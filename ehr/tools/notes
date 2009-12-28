@@ -1,0 +1,22 @@
+1. Import data into mysql:
+
+    mysql -uroot -psasa
+    > \. WNPRC_records.sql
+
+2. Dump mysql tables. Must be writable by mysql user.
+
+    mkdir /tmp/primate-dump
+    chmod 777 /tmp/primate-dump
+    mysqldump -uroot -psasa --tab=/tmp/primate-dump --no-create-info colony --ignore-table=colony.tmp_table
+
+3. Compile FixTabs.java tool:
+
+    javac FixTabs.java
+
+4. Fixup and import data:
+
+    vi importdata.sh, edit paths
+    chmod 777 a target and source directories
+    sudo su postgres (authentication may not work otherwise)
+    ./importdata.sh
+
