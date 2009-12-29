@@ -1,3 +1,12 @@
 * text=auto !eol
+ehr/build.xml -text
+ehr/module.properties -text
+ehr/src/META-INF/ehr/ehr.sql -text
+ehr/src/org/labkey/ehr/EHRContainerListener.java -text
+ehr/src/org/labkey/ehr/EHRController.java -text
+ehr/src/org/labkey/ehr/EHRManager.java -text
+ehr/src/org/labkey/ehr/EHRModule.java -text
+ehr/src/org/labkey/ehr/EHRSchema.java -text
+ehr/src/org/labkey/ehr/view/begin.jsp -text
 ehr/tools/FixTabs.java -text
 ehr/tools/notes -text
