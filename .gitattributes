@@ -1,5 +1,12 @@
 * text=auto !eol
 ehr/build.xml -text
+ehr/ehr-study/datasets/datasets_manifest.xml -text
+ehr/ehr-study/datasets/datasets_metadata.xml -text
+ehr/ehr-study/datasets/labanimals.txt -text
+ehr/ehr-study/datasets/parares.txt -text
+ehr/ehr-study/lists/lists.xml -text
+ehr/ehr-study/lists/snomed.tsv -text
+ehr/ehr-study/study.xml -text
 ehr/module.properties -text
 ehr/src/META-INF/ehr/ehr.sql -text
 ehr/src/org/labkey/ehr/EHRContainerListener.java -text

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<study label="EHR Study" dateBased="true" startDate="2008-01-01-08:00" securityType="BASIC_WRITE" xmlns="http://labkey.org/study/xml">
+  <lists dir="lists"/>
+  <!--
+  <queries dir="queries"/>
+  <views dir="views"/>
+  <reports dir="reports"/>
+  <visits file="visit_map.xml"/>
+  <cohorts type="AUTOMATIC" mode="SIMPLE" datasetId="5008" datasetProperty="Group"/>
+  -->
+  <qcStates showPrivateDataByDefault="false"/>
+  <datasets dir="datasets" file="datasets_manifest.xml">
+    <definition file="EHRStudy.dataset"/>
+  </datasets>
+  <!--
+  <specimens repositoryType="ADVANCED" dir="specimens" file="DemoStudy.specimens"/>
+  -->
+  <comments/>
+  <missingValueIndicators>
+    <missingValueIndicator indicator="UNK" label="Unknown"/>
+    <missingValueIndicator indicator="N" label="Required field marked by site as 'data not available'."/>
+    <missingValueIndicator indicator="Q" label="Data currently under quality control review."/>
+  </missingValueIndicators>
+</study>

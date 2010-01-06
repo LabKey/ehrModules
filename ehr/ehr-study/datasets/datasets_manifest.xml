@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<datasets metaDataFile="datasets_metadata.xml" xmlns="http://labkey.org/study/xml">
+  <categories>
+    <category>Assays</category>
+    <category>Exams</category>
+    <category>Status</category>
+    <category>Tests</category>
+  </categories>
+  <datasets>
+    <dataset name="labanimals" id="6008" category="Exams" demographicData="true"/>
+    <dataset name="parares" id="6009" category="Tests"/>
+  </datasets>
+</datasets>

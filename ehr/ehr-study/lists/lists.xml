@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ns:tables xmlns:ns="http://labkey.org/data/xml">
+  <ns:table tableName="snomed" tableDbType="TABLE">
+    <ns:pkColumnName>code</ns:pkColumnName>
+    <ns:columns>
+      <ns:column columnName="code">
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>8</ns:scale>
+        <ns:isKeyField>true</ns:isKeyField>
+      </ns:column>
+      <ns:column columnName="meaning">
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>70</ns:scale>
+      </ns:column>
+    </ns:columns>
+  </ns:table>
+</ns:tables>
