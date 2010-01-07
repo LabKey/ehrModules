@@ -55,7 +55,7 @@ public class EHRQuerySchema extends UserSchema
     protected TableInfo createTable(String name)
     {
         if (name.equalsIgnoreCase("Accounting"))
-            return new AccountingTable(getContainer());
+            return new AccountingTable(this);
         Study study = StudyService.get().getStudy(getContainer());
         if (study != null)
         {
