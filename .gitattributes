@@ -1,5 +1,6 @@
 * text=auto !eol
 ehr/build.xml -text
+ehr/ehr-study/datasets/EHRStudy.dataset -text
 ehr/ehr-study/datasets/datasets_manifest.xml -text
 ehr/ehr-study/datasets/datasets_metadata.xml -text
 ehr/ehr-study/datasets/labanimals.txt -text
