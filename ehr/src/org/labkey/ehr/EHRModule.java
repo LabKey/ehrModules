@@ -22,6 +22,7 @@ import org.labkey.api.module.DefaultModule;
 import org.labkey.api.module.ModuleContext;
 import org.labkey.api.util.PageFlowUtil;
 import org.labkey.api.view.WebPartFactory;
+import org.labkey.ehr.query.EHRQuerySchema;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -52,6 +53,7 @@ public class EHRModule extends DefaultModule
     protected void init()
     {
         addController("ehr", EHRController.class);
+        EHRQuerySchema.register();        
     }
 
     public void startup(ModuleContext moduleContext)
