@@ -18,7 +18,6 @@ ehr/src/org/labkey/ehr/EHRSchema.java -text
 ehr/src/org/labkey/ehr/query/AccountingTable.java -text
 ehr/src/org/labkey/ehr/query/DepivotedStudyTable.java -text
 ehr/src/org/labkey/ehr/query/EHRQuerySchema.java -text
-ehr/src/org/labkey/ehr/query/WrappedStudyTable.java -text
 ehr/src/org/labkey/ehr/view/begin.jsp -text
 ehr/tools/FixTabs.java -text
 ehr/tools/notes -text
