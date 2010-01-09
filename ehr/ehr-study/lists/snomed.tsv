@@ -1,96 +1,500 @@
 code	meaning
 @d-06830	hydatid disease
+@e-15240	corynebacterium renale
+@e-22900	diptheroids, nos
+@e-70720	isoflurane
+@e-71620	furacort, furazolidone, nitrofurazone, furoxone, furasolium
+@e-72130	neomycin, biosol
+@e-72520	oxytetracycline hcl, oxytetracyline
+@e-yy958	chloromycetin ointment + proteolytic enzyme
+@f-25170	gnrh
+@f-31170	postpartum state
+@m-02530	inequality of size, nos
+@m-24700	coarctation, nos
+@m-31600	hernia,nos
+@m-33400	cyst
+@m-34300	collapse, nos
+@m-36100	congestion, nos
+@m-36504	pitting edema
+@m-37000	hemorrhage, nos
+@m-43060	plasma cell inflammation
+@p-10406	repeat, elective cesarean
+@p-12000	injection (code to e- axis)    (code to t- axis)
+@p-16010	closure of skin by suture
+@t-04210	mastectomy - female, right
+@t-10600	thoracic vertebra
+@t-14412	psoas major muscle
+@t-54240	maxillary right second premolar tooth
+t-11180	mandible, nos
+t-62061	serous capsule of liver
+w-10010	padre with ctl epitope (tpy)
+t-11900	lumbar vertebra, nos
+t-03000	subcutaneous tissue
+t-81000	vulva, nos
+p2-87524	embryo transfer
+t-32160	endocardium of atrium, nos
+t-13760	palmaris longus
+t-13010	skeletal muscle fiber, nos
+@p-1x010	general anesthesia
+@t-0x004	blood, cord
+@t-0x400	plasma
+@t-x1502	cranial subarachnoid space
+@t-x1601	cerebral ventricle and subarachnoid cistern, nos
+@t-x6000	cerebellum
+d3-26000	myocarditis, nos
+d8-04100	miscarriage
+df-d0100	cause of death, natural
 t-aa020	left eye
+d0-22310	hyperkeratosis of skin, nos
+c-60430	piroxicam
+c-93040	bismuth subsalicylate (pepto bismuth)
+d5-21100	stomatitis, nos
+c-80322	digitalis preparation
+c-6a16a	methoxyflurane
+d7-12420	chronic tubulointerstitial nephritis
+d5-10810	gingivitis, nos
+t-aa200	cornea, nos
+@e-00010	etiologic agent unknown
+@e-15910	enterobacter agglomerans
+@e-20030	mycobacterium bovis
+@e-50040	solution,nos
+@e-71160	hydrogen peroxide
+@e-71875	septra
+@e-72260	streptomycin sulphate
+@e-75560	cyclopentylate eye drops, cyclogel
+@e-75970	tropicamide
+@e-77760	indomethacin
+@e-78860	phenobarbital
+@e-87790	vitamin k
+@f-01620	weakness
+@m-14010	infected wound
+@m-14830	transected structure, nos
+@m-31530	kyphosis
+@m-34030	obstruction, paralytic ileus
+da-92150	chronic otitis media, nos
+w-10022	acemannin (carravet)
+t-00250	epithelium, nos
+t-70000	urinary tract, nos
+@f-x2510	anisocoria, nos
+d4-02214	chromosomal imbalance syndrome, pair 21, trisomy
+f-03004	hypothermia
+m-14018	wound, multiple
+c-53540	ceftazidime
+c-53010	cephaloridine
+c-52270	polymyxin b
+d8-71100	cerebral hemorrhage in the fetus or newborn, nos
+c-21313	propylene glycol
+d0-00010	dermatitis, NOS
+@e-10510	acinetobacter calcoaceticus var anitrat
+@e-13711	campylobacter fetus, -ss fetus
+@e-15717	e. coli (4451107)
+@e-87280	potassium gluconate
 @e-90590	catheter nos
+t-57700	stomach, pyloric region
+g-a3730	high
+w-10034	atipamezole
+c-c274e	tobradex ophthalamic ointment
+t-54290	maxillary left central incisor tooth
+@e-72980	cefotaxime
+d2-50524	vesicular emphysema
+d2-60306	complete atelectasis
+d5-41724	purulent enteritis
+d2-60500	pulmonary edema, acute, nos
+c-680e0	phenylephrine
+d1-50630	myositis, nos
+m-50800	cell degeneration
+f-88450	stillbirth, nos
+m-52110	atherosclerosis, nos
+m-80103	carcinoma, nos
+m-80500	papilloma, nos
+t-64700	ampulla of vater
+w-10007	staphage lysate
+t-94800	both testes
+m-72200	lymphoid hyperplasia, nos
+m-72020	reactive hyperplasia
+m-50080	steatosis, fatty change
+t-54400	mandibular left second premolar tooth
+t-54510	mandibular right second molar tooth
+t-71065	corticomedullary juction of kidney
+@d-75080	clinical pleurisy, nos
+@e-70480	tetracaine 1% drop, alcaine drops
+@e-71190	1% silver sulfadiazine
+@e-72193	ceftriaxone sodium
+@e-85560	estrone (injection)
+@e-87271	phosphate buffered saline
+@e-88450	diphenhydramine hcl
+@t-88100	placenta, nos
+@t-89000	fetus, nos
+@t-x1280	epidural space, nos
+d7-71232	hydrosalpinx
+d7-71420	endometritis, nos
+d7-75626	endometrial polyp
+d2-40010	bronchiolitis, nos
+d0-53100	alopecia, nos
+c-a4830	dihydrotachysterol
+g-a1780	remote
+@t-y9060	left femoral region
 m-36870	mucus, leakage
+m-70300	involution, nos
+m-43040	eosinophilic infiltration, nos
+l-21600	moraxella, nos
+l-22200	neisseria, nos
+m-80001	neoplasm, nos
+m-73070	neovascularization
+l-51941	blastocystis hominis
+m-36780	crust
+m-33030	protein cast
+m-40000	inflammation, nos; leucocytic infiltrate, nos
+@e-54590	carboline
+@e-81040	fluorescein
+@e-85050	pms
+@e-85541	diethylstilbesterol dipropionate
+@e-86146	gnrh antagonist
+@m-83123	renal cell carcinoma, grade 3
+@m-85030	duct adenoma, nos
+@p-11485	biopsy, punch, 5mm
+@t-49530	great saphenous vein
+@t-68000	rectum, nos
+@t-78010	right testis, nos;  orchidectomy right
+@t-96200	left thyroid
+t-59380	colonic serosa
+c-a0590	stanozolol
+g-a1000	right
+dd-1100	head, open wound
+c-655b0	pentylenetetrazol
+c-56a96	levamisole
+c-d1237	amino acid concentrate
+f-b2830	dehydroepiandrosterone
+c-b6070	measles live virus vaccine
+g-a1110	peripheral
+g-a1660	area
+m-41610	acute abscess; abscess
+t-c3040	splenic red pulp
+m-41700	acute necrotizing inflammation, nos
+m-76000	proliferation, nos
+p1-03100	biopsy, nos
+l-10020	coccus, gram positive
+d3-89120	meningeal hemorrhage
+p1-03001	excision, partial (code to t or m)
+@e-89605	pyrazinoylguanidine, pzg
+@e-90620	plastic tube
+@m-80103	carcinoma, metastatic
 @p-60310	dental prophylaxis,adult
+@t-03470	subcutaneous tissue of hip
+@t-08340	paratracheal lymph node
+@t-47420	left femoral artery
+@t-48710	inferior vena cava
+@t-54320	maxillary left first premolar tooth
+@t-58700	ampulla of vater
+@t-63000	stomach
+c-52a02	erythromycin ethylsuccinate
+@t-67400	colon, transverse
+@t-73010	right ureter
+c-803c1	enalapril maleate
+t-58000	small intestine, nos
+t-11409	shaft of tenth rib
+t-59400	transverse colon
+c-a0270	betamethasone preparation
+c-6a100	general anesthetic, nos
+c-c2612	cefixime (suprax)
+t-49410	femoral vein, nos
+@e-793x0	phencyclidine nos
+@e-yy790	xylazine
+@t-x1660	right lateral ventricle
+c-84710	simethicone
+de-a1420	sarcoidosis, nos
+df-d0260	strangulation death
+m-14700	abrasion
+m-54120	zonal necrosis
+m-57610	jaundice, nos
+t-a2210	cortex of frontal lobe
+t-a2300	parietal lobe, nos
+t-d1200	face, nos
+t-d1460	sella turcica
+m-37010	ecchymosis
+l-24800	staphylococcus, nos
+l-10036	normal flora
+p1-b6710	laparoscopy with aspiration
+m-44020	pyogenic granuloma
+t-d2600	buttock, nos
+t-a2030	cerebral white matter
+t-d1130	parietal region
+@e-79600	lithium chloride
+@e-85210	fludrocortisone
+@e-86110	corticotropin releasing factor
+@e-86401	polypeptide (hiv) vaccine
+@m-02570	swelling, nos
 @m-36140	passive congestion
+@m-54730	hemorrhagic infarct
+@m-70700	emaciation
+@m-76100	fibromatosis, nos
+@m-76510	endometriosis, internal
+@p-11750	resection-recession, nos
+@t-02820	skin of knee
+@t-10640	fourth thoracic vertebra
+@t-42000	aorta, nos
+@t-55300	submaxillary gland
+@t-56000	liver, nos
+c-60d11	naloxone hcl
+c-d1033	acepromazine maleate
+c-6a112	halothane
+f-e4060	mitotic index
+t-88005	oviduct, nos
+@e-730x0	tolnaftate 1% ointment, tinactin
+@t-1x020	yellow fat
+@t-x1740	third ventricle, nos
+m-88100	fibroma, nos
+t-c4860	pelvic lymph node
+t-d4900	retroperitoneum
+c-54221	benzathine penicillin, procaine, longicil
+c-55000	tetracycline
+c-54620	amoxicillin
+c-54400	cloxacillin
+c-96511	bacitracin preparation
+c-a0d05	oxytocin preparation
+c-64520	alprazolam
+c-a15e5	thyrotropin releasing hormone preparation
+m-88320	dermatofibroma, nos
+t-a7802	sacral spinal cord
+@d-10140	malnutrition syndrome, nos
+@e-10040	bacillus, gram +
+@e-15950	morganella morganii
+@e-43310	pneumocystis carini
+@e-70020	experimental drug, sl 53
+@e-71120	chlorhexidine, nolvasan
+@e-71613	ciprofloxacin
+@e-72220	polymyxin b
+@e-72610	methicillin
+@e-77720	ibuprofen
+@f-26570	testosterone nos
+@f-35250	stillbirth, nos
+@m-22210	mobile cecum
 @m-30000	stone, nos
+@m-32200	distention, nos
+@m-33300	hydronephrosis, nos
+@m-33770	serous cyst
+@m-37106	hematoma, localized
+@m-41500	acute fibrinous pericarditis
+@m-44000	granuloma, nos
+@m-50060	hyalinization, nos
+@m-54111	fat necrosis
+@m-55110	amyloidosis, focal
+@m-58000	atrophy, nos
+@p-10401	initial cesarean
+@p-10500	incision and re-exploration of recent operation
+@p-11400	biopsy - nos
+@p-11810	excision of tissue or organ for grafting from recipient
+@p-12700	implantation - nos
+@p-16300	suture ligature, nos
+@p-20100	specimen collection nos
+@p-34510	microbial o & p exam fecal
+@t-21030	olfactory region of nose
+@t-25000	trachea, tracheotomy
+@t-xx020	left eye
+c-a2211	intermediate-acting insulin
+t-13820	brachioradialis teres
+@f-y1755	administrative death
+@t-2y600	pleural fluid, nos
+@t-x1000	csf
+@t-x1410	cranial subdural space
+@t-x2300	parietal lobe
+@t-y1010	upper trunk
+@t-y4100	laparoscopy, laparotomy
+@t-y5000	abdominal viscera
+c-51851	hydroxyzine hydrochloride
+d5-80140	acute hepatitis
+f-01804	body weight loss
+m-78430	adhesion, fibrous
+t-a4101	thalamus, periventricular gray matter
+t-c4160	submandibular lymph node
+t-c4340	paratracheal lymph node
+t-c4520	ileocolic lymph node
+t-d4000	abdomen, nos
+c-80401	lidocaine hydrochloride
+c-97580	tropicamide
+c-91451	methylprednisolone acetate (depomedrol)
+c-70831	lactated ringer's solution
 c-80330	digoxin
+t-a4630	tuber cinereum
+t-c4610	iliac lymph node
+t-a5100	mid brain, nos
+@d-10020	failure to thrive syndrome
+@d-63350	cholestatic jaundice syndrome, nos
+@e-00130	etiology, physician association
+w-10030	hcg recombinant
+@e-16522	shigella flexneri, type 2
+@e-22310	pasteurella multocida
+@e-44570	entamoeba coli
+@e-70041	experimental drug fp7070 (shiseido)
+@e-72340	tobramycin
+@e-72730	amoxicillin
+@e-77230	caffeine sodium benzoate, pentylenetetrazol
+@e-yy972	doxapdopram
+@m-12300	fracture, ununited, nos
+@m-32710	diverticulosis
+@m-49400	adhesion, nos
+@t-04000	breast, nos
+@t-06002	bone marrow,iliaccrest
+t-62000	liver, nos
+t-03020	subcutaneous fat; panniculus adiposus
+t-02201	skin of pinna
+t-02420	skin of axilla, NOS
+t-13740	pronator teres
+t-62220	midlobular region of liver
+@p-12x10	ia
+@t-0x006	blood, anaerobic culture
+d2-30100	bronchitis, nos
+d7-21100	cystitis, nos
+df-d1600	death due to fight
+c-61320	phenobarbital
+c-73002	proteolytic enzyme preparation
+c-a15c0	gnrh
+d1-08402	debridement and suture
+@d-62170	malabsorption syndrome
+@d-67040	acute glomerulonephritis syndrome
+@e-10002	bacterium, growth absent
+@e-10630	actinobacillus actinomycetem comitans
+@e-15700	escherichia, nos
+w-10003	experimental drug ru65008 (roussel uclaf)
+@e-77970	morphine sulphate
+@f-35010	perinatal state, nos
+@m-12800	multiple fracture, nos
 @m-32820	vesicular emphysema
+@m-39320	fistula, nos
+@m-41740	abscess, nos
+t-50510	intestinal mucosa, nos
+t-57000	stomach, nos
+t-96000	vas deferens
+t-57110	gastric submucosa
+t-70060	urine
+t-02102	skin of scalp, nos
+p1-79520	electroejaculation
+p1-08450	hernia repair, nos
+p1-57803	colopexy
+@p-95460	embryo transfer
+c-72050	mannitol
+d7-11010	renal insufficiency syndrome
+c-a6218	iron dextran
+d7-14100	hydronephrosis, nos
+f-87280	breech presentation
+c-53560	ceftriaxone
+c-52250	lincomycin
+c-62150	lithium chloride
+c-63220	haloperidol
+c-c16c2	diamox
+@e-13713	campylobacter jejuni
+@e-71670	furacin, nitrofurazone, nitrofurazone-penicillin
+@f-12214	hypoproteinemia
+@f-13611	triglyceride, medium chain
+m-81403	adenocarcinoma, nos
+t-d9110	right thigh
+m-62390	vacuolization
+t-1234a	iliac crest
+w-10015	experimental drug bms234303 (bristal meyers)
+g-a31700	increased
+t-01404	hair shaft
+t-54490	mandibular right second premolar tooth
+t-94100	seminiferous tubule, nos
+@t-54490	mandibular right second premolar tooth
+@t-y9780	both feet
+d2-60300	collapse of lung; atelectasis, nos
+d5-41110	chronic ulcerative colitis
+d3-40220	pulmonary thrombosis
+l-1e100	shigella, nos
+d0-00564	folliculitis
+c-c1758	kaolin & opium (donnagel-pg)
+d4-41010	regional ileitis of the small intestine
 t-24100	larynx, nos
+db-61110	diabetes mellitus, drug-related
+m-83300	follicular adenoma, nos
+t-64500	common bile duct, nos
+t-c8000	thymus, nos
+t-d8520	left forearm
+w-10027	plasmalyte
+m-72000	hyperplasia, NOS
+t-54420	mandibular left canine tooth
+t-54350	maxillary left second molar tooth
+t-54240	maxillary right second premolar tooth
+t-14570	vastus lateralis muscle
+@e-72090	clindamycin
+@e-72191	cefazolin
+@e-73580	interferon
+@e-76591	enulapril, angiotensin converting enzyme inhibitor
+@e-84660	protamine
+@e-85370	triamcinolone
+@f-60180	bulimia
+@m-47190	lymphocytic inflammatory cell infiltrate
+@t-82900	uterus and cervix
+@t-86910	salpingo-ovariectomy - right
+@t-88300	amniocentesis
+c-54b30	piperacillin
+c-a4410	folic acid preparation
+c-56a80	thiabendazole
+g-a1090	medial; middle
+m-33540	blood cyst
+m-41790	acute hemorrhagic inflammation, nos
+m-33980	pseudocyst, nos
+m-41602	pus, NOS
+m-31180	separation, nos
+@e-80750	methylcellulose
+@e-87440	bha, food additive
+@e-87830	pyridoxine hcl
+@m-85032	duct adenoma,nos
+@p-11487	biopsy, punch, 7mm
+@p-14290	transplantation (allogeneic), corneal transplant (t-xx200)
+c-a6710	protamine sodium
+@t-10680	eighth thoracic vertebra
+@t-82000	uterus, nos
+@t-86400	parametrium
+@t-87500	ovum, nos
+@t-93110	adrenal, zona glomerulosa
+@t-96000	thyroid gland, nos
 c-6a157	ketamine hcl, vetalar
+c-a6530	warfarin
+c-6a116	isoflurane
+c-a1204	progesterone preparation
+c-b5540	diphtheria toxoid
+w-10018	experimental drug rs1716 (sankyo)
+t-02158	skin of jaw, nos
+c-b7180	dimethyl sulfoxide
+g-a1020	bilateral
+t-c3310	sheathed arterioles of spleen
+t-b3120	adrenal, zona fasiculata
+t-d2010	upper trunk
+t-d2100	back, nos
+df-d0590	euthanasia
+l-16001	klebsiella pneumoniae
+@d-81010	stroke syndrome,nos
+@e-10080	bacillus, gram negative
+@e-15990	providencia stuartii
+@e-71900	sulfasalazine
+@e-79001	anxiolytic drug, nos
+@e-86220	thyroxin, injectable nos
+@e-88810	diamox, acetazolamide
+@e-89603	nmda (n-methyl-d-aspartate acid)
+@m-53320	kimmelstiel-wilson lesion
+@m-72200	lymphoid hyperplasia, nos
+@m-80703	epidermoid carcinoma
+@m-81401	adenocarcinoma
+@m-81500	islet cell adenoma
+@m-82600	papillary adenoma, nos
+@m-83700	adrenal cortical adenoma, nos
+@m-84000	sweat gland tumor, malignant
+@m-85001	intraductal carcinoma, grade 1
+@p-11070	vasectomy, segmental excision and ligation
+@p-11440	biopsy, aspiration of tissue or fluid
+@p-14920	open reduction and fixation (code to device, e-9...)
+@p-15040	electrosurgery - nos
+@p-62300	root canal
+@t-48170	internal jugular vein
+@t-51000	mouth, nos
+@t-54500	mandibular right first molar tooth
+@t-54910	gingiva
+@t-67200	ascending colon
+@t-71020	left kidney
+c-a6211	iron preparation nos
+t-39000	pericardium, nos
 t-58200	duodenum, nos
-@t-32200	right atrium nos
-t-73020	left ureter
-t-90100	male genitourinary system, nos
-da-10010	meningitis, nos
-m-31430	intussusception
-t-a3200	caudate nucleus
-t-b1000	pituitary gland, nos
-a-2a110	electronic monitor, nos
-@p-10100	incision exploratory
-@e-15800	aerobacter, nos
-t-56000	esophagus, nos
-@e-85750	hydroxyprogesterone
-de-0020	septicemia
-@e-82301	imodium
-c-54450	nafcillin
-t-b6010	thyroid capsule
-@t-0x005	blood, aerobic culture
-c-52551	neomycin sulphate
-@t-86921	salpingo-ovariectomy - left
-l-16501	morganella morganii
-m-34260	obstruction, stricture
-@t-x9210	axillary nerve
-d8-72340	intrauterine anoxia
-@f-y2910	experimental death
-d8-72510	respiratory distress syndrome in the newborn
-t-04000	mammary gland, nos
-@t-7x100	urine
-@t-x2050	brain stem
-@t-xx860	conjunctiva
-@t-00010	total body
-@t-07000	spleen
-l-1e102	shigella flexneri
-d5-41700	colitis, nos
-g-a1650	site
-@t-54400	mandibular left second premolar tooth
-@e-85300	cortisone acetate
-@m-36500	edema, nos
-@e-10030	bacterium, gram positive
-@e-50150	sterile water
-@p-11488	biopsy, punch, 8mm
-@p-17060	manual reduction, fracture repair
-@f-33790	intrauterine anoxia
-@e-72600	penicillin 0, g-aqueous, penicillin g, potassium penicillin g
-t-c4472	splenic lymph node
-d5-86444	Oriental Cholangiohepatitis
-@e-80691	maxitrol (ointment), neomycin, bacitracin, 1%, polyspectrin
-@t-x2493	occipital and temporal lobes, cs
-m-17080	amputation stump
-c-84040	metoclopramide
-@p-12x40	id
-@t-33010	myocardium, nos
-m-86201	granulosa cell tumor, nos
-d1-21000	osteoarthrosis, nos; osteoarthritis, nos
-g-a5700	secondary
-d5-20120	sialoadenitis, nos
-c-622b0	clomipramine
-m-39100	sequestrum, nos
-db-80000	disorder of thyroid, nos
-d7-11000	kidney disease, nos
-g-c0010	due to
-t-93020	left seminal vesicle
-f-93046	self-mutilation
-r-4093b	cervical
-r-4044b	ischemic
-w-10082	crl1005 adjuvant in benzalkonium chloride
-w-10091	micropapillary
-da-13011	ependymal cyst
-g-a430	mature
-w-10119	pleuropneumonia
-t-1a31f	prostatic gland
-w-10138	serosa
-t-74020	submucosa of urinary bladder
-w-10181	peptide siv (gpgirypktfgwlwk)
-t-c0292	cd8+ lymphocyte (cell)
-c-300f4	old tuberculin
-da-70114	panophthalmitis
-w-10227	id transponder implant (microchip)
-w-10247	a195 buffer (preservation solution by merck for adenovirus)
-f-c2202	rituximab (antibody)
-w-10279	rbcg w/gag5,nef2,vif2 mini genes
-c-d6817	vpl trypzyme-v aerosol spray
-d3-16172	left ventricular hypertrophy
-f-85350	placental separation
+t-59420	ascending colon
+t-59600	rectum, nos
+c-a0250	dexamethasone preparation

@@ -9,17 +9,46 @@ default.deleteAfterImport=FALSE
 # map a source tsv column (right side) to a property name or full propertyURI (left)
 # predefined properties: ParticipantId, SiteId, VisitId, Created
 default.property.ParticipantId=id
-#default.property.Created=dfcreate
-
-6008.file=labanimals.txt
-6008.property.VisitDate=acquire
-
-6009.file=parares.txt
-6009.property.VisitDate=date
+default.property.VisitDate=date
 
 # use to map from filename->datasetid
 # NOTE: if there are NO explicit import definitions, we will try to import all files matching pattern
 # NOTE: if there are ANY explicit mapping, we will only import listed datasets
 
-#default.filePattern=dataset_(\\d*).tsv
-default.importAllMatches=FALSE
+#default.filePattern=dataset(\\d*).tsv
+#default.importAllMatches=TRUE
+
+arrival.file=arrival.tsv
+assignment.file=assignment.tsv
+bacteriology.file=bacteriology.tsv
+behavetrem.file=behavetrem.tsv
+biopsyhead.file=biopsyhead.tsv
+biopsydiag.file=biopsydiag.tsv
+birth.file=birth.tsv
+blood.file=blood.tsv
+chemisc.file=chemisc.tsv
+chemistry.file=chemistry.tsv
+clintrem.file=clintrem.tsv
+problem.file=problem.tsv
+drug.file=drug.tsv
+demographics.file=demographics.tsv
+departure.file=departure.tsv
+hemamisc.file=hemamisc.tsv
+hematology.file=hematology.tsv
+hormtrem.file=hormtrem.tsv
+immunores.file=immunores.tsv
+mhctype.file=mhctype.tsv
+necropsyhead.file=necropsyhead.tsv
+necropsydiag.file=necropsydiag.tsv
+obs.file=obs.tsv
+parares.file=parares.tsv
+parahead.file=parahead.tsv
+surghead.file=surghead.tsv
+surgfluid.file=surgfluid.tsv
+surgproc.file=surgproc.tsv
+surgsum.file=surgsum.tsv
+tb.file=tb.tsv
+tissue.file=tissue.tsv
+treatments.file=treatments.tsv
+urine.file=urine.tsv
+weight.file=weight.tsv

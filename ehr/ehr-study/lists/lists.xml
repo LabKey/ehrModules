@@ -1,18 +1,57 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<ns:tables xmlns:ns="http://labkey.org/data/xml">
-  <ns:table tableName="snomed" tableDbType="TABLE">
-    <ns:pkColumnName>code</ns:pkColumnName>
-    <ns:columns>
-      <ns:column columnName="code">
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>8</ns:scale>
-        <ns:isKeyField>true</ns:isKeyField>
-      </ns:column>
-      <ns:column columnName="meaning">
-        <ns:nullable>true</ns:nullable>
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>70</ns:scale>
-      </ns:column>
-    </ns:columns>
-  </ns:table>
-</ns:tables>
+<tables xmlns="http://labkey.org/data/xml">
+  <table tableName="project" tableDbType="TABLE">
+    <columns>
+      <column columnName="pno">
+        <datatype>varchar</datatype>
+        <columnTitle>Pno</columnTitle>
+        <nullable>false</nullable>
+        <isKeyField>true</isKeyField>
+      </column>
+      <column columnName="protocol">
+        <datatype>varchar</datatype>
+        <columnTitle>Protocol</columnTitle>
+      </column>
+      <column columnName="account">
+        <datatype>varchar</datatype>
+        <columnTitle>Account</columnTitle>
+      </column>
+      <column columnName="inves">
+        <datatype>varchar</datatype>
+        <columnTitle>Inves</columnTitle>
+      </column>
+      <column columnName="avail">
+        <datatype>varchar</datatype>
+        <columnTitle>Avail</columnTitle>
+      </column>
+      <column columnName="title">
+        <datatype>varchar</datatype>
+        <columnTitle>Title</columnTitle>
+      </column>
+      <column columnName="research">
+        <datatype>boolean</datatype>
+        <columnTitle>Research</columnTitle>
+      </column>
+      <column columnName="reqname">
+        <datatype>varchar</datatype>
+        <columnTitle>Reqname</columnTitle>
+      </column>
+    </columns>
+    <pkColumnName>pno</pkColumnName>
+  </table>
+  <table tableName="snomed" tableDbType="TABLE">
+    <columns>
+      <column columnName="code">
+        <datatype>varchar</datatype>
+        <columnTitle>Code</columnTitle>
+        <nullable>false</nullable>
+        <isKeyField>true</isKeyField>
+      </column>
+      <column columnName="meaning">
+        <datatype>varchar</datatype>
+        <columnTitle>Meaning</columnTitle>
+      </column>
+    </columns>
+    <pkColumnName>code</pkColumnName>
+  </table>
+</tables>
