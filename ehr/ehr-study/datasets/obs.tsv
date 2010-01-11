@@ -1,1 +1,51 @@
-id	userid	feces	menses	behavior	breeding	other	tlocation	remark	otherbehavior	date	time	
+id	Date	userid	feces	menses	behavior	breeding	other	tlocation	remark	otherbehavior	time	Description
+r02100	2009-07-27	crodriguez									1970-01-01 06:24:59	userid: crodriguez
+r02125	2009-07-27	crodriguez		M							1970-01-01 06:24:59	userid: crodriguez, menses: M
+r03053	2009-07-27	crodriguez									1970-01-01 06:24:59	userid: crodriguez
+r02008	2009-07-27	crodriguez									1970-01-01 06:24:59	userid: crodriguez
+r03112	2009-07-27	crodriguez		M							1970-01-01 06:24:59	userid: crodriguez, menses: M
+r03043	2009-07-27	crodriguez		M							1970-01-01 06:24:59	userid: crodriguez, menses: M
+r05075	2009-07-27	crodriguez									1970-01-01 06:24:59	userid: crodriguez
+r05014	2009-07-27	crodriguez									1970-01-01 06:24:59	userid: crodriguez
+r05069	2009-07-27	crodriguez		M							1970-01-01 06:24:59	userid: crodriguez, menses: M
+r02130	2009-07-27	crodriguez							ring on neck 		1970-01-01 06:24:59	userid: crodriguez, remark: ring on neck 
+r03063	2009-07-27	crodriguez									1970-01-01 06:26:30	userid: crodriguez
+r97075	2009-07-27	crodriguez									1970-01-01 06:26:30	userid: crodriguez
+r03057	2009-07-27	crodriguez									1970-01-01 06:26:30	userid: crodriguez
+r03084	2009-07-27	crodriguez									1970-01-01 06:26:30	userid: crodriguez
+r05060	2009-07-27	crodriguez									1970-01-01 06:26:30	userid: crodriguez
+r05063	2009-07-27	crodriguez									1970-01-01 06:26:30	userid: crodriguez
+r99057	2009-07-27	crodriguez									1970-01-01 06:26:30	userid: crodriguez
+r01014	2009-07-27	crodriguez		LM							1970-01-01 06:26:30	userid: crodriguez, menses: LM
+r05020	2009-07-27	crodriguez									1970-01-01 06:26:30	userid: crodriguez
+r05017	2009-07-27	crodriguez							scratches healing 		1970-01-01 06:26:30	userid: crodriguez, remark: scratches healing 
+r99050	2009-07-27	crodriguez									1970-01-01 06:28:52	userid: crodriguez
+r03115	2009-07-27	crodriguez									1970-01-01 06:28:52	userid: crodriguez
+r03121	2009-07-27	crodriguez									1970-01-01 06:28:52	userid: crodriguez
+rh2036	2009-07-27	crodriguez									1970-01-01 06:28:52	userid: crodriguez
+r04018	2009-07-27	crodriguez									1970-01-01 06:28:52	userid: crodriguez
+r04039	2009-07-27	crodriguez									1970-01-01 06:28:52	userid: crodriguez
+r03025	2009-07-27	crodriguez									1970-01-01 06:28:52	userid: crodriguez
+r03026	2009-07-27	crodriguez									1970-01-01 06:28:52	userid: crodriguez
+r99035	2009-07-27	crodriguez									1970-01-01 06:28:52	userid: crodriguez
+r04057	2009-07-27	crodriguez									1970-01-01 06:28:52	userid: crodriguez
+r04086	2009-07-27	crodriguez									1970-01-01 06:30:33	userid: crodriguez
+r03050	2009-07-27	crodriguez									1970-01-01 06:30:33	userid: crodriguez
+r04132	2009-07-27	crodriguez	D								1970-01-01 06:30:33	userid: crodriguez, feces: D
+r02002	2009-07-27	crodriguez									1970-01-01 06:30:33	userid: crodriguez
+r05001	2009-07-27	crodriguez									1970-01-01 06:30:33	userid: crodriguez
+r05003	2009-07-27	crodriguez									1970-01-01 06:30:33	userid: crodriguez
+r04029	2009-07-27	crodriguez									1970-01-01 06:30:33	userid: crodriguez
+r05057	2009-07-27	crodriguez									1970-01-01 06:30:33	userid: crodriguez
+r01059	2009-07-27	crodriguez									1970-01-01 06:30:33	userid: crodriguez
+r04046	2009-07-27	crodriguez									1970-01-01 06:30:33	userid: crodriguez
+r04141	2009-07-27	crodriguez		LM							1970-01-01 06:31:39	userid: crodriguez, menses: LM
+r03056	2009-07-27	crodriguez									1970-01-01 06:31:39	userid: crodriguez
+r03087	2009-07-27	crodriguez		M							1970-01-01 06:31:39	userid: crodriguez, menses: M
+r02014	2009-07-27	crodriguez									1970-01-01 06:31:39	userid: crodriguez
+r04081	2009-07-27	crodriguez							scratch healing 		1970-01-01 06:31:39	userid: crodriguez, remark: scratch healing 
+r04084	2009-07-27	crodriguez									1970-01-01 06:31:39	userid: crodriguez
+r03009	2009-07-27	crodriguez									1970-01-01 06:31:39	userid: crodriguez
+r03075	2009-07-27	crodriguez									1970-01-01 06:31:39	userid: crodriguez
+r04067	2009-07-27	crodriguez									1970-01-01 06:31:39	userid: crodriguez
+r04090	2009-07-27	crodriguez									1970-01-01 06:31:39	userid: crodriguez

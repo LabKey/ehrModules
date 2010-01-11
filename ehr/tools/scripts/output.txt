@@ -1,0 +1,101 @@
+id	Date	time	source	remark	Description
+NULL	1989-3-13	NULL	waisman		source: waisman
+ca0002	1989-3-13	NULL	waisman		source: waisman
+ca0003	1989-3-13	NULL	waisman		source: waisman
+ca0004	1989-3-13	NULL	waisman		source: waisman
+ca0005	1989-3-13	NULL	waisman		source: waisman
+ca0006	1989-3-13	NULL	waisman		source: waisman
+ca0007	1989-3-13	NULL	waisman		source: waisman
+ca0009	1989-3-13	NULL	waisman		source: waisman
+ca0010	1989-3-13	NULL	waisman		source: waisman
+ca0011	1989-3-13	NULL	waisman		source: waisman
+ca0012	1989-3-13	NULL	waisman		source: waisman
+ca0013	1989-3-13	NULL	waisman		source: waisman
+ca0014	1989-3-13	NULL	waisman		source: waisman
+ca0015	1989-3-13	NULL	waisman		source: waisman
+cj0001	1990-3-5	1970-01-01 09:00:00	waisman cen.		source: waisman cen.
+cj0002	1990-3-5	1970-01-01 09:00:00	waisman cen.		source: waisman cen.
+cj0003	1990-3-5	1970-01-01 09:00:00	waisman cen.		source: waisman cen.
+cj0004	1990-3-5	1970-01-01 09:00:00	waisman cen.		source: waisman cen.
+cj0005	1990-3-5	1970-01-01 09:00:00	waisman cen.		source: waisman cen.
+cj0006	1990-3-5	1970-01-01 09:00:00	waisman cen.		source: waisman cen.
+cj0007	1990-3-5	1970-01-01 09:00:00	waisman cen.		source: waisman cen.
+cj0008	1990-3-5	1970-01-01 09:00:00	waisman cen.		source: waisman cen.
+cj0009	1990-3-5	1970-01-01 09:00:00	waisman cen.		source: waisman cen.
+cj0010	1990-3-5	1970-01-01 09:00:00	waisman cen.		source: waisman cen.
+cj0011	1990-3-5	1970-01-01 09:00:00	waisman cen.		source: waisman cen.
+cj0012	1990-3-5	1970-01-01 09:00:00	waisman cen.		source: waisman cen.
+cj0013	1990-3-5	1970-01-01 09:00:00	waisman cen.		source: waisman cen.
+cj0016	1991-1-29	1970-01-01 17:00:00	lemsip	old id mj60016	source: lemsip, remark: old id mj60016
+cj0017	1991-1-29	1970-01-01 17:00:00	lemsip	old id mj70029	source: lemsip, remark: old id mj70029
+cj0018	1991-1-29	1970-01-01 17:00:00	lemsip	old id mj60050	source: lemsip, remark: old id mj60050
+cj0019	1991-1-29	1970-01-01 17:00:00	lemsip	old id mj80068	source: lemsip, remark: old id mj80068
+cj0020	1991-1-29	1970-01-01 17:00:00	lemsip	old id mj80027	source: lemsip, remark: old id mj80027
+cj0021	1991-1-29	1970-01-01 17:00:00	lemsip	old id mj70037	source: lemsip, remark: old id mj70037
+cj0022	1991-1-29	1970-01-01 17:00:00	lemsip	old id mx70054	source: lemsip, remark: old id mx70054
+cj0023	1991-1-29	1970-01-01 17:00:00	lemsip	old id mj80070	source: lemsip, remark: old id mj80070
+cj0024	1991-1-29	1970-01-01 17:00:00	lemsip	old id mj80031	source: lemsip, remark: old id mj80031
+cj0025	1991-1-29	1970-01-01 17:00:00	lemsip	old id mj80072	source: lemsip, remark: old id mj80072
+cj0026	1991-1-29	1970-01-01 17:00:00	lemsip	old id mj80033	source: lemsip, remark: old id mj80033
+cj0027	1991-1-29	1970-01-01 17:00:00	lemsip	old id mj80049	source: lemsip, remark: old id mj80049
+cj0028	1991-1-29	1970-01-01 17:00:00	lemsip	old id mj80028	source: lemsip, remark: old id mj80028
+cj0029	1991-1-29	1970-01-01 17:00:00	lemsip	old id mj80005	source: lemsip, remark: old id mj80005
+cj0030	1991-1-29	1970-01-01 17:00:00	lemsip	old id mj80006	source: lemsip, remark: old id mj80006
+cj0031	1991-1-29	1970-01-01 17:00:00	lemsip	old id mj80052	source: lemsip, remark: old id mj80052
+cj0032	1991-1-29	1970-01-01 17:00:00	lemsip	old id mj80045	source: lemsip, remark: old id mj80045
+cj0033	1991-1-29	1970-01-01 17:00:00	lemsip	old id mj70038	source: lemsip, remark: old id mj70038
+cj0034	1991-1-29	1970-01-01 17:00:00	lemsip	old id mj60055	source: lemsip, remark: old id mj60055
+cj0035	1991-1-29	1970-01-01 17:00:00	lemsip	old id mj60054	source: lemsip, remark: old id mj60054
+cj0036	1991-1-29	1970-01-01 17:00:00	lemsip	old id mj90003	source: lemsip, remark: old id mj90003
+cj0037	1991-1-29	1970-01-01 17:00:00	lemsip	old id mj70066	source: lemsip, remark: old id mj70066
+cj0038	1991-1-29	1970-01-01 17:00:00	lemsip	old id mj80094	source: lemsip, remark: old id mj80094
+cj0039	1991-1-29	1970-01-01 17:00:00	lemsip	old id mj80095	source: lemsip, remark: old id mj80095
+cj0040	1991-1-29	1970-01-01 17:00:00	lemsip	old id mj90001	source: lemsip, remark: old id mj90001
+cj0041	1991-1-29	1970-01-01 17:00:00	lemsip	old id mj80096	source: lemsip, remark: old id mj80096
+cj0042	1991-1-29	1970-01-01 17:00:00	lemsip	old id mx80104	source: lemsip, remark: old id mx80104
+cj0043	1991-1-29	1970-01-01 17:00:00	lemsip	old id mj80077	source: lemsip, remark: old id mj80077
+cj0044	1991-1-29	1970-01-01 17:00:00	lemsip	old id mj80091	source: lemsip, remark: old id mj80091
+cj0045	1991-1-29	1970-01-01 17:00:00	lemsip	old id mx70070	source: lemsip, remark: old id mx70070
+cj0046	1991-1-29	1970-01-01 17:00:00	lemsip	old id mj90006	source: lemsip, remark: old id mj90006
+cj0047	1991-1-29	1970-01-01 17:00:00	lemsip	old id mj90011	source: lemsip, remark: old id mj90011
+cj0048	1991-1-29	1970-01-01 17:00:00	lemsip		source: lemsip
+cj0049	1991-1-29	1970-01-01 17:00:00	lemsip	old id mj70016	source: lemsip, remark: old id mj70016
+cj0050	1991-1-29	1970-01-01 17:00:00	lemsip	old id mj80043	source: lemsip, remark: old id mj80043
+cj0051	1991-1-29	1970-01-01 17:00:00	lemsip	old id mj70015	source: lemsip, remark: old id mj70015
+cj0052	1991-1-29	1970-01-01 17:00:00	lemsip	old id mj80088	source: lemsip, remark: old id mj80088
+cj0053	1991-1-29	1970-01-01 17:00:00	lemsip	old id mj70025	source: lemsip, remark: old id mj70025
+cj0054	1991-1-29	1970-01-01 17:00:00	lemsip	old id mj70068	source: lemsip, remark: old id mj70068
+cj0055	1991-1-29	1970-01-01 17:00:00	lemsip	old id mx70052	source: lemsip, remark: old id mx70052
+cj0056	1991-1-29	1970-01-01 17:00:00	lemsip	old id mj80073	source: lemsip, remark: old id mj80073
+cj0057	1991-1-29	1970-01-01 17:00:00	lemsip	old id mx70056	source: lemsip, remark: old id mx70056
+cj0058	1991-1-29	1970-01-01 17:00:00	lemsip	old id mj90005	source: lemsip, remark: old id mj90005
+cj0059	1991-1-29	1970-01-01 17:00:00	lemsip	old id mj80092	source: lemsip, remark: old id mj80092
+cj0060	1991-1-29	1970-01-01 17:00:00	lemsip	old id mj80065	source: lemsip, remark: old id mj80065
+cj0061	1991-1-29	1970-01-01 17:00:00	lemsip	old id mj80086	source: lemsip, remark: old id mj80086
+cj0062	1991-1-29	1970-01-01 17:00:00	lemsip	old id mj70039	source: lemsip, remark: old id mj70039
+cj0063	1991-1-29	1970-01-01 17:00:00	lemsip	old id mj80002	source: lemsip, remark: old id mj80002
+cj0064	1991-1-29	1970-01-01 17:00:00	lemsip	old id mj50031	source: lemsip, remark: old id mj50031
+cj0065	1991-1-29	1970-01-01 17:00:00	lemsip	old id mj90010	source: lemsip, remark: old id mj90010
+cj0066	1991-1-29	1970-01-01 17:00:00	lemsip	old id mj80063	source: lemsip, remark: old id mj80063
+cj0067	1991-1-29	1970-01-01 17:00:00	lemsip	old id mj70062	source: lemsip, remark: old id mj70062
+cj0068	1991-1-29	1970-01-01 17:00:00	lemsip	old id mj90017	source: lemsip, remark: old id mj90017
+cj0069	1991-1-29	1970-01-01 17:00:00	lemsip	old id mj50029	source: lemsip, remark: old id mj50029
+cj0072	1991-4-4	1970-01-01 15:00:00	lemsip, tuxedo,new york	old id mj80106	source: lemsip, tuxedo,new york, remark: old id mj80106
+cj0074	1991-4-4	1970-01-01 15:00:00	lemsip, tuxedo,new york	old id mj90020	source: lemsip, tuxedo,new york, remark: old id mj90020
+cj0076	1991-4-4	1970-01-01 15:00:00	lemsip, tuxedo,new york	old id mj70074	source: lemsip, tuxedo,new york, remark: old id mj70074
+cj0078	1991-4-4	1970-01-01 15:00:00	lemsip, tuxedo,new york	old id mj90016	source: lemsip, tuxedo,new york, remark: old id mj90016
+cj0080	1991-4-4	1970-01-01 15:00:00	lemsip, tuxedo,new york	old id mj80102	source: lemsip, tuxedo,new york, remark: old id mj80102
+cj0082	1991-4-4	1970-01-01 15:00:00	lemsip, tuxedo,new york	old id mj80108	source: lemsip, tuxedo,new york, remark: old id mj80108
+cj0129	1992-11-4	1970-01-01 11:00:00	lempsip, tuxedo,new york	old id mj70027	source: lempsip, tuxedo,new york, remark: old id mj70027
+cj0131	1992-11-4	1970-01-01 11:00:00	lempsip, tuxedo,new york	old id mx60091	source: lempsip, tuxedo,new york, remark: old id mx60091
+cj0133	1992-11-4	1970-01-01 11:00:00	lempsip, tuxedo,new york	old id mx60087	source: lempsip, tuxedo,new york, remark: old id mx60087
+cj0134	1992-11-4	1970-01-01 11:00:00	lempsip, tuxedo,new york	old id mj60052	source: lempsip, tuxedo,new york, remark: old id mj60052
+cj0135	1992-11-4	1970-01-01 11:00:00	lempsip, tuxedo,new york	old id mx70049	source: lempsip, tuxedo,new york, remark: old id mx70049
+cj0136	1992-11-4	1970-01-01 11:00:00	lempsip, tuxedo,new york	old id mx60062	source: lempsip, tuxedo,new york, remark: old id mx60062
+cj0137	1992-11-4	1970-01-01 11:00:00	lempsip, tuxedo,new york	old id mx70069	source: lempsip, tuxedo,new york, remark: old id mx70069
+cj0138	1992-11-4	1970-01-01 11:00:00	lempsip, tuxedo,new york	old id mx60064	source: lempsip, tuxedo,new york, remark: old id mx60064
+cj0139	1992-11-4	1970-01-01 11:00:00	lempsip, tuxedo,new york	old id mj90027	source: lempsip, tuxedo,new york, remark: old id mj90027
+cj0140	1992-11-4	1970-01-01 11:00:00	lempsip, tuxedo,new york	old id mx60056	source: lempsip, tuxedo,new york, remark: old id mx60056
+cj0141	1992-11-4	1970-01-01 11:00:00	lempsip, tuxedo,new york	old id mj60057	source: lempsip, tuxedo,new york, remark: old id mj60057
+cj0142	1992-11-4	1970-01-01 11:00:00	lempsip, tuxedo,new york	old id mx60030	source: lempsip, tuxedo,new york, remark: old id mx60030
+cj0143	1992-11-4	1970-01-01 11:00:00	lempsip, tuxedo,new york	old id mj90033	source: lempsip, tuxedo,new york, remark: old id mj90033

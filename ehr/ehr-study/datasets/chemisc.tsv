@@ -1,1 +1,51 @@
-id	date	propertyid	value	objectid	
+id	Date	propertyid	value
+rh2325	2009-07-15	albumin	3.9 g/dl
+rhao33	2009-07-15	crp	4.30 mg/l
+rh1951	2009-07-15	uric acid	<0.2 mg/dl
+rh2335	2009-07-15	cholesterol	179 mg/dl
+rh1950	2009-07-15	globulin	3.9 g/dl
+rh2341	2009-07-15	triglycerides	58 mg/dl
+rhao33	2009-07-15	uric acid	<0.2 mg/dl
+rh2325	2009-07-15	hdl	16 mg/dl
+rh2335	2009-07-15	globulin	3.9 g/dl
+rh1951	2009-07-15	ldl(calculated)	82 mg/dl
+rh2341	2009-07-15	sdh	44.4 u/l
+rh1950	2009-07-15	chol/hdl ratio	2.6
+rh2341	2009-07-15	direct bilirubin	<0.1 mg/dl
+rhao33	2009-07-15	ldl(calculated)	41 mg/dl
+rh2325	2009-07-15	crp	11.00 mg/l
+rh2335	2009-07-15	chol/hdl ratio	3.8
+rh1951	2009-07-15	cholesterol	157 mg/dl
+rh2341	2009-07-15	albumin	3.8 g/dl
+rh1950	2009-07-15	triglycerides	122 mg/dl
+rh2325	2009-07-15	uric acid	<0.2 mg/dl
+rhao33	2009-07-15	cholesterol	104 mg/dl
+rh1951	2009-07-15	globulin	4.7 g/dl
+rh2335	2009-07-15	triglycerides	321 mg/dl
+rh1950	2009-07-15	sdh	43.0 u/l
+rh2341	2009-07-15	hdl	60 mg/dl
+rh1950	2009-07-15	direct bilirubin	<0.1 mg/dl
+rhao33	2009-07-15	globulin	3.5 g/dl
+rh2325	2009-07-15	ldl(calculated)	29 mg/dl
+rh2335	2009-07-15	sdh	48.5 u/l
+rh1951	2009-07-15	chol/hdl ratio	5.4
+rh2335	2009-07-15	direct bilirubin	<0.1 mg/dl
+rh1950	2009-07-15	albumin	3.7 g/dl
+rh2341	2009-07-15	crp	4.30 mg/l
+rhao33	2009-07-15	chol/hdl ratio	2.0
+rh2325	2009-07-15	cholesterol	82 mg/dl
+rh2335	2009-07-15	albumin	4.2 g/dl
+rh1951	2009-07-15	triglycerides	231 mg/dl
+rh2341	2009-07-15	uric acid	<0.2 mg/dl
+rh1950	2009-07-15	hdl	43 mg/dl
+rh2325	2009-07-15	globulin	4.1 g/dl
+rhao33	2009-07-15	triglycerides	61 mg/dl
+rh1951	2009-07-15	sdh	32.2 u/l
+rh2335	2009-07-15	hdl	47 mg/dl
+rh1951	2009-07-15	direct bilirubin	<0.1 mg/dl
+rh2341	2009-07-15	ldl(calculated)	38 mg/dl
+rh1950	2009-07-15	crp	6.90 mg/l
+rhao33	2009-07-15	sdh	23.0 u/l
+rh2325	2009-07-15	chol/hdl ratio	5.1
+rhao33	2009-07-15	direct bilirubin	<0.1 mg/dl
+rh1951	2009-07-15	albumin	4.0 g/dl

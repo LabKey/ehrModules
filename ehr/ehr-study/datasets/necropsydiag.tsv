@@ -1,1 +1,51 @@
-id	date	necropsy_objectid	seq1	seq2	code	
+id	Date	necropsy_objectid	seq1	seq2	code	description
+cy0061	2009-05-19		3	2	g-a0020	moderate
+cy0088	2009-05-19		2	1	df-d0590	euthanasia
+cy0088	2009-05-19		4	3	g-a4430	multifocal
+cy0088	2009-05-19		4	11	m-72000	hyperplasia, NOS
+cy0088	2009-05-19		6	4	t-c1770	plasmacytoid lymphocyte
+cy0061	2009-05-19		3	5	d5-3251d	lymphocytic gastritis
+cy0088	2009-05-19		3	3	g-a4430	multifocal
+cy0088	2009-05-19		4	6	g-c0080	with
+cy0088	2009-05-19		5	3	g-a0020	moderate
+cy0088	2009-05-19		7	2	g-a0020	moderate
+cy0061	2009-05-19		4	3	g-a4430	multifocal
+cy0088	2009-05-19		4	1	t-28000	lung, nos
+cy0088	2009-05-19		4	9	t-28053	alveolar macrophage
+cy0088	2009-05-19		6	2	g-a0010	mild
+cy0088	2009-05-19		8	2	g-a0010	mild
+cy0061	2009-05-19		2	1	df-d0590	euthanasia
+cy0061	2009-05-19		3	3	g-a4430	multifocal
+cy0088	2009-05-19		3	1	t-62000	liver, nos
+cy0088	2009-05-19		4	4	t-27090	peribronchiolar tissue
+cy0088	2009-05-19		5	1	t-c3000	spleen, nos
+cy0088	2009-05-19		6	5	d2-10100	tracheitis
+cy0061	2009-05-19		4	1	t-28000	lung, nos
+cy0088	2009-05-19		3	4	t-c1770	plasmacytoid lymphocyte
+cy0088	2009-05-19		4	7	g-a0010	mild
+cy0088	2009-05-19		5	4	m-72200	lymphoid hyperplasia, nos
+cy0088	2009-05-19		7	3	d5-3251d	lymphocytic gastritis
+cy0061	2009-05-19		4	4	d2-61100	pulmonary edema, nos
+cy0088	2009-05-19		1	1	w-10244	clinical death
+cy0088	2009-05-19		4	2	g-a0020	moderate
+cy0088	2009-05-19		4	10	t-28052	pneumocyte, type 2 (cell)
+cy0088	2009-05-19		6	3	g-a4430	multifocal
+cy0088	2009-05-19		8	3	de-50500	balantidiasis
+cy0061	2009-05-19		3	1	t-57000	stomach, nos
+cy0061	2009-05-19		3	4	m-03010	nodule
+cy0088	2009-05-19		3	2	g-a0020	moderate
+cy0088	2009-05-19		4	5	m-72200	lymphoid hyperplasia, nos
+cy0088	2009-05-19		5	2	t-c3030	splenic white pulp, lymphatic follicule of spleen
+cy0088	2009-05-19		7	1	t-57000	stomach, nos
+cy0061	2009-05-19		4	2	g-a0010	mild
+cy0088	2009-05-19		3	5	d5-81400	hepatitis, nos
+cy0088	2009-05-19		4	8	g-a3510	focally, focal, foci of
+cy0088	2009-05-19		6	1	t-25000	trachea
+cy0088	2009-05-19		8	1	t-59100	cecum
+cy0061	2009-05-19		1	1	w-10244	clinical death
+cy0183	2009-05-14		1	1	w-10244	clinical death
+cy0183	2009-05-14		4	4	m-57500	hemosiderosis
+cy0183	2009-05-14		6	4	m-03010	nodule
+cy0185	2009-05-14		1	1	w-10244	clinical death
+cy0185	2009-05-14		4	4	m-03010	nodule
+cy0185	2009-05-14		6	3	g-a4430	multifocal

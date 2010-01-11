@@ -1,0 +1,51 @@
+id	Date	pno	code	meaning	volume	vunits	conc	cunits	amount	units	route	enddate	frequency	remark	userid	Description
+r95096	2009-07-28	00300901	c-60432		0.8000	ml	1.5000	mg/ml	1.2000	mg	oral	2009-07-29	1			1.2000 mg  oral 1 end date:  2009-07-29
+cj1566	2009-07-27	00300901	c-d1507		0.5000	ml	4.5000	mg/ml	2.2500	mg	oral	2009-07-31	1			2.2500 mg  oral 1 end date:  2009-07-31
+cj1565	2009-07-27	00300901	c-d1507		0.5000	ml	4.5000	mg/ml	2.2500	mg	oral	2009-07-31	1			2.2500 mg  oral 1 end date:  2009-07-31
+r96027	2009-07-25	00300901	c-60432		1.0000	ml	1.5000	mg/ml	1.5000	mg	oral	2009-07-26	1			1.5000 mg  oral 1 end date:  2009-07-26
+cj1010	2009-07-24	00300901	c-d1507		0.5000	ml	4.5000	mg/ml	2.2500	mg	oral	2009-07-28	1			2.2500 mg  oral 1 end date:  2009-07-28
+cy0158	2009-07-24	00300901	c-60432		0.3700	ml	1.5000	mg/ml	0.5550	mg	oral	2009-07-25	1			0.5550 mg  oral 1 end date:  2009-07-25
+r96027	2009-07-24	00300901	c-60432		2.0000		1.5000	mg/ml	3.0000	mg	oral	2009-07-24	4			3.0000 mg  oral 4 end date:  2009-07-24
+r03104	2009-07-23	00300901	c-52040		5.5000	ml	100.0000	mg/ml	550.0000	mg	oral	2009-07-31	1			550.0000 mg  oral 1 end date:  2009-07-31
+cj1049	2009-07-23	00300901	c-d1507		0.5000	ml	4.5000	mg/ml	2.2500	mg	oral	2009-07-27	1			2.2500 mg  oral 1 end date:  2009-07-27
+cj0886	2009-07-22	00300901	c-f0000		0.0000		0.0000		0.5000	ounces	oral	0000-00-00	1	Give one small \\"ketchup\\" cup of FAGE greek yogurt in addition to normal food ration		0.5000 ounces  oral 1 end date:  0000-00-00
+cj0886	2009-07-22	00300901	c-d1507		0.5000	ml	4.5000	mg/ml	2.2500	mg	oral	2009-07-26	1			2.2500 mg  oral 1 end date:  2009-07-26
+r03104	2009-07-22	00300901	c-52040		5.5000	ml	100.0000	mg/ml	550.0000	mg	oral	2009-07-22	4			550.0000 mg  oral 4 end date:  2009-07-22
+cj1334	2009-07-22	00300901	c-d1507		0.5000	ml	4.5000	mg/ml	2.2500	mg	oral	2009-07-26	1			2.2500 mg  oral 1 end date:  2009-07-26
+cj1175	2009-07-22	00300901	c-d1507		0.5000	ml	4.5000	mg/ml	2.2500	mg	oral	2009-07-26	1			2.2500 mg  oral 1 end date:  2009-07-26
+rh2272	2009-07-21	00300901	c-a2206		0.2800	ml	100.0000	units/ml	28.0000	units	SQ	0000-00-00	1			28.0000 units  SQ 1 end date:  0000-00-00
+cj1117	2009-07-21	00300901	c-d1507		0.5000	ml	4.5000	mg/ml	2.2500	mg	oral	2009-07-25	1			2.2500 mg  oral 1 end date:  2009-07-25
+cj0590	2009-07-21	00300901	c-d1507		0.5000	ml	4.5000	mg/ml	2.2500	mg	oral	2009-07-25	1			2.2500 mg  oral 1 end date:  2009-07-25
+cj1431	2009-07-21	00300901	c-d1507		0.5000	ml	4.5000	mg/ml	2.2500	mg	oral	2009-07-25	1			2.2500 mg  oral 1 end date:  2009-07-25
+r99031	2009-07-21	00300901	w-10053		0.2500	tablets	45.0000	mg/tablet	11.2500	mg	oral	0000-00-00	1			11.2500 mg  oral 1 end date:  0000-00-00
+cj1603	2009-07-21	00300901	c-60130		0.0300	ml	100.0000	mg/ml	3.0000	mg	oral	2009-07-21	2			3.0000 mg  oral 2 end date:  2009-07-21
+cj1603	2009-07-20	00300901	c-60130		0.0300	ml	100.0000	mg/ml	3.0000	mg	oral	2009-07-20	4			3.0000 mg  oral 4 end date:  2009-07-20
+rh2272	2009-07-20	00300901	c-a2206		0.1400	ml	100.0000	units/ml	14.0000	units	SQ	2009-07-20	1	Treatment will be late morning: Give AFTER recovered from sedation and AFTER confirmed eating		14.0000 units  SQ 1 end date:  2009-07-20
+r00032	2009-07-18	00300901	c-60432		1.7000	ml	1.5000	mg/ml	2.5500	mg	oral	2009-07-18	1			2.5500 mg  oral 1 end date:  2009-07-18
+cy0158	2009-07-18	00300901	c-60432		0.3700	ml	1.5000	mg/ml	0.5550	mg	oral	2009-07-19	1			0.5550 mg  oral 1 end date:  2009-07-19
+cy0158	2009-07-18	00300901	c-54221		0.9300	ml	300000.0000	units/ml	279000.0000	units	SQ	2009-07-21	1			279000.0000 units  SQ 1 end date:  2009-07-21
+cj0583	2009-07-17	00300901	c-d1507		0.5000	ml	4.5000	mg/ml	2.2500	mg	oral	2009-07-21	1			2.2500 mg  oral 1 end date:  2009-07-21
+cy0158	2009-07-17	00300901	c-54221		0.9300	ml	300000.0000	units/ml	279000.0000	units	SQ	2009-07-17	4			279000.0000 units  SQ 4 end date:  2009-07-17
+r90080	2009-07-17	00300901	r-f94e9		2.0000	pieces	800.0000	mg/piece	1600.0000	mg	oral	0000-00-00	1			1600.0000 mg  oral 1 end date:  0000-00-00
+cy0158	2009-07-17	00300901	c-60432		0.7500	ml	1.5000	mg/ml	1.1250	mg	oral	2009-07-17	4			1.1250 mg  oral 4 end date:  2009-07-17
+r00032	2009-07-14	00300901	c-d1507		3.0000	ml	22.7000	mg/ml	68.1000	mg	IM	2009-07-18	1	Too large to give in one injection; please split and give in two separate spots to avoid muscular pain		68.1000 mg  IM 1 end date:  2009-07-18
+cy0158	2009-07-12	00300901	c-60432		0.4000	ml	1.5000	mg/ml	0.6000	mg	oral	2009-07-13	1			0.6000 mg  oral 1 end date:  2009-07-13
+cj0886	2009-07-12	00300901	c-d1507		0.5000	ml	4.5000	mg/ml	2.2500	mg	oral	2009-07-15	1			2.2500 mg  oral 1 end date:  2009-07-15
+rh2156	2009-07-10	00300901	c-f0000		0.0000		0.0000		0.0000		oral	0000-00-00	2	Feed sandwiches, extra fruit, fig newtons, or whatever she\\'ll eat.		0.0000   oral 2 end date:  0000-00-00
+cj1343	2009-07-10	00300901	c-d1507		0.5000	ml	4.5000	mg/ml	2.2500	mg	oral	2009-07-13	1			2.2500 mg  oral 1 end date:  2009-07-13
+rh2357	2009-07-10	00300901	c-52040		3.4000	ml	100.0000	mg/ml	340.0000	mg	oral	2009-07-19	1			340.0000 mg  oral 1 end date:  2009-07-19
+cj0465	2009-07-09	00300901	c-60130		1.0000	tablets	10.0000	mg/tablet	10.0000	mg	oral	2009-07-09	1			10.0000 mg  oral 1 end date:  2009-07-09
+cj1343	2009-07-09	00300901	c-d1507		0.5000	ml	4.5000	mg/ml	2.2500	mg	oral	2009-07-09	4			2.2500 mg  oral 4 end date:  2009-07-09
+rh2357	2009-07-09	00300901	c-52040		3.4000	ml	100.0000	mg/ml	340.0000	mg	oral	2009-07-09	4			340.0000 mg  oral 4 end date:  2009-07-09
+rh2156	2009-07-07	00300901	c-52b50		2.5000	ml	20.0000	mg/ml	50.0000	mg	oral	0000-00-00	2			50.0000 mg  oral 2 end date:  0000-00-00
+r96009	2009-07-07	00300901	c-d1507		1.2000	ml	22.7000	mg/ml	27.2400	mg	IM	2009-07-10	1			27.2400 mg  IM 1 end date:  2009-07-10
+cj0590	2009-07-06	00300901	c-d1507		0.5000	ml	4.5000	mg/ml	2.2500	mg	oral	2009-07-10	1			2.2500 mg  oral 1 end date:  2009-07-10
+cj0988	2009-07-06	00300901	c-d1507		0.5000	ml	4.5000	mg/ml	2.2500	mg	oral	2009-07-10	1			2.2500 mg  oral 1 end date:  2009-07-10
+r86054	2009-07-04	00300901	c-53120		0.5000	ml	330.0000	mg/ml	165.0000	mg	IM	2009-07-09	2			165.0000 mg  IM 2 end date:  2009-07-09
+cj0988	2009-07-04	00300901	c-60130		0.0300	ml	100.0000	mg/ml	3.0000	mg	oral	2009-07-04	2			3.0000 mg  oral 2 end date:  2009-07-04
+cj0573	2009-07-03	00300901	c-f0000		0.0000		0.0000		0.5000	ounces	oral	0000-00-00	1	Give one small \\"ketchup\\" cup of FAGE greek yogurt in addition to normal food ration		0.5000 ounces  oral 1 end date:  0000-00-00
+r86054	2009-07-03	00300901	c-53120		0.5000	ml	330.0000	mg/ml	165.0000	mg	IM	2009-07-03	4			165.0000 mg  IM 4 end date:  2009-07-03
+cj0988	2009-07-03	00300901	c-60130		0.0300	ml	100.0000	mg/ml	3.0000	mg	oral	2009-07-03	4			3.0000 mg  oral 4 end date:  2009-07-03
+cj1165	2009-07-02	00300901	c-d1507		0.5000	ml	4.5000	mg/ml	2.2500	mg	oral	2009-07-05	1			2.2500 mg  oral 1 end date:  2009-07-05
+cj0463	2009-07-02	00300901	c-f0000		0.0000		0.0000		0.5000	ounces	oral	0000-00-00	1	Give one small \\"ketchup\\" cup of FAGE greek yogurt in addition to normal food ration		0.5000 ounces  oral 1 end date:  0000-00-00
+cj1410	2009-07-02	00300901	c-d1507		0.5000	ml	4.5000	mg/ml	2.2500	mg	oral	2009-07-05	1			2.2500 mg  oral 1 end date:  2009-07-05

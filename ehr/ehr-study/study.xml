@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--Exported from LabKey Server at http://localhost:8080/labkey/project/O%27Connor/BasicStudy/begin.view by markigra@gmail.com on Wed Jan 06 22:49:09 PST 2010-->
-<study label="EHRStudy" timepointType="RELATIVE_DATE" startDate="1990-01-01-08:00" securityType="BASIC_READ" xmlns="http://labkey.org/study/xml">
+<study label="EHRStudy" timepointType="ABSOLUTE_DATE" startDate="1990-01-01-08:00" securityType="BASIC_WRITE" xmlns="http://labkey.org/study/xml">
   <lists dir="lists"/>
   <datasets dir="datasets" file="datasets_manifest.xml">
     <schema file="schema.tsv" typeNameColumn="platename" labelColumn="platelabel" typeIdColumn="plateno"/>

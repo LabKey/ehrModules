@@ -1,1 +1,51 @@
-id	sex	date	time	livedead	wbo	tissue	source	dest	recip	affil	remark	
+id	Date	sex	time	livedead	wbo	tissue	source	dest	recip	affil	remark	Description
+r80100	1992-08-25	f	1970-01-01 08:30:00	d	o		p	p	Kalin		cerebellum	sex: f, livedead: d, wbo: o, source: p, dest: p, recip: Kalin, remark: cerebellum
+r80100	1992-08-25	f	1970-01-01 08:30:00	d	o		p	p	Kalin		cerebral cortex	sex: f, livedead: d, wbo: o, source: p, dest: p, recip: Kalin, remark: cerebral cortex
+r80100	1992-08-25	f	1970-01-01 08:30:00	d	o		p	p	Kalin		hippocampus	sex: f, livedead: d, wbo: o, source: p, dest: p, recip: Kalin, remark: hippocampus
+r79047	1992-08-20	e	1970-01-01 08:30:00	d	o		p	c	Wolff		skeletal muscle	sex: e, livedead: d, wbo: o, source: p, dest: c, recip: Wolff, remark: skeletal muscle
+r79047	1992-08-20	e	1970-01-01 08:30:00	d	o		p	p	Claude		olfactory epithelia	sex: e, livedead: d, wbo: o, source: p, dest: p, recip: Claude, remark: olfactory epithelia
+r79047	1992-08-20	e	1970-01-01 08:30:00	d	o		p	c	Kaufman		eyes	sex: e, livedead: d, wbo: o, source: p, dest: c, recip: Kaufman, remark: eyes
+r79047	1992-08-20	e	1970-01-01 08:30:00	d	o		p	c	Weber		brain	sex: e, livedead: d, wbo: o, source: p, dest: c, recip: Weber, remark: brain
+r79047	1992-08-20	e	1970-01-01 08:30:00	d	o		p	c	Weber		eyes	sex: e, livedead: d, wbo: o, source: p, dest: c, recip: Weber, remark: eyes
+r86055	1992-08-11	f	1970-01-01 08:30:00	d	o		p	c	Hokin		cerebral cortex	sex: f, livedead: d, wbo: o, source: p, dest: c, recip: Hokin, remark: cerebral cortex
+r86055	1992-08-11	f	1970-01-01 08:30:00	d	o		p	p	Kalin		hippocampus	sex: f, livedead: d, wbo: o, source: p, dest: p, recip: Kalin, remark: hippocampus
+r86055	1992-08-11	f	1970-01-01 08:30:00	d	o		p	p	Claude		olfactory epithelia	sex: f, livedead: d, wbo: o, source: p, dest: p, recip: Claude, remark: olfactory epithelia
+r86055	1992-08-11	f	1970-01-01 08:30:00	d	o		p	o	Hoak		heart, pancreas	sex: f, livedead: d, wbo: o, source: p, dest: o, recip: Hoak, remark: heart, pancreas
+r86055	1992-08-11	f	1970-01-01 08:30:00	d	o		p	p	Teresawa		midbasal hypothalamus	sex: f, livedead: d, wbo: o, source: p, dest: p, recip: Teresawa, remark: midbasal hypothalamus
+r86055	1992-08-11	f	1970-01-01 08:30:00	d	o		p	c	Hokin		hippocampus	sex: f, livedead: d, wbo: o, source: p, dest: c, recip: Hokin, remark: hippocampus
+r86055	1992-08-11	f	1970-01-01 08:30:00	d	o		p	p	Kalin		pituitary	sex: f, livedead: d, wbo: o, source: p, dest: p, recip: Kalin, remark: pituitary
+r86055	1992-08-11	f	1970-01-01 08:30:00	d	o		p	p	Golos		plasma	sex: f, livedead: d, wbo: o, source: p, dest: p, recip: Golos, remark: plasma
+r86055	1992-08-11	f	1970-01-01 08:30:00	d	o		p	o	Richtand		substantia nigra	sex: f, livedead: d, wbo: o, source: p, dest: o, recip: Richtand, remark: substantia nigra
+r86055	1992-08-11	f	1970-01-01 08:30:00	d	o		p	c	Schatten		ovaries	sex: f, livedead: d, wbo: o, source: p, dest: c, recip: Schatten, remark: ovaries
+r86055	1992-08-11	f	1970-01-01 08:30:00	d	o		p	p	Kalin		pons/medulla	sex: f, livedead: d, wbo: o, source: p, dest: p, recip: Kalin, remark: pons/medulla
+r86055	1992-08-11	f	1970-01-01 08:30:00	d	o		p	p	Kalin		adrenals	sex: f, livedead: d, wbo: o, source: p, dest: p, recip: Kalin, remark: adrenals
+r86055	1992-08-11	f	1970-01-01 08:30:00	d	o		p	o	Schmidt		achilles tendons	sex: f, livedead: d, wbo: o, source: p, dest: o, recip: Schmidt, remark: achilles tendons
+r86055	1992-08-11	f	1970-01-01 08:30:00	d	o		p	c	Will		lungs, trachea	sex: f, livedead: d, wbo: o, source: p, dest: c, recip: Will, remark: lungs, trachea
+r86055	1992-08-11	f	1970-01-01 08:30:00	d	o		p	c	Hellekant		tongue	sex: f, livedead: d, wbo: o, source: p, dest: c, recip: Hellekant, remark: tongue
+r86055	1992-08-11	f	1970-01-01 08:30:00	d	o		p	p	Kalin		cerebellum	sex: f, livedead: d, wbo: o, source: p, dest: p, recip: Kalin, remark: cerebellum
+r86055	1992-08-11	f	1970-01-01 08:30:00	d	o		p	o	Spangenberg		thyroid	sex: f, livedead: d, wbo: o, source: p, dest: o, recip: Spangenberg, remark: thyroid
+r86055	1992-08-11	f	1970-01-01 08:30:00	d	o		p	c	Will		mammary gland	sex: f, livedead: d, wbo: o, source: p, dest: c, recip: Will, remark: mammary gland
+r86055	1992-08-11	f	1970-01-01 08:30:00	d	o		p	p	Scheffler		plasma, serum	sex: f, livedead: d, wbo: o, source: p, dest: p, recip: Scheffler, remark: plasma, serum
+r86055	1992-08-11	f	1970-01-01 08:30:00	d	o		p	c	Hokin		cerebellum	sex: f, livedead: d, wbo: o, source: p, dest: c, recip: Hokin, remark: cerebellum
+r86055	1992-08-11	f	1970-01-01 08:30:00	d	o		p	p	Kalin		cerebral cortex	sex: f, livedead: d, wbo: o, source: p, dest: p, recip: Kalin, remark: cerebral cortex
+r86055	1992-08-11	f	1970-01-01 08:30:00	d	o		p	o	State Lab		kidneys	sex: f, livedead: d, wbo: o, source: p, dest: o, recip: State Lab, remark: kidneys
+r86055	1992-08-11	f	1970-01-01 08:30:00	d	o		p	c	Wolff		skeletal muscle	sex: f, livedead: d, wbo: o, source: p, dest: c, recip: Wolff, remark: skeletal muscle
+r86055	1992-08-11	f	1970-01-01 08:30:00	d	o		p	p	Seshagiri		oviducts/uterus	sex: f, livedead: d, wbo: o, source: p, dest: p, recip: Seshagiri, remark: oviducts/uterus
+r86028	1992-08-10	f	1970-01-01 08:30:00	d	o		p	p	Claude		olfactory epithelia	sex: f, livedead: d, wbo: o, source: p, dest: p, recip: Claude, remark: olfactory epithelia
+r86028	1992-08-10	f	1970-01-01 08:30:00	d	o		p	p	Paul-Murphy		oviducts, uterus	sex: f, livedead: d, wbo: o, source: p, dest: p, recip: Paul-Murphy, remark: oviducts, uterus
+r86028	1992-08-10	f	1970-01-01 08:30:00	d	o		p	p	Scheffler		serum, plasma	sex: f, livedead: d, wbo: o, source: p, dest: p, recip: Scheffler, remark: serum, plasma
+r86028	1992-08-10	f	1970-01-01 08:30:00	d	o		p	p	Teresawa		brain	sex: f, livedead: d, wbo: o, source: p, dest: p, recip: Teresawa, remark: brain
+r86028	1992-08-10	f	1970-01-01 08:30:00	d	o		p	c	Wolff		skeletal muscle	sex: f, livedead: d, wbo: o, source: p, dest: c, recip: Wolff, remark: skeletal muscle
+r86028	1992-08-10	f	1970-01-01 08:30:00	d	o		p	p	Bavister		ovaries	sex: f, livedead: d, wbo: o, source: p, dest: p, recip: Bavister, remark: ovaries
+rh1877	1992-08-06	c	1970-01-01 02:30:00	d	o		p	p	Teresawa		brain	sex: c, livedead: d, wbo: o, source: p, dest: p, recip: Teresawa, remark: brain
+rh1877	1992-08-06	c	1970-01-01 02:30:00	d	o		p	c	Wolff		skeletal muscle	sex: c, livedead: d, wbo: o, source: p, dest: c, recip: Wolff, remark: skeletal muscle
+rh1877	1992-08-06	c	1970-01-01 02:30:00	d	o		p	p	Claude		olfactory epithelia	sex: c, livedead: d, wbo: o, source: p, dest: p, recip: Claude, remark: olfactory epithelia
+rh1877	1992-08-06	c	1970-01-01 02:30:00	d	o		p	p	Seshagiri		oviducts, uterus	sex: c, livedead: d, wbo: o, source: p, dest: p, recip: Seshagiri, remark: oviducts, uterus
+r80154	1992-07-21	f	1970-01-01 08:30:00	d	o		p	p	Golos		pituitary	sex: f, livedead: d, wbo: o, source: p, dest: p, recip: Golos, remark: pituitary
+r80154	1992-07-21	f	1970-01-01 08:30:00	d	o		p	c	Will		lungs, trachea	sex: f, livedead: d, wbo: o, source: p, dest: c, recip: Will, remark: lungs, trachea
+r80154	1992-07-21	f	1970-01-01 08:30:00	d	o		p	c	Hokin		hippocampus	sex: f, livedead: d, wbo: o, source: p, dest: c, recip: Hokin, remark: hippocampus
+r80154	1992-07-21	f	1970-01-01 08:30:00	d	o		p	p	Scheffler		plasma, serum	sex: f, livedead: d, wbo: o, source: p, dest: p, recip: Scheffler, remark: plasma, serum
+r80154	1992-07-21	f	1970-01-01 08:30:00	d	o		p	p	Kalin		adrenals	sex: f, livedead: d, wbo: o, source: p, dest: p, recip: Kalin, remark: adrenals
+r80154	1992-07-21	f	1970-01-01 08:30:00	d	o		p	c	Wolff		skeletal muscle	sex: f, livedead: d, wbo: o, source: p, dest: c, recip: Wolff, remark: skeletal muscle
+r80154	1992-07-21	f	1970-01-01 08:30:00	d	o		p	c	Kaufman		eyes	sex: f, livedead: d, wbo: o, source: p, dest: c, recip: Kaufman, remark: eyes
+r80154	1992-07-21	f	1970-01-01 08:30:00	d	o		p	p	Wolden-Hanson		CSF	sex: f, livedead: d, wbo: o, source: p, dest: p, recip: Wolden-Hanson, remark: CSF
