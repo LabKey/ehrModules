@@ -54,8 +54,8 @@ public class EHRQuerySchema extends UserSchema
 
     protected TableInfo createTable(String name)
     {
-        if (name.equalsIgnoreCase("Accounting"))
-            return new AccountingTable(this);
+//        if (name.equalsIgnoreCase("Accounting"))
+//            return new AccountingTable(this);
         Study study = StudyService.get().getStudy(getContainer());
         if (study != null)
         {
@@ -91,7 +91,7 @@ public class EHRQuerySchema extends UserSchema
     public Set<String> getTableNames()
     {
         Set<String> tableNames = new HashSet<String>();
-        tableNames.add("Accounting");
+//        tableNames.add("Accounting");
         Study study = StudyService.get().getStudy(getContainer());
         if (study != null)
         {

@@ -75,9 +75,11 @@ public class AccountingTable extends AbstractTableInfo
                     {
                         for (ColumnInfo col : cols)
                         {
-                            ColumnInfo newCol = new ColumnInfo(col);
-                            newCol.setParentTable(this);
-                            addColumn(newCol);
+                            if (col != null)
+                            {
+                                ColumnInfo newCol = new ColumnInfo(col, this);
+                                addColumn(newCol);
+                            }
                         }
                         break;
                     }
@@ -112,10 +114,13 @@ public class AccountingTable extends AbstractTableInfo
                     String sep = "";
                     for (ColumnInfo column : columns)
                     {
-                        sql.append(sep).append("x.").append(column.getSelectName()).append(" ");
-                        sep = ",";
+                        if (column == null)
+                            sql.append(sep).append("NULL");
+                        else
+                            sql.append(sep).append("x.").append(column.getSelectName());
+                        sep = ", ";
                     }
-                    sql.append("FROM (").append(tableInfo.getFromSQL()).append(") AS x");
+                    sql.append(" FROM (").append(tableInfo.getFromSQL()).append(") AS x");
 
                     if (i+1 < datasets.length)
                         sql.append("\nUNION\n");
