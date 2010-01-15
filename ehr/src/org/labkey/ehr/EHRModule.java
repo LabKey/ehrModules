@@ -53,7 +53,8 @@ public class EHRModule extends DefaultModule
     protected void init()
     {
         addController("ehr", EHRController.class);
-        EHRQuerySchema.register();        
+        EHRProperties.register();
+        EHRQuerySchema.register();
     }
 
     public void startup(ModuleContext moduleContext)

@@ -55,6 +55,7 @@ ehr/src/org/labkey/ehr/EHRContainerListener.java -text
 ehr/src/org/labkey/ehr/EHRController.java -text
 ehr/src/org/labkey/ehr/EHRManager.java -text
 ehr/src/org/labkey/ehr/EHRModule.java -text
+ehr/src/org/labkey/ehr/EHRProperties.java -text
 ehr/src/org/labkey/ehr/EHRSchema.java -text
 ehr/src/org/labkey/ehr/query/AccountingTable.java -text
 ehr/src/org/labkey/ehr/query/DepivotedStudyTable.java -text
