@@ -31,12 +31,12 @@ biopsydiag	biopsydiag	1004	code	xsd:string		optional			0	FALSE
 biopsydiag	biopsydiag	1004	biopsy_objectid	xsd:int		optional			0	FALSE		
 biopsydiag	biopsydiag	1004	description	xsd:string		optional			0	FALSE		
 biopsydiag	biopsydiag	1004	objectid	xsd:int		optional			1	TRUE		
-biopsy	biopsyhead	1005	caseno	xsd:string		optional			0	FALSE		
-biopsy	biopsyhead	1005	date	xsd:dateTime		required		http://cpas.labkey.com/Study#VisitDate	0	FALSE		
-biopsy	biopsyhead	1005	account	xsd:string		optional			0	FALSE		
-biopsy	biopsyhead	1005	remark	xsd:string		optional			0	FALSE		
-biopsy	biopsyhead	1005	description	xsd:string		optional			0	FALSE		
-biopsy	biopsyhead	1005	objectid	xsd:int		optional			1	TRUE		
+biopsy	biopsy	1005	caseno	xsd:string		optional			0	FALSE		
+biopsy	biopsy	1005	date	xsd:dateTime		required		http://cpas.labkey.com/Study#VisitDate	0	FALSE		
+biopsy	biopsy	1005	account	xsd:string		optional			0	FALSE		
+biopsy	biopsy	1005	remark	xsd:string		optional			0	FALSE		
+biopsy	biopsy	1005	description	xsd:string		optional			0	FALSE		
+biopsy	biopsy	1005	objectid	xsd:int		optional			1	TRUE		
 birth	birth	1006	date	xsd:dateTime		required		http://cpas.labkey.com/Study#VisitDate	0	FALSE		
 birth	birth	1006	sex	xsd:string		optional			0	FALSE		
 birth	birth	1006	weight	xsd:double		optional			0	FALSE		
@@ -103,17 +103,6 @@ clintrem	clintrem	1010	time	xsd:dateTime		optional	H:mm		0	FALSE
 clintrem	clintrem	1010	description	xsd:string	remark	optional			0	FALSE		
 clintrem	clintrem	1010	userid	xsd:string		optional			0	FALSE		
 clintrem	clintrem	1010	objectid	xsd:int		optional			1	TRUE		
-demographics	demographics	1011	sex	xsd:string		optional			0	FALSE		
-demographics	demographics	1011	dam	xsd:string		optional			0	FALSE		
-demographics	demographics	1011	sire	xsd:string		optional			0	FALSE		
-demographics	demographics	1011	birth	xsd:dateTime		optional			0	FALSE		
-demographics	demographics	1011	acquire	xsd:dateTime		optional			0	FALSE		                                                          
-demographics	demographics	1011	exit	xsd:dateTime		optional			0	FALSE		
-demographics	demographics	1011	acqcode	xsd:int		optional			0	FALSE		
-demographics	demographics	1011	exitcode	xsd:int		optional			0	FALSE		
-demographics	demographics	1011	name	xsd:string		optional			0	FALSE		
-demographics	demographics	1011	info1	xsd:string		optional			0	FALSE		
-demographics	demographics	1011	info2	xsd:string		optional			0	FALSE		
 departure	departure	1014	date	xsd:dateTime		required		http://cpas.labkey.com/Study#VisitDate	0	FALSE		
 departure	departure	1014	time	xsd:dateTime		optional	H:mm		0	FALSE		
 departure	departure	1014	authorize	xsd:string		optional			0	FALSE		
@@ -187,12 +176,12 @@ mhctype	mhctype	1022	b08	xsd:string		optional			0	FALSE
 mhctype	mhctype	1022	b17	xsd:string		optional			0	FALSE		
 mhctype	mhctype	1022	description	xsd:string		optional			0	FALSE		
 mhctype	mhctype	1022	objectid	xsd:int		optional			1	TRUE		
-necropsy	necropsyhead	1023	caseno	xsd:string		optional			0	FALSE		
-necropsy	necropsyhead	1023	date	xsd:dateTime		required		http://cpas.labkey.com/Study#VisitDate	0	FALSE		
-necropsy	necropsyhead	1023	account	xsd:string		optional			0	FALSE		
-necropsy	necropsyhead	1023	description	xsd:string	remark	optional			0	FALSE		
-necropsy	necropsyhead	1023	description	xsd:string		optional			0	FALSE		
-necropsy	necropsyhead	1023	objectid	xsd:int		optional			1	TRUE		
+necropsy	necropsy	1023	caseno	xsd:string		optional			0	FALSE		
+necropsy	necropsy	1023	date	xsd:dateTime		required		http://cpas.labkey.com/Study#VisitDate	0	FALSE		
+necropsy	necropsy	1023	account	xsd:string		optional			0	FALSE		
+necropsy	necropsy	1023	description	xsd:string	remark	optional			0	FALSE		
+necropsy	necropsy	1023	description	xsd:string		optional			0	FALSE		
+necropsy	necropsy	1023	objectid	xsd:int		optional			1	TRUE		
 necropsydiag	necropsydiag	1024	date	xsd:dateTime		required		http://cpas.labkey.com/Study#VisitDate	0	FALSE		
 necropsydiag	necropsydiag	1024	necropsy_objectid	xsd:int		optional			0	FALSE		
 necropsydiag	necropsydiag	1024	seq1	xsd:int		optional			0	FALSE		
@@ -219,30 +208,30 @@ parares	parares	1026	seq	xsd:int		optional			0	FALSE
 parares	parares	1026	code	xsd:string		optional			0	FALSE		
 parares	parares	1026	description	xsd:string		optional			0	FALSE		
 parares	parares	1026	objectid	xsd:int		optional			1	TRUE		
-parasitology	parahead	1027	date	xsd:dateTime		required		http://cpas.labkey.com/Study#VisitDate	0	FALSE		
-parasitology	parahead	1027	room	xsd:string		optional			0	FALSE		
-parasitology	parahead	1027	account	xsd:string		optional			0	FALSE		
-parasitology	parahead	1027	remark	xsd:string		optional			0	FALSE		
-parasitology	parahead	1027	clinremark	xsd:string		optional			0	FALSE		
-parasitology	parahead	1027	description	xsd:string		optional			0	FALSE		
-parasitology	parahead	1027	objectid	xsd:int		optional			1	TRUE		
+parasitology	parasitology	1027	date	xsd:dateTime		required		http://cpas.labkey.com/Study#VisitDate	0	FALSE		
+parasitology	parasitology	1027	room	xsd:string		optional			0	FALSE		
+parasitology	parasitology	1027	account	xsd:string		optional			0	FALSE		
+parasitology	parasitology	1027	remark	xsd:string		optional			0	FALSE		
+parasitology	parasitology	1027	clinremark	xsd:string		optional			0	FALSE		
+parasitology	parasitology	1027	description	xsd:string		optional			0	FALSE		
+parasitology	parasitology	1027	objectid	xsd:int		optional			1	TRUE		
 problem	problem	1028	problem_no	xsd:int		optional			0	FALSE		
 problem	problem	1028	description	xsd:string		optional			0	FALSE		
 problem	problem	1028	date_observed	xsd:dateTime		optional			0	FALSE		
 problem	problem	1028	date_resolved	xsd:dateTime		optional			0	FALSE		
 problem	problem	1028	code	xsd:string		optional			0	FALSE		
 problem	problem	1028	objectid	xsd:int		optional			1	TRUE		
-surgery	surghead	1029	date	xsd:dateTime		required		http://cpas.labkey.com/Study#VisitDate	0	FALSE		
-surgery	surghead	1029	time	xsd:dateTime		optional	H:mm		0	FALSE		
-surgery	surghead	1029	age	xsd:int		optional			0	FALSE		
-surgery	surghead	1029	inves	xsd:string		optional			0	FALSE		
-surgery	surghead	1029	pno	xsd:string		optional			0	FALSE		
-surgery	surghead	1029	surgeon	xsd:string		optional			0	FALSE		
-surgery	surghead	1029	enddate	xsd:dateTime		optional			0	FALSE		
-surgery	surghead	1029	endtime	xsd:dateTime		optional			0	FALSE		
-surgery	surghead	1029	major	xsd:string		optional			0	FALSE		
-surgery	surghead	1029	description	xsd:string	remark	optional			0	FALSE		
-surgery	surghead	1029	objectid	xsd:int		optional			1	TRUE		
+surgery	surgery	1029	date	xsd:dateTime		required		http://cpas.labkey.com/Study#VisitDate	0	FALSE		
+surgery	surgery	1029	time	xsd:dateTime		optional	H:mm		0	FALSE		
+surgery	surgery	1029	age	xsd:int		optional			0	FALSE		
+surgery	surgery	1029	inves	xsd:string		optional			0	FALSE		
+surgery	surgery	1029	pno	xsd:string		optional			0	FALSE		
+surgery	surgery	1029	surgeon	xsd:string		optional			0	FALSE		
+surgery	surgery	1029	enddate	xsd:dateTime		optional			0	FALSE		
+surgery	surgery	1029	endtime	xsd:dateTime		optional			0	FALSE		
+surgery	surgery	1029	major	xsd:string		optional			0	FALSE		
+surgery	surgery	1029	description	xsd:string	remark	optional			0	FALSE		
+surgery	surgery	1029	objectid	xsd:int		optional			1	TRUE		
 surgfluid	surgfluid	1030	date	xsd:dateTime		required		http://cpas.labkey.com/Study#VisitDate	0	FALSE		
 surgfluid	surgfluid	1030	time	xsd:dateTime		optional	H:mm		0	FALSE		
 surgfluid	surgfluid	1030	code	xsd:string		optional			0	FALSE		
@@ -287,23 +276,23 @@ tissue	tissue	1034	affil	xsd:string		optional			0	FALSE
 tissue	tissue	1034	remark	xsd:string		optional			0	FALSE		
 tissue	tissue	1034	description	xsd:string		optional			0	FALSE		
 tissue	tissue	1034	objectid	xsd:int		optional			1	TRUE		
-treatment_order	treatments	1035	pno	xsd:string		optional			0	FALSE		
-treatment_order	treatments	1035	date	xsd:dateTime		required		http://cpas.labkey.com/Study#VisitDate	0	FALSE		
-treatment_order	treatments	1035	code	xsd:string		optional			0	FALSE		
-treatment_order	treatments	1035	meaning	xsd:string		optional			0	FALSE		
-treatment_order	treatments	1035	volume	xsd:double		optional			0	FALSE		
-treatment_order	treatments	1035	vunits	xsd:string		optional			0	FALSE		
-treatment_order	treatments	1035	conc	xsd:double		optional			0	FALSE		
-treatment_order	treatments	1035	cunits	xsd:string		optional			0	FALSE		
-treatment_order	treatments	1035	amount	xsd:double		optional			0	FALSE		
-treatment_order	treatments	1035	units	xsd:string		optional			0	FALSE		
-treatment_order	treatments	1035	route	xsd:string		optional			0	FALSE		
-treatment_order	treatments	1035	enddate	xsd:dateTime		optional			0	FALSE		
-treatment_order	treatments	1035	frequency	xsd:int		optional			0	FALSE		
-treatment_order	treatments	1035	remark	xsd:string		optional			0	FALSE		
-treatment_order	treatments	1035	userid	xsd:string		optional			0	FALSE		
-treatment_order	treatments	1035	description	xsd:string		optional			0	FALSE		
-treatment_order	treatments	1035	objectid	xsd:int		optional			1	TRUE		
+treatment_order	treatment_order	1035	pno	xsd:string		optional			0	FALSE		
+treatment_order	treatment_order	1035	date	xsd:dateTime		required		http://cpas.labkey.com/Study#VisitDate	0	FALSE		
+treatment_order	treatment_order	1035	code	xsd:string		optional			0	FALSE		
+treatment_order	treatment_order	1035	meaning	xsd:string		optional			0	FALSE		
+treatment_order	treatment_order	1035	volume	xsd:double		optional			0	FALSE		
+treatment_order	treatment_order	1035	vunits	xsd:string		optional			0	FALSE		
+treatment_order	treatment_order	1035	conc	xsd:double		optional			0	FALSE		
+treatment_order	treatment_order	1035	cunits	xsd:string		optional			0	FALSE		
+treatment_order	treatment_order	1035	amount	xsd:double		optional			0	FALSE		
+treatment_order	treatment_order	1035	units	xsd:string		optional			0	FALSE		
+treatment_order	treatment_order	1035	route	xsd:string		optional			0	FALSE		
+treatment_order	treatment_order	1035	enddate	xsd:dateTime		optional			0	FALSE		
+treatment_order	treatment_order	1035	frequency	xsd:int		optional			0	FALSE		
+treatment_order	treatment_order	1035	remark	xsd:string		optional			0	FALSE		
+treatment_order	treatment_order	1035	userid	xsd:string		optional			0	FALSE		
+treatment_order	treatment_order	1035	description	xsd:string		optional			0	FALSE		
+treatment_order	treatment_order	1035	objectid	xsd:int		optional			1	TRUE		
 urine	urine	1036	date	xsd:dateTime		required		http://cpas.labkey.com/Study#VisitDate	0	FALSE		
 urine	urine	1036	account	xsd:string		optional			0	FALSE		
 urine	urine	1036	quantity	xsd:string		optional			0	FALSE		
@@ -330,3 +319,27 @@ weight	weight	1037	weight	xsd:double		optional			0	FALSE
 weight	weight	1037	verified	xsd:int		optional			0	FALSE		
 weight	weight	1037	description	xsd:string		optional			0	FALSE		
 weight	weight	1037	objectid	xsd:int		optional			1	TRUE		
+demographics	demographics	1011	date	xsd:dateTime		required			0	FALSE		
+demographics	demographics	1011	sex	xsd:string		optional			0	FALSE		
+demographics	demographics	1011	status	xsd:string		optional			0	FALSE		
+demographics	demographics	1011	avail	xsd:string		optional			0	FALSE		
+demographics	demographics	1011	hold	xsd:string		optional			0	FALSE		
+demographics	demographics	1011	dam	xsd:string		optional			0	FALSE		
+demographics	demographics	1011	sire	xsd:string		optional			0	FALSE		
+demographics	demographics	1011	origin	xsd:string		optional			0	FALSE		
+demographics	demographics	1011	birth	xsd:dateTime		optional			0	FALSE		
+demographics	demographics	1011	death	xsd:dateTime		optional			0	FALSE		
+demographics	demographics	1011	arrivedate	xsd:dateTime		optional			0	FALSE		
+demographics	demographics	1011	arrivetime	xsd:dateTime		optional	H:mm		0	FALSE		
+demographics	demographics	1011	departdate	xsd:dateTime		optional			0	FALSE		
+demographics	demographics	1011	departtime	xsd:dateTime		optional	H:mm		0	FALSE		
+demographics	demographics	1011	room	xsd:string		optional			0	FALSE		
+demographics	demographics	1011	cage	xsd:string		optional			0	FALSE		
+demographics	demographics	1011	cond	xsd:string		optional			0	FALSE		
+demographics	demographics	1011	weight	xsd:double		optional			0	FALSE		
+demographics	demographics	1011	wdate	xsd:dateTime		optional			0	FALSE		
+demographics	demographics	1011	wtime	xsd:dateTime		optional	H:mm		0	FALSE		
+demographics	demographics	1011	tbdate	xsd:dateTime		optional			0	FALSE		
+demographics	demographics	1011	medical	xsd:string		optional			0	FALSE		
+demographics	demographics	1011	purchasedby	xsd:string		optional			0	FALSE		
+demographics	demographics	1011	v_status	xsd:string		optional			0	FALSE		

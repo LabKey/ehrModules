@@ -1,0 +1,17 @@
+reportName	reportType	reportTitle	visible	schema	queryName	view	dateFieldName
+Demographics	query	Demographics	true	study	demographics		
+Assignment History	query	Assignment History	true	study	assignment		date
+Bacteriology	query	Bacteriology	true	study	bacteriology		date
+Hematology	query	Hematology	false	study	hematology		date
+Housing	query	Housing	true	study	housing		date
+Abstract	webpart	Abstract	true	colony	abstract		
+Irregular Observations	query	Irregular Observations	true	study	obs		date
+Weights	query	Weights	true	study	weight		date
+Treatments	query	Treatments	true	study	treatments		date
+Viral Loads	query	Viral Loads	true	study	viralLoads		date
+Parasitology	query	Parsitology	true	study	parahead		date
+Blood Draws	query	Blood Draws	true	study	blood		date
+Birth History	query	Birth History	true	study	birth		date
+Clinical Remarks	query	Clinical Remarks	true	study	clintrem		date
+Test MultiPart Report	multi	Test MultiPart Report	true	study	1,2,5		
+MHC SSP Typing	query	MHC SSP Typing	true	study	SSP_summary		

@@ -1,5 +1,51 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <tables xmlns="http://labkey.org/data/xml">
+  <table tableName="reports" tableDbType="TABLE">
+    <columns>
+      <column columnName="Key">
+        <datatype>integer</datatype>
+        <columnTitle>Key</columnTitle>
+        <nullable>false</nullable>
+        <isKeyField>true</isKeyField>
+        <isAutoInc>true</isAutoInc>
+      </column>
+      <column columnName="ReportName">
+        <datatype>varchar</datatype>
+        <columnTitle>ReportName</columnTitle>
+      </column>
+      <column columnName="ReportType">
+        <datatype>varchar</datatype>
+        <columnTitle>ReportType</columnTitle>
+      </column>
+      <column columnName="ReportTitle">
+        <datatype>varchar</datatype>
+        <columnTitle>ReportTitle</columnTitle>
+      </column>
+      <column columnName="Visible">
+        <datatype>boolean</datatype>
+        <columnTitle>Visible</columnTitle>
+      </column>
+      <column columnName="Schema">
+        <datatype>varchar</datatype>
+        <columnTitle>Schema</columnTitle>
+      </column>
+      <column columnName="QueryName">
+        <datatype>varchar</datatype>
+        <columnTitle>QueryName</columnTitle>
+        <description>This is the name of the query, report, webpart, view or js function to be displayed</description>
+      </column>
+      <column columnName="View">
+        <datatype>varchar</datatype>
+        <columnTitle>View</columnTitle>
+        <description>(optional)</description>
+      </column>
+      <column columnName="DateFieldName">
+        <datatype>varchar</datatype>
+        <columnTitle>DateFieldName</columnTitle>
+      </column>
+    </columns>
+    <pkColumnName>Key</pkColumnName>
+  </table>
   <table tableName="project" tableDbType="TABLE">
     <columns>
       <column columnName="pno">

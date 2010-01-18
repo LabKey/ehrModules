@@ -1,5 +1,4 @@
-SELECT id, FixDate(date) AS Date, (sex) AS sex, (weight) AS weight, (wdate) AS wdate, (wtime) AS wtime, (dam) AS dam, (sire) AS sire, (room) AS room, (cage) AS cage, (cond) AS cond, (origin) AS origin, (conception) AS conception, (type) AS type, (remark) AS remark, ( CONCAT_WS(', ', 
-     CASE WHEN sex IS NULL  OR sex=''  THEN NULL ELSE CONCAT('sex: ', sex)  END, 
+SELECT id, FixDate(date) AS Date, (sex) AS sex, (weight) AS weight, (wdate) AS wdate, Timestamp(Date('1970-01-01'), wtime)  AS wtime, (dam) AS dam, (sire) AS sire, (room) AS room, (cage) AS cage, (cond) AS cond, (origin) AS origin, (conception) AS conception, (type) AS type, (remark) AS remark, ( CONCAT_WS(', ',      CASE WHEN sex IS NULL  OR sex=''  THEN NULL ELSE CONCAT('sex: ', sex)  END, 
      CASE WHEN weight IS NULL  THEN NULL ELSE CONCAT('weight: ', CAST(weight AS CHAR))  END, 
      CASE WHEN wdate IS NULL  THEN NULL ELSE CONCAT('wdate: ', CAST(wdate AS CHAR))  END, 
      CASE WHEN wtime IS NULL  THEN NULL ELSE CONCAT('wtime: ', CAST(wtime AS CHAR))  END, 

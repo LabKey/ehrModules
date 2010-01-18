@@ -1,51 +1,51 @@
 id	Date	time	code	amount	units	route	begintime	endtime	Description
-r05014	2009-07-16	1970-01-01 08:05:00	c-c3eb9	85.0000	ml	iv	8:25	9:55	plasmalyte, amount: 85.0000, ml, iv, begintime: 8:25, endtime: 9:55
-r03019	2009-07-09	1970-01-01 12:05:00	c-70840	120.0000	ml	ip	12:10		sodium chloride solution, amount: 120.0000, ml, ip, begintime: 12:10
-r99078	2009-07-08	1970-01-01 04:39:00	c-c3eb9	158.0000	ml	iv	5:00	6:45	plasmalyte, amount: 158.0000, ml, iv, begintime: 5:00, endtime: 6:45
-r02118	2009-07-06	1970-01-01 09:00:00	c-c3eb9	110.0000	ml	iv	920	1038	plasmalyte, amount: 110.0000, ml, iv, begintime: 920, endtime: 1038
-rhay92	2009-07-02	1970-01-01 09:45:00	c-70831	134.0000	ml	iv	10:04	12:23	lactated ringer's solution, amount: 134.0000, ml, iv, begintime: 10:04, endtime: 12:23
-rhaw99	2009-07-02	1970-01-01 11:40:00	c-70831	134.0000	ml	iv	12:27	14:27	lactated ringer's solution, amount: 134.0000, ml, iv, begintime: 12:27, endtime: 14:27
-r01031	2009-07-01	1970-01-01 10:00:00	c-70831	309.0000	ml	iv	10:26	13:35	lactated ringer's solution, amount: 309.0000, ml, iv, begintime: 10:26, endtime: 13:35
-rhau72	2009-06-30	1970-01-01 12:35:00	c-c3eb9	240.0000	ml	iv	12:56	14:50	plasmalyte, amount: 240.0000, ml, iv, begintime: 12:56, endtime: 14:50
-r85080	2009-06-30	1970-01-01 09:08:00	c-c3eb9	159.0000	ml	iv	9:45	12:20	plasmalyte, amount: 159.0000, ml, iv, begintime: 9:45, endtime: 12:20
-rhas91	2009-06-25	1970-01-01 08:36:00	c-c3eb9	150.0000	ml	iv	9:01	10:40	plasmalyte, amount: 150.0000, ml, iv, begintime: 9:01, endtime: 10:40
-r08022	2009-06-23	1970-01-01 08:05:00	c-c3eb9	56.0000	ml	iv	8:32	11:24	plasmalyte, amount: 56.0000, ml, iv, begintime: 8:32, endtime: 11:24
-r08019	2009-06-22	1970-01-01 08:05:00	c-c3eb9	84.0000	ml	iv	8:25	13:59	plasmalyte, amount: 84.0000, ml, iv, begintime: 8:25, endtime: 13:59
-r03009	2009-06-18	1970-01-01 08:23:00	c-c3eb9	82.0000	ml	iv	8:45	10:08	plasmalyte, amount: 82.0000, ml, iv, begintime: 8:45, endtime: 10:08
-r03064	2009-06-17	1970-01-01 04:32:00	c-c3eb9	78.0000	ml	iv	5:01	6:58	plasmalyte, amount: 78.0000, ml, iv, begintime: 5:01, endtime: 6:58
-r97095	2009-06-12	1970-01-01 08:04:00	c-c3eb9	198.0000	ml	iv	8:22	9:45	plasmalyte, amount: 198.0000, ml, iv, begintime: 8:22, endtime: 9:45
-r90123	2009-06-11	1970-01-01 13:50:00	c-c3eb9	93.0000	ml	iv	14:00	15:40	plasmalyte, amount: 93.0000, ml, iv, begintime: 14:00, endtime: 15:40
-r02076	2009-06-11	1970-01-01 09:55:00	c-c3eb9	167.0000	ml	iv	10:20	11:33	plasmalyte, amount: 167.0000, ml, iv, begintime: 10:20, endtime: 11:33
-r03044	2009-06-05	1970-01-01 04:39:00	c-c3eb9	93.0000	ml	iv	5:10	7:05	plasmalyte, amount: 93.0000, ml, iv, begintime: 5:10, endtime: 7:05
-cy0164	2009-06-05	1970-01-01 08:25:00	c-c3eb9	48.0000	ml	iv	9:30	10:38	plasmalyte, amount: 48.0000, ml, iv, begintime: 9:30, endtime: 10:38
-rh2342	2009-06-04	1970-01-01 08:06:00	c-c3eb9	302.0000	mg	iv	8:58	14:07	plasmalyte, amount: 302.0000, mg, iv, begintime: 8:58, endtime: 14:07
-r02091	2009-06-03	1970-01-01 10:05:00	c-c3eb9	129.0000	ml	iv	10:30	11:36	plasmalyte, amount: 129.0000, ml, iv, begintime: 10:30, endtime: 11:36
-r04108	2009-06-01	1970-01-01 12:40:00	c-70840	120.0000	ml	ip	13:45		sodium chloride solution, amount: 120.0000, ml, ip, begintime: 13:45
-r99060	2009-05-11	1970-01-01 09:30:00	c-c3eb9	97.0000	ml	iv	9:55	11:10	plasmalyte, amount: 97.0000, ml, iv, begintime: 9:55, endtime: 11:10
-r03111	2009-05-11	1970-01-01 08:10:00	c-c3eb9	123.0000	ml	iv	8:23	9:55	plasmalyte, amount: 123.0000, ml, iv, begintime: 8:23, endtime: 9:55
-r03063	2009-05-05	1970-01-01 12:36:00	c-70840	120.0000	ml	ip	14:03		sodium chloride solution, amount: 120.0000, ml, ip, begintime: 14:03
-r86058	2009-05-04	1970-01-01 09:05:00	c-c3eb9	67.0000	ml	iv	9:40	10:25	plasmalyte, amount: 67.0000, ml, iv, begintime: 9:40, endtime: 10:25
-r04108	2009-04-10	1970-01-01 12:35:00	c-70840	120.0000	ml	ip	13:56		sodium chloride solution, amount: 120.0000, ml, ip, begintime: 13:56
-r04023	2009-04-07	1970-01-01 14:24:00	c-c3eb9	101.0000	ml	iv	15:31	16:37	plasmalyte, amount: 101.0000, ml, iv, begintime: 15:31, endtime: 16:37
-r04139	2009-04-01	1970-01-01 07:57:00	c-c3eb9	62.0000	ml	iv	8:15	10:03	plasmalyte, amount: 62.0000, ml, iv, begintime: 8:15, endtime: 10:03
-cj0962	2009-03-25	1970-01-01 08:06:00	c-c3eb9	15.0000	ml	iv	8:15	9:18	plasmalyte, amount: 15.0000, ml, iv, begintime: 8:15, endtime: 9:18
-r07019	2009-03-20	1970-01-01 08:40:00	c-c3eb9	25.0000	ml	iv	9:40	10:49	plasmalyte, amount: 25.0000, ml, iv, begintime: 9:40, endtime: 10:49
-r04083	2009-03-16	1970-01-01 08:07:00	c-c3eb9	77.0000	ml	iv	8:20	9:30	plasmalyte, amount: 77.0000, ml, iv, begintime: 8:20, endtime: 9:30
-r02024	2009-03-13	1970-01-01 08:45:00	c-c3eb9	108.0000	ml	iv	9:07	10:28	plasmalyte, amount: 108.0000, ml, iv, begintime: 9:07, endtime: 10:28
-r07006	2009-03-09	1970-01-01 08:07:00	c-c3eb9	20.0000	ml	iv	8:30	9:15	plasmalyte, amount: 20.0000, ml, iv, begintime: 8:30, endtime: 9:15
-r07007	2009-03-09	1970-01-01 08:50:00	c-c3eb9	18.0000	ml	iv	9:03	9:52	plasmalyte, amount: 18.0000, ml, iv, begintime: 9:03, endtime: 9:52
-r88082	2009-03-06	1970-01-01 08:04:00	c-c3eb9	168.0000	ml	iv	8:55	10:36	plasmalyte, amount: 168.0000, ml, iv, begintime: 8:55, endtime: 10:36
-rh2318	2009-03-05	1970-01-01 08:42:00	c-c3eb9	377.0000	ml	iv	9:10	14:30	plasmalyte, amount: 377.0000, ml, iv, begintime: 9:10, endtime: 14:30
-rh2316	2009-03-04	1970-01-01 10:00:00	c-c3eb9	43.0000	ml	iv	14:30	16:15	plasmalyte, amount: 43.0000, ml, iv, begintime: 14:30, endtime: 16:15
-rh2316	2009-03-04	1970-01-01 10:00:00	c-c3eb9	223.0000	ml	iv	10:30	13:45	plasmalyte, amount: 223.0000, ml, iv, begintime: 10:30, endtime: 13:45
-r83113	2009-02-20	1970-01-01 08:38:00	c-c3eb9	70.0000	ml	iv	12:15	12:40	plasmalyte, amount: 70.0000, ml, iv, begintime: 12:15, endtime: 12:40
-r83113	2009-02-20	1970-01-01 08:38:00	c-72050	11.0000	ml	iv	15:00	15:48	mannitol, amount: 11.0000, ml, iv, begintime: 15:00, endtime: 15:48
-r83113	2009-02-20	1970-01-01 08:38:00	c-c3eb9	22.0000	ml	iv	14:25	15:48	plasmalyte, amount: 22.0000, ml, iv, begintime: 14:25, endtime: 15:48
-r83113	2009-02-20	1970-01-01 08:38:00	c-c3eb9	217.0000	ml	iv	8:50	11:47	plasmalyte, amount: 217.0000, ml, iv, begintime: 8:50, endtime: 11:47
-r96120	2009-02-17	1970-01-01 08:40:00	c-c3eb9	66.0000	ml	iv	8:55	10:00	plasmalyte, amount: 66.0000, ml, iv, begintime: 8:55, endtime: 10:00
-r95106	2009-02-13	1970-01-01 04:35:00	c-c3eb9	121.0000	ml	iv	4:58	7:14	plasmalyte, amount: 121.0000, ml, iv, begintime: 4:58, endtime: 7:14
-r03063	2009-02-12	1970-01-01 12:12:00	c-70840	120.0000	ml	ip	13:00		sodium chloride solution, amount: 120.0000, ml, ip, begintime: 13:00
-r94065	2009-02-11	1970-01-01 08:47:00	c-c3eb9	115.0000	ml	iv	9:12	10:26	plasmalyte, amount: 115.0000, ml, iv, begintime: 9:12, endtime: 10:26
-r91070	2009-02-11	1970-01-01 04:35:00	c-c3eb9	114.0000	ml	iv	4:55	7:36	plasmalyte, amount: 114.0000, ml, iv, begintime: 4:55, endtime: 7:36
-r99023	2009-02-05	1970-01-01 12:44:00	c-c3eb9	206.0000	ml	iv	13:05	14:30	plasmalyte, amount: 206.0000, ml, iv, begintime: 13:05, endtime: 14:30
-cj1440	2009-02-04	1970-01-01 12:20:00	c-d2461	5.0000	ml	sc	13:23		dextrose 5% in saline, amount: 5.0000, ml, sc, begintime: 13:23
+r05014	2009-07-16	1970-01-01 08:05:00	c-c3eb9	85.0000	ml	iv	1970-01-01 08:25:00	1970-01-01 09:55:00	plasmalyte, amount: 85.0000, ml, iv, begintime: 8:25, endtime: 9:55
+r03019	2009-07-09	1970-01-01 12:05:00	c-70840	120.0000	ml	ip	1970-01-01 12:10:00		sodium chloride solution, amount: 120.0000, ml, ip, begintime: 12:10
+r99078	2009-07-08	1970-01-01 04:39:00	c-c3eb9	158.0000	ml	iv	1970-01-01 05:00:00	1970-01-01 06:45:00	plasmalyte, amount: 158.0000, ml, iv, begintime: 5:00, endtime: 6:45
+r02118	2009-07-06	1970-01-01 09:00:00	c-c3eb9	110.0000	ml	iv	1970-01-01 00:09:20	1970-01-01 00:10:38	plasmalyte, amount: 110.0000, ml, iv, begintime: 920, endtime: 1038
+rhaw99	2009-07-02	1970-01-01 11:40:00	c-70831	134.0000	ml	iv	1970-01-01 12:27:00	1970-01-01 14:27:00	lactated ringer's solution, amount: 134.0000, ml, iv, begintime: 12:27, endtime: 14:27
+rhay92	2009-07-02	1970-01-01 09:45:00	c-70831	134.0000	ml	iv	1970-01-01 10:04:00	1970-01-01 12:23:00	lactated ringer's solution, amount: 134.0000, ml, iv, begintime: 10:04, endtime: 12:23
+r01031	2009-07-01	1970-01-01 10:00:00	c-70831	309.0000	ml	iv	1970-01-01 10:26:00	1970-01-01 13:35:00	lactated ringer's solution, amount: 309.0000, ml, iv, begintime: 10:26, endtime: 13:35
+rhau72	2009-06-30	1970-01-01 12:35:00	c-c3eb9	240.0000	ml	iv	1970-01-01 12:56:00	1970-01-01 14:50:00	plasmalyte, amount: 240.0000, ml, iv, begintime: 12:56, endtime: 14:50
+r85080	2009-06-30	1970-01-01 09:08:00	c-c3eb9	159.0000	ml	iv	1970-01-01 09:45:00	1970-01-01 12:20:00	plasmalyte, amount: 159.0000, ml, iv, begintime: 9:45, endtime: 12:20
+rhas91	2009-06-25	1970-01-01 08:36:00	c-c3eb9	150.0000	ml	iv	1970-01-01 09:01:00	1970-01-01 10:40:00	plasmalyte, amount: 150.0000, ml, iv, begintime: 9:01, endtime: 10:40
+r08022	2009-06-23	1970-01-01 08:05:00	c-c3eb9	56.0000	ml	iv	1970-01-01 08:32:00	1970-01-01 11:24:00	plasmalyte, amount: 56.0000, ml, iv, begintime: 8:32, endtime: 11:24
+r08019	2009-06-22	1970-01-01 08:05:00	c-c3eb9	84.0000	ml	iv	1970-01-01 08:25:00	1970-01-01 13:59:00	plasmalyte, amount: 84.0000, ml, iv, begintime: 8:25, endtime: 13:59
+r03009	2009-06-18	1970-01-01 08:23:00	c-c3eb9	82.0000	ml	iv	1970-01-01 08:45:00	1970-01-01 10:08:00	plasmalyte, amount: 82.0000, ml, iv, begintime: 8:45, endtime: 10:08
+r03064	2009-06-17	1970-01-01 04:32:00	c-c3eb9	78.0000	ml	iv	1970-01-01 05:01:00	1970-01-01 06:58:00	plasmalyte, amount: 78.0000, ml, iv, begintime: 5:01, endtime: 6:58
+r97095	2009-06-12	1970-01-01 08:04:00	c-c3eb9	198.0000	ml	iv	1970-01-01 08:22:00	1970-01-01 09:45:00	plasmalyte, amount: 198.0000, ml, iv, begintime: 8:22, endtime: 9:45
+r02076	2009-06-11	1970-01-01 09:55:00	c-c3eb9	167.0000	ml	iv	1970-01-01 10:20:00	1970-01-01 11:33:00	plasmalyte, amount: 167.0000, ml, iv, begintime: 10:20, endtime: 11:33
+r90123	2009-06-11	1970-01-01 13:50:00	c-c3eb9	93.0000	ml	iv	1970-01-01 14:00:00	1970-01-01 15:40:00	plasmalyte, amount: 93.0000, ml, iv, begintime: 14:00, endtime: 15:40
+cy0164	2009-06-05	1970-01-01 08:25:00	c-c3eb9	48.0000	ml	iv	1970-01-01 09:30:00	1970-01-01 10:38:00	plasmalyte, amount: 48.0000, ml, iv, begintime: 9:30, endtime: 10:38
+r03044	2009-06-05	1970-01-01 04:39:00	c-c3eb9	93.0000	ml	iv	1970-01-01 05:10:00	1970-01-01 07:05:00	plasmalyte, amount: 93.0000, ml, iv, begintime: 5:10, endtime: 7:05
+rh2342	2009-06-04	1970-01-01 08:06:00	c-c3eb9	302.0000	mg	iv	1970-01-01 08:58:00	1970-01-01 14:07:00	plasmalyte, amount: 302.0000, mg, iv, begintime: 8:58, endtime: 14:07
+r02091	2009-06-03	1970-01-01 10:05:00	c-c3eb9	129.0000	ml	iv	1970-01-01 10:30:00	1970-01-01 11:36:00	plasmalyte, amount: 129.0000, ml, iv, begintime: 10:30, endtime: 11:36
+r04108	2009-06-01	1970-01-01 12:40:00	c-70840	120.0000	ml	ip	1970-01-01 13:45:00		sodium chloride solution, amount: 120.0000, ml, ip, begintime: 13:45
+r03111	2009-05-11	1970-01-01 08:10:00	c-c3eb9	123.0000	ml	iv	1970-01-01 08:23:00	1970-01-01 09:55:00	plasmalyte, amount: 123.0000, ml, iv, begintime: 8:23, endtime: 9:55
+r99060	2009-05-11	1970-01-01 09:30:00	c-c3eb9	97.0000	ml	iv	1970-01-01 09:55:00	1970-01-01 11:10:00	plasmalyte, amount: 97.0000, ml, iv, begintime: 9:55, endtime: 11:10
+r03063	2009-05-05	1970-01-01 12:36:00	c-70840	120.0000	ml	ip	1970-01-01 14:03:00		sodium chloride solution, amount: 120.0000, ml, ip, begintime: 14:03
+r86058	2009-05-04	1970-01-01 09:05:00	c-c3eb9	67.0000	ml	iv	1970-01-01 09:40:00	1970-01-01 10:25:00	plasmalyte, amount: 67.0000, ml, iv, begintime: 9:40, endtime: 10:25
+r04108	2009-04-10	1970-01-01 12:35:00	c-70840	120.0000	ml	ip	1970-01-01 13:56:00		sodium chloride solution, amount: 120.0000, ml, ip, begintime: 13:56
+r04023	2009-04-07	1970-01-01 14:24:00	c-c3eb9	101.0000	ml	iv	1970-01-01 15:31:00	1970-01-01 16:37:00	plasmalyte, amount: 101.0000, ml, iv, begintime: 15:31, endtime: 16:37
+r04139	2009-04-01	1970-01-01 07:57:00	c-c3eb9	62.0000	ml	iv	1970-01-01 08:15:00	1970-01-01 10:03:00	plasmalyte, amount: 62.0000, ml, iv, begintime: 8:15, endtime: 10:03
+cj0962	2009-03-25	1970-01-01 08:06:00	c-c3eb9	15.0000	ml	iv	1970-01-01 08:15:00	1970-01-01 09:18:00	plasmalyte, amount: 15.0000, ml, iv, begintime: 8:15, endtime: 9:18
+r07019	2009-03-20	1970-01-01 08:40:00	c-c3eb9	25.0000	ml	iv	1970-01-01 09:40:00	1970-01-01 10:49:00	plasmalyte, amount: 25.0000, ml, iv, begintime: 9:40, endtime: 10:49
+r04083	2009-03-16	1970-01-01 08:07:00	c-c3eb9	77.0000	ml	iv	1970-01-01 08:20:00	1970-01-01 09:30:00	plasmalyte, amount: 77.0000, ml, iv, begintime: 8:20, endtime: 9:30
+r02024	2009-03-13	1970-01-01 08:45:00	c-c3eb9	108.0000	ml	iv	1970-01-01 09:07:00	1970-01-01 10:28:00	plasmalyte, amount: 108.0000, ml, iv, begintime: 9:07, endtime: 10:28
+r07006	2009-03-09	1970-01-01 08:07:00	c-c3eb9	20.0000	ml	iv	1970-01-01 08:30:00	1970-01-01 09:15:00	plasmalyte, amount: 20.0000, ml, iv, begintime: 8:30, endtime: 9:15
+r07007	2009-03-09	1970-01-01 08:50:00	c-c3eb9	18.0000	ml	iv	1970-01-01 09:03:00	1970-01-01 09:52:00	plasmalyte, amount: 18.0000, ml, iv, begintime: 9:03, endtime: 9:52
+r88082	2009-03-06	1970-01-01 08:04:00	c-c3eb9	168.0000	ml	iv	1970-01-01 08:55:00	1970-01-01 10:36:00	plasmalyte, amount: 168.0000, ml, iv, begintime: 8:55, endtime: 10:36
+rh2318	2009-03-05	1970-01-01 08:42:00	c-c3eb9	377.0000	ml	iv	1970-01-01 09:10:00	1970-01-01 14:30:00	plasmalyte, amount: 377.0000, ml, iv, begintime: 9:10, endtime: 14:30
+rh2316	2009-03-04	1970-01-01 10:00:00	c-c3eb9	43.0000	ml	iv	1970-01-01 14:30:00	1970-01-01 16:15:00	plasmalyte, amount: 43.0000, ml, iv, begintime: 14:30, endtime: 16:15
+rh2316	2009-03-04	1970-01-01 10:00:00	c-c3eb9	223.0000	ml	iv	1970-01-01 10:30:00	1970-01-01 13:45:00	plasmalyte, amount: 223.0000, ml, iv, begintime: 10:30, endtime: 13:45
+r83113	2009-02-20	1970-01-01 08:38:00	c-c3eb9	22.0000	ml	iv	1970-01-01 14:25:00	1970-01-01 15:48:00	plasmalyte, amount: 22.0000, ml, iv, begintime: 14:25, endtime: 15:48
+r83113	2009-02-20	1970-01-01 08:38:00	c-c3eb9	217.0000	ml	iv	1970-01-01 08:50:00	1970-01-01 11:47:00	plasmalyte, amount: 217.0000, ml, iv, begintime: 8:50, endtime: 11:47
+r83113	2009-02-20	1970-01-01 08:38:00	c-c3eb9	70.0000	ml	iv	1970-01-01 12:15:00	1970-01-01 12:40:00	plasmalyte, amount: 70.0000, ml, iv, begintime: 12:15, endtime: 12:40
+r83113	2009-02-20	1970-01-01 08:38:00	c-72050	11.0000	ml	iv	1970-01-01 15:00:00	1970-01-01 15:48:00	mannitol, amount: 11.0000, ml, iv, begintime: 15:00, endtime: 15:48
+r96120	2009-02-17	1970-01-01 08:40:00	c-c3eb9	66.0000	ml	iv	1970-01-01 08:55:00	1970-01-01 10:00:00	plasmalyte, amount: 66.0000, ml, iv, begintime: 8:55, endtime: 10:00
+r95106	2009-02-13	1970-01-01 04:35:00	c-c3eb9	121.0000	ml	iv	1970-01-01 04:58:00	1970-01-01 07:14:00	plasmalyte, amount: 121.0000, ml, iv, begintime: 4:58, endtime: 7:14
+r03063	2009-02-12	1970-01-01 12:12:00	c-70840	120.0000	ml	ip	1970-01-01 13:00:00		sodium chloride solution, amount: 120.0000, ml, ip, begintime: 13:00
+r94065	2009-02-11	1970-01-01 08:47:00	c-c3eb9	115.0000	ml	iv	1970-01-01 09:12:00	1970-01-01 10:26:00	plasmalyte, amount: 115.0000, ml, iv, begintime: 9:12, endtime: 10:26
+r91070	2009-02-11	1970-01-01 04:35:00	c-c3eb9	114.0000	ml	iv	1970-01-01 04:55:00	1970-01-01 07:36:00	plasmalyte, amount: 114.0000, ml, iv, begintime: 4:55, endtime: 7:36
+r99023	2009-02-05	1970-01-01 12:44:00	c-c3eb9	206.0000	ml	iv	1970-01-01 13:05:00	1970-01-01 14:30:00	plasmalyte, amount: 206.0000, ml, iv, begintime: 13:05, endtime: 14:30
+cj1476	2009-02-04	1970-01-01 10:55:00	c-d2461	5.0000	ml	sc	1970-01-01 11:40:00		dextrose 5% in saline, amount: 5.0000, ml, sc, begintime: 11:40

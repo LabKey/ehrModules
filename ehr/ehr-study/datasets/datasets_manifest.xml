@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<datasets xmlns="http://labkey.org/study/xml">
-  <datasets>
+<datasets metaDataFile="datasets_metadata.xml" xmlns="http://labkey.org/study/xml">
+    <datasets>
     <dataset name='arrival' id='1000' />
     <dataset name='assignment' id='1001' />
     <dataset name='bacteriology' id='1002' />
-    <dataset name='behavior' id='1003' />
+    <dataset name='behavetrem' id='1003' />
     <dataset name='biopsy' id='1005' />
     <dataset name='biopsydiag' id='1004' />
     <dataset name='birth' id='1006' />

@@ -1,9 +1,10 @@
 #!bash
 #generate tsv files
-
-names=(arrival	assignment	bacteriology	behavetrem	biopsy	biopsydiag	birth	blood	chemisc	chemistry	clintrem	demographics)
-for basename in ${names[@]}
+mysql -u${MYSQLUSER} -p${MYSQLPWD} -B < setup.sql
+for dumpfile in scripts/dataset/*.sql
 do
+  fname=${dumpfile##*/}
+  basename=${fname%%.*}
     echo $basename
-    ./generatetsv.sh $basename
+    ./generatetsv.sh $dumpfile > ../ehr-study/datasets/${basename}.tsv
 done

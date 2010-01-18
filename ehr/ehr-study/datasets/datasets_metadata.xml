@@ -1,0 +1,2185 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tables xmlns="http://labkey.org/data/xml">
+  <table tableName="arrival" tableDbType="TABLE">
+    <columns>
+      <column columnName="participantid">
+        <datatype>varchar</datatype>
+        <columnTitle>Participant ID</columnTitle>
+        <description>Participant identifier</description>
+        <nullable>false</nullable>
+      </column>
+      <column columnName="Date">
+        <datatype>timestamp</datatype>
+        <columnTitle>Date</columnTitle>
+        <nullable>false</nullable>
+        <propertyURI>http://cpas.labkey.com/Study#VisitDate</propertyURI>
+      </column>
+      <column columnName="time">
+        <datatype>timestamp</datatype>
+        <columnTitle>Time</columnTitle>
+        <formatString>H:mm</formatString>
+      </column>
+      <column columnName="source">
+        <datatype>varchar</datatype>
+        <columnTitle>Source</columnTitle>
+      </column>
+      <column columnName="remark">
+        <datatype>varchar</datatype>
+        <columnTitle>Remark</columnTitle>
+      </column>
+      <column columnName="description">
+        <datatype>varchar</datatype>
+        <columnTitle>Description</columnTitle>
+      </column>
+      <column columnName="objectid">
+        <datatype>integer</datatype>
+        <columnTitle>ObjectID</columnTitle>
+        <shownInInsertView>false</shownInInsertView>
+        <shownInUpdateView>false</shownInUpdateView>
+        <shownInDetailsView>false</shownInDetailsView>
+        <isKeyField>true</isKeyField>
+        <isAutoInc>true</isAutoInc>
+      </column>
+    </columns>
+    <tableTitle>Arrival</tableTitle>
+    <description>This contains information on the arrival of animals at WNPRC</description>
+  </table>
+  <table tableName="assignment" tableDbType="TABLE">
+    <columns>
+      <column columnName="participantid">
+        <datatype>varchar</datatype>
+        <columnTitle>Participant ID</columnTitle>
+        <description>Participant identifier</description>
+        <nullable>false</nullable>
+      </column>
+      <column columnName="Date">
+        <datatype>timestamp</datatype>
+        <columnTitle>Date</columnTitle>
+        <nullable>false</nullable>
+        <propertyURI>http://cpas.labkey.com/Study#VisitDate</propertyURI>
+      </column>
+      <column columnName="pno">
+        <datatype>varchar</datatype>
+        <columnTitle>Project Number</columnTitle>
+        <fk>
+          <fkFolderPath>/EHRTest/Import Test</fkFolderPath>
+          <fkDbSchema>lists</fkDbSchema>
+          <fkTable>project</fkTable>
+          <fkColumnName>pno</fkColumnName>
+        </fk>
+      </column>
+      <column columnName="rdate">
+        <datatype>timestamp</datatype>
+        <columnTitle>Removal Date</columnTitle>
+      </column>
+      <column columnName="description">
+        <datatype>varchar</datatype>
+        <columnTitle>Description</columnTitle>
+      </column>
+      <column columnName="objectid">
+        <datatype>integer</datatype>
+        <columnTitle>ObjectId</columnTitle>
+        <shownInInsertView>false</shownInInsertView>
+        <shownInUpdateView>false</shownInUpdateView>
+        <shownInDetailsView>false</shownInDetailsView>
+        <isKeyField>true</isKeyField>
+        <isAutoInc>true</isAutoInc>
+      </column>
+    </columns>
+    <tableTitle>Assignment</tableTitle>
+  </table>
+  <table tableName="bacteriology" tableDbType="TABLE">
+    <columns>
+      <column columnName="participantid">
+        <datatype>varchar</datatype>
+        <columnTitle>Participant ID</columnTitle>
+        <description>Participant identifier</description>
+        <nullable>false</nullable>
+      </column>
+      <column columnName="Date">
+        <datatype>timestamp</datatype>
+        <columnTitle>Date</columnTitle>
+        <nullable>false</nullable>
+        <propertyURI>http://cpas.labkey.com/Study#VisitDate</propertyURI>
+      </column>
+      <column columnName="account">
+        <datatype>varchar</datatype>
+        <columnTitle>Account</columnTitle>
+      </column>
+      <column columnName="source">
+        <datatype>varchar</datatype>
+        <columnTitle>Source SNOMED</columnTitle>
+        <fk>
+          <fkFolderPath>/EHRTest/Import Test</fkFolderPath>
+          <fkDbSchema>lists</fkDbSchema>
+          <fkTable>snomed</fkTable>
+          <fkColumnName>code</fkColumnName>
+        </fk>
+      </column>
+      <column columnName="result">
+        <datatype>varchar</datatype>
+        <columnTitle>Result SNOMED</columnTitle>
+        <fk>
+          <fkFolderPath>/EHRTest/Import Test</fkFolderPath>
+          <fkDbSchema>lists</fkDbSchema>
+          <fkTable>snomed</fkTable>
+          <fkColumnName>code</fkColumnName>
+        </fk>
+      </column>
+      <column columnName="remark">
+        <datatype>varchar</datatype>
+        <columnTitle>Remark</columnTitle>
+      </column>
+      <column columnName="antibiotic">
+        <datatype>varchar</datatype>
+        <columnTitle>Antibiotic SNOMED</columnTitle>
+        <fk>
+          <fkFolderPath>/EHRTest/Import Test</fkFolderPath>
+          <fkDbSchema>lists</fkDbSchema>
+          <fkTable>snomed</fkTable>
+          <fkColumnName>code</fkColumnName>
+        </fk>
+      </column>
+      <column columnName="sensitivity">
+        <datatype>varchar</datatype>
+        <columnTitle>Sensitivity</columnTitle>
+      </column>
+      <column columnName="description">
+        <datatype>varchar</datatype>
+        <columnTitle>Description</columnTitle>
+        <shownInInsertView>false</shownInInsertView>
+        <shownInUpdateView>false</shownInUpdateView>
+        <shownInDetailsView>false</shownInDetailsView>
+      </column>
+      <column columnName="objectid">
+        <datatype>integer</datatype>
+        <columnTitle>objectid</columnTitle>
+        <isKeyField>true</isKeyField>
+        <isAutoInc>true</isAutoInc>
+      </column>
+    </columns>
+    <tableTitle>Bacteriology</tableTitle>
+  </table>
+  <table tableName="behavetrem" tableDbType="TABLE">
+    <columns>
+      <column columnName="participantid">
+        <datatype>varchar</datatype>
+        <columnTitle>Participant ID</columnTitle>
+        <description>Participant identifier</description>
+        <nullable>false</nullable>
+      </column>
+      <column columnName="Date">
+        <datatype>timestamp</datatype>
+        <columnTitle>Date</columnTitle>
+        <nullable>false</nullable>
+        <propertyURI>http://cpas.labkey.com/Study#VisitDate</propertyURI>
+      </column>
+      <column columnName="pno">
+        <datatype>varchar</datatype>
+        <columnTitle>Project</columnTitle>
+        <fk>
+          <fkFolderPath>/EHRTest/Import Test</fkFolderPath>
+          <fkDbSchema>lists</fkDbSchema>
+          <fkTable>project</fkTable>
+          <fkColumnName>pno</fkColumnName>
+        </fk>
+      </column>
+      <column columnName="time">
+        <datatype>timestamp</datatype>
+        <columnTitle>Time</columnTitle>
+        <formatString>H:mm</formatString>
+      </column>
+      <column columnName="description">
+        <datatype>varchar</datatype>
+        <columnTitle>Remark</columnTitle>
+      </column>
+      <column columnName="objectid">
+        <datatype>integer</datatype>
+        <columnTitle>objectid</columnTitle>
+        <shownInInsertView>false</shownInInsertView>
+        <shownInUpdateView>false</shownInUpdateView>
+        <shownInDetailsView>false</shownInDetailsView>
+        <isKeyField>true</isKeyField>
+        <isAutoInc>true</isAutoInc>
+      </column>
+    </columns>
+    <tableTitle>behavetrem</tableTitle>
+  </table>
+  <table tableName="biopsy" tableDbType="TABLE">
+    <columns>
+      <column columnName="participantid">
+        <datatype>varchar</datatype>
+        <columnTitle>Participant ID</columnTitle>
+        <description>Participant identifier</description>
+        <nullable>false</nullable>
+      </column>
+      <column columnName="Date">
+        <datatype>timestamp</datatype>
+        <columnTitle>Date</columnTitle>
+        <nullable>false</nullable>
+        <propertyURI>http://cpas.labkey.com/Study#VisitDate</propertyURI>
+      </column>
+      <column columnName="caseno">
+        <datatype>varchar</datatype>
+        <columnTitle>Case Number</columnTitle>
+      </column>
+      <column columnName="account">
+        <datatype>varchar</datatype>
+        <columnTitle>Account</columnTitle>
+      </column>
+      <column columnName="remark">
+        <datatype>varchar</datatype>
+        <columnTitle>Remark</columnTitle>
+      </column>
+      <column columnName="description">
+        <datatype>varchar</datatype>
+        <columnTitle>Description</columnTitle>
+      </column>
+      <column columnName="objectid">
+        <datatype>integer</datatype>
+        <columnTitle>objectid</columnTitle>
+        <shownInInsertView>false</shownInInsertView>
+        <shownInUpdateView>false</shownInUpdateView>
+        <shownInDetailsView>false</shownInDetailsView>
+        <isKeyField>true</isKeyField>
+        <isAutoInc>true</isAutoInc>
+      </column>
+    </columns>
+    <tableTitle>Biopsy</tableTitle>
+  </table>
+  <table tableName="biopsydiag" tableDbType="TABLE">
+    <columns>
+      <column columnName="participantid">
+        <datatype>varchar</datatype>
+        <columnTitle>Participant ID</columnTitle>
+        <description>Participant identifier</description>
+        <nullable>false</nullable>
+      </column>
+      <column columnName="Date">
+        <datatype>timestamp</datatype>
+        <columnTitle>Date</columnTitle>
+        <nullable>false</nullable>
+        <propertyURI>http://cpas.labkey.com/Study#VisitDate</propertyURI>
+      </column>
+      <column columnName="seq1">
+        <datatype>integer</datatype>
+        <columnTitle>seq1</columnTitle>
+      </column>
+      <column columnName="seq2">
+        <datatype>integer</datatype>
+        <columnTitle>seq2</columnTitle>
+      </column>
+      <column columnName="code">
+        <datatype>varchar</datatype>
+        <columnTitle>SNOMED</columnTitle>
+        <fk>
+          <fkFolderPath>/EHRTest/Import Test</fkFolderPath>
+          <fkDbSchema>lists</fkDbSchema>
+          <fkTable>snomed</fkTable>
+          <fkColumnName>code</fkColumnName>
+        </fk>
+      </column>
+      <column columnName="biopsy_objectid">
+        <datatype>integer</datatype>
+        <columnTitle>biopsy_objectid</columnTitle>
+        <shownInInsertView>false</shownInInsertView>
+        <shownInUpdateView>false</shownInUpdateView>
+        <shownInDetailsView>false</shownInDetailsView>
+      </column>
+      <column columnName="description">
+        <datatype>varchar</datatype>
+        <columnTitle>Description</columnTitle>
+        <shownInInsertView>false</shownInInsertView>
+        <shownInUpdateView>false</shownInUpdateView>
+        <shownInDetailsView>false</shownInDetailsView>
+      </column>
+      <column columnName="objectid">
+        <datatype>integer</datatype>
+        <columnTitle>objectid</columnTitle>
+        <shownInInsertView>false</shownInInsertView>
+        <shownInUpdateView>false</shownInUpdateView>
+        <shownInDetailsView>false</shownInDetailsView>
+        <isKeyField>true</isKeyField>
+        <isAutoInc>true</isAutoInc>
+      </column>
+    </columns>
+    <tableTitle>biopsydiag</tableTitle>
+  </table>
+  <table tableName="birth" tableDbType="TABLE">
+    <columns>
+      <column columnName="participantid">
+        <datatype>varchar</datatype>
+        <columnTitle>Participant ID</columnTitle>
+        <description>Participant identifier</description>
+        <nullable>false</nullable>
+      </column>
+      <column columnName="Date">
+        <datatype>timestamp</datatype>
+        <columnTitle>Date</columnTitle>
+        <nullable>false</nullable>
+        <propertyURI>http://cpas.labkey.com/Study#VisitDate</propertyURI>
+      </column>
+      <column columnName="sex">
+        <datatype>varchar</datatype>
+        <columnTitle>Sex</columnTitle>
+      </column>
+      <column columnName="weight">
+        <datatype>double</datatype>
+        <columnTitle>Birth Weight</columnTitle>
+      </column>
+      <column columnName="wdate">
+        <datatype>timestamp</datatype>
+        <columnTitle>Weigh Date</columnTitle>
+      </column>
+      <column columnName="wtime">
+        <datatype>timestamp</datatype>
+        <columnTitle>Weight Time</columnTitle>
+        <formatString>H:mm</formatString>
+      </column>
+      <column columnName="dam">
+        <datatype>varchar</datatype>
+        <columnTitle>Dam</columnTitle>
+      </column>
+      <column columnName="sire">
+        <datatype>varchar</datatype>
+        <columnTitle>Sire</columnTitle>
+      </column>
+      <column columnName="room">
+        <datatype>varchar</datatype>
+        <columnTitle>Room</columnTitle>
+      </column>
+      <column columnName="cage">
+        <datatype>varchar</datatype>
+        <columnTitle>Cage</columnTitle>
+      </column>
+      <column columnName="cond">
+        <datatype>varchar</datatype>
+        <columnTitle>Condition</columnTitle>
+      </column>
+      <column columnName="origin">
+        <datatype>varchar</datatype>
+        <columnTitle>Origin</columnTitle>
+      </column>
+      <column columnName="conception">
+        <datatype>timestamp</datatype>
+        <columnTitle>Conception</columnTitle>
+      </column>
+      <column columnName="type">
+        <datatype>varchar</datatype>
+        <columnTitle>Type</columnTitle>
+      </column>
+      <column columnName="remark">
+        <datatype>varchar</datatype>
+        <columnTitle>Remark</columnTitle>
+      </column>
+      <column columnName="description">
+        <datatype>varchar</datatype>
+        <columnTitle>description</columnTitle>
+        <shownInInsertView>false</shownInInsertView>
+        <shownInUpdateView>false</shownInUpdateView>
+        <shownInDetailsView>false</shownInDetailsView>
+      </column>
+      <column columnName="objectid">
+        <datatype>integer</datatype>
+        <columnTitle>objectid</columnTitle>
+        <shownInInsertView>false</shownInInsertView>
+        <shownInUpdateView>false</shownInUpdateView>
+        <shownInDetailsView>false</shownInDetailsView>
+        <isKeyField>true</isKeyField>
+        <isAutoInc>true</isAutoInc>
+      </column>
+    </columns>
+    <tableTitle>Birth</tableTitle>
+    <description>This table contains birth information on all animals born at WNPRC</description>
+  </table>
+  <table tableName="blood" tableDbType="TABLE">
+    <columns>
+      <column columnName="participantid">
+        <datatype>varchar</datatype>
+        <columnTitle>Participant ID</columnTitle>
+        <description>Participant identifier</description>
+        <nullable>false</nullable>
+      </column>
+      <column columnName="Date">
+        <datatype>timestamp</datatype>
+        <columnTitle>Date</columnTitle>
+        <nullable>false</nullable>
+        <propertyURI>http://cpas.labkey.com/Study#VisitDate</propertyURI>
+      </column>
+      <column columnName="time">
+        <datatype>timestamp</datatype>
+        <columnTitle>Time</columnTitle>
+        <formatString>H:mm</formatString>
+      </column>
+      <column columnName="quantity">
+        <datatype>double</datatype>
+        <columnTitle>Quantity</columnTitle>
+      </column>
+      <column columnName="done_by">
+        <datatype>varchar</datatype>
+        <columnTitle>Performed By</columnTitle>
+      </column>
+      <column columnName="done_for">
+        <datatype>varchar</datatype>
+        <columnTitle>Requestor</columnTitle>
+      </column>
+      <column columnName="pno">
+        <datatype>varchar</datatype>
+        <columnTitle>Project</columnTitle>
+        <fk>
+          <fkFolderPath>/EHRTest/Import Test</fkFolderPath>
+          <fkDbSchema>lists</fkDbSchema>
+          <fkTable>project</fkTable>
+          <fkColumnName>pno</fkColumnName>
+        </fk>
+      </column>
+      <column columnName="p_s">
+        <datatype>varchar</datatype>
+        <columnTitle>p_s</columnTitle>
+      </column>
+      <column columnName="a_v">
+        <datatype>varchar</datatype>
+        <columnTitle>a_v</columnTitle>
+      </column>
+      <column columnName="code">
+        <datatype>varchar</datatype>
+        <columnTitle>Code</columnTitle>
+      </column>
+      <column columnName="caretaker">
+        <datatype>varchar</datatype>
+        <columnTitle>Caretaker</columnTitle>
+      </column>
+      <column columnName="tube_type">
+        <datatype>varchar</datatype>
+        <columnTitle>Tube Type</columnTitle>
+      </column>
+      <column columnName="description">
+        <datatype>varchar</datatype>
+        <columnTitle>Description</columnTitle>
+        <shownInInsertView>false</shownInInsertView>
+        <shownInUpdateView>false</shownInUpdateView>
+        <shownInDetailsView>false</shownInDetailsView>
+      </column>
+      <column columnName="objectid">
+        <datatype>integer</datatype>
+        <columnTitle>objectid</columnTitle>
+        <shownInInsertView>false</shownInInsertView>
+        <shownInUpdateView>false</shownInUpdateView>
+        <shownInDetailsView>false</shownInDetailsView>
+        <isKeyField>true</isKeyField>
+        <isAutoInc>true</isAutoInc>
+      </column>
+    </columns>
+    <tableTitle>Blood</tableTitle>
+    <description>This tables contains information on all blood draws at WNPRC</description>
+  </table>
+  <table tableName="chemisc" tableDbType="TABLE">
+    <columns>
+      <column columnName="participantid">
+        <datatype>varchar</datatype>
+        <columnTitle>Participant ID</columnTitle>
+        <description>Participant identifier</description>
+        <nullable>false</nullable>
+      </column>
+      <column columnName="Date">
+        <datatype>timestamp</datatype>
+        <columnTitle>Date</columnTitle>
+        <nullable>false</nullable>
+        <propertyURI>http://cpas.labkey.com/Study#VisitDate</propertyURI>
+      </column>
+      <column columnName="propertyid">
+        <datatype>varchar</datatype>
+        <columnTitle>TestName</columnTitle>
+      </column>
+      <column columnName="value">
+        <datatype>varchar</datatype>
+        <columnTitle>Result</columnTitle>
+      </column>
+      <column columnName="objectid">
+        <datatype>integer</datatype>
+        <columnTitle>objectid</columnTitle>
+        <shownInInsertView>false</shownInInsertView>
+        <shownInUpdateView>false</shownInUpdateView>
+        <shownInDetailsView>false</shownInDetailsView>
+        <isKeyField>true</isKeyField>
+        <isAutoInc>true</isAutoInc>
+      </column>
+    </columns>
+    <tableTitle>chemisc</tableTitle>
+    <description>This tables contains the results of clinical pathology tests</description>
+  </table>
+  <table tableName="chemistry" tableDbType="TABLE">
+    <columns>
+      <column columnName="participantid">
+        <datatype>varchar</datatype>
+        <columnTitle>Participant ID</columnTitle>
+        <description>Participant identifier</description>
+        <nullable>false</nullable>
+      </column>
+      <column columnName="Date">
+        <datatype>timestamp</datatype>
+        <columnTitle>Date</columnTitle>
+        <nullable>false</nullable>
+        <propertyURI>http://cpas.labkey.com/Study#VisitDate</propertyURI>
+      </column>
+      <column columnName="account">
+        <datatype>varchar</datatype>
+        <columnTitle>Account</columnTitle>
+      </column>
+      <column columnName="description">
+        <datatype>varchar</datatype>
+        <columnTitle>Description</columnTitle>
+        <shownInInsertView>false</shownInInsertView>
+        <shownInUpdateView>false</shownInUpdateView>
+        <shownInDetailsView>false</shownInDetailsView>
+      </column>
+      <column columnName="objectid">
+        <datatype>integer</datatype>
+        <columnTitle>objectid</columnTitle>
+        <shownInInsertView>false</shownInInsertView>
+        <shownInUpdateView>false</shownInUpdateView>
+        <shownInDetailsView>false</shownInDetailsView>
+        <isKeyField>true</isKeyField>
+        <isAutoInc>true</isAutoInc>
+      </column>
+      <column columnName="glucose">
+        <datatype>double</datatype>
+        <columnTitle>Glucose</columnTitle>
+      </column>
+      <column columnName="bun">
+        <datatype>double</datatype>
+        <columnTitle>BUN</columnTitle>
+        <description>Blood Urea Nitrogen</description>
+      </column>
+      <column columnName="creatinine">
+        <datatype>double</datatype>
+        <columnTitle>Creatinine</columnTitle>
+      </column>
+      <column columnName="ck_cpk">
+        <datatype>double</datatype>
+        <columnTitle>CK/CPK</columnTitle>
+        <description>Creatine Kinase, Creatine Phosphokinase</description>
+      </column>
+      <column columnName="uricacid">
+        <datatype>double</datatype>
+        <columnTitle>Uric Acid</columnTitle>
+      </column>
+      <column columnName="cholesterol">
+        <datatype>double</datatype>
+        <columnTitle>Cholesterol</columnTitle>
+      </column>
+      <column columnName="triglyc">
+        <datatype>double</datatype>
+        <columnTitle>Triclyceride</columnTitle>
+      </column>
+      <column columnName="sgot_ast">
+        <datatype>double</datatype>
+        <columnTitle>SGOT_AST</columnTitle>
+        <description>liver enzymes</description>
+      </column>
+      <column columnName="ldh">
+        <datatype>double</datatype>
+        <columnTitle>LDH</columnTitle>
+      </column>
+      <column columnName="tbili">
+        <datatype>double</datatype>
+        <columnTitle>Tbili</columnTitle>
+      </column>
+      <column columnName="ggt">
+        <datatype>double</datatype>
+        <columnTitle>GGT</columnTitle>
+      </column>
+      <column columnName="sgpt_alt">
+        <datatype>double</datatype>
+        <columnTitle>SGPT_ALT</columnTitle>
+      </column>
+      <column columnName="tprotein">
+        <datatype>double</datatype>
+        <columnTitle>Total Protein</columnTitle>
+      </column>
+      <column columnName="albumin">
+        <datatype>double</datatype>
+        <columnTitle>Albumin</columnTitle>
+      </column>
+      <column columnName="phosphatase">
+        <datatype>double</datatype>
+        <columnTitle>Phosphatase</columnTitle>
+      </column>
+      <column columnName="calcium">
+        <datatype>double</datatype>
+        <columnTitle>Calcium</columnTitle>
+      </column>
+      <column columnName="phosphorus">
+        <datatype>double</datatype>
+        <columnTitle>Phosphorus</columnTitle>
+      </column>
+      <column columnName="iron">
+        <datatype>double</datatype>
+        <columnTitle>Iron</columnTitle>
+      </column>
+      <column columnName="sodium">
+        <datatype>double</datatype>
+        <columnTitle>Sodium</columnTitle>
+      </column>
+      <column columnName="potassium">
+        <datatype>double</datatype>
+        <columnTitle>Potassium</columnTitle>
+      </column>
+      <column columnName="chloride">
+        <datatype>double</datatype>
+        <columnTitle>Chloride</columnTitle>
+      </column>
+      <column columnName="remark">
+        <datatype>varchar</datatype>
+        <columnTitle>Remark</columnTitle>
+      </column>
+      <column columnName="clinremark">
+        <datatype>varchar</datatype>
+        <columnTitle>Clin Remark</columnTitle>
+      </column>
+    </columns>
+    <tableTitle>Chemistry</tableTitle>
+    <description>This table contains results of animal blood chemistries</description>
+  </table>
+  <table tableName="clintrem" tableDbType="TABLE">
+    <columns>
+      <column columnName="participantid">
+        <datatype>varchar</datatype>
+        <columnTitle>Participant ID</columnTitle>
+        <description>Participant identifier</description>
+        <nullable>false</nullable>
+      </column>
+      <column columnName="Date">
+        <datatype>timestamp</datatype>
+        <columnTitle>Date</columnTitle>
+        <nullable>false</nullable>
+        <propertyURI>http://cpas.labkey.com/Study#VisitDate</propertyURI>
+      </column>
+      <column columnName="pno">
+        <datatype>varchar</datatype>
+        <columnTitle>Protocol</columnTitle>
+      </column>
+      <column columnName="time">
+        <datatype>timestamp</datatype>
+        <columnTitle>Time</columnTitle>
+        <formatString>H:mm</formatString>
+      </column>
+      <column columnName="description">
+        <datatype>varchar</datatype>
+        <columnTitle>Remark</columnTitle>
+      </column>
+      <column columnName="userid">
+        <datatype>varchar</datatype>
+        <columnTitle>User ID</columnTitle>
+      </column>
+      <column columnName="objectid">
+        <datatype>integer</datatype>
+        <columnTitle>objectid</columnTitle>
+        <shownInInsertView>false</shownInInsertView>
+        <shownInUpdateView>false</shownInUpdateView>
+        <shownInDetailsView>false</shownInDetailsView>
+        <isKeyField>true</isKeyField>
+        <isAutoInc>true</isAutoInc>
+      </column>
+    </columns>
+    <tableTitle>clintrem</tableTitle>
+  </table>
+  <table tableName="demographics" tableDbType="TABLE">
+    <columns>
+      <column columnName="ParticipantId">
+        <datatype>varchar</datatype>
+        <columnTitle>ParticipantId</columnTitle>
+        <description>Subject identifier</description>
+        <nullable>false</nullable>
+      </column>
+      <column columnName="Date">
+        <datatype>timestamp</datatype>
+        <columnTitle>Date</columnTitle>
+        <nullable>false</nullable>
+        <propertyURI>http://cpas.labkey.com/Study#VisitDate</propertyURI>
+      </column>
+      <column columnName="sex">
+        <datatype>varchar</datatype>
+        <columnTitle>sex</columnTitle>
+      </column>
+      <column columnName="status">
+        <datatype>varchar</datatype>
+        <columnTitle>status</columnTitle>
+      </column>
+      <column columnName="avail">
+        <datatype>varchar</datatype>
+        <columnTitle>avail</columnTitle>
+      </column>
+      <column columnName="hold">
+        <datatype>varchar</datatype>
+        <columnTitle>hold</columnTitle>
+      </column>
+      <column columnName="dam">
+        <datatype>varchar</datatype>
+        <columnTitle>dam</columnTitle>
+      </column>
+      <column columnName="sire">
+        <datatype>varchar</datatype>
+        <columnTitle>sire</columnTitle>
+      </column>
+      <column columnName="origin">
+        <datatype>varchar</datatype>
+        <columnTitle>origin</columnTitle>
+      </column>
+      <column columnName="birth">
+        <datatype>timestamp</datatype>
+        <columnTitle>birth</columnTitle>
+      </column>
+      <column columnName="death">
+        <datatype>timestamp</datatype>
+        <columnTitle>death</columnTitle>
+      </column>
+      <column columnName="arrivedate">
+        <datatype>timestamp</datatype>
+        <columnTitle>arrivedate</columnTitle>
+      </column>
+      <column columnName="arrivetime">
+        <datatype>timestamp</datatype>
+        <columnTitle>arrivetime</columnTitle>
+        <formatString>H:mm</formatString>
+      </column>
+      <column columnName="departdate">
+        <datatype>timestamp</datatype>
+        <columnTitle>departdate</columnTitle>
+      </column>
+      <column columnName="departtime">
+        <datatype>timestamp</datatype>
+        <columnTitle>departtime</columnTitle>
+        <formatString>H:mm</formatString>
+      </column>
+      <column columnName="room">
+        <datatype>varchar</datatype>
+        <columnTitle>room</columnTitle>
+      </column>
+      <column columnName="cage">
+        <datatype>varchar</datatype>
+        <columnTitle>cage</columnTitle>
+      </column>
+      <column columnName="cond">
+        <datatype>varchar</datatype>
+        <columnTitle>cond</columnTitle>
+      </column>
+      <column columnName="weight">
+        <datatype>double</datatype>
+        <columnTitle>weight</columnTitle>
+      </column>
+      <column columnName="wdate">
+        <datatype>timestamp</datatype>
+        <columnTitle>wdate</columnTitle>
+      </column>
+      <column columnName="wtime">
+        <datatype>timestamp</datatype>
+        <columnTitle>wtime</columnTitle>
+        <formatString>H:mm</formatString>
+      </column>
+      <column columnName="tbdate">
+        <datatype>timestamp</datatype>
+        <columnTitle>tbdate</columnTitle>
+      </column>
+      <column columnName="medical">
+        <datatype>varchar</datatype>
+        <columnTitle>medical</columnTitle>
+      </column>
+      <column columnName="purchasedby">
+        <datatype>varchar</datatype>
+        <columnTitle>purchasedby</columnTitle>
+      </column>
+      <column columnName="v_status">
+        <datatype>varchar</datatype>
+        <columnTitle>v_status</columnTitle>
+      </column>
+    </columns>
+    <tableTitle>Demographics</tableTitle>
+    <description>This table contains basic demographic information on all WNPRC animals</description>
+  </table>
+  <table tableName="departure" tableDbType="TABLE">
+    <columns>
+      <column columnName="participantid">
+        <datatype>varchar</datatype>
+        <columnTitle>Participant ID</columnTitle>
+        <description>Participant identifier</description>
+        <nullable>false</nullable>
+      </column>
+      <column columnName="Date">
+        <datatype>timestamp</datatype>
+        <columnTitle>Date</columnTitle>
+        <nullable>false</nullable>
+        <propertyURI>http://cpas.labkey.com/Study#VisitDate</propertyURI>
+      </column>
+      <column columnName="time">
+        <datatype>timestamp</datatype>
+        <columnTitle>Time</columnTitle>
+        <formatString>H:mm</formatString>
+      </column>
+      <column columnName="authorize">
+        <datatype>varchar</datatype>
+        <columnTitle>Authorized By</columnTitle>
+      </column>
+      <column columnName="destination">
+        <datatype>varchar</datatype>
+        <columnTitle>Destination</columnTitle>
+      </column>
+      <column columnName="remark">
+        <datatype>varchar</datatype>
+        <columnTitle>Remark</columnTitle>
+      </column>
+      <column columnName="description">
+        <datatype>varchar</datatype>
+        <columnTitle>description</columnTitle>
+        <shownInInsertView>false</shownInInsertView>
+        <shownInUpdateView>false</shownInUpdateView>
+        <shownInDetailsView>false</shownInDetailsView>
+      </column>
+      <column columnName="objectid">
+        <datatype>integer</datatype>
+        <columnTitle>objectid</columnTitle>
+        <shownInInsertView>false</shownInInsertView>
+        <shownInUpdateView>false</shownInUpdateView>
+        <shownInDetailsView>false</shownInDetailsView>
+        <isKeyField>true</isKeyField>
+        <isAutoInc>true</isAutoInc>
+      </column>
+    </columns>
+    <tableTitle>Departure</tableTitle>
+  </table>
+  <table tableName="drug" tableDbType="TABLE">
+    <columns>
+      <column columnName="participantid">
+        <datatype>varchar</datatype>
+        <columnTitle>Participant ID</columnTitle>
+        <description>Participant identifier</description>
+        <nullable>false</nullable>
+      </column>
+      <column columnName="Date">
+        <datatype>timestamp</datatype>
+        <columnTitle>Date</columnTitle>
+        <nullable>false</nullable>
+        <propertyURI>http://cpas.labkey.com/Study#VisitDate</propertyURI>
+      </column>
+      <column columnName="pno">
+        <datatype>varchar</datatype>
+        <columnTitle>Project</columnTitle>
+        <fk>
+          <fkFolderPath>/EHRTest/Import Test</fkFolderPath>
+          <fkDbSchema>lists</fkDbSchema>
+          <fkTable>project</fkTable>
+          <fkColumnName>pno</fkColumnName>
+        </fk>
+      </column>
+      <column columnName="time">
+        <datatype>timestamp</datatype>
+        <columnTitle>Time</columnTitle>
+        <formatString>H:mm</formatString>
+      </column>
+      <column columnName="code">
+        <datatype>varchar</datatype>
+        <columnTitle>SNOMED</columnTitle>
+        <fk>
+          <fkFolderPath>/EHRTest/Import Test</fkFolderPath>
+          <fkDbSchema>lists</fkDbSchema>
+          <fkTable>snomed</fkTable>
+          <fkColumnName>code</fkColumnName>
+        </fk>
+      </column>
+      <column columnName="amount">
+        <datatype>double</datatype>
+        <columnTitle>Amount</columnTitle>
+      </column>
+      <column columnName="units">
+        <datatype>varchar</datatype>
+        <columnTitle>Units</columnTitle>
+      </column>
+      <column columnName="route">
+        <datatype>varchar</datatype>
+        <columnTitle>Route</columnTitle>
+      </column>
+      <column columnName="time2">
+        <datatype>varchar</datatype>
+        <columnTitle>Time2</columnTitle>
+        <formatString>H:mm</formatString>
+      </column>
+      <column columnName="remark">
+        <datatype>varchar</datatype>
+        <columnTitle>Remark</columnTitle>
+      </column>
+      <column columnName="description">
+        <datatype>varchar</datatype>
+        <columnTitle>Description</columnTitle>
+        <shownInInsertView>false</shownInInsertView>
+        <shownInUpdateView>false</shownInUpdateView>
+        <shownInDetailsView>false</shownInDetailsView>
+      </column>
+      <column columnName="objectid">
+        <datatype>integer</datatype>
+        <columnTitle>objectid</columnTitle>
+        <shownInInsertView>false</shownInInsertView>
+        <shownInUpdateView>false</shownInUpdateView>
+        <shownInDetailsView>false</shownInDetailsView>
+        <isKeyField>true</isKeyField>
+        <isAutoInc>true</isAutoInc>
+      </column>
+    </columns>
+    <tableTitle>Drug</tableTitle>
+    <description>This tables contains records of all medications given to animals</description>
+  </table>
+  <table tableName="hemamisc" tableDbType="TABLE">
+    <columns>
+      <column columnName="participantid">
+        <datatype>varchar</datatype>
+        <columnTitle>Participant ID</columnTitle>
+        <description>Participant identifier</description>
+        <nullable>false</nullable>
+      </column>
+      <column columnName="Date">
+        <datatype>timestamp</datatype>
+        <columnTitle>Date</columnTitle>
+        <nullable>false</nullable>
+        <propertyURI>http://cpas.labkey.com/Study#VisitDate</propertyURI>
+      </column>
+      <column columnName="morphology">
+        <datatype>varchar</datatype>
+        <columnTitle>Morphology</columnTitle>
+      </column>
+      <column columnName="account">
+        <datatype>varchar</datatype>
+        <columnTitle>Account</columnTitle>
+      </column>
+      <column columnName="objectid">
+        <datatype>integer</datatype>
+        <columnTitle>objectid</columnTitle>
+        <shownInInsertView>false</shownInInsertView>
+        <shownInUpdateView>false</shownInUpdateView>
+        <shownInDetailsView>false</shownInDetailsView>
+        <isKeyField>true</isKeyField>
+        <isAutoInc>true</isAutoInc>
+      </column>
+    </columns>
+    <tableTitle>hemamisc</tableTitle>
+    <description>This tables contains the results of hematology _______</description>
+  </table>
+  <table tableName="hematology" tableDbType="TABLE">
+    <columns>
+      <column columnName="participantid">
+        <datatype>varchar</datatype>
+        <columnTitle>Participant ID</columnTitle>
+        <description>Participant identifier</description>
+        <nullable>false</nullable>
+      </column>
+      <column columnName="Date">
+        <datatype>timestamp</datatype>
+        <columnTitle>Date</columnTitle>
+        <nullable>false</nullable>
+        <propertyURI>http://cpas.labkey.com/Study#VisitDate</propertyURI>
+      </column>
+      <column columnName="account">
+        <datatype>varchar</datatype>
+        <columnTitle>Account</columnTitle>
+      </column>
+      <column columnName="wbc">
+        <datatype>double</datatype>
+        <columnTitle>WBC</columnTitle>
+      </column>
+      <column columnName="rbc">
+        <datatype>double</datatype>
+        <columnTitle>RBC</columnTitle>
+      </column>
+      <column columnName="hgb">
+        <datatype>double</datatype>
+        <columnTitle>Hemoglobin</columnTitle>
+      </column>
+      <column columnName="hct">
+        <datatype>double</datatype>
+        <columnTitle>Hematocrit</columnTitle>
+      </column>
+      <column columnName="mcv">
+        <datatype>double</datatype>
+        <columnTitle>MCV</columnTitle>
+      </column>
+      <column columnName="mch">
+        <datatype>double</datatype>
+        <columnTitle>MCH</columnTitle>
+      </column>
+      <column columnName="mchc">
+        <datatype>double</datatype>
+        <columnTitle>MCHC</columnTitle>
+      </column>
+      <column columnName="rdw">
+        <datatype>double</datatype>
+        <columnTitle>RDW</columnTitle>
+      </column>
+      <column columnName="plt">
+        <datatype>double</datatype>
+        <columnTitle>PLT</columnTitle>
+      </column>
+      <column columnName="mpv">
+        <datatype>double</datatype>
+        <columnTitle>MPV</columnTitle>
+      </column>
+      <column columnName="pcv">
+        <datatype>double</datatype>
+        <columnTitle>PCV</columnTitle>
+      </column>
+      <column columnName="n">
+        <datatype>double</datatype>
+        <columnTitle>N</columnTitle>
+      </column>
+      <column columnName="l">
+        <datatype>double</datatype>
+        <columnTitle>L</columnTitle>
+      </column>
+      <column columnName="m">
+        <datatype>double</datatype>
+        <columnTitle>M</columnTitle>
+      </column>
+      <column columnName="e">
+        <datatype>double</datatype>
+        <columnTitle>E</columnTitle>
+      </column>
+      <column columnName="b">
+        <datatype>double</datatype>
+        <columnTitle>B</columnTitle>
+      </column>
+      <column columnName="bands">
+        <datatype>double</datatype>
+        <columnTitle>Bands</columnTitle>
+      </column>
+      <column columnName="metamyelo">
+        <datatype>double</datatype>
+        <columnTitle>Metamyelocytes</columnTitle>
+      </column>
+      <column columnName="myelo">
+        <datatype>double</datatype>
+        <columnTitle>Myelocytes</columnTitle>
+      </column>
+      <column columnName="tprotein">
+        <datatype>double</datatype>
+        <columnTitle>Total Protein</columnTitle>
+      </column>
+      <column columnName="reticulo">
+        <datatype>double</datatype>
+        <columnTitle>Reticulocyte Count</columnTitle>
+      </column>
+      <column columnName="remark">
+        <datatype>varchar</datatype>
+        <columnTitle>Remark</columnTitle>
+      </column>
+      <column columnName="clinremark">
+        <datatype>varchar</datatype>
+        <columnTitle>Clinremark</columnTitle>
+      </column>
+      <column columnName="proMyelo">
+        <datatype>double</datatype>
+        <columnTitle>Promyelocyte</columnTitle>
+      </column>
+      <column columnName="blast">
+        <datatype>double</datatype>
+        <columnTitle>Blast</columnTitle>
+      </column>
+      <column columnName="atyLymph">
+        <datatype>double</datatype>
+        <columnTitle>AtyLymph</columnTitle>
+      </column>
+      <column columnName="other">
+        <datatype>double</datatype>
+        <columnTitle>Other</columnTitle>
+      </column>
+      <column columnName="description">
+        <datatype>varchar</datatype>
+        <columnTitle>description</columnTitle>
+        <shownInInsertView>false</shownInInsertView>
+        <shownInUpdateView>false</shownInUpdateView>
+        <shownInDetailsView>false</shownInDetailsView>
+      </column>
+      <column columnName="objectid">
+        <datatype>integer</datatype>
+        <columnTitle>objectid</columnTitle>
+        <shownInInsertView>false</shownInInsertView>
+        <shownInUpdateView>false</shownInUpdateView>
+        <shownInDetailsView>false</shownInDetailsView>
+        <isKeyField>true</isKeyField>
+        <isAutoInc>true</isAutoInc>
+      </column>
+    </columns>
+    <tableTitle>Hematology</tableTitle>
+  </table>
+  <table tableName="hormtrem" tableDbType="TABLE">
+    <columns>
+      <column columnName="participantid">
+        <datatype>varchar</datatype>
+        <columnTitle>Participant ID</columnTitle>
+        <description>Participant identifier</description>
+        <nullable>false</nullable>
+      </column>
+      <column columnName="Date">
+        <datatype>timestamp</datatype>
+        <columnTitle>Date</columnTitle>
+        <nullable>false</nullable>
+        <propertyURI>http://cpas.labkey.com/Study#VisitDate</propertyURI>
+      </column>
+      <column columnName="pno">
+        <datatype>varchar</datatype>
+        <columnTitle>Project</columnTitle>
+        <fk>
+          <fkFolderPath>/EHRTest/Import Test</fkFolderPath>
+          <fkDbSchema>lists</fkDbSchema>
+          <fkTable>project</fkTable>
+          <fkColumnName>pno</fkColumnName>
+        </fk>
+      </column>
+      <column columnName="time">
+        <datatype>timestamp</datatype>
+        <columnTitle>Time</columnTitle>
+        <formatString>H:mm</formatString>
+      </column>
+      <column columnName="description">
+        <datatype>varchar</datatype>
+        <columnTitle>Remark</columnTitle>
+      </column>
+      <column columnName="objectid">
+        <datatype>integer</datatype>
+        <columnTitle>objectid</columnTitle>
+        <shownInInsertView>false</shownInInsertView>
+        <shownInUpdateView>false</shownInUpdateView>
+        <shownInDetailsView>false</shownInDetailsView>
+        <isKeyField>true</isKeyField>
+        <isAutoInc>true</isAutoInc>
+      </column>
+    </columns>
+    <tableTitle>hormtrem</tableTitle>
+  </table>
+  <table tableName="immunores" tableDbType="TABLE">
+    <columns>
+      <column columnName="participantid">
+        <datatype>varchar</datatype>
+        <columnTitle>Participant ID</columnTitle>
+        <description>Participant identifier</description>
+        <nullable>false</nullable>
+      </column>
+      <column columnName="Date">
+        <datatype>timestamp</datatype>
+        <columnTitle>Date</columnTitle>
+        <nullable>false</nullable>
+        <propertyURI>http://cpas.labkey.com/Study#VisitDate</propertyURI>
+      </column>
+      <column columnName="reqid">
+        <datatype>varchar</datatype>
+        <columnTitle>RequestID</columnTitle>
+      </column>
+      <column columnName="cd3">
+        <datatype>integer</datatype>
+        <columnTitle>CD3</columnTitle>
+      </column>
+      <column columnName="cd20">
+        <datatype>integer</datatype>
+        <columnTitle>CD20</columnTitle>
+      </column>
+      <column columnName="cd4">
+        <datatype>integer</datatype>
+        <columnTitle>CD4</columnTitle>
+      </column>
+      <column columnName="cd8">
+        <datatype>integer</datatype>
+        <columnTitle>CD8</columnTitle>
+      </column>
+      <column columnName="description">
+        <datatype>varchar</datatype>
+        <columnTitle>Description</columnTitle>
+        <shownInInsertView>false</shownInInsertView>
+        <shownInUpdateView>false</shownInUpdateView>
+        <shownInDetailsView>false</shownInDetailsView>
+      </column>
+      <column columnName="objectid">
+        <datatype>integer</datatype>
+        <columnTitle>objectid</columnTitle>
+        <shownInInsertView>false</shownInInsertView>
+        <shownInUpdateView>false</shownInUpdateView>
+        <shownInDetailsView>false</shownInDetailsView>
+        <isKeyField>true</isKeyField>
+        <isAutoInc>true</isAutoInc>
+      </column>
+    </columns>
+    <tableTitle>immunores</tableTitle>
+  </table>
+  <table tableName="mhctype" tableDbType="TABLE">
+    <columns>
+      <column columnName="participantid">
+        <datatype>varchar</datatype>
+        <columnTitle>Participant ID</columnTitle>
+        <description>Participant identifier</description>
+        <nullable>false</nullable>
+      </column>
+      <column columnName="Date">
+        <datatype>timestamp</datatype>
+        <columnTitle>Date</columnTitle>
+        <nullable>false</nullable>
+        <propertyURI>http://cpas.labkey.com/Study#VisitDate</propertyURI>
+      </column>
+      <column columnName="a01">
+        <datatype>varchar</datatype>
+        <columnTitle>a01</columnTitle>
+      </column>
+      <column columnName="a02">
+        <datatype>varchar</datatype>
+        <columnTitle>a02</columnTitle>
+      </column>
+      <column columnName="b08">
+        <datatype>varchar</datatype>
+        <columnTitle>b08</columnTitle>
+      </column>
+      <column columnName="b17">
+        <datatype>varchar</datatype>
+        <columnTitle>b17</columnTitle>
+      </column>
+      <column columnName="description">
+        <datatype>varchar</datatype>
+        <columnTitle>description</columnTitle>
+      </column>
+      <column columnName="objectid">
+        <datatype>integer</datatype>
+        <columnTitle>objectid</columnTitle>
+        <isKeyField>true</isKeyField>
+        <isAutoInc>true</isAutoInc>
+      </column>
+    </columns>
+    <tableTitle>mhctype</tableTitle>
+  </table>
+  <table tableName="necropsy" tableDbType="TABLE">
+    <columns>
+      <column columnName="participantid">
+        <datatype>varchar</datatype>
+        <columnTitle>Participant ID</columnTitle>
+        <description>Participant identifier</description>
+        <nullable>false</nullable>
+      </column>
+      <column columnName="Date">
+        <datatype>timestamp</datatype>
+        <columnTitle>Date</columnTitle>
+        <nullable>false</nullable>
+        <propertyURI>http://cpas.labkey.com/Study#VisitDate</propertyURI>
+      </column>
+      <column columnName="caseno">
+        <datatype>varchar</datatype>
+        <columnTitle>Case Number</columnTitle>
+      </column>
+      <column columnName="account">
+        <datatype>varchar</datatype>
+        <columnTitle>Account</columnTitle>
+      </column>
+      <column columnName="description">
+        <datatype>varchar</datatype>
+        <columnTitle>Description</columnTitle>
+        <shownInInsertView>false</shownInInsertView>
+        <shownInUpdateView>false</shownInUpdateView>
+        <shownInDetailsView>false</shownInDetailsView>
+      </column>
+      <column columnName="objectid">
+        <datatype>integer</datatype>
+        <columnTitle>objectid</columnTitle>
+        <shownInInsertView>false</shownInInsertView>
+        <shownInUpdateView>false</shownInUpdateView>
+        <shownInDetailsView>false</shownInDetailsView>
+        <isKeyField>true</isKeyField>
+        <isAutoInc>true</isAutoInc>
+      </column>
+    </columns>
+    <tableTitle>necropsy</tableTitle>
+  </table>
+  <table tableName="necropsydiag" tableDbType="TABLE">
+    <columns>
+      <column columnName="participantid">
+        <datatype>varchar</datatype>
+        <columnTitle>Participant ID</columnTitle>
+        <description>Participant identifier</description>
+        <nullable>false</nullable>
+      </column>
+      <column columnName="Date">
+        <datatype>timestamp</datatype>
+        <columnTitle>Date</columnTitle>
+        <nullable>false</nullable>
+        <propertyURI>http://cpas.labkey.com/Study#VisitDate</propertyURI>
+      </column>
+      <column columnName="necropsy_objectid">
+        <datatype>integer</datatype>
+        <columnTitle>necropsy_objectid</columnTitle>
+      </column>
+      <column columnName="seq1">
+        <datatype>integer</datatype>
+        <columnTitle>seq1</columnTitle>
+      </column>
+      <column columnName="seq2">
+        <datatype>integer</datatype>
+        <columnTitle>seq2</columnTitle>
+      </column>
+      <column columnName="code">
+        <datatype>varchar</datatype>
+        <columnTitle>SNOMED</columnTitle>
+        <fk>
+          <fkFolderPath>/EHRTest/Import Test</fkFolderPath>
+          <fkDbSchema>lists</fkDbSchema>
+          <fkTable>snomed</fkTable>
+          <fkColumnName>code</fkColumnName>
+        </fk>
+      </column>
+      <column columnName="description">
+        <datatype>varchar</datatype>
+        <columnTitle>Description</columnTitle>
+        <shownInInsertView>false</shownInInsertView>
+        <shownInUpdateView>false</shownInUpdateView>
+        <shownInDetailsView>false</shownInDetailsView>
+      </column>
+      <column columnName="objectid">
+        <datatype>integer</datatype>
+        <columnTitle>objectid</columnTitle>
+        <shownInInsertView>false</shownInInsertView>
+        <shownInUpdateView>false</shownInUpdateView>
+        <shownInDetailsView>false</shownInDetailsView>
+        <isKeyField>true</isKeyField>
+        <isAutoInc>true</isAutoInc>
+      </column>
+    </columns>
+    <tableTitle>necropsydiag</tableTitle>
+  </table>
+  <table tableName="obs" tableDbType="TABLE">
+    <columns>
+      <column columnName="participantid">
+        <datatype>varchar</datatype>
+        <columnTitle>Participant ID</columnTitle>
+        <description>Participant identifier</description>
+        <nullable>false</nullable>
+      </column>
+      <column columnName="Date">
+        <datatype>timestamp</datatype>
+        <columnTitle>Date</columnTitle>
+        <nullable>false</nullable>
+        <propertyURI>http://cpas.labkey.com/Study#VisitDate</propertyURI>
+      </column>
+      <column columnName="userid">
+        <datatype>varchar</datatype>
+        <columnTitle>UserID</columnTitle>
+      </column>
+      <column columnName="feces">
+        <datatype>varchar</datatype>
+        <columnTitle>Feces</columnTitle>
+      </column>
+      <column columnName="menses">
+        <datatype>varchar</datatype>
+        <columnTitle>Menses</columnTitle>
+      </column>
+      <column columnName="behavior">
+        <datatype>varchar</datatype>
+        <columnTitle>Behavior</columnTitle>
+      </column>
+      <column columnName="breeding">
+        <datatype>varchar</datatype>
+        <columnTitle>Breeding</columnTitle>
+      </column>
+      <column columnName="other">
+        <datatype>varchar</datatype>
+        <columnTitle>Other</columnTitle>
+      </column>
+      <column columnName="tlocation">
+        <datatype>varchar</datatype>
+        <columnTitle>Tlocation</columnTitle>
+      </column>
+      <column columnName="remark">
+        <datatype>varchar</datatype>
+        <columnTitle>Remark</columnTitle>
+      </column>
+      <column columnName="otherbehavior">
+        <datatype>varchar</datatype>
+        <columnTitle>Other Behavior</columnTitle>
+      </column>
+      <column columnName="time">
+        <datatype>timestamp</datatype>
+        <columnTitle>Time</columnTitle>
+        <formatString>H:mm</formatString>
+      </column>
+      <column columnName="description">
+        <datatype>varchar</datatype>
+        <columnTitle>Description</columnTitle>
+        <shownInInsertView>false</shownInInsertView>
+        <shownInUpdateView>false</shownInUpdateView>
+        <shownInDetailsView>false</shownInDetailsView>
+      </column>
+      <column columnName="objectid">
+        <datatype>integer</datatype>
+        <columnTitle>objectid</columnTitle>
+        <shownInInsertView>false</shownInInsertView>
+        <shownInUpdateView>false</shownInUpdateView>
+        <shownInDetailsView>false</shownInDetailsView>
+        <isKeyField>true</isKeyField>
+        <isAutoInc>true</isAutoInc>
+      </column>
+    </columns>
+    <tableTitle>obs</tableTitle>
+  </table>
+  <table tableName="parares" tableDbType="TABLE">
+    <columns>
+      <column columnName="participantid">
+        <datatype>varchar</datatype>
+        <columnTitle>Participant ID</columnTitle>
+        <description>Participant identifier</description>
+        <nullable>false</nullable>
+      </column>
+      <column columnName="Date">
+        <datatype>timestamp</datatype>
+        <columnTitle>Date</columnTitle>
+        <nullable>false</nullable>
+        <propertyURI>http://cpas.labkey.com/Study#VisitDate</propertyURI>
+      </column>
+      <column columnName="parasitology_objectid">
+        <datatype>integer</datatype>
+        <columnTitle>parasitology_objectid</columnTitle>
+      </column>
+      <column columnName="seq">
+        <datatype>integer</datatype>
+        <columnTitle>seq</columnTitle>
+      </column>
+      <column columnName="code">
+        <datatype>varchar</datatype>
+        <columnTitle>SNOMED</columnTitle>
+        <fk>
+          <fkFolderPath>/EHRTest/Import Test</fkFolderPath>
+          <fkDbSchema>lists</fkDbSchema>
+          <fkTable>snomed</fkTable>
+          <fkColumnName>code</fkColumnName>
+        </fk>
+      </column>
+      <column columnName="description">
+        <datatype>varchar</datatype>
+        <columnTitle>description</columnTitle>
+        <shownInInsertView>false</shownInInsertView>
+        <shownInUpdateView>false</shownInUpdateView>
+        <shownInDetailsView>false</shownInDetailsView>
+      </column>
+      <column columnName="objectid">
+        <datatype>integer</datatype>
+        <columnTitle>objectid</columnTitle>
+        <shownInInsertView>false</shownInInsertView>
+        <shownInUpdateView>false</shownInUpdateView>
+        <shownInDetailsView>false</shownInDetailsView>
+        <isKeyField>true</isKeyField>
+        <isAutoInc>true</isAutoInc>
+      </column>
+    </columns>
+    <tableTitle>parares</tableTitle>
+  </table>
+  <table tableName="parasitology" tableDbType="TABLE">
+    <columns>
+      <column columnName="participantid">
+        <datatype>varchar</datatype>
+        <columnTitle>Participant ID</columnTitle>
+        <description>Participant identifier</description>
+        <nullable>false</nullable>
+      </column>
+      <column columnName="Date">
+        <datatype>timestamp</datatype>
+        <columnTitle>Date</columnTitle>
+        <nullable>false</nullable>
+        <propertyURI>http://cpas.labkey.com/Study#VisitDate</propertyURI>
+      </column>
+      <column columnName="room">
+        <datatype>varchar</datatype>
+        <columnTitle>Room</columnTitle>
+      </column>
+      <column columnName="account">
+        <datatype>varchar</datatype>
+        <columnTitle>Account</columnTitle>
+      </column>
+      <column columnName="remark">
+        <datatype>varchar</datatype>
+        <columnTitle>Remark</columnTitle>
+      </column>
+      <column columnName="clinremark">
+        <datatype>varchar</datatype>
+        <columnTitle>Clin Remark</columnTitle>
+      </column>
+      <column columnName="description">
+        <datatype>varchar</datatype>
+        <columnTitle>Description</columnTitle>
+        <shownInInsertView>false</shownInInsertView>
+        <shownInUpdateView>false</shownInUpdateView>
+        <shownInDetailsView>false</shownInDetailsView>
+      </column>
+      <column columnName="objectid">
+        <datatype>integer</datatype>
+        <columnTitle>objectid</columnTitle>
+        <shownInInsertView>false</shownInInsertView>
+        <shownInUpdateView>false</shownInUpdateView>
+        <shownInDetailsView>false</shownInDetailsView>
+        <isKeyField>true</isKeyField>
+        <isAutoInc>true</isAutoInc>
+      </column>
+    </columns>
+    <tableTitle>parasitology</tableTitle>
+  </table>
+  <table tableName="problem" tableDbType="TABLE">
+    <columns>
+      <column columnName="participantid">
+        <datatype>varchar</datatype>
+        <columnTitle>Participant ID</columnTitle>
+        <description>Participant identifier</description>
+        <nullable>false</nullable>
+      </column>
+      <column columnName="Date">
+        <datatype>timestamp</datatype>
+        <columnTitle>Date</columnTitle>
+        <nullable>false</nullable>
+        <propertyURI>http://cpas.labkey.com/Study#VisitDate</propertyURI>
+      </column>
+      <column columnName="problem_no">
+        <datatype>integer</datatype>
+        <columnTitle>Problem No</columnTitle>
+      </column>
+      <column columnName="description">
+        <datatype>varchar</datatype>
+        <columnTitle>Description</columnTitle>
+      </column>
+      <column columnName="date_observed">
+        <datatype>timestamp</datatype>
+        <columnTitle>Date Observed</columnTitle>
+      </column>
+      <column columnName="date_resolved">
+        <datatype>timestamp</datatype>
+        <columnTitle>Date Resolved</columnTitle>
+      </column>
+      <column columnName="code">
+        <datatype>varchar</datatype>
+        <columnTitle>SNOMED</columnTitle>
+        <fk>
+          <fkFolderPath>/EHRTest/Import Test</fkFolderPath>
+          <fkDbSchema>lists</fkDbSchema>
+          <fkTable>snomed</fkTable>
+          <fkColumnName>code</fkColumnName>
+        </fk>
+      </column>
+      <column columnName="objectid">
+        <datatype>integer</datatype>
+        <columnTitle>objectid</columnTitle>
+        <shownInInsertView>false</shownInInsertView>
+        <shownInUpdateView>false</shownInUpdateView>
+        <shownInDetailsView>false</shownInDetailsView>
+        <isKeyField>true</isKeyField>
+        <isAutoInc>true</isAutoInc>
+      </column>
+    </columns>
+    <tableTitle>Problem</tableTitle>
+  </table>
+  <table tableName="surgery" tableDbType="TABLE">
+    <columns>
+      <column columnName="participantid">
+        <datatype>varchar</datatype>
+        <columnTitle>Participant ID</columnTitle>
+        <description>Participant identifier</description>
+        <nullable>false</nullable>
+      </column>
+      <column columnName="Date">
+        <datatype>timestamp</datatype>
+        <columnTitle>Date</columnTitle>
+        <nullable>false</nullable>
+        <propertyURI>http://cpas.labkey.com/Study#VisitDate</propertyURI>
+      </column>
+      <column columnName="time">
+        <datatype>timestamp</datatype>
+        <columnTitle>Time</columnTitle>
+        <formatString>H:mm</formatString>
+      </column>
+      <column columnName="age">
+        <datatype>integer</datatype>
+        <columnTitle>Age</columnTitle>
+      </column>
+      <column columnName="inves">
+        <datatype>varchar</datatype>
+        <columnTitle>Investigator</columnTitle>
+      </column>
+      <column columnName="pno">
+        <datatype>varchar</datatype>
+        <columnTitle>Project</columnTitle>
+      </column>
+      <column columnName="surgeon">
+        <datatype>varchar</datatype>
+        <columnTitle>Surgeon</columnTitle>
+      </column>
+      <column columnName="enddate">
+        <datatype>timestamp</datatype>
+        <columnTitle>End Date</columnTitle>
+      </column>
+      <column columnName="endtime">
+        <datatype>timestamp</datatype>
+        <columnTitle>End Time</columnTitle>
+        <formatString>H:mm</formatString>
+      </column>
+      <column columnName="major">
+        <datatype>varchar</datatype>
+        <columnTitle>Major</columnTitle>
+      </column>
+      <column columnName="description">
+        <datatype>varchar</datatype>
+        <columnTitle>Remark</columnTitle>
+      </column>
+      <column columnName="objectid">
+        <datatype>integer</datatype>
+        <columnTitle>objectid</columnTitle>
+        <shownInInsertView>false</shownInInsertView>
+        <shownInUpdateView>false</shownInUpdateView>
+        <shownInDetailsView>false</shownInDetailsView>
+        <isKeyField>true</isKeyField>
+        <isAutoInc>true</isAutoInc>
+      </column>
+    </columns>
+    <tableTitle>Surgery</tableTitle>
+  </table>
+  <table tableName="surgfluid" tableDbType="TABLE">
+    <columns>
+      <column columnName="participantid">
+        <datatype>varchar</datatype>
+        <columnTitle>Participant ID</columnTitle>
+        <description>Participant identifier</description>
+        <nullable>false</nullable>
+      </column>
+      <column columnName="Date">
+        <datatype>timestamp</datatype>
+        <columnTitle>Date</columnTitle>
+        <nullable>false</nullable>
+        <propertyURI>http://cpas.labkey.com/Study#VisitDate</propertyURI>
+      </column>
+      <column columnName="time">
+        <datatype>timestamp</datatype>
+        <columnTitle>Time</columnTitle>
+        <formatString>H:mm</formatString>
+      </column>
+      <column columnName="code">
+        <datatype>varchar</datatype>
+        <columnTitle>Code</columnTitle>
+      </column>
+      <column columnName="amount">
+        <datatype>double</datatype>
+        <columnTitle>Amount</columnTitle>
+      </column>
+      <column columnName="units">
+        <datatype>varchar</datatype>
+        <columnTitle>Units</columnTitle>
+      </column>
+      <column columnName="route">
+        <datatype>varchar</datatype>
+        <columnTitle>Route</columnTitle>
+      </column>
+      <column columnName="begintime">
+        <datatype>timestamp</datatype>
+        <columnTitle>Begin Time</columnTitle>
+        <formatString>H:mm</formatString>
+      </column>
+      <column columnName="endtime">
+        <datatype>timestamp</datatype>
+        <columnTitle>End Time</columnTitle>
+        <formatString>H:mm</formatString>
+      </column>
+      <column columnName="description">
+        <datatype>varchar</datatype>
+        <columnTitle>description</columnTitle>
+      </column>
+      <column columnName="objectid">
+        <datatype>integer</datatype>
+        <columnTitle>objectid</columnTitle>
+        <shownInInsertView>false</shownInInsertView>
+        <shownInUpdateView>false</shownInUpdateView>
+        <shownInDetailsView>false</shownInDetailsView>
+        <isKeyField>true</isKeyField>
+        <isAutoInc>true</isAutoInc>
+      </column>
+    </columns>
+    <tableTitle>surgfluid</tableTitle>
+    <description>This tables contains records of fluids administered during surgery</description>
+  </table>
+  <table tableName="surgproc" tableDbType="TABLE">
+    <columns>
+      <column columnName="participantid">
+        <datatype>varchar</datatype>
+        <columnTitle>Participant ID</columnTitle>
+        <description>Participant identifier</description>
+        <nullable>false</nullable>
+      </column>
+      <column columnName="Date">
+        <datatype>timestamp</datatype>
+        <columnTitle>Date</columnTitle>
+        <nullable>false</nullable>
+        <propertyURI>http://cpas.labkey.com/Study#VisitDate</propertyURI>
+      </column>
+      <column columnName="time">
+        <datatype>timestamp</datatype>
+        <columnTitle>Time</columnTitle>
+        <formatString>H:mm</formatString>
+      </column>
+      <column columnName="code">
+        <datatype>varchar</datatype>
+        <columnTitle>SNOMED</columnTitle>
+        <fk>
+          <fkFolderPath>/EHRTest/Import Test</fkFolderPath>
+          <fkDbSchema>lists</fkDbSchema>
+          <fkTable>snomed</fkTable>
+          <fkColumnName>code</fkColumnName>
+        </fk>
+      </column>
+      <column columnName="objectid">
+        <datatype>integer</datatype>
+        <columnTitle>objectid</columnTitle>
+        <shownInInsertView>false</shownInInsertView>
+        <shownInUpdateView>false</shownInUpdateView>
+        <shownInDetailsView>false</shownInDetailsView>
+        <isKeyField>true</isKeyField>
+        <isAutoInc>true</isAutoInc>
+      </column>
+    </columns>
+    <tableTitle>surgproc</tableTitle>
+    <description>This table contains records of surgical procedures</description>
+  </table>
+  <table tableName="surgsum" tableDbType="TABLE">
+    <columns>
+      <column columnName="participantid">
+        <datatype>varchar</datatype>
+        <columnTitle>Participant ID</columnTitle>
+        <description>Participant identifier</description>
+        <nullable>false</nullable>
+      </column>
+      <column columnName="Date">
+        <datatype>timestamp</datatype>
+        <columnTitle>Date</columnTitle>
+        <nullable>false</nullable>
+        <propertyURI>http://cpas.labkey.com/Study#VisitDate</propertyURI>
+      </column>
+      <column columnName="pno">
+        <datatype>varchar</datatype>
+        <columnTitle>Project</columnTitle>
+        <fk>
+          <fkFolderPath>/EHRTest/Import Test</fkFolderPath>
+          <fkDbSchema>lists</fkDbSchema>
+          <fkTable>project</fkTable>
+          <fkColumnName>pno</fkColumnName>
+        </fk>
+      </column>
+      <column columnName="time">
+        <datatype>timestamp</datatype>
+        <columnTitle>Time</columnTitle>
+        <formatString>H:mm</formatString>
+      </column>
+      <column columnName="so">
+        <datatype>varchar</datatype>
+        <columnTitle>SO</columnTitle>
+      </column>
+      <column columnName="a">
+        <datatype>varchar</datatype>
+        <columnTitle>A</columnTitle>
+      </column>
+      <column columnName="p">
+        <datatype>varchar</datatype>
+        <columnTitle>P</columnTitle>
+      </column>
+      <column columnName="description">
+        <datatype>varchar</datatype>
+        <columnTitle>Description</columnTitle>
+        <shownInInsertView>false</shownInInsertView>
+        <shownInUpdateView>false</shownInUpdateView>
+        <shownInDetailsView>false</shownInDetailsView>
+      </column>
+      <column columnName="objectid">
+        <datatype>integer</datatype>
+        <columnTitle>objectid</columnTitle>
+        <shownInInsertView>false</shownInInsertView>
+        <shownInUpdateView>false</shownInUpdateView>
+        <shownInDetailsView>false</shownInDetailsView>
+        <isKeyField>true</isKeyField>
+        <isAutoInc>true</isAutoInc>
+      </column>
+    </columns>
+    <tableTitle>surgsum</tableTitle>
+    <description>This tables contains a summary of surgeries</description>
+  </table>
+  <table tableName="tb" tableDbType="TABLE">
+    <columns>
+      <column columnName="participantid">
+        <datatype>varchar</datatype>
+        <columnTitle>Participant ID</columnTitle>
+        <description>Participant identifier</description>
+        <nullable>false</nullable>
+      </column>
+      <column columnName="Date">
+        <datatype>timestamp</datatype>
+        <columnTitle>Date</columnTitle>
+        <nullable>false</nullable>
+        <propertyURI>http://cpas.labkey.com/Study#VisitDate</propertyURI>
+      </column>
+      <column columnName="lot">
+        <datatype>varchar</datatype>
+        <columnTitle>Lot</columnTitle>
+      </column>
+      <column columnName="dilution">
+        <datatype>varchar</datatype>
+        <columnTitle>Dilution</columnTitle>
+      </column>
+      <column columnName="eye">
+        <datatype>varchar</datatype>
+        <columnTitle>Eye</columnTitle>
+      </column>
+      <column columnName="result1">
+        <datatype>varchar</datatype>
+        <columnTitle>Result1</columnTitle>
+      </column>
+      <column columnName="result2">
+        <datatype>varchar</datatype>
+        <columnTitle>Result2</columnTitle>
+      </column>
+      <column columnName="result3">
+        <datatype>varchar</datatype>
+        <columnTitle>Result3</columnTitle>
+      </column>
+      <column columnName="description">
+        <datatype>varchar</datatype>
+        <columnTitle>Description</columnTitle>
+        <shownInInsertView>false</shownInInsertView>
+        <shownInUpdateView>false</shownInUpdateView>
+        <shownInDetailsView>false</shownInDetailsView>
+      </column>
+      <column columnName="objectid">
+        <datatype>integer</datatype>
+        <columnTitle>objectid</columnTitle>
+        <shownInInsertView>false</shownInInsertView>
+        <shownInUpdateView>false</shownInUpdateView>
+        <shownInDetailsView>false</shownInDetailsView>
+        <isKeyField>true</isKeyField>
+        <isAutoInc>true</isAutoInc>
+      </column>
+    </columns>
+    <tableTitle>TB</tableTitle>
+    <description>This tables contains results of TB Tests</description>
+  </table>
+  <table tableName="tissue" tableDbType="TABLE">
+    <columns>
+      <column columnName="participantid">
+        <datatype>varchar</datatype>
+        <columnTitle>Participant ID</columnTitle>
+        <description>Participant identifier</description>
+        <nullable>false</nullable>
+      </column>
+      <column columnName="Date">
+        <datatype>timestamp</datatype>
+        <columnTitle>Date</columnTitle>
+        <nullable>false</nullable>
+        <propertyURI>http://cpas.labkey.com/Study#VisitDate</propertyURI>
+      </column>
+      <column columnName="sex">
+        <datatype>varchar</datatype>
+        <columnTitle>Sex</columnTitle>
+      </column>
+      <column columnName="time">
+        <datatype>timestamp</datatype>
+        <columnTitle>Time</columnTitle>
+        <formatString>H:mm</formatString>
+      </column>
+      <column columnName="livedead">
+        <datatype>varchar</datatype>
+        <columnTitle>Live/Dead</columnTitle>
+      </column>
+      <column columnName="wbo">
+        <datatype>varchar</datatype>
+        <columnTitle>WBO</columnTitle>
+      </column>
+      <column columnName="tissue">
+        <datatype>varchar</datatype>
+        <columnTitle>Tissue</columnTitle>
+      </column>
+      <column columnName="source">
+        <datatype>varchar</datatype>
+        <columnTitle>Source</columnTitle>
+      </column>
+      <column columnName="dest">
+        <datatype>varchar</datatype>
+        <columnTitle>Destination</columnTitle>
+      </column>
+      <column columnName="recip">
+        <datatype>varchar</datatype>
+        <columnTitle>Recipient</columnTitle>
+      </column>
+      <column columnName="affil">
+        <datatype>varchar</datatype>
+        <columnTitle>Affiliation</columnTitle>
+      </column>
+      <column columnName="remark">
+        <datatype>varchar</datatype>
+        <columnTitle>Remark</columnTitle>
+      </column>
+      <column columnName="description">
+        <datatype>varchar</datatype>
+        <columnTitle>Description</columnTitle>
+        <shownInInsertView>false</shownInInsertView>
+        <shownInUpdateView>false</shownInUpdateView>
+        <shownInDetailsView>false</shownInDetailsView>
+      </column>
+      <column columnName="objectid">
+        <datatype>integer</datatype>
+        <columnTitle>objectid</columnTitle>
+        <shownInInsertView>false</shownInInsertView>
+        <shownInUpdateView>false</shownInUpdateView>
+        <shownInDetailsView>false</shownInDetailsView>
+        <isKeyField>true</isKeyField>
+        <isAutoInc>true</isAutoInc>
+      </column>
+    </columns>
+    <tableTitle>Tissue</tableTitle>
+  </table>
+  <table tableName="treatment_order" tableDbType="TABLE">
+    <columns>
+      <column columnName="participantid">
+        <datatype>varchar</datatype>
+        <columnTitle>Participant ID</columnTitle>
+        <description>Participant identifier</description>
+        <nullable>false</nullable>
+      </column>
+      <column columnName="Date">
+        <datatype>timestamp</datatype>
+        <columnTitle>Date</columnTitle>
+        <nullable>false</nullable>
+        <propertyURI>http://cpas.labkey.com/Study#VisitDate</propertyURI>
+      </column>
+      <column columnName="pno">
+        <datatype>varchar</datatype>
+        <columnTitle>Project</columnTitle>
+        <fk>
+          <fkFolderPath>/EHRTest/Import Test</fkFolderPath>
+          <fkDbSchema>lists</fkDbSchema>
+          <fkTable>project</fkTable>
+          <fkColumnName>pno</fkColumnName>
+        </fk>
+      </column>
+      <column columnName="code">
+        <datatype>varchar</datatype>
+        <columnTitle>SNOMED</columnTitle>
+        <fk>
+          <fkFolderPath>/EHRTest/Import Test</fkFolderPath>
+          <fkDbSchema>lists</fkDbSchema>
+          <fkTable>snomed</fkTable>
+          <fkColumnName>code</fkColumnName>
+        </fk>
+      </column>
+      <column columnName="meaning">
+        <datatype>varchar</datatype>
+        <columnTitle>Meaning</columnTitle>
+      </column>
+      <column columnName="volume">
+        <datatype>double</datatype>
+        <columnTitle>Volume</columnTitle>
+      </column>
+      <column columnName="vunits">
+        <datatype>varchar</datatype>
+        <columnTitle>Vol Units</columnTitle>
+      </column>
+      <column columnName="conc">
+        <datatype>double</datatype>
+        <columnTitle>Conc</columnTitle>
+      </column>
+      <column columnName="cunits">
+        <datatype>varchar</datatype>
+        <columnTitle>Conc Units</columnTitle>
+      </column>
+      <column columnName="amount">
+        <datatype>double</datatype>
+        <columnTitle>Amount</columnTitle>
+      </column>
+      <column columnName="units">
+        <datatype>varchar</datatype>
+        <columnTitle>Units</columnTitle>
+      </column>
+      <column columnName="route">
+        <datatype>varchar</datatype>
+        <columnTitle>Route</columnTitle>
+      </column>
+      <column columnName="enddate">
+        <datatype>timestamp</datatype>
+        <columnTitle>End Date</columnTitle>
+      </column>
+      <column columnName="frequency">
+        <datatype>integer</datatype>
+        <columnTitle>Frequency</columnTitle>
+      </column>
+      <column columnName="remark">
+        <datatype>varchar</datatype>
+        <columnTitle>Remark</columnTitle>
+      </column>
+      <column columnName="userid">
+        <datatype>varchar</datatype>
+        <columnTitle>UserID</columnTitle>
+      </column>
+      <column columnName="description">
+        <datatype>varchar</datatype>
+        <columnTitle>Description</columnTitle>
+        <shownInInsertView>false</shownInInsertView>
+        <shownInUpdateView>false</shownInUpdateView>
+        <shownInDetailsView>false</shownInDetailsView>
+      </column>
+      <column columnName="objectid">
+        <datatype>integer</datatype>
+        <columnTitle>objectid</columnTitle>
+        <shownInInsertView>false</shownInInsertView>
+        <shownInUpdateView>false</shownInUpdateView>
+        <shownInDetailsView>false</shownInDetailsView>
+        <isKeyField>true</isKeyField>
+        <isAutoInc>true</isAutoInc>
+      </column>
+    </columns>
+    <tableTitle>treatment_order</tableTitle>
+    <description>This table contains treatments ordered for animals</description>
+  </table>
+  <table tableName="urine" tableDbType="TABLE">
+    <columns>
+      <column columnName="participantid">
+        <datatype>varchar</datatype>
+        <columnTitle>Participant ID</columnTitle>
+        <description>Participant identifier</description>
+        <nullable>false</nullable>
+      </column>
+      <column columnName="Date">
+        <datatype>timestamp</datatype>
+        <columnTitle>Date</columnTitle>
+        <nullable>false</nullable>
+        <propertyURI>http://cpas.labkey.com/Study#VisitDate</propertyURI>
+      </column>
+      <column columnName="account">
+        <datatype>varchar</datatype>
+        <columnTitle>Account</columnTitle>
+      </column>
+      <column columnName="quantity">
+        <datatype>varchar</datatype>
+        <columnTitle>Quantity</columnTitle>
+      </column>
+      <column columnName="collected_by">
+        <datatype>varchar</datatype>
+        <columnTitle>Collected By</columnTitle>
+      </column>
+      <column columnName="method">
+        <datatype>varchar</datatype>
+        <columnTitle>Method</columnTitle>
+      </column>
+      <column columnName="glucose">
+        <datatype>varchar</datatype>
+        <columnTitle>Glucose</columnTitle>
+      </column>
+      <column columnName="bilirubin">
+        <datatype>varchar</datatype>
+        <columnTitle>Bilirubin</columnTitle>
+      </column>
+      <column columnName="ketone">
+        <datatype>varchar</datatype>
+        <columnTitle>Ketone</columnTitle>
+      </column>
+      <column columnName="sp_gravity">
+        <datatype>double</datatype>
+        <columnTitle>Sp_Gravity</columnTitle>
+      </column>
+      <column columnName="blood">
+        <datatype>varchar</datatype>
+        <columnTitle>Blood</columnTitle>
+      </column>
+      <column columnName="ph">
+        <datatype>double</datatype>
+        <columnTitle>pH</columnTitle>
+      </column>
+      <column columnName="protein">
+        <datatype>varchar</datatype>
+        <columnTitle>Protein</columnTitle>
+      </column>
+      <column columnName="urobilinogen">
+        <datatype>varchar</datatype>
+        <columnTitle>Urobilinogen</columnTitle>
+      </column>
+      <column columnName="nitrite">
+        <datatype>varchar</datatype>
+        <columnTitle>Nitrite</columnTitle>
+      </column>
+      <column columnName="leucocytes">
+        <datatype>varchar</datatype>
+        <columnTitle>Leucocytes</columnTitle>
+      </column>
+      <column columnName="appearance">
+        <datatype>varchar</datatype>
+        <columnTitle>Appearance</columnTitle>
+      </column>
+      <column columnName="microscopic">
+        <datatype>varchar</datatype>
+        <columnTitle>Microscopic</columnTitle>
+      </column>
+      <column columnName="clincomment">
+        <datatype>varchar</datatype>
+        <columnTitle>Clin Comment</columnTitle>
+      </column>
+      <column columnName="description">
+        <datatype>varchar</datatype>
+        <columnTitle>description</columnTitle>
+        <shownInInsertView>false</shownInInsertView>
+        <shownInUpdateView>false</shownInUpdateView>
+        <shownInDetailsView>false</shownInDetailsView>
+      </column>
+      <column columnName="objectid">
+        <datatype>integer</datatype>
+        <columnTitle>objectid</columnTitle>
+        <shownInInsertView>false</shownInInsertView>
+        <shownInUpdateView>false</shownInUpdateView>
+        <shownInDetailsView>false</shownInDetailsView>
+        <isKeyField>true</isKeyField>
+        <isAutoInc>true</isAutoInc>
+      </column>
+    </columns>
+    <tableTitle>Urine</tableTitle>
+    <description>This table contains the results of urine panels</description>
+  </table>
+  <table tableName="weight" tableDbType="TABLE">
+    <columns>
+      <column columnName="participantid">
+        <datatype>varchar</datatype>
+        <columnTitle>Participant ID</columnTitle>
+        <description>Participant identifier</description>
+        <nullable>false</nullable>
+      </column>
+      <column columnName="Date">
+        <datatype>timestamp</datatype>
+        <columnTitle>Date</columnTitle>
+        <nullable>false</nullable>
+        <propertyURI>http://cpas.labkey.com/Study#VisitDate</propertyURI>
+      </column>
+      <column columnName="time">
+        <datatype>timestamp</datatype>
+        <columnTitle>Time</columnTitle>
+        <formatString>H:mm</formatString>
+      </column>
+      <column columnName="weight">
+        <datatype>double</datatype>
+        <columnTitle>Weight</columnTitle>
+      </column>
+      <column columnName="verified">
+        <datatype>integer</datatype>
+        <columnTitle>Verified</columnTitle>
+      </column>
+      <column columnName="description">
+        <datatype>varchar</datatype>
+        <columnTitle>Description</columnTitle>
+        <shownInInsertView>false</shownInInsertView>
+        <shownInUpdateView>false</shownInUpdateView>
+        <shownInDetailsView>false</shownInDetailsView>
+      </column>
+      <column columnName="objectid">
+        <datatype>integer</datatype>
+        <columnTitle>objectid</columnTitle>
+        <shownInInsertView>false</shownInInsertView>
+        <shownInUpdateView>false</shownInUpdateView>
+        <shownInDetailsView>false</shownInDetailsView>
+        <isKeyField>true</isKeyField>
+        <isAutoInc>true</isAutoInc>
+      </column>
+    </columns>
+    <tableTitle>Weight</tableTitle>
+    <description>This tables contains records of animal weights</description>
+  </table>
+</tables>

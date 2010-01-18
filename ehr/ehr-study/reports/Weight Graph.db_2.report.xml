@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ReportDescriptor descriptorType="chartDescriptor" reportName="Weight Graph" reportKey="study/weight" xmlns="http://labkey.org/query/xml">
+  <Properties>
+    <Prop name="descriptorType">chartDescriptor</Prop>
+    <Prop name="version">9.3</Prop>
+    <Prop name="reportType">ReportService.chartQueryReport</Prop>
+    <Prop name="queryName">weight</Prop>
+    <Prop name="schemaName">study</Prop>
+    <Prop name="reportName">Weight Graph</Prop>
+    <Prop name="reportDescription">This is a graph of weights</Prop>
+    <Prop name="cached">false</Prop>
+    <Prop name="columnXName">Date</Prop>
+    <Prop name="columnYName">weight</Prop>
+    <Prop name="chartType">2</Prop>
+    <Prop name="isLogX">false</Prop>
+    <Prop name="isLogY">false</Prop>
+    <Prop name="height">200</Prop>
+    <Prop name="width">640</Prop>
+    <Prop name="showMultipleYAxis">false</Prop>
+    <Prop name="showLines">true</Prop>
+    <Prop name="showMultipleCharts">true</Prop>
+    <Prop name="isVerticalOrientation">false</Prop>
+    <Prop name="reportId">db:2</Prop>
+  </Properties>
+</ReportDescriptor>

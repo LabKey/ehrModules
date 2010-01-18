@@ -5,13 +5,18 @@
 #
 MYSQLPWD=sasa
 MYSQLUSER=root
-TSVDIR=../ehr-study/datasets
+SCRIPT=$1
+ROWCOUNT=${2:-50}
+BASENAME=${SCRIPT%%.*}
+
+
+#echo "Using script $1. Creating tsv with $ROWCOUNT rows."
 
 #rm tempdata
 echo "use colony;" > tempscript
-cat scripts/$1.sql >> tempscript
-echo " ORDER BY DATE DESC LIMIT 50 ;" >> tempscript
-mysql -u${MYSQLUSER} -p${MYSQLPWD} -B < tempscript | sed s/NULL//g > $TSVDIR/$1.tsv
+cat $1 >> tempscript
+echo " ORDER BY DATE DESC LIMIT $ROWCOUNT ;" >> tempscript
+mysql -u${MYSQLUSER} -p${MYSQLPWD} -B < tempscript | sed s/NULL//g 
 
 #java FixTabs < tempdata >> temptsv
 
