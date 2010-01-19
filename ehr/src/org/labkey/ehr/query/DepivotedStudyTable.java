@@ -11,7 +11,7 @@ import java.sql.Types;
 import java.util.Map;
 
 /**
- * Copyright (c) 2006-2009 LabKey Corporation
+ * Copyright (c) 2010 LabKey Corporation
  * <p/>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
