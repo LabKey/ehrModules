@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2010 LabKey Corporation
+ *
+ * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
+ */
 SELECT id, FixDate(date) AS Date, (reqid) AS reqid, (cd3) AS cd3, (cd20) AS cd20, (cd4) AS cd4, (cd8) AS cd8, ( CONCAT_WS(', ', 
      CASE WHEN reqid IS NULL  OR reqid=''  THEN NULL ELSE CONCAT('reqid: ', reqid)  END, 
      CASE WHEN cd3 IS NULL  THEN NULL ELSE CONCAT('cd3: ', CAST(cd3 AS CHAR))  END, 

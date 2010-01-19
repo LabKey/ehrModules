@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2010 LabKey Corporation
+ *
+ * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
+ */
 SELECT id, FixDate(date) AS Date, (account) AS account, (source) AS source, (result) AS result, (remark) AS remark, (antibiotic) AS antibiotic, (sensitivity) AS sensitivity, 
 ( CONCAT_WS(', ', 
      CASE WHEN source IS NULL  OR source=''  THEN NULL ELSE CONCAT('source: ', s1.meaning, ' (', source, ')') END, 

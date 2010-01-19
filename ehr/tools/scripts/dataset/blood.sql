@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2010 LabKey Corporation
+ *
+ * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
+ */
 SELECT id, FixDate(date) AS Date, Timestamp(Date('1970-01-01'), time) AS time, (quantity) AS quantity, (done_by) AS done_by, (done_for) AS done_for, (pno) AS pno, (p_s) AS p_s, (a_v) AS a_v, (code) AS code, (caretaker) AS caretaker, (tube_type) AS tube_type, ( CONCAT_WS(', ', 
      CASE WHEN quantity IS NULL  THEN NULL ELSE CONCAT('quantity: ', CAST(quantity AS CHAR))  END, 
      CASE WHEN done_by IS NULL  OR done_by=''  THEN NULL ELSE CONCAT('done_by: ', done_by)  END, 

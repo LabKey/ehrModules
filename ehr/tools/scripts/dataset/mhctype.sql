@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2010 LabKey Corporation
+ *
+ * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
+ */
 SELECT id, CurDate() AS Date, (a01) AS a01, (a02) AS a02, (b08) AS b08, (b17) AS b17, ( CONCAT_WS(', ', 
      CASE WHEN a01 IS NULL  OR a01=''  THEN NULL ELSE CONCAT('a01: ', a01)  END, 
      CASE WHEN a02 IS NULL  OR a02=''  THEN NULL ELSE CONCAT('a02: ', a02)  END, 

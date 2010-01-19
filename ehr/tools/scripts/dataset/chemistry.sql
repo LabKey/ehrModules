@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2010 LabKey Corporation
+ *
+ * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
+ */
 SELECT id, FixDate(date) AS Date, (account) AS account, ( CONCAT_WS(', ', 
      CASE WHEN clinremark IS NULL  OR clinremark=''  THEN NULL ELSE CONCAT('clinremark: ', clinremark)  END,
      CASE WHEN remark IS NULL  OR remark=''  THEN NULL ELSE CONCAT('remark: ', remark)  END ,
