@@ -3,6 +3,20 @@
     mysql -uroot -psasa
     > \. WNPRC_records.sql
 
+2. Dump to ehr-study/datasets/tsv files:
+
+    cd tools
+    ./batchtsv.sh
+
+3. In labkey, create a new study or use an existing study.
+
+4. Point pipeline root at the ehr-study directory in this directory.
+
+5. Import the study!
+
+---------------
+Old steps no longer used, but kept for reference:
+
 2. Dump mysql tables. Must be writable by mysql user.
 
     mkdir /tmp/primate-dump

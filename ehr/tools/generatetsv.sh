@@ -17,6 +17,10 @@ echo "use colony;" > tempscript
 cat $1 >> tempscript
 echo " ORDER BY DATE DESC LIMIT $ROWCOUNT ;" >> tempscript
 mysql -u${MYSQLUSER} -p${MYSQLPWD} -B < tempscript | sed s/NULL//g 
+if [ $? -ne 0 ]; then
+    echo "ERROR trying to setup dump table using script $1"
+    exit 1
+fi
 
 #java FixTabs < tempdata >> temptsv
 
