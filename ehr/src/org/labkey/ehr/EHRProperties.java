@@ -36,6 +36,8 @@ public class EHRProperties
         protected PropertyDescriptor constructPropertyDescriptor()
         {
             PropertyDescriptor pd = super.constructPropertyDescriptor();
+            pd.setLookupSchema("lists");
+            pd.setLookupQuery("project");
             pd.setImportAliases("pno");
             return pd;
         }
