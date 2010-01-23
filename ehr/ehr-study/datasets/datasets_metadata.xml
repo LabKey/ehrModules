@@ -27,11 +27,13 @@
         <datatype>varchar</datatype>
         <columnTitle>Remark</columnTitle>
         <propertyURI>urn:ehr.labkey.org/#Remark</propertyURI>
+        <inputType>textarea</inputType>
       </column>
       <column columnName="description">
         <datatype>varchar</datatype>
         <columnTitle>Description</columnTitle>
         <propertyURI>urn:ehr.labkey.org/#Description</propertyURI>
+        <inputType>textarea</inputType>
       </column>
       <column columnName="objectid">
         <datatype>integer</datatype>
@@ -79,6 +81,7 @@
         <datatype>varchar</datatype>
         <columnTitle>Description</columnTitle>
         <propertyURI>urn:ehr.labkey.org/#Description</propertyURI>
+        <inputType>textarea</inputType>
       </column>
       <column columnName="objectid">
         <datatype>integer</datatype>
@@ -135,6 +138,7 @@
         <datatype>varchar</datatype>
         <columnTitle>Remark</columnTitle>
         <propertyURI>urn:ehr.labkey.org/#Remark</propertyURI>
+        <inputType>textarea</inputType>
       </column>
       <column columnName="antibiotic">
         <datatype>varchar</datatype>
@@ -157,6 +161,7 @@
         <shownInUpdateView>false</shownInUpdateView>
         <shownInDetailsView>false</shownInDetailsView>
         <propertyURI>urn:ehr.labkey.org/#Description</propertyURI>
+        <inputType>textarea</inputType>
       </column>
       <column columnName="objectid">
         <datatype>integer</datatype>
@@ -201,6 +206,7 @@
         <datatype>varchar</datatype>
         <columnTitle>Remark</columnTitle>
         <propertyURI>urn:ehr.labkey.org/#Description</propertyURI>
+        <inputType>textarea</inputType>
       </column>
       <column columnName="objectid">
         <datatype>integer</datatype>
@@ -241,11 +247,13 @@
         <datatype>varchar</datatype>
         <columnTitle>Remark</columnTitle>
         <propertyURI>urn:ehr.labkey.org/#Remark</propertyURI>
+        <inputType>textarea</inputType>
       </column>
       <column columnName="description">
         <datatype>varchar</datatype>
         <columnTitle>Description</columnTitle>
         <propertyURI>urn:ehr.labkey.org/#Description</propertyURI>
+        <inputType>textarea</inputType>
       </column>
       <column columnName="objectid">
         <datatype>integer</datatype>
@@ -305,6 +313,7 @@
         <shownInUpdateView>false</shownInUpdateView>
         <shownInDetailsView>false</shownInDetailsView>
         <propertyURI>urn:ehr.labkey.org/#Description</propertyURI>
+        <inputType>textarea</inputType>
       </column>
       <column columnName="objectid">
         <datatype>integer</datatype>
@@ -385,6 +394,7 @@
         <datatype>varchar</datatype>
         <columnTitle>Remark</columnTitle>
         <propertyURI>urn:ehr.labkey.org/#Remark</propertyURI>
+        <inputType>textarea</inputType>
       </column>
       <column columnName="description">
         <datatype>varchar</datatype>
@@ -393,6 +403,7 @@
         <shownInUpdateView>false</shownInUpdateView>
         <shownInDetailsView>false</shownInDetailsView>
         <propertyURI>urn:ehr.labkey.org/#Description</propertyURI>
+        <inputType>textarea</inputType>
       </column>
       <column columnName="objectid">
         <datatype>integer</datatype>
@@ -476,6 +487,7 @@
         <shownInUpdateView>false</shownInUpdateView>
         <shownInDetailsView>false</shownInDetailsView>
         <propertyURI>urn:ehr.labkey.org/#Description</propertyURI>
+        <inputType>textarea</inputType>
       </column>
       <column columnName="objectid">
         <datatype>integer</datatype>
@@ -551,6 +563,7 @@
         <shownInUpdateView>false</shownInUpdateView>
         <shownInDetailsView>false</shownInDetailsView>
         <propertyURI>urn:ehr.labkey.org/#Description</propertyURI>
+        <inputType>textarea</inputType>
       </column>
       <column columnName="objectid">
         <datatype>integer</datatype>
@@ -652,10 +665,12 @@
         <datatype>varchar</datatype>
         <columnTitle>Remark</columnTitle>
         <propertyURI>urn:ehr.labkey.org/#Remark</propertyURI>
+        <inputType>textarea</inputType>
       </column>
       <column columnName="clinremark">
         <datatype>varchar</datatype>
         <columnTitle>Clin Remark</columnTitle>
+        <inputType>textarea</inputType>
       </column>
     </columns>
     <tableTitle>Chemistry</tableTitle>
@@ -689,6 +704,7 @@
         <datatype>varchar</datatype>
         <columnTitle>Remark</columnTitle>
         <propertyURI>urn:ehr.labkey.org/#Description</propertyURI>
+        <inputType>textarea</inputType>
       </column>
       <column columnName="userid">
         <datatype>varchar</datatype>
@@ -850,6 +866,7 @@
         <datatype>varchar</datatype>
         <columnTitle>Remark</columnTitle>
         <propertyURI>urn:ehr.labkey.org/#Remark</propertyURI>
+        <inputType>textarea</inputType>
       </column>
       <column columnName="description">
         <datatype>varchar</datatype>
@@ -858,6 +875,7 @@
         <shownInUpdateView>false</shownInUpdateView>
         <shownInDetailsView>false</shownInDetailsView>
         <propertyURI>urn:ehr.labkey.org/#Description</propertyURI>
+        <inputType>textarea</inputType>
       </column>
       <column columnName="objectid">
         <datatype>integer</datatype>
@@ -932,6 +950,7 @@
         <datatype>varchar</datatype>
         <columnTitle>Remark</columnTitle>
         <propertyURI>urn:ehr.labkey.org/#Remark</propertyURI>
+        <inputType>textarea</inputType>
       </column>
       <column columnName="description">
         <datatype>varchar</datatype>
@@ -940,6 +959,7 @@
         <shownInUpdateView>false</shownInUpdateView>
         <shownInDetailsView>false</shownInDetailsView>
         <propertyURI>urn:ehr.labkey.org/#Description</propertyURI>
+        <inputType>textarea</inputType>
       </column>
       <column columnName="objectid">
         <datatype>integer</datatype>
@@ -1097,10 +1117,12 @@
         <datatype>varchar</datatype>
         <columnTitle>Remark</columnTitle>
         <propertyURI>urn:ehr.labkey.org/#Remark</propertyURI>
+        <inputType>textarea</inputType>
       </column>
       <column columnName="clinremark">
         <datatype>varchar</datatype>
-        <columnTitle>Clinremark</columnTitle>
+        <columnTitle>Clin Remark</columnTitle>
+        <inputType>textarea</inputType>
       </column>
       <column columnName="proMyelo">
         <datatype>double</datatype>
@@ -1125,6 +1147,7 @@
         <shownInUpdateView>false</shownInUpdateView>
         <shownInDetailsView>false</shownInDetailsView>
         <propertyURI>urn:ehr.labkey.org/#Description</propertyURI>
+        <inputType>textarea</inputType>
       </column>
       <column columnName="objectid">
         <datatype>integer</datatype>
@@ -1172,6 +1195,7 @@
         <datatype>varchar</datatype>
         <columnTitle>Remark</columnTitle>
         <propertyURI>urn:ehr.labkey.org/#Description</propertyURI>
+        <inputType>textarea</inputType>
       </column>
       <column columnName="objectid">
         <datatype>integer</datatype>
@@ -1226,6 +1250,7 @@
         <shownInUpdateView>false</shownInUpdateView>
         <shownInDetailsView>false</shownInDetailsView>
         <propertyURI>urn:ehr.labkey.org/#Description</propertyURI>
+        <inputType>textarea</inputType>
       </column>
       <column columnName="objectid">
         <datatype>integer</datatype>
@@ -1273,6 +1298,7 @@
         <datatype>varchar</datatype>
         <columnTitle>description</columnTitle>
         <propertyURI>urn:ehr.labkey.org/#Description</propertyURI>
+        <inputType>textarea</inputType>
       </column>
       <column columnName="objectid">
         <datatype>integer</datatype>
@@ -1313,6 +1339,7 @@
         <shownInUpdateView>false</shownInUpdateView>
         <shownInDetailsView>false</shownInDetailsView>
         <propertyURI>urn:ehr.labkey.org/#Description</propertyURI>
+        <inputType>textarea</inputType>
       </column>
       <column columnName="objectid">
         <datatype>integer</datatype>
@@ -1369,6 +1396,7 @@
         <shownInUpdateView>false</shownInUpdateView>
         <shownInDetailsView>false</shownInDetailsView>
         <propertyURI>urn:ehr.labkey.org/#Description</propertyURI>
+        <inputType>textarea</inputType>
       </column>
       <column columnName="objectid">
         <datatype>integer</datatype>
@@ -1428,6 +1456,7 @@
         <datatype>varchar</datatype>
         <columnTitle>Remark</columnTitle>
         <propertyURI>urn:ehr.labkey.org/#Remark</propertyURI>
+        <inputType>textarea</inputType>
       </column>
       <column columnName="otherbehavior">
         <datatype>varchar</datatype>
@@ -1445,6 +1474,7 @@
         <shownInUpdateView>false</shownInUpdateView>
         <shownInDetailsView>false</shownInDetailsView>
         <propertyURI>urn:ehr.labkey.org/#Description</propertyURI>
+        <inputType>textarea</inputType>
       </column>
       <column columnName="objectid">
         <datatype>integer</datatype>
@@ -1497,6 +1527,7 @@
         <shownInUpdateView>false</shownInUpdateView>
         <shownInDetailsView>false</shownInDetailsView>
         <propertyURI>urn:ehr.labkey.org/#Description</propertyURI>
+        <inputType>textarea</inputType>
       </column>
       <column columnName="objectid">
         <datatype>integer</datatype>
@@ -1537,10 +1568,12 @@
         <datatype>varchar</datatype>
         <columnTitle>Remark</columnTitle>
         <propertyURI>urn:ehr.labkey.org/#Remark</propertyURI>
+        <inputType>textarea</inputType>
       </column>
       <column columnName="clinremark">
         <datatype>varchar</datatype>
         <columnTitle>Clin Remark</columnTitle>
+        <inputType>textarea</inputType>
       </column>
       <column columnName="description">
         <datatype>varchar</datatype>
@@ -1549,6 +1582,7 @@
         <shownInUpdateView>false</shownInUpdateView>
         <shownInDetailsView>false</shownInDetailsView>
         <propertyURI>urn:ehr.labkey.org/#Description</propertyURI>
+        <inputType>textarea</inputType>
       </column>
       <column columnName="objectid">
         <datatype>integer</datatype>
@@ -1584,6 +1618,7 @@
         <datatype>varchar</datatype>
         <columnTitle>Description</columnTitle>
         <propertyURI>urn:ehr.labkey.org/#Description</propertyURI>
+        <inputType>textarea</inputType>
       </column>
       <column columnName="date_observed">
         <datatype>timestamp</datatype>
@@ -1668,6 +1703,7 @@
         <datatype>varchar</datatype>
         <columnTitle>Remark</columnTitle>
         <propertyURI>urn:ehr.labkey.org/#Description</propertyURI>
+        <inputType>textarea</inputType>
       </column>
       <column columnName="objectid">
         <datatype>integer</datatype>
@@ -1730,6 +1766,7 @@
         <datatype>varchar</datatype>
         <columnTitle>description</columnTitle>
         <propertyURI>urn:ehr.labkey.org/#Description</propertyURI>
+        <inputType>textarea</inputType>
       </column>
       <column columnName="objectid">
         <datatype>integer</datatype>
@@ -1835,6 +1872,7 @@
         <shownInUpdateView>false</shownInUpdateView>
         <shownInDetailsView>false</shownInDetailsView>
         <propertyURI>urn:ehr.labkey.org/#Description</propertyURI>
+        <inputType>textarea</inputType>
       </column>
       <column columnName="objectid">
         <datatype>integer</datatype>
@@ -1894,6 +1932,7 @@
         <shownInUpdateView>false</shownInUpdateView>
         <shownInDetailsView>false</shownInDetailsView>
         <propertyURI>urn:ehr.labkey.org/#Description</propertyURI>
+        <inputType>textarea</inputType>
       </column>
       <column columnName="objectid">
         <datatype>integer</datatype>
@@ -1963,6 +2002,7 @@
         <datatype>varchar</datatype>
         <columnTitle>Remark</columnTitle>
         <propertyURI>urn:ehr.labkey.org/#Remark</propertyURI>
+        <inputType>textarea</inputType>
       </column>
       <column columnName="description">
         <datatype>varchar</datatype>
@@ -1971,6 +2011,7 @@
         <shownInUpdateView>false</shownInUpdateView>
         <shownInDetailsView>false</shownInDetailsView>
         <propertyURI>urn:ehr.labkey.org/#Description</propertyURI>
+        <inputType>textarea</inputType>
       </column>
       <column columnName="objectid">
         <datatype>integer</datatype>
@@ -2063,6 +2104,7 @@
         <datatype>varchar</datatype>
         <columnTitle>Remark</columnTitle>
         <propertyURI>urn:ehr.labkey.org/#Remark</propertyURI>
+        <inputType>textarea</inputType>
       </column>
       <column columnName="userid">
         <datatype>varchar</datatype>
@@ -2075,6 +2117,7 @@
         <shownInUpdateView>false</shownInUpdateView>
         <shownInDetailsView>false</shownInDetailsView>
         <propertyURI>urn:ehr.labkey.org/#Description</propertyURI>
+        <inputType>textarea</inputType>
       </column>
       <column columnName="objectid">
         <datatype>integer</datatype>
@@ -2171,6 +2214,7 @@
       <column columnName="clincomment">
         <datatype>varchar</datatype>
         <columnTitle>Clin Comment</columnTitle>
+        <inputType>textarea</inputType>
       </column>
       <column columnName="description">
         <datatype>varchar</datatype>
@@ -2179,6 +2223,7 @@
         <shownInUpdateView>false</shownInUpdateView>
         <shownInDetailsView>false</shownInDetailsView>
         <propertyURI>urn:ehr.labkey.org/#Description</propertyURI>
+        <inputType>textarea</inputType>
       </column>
       <column columnName="objectid">
         <datatype>integer</datatype>
@@ -2227,6 +2272,7 @@
         <shownInUpdateView>false</shownInUpdateView>
         <shownInDetailsView>false</shownInDetailsView>
         <propertyURI>urn:ehr.labkey.org/#Description</propertyURI>
+        <inputType>textarea</inputType>
       </column>
       <column columnName="objectid">
         <datatype>integer</datatype>

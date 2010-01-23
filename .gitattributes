@@ -66,6 +66,7 @@ ehr/src/org/labkey/ehr/query/EHRQuerySchema.java -text
 ehr/src/org/labkey/ehr/view/begin.jsp -text
 ehr/tools/FixTabs.java -text
 ehr/tools/batchtsv.sh -text
+ehr/tools/fixmeta.js -text
 ehr/tools/notes -text
 ehr/tools/scripts/dataset/arrival.sql -text
 ehr/tools/scripts/dataset/assignment.sql -text
@@ -102,3 +103,4 @@ ehr/tools/scripts/dataset/treatment_order.sql -text
 ehr/tools/scripts/dataset/urine.sql -text
 ehr/tools/scripts/dataset/weight.sql -text
 ehr/tools/scripts/setup/setup.sql -text
+ehr/tools/util.js -text
