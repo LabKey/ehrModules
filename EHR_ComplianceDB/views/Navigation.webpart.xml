@@ -1,0 +1,7 @@
+<webpart xmlns="http://labkey.org/data/xml/webpart">
+   <view name="navigation"/>
+   <locations>
+		<location name="right"/>
+		<location name="menu"/>
+   </locations>
+</webpart>
