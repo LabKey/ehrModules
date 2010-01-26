@@ -1,10 +1,8 @@
 #!/bin/bash
 #generate tsv files
 
-if [ -z "${MYSQLUSER}" ]; then
-    echo "Set MYSQLUSER env variable before calling this script"
-    exit 1
-fi
+MYSQLPWD=sasa
+MYSQLUSER=root
 
 if [ -z "${MYSQLPWD}" ]; then
     echo "Set MYSQLPWD env variable before calling this script"
@@ -22,7 +20,7 @@ do
     fname=${dumpfile##*/}
     basename=${fname%%.*}
     echo $basename
-    ./generatetsv.sh $dumpfile > ../ehr-study/datasets/${basename}.tsv
+    time ./generatetsv.sh $dumpfile > ../ehr-study/datasets/${basename}.tsv
     if [ $? -ne 0 ]; then
         exit 1
     fi

@@ -12,3 +12,19 @@ CREATE FUNCTION FixDate(d DATE)
     STR_TO_DATE(concat_Ws('-', case WHEN YEAR(d)=0 THEN '0001' else cast(YEAR(d) AS CHAR) END,
     CASE WHEN MONTH(d)=0 THEN '01' ELSE cast(MONTH(d) AS CHAR) END ,
     CASE WHEN DAY(d)=0 THEN '01' ELSE CAST(DAY(d) AS CHAR) END), '%Y-%m-%d') END;
+
+/*
+ * Replaces '<cr><lf>' with an escaped linefeed '\n'.
+ * Replaces \\ with \
+ */
+DROP FUNCTION IF EXISTS FixNewlines;
+CREATE FUNCTION FixNewlines(t VARCHAR(4000))
+    RETURNS VARCHAR(4000) DETERMINISTIC
+    RETURN
+    REPLACE(REPLACE(t,
+        '\r\n', '\n'),
+        '\\', '')
+    ;
+
+
+

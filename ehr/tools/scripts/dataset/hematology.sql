@@ -3,7 +3,7 @@
  *
  * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
  */
-SELECT id, FixDate(date) AS Date, (account) AS account, (wbc) AS wbc, (rbc) AS rbc, (hgb) AS hgb, (hct) AS hct, (mcv) AS mcv, (mch) AS mch, (mchc) AS mchc, (rdw) AS rdw, (plt) AS plt, (mpv) AS mpv, (pcv) AS pcv, (n) AS n, (l) AS l, (m) AS m, (e) AS e, (b) AS b, (bands) AS bands, (metamyelo) AS metamyelo, (myelo) AS myelo, (tprotein) AS tprotein, (reticulo) AS reticulo, (remark) AS remark, (clinremark) AS clinremark, (proMyelo) AS proMyelo, (blast) AS blast, (atyLymph) AS atyLymph, (other) AS other, ( CONCAT_WS(', ', 
+SELECT id, FixDate(date) AS Date, (account) AS account, (wbc) AS wbc, (rbc) AS rbc, (hgb) AS hgb, (hct) AS hct, (mcv) AS mcv, (mch) AS mch, (mchc) AS mchc, (rdw) AS rdw, (plt) AS plt, (mpv) AS mpv, (pcv) AS pcv, (n) AS n, (l) AS l, (m) AS m, (e) AS e, (b) AS b, (bands) AS bands, (metamyelo) AS metamyelo, (myelo) AS myelo, (tprotein) AS tprotein, (reticulo) AS reticulo, FixNewlines(remark) AS remark, FixNewlines(clinremark) AS clinremark, (proMyelo) AS proMyelo, (blast) AS blast, (atyLymph) AS atyLymph, (other) AS other, ( CONCAT_WS(', ', 
      CASE WHEN wbc IS NULL  THEN NULL ELSE CONCAT('wbc: ', CAST(wbc AS CHAR))  END, 
      CASE WHEN rbc IS NULL  THEN NULL ELSE CONCAT('rbc: ', CAST(rbc AS CHAR))  END, 
      CASE WHEN hgb IS NULL  THEN NULL ELSE CONCAT('hgb: ', CAST(hgb AS CHAR))  END, 
@@ -25,8 +25,8 @@ SELECT id, FixDate(date) AS Date, (account) AS account, (wbc) AS wbc, (rbc) AS r
      CASE WHEN myelo IS NULL  THEN NULL ELSE CONCAT('myelo: ', CAST(myelo AS CHAR))  END, 
      CASE WHEN tprotein IS NULL  THEN NULL ELSE CONCAT('tprotein: ', CAST(tprotein AS CHAR))  END, 
      CASE WHEN reticulo IS NULL  THEN NULL ELSE CONCAT('reticulo: ', CAST(reticulo AS CHAR))  END, 
-     CASE WHEN remark IS NULL  OR remark=''  THEN NULL ELSE CONCAT('remark: ', remark)  END, 
-     CASE WHEN clinremark IS NULL  OR clinremark=''  THEN NULL ELSE CONCAT('clinremark: ', clinremark)  END, 
+     CASE WHEN remark IS NULL  OR remark=''  THEN NULL ELSE CONCAT('remark: ', FixNewlines(remark))  END, 
+     CASE WHEN clinremark IS NULL  OR clinremark=''  THEN NULL ELSE CONCAT('clinremark: ', FixNewlines(clinremark))  END, 
      CASE WHEN proMyelo IS NULL  THEN NULL ELSE CONCAT('proMyelo: ', CAST(proMyelo AS CHAR))  END, 
      CASE WHEN blast IS NULL  THEN NULL ELSE CONCAT('blast: ', CAST(blast AS CHAR))  END, 
      CASE WHEN atyLymph IS NULL  THEN NULL ELSE CONCAT('atyLymph: ', CAST(atyLymph AS CHAR))  END, 
