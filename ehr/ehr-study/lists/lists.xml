@@ -100,4 +100,114 @@
     </columns>
     <pkColumnName>code</pkColumnName>
   </table>
+  <table tableName="sex" tableDbType="TABLE">
+    <columns>
+      <column columnName="code">
+        <datatype>varchar</datatype>
+        <columnTitle>Code</columnTitle>
+        <nullable>false</nullable>
+        <isKeyField>true</isKeyField>
+      </column>
+      <column columnName="meaning">
+        <datatype>varchar</datatype>
+        <columnTitle>Meaning</columnTitle>
+      </column>
+    </columns>
+    <pkColumnName>code</pkColumnName>
+  </table>
+  <table tableName="hold" tableDbType="TABLE">
+    <columns>
+      <column columnName="code">
+        <datatype>varchar</datatype>
+        <columnTitle>Code</columnTitle>
+        <nullable>false</nullable>
+        <isKeyField>true</isKeyField>
+      </column>
+      <column columnName="meaning">
+        <datatype>varchar</datatype>
+        <columnTitle>Meaning</columnTitle>
+      </column>
+    </columns>
+    <pkColumnName>code</pkColumnName>
+  </table>
+  <table tableName="condition" tableDbType="TABLE">
+    <columns>
+      <column columnName="code">
+        <datatype>varchar</datatype>
+        <columnTitle>Code</columnTitle>
+        <nullable>false</nullable>
+        <isKeyField>true</isKeyField>
+      </column>
+      <column columnName="meaning">
+        <datatype>varchar</datatype>
+        <columnTitle>Meaning</columnTitle>
+      </column>
+    </columns>
+    <pkColumnName>code</pkColumnName>
+  </table>
+  <table tableName="origin" tableDbType="TABLE">
+    <columns>
+      <column columnName="code">
+        <datatype>varchar</datatype>
+        <columnTitle>Code</columnTitle>
+        <nullable>false</nullable>
+        <isKeyField>true</isKeyField>
+      </column>
+      <column columnName="meaning">
+        <datatype>varchar</datatype>
+        <columnTitle>Meaning</columnTitle>
+      </column>
+    </columns>
+    <pkColumnName>code</pkColumnName>
+  </table>
+  <table tableName="avail" tableDbType="TABLE">
+    <tableTitle>availability</tableTitle>
+    <columns>
+      <column columnName="code">
+        <datatype>varchar</datatype>
+        <columnTitle>Code</columnTitle>
+        <nullable>false</nullable>
+        <isKeyField>true</isKeyField>
+      </column>
+      <column columnName="meaning">
+        <datatype>varchar</datatype>
+        <columnTitle>Meaning</columnTitle>
+      </column>
+    </columns>
+    <pkColumnName>code</pkColumnName>
+  </table>
+  <table tableName="status" tableDbType="TABLE">
+    <columns>
+      <column columnName="code">
+        <datatype>varchar</datatype>
+        <columnTitle>Code</columnTitle>
+        <nullable>false</nullable>
+        <isKeyField>true</isKeyField>
+      </column>
+      <column columnName="meaning">
+        <datatype>varchar</datatype>
+        <columnTitle>Meaning</columnTitle>
+      </column>
+    </columns>
+    <pkColumnName>code</pkColumnName>
+  </table>
+  <table tableName="species" tableDbType="TABLE">
+    <columns>
+      <column columnName="code">
+        <datatype>varchar</datatype>
+        <columnTitle>Code</columnTitle>
+        <nullable>false</nullable>
+        <isKeyField>true</isKeyField>
+      </column>
+      <column columnName="scientific">
+        <datatype>varchar</datatype>
+        <columnTitle>Scientific Name</columnTitle>
+      </column>
+      <column columnName="common">
+        <datatype>varchar</datatype>
+        <columnTitle>Common Name</columnTitle>
+      </column>
+    </columns>
+    <pkColumnName>code</pkColumnName>
+  </table>
 </tables>

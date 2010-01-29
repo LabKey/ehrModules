@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <datasets metaDataFile="datasets_metadata.xml" xmlns="http://labkey.org/study/xml">
-    <datasets>
+  <datasets>
     <dataset name='arrival' id='1000' />
     <dataset name='assignment' id='1001' />
     <dataset name='bacteriology' id='1002' />
@@ -39,3 +39,4 @@
     <dataset name='weight' id='1037' />
   </datasets>
 </datasets>
+

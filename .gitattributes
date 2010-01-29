@@ -42,7 +42,6 @@ ehr/ehr-study/datasets/parares.tsv -text
 ehr/ehr-study/datasets/parares.txt -text
 ehr/ehr-study/datasets/parasitology.tsv -text
 ehr/ehr-study/datasets/problem.tsv -text
-ehr/ehr-study/datasets/schema.tsv -text
 ehr/ehr-study/datasets/surgery.tsv -text
 ehr/ehr-study/datasets/surgfluid.tsv -text
 ehr/ehr-study/datasets/surghead.tsv -text
@@ -54,10 +53,17 @@ ehr/ehr-study/datasets/treatment_order.tsv -text
 ehr/ehr-study/datasets/treatments.tsv -text
 ehr/ehr-study/datasets/urine.tsv -text
 ehr/ehr-study/datasets/weight.tsv -text
+ehr/ehr-study/lists/avail.tsv -text
+ehr/ehr-study/lists/condition.tsv -text
+ehr/ehr-study/lists/hold.tsv -text
 ehr/ehr-study/lists/lists.xml -text
+ehr/ehr-study/lists/origin.tsv -text
 ehr/ehr-study/lists/project.tsv -text
 ehr/ehr-study/lists/reports.tsv -text
+ehr/ehr-study/lists/sex.tsv -text
 ehr/ehr-study/lists/snomed.tsv -text
+ehr/ehr-study/lists/species.tsv -text
+ehr/ehr-study/lists/status.tsv -text
 ehr/ehr-study/reports/Weight[!!-~]Graph.db_2.report.xml -text
 ehr/ehr-study/study.xml -text
 ehr/module.properties -text

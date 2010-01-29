@@ -1,0 +1,6 @@
+code	meaning
+alive	alive
+d-expr	died experimentally (e.g., sacrifice)
+d-othr	died for other reason (e.g., clinical death)
+d-quar	died in quarantine
+shippd	shipped

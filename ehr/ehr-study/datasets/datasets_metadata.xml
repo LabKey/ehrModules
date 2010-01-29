@@ -22,6 +22,7 @@
       <column columnName="source">
         <datatype>varchar</datatype>
         <columnTitle>Source</columnTitle>
+        <!-- Note: sometimes this is a lookup to lists.origin -->
       </column>
       <column columnName="remark">
         <datatype>varchar</datatype>
@@ -66,7 +67,6 @@
         <datatype>varchar</datatype>
         <columnTitle>Project</columnTitle>
         <fk>
-          <fkFolderPath>/EHRTest/Import Test</fkFolderPath>
           <fkDbSchema>lists</fkDbSchema>
           <fkTable>project</fkTable>
           <fkColumnName>pno</fkColumnName>
@@ -118,7 +118,6 @@
         <datatype>varchar</datatype>
         <columnTitle>Source SNOMED</columnTitle>
         <fk>
-          <fkFolderPath>/EHRTest/Import Test</fkFolderPath>
           <fkDbSchema>lists</fkDbSchema>
           <fkTable>snomed</fkTable>
           <fkColumnName>code</fkColumnName>
@@ -128,7 +127,6 @@
         <datatype>varchar</datatype>
         <columnTitle>Result SNOMED</columnTitle>
         <fk>
-          <fkFolderPath>/EHRTest/Import Test</fkFolderPath>
           <fkDbSchema>lists</fkDbSchema>
           <fkTable>snomed</fkTable>
           <fkColumnName>code</fkColumnName>
@@ -144,7 +142,6 @@
         <datatype>varchar</datatype>
         <columnTitle>Antibiotic SNOMED</columnTitle>
         <fk>
-          <fkFolderPath>/EHRTest/Import Test</fkFolderPath>
           <fkDbSchema>lists</fkDbSchema>
           <fkTable>snomed</fkTable>
           <fkColumnName>code</fkColumnName>
@@ -190,7 +187,6 @@
         <datatype>varchar</datatype>
         <columnTitle>Project</columnTitle>
         <fk>
-          <fkFolderPath>/EHRTest/Import Test</fkFolderPath>
           <fkDbSchema>lists</fkDbSchema>
           <fkTable>project</fkTable>
           <fkColumnName>pno</fkColumnName>
@@ -293,7 +289,6 @@
         <datatype>varchar</datatype>
         <columnTitle>SNOMED</columnTitle>
         <fk>
-          <fkFolderPath>/EHRTest/Import Test</fkFolderPath>
           <fkDbSchema>lists</fkDbSchema>
           <fkTable>snomed</fkTable>
           <fkColumnName>code</fkColumnName>
@@ -344,6 +339,11 @@
       <column columnName="sex">
         <datatype>varchar</datatype>
         <columnTitle>Sex</columnTitle>
+        <fk>
+          <fkDbSchema>lists</fkDbSchema>
+          <fkTable>sex</fkTable>
+          <fkColumnName>Code</fkColumnName>
+        </fk>
       </column>
       <column columnName="weight">
         <datatype>double</datatype>
@@ -377,10 +377,20 @@
       <column columnName="cond">
         <datatype>varchar</datatype>
         <columnTitle>Condition</columnTitle>
+        <fk>
+          <fkDbSchema>lists</fkDbSchema>
+          <fkTable>condition</fkTable>
+          <fkColumnName>Code</fkColumnName>
+        </fk>
       </column>
       <column columnName="origin">
         <datatype>varchar</datatype>
         <columnTitle>Origin</columnTitle>
+        <fk>
+          <fkDbSchema>lists</fkDbSchema>
+          <fkTable>origin</fkTable>
+          <fkColumnName>Code</fkColumnName>
+        </fk>
       </column>
       <column columnName="conception">
         <datatype>timestamp</datatype>
@@ -453,7 +463,6 @@
         <datatype>varchar</datatype>
         <columnTitle>Project</columnTitle>
         <fk>
-          <fkFolderPath>/EHRTest/Import Test</fkFolderPath>
           <fkDbSchema>lists</fkDbSchema>
           <fkTable>project</fkTable>
           <fkColumnName>pno</fkColumnName>
@@ -739,18 +748,38 @@
       <column columnName="sex">
         <datatype>varchar</datatype>
         <columnTitle>sex</columnTitle>
+        <fk>
+          <fkDbSchema>lists</fkDbSchema>
+          <fkTable>sex</fkTable>
+          <fkColumnName>Code</fkColumnName>
+        </fk>
       </column>
       <column columnName="status">
         <datatype>varchar</datatype>
         <columnTitle>status</columnTitle>
+        <fk>
+          <fkDbSchema>lists</fkDbSchema>
+          <fkTable>status</fkTable>
+          <fkColumnName>Code</fkColumnName>
+        </fk>
       </column>
       <column columnName="avail">
         <datatype>varchar</datatype>
-        <columnTitle>avail</columnTitle>
+        <columnTitle>availability</columnTitle>
+        <fk>
+          <fkDbSchema>lists</fkDbSchema>
+          <fkTable>avail</fkTable>
+          <fkColumnName>Code</fkColumnName>
+        </fk>
       </column>
       <column columnName="hold">
         <datatype>varchar</datatype>
         <columnTitle>hold</columnTitle>
+        <fk>
+          <fkDbSchema>lists</fkDbSchema>
+          <fkTable>hold</fkTable>
+          <fkColumnName>Code</fkColumnName>
+        </fk>
       </column>
       <column columnName="dam">
         <datatype>varchar</datatype>
@@ -763,6 +792,11 @@
       <column columnName="origin">
         <datatype>varchar</datatype>
         <columnTitle>origin</columnTitle>
+        <fk>
+          <fkDbSchema>lists</fkDbSchema>
+          <fkTable>origin</fkTable>
+          <fkColumnName>Code</fkColumnName>
+        </fk>
       </column>
       <column columnName="birth">
         <datatype>timestamp</datatype>
@@ -907,7 +941,6 @@
         <datatype>varchar</datatype>
         <columnTitle>Project</columnTitle>
         <fk>
-          <fkFolderPath>/EHRTest/Import Test</fkFolderPath>
           <fkDbSchema>lists</fkDbSchema>
           <fkTable>project</fkTable>
           <fkColumnName>pno</fkColumnName>
@@ -923,7 +956,6 @@
         <datatype>varchar</datatype>
         <columnTitle>SNOMED</columnTitle>
         <fk>
-          <fkFolderPath>/EHRTest/Import Test</fkFolderPath>
           <fkDbSchema>lists</fkDbSchema>
           <fkTable>snomed</fkTable>
           <fkColumnName>code</fkColumnName>
@@ -1179,7 +1211,6 @@
         <datatype>varchar</datatype>
         <columnTitle>Project</columnTitle>
         <fk>
-          <fkFolderPath>/EHRTest/Import Test</fkFolderPath>
           <fkDbSchema>lists</fkDbSchema>
           <fkTable>project</fkTable>
           <fkColumnName>pno</fkColumnName>
@@ -1383,7 +1414,6 @@
         <datatype>varchar</datatype>
         <columnTitle>SNOMED</columnTitle>
         <fk>
-          <fkFolderPath>/EHRTest/Import Test</fkFolderPath>
           <fkDbSchema>lists</fkDbSchema>
           <fkTable>snomed</fkTable>
           <fkColumnName>code</fkColumnName>
@@ -1514,7 +1544,6 @@
         <datatype>varchar</datatype>
         <columnTitle>SNOMED</columnTitle>
         <fk>
-          <fkFolderPath>/EHRTest/Import Test</fkFolderPath>
           <fkDbSchema>lists</fkDbSchema>
           <fkTable>snomed</fkTable>
           <fkColumnName>code</fkColumnName>
@@ -1632,7 +1661,6 @@
         <datatype>varchar</datatype>
         <columnTitle>SNOMED</columnTitle>
         <fk>
-          <fkFolderPath>/EHRTest/Import Test</fkFolderPath>
           <fkDbSchema>lists</fkDbSchema>
           <fkTable>snomed</fkTable>
           <fkColumnName>code</fkColumnName>
@@ -1804,7 +1832,6 @@
         <datatype>varchar</datatype>
         <columnTitle>SNOMED</columnTitle>
         <fk>
-          <fkFolderPath>/EHRTest/Import Test</fkFolderPath>
           <fkDbSchema>lists</fkDbSchema>
           <fkTable>snomed</fkTable>
           <fkColumnName>code</fkColumnName>
@@ -1841,7 +1868,6 @@
         <datatype>varchar</datatype>
         <columnTitle>Project</columnTitle>
         <fk>
-          <fkFolderPath>/EHRTest/Import Test</fkFolderPath>
           <fkDbSchema>lists</fkDbSchema>
           <fkTable>project</fkTable>
           <fkColumnName>pno</fkColumnName>
@@ -1964,6 +1990,11 @@
       <column columnName="sex">
         <datatype>varchar</datatype>
         <columnTitle>Sex</columnTitle>
+        <fk>
+          <fkDbSchema>lists</fkDbSchema>
+          <fkTable>sex</fkTable>
+          <fkColumnName>Code</fkColumnName>
+        </fk>
       </column>
       <column columnName="time">
         <datatype>timestamp</datatype>
@@ -2043,7 +2074,6 @@
         <datatype>varchar</datatype>
         <columnTitle>Project</columnTitle>
         <fk>
-          <fkFolderPath>/EHRTest/Import Test</fkFolderPath>
           <fkDbSchema>lists</fkDbSchema>
           <fkTable>project</fkTable>
           <fkColumnName>pno</fkColumnName>
@@ -2054,7 +2084,6 @@
         <datatype>varchar</datatype>
         <columnTitle>SNOMED</columnTitle>
         <fk>
-          <fkFolderPath>/EHRTest/Import Test</fkFolderPath>
           <fkDbSchema>lists</fkDbSchema>
           <fkTable>snomed</fkTable>
           <fkColumnName>code</fkColumnName>
@@ -2211,9 +2240,10 @@
         <datatype>varchar</datatype>
         <columnTitle>Microscopic</columnTitle>
       </column>
-      <column columnName="clincomment">
+      <column columnName="remark">
         <datatype>varchar</datatype>
-        <columnTitle>Clin Comment</columnTitle>
+        <columnTitle>Remark</columnTitle>
+        <propertyURI>urn:ehr.labkey.org/#Remark</propertyURI>
         <inputType>textarea</inputType>
       </column>
       <column columnName="description">
