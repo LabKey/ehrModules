@@ -1,9 +1,6 @@
-SELECT
-  e.LastName,
+SELECT e.key,
+        "Pending Requirements" AS Pending
 
 
-  --we calculate time since most recent TB date
-  
-
-FROM lists.employees e
+  FROM lists.employees e
 

@@ -2,9 +2,10 @@
 EHR_ComplianceDB/EHR_ComplianceDB.iml -text
 EHR_ComplianceDB/queries/lists/ComplianceRecentTests.sql -text
 EHR_ComplianceDB/queries/lists/EmployeesPlus.sql -text
-EHR_ComplianceDB/views/Navigation.webpart.xml -text
+EHR_ComplianceDB/views/Compliance[!!-~]Navigation.webpart.xml -text
+EHR_ComplianceDB/views/My_Requirements.html -text
+EHR_ComplianceDB/views/Navigation.html -text
 EHR_ComplianceDB/views/SOP_submission.html -text
-EHR_ComplianceDB/views/SOP_summary.html -text
 EHR_ComplianceDB/views/begin.html -text
 EHR_ComplianceDB/views/navigation.html -text
 ehr/build.xml -text
