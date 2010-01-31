@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="module_ehr_compliancedb" default="compile.module.ehr_compliancedb">
+  <dirname property="module.ehr_compliancedb.basedir" file="${ant.file.module_ehr_compliancedb}"/>
+  
+  <property name="module.jdk.home.ehr_compliancedb" value="${project.jdk.home}"/>
+  <property name="module.jdk.bin.ehr_compliancedb" value="${project.jdk.bin}"/>
+  <property name="module.jdk.classpath.ehr_compliancedb" value="${project.jdk.classpath}"/>
+  
+  <property name="compiler.args.ehr_compliancedb" value="${compiler.args}"/>
+  
+  <property name="ehr_compliancedb.output.dir" value="C:/Projects/Labkey/intellijBuild/production/EHR_ComplianceDB"/>
+  <property name="ehr_compliancedb.testoutput.dir" value="C:/Projects/Labkey/intellijBuild/test/EHR_ComplianceDB"/>
+  
+  <path id="ehr_compliancedb.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="ehr_compliancedb.module.classpath">
+    <path refid="${module.jdk.classpath.ehr_compliancedb}"/>
+  </path>
+  
+  <path id="ehr_compliancedb.runtime.module.classpath">
+    <pathelement location="${ehr_compliancedb.output.dir}"/>
+    <pathelement location="${ehr_compliancedb.testoutput.dir}"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.ehr_compliancedb">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.ehr_compliancedb">
+    <patternset refid="compiler.excluded"/>
+    <patternset refid="excluded.from.module.ehr_compliancedb"/>
+  </patternset>
+  
+  
+  <target name="compile.module.ehr_compliancedb" depends="compile.module.ehr_compliancedb.production,compile.module.ehr_compliancedb.tests" description="Compile module EHR_ComplianceDB"/>
+  
+  <target name="compile.module.ehr_compliancedb.production" description="Compile module EHR_ComplianceDB; production classes"/>
+  
+  <target name="compile.module.ehr_compliancedb.tests" depends="compile.module.ehr_compliancedb.production" description="compile module EHR_ComplianceDB; test classes" unless="skip.tests"/>
+  
+  <target name="clean.module.ehr_compliancedb" description="cleanup module">
+    <delete dir="${ehr_compliancedb.output.dir}"/>
+    <delete dir="${ehr_compliancedb.testoutput.dir}"/>
+  </target>
+</project>
