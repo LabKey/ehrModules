@@ -49,7 +49,7 @@ public class EHRQuerySchema extends UserSchema
 
     public EHRQuerySchema(Container c, User user)
     {
-        super(SCHEMA_NAME, SCHEMA_DESCRIPTION, user, c, EHRSchema.getInstance().getSchema());
+        super(SCHEMA_NAME, SCHEMA_DESCRIPTION, user, c, DbSchema.get("study"));
     }
 
     protected TableInfo createTable(String name)
