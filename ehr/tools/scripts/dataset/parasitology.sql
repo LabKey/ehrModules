@@ -3,5 +3,5 @@
  *
  * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
  */
-SELECT id, FixDate(date) AS Date, (room) AS room, (account) AS account, FixNewlines(remark) AS remark, FixNewlines(clinremark) AS clinremark, 
-FixNewlines(remark) AS Description FROM parahead
+SELECT id, FixDate(date) AS Date, (room) AS room, (account) AS account, FixNewlines(remark) AS remark, FixNewlines(clinremark) AS clinremark
+FROM parahead

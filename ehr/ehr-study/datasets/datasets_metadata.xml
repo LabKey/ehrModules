@@ -198,10 +198,10 @@
         <columnTitle>Time</columnTitle>
         <formatString>H:mm</formatString>
       </column>
-      <column columnName="description">
+      <column columnName="Remark">
         <datatype>varchar</datatype>
         <columnTitle>Remark</columnTitle>
-        <propertyURI>urn:ehr.labkey.org/#Description</propertyURI>
+        <propertyURI>urn:ehr.labkey.org/#Remark</propertyURI>
         <inputType>textarea</inputType>
       </column>
       <column columnName="objectid">
@@ -243,12 +243,6 @@
         <datatype>varchar</datatype>
         <columnTitle>Remark</columnTitle>
         <propertyURI>urn:ehr.labkey.org/#Remark</propertyURI>
-        <inputType>textarea</inputType>
-      </column>
-      <column columnName="description">
-        <datatype>varchar</datatype>
-        <columnTitle>Description</columnTitle>
-        <propertyURI>urn:ehr.labkey.org/#Description</propertyURI>
         <inputType>textarea</inputType>
       </column>
       <column columnName="objectid">
@@ -1222,10 +1216,10 @@
         <columnTitle>Time</columnTitle>
         <formatString>H:mm</formatString>
       </column>
-      <column columnName="description">
+      <column columnName="remark">
         <datatype>varchar</datatype>
         <columnTitle>Remark</columnTitle>
-        <propertyURI>urn:ehr.labkey.org/#Description</propertyURI>
+        <propertyURI>urn:ehr.labkey.org/#Remark</propertyURI>
         <inputType>textarea</inputType>
       </column>
       <column columnName="objectid">
@@ -1602,15 +1596,6 @@
       <column columnName="clinremark">
         <datatype>varchar</datatype>
         <columnTitle>Clin Remark</columnTitle>
-        <inputType>textarea</inputType>
-      </column>
-      <column columnName="description">
-        <datatype>varchar</datatype>
-        <columnTitle>Description</columnTitle>
-        <shownInInsertView>false</shownInInsertView>
-        <shownInUpdateView>false</shownInUpdateView>
-        <shownInDetailsView>false</shownInDetailsView>
-        <propertyURI>urn:ehr.labkey.org/#Description</propertyURI>
         <inputType>textarea</inputType>
       </column>
       <column columnName="objectid">

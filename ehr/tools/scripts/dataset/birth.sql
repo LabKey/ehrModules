@@ -14,5 +14,5 @@ SELECT id, FixDate(date) AS Date, (sex) AS sex, (weight) AS weight, (wdate) AS w
      CASE WHEN cond IS NULL  OR cond=''  THEN NULL ELSE CONCAT('cond: ', cond)  END, 
      CASE WHEN origin IS NULL  OR origin=''  THEN NULL ELSE CONCAT('origin: ', origin)  END, 
      CASE WHEN conception IS NULL  THEN NULL ELSE CONCAT('conception: ', CAST(conception AS CHAR))  END, 
-     CASE WHEN type IS NULL  OR type=''  THEN NULL ELSE CONCAT('type: ', type)  END, 
-     CASE WHEN remark IS NULL  OR remark=''  THEN NULL ELSE CONCAT('remark: ', FixNewlines(remark))  END) ) AS Description FROM birth
+     CASE WHEN type IS NULL  OR type=''  THEN NULL ELSE CONCAT('type: ', type)  END
+     ) ) AS Description FROM birth

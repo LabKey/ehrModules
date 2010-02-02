@@ -25,7 +25,6 @@ SELECT id, FixDate(date) AS Date, (account) AS account, (wbc) AS wbc, (rbc) AS r
      CASE WHEN myelo IS NULL  THEN NULL ELSE CONCAT('myelo: ', CAST(myelo AS CHAR))  END, 
      CASE WHEN tprotein IS NULL  THEN NULL ELSE CONCAT('tprotein: ', CAST(tprotein AS CHAR))  END, 
      CASE WHEN reticulo IS NULL  THEN NULL ELSE CONCAT('reticulo: ', CAST(reticulo AS CHAR))  END, 
-     CASE WHEN remark IS NULL  OR remark=''  THEN NULL ELSE CONCAT('remark: ', FixNewlines(remark))  END, 
      CASE WHEN clinremark IS NULL  OR clinremark=''  THEN NULL ELSE CONCAT('clinremark: ', FixNewlines(clinremark))  END, 
      CASE WHEN proMyelo IS NULL  THEN NULL ELSE CONCAT('proMyelo: ', CAST(proMyelo AS CHAR))  END, 
      CASE WHEN blast IS NULL  THEN NULL ELSE CONCAT('blast: ', CAST(blast AS CHAR))  END, 

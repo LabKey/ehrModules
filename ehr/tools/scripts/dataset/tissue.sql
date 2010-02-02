@@ -11,5 +11,5 @@ SELECT id, FixDate(date) AS Date, (sex) AS sex, Timestamp(Date('1970-01-01'), ti
      CASE WHEN source IS NULL  OR source=''  THEN NULL ELSE CONCAT('source: ', source)  END, 
      CASE WHEN dest IS NULL  OR dest=''  THEN NULL ELSE CONCAT('dest: ', dest)  END, 
      CASE WHEN recip IS NULL  OR recip=''  THEN NULL ELSE CONCAT('recip: ', recip)  END, 
-     CASE WHEN affil IS NULL  OR affil=''  THEN NULL ELSE CONCAT('affil: ', affil)  END, 
-     CASE WHEN remark IS NULL  OR remark=''  THEN NULL ELSE CONCAT('remark: ', FixNewlines(remark))  END) ) AS Description FROM tissue
+     CASE WHEN affil IS NULL  OR affil=''  THEN NULL ELSE CONCAT('affil: ', affil)  END
+     ) ) AS Description FROM tissue

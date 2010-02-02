@@ -5,7 +5,6 @@
  */
 SELECT id, FixDate(date) AS Date, (account) AS account, ( CONCAT_WS(', ', 
      CASE WHEN clinremark IS NULL  OR clinremark=''  THEN NULL ELSE CONCAT('clinremark: ', FixNewlines(clinremark))  END,
-     CASE WHEN remark IS NULL  OR remark=''  THEN NULL ELSE CONCAT('remark: ', FixNewlines(remark))  END ,
      CASE WHEN glucose IS NULL  THEN NULL ELSE CONCAT('glucose: ', CAST(glucose AS CHAR))  END, 
      CASE WHEN bun IS NULL  THEN NULL ELSE CONCAT('bun: ', CAST(bun AS CHAR))  END, 
      CASE WHEN creatinine IS NULL  THEN NULL ELSE CONCAT('creatinine: ', CAST(creatinine AS CHAR))  END, 

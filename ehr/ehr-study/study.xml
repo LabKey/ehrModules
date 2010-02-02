@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<study label="Primate Electronic Health Record" timepointType="ABSOLUTE_DATE" startDate="1990-01-01-08:00" securityType="BASIC_WRITE" xmlns="http://labkey.org/study/xml">
+<study label="Primate Electronic Health Record" timepointType="ABSOLUTE_DATE" startDate="1990-01-01-08:00" securityType="BASIC_WRITE" subjectNounSingular="Animal" subjectNounPlural="Animals" subjectColumnName="Id" xmlns="http://labkey.org/study/xml">
   <lists dir="lists"/>
   <reports dir="reports"/>
   <qcStates showPrivateDataByDefault="false"/>

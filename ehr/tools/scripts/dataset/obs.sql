@@ -11,5 +11,4 @@ SELECT id, FixDate(date) AS Date, (userid) AS userid, (feces) AS feces, (menses)
      CASE WHEN breeding IS NULL  OR breeding=''  THEN NULL ELSE CONCAT('breeding: ', breeding)  END, 
      CASE WHEN other=''  THEN NULL ELSE CONCAT('other: ', other)  END, 
      CASE WHEN tlocation IS NULL  OR tlocation=''  THEN NULL ELSE CONCAT('tlocation: ', tlocation)  END, 
-     CASE WHEN remark IS NULL  OR remark=''  THEN NULL ELSE CONCAT('remark: ', FixNewlines(remark))  END, 
      CASE WHEN otherbehavior IS NULL  OR otherbehavior=''  THEN NULL ELSE CONCAT('otherbehavior: ', otherbehavior)  END) ) AS Description FROM obs

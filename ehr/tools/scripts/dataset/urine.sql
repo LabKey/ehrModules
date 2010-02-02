@@ -18,5 +18,5 @@ SELECT id, FixDate(date) AS Date, (account) AS account, (quantity) AS quantity, 
      CASE WHEN nitrite IS NULL  OR nitrite=''  THEN NULL ELSE CONCAT('nitrite: ', nitrite)  END, 
      CASE WHEN leucocytes IS NULL  OR leucocytes=''  THEN NULL ELSE CONCAT('leucocytes: ', leucocytes)  END, 
      CASE WHEN appearance IS NULL  OR appearance=''  THEN NULL ELSE CONCAT('appearance: ', appearance)  END, 
-     CASE WHEN microscopic IS NULL  OR microscopic=''  THEN NULL ELSE CONCAT('microscopic: ', microscopic)  END, 
-     CASE WHEN clincomment IS NULL  OR clincomment=''  THEN NULL ELSE CONCAT('remark: ', FixNewlines(clincomment))  END) ) AS Description FROM urine
+     CASE WHEN microscopic IS NULL  OR microscopic=''  THEN NULL ELSE CONCAT('microscopic: ', microscopic)  END
+     ) ) AS Description FROM urine
