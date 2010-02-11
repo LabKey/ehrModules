@@ -1,11 +1,13 @@
 package org.labkey.ehr.query;
 
-import org.labkey.api.query.FilteredTable;
-import org.labkey.api.query.ExprColumn;
+import org.labkey.api.data.ColumnInfo;
+import org.labkey.api.query.*;
 import org.labkey.api.data.TableInfo;
 import org.labkey.api.data.SQLFragment;
 import org.labkey.api.study.DataSet;
 import org.labkey.api.exp.OntologyManager;
+import org.labkey.api.study.Study;
+import org.labkey.api.view.ActionURL;
 
 import java.sql.Types;
 import java.util.Map;
@@ -30,13 +32,30 @@ import java.util.Map;
  */
 public class DepivotedStudyTable extends FilteredTable
 {
-    public DepivotedStudyTable(DataSet dataset)
+    public DepivotedStudyTable(final EHRQuerySchema schema, DataSet dataset)
     {
         super(OntologyManager.getTinfoObjectProperty(), dataset.getContainer());
 
-        addColumn(new StudyDataColumn(this, dataset, "Subject", "ParticipantId", Types.VARCHAR, "Subject ID for this data value"));
+        Study study = dataset.getStudy();
+
+        ColumnInfo participantIdColumn = new StudyDataColumn(this, dataset, study.getSubjectColumnName(), "ParticipantId", Types.VARCHAR, study.getSubjectColumnName() + " for this data value");
+        participantIdColumn.setFk(new TitleForeignKey(getParticipantURL(), null, null, "participantId"));
+        addColumn(participantIdColumn);
+
         addColumn(new StudyDataColumn(this, dataset, "Date", "_visitdate", Types.DATE, "Collection date for this data value"));
-        addColumn(new StudyDataColumn(this, dataset, "DatasetId", "DatasetId", Types.INTEGER, "Dataset ID for this data value"));
+
+        ColumnInfo datasetColumn = new StudyDataColumn(this, dataset, "Dataset", "DatasetId", Types.INTEGER, "Dataset ID for this data value");
+        datasetColumn.setFk(new LookupForeignKey(getDataSetURL(), "datasetId", "datasetId", "Name") {
+            public TableInfo getLookupTableInfo()
+            {
+                UserSchema studySchema = QueryService.get().getUserSchema(schema.getUser(), getContainer(), "study");
+                if (studySchema != null)
+                    return studySchema.getTable("DataSets");
+                return null;
+            }
+        });
+        addColumn(datasetColumn);
+
         addColumn(new PropertyDescriptorColumn(this, "PropertyName", "name", Types.VARCHAR, "Data property name"));
         addColumn(new PropertyDescriptorColumn(this, "PropertyLabel", "label", Types.VARCHAR, "Data property label"));
         addColumn(new PropertyDescriptorColumn(this, "PropertyDescription", "description", Types.VARCHAR, "Data property description"));
@@ -53,7 +72,17 @@ public class DepivotedStudyTable extends FilteredTable
         addWrapColumn(_rootTable.getColumn("DateTimeValue"));
         addWrapColumn(_rootTable.getColumn("StringValue"));
         addWrapColumn(_rootTable.getColumn("MVIndicator"));
-       }
+    }
+
+    private ActionURL getParticipantURL()
+    {
+        return new ActionURL("study", "participant", getContainer());
+    }
+
+    private ActionURL getDataSetURL()
+    {
+        return new ActionURL("study", "dataset", getContainer());
+    }
 
     private class StudyDataColumn extends ExprColumn
     {

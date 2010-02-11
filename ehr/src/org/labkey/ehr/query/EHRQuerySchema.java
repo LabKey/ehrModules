@@ -68,7 +68,7 @@ public class EHRQuerySchema extends UserSchema
                     if (dataset.getLabel().equalsIgnoreCase(name))
                         return dataset.getTableInfo(getUser());
                     else if (getDepivotName(dataset.getLabel()).equalsIgnoreCase(name))
-                        return new DepivotedStudyTable(dataset);
+                        return new DepivotedStudyTable(this, dataset);
                 }
             }
         }
@@ -118,85 +118,4 @@ public class EHRQuerySchema extends UserSchema
         return tableNames;
     }
 
-    private static class WrappedTable extends FilteredTable
-    {
-        private class PassThroughColumn extends AliasedColumn
-        {
-            public PassThroughColumn(TableInfo parent, String name, ColumnInfo column)
-            {
-                super(parent, name, column);
-            }
-
-            @Override
-            public SQLFragment getValueSql()
-            {
-                return getColumn().getValueSql();
-            }
-
-            @Override
-            public SQLFragment getValueSql(String tableAlias)
-            {
-                return getColumn().getValueSql(tableAlias);
-            }
-
-            @Override
-            public void declareJoins(String parentAlias, Map<String, SQLFragment> map)
-            {
-                getColumn().declareJoins(parentAlias, map);
-            }
-/*
-            @Override
-            public ForeignKey getFk()
-            {
-                final ForeignKey fk = getColumn().getFk();
-                if (fk == null)
-                    return null;
-
-                return new AbstractForeignKey(fk.getLookupTableName(), fk.getLookupColumnName(), EHRQuerySchema.SCHEMA_NAME)
-                {
-                    public ColumnInfo createLookupColumn(ColumnInfo parent, String displayField)
-                    {
-                        return fk.createLookupColumn(parent, displayField);
-                    }
-
-                    public TableInfo getLookupTableInfo()
-                    {
-                        TableInfo tinfo = fk.getLookupTableInfo();
-                        if ("lists".equals(tinfo.getSchema().getName()) || "study".equals(tinfo.getSchema().getName()))
-                        {
-                            TableInfo ehrTable = getSchema().getTable(tinfo.getName());
-                            if (ehrTable != null)
-                                return ehrTable;
-                        }
-                        return tinfo;
-                    }
-
-                    public StringExpression getURL(ColumnInfo parent)
-                    {
-                        return fk.getURL(parent);
-                    }
-                };
-            }
-            */
-        }
-
-        public WrappedTable(TableInfo table, Container container)
-        {
-            super(table, container);
-
-            for (ColumnInfo column : getRealTable().getColumns())
-            {
-                ColumnInfo passThroughColumn = new PassThroughColumn(this, column.getName(), column);
-                if (column.isKeyField() && getColumn(column.getName()) != null)
-                {
-                    passThroughColumn.setKeyField(false);
-                }
-                addColumn(passThroughColumn);
-                if (passThroughColumn.isHidden())
-                    passThroughColumn.setHidden(column.isHidden());
-            }
-
-            setDefaultVisibleColumns(table.getDefaultVisibleColumns());
-        }
-    }
 }

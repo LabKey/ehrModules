@@ -28,7 +28,18 @@ public class EHRProperties
     static private String URI = "urn:ehr.labkey.org/#";
 
     public static SystemProperty REMARK = new SystemProperty(URI + "Remark", PropertyType.STRING);
-    public static SystemProperty DESCRIPTION = new SystemProperty(URI + "Description", PropertyType.STRING);
+
+    public static SystemProperty DESCRIPTION = new SystemProperty(URI + "Description", PropertyType.STRING)
+    {
+        @Override
+        protected PropertyDescriptor constructPropertyDescriptor()
+        {
+            PropertyDescriptor pd = super.constructPropertyDescriptor();
+            pd.setHidden(true);
+            return pd;
+        }
+    };
+
     public static SystemProperty ACCOUNT = new SystemProperty(URI + "Account", PropertyType.STRING);
     public static SystemProperty PROJECT = new SystemProperty(URI + "Project", PropertyType.STRING)
     {
