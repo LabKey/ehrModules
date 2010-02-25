@@ -21,7 +21,7 @@ cygwin=false;
 darwin=false;
 case "`uname`" in
     CYGWIN*) cygwin=true ;;
-    Darwin*) darwin=truw
+    Darwin*) darwin=true
         if [ -z "$JAVA_HOME" ]; then
             JAVA_HOME=/System/Library/Frameworks/JavaVM.framework/Home
         fi

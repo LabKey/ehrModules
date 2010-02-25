@@ -1,42 +1,51 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <datasets metaDataFile="datasets_metadata.xml" xmlns="http://labkey.org/study/xml">
   <datasets>
-    <dataset name='arrival' id='1000' />
-    <dataset name='assignment' id='1001' />
-    <dataset name='bacteriology' id='1002' />
-    <dataset name='behavetrem' id='1003' />
-    <dataset name='biopsy' id='1005' />
-    <dataset name='biopsydiag' id='1004' />
-    <dataset name='birth' id='1006' />
-    <dataset name='blood' id='1007' />
-    <dataset name='chemisc' id='1008' />
-    <dataset name='chemistry' id='1009' />
-    <dataset name='clintrem' id='1010' />
-    <dataset name='demographics' demographicData="true" id='1011' />
-    <dataset name='departure' id='1014' />
-    <dataset name='drug' id='1015' />
-    <dataset name='drug' id='1016' />
-    <dataset name='drug' id='1017' />
-    <dataset name='hemamisc' id='1018' />
-    <dataset name='hematology' id='1019' />
-    <dataset name='hormtrem' id='1020' />
-    <dataset name='immunores' id='1021' />
-    <dataset name='mhctype' id='1022' />
-    <dataset name='necropsy' id='1023' />
-    <dataset name='necropsydiag' id='1024' />
-    <dataset name='obs' id='1025' />
-    <dataset name='parares' id='1026' />
+    <dataset name='arrival' id='1001' />
+    <dataset name='assignment' id='1002' />
+    <dataset name='bacteriology' id='1003' />
+    <dataset name='behavetrem' id='1004' />
+    <dataset name='biopsydiag' id='1005' />
+    <dataset name='biopsy' id='1006' />
+    <dataset name='birth' id='1007' />
+    <dataset name='blood' id='1008' />
+    <dataset name='chemisc' id='1009' />
+    <dataset name='chemistry' id='1010' />
+    <dataset name='clintrem' id='1011' />
+    <dataset name='demographics' demographicData='true' id='1012' />
+    <dataset name='departure' id='1013' />
+    <dataset name='drug' id='1014' />
+    <dataset name='hemamisc' id='1015' />
+    <dataset name='hematology' id='1016' />
+    <dataset name='hormtrem' id='1017' />
+    <dataset name='housing' id='1018' />
+    <dataset name='immunores' id='1019' />
+    <dataset name='mhctype' id='1020' />
+    <dataset name='necropsydiag' id='1021' />
+    <dataset name='necropsy' id='1022' />
+    <dataset name='obs' id='1023' />
+    <dataset name='parahead' id='1024' />
+    <dataset name='parares' id='1025' />
+    <dataset name='parahead' id='1026' />
     <dataset name='parasitology' id='1027' />
-    <dataset name='problem' id='1028' />
-    <dataset name='surgery' id='1029' />
-    <dataset name='surgfluid' id='1030' />
-    <dataset name='surgproc' id='1031' />
-    <dataset name='surgsum' id='1032' />
-    <dataset name='tb' id='1033' />
-    <dataset name='tissue' id='1034' />
-    <dataset name='treatment_order' id='1035' />
-    <dataset name='urine' id='1036' />
-    <dataset name='weight' id='1037' />
+    <dataset name='pedigree' id='1028' />
+    <dataset name='prenatal' id='1029' />
+    <dataset name='problem' id='1030' />
+    <dataset name='surgery' id='1031' />
+    <dataset name='surgfluid' id='1032' />
+    <dataset name='surgproc' id='1033' />
+    <dataset name='surgsum' id='1034' />
+    <dataset name='tb' id='1035' />
+    <dataset name='tissue' id='1036' />
+    <dataset name='treatment_order' id='1037' />
+    <dataset name='urine' id='1038' />
+    <dataset name='virsero' id='1039' />
+    <dataset name='virserohead' id='1040' />
+    <dataset name='virserores' id='1041' />
+    <dataset name='viriso' id='1042' />
+    <dataset name='virisohead' id='1043' />
+    <dataset name='virisores' id='1044' />
+    <dataset name='weight' id='1045' />
   </datasets>
 </datasets>
 

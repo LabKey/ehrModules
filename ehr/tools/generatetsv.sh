@@ -15,18 +15,35 @@ if [ -z "${SCRIPT}" ]; then
 fi
 
 mysql -u${MYSQLUSER} -p${MYSQLPWD} -B < scripts/setup/setup.sql
+if [ $? -ne 0 ]; then
+    echo "ERROR trying to setup mysql functions"
+    exit 1
+fi
 
 #echo "Using script $1. Creating tsv with $ROWCOUNT rows."
 
 #rm tempdata
 echo "use colony;" > tempscript
 cat $1 >> tempscript
-echo " ORDER BY DATE DESC" >> tempscript
+
+case $1 in
+
+    scripts/lists/snomap.sql | scripts/dataset/*.sql )
+        echo " ORDER BY DATE DESC" >> tempscript
+        ;;
+
+    scripts/lists/*.sql )
+        # other lists don't have dates
+        ;;
+
+esac
+
 echo " LIMIT $ROWCOUNT" >> tempscript
 echo " ;" >> tempscript
+
 mysql -u${MYSQLUSER} -p${MYSQLPWD} -B < tempscript | sed s/NULL//g
 if [ $? -ne 0 ]; then
-    echo "ERROR trying to setup dump table using script $1"
+    echo "ERROR trying to dump table using script $1"
     exit 1
 fi
 

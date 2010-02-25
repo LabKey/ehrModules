@@ -3,4 +3,4 @@
  *
  * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
  */
-SELECT id, FixDate(date) AS Date, (pno) AS pno, Timestamp(Date('1970-01-01'), time) AS time, FixNewlines(remark) AS remark FROM behavetrem where id != ''
+SELECT id, FixDateTime(date, time) AS Date, (pno) AS pno, FixNewlines(remark) as remark, FixNewlines(remark) AS description FROM behavetrem where id != ''

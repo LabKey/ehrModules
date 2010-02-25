@@ -1,6 +1,53 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <tables xmlns="http://labkey.org/data/xml">
-  <table tableName="reports" tableDbType="TABLE">
+    <table tableName="avail" tableDbType="TABLE">
+      <tableTitle>availability</tableTitle>
+      <columns>
+        <column columnName="code">
+          <datatype>varchar</datatype>
+          <columnTitle>Code</columnTitle>
+          <nullable>false</nullable>
+          <isKeyField>true</isKeyField>
+        </column>
+        <column columnName="meaning">
+          <datatype>varchar</datatype>
+          <columnTitle>Meaning</columnTitle>
+        </column>
+      </columns>
+      <pkColumnName>code</pkColumnName>
+    </table>
+    <table tableName="cage" tableDbType="TABLE">
+    <columns>
+      <column columnName="roomcage">
+        <datatype>varchar</datatype>
+        <columnTitle>RoomCage</columnTitle>
+        <nullable>false</nullable>
+        <isKeyField>true</isKeyField>
+      </column>
+      <column columnName="room">
+        <datatype>varchar</datatype>
+        <columnTitle>Room</columnTitle>
+      </column>
+      <column columnName="cage">
+        <datatype>varchar</datatype>
+        <columnTitle>Cage</columnTitle>
+      </column>
+      <column columnName="length">
+        <datatype>varchar</datatype>
+        <columnTitle>Length</columnTitle>
+      </column>
+      <column columnName="width">
+        <datatype>varchar</datatype>
+        <columnTitle>Width</columnTitle>
+      </column>
+      <column columnName="height">
+        <datatype>varchar</datatype>
+        <columnTitle>Height</columnTitle>
+      </column>
+    </columns>
+    <pkColumnName>roomcage</pkColumnName>
+    </table>
+    <table tableName="cageclass" tableDbType="TABLE">
     <columns>
       <column columnName="Key">
         <datatype>integer</datatype>
@@ -9,205 +56,478 @@
         <isKeyField>true</isKeyField>
         <isAutoInc>true</isAutoInc>
       </column>
-      <column columnName="ReportName">
-        <datatype>varchar</datatype>
-        <columnTitle>ReportName</columnTitle>
+      <column columnName="low">
+        <datatype>double</datatype>
+        <columnTitle>Low</columnTitle>
       </column>
-      <column columnName="ReportType">
-        <datatype>varchar</datatype>
-        <columnTitle>ReportType</columnTitle>
+      <column columnName="high">
+        <datatype>double</datatype>
+        <columnTitle>High</columnTitle>
       </column>
-      <column columnName="ReportTitle">
-        <datatype>varchar</datatype>
-        <columnTitle>ReportTitle</columnTitle>
+      <column columnName="sqft">
+        <datatype>double</datatype>
+        <columnTitle>Sq. Ft</columnTitle>
       </column>
-      <column columnName="Visible">
-        <datatype>boolean</datatype>
-        <columnTitle>Visible</columnTitle>
-      </column>
-      <column columnName="Schema">
-        <datatype>varchar</datatype>
-        <columnTitle>Schema</columnTitle>
-      </column>
-      <column columnName="QueryName">
-        <datatype>varchar</datatype>
-        <columnTitle>QueryName</columnTitle>
-        <description>This is the name of the query, report, webpart, view or js function to be displayed</description>
-      </column>
-      <column columnName="View">
-        <datatype>varchar</datatype>
-        <columnTitle>View</columnTitle>
-        <description>(optional)</description>
-      </column>
-      <column columnName="DateFieldName">
-        <datatype>varchar</datatype>
-        <columnTitle>DateFieldName</columnTitle>
+      <column columnName="height">
+        <datatype>double</datatype>
+        <columnTitle>Height</columnTitle>
       </column>
     </columns>
     <pkColumnName>Key</pkColumnName>
-  </table>
-  <table tableName="project" tableDbType="TABLE">
+    </table>
+    <table tableName="cagenotes" tableDbType="TABLE">
     <columns>
-      <column columnName="pno">
+      <column columnName="roomcage">
         <datatype>varchar</datatype>
-        <columnTitle>Pno</columnTitle>
+        <columnTitle>RoomCage</columnTitle>
         <nullable>false</nullable>
         <isKeyField>true</isKeyField>
       </column>
-      <column columnName="protocol">
+      <column columnName="room">
         <datatype>varchar</datatype>
-        <columnTitle>Protocol</columnTitle>
+        <columnTitle>Room</columnTitle>
       </column>
-      <column columnName="account">
+      <column columnName="cage">
         <datatype>varchar</datatype>
-        <columnTitle>Account</columnTitle>
+        <columnTitle>Cage</columnTitle>
       </column>
-      <column columnName="inves">
+      <column columnName="date">
+        <datatype>timestamp</datatype>
+        <columnTitle>Date</columnTitle>
+      </column>
+      <column columnName="userid">
         <datatype>varchar</datatype>
-        <columnTitle>Inves</columnTitle>
-      </column>
-      <column columnName="avail">
-        <datatype>varchar</datatype>
-        <columnTitle>Avail</columnTitle>
-      </column>
-      <column columnName="title">
-        <datatype>varchar</datatype>
-        <columnTitle>Title</columnTitle>
-      </column>
-      <column columnName="research">
-        <datatype>boolean</datatype>
-        <columnTitle>Research</columnTitle>
-      </column>
-      <column columnName="reqname">
-        <datatype>varchar</datatype>
-        <columnTitle>Reqname</columnTitle>
+        <columnTitle>UserID</columnTitle>
       </column>
     </columns>
-    <pkColumnName>pno</pkColumnName>
-  </table>
-  <table tableName="snomed" tableDbType="TABLE">
+    <pkColumnName>roomcage</pkColumnName>
+    </table>
+    <table tableName="chemnorm" tableDbType="TABLE">
     <columns>
-      <column columnName="code">
+      <column columnName="testname">
         <datatype>varchar</datatype>
-        <columnTitle>Code</columnTitle>
+        <columnTitle>Test Name</columnTitle>
         <nullable>false</nullable>
         <isKeyField>true</isKeyField>
       </column>
-      <column columnName="meaning">
+      <column columnName="unit">
         <datatype>varchar</datatype>
-        <columnTitle>Meaning</columnTitle>
+        <columnTitle>Unit</columnTitle>
+      </column>
+      <column columnName="juv_m">
+        <datatype>varchar</datatype>
+        <columnTitle>Juvenile Male</columnTitle>
+      </column>
+      <column columnName="juv_f">
+        <datatype>varchar</datatype>
+        <columnTitle>Juvenile Female</columnTitle>
+      </column>
+      <column columnName="adult_m">
+        <datatype>varchar</datatype>
+        <columnTitle>Adult Male</columnTitle>
+      </column>
+      <column columnName="adult_f">
+        <datatype>varchar</datatype>
+        <columnTitle>Adult Female</columnTitle>
+      </column>
+      <column columnName="get_m">
+        <datatype>varchar</datatype>
+        <columnTitle>Ger Male</columnTitle>
+      </column>
+      <column columnName="ger_f">
+        <datatype>varchar</datatype>
+        <columnTitle>Ger Female</columnTitle>
+      </column>
+      <column columnName="species">
+        <datatype>varchar</datatype>
+        <columnTitle>Species</columnTitle>
       </column>
     </columns>
-    <pkColumnName>code</pkColumnName>
-  </table>
-  <table tableName="sex" tableDbType="TABLE">
+    <pkColumnName>testname</pkColumnName>
+    </table>
+    <table tableName="condition" tableDbType="TABLE">
+      <columns>
+        <column columnName="code">
+          <datatype>varchar</datatype>
+          <columnTitle>Code</columnTitle>
+          <nullable>false</nullable>
+          <isKeyField>true</isKeyField>
+        </column>
+        <column columnName="meaning">
+          <datatype>varchar</datatype>
+          <columnTitle>Meaning</columnTitle>
+        </column>
+      </columns>
+      <pkColumnName>code</pkColumnName>
+    </table>
+    <table tableName="hold" tableDbType="TABLE">
+      <columns>
+        <column columnName="code">
+          <datatype>varchar</datatype>
+          <columnTitle>Code</columnTitle>
+          <nullable>false</nullable>
+          <isKeyField>true</isKeyField>
+        </column>
+        <column columnName="meaning">
+          <datatype>varchar</datatype>
+          <columnTitle>Meaning</columnTitle>
+        </column>
+      </columns>
+      <pkColumnName>code</pkColumnName>
+    </table>
+    <table tableName="newsnomed" tableDbType="TABLE">
+        <columns>
+          <column columnName="code">
+            <datatype>varchar</datatype>
+            <columnTitle>Code</columnTitle>
+            <nullable>false</nullable>
+            <isKeyField>true</isKeyField>
+          </column>
+          <column columnName="meaning">
+            <datatype>varchar</datatype>
+            <columnTitle>Meaning</columnTitle>
+          </column>
+        </columns>
+        <pkColumnName>code</pkColumnName>
+    </table>
+    <table tableName="perdiemrates" tableDbType="TABLE">
+        <columns>
+          <column columnName="type">
+            <datatype>varchar</datatype>
+            <columnTitle>Type</columnTitle>
+            <nullable>false</nullable>
+            <isKeyField>true</isKeyField>
+          </column>
+          <column columnName="rate">
+            <datatype>double</datatype>
+            <columnTitle>Rate</columnTitle>
+          </column>
+        </columns>
+        <pkColumnName>type</pkColumnName>
+    </table>
+    <table tableName="origin" tableDbType="TABLE">
+      <columns>
+        <column columnName="code">
+          <datatype>varchar</datatype>
+          <columnTitle>Code</columnTitle>
+          <nullable>false</nullable>
+          <isKeyField>true</isKeyField>
+        </column>
+        <column columnName="meaning">
+          <datatype>varchar</datatype>
+          <columnTitle>Meaning</columnTitle>
+        </column>
+      </columns>
+      <pkColumnName>code</pkColumnName>
+    </table>
+    <table tableName="project" tableDbType="TABLE">
+      <columns>
+        <column columnName="pno">
+          <datatype>varchar</datatype>
+          <columnTitle>Pno</columnTitle>
+          <nullable>false</nullable>
+          <isKeyField>true</isKeyField>
+        </column>
+        <column columnName="protocol">
+          <datatype>varchar</datatype>
+          <columnTitle>Protocol</columnTitle>
+          <fk>
+            <fkDbSchema>lists</fkDbSchema>
+            <fkTable>protocol</fkTable>
+            <fkColumnName>protocol</fkColumnName>
+          </fk>
+        </column>
+        <column columnName="account">
+          <datatype>varchar</datatype>
+          <columnTitle>Account</columnTitle>
+        </column>
+        <column columnName="inves">
+          <datatype>varchar</datatype>
+          <columnTitle>Inves</columnTitle>
+        </column>
+        <column columnName="avail">
+          <datatype>varchar</datatype>
+          <columnTitle>Avail</columnTitle>
+          <fk>
+            <fkDbSchema>lists</fkDbSchema>
+            <fkTable>avail</fkTable>
+            <fkColumnName>code</fkColumnName>
+          </fk>
+        </column>
+        <column columnName="title">
+          <datatype>varchar</datatype>
+          <columnTitle>Title</columnTitle>
+        </column>
+        <column columnName="research">
+          <datatype>boolean</datatype>
+          <columnTitle>Research</columnTitle>
+        </column>
+        <column columnName="reqname">
+          <datatype>varchar</datatype>
+          <columnTitle>Reqname</columnTitle>
+        </column>
+      </columns>
+      <pkColumnName>pno</pkColumnName>
+    </table>
+    <table tableName="protocol" tableDbType="TABLE">
+      <columns>
+        <column columnName="protocol">
+          <datatype>varchar</datatype>
+          <columnTitle>Protocol</columnTitle>
+          <nullable>false</nullable>
+          <isKeyField>true</isKeyField>
+        </column>
+        <column columnName="inves">
+          <datatype>varchar</datatype>
+          <columnTitle>Inves</columnTitle>
+        </column>
+        <column columnName="approve">
+          <datatype>timestamp</datatype>
+          <columnTitle>Approve</columnTitle>
+        </column>
+        <column columnName="species1">
+          <datatype>varchar</datatype>
+          <columnTitle>Species1</columnTitle>
+        </column>
+        <column columnName="c1">
+          <datatype>integer</datatype>
+          <columnTitle>Count 1</columnTitle>
+        </column>
+        <column columnName="species2">
+          <datatype>varchar</datatype>
+          <columnTitle>Species2</columnTitle>
+        </column>
+        <column columnName="c2">
+          <datatype>integer</datatype>
+          <columnTitle>Count 2</columnTitle>
+        </column>
+        <column columnName="species3">
+          <datatype>varchar</datatype>
+          <columnTitle>Species3</columnTitle>
+        </column>
+        <column columnName="c3">
+          <datatype>integer</datatype>
+          <columnTitle>Count 3</columnTitle>
+        </column>
+        <column columnName="species4">
+          <datatype>varchar</datatype>
+          <columnTitle>Species4</columnTitle>
+        </column>
+        <column columnName="c4">
+          <datatype>integer</datatype>
+          <columnTitle>Count 4</columnTitle>
+        </column>
+        <column columnName="species5">
+          <datatype>varchar</datatype>
+          <columnTitle>Species5</columnTitle>
+        </column>
+        <column columnName="c5">
+          <datatype>integer</datatype>
+          <columnTitle>Count 5</columnTitle>
+        </column>
+      </columns>
+      <pkColumnName>protocol</pkColumnName>
+    </table>
+    <table tableName="ref_range" tableDbType="TABLE">
     <columns>
-      <column columnName="code">
+      <column columnName="Key">
         <datatype>varchar</datatype>
-        <columnTitle>Code</columnTitle>
+        <columnTitle>Key</columnTitle>
         <nullable>false</nullable>
         <isKeyField>true</isKeyField>
       </column>
-      <column columnName="meaning">
+      <column columnName="species">
         <datatype>varchar</datatype>
-        <columnTitle>Meaning</columnTitle>
+        <columnTitle>species</columnTitle>
       </column>
+      <column columnName="sex">
+        <datatype>varchar</datatype>
+        <columnTitle>Sex</columnTitle>
+        <fk>
+            <fkDbSchema>lists</fkDbSchema>
+            <fkTable>sex</fkTable>
+            <fkColumnName>code</fkColumnName>
+        </fk>
+      </column>
+      <column columnName="age_class">
+        <datatype>integer</datatype>
+        <columnTitle>Age Class</columnTitle>
+      </column>
+      <column columnName="test">
+        <datatype>varchar</datatype>
+        <columnTitle>Test</columnTitle>
+      </column>
+      <column columnName="ref_range_min">
+        <datatype>double</datatype>
+        <columnTitle>Ref Range Min</columnTitle>
+      </column>
+        <column columnName="ref_range_max">
+          <datatype>double</datatype>
+          <columnTitle>Ref Range Max</columnTitle>
+        </column>
     </columns>
-    <pkColumnName>code</pkColumnName>
-  </table>
-  <table tableName="hold" tableDbType="TABLE">
-    <columns>
-      <column columnName="code">
-        <datatype>varchar</datatype>
-        <columnTitle>Code</columnTitle>
-        <nullable>false</nullable>
-        <isKeyField>true</isKeyField>
-      </column>
-      <column columnName="meaning">
-        <datatype>varchar</datatype>
-        <columnTitle>Meaning</columnTitle>
-      </column>
-    </columns>
-    <pkColumnName>code</pkColumnName>
-  </table>
-  <table tableName="condition" tableDbType="TABLE">
-    <columns>
-      <column columnName="code">
-        <datatype>varchar</datatype>
-        <columnTitle>Code</columnTitle>
-        <nullable>false</nullable>
-        <isKeyField>true</isKeyField>
-      </column>
-      <column columnName="meaning">
-        <datatype>varchar</datatype>
-        <columnTitle>Meaning</columnTitle>
-      </column>
-    </columns>
-    <pkColumnName>code</pkColumnName>
-  </table>
-  <table tableName="origin" tableDbType="TABLE">
-    <columns>
-      <column columnName="code">
-        <datatype>varchar</datatype>
-        <columnTitle>Code</columnTitle>
-        <nullable>false</nullable>
-        <isKeyField>true</isKeyField>
-      </column>
-      <column columnName="meaning">
-        <datatype>varchar</datatype>
-        <columnTitle>Meaning</columnTitle>
-      </column>
-    </columns>
-    <pkColumnName>code</pkColumnName>
-  </table>
-  <table tableName="avail" tableDbType="TABLE">
-    <tableTitle>availability</tableTitle>
-    <columns>
-      <column columnName="code">
-        <datatype>varchar</datatype>
-        <columnTitle>Code</columnTitle>
-        <nullable>false</nullable>
-        <isKeyField>true</isKeyField>
-      </column>
-      <column columnName="meaning">
-        <datatype>varchar</datatype>
-        <columnTitle>Meaning</columnTitle>
-      </column>
-    </columns>
-    <pkColumnName>code</pkColumnName>
-  </table>
-  <table tableName="status" tableDbType="TABLE">
-    <columns>
-      <column columnName="code">
-        <datatype>varchar</datatype>
-        <columnTitle>Code</columnTitle>
-        <nullable>false</nullable>
-        <isKeyField>true</isKeyField>
-      </column>
-      <column columnName="meaning">
-        <datatype>varchar</datatype>
-        <columnTitle>Meaning</columnTitle>
-      </column>
-    </columns>
-    <pkColumnName>code</pkColumnName>
-  </table>
-  <table tableName="species" tableDbType="TABLE">
-    <columns>
-      <column columnName="code">
-        <datatype>varchar</datatype>
-        <columnTitle>Code</columnTitle>
-        <nullable>false</nullable>
-        <isKeyField>true</isKeyField>
-      </column>
-      <column columnName="scientific">
-        <datatype>varchar</datatype>
-        <columnTitle>Scientific Name</columnTitle>
-      </column>
-      <column columnName="common">
-        <datatype>varchar</datatype>
-        <columnTitle>Common Name</columnTitle>
-      </column>
-    </columns>
-    <pkColumnName>code</pkColumnName>
-  </table>
+    <pkColumnName>test</pkColumnName>
+    </table>
+    <table tableName="reports" tableDbType="TABLE">
+      <columns>
+        <column columnName="Key">
+          <datatype>integer</datatype>
+          <columnTitle>Key</columnTitle>
+          <nullable>false</nullable>
+          <isKeyField>true</isKeyField>
+          <isAutoInc>true</isAutoInc>
+        </column>
+        <column columnName="ReportName">
+          <datatype>varchar</datatype>
+          <columnTitle>ReportName</columnTitle>
+        </column>
+        <column columnName="ReportType">
+          <datatype>varchar</datatype>
+          <columnTitle>ReportType</columnTitle>
+        </column>
+        <column columnName="ReportTitle">
+          <datatype>varchar</datatype>
+          <columnTitle>ReportTitle</columnTitle>
+        </column>
+        <column columnName="Visible">
+          <datatype>boolean</datatype>
+          <columnTitle>Visible</columnTitle>
+        </column>
+        <column columnName="Schema">
+          <datatype>varchar</datatype>
+          <columnTitle>Schema</columnTitle>
+        </column>
+        <column columnName="QueryName">
+          <datatype>varchar</datatype>
+          <columnTitle>QueryName</columnTitle>
+          <description>This is the name of the query, report, webpart, view or js function to be displayed</description>
+        </column>
+        <column columnName="View">
+          <datatype>varchar</datatype>
+          <columnTitle>View</columnTitle>
+          <description>(optional)</description>
+        </column>
+        <column columnName="DateFieldName">
+          <datatype>varchar</datatype>
+          <columnTitle>DateFieldName</columnTitle>
+        </column>
+      </columns>
+      <pkColumnName>Key</pkColumnName>
+    </table>
+    <table tableName="rhesaux" tableDbType="TABLE">
+      <columns>
+        <column columnName="participantid">
+            <datatype>varchar</datatype>
+            <columnTitle>Participant ID</columnTitle>
+            <description>Participant identifier</description>
+            <nullable>false</nullable>
+            <isKeyField>true</isKeyField>
+        </column>
+        <column columnName="name">
+          <datatype>varchar</datatype>
+          <columnTitle>Name</columnTitle>
+        </column>
+        <column columnName="info1">
+          <datatype>varchar</datatype>
+          <columnTitle>Info1</columnTitle>
+        </column>
+        <column columnName="info2">
+          <datatype>varchar</datatype>
+          <columnTitle>Info2</columnTitle>
+        </column>
+      </columns>
+      <pkColumnName>ParticipantId</pkColumnName>
+    </table>
+    <table tableName="sex" tableDbType="TABLE">
+      <columns>
+        <column columnName="code">
+          <datatype>varchar</datatype>
+          <columnTitle>Code</columnTitle>
+          <nullable>false</nullable>
+          <isKeyField>true</isKeyField>
+        </column>
+        <column columnName="meaning">
+          <datatype>varchar</datatype>
+          <columnTitle>Meaning</columnTitle>
+        </column>
+      </columns>
+      <pkColumnName>code</pkColumnName>
+    </table>
+    <table tableName="snomed" tableDbType="TABLE">
+      <columns>
+        <column columnName="code">
+          <datatype>varchar</datatype>
+          <columnTitle>Code</columnTitle>
+          <nullable>false</nullable>
+          <isKeyField>true</isKeyField>
+        </column>
+        <column columnName="meaning">
+          <datatype>varchar</datatype>
+          <columnTitle>Meaning</columnTitle>
+        </column>
+      </columns>
+      <pkColumnName>code</pkColumnName>
+    </table>
+    <table tableName="snomap" tableDbType="TABLE">
+      <columns>
+        <column columnName="key">
+          <datatype>integer</datatype>
+          <columnTitle>Key</columnTitle>
+          <nullable>false</nullable>
+          <isAutoInc>true</isAutoInc>
+          <isKeyField>true</isKeyField>
+        </column>
+        <column columnName="ocode">
+          <datatype>varchar</datatype>
+          <columnTitle>Old Code</columnTitle>
+        </column>
+        <column columnName="ncode">
+          <datatype>varchar</datatype>
+          <columnTitle>New Code</columnTitle>
+        </column>
+        <column columnName="meaning">
+          <datatype>varchar</datatype>
+          <columnTitle>Meaning</columnTitle>
+        </column>
+        <column columnName="date">
+          <datatype>timestamp</datatype>
+          <columnTitle>Date</columnTitle>
+        </column>
+      </columns>
+      <pkColumnName>key</pkColumnName>
+    </table>
+    <table tableName="species" tableDbType="TABLE">
+      <columns>
+        <column columnName="code">
+          <datatype>varchar</datatype>
+          <columnTitle>Code</columnTitle>
+          <nullable>false</nullable>
+          <isKeyField>true</isKeyField>
+        </column>
+        <column columnName="scientific">
+          <datatype>varchar</datatype>
+          <columnTitle>Scientific Name</columnTitle>
+        </column>
+        <column columnName="common">
+          <datatype>varchar</datatype>
+          <columnTitle>Common Name</columnTitle>
+        </column>
+      </columns>
+      <pkColumnName>code</pkColumnName>
+    </table>
+    <table tableName="status" tableDbType="TABLE">
+      <columns>
+        <column columnName="code">
+          <datatype>varchar</datatype>
+          <columnTitle>Code</columnTitle>
+          <nullable>false</nullable>
+          <isKeyField>true</isKeyField>
+        </column>
+        <column columnName="meaning">
+          <datatype>varchar</datatype>
+          <columnTitle>Meaning</columnTitle>
+        </column>
+      </columns>
+      <pkColumnName>code</pkColumnName>
+    </table>
 </tables>

@@ -3,4 +3,9 @@
  *
  * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
  */
-SELECT id, FixDate(date) AS Date, (caseno) AS caseno, (account) AS account, concat('caseno: ', caseno, ', account: ', account) AS Description FROM necropsyhead
+SELECT id, FixDate(date) AS Date, (caseno) AS caseno, (account) AS account,
+     ( CONCAT_WS(',\n',
+        concat('Case No: ', caseno),
+        CONCAT('Account: ', account)
+        )) AS Description 
+  FROM necropsyhead

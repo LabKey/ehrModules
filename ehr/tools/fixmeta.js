@@ -31,10 +31,17 @@ function fixupSharedProperties(tables)
 
             if (col.@columnName == "remark")
                 col.propertyURI = "urn:ehr.labkey.org/#Remark";
-            else if (col.@columnName == "description")
+            else if (col.@columnName == "description"){
                 col.propertyURI = "urn:ehr.labkey.org/#Description";
-            else if (col.@columnName == "pno")
+                col.isHidden = true;
+                col.shownInInsertView = false;
+                col.shownInUpdateView = false;
+                col.shownInDetailsView = false;
+            }
+            else if (col.@columnName == "pno"){
                 col.propertyURI = "urn:ehr.labkey.org/#Project";
+                col.fk = {fkDbSchema: 'lists', fkTable: 'project', fkColumnName: 'pno'};
+            }
             else if (col.@columnName == "account")
                 col.propertyURI = "urn:ehr.labkey.org/#Account";
             else

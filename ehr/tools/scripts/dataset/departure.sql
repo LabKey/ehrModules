@@ -3,7 +3,9 @@
  *
  * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
  */
-SELECT id, FixDate(date) AS Date, Timestamp(Date('1970-01-01'), time) AS time, (authorize) AS authorize, (destination) AS destination, FixNewlines(remark) AS remark, ( CONCAT_WS(', ', 
-     CASE WHEN authorize IS NULL  OR authorize=''  THEN NULL ELSE CONCAT('authorize: ', authorize)  END, 
-     CASE WHEN destination IS NULL  OR destination=''  THEN NULL ELSE CONCAT('destination: ', destination)  END
-     ) ) AS Description FROM departure
+SELECT id, FixDateTime(date, time) AS Date, (authorize) AS authorize, (destination) AS destination, FixNewlines(remark) AS remark,
+     ( CONCAT_WS(',\n', 
+     CONCAT('Authorize: ', authorize),
+     CONCAT('Destination: ', destination)
+     ) ) AS Description
+FROM departure
