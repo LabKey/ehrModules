@@ -6,11 +6,13 @@
 MYSQLPWD=sasa
 MYSQLUSER=root
 SCRIPT=$1
-ROWCOUNT=${2:-50}
-BASENAME=${SCRIPT%%.*}
+ROWCOUNT=${2:-10}
+FILENAME=${SCRIPT##*/}
+BASENAME=${FILENAME%%.*}
 
 if [ -z "${SCRIPT}" ]; then
-    echo "Pass scripts/dataset/<table-name>.sql name as an argument"
+    echo "Missing script argument"
+    echo "Usage: $0 script.sql [row-count] > out-file.tsv"
     exit 1
 fi
 
@@ -20,9 +22,6 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 
-#echo "Using script $1. Creating tsv with $ROWCOUNT rows."
-
-#rm tempdata
 echo "use colony;" > tempscript
 cat $1 >> tempscript
 
@@ -41,11 +40,10 @@ esac
 echo " LIMIT $ROWCOUNT" >> tempscript
 echo " ;" >> tempscript
 
-mysql -u${MYSQLUSER} -p${MYSQLPWD} -B < tempscript | sed s/NULL//g
+# sed script truncates nulls and backslash-escapes the double-quote character
+mysql -u${MYSQLUSER} -p${MYSQLPWD} -B < tempscript | sed -e 's/NULL//g;s@"@\\"@g'
 if [ $? -ne 0 ]; then
     echo "ERROR trying to dump table using script $1"
     exit 1
 fi
-
-#java FixTabs < tempdata >> temptsv
 

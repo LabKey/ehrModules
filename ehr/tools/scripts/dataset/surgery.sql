@@ -17,3 +17,5 @@ FixDateTime(enddate, endtime) AS enddate, (major) AS major, FixNewlines(remark) 
     CONCAT('Remark: ', FixNewLines(remark))
 )) AS Description
 FROM surghead
+
+

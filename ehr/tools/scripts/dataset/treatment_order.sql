@@ -14,10 +14,11 @@ SELECT id, FixDate(date) AS Date, (pno) AS pno, (t.code) AS code, (t.meaning) AS
      CONCAT('Conc: ', conc, ' ', cunits),
      CONCAT('EndDate: ', CAST(enddate AS CHAR)),
      CONCAT('Frequency: ', frequency),
-     CONCAT('Remark: ', remark)
+     CONCAT('Remark: ', FixNewLines(remark))
 
 )) AS Description
 
 FROM treatments t
 
 LEFT OUTER JOIN colony.snomed s1 ON s1.code=t.code
+

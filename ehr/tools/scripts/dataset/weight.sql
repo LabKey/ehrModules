@@ -7,4 +7,5 @@ SELECT id, FixDateTime(date, time) AS Date, (weight) AS weight, (verified) AS ve
 ( CONCAT_WS(',\n', 
      CONCAT('Weight: ', CAST(weight AS CHAR))
 ) ) AS Description
-  FROM weight
+FROM weight
+

@@ -9,3 +9,4 @@ SELECT id, FixDate(adate) AS Date, (pno) AS pno, FixDate(rdate) AS rdate,
     CONCAT('Removal Date: ', CAST(rdate AS CHAR))
     ) ) AS Description
 FROM assignment
+

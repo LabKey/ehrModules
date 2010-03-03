@@ -8,3 +8,4 @@ SELECT id, FixDateTime(date, time) AS Date, (source) AS source, FixNewlines(rema
     CONCAT('Source: ', source),
     CONCAT('Remark: ', remark)
     ) AS Description FROM arrival
+

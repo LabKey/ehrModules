@@ -7,8 +7,8 @@ concat_ws(',\n',
      CONCAT('Clin Remark: ', t2.clinremark)
      ) AS Description
 FROM
-(SELECT id, date, seq, source, result FROM virisores where result is not null group by id, date, seq, source, result) t1
+(SELECT id, date, seq, source, result FROM virisores WHERE result IS NOT NULL GROUP BY id, date, seq, source, result) t1
 LEFT JOIN
-(SELECT id, date, account, suspvirus, remark, clinremark FROM virisohead group by id, date, suspvirus) t2
+(SELECT id, date, account, suspvirus, remark, clinremark FROM virisohead) t2
 on (t1.id = t2.id AND t1.date = t2.date)
 

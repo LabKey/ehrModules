@@ -5,3 +5,4 @@ concat_ws(',\n',
      ) AS Description
 
 FROM virisores v
+

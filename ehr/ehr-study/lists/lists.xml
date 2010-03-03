@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <tables xmlns="http://labkey.org/data/xml">
     <table tableName="avail" tableDbType="TABLE">
-      <tableTitle>availability</tableTitle>
+      <tableTitle>Availability Codes</tableTitle>
       <columns>
         <column columnName="code">
           <datatype>varchar</datatype>
@@ -17,10 +17,11 @@
       <pkColumnName>code</pkColumnName>
     </table>
     <table tableName="cage" tableDbType="TABLE">
+    <tableTitle>Cage Sizes</tableTitle>
     <columns>
       <column columnName="roomcage">
         <datatype>varchar</datatype>
-        <columnTitle>RoomCage</columnTitle>
+        <columnTitle>Room/Cage</columnTitle>
         <nullable>false</nullable>
         <isKeyField>true</isKeyField>
       </column>
@@ -48,6 +49,7 @@
     <pkColumnName>roomcage</pkColumnName>
     </table>
     <table tableName="cageclass" tableDbType="TABLE">
+    <tableTitle>Cage Class</tableTitle>
     <columns>
       <column columnName="Key">
         <datatype>integer</datatype>
@@ -76,12 +78,14 @@
     <pkColumnName>Key</pkColumnName>
     </table>
     <table tableName="cagenotes" tableDbType="TABLE">
+    <tableTitle>Cage Notes</tableTitle>
     <columns>
-      <column columnName="roomcage">
-        <datatype>varchar</datatype>
-        <columnTitle>RoomCage</columnTitle>
+      <column columnName="Key">
+        <datatype>integer</datatype>
+        <columnTitle>Key</columnTitle>
         <nullable>false</nullable>
         <isKeyField>true</isKeyField>
+        <isAutoInc>true</isAutoInc>
       </column>
       <column columnName="room">
         <datatype>varchar</datatype>
@@ -91,6 +95,10 @@
         <datatype>varchar</datatype>
         <columnTitle>Cage</columnTitle>
       </column>
+      <column columnName="note">
+        <datatype>varchar</datatype>
+        <columnTitle>Note</columnTitle>
+      </column>
       <column columnName="date">
         <datatype>timestamp</datatype>
         <columnTitle>Date</columnTitle>
@@ -98,11 +106,17 @@
       <column columnName="userid">
         <datatype>varchar</datatype>
         <columnTitle>UserID</columnTitle>
+        <fk>
+          <fkDbSchema>core</fkDbSchema>
+          <fkTable>Users</fkTable>
+          <fkColumnName>UserId</fkColumnName>
+        </fk>
       </column>
     </columns>
-    <pkColumnName>roomcage</pkColumnName>
+    <pkColumnName>Key</pkColumnName>
     </table>
     <table tableName="chemnorm" tableDbType="TABLE">
+    <tableTitle>Chem Normals</tableTitle>
     <columns>
       <column columnName="testname">
         <datatype>varchar</datatype>
@@ -130,13 +144,13 @@
         <datatype>varchar</datatype>
         <columnTitle>Adult Female</columnTitle>
       </column>
-      <column columnName="get_m">
+      <column columnName="ger_m">
         <datatype>varchar</datatype>
-        <columnTitle>Ger Male</columnTitle>
+        <columnTitle>Geriatric Male</columnTitle>
       </column>
       <column columnName="ger_f">
         <datatype>varchar</datatype>
-        <columnTitle>Ger Female</columnTitle>
+        <columnTitle>Geriatric Female</columnTitle>
       </column>
       <column columnName="species">
         <datatype>varchar</datatype>
@@ -146,6 +160,7 @@
     <pkColumnName>testname</pkColumnName>
     </table>
     <table tableName="condition" tableDbType="TABLE">
+      <tableTitle>Condition Codes</tableTitle>
       <columns>
         <column columnName="code">
           <datatype>varchar</datatype>
@@ -161,6 +176,7 @@
       <pkColumnName>code</pkColumnName>
     </table>
     <table tableName="hold" tableDbType="TABLE">
+      <tableTitle>Hold Codes</tableTitle>
       <columns>
         <column columnName="code">
           <datatype>varchar</datatype>
@@ -176,6 +192,7 @@
       <pkColumnName>code</pkColumnName>
     </table>
     <table tableName="newsnomed" tableDbType="TABLE">
+        <tableTitle>New SNOMED Codes</tableTitle>
         <columns>
           <column columnName="code">
             <datatype>varchar</datatype>
@@ -191,6 +208,7 @@
         <pkColumnName>code</pkColumnName>
     </table>
     <table tableName="perdiemrates" tableDbType="TABLE">
+        <tableTitle>Per Diem Rates</tableTitle>
         <columns>
           <column columnName="type">
             <datatype>varchar</datatype>
@@ -206,6 +224,7 @@
         <pkColumnName>type</pkColumnName>
     </table>
     <table tableName="origin" tableDbType="TABLE">
+      <tableTitle>Origin Codes</tableTitle>
       <columns>
         <column columnName="code">
           <datatype>varchar</datatype>
@@ -221,10 +240,11 @@
       <pkColumnName>code</pkColumnName>
     </table>
     <table tableName="project" tableDbType="TABLE">
+      <tableTitle>IACUC Projects</tableTitle>
       <columns>
         <column columnName="pno">
           <datatype>varchar</datatype>
-          <columnTitle>Pno</columnTitle>
+          <columnTitle>Project</columnTitle>
           <nullable>false</nullable>
           <isKeyField>true</isKeyField>
         </column>
@@ -243,11 +263,11 @@
         </column>
         <column columnName="inves">
           <datatype>varchar</datatype>
-          <columnTitle>Inves</columnTitle>
+          <columnTitle>Investigator</columnTitle>
         </column>
         <column columnName="avail">
           <datatype>varchar</datatype>
-          <columnTitle>Avail</columnTitle>
+          <columnTitle>Availability</columnTitle>
           <fk>
             <fkDbSchema>lists</fkDbSchema>
             <fkTable>avail</fkTable>
@@ -264,12 +284,13 @@
         </column>
         <column columnName="reqname">
           <datatype>varchar</datatype>
-          <columnTitle>Reqname</columnTitle>
+          <columnTitle>Requestor Name</columnTitle>
         </column>
       </columns>
       <pkColumnName>pno</pkColumnName>
     </table>
     <table tableName="protocol" tableDbType="TABLE">
+      <tableTitle>RARC Protocols</tableTitle>
       <columns>
         <column columnName="protocol">
           <datatype>varchar</datatype>
@@ -279,7 +300,7 @@
         </column>
         <column columnName="inves">
           <datatype>varchar</datatype>
-          <columnTitle>Inves</columnTitle>
+          <columnTitle>Investigator</columnTitle>
         </column>
         <column columnName="approve">
           <datatype>timestamp</datatype>
@@ -329,6 +350,7 @@
       <pkColumnName>protocol</pkColumnName>
     </table>
     <table tableName="ref_range" tableDbType="TABLE">
+    <tableTitle>Ref Ranges</tableTitle>
     <columns>
       <column columnName="Key">
         <datatype>varchar</datatype>
@@ -338,7 +360,12 @@
       </column>
       <column columnName="species">
         <datatype>varchar</datatype>
-        <columnTitle>species</columnTitle>
+        <columnTitle>Species</columnTitle>
+        <fk>
+            <fkDbSchema>lists</fkDbSchema>
+            <fkTable>species</fkTable>
+            <fkColumnName>code</fkColumnName>
+        </fk>
       </column>
       <column columnName="sex">
         <datatype>varchar</datatype>
@@ -366,57 +393,12 @@
           <columnTitle>Ref Range Max</columnTitle>
         </column>
     </columns>
-    <pkColumnName>test</pkColumnName>
-    </table>
-    <table tableName="reports" tableDbType="TABLE">
-      <columns>
-        <column columnName="Key">
-          <datatype>integer</datatype>
-          <columnTitle>Key</columnTitle>
-          <nullable>false</nullable>
-          <isKeyField>true</isKeyField>
-          <isAutoInc>true</isAutoInc>
-        </column>
-        <column columnName="ReportName">
-          <datatype>varchar</datatype>
-          <columnTitle>ReportName</columnTitle>
-        </column>
-        <column columnName="ReportType">
-          <datatype>varchar</datatype>
-          <columnTitle>ReportType</columnTitle>
-        </column>
-        <column columnName="ReportTitle">
-          <datatype>varchar</datatype>
-          <columnTitle>ReportTitle</columnTitle>
-        </column>
-        <column columnName="Visible">
-          <datatype>boolean</datatype>
-          <columnTitle>Visible</columnTitle>
-        </column>
-        <column columnName="Schema">
-          <datatype>varchar</datatype>
-          <columnTitle>Schema</columnTitle>
-        </column>
-        <column columnName="QueryName">
-          <datatype>varchar</datatype>
-          <columnTitle>QueryName</columnTitle>
-          <description>This is the name of the query, report, webpart, view or js function to be displayed</description>
-        </column>
-        <column columnName="View">
-          <datatype>varchar</datatype>
-          <columnTitle>View</columnTitle>
-          <description>(optional)</description>
-        </column>
-        <column columnName="DateFieldName">
-          <datatype>varchar</datatype>
-          <columnTitle>DateFieldName</columnTitle>
-        </column>
-      </columns>
-      <pkColumnName>Key</pkColumnName>
+    <pkColumnName>Key</pkColumnName>
     </table>
     <table tableName="rhesaux" tableDbType="TABLE">
+      <tableTitle>Rhesus Aux Names</tableTitle>
       <columns>
-        <column columnName="participantid">
+        <column columnName="id">
             <datatype>varchar</datatype>
             <columnTitle>Participant ID</columnTitle>
             <description>Participant identifier</description>
@@ -436,9 +418,10 @@
           <columnTitle>Info2</columnTitle>
         </column>
       </columns>
-      <pkColumnName>ParticipantId</pkColumnName>
+      <pkColumnName>id</pkColumnName>
     </table>
     <table tableName="sex" tableDbType="TABLE">
+      <tableTitle>Sex Codes</tableTitle>
       <columns>
         <column columnName="code">
           <datatype>varchar</datatype>
@@ -454,6 +437,7 @@
       <pkColumnName>code</pkColumnName>
     </table>
     <table tableName="snomed" tableDbType="TABLE">
+      <tableTitle>SNOMED Codes</tableTitle>
       <columns>
         <column columnName="code">
           <datatype>varchar</datatype>
@@ -469,6 +453,7 @@
       <pkColumnName>code</pkColumnName>
     </table>
     <table tableName="snomap" tableDbType="TABLE">
+      <tableTitle>SNOMED Code Map</tableTitle>
       <columns>
         <column columnName="key">
           <datatype>integer</datatype>
@@ -497,6 +482,7 @@
       <pkColumnName>key</pkColumnName>
     </table>
     <table tableName="species" tableDbType="TABLE">
+      <tableTitle>Species Codes</tableTitle>
       <columns>
         <column columnName="code">
           <datatype>varchar</datatype>
@@ -516,6 +502,7 @@
       <pkColumnName>code</pkColumnName>
     </table>
     <table tableName="status" tableDbType="TABLE">
+      <tableTitle>Status Codes</tableTitle>
       <columns>
         <column columnName="code">
           <datatype>varchar</datatype>

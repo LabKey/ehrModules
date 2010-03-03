@@ -15,3 +15,4 @@ SELECT id, FixDateTime(date, time) AS Date, (sex) AS sex, (livedead) AS livedead
      CONCAT('Affiliation: ', affil)
 ) ) AS Description
 FROM tissue
+

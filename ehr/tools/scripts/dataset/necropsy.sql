@@ -8,4 +8,5 @@ SELECT id, FixDate(date) AS Date, (caseno) AS caseno, (account) AS account,
         concat('Case No: ', caseno),
         CONCAT('Account: ', account)
         )) AS Description 
-  FROM necropsyhead
+FROM necropsyhead
+

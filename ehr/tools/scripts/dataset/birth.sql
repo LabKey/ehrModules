@@ -19,3 +19,4 @@ SELECT id, FixDate(date) AS Date, (sex) AS sex, (weight) AS weight, FixDateTime(
      CONCAT('Remark: ', remark)
      ) ) AS Description
 FROM birth
+

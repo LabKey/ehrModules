@@ -19,14 +19,14 @@ CREATE FUNCTION FixDate(d DATE)
 
 DROP FUNCTION IF EXISTS FixDateTime;
 CREATE FUNCTION FixDateTime(d DATE, t TIME)
-    RETURNS DATE DETERMINISTIC
+    RETURNS DATETIME DETERMINISTIC
     RETURN
     CASE
       WHEN ((d IS NULL OR d = '0000-00-00') AND (t IS NULL OR t = '00:00:00')) THEN
               NULL
       WHEN (d IS NULL OR d = '0000-00-00') THEN
               STR_TO_DATE(concat_ws('d','1979-01-01',
-              CASE WHEN HOUR(t)=0 THEN '00' ELSE CAST(HOUR(t) AS CHAR) END,
+              CASE WHEN HOUR(t)=0 OR HOUR(t)=24 THEN '00' ELSE CAST(HOUR(t) AS CHAR) END,
               CASE WHEN MINUTE(t)=0 THEN '00' ELSE CAST(MINUTE(t) AS CHAR) END,
               CASE WHEN SECOND(t)=0 THEN '00' ELSE CAST(SECOND(t) AS CHAR) END
               ), '%Y-%m-%d-%H-%i-%s')
@@ -42,7 +42,7 @@ CREATE FUNCTION FixDateTime(d DATE, t TIME)
               CASE WHEN YEAR(d)=0 THEN '0001' else cast(YEAR(d) AS CHAR) END,
               CASE WHEN MONTH(d)=0 THEN '01' ELSE cast(MONTH(d) AS CHAR) END ,
               CASE WHEN DAY(d)=0 THEN '01' ELSE CAST(DAY(d) AS CHAR) END,
-              CASE WHEN HOUR(t)=0 THEN '00' ELSE CAST(HOUR(t) AS CHAR) END,
+              CASE WHEN HOUR(t)=0 OR HOUR(t)=24 THEN '00' ELSE CAST(HOUR(t) AS CHAR) END,
               CASE WHEN MINUTE(t)=0 THEN '00' ELSE CAST(MINUTE(t) AS CHAR) END,
               CASE WHEN SECOND(t)=0 THEN '00' ELSE CAST(SECOND(t) AS CHAR) END
               ), '%Y-%m-%d-%H-%i-%s')

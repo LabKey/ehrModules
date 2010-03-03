@@ -41,10 +41,11 @@
       </column>
       <column columnName="objectid">
         <datatype>integer</datatype>
-        <columnTitle>ObjectID</columnTitle>
+        <columnTitle>Key</columnTitle>
         <shownInInsertView>false</shownInInsertView>
         <shownInUpdateView>false</shownInUpdateView>
         <shownInDetailsView>false</shownInDetailsView>
+        <isHidden>true</isHidden>
         <isKeyField>true</isKeyField>
         <isAutoInc>true</isAutoInc>
       </column>
@@ -92,10 +93,11 @@
       </column>
       <column columnName="objectid">
         <datatype>integer</datatype>
-        <columnTitle>ObjectId</columnTitle>
+        <columnTitle>Key</columnTitle>
         <shownInInsertView>false</shownInInsertView>
         <shownInUpdateView>false</shownInUpdateView>
         <shownInDetailsView>false</shownInDetailsView>
+        <isHidden>true</isHidden>
         <isKeyField>true</isKeyField>
         <isAutoInc>true</isAutoInc>
       </column>
@@ -170,7 +172,8 @@
       </column>
       <column columnName="objectid">
         <datatype>integer</datatype>
-        <columnTitle>objectid</columnTitle>
+        <columnTitle>Key</columnTitle>
+        <isHidden>true</isHidden>
         <isKeyField>true</isKeyField>
         <isAutoInc>true</isAutoInc>
       </column>
@@ -219,15 +222,16 @@
       </column>
       <column columnName="objectid">
         <datatype>integer</datatype>
-        <columnTitle>objectid</columnTitle>
+        <columnTitle>Key</columnTitle>
         <shownInInsertView>false</shownInInsertView>
         <shownInUpdateView>false</shownInUpdateView>
         <shownInDetailsView>false</shownInDetailsView>
+        <isHidden>true</isHidden>
         <isKeyField>true</isKeyField>
         <isAutoInc>true</isAutoInc>
       </column>
     </columns>
-  <tableTitle>behavetrem</tableTitle>
+  <tableTitle>Behavior Treatment Remarks</tableTitle>
   </table>
   <table tableName="biopsy" tableDbType="TABLE">
     <columns>
@@ -270,15 +274,16 @@
       </column>
       <column columnName="objectid">
         <datatype>integer</datatype>
-        <columnTitle>objectid</columnTitle>
+        <columnTitle>Key</columnTitle>
         <shownInInsertView>false</shownInInsertView>
         <shownInUpdateView>false</shownInUpdateView>
         <shownInDetailsView>false</shownInDetailsView>
+        <isHidden>true</isHidden>
         <isKeyField>true</isKeyField>
         <isAutoInc>true</isAutoInc>
       </column>
     </columns>
-    <tableTitle>Biopsy</tableTitle>
+    <tableTitle>Biopsy Head</tableTitle>
   </table>
   <table tableName="biopsydiag" tableDbType="TABLE">
     <columns>
@@ -296,11 +301,11 @@
       </column>
       <column columnName="seq1">
         <datatype>integer</datatype>
-        <columnTitle>seq1</columnTitle>
+        <columnTitle>Seq 1</columnTitle>
       </column>
       <column columnName="seq2">
         <datatype>integer</datatype>
-        <columnTitle>seq2</columnTitle>
+        <columnTitle>Seq 2</columnTitle>
       </column>
       <column columnName="code">
         <datatype>varchar</datatype>
@@ -313,10 +318,11 @@
       </column>
       <column columnName="biopsy_objectid">
         <datatype>integer</datatype>
-        <columnTitle>biopsy_objectid</columnTitle>
+        <columnTitle>Biopsy ID</columnTitle>
         <shownInInsertView>false</shownInInsertView>
         <shownInUpdateView>false</shownInUpdateView>
         <shownInDetailsView>false</shownInDetailsView>
+        <isHidden>true</isHidden>
       </column>
       <column columnName="description">
         <datatype>varchar</datatype>
@@ -330,15 +336,16 @@
       </column>
       <column columnName="objectid">
         <datatype>integer</datatype>
-        <columnTitle>objectid</columnTitle>
+        <columnTitle>Key</columnTitle>
         <shownInInsertView>false</shownInInsertView>
         <shownInUpdateView>false</shownInUpdateView>
         <shownInDetailsView>false</shownInDetailsView>
+        <isHidden>true</isHidden>
         <isKeyField>true</isKeyField>
         <isAutoInc>true</isAutoInc>
       </column>
     </columns>
-    <tableTitle>biopsydiag</tableTitle>
+    <tableTitle>Biopsy Diagnosis</tableTitle>
   </table>
   <table tableName="birth" tableDbType="TABLE">
     <columns>
@@ -421,7 +428,7 @@
       </column>
       <column columnName="description">
         <datatype>varchar</datatype>
-        <columnTitle>description</columnTitle>
+        <columnTitle>Description</columnTitle>
         <shownInInsertView>false</shownInInsertView>
         <shownInUpdateView>false</shownInUpdateView>
         <shownInDetailsView>false</shownInDetailsView>
@@ -431,10 +438,11 @@
       </column>
       <column columnName="objectid">
         <datatype>integer</datatype>
-        <columnTitle>objectid</columnTitle>
+        <columnTitle>Key</columnTitle>
         <shownInInsertView>false</shownInInsertView>
         <shownInUpdateView>false</shownInUpdateView>
         <shownInDetailsView>false</shownInDetailsView>
+        <isHidden>true</isHidden>
         <isKeyField>true</isKeyField>
         <isAutoInc>true</isAutoInc>
       </column>
@@ -510,15 +518,16 @@
       </column>
       <column columnName="objectid">
         <datatype>integer</datatype>
-        <columnTitle>objectid</columnTitle>
+        <columnTitle>Key</columnTitle>
         <shownInInsertView>false</shownInInsertView>
         <shownInUpdateView>false</shownInUpdateView>
         <shownInDetailsView>false</shownInDetailsView>
+        <isHidden>true</isHidden>
         <isKeyField>true</isKeyField>
         <isAutoInc>true</isAutoInc>
       </column>
     </columns>
-    <tableTitle>Blood</tableTitle>
+    <tableTitle>Blood Draws</tableTitle>
     <description>Blood Draws</description>
   </table>
   <table tableName="chemisc" tableDbType="TABLE">
@@ -559,15 +568,16 @@
       </column>
       <column columnName="objectid">
         <datatype>integer</datatype>
-        <columnTitle>objectid</columnTitle>
+        <columnTitle>Key</columnTitle>
         <shownInInsertView>false</shownInInsertView>
         <shownInUpdateView>false</shownInUpdateView>
         <shownInDetailsView>false</shownInDetailsView>
+        <isHidden>true</isHidden>
         <isKeyField>true</isKeyField>
         <isAutoInc>true</isAutoInc>
       </column>
     </columns>
-    <tableTitle>chemisc</tableTitle>
+    <tableTitle>Chemistry Misc</tableTitle>
     <description>Clinical Pathology Data</description>
   </table>
   <table tableName="chemistry" tableDbType="TABLE">
@@ -684,7 +694,7 @@
       </column>
       <column columnName="clinremark">
         <datatype>varchar</datatype>
-        <columnTitle>Clin Remark</columnTitle>
+        <columnTitle>Clinical Remark</columnTitle>
         <inputType>textarea</inputType>
       </column>
       <column columnName="description">
@@ -699,10 +709,11 @@
       </column>
       <column columnName="objectid">
         <datatype>integer</datatype>
-        <columnTitle>objectid</columnTitle>
+        <columnTitle>Key</columnTitle>
         <shownInInsertView>false</shownInInsertView>
         <shownInUpdateView>false</shownInUpdateView>
         <shownInDetailsView>false</shownInDetailsView>
+        <isHidden>true</isHidden>
         <isKeyField>true</isKeyField>
         <isAutoInc>true</isAutoInc>
       </column>
@@ -756,15 +767,16 @@
       </column>
       <column columnName="objectid">
         <datatype>integer</datatype>
-        <columnTitle>objectid</columnTitle>
+        <columnTitle>Key</columnTitle>
         <shownInInsertView>false</shownInInsertView>
         <shownInUpdateView>false</shownInUpdateView>
         <shownInDetailsView>false</shownInDetailsView>
+        <isHidden>true</isHidden>
         <isKeyField>true</isKeyField>
         <isAutoInc>true</isAutoInc>
       </column>
     </columns>
-    <tableTitle>clintrem</tableTitle>
+    <tableTitle>Clinical Treatment Remarks</tableTitle>
   </table>
   <table tableName="demographics" tableDbType="TABLE">
     <columns>
@@ -782,7 +794,7 @@
       </column>
       <column columnName="sex">
         <datatype>varchar</datatype>
-        <columnTitle>sex</columnTitle>
+        <columnTitle>Sex</columnTitle>
         <fk>
           <fkDbSchema>lists</fkDbSchema>
           <fkTable>sex</fkTable>
@@ -791,7 +803,7 @@
       </column>
       <column columnName="status">
         <datatype>varchar</datatype>
-        <columnTitle>status</columnTitle>
+        <columnTitle>Status</columnTitle>
         <fk>
           <fkDbSchema>lists</fkDbSchema>
           <fkTable>status</fkTable>
@@ -800,7 +812,7 @@
       </column>
       <column columnName="avail">
         <datatype>varchar</datatype>
-        <columnTitle>availability</columnTitle>
+        <columnTitle>Availability</columnTitle>
         <fk>
           <fkDbSchema>lists</fkDbSchema>
           <fkTable>avail</fkTable>
@@ -809,7 +821,7 @@
       </column>
       <column columnName="hold">
         <datatype>varchar</datatype>
-        <columnTitle>hold</columnTitle>
+        <columnTitle>Hold</columnTitle>
         <fk>
           <fkDbSchema>lists</fkDbSchema>
           <fkTable>hold</fkTable>
@@ -818,15 +830,15 @@
       </column>
       <column columnName="dam">
         <datatype>varchar</datatype>
-        <columnTitle>dam</columnTitle>
+        <columnTitle>Dam</columnTitle>
       </column>
       <column columnName="sire">
         <datatype>varchar</datatype>
-        <columnTitle>sire</columnTitle>
+        <columnTitle>Sire</columnTitle>
       </column>
       <column columnName="origin">
         <datatype>varchar</datatype>
-        <columnTitle>origin</columnTitle>
+        <columnTitle>Origin</columnTitle>
         <fk>
           <fkDbSchema>lists</fkDbSchema>
           <fkTable>origin</fkTable>
@@ -835,55 +847,55 @@
       </column>
       <column columnName="birth">
         <datatype>timestamp</datatype>
-        <columnTitle>birth</columnTitle>
+        <columnTitle>Birth</columnTitle>
       </column>
       <column columnName="death">
         <datatype>timestamp</datatype>
-        <columnTitle>death</columnTitle>
+        <columnTitle>Death</columnTitle>
       </column>
       <column columnName="arrivedate">
         <datatype>timestamp</datatype>
-        <columnTitle>arrivedate</columnTitle>
+        <columnTitle>Arrival Date</columnTitle>
       </column>
       <column columnName="departdate">
         <datatype>timestamp</datatype>
-        <columnTitle>departdate</columnTitle>
+        <columnTitle>Departure Date</columnTitle>
       </column>
       <column columnName="room">
         <datatype>varchar</datatype>
-        <columnTitle>room</columnTitle>
+        <columnTitle>Room</columnTitle>
       </column>
       <column columnName="cage">
         <datatype>varchar</datatype>
-        <columnTitle>cage</columnTitle>
+        <columnTitle>Cage</columnTitle>
       </column>
       <column columnName="cond">
         <datatype>varchar</datatype>
-        <columnTitle>cond</columnTitle>
+        <columnTitle>Condition</columnTitle>
       </column>
       <column columnName="weight">
         <datatype>double</datatype>
-        <columnTitle>weight</columnTitle>
+        <columnTitle>Current Weight</columnTitle>
       </column>
       <column columnName="wdate">
         <datatype>timestamp</datatype>
-        <columnTitle>wdate</columnTitle>
+        <columnTitle>Weight Date</columnTitle>
       </column>
       <column columnName="tbdate">
         <datatype>timestamp</datatype>
-        <columnTitle>tbdate</columnTitle>
+        <columnTitle>Last TB Date</columnTitle>
       </column>
       <column columnName="medical">
         <datatype>varchar</datatype>
-        <columnTitle>medical</columnTitle>
+        <columnTitle>Medical</columnTitle>
       </column>
       <column columnName="purchasedby">
         <datatype>varchar</datatype>
-        <columnTitle>purchasedby</columnTitle>
+        <columnTitle>Purchased By</columnTitle>
       </column>
       <column columnName="v_status">
         <datatype>varchar</datatype>
-        <columnTitle>v_status</columnTitle>
+        <columnTitle>Viral Status</columnTitle>
       </column>
     </columns>
     <tableTitle>Demographics</tableTitle>
@@ -919,7 +931,7 @@
       </column>
       <column columnName="description">
         <datatype>varchar</datatype>
-        <columnTitle>description</columnTitle>
+        <columnTitle>Description</columnTitle>
         <shownInInsertView>false</shownInInsertView>
         <shownInUpdateView>false</shownInUpdateView>
         <shownInDetailsView>false</shownInDetailsView>
@@ -929,10 +941,11 @@
       </column>
       <column columnName="objectid">
         <datatype>integer</datatype>
-        <columnTitle>objectid</columnTitle>
+        <columnTitle>Key</columnTitle>
         <shownInInsertView>false</shownInInsertView>
         <shownInUpdateView>false</shownInUpdateView>
         <shownInDetailsView>false</shownInDetailsView>
+        <isHidden>true</isHidden>
         <isKeyField>true</isKeyField>
         <isAutoInc>true</isAutoInc>
       </column>
@@ -1007,16 +1020,17 @@
       </column>
       <column columnName="objectid">
         <datatype>integer</datatype>
-        <columnTitle>objectid</columnTitle>
+        <columnTitle>Key</columnTitle>
         <shownInInsertView>false</shownInInsertView>
         <shownInUpdateView>false</shownInUpdateView>
         <shownInDetailsView>false</shownInDetailsView>
+        <isHidden>true</isHidden>
         <isKeyField>true</isKeyField>
         <isAutoInc>true</isAutoInc>
       </column>
     </columns>
-    <tableTitle>Drug</tableTitle>
-    <description>Medication records</description>
+    <tableTitle>Drug Administration</tableTitle>
+    <description>Drug administration records</description>
   </table>
   <table tableName="hemamisc" tableDbType="TABLE">
     <columns>
@@ -1053,16 +1067,17 @@
       </column>
       <column columnName="objectid">
         <datatype>integer</datatype>
-        <columnTitle>objectid</columnTitle>
+        <columnTitle>Key</columnTitle>
         <shownInInsertView>false</shownInInsertView>
         <shownInUpdateView>false</shownInUpdateView>
         <shownInDetailsView>false</shownInDetailsView>
+        <isHidden>true</isHidden>
         <isKeyField>true</isKeyField>
         <isAutoInc>true</isAutoInc>
       </column>
     </columns>
-    <tableTitle>hemamisc</tableTitle>
-    <description>CBC data</description>
+    <tableTitle>Hematology Misc</tableTitle>
+    <description>Hematology Data</description>
   </table>
   <table tableName="hematology" tableDbType="TABLE">
     <columns>
@@ -1175,7 +1190,7 @@
       </column>
       <column columnName="clinremark">
         <datatype>varchar</datatype>
-        <columnTitle>Clin Remark</columnTitle>
+        <columnTitle>Clinical Remark</columnTitle>
         <inputType>textarea</inputType>
       </column>
       <column columnName="proMyelo">
@@ -1196,7 +1211,7 @@
       </column>
       <column columnName="description">
         <datatype>varchar</datatype>
-        <columnTitle>description</columnTitle>
+        <columnTitle>Description</columnTitle>
         <shownInInsertView>false</shownInInsertView>
         <shownInUpdateView>false</shownInUpdateView>
         <shownInDetailsView>false</shownInDetailsView>
@@ -1206,10 +1221,11 @@
       </column>
       <column columnName="objectid">
         <datatype>integer</datatype>
-        <columnTitle>objectid</columnTitle>
+        <columnTitle>Key</columnTitle>
         <shownInInsertView>false</shownInInsertView>
         <shownInUpdateView>false</shownInUpdateView>
         <shownInDetailsView>false</shownInDetailsView>
+        <isHidden>true</isHidden>
         <isKeyField>true</isKeyField>
         <isAutoInc>true</isAutoInc>
       </column>
@@ -1248,7 +1264,7 @@
       </column>
       <column columnName="description">
         <datatype>varchar</datatype>
-        <columnTitle>description</columnTitle>
+        <columnTitle>Description</columnTitle>
         <shownInInsertView>false</shownInInsertView>
         <shownInUpdateView>false</shownInUpdateView>
         <shownInDetailsView>false</shownInDetailsView>
@@ -1258,15 +1274,16 @@
       </column>
       <column columnName="objectid">
         <datatype>integer</datatype>
-        <columnTitle>objectid</columnTitle>
+        <columnTitle>Key</columnTitle>
         <shownInInsertView>false</shownInInsertView>
         <shownInUpdateView>false</shownInUpdateView>
         <shownInDetailsView>false</shownInDetailsView>
+        <isHidden>true</isHidden>
         <isKeyField>true</isKeyField>
         <isAutoInc>true</isAutoInc>
       </column>
     </columns>
-    <tableTitle>hormtrem</tableTitle>
+    <tableTitle>Hormone Treatment Remarks</tableTitle>
   </table>
   <table tableName="housing" tableDbType="TABLE">
     <columns>
@@ -1278,30 +1295,35 @@
       </column>
       <column columnName="Date">
         <datatype>timestamp</datatype>
-        <columnTitle>Date</columnTitle>
+        <columnTitle>In Date</columnTitle>
         <nullable>false</nullable>
         <propertyURI>http://cpas.labkey.com/Study#VisitDate</propertyURI>
       </column>
       <column columnName="room">
         <datatype>varchar</datatype>
+        <columnTitle>Room</columnTitle>
       </column>
       <column columnName="cage">
         <datatype>varchar</datatype>
+        <columnTitle>Cage</columnTitle>
       </column>
       <column columnName="cond">
         <nullable>true</nullable>
         <datatype>varchar</datatype>
+        <columnTitle>Condition</columnTitle>
       </column>
       <column columnName="odate">
         <nullable>true</nullable>
         <datatype>timestamp</datatype>
+        <columnTitle>Out Date</columnTitle>
       </column>
       <column columnName="objectid">
         <datatype>integer</datatype>
-        <columnTitle>ObjectID</columnTitle>
+        <columnTitle>Key</columnTitle>
         <shownInInsertView>false</shownInInsertView>
         <shownInUpdateView>false</shownInUpdateView>
         <shownInDetailsView>false</shownInDetailsView>
+        <isHidden>true</isHidden>
         <isKeyField>true</isKeyField>
         <isAutoInc>true</isAutoInc>
       </column>
@@ -1324,7 +1346,7 @@
       </column>
       <column columnName="reqid">
         <datatype>varchar</datatype>
-        <columnTitle>RequestID</columnTitle>
+        <columnTitle>Request ID</columnTitle>
       </column>
       <column columnName="cd3">
         <datatype>integer</datatype>
@@ -1354,10 +1376,11 @@
       </column>
       <column columnName="objectid">
         <datatype>integer</datatype>
-        <columnTitle>objectid</columnTitle>
+        <columnTitle>Key</columnTitle>
         <shownInInsertView>false</shownInInsertView>
         <shownInUpdateView>false</shownInUpdateView>
         <shownInDetailsView>false</shownInDetailsView>
+        <isHidden>true</isHidden>
         <isKeyField>true</isKeyField>
         <isAutoInc>true</isAutoInc>
       </column>
@@ -1380,19 +1403,19 @@
       </column>
       <column columnName="a01">
         <datatype>varchar</datatype>
-        <columnTitle>a01</columnTitle>
+        <columnTitle>A01</columnTitle>
       </column>
       <column columnName="a02">
         <datatype>varchar</datatype>
-        <columnTitle>a02</columnTitle>
+        <columnTitle>A02</columnTitle>
       </column>
       <column columnName="b08">
         <datatype>varchar</datatype>
-        <columnTitle>b08</columnTitle>
+        <columnTitle>B08</columnTitle>
       </column>
       <column columnName="b17">
         <datatype>varchar</datatype>
-        <columnTitle>b17</columnTitle>
+        <columnTitle>B17</columnTitle>
       </column>
       <column columnName="description">
         <datatype>varchar</datatype>
@@ -1406,12 +1429,13 @@
       </column>
       <column columnName="objectid">
         <datatype>integer</datatype>
-        <columnTitle>objectid</columnTitle>
+        <columnTitle>Key</columnTitle>
+        <isHidden>true</isHidden>
         <isKeyField>true</isKeyField>
         <isAutoInc>true</isAutoInc>
       </column>
     </columns>
-    <tableTitle>mhctype</tableTitle>
+    <tableTitle>MHC Types</tableTitle>
   </table>
   <table tableName="necropsy" tableDbType="TABLE">
     <columns>
@@ -1448,15 +1472,16 @@
       </column>
       <column columnName="objectid">
         <datatype>integer</datatype>
-        <columnTitle>objectid</columnTitle>
+        <columnTitle>Key</columnTitle>
         <shownInInsertView>false</shownInInsertView>
         <shownInUpdateView>false</shownInUpdateView>
         <shownInDetailsView>false</shownInDetailsView>
+        <isHidden>true</isHidden>
         <isKeyField>true</isKeyField>
         <isAutoInc>true</isAutoInc>
       </column>
     </columns>
-    <tableTitle>necropsy</tableTitle>
+    <tableTitle>Necropsy Head</tableTitle>
   </table>
   <table tableName="necropsydiag" tableDbType="TABLE">
     <columns>
@@ -1474,15 +1499,16 @@
       </column>
       <column columnName="necropsy_objectid">
         <datatype>integer</datatype>
-        <columnTitle>necropsy_objectid</columnTitle>
+        <isHidden>true</isHidden>
+        <columnTitle>Necropsy ID</columnTitle>
       </column>
       <column columnName="seq1">
         <datatype>integer</datatype>
-        <columnTitle>seq1</columnTitle>
+        <columnTitle>Seq1</columnTitle>
       </column>
       <column columnName="seq2">
         <datatype>integer</datatype>
-        <columnTitle>seq2</columnTitle>
+        <columnTitle>Seq2</columnTitle>
       </column>
       <column columnName="code">
         <datatype>varchar</datatype>
@@ -1505,15 +1531,16 @@
       </column>
       <column columnName="objectid">
         <datatype>integer</datatype>
-        <columnTitle>objectid</columnTitle>
+        <columnTitle>Key</columnTitle>
         <shownInInsertView>false</shownInInsertView>
         <shownInUpdateView>false</shownInUpdateView>
         <shownInDetailsView>false</shownInDetailsView>
+        <isHidden>true</isHidden>
         <isKeyField>true</isKeyField>
         <isAutoInc>true</isAutoInc>
       </column>
     </columns>
-    <tableTitle>necropsydiag</tableTitle>
+    <tableTitle>Necropsy Diagnosis</tableTitle>
   </table>
   <table tableName="obs" tableDbType="TABLE">
     <columns>
@@ -1531,7 +1558,7 @@
       </column>
       <column columnName="userid">
         <datatype>varchar</datatype>
-        <columnTitle>UserID</columnTitle>
+        <columnTitle>User ID</columnTitle>
       </column>
       <column columnName="feces">
         <datatype>varchar</datatype>
@@ -1579,15 +1606,16 @@
       </column>
       <column columnName="objectid">
         <datatype>integer</datatype>
-        <columnTitle>objectid</columnTitle>
+        <columnTitle>Key</columnTitle>
         <shownInInsertView>false</shownInInsertView>
         <shownInUpdateView>false</shownInUpdateView>
         <shownInDetailsView>false</shownInDetailsView>
+        <isHidden>true</isHidden>
         <isKeyField>true</isKeyField>
         <isAutoInc>true</isAutoInc>
       </column>
     </columns>
-    <tableTitle>obs</tableTitle>
+    <tableTitle>Observations</tableTitle>
   </table>
   <table tableName="parares" tableDbType="TABLE">
     <columns>
@@ -1605,11 +1633,12 @@
       </column>
       <column columnName="parasitology_objectid">
         <datatype>integer</datatype>
-        <columnTitle>parasitology_objectid</columnTitle>
+        <isHidden>true</isHidden>
+        <columnTitle>Parasitology Run ID</columnTitle>
       </column>
       <column columnName="seq">
         <datatype>integer</datatype>
-        <columnTitle>seq</columnTitle>
+        <columnTitle>Seq</columnTitle>
       </column>
       <column columnName="code">
         <datatype>varchar</datatype>
@@ -1622,7 +1651,7 @@
       </column>
       <column columnName="description">
         <datatype>varchar</datatype>
-        <columnTitle>description</columnTitle>
+        <columnTitle>Description</columnTitle>
         <shownInInsertView>false</shownInInsertView>
         <shownInUpdateView>false</shownInUpdateView>
         <shownInDetailsView>false</shownInDetailsView>
@@ -1632,15 +1661,16 @@
       </column>
       <column columnName="objectid">
         <datatype>integer</datatype>
-        <columnTitle>objectid</columnTitle>
+        <columnTitle>Key</columnTitle>
         <shownInInsertView>false</shownInInsertView>
         <shownInUpdateView>false</shownInUpdateView>
         <shownInDetailsView>false</shownInDetailsView>
+        <isHidden>true</isHidden>
         <isKeyField>true</isKeyField>
         <isAutoInc>true</isAutoInc>
       </column>
     </columns>
-    <tableTitle>parares</tableTitle>
+    <tableTitle>Parasitology Results</tableTitle>
   </table>
   <table tableName="parahead" tableDbType="TABLE">
     <columns>
@@ -1673,12 +1703,12 @@
       </column>
       <column columnName="clinremark">
         <datatype>varchar</datatype>
-        <columnTitle>Clin Remark</columnTitle>
+        <columnTitle>Clinical Remark</columnTitle>
         <inputType>textarea</inputType>
       </column>
       <column columnName="description">
         <datatype>varchar</datatype>
-        <columnTitle>description</columnTitle>
+        <columnTitle>Description</columnTitle>
         <shownInInsertView>false</shownInInsertView>
         <shownInUpdateView>false</shownInUpdateView>
         <shownInDetailsView>false</shownInDetailsView>
@@ -1688,15 +1718,16 @@
       </column>
       <column columnName="objectid">
         <datatype>integer</datatype>
-        <columnTitle>objectid</columnTitle>
+        <columnTitle>Key</columnTitle>
         <shownInInsertView>false</shownInInsertView>
         <shownInUpdateView>false</shownInUpdateView>
         <shownInDetailsView>false</shownInDetailsView>
+        <isHidden>true</isHidden>
         <isKeyField>true</isKeyField>
         <isAutoInc>true</isAutoInc>
       </column>
     </columns>
-    <tableTitle>Parahead</tableTitle>
+    <tableTitle>Parasitology Head</tableTitle>
   </table>
   <table tableName="parasitology" tableDbType="TABLE">
     <columns>
@@ -1743,12 +1774,12 @@
       </column>
       <column columnName="clinremark">
         <datatype>varchar</datatype>
-        <columnTitle>Clin Remark</columnTitle>
+        <columnTitle>Clinical Remark</columnTitle>
         <inputType>textarea</inputType>
       </column>
       <column columnName="description">
         <datatype>varchar</datatype>
-        <columnTitle>description</columnTitle>
+        <columnTitle>Description</columnTitle>
         <shownInInsertView>false</shownInInsertView>
         <shownInUpdateView>false</shownInUpdateView>
         <shownInDetailsView>false</shownInDetailsView>
@@ -1758,10 +1789,11 @@
       </column>
       <column columnName="objectid">
         <datatype>integer</datatype>
-        <columnTitle>objectid</columnTitle>
+        <columnTitle>Key</columnTitle>
         <shownInInsertView>false</shownInInsertView>
         <shownInUpdateView>false</shownInUpdateView>
         <shownInDetailsView>false</shownInDetailsView>
+        <isHidden>true</isHidden>
         <isKeyField>true</isKeyField>
         <isAutoInc>true</isAutoInc>
       </column>
@@ -1796,8 +1828,8 @@
         <columnTitle>Dam</columnTitle>
         <fk>
           <fkDbSchema>study</fkDbSchema>
-          <fkTable>participant</fkTable>
-          <fkColumnName>ParticipantId</fkColumnName>
+          <fkTable>animal</fkTable>
+          <fkColumnName>Id</fkColumnName>
         </fk>
       </column>
       <column columnName="sire1">
@@ -1805,8 +1837,8 @@
         <columnTitle>Sire1</columnTitle>
         <fk>
           <fkDbSchema>study</fkDbSchema>
-          <fkTable>participant</fkTable>
-          <fkColumnName>ParticipantId</fkColumnName>
+          <fkTable>animal</fkTable>
+          <fkColumnName>Id</fkColumnName>
         </fk>
       </column>
       <column columnName="sire2">
@@ -1814,8 +1846,8 @@
         <columnTitle>Sire2</columnTitle>
         <fk>
           <fkDbSchema>study</fkDbSchema>
-          <fkTable>participant</fkTable>
-          <fkColumnName>ParticipantId</fkColumnName>
+          <fkTable>animal</fkTable>
+          <fkColumnName>Id</fkColumnName>
         </fk>
       </column>
       <column columnName="sire3">
@@ -1823,13 +1855,13 @@
         <columnTitle>Sire3</columnTitle>
         <fk>
           <fkDbSchema>study</fkDbSchema>
-          <fkTable>participant</fkTable>
-          <fkColumnName>ParticipantId</fkColumnName>
+          <fkTable>animal</fkTable>
+          <fkColumnName>Id</fkColumnName>
         </fk>
       </column>
       <column columnName="status">
         <datatype>varchar</datatype>
-        <columnTitle>status</columnTitle>
+        <columnTitle>Status</columnTitle>
         <fk>
           <fkDbSchema>lists</fkDbSchema>
           <fkTable>status</fkTable>
@@ -1842,7 +1874,7 @@
       </column>
       <column columnName="description">
         <datatype>varchar</datatype>
-        <columnTitle>description</columnTitle>
+        <columnTitle>Description</columnTitle>
         <shownInInsertView>false</shownInInsertView>
         <shownInUpdateView>false</shownInUpdateView>
         <shownInDetailsView>false</shownInDetailsView>
@@ -1852,10 +1884,11 @@
       </column>
       <column columnName="objectid">
         <datatype>integer</datatype>
-        <columnTitle>objectid</columnTitle>
+        <columnTitle>Key</columnTitle>
         <shownInInsertView>false</shownInInsertView>
         <shownInUpdateView>false</shownInUpdateView>
         <shownInDetailsView>false</shownInDetailsView>
+        <isHidden>true</isHidden>
         <isKeyField>true</isKeyField>
         <isAutoInc>true</isAutoInc>
       </column>
@@ -1879,10 +1912,20 @@
       <column columnName="species">
         <datatype>varchar</datatype>
         <columnTitle>Species</columnTitle>
+        <fk>
+          <fkDbSchema>lists</fkDbSchema>
+          <fkTable>species</fkTable>
+          <fkColumnName>code</fkColumnName>
+        </fk>
       </column>
       <column columnName="sex">
         <datatype>varchar</datatype>
         <columnTitle>Sex</columnTitle>
+        <fk>
+          <fkDbSchema>lists</fkDbSchema>
+          <fkTable>sex</fkTable>
+          <fkColumnName>code</fkColumnName>
+        </fk>
       </column>
       <column columnName="weight">
         <datatype>double</datatype>
@@ -1893,8 +1936,8 @@
         <columnTitle>Dam</columnTitle>
         <fk>
           <fkDbSchema>study</fkDbSchema>
-          <fkTable>participant</fkTable>
-          <fkColumnName>ParticipantId</fkColumnName>
+          <fkTable>animal</fkTable>
+          <fkColumnName>Id</fkColumnName>
         </fk>
       </column>
       <column columnName="sire">
@@ -1902,8 +1945,8 @@
         <columnTitle>Sire</columnTitle>
         <fk>
           <fkDbSchema>study</fkDbSchema>
-          <fkTable>participant</fkTable>
-          <fkColumnName>ParticipantId</fkColumnName>
+          <fkTable>animal</fkTable>
+          <fkColumnName>Id</fkColumnName>
         </fk>
       </column>
       <column columnName="room">
@@ -1935,7 +1978,7 @@
       </column>
       <column columnName="description">
         <datatype>varchar</datatype>
-        <columnTitle>description</columnTitle>
+        <columnTitle>Description</columnTitle>
         <shownInInsertView>false</shownInInsertView>
         <shownInUpdateView>false</shownInUpdateView>
         <shownInDetailsView>false</shownInDetailsView>
@@ -1945,10 +1988,11 @@
       </column>
       <column columnName="objectid">
         <datatype>integer</datatype>
-        <columnTitle>objectid</columnTitle>
+        <columnTitle>Key</columnTitle>
         <shownInInsertView>false</shownInInsertView>
         <shownInUpdateView>false</shownInUpdateView>
         <shownInDetailsView>false</shownInDetailsView>
+        <isHidden>true</isHidden>
         <isKeyField>true</isKeyField>
         <isAutoInc>true</isAutoInc>
       </column>
@@ -1971,12 +2015,16 @@
       </column>
       <column columnName="problem_no">
         <datatype>integer</datatype>
-        <columnTitle>Problem No</columnTitle>
+        <columnTitle>Problem Number</columnTitle>
       </column>
-      <column columnName="descript">
+      <column columnName="remark">
         <datatype>varchar</datatype>
-        <columnTitle>Descript</columnTitle>
+        <columnTitle>Remark</columnTitle>
         <inputType>textarea</inputType>
+      </column>
+      <column columnName="date_observed">
+        <datatype>timestamp</datatype>
+        <columnTitle>Date Observed</columnTitle>
       </column>
       <column columnName="date_resolved">
         <datatype>timestamp</datatype>
@@ -1993,7 +2041,7 @@
       </column>
       <column columnName="description">
         <datatype>varchar</datatype>
-        <columnTitle>description</columnTitle>
+        <columnTitle>Description</columnTitle>
         <shownInInsertView>false</shownInInsertView>
         <shownInUpdateView>false</shownInUpdateView>
         <shownInDetailsView>false</shownInDetailsView>
@@ -2003,15 +2051,16 @@
       </column>
       <column columnName="objectid">
         <datatype>integer</datatype>
-        <columnTitle>objectid</columnTitle>
+        <columnTitle>Key</columnTitle>
         <shownInInsertView>false</shownInInsertView>
         <shownInUpdateView>false</shownInUpdateView>
         <shownInDetailsView>false</shownInDetailsView>
+        <isHidden>true</isHidden>
         <isKeyField>true</isKeyField>
         <isAutoInc>true</isAutoInc>
       </column>
     </columns>
-    <tableTitle>Problem</tableTitle>
+    <tableTitle>Cases</tableTitle>
   </table>
   <table tableName="surgery" tableDbType="TABLE">
     <columns>
@@ -2064,7 +2113,7 @@
       </column>
       <column columnName="description">
         <datatype>varchar</datatype>
-        <columnTitle>description</columnTitle>
+        <columnTitle>Description</columnTitle>
         <shownInInsertView>false</shownInInsertView>
         <shownInUpdateView>false</shownInUpdateView>
         <shownInDetailsView>false</shownInDetailsView>
@@ -2074,15 +2123,16 @@
       </column>
       <column columnName="objectid">
         <datatype>integer</datatype>
-        <columnTitle>objectid</columnTitle>
+        <columnTitle>Key</columnTitle>
         <shownInInsertView>false</shownInInsertView>
         <shownInUpdateView>false</shownInUpdateView>
         <shownInDetailsView>false</shownInDetailsView>
+        <isHidden>true</isHidden>
         <isKeyField>true</isKeyField>
         <isAutoInc>true</isAutoInc>
       </column>
     </columns>
-    <tableTitle>Surgery</tableTitle>
+    <tableTitle>Surgery Head</tableTitle>
   </table>
   <table tableName="surgfluid" tableDbType="TABLE">
     <columns>
@@ -2131,7 +2181,7 @@
       </column>
       <column columnName="description">
         <datatype>varchar</datatype>
-        <columnTitle>description</columnTitle>
+        <columnTitle>Description</columnTitle>
         <shownInInsertView>false</shownInInsertView>
         <shownInUpdateView>false</shownInUpdateView>
         <shownInDetailsView>false</shownInDetailsView>
@@ -2141,15 +2191,16 @@
       </column>
       <column columnName="objectid">
         <datatype>integer</datatype>
-        <columnTitle>objectid</columnTitle>
+        <columnTitle>Key</columnTitle>
         <shownInInsertView>false</shownInInsertView>
         <shownInUpdateView>false</shownInUpdateView>
         <shownInDetailsView>false</shownInDetailsView>
+        <isHidden>true</isHidden>
         <isKeyField>true</isKeyField>
         <isAutoInc>true</isAutoInc>
       </column>
     </columns>
-    <tableTitle>surgfluid</tableTitle>
+    <tableTitle>Surgery Fluid</tableTitle>
     <description>Fluids administered during surgery</description>
   </table>
   <table tableName="surgproc" tableDbType="TABLE">
@@ -2177,7 +2228,7 @@
       </column>
       <column columnName="description">
         <datatype>varchar</datatype>
-        <columnTitle>description</columnTitle>
+        <columnTitle>Description</columnTitle>
         <shownInInsertView>false</shownInInsertView>
         <shownInUpdateView>false</shownInUpdateView>
         <shownInDetailsView>false</shownInDetailsView>
@@ -2187,15 +2238,16 @@
       </column>
       <column columnName="objectid">
         <datatype>integer</datatype>
-        <columnTitle>objectid</columnTitle>
+        <columnTitle>Key</columnTitle>
         <shownInInsertView>false</shownInInsertView>
         <shownInUpdateView>false</shownInUpdateView>
         <shownInDetailsView>false</shownInDetailsView>
+        <isHidden>true</isHidden>
         <isKeyField>true</isKeyField>
         <isAutoInc>true</isAutoInc>
       </column>
     </columns>
-    <tableTitle>surgproc</tableTitle>
+    <tableTitle>Surgery Procedures</tableTitle>
     <description>Surgical Procedures</description>
   </table>
   <table tableName="surgsum" tableDbType="TABLE">
@@ -2249,15 +2301,16 @@
       </column>
       <column columnName="objectid">
         <datatype>integer</datatype>
-        <columnTitle>objectid</columnTitle>
+        <columnTitle>Key</columnTitle>
         <shownInInsertView>false</shownInInsertView>
         <shownInUpdateView>false</shownInUpdateView>
         <shownInDetailsView>false</shownInDetailsView>
+        <isHidden>true</isHidden>
         <isKeyField>true</isKeyField>
         <isAutoInc>true</isAutoInc>
       </column>
     </columns>
-    <tableTitle>surgsum</tableTitle>
+    <tableTitle>Surgery Summary</tableTitle>
     <description>Summary of surgeries</description>
   </table>
   <table tableName="tb" tableDbType="TABLE">
@@ -2310,10 +2363,11 @@
       </column>
       <column columnName="objectid">
         <datatype>integer</datatype>
-        <columnTitle>objectid</columnTitle>
+        <columnTitle>Key</columnTitle>
         <shownInInsertView>false</shownInInsertView>
         <shownInUpdateView>false</shownInUpdateView>
         <shownInDetailsView>false</shownInDetailsView>
+        <isHidden>true</isHidden>
         <isKeyField>true</isKeyField>
         <isAutoInc>true</isAutoInc>
       </column>
@@ -2390,10 +2444,11 @@
       </column>
       <column columnName="objectid">
         <datatype>integer</datatype>
-        <columnTitle>objectid</columnTitle>
+        <columnTitle>Key</columnTitle>
         <shownInInsertView>false</shownInInsertView>
         <shownInUpdateView>false</shownInUpdateView>
         <shownInDetailsView>false</shownInDetailsView>
+        <isHidden>true</isHidden>
         <isKeyField>true</isKeyField>
         <isAutoInc>true</isAutoInc>
       </column>
@@ -2495,15 +2550,16 @@
       </column>
       <column columnName="objectid">
         <datatype>integer</datatype>
-        <columnTitle>objectid</columnTitle>
+        <columnTitle>Key</columnTitle>
         <shownInInsertView>false</shownInInsertView>
         <shownInUpdateView>false</shownInUpdateView>
         <shownInDetailsView>false</shownInDetailsView>
+        <isHidden>true</isHidden>
         <isKeyField>true</isKeyField>
         <isAutoInc>true</isAutoInc>
       </column>
     </columns>
-    <tableTitle>treatment_order</tableTitle>
+    <tableTitle>Treatment Order</tableTitle>
     <description>This table contains treatments ordered for animals</description>
   </table>
   <table tableName="urine" tableDbType="TABLE">
@@ -2593,7 +2649,7 @@
       </column>
       <column columnName="description">
         <datatype>varchar</datatype>
-        <columnTitle>description</columnTitle>
+        <columnTitle>Description</columnTitle>
         <shownInInsertView>false</shownInInsertView>
         <shownInUpdateView>false</shownInUpdateView>
         <shownInDetailsView>false</shownInDetailsView>
@@ -2603,64 +2659,17 @@
       </column>
       <column columnName="objectid">
         <datatype>integer</datatype>
-        <columnTitle>objectid</columnTitle>
+        <columnTitle>Key</columnTitle>
         <shownInInsertView>false</shownInInsertView>
         <shownInUpdateView>false</shownInUpdateView>
         <shownInDetailsView>false</shownInDetailsView>
+        <isHidden>true</isHidden>
         <isKeyField>true</isKeyField>
         <isAutoInc>true</isAutoInc>
       </column>
     </columns>
     <tableTitle>Urine</tableTitle>
     <description>Urine data</description>
-  </table>
-  <table tableName="virserores" tableDbType="TABLE">
-    <columns>
-      <column columnName="participantid">
-        <datatype>varchar</datatype>
-        <columnTitle>Participant ID</columnTitle>
-        <description>Participant identifier</description>
-        <nullable>false</nullable>
-      </column>
-      <column columnName="Date">
-        <datatype>timestamp</datatype>
-        <columnTitle>Date</columnTitle>
-        <nullable>false</nullable>
-        <propertyURI>http://cpas.labkey.com/Study#VisitDate</propertyURI>
-      </column>
-      <column columnName="seq">
-        <nullable>true</nullable>
-        <datatype>integer</datatype>
-      </column>
-      <column columnName="virus">
-        <nullable>true</nullable>
-        <datatype>varchar</datatype>
-      </column>
-      <column columnName="result">
-        <nullable>true</nullable>
-        <datatype>varchar</datatype>
-      </column>
-      <column columnName="description">
-        <datatype>varchar</datatype>
-        <columnTitle>description</columnTitle>
-        <shownInInsertView>false</shownInInsertView>
-        <shownInUpdateView>false</shownInUpdateView>
-        <shownInDetailsView>false</shownInDetailsView>
-        <propertyURI>urn:ehr.labkey.org/#Description</propertyURI>
-        <isHidden>true</isHidden>
-        <inputType>textarea</inputType>
-      </column>
-      <column columnName="objectid">
-        <datatype>integer</datatype>
-        <columnTitle>objectid</columnTitle>
-        <shownInInsertView>false</shownInInsertView>
-        <shownInUpdateView>false</shownInUpdateView>
-        <shownInDetailsView>false</shownInDetailsView>
-        <isKeyField>true</isKeyField>
-        <isAutoInc>true</isAutoInc>
-      </column>
-    </columns>
-    <tableTitle>virserores</tableTitle>
   </table>
   <table tableName="viriso" tableDbType="TABLE">
       <columns>
@@ -2678,7 +2687,7 @@
         </column>
         <column columnName="seq">
           <datatype>integer</datatype>
-          <columnTitle>seq</columnTitle>
+          <columnTitle>Seq</columnTitle>
           <isHidden>true</isHidden>
         </column>
         <column columnName="source">
@@ -2706,7 +2715,7 @@
         </column>
         <column columnName="clinremark">
           <datatype>varchar</datatype>
-          <columnTitle>Clin Remark</columnTitle>
+          <columnTitle>Clinical Remark</columnTitle>
           <inputType>textarea</inputType>
         </column>
         <column columnName="description">
@@ -2721,16 +2730,17 @@
         </column>
         <column columnName="objectid">
           <datatype>integer</datatype>
-          <columnTitle>objectid</columnTitle>
+          <columnTitle>Key</columnTitle>
           <shownInInsertView>false</shownInInsertView>
           <shownInUpdateView>false</shownInUpdateView>
           <shownInDetailsView>false</shownInDetailsView>
+          <isHidden>true</isHidden>
           <isKeyField>true</isKeyField>
           <isAutoInc>true</isAutoInc>
         </column>
       </columns>
-      <tableTitle>Viriso</tableTitle>
-      <description>Viriso</description>
+      <tableTitle>Virology/Isolation</tableTitle>
+      <description>Virology/Isolation</description>
   </table>
   <table tableName="virisohead" tableDbType="TABLE">
       <columns>
@@ -2763,7 +2773,7 @@
         </column>
         <column columnName="clinremark">
           <datatype>varchar</datatype>
-          <columnTitle>Clin Remark</columnTitle>
+          <columnTitle>Clinical Remark</columnTitle>
           <inputType>textarea</inputType>
         </column>
         <column columnName="description">
@@ -2778,16 +2788,17 @@
         </column>
         <column columnName="objectid">
           <datatype>integer</datatype>
-          <columnTitle>objectid</columnTitle>
+          <columnTitle>Key</columnTitle>
           <shownInInsertView>false</shownInInsertView>
           <shownInUpdateView>false</shownInUpdateView>
           <shownInDetailsView>false</shownInDetailsView>
+          <isHidden>true</isHidden>
           <isKeyField>true</isKeyField>
           <isAutoInc>true</isAutoInc>
         </column>
     </columns>
-    <tableTitle>Virisohead</tableTitle>
-    <description>Virisohead</description>
+    <tableTitle>Virology/Isolation Head</tableTitle>
+    <description>Virology/Isolation Head</description>
   </table>
   <table tableName="virisores" tableDbType="TABLE">
       <columns>
@@ -2805,7 +2816,7 @@
         </column>
         <column columnName="seq">
           <datatype>integer</datatype>
-          <columnTitle>seq</columnTitle>
+          <columnTitle>Seq</columnTitle>
           <isHidden>true</isHidden>
         </column>
         <column columnName="source">
@@ -2828,16 +2839,17 @@
         </column>
         <column columnName="objectid">
           <datatype>integer</datatype>
-          <columnTitle>objectid</columnTitle>
+          <columnTitle>Key</columnTitle>
           <shownInInsertView>false</shownInInsertView>
           <shownInUpdateView>false</shownInUpdateView>
           <shownInDetailsView>false</shownInDetailsView>
+          <isHidden>true</isHidden>
           <isKeyField>true</isKeyField>
           <isAutoInc>true</isAutoInc>
         </column>
     </columns>
-    <tableTitle>Virisores</tableTitle>
-    <description>Virisores</description>
+    <tableTitle>Virology/Isolation Results</tableTitle>
+    <description>Virology/Isolation Results</description>
   </table>
   <table tableName="virsero" tableDbType="TABLE">
       <columns>
@@ -2855,7 +2867,7 @@
         </column>
         <column columnName="seq">
           <datatype>integer</datatype>
-          <columnTitle>seq</columnTitle>
+          <columnTitle>Seq</columnTitle>
           <isHidden>true</isHidden>
         </column>
         <column columnName="virus">
@@ -2879,7 +2891,7 @@
         </column>
         <column columnName="clinremark">
           <datatype>varchar</datatype>
-          <columnTitle>Clin Remark</columnTitle>
+          <columnTitle>Clinical Remark</columnTitle>
           <inputType>textarea</inputType>
         </column>
         <column columnName="description">
@@ -2894,16 +2906,17 @@
         </column>
         <column columnName="objectid">
           <datatype>integer</datatype>
-          <columnTitle>objectid</columnTitle>
+          <columnTitle>Key</columnTitle>
           <shownInInsertView>false</shownInInsertView>
           <shownInUpdateView>false</shownInUpdateView>
           <shownInDetailsView>false</shownInDetailsView>
+          <isHidden>true</isHidden>
           <isKeyField>true</isKeyField>
           <isAutoInc>true</isAutoInc>
         </column>
       </columns>
-      <tableTitle>Virsero</tableTitle>
-      <description>Virsero</description>
+      <tableTitle>Virology/Serology</tableTitle>
+      <description>Virology/Serology</description>
   </table>
   <table tableName="virserohead" tableDbType="TABLE">
       <columns>
@@ -2932,7 +2945,7 @@
         </column>
         <column columnName="clinremark">
           <datatype>varchar</datatype>
-          <columnTitle>Clin Remark</columnTitle>
+          <columnTitle>Clinical Remark</columnTitle>
           <inputType>textarea</inputType>
         </column>
         <column columnName="description">
@@ -2947,16 +2960,17 @@
         </column>
         <column columnName="objectid">
           <datatype>integer</datatype>
-          <columnTitle>objectid</columnTitle>
+          <columnTitle>Key</columnTitle>
           <shownInInsertView>false</shownInInsertView>
           <shownInUpdateView>false</shownInUpdateView>
           <shownInDetailsView>false</shownInDetailsView>
+          <isHidden>true</isHidden>
           <isKeyField>true</isKeyField>
           <isAutoInc>true</isAutoInc>
         </column>
       </columns>
-      <tableTitle>Virserohead</tableTitle>
-      <description>Virserohead</description>
+      <tableTitle>Virology/Serology Head</tableTitle>
+      <description>Virology/Serology Head</description>
   </table>
     <table tableName="virserores" tableDbType="TABLE">
       <columns>
@@ -2974,7 +2988,7 @@
        </column>
       <column columnName="seq">
         <datatype>integer</datatype>
-        <columnTitle>seq</columnTitle>
+        <columnTitle>Seq</columnTitle>
         <isHidden>true</isHidden>
       </column>
       <column columnName="virus">
@@ -2997,16 +3011,17 @@
       </column>
       <column columnName="objectid">
         <datatype>integer</datatype>
-        <columnTitle>objectid</columnTitle>
+        <columnTitle>Key</columnTitle>
         <shownInInsertView>false</shownInInsertView>
         <shownInUpdateView>false</shownInUpdateView>
         <shownInDetailsView>false</shownInDetailsView>
+        <isHidden>true</isHidden>
         <isKeyField>true</isKeyField>
         <isAutoInc>true</isAutoInc>
       </column>
     </columns>
-    <tableTitle>Virserores</tableTitle>
-    <description>Virserores</description>
+    <tableTitle>Virology/Serology Results</tableTitle>
+    <description>Virology/Serology Results</description>
   </table>
   <table tableName="weight" tableDbType="TABLE">
     <columns>
@@ -3028,6 +3043,7 @@
       </column>
       <column columnName="verified">
         <datatype>integer</datatype>
+        <isHidden>true</isHidden>
         <columnTitle>Verified</columnTitle>
       </column>
       <column columnName="description">
@@ -3042,15 +3058,16 @@
       </column>
       <column columnName="objectid">
         <datatype>integer</datatype>
-        <columnTitle>objectid</columnTitle>
+        <columnTitle>Key</columnTitle>
         <shownInInsertView>false</shownInInsertView>
         <shownInUpdateView>false</shownInUpdateView>
         <shownInDetailsView>false</shownInDetailsView>
+        <isHidden>true</isHidden>
         <isKeyField>true</isKeyField>
         <isAutoInc>true</isAutoInc>
       </column>
     </columns>
     <tableTitle>Weight</tableTitle>
-    <description>Animal weights</description>
+    <description>Animal Weights</description>
   </table>
 </tables>

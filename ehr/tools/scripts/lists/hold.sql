@@ -1,1 +1,1 @@
-SELECT code, meaning FROM holdcode h
+SELECT code, meaning FROM holdcode h WHERE code != ''

@@ -10,3 +10,4 @@ SELECT id, FixDateTime(date, time) AS Date, (p.code) AS code,
 
 FROM surgproc p
 LEFT OUTER JOIN snomed s1 on s1.code=p.code
+

@@ -10,4 +10,6 @@ SELECT id, FixDate(date) AS Date, (reqid) AS reqid, (cd3) AS cd3, (cd20) AS cd20
      CONCAT('CD20: ', CAST(cd20 AS CHAR)),
      CONCAT('CD4: ', CAST(cd4 AS CHAR)),
      CONCAT('CD8: ', CAST(cd8 AS CHAR))
-     ) ) AS Description FROM immunores
+     ) ) AS Description
+FROM immunores
+

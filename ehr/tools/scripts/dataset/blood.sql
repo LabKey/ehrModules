@@ -16,3 +16,4 @@ SELECT id, FixDateTime(date, time) AS Date, (quantity) AS quantity, (done_by) AS
      ) ) AS Description FROM blood b
 
 LEFT OUTER JOIN colony.snomed s1 ON s1.code=b.code
+

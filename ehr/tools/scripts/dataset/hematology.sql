@@ -33,3 +33,4 @@ SELECT id, FixDate(date) AS Date, (account) AS account, (wbc) AS wbc, (rbc) AS r
      CONCAT('Remark: ', FixNewlines(clinremark))
      ) ) AS Description
 FROM hematology
+

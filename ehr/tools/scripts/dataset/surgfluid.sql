@@ -20,3 +20,4 @@ Timestamp(Date('1970-01-01'), FixBadTime(endtime)) AS endtime,
 
 FROM surgfluid f
 LEFT OUTER JOIN snomed s1 on s1.code=f.code
+

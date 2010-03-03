@@ -8,8 +8,12 @@ concat_ws(',\n',
      ) AS Description
 
 FROM
-  (SELECT * FROM virserores where id != "" group by id, date, seq, virus, result) t1
+  (SELECT * FROM virserores
+  WHERE id IS NOT NULL AND id != "" AND date IS NOT NULL AND date != ''
+  group by id, date, seq, virus, result) t1
 LEFT JOIN
-  (SELECT * FROM virserohead where id != "" group by id, date, account) t2
+  (SELECT * FROM virserohead
+  WHERE id IS NOT NULL AND id != "" AND date IS NOT NULL AND date != ''
+  group by id, date, account) t2
 ON (t1.id = t2.id AND t1.date = t2.date)
 

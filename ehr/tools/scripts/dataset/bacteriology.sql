@@ -13,4 +13,4 @@ SELECT id, FixDate(date) AS Date, (account) AS account, (source) AS source, (res
      ) ) AS Description
 FROM colony.bacteriology b
 LEFT OUTER JOIN colony.snomed s1 ON s1.code=b.source LEFT OUTER JOIN colony.snomed s2 ON s2.code = b.result LEFT OUTER JOIN colony.snomed s3 ON s3.code=b.antibiotic
-     
+

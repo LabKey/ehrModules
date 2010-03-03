@@ -10,3 +10,4 @@ SELECT id, birth AS date, sex, dam, sire1, sire2, sire3, status, weight,
      )) AS Description
 
 FROM pedigree p
+

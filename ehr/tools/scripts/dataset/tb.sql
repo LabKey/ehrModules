@@ -15,3 +15,4 @@ SELECT id, FixDate(date) AS Date, (lot) AS lot, (dilution) AS dilution, (eye) AS
 ) ) AS Description
 
 FROM tb
+

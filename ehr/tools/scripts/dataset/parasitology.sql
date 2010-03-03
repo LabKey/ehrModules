@@ -14,7 +14,7 @@ SELECT p1.id, FixDate(p1.date) as date, seq, p1.code as code, room, account, Fix
 FROM
 (select * from parares GROUP BY id, date, seq, code) p1
 left outer join
-(SELECT id, date, max(room) as room, max(account) as account, max(remark) as remark, max(clinremark) as clinremark FROM parahead p group by id, date) p2
+(SELECT id, date, max(room) as room, max(account) as account, max(remark) as remark, max(clinremark) as clinremark FROM parahead p GROUP BY id, date) p2
 ON (p1.id = p2.id AND p1.date = p2.date)
 
 LEFT OUTER JOIN colony.snomed s1 ON s1.code=p1.code

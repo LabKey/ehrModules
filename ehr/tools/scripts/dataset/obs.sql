@@ -13,4 +13,6 @@ SELECT id, FixDateTime(date, time) AS Date, (userid) AS userid, (feces) AS feces
      CONCAT('Other: ', other),
      CONCAT('T Location: ', tlocation),
      CONCAT('Other Behavior: ', otherbehavior)
-     ) ) AS Description FROM obs
+     ) ) AS Description
+FROM obs
+

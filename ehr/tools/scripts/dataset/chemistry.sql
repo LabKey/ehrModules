@@ -29,4 +29,3 @@ SELECT id, FixDate(date) AS Date, (account) AS account, (glucose) AS glucose, (b
      CONCAT('Chloride: ', CAST(chloride AS CHAR))
      ) ) AS Description
 FROM chemistry
-WHERE id != ''

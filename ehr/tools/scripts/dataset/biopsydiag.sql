@@ -11,3 +11,4 @@ SELECT id, FixDate(date) AS Date, (seq1) AS seq1, (seq2) AS seq2, (b.code) AS co
 FROM biopsydiag b
 LEFT OUTER JOIN colony.snomed s1 ON s1.code=b.code
 
+

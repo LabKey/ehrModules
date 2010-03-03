@@ -11,4 +11,6 @@ SELECT id, FixDateTime(idate, itime) AS date, room, cage, cond, FixDateTime(odat
     CONCAT('In Time: ', FixDateTime(idate, itime)),
     CONCAT('Out Time: ', FixDateTime(odate, otime))
 
-    ) AS Description FROM housing
+    ) AS Description
+FROM housing
+

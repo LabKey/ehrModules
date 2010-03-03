@@ -5,3 +5,4 @@
  */
 SELECT id, FixDateTime(date, time) AS Date, (pno) AS pno, (userid) AS userid, FixNewlines(remark) AS remark, FixNewlines(remark) AS description
 FROM clintrem
+WHERE id IS NOT NULL AND id != ''

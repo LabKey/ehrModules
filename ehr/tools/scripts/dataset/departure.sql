@@ -9,3 +9,4 @@ SELECT id, FixDateTime(date, time) AS Date, (authorize) AS authorize, (destinati
      CONCAT('Destination: ', destination)
      ) ) AS Description
 FROM departure
+
