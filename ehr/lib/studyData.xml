@@ -1,0 +1,10 @@
+<tables xmlns="http://labkey.org/data/xml">
+  <table tableName="StudyData" tableDbType="NOT_IN_DB">
+    <columns>
+      <column columnName="Description">
+        <isHidden>false</isHidden>
+        <displayWidth>200</displayWidth>
+      </column>
+    </columns>
+  </table>
+</tables>

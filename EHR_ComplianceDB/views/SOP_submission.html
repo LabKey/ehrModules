@@ -1,84 +1,95 @@
 <html>
 <head>
-    <script type="text/javascript">
+<script type="text/javascript">
 
-        Ext.onReady(function()
-        {
+Ext.onReady(function()
+{
 
-            var userName = LABKEY.Security.currentUser.displayName;
-            var userName = 'BIMBER';
+    var userName = LABKEY.Security.currentUser.displayName;
 
-            //we look up this employee's information
-            LABKEY.Query.selectRows({
+    //we look up this employee's information
+    LABKEY.Query.selectRows({
+        schemaName: 'lists',
+        queryName: 'Employees',
+        //TODO: needs to be updated once we have LDAP
+        filterArray: [LABKEY.Filter.create('Email', userName, LABKEY.Filter.Types.EQUAL)],
+        successCallback: onSuccess
+    });
+
+    function onSuccess(results)
+    {
+        if (results.rows.length < 1){alert('No Records Found for user ID: '+userName);return;}
+
+        var employeeCategory = results.rows[0]['Category'];
+        var employeeID = results.rows[0]['PersonID'];
+        var lastName = results.rows[0]['LastName'];
+        var email = results.rows[0]['Email'];
+
+        //then we display a list of all their required SOPs
+        var sopGrid = new LABKEY.ext.EditorGridPanel({
+            store: new LABKEY.ext.Store({
                 schemaName: 'lists',
-                queryName: 'Employees',
-                //NOTE: needs to be updated once we have LDAP
-                filterArray: [LABKEY.Filter.create('LastName', userName, LABKEY.Filter.Types.EQUAL)],
-                successCallback: onSuccess
-            });
-
-            function onSuccess(results)
-            {
-
-                var employeeCategory = results.rows[0]['Category'];
-
-                //then we display a list of all their required SOPs
-                var sopGrid = new LABKEY.ext.EditorGridPanel({
-                    store: new LABKEY.ext.Store({
-                        schemaName: 'lists',
-                        queryName: 'SOPbyCategory',
-                        columns: 'Category,SOP_ID,SOP_ID/Name,SOP_ID/PDF',
-                        //need to update once we have real unique IDs in the tables
-                        filterArray: [LABKEY.Filter.create('Category', employeeCategory, LABKEY.Filter.Types.EQUAL)],
-                        sort: 'SOPID'
-                    })
-                    ,applyTo: 'sopDiv'
-                    ,width: 1000
-                    ,autoHeight: true
-                    ,editable: false
-                    ,title: 'Required SOPs For All Employees of Category: ' + employeeCategory
-                    ,stripeRows: true
-                    ,disableSelection: true
-                });
-
-                //here is simple JS to make the form
-                var theForm = document.getElementById('SOPform');
-                var un = document.createElement('input');
-                un.name = 'userName';
-                un.value = userName;
-                un.type = 'hidden';
-                theForm.appendChild(un);
-
-                var rn = document.createElement('input');
-                un.name = 'requirementName';
-                un.value = 'SOP';
-                un.type = 'hidden';
-                theForm.appendChild(un);
-            }
-
-            /*
-             function submitRequest() {
-             // Insert form data into the list.
-             LABKEY.Query.insertRows({
-             //containerPath: '',
-             schemaName: 'lists',
-             queryName: 'TestDates',
-             rowDataArray: [{
-             "RequirementName": 'SOP Review'
-             ,"UserID": userID
-             ,"Comments": new Date()
-             }]
-             ,successCallback: function(data){
-             window.location = '/wiki/home/Study/demo/page.view?name=confirmation&userid='
-             + LABKEY.Security.currentUser.id;
-             }
-             });
-             }
-
-             */
-
+                queryName: 'SOPbyCategory',
+                columns: 'Category,SOP_ID,SOP_ID/Name,SOP_ID/PDF',
+                filterArray: [LABKEY.Filter.create('Category', employeeCategory, LABKEY.Filter.Types.EQUAL)],
+                sort: 'SOPID'
+            })
+            ,applyTo: 'sopDiv'
+            ,width: 1000
+            ,autoHeight: true
+            ,editable: false
+            ,title: 'Required SOPs For All Employees of Category: ' + employeeCategory
+            ,stripeRows: true
+            ,disableSelection: true
         });
-    </script>
+
+        //here is simple JS to make the form
+        var theForm = document.getElementById('SOPform');
+        var un = document.createElement('input');
+        un.name = 'userName';
+        un.value = userName;
+        un.type = 'hidden';
+        theForm.appendChild(un);
+
+        var rn = document.createElement('input');
+        un.name = 'requirementName';
+        un.value = 'SOP';
+        un.type = 'hidden';
+        theForm.appendChild(un);
+
+        var submit = document.getElementById("SOPsubmitButton");
+        submit.onclick = function(){submitRequest(employeeID, lastName, email)}
+    }
+
+
+});
+
+function submitRequest(employeeID, lastName, email) {
+     // Insert form data into the list.
+    
+     LABKEY.Query.insertRows({
+         //containerPath: '',
+         schemaName: 'lists',
+         queryName: 'CompletionDates',
+         rowDataArray: [{
+            RequirementName: 'SOP Review'
+            ,PersonID: employeeID
+            ,LastName: lastName
+            ,Email: email
+            ,Date: new Date().format("Y-m-d")
+            }],
+         successCallback: function(){
+            alert('Thank You for Reading Your SOPs')             
+         },
+         failureCallback: function(errorInfo, format) {
+            Ext.Msg.alert("Error:", errorInfo);
+            }
+        });
+        
+ }
+
+    
+</script>
 </head>
 <body>
 <br>
@@ -93,7 +104,7 @@
     <tr>
         <td>
             I Certify That I have read all the required SOPs.<br><br>
-            <button text="Submit">Submit</button>
+            <button text="Submit" id="SOPsubmitButton">Submit</button>
         </td>
     </tr>
 </table>

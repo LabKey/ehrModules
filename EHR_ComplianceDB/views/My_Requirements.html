@@ -6,32 +6,32 @@
         {
 
             var userName = LABKEY.Security.currentUser.displayName;
-            var userName = 'ABBOTT';
 
             //we find this employee's info
             var employeeRecord = new LABKEY.ext.Store({
                 schemaName: 'lists',
                 queryName: 'Employees',
                 //need to update once we have real unique IDs in the tables
-                filterArray: [LABKEY.Filter.create('LastName', userName, LABKEY.Filter.Types.EQUAL)
+                filterArray: [LABKEY.Filter.create('Email', userName, LABKEY.Filter.Types.EQUAL)
                 ]
             });
 
-            employeeRecord.on('load', loadRequirements)
+            employeeRecord.on('load', loadRequirements);
             employeeRecord.load();
 
             function loadRequirements()
             {
-                alert(employeeRecord);
+                if (employeeRecord.data.items.length < 1){alert('No Records Found for user ID: '+userName);return;}
 
-                var employeeCategory = 'CLINPATH';
+                employeeRecord = employeeRecord.data.items[0];
 
                 //we display a list of all requirements for this person
                 var requirementStore = new LABKEY.ext.Store({
                     schemaName: 'lists',
                     queryName: 'ComplianceRecentTests',
-                    //need to update once we have real unique IDs in the tables
-                    filterArray: [LABKEY.Filter.create('TestRequired', true, LABKEY.Filter.Types.EQUAL), LABKEY.Filter.create('LastName', userName, LABKEY.Filter.Types.EQUAL)
+                    //TODO: need to update once we have real unique IDs in the tables
+                    columns: 'PersonID,RequirementName,ExpirePeriod,MostRecentDate,MonthsUntilRenewal',
+                    filterArray: [LABKEY.Filter.create('PersonId', employeeRecord.get('PersonID'), LABKEY.Filter.Types.EQUAL)
                     ],
                     sort: 'RequirementName'
                 });
@@ -39,7 +39,7 @@
                 var requirementGrid = new LABKEY.ext.EditorGridPanel({
                     store: requirementStore
                     ,applyTo: 'myRequirementsDiv'
-                    ,width: 1000
+                    ,width: 1200
                     ,autoHeight: true
                     ,title: 'My Requirements'
                     ,editable: false
