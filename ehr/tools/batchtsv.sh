@@ -3,7 +3,7 @@
 
 #MYSQLPWD=sasa
 MYSQLUSER=root
-FILEDEST=/usr/local/labkey/files/WNPRC/EHR/@files/
+FILEDEST=/usr/local/labkey/files/WNPRC/EHR/@files/ehr-studylocal/
 
 if [ -z "${MYSQLPWD}" ]; then
     echo "Set MYSQLPWD env variable before calling this script"
@@ -15,7 +15,7 @@ do
     fname=${dumpfile##*/}
     basename=${fname%%.*}
     echo "** dataset $basename"
-    time ./generatetsv.sh $dumpfile > $FILEDEST${basename}.tsv
+    time ./generatetsv.sh $dumpfile > ${FILEDEST}datasets/${basename}.tsv
     if [ $? -ne 0 ]; then
         echo "Failed to run '$dumpfile', exiting early"
         exit 1
@@ -28,7 +28,7 @@ do
     fname=${dumpfile##*/}
     basename=${fname%%.*}
     echo "** list $basename"
-    time ./generatetsv.sh $dumpfile > $FILEDEST${basename}.tsv
+    time ./generatetsv.sh $dumpfile > ${FILEDEST}lists/${basename}.tsv
     if [ $? -ne 0 ]; then
         echo "Failed to run '$dumpfile', exiting early"
         exit 1

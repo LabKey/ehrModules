@@ -11,7 +11,7 @@ SELECT
   T1.MostRecentDate,
   
   --we calculate the time since that test in months
-  age_in_months(T1.MostRecentDate, curdate()) AS TimeSinceTest,
+  --age_in_months(T1.MostRecentDate, curdate()) AS TimeSinceTest,
 
   --we calculate the time until renewal
   /*
@@ -26,18 +26,21 @@ SELECT
   --we calculate the time until renewal
   --this subquery was written before I changed this to use joins
   --it is no longer needed, but i kept it b/c is uses age_in_months and is working 
-  
+  CONVERT(
   CASE
     WHEN (T1.MostRecentDate IS NULL) THEN
       0
     WHEN(rn.ExpirePeriod = 0 OR rn.ExpirePeriod IS NULL) THEN
       NULL
     ELSE
-      COALESCE((SELECT (rn.ExpirePeriod - age_in_months(sq1.MostRecentDate, curdate())) AS TimeUntilRenewal
+        COALESCE(
+        --(rn.ExpirePeriod - age_in_months(T1.MostRecentDate, curdate())) , 0)
+
+      (SELECT (rn.ExpirePeriod - age_in_months(sq1.MostRecentDate, curdate())) AS TimeUntilRenewal
       FROM
         (SELECT max(t.date) AS MostRecentDate, t.RequirementName, t.PersonId FROM lists.CompletionDates t GROUP BY t.PersonID, t.RequirementName) sq1
-      WHERE sq1.RequirementName = rn.RequirementName AND e.PersonID = sq1.PersonID), 0)
-    END
+        WHERE sq1.RequirementName = rn.RequirementName AND e.PersonID = sq1.PersonID), 0)
+    END, double)
     AS MonthsUntilRenewal,
 
 FROM lists.employees e

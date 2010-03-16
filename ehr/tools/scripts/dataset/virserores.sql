@@ -10,4 +10,4 @@ concat_ws(',\n',
      ) AS Description
 
 FROM virserores
-
+WHERE date != '0000-00-00' AND id != ''

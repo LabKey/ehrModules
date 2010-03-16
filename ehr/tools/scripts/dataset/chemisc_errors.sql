@@ -15,12 +15,12 @@ FROM
 
 SELECT id, date, name, value, NULL AS units
 FROM chemisc c
-WHERE date IS NOT NULL AND date != '0000-00-00'
+WHERE date IS NULL OR date = '0000-00-00'
 
 UNION ALL
 
 SELECT id, date, name, value, units
 FROM chemisc2
-WHERE date IS NOT NULL AND date != '0000-00-00'
+WHERE date IS NULL OR date = '0000-00-00'
 ) x
 

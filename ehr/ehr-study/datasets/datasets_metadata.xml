@@ -2250,69 +2250,6 @@
     <tableTitle>Surgery Procedures</tableTitle>
     <description>Surgical Procedures</description>
   </table>
-  <table tableName="surgsum" tableDbType="TABLE">
-    <columns>
-      <column columnName="participantid">
-        <datatype>varchar</datatype>
-        <columnTitle>Participant ID</columnTitle>
-        <description>Participant identifier</description>
-        <nullable>false</nullable>
-      </column>
-      <column columnName="Date">
-        <datatype>timestamp</datatype>
-        <columnTitle>Date</columnTitle>
-        <nullable>false</nullable>
-        <propertyURI>http://cpas.labkey.com/Study#VisitDate</propertyURI>
-      </column>
-      <column columnName="pno">
-        <datatype>varchar</datatype>
-        <columnTitle>Project</columnTitle>
-        <fk>
-          <fkDbSchema>lists</fkDbSchema>
-          <fkTable>project</fkTable>
-          <fkColumnName>pno</fkColumnName>
-        </fk>
-        <propertyURI>urn:ehr.labkey.org/#Project</propertyURI>
-      </column>
-      <column columnName="so">
-        <datatype>varchar</datatype>
-        <columnTitle>SO</columnTitle>
-        <inputType>textarea</inputType>
-      </column>
-      <column columnName="a">
-        <datatype>varchar</datatype>
-        <columnTitle>A</columnTitle>
-        <inputType>textarea</inputType>
-      </column>
-      <column columnName="p">
-        <datatype>varchar</datatype>
-        <columnTitle>P</columnTitle>
-        <inputType>textarea</inputType>
-      </column>
-      <column columnName="description">
-        <datatype>varchar</datatype>
-        <columnTitle>Description</columnTitle>
-        <shownInInsertView>false</shownInInsertView>
-        <shownInUpdateView>false</shownInUpdateView>
-        <shownInDetailsView>false</shownInDetailsView>
-        <propertyURI>urn:ehr.labkey.org/#Description</propertyURI>
-        <isHidden>true</isHidden>
-        <inputType>textarea</inputType>
-      </column>
-      <column columnName="objectid">
-        <datatype>integer</datatype>
-        <columnTitle>Key</columnTitle>
-        <shownInInsertView>false</shownInInsertView>
-        <shownInUpdateView>false</shownInUpdateView>
-        <shownInDetailsView>false</shownInDetailsView>
-        <isHidden>true</isHidden>
-        <isKeyField>true</isKeyField>
-        <isAutoInc>true</isAutoInc>
-      </column>
-    </columns>
-    <tableTitle>Surgery Summary</tableTitle>
-    <description>Summary of surgeries</description>
-  </table>
   <table tableName="tb" tableDbType="TABLE">
     <columns>
       <column columnName="participantid">

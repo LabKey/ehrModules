@@ -34,7 +34,6 @@
     <dataset name='surgery' id='1031' category="Clinical"/>
     <dataset name='surgfluid' id='1032' category="Clinical"/>
     <dataset name='surgproc' id='1033' category="Clinical"/>
-    <dataset name='surgsum' id='1034' category="Clinical"/>
     <dataset name='tb' id='1035' category="Clinical"/>
     <dataset name='tissue' id='1036' category="Pathology"/>
     <dataset name='treatment_order' id='1037' category="Clinical"/>

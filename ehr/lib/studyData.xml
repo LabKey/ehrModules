@@ -6,5 +6,8 @@
         <displayWidth>200</displayWidth>
       </column>
     </columns>
+    <columns>
+      <column columnName="Id" wrappedColumnName="ParticipantId"/>
+    </columns>      
   </table>
 </tables>
