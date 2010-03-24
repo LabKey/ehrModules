@@ -50,7 +50,6 @@ problem.file=problem.tsv
 surgery.file=surgery.tsv
 surgfluid.file=surgfluid.tsv
 surgproc.file=surgproc.tsv
-surgsum.file=surgsum.tsv
 tb.file=tb.tsv
 tissue.file=tissue.tsv
 treatment_order.file=treatment_order.tsv

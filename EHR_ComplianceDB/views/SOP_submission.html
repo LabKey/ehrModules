@@ -11,6 +11,7 @@ Ext.onReady(function()
     LABKEY.Query.selectRows({
         schemaName: 'lists',
         queryName: 'Employees',
+        containerPath: 'WNPRC/WNPRC_Units/Animal_Services/Compliance_Training/Private/EmployeeDB/',
         //TODO: needs to be updated once we have LDAP
         filterArray: [LABKEY.Filter.create('Email', userName, LABKEY.Filter.Types.EQUAL)],
         successCallback: onSuccess
@@ -21,7 +22,7 @@ Ext.onReady(function()
         if (results.rows.length < 1){alert('No Records Found for user ID: '+userName);return;}
 
         var employeeCategory = results.rows[0]['Category'];
-        var employeeID = results.rows[0]['PersonID'];
+        var employeeID = results.rows[0]['Id'];
         var lastName = results.rows[0]['LastName'];
         var email = results.rows[0]['Email'];
 
@@ -30,6 +31,7 @@ Ext.onReady(function()
             store: new LABKEY.ext.Store({
                 schemaName: 'lists',
                 queryName: 'SOPbyCategory',
+                containerPath: 'WNPRC/WNPRC_Units/Animal_Services/Compliance_Training/Private/SOPs/',
                 columns: 'Category,SOP_ID,SOP_ID/Name,SOP_ID/PDF',
                 filterArray: [LABKEY.Filter.create('Category', employeeCategory, LABKEY.Filter.Types.EQUAL)],
                 sort: 'SOPID'
@@ -66,29 +68,27 @@ Ext.onReady(function()
 
 function submitRequest(employeeID, lastName, email) {
      // Insert form data into the list.
-    
+
      LABKEY.Query.insertRows({
-         //containerPath: '',
+         containerPath: 'WNPRC/WNPRC_Units/Animal_Services/Compliance_Training/Private/EmployeeDB/',
          schemaName: 'lists',
          queryName: 'CompletionDates',
          rowDataArray: [{
             RequirementName: 'SOP Review'
-            ,PersonID: employeeID
-            ,LastName: lastName
-            ,Email: email
+            ,EmployeeId: employeeID
             ,Date: new Date().format("Y-m-d")
             }],
          successCallback: function(){
-            alert('Thank You for Reading Your SOPs')             
+            alert('Thank You for Reading Your SOPs')
          },
          failureCallback: function(errorInfo, format) {
             Ext.Msg.alert("Error:", errorInfo);
             }
         });
-        
+
  }
 
-    
+
 </script>
 </head>
 <body>

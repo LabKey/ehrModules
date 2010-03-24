@@ -1,0 +1,35 @@
+<html>
+<script type="text/javascript">
+
+LABKEY.requiresScript("/WNPRC_Main/navMenu.js");
+
+Ext.onReady(createNavMenu);
+
+function createNavMenu()
+{
+    if (!window.EHR || !window.EHR.UTILITIES || !window.EHR.UTILITIES.navMenu)
+    {
+        createNavMenu.defer(10);
+        return;
+    }
+
+    new EHR.UTILITIES.navMenu({
+        target: 'sopNav',
+        sections: [
+            {header: 'SOPs',
+            items: [
+                {name: 'View/Edit SOPs', url: '<%=contextPath%>/list<%=containerPath%>/grid.view?listId=129'},
+                {name: 'View/Edit SOPs Required For Each Employee Category', url: '<%=contextPath%>/list<%=containerPath%>/grid.view?listId=128'}
+            ]},
+        ]
+    });
+
+}
+
+</script>
+<body>
+
+<div id="sopNav"></div>
+
+</body>
+</html>

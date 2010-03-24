@@ -6,6 +6,9 @@ EHR_ComplianceDB/queries/lists/ComplianceRecentTests.query.xml -text
 EHR_ComplianceDB/queries/lists/ComplianceRecentTests.sql -text
 EHR_ComplianceDB/views/My_Requirements.html -text
 EHR_ComplianceDB/views/SOP_submission.html -text
+EHR_ComplianceDB/views/SOPadmin.html -text
+EHR_ComplianceDB/views/SOPadmin.view.xml -text
+EHR_ComplianceDB/views/SOPadmin.webpart.xml -text
 EHR_ComplianceDB/views/begin.html -text
 EHR_ComplianceDB/views/begin.view.xml -text
 EHR_ComplianceDB/views/begin.webpart.xml -text
@@ -34,8 +37,9 @@ ehr/ehr-study/lists/ref_range.tsv -text
 ehr/ehr-study/lists/rhesaux.tsv -text
 ehr/ehr-study/lists/snomap.tsv -text
 ehr/ehr-study/study.xml -text
-ehr/lib/participant.xml -text
-ehr/lib/studyData.xml -text
+ehr/metadata/participant.xml -text
+ehr/metadata/project.xml -text
+ehr/metadata/studyData.xml -text
 ehr/module.properties -text
 ehr/src/META-INF/ehr/ehr.sql -text
 ehr/src/org/labkey/ehr/EHRContainerListener.java -text

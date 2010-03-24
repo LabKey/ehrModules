@@ -286,22 +286,6 @@
           <datatype>varchar</datatype>
           <columnTitle>Requestor Name</columnTitle>
         </column>
-        <column columnName="totalAssigned" wrappedColumnName="pno">
-	      <columnTitle>Animals Assigned</columnTitle>
-	      <fk>
-	        <fkDbSchema>lists</fkDbSchema>
-	        <fkTable>projectTotalAssigned</fkTable>
-	        <fkColumnName>pno</fkColumnName>
-	      </fk>
-        </column>
-        <column columnName="lastAssignment" wrappedColumnName="pno">
-	      <columnTitle>Last Assignment Date</columnTitle>
-	      <fk>
-	        <fkDbSchema>lists</fkDbSchema>
-	        <fkTable>projectLastAssignmentDate</fkTable>
-	        <fkColumnName>pno</fkColumnName>
-	      </fk>
-        </column>
       </columns>
       <pkColumnName>pno</pkColumnName>
     </table>
@@ -513,6 +497,10 @@
         <column columnName="common">
           <datatype>varchar</datatype>
           <columnTitle>Common Name</columnTitle>
+        </column>
+        <column columnName="mhc_prefix">
+          <datatype>varchar</datatype>
+          <columnTitle>MHC Prefix</columnTitle>
         </column>
       </columns>
       <pkColumnName>code</pkColumnName>

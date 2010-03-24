@@ -11,5 +11,5 @@ SUBSTR(CONCAT_WS(',\n',
      CONCAT('P: ', FixNewlines(p))
 ), 1, 4000) AS Description
 FROM surgsum
-WHERE id != ''
+WHERE id = ''
 

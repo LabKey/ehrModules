@@ -16,30 +16,23 @@ function createNavMenu()
     new EHR.UTILITIES.navMenu({
         target: 'complianceNav',
         sections: [
-            {header: 'Public Pages',
-            items: [
-                {name: 'My Requirement Status', url: '<%=contextPath%>/EHR_ComplianceDB/WNPRC/WNPRC_Units/Animal_Services/Compliance_Training/My_Requirements.view?'},
-                {name: 'View and Certify SOPs', url: '<%=contextPath%>/EHR_ComplianceDB/WNPRC/WNPRC_Units/Animal_Services/Compliance_Training/SOP_submission.view?'}
-            ]},
             {header: 'Employee Information',
             items: [
-                {name: 'WNPRC Employee Information', url: '<%=contextPath%>/list<%=containerPath%>/grid.view?listId=61'},
-                {name: 'Non-Standard Employee Requirements', url: '<%=contextPath%>/list<%=containerPath%>/grid.view?listId=59'},
-                {name: 'Requirement Completion Records', url: '<%=contextPath%>/list<%=containerPath%>/grid.view?listId=62'},
-                {name: 'Requirement Completion Overview', url: '<%=contextPath%>/query<%=containerPath%>/executeQuery.view?schemaName=lists&query.queryName=ComplianceRecentTests'}
+                {name: 'WNPRC Employee Information', url: '<%=contextPath%>/list<%=containerPath%>/grid.view?listId=141'},
             ]},
-            {header: 'Compliance Staff',
+            {header: 'Requirements and Compliance',
             items: [
-                {name: 'View/Edit Requirements Tracked In System', url: '<%=contextPath%>/list<%=containerPath%>/grid.view?listId=50'},
-                {name: 'View/Edit SOPs', url: '<%=contextPath%>/list<%=containerPath%>/grid.view?listId=57'},
-                {name: 'View/Edit SOPs Required For Each Employee Category', url: '<%=contextPath%>/list<%=containerPath%>/grid.view?listId=54'}
+                {name: 'View/Edit Requirements Tracked In System', url: '<%=contextPath%>/list<%=containerPath%>/grid.view?listId=146'},
+                {name: 'View/Edit Non-Standard Employee Requirements', url: '<%=contextPath%>/list<%=containerPath%>/grid.view?listId=142'},
+                {name: 'View/Edit Dates Employees Completed Requirements', url: '<%=contextPath%>/list<%=containerPath%>/grid.view?listId=145'},
+                {name: 'Requirement Completion Overview', url: '<%=contextPath%>/query<%=containerPath%>/executeQuery.view?schemaName=lists&query.queryName=ComplianceRecentTests'}
             ]},
             {header: 'Maintenance',
             items: [
-                {name: 'View/Edit Allowable Employee Categories', url: '<%=contextPath%>/list<%=containerPath%>/grid.view?listId=56'},
-                {name: 'View/Edit Allowable Employee Types', url: '<%=contextPath%>/list<%=containerPath%>/grid.view?listId=51'},
-                {name: 'View/Edit Allowable WNPRC Locations', url: '<%=contextPath%>/list<%=containerPath%>/grid.view?listId=52'},
-                {name: 'View/Edit Allowable WNPRC Unit Names', url: '<%=contextPath%>/list<%=containerPath%>/grid.view?listId=53'}
+                {name: 'View/Edit Allowable Employee Categories', url: '<%=contextPath%>/list<%=containerPath%>/grid.view?listId=144'},
+                {name: 'View/Edit Allowable Employee Types', url: '<%=contextPath%>/list<%=containerPath%>/grid.view?listId=143'},
+                {name: 'View/Edit Allowable WNPRC Locations', url: '<%=contextPath%>/list<%=containerPath%>/grid.view?listId=140'},
+                {name: 'View/Edit Allowable WNPRC Unit Names', url: '<%=contextPath%>/list<%=containerPath%>/grid.view?listId=147'}
             ]}
         ]
     });

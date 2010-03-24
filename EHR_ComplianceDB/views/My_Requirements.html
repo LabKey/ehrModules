@@ -11,6 +11,7 @@
             var employeeRecord = new LABKEY.ext.Store({
                 schemaName: 'lists',
                 queryName: 'Employees',
+                containerPath: 'WNPRC/WNPRC_Units/Animal_Services/Compliance_Training/Private/EmployeeDB/',
                 //need to update once we have real unique IDs in the tables
                 filterArray: [LABKEY.Filter.create('Email', userName, LABKEY.Filter.Types.EQUAL)
                 ]
@@ -29,9 +30,10 @@
                 var requirementStore = new LABKEY.ext.Store({
                     schemaName: 'lists',
                     queryName: 'ComplianceRecentTests',
+                    containerPath: 'WNPRC/WNPRC_Units/Animal_Services/Compliance_Training/Private/EmployeeDB/',
                     //TODO: need to update once we have real unique IDs in the tables
-                    columns: 'PersonID,RequirementName,ExpirePeriod,MostRecentDate,MonthsUntilRenewal',
-                    filterArray: [LABKEY.Filter.create('PersonId', employeeRecord.get('PersonID'), LABKEY.Filter.Types.EQUAL)
+                    columns: 'Id,RequirementName,ExpirePeriod,MostRecentDate,MonthsUntilRenewal',
+                    filterArray: [LABKEY.Filter.create('Id', employeeRecord.get('Id'), LABKEY.Filter.Types.EQUAL)
                     ],
                     sort: 'RequirementName'
                 });
