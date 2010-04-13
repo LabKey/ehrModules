@@ -4,6 +4,7 @@
 # ./generatetsv.sh scripts/datasets/arrival.sql ../ehr-study/datasets/arrival.tsv
 #
 #MYSQLPWD=sasa
+#MYSQLDB=colony
 MYSQLUSER=root
 MYSQLHOST=saimiri.primate.wisc.edu
 #MYSQLHOST=localhost
@@ -28,25 +29,26 @@ fi
 
 . setup.sh
 
-echo "USE colony;" > tempscript
+#echo "USE colony;" > tempscript
 echo "SELECT * FROM (" >> tempscript
 cat $1 >> tempscript
 echo ") X" >> tempscript
 
 case $1 in
 
-    scripts/dataset/*.sql )
-        echo " WHERE Date > '${DATE_CUTOFF}'" >> tempscript
-        #echo " ORDER BY DATE DESC" >> tempscript
+    scripts/dataset/demographics.sql )
+        #replace all of demographics
         ;;
 
-    scripts/lists/snomap.sql )
-        # don't use DATE_CUTOFF with snomap -- lists don't support reloading based on date range yet
+    scripts/dataset/*.sql )
+        echo " WHERE date > '${DATE_CUTOFF}'" >> tempscript
+        #echo " WHERE ts > '${DATE_CUTOFF}'" >> tempscript
         #echo " ORDER BY DATE DESC" >> tempscript
         ;;
 
     scripts/lists/*.sql )
-        # other lists don't have dates
+        #continue to update all lists
+        #echo " WHERE ts > '${DATE_CUTOFF}'" >> tempscript
         ;;
 
 esac
@@ -58,7 +60,7 @@ fi
 echo " ;" >> tempscript
 
 # sed script truncates nulls and backslash-escapes the double-quote character
-mysql -u${MYSQLUSER} -p${MYSQLPWD} -B -h $MYSQLHOST < tempscript | sed -e 's/NULL//g;s@"@\\"@g' > $OUTFILE
+mysql -u${MYSQLUSER} -p${MYSQLPWD} -D ${MYSQLDB} -B -h $MYSQLHOST < tempscript | sed -e 's/NULL//g;s@"@\\"@g' > $OUTFILE
 if [ $PIPESTATUS -ne 0 ]; then
     echo "ERROR trying to dump table using script $1"
     exit 1

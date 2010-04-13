@@ -1,17 +1,22 @@
 #!/bin/bash
 #generate tsv files
 
-#FILEDEST=/usr/local/labkey/files/WNPRC/EHR/@files/ehr-studylocal/
-FILEDEST=/home/kevink/labkey/release10.1/server/customModules/ehr/ehr-6mos/
+#PIPELINE_ROOT=/home/kevink/labkey/release10.1/server/customModules/ehr
+#STUDY_DIR=${PIPELINE_ROOT}/ehr-6mos
+
+PIPELINE_ROOT=/usr/local/labkey/files/WNPRC/EHR/@files/ehr-studylocal
+STUDY_DIR=${PIPELINE_ROOT}
+
+STUDY_LOAD_FILE=${PIPELINE_ROOT}/studyload.txt
 
 . setup.sh
 
-if [ ! -f $FILEDEST/datasets/EHRStudy.dataset -o \
-    ${DATE_CUTOFF_FILE} -nt ${FILEDEST}/datasets/EHRStudy.dataset -o \
-    ./scripts/setup/EHRStudy.dataset -nt ${FILEDEST}/datasets/EHRStudy.dataset ]
+if [ ! -f $STUDY_DIR/datasets/EHRStudy.dataset -o \
+    ${DATE_CUTOFF_FILE} -nt ${STUDY_DIR}/datasets/EHRStudy.dataset -o \
+    ./scripts/setup/EHRStudy.dataset -nt ${STUDY_DIR}/datasets/EHRStudy.dataset ]
 then
     echo "Generating new EHRStudy.dataset file"
-    eval "echo \"`cat ./scripts/setup/EHRStudy.dataset`\"" > ${FILEDEST}/datasets/EHRStudy.dataset
+    eval "echo \"`cat ./scripts/setup/EHRStudy.dataset`\"" > ${STUDY_DIR}/datasets/EHRStudy.dataset
 fi
 
 for script in scripts/dataset/*.sql
@@ -20,7 +25,7 @@ do
     basename=${fname%%.*}
     echo
     echo "** dataset $basename"
-    time ./generatetsv.sh $script ${FILEDEST}datasets/${basename}.tsv
+    time ./generatetsv.sh $script ${STUDY_DIR}/datasets/${basename}.tsv
     if [ $? -ne 0 ]; then
         echo "Failed running '$script', exiting early"
         exit 1
@@ -33,11 +38,12 @@ do
     basename=${fname%%.*}
     echo
     echo "** list $basename"
-    time ./generatetsv.sh $script ${FILEDEST}lists/${basename}.tsv
+    time ./generatetsv.sh $script ${STUDY_DIR}/lists/${basename}.tsv
     if [ $? -ne 0 ]; then
         echo "Failed running '$script', exiting early"
         exit 1
     fi
 done
 
+touch ${STUDY_LOAD_FILE}
 echo "Finished dumping all tsv files."

@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <tables xmlns="http://labkey.org/data/xml">
   <table tableName="arrival" tableDbType="TABLE">
+    <tableUrl>query/detailsQueryRow.view?
+        _print=1&amp;
+        schemaName=study&amp;
+        query.queryName=Arrival&amp;
+        lsid=${lsid}
+    </tableUrl>
     <columns>
       <column columnName="participantid">
         <datatype>varchar</datatype>
@@ -17,11 +23,11 @@
       <column columnName="source">
         <datatype>varchar</datatype>
         <columnTitle>Source</columnTitle>
-        <!-- Note: sometimes this is a lookup to lists.origin -->
       </column>
       <column columnName="remark">
         <datatype>varchar</datatype>
         <columnTitle>Remark</columnTitle>
+        <displayWidth>110</displayWidth>
         <propertyURI>urn:ehr.labkey.org/#Remark</propertyURI>
         <inputType>textarea</inputType>
       </column>
@@ -49,11 +55,28 @@
         <isKeyField>true</isKeyField>
         <isAutoInc>true</isAutoInc>
       </column>
+<!--
+      <column columnName="ts">
+        <datatype>timestamp</datatype>
+        <columnTitle>Last Changed</columnTitle>
+        <nullable>false</nullable>
+        <shownInInsertView>false</shownInInsertView>
+        <shownInUpdateView>false</shownInUpdateView>
+        <shownInDetailsView>false</shownInDetailsView>
+        <isHidden>true</isHidden>
+      </column>
+-->
     </columns>
     <tableTitle>Arrival</tableTitle>
     <description>Arrival of animals at WNPRC</description>
   </table>
   <table tableName="assignment" tableDbType="TABLE">
+    <tableUrl>query/detailsQueryRow.view?
+        _print=1&amp;
+        schemaName=study&amp;
+        query.queryName=Assignment&amp;
+        lsid=${lsid}
+    </tableUrl>
     <columns>
       <column columnName="participantid">
         <datatype>varchar</datatype>
@@ -68,13 +91,14 @@
         <propertyURI>http://cpas.labkey.com/Study#VisitDate</propertyURI>
       </column>
       <column columnName="pno">
-        <datatype>varchar</datatype>
+        <datatype>integer</datatype>
         <columnTitle>Project</columnTitle>
         <fk>
           <fkDbSchema>lists</fkDbSchema>
           <fkTable>project</fkTable>
           <fkColumnName>pno</fkColumnName>
         </fk>
+        <formatString>00000000</formatString>
         <propertyURI>urn:ehr.labkey.org/#Project</propertyURI>
       </column>
       <column columnName="rdate">
@@ -105,6 +129,12 @@
     <tableTitle>Assignment</tableTitle>
   </table>
   <table tableName="bacteriology" tableDbType="TABLE">
+    <tableUrl>query/detailsQueryRow.view?
+        _print=1&amp;
+        schemaName=study&amp;
+        query.queryName=Bacteriology&amp;
+        lsid=${lsid}
+    </tableUrl>
     <columns>
       <column columnName="participantid">
         <datatype>varchar</datatype>
@@ -144,6 +174,7 @@
       <column columnName="remark">
         <datatype>varchar</datatype>
         <columnTitle>Remark</columnTitle>
+        <displayWidth>110</displayWidth>
         <propertyURI>urn:ehr.labkey.org/#Remark</propertyURI>
         <inputType>textarea</inputType>
       </column>
@@ -181,6 +212,12 @@
     <tableTitle>Bacteriology</tableTitle>
   </table>
   <table tableName="behavetrem" tableDbType="TABLE">
+    <tableUrl>query/detailsQueryRow.view?
+        _print=1&amp;
+        schemaName=study&amp;
+        query.queryName=behavetrem&amp;
+        lsid=${lsid}
+    </tableUrl>
     <columns>
       <column columnName="participantid">
         <datatype>varchar</datatype>
@@ -195,18 +232,20 @@
         <propertyURI>http://cpas.labkey.com/Study#VisitDate</propertyURI>
       </column>
       <column columnName="pno">
-        <datatype>varchar</datatype>
+        <datatype>integer</datatype>
         <columnTitle>Project</columnTitle>
         <fk>
           <fkDbSchema>lists</fkDbSchema>
           <fkTable>project</fkTable>
           <fkColumnName>pno</fkColumnName>
         </fk>
+        <formatString>00000000</formatString>
         <propertyURI>urn:ehr.labkey.org/#Project</propertyURI>
       </column>
       <column columnName="Remark">
         <datatype>varchar</datatype>
         <columnTitle>Remark</columnTitle>
+        <displayWidth>110</displayWidth>
         <propertyURI>urn:ehr.labkey.org/#Remark</propertyURI>
         <inputType>textarea</inputType>
       </column>
@@ -234,6 +273,12 @@
   <tableTitle>Behavior Treatment Remarks</tableTitle>
   </table>
   <table tableName="biopsy" tableDbType="TABLE">
+    <tableUrl>query/detailsQueryRow.view?
+        _print=1&amp;
+        schemaName=study&amp;
+        query.queryName=biopsy&amp;
+        lsid=${lsid}
+    </tableUrl>
     <columns>
       <column columnName="participantid">
         <datatype>varchar</datatype>
@@ -259,6 +304,7 @@
       <column columnName="remark">
         <datatype>varchar</datatype>
         <columnTitle>Remark</columnTitle>
+        <displayWidth>110</displayWidth>
         <propertyURI>urn:ehr.labkey.org/#Remark</propertyURI>
         <inputType>textarea</inputType>
       </column>
@@ -286,6 +332,12 @@
     <tableTitle>Biopsy Head</tableTitle>
   </table>
   <table tableName="biopsydiag" tableDbType="TABLE">
+    <tableUrl>query/detailsQueryRow.view?
+        _print=1&amp;
+        schemaName=study&amp;
+        query.queryName=biopsydiag&amp;
+        lsid=${lsid}
+    </tableUrl>
     <columns>
       <column columnName="participantid">
         <datatype>varchar</datatype>
@@ -348,6 +400,12 @@
     <tableTitle>Biopsy Diagnosis</tableTitle>
   </table>
   <table tableName="birth" tableDbType="TABLE">
+    <tableUrl>query/detailsQueryRow.view?
+        _print=1&amp;
+        schemaName=study&amp;
+        query.queryName=birth&amp;
+        lsid=${lsid}
+    </tableUrl>
     <columns>
       <column columnName="participantid">
         <datatype>varchar</datatype>
@@ -381,18 +439,35 @@
       <column columnName="dam">
         <datatype>varchar</datatype>
         <columnTitle>Dam</columnTitle>
+        <url>/study/participant.view?
+            participantId=${dam}&amp;
+        </url>
       </column>
       <column columnName="sire">
         <datatype>varchar</datatype>
         <columnTitle>Sire</columnTitle>
+        <url>/study/participant.view?
+            participantId=${sire}&amp;
+        </url>
       </column>
       <column columnName="room">
         <datatype>varchar</datatype>
         <columnTitle>Room</columnTitle>
+        <url>/query/executeQuery.view?schemaName=study&amp;
+            query.queryName=Housing&amp;
+            query.room~eq=${room}&amp;
+            query.viewName=Active Housing
+        </url>
       </column>
       <column columnName="cage">
         <datatype>varchar</datatype>
         <columnTitle>Cage</columnTitle>
+        <url>/query/executeQuery.view?schemaName=study&amp;
+            query.queryName=Housing&amp;
+            query.room~eq=${room}&amp;
+            query.room~eq=${cage}&amp;
+            query.viewName=Active Housing
+        </url>
       </column>
       <column columnName="cond">
         <datatype>varchar</datatype>
@@ -423,6 +498,7 @@
       <column columnName="remark">
         <datatype>varchar</datatype>
         <columnTitle>Remark</columnTitle>
+        <displayWidth>110</displayWidth>
         <propertyURI>urn:ehr.labkey.org/#Remark</propertyURI>
         <inputType>textarea</inputType>
       </column>
@@ -451,6 +527,12 @@
     <description>Birth Records</description>
   </table>
   <table tableName="blood" tableDbType="TABLE">
+    <tableUrl>query/detailsQueryRow.view?
+        _print=1&amp;
+        schemaName=study&amp;
+        query.queryName=blood&amp;
+        lsid=${lsid}
+    </tableUrl>
     <columns>
       <column columnName="participantid">
         <datatype>varchar</datatype>
@@ -476,14 +558,15 @@
         <datatype>varchar</datatype>
         <columnTitle>Requestor</columnTitle>
       </column>
-      <column columnName="pno">
-        <datatype>varchar</datatype>
+      <column columnName="project">
+        <datatype>integer</datatype>
         <columnTitle>Project</columnTitle>
         <fk>
           <fkDbSchema>lists</fkDbSchema>
           <fkTable>project</fkTable>
           <fkColumnName>pno</fkColumnName>
         </fk>
+        <formatString>00000000</formatString>
         <propertyURI>urn:ehr.labkey.org/#Project</propertyURI>
       </column>
       <column columnName="p_s">
@@ -531,6 +614,12 @@
     <description>Blood Draws</description>
   </table>
   <table tableName="chemisc" tableDbType="TABLE">
+    <tableUrl>query/detailsQueryRow.view?
+        _print=1&amp;
+        schemaName=study&amp;
+        query.queryName=chemmisc&amp;
+        lsid=${lsid}
+    </tableUrl>
     <columns>
       <column columnName="participantid">
         <datatype>varchar</datatype>
@@ -578,9 +667,15 @@
       </column>
     </columns>
     <tableTitle>Chemistry Misc</tableTitle>
-    <description>Clinical Pathology Data</description>
+    <description>Misc Chemistry Tests</description>
   </table>
   <table tableName="chemistry" tableDbType="TABLE">
+    <tableUrl>query/detailsQueryRow.view?
+        _print=1&amp;
+        schemaName=study&amp;
+        query.queryName=chemistry&amp;
+        lsid=${lsid}
+    </tableUrl>
     <columns>
       <column columnName="participantid">
         <datatype>varchar</datatype>
@@ -689,12 +784,14 @@
       <column columnName="remark">
         <datatype>varchar</datatype>
         <columnTitle>Remark</columnTitle>
+        <displayWidth>110</displayWidth>
         <propertyURI>urn:ehr.labkey.org/#Remark</propertyURI>
         <inputType>textarea</inputType>
       </column>
       <column columnName="clinremark">
         <datatype>varchar</datatype>
         <columnTitle>Clinical Remark</columnTitle>
+        <displayWidth>110</displayWidth>
         <inputType>textarea</inputType>
       </column>
       <column columnName="description">
@@ -719,9 +816,15 @@
       </column>
     </columns>
     <tableTitle>Chemistry</tableTitle>
-    <description>Blood chemistry data</description>
+    <description>Blood Chemistry Data</description>
   </table>
   <table tableName="clintrem" tableDbType="TABLE">
+    <tableUrl>query/detailsQueryRow.view?
+        _print=1&amp;
+        schemaName=study&amp;
+        query.queryName=clintrem&amp;
+        lsid=${lsid}
+    </tableUrl>
     <columns>
       <column columnName="participantid">
         <datatype>varchar</datatype>
@@ -743,6 +846,7 @@
           <fkTable>project</fkTable>
           <fkColumnName>pno</fkColumnName>
         </fk>
+        <formatString>00000000</formatString>
         <propertyURI>urn:ehr.labkey.org/#Project</propertyURI>
       </column>
       <column columnName="userid">
@@ -752,6 +856,7 @@
       <column columnName="remark">
         <datatype>varchar</datatype>
         <columnTitle>Remark</columnTitle>
+        <displayWidth>110</displayWidth>
         <propertyURI>urn:ehr.labkey.org/#Remark</propertyURI>
         <inputType>textarea</inputType>
       </column>
@@ -779,6 +884,12 @@
     <tableTitle>Clinical Treatment Remarks</tableTitle>
   </table>
   <table tableName="demographics" tableDbType="TABLE">
+    <tableUrl>query/detailsQueryRow.view?
+        _print=1&amp;
+        schemaName=study&amp;
+        query.queryName=demographics&amp;
+        lsid=${lsid}
+    </tableUrl>
     <columns>
       <column columnName="ParticipantId">
         <datatype>varchar</datatype>
@@ -831,10 +942,16 @@
       <column columnName="dam">
         <datatype>varchar</datatype>
         <columnTitle>Dam</columnTitle>
+        <url>/study/participant.view?
+            participantId=${dam}
+        </url>
       </column>
       <column columnName="sire">
         <datatype>varchar</datatype>
         <columnTitle>Sire</columnTitle>
+        <url>/study/participant.view?
+            participantId=${sire}
+        </url>
       </column>
       <column columnName="origin">
         <datatype>varchar</datatype>
@@ -864,26 +981,56 @@
       <column columnName="room">
         <datatype>varchar</datatype>
         <columnTitle>Room</columnTitle>
+        <url>/query/executeQuery.view?schemaName=study&amp;
+            query.queryName=Housing&amp;
+            query.room~eq=${room}&amp;
+            query.viewName=Active Housing
+        </url>
       </column>
       <column columnName="cage">
         <datatype>varchar</datatype>
         <columnTitle>Cage</columnTitle>
+        <url>/query/executeQuery.view?schemaName=study&amp;
+            query.queryName=Housing&amp;
+            query.room~eq=${room}&amp;
+            query.cage~eq=${cage}&amp;
+            query.viewName=Active Housing
+        </url>
       </column>
       <column columnName="cond">
         <datatype>varchar</datatype>
         <columnTitle>Condition</columnTitle>
+        <fk>
+          <fkDbSchema>lists</fkDbSchema>
+          <fkTable>condition</fkTable>
+          <fkColumnName>Code</fkColumnName>
+        </fk>
       </column>
       <column columnName="weight">
         <datatype>double</datatype>
         <columnTitle>Current Weight</columnTitle>
+        <url>/query/executeQuery.view?schemaName=study&amp;
+            query.queryName=Weight&amp;
+            query.id~eq=${id}
+        </url>
       </column>
       <column columnName="wdate">
         <datatype>timestamp</datatype>
         <columnTitle>Weight Date</columnTitle>
+        <url>/query/executeQuery.view?schemaName=study&amp;
+            query.queryName=Weight&amp;
+            query.id~eq=${id}&amp;
+            query.date~eq=${wdate}
+        </url>
       </column>
       <column columnName="tbdate">
         <datatype>timestamp</datatype>
         <columnTitle>Last TB Date</columnTitle>
+        <url>/query/executeQuery.view?schemaName=study&amp;
+            query.queryName=TB&amp;
+            query.id~eq=${id}&amp;
+            query.sort=-Date
+        </url>
       </column>
       <column columnName="medical">
         <datatype>varchar</datatype>
@@ -902,6 +1049,12 @@
     <description>Demographics data of WNPRC animals</description>
   </table>
   <table tableName="departure" tableDbType="TABLE">
+    <tableUrl>query/detailsQueryRow.view?
+        _print=1&amp;
+        schemaName=study&amp;
+        query.queryName=departure&amp;
+        lsid=${lsid}
+    </tableUrl>
     <columns>
       <column columnName="participantid">
         <datatype>varchar</datatype>
@@ -926,6 +1079,7 @@
       <column columnName="remark">
         <datatype>varchar</datatype>
         <columnTitle>Remark</columnTitle>
+        <displayWidth>110</displayWidth>
         <propertyURI>urn:ehr.labkey.org/#Remark</propertyURI>
         <inputType>textarea</inputType>
       </column>
@@ -953,6 +1107,12 @@
     <tableTitle>Departure</tableTitle>
   </table>
   <table tableName="drug" tableDbType="TABLE">
+    <tableUrl>query/detailsQueryRow.view?
+        _print=1&amp;
+        schemaName=study&amp;
+        query.queryName=drug&amp;
+        lsid=${lsid}
+    </tableUrl>
     <columns>
       <column columnName="participantid">
         <datatype>varchar</datatype>
@@ -966,7 +1126,7 @@
         <nullable>false</nullable>
         <propertyURI>http://cpas.labkey.com/Study#VisitDate</propertyURI>
       </column>
-      <column columnName="pno">
+      <column columnName="project">
         <datatype>varchar</datatype>
         <columnTitle>Project</columnTitle>
         <fk>
@@ -974,6 +1134,7 @@
           <fkTable>project</fkTable>
           <fkColumnName>pno</fkColumnName>
         </fk>
+        <formatString>00000000</formatString>
         <propertyURI>urn:ehr.labkey.org/#Project</propertyURI>
       </column>
       <column columnName="code">
@@ -1005,8 +1166,13 @@
       <column columnName="remark">
         <datatype>varchar</datatype>
         <columnTitle>Remark</columnTitle>
+        <displayWidth>110</displayWidth>
         <propertyURI>urn:ehr.labkey.org/#Remark</propertyURI>
         <inputType>textarea</inputType>
+      </column>
+      <column columnName="dataset">
+        <datatype>varchar</datatype>
+        <columnTitle>Dataset</columnTitle>
       </column>
       <column columnName="description">
         <datatype>varchar</datatype>
@@ -1030,9 +1196,15 @@
       </column>
     </columns>
     <tableTitle>Drug Administration</tableTitle>
-    <description>Drug administration records</description>
+    <description>Drug Administration Records</description>
   </table>
   <table tableName="hemamisc" tableDbType="TABLE">
+    <tableUrl>query/detailsQueryRow.view?
+        _print=1&amp;
+        schemaName=study&amp;
+        query.queryName=hemamisc&amp;
+        lsid=${lsid}
+    </tableUrl>
     <columns>
       <column columnName="participantid">
         <datatype>varchar</datatype>
@@ -1080,6 +1252,12 @@
     <description>Hematology Data</description>
   </table>
   <table tableName="hematology" tableDbType="TABLE">
+    <tableUrl>query/detailsQueryRow.view?
+        _print=1&amp;
+        schemaName=study&amp;
+        query.queryName=hematology&amp;
+        lsid=${lsid}
+    </tableUrl>
     <columns>
       <column columnName="participantid">
         <datatype>varchar</datatype>
@@ -1185,12 +1363,14 @@
       <column columnName="remark">
         <datatype>varchar</datatype>
         <columnTitle>Remark</columnTitle>
+        <displayWidth>110</displayWidth>
         <propertyURI>urn:ehr.labkey.org/#Remark</propertyURI>
         <inputType>textarea</inputType>
       </column>
       <column columnName="clinremark">
         <datatype>varchar</datatype>
         <columnTitle>Clinical Remark</columnTitle>
+        <displayWidth>110</displayWidth>
         <inputType>textarea</inputType>
       </column>
       <column columnName="proMyelo">
@@ -1233,6 +1413,12 @@
     <tableTitle>Hematology</tableTitle>
   </table>
   <table tableName="hormtrem" tableDbType="TABLE">
+    <tableUrl>query/detailsQueryRow.view?
+        _print=1&amp;
+        schemaName=study&amp;
+        query.queryName=hormtrem&amp;
+        lsid=${lsid}
+    </tableUrl>
     <columns>
       <column columnName="participantid">
         <datatype>varchar</datatype>
@@ -1246,7 +1432,7 @@
         <nullable>false</nullable>
         <propertyURI>http://cpas.labkey.com/Study#VisitDate</propertyURI>
       </column>
-      <column columnName="pno">
+      <column columnName="project">
         <datatype>varchar</datatype>
         <columnTitle>Project</columnTitle>
         <fk>
@@ -1254,11 +1440,13 @@
           <fkTable>project</fkTable>
           <fkColumnName>pno</fkColumnName>
         </fk>
+        <formatString>00000000</formatString>
         <propertyURI>urn:ehr.labkey.org/#Project</propertyURI>
       </column>
       <column columnName="remark">
         <datatype>varchar</datatype>
         <columnTitle>Remark</columnTitle>
+        <displayWidth>110</displayWidth>
         <propertyURI>urn:ehr.labkey.org/#Remark</propertyURI>
         <inputType>textarea</inputType>
       </column>
@@ -1286,6 +1474,12 @@
     <tableTitle>Hormone Treatment Remarks</tableTitle>
   </table>
   <table tableName="housing" tableDbType="TABLE">
+    <tableUrl>query/detailsQueryRow.view?
+        _print=1&amp;
+        schemaName=study&amp;
+        query.queryName=housing&amp;
+        lsid=${lsid}
+    </tableUrl>
     <columns>
       <column columnName="participantid">
         <datatype>varchar</datatype>
@@ -1302,15 +1496,31 @@
       <column columnName="room">
         <datatype>varchar</datatype>
         <columnTitle>Room</columnTitle>
+        <url>/query/executeQuery.view?schemaName=study&amp;
+            query.queryName=Housing&amp;
+            query.room~eq=${room}&amp;
+            query.viewName=Active Housing
+        </url>
       </column>
       <column columnName="cage">
         <datatype>varchar</datatype>
         <columnTitle>Cage</columnTitle>
+        <url>/query/executeQuery.view?schemaName=study&amp;
+            query.queryName=Housing&amp;
+            query.room~eq=${room}&amp;
+            query.cage~eq=${cage}&amp;
+            query.viewName=Active Housing
+        </url>
       </column>
       <column columnName="cond">
         <nullable>true</nullable>
         <datatype>varchar</datatype>
         <columnTitle>Condition</columnTitle>
+        <fk>
+          <fkDbSchema>lists</fkDbSchema>
+          <fkTable>condition</fkTable>
+          <fkColumnName>Code</fkColumnName>
+        </fk>          
       </column>
       <column columnName="odate">
         <nullable>true</nullable>
@@ -1331,6 +1541,12 @@
     <tableTitle>Housing</tableTitle>
   </table>
   <table tableName="immunores" tableDbType="TABLE">
+    <tableUrl>query/detailsQueryRow.view?
+        _print=1&amp;
+        schemaName=study&amp;
+        query.queryName=immunores&amp;
+        lsid=${lsid}
+    </tableUrl>
     <columns>
       <column columnName="participantid">
         <datatype>varchar</datatype>
@@ -1388,6 +1604,12 @@
     <tableTitle>Immunology</tableTitle>
   </table>
   <table tableName="mhctype" tableDbType="TABLE">
+    <tableUrl>query/detailsQueryRow.view?
+        _print=1&amp;
+        schemaName=study&amp;
+        query.queryName=mhctype&amp;
+        lsid=${lsid}
+    </tableUrl>
     <columns>
       <column columnName="participantid">
         <datatype>varchar</datatype>
@@ -1435,9 +1657,15 @@
         <isAutoInc>true</isAutoInc>
       </column>
     </columns>
-    <tableTitle>MHC Types</tableTitle>
+    <tableTitle>MHC Typing</tableTitle>
   </table>
   <table tableName="necropsy" tableDbType="TABLE">
+    <tableUrl>query/detailsQueryRow.view?
+        _print=1&amp;
+        schemaName=study&amp;
+        query.queryName=necropsy&amp;
+        lsid=${lsid}
+    </tableUrl>
     <columns>
       <column columnName="participantid">
         <datatype>varchar</datatype>
@@ -1484,6 +1712,12 @@
     <tableTitle>Necropsy Head</tableTitle>
   </table>
   <table tableName="necropsydiag" tableDbType="TABLE">
+    <tableUrl>query/detailsQueryRow.view?
+        _print=1&amp;
+        schemaName=study&amp;
+        query.queryName=necropsydiag&amp;
+        lsid=${lsid}
+    </tableUrl>
     <columns>
       <column columnName="participantid">
         <datatype>varchar</datatype>
@@ -1543,6 +1777,12 @@
     <tableTitle>Necropsy Diagnosis</tableTitle>
   </table>
   <table tableName="obs" tableDbType="TABLE">
+    <tableUrl>query/detailsQueryRow.view?
+        _print=1&amp;
+        schemaName=study&amp;
+        query.queryName=obs&amp;
+        lsid=${lsid}
+    </tableUrl>
     <columns>
       <column columnName="participantid">
         <datatype>varchar</datatype>
@@ -1587,6 +1827,7 @@
       <column columnName="remark">
         <datatype>varchar</datatype>
         <columnTitle>Remark</columnTitle>
+        <displayWidth>110</displayWidth>
         <propertyURI>urn:ehr.labkey.org/#Remark</propertyURI>
         <inputType>textarea</inputType>
       </column>
@@ -1618,6 +1859,12 @@
     <tableTitle>Observations</tableTitle>
   </table>
   <table tableName="parares" tableDbType="TABLE">
+    <tableUrl>query/detailsQueryRow.view?
+        _print=1&amp;
+        schemaName=study&amp;
+        query.queryName=parares&amp;
+        lsid=${lsid}
+    </tableUrl>
     <columns>
       <column columnName="participantid">
         <datatype>varchar</datatype>
@@ -1673,6 +1920,12 @@
     <tableTitle>Parasitology Results</tableTitle>
   </table>
   <table tableName="parahead" tableDbType="TABLE">
+    <tableUrl>query/detailsQueryRow.view?
+        _print=1&amp;
+        schemaName=study&amp;
+        query.queryName=parahead&amp;
+        lsid=${lsid}
+    </tableUrl>
     <columns>
       <column columnName="participantid">
         <datatype>varchar</datatype>
@@ -1689,6 +1942,12 @@
       <column columnName="room">
         <datatype>varchar</datatype>
         <columnTitle>Room</columnTitle>
+        <url>/query/executeQuery.view?schemaName=study&amp;
+            query.queryName=Housing&amp;
+            query.room~eq=${room}&amp;
+            query.date~lte=${date}&amp;
+            query.odate~gte=${date}
+        </url>
       </column>
       <column columnName="account">
         <datatype>varchar</datatype>
@@ -1698,12 +1957,14 @@
       <column columnName="remark">
         <datatype>varchar</datatype>
         <columnTitle>Remark</columnTitle>
+        <displayWidth>110</displayWidth>
         <propertyURI>urn:ehr.labkey.org/#Remark</propertyURI>
         <inputType>textarea</inputType>
       </column>
       <column columnName="clinremark">
         <datatype>varchar</datatype>
         <columnTitle>Clinical Remark</columnTitle>
+        <displayWidth>110</displayWidth>
         <inputType>textarea</inputType>
       </column>
       <column columnName="description">
@@ -1730,6 +1991,12 @@
     <tableTitle>Parasitology Head</tableTitle>
   </table>
   <table tableName="parasitology" tableDbType="TABLE">
+    <tableUrl>query/detailsQueryRow.view?
+        _print=1&amp;
+        schemaName=study&amp;
+        query.queryName=parasitology&amp;
+        lsid=${lsid}
+    </tableUrl>
     <columns>
       <column columnName="participantid">
         <datatype>varchar</datatype>
@@ -1760,6 +2027,12 @@
       <column columnName="room">
         <datatype>varchar</datatype>
         <columnTitle>Room</columnTitle>
+        <url>/query/executeQuery.view?schemaName=study&amp;
+            query.queryName=Housing&amp;
+            query.room~eq=${room}&amp;
+            query.date~lte=${date}&amp;
+            query.odate~gte=${date}
+        </url>          
       </column>
       <column columnName="account">
         <datatype>varchar</datatype>
@@ -1769,12 +2042,14 @@
       <column columnName="remark">
         <datatype>varchar</datatype>
         <columnTitle>Remark</columnTitle>
+        <displayWidth>110</displayWidth>
         <propertyURI>urn:ehr.labkey.org/#Remark</propertyURI>
         <inputType>textarea</inputType>
       </column>
       <column columnName="clinremark">
         <datatype>varchar</datatype>
         <columnTitle>Clinical Remark</columnTitle>
+        <displayWidth>110</displayWidth>
         <inputType>textarea</inputType>
       </column>
       <column columnName="description">
@@ -1801,6 +2076,12 @@
     <tableTitle>Parasitology</tableTitle>
   </table>
   <table tableName="pedigree" tableDbType="TABLE">
+    <tableUrl>query/detailsQueryRow.view?
+        _print=1&amp;
+        schemaName=study&amp;
+        query.queryName=pedigree&amp;
+        lsid=${lsid}
+    </tableUrl>
     <columns>
       <column columnName="participantid">
         <datatype>varchar</datatype>
@@ -1871,6 +2152,10 @@
       <column columnName="weight">
         <datatype>double</datatype>
         <columnTitle>Weight</columnTitle>
+        <url>/query/executeQuery.view?schemaName=study&amp;
+            query.queryName=Weight&amp;
+            query.id~eq=${id}
+        </url>
       </column>
       <column columnName="description">
         <datatype>varchar</datatype>
@@ -1896,6 +2181,12 @@
     <tableTitle>Pedigree</tableTitle>
   </table>
   <table tableName="prenatal" tableDbType="TABLE">
+    <tableUrl>query/detailsQueryRow.view?
+        _print=1&amp;
+        schemaName=study&amp;
+        query.queryName=prenatal&amp;
+        lsid=${lsid}
+    </tableUrl>
     <columns>
       <column columnName="participantid">
         <datatype>varchar</datatype>
@@ -1930,6 +2221,10 @@
       <column columnName="weight">
         <datatype>double</datatype>
         <columnTitle>Weight</columnTitle>
+        <url>/query/executeQuery.view?schemaName=study&amp;
+            query.queryName=Weight&amp;
+            query.id~eq=${id}
+        </url>
       </column>
       <column columnName="dam">
         <datatype>varchar</datatype>
@@ -1952,20 +2247,40 @@
       <column columnName="room">
         <datatype>varchar</datatype>
         <columnTitle>Room</columnTitle>
+        <url>/query/executeQuery.view?schemaName=study&amp;
+            query.queryName=Housing&amp;
+            query.room~eq=${room}&amp;
+            query.date~lte=${date}&amp;
+            query.odate~gte=${date}
+        </url>
       </column>
       <column columnName="cage">
         <datatype>varchar</datatype>
         <columnTitle>Cage</columnTitle>
+        <url>/query/executeQuery.view?schemaName=study&amp;
+            query.queryName=Housing&amp;
+            query.room~eq=${room}&amp;
+            query.cage~eq=${cage}&amp;
+            query.date~lte=${date}&amp;
+            query.odate~gte=${date}
+        </url>
       </column>
       <column columnName="roomcage">
         <datatype>varchar</datatype>
         <columnTitle>Room/Cage</columnTitle>
         <isHidden>true</isHidden>
-          <fk>
-            <fkDbSchema>lists</fkDbSchema>
-            <fkTable>cage</fkTable>
-            <fkColumnName>roomcage</fkColumnName>
-          </fk>
+        <fk>
+          <fkDbSchema>lists</fkDbSchema>
+          <fkTable>cage</fkTable>
+          <fkColumnName>roomcage</fkColumnName>
+        </fk>
+        <url>/query/executeQuery.view?schemaName=study&amp;
+            query.queryName=Housing&amp;
+            query.room~eq=${room}&amp;
+            query.cage~eq=${cage}&amp;
+            query.date~lte=${date}&amp;
+            query.odate~gte=${date}
+        </url>
       </column>
       <column columnName="conception">
         <datatype>timestamp</datatype>
@@ -1974,6 +2289,7 @@
       <column columnName="remark">
         <datatype>varchar</datatype>
         <columnTitle>Remark</columnTitle>
+        <displayWidth>110</displayWidth>
         <inputType>textarea</inputType>
       </column>
       <column columnName="description">
@@ -2000,6 +2316,12 @@
     <tableTitle>Prenatal</tableTitle>
   </table>
   <table tableName="problem" tableDbType="TABLE">
+    <tableUrl>query/detailsQueryRow.view?
+        _print=1&amp;
+        schemaName=study&amp;
+        query.queryName=problem&amp;
+        lsid=${lsid}
+    </tableUrl>
     <columns>
       <column columnName="participantid">
         <datatype>varchar</datatype>
@@ -2020,6 +2342,7 @@
       <column columnName="remark">
         <datatype>varchar</datatype>
         <columnTitle>Remark</columnTitle>
+        <displayWidth>110</displayWidth>
         <inputType>textarea</inputType>
       </column>
       <column columnName="date_observed">
@@ -2063,6 +2386,12 @@
     <tableTitle>Cases</tableTitle>
   </table>
   <table tableName="surgery" tableDbType="TABLE">
+    <tableUrl>query/detailsQueryRow.view?
+        _print=1&amp;
+        schemaName=study&amp;
+        query.queryName=surgery&amp;
+        lsid=${lsid}
+    </tableUrl>
     <columns>
       <column columnName="participantid">
         <datatype>varchar</datatype>
@@ -2084,7 +2413,7 @@
         <datatype>varchar</datatype>
         <columnTitle>Investigator</columnTitle>
       </column>
-      <column columnName="pno">
+      <column columnName="project">
         <datatype>varchar</datatype>
         <columnTitle>Project</columnTitle>
         <fk>
@@ -2092,6 +2421,7 @@
           <fkTable>project</fkTable>
           <fkColumnName>pno</fkColumnName>
         </fk>
+        <formatString>00000000</formatString>
         <propertyURI>urn:ehr.labkey.org/#Project</propertyURI>
       </column>
       <column columnName="surgeon">
@@ -2109,6 +2439,7 @@
       <column columnName="remark">
         <datatype>varchar</datatype>
         <columnTitle>Remark</columnTitle>
+        <displayWidth>110</displayWidth>
         <inputType>textarea</inputType>
       </column>
       <column columnName="description">
@@ -2135,6 +2466,12 @@
     <tableTitle>Surgery Head</tableTitle>
   </table>
   <table tableName="surgfluid" tableDbType="TABLE">
+    <tableUrl>query/detailsQueryRow.view?
+        _print=1&amp;
+        schemaName=study&amp;
+        query.queryName=surgfluid&amp;
+        lsid=${lsid}
+    </tableUrl>
     <columns>
       <column columnName="participantid">
         <datatype>varchar</datatype>
@@ -2204,6 +2541,12 @@
     <description>Fluids administered during surgery</description>
   </table>
   <table tableName="surgproc" tableDbType="TABLE">
+    <tableUrl>query/detailsQueryRow.view?
+        _print=1&amp;
+        schemaName=study&amp;
+        query.queryName=surgproc&amp;
+        lsid=${lsid}
+    </tableUrl>
     <columns>
       <column columnName="participantid">
         <datatype>varchar</datatype>
@@ -2251,6 +2594,12 @@
     <description>Surgical Procedures</description>
   </table>
   <table tableName="tb" tableDbType="TABLE">
+    <tableUrl>query/detailsQueryRow.view?
+        _print=1&amp;
+        schemaName=study&amp;
+        query.queryName=tb&amp;
+        lsid=${lsid}
+    </tableUrl>
     <columns>
       <column columnName="participantid">
         <datatype>varchar</datatype>
@@ -2313,6 +2662,12 @@
     <description>TB Tests</description>
   </table>
   <table tableName="tissue" tableDbType="TABLE">
+    <tableUrl>query/detailsQueryRow.view?
+        _print=1&amp;
+        schemaName=study&amp;
+        query.queryName=tissue&amp;
+        lsid=${lsid}
+    </tableUrl>
     <columns>
       <column columnName="participantid">
         <datatype>varchar</datatype>
@@ -2366,6 +2721,7 @@
       <column columnName="remark">
         <datatype>varchar</datatype>
         <columnTitle>Remark</columnTitle>
+        <displayWidth>110</displayWidth>
         <propertyURI>urn:ehr.labkey.org/#Remark</propertyURI>
         <inputType>textarea</inputType>
       </column>
@@ -2393,6 +2749,12 @@
     <tableTitle>Tissue</tableTitle>
   </table>
   <table tableName="treatment_order" tableDbType="TABLE">
+    <tableUrl>query/detailsQueryRow.view?
+        _print=1&amp;
+        schemaName=study&amp;
+        query.queryName=treatment_order&amp;
+        lsid=${lsid}
+    </tableUrl>
     <columns>
       <column columnName="participantid">
         <datatype>varchar</datatype>
@@ -2406,7 +2768,7 @@
         <nullable>false</nullable>
         <propertyURI>http://cpas.labkey.com/Study#VisitDate</propertyURI>
       </column>
-      <column columnName="pno">
+      <column columnName="project">
         <datatype>varchar</datatype>
         <columnTitle>Project</columnTitle>
         <fk>
@@ -2414,6 +2776,7 @@
           <fkTable>project</fkTable>
           <fkColumnName>pno</fkColumnName>
         </fk>
+        <formatString>00000000</formatString>
         <propertyURI>urn:ehr.labkey.org/#Project</propertyURI>
       </column>
       <column columnName="code">
@@ -2468,6 +2831,7 @@
       <column columnName="remark">
         <datatype>varchar</datatype>
         <columnTitle>Remark</columnTitle>
+        <displayWidth>110</displayWidth>
         <propertyURI>urn:ehr.labkey.org/#Remark</propertyURI>
         <inputType>textarea</inputType>
       </column>
@@ -2496,10 +2860,16 @@
         <isAutoInc>true</isAutoInc>
       </column>
     </columns>
-    <tableTitle>Treatment Order</tableTitle>
+    <tableTitle>Treatment Orders</tableTitle>
     <description>This table contains treatments ordered for animals</description>
   </table>
-  <table tableName="urine" tableDbType="TABLE">
+  <table tableName="urinalysis" tableDbType="TABLE">
+    <tableUrl>query/detailsQueryRow.view?
+        _print=1&amp;
+        schemaName=study&amp;
+        query.queryName=urinalysis&amp;
+        lsid=${lsid}
+    </tableUrl>
     <columns>
       <column columnName="participantid">
         <datatype>varchar</datatype>
@@ -2581,6 +2951,7 @@
       <column columnName="remark">
         <datatype>varchar</datatype>
         <columnTitle>Remark</columnTitle>
+        <displayWidth>110</displayWidth>
         <propertyURI>urn:ehr.labkey.org/#Remark</propertyURI>
         <inputType>textarea</inputType>
       </column>
@@ -2605,10 +2976,16 @@
         <isAutoInc>true</isAutoInc>
       </column>
     </columns>
-    <tableTitle>Urine</tableTitle>
-    <description>Urine data</description>
+    <tableTitle>Urinalysis</tableTitle>
+    <description>Urinalysis data</description>
   </table>
   <table tableName="viriso" tableDbType="TABLE">
+    <tableUrl>query/detailsQueryRow.view?
+        _print=1&amp;
+        schemaName=study&amp;
+        query.queryName=viriso&amp;
+        lsid=${lsid}
+    </tableUrl>
       <columns>
         <column columnName="participantid">
           <datatype>varchar</datatype>
@@ -2647,12 +3024,14 @@
         <column columnName="remark">
           <datatype>varchar</datatype>
           <columnTitle>Remark</columnTitle>
+          <displayWidth>110</displayWidth>
           <propertyURI>urn:ehr.labkey.org/#Remark</propertyURI>
           <inputType>textarea</inputType>
         </column>
         <column columnName="clinremark">
           <datatype>varchar</datatype>
           <columnTitle>Clinical Remark</columnTitle>
+          <displayWidth>110</displayWidth>
           <inputType>textarea</inputType>
         </column>
         <column columnName="description">
@@ -2680,6 +3059,12 @@
       <description>Virology/Isolation</description>
   </table>
   <table tableName="virisohead" tableDbType="TABLE">
+    <tableUrl>query/detailsQueryRow.view?
+        _print=1&amp;
+        schemaName=study&amp;
+        query.queryName=virisohead&amp;
+        lsid=${lsid}
+    </tableUrl>
       <columns>
         <column columnName="participantid">
           <datatype>varchar</datatype>
@@ -2705,12 +3090,14 @@
         <column columnName="remark">
           <datatype>varchar</datatype>
           <columnTitle>Remark</columnTitle>
+          <displayWidth>110</displayWidth>
           <propertyURI>urn:ehr.labkey.org/#Remark</propertyURI>
           <inputType>textarea</inputType>
         </column>
         <column columnName="clinremark">
           <datatype>varchar</datatype>
           <columnTitle>Clinical Remark</columnTitle>
+          <displayWidth>110</displayWidth>
           <inputType>textarea</inputType>
         </column>
         <column columnName="description">
@@ -2738,6 +3125,12 @@
     <description>Virology/Isolation Head</description>
   </table>
   <table tableName="virisores" tableDbType="TABLE">
+    <tableUrl>query/detailsQueryRow.view?
+        _print=1&amp;
+        schemaName=study&amp;
+        query.queryName=virisores&amp;
+        lsid=${lsid}
+    </tableUrl>
       <columns>
         <column columnName="participantid">
           <datatype>varchar</datatype>
@@ -2789,6 +3182,12 @@
     <description>Virology/Isolation Results</description>
   </table>
   <table tableName="virsero" tableDbType="TABLE">
+    <tableUrl>query/detailsQueryRow.view?
+        _print=1&amp;
+        schemaName=study&amp;
+        query.queryName=virsero&amp;
+        lsid=${lsid}
+    </tableUrl>
       <columns>
         <column columnName="participantid">
           <datatype>varchar</datatype>
@@ -2823,12 +3222,14 @@
         <column columnName="remark">
           <datatype>varchar</datatype>
           <columnTitle>Remark</columnTitle>
+          <displayWidth>110</displayWidth>
           <propertyURI>urn:ehr.labkey.org/#Remark</propertyURI>
           <inputType>textarea</inputType>
         </column>
         <column columnName="clinremark">
           <datatype>varchar</datatype>
           <columnTitle>Clinical Remark</columnTitle>
+          <displayWidth>110</displayWidth>
           <inputType>textarea</inputType>
         </column>
         <column columnName="description">
@@ -2856,6 +3257,12 @@
       <description>Virology/Serology</description>
   </table>
   <table tableName="virserohead" tableDbType="TABLE">
+    <tableUrl>query/detailsQueryRow.view?
+        _print=1&amp;
+        schemaName=study&amp;
+        query.queryName=virserohead&amp;
+        lsid=${lsid}
+    </tableUrl>
       <columns>
         <column columnName="participantid">
           <datatype>varchar</datatype>
@@ -2877,12 +3284,14 @@
         <column columnName="remark">
           <datatype>varchar</datatype>
           <columnTitle>Remark</columnTitle>
+          <displayWidth>110</displayWidth>
           <propertyURI>urn:ehr.labkey.org/#Remark</propertyURI>
           <inputType>textarea</inputType>
         </column>
         <column columnName="clinremark">
           <datatype>varchar</datatype>
           <columnTitle>Clinical Remark</columnTitle>
+          <displayWidth>110</displayWidth>
           <inputType>textarea</inputType>
         </column>
         <column columnName="description">
@@ -2910,6 +3319,12 @@
       <description>Virology/Serology Head</description>
   </table>
     <table tableName="virserores" tableDbType="TABLE">
+    <tableUrl>query/detailsQueryRow.view?
+        _print=1&amp;
+        schemaName=study&amp;
+        query.queryName=virserores&amp;
+        lsid=${lsid}
+    </tableUrl>
       <columns>
       <column columnName="participantid">
         <datatype>varchar</datatype>
@@ -2961,6 +3376,12 @@
     <description>Virology/Serology Results</description>
   </table>
   <table tableName="weight" tableDbType="TABLE">
+    <tableUrl>query/detailsQueryRow.view?
+        _print=1&amp;
+        schemaName=study&amp;
+        query.queryName=weight&amp;
+        lsid=${lsid}
+    </tableUrl>
     <columns>
       <column columnName="participantid">
         <datatype>varchar</datatype>

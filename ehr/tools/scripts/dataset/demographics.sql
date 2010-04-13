@@ -10,7 +10,13 @@ FixDateTime(arrivedate, arrivetime) AS arrivedate,
 FixDateTime(departdate, departtime) AS departdate,
 (room) AS room, (cage) AS cage, (cond) AS cond, 
 (weight) AS weight, FixDateTime(wdate, wtime) AS wdate, FixDate(tbdate) AS tbdate,
-(medical) AS medical, (purchasedby) AS purchasedby, (v_status) AS v_status
+(medical) AS medical, (purchasedby) AS purchasedby,
+CASE
+  WHEN (v_status = "" OR v_status IS NULL)
+    then "Not Defined"
+  ELSE
+    v_status
+END AS v_status
   
 
 FROM abstract

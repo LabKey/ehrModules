@@ -19,6 +19,7 @@ ehr/ehr-study/datasets/datasets_metadata.xml -text
 ehr/ehr-study/datasets/housing.tsv -text
 ehr/ehr-study/datasets/pedigree.tsv -text
 ehr/ehr-study/datasets/prenatal.tsv -text
+ehr/ehr-study/datasets/urinalysis.tsv -text
 ehr/ehr-study/datasets/viriso.tsv -text
 ehr/ehr-study/datasets/virisohead.tsv -text
 ehr/ehr-study/datasets/virisores.tsv -text
@@ -39,6 +40,7 @@ ehr/ehr-study/lists/snomap.tsv -text
 ehr/ehr-study/study.xml -text
 ehr/metadata/participant.xml -text
 ehr/metadata/project.xml -text
+ehr/metadata/protocol.xml -text
 ehr/metadata/studyData.xml -text
 ehr/module.properties -text
 ehr/src/META-INF/ehr/ehr.sql -text
@@ -54,6 +56,7 @@ ehr/src/org/labkey/ehr/view/begin.jsp -text
 ehr/tools/FixTabs.java -text
 ehr/tools/fixmeta.js -text
 ehr/tools/notes -text
+ehr/tools/pg_testserver_change.sql -text
 ehr/tools/scripts/setup/EHRStudy.dataset -text
 ehr/tools/scripts/setup/setup.sql -text
 ehr/tools/util.js -text

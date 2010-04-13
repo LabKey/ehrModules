@@ -3,7 +3,7 @@
  *
  * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
  */
-USE colony;
+
 DROP FUNCTION IF EXISTS FixDate;
 CREATE FUNCTION FixDate(d DATE)
     RETURNS DATE DETERMINISTIC

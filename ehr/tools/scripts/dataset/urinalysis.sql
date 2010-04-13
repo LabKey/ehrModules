@@ -21,5 +21,5 @@ SELECT id, FixDate(date) AS Date, (account) AS account, (quantity) AS quantity, 
      CONCAT('Appearance: ', appearance),
      CONCAT('Microscopic: ', microscopic)
 ) ) AS Description
-FROM urine
+FROM urinalysis
 

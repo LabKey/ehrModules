@@ -5,7 +5,7 @@
 Ext.onReady(function()
 {
 
-    var userName = LABKEY.Security.currentUser.displayName;
+    var userName = LABKEY.Security.currentUser.email;
 
     //we look up this employee's information
     LABKEY.Query.selectRows({
@@ -19,7 +19,7 @@ Ext.onReady(function()
 
     function onSuccess(results)
     {
-        if (results.rows.length < 1){alert('No Records Found for user ID: '+userName);return;}
+        if (results.rows.length < 1){alert('No Employee Record Found for User: '+userName);return;}
 
         var employeeCategory = results.rows[0]['Category'];
         var employeeID = results.rows[0]['Id'];
@@ -67,8 +67,12 @@ Ext.onReady(function()
 });
 
 function submitRequest(employeeID, lastName, email) {
-     // Insert form data into the list.
+    if (!document.getElementById('sopCheck').checked){
+        alert('You must check the box above the submit button to certify you have read your SOPs');
+        return false;
+    }
 
+    // Insert form data into the list.
      LABKEY.Query.insertRows({
          containerPath: 'WNPRC/WNPRC_Units/Animal_Services/Compliance_Training/Private/EmployeeDB/',
          schemaName: 'lists',
@@ -81,7 +85,7 @@ function submitRequest(employeeID, lastName, email) {
          successCallback: function(){
             alert('Thank You for Reading Your SOPs')
          },
-         failureCallback: function(errorInfo, format) {
+         failureCallback: function(errorInfo) {
             Ext.Msg.alert("Error:", errorInfo);
             }
         });
@@ -103,8 +107,10 @@ function submitRequest(employeeID, lastName, email) {
 <table border="1" id="SOPform">
     <tr>
         <td>
-            I Certify That I have read all the required SOPs.<br><br>
-            <button text="Submit" id="SOPsubmitButton">Submit</button>
+            I Certify That I have read all the required SOPs.
+            <input type="checkbox" id="sopCheck" value="1"/>
+            <br><br>
+            <button id="SOPsubmitButton">Submit</button>
         </td>
     </tr>
 </table>

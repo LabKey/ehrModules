@@ -5,7 +5,7 @@
         Ext.onReady(function()
         {
 
-            var userName = LABKEY.Security.currentUser.displayName;
+            var userName = LABKEY.Security.currentUser.email;
 
             //we find this employee's info
             var employeeRecord = new LABKEY.ext.Store({
@@ -60,8 +60,7 @@
 <body>
 <p>
 
-<div id='myRequirementsDiv'>
-    <div>
+<div id='myRequirementsDiv'></div>
 
 
 </body>
