@@ -2,6 +2,7 @@
 EHR_ComplianceDB/EHR_ComplianceDB.iml -text
 EHR_ComplianceDB/config/module.properties -text
 EHR_ComplianceDB/module_ehr_compliancedb.xml -text
+EHR_ComplianceDB/queries/lists/AgeTestfromFile.sql -text
 EHR_ComplianceDB/queries/lists/ComplianceRecentTests.query.xml -text
 EHR_ComplianceDB/queries/lists/ComplianceRecentTests.sql -text
 EHR_ComplianceDB/views/My_Requirements.html -text
@@ -13,7 +14,6 @@ EHR_ComplianceDB/views/begin.html -text
 EHR_ComplianceDB/views/begin.view.xml -text
 EHR_ComplianceDB/views/begin.webpart.xml -text
 ehr/build.xml -text
-ehr/ehr-study/datasets/EHRStudy.dataset -text
 ehr/ehr-study/datasets/datasets_manifest.xml -text
 ehr/ehr-study/datasets/datasets_metadata.xml -text
 ehr/ehr-study/datasets/housing.tsv -text
@@ -54,5 +54,6 @@ ehr/src/org/labkey/ehr/view/begin.jsp -text
 ehr/tools/FixTabs.java -text
 ehr/tools/fixmeta.js -text
 ehr/tools/notes -text
+ehr/tools/scripts/setup/EHRStudy.dataset -text
 ehr/tools/scripts/setup/setup.sql -text
 ehr/tools/util.js -text

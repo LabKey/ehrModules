@@ -1,34 +1,48 @@
 #!/bin/bash
 #
 # Generate a valid tsv file from one of the queries in this directory
-# ./generatetsv.sh arrival
+# ./generatetsv.sh scripts/datasets/arrival.sql ../ehr-study/datasets/arrival.tsv
 #
 #MYSQLPWD=sasa
 MYSQLUSER=root
+MYSQLHOST=saimiri.primate.wisc.edu
+#MYSQLHOST=localhost
+
 SCRIPT=$1
-#ROWCOUNT=${2:-10}
+OUTFILE=$2
+#ROWCOUNT=${3:-10}
 FILENAME=${SCRIPT##*/}
 BASENAME=${FILENAME%%.*}
 
 if [ -z "${SCRIPT}" ]; then
     echo "Missing script argument"
-    echo "Usage: $0 script.sql [row-count] > out-file.tsv"
+    echo "Usage: $0 script.sql out-file.tsv [row-count]"
     exit 1
 fi
 
-mysql -u${MYSQLUSER} -p${MYSQLPWD} -B -h saimiri.primate.wisc.edu < scripts/setup/setup.sql
-if [ $? -ne 0 ]; then
-    echo "ERROR trying to setup mysql functions"
+if [ -z "${OUTFILE}" ]; then
+    echo "Missing output file argument"
+    echo "Usage: $0 script.sql out-file.tsv [row-count]"
     exit 1
 fi
 
-echo "use colony;" > tempscript
+. setup.sh
+
+echo "USE colony;" > tempscript
+echo "SELECT * FROM (" >> tempscript
 cat $1 >> tempscript
+echo ") X" >> tempscript
 
 case $1 in
 
-    scripts/lists/snomap.sql | scripts/dataset/*.sql )
-#        echo " ORDER BY DATE DESC" >> tempscript
+    scripts/dataset/*.sql )
+        echo " WHERE Date > '${DATE_CUTOFF}'" >> tempscript
+        #echo " ORDER BY DATE DESC" >> tempscript
+        ;;
+
+    scripts/lists/snomap.sql )
+        # don't use DATE_CUTOFF with snomap -- lists don't support reloading based on date range yet
+        #echo " ORDER BY DATE DESC" >> tempscript
         ;;
 
     scripts/lists/*.sql )
@@ -37,13 +51,17 @@ case $1 in
 
 esac
 
-#echo " LIMIT $ROWCOUNT" >> tempscript
+if [ ! -z "$ROWCOUNT" ]; then
+    echo " LIMIT $ROWCOUNT" >> tempscript
+fi
+
 echo " ;" >> tempscript
 
 # sed script truncates nulls and backslash-escapes the double-quote character
-mysql -u${MYSQLUSER} -p${MYSQLPWD} -B -h saimiri.primate.wisc.edu < tempscript | sed -e 's/NULL//g;s@"@\\"@g'
-if [ $? -ne 0 ]; then
+mysql -u${MYSQLUSER} -p${MYSQLPWD} -B -h $MYSQLHOST < tempscript | sed -e 's/NULL//g;s@"@\\"@g' > $OUTFILE
+if [ $PIPESTATUS -ne 0 ]; then
     echo "ERROR trying to dump table using script $1"
     exit 1
 fi
+echo "=> ${OUTFILE}"
 

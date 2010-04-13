@@ -5,6 +5,7 @@
 
 default.action=REPLACE
 default.deleteAfterImport=FALSE
+default.replaceNewerThanDate=${DATE_CUTOFF}
 
 # map a source tsv column (right side) to a property name or full propertyURI (left)
 # predefined properties: ParticipantId, SiteId, VisitId, Created
@@ -30,6 +31,8 @@ chemisc.file=chemisc.tsv
 chemistry.file=chemistry.tsv
 clintrem.file=clintrem.tsv
 demographics.file=demographics.tsv
+# always replace the demographics table completely.
+demographics.replaceNewerThanDate=FALSE
 departure.file=departure.tsv
 drug.file=drug.tsv
 hemamisc.file=hemamisc.tsv

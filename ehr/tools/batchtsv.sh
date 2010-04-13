@@ -1,39 +1,43 @@
 #!/bin/bash
 #generate tsv files
 
-#MYSQLPWD=sasa
-MYSQLUSER=root
-FILEDEST=/usr/local/labkey/files/WNPRC/EHR/@files/ehr-studylocal/
+#FILEDEST=/usr/local/labkey/files/WNPRC/EHR/@files/ehr-studylocal/
+FILEDEST=/home/kevink/labkey/release10.1/server/customModules/ehr/ehr-6mos/
 
-if [ -z "${MYSQLPWD}" ]; then
-    echo "Set MYSQLPWD env variable before calling this script"
-    exit 1
+. setup.sh
+
+if [ ! -f $FILEDEST/datasets/EHRStudy.dataset -o \
+    ${DATE_CUTOFF_FILE} -nt ${FILEDEST}/datasets/EHRStudy.dataset -o \
+    ./scripts/setup/EHRStudy.dataset -nt ${FILEDEST}/datasets/EHRStudy.dataset ]
+then
+    echo "Generating new EHRStudy.dataset file"
+    eval "echo \"`cat ./scripts/setup/EHRStudy.dataset`\"" > ${FILEDEST}/datasets/EHRStudy.dataset
 fi
 
-for dumpfile in scripts/dataset/*.sql
+for script in scripts/dataset/*.sql
 do
-    fname=${dumpfile##*/}
+    fname=${script##*/}
     basename=${fname%%.*}
+    echo
     echo "** dataset $basename"
-    time ./generatetsv.sh $dumpfile > ${FILEDEST}datasets/${basename}.tsv
+    time ./generatetsv.sh $script ${FILEDEST}datasets/${basename}.tsv
     if [ $? -ne 0 ]; then
-        echo "Failed to run '$dumpfile', exiting early"
+        echo "Failed running '$script', exiting early"
         exit 1
     fi
-    echo
 done
 
-for dumpfile in scripts/lists/*.sql
+for script in scripts/lists/*.sql
 do
-    fname=${dumpfile##*/}
+    fname=${script##*/}
     basename=${fname%%.*}
+    echo
     echo "** list $basename"
-    time ./generatetsv.sh $dumpfile > ${FILEDEST}lists/${basename}.tsv
+    time ./generatetsv.sh $script ${FILEDEST}lists/${basename}.tsv
     if [ $? -ne 0 ]; then
-        echo "Failed to run '$dumpfile', exiting early"
+        echo "Failed running '$script', exiting early"
         exit 1
     fi
-    echo
 done
 
 echo "Finished dumping all tsv files."
