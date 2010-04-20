@@ -76,12 +76,12 @@
                     <fkColumnName>Id</fkColumnName>
                 </fk>
             </column>
-            <column columnName="totalChildren" wrappedColumnName="id">
-                <columnTitle>Num Children</columnTitle>
+            <column columnName="totalOffspring" wrappedColumnName="id">
+                <columnTitle>Num Offspring</columnTitle>
                 <isHidden>true</isHidden>
                 <fk>
                     <fkDbSchema>study</fkDbSchema>
-                    <fkTable>demographicsTotalChildren</fkTable>
+                    <fkTable>demographicsTotalOffspring</fkTable>
                     <fkColumnName>Id</fkColumnName>
                 </fk>
             </column>
