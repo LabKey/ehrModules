@@ -1,4 +1,9 @@
 /*
+ * Copyright (c) 2010 LabKey Corporation
+ *
+ * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
+ */
+/*
 This script is designed to alter postgres settings on a staging/development server following a full postgres dump from
 a production server.  This script comes with no guarantee whatsoever.  Test prior to use.
   
