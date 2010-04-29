@@ -6,11 +6,9 @@ import org.labkey.api.security.User;
 import org.labkey.api.study.StudyService;
 import org.labkey.api.study.Study;
 import org.labkey.api.study.DataSet;
-import org.labkey.ehr.EHRSchema;
 
 import java.util.Set;
 import java.util.HashSet;
-import java.util.Map;
 
 /**
  * Copyright (c) 2010 LabKey Corporation
@@ -60,16 +58,12 @@ public class EHRQuerySchema extends UserSchema
             if (name.equalsIgnoreCase("StudyData"))
                 return QueryService.get().getUserSchema(getUser(), getContainer(), "study").getTable("StudyData");
 
-            DataSet[] datasets = study.getDataSets();
-            if (datasets != null)
+            for (DataSet dataset : study.getDataSets())
             {
-                for (DataSet dataset : datasets)
-                {
-                    if (dataset.getLabel().equalsIgnoreCase(name))
-                        return dataset.getTableInfo(getUser());
-                    else if (getDepivotName(dataset.getLabel()).equalsIgnoreCase(name))
-                        return new DepivotedStudyTable(this, dataset);
-                }
+                if (dataset.getLabel().equalsIgnoreCase(name))
+                    return dataset.getTableInfo(getUser());
+                else if (getDepivotName(dataset.getLabel()).equalsIgnoreCase(name))
+                    return new DepivotedStudyTable(this, dataset);
             }
         }
 
@@ -97,16 +91,12 @@ public class EHRQuerySchema extends UserSchema
         {
             tableNames.add("StudyData");
 
-            DataSet[] datasets = study.getDataSets();
-            if (datasets != null)
+            for (DataSet dataset : study.getDataSets())
             {
-                for (DataSet dataset : datasets)
+                if (dataset.canRead(getUser()))
                 {
-                    if (dataset.canRead(getUser()))
-                    {
-                        tableNames.add(dataset.getLabel());
-                        tableNames.add(getDepivotName(dataset.getLabel()));
-                    }
+                    tableNames.add(dataset.getLabel());
+                    tableNames.add(getDepivotName(dataset.getLabel()));
                 }
             }
         }
