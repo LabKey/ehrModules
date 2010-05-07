@@ -20,10 +20,10 @@ import org.labkey.api.data.ContainerManager;
 import org.labkey.api.data.DbSchema;
 import org.labkey.api.module.DefaultModule;
 import org.labkey.api.module.ModuleContext;
-import org.labkey.api.util.PageFlowUtil;
 import org.labkey.api.view.WebPartFactory;
 import org.labkey.ehr.query.EHRQuerySchema;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Set;
@@ -45,7 +45,7 @@ public class EHRModule extends DefaultModule
         return false;
     }
 
-    protected Collection<? extends WebPartFactory> createWebPartFactories()
+    protected Collection<WebPartFactory> createWebPartFactories()
     {
         return Collections.emptyList();
     }
