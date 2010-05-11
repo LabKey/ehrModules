@@ -29,6 +29,17 @@ public class EHRProperties
 
     public static SystemProperty REMARK = new SystemProperty(URI + "Remark", PropertyType.MULTI_LINE);
 
+    public static SystemProperty PARENTID = new SystemProperty(URI + "ParentId", PropertyType.STRING)
+    {
+        @Override
+        protected PropertyDescriptor constructPropertyDescriptor()
+        {
+            PropertyDescriptor pd = super.constructPropertyDescriptor();
+            pd.setHidden(true);
+            return pd;
+        }
+    };
+
     public static SystemProperty DESCRIPTION = new SystemProperty(URI + "Description", PropertyType.MULTI_LINE)
     {
         @Override
@@ -41,7 +52,7 @@ public class EHRProperties
     };
 
     public static SystemProperty ACCOUNT = new SystemProperty(URI + "Account", PropertyType.STRING);
-    public static SystemProperty PROJECT = new SystemProperty(URI + "Project", PropertyType.STRING)
+    public static SystemProperty PROJECT = new SystemProperty(URI + "Project", PropertyType.INTEGER)
     {
         @Override
         protected PropertyDescriptor constructPropertyDescriptor()
@@ -50,6 +61,7 @@ public class EHRProperties
             pd.setLookupSchema("lists");
             pd.setLookupQuery("project");
             pd.setImportAliases("pno");
+            pd.setFormat("00000000");
             return pd;
         }
     };
