@@ -3,9 +3,9 @@
  *
  * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
  */
-SELECT id, FixDateTime(date, time) AS Date, (weight) AS weight, (verified) AS verified,
+SELECT lower(id) as id, FixDateTime(date, time) AS Date, (weight) AS weight, (verified) AS verified,
 ( CONCAT_WS(',\n', 
      CONCAT('Weight: ', CAST(weight AS CHAR))
-) ) AS Description
+) ) AS Description, ts, uuid AS objectid
 FROM weight
 

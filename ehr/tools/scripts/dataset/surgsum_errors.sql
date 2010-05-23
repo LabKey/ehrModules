@@ -9,7 +9,7 @@ SUBSTR(CONCAT_WS(',\n',
      CONCAT('SO: ', FixNewlines(so)),
      CONCAT('A: ', FixNewlines(a)),
      CONCAT('P: ', FixNewlines(p))
-), 1, 4000) AS Description
+), 1, 4000) AS Description, ts, uuid AS objectid
 FROM surgsum
 WHERE id = ''
 

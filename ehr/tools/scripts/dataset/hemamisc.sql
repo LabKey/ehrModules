@@ -3,11 +3,11 @@
  *
  * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
  */
-SELECT id, FixDate(date) AS Date, morphology AS morphology, (account) AS account,
+SELECT lower(id) as id, FixDate(date) AS Date, morphology AS morphology, (account) AS account,
      ( CONCAT_WS(',\n',
      CONCAT('Morphology: ', morphology),
      CONCAT('Account: ', account)
-     ) ) AS Description
+     ) ) AS Description, ts, uuid AS objectid
 
 
 FROM hemamisc

@@ -3,16 +3,26 @@
  *
  * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
  */
-SELECT id, birth AS date, sex, dam, sire1, sire2, sire3, status, weight,
+
+SELECT lower(id) as id, FixDate(birth) AS date, sex, dam, sire1, sire2, sire3, status, weight,
      ( CONCAT_WS(',\n',
-     CONCAT('Sex: ', sex),
-     CONCAT('Dam: ', dam),
-     CONCAT('Sire1: ', sire1),
-     CONCAT('Sire2: ', sire2),
-     CONCAT('Sire3: ', sire3),
-     CONCAT('Status: ', status),
-     CONCAT('Weight: ', weight)
-     )) AS Description
+     CONCAT('Sex: ', p.sex),
+     CONCAT('Dam: ', p.dam),
+     CONCAT('Sire1: ', p.sire1),
+     CONCAT('Sire2: ', p.sire2),
+     CONCAT('Sire3: ', p.sire3),
+     CONCAT('Status: ', p.status),
+     CONCAT('Weight: ', p.weight)
+     )) AS Description, p.ts as ts, p.uuid AS objectid
+
 
 FROM pedigree p
+
+group by p.id
+
+/*
+left join abstract p
+
+on a.id = p.id
+*/
 

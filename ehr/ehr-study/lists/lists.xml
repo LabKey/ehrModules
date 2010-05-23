@@ -34,16 +34,33 @@
         <columnTitle>Cage</columnTitle>
       </column>
       <column columnName="length">
-        <datatype>varchar</datatype>
+        <datatype>double</datatype>
         <columnTitle>Length</columnTitle>
       </column>
       <column columnName="width">
-        <datatype>varchar</datatype>
+        <datatype>double</datatype>
         <columnTitle>Width</columnTitle>
       </column>
       <column columnName="height">
-        <datatype>varchar</datatype>
+        <datatype>double</datatype>
         <columnTitle>Height</columnTitle>
+      </column>
+      <column columnName="objectid">
+        <datatype>varchar</datatype>
+        <columnTitle>Key</columnTitle>
+        <shownInInsertView>false</shownInInsertView>
+        <shownInUpdateView>false</shownInUpdateView>
+        <shownInDetailsView>false</shownInDetailsView>
+        <isHidden>true</isHidden>
+      </column>
+      <column columnName="ts">
+        <datatype>timestamp</datatype>
+        <columnTitle>Last Changed</columnTitle>
+        <nullable>false</nullable>
+        <shownInInsertView>false</shownInInsertView>
+        <shownInUpdateView>false</shownInUpdateView>
+        <shownInDetailsView>false</shownInDetailsView>
+        <isHidden>true</isHidden>
       </column>
     </columns>
     <pkColumnName>roomcage</pkColumnName>
@@ -51,12 +68,23 @@
     <table tableName="cageclass" tableDbType="TABLE">
     <tableTitle>Cage Class</tableTitle>
     <columns>
-      <column columnName="Key">
-        <datatype>integer</datatype>
+      <column columnName="objectid">
+        <datatype>varchar</datatype>
         <columnTitle>Key</columnTitle>
-        <nullable>false</nullable>
+        <shownInInsertView>false</shownInInsertView>
+        <shownInUpdateView>false</shownInUpdateView>
+        <shownInDetailsView>false</shownInDetailsView>
+        <isHidden>true</isHidden>
         <isKeyField>true</isKeyField>
-        <isAutoInc>true</isAutoInc>
+      </column>
+      <column columnName="ts">
+        <datatype>timestamp</datatype>
+        <columnTitle>Last Changed</columnTitle>
+        <nullable>false</nullable>
+        <shownInInsertView>false</shownInInsertView>
+        <shownInUpdateView>false</shownInUpdateView>
+        <shownInDetailsView>false</shownInDetailsView>
+        <isHidden>true</isHidden>
       </column>
       <column columnName="low">
         <datatype>double</datatype>
@@ -75,17 +103,33 @@
         <columnTitle>Height</columnTitle>
       </column>
     </columns>
-    <pkColumnName>Key</pkColumnName>
+    <pkColumnName>objectid</pkColumnName>
     </table>
     <table tableName="cagenotes" tableDbType="TABLE">
     <tableTitle>Cage Notes</tableTitle>
     <columns>
-      <column columnName="Key">
-        <datatype>integer</datatype>
+      <column columnName="objectid">
+        <datatype>varchar</datatype>
         <columnTitle>Key</columnTitle>
-        <nullable>false</nullable>
+        <shownInInsertView>false</shownInInsertView>
+        <shownInUpdateView>false</shownInUpdateView>
+        <shownInDetailsView>false</shownInDetailsView>
+        <isHidden>true</isHidden>
         <isKeyField>true</isKeyField>
-        <isAutoInc>true</isAutoInc>
+      </column>
+      <column columnName="ts">
+        <datatype>timestamp</datatype>
+        <columnTitle>Last Changed</columnTitle>
+        <nullable>false</nullable>
+        <shownInInsertView>false</shownInInsertView>
+        <shownInUpdateView>false</shownInUpdateView>
+        <shownInDetailsView>false</shownInDetailsView>
+        <isHidden>true</isHidden>
+      </column>
+      <column columnName="roomcage">
+        <datatype>varchar</datatype>
+        <columnTitle>Room/Cage</columnTitle>
+        <nullable>false</nullable>
       </column>
       <column columnName="room">
         <datatype>varchar</datatype>
@@ -101,6 +145,7 @@
       </column>
       <column columnName="date">
         <datatype>timestamp</datatype>
+        <formatString>yyyy-mm-dd</formatString>
         <columnTitle>Date</columnTitle>
       </column>
       <column columnName="userid">
@@ -113,7 +158,7 @@
         </fk>
       </column>
     </columns>
-    <pkColumnName>Key</pkColumnName>
+    <pkColumnName>objectid</pkColumnName>
     </table>
     <table tableName="chemnorm" tableDbType="TABLE">
     <tableTitle>Chem Normals</tableTitle>
@@ -155,6 +200,28 @@
       <column columnName="species">
         <datatype>varchar</datatype>
         <columnTitle>Species</columnTitle>
+        <fk>
+          <fkDbSchema>lists</fkDbSchema>
+          <fkTable>species</fkTable>
+          <fkColumnName>common</fkColumnName>
+        </fk>
+      </column>
+      <column columnName="objectid">
+        <datatype>varchar</datatype>
+        <columnTitle>Key</columnTitle>
+        <shownInInsertView>false</shownInInsertView>
+        <shownInUpdateView>false</shownInUpdateView>
+        <shownInDetailsView>false</shownInDetailsView>
+        <isHidden>true</isHidden>
+      </column>
+      <column columnName="ts">
+        <datatype>timestamp</datatype>
+        <columnTitle>Last Changed</columnTitle>
+        <nullable>false</nullable>
+        <shownInInsertView>false</shownInInsertView>
+        <shownInUpdateView>false</shownInUpdateView>
+        <shownInDetailsView>false</shownInDetailsView>
+        <isHidden>true</isHidden>
       </column>
     </columns>
     <pkColumnName>testname</pkColumnName>
@@ -188,6 +255,23 @@
           <datatype>varchar</datatype>
           <columnTitle>Meaning</columnTitle>
         </column>
+      <column columnName="objectid">
+        <datatype>varchar</datatype>
+        <columnTitle>Key</columnTitle>
+        <shownInInsertView>false</shownInInsertView>
+        <shownInUpdateView>false</shownInUpdateView>
+        <shownInDetailsView>false</shownInDetailsView>
+        <isHidden>true</isHidden>
+      </column>
+      <column columnName="ts">
+        <datatype>timestamp</datatype>
+        <columnTitle>Last Changed</columnTitle>
+        <nullable>false</nullable>
+        <shownInInsertView>false</shownInInsertView>
+        <shownInUpdateView>false</shownInUpdateView>
+        <shownInDetailsView>false</shownInDetailsView>
+        <isHidden>true</isHidden>
+      </column>
       </columns>
       <pkColumnName>code</pkColumnName>
     </table>
@@ -204,6 +288,23 @@
             <datatype>varchar</datatype>
             <columnTitle>Meaning</columnTitle>
           </column>
+          <column columnName="objectid">
+            <datatype>varchar</datatype>
+            <columnTitle>Key</columnTitle>
+            <shownInInsertView>false</shownInInsertView>
+            <shownInUpdateView>false</shownInUpdateView>
+            <shownInDetailsView>false</shownInDetailsView>
+            <isHidden>true</isHidden>
+          </column>
+          <column columnName="ts">
+            <datatype>timestamp</datatype>
+            <columnTitle>Last Changed</columnTitle>
+            <nullable>false</nullable>
+            <shownInInsertView>false</shownInInsertView>
+            <shownInUpdateView>false</shownInUpdateView>
+            <shownInDetailsView>false</shownInDetailsView>
+            <isHidden>true</isHidden>
+          </column>
         </columns>
         <pkColumnName>code</pkColumnName>
     </table>
@@ -219,6 +320,23 @@
           <column columnName="rate">
             <datatype>double</datatype>
             <columnTitle>Rate</columnTitle>
+          </column>
+          <column columnName="objectid">
+            <datatype>varchar</datatype>
+            <columnTitle>Key</columnTitle>
+            <shownInInsertView>false</shownInInsertView>
+            <shownInUpdateView>false</shownInUpdateView>
+            <shownInDetailsView>false</shownInDetailsView>
+            <isHidden>true</isHidden>
+          </column>
+          <column columnName="ts">
+            <datatype>timestamp</datatype>
+            <columnTitle>Last Changed</columnTitle>
+            <nullable>false</nullable>
+            <shownInInsertView>false</shownInInsertView>
+            <shownInUpdateView>false</shownInUpdateView>
+            <shownInDetailsView>false</shownInDetailsView>
+            <isHidden>true</isHidden>
           </column>
         </columns>
         <pkColumnName>type</pkColumnName>
@@ -241,12 +359,14 @@
     </table>
     <table tableName="project" tableDbType="TABLE">
       <tableTitle>IACUC Projects</tableTitle>
+      <tableUrl>/EHR_Reporting/projectDetails.view?key=${project}</tableUrl>
       <columns>
-        <column columnName="pno">
+        <column columnName="project">
           <datatype>integer</datatype>
           <columnTitle>Project</columnTitle>
           <nullable>false</nullable>
           <isKeyField>true</isKeyField>
+          <propertyURI>urn:ehr.labkey.org/#Project</propertyURI>
         </column>
         <column columnName="protocol">
           <datatype>varchar</datatype>
@@ -286,11 +406,29 @@
           <datatype>varchar</datatype>
           <columnTitle>Requestor Name</columnTitle>
         </column>
+        <column columnName="objectid">
+          <datatype>varchar</datatype>
+          <columnTitle>Key</columnTitle>
+          <shownInInsertView>false</shownInInsertView>
+          <shownInUpdateView>false</shownInUpdateView>
+          <shownInDetailsView>false</shownInDetailsView>
+          <isHidden>true</isHidden>
+        </column>
+        <column columnName="ts">
+          <datatype>timestamp</datatype>
+          <columnTitle>Last Changed</columnTitle>
+          <nullable>false</nullable>
+          <shownInInsertView>false</shownInInsertView>
+          <shownInUpdateView>false</shownInUpdateView>
+          <shownInDetailsView>false</shownInDetailsView>
+          <isHidden>true</isHidden>
+        </column>
       </columns>
-      <pkColumnName>pno</pkColumnName>
+      <pkColumnName>project</pkColumnName>
     </table>
     <table tableName="protocol" tableDbType="TABLE">
       <tableTitle>RARC Protocols</tableTitle>
+      <tableUrl>/EHR_Reporting/protocolDetails.view?key=${protocol}</tableUrl>
       <columns>
         <column columnName="protocol">
           <datatype>varchar</datatype>
@@ -306,73 +444,166 @@
           <datatype>timestamp</datatype>
           <columnTitle>Approve</columnTitle>
         </column>
-        <column columnName="species1">
+        <!--<column columnName="species1">-->
+          <!--<datatype>varchar</datatype>-->
+          <!--<columnTitle>Species1</columnTitle>-->
+        <!--</column>-->
+        <!--<column columnName="c1">-->
+          <!--<datatype>integer</datatype>-->
+          <!--<columnTitle>Count 1</columnTitle>-->
+        <!--</column>-->
+        <!--<column columnName="species2">-->
+          <!--<datatype>varchar</datatype>-->
+          <!--<columnTitle>Species2</columnTitle>-->
+        <!--</column>-->
+        <!--<column columnName="c2">-->
+          <!--<datatype>integer</datatype>-->
+          <!--<columnTitle>Count 2</columnTitle>-->
+        <!--</column>-->
+        <!--<column columnName="species3">-->
+          <!--<datatype>varchar</datatype>-->
+          <!--<columnTitle>Species3</columnTitle>-->
+        <!--</column>-->
+        <!--<column columnName="c3">-->
+          <!--<datatype>integer</datatype>-->
+          <!--<columnTitle>Count 3</columnTitle>-->
+        <!--</column>-->
+        <!--<column columnName="species4">-->
+          <!--<datatype>varchar</datatype>-->
+          <!--<columnTitle>Species4</columnTitle>-->
+        <!--</column>-->
+        <!--<column columnName="c4">-->
+          <!--<datatype>integer</datatype>-->
+          <!--<columnTitle>Count 4</columnTitle>-->
+        <!--</column>-->
+        <!--<column columnName="species5">-->
+          <!--<datatype>varchar</datatype>-->
+          <!--<columnTitle>Species5</columnTitle>-->
+        <!--</column>-->
+        <!--<column columnName="c5">-->
+          <!--<datatype>integer</datatype>-->
+          <!--<columnTitle>Count 5</columnTitle>-->
+        <!--</column>-->
+        <column columnName="objectid">
           <datatype>varchar</datatype>
-          <columnTitle>Species1</columnTitle>
+          <columnTitle>Key</columnTitle>
+          <shownInInsertView>false</shownInInsertView>
+          <shownInUpdateView>false</shownInUpdateView>
+          <shownInDetailsView>false</shownInDetailsView>
+          <isHidden>true</isHidden>
         </column>
-        <column columnName="c1">
-          <datatype>integer</datatype>
-          <columnTitle>Count 1</columnTitle>
-        </column>
-        <column columnName="species2">
-          <datatype>varchar</datatype>
-          <columnTitle>Species2</columnTitle>
-        </column>
-        <column columnName="c2">
-          <datatype>integer</datatype>
-          <columnTitle>Count 2</columnTitle>
-        </column>
-        <column columnName="species3">
-          <datatype>varchar</datatype>
-          <columnTitle>Species3</columnTitle>
-        </column>
-        <column columnName="c3">
-          <datatype>integer</datatype>
-          <columnTitle>Count 3</columnTitle>
-        </column>
-        <column columnName="species4">
-          <datatype>varchar</datatype>
-          <columnTitle>Species4</columnTitle>
-        </column>
-        <column columnName="c4">
-          <datatype>integer</datatype>
-          <columnTitle>Count 4</columnTitle>
-        </column>
-        <column columnName="species5">
-          <datatype>varchar</datatype>
-          <columnTitle>Species5</columnTitle>
-        </column>
-        <column columnName="c5">
-          <datatype>integer</datatype>
-          <columnTitle>Count 5</columnTitle>
-        </column>
+        <column columnName="ts">
+          <datatype>timestamp</datatype>
+          <columnTitle>Last Changed</columnTitle>
+          <nullable>false</nullable>
+          <shownInInsertView>false</shownInInsertView>
+          <shownInUpdateView>false</shownInUpdateView>
+          <shownInDetailsView>false</shownInDetailsView>
+          <isHidden>true</isHidden>
+        </column>          
       </columns>
       <pkColumnName>protocol</pkColumnName>
+    </table>
+    <table tableName="protocol_counts" tableDbType="TABLE">
+      <tableTitle>RARC Protocol Allowable Animals</tableTitle>
+      <columns>
+        <column columnName="Key">
+          <datatype>integer</datatype>
+          <columnTitle>Key</columnTitle>
+          <nullable>false</nullable>
+          <isKeyField>true</isKeyField>
+          <isAutoInc>true</isAutoInc>
+        </column>
+        <column columnName="parentid">
+          <datatype>varchar</datatype>
+          <columnTitle>Key</columnTitle>
+          <shownInInsertView>false</shownInInsertView>
+          <shownInUpdateView>false</shownInUpdateView>
+          <shownInDetailsView>false</shownInDetailsView>
+          <isHidden>true</isHidden>
+        </column>
+        <column columnName="ts">
+          <datatype>timestamp</datatype>
+          <columnTitle>Last Changed</columnTitle>
+          <nullable>false</nullable>
+          <shownInInsertView>false</shownInInsertView>
+          <shownInUpdateView>false</shownInUpdateView>
+          <shownInDetailsView>false</shownInDetailsView>
+          <isHidden>true</isHidden>
+        </column>
+        <column columnName="protocol">
+          <datatype>varchar</datatype>
+          <columnTitle>Protocol</columnTitle>
+          <nullable>false</nullable>
+            <fk>
+              <fkDbSchema>lists</fkDbSchema>
+              <fkTable>protocol</fkTable>
+              <fkColumnName>protocol</fkColumnName>
+            </fk>
+        </column>
+        <column columnName="species">
+          <datatype>varchar</datatype>
+          <columnTitle>Species</columnTitle>
+            <fk>
+              <fkDbSchema>lists</fkDbSchema>
+              <fkTable>species</fkTable>
+              <fkColumnName>common</fkColumnName>
+            </fk>
+        </column>
+        <column columnName="count">
+          <datatype>integer</datatype>
+          <columnTitle>Number Allowed</columnTitle>
+        </column>
+        <column columnName="StartDate">
+          <datatype>timestamp</datatype>
+          <formatString>yyyy-mm-dd</formatString>
+          <columnTitle>Start Date</columnTitle>
+        </column>
+        <column columnName="EndDate">
+          <datatype>timestamp</datatype>
+          <formatString>yyyy-mm-dd</formatString>
+          <columnTitle>EndDate</columnTitle>
+        </column>
+      </columns>
+      <pkColumnName>Key</pkColumnName>
     </table>
     <table tableName="ref_range" tableDbType="TABLE">
     <tableTitle>Ref Ranges</tableTitle>
     <columns>
-      <column columnName="Key">
+      <column columnName="keyField">
         <datatype>varchar</datatype>
         <columnTitle>Key</columnTitle>
+        <shownInInsertView>false</shownInInsertView>
+        <shownInUpdateView>false</shownInUpdateView>
+        <shownInDetailsView>false</shownInDetailsView>
         <nullable>false</nullable>
+        <isHidden>true</isHidden>
         <isKeyField>true</isKeyField>
+      </column>
+      <column columnName="ts">
+        <datatype>timestamp</datatype>
+        <columnTitle>Last Changed</columnTitle>
+        <nullable>false</nullable>
+        <shownInInsertView>false</shownInInsertView>
+        <shownInUpdateView>false</shownInUpdateView>
+        <shownInDetailsView>false</shownInDetailsView>
+        <isHidden>true</isHidden>
       </column>
       <column columnName="species">
         <datatype>varchar</datatype>
         <columnTitle>Species</columnTitle>
         <fk>
-            <fkDbSchema>lists</fkDbSchema>
-            <fkTable>species</fkTable>
-            <fkColumnName>code</fkColumnName>
+          <fkDbSchema>lists</fkDbSchema>
+          <fkTable>species</fkTable>
+          <fkColumnName>common</fkColumnName>
         </fk>
       </column>
       <column columnName="sex">
         <datatype>varchar</datatype>
-        <columnTitle>Sex</columnTitle>
+        <columnTitle>Gender</columnTitle>
         <fk>
             <fkDbSchema>lists</fkDbSchema>
-            <fkTable>sex</fkTable>
+            <fkTable>gender_codes</fkTable>
             <fkColumnName>code</fkColumnName>
         </fk>
       </column>
@@ -392,8 +623,16 @@
           <datatype>double</datatype>
           <columnTitle>Ref Range Max</columnTitle>
         </column>
+        <column columnName="objectid">
+          <datatype>varchar</datatype>
+          <columnTitle>objectid</columnTitle>
+          <shownInInsertView>false</shownInInsertView>
+          <shownInUpdateView>false</shownInUpdateView>
+          <shownInDetailsView>false</shownInDetailsView>
+          <isHidden>true</isHidden>
+        </column>
     </columns>
-    <pkColumnName>Key</pkColumnName>
+    <pkColumnName>keyField</pkColumnName>
     </table>
     <table tableName="rhesaux" tableDbType="TABLE">
       <tableTitle>Rhesus Aux Names</tableTitle>
@@ -417,11 +656,28 @@
           <datatype>varchar</datatype>
           <columnTitle>Info2</columnTitle>
         </column>
+        <column columnName="objectid">
+          <datatype>varchar</datatype>
+          <columnTitle>Key</columnTitle>
+          <shownInInsertView>false</shownInInsertView>
+          <shownInUpdateView>false</shownInUpdateView>
+          <shownInDetailsView>false</shownInDetailsView>
+          <isHidden>true</isHidden>
+        </column>
+        <column columnName="ts">
+          <datatype>timestamp</datatype>
+          <columnTitle>Last Changed</columnTitle>
+          <nullable>false</nullable>
+          <shownInInsertView>false</shownInInsertView>
+          <shownInUpdateView>false</shownInUpdateView>
+          <shownInDetailsView>false</shownInDetailsView>
+          <isHidden>true</isHidden>
+        </column>
       </columns>
       <pkColumnName>id</pkColumnName>
     </table>
-    <table tableName="sex" tableDbType="TABLE">
-      <tableTitle>Sex Codes</tableTitle>
+    <table tableName="gender_codes" tableDbType="TABLE">
+      <tableTitle>Gender Codes</tableTitle>
       <columns>
         <column columnName="code">
           <datatype>varchar</datatype>
@@ -449,26 +705,47 @@
           <datatype>varchar</datatype>
           <columnTitle>Meaning</columnTitle>
         </column>
+        <column columnName="objectid">
+          <datatype>varchar</datatype>
+          <columnTitle>Key</columnTitle>
+          <shownInInsertView>false</shownInInsertView>
+          <shownInUpdateView>false</shownInUpdateView>
+          <shownInDetailsView>false</shownInDetailsView>
+          <isHidden>true</isHidden>
+        </column>
+        <column columnName="ts">
+          <datatype>timestamp</datatype>
+          <columnTitle>Last Changed</columnTitle>
+          <nullable>false</nullable>
+          <shownInInsertView>false</shownInInsertView>
+          <shownInUpdateView>false</shownInUpdateView>
+          <shownInDetailsView>false</shownInDetailsView>
+          <isHidden>true</isHidden>
+        </column>
       </columns>
+      <titleColumn>meaning</titleColumn>
       <pkColumnName>code</pkColumnName>
     </table>
     <table tableName="snomap" tableDbType="TABLE">
       <tableTitle>SNOMED Code Map</tableTitle>
       <columns>
-        <column columnName="key">
-          <datatype>integer</datatype>
-          <columnTitle>Key</columnTitle>
-          <nullable>false</nullable>
-          <isAutoInc>true</isAutoInc>
-          <isKeyField>true</isKeyField>
-        </column>
         <column columnName="ocode">
           <datatype>varchar</datatype>
           <columnTitle>Old Code</columnTitle>
+          <fk>
+           <fkDbSchema>lists</fkDbSchema>
+            <fkTable>snomed</fkTable>
+            <fkColumnName>code</fkColumnName>
+          </fk>
         </column>
         <column columnName="ncode">
           <datatype>varchar</datatype>
           <columnTitle>New Code</columnTitle>
+          <fk>
+           <fkDbSchema>lists</fkDbSchema>
+            <fkTable>snomed</fkTable>
+            <fkColumnName>code</fkColumnName>
+          </fk>
         </column>
         <column columnName="meaning">
           <datatype>varchar</datatype>
@@ -476,13 +753,61 @@
         </column>
         <column columnName="date">
           <datatype>timestamp</datatype>
+          <formatString>yyyy-mm-dd</formatString>
           <columnTitle>Date</columnTitle>
         </column>
+        <column columnName="objectid">
+          <datatype>varchar</datatype>
+          <columnTitle>Key</columnTitle>
+          <shownInInsertView>false</shownInInsertView>
+          <shownInUpdateView>false</shownInUpdateView>
+          <shownInDetailsView>false</shownInDetailsView>
+          <isKeyField>true</isKeyField>
+          <isHidden>true</isHidden>
+        </column>
+        <column columnName="ts">
+          <datatype>timestamp</datatype>
+          <columnTitle>Last Changed</columnTitle>
+          <nullable>false</nullable>
+          <shownInInsertView>false</shownInInsertView>
+          <shownInUpdateView>false</shownInUpdateView>
+          <shownInDetailsView>false</shownInDetailsView>
+          <isHidden>true</isHidden>
+        </column>
       </columns>
-      <pkColumnName>key</pkColumnName>
+      <pkColumnName>objectid</pkColumnName>
     </table>
     <table tableName="species" tableDbType="TABLE">
-      <tableTitle>Species Codes</tableTitle>
+      <tableTitle>Species</tableTitle>
+      <columns>
+        <column columnName="common">
+          <datatype>varchar</datatype>
+          <columnTitle>Common Name</columnTitle>
+          <nullable>false</nullable>
+          <isKeyField>true</isKeyField>
+        </column>
+        <column columnName="scientific">
+          <datatype>varchar</datatype>
+          <columnTitle>Scientific Name</columnTitle>
+        </column>
+        <column columnName="code">
+          <datatype>varchar</datatype>
+          <columnTitle>Id Prefix(es)</columnTitle>
+        </column>
+        <column columnName="regexp">
+          <datatype>varchar</datatype>
+          <columnTitle>Regular Expression</columnTitle>
+          <isHidden>true</isHidden>
+        </column>
+        <column columnName="mhc_prefix">
+          <datatype>varchar</datatype>
+          <columnTitle>MHC Prefix</columnTitle>
+        </column>
+      </columns>
+      <pkColumnName>common</pkColumnName>
+    </table>
+    <table tableName="species_codes" tableDbType="TABLE">
+      <tableTitle>Species</tableTitle>
       <columns>
         <column columnName="code">
           <datatype>varchar</datatype>
@@ -497,10 +822,6 @@
         <column columnName="common">
           <datatype>varchar</datatype>
           <columnTitle>Common Name</columnTitle>
-        </column>
-        <column columnName="mhc_prefix">
-          <datatype>varchar</datatype>
-          <columnTitle>MHC Prefix</columnTitle>
         </column>
       </columns>
       <pkColumnName>code</pkColumnName>

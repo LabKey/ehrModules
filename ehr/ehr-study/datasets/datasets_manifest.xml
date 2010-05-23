@@ -4,18 +4,22 @@
     <dataset name='behavetrem' id='1004' category="Behavior"/>
     <dataset name='birth' id='1007' category="Clinical"/>
     <dataset name='blood' id='1008' category="Clinical"/>
-    <dataset name='problem' id='1030' category="Clinical"/>
-    <dataset name='clintrem' id='1011' category="Clinical"/>
+    <!--<dataset name='clintrem' id='1011' category="Clinical"/>-->
+    <dataset name='clinremarks' id='1047' category="Clinical" showByDefault="false"/>
     <dataset name='drug' id='1014' category="Clinical"/>
-    <dataset name='hormtrem' id='1017' category="Clinical"/>
+    <!--<dataset name='encounters' id='1046' category="Clinical"/>-->
+    <!--<dataset name='hormtrem' id='1017' category="Clinical" showByDefault="false"/>-->
     <dataset name='obs' id='1023' category="Clinical"/>
     <dataset name='prenatal' id='1029' category="Clinical"/>
+    <dataset name='problem' id='1030' category="Clinical"/>
     <dataset name='surgery' id='1031' category="Clinical"/>
-    <dataset name='surgfluid' id='1032' category="Clinical"/>
-    <dataset name='surgproc' id='1033' category="Clinical"/>
+    <!--<dataset name='surgfluid' id='1032' category="Clinical" showByDefault="false"/>-->
+    <dataset name='surgproc' id='1033' category="Clinical" showByDefault="false"/>
+    <dataset name='surgsum' id='1034' category="Clinical" showByDefault="false"/>
     <dataset name='tb' id='1035' category="Clinical"/>
     <dataset name='treatment_order' id='1037' category="Clinical"/>
     <dataset name='weight' id='1045' category="Clinical"/>
+      
     <dataset name='bacteriology' id='1003' category="ClinPath"/>
     <dataset name='chemisc' id='1009' category="ClinPath"/>
     <dataset name='chemistry' id='1010' category="ClinPath"/>
@@ -23,27 +27,36 @@
     <dataset name='hemamisc' id='1015' category="ClinPath"/>
     <dataset name='immunores' id='1019' category="ClinPath"/>
     <dataset name='parasitology' id='1027' category="ClinPath"/>
+    <!--
     <dataset name='parahead' id='1026' category="ClinPath"/>
     <dataset name='parares' id='1025' category="ClinPath"/>
+    -->
     <dataset name='urinalysis' id='1038' category="ClinPath"/>
     <dataset name='virsero' id='1039' category="ClinPath"/>
+    <!--
     <dataset name='virserohead' id='1040' category="ClinPath"/>
     <dataset name='virserores' id='1041' category="ClinPath"/>
+    -->
     <dataset name='viriso' id='1042' category="ClinPath"/>
+    <!--
     <dataset name='virisohead' id='1043' category="ClinPath"/>
     <dataset name='virisores' id='1044' category="ClinPath"/>
+    -->
     <dataset name='arrival' id='1001' category="ColonyManagement"/>
     <dataset name='assignment' id='1002' category="ColonyManagement"/>
+    <dataset name='deaths' id='1048' demographicData='true' category="ColonyManagement"/>
     <dataset name='demographics' category="ColonyManagement" demographicData='true' id='1012' />
     <dataset name='departure' id='1013' category="ColonyManagement"/>
     <dataset name='housing' id='1018' category="ColonyManagement"/>
-    <dataset name='pedigree' id='1028' category="ColonyManagement"/>
+    <dataset name='pedigree' id='1028' demographicData='true' category="ColonyManagement"/>
+    <!--
     <dataset name='mhctype' id='1020' category="Laboratory"/>
-    <dataset name='biopsydiag' id='1005' category="Pathology"/>
+    -->
     <dataset name='biopsy' id='1006' category="Pathology"/>
-    <dataset name='necropsydiag' id='1021' category="Pathology"/>
+    <dataset name='biopsydiag' id='1005' category="Pathology" showByDefault="false"/>
     <dataset name='necropsy' id='1022' category="Pathology"/>
-    <dataset name='tissue' id='1036' category="Pathology"/>
+    <dataset name='necropsydiag' id='1021' category="Pathology" showByDefault="false"/>
+    <dataset name='tissue' id='1036' category="Pathology" showByDefault="false"/>
   </datasets>
 </datasets>
 

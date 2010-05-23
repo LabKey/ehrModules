@@ -16,6 +16,29 @@ CREATE FUNCTION FixDate(d DATE)
       CASE WHEN DAY(d)=0 THEN '01' ELSE CAST(DAY(d) AS CHAR) END), '%Y-%m-%d')
     END;
 
+DROP FUNCTION IF EXISTS FixSpecies;
+CREATE FUNCTION FixSpecies(d VARCHAR(30))
+    RETURNS VARCHAR(30) DETERMINISTIC
+    RETURN
+    CASE
+    WHEN (d = 'rhesus' OR d='rhesus macaque' or d = 'macaca mulatta' or d='r' or d='rh') THEN
+      'Rhesus'
+    WHEN (d = 'cyno' OR d='cynomolgus' or d = 'macaca fascicularis' or d='cynomolgus maca' or d='cy') THEN
+      'Cynomolgus'
+    WHEN (d = 'marmoset' or d='cj') THEN
+      'Marmoset'
+    WHEN (d ='baboon') THEN
+      'Baboon'
+    WHEN (d ='stump tailed' OR d = 'st') THEN
+      'Stump Tailed'  
+    WHEN (d ='Vervet' OR d = 'ag') THEN
+      'Vervet'
+    WHEN (d ='Cotton-top Tamarin' OR d = 'so') THEN
+      'Cotton-top Tamarin'
+    ELSE
+      NULL
+    END;
+
 
 DROP FUNCTION IF EXISTS FixDateTime;
 CREATE FUNCTION FixDateTime(d DATE, t TIME)

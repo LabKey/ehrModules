@@ -1,0 +1,10 @@
+common	scientific	code	regexp	MHC_prefix
+Marmoset	Callithrix jacchus	cj	^cj[0-9]{4}$	Caja
+Cynomolgus	Macaca fascicularis	cy	^cy[0-9]{4}$	Mafa
+Rhesus	Macaca mulatta	r|rh	^rh[0-9]{4}$|^r[0-9]{5}$	Mamu
+Baboon				
+Stump Tailed	Macaca Arctoides			Maar
+Pigtail	Macaca Nemestrina			Mane
+Vervet	Chlorocebus sabaeus	ag	^ag[0-9]{4}$	Chsa
+Cotton-top Tamarin	Saguinus oedipus	so	^so[0-9]{4}$	Saoe
+Sooty Mangabey	Cercocebus atys			Ceat

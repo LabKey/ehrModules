@@ -1,0 +1,85 @@
+/*
+ * Copyright (c) 2010 LabKey Corporation
+ *
+ * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
+ */
+
+SELECT
+lower(id) as id,
+Date,
+pno,
+userid,
+FixNewlines(remark) AS remark,
+FixNewlines(remark) AS description,
+ts, objectid,
+parentid,
+category
+FROM
+
+(
+
+SELECT
+id,
+FixDateTime(date, time) AS Date,
+(pno) AS pno,
+(userid) AS userid,
+remark,
+ts, uuid AS objectid,
+(select UUID from clinhead t2 WHERE t1.id=t2.id AND t1.date=t2.date AND t1.time=t2.time AND t1.pno=t2.pno GROUP BY t1.id,t1.date,t1.time,t1.pno limit 1) as parentid,
+'Clinical' AS category
+FROM clintrem t1
+/*
+UNION ALL
+
+SELECT id,
+FixDateTime(date, time) AS Date,
+(pno) AS pno,
+NULL as userid,
+remark,
+ts, uuid AS objectid,
+(select UUID from behavehead b2 WHERE b1.id=b2.id AND b1.date=b2.date AND b1.time=b2.time GROUP BY b1.id,b1.date,b1.time limit 1) as parentid,
+'Behavior' AS category
+FROM behavetrem b1
+*/
+UNION ALL
+
+SELECT id,
+FixDateTime(date, time) AS Date,
+(pno) AS pno,
+(surgeon) AS userid,
+remark,
+ts, uuid AS objectid,
+(select UUID from surghead s2 WHERE s1.id=s2.id AND s1.date=s2.date AND s1.time=s2.time AND s1.pno=s2.pno GROUP BY s1.id,s1.date,s1.time,s1.pno limit 1) as parentid,
+'Surgery' AS category
+FROM surghead s1
+
+UNION ALL
+
+SELECT
+id,
+FixDate(date) AS Date,
+NULL as pno,
+NULL as userid,
+remark,
+ts, uuid AS objectid,
+(select UUID from necropsyhead n2 WHERE n1.id=n2.id AND n1.date=n2.date AND n1.caseno=n2.caseno GROUP BY n1.id,n1.date,n1.caseno limit 1) as parentid,
+'Necropsy' AS category
+FROM necropsyhead n1
+
+UNION ALL
+
+SELECT
+id,
+FixDate(date) AS Date,
+NULL as pno,
+NULL as userid,
+FixNewlines(remark) AS remark,
+ts, uuid AS objectid,
+(select UUID from biopsyhead n2 WHERE n1.id=n2.id AND n1.date=n2.date AND n1.caseno=n2.caseno GROUP BY n1.id,n1.date,n1.caseno limit 1) as parentid,
+'Biopsy' AS category
+FROM biopsyhead n1
+
+) x
+
+
+WHERE x.remark != '' AND x.remark IS NOT NULL AND x.id IS NOT NULL AND x.id != '' and x.pno REGEXP '^[0-9]+$' AND x.parentid NOT LIKE '%,%'

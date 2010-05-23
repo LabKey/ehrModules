@@ -3,7 +3,7 @@
  *
  * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
  */
-SELECT id, FixDate(date) AS Date, (account) AS account, (glucose) AS glucose, (bun) AS bun, (creatinine) AS creatinine, (ck_cpk) AS ck_cpk, (uricacid) AS uricacid, (cholesterol) AS cholesterol, (triglyc) AS triglyc, (sgot_ast) AS sgot_ast, (ldh) AS ldh, (tbili) AS tbili, (ggt) AS ggt, (sgpt_alt) AS sgpt_alt, (tprotein) AS tprotein, (albumin) AS albumin, (phosphatase) AS phosphatase, (calcium) AS calcium, (phosphorus) AS phosphorus, (iron) AS iron, (sodium) AS sodium, (potassium) AS potassium, (chloride) AS chloride, FixNewlines(remark) AS remark, FixNewlines(clinremark) AS clinremark,
+SELECT lower(id) as id, FixDate(date) AS Date, (account) AS account, (glucose) AS glucose, (bun) AS bun, (creatinine) AS creatinine, (ck_cpk) AS ck_cpk, (uricacid) AS uricacid, (cholesterol) AS cholesterol, (triglyc) AS triglyc, (sgot_ast) AS sgot_ast, (ldh) AS ldh, (tbili) AS tbili, (ggt) AS ggt, (sgpt_alt) AS sgpt_alt, (tprotein) AS tprotein, (albumin) AS albumin, (phosphatase) AS phosphatase, (calcium) AS calcium, (phosphorus) AS phosphorus, (iron) AS iron, (sodium) AS sodium, (potassium) AS potassium, (chloride) AS chloride, FixNewlines(remark) AS remark, FixNewlines(clinremark) AS clinremark, null as parentid,
      ( CONCAT_WS(',\n',
      CONCAT('Remark: ', FixNewlines(clinremark)),
      CONCAT('Glucose: ', CAST(glucose AS CHAR)),
@@ -27,5 +27,5 @@ SELECT id, FixDate(date) AS Date, (account) AS account, (glucose) AS glucose, (b
      CONCAT('Sodium: ', CAST(sodium AS CHAR)),
      CONCAT('Potassium: ', CAST(potassium AS CHAR)),
      CONCAT('Chloride: ', CAST(chloride AS CHAR))
-     ) ) AS Description
+     ) ) AS Description, ts, uuid AS objectid
 FROM chemistry

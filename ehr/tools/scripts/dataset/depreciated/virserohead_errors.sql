@@ -7,7 +7,7 @@ SELECT id, FixDate(date) as date, account, remark, clinremark,
 concat_ws(',\n',
      CONCAT('Remark: ', remark),
      CONCAT('Clin Remark: ', clinremark)
-     ) AS Description
+     ) AS Description, ts, uuid AS objectid
 
 FROM virserohead
-WHERE date != '0000-00-00' AND id != ''
+WHERE date = '0000-00-00' OR id = ''

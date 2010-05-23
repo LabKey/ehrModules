@@ -3,7 +3,7 @@
  *
  * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
  */
-SELECT id, FixDate(date) AS Date, (sex) AS sex, (weight) AS weight, FixDateTime(wdate, wtime) AS wdate, (dam) AS dam, (sire) AS sire, (room) AS room, (cage) AS cage, (cond) AS cond, (origin) AS origin, (conception) AS conception, (type) AS type, FixNewlines(remark) AS remark,
+SELECT lower(id) as id, FixDate(date) AS Date, sex, weight, FixDateTime(wdate, wtime) AS wdate, lower(dam) as dam, lower(sire) as sire, room, cage, cond, origin, conception, type, FixNewlines(remark) AS remark, null as parentid,
      ( CONCAT_WS(',\n',
      CONCAT('Conception: ', CAST(conception AS CHAR)),
      CONCAT('Date: ', CAST(wdate AS CHAR)),
@@ -17,6 +17,6 @@ SELECT id, FixDate(date) AS Date, (sex) AS sex, (weight) AS weight, FixDateTime(
      CONCAT('Origin: ', origin),
      CONCAT('Type: ', type),
      CONCAT('Remark: ', remark)
-     ) ) AS Description
+     ) ) AS Description, ts, uuid AS objectid
 FROM birth
 

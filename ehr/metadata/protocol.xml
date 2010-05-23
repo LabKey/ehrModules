@@ -1,8 +1,0 @@
-        <column columnName="totalAssigned" wrappedColumnName="protocol">
-	      <columnTitle>Animals Assigned</columnTitle>
-	      <fk>
-	        <fkDbSchema>lists</fkDbSchema>
-	        <fkTable>projectTotalAssigned</fkTable>
-	        <fkColumnName>protocol</fkColumnName>
-	      </fk>
-        </column>

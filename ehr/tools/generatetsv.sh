@@ -4,9 +4,14 @@
 # ./generatetsv.sh scripts/datasets/arrival.sql ../ehr-study/datasets/arrival.tsv
 #
 #MYSQLPWD=sasa
-#MYSQLDB=colony
 MYSQLUSER=root
-MYSQLHOST=saimiri.primate.wisc.edu
+
+MYSQLHOST=wprcfs.primate.wisc.edu
+MYSQLDB=coltest
+
+#MYSQLHOST=saimiri.primate.wisc.edu
+#MYSQLDB=colony
+
 #MYSQLHOST=localhost
 
 SCRIPT=$1
@@ -29,7 +34,7 @@ fi
 
 . setup.sh
 
-#echo "USE colony;" > tempscript
+echo "USE ${MYSQLDB};" > tempscript
 echo "SELECT * FROM (" >> tempscript
 cat $1 >> tempscript
 echo ") X" >> tempscript
@@ -38,6 +43,14 @@ case $1 in
 
     scripts/dataset/demographics.sql )
         #replace all of demographics
+        ;;
+
+    scripts/dataset/assignment.sql )
+        #replace all of assignment
+        ;;
+
+    scripts/dataset/housing.sql )
+        #replace all of housing
         ;;
 
     scripts/dataset/*.sql )

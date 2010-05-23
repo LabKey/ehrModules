@@ -3,9 +3,10 @@
  *
  * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
  */
-SELECT id, FixDateTime(date, time) AS Date, (source) AS source, FixNewlines(remark) AS remark,
+SELECT lower(id) as id, FixDateTime(date, time) AS Date, (source) AS source, FixNewlines(remark) AS remark, NULL as parentid,
     CONCAT_WS(',\n',
     CONCAT('Source: ', source),
     CONCAT('Remark: ', remark)
-    ) AS Description FROM arrival
+    ) AS Description, ts, uuid AS objectid
+     FROM arrival
 

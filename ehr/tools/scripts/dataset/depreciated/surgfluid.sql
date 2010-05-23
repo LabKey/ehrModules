@@ -5,8 +5,8 @@
  */
 SELECT id, FixDateTime(date, time) AS Date, (f.code) AS code, (amount) AS amount, (units) AS units, (route) AS route,
 
-Timestamp(Date('1970-01-01'), FixBadTime(begintime)) AS begintime,
-Timestamp(Date('1970-01-01'), FixBadTime(endtime)) AS endtime,
+Timestamp(FixDate(date), FixBadTime(begintime)) AS begintime,
+Timestamp(FixDate(date), FixBadTime(endtime)) AS endtime,
 
 ( CONCAT_WS(',\n',
      CONCAT('Code: ', s1.meaning, ' (', f.code, ')'),
@@ -15,7 +15,7 @@ Timestamp(Date('1970-01-01'), FixBadTime(endtime)) AS endtime,
      CONCAT('Route: ', route),
      CONCAT('Begin Time: ', cast(begintime AS time)),
      CONCAT('End Time: ', cast(endtime AS time))
-) ) AS Description
+) ) AS Description, f.ts, f.uuid AS objectid
 
 
 FROM surgfluid f

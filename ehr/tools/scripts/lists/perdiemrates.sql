@@ -3,4 +3,4 @@
  *
  * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
  */
-SELECT type, rate FROM perdiemrates p
+SELECT type, rate, ts, uuid AS objectid FROM perdiemrates p

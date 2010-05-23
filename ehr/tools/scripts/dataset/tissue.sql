@@ -3,7 +3,7 @@
  *
  * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
  */
-SELECT id, FixDateTime(date, time) AS Date, (sex) AS sex, (livedead) AS livedead, (wbo) AS wbo, (tissue) AS tissue, (source) AS source, (dest) AS dest, (recip) AS recip, (affil) AS affil, FixNewlines(remark) AS remark,
+SELECT lower(id) as id, FixDateTime(date, time) AS Date, (sex) AS sex, (livedead) AS livedead, (wbo) AS wbo, (tissue) AS tissue, (source) AS source, (dest) AS dest, (recip) AS recip, (affil) AS affil, FixNewlines(remark) AS remark,
 ( CONCAT_WS(',\n',
      CONCAT('Sex: ', sex),
      CONCAT('Live/Dead: ', livedead), 
@@ -13,6 +13,6 @@ SELECT id, FixDateTime(date, time) AS Date, (sex) AS sex, (livedead) AS livedead
      CONCAT('Dest: ', dest),
      CONCAT('Recipient: ', recip),
      CONCAT('Affiliation: ', affil)
-) ) AS Description
+) ) AS Description, ts, uuid AS objectid
 FROM tissue
 
