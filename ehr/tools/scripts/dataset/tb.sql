@@ -15,4 +15,4 @@ SELECT lower(id) as id, FixDate(date) AS Date, (lot) AS lot, (dilution) AS dilut
 ) ) AS Description, ts, uuid AS objectid
 
 FROM tb
-
+WHERE id not like "|%"

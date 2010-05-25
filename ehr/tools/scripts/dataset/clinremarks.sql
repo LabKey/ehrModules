@@ -46,6 +46,18 @@ UNION ALL
 SELECT id,
 FixDateTime(date, time) AS Date,
 (pno) AS pno,
+NULL as userid,
+remark,
+ts, uuid AS objectid,
+(select UUID from hormhead h2 WHERE h1.id=h2.id AND h1.date=h2.date AND h1.time=h2.time GROUP BY h1.id,h1.date,h1.time limit 1) as parentid,
+'Hormone' AS category
+FROM hormtrem h1
+
+UNION ALL
+
+SELECT id,
+FixDateTime(date, time) AS Date,
+(pno) AS pno,
 (surgeon) AS userid,
 remark,
 ts, uuid AS objectid,

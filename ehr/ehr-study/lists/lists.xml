@@ -550,7 +550,7 @@
               <fkColumnName>common</fkColumnName>
             </fk>
         </column>
-        <column columnName="count">
+        <column columnName="allowed">
           <datatype>integer</datatype>
           <columnTitle>Number Allowed</columnTitle>
         </column>

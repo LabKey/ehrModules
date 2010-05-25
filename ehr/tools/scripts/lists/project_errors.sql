@@ -5,4 +5,4 @@
  */
 SELECT pno as project, UCASE(protocol) as protocol, account, inves, avail, title, research, reqname, ts, uuid AS objectid FROM project p
 
-WHERE pno REGEXP '^[0-9]+$'
+WHERE pno NOT REGEXP '^[0-9]+$'
