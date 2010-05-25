@@ -78,3 +78,5 @@ WHERE
       FALSE
   END
   IS TRUE
+
+  AND e.EndDate IS NULL
