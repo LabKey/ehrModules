@@ -5,8 +5,13 @@ EHR_ComplianceDB/module_ehr_compliancedb.xml -text
 EHR_ComplianceDB/queries/lists/AgeTestfromFile.sql -text
 EHR_ComplianceDB/queries/lists/ComplianceRecentTests.query.xml -text
 EHR_ComplianceDB/queries/lists/ComplianceRecentTests.sql -text
+EHR_ComplianceDB/queries/lists/SOPrequirements.query.xml -text
+EHR_ComplianceDB/queries/lists/SOPrequirements.sql -text
+EHR_ComplianceDB/queries/lists/SOPrequirements/.qview.xml -text
+EHR_ComplianceDB/queries/lists/SOPrequirements/To[!!-~]Read.qview.xml -text
 EHR_ComplianceDB/views/My_Requirements.html -text
 EHR_ComplianceDB/views/SOP_submission.html -text
+EHR_ComplianceDB/views/SOP_submission.view.xml -text
 EHR_ComplianceDB/views/SOPadmin.html -text
 EHR_ComplianceDB/views/SOPadmin.view.xml -text
 EHR_ComplianceDB/views/SOPadmin.webpart.xml -text

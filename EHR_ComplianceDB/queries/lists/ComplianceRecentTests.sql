@@ -18,6 +18,8 @@ SELECT
   CASE
     WHEN (T1.MostRecentDate IS NULL) THEN
       0
+    WHEN(rn.ExpirePeriod = 0 OR rn.ExpirePeriod IS NULL) THEN
+      NULL
     ELSE
      (rn.expirePeriod - (age_in_months(T1.MostRecentDate, curdate())))
   END, double)
