@@ -21,7 +21,7 @@
     <columns>
       <column columnName="roomcage">
         <datatype>varchar</datatype>
-        <columnTitle>Room/Cage</columnTitle>
+        <columnTitle>Cage Id</columnTitle>
         <nullable>false</nullable>
         <isKeyField>true</isKeyField>
       </column>

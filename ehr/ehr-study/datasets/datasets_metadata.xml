@@ -586,20 +586,17 @@
       <column columnName="room">
         <datatype>varchar</datatype>
         <columnTitle>Room</columnTitle>
-        <url>/query/executeQuery.view?schemaName=study&amp;
-            query.queryName=Housing&amp;
-            query.room~eq=${room}&amp;
-            query.viewName=Current Housing
+        <url>/EHR_Reporting/cageDetails.view?
+            room=${room}&amp;
+            cage=${cage}&amp;
         </url>
       </column>
       <column columnName="cage">
         <datatype>varchar</datatype>
         <columnTitle>Cage</columnTitle>
-        <url>/query/executeQuery.view?schemaName=study&amp;
-            query.queryName=Housing&amp;
-            query.room~eq=${room}&amp;
-            query.room~eq=${cage}&amp;
-            query.viewName=Current Housing
+        <url>/EHR_Reporting/cageDetails.view?
+            room=${room}&amp;
+            cage=${cage}&amp;
         </url>
       </column>
       <column columnName="cond">
@@ -1321,20 +1318,17 @@
       <column columnName="room">
         <datatype>varchar</datatype>
         <columnTitle>Room</columnTitle>
-        <url>/query/executeQuery.view?schemaName=study&amp;
-            query.queryName=Housing&amp;
-            query.room~eq=${room}&amp;
-            query.viewName=Current Housing
+        <url>/EHR_Reporting/cageDetails.view?
+            room=${room}&amp;
+            cage=${cage}&amp;
         </url>
       </column>
       <column columnName="cage">
         <datatype>varchar</datatype>
         <columnTitle>Cage</columnTitle>
-        <url>/query/executeQuery.view?schemaName=study&amp;
-            query.queryName=Housing&amp;
-            query.room~eq=${room}&amp;
-            query.cage~eq=${cage}&amp;
-            query.viewName=Current Housing
+        <url>/EHR_Reporting/cageDetails.view?
+            room=${room}&amp;
+            cage=${cage}&amp;
         </url>
       </column>
       <column columnName="cond">
@@ -2007,20 +2001,17 @@
       <column columnName="room">
         <datatype>varchar</datatype>
         <columnTitle>Room</columnTitle>
-        <url>/query/executeQuery.view?schemaName=study&amp;
-            query.queryName=Housing&amp;
-            query.room~eq=${room}&amp;
-            query.viewName=Current Housing
+        <url>/EHR_Reporting/cageDetails.view?
+            room=${room}&amp;
+            cage=${cage}&amp;
         </url>
       </column>
       <column columnName="cage">
         <datatype>varchar</datatype>
         <columnTitle>Cage</columnTitle>
-        <url>/query/executeQuery.view?schemaName=study&amp;
-            query.queryName=Housing&amp;
-            query.room~eq=${room}&amp;
-            query.cage~eq=${cage}&amp;
-            query.viewName=Current Housing
+        <url>/EHR_Reporting/cageDetails.view?
+            room=${room}&amp;
+            cage=${cage}&amp;
         </url>
       </column>
       <column columnName="cond">
@@ -2578,12 +2569,10 @@
       <column columnName="room">
         <datatype>varchar</datatype>
         <columnTitle>Room</columnTitle>
-        <url>/query/executeQuery.view?schemaName=study&amp;
-            query.queryName=Housing&amp;
-            query.room~eq=${room}&amp;
-            query.date~lte=${date}&amp;
-            query.odate~gte=${date}
-        </url>          
+        <url>/EHR_Reporting/cageDetails.view?
+            room=${room}&amp;
+            cage=${cage}&amp;
+        </url>
       </column>
       <column columnName="account">
         <datatype>varchar</datatype>
@@ -2781,7 +2770,7 @@
         <fk>
           <fkDbSchema>lists</fkDbSchema>
           <fkTable>species_codes</fkTable>
-          <fkColumnName>common</fkColumnName>
+          <fkColumnName>code</fkColumnName>
         </fk>
       </column>
       <column columnName="sex">
@@ -2822,22 +2811,17 @@
       <column columnName="room">
         <datatype>varchar</datatype>
         <columnTitle>Room</columnTitle>
-        <url>/query/executeQuery.view?schemaName=study&amp;
-            query.queryName=Housing&amp;
-            query.room~eq=${room}&amp;
-            query.date~lte=${date}&amp;
-            query.odate~gte=${date}
+        <url>/EHR_Reporting/cageDetails.view?
+            room=${room}&amp;
+            cage=${cage}&amp;
         </url>
       </column>
       <column columnName="cage">
         <datatype>varchar</datatype>
         <columnTitle>Cage</columnTitle>
-        <url>/query/executeQuery.view?schemaName=study&amp;
-            query.queryName=Housing&amp;
-            query.room~eq=${room}&amp;
-            query.cage~eq=${cage}&amp;
-            query.date~lte=${date}&amp;
-            query.odate~gte=${date}
+        <url>/EHR_Reporting/cageDetails.view?
+            room=${room}&amp;
+            cage=${cage}&amp;
         </url>
       </column>
       <column columnName="roomcage">
@@ -2849,12 +2833,9 @@
           <fkTable>cage</fkTable>
           <fkColumnName>roomcage</fkColumnName>
         </fk>
-        <url>/query/executeQuery.view?schemaName=study&amp;
-            query.queryName=Housing&amp;
-            query.room~eq=${room}&amp;
-            query.cage~eq=${cage}&amp;
-            query.date~lte=${date}&amp;
-            query.odate~gte=${date}
+        <url>/EHR_Reporting/cageDetails.view?
+            room=${room}&amp;
+            cage=${cage}&amp;
         </url>
       </column>
       <column columnName="conception">
