@@ -186,10 +186,10 @@ public class EHRController extends SpringActionController
         }
 
         @Override
-        public void setStatus(String status, String info)
+        public boolean setStatus(String status, String info)
         {
             info(info != null ? info : status);
-            super.setStatus(status, info);
+            return super.setStatus(status, info);
         }
 
         @Override
