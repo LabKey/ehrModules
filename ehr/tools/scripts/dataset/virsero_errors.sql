@@ -22,5 +22,4 @@ LEFT JOIN
   group by id, date, account) t2
 ON (t1.id = t2.id AND t1.date = t2.date)
 group by t1.uuid
-having count(*) = 1
-
+having count(*) > 1

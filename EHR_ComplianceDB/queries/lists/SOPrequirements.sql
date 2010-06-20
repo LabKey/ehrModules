@@ -6,6 +6,7 @@
 SELECT
   sc.SOP_ID,
   e.Id,
+  e.email,
   T1.LastRead,
 
   --we calculate the time since that test in months

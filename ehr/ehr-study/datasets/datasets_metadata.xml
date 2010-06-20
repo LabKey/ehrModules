@@ -12,14 +12,14 @@
       <!--<column columnName="Date">-->
         <!--<datatype>timestamp</datatype>-->
         <!--<columnTitle>Start Date</columnTitle>-->
-        <!--<formatString>yyyy-mm-dd HH:mm a</formatString>-->
+        <!--<formatString>yyyy-MM-dd HH:mm a</formatString>-->
         <!--<nullable>false</nullable>-->
         <!--<propertyURI>http://cpas.labkey.com/Study#VisitDate</propertyURI>-->
       <!--</column>-->
       <!--<column columnName="EndDate">-->
         <!--<datatype>timestamp</datatype>-->
         <!--<columnTitle>Expire Date</columnTitle>-->
-        <!--<formatString>yyyy-mm-dd HH:mm a</formatString>-->
+        <!--<formatString>yyyy-MM-dd HH:mm a</formatString>-->
       <!--</column>-->
       <!--<column columnName="category">-->
         <!--<datatype>varchar</datatype>-->
@@ -85,7 +85,7 @@
       <column columnName="Date">
         <datatype>timestamp</datatype>
         <columnTitle>Arrival Date</columnTitle>
-        <formatString>yyyy-mm-dd HH:mm a</formatString>          
+        <formatString>yyyy-MM-dd HH:mm a</formatString>          
         <nullable>false</nullable>
         <propertyURI>http://cpas.labkey.com/Study#VisitDate</propertyURI>
       </column>
@@ -155,7 +155,7 @@
       </column>
       <column columnName="Date">
         <datatype>timestamp</datatype>
-        <formatString>yyyy-mm-dd</formatString>
+        <formatString>yyyy-MM-dd</formatString>
         <columnTitle>Start Date</columnTitle>
         <nullable>false</nullable>
         <propertyURI>http://cpas.labkey.com/Study#VisitDate</propertyURI>
@@ -163,7 +163,7 @@
       <column columnName="rdate">
         <datatype>timestamp</datatype>
         <columnTitle>Removal Date</columnTitle>
-        <formatString>yyyy-mm-dd</formatString>
+        <formatString>yyyy-MM-dd</formatString>
       </column>
       <column columnName="project">
         <datatype>integer</datatype>
@@ -226,7 +226,7 @@
       </column>
       <column columnName="Date">
         <datatype>timestamp</datatype>
-        <formatString>yyyy-mm-dd</formatString>
+        <formatString>yyyy-MM-dd</formatString>
         <columnTitle>Date</columnTitle>
         <nullable>false</nullable>
         <propertyURI>http://cpas.labkey.com/Study#VisitDate</propertyURI>
@@ -324,7 +324,7 @@
       </column>
       <column columnName="Date">
         <datatype>timestamp</datatype>
-        <formatString>yyyy-mm-dd HH:mm a</formatString>
+        <formatString>yyyy-MM-dd HH:mm a</formatString>
         <columnTitle>Date</columnTitle>
         <nullable>false</nullable>
         <propertyURI>http://cpas.labkey.com/Study#VisitDate</propertyURI>
@@ -397,7 +397,7 @@
       </column>
       <column columnName="Date">
         <datatype>timestamp</datatype>
-        <formatString>yyyy-mm-dd</formatString>
+        <formatString>yyyy-MM-dd</formatString>
         <columnTitle>Date</columnTitle>
         <nullable>false</nullable>
         <propertyURI>http://cpas.labkey.com/Study#VisitDate</propertyURI>
@@ -468,7 +468,7 @@
       </column>
       <column columnName="Date">
         <datatype>timestamp</datatype>
-        <formatString>yyyy-mm-dd</formatString>
+        <formatString>yyyy-MM-dd</formatString>
         <columnTitle>Date</columnTitle>
         <nullable>false</nullable>
         <propertyURI>http://cpas.labkey.com/Study#VisitDate</propertyURI>
@@ -542,7 +542,7 @@
       </column>
       <column columnName="Date">
         <datatype>timestamp</datatype>
-        <formatString>yyyy-mm-dd</formatString>
+        <formatString>yyyy-MM-dd</formatString>
         <columnTitle>Date</columnTitle>
         <nullable>false</nullable>
         <propertyURI>http://cpas.labkey.com/Study#VisitDate</propertyURI>
@@ -562,7 +562,7 @@
       </column>
       <column columnName="wdate">
         <datatype>timestamp</datatype>
-        <formatString>yyyy-mm-dd HH:mm a</formatString>
+        <formatString>yyyy-MM-dd HH:mm a</formatString>
         <columnTitle>Weigh Date</columnTitle>
       </column>
       <column columnName="dam">
@@ -619,7 +619,7 @@
       </column>
       <column columnName="conception">
         <datatype>timestamp</datatype>
-        <formatString>yyyy-mm-dd</formatString>
+        <formatString>yyyy-MM-dd</formatString>
         <columnTitle>Conception</columnTitle>
       </column>
       <column columnName="type">
@@ -685,7 +685,7 @@
       <column columnName="Date">
         <datatype>timestamp</datatype>
         <columnTitle>Date</columnTitle>
-        <formatString>yyyy-mm-dd HH:mm a</formatString>
+        <formatString>yyyy-MM-dd HH:mm a</formatString>
         <nullable>false</nullable>
         <propertyURI>http://cpas.labkey.com/Study#VisitDate</propertyURI>
       </column>
@@ -783,7 +783,7 @@
       </column>
       <column columnName="Date">
         <datatype>timestamp</datatype>
-        <formatString>yyyy-mm-dd HH:mm a</formatString>
+        <formatString>yyyy-MM-dd HH:mm a</formatString>
         <columnTitle>Date</columnTitle>
         <nullable>false</nullable>
         <propertyURI>http://cpas.labkey.com/Study#VisitDate</propertyURI>
@@ -851,7 +851,7 @@
       </column>
       <column columnName="Date">
         <datatype>timestamp</datatype>
-        <formatString>yyyy-mm-dd</formatString>
+        <formatString>yyyy-MM-dd</formatString>
         <columnTitle>Date</columnTitle>
         <nullable>false</nullable>
         <propertyURI>http://cpas.labkey.com/Study#VisitDate</propertyURI>
@@ -1012,7 +1012,7 @@
       </column>
       <column columnName="Date">
         <datatype>timestamp</datatype>
-        <formatString>yyyy-mm-dd HH:mm a</formatString>
+        <formatString>yyyy-MM-dd HH:mm a</formatString>
         <columnTitle>Date</columnTitle>
         <nullable>false</nullable>
         <propertyURI>http://cpas.labkey.com/Study#VisitDate</propertyURI>
@@ -1093,7 +1093,7 @@
       <!--</column>-->
       <!--<column columnName="Date">-->
         <!--<datatype>timestamp</datatype>-->
-        <!--<formatString>yyyy-mm-dd HH:mm a</formatString>-->
+        <!--<formatString>yyyy-MM-dd HH:mm a</formatString>-->
         <!--<columnTitle>Date</columnTitle>-->
         <!--<nullable>false</nullable>-->
         <!--<propertyURI>http://cpas.labkey.com/Study#VisitDate</propertyURI>-->
@@ -1171,7 +1171,7 @@
       </column>
       <column columnName="Date">
         <datatype>timestamp</datatype>
-        <formatString>yyyy-mm-dd</formatString>
+        <formatString>yyyy-MM-dd</formatString>
         <columnTitle>Date</columnTitle>
         <nullable>false</nullable>
         <propertyURI>http://cpas.labkey.com/Study#VisitDate</propertyURI>
@@ -1227,7 +1227,7 @@
       </column>
       <column columnName="Date">
         <datatype>timestamp</datatype>
-        <formatString>yyyy-mm-dd</formatString>
+        <formatString>yyyy-MM-dd</formatString>
         <columnTitle>Date</columnTitle>
         <nullable>false</nullable>
         <propertyURI>http://cpas.labkey.com/Study#VisitDate</propertyURI>
@@ -1297,22 +1297,22 @@
       </column>
       <column columnName="birth">
         <datatype>timestamp</datatype>
-        <formatString>yyyy-mm-dd</formatString>
+        <formatString>yyyy-MM-dd</formatString>
         <columnTitle>Birth</columnTitle>
       </column>
       <column columnName="death">
         <datatype>timestamp</datatype>
-        <formatString>yyyy-mm-dd</formatString>
+        <formatString>yyyy-MM-dd</formatString>
         <columnTitle>Death</columnTitle>
       </column>
       <column columnName="arrivedate">
         <datatype>timestamp</datatype>
-        <formatString>yyyy-mm-dd HH:mm a</formatString>
+        <formatString>yyyy-MM-dd HH:mm a</formatString>
         <columnTitle>Arrival Date</columnTitle>
       </column>
       <column columnName="departdate">
         <datatype>timestamp</datatype>
-        <formatString>yyyy-mm-dd HH:mm a</formatString>
+        <formatString>yyyy-MM-dd HH:mm a</formatString>
         <columnTitle>Departure Date</columnTitle>
       </column>
       <column columnName="room">
@@ -1350,7 +1350,7 @@
       </column>
       <column columnName="wdate">
         <datatype>timestamp</datatype>
-        <formatString>yyyy-mm-dd HH:mm a</formatString>
+        <formatString>yyyy-MM-dd HH:mm a</formatString>
         <columnTitle>Weight Date</columnTitle>
         <url>/query/executeQuery.view?schemaName=study&amp;
             query.queryName=Weight&amp;
@@ -1360,7 +1360,7 @@
       </column>
       <column columnName="tbdate">
         <datatype>timestamp</datatype>
-        <formatString>yyyy-mm-dd</formatString>
+        <formatString>yyyy-MM-dd</formatString>
         <columnTitle>Last TB Date</columnTitle>
         <url>/query/executeQuery.view?schemaName=study&amp;
             query.queryName=TB&amp;
@@ -1421,7 +1421,7 @@
       </column>
       <column columnName="Date">
         <datatype>timestamp</datatype>
-        <formatString>yyyy-mm-dd HH:mm a</formatString>
+        <formatString>yyyy-MM-dd HH:mm a</formatString>
         <columnTitle>Date</columnTitle>
         <nullable>false</nullable>
         <propertyURI>http://cpas.labkey.com/Study#VisitDate</propertyURI>
@@ -1491,7 +1491,7 @@
       </column>
       <column columnName="Date">
         <datatype>timestamp</datatype>
-        <formatString>yyyy-mm-dd HH:mm a</formatString>
+        <formatString>yyyy-MM-dd HH:mm a</formatString>
         <columnTitle>Header Date</columnTitle>
         <nullable>false</nullable>
         <propertyURI>http://cpas.labkey.com/Study#VisitDate</propertyURI>
@@ -1596,14 +1596,14 @@
       <!--<column columnName="Date">-->
         <!--<datatype>timestamp</datatype>-->
         <!--<columnTitle>Date</columnTitle>-->
-        <!--<formatString>yyyy-mm-dd HH:mm a</formatString>-->
+        <!--<formatString>yyyy-MM-dd HH:mm a</formatString>-->
         <!--<nullable>false</nullable>-->
         <!--<propertyURI>http://cpas.labkey.com/Study#VisitDate</propertyURI>-->
       <!--</column>-->
       <!--<column columnName="EndDate">-->
         <!--<datatype>timestamp</datatype>-->
         <!--<columnTitle>End Date</columnTitle>-->
-        <!--<formatString>yyyy-mm-dd HH:mm a</formatString>-->
+        <!--<formatString>yyyy-MM-dd HH:mm a</formatString>-->
       <!--</column>-->
       <!--<column columnName="project">-->
         <!--<datatype>integer</datatype>-->
@@ -1676,7 +1676,7 @@
       </column>
       <column columnName="Date">
         <datatype>timestamp</datatype>
-        <formatString>yyyy-mm-dd</formatString>
+        <formatString>yyyy-MM-dd</formatString>
         <columnTitle>Date</columnTitle>
         <nullable>false</nullable>
         <propertyURI>http://cpas.labkey.com/Study#VisitDate</propertyURI>
@@ -1741,7 +1741,7 @@
       </column>
       <column columnName="Date">
         <datatype>timestamp</datatype>
-        <formatString>yyyy-mm-dd</formatString>
+        <formatString>yyyy-MM-dd</formatString>
         <columnTitle>Date</columnTitle>
         <nullable>false</nullable>
         <propertyURI>http://cpas.labkey.com/Study#VisitDate</propertyURI>
@@ -1914,7 +1914,7 @@
       <!--</column>-->
       <!--<column columnName="Date">-->
         <!--<datatype>timestamp</datatype>-->
-        <!--<formatString>yyyy-mm-dd HH:mm a</formatString>-->
+        <!--<formatString>yyyy-MM-dd HH:mm a</formatString>-->
         <!--<columnTitle>Date</columnTitle>-->
         <!--<nullable>false</nullable>-->
         <!--<propertyURI>http://cpas.labkey.com/Study#VisitDate</propertyURI>-->
@@ -1987,7 +1987,7 @@
       </column>
       <column columnName="Date">
         <datatype>timestamp</datatype>
-        <formatString>yyyy-mm-dd HH:mm a</formatString>
+        <formatString>yyyy-MM-dd HH:mm a</formatString>
         <columnTitle>In Date</columnTitle>
         <nullable>false</nullable>
         <propertyURI>http://cpas.labkey.com/Study#VisitDate</propertyURI>
@@ -1995,7 +1995,7 @@
       <column columnName="odate">
         <nullable>true</nullable>
         <datatype>timestamp</datatype>
-        <formatString>yyyy-mm-dd HH:mm a</formatString>
+        <formatString>yyyy-MM-dd HH:mm a</formatString>
         <columnTitle>Out Date</columnTitle>
       </column>
       <column columnName="room">
@@ -2064,7 +2064,7 @@
       </column>
       <column columnName="Date">
         <datatype>timestamp</datatype>
-        <formatString>yyyy-mm-dd</formatString>
+        <formatString>yyyy-MM-dd</formatString>
         <columnTitle>Date</columnTitle>
         <nullable>false</nullable>
         <propertyURI>http://cpas.labkey.com/Study#VisitDate</propertyURI>
@@ -2195,7 +2195,7 @@
       </column>
       <column columnName="Date">
         <datatype>timestamp</datatype>
-        <formatString>yyyy-mm-dd</formatString>
+        <formatString>yyyy-MM-dd</formatString>
         <columnTitle>Date</columnTitle>
         <nullable>false</nullable>
         <propertyURI>http://cpas.labkey.com/Study#VisitDate</propertyURI>
@@ -2259,7 +2259,7 @@
       </column>
       <column columnName="Date">
         <datatype>timestamp</datatype>
-        <formatString>yyyy-mm-dd</formatString>
+        <formatString>yyyy-MM-dd</formatString>
         <columnTitle>Date</columnTitle>
         <nullable>false</nullable>
         <propertyURI>http://cpas.labkey.com/Study#VisitDate</propertyURI>
@@ -2331,7 +2331,7 @@
       </column>
       <column columnName="Date">
         <datatype>timestamp</datatype>
-        <formatString>yyyy-mm-dd HH:mm a</formatString>
+        <formatString>yyyy-MM-dd HH:mm a</formatString>
         <columnTitle>Date</columnTitle>
         <nullable>false</nullable>
         <propertyURI>http://cpas.labkey.com/Study#VisitDate</propertyURI>
@@ -2547,7 +2547,7 @@
       </column>
       <column columnName="Date">
         <datatype>timestamp</datatype>
-        <formatString>yyyy-mm-dd</formatString>
+        <formatString>yyyy-MM-dd</formatString>
         <columnTitle>Date</columnTitle>
         <nullable>false</nullable>
         <propertyURI>http://cpas.labkey.com/Study#VisitDate</propertyURI>
@@ -2642,7 +2642,7 @@
       </column>
       <column columnName="Date">
         <datatype>timestamp</datatype>
-        <formatString>yyyy-mm-dd</formatString>
+        <formatString>yyyy-MM-dd</formatString>
         <columnTitle>Birth</columnTitle>
         <nullable>false</nullable>
         <propertyURI>http://cpas.labkey.com/Study#VisitDate</propertyURI>
@@ -2759,7 +2759,7 @@
       </column>
       <column columnName="Date">
         <datatype>timestamp</datatype>
-        <formatString>yyyy-mm-dd</formatString>
+        <formatString>yyyy-MM-dd</formatString>
         <columnTitle>Date</columnTitle>
         <nullable>false</nullable>
         <propertyURI>http://cpas.labkey.com/Study#VisitDate</propertyURI>
@@ -2840,7 +2840,7 @@
       </column>
       <column columnName="conception">
         <datatype>timestamp</datatype>
-        <formatString>yyyy-mm-dd</formatString>
+        <formatString>yyyy-MM-dd</formatString>
         <columnTitle>Conception</columnTitle>
       </column>
       <column columnName="remark">
@@ -2899,7 +2899,7 @@
       </column>
       <column columnName="Date">
         <datatype>timestamp</datatype>
-        <formatString>yyyy-mm-dd</formatString>
+        <formatString>yyyy-MM-dd</formatString>
         <columnTitle>Date Observed</columnTitle>
         <nullable>false</nullable>
         <propertyURI>http://cpas.labkey.com/Study#VisitDate</propertyURI>
@@ -2916,7 +2916,7 @@
       </column>
       <column columnName="date_resolved">
         <datatype>timestamp</datatype>
-        <formatString>yyyy-mm-dd</formatString>
+        <formatString>yyyy-MM-dd</formatString>
         <columnTitle>Date Resolved</columnTitle>
       </column>
       <column columnName="code">
@@ -2978,7 +2978,7 @@
       </column>
       <column columnName="Date">
         <datatype>timestamp</datatype>
-        <formatString>yyyy-mm-dd HH:mm a</formatString>
+        <formatString>yyyy-MM-dd HH:mm a</formatString>
         <columnTitle>Start Date</columnTitle>
         <nullable>false</nullable>
         <propertyURI>http://cpas.labkey.com/Study#VisitDate</propertyURI>
@@ -3008,7 +3008,7 @@
       </column>
       <column columnName="enddate">
         <datatype>timestamp</datatype>
-        <formatString>yyyy-mm-dd HH:mm a</formatString>
+        <formatString>yyyy-MM-dd HH:mm a</formatString>
         <columnTitle>End Date</columnTitle>
       </column>
       <column columnName="major">
@@ -3098,12 +3098,12 @@
       <!--</column>-->
       <!--<column columnName="begintime">-->
         <!--<datatype>timestamp</datatype>-->
-        <!--<formatString>yyyy-mm-dd HH:mm a</formatString>-->
+        <!--<formatString>yyyy-MM-dd HH:mm a</formatString>-->
         <!--<columnTitle>Begin Time</columnTitle>-->
       <!--</column>-->
       <!--<column columnName="endtime">-->
         <!--<datatype>timestamp</datatype>-->
-        <!--<formatString>yyyy-mm-dd HH:mm a</formatString>-->
+        <!--<formatString>yyyy-MM-dd HH:mm a</formatString>-->
         <!--<columnTitle>End Time</columnTitle>-->
       <!--</column>-->
       <!--<column columnName="description">-->
@@ -3157,7 +3157,7 @@
       </column>
       <column columnName="Date">
         <datatype>timestamp</datatype>
-        <formatString>yyyy-mm-dd HH:mm a</formatString>
+        <formatString>yyyy-MM-dd HH:mm a</formatString>
         <columnTitle>Date</columnTitle>
         <nullable>false</nullable>
         <propertyURI>http://cpas.labkey.com/Study#VisitDate</propertyURI>
@@ -3221,7 +3221,7 @@
       </column>
       <column columnName="Date">
         <datatype>timestamp</datatype>
-        <formatString>yyyy-mm-dd HH:mm a</formatString>
+        <formatString>yyyy-MM-dd HH:mm a</formatString>
         <columnTitle>Date</columnTitle>
         <nullable>false</nullable>
         <propertyURI>http://cpas.labkey.com/Study#VisitDate</propertyURI>
@@ -3303,7 +3303,7 @@
       </column>
       <column columnName="Date">
         <datatype>timestamp</datatype>
-        <formatString>yyyy-mm-dd</formatString>
+        <formatString>yyyy-MM-dd</formatString>
         <columnTitle>Date</columnTitle>
         <nullable>false</nullable>
         <propertyURI>http://cpas.labkey.com/Study#VisitDate</propertyURI>
@@ -3383,7 +3383,7 @@
       </column>
       <column columnName="Date">
         <datatype>timestamp</datatype>
-        <formatString>yyyy-mm-dd HH:mm a</formatString>
+        <formatString>yyyy-MM-dd HH:mm a</formatString>
         <columnTitle>Date</columnTitle>
         <nullable>false</nullable>
         <propertyURI>http://cpas.labkey.com/Study#VisitDate</propertyURI>
@@ -3483,7 +3483,7 @@
       <column columnName="Date">
         <datatype>timestamp</datatype>
         <columnTitle>Begin Date</columnTitle>
-        <formatString>yyyy-mm-dd</formatString>
+        <formatString>yyyy-MM-dd</formatString>
         <nullable>false</nullable>
         <propertyURI>http://cpas.labkey.com/Study#VisitDate</propertyURI>
       </column>
@@ -3541,7 +3541,7 @@
       </column>
       <column columnName="enddate">
         <datatype>timestamp</datatype>
-        <formatString>yyyy-mm-dd</formatString>
+        <formatString>yyyy-MM-dd</formatString>
         <columnTitle>End Date</columnTitle>
       </column>
       <column columnName="frequency">
@@ -3610,7 +3610,7 @@
       </column>
       <column columnName="Date">
         <datatype>timestamp</datatype>
-        <formatString>yyyy-mm-dd</formatString>
+        <formatString>yyyy-MM-dd</formatString>
         <columnTitle>Date</columnTitle>
         <nullable>false</nullable>
         <propertyURI>http://cpas.labkey.com/Study#VisitDate</propertyURI>
@@ -3738,7 +3738,7 @@
         </column>
         <column columnName="Date">
           <datatype>timestamp</datatype>
-          <formatString>yyyy-mm-dd</formatString>
+          <formatString>yyyy-MM-dd</formatString>
           <columnTitle>Date</columnTitle>
           <nullable>false</nullable>
           <propertyURI>http://cpas.labkey.com/Study#VisitDate</propertyURI>
@@ -3942,7 +3942,7 @@
         </column>
         <column columnName="Date">
           <datatype>timestamp</datatype>
-          <formatString>yyyy-mm-dd</formatString>
+          <formatString>yyyy-MM-dd</formatString>
           <columnTitle>Date</columnTitle>
           <nullable>false</nullable>
           <propertyURI>http://cpas.labkey.com/Study#VisitDate</propertyURI>
@@ -4138,7 +4138,7 @@
       </column>
       <column columnName="Date">
         <datatype>timestamp</datatype>
-        <formatString>yyyy-mm-dd HH:mm a</formatString>
+        <formatString>yyyy-MM-dd HH:mm a</formatString>
         <columnTitle>Date</columnTitle>
         <nullable>false</nullable>
         <propertyURI>http://cpas.labkey.com/Study#VisitDate</propertyURI>

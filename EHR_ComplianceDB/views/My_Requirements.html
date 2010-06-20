@@ -22,7 +22,7 @@
 
             function loadRequirements()
             {
-                if (employeeRecord.data.items.length < 1){alert('No Records Found for user ID: '+userName);return;}
+                if (employeeRecord.data.items.length < 1){alert('No Records Found for user ID: '+userName+'. Contact Sandra Boehm if this is an error.');return;}
 
                 employeeRecord = employeeRecord.data.items[0];
 
@@ -48,7 +48,18 @@
                     ,stripeRows: true
                     ,disableSelection: true
                 });
+                requirementGrid.on("columnmodelcustomize", customizeColumnModel);
 
+                function customizeColumnModel(colModel, index)
+                    {
+                        //apparently cannot do this prior to render
+                        index['Id']['width'] = 150;
+                        index['RequirementName']['width'] = 200;
+                        index['ExpirePeriod']['width'] = 100;
+                        index['MostRecentDate']['width'] = 100;
+                        index['MonthsUntilRenewal']['width'] = 100;
+
+                    }
             }
 
         });

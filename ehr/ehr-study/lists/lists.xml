@@ -145,17 +145,17 @@
       </column>
       <column columnName="date">
         <datatype>timestamp</datatype>
-        <formatString>yyyy-mm-dd</formatString>
+        <formatString>yyyy-MM-dd</formatString>
         <columnTitle>Date</columnTitle>
       </column>
       <column columnName="userid">
         <datatype>varchar</datatype>
         <columnTitle>UserID</columnTitle>
-        <fk>
-          <fkDbSchema>core</fkDbSchema>
-          <fkTable>Users</fkTable>
-          <fkColumnName>UserId</fkColumnName>
-        </fk>
+        <!--<fk>-->
+          <!--<fkDbSchema>core</fkDbSchema>-->
+          <!--<fkTable>Users</fkTable>-->
+          <!--<fkColumnName>UserId</fkColumnName>-->
+        <!--</fk>-->
       </column>
     </columns>
     <pkColumnName>objectid</pkColumnName>
@@ -360,6 +360,7 @@
     <table tableName="project" tableDbType="TABLE">
       <tableTitle>IACUC Projects</tableTitle>
       <tableUrl>/EHR_Reporting/projectDetails.view?key=${project}</tableUrl>
+      <titleColumn>project</titleColumn>
       <columns>
         <column columnName="project">
           <datatype>integer</datatype>
@@ -556,12 +557,12 @@
         </column>
         <column columnName="StartDate">
           <datatype>timestamp</datatype>
-          <formatString>yyyy-mm-dd</formatString>
+          <formatString>yyyy-MM-dd</formatString>
           <columnTitle>Start Date</columnTitle>
         </column>
         <column columnName="EndDate">
           <datatype>timestamp</datatype>
-          <formatString>yyyy-mm-dd</formatString>
+          <formatString>yyyy-MM-dd</formatString>
           <columnTitle>EndDate</columnTitle>
         </column>
       </columns>
@@ -753,7 +754,7 @@
         </column>
         <column columnName="date">
           <datatype>timestamp</datatype>
-          <formatString>yyyy-mm-dd</formatString>
+          <formatString>yyyy-MM-dd</formatString>
           <columnTitle>Date</columnTitle>
         </column>
         <column columnName="objectid">

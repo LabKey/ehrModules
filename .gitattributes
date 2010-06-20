@@ -82,6 +82,7 @@ ehr/tools/scripts/dataset/testing/specimens.sql -text
 ehr/tools/scripts/dataset/urinalysis.sql -text
 ehr/tools/scripts/dataset/viriso.sql -text
 ehr/tools/scripts/dataset/virsero.sql -text
+ehr/tools/scripts/dataset/virsero_errors.sql -text
 ehr/tools/scripts/setup/EHRStudy.dataset -text
 ehr/tools/scripts/setup/setup.sql -text
 ehr/tools/util.js -text

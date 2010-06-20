@@ -48,6 +48,7 @@
     <dataset name='demographics' category="ColonyManagement" demographicData='true' id='1012' />
     <dataset name='departure' id='1013' category="ColonyManagement"/>
     <dataset name='housing' id='1018' category="ColonyManagement"/>
+    <dataset name='inbreeding' id='5001' category="ColonyManagement"/>
     <dataset name='pedigree' id='1028' demographicData='true' category="ColonyManagement"/>
     <!--
     <dataset name='mhctype' id='1020' category="Laboratory"/>

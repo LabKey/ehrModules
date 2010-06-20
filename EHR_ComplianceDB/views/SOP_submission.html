@@ -16,9 +16,9 @@ Ext.onReady(function()
 
     function onSuccess(results)
     {
-        if (results.rows.length < 1){alert('No Employee Record Found for User: '+email);return;}
+        if (results.rows.length < 1){alert('No Employee Record Found for User: '+LABKEY.Security.currentUser.email+'.\nPlease contact Sandra Boehm.');return;}
 
-        var displayName = LABKEY.Security.currentUser.displayName;
+        var email = LABKEY.Security.currentUser.email;
 
         //then we display a list of all their required SOPs
         var sopQWP = new LABKEY.QueryWebPart({
@@ -32,7 +32,7 @@ Ext.onReady(function()
             allowChooseQuery: false,
             //allowChooseView: false,
             successCallback: function(){setButtons('sopGrid', [{text: 'Mark Read', onclick: "markRead('sopGrid')"}])},
-            filters: [LABKEY.Filter.create('Id', displayName, LABKEY.Filter.Types.EQUAL)]
+            filters: [LABKEY.Filter.create('email', email, LABKEY.Filter.Types.EQUAL)]
         });
 
         //we find remaining SOPs
@@ -40,7 +40,7 @@ Ext.onReady(function()
             schemaName: 'lists',
             queryName: 'SOPrequirements',
             containerPath: 'WNPRC/WNPRC_Units/Animal_Services/Compliance_Training/Private/SOPs/',
-            filterArray: [LABKEY.Filter.create('Id', displayName, LABKEY.Filter.Types.EQUAL), LABKEY.Filter.create('MonthsUntilRenewal', 10, LABKEY.Filter.Types.LESS_THAN)],
+            filterArray: [LABKEY.Filter.create('email', email, LABKEY.Filter.Types.EQUAL), LABKEY.Filter.create('MonthsUntilRenewal', 10, LABKEY.Filter.Types.LESS_THAN)],
             successCallback: makeForm
         });
 
@@ -144,18 +144,26 @@ Ext.onReady(function()
         }
 
         LABKEY.Query.insertRows({
-             containerPath: 'WNPRC/WNPRC_Units/Animal_Services/Compliance_Training/Private/EmployeeDB/',
+             containerPath: '/WNPRC/WNPRC_Units/Animal_Services/Compliance_Training/Private/EmployeeDB',
              schemaName: 'lists',
              queryName: 'CompletionDates',
+             scope: this,
              rowDataArray: [{
                 RequirementName: 'SOP Review'
-                ,Id: LABKEY.Security.currentUser.displayName
+                ,EmployeeId: LABKEY.Security.currentUser.displayName
                 ,Date: new Date().format("Y-m-d")
                 }],
              successCallback: function(){
-                alert('Thank You for Reading Your SOPs')
+                alert('Thank You for Reading Your SOPs.  You have now completed your SOP requirements for the year.');
+                var url = LABKEY.ActionURL.buildURL(
+                    'Project',
+                    'begin.view',
+                    'home'
+                    );
+
+                window.location = url
              },
-             failureCallback: function(errorInfo) {
+             errorCallback: function(errorInfo) {
                 Ext.Msg.alert("Error:", errorInfo);
                 }
             });
@@ -163,15 +171,18 @@ Ext.onReady(function()
 
 
     function markRead(dataRegionName) {
+        Ext.Msg.wait("Loading...");
         var userName = LABKEY.Security.currentUser.email;
 
         var dataRegion = LABKEY.DataRegions[dataRegionName];
         var checked = dataRegion.getChecked();
-        var x;
+
+        var request = new LABKEY.MultiRequest({listeners: {'done': onComplete, scope: this}});
+
         for (var i=0;i<checked.length;i++){
             // Insert form data into the list.
             var value = checked[i].split(',');
-            LABKEY.Query.insertRows({
+            var insertCfg = {
                  containerPath: 'WNPRC/WNPRC_Units/Animal_Services/Compliance_Training/Private/SOPs/',
                  schemaName: 'lists',
                  queryName: 'SOPDates',
@@ -180,16 +191,24 @@ Ext.onReady(function()
                     ,EmployeeId: LABKEY.Security.currentUser.displayName
                     ,Date: new Date().format("Y-m-d")
                     }],
-                 successCallback: function(){
-                     dataRegion.render();
-                     alert('SOPs Marked Read');
-                     window.location.reload();
-                 },
                  failureCallback: function(errorInfo) {
+                    Ext.Msg.hide();
                     Ext.Msg.alert("Error:", errorInfo);
                     }
-                });
+                };
+
+            request.add(LABKEY.Query.insertRows, insertCfg);
         }
+
+        request.send({});
+
+        function onComplete(){
+             //dataRegion.render();
+             dataRegion.selectNone();
+             Ext.Msg.hide();
+             alert('SOPs Marked Read');
+             window.location.reload();
+         }
      }
 
 
@@ -203,6 +222,10 @@ Ext.onReady(function()
 <br>
 <li>
     Each SOP must be read every 12 months.  The 'Months Until Renewal' column indicates how soon you must re-read each SOP.     
+</li>
+<br>
+<li>
+    To download an SOP, click the PDF icon in the PDF column.
 </li>
 <br>
 <li>

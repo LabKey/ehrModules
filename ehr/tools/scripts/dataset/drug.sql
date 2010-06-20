@@ -48,4 +48,4 @@ FROM surgfluid t1
         ) x
 JOIN snomed s1 on x.code=s1.code
 
-WHERE date != '0000-00-00' AND id != '' AND pno REGEXP '^[0-9]+$'
+WHERE date != '0000-00-00' AND id != '' AND (pno REGEXP '^[0-9]+$' OR pno IS NULL)

@@ -94,4 +94,4 @@ FROM biopsyhead n1
 ) x
 
 
-WHERE x.remark != '' AND x.remark IS NOT NULL AND x.id IS NOT NULL AND x.id != '' and x.pno REGEXP '^[0-9]+$' AND x.parentid NOT LIKE '%,%'
+WHERE x.remark != '' AND x.remark IS NOT NULL AND x.id IS NOT NULL AND x.id != '' and (x.pno REGEXP '^[0-9]+$' OR x.pno IS NULL) AND x.parentid NOT LIKE '%,%'
