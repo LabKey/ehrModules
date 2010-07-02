@@ -90,20 +90,56 @@ CREATE FUNCTION FixNewlines(t VARCHAR(4000))
  * This is ugly.  mySQL doesnt support replace using regexp
  * These are cases that have occurred.
  */
-DROP FUNCTION IF EXISTS FixBadTime;
-CREATE FUNCTION `FixBadTime`(t char) RETURNS time
-    DETERMINISTIC
-    RETURN
-    CASE
-            WHEN (t IS NULL OR t = '' OR t = 'pre-op') THEN NULL
-    ELSE
-            CAST(
-            replace(replace(replace(replace(replace(replace(t,
-            ';', ':'),
-            'L', ''),
-            '!', ''),
-            'j', ''),
-            '~', ''),
-            '"', ':')
-            AS TIME )
-    END;
+ 
+DELIMITER $$
+DROP FUNCTION IF EXISTS `colony`.`FixBadTime` $$
+CREATE FUNCTION `FixBadTime`(t VARCHAR(30)) RETURNS time DETERMINISTIC
+BEGIN
+    SET t = replace(t, 'pre-op', '');
+    SET t = replace(t, '7:$9', '');
+    SET t = replace(t, '1&:20', '');
+    SET t = replace(t, '/', '0');
+    SET t = replace(t, '15:76', '');
+    SET t = replace(t, 's11:6', '');
+    SET t = replace(t, 'PPP', '');
+    SET t = replace(t, ' ', '');
+    SET t = replace(t, '@', '2');
+    SET t = replace(t, '8:94', '');
+    SET t = replace(t, 's14:5', '14:50');
+    SET t = replace(t, '8:100', '');
+    SET t = replace(t, 'oral', '');
+    SET t = replace(t, ':;', ':');
+    SET t = replace(t, '1.', '1');
+    SET t = replace(t, '4.', '40');
+    SET t = replace(t, 'd15:5', '');
+    SET t = replace(t, '15:75', '');
+    SET t = replace(t, '16:60', '');
+    SET t = replace(t, '14:80', '');
+    SET t = replace(t, '\\', '');
+    SET t = replace(t, '95079', '');
+    SET t = replace(t, '83098', '');
+    SET t = replace(t, 'it', '');
+    SET t = replace(t, ']', '');
+    SET t = replace(t, '-', '');
+    SET t = replace(t, '#', '');
+    SET t = replace(t, '>', ':');
+    SET t = replace(t, 'daily', '');
+    SET t = replace(t, '15:74', '');
+    SET t = replace(t, ';', ':');
+    SET t = replace(t, 'L', '');
+    SET t = replace(t, '!', '');
+    SET t = replace(t, 'j', '');
+    SET t = replace(t, '~', '');
+    SET t = replace(t,  '`', '');
+    SET t = replace(t, '0:700', '07:00');
+    SET t = replace(t, '7:300', '07:30');
+    SET t = replace(t, 'daily', '');
+    SET t = replace(t, 'c', '');
+    SET t = replace(t, 'im', '');
+    SET t = replace(t, '"', ':');
+    SET t = replace(t, 'p', '');
+
+    RETURN CAST(NULLIF(t, '') AS TIME);
+END $$
+
+DELIMITER ;

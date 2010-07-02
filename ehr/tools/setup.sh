@@ -1,13 +1,10 @@
 #!/bin/bash
 
 #MYSQLPWD=sasa
+MYSQLDB=colony
 MYSQLUSER=root
-
-MYSQLHOST=wprcfs.primate.wisc.edu
-MYSQLDB=coltest
-
-#MYSQLHOST=saimiri.primate.wisc.edu
-#MYSQLDB=colony
+MYSQLHOST=saimiri.primate.wisc.edu
+#MYSQLHOST=localhost
 
 
 DATE_CUTOFF_FILE=./date-cutoff.txt

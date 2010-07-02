@@ -4,6 +4,7 @@
  * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
  */
 SELECT lower(id) as id, FixDate(date) AS Date, morphology AS morphology, (account) AS account,
+uuid as requestId,
      ( CONCAT_WS(',\n',
      CONCAT('Morphology: ', morphology),
      CONCAT('Account: ', account)
@@ -12,3 +13,4 @@ SELECT lower(id) as id, FixDate(date) AS Date, morphology AS morphology, (accoun
 
 FROM hemamisc
 
+/*WHERE ts > ?*/

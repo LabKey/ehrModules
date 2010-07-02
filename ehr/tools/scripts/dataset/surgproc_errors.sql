@@ -7,11 +7,11 @@ SELECT lower(id) as id, FixDateTime(date, time) AS Date, (p.code) AS code,
 ( CONCAT_WS(',\n',
      CONCAT('Code: ', s1.meaning, ' (', p.code, ')')
 ) ) AS Description, p.ts, p.uuid AS objectid,
-(select group_concat(distinct UUID) as uuid from surghead t2 WHERE p.id=t2.id AND p.date=t2.date AND p.time=t2.time GROUP BY p.id,p.date,p.time limit 1) as parentid
+(select group_concat(distinct UUID) as uuid from surghead t2 WHERE p.id=t2.id AND p.date=t2.date AND p.time=t2.time GROUP BY p.id,p.date,p.time) as parentid
 
 FROM surgproc p
 
 LEFT OUTER JOIN snomed s1 on s1.code=p.code
 
-
+HAVING parentid NOT LIKE '%,%'
 

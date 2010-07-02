@@ -4,14 +4,9 @@
 # ./generatetsv.sh scripts/datasets/arrival.sql ../ehr-study/datasets/arrival.tsv
 #
 #MYSQLPWD=sasa
+MYSQLDB=colony
 MYSQLUSER=root
-
-MYSQLHOST=wprcfs.primate.wisc.edu
-MYSQLDB=coltest
-
-#MYSQLHOST=saimiri.primate.wisc.edu
-#MYSQLDB=colony
-
+MYSQLHOST=saimiri.primate.wisc.edu
 #MYSQLHOST=localhost
 
 SCRIPT=$1

@@ -10,4 +10,4 @@ SELECT lower(id) as id, FixDate(date) AS Date,
 FROM necropsydiag n
 LEFT JOIN snomed s1 on n.code =s1.code
 
-HAVING parentid NOT LIKE "%,%"
+HAVING parentid LIKE "%,%"

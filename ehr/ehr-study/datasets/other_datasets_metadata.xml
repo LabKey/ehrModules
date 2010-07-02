@@ -1,0 +1,386 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tables xmlns="http://labkey.org/data/xml">
+    <table tableName="menses" tableDbType="TABLE">
+        <tableUrl>/query/detailsQueryRow.view?schemaName=study&amp;query.queryName=menses&amp;lsid=${lsid}</tableUrl>
+        <columns>
+            <column columnName="participantid">
+                <datatype>varchar</datatype>
+                <columnTitle>Participant ID</columnTitle>
+                <description>Participant identifier</description>
+                <nullable>false</nullable>
+            </column>
+            <column columnName="Date">
+                <datatype>timestamp</datatype>
+                <formatString>yyyy-MM-dd HH:mm a</formatString>
+                <columnTitle>Date</columnTitle>
+                <nullable>false</nullable>
+                <propertyURI>http://cpas.labkey.com/Study#VisitDate</propertyURI>
+            </column>
+            <column columnName="remark">
+                <datatype>varchar</datatype>
+                <columnTitle>Remark</columnTitle>
+                <displayWidth>110</displayWidth>
+                <propertyURI>urn:ehr.labkey.org/#Remark</propertyURI>
+                <inputType>textarea</inputType>
+            </column>
+            <column columnName="description">
+                <datatype>varchar</datatype>
+                <columnTitle>Description</columnTitle>
+                <shownInInsertView>false</shownInInsertView>
+                <shownInUpdateView>false</shownInUpdateView>
+                <shownInDetailsView>false</shownInDetailsView>
+                <propertyURI>urn:ehr.labkey.org/#Description</propertyURI>
+                <isHidden>true</isHidden>
+                <inputType>textarea</inputType>
+            </column>
+            <column columnName="objectid">
+                <datatype>varchar</datatype>
+                <columnTitle>Key</columnTitle>
+                <shownInInsertView>false</shownInInsertView>
+                <shownInUpdateView>false</shownInUpdateView>
+                <shownInDetailsView>false</shownInDetailsView>
+                <isHidden>true</isHidden>
+                <isAutoInc>true</isAutoInc>
+                <isKeyField>true</isKeyField>
+            </column>
+            <column columnName="parentid">
+                <datatype>varchar</datatype>
+                <columnTitle>Parent Id</columnTitle>
+                <shownInInsertView>false</shownInInsertView>
+                <shownInUpdateView>false</shownInUpdateView>
+                <shownInDetailsView>false</shownInDetailsView>
+                <isHidden>true</isHidden>
+            </column>
+        </columns>
+        <tableTitle>Menses</tableTitle>
+        <description>Menses Observations</description>
+    </table>
+    <table tableName="alopecia" tableDbType="TABLE">
+        <tableUrl>/query/detailsQueryRow.view?schemaName=study&amp;query.queryName=alopecia&amp;lsid=${lsid}</tableUrl>
+        <columns>
+            <column columnName="participantid">
+                <datatype>varchar</datatype>
+                <columnTitle>Participant ID</columnTitle>
+                <description>Participant identifier</description>
+                <nullable>false</nullable>
+            </column>
+            <column columnName="Date">
+                <datatype>timestamp</datatype>
+                <formatString>yyyy-MM-dd HH:mm a</formatString>
+                <columnTitle>Date</columnTitle>
+                <nullable>false</nullable>
+                <propertyURI>http://cpas.labkey.com/Study#VisitDate</propertyURI>
+            </column>
+            <column columnName="score">
+                <datatype>double</datatype>
+                <columnTitle>Alopecia Score</columnTitle>
+            </column>
+            <column columnName="cause">
+                <datatype>varchar</datatype>
+                <columnTitle>Cause</columnTitle>
+            </column>
+            <column columnName="head">
+                <datatype>boolean</datatype>
+                <columnTitle>Head</columnTitle>
+            </column>
+            <column columnName="dorsum">
+                <datatype>boolean</datatype>
+                <columnTitle>Dorsum</columnTitle>
+            </column>
+            <column columnName="rump">
+                <datatype>boolean</datatype>
+                <columnTitle>Rump</columnTitle>
+            </column>
+            <column columnName="shoulders">
+                <datatype>boolean</datatype>
+                <columnTitle>Shoulders</columnTitle>
+            </column>
+            <column columnName="upperArms">
+                <datatype>boolean</datatype>
+                <columnTitle>Upper Arms</columnTitle>
+            </column>
+            <column columnName="lowerArms">
+                <datatype>boolean</datatype>
+                <columnTitle>Lower Arms</columnTitle>
+            </column>
+            <column columnName="lowerArms">
+                <datatype>boolean</datatype>
+                <columnTitle>Lower Arms</columnTitle>
+            </column>
+            <column columnName="hips">
+                <datatype>boolean</datatype>
+                <columnTitle>Hips</columnTitle>
+            </column>
+            <column columnName="upperLegs">
+                <datatype>boolean</datatype>
+                <columnTitle>Upper Legs</columnTitle>
+            </column>
+            <column columnName="lowerLegs">
+                <datatype>boolean</datatype>
+                <columnTitle>Lower Legs</columnTitle>
+            </column>
+            <column columnName="other">
+                <datatype>boolean</datatype>
+                <columnTitle>Other</columnTitle>
+            </column>
+            <column columnName="remark">
+                <datatype>varchar</datatype>
+                <columnTitle>Remark</columnTitle>
+                <displayWidth>110</displayWidth>
+                <propertyURI>urn:ehr.labkey.org/#Remark</propertyURI>
+                <inputType>textarea</inputType>
+            </column>
+            <column columnName="description">
+                <datatype>varchar</datatype>
+                <columnTitle>Description</columnTitle>
+                <shownInInsertView>false</shownInInsertView>
+                <shownInUpdateView>false</shownInUpdateView>
+                <shownInDetailsView>false</shownInDetailsView>
+                <propertyURI>urn:ehr.labkey.org/#Description</propertyURI>
+                <isHidden>true</isHidden>
+                <inputType>textarea</inputType>
+            </column>
+            <column columnName="objectid">
+                <datatype>varchar</datatype>
+                <columnTitle>Key</columnTitle>
+                <shownInInsertView>false</shownInInsertView>
+                <shownInUpdateView>false</shownInUpdateView>
+                <shownInDetailsView>false</shownInDetailsView>
+                <isAutoInc>true</isAutoInc>
+                <isHidden>true</isHidden>
+                <isKeyField>true</isKeyField>
+            </column>
+            <column columnName="parentid">
+                <datatype>varchar</datatype>
+                <columnTitle>Parent Id</columnTitle>
+                <shownInInsertView>false</shownInInsertView>
+                <shownInUpdateView>false</shownInUpdateView>
+                <shownInDetailsView>false</shownInDetailsView>
+                <isHidden>true</isHidden>
+            </column>
+        </columns>
+        <tableTitle>Alopecia</tableTitle>
+        <description>Alopecia data</description>
+    </table>
+    <table tableName="dental" tableDbType="TABLE">
+        <tableUrl>/query/detailsQueryRow.view?schemaName=study&amp;query.queryName=dental&amp;lsid=${lsid}</tableUrl>
+        <columns>
+            <column columnName="participantid">
+                <datatype>varchar</datatype>
+                <columnTitle>Participant ID</columnTitle>
+                <description>Participant identifier</description>
+                <nullable>false</nullable>
+            </column>
+            <column columnName="Date">
+                <datatype>timestamp</datatype>
+                <formatString>yyyy-MM-dd HH:mm a</formatString>
+                <columnTitle>Date</columnTitle>
+                <nullable>false</nullable>
+                <propertyURI>http://cpas.labkey.com/Study#VisitDate</propertyURI>
+            </column>
+            <column columnName="l">
+                <datatype>boolean</datatype>
+                <columnTitle>L</columnTitle>
+            </column>
+            <column columnName="lm">
+                <datatype>boolean</datatype>
+                <columnTitle>L/M</columnTitle>
+            </column>
+            <column columnName="M">
+                <datatype>boolean</datatype>
+                <columnTitle>M</columnTitle>
+            </column>
+            <column columnName="mh">
+                <datatype>boolean</datatype>
+                <columnTitle>M/H</columnTitle>
+            </column>
+            <column columnName="h">
+                <datatype>boolean</datatype>
+                <columnTitle>H</columnTitle>
+            </column>
+            <column columnName="remark">
+                <datatype>varchar</datatype>
+                <columnTitle>Remark</columnTitle>
+                <displayWidth>110</displayWidth>
+                <propertyURI>urn:ehr.labkey.org/#Remark</propertyURI>
+                <inputType>textarea</inputType>
+            </column>
+            <column columnName="description">
+                <datatype>varchar</datatype>
+                <columnTitle>Description</columnTitle>
+                <shownInInsertView>false</shownInInsertView>
+                <shownInUpdateView>false</shownInUpdateView>
+                <shownInDetailsView>false</shownInDetailsView>
+                <propertyURI>urn:ehr.labkey.org/#Description</propertyURI>
+                <isHidden>true</isHidden>
+                <inputType>textarea</inputType>
+            </column>
+            <column columnName="objectid">
+                <datatype>integer</datatype>
+                <columnTitle>Key</columnTitle>
+                <shownInInsertView>false</shownInInsertView>
+                <shownInUpdateView>false</shownInUpdateView>
+                <shownInDetailsView>false</shownInDetailsView>
+                <isHidden>true</isHidden>
+                <isAutoInc>true</isAutoInc>
+                <isKeyField>true</isKeyField>
+            </column>
+            <column columnName="parentid">
+                <datatype>varchar</datatype>
+                <columnTitle>Parent Id</columnTitle>
+                <shownInInsertView>false</shownInInsertView>
+                <shownInUpdateView>false</shownInUpdateView>
+                <shownInDetailsView>false</shownInDetailsView>
+                <isHidden>true</isHidden>
+            </column>
+        </columns>
+        <tableTitle>Dental</tableTitle>
+        <description>Dental data</description>
+    </table>
+    <!--<table tableName="alerts" tableDbType="TABLE">-->
+      <!--<tableUrl>/query/detailsQueryRow.view?schemaName=study&amp;query.queryName=alerts&amp;lsid=${lsid}</tableUrl>-->
+      <!--<columns>-->
+        <!--<column columnName="participantid">-->
+          <!--<datatype>varchar</datatype>-->
+          <!--<columnTitle>Participant ID</columnTitle>-->
+          <!--<description>Participant identifier</description>-->
+          <!--<nullable>false</nullable>-->
+        <!--</column>-->
+        <!--<column columnName="Date">-->
+          <!--<datatype>timestamp</datatype>-->
+          <!--<columnTitle>Start Date</columnTitle>-->
+          <!--<formatString>yyyy-MM-dd HH:mm a</formatString>-->
+          <!--<nullable>false</nullable>-->
+          <!--<propertyURI>http://cpas.labkey.com/Study#VisitDate</propertyURI>-->
+        <!--</column>-->
+        <!--<column columnName="EndDate">-->
+          <!--<datatype>timestamp</datatype>-->
+          <!--<columnTitle>Expire Date</columnTitle>-->
+          <!--<formatString>yyyy-MM-dd HH:mm a</formatString>-->
+        <!--</column>-->
+        <!--<column columnName="category">-->
+          <!--<datatype>varchar</datatype>-->
+          <!--<columnTitle>Category</columnTitle>-->
+        <!--</column>-->
+        <!--<column columnName="userid">-->
+          <!--<datatype>varchar</datatype>-->
+          <!--<columnTitle>User ID</columnTitle>-->
+        <!--</column>-->
+        <!--<column columnName="value">-->
+          <!--<datatype>varchar</datatype>-->
+          <!--<columnTitle>Value</columnTitle>-->
+        <!--</column>-->
+        <!--<column columnName="description">-->
+          <!--<datatype>varchar</datatype>-->
+          <!--<columnTitle>Description</columnTitle>-->
+          <!--<propertyURI>urn:ehr.labkey.org/#Description</propertyURI>-->
+          <!--<shownInInsertView>false</shownInInsertView>-->
+          <!--<shownInUpdateView>false</shownInUpdateView>-->
+          <!--<shownInDetailsView>false</shownInDetailsView>-->
+          <!--<isHidden>true</isHidden>-->
+          <!--<inputType>textarea</inputType>-->
+        <!--</column>-->
+        <!--<column columnName="objectid">-->
+          <!--<datatype>varchar</datatype>-->
+          <!--<columnTitle>Key</columnTitle>-->
+          <!--<shownInInsertView>false</shownInInsertView>-->
+          <!--<shownInUpdateView>false</shownInUpdateView>-->
+          <!--<shownInDetailsView>false</shownInDetailsView>-->
+          <!--<isHidden>true</isHidden>-->
+          <!--<isKeyField>true</isKeyField>-->
+        <!--</column>-->
+        <!--<column columnName="parentid">-->
+          <!--<datatype>varchar</datatype>-->
+          <!--<columnTitle>Parent Id</columnTitle>-->
+          <!--<shownInInsertView>false</shownInInsertView>-->
+          <!--<shownInUpdateView>false</shownInUpdateView>-->
+          <!--<shownInDetailsView>false</shownInDetailsView>-->
+          <!--<isHidden>true</isHidden>-->
+        <!--</column>-->
+        <!--<column columnName="ts">-->
+          <!--<datatype>timestamp</datatype>-->
+          <!--<columnTitle>Last Changed</columnTitle>-->
+          <!--<nullable>false</nullable>-->
+          <!--<shownInInsertView>false</shownInInsertView>-->
+          <!--<shownInUpdateView>false</shownInUpdateView>-->
+          <!--<shownInDetailsView>false</shownInDetailsView>-->
+          <!--<isHidden>true</isHidden>-->
+        <!--</column>-->
+      <!--</columns>-->
+      <!--<tableTitle>Alerts</tableTitle>-->
+      <!--<description>Alerts About WNPRC Animals</description>-->
+    <!--</table>-->
+    <table tableName="forms" tableDbType="TABLE">
+      <tableUrl>/query/detailsQueryRow.view?schemaName=study&amp;query.queryName=forms&amp;lsid=${lsid}</tableUrl>
+      <columns>
+        <column columnName="participantid">
+          <datatype>varchar</datatype>
+          <columnTitle>Participant ID</columnTitle>
+          <description>Participant identifier</description>
+          <nullable>false</nullable>
+        </column>
+        <column columnName="Date">
+          <datatype>timestamp</datatype>
+          <columnTitle>Date</columnTitle>
+          <formatString>yyyy-MM-dd HH:mm a</formatString>
+          <nullable>false</nullable>
+          <propertyURI>http://cpas.labkey.com/Study#VisitDate</propertyURI>
+        </column>
+        <column columnName="FormCompleted">
+          <datatype>timestamp</datatype>
+          <columnTitle>Form Completed</columnTitle>
+          <formatString>yyyy-MM-dd HH:mm a</formatString>
+        </column>
+        <!--<column columnName="project">-->
+          <!--<datatype>integer</datatype>-->
+          <!--<columnTitle>Project</columnTitle>-->
+          <!--<fk>-->
+            <!--<fkDbSchema>lists</fkDbSchema>-->
+            <!--<fkTable>project</fkTable>-->
+            <!--<fkColumnName>project</fkColumnName>-->
+          <!--</fk>-->
+          <!--<formatString>00000000</formatString>-->
+          <!--<propertyURI>urn:ehr.labkey.org/#Project</propertyURI>-->
+        <!--</column>-->
+        <!--<column columnName="account">-->
+          <!--<datatype>varchar</datatype>-->
+          <!--<columnTitle>Account</columnTitle>-->
+          <!--<propertyURI>urn:ehr.labkey.org/#Account</propertyURI>-->
+        <!--</column>-->
+        <column columnName="type">
+          <datatype>varchar</datatype>
+          <columnTitle>Type</columnTitle>
+        </column>
+        <!--<column columnName="encounterid">-->
+          <!--<datatype>varchar</datatype>-->
+          <!--<columnTitle>Encounter Id</columnTitle>-->
+        <!--</column>-->
+        <column columnName="userid">
+          <datatype>varchar</datatype>
+          <columnTitle>User Id</columnTitle>
+        </column>
+        <column columnName="description">
+          <datatype>varchar</datatype>
+          <columnTitle>Description</columnTitle>
+          <propertyURI>urn:ehr.labkey.org/#Description</propertyURI>
+          <shownInInsertView>false</shownInInsertView>
+          <shownInUpdateView>false</shownInUpdateView>
+          <shownInDetailsView>false</shownInDetailsView>
+          <isHidden>true</isHidden>
+          <inputType>textarea</inputType>
+        </column>
+        <column columnName="objectid">
+          <datatype>varchar</datatype>
+          <columnTitle>Key</columnTitle>
+          <shownInInsertView>false</shownInInsertView>
+          <shownInUpdateView>false</shownInUpdateView>
+          <shownInDetailsView>false</shownInDetailsView>
+          <isHidden>true</isHidden>
+          <isAutoInc>true</isAutoInc>
+          <isKeyField>true</isKeyField>
+        </column>
+      </columns>
+      <tableTitle>Forms</tableTitle>
+      <description>Form Submissions</description>
+    </table>
+</tables>

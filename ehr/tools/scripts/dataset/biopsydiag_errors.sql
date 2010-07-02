@@ -12,5 +12,5 @@ SELECT lower(id) as id, FixDate(date) AS Date, (seq1) AS seq1, (seq2) AS seq2, (
 FROM biopsydiag b
 LEFT OUTER JOIN snomed s1 ON s1.code=b.code
 
-HAVING parentid NOT LIKE "%,%"
+HAVING parentid LIKE "%,%"
 

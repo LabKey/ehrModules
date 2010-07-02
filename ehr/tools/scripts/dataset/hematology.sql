@@ -4,6 +4,7 @@
  * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
  */
 SELECT lower(id) as id, FixDate(date) AS Date, (account) AS account, (wbc) AS wbc, (rbc) AS rbc, (hgb) AS hgb, (hct) AS hct, (mcv) AS mcv, (mch) AS mch, (mchc) AS mchc, (rdw) AS rdw, (plt) AS plt, (mpv) AS mpv, (pcv) AS pcv, (n) AS n, (l) AS l, (m) AS m, (e) AS e, (b) AS b, (bands) AS bands, (metamyelo) AS metamyelo, (myelo) AS myelo, (tprotein) AS tprotein, (reticulo) AS reticulo, FixNewlines(remark) AS remark, FixNewlines(clinremark) AS clinremark, (proMyelo) AS proMyelo, (blast) AS blast, (atyLymph) AS atyLymph, (other) AS other,
+uuid as requestId,
      ( CONCAT_WS(',\n', 
      CONCAT('WBC: ', CAST(wbc AS CHAR)),
      CONCAT('RBC: ', CAST(rbc AS CHAR)),
@@ -33,4 +34,6 @@ SELECT lower(id) as id, FixDate(date) AS Date, (account) AS account, (wbc) AS wb
      CONCAT('Remark: ', FixNewlines(clinremark))
      ) ) AS Description, ts, uuid AS objectid
 FROM hematology
+
+/*WHERE ts > ?*/
 

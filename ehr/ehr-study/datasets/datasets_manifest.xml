@@ -20,25 +20,28 @@
     <dataset name='treatment_order' id='1037' category="Clinical"/>
     <dataset name='weight' id='1045' category="Clinical"/>
       
-    <dataset name='bacteriology' id='1003' category="ClinPath"/>
+    <dataset name='bacteriologyRuns' id='1050' category="ClinPath"/>
+    <dataset name='bacteriologyResults' id='1049' category="ClinPath"/>
     <dataset name='chemisc' id='1009' category="ClinPath"/>
     <dataset name='chemistry' id='1010' category="ClinPath"/>
     <dataset name='hematology' id='1016' category="ClinPath"/>
     <dataset name='hemamisc' id='1015' category="ClinPath"/>
     <dataset name='immunores' id='1019' category="ClinPath"/>
-    <dataset name='parasitology' id='1027' category="ClinPath"/>
+    <dataset name='parasitologyRuns' id='1051' category="ClinPath"/>
+    <dataset name='parasitologyResults' id='1052' category="ClinPath"/>
     <!--
     <dataset name='parahead' id='1026' category="ClinPath"/>
     <dataset name='parares' id='1025' category="ClinPath"/>
     -->
     <dataset name='urinalysis' id='1038' category="ClinPath"/>
-    <dataset name='virsero' id='1039' category="ClinPath"/>
+    <dataset name='virologyRuns' id='1053' category="ClinPath"/>
+    <dataset name='virologyResults' id='1054' category="ClinPath"/>
     <!--
     <dataset name='virserohead' id='1040' category="ClinPath"/>
     <dataset name='virserores' id='1041' category="ClinPath"/>
-    -->
+
     <dataset name='viriso' id='1042' category="ClinPath"/>
-    <!--
+
     <dataset name='virisohead' id='1043' category="ClinPath"/>
     <dataset name='virisores' id='1044' category="ClinPath"/>
     -->
@@ -48,7 +51,7 @@
     <dataset name='demographics' category="ColonyManagement" demographicData='true' id='1012' />
     <dataset name='departure' id='1013' category="ColonyManagement"/>
     <dataset name='housing' id='1018' category="ColonyManagement"/>
-    <dataset name='inbreeding' id='5001' category="ColonyManagement"/>
+    <!--<dataset name='inbreeding' id='5001' category="ColonyManagement"/>-->
     <dataset name='pedigree' id='1028' demographicData='true' category="ColonyManagement"/>
     <!--
     <dataset name='mhctype' id='1020' category="Laboratory"/>
