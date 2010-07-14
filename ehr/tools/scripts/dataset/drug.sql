@@ -22,37 +22,56 @@ FROM
 
 (
 
-SELECT id,pno, date,time, code, amount,units, route, FixBadTime(time2) as BeginTime, null as EndTime, null as remark, 'clindrug' AS category, ts, uuid,
-(select group_concat(DISTINCT UUID) as uuid from clinhead t2 WHERE t1.id=t2.id AND t1.date=t2.date AND t1.time=t2.time AND (t1.pno=t2.pno OR t1.pno IS NULL) GROUP BY t1.id,t1.date,t1.time,t1.pno limit 1) as parentid
+SELECT id, date, time, code, amount,units, route, FixBadTime(time2) as BeginTime, null as EndTime, 'clindrug' AS category, ts, uuid,
+(select UUID as uuid from clinhead t2 WHERE t1.id=t2.id AND t1.date=t2.date AND t1.time=t2.time AND (t1.pno=t2.pno OR t1.pno IS NULL) GROUP BY t1.uuid) as parentid,
+(select group_concat(DISTINCT pno) as pno from clinhead t2 WHERE t1.id=t2.id AND t1.date=t2.date AND t1.time=t2.time AND (t1.pno=t2.pno OR t1.pno IS NULL) GROUP BY t1.uuid) as pno,
+(select group_concat(distinct remark) as remark from clintrem t2 WHERE t1.id=t2.id AND t1.date=t2.date AND t1.time=t2.time AND (t1.pno=t2.pno OR t1.pno is null) AND remark is not null and remark != '' AND remark not like "%s/o%" AND userid is null GROUP BY t1.uuid) as remark
 FROM clindrug t1
+WHERE date != '0000-00-00' AND id != ''
 
 UNION ALL
 
-SELECT h1.id, h1.pno,h1.date,h1.time, code, amount,units, route, FixBadTime(time2) as BeginTime, null as EndTime, FixNewLines(h2.remark) as remark, 'hormdrug' AS category, greatest(h1.ts, coalesce(h2.ts,'1979-01-01')) as ts, h1.uuid,
-(select UUID from hormhead t2 WHERE h1.id=t2.id AND h1.date=t2.date AND h1.time=t2.time AND (h1.pno=t2.pno OR h1.pno is null) GROUP BY h1.id,h1.date,h1.time,h1.pno limit 1) as parentid
-FROM hormdrug h1 left join hormtrem h2 on (h1.id=h2.id AND (h1.pno=h2.pno OR h1.pno is null) AND h1.date=h2.date AND h1.time=h2.time AND h2.remark != '')
+SELECT h1.id, h1.date,h1.time, code, amount,units, route, FixBadTime(time2) as BeginTime, null as EndTime, 'hormdrug' AS category, h1.ts as ts, h1.uuid,
+(select UUID as uuid from hormhead t2 WHERE h1.id=t2.id AND h1.date=t2.date AND h1.time=t2.time AND (h1.pno=t2.pno OR h1.pno is null) GROUP BY h1.uuid) as parentid,
+(select group_concat(DISTINCT pno) as pno from hormhead t2 WHERE h1.id=t2.id AND h1.date=t2.date AND h1.time=t2.time AND (h1.pno=t2.pno OR h1.pno is null) GROUP BY h1.uuid) as pno,
+(select group_concat(distinct remark) as remark from hormtrem t2 WHERE h1.id=t2.id AND h1.date=t2.date AND h1.time=t2.time AND (h1.pno=t2.pno OR h1.pno is null) GROUP BY h1.uuid) as remark
+FROM hormdrug h1
+/*left join hormtrem h2 on (h1.id=h2.id AND (h1.pno=h2.pno OR h1.pno is null) AND h1.date=h2.date AND h1.time=h2.time AND h2.remark != '')*/
+WHERE date != '0000-00-00' AND id != ''
 
 UNION ALL
 
-SELECT id, null as pno, date,time, code, amount,units, route, null as BeginTime, null as EndTime, remark, 'surgmed' AS category, ts, uuid,
-(select UUID from surghead t2 WHERE t1.id=t2.id AND t1.date=t2.date AND t1.time=t2.time GROUP BY t1.id,t1.date,t1.time limit 1) as parentid
+SELECT id, date,time, code, amount,units, route, null as BeginTime, null as EndTime, 'surgmed' AS category, ts, uuid,
+(select UUID from surghead t2 WHERE t1.id=t2.id AND t1.date=t2.date AND t1.time=t2.time GROUP BY t1.uuid) as parentid,
+(select pno from surghead t2 WHERE t1.id=t2.id AND t1.date=t2.date AND t1.time=t2.time GROUP BY t1.uuid) as pno,
+remark
 FROM surgmed t1
+WHERE date != '0000-00-00' AND id != ''
 
 UNION ALL
 
-SELECT id, null as pno, date,time, code, amount,units, route, null as BeginTime, null as EndTime, remark, 'surganes' AS category, ts, uuid,
-(select UUID from surghead t2 WHERE t1.id=t2.id AND t1.date=t2.date AND t1.time=t2.time GROUP BY t1.id,t1.date,t1.time limit 1) as parentid
+SELECT id, date,time, code, amount,units, route, null as BeginTime, null as EndTime, 'surganes' AS category, ts, uuid,
+(select UUID from surghead t2 WHERE t1.id=t2.id AND t1.date=t2.date AND t1.time=t2.time GROUP BY t1.uuid) as parentid,
+(select pno from surghead t2 WHERE t1.id=t2.id AND t1.date=t2.date AND t1.time=t2.time GROUP BY t1.uuid) as pno,
+remark
 FROM surganes t1
+WHERE date != '0000-00-00' AND id != ''
 
 UNION ALL
 
-SELECT id, null as pno, date, time, code, amount, units, route,
+SELECT id, date, time, code, amount, units, route,
 FixBadTime(begintime) AS begintime,
-FixBadTime(endtime) AS endtime, null as remark, 'surgfluid' as category, ts, uuid,
-(select UUID from surghead t2 WHERE t1.id=t2.id AND t1.date=t2.date AND t1.time=t2.time GROUP BY t1.id,t1.date,t1.time limit 1) as parentid
+FixBadTime(endtime) AS endtime, 'surgfluid' as category, ts, uuid,
+(select UUID from surghead t2 WHERE t1.id=t2.id AND t1.date=t2.date AND t1.time=t2.time GROUP BY t1.id,t1.date,t1.time limit 1) as parentid,
+(select pno from surghead t2 WHERE t1.id=t2.id AND t1.date=t2.date AND t1.time=t2.time GROUP BY t1.uuid) as pno,
+null as remark
 FROM surgfluid t1
+WHERE date != '0000-00-00' AND id != ''
 
         ) x
+
 JOIN snomed s1 on x.code=s1.code
 
-WHERE date != '0000-00-00' AND id != '' AND (pno REGEXP '^[0-9]+$' OR pno IS NULL)
+WHERE (pno REGEXP '^[0-9]+$' OR pno IS NULL)
+
+

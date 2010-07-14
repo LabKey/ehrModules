@@ -24,7 +24,7 @@ Ext.onReady(function()
         var sopQWP = new LABKEY.QueryWebPart({
             renderTo: 'sopDiv',
             dataRegionName: 'sopGrid',
-            title: 'Required SOPs',
+            title: 'Unread SOPs (Less Than 10 Months Until Renewal)',
             schemaName: 'lists',
             queryName: 'SOPrequirements',
             buttonBarPosition: 'top',
@@ -32,8 +32,24 @@ Ext.onReady(function()
             allowChooseQuery: false,
             //allowChooseView: false,
             successCallback: function(){setButtons('sopGrid', [{text: 'Mark Read', onclick: "markRead('sopGrid')"}])},
-            filters: [LABKEY.Filter.create('email', email, LABKEY.Filter.Types.EQUAL)]
+            filters: [LABKEY.Filter.create('email', email, LABKEY.Filter.Types.EQUAL), LABKEY.Filter.create('MonthsUntilRenewal', 10, LABKEY.Filter.Types.LESS_THAN)]
         });
+
+        //then we display a list of all completed required SOPs
+        var sopQWP2 = new LABKEY.QueryWebPart({
+            renderTo: 'sopDiv2',
+            //dataRegionName: 'sopGrid',
+            title: 'Completed SOPs (More Than 10 Months Until Renewal)',
+            schemaName: 'lists',
+            queryName: 'SOPrequirements',
+            buttonBarPosition: 'top',
+            showRecordSelectors: true,
+            allowChooseQuery: false,
+            //allowChooseView: false,
+            //successCallback: function(){setButtons('sopGrid', [{text: 'Mark Read', onclick: "markRead('sopGrid')"}])},
+            filters: [LABKEY.Filter.create('email', email, LABKEY.Filter.Types.EQUAL), LABKEY.Filter.create('MonthsUntilRenewal', 10, LABKEY.Filter.Types.GREATER_THAN_OR_EQUAL)]
+        });
+
 
         //we find remaining SOPs
         LABKEY.Query.selectRows({
@@ -229,7 +245,7 @@ Ext.onReady(function()
 </li>
 <br>
 <li>
-    Once you have read an SOP, check the box next to it and hit the 'Mark Read' button above the grid.  Today's date should now appear next to this SOP, indicating that you have read it.  Note that SOPs are sorted with unread SOPs appearing first.  Once you mark an SOP read, it will jump to the bottom of the list.
+    Once you have read an SOP, check the box next to it and hit the 'Mark Read' button above the grid.  Today's date should now appear next to this SOP, indicating that you have read it.  Note that once you mark an SOP read, it will jump to the bottom 'Completed' grid.
 </li>
 <br>
 <li>
@@ -258,6 +274,8 @@ Ext.onReady(function()
 <div id="sopDiv">Loading...</div>
 
 <br><br>
+
+<div id="sopDiv2">Loading...</div>
 
 </body>
 </html>

@@ -5,7 +5,7 @@
     <dataset name='birth' id='1007' category="Clinical"/>
     <dataset name='blood' id='1008' category="Clinical"/>
     <!--<dataset name='clintrem' id='1011' category="Clinical"/>-->
-    <dataset name='clinremarks' id='1047' category="Clinical" showByDefault="false"/>
+    <dataset name='clinremarks' id='1047' category="Clinical"/>
     <dataset name='drug' id='1014' category="Clinical"/>
     <!--<dataset name='encounters' id='1046' category="Clinical"/>-->
     <!--<dataset name='hormtrem' id='1017' category="Clinical" showByDefault="false"/>-->
@@ -22,8 +22,10 @@
       
     <dataset name='bacteriologyRuns' id='1050' category="ClinPath"/>
     <dataset name='bacteriologyResults' id='1049' category="ClinPath"/>
-    <dataset name='chemisc' id='1009' category="ClinPath"/>
-    <dataset name='chemistry' id='1010' category="ClinPath"/>
+    <!--<dataset name='chemisc' id='1009' category="ClinPath"/>-->
+    <!--<dataset name='chemistry' id='1010' category="ClinPath"/>-->
+    <dataset name='chemistryRuns' id='1055' category="ClinPath"/>
+    <dataset name='chemistryResults' id='1056' category="ClinPath"/>
     <dataset name='hematology' id='1016' category="ClinPath"/>
     <dataset name='hemamisc' id='1015' category="ClinPath"/>
     <dataset name='immunores' id='1019' category="ClinPath"/>

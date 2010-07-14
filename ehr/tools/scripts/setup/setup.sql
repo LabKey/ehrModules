@@ -95,6 +95,7 @@ DELIMITER $$
 DROP FUNCTION IF EXISTS `colony`.`FixBadTime` $$
 CREATE FUNCTION `FixBadTime`(t VARCHAR(30)) RETURNS time DETERMINISTIC
 BEGIN
+    SET t = replace(t, 'YB', '');
     SET t = replace(t, 'pre-op', '');
     SET t = replace(t, '7:$9', '');
     SET t = replace(t, '1&:20', '');

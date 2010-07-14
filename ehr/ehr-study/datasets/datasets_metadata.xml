@@ -18,7 +18,7 @@
       </column>
       <column columnName="source">
         <datatype>varchar</datatype>
-        <nullable>false</nullable>
+        <!--<nullable>false</nullable>-->
         <columnTitle>Source</columnTitle>
       </column>
       <column columnName="remark">
@@ -28,10 +28,6 @@
         <propertyURI>urn:ehr.labkey.org/#Remark</propertyURI>
         <inputType>textarea</inputType>
       </column>
-      <!--<column columnName="dataset">-->
-        <!--<datatype>varchar</datatype>-->
-        <!--<columnTitle>Dataset</columnTitle>-->
-      <!--</column>-->
       <column columnName="description">
         <datatype>varchar</datatype>
         <columnTitle>Description</columnTitle>
@@ -43,7 +39,7 @@
         <inputType>textarea</inputType>
       </column>
       <column columnName="objectid">
-        <datatype>varchar</datatype>
+        <datatype>entityid</datatype>
         <columnTitle>Key</columnTitle>
         <shownInInsertView>false</shownInInsertView>
         <shownInUpdateView>false</shownInUpdateView>
@@ -54,15 +50,12 @@
       <column columnName="parentid">
         <datatype>varchar</datatype>
         <columnTitle>Parent Id</columnTitle>
-        <shownInInsertView>false</shownInInsertView>
-        <shownInUpdateView>false</shownInUpdateView>
-        <shownInDetailsView>false</shownInDetailsView>
-        <isHidden>true</isHidden>
+        <propertyURI>urn:ehr.labkey.org/#ParentId</propertyURI>
       </column>
       <column columnName="ts">
         <datatype>timestamp</datatype>
         <columnTitle>Last Changed</columnTitle>
-        <nullable>false</nullable>
+        <!--<nullable>false</nullable>-->
         <shownInInsertView>false</shownInInsertView>
         <shownInUpdateView>false</shownInUpdateView>
         <shownInDetailsView>false</shownInDetailsView>
@@ -102,7 +95,7 @@
           <fkColumnName>project</fkColumnName>
         </fk>
         <formatString>00000000</formatString>
-        <nullable>false</nullable>
+        <!--<nullable>false</nullable>-->
         <propertyURI>urn:ehr.labkey.org/#Project</propertyURI>
       </column>
       <column columnName="description">
@@ -116,7 +109,7 @@
         <inputType>textarea</inputType>
       </column>
       <column columnName="objectid">
-        <datatype>varchar</datatype>
+        <datatype>entityid</datatype>
         <columnTitle>Key</columnTitle>
         <shownInInsertView>false</shownInInsertView>
         <shownInUpdateView>false</shownInUpdateView>
@@ -127,15 +120,12 @@
       <column columnName="parentid">
         <datatype>varchar</datatype>
         <columnTitle>Parent Id</columnTitle>
-        <shownInInsertView>false</shownInInsertView>
-        <shownInUpdateView>false</shownInUpdateView>
-        <shownInDetailsView>false</shownInDetailsView>
-        <isHidden>true</isHidden>
+        <propertyURI>urn:ehr.labkey.org/#ParentId</propertyURI>
       </column>
       <column columnName="ts">
         <datatype>timestamp</datatype>
         <columnTitle>Last Changed</columnTitle>
-        <nullable>false</nullable>
+        <!--<nullable>false</nullable>-->
         <shownInInsertView>false</shownInInsertView>
         <shownInUpdateView>false</shownInUpdateView>
         <shownInDetailsView>false</shownInDetailsView>
@@ -162,13 +152,18 @@
       </column>
       <column columnName="account">
         <datatype>varchar</datatype>
-        <nullable>false</nullable>
+        <!--<nullable>false</nullable>-->
         <columnTitle>Account</columnTitle>
         <propertyURI>urn:ehr.labkey.org/#Account</propertyURI>
       </column>
       <column columnName="userid">
         <datatype>varchar</datatype>
         <columnTitle>User ID</columnTitle>
+        <fk>
+          <fkDbSchema>core</fkDbSchema>
+          <fkTable>users</fkTable>
+          <fkColumnName>userid</fkColumnName>
+        </fk>
       </column>
       <column columnName="remark">
         <datatype>varchar</datatype>
@@ -191,9 +186,11 @@
         <datatype>varchar</datatype>
         <columnTitle>Request Id</columnTitle>
         <isHidden>true</isHidden>
+        <shownInInsertView>false</shownInInsertView>
+        <shownInUpdateView>false</shownInUpdateView>
       </column>
       <column columnName="objectid">
-        <datatype>varchar</datatype>
+        <datatype>entityid</datatype>
         <columnTitle>Key</columnTitle>
         <shownInInsertView>false</shownInInsertView>
         <shownInUpdateView>false</shownInUpdateView>
@@ -204,15 +201,12 @@
       <column columnName="parentid">
         <datatype>varchar</datatype>
         <columnTitle>Parent Id</columnTitle>
-        <shownInInsertView>false</shownInInsertView>
-        <shownInUpdateView>false</shownInUpdateView>
-        <shownInDetailsView>false</shownInDetailsView>
-        <isHidden>true</isHidden>
+        <propertyURI>urn:ehr.labkey.org/#ParentId</propertyURI>
       </column>
       <column columnName="ts">
         <datatype>timestamp</datatype>
         <columnTitle>Last Changed</columnTitle>
-        <nullable>false</nullable>
+        <!--<nullable>false</nullable>-->
         <shownInInsertView>false</shownInInsertView>
         <shownInUpdateView>false</shownInUpdateView>
         <shownInDetailsView>false</shownInDetailsView>
@@ -274,6 +268,11 @@
       <column columnName="sensitivity">
         <datatype>varchar</datatype>
         <columnTitle>Sensitivity</columnTitle>
+        <fk>
+          <fkDbSchema>lookups</fkDbSchema>
+          <fkTable>bacteriology_sensitivity</fkTable>
+          <fkColumnName>code</fkColumnName>
+        </fk>
       </column>
       <column columnName="description">
         <datatype>varchar</datatype>
@@ -294,18 +293,22 @@
         <isHidden>true</isHidden>
         <isKeyField>true</isKeyField>
       </column>
-      <column columnName="parentid">
+      <column columnName="runid">
         <datatype>varchar</datatype>
-        <columnTitle>Parent Id</columnTitle>
+        <columnTitle>Run Id</columnTitle>
         <shownInInsertView>false</shownInInsertView>
         <shownInUpdateView>false</shownInUpdateView>
-        <shownInDetailsView>false</shownInDetailsView>
         <isHidden>true</isHidden>
+      </column>
+      <column columnName="parentId">
+        <datatype>varchar</datatype>
+        <columnTitle>Parent Id</columnTitle>
+        <propertyURI>urn:ehr.labkey.org/#ParentId</propertyURI>
       </column>
       <column columnName="ts">
         <datatype>timestamp</datatype>
         <columnTitle>Last Changed</columnTitle>
-        <nullable>false</nullable>
+        <!--<nullable>false</nullable>-->
         <shownInInsertView>false</shownInInsertView>
         <shownInUpdateView>false</shownInUpdateView>
         <shownInDetailsView>false</shownInDetailsView>
@@ -345,6 +348,20 @@
           <datatype>varchar</datatype>
           <columnTitle>Category</columnTitle>
           <description>Category</description>
+            <fk>
+              <fkDbSchema>lookups</fkDbSchema>
+              <fkTable>behavior_category</fkTable>
+              <fkColumnName>category</fkColumnName>
+            </fk>
+      </column>
+      <column columnName="userid">
+        <datatype>varchar</datatype>
+        <columnTitle>User ID</columnTitle>
+        <fk>
+          <fkDbSchema>core</fkDbSchema>
+          <fkTable>users</fkTable>
+          <fkColumnName>userid</fkColumnName>
+        </fk>
       </column>
       <column columnName="Remark">
         <datatype>varchar</datatype>
@@ -376,15 +393,12 @@
       <column columnName="parentid">
         <datatype>varchar</datatype>
         <columnTitle>Parent Id</columnTitle>
-        <shownInInsertView>false</shownInInsertView>
-        <shownInUpdateView>false</shownInUpdateView>
-        <shownInDetailsView>false</shownInDetailsView>
-        <isHidden>true</isHidden>
+        <propertyURI>urn:ehr.labkey.org/#ParentId</propertyURI>
       </column>
       <column columnName="ts">
         <datatype>timestamp</datatype>
         <columnTitle>Last Changed</columnTitle>
-        <nullable>false</nullable>
+        <!--<nullable>false</nullable>-->
         <shownInInsertView>false</shownInInsertView>
         <shownInUpdateView>false</shownInUpdateView>
         <shownInDetailsView>false</shownInDetailsView>
@@ -411,13 +425,13 @@
       </column>
       <column columnName="caseno">
         <datatype>varchar</datatype>
-        <nullable>false</nullable>
+        <!--<nullable>false</nullable>-->
         <columnTitle>Case Number</columnTitle>
       </column>
       <column columnName="account">
         <datatype>varchar</datatype>
         <columnTitle>Account</columnTitle>
-        <nullable>false</nullable>
+        <!--<nullable>false</nullable>-->
         <propertyURI>urn:ehr.labkey.org/#Account</propertyURI>
       </column>
       <!--<column columnName="remark">-->
@@ -441,6 +455,8 @@
         <datatype>varchar</datatype>
         <columnTitle>Request Id</columnTitle>
         <isHidden>true</isHidden>
+        <shownInInsertView>false</shownInInsertView>
+        <shownInUpdateView>false</shownInUpdateView>
       </column>
       <column columnName="objectid">
         <datatype>varchar</datatype>
@@ -454,15 +470,12 @@
       <column columnName="parentid">
         <datatype>varchar</datatype>
         <columnTitle>Parent Id</columnTitle>
-        <shownInInsertView>false</shownInInsertView>
-        <shownInUpdateView>false</shownInUpdateView>
-        <shownInDetailsView>false</shownInDetailsView>
-        <isHidden>true</isHidden>
+        <propertyURI>urn:ehr.labkey.org/#ParentId</propertyURI>
       </column>
       <column columnName="ts">
         <datatype>timestamp</datatype>
         <columnTitle>Last Changed</columnTitle>
-        <nullable>false</nullable>
+        <!--<nullable>false</nullable>-->
         <shownInInsertView>false</shownInInsertView>
         <shownInUpdateView>false</shownInUpdateView>
         <shownInDetailsView>false</shownInDetailsView>
@@ -499,7 +512,7 @@
       </column>
       <column columnName="code">
         <datatype>varchar</datatype>
-        <nullable>false</nullable>
+        <!--<nullable>false</nullable>-->
         <columnTitle>SNOMED</columnTitle>
         <fk>
           <fkDbSchema>lists</fkDbSchema>
@@ -510,10 +523,7 @@
       <column columnName="parentid">
         <datatype>varchar</datatype>
         <columnTitle>Parent Id</columnTitle>
-        <shownInInsertView>false</shownInInsertView>
-        <shownInUpdateView>false</shownInUpdateView>
-        <shownInDetailsView>false</shownInDetailsView>
-        <isHidden>true</isHidden>
+        <propertyURI>urn:ehr.labkey.org/#ParentId</propertyURI>
       </column>
       <column columnName="description">
         <datatype>varchar</datatype>
@@ -537,7 +547,7 @@
       <column columnName="ts">
         <datatype>timestamp</datatype>
         <columnTitle>Last Changed</columnTitle>
-        <nullable>false</nullable>
+        <!--<nullable>false</nullable>-->
         <shownInInsertView>false</shownInInsertView>
         <shownInUpdateView>false</shownInUpdateView>
         <shownInDetailsView>false</shownInDetailsView>
@@ -582,8 +592,9 @@
       </column>
       <column columnName="dam">
         <datatype>varchar</datatype>
-        <nullable>false</nullable>
+        <!--<nullable>false</nullable>-->
         <columnTitle>Dam</columnTitle>
+        <isMvEnabled>true</isMvEnabled>
         <fk>
           <fkDbSchema>study</fkDbSchema>
           <fkTable>animal</fkTable>
@@ -593,14 +604,28 @@
       <column columnName="sire">
         <datatype>varchar</datatype>
         <columnTitle>Sire</columnTitle>
+        <isMvEnabled>true</isMvEnabled>
         <fk>
           <fkDbSchema>study</fkDbSchema>
           <fkTable>animal</fkTable>
           <fkColumnName>id</fkColumnName>
         </fk>
       </column>
+      <!--<column columnName="roomcage">-->
+          <!--<datatype>varchar</datatype>-->
+          <!--<columnTitle>Room/Cage</columnTitle>-->
+          <!--<fk>-->
+            <!--<fkDbSchema>lists</fkDbSchema>-->
+            <!--<fkTable>cage</fkTable>-->
+            <!--<fkColumnName>roomcage</fkColumnName>            -->
+          <!--</fk>-->
+      <!--</column>-->
       <column columnName="room">
         <datatype>varchar</datatype>
+        <shownInInsertView>false</shownInInsertView>
+        <shownInDetailsView>false</shownInDetailsView>
+        <shownInUpdateView>false</shownInUpdateView>
+        <isHidden>true</isHidden>
         <columnTitle>Room</columnTitle>
         <url>/EHR_Reporting/cageDetails.view?
             room=${room}&amp;
@@ -609,6 +634,9 @@
       </column>
       <column columnName="cage">
         <datatype>varchar</datatype>
+        <shownInDetailsView>false</shownInDetailsView>
+        <shownInUpdateView>false</shownInUpdateView>
+        <isHidden>true</isHidden>
         <columnTitle>Cage</columnTitle>
         <url>/EHR_Reporting/cageDetails.view?
             room=${room}&amp;
@@ -641,6 +669,11 @@
       <column columnName="type">
         <datatype>varchar</datatype>
         <columnTitle>Type</columnTitle>
+        <fk>
+          <fkDbSchema>lookups</fkDbSchema>
+          <fkTable>birth_type</fkTable>
+          <fkColumnName>type</fkColumnName>
+        </fk>
       </column>
       <column columnName="remark">
         <datatype>varchar</datatype>
@@ -660,7 +693,7 @@
         <inputType>textarea</inputType>
       </column>
       <column columnName="objectid">
-        <datatype>varchar</datatype>
+        <datatype>entityid</datatype>
         <columnTitle>Key</columnTitle>
         <shownInInsertView>false</shownInInsertView>
         <shownInUpdateView>false</shownInUpdateView>
@@ -671,15 +704,12 @@
       <column columnName="parentid">
         <datatype>varchar</datatype>
         <columnTitle>Parent Id</columnTitle>
-        <shownInInsertView>false</shownInInsertView>
-        <shownInUpdateView>false</shownInUpdateView>
-        <shownInDetailsView>false</shownInDetailsView>
-        <isHidden>true</isHidden>
+        <propertyURI>urn:ehr.labkey.org/#ParentId</propertyURI>
       </column>
       <column columnName="ts">
         <datatype>timestamp</datatype>
         <columnTitle>Last Changed</columnTitle>
-        <nullable>false</nullable>
+        <!--<nullable>false</nullable>-->
         <shownInInsertView>false</shownInInsertView>
         <shownInUpdateView>false</shownInUpdateView>
         <shownInDetailsView>false</shownInDetailsView>
@@ -707,7 +737,7 @@
       </column>
       <column columnName="quantity">
         <datatype>double</datatype>
-        <nullable>false</nullable>
+        <!--<nullable>false</nullable>-->
         <columnTitle>Quantity</columnTitle>
       </column>
       <column columnName="done_by">
@@ -720,7 +750,7 @@
       </column>
       <column columnName="project">
         <datatype>integer</datatype>
-        <nullable>false</nullable>
+        <!--<nullable>false</nullable>-->
         <columnTitle>Project</columnTitle>
         <fk>
           <fkDbSchema>lists</fkDbSchema>
@@ -744,7 +774,7 @@
       </column>
       <column columnName="caretaker">
         <datatype>varchar</datatype>
-        <nullable>false</nullable>
+        <!--<nullable>false</nullable>-->
         <columnTitle>Caretaker</columnTitle>
       </column>
       <column columnName="tube_type">
@@ -765,9 +795,11 @@
         <datatype>varchar</datatype>
         <columnTitle>Request Id</columnTitle>
         <isHidden>true</isHidden>
+        <shownInInsertView>false</shownInInsertView>
+        <shownInUpdateView>false</shownInUpdateView>
       </column>
       <column columnName="objectid">
-        <datatype>varchar</datatype>
+        <datatype>entityid</datatype>
         <columnTitle>Key</columnTitle>
         <shownInInsertView>false</shownInInsertView>
         <shownInUpdateView>false</shownInUpdateView>
@@ -778,15 +810,12 @@
       <column columnName="parentid">
         <datatype>varchar</datatype>
         <columnTitle>Parent Id</columnTitle>
-        <shownInInsertView>false</shownInInsertView>
-        <shownInUpdateView>false</shownInUpdateView>
-        <shownInDetailsView>false</shownInDetailsView>
-        <isHidden>true</isHidden>
+        <propertyURI>urn:ehr.labkey.org/#ParentId</propertyURI>
       </column>
       <column columnName="ts">
         <datatype>timestamp</datatype>
         <columnTitle>Last Changed</columnTitle>
-        <nullable>false</nullable>
+        <!--<nullable>false</nullable>-->
         <shownInInsertView>false</shownInInsertView>
         <shownInUpdateView>false</shownInUpdateView>
         <shownInDetailsView>false</shownInDetailsView>
@@ -796,248 +825,422 @@
     <tableTitle>Blood Draws</tableTitle>
     <description>Blood Draws</description>
   </table>
-  <table tableName="chemisc" tableDbType="TABLE">
-    <tableUrl>/query/detailsQueryRow.view?schemaName=study&amp;query.queryName=chemmisc&amp;lsid=${lsid}</tableUrl>
-    <columns>
-      <column columnName="participantid">
-        <datatype>varchar</datatype>
-        <columnTitle>Participant ID</columnTitle>
-        <description>Participant identifier</description>
-        <nullable>false</nullable>
-      </column>
-      <column columnName="Date">
-        <datatype>timestamp</datatype>
-        <formatString>yyyy-MM-dd HH:mm</formatString>
-        <columnTitle>Date</columnTitle>
-        <nullable>false</nullable>
-        <propertyURI>http://cpas.labkey.com/Study#VisitDate</propertyURI>
-      </column>
-      <column columnName="name">
-        <datatype>varchar</datatype>
-        <nullable>false</nullable>
-        <columnTitle>TestName</columnTitle>
-      </column>
-      <column columnName="value">
-        <datatype>varchar</datatype>
-        <nullable>false</nullable>
-        <columnTitle>Result</columnTitle>
-      </column>
-      <column columnName="units">
-        <datatype>varchar</datatype>
-        <columnTitle>Units</columnTitle>
-      </column>
-      <column columnName="description">
-        <datatype>varchar</datatype>
-        <columnTitle>Description</columnTitle>
-        <shownInInsertView>false</shownInInsertView>
-        <shownInUpdateView>false</shownInUpdateView>
-        <shownInDetailsView>false</shownInDetailsView>
-        <propertyURI>urn:ehr.labkey.org/#Description</propertyURI>
-        <isHidden>true</isHidden>
-        <inputType>textarea</inputType>
-      </column>
-      <column columnName="objectid">
-        <datatype>varchar</datatype>
-        <columnTitle>Key</columnTitle>
-        <shownInInsertView>false</shownInInsertView>
-        <shownInUpdateView>false</shownInUpdateView>
-        <shownInDetailsView>false</shownInDetailsView>
-        <isHidden>true</isHidden>
-        <isKeyField>true</isKeyField>
-      </column>
-      <column columnName="requestId">
-        <datatype>varchar</datatype>
-        <columnTitle>Request Id</columnTitle>
-        <isHidden>true</isHidden>
-      </column>
-      <column columnName="parentid">
-        <datatype>varchar</datatype>
-        <columnTitle>Parent Id</columnTitle>
-        <shownInInsertView>false</shownInInsertView>
-        <shownInUpdateView>false</shownInUpdateView>
-        <shownInDetailsView>false</shownInDetailsView>
-        <isHidden>true</isHidden>
-      </column>
-      <column columnName="ts">
-        <datatype>timestamp</datatype>
-        <columnTitle>Last Changed</columnTitle>
-        <nullable>false</nullable>
-        <shownInInsertView>false</shownInInsertView>
-        <shownInUpdateView>false</shownInUpdateView>
-        <shownInDetailsView>false</shownInDetailsView>
-        <isHidden>true</isHidden>
-      </column>
-    </columns>
-    <tableTitle>Blood Chemistry Misc</tableTitle>
-    <description>Misc Blood Chemistry Tests</description>
-  </table>
-  <table tableName="chemistry" tableDbType="TABLE">
-    <tableUrl>/query/detailsQueryRow.view?schemaName=study&amp;query.queryName=chemistry&amp;lsid=${lsid}</tableUrl>
-    <columns>
-      <column columnName="participantid">
-        <datatype>varchar</datatype>
-        <columnTitle>Participant ID</columnTitle>
-        <description>Participant identifier</description>
-        <nullable>false</nullable>
-      </column>
-      <column columnName="Date">
-        <datatype>timestamp</datatype>
-        <formatString>yyyy-MM-dd</formatString>
-        <columnTitle>Date</columnTitle>
-        <nullable>false</nullable>
-        <propertyURI>http://cpas.labkey.com/Study#VisitDate</propertyURI>
-      </column>
-      <column columnName="account">
-        <datatype>varchar</datatype>
-        <nullable>false</nullable>
-        <columnTitle>Account</columnTitle>
-        <propertyURI>urn:ehr.labkey.org/#Account</propertyURI>
-      </column>
-      <column columnName="glucose">
-        <datatype>double</datatype>
-        <columnTitle>Glucose</columnTitle>
-      </column>
-      <column columnName="bun">
-        <datatype>double</datatype>
-        <columnTitle>BUN</columnTitle>
-        <description>Blood Urea Nitrogen</description>
-      </column>
-      <column columnName="creatinine">
-        <datatype>double</datatype>
-        <columnTitle>Creatinine</columnTitle>
-      </column>
-      <column columnName="ck_cpk">
-        <datatype>double</datatype>
-        <columnTitle>CK/CPK</columnTitle>
-        <description>Creatine Kinase, Creatine Phosphokinase</description>
-      </column>
-      <column columnName="uricacid">
-        <datatype>double</datatype>
-        <columnTitle>Uric Acid</columnTitle>
-      </column>
-      <column columnName="cholesterol">
-        <datatype>double</datatype>
-        <columnTitle>Cholesterol</columnTitle>
-      </column>
-      <column columnName="triglyc">
-        <datatype>double</datatype>
-        <columnTitle>Triclyceride</columnTitle>
-      </column>
-      <column columnName="sgot_ast">
-        <datatype>double</datatype>
-        <columnTitle>SGOT_AST</columnTitle>
-        <description>liver enzymes</description>
-      </column>
-      <column columnName="ldh">
-        <datatype>double</datatype>
-        <columnTitle>LDH</columnTitle>
-      </column>
-      <column columnName="tbili">
-        <datatype>double</datatype>
-        <columnTitle>Tbili</columnTitle>
-      </column>
-      <column columnName="ggt">
-        <datatype>double</datatype>
-        <columnTitle>GGT</columnTitle>
-      </column>
-      <column columnName="sgpt_alt">
-        <datatype>double</datatype>
-        <columnTitle>SGPT_ALT</columnTitle>
-      </column>
-      <column columnName="tprotein">
-        <datatype>double</datatype>
-        <columnTitle>Total Protein</columnTitle>
-      </column>
-      <column columnName="albumin">
-        <datatype>double</datatype>
-        <columnTitle>Albumin</columnTitle>
-      </column>
-      <column columnName="phosphatase">
-        <datatype>double</datatype>
-        <columnTitle>Phosphatase</columnTitle>
-      </column>
-      <column columnName="calcium">
-        <datatype>double</datatype>
-        <columnTitle>Calcium</columnTitle>
-      </column>
-      <column columnName="phosphorus">
-        <datatype>double</datatype>
-        <columnTitle>Phosphorus</columnTitle>
-      </column>
-      <column columnName="iron">
-        <datatype>double</datatype>
-        <columnTitle>Iron</columnTitle>
-      </column>
-      <column columnName="sodium">
-        <datatype>double</datatype>
-        <columnTitle>Sodium</columnTitle>
-      </column>
-      <column columnName="potassium">
-        <datatype>double</datatype>
-        <columnTitle>Potassium</columnTitle>
-      </column>
-      <column columnName="chloride">
-        <datatype>double</datatype>
-        <columnTitle>Chloride</columnTitle>
-      </column>
-      <column columnName="remark">
-        <datatype>varchar</datatype>
-        <columnTitle>Remark</columnTitle>
-        <displayWidth>110</displayWidth>
-        <propertyURI>urn:ehr.labkey.org/#Remark</propertyURI>
-        <inputType>textarea</inputType>
-      </column>
-      <column columnName="clinremark">
-        <datatype>varchar</datatype>
-        <columnTitle>Clinical Remark</columnTitle>
-        <displayWidth>110</displayWidth>
-        <inputType>textarea</inputType>
-      </column>
-      <column columnName="description">
-        <datatype>varchar</datatype>
-        <columnTitle>Description</columnTitle>
-        <shownInInsertView>false</shownInInsertView>
-        <shownInUpdateView>false</shownInUpdateView>
-        <shownInDetailsView>false</shownInDetailsView>
-        <propertyURI>urn:ehr.labkey.org/#Description</propertyURI>
-        <isHidden>true</isHidden>
-        <inputType>textarea</inputType>
-      </column>
-      <column columnName="objectid">
-        <datatype>varchar</datatype>
-        <columnTitle>Key</columnTitle>
-        <shownInInsertView>false</shownInInsertView>
-        <shownInUpdateView>false</shownInUpdateView>
-        <shownInDetailsView>false</shownInDetailsView>
-        <isHidden>true</isHidden>
-        <isKeyField>true</isKeyField>
-      </column>
-      <column columnName="requestId">
-        <datatype>varchar</datatype>
-        <columnTitle>Request Id</columnTitle>
-        <isHidden>true</isHidden>
-      </column>
-      <column columnName="parentid">
-        <datatype>varchar</datatype>
-        <columnTitle>Parent Id</columnTitle>
-        <shownInInsertView>false</shownInInsertView>
-        <shownInUpdateView>false</shownInUpdateView>
-        <shownInDetailsView>false</shownInDetailsView>
-        <isHidden>true</isHidden>
-      </column>
-      <column columnName="ts">
-        <datatype>timestamp</datatype>
-        <columnTitle>Last Changed</columnTitle>
-        <nullable>false</nullable>
-        <shownInInsertView>false</shownInInsertView>
-        <shownInUpdateView>false</shownInUpdateView>
-        <shownInDetailsView>false</shownInDetailsView>
-        <isHidden>true</isHidden>
-      </column>
-    </columns>
-    <tableTitle>Blood Chemistry</tableTitle>
-    <description>Blood Chemistry Data</description>
-  </table>
+  <!--<table tableName="chemisc" tableDbType="TABLE">-->
+    <!--<tableUrl>/query/detailsQueryRow.view?schemaName=study&amp;query.queryName=chemmisc&amp;lsid=${lsid}</tableUrl>-->
+    <!--<columns>-->
+      <!--<column columnName="participantid">-->
+        <!--<datatype>varchar</datatype>-->
+        <!--<columnTitle>Participant ID</columnTitle>-->
+        <!--<description>Participant identifier</description>-->
+        <!--<nullable>false</nullable>-->
+      <!--</column>-->
+      <!--<column columnName="Date">-->
+        <!--<datatype>timestamp</datatype>-->
+        <!--<formatString>yyyy-MM-dd HH:mm</formatString>-->
+        <!--<columnTitle>Date</columnTitle>-->
+        <!--<nullable>false</nullable>-->
+        <!--<propertyURI>http://cpas.labkey.com/Study#VisitDate</propertyURI>-->
+      <!--</column>-->
+      <!--<column columnName="name">-->
+        <!--<datatype>varchar</datatype>-->
+        <!--<nullable>false</nullable>-->
+        <!--<columnTitle>TestName</columnTitle>-->
+      <!--</column>-->
+      <!--<column columnName="value">-->
+        <!--<datatype>varchar</datatype>-->
+        <!--<nullable>false</nullable>-->
+        <!--<columnTitle>Result</columnTitle>-->
+      <!--</column>-->
+      <!--<column columnName="units">-->
+        <!--<datatype>varchar</datatype>-->
+        <!--<columnTitle>Units</columnTitle>-->
+      <!--</column>-->
+      <!--<column columnName="description">-->
+        <!--<datatype>varchar</datatype>-->
+        <!--<columnTitle>Description</columnTitle>-->
+        <!--<shownInInsertView>false</shownInInsertView>-->
+        <!--<shownInUpdateView>false</shownInUpdateView>-->
+        <!--<shownInDetailsView>false</shownInDetailsView>-->
+        <!--<propertyURI>urn:ehr.labkey.org/#Description</propertyURI>-->
+        <!--<isHidden>true</isHidden>-->
+        <!--<inputType>textarea</inputType>-->
+      <!--</column>-->
+      <!--<column columnName="objectid">-->
+        <!--<datatype>varchar</datatype>-->
+        <!--<columnTitle>Key</columnTitle>-->
+        <!--<shownInInsertView>false</shownInInsertView>-->
+        <!--<shownInUpdateView>false</shownInUpdateView>-->
+        <!--<shownInDetailsView>false</shownInDetailsView>-->
+        <!--<isHidden>true</isHidden>-->
+        <!--<isKeyField>true</isKeyField>-->
+      <!--</column>-->
+      <!--<column columnName="requestId">-->
+        <!--<datatype>varchar</datatype>-->
+        <!--<columnTitle>Request Id</columnTitle>-->
+        <!--<isHidden>true</isHidden>-->
+      <!--</column>-->
+      <!--<column columnName="parentid">-->
+        <!--<datatype>varchar</datatype>-->
+        <!--<columnTitle>Parent Id</columnTitle>-->
+        <!--<shownInInsertView>false</shownInInsertView>-->
+        <!--<shownInUpdateView>false</shownInUpdateView>-->
+        <!--<shownInDetailsView>false</shownInDetailsView>-->
+        <!--<isHidden>true</isHidden>-->
+      <!--</column>-->
+      <!--<column columnName="ts">-->
+        <!--<datatype>timestamp</datatype>-->
+        <!--<columnTitle>Last Changed</columnTitle>-->
+        <!--<nullable>false</nullable>-->
+        <!--<shownInInsertView>false</shownInInsertView>-->
+        <!--<shownInUpdateView>false</shownInUpdateView>-->
+        <!--<shownInDetailsView>false</shownInDetailsView>-->
+        <!--<isHidden>true</isHidden>-->
+      <!--</column>-->
+    <!--</columns>-->
+    <!--<tableTitle>Blood Chemistry Misc</tableTitle>-->
+    <!--<description>Misc Blood Chemistry Tests</description>-->
+  <!--</table>-->
+  <!--<table tableName="chemistry" tableDbType="TABLE">-->
+    <!--<tableUrl>/query/detailsQueryRow.view?schemaName=study&amp;query.queryName=chemistry&amp;lsid=${lsid}</tableUrl>-->
+    <!--<columns>-->
+      <!--<column columnName="participantid">-->
+        <!--<datatype>varchar</datatype>-->
+        <!--<columnTitle>Participant ID</columnTitle>-->
+        <!--<description>Participant identifier</description>-->
+        <!--<nullable>false</nullable>-->
+      <!--</column>-->
+      <!--<column columnName="Date">-->
+        <!--<datatype>timestamp</datatype>-->
+        <!--<formatString>yyyy-MM-dd</formatString>-->
+        <!--<columnTitle>Date</columnTitle>-->
+        <!--<nullable>false</nullable>-->
+        <!--<propertyURI>http://cpas.labkey.com/Study#VisitDate</propertyURI>-->
+      <!--</column>-->
+      <!--<column columnName="account">-->
+        <!--<datatype>varchar</datatype>-->
+        <!--<nullable>false</nullable>-->
+        <!--<columnTitle>Account</columnTitle>-->
+        <!--<propertyURI>urn:ehr.labkey.org/#Account</propertyURI>-->
+      <!--</column>-->
+      <!--<column columnName="glucose">-->
+        <!--<datatype>double</datatype>-->
+        <!--<columnTitle>Glucose</columnTitle>-->
+      <!--</column>-->
+      <!--<column columnName="bun">-->
+        <!--<datatype>double</datatype>-->
+        <!--<columnTitle>BUN</columnTitle>-->
+        <!--<description>Blood Urea Nitrogen</description>-->
+      <!--</column>-->
+      <!--<column columnName="creatinine">-->
+        <!--<datatype>double</datatype>-->
+        <!--<columnTitle>Creatinine</columnTitle>-->
+      <!--</column>-->
+      <!--<column columnName="ck_cpk">-->
+        <!--<datatype>double</datatype>-->
+        <!--<columnTitle>CK/CPK</columnTitle>-->
+        <!--<description>Creatine Kinase, Creatine Phosphokinase</description>-->
+      <!--</column>-->
+      <!--<column columnName="uricacid">-->
+        <!--<datatype>double</datatype>-->
+        <!--<columnTitle>Uric Acid</columnTitle>-->
+      <!--</column>-->
+      <!--<column columnName="cholesterol">-->
+        <!--<datatype>double</datatype>-->
+        <!--<columnTitle>Cholesterol</columnTitle>-->
+      <!--</column>-->
+      <!--<column columnName="triglyc">-->
+        <!--<datatype>double</datatype>-->
+        <!--<columnTitle>Triclyceride</columnTitle>-->
+      <!--</column>-->
+      <!--<column columnName="sgot_ast">-->
+        <!--<datatype>double</datatype>-->
+        <!--<columnTitle>SGOT_AST</columnTitle>-->
+        <!--<description>liver enzymes</description>-->
+      <!--</column>-->
+      <!--<column columnName="ldh">-->
+        <!--<datatype>double</datatype>-->
+        <!--<columnTitle>LDH</columnTitle>-->
+      <!--</column>-->
+      <!--<column columnName="tbili">-->
+        <!--<datatype>double</datatype>-->
+        <!--<columnTitle>Tbili</columnTitle>-->
+      <!--</column>-->
+      <!--<column columnName="ggt">-->
+        <!--<datatype>double</datatype>-->
+        <!--<columnTitle>GGT</columnTitle>-->
+      <!--</column>-->
+      <!--<column columnName="sgpt_alt">-->
+        <!--<datatype>double</datatype>-->
+        <!--<columnTitle>SGPT_ALT</columnTitle>-->
+      <!--</column>-->
+      <!--<column columnName="tprotein">-->
+        <!--<datatype>double</datatype>-->
+        <!--<columnTitle>Total Protein</columnTitle>-->
+      <!--</column>-->
+      <!--<column columnName="albumin">-->
+        <!--<datatype>double</datatype>-->
+        <!--<columnTitle>Albumin</columnTitle>-->
+      <!--</column>-->
+      <!--<column columnName="phosphatase">-->
+        <!--<datatype>double</datatype>-->
+        <!--<columnTitle>Phosphatase</columnTitle>-->
+      <!--</column>-->
+      <!--<column columnName="calcium">-->
+        <!--<datatype>double</datatype>-->
+        <!--<columnTitle>Calcium</columnTitle>-->
+      <!--</column>-->
+      <!--<column columnName="phosphorus">-->
+        <!--<datatype>double</datatype>-->
+        <!--<columnTitle>Phosphorus</columnTitle>-->
+      <!--</column>-->
+      <!--<column columnName="iron">-->
+        <!--<datatype>double</datatype>-->
+        <!--<columnTitle>Iron</columnTitle>-->
+      <!--</column>-->
+      <!--<column columnName="sodium">-->
+        <!--<datatype>double</datatype>-->
+        <!--<columnTitle>Sodium</columnTitle>-->
+      <!--</column>-->
+      <!--<column columnName="potassium">-->
+        <!--<datatype>double</datatype>-->
+        <!--<columnTitle>Potassium</columnTitle>-->
+      <!--</column>-->
+      <!--<column columnName="chloride">-->
+        <!--<datatype>double</datatype>-->
+        <!--<columnTitle>Chloride</columnTitle>-->
+      <!--</column>-->
+      <!--<column columnName="remark">-->
+        <!--<datatype>varchar</datatype>-->
+        <!--<columnTitle>Remark</columnTitle>-->
+        <!--<displayWidth>110</displayWidth>-->
+        <!--<propertyURI>urn:ehr.labkey.org/#Remark</propertyURI>-->
+        <!--<inputType>textarea</inputType>-->
+      <!--</column>-->
+      <!--<column columnName="clinremark">-->
+        <!--<datatype>varchar</datatype>-->
+        <!--<columnTitle>Clinical Remark</columnTitle>-->
+        <!--<displayWidth>110</displayWidth>-->
+        <!--<inputType>textarea</inputType>-->
+      <!--</column>-->
+      <!--<column columnName="description">-->
+        <!--<datatype>varchar</datatype>-->
+        <!--<columnTitle>Description</columnTitle>-->
+        <!--<shownInInsertView>false</shownInInsertView>-->
+        <!--<shownInUpdateView>false</shownInUpdateView>-->
+        <!--<shownInDetailsView>false</shownInDetailsView>-->
+        <!--<propertyURI>urn:ehr.labkey.org/#Description</propertyURI>-->
+        <!--<isHidden>true</isHidden>-->
+        <!--<inputType>textarea</inputType>-->
+      <!--</column>-->
+      <!--<column columnName="objectid">-->
+        <!--<datatype>varchar</datatype>-->
+        <!--<columnTitle>Key</columnTitle>-->
+        <!--<shownInInsertView>false</shownInInsertView>-->
+        <!--<shownInUpdateView>false</shownInUpdateView>-->
+        <!--<shownInDetailsView>false</shownInDetailsView>-->
+        <!--<isHidden>true</isHidden>-->
+        <!--<isKeyField>true</isKeyField>-->
+      <!--</column>-->
+      <!--<column columnName="requestId">-->
+        <!--<datatype>varchar</datatype>-->
+        <!--<columnTitle>Request Id</columnTitle>-->
+        <!--<isHidden>true</isHidden>-->
+      <!--</column>-->
+      <!--<column columnName="parentid">-->
+        <!--<datatype>varchar</datatype>-->
+        <!--<columnTitle>Parent Id</columnTitle>-->
+        <!--<shownInInsertView>false</shownInInsertView>-->
+        <!--<shownInUpdateView>false</shownInUpdateView>-->
+        <!--<shownInDetailsView>false</shownInDetailsView>-->
+        <!--<isHidden>true</isHidden>-->
+      <!--</column>-->
+      <!--<column columnName="ts">-->
+        <!--<datatype>timestamp</datatype>-->
+        <!--<columnTitle>Last Changed</columnTitle>-->
+        <!--<nullable>false</nullable>-->
+        <!--<shownInInsertView>false</shownInInsertView>-->
+        <!--<shownInUpdateView>false</shownInUpdateView>-->
+        <!--<shownInDetailsView>false</shownInDetailsView>-->
+        <!--<isHidden>true</isHidden>-->
+      <!--</column>-->
+    <!--</columns>-->
+    <!--<tableTitle>Blood Chemistry</tableTitle>-->
+    <!--<description>Blood Chemistry Data</description>-->
+  <!--</table>-->
+    <table tableName="chemistryRuns" tableDbType="TABLE">
+      <tableUrl>/query/detailsQueryRow.view?schemaName=study&amp;query.queryName=chemistryRuns&amp;lsid=${lsid}</tableUrl>
+      <columns>
+        <column columnName="participantid">
+          <datatype>varchar</datatype>
+          <columnTitle>Participant ID</columnTitle>
+          <description>Participant identifier</description>
+          <nullable>false</nullable>
+        </column>
+        <column columnName="Date">
+          <datatype>timestamp</datatype>
+          <formatString>yyyy-MM-dd</formatString>
+          <columnTitle>Date</columnTitle>
+          <nullable>false</nullable>
+          <propertyURI>http://cpas.labkey.com/Study#VisitDate</propertyURI>
+        </column>
+        <column columnName="account">
+          <datatype>varchar</datatype>
+          <columnTitle>Account</columnTitle>
+          <propertyURI>urn:ehr.labkey.org/#Account</propertyURI>
+        </column>
+        <column columnName="userid">
+          <datatype>varchar</datatype>
+          <columnTitle>User ID</columnTitle>
+          <fk>
+            <fkDbSchema>core</fkDbSchema>
+            <fkTable>users</fkTable>
+            <fkColumnName>userid</fkColumnName>
+          </fk>
+        </column>
+        <column columnName="remark">
+          <datatype>varchar</datatype>
+          <columnTitle>Remark</columnTitle>
+          <displayWidth>110</displayWidth>
+          <propertyURI>urn:ehr.labkey.org/#Remark</propertyURI>
+          <inputType>textarea</inputType>
+        </column>
+        <column columnName="clinremark">
+          <datatype>varchar</datatype>
+          <columnTitle>Clinical Remark</columnTitle>
+          <displayWidth>110</displayWidth>
+          <inputType>textarea</inputType>
+        </column>
+        <column columnName="description">
+          <datatype>varchar</datatype>
+          <columnTitle>Description</columnTitle>
+          <shownInInsertView>false</shownInInsertView>
+          <shownInUpdateView>false</shownInUpdateView>
+          <shownInDetailsView>false</shownInDetailsView>
+          <propertyURI>urn:ehr.labkey.org/#Description</propertyURI>
+          <isHidden>true</isHidden>
+          <inputType>textarea</inputType>
+        </column>
+        <column columnName="requestId">
+          <datatype>varchar</datatype>
+          <columnTitle>Request Id</columnTitle>
+          <isHidden>true</isHidden>
+          <shownInInsertView>false</shownInInsertView>
+          <shownInUpdateView>false</shownInUpdateView>
+        </column>
+        <column columnName="objectid">
+          <datatype>varchar</datatype>
+          <columnTitle>Key</columnTitle>
+          <shownInInsertView>false</shownInInsertView>
+          <shownInUpdateView>false</shownInUpdateView>
+          <shownInDetailsView>false</shownInDetailsView>
+          <isHidden>true</isHidden>
+          <isKeyField>true</isKeyField>
+        </column>
+        <column columnName="parentid">
+          <datatype>varchar</datatype>
+          <columnTitle>Parent Id</columnTitle>
+          <propertyURI>urn:ehr.labkey.org/#ParentId</propertyURI>
+        </column>
+        <column columnName="ts">
+          <datatype>timestamp</datatype>
+          <columnTitle>Last Changed</columnTitle>
+          <!--<nullable>false</nullable>-->
+          <shownInInsertView>false</shownInInsertView>
+          <shownInUpdateView>false</shownInUpdateView>
+          <shownInDetailsView>false</shownInDetailsView>
+          <isHidden>true</isHidden>
+        </column>
+      </columns>
+      <tableTitle>Blood Chemistry Runs</tableTitle>
+    </table>
+    <table tableName="chemistryResults" tableDbType="TABLE">
+      <tableUrl>/query/detailsQueryRow.view?schemaName=study&amp;query.queryName=chemistryResults&amp;lsid=${lsid}</tableUrl>
+      <columns>
+        <column columnName="participantid">
+          <datatype>varchar</datatype>
+          <columnTitle>Participant ID</columnTitle>
+          <description>Participant identifier</description>
+          <nullable>false</nullable>
+        </column>
+        <column columnName="Date">
+          <datatype>timestamp</datatype>
+          <formatString>yyyy-MM-dd HH:mm</formatString>
+          <columnTitle>Date</columnTitle>
+          <nullable>false</nullable>
+          <propertyURI>http://cpas.labkey.com/Study#VisitDate</propertyURI>
+        </column>
+        <column columnName="testid">
+          <datatype>varchar</datatype>
+          <!--<nullable>false</nullable>-->
+          <columnTitle>Test Id</columnTitle>
+        </column>
+        <column columnName="results">
+          <datatype>integer</datatype>
+          <!--<nullable>false</nullable>-->
+          <columnTitle>Results</columnTitle>
+          <isMvEnabled>true</isMvEnabled>
+        </column>
+        <column columnName="resultsOORIndicator">
+          <datatype>varchar</datatype>
+          <columnTitle>Results Out Of Range</columnTitle>
+        </column>
+        <column columnName="units">
+          <datatype>varchar</datatype>
+          <columnTitle>Units</columnTitle>
+          <isMvEnabled>true</isMvEnabled>
+        </column>
+        <column columnName="qualResult">
+          <datatype>varchar</datatype>
+          <columnTitle>Qualitative Result</columnTitle>
+        </column>
+        <column columnName="remark">
+          <datatype>varchar</datatype>
+          <columnTitle>Remark</columnTitle>
+          <propertyURI>urn:ehr.labkey.org/#Remark</propertyURI>
+        </column>
+        <column columnName="description">
+          <datatype>varchar</datatype>
+          <columnTitle>Description</columnTitle>
+          <shownInInsertView>false</shownInInsertView>
+          <shownInUpdateView>false</shownInUpdateView>
+          <shownInDetailsView>false</shownInDetailsView>
+          <propertyURI>urn:ehr.labkey.org/#Description</propertyURI>
+          <isHidden>true</isHidden>
+          <inputType>textarea</inputType>
+        </column>
+        <column columnName="objectid">
+          <datatype>varchar</datatype>
+          <columnTitle>Key</columnTitle>
+          <shownInInsertView>false</shownInInsertView>
+          <shownInUpdateView>false</shownInUpdateView>
+          <shownInDetailsView>false</shownInDetailsView>
+          <isHidden>true</isHidden>
+          <isKeyField>true</isKeyField>
+        </column>
+        <column columnName="runid">
+          <datatype>varchar</datatype>
+          <columnTitle>Run Id</columnTitle>
+          <shownInInsertView>false</shownInInsertView>
+          <shownInUpdateView>false</shownInUpdateView>
+          <isHidden>true</isHidden>
+        </column>
+        <column columnName="parentId">
+            <datatype>varchar</datatype>
+            <propertyURI>urn:ehr.labkey.org/#ParentId</propertyURI>
+        </column>
+        <column columnName="ts">
+          <datatype>timestamp</datatype>
+          <columnTitle>Last Changed</columnTitle>
+          <!--<nullable>false</nullable>-->
+          <shownInInsertView>false</shownInInsertView>
+          <shownInUpdateView>false</shownInUpdateView>
+          <shownInDetailsView>false</shownInDetailsView>
+          <isHidden>true</isHidden>
+        </column>
+      </columns>
+      <tableTitle>Blood Chemistry Results</tableTitle>
+      <description>Blood Chemistry Results</description>
+    </table>
   <table tableName="clinremarks" tableDbType="TABLE">
     <tableUrl>/query/detailsQueryRow.view?schemaName=study&amp;query.queryName=clinremarks&amp;lsid=${lsid}</tableUrl>
     <columns>
@@ -1067,12 +1270,22 @@
       </column>
       <column columnName="category">
         <datatype>varchar</datatype>
-        <nullable>false</nullable>
+        <!--<nullable>false</nullable>-->
         <columnTitle>Category</columnTitle>
+        <fk>
+          <fkDbSchema>lookups</fkDbSchema>
+          <fkTable>clinremarks_category</fkTable>
+          <fkColumnName>category</fkColumnName>
+        </fk>
       </column>
       <column columnName="userid">
         <datatype>varchar</datatype>
         <columnTitle>User ID</columnTitle>
+        <fk>
+          <fkDbSchema>core</fkDbSchema>
+          <fkTable>users</fkTable>
+          <fkColumnName>userid</fkColumnName>
+        </fk>
       </column>
       <column columnName="remark">
         <datatype>varchar</datatype>
@@ -1092,7 +1305,7 @@
         <inputType>textarea</inputType>
       </column>
       <column columnName="objectid">
-        <datatype>varchar</datatype>
+        <datatype>entityid</datatype>
         <columnTitle>Key</columnTitle>
         <shownInInsertView>false</shownInInsertView>
         <shownInUpdateView>false</shownInUpdateView>
@@ -1103,15 +1316,12 @@
       <column columnName="parentid">
         <datatype>varchar</datatype>
         <columnTitle>Parent Id</columnTitle>
-        <shownInInsertView>false</shownInInsertView>
-        <shownInUpdateView>false</shownInUpdateView>
-        <shownInDetailsView>false</shownInDetailsView>
-        <isHidden>true</isHidden>
+        <propertyURI>urn:ehr.labkey.org/#ParentId</propertyURI>
       </column>
       <column columnName="ts">
         <datatype>timestamp</datatype>
         <columnTitle>Last Changed</columnTitle>
-        <nullable>false</nullable>
+        <!--<nullable>false</nullable>-->
         <shownInInsertView>false</shownInInsertView>
         <shownInUpdateView>false</shownInUpdateView>
         <shownInDetailsView>false</shownInDetailsView>
@@ -1233,7 +1443,7 @@
         </fk>
       </column>
       <column columnName="objectid">
-        <datatype>varchar</datatype>
+        <datatype>entityid</datatype>
         <columnTitle>Key</columnTitle>
         <shownInInsertView>false</shownInInsertView>
         <shownInUpdateView>false</shownInUpdateView>
@@ -1244,19 +1454,26 @@
       <column columnName="parentid">
         <datatype>varchar</datatype>
         <columnTitle>Parent Id</columnTitle>
+        <propertyURI>urn:ehr.labkey.org/#ParentId</propertyURI>
+      </column>
+      <column columnName="ts">
+        <datatype>timestamp</datatype>
+        <columnTitle>Last Changed</columnTitle>
+        <!--<nullable>false</nullable>-->
         <shownInInsertView>false</shownInInsertView>
         <shownInUpdateView>false</shownInUpdateView>
         <shownInDetailsView>false</shownInDetailsView>
         <isHidden>true</isHidden>
       </column>
-      <column columnName="ts">
-        <datatype>timestamp</datatype>
-        <columnTitle>Last Changed</columnTitle>
-        <nullable>false</nullable>
+      <column columnName="description">
+        <datatype>varchar</datatype>
+        <columnTitle>Description</columnTitle>
+        <propertyURI>urn:ehr.labkey.org/#Description</propertyURI>
         <shownInInsertView>false</shownInInsertView>
         <shownInUpdateView>false</shownInUpdateView>
         <shownInDetailsView>false</shownInDetailsView>
         <isHidden>true</isHidden>
+        <inputType>textarea</inputType>
       </column>
     </columns>
     <tableTitle>Deaths</tableTitle>
@@ -1426,28 +1643,41 @@
       <column columnName="v_status">
         <datatype>varchar</datatype>
         <columnTitle>Viral Status</columnTitle>
+        <fk>
+          <fkDbSchema>lookups</fkDbSchema>
+          <fkTable>viral_status</fkTable>
+          <fkColumnName>viral_status</fkColumnName>
+        </fk>
       </column>
       <column columnName="objectid">
-        <datatype>varchar</datatype>
+        <datatype>entityid</datatype>
         <columnTitle>Key</columnTitle>
         <shownInInsertView>false</shownInInsertView>
         <shownInUpdateView>false</shownInUpdateView>
         <shownInDetailsView>false</shownInDetailsView>
         <isHidden>true</isHidden>
+          <!-- XXX entityid needs to be a key field -->
         <!--<isKeyField>true</isKeyField>-->
       </column>
       <column columnName="parentid">
         <datatype>varchar</datatype>
         <columnTitle>Parent Id</columnTitle>
+        <propertyURI>urn:ehr.labkey.org/#ParentId</propertyURI>
+      </column>
+      <column columnName="description">
+        <datatype>varchar</datatype>
+        <columnTitle>Description</columnTitle>
         <shownInInsertView>false</shownInInsertView>
         <shownInUpdateView>false</shownInUpdateView>
         <shownInDetailsView>false</shownInDetailsView>
+        <propertyURI>urn:ehr.labkey.org/#Description</propertyURI>
         <isHidden>true</isHidden>
+        <inputType>textarea</inputType>
       </column>
       <column columnName="ts">
         <datatype>timestamp</datatype>
         <columnTitle>Last Changed</columnTitle>
-        <nullable>false</nullable>
+        <!--<nullable>false</nullable>-->
         <shownInInsertView>false</shownInInsertView>
         <shownInUpdateView>false</shownInUpdateView>
         <shownInDetailsView>false</shownInDetailsView>
@@ -1486,20 +1716,15 @@
         <columnTitle>Remark</columnTitle>
         <displayWidth>110</displayWidth>
         <propertyURI>urn:ehr.labkey.org/#Remark</propertyURI>
-        <inputType>textarea</inputType>
       </column>
       <column columnName="description">
         <datatype>varchar</datatype>
         <columnTitle>Description</columnTitle>
-        <shownInInsertView>false</shownInInsertView>
-        <shownInUpdateView>false</shownInUpdateView>
-        <shownInDetailsView>false</shownInDetailsView>
         <propertyURI>urn:ehr.labkey.org/#Description</propertyURI>
-        <isHidden>true</isHidden>
         <inputType>textarea</inputType>
       </column>
       <column columnName="objectid">
-        <datatype>varchar</datatype>
+        <datatype>entityid</datatype>
         <columnTitle>Key</columnTitle>
         <shownInInsertView>false</shownInInsertView>
         <shownInUpdateView>false</shownInUpdateView>
@@ -1510,15 +1735,12 @@
       <column columnName="parentid">
         <datatype>varchar</datatype>
         <columnTitle>Parent Id</columnTitle>
-        <shownInInsertView>false</shownInInsertView>
-        <shownInUpdateView>false</shownInUpdateView>
-        <shownInDetailsView>false</shownInDetailsView>
-        <isHidden>true</isHidden>
+        <propertyURI>urn:ehr.labkey.org/#ParentId</propertyURI>
       </column>
       <column columnName="ts">
         <datatype>timestamp</datatype>
         <columnTitle>Last Changed</columnTitle>
-        <nullable>false</nullable>
+        <!--<nullable>false</nullable>-->
         <shownInInsertView>false</shownInInsertView>
         <shownInUpdateView>false</shownInUpdateView>
         <shownInDetailsView>false</shownInDetailsView>
@@ -1599,15 +1821,11 @@
       <column columnName="description">
         <datatype>varchar</datatype>
         <columnTitle>Description</columnTitle>
-        <shownInInsertView>false</shownInInsertView>
-        <shownInUpdateView>false</shownInUpdateView>
-        <shownInDetailsView>false</shownInDetailsView>
         <propertyURI>urn:ehr.labkey.org/#Description</propertyURI>
-        <isHidden>true</isHidden>
         <inputType>textarea</inputType>
       </column>
       <column columnName="objectid">
-        <datatype>varchar</datatype>
+        <datatype>entityid</datatype>
         <columnTitle>Key</columnTitle>
         <shownInInsertView>false</shownInInsertView>
         <shownInUpdateView>false</shownInUpdateView>
@@ -1618,15 +1836,12 @@
       <column columnName="parentid">
         <datatype>varchar</datatype>
         <columnTitle>Parent Id</columnTitle>
-        <shownInInsertView>false</shownInInsertView>
-        <shownInUpdateView>false</shownInUpdateView>
-        <shownInDetailsView>false</shownInDetailsView>
-        <isHidden>true</isHidden>
+        <propertyURI>urn:ehr.labkey.org/#ParentId</propertyURI>
       </column>
       <column columnName="ts">
         <datatype>timestamp</datatype>
         <columnTitle>Last Changed</columnTitle>
-        <nullable>false</nullable>
+        <!--<nullable>false</nullable>-->
         <shownInInsertView>false</shownInInsertView>
         <shownInUpdateView>false</shownInUpdateView>
         <shownInDetailsView>false</shownInDetailsView>
@@ -1652,16 +1867,31 @@
         <nullable>false</nullable>
         <propertyURI>http://cpas.labkey.com/Study#VisitDate</propertyURI>
       </column>
-      <column columnName="morphology">
-        <datatype>varchar</datatype>
-        <nullable>false</nullable>
-        <columnTitle>Morphology</columnTitle>
-      </column>
       <column columnName="account">
         <datatype>varchar</datatype>
-        <nullable>false</nullable>
+        <!--<nullable>false</nullable>-->
         <columnTitle>Account</columnTitle>
         <propertyURI>urn:ehr.labkey.org/#Account</propertyURI>
+      </column>
+      <column columnName="morphology">
+        <datatype>varchar</datatype>
+        <!--<nullable>false</nullable>-->
+        <columnTitle>Morphology</columnTitle>
+        <fk>
+          <fkDbSchema>lookups</fkDbSchema>
+          <fkTable>hematology_morphology</fkTable>
+          <fkColumnName>morphology</fkColumnName>
+        </fk>
+      </column>
+      <column columnName="score">
+        <datatype>varchar</datatype>
+        <!--<nullable>false</nullable>-->
+        <columnTitle>Score</columnTitle>
+        <fk>
+          <fkDbSchema>lookups</fkDbSchema>
+          <fkTable>hematology_score</fkTable>
+          <fkColumnName>score</fkColumnName>
+        </fk>
       </column>
       <column columnName="description">
         <datatype>varchar</datatype>
@@ -1674,7 +1904,7 @@
         <inputType>textarea</inputType>
       </column>
       <column columnName="objectid">
-        <datatype>varchar</datatype>
+        <datatype>entityid</datatype>
         <columnTitle>Key</columnTitle>
         <shownInInsertView>false</shownInInsertView>
         <shownInUpdateView>false</shownInUpdateView>
@@ -1685,15 +1915,12 @@
       <column columnName="parentid">
         <datatype>varchar</datatype>
         <columnTitle>Parent Id</columnTitle>
-        <shownInInsertView>false</shownInInsertView>
-        <shownInUpdateView>false</shownInUpdateView>
-        <shownInDetailsView>false</shownInDetailsView>
-        <isHidden>true</isHidden>
+        <propertyURI>urn:ehr.labkey.org/#ParentId</propertyURI>
       </column>
       <column columnName="ts">
         <datatype>timestamp</datatype>
         <columnTitle>Last Changed</columnTitle>
-        <nullable>false</nullable>
+        <!--<nullable>false</nullable>-->
         <shownInInsertView>false</shownInInsertView>
         <shownInUpdateView>false</shownInUpdateView>
         <shownInDetailsView>false</shownInDetailsView>
@@ -1808,19 +2035,6 @@
         <datatype>double</datatype>
         <columnTitle>Reticulocyte Count</columnTitle>
       </column>
-      <column columnName="remark">
-        <datatype>varchar</datatype>
-        <columnTitle>Remark</columnTitle>
-        <displayWidth>110</displayWidth>
-        <propertyURI>urn:ehr.labkey.org/#Remark</propertyURI>
-        <inputType>textarea</inputType>
-      </column>
-      <column columnName="clinremark">
-        <datatype>varchar</datatype>
-        <columnTitle>Clinical Remark</columnTitle>
-        <displayWidth>110</displayWidth>
-        <inputType>textarea</inputType>
-      </column>
       <column columnName="proMyelo">
         <datatype>double</datatype>
         <columnTitle>Promyelocyte</columnTitle>
@@ -1837,6 +2051,19 @@
         <datatype>double</datatype>
         <columnTitle>Other</columnTitle>
       </column>
+      <column columnName="remark">
+        <datatype>varchar</datatype>
+        <columnTitle>Remark</columnTitle>
+        <displayWidth>110</displayWidth>
+        <propertyURI>urn:ehr.labkey.org/#Remark</propertyURI>
+        <inputType>textarea</inputType>
+      </column>
+      <column columnName="clinremark">
+        <datatype>varchar</datatype>
+        <columnTitle>Clinical Remark</columnTitle>
+        <displayWidth>110</displayWidth>
+        <inputType>textarea</inputType>
+      </column>
       <column columnName="description">
         <datatype>varchar</datatype>
         <columnTitle>Description</columnTitle>
@@ -1848,7 +2075,7 @@
         <inputType>textarea</inputType>
       </column>
       <column columnName="objectid">
-        <datatype>varchar</datatype>
+        <datatype>entityid</datatype>
         <columnTitle>Key</columnTitle>
         <shownInInsertView>false</shownInInsertView>
         <shownInUpdateView>false</shownInUpdateView>
@@ -1860,19 +2087,18 @@
         <datatype>varchar</datatype>
         <columnTitle>Request Id</columnTitle>
         <isHidden>true</isHidden>
+        <shownInInsertView>false</shownInInsertView>
+        <shownInUpdateView>false</shownInUpdateView>
       </column>
       <column columnName="parentid">
         <datatype>varchar</datatype>
         <columnTitle>Parent Id</columnTitle>
-        <shownInInsertView>false</shownInInsertView>
-        <shownInUpdateView>false</shownInUpdateView>
-        <shownInDetailsView>false</shownInDetailsView>
-        <isHidden>true</isHidden>
+        <propertyURI>urn:ehr.labkey.org/#ParentId</propertyURI>
       </column>
       <column columnName="ts">
         <datatype>timestamp</datatype>
         <columnTitle>Last Changed</columnTitle>
-        <nullable>false</nullable>
+        <!--<nullable>false</nullable>-->
         <shownInInsertView>false</shownInInsertView>
         <shownInUpdateView>false</shownInUpdateView>
         <shownInDetailsView>false</shownInDetailsView>
@@ -1971,14 +2197,13 @@
         <propertyURI>http://cpas.labkey.com/Study#VisitDate</propertyURI>
       </column>
       <column columnName="odate">
-        <nullable>true</nullable>
         <datatype>timestamp</datatype>
         <formatString>yyyy-MM-dd HH:mm</formatString>
         <columnTitle>Out Date</columnTitle>
       </column>
       <column columnName="room">
         <datatype>varchar</datatype>
-        <nullable>false</nullable>
+        <!--<nullable>false</nullable>-->
         <columnTitle>Room</columnTitle>
         <url>/EHR_Reporting/cageDetails.view?
             room=${room}&amp;
@@ -1987,7 +2212,6 @@
       </column>
       <column columnName="cage">
         <datatype>varchar</datatype>
-        <!--<nullable>false</nullable>-->
         <columnTitle>Cage</columnTitle>
         <url>/EHR_Reporting/cageDetails.view?
             room=${room}&amp;
@@ -2002,10 +2226,10 @@
           <fkDbSchema>lists</fkDbSchema>
           <fkTable>condition</fkTable>
           <fkColumnName>Code</fkColumnName>
-        </fk>          
+        </fk>
       </column>
       <column columnName="objectid">
-        <datatype>varchar</datatype>
+        <datatype>entityid</datatype>
         <columnTitle>Key</columnTitle>
         <shownInInsertView>false</shownInInsertView>
         <shownInUpdateView>false</shownInUpdateView>
@@ -2016,15 +2240,22 @@
       <column columnName="parentid">
         <datatype>varchar</datatype>
         <columnTitle>Parent Id</columnTitle>
+        <propertyURI>urn:ehr.labkey.org/#ParentId</propertyURI>
+      </column>
+      <column columnName="description">
+        <datatype>varchar</datatype>
+        <columnTitle>Description</columnTitle>
         <shownInInsertView>false</shownInInsertView>
         <shownInUpdateView>false</shownInUpdateView>
         <shownInDetailsView>false</shownInDetailsView>
+        <propertyURI>urn:ehr.labkey.org/#Description</propertyURI>
         <isHidden>true</isHidden>
+        <inputType>textarea</inputType>
       </column>
       <column columnName="ts">
         <datatype>timestamp</datatype>
         <columnTitle>Last Changed</columnTitle>
-        <nullable>false</nullable>
+        <!--<nullable>false</nullable>-->
         <shownInInsertView>false</shownInInsertView>
         <shownInUpdateView>false</shownInUpdateView>
         <shownInDetailsView>false</shownInDetailsView>
@@ -2049,11 +2280,13 @@
         <nullable>false</nullable>
         <propertyURI>http://cpas.labkey.com/Study#VisitDate</propertyURI>
       </column>
-      <column columnName="reqid">
-        <datatype>varchar</datatype>
-        <columnTitle>Request ID</columnTitle>
-        <isHidden>true</isHidden>
-      </column>
+      <!--<column columnName="reqid">-->
+        <!--<datatype>varchar</datatype>-->
+        <!--<columnTitle>Request ID</columnTitle>-->
+        <!--<isHidden>true</isHidden>-->
+        <!--<shownInInsertView>false</shownInInsertView>-->
+        <!--<shownInUpdateView>false</shownInUpdateView>-->
+      <!--</column>-->
       <column columnName="cd3">
         <datatype>integer</datatype>
         <columnTitle>CD3</columnTitle>
@@ -2081,7 +2314,7 @@
         <inputType>textarea</inputType>
       </column>
       <column columnName="objectid">
-        <datatype>varchar</datatype>
+        <datatype>entityid</datatype>
         <columnTitle>Key</columnTitle>
         <shownInInsertView>false</shownInInsertView>
         <shownInUpdateView>false</shownInUpdateView>
@@ -2093,19 +2326,18 @@
         <datatype>varchar</datatype>
         <columnTitle>Request Id</columnTitle>
         <isHidden>true</isHidden>
+        <shownInInsertView>false</shownInInsertView>
+        <shownInUpdateView>false</shownInUpdateView>
       </column>
       <column columnName="parentid">
         <datatype>varchar</datatype>
         <columnTitle>Parent Id</columnTitle>
-        <shownInInsertView>false</shownInInsertView>
-        <shownInUpdateView>false</shownInUpdateView>
-        <shownInDetailsView>false</shownInDetailsView>
-        <isHidden>true</isHidden>
+        <propertyURI>urn:ehr.labkey.org/#ParentId</propertyURI>
       </column>
       <column columnName="ts">
         <datatype>timestamp</datatype>
         <columnTitle>Last Changed</columnTitle>
-        <nullable>false</nullable>
+        <!--<nullable>false</nullable>-->
         <shownInInsertView>false</shownInInsertView>
         <shownInUpdateView>false</shownInUpdateView>
         <shownInDetailsView>false</shownInDetailsView>
@@ -2207,7 +2439,7 @@
         <inputType>textarea</inputType>
       </column>
       <column columnName="objectid">
-        <datatype>varchar</datatype>
+        <datatype>entityid</datatype>
         <columnTitle>Key</columnTitle>
         <shownInInsertView>false</shownInInsertView>
         <shownInUpdateView>false</shownInUpdateView>
@@ -2218,20 +2450,19 @@
       <column columnName="parentid">
         <datatype>varchar</datatype>
         <columnTitle>Parent Id</columnTitle>
-        <shownInInsertView>false</shownInInsertView>
-        <shownInUpdateView>false</shownInUpdateView>
-        <shownInDetailsView>false</shownInDetailsView>
-        <isHidden>true</isHidden>
+        <propertyURI>urn:ehr.labkey.org/#ParentId</propertyURI>
       </column>
       <column columnName="requestId">
         <datatype>varchar</datatype>
         <columnTitle>Request Id</columnTitle>
         <isHidden>true</isHidden>
+        <shownInInsertView>false</shownInInsertView>
+        <shownInUpdateView>false</shownInUpdateView>
       </column>
       <column columnName="ts">
         <datatype>timestamp</datatype>
         <columnTitle>Last Changed</columnTitle>
-        <nullable>false</nullable>
+        <!--<nullable>false</nullable>-->
         <shownInInsertView>false</shownInInsertView>
         <shownInUpdateView>false</shownInUpdateView>
         <shownInDetailsView>false</shownInDetailsView>
@@ -2266,7 +2497,7 @@
       </column>
       <column columnName="code">
         <datatype>varchar</datatype>
-        <nullable>false</nullable>
+        <!--<nullable>false</nullable>-->
         <columnTitle>SNOMED</columnTitle>
         <fk>
           <fkDbSchema>lists</fkDbSchema>
@@ -2285,7 +2516,7 @@
         <inputType>textarea</inputType>
       </column>
       <column columnName="objectid">
-        <datatype>varchar</datatype>
+        <datatype>entityid</datatype>
         <columnTitle>Key</columnTitle>
         <shownInInsertView>false</shownInInsertView>
         <shownInUpdateView>false</shownInUpdateView>
@@ -2296,15 +2527,12 @@
       <column columnName="parentid">
         <datatype>varchar</datatype>
         <columnTitle>Parent Id</columnTitle>
-        <shownInInsertView>false</shownInInsertView>
-        <shownInUpdateView>false</shownInUpdateView>
-        <shownInDetailsView>false</shownInDetailsView>
-        <isHidden>true</isHidden>
+        <propertyURI>urn:ehr.labkey.org/#ParentId</propertyURI>
       </column>
       <column columnName="ts">
         <datatype>timestamp</datatype>
         <columnTitle>Last Changed</columnTitle>
-        <nullable>false</nullable>
+        <!--<nullable>false</nullable>-->
         <shownInInsertView>false</shownInInsertView>
         <shownInUpdateView>false</shownInUpdateView>
         <shownInDetailsView>false</shownInDetailsView>
@@ -2331,8 +2559,13 @@
       </column>
       <column columnName="userid">
         <datatype>varchar</datatype>
-        <nullable>false</nullable>
+        <!--<nullable>false</nullable>-->
         <columnTitle>User ID</columnTitle>
+        <fk>
+          <fkDbSchema>core</fkDbSchema>
+          <fkTable>users</fkTable>
+          <fkColumnName>userid</fkColumnName>
+        </fk>
       </column>
       <column columnName="feces">
         <datatype>varchar</datatype>
@@ -2380,7 +2613,7 @@
         <inputType>textarea</inputType>
       </column>
       <column columnName="objectid">
-        <datatype>varchar</datatype>
+        <datatype>entityid</datatype>
         <columnTitle>Key</columnTitle>
         <shownInInsertView>false</shownInInsertView>
         <shownInUpdateView>false</shownInUpdateView>
@@ -2391,15 +2624,12 @@
       <column columnName="parentid">
         <datatype>varchar</datatype>
         <columnTitle>Parent Id</columnTitle>
-        <shownInInsertView>false</shownInInsertView>
-        <shownInUpdateView>false</shownInUpdateView>
-        <shownInDetailsView>false</shownInDetailsView>
-        <isHidden>true</isHidden>
+        <propertyURI>urn:ehr.labkey.org/#ParentId</propertyURI>
       </column>
       <column columnName="ts">
         <datatype>timestamp</datatype>
         <columnTitle>Last Changed</columnTitle>
-        <nullable>false</nullable>
+        <!--<nullable>false</nullable>-->
         <shownInInsertView>false</shownInInsertView>
         <shownInUpdateView>false</shownInUpdateView>
         <shownInDetailsView>false</shownInDetailsView>
@@ -2562,6 +2792,11 @@
       <column columnName="userid">
         <datatype>varchar</datatype>
         <columnTitle>User ID</columnTitle>
+        <fk>
+          <fkDbSchema>core</fkDbSchema>
+          <fkTable>users</fkTable>
+          <fkColumnName>userid</fkColumnName>
+        </fk>
       </column>
       <column columnName="remark">
         <datatype>varchar</datatype>
@@ -2590,9 +2825,11 @@
         <datatype>varchar</datatype>
         <columnTitle>Request Id</columnTitle>
         <isHidden>true</isHidden>
+        <shownInInsertView>false</shownInInsertView>
+        <shownInUpdateView>false</shownInUpdateView>
       </column>
       <column columnName="objectid">
-        <datatype>varchar</datatype>
+        <datatype>entityid</datatype>
         <columnTitle>Key</columnTitle>
         <shownInInsertView>false</shownInInsertView>
         <shownInUpdateView>false</shownInUpdateView>
@@ -2603,15 +2840,12 @@
       <column columnName="parentid">
         <datatype>varchar</datatype>
         <columnTitle>Parent Id</columnTitle>
-        <shownInInsertView>false</shownInInsertView>
-        <shownInUpdateView>false</shownInUpdateView>
-        <shownInDetailsView>false</shownInDetailsView>
-        <isHidden>true</isHidden>
+        <propertyURI>urn:ehr.labkey.org/#ParentId</propertyURI>
       </column>
       <column columnName="ts">
         <datatype>timestamp</datatype>
         <columnTitle>Last Changed</columnTitle>
-        <nullable>false</nullable>
+        <!--<nullable>false</nullable>-->
         <shownInInsertView>false</shownInInsertView>
         <shownInUpdateView>false</shownInUpdateView>
         <shownInDetailsView>false</shownInDetailsView>
@@ -2644,7 +2878,7 @@
           <fkTable>snomed</fkTable>
           <fkColumnName>Code</fkColumnName>
         </fk>
-        <nullable>false</nullable>
+        <!--<nullable>false</nullable>-->
       </column>
       <column columnName="seq">
         <datatype>integer</datatype>
@@ -2661,7 +2895,7 @@
         <inputType>textarea</inputType>
       </column>
       <column columnName="objectid">
-        <datatype>varchar</datatype>
+        <datatype>entityid</datatype>
         <columnTitle>Key</columnTitle>
         <shownInInsertView>false</shownInInsertView>
         <shownInUpdateView>false</shownInUpdateView>
@@ -2669,18 +2903,22 @@
         <isHidden>true</isHidden>
         <isKeyField>true</isKeyField>
       </column>
+      <column columnName="runid">
+        <datatype>varchar</datatype>
+        <columnTitle>Run Id</columnTitle>
+        <shownInInsertView>false</shownInInsertView>
+        <shownInUpdateView>false</shownInUpdateView>
+        <isHidden>true</isHidden>
+      </column>
       <column columnName="parentid">
         <datatype>varchar</datatype>
         <columnTitle>Parent Id</columnTitle>
-        <shownInInsertView>false</shownInInsertView>
-        <shownInUpdateView>false</shownInUpdateView>
-        <shownInDetailsView>false</shownInDetailsView>
-        <isHidden>true</isHidden>
+        <propertyURI>urn:ehr.labkey.org/#ParentId</propertyURI>
       </column>
       <column columnName="ts">
         <datatype>timestamp</datatype>
         <columnTitle>Last Changed</columnTitle>
-        <nullable>false</nullable>
+        <!--<nullable>false</nullable>-->
         <shownInInsertView>false</shownInInsertView>
         <shownInUpdateView>false</shownInUpdateView>
         <shownInDetailsView>false</shownInDetailsView>
@@ -2778,7 +3016,7 @@
         <inputType>textarea</inputType>
       </column>
       <column columnName="objectid">
-        <datatype>varchar</datatype>
+        <datatype>entityid</datatype>
         <columnTitle>Key</columnTitle>
         <shownInInsertView>false</shownInInsertView>
         <shownInUpdateView>false</shownInUpdateView>
@@ -2789,15 +3027,12 @@
       <column columnName="parentid">
         <datatype>varchar</datatype>
         <columnTitle>Parent Id</columnTitle>
-        <shownInInsertView>false</shownInInsertView>
-        <shownInUpdateView>false</shownInUpdateView>
-        <shownInDetailsView>false</shownInDetailsView>
-        <isHidden>true</isHidden>
+        <propertyURI>urn:ehr.labkey.org/#ParentId</propertyURI>
       </column>
       <column columnName="ts">
         <datatype>timestamp</datatype>
         <columnTitle>Last Changed</columnTitle>
-        <nullable>false</nullable>
+        <!--<nullable>false</nullable>-->
         <shownInInsertView>false</shownInInsertView>
         <shownInUpdateView>false</shownInUpdateView>
         <shownInDetailsView>false</shownInDetailsView>
@@ -2824,12 +3059,12 @@
       </column>
       <column columnName="species">
         <datatype>varchar</datatype>
-        <nullable>false</nullable>
+        <!--<nullable>false</nullable>-->
         <columnTitle>Species</columnTitle>
         <fk>
           <fkDbSchema>lists</fkDbSchema>
-          <fkTable>species_codes</fkTable>
-          <fkColumnName>code</fkColumnName>
+          <fkTable>species</fkTable>
+          <fkColumnName>common</fkColumnName>
         </fk>
       </column>
       <column columnName="sex">
@@ -2883,20 +3118,20 @@
             cage=${cage}&amp;
         </url>
       </column>
-      <column columnName="roomcage">
-        <datatype>varchar</datatype>
-        <columnTitle>Room/Cage</columnTitle>
-        <isHidden>true</isHidden>
-        <fk>
-          <fkDbSchema>lists</fkDbSchema>
-          <fkTable>cage</fkTable>
-          <fkColumnName>roomcage</fkColumnName>
-        </fk>
-        <url>/EHR_Reporting/cageDetails.view?
-            room=${room}&amp;
-            cage=${cage}&amp;
-        </url>
-      </column>
+      <!--<column columnName="roomcage">-->
+        <!--<datatype>varchar</datatype>-->
+        <!--<columnTitle>Room/Cage</columnTitle>-->
+        <!--<isHidden>true</isHidden>-->
+        <!--<fk>-->
+          <!--<fkDbSchema>lists</fkDbSchema>-->
+          <!--<fkTable>cage</fkTable>-->
+          <!--<fkColumnName>roomcage</fkColumnName>-->
+        <!--</fk>-->
+        <!--<url>/EHR_Reporting/cageDetails.view?-->
+            <!--room=${room}&amp;-->
+            <!--cage=${cage}&amp;-->
+        <!--</url>-->
+      <!--</column>-->
       <column columnName="conception">
         <datatype>timestamp</datatype>
         <formatString>yyyy-MM-dd</formatString>
@@ -2919,7 +3154,7 @@
         <inputType>textarea</inputType>
       </column>
       <column columnName="objectid">
-        <datatype>varchar</datatype>
+        <datatype>entityid</datatype>
         <columnTitle>Key</columnTitle>
         <shownInInsertView>false</shownInInsertView>
         <shownInUpdateView>false</shownInUpdateView>
@@ -2930,15 +3165,12 @@
       <column columnName="parentid">
         <datatype>varchar</datatype>
         <columnTitle>Parent Id</columnTitle>
-        <shownInInsertView>false</shownInInsertView>
-        <shownInUpdateView>false</shownInUpdateView>
-        <shownInDetailsView>false</shownInDetailsView>
-        <isHidden>true</isHidden>
+        <propertyURI>urn:ehr.labkey.org/#ParentId</propertyURI>
       </column>
       <column columnName="ts">
         <datatype>timestamp</datatype>
         <columnTitle>Last Changed</columnTitle>
-        <nullable>false</nullable>
+        <!--<nullable>false</nullable>-->
         <shownInInsertView>false</shownInInsertView>
         <shownInUpdateView>false</shownInUpdateView>
         <shownInDetailsView>false</shownInDetailsView>
@@ -2998,7 +3230,7 @@
         <inputType>textarea</inputType>
       </column>
       <column columnName="objectid">
-        <datatype>varchar</datatype>
+        <datatype>entityid</datatype>
         <columnTitle>Key</columnTitle>
         <shownInInsertView>false</shownInInsertView>
         <shownInUpdateView>false</shownInUpdateView>
@@ -3009,15 +3241,12 @@
       <column columnName="parentid">
         <datatype>varchar</datatype>
         <columnTitle>Parent Id</columnTitle>
-        <shownInInsertView>false</shownInInsertView>
-        <shownInUpdateView>false</shownInUpdateView>
-        <shownInDetailsView>false</shownInDetailsView>
-        <isHidden>true</isHidden>
+        <propertyURI>urn:ehr.labkey.org/#ParentId</propertyURI>
       </column>
       <column columnName="ts">
         <datatype>timestamp</datatype>
         <columnTitle>Last Changed</columnTitle>
-        <nullable>false</nullable>
+        <!--<nullable>false</nullable>-->
         <shownInInsertView>false</shownInInsertView>
         <shownInUpdateView>false</shownInUpdateView>
         <shownInDetailsView>false</shownInDetailsView>
@@ -3071,7 +3300,8 @@
         <columnTitle>End Date</columnTitle>
       </column>
       <column columnName="major">
-        <datatype>varchar</datatype>
+        <!--<datatype>varchar</datatype>-->
+        <datatype>boolean</datatype>
         <columnTitle>Major</columnTitle>
       </column>
       <!--<column columnName="remark">-->
@@ -3091,7 +3321,7 @@
         <inputType>textarea</inputType>
       </column>
       <column columnName="objectid">
-        <datatype>varchar</datatype>
+        <datatype>entityid</datatype>
         <columnTitle>Key</columnTitle>
         <shownInInsertView>false</shownInInsertView>
         <shownInUpdateView>false</shownInUpdateView>
@@ -3102,15 +3332,12 @@
       <column columnName="parentid">
         <datatype>varchar</datatype>
         <columnTitle>Parent Id</columnTitle>
-        <shownInInsertView>false</shownInInsertView>
-        <shownInUpdateView>false</shownInUpdateView>
-        <shownInDetailsView>false</shownInDetailsView>
-        <isHidden>true</isHidden>
+        <propertyURI>urn:ehr.labkey.org/#ParentId</propertyURI>
       </column>
       <column columnName="ts">
         <datatype>timestamp</datatype>
         <columnTitle>Last Changed</columnTitle>
-        <nullable>false</nullable>
+        <!--<nullable>false</nullable>-->
         <shownInInsertView>false</shownInInsertView>
         <shownInUpdateView>false</shownInUpdateView>
         <shownInDetailsView>false</shownInDetailsView>
@@ -3241,7 +3468,7 @@
         <inputType>textarea</inputType>
       </column>
       <column columnName="objectid">
-        <datatype>varchar</datatype>
+        <datatype>entityid</datatype>
         <columnTitle>Key</columnTitle>
         <shownInInsertView>false</shownInInsertView>
         <shownInUpdateView>false</shownInUpdateView>
@@ -3252,15 +3479,12 @@
       <column columnName="parentid">
         <datatype>varchar</datatype>
         <columnTitle>Parent Id</columnTitle>
-        <shownInInsertView>false</shownInInsertView>
-        <shownInUpdateView>false</shownInUpdateView>
-        <shownInDetailsView>false</shownInDetailsView>
-        <isHidden>true</isHidden>
+        <propertyURI>urn:ehr.labkey.org/#ParentId</propertyURI>
       </column>
       <column columnName="ts">
         <datatype>timestamp</datatype>
         <columnTitle>Last Changed</columnTitle>
-        <nullable>false</nullable>
+        <!--<nullable>false</nullable>-->
         <shownInInsertView>false</shownInInsertView>
         <shownInUpdateView>false</shownInUpdateView>
         <shownInDetailsView>false</shownInDetailsView>
@@ -3322,7 +3546,7 @@
         <inputType>textarea</inputType>
       </column>
       <column columnName="objectid">
-        <datatype>varchar</datatype>
+        <datatype>entityid</datatype>
         <columnTitle>Key</columnTitle>
         <shownInInsertView>false</shownInInsertView>
         <shownInUpdateView>false</shownInUpdateView>
@@ -3333,15 +3557,12 @@
       <column columnName="parentid">
         <datatype>varchar</datatype>
         <columnTitle>Parent Id</columnTitle>
-        <shownInInsertView>false</shownInInsertView>
-        <shownInUpdateView>false</shownInUpdateView>
-        <shownInDetailsView>false</shownInDetailsView>
-        <isHidden>true</isHidden>
+        <propertyURI>urn:ehr.labkey.org/#ParentId</propertyURI>
       </column>
       <column columnName="ts">
         <datatype>timestamp</datatype>
         <columnTitle>Last Changed</columnTitle>
-        <nullable>false</nullable>
+        <!--<nullable>false</nullable>-->
         <shownInInsertView>false</shownInInsertView>
         <shownInUpdateView>false</shownInUpdateView>
         <shownInDetailsView>false</shownInDetailsView>
@@ -3374,6 +3595,11 @@
       <column columnName="dilution">
         <datatype>varchar</datatype>
         <columnTitle>Dilution</columnTitle>
+        <fk>
+          <fkDbSchema>lookups</fkDbSchema>
+          <fkTable>tb_eye</fkTable>
+          <fkColumnName>eye</fkColumnName>
+        </fk>
       </column>
       <column columnName="eye">
         <datatype>varchar</datatype>
@@ -3382,14 +3608,29 @@
       <column columnName="result1">
         <datatype>varchar</datatype>
         <columnTitle>Result1</columnTitle>
+        <fk>
+          <fkDbSchema>lookups</fkDbSchema>
+          <fkTable>tb_result</fkTable>
+          <fkColumnName>result</fkColumnName>
+        </fk>
       </column>
       <column columnName="result2">
         <datatype>varchar</datatype>
         <columnTitle>Result2</columnTitle>
+        <fk>
+          <fkDbSchema>lookups</fkDbSchema>
+          <fkTable>tb_result</fkTable>
+          <fkColumnName>result</fkColumnName>
+        </fk>
       </column>
       <column columnName="result3">
         <datatype>varchar</datatype>
         <columnTitle>Result3</columnTitle>
+        <fk>
+          <fkDbSchema>lookups</fkDbSchema>
+          <fkTable>tb_result</fkTable>
+          <fkColumnName>result</fkColumnName>
+        </fk>
       </column>
       <column columnName="description">
         <datatype>varchar</datatype>
@@ -3402,7 +3643,7 @@
         <inputType>textarea</inputType>
       </column>
       <column columnName="objectid">
-        <datatype>varchar</datatype>
+        <datatype>entityid</datatype>
         <columnTitle>Key</columnTitle>
         <shownInInsertView>false</shownInInsertView>
         <shownInUpdateView>false</shownInUpdateView>
@@ -3413,15 +3654,12 @@
       <column columnName="parentid">
         <datatype>varchar</datatype>
         <columnTitle>Parent Id</columnTitle>
-        <shownInInsertView>false</shownInInsertView>
-        <shownInUpdateView>false</shownInUpdateView>
-        <shownInDetailsView>false</shownInDetailsView>
-        <isHidden>true</isHidden>
+        <propertyURI>urn:ehr.labkey.org/#ParentId</propertyURI>
       </column>
       <column columnName="ts">
         <datatype>timestamp</datatype>
         <columnTitle>Last Changed</columnTitle>
-        <nullable>false</nullable>
+        <!--<nullable>false</nullable>-->
         <shownInInsertView>false</shownInInsertView>
         <shownInUpdateView>false</shownInUpdateView>
         <shownInDetailsView>false</shownInDetailsView>
@@ -3502,7 +3740,7 @@
         <inputType>textarea</inputType>
       </column>
       <column columnName="objectid">
-        <datatype>varchar</datatype>
+        <datatype>entityid</datatype>
         <columnTitle>Key</columnTitle>
         <shownInInsertView>false</shownInInsertView>
         <shownInUpdateView>false</shownInUpdateView>
@@ -3514,19 +3752,18 @@
         <datatype>varchar</datatype>
         <columnTitle>Request Id</columnTitle>
         <isHidden>true</isHidden>
+        <shownInInsertView>false</shownInInsertView>
+        <shownInUpdateView>false</shownInUpdateView>
       </column>
       <column columnName="parentid">
         <datatype>varchar</datatype>
         <columnTitle>Parent Id</columnTitle>
-        <shownInInsertView>false</shownInInsertView>
-        <shownInUpdateView>false</shownInUpdateView>
-        <shownInDetailsView>false</shownInDetailsView>
-        <isHidden>true</isHidden>
+        <propertyURI>urn:ehr.labkey.org/#ParentId</propertyURI>
       </column>
       <column columnName="ts">
         <datatype>timestamp</datatype>
         <columnTitle>Last Changed</columnTitle>
-        <nullable>false</nullable>
+        <!--<nullable>false</nullable>-->
         <shownInInsertView>false</shownInInsertView>
         <shownInUpdateView>false</shownInUpdateView>
         <shownInDetailsView>false</shownInDetailsView>
@@ -3560,12 +3797,12 @@
           <fkColumnName>project</fkColumnName>
         </fk>
         <formatString>00000000</formatString>
-        <nullable>false</nullable>
+        <!--<nullable>false</nullable>-->
         <propertyURI>urn:ehr.labkey.org/#Project</propertyURI>
       </column>
       <column columnName="code">
         <datatype>varchar</datatype>
-        <nullable>false</nullable>
+        <!--<nullable>false</nullable>-->
         <columnTitle>SNOMED</columnTitle>
         <fk>
           <fkDbSchema>lists</fkDbSchema>
@@ -3624,6 +3861,11 @@
       <column columnName="userid">
         <datatype>varchar</datatype>
         <columnTitle>UserID</columnTitle>
+        <fk>
+          <fkDbSchema>core</fkDbSchema>
+          <fkTable>users</fkTable>
+          <fkColumnName>userid</fkColumnName>
+        </fk>
       </column>
       <column columnName="description">
         <datatype>varchar</datatype>
@@ -3636,7 +3878,7 @@
         <inputType>textarea</inputType>
       </column>
       <column columnName="objectid">
-        <datatype>varchar</datatype>
+        <datatype>entityid</datatype>
         <columnTitle>Key</columnTitle>
         <shownInInsertView>false</shownInInsertView>
         <shownInUpdateView>false</shownInUpdateView>
@@ -3647,15 +3889,12 @@
       <column columnName="parentid">
         <datatype>varchar</datatype>
         <columnTitle>Parent Id</columnTitle>
-        <shownInInsertView>false</shownInInsertView>
-        <shownInUpdateView>false</shownInUpdateView>
-        <shownInDetailsView>false</shownInDetailsView>
-        <isHidden>true</isHidden>
+        <propertyURI>urn:ehr.labkey.org/#ParentId</propertyURI>
       </column>
       <column columnName="ts">
         <datatype>timestamp</datatype>
         <columnTitle>Last Changed</columnTitle>
-        <nullable>false</nullable>
+        <!--<nullable>false</nullable>-->
         <shownInInsertView>false</shownInInsertView>
         <shownInUpdateView>false</shownInUpdateView>
         <shownInDetailsView>false</shownInDetailsView>
@@ -3683,7 +3922,7 @@
       </column>
       <column columnName="account">
         <datatype>varchar</datatype>
-        <nullable>false</nullable>
+        <!--<nullable>false</nullable>-->
         <columnTitle>Account</columnTitle>
         <propertyURI>urn:ehr.labkey.org/#Account</propertyURI>
       </column>
@@ -3691,14 +3930,21 @@
         <datatype>varchar</datatype>
         <columnTitle>Request Id</columnTitle>
         <isHidden>true</isHidden>
+        <shownInInsertView>false</shownInInsertView>
+        <shownInUpdateView>false</shownInUpdateView>
       </column>
       <column columnName="quantity">
-        <datatype>varchar</datatype>
+        <datatype>double</datatype>
         <columnTitle>Quantity</columnTitle>
       </column>
       <column columnName="collected_by">
         <datatype>varchar</datatype>
         <columnTitle>Collected By</columnTitle>
+        <fk>
+          <fkDbSchema>core</fkDbSchema>
+          <fkTable>users</fkTable>
+          <fkColumnName>userid</fkColumnName>
+        </fk>
       </column>
       <column columnName="method">
         <datatype>varchar</datatype>
@@ -3770,7 +4016,7 @@
         <inputType>textarea</inputType>
       </column>
       <column columnName="objectid">
-        <datatype>varchar</datatype>
+        <datatype>entityid</datatype>
         <columnTitle>Key</columnTitle>
         <shownInInsertView>false</shownInInsertView>
         <shownInUpdateView>false</shownInUpdateView>
@@ -3781,15 +4027,12 @@
       <column columnName="parentid">
         <datatype>varchar</datatype>
         <columnTitle>Parent Id</columnTitle>
-        <shownInInsertView>false</shownInInsertView>
-        <shownInUpdateView>false</shownInUpdateView>
-        <shownInDetailsView>false</shownInDetailsView>
-        <isHidden>true</isHidden>
+        <propertyURI>urn:ehr.labkey.org/#ParentId</propertyURI>
       </column>
       <column columnName="ts">
         <datatype>timestamp</datatype>
         <columnTitle>Last Changed</columnTitle>
-        <nullable>false</nullable>
+        <!--<nullable>false</nullable>-->
         <shownInInsertView>false</shownInInsertView>
         <shownInUpdateView>false</shownInUpdateView>
         <shownInDetailsView>false</shownInDetailsView>
@@ -3823,6 +4066,11 @@
         <column columnName="userid">
           <datatype>varchar</datatype>
           <columnTitle>User ID</columnTitle>
+          <fk>
+            <fkDbSchema>core</fkDbSchema>
+            <fkTable>users</fkTable>
+            <fkColumnName>userid</fkColumnName>
+          </fk>
         </column>
         <column columnName="remark">
           <datatype>varchar</datatype>
@@ -3851,9 +4099,11 @@
         <datatype>varchar</datatype>
         <columnTitle>Request Id</columnTitle>
         <isHidden>true</isHidden>
+        <shownInInsertView>false</shownInInsertView>
+        <shownInUpdateView>false</shownInUpdateView>
       </column>
       <column columnName="objectid">
-        <datatype>varchar</datatype>
+        <datatype>entityid</datatype>
         <columnTitle>Key</columnTitle>
         <shownInInsertView>false</shownInInsertView>
         <shownInUpdateView>false</shownInUpdateView>
@@ -3864,15 +4114,12 @@
       <column columnName="parentid">
         <datatype>varchar</datatype>
         <columnTitle>Parent Id</columnTitle>
-        <shownInInsertView>false</shownInInsertView>
-        <shownInUpdateView>false</shownInUpdateView>
-        <shownInDetailsView>false</shownInDetailsView>
-        <isHidden>true</isHidden>
+        <propertyURI>urn:ehr.labkey.org/#ParentId</propertyURI>
       </column>
       <column columnName="ts">
         <datatype>timestamp</datatype>
         <columnTitle>Last Changed</columnTitle>
-        <nullable>false</nullable>
+        <!--<nullable>false</nullable>-->
         <shownInInsertView>false</shownInInsertView>
         <shownInUpdateView>false</shownInUpdateView>
         <shownInDetailsView>false</shownInDetailsView>
@@ -3926,7 +4173,7 @@
           <inputType>textarea</inputType>
         </column>
       <column columnName="objectid">
-        <datatype>varchar</datatype>
+        <datatype>entityid</datatype>
         <columnTitle>Key</columnTitle>
         <shownInInsertView>false</shownInInsertView>
         <shownInUpdateView>false</shownInUpdateView>
@@ -3934,18 +4181,22 @@
         <isHidden>true</isHidden>
         <isKeyField>true</isKeyField>
       </column>
+      <column columnName="runid">
+        <datatype>varchar</datatype>
+        <columnTitle>Run Id</columnTitle>
+        <shownInInsertView>false</shownInInsertView>
+        <shownInUpdateView>false</shownInUpdateView>
+        <isHidden>true</isHidden>
+      </column>
       <column columnName="parentid">
         <datatype>varchar</datatype>
         <columnTitle>Parent Id</columnTitle>
-        <shownInInsertView>false</shownInInsertView>
-        <shownInUpdateView>false</shownInUpdateView>
-        <shownInDetailsView>false</shownInDetailsView>
-        <isHidden>true</isHidden>
+        <propertyURI>urn:ehr.labkey.org/#ParentId</propertyURI>
       </column>
       <column columnName="ts">
         <datatype>timestamp</datatype>
         <columnTitle>Last Changed</columnTitle>
-        <nullable>false</nullable>
+        <!--<nullable>false</nullable>-->
         <shownInInsertView>false</shownInInsertView>
         <shownInUpdateView>false</shownInUpdateView>
         <shownInDetailsView>false</shownInDetailsView>
@@ -4373,14 +4624,15 @@
       </column>
       <column columnName="weight">
         <datatype>double</datatype>
-        <nullable>false</nullable>
+        <!--<nullable>false</nullable>-->
         <columnTitle>Weight</columnTitle>
+        <isMvEnabled>true</isMvEnabled>
       </column>
-      <column columnName="verified">
-        <datatype>integer</datatype>
-        <isHidden>true</isHidden>
-        <columnTitle>Verified</columnTitle>
-      </column>
+      <!--<column columnName="verified">-->
+        <!--<datatype>boolean</datatype>-->
+        <!--<isHidden>true</isHidden>-->
+        <!--<columnTitle>Verified</columnTitle>-->
+      <!--</column>-->
       <column columnName="description">
         <datatype>varchar</datatype>
         <columnTitle>Description</columnTitle>
@@ -4392,7 +4644,7 @@
         <inputType>textarea</inputType>
       </column>
       <column columnName="objectid">
-        <datatype>varchar</datatype>
+        <datatype>entityid</datatype>
         <columnTitle>Key</columnTitle>
         <shownInInsertView>false</shownInInsertView>
         <shownInUpdateView>false</shownInUpdateView>
@@ -4403,15 +4655,12 @@
       <column columnName="parentid">
         <datatype>varchar</datatype>
         <columnTitle>Parent Id</columnTitle>
-        <shownInInsertView>false</shownInInsertView>
-        <shownInUpdateView>false</shownInUpdateView>
-        <shownInDetailsView>false</shownInDetailsView>
-        <isHidden>true</isHidden>
-      </column>         
+        <propertyURI>urn:ehr.labkey.org/#ParentId</propertyURI>
+      </column>
       <column columnName="ts">
         <datatype>timestamp</datatype>
         <columnTitle>Last Changed</columnTitle>
-        <nullable>false</nullable>
+        <!--<nullable>false</nullable>-->
         <shownInInsertView>false</shownInInsertView>
         <shownInUpdateView>false</shownInUpdateView>
         <shownInDetailsView>false</shownInDetailsView>

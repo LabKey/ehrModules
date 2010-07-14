@@ -6,6 +6,6 @@
 /* no time column */
 SELECT lower(id) as id, FixDate(date) AS Date, caseno, account,
 Concat('Biopsy: ', caseno) AS description,
-ts, uuid AS objectid
+max(ts) as ts, uuid AS objectid
 FROM biopsyhead
 GROUP BY id, date, caseno, account

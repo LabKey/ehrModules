@@ -23,7 +23,6 @@
         <datatype>varchar</datatype>
         <columnTitle>Cage Id</columnTitle>
         <nullable>false</nullable>
-        <isKeyField>true</isKeyField>
       </column>
       <column columnName="room">
         <datatype>varchar</datatype>
@@ -46,17 +45,18 @@
         <columnTitle>Height</columnTitle>
       </column>
       <column columnName="objectid">
-        <datatype>varchar</datatype>
+        <datatype>entityid</datatype>
         <columnTitle>Key</columnTitle>
         <shownInInsertView>false</shownInInsertView>
         <shownInUpdateView>false</shownInUpdateView>
         <shownInDetailsView>false</shownInDetailsView>
         <isHidden>true</isHidden>
+        <isKeyField>true</isKeyField>
       </column>
       <column columnName="ts">
         <datatype>timestamp</datatype>
         <columnTitle>Last Changed</columnTitle>
-        <nullable>false</nullable>
+        <!--<nullable>false</nullable>-->
         <shownInInsertView>false</shownInInsertView>
         <shownInUpdateView>false</shownInUpdateView>
         <shownInDetailsView>false</shownInDetailsView>
@@ -69,7 +69,7 @@
     <tableTitle>Cage Class</tableTitle>
     <columns>
       <column columnName="objectid">
-        <datatype>varchar</datatype>
+        <datatype>entityid</datatype>
         <columnTitle>Key</columnTitle>
         <shownInInsertView>false</shownInInsertView>
         <shownInUpdateView>false</shownInUpdateView>
@@ -80,7 +80,7 @@
       <column columnName="ts">
         <datatype>timestamp</datatype>
         <columnTitle>Last Changed</columnTitle>
-        <nullable>false</nullable>
+        <!--<nullable>false</nullable>-->
         <shownInInsertView>false</shownInInsertView>
         <shownInUpdateView>false</shownInUpdateView>
         <shownInDetailsView>false</shownInDetailsView>
@@ -120,7 +120,7 @@
       <column columnName="ts">
         <datatype>timestamp</datatype>
         <columnTitle>Last Changed</columnTitle>
-        <nullable>false</nullable>
+        <!--<nullable>false</nullable>-->
         <shownInInsertView>false</shownInInsertView>
         <shownInUpdateView>false</shownInUpdateView>
         <shownInDetailsView>false</shownInDetailsView>
@@ -151,11 +151,11 @@
       <column columnName="userid">
         <datatype>varchar</datatype>
         <columnTitle>UserID</columnTitle>
-        <!--<fk>-->
-          <!--<fkDbSchema>core</fkDbSchema>-->
-          <!--<fkTable>Users</fkTable>-->
-          <!--<fkColumnName>UserId</fkColumnName>-->
-        <!--</fk>-->
+        <fk>
+          <fkDbSchema>core</fkDbSchema>
+          <fkTable>Users</fkTable>
+          <fkColumnName>UserId</fkColumnName>
+        </fk>
       </column>
     </columns>
     <pkColumnName>objectid</pkColumnName>
@@ -217,7 +217,7 @@
       <column columnName="ts">
         <datatype>timestamp</datatype>
         <columnTitle>Last Changed</columnTitle>
-        <nullable>false</nullable>
+        <!--<nullable>false</nullable>-->
         <shownInInsertView>false</shownInInsertView>
         <shownInUpdateView>false</shownInUpdateView>
         <shownInDetailsView>false</shownInDetailsView>
@@ -228,6 +228,22 @@
     </table>
     <table tableName="condition" tableDbType="TABLE">
       <tableTitle>Condition Codes</tableTitle>
+      <columns>
+        <column columnName="code">
+          <datatype>varchar</datatype>
+          <columnTitle>Code</columnTitle>
+          <nullable>false</nullable>
+          <isKeyField>true</isKeyField>
+        </column>
+        <column columnName="meaning">
+          <datatype>varchar</datatype>
+          <columnTitle>Meaning</columnTitle>
+        </column>
+      </columns>
+      <pkColumnName>code</pkColumnName>
+    </table>
+    <table tableName="death_codes" tableDbType="TABLE">
+      <tableTitle>Death Codes</tableTitle>
       <columns>
         <column columnName="code">
           <datatype>varchar</datatype>
@@ -266,7 +282,7 @@
       <column columnName="ts">
         <datatype>timestamp</datatype>
         <columnTitle>Last Changed</columnTitle>
-        <nullable>false</nullable>
+        <!--<nullable>false</nullable>-->
         <shownInInsertView>false</shownInInsertView>
         <shownInUpdateView>false</shownInUpdateView>
         <shownInDetailsView>false</shownInDetailsView>
@@ -299,7 +315,7 @@
           <column columnName="ts">
             <datatype>timestamp</datatype>
             <columnTitle>Last Changed</columnTitle>
-            <nullable>false</nullable>
+            <!--<nullable>false</nullable>-->
             <shownInInsertView>false</shownInInsertView>
             <shownInUpdateView>false</shownInUpdateView>
             <shownInDetailsView>false</shownInDetailsView>
@@ -332,7 +348,7 @@
           <column columnName="ts">
             <datatype>timestamp</datatype>
             <columnTitle>Last Changed</columnTitle>
-            <nullable>false</nullable>
+            <!--<nullable>false</nullable>-->
             <shownInInsertView>false</shownInInsertView>
             <shownInUpdateView>false</shownInUpdateView>
             <shownInDetailsView>false</shownInDetailsView>
@@ -365,7 +381,7 @@
         <column columnName="project">
           <datatype>integer</datatype>
           <columnTitle>Project</columnTitle>
-          <nullable>false</nullable>
+          <!--<nullable>false</nullable>-->
           <isKeyField>true</isKeyField>
           <propertyURI>urn:ehr.labkey.org/#Project</propertyURI>
         </column>
@@ -418,7 +434,7 @@
         <column columnName="ts">
           <datatype>timestamp</datatype>
           <columnTitle>Last Changed</columnTitle>
-          <nullable>false</nullable>
+          <!--<nullable>false</nullable>-->
           <shownInInsertView>false</shownInInsertView>
           <shownInUpdateView>false</shownInUpdateView>
           <shownInDetailsView>false</shownInDetailsView>
@@ -443,7 +459,7 @@
         </column>
         <column columnName="approve">
           <datatype>timestamp</datatype>
-          <columnTitle>Approve</columnTitle>
+          <columnTitle>Approve Date</columnTitle>
         </column>
         <!--<column columnName="species1">-->
           <!--<datatype>varchar</datatype>-->
@@ -496,7 +512,7 @@
         <column columnName="ts">
           <datatype>timestamp</datatype>
           <columnTitle>Last Changed</columnTitle>
-          <nullable>false</nullable>
+          <!--<nullable>false</nullable>-->
           <shownInInsertView>false</shownInInsertView>
           <shownInUpdateView>false</shownInUpdateView>
           <shownInDetailsView>false</shownInDetailsView>
@@ -508,13 +524,13 @@
     <table tableName="protocol_counts" tableDbType="TABLE">
       <tableTitle>RARC Protocol Allowable Animals</tableTitle>
       <columns>
-        <column columnName="Key">
-          <datatype>integer</datatype>
-          <columnTitle>Key</columnTitle>
-          <nullable>false</nullable>
-          <isKeyField>true</isKeyField>
-          <isAutoInc>true</isAutoInc>
-        </column>
+        <!--<column columnName="Key">-->
+          <!--<datatype>integer</datatype>-->
+          <!--<columnTitle>Key</columnTitle>-->
+          <!--<nullable>false</nullable>-->
+          <!--<isKeyField>true</isKeyField>-->
+          <!--<isAutoInc>true</isAutoInc>-->
+        <!--</column>-->
         <column columnName="parentid">
           <datatype>varchar</datatype>
           <columnTitle>Key</columnTitle>
@@ -526,7 +542,7 @@
         <column columnName="ts">
           <datatype>timestamp</datatype>
           <columnTitle>Last Changed</columnTitle>
-          <nullable>false</nullable>
+          <!--<nullable>false</nullable>-->
           <shownInInsertView>false</shownInInsertView>
           <shownInUpdateView>false</shownInUpdateView>
           <shownInDetailsView>false</shownInDetailsView>
@@ -565,8 +581,17 @@
           <formatString>yyyy-MM-dd</formatString>
           <columnTitle>EndDate</columnTitle>
         </column>
+          <column columnName="objectid">
+            <datatype>varchar</datatype>
+            <columnTitle>Key</columnTitle>
+            <shownInInsertView>false</shownInInsertView>
+            <shownInUpdateView>false</shownInUpdateView>
+            <shownInDetailsView>false</shownInDetailsView>
+            <isHidden>true</isHidden>
+            <isKeyField>true</isKeyField>
+          </column>
       </columns>
-      <pkColumnName>Key</pkColumnName>
+      <pkColumnName>objectid</pkColumnName>
     </table>
     <table tableName="ref_range" tableDbType="TABLE">
     <tableTitle>Ref Ranges</tableTitle>
@@ -584,7 +609,7 @@
       <column columnName="ts">
         <datatype>timestamp</datatype>
         <columnTitle>Last Changed</columnTitle>
-        <nullable>false</nullable>
+        <!--<nullable>false</nullable>-->
         <shownInInsertView>false</shownInInsertView>
         <shownInUpdateView>false</shownInUpdateView>
         <shownInDetailsView>false</shownInDetailsView>
@@ -668,7 +693,7 @@
         <column columnName="ts">
           <datatype>timestamp</datatype>
           <columnTitle>Last Changed</columnTitle>
-          <nullable>false</nullable>
+          <!--<nullable>false</nullable>-->
           <shownInInsertView>false</shownInInsertView>
           <shownInUpdateView>false</shownInUpdateView>
           <shownInDetailsView>false</shownInDetailsView>
@@ -717,7 +742,7 @@
         <column columnName="ts">
           <datatype>timestamp</datatype>
           <columnTitle>Last Changed</columnTitle>
-          <nullable>false</nullable>
+          <!--<nullable>false</nullable>-->
           <shownInInsertView>false</shownInInsertView>
           <shownInUpdateView>false</shownInUpdateView>
           <shownInDetailsView>false</shownInDetailsView>
@@ -769,7 +794,7 @@
         <column columnName="ts">
           <datatype>timestamp</datatype>
           <columnTitle>Last Changed</columnTitle>
-          <nullable>false</nullable>
+          <!--<nullable>false</nullable>-->
           <shownInInsertView>false</shownInInsertView>
           <shownInUpdateView>false</shownInUpdateView>
           <shownInDetailsView>false</shownInDetailsView>

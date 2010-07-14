@@ -15,17 +15,21 @@
 
 package org.labkey.ehr;
 
+import junit.framework.TestCase;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.ContainerManager;
 import org.labkey.api.data.DbSchema;
 import org.labkey.api.module.DefaultModule;
 import org.labkey.api.module.ModuleContext;
 import org.labkey.api.view.WebPartFactory;
+import org.labkey.ehr.etl.ETLRunnable;
 import org.labkey.ehr.query.EHRQuerySchema;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
 
 public class EHRModule extends DefaultModule
@@ -37,7 +41,7 @@ public class EHRModule extends DefaultModule
 
     public double getVersion()
     {
-        return 10.19;
+        return 10.20;
     }
 
     public boolean hasScripts()
@@ -81,5 +85,11 @@ public class EHRModule extends DefaultModule
     {
         //return PageFlowUtil.set(EHRSchema.getInstance().getSchema());
         return Collections.emptySet();
+    }
+
+    @Override
+    public Set<Class<? extends TestCase>> getJUnitTests()
+    {
+        return new HashSet<Class<? extends TestCase>>(Arrays.asList(ETLRunnable.TestCase.class));
     }
 }

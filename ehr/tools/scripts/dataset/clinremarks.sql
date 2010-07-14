@@ -42,10 +42,9 @@ ts, uuid AS objectid,
 (select UUID from behavehead b2 WHERE b1.id=b2.id AND b1.date=b2.date AND b1.time=b2.time GROUP BY b1.id,b1.date,b1.time limit 1) as parentid,
 'Behavior' AS category
 FROM behavetrem b1
-*/
+
 UNION ALL
 
-/*
 SELECT id,
 FixDateTime(date, time) AS Date,
 (pno) AS pno,
@@ -57,9 +56,10 @@ ts, uuid AS objectid,
 FROM hormtrem h1
 WHERE remark != '' AND remark IS NOT NULL
 
-UNION ALL
+
 */
 
+UNION ALL
 
 SELECT id,
 FixDateTime(date, time) AS Date,
@@ -105,4 +105,4 @@ WHERE remark != '' AND remark IS NOT NULL
 WHERE
 x.id IS NOT NULL AND x.id != ''
 and (x.pno REGEXP '^[0-9]+$' OR x.pno IS NULL)
-AND x.parentid NOT LIKE '%,%'
+AND (x.parentid NOT LIKE '%,%' or x.parentid is null)

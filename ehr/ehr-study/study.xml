@@ -3,7 +3,8 @@
   <lists dir="lists"/>
   <cohorts type="AUTOMATIC" mode="SIMPLE" datasetId="1012" datasetProperty="v_status"/>
   <reports dir="reports"/>
-  <qcStates showPrivateDataByDefault="false"/>
+  <!--removed to prevent resetting the other QC state prefs on import-->
+  <!--<qcStates showPrivateDataByDefault="false"/>-->
   <datasets dir="datasets" file="datasets_manifest.xml">
     <definition file="EHRStudy.dataset"/>
   </datasets>

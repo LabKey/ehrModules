@@ -15,6 +15,7 @@
  */
 package org.labkey.ehr;
 
+import org.labkey.api.data.ContainerManager;
 import org.labkey.api.exp.PropertyDescriptor;
 import org.labkey.api.exp.PropertyType;
 import org.labkey.api.exp.property.SystemProperty;
@@ -35,6 +36,9 @@ public class EHRProperties
         protected PropertyDescriptor constructPropertyDescriptor()
         {
             PropertyDescriptor pd = super.constructPropertyDescriptor();
+            pd.setShownInInsertView(false);
+            pd.setShownInUpdateView(false);
+            pd.setShownInDetailsView(false);
             pd.setHidden(true);
             return pd;
         }
@@ -46,6 +50,9 @@ public class EHRProperties
         protected PropertyDescriptor constructPropertyDescriptor()
         {
             PropertyDescriptor pd = super.constructPropertyDescriptor();
+            pd.setShownInInsertView(false);
+            pd.setShownInUpdateView(false);
+            pd.setShownInDetailsView(false);
             pd.setHidden(true);
             return pd;
         }
@@ -58,8 +65,6 @@ public class EHRProperties
         protected PropertyDescriptor constructPropertyDescriptor()
         {
             PropertyDescriptor pd = super.constructPropertyDescriptor();
-            pd.setLookupSchema("lists");
-            pd.setLookupQuery("project");
             pd.setImportAliases("pno");
             pd.setFormat("00000000");
             return pd;

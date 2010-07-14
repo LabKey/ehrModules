@@ -50,7 +50,7 @@ WHERE     (SELECT s.Category FROM prop.PropertySets s WHERE s.Set = p.Set) = 'Lo
 	      AND p.Name = 'themeName'
 ;
 
---this is the test-ehr's analytics ID.  xnight is '-1'
+--this is the test-ehr's analytics ID.
 UPDATE    prop.Properties p
 SET       Value = 'UA-12818769-2'
 WHERE     (SELECT s.Category FROM prop.PropertySets s WHERE s.Set = p.Set) = 'analytics'
