@@ -29,32 +29,32 @@ WHERE type = 'u'
 UPDATE    prop.Properties p
 SET       Value = 'http://test-ehr.primate.wisc.edu:8080'
 WHERE     (SELECT s.Category FROM prop.PropertySets s WHERE s.Set = p.Set) = 'SiteConfig'
-	      AND p.Name = 'baseServerURL'
+          AND p.Name = 'baseServerURL'
 ;
 
 UPDATE    prop.Properties p
 SET       Value = 'TestServer'
 WHERE     (SELECT s.Category FROM prop.PropertySets s WHERE s.Set = p.Set) = 'LookAndFeel'
-	      AND p.Name = 'systemShortName'
+          AND p.Name = 'systemShortName'
 ;
 
 UPDATE    prop.Properties p
 SET       Value = 'EHR Test Server'
 WHERE     (SELECT s.Category FROM prop.PropertySets s WHERE s.Set = p.Set) = 'LookAndFeel'
-	      AND p.Name = 'systemDescription'
+          AND p.Name = 'systemDescription'
 ;
 
 UPDATE    prop.Properties p
 SET       Value = 'Blue'
 WHERE     (SELECT s.Category FROM prop.PropertySets s WHERE s.Set = p.Set) = 'LookAndFeel'
-	      AND p.Name = 'themeName'
+          AND p.Name = 'themeName'
 ;
 
 --this is the test-ehr's analytics ID.
 UPDATE    prop.Properties p
 SET       Value = 'UA-12818769-2'
 WHERE     (SELECT s.Category FROM prop.PropertySets s WHERE s.Set = p.Set) = 'analytics'
-	      AND p.Name = 'accountId'
+          AND p.Name = 'accountId'
 ;
 
 
@@ -64,23 +64,23 @@ WHERE     (SELECT s.Category FROM prop.PropertySets s WHERE s.Set = p.Set) = 'an
 -- UPDATE    prop.Properties p
 -- SET       Value = FALSE
 -- WHERE     (SELECT s.Category FROM prop.PropertySets s WHERE s.Set = p.Set) = 'SiteConfig'
--- 	        AND p.Name = 'sslRequired'
+--             AND p.Name = 'sslRequired'
 -- ;
 
 -- UPDATE    prop.Properties p
 -- SET       Value = '8443'
 -- WHERE     (SELECT s.Category FROM prop.PropertySets s WHERE s.Set = p.Set) = 'SiteConfig'
--- 	        AND p.Name = 'sslPort'
+--             AND p.Name = 'sslPort'
 -- ;
 
 -- UPDATE    prop.Properties p
 -- SET       Value = 'c:\labkey_data'
 -- WHERE     (SELECT s.Category FROM prop.PropertySets s WHERE s.Set = p.Set) = 'SiteConfig'
--- 	        AND p.Name = 'webRoot'
+--             AND p.Name = 'webRoot'
 -- ;
 
 -- UPDATE    prop.Properties p
 -- SET       Value = TRUE
 -- WHERE     (SELECT s.Category FROM prop.PropertySets s WHERE s.Set = p.Set) = 'SiteConfig'
--- 	        AND p.Name = 'adminOnlyMode'
+--             AND p.Name = 'adminOnlyMode'
 -- ;
