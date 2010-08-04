@@ -5,7 +5,10 @@
  */
 SELECT lower(p1.id) as id, FixDate(p1.date) as date, seq, p1.code as code,
 s1.meaning,
-p1.maxts as ts, p1.uuid AS objectid
+p1.maxts as ts,
+p1.uuid AS objectid,
+p2.runId,
+p2.runId AS parentId
 
 FROM
 /* note: this grouping is not ideal, but I think these other records are duplicates */

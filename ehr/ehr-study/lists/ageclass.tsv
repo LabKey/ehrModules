@@ -1,0 +1,11 @@
+Species	AgeClass	Min	Max	Dataset
+Rhesus	1	0.0000	1.0000	Chemistry
+Rhesus	2	1.0000	4.0000	Chemistry
+Rhesus	3	4.0000	20.0000	Chemistry
+Rhesus	4	20.0000		Chemistry
+Cynomolgus	3	5.0000		Chemistry
+Marmoset	1	0.0000	0.5000	Chemistry
+Marmoset	2	0.5000	2.0000	Chemistry
+Marmoset	3	2.0000	8.0000	Chemistry
+Marmoset	4	8.0000		Chemistry
+

@@ -15,25 +15,29 @@
 
 package org.labkey.ehr;
 
-import junit.framework.TestCase;
+import org.apache.log4j.Logger;
+import org.labkey.api.audit.AuditLogService;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.ContainerManager;
 import org.labkey.api.data.DbSchema;
 import org.labkey.api.module.DefaultModule;
 import org.labkey.api.module.ModuleContext;
 import org.labkey.api.view.WebPartFactory;
+import org.labkey.ehr.etl.ETLAuditViewFactory;
 import org.labkey.ehr.etl.ETLRunnable;
-import org.labkey.ehr.query.EHRQuerySchema;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 public class EHRModule extends DefaultModule
 {
+    private final static Logger log = Logger.getLogger(EHRModule.class);
+    private ScheduledExecutorService executor;
+
     public String getName()
     {
         return "EHR";
@@ -56,15 +60,40 @@ public class EHRModule extends DefaultModule
 
     protected void init()
     {
-//        addController("ehr", EHRController.class);
+        addController("ehr", EHRController.class);
         EHRProperties.register();
 //        EHRQuerySchema.register();
     }
 
+    @Override
     public void startup(ModuleContext moduleContext)
     {
+        executor = Executors.newSingleThreadScheduledExecutor();
+        try {
+            ETLRunnable etl = new ETLRunnable();
+            int interval = etl.getRunIntervalInMinutes();
+            if (interval != 0)
+            {
+                log.info("Scheduling db sync at " + interval + " minute interval.");
+                executor.scheduleWithFixedDelay(etl, 0, interval, TimeUnit.MINUTES);
+            }
+        }
+        catch (Exception e)
+        {
+            log.error("Could not start incremental db sync", e);
+        }
+
         // add a container listener so we'll know when our container is deleted:
         ContainerManager.addContainerListener(new EHRContainerListener());
+
+        AuditLogService.get().addAuditViewFactory(ETLAuditViewFactory.getInstance());
+    }
+
+    @Override
+    public void destroy()
+    {
+        executor.shutdownNow();
+        super.destroy();
     }
 
     @Override
@@ -87,9 +116,4 @@ public class EHRModule extends DefaultModule
         return Collections.emptySet();
     }
 
-    @Override
-    public Set<Class<? extends TestCase>> getJUnitTests()
-    {
-        return new HashSet<Class<? extends TestCase>>(Arrays.asList(ETLRunnable.TestCase.class));
-    }
 }

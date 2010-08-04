@@ -12,8 +12,7 @@ SELECT lower(id) as id, FixDateTime(date, time) AS Date, (userid) AS userid, (fe
      CONCAT('Breeding: ', breeding),
      CONCAT('Other: ', other),
      CONCAT('T Location: ', tlocation),
-     CONCAT('Other Behavior: ', otherbehavior),
-     CONCAT('Remark: ', FixNewLines(remark))
+     CONCAT('Other Behavior: ', otherbehavior)
      ) ) AS Description, ts, uuid AS objectid
 FROM obs
 

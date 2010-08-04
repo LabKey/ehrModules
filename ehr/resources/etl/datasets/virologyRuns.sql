@@ -6,7 +6,7 @@
 SELECT
 lower(x.id) as id,
 FixDate(x.date) as date,
-x.account,
+lower(x.account) as account,
 x.remark,
 x.clinremark,
 x.ts,

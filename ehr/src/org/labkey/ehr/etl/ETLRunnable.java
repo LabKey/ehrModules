@@ -17,35 +17,40 @@ package org.labkey.ehr.etl;
 
 import com.google.common.base.Charsets;
 import com.google.common.io.Files;
-import junit.framework.Test;
-import junit.framework.TestSuite;
-import org.apache.commons.dbcp.BasicDataSource;
+import org.apache.commons.beanutils.ConversionException;
 import org.apache.log4j.Logger;
+import org.labkey.api.collections.CaseInsensitiveHashMap;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.ContainerManager;
 import org.labkey.api.data.DbScope;
 import org.labkey.api.data.PropertyManager;
 import org.labkey.api.data.TableInfo;
 import org.labkey.api.module.ModuleLoader;
+import org.labkey.api.query.DuplicateKeyException;
+import org.labkey.api.query.InvalidKeyException;
 import org.labkey.api.query.QueryService;
 import org.labkey.api.query.QueryUpdateService;
+import org.labkey.api.query.QueryUpdateServiceException;
 import org.labkey.api.query.UserSchema;
 import org.labkey.api.query.ValidationException;
 import org.labkey.api.security.User;
 import org.labkey.api.security.UserManager;
 import org.labkey.api.security.ValidEmail;
+import org.labkey.api.util.DateUtil;
 
-import javax.sql.DataSource;
 import java.io.Closeable;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -56,17 +61,15 @@ import java.util.Properties;
 
 public class ETLRunnable implements Runnable
 {
-    private final Map<String, String> listQueries;
-    private final Map<String, String> studyQueries;
-    private final DataSource originDataSource;
     private final User user;
     private final Container container;
     private final Properties props;
-    private final static String PROP_DOMAIN_KEY = "wnprc.ehr.etl";
-    private final static String LAST_TIMESTAMP_PROP_KEY_PREFIX = "timestamp.";
-    private final static int MAX_VALIDATION_ERRORS_PER_SET = 5;
+    private final static String TIMESTAMP_PROPERTY_DOMAIN = "wnprc.ehr.etl.timestamp";
+    private final Map<String, String> listQueries;
+    private final Map<String, String> studyQueries;
 
     private final static Logger log = Logger.getLogger(ETLRunnable.class);
+    private static final int UPSERT_BATCH_SIZE = 1000;
 
     public ETLRunnable() throws IOException, SQLException, ValidEmail.InvalidEmailException
     {
@@ -82,7 +85,6 @@ public class ETLRunnable implements Runnable
             close(is);
         }
 
-        this.originDataSource = getOriginDataSource();
         this.user = UserManager.getUser(new ValidEmail(props.getProperty("labkey.user")));
         this.container = ContainerManager.getForPath(props.getProperty("labkey.container"));
         this.listQueries = loadQueries(getResource("lists").listFiles());
@@ -92,210 +94,213 @@ public class ETLRunnable implements Runnable
     @Override
     public void run()
     {
-
-        if (isDisabled())
-        {
-            log.info("EHR database sync invoked, but is disabled in server/customModules/ehr/resources/etl/etl.properties");
-            return;
-        }
-
         try
         {
             log.info("Begin incremental sync from external datasource.");
+
+            if (container == null)
+            {
+                log.error("EHR sync target container could not be found");
+                return;
+            }
+            if (user == null)
+            {
+                log.error("EHR sync user could not be found");
+                return;
+            }
+
+            ETLAuditViewFactory.addAuditEntry(container, user, "START", "Starting EHR synchronization", 0, 0);
+
+            for (String datasetName : studyQueries.keySet())
+            {
+                long lastTs = getLastTimestamp(datasetName);
+                log.info(String.format("dataset %s last synced %s", datasetName, lastTs == 0 ? "never" : new Date(lastTs).toString()));
+            }
+
+            for (String listName : listQueries.keySet())
+            {
+                long lastTs = getLastTimestamp(listName);
+                log.info(String.format("list %s last synced %s", listName, lastTs == 0 ? "never" : new Date(lastTs).toString()));
+            }
+
+
             UserSchema listSchema = QueryService.get().getUserSchema(this.user, this.container, "lists");
             UserSchema studySchema = QueryService.get().getUserSchema(this.user, this.container, "study");
 
-            merge(listQueries, listSchema);
-            // XXX datasets turned off
-            //merge(studyQueries, studySchema);
+            int listErrors = merge(listQueries, listSchema, TargetType.List);
+            int datasetErrors = merge(studyQueries, studySchema, TargetType.Dataset);
 
             log.info("End incremental sync run.");
 
+            ETLAuditViewFactory.addAuditEntry(container, user, "FINISH", "Finishing EHR synchronization", listErrors, datasetErrors);
         }
         catch (Throwable x)
         {
             // Depending on the configuration of the executor,
             // if run() throws anything future executions may all canceled.
-            // But we'd rather catch unexepcted exceptions and continue trying,
+            // But we'd rather catch unexpected exceptions and continue trying,
             // to smooth over any transient issues like the remote datasource
             // being temporarily unavailable.
-            log.warn("Incremental sync error:", x);
+            log.warn("Fatal incremental sync error", x);
+
+            if (this.container != null)
+            {
+                ETLAuditViewFactory.addAuditEntry(container, user, "FATAL ERROR", "Fatal error during EHR synchronization", 0, 0);
+            }
         }
 
-        // TODO log all last synced timestamps for all targets here
     }
 
-    private boolean isDisabled()
+    /** @return count of collections that encountered errors */
+    int merge(Map<String, String> queries, UserSchema schema, TargetType targetType)
     {
-        String isDisabledProperty = props.getProperty("labkey.etlDisabled");
+        DbScope scope = schema.getDbSchema().getScope();
+        int errorCount = 0;
 
-        return isDisabledProperty != null && isDisabledProperty.equals("true");
-    }
-
-
-    void merge(Map<String, String> queries, UserSchema schema)
-    {
-        Connection originConnection = null;
-
-        try
+        for (Map.Entry<String, String> kv : queries.entrySet())
         {
-            originConnection = originDataSource.getConnection();
-            DbScope scope = schema.getDbSchema().getScope();
+            Connection originConnection = null;
+            String targetTableName = null;
+            String sql;
+            PreparedStatement ps = null;
+            ResultSet rs = null;
 
-            // for each target collection
-            for (Map.Entry<String, String> kv : queries.entrySet())
+            try
             {
-
-                String targetTableName = kv.getKey();
+                targetTableName = kv.getKey();
+                sql = kv.getValue();
                 TableInfo targetTable = schema.getTable(targetTableName);
 
                 if (targetTable == null)
                 {
                     log.warn(targetTableName + " is not a known labkey study name, skipping the so-named sql query");
+                    errorCount++;
                     continue;
                 }
 
-                //
-                //
-
-                Collection<String> keyFieldNames = targetTable.getPkColumnNames();
-                //
-                //
-
-
-                log.info("preparing query " + targetTableName);
-                PreparedStatement ps = originConnection.prepareStatement(kv.getValue());
+                log.info("Connecting to remote and preparing query " + targetTableName);
+                originConnection = getOriginConnection();
+                ps = originConnection.prepareStatement(sql);
                 // Hack for MySQL. If setFetchSize is not set, or is set to any value other than Integer.MIN_VALUE,
-                // mysql driver will read the whole resultset into memory and run out of heap space.
+                // mysql driver will read the whole resultset into memory, potentially running out of heap.
                 ps.setFetchSize(Integer.MIN_VALUE);
                 // Each statement will have zero or more bind variables in it. Set them all to
                 // the baseline timestamp date.
                 int paramCount = ps.getParameterMetaData().getParameterCount();
-                java.sql.Date fromDate = new java.sql.Date(getLastTimestamp(targetTableName).longValue());
+                java.sql.Date fromDate = new java.sql.Date(getLastTimestamp(targetTableName));
                 for (int i = 1; i <= paramCount; i++)
                 {
                     ps.setDate(i, fromDate);
                 }
 
 
-                log.info("querying for " + targetTableName + " since " + fromDate);
-                ResultSet rs = null;
+                log.info("querying for " + targetTableName + " since " + new Date(fromDate.getTime()));
 
                 QueryUpdateService updater = targetTable.getUpdateService();
-                int adds = 0, updates = 0, errors = 0;
+                updater.setAuditLog(false);
+                int updates = 0;
 
                 Long newBaselineTimestamp = getOriginDataSourceCurrentTime();
-                Boolean commit = true;
+                boolean rollback = false;
+
+                rs = ps.executeQuery();
+                log.info("query " + targetTableName + " returned");
 
                 try
                 {
-                    rs = ps.executeQuery();
                     scope.beginTransaction();
-                    // for each input record
-                    while (rs.next())
+                    List<Map<String, Object>> sourceRows = new ArrayList<Map<String, Object>>();
+                    // accumulating batches of rows. would employ ResultSet.isDone to manage the last remainder
+                    // batch but the MySQL jdbc driver doesn't support that method if it is a streaming result set.
+                    boolean isDone = false;
+                    while (!isDone)
                     {
-                        Map<String, Object> sourceRow = mapResultSetRow(rs);
-                        // TODO may have to inspect the metadata to get the key field(s) rather than assume "objectid" to make lists and demographic-type datasets work
-                        // TODO avoid overl arge audit logging
+                        isDone = !rs.next();
 
-                        //String selectKey = "objectid";
-                        //Object selectValue = sourceRow.get("objectid");
-                        Map<String, Object> matcher = getMatcher(keyFieldNames, sourceRow);
-
-                        try
+                        if (!isDone)
                         {
-                            List<Map<String, Object>> matcherList = Collections.singletonList(matcher);
-                            List<Map<String, Object>> match = updater.getRows(this.user, this.container, matcherList);
-                            if (match.isEmpty())
-                            {
-                                updater.insertRows(user, container, Collections.singletonList(sourceRow));
-                                adds++;
-                            }
-                            else
-                            {
-                                updater.updateRows(user, container, Collections.singletonList(sourceRow), matcherList);
-                                updates++;
-                            }
+                            sourceRows.add(mapResultSetRow(rs));
                         }
 
-                        catch (ValidationException e)
+                        if (sourceRows.size() == UPSERT_BATCH_SIZE || isDone)
                         {
-                            // todo log info about row that failed
-                            log.error("ValidationException: "+ e.getMessage());
-                            errors++;
-                            if (errors > MAX_VALIDATION_ERRORS_PER_SET)
-                            {
-                                log.warn(String.format("Aborting %s after %d validation errors", targetTable.getName(), MAX_VALIDATION_ERRORS_PER_SET));
-                                commit = false;
-                                break;
-                            }
+                            updater.deleteRows(user, container, sourceRows);
+                            updater.insertRows(user, container, sourceRows);
+                            updates += sourceRows.size();
+                            log.info("Updated " + updates + " records in " + targetTableName);
+                            sourceRows.clear();
                         }
 
-                        catch (Exception e)
-                        {
-                            // log info about the record that broke
-                            log.error("Fatal error for " + targetTableName, e);
-                            commit = false;
-                            break;
-                        }
+                    } // each record
 
-                    }
-
+                } // all records in a target
+                catch (Throwable e) // comm errors and timeouts with remote, labkey exceptions
+                {
+                    log.error(e);
+                    rollback = true;
+                    errorCount++;
                 }
-
                 finally
                 {
-                    close(rs);
-
-                    if (commit)
+                    if (rollback)
                     {
-                        // commit
-                        scope.commitTransaction();
-                        setLastTimestamp(targetTableName, newBaselineTimestamp);
-                        log.info(String.format("'%s' - added %d and updated %d with %d validation failures", targetTableName, adds, updates, errors));
+                        if (scope.isTransactionActive()) scope.rollbackTransaction();
+                        log.warn("Rolled back update of " + targetTableName);
                     }
                     else
                     {
-                        // rollback
-                        scope.rollbackTransaction();
-                        log.warn("rollback update of " + targetTableName);
+                        scope.commitTransaction();
+                        setLastTimestamp(targetTableName, newBaselineTimestamp);
+                        log.info(MessageFormat.format("Committed updates for {0} records in {1}", updates, targetTableName));
                     }
 
                 }
             }
+            catch (SQLException e)
+            {
+                // exception connecting, preparing or executing the query to the origin db
+                log.error(String.format("Error syncing '%s' - caught SQLException: %s", targetTableName, e.getMessage()), e);
+                errorCount++;
+            }
+            finally
+            {
+                close(rs);
+                close(ps);
+                close(originConnection);
+            }
 
-
-        }
-        catch (SQLException e)
-        {
-            log.error("error syncing", e);
-        }
-        finally
-        {
-            close(originConnection);
-        }
+        } // each target collection
+        return errorCount;
     }
-
-    private Map<String, Object> getMatcher(Collection<String> keyFieldNames, Map<String, Object> sourceRow)
-    {
-        Map<String, Object> matcher = new HashMap<String, Object>();
-        for (String keyFieldName : keyFieldNames) {
-            matcher.put(keyFieldName, sourceRow.get(keyFieldName));
-        }
-
-        return matcher;
-    }
-
 
     /**
-     * @param tableName
      * @return the timestamp last stored by @setLastTimestamp, or 0 time if not present
      */
-    private Long getLastTimestamp(String tableName)
+    private long getLastTimestamp(String tableName)
     {
-        Map<String, String> m = PropertyManager.getProperties(PROP_DOMAIN_KEY);
-        String value = m.get(LAST_TIMESTAMP_PROP_KEY_PREFIX + tableName);
-        return null == value ? 0L : Long.parseLong(m.get(LAST_TIMESTAMP_PROP_KEY_PREFIX + tableName));
+        Map<String, String> m = PropertyManager.getProperties(TIMESTAMP_PROPERTY_DOMAIN);
+        String value = m.get(tableName);
+        if (value != null)
+        {
+            return Long.parseLong(value);
+        }
+
+        // If we haven't already synced, look in the properties file for a default timestamp
+        value = props.getProperty("default.lastTimestamp");
+        if (value != null && value.trim().length() > 0)
+        {
+            try
+            {
+                return DateUtil.parseDateTime(value.trim());
+            }
+            catch (ConversionException e)
+            {
+                log.error("Failed to parse default timestamp " + value + " for table " + tableName +
+                        ", continuing with full sync");
+            }
+        }
+
+        return 0;
     }
 
     /**
@@ -306,14 +311,13 @@ public class ETLRunnable implements Runnable
     private void setLastTimestamp(String tableName, Long ts)
     {
         log.info(String.format("setting new baseline timestamp of %s on collection %s", new Date(ts.longValue()).toString(), tableName));
-        PropertyManager.PropertyMap pm = PropertyManager.getWritableProperties(PROP_DOMAIN_KEY, true);
-        pm.put(LAST_TIMESTAMP_PROP_KEY_PREFIX + tableName, ts.toString());
+        PropertyManager.PropertyMap pm = PropertyManager.getWritableProperties(TIMESTAMP_PROPERTY_DOMAIN, true);
+        pm.put(tableName, ts.toString());
         PropertyManager.saveProperties(pm);
     }
 
     /**
      * @return the current time according to the origin db.
-     * @throws SQLException
      */
     private Long getOriginDataSourceCurrentTime() throws SQLException
     {
@@ -321,12 +325,12 @@ public class ETLRunnable implements Runnable
         Long ts = null;
         try
         {
-            con = originDataSource.getConnection();
+
+            con = getOriginConnection();
             PreparedStatement ps = con.prepareStatement("select now()");
             ResultSet rs = ps.executeQuery();
             if (rs.next())
             {
-                // XXX probably use getTimestamp
                 ts = new Long(rs.getTimestamp(1).getTime());
             }
         }
@@ -337,18 +341,18 @@ public class ETLRunnable implements Runnable
         return ts;
     }
 
-
-    private DataSource getOriginDataSource() throws IOException
+    private Connection getOriginConnection() throws SQLException
     {
+        try
+        {
+            Class.forName(props.getProperty("jdbc.driver")).newInstance();
+        }
+        catch (Throwable t)
+        {
+            throw new RuntimeException(t);
+        }
 
-        BasicDataSource ds = new BasicDataSource();
-        ds.setDriverClassName(props.getProperty("jdbc.driver"));
-        ds.setUsername(props.getProperty("jdbc.user"));
-        ds.setPassword(props.getProperty("jdbc.password"));
-        ds.setUrl(props.getProperty("jdbc.url"));
-        ds.setPoolPreparedStatements(true);
-
-        return ds;
+        return DriverManager.getConnection(props.getProperty("jdbc.url"));
     }
 
     private Map<String, String> loadQueries(File[] sqlFiles) throws IOException
@@ -368,13 +372,16 @@ public class ETLRunnable implements Runnable
 
     private Map<String, Object> mapResultSetRow(ResultSet rs) throws SQLException
     {
-        Map<String, Object> map = new HashMap<String, Object>();
+        Map<String, Object> map = new CaseInsensitiveHashMap<Object>();
         ResultSetMetaData md = rs.getMetaData();
         int columnCount = md.getColumnCount();
         for (int i = 1; i <= columnCount; i++)
         {
-            map.put(md.getColumnName(i), rs.getObject(i));
+            // Pull out of ResultSet based on label instead of name, as the column
+            // may have been aliased to match with its target in the dataset or list
+            map.put(md.getColumnLabel(i), rs.getObject(i));
         }
+        map.put("dataSource", "etl");
         return map;
     }
 
@@ -420,28 +427,26 @@ public class ETLRunnable implements Runnable
         }
     }
 
-    public static class TestCase extends junit.framework.TestCase
+    private static void close(PreparedStatement o)
     {
-
-        public void testInit() throws Exception
+        if (o != null) try
         {
-            ETLRunnable etl = new ETLRunnable();
-            etl.run();
+            o.close();
         }
-
-        /*
-            public void testGetResources() throws Exception {
-                File root = ModuleLoader.getInstance().getModule("EHR").getExplodedPath();
-                throw new RuntimeException("exploded path: "+root.getAbsolutePath());
-            }
-
-        */
-
-        public static Test suite()
+        catch (Exception ignored)
         {
-            return new TestSuite(TestCase.class);
         }
+    }
 
+    public int getRunIntervalInMinutes()
+    {
+        String prop = props.getProperty("labkey.runIntervalInMinutes", "0");
+        return Integer.parseInt(prop);
+    }
+
+    enum TargetType
+    {
+        List, Dataset
     }
 
 }

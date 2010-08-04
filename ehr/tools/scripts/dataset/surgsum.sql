@@ -12,7 +12,7 @@ SUBSTR(CONCAT_WS(',\n',
 ), 1, 4000) AS Description, ts, uuid AS objectid,
 (select group_concat(distinct UUID) as uuid from surghead t2 WHERE s.id=t2.id AND s.date=t2.date AND s.time=t2.time AND s.pno=t2.pno GROUP BY s.id,s.date,s.time,s.pno limit 1) as parentid
 FROM surgsum s
-WHERE id != ''
+
 
 
 

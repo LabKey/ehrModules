@@ -11,6 +11,7 @@ x.result,
 x.source,
 x.virus,
 x.runId,
+x.runId as parentId,
 x.ts,
 x.uuid as objectId
 
@@ -41,5 +42,6 @@ FROM
   (SELECT *, max(ts) as maxts FROM virserores
   WHERE id IS NOT NULL AND id != "" AND date IS NOT NULL AND date != '0000-00-00'
   group by id, date, seq, virus, result) t1
-) x
 WHERE t1.ts > ?
+
+) x

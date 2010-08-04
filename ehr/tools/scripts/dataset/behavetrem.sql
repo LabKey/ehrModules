@@ -7,4 +7,4 @@ SELECT lower(id) as id, FixDateTime(date, time) AS Date, (pno) AS pno, FixNewlin
 /* (select group_concat(UUID) from behavehead b2 WHERE b1.id=b2.id AND b1.date=b2.date AND b1.time=b2.time GROUP BY b1.id,b1.date,b1.time) as parentid */
 null as parentid
 FROM behavetrem b1
-WHERE (pno REGEXP '^[0-9]+$' OR pno IS NULL)
+/*WHERE (pno REGEXP '^[0-9]+$' OR pno IS NULL)*/

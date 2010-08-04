@@ -3,14 +3,14 @@
  *
  * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
  */
-SELECT id, FixDateTime(date, time) AS Date, (pno) AS pno, (x.code) AS code,
+SELECT id, FixDateTime(date, time) AS Date, (pno) AS project, (x.code) AS code,
 (amount) AS amount, (units) AS units, (route) AS route,
 FixDateTime(date, coalesce(BeginTime, time)) AS BeginTime,
-CASE EndTime
-  WHEN null THEN null
-  WHEN '' THEN null
+CASE
+  WHEN EndTime is null THEN null
+  WHEN EndTime='' THEN null
   ELSE FixDateTime(date, coalesce(EndTime, time))
-END AS EndTime, 
+END AS EndTime,
 FixNewlines(remark) AS remark, category,
 concat_ws(',\n',
      CONCAT('Code: ', s1.meaning, ' (', x.code, ')'),
@@ -25,7 +25,8 @@ FROM
 SELECT id, date, time, code, amount,units, route, FixBadTime(time2) as BeginTime, null as EndTime, 'clindrug' AS category, ts, uuid,
 (select UUID as uuid from clinhead t2 WHERE t1.id=t2.id AND t1.date=t2.date AND t1.time=t2.time AND (t1.pno=t2.pno OR t1.pno IS NULL) GROUP BY t1.uuid) as parentid,
 (select group_concat(DISTINCT pno) as pno from clinhead t2 WHERE t1.id=t2.id AND t1.date=t2.date AND t1.time=t2.time AND (t1.pno=t2.pno OR t1.pno IS NULL) GROUP BY t1.uuid) as pno,
-(select group_concat(distinct remark) as remark from clintrem t2 WHERE t1.id=t2.id AND t1.date=t2.date AND t1.time=t2.time AND (t1.pno=t2.pno OR t1.pno is null) AND remark is not null and remark != '' AND remark not like "%s/o%" AND userid is null GROUP BY t1.uuid) as remark
+/*(select group_concat(distinct remark) as remark from clintrem t2 WHERE t1.id=t2.id AND t1.date=t2.date AND t1.time=t2.time AND (t1.pno=t2.pno OR t1.pno is null) AND remark is not null and remark != '' AND remark not like "%s/o%" AND userid is null GROUP BY t1.uuid) as remark*/
+null as remark
 FROM clindrug t1
 WHERE date != '0000-00-00' AND id != ''
 

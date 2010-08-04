@@ -81,8 +81,9 @@ DROP FUNCTION IF EXISTS FixNewlines;
 CREATE FUNCTION FixNewlines(t VARCHAR(4000))
     RETURNS VARCHAR(4000) DETERMINISTIC
     RETURN
-    REPLACE(REPLACE(t,
-        '\r\n', '\n'),
+    REPLACE(REPLACE(REPLACE(t,
+        '\r', '\n'),
+        '\n\n', '\n'),
         '\\', '')
     ;
 

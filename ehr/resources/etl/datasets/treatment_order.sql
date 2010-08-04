@@ -8,6 +8,8 @@ s1.meaning,
 t.ts, t.uuid AS objectid
 
 FROM treatments t
-WHERE ts > ?
+
 LEFT OUTER JOIN snomed s1 ON s1.code=t.code
+
+WHERE t.ts > ?
 

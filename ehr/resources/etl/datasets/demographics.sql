@@ -3,7 +3,7 @@
  *
  * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
  */
-SELECT lower(id) as id, FixDate(birth) AS Date, (sex) AS sex, (status) AS status, (avail) AS avail, 
+SELECT lower(id) as id, FixDate(birth) AS Date, (sex) as gender, (status) AS status, (avail) AS avail,
 (hold) AS hold, (dam) AS dam, (sire) AS sire, (origin) AS origin,
 FixDate(birth) AS birth, FixDate(death) AS death,
 FixDateTime(arrivedate, arrivetime) AS arrivedate,

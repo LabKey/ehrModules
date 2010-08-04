@@ -3,7 +3,7 @@
  *
  * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
  */
-SELECT lower(id) as id, FixDate(date) AS Date, TestID, Results, units, remark,
+SELECT lower(id) as id, FixDate(date) AS Date, TestID, Results as result, units, remark,
      ( CONCAT_WS(',\n',
      CONCAT('Test: ', TestId),
      CONCAT('Value: ', Results, ' ', units)
@@ -17,7 +17,7 @@ FROM
 SELECT
 id,
 date,
-'Glucose' as TestID,
+'glucose' as TestID,
 glucose as Results,
 null as Units,
 null as remark,
@@ -309,4 +309,4 @@ FROM chemisc2 t1
 
 ) x
 
-WHERE date != '0000-00-00' and TestID != '' and results != ''
+/* WHERE date != '0000-00-00' and TestID != '' and results != '' */

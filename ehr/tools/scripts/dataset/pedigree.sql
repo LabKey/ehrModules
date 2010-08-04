@@ -4,7 +4,7 @@
  * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
  */
 
-SELECT lower(id) as id, FixDate(birth) AS date, sex, dam, sire1, sire2, sire3, status, weight,
+SELECT lower(id) as id, FixDate(birth) AS date, sex as gender, dam, sire1, sire2, sire3, status, weight,
      ( CONCAT_WS(',\n',
      CONCAT('Sex: ', p.sex),
      CONCAT('Dam: ', p.dam),

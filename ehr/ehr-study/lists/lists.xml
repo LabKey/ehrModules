@@ -23,6 +23,7 @@
         <datatype>varchar</datatype>
         <columnTitle>Cage Id</columnTitle>
         <nullable>false</nullable>
+        <isKeyField>true</isKeyField>
       </column>
       <column columnName="room">
         <datatype>varchar</datatype>
@@ -45,13 +46,12 @@
         <columnTitle>Height</columnTitle>
       </column>
       <column columnName="objectid">
-        <datatype>entityid</datatype>
+        <datatype>varchar</datatype>
         <columnTitle>Key</columnTitle>
         <shownInInsertView>false</shownInInsertView>
         <shownInUpdateView>false</shownInUpdateView>
         <shownInDetailsView>false</shownInDetailsView>
         <isHidden>true</isHidden>
-        <isKeyField>true</isKeyField>
       </column>
       <column columnName="ts">
         <datatype>timestamp</datatype>
@@ -69,7 +69,7 @@
     <tableTitle>Cage Class</tableTitle>
     <columns>
       <column columnName="objectid">
-        <datatype>entityid</datatype>
+        <datatype>varchar</datatype>
         <columnTitle>Key</columnTitle>
         <shownInInsertView>false</shownInInsertView>
         <shownInUpdateView>false</shownInUpdateView>
@@ -212,6 +212,7 @@
         <shownInInsertView>false</shownInInsertView>
         <shownInUpdateView>false</shownInUpdateView>
         <shownInDetailsView>false</shownInDetailsView>
+        <!--<isKeyField>true</isKeyField>-->
         <isHidden>true</isHidden>
       </column>
       <column columnName="ts">
@@ -277,6 +278,7 @@
         <shownInInsertView>false</shownInInsertView>
         <shownInUpdateView>false</shownInUpdateView>
         <shownInDetailsView>false</shownInDetailsView>
+        <!--<isKeyField>true</isKeyField>-->
         <isHidden>true</isHidden>
       </column>
       <column columnName="ts">
@@ -311,6 +313,7 @@
             <shownInUpdateView>false</shownInUpdateView>
             <shownInDetailsView>false</shownInDetailsView>
             <isHidden>true</isHidden>
+            <!--<isKeyField>true</isKeyField>-->
           </column>
           <column columnName="ts">
             <datatype>timestamp</datatype>
@@ -344,6 +347,7 @@
             <shownInUpdateView>false</shownInUpdateView>
             <shownInDetailsView>false</shownInDetailsView>
             <isHidden>true</isHidden>
+            <!--<isKeyField>true</isKeyField>-->
           </column>
           <column columnName="ts">
             <datatype>timestamp</datatype>
@@ -430,6 +434,7 @@
           <shownInUpdateView>false</shownInUpdateView>
           <shownInDetailsView>false</shownInDetailsView>
           <isHidden>true</isHidden>
+          <!--<isKeyField>true</isKeyField>-->
         </column>
         <column columnName="ts">
           <datatype>timestamp</datatype>
@@ -508,6 +513,7 @@
           <shownInUpdateView>false</shownInUpdateView>
           <shownInDetailsView>false</shownInDetailsView>
           <isHidden>true</isHidden>
+          <!--<isKeyField>true</isKeyField>-->
         </column>
         <column columnName="ts">
           <datatype>timestamp</datatype>
@@ -596,16 +602,16 @@
     <table tableName="ref_range" tableDbType="TABLE">
     <tableTitle>Ref Ranges</tableTitle>
     <columns>
-      <column columnName="keyField">
-        <datatype>varchar</datatype>
-        <columnTitle>Key</columnTitle>
-        <shownInInsertView>false</shownInInsertView>
-        <shownInUpdateView>false</shownInUpdateView>
-        <shownInDetailsView>false</shownInDetailsView>
-        <nullable>false</nullable>
-        <isHidden>true</isHidden>
-        <isKeyField>true</isKeyField>
-      </column>
+      <!--<column columnName="keyField">-->
+        <!--<datatype>varchar</datatype>-->
+        <!--<columnTitle>Key</columnTitle>-->
+        <!--<shownInInsertView>false</shownInInsertView>-->
+        <!--<shownInUpdateView>false</shownInUpdateView>-->
+        <!--<shownInDetailsView>false</shownInDetailsView>-->
+        <!--<nullable>false</nullable>-->
+        <!--<isHidden>true</isHidden>-->
+        <!--<isKeyField>true</isKeyField>-->
+      <!--</column>-->
       <column columnName="ts">
         <datatype>timestamp</datatype>
         <columnTitle>Last Changed</columnTitle>
@@ -624,7 +630,7 @@
           <fkColumnName>common</fkColumnName>
         </fk>
       </column>
-      <column columnName="sex">
+      <column columnName="gender">
         <datatype>varchar</datatype>
         <columnTitle>Gender</columnTitle>
         <fk>
@@ -655,10 +661,11 @@
           <shownInInsertView>false</shownInInsertView>
           <shownInUpdateView>false</shownInUpdateView>
           <shownInDetailsView>false</shownInDetailsView>
+          <isKeyField>true</isKeyField>
           <isHidden>true</isHidden>
         </column>
     </columns>
-    <pkColumnName>keyField</pkColumnName>
+    <pkColumnName>objectid</pkColumnName>
     </table>
     <table tableName="rhesaux" tableDbType="TABLE">
       <tableTitle>Rhesus Aux Names</tableTitle>
@@ -689,6 +696,7 @@
           <shownInUpdateView>false</shownInUpdateView>
           <shownInDetailsView>false</shownInDetailsView>
           <isHidden>true</isHidden>
+          <!--<isKeyField>true</isKeyField>-->
         </column>
         <column columnName="ts">
           <datatype>timestamp</datatype>
@@ -737,6 +745,7 @@
           <shownInInsertView>false</shownInInsertView>
           <shownInUpdateView>false</shownInUpdateView>
           <shownInDetailsView>false</shownInDetailsView>
+          <!--<isKeyField>true</isKeyField>-->
           <isHidden>true</isHidden>
         </column>
         <column columnName="ts">
@@ -867,5 +876,43 @@
         </column>
       </columns>
       <pkColumnName>code</pkColumnName>
+    </table>
+    <table tableName="ageclass" tableDbType="TABLE">
+    <tableTitle>Age Class</tableTitle>
+    <columns>
+      <column columnName="key">
+        <datatype>integer</datatype>
+        <columnTitle>Key</columnTitle>
+        <nullable>false</nullable>
+        <isKeyField>true</isKeyField>
+        <isAutoInc>true</isAutoInc>
+      </column>
+      <column columnName="species">
+        <datatype>varchar</datatype>
+        <columnTitle>Species</columnTitle>
+        <fk>
+          <fkDbSchema>lists</fkDbSchema>
+          <fkTable>species</fkTable>
+          <fkColumnName>common</fkColumnName>
+        </fk>
+      </column>
+      <column columnName="AgeClass">
+        <datatype>integer</datatype>
+        <columnTitle>Age Class</columnTitle>
+      </column>
+      <column columnName="min">
+        <datatype>double</datatype>
+        <columnTitle>Min</columnTitle>
+      </column>
+      <column columnName="max">
+        <datatype>double</datatype>
+        <columnTitle>Max</columnTitle>
+      </column>
+      <column columnName="dataset">
+        <datatype>varchar</datatype>
+        <columnTitle>Dataset</columnTitle>
+      </column>
+    </columns>
+    <pkColumnName>key</pkColumnName>
     </table>
 </tables>
