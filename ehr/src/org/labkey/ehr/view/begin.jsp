@@ -45,14 +45,6 @@ Hello, and welcome to the EHR module.
 <p>
     <% if (pipeRoot == null) { %>
 [<a href="<%=pipelineSetupURL%>">Setup Pipeline</a>]
-    <% } else { %>
-<script type="text/javascript">
-    function reloadSchema() {
-        Ext.Ajax.request({url:"<%=new ActionURL(EHRController.ReloadSchemaAction.class, c)%>"});
-        window.location = "<%=pipelineBeginURL%>";
-    }
-</script>
-[<a onclick="reloadSchema(); return false;">Reload Schema</a>]
     <% } %>
 
 <%--
