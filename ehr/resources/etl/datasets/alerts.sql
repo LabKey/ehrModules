@@ -7,8 +7,8 @@
 
 
 SELECT
-d.id,
-d.birth as date,
+d.Id,
+d.birth as Date,
 'Purchasing' as category,
 d.purchasedby as value,
 d.ts,

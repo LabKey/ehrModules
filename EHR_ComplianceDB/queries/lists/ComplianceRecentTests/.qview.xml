@@ -1,0 +1,23 @@
+<customView xmlns="http://labkey.org/data/xml/queryCustomView">
+    <columns>
+        <column name="Id"/>
+        <column name="Id/lastName">
+            <properties>
+                <property name="columnTitle" value="Last Name"/>
+            </properties>
+        </column>
+        <column name="Id/firstName">
+            <properties>
+                <property name="columnTitle" value="First Name"/>
+            </properties>
+        </column>
+        <column name="RequirementName"/>
+        <column name="ExpirePeriod"/>
+        <column name="MostRecentDate"/>
+        <column name="MonthsUntilRenewal"/>
+    </columns>
+    <sorts>
+        <sort column="id/lastName" descending="false"/>
+        <sort column="id/firstName" descending="false"/>
+    </sorts>
+</customView>

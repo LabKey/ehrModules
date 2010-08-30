@@ -1,0 +1,78 @@
+<html>
+<script type="text/javascript">
+    new LABKEY.QueryWebPart({
+        renderTo: 'trainingQWP',
+        dataRegionName: 'trainingQWP',
+        title: 'Manage Training Requirements',
+        containerPath: '/WNPRC/WNPRC_Units/Animal_Services/Compliance_Training/Private/EmployeeDB',
+        schemaName: 'lists',
+        queryName: 'completionDates',
+        viewName: 'Training',
+        buttonBarPosition: 'top',
+        showRecordSelectors: true,
+        allowChooseQuery: false,
+        allowChooseView: false,
+        showDetailsColumn: false,     
+        maxRows: 10,
+        buttonBar: {
+            includeStandardButtons: true,
+            items:[
+              'Import Data'
+            ]
+        }
+
+    });
+
+    new LABKEY.QueryWebPart({
+        renderTo: 'employeeQWP',
+        dataRegionName: 'employeeQWP',
+        title: 'List of WNPRC Staff',
+        containerPath: '/WNPRC/WNPRC_Units/Animal_Services/Compliance_Training/Private/EmployeeDB',
+        schemaName: 'lists',
+        queryName: 'employees',
+        viewName: 'No Personal Info',        
+        buttonBarPosition: 'top',
+        showRecordSelectors: true,
+        showInsertNewButton: false,
+        showDeleteButton: false,
+        showUpdateColumn: false,
+        showDetailsColumn: false,        
+        allowChooseQuery: false,
+        allowChooseView: false,
+        maxRows: 10
+    });
+</script>
+<body>
+<li>
+    This page provides a mechanism for WNPRC Trainers to directly enter the dates that staff complete training requirements.
+</li>
+<br>
+<li>
+    Below is a grid that displays records of when each employee completed Complaince/Training requirements.
+</li>
+<br>
+<li>
+    You can import new information using the 'Insert New' button.  Employees must be entered using their employee ID.  This is usually the beginning of their WNPRC email.
+</li>
+<br>
+<li>
+    At the bottom of this page there is a list of all WNPRC employees, including their employee ID.
+</li>
+<br>
+<li>
+    All grids can be sorted and filtered by clicking on the column header.
+</li>
+<br>
+<li>
+    If you need to add a new employee record, contact Sandra Boehm <a href="<%=contextPath%>/issues/WNPRC/WNPRC_Units/Animal_Services/Compliance_Training/Issue_Tracker/list.view?" target="new">here</a>
+</li>
+<br>
+<li>
+    If you have questions or feature requests on this page, please contact Ben Bimber <a href="<%=contextPath%>/issues/WNPRC/WNPRC_Units/Research_Services/Research_Computing/Issue_Tracker/list.view?" target="new">here</a>
+</li>
+<p/>
+<div id="trainingQWP"></div>
+<p/>
+<div id="employeeQWP"></div>
+</body>
+</html>

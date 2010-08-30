@@ -37,6 +37,7 @@
     PipeRoot pipeRoot = PipelineService.get().findPipelineRoot(c);
     ActionURL pipelineSetupURL = PageFlowUtil.urlProvider(PipelineUrls.class).urlSetup(c);
     ActionURL pipelineBeginURL = PageFlowUtil.urlProvider(PipelineUrls.class).urlBegin(c);
+    ActionURL etlAdminURL = new ActionURL(EHRController.EtlAdminAction.class, c);
 
 %>
 Hello, and welcome to the EHR module.
@@ -46,6 +47,7 @@ Hello, and welcome to the EHR module.
     <% if (pipeRoot == null) { %>
 [<a href="<%=pipelineSetupURL%>">Setup Pipeline</a>]
     <% } %>
+[<a href="<%= etlAdminURL %>">ETL Administation</a>]   
 
 <%--
 <script type="text/javascript">

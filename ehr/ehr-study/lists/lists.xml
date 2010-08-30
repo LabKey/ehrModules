@@ -577,12 +577,12 @@
           <datatype>integer</datatype>
           <columnTitle>Number Allowed</columnTitle>
         </column>
-        <column columnName="StartDate">
+        <column columnName="startdate">
           <datatype>timestamp</datatype>
           <formatString>yyyy-MM-dd</formatString>
           <columnTitle>Start Date</columnTitle>
         </column>
-        <column columnName="EndDate">
+        <column columnName="enddate">
           <datatype>timestamp</datatype>
           <formatString>yyyy-MM-dd</formatString>
           <columnTitle>EndDate</columnTitle>
@@ -896,7 +896,7 @@
           <fkColumnName>common</fkColumnName>
         </fk>
       </column>
-      <column columnName="AgeClass">
+      <column columnName="ageclass">
         <datatype>integer</datatype>
         <columnTitle>Age Class</columnTitle>
       </column>

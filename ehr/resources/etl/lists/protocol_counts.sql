@@ -3,10 +3,10 @@
  *
  * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
  */
-SELECT lower(protocol) as protocol, uuid AS parentId, ts,
+SELECT lower(protocol) as protocol, uuid AS parentid, ts,
 FixSpecies(species1) AS species, c1 as allowed,
-null as StartDate, null as EndDate,
-concat(uuid, species1) as objectId
+null as startdate, null as enddate,
+concat(uuid, species1) as objectid
 FROM protocol p
 WHERE species1 != ""
 AND ts > ?

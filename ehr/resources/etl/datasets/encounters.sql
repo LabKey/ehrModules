@@ -5,8 +5,8 @@
  */
 SELECT
 
-lower(x.id) as id,
-x.date,
+lower(x.id) as Id,
+x.date as Date,
 x.enddate,
 x.pno as project,
 x.category,
@@ -92,6 +92,7 @@ ts,
 uuid
 
 FROM necropsyhead
+*/
 
 UNION ALL
 
@@ -100,21 +101,12 @@ id,
 FixDateTime(date, time) as date,
 FixDateTime(enddate, endtime) as enddate,
 pno,
-null as EncounterId,
-surgeon as PerformedBy,
 'Surgery' AS category,
-NULL AS account,
 ts,
 uuid
-
-/* major
-age
-inves
-remark,
-
 FROM surghead
 GROUP BY id, surghead.date, surghead.time, pno
-*/
+HAVING max(ts) > ?
 
 ) x
 

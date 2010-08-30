@@ -36,7 +36,8 @@ import java.util.concurrent.TimeUnit;
 public class EHRModule extends DefaultModule
 {
     private final static Logger log = Logger.getLogger(EHRModule.class);
-    private ScheduledExecutorService executor;
+    private static ScheduledExecutorService executor;
+    private static ETLRunnable etl;
 
     public String getName()
     {
@@ -68,21 +69,7 @@ public class EHRModule extends DefaultModule
     @Override
     public void startup(ModuleContext moduleContext)
     {
-        executor = Executors.newSingleThreadScheduledExecutor();
-        try {
-            ETLRunnable etl = new ETLRunnable();
-            int interval = etl.getRunIntervalInMinutes();
-            if (interval != 0)
-            {
-                log.info("Scheduling db sync at " + interval + " minute interval.");
-                executor.scheduleWithFixedDelay(etl, 0, interval, TimeUnit.MINUTES);
-            }
-        }
-        catch (Exception e)
-        {
-            log.error("Could not start incremental db sync", e);
-        }
-
+        startETL();
         // add a container listener so we'll know when our container is deleted:
         ContainerManager.addContainerListener(new EHRContainerListener());
 
@@ -92,7 +79,7 @@ public class EHRModule extends DefaultModule
     @Override
     public void destroy()
     {
-        executor.shutdownNow();
+        stopETL();
         super.destroy();
     }
 
@@ -114,6 +101,40 @@ public class EHRModule extends DefaultModule
     {
         //return PageFlowUtil.set(EHRSchema.getInstance().getSchema());
         return Collections.emptySet();
+    }
+
+    static public void startETL()
+    {
+        if (EHRController.etlStatus != EHRController.ETLStatus.Run)
+        {
+            executor = Executors.newSingleThreadScheduledExecutor();
+            try {
+                etl = new ETLRunnable();
+                int interval = etl.getRunIntervalInMinutes();
+                if (interval != 0)
+                {
+                    log.info("Scheduling db sync at " + interval + " minute interval.");
+                    executor.scheduleWithFixedDelay(etl, 0, interval, TimeUnit.MINUTES);
+                    EHRController.etlStatus = EHRController.ETLStatus.Run;
+                }
+            }
+            catch (Exception e)
+            {
+                log.error("Could not start incremental db sync", e);
+            }
+
+        }
+    }
+
+    static public void stopETL()
+    {
+        if (EHRController.etlStatus != EHRController.ETLStatus.Stop)
+        {
+            log.info("Stopping ETL");
+            executor.shutdownNow();
+            etl.shutdown();
+            EHRController.etlStatus = EHRController.ETLStatus.Stop;
+        }
     }
 
 }

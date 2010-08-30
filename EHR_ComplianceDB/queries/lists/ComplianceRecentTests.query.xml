@@ -11,6 +11,13 @@
                         <fkColumnName>Id</fkColumnName>
                     </fk>
                 </column>
+                <column columnName="requirementName">
+                    <url>/query/executeQuery.view?schemaName=lists&amp;
+                        query.queryName=CompletionDates&amp;
+                        query.EmployeeId~eq=${id}&amp;
+                        query.RequirementName~lte=${RequirementName}&amp;
+                    </url>
+                </column>
             </columns>
         </table>
     </tables>

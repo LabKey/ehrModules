@@ -3,7 +3,7 @@
  *
  * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
  */
-SELECT lower(id) as id, FixDate(date) AS Date, TestID, Results, units, remark,
+SELECT lower(id) as Id, FixDate(date) AS Date, upper(testid) as testid, Results as result, units, remark,
 ts, objectid, runId
 
 FROM
@@ -13,7 +13,7 @@ FROM
 SELECT
 id,
 date,
-'wbc' as TestID,
+'WBC' as TestID,
 wbc as Results,
 null as Units,
 null as remark,
@@ -28,7 +28,7 @@ UNION ALL
 SELECT
 id,
 date,
-'rbc' as TestID,
+'RBC' as TestID,
 rbc as Results,
 null as Units,
 null as remark,
@@ -43,7 +43,7 @@ UNION ALL
 SELECT
 id,
 date,
-'hgb' as TestID,
+'HGB' as TestID,
 hgb as Results,
 null as Units,
 null as remark,
@@ -58,7 +58,7 @@ UNION ALL
 SELECT
 id,
 date,
-'hct' as TestID,
+'HCT' as TestID,
 hct as Results,
 null as Units,
 null as remark,
@@ -73,7 +73,7 @@ UNION ALL
 SELECT
 id,
 date,
-'mcv' as TestID,
+'MCV' as TestID,
 mcv as Results,
 null as Units,
 null as remark,
@@ -88,7 +88,7 @@ UNION ALL
 SELECT
 id,
 date,
-'mch' as TestID,
+'MCH' as TestID,
 mch as Results,
 null as Units,
 null as remark,
@@ -103,7 +103,7 @@ UNION ALL
 SELECT
 id,
 date,
-'mchc' as TestID,
+'MCHC' as TestID,
 mchc as Results,
 null as Units,
 null as remark,
@@ -118,7 +118,7 @@ UNION ALL
 SELECT
 id,
 date,
-'rdw' as TestID,
+'RDW' as TestID,
 rdw as Results,
 null as Units,
 null as remark,
@@ -133,7 +133,7 @@ UNION ALL
 SELECT
 id,
 date,
-'plt' as TestID,
+'PLT' as TestID,
 plt as Results,
 null as Units,
 null as remark,
@@ -148,7 +148,7 @@ UNION ALL
 SELECT
 id,
 date,
-'mpv' as TestID,
+'MPV' as TestID,
 mpv as Results,
 null as Units,
 null as remark,
@@ -163,7 +163,7 @@ UNION ALL
 SELECT
 id,
 date,
-'pcv' as TestID,
+'PCV' as TestID,
 pcv as Results,
 null as Units,
 null as remark,
@@ -178,7 +178,7 @@ UNION ALL
 SELECT
 id,
 date,
-'n' as TestID,
+'NE' as TestID,
 n as Results,
 null as Units,
 null as remark,
@@ -193,7 +193,7 @@ UNION ALL
 SELECT
 id,
 date,
-'l' as TestID,
+'LY' as TestID,
 l as Results,
 null as Units,
 null as remark,
@@ -208,7 +208,7 @@ UNION ALL
 SELECT
 id,
 date,
-'m' as TestID,
+'MN' as TestID,
 m as Results,
 null as Units,
 null as remark,
@@ -223,7 +223,7 @@ UNION ALL
 SELECT
 id,
 date,
-'e' as TestID,
+'EO' as TestID,
 e as Results,
 null as Units,
 null as remark,
@@ -238,7 +238,7 @@ UNION ALL
 SELECT
 id,
 date,
-'b' as TestID,
+'BS' as TestID,
 b as Results,
 null as Units,
 null as remark,
@@ -253,7 +253,7 @@ UNION ALL
 SELECT
 id,
 date,
-'bands' as TestID,
+'BANDS' as TestID,
 bands as Results,
 null as Units,
 null as remark,
@@ -268,7 +268,7 @@ UNION ALL
 SELECT
 id,
 date,
-'metamyelo' as TestID,
+'METAMYELO' as TestID,
 metamyelo as Results,
 null as Units,
 null as remark,
@@ -283,7 +283,7 @@ UNION ALL
 SELECT
 id,
 date,
-'myelo' as TestID,
+'MYELO' as TestID,
 myelo as Results,
 null as Units,
 null as remark,
@@ -298,7 +298,7 @@ UNION ALL
 SELECT
 id,
 date,
-'tprotein' as TestID,
+'TP' as TestID,
 tprotein as Results,
 null as Units,
 null as remark,
@@ -313,7 +313,7 @@ UNION ALL
 SELECT
 id,
 date,
-'reticulo' as TestID,
+'RETICULO' as TestID,
 reticulo as Results,
 null as Units,
 null as remark,

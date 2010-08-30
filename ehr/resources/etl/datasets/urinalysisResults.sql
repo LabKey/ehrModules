@@ -3,11 +3,7 @@
  *
  * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
  */
-SELECT lower(id) as id, FixDate(date) AS Date, TestID, stringResults, result, units, remark,
-     ( CONCAT_WS(',\n',
-     CONCAT('Test: ', TestId),
-     CONCAT('Value: ', Result, ' ', units)
-     ) ) AS Description,
+SELECT lower(id) as Id, FixDate(date) AS Date, upper(testid) as testid, stringResults, result, units, remark,
      ts, objectid, runId
 
 FROM
@@ -82,7 +78,7 @@ UNION ALL
 SELECT
 id,
 date,
-'ph' as TestID,
+'PH' as TestID,
 null as stringResults,
 ph as result,
 null as Units,

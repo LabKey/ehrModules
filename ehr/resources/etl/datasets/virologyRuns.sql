@@ -4,8 +4,8 @@
  * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
  */
 SELECT
-lower(x.id) as id,
-FixDate(x.date) as date,
+lower(x.id) as Id,
+FixDate(x.date) as Date,
 lower(x.account) as account,
 x.remark,
 x.clinremark,

@@ -27,7 +27,7 @@ WHERE type = 'u'
 
 
 UPDATE    prop.Properties p
-SET       Value = 'http://test-ehr.primate.wisc.edu:8080'
+SET       Value = 'http://test-ehr.primate.wisc.edu:8443'
 WHERE     (SELECT s.Category FROM prop.PropertySets s WHERE s.Set = p.Set) = 'SiteConfig'
           AND p.Name = 'baseServerURL'
 ;
@@ -57,7 +57,12 @@ WHERE     (SELECT s.Category FROM prop.PropertySets s WHERE s.Set = p.Set) = 'an
           AND p.Name = 'accountId'
 ;
 
-
+--replace the mySQL server used.  use replace so we dont save the password here 
+UPDATE    prop.Properties p
+SET       Value = replace(Value, 'saimiri', 'colony-test')
+WHERE     (SELECT s.Category FROM prop.PropertySets s WHERE s.Set = p.Set) = 'wnprc.ehr.etl.config'
+	      AND p.Name = 'jdbcUrl'
+;
 
 
 --not used, but might be of interest
@@ -83,4 +88,9 @@ WHERE     (SELECT s.Category FROM prop.PropertySets s WHERE s.Set = p.Set) = 'an
 -- SET       Value = TRUE
 -- WHERE     (SELECT s.Category FROM prop.PropertySets s WHERE s.Set = p.Set) = 'SiteConfig'
 --             AND p.Name = 'adminOnlyMode'
+-- ;
+
+--not used, but might be of interest
+-- INSERT into    core.Members m
+-- (GroupId, UserId) VALUES (-1, (select userId from core.users WHERE email='yourEmail@wisc.edu')
 -- ;

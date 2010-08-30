@@ -3,8 +3,8 @@
  *
  * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
  */
-SELECT lower(id) as id, FixDate(date) AS Date, source, result, FixNewlines(remark) AS remark, antibiotic, sensitivity,
-b.uuid as runid,
+SELECT lower(id) as Id, FixDate(date) AS Date, source, result, FixNewlines(remark) AS remark, antibiotic, sensitivity,
+b.uuid as runId,
 b.ts, b.uuid AS objectid,
 s1.meaning as sourceMeaning,
 s2.meaning as resultMeaning,

@@ -3,7 +3,7 @@
  *
  * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
  */
-SELECT lower(p1.id) as id, FixDate(p1.date) as date, seq, p1.code as code,
+SELECT lower(p1.id) as Id, FixDate(p1.date) as Date, seq, p1.code as code,
 s1.meaning,
 p1.maxts as ts,
 p1.uuid AS objectid,

@@ -4,16 +4,16 @@
  * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
  */
 SELECT
-lower(x.id) as id,
-FixDate(x.date) as date,
+lower(x.id) as Id,
+FixDate(x.date) as Date,
 x.seq,
 x.result,
 x.source,
-x.virus,
+upper(x.virus) as virus,
 x.runId,
-x.runId as parentId,
+x.runId as parentid,
 x.ts,
-x.uuid as objectId
+x.uuid as objectid
 
 FROM (
 

@@ -5,10 +5,16 @@ EHR_ComplianceDB/module_ehr_compliancedb.xml -text
 EHR_ComplianceDB/queries/lists/AgeTestfromFile.sql -text
 EHR_ComplianceDB/queries/lists/ComplianceRecentTests.query.xml -text
 EHR_ComplianceDB/queries/lists/ComplianceRecentTests.sql -text
+EHR_ComplianceDB/queries/lists/ComplianceRecentTests/.qview.xml -text
+EHR_ComplianceDB/queries/lists/Employees.query.xml -text
 EHR_ComplianceDB/queries/lists/SOPrequirements.query.xml -text
 EHR_ComplianceDB/queries/lists/SOPrequirements.sql -text
 EHR_ComplianceDB/queries/lists/SOPrequirements/.qview.xml -text
 EHR_ComplianceDB/queries/lists/SOPrequirements/To[!!-~]Read.qview.xml -text
+EHR_ComplianceDB/queries/lists/completionDates.query.xml -text
+EHR_ComplianceDB/queries/lists/completionDates/.qview.xml -text
+EHR_ComplianceDB/queries/lists/completionDates/Training.qview.xml -text
+EHR_ComplianceDB/queries/lists/employees/No[!!-~]Personal[!!-~]Info.qview.xml -text
 EHR_ComplianceDB/views/My_Requirements.html -text
 EHR_ComplianceDB/views/SOP_submission.html -text
 EHR_ComplianceDB/views/SOP_submission.view.xml -text
@@ -18,6 +24,9 @@ EHR_ComplianceDB/views/SOPadmin.webpart.xml -text
 EHR_ComplianceDB/views/begin.html -text
 EHR_ComplianceDB/views/begin.view.xml -text
 EHR_ComplianceDB/views/begin.webpart.xml -text
+EHR_ComplianceDB/views/training.html -text
+EHR_ComplianceDB/views/training.view.xml -text
+EHR_ComplianceDB/views/training.webpart.xml -text
 ehr/build.xml -text
 ehr/ehr-materialize/readme.txt -text
 ehr/ehr-materialize/study.xml -text
@@ -76,8 +85,8 @@ ehr/resources/etl/datasets/urinalysisResults.sql -text
 ehr/resources/etl/datasets/urinalysisRuns.sql -text
 ehr/resources/etl/datasets/virologyResults.sql -text
 ehr/resources/etl/datasets/virologyRuns.sql -text
-ehr/resources/etl/etl.properties -text
 ehr/resources/stylesheet.css -text
+ehr/resources/validationHelper.pl -text
 ehr/scripts/ehr-0.00-0.10.sql -text
 ehr/scripts/pg_backup/_netrc -text
 ehr/scripts/pg_backup/_pgpass -text
@@ -92,6 +101,7 @@ ehr/src/org/labkey/ehr/EHRProperties.java -text
 ehr/src/org/labkey/ehr/EHRSchema.java -text
 ehr/src/org/labkey/ehr/etl/ETLAuditViewFactory.java -text
 ehr/src/org/labkey/ehr/etl/ETLRunnable.java -text
+ehr/src/org/labkey/ehr/view/EtlAdmin.jsp -text
 ehr/src/org/labkey/ehr/view/begin.jsp -text
 ehr/tools/FixTabs.java -text
 ehr/tools/fixmeta.js -text

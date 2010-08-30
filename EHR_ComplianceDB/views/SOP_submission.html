@@ -28,10 +28,19 @@ Ext.onReady(function()
             schemaName: 'lists',
             queryName: 'SOPrequirements',
             buttonBarPosition: 'top',
+            buttonBar: {
+               includeStandardButtons: false,
+               items:[
+                 LABKEY.QueryWebPart.standardButtons.exportRows,
+                 LABKEY.QueryWebPart.standardButtons.print,
+                 LABKEY.QueryWebPart.standardButtons.pageSize,
+                 {text: 'Mark Read', requiresSelection: true, handler: markRead}
+               ]
+            },
             showRecordSelectors: true,
             allowChooseQuery: false,
             //allowChooseView: false,
-            successCallback: function(){setButtons('sopGrid', [{text: 'Mark Read', onclick: "markRead('sopGrid')"}])},
+            //successCallback: function(){setButtons('sopGrid', [{text: 'Mark Read', onclick: "markRead('sopGrid')"}])},
             filters: [LABKEY.Filter.create('email', email, LABKEY.Filter.Types.EQUAL), LABKEY.Filter.create('MonthsUntilRenewal', 10, LABKEY.Filter.Types.LESS_THAN)]
         });
 
@@ -43,6 +52,15 @@ Ext.onReady(function()
             schemaName: 'lists',
             queryName: 'SOPrequirements',
             buttonBarPosition: 'top',
+            buttonBar: {
+               includeStandardButtons: false,
+               items:[
+                 LABKEY.QueryWebPart.standardButtons.exportRows,
+                 LABKEY.QueryWebPart.standardButtons.print,
+                 LABKEY.QueryWebPart.standardButtons.pageSize,
+                 {text: 'Mark Read', requiresSelection: true, handler: markRead}
+               ]
+            },
             showRecordSelectors: true,
             allowChooseQuery: false,
             //allowChooseView: false,
@@ -72,87 +90,56 @@ Ext.onReady(function()
         }
 
 
-        function setButtons(dataRegionName, buttons)
-        {
-            var dataRegion = LABKEY.DataRegions[dataRegionName];
-            setButtonsForBar(buttons, dataRegion.header);
-
-            //setButtonsForBar(buttons, dataRegion.footer);
-
-            function setButtonsForBar(buttons, area)
-            {
-                var buttonBar = Ext.DomQuery.selectNode("div.labkey-button-bar", area.dom);
-                if (!buttonBar)
-                    return;
-
-                var aTags = Ext.DomQuery.select("a", buttonBar);
-                if (!area.labkeyButtons)
-                {
-                    var oldButtons = {};
-                    for (var i = 0; i < aTags.length; i++)
-                    {
-                        var aTag = aTags[i];
-                        var buttonNode = aTag.parentNode;
-                        //First child is a SPAN tag, it's first child is the text node with the button name...
-                        var buttonText = aTag.firstChild.firstChild.nodeValue;
-                        oldButtons[buttonText] = buttonNode;
-                    }
-                    area.labkeyButtons = oldButtons;
-                }
-                //Delete the old buttons, we are replacing all of them...
-//                for (i = 0; i < aTags.length; i++)
-//                {
-//                    buttonNode = aTags[i].parentNode;
-//                    buttonNode.parentNode.removeChild(buttonNode); //Remove them all & put them back later...
-//                }
-
-                for (i = 0; i < buttons.length; i++)
-                {
-                    var buttonConfig = buttons[i];
-                    buttonNode = null;
-                    if (buttonConfig.labkeyButton)
-                        buttonNode = area.labkeyButtons[buttonConfig.labkeyButton];
-                    else
-                        buttonNode = createButton(buttonConfig);
-
-                    buttonBar.appendChild(buttonNode);
-                }
-            }
-
-            function createButton(config)
-            {
-                var href = config.href;
-                var onclick = config.onclick || "";
-                var cls = 'labkey-button';
-
-                if (!href)
-                {
-                    href = "#";
-                    if (config.action)
-                    {
-                        var method = config.method || "GET";
-                        onclick = "var frm = LABKEY.DataRegions['" + dataRegion.name + "'];frm.action = '" + config.action + "'; " +
-                                  "frm.method = '" + method + "'; " +
-                                  "frm.submit();";
-                    }
-                    else if (config.menuItems)
-                    {
-                        var menuCopy = {id:Ext.id(), cls:"extContainer", items:config.menuItems};
-                        new Ext.menu.Menu(menuCopy);
-                        onclick = "showMenu(this, '" + menuCopy.id + "', 'tl-bl?')";
-                        cls = 'labkey-menu-button';
-                    }
-                }
-
-                var span = document.createElement("span");
-                var menuHTML = config.menuItems ? "&nbsp;<img src='" + LABKEY.contextPath + "/_images/button_arrow.gif' class='labkey-button-arrow'>" : "";
-                span.innerHTML = "<a class='" + cls + "' href='" + href + "' onclick=\"" + onclick + "\" ><span>" + LABKEY.Utils.encodeHtml(config.text) + "</span>" + menuHTML + "</a>";
-                return span;
-            }
-        }
     }
-});
 
+
+});
+function markRead(dataRegion, dataRegionName) {
+
+    var userName = LABKEY.Security.currentUser.email;
+
+//    var dataRegion = LABKEY.DataRegions[dataRegionName];
+    var checked = dataRegion.getChecked();
+
+    if (!checked.length)
+        return false;
+
+    var request = new LABKEY.MultiRequest({listeners: {'done': onComplete, scope: this}});
+
+    Ext.Msg.wait("Loading...");
+
+    for (var i=0;i<checked.length;i++){
+        // Insert form data into the list.
+        var value = checked[i].split(',');
+        var insertCfg = {
+             containerPath: 'WNPRC/WNPRC_Units/Animal_Services/Compliance_Training/Private/SOPs/',
+             schemaName: 'lists',
+             queryName: 'SOPDates',
+             rowDataArray: [{
+                SOP_ID: value[0]
+                ,EmployeeId: LABKEY.Security.currentUser.displayName
+                ,Date: new Date().format("Y-m-d")
+                }],
+             failureCallback: function(errorInfo) {
+                Ext.Msg.hide();
+                Ext.Msg.alert("Error:", errorInfo);
+                }
+            };
+
+        request.add(LABKEY.Query.insertRows, insertCfg);
+    }
+
+    request.send({});
+
+    function onComplete(){
+         //dataRegion.render();
+         dataRegion.selectNone();
+         Ext.Msg.hide();
+         alert('SOPs Marked Read');
+         window.location.reload();
+     }
+ }
+        
     function submitRequest() {
         if (!document.getElementById('sopCheck').checked){
             alert('You must check the box above the submit button to certify you have read your SOPs');
@@ -185,47 +172,6 @@ Ext.onReady(function()
             });
      }
 
-
-    function markRead(dataRegionName) {
-        Ext.Msg.wait("Loading...");
-        var userName = LABKEY.Security.currentUser.email;
-
-        var dataRegion = LABKEY.DataRegions[dataRegionName];
-        var checked = dataRegion.getChecked();
-
-        var request = new LABKEY.MultiRequest({listeners: {'done': onComplete, scope: this}});
-
-        for (var i=0;i<checked.length;i++){
-            // Insert form data into the list.
-            var value = checked[i].split(',');
-            var insertCfg = {
-                 containerPath: 'WNPRC/WNPRC_Units/Animal_Services/Compliance_Training/Private/SOPs/',
-                 schemaName: 'lists',
-                 queryName: 'SOPDates',
-                 rowDataArray: [{
-                    SOP_ID: value[0]
-                    ,EmployeeId: LABKEY.Security.currentUser.displayName
-                    ,Date: new Date().format("Y-m-d")
-                    }],
-                 failureCallback: function(errorInfo) {
-                    Ext.Msg.hide();
-                    Ext.Msg.alert("Error:", errorInfo);
-                    }
-                };
-
-            request.add(LABKEY.Query.insertRows, insertCfg);
-        }
-
-        request.send({});
-
-        function onComplete(){
-             //dataRegion.render();
-             dataRegion.selectNone();
-             Ext.Msg.hide();
-             alert('SOPs Marked Read');
-             window.location.reload();
-         }
-     }
 
 
 </script>

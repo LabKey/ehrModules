@@ -5,9 +5,9 @@
  */
 
 SELECT
-lower(id) as id,
+lower(id) as Id,
 Date,
-pno,
+pno as project,
 userid,
 remark,
 ts, objectid,

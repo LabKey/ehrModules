@@ -3,8 +3,8 @@
  *
  * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
  */
-SELECT lower(id) as id, FixDate(date) AS Date, TestID, Results as result, stringResults, units, remark,
-ts, objectid, runId
+SELECT lower(id) as Id, FixDate(date) AS Date, upper(testid) as testid, Results as result, stringResults, units, remark,
+ts, objectid, runid
 
 FROM
 
@@ -13,7 +13,7 @@ FROM
 SELECT
 id,
 date,
-'glucose' as TestID,
+'GLUC' as TestID,
 glucose as Results,
 null as stringResults,
 null as Units,
@@ -29,7 +29,7 @@ UNION ALL
 SELECT
 id,
 date,
-'bun' as TestID,
+'BUN' as TestID,
 bun as Results,
 null as stringResults,
 null as Units,
@@ -45,7 +45,7 @@ UNION ALL
 SELECT
 id,
 date,
-'creatinine' as TestID,
+'CREAT' as TestID,
 creatinine as Results,
 null as stringResults,
 null as Units,
@@ -61,7 +61,7 @@ UNION ALL
 SELECT
 id,
 date,
-'ck_cpk' as TestID,
+'CPK' as TestID,
 ck_cpk as Results,
 null as stringResults,
 null as Units,
@@ -77,7 +77,7 @@ UNION ALL
 SELECT
 id,
 date,
-'uricacid' as TestID,
+'UA' as TestID,
 uricacid as Results,
 null as stringResults,
 null as Units,
@@ -93,7 +93,7 @@ UNION ALL
 SELECT
 id,
 date,
-'cholesterol' as TestID,
+'CHOL' as TestID,
 cholesterol as Results,
 null as stringResults,
 null as Units,
@@ -109,7 +109,7 @@ UNION ALL
 SELECT
 id,
 date,
-'triglyc' as TestID,
+'TRIG' as TestID,
 triglyc as Results,
 null as stringResults,
 null as Units,
@@ -125,12 +125,12 @@ UNION ALL
 SELECT
 id,
 date,
-'sgot_ast' as TestID,
+'SGOT' as TestID,
 sgot_ast as Results,
 null as stringResults,
 null as Units,
 null as remark,
-concat(uuid,'sgot_ast') as objectid, ts,
+concat(uuid,'sgot') as objectid, ts,
 uuid as runId
 FROM chemistry
 where sgot_ast is not null and sgot_ast != ""
@@ -141,7 +141,7 @@ UNION ALL
 SELECT
 id,
 date,
-'tbili' as TestID,
+'TB' as TestID,
 tbili as Results,
 null as stringResults,
 null as Units,
@@ -157,7 +157,7 @@ UNION ALL
 SELECT
 id,
 date,
-'ggt' as TestID,
+'GGT' as TestID,
 ggt as Results,
 null as stringResults,
 null as Units,
@@ -173,7 +173,7 @@ UNION ALL
 SELECT
 id,
 date,
-'sgpt_alt' as TestID,
+'SGPT' as TestID,
 sgpt_alt as Results,
 null as stringResults,
 null as Units,
@@ -189,7 +189,7 @@ UNION ALL
 SELECT
 id,
 date,
-'tprotein' as TestID,
+'TP' as TestID,
 tprotein as Results,
 null as stringResults,
 null as Units,
@@ -205,7 +205,7 @@ UNION ALL
 SELECT
 id,
 date,
-'albumin' as TestID,
+'ALB' as TestID,
 albumin as Results,
 null as stringResults,
 null as Units,
@@ -221,7 +221,7 @@ UNION ALL
 SELECT
 id,
 date,
-'phosphatase' as TestID,
+'ALKP' as TestID,
 phosphatase as Results,
 null as stringResults,
 null as Units,
@@ -237,7 +237,7 @@ UNION ALL
 SELECT
 id,
 date,
-'calcium' as TestID,
+'CA' as TestID,
 calcium as Results,
 null as stringResults,
 null as Units,
@@ -253,7 +253,7 @@ UNION ALL
 SELECT
 id,
 date,
-'phosphorus' as TestID,
+'PHOS' as TestID,
 phosphorus as Results,
 null as stringResults,
 null as Units,
@@ -269,7 +269,7 @@ UNION ALL
 SELECT
 id,
 date,
-'iron' as TestID,
+'FE' as TestID,
 iron as Results,
 null as stringResults,
 null as Units,
@@ -285,7 +285,7 @@ UNION ALL
 SELECT
 id,
 date,
-'sodium' as TestID,
+'NA' as TestID,
 sodium as Results,
 null as stringResults,
 null as Units,
@@ -301,7 +301,7 @@ UNION ALL
 SELECT
 id,
 date,
-'potassium' as TestID,
+'K' as TestID,
 potassium as Results,
 null as stringResults,
 null as Units,
@@ -317,7 +317,7 @@ UNION ALL
 SELECT
 id,
 date,
-'chloride' as TestID,
+'CL' as TestID,
 chloride as Results,
 null as stringResults,
 null as Units,
@@ -330,7 +330,7 @@ AND ts > ?
 
 UNION ALL
 
-SELECT id, date, name as TestID, null as Results, value as stringResults, NULL AS units, NULL as remark,
+SELECT id, date, Upper(name) as TestID, null as Results, value as stringResults, NULL AS units, NULL as remark,
 uuid as objectId, ts,
 COALESCE((select UUID FROM chemistry t2 WHERE t1.id=t2.id and t1.date=t2.date limit 1), uuid) as runId
 FROM chemisc t1
@@ -338,7 +338,7 @@ WHERE ts > ?
 
 UNION ALL
 
-SELECT id, date, name as TestID, value as results, null as stringResults, units AS units, NULL as remark,
+SELECT id, date, upper(name) as TestID, value as results, null as stringResults, units AS units, NULL as remark,
 uuid as objectId, ts,
 COALESCE((select UUID FROM chemistry t2 WHERE t1.id=t2.id and t1.date=t2.date limit 1), uuid) as runId
 FROM chemisc2 t1

@@ -199,7 +199,7 @@
         <isHidden>true</isHidden>
         <inputType>textarea</inputType>
       </column>
-      <column columnName="requestId">
+      <column columnName="requestid">
         <datatype>varchar</datatype>
         <columnTitle>Request Id</columnTitle>
         <isHidden>true</isHidden>
@@ -317,7 +317,7 @@
         <shownInUpdateView>false</shownInUpdateView>
         <isHidden>true</isHidden>
       </column>
-      <column columnName="parentId">
+      <column columnName="parentid">
         <datatype>varchar</datatype>
         <columnTitle>Parent Id</columnTitle>
         <propertyURI>urn:ehr.labkey.org/#ParentId</propertyURI>
@@ -479,7 +479,7 @@
         <isHidden>true</isHidden>
         <inputType>textarea</inputType>
       </column>
-      <column columnName="requestId">
+      <column columnName="requestid">
         <datatype>varchar</datatype>
         <columnTitle>Request Id</columnTitle>
         <isHidden>true</isHidden>
@@ -825,7 +825,7 @@
         <isHidden>true</isHidden>
         <inputType>textarea</inputType>
       </column>
-      <column columnName="requestId">
+      <column columnName="requestid">
         <datatype>varchar</datatype>
         <columnTitle>Request Id</columnTitle>
         <isHidden>true</isHidden>
@@ -908,7 +908,7 @@
         <!--<isHidden>true</isHidden>-->
         <!--<isKeyField>true</isKeyField>-->
       <!--</column>-->
-      <!--<column columnName="requestId">-->
+      <!--<column columnName="requestid">-->
         <!--<datatype>varchar</datatype>-->
         <!--<columnTitle>Request Id</columnTitle>-->
         <!--<isHidden>true</isHidden>-->
@@ -1075,7 +1075,7 @@
         <!--<isHidden>true</isHidden>-->
         <!--<isKeyField>true</isKeyField>-->
       <!--</column>-->
-      <!--<column columnName="requestId">-->
+      <!--<column columnName="requestid">-->
         <!--<datatype>varchar</datatype>-->
         <!--<columnTitle>Request Id</columnTitle>-->
         <!--<isHidden>true</isHidden>-->
@@ -1165,7 +1165,7 @@
           <isHidden>true</isHidden>
           <inputType>textarea</inputType>
         </column>
-        <column columnName="requestId">
+        <column columnName="requestid">
           <datatype>varchar</datatype>
           <columnTitle>Request Id</columnTitle>
           <isHidden>true</isHidden>
@@ -1218,6 +1218,11 @@
           <datatype>varchar</datatype>
           <!--<nullable>false</nullable>-->
           <columnTitle>Test Id</columnTitle>
+          <fk>
+            <fkDbSchema>lists</fkDbSchema>
+            <fkTable>lab_tests</fkTable>
+            <fkColumnName>testid</fkColumnName>
+          </fk>
         </column>
         <column columnName="result">
           <datatype>double</datatype>
@@ -1234,7 +1239,7 @@
           <columnTitle>Units</columnTitle>
           <isMvEnabled>true</isMvEnabled>
         </column>
-        <column columnName="qualResult">
+        <column columnName="qualresult">
           <datatype>varchar</datatype>
           <columnTitle>Qualitative Result</columnTitle>
         </column>
@@ -1269,7 +1274,7 @@
           <shownInUpdateView>false</shownInUpdateView>
           <isHidden>true</isHidden>
         </column>
-        <column columnName="parentId">
+        <column columnName="parentid">
             <datatype>varchar</datatype>
             <propertyURI>urn:ehr.labkey.org/#ParentId</propertyURI>
         </column>
@@ -1483,9 +1488,9 @@
   <table tableName="deaths" tableDbType="TABLE">
     <tableUrl>/query/detailsQueryRow.view?schemaName=study&amp;query.queryName=deaths&amp;lsid=${lsid}</tableUrl>
     <columns>
-      <column columnName="ParticipantId">
+      <column columnName="participantid">
         <datatype>varchar</datatype>
-        <columnTitle>ParticipantId</columnTitle>
+        <columnTitle>participantid</columnTitle>
         <description>Subject identifier</description>
         <isKeyField>true</isKeyField>
         <nullable>false</nullable>
@@ -1561,9 +1566,9 @@
   <table tableName="demographics" tableDbType="TABLE">
     <tableUrl>/query/detailsQueryRow.view?schemaName=study&amp;query.queryName=demographics&amp;lsid=${lsid}</tableUrl>
     <columns>
-      <column columnName="ParticipantId">
+      <column columnName="participantid">
         <datatype>varchar</datatype>
-        <columnTitle>ParticipantId</columnTitle>
+        <columnTitle>Participant ID</columnTitle>
         <description>Subject identifier</description>
         <isKeyField>true</isKeyField>
         <nullable>false</nullable>
@@ -2048,6 +2053,11 @@
           <datatype>varchar</datatype>
           <!--<nullable>false</nullable>-->
           <columnTitle>Test Id</columnTitle>
+          <fk>
+            <fkDbSchema>lists</fkDbSchema>
+            <fkTable>lab_tests</fkTable>
+            <fkColumnName>testid</fkColumnName>
+          </fk>
         </column>
         <column columnName="result">
           <datatype>double</datatype>
@@ -2064,7 +2074,7 @@
           <columnTitle>Units</columnTitle>
           <isMvEnabled>true</isMvEnabled>
         </column>
-        <column columnName="qualResult">
+        <column columnName="qualresult">
           <datatype>varchar</datatype>
           <columnTitle>Qualitative Result</columnTitle>
         </column>
@@ -2099,7 +2109,7 @@
           <shownInUpdateView>false</shownInUpdateView>
           <isHidden>true</isHidden>
         </column>
-        <column columnName="parentId">
+        <column columnName="parentid">
             <datatype>varchar</datatype>
             <propertyURI>urn:ehr.labkey.org/#ParentId</propertyURI>
         </column>
@@ -2181,7 +2191,7 @@
         <isHidden>true</isHidden>
         <inputType>textarea</inputType>
       </column>
-      <column columnName="requestId">
+      <column columnName="requestid">
         <datatype>varchar</datatype>
         <columnTitle>Request Id</columnTitle>
         <isHidden>true</isHidden>
@@ -2367,7 +2377,7 @@
         <!--<isHidden>true</isHidden>-->
         <!--<isKeyField>true</isKeyField>-->
       <!--</column>-->
-      <!--<column columnName="requestId">-->
+      <!--<column columnName="requestid">-->
         <!--<datatype>varchar</datatype>-->
         <!--<columnTitle>Request Id</columnTitle>-->
         <!--<isHidden>true</isHidden>-->
@@ -2627,7 +2637,7 @@
         <!--<isHidden>true</isHidden>-->
         <!--<isKeyField>true</isKeyField>-->
       <!--</column>-->
-      <!--<column columnName="requestId">-->
+      <!--<column columnName="requestid">-->
         <!--<datatype>varchar</datatype>-->
         <!--<columnTitle>Request Id</columnTitle>-->
         <!--<isHidden>true</isHidden>-->
@@ -2709,7 +2719,7 @@
           <isHidden>true</isHidden>
           <inputType>textarea</inputType>
         </column>
-        <column columnName="requestId">
+        <column columnName="requestid">
           <datatype>varchar</datatype>
           <columnTitle>Request Id</columnTitle>
           <isHidden>true</isHidden>
@@ -2762,6 +2772,11 @@
           <datatype>varchar</datatype>
           <!--<nullable>false</nullable>-->
           <columnTitle>Test Id</columnTitle>
+          <fk>
+            <fkDbSchema>lists</fkDbSchema>
+            <fkTable>lab_tests</fkTable>
+            <fkColumnName>testid</fkColumnName>
+          </fk>
         </column>
         <column columnName="result">
           <datatype>double</datatype>
@@ -2778,7 +2793,7 @@
           <columnTitle>Units</columnTitle>
           <isMvEnabled>true</isMvEnabled>
         </column>
-        <column columnName="qualResult">
+        <column columnName="qualresult">
           <datatype>varchar</datatype>
           <columnTitle>Qualitative Result</columnTitle>
         </column>
@@ -2813,7 +2828,7 @@
           <shownInUpdateView>false</shownInUpdateView>
           <isHidden>true</isHidden>
         </column>
-        <column columnName="parentId">
+        <column columnName="parentid">
             <datatype>varchar</datatype>
             <propertyURI>urn:ehr.labkey.org/#ParentId</propertyURI>
         </column>
@@ -2998,7 +3013,7 @@
         <columnTitle>Parent Id</columnTitle>
         <propertyURI>urn:ehr.labkey.org/#ParentId</propertyURI>
       </column>
-      <column columnName="requestId">
+      <column columnName="requestid">
         <datatype>varchar</datatype>
         <columnTitle>Request Id</columnTitle>
         <isHidden>true</isHidden>
@@ -3141,11 +3156,11 @@
         <datatype>varchar</datatype>
         <!--<nullable>false</nullable>-->
         <columnTitle>User ID</columnTitle>
-        <fk>
-          <fkDbSchema>core</fkDbSchema>
-          <fkTable>users</fkTable>
-          <fkColumnName>userid</fkColumnName>
-        </fk>
+        <!--<fk>-->
+          <!--<fkDbSchema>core</fkDbSchema>-->
+          <!--<fkTable>users</fkTable>-->
+          <!--<fkColumnName>userid</fkColumnName>-->
+        <!--</fk>-->
       </column>
       <column columnName="feces">
         <datatype>varchar</datatype>
@@ -3412,7 +3427,7 @@
         <isHidden>true</isHidden>
         <inputType>textarea</inputType>
       </column>
-      <column columnName="requestId">
+      <column columnName="requestid">
         <datatype>varchar</datatype>
         <columnTitle>Request Id</columnTitle>
         <isHidden>true</isHidden>
@@ -4209,7 +4224,7 @@
         </fk>          
       </column>
       <column columnName="result1">
-        <datatype>varchar</datatype>
+        <datatype>integer</datatype>
         <columnTitle>Result1</columnTitle>
         <fk>
           <fkDbSchema>lookups</fkDbSchema>
@@ -4218,7 +4233,7 @@
         </fk>
       </column>
       <column columnName="result2">
-        <datatype>varchar</datatype>
+        <datatype>integer</datatype>
         <columnTitle>Result2</columnTitle>
         <fk>
           <fkDbSchema>lookups</fkDbSchema>
@@ -4227,7 +4242,7 @@
         </fk>
       </column>
       <column columnName="result3">
-        <datatype>varchar</datatype>
+        <datatype>integer</datatype>
         <columnTitle>Result3</columnTitle>
         <fk>
           <fkDbSchema>lookups</fkDbSchema>
@@ -4357,7 +4372,7 @@
         <isHidden>true</isHidden>
         <isKeyField>true</isKeyField>
       </column>
-      <column columnName="requestId">
+      <column columnName="requestid">
         <datatype>varchar</datatype>
         <columnTitle>Request Id</columnTitle>
         <isHidden>true</isHidden>
@@ -4470,11 +4485,11 @@
       <column columnName="userid">
         <datatype>varchar</datatype>
         <columnTitle>UserID</columnTitle>
-        <fk>
-          <fkDbSchema>core</fkDbSchema>
-          <fkTable>users</fkTable>
-          <fkColumnName>userid</fkColumnName>
-        </fk>
+        <!--<fk>-->
+          <!--<fkDbSchema>core</fkDbSchema>-->
+          <!--<fkTable>users</fkTable>-->
+          <!--<fkColumnName>userid</fkColumnName>-->
+        <!--</fk>-->
       </column>
       <column columnName="description">
         <datatype>varchar</datatype>
@@ -4535,7 +4550,7 @@
         <!--<columnTitle>Account</columnTitle>-->
         <!--<propertyURI>urn:ehr.labkey.org/#Account</propertyURI>-->
       <!--</column>-->
-      <!--<column columnName="requestId">-->
+      <!--<column columnName="requestid">-->
         <!--<datatype>varchar</datatype>-->
         <!--<columnTitle>Request Id</columnTitle>-->
         <!--<isHidden>true</isHidden>-->
@@ -4675,6 +4690,11 @@
           <datatype>varchar</datatype>
           <!--<nullable>false</nullable>-->
           <columnTitle>Test Id</columnTitle>
+          <fk>
+            <fkDbSchema>lists</fkDbSchema>
+            <fkTable>lab_tests</fkTable>
+            <fkColumnName>testid</fkColumnName>
+          </fk>
         </column>
         <column columnName="result">
           <datatype>double</datatype>
@@ -4691,7 +4711,7 @@
           <columnTitle>Units</columnTitle>
           <isMvEnabled>true</isMvEnabled>
         </column>
-        <column columnName="qualResult">
+        <column columnName="qualresult">
           <datatype>varchar</datatype>
           <columnTitle>Qualitative Result</columnTitle>
         </column>
@@ -4726,7 +4746,7 @@
           <shownInUpdateView>false</shownInUpdateView>
           <isHidden>true</isHidden>
         </column>
-        <column columnName="parentId">
+        <column columnName="parentid">
             <datatype>varchar</datatype>
             <propertyURI>urn:ehr.labkey.org/#ParentId</propertyURI>
         </column>
@@ -4815,7 +4835,7 @@
         <isHidden>true</isHidden>
         <inputType>textarea</inputType>
       </column>
-      <column columnName="requestId">
+      <column columnName="requestid">
         <datatype>varchar</datatype>
         <columnTitle>Request Id</columnTitle>
         <isHidden>true</isHidden>
@@ -4912,7 +4932,7 @@
           <isHidden>true</isHidden>
           <inputType>textarea</inputType>
         </column>
-      <column columnName="requestId">
+      <column columnName="requestid">
         <datatype>varchar</datatype>
         <columnTitle>Request Id</columnTitle>
         <isHidden>true</isHidden>
@@ -5522,6 +5542,10 @@
                 <columnTitle>Date</columnTitle>
                 <nullable>false</nullable>
                 <propertyURI>http://cpas.labkey.com/Study#VisitDate</propertyURI>
+            </column>
+            <column columnName="menses">
+                <datatype>boolean</datatype>
+                <columnTitle>Menses Observed?</columnTitle>
             </column>
             <column columnName="remark">
                 <datatype>varchar</datatype>
@@ -6404,6 +6428,22 @@
               <datatype>varchar</datatype>
               <columnTitle>Account</columnTitle>
               <propertyURI>urn:ehr.labkey.org/#Account</propertyURI>
+            </column>
+            <column columnName="requestor">
+              <datatype>varchar</datatype>
+              <columnTitle>Requestor</columnTitle>
+            </column>
+            <column columnName="pi">
+              <datatype>varchar</datatype>
+              <columnTitle>PI</columnTitle>
+            </column>
+            <column columnName="notify1">
+              <datatype>varchar</datatype>
+              <columnTitle>Additional Email 1</columnTitle>
+            </column>
+            <column columnName="notify2">
+              <datatype>varchar</datatype>
+              <columnTitle>Additional Email 2</columnTitle>
             </column>
             <column columnName="status">
                 <datatype>varchar</datatype>
