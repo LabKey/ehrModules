@@ -44,6 +44,8 @@ several steps:
 Authentication to LabKey is handled using a file names .netrc located in the user's
 home directory.  The user running this script should match a postgres user.  The
 machine in the netrc file should match the domain of your labkey URL.
+NOTE: Crypt::SSLeay or Net::SSLeay required for HTTPS
+
 Example .netrc file:
 
 machine labkey.com
@@ -61,7 +63,7 @@ You must also include a [lk_config] section in the INI file.  Below is an exampl
 file with comments explaining each line.
 
 [general]
-makeTar = 1								;0 or 1.  determines whether DB dumps are compressed
+compress = 1							;0 or 1.  determines whether DB dumps are compressed
 pg_dbname = labkey           			;name of postgres schema(s).  separate multiple schemas with whitespace (ie. 'labkey postgres')
 pg_host = someserver.com	 			;the postgres host.  can be omitted in running on the same server
 backupdir = /labkey/backup/  			;the directory where backups will be stored
@@ -78,7 +80,7 @@ queryName = backup	                   ;name of the list itself
 [file_rotation]		;can be omited, which will use defaults
 maxDaily = 7		;maximum daily backups to keep.  default: 7
 maxWeekly = 5		;maximum daily backups to keep.  default: 5
-maxMonthly = 100	;maximum daily backups to keep.  default: all
+maxMonthly = 100	;maximum daily backups to keep.  default: 0 
 
 
 =cut
@@ -89,33 +91,27 @@ maxMonthly = 100	;maximum daily backups to keep.  default: all
 use strict;
 use Net::SMTP;
 use Time::localtime;
+use FileHandle;
 use File::Spec;        
 use File::Basename;	 
 use File::Copy;
 use Config::Abstract::Ini;
 use Archive::Tar;
+use Log::Rolling;
+use Data::Dumper;
+use Labkey::query;
+ 
 
-#required for labkey API.  can comment out if this is not used
-use LWP::UserAgent; 
-use HTTP::Request; 
-use Net::Netrc;
-use JSON;
-# Crypt::SSLeay or Net::SSLeay required for HTTPS
-
-# get settings.  this should allow a filepath relative to this script
+# get INI file.  this should allow a filepath relative to this script
 my @fileparse = fileparse($0, qr/\.[^.]*/);
 my $settings = new Config::Abstract::Ini(File::Spec->catfile($fileparse[1],'lkbackup.ini'));
 
 my %config = $settings->get_entry('general');
-$config{pg_dbname} ||= 'labkey';
-$config{pgdump_dir} ||= "/opt/PostgreSQL/8.4/bin/";
-
 my %lk_config = $settings->get_entry('lk_config');
 my %rotation = $settings->get_entry('file_rotation');
 
-	
 # Variables 
-my ($day, $month, $year, $hr, $min, $log, $path, $status);
+my ($day, $month, $year, $hr, $min, $path, $status);
 
 # Find today's date to append to filenames
 my $tm = localtime;
@@ -124,16 +120,26 @@ my $datestr=sprintf("%04d%02d%02d_%02d%02d", $tm->year+1900, ($tm->mon)+1, $tm->
 # make sure the destination folder exists 
 checkFolder($config{backupdir});
 
+my $log = Log::Rolling->new(
+	log_file => $config{backupdir}."lk_backup.log", 
+	max_size=>5000
+);
+
+$log->entry("Backup is starting");
+
 if (!-e $config{backupdir}){
 	onExit("Unable to create backup directory");	
 }
 
-# Open log file and start log entries
-my $logfile = $config{backupdir} . "lk_backup.log";
-open(LOGFILE, ">>", $logfile) || onExit("Unable to open $logfile");
-print LOGFILE "\n";
-print LOGFILE "======================================================================= \n";
-$log .= "[".sprintf("%02d:%02d %02d/%02d/%04d", $tm->hour, $tm->min, ($tm->mon)+1, $tm->mday, $tm->year+1900)."]: Backup is starting\n";
+#check required params
+my @required = qw(pg_dbname pg_host backupdir pgdump_dir);
+foreach (@required){
+	if (!$config{$_}){
+		$log->entry("Missing param: $_ from INI file");	
+		onExit("Improper INI file");
+	}	 
+}	
+
 	
 #the postgres backup
 checkFolder($config{backupdir} . "database/");
@@ -160,26 +166,26 @@ sub runPgBackup
 	
 	my $backupdir = File::Spec->catfile($config{backupdir}, "database");
 	
-	$log .= "Starting pg_dump of: $db\n";
+	$log->entry("Starting pg_dump of: $db");
 			
 	#run pg_dump and store in the daily backup folder
 	$path = $backupdir."/daily/";
 	checkFolder($path);
 	
 	my $dailyBackupFile = $path.$pg_filename;
-	pg_dump($dailyBackupFile, $db);
+	_pg_dump($dailyBackupFile, $db);
+	
+	if ($config{compress}){
+		$log->entry("Compressing file: $dailyBackupFile");
+		$pg_filename = _compressFile($dailyBackupFile, 1);
 
-	$log .= "Compressing file: \n";
-	if ($config{makeTar}){
-		compressFile($dailyBackupFile, 1);
+		$dailyBackupFile = $path.$pg_filename;
 	}
 	
-	$dailyBackupFile .= ".gz";
-	$pg_filename .= ".gz";
 	
 	#rotate daily backups	
 	$rotation{'maxDaily'} ||= 7;
-	rotateFiles($path, $rotation{'maxDaily'}, $file_prefix);		
+	_rotateFiles($path, $rotation{'maxDaily'}, $file_prefix);		
 		
 	#add/rotate weekly backups on saturday
 	if ($tm->mday == 6 && $rotation{'maxWeekly'} > 0)
@@ -188,7 +194,7 @@ sub runPgBackup
 			checkFolder($path);
 			copy($dailyBackupFile,$path.$pg_filename) or onExit("Weekly Pgsql File Copy failed: $!");
 			$rotation{'maxWeekly'} ||= 5;
-			rotateFiles($path, $rotation{'maxWeekly'}, $file_prefix);
+			_rotateFiles($path, $rotation{'maxWeekly'}, $file_prefix);
 		}
 	
 	#add monthly backups on the 1st of the month.  
@@ -197,12 +203,10 @@ sub runPgBackup
 			$path = $backupdir."/monthly/";
 			checkFolder($path);
 			copy($dailyBackupFile,$path.$pg_filename) or onExit("Monthly Pgsql File Copy failed: $!");
-			$rotation{'maxMonthly'} ||= undef;
-			rotateFiles($path, $rotation{'maxMonthly'}, $file_prefix);
+			_rotateFiles($path, $rotation{'maxMonthly'}, $file_prefix);
 		}
 
-	$log .= "DB Backup Successful\n";
-
+	$log->entry("Backup of $db was successful");
 }
 
 
@@ -217,12 +221,6 @@ sub onExit
 	my $msg = shift;
 	my $code = shift;
 	
-	unless ( defined $msg && $msg ne '' )
-	{
-		$msg = '';
-	}
-
-	
 	if (!$code || $code != 1)
 	{
 		$status = "Error";	
@@ -232,6 +230,8 @@ sub onExit
 		$status = "Success";
 	}
 	
+	$log->entry($msg);
+	
 	# Insert a record into a labkey list
 	if (%lk_config)
 	{
@@ -239,11 +239,9 @@ sub onExit
 	}
 	
 	# Write Log messages to log file 
-	print LOGFILE $log;
-	close LOGFILE;
+	$log->commit;
 		
-	die $msg;
-	return undef;
+	exit $msg;
 }
 
 
@@ -259,20 +257,19 @@ sub checkFolder
 
 	if (!-d $folder)
 	{
-		mkdir($folder)
-		  || onExit "Could not create '" . $folder . "'";
+		mkdir($folder) || onExit "Could not create '" . $folder . "'";
 	chmod 0700,		
 	}
 	
 }
 
-=item pg_dump($bkpostgresfile, $pg_dbname)
+=item _pg_dump($bkpostgresfile, $pg_dbname)
 
-pg_dump() will backup the schema defined by $pg_dbname into the file specified by $bkpostgresfile 
+_pg_dump() will backup the schema defined by $pg_dbname into the file specified by $bkpostgresfile 
 
 =cut
 
-sub pg_dump
+sub _pg_dump
 {
 	my $bkpostgresfile = shift;
 	my $pg_dbname = shift;
@@ -282,73 +279,76 @@ sub pg_dump
 	$cmd .= " -h ".$config{pg_host} if $config{pg_host};
 	 
 	my $pgout = system($cmd . " 2>&1");
+	$log->entry($cmd);
 	if( $? ){
-	    $log .="**** Database backup process has returned an error! ****: See output from command below \n\n";
-	    $log .="$pgout \n" if $pgout;
+	    $log->entry("ERROR: Database backup of $pg_dbname has returned an error: $pgout");
+
 	    onExit("Postgres Error: $pgout");
 	}
 	else{
 	    my $tm1 = localtime;
-	    $log .= "[".sprintf("%02d:%02d %02d/%02d/%04d", $tm1->hour, $tm1->min, ($tm1->mon)+1, $tm1->mday, $tm1->year+1900)."]: Database backup was a success.\n";
-	    $log .="$pgout \n" if $pgout;
+	    $log->entry("pg_dump of $pg_dbname complete");
 	}
 	
 }
 
 
-=item makeTar(fileName, deleteOrig)
+=item _compressFile(fileName, deleteOrig)
 
-makeTar() will make a tar file of the specified file.  
+_compressFile() will compress the specified file.  
 
 =cut
 
-sub compressFile
+sub _compressFile
 {
 	my $fileName = shift;
+	my $newFile = shift;
 	my $deleteOrig = shift || 0;
 
 	my $archive;
 	if ($^O eq "MacOS" || $^O eq 'linux' || $^O eq "darwin") {
 		my $archive = system("gzip $fileName 2>&1");
 		if( $? ){
-		    $log .="**** Compression returned an error! ****: See output from command below \n\n";
-		    $log .= $archive . " \n";
+			$log->entry("ERROR: Compression returned an error: $archive");
 		    onExit("Compression Error: $archive");
-		}			
+		}
+		$newFile .= '.gz';			
 	}
 	elsif ($^O eq 'MSWin32'){
 		#this is really, really slow.  if you actually run this on a PC you should replace this with a system command
 		my $archive = Archive::Tar->create_archive( $fileName.'.gz', COMPRESS_GZIP, $fileName );	
 		
 		if( !$archive ){
-		    $log .="**** Compression process has returned an error! ****: See output from command below \n\n";
-		    $log .= $archive->error . " \n";
+		    $log->entry("ERROR: Compression returned an error:");
+		    $log->entry($archive->error);
 	
-		    onExit("Compression Error: $archive->error");
+		    onExit("Compression Error: ".$archive->error);
 		}
+		$fileName .= '.gz';
 	}
 	else {
 		onExit("Unrecognized OS: $^O");
 	}
 	
-    my $tm1 = localtime;
-    $log .= "[".sprintf("%02d:%02d %02d/%02d/%04d", $tm1->hour, $tm1->min, ($tm1->mon)+1, $tm1->mday, $tm1->year+1900)."]: File compressed.\n";
+    $log->entry("Compression complete");
     
     if ($deleteOrig == 1){
     	unlink $fileName;
     }
+    
+    return $newFile;
 		
 }
 
 
-=item rotateFiles(directory, maxFiles, filePrefix)
+=item _rotateFiles(directory, maxFiles, filePrefix)
 
-rotateFiles() will delete all files older than the 'maxFiles' with the given 'filePrefix'
+_rotateFiles() will delete all files older than the 'maxFiles' with the given 'filePrefix'
 in the specified 'directory'.
 
 =cut
 
-sub rotateFiles
+sub _rotateFiles
 {
 	my $dir = shift;
 	my $maxFiles = shift;
@@ -360,34 +360,33 @@ sub rotateFiles
 	unless ( -d $dir )
 	{
 		my $msg = (-e _ ? "$dir: not a directory" : "$dir: does not exist");
-		$log .=  $msg."\n";
+		$log->entry($msg);
 		onExit($msg);
 	}
 
 	# We need write access since we are going to delete files.
 	unless ( -w _ )
 	{
-		$log .= "$dir: no write access\n";
+		$log->entry("$dir: no write access");
 		onExit("$dir: no write access");
 	}
 
 	# We need read acces since we are going to get the file list.
 	unless ( -r _ )
 	{
-		$log .= "$dir: no read access\n";
+		$log->entry("$dir: no read access");
 		onExit("$dir: no read access");
 	}
 
 	# Probably need this.
 	unless ( -x _ )
 	{
-		$log .= "$dir: no access\n";
+		$log->entry("$dir: no access");
 		onExit("$dir: no access");
 	}
 
 	# Gather file names and ages.
-	opendir( DIR, $dir )
-	  or onExit("dir: $!");
+	opendir( DIR, $dir ) or onExit("dir: $!");
 
 	my @files;
 	foreach ( readdir(DIR) )
@@ -400,12 +399,12 @@ sub rotateFiles
 	}
 	closedir(DIR);
 
-	$log .= "$dir: total of " . scalar(@files) . " files" . "\n";
-
+	$log->entry("$dir: total of " . scalar(@files) . " files");
+	
 	# Complete if file count below max
 	if ( @files <= abs($maxFiles) )
 	{
-		$logfile.= ("$dir: not rotated, below max limit");
+ 		$log->entry("$dir: not rotated, below max limit");
 		return 1;
 	}
 
@@ -445,53 +444,19 @@ lk_log() will add a record to the specified labkey list summarizing the backup s
 =cut
 
 sub lk_log
+
 {	
-	my $ua = new LWP::UserAgent; 
-	$ua->agent("Perl API Client/1.0");
-			
-	my $url = $lk_config{'baseURL'} . "query/" . $lk_config{'project'} . ($lk_config{'containerPath'} ? $lk_config{'containerPath'} : '') . "/" . "insertRows.api";
- 	#print $url;
- 	
 	my $date = sprintf("%04d-%02d-%02d %02d:%02d", $tm->year+1900, ($tm->mon)+1, $tm->mday, $tm->hour, $tm->min);
-	my $data = {
-		"schemaName" => $lk_config{'schemaName'},
- 		"queryName"=> $lk_config{'queryName'},
- 		"rows" => [{"JobName" => $lk_config{'jobName'}, "Status" => $status, "Log" => $log, "Date" => $date}]
-		};
-		
-	my $json_obj = JSON->new->utf8->encode($data);
-	#print $json_obj;
-	 
-	#insert the row	
-	my $req = new HTTP::Request;
-	$req->method('POST');
-	$req->url($url);
-	$req->content_type('application/json');
-	$req->content($json_obj);
-  
-	#if no machine supplied, extract domain from baseUrl 
-	if (!$lk_config{'machineName'}){
-		$lk_config{'machineName'} = URI->new($lk_config{'baseURL'})->host;
-	}  
+	my $insert = Labkey::query::insertRows(
+		-baseUrl => $lk_config{'baseURL'},
+		-containerPath => $lk_config{'containerPath'},
+		-project => $lk_config{'project'},
+		-schemaName => $lk_config{'schemaName'},
+ 		-queryName => $lk_config{'queryName'},
+		-rows => [{"JobName" => $lk_config{'jobName'}, "Status" => $status, "Log" => '', "Date" => $date}]
+		);			
+ 		 	
 	
-	my $mach = Net::Netrc->lookup($lk_config{'machineName'});
-	if (!$mach)
-	{
-		$log .= "\nERROR: netrc either not present or machine name not found\n";
-		print "ERROR: netrc either not present or machine name not found\n";
-	}	
-	else
-	{
-		$req->authorization_basic($mach->login, $mach->password);
-		my $response = $ua->request($req);	
-		#print $response->content;				
-
-		if ($response->is_error){
-			$log .= "Error Inserting Record: ".$response->status_line . "\n";
-			$log .= "$url\n";			
-		}
-
-	}
 }
 
 
