@@ -10,7 +10,7 @@
 Ext.namespace('EHR.ext.customFields', 'EHR.ext.customPanels');
 
 LABKEY.requiresScript("/ehr/datetime.js");
-LABKEY.requiresScript("/ehr/arrayUtils.js");
+//LABKEY.requiresScript("/ehr/arrayUtils.js");
 LABKEY.requiresScript("/ehr/utilities.js");
 LABKEY.requiresScript("/ehr/ehrEditorGridpanel.js");
 
@@ -45,7 +45,7 @@ EHR.ext.standardMetadata = {
 //    '</div>'
 //);
 
-EHR.ext.formPanel = Ext.extend(Ext.FormPanel, {
+EHR.ext.formPanel = Ext.extend(Ext.Panel, {
     constructor: function(config){
         config = config || {};
 
@@ -71,7 +71,7 @@ EHR.ext.formPanel = Ext.extend(Ext.FormPanel, {
                 {text: 'Submit for SNOMED Coding', id: 'snomedReview', handler: this.onSubmit, scope: this, formBind: true},
                 {text: 'Discard', id: 'discard', handler: this.discard, scope: this}
             ]
-            ,uuid: LABKEY.ActionURL.getParameter('uuid') || LABKEY.Utils.generateUUID()
+            ,uuid: LABKEY.ActionURL.getParameter('uuid') // || LABKEY.Utils.generateUUID()
         });
 
         EHR.ext.formPanel.superclass.constructor.call(this, config);
@@ -101,7 +101,7 @@ EHR.ext.Header = Ext.extend(Ext.form.FieldSet, {
             autoHeight: true
             ,id: 'header'
             ,title: 'Header'
-            ,width: 'auto'
+//            ,width: 'auto'
             ,layout: 'column'
             ,bodyBorder: true
             ,labelAlign: 'top'

@@ -27,10 +27,13 @@ Ext.onReady(function (){
                     {name: 'Labkey.log', url: '<%=contextPath%>/files/WNPRC/EHR/Logs/%40filesets/Tomcat%20Logs/labkey.log?renderAs=DEFAULT'},
                     {name: 'ActiveMQ Log', url: '<%=contextPath%>/files/WNPRC/EHR/Logs/%40filesets/ActiveMQ/activemq.log?renderAs=DEFAULT'}
                 ]
+            },
+            {header: 'Validation',
+                items: [
+                    {name: 'Validate Status', url: '<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=Validation'}
+                ]
+
             }
-
-
-
         ]
     })
     }

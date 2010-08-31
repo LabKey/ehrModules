@@ -27,7 +27,7 @@ a.curLocation.Location,
 
 a.dataset.demographics.status,
 
- a.Status.Status as calculatedStatus,
+a.Status.Status as calculatedStatus,
 
 CASE when a.dataset.demographics.arrivedate != a.MostRecentArrival.MostRecentArrival
 THEN 'error'

@@ -1,0 +1,26 @@
+<customView xmlns="http://labkey.org/data/xml/queryCustomView">
+    <columns>
+        <column name="Id"/>
+        <column name="room">
+            <properties>
+                <property name="columnTitle" value="Current Room"/>
+            </properties>
+        </column>
+        <column name="cage">
+            <properties>
+                <property name="columnTitle" value="Current Cage"/>
+            </properties>
+        </column>
+        <column name="Location">
+            <properties>
+                <property name="columnTitle" value="Location From Housing"/>
+            </properties>
+        </column>
+    </columns>
+    <filters>
+        <filter column="locationCheck" operator="isnonblank"/>
+    </filters>
+    <sorts>
+        <sort column="id" descending="false"/>
+    </sorts>
+</customView>
