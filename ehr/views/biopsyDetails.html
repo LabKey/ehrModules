@@ -1,0 +1,61 @@
+<html>
+<head>
+
+<script type="text/javascript">
+
+LABKEY.requiresScript("/ehr/transposeRows.js");
+
+Ext.onReady(function ()
+{
+    if (!LABKEY.ActionURL.getParameter('key')){alert('Must Provide Biopsy Number'); return false;}
+
+    var key = LABKEY.ActionURL.getParameter('key');
+
+    new EHR.ext.customPanels.detailsView({
+        schemaName: 'study',
+        queryName: 'biopsy',
+        title: 'Biopsy Details:',
+        renderTo: 'biopsyDetails',
+        filterArray: [LABKEY.Filter.create('objectId', key, LABKEY.Filter.Types.EQUAL)]
+    });
+
+    new LABKEY.QueryWebPart({
+        title: 'Biopsy Diagnoses',
+        schemaName: 'study',
+        queryName: 'Biopsy Diagnosis',
+        allowChooseQuery: false,
+        allowChooseView: true,
+        showInsertNewButton: false,
+        showDeleteButton: false,
+        showDetailsColumn: true,
+        showUpdateColumn: false,
+        showRecordSelectors: true,
+        buttonBarPosition: 'top',
+        filters: [LABKEY.Filter.create('parentId', key, LABKEY.Filter.Types.EQUAL)],
+        //sort: '-Date',
+        scope: this,
+        errorCallback: EHR.UTILITIES.onError
+     }).render('biopsyDiagnosis');
+
+
+});
+
+</script>
+</head>
+<body>
+    <p/>
+
+	<div id='biopsyDetails'></div>
+
+    <p/>
+
+    <div id='biopsyReport'></div>
+
+    <p/>
+
+    <div id='biopsyDiagnosis'></div>
+
+    <p/>
+
+</body>
+</html>

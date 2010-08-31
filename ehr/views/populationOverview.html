@@ -1,0 +1,143 @@
+<html>
+<head>
+<script type="text/javascript">
+
+
+LABKEY.requiresScript("ehr/utilities.js");
+Ext.Ajax.timeout = 120000; //in milliseconds
+
+</script>
+<script type="text/javascript">
+    
+Ext.onReady(function(){
+
+    new LABKEY.QueryWebPart({
+         title: 'Current Population Counts',
+         schemaName: 'study',
+         queryName: 'colonyPopulationSummary',
+         allowChooseQuery: false,
+         allowChooseView: false,
+         showInsertNewButton: false,
+         showDeleteButton: false,
+         showDetailsColumn: false,
+         showUpdateColumn: false,
+         buttonBarPosition: 'top',
+         errorCallback: EHR.UTILITIES.onError,
+         //successCallback: this.endMsg,
+         scope: this
+     }).render('colonyPopulationSummary');
+
+    var dateRange = Ext.extend(Ext.Panel, {
+        initComponent: function(config){
+
+            Ext.apply(this, {
+                bodyBorder: false,
+                border: false,
+                defaults: {
+                    border: false,
+                    bodyBorder: false
+                }
+            });
+
+            dateRange.superclass.initComponent.call(this);
+
+            this.datePanel = this.add(new EHR.ext.customFields.DateRangePanel());
+
+            this.add(new Ext.Button({
+                    text: 'Display Report'
+                    ,scope: this
+                    ,handler: this.displayReport
+                    ,type: 'submit'
+                })
+            );
+        },
+        displayReport: function(a,b){
+            if (!b){return false}
+
+            var target = document.getElementById('colonyPopulationChange');
+            target.innerHTML = '';
+            var loading = document.createElement('span');
+            loading.innerHTML = 'Loading...<p>';
+            loading.setAttribute('class', "loading-indicator");
+            target.appendChild(loading);
+            
+            var config = {
+                partName: 'Report',
+                renderTo: 'colonyPopulationChange',
+                partConfig: {
+                    title: 'Population Change',
+                    schemaName: 'study',
+                    //showSection: 'barchart',
+                    reportId : 'module:ehr/schemas/study/colonyPopulationChange/Bar Chart.r',
+                    'query.queryName': 'colonyPopulationChange',
+                    '_union.species~neq': 'Unknown',
+                    '_select.species~neq': 'Unknown'
+                },
+                errorCallback: EHR.UTILITIES.onError
+                //,scope: this
+            };
+
+            if (this.datePanel.startDateField.getValue()){                
+                config.partConfig['_select.date~gte'] = this.datePanel.startDateField.getValue();
+                config.partConfig['_union.date~gte'] = this.datePanel.startDateField.getValue();
+            }
+
+            if (this.datePanel.endDateField.getValue()){
+                config.partConfig['_select.date~lte'] = this.datePanel.endDateField.getValue();
+                config.partConfig['_union.date~lte'] = this.datePanel.endDateField.getValue();
+            }
+
+            new LABKEY.WebPart(config).render();
+        }
+    });
+
+    new dateRange().render('dateRange');
+
+
+});
+
+
+</script>
+</head>
+
+<body>
+    The purpose of this page is to provide an overview of the WNPRC colony.  If you suggestions on reports or information that would be useful, please report them through the 'User Feedback' menu above.
+
+    <p/>
+
+	<div id='colonyPopulationSummary'><span class="loading-indicator">Loading...</span></div>
+    <p/>
+
+    <table class="labkey-wp">
+        <tbody>
+            <tr class="labkey-wp-header">
+                <th class="labkey-wp-title-left">Population Changes:</th>
+                <th class="labkey-wp-title-right">&nbsp;</th>                
+            </tr>
+        </tbody>
+    </table>
+
+    <p/>
+    <div id='dateRange'></div>
+
+    <p/>
+    
+	<div id='colonyPopulationChange'></div>
+
+    <p/>
+
+    <table class="labkey-wp">
+        <tbody>
+            <tr class="labkey-wp-header">
+                <th class="labkey-wp-title-left">Other Population Queries:</th>
+                <th class="labkey-wp-title-right">&nbsp;</th>
+            </tr>
+        </tbody>
+    </table>
+
+    <li>
+        <a href="<%=contextPath%>/query<%=containerPath%>/executeQuery.view?schemaName=study&query.queryName=colonyPopulationByAge">Population By Age and Species</a>
+    </li>
+
+</body>
+</html>

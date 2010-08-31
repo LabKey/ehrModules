@@ -1,0 +1,56 @@
+<html>
+<head>
+<script type="text/javascript">
+
+LABKEY.requiresScript("/ehr/searchForm.js");
+
+Ext.onReady(function(){
+
+    new EHR.ext.customPanels.searchForm({
+        schemaName: 'study'
+        ,queryName: 'Housing'
+        ,title: 'Search Housing'
+        ,defaultView: 'Current Housing'
+        ,metadata: {
+            Id: {lookups: false}            
+        }
+    }).render('housingPanel');
+
+
+});
+
+</script>
+</head>
+
+<body>
+
+This page contains a series of queries to search animal housing data.  If there are additional one-button reports you would like added to the top section, please submit a request using the 'user feedback' item on the menu bar above.
+
+
+<p/>
+
+<h3>Commonly Used Queries:</h3>
+
+<li>
+    <b>For 'Inroom' just type the room name into the search box below and hit submit.</b>
+</li>
+<br>
+<li>
+    <a href="<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=Animal&query.viewName=Loners">List Single-housed Animals</a>    
+</li>
+<br>
+<li>
+    <a href="<%=contextPath%>/ehr/WNPRC/EHR/animalHistory.view?report=23">View Roommate History for Animals</a>
+</li>
+
+<br>
+<p/>
+<h3>Search All Housing Records:</h3>
+
+<p/>
+
+<div id='housingPanel'></div>
+<p/>
+
+</body>
+</html>

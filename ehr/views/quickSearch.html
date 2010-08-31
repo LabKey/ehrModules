@@ -1,0 +1,261 @@
+<html>
+<head>
+
+<script type="text/javascript">
+
+LABKEY.requiresScript("/ehr/utilities.js");
+
+Ext.onReady(makePanel)
+
+function makePanel(){
+    if (!window.EHR || !window.EHR.ext || !window.EHR.UTILITIES)
+    {
+        makePanel.defer(10);
+        return;
+    }
+
+    var thePanel = Ext.extend(Ext.Panel, {
+        initComponent: function(){
+
+            Ext.apply(this, {
+                layout: 'table'
+                ,width: 250
+                ,bodyBorder: false
+                ,border: false
+                ,defaults: {
+                    border: false
+                    ,bodyStyle:'align:left'
+                },
+                layoutConfig: {
+                    columns: 2
+                }
+            })
+
+            thePanel.superclass.initComponent.apply(this, arguments);
+
+            this.add({html: 'Animal:', colspan: 2});
+
+            this.animalField = this.add(new Ext.form.TextField({
+                type: 'textbox'
+               ,name: 'animal'
+               ,width: 160
+                })
+            );
+
+//            this.animalField = this.add(new EHR.ext.customFields.LabKeyCombo({
+//                emptyText:''
+//                ,xtype: 'LabkeyComboBox'
+//                ,displayField:'protocol'
+//                ,typeAhead: true
+//                ,width: 100
+//                ,editable: true
+//                ,store: new LABKEY.ext.Store({
+//                    containerPath: 'WNPRC/EHR/',
+//                    schemaName: 'study',
+//                    queryName: 'animal',
+//                    sort: 'Id'
+//                })
+//            }));
+
+
+            this.add(new Ext.Button({
+                text: 'Show Animal'
+                ,width: 80
+                ,handler: function(){
+                    var value = this.animalField.getValue();
+                    if (!value) return false;
+
+                    window.location = LABKEY.ActionURL.buildURL(
+                        'study'
+                        ,'participant'
+                        ,'WNPRC/EHR/'
+                        ,{participantId: value}
+                        );
+                }
+                ,scope: this
+                })
+            );
+
+            this.add({html: '<a href="/labkey/ehr/WNPRC/EHR/animalSearch.view?">Advanced Animal Search</a>', colspan: 2});
+
+            this.add({html: '<Br>Animal Groups:', colspan: 2});
+
+            this.animalGroup = this.add(new EHR.ext.customFields.LabKeyCombo({
+                emptyText:''
+                ,xtype: 'LabkeyComboBox'
+                ,displayField:'label'
+                ,valueField: 'viewName'                
+                ,typeAhead: true
+                ,width: 160
+                ,editable: true
+                ,store: new LABKEY.ext.Store({
+                    containerPath: 'WNPRC/EHR/',
+                    schemaName: 'lists',
+                    queryName: 'animalGroups',
+                    sort: 'label'
+                })
+            }));
+
+            this.add(new Ext.Button({
+                text: 'Show Group'
+                ,width: 80
+                ,handler: function(){
+                    var value = this.animalGroup.getValue();
+                    if (!value) return false;
+
+                    window.location = LABKEY.ActionURL.buildURL(
+                        'query'
+                        ,'executeQuery'
+                        ,'WNPRC/EHR/'
+                        ,{schemaName: 'study', 'query.queryName': 'Animal', 'query.viewName': value}
+                        );
+                }
+                ,scope: this
+                })
+            );
+
+            this.add({html: '<a href="/labkey/query/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=Animal&query.viewName=Alive%2C%20at%20WNPRC">View All WNPRC Animals</a>', colspan: 2});
+
+            this.add({html: '<Br>Project:', colspan: 2});
+
+
+            this.projectField = this.add(new EHR.ext.customFields.LabKeyCombo({
+                emptyText:''
+                ,xtype: 'LabkeyComboBox'
+                ,displayField:'project'
+                ,valueField: 'project'
+                ,typeAhead: true
+                ,width: 160
+                ,editable: true
+                ,store: new LABKEY.ext.Store({
+                    containerPath: 'WNPRC/EHR/',
+                    schemaName: 'lists',
+                    queryName: 'project',
+                    sort: 'project'
+                })
+            }));
+
+            this.add(new Ext.Button({
+                text: 'Show Project'
+                ,width: 80
+                ,handler: function(){
+                    var value = this.projectField.getValue();
+                    if (!value) return false;
+
+                    window.location = LABKEY.ActionURL.buildURL(
+                        'ehr'
+                        ,'projectDetails'
+                        ,'WNPRC/EHR/'
+                        ,{key: value});
+                }
+                ,scope: this
+                })
+            );
+
+            this.add({html: '<a href="/labkey/ehr/WNPRC/EHR/projectQueries.view?">Advanced Project Search</a>', colspan: 2});
+
+            this.add({html: '<Br>Protocol:', colspan: 2});
+
+            this.protocolField = this.add(new EHR.ext.customFields.LabKeyCombo({
+                emptyText:''
+                ,xtype: 'LabkeyComboBox'
+                ,displayField:'protocol'
+                ,valueField: 'protocol'
+                ,typeAhead: true
+                ,width: 160
+                ,editable: true
+                ,store: new LABKEY.ext.Store({
+                    containerPath: 'WNPRC/EHR/',
+                    schemaName: 'lists',
+                    queryName: 'protocol',
+                    sort: 'protocol'
+                })
+            }));
+
+            this.add(new Ext.Button({
+                text: 'Show Protocol'
+                ,width: 80
+                ,handler: function(){
+                    var value = this.protocolField.getValue();
+                    
+                    if (!value) return false;
+
+                    window.location = LABKEY.ActionURL.buildURL(
+                        'ehr'
+                        ,'protocolDetails'
+                        ,'WNPRC/EHR/'
+                        ,{key: value});
+                }
+                ,scope: this
+                })
+            );
+
+            this.add({html: '<a href="/labkey/ehr/WNPRC/EHR/projectQueries.view?">Advanced Protocol Search</a>', colspan: 2});
+
+            this.add({html: '<Br>Room:', colspan: 2});
+
+            this.roomField = this.add(new Ext.form.TextField({
+                type: 'textbox'
+               ,name: 'room'
+               ,width: 160
+                })
+            );
+
+//            this.roomField = this.add(new EHR.ext.customFields.LabKeyCombo({
+//                emptyText:''
+//                ,xtype: 'LabkeyComboBox'
+//                ,displayField:'room'
+//                ,valueField: 'room'
+//                ,typeAhead: true
+//                ,width: 100
+//                ,editable: true
+//                ,store: new LABKEY.ext.Store({
+//                    containerPath: 'WNPRC/EHR/',
+//                    schemaName: 'study',
+//                    queryName: 'housing',
+//                    sort: 'room'
+//                })
+//            }));
+
+            this.add(new Ext.Button({
+                text: 'Show Room'
+                ,width: 80
+                ,handler: function(){
+                    var value = this.roomField.getValue();
+                    if (!value) return false;
+
+                    window.location = LABKEY.ActionURL.buildURL(
+                        'query'
+                        ,'executeQuery'
+                        ,'WNPRC/EHR/'
+                        ,{'schemaName':'study', 'query.queryName':'Animal', 'query.Dataset/Demographics/Room~startswith': value, 'query.viewName': 'Alive, at WNPRC'});
+
+                }
+                ,scope: this
+                })
+            );
+
+            this.add({html: '<a href="/labkey/ehr/WNPRC/EHR/housingQueries.view?">Advanced Housing Search</a>', colspan: 2});
+        }
+    });
+
+
+    var panel = new thePanel();
+
+    panel.render('thePanel');
+
+}
+    
+
+
+
+
+
+</script>
+</head>
+<body>
+
+<div id="thePanel"></div>
+
+</body>
+</html>

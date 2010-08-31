@@ -1,0 +1,125 @@
+<html>
+<head>
+<script type="text/javascript">
+
+    LABKEY.requiresScript("/ehr/searchForm.js");
+
+    Ext.onReady(function(){
+
+    new EHR.ext.customPanels.searchForm({
+        schemaName: 'lists'
+        ,queryName: 'project'
+        ,title: 'Search Projects'
+        ,metadata: {
+            protocol: {lookups: false}
+            ,totalAssigned: {isHidden: true}
+            ,lastAssignment: {isHidden: true}
+        }
+        ,newFields: [
+            {caption: 'Last Assignment Date', name: 'lastAssignment/LastAssignmentDate', jsonType: 'date'},
+            {caption: 'Animals Assigned', name: 'totalAssigned/ActiveAssignments', jsonType: 'int'}
+        ]
+    }).render('projectPanel');
+
+    new EHR.ext.customPanels.searchForm({
+        schemaName: 'lists'
+        ,queryName: 'protocol'
+        ,title: 'Search Protocols'
+        ,metadata: {}
+    }).render('protocolPanel');                   
+
+    new EHR.ext.customPanels.searchForm({
+        schemaName: 'study'
+        ,queryName: 'assignment'
+        ,title: 'Search Assignments'
+        ,metadata: {
+            Id: {lookups: false}
+            ,project: {lookups: false}
+        }
+        ,exclude: ['SequenceNum', 'AnimalVisit', 'created', 'modified', 'QCState']
+        ,defaultView: 'Active Assignments'
+        ,newFields: [
+            {caption: 'Protocol', name: 'Project/protocol'}
+        ]
+    }).render('assignmentPanel');
+
+
+});
+
+</script>
+</head>
+
+<body>
+
+This page contains a series of queries to search IACUC Protocols, RARC Projects and Assignment data.  If there are additional one-button reports you would like added to the top section, please submit a request using the 'user feedback' item on the menu bar above.
+
+
+<p/>
+
+<p/>
+<!--<h2>Shortcuts:</h2>-->
+
+<!--<div id="projectSearch"></div>-->
+<!--<form action="<%=contextPath%>/ehr<%=containerPath%>/projectDetails.view">-->
+    <!--Enter Project Number: <input type="textbox" name="key"/>-->
+    <!--<input type="submit" value="View Project"/>-->
+<!--</form>-->
+<!--<p/>-->
+
+<!--<form action="<%=contextPath%>/ehr<%=containerPath%>/protocolDetails.view">-->
+    <!--Enter Protocol Number: <input type="textbox" name="key"/>-->
+    <!--<input type="submit" value="View Protocol"/>-->
+<!--</form>-->
+
+<!--<p/>-->
+
+
+<p/>
+<h2>IACUC Projects:</h2>
+
+<div id='projectPanel'></div>
+<p/>
+<hr>
+
+<p/>
+<h2>RARC Protocols:</h2>
+
+<p/>
+
+<h3>Commonly Used Queries:</h3>
+
+<li>
+    <a href="<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=lists&query.queryName=protocolTotalAnimalsBySpecies">View Total Animals Assigned to Each Protocol, By Species</a>
+</li>
+<p/>
+
+<h3>Search All Protocols:</h3>
+<p/>
+
+<div id='protocolPanel'></div>
+<p/>
+<hr>
+<p/>
+
+<h2>Assignments:</h2>
+<p/>
+<h3>Commonly Used Queries:</h3>
+
+<p/>
+
+
+<li>
+    <a href="<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=demographicsAssignmentSummary">Assignment Summary By Animal</a>
+</li>
+
+<p/>
+<h3>Search All Assignment Records:</h3>
+
+
+<p/>
+<div id='assignmentPanel'></div>
+<p/>
+
+
+</body>
+</html>

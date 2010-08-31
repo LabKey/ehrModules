@@ -1,0 +1,76 @@
+<html>
+<head>
+
+<script type="text/javascript">
+
+LABKEY.requiresScript("/ehr/transposeRows.js");
+
+Ext.onReady(function ()
+{
+    if (!LABKEY.ActionURL.getParameter('key')){alert('Must Provide Project Number'); return false;}
+
+    var project = LABKEY.ActionURL.getParameter('key');
+
+    new EHR.ext.customPanels.detailsView({
+        schemaName: 'lists',
+        queryName: 'project',
+        title: 'Project Details:',
+        renderTo: 'projectDetails',
+        filterArray: [LABKEY.Filter.create('project', project, LABKEY.Filter.Types.EQUAL)]
+    });
+
+    new LABKEY.QueryWebPart({
+        title: 'Active Assignments',
+        schemaName: 'study',
+        queryName: 'Assignment',
+        allowChooseQuery: false,
+        allowChooseView: true,
+        showInsertNewButton: false,
+        showDeleteButton: false,
+        showDetailsColumn: true,
+        showUpdateColumn: false,
+        showRecordSelectors: true,
+        buttonBarPosition: 'top',
+        filters: [LABKEY.Filter.create('project', project, LABKEY.Filter.Types.EQUAL)],
+        viewName: 'Active Assignments',
+        sort: '-Date',
+        scope: this,
+        errorCallback: EHR.UTILITIES.onError
+     }).render('projectAssignments');
+
+
+    new LABKEY.QueryWebPart({
+        title: 'All Assignments',
+        schemaName: 'study',
+        queryName: 'Assignment',
+        allowChooseQuery: false,
+        allowChooseView: true,
+        showInsertNewButton: false,
+        showDeleteButton: false,
+        showDetailsColumn: true,
+        showUpdateColumn: false,
+        showRecordSelectors: true,
+        buttonBarPosition: 'top',
+        filters: [LABKEY.Filter.create('project', project, LABKEY.Filter.Types.EQUAL)],
+        sort: '-Date',
+        scope: this,
+        errorCallback: EHR.UTILITIES.onError
+     }).render('projectTotalAssignments');
+
+});
+
+</script>
+</head>
+<body>
+    <p/>
+
+	<div id='projectDetails'></div>
+
+    <p/>
+
+    <div id='projectAssignments'></div>
+
+    <p/>
+
+    <div id='projectTotalAssignments'></div></body>
+</html>

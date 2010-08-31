@@ -1,0 +1,31 @@
+<html>
+<head>
+<script type="text/javascript">
+//first we load JS
+LABKEY.requiresScript("/ehr/animalHistory.js");
+LABKEY.requiresScript("/WNPRC_Main/navMenu.js");
+Ext.onReady(function (){
+    new EHR.ext.customPanels.SingleAnimalReport({applyTo: 'animalHistory'});
+});
+
+
+</script>
+</head>
+
+<body align="center">
+<p/>
+    This page will display reports centered around one or more animals.  It is analogous to the Hist command from the UNIX system.  If you would like new reports added or would like changes made to an existing report, please contact Ben Bimber or <a href="<%=contextPath%>/issues/WNPRC/WNPRC_Units/Research_Services/Research_Computing/Issue_Tracker/list.view?" target="new">submit a request</a>
+
+<p/>
+
+
+<form id="reportForm" action="">
+    <div id="animalHistory"></div>
+</form>
+
+<br><br>
+
+<div id="reportDiv"></div>
+
+</body>
+</html>

@@ -1,0 +1,121 @@
+<html>
+<head>
+
+<script type="text/javascript">
+
+LABKEY.requiresScript("/ehr/transposeRows.js");
+
+Ext.onReady(function ()
+{
+    if (!LABKEY.ActionURL.getParameter('room')){alert('Must Provide Location'); return false;}
+
+    var filterArray = [LABKEY.Filter.create('room', LABKEY.ActionURL.getParameter('room'), LABKEY.Filter.Types.EQUAL)];
+
+    if (LABKEY.ActionURL.getParameter('cage')){
+        filterArray.push(LABKEY.Filter.create('cage', LABKEY.ActionURL.getParameter('cage'), LABKEY.Filter.Types.EQUAL));
+    }
+
+    if (LABKEY.ActionURL.getParameter('cage')){
+        new EHR.ext.customPanels.detailsView({
+            schemaName: 'lists',
+            queryName: 'cage',
+            title: 'Cage Details:',
+            renderTo: 'cageDetails',
+            filterArray: filterArray
+        });
+    }
+    else {
+        new LABKEY.QueryWebPart({
+            title: 'Cage Details:',
+            schemaName: 'lists',
+            queryName: 'cage',
+            allowChooseQuery: false,
+            allowChooseView: true,
+            showInsertNewButton: false,
+            showDeleteButton: false,
+            showDetailsColumn: true,
+            showUpdateColumn: false,
+            showRecordSelectors: true,
+            buttonBarPosition: 'top',
+            filterArray: filterArray,
+            scope: this,
+            errorCallback: EHR.UTILITIES.onError
+         }).render('cageDetails');
+    }
+
+    new LABKEY.QueryWebPart({
+        title: 'All Animals Ever Housed',
+        schemaName: 'study',
+        queryName: 'Housing',
+        allowChooseQuery: false,
+        allowChooseView: true,
+        showInsertNewButton: false,
+        showDeleteButton: false,
+        showDetailsColumn: true,
+        showUpdateColumn: false,
+        showRecordSelectors: true,
+        buttonBarPosition: 'top',
+        filterArray: filterArray,
+        sort: '-Date',
+        scope: this,
+        errorCallback: EHR.UTILITIES.onError
+     }).render('allAnimals');
+
+
+    new LABKEY.QueryWebPart({
+        title: 'Cage Notes',
+        schemaName: 'lists',
+        queryName: 'cagenotes',
+        allowChooseQuery: false,
+        allowChooseView: true,
+        showInsertNewButton: false,
+        showDeleteButton: false,
+        showDetailsColumn: true,
+        showUpdateColumn: false,
+        buttonBarPosition: 'top',
+        filterArray: filterArray,
+        sort: '-Date',
+        scope: this,
+        errorCallback: EHR.UTILITIES.onError
+     }).render('cageNotes');
+
+    filterArray.push(LABKEY.Filter.create('odate', null, LABKEY.Filter.Types.ISBLANK));
+    new LABKEY.QueryWebPart({
+        title: 'Animals Currently Housed',
+        schemaName: 'study',
+        queryName: 'Housing',
+        allowChooseQuery: false,
+        allowChooseView: true,
+        showInsertNewButton: false,
+        showDeleteButton: false,
+        showDetailsColumn: true,
+        showUpdateColumn: false,
+        buttonBarPosition: 'top',
+        showRecordSelectors: true,
+        filterArray: filterArray,
+        sort: '-Date',
+        scope: this,
+        errorCallback: EHR.UTILITIES.onError
+     }).render('activeAnimals');
+
+});
+
+</script>
+</head>
+<body>
+    <p/>
+
+	<div id='cageDetails'></div>
+
+    <p/>
+
+    <div id='activeAnimals'></div>
+
+    <p/>
+
+    <div id='cageNotes'></div>
+
+    <p/>
+
+    <div id='allAnimals'></div></body>
+</html>

@@ -1,0 +1,130 @@
+<html>
+<head>
+
+<script type="text/javascript">
+
+LABKEY.requiresScript("/ehr/transposeRows.js");
+
+Ext.onReady(function ()
+{
+    if (!LABKEY.ActionURL.getParameter('key')){alert('Must Provide Protocol Number'); return false;}
+
+    var protocol = LABKEY.ActionURL.getParameter('key').toLowerCase();
+
+    new EHR.ext.customPanels.detailsView({
+        schemaName: 'lists',
+        queryName: 'protocol',
+        title: 'Protocol Details:',
+        renderTo: 'protocolDetails',
+        filterArray: [LABKEY.Filter.create('protocol', protocol, LABKEY.Filter.Types.EQUAL)]
+    });
+
+    
+    new LABKEY.QueryWebPart({
+        title: 'Projects Under This Protocol',
+        schemaName: 'lists',
+        queryName: 'project',
+        allowChooseQuery: false,
+        allowChooseView: true,
+        showInsertNewButton: false,
+        showDeleteButton: false,
+        showDetailsColumn: true,
+        showUpdateColumn: false,
+        buttonBarPosition: 'top',
+        filters: [LABKEY.Filter.create('protocol', protocol, LABKEY.Filter.Types.EQUAL)],
+        //sort: '-Date',
+        scope: this,
+        errorCallback: EHR.UTILITIES.onError
+     }).render('protocolProjects');
+
+
+    new LABKEY.QueryWebPart({
+        title: 'Active Animal Assignments',
+        schemaName: 'study',
+        queryName: 'Assignment',
+        allowChooseQuery: false,
+        allowChooseView: true,
+        showInsertNewButton: false,
+        showRecordSelectors: true,
+        showDeleteButton: false,
+        showDetailsColumn: true,
+        showUpdateColumn: false,
+        buttonBarPosition: 'top',
+        filters: [LABKEY.Filter.create('project/protocol', protocol, LABKEY.Filter.Types.EQUAL)],
+        viewName: 'Active Assignments',
+        sort: '-Date',
+        scope: this,
+        errorCallback: EHR.UTILITIES.onError
+     }).render('protocolAssignments');
+
+
+    new LABKEY.QueryWebPart({
+        title: 'Total Historical Assignments By Species',
+        schemaName: 'lists',
+        queryName: 'protocolTotalAnimalsBySpecies',
+        allowChooseQuery: false,
+        allowChooseView: true,
+        showInsertNewButton: false,
+        showDeleteButton: false,
+        showDetailsColumn: true,
+        showUpdateColumn: false,
+        buttonBarPosition: 'top',
+        filters: [LABKEY.Filter.create('protocol', protocol, LABKEY.Filter.Types.EQUAL)],
+        //viewName: '',
+        //sort: '-Date',
+        scope: this,
+        errorCallback: EHR.UTILITIES.onError
+     }).render('protocolTotalAnimalsBySpecies');
+
+
+
+    EHR.UTILITIES.isMemberOf(['vets (LDAP)', 'cpi (LDAP)', 'protocol (LDAP)', 'Site Administrators'], loadPdf);
+
+    function loadPdf(){
+        new LABKEY.QueryWebPart({
+            title: 'Protocol PDF',
+            containerPath: '/WNPRC/WNPRC_Units/Animal_Services/Compliance_Training/Private/Protocols',
+            schemaName: 'lists',
+            queryName: 'Protocols',
+            allowChooseQuery: false,
+            allowChooseView: false,
+            showInsertNewButton: false,
+            showDeleteButton: false,
+            showDetailsColumn: false,
+            showUpdateColumn: false,
+            buttonBarPosition: 'none',
+            filters: [LABKEY.Filter.create('protocol', protocol, LABKEY.Filter.Types.EQUAL)],
+            scope: this,
+            errorCallback: EHR.UTILITIES.onError
+         }).render('protocolPdf');
+    }
+
+
+
+});
+
+</script>
+</head>
+<body>
+    <p/>
+
+	<div id='protocolDetails'></div>
+
+    <p/>
+
+    <div id='protocolProjects'>Loading...</div>
+
+    <p/>
+
+    <div id='protocolAssignments'>Loading...</div>
+
+    <p/>
+
+    <div id="protocolTotalAnimalsBySpecies">Loading...</div>
+
+    <p/>
+
+	<div id='protocolPdf'></div>
+
+</body>
+</html>

@@ -1,0 +1,61 @@
+<html>
+<script type="text/javascript">
+
+LABKEY.requiresScript("/WNPRC_Main/navMenu.js");
+
+
+Ext.onReady(createNavMenu);
+
+function createNavMenu()
+{
+    if (!window.EHR || !window.EHR.UTILITIES || !window.EHR.UTILITIES.navMenu)
+    {
+        createNavMenu.defer(10);
+        return;
+    }
+
+    var config = {displayField: 'Label', headerField: 'Category', target: 'ehrDatasets'};
+    
+    LABKEY.Query.selectRows({
+            schemaName: 'study',
+            queryName: 'DataSets',
+            successCallback: onSuccess,
+            scope: this,
+            errorCallback: EHR.UTILITIES.onError,
+            sort: config.headerField+','+config.displayField,
+            filterArray: config.filterArray
+    });
+
+    function onSuccess(data){
+        var menuCfg = {target: config.target, sections: new Array()}
+        var prevHeader;
+        var section;
+        for (var i=0;i<data.rows.length;i++){
+            var tmp = data.rows[i];
+
+            if (tmp[config.headerField] != prevHeader){
+                menuCfg.sections.push(section);
+                prevHeader = tmp[config.headerField];
+
+                section = {header: tmp[config.headerField], items: new Array()};
+            }
+
+            section.items.push({name: tmp[config.displayField], url: '<%=contextPath%>/study/WNPRC/EHR/defaultDatasetReport.view?datasetId='+tmp['DataSetId']})
+
+        }
+
+        menuCfg.sections.shift();
+        new EHR.UTILITIES.navMenu(menuCfg);
+    }
+
+
+
+}
+
+</script>
+<body>
+
+<div id="ehrDatasets"></div>
+
+</body>
+</html>

@@ -1,0 +1,189 @@
+<html>
+<head>
+
+<script type="text/javascript">
+
+LABKEY.requiresScript("/ehr/transposeRows.js");
+
+Ext.onReady(function ()
+{
+    if (!LABKEY.ActionURL.getParameter('key')){alert('Must Provide Surgery ID'); return false;}
+
+    var key = LABKEY.ActionURL.getParameter('key');
+
+    new EHR.ext.customPanels.detailsView({
+        schemaName: 'study',
+        queryName: 'surgery',
+        title: 'Surgery Details:',
+        renderTo: 'surgeryDetails',
+        filterArray: [LABKEY.Filter.create('objectid', key, LABKEY.Filter.Types.EQUAL)]
+    });
+
+
+//    LABKEY.Query.selectRows({
+//        schemaName: 'study',
+//        queryName: 'surgery',
+//        filterArray: [LABKEY.Filter.create('objectid', key, LABKEY.Filter.Types.EQUAL)],
+//        successCallback: loadQueries,
+//        errorCallback: EHR.UTILITIES.onError,
+//        scope: this
+//        //maxRows: 10
+//    });
+//
+//});
+
+//function loadQueries(data){
+
+//    if (data.rows.length){
+//        var row = data.rows[0];
+
+     new LABKEY.QueryWebPart({
+        title: 'Fluids Administered',
+        schemaName: 'study',
+        queryName: 'Drug Administration',
+        allowChooseQuery: false,
+        allowChooseView: true,
+        showInsertNewButton: false,
+        showDeleteButton: false,
+        showDetailsColumn: true,
+        showUpdateColumn: false,
+        buttonBarPosition: 'top',
+        filters: [
+            //LABKEY.Filter.create('parentid', row['objectid'], LABKEY.Filter.Types.EQUAL),
+            LABKEY.Filter.create('parentid', key, LABKEY.Filter.Types.EQUAL),
+            LABKEY.Filter.create('category', 'surgfluid', LABKEY.Filter.Types.EQUAL)
+        ],
+        //viewName: '',
+        sort: '-Date',
+        scope: this,
+        errorCallback: EHR.UTILITIES.onError
+     }).render('surgFluid');
+
+    new LABKEY.QueryWebPart({
+        title: 'Procedures',
+        schemaName: 'study',
+        queryName: 'procedures',
+        allowChooseQuery: false,
+        allowChooseView: true,
+        showInsertNewButton: false,
+        showDeleteButton: false,
+        showDetailsColumn: true,
+        showUpdateColumn: false,
+        buttonBarPosition: 'top',
+        filters: [
+            //LABKEY.Filter.create('parentid', row['objectid'], LABKEY.Filter.Types.EQUAL)
+            LABKEY.Filter.create('parentid', key, LABKEY.Filter.Types.EQUAL)
+        ],
+        //viewName: '',
+        sort: '-Date',
+        scope: this,
+        errorCallback: EHR.UTILITIES.onError
+     }).render('procedures');
+
+    new LABKEY.QueryWebPart({
+        title: 'Surgery Medications',
+        schemaName: 'study',
+        queryName: 'Drug Administration',
+        allowChooseQuery: false,
+        allowChooseView: true,
+        showInsertNewButton: false,
+        showDeleteButton: false,
+        showDetailsColumn: true,
+        showUpdateColumn: false,
+        buttonBarPosition: 'top',
+        filters: [
+            //LABKEY.Filter.create('parentid', row['objectid'], LABKEY.Filter.Types.EQUAL),
+            LABKEY.Filter.create('parentid', key, LABKEY.Filter.Types.EQUAL),
+            LABKEY.Filter.create('category', 'surgmed', LABKEY.Filter.Types.EQUAL)
+        ],
+        //viewName: '',
+        sort: '-Date',
+        scope: this,
+        errorCallback: EHR.UTILITIES.onError
+     }).render('surgMed');
+
+    new LABKEY.QueryWebPart({
+        title: 'Surgery Summary',
+        schemaName: 'study',
+        queryName: 'Surgery Summary',
+        allowChooseQuery: false,
+        allowChooseView: true,
+        showInsertNewButton: false,
+        showDeleteButton: false,
+        showDetailsColumn: true,
+        showUpdateColumn: false,
+        buttonBarPosition: 'top',
+        filters: [
+            //LABKEY.Filter.create('parentid', row['objectid'], LABKEY.Filter.Types.EQUAL)
+            LABKEY.Filter.create('parentid', key, LABKEY.Filter.Types.EQUAL)
+        ],
+        //viewName: '',
+        sort: '-Date',
+        scope: this,
+        errorCallback: EHR.UTILITIES.onError
+     }).render('surgSum');
+
+
+    new LABKEY.QueryWebPart({
+        title: 'Surgery Remarks',
+        schemaName: 'study',
+        queryName: 'Clinical Remarks',
+        allowChooseQuery: false,
+        allowChooseView: true,
+        showInsertNewButton: false,
+        showDeleteButton: false,
+        showDetailsColumn: true,
+        showUpdateColumn: false,
+        buttonBarPosition: 'top',
+        filters: [
+            //LABKEY.Filter.create('parentid', row['objectid'], LABKEY.Filter.Types.EQUAL),
+            LABKEY.Filter.create('parentid', key, LABKEY.Filter.Types.EQUAL),
+            LABKEY.Filter.create('category', 'surgery', LABKEY.Filter.Types.EQUAL)
+        ],
+        //viewName: '',
+        sort: '-Date',
+        scope: this,
+        errorCallback: EHR.UTILITIES.onError
+     }).render('surgRemarks');
+
+
+//    }
+});
+
+
+
+</script>
+</head>
+<body>
+    <p/>
+
+	<div id='surgeryDetails'></div>
+
+    <p/>
+
+    <div id='surgRemarks'></div>
+    
+    <p/>
+
+    <div id='surgSum'></div>
+
+    <p/>
+
+    <div id='surgMed'></div>
+
+    <p/>
+
+    <div id='surgFluid'></div>
+
+    <p/>
+
+    <div id='surgAnes'></div>
+
+    <p/>
+
+    <div id='procedures'></div>
+
+
+    <p/>
+</body>
+</html>

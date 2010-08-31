@@ -1,0 +1,90 @@
+<html>
+<head>
+<script type="text/javascript">
+
+LABKEY.requiresScript("/WNPRC_Main/navMenu.js");
+LABKEY.requiresScript("/ehr/utilities.js");
+
+Ext.onReady(function (){
+
+    if (LABKEY.Security.currentUser.isAdmin){
+    new EHR.UTILITIES.navMenu({
+        target: 'adminLinks',
+        sections: [
+            {header: 'Admin',
+                items: [
+                    {name: 'Backup History', url: '<%=contextPath%>/project/WNPRC/EHR/Backups/begin.view?'},
+                    {name: 'Development Notes', url: '<%=contextPath%>/project/WNPRC/EHR/Development Notes/begin.view?'},
+                    {name: 'ETL Admin', url: '<%=contextPath%>/EHR/WNPRC/EHR/etlAdmin.view?'},
+                    {name: 'Manage EHR Study', url: '<%=contextPath%>/study/WNPRC/EHR/manageStudy.view?'},
+                    {name: 'Reload Study', url: '<%=contextPath%>/pipeline/WNPRC/EHR/begin.view?'},
+                    {name: 'Sync History', url: '<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=core&query.queryName=Sync History'},
+                    {name: 'View Logs', url: '<%=contextPath%>/project/WNPRC/EHR/Logs/begin.view?'}
+                ]
+            },
+            {header: 'Logs',
+                items: [
+                    {name: 'Labkey.log', url: '<%=contextPath%>/files/WNPRC/EHR/Logs/%40filesets/Tomcat%20Logs/labkey.log?renderAs=DEFAULT'},
+                    {name: 'ActiveMQ Log', url: '<%=contextPath%>/files/WNPRC/EHR/Logs/%40filesets/ActiveMQ/activemq.log?renderAs=DEFAULT'}
+                ]
+            }
+
+
+
+        ]
+    })
+    }
+
+    new LABKEY.QueryWebPart({
+        title: 'Maintenance History',
+        //containerPath: '/WNPRC/EHR/Backups',
+        schemaName: 'core',
+        queryName: 'Maintenance History',
+        allowChooseQuery: false,
+        allowChooseView: true,
+        showInsertNewButton: false,
+        showDeleteButton: false,
+        showDetailsColumn: true,
+        showUpdateColumn: false,
+        buttonBarPosition: 'top',
+        //maxRows: 2,
+        scope: this,
+        errorCallback: EHR.UTILITIES.onError
+     }).render('backupDate');
+
+
+//    new LABKEY.QueryWebPart({
+//        title: 'Sync History',
+//        schemaName: 'lists',
+//        queryName: 'backup',
+//        allowChooseQuery: false,
+//        allowChooseView: true,
+//        showInsertNewButton: false,
+//        showDeleteButton: false,
+//        showDetailsColumn: true,
+//        showUpdateColumn: false,
+//        buttonBarPosition: 'top',
+//        sort: '-Date',
+//        scope: this,
+//        errorCallback: EHR.UTILITIES.onError
+//     }).render('syncDate');
+
+    
+});
+
+
+</script>
+</head>
+
+<body align="center">
+
+<div id="adminLinks"></div>
+<p/>
+<div id="backupDate"></div>
+<p/>
+<div id="syncDate"></div>
+
+
+
+</body>
+</html>

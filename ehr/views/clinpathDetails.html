@@ -1,0 +1,51 @@
+<html>
+<head>
+
+<script type="text/javascript">
+
+LABKEY.requiresScript("/ehr/transposeRows.js");
+
+Ext.onReady(function ()
+{
+    if (!LABKEY.ActionURL.getParameter('runId')){alert('Must Provide Run #'); return false;}
+    if (!LABKEY.ActionURL.getParameter('dataset')){alert('Must Provide Assay Type'); return false;}
+
+    new EHR.ext.customPanels.detailsView({
+        schemaName: 'study',
+        queryName: LABKEY.ActionURL.getParameter('dataset')+' Runs',
+        title: LABKEY.ActionURL.getParameter('dataset')+' Run Details:',
+        renderTo: 'runDetails',
+        filterArray: [LABKEY.Filter.create('objectid', LABKEY.ActionURL.getParameter('runId'), LABKEY.Filter.Types.EQUAL)]
+    });
+
+    new LABKEY.QueryWebPart({
+        title: LABKEY.ActionURL.getParameter('dataset')+' Results:',
+        schemaName: 'study',
+        queryName: LABKEY.ActionURL.getParameter('dataset')+' Results',
+        allowChooseQuery: false,
+        allowChooseView: true,
+        showInsertNewButton: false,
+        showDeleteButton: false,
+        showDetailsColumn: true,
+        showUpdateColumn: false,
+        showRecordSelectors: true,
+        buttonBarPosition: 'top',
+        filterArray: [LABKEY.Filter.create('runId', LABKEY.ActionURL.getParameter('runId'), LABKEY.Filter.Types.EQUAL)],
+        scope: this,
+        errorCallback: EHR.UTILITIES.onError
+     }).render('resultDetails');
+
+});
+
+</script>
+</head>
+<body>
+    <p/>
+
+	<div id='runDetails'>Loading...</div>
+
+    <p/>
+
+    <div id='resultDetails'>Loading...</div>
+
+</html>

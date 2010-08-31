@@ -1,0 +1,98 @@
+<html>
+<head>
+<script type="text/javascript">
+
+LABKEY.requiresScript("/ehr/utilities.js");
+
+Ext.onReady(function(){
+
+    var dataset = LABKEY.ActionURL.getParameter('dataset');
+    if (!dataset){alert('Must Provide Dataset Name'); return false;}
+
+    new LABKEY.QueryWebPart({
+         title: dataset,
+         //frame: 'none',
+         schemaName: 'study',
+         queryName: dataset,
+         allowChooseQuery: false,
+         allowChooseView: true,
+         showInsertNewButton: false,
+         showDeleteButton: false,
+         showDetailsColumn: true,
+         showUpdateColumn: false,
+         buttonBarPosition: 'top',
+         showRecordSelectors: true,
+         errorCallback: EHR.UTILITIES.onError,
+         scope: this,
+         buttonBar: {
+            includeStandardButtons: true,
+            items:[
+              LABKEY.QueryWebPart.standardButtons.views,
+              LABKEY.QueryWebPart.standardButtons.exportRows,
+              LABKEY.QueryWebPart.standardButtons.print,
+              LABKEY.QueryWebPart.standardButtons.pageSize,
+              {text: 'Animal History', handler: historyHandler}
+                //{text: 'Test', url: LABKEY.ActionURL.buildURL('project', 'begin')},
+              //{text: 'Test Script', onClick: "alert('Hello World!'); return false;"},
+              //{text: 'Test Handler', handler: onTestHandler},
+              //{text: 'More Actions', items: [
+
+                //{text: 'Fly Out', items: [
+                //  {text: 'Sub Item 1', handler: onItem1Handler}
+                //]},
+                //'-', //separator
+                //{text: 'Item 2', handler: onItem2Handler}
+              //]}
+            ]
+        }
+     }).render('theGrid');
+
+
+    function historyHandler(dataRegion)
+    {
+        var checked = dataRegion.getChecked();
+
+        var sql = 'SELECT DISTINCT Id FROM study.studydata WHERE LSID IN "' + checked.join(',') + '"'
+
+        LABKEY.Query.executeSql({
+             schemaName: 'study',
+             sql: sql,
+             successCallback: changeLocation
+             });
+
+        //for (var i = 0; i < checked.length; i++)
+            //ids.push({Key:checked[i], Complete:true});
+
+        //window.location = '';
+    }
+
+    function changeLocation(data){
+        alert(data)
+    }
+
+//    function markComplete(dataRegion)
+//    {
+//        var checked = dataRegion.getChecked();
+//
+//        var rowsToUpdate = [];
+//        for (var i = 0; i < checked.length; i++)
+//            rowsToUpdate.push({Key:checked[i], Complete:true});
+//
+//        LABKEY.Query.updateRows({schemaName:'lists', queryName:'MyList', rowDataArray:rowsToUpdate, successCallback:renderList});
+//    }
+
+
+
+});
+
+</script>
+</head>
+
+<body>
+
+
+<div id='theGrid'></div>
+
+
+</body>
+</html>
