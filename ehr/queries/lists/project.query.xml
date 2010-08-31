@@ -2,7 +2,7 @@
     <metadata>
         <tables xmlns="http://labkey.org/data/xml">
             <table tableName="project" tableDbType="TABLE">
-                <tableUrl>/ehr/projectDetails.view?key=${project}</tableUrl>
+                <tableUrl>/EHR_Reporting/projectDetails.view?key=${project}</tableUrl>
                 <titleColumn>project</titleColumn>
                 <columns>
                     <column columnName="totalAssigned" wrappedColumnName="project">

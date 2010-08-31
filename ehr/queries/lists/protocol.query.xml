@@ -2,7 +2,7 @@
     <metadata>
         <tables xmlns="http://labkey.org/data/xml">
             <table tableName="protocol" tableDbType="TABLE">
-                <tableUrl>/ehr/protocolDetails.view?key=${protocol}</tableUrl>
+                <tableUrl>/EHR_Reporting/protocolDetails.view?key=${protocol}</tableUrl>
                 <columns>
                     <column columnName="totalAnimals" wrappedColumnName="protocol">
                       <columnTitle>Total Animals</columnTitle>

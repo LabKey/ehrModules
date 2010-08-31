@@ -2,7 +2,7 @@
     <metadata> 
         <tables xmlns="http://labkey.org/data/xml">
             <table tableName="bacteriologyRuns" tableDbType="TABLE">
-                <tableUrl>/ehr/clinpathDetails.view?runId=${objectid}&amp;dataset=Bacteriology</tableUrl>
+                <tableUrl>/EHR_Reporting/clinpathDetails.view?runId=${objectid}&amp;dataset=Bacteriology</tableUrl>
             </table>
         </tables>
     </metadata>

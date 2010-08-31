@@ -90,14 +90,14 @@
                     <column columnName="room">
                         <datatype>varchar</datatype>
                         <columnTitle>Room</columnTitle>
-                        <url>/ehr/cageDetails.view?
+                        <url>/EHR_Reporting/cageDetails.view?
                             room=${room}&amp;
                         </url>
                     </column>
                     <column columnName="cage">
                         <datatype>varchar</datatype>
                         <columnTitle>Cage</columnTitle>
-                        <url>/ehr/cageDetails.view?
+                        <url>/EHR_Reporting/cageDetails.view?
                             room=${room}&amp;
                             cage=${cage}&amp;
                         </url>

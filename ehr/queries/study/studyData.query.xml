@@ -23,7 +23,7 @@
                     </column>
                 </columns>
                 <buttonBarOptions position="both" includeStandardButtons="false">
-                    <includeScript>/ehr/studyButtons.js</includeScript>
+                    <includeScript>/EHR_Reporting/studyButtons.js</includeScript>
                     <item text="Insert New">
                         <originalText>Insert New</originalText>
                     </item>

@@ -2,7 +2,7 @@
     <metadata> 
         <tables xmlns="http://labkey.org/data/xml">
             <table tableName="necropsies" tableDbType="TABLE">
-                <tableUrl>/ehr/necropsyDetails.view?key=${objectid}</tableUrl>
+                <tableUrl>/EHR_Reporting/necropsyDetails.view?key=${objectid}</tableUrl>
                 <columns>
                     <column columnName="parentId">
                         <fk>

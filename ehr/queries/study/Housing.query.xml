@@ -28,7 +28,7 @@
                         <datatype>varchar</datatype>
                         <nullable>false</nullable>
                         <columnTitle>Room</columnTitle>
-                        <url>/ehr/cageDetails.view?
+                        <url>/EHR_Reporting/cageDetails.view?
                             room=${room}&amp;
                             cage=${cage}&amp;
                         </url>
@@ -37,7 +37,7 @@
                         <datatype>varchar</datatype>
                         <!--<nullable>false</nullable>-->
                         <columnTitle>Cage</columnTitle>
-                        <url>/ehr/cageDetails.view?
+                        <url>/EHR_Reporting/cageDetails.view?
                             room=${room}&amp;
                             cage=${cage}&amp;
                         </url>
