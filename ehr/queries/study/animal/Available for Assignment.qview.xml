@@ -1,0 +1,97 @@
+<customView xmlns="http://labkey.org/data/xml/queryCustomView">
+    <columns>
+        <column name="Id"/>
+        <column name="Dataset/Demographics/gender">
+            <properties>
+                <property name="columnTitle" value="Gender"/>
+            </properties>
+        </column>
+        <column name="Dataset/Demographics/Status">
+            <properties>
+                <property name="columnTitle" value="Status"/>
+            </properties>
+        </column>
+        <column name="Dataset/Demographics/Avail">
+            <properties>
+                <property name="columnTitle" value="Avail"/>
+            </properties>
+        </column>
+        <column name="Dataset/Demographics/Hold">
+            <properties>
+                <property name="columnTitle" value="Hold"/>
+            </properties>
+        </column>
+        <column name="activeAssignments/ActiveBreedingAssignments">
+            <properties>
+                <property name="columnTitle" value="ActiveBreedingAssignments"/>
+            </properties>
+        </column>
+        <column name="activeAssignments/PendingAssignments">
+            <properties>
+                <property name="columnTitle" value="PendingAssignments"/>
+            </properties>
+        </column>
+        <column name="activeAssignments/ActiveTrainingAssignments">
+            <properties>
+                <property name="columnTitle" value="ActiveTrainingAssignments"/>
+            </properties>
+        </column>
+        <column name="activeAssignments/ActiveResearchAssignments">
+            <properties>
+                <property name="columnTitle" value="ActiveResearchAssignments"/>
+            </properties>
+        </column>
+        <column name="Dataset/Demographics/Origin">
+            <properties>
+                <property name="columnTitle" value="Origin"/>
+            </properties>
+        </column>
+        <column name="Dataset/Demographics/Birth">
+            <properties>
+                <property name="columnTitle" value="Birth"/>
+            </properties>
+        </column>
+        <column name="Dataset/Demographics/Room">
+            <properties>
+                <property name="columnTitle" value="Room"/>
+            </properties>
+        </column>
+        <column name="Dataset/Demographics/Cage">
+            <properties>
+                <property name="columnTitle" value="Cage"/>
+            </properties>
+        </column>
+        <column name="Dataset/Demographics/Cond">
+            <properties>
+                <property name="columnTitle" value="Condition"/>
+            </properties>
+        </column>
+        <column name="Dataset/Demographics/weight">
+            <properties>
+                <property name="columnTitle" value="Current Weight"/>
+            </properties>
+        </column>
+        <column name="Dataset/Demographics/Medical">
+            <properties>
+                <property name="columnTitle" value="Medical"/>
+            </properties>
+        </column>
+        <column name="Dataset/Demographics/purchasedby">
+            <properties>
+                <property name="columnTitle" value="Purchased By"/>
+            </properties>
+        </column>
+        <column name="Dataset/Demographics/v_status">
+            <properties>
+                <property name="columnTitle" value="Viral Status"/>
+            </properties>
+        </column>
+    </columns>
+    <filters>
+        <filter column="Status/Status" operator="eq" value="Alive"/>
+        <filter column="activeAssignments/ActiveBreedingAssignments" operator="gt" value="0"/>
+    </filters>
+    <sorts>
+        <sort column="id" descending="false"/>
+    </sorts>
+</customView>

@@ -1,0 +1,9 @@
+ <query xmlns="http://labkey.org/data/xml/query">
+    <metadata> 
+        <tables xmlns="http://labkey.org/data/xml">
+            <table tableName="urinalysisRuns" tableDbType="TABLE">
+                <tableUrl>/ehr/clinpathDetails.view?runId=${objectid}&amp;dataset=Urinalysis</tableUrl>
+            </table>
+        </tables>
+    </metadata>
+</query>

@@ -1,0 +1,89 @@
+<customView xmlns="http://labkey.org/data/xml/queryCustomView">
+    <columns>
+        <column name="Id"/>
+        <column name="Id/Dataset/Demographics/Gender">
+            <properties>
+                <property name="columnTitle" value="Gender"/>
+            </properties>
+        </column>
+        <column name="Dataset/Demographics/Status">
+            <properties>
+                <property name="columnTitle" value="Status"/>
+            </properties>
+        </column>
+        <column name="Dataset/Demographics/Avail">
+            <properties>
+                <property name="columnTitle" value="Avail"/>
+            </properties>
+        </column>
+        <column name="Dataset/Demographics/Hold">
+            <properties>
+                <property name="columnTitle" value="Hold"/>
+            </properties>
+        </column>
+        <column name="Dataset/Demographics/Origin">
+            <properties>
+                <property name="columnTitle" value="Origin"/>
+            </properties>
+        </column>
+        <column name="Dataset/Demographics/Birth">
+            <properties>
+                <property name="columnTitle" value="Birth"/>
+            </properties>
+        </column>
+        <column name="Dataset/Demographics/Death">
+            <properties>
+                <property name="columnTitle" value="Death"/>
+            </properties>
+        </column>
+        <column name="Dataset/Demographics/Room">
+            <properties>
+                <property name="columnTitle" value="Room"/>
+            </properties>
+        </column>
+        <column name="Dataset/Demographics/Cage">
+            <properties>
+                <property name="columnTitle" value="Cage"/>
+            </properties>
+        </column>
+        <column name="Dataset/Demographics/Cond">
+            <properties>
+                <property name="columnTitle" value="Condition"/>
+            </properties>
+        </column>
+        <column name="Dataset/MostRecentWeight/MostRecentWeight">
+            <properties>
+                <property name="columnTitle" value="Current Weight"/>
+            </properties>
+        </column>
+        <column name="MostRecentWeight/MostRecentWeightDate">
+            <properties>
+                <property name="columnTitle" value="Weight Date"/>
+            </properties>
+        </column>
+        <column name="MostRecentWeight/DaysSinceWeight">
+            <properties>
+                <property name="columnTitle" value="Days Since Weight"/>
+            </properties>
+        </column>
+        <column name="Dataset/Demographics/Medical">
+            <properties>
+                <property name="columnTitle" value="Medical"/>
+            </properties>
+        </column>
+        <column name="Dataset/Demographics/v_status">
+            <properties>
+                <property name="columnTitle" value="Viral Status"/>
+            </properties>
+        </column>
+    </columns>
+    <filters>
+        <filter column="Status/Status" operator="eq" value="Alive"/>
+        <filter column="MostRecentWeight/DaysSinceWeight" operator="gt" value="60"/>
+    </filters>
+    <sorts>
+        <sort column="Dataset/Demographics/room" descending="false"/>
+        <sort column="Dataset/Demographics/cage" descending="false"/>
+        <sort column="id" descending="false"/>
+    </sorts>
+</customView>

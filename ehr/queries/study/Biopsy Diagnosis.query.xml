@@ -1,0 +1,25 @@
+ <query xmlns="http://labkey.org/data/xml/query">
+    <metadata> 
+        <tables xmlns="http://labkey.org/data/xml">
+            <table tableName="Biopsydiag" tableDbType="TABLE">
+                <tableUrl>/query/detailsQueryRow.view?schemaName=study&amp;query.queryName=Biopsydiag&amp;lsid=${lsid}</tableUrl>
+                <columns>
+                    <column columnName="parentId">
+                        <fk>
+                          <fkDbSchema>study</fkDbSchema>
+                          <fkTable>biopsy</fkTable>
+                          <fkColumnName>objectid</fkColumnName>
+                        </fk>
+                    </column>
+                    <!--<column columnName="caseno">-->
+                        <!--<fk>-->
+                          <!--<fkDbSchema>study</fkDbSchema>-->
+                          <!--<fkTable>biopsies</fkTable>-->
+                          <!--<fkColumnName>caseno</fkColumnName>-->
+                        <!--</fk>-->
+                    <!--</column>-->
+                </columns>
+            </table>
+        </tables>
+    </metadata>
+</query>

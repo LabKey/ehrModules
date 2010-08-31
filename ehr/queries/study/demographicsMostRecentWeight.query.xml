@@ -1,0 +1,33 @@
+<query xmlns="http://labkey.org/data/xml/query">
+    <metadata>
+        <tables xmlns="http://labkey.org/data/xml">
+            <table tableName="demographicsMostRecentWeight" tableDbType="NOT_IN_DB">
+                <columns>
+                    <column columnName="Id">
+                        <isKeyField>true</isKeyField>
+                        <isHidden>true</isHidden>
+                    </column>
+                    <column columnName="MostRecentWeight">
+                      <datatype>double</datatype>
+                      <columnTitle>Current Weight (kg)</columnTitle>
+                      <url>/query/executeQuery.view?schemaName=study&amp;
+                          query.queryName=Weight&amp;
+                          query.id~eq=${id}
+                      </url>
+                    </column>
+                    <column columnName="MostRecentWeightDate">
+                      <datatype>timestamp</datatype>
+                      <formatString>yyyy-mm-dd HH:mm a</formatString>
+                      <columnTitle>Weight Date</columnTitle>
+                      <url>/query/executeQuery.view?schemaName=study&amp;
+                          query.queryName=Weight&amp;
+                          query.id~eq=${id}&amp;
+                          query.date~eq=${MostRecentWeightDate}
+                      </url>
+                    </column>
+                </columns>
+                <titleColumn>MostRecentWeight</titleColumn>
+            </table>
+        </tables>
+    </metadata>
+</query>

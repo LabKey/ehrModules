@@ -1,0 +1,9 @@
+ <query xmlns="http://labkey.org/data/xml/query">
+    <metadata> 
+        <tables xmlns="http://labkey.org/data/xml">
+            <table tableName="Biopsies" tableDbType="TABLE">
+                <tableUrl>/ehr/biopsyDetails.view?key=${objectid}</tableUrl>
+            </table>
+        </tables>
+    </metadata>
+</query>

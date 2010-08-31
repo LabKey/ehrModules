@@ -1,0 +1,165 @@
+<query xmlns="http://labkey.org/data/xml/query">
+    <metadata>
+        <tables xmlns="http://labkey.org/data/xml">
+            <table tableName="Demographics" tableDbType="TABLE">
+                <tableUrl>/query/detailsQueryRow.view?schemaName=study&amp;query.queryName=Demographics&amp;lsid=${lsid}</tableUrl>
+                <columns>
+                    <column columnName="gender">
+                        <datatype>varchar</datatype>
+                        <columnTitle>Gender</columnTitle>
+                        <fk>
+                            <fkDbSchema>lists</fkDbSchema>
+                            <fkTable>gender_codes</fkTable>
+                            <fkColumnName>Code</fkColumnName>
+                        </fk>
+                    </column>
+                    <column columnName="status">
+                        <datatype>varchar</datatype>
+                        <columnTitle>Status</columnTitle>
+                        <fk>
+                            <fkDbSchema>lists</fkDbSchema>
+                            <fkTable>status</fkTable>
+                            <fkColumnName>Code</fkColumnName>
+                        </fk>
+                    </column>
+                    <column columnName="avail">
+                        <datatype>varchar</datatype>
+                        <columnTitle>Availability</columnTitle>
+                        <!--<fk>-->
+                        <!--<fkDbSchema>lists</fkDbSchema>-->
+                        <!--<fkTable>avail</fkTable>-->
+                        <!--<fkColumnName>Code</fkColumnName>-->
+                        <!--</fk>-->
+                    </column>
+                    <column columnName="hold">
+                        <datatype>varchar</datatype>
+                        <columnTitle>Hold</columnTitle>
+                        <!--<fk>-->
+                        <!--<fkDbSchema>lists</fkDbSchema>-->
+                        <!--<fkTable>hold</fkTable>-->
+                        <!--<fkColumnName>Code</fkColumnName>-->
+                        <!--</fk>-->
+                    </column>
+                    <column columnName="dam">
+                        <datatype>varchar</datatype>
+                        <columnTitle>Dam</columnTitle>
+                        <fk>
+                            <fkDbSchema>study</fkDbSchema>
+                            <fkTable>animal</fkTable>
+                            <fkColumnName>id</fkColumnName>
+                        </fk>
+                    </column>
+                    <column columnName="sire">
+                        <datatype>varchar</datatype>
+                        <columnTitle>Sire</columnTitle>
+                        <fk>
+                            <fkDbSchema>study</fkDbSchema>
+                            <fkTable>animal</fkTable>
+                            <fkColumnName>id</fkColumnName>
+                        </fk>
+                    </column>
+                    <column columnName="origin">
+                        <datatype>varchar</datatype>
+                        <columnTitle>Origin</columnTitle>
+                        <fk>
+                            <fkDbSchema>lists</fkDbSchema>
+                            <fkTable>origin</fkTable>
+                            <fkColumnName>Code</fkColumnName>
+                        </fk>
+                    </column>
+                    <column columnName="birth">
+                        <datatype>timestamp</datatype>
+                        <formatString>yyyy-MM-dd</formatString>
+                        <columnTitle>Birth</columnTitle>
+                    </column>
+                    <column columnName="death">
+                        <datatype>timestamp</datatype>
+                        <formatString>yyyy-MM-dd</formatString>
+                        <columnTitle>Death</columnTitle>
+                    </column>
+                    <column columnName="arrivedate">
+                        <datatype>timestamp</datatype>
+                        <formatString>yyyy-MM-dd HH:mm</formatString>
+                        <columnTitle>Arrival Date</columnTitle>
+                    </column>
+                    <column columnName="departdate">
+                        <datatype>timestamp</datatype>
+                        <formatString>yyyy-MM-dd HH:mm</formatString>
+                        <columnTitle>Departure Date</columnTitle>
+                    </column>
+                    <column columnName="room">
+                        <datatype>varchar</datatype>
+                        <columnTitle>Room</columnTitle>
+                        <url>/ehr/cageDetails.view?
+                            room=${room}&amp;
+                        </url>
+                    </column>
+                    <column columnName="cage">
+                        <datatype>varchar</datatype>
+                        <columnTitle>Cage</columnTitle>
+                        <url>/ehr/cageDetails.view?
+                            room=${room}&amp;
+                            cage=${cage}&amp;
+                        </url>
+                    </column>
+                    <column columnName="cond">
+                        <datatype>varchar</datatype>
+                        <columnTitle>Condition</columnTitle>
+                        <fk>
+                            <fkDbSchema>lists</fkDbSchema>
+                            <fkTable>condition</fkTable>
+                            <fkColumnName>Code</fkColumnName>
+                        </fk>
+                    </column>
+                    <column columnName="weight">
+                        <datatype>double</datatype>
+                        <columnTitle>Current Weight</columnTitle>
+                        <url>/query/executeQuery.view?schemaName=study&amp;
+                            query.queryName=Weight&amp;
+                            query.id~eq=${id}
+                        </url>
+                    </column>
+                    <column columnName="wdate">
+                        <datatype>timestamp</datatype>
+                        <formatString>yyyy-MM-dd HH:mm</formatString>
+                        <columnTitle>Weight Date</columnTitle>
+                        <url>/query/executeQuery.view?schemaName=study&amp;
+                            query.queryName=Weight&amp;
+                            query.id~eq=${id}&amp;
+                            query.date~eq=${wdate}
+                        </url>
+                    </column>
+                    <column columnName="tbdate">
+                        <datatype>timestamp</datatype>
+                        <formatString>yyyy-MM-dd</formatString>
+                        <columnTitle>Last TB Date</columnTitle>
+                        <url>/query/executeQuery.view?schemaName=study&amp;
+                            query.queryName=TB&amp;
+                            query.id~eq=${id}&amp;
+                            query.sort=-Date
+                        </url>
+                    </column>
+                    <column columnName="medical">
+                        <datatype>varchar</datatype>
+                        <columnTitle>Medical</columnTitle>
+                    </column>
+                    <column columnName="purchasedby">
+                        <datatype>varchar</datatype>
+                        <columnTitle>Purchased By</columnTitle>
+                    </column>
+                    <column columnName="v_status">
+                        <datatype>varchar</datatype>
+                        <columnTitle>Viral Status</columnTitle>
+                    </column>
+                    <column columnName="parentId">
+                        <fk>
+                          <fkDbSchema>study</fkDbSchema>
+                          <fkTable>encounters</fkTable>
+                          <fkColumnName>objectid</fkColumnName>
+                        </fk>
+                    </column>
+                </columns>
+            </table>
+        </tables>
+    </metadata>
+</query>

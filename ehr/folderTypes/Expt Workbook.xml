@@ -1,0 +1,22 @@
+<folderType xmlns="http://labkey.org/data/xml/folderType">
+    <name>Expt Workbook</name>
+    <description>The default workbook</description>
+    <requiredWebParts>
+        <webPart>
+            <name>query</name>
+            <location>body</location>
+        </webPart>
+    </requiredWebParts>
+    <preferredWebParts>
+        <webPart>
+            <name>query</name>
+            <location>right</location>
+        </webPart>
+    </preferredWebParts>
+    <modules>
+        <moduleName>ehr</moduleName>
+        <moduleName>query</moduleName>
+        <moduleName>portal</moduleName>
+    </modules>
+    <defaultModule>portal</defaultModule>
+</folderType>

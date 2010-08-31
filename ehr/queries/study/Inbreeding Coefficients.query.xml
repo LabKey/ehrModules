@@ -1,0 +1,9 @@
+<query xmlns="http://labkey.org/data/xml/query">
+    <metadata>
+        <tables xmlns="http://labkey.org/data/xml">
+            <table tableName="inbreeding" tableDbType="TABLE">
+                <tableUrl>/query/detailsQueryRow.view?schemaName=study&amp;query.queryName=inbreeding&amp;lsid=${lsid}</tableUrl>
+            </table>
+        </tables>
+    </metadata>
+</query>

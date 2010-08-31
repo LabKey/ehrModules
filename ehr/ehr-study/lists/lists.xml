@@ -379,7 +379,7 @@
     </table>
     <table tableName="project" tableDbType="TABLE">
       <tableTitle>IACUC Projects</tableTitle>
-      <tableUrl>/EHR_Reporting/projectDetails.view?key=${project}</tableUrl>
+      <tableUrl>/ehr/projectDetails.view?key=${project}</tableUrl>
       <titleColumn>project</titleColumn>
       <columns>
         <column columnName="project">
@@ -450,7 +450,7 @@
     </table>
     <table tableName="protocol" tableDbType="TABLE">
       <tableTitle>RARC Protocols</tableTitle>
-      <tableUrl>/EHR_Reporting/protocolDetails.view?key=${protocol}</tableUrl>
+      <tableUrl>/ehr/protocolDetails.view?key=${protocol}</tableUrl>
       <columns>
         <column columnName="protocol">
           <datatype>varchar</datatype>

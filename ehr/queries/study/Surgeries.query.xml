@@ -1,0 +1,33 @@
+<query xmlns="http://labkey.org/data/xml/query">
+    <metadata>
+        <tables xmlns="http://labkey.org/data/xml">
+            <table tableName="Surgeries" tableDbType="TABLE">
+                <tableUrl>/ehr/surgeryDetails.view?key=${objectid}</tableUrl>
+                <columns>
+                    <column columnName="Project">
+                        <fk>
+                            <fkDbSchema>lists</fkDbSchema>
+                            <fkTable>project</fkTable>
+                            <fkColumnName>project</fkColumnName>
+                        </fk>
+                    </column>
+                    <column columnName="Date">
+                        <formatString>yyyy-MM-dd HH:mm</formatString>
+                    </column>
+                    <column columnName="enddate">
+                        <datatype>timestamp</datatype>
+                        <formatString>yyyy-MM-dd HH:mm</formatString>
+                        <columnTitle>End Date</columnTitle>
+                    </column>
+                    <column columnName="parentId">
+                        <fk>
+                          <fkDbSchema>study</fkDbSchema>
+                          <fkTable>encounters</fkTable>
+                          <fkColumnName>objectid</fkColumnName>
+                        </fk>
+                    </column>
+                </columns>
+            </table>
+        </tables>
+    </metadata>
+</query>

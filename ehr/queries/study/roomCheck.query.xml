@@ -1,0 +1,31 @@
+<query xmlns="http://labkey.org/data/xml/query">
+    <metadata>
+        <tables xmlns="http://labkey.org/data/xml">
+            <table tableName="roomCheck" tableDbType="NOT_IN_DB">
+                <columns>
+                    <column columnName="Location">
+                        <columnTitle>Current Location</columnTitle>
+                    </column>
+                    <column columnName="Length">
+                        <columnTitle>Length (in)</columnTitle>
+                    </column>
+                    <column columnName="Width">
+                        <columnTitle>Width (in)</columnTitle>
+                    </column>
+                    <column columnName="CageSqft">
+                        <columnTitle>Square Feet in Cage</columnTitle>
+                    </column>
+                    <column columnName="ReqSqft">
+                        <columnTitle>Min. Square Feet Required</columnTitle>
+                    </column>
+                    <column columnName="CageHeight">
+                        <columnTitle>Height of Cage</columnTitle>
+                    </column>
+                    <column columnName="ReqHeight">
+                        <columnTitle>Min. Height Required</columnTitle>
+                    </column>
+                </columns>
+            </table>
+        </tables>
+    </metadata>
+</query>

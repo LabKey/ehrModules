@@ -1,0 +1,26 @@
+.extContainer fieldset, fieldset {
+margin-bottom:5px;
+padding-bottom:5px;
+height:auto
+}
+.x-form-item  {
+margin-bottom:4px
+}
+
+.x-menu-item ul {
+margin-bottom:0px;
+margin-top:0px;
+}
+
+/*.x-grid-panel .x-panel-mc .x-panel-body {*/
+/*border:none;*//*#d0d0d0;*/
+/*}*/
+
+.ehr-panel {
+border:#B5B8C8;
+border-top-color:#B5B8C8;
+border-bottom-color:#B5B8C8;
+border-left-color:#B5B8C8;
+border-right-color:#B5B8C8;
+border:1px solid;
+}

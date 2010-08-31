@@ -1,0 +1,28 @@
+ <query xmlns="http://labkey.org/data/xml/query">
+    <metadata> 
+        <tables xmlns="http://labkey.org/data/xml">
+            <table tableName="clinremarks" tableDbType="TABLE">
+                <tableUrl>/query/detailsQueryRow.view?schemaName=study&amp;query.queryName=clinremarks&amp;lsid=${lsid}</tableUrl>
+                <columns>
+                    <column columnName="project">
+                        <fk>
+                          <fkDbSchema>lists</fkDbSchema>
+                          <fkTable>project</fkTable>
+                          <fkColumnName>project</fkColumnName>
+                        </fk>
+                    </column>
+                    <column columnName="date">
+                        <formatString>yyyy-MM-dd HH:mm</formatString>
+                    </column>
+                    <column columnName="parentId">
+                        <fk>
+                          <fkDbSchema>study</fkDbSchema>
+                          <fkTable>encounters</fkTable>
+                          <fkColumnName>objectid</fkColumnName>
+                        </fk>
+                    </column>
+                </columns>
+            </table>
+        </tables>
+    </metadata>
+</query>

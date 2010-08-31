@@ -1,0 +1,38 @@
+ <query xmlns="http://labkey.org/data/xml/query">
+    <metadata> 
+        <tables xmlns="http://labkey.org/data/xml">
+            <table tableName="chemistryResults" tableDbType="TABLE">
+                <tableUrl>/query/detailsQueryRow.view?schemaName=study&amp;query.queryName=chemistryResults&amp;lsid=${lsid}</tableUrl>
+                <columns>
+                    <column columnName="date">
+                        <formatString>yyyy-MM-dd HH:mm</formatString>
+                    </column>
+                    <column columnName="RefRange" wrappedColumnName="lsid">
+                        <columnTitle>Ref Range</columnTitle>
+                        <isUnselectable>true</isUnselectable>
+                        <isHidden>false</isHidden>
+                        <fk>
+                            <fkDbSchema>study</fkDbSchema>
+                            <fkTable>chemistryRefRange</fkTable>
+                            <fkColumnName>lsid</fkColumnName>
+                        </fk>
+                    </column>
+                    <column columnName="parentId">
+                        <fk>
+                          <fkDbSchema>study</fkDbSchema>
+                          <fkTable>chemistryRuns</fkTable>
+                          <fkColumnName>objectid</fkColumnName>
+                        </fk>
+                    </column>
+                    <column columnName="runId">
+                        <fk>
+                          <fkDbSchema>study</fkDbSchema>
+                          <fkTable>chemistryRuns</fkTable>
+                          <fkColumnName>objectid</fkColumnName>
+                        </fk>
+                    </column>
+                </columns>
+            </table>
+        </tables>
+    </metadata>
+</query>

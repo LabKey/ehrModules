@@ -1,0 +1,8 @@
+<customView xmlns="http://labkey.org/data/xml/queryCustomView">
+   <sorts>
+       <sort column="id" />
+       <sort column="date" />
+       <sort column="seq1" />
+       <sort column="seq2" />
+   </sorts>
+</customView>

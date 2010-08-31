@@ -1,0 +1,31 @@
+<query xmlns="http://labkey.org/data/xml/query">
+    <metadata>
+        <tables xmlns="http://labkey.org/data/xml">
+            <table tableName="project" tableDbType="TABLE">
+                <tableUrl>/ehr/projectDetails.view?key=${project}</tableUrl>
+                <titleColumn>project</titleColumn>
+                <columns>
+                    <column columnName="totalAssigned" wrappedColumnName="project">
+                      <datatype>integer</datatype>
+                      <isUnselectable>true</isUnselectable>
+                      <columnTitle>Animals Assigned</columnTitle>
+                      <fk>
+                        <fkDbSchema>lists</fkDbSchema>
+                        <fkTable>projectTotalAssigned</fkTable>
+                        <fkColumnName>project</fkColumnName>
+                      </fk>
+                    </column>
+                    <column columnName="lastAssignment" wrappedColumnName="project">
+                      <columnTitle>Last Assignment Date</columnTitle>
+                      <isUnselectable>true</isUnselectable>
+                      <fk>
+                        <fkDbSchema>lists</fkDbSchema>
+                        <fkTable>projectLastAssignmentDate</fkTable>
+                        <fkColumnName>project</fkColumnName>
+                      </fk>
+                    </column>
+                </columns>
+            </table>
+        </tables>
+    </metadata>
+</query>

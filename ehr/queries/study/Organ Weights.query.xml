@@ -1,0 +1,9 @@
+<query xmlns="http://labkey.org/data/xml/query">
+    <metadata>
+        <tables xmlns="http://labkey.org/data/xml">
+            <table tableName="organ_weights" tableDbType="TABLE">
+                <tableUrl>/query/detailsQueryRow.view?schemaName=study&amp;query.queryName=organ_weights&amp;lsid=${lsid}</tableUrl>
+            </table>
+        </tables>
+    </metadata>
+</query>

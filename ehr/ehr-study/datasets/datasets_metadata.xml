@@ -655,7 +655,7 @@
         <shownInUpdateView>false</shownInUpdateView>
         <isHidden>true</isHidden>
         <columnTitle>Room</columnTitle>
-        <url>/EHR_Reporting/cageDetails.view?
+        <url>/ehr/cageDetails.view?
             room=${room}&amp;
             cage=${cage}&amp;
         </url>
@@ -666,7 +666,7 @@
         <shownInUpdateView>false</shownInUpdateView>
         <isHidden>true</isHidden>
         <columnTitle>Cage</columnTitle>
-        <url>/EHR_Reporting/cageDetails.view?
+        <url>/ehr/cageDetails.view?
             room=${room}&amp;
             cage=${cage}
         </url>
@@ -1670,7 +1670,7 @@
       <column columnName="room">
         <datatype>varchar</datatype>
         <columnTitle>Room</columnTitle>
-        <url>/EHR_Reporting/cageDetails.view?
+        <url>/ehr/cageDetails.view?
             room=${room}&amp;
             cage=${cage}
         </url>
@@ -1678,7 +1678,7 @@
       <column columnName="cage">
         <datatype>varchar</datatype>
         <columnTitle>Cage</columnTitle>
-        <url>/EHR_Reporting/cageDetails.view?
+        <url>/ehr/cageDetails.view?
             room=${room}&amp;
             cage=${cage}
         </url>
@@ -2499,7 +2499,7 @@
         <datatype>varchar</datatype>
         <!--<nullable>false</nullable>-->
         <columnTitle>Room</columnTitle>
-        <url>/EHR_Reporting/cageDetails.view?
+        <url>/ehr/cageDetails.view?
             room=${room}&amp;
             cage=${cage}&amp;
         </url>
@@ -2507,7 +2507,7 @@
       <column columnName="cage">
         <datatype>varchar</datatype>
         <columnTitle>Cage</columnTitle>
-        <url>/EHR_Reporting/cageDetails.view?
+        <url>/ehr/cageDetails.view?
             room=${room}&amp;
             cage=${cage}&amp;
         </url>
@@ -3374,7 +3374,7 @@
       <column columnName="room">
         <datatype>varchar</datatype>
         <columnTitle>Room</columnTitle>
-        <url>/EHR_Reporting/cageDetails.view?
+        <url>/ehr/cageDetails.view?
             room=${room}&amp;
             cage=${cage}
         </url>
@@ -3717,7 +3717,7 @@
       <column columnName="room">
         <datatype>varchar</datatype>
         <columnTitle>Room</columnTitle>
-        <url>/EHR_Reporting/cageDetails.view?
+        <url>/ehr/cageDetails.view?
             room=${room}&amp;
             cage=${cage}&amp;
         </url>
@@ -3725,7 +3725,7 @@
       <column columnName="cage">
         <datatype>varchar</datatype>
         <columnTitle>Cage</columnTitle>
-        <url>/EHR_Reporting/cageDetails.view?
+        <url>/ehr/cageDetails.view?
             room=${room}&amp;
             cage=${cage}&amp;
         </url>
@@ -3739,7 +3739,7 @@
           <!--<fkTable>cage</fkTable>-->
           <!--<fkColumnName>roomcage</fkColumnName>-->
         <!--</fk>-->
-        <!--<url>/EHR_Reporting/cageDetails.view?-->
+        <!--<url>/ehr/cageDetails.view?-->
             <!--room=${room}&amp;-->
             <!--cage=${cage}&amp;-->
         <!--</url>-->
@@ -3868,7 +3868,7 @@
     <tableTitle>Problem List</tableTitle>
   </table>
   <table tableName="surgery" tableDbType="TABLE">
-    <tableUrl>/EHR_Reporting/protocolDetails.view?key=${lsid}</tableUrl>
+    <tableUrl>/ehr/protocolDetails.view?key=${lsid}</tableUrl>
     <columns>
       <column columnName="participantid">
         <datatype>varchar</datatype>

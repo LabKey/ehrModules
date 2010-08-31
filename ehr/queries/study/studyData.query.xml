@@ -1,0 +1,63 @@
+<query xmlns="http://labkey.org/data/xml/query">
+  <metadata>
+        <tables xmlns="http://labkey.org/data/xml">
+            <table tableName="StudyData" tableDbType="TABLE">                
+                <columns>
+                    <column columnName="Remark">
+                        <isHidden>false</isHidden>
+                        <displayWidth>250</displayWidth>
+                    </column>
+                    <column columnName="Description">
+                        <isHidden>false</isHidden>
+                        <displayWidth>300</displayWidth>
+                    </column>
+                    <column columnName="Project">
+                        <fk>
+                            <fkDbSchema>lists</fkDbSchema>
+                            <fkTable>project</fkTable>
+                            <fkColumnName>project</fkColumnName>
+                        </fk>
+                    </column>
+                    <column columnName="parentId">
+                        <isHidden>true</isHidden>
+                    </column>
+                </columns>
+                <buttonBarOptions position="both" includeStandardButtons="false">
+                    <includeScript>/ehr/studyButtons.js</includeScript>
+                    <item text="Insert New">
+                        <originalText>Insert New</originalText>
+                    </item>
+                    <item text="Views">
+                        <originalText>Views</originalText>
+                    </item>
+                    <item text="Cohorts">
+                        <originalText>Cohorts</originalText>
+                    </item>
+                    <item text="QC State">
+                        <originalText>QC State</originalText>
+                    </item>
+                    <item text="Export">
+                        <originalText>Export</originalText>
+                    </item>
+                    <item text="Print">
+                        <originalText>Print</originalText>
+                    </item>
+                    <item text="Import Data">
+                        <originalText>Import Data</originalText>
+                    </item>
+                    <item text="Page Size">
+                        <originalText>Page Size</originalText>
+                    </item>
+                    <item text="Delete">
+                        <originalText>Delete</originalText>
+                    </item>
+                    <item requiresSelection="true" text="View Chart">
+                        <onClick>
+                            historyHandler(dataRegion, dataRegionName);
+                        </onClick>
+                    </item>
+                </buttonBarOptions>
+            </table>
+        </tables>
+    </metadata>
+</query>

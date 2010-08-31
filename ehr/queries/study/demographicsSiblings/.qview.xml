@@ -1,0 +1,17 @@
+<customView xmlns="http://labkey.org/data/xml/queryCustomView">
+    <columns>
+        <column name="Id"/>
+        <column name="Relationship"/>
+        <column name="Sibling"/>
+        <column name="Sibling/Status/Status">
+            <properties>
+                <property name="columnTitle" value="Sibling Status"/>
+            </properties>
+        </column>
+        <column name="SiblingDam"/>
+        <column name="SiblingSire"/>
+   </columns>
+   <sorts>
+       <sort column="Id" descending="true"/>
+   </sorts>
+</customView>

@@ -1,0 +1,41 @@
+<customView xmlns="http://labkey.org/data/xml/queryCustomView">
+    <columns>
+        <column name="problem_number"/>
+        <column name="Id"/>
+        <column name="date_observed"/>
+        <column name="date_resolved"/>
+        <column name="Remark"/>
+        <column name="code"/>
+        <column name="Id/Dataset/Demographics/gender">
+            <properties>
+                <property name="columnTitle" value="gender"/>
+            </properties>
+        </column>
+        <column name="Id/Species/Species">
+            <properties>
+                <property name="columnTitle" value="Species"/>
+            </properties>
+        </column>
+        <column name="Id/age/AgeInYears">
+            <properties>
+                <property name="columnTitle" value="Age (Years)"/>
+            </properties>
+        </column>
+        <column name="Id/curLocation/room">
+            <properties>
+                <property name="columnTitle" value="Current Room"/>
+            </properties>
+        </column>
+        <column name="Id/curLocation/cage">
+            <properties>
+                <property name="columnTitle" value="Current Cage"/>
+            </properties>
+        </column>
+    </columns>
+    <filters>
+        <filter column="date_resolved" operator="isblank"/>
+    </filters>
+    <sorts>
+        <sort column="date_observed" descending="true"/>
+    </sorts>
+</customView>

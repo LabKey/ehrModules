@@ -1,0 +1,48 @@
+<query xmlns="http://labkey.org/data/xml/query">
+    <metadata>
+        <tables xmlns="http://labkey.org/data/xml">
+            <table tableName="drug" tableDbType="TABLE">
+                <tableUrl>/query/detailsQueryRow.view?schemaName=study&amp;query.queryName=drug&amp;lsid=${lsid}</tableUrl>
+                <columns>
+                    <column columnName="project">
+                        <fk>
+                            <fkDbSchema>lists</fkDbSchema>
+                            <fkTable>project</fkTable>
+                            <fkColumnName>project</fkColumnName>
+                        </fk>
+                    </column>
+                    <column columnName="date">
+                        <columnTitle>Header Date</columnTitle>
+                        <formatString>yyyy-MM-dd HH:mm</formatString>
+                    </column>
+                    <column columnName="code">
+                        <datatype>varchar</datatype>
+                        <columnTitle>SNOMED</columnTitle>
+                        <fk>
+                            <fkDbSchema>lists</fkDbSchema>
+                            <fkTable>snomed</fkTable>
+                            <fkColumnName>code</fkColumnName>
+                        </fk>
+                    </column>
+                    <column columnName="BeginTime">
+                        <datatype>timestamp</datatype>
+                        <columnTitle>Begin Time</columnTitle>
+                        <formatString>H:mm</formatString>
+                    </column>
+                    <column columnName="EndTime">
+                        <datatype>timestamp</datatype>
+                        <columnTitle>End Time</columnTitle>
+                        <formatString>H:mm</formatString>
+                    </column>
+                    <column columnName="parentId">
+                        <fk>
+                          <fkDbSchema>study</fkDbSchema>
+                          <fkTable>encounters</fkTable>
+                          <fkColumnName>objectid</fkColumnName>
+                        </fk>
+                    </column>
+                </columns>
+            </table>
+        </tables>
+    </metadata>
+</query>

@@ -1,0 +1,9 @@
+<query xmlns="http://labkey.org/data/xml/query">
+    <metadata>
+        <tables xmlns="http://labkey.org/data/xml">
+            <table tableName="Cage" tableDbType="TABLE">
+                <tableUrl>/ehr/cageDetails.view?room=${room}&amp;cage=${cage}</tableUrl>
+            </table>
+        </tables>
+    </metadata>
+</query>

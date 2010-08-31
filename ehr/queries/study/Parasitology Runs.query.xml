@@ -1,0 +1,26 @@
+<query xmlns="http://labkey.org/data/xml/query">
+    <metadata>
+        <tables xmlns="http://labkey.org/data/xml">
+            <table tableName="parasitologyRuns" tableDbType="TABLE">
+                <tableUrl>/ehr/clinpathDetails.view?runId=${objectid}&amp;dataset=Parasitology</tableUrl>
+                <columns>
+                    <column columnName="room">
+                        <datatype>varchar</datatype>
+                        <columnTitle>Room</columnTitle>
+                        <url>/ehr/cageDetails.view?
+                            room=${room}&amp;
+                            cage=${cage}
+                        </url>
+                    </column>
+                    <column columnName="parentId">
+                        <fk>
+                          <fkDbSchema>study</fkDbSchema>
+                          <fkTable>encounters</fkTable>
+                          <fkColumnName>objectid</fkColumnName>
+                        </fk>
+                    </column>
+                </columns>
+            </table>
+        </tables>
+    </metadata>
+</query>

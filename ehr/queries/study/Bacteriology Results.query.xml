@@ -1,0 +1,56 @@
+<query xmlns="http://labkey.org/data/xml/query">
+    <metadata>
+        <tables xmlns="http://labkey.org/data/xml">
+            <table tableName="bacteriologyResults" tableDbType="TABLE">
+                <tableUrl>/query/detailsQueryRow.view?schemaName=study&amp;query.queryName=bacteriologyResults&amp;lsid=${lsid}</tableUrl>
+                <columns>
+                    <column columnName="source">
+                        <datatype>varchar</datatype>
+                        <columnTitle>Source SNOMED</columnTitle>
+                        <fk>
+                            <fkDbSchema>lists</fkDbSchema>
+                            <fkTable>snomed</fkTable>
+                            <fkColumnName>code</fkColumnName>
+                        </fk>
+                    </column>
+                    <column columnName="result">
+                        <datatype>varchar</datatype>
+                        <columnTitle>Result SNOMED</columnTitle>
+                        <fk>
+                            <fkDbSchema>lists</fkDbSchema>
+                            <fkTable>snomed</fkTable>
+                            <fkColumnName>code</fkColumnName>
+                        </fk>
+                    </column>
+                    <column columnName="antibiotic">
+                        <datatype>varchar</datatype>
+                        <columnTitle>Antibiotic SNOMED</columnTitle>
+                        <fk>
+                            <fkDbSchema>lists</fkDbSchema>
+                            <fkTable>snomed</fkTable>
+                            <fkColumnName>code</fkColumnName>
+                        </fk>
+                    </column>
+                    <column columnName="sensitivity">
+                        <datatype>varchar</datatype>
+                        <columnTitle>Sensitivity</columnTitle>
+                    </column>
+                    <column columnName="runId">
+                        <fk>
+                          <fkDbSchema>study</fkDbSchema>
+                          <fkTable>bacteriologyRuns</fkTable>
+                          <fkColumnName>objectid</fkColumnName>
+                        </fk>
+                    </column>
+                    <column columnName="parentId">
+                        <fk>
+                          <fkDbSchema>study</fkDbSchema>
+                          <fkTable>bacteriologyRuns</fkTable>
+                          <fkColumnName>objectid</fkColumnName>
+                        </fk>
+                    </column>
+                </columns>
+            </table>
+        </tables>
+    </metadata>
+</query>

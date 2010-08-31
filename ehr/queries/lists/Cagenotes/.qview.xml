@@ -1,0 +1,12 @@
+<customView xmlns="http://labkey.org/data/xml/queryCustomView">
+   <columns>
+       <column name="room"/>
+       <column name="cage"/>
+       <column name="date"/>
+       <column name="note"/>
+       <column name="userid"/>
+   </columns>
+   <sorts>
+       <sort column="date" descending="true"/>
+   </sorts>
+</customView>
