@@ -469,6 +469,7 @@ ehr/resources/views/quickSearch.view.xml -text
 ehr/resources/views/quickSearch.webpart.xml -text
 ehr/resources/views/surgeryDetails.html -text
 ehr/resources/views/utilities.html -text
+ehr/scripts/pg_backup/.project -text
 ehr/scripts/pg_backup/_netrc -text
 ehr/scripts/pg_backup/_pgpass -text
 ehr/scripts/pg_backup/lkServerBackup.pl -text

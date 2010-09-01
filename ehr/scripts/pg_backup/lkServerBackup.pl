@@ -99,7 +99,7 @@ use Config::Abstract::Ini;
 use Archive::Tar;
 use Log::Rolling;
 use Data::Dumper;
-use Labkey::query;
+use Labkey::Query;
  
 
 # get INI file.  this should allow a filepath relative to this script
@@ -447,7 +447,7 @@ sub lk_log
 
 {	
 	my $date = sprintf("%04d-%02d-%02d %02d:%02d", $tm->year+1900, ($tm->mon)+1, $tm->mday, $tm->hour, $tm->min);
-	my $insert = Labkey::query::insertRows(
+	my $insert = Labkey::Query::insertRows(
 		-baseUrl => $lk_config{'baseURL'},
 		-containerPath => $lk_config{'containerPath'},
 		-project => $lk_config{'project'},
