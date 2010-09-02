@@ -17,6 +17,12 @@
                         query.EmployeeId~eq=${id}&amp;
                         query.RequirementName~lte=${RequirementName}&amp;
                     </url>
+                    <fk>
+                        <fkFolderPath>WNPRC/WNPRC_Units/Animal_Services/Compliance_Training/Private/EmployeeDB/</fkFolderPath>
+                        <fkDbSchema>lists</fkDbSchema>
+                      <fkTable>RequirementsList</fkTable>
+                      <fkColumnName>requirementName</fkColumnName>
+                    </fk>
                 </column>
             </columns>
         </table>

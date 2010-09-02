@@ -12,6 +12,11 @@
             </properties>
         </column>
         <column name="requirementName"/>
+        <column name="requirementName/Type">
+            <properties>
+                <property name="columnTitle" value="Requirement Type"/>
+            </properties>
+        </column>
         <column name="date"/>
         <column name="result"/>
         <column name="comment"/>

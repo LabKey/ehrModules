@@ -7,14 +7,16 @@
  *
  * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
  */
-Ext.namespace('EHR.ext.customFields', 'EHR.ext.customPanels');
+Ext.namespace('EHR.ext');
 
 LABKEY.requiresScript("/ehr/datetime.js");
-//LABKEY.requiresScript("/ehr/arrayUtils.js");
 LABKEY.requiresScript("/ehr/utilities.js");
-LABKEY.requiresScript("/ehr/ehrEditorGridpanel.js");
+//LABKEY.requiresScript("/ehr/ehrEditorGridpanel.js");
+LABKEY.requiresScript("/ehr/databind.js");
 
 Ext.form.Field.prototype.msgTarget = 'side';
+
+//a css fix for Ext datepicker
 Ext.menu.DateMenu.prototype.addClass('extContainer');
 
 EHR.ext.standardMetadata = {
@@ -24,30 +26,73 @@ EHR.ext.standardMetadata = {
     AnimalVisit: {isHidden: true},
     modified: {isHidden: true},
     SequenceNum: {isHidden: true},
-    QCState: {isHidden: true}
+    QCState: {isHidden: true, inherited: true}
 };
 
 //Ext.form.Field.prototype.fieldTpl = new Ext.Template(
 //    '<div class="x-form-item {itemCls}" tabIndex="-1">',
 //        '<label for="{id}" style="{labelStyle}" class="x-form-item-label">{label}{labelSeparator}</label>',
-//        '<div for="{id}" >abc</div>',
 //        '<div class="x-form-element" id="x-form-el-{id}" style="{elementStyle}">',
 //        '</div><div class="{clearCls}"></div>',
 //    '</div>'
 //);
 //
-//Ext.FormPanel.prototype.fieldTpl = new Ext.Template(
-//    '<div class="x-form-item {itemCls}" tabIndex="-1">',
-//        '<label for="{id}" style="{labelStyle}" class="x-form-item-label">{label}{labelSeparator}</label>',
-//        '<div>abc</div>',
-//        '<div class="x-form-element" id="x-form-el-{id}" style="{elementStyle}">',
-//        '</div><div class="{clearCls}"></div>',
-//    '</div>'
-//);
+
+/**
+ * The following overwrite allows tooltips on labels within form layouts.
+ * The field have to be a property named "labelTooltip" in the corresponding
+ * config object.
+ */
+Ext.override(Ext.layout.FormLayout, {
+    setContainer: Ext.layout.FormLayout.prototype.setContainer.createSequence(function(ct) {
+        // the default field template used by all form layouts
+        var t = new Ext.Template(
+            '<div class="x-form-item {5}" tabIndex="-1">',
+                '<label for="{0}" style="{2}" class="x-form-item-label"{7}>{1}{4}</label>',
+                '<div class="x-form-element" id="x-form-el-{0}" style="{3}">',
+                '</div><div class="{6}"></div>',
+            '</div>'
+        );
+        t.disableFormats = true;
+        t.compile();
+        Ext.layout.FormLayout.prototype.fieldTpl = t;
+    }),
+
+    renderItem: function(c, position, target){
+        if(c && !c.rendered && c.isFormField && c.inputType != 'hidden' && c.fieldLabel){
+            var args = [
+                   c.id,
+                   c.fieldLabel,
+                   c.labelStyle||this.labelStyle||'',
+                   this.elementStyle||'',
+                   typeof c.labelSeparator == 'undefined' ? this.labelSeparator : c.labelSeparator,
+                   (c.itemCls||this.container.itemCls||'') + (c.hideLabel ? ' x-hide-label' : ''),
+                   c.clearCls || 'x-form-clear-left',
+                   (c.labelTooltip === undefined ? '' : ' ext:qtip="'+c.labelTooltip+'"')
+            ];
+            if(typeof position == 'number'){
+                position = target.dom.childNodes[position] || null;
+            }
+            if(position){
+                this.fieldTpl.insertBefore(position, args);
+            }else{
+                this.fieldTpl.append(target, args);
+            }
+            c.render('x-form-el-'+c.id);
+        }
+        else {
+            Ext.layout.FormLayout.superclass.renderItem.apply(this, arguments);
+        }
+    }
+});
+
 
 EHR.ext.formPanel = Ext.extend(Ext.Panel, {
+//EHR.ext.formPanel = Ext.extend(Ext.TabPanel, {
     constructor: function(config){
         config = config || {};
+
+        this.uuid = LABKEY.ActionURL.getParameter('uuid') || LABKEY.Utils.generateUUID();
 
         Ext.QuickTips.init();
         
@@ -59,11 +104,14 @@ EHR.ext.formPanel = Ext.extend(Ext.Panel, {
             ,frame:true
             ,defaultType: 'textfield'
             ,bodyStyle: 'padding:5px 5px 5px 5px'
+            ,style: 'border-style:solid;border-width:1px'
+            //,cls: 'extContainer'
+            ,queries: []
             ,monitorValid: true
             ,defaults: {
                 msgTarget: 'side'
                 ,validationDelay: 1000
-                ,bubbleEvents: ['valid', 'invalid', 'add']
+                //,bubbleEvents: ['valid', 'invalid', 'add']
             }
             ,buttons: [
                 {text: 'Save Draft', id: 'saveDraft', handler: this.onSubmit, scope: this},
@@ -71,60 +119,76 @@ EHR.ext.formPanel = Ext.extend(Ext.Panel, {
                 {text: 'Submit for SNOMED Coding', id: 'snomedReview', handler: this.onSubmit, scope: this, formBind: true},
                 {text: 'Discard', id: 'discard', handler: this.discard, scope: this}
             ]
-            ,uuid: LABKEY.ActionURL.getParameter('uuid') // || LABKEY.Utils.generateUUID()
         });
 
         EHR.ext.formPanel.superclass.constructor.call(this, config);
 
         window.onbeforeunload = LABKEY.beforeunload(function () {
-            if (this.getForm().isDirty())
-                return this.warningMessage;
+            if (this.isDirty(this.getForms()))
+                return this.warningMessage || 'form dirty';
         }, this);
     },
     onSubmit: function(o){
-        console.log(o)
+        var forms = this.getForms();
+        Ext.each(forms, function(c){
+            console.log(c.getFieldValues());
+        }, this)
     },
     discard: function(o){
-        console.log(o)
+
+    },
+    getForms: function(){
+        var forms = [];
+        Ext.each(this.queries, function(c){
+            forms.push(this.get(c).getForm());            
+        }, this);
+        return forms;
+    },
+    isDirty: function(forms){
+        Ext.each(forms, function(c){
+            if(c.isDirty()){
+                return true
+            }
+        }, this)
     }
 });
 
 
-
-
-
-
-
-EHR.ext.Header = Ext.extend(Ext.form.FieldSet, {
+EHR.ext.Header = Ext.extend(Ext.FormPanel, {
     initComponent: function(){
         Ext.apply(this, {
             autoHeight: true
-            ,id: 'header'
+            ,id: 'encounters'
+            ,width: 'auto'            
             ,title: 'Header'
-//            ,width: 'auto'
-            ,layout: 'column'
             ,bodyBorder: true
-            ,labelAlign: 'top'
+            ,frame: true
             ,border: true
-//            ,bodyStyle: 'padding:5px 5px 5px 5px'
-            ,bubbleEvents: ['valid', 'invalid', 'add']
+            ,buttons: []
+            ,bodyStyle: 'padding:5px 5px 5px 5px'
+            ,style: 'margin-bottom: 5px'
             ,defaults: {
                 width: 'auto',
                 fieldGroup: 'parent',
-                border: true,
-                bubbleEvents: ['valid', 'invalid', 'add']
+                border: true
             }
-            ,items: [
+            ,items: [{
+                layout: 'column'
+                ,labelAlign: 'top'
+                ,items: [
                 {
                     columnWidth:'250px',
                     style:'padding-right:4px;padding-top:1px',
                     layout: 'form',
                     items: [{
                         xtype:'ehr-animal',
-                        id: 'id',
+                        //id: 'id',
+                        name: 'encounters.id',
+                        msgTarget: 'under',
                         listeners: {
                             scope: this,
-                            valid: this.fetchAbstract
+                            valid: this.fetchAbstract,
+                            invalid: this.clearAbstract
                         }
                     }]
                 },{
@@ -132,21 +196,42 @@ EHR.ext.Header = Ext.extend(Ext.form.FieldSet, {
                     layout: 'form',
                     items: [{
                         xtype:'xdatetime',
-                        id: 'datetime',
+                        //id: 'date',
+                        name: 'encounters.date',
                         fieldLabel: 'Date/Time',
                         dateFormat: 'Y-m-d',
                         timeFormat: 'H:i'
                     }]
                 },{
                     columnWidth:'150px',
-                    style:'padding-left:4px;padding-top:1px',
+                    style:'padding-left:5px;padding-top:1px',
                     layout: 'form',
                     items: [{
                         xtype:'ehr-project',
-                        id: 'project'
+                        //id: 'encounters.project',
+                        name: 'encounters.project'
                     }]
                 }]
+            },{
+                xtype: 'fieldset'
+                ,id: 'abstract'
+                ,title: 'Abstract'
+                ,autoHeight: true
+                ,collapsible: true
+                ,collapsed: true
+                ,defaultType: 'displayfield'
+            }]
         });
+
+        this.store = EHR.ext.getLookupStore({
+            containerPath: 'WNPRC/EHR/',
+            schemaName: 'study',
+            queryName: 'encounters',
+            filterArray: [LABKEY.Filter.create('objectid', this.ownerCt.uuid, LABKEY.Filter.Types.EQUAL)],
+            maxRows: 1
+        });
+        this.ownerCt.queries.push('encounters');
+
         EHR.ext.Header.superclass.initComponent.call(this);
     },
     fetchAbstract: function(c){
@@ -174,7 +259,7 @@ EHR.ext.Header = Ext.extend(Ext.form.FieldSet, {
         target.removeAll();
 
         if(!data.rows.length){
-            target.add({xtype: 'displayfield', value: 'Id Not Found'});
+            target.add({xtype: 'displayfield', value: 'Id not found or animal not alive'});
         }
         else {
             var row = data.rows[0];
@@ -182,34 +267,42 @@ EHR.ext.Header = Ext.extend(Ext.form.FieldSet, {
                 if(c.isHidden)
                     return false;
                 var value = row['_labkeyurl_'+c.name] ? '<a href="'+row['_labkeyurl_'+c.name]+'" target=new>'+row[c.name]+'</a>' : row[c.name];
-                target.add({xtype: 'displayfield', fieldLabel: c.caption, value: value});
+                target.add({xtype: 'displayfield', fieldLabel: c.caption, value: value, submitValue: false});
             }, this);
         }
         target.doLayout();
+        target.expand();
+    },
+    clearAbstract: function(c){
+        var target = this.ownerCt.find('id', 'abstract');
+        target = target[0];
+        target.removeAll();
+        target.add({html: 'Invalid ID'});
         target.expand();
     }
 });
 Ext.reg('ehr-header', EHR.ext.Header);
 
 
-EHR.ext.Abstract = Ext.extend(Ext.form.FieldSet,
-{
-    initComponent: function(){
-        Ext.apply(this, {
-            autoHeight: true
-            ,title: 'Abstract'
-            ,collapsible: true
-            ,collapsed: true
-            ,width: 'auto'
-            ,id: 'abstract'
-            ,defaultType: 'displayfield'
-            ,bubbleEvents: ['valid', 'invalid', 'add']
-            ,border: true
-        });
-        EHR.ext.Abstract.superclass.initComponent.call(this);
-    }
-});
-Ext.reg('ehr-abstract', EHR.ext.Abstract);
+
+//EHR.ext.Abstract = Ext.extend(Ext.form.FieldSet,
+//{
+//    initComponent: function(){
+//        Ext.apply(this, {
+//            autoHeight: true
+//            ,title: 'Abstract'
+//            ,collapsible: true
+//            ,collapsed: true
+//            ,width: 'auto'
+//            ,id: 'abstract'
+//            ,defaultType: 'displayfield'
+//            ,bubbleEvents: ['valid', 'invalid', 'add']
+//            ,border: true
+//        });
+//        EHR.ext.Abstract.superclass.initComponent.call(this);
+//    }
+//});
+//Ext.reg('ehr-abstract', EHR.ext.Abstract);
 
 
 EHR.ext.DateTimeField = Ext.extend(Ext.form.Field,
@@ -286,11 +379,12 @@ EHR.ext.ProjectField = Ext.extend(LABKEY.ext.ComboBox,
         Ext.apply(this, {
             fieldLabel: 'Project'
             ,width: 120
-            ,name: 'Project'
+            ,name: this.name || 'Project'
             ,emptyText:'Select project...'
             ,displayField:'project'
             ,valueField: 'project'
             ,typeAhead: true
+            ,forceSelection: true
             ,mode: 'local'
             ,store: EHR.ext.getLookupStore({
                 containerPath: 'WNPRC/EHR/',
@@ -311,10 +405,11 @@ EHR.ext.ProtocolField = Ext.extend(LABKEY.ext.ComboBox,
     initComponent: function(){
         Ext.apply(this, {
             fieldLabel: 'Protocol'
-            ,name: 'Protocol'
+            ,name: this.name || 'Protocol'
             ,emptyText:'Select protocol...'
             ,displayField:'protocol'
             ,valueField: 'protocol'
+            ,forceSelection: true
             ,typeAhead: true
             ,mode: 'local'
             ,store: EHR.ext.getLookupStore({
@@ -339,7 +434,7 @@ EHR.ext.BooleanCombo = Ext.extend(LABKEY.ext.ComboBox,
             valueField: 'value',
             store: new Ext.data.ArrayStore({
                 fields: ['name', 'value'],
-                data: [['N/A',''], ['No',false], ['Yes',true]]
+                data: [['N/A',null], ['No',false], ['Yes',true]]
             }),
             forceSelection:true,
             typeAhead: false,
@@ -381,7 +476,6 @@ EHR.ext.getLookupStore = function(c, uniqueName)
 
         c.autoLoad = true;
         c.storeId = uniqueName;
-
         store = new LABKEY.ext.Store(c);
     }
     return store;
@@ -426,16 +520,51 @@ EHR.ext.getLookupStore = function(c, uniqueName)
 //Ext.reg('ehr-date', EHR.ext.DateField);
 
 
-EHR.ext.QuerySet = Ext.extend(Ext.form.FieldSet,
+EHR.ext.QuerySet = Ext.extend(Ext.FormPanel,
 {
     initComponent: function(){
         Ext.apply(this, {
             autoHeight: true
             ,collapsible: true
+            ,animCollapse: true
             ,width: 'auto'
             ,border: true
             ,items: {xtype: 'displayfield', value: 'Loading...'}
+            ,id: this.id || this.queryName
+            ,bodyBorder: true
+            ,frame:true
+            ,bodyStyle: 'padding:5px 5px 5px 5px'
+            ,style: 'margin-bottom: 5px;border-style:solid;border-width:1px'
+            ,monitorValid: true
+            ,buttons: [{text: 'Show Store', id: 'store', handler: this.showStore, scope: this, formBind: true}]
+            ,store: EHR.ext.getLookupStore({
+                containerPath: 'WNPRC/EHR/',
+                schemaName: this.schemaName,
+                queryName: this.queryName,
+                viewName: this.viewName,
+                filterArray: [LABKEY.Filter.create('parentid', this.ownerCt.uuid, LABKEY.Filter.Types.EQUAL)]
+            })
         });
+
+        EHR.ext.QuerySet.superclass.initComponent.apply(this, arguments);
+        this.ownerCt.queries.push(this.id);
+
+        //  createOverrides();
+        if (this.store)  {
+           this.store = Ext.StoreMgr.lookup(this.store);
+           this.store.on({
+            scope: this,
+            load : function(store, records, options ) {
+              // Can only contain one row of data.
+              if (records.length > 0) {
+                this.onBind(records[0]);
+              } else  {
+                store.addRecord(new store.recordType());
+                this.onBind(store.getAt(0));
+              }
+            }
+            });
+        }
 
         LABKEY.Query.getQueryDetails({
             queryName: this.queryName
@@ -444,27 +573,60 @@ EHR.ext.QuerySet = Ext.extend(Ext.form.FieldSet,
             ,errorCallback: EHR.UTILITIES.onError
             ,scope: this
         });
-        EHR.ext.QuerySet.superclass.initComponent.apply(this, arguments);
-
     },
+    showStore: function(c){
+//        Ext.each(this.getDataboundFields(), function(c){
+//            console.log(c.name+': '+c.getValue())
+//        }, this)
+        this.store.each(function(rec){
+            Ext.each(rec.fields.keys, function(f){
+                console.log(f+': '+rec.get(f));
+            }, this);
+        }, this)
+        
+    },    
     loadQuery: function(meta){
         this.removeAll();
         Ext.each(meta.columns, function(c){
             //TODO: get shownInInsertView applied correctly
             if(this.metadata && this.metadata[c.name])
                 EHR.UTILITIES.rApply(c, this.metadata[c.name]);
-
-            EHR.UTILITIES.rApply(c, {fieldLabel: c.label, queryName: this.queryName, schemaName: this.schemaName});
-            
+            //console.log(c);
+            EHR.UTILITIES.rApply(c, {
+                fieldLabel: c.label,
+                queryName: this.queryName,
+                schemaName: this.schemaName,
+                ext: {
+                    name: this.schemaName+'.'+c.name,
+                    labelTooltip: c.type,
+                    dataIndex: c.name,
+                    listeners: {
+                        scope: this,
+                        change: function(field){
+//console.log('change called')
+//console.log(field);
+                            if(this.boundRecord) {
+                                var val = (field instanceof Ext.form.RadioGroup ? field.getValue().inputValue : field.getValue());
+//console.log('change')
+                                this.boundRecord.set(field.dataIndex, val);
+                                this.updateBound();
+                            }
+                        }
+                    }
+                }
+            });
+         
             if (!c.isHidden && c.shownInInsertView){
                 if (c.inputType == 'textarea')
-                    EHR.UTILITIES.rApply(c, {ext: {height: 100, width: 400}});
+                    EHR.UTILITIES.rApply(c, {ext: {height: 100, width: '90%'}});
                 else
                     EHR.UTILITIES.rApply(c, {ext: {width: 200}});
 
                 if (c.inherited){
-                    EHR.UTILITIES.rApply(c, {ext: {xtype: 'hidden'}});
-                    //TODO: point to header
+                    var parent = this.get('id');
+                    EHR.UTILITIES.rApply(c, {ext: {
+                        xtype: 'hidden'
+                    }});
                 }
 
                 this.add(LABKEY.ext.FormHelper.getFieldEditor(c));

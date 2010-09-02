@@ -32,10 +32,10 @@
                     queryName: 'ComplianceRecentTests',
                     containerPath: 'WNPRC/WNPRC_Units/Animal_Services/Compliance_Training/Private/EmployeeDB/',
                     //TODO: need to update once we have real unique IDs in the tables
-                    columns: 'Id,RequirementName,ExpirePeriod,MostRecentDate,MonthsUntilRenewal',
+                    columns: 'Id,requirementName,requirementName/type,ExpirePeriod,MostRecentDate,MonthsUntilRenewal',
                     filterArray: [LABKEY.Filter.create('Id', employeeRecord.get('Id'), LABKEY.Filter.Types.EQUAL)
                     ],
-                    sort: 'RequirementName'
+                    sort: 'requirementName/type,RequirementName'
                 });
 
                 var requirementGrid = new LABKEY.ext.EditorGridPanel({
@@ -53,11 +53,13 @@
                 function customizeColumnModel(colModel, index)
                     {
                         //apparently cannot do this prior to render
-                        index['Id']['width'] = 150;
-                        index['RequirementName']['width'] = 200;
+                        index['Id']['width'] = 60;
+                        index['requirementName/type']['width'] = 60;
+                        index['requirementName/type']['header'] = 'Type';
+                        index['requirementName']['width'] = 200;
                         index['ExpirePeriod']['width'] = 100;
-                        index['MostRecentDate']['width'] = 100;
-                        index['MonthsUntilRenewal']['width'] = 100;
+                        index['MostRecentDate']['width'] = 90;
+                        index['MonthsUntilRenewal']['width'] = 90;
 
                     }
             }

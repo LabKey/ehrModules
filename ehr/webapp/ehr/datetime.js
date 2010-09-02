@@ -81,6 +81,7 @@ Ext.ux.form.DateTime = Ext.extend(Ext.form.Field, {
                         ,format:this.dateFormat || Ext.form.DateField.prototype.format
                         ,width:this.timeWidth
                         ,selectOnFocus:this.selectOnFocus
+                        ,msgTarget: 'under'
                         ,listeners:{
                                   blur:{scope:this, fn:this.onBlur}
                                  ,focus:{scope:this, fn:this.onFocus}
@@ -96,6 +97,7 @@ Ext.ux.form.DateTime = Ext.extend(Ext.form.Field, {
                         ,format:this.timeFormat || Ext.form.TimeField.prototype.format
                         ,width:this.timeWidth
                         ,selectOnFocus:this.selectOnFocus
+                        ,msgTarget: 'under'
                         ,listeners:{
                                   blur:{scope:this, fn:this.onBlur}
                                  ,focus:{scope:this, fn:this.onFocus}

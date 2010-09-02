@@ -1728,16 +1728,16 @@
         <datatype>varchar</datatype>
         <columnTitle>Purchased By</columnTitle>
       </column>
-        <column columnName="species">
-          <datatype>varchar</datatype>
-          <!--<nullable>false</nullable>-->
-          <columnTitle>Species</columnTitle>
-          <fk>
-            <fkDbSchema>lists</fkDbSchema>
-            <fkTable>species</fkTable>
-            <fkColumnName>common</fkColumnName>
-          </fk>
-        </column>        
+      <column columnName="species">
+        <datatype>varchar</datatype>
+        <!--<nullable>false</nullable>-->
+        <columnTitle>Species</columnTitle>
+        <fk>
+          <fkDbSchema>lists</fkDbSchema>
+          <fkTable>species</fkTable>
+          <fkColumnName>common</fkColumnName>
+        </fk>
+      </column>        
       <column columnName="v_status">
         <datatype>varchar</datatype>
         <columnTitle>Viral Status</columnTitle>

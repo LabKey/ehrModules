@@ -1,5 +1,22 @@
 <html>
 <script type="text/javascript">
+
+    new LABKEY.QueryWebPart({
+        renderTo: 'summaryQWP',
+        dataRegionName: 'summaryQWP',
+        title: 'Summary of Requirements',
+        containerPath: '/WNPRC/WNPRC_Units/Animal_Services/Compliance_Training/Private/EmployeeDB',
+        schemaName: 'lists',
+        queryName: 'ComplianceRecentTests',
+        viewName: 'Training',
+        buttonBarPosition: 'top',
+        showRecordSelectors: true,
+        allowChooseQuery: false,
+        allowChooseView: false,
+        showDetailsColumn: false,
+        maxRows: 10
+    });
+
     new LABKEY.QueryWebPart({
         renderTo: 'trainingQWP',
         dataRegionName: 'trainingQWP',
@@ -48,15 +65,15 @@
 </li>
 <br>
 <li>
-    Below is a grid that displays records of when each employee completed Complaince/Training requirements.
+    Below are three grids.  The top grid displays a summary of each WNPRC employee, the requirements they need to complete, and the last date they completed it.
 </li>
 <br>
 <li>
-    You can import new information using the 'Insert New' button.  Employees must be entered using their employee ID.  This is usually the beginning of their WNPRC email.
+    The second grid displays the dates that each employee completed Complaince/Training requirements.  You can import new information using the 'Insert New' button.  Employees must be entered using their employee ID.  This is usually the beginning of their WNPRC email.
 </li>
 <br>
 <li>
-    At the bottom of this page there is a list of all WNPRC employees, including their employee ID.
+    At the bottom of this page there is a list of all WNPRC employees, including their employee ID.  This can be used to look up an employee ID if you do not know it.
 </li>
 <br>
 <li>
@@ -70,6 +87,8 @@
 <li>
     If you have questions or feature requests on this page, please contact Ben Bimber <a href="<%=contextPath%>/issues/WNPRC/WNPRC_Units/Research_Services/Research_Computing/Issue_Tracker/list.view?" target="new">here</a>
 </li>
+<p/>
+<div id="summaryQWP"></div>
 <p/>
 <div id="trainingQWP"></div>
 <p/>

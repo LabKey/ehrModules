@@ -18,7 +18,7 @@ oldRecords <- labkey.selectRows(
     folderPath="/WNPRC/EHR",
     schemaName="study",
     queryName="Inbreeding",
-    colSelect=c('lsid', 'Id', 'InbreedingCoefficient'),
+    colSelect=c('lsid', 'Id', 'coefficient'),
     showHidden = FALSE
 )
 str(oldRecords);

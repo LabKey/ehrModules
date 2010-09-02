@@ -322,6 +322,19 @@ EHR.validation = {
             row.species = 'Cotton-top Tamarin';
         else if (row.Id.match(/^pt([0-9]{4})/))
             row.species = 'Pigtail';
+
+        //these are to handle legacy data:
+        else if (row.Id.match(/(^rha([a-z]{1})([0-9]{2}))/))
+            row.species = 'Rhesus';
+        else if (row.Id.match(/(^rh-([a-z]{1})([0-9]{2}))/))
+            row.species = 'Rhesus';
+        else if (row.Id.match(/^cja([0-9]{3})/))
+            row.species = 'Marmoset';
+        else if (row.Id.match(/^m([0-9]{5})/))
+            row.species = 'Marmoset';
+        else if (row.Id.match(/^tx([0-9]{4})/))
+            row.species = 'Marmoset';
+
         else
             row.species = 'Unknown';
     }

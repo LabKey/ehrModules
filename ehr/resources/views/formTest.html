@@ -14,47 +14,37 @@ Ext.onReady(function(){
 
     new EHR.ext.formPanel({
         title: 'Test EHR Form',
-        layout: 'anchor',
-        width: '50%',
+        activeTab: 0,
+        width: 600,
         id: 'testForm',
         items: [
             {
-                xtype: 'ehr-header',
-                width: 'auto',
-                id: 'header'
-            },{
-                xtype: 'ehr-abstract',
-                width: 'auto',
-                id: 'abstract'
+                xtype: 'ehr-header'
             },{
                 xtype: 'ehr-queryset',
                 queryName: 'vitals',
                 schemaName: 'study',
                 title: 'Vitals',
-                id: 'vitals',
                 metadata: EHR.ext.standardMetadata
             },{
                 xtype: 'ehr-queryset',
                 queryName: 'alopecia',
                 schemaName: 'study',
                 title: 'Alopecia',
-                id: 'alopecia',
                 metadata: EHR.UTILITIES.rApply(EHR.ext.standardMetadata, {
-                    head: {ext: {xtype: 'ehr-booleancombo', value: 'N/A'}}
+                    head: {ext: {xtype: 'ehr-booleancombo', value: null}}
                 })
             },{
                 xtype: 'ehr-queryset',
                 queryName: 'bcs',
                 schemaName: 'study',
                 title: 'Body Condition',
-                id: 'bcs',
                 metadata: EHR.ext.standardMetadata
             },{
                 xtype: 'ehr-queryset',
                 queryName: 'Dental Status',
                 schemaName: 'study',
-                title: 'Dental',
-                id: 'dental',
+                title: 'Dental Status',
                 metadata: EHR.ext.standardMetadata
 //            },{
 //                xtype: 'fieldset',
@@ -76,8 +66,20 @@ Ext.onReady(function(){
         ]
     }).render('formDiv');
 
-
-
+//var store = new LABKEY.ext.Store({
+//    containerPath: 'WNPRC/EHR/',
+//    schemaName: 'study',
+//    queryName: 'treatments',
+//    maxRecords: 1,
+//    listeners: {
+//        scope: this,
+//        load: function(c){alert('123456')}
+//    }
+//});
+//
+//store.on('load', function(c){alert('abc')}, this);
+//console.log(store)
+    
 });
 
 

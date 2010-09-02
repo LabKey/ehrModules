@@ -11,6 +11,11 @@
                 <property name="columnTitle" value="First Name"/>
             </properties>
         </column>
+        <column name="Id/unit">
+            <properties>
+                <property name="columnTitle" value="Unit"/>
+            </properties>
+        </column>
         <column name="RequirementName"/>
         <column name="requirementName/Type">
             <properties>
@@ -24,5 +29,7 @@
     <sorts>
         <sort column="id/lastName" descending="false"/>
         <sort column="id/firstName" descending="false"/>
+        <sort column="requirementName/Type" descending="false"/>
+        <sort column="requirementName" descending="false"/>        
     </sorts>
 </customView>

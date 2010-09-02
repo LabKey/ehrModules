@@ -17,6 +17,11 @@
             </properties>
         </column>
         <column name="requirementName"/>
+        <column name="requirementName/Type">
+            <properties>
+                <property name="columnTitle" value="Requirement Type"/>
+            </properties>
+        </column>        
         <column name="date"/>
         <column name="result"/>
         <column name="comment"/>
@@ -27,5 +32,7 @@
     <sorts>
         <sort column="employeeId/lastName" descending="false"/>
         <sort column="employeeId/firstName" descending="false"/>
+        <sort column="requirementName/Type" descending="false"/>
+        <sort column="requirementName" descending="false"/>
     </sorts>
 </customView>

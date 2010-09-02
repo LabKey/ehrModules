@@ -37,6 +37,11 @@ function beforeUpdate(row, oldRow, errors) {
 // ================================================
 
 //==includeStart
+/*
+ * Copyright (c) 2010 LabKey Corporation
+ *
+ * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
+ */
 console.log("** evaluating: " + this['javax.script.filename']);
 
 //var errorQC = 4;
@@ -356,6 +361,19 @@ EHR.validation = {
             row.species = 'Cotton-top Tamarin';
         else if (row.Id.match(/^pt([0-9]{4})/))
             row.species = 'Pigtail';
+
+        //these are to handle legacy data:
+        else if (row.Id.match(/(^rha([a-z]{1})([0-9]{2}))/))
+            row.species = 'Rhesus';
+        else if (row.Id.match(/(^rh-([a-z]{1})([0-9]{2}))/))
+            row.species = 'Rhesus';
+        else if (row.Id.match(/^cja([0-9]{3})/))
+            row.species = 'Marmoset';
+        else if (row.Id.match(/^m([0-9]{5})/))
+            row.species = 'Marmoset';
+        else if (row.Id.match(/^tx([0-9]{4})/))
+            row.species = 'Marmoset';
+
         else
             row.species = 'Unknown';
     }

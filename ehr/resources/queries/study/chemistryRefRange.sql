@@ -7,13 +7,13 @@ SELECT
 
 c.lsid,
 c.id.species.species as species,
-c.id.ageclass.ageClass as ageClass,
 c.id.dataset.demographics.gender as gender,
 c.testId,
 c.AgeAtTime,
+ac.ageClass,
 r.ref_range_min,
 r.ref_range_max,
-(round(r.ref_range_min, 1) || '-' || r.ref_range_max) as range,
+round(r.ref_range_min, 0) || '-' || round(r.ref_range_max, 1) as range,
 CASE
 WHEN r.ref_range_max IS NULL or r.ref_range_min IS NULL
  THEN null
@@ -57,7 +57,7 @@ c.id.Species.species = ac.species
 LEFT JOIN lists.lab_test_range r ON (
 c.testId = r.test AND
 c.id.species.species = r.species AND
-c.id.ageclass.ageClass = r.age_class AND
+ac.ageClass = r.age_class AND
 c.id.dataset.demographics.gender = r.gender
 )
 

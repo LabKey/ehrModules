@@ -13,7 +13,7 @@ my @fileparse = fileparse($0, qr/\.[^.]*/);
 my $folder = dirname($fileparse[1]);
 
 
-my $sharedFile = File::Spec->catfile($folder, 'web', 'ehr', 'validation.js');
+my $sharedFile = File::Spec->catfile($folder, 'webapp', 'ehr', 'validation.js');
 open(SHARED, $sharedFile) || die("Could not open file!");
 my @sharedCode = <SHARED>;
 my $sharedCode = join("", @sharedCode);
@@ -22,7 +22,7 @@ close SHARED;
 
 #find the JS files:
 my @files;
-my $scriptDir = File::Spec->catfile($folder, 'queries', 'study');
+my $scriptDir = File::Spec->catfile($folder, 'resources', 'queries', 'study');
 opendir( DIR, $scriptDir ) or print "error: $!";
 foreach ( readdir(DIR) )
 {
@@ -36,7 +36,7 @@ closedir(DIR);
 
 foreach (@files){
 	#backup the old script first
-	my $backupDir = File::Spec->catfile($folder, 'web', 'ehr', 'backup');
+	my $backupDir = File::Spec->catfile($folder, 'webapp', 'ehr', 'backup');
 	mkdir($backupDir) unless -e $backupDir;	
 	copy(File::Spec->catfile($scriptDir,$_), File::Spec->catfile($backupDir,$_.".bk"))
 		|| die "Unable to copy file";

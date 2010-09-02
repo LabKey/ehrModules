@@ -415,3 +415,25 @@ EHR.ext.customPanels.participantView = Ext.extend(Ext.Panel, {
 });
 
 
+
+
+Ext.onReady(function ()
+{
+    /* get the participant id from the request URL: this parameter is required. */
+    var participantId = LABKEY.ActionURL.getParameter('participantId');
+    /* get the dataset id from the request URL: this is used to remember expand/collapse
+       state per-dataset.  This parameter is optional; we use -1 if it isn't provided. */
+
+    if (!participantId){alert('Must Provide Id'); return false;}
+
+    new EHR.ext.customPanels.detailsView({
+        schemaName: 'study',
+        queryName: 'demographics',
+        title: 'Animal Details:',
+        renderTo: 'participantDetails',
+        filterArray: [LABKEY.Filter.create('Id', participantId, LABKEY.Filter.Types.EQUAL)]
+    });
+
+    new EHR.ext.customPanels.participantView({applyTo: 'participantView'});
+
+});
