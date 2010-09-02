@@ -72,8 +72,7 @@ pgdump_dir = /opt/PostgreSQL/8.4/bin/	;the location of pg_dump
 [lk_config]                            ;Section Optional.  
 jobName = LK Daily Backup	 		   ;optional. will appear in logfile
 baseURL= http://localhost:8080/labkey/ ;url of your server
-containerPath = /Folder1			   ;optional. the containerPath where your list is located
-project=shared	                       ;name of the project where log list is located
+containerPath = /Project/Folder1	   ;the containerPath where your list is located
 schemaName = lists                     ;schema where list is located
 queryName = backup	                   ;name of the list itself
 
@@ -450,7 +449,6 @@ sub lk_log
 	my $insert = Labkey::Query::insertRows(
 		-baseUrl => $lk_config{'baseURL'},
 		-containerPath => $lk_config{'containerPath'},
-		-project => $lk_config{'project'},
 		-schemaName => $lk_config{'schemaName'},
  		-queryName => $lk_config{'queryName'},
 		-rows => [{"JobName" => $lk_config{'jobName'}, "Status" => $status, "Log" => '', "Date" => $date}]
