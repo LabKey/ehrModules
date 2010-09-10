@@ -6,8 +6,8 @@
 SELECT
 
 c.lsid,
-c.id.species.species as species,
-c.id.dataset.demographics.gender as gender,
+c.species as species,
+c.gender as gender,
 c.testId,
 c.AgeAtTime,
 ac.ageClass,
@@ -34,7 +34,8 @@ c.lsid,
 c.testId,
 c.result,
 c.id,
-
+c.id.species.species as species,
+c.id.dataset.demographics.gender as gender,
 CASE
 WHEN c.id.dataset.demographics.birth is null or c.date is null
   THEN null
@@ -51,14 +52,12 @@ ON (
 c.ageAtTime IS NOT NULL AND
 c.ageAtTime >= ac."min" AND
 (c.ageAtTime <= ac."max" OR ac."max" is null) AND
-c.id.Species.species = ac.species
+c.species = ac.species
 )
 
 LEFT JOIN lists.lab_test_range r ON (
 c.testId = r.test AND
-c.id.species.species = r.species AND
+c.species = r.species AND
 ac.ageClass = r.age_class AND
-c.id.dataset.demographics.gender = r.gender
+c.gender = r.gender
 )
-
-

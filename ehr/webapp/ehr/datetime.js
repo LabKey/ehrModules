@@ -8,6 +8,8 @@
  * @constructor
  * @param {Object} config A config object
  */
+Ext.namespace('Ext.ux.form');
+
 Ext.ux.form.DateTime = Ext.extend(Ext.form.Field, {
 
 /**
@@ -81,6 +83,7 @@ Ext.ux.form.DateTime = Ext.extend(Ext.form.Field, {
                         ,format:this.dateFormat || Ext.form.DateField.prototype.format
                         ,width:this.timeWidth
                         ,selectOnFocus:this.selectOnFocus
+                        ,allowBlank: this.allowBlank || false
                         ,msgTarget: 'under'
                         ,listeners:{
                                   blur:{scope:this, fn:this.onBlur}
@@ -132,22 +135,28 @@ Ext.ux.form.DateTime = Ext.extend(Ext.form.Field, {
                 var t;
                 if('below' === this.timePosition || 'bellow' === this.timePosition) {
                         t = Ext.DomHelper.append(ct, {tag:'table',style:'border-collapse:collapse',children:[
-                                 {tag:'tr',children:[{tag:'td', style:'padding-bottom:1px', cls:'ux-datetime-date'}]}
-                                ,{tag:'tr',children:[{tag:'td', cls:'ux-datetime-time'}]}
+                                 {tag:'tr',children:[{tag:'td', style:'padding-bottom:0px', cls:'ux-datetime-date'}]}
+                                ,{tag:'tr',children:[{tag:'td', style:'padding-bottom:0px', cls:'ux-datetime-time'}]}
                         ]}, true);
                 }
                 else {
                         t = Ext.DomHelper.append(ct, {tag:'table',style:'border-collapse:collapse',children:[
                                 {tag:'tr',children:[
-                                        {tag:'td',style:'padding-right:4px', cls:'ux-datetime-date'},{tag:'td', cls:'ux-datetime-time'}
+                                {tag:'td',style:'padding-right:4px;padding-top:0px', cls:'ux-datetime-date'}
+                                ,{tag:'td', style:'padding-top:0px', cls:'ux-datetime-time'}
+                                ,{tag:'tr',children:[{tag:'td', colspan:2, cls: 'x-form-invalid-msg'}]}
                                 ]}
                         ]}, true);
+
+                        //set the msg location
+                        this.df.msgTarget = t.child('td.x-form-invalid-msg').id;
                 }
 
                 this.tableEl = t;
                 this.wrap = t.wrap({cls:'x-form-field-wrap'});
 //              this.wrap = t.wrap();
         this.wrap.on("mousedown", this.onMouseDown, this, {delay:10});
+
 
                 // render DateField & TimeField
                 this.df.render(t.child('td.ux-datetime-date'));

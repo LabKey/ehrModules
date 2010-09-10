@@ -14,7 +14,7 @@
         </webPart>
     </preferredWebParts>
     <modules>
-        <moduleName>ehr</moduleName>
+        <moduleName>EHR</moduleName>
         <moduleName>Query</moduleName>
         <moduleName>Portal</moduleName>
     </modules>

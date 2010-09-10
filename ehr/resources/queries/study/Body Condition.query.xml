@@ -1,8 +1,8 @@
 <query xmlns="http://labkey.org/data/xml/query">
     <metadata>
         <tables xmlns="http://labkey.org/data/xml">
-            <table tableName="Alopecia" tableDbType="TABLE">
-                <tableUrl>/query/detailsQueryRow.view?schemaName=study&amp;query.queryName=alopecia&amp;lsid=${lsid}</tableUrl>
+            <table tableName="Body Condition" tableDbType="TABLE">
+                <tableUrl>/query/detailsQueryRow.view?schemaName=study&amp;query.queryName=bcs&amp;lsid=${lsid}</tableUrl>
                 <columns>
                     <column columnName="parentId">
                         <fk>

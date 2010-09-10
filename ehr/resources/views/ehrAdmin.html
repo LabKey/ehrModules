@@ -25,7 +25,14 @@ Ext.onReady(function (){
             {header: 'Logs',
                 items: [
                     {name: 'Labkey.log', url: '<%=contextPath%>/files/WNPRC/EHR/Logs/%40filesets/Tomcat%20Logs/labkey.log?renderAs=DEFAULT'},
-                    {name: 'ActiveMQ Log', url: '<%=contextPath%>/files/WNPRC/EHR/Logs/%40filesets/ActiveMQ/activemq.log?renderAs=DEFAULT'}
+                    {name: 'ActiveMQ Log', url: '<%=contextPath%>/files/WNPRC/EHR/Logs/%40filesets/ActiveMQ/activemq.log?renderAs=DEFAULT'},
+                    {name: 'Munin Log', url: '<%=contextPath%>/files/WNPRC/EHR/Logs/%40filesets/Munin/munin.log?renderAs=DEFAULT'}
+                ]
+            },
+            {header: 'Munin',
+                items: [
+                    {name: 'Xnight', url: 'http://xnight.primate.wisc.edu/munin/index.html'},
+                    {name: 'Gems', url: 'http://gems.primate.wisc.edu/munin/localdomain/index.html'}
                 ]
             },
             {header: 'Validation',

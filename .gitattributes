@@ -87,7 +87,7 @@ ehr/resources/etl/datasets/urinalysisResults.sql -text
 ehr/resources/etl/datasets/urinalysisRuns.sql -text
 ehr/resources/etl/datasets/virologyResults.sql -text
 ehr/resources/etl/datasets/virologyRuns.sql -text
-ehr/resources/folderTypes/Expt[!!-~]Workbook.folderType.xml.tmp -text
+ehr/resources/folderTypes/Expt[!!-~]Workbook.folderType.xml -text
 ehr/resources/mySQL_edit.pl -text
 ehr/resources/queries/core/Last[!!-~]Backup.sql -text
 ehr/resources/queries/core/Last[!!-~]Sync.sql -text
@@ -156,6 +156,7 @@ ehr/resources/queries/study/Blood[!!-~]Draws/Blood[!!-~]Summary.qview.xml -text
 ehr/resources/queries/study/Blood_Chemistry_Results.js -text
 ehr/resources/queries/study/Blood_Chemistry_Runs.js -text
 ehr/resources/queries/study/Blood_Draws.js -text
+ehr/resources/queries/study/Body[!!-~]Condition.query.xml -text
 ehr/resources/queries/study/Clinical[!!-~]Encounters.query.xml -text
 ehr/resources/queries/study/Clinical[!!-~]Encounters/.qview.xml -text
 ehr/resources/queries/study/Clinical[!!-~]Remarks.query.xml -text
@@ -530,7 +531,8 @@ ehr/webapp/ehr/arrayUtils.js -text
 ehr/webapp/ehr/databind.js -text
 ehr/webapp/ehr/datetime.js -text
 ehr/webapp/ehr/ehrEditorGridpanel.js -text
-ehr/webapp/ehr/elastic-textarea.js -text
+ehr/webapp/ehr/ext.ux.datetimefield.js -text
+ehr/webapp/ehr/ext.ux.multiselect.js -text
 ehr/webapp/ehr/formHelper.js -text
 ehr/webapp/ehr/participantView.js -text
 ehr/webapp/ehr/searchForm.js -text

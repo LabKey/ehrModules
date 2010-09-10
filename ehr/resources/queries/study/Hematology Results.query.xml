@@ -21,6 +21,9 @@
                           <fkColumnName>objectid</fkColumnName>
                         </fk>
                     </column>
+                    <column columnName="result">
+                        <columnTitle>Result</columnTitle>
+                    </column>                    
                 </columns>
             </table>
         </tables>

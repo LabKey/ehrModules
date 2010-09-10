@@ -29,7 +29,7 @@
                     </column>
                     <column columnName="gender">
                         <isHidden>true</isHidden>
-                    </column>
+                    </column>                
                 </columns>
                 <titleColumn>Status</titleColumn>
             </table>

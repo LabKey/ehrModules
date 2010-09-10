@@ -519,7 +519,8 @@ EHR.ext.customPanels.SingleAnimalReport = Ext.extend(Ext.Panel, {
             showUpdateColumn: false,
             showRecordSelectors: true,
             buttonBarPosition: 'top',
-            timeout: 0,
+            //TODO: switch to 0 once bug is fixed
+            timeout: 3000000,
             filters: filterArray,
             successCallback: function(){
                 console.log('Success callback called');
@@ -551,7 +552,7 @@ EHR.ext.customPanels.SingleAnimalReport = Ext.extend(Ext.Panel, {
         }
 
 
-        //Ext.Ajax.timeout = 30000; //in milliseconds
+        Ext.Ajax.timeout = 3000000; //in milliseconds
 
         new LABKEY.QueryWebPart(queryConfig).render(target);
 

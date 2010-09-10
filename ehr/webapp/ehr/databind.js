@@ -112,6 +112,49 @@
 //});
 
 //EHR.ext.recordPanel = Ext.extend(Ext.Panel, {
+
+Ext.override(Ext.Component, {
+    initRef: function(r){
+        if(this.ref && !this.refOwner){
+            var levels = this.ref.split('/'),
+                last = levels.length - 1,
+                i = 0,
+                t = this.ownerCt || this;
+
+            while(t && i < last){
+                if (levels[i] == '..')
+                    t = t.ownerCt;
+                else {
+                    //TODO: test if is ext container?
+                    if (!this.refOwner)
+                        this.refOwner = t;
+
+                    if (!t[levels[i]]){
+                        t[levels[i]] = {};
+                    }
+
+                    t = t[levels[i]];
+                }                
+                ++i;
+            }
+
+            if(t){
+                t[this.refName = levels[i]] = this;
+
+/**
+                 * @type Ext.Container
+                 * @property refOwner
+                 * The ancestor Container into which the {@link #ref} reference was inserted if this Component
+                 * is a child of a Container, and has been configured with a ref.
+                 */
+                if (!this.refOwner)
+                    this.refOwner = t;
+            }
+        }    
+    }
+});
+
+
 Ext.override(Ext.Panel, {
   enableOnBind: false,
   getStore : function() {
@@ -187,5 +230,15 @@ Ext.override(Ext.Panel, {
         }
       }, this);
     }
+  },
+  showStore: function(c){
+      if(this.store){
+          this.store.each(function(rec){
+              //console.log(rec.fields.keys);
+              Ext.each(rec.fields.keys, function(f){
+                  console.log(f+': '+rec.get(f));
+              }, this);
+          }, this)
+      }
   }
 });

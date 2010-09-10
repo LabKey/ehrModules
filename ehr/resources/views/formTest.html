@@ -1,3 +1,5 @@
+<html>
+<head>
 <script type="text/javascript">
 
 /*!
@@ -14,13 +16,13 @@ Ext.onReady(function(){
 
     new EHR.ext.formPanel({
         title: 'Test EHR Form',
-        activeTab: 0,
         width: 600,
         id: 'testForm',
-        items: [
+//        header: {
+//            xtype: 'ehr-header'
+//        },
+        tabs: [
             {
-                xtype: 'ehr-header'
-            },{
                 xtype: 'ehr-queryset',
                 queryName: 'vitals',
                 schemaName: 'study',
@@ -36,7 +38,7 @@ Ext.onReady(function(){
                 })
             },{
                 xtype: 'ehr-queryset',
-                queryName: 'bcs',
+                queryName: 'Body Condition',
                 schemaName: 'study',
                 title: 'Body Condition',
                 metadata: EHR.ext.standardMetadata
@@ -45,44 +47,60 @@ Ext.onReady(function(){
                 queryName: 'Dental Status',
                 schemaName: 'study',
                 title: 'Dental Status',
-                metadata: EHR.ext.standardMetadata
-//            },{
-//                xtype: 'fieldset',
-//                width: '80%',
-//                title: 'Treatments',
-//                collapsible: true,
-//                metadata: EHR.ext.standardMetadata,
-//                items: [{
-//                    id: 'treatments',
-//                    xtype: 'ehr-formgrid',
-//                    store: EHR.ext.getLookupStore({
-//                        schemaName: 'study',
-//                        queryName: 'treatments',
-//                        sort: '-date',
-//                        autoLoad: true
-//                    })
-//                }]
+                metadata: EHR.UTILITIES.rApply(EHR.ext.standardMetadata, {
+                    gingivitis: {requireSelection: true, lookupNullCaption: 'N/A', value: null},
+                    tartar: {allowBlank: false, lookupNullCaption: 'N/A', ext: {value: null}}
+                })
+
+    //            },{
+    //                xtype: 'fieldset',
+    //                width: '80%',
+    //                title: 'Treatments',
+    //                collapsible: true,
+    //                metadata: EHR.ext.standardMetadata,
+    //                items: [{
+    //                    id: 'treatments',
+    //                    xtype: 'ehr-formgrid',
+    //                    store: EHR.ext.getLookupStore({
+    //                        schemaName: 'study',
+    //                        queryName: 'treatments',
+    //                        sort: '-date',
+    //                        autoLoad: true
+    //                    })
+    //                }]
             }
         ]
     }).render('formDiv');
 
+
+
+
 //var store = new LABKEY.ext.Store({
 //    containerPath: 'WNPRC/EHR/',
 //    schemaName: 'study',
-//    queryName: 'treatments',
-//    maxRecords: 1,
+//    queryName: 'demographics',
+//    maxRows: 1,
+//    autoLoad: true,
 //    listeners: {
-//        scope: this,
-//        load: function(c){alert('123456')}
+//        load: function(){alert('123456')}
 //    }
 //});
 //
 //store.on('load', function(c){alert('abc')}, this);
+//store.on('load', function(c){alert('xyz')}, this);
 //console.log(store)
     
 });
 
 
 </script>
+</head>
+<body>
+<div id="formDiv"></div>
 
-<div id="formDiv"></div>        
+
+
+</body>
+
+
+</html>

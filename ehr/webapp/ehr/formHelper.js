@@ -14,121 +14,155 @@ LABKEY.requiresScript("/ehr/utilities.js");
 //LABKEY.requiresScript("/ehr/ehrEditorGridpanel.js");
 LABKEY.requiresScript("/ehr/databind.js");
 
+
+
 Ext.form.Field.prototype.msgTarget = 'side';
 
 //a css fix for Ext datepicker
 Ext.menu.DateMenu.prototype.addClass('extContainer');
 
+var debug = 0;
+
 EHR.ext.standardMetadata = {
-    Id: {lookups: false, inherited: true},
-    Date: {inherited: true},
-    created: {isHidden: true},
+    Id: {lookups: false, parentField: {queryName: 'encounters', field: 'id'}},
+    Date: {parentField: {queryName: 'encounters', field: 'date'}},
+    //created: {isHidden: true},
     AnimalVisit: {isHidden: true},
-    modified: {isHidden: true},
-    SequenceNum: {isHidden: true},
-    QCState: {isHidden: true, inherited: true}
+    //modified: {isHidden: true},
+    //SequenceNum: {isHidden: true},
+    QCState: {parentField: {queryName: 'encounters', field: 'qcstate'}},
+    parentId: {parentField: {queryName: 'encounters', field: 'key'}, lookups: false}
 };
 
-//Ext.form.Field.prototype.fieldTpl = new Ext.Template(
-//    '<div class="x-form-item {itemCls}" tabIndex="-1">',
-//        '<label for="{id}" style="{labelStyle}" class="x-form-item-label">{label}{labelSeparator}</label>',
-//        '<div class="x-form-element" id="x-form-el-{id}" style="{elementStyle}">',
-//        '</div><div class="{clearCls}"></div>',
-//    '</div>'
-//);
-//
 
 /**
  * The following overwrite allows tooltips on labels within form layouts.
- * The field have to be a property named "labelTooltip" in the corresponding
+ * The field have to have a property named "fieldLabelTip" in the corresponding
  * config object.
  */
 Ext.override(Ext.layout.FormLayout, {
-    setContainer: Ext.layout.FormLayout.prototype.setContainer.createSequence(function(ct) {
-        // the default field template used by all form layouts
+    fieldTpl: (function() {
         var t = new Ext.Template(
-            '<div class="x-form-item {5}" tabIndex="-1">',
-                '<label for="{0}" style="{2}" class="x-form-item-label"{7}>{1}{4}</label>',
-                '<div class="x-form-element" id="x-form-el-{0}" style="{3}">',
-                '</div><div class="{6}"></div>',
+            '<div class="x-form-item {itemCls}" tabIndex="-1">',
+                '<label for="{id}" style="{labelStyle}" class="x-form-item-label" {labelAttrs}>{label}{labelSeparator}</label>',
+                '<div class="x-form-element" id="x-form-el-{id}" style="{elementStyle}">',
+                '</div><div class="{clearCls}"></div>',
             '</div>'
         );
         t.disableFormats = true;
-        t.compile();
-        Ext.layout.FormLayout.prototype.fieldTpl = t;
-    }),
-
-    renderItem: function(c, position, target){
-        if(c && !c.rendered && c.isFormField && c.inputType != 'hidden' && c.fieldLabel){
-            var args = [
-                   c.id,
-                   c.fieldLabel,
-                   c.labelStyle||this.labelStyle||'',
-                   this.elementStyle||'',
-                   typeof c.labelSeparator == 'undefined' ? this.labelSeparator : c.labelSeparator,
-                   (c.itemCls||this.container.itemCls||'') + (c.hideLabel ? ' x-hide-label' : ''),
-                   c.clearCls || 'x-form-clear-left',
-                   (c.labelTooltip === undefined ? '' : ' ext:qtip="'+c.labelTooltip+'"')
-            ];
-            if(typeof position == 'number'){
-                position = target.dom.childNodes[position] || null;
-            }
-            if(position){
-                this.fieldTpl.insertBefore(position, args);
-            }else{
-                this.fieldTpl.append(target, args);
-            }
-            c.render('x-form-el-'+c.id);
-        }
-        else {
-            Ext.layout.FormLayout.superclass.renderItem.apply(this, arguments);
-        }
+        return t.compile();
+    })(),
+    getTemplateArgs: function(field) {
+        var noLabelSep = !field.fieldLabel || field.hideLabel;
+        return {
+            id            : field.id,
+            label         : field.fieldLabel,
+            labelAttrs    : field.fieldLabelTip ? 'ext:qtip="' + Ext.util.Format.htmlEncode(field.fieldLabelTip) + '"' : '',
+            itemCls       : (field.itemCls || this.container.itemCls || '') + (field.hideLabel ? ' x-hide-label' : ''),
+            clearCls      : field.clearCls || 'x-form-clear-left',
+            labelStyle    : this.getLabelStyle(field.labelStyle),
+            elementStyle  : this.elementStyle || '',
+            labelSeparator: noLabelSep ? '' : (Ext.isDefined(field.labelSeparator) ? field.labelSeparator : this.labelSeparator)
+        };
     }
 });
 
 
 EHR.ext.formPanel = Ext.extend(Ext.Panel, {
-//EHR.ext.formPanel = Ext.extend(Ext.TabPanel, {
-    constructor: function(config){
-        config = config || {};
+    initComponent: function(){
 
-        this.uuid = LABKEY.ActionURL.getParameter('uuid') || LABKEY.Utils.generateUUID();
-
+        this.uuid = this.uuid || LABKEY.Utils.generateUUID();
+        
         Ext.QuickTips.init();
+
+        var tabItems = [{
+            xtype: 'form'
+            ,id: 'abstract'
+            ,title: 'Abstract'
+            ,border: false
+            ,autoHeight: true
+            ,collapsible: false
+            ,collapsed: false
+            ,defaultType: 'displayfield'
+            ,bodyStyle: 'padding:5px 5px 5px 5px'
+            ,ref: '../abstract'
+            ,items: {html: 'No Animal Selected'}
+        }]
+
+        if (this.tabs)
+            tabItems.push(this.tabs);
         
         Ext.applyIf(this, {
             autoHeight: true
             ,bodyBorder: true
             ,border: true
-            ,buttonAlign: 'left'
+            ,buttonAlign: 'right'
             ,frame:true
             ,defaultType: 'textfield'
-            ,bodyStyle: 'padding:5px 5px 5px 5px'
             ,style: 'border-style:solid;border-width:1px'
-            //,cls: 'extContainer'
-            ,queries: []
             ,monitorValid: true
+            ,monitorPoll : 200
             ,defaults: {
                 msgTarget: 'side'
-                ,validationDelay: 1000
-                //,bubbleEvents: ['valid', 'invalid', 'add']
+                ,validationDelay: 100
             }
             ,buttons: [
                 {text: 'Save Draft', id: 'saveDraft', handler: this.onSubmit, scope: this},
                 {text: 'Submit', id: 'submit', handler: this.onSubmit, scope: this, formBind: true},
-                {text: 'Submit for SNOMED Coding', id: 'snomedReview', handler: this.onSubmit, scope: this, formBind: true},
+                //{text: 'Submit for SNOMED Coding', id: 'snomedReview', handler: this.onSubmit, scope: this, formBind: true},
                 {text: 'Discard', id: 'discard', handler: this.discard, scope: this}
+            ],
+            items: [
+                new EHR.ext.ClinicalHeader({
+                    scope: this, 
+                    parent: this,
+                    ref: 'querySets/encounters'
+                }),
+                {
+                    xtype: 'tabpanel',
+                    activeTab: 0,
+                    deferredRender: false,
+                    ref: 'queryPanel',
+                    items: tabItems,
+                    cls: 'extContainer',
+                    scope: this
+                }
             ]
+            ,listeners: {
+                scope: this,
+                clientvalidation: function(o, valid){
+                    //console.log('clientvalidation: '+o.id+'/'+valid);
+                    //this.bindHandler(valid);
+                }
+            }
         });
 
-        EHR.ext.formPanel.superclass.constructor.call(this, config);
+        if (debug){
+            this.buttons.push([
+                {text: 'Dirty?', id: 'dirty', handler: this.isDirty, scope: this}
+                ,{text: 'Valid?', id: 'valid', handler: this.isValid, scope: this}
+                ,{text: 'Stores?', id: 'stores', handler: this.showStores, scope: this}
+            ])
+        }
 
+        //console.log("Parent UUID: "+this.uuid);
+        EHR.ext.formPanel.superclass.initComponent.call(this);
+
+        //monitor dirty state
         window.onbeforeunload = LABKEY.beforeunload(function () {
-            if (this.isDirty(this.getForms()))
+            if (this.isDirty())
                 return this.warningMessage || 'form dirty';
         }, this);
     },
+    initEvents : function(){
+        EHR.ext.formPanel.superclass.initEvents.call(this);
+
+        if(this.monitorValid){ // initialize after render
+            this.startMonitoring();
+        }
+    },
     onSubmit: function(o){
+        console.log(this.form.getFieldValues());
         var forms = this.getForms();
         Ext.each(forms, function(c){
             console.log(c.getFieldValues());
@@ -139,37 +173,108 @@ EHR.ext.formPanel = Ext.extend(Ext.Panel, {
     },
     getForms: function(){
         var forms = [];
-        Ext.each(this.queries, function(c){
-            forms.push(this.get(c).getForm());            
-        }, this);
+        for (var i in this.querySets){
+            forms.push(this.querySets[i].getForm());
+        }
         return forms;
     },
-    isDirty: function(forms){
-        Ext.each(forms, function(c){
-            if(c.isDirty()){
-                return true
+    getStores: function(){
+        var stores = [];
+        for (var i in this.querySets){
+            stores.push(this.querySets[i].getStore());
+        }
+        return stores;
+    },
+    showStores: function(){
+//        var stores = this.getStores();
+//        Ext.each(stores, function(c){
+//            console.log(c);
+//        }, this);
+
+        for (var i in this.querySets){
+            console.log(this.querySets[i].id);
+            console.log(this.querySets[i].showStore());
+        }
+    },
+    bindHandler : function(){
+        var valid = this.isValid();
+        if(this.fbar){
+            var fitems = this.fbar.items.items;
+            for(var i = 0, len = fitems.length; i < len; i++){
+                var btn = fitems[i];
+                if(btn.formBind === true && btn.disabled === valid){
+                    btn.setDisabled(!valid);
+                }
             }
-        }, this)
+        }
+        this.fireEvent('clientvalidation', this, valid);
+    },
+    startMonitoring : function(){
+        if(!this.validTask){
+            this.validTask = new Ext.util.TaskRunner();
+            this.validTask.start({
+                run : this.bindHandler,
+                interval : this.monitorPoll || 200,
+                scope: this
+            });
+        }
+    },
+    stopMonitoring : function(){
+        if(this.validTask){
+            this.validTask.stopAll();
+            this.validTask = null;
+        }
+    },
+    isDirty: function(){
+        var dirty = []
+        for (var i in this.querySets){
+            if(this.querySets[i].getForm().isDirty()){
+                dirty.push(i);
+            }
+        }
+        console.log('Dirty Forms:');
+        if (dirty.length){
+            console.log(dirty);
+            return true;
+        }
+        console.log('none');
+        return false;
+    },
+    isValid: function(){
+        var invalid = [];
+        for (var i in this.querySets){
+            if(!this.querySets[i].getForm().isValid()){
+                invalid.push(i);
+            }
+        }
+        //console.log('Invalid Forms:');
+        if (invalid.length){
+            //console.log(invalid);
+            return false;
+        }
+        //console.log('none');
+        return true;
+    },
+    getUUID: function(){
+        return this.uuid;
     }
 });
 
 
-EHR.ext.Header = Ext.extend(Ext.FormPanel, {
+EHR.ext.ClinicalHeader = Ext.extend(Ext.FormPanel, {
     initComponent: function(){
         Ext.apply(this, {
             autoHeight: true
             ,id: 'encounters'
-            ,width: 'auto'            
-            ,title: 'Header'
+            ,name: 'encounters'
+            ,width: 'auto'
             ,bodyBorder: true
-            ,frame: true
             ,border: true
             ,buttons: []
             ,bodyStyle: 'padding:5px 5px 5px 5px'
             ,style: 'margin-bottom: 5px'
             ,defaults: {
                 width: 'auto',
-                fieldGroup: 'parent',
                 border: true
             }
             ,items: [{
@@ -178,69 +283,99 @@ EHR.ext.Header = Ext.extend(Ext.FormPanel, {
                 ,items: [
                 {
                     columnWidth:'250px',
-                    style:'padding-right:4px;padding-top:1px',
+                    style:'padding-right:4px;padding-top:0px',
                     layout: 'form',
                     items: [{
                         xtype:'ehr-animal',
                         //id: 'id',
                         name: 'encounters.id',
+                        allowBlank: false,
+                        ref: '../../../encounters/id',
                         msgTarget: 'under',
                         listeners: {
                             scope: this,
                             valid: this.fetchAbstract,
                             invalid: this.clearAbstract
+                            }
+                        },{
+                            xtype: (debug ? 'combo': 'hidden')
+                            ,fieldLabel: 'QC State'
+                            ,ref: '../../../encounters/qcstate'
+                            ,width: 140
+                            ,name: 'encounters.key'
+                            ,displayField:'Label'
+                            ,valueField: 'Label'
+                            ,forceSelection: true
+                            ,typeAhead: false
+                            ,triggerAction: 'all'
+                            ,mode: 'local'
+                            ,value: this.qcState || 'In Progress'
+                            ,store: EHR.ext.getLookupStore({
+                                containerPath: 'WNPRC/EHR/',
+                                schemaName: 'study',
+                                queryName: 'QCState',
+                                sort: 'Label'
+                            })
                         }
-                    }]
+                    ]
                 },{
                     columnWidth:'300px',
                     layout: 'form',
                     items: [{
                         xtype:'xdatetime',
-                        //id: 'date',
                         name: 'encounters.date',
+                        allowBlank: false,
+                        ref: '../../../encounters/date',
                         fieldLabel: 'Date/Time',
                         dateFormat: 'Y-m-d',
                         timeFormat: 'H:i'
                     }]
                 },{
-                    columnWidth:'150px',
-                    style:'padding-left:5px;padding-top:1px',
+                    //columnWidth:'220px',
+                    style:'padding-left:5px;padding-top:0px',
                     layout: 'form',
                     items: [{
                         xtype:'ehr-project',
-                        //id: 'encounters.project',
-                        name: 'encounters.project'
+                        name: 'encounters.project',
+                        msgTarget: 'under',
+                        allowBlank: false,
+                        ref: '../../../encounters/project'
+                    },{
+                        xtype: (debug ? 'displayfield': 'hidden'),
+                        value: this.parent.uuid,
+                        width: 140,
+                        fieldLabel: 'UUID',
+                        ref: '../../../encounters/key'
                     }]
                 }]
-            },{
-                xtype: 'fieldset'
-                ,id: 'abstract'
-                ,title: 'Abstract'
-                ,autoHeight: true
-                ,collapsible: true
-                ,collapsed: true
-                ,defaultType: 'displayfield'
             }]
+            ,store:  EHR.ext.getLookupStore({
+                containerPath: 'WNPRC/EHR/',
+                schemaName: 'study',
+                queryName: 'encounters',
+                filterArray: [LABKEY.Filter.create('objectid', this.parent.uuid, LABKEY.Filter.Types.EQUAL)],
+                maxRows: 1
+            })
         });
 
-        this.store = EHR.ext.getLookupStore({
-            containerPath: 'WNPRC/EHR/',
-            schemaName: 'study',
-            queryName: 'encounters',
-            filterArray: [LABKEY.Filter.create('objectid', this.ownerCt.uuid, LABKEY.Filter.Types.EQUAL)],
-            maxRows: 1
-        });
-        this.ownerCt.queries.push('encounters');
+        EHR.ext.ClinicalHeader.superclass.initComponent.call(this, arguments);
 
-        EHR.ext.Header.superclass.initComponent.call(this);
+        this.enableBubble('clientvalidation');
     },
     fetchAbstract: function(c){
         var id = c.getValue();
         if (!id)
             return false;
 
-        var target = this.ownerCt.find('id', 'abstract');
-        target = target[0];
+        var target = this.refOwner.abstract;
+
+        //no need to reload if ID is unchanged
+        if (target.loadedId == id){
+            return;
+        }
+
+        target.loadedId = id;
+
         target.removeAll();
 
         LABKEY.Query.selectRows({
@@ -254,12 +389,11 @@ EHR.ext.Header = Ext.extend(Ext.FormPanel, {
         });
     },
     renderAbstract: function(data){
-        var target = this.ownerCt.find('id', 'abstract');
-        target = target[0];
+        var target = this.refOwner.abstract;
         target.removeAll();
 
         if(!data.rows.length){
-            target.add({xtype: 'displayfield', value: 'Id not found or animal not alive'});
+            this.refOwner.encounters.id.markInvalid('Animal Id Not Found');
         }
         else {
             var row = data.rows[0];
@@ -267,43 +401,29 @@ EHR.ext.Header = Ext.extend(Ext.FormPanel, {
                 if(c.isHidden)
                     return false;
                 var value = row['_labkeyurl_'+c.name] ? '<a href="'+row['_labkeyurl_'+c.name]+'" target=new>'+row[c.name]+'</a>' : row[c.name];
-                target.add({xtype: 'displayfield', fieldLabel: c.caption, value: value, submitValue: false});
+                target.add({id: c.name, xtype: 'displayfield', fieldLabel: c.caption, value: value, submitValue: false});
+
+                if(c.name == 'Id')
+                    target.loadedId = row[c.name];
             }, this);
         }
+
         target.doLayout();
         target.expand();
+        this.refOwner.queryPanel.setActiveTab('abstract');
     },
     clearAbstract: function(c){
-        var target = this.ownerCt.find('id', 'abstract');
-        target = target[0];
-        target.removeAll();
-        target.add({html: 'Invalid ID'});
-        target.expand();
+        var target = this.parent.abstract;
+        target.loadedId = '';
+
+        if(c.getValue()){
+            target.removeAll();
+            target.add({html: 'Invalid ID'});
+            target.doLayout();
+            target.expand();
+        }
     }
 });
-Ext.reg('ehr-header', EHR.ext.Header);
-
-
-
-//EHR.ext.Abstract = Ext.extend(Ext.form.FieldSet,
-//{
-//    initComponent: function(){
-//        Ext.apply(this, {
-//            autoHeight: true
-//            ,title: 'Abstract'
-//            ,collapsible: true
-//            ,collapsed: true
-//            ,width: 'auto'
-//            ,id: 'abstract'
-//            ,defaultType: 'displayfield'
-//            ,bubbleEvents: ['valid', 'invalid', 'add']
-//            ,border: true
-//        });
-//        EHR.ext.Abstract.superclass.initComponent.call(this);
-//    }
-//});
-//Ext.reg('ehr-abstract', EHR.ext.Abstract);
-
 
 EHR.ext.DateTimeField = Ext.extend(Ext.form.Field,
 {
@@ -319,39 +439,10 @@ EHR.ext.DateTimeField = Ext.extend(Ext.form.Field,
             ,name: 'date'
         });
 
-        EHR.ext.DateTimeField.superclass.initComponent.call(this);
+        EHR.ext.DateTimeField.superclass.initComponent.call(this, arguments);
     }
 });
 Ext.reg('ehr-datetime', EHR.ext.DateTimeField);
-
-//this vtype is used for WNPRC animal ids
-Ext.apply(Ext.form.VTypes, {
-    'ehr-animal' : function(val, field)
-    {
-        if (!val)
-        {
-            return;
-        }
-
-        var species;
-        if (val.match(/(^rh([0-9]{4}))|(^r([0-9]{5}))/))
-            species = 'Rhesus';
-        else if (val.match(/^cy([0-9]{4})/))
-            species = 'Cynomolgus';
-        else if (val.match(/^ag([0-9]{4})/))
-            species = 'Vervet';
-        else if (val.match(/^cj([0-9]{4})/))
-            species = 'Marmoset';
-        else if (val.match(/^so([0-9]{4})/))
-            species = 'Cotton-top Tamarin';
-        else if (val.match(/^pt([0-9]{4})/))
-            species = 'Pigtail';
-
-        return species ? true : false;
-
-    },
-    'ehr-animalText': 'Invalid Id Format'
-});
 
 
 EHR.ext.AnimalField = Ext.extend(Ext.form.TextField,
@@ -359,15 +450,38 @@ EHR.ext.AnimalField = Ext.extend(Ext.form.TextField,
     initComponent: function(){
         Ext.apply(this, {
             labelAlign: 'top'
-            ,vtype: 'ehr-animal'
             ,fieldLabel: 'Id'
-            ,required: true
+            ,allowBlank: false
             ,bubbleEvents: ['valid', 'invalid', 'added']
             ,validationDelay: 1000
             ,validationEvent: 'blur'
+            ,validator: function(val, field)
+            {
+                if (!val)
+                {
+                    return 'This field is required';
+                }
+
+                var species;
+                if (val.match(/(^rh([0-9]{4})$)|(^r([0-9]{5})$)/))
+                    species = 'Rhesus';
+                else if (val.match(/^cy([0-9]{4})$/))
+                    species = 'Cynomolgus';
+                else if (val.match(/^ag([0-9]{4})$/))
+                    species = 'Vervet';
+                else if (val.match(/^cj([0-9]{4})$/))
+                    species = 'Marmoset';
+                else if (val.match(/^so([0-9]{4})$/))
+                    species = 'Cotton-top Tamarin';
+                else if (val.match(/^pt([0-9]{4})$/))
+                    species = 'Pigtail';
+
+                return species ? true : 'Invalid Id Format';
+
+            }
         });
 
-        EHR.ext.AnimalField.superclass.initComponent.call(this);
+        EHR.ext.AnimalField.superclass.initComponent.call(this, arguments);
     }
 });
 Ext.reg('ehr-animal', EHR.ext.AnimalField);
@@ -378,12 +492,13 @@ EHR.ext.ProjectField = Ext.extend(LABKEY.ext.ComboBox,
     initComponent: function(){
         Ext.apply(this, {
             fieldLabel: 'Project'
-            ,width: 120
+            ,width: 140
             ,name: this.name || 'Project'
             ,emptyText:'Select project...'
             ,displayField:'project'
             ,valueField: 'project'
             ,typeAhead: true
+            ,triggerAction: 'all'
             ,forceSelection: true
             ,mode: 'local'
             ,store: EHR.ext.getLookupStore({
@@ -394,7 +509,7 @@ EHR.ext.ProjectField = Ext.extend(LABKEY.ext.ComboBox,
             })
         });
 
-        EHR.ext.ProjectField.superclass.initComponent.call(this);
+        EHR.ext.ProjectField.superclass.initComponent.call(this, arguments);
     }
 });
 Ext.reg('ehr-project', EHR.ext.ProjectField);
@@ -410,6 +525,7 @@ EHR.ext.ProtocolField = Ext.extend(LABKEY.ext.ComboBox,
             ,displayField:'protocol'
             ,valueField: 'protocol'
             ,forceSelection: true
+            ,triggerAction: 'all'
             ,typeAhead: true
             ,mode: 'local'
             ,store: EHR.ext.getLookupStore({
@@ -420,7 +536,7 @@ EHR.ext.ProtocolField = Ext.extend(LABKEY.ext.ComboBox,
             })
         });
 
-        EHR.ext.ProjectField.superclass.initComponent.call(this);
+        EHR.ext.ProjectField.superclass.initComponent.call(this, arguments);
     }
 });
 Ext.reg('ehr-protocol', EHR.ext.ProtocolField);
@@ -444,10 +560,136 @@ EHR.ext.BooleanCombo = Ext.extend(LABKEY.ext.ComboBox,
 
         });
 
-        EHR.ext.BooleanCombo.superclass.initComponent.call(this);
+        EHR.ext.BooleanCombo.superclass.initComponent.call(this, arguments);
     }
 });
 Ext.reg('ehr-booleancombo', EHR.ext.BooleanCombo);
+
+
+EHR.ext.QuerySet = Ext.extend(Ext.FormPanel,
+{
+    initComponent: function(){
+        Ext.apply(this, {
+            autoHeight: true
+            ,width: 'auto'
+            ,items: {xtype: 'displayfield', value: 'Loading...'}
+            ,id: this.queryName
+            ,bodyBorder: true
+            ,bodyStyle: 'padding:5px 5px 5px 5px'
+            //,style: 'margin-bottom: 5px;border-style:solid;border-width:1px'
+            ,ref: '../querySets/'+this.queryName
+        });
+
+        EHR.ext.QuerySet.superclass.initComponent.apply(this, arguments);
+
+        this.store = EHR.ext.getLookupStore({
+            containerPath: 'WNPRC/EHR/',
+            schemaName: this.schemaName,
+            queryName: this.queryName,
+            viewName: this.viewName,
+            columns: '*',
+            filterArray: [LABKEY.Filter.create('parentid', this.ownerCt.ownerCt.uuid, LABKEY.Filter.Types.EQUAL)]
+        });
+
+
+        //  createOverrides();
+        if (this.store)  {
+           this.store = Ext.StoreMgr.lookup(this.store);
+           this.store.on({
+            scope: this,
+            load : function(store, records, options ) {
+              // Can only contain one row of data.
+              if (records.length == 1) {
+                this.onBind(records[0]);
+              }
+              else if (records.length == 0) {
+                  store.addRecord(new store.recordType());
+                this.onBind(store.getAt(0));
+              }
+              else  {
+                console.log('ERROR: Multiple records returned');
+              }
+            },
+            beforecommit: function(records, rows){
+                console.log(rows);
+            }
+            });
+        }
+
+        LABKEY.Query.getQueryDetails({
+            queryName: this.queryName
+            ,schemaName: this.schemaName
+            ,viewName: this.viewName
+            ,successCallback: this.loadQuery
+            ,errorCallback: EHR.UTILITIES.onError
+            ,scope: this
+        });
+    },
+    loadQuery: function(meta){
+        this.removeAll();
+        Ext.each(meta.columns, function(c){
+            //TODO: get shownInInsertView applied correctly
+            if(this.metadata && this.metadata[c.name])
+                EHR.UTILITIES.rApply(c, this.metadata[c.name]);
+
+            EHR.UTILITIES.rApply(c, {
+                fieldLabel: c.label,
+                queryName: this.queryName,
+                schemaName: this.schemaName,
+                ext: {
+                    name: this.schemaName+'.'+c.name,
+                    fieldLabelTip: 'Type: '+c.type+'<br>'+c.name,
+                    dataIndex: c.name,
+                    listeners: {
+                        scope: this,
+                        change: function(field){
+                            if(this.boundRecord) {
+                                var val = (field instanceof Ext.form.RadioGroup ? field.getValue().inputValue : field.getValue());
+                                this.boundRecord.set(field.dataIndex, val);
+                                this.updateBound();
+                            }
+                        }
+                    }
+                }
+            });
+
+            if ((!c.isHidden && c.shownInInsertView) || c.parentField){
+
+                if (c.inputType == 'textarea')
+                    EHR.UTILITIES.rApply(c, {ext: {height: 100, width: '90%'}});
+                else
+                    EHR.UTILITIES.rApply(c, {ext: {width: 200}});
+
+                if (c.parentField){
+                    var parent = this.get(c.parentField);
+                    EHR.UTILITIES.rApply(c, {ext: {
+                        xtype: (debug ? 'displayfield': 'hidden')
+                    }});
+                }
+                var theField = LABKEY.ext.FormHelper.getFieldEditor(c);
+
+                //TODO: would be nice to deal w/ scope better
+                if (c.parentField){
+                    theField.parent = this.refOwner[c.parentField.queryName][c.parentField.field];
+
+                    theField.parent.on('change', function(c){
+                        this.setValue(c.getValue());
+                        this.fireEvent('change', this);
+                    }, theField);
+                    theField.on('render', function(c){
+                        c.setValue(c.parent.getValue());
+                        this.fireEvent('change', this);
+                    }, theField)
+                }
+
+                this.add(theField);
+            }
+        }, this);
+        this.doLayout();
+    }
+
+});
+Ext.reg('ehr-queryset', EHR.ext.QuerySet);
 
 
 EHR.ext.getLookupStore = function(c, uniqueName)
@@ -480,393 +722,3 @@ EHR.ext.getLookupStore = function(c, uniqueName)
     }
     return store;
 }
-
-
-//EHR.ext.DateField = Ext.extend(LABKEY.ext.DateField,
-//{
-//    initComponent: function(){
-//        Ext.applyIf(this, {
-//            listeners:{
-//                      blur:{scope:this, fn:this.onBlur}
-//                     ,focus:{scope:this, fn:this.onFocus}
-//            }
-//        });
-//
-//        EHR.ext.DateField.superclass.initComponent.apply(this, arguments);
-//    },
-//    onBlur:function(f) {
-//        // called by both DateField and TimeField blur events
-//
-//        // revert focus to previous field if clicked in between
-//        if(this.wrapClick) {
-//                f.focus();
-//                this.wrapClick = false;
-//        }
-//
-//        // fire events later
-//        (function() {
-//                if(!this.hasFocus) {
-//                        var v = this.getValue();
-//                        if(String(v) !== String(this.startValue)) {
-//                                this.fireEvent("change", this, v, this.startValue);
-//                        }
-//                        this.hasFocus = false;
-//                        this.fireEvent('blur', this);
-//                }
-//        }).defer(100, this);
-//
-//    } // eo function onBlur
-//});
-//Ext.reg('ehr-date', EHR.ext.DateField);
-
-
-EHR.ext.QuerySet = Ext.extend(Ext.FormPanel,
-{
-    initComponent: function(){
-        Ext.apply(this, {
-            autoHeight: true
-            ,collapsible: true
-            ,animCollapse: true
-            ,width: 'auto'
-            ,border: true
-            ,items: {xtype: 'displayfield', value: 'Loading...'}
-            ,id: this.id || this.queryName
-            ,bodyBorder: true
-            ,frame:true
-            ,bodyStyle: 'padding:5px 5px 5px 5px'
-            ,style: 'margin-bottom: 5px;border-style:solid;border-width:1px'
-            ,monitorValid: true
-            ,buttons: [{text: 'Show Store', id: 'store', handler: this.showStore, scope: this, formBind: true}]
-            ,store: EHR.ext.getLookupStore({
-                containerPath: 'WNPRC/EHR/',
-                schemaName: this.schemaName,
-                queryName: this.queryName,
-                viewName: this.viewName,
-                filterArray: [LABKEY.Filter.create('parentid', this.ownerCt.uuid, LABKEY.Filter.Types.EQUAL)]
-            })
-        });
-
-        EHR.ext.QuerySet.superclass.initComponent.apply(this, arguments);
-        this.ownerCt.queries.push(this.id);
-
-        //  createOverrides();
-        if (this.store)  {
-           this.store = Ext.StoreMgr.lookup(this.store);
-           this.store.on({
-            scope: this,
-            load : function(store, records, options ) {
-              // Can only contain one row of data.
-              if (records.length > 0) {
-                this.onBind(records[0]);
-              } else  {
-                store.addRecord(new store.recordType());
-                this.onBind(store.getAt(0));
-              }
-            }
-            });
-        }
-
-        LABKEY.Query.getQueryDetails({
-            queryName: this.queryName
-            ,schemaName: this.schemaName
-            ,successCallback: this.loadQuery
-            ,errorCallback: EHR.UTILITIES.onError
-            ,scope: this
-        });
-    },
-    showStore: function(c){
-//        Ext.each(this.getDataboundFields(), function(c){
-//            console.log(c.name+': '+c.getValue())
-//        }, this)
-        this.store.each(function(rec){
-            Ext.each(rec.fields.keys, function(f){
-                console.log(f+': '+rec.get(f));
-            }, this);
-        }, this)
-        
-    },    
-    loadQuery: function(meta){
-        this.removeAll();
-        Ext.each(meta.columns, function(c){
-            //TODO: get shownInInsertView applied correctly
-            if(this.metadata && this.metadata[c.name])
-                EHR.UTILITIES.rApply(c, this.metadata[c.name]);
-            //console.log(c);
-            EHR.UTILITIES.rApply(c, {
-                fieldLabel: c.label,
-                queryName: this.queryName,
-                schemaName: this.schemaName,
-                ext: {
-                    name: this.schemaName+'.'+c.name,
-                    labelTooltip: c.type,
-                    dataIndex: c.name,
-                    listeners: {
-                        scope: this,
-                        change: function(field){
-//console.log('change called')
-//console.log(field);
-                            if(this.boundRecord) {
-                                var val = (field instanceof Ext.form.RadioGroup ? field.getValue().inputValue : field.getValue());
-//console.log('change')
-                                this.boundRecord.set(field.dataIndex, val);
-                                this.updateBound();
-                            }
-                        }
-                    }
-                }
-            });
-         
-            if (!c.isHidden && c.shownInInsertView){
-                if (c.inputType == 'textarea')
-                    EHR.UTILITIES.rApply(c, {ext: {height: 100, width: '90%'}});
-                else
-                    EHR.UTILITIES.rApply(c, {ext: {width: 200}});
-
-                if (c.inherited){
-                    var parent = this.get('id');
-                    EHR.UTILITIES.rApply(c, {ext: {
-                        xtype: 'hidden'
-                    }});
-                }
-
-                this.add(LABKEY.ext.FormHelper.getFieldEditor(c));
-            }
-        }, this);
-        this.doLayout();
-    }
-
-});
-Ext.reg('ehr-queryset', EHR.ext.QuerySet);
-
-
-
-
-/**
- * @author Andrew Pleshkov
- */
-//http://www.sencha.com/forum/showthread.php?98292-DateTime-field-again-and-again-%29&highlight=time+picker
-//new Ext.ux.form.DateTimeField({
-//    fieldLabel: 'date & time',
-//    dateFormat: 'd.m.Y',
-//    timeFormat: 'H:i'
-//});
-Ext.namespace('Ext.ux.form');
-
-(function () {
-
-    var Form = Ext.ux.form;
-
-    //
-
-    function doSomeAlchemy(picker) {
-        Ext.apply(picker, {
-
-            _getDateTime: function (value) {
-                if (this.timeField != null) {
-                    var timeval = this.timeField.getValue();
-                    value = Date.parseDate(value.format(this.dateFormat) + ' ' + timeval, this.format);
-                }
-                return value;
-            },
-
-            _initTimeField: function () {
-                if (null == this.timeField) {
-                    var config = Ext.apply({}, this.timeFieldConfig, {
-                        width: 100
-                    });
-                    var timeField = this.timeField = Ext.ComponentMgr.create(config, 'timefield');
-
-                    if (timeField instanceof Ext.form.ComboBox) {
-                        timeField.getListParent = function () {
-                            return this.el.up('.x-menu');
-                        }.createDelegate(timeField);
-
-                        if (Ext.isIE7) {
-                            timeField.maxHeight = 190;
-                        }
-                    }
-                }
-            },
-
-            setValue: function (value) {
-                if (null == this.timeField) {
-                    this._initTimeField();
-                    this.timeField.setValue(value);
-                }
-
-                this.value = this._getDateTime(value);
-                this.update(this.value, true);
-            },
-
-            update: function (date, forceRefresh) {
-                var d = date.clone().clearTime();
-                Ext.DatePicker.prototype.update.call(this, d, forceRefresh);
-            },
-
-            _handleTimeButtonClick: function (e) {
-                e.stopEvent();
-                var t = this.el.child('table.x-date-inner td.x-date-selected a', true);
-                this.handleDateClick(e, t);
-            },
-
-            onRender: function () {
-                Ext.DatePicker.prototype.onRender.apply(this, arguments);
-
-                var cls = 'ux-form-datetimefield';
-                var timeBtnCls = cls + '-timeButton';
-
-                var table = this.el.child('table');
-
-                Ext.DomHelper.insertBefore(table.child('tr:first'), {
-                    tag: 'tr',
-                    children: [
-                        {
-                            tag: 'td',
-                            colspan: '3',
-                            cls: 'x-date-bottom',
-                            style: 'border-top: 0',
-                            children: [
-                                {
-                                    tag: 'table',
-                                    cellspacing: 0,
-                                    cls: 'x-date-picker',
-                                    style: 'background: transparent',
-                                    children: [
-                                        {
-                                            tag: 'tbody',
-                                            children: [
-                                                {
-                                                    tag: 'tr',
-                                                    children: [
-                                                        {
-                                                            tag: 'td',
-                                                            style: 'padding-right: 5px',
-                                                            html: this.timeFieldLabel
-                                                        },
-                                                        {
-                                                            tag: 'td',
-                                                            cls: cls
-                                                        },
-                                                        {
-                                                            tag: 'td',
-                                                            cls: 'x-date-right',
-                                                            style: 'text-align: left; background: transparent; padding-left: 5px',
-                                                            html: '<a class="' + timeBtnCls + '" href="#"> </a>'
-                                                        }
-                                                    ]
-                                                }
-                                            ]
-                                        }
-                                    ]
-                                }
-                            ]
-                        }
-                    ]
-                }, true);
-
-                var selBtn = table.child('a.' + timeBtnCls);
-                selBtn.on('click', this._handleTimeButtonClick, this);
-
-                var ct = table.child('td.' + cls);
-                this.timeField.render(ct);
-            },
-
-            beforeDestroy: function () {
-                if (this.timeField) {
-                    Ext.destroy(this.timeField);
-                    delete this.timeField;
-                }
-
-                Ext.DatePicker.prototype.beforeDestroy.call(this);
-            },
-
-            fixIE: function () {
-                var el = this.timeField.el;
-                el.repaint();
-            }
-
-        });
-    }
-
-    //
-
-    var DateMenu = Ext.extend(Ext.menu.DateMenu, {
-
-        initComponent: function () {
-            DateMenu.superclass.initComponent.call(this);
-
-            if (Ext.isStrict && Ext.isIE7) {
-                this.on('show', function () {
-                    var h = this.picker.el.getComputedHeight();
-                    h += this.el.getFrameWidth('tb');
-                    this.setHeight(h);
-                }, this, { single: true });
-            }
-
-            // Using of Ext.DatePicker as this.picker is hardcoded in Ext.menu.DateMenu,
-            // so we need to do some alchemy to provide additional functionality and avoid copypasta
-            doSomeAlchemy(this.picker);
-        },
-
-        onShow: function () {
-            DateMenu.superclass.onShow.apply(this, arguments);
-
-            this.picker.fixIE();
-        }
-
-    });
-
-    //
-
-    Form.DateTimeField = Ext.extend(Ext.form.DateField, {
-
-        defaultAutoCreate : {
-            tag: "input",
-            type: "text",
-            size: "20",
-            autocomplete: "off"
-        },
-
-        timeFieldLabel: 'Time',
-
-        initComponent: function () {
-            var tfc = this.timeFieldConfig || {};
-
-            if (this.timeFormat != null && tfc.format != null) {
-                throw 'What time format do you prefer?';
-            }
-            var timeFormat = this.timeFormat || tfc.format || Ext.form.TimeField.prototype.format;
-            this.timeFormat = tfc.format = timeFormat;
-
-            this.timeFieldConfig = tfc;
-
-            this.dateFormat = this.dateFormat || Ext.form.DateField.prototype.format;
-            this.format = this.dateFormat + ' ' + this.timeFormat;
-
-            Form.DateTimeField.superclass.initComponent.call(this);
-        },
-
-        onTriggerClick: function () {
-            if (null == this.menu) {
-                this.menu = new DateMenu({
-                    hideOnClick: false,
-                    focusOnSelect: false,
-                    //
-                    timeFieldLabel: this.timeFieldLabel,
-                    timeFieldConfig: this.timeFieldConfig,
-                    dateFormat: this.dateFormat,
-                    format: this.format
-                });
-            }
-
-            Form.DateTimeField.superclass.onTriggerClick.call(this);
-        }
-
-    });
-
-    Ext.reg('datetimefield', Form.DateTimeField);
-
-})();
-
-
-
