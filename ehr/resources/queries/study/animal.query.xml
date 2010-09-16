@@ -48,12 +48,22 @@
                         </fk>
                     </column>
                     <column columnName="activeAssignments" wrappedColumnName="id">
-                        <columnTitle>Active Assignments</columnTitle>
+                        <columnTitle>Assignments - Active</columnTitle>
                         <isHidden>false</isHidden>
                         <isUnselectable>true</isUnselectable>
                         <fk>
                             <fkDbSchema>study</fkDbSchema>
                             <fkTable>demographicsAssignmentSummary</fkTable>
+                            <fkColumnName>Id</fkColumnName>
+                        </fk>
+                    </column>
+                    <column columnName="totalAssignments" wrappedColumnName="id">
+                        <columnTitle>Assignments - Total</columnTitle>
+                        <isHidden>false</isHidden>
+                        <isUnselectable>true</isUnselectable>
+                        <fk>
+                            <fkDbSchema>study</fkDbSchema>
+                            <fkTable>demographicsAssignmentHistory</fkTable>
                             <fkColumnName>Id</fkColumnName>
                         </fk>
                     </column>

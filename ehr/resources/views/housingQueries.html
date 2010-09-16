@@ -12,7 +12,8 @@ Ext.onReady(function(){
         ,title: 'Search Housing'
         ,defaultView: 'Current Housing'
         ,metadata: {
-            Id: {lookups: false}            
+            Id: {lookups: false},
+            TotalRoommates: {isHidden: true}
         }
     }).render('housingPanel');
 

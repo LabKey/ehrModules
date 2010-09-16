@@ -466,3 +466,33 @@ EHR.UTILITIES.rApply = function(o, c){
 }
 
 
+EHR.ext.getLookupStore = function(c, uniqueName)
+{
+    // normalize lookup
+    c.table = c.table || c.queryName;
+    c.schema = c.schema || c.schemaName;
+    c.view = c.view || c.viewName;
+    c.container = c.container || c.containerPath || LABKEY.container.path;
+
+    if (typeof(uniqueName) != 'string')
+        uniqueName = [c.container,c.schema,c.table,c.view,c.keyColumn,c.displayColumn].join('||');
+
+    var store = Ext.StoreMgr.key(uniqueName);
+    if (!store)
+    {
+        var columns = [];
+        if (c.keyColumn)
+            columns.push(c.keyColumn);
+
+        if (c.displayColumn && c.displayColumn != c.keyColumn)
+            columns.push(c.displayColumn);
+
+        if(columns.length)
+            c.columns = columns.join(',');
+
+        c.autoLoad = true;
+        c.storeId = uniqueName;
+        store = new LABKEY.ext.Store(c);
+    }
+    return store;
+}

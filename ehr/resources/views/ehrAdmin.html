@@ -16,23 +16,39 @@ Ext.onReady(function (){
                     {name: 'Backup History', url: '<%=contextPath%>/project/WNPRC/EHR/Backups/begin.view?'},
                     {name: 'Development Notes', url: '<%=contextPath%>/project/WNPRC/EHR/Development Notes/begin.view?'},
                     {name: 'ETL Admin', url: '<%=contextPath%>/EHR/WNPRC/EHR/etlAdmin.view?'},
+                    {name: 'ETL History', url: '<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=core&query.queryName=Sync History'},
                     {name: 'Manage EHR Study', url: '<%=contextPath%>/study/WNPRC/EHR/manageStudy.view?'},
                     {name: 'Reload Study', url: '<%=contextPath%>/pipeline/WNPRC/EHR/begin.view?'},
-                    {name: 'Sync History', url: '<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=core&query.queryName=Sync History'},
                     {name: 'View Logs', url: '<%=contextPath%>/project/WNPRC/EHR/Logs/begin.view?'}
                 ]
             },
             {header: 'Logs',
                 items: [
                     {name: 'Labkey.log', url: '<%=contextPath%>/files/WNPRC/EHR/Logs/%40filesets/Tomcat%20Logs/labkey.log?renderAs=DEFAULT'},
-                    {name: 'ActiveMQ Log', url: '<%=contextPath%>/files/WNPRC/EHR/Logs/%40filesets/ActiveMQ/activemq.log?renderAs=DEFAULT'},
-                    {name: 'Munin Log', url: '<%=contextPath%>/files/WNPRC/EHR/Logs/%40filesets/Munin/munin.log?renderAs=DEFAULT'}
+                    {name: 'ActiveMQ.log', url: '<%=contextPath%>/files/WNPRC/EHR/Logs/%40filesets/ActiveMQ/activemq.log?renderAs=DEFAULT'},
+                    {name: 'Monit.log', url: '<%=contextPath%>/files/WNPRC/EHR/Logs/%40filesets/Monit/monit.log?renderAs=DEFAULT'},
+                    {name: 'Munin.log', url: '<%=contextPath%>/files/WNPRC/EHR/Logs/%40filesets/Munin/munin.log?renderAs=DEFAULT'}
+                ]
+            },
+            {header: 'Monit',
+                items: [
+                    {name: 'Xnight', url: 'http://xnight.primate.wisc.edu:2812/'},
+                    {name: 'Test-EHR', url: 'http://test-ehr.primate.wisc.edu:2812/'},
+                    {name: 'Gems', url: 'http://gems.primate.wisc.edu:2812/'}
                 ]
             },
             {header: 'Munin',
                 items: [
-                    {name: 'Xnight', url: 'http://xnight.primate.wisc.edu/munin/index.html'},
-                    {name: 'Gems', url: 'http://gems.primate.wisc.edu/munin/localdomain/index.html'}
+                    {name: 'Xnight', url: 'https://xnight.primate.wisc.edu:4433/'},
+                    {name: 'Test-EHR', url: 'http://test-ehr.primate.wisc.edu/munin/'},                                                
+                    {name: 'Gems', url: 'http://gems.primate.wisc.edu/munin/'}
+                ]
+            },
+            {header: 'Usage',
+                items: [
+                    {name: 'Site Logins', url: '<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=core&query.queryName=SiteUsage'},
+                        {name: 'Site Logins By Month', url: '<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=core&query.queryName=SiteUsageByMonth'},
+                        {name: 'Site Logins By Group', url: '<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=core&query.queryName=SiteUsageByGroup'}
                 ]
             },
             {header: 'Validation',
@@ -62,22 +78,6 @@ Ext.onReady(function (){
         errorCallback: EHR.UTILITIES.onError
      }).render('backupDate');
 
-
-//    new LABKEY.QueryWebPart({
-//        title: 'Sync History',
-//        schemaName: 'lists',
-//        queryName: 'backup',
-//        allowChooseQuery: false,
-//        allowChooseView: true,
-//        showInsertNewButton: false,
-//        showDeleteButton: false,
-//        showDetailsColumn: true,
-//        showUpdateColumn: false,
-//        buttonBarPosition: 'top',
-//        sort: '-Date',
-//        scope: this,
-//        errorCallback: EHR.UTILITIES.onError
-//     }).render('syncDate');
 
     
 });

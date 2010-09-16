@@ -17,6 +17,7 @@ Ext.onReady(function(){
     new EHR.ext.formPanel({
         title: 'Test EHR Form',
         width: 600,
+        containerPath: 'WNPRC/EHR/',
         id: 'testForm',
 //        header: {
 //            xtype: 'ehr-header'
@@ -72,23 +73,6 @@ Ext.onReady(function(){
         ]
     }).render('formDiv');
 
-
-
-
-//var store = new LABKEY.ext.Store({
-//    containerPath: 'WNPRC/EHR/',
-//    schemaName: 'study',
-//    queryName: 'demographics',
-//    maxRows: 1,
-//    autoLoad: true,
-//    listeners: {
-//        load: function(){alert('123456')}
-//    }
-//});
-//
-//store.on('load', function(c){alert('abc')}, this);
-//store.on('load', function(c){alert('xyz')}, this);
-//console.log(store)
     
 });
 

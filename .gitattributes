@@ -115,6 +115,7 @@ ehr/resources/queries/lists/protocolTotalProjects.sql -text
 ehr/resources/queries/lists/room.sql -text
 ehr/resources/queries/lists/snomed.query.xml -text
 ehr/resources/queries/lists/yearMonth.sql -text
+ehr/resources/queries/lookups/lab_test_range.query.xml -text
 ehr/resources/queries/pipeline/lastStudyUpload.sql -text
 ehr/resources/queries/study/Alerts.js -text
 ehr/resources/queries/study/Alerts.query.xml -text
@@ -359,6 +360,8 @@ ehr/resources/queries/study/demographicsAgeClass.query.xml -text
 ehr/resources/queries/study/demographicsAgeClass.sql -text
 ehr/resources/queries/study/demographicsArrival.query.xml -text
 ehr/resources/queries/study/demographicsArrival.sql -text
+ehr/resources/queries/study/demographicsAssignmentHistory.query.xml -text
+ehr/resources/queries/study/demographicsAssignmentHistory.sql -text
 ehr/resources/queries/study/demographicsAssignmentSummary.query.xml -text
 ehr/resources/queries/study/demographicsAssignmentSummary.sql -text
 ehr/resources/queries/study/demographicsBloodSummary.query.xml -text
