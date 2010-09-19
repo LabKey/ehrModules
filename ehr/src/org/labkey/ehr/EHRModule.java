@@ -108,7 +108,9 @@ public class EHRModule extends DefaultModule
         if (EHRController.etlStatus != EHRController.ETLStatus.Run)
         {
             executor = Executors.newSingleThreadScheduledExecutor();
-            try {
+
+            try
+            {
                 etl = new ETLRunnable();
                 int interval = etl.getRunIntervalInMinutes();
                 if (interval != 0)
@@ -122,7 +124,6 @@ public class EHRModule extends DefaultModule
             {
                 log.error("Could not start incremental db sync", e);
             }
-
         }
     }
 
@@ -136,5 +137,4 @@ public class EHRModule extends DefaultModule
             EHRController.etlStatus = EHRController.ETLStatus.Stop;
         }
     }
-
 }
