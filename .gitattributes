@@ -8,6 +8,8 @@ EHR_ComplianceDB/queries/lists/ComplianceRecentTests.sql -text
 EHR_ComplianceDB/queries/lists/ComplianceRecentTests/.qview.xml -text
 EHR_ComplianceDB/queries/lists/ComplianceRecentTests/Training.qview.xml -text
 EHR_ComplianceDB/queries/lists/EmployeeList.sql -text
+EHR_ComplianceDB/queries/lists/EmployeeUsers.query.xml -text
+EHR_ComplianceDB/queries/lists/EmployeeUsers.sql -text
 EHR_ComplianceDB/queries/lists/Employees.query.xml -text
 EHR_ComplianceDB/queries/lists/SOPrequirements.query.xml -text
 EHR_ComplianceDB/queries/lists/SOPrequirements.sql -text
@@ -16,6 +18,7 @@ EHR_ComplianceDB/queries/lists/SOPrequirements/To[!!-~]Read.qview.xml -text
 EHR_ComplianceDB/queries/lists/completionDates.query.xml -text
 EHR_ComplianceDB/queries/lists/completionDates/.qview.xml -text
 EHR_ComplianceDB/queries/lists/completionDates/Training.qview.xml -text
+EHR_ComplianceDB/queries/lists/employees/LabKey[!!-~]User.qview.xml -text
 EHR_ComplianceDB/queries/lists/employees/No[!!-~]Personal[!!-~]Info.qview.xml -text
 EHR_ComplianceDB/views/My_Requirements.html -text
 EHR_ComplianceDB/views/SOP_submission.html -text

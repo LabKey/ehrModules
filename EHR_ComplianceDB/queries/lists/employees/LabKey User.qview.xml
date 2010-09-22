@@ -1,0 +1,30 @@
+<customView xmlns="http://labkey.org/data/xml/queryCustomView">
+    <columns>
+        <column name="employeeId2"/>
+        <column name="lastName"/>
+        <column name="firstName"/>
+        <column name="email"/>
+        <column name="title"/>
+        <column name="unit"/>
+        <column name="UsernameStatus/HasUsername">
+            <properties>
+                <property name="columnTitle" value="HasUsername"/>
+            </properties>
+        </column>
+        <column name="UsernameStatus/EmailExists">
+            <properties>
+                <property name="columnTitle" value="EmailExists"/>
+            </properties>
+        </column>
+        <column name="UsernameStatus/BothCorrect">
+            <properties>
+                <property name="columnTitle" value="BothCorrect"/>
+            </properties>
+        </column>
+    </columns>
+    <sorts>
+        <sort column="UsernameStatus/BothCorrect" descending="true"/>
+        <sort column="lastName" descending="false"/>
+        <sort column="firstName" descending="false"/>
+    </sorts>
+</customView>

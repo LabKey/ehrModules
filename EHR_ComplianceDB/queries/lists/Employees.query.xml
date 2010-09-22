@@ -7,6 +7,15 @@
                     <columnTitle>Employee Id</columnTitle>
                     <isHidden>true</isHidden>
                 </column>
+                <column columnName="UsernameStatus" wrappedColumnName="id">
+                    <columnTitle>Labkey User Status</columnTitle>
+                      <isUnselectable>true</isUnselectable>
+                      <fk>
+                        <fkDbSchema>lists</fkDbSchema>
+                        <fkTable>EmployeeUsers</fkTable>
+                        <fkColumnName>id</fkColumnName>
+                      </fk>
+                </column>
             </columns>
         </table>
     </tables>

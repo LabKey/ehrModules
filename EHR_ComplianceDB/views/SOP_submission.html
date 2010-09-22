@@ -96,15 +96,13 @@ Ext.onReady(function()
 });
 function markRead(dataRegion, dataRegionName) {
 
-    var userName = LABKEY.Security.currentUser.email;
-
-//    var dataRegion = LABKEY.DataRegions[dataRegionName];
     var checked = dataRegion.getChecked();
 
     if (!checked.length)
         return false;
 
     var request = new LABKEY.MultiRequest({listeners: {'done': onComplete, scope: this}});
+    var errorState = 0;
 
     Ext.Msg.wait("Loading...");
 
@@ -117,12 +115,14 @@ function markRead(dataRegion, dataRegionName) {
              queryName: 'SOPDates',
              rowDataArray: [{
                 SOP_ID: value[0]
-                ,EmployeeId: LABKEY.Security.currentUser.displayName
+                ,EmployeeId: value[1]
                 ,Date: new Date().format("Y-m-d")
                 }],
              failureCallback: function(errorInfo) {
+                errorState = 1;
                 Ext.Msg.hide();
-                Ext.Msg.alert("Error:", errorInfo);
+                Ext.Msg.alert("Error: please contact bimber@wisc.edu");
+                console.log(errorInfo)
                 }
             };
 
@@ -132,11 +132,15 @@ function markRead(dataRegion, dataRegionName) {
     request.send({});
 
     function onComplete(){
-         //dataRegion.render();
-         dataRegion.selectNone();
-         Ext.Msg.hide();
-         alert('SOPs Marked Read');
-         window.location.reload();
+        dataRegion.selectNone();
+        Ext.Msg.hide();
+        if(errorState != 1){
+            alert('SOPs Marked Read');
+            window.location.reload();
+        }
+        else {
+            alert('Something went wrong with the submission.  Please contact bimber@wisc.edu');
+        }
      }
  }
         
@@ -167,7 +171,8 @@ function markRead(dataRegion, dataRegionName) {
                 window.location = url
              },
              errorCallback: function(errorInfo) {
-                Ext.Msg.alert("Error:", errorInfo);
+                Ext.Msg.alert("Error: please contract bimber@wisc.edu");
+                 console.log(errorInfo);
                 }
             });
      }
