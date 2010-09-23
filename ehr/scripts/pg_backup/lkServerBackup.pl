@@ -36,7 +36,11 @@ home directory.  The user running this script should match a postgres user.
 Example .pgpass file:
 
 #username and pass must match a postgres user and the user running this script
-localhost:5432:*:fedora:fedora 
+localhost:*:*:postgres:yourPassword 
+
+When the script completes it will write to a logfile and touch the file called '.last_backup'
+located in the backup directory. This file can be used by monit or other system monitoring
+programs to gauge backup success.
 
 This script can save a record in a labkey list the job completes.  This requires
 several steps:
@@ -65,14 +69,16 @@ file with comments explaining each line.
 [general]
 compress = 1							;0 or 1.  determines whether DB dumps are compressed
 pg_dbname = labkey           			;name of postgres schema(s).  separate multiple schemas with whitespace (ie. 'labkey postgres')
-pg_host = someserver.com	 			;the postgres host.  can be omitted in running on the same server
+pg_host = someserver.com	 			;the postgres host.  can be omitted if running on the same server
+pg_user = labkey						;user connecting to postgres. can be omitted if using IDENT or other form of authentication
 backupdir = /labkey/backup/  			;the directory where backups will be stored
 pgdump_dir = /opt/PostgreSQL/8.4/bin/	;the location of pg_dump 
+file_root = /labkey/files/				;optional. a folder to be copied to the backupdir. for example the site root
 
 [lk_config]                            ;Section Optional.  
 jobName = LK Daily Backup	 		   ;optional. will appear in logfile
 baseURL= http://localhost:8080/labkey/ ;url of your server
-containerPath = /Project/Folder1	   ;the containerPath where your list is located
+containerPath = Project/Folder1/	   ;the containerPath where your list is located
 schemaName = lists                     ;schema where list is located
 queryName = backup	                   ;name of the list itself
 
@@ -88,7 +94,7 @@ maxMonthly = 100	;maximum daily backups to keep.  default: 0
 
 #should be included with perl install
 use strict;
-use Net::SMTP;
+#use Net::SMTP;
 use Time::localtime;
 use FileHandle;
 use File::Spec;        
@@ -99,6 +105,7 @@ use Archive::Tar;
 use Log::Rolling;
 use Data::Dumper;
 use Labkey::Query;
+use File::Touch;
  
 
 # get INI file.  this should allow a filepath relative to this script
@@ -131,7 +138,7 @@ if (!-e $config{backupdir}){
 }
 
 #check required params
-my @required = qw(pg_dbname pg_host backupdir pgdump_dir);
+my @required = qw(pg_dbname backupdir pgdump_dir);
 foreach (@required){
 	if (!$config{$_}){
 		$log->entry("Missing param: $_ from INI file");	
@@ -145,6 +152,13 @@ checkFolder($config{backupdir} . "database/");
 my @dbs = split(/\s/, $config{pg_dbname});
 foreach(@dbs){
 	runPgBackup($_);
+}
+
+#rsync
+if($config{file_root}){
+	my $dest = $config{backupdir} . "files/";
+	checkFolder($dest);
+	_rsync($config{file_root}, $dest);
 }
 
 onExit("Success", 1);
@@ -176,9 +190,7 @@ sub runPgBackup
 	
 	if ($config{compress}){
 		$log->entry("Compressing file: $dailyBackupFile");
-		$pg_filename = _compressFile($dailyBackupFile, 1);
-
-		$dailyBackupFile = $path.$pg_filename;
+		$dailyBackupFile = _compressFile($dailyBackupFile, 1);
 	}
 	
 	
@@ -187,11 +199,13 @@ sub runPgBackup
 	_rotateFiles($path, $rotation{'maxDaily'}, $file_prefix);		
 		
 	#add/rotate weekly backups on saturday
-	if ($tm->mday == 6 && $rotation{'maxWeekly'} > 0)
+	if ($tm->wday == 6 && $rotation{'maxWeekly'} > 0)
 		{		
 			$path = $backupdir."/weekly/";
-			checkFolder($path);
-			copy($dailyBackupFile,$path.$pg_filename) or onExit("Weekly Pgsql File Copy failed: $!");
+			checkFolder($path);		
+			my $weeklyFile = $dailyBackupFile ;
+			$weeklyFile =~ s/daily/weekly/;
+			copy($dailyBackupFile,$weeklyFile ) or onExit("Weekly Pgsql File Copy failed: $!");
 			$rotation{'maxWeekly'} ||= 5;
 			_rotateFiles($path, $rotation{'maxWeekly'}, $file_prefix);
 		}
@@ -239,7 +253,13 @@ sub onExit
 	
 	# Write Log messages to log file 
 	$log->commit;
-		
+
+	# touch a file to indicate success.  can be used /w monit
+	if ($status eq "Success"){
+		touch($config{backupdir}.".last_backup");
+	}
+	
+			
 	exit $msg;
 }
 
@@ -274,7 +294,7 @@ sub _pg_dump
 	my $pg_dbname = shift;
 	
 	# Postgres Backup
-	my $cmd = $config{pgdump_dir} . "pg_dump -F t " . $pg_dbname . " -f ".$bkpostgresfile;
+	my $cmd = $config{pgdump_dir} . "pg_dump -F t " . ($config{pg_host} ? " -U ".$config{pg_host}." " : "") . $pg_dbname . " -f ".$bkpostgresfile;
 	$cmd .= " -h ".$config{pg_host} if $config{pg_host};
 	 
 	my $pgout = system($cmd . " 2>&1");
@@ -300,13 +320,13 @@ _compressFile() will compress the specified file.
 
 sub _compressFile
 {
-	my $fileName = shift;
-	my $newFile = shift;
+	my $origFile = shift;
+	my $newFile = $origFile;
 	my $deleteOrig = shift || 0;
 
 	my $archive;
 	if ($^O eq "MacOS" || $^O eq 'linux' || $^O eq "darwin") {
-		my $archive = system("gzip $fileName 2>&1");
+		my $archive = system("gzip $origFile 2>&1");
 		if( $? ){
 			$log->entry("ERROR: Compression returned an error: $archive");
 		    onExit("Compression Error: $archive");
@@ -315,7 +335,7 @@ sub _compressFile
 	}
 	elsif ($^O eq 'MSWin32'){
 		#this is really, really slow.  if you actually run this on a PC you should replace this with a system command
-		my $archive = Archive::Tar->create_archive( $fileName.'.gz', COMPRESS_GZIP, $fileName );	
+		my $archive = Archive::Tar->create_archive( $origFile.'.gz', COMPRESS_GZIP, $origFile );	
 		
 		if( !$archive ){
 		    $log->entry("ERROR: Compression returned an error:");
@@ -323,7 +343,7 @@ sub _compressFile
 	
 		    onExit("Compression Error: ".$archive->error);
 		}
-		$fileName .= '.gz';
+		$newFile .= '.gz';	
 	}
 	else {
 		onExit("Unrecognized OS: $^O");
@@ -332,9 +352,8 @@ sub _compressFile
     $log->entry("Compression complete");
     
     if ($deleteOrig == 1){
-    	unlink $fileName;
+    	unlink $origFile;
     }
-    
     return $newFile;
 		
 }
@@ -352,7 +371,6 @@ sub _rotateFiles
 	my $dir = shift;
 	my $maxFiles = shift;
 	my $filePrefix = shift;
-
 	if (!$maxFiles){return 1;}
 
 	# Must be a directory.
@@ -457,9 +475,31 @@ sub lk_log
 	
 }
 
+=item _rsync()
 
+_rsync() will run rsync for the purposes of backing up the labkey file root
 
+=cut
 
+sub _rsync
+{
+	my $source = shift;
+	my $dest = shift;
+	
+	# Postgres Backup
+	my $cmd = "rsync --executability --recursive --perms --times --dry-run --delete --itemize-changes $source $dest";
+
+	my $output = system($cmd . " 2>&1");
+	$log->entry($cmd);
+	if( $? ){
+	    $log->entry("ERROR: Rsync returned an error: $output");
+
+	    onExit("Rsync Error: $output");
+	}
+	else{
+	    $log->entry("rsync operation complete");
+	}
+}
 
 
 1;
