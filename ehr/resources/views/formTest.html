@@ -14,40 +14,45 @@ LABKEY.requiresScript("/ehr/formHelper.js");
 
 Ext.onReady(function(){
 
-    new EHR.ext.formPanel({
+    new EHR.ext.ParentFormPanel({
         title: 'Test EHR Form',
         width: 600,
         containerPath: 'WNPRC/EHR/',
         id: 'testForm',
+        uuid: '2740da71-a932-102d-be95-73892a760bbf',
 //        header: {
 //            xtype: 'ehr-header'
 //        },
         tabs: [
             {
-                xtype: 'ehr-queryset',
+                xtype: 'ehr-formpanel',
                 queryName: 'vitals',
                 schemaName: 'study',
                 title: 'Vitals',
+                isChild: true,
                 metadata: EHR.ext.standardMetadata
             },{
-                xtype: 'ehr-queryset',
+                xtype: 'ehr-formpanel',
                 queryName: 'alopecia',
                 schemaName: 'study',
                 title: 'Alopecia',
+                isChild: true,
                 metadata: EHR.UTILITIES.rApply(EHR.ext.standardMetadata, {
                     head: {ext: {xtype: 'ehr-booleancombo', value: null}}
                 })
             },{
-                xtype: 'ehr-queryset',
+                xtype: 'ehr-formpanel',
                 queryName: 'Body Condition',
                 schemaName: 'study',
                 title: 'Body Condition',
+                isChild: true,
                 metadata: EHR.ext.standardMetadata
             },{
-                xtype: 'ehr-queryset',
+                xtype: 'ehr-formpanel',
                 queryName: 'Dental Status',
                 schemaName: 'study',
                 title: 'Dental Status',
+                isChild: true,
                 metadata: EHR.UTILITIES.rApply(EHR.ext.standardMetadata, {
                     gingivitis: {requireSelection: true, lookupNullCaption: 'N/A', value: null},
                     tartar: {allowBlank: false, lookupNullCaption: 'N/A', ext: {value: null}}

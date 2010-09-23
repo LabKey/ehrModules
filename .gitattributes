@@ -227,6 +227,7 @@ ehr/resources/queries/study/Inbreeding[!!-~]Coefficients/.qview.xml -text
 ehr/resources/queries/study/Inbreeding_Coefficients.js -text
 ehr/resources/queries/study/Irregular[!!-~]Observations.query.xml -text
 ehr/resources/queries/study/Irregular[!!-~]Observations/.qview.xml -text
+ehr/resources/queries/study/Irregular[!!-~]Observations/With[!!-~]Room.qview.xml -text
 ehr/resources/queries/study/Irregular_Observations.js -text
 ehr/resources/queries/study/Menses[!!-~]Observations.query.xml -text
 ehr/resources/queries/study/Menses[!!-~]Observations/.qview.xml -text

@@ -64,7 +64,7 @@ var verbosity = 0;
 var EHR = {};
 EHR.validation = {
     rowInit: function(row, errors){
-        row.dataSource = 'etl';
+        //row.dataSource = 'etl';
         row._warnings = new Array();
         
         if (verbosity > 1)
@@ -276,6 +276,11 @@ EHR.validation = {
             row.score = c[1];
     },
     suspDate: function(row, errors){
+        //TODO
+        if(typeof(row.Date) == 'string'){
+            row.Date = new java.util.Date(java.util.Date.parse(row.Date));
+        }
+
         //flag any dates greater than 1 year from now
         var cal1 = new java.util.GregorianCalendar();
         cal1.add(java.util.Calendar.YEAR, 1);
@@ -361,29 +366,29 @@ EHR.validation = {
         //row.birthmvIndicator = 'E';
     },
     setSpecies: function(row, errors){
-        if (row.Id.match(/(^rh([0-9]{4}))|(^r([0-9]{5}))/))
+        if (row.Id.match(/(^rh([0-9]{4})$)|(^r([0-9]{5})$)/))
             row.species = 'Rhesus';
-        else if (row.Id.match(/^cy([0-9]{4})/))
+        else if (row.Id.match(/^cy([0-9]{4})$/))
             row.species = 'Cynomolgus';
-        else if (row.Id.match(/^ag([0-9]{4})/))
+        else if (row.Id.match(/^ag([0-9]{4})$/))
             row.species = 'Vervet';
-        else if (row.Id.match(/^cj([0-9]{4})/))
+        else if (row.Id.match(/^cj([0-9]{4})$/))
             row.species = 'Marmoset';
-        else if (row.Id.match(/^so([0-9]{4})/))
+        else if (row.Id.match(/^so([0-9]{4})$/))
             row.species = 'Cotton-top Tamarin';
-        else if (row.Id.match(/^pt([0-9]{4})/))
+        else if (row.Id.match(/^pt([0-9]{4})$/))
             row.species = 'Pigtail';
 
         //these are to handle legacy data:
-        else if (row.Id.match(/(^rha([a-z]{1})([0-9]{2}))/))
+        else if (row.Id.match(/(^rha([a-z]{1})([0-9]{2}))$/))
             row.species = 'Rhesus';
-        else if (row.Id.match(/(^rh-([a-z]{1})([0-9]{2}))/))
+        else if (row.Id.match(/(^rh-([a-z]{1})([0-9]{2}))$/))
             row.species = 'Rhesus';
-        else if (row.Id.match(/^cja([0-9]{3})/))
+        else if (row.Id.match(/^cja([0-9]{3})$/))
             row.species = 'Marmoset';
-        else if (row.Id.match(/^m([0-9]{5})/))
+        else if (row.Id.match(/^m([0-9]{5})$/))
             row.species = 'Marmoset';
-        else if (row.Id.match(/^tx([0-9]{4})/))
+        else if (row.Id.match(/^tx([0-9]{4})$/))
             row.species = 'Marmoset';
 
         else

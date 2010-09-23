@@ -492,6 +492,7 @@ EHR.ext.getLookupStore = function(c, uniqueName)
 
         c.autoLoad = true;
         c.storeId = uniqueName;
+        c.noValidationCheck = true;
         store = new LABKEY.ext.Store(c);
     }
     return store;

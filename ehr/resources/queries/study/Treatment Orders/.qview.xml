@@ -27,6 +27,8 @@
        <column name="remark"/>
    </columns>
    <sorts>
-       <sort column="enddate" descending="true"/>
+       <!--<sort column="enddate" descending="true"/>-->
+       <sort column="Id/curLocation/cage" descending="false"/>
+       <sort column="Id/curLocation/room" descending="false"/>
    </sorts>
 </customView>
