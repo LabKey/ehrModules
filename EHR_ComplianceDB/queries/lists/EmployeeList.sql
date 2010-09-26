@@ -4,18 +4,18 @@
  * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
  */
 SELECT
-Id,
-LastName,
-FirstName,
-Email,
-Title,
-Unit,
-Category,
-Location,
-OfficePhone
+e.Id,
+e.LastName,
+e.FirstName,
+e.Email,
+e.Title,
+e.Unit,
+e.Category,
+e.Location,
+e.OfficePhone
 
-FROM lists.employees
+FROM "/WNPRC/WNPRC_Units/Animal_Services/Compliance_Training/Private/EmployeeDB/".lists.employees e
 
 WHERE
 
-EndDate is null
+e.EndDate is null

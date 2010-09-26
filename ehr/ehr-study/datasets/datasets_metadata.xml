@@ -176,11 +176,11 @@
       <column columnName="userid">
         <datatype>varchar</datatype>
         <columnTitle>User ID</columnTitle>
-        <fk>
-          <fkDbSchema>core</fkDbSchema>
-          <fkTable>users</fkTable>
-          <fkColumnName>userid</fkColumnName>
-        </fk>
+        <!--<fk>-->
+          <!--<fkDbSchema>core</fkDbSchema>-->
+          <!--<fkTable>users</fkTable>-->
+          <!--<fkColumnName>userid</fkColumnName>-->
+        <!--</fk>-->
       </column>
       <column columnName="remark">
         <datatype>varchar</datatype>
@@ -374,11 +374,11 @@
       <column columnName="userid">
         <datatype>varchar</datatype>
         <columnTitle>User ID</columnTitle>
-        <fk>
-          <fkDbSchema>core</fkDbSchema>
-          <fkTable>users</fkTable>
-          <fkColumnName>userid</fkColumnName>
-        </fk>
+        <!--<fk>-->
+          <!--<fkDbSchema>core</fkDbSchema>-->
+          <!--<fkTable>users</fkTable>-->
+          <!--<fkColumnName>userid</fkColumnName>-->
+        <!--</fk>-->
       </column>
       <column columnName="code">
         <datatype>varchar</datatype>
@@ -1136,11 +1136,11 @@
         <column columnName="userid">
           <datatype>varchar</datatype>
           <columnTitle>User ID</columnTitle>
-          <fk>
-            <fkDbSchema>core</fkDbSchema>
-            <fkTable>users</fkTable>
-            <fkColumnName>userid</fkColumnName>
-          </fk>
+          <!--<fk>-->
+            <!--<fkDbSchema>core</fkDbSchema>-->
+            <!--<fkTable>users</fkTable>-->
+            <!--<fkColumnName>userid</fkColumnName>-->
+          <!--</fk>-->
         </column>
         <column columnName="remark">
           <datatype>varchar</datatype>
@@ -1331,11 +1331,11 @@
       <column columnName="userid">
         <datatype>varchar</datatype>
         <columnTitle>User ID</columnTitle>
-        <fk>
-          <fkDbSchema>core</fkDbSchema>
-          <fkTable>users</fkTable>
-          <fkColumnName>userid</fkColumnName>
-        </fk>
+        <!--<fk>-->
+          <!--<fkDbSchema>core</fkDbSchema>-->
+          <!--<fkTable>users</fkTable>-->
+          <!--<fkColumnName>userid</fkColumnName>-->
+        <!--</fk>-->
       </column>
         <!--TODO: view on SNOMED-->
       <column columnName="location">
@@ -2162,11 +2162,11 @@
       <column columnName="userid">
         <datatype>varchar</datatype>
         <columnTitle>User ID</columnTitle>
-        <fk>
-          <fkDbSchema>core</fkDbSchema>
-          <fkTable>users</fkTable>
-          <fkColumnName>userid</fkColumnName>
-        </fk>
+        <!--<fk>-->
+          <!--<fkDbSchema>core</fkDbSchema>-->
+          <!--<fkTable>users</fkTable>-->
+          <!--<fkColumnName>userid</fkColumnName>-->
+        <!--</fk>-->
       </column>
       <column columnName="clinremark">
         <datatype>varchar</datatype>
@@ -2696,11 +2696,11 @@
         <column columnName="userid">
           <datatype>varchar</datatype>
           <columnTitle>User ID</columnTitle>
-          <fk>
-            <fkDbSchema>core</fkDbSchema>
-            <fkTable>users</fkTable>
-            <fkColumnName>userid</fkColumnName>
-          </fk>
+          <!--<fk>-->
+            <!--<fkDbSchema>core</fkDbSchema>-->
+            <!--<fkTable>users</fkTable>-->
+            <!--<fkColumnName>userid</fkColumnName>-->
+          <!--</fk>-->
         </column>
         <column columnName="remark">
           <datatype>varchar</datatype>
@@ -3398,11 +3398,11 @@
       <column columnName="userid">
         <datatype>varchar</datatype>
         <columnTitle>User ID</columnTitle>
-        <fk>
-          <fkDbSchema>core</fkDbSchema>
-          <fkTable>users</fkTable>
-          <fkColumnName>userid</fkColumnName>
-        </fk>
+        <!--<fk>-->
+          <!--<fkDbSchema>core</fkDbSchema>-->
+          <!--<fkTable>users</fkTable>-->
+          <!--<fkColumnName>userid</fkColumnName>-->
+        <!--</fk>-->
       </column>
       <column columnName="remark">
         <datatype>varchar</datatype>
@@ -4903,11 +4903,11 @@
         <column columnName="userid">
           <datatype>varchar</datatype>
           <columnTitle>User ID</columnTitle>
-          <fk>
-            <fkDbSchema>core</fkDbSchema>
-            <fkTable>users</fkTable>
-            <fkColumnName>userid</fkColumnName>
-          </fk>
+          <!--<fk>-->
+            <!--<fkDbSchema>core</fkDbSchema>-->
+            <!--<fkTable>users</fkTable>-->
+            <!--<fkColumnName>userid</fkColumnName>-->
+          <!--</fk>-->
         </column>
         <column columnName="remark">
           <datatype>varchar</datatype>

@@ -4,6 +4,7 @@
 
 Ext.onReady(function()
 {
+    var username;
 
     //we look up this employee's information
     LABKEY.Query.selectRows({
@@ -17,6 +18,8 @@ Ext.onReady(function()
     function onSuccess(results)
     {
         if (results.rows.length < 1){alert('No Employee Record Found for User: '+LABKEY.Security.currentUser.email+'.\nPlease contact Sandra Boehm.');return;}
+
+        username = results.rows[0].Id;
 
         var email = LABKEY.Security.currentUser.email;
 
@@ -93,7 +96,8 @@ Ext.onReady(function()
     }
 
 
-});
+
+
 function markRead(dataRegion, dataRegionName) {
 
     var checked = dataRegion.getChecked();
@@ -144,40 +148,46 @@ function markRead(dataRegion, dataRegionName) {
      }
  }
         
-    function submitRequest() {
-        if (!document.getElementById('sopCheck').checked){
-            alert('You must check the box above the submit button to certify you have read your SOPs');
-            return false;
-        }
+function submitRequest() {
 
-        LABKEY.Query.insertRows({
-             containerPath: '/WNPRC/WNPRC_Units/Animal_Services/Compliance_Training/Private/EmployeeDB',
-             schemaName: 'lists',
-             queryName: 'CompletionDates',
-             scope: this,
-             rowDataArray: [{
-                RequirementName: 'SOP Review'
-                ,EmployeeId: LABKEY.Security.currentUser.displayName
-                ,Date: new Date().format("Y-m-d")
-                }],
-             successCallback: function(){
-                alert('Thank You for Reading Your SOPs.  You have now completed your SOP requirements for the year.');
-                var url = LABKEY.ActionURL.buildURL(
-                    'Project',
-                    'begin.view',
-                    'home'
-                    );
+    if (!document.getElementById('sopCheck').checked){
+        alert('You must check the box above the submit button to certify you have read your SOPs');
+        return false;
+    }
 
-                window.location = url
-             },
-             errorCallback: function(errorInfo) {
-                Ext.Msg.alert("Error: please contract bimber@wisc.edu");
-                 console.log(errorInfo);
-                }
-            });
-     }
+    if(!username){
 
+        return;
+    }
 
+    LABKEY.Query.insertRows({
+         containerPath: '/WNPRC/WNPRC_Units/Animal_Services/Compliance_Training/Private/EmployeeDB',
+         schemaName: 'lists',
+         queryName: 'CompletionDates',
+         scope: this,
+         rowDataArray: [{
+            RequirementName: 'SOP Review'
+            ,EmployeeId: username
+            ,Date: new Date().format("Y-m-d")
+            }],
+         successCallback: function(){
+            alert('Thank You for Reading Your SOPs.  You have now completed your SOP requirements for the year.');
+            var url = LABKEY.ActionURL.buildURL(
+                'Project',
+                'begin.view',
+                'home'
+                );
+
+            window.location = url
+         },
+         errorCallback: function(errorInfo) {
+            Ext.Msg.alert("Error: please contact bimber@wisc.edu");
+             console.log(errorInfo);
+            }
+        });
+ }
+
+});
 
 </script>
 </head>

@@ -5,76 +5,13 @@
  */
 
 
-EHR.ext.formGrid = Ext.extend(LABKEY.ext.EditorGridPanel,
+EHR.ext.EditorGridPanel = Ext.extend(LABKEY.ext.EditorGridPanel,
 {
     initComponent: function(){
         
         var sm = new Ext.grid.CheckboxSelectionModel();
-
         Ext.apply(this, {
-            width: 'auto',
-            viewConfig: {
-                forceFit: true,
-                autoFill: true,
-//                autoExpandColumn: 'remark',
-                frame: true
-//                autoFill : true,
-//                autoExpand : function(preventUpdate){
-//                       var g = this.grid, cm = this.cm;
-//                       if(g.autoExpandColumn){
-//                            var tw = cm.getTotalWidth(false);
-//                            var aw = this.grid.getGridEl().getWidth(true)-this.scrollOffset;
-//                            if(tw != aw){
-//                                var ci = cm.getIndexById(g.autoExpandColumn);
-//                                var currentWidth = cm.getColumnWidth(ci);
-//                                var cw = Math.min(Math.max(((aw-tw)+currentWidth), g.autoExpandMin), g.autoExpandMax);
-//                                if(cw != currentWidth){
-//                                    cm.setColumnWidth(ci, cw, true);
-//                                    if(preventUpdate !== true){
-//                                        this.updateColumnWidth(ci, cw);
-//                                    }
-//                                }
-//                            }
-//                        }
-//                    }
-            },
-            autoHeight: true,
-            autoWidth: true,
-//            plugins: ['autosizecolumns'],
-//            border: true,
-//            bodyBorder: true,
-            autoSave: true,
-            editable: true,
-            stripeRows: true,
-            enableHdMenu: false,
-            listeners: {
-                scope: this
-                ,columnmodelcustomize: function(colModel, index){
-                    //apparently cannot do this prior to render
-                    Ext.each(colModel, function(c){
-                        delete c.width;
-                    }, this);
-                }
-            },
-            bodyCls: 'ehr-panel',
-            tbar: [
-                {
-                    text: 'Add Record',
-                    tooltip: 'Click to add a row',
-                    id: 'add-record-button',
-                    handler: this.onAddRecord,
-                    scope: this
-                },
-                    "-"
-                ,{
-                    text: 'Delete Selected',
-                    tooltip: 'Click to delete selected row(s)',
-                    id: 'delete-records-button',
-                    handler: this.onDeleteRecords,
-                    scope: this
-                }
-            ]
-            ,addRecord:function() {
+            addRecord:function() {
                 var store = this.store;
                 if(store.recordType) {
                     var rec = new store.recordType({newRecord:true});
@@ -86,27 +23,98 @@ EHR.ext.formGrid = Ext.extend(LABKEY.ext.EditorGridPanel,
                     return rec;
                 }
                 return false;
-            } // eo function addRecord
-            // }}}
-            // {{{
-            ,onRowAction:function(grid, record, action, row, col) {
-                switch(action) {
-                    case 'icon-minus':
-                        this.deleteRecord(record);
-                    break;
+            }
+            ,deleteRecords:function() {
 
-                    case 'icon-edit-record':
-                        this.recordForm.show(record, grid.getView().getCell(row, col));
-                    break;
-                }
-            } // eo onRowAction
+            }
         });
 
-        EHR.ext.formGrid.superclass.initComponent.apply(this, arguments);
+        Ext.apply(this, {
+            width: 'auto',
+            viewConfig: {
+                forceFit: true,
+                autoFill : true,
+                scrollOffset: 0
+            },
+            autoHeight: true,
+            autoWidth: true,
+            plugins: ['autosizecolumns'],
+            autoSave: false,
+            editable: true,
+            stripeRows: true,
+            enableHdMenu: false,
+            listeners: {
+                scope: this
+                ,columnmodelcustomize: function(colModel, index){
+                    Ext.each(colModel, function(c){
+                        delete c.scale;
+                        delete c.width;
+                        
+                        if(!c.shownInInsertView || c.parentField)
+                            c.hidden = true;
+                    }, this);
+                }
+            },
+            bodyCls: 'ehr-panel',
+            tbar: [
+                {
+                    text: 'Add Record',
+                    tooltip: 'Click to add a blank record',
+                    id: 'add-record-button',
+                    handler: this.onAddRecord, //this.addRecord,
+                    scope: this
+                },
+                    "-"
+                ,{
+                    text: 'Delete Selected',
+                    tooltip: 'Click to delete selected row(s)',
+                    id: 'delete-records-button',
+                    handler: this.onDeleteRecords,
+                    scope: this
+                }
+            ]
+        });
+
+        EHR.ext.EditorGridPanel.superclass.initComponent.apply(this, arguments);
     },
-    getDefaultEditor : LABKEY.ext.FormHelper.getFieldEditorConfig
+    onStoreLoad : function(store, records, options) {
+        this.store.un("load", this.onStoreLoad, this);
+
+        this.populateMetaMap();
+        this.setupColumnModel();
+    },
+    populateMetaMap : function() {
+        //the metaMap is a map from field name to meta data about the field
+        //the meta data contains the following properties:
+        // id, totalProperty, root, fields[]
+        // fields[] is an array of objects with the following properties
+        // name, type, lookup
+        // lookup is a nested object with the following properties
+        // schema, table, keyColumn, displayColumn
+        this.metaMap = {};
+        var fields = this.store.reader.jsonData.metaData.fields;
+        for(var idx = 0; idx < fields.length; ++idx)
+        {
+            var field = fields[idx];
+            delete field.scale;
+
+            //allow additional metadata
+            if(this.metadata && this.metadata[field.name])
+                EHR.UTILITIES.rApply(field, this.metadata[field.name]);
+
+            this.metaMap[field.name] = field;
+        }
+    },
+    getDefaultEditorConfig: LABKEY.ext.FormHelper.getFieldEditorConfig,
+    getDefaultEditor : function(col, meta) {
+        Ext.apply(col, meta);
+        console.log(col);
+        var s = LABKEY.ext.FormHelper.getFieldEditor(col);
+        console.log(s);
+        return s;
+    }
 });
-Ext.reg('ehr-formgrid', EHR.ext.formGrid);
+Ext.reg('ehr-editorgrid', EHR.ext.EditorGridPanel);
 
 
 
@@ -157,3 +165,5 @@ Ext.ns('Ext.ux.grid');
     });
 })();
 Ext.preg('autosizecolumns', Ext.ux.grid.AutoSizeColumns);
+
+

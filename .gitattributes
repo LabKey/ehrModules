@@ -95,6 +95,7 @@ ehr/resources/mySQL_edit.pl -text
 ehr/resources/queries/core/Last[!!-~]Backup.sql -text
 ehr/resources/queries/core/Last[!!-~]Sync.sql -text
 ehr/resources/queries/core/Maintenance[!!-~]History.sql -text
+ehr/resources/queries/core/Sync[!!-~]Duration.sql -text
 ehr/resources/queries/core/Sync[!!-~]History.sql -text
 ehr/resources/queries/lists/Cagenotes/.qview.xml -text
 ehr/resources/queries/lists/Last[!!-~]Backup.sql -text
@@ -120,6 +121,7 @@ ehr/resources/queries/lists/snomed.query.xml -text
 ehr/resources/queries/lists/yearMonth.sql -text
 ehr/resources/queries/lookups/lab_test_range.query.xml -text
 ehr/resources/queries/pipeline/lastStudyUpload.sql -text
+ehr/resources/queries/study/AgeAtTime.sql -text
 ehr/resources/queries/study/Alerts.js -text
 ehr/resources/queries/study/Alerts.query.xml -text
 ehr/resources/queries/study/Alerts/.qview.xml -text
@@ -479,6 +481,7 @@ ehr/resources/views/quickSearch.view.xml -text
 ehr/resources/views/quickSearch.webpart.xml -text
 ehr/resources/views/surgeryDetails.html -text
 ehr/resources/views/utilities.html -text
+ehr/resources/views/webDAV.html -text
 ehr/scripts/pg_backup/.project -text
 ehr/scripts/pg_backup/_netrc -text
 ehr/scripts/pg_backup/_pgpass -text
@@ -540,6 +543,7 @@ ehr/webapp/ehr/datetime.js -text
 ehr/webapp/ehr/ehrEditorGridpanel.js -text
 ehr/webapp/ehr/ext.ux.datetimefield.js -text
 ehr/webapp/ehr/ext.ux.multiselect.js -text
+ehr/webapp/ehr/ext.ux.statusbar.js -text
 ehr/webapp/ehr/formHelper.js -text
 ehr/webapp/ehr/participantView.js -text
 ehr/webapp/ehr/searchForm.js -text

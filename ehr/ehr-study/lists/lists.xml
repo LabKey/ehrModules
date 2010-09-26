@@ -151,11 +151,11 @@
       <column columnName="userid">
         <datatype>varchar</datatype>
         <columnTitle>UserID</columnTitle>
-        <fk>
-          <fkDbSchema>core</fkDbSchema>
-          <fkTable>Users</fkTable>
-          <fkColumnName>UserId</fkColumnName>
-        </fk>
+        <!--<fk>-->
+          <!--<fkDbSchema>core</fkDbSchema>-->
+          <!--<fkTable>Users</fkTable>-->
+          <!--<fkColumnName>UserId</fkColumnName>-->
+        <!--</fk>-->
       </column>
     </columns>
     <pkColumnName>objectid</pkColumnName>

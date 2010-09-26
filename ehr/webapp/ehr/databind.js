@@ -9,16 +9,10 @@ Ext.namespace('EHR.ext.plugins');
 
 //adapted from:
 //http://www.sencha.com/forum/showthread.php?83770-Ext-Databinding&highlight=Ext-Databinding
-EHR.ext.plugins.DataBind = function(config) {
-    Ext.apply(this, config);
-};
-
-// plugin code
-Ext.extend(EHR.ext.plugins.DataBind, Ext.util.Observable, {
+EHR.ext.plugins.DataBind = Ext.extend(Ext.util.Observable, {
     init:function(o) {
         Ext.apply(o, {
-            enableOnBind: false,
-            useFieldValues: false,
+            enableOnBind: true,
             getStore : function()
             {
                 return this.store;
@@ -112,6 +106,10 @@ Ext.extend(EHR.ext.plugins.DataBind, Ext.util.Observable, {
                         {
                             this.internalUpdate = true;
                             f.on('change', this.fieldChange, this);
+
+                            if(this.enableOnBind){
+                                f.setDisabled(true);
+                            }
                         }
                     }, this);
                 }
@@ -149,9 +147,8 @@ Ext.extend(EHR.ext.plugins.DataBind, Ext.util.Observable, {
                     Ext.apply(this.store, {
                         boundPanel: this,
                         createFormRecord: function(){
-                            var r = new this.recordType();
-                            //var record = this.addRecord(r);
-                            var record = this.add(r);
+                            var record = new this.recordType();
+                            this.add(record);
 
                             if(this.boundPanel){
                                 var fields = this.boundPanel.getDataboundFields();
@@ -190,15 +187,13 @@ Ext.extend(EHR.ext.plugins.DataBind, Ext.util.Observable, {
                         },
                         beforecommit: function(records, rows){
                             console.log('child store before commit');
-                            //console.log(rows);
                         },
                         commitexception: function(m){
                             console.log('child store commit exception');
                             console.log(m);
                         },
-                        commitcomplete: function(e){
+                        commitcomplete: function(){
                             console.log('child store commit complete');
-                            console.log(e);    
                         }
                     });
 
@@ -208,11 +203,23 @@ Ext.extend(EHR.ext.plugins.DataBind, Ext.util.Observable, {
 
         o.storeOverride();
         o.addFieldListeners();
+
+        o.addEvents('beforesubmit');
+
+        o.on('beforesubmit', function(c){
+            if (c.updateInherited)
+                c.updateInherited();
+            
+            c.updateStore();
+            console.log('child panel before submit');
+        });
     }
 }); 
+Ext.preg('databind', EHR.ext.plugins.DataBind);
+
 
 // this class will serve to monitor multiple child stores.
-// it will handle: changed records, commitChanges
+// it will handle: changed records, commitChanges, decoding server response
 // should delegate as much as reasonable to child stores
 EHR.ext.ParentStore = Ext.extend(Ext.util.Observable, {
     constructor: function(config){
@@ -223,10 +230,11 @@ EHR.ext.ParentStore = Ext.extend(Ext.util.Observable, {
 
         this.on('beforecommit', function(c){console.log('parent store before commit')});
         this.on('commitcomplete', function(c){console.log('parent store commit complete!')});
+        this.on('commitexception', function(c){console.log('parent store commit exception')});
 
     },
     addStore: function(store){
-        var store = Ext.StoreMgr.lookup(store);
+        store = Ext.StoreMgr.lookup(store);
 
         if (!this.containerPath){
             this.containerPath = store.containerPath;
@@ -234,7 +242,7 @@ EHR.ext.ParentStore = Ext.extend(Ext.util.Observable, {
 
         //check whether container path matches
         if (store.containerPath != this.containerPath){
-            console.log('possible problem: container dont match')
+            console.log('possible problem: container dont match');
         }
 
         if (!this.storeMap[store.storeId]){
@@ -244,14 +252,16 @@ EHR.ext.ParentStore = Ext.extend(Ext.util.Observable, {
 
     },
     removeStore: function(store){
-        var store = Ext.StoreMgr.lookup(store);
+        store = Ext.StoreMgr.lookup(store);
         if (!this.storeMap[store.storeId]){
             if(this.stores.indexOf(store) != -1)
                 this.store.remove(store);
 
             delete this.storeMap[store.storeId];
         }
-
+    },
+    getStores: function(){
+        return this.stores;    
     },
     getChanged: function(o){
         var allCommands = [];
@@ -259,10 +269,6 @@ EHR.ext.ParentStore = Ext.extend(Ext.util.Observable, {
 
         for (var i in this.storeMap){
             var store = this.storeMap[i];
-//todo: doesnt really belong here.  maybe a form beforesubmit event?
-if(store.boundPanel.updateInherited)
-    store.boundPanel.updateInherited();
-store.boundPanel.updateStore();
 
             var records = store.getModifiedRecords();
             var commands = store.getChanges(records);
@@ -285,6 +291,7 @@ store.boundPanel.updateStore();
         var changed = this.getChanged();
 
         if (!changed.commands.length){
+            console.log('no changes.  nothing to do');            
             return;
         }
         
@@ -329,6 +336,7 @@ store.boundPanel.updateStore();
 
         for (var i=0;i<json.result.length;i++){
             this.stores[i].processResponse(json.result[i].rows);
+            this.stores[i].fireEvent("commitcomplete");
         }
 
         this.fireEvent("commitcomplete");
@@ -338,6 +346,15 @@ store.boundPanel.updateStore();
                 && response.getResponseHeader('Content-Type').indexOf('application/json') >= 0)
                 ? Ext.util.JSON.decode(response.responseText)
                 : null;
+    },
+    deleteAllRecords: function(){
+        var stores = this.getStores();
+        var s;
+        Ext.each(stores, function(s){
+            s.each(function(r){
+                s.deleteRecords([r]);
+            }, this);
+        }, this);
     },
     stores : [],
     storeMap : {}

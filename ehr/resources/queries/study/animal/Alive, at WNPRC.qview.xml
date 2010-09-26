@@ -106,6 +106,6 @@
         <filter column="Status/Status" operator="eq" value="Alive"/>
     </filters>
     <sorts>
-        <sort column="id" descending="false"/>
+        <sort column="Id" descending="false"/>
     </sorts>
 </customView>

@@ -16,14 +16,13 @@ a production server.  This script comes with no guarantee whatsoever.  Test prio
 
 
 --will inactivate all users except site admins and labkey
--- select count(*)
-update   core.Principals
-SET      Active = FALSE
-WHERE type = 'u'   
-      AND UserId NOT IN (select p.UserId from core.Principals p inner join core.Members m on (p.UserId = m.UserId and m.GroupId=-1))
-      AND Name NOT LIKE '%@labkey.com'
-      --AND Name NOT IN ('someuser@myServer.com', 'someOtherUser@myServer.com')
-;
+-- update   core.Principals
+-- SET      Active = FALSE
+-- WHERE type = 'u'
+--       AND UserId NOT IN (select p.UserId from core.Principals p inner join core.Members m on (p.UserId = m.UserId and m.GroupId=-1))
+--       AND Name NOT LIKE '%@labkey.com'
+--       --AND Name NOT IN ('someuser@myServer.com', 'someOtherUser@myServer.com')
+-- ;
 
 
 UPDATE    prop.Properties p
