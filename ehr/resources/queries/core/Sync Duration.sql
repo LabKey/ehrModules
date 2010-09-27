@@ -17,19 +17,26 @@ SELECT
 
 c1.Date as Start,
 c2.EndTime,
+timestampdiff('SQL_TSI_MINUTE', c2.EndTime, c1.Date) AS Duration,
 
-a.key1,
-a.IntKey1 as ListErrors,
-a.IntKey2 as DatasetErrors,
-a.EventType,
-a.comment,
+-- c1.key1,
+c1.IntKey1 as ListErrors,
+c1.IntKey2 as DatasetErrors,
+-- c1.EventType,
+-- c1.comment,
 
-FROM core."Sync Duration" c1
+FROM auditlog.audit c1
 
 left join
 
-(SELECT max(c3.date) as EndTime
- FROM core."Sync Duration" c2 JOIN core."Sync Duration" c3 ON (c2.date > c3.date) GROUP BY c2.date
-) c2
+(
+SELECT c2.date, max(c3.date) as EndTime
+  FROM auditlog.audit c2 LEFT JOIN auditlog.audit c3
+  ON (c2.date > c3.date)
+  WHERE c2.EventType = 'EHRSyncAuditEvent' AND c3.EventType = 'EHRSyncAuditEvent' AND c3.key1='START' AND c2.key1='FINISH'
+  GROUP BY c2.date
+  ) c2
 
 ON (c2.date = c1.date)
+
+WHERE c1.EventType = 'EHRSyncAuditEvent' AND c1.key1='FINISH'

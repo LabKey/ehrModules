@@ -21,6 +21,10 @@
                           <fkColumnName>objectid</fkColumnName>
                         </fk>
                     </column>
+                    <column columnName="Remark">
+                        <isHidden>false</isHidden>
+                        <displayWidth>350</displayWidth>
+                    </column>                    
                 </columns>
             </table>
         </tables>

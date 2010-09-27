@@ -47,15 +47,24 @@ SELECT
     AS MonthsUntilRenewal,
 
 FROM "/WNPRC/WNPRC_Units/Animal_Services/Compliance_Training/Private/EmployeeDB/".lists.Employees e
-    LEFT OUTER JOIN "/WNPRC/WNPRC_Units/Animal_Services/Compliance_Training/Private/EmployeeDB/".lists.RequirementsList rn
 
-    --we add in more fields
-    LEFT JOIN "/WNPRC/WNPRC_Units/Animal_Services/Compliance_Training/Private/EmployeeDB/".lists.EmployeeMiscRequirements mt
-    ON (mt.RequirementName=rn.RequirementName AND mt.EmployeeId = e.Id)
+LEFT OUTER JOIN "/WNPRC/WNPRC_Units/Animal_Services/Compliance_Training/Private/EmployeeDB/".lists.RequirementsList rn
 
-    LEFT JOIN
-    (SELECT max(t.date) AS MostRecentDate, t.RequirementName, t.EmployeeId FROM "/WNPRC/WNPRC_Units/Animal_Services/Compliance_Training/Private/EmployeeDB/".lists.CompletionDates t GROUP BY t.EmployeeId, t.RequirementName) T1
-    ON (T1.RequirementName = rn.RequirementName AND T1.EmployeeId = e.Id)
+--we add in category/unit specific requirements
+LEFT JOIN "/WNPRC/WNPRC_Units/Animal_Services/Compliance_Training/Private/EmployeeDB/".lists.RequirementsByCategory rc
+ON (rc.Requirement=rn.RequirementName AND (
+      rc.Category = e.category AND rc.unit = e.unit OR
+      rc.Category = e.category AND rc.unit IS NULL OR
+      rc.Category IS NULL AND rc.unit = e.unit
+      ))
+
+--we add in misc requirements
+LEFT JOIN "/WNPRC/WNPRC_Units/Animal_Services/Compliance_Training/Private/EmployeeDB/".lists.EmployeeMiscRequirements mt
+ON (mt.RequirementName=rn.RequirementName AND mt.EmployeeId = e.Id)
+
+LEFT JOIN
+(SELECT max(t.date) AS MostRecentDate, t.RequirementName, t.EmployeeId FROM "/WNPRC/WNPRC_Units/Animal_Services/Compliance_Training/Private/EmployeeDB/".lists.CompletionDates t GROUP BY t.EmployeeId, t.RequirementName) T1
+ON (T1.RequirementName = rn.RequirementName AND T1.EmployeeId = e.Id)
 
 WHERE
   --we compute whether this person requires this test
@@ -70,11 +79,11 @@ WHERE
       THEN TRUE
     WHEN (e.Category.Tissue IS TRUE AND rn.Tissues IS TRUE)
       THEN TRUE
-    --if a requirement is mandatory for a given employee category and this employee is one, it's required
-    WHEN (e.Category != '' AND rn.Category = e.Category)
+    --if a requirement is mandatory for a given employee category/unit and this employee is one, it's required
+    WHEN (rc.Requirement IS NOT NULL)
       THEN TRUE
     --this allows to non-standard requirements to be tracked
-    WHEN (rn.CertainPeople IS TRUE AND mt.RequirementName IS NOT NULL)
+    WHEN (mt.RequirementName IS NOT NULL)
       THEN TRUE
     ELSE
       FALSE

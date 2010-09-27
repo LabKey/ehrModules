@@ -379,9 +379,10 @@ Ext.apply(Ext.form.VTypes, {
     daterange : function(val, field)
     {
         var date = field.parseDate(val);
-
+        console.log('validating');
         if (!date)
         {
+            console.log('returned');
             return;
         }
         if (field.startDateField && (!this.dateRangeMax || (date.getTime() != this.dateRangeMax.getTime())))

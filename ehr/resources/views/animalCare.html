@@ -16,7 +16,7 @@ function createNavMenu()
 
 
     new EHR.UTILITIES.navMenu({
-        target: 'ehrMenu1',
+        target: 'animalCare1',
         sections: [
             {header: 'By Animal',
             items: [
@@ -26,22 +26,19 @@ function createNavMenu()
             {header: 'By Dataset',
             items: [
                 {name: 'Browse All Datasets', url: '<%=contextPath%>/study/WNPRC/EHR/datasets.view?'},
-                {name: 'Clincal Remarks', url: '<%=contextPath%>/study/WNPRC/EHR/datasets.view?'},
-                {name: 'Housing Queries', url: '<%=contextPath%>/ehr/WNPRC/EHR/housingQueries.view?'},
                 {name: 'Protocol and Project Queries', url: '<%=contextPath%>/ehr/WNPRC/EHR/projectQueries.view?'}
             ]},
-            {header: 'By Location',
+            {header: 'By Room',
             items: [
-                {name: 'Search By Room, Floor or Cage', url: '<%=contextPath%>/study/WNPRC/EHR/datasets.view?'},
-                {name: 'Irregular Obs By Location', url: '<%=contextPath%>/study/WNPRC/EHR/datasets.view?'},
-                {name: 'Clincal Remarks By Location', url: '<%=contextPath%>/study/WNPRC/EHR/datasets.view?'}
+                {name: 'Housing Queries', url: '<%=contextPath%>/ehr/WNPRC/EHR/housingQueries.view?'},
+                {name: 'Room Utilization', url: '<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=roomCheck'}
             ]}
         ]
     });
 
 
     new EHR.UTILITIES.navMenu({
-        target: 'ehrMenu2',
+        target: 'animalCare2',
         sections: [
             {header: 'Entire Colony',
             items: [
@@ -50,37 +47,41 @@ function createNavMenu()
                 {name: 'MHC Genotype Summary', url: '<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=alleleFrequencies'},
                 //{name: 'Population Summary', url: '<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=colonyPopulationSummary'},
                 {name: 'Population Summary', url: '<%=contextPath%>/ehr/WNPRC/EHR/populationOverview.view?'},
-                //{name: 'This Week At WNPRC', url: '<%=contextPath%>/ehr/WNPRC/EHR/thisWeek.view?'},
+                {name: 'Room Utilization', url: '<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=lists&query.queryName=RoomUtilization'},
                 {name: 'Viral Challenges', url: '<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=demographicsViralChallenge'}
+            ]},
+            {header: 'Validation',
+            items: [
+                {name: 'Animal/Cage Size Check', url: '<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=roomCheck'},
+                {name: 'Loners', url: '<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=demographicsDaysAlone'},
+                {name: 'Unweighed Animals', url: '<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=roomCheck'}
             ]}
         ]
     });
 
+
     var menuCfg = {
-        target: 'ehrMenu3',
+        target: 'animalCare3',
         sections: [
             {header: 'Misc',
             items: [
-                {name: 'About the EHR Project', url: '<%=contextPath%>/project/WNPRC/EHR/About The EHR/begin.view?'},
                 {name: 'Search WNPRC SNOMED Codes', url: '<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=lists&query.queryName=snomed'},
-                {name: 'Search ALL SNOMED Codes', url: '<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=lists&query.queryName=newsnomed'},                    
-                {name: 'Utilities', url: '<%=contextPath%>/ehr/WNPRC/EHR/utilities.view?'}
+                {name: 'Search ALL SNOMED Codes', url: '<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=lists&query.queryName=newsnomed'}
             ]}
         ]
     };
 
-    if (LABKEY.Security.currentUser.isAdmin){
-        menuCfg.sections.push({
-            header: 'Admin',
-            items: [
-                {name: 'Manage EHR Study', url: '<%=contextPath%>/study/WNPRC/EHR/manageStudy.view?'},                
-                {name: 'EHR Admin Page', url: '<%=contextPath%>/ehr/WNPRC/EHR/ehrAdmin.view'},
-                {name: 'Form Test', url: '<%=contextPath%>/ehr/WNPRC/EHR/formTest.view'},
-                {name: 'Animal Care Staff', url: '<%=contextPath%>/ehr/WNPRC/EHR/animalCare.view?'}
-            ]
-        })
-
-    }
+//    if (LABKEY.Security.currentUser.isAdmin){
+//        menuCfg.sections.push({
+//            header: 'Admin',
+//            items: [
+//                {name: 'Manage EHR Study', url: '<%=contextPath%>/study/WNPRC/EHR/manageStudy.view?'},
+//                {name: 'EHR Admin Page', url: '<%=contextPath%>/ehr/WNPRC/EHR/ehrAdmin.view'},
+//                {name: 'Form Test', url: '<%=contextPath%>/ehr/WNPRC/EHR/formTest.view'}
+//            ]
+//        })
+//
+//    }
 
     new EHR.UTILITIES.navMenu(menuCfg);
 
@@ -90,28 +91,20 @@ function createNavMenu()
 <body>
 
 <div style="max-width:900px">
-    Below are the sections of the Electronic Health Record.  The EHR currently is a read-only mirror of WNPRC colony records.  It contains reports designed to mirror those available through the existing UNIX and web interfaces.  If there are additional reports you would like, please submit a request <a href="<%=contextPath%>/issues/WNPRC/WNPRC_Units/Research_Services/Research_Computing/Issue_Tracker/list.view?" target="new">here</a>
+    Below is a prototype of what an Animal Care main page might look like.  If you have any comments or suggestions, please submit a request <a href="<%=contextPath%>/issues/WNPRC/WNPRC_Units/Research_Services/Research_Computing/Issue_Tracker/list.view?" target="new">here</a>
     <br><br>
 </div>
 
 <table>
 <tr style="vertical-align:top">
-<td colspan="3">
-    <a class="labkey-main-title">
-        Electronic Health Record:
-    </a>
-    <p/>
-</td>
-</tr>
-<tr style="vertical-align:top">
     <td style="width:275px">
-        <div id="ehrMenu1"></div>
+        <div id="animalCare1"></div>
     </td>
     <td style="width:275px;vertical-align:top">
-        <div id="ehrMenu2"></div>
+        <div id="animalCare2"></div>
     </td>
     <td style="width:275px">
-        <div id="ehrMenu3"></div>
+        <div id="animalCare3"></div>
     </td>
 </tr>
 
@@ -122,5 +115,8 @@ function createNavMenu()
 
 <div id="ehrMenu"></div>
 
+
+
 </body>
 </html>
+

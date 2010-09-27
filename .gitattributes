@@ -8,6 +8,7 @@ EHR_ComplianceDB/queries/lists/ComplianceRecentTests.sql -text
 EHR_ComplianceDB/queries/lists/ComplianceRecentTests/.qview.xml -text
 EHR_ComplianceDB/queries/lists/ComplianceRecentTests/Training.qview.xml -text
 EHR_ComplianceDB/queries/lists/EmployeeList.sql -text
+EHR_ComplianceDB/queries/lists/EmployeeList/.qview.xml -text
 EHR_ComplianceDB/queries/lists/EmployeeUsers.query.xml -text
 EHR_ComplianceDB/queries/lists/EmployeeUsers.sql -text
 EHR_ComplianceDB/queries/lists/Employees.query.xml -text
@@ -96,12 +97,16 @@ ehr/resources/queries/core/Last[!!-~]Backup.sql -text
 ehr/resources/queries/core/Last[!!-~]Sync.sql -text
 ehr/resources/queries/core/Maintenance[!!-~]History.sql -text
 ehr/resources/queries/core/Sync[!!-~]Duration.sql -text
+ehr/resources/queries/core/Sync[!!-~]Duration/.qview.xml -text
 ehr/resources/queries/core/Sync[!!-~]History.sql -text
+ehr/resources/queries/lists/CageUtilization.sql -text
 ehr/resources/queries/lists/Cagenotes/.qview.xml -text
 ehr/resources/queries/lists/Last[!!-~]Backup.sql -text
 ehr/resources/queries/lists/Project/Projects[!!-~]With[!!-~]Active[!!-~]Assignments.qview.xml -text
 ehr/resources/queries/lists/Protocol/Protocols[!!-~]With[!!-~]Active[!!-~]Assignments.qview.xml -text
+ehr/resources/queries/lists/RoomUtilization.sql -text
 ehr/resources/queries/lists/cage.query.xml -text
+ehr/resources/queries/lists/cages.sql -text
 ehr/resources/queries/lists/project.query.xml -text
 ehr/resources/queries/lists/projectLastAssignmentDate.query.xml -text
 ehr/resources/queries/lists/projectLastAssignmentDate.sql -text
@@ -116,7 +121,7 @@ ehr/resources/queries/lists/protocolTotalAnimalsBySpecies.query.xml -text
 ehr/resources/queries/lists/protocolTotalAnimalsBySpecies.sql -text
 ehr/resources/queries/lists/protocolTotalProjects.query.xml -text
 ehr/resources/queries/lists/protocolTotalProjects.sql -text
-ehr/resources/queries/lists/room.sql -text
+ehr/resources/queries/lists/rooms.sql -text
 ehr/resources/queries/lists/snomed.query.xml -text
 ehr/resources/queries/lists/yearMonth.sql -text
 ehr/resources/queries/lookups/lab_test_range.query.xml -text
@@ -445,6 +450,7 @@ ehr/resources/reports/schemas/study/private/InbreedingCoefficients.r -text
 ehr/resources/reports/schemas/study/private/Kinship.r -text
 ehr/resources/stylesheet.css -text
 ehr/resources/validationHelper.pl -text
+ehr/resources/views/animalCare.html -text
 ehr/resources/views/animalHistory.html -text
 ehr/resources/views/animalHistory.view.xml -text
 ehr/resources/views/animalHistory.webpart.xml -text

@@ -92,7 +92,14 @@ EHR.ext.customPanels.searchForm = Ext.extend(Ext.Panel, {
             width: 482,
             //width: 1200,
             forceLayout: true,
-            autoHeight: true
+            autoHeight: true,
+            keys: [
+                {
+                    key: Ext.EventObject.ENTER,
+                    handler: this.onSubmit,
+                    scope: this
+                }
+            ]
         });
 
     },
@@ -113,44 +120,9 @@ EHR.ext.customPanels.searchForm = Ext.extend(Ext.Panel, {
             layout: 'table',
             layoutConfig: {columns: 3},
             items: [],
-            buttons: [{text: 'Submit', scope: this, handler: function(){
-                var params = {schemaName: this.config.schemaName, 'query.queryName': this.config.queryName};
-                var thePanel = this.items.items[0];
-                var loops = (thePanel.items.items.length - 2) /3;
-
-                for (var i=0;i<loops;i++){
-                    var op;
-                    if (thePanel.items.items[(i*3)+1].getValue){
-                        op = thePanel.items.items[(i*3)+1].getValue();
-                    }
-                    else {
-                        op = 'eq';
-                    }
-
-                    //TODO: .selectText() for select menus?
-                    var field = thePanel.items.items[(i*3)+2];
-
-                    if (i == (loops - 1) && thePanel.items.items[(i*3)+4].getValue() != null){
-                        params['query.viewName'] = thePanel.items.items[(i*3)+4].getValue();
-                    }
-
-                    if (field.getValue() || op == 'isblank' || op == 'isnonblank'){
-                        params[('query.' + field.originalConfig.name + '~' + op)] = field.getValue();
-                    }
-                }
-
-                var url = LABKEY.ActionURL.buildURL(
-                    'query',
-                    'executeQuery.view',
-                    LABKEY.ActionURL.getContainer(),
-                    params
-                    );
-
-                //TODO: Maybe load a QWP instead??
-                window.location = url
-
-                }
-            }]
+            buttons: [
+                {text: 'Submit', scope: this, handler: this.onSubmit}
+            ]
 
         };
 
@@ -173,7 +145,43 @@ EHR.ext.customPanels.searchForm = Ext.extend(Ext.Panel, {
         this.doLayout();
 
     },
+    onSubmit: function(){
+        var params = {schemaName: this.config.schemaName, 'query.queryName': this.config.queryName};
+        var thePanel = this.items.items[0];
+        var loops = (thePanel.items.items.length - 2) /3;
 
+        for (var i=0;i<loops;i++){
+            var op;
+            if (thePanel.items.items[(i*3)+1].getValue){
+                op = thePanel.items.items[(i*3)+1].getValue();
+            }
+            else {
+                op = 'eq';
+            }
+
+            //TODO: .selectText() for select menus?
+            var field = thePanel.items.items[(i*3)+2];
+
+            if (i == (loops - 1) && thePanel.items.items[(i*3)+4].getValue() != null){
+                params['query.viewName'] = thePanel.items.items[(i*3)+4].getValue();
+            }
+
+            if (field.getValue() || op == 'isblank' || op == 'isnonblank'){
+                params[('query.' + field.originalConfig.name + '~' + op)] = field.getValue();
+            }
+        }
+
+        var url = LABKEY.ActionURL.buildURL(
+            'query',
+            'executeQuery.view',
+            LABKEY.ActionURL.getContainer(),
+            params
+            );
+
+        //TODO: Maybe load a QWP instead??
+        window.location = url
+
+    },
     addRow: function(meta){
         Ext.apply(meta, {ext: {width: 150, lazyInit: false, editable: false}});
         if(meta.inputType == 'textarea')
