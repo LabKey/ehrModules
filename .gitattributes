@@ -72,7 +72,6 @@ ehr/ehr-study/lists/species.tsv -text
 ehr/ehr-study/lists/species_codes.tsv -text
 ehr/ehr-study/lists/status.tsv -text
 ehr/ehr-study/study.xml -text
-ehr/lib/guava-r05.jar -text
 ehr/module.properties -text
 ehr/resources/etl/datasets/alerts.sql -text
 ehr/resources/etl/datasets/bacteriologyResults.sql -text
