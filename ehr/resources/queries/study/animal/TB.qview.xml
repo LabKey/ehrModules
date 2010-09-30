@@ -51,19 +51,14 @@
                 <property name="columnTitle" value="Condition"/>
             </properties>
         </column>
-        <column name="MostRecentWeight/MostRecentWeight">
+        <column name="MostRecentTB/MostRecentTBDate">
             <properties>
-                <property name="columnTitle" value="Current Weight"/>
+                <property name="columnTitle" value="Last TB Date"/>
             </properties>
         </column>
-        <column name="MostRecentWeight/MostRecentWeightDate">
+        <column name="MostRecentTB/MonthsSinceLastTB">
             <properties>
-                <property name="columnTitle" value="Weight Date"/>
-            </properties>
-        </column>
-        <column name="MostRecentWeight/DaysSinceWeight">
-            <properties>
-                <property name="columnTitle" value="Days Since Weight"/>
+                <property name="columnTitle" value="Months Since Weight"/>
             </properties>
         </column>
         <column name="Dataset/Demographics/Medical">
@@ -79,7 +74,7 @@
     </columns>
     <filters>
         <filter column="Status/Status" operator="eq" value="Alive"/>
-        <filter column="MostRecentWeight/DaysSinceWeight" operator="gt" value="60"/>
+        <filter column="MostRecentTB/MonthsSinceLastTB" operator="gt" value="6"/>
     </filters>
     <sorts>
         <sort column="Dataset/Demographics/room" descending="false"/>

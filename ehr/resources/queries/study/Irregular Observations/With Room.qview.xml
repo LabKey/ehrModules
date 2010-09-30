@@ -24,5 +24,7 @@
   </columns>
    <sorts>
        <sort column="date" descending="true"/>
+       <sort column="Id/curLocation/room"/>
+       <sort column="Id/curLocation/cage"/>
    </sorts>
 </customView>

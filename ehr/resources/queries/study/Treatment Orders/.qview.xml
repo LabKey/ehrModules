@@ -3,19 +3,19 @@
        <column name="id"/>
        <column name="Id/curLocation/room">
            <properties>
-               <property name="columnTitle" value="Room"/>
+               <property name="columnTitle" value="Current Room"/>
            </properties>
        </column>
        <column name="Id/curLocation/cage">
            <properties>
-               <property name="columnTitle" value="Cage"/>
+               <property name="columnTitle" value="Current Cage"/>
            </properties>
        </column>
        <column name="date"/>
        <column name="enddate"/>
        <column name="frequency"/>
        <column name="project"/>
-       <column name="snomed"/>
+       <column name="code"/>
        <column name="volume"/>
        <column name="vunits"/>
        <column name="conc"/>

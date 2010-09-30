@@ -28,22 +28,6 @@ EHR.ext.customPanels.detailsView = function(config)
             break;
     }
 
-
-    /*
-    var defaults = {
-        width: 350,
-        autoHeight: true,
-        bodyBorder: true,
-        defaults: {
-            border: false
-        },
-        items: [{html: 'Loading...'}]
-    };
-    */
-    //Ext.apply(this, defaults);
-
-    //EHR.ext.customPanels.detailsView.superclass.constructor.call(this);
-
     config.renderTo.innerHTML = 'Loading...<p>';
 
     var queryConfig = {
@@ -74,6 +58,24 @@ EHR.ext.customPanels.detailsView = function(config)
             target.innerHTML = '';
             target.appendChild(header);
 
+            return;
+        }
+        else if (data.rows.length > 1 && this.config.multiToGrid){
+            Ext.applyIf(queryConfig, {
+                allowChooseQuery: false,
+                allowChooseView: false,
+                showInsertNewButton: false,
+                showDeleteButton: false,
+                showDetailsColumn: true,
+                showUpdateColumn: false,
+                showRecordSelectors: true,
+                buttonBarPosition: 'top',
+                //TODO: switch to 0 once bug is fixed
+                timeout: 3000000
+            })
+            
+            queryConfig.successCallback = null;
+            new LABKEY.QueryWebPart(queryConfig).render(target);
             return;
         }
 
@@ -121,8 +123,8 @@ EHR.ext.customPanels.detailsView = function(config)
             target.appendChild(document.createElement('br'));
             
             if (j == data.rows.length-1){
-                target.appendChild(document.createElement('br'));
-                target.appendChild(document.createElement('br'));
+                //target.appendChild(document.createElement('br'));
+                //target.appendChild(document.createElement('br'));
                 //target.appendChild(document.createElement('hr'));
             }
 

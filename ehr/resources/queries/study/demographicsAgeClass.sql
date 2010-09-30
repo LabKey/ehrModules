@@ -15,5 +15,5 @@ ON (
 d.id.age.ageInYears IS NOT NULL AND
 d.id.age.ageInYears >= ac."min" AND
 (d.id.age.ageInYears <= ac."max" OR ac."max" is null) AND
-d.id.Species.species = ac.species
+d.species = ac.species
 )

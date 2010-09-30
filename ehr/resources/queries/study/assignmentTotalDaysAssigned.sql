@@ -14,7 +14,7 @@ T1.year,
 
 
 
-SUM(
+convert(SUM(
 CASE
   WHEN (T1.year > T1.startYear AND T1.year < T1.EndYear) THEN
     365
@@ -27,7 +27,7 @@ CASE
   ELSE
     9999
 END
-)
+), integer)
 AS TotalDaysAssigned,
 
 

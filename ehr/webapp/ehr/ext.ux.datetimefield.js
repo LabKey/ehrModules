@@ -17,7 +17,7 @@ Ext.namespace('Ext.ux.form');
 (function () {
 
     var Form = Ext.ux.form;
-
+    Ext.menu.DateMenu.prototype.addClass('extContainer');
     //
 
     function doSomeAlchemy(picker) {

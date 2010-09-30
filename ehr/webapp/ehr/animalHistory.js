@@ -7,6 +7,8 @@ Ext.namespace('EHR.ext.customPanels');
 
 LABKEY.requiresScript("/ehr/transposeRows.js");
 LABKEY.requiresScript("/ehr/utilities.js");
+LABKEY.requiresScript("/ehr/reports.js");
+LABKEY.requiresScript("/ehr/ext.ux.datetimefield.js");
 
 EHR.ext.customPanels.SingleAnimalReport = Ext.extend(Ext.Panel, {
 
@@ -14,53 +16,206 @@ EHR.ext.customPanels.SingleAnimalReport = Ext.extend(Ext.Panel, {
     {
         this.on('afterLayout', this.afterLayout, this);
 
-//        this.cp = new Ext.state.CookieProvider({
-//            expires: new Date(new Date().getTime() + (1000 * 60 * 60)) //1 hour from now
-//        });
+        Ext.Panel.prototype.bodyBorder = false;
 
         Ext.apply(this, {
-            layout:'table'
-            ,autoHeight: true
+            autoHeight: true
+//            ,autoWidth: true
             ,bodyBorder: false
             ,border: false
+            ,frame: false
+//            ,layout: 'anchor'
+//            ,width: '90%'
+//            ,width: 1000
             ,defaults: {
-                // applied to each contained panel
-                border: false
-                //,bodyStyle:'padding:0px'
-            },
-            layoutConfig: {
-                columns: 4
+                border: false,
+//                autoHeight: true,
+                autoWidth: true
+                //bodyStyle:'align: center;padding-bottom:30px, vertical-align:middle'
             }
+            ,items: [
+            {
+                layout: 'column'
+                ,defaults: {
+                    autoHeight: true
+//                    autoWidth: true
+                }
+                ,items: [{
+                    width: 500,
+//                    width: 'auto',
+                    items: [{
+                        xtype: 'panel',
+                        ref: '../../togglePanel',
+                        layout: 'hbox'
+                    },{
+                        xtype: 'panel',
+                        ref: '../../filterPanel',
+                        layout: 'hbox'
+                    },{
+                        xtype: 'panel',
+                        ref: '../../datePanel',
+                        layout: 'hbox'
+                    }]
+                },{
+                    width: 'auto',
+                    ref: '../idPanel'
+                }]
+            },{
+                xtype: 'button'
+                ,text: 'Display Report'
+                ,handler: this.onSubmit
+                ,type: 'submit'
+                ,scope: this
+                ,style:'padding-top: 5px;margin-left:205px'
+            },{
+                tag: 'span',
+                style: 'padding: 10px'
+            },{
+                xtype: 'tabpanel',
+                ref: 'tabPanel',
+                cls: 'extContainer',
+                activeTab: 0,
+//                autoWidth: true,
+                bodyBorder: true,
+                width: '90%',
+                border: true,
+                autoHeight: true,
+                bodyStyle: 'padding-top: 5px;',
+                frame: true
+            }]
         });
 
         EHR.ext.customPanels.SingleAnimalReport.superclass.initComponent.call(this);
 
+        this.togglePanel.add({
+            width: 200,
+            html: '<p>Type of Search:</p>'
+        },{
+            xtype: 'radiogroup',
+            ref: '../../../inputType',
+            style: 'padding-bottom:10px',
+            columns: 1,
+            listeners: {
+                scope: this,
+                change: function(o, s){
+                    var val = o.getValue();
+                    val = val.inputValue;
+                    //this.subjectArray = [];
+                    this.processSubj();
+                    this[val]();
+                }
+            },
+            items: [{
+                name: 'selector',
+                boxLabel: 'Single Animal',
+                inputValue: 'renderSingleSubject',
+                ref: 'renderSingleSubject'
+            },{
+                name: 'selector',
+                boxLabel: 'Multiple Animals',
+                inputValue: 'renderMultiSubject',
+                ref: 'renderMultiSubject'
+            },{
+                name: 'selector',
+                boxLabel: 'Room/Cage',
+                inputValue: 'renderRoomCage',
+                ref: 'renderRoomCage'
+//            },{
+//                name: 'selector',
+//                boxLabel: 'Complex',
+//                inputValue: 'renderComplex'
+            }]
+        });
+
         //now we add each component
-        this.add({html: '<p>Enter Subject ID(s):<br><i>(Separated by commas, semicolons, space or line breaks)</i></p>'});
+        this.renderDateRow();
+//        this.renderCombineSubjects();
 
-        this.textarea = new Ext.form.TextArea({name:"subjectBox", width:165});
-        this.add(this.textarea);
+        //force filter area to render
+        var inputType = LABKEY.ActionURL.getParameter('inputType') || 'renderSingleSubject';
+        Ext.each(this.inputType.items, function(c){
+            c.checked = (c.inputValue == inputType)
+        }, this);
 
-        var subjButton = this.add(new Ext.Panel({
-            bodyStyle:'padding-left: 16px',
-//            bodyStyle:'align: center'
+        this[inputType]();
+
+
+        this.allReports = new LABKEY.ext.Store({
+            schemaName: 'lists',
+            queryName: 'reports',
+            filterArray: [LABKEY.Filter.create('Visible', true, LABKEY.Filter.Types.EQUAL)],
+            //, LABKEY.Filter.create('ReportCategory', 'AnimalReport', LABKEY.Filter.Types.EQUAL)
+            sort: 'ReportName',
+            autoLoad: true,
+            listeners: {
+                scope: this,
+                load: this.createTabPanel
+            }
+        });
+
+        this.doLayout();
+
+    },
+    renderSingleSubject: function(){
+        var target = this.filterPanel;
+        target.removeAll();
+
+        target.add({width: 200, html: 'Enter Subject Id:', style: 'padding-bottom:10px'});
+
+        target.add({
+            xtype: 'panel',
+            items: [
+                new Ext.form.TextField({
+                    name:"subjectBox",
+                    width:165,
+                    ref: '../../../../subjArea',
+                    value: (this.subjectArray && this.subjectArray.length ? this.subjectArray.join(';') : ''),
+                    keys: [
+                        {
+                            key: Ext.EventObject.ENTER,
+                            handler: this.onSubmit,
+                            scope: this
+                        }
+                    ]
+                })
+            ]});
+
+        target.doLayout();
+
+    },
+    renderMultiSubject: function(){
+        var target = this.filterPanel;
+        target.removeAll();
+        target.add({width: 200, html: 'Enter Subject Id(s):<br><i>(Separated by commas, semicolons, space or line breaks)</i>'});
+
+        var thePanel = target.add({xtype: 'panel'});
+
+        thePanel.add (new Ext.form.TextArea({
+            name:"subjectBox",
+            width:165,
+            ref: '../../../../subjArea'})
+        );
+
+        var subjButton = target.add(new Ext.Panel({
+            bodyStyle:'padding-left: 16px;padding-right: 16px',
             buttonAlign: 'center',
             defaults: {buttonAlign: 'center'}
         }));
 
         subjButton.add(new Ext.Button({
             text: '  Append -->'
-            ,minWidth: 80
+            ,minWidth: 85
             ,handler: this.processSubj
             ,scope: this
             //,style:'align: center'
             ,bodyStyle:'align: center'
             ,buttonAlign: 'center'
+            //,cls: 'labkey-button'
             })
         );
         subjButton.add(new Ext.Button({
             text: '  Replace -->'
-            ,minWidth: 80
+            ,minWidth: 85
             ,handler: function(){
                 this.subjectArray = [];
                 this.processSubj()
@@ -71,11 +226,11 @@ EHR.ext.customPanels.SingleAnimalReport = Ext.extend(Ext.Panel, {
             })
         );
         subjButton.add(new Ext.Button({
-            text: ' Clear All '
-            ,minWidth: 80
+            text: ' Clear Dates '
+            ,minWidth: 85
             ,handler: function(c){
                 this.subjectArray = [];
-                this.subjTable.body.update('');                
+                this.idPanel.removeAll();
             }
             ,scope: this
             //,style:'align: center'
@@ -83,13 +238,6 @@ EHR.ext.customPanels.SingleAnimalReport = Ext.extend(Ext.Panel, {
             ,buttonAlign: 'center'
             })
         );
-
-        this.subjTable = new Ext.Panel({style:'vertical-align: top', height: 220, rowspan: 6});
-        this.add(this.subjTable);
-
-        this.add({});
-
-        var thePanel = this.add({xtype: 'panel',bodyStyle:'align: center',buttonAlign: 'center'});
 
         this.projectWin = new Ext.Window({
             width: 280,
@@ -107,15 +255,44 @@ EHR.ext.customPanels.SingleAnimalReport = Ext.extend(Ext.Panel, {
             title: 'Search By Project/Protocol',
             layout: 'form',
 
-            items: [{
-                xtype: 'numberfield',
-                fieldLabel: 'Project',
-                ref: 'project'
-            },{
-                xtype: 'textfield',
-                fieldLabel: 'Protocol',
-                ref: 'protocol'
-            }],
+            items: [new EHR.ext.customFields.LabKeyCombo({
+                emptyText:''
+                ,fieldLabel: 'Project'
+                ,ref: 'project'
+                ,xtype: 'combo'
+                ,displayField:'project'
+                ,valueField: 'project'
+                ,typeAhead: true
+                ,width: 150
+                ,editable: true
+                ,store: new LABKEY.ext.Store({
+                    containerPath: 'WNPRC/EHR/',
+                    schemaName: 'lists',
+                    queryName: 'project',
+                    viewName: 'Projects With Active Assignments',
+                    sort: 'project',
+                    autoLoad: true
+                })
+            }),
+                new EHR.ext.customFields.LabKeyCombo({
+                emptyText:''
+                ,fieldLabel: 'Protocol'
+                ,ref: 'protocol'
+                ,xtype: 'combo'
+                ,displayField:'protocol'
+                ,valueField: 'protocol'
+                ,typeAhead: true
+                ,width: 150
+                ,editable: true
+                ,store: new LABKEY.ext.Store({
+                    containerPath: 'WNPRC/EHR/',
+                    schemaName: 'lists',
+                    queryName: 'protocol',
+                    viewName: 'Protocols With Active Assignments',
+                    sort: 'protocol',
+                    autoLoad: true
+                })
+            })],
             buttons: [{
                 text:'Submit',
                 disabled:false,
@@ -171,7 +348,7 @@ EHR.ext.customPanels.SingleAnimalReport = Ext.extend(Ext.Panel, {
             }]
         });
 
-//        thePanel.add(new Ext.Button({
+//        target.add(new Ext.Button({
 //            text: ' Search Room/Cage '
 //            ,minWidth: 80
 //            ,handler: function(c){
@@ -183,58 +360,67 @@ EHR.ext.customPanels.SingleAnimalReport = Ext.extend(Ext.Panel, {
 //            })
 //        );
 
-        thePanel.add(new Ext.Button({
-            text: 'Search Protocol/Project'
+        thePanel.add({
+            xtype: 'button'
+            ,html: '[Search By Project/Protocol]'
             ,minWidth: 80
             ,scope: this
             ,handler: function(c){
                 this.projectWin.show(this);
             }
-            ,scope: this
-            //,bodyStyle:'align: center'
+            ,style: 'padding-bottom:10px'
             ,buttonAlign: 'center'
-            })
-        );
+        });
 
-        this.add({});
-        
-        this.add({html: '<p>Or Search By Location:<br><i>(active location only. to search by floor, enter start of room)</i></p>'});
-        var roomPanel = this.add({
+        target.doLayout();
+    },
+    renderRoomCage: function(){
+        var target = this.filterPanel;
+        target.removeAll();
+        this.subjectArray = [];
+
+        target.add({width: 200, html: 'Search By Location:<br><i>(enter partial room name to search by floor)</i>'});
+        var roomPanel = target.add({
             xtype: 'panel',
             buttonAlign: 'center',
-            bodyStyle:'align: center;padding-top:5px;padding-bottom:5px',
+            bodyStyle:'align: center;padding-bottom:10px',
             defaults: {cls: 'extContainer', bodyBorder: false}
         });
 
         roomPanel.add({tag: 'div', html: 'Room:'});
         roomPanel.add({
             xtype: 'textfield',
-            ref: '../roomField',
+            ref: '../../../../roomField',
             width: 165,
             fieldLabel: 'Room'
         });
         roomPanel.add({tag: 'div', html: 'Cage:'});
         roomPanel.add({
             xtype: 'textfield',
-            ref: '../cageField',
+            ref: '../../../../cageField',
             width: 165,
             fieldLabel: 'Cage'
         });
 
+        target.doLayout();
 
-        this.add({});
-
-        this.add({html: '<p>Enter Date Range<br><i>(optional - ignored by some reports)</i></p>'});
+    },
+    renderDateRow: function(){
+        var target = this.datePanel;
+        target.add({
+            width: 200,
+            html: 'Enter Date Range:<br><i>(optional - ignored by some reports)</i>'
+        });
 
         //the date range cell:
         var datePanel = new Ext.Panel({
-            defaults: {cls: 'extContainer', bodyBorder: false}
+            defaults: {bodyBorder: false, style:'vertical-align:middle'}
         });
 
-        this.startDateField = new LABKEY.ext.DateField({
-            format: 'Y-M-d' //YYYY-MMM-DD
-            ,width: 165
+        this.startDateField = Ext.ComponentMgr.create({
+            width: 165
             ,name:'startDate'
+            ,xtype: 'datetimefield'
             ,allowBlank:true
             ,vtype: 'daterange'
             ,listeners: {
@@ -245,25 +431,34 @@ EHR.ext.customPanels.SingleAnimalReport = Ext.extend(Ext.Panel, {
                     o.validate(o.getValue(), o);
                 }
             }
-            ,validateOnBlur: true            
+            ,validateOnBlur: true
             ,value: LABKEY.ActionURL.getParameter('startDate')
         });
 
-        this.endDateField = new LABKEY.ext.DateField({
-            format: 'Y-M-d' //YYYY-MMM-DD
-            ,width:165
+        this.endDateField = Ext.ComponentMgr.create({
+            width:165
+            ,xtype: 'datetimefield'
             ,name:'endDate'
             ,allowBlank:true
             ,vtype: 'daterange'
             ,listeners: {
                 scope: this,
                 blur: function(o){
-                    o.fireEvent('change');                    
+                    o.fireEvent('change');
                     o.startDateField.fireEvent('change');
                     o.validate(o.getValue(), o);
+                    console.log('blur')
+                }
+//                ,change: function(c){
+//                    console.log('change');
+//                    if(c)
+//                        Ext.form.VTypes.daterange(c.getValue(), c);
+//                }
+                ,keyup: function(a,b){
+                    console.log('keyup')
                 }
             }
-            ,validateOnBlur: true
+//            ,validateOnBlur: true
             ,value: LABKEY.ActionURL.getParameter('endDate')
             //,scope: this
         });
@@ -275,78 +470,78 @@ EHR.ext.customPanels.SingleAnimalReport = Ext.extend(Ext.Panel, {
         datePanel.add(this.startDateField);
         datePanel.add({tag: 'div', html: 'To:'});
         datePanel.add(this.endDateField);
-        datePanel.add({tag: 'div', html: '<br>'});
+        //datePanel.add({tag: 'div', html: '<br>'});
+        datePanel.add({
+            xtype: 'button',
+            text: 'Clear',
+            html: '[Clear All]',
+            listeners: {
+                scope: this,
+                click: function(o){
+                    this.startDateField.reset();
+                    this.endDateField.reset();
+                }
+            }
+        })
 
-        this.add(datePanel);
+        target.add(datePanel);
 
         //the date buttons:
-        var dateButtons = new Ext.Panel({minButtonWidth: 150, bodyStyle:'padding:5px'});
+        var dateButtons = new Ext.Panel({minButtonWidth: 150, bodyStyle:'padding:5px;vertical-align:middle'});
 
         dateButtons.add(this.renderTimePreset("Past 24 Hours", -1));
         dateButtons.add(this.renderTimePreset("Past Week", -7));
         dateButtons.add(this.renderTimePreset("Past 30 Days", -30));
         dateButtons.add(this.renderTimePreset("Past Year", -365));
 
-        this.add(dateButtons);
-
-        //the report row
-        this.add({html: 'Choose Report:'});
-
-        this.allReports = new LABKEY.ext.Store({
-            schemaName: 'lists',
-            queryName: 'reports',
-            sort: 'ReportName'
-        });
-        this.allReports.load();
-
-        var reportStore = new LABKEY.ext.Store({
-            schemaName: 'lists',
-            queryName: 'reports',
-            filterArray: [LABKEY.Filter.create('Visible', true, LABKEY.Filter.Types.EQUAL), LABKEY.Filter.create('ReportCategory', 'AnimalReport', LABKEY.Filter.Types.EQUAL)],
-            sort: 'ReportName',
-            autoLoad: true
-        });
-
-        var comboConfig = {
-            emptyText:'Select a report...'
-            ,xtype: 'LabKeyCombo'
-            ,displayField:'ReportName'
-            ,id:'report'
-            ,store: reportStore
-        };
-
-        if (LABKEY.ActionURL.getParameter('report') && LABKEY.ActionURL.getParameter('report') != ''){
-            comboConfig.value = LABKEY.ActionURL.getParameter('report')
-        }
-        else {
-            comboConfig.value = 1;            
-        }
-
-        this.reportSelector = this.add(comboConfig);
-        this.add({});
-
+        target.add(dateButtons);
+    },
+//    renderReportRow: function(){
+//        //the report row
+//        this.add({html: 'Choose Report:'});
+//
+//        var reportStore = new LABKEY.ext.Store({
+//            schemaName: 'lists',
+//            queryName: 'reports',
+//            filterArray: [LABKEY.Filter.create('Visible', true, LABKEY.Filter.Types.EQUAL), LABKEY.Filter.create('ReportCategory', 'AnimalReport', LABKEY.Filter.Types.EQUAL)],
+//            sort: 'ReportName',
+//            autoLoad: true
+//        });
+//
+//        var comboConfig = {
+//            emptyText:'Select a report...'
+//            ,xtype: 'LabKeyCombo'
+//            ,displayField:'ReportName'
+//            ,id:'report'
+//            ,store: reportStore
+//        };
+//
+//        if (LABKEY.ActionURL.getParameter('report') && LABKEY.ActionURL.getParameter('report') != ''){
+//            comboConfig.value = LABKEY.ActionURL.getParameter('report')
+//        }
+//        else {
+//            comboConfig.value = 1;
+//        }
+//
+//        this.reportSelector = this.add(comboConfig);
+//        this.add({});
+//
+//    },
+    renderCombineSubjects: function(){
         this.add({html: 'Combine Subjects Into Single Table:'});
         this.combineSubj = this.add(new Ext.form.Checkbox());
 
         if (LABKEY.ActionURL.getParameter('combineSubj')){
             this.combineSubj.setValue(true);
         }
-
-        //placeholders
         this.add({});
-        this.add({});
-        this.add(new Ext.Button({
-            text: 'Display Report'
-            ,handler: this.onSubmit
-            ,type: 'submit'
-            ,scope: this
-            })
-        );
-
     },
     loadProject: function(o){
         var project = this.projectWin.project.getValue();
         var protocol = this.projectWin.protocol.getValue();
+        this.projectWin.project.reset();
+        this.projectWin.protocol.reset();
+
         this.projectWin.hide();
         
         Ext.Msg.wait("Loading...");
@@ -380,8 +575,8 @@ EHR.ext.customPanels.SingleAnimalReport = Ext.extend(Ext.Panel, {
                     subjectArray.push(r.Id);
                 }, this)
                 if(subjectArray.length){
-                    this.subjectArray = subjectArray.join(';');
-                    this.makeSubjGrid(subjectArray);
+                    this.subjectArray = subjectArray;
+                    this.makeSubjGrid();
                 }
                 Ext.Msg.hide();
             },
@@ -396,6 +591,9 @@ EHR.ext.customPanels.SingleAnimalReport = Ext.extend(Ext.Panel, {
     loadRoom: function(o){
         var room = this.housingWin.room.getValue();
         var cage = this.housingWin.cage.getValue();
+        this.housingWin.room.reset();
+        this.housingWin.cage.reset();
+        
         this.housingWin.hide();
         
         Ext.Msg.wait("Loading...");
@@ -430,8 +628,8 @@ EHR.ext.customPanels.SingleAnimalReport = Ext.extend(Ext.Panel, {
                     subjectArray.push(r.Id);
                 }, this)
                 if(subjectArray.length){
-                    this.subjectArray = subjectArray.join(';');
-                    this.makeSubjGrid(subjectArray);
+                    this.subjectArray = subjectArray;
+                    this.makeSubjGrid();
                 }
                 Ext.Msg.hide();
             },
@@ -444,30 +642,28 @@ EHR.ext.customPanels.SingleAnimalReport = Ext.extend(Ext.Panel, {
     afterLayout: function()
     {
         //TODO: if the query webpart is changed to prevent page reload, this should be rewritten
-
         //we reload the fields from URL if the params exist
-        if (LABKEY.ActionURL.getParameter('participantId'))
+        if (this.subjArea && LABKEY.ActionURL.getParameter('participantId') && LABKEY.ActionURL.getParameter('participantId') != '')
         {
-            this.subjectArray = LABKEY.ActionURL.getParameter('participantId');
+            this.subjArea.setValue(LABKEY.ActionURL.getParameter('participantId'));
             this.processSubj();
         }
-
 
         if (LABKEY.ActionURL.getParameter('showReport'))
         {
             //test whether the store loaded
-            if(this.reportSelector.store.getCount())
+            if(this.allReports.getCount())
             {
-                this.displayReport()
+                this.onSubmit();
             }
             else
             {
                 this.awaitStore = function(){
-                    this.reportSelector.store.un('load', this.awaitStore, this);
-                    this.displayReport();
+                    this.allReports.un('load', this.awaitStore, this);
+                    this.onSubmit();
                     };
 
-                this.reportSelector.store.on('load', this.awaitStore, this)
+                this.allReports.on('load', this.awaitStore, this)
             }
         }
 
@@ -475,285 +671,277 @@ EHR.ext.customPanels.SingleAnimalReport = Ext.extend(Ext.Panel, {
 
     renderTimePreset: function(label, timeShift)
     {
-        return new Ext.Button({
-            text: label
+        return {
+            xtype: 'button'
+//            ,html: '['+label+']'
+            ,text: label
             ,minWidth: 100
-            //TODO: Add cls
-            ,handler: function(){
-                var dt = new Date();
-                dt.setDate(dt.getDate() + timeShift);
-                dt = dt.format("Y-m-d");
-                this.endDateField.setValue('');
-                this.startDateField.setValue(dt);
-            }
-            ,scope: this
-        });
+            ,listeners: {
+                scope: this,
+                click: function(o){
+                    var dt = new Date();
+                    dt.setDate(dt.getDate() + timeShift);
+                    dt = dt.format("Y-m-d");
+                    this.endDateField.setValue('');
+                    this.startDateField.setValue(dt);
+                }
+            }            
+        };
     },
 
     processSubj: function()
     {
-        //we clean up, combine, then split the subjectBox and subject inputs
-        var subjectArray = this.textarea.getValue();
+        var type = this.inputType.getValue().inputValue;
 
-        if (this.subjectArray){
-            subjectArray += ';' + this.subjectArray;
+        if(!this.subjArea){
+            this.subjectArray = [];
+            this.idPanel.removeAll();
+            return;
         }
 
+        //we clean up, combine, then split the subjectBox and subject inputs
+        var subjectArray = this.subjArea.getValue();
+        
         subjectArray = subjectArray.replace(/[\s,;]+/g, ';');
         subjectArray = subjectArray.replace(/(^;|;$)/g, '');
         subjectArray = subjectArray.toLowerCase();
 
-        if (subjectArray == '') return;
+        if(subjectArray)
+            subjectArray = subjectArray.split(';');
+        else
+            subjectArray = new Array();
 
-        subjectArray = subjectArray.split(';');
-        subjectArray = subjectArray.unique();
-        subjectArray.sort();
+        if (this.subjectArray && this.subjectArray.length){//type == 'renderMultiSubject' && 
+            subjectArray = subjectArray.concat(this.subjectArray);
+        }
 
-        this.textarea.setValue('');
-        this.subjectArray = subjectArray.join(';');
+        if (subjectArray.length != 0){
+            subjectArray = subjectArray.unique();
+            subjectArray.sort();
+        }
 
-        //we display the result
-        this.makeSubjGrid(subjectArray);
+        this.subjectArray = subjectArray;
 
-        return subjectArray;
+        if(type == 'renderMultiSubject'){
+            this.subjArea.setValue('');
+
+            //we display the result
+            this.makeSubjGrid();
+        }
+        else {
+            this.subjArea.setValue(subjectArray);
+            this.idPanel.removeAll();
+        }
     },
 
-    makeSubjGrid: function(subjectArray)
+    makeSubjGrid: function()
     {
-        this.subjTable.body.update('');
+        var target = this.idPanel;
+        target.removeAll();
 
-        var table = document.createElement('table');
-
-
-        for (var i = 0; i < subjectArray.length; i++)
+        var thePanel = target.add({
+            xtype: 'panel'
+            ,layout: 'table'
+            ,layoutConfig: {
+                columns: 4
+            }
+        });
+        
+        for (var i = 0; i < this.subjectArray.length; i++)
         {
-
-            //we calculate row/col
-            var maxRow = 8;
-            var r = i % maxRow;
-            var c = Math.floor(i / maxRow) * 2;
-
-            if (c == 0)
-                var row = table.insertRow(r);
-
-            var row = table.rows[r];
-
-            var cell0 = row.insertCell(c);
-            cell0.setAttribute('style', 'padding-left:15px;');
-            cell0.innerHTML = subjectArray[i];
-
-            var cell1 = row.insertCell(c+1).appendChild(document.createElement('span'));
-
-            var button = new Ext.Button({
-                text:'X'
-                ,renderTo: cell1
-                //,applyTo: target
-                ,subjectID: subjectArray[i]
+            thePanel.add(new Ext.Button({
+                text: this.subjectArray[i]+' (X)'
+                ,subjectID: this.subjectArray[i]
                 ,style: 'padding-right:0px;padding-left:0px'
                 ,handler: function(button)
                 {
                     var subject = button.subjectID;
 
                     //we find the subjectArray
-                    var subjectArray = this.subjectArray.split(';');
-                    subjectArray.remove(subject);
-                    this.subjectArray = subjectArray.join(';');
+                    this.subjectArray.remove(subject);
 
                     //we rebuild the table
-                    this.makeSubjGrid(subjectArray)
+                    this.makeSubjGrid()
                 }
                 ,scope: this
-            });
+            }));
 
         }
-        this.subjTable.body.appendChild(table);
+        target.add(thePanel);
+        target.doLayout();
     },
 
     onSubmit: function(){
-       this.processSubj();
+       if (!this.checkValid())
+            return;
 
-       if (!this.subjectArray && !this.roomField.getValue())
-        {
-            alert('Must Enter At Least 1 Animal ID or Room');
-            return
-        }
-        if (!this.reportSelector.getValue())
-        {
-            alert('Must Choose A Report');
-            return
-        }
+       if (!this.activeReport){
+           this.activeReport = this.tabPanel['General']['Abstract'];
+           var parent = this.activeReport.ownerCt;
+           this.tabPanel.activate(parent);
+           parent.activate(this.activeReport);
+       }
+       else {
+           this.loadTab(this.activeReport);    
+       }
 
-        var params = {
-            report: this.reportSelector.getValue()
-            ,showReport: 1
-            ,participantId: this.subjectArray
-            ,other: 2
-            ,room: this.roomField.getValue()
-            ,cage: this.cageField.getValue()
-        };
-
-        if (this.startDateField.getValue()){
-            params.startDate = this.startDateField.getValue().format('Y-m-d')
-        }
-
-        if (this.endDateField.getValue()){
-            params.endDate = this.endDateField.getValue().format('Y-m-d')
-        }
-
-        if (this.combineSubj.getValue()){
-            params.combineSubj = this.combineSubj.getValue()
-        }
-
-        this.displayReport();
     },
 
+    //separated so subclasses can override as needed
+    checkValid: function(){
+       this.processSubj();
+       var type = this.inputType.getValue().inputValue;
 
-    displayReport: function(){
-       var subjectArray = this.processSubj();
-       var room = this.roomField.getValue();
-       var cage = this.cageField.getValue();
+       if (type == 'renderRoomCage'){
+           if(!this.roomField.getValue()){
+               alert('Must Enter A Room');
+               return 0;
+           }
+       }
+       else
+       {
+           if(!this.subjectArray.length){
+                alert('Must Enter At Least 1 Animal ID');
+                return 0;
+           }
+       }
+        return 1;
+    },
 
-       this.startTime = new Date().getTime();
+    displayReport: function(tab){
+//        this.wheel = document.getElementById('reportDiv').appendChild(document.createElement('span'));
+//        this.wheel.innerHTML = 'Loading...<p>';
+//        this.wheel.setAttribute('class', "loading-indicator");
 
-       //we clear any old reports
-       var div = document.getElementById('reportDiv');
-       div.innerHTML = '';
-
-       if (subjectArray && !room)
-        {
-            alert('Must Enter At Least 1 Animal ID or a Room');
-            return
-        }
-        if (!this.reportSelector.getValue())
-        {
-            alert('Must Choose A Report');
-            return
-        }
-
-
-        this.wheel = document.getElementById('reportDiv').appendChild(document.createElement('span'));
-        this.wheel.innerHTML = 'Loading...<p>';
-        this.wheel.setAttribute('class', "loading-indicator");
-
-        //we handle differently depending on whether we combine subjects
-        if (!this.combineSubj.getValue())
-        {
-            for (var i = 0; i < subjectArray.length; i++)
+        if(tab.subjectArray.length){
+            //we handle differently depending on whether we combine subjects
+            if (tab.combineSubj)
             {
-                //first we make a new DIV for each subject to hold the report
-                var subject = [subjectArray[i]];
-                _reportSelector.call(this, subject);
-            }
-        }
-        else
-        {
-            var subject = subjectArray;
-            _reportSelector.call(this, subject);
-        }
-
-        function _reportSelector(subject)
-        {
-            var reportStore = this.allReports;
-
-            //verify the store is loaded.
-            if (!reportStore.getCount())
-            {
-                reportStore.on('load', this.displayReport, this);
-                return;
-            }
-
-            var selectedReport = this.reportSelector.getValue();
-            selectedReport = reportStore.getById(selectedReport);
-
-            this.reportName = selectedReport.get("QueryName");
-            
-            if (selectedReport.get("ReportType") == 'multi')
-            {
-                selectedReport = selectedReport.get("QueryName");
-                selectedReport = selectedReport.split(',');
-
-                for (var i = 0; i < selectedReport.length; i++)
+                for (var i = 0; i < tab.subjectArray.length; i++)
                 {
-                    var curReport = reportStore.getById(selectedReport[i]);
-                    this._renderReport(curReport, subject);
+                    //first we make a new DIV for each subject to hold the report
+                    var subject = [tab.subjectArray[i]];
+                    this._renderReport(tab, subject);
                 }
             }
             else
             {
-                this._renderReport(selectedReport, subject);
+                this._renderReport(tab, tab.subjectArray);
             }
         }
+        else {
+            this._renderReport(tab);    
+        }
+
 
     },
 
-    _renderReport: function(rowData, subject)
+//    _reportSelector: function(subject)
+//    {
+//        var reportStore = this.allReports;
+//
+//        //verify the store is loaded.
+//        if (!reportStore.getCount())
+//        {
+//            reportStore.on('load', this.displayReport, this);
+//            return;
+//        }
+//
+//        var selectedReport = this.reportSelector.getValue();
+//        selectedReport = reportStore.getById(selectedReport);
+//
+//        this.reportName = selectedReport.get("QueryName");
+//
+//        this._renderReport(selectedReport, subject);
+//
+//    },
+
+    _renderReport: function(tab, subject)
     {
-        subject = subject.join(';');
-
-        //we run a different function depending on report type
-        //Ext.Ajax.timeout = 30000; //in milliseconds
-
-        switch (rowData.get("ReportType"))
+        Ext.Ajax.timeout = 3000000; //in milliseconds
+        switch (tab.rowData.get("ReportType"))
         {
             case 'query':
-                this.loadQuery(rowData, subject);
+                this.loadQuery(tab, subject);
                 break;
             case 'webpart':
-                this.loadWebPart(rowData, subject);
+                this.loadWebPart(tab, subject);
                 break;
             case 'details':
-                this.loadDetails(rowData, subject);
+                this.loadDetails(tab, subject);
                 break;
             case 'multi':
                 alert("Error: Child Report Cannot Be a Multipart Report");
                 break;
             case 'report':
-                this.loadReport(rowData, subject);
+                this.loadReport(tab, subject);
                 break;
             case 'js':
-                this.loadJS(rowData, subject);
+                this.loadJS(tab, subject);
                 break;
             case 'chart':
-                this.loadChart(rowData, subject);
+                this.loadChart(tab, subject);
                 break;
             default:
                 EHR.UTILITIES.onError('Improper Report Type');
         }
     },
 
-    loadQuery: function(rowData, subject)
-    {
-        var filterArray = [LABKEY.Filter.create('Id', subject, LABKEY.Filter.Types.EQUALS_ONE_OF)];
-        var div = document.getElementById('reportDiv');
-        var target = div.appendChild(document.createElement('span'));
+    getFilterArray: function(tab, subject){
+        var rowData = tab.rowData;
+        var filterArray = [];
+
+        var room = (this.roomField ? this.roomField.getValue() : null);
+        var cage = (this.cageField ? this.cageField.getValue() : null);
+
+        if(tab.subjectArray && tab.subjectArray.length){
+            filterArray.push(LABKEY.Filter.create('Id', subject.join(';'), LABKEY.Filter.Types.EQUALS_ONE_OF));
+        }
+
+        if(room){
+            filterArray.push(LABKEY.Filter.create('Id/curLocation/room', room, LABKEY.Filter.Types.STARTS_WITH));
+        }
+
+        if(cage){
+            filterArray.push(LABKEY.Filter.create('Id/curLocation/cage', cage, LABKEY.Filter.Types.EQUAL));
+        }
 
         //we handle date
         if (rowData.get("DateFieldName"))
         {
-            if (this.startDateField.getValue())
+            if (this.startDateField && this.startDateField.getValue())
                 filterArray.push(LABKEY.Filter.create(rowData.get("DateFieldName"), this.startDateField.getValue().format('Y-m-d'), LABKEY.Filter.Types.GREATER_THAN_OR_EQUAL));
-            if (this.endDateField.getValue())
+            if (this.endDateField && this.endDateField.getValue())
                 filterArray.push(LABKEY.Filter.create(rowData.get("DateFieldName"), this.endDateField.getValue().format('Y-m-d'), LABKEY.Filter.Types.LESS_THAN_OR_EQUAL));
         }
 
+        tab.filterArray = filterArray;
+        return filterArray;
+    },
+
+    loadQuery: function(tab, subject, target)
+    {
+        var filterArray = this.getFilterArray(tab, subject);
+        var target = target || tab.add({tag: 'span', html: 'Loading...', cls: 'loading-indicator'});
+        var title = (subject ? subject.join("; ") : '');
 
         var queryConfig = {
-            title: rowData.get("ReportTitle") + ": " + subject.replace(/;/g, "; "),
-            schemaName: rowData.get("Schema"),
-            queryName: rowData.get("QueryName"),
+            title: tab.rowData.get("ReportTitle") + ": " + title,
+            schemaName: tab.rowData.get("Schema"),
+            queryName: tab.rowData.get("QueryName"),
             allowChooseQuery: false,
             allowChooseView: false,
             showInsertNewButton: false,
-            //showPagination: false,
             showDeleteButton: false,
             showDetailsColumn: true,
             showUpdateColumn: false,
             showRecordSelectors: true,
+            frame: 'none',
             buttonBarPosition: 'top',
             //TODO: switch to 0 once bug is fixed
             timeout: 3000000,
             filters: filterArray,
-            successCallback: function(){
+            successCallback: function(c){
                 console.log('Success callback called');
                 this.endMsg();
             },
@@ -767,53 +955,40 @@ EHR.ext.customPanels.SingleAnimalReport = Ext.extend(Ext.Panel, {
             scope: this
         };
 
-        if (rowData.get("View"))
+        if (tab.rowData.get("View"))
         {
-            queryConfig.viewName = rowData.get("View")
+            queryConfig.viewName = tab.rowData.get("View")
         }
 
-        if (rowData.get("ContainerPath"))
+        if (tab.rowData.get("ContainerPath"))
         {
-            queryConfig.containerPath = rowData.get("ContainerPath");
+            queryConfig.containerPath = tab.rowData.get("ContainerPath");
         }
 
-        if (rowData.get("DateFieldName"))
+        if (tab.rowData.get("DateFieldName"))
         {
-            queryConfig.sort = 'Id,-'+rowData.get("DateFieldName");
+            queryConfig.sort = 'Id,-'+tab.rowData.get("DateFieldName");
         }
 
-
-        Ext.Ajax.timeout = 3000000; //in milliseconds
-
-        new LABKEY.QueryWebPart(queryConfig).render(target);
+        new LABKEY.QueryWebPart(queryConfig).render(target.id);
 
     },
 
 
-    loadReport: function(rowData, subject)
+    loadReport: function(tab, subject, target)
     {
-        var filterArray = [LABKEY.Filter.create('Id', subject, LABKEY.Filter.Types.EQUALS_ONE_OF)];
-        var div = document.getElementById('reportDiv');
-        var target = div.appendChild(document.createElement('span'));
-        //Ext.Ajax.timeout = 30000; //in milliseconds
-        
-        //we handle date
-        if (rowData.get("DateFieldName"))
-        {
-            if (this.startDateField.getValue())
-                filterArray.push(LABKEY.Filter.create(rowData.get("DateFieldName"), this.startDateField.getValue().format('Y-m-d'), LABKEY.Filter.Types.GREATER_THAN_OR_EQUAL));
-            if (this.endDateField.getValue())
-                filterArray.push(LABKEY.Filter.create(rowData.get("DateFieldName"), this.endDateField.getValue().format('Y-m-d'), LABKEY.Filter.Types.LESS_THAN_OR_EQUAL));
-        }
+        var filterArray = this.getFilterArray(tab, subject);
+        var target = target || tab.add({tag: 'span', html: 'Loading...', cls: 'loading-indicator'});
+        var title = (subject ? subject.join("; ") : '');
 
         var queryConfig = {
             partName: 'Report',
-            renderTo: target,
+            renderTo: target.id,
             partConfig: {
-                title: rowData.get("ReportTitle") + ": " + subject,
-                schemaName: rowData.get("Schema"),
-                reportId : rowData.get("Report"),
-                'query.queryName': rowData.get("QueryName"),
+                title: tab.rowData.get("ReportTitle") + ": " + title,
+                schemaName: tab.rowData.get("Schema"),
+                reportId : tab.rowData.get("Report"),
+                'query.queryName': tab.rowData.get("QueryName"),
                 'query.Id~in': subject,
                 '_union.Id~in': subject,
                 '_select.Id~in': subject
@@ -829,72 +1004,50 @@ EHR.ext.customPanels.SingleAnimalReport = Ext.extend(Ext.Panel, {
         };
 
 
-        if (rowData.get("ContainerPath"))
+        if (tab.rowData.get("ContainerPath"))
         {
-            queryConfig.containerPath = rowData.get("ContainerPath");
+            queryConfig.containerPath = tab.rowData.get("ContainerPath");
         }
 
-        if (rowData.get("View"))
+        if (tab.rowData.get("View"))
         {
-            queryConfig.partConfig.showSection = rowData.get("View");
+            queryConfig.partConfig.showSection = tab.rowData.get("View");
         }
 
         new LABKEY.WebPart(queryConfig).render();
 
     },
 
-    loadJS: function(rowData, subject)
+    loadJS: function(tab, subject, target)
     {
-        var div = document.getElementById('reportDiv');
-        var target = div.appendChild(document.createElement('span'));
-        //need 10.2 for this
-        LABKEY.requiresScript("/ehr/AnimalReports/"+rowData.get("QueryName")+".js");
-
-        LABKEY.Utils.onTrue({
-               testCallback: function(){return undefined != rowData.get("QueryName")},
-               successCallback: function(){EHR.AnimalReports[rowData.get("QueryName")].call(this, rowData, subject)},
-               maxTests: 100,
-               scope: this
-        });
+//        var filterArray = this.getFilterArray(tab, subject);
+//        var target = target || tab.add({tag: 'span'});
+//        var title = (subject ? subject.join("; ") : '');
+ 
+        EHR.reports[tab.rowData.get('QueryName')].call(this, tab, subject, target);
     },
 
-    loadGrid: function(rowData, subject)
+    loadGrid: function(tab, subject, target)
     {
-
-        var div = document.getElementById('reportDiv');
-        var target = div.appendChild(document.createElement('span'));
-
-        var filterArray = [LABKEY.Filter.create('Id', subject, LABKEY.Filter.Types.EQUALS_ONE_OF)];
-
-        //we handle date
-        if (rowData.get("DateFieldName"))
-        {
-
-            if (this.startDateField.getValue())
-            //var date = this.startDateField.getValue().format('Y-m-d');
-                filterArray.push(LABKEY.Filter.create(rowData.get("DateFieldName"), this.startDateField.getValue().format('Y-m-d'), LABKEY.Filter.Types.GREATER_THAN_OR_EQUAL));
-            if (this.endDateField.getValue())
-                filterArray.push(LABKEY.Filter.create(rowData.get("DateFieldName"), this.endDateField.getValue().format('Y-m-d'), LABKEY.Filter.Types.LESS_THAN_OR_EQUAL));
-
-        }
-
+        var filterArray = this.getFilterArray(tab, subject);
+        var target = target || tab.add({tag: 'span', html: 'Loading...', cls: 'loading-indicator'});
+        var title = (subject ? subject.join("; ") : '');
 
         var store = new LABKEY.ext.Store({
-            schemaName: rowData.get("Schema"),
-            queryName: rowData.get("QueryName"),
+            schemaName: tab.rowData.get("Schema"),
+            queryName: tab.rowData.get("QueryName"),
             filterArray: filterArray,
             sort: 'Id'
-
         });
 
-        if (rowData.get("View"))
+        if (tab.rowData.get("View"))
         {
-            store.viewName = rowData.get("View")
+            store.viewName = tab.rowData.get("View")
         }
 
         var grid = new LABKEY.ext.EditorGridPanel({
             store: store
-            ,title: rowData.get("ReportTitle") + ": " + subject
+            ,title: tab.rowData.get("ReportTitle") + ": " + title
             ,width: 1000
             ,autoHeight: true
             ,editable: false
@@ -912,20 +1065,21 @@ EHR.ext.customPanels.SingleAnimalReport = Ext.extend(Ext.Panel, {
 
     },
 
-    loadWebPart: function(rowData, subject)
+    loadWebPart: function(tab, subject, target)
     {
-        var div = document.getElementById('reportDiv');
-        var target = div.appendChild(document.createElement('span'));
+        var filterArray = this.getFilterArray(tab, subject);
+        var target = target || tab.add({tag: 'span', html: 'Loading...', cls: 'loading-indicator'});
+        var title = (subject ? subject.join("; ") : '');
 
         this.params = {};
         this.subject = subject;
         this.params.rowData = rowData;
 
         var WebPartRenderer = new LABKEY.WebPart({
-            partName: rowData.get("QueryName"),
-            title: rowData.get("ReportTitle") + ": " + subject,
+            partName: tab.rowData.get("QueryName"),
+            title: tab.rowData.get("ReportTitle") + ": " + title,
             renderTo: target,
-            config: rowData.get("Config"),
+            config: tab.rowData.get("Config"),
             successCallback: this.endMsg,
             errorCallback: function(error){
                 target.innerHTML = 'ERROR: ' + error.exception + '<br>';
@@ -937,23 +1091,27 @@ EHR.ext.customPanels.SingleAnimalReport = Ext.extend(Ext.Panel, {
         WebPartRenderer.render(target);
     },
 
-    loadDetails: function(rowData, subject)
+    loadDetails: function(tab, subject, target)
     {
-        var div = document.getElementById('reportDiv');
-        var target = div.appendChild(document.createElement('span'));
+        var filterArray = this.getFilterArray(tab, subject);
+        var target = target || tab.add({tag: 'span', html: 'Loading...', cls: 'loading-indicator'});
+        var title = (subject ? subject.join("; ") : '');
 
+        tab.doLayout();
+        
         var config = {
-            schemaName: rowData.get("Schema"),
-            queryName: rowData.get("QueryName"),
-            title: rowData.get("ReportTitle") + ":",
+            schemaName: tab.rowData.get("Schema"),
+            queryName: tab.rowData.get("QueryName"),
+            title: tab.rowData.get("ReportTitle") + ":",
             titleField: 'Id',
-            renderTo: target,
-            filterArray: [LABKEY.Filter.create('Id', subject, LABKEY.Filter.Types.EQUALS_ONE_OF)]
+            renderTo: target.id,
+            filterArray: filterArray,
+            multiToGrid: this.multiToGrid
         };
 
-        if (rowData.get("View"))
+        if (tab.rowData.get("View"))
         {
-            config.viewName = rowData.get("View");
+            config.viewName = tab.rowData.get("View");
         }
 
         new EHR.ext.customPanels.detailsView(config);
@@ -962,36 +1120,23 @@ EHR.ext.customPanels.SingleAnimalReport = Ext.extend(Ext.Panel, {
 
     },
 
-    loadChart: function(rowData, subject)
+    loadChart: function(tab, subject, target)
     {
-        var div = document.getElementById('reportDiv');
-        var target = div.appendChild(document.createElement('span'));
-
-        var filterArray = [LABKEY.Filter.create('Id', subject, LABKEY.Filter.Types.EQUALS_ONE_OF)];
-
-        //we handle date
-        if (rowData.get("DateFieldName"))
-        {
-
-            if (this.startDateField.getValue())
-            //var date = this.startDateField.getValue().format('Y-m-d');
-                filterArray.push(LABKEY.Filter.create(rowData.get("DateFieldName"), this.startDateField.getValue().format('Y-m-d'), LABKEY.Filter.Types.GREATER_THAN_OR_EQUAL));
-            if (this.endDateField.getValue())
-                filterArray.push(LABKEY.Filter.create(rowData.get("DateFieldName"), this.endDateField.getValue().format('Y-m-d'), LABKEY.Filter.Types.LESS_THAN_OR_EQUAL));
-
-        }
+        var filterArray = this.getFilterArray(tab, subject);
+        var target = target || tab.add({tag: 'span', html: 'Loading...', cls: 'loading-indicator'});
+        var title = (subject ? subject.join("; ") : '');
 
         var store = new LABKEY.ext.Store({
-                    schemaName: rowData.get("Schema"),
-                    queryName: rowData.get("QueryName"),
-                    filterArray: filterArray,
-                    sort: 'Id',
-                    autoLoad: true
-                });
+            schemaName: tab.rowData.get("Schema"),
+            queryName: tab.rowData.get("QueryName"),
+            filterArray: filterArray,
+            sort: 'Id',
+            autoLoad: true
+        });
         
         var chart = new Ext.Panel({
-            title: rowData.get("ReportTitle") + ": " + subject,
-            renderTo: target,
+            title: tab.rowData.get("ReportTitle") + ": " + title,
+            renderTo: target.id,
             width:500,
             height:300,
             layout:'fit',
@@ -1000,25 +1145,119 @@ EHR.ext.customPanels.SingleAnimalReport = Ext.extend(Ext.Panel, {
                 store: store,
                 xField: 'Date',
                 yField: 'weight'
-//                listeners: {
-//                    scope: this,
-//                    itemclick: function(o){
-//                        var rec = o.getStore().getAt(o.index);
-//                        Ext.example.msg('Item Selected', 'You chose {0}.', rec.get('weight'));
-//                    },
-//                    render: this.endMsg
-//                }
             }
         });
 
     },
 
     endMsg: function(){
-        Ext.fly(this.wheel).remove();
+        Ext.Msg.hide();
 
-        //log using analytics
-        var loadTime = new Date().getTime() - this.startTime;
-        pageTracker._trackEvent('AnimalReport', 'LoadTime', this.reportName, loadTime);
+//        //log using analytics
+//        var loadTime = new Date().getTime() - this.startTime;
+//        pageTracker._trackEvent('AnimalReport', 'LoadTime', this.reportName, loadTime);
+    },
+
+    createTabPanel: function(){
+        this.allReports.each(function(c){
+            var category = c.get('Category');
+
+            //create top-level tab
+            if(!this.tabPanel[category]){
+                this.tabPanel.add(new Ext.TabPanel({
+                    ref: category,
+                    title: category,
+                    enableTabScroll: true,
+                    autoHeight: true,
+                    autoWidth: true,
+                    frame:false
+                }))
+            }
+
+            var subTab = this.tabPanel[category];
+            var report = c.get('ReportName');
+
+            //create 2nd tier tab
+            if(!subTab[report]){
+                subTab.add(new Ext.Panel({
+                    title: report,
+                    ref: report,
+                    rowData: c,
+                    autoHeight: true,
+                    bodyStyle:'padding:5px',
+                    border: false,
+                    autoWidth: true,
+//                    buttons: [
+//                        {text: 'Reload', ref: '../reload', handler: function(o){
+//                            this.loadTab(o.refOwner)
+//                        }, scope: this}
+//                    ],
+                    subjectArray: [],
+                    filterArray: [],
+                    listeners: {
+                        scope: this,
+                        activate: function(t){
+                            this.activeReport = t;
+                            this.onSubmit();
+                        },
+                        click: function(t){
+                            console.log('click');
+                            this.activeReport = t;
+                            this.onSubmit();
+                        }
+                    }
+                }))
+            }
+
+        }, this);
+
+        this.add(this.tabPanel);
+        this.tabPanel.setActiveTab(0);
+        this.doLayout();
+        this.tabPanel.doLayout();
+    },
+    loadTab: function(o){
+        this.setFilters();
+
+        var reload = 0;
+        for (var i in this.filters){
+            if(!o.filters || this.filters[i]!=o.filters[i]){
+                reload = 1;
+                continue;
+            }
+        }
+                
+        //indicates tab already has up to date content
+        if(reload == 0){
+            console.log('no reload needed');
+            return;
+        }
+
+
+
+        o.filters = this.filters;
+        o.subjectArray = this.subjectArray;
+
+//        tab.loadMask = new Ext.LoadMask(tab.body);
+//        tab.loadMask.show();
+        
+        o.removeAll();
+
+        this.displayReport(o);
+        this.activeReport = o;
+        o.doLayout();
+        
+    },
+    setFilters: function(){
+        this.filters = {};
+        this.processSubj();
+
+        this.filters.room = (this.roomField ? this.roomField.getValue() : null);
+        this.filters.cage = (this.cageField ? this.cageField.getValue() : null);
+        this.filters.subjectString = this.subjectArray.join(';');
+        this.filters.startDate = this.startDateField ? this.startDateField.getValue() : null;
+        this.filters.endDate = this.endDateField ? this.endDateField.getValue() : null;
+
     }
 
 });

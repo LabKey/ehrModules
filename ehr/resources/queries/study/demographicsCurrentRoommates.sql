@@ -7,6 +7,7 @@ SELECT
   h.id,
   max(h.condition) as condition,
   count(h.RoommateId) AS NumRoommates,
+--   group_concat(DISTINCT h.RoommateId) as Roommates
 
 FROM study.housingRoommates h
 

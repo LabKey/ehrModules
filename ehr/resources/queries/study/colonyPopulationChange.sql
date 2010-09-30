@@ -5,7 +5,7 @@
  */
 SELECT
   T1.id,
-  T1.id.species.species,
+  T1.species,
   'Births' AS Category,
   T1.birth as Date,
   convert(year(T1.birth), integer) AS Year,

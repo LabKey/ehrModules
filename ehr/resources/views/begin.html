@@ -26,15 +26,15 @@ function createNavMenu()
             {header: 'By Dataset',
             items: [
                 {name: 'Browse All Datasets', url: '<%=contextPath%>/study/WNPRC/EHR/datasets.view?'},
-                {name: 'Clincal Remarks', url: '<%=contextPath%>/study/WNPRC/EHR/datasets.view?'},
+                {name: 'Clincal Remarks', url: '<%=contextPath%>/study/WNPRC/EHR/defaultDatasetReport.view?datasetId=1067'},
                 {name: 'Housing Queries', url: '<%=contextPath%>/ehr/WNPRC/EHR/housingQueries.view?'},
                 {name: 'Protocol and Project Queries', url: '<%=contextPath%>/ehr/WNPRC/EHR/projectQueries.view?'}
             ]},
             {header: 'By Location',
             items: [
-                {name: 'Search By Room, Floor or Cage', url: '<%=contextPath%>/study/WNPRC/EHR/datasets.view?'},
-                {name: 'Irregular Obs By Location', url: '<%=contextPath%>/study/WNPRC/EHR/datasets.view?'},
-                {name: 'Clincal Remarks By Location', url: '<%=contextPath%>/study/WNPRC/EHR/datasets.view?'}
+                {name: 'Search By Room, Floor or Cage', url: '<%=contextPath%>/ehr/WNPRC/EHR/animalHistory.view?'},
+                {name: 'Irregular Obs By Location', url: '<%=contextPath%>/ehr/WNPRC/EHR/animalHistory.view?report=18'},
+                {name: 'Clincal Remarks By Location', url: '<%=contextPath%>/ehr/WNPRC/EHR/animalHistory.view?report=9'}
             ]}
         ]
     });
@@ -45,12 +45,14 @@ function createNavMenu()
         sections: [
             {header: 'Entire Colony',
             items: [
-                {name: 'Animal Utilization', url: '<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=colonyAssignmentSummary'},
-                //{name: 'Clinical Summary', url: '<%=contextPath%>/ehr/WNPRC/EHR/clinicalOverview.view?'},
+                {name: 'Animal Utilization By Category', url: '<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=colonyAssignmentSummary'},
+                {name: 'Colony Population By Age', url: '<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=colonyPopulationByAge'},
                 {name: 'MHC Genotype Summary', url: '<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=alleleFrequencies'},
-                //{name: 'Population Summary', url: '<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=colonyPopulationSummary'},
-                {name: 'Population Summary', url: '<%=contextPath%>/ehr/WNPRC/EHR/populationOverview.view?'},
-                //{name: 'This Week At WNPRC', url: '<%=contextPath%>/ehr/WNPRC/EHR/thisWeek.view?'},
+                {name: 'Population Summary', url: '<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=colonyPopulationSummary'},
+//                {name: 'Population Summary', url: '<%=contextPath%>/ehr/WNPRC/EHR/populationOverview.view?'},
+                {name: 'Room Utilization', url: '<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=lists&query.queryName=RoomUtilization'},
+                {name: 'TB Tests', url: '<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=animal&query.viewName=TB'},
+                {name: 'Unweighed Animals', url: '<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=animal&query.viewName=Unweighed'},
                 {name: 'Viral Challenges', url: '<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=demographicsViralChallenge'}
             ]}
         ]

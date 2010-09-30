@@ -14,6 +14,6 @@ FROM study.animal a
     ON a.Id = LastR.Id
 
 WHERE
-  --a.numRoommates.numRoommates = 0 
+  a.numRoommates.numRoommates = 0 
 
   AND a.Status.Status = 'Alive'

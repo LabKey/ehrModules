@@ -15,6 +15,7 @@ Ext.onReady(function ()
             Id: {lookups: false}
             ,DataSet: {isHidden: true}
             ,Cohort: {isHidden: true}
+            ,InitialCohort: {isHidden: true}
             ,Age: {isHidden: true}
             ,Surgery: {isHidden: true}
             ,activeAssignments: {isHidden: true}
@@ -32,6 +33,7 @@ Ext.onReady(function ()
             ,AvailBlood: {isHidden: true}
             ,DaysAlone: {isHidden: true}
             ,AgeClass: {isHidden: true}
+            ,totalAssignments: {isHidden: true}
         }
         ,newFields: [
             {caption: 'Cohort', name: 'Cohort/label'}
@@ -40,7 +42,7 @@ Ext.onReady(function ()
             //,{caption: 'Last TB Date', name: 'mostRecentTB'}
             //,{caption: 'Num. of Active Assignments', name: 'activeProjects/ActiveProjects (avail=all)'}
             ,{caption: 'Num. of Offspring', name: 'totalOffspring/TotalOffspring', jsonType: 'int'}
-            ,{caption: 'Num. of Roommates', name: 'numRoommates/numRoommates'}
+            ,{caption: 'Num. of Roommates', name: 'numRoommates/numRoommates', jsonType: 'int'}
             ,{caption: 'Species', name: 'Species/species'}
             ,{caption: 'Gender', name: 'DataSet/Demographics/gender'}
             ,{caption: 'Dam', name: 'DataSet/Demographics/dam'}

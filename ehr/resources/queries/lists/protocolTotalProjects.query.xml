@@ -19,7 +19,6 @@
                             query.sort=project&amp;
                         </url>
                     </column>
-                    <titleColumn>TotalProjects</titleColumn>
                 </columns>
             </table>
         </tables>

@@ -103,6 +103,7 @@ ehr/resources/queries/lists/Cagenotes/.qview.xml -text
 ehr/resources/queries/lists/Last[!!-~]Backup.sql -text
 ehr/resources/queries/lists/Project/Projects[!!-~]With[!!-~]Active[!!-~]Assignments.qview.xml -text
 ehr/resources/queries/lists/Protocol/Protocols[!!-~]With[!!-~]Active[!!-~]Assignments.qview.xml -text
+ehr/resources/queries/lists/RoomUtilization.query.xml -text
 ehr/resources/queries/lists/RoomUtilization.sql -text
 ehr/resources/queries/lists/cage.query.xml -text
 ehr/resources/queries/lists/cages.sql -text
@@ -331,6 +332,7 @@ ehr/resources/queries/study/animal/Conventional[!!-~]Stock.qview.xml -text
 ehr/resources/queries/study/animal/Extended[!!-~]Abstract.qview.xml -text
 ehr/resources/queries/study/animal/Loners.qview.xml -text
 ehr/resources/queries/study/animal/SPF[!!-~]Stock.qview.xml -text
+ehr/resources/queries/study/animal/TB.qview.xml -text
 ehr/resources/queries/study/animal/Unweighed.qview.xml -text
 ehr/resources/queries/study/assignment/.qview.xml -text
 ehr/resources/queries/study/assignment/Active[!!-~]Assignments.qview.xml -text
@@ -441,7 +443,7 @@ ehr/resources/reports/schemas/study/Weight/Weight[!!-~]Graph.r -text
 ehr/resources/reports/schemas/study/Weight/Weight[!!-~]Graph.report.xml -text
 ehr/resources/reports/schemas/study/colonyPopulationChange/Bar[!!-~]Chart.r -text
 ehr/resources/reports/schemas/study/demographicsPedigree/InbreedingCoefficients.r -text
-ehr/resources/reports/schemas/study/demographicsPedigree/InbreedingCoefficients.report.xml -text
+ehr/resources/reports/schemas/study/demographicsPedigree/InbreedingCoefficients.report.xml.tmp -text
 ehr/resources/reports/schemas/study/demographicsPedigree/Kinship.r -text
 ehr/resources/reports/schemas/study/demographicsPedigree/Pedigree.r -text
 ehr/resources/reports/schemas/study/demographicsPedigree/Pedigree2.r -text
@@ -552,6 +554,7 @@ ehr/webapp/ehr/ext.ux.multiselect.js -text
 ehr/webapp/ehr/ext.ux.statusbar.js -text
 ehr/webapp/ehr/formHelper.js -text
 ehr/webapp/ehr/participantView.js -text
+ehr/webapp/ehr/reports.js -text
 ehr/webapp/ehr/searchForm.js -text
 ehr/webapp/ehr/studyButtons.js -text
 ehr/webapp/ehr/stylesheet.css -text

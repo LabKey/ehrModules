@@ -13,7 +13,18 @@ d2.room,
 
 d2.cage,
 
-d2.cond
+d2.cond,
+
+CASE
+  WHEN d2.room like 'ab%' THEN 'AB'
+  WHEN d2.room like 'a%' THEN 'A'
+  WHEN d2.room like 'cb%' THEN 'CB'
+  WHEN d2.room like 'cif%' THEN 'CIF'
+  WHEN d2.room like 'c%' THEN 'C'
+  WHEN d2.room like 'mr%' THEN 'MR'
+  ELSE null
+END as building
+
 
 FROM study.Demographics d
 

@@ -19,12 +19,14 @@ function historyHandler(dataRegion, dataRegionName)
         for (var i = 0; i < data.rows.length; i++)
             ids.push(data.rows[i].Id);
 
-        window.location = LABKEY.ActionURL.buildURL(
-            'ehr'
-            ,'animalHistory'
-            ,'WNPRC/EHR/'
-            ,{showReport: 1, report: 1, participantId: ids.join(',')}
-        );
+        if (ids.length){
+            window.location = LABKEY.ActionURL.buildURL(
+                'ehr'
+                ,'animalHistory'
+                ,'WNPRC/EHR/'
+                ,{showReport: 1, report: 1, participantId: ids.join(',')}
+            );
+        }
     }
 
 

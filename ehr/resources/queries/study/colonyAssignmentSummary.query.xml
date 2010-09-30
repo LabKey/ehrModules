@@ -14,6 +14,7 @@
                         <url>/query/executeQuery.view?schemaName=study&amp;
                             query.queryName=demographicsAssignmentSummary&amp;
                             query.Id/DataSet/Demographics/v_status~eq=${v_status}&amp;
+                            query.Id/DataSet/Demographics/species~eq=${species}&amp;
                         </url>
                     </column>
                     <column columnName="ActiveAssignments">
@@ -23,6 +24,7 @@
                         <url>/query/executeQuery.view?schemaName=study&amp;
                             query.queryName=demographicsAssignmentSummary&amp;
                             query.Id/DataSet/Demographics/v_status~eq=${v_status}&amp;
+                            query.Id/DataSet/Demographics/species~eq=${species}&amp;
                             query.ActiveAssignments~gt=0&amp;
                         </url>
                     </column>
@@ -33,6 +35,7 @@
                         <url>/query/executeQuery.view?schemaName=study&amp;
                             query.queryName=demographicsAssignmentSummary&amp;
                             query.Id/DataSet/Demographics/v_status~eq=${v_status}&amp;
+                            query.Id/DataSet/Demographics/species~eq=${species}&amp;
                             query.ActiveAssignments~eq=0&amp;
                         </url>
                     </column>
@@ -43,6 +46,7 @@
                         <url>/query/executeQuery.view?schemaName=study&amp;
                             query.queryName=demographicsAssignmentSummary&amp;
                             query.Id/DataSet/Demographics/v_status~eq=${v_status}&amp;
+                            query.Id/DataSet/Demographics/species~eq=${species}&amp;
                             query.PendingAssignments~gt=0&amp;
                         </url>
                     </column>
@@ -53,6 +57,7 @@
                         <url>/query/executeQuery.view?schemaName=study&amp;
                             query.queryName=demographicsAssignmentSummary&amp;
                             query.Id/DataSet/Demographics/v_status~eq=${v_status}&amp;
+                            query.Id/DataSet/Demographics/species~eq=${species}&amp;
                             query.ActiveResearchAssignments~gt=0&amp;
                         </url>
                     </column>
@@ -63,6 +68,7 @@
                         <url>/query/executeQuery.view?schemaName=study&amp;
                             query.queryName=demographicsAssignmentSummary&amp;
                             query.Id/DataSet/Demographics/v_status~eq=${v_status}&amp;
+                            query.Id/DataSet/Demographics/species~eq=${species}&amp;
                             query.ActiveBreedingAssignments~gt=0&amp;                            
                         </url>
                     </column>
@@ -73,6 +79,7 @@
                         <url>/query/executeQuery.view?schemaName=study&amp;
                             query.queryName=demographicsAssignmentSummary&amp;
                             query.Id/DataSet/Demographics/v_status~eq=${v_status}&amp;
+                            query.Id/DataSet/Demographics/species~eq=${species}&amp;
                             query.ActiveTrainingAssignments~gt=0&amp;                            
                         </url>
                     </column>
@@ -83,6 +90,7 @@
                         <url>/query/executeQuery.view?schemaName=study&amp;
                             query.queryName=demographicsAssignmentSummary&amp;
                             query.Id/DataSet/Demographics/v_status~eq=${v_status}&amp;
+                            query.Id/DataSet/Demographics/species~eq=${species}&amp;
                             query.ActiveVetAssignments~gt=0&amp;                            
                         </url>
                     </column>
@@ -92,7 +100,8 @@
                         <displayWidth>110</displayWidth>
                         <url>/query/executeQuery.view?schemaName=study&amp;
                             query.queryName=demographicsAssignmentSummary&amp;
-                            query.Id/DataSet/Demographics/v_status~eq=${v_status}&amp;                            
+                            query.Id/DataSet/Demographics/v_status~eq=${v_status}&amp;
+                            query.Id/DataSet/Demographics/species~eq=${species}&amp;
                             query.ActiveSPF_StockAssignment~eq=Y&amp;
                         </url>
                     </column>
@@ -103,6 +112,7 @@
                         <url>/query/executeQuery.view?schemaName=study&amp;
                             query.queryName=demographicsAssignmentSummary&amp;
                             query.Id/DataSet/Demographics/v_status~eq=${v_status}&amp;
+                            query.Id/DataSet/Demographics/species~eq=${species}&amp;
                             query.ActiveConventionalStockAssignment~eq=Y&amp;
                         </url>
                     </column>
@@ -113,6 +123,7 @@
                         <url>/query/executeQuery.view?schemaName=study&amp;
                             query.queryName=demographicsAssignmentSummary&amp;
                             query.Id/DataSet/Demographics/v_status~eq=${v_status}&amp;
+                            query.Id/DataSet/Demographics/species~eq=${species}&amp;
                             query.ActiveMarmStockAssignment~eq=Y&amp;
                         </url>
                     </column>

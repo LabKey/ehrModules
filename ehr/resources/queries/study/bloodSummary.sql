@@ -13,30 +13,32 @@ timestampadd('SQL_TSI_DAY', -30, b.date) as minDate,
 w3.date as WeightDate,
 w3.weight,
 round(w3.weight*0.2*60, 1) AS MaxBlood,
-round(b0.BloodLast30, 1) as BloodLast30,
-round((w3.weight*0.2*60) - b0.BloodLast30, 1) AS AvailBlood,
+-- round(b0.BloodLast30, 1) as BloodLast30,
+-- round((w3.weight*0.2*60) - b0.BloodLast30, 1) AS AvailBlood,
 
-FROM (
+-- FROM (
+--
+-- SELECT
+--   b.lsid,
+--   sum(T6.quantity) AS BloodLast30,
 
-SELECT
-  b.lsid,
-  sum(T6.quantity) AS BloodLast30,
-
-FROM study.blood b
+-- FROM study.blood b
 
 --we calculate the total blood drawn in the last 30 days before this date
-LEFT JOIN
-  study.blood T6
-  ON (T6.Id = b.Id AND T6.date <= b.date AND TIMESTAMPDIFF('SQL_TSI_DAY', T6.date, b.date) <= 30 )
+-- LEFT JOIN
+--   study.blood T6
+--   ON (T6.Id = b.Id AND T6.date <= b.date AND TIMESTAMPDIFF('SQL_TSI_DAY', T6.date, b.date) <= 30 )
 
-WHERE b.Date >= (curdate() - 350)
+-- WHERE b.Date >= (curdate() - 350)
+--
+-- GROUP BY b.lsid
 
-GROUP BY b.lsid
+-- ) b0
 
-) b0
+-- LEFT JOIN study.blood b
+--   on (b0.lsid = b.lsid)
 
-LEFT JOIN study.blood b
-  on (b0.lsid = b.lsid)
+from study.blood b
 
 
 --Find the next most recent weight date less than the blood draw date
@@ -45,7 +47,10 @@ LEFT JOIN
     FROM study.weight w RIGHT JOIN study.blood b ON (w.Id = b.Id AND w.date <= b.date) GROUP BY b.lsid) w2
     ON (b.lsid = w2.lsid)
 
---use TS so we guarantee a single record
+--include TS so we should get a single record
 LEFT JOIN study.weight w3
     ON (b.Id = w3.Id AND w3.date = w2.prevdate and w3.modified = w2.ts)
 
+-- LEFT JOIN
+--   study.blood T6
+--   ON (T6.Id = b.Id AND T6.date <= b.date AND TIMESTAMPDIFF('SQL_TSI_DAY', T6.date, b.date) <= 30 )
