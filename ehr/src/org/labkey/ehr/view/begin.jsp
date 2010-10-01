@@ -45,9 +45,9 @@ Hello, and welcome to the EHR module.
 <% if (c.hasPermission(user, AdminPermission.class)) { %>
 <p>
     <% if (pipeRoot == null) { %>
-[<a href="<%=pipelineSetupURL%>">Setup Pipeline</a>]
+<%=textLink("Setup Pipeline", pipelineSetupURL)%>
     <% } %>
-[<a href="<%= etlAdminURL %>">ETL Administation</a>]   
+<%=textLink("ETL Administation", etlAdminURL)%>
 
 <%--
 <script type="text/javascript">
@@ -108,7 +108,7 @@ Hello, and welcome to the EHR module.
 </script>
 
 <p>
-[<a onclick="reloadSchema(); return false;">Reload Schema</a>]
+<%=textLink("Reload Schema", "#", "reloadSchema(); return false;", "")%>
 </p>
 <div id="reloadStatus">
 </div>

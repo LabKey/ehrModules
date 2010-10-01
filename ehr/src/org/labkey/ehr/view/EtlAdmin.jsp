@@ -23,6 +23,7 @@
 <%@ page import="java.util.Map" %>
 <%@ page import="java.util.Date" %>
 <%@ page import="java.text.DateFormat" %>
+<%@ page extends="org.labkey.api.jsp.JspBase" %>
 
 <%
     ViewContext context = HttpView.currentContext();
@@ -45,7 +46,7 @@
 
 <input type="submit" value="Save All"/>
 
-[<a href="<%= new ActionURL(EHRController.EtlAdminAction.class, context.getContainer()) %>">refresh</a>]
+<%=textLink("refresh", new ActionURL(EHRController.EtlAdminAction.class, context.getContainer()))%>
 
 <table>
 <tr>
