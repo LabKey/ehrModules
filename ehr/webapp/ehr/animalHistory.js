@@ -74,7 +74,7 @@ EHR.ext.customPanels.SingleAnimalReport = Ext.extend(Ext.Panel, {
                 xtype: 'tabpanel',
                 ref: 'tabPanel',
                 cls: 'extContainer',
-                activeTab: 0,
+                //activeTab: 0,
 //                autoWidth: true,
                 bodyBorder: true,
                 width: '90%',
@@ -147,11 +147,19 @@ EHR.ext.customPanels.SingleAnimalReport = Ext.extend(Ext.Panel, {
             //, LABKEY.Filter.create('ReportCategory', 'AnimalReport', LABKEY.Filter.Types.EQUAL)
             sort: 'ReportName',
             autoLoad: true,
-            listeners: {
-                scope: this,
-                load: this.createTabPanel
+//            listeners: {
+//                scope: this,
+//                load: this.createTabPanel
+//            },
+            errorCallback: function(error){
+                console.log('Error callback called');
+                console.log(target);
+                EHR.UTILITIES.onError(error)
             }
         });
+//TODO: replace when store is fixed
+        this.allReports.on('load', this.createTabPanel, this);
+
 
         this.doLayout();
 
@@ -420,7 +428,8 @@ EHR.ext.customPanels.SingleAnimalReport = Ext.extend(Ext.Panel, {
         this.startDateField = Ext.ComponentMgr.create({
             width: 165
             ,name:'startDate'
-            ,xtype: 'datetimefield'
+            //,xtype: 'datetimefield'
+            ,xtype: 'datefield'
             ,allowBlank:true
             ,vtype: 'daterange'
             ,listeners: {
@@ -711,7 +720,7 @@ EHR.ext.customPanels.SingleAnimalReport = Ext.extend(Ext.Panel, {
         else
             subjectArray = new Array();
 
-        if (this.subjectArray && this.subjectArray.length){//type == 'renderMultiSubject' && 
+        if (type == 'renderMultiSubject' && this.subjectArray && this.subjectArray.length){ 
             subjectArray = subjectArray.concat(this.subjectArray);
         }
 
@@ -815,7 +824,7 @@ EHR.ext.customPanels.SingleAnimalReport = Ext.extend(Ext.Panel, {
 
         if(tab.subjectArray.length){
             //we handle differently depending on whether we combine subjects
-            if (tab.combineSubj)
+            if (!tab.combineSubj)
             {
                 for (var i = 0; i < tab.subjectArray.length; i++)
                 {
@@ -936,7 +945,7 @@ EHR.ext.customPanels.SingleAnimalReport = Ext.extend(Ext.Panel, {
             showDetailsColumn: true,
             showUpdateColumn: false,
             showRecordSelectors: true,
-            frame: 'none',
+            frame: (tab.combineSubj ? 'title' : 'none'),            
             buttonBarPosition: 'top',
             //TODO: switch to 0 once bug is fixed
             timeout: 3000000,
@@ -1137,15 +1146,20 @@ EHR.ext.customPanels.SingleAnimalReport = Ext.extend(Ext.Panel, {
         var chart = new Ext.Panel({
             title: tab.rowData.get("ReportTitle") + ": " + title,
             renderTo: target.id,
-            width:500,
-            height:300,
-            layout:'fit',
-            items: {
-                xtype: 'linechart',
-                store: store,
-                xField: 'Date',
-                yField: 'weight'
-            }
+            //layout:'vbox',
+            items: [
+                {
+                    xtype: 'linechart',
+                    width:600,
+                    height:300,
+                    store: store,
+                    xField: 'Date',
+                    yField: 'weight'
+//                },{
+//                    xtype: 'button',
+//                    html: 'test'
+                }
+            ]              
         });
 
     },
@@ -1179,8 +1193,8 @@ EHR.ext.customPanels.SingleAnimalReport = Ext.extend(Ext.Panel, {
 
             //create 2nd tier tab
             if(!subTab[report]){
-                subTab.add(new Ext.Panel({
-                    title: report,
+                var theTab = subTab.add(new Ext.Panel({
+                    title: c.get('ReportTitle'),
                     ref: report,
                     rowData: c,
                     autoHeight: true,
@@ -1206,22 +1220,39 @@ EHR.ext.customPanels.SingleAnimalReport = Ext.extend(Ext.Panel, {
                             this.onSubmit();
                         }
                     }
-                }))
+                }));
+
+                if(LABKEY.ActionURL.getParameter('report')==report){
+                    this.activeReport = theTab;    
+                }
             }
 
         }, this);
 
         this.add(this.tabPanel);
-        this.tabPanel.setActiveTab(0);
+        console.log(this.activeReport)
+        if(this.activeReport){
+            console.log('setting tab')
+            this.tabPanel.setActiveTab(this.activeReport.ownerCt);
+            this.activeReport.suspendEvents();
+            this.activeReport.ownerCt.setActiveTab(this.activeReport);
+            this.activeReport.resumeEvents();
+        }
+        else{
+            this.tabPanel.setActiveTab(0);
+        }
+
         this.doLayout();
         this.tabPanel.doLayout();
     },
     loadTab: function(o){
-        this.setFilters();
+        o.combineSubj = false;
+        
+        this.setFilters(o);
 
         var reload = 0;
         for (var i in this.filters){
-            if(!o.filters || this.filters[i]!=o.filters[i]){
+            if(!o.filters || this.filters[i]!==o.filters[i]){
                 reload = 1;
                 continue;
             }
@@ -1248,7 +1279,7 @@ EHR.ext.customPanels.SingleAnimalReport = Ext.extend(Ext.Panel, {
         o.doLayout();
         
     },
-    setFilters: function(){
+    setFilters: function(tab){
         this.filters = {};
         this.processSubj();
 
@@ -1257,6 +1288,7 @@ EHR.ext.customPanels.SingleAnimalReport = Ext.extend(Ext.Panel, {
         this.filters.subjectString = this.subjectArray.join(';');
         this.filters.startDate = this.startDateField ? this.startDateField.getValue() : null;
         this.filters.endDate = this.endDateField ? this.endDateField.getValue() : null;
+        this.filters.combineSubj = tab.combineSubj;
 
     }
 

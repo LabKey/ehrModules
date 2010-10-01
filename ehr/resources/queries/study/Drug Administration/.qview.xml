@@ -1,10 +1,12 @@
 <customView xmlns="http://labkey.org/data/xml/queryCustomView">
    <columns>
        <column name="id"/>
-       <column name="date"/>
+       <column name="Date"/>
+       <column name="BeginTime"/>
+       <column name="EndTime"/>
        <column name="project"/>
-       <column name="snomed"/>
-       <column name="snomed/code">
+       <column name="code"/>
+       <column name="code/code">
            <properties>
                <property name="columnTitle" value="SNOMED Code"/>
            </properties>
@@ -12,7 +14,6 @@
        <column name="amount"/>
        <column name="units"/>
        <column name="route"/>
-       <column name="time2"/>
        <column name="remark"/>
    </columns>
    <sorts>

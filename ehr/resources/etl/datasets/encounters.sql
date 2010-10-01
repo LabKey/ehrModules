@@ -9,7 +9,7 @@ lower(x.id) as Id,
 x.date as Date,
 x.enddate,
 x.pno as project,
-x.category,
+x.category as type,
 x.ts,
 x.uuid as objectid
 

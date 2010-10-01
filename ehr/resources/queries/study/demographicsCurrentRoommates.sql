@@ -11,6 +11,6 @@ SELECT
 
 FROM study.housingRoommates h
 
-WHERE h.RemovalDate is null
+WHERE h.RemovalDate is null AND h.RoommateEnd is null
 
 GROUP BY h.id

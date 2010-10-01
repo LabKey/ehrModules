@@ -5,7 +5,7 @@
  */
 
 SELECT
-b.id,
+b.dam as id,
 b.date,
 'Birth' as type,
 'Offspring: ' || b.id as comment

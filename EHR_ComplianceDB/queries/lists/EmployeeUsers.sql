@@ -6,9 +6,9 @@
 SELECT
 e.Id,
 CASE WHEN u1.DisplayName is null THEN 'NO' ELSE '' END AS "HasUsername",
-CASE WHEN u2.DisplayName is NULL THEN 'NO' ELSE '' END AS "EmailExists",
+CASE WHEN u2.email is NULL THEN 'NO' ELSE '' END AS "EmailExists",
 
-CASE WHEN (u2.DisplayName is NOT NULL AND u1.displayName is not null) THEN '' ELSE 'NO' END AS "BothCorrect"
+CASE WHEN (u2.email is NOT NULL AND u1.displayName is not null) THEN '' ELSE 'NO' END AS "BothCorrect"
 
 FROM lists.employees e
 

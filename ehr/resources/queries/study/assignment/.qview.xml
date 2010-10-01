@@ -12,6 +12,11 @@
                 <property name="columnTitle" value="Protocol"/>
             </properties>
         </column>
+        <column name="Project/title">
+            <properties>
+                <property name="columnTitle" value="Title"/>
+            </properties>
+        </column>   
         <column name="date"/>
         <column name="rdate"/>
     </columns>

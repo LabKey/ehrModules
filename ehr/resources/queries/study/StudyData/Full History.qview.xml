@@ -16,6 +16,6 @@
        <sort column="date" descending="true"/>
    </sorts>
    <filters>
-       <filter column="dataset/name" operator="in" value="behavetrem;biopsy;blood;clinremarks;drug;necropsy;problem;surgeries;tb;weight"/>
+       <filter column="dataset/name" operator="in" value="assignments;behavetrem;biopsy;blood;clinremarks;drug;housing;necropsy;problem;weight;surgeries;tb"/>
    </filters>
 </customView>

@@ -178,9 +178,9 @@ EHR.reports.weightGraph = function(tab, subject){
 
     tab.add(new Ext.Panel({
         title: 'Weight: ' + title,
-        width:500,
-        height:300,
-        layout:'fit',
+        layout:'hbox',
+        autoScroll: true,
+        autoHeight: true,
         items: [{
             xtype: 'linechart',
             height: 300,
@@ -196,7 +196,69 @@ EHR.reports.weightGraph = function(tab, subject){
             }),
             yAxis: new Ext.chart.NumericAxis({
                 title: 'Weight (kg)'
-            })
+            }),
+            listeners: {
+                scope: this,
+                itemmouseover: function(o) {
+	                //var myGrid = Ext.getCmp('myGrid');
+                    //myGrid.selModel.selectRow(o.index);
+                },
+                itemclick: function(o){
+                    var rec = o.item;
+                    var panel = o.component.ownerCt.detailsPanel;
+                    panel.removeAll();
+
+                    var store = new LABKEY.ext.Store({
+                        schemaName: 'study',
+                        queryName: 'Clinical Remarks',
+                        filterArray: [LABKEY.Filter.create('Id', rec.Id, LABKEY.Filter.Types.EQUAL), LABKEY.Filter.create('Date', rec.date, LABKEY.Filter.Types.DATE_EQUAL)],
+                        columns: 'category,remark',
+                        autoLoad: true,
+                        ownerCt: panel
+                    });
+                    store.on('load', function(s){
+                        s.ownerCt.doLayout();
+                    }, this);
+                    
+                    var grid = new LABKEY.ext.EditorGridPanel({
+                        store: store
+                        ,title: 'Clinical Remarks: '+rec.date.format('Y-m-d')
+                        ,height: 300
+                        ,width: 500
+                        ,autoScroll: true
+                        ,editable: false
+                        ,stripeRows: true
+                        ,disableSelection: true
+                        ,style: 'padding-top: 10px'
+                        ,tbar: []
+                        ,bbar: []
+                        ,sm: new Ext.grid.RowSelectionModel()
+                        ,errorCallback: function(error){
+                            EHR.UTILITIES.onError(error)
+                        }
+                        ,scope: this
+                        ,listeners: {
+                            scope: this,
+                            reconfigure: function(c){
+                                console.log('reconfigure')
+                                c.doLayout();
+                            },
+                            bodyresize: function(c){
+                                console.log('resize')
+                                c.doLayout();
+                            }
+                        }
+                    });
+
+                    panel.add(grid);
+                    panel.doLayout();
+                }
+            }
+        },{
+            xtype: 'panel',
+//            autoHeight: true,
+            ref: 'detailsPanel',
+            autoScroll: true
         }]
     }));
 }

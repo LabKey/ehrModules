@@ -10,7 +10,7 @@ SELECT
 
 FROM lists.cages c
 
-LEFT JOIN study.housing h
+LEFT OUTER JOIN study.housing h
 
 ON (c.room=h.room AND c.cage=h.cage)
 

@@ -176,13 +176,16 @@ ehr/resources/queries/study/Clinical[!!-~]Remarks/Biopsy[!!-~]Remarks.qview.xml 
 ehr/resources/queries/study/Clinical[!!-~]Remarks/Clinical[!!-~]Remarks.qview.xml -text
 ehr/resources/queries/study/Clinical[!!-~]Remarks/Hormone[!!-~]Remarks.qview.xml -text
 ehr/resources/queries/study/Clinical[!!-~]Remarks/Necropsy[!!-~]Remarks.qview.xml -text
+ehr/resources/queries/study/Clinical[!!-~]Remarks/Remark[!!-~]Only.qview.xml -text
 ehr/resources/queries/study/Clinical[!!-~]Remarks/Surgery[!!-~]Remarks.qview.xml -text
 ehr/resources/queries/study/Clinical_Encounters.js -text
 ehr/resources/queries/study/Clinical_Remarks.js -text
 ehr/resources/queries/study/Clinpath[!!-~]Requests.query.xml -text
 ehr/resources/queries/study/Clinpath[!!-~]Requests/.qview.xml -text
-ehr/resources/queries/study/Clinpath[!!-~]Runs.sql -text
+ehr/resources/queries/study/ClinpathRuns.query.xml -text
+ehr/resources/queries/study/ClinpathRuns.sql -text
 ehr/resources/queries/study/Clinpath_Requests.js -text
+ehr/resources/queries/study/Datasets.query.xml -text
 ehr/resources/queries/study/Deaths.js -text
 ehr/resources/queries/study/Deaths.query.xml -text
 ehr/resources/queries/study/Deaths/.qview.xml -text
@@ -273,6 +276,7 @@ ehr/resources/queries/study/SSP_Summary.query.xml -text
 ehr/resources/queries/study/SSP_Summary.sql -text
 ehr/resources/queries/study/SSP_Summary/.qview.xml -text
 ehr/resources/queries/study/StudyData/.qview.xml -text
+ehr/resources/queries/study/StudyData/Full[!!-~]History.qview.xml -text
 ehr/resources/queries/study/StudyData/Medical[!!-~]History.qview.xml -text
 ehr/resources/queries/study/Surgeries.js -text
 ehr/resources/queries/study/Surgeries.query.xml -text
@@ -306,6 +310,7 @@ ehr/resources/queries/study/Urinalysis_Results.js -text
 ehr/resources/queries/study/Urinalysis_Runs.js -text
 ehr/resources/queries/study/Validation.sql -text
 ehr/resources/queries/study/Validation/Housing.qview.xml -text
+ehr/resources/queries/study/ViralLoads.sql -text
 ehr/resources/queries/study/Virology[!!-~]Results.query.xml -text
 ehr/resources/queries/study/Virology[!!-~]Results/.qview.xml -text
 ehr/resources/queries/study/Virology[!!-~]Runs.query.xml -text
@@ -341,10 +346,14 @@ ehr/resources/queries/study/assignmentTotalCoAssigned.query.xml -text
 ehr/resources/queries/study/assignmentTotalCoAssigned.sql -text
 ehr/resources/queries/study/assignmentTotalDaysAssigned.query.xml -text
 ehr/resources/queries/study/assignmentTotalDaysAssigned.sql -text
+ehr/resources/queries/study/bloodLast30.sql -text
+ehr/resources/queries/study/bloodRecentWeight.sql -text
 ehr/resources/queries/study/bloodSummary.query.xml -text
 ehr/resources/queries/study/bloodSummary.sql -text
+ehr/resources/queries/study/bloodSummary2.sql -text
 ehr/resources/queries/study/chemistryRefRange.query.xml -text
 ehr/resources/queries/study/chemistryRefRange.sql -text
+ehr/resources/queries/study/clintremDiarrhea.query.xml -text
 ehr/resources/queries/study/clintremDiarrhea.sql -text
 ehr/resources/queries/study/clintremDiarrheaSummary.query.xml -text
 ehr/resources/queries/study/clintremDiarrheaSummary.sql -text
@@ -387,6 +396,7 @@ ehr/resources/queries/study/demographicsCurrentRoommates.query.xml -text
 ehr/resources/queries/study/demographicsCurrentRoommates.sql -text
 ehr/resources/queries/study/demographicsDaysAlone.query.xml -text
 ehr/resources/queries/study/demographicsDaysAlone.sql -text
+ehr/resources/queries/study/demographicsDaysAlone/.qview.xml -text
 ehr/resources/queries/study/demographicsFamily.query.xml -text
 ehr/resources/queries/study/demographicsFamily.sql -text
 ehr/resources/queries/study/demographicsLatestSIVChallenge.sql -text

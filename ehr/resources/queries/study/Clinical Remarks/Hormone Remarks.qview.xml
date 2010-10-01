@@ -1,4 +1,12 @@
 <customView xmlns="http://labkey.org/data/xml/queryCustomView">
+    <columns>
+        <column name="Id"/>
+        <column name="Date"/>
+        <column name="project"/>
+        <column name="Remark"/>
+        <column name="userid"/>
+        <column name="category"/>
+    </columns>    
     <filters>
         <filter column="category" operator="eq" value="Hormone"/>
     </filters>

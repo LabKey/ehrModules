@@ -7,7 +7,9 @@
 SELECT
   m.Properties.Id,
   --m.Properties.Institution AS Institution,
-  m.Properties.PrimerPair.Allele AS Allele,
+  m.Properties.PrimerPair.Allele AS Alleles,
+  COALESCE(m.Properties.PrimerPair.ShortName, m.Properties.PrimerPair.Allele) AS Allele,
+
   COALESCE(max(m.Properties.ReportDate), '1990-01-01') as Date,
   count(*) as TotalRecords,
   

@@ -11,11 +11,6 @@
                 <property name="columnTitle" value="Status"/>
             </properties>
         </column>
-        <column name="Dataset/Demographics/Avail">
-            <properties>
-                <property name="columnTitle" value="Avail"/>
-            </properties>
-        </column>
         <column name="Dataset/Demographics/Room">
             <properties>
                 <property name="columnTitle" value="Room"/>
@@ -26,21 +21,21 @@
                 <property name="columnTitle" value="Cage"/>
             </properties>
         </column>
-        <column name="Dataset/Demographics/Cond">
-            <properties>
-                <property name="columnTitle" value="Condition"/>
-            </properties>
-        </column>
-        <column name="Dataset/Demographics/Medical">
-            <properties>
-                <property name="columnTitle" value="Medical"/>
-            </properties>
-        </column>
-        <column name="Dataset/Demographics/v_status">
-            <properties>
-                <property name="columnTitle" value="Viral Status"/>
-            </properties>
-        </column>
+        <!--<column name="Dataset/Demographics/Cond">-->
+            <!--<properties>-->
+                <!--<property name="columnTitle" value="Condition"/>-->
+            <!--</properties>-->
+        <!--</column>-->
+        <!--<column name="Dataset/Demographics/Medical">-->
+            <!--<properties>-->
+                <!--<property name="columnTitle" value="Medical"/>-->
+            <!--</properties>-->
+        <!--</column>-->
+        <!--<column name="Dataset/Demographics/v_status">-->
+            <!--<properties>-->
+                <!--<property name="columnTitle" value="Viral Status"/>-->
+            <!--</properties>-->
+        <!--</column>-->
         <column name="DaysAlone/DaysAlone">
             <properties>
                 <property name="columnTitle" value="Days Alone"/>
@@ -51,9 +46,13 @@
                 <property name="columnTitle" value="Alone Since"/>
             </properties>
         </column>
+        <column name="DaysAlone/Exemptions">
+            <properties>
+                <property name="columnTitle" value="Exemptions"/>
+            </properties>
+        </column>
     </columns>
     <filters>
-        <filter column="Status/Status" operator="eq" value="Alive"/>
         <filter column="DaysAlone/DaysAlone" operator="neq" value="0"/>
     </filters>
     <sorts>

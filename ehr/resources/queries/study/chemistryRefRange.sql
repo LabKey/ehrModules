@@ -43,12 +43,12 @@ WHEN c.id.dataset.demographics.birth is null or c.date is null
 ELSE
   ROUND(CONVERT(age_in_months(c.id.dataset.demographics.birth, c.date), DOUBLE) / 12, 1)
 END as AgeAtTime
-  
+
 FROM chemistryResults c
 
 ) c
 
-LEFT JOIN lists.ageclass ac
+LEFT JOIN lookups.ageclass ac
 ON (
 c.ageAtTime IS NOT NULL AND
 c.ageAtTime >= ac."min" AND
@@ -56,7 +56,7 @@ c.ageAtTime >= ac."min" AND
 c.species = ac.species
 )
 
-LEFT JOIN lists.lab_test_range r ON (
+LEFT JOIN lookups.lab_test_range r ON (
 c.testId = r.test AND
 c.species = r.species AND
 ac.ageClass = r.age_class AND

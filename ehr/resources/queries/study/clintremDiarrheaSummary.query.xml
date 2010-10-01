@@ -28,66 +28,66 @@
                             query.week~eq=${week}&amp;
                         </url>
                     </column>
-                    <column columnName="Mon">
-                        <datatype>varchar</datatype>
-                        <displayWidth>40</displayWidth>
-                        <url>/query/executeQuery.view?schemaName=study&amp;
-                            query.queryName=clintremDiarrhea&amp;
-                            query.Id~eq=${id}&amp;
-                            query.Year~eq=${year}&amp;
-                            query.week~eq=${week}&amp;
-                        </url>
-                    </column>
-                    <column columnName="Tues">
-                        <datatype>varchar</datatype>
-                        <displayWidth>40</displayWidth>
-                        <url>/query/executeQuery.view?schemaName=study&amp;
-                            query.queryName=clintremDiarrhea&amp;
-                            query.Id~eq=${id}&amp;
-                            query.Year~eq=${year}&amp;
-                            query.week~eq=${week}&amp;
-                        </url>
-                    </column>
-                    <column columnName="Weds">
-                        <datatype>varchar</datatype>
-                        <displayWidth>40</displayWidth>
-                        <url>/query/executeQuery.view?schemaName=study&amp;
-                            query.queryName=clintremDiarrhea&amp;
-                            query.Id~eq=${id}&amp;
-                            query.Year~eq=${year}&amp;
-                            query.week~eq=${week}&amp;
-                        </url>
-                    </column>
-                    <column columnName="Thurs">
-                        <datatype>varchar</datatype>
-                        <displayWidth>40</displayWidth>
-                        <url>/query/executeQuery.view?schemaName=study&amp;
-                            query.queryName=clintremDiarrhea&amp;
-                            query.Id~eq=${id}&amp;
-                            query.Year~eq=${year}&amp;
-                            query.week~eq=${week}&amp;
-                        </url>
-                    </column>
-                    <column columnName="Fri">
-                        <datatype>varchar</datatype>
-                        <displayWidth>40</displayWidth>
-                        <url>/query/executeQuery.view?schemaName=study&amp;
-                            query.queryName=clintremDiarrhea&amp;
-                            query.Id~eq=${id}&amp;
-                            query.Year~eq=${year}&amp;
-                            query.week~eq=${week}&amp;
-                        </url>
-                    </column>
-                    <column columnName="Sat">
-                        <datatype>varchar</datatype>
-                        <displayWidth>40</displayWidth>
-                        <url>/query/executeQuery.view?schemaName=study&amp;
-                            query.queryName=clintremDiarrhea&amp;
-                            query.Id~eq=${id}&amp;
-                            query.Year~eq=${year}&amp;
-                            query.week~eq=${week}&amp;
-                        </url>
-                    </column>
+                    <!--<column columnName="Mon">-->
+                        <!--<datatype>varchar</datatype>-->
+                        <!--<displayWidth>40</displayWidth>-->
+                        <!--<url>/query/executeQuery.view?schemaName=study&amp;-->
+                            <!--query.queryName=clintremDiarrhea&amp;-->
+                            <!--query.Id~eq=${id}&amp;-->
+                            <!--query.Year~eq=${year}&amp;-->
+                            <!--query.week~eq=${week}&amp;-->
+                        <!--</url>-->
+                    <!--</column>-->
+                    <!--<column columnName="Tues">-->
+                        <!--<datatype>varchar</datatype>-->
+                        <!--<displayWidth>40</displayWidth>-->
+                        <!--<url>/query/executeQuery.view?schemaName=study&amp;-->
+                            <!--query.queryName=clintremDiarrhea&amp;-->
+                            <!--query.Id~eq=${id}&amp;-->
+                            <!--query.Year~eq=${year}&amp;-->
+                            <!--query.week~eq=${week}&amp;-->
+                        <!--</url>-->
+                    <!--</column>-->
+                    <!--<column columnName="Weds">-->
+                        <!--<datatype>varchar</datatype>-->
+                        <!--<displayWidth>40</displayWidth>-->
+                        <!--<url>/query/executeQuery.view?schemaName=study&amp;-->
+                            <!--query.queryName=clintremDiarrhea&amp;-->
+                            <!--query.Id~eq=${id}&amp;-->
+                            <!--query.Year~eq=${year}&amp;-->
+                            <!--query.week~eq=${week}&amp;-->
+                        <!--</url>-->
+                    <!--</column>-->
+                    <!--<column columnName="Thurs">-->
+                        <!--<datatype>varchar</datatype>-->
+                        <!--<displayWidth>40</displayWidth>-->
+                        <!--<url>/query/executeQuery.view?schemaName=study&amp;-->
+                            <!--query.queryName=clintremDiarrhea&amp;-->
+                            <!--query.Id~eq=${id}&amp;-->
+                            <!--query.Year~eq=${year}&amp;-->
+                            <!--query.week~eq=${week}&amp;-->
+                        <!--</url>-->
+                    <!--</column>-->
+                    <!--<column columnName="Fri">-->
+                        <!--<datatype>varchar</datatype>-->
+                        <!--<displayWidth>40</displayWidth>-->
+                        <!--<url>/query/executeQuery.view?schemaName=study&amp;-->
+                            <!--query.queryName=clintremDiarrhea&amp;-->
+                            <!--query.Id~eq=${id}&amp;-->
+                            <!--query.Year~eq=${year}&amp;-->
+                            <!--query.week~eq=${week}&amp;-->
+                        <!--</url>-->
+                    <!--</column>-->
+                    <!--<column columnName="Sat">-->
+                        <!--<datatype>varchar</datatype>-->
+                        <!--<displayWidth>40</displayWidth>-->
+                        <!--<url>/query/executeQuery.view?schemaName=study&amp;-->
+                            <!--query.queryName=clintremDiarrhea&amp;-->
+                            <!--query.Id~eq=${id}&amp;-->
+                            <!--query.Year~eq=${year}&amp;-->
+                            <!--query.week~eq=${week}&amp;-->
+                        <!--</url>-->
+                    <!--</column>-->
                 </columns>
             </table>
         </tables>

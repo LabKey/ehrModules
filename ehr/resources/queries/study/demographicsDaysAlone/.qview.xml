@@ -1,0 +1,47 @@
+<customView xmlns="http://labkey.org/data/xml/queryCustomView">
+    <columns>
+        <column name="Id"/>
+        <!--<column name="Id/Dataset/Demographics/Gender">-->
+            <!--<properties>-->
+                <!--<property name="columnTitle" value="Gender"/>-->
+            <!--</properties>-->
+        <!--</column>-->
+        <!--<column name="Id/Dataset/Demographics/Status">-->
+            <!--<properties>-->
+                <!--<property name="columnTitle" value="Status"/>-->
+            <!--</properties>-->
+        <!--</column>-->
+        <!--<column name="Id/Dataset/Demographics/Room">-->
+            <!--<properties>-->
+                <!--<property name="columnTitle" value="Room"/>-->
+            <!--</properties>-->
+        <!--</column>-->
+        <!--<column name="Id/Dataset/Demographics/Cage">-->
+            <!--<properties>-->
+                <!--<property name="columnTitle" value="Cage"/>-->
+            <!--</properties>-->
+        <!--</column>-->
+        <column name="DaysAlone">
+            <properties>
+                <property name="columnTitle" value="Days Alone"/>
+            </properties>
+        </column>
+        <column name="AloneSince">
+            <properties>
+                <property name="columnTitle" value="Alone Since"/>
+            </properties>
+        </column>
+        <column name="Exemptions">
+            <properties>
+                <property name="columnTitle" value="Exemptions"/>
+            </properties>
+        </column>
+    </columns>
+    <filters>
+        <filter column="DaysAlone" operator="neq" value="0"/>
+    </filters>
+    <sorts>
+        <sort column="id" descending="false"/>
+        <sort column="DaysAlone" descending="true"/>
+    </sorts>
+</customView>

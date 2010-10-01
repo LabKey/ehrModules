@@ -70,6 +70,7 @@ EHR.ext.customPanels.detailsView = function(config)
                 showUpdateColumn: false,
                 showRecordSelectors: true,
                 buttonBarPosition: 'top',
+                title: this.config.title,
                 //TODO: switch to 0 once bug is fixed
                 timeout: 3000000
             })

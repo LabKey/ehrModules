@@ -10,18 +10,40 @@ Ext.onReady(function ()
     if (!LABKEY.ActionURL.getParameter('runId')){alert('Must Provide Run #'); return false;}
     if (!LABKEY.ActionURL.getParameter('dataset')){alert('Must Provide Assay Type'); return false;}
 
+    var dataset;
+    switch (LABKEY.ActionURL.getParameter('dataset')){
+        case 'chemistry':
+            dataset='Blood Chemistry';
+            break;
+        case 'parasitology':
+            dataset='Parasitology';
+            break;
+        case 'virology':
+            dataset='Virology';
+            break;
+        case 'hematology':
+            dataset='Hematology';
+            break;
+        case 'bacteriology':
+            dataset='Bacteriology';
+            break;
+        case 'immunology':
+            dataset='Immunology';
+            break;
+    };
+
     new EHR.ext.customPanels.detailsView({
         schemaName: 'study',
-        queryName: LABKEY.ActionURL.getParameter('dataset')+' Runs',
-        title: LABKEY.ActionURL.getParameter('dataset')+' Run Details:',
+        queryName: dataset+' Runs',
+        title: dataset+' Run Details:',
         renderTo: 'runDetails',
         filterArray: [LABKEY.Filter.create('objectid', LABKEY.ActionURL.getParameter('runId'), LABKEY.Filter.Types.EQUAL)]
     });
 
     new LABKEY.QueryWebPart({
-        title: LABKEY.ActionURL.getParameter('dataset')+' Results:',
+        title: dataset+' Results:',
         schemaName: 'study',
-        queryName: LABKEY.ActionURL.getParameter('dataset')+' Results',
+        queryName: dataset+' Results',
         allowChooseQuery: false,
         allowChooseView: true,
         showInsertNewButton: false,

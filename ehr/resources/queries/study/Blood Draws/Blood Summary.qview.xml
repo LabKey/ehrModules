@@ -14,7 +14,7 @@
        <column name="remark" />
        <column name="BloodRemaining/BloodLast30">
             <properties>
-                <property name="columnTitle" value="Drawn in Last 30 Days (from today)"/>
+                <property name="columnTitle" value="Drawn in Previous 30 Days"/>
             </properties>
        </column>
        <column name="BloodRemaining/weight">
@@ -24,12 +24,12 @@
        </column>
        <column name="BloodRemaining/MaxBlood">
             <properties>
-                <property name="columnTitle" value="Max Allowable"/>
+                <property name="columnTitle" value="Max Allowable Blood"/>
             </properties>
        </column>
        <column name="BloodRemaining/AvailBlood">
             <properties>
-                <property name="columnTitle" value="Volume Remaining"/>
+                <property name="columnTitle" value="Volume Remaining (mL)"/>
             </properties>
        </column>
    </columns>
