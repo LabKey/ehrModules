@@ -14,19 +14,18 @@ EHR.ext.customPanels.SingleAnimalReport = Ext.extend(Ext.Panel, {
 
     initComponent: function()
     {
-        this.on('afterLayout', this.afterLayout, this);
 
         Ext.Panel.prototype.bodyBorder = false;
+        //Ext.History.on('change', this.dispatch);
 
         Ext.apply(this, {
             autoHeight: true
 //            ,autoWidth: true
             ,bodyBorder: false
+            ,width: '100%'
             ,border: false
             ,frame: false
-//            ,layout: 'anchor'
-//            ,width: '90%'
-//            ,width: 1000
+            ,reports: {}
             ,defaults: {
                 border: false,
 //                autoHeight: true,
@@ -62,11 +61,11 @@ EHR.ext.customPanels.SingleAnimalReport = Ext.extend(Ext.Panel, {
                 }]
             },{
                 xtype: 'button'
-                ,text: 'Display Report'
+                ,text: 'Refresh'
                 ,handler: this.onSubmit
                 ,type: 'submit'
                 ,scope: this
-                ,style:'padding-top: 5px;margin-left:205px'
+                ,style:'padding-top: 5px;margin-left:200px'
             },{
                 tag: 'span',
                 style: 'padding: 10px'
@@ -109,17 +108,17 @@ EHR.ext.customPanels.SingleAnimalReport = Ext.extend(Ext.Panel, {
                 name: 'selector',
                 boxLabel: 'Single Animal',
                 inputValue: 'renderSingleSubject',
-                ref: 'renderSingleSubject'
+                ref: '../renderSingleSubject'
             },{
                 name: 'selector',
                 boxLabel: 'Multiple Animals',
                 inputValue: 'renderMultiSubject',
-                ref: 'renderMultiSubject'
+                ref: '../renderMultiSubject'
             },{
                 name: 'selector',
                 boxLabel: 'Room/Cage',
                 inputValue: 'renderRoomCage',
-                ref: 'renderRoomCage'
+                ref: '../renderRoomCage'
 //            },{
 //                name: 'selector',
 //                boxLabel: 'Complex',
@@ -145,7 +144,7 @@ EHR.ext.customPanels.SingleAnimalReport = Ext.extend(Ext.Panel, {
             queryName: 'reports',
             filterArray: [LABKEY.Filter.create('Visible', true, LABKEY.Filter.Types.EQUAL)],
             //, LABKEY.Filter.create('ReportCategory', 'AnimalReport', LABKEY.Filter.Types.EQUAL)
-            sort: 'ReportName',
+            sort: 'Category,ReportTitle',
             autoLoad: true,
 //            listeners: {
 //                scope: this,
@@ -160,9 +159,24 @@ EHR.ext.customPanels.SingleAnimalReport = Ext.extend(Ext.Panel, {
 //TODO: replace when store is fixed
         this.allReports.on('load', this.createTabPanel, this);
 
-
         this.doLayout();
 
+        this.on('beforeRender', this.restoreUrl);        
+
+    },
+    dispatch: function(token){
+        console.log('dispatch'+token);
+        token = token.split(';');
+        switch (token) {
+            case "users":
+                break;
+            case "users/new":
+                break;
+            case "users/2/edit":
+                    break;
+            default:
+                break;
+          };                
     },
     renderSingleSubject: function(){
         var target = this.filterPanel;
@@ -234,7 +248,7 @@ EHR.ext.customPanels.SingleAnimalReport = Ext.extend(Ext.Panel, {
             })
         );
         subjButton.add(new Ext.Button({
-            text: ' Clear Dates '
+            text: ' Clear '
             ,minWidth: 85
             ,handler: function(c){
                 this.subjectArray = [];
@@ -332,11 +346,24 @@ EHR.ext.customPanels.SingleAnimalReport = Ext.extend(Ext.Panel, {
             title: 'Search By Room/Cage',
             layout: 'form',
 
-            items: [{
-                xtype: 'textfield',
-                fieldLabel: 'Room',
-                ref: 'room'
-            },{
+            items: [new EHR.ext.customFields.LabKeyCombo({
+                emptyText:''
+                ,fieldLabel: 'Room'
+                ,ref: 'room'
+                ,xtype: 'combo'
+                ,displayField:'room'
+                ,valueField: 'room'
+                ,typeAhead: true
+                ,width: 150
+                ,editable: true
+                ,store: new LABKEY.ext.Store({
+                    containerPath: 'WNPRC/EHR/',
+                    schemaName: 'lists',
+                    queryName: 'rooms',
+                    sort: 'room',
+                    autoLoad: true
+                })
+            }),{
                 xtype: 'numberfield',
                 fieldLabel: 'Cage',
                 ref: 'cage'
@@ -356,17 +383,18 @@ EHR.ext.customPanels.SingleAnimalReport = Ext.extend(Ext.Panel, {
             }]
         });
 
-//        target.add(new Ext.Button({
-//            text: ' Search Room/Cage '
-//            ,minWidth: 80
-//            ,handler: function(c){
-//                this.housingWin.show(this);
-//            }
-//            ,scope: this
-//            //,bodyStyle:'align: center'
-//            ,buttonAlign: 'center'
-//            })
-//        );
+        thePanel.add(new Ext.Button({
+            text: ' Search By Room/Cage '
+            ,html: '[Search By Room/Cage]'
+            ,minWidth: 80
+            ,handler: function(c){
+                this.housingWin.show(this);
+            }
+            ,scope: this
+            //,bodyStyle:'align: center'
+            ,buttonAlign: 'center'
+            })
+        );
 
         thePanel.add({
             xtype: 'button'
@@ -487,8 +515,8 @@ EHR.ext.customPanels.SingleAnimalReport = Ext.extend(Ext.Panel, {
             listeners: {
                 scope: this,
                 click: function(o){
-                    this.startDateField.reset();
-                    this.endDateField.reset();
+                    this.startDateField.setValue();
+                    this.endDateField.setValue();
                 }
             }
         })
@@ -648,33 +676,55 @@ EHR.ext.customPanels.SingleAnimalReport = Ext.extend(Ext.Panel, {
             }
         });
     },
-    afterLayout: function()
+    restoreUrl: function()
     {
-        //TODO: if the query webpart is changed to prevent page reload, this should be rewritten
-        //we reload the fields from URL if the params exist
-        if (this.subjArea && LABKEY.ActionURL.getParameter('participantId') && LABKEY.ActionURL.getParameter('participantId') != '')
-        {
-            this.subjArea.setValue(LABKEY.ActionURL.getParameter('participantId'));
-            this.processSubj();
+
+        if(document.location.hash){
+            var token = document.location.hash.split('#');
+            token = token[1].split('/');
+            for (var i=0;i<token.length;i++){
+                var t = token[i].split(':');
+                switch(t[0]){
+                    case '_inputType':
+                        Ext.each(this.inputType.items, function(c){
+                            c.checked = (c.inputValue == t[1]);
+                        }, this);
+
+                        this[t[1]]();
+                        break;
+                    case 'subject':
+                        if(this.subjArea){
+                            this.subjArea.setValue(t[1]);
+                            //this.processSubj();
+                        }
+                        break;
+                    case 'activeReport':
+                        this.report = t[1];
+                        break;
+                    case 'room':
+                        if(this.roomField){
+                            this.roomField.setValue(t[1]);
+                        }
+                        break;
+                    case 'cage':
+                        if(this.cageField){
+                            this.cageField.setValue(t[1]);
+                        }
+                        break;
+                    case 'startDate':
+                        if(this.startDateField){
+                            this.startDateField.setValue(t[1]);
+                        }
+                        break;
+                    case 'endDate':
+                        if(this.endDateField){
+                            this.endDateField.setValue(t[1]);
+                        }
+                        break;
+                }
+            }
         }
 
-        if (LABKEY.ActionURL.getParameter('showReport'))
-        {
-            //test whether the store loaded
-            if(this.allReports.getCount())
-            {
-                this.onSubmit();
-            }
-            else
-            {
-                this.awaitStore = function(){
-                    this.allReports.un('load', this.awaitStore, this);
-                    this.onSubmit();
-                    };
-
-                this.allReports.on('load', this.awaitStore, this)
-            }
-        }
 
     },
 
@@ -785,7 +835,7 @@ EHR.ext.customPanels.SingleAnimalReport = Ext.extend(Ext.Panel, {
             return;
 
        if (!this.activeReport){
-           this.activeReport = this.tabPanel['General']['Abstract'];
+           this.activeReport = this.tabPanel['General']['abstract'];
            var parent = this.activeReport.ownerCt;
            this.tabPanel.activate(parent);
            parent.activate(this.activeReport);
@@ -821,6 +871,7 @@ EHR.ext.customPanels.SingleAnimalReport = Ext.extend(Ext.Panel, {
 //        this.wheel = document.getElementById('reportDiv').appendChild(document.createElement('span'));
 //        this.wheel.innerHTML = 'Loading...<p>';
 //        this.wheel.setAttribute('class', "loading-indicator");
+        this.addHeader(tab);
 
         if(tab.subjectArray.length){
             //we handle differently depending on whether we combine subjects
@@ -838,7 +889,7 @@ EHR.ext.customPanels.SingleAnimalReport = Ext.extend(Ext.Panel, {
                 this._renderReport(tab, tab.subjectArray);
             }
         }
-        else {
+        else {          
             this._renderReport(tab);    
         }
 
@@ -928,11 +979,29 @@ EHR.ext.customPanels.SingleAnimalReport = Ext.extend(Ext.Panel, {
         return filterArray;
     },
 
+    makeTitle: function(tab, subject){
+        var title = '';
+        var room = (this.roomField ? this.roomField.getValue() : null);
+        var cage = (this.cageField ? this.cageField.getValue() : null);
+
+        if(subject && subject.length)
+            title = subject.join("; ");
+
+        if (room)
+            title += 'Room: '+room;
+
+        if (cage)
+            title += ', Cage: '+cage;            
+
+        return title;
+    },
+
     loadQuery: function(tab, subject, target)
     {
         var filterArray = this.getFilterArray(tab, subject);
-        var target = target || tab.add({tag: 'span', html: 'Loading...', cls: 'loading-indicator'});
-        var title = (subject ? subject.join("; ") : '');
+        var target = target || tab.add({tag: 'span', html: 'Loading...', cls: 'loading-indicator', style: 'padding-bottom: 20px'});
+
+        var title = this.makeTitle(tab, subject);
 
         var queryConfig = {
             title: tab.rowData.get("ReportTitle") + ": " + title,
@@ -945,13 +1014,12 @@ EHR.ext.customPanels.SingleAnimalReport = Ext.extend(Ext.Panel, {
             showDetailsColumn: true,
             showUpdateColumn: false,
             showRecordSelectors: true,
-            frame: (tab.combineSubj ? 'title' : 'none'),            
+            frame: (tab.combineSubj ? 'portal' : 'portal'),            
             buttonBarPosition: 'top',
             //TODO: switch to 0 once bug is fixed
             timeout: 3000000,
             filters: filterArray,
             successCallback: function(c){
-                console.log('Success callback called');
                 this.endMsg();
             },
             errorCallback: function(error){
@@ -974,10 +1042,10 @@ EHR.ext.customPanels.SingleAnimalReport = Ext.extend(Ext.Panel, {
             queryConfig.containerPath = tab.rowData.get("ContainerPath");
         }
 
-        if (tab.rowData.get("DateFieldName"))
-        {
-            queryConfig.sort = 'Id,-'+tab.rowData.get("DateFieldName");
-        }
+//        if (tab.rowData.get("DateFieldName"))
+//        {
+//            queryConfig.sort = 'Id,-'+tab.rowData.get("DateFieldName");
+//        }
 
         new LABKEY.QueryWebPart(queryConfig).render(target.id);
 
@@ -1208,6 +1276,7 @@ EHR.ext.customPanels.SingleAnimalReport = Ext.extend(Ext.Panel, {
 //                    ],
                     subjectArray: [],
                     filterArray: [],
+                    tbar: new Ext.Toolbar({style: 'padding-left:10px'}),
                     listeners: {
                         scope: this,
                         activate: function(t){
@@ -1222,31 +1291,36 @@ EHR.ext.customPanels.SingleAnimalReport = Ext.extend(Ext.Panel, {
                     }
                 }));
 
-                if(LABKEY.ActionURL.getParameter('report')==report){
-                    this.activeReport = theTab;    
+                if(this.report==report){
+                    this.activeReport = theTab;
                 }
+
+                this.reports[c.get('ReportName')] = theTab;
+
             }
 
         }, this);
 
         this.add(this.tabPanel);
-        console.log(this.activeReport)
+
         if(this.activeReport){
-            console.log('setting tab')
+            console.log('setting tab');
             this.tabPanel.setActiveTab(this.activeReport.ownerCt);
             this.activeReport.suspendEvents();
             this.activeReport.ownerCt.setActiveTab(this.activeReport);
             this.activeReport.resumeEvents();
+            this.onSubmit(this.activeReport);
         }
         else{
-            this.tabPanel.setActiveTab(0);
+            this.tabPanel.setActiveTab(this.tabPanel.General);
         }
 
         this.doLayout();
         this.tabPanel.doLayout();
+
     },
     loadTab: function(o){
-        o.combineSubj = false;
+        o.combineSubj = o.combineSubj || false;
         
         this.setFilters(o);
 
@@ -1280,16 +1354,82 @@ EHR.ext.customPanels.SingleAnimalReport = Ext.extend(Ext.Panel, {
         
     },
     setFilters: function(tab){
-        this.filters = {};
+        this.filters = {
+            _inputType : this.inputType.getValue().inputValue,
+            room: (this.roomField ? this.roomField.getValue() : null),
+            cage : (this.cageField ? this.cageField.getValue() : null),
+            subject : this.subjectArray.join(';'),
+            startDate : (this.startDateField && this.startDateField.getValue()) ? this.startDateField.getValue().format('Y-m-d') : null,
+            endDate : (this.endDateField && this.endDateField.getValue()) ? this.endDateField.getValue().format('Y-m-d'): null,
+            combineSubj : tab.combineSubj,
+            activeReport: tab.rowData.get('ReportName')
+        };
+
         this.processSubj();
+        var token = [];
+        for (var i in this.filters){
+            if(this.filters[i]){
+                token.push(i+':'+this.filters[i]);
+            }
+        }
+        Ext.History.add(token.join('/'));
+    },
+    addHeader: function(tab, items){
+        var tb = tab.getTopToolbar();
+        tb.removeAll();
 
-        this.filters.room = (this.roomField ? this.roomField.getValue() : null);
-        this.filters.cage = (this.cageField ? this.cageField.getValue() : null);
-        this.filters.subjectString = this.subjectArray.join(';');
-        this.filters.startDate = this.startDateField ? this.startDateField.getValue() : null;
-        this.filters.endDate = this.endDateField ? this.endDateField.getValue() : null;
-        this.filters.combineSubj = tab.combineSubj;
+        //cannot separate subjects if filtering by room
+        if(this.roomField){
+            return;
+        }
 
+        tb.add({
+                html: 'Combine Subjects:'
+            },{
+            xtype: 'radiogroup',
+            autoWidth: true,
+            ref: 'combine',
+            tab: tab,
+            style: 'margins:10px',
+            defaults: {
+                style: 'padding-right:10px',
+                labelWidth: 100,
+                labelStyle: 'padding:10px' 
+            },
+            //columns: 2,
+            listeners: {
+                scope: this,
+                change: function(o, s){
+                    var val = o.getValue();
+
+                    if(o.tab.combineSubj != val && o.tab.subjectArray.length!=1){
+                        o.tab.combineSubj = val.inputValue;
+                        this.loadTab(tab)
+                    }
+                }
+            },
+            items: [{
+                name: 'combine',
+                boxLabel: 'No',
+                inputValue: false,
+                autoWidth: true,
+                ref: 'combine',
+                checked: !tab.combineSubj
+            },{
+                name: 'combine',
+                boxLabel: 'Yes',
+                inputValue: true,
+                autoWidth: true,
+                ref: 'separate',
+                checked: tab.combineSubj
+            }]
+        },
+            '-'
+        );
+
+        if(items){
+            tb.add(items);
+        }
     }
 
 });

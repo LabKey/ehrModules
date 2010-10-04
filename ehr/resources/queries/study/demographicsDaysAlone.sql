@@ -10,33 +10,31 @@ SELECT
 
 h1.id,
 
--- max(h2.date) as LastStart,
--- max(h2.odate) as LastStop,
-
+-- convert(
 CASE
-  WHEN max(h2.date) >= max(h2.odate)
-    THEN now()
-  WHEN max(h2.odate) IS NULL AND max(h2.date) is not null
-    THEN now()
-  WHEN max(h2.odate) IS NULL
-    THEN min(h1.date)
+  --never had a roommate
+  WHEN count(h2.id) = 0
+    then min(h1.date)
+  --has an active roommate
+  WHEN (max(coalesce(h2.odate, now())) = now()) OR (max(h2.date) >= max(coalesce(h2.odate, now())))
+    THEN null
   ELSE
     max(h2.odate)
 END as AloneSince,
 
 convert(
 CASE
-  WHEN max(h2.date) >= max(h2.odate)
-    THEN 0
-  WHEN max(h2.odate) IS NULL AND max(h2.date) is not null
-    THEN 0
-  WHEN max(h2.odate) IS NULL
+  --never had a roommate
+  WHEN count(h2.id) = 0
     then TIMESTAMPDIFF('SQL_TSI_DAY', min(h1.date), now())
+  --has an active roommate
+  WHEN (max(coalesce(h2.odate, now())) = now()) OR (max(h2.date) >= max(coalesce(h2.odate, now())))
+    THEN 0
   ELSE
     TIMESTAMPDIFF('SQL_TSI_DAY', max(h2.odate), now())
 END, 'INTEGER') as DaysAlone,
 
-max(a.value) as Exemptions 
+max(a.value) as Exemptions
 
 FROM study.Housing h1
 
@@ -58,6 +56,7 @@ LEFT JOIN study.alerts a
 
 WHERE
 h1.id.Status.Status = 'Alive'
+
 --filter out pairing exempt animals
 --AND a.id IS NULL
 

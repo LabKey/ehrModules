@@ -167,7 +167,10 @@ EHR.ext.customPanels.searchForm = Ext.extend(Ext.Panel, {
             }
 
             if (field.getValue() || op == 'isblank' || op == 'isnonblank'){
-                params[('query.' + field.originalConfig.name + '~' + op)] = field.getValue();
+                var val = field.getValue();
+                //NOTE: a hack to get about the null record display field of comboboxes
+                if (val != '[none]')
+                    params[('query.' + field.originalConfig.name + '~' + op)] = val;
             }
         }
 
@@ -183,7 +186,7 @@ EHR.ext.customPanels.searchForm = Ext.extend(Ext.Panel, {
 
     },
     addRow: function(meta){
-        Ext.apply(meta, {ext: {width: 150, lazyInit: false, editable: false}});
+        Ext.apply(meta, {ext: {width: 150, lazyInit: false, editable: false, type: 'formField'}});
         if(meta.inputType == 'textarea')
             meta.inputType = 'textbox';
 
@@ -200,16 +203,16 @@ EHR.ext.customPanels.searchForm = Ext.extend(Ext.Panel, {
                 switch(meta.jsonType){
                     case 'int':
                     case 'float':
-                        this.panelConfig.items.push({xtype: 'OperatorComboNum'});
+                        this.panelConfig.items.push({xtype: 'OperatorComboNum', type: 'operator'});
                         break;
                     case 'date':
-                        this.panelConfig.items.push({xtype: 'OperatorComboDate'});
+                        this.panelConfig.items.push({xtype: 'OperatorComboDate', type: 'operator'});
                         break;
                     case 'boolean':
                         this.panelConfig.items.push({});
                         break;
                     default:
-                        this.panelConfig.items.push({xtype: 'OperatorCombo'});
+                        this.panelConfig.items.push({xtype: 'OperatorCombo', type: 'operator'});
                         break;
                     }
             }

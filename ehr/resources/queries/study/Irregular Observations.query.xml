@@ -14,6 +14,16 @@
                           <fkColumnName>objectid</fkColumnName>
                         </fk>
                     </column>
+                    <column columnName="hasObs" wrappedColumnName="lsid">
+                        <columnTitle>Has Obs?</columnTitle>
+                        <isHidden>false</isHidden>
+                        <isUnselectable>true</isUnselectable>
+                        <fk>
+                            <fkDbSchema>study</fkDbSchema>
+                            <fkTable>obsStatus</fkTable>
+                            <fkColumnName>lsid</fkColumnName>
+                        </fk>
+                    </column>
                 </columns>
             </table>
         </tables>

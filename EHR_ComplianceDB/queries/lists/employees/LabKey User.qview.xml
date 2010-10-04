@@ -27,4 +27,7 @@
         <sort column="lastName" descending="false"/>
         <sort column="firstName" descending="false"/>
     </sorts>
+    <filters>
+        <filter column="endDate" operator="isblank"/>
+    </filters>
 </customView>

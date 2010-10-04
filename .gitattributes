@@ -184,6 +184,7 @@ ehr/resources/queries/study/Clinpath[!!-~]Requests.query.xml -text
 ehr/resources/queries/study/Clinpath[!!-~]Requests/.qview.xml -text
 ehr/resources/queries/study/ClinpathRuns.query.xml -text
 ehr/resources/queries/study/ClinpathRuns.sql -text
+ehr/resources/queries/study/ClinpathRuns/.qview.xml -text
 ehr/resources/queries/study/Clinpath_Requests.js -text
 ehr/resources/queries/study/Datasets.query.xml -text
 ehr/resources/queries/study/Deaths.js -text
@@ -237,6 +238,7 @@ ehr/resources/queries/study/Inbreeding[!!-~]Coefficients/.qview.xml -text
 ehr/resources/queries/study/Inbreeding_Coefficients.js -text
 ehr/resources/queries/study/Irregular[!!-~]Observations.query.xml -text
 ehr/resources/queries/study/Irregular[!!-~]Observations/.qview.xml -text
+ehr/resources/queries/study/Irregular[!!-~]Observations/Irregular[!!-~]Obs.qview.xml -text
 ehr/resources/queries/study/Irregular[!!-~]Observations/With[!!-~]Room.qview.xml -text
 ehr/resources/queries/study/Irregular_Observations.js -text
 ehr/resources/queries/study/Menses[!!-~]Observations.query.xml -text
@@ -311,6 +313,7 @@ ehr/resources/queries/study/Urinalysis_Runs.js -text
 ehr/resources/queries/study/Validation.sql -text
 ehr/resources/queries/study/Validation/Housing.qview.xml -text
 ehr/resources/queries/study/ViralLoads.sql -text
+ehr/resources/queries/study/ViralLoadsWpi.sql -text
 ehr/resources/queries/study/Virology[!!-~]Results.query.xml -text
 ehr/resources/queries/study/Virology[!!-~]Results/.qview.xml -text
 ehr/resources/queries/study/Virology[!!-~]Runs.query.xml -text
@@ -346,11 +349,11 @@ ehr/resources/queries/study/assignmentTotalCoAssigned.query.xml -text
 ehr/resources/queries/study/assignmentTotalCoAssigned.sql -text
 ehr/resources/queries/study/assignmentTotalDaysAssigned.query.xml -text
 ehr/resources/queries/study/assignmentTotalDaysAssigned.sql -text
-ehr/resources/queries/study/bloodLast30.sql -text
 ehr/resources/queries/study/bloodRecentWeight.sql -text
 ehr/resources/queries/study/bloodSummary.query.xml -text
 ehr/resources/queries/study/bloodSummary.sql -text
 ehr/resources/queries/study/bloodSummary2.sql -text
+ehr/resources/queries/study/chemPivot.sql -text
 ehr/resources/queries/study/chemistryRefRange.query.xml -text
 ehr/resources/queries/study/chemistryRefRange.sql -text
 ehr/resources/queries/study/clintremDiarrhea.query.xml -text
@@ -421,9 +424,12 @@ ehr/resources/queries/study/demographicsSurgery.query.xml -text
 ehr/resources/queries/study/demographicsSurgery.sql -text
 ehr/resources/queries/study/demographicsTotalOffspring.query.xml -text
 ehr/resources/queries/study/demographicsTotalOffspring.sql -text
+ehr/resources/queries/study/demographicsVL.sql -text
 ehr/resources/queries/study/demographicsViralChallenge.sql -text
+ehr/resources/queries/study/demographicsViralChallenges/.qview.xml -text
 ehr/resources/queries/study/demographicsWeightChange.query.xml -text
 ehr/resources/queries/study/demographicsWeightChange.sql -text
+ehr/resources/queries/study/hematologyPivot.sql -text
 ehr/resources/queries/study/hematologyRefRange.query.xml -text
 ehr/resources/queries/study/hematologyRefRange.sql -text
 ehr/resources/queries/study/housing/.qview.xml -text
@@ -433,12 +439,16 @@ ehr/resources/queries/study/housingByRoomCage.query.xml -text
 ehr/resources/queries/study/housingByRoomCage.sql -text
 ehr/resources/queries/study/housingRoommates.query.xml -text
 ehr/resources/queries/study/housingRoommates.sql -text
+ehr/resources/queries/study/housingRoommates/.qview.xml -text
 ehr/resources/queries/study/housingTotalRoommates.query.xml -text
 ehr/resources/queries/study/housingTotalRoommates.sql -text
+ehr/resources/queries/study/immunologyPivot.sql -text
 ehr/resources/queries/study/majorEvents.query.xml -text
 ehr/resources/queries/study/majorEvents.sql -text
 ehr/resources/queries/study/mensesInterval.query.xml -text
 ehr/resources/queries/study/mensesInterval.sql -text
+ehr/resources/queries/study/obsStatus.query.xml -text
+ehr/resources/queries/study/obsStatus.sql -text
 ehr/resources/queries/study/pairingSuccess.sql -text
 ehr/resources/queries/study/private.query.xml -text
 ehr/resources/queries/study/private.sql -text

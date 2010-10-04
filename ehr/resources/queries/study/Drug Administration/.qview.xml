@@ -15,6 +15,7 @@
        <column name="units"/>
        <column name="route"/>
        <column name="remark"/>
+       <column name="category"/>
    </columns>
    <sorts>
        <sort column="date" descending="true"/>

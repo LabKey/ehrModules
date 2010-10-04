@@ -3,7 +3,6 @@
        <column name="id"/>
        <column name="date"/>
        <column name="project"/>
-       <column name="account"/>
        <column name="dataset/label">
             <properties>
                 <property name="columnTitle" value="Dataset"/>

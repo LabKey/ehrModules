@@ -6,7 +6,8 @@
 SELECT
 
 d.id,
-
+d.id.MostRecentWeight.MostRecentWeight as MostRecentWeight,
+ 
 c.sqft as ReqSqFt,
 
 c.height as ReqHeight

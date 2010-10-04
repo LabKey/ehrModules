@@ -6,6 +6,7 @@
 
 #options(echo=TRUE);
 library(kinship)
+library(Rlabkey)
 
 #print("The kinship coefficient is a measure of relatedness between two individuals.")
 #print("It represents the probability that two genes, sampled at random from each individual are identical")
@@ -13,23 +14,26 @@ library(kinship)
 
 #kinship coefficient between two individuals equals the inbreeding coefficient of a hypotheticial offspring between them
 
-df = kinship(labkey.data$id, labkey.data$dam, labkey.data$sire)
+kin = kinship(labkey.data$id, labkey.data$dam, labkey.data$sire)
 
-names(df)
+#labkey.deleteRows(
+#    baseUrl=labkey.url.base,
+#    folderPath="/WNPRC/EHR",
+#    schemaName="study",
+#    queryName="kinship",
+#    toDelete=data.frame(lsid=labkey.data$lsid)
+#    );
 
+#labkey.insertRows(
+#    baseUrl=labkey.url.base,
+#    folderPath="/WNPRC/EHR",
+#    schemaName="study",
+#    queryName="kinship",
+#    toInsert=kin
+#    );
 
-labkey.deleteRows(
-    baseUrl=labkey.url.base,
-    folderPath="/WNPRC/EHR",
-    schemaName="study",
-    queryName="kinship",
-    toDelete=data.frame(lsid=labkey.data$lsid)
-    );
+#colnames(kin);
+#rownames(kin);
 
-labkey.insertRows(
-    baseUrl=labkey.url.base,
-    folderPath="/WNPRC/EHR",
-    schemaName="study",
-    queryName="kinship",
-    toInsert=df
-    );
+vec <- c(kin);
+vec;

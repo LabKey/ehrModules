@@ -11,13 +11,13 @@ Ext.onReady(function ()
 
     if (!participantId){alert('Must Provide Id'); return false;}
 
-    new EHR.ext.customPanels.detailsView({
-        schemaName: 'study',
-        queryName: 'demographics',
-        title: 'Animal Details:',
-        renderTo: 'participantDetails',
-        filterArray: [LABKEY.Filter.create('Id', participantId, LABKEY.Filter.Types.EQUAL)]
-    });
+//    new EHR.ext.customPanels.detailsView({
+//        schemaName: 'study',
+//        queryName: 'demographics',
+//        title: 'Animal Details:',
+//        renderTo: 'participantDetails',
+//        filterArray: [LABKEY.Filter.create('Id', participantId, LABKEY.Filter.Types.EQUAL)]
+//    });
 
     new EHR.ext.customPanels.participantView({applyTo: 'participantView'});
 

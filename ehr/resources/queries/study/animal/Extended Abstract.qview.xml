@@ -116,16 +116,16 @@
                 <property name="columnTitle" value="Number of Roommates"/>
             </properties>
         </column>
-        <column name="DaysAlone/DaysAlone">
-            <properties>
-                <property name="columnTitle" value="Days Alone"/>
-            </properties>
-        </column>
-        <column name="DaysAlone/AloneSince">
-            <properties>
-                <property name="columnTitle" value="Alone Since"/>
-            </properties>
-        </column>
+        <!--<column name="DaysAlone/DaysAlone">-->
+            <!--<properties>-->
+                <!--<property name="columnTitle" value="Days Alone"/>-->
+            <!--</properties>-->
+        <!--</column>-->
+        <!--<column name="DaysAlone/AloneSince">-->
+            <!--<properties>-->
+                <!--<property name="columnTitle" value="Alone Since"/>-->
+            <!--</properties>-->
+        <!--</column>-->
     </columns>
     <!--<filters>-->
         <!--<filter column="Status/Status" operator="eq" value="Alive"/>-->

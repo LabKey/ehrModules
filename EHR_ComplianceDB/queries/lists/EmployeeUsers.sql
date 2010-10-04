@@ -17,4 +17,3 @@ ON (e.id = u1.DisplayName)
 
 LEFT JOIN core.users u2
 ON (e.email = u2.email)
-

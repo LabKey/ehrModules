@@ -13,6 +13,9 @@
                     <column columnName="ReqHeight">
                         <columnTitle>Required Height</columnTitle>
                     </column>
+                    <column columnName="MostRecentWeight">
+                        <isHidden>true</isHidden>
+                    </column>
                 </columns>
                 <titleColumn>Location</titleColumn>
             </table>

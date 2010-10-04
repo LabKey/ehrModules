@@ -5,9 +5,26 @@
  */
 SELECT
   v.Properties.Id,
-  --v.Properties.PrimerPair.Allele AS Allele,
+  v.Properties.SampleDate as date,
 
-FROM "/WNPRC/WNPRC_Units/Research_Services/Virology_Services/VL_DB/".assay."Viral_Loads" v
+  CASE
+    WHEN (v.Properties.ViralLoad < 50)
+      THEN 50
+    else
+      v.Properties.ViralLoad
+    END
+   as ViralLoad,
+
+  round(
+  CASE
+    WHEN (v.Properties.ViralLoad < 50)
+      THEN log10(50)
+    else
+      log10(v.Properties.ViralLoad)
+    END, 1)
+   as LogVL
+
+FROM "/WNPRC/WNPRC_Units/Research_Services/Virology_Services/VL_DB/".assay."Viral_Load Data" v
 
 
 

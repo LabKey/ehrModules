@@ -32,9 +32,9 @@ function createNavMenu()
             ]},
             {header: 'By Location',
             items: [
-                {name: 'Search By Room, Floor or Cage', url: '<%=contextPath%>/ehr/WNPRC/EHR/animalHistory.view?inputType=renderRoomCage'},
-                {name: 'Irregular Obs By Location', url: '<%=contextPath%>/ehr/WNPRC/EHR/animalHistory.view?inputType=renderRoomCage&report=obs'},
-                {name: 'Clincal Remarks By Location', url: '<%=contextPath%>/ehr/WNPRC/EHR/animalHistory.view?inputType=renderRoomCage&report=clinremarks'}
+                {name: 'Search By Room, Floor or Cage', url: '<%=contextPath%>/ehr/WNPRC/EHR/animalHistory.view#_inputType:renderRoomCage'},
+                {name: 'Irregular Obs By Location', url: '<%=contextPath%>/ehr/WNPRC/EHR/animalHistory.view#_inputType:renderRoomCage/activeReport:obs'},
+                {name: 'Clincal Remarks By Location', url: '<%=contextPath%>/ehr/WNPRC/EHR/animalHistory.view#_inputType:renderRoomCage/activeReport:clinremarks'}
             ]}
         ]
     });
@@ -46,7 +46,7 @@ function createNavMenu()
             {header: 'Entire Colony',
             items: [
                 {name: 'Animal Utilization By Category', url: '<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=colonyAssignmentSummary'},
-                {name: 'Colony Population By Age', url: '<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=colonyPopulationByAge'},
+                {name: 'Colony Population By Age', url: '<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=Colony Population By Age'},
                 {name: 'MHC Genotype Summary', url: '<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=alleleFrequencies'},
                 {name: 'Population Summary', url: '<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=colonyPopulationSummary'},
 //                {name: 'Population Summary', url: '<%=contextPath%>/ehr/WNPRC/EHR/populationOverview.view?'},

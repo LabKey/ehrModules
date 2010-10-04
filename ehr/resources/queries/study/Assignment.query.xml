@@ -13,7 +13,11 @@
                     </column>
                     <column columnName="date">
                         <formatString>yyyy-MM-dd</formatString>
-                        <columnTitle>Start Date</columnTitle>
+                        <columnTitle>Assign Date</columnTitle>
+                    </column>
+                    <column columnName="rdate">
+                        <formatString>yyyy-MM-dd</formatString>
+                        <columnTitle>Release Date</columnTitle>
                     </column>
                     <column columnName="parentId">
                         <fk>

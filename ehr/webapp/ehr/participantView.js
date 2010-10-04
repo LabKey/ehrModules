@@ -37,92 +37,77 @@ Ext.onReady(function ()
                 this.subjectArray = LABKEY.ActionURL.getParameter('participantId').split(',');
             }
 
+            Ext.Panel.prototype.bodyBorder = false;
+
             Ext.apply(this, {
-                layout:'table'
-                ,autoHeight: true
+                autoHeight: true
                 ,bodyBorder: false
                 ,border: false
+                ,frame: false
+                ,reports: {}
                 ,defaults: {
-                    // applied to each contained panel
-                    border: false
-                    //,bodyStyle:'padding:5px'
-                },
-                layoutConfig: {
-                    columns: 4
+                    border: false,
+                    autoWidth: true
                 }
+                ,items: [
+                {
+//                    layout: 'column'
+//                    ,defaults: {
+//                        autoHeight: true
+//                    }
+//                    ,items: [{
+                        width: 500,
+                        items: [{
+                            xtype: 'hidden',
+                            ref: '../inputType',
+                            value: 'renderSingleSubject'
+                        },{
+                            xtype: 'hidden',
+                            ref: '../subjArea',
+                            value: LABKEY.ActionURL.getParameter('participantId')
+//                        }]
+                    }]
+                },{
+                    ref: 'idPanel'                        
+                },{
+                    xtype: 'tabpanel',
+                    ref: 'tabPanel',
+                    cls: 'extContainer',
+                    bodyBorder: true,
+                    width: '90%',
+                    border: true,
+                    autoHeight: true,
+                    bodyStyle: 'padding-top: 5px;',
+                    frame: true
+                }]
             });
 
             EHR.ext.customPanels.SingleAnimalReport.superclass.initComponent.call(this);
 
-            //the report row
-            this.add({html: 'Choose Report:'});
-
             this.allReports = new LABKEY.ext.Store({
                 schemaName: 'lists',
                 queryName: 'reports',
-                sort: 'ReportName'
+                filterArray: [LABKEY.Filter.create('Visible', true, LABKEY.Filter.Types.EQUAL)],
+                //, LABKEY.Filter.create('ReportCategory', 'AnimalReport', LABKEY.Filter.Types.EQUAL)
+                sort: 'Category,ReportTitle',
+                autoLoad: true,
+    //            listeners: {
+    //                scope: this,
+    //                load: this.createTabPanel
+    //            },
+                errorCallback: function(error){
+                    console.log('Error callback called');
+                    console.log(target);
+                    EHR.UTILITIES.onError(error)
+                }
             });
-            this.allReports.load();
+    //TODO: replace when store is fixed
+            this.allReports.on('load', this.createTabPanel, this);
 
-            var reportStore = new LABKEY.ext.Store({
-                schemaName: 'lists',
-                queryName: 'reports',
-                filterArray: [LABKEY.Filter.create('Visible', true, LABKEY.Filter.Types.EQUAL), LABKEY.Filter.create('ReportCategory', 'AnimalReport', LABKEY.Filter.Types.EQUAL)],
-                sort: 'ReportName'
-            });
-
-            var comboConfig = {
-                emptyText:'Select a report...'
-                ,xtype: 'LabkeyComboBox'
-                ,displayField:'ReportName'
-                ,hiddenName:'report'
-                ,store: reportStore
-            };
-
-            if (LABKEY.ActionURL.getParameter('report') && LABKEY.ActionURL.getParameter('report') != ''){
-                comboConfig.value = LABKEY.ActionURL.getParameter('report')
-            }
-            else {
-                comboConfig.value = 1;
-            }
-
-            this.reportSelector = new EHR.ext.customFields.LabKeyCombo(comboConfig);
-
-            this.add(this.reportSelector);
-
-            this.combineSubj = new Ext.form.Checkbox();
-            /*
-            this.add({});
-
-            this.add({html: 'Combine Subjects Into Single Table:'});
-            this.combineSubj = this.add(new Ext.form.Checkbox());
-
-            if (LABKEY.ActionURL.getParameter('combineSubj')){
-                this.combineSubj.setValue(true);
-            }
-            */
-
-            //placeholder
-            this.add({});
-            this.add(new Ext.Button({
-                text: 'Display Report'
-                ,scope: this
-                ,handler: this.onSubmit
-                ,type: 'submit'
-                })
-            );
-
-            //pre-load the abstract
-            this.reportSelector.setValue(1);
-            this.onSubmit();
-
-
+            this.on('afterLayout', this.restoreUrl);  
+            this.doLayout();
         }
 
-        //this function builds the URL and reloads the page
-//        onSubmit: function(){
-//            this.displayReport()
-//        }
     });
 
 });

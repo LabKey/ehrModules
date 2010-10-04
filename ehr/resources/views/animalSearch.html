@@ -38,27 +38,29 @@ Ext.onReady(function ()
         ,newFields: [
             {caption: 'Cohort', name: 'Cohort/label'}
             ,{caption: 'Age', name: 'age/AgeInYears', jsonType: 'int'}
+            ,{caption: 'Age', name: 'age/AgeInYears', jsonType: 'int'}
             ,{caption: 'Current Room', name: 'curLocation/room'}
             //,{caption: 'Last TB Date', name: 'mostRecentTB'}
             //,{caption: 'Num. of Active Assignments', name: 'activeProjects/ActiveProjects (avail=all)'}
             ,{caption: 'Num. of Offspring', name: 'totalOffspring/TotalOffspring', jsonType: 'int'}
             ,{caption: 'Num. of Roommates', name: 'numRoommates/numRoommates', jsonType: 'int'}
-            ,{caption: 'Species', name: 'Species/species'}
-            ,{caption: 'Gender', name: 'DataSet/Demographics/gender'}
+            ,{caption: 'Species', name: 'Species/species', lookup: {schemaName: 'lists', queryName: 'species', displayColumn: 'common', keyColumn: 'common'}
+            }
+            ,{caption: 'Gender', name: 'DataSet/Demographics/gender', lookup: {schemaName: 'lists', queryName: 'gender_codes', displayColumn: 'code', keyColumn: 'meaning'}}
             ,{caption: 'Dam', name: 'DataSet/Demographics/dam'}
             ,{caption: 'Sire', name: 'DataSet/Demographics/sire'}
-            ,{caption: 'Availability', name: 'DataSet/Demographics/avail'}
+            ,{caption: 'Availability', name: 'DataSet/Demographics/avail', lookup: {schemaName: 'lists', queryName: 'avail', displayColumn: 'code', keyColumn: 'meaning'}}
             ,{caption: 'Hold', name: 'DataSet/Demographics/hold'}
             ,{caption: 'Birth', name: 'DataSet/Demographics/birth', jsonType: 'date'}
-            ,{caption: 'Origin', name: 'DataSet/Demographics/origin'}
+            ,{caption: 'Origin', name: 'DataSet/Demographics/origin', lookup: {schemaName: 'lists', queryName: 'origin', displayColumn: 'code', keyColumn: 'code'}}
             ,{caption: 'Death', name: 'DataSet/Demographics/death', jsonType: 'date'}
-            ,{caption: 'Viral Status', name: 'DataSet/Demographics/v_status'}
-            ,{caption: 'Most Recent Weight', name: 'MostRecentWeight/MostRecentWeight', jsonType: 'int'}
-            ,{caption: 'Most Recent Weight Date', name: 'MostRecentWeight/MostRecentWeightDate', jsonType: 'date'}
+            ,{caption: 'Viral Status', name: 'DataSet/Demographics/v_status', lookup: {schemaName: 'lookups', queryName: 'viral_status', displayColumn: 'viral_status', keyColumn: 'viral_status'}}
+            ,{caption: 'Most Recent Weight', name: 'MostRecentWeight/MostRecentWeight', jsonType: 'float'}
+            ,{caption: 'Most Recent Weight', name: 'MostRecentWeight/MostRecentWeight', jsonType: 'float'}
+            //,{caption: 'Most Recent Weight Date', name: 'MostRecentWeight/MostRecentWeightDate', jsonType: 'date'}
             //major surgery
             //blood summary
             //mhc
-
          ]
     }).render('animalSearch');
 });
@@ -79,7 +81,7 @@ Ext.onReady(function ()
             <a href="<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=Animal&query.viewName=All WNPRC">Browse All WNPRC Animals</a>
         </li>
         <li>
-            <a href="<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=colonyPopulationByAge">Population Summary By Species, Gender and Age</a>
+            <a href="<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=Colony Population By Age">Population Summary By Species, Gender and Age</a>
         </li>
         <!--<li>-->
             <!--<a href="<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?chooseColumns.view?schemaName=study&query.queryName=Animal&srcURL=%2Flabkey%2Fquery%2FWNPRC%2FEHR%2FexecuteQuery.view%3FschemaName%3Dstudy%26query.queryName%3DAnimal%26query.viewName%3DAlive%252C%2520at%2520WNPRC&dataRegionName=query&queryName=Animal&viewName=Alive%2C%20at%20WNPRC">Advanced Search</a>-->

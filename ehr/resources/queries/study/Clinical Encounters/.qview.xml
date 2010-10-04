@@ -5,7 +5,7 @@
         <column name="EndDate"/>
         <column name="project"/>
         <column name="account"/>
-        <column name="category"/>
+        <column name="type"/>
         <column name="Remark"/>
         <column name="userid"/>
     </columns>

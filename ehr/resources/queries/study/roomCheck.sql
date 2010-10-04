@@ -8,17 +8,16 @@ SELECT
 a.id,
 
 a.id.curLocation.location as location,
+a.id.cageclass.MostRecentWeight as MostRecentWeight,
 
 a.id.curLocation.location.length as length,
 a.id.curLocation.location.width as width,
-a.id.curLocation.location.height as CageHeight,
-
 round((a.id.curLocation.location.length * a.id.curLocation.location.width)/144, 1) as CageSqft,
 
 a.id.cageclass.ReqSqft,
 
 
-
+a.id.curLocation.location.height as CageHeight,
 a.id.cageclass.ReqHeight
 
 FROM study.demographics a

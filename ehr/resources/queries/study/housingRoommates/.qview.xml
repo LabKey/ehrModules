@@ -1,6 +1,5 @@
 <customView xmlns="http://labkey.org/data/xml/queryCustomView">
    <sorts>
-       <sort column="id" descending="false"/>
-       <sort column="ShortName" descending="false"/>
+       <sort column="StartDate" descending="true"/>
    </sorts>
 </customView>

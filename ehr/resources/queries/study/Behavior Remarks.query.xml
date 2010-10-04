@@ -28,6 +28,9 @@
                           <fkColumnName>objectid</fkColumnName>
                         </fk>
                     </column>
+                    <column columnName="Remark">
+                        <displayWidth>350</displayWidth>
+                    </column>
                 </columns>
             </table>
         </tables>

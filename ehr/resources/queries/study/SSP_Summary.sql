@@ -7,8 +7,9 @@
 SELECT
   m.Properties.Id,
   --m.Properties.Institution AS Institution,
+  COALESCE(m.Properties.PrimerPair.ShortName, m.Properties.PrimerPair.Allele) AS ShortName,
   m.Properties.PrimerPair.Allele AS Alleles,
-  COALESCE(m.Properties.PrimerPair.ShortName, m.Properties.PrimerPair.Allele) AS Allele,
+
 
   COALESCE(max(m.Properties.ReportDate), '1990-01-01') as Date,
   count(*) as TotalRecords,
@@ -26,4 +27,4 @@ FROM "/WNPRC/WNPRC_Units/Research_Services/MHC_SSP/Private/MHC_DB/".assay."MHC_S
 
 WHERE (m.Properties.Institution='Wisconsin NPRC' or m.Properties.Institution='Harlow')
 
-GROUP BY m.Properties.Id, m.Properties.PrimerPair.Allele
+GROUP BY m.Properties.Id, m.Properties.PrimerPair.Allele, m.Properties.PrimerPair.ShortName
