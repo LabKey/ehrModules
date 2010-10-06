@@ -24,6 +24,7 @@ import org.labkey.api.data.ContainerManager;
 import org.labkey.api.data.DbSchema;
 import org.labkey.api.data.DbScope;
 import org.labkey.api.data.PropertyManager;
+import org.labkey.api.data.SQLFragment;
 import org.labkey.api.data.Table;
 import org.labkey.api.data.TableInfo;
 import org.labkey.api.module.ModuleLoader;
@@ -327,7 +328,8 @@ public class ETLRunnable implements Runnable
 
     boolean isEmpty(TableInfo tinfo) throws SQLException
     {
-        return Table.executeSingleton(tinfo.getSchema(), "SELECT COUNT(*) FROM (" + tinfo.getFromSQL() + ") x ", null, Long.class) == 0;
+        SQLFragment sql = new SQLFragment("SELECT COUNT(*) FROM ").append(tinfo.getFromSQL("x"));
+        return Table.executeSingleton(tinfo.getSchema(), sql.getSQL(), sql.getParamsArray(), Long.class) == 0;
     }
 
     /**
