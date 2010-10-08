@@ -1,0 +1,31 @@
+<query xmlns="http://labkey.org/data/xml/query">
+    <metadata>
+        <tables xmlns="http://labkey.org/data/xml">
+            <table tableName="irregularObs" tableDbType="TABLE">
+                <!--<tableUrl>/query/detailsQueryRow.view?schemaName=study&amp;query.queryName=obs&amp;lsid=${lsid}</tableUrl>-->
+                <columns>
+                    <column columnName="date">
+                        <formatString>yyyy-MM-dd HH:mm</formatString>
+                    </column>
+                    <column columnName="Id">
+                        <fk>
+                          <fkDbSchema>study</fkDbSchema>
+                          <fkTable>Animal</fkTable>
+                          <fkColumnName>Id</fkColumnName>
+                        </fk>
+                    </column>
+                    <column columnName="RoomAtTime">
+                        <fk>
+                          <fkDbSchema>lists</fkDbSchema>
+                          <fkTable>rooms</fkTable>
+                          <fkColumnName>Room</fkColumnName>
+                        </fk>
+                    </column>                    
+                    <column columnName="Remark">
+                        <displayWidth>250</displayWidth>
+                    </column>
+                </columns>
+            </table>
+        </tables>
+    </metadata>
+</query>

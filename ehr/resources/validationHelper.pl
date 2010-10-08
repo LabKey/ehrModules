@@ -40,7 +40,7 @@ foreach (@files){
 	mkdir($backupDir) unless -e $backupDir;	
 	copy(File::Spec->catfile($scriptDir,$_), File::Spec->catfile($backupDir,$_.".bk"))
 		|| die "Unable to copy file";
-print File::Spec->catfile($scriptDir,$_)."\n";	
+	
 	open(SCRIPT, '+<', File::Spec->catfile($scriptDir,$_)) || die("Could not open file!");	
 	my @contents = <SCRIPT>;
 	my $c = join('', @contents);

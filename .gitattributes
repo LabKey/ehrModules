@@ -280,6 +280,7 @@ ehr/resources/queries/study/SSP_Summary/.qview.xml -text
 ehr/resources/queries/study/StudyData/.qview.xml -text
 ehr/resources/queries/study/StudyData/Full[!!-~]History.qview.xml -text
 ehr/resources/queries/study/StudyData/Medical[!!-~]History.qview.xml -text
+ehr/resources/queries/study/StudyData/Review[!!-~]Required.qview.xml -text
 ehr/resources/queries/study/Surgeries.js -text
 ehr/resources/queries/study/Surgeries.query.xml -text
 ehr/resources/queries/study/Surgeries/.qview.xml -text
@@ -300,6 +301,7 @@ ehr/resources/queries/study/Tissue_Requests.js -text
 ehr/resources/queries/study/Tissue_Samples.js -text
 ehr/resources/queries/study/Treatment[!!-~]Orders.query.xml -text
 ehr/resources/queries/study/Treatment[!!-~]Orders/.qview.xml -text
+ehr/resources/queries/study/Treatment[!!-~]Orders/Active[!!-~]Treatments.qview.xml -text
 ehr/resources/queries/study/Treatment_Orders.js -text
 ehr/resources/queries/study/Treatments.js -text
 ehr/resources/queries/study/Treatments.query.xml -text
@@ -443,6 +445,9 @@ ehr/resources/queries/study/housingRoommates/.qview.xml -text
 ehr/resources/queries/study/housingTotalRoommates.query.xml -text
 ehr/resources/queries/study/housingTotalRoommates.sql -text
 ehr/resources/queries/study/immunologyPivot.sql -text
+ehr/resources/queries/study/irregularObs.query.xml -text
+ehr/resources/queries/study/irregularObs.sql -text
+ehr/resources/queries/study/irregularObs/.qview.xml -text
 ehr/resources/queries/study/majorEvents.query.xml -text
 ehr/resources/queries/study/majorEvents.sql -text
 ehr/resources/queries/study/mensesInterval.query.xml -text
@@ -457,6 +462,10 @@ ehr/resources/queries/study/roomCheck.sql -text
 ehr/resources/queries/study/studyData.query.xml -text
 ehr/resources/queries/study/tbMostRecentTestDate.query.xml -text
 ehr/resources/queries/study/tbMostRecentTestDate.sql -text
+ehr/resources/queries/study/treatmentSchedule.query.xml -text
+ehr/resources/queries/study/treatmentSchedule.sql -text
+ehr/resources/queries/study/treatmentSchedule/.qview.xml -text
+ehr/resources/queries/study/treatmentSchedule/Active[!!-~]Treatments.qview.xml -text
 ehr/resources/queries/study/weightPctChange.query.xml -text
 ehr/resources/queries/study/weightPctChange.sql -text
 ehr/resources/reports/schemas/study/Weight/Weight[!!-~]Graph.r -text
@@ -471,7 +480,6 @@ ehr/resources/reports/schemas/study/private/InbreedingCoefficients.r -text
 ehr/resources/reports/schemas/study/private/Kinship.r -text
 ehr/resources/stylesheet.css -text
 ehr/resources/validationHelper.pl -text
-ehr/resources/views/animalCare.html -text
 ehr/resources/views/animalHistory.html -text
 ehr/resources/views/animalHistory.view.xml -text
 ehr/resources/views/animalHistory.webpart.xml -text

@@ -13,18 +13,24 @@ d2.room,
 
 d2.cage,
 
-d2.cond,
+  CASE
+    WHEN d2.room like 'ab10%' THEN 'SPF'
+    WHEN d2.room like 'ab11%' THEN 'SPF'
+    WHEN d2.room like 'ab12%' THEN 'SPF'
+    WHEN d2.room like 'ab14%' THEN 'NSPF'
+    WHEN d2.room like 'ab16%' THEN 'NSPF'
+    WHEN d2.room like 'a1%' THEN 'A1'
+    WHEN d2.room like 'ab190%' THEN 'A1'
+    WHEN d2.room like 'a2%' THEN 'A2'
+    WHEN d2.room like 'cb%' THEN 'CB'
+    WHEN d2.room like 'c3%' THEN 'C3'
+    WHEN d2.room like 'c4%' THEN 'C4'
+    WHEN d2.room like 'cif%' THEN 'Charmany'
+    WHEN d2.room like 'mr%' THEN 'WIMR'
+    ELSE null
+  END as area,
 
-CASE
-  WHEN d2.room like 'ab%' THEN 'AB'
-  WHEN d2.room like 'a%' THEN 'A'
-  WHEN d2.room like 'cb%' THEN 'CB'
-  WHEN d2.room like 'cif%' THEN 'CIF'
-  WHEN d2.room like 'c%' THEN 'C'
-  WHEN d2.room like 'mr%' THEN 'MR'
-  ELSE null
-END as building
-
+d2.cond
 
 FROM study.Demographics d
 

@@ -2,7 +2,7 @@
     <metadata>
         <tables xmlns="http://labkey.org/data/xml">
             <table tableName="treatment_order" tableDbType="TABLE">
-                <tableUrl>/query/detailsQueryRow.view?schemaName=study&amp;query.queryName=treatment_order&amp;lsid=${lsid}</tableUrl>
+                <!--<tableUrl>/query/detailsQueryRow.view?schemaName=study&amp;query.queryName=treatment_order&amp;lsid=${lsid}</tableUrl>-->
                 <columns>
                     <column columnName="project">
                         <fk>
@@ -38,16 +38,6 @@
                           <fkDbSchema>lookups</fkDbSchema>
                           <fkTable>treatment_frequency</fkTable>
                           <fkColumnName>key</fkColumnName>
-                        </fk>
-                    </column>
-                    <column columnName="dateOnly" wrappedColumnName="lsid">
-                        <columnTitle>DateOnly</columnTitle>
-                        <isHidden>true</isHidden>
-                        <isUnselectable>true</isUnselectable>
-                        <fk>
-                            <fkDbSchema>study</fkDbSchema>
-                            <fkTable>treatmentDate</fkTable>
-                            <fkColumnName>lsid</fkColumnName>
                         </fk>
                     </column>
                 </columns>

@@ -7,14 +7,21 @@ SELECT
   DISTINCT c.room as room,
 
   CASE
-    WHEN c.room like 'ab%' THEN 'AB'
-    WHEN c.room like 'a%' THEN 'A'
+    WHEN c.room like 'ab10%' THEN 'SPF'
+    WHEN c.room like 'ab11%' THEN 'SPF'
+    WHEN c.room like 'ab12%' THEN 'SPF'
+    WHEN c.room like 'ab14%' THEN 'NSPF'
+    WHEN c.room like 'ab16%' THEN 'NSPF'
+    WHEN c.room like 'a1%' THEN 'A1'
+    WHEN c.room like 'ab190%' THEN 'A1'
+    WHEN c.room like 'a2%' THEN 'A2'
     WHEN c.room like 'cb%' THEN 'CB'
-    WHEN c.room like 'cif%' THEN 'CIF'
-    WHEN c.room like 'c%' THEN 'C'
-    WHEN c.room like 'mr%' THEN 'MR'
+    WHEN c.room like 'c3%' THEN 'C3'
+    WHEN c.room like 'c4%' THEN 'C4'    
+    WHEN c.room like 'cif%' THEN 'Charmany'
+    WHEN c.room like 'mr%' THEN 'WIMR'
     ELSE null
-  END as building
+  END as area
   
 FROM lists.cage c
 

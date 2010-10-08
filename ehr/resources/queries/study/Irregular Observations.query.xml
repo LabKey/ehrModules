@@ -14,6 +14,9 @@
                           <fkColumnName>objectid</fkColumnName>
                         </fk>
                     </column>
+                    <column columnName="Remark">
+                        <displayWidth>250</displayWidth>
+                    </column>
                     <column columnName="hasObs" wrappedColumnName="lsid">
                         <columnTitle>Has Obs?</columnTitle>
                         <isHidden>false</isHidden>

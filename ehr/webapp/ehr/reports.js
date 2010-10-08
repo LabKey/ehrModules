@@ -17,7 +17,6 @@ EHR.reports.qwpConfig = {
     showUpdateColumn: false,
     showRecordSelectors: true,
     frame: 'portal',
-    //sort: '-date',
     buttonBarPosition: 'top',
     //TODO: switch to 0 once bug is fixed
     timeout: 3000000,
@@ -57,20 +56,20 @@ EHR.reports.abstract = function(tab, subject){
         schemaName: 'study',
         queryName: 'assignment',
         viewName: 'Active Assignments',
-        sort: '-date',
+        //sort: '-date',
         filters: filterArray,
-        scope: this,
-        frame: true
+        scope: this
     }, EHR.reports.qwpConfig);
     new LABKEY.QueryWebPart(config).render(target.id);
 
     target = tab.add({tag: 'span', html: 'Loading...', cls: 'loading-indicator', style: 'padding-bottom: 20px'});
     var config = Ext.applyIf({
-        title: 'Proplem List' + ": " + title,
+        title: 'Unresolved Problems' + ": " + title,
         frame: true,
         schemaName: 'study',
         queryName: 'problem',
-        sort: '-date',
+        viewName: 'Unresolved Problems',
+        //sort: '-date',
         filters: filterArray,
         scope: this
     }, EHR.reports.qwpConfig);
@@ -543,4 +542,62 @@ EHR.reports.viralLoads = function(tab, subject){
     }, EHR.reports.qwpConfig);
 
     new LABKEY.QueryWebPart(config).render(target.id);
+}
+
+
+EHR.reports.irregularObs = function(tab, subject){
+
+    var filterArray = [];
+        var rowData = tab.rowData;
+
+        var room = (this.roomField ? this.roomField.getValue() : null);
+        var cage = (this.cageField ? this.cageField.getValue() : null);
+        var area = (this.areaField ? this.areaField.getValue() : null);
+
+        if(tab.subjectArray && tab.subjectArray.length){
+            filterArray.push(LABKEY.Filter.create('Id', subject.join(';'), LABKEY.Filter.Types.EQUALS_ONE_OF));
+        }
+
+        if(area){
+            filterArray.push(LABKEY.Filter.create('RoomAtTime/area', area, LABKEY.Filter.Types.EQUAL));
+        }
+
+        if(room){
+            filterArray.push(LABKEY.Filter.create('RoomAtTime', room, LABKEY.Filter.Types.STARTS_WITH));
+        }
+
+        if(cage){
+            filterArray.push(LABKEY.Filter.create('RoomAtTime', cage, LABKEY.Filter.Types.EQUAL));
+        }
+
+        //we handle date
+        if (this.startDateField && this.startDateField.getValue())
+            filterArray.push(LABKEY.Filter.create(rowData.get("DateFieldName"), this.startDateField.getValue().format('Y-m-d'), LABKEY.Filter.Types.GREATER_THAN_OR_EQUAL));
+        if (this.endDateField && this.endDateField.getValue())
+            filterArray.push(LABKEY.Filter.create(rowData.get("DateFieldName"), this.endDateField.getValue().format('Y-m-d'), LABKEY.Filter.Types.LESS_THAN_OR_EQUAL));
+
+        tab.filterArray = filterArray;
+
+
+
+
+
+
+    var title = (subject ? subject.join("; ") : '');
+    this.addHeader(tab);
+
+    var target = tab.add({tag: 'span', html: 'Loading...', style: 'padding-bottom: 20px'});
+    tab.doLayout();
+
+    var config = Ext.applyIf({
+        schemaName: 'study',
+        queryName: 'irregularObs',
+        //viewName: tab.viewName,
+        title: "Irregular Observations:",
+        titleField: 'Id',
+        filterArray: filterArray,
+        scope: this
+    }, EHR.reports.qwpConfig);
+    new LABKEY.QueryWebPart(config).render(target.id);
+
 }

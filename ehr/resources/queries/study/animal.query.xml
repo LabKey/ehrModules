@@ -15,6 +15,12 @@
                         <shownInUpdateView>false</shownInUpdateView>
                         <shownInDetailsView>false</shownInDetailsView>
                     </column>
+                    <column columnName="InitialCohort">
+                        <isHidden>true</isHidden>
+                        <shownInInsertView>false</shownInInsertView>
+                        <shownInUpdateView>false</shownInUpdateView>
+                        <shownInDetailsView>false</shownInDetailsView>
+                    </column>
                     <column columnName="StartDate">
                         <isHidden>true</isHidden>
                         <shownInInsertView>false</shownInInsertView>

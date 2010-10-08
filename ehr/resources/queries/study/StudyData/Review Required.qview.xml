@@ -1,0 +1,19 @@
+<customView xmlns="http://labkey.org/data/xml/queryCustomView">
+   <columns>
+       <column name="id"/>
+       <column name="date"/>
+       <column name="project"/>
+       <column name="account"/>
+       <column name="dataset"/>
+       <column name="remark"/>
+       <column name="description"/>
+       <column name="QCState"/>
+       <column name="ParentId"/>
+   </columns>
+   <sorts>
+       <sort column="date" descending="true"/>
+   </sorts>
+    <filters>
+        <filter column="QCState/Label" operator="eq" value="Review Required"/>
+    </filters>
+</customView>

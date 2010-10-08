@@ -13,7 +13,13 @@ print('It measures the probability that the two alleles of a gene are identical 
 print('It is zero if the individual is not inbred.')
 #kinship coefficient between two individuals equals the inbreeding coefficient of a hypothetical offspring between them
 
-#find and delete old records first
+df = data.frame(labkey.data$id, labkey.data$dam, labkey.data$sire)
+ib = calcInbreeding(df);
+
+date <- as.character( date() );
+newRecords = data.frame(Id=as.character(labkey.data$id), coefficient=ib, date=c(date), stringsAsFactors=FALSE);
+
+#find old records first
 oldRecords <- labkey.selectRows(
     baseUrl='http://localhost:8080/labkey/',
     folderPath="/WNPRC/EHR",
@@ -22,32 +28,34 @@ oldRecords <- labkey.selectRows(
     colSelect=c('lsid', 'Id', 'date', 'coefficient'),
     showHidden = TRUE
 )
-str(oldRecords);
-if(length(oldRecords$Id)){
-    del <- labkey.deleteRows(
-        baseUrl='http://localhost:8080/labkey/',
-        folderPath="/WNPRC/EHR",
-        schemaName="study",
-        queryName="inbreeding",
-        toDelete=data.frame(lsid=oldRecords$Lsid)
-    );
-}
 
-df = data.frame(labkey.data$id, labkey.data$dam, labkey.data$sire)
-ib = calcInbreeding(df);
+intersect(oldRecords$Id, newRecords$Id) 
 
-date <- c(Sys.Date());
 
-df = data.frame(Id=as.character(labkey.data$id), coefficient=ib, date=c(as.Date('2010-01-01')), stringsAsFactors=FALSE);
+
+
+#if(length(oldRecords$Id)){
+#    del <- labkey.deleteRows(
+#        baseUrl='http://localhost:8080/labkey/',
+#        folderPath="/WNPRC/EHR",
+#        schemaName="study",
+#        queryName="inbreeding",
+#        toDelete=data.frame(lsid=oldRecords$Lsid)
+#    );
+#}
+
+
+
+
 
 str(df);
 print("created df");
 
-insert <- labkey.insertRows(
-    baseUrl=labkey.url.base,
-    #baseUrl='https://xnight.primate.wisc.edu:8443/labkey/',
-    folderPath="/WNPRC/EHR",
-    schemaName="study",
-    queryName="inbreeding",
-    toInsert=df
-    );
+#insert <- labkey.insertRows(
+#    baseUrl=labkey.url.base,
+#    #baseUrl='https://xnight.primate.wisc.edu:8443/labkey/',
+#    folderPath="/WNPRC/EHR",
+#    schemaName="study",
+#    queryName="inbreeding",
+#    toInsert=df
+#    );

@@ -103,6 +103,28 @@ Ext.onReady(function ()
      }).render('surgMed');
 
     new LABKEY.QueryWebPart({
+        title: 'Surgery Anesthesia',
+        schemaName: 'study',
+        queryName: 'Drug Administration',
+        allowChooseQuery: false,
+        allowChooseView: true,
+        showInsertNewButton: false,
+        showDeleteButton: false,
+        showDetailsColumn: true,
+        showUpdateColumn: false,
+        buttonBarPosition: 'top',
+        filters: [
+            //LABKEY.Filter.create('parentid', row['objectid'], LABKEY.Filter.Types.EQUAL),
+            LABKEY.Filter.create('parentid', key, LABKEY.Filter.Types.EQUAL),
+            LABKEY.Filter.create('category', 'surganes', LABKEY.Filter.Types.EQUAL)
+        ],
+        //viewName: '',
+        sort: '-Date',
+        scope: this,
+        errorCallback: EHR.UTILITIES.onError
+     }).render('surgAnes');
+
+    new LABKEY.QueryWebPart({
         title: 'Surgery Summary',
         schemaName: 'study',
         queryName: 'Surgery Summary',

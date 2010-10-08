@@ -16,7 +16,6 @@ EHR.ext.customPanels.SingleAnimalReport = Ext.extend(Ext.Panel, {
     {
 
         Ext.Panel.prototype.bodyBorder = false;
-        //Ext.History.on('change', this.dispatch);
 
         Ext.apply(this, {
             autoHeight: true
@@ -116,10 +115,15 @@ EHR.ext.customPanels.SingleAnimalReport = Ext.extend(Ext.Panel, {
                 ref: '../renderMultiSubject'
             },{
                 name: 'selector',
-                boxLabel: 'Room/Cage',
+                boxLabel: 'Current Location',
                 inputValue: 'renderRoomCage',
                 ref: '../renderRoomCage'
-//            },{
+            },{
+                name: 'selector',
+                boxLabel: 'Entire Colony',
+                inputValue: 'renderColony',
+                ref: '../renderColony'
+                //            },{
 //                name: 'selector',
 //                boxLabel: 'Complex',
 //                inputValue: 'renderComplex'
@@ -164,19 +168,11 @@ EHR.ext.customPanels.SingleAnimalReport = Ext.extend(Ext.Panel, {
         this.on('beforeRender', this.restoreUrl);        
 
     },
-    dispatch: function(token){
-        console.log('dispatch'+token);
-        token = token.split(';');
-        switch (token) {
-            case "users":
-                break;
-            case "users/new":
-                break;
-            case "users/2/edit":
-                    break;
-            default:
-                break;
-          };                
+    renderColony: function(){
+        var target = this.filterPanel;
+        target.removeAll();
+        target.doLayout();
+
     },
     renderSingleSubject: function(){
         var target = this.filterPanel;
@@ -423,6 +419,27 @@ EHR.ext.customPanels.SingleAnimalReport = Ext.extend(Ext.Panel, {
             defaults: {cls: 'extContainer', bodyBorder: false}
         });
 
+        roomPanel.add({tag: 'div', html: 'Area:'});
+        roomPanel.add(new EHR.ext.customFields.LabKeyCombo({
+            xtype: 'combo'
+            ,emptyText:''
+            ,fieldLabel: 'Area'
+            ,displayField:'area'
+            ,valueField: 'area'
+            ,typeAhead: true
+            ,editable: true
+            ,triggerAction: 'all'
+            ,store: new LABKEY.ext.Store({
+                containerPath: 'WNPRC/EHR/',
+                schemaName: 'lookups',
+                queryName: 'areas',
+                sort: 'area',
+                autoLoad: true
+            }),
+            ref: '../../../../areaField',
+            width: 165
+
+        }));        
         roomPanel.add({tag: 'div', html: 'Room:'});
         roomPanel.add({
             xtype: 'textfield',
@@ -526,7 +543,7 @@ EHR.ext.customPanels.SingleAnimalReport = Ext.extend(Ext.Panel, {
         //the date buttons:
         var dateButtons = new Ext.Panel({minButtonWidth: 150, bodyStyle:'padding:5px;vertical-align:middle'});
 
-        dateButtons.add(this.renderTimePreset("Past 24 Hours", -1));
+        dateButtons.add(this.renderTimePreset("Today", 0));
         dateButtons.add(this.renderTimePreset("Past Week", -7));
         dateButtons.add(this.renderTimePreset("Past 30 Days", -30));
         dateButtons.add(this.renderTimePreset("Past Year", -365));
@@ -681,7 +698,7 @@ EHR.ext.customPanels.SingleAnimalReport = Ext.extend(Ext.Panel, {
 
         if(document.location.hash){
             var token = document.location.hash.split('#');
-            token = token[1].split('/');
+            token = token[1].split('&');
             for (var i=0;i<token.length;i++){
                 var t = token[i].split(':');
                 switch(t[0]){
@@ -698,6 +715,9 @@ EHR.ext.customPanels.SingleAnimalReport = Ext.extend(Ext.Panel, {
                             //this.processSubj();
                         }
                         break;
+                    case '_showReport':
+                        this.doLoad = 1;
+                        break;
                     case 'activeReport':
                         this.report = t[1];
                         break;
@@ -709,6 +729,11 @@ EHR.ext.customPanels.SingleAnimalReport = Ext.extend(Ext.Panel, {
                     case 'cage':
                         if(this.cageField){
                             this.cageField.setValue(t[1]);
+                        }
+                        break;
+                    case 'area':
+                        if(this.areaField){
+                            this.areaField.setValue(t[1]);
                         }
                         break;
                     case 'startDate':
@@ -851,20 +876,22 @@ EHR.ext.customPanels.SingleAnimalReport = Ext.extend(Ext.Panel, {
        this.processSubj();
        var type = this.inputType.getValue().inputValue;
 
-       if (type == 'renderRoomCage'){
-           if(!this.roomField.getValue()){
-               alert('Must Enter A Room');
+       switch (type){
+       case 'renderRoomCage':
+           if(!this.roomField.getValue() && !this.areaField.getValue()){
+               alert('Must Enter A Room or Area');
                return 0;
            }
-       }
-       else
-       {
+           break;
+       case 'renderColony':
+           break;
+       default:
            if(!this.subjectArray.length){
                 alert('Must Enter At Least 1 Animal ID');
                 return 0;
            }
        }
-        return 1;
+       return 1;
     },
 
     displayReport: function(tab){
@@ -953,9 +980,14 @@ EHR.ext.customPanels.SingleAnimalReport = Ext.extend(Ext.Panel, {
 
         var room = (this.roomField ? this.roomField.getValue() : null);
         var cage = (this.cageField ? this.cageField.getValue() : null);
+        var area = (this.areaField ? this.areaField.getValue() : null);
 
         if(tab.subjectArray && tab.subjectArray.length){
             filterArray.push(LABKEY.Filter.create('Id', subject.join(';'), LABKEY.Filter.Types.EQUALS_ONE_OF));
+        }
+
+        if(area){
+            filterArray.push(LABKEY.Filter.create('Id/curLocation/area', area, LABKEY.Filter.Types.EQUAL));
         }
 
         if(room){
@@ -983,9 +1015,13 @@ EHR.ext.customPanels.SingleAnimalReport = Ext.extend(Ext.Panel, {
         var title = '';
         var room = (this.roomField ? this.roomField.getValue() : null);
         var cage = (this.cageField ? this.cageField.getValue() : null);
+        var area = (this.areaField ? this.areaField.getValue() : null);
 
         if(subject && subject.length)
             title = subject.join("; ");
+
+        if (area)
+            title += 'Area: '+area;
 
         if (room)
             title += 'Room: '+room;
@@ -1042,11 +1078,6 @@ EHR.ext.customPanels.SingleAnimalReport = Ext.extend(Ext.Panel, {
             queryConfig.containerPath = tab.rowData.get("ContainerPath");
         }
 
-//        if (tab.rowData.get("DateFieldName"))
-//        {
-//            queryConfig.sort = 'Id,-'+tab.rowData.get("DateFieldName");
-//        }
-
         new LABKEY.QueryWebPart(queryConfig).render(target.id);
 
     },
@@ -1097,10 +1128,6 @@ EHR.ext.customPanels.SingleAnimalReport = Ext.extend(Ext.Panel, {
 
     loadJS: function(tab, subject, target)
     {
-//        var filterArray = this.getFilterArray(tab, subject);
-//        var target = target || tab.add({tag: 'span'});
-//        var title = (subject ? subject.join("; ") : '');
- 
         EHR.reports[tab.rowData.get('QueryName')].call(this, tab, subject, target);
     },
 
@@ -1309,7 +1336,9 @@ EHR.ext.customPanels.SingleAnimalReport = Ext.extend(Ext.Panel, {
             this.activeReport.suspendEvents();
             this.activeReport.ownerCt.setActiveTab(this.activeReport);
             this.activeReport.resumeEvents();
-            this.onSubmit(this.activeReport);
+            if(this.doLoad){
+                this.onSubmit(this.activeReport);
+            }
         }
         else{
             this.tabPanel.setActiveTab(this.tabPanel.General);
@@ -1356,8 +1385,10 @@ EHR.ext.customPanels.SingleAnimalReport = Ext.extend(Ext.Panel, {
     setFilters: function(tab){
         this.filters = {
             _inputType : this.inputType.getValue().inputValue,
+            _showReport: 1,
             room: (this.roomField ? this.roomField.getValue() : null),
             cage : (this.cageField ? this.cageField.getValue() : null),
+            area : (this.areaField ? this.areaField.getValue() : null),
             subject : this.subjectArray.join(';'),
             startDate : (this.startDateField && this.startDateField.getValue()) ? this.startDateField.getValue().format('Y-m-d') : null,
             endDate : (this.endDateField && this.endDateField.getValue()) ? this.endDateField.getValue().format('Y-m-d'): null,
@@ -1372,7 +1403,7 @@ EHR.ext.customPanels.SingleAnimalReport = Ext.extend(Ext.Panel, {
                 token.push(i+':'+this.filters[i]);
             }
         }
-        Ext.History.add(token.join('/'));
+        Ext.History.add(token.join('&'));
     },
     addHeader: function(tab, items){
         var tb = tab.getTopToolbar();

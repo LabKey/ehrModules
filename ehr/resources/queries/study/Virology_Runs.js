@@ -79,9 +79,11 @@ EHR.validation = {
         return title+': ' + (meaning ? meaning+' ('+code+')' : code)
     },
     dateString: function (date){
+        //TODO: do better once more date functions added
         if(date){
             date = new Date(date);
-            return date.getFullYear()+'-'+(date.getMonth()<10 ? 0:'')+date.getMonth()+'-'+(date.getDate()<10 ? 0:'')+date.getDate();
+
+            return (date.getFullYear() ? date.getFullYear()+'-'+(date.getMonth()<10 ? 0:'')+date.getMonth()+'-'+(date.getDate()<10 ? 0:'')+date.getDate() : '');
         }
         else
             return '';
@@ -107,7 +109,7 @@ EHR.validation = {
     fixParticipantId: function (row, errors){
         if (!row.Id && !row.id){
             row.id = 'MISSING';
-            row._warnings.push('ERROR: Missing Id');
+            row._warnings.push('ERROR: Missing Id');            
             row.QCStateLabel = errorQC;
         }
 
@@ -165,7 +167,7 @@ EHR.validation = {
         //we try to remove non-numeric characters from this field
         if (row.stringResults && !row.stringResults.match(/^[0-9]*$/)){
             //we need to manually split these into multiple rows
-            if (row.stringResults.match(/,/)){
+            if (row.stringResults.match(/,/) && row.stringResults.match(/[0-9]/)){
                 row.stringResults = null;
                 row._warnings.push('ERROR problem with results: ' + row.stringResults);
                 row.QCStateLabel = errorQC;
@@ -174,21 +176,41 @@ EHR.validation = {
                 //did not find other strings in data
                 row.stringResults = row.stringResults.replace('less than', '<');
 
-                var match = row.stringResults.match(/^([<>]*)[ ]*(\d*\.*\d*)[ ]*(.*)$/);
+                var match = row.stringResults.match(/^([<>=]*)[ ]*(\d*\.*\d*)([-]*\d*\.*\d*)([+]*)[ ]*(.*)$/);
 
+                if (match[4])
+                    row.resultOORIndicator = match[4];
+                //kinda weak, but we preferentially take the prefix.  should never have both
                 if (match[1])
                     row.resultOORIndicator = match[1];
 
-                row.result = match[2];
+                //these should be ranges
+                if(match[3])
+                    row.qualResult = match[2]+match[3];
+                else
+                    row.result = match[2];
 
                 //if there is a value plus a string, we assume it's units.  otherwise it's a remark
-                if (match[3]){
-                    if(match[2])
-                        row.units = match[3];
-                    else
-                        row.qualResult = match[3];
+                if (match[5]){
+                    if(match[2] && !match[5].match(/[;,]/)){
+                        row.units = match[5];
+                    }
+                    else {
+                        if(row.qualResult){
+                            row.Remark = match[5];                            
+                        }
+                        else {
+                            row.qualResult = match[5];
+                        }
+
+                    }
                 }
             }
+        }
+        else {
+            //this covers the situation where a mySQL string column contained a numeric value
+            row.result = row.stringResults;
+            delete row.stringResults;
         }
     },
     fixUrineQuantity: function(row, errors){
