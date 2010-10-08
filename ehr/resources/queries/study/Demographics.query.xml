@@ -90,14 +90,19 @@
                     <column columnName="room">
                         <datatype>varchar</datatype>
                         <columnTitle>Room</columnTitle>
-                        <url>/EHR_Reporting/cageDetails.view?
+                        <url>/ehr/cageDetails.view?
                             room=${room}&amp;
                         </url>
+                        <fk>
+                            <fkDbSchema>lists</fkDbSchema>
+                            <fkTable>rooms</fkTable>
+                            <fkColumnName>room</fkColumnName>
+                        </fk>
                     </column>
                     <column columnName="cage">
                         <datatype>varchar</datatype>
                         <columnTitle>Cage</columnTitle>
-                        <url>/EHR_Reporting/cageDetails.view?
+                        <url>/ehr/cageDetails.view?
                             room=${room}&amp;
                             cage=${cage}&amp;
                         </url>

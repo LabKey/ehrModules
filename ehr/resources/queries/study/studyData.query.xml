@@ -1,15 +1,15 @@
 <query xmlns="http://labkey.org/data/xml/query">
   <metadata>
         <tables xmlns="http://labkey.org/data/xml">
-            <table tableName="StudyData" tableDbType="TABLE">                
+            <table tableName="StudyData" tableDbType="TABLE">
                 <columns>
                     <column columnName="Remark">
                         <isHidden>false</isHidden>
-                        <displayWidth>250</displayWidth>
+                        <displayWidth>350</displayWidth>
                     </column>
                     <column columnName="Description">
                         <isHidden>false</isHidden>
-                        <displayWidth>300</displayWidth>
+                        <displayWidth>350</displayWidth>
                     </column>
                     <column columnName="Project">
                         <fk>
@@ -21,9 +21,29 @@
                     <column columnName="parentId">
                         <isHidden>true</isHidden>
                     </column>
+                    <!--<column columnName="AgeAtTime" wrappedColumnName="lsid">-->
+                        <!--<columnTitle>Age At The Time</columnTitle>-->
+                        <!--<isHidden>false</isHidden>-->
+                        <!--<isUnselectable>true</isUnselectable>-->
+                        <!--<fk>-->
+                            <!--<fkDbSchema>study</fkDbSchema>-->
+                            <!--<fkTable>AgeAtTime</fkTable>-->
+                            <!--<fkColumnName>lsid</fkColumnName>-->
+                        <!--</fk>-->
+                    <!--</column>                    -->
+                    <!--<column columnName="DateOnly" wrappedColumnName="lsid">-->
+                        <!--<columnTitle>Date Only</columnTitle>-->
+                        <!--<isHidden>true</isHidden>-->
+                        <!--<isUnselectable>true</isUnselectable>-->
+                        <!--<fk>-->
+                            <!--<fkDbSchema>study</fkDbSchema>-->
+                            <!--<fkTable>DateOnly</fkTable>-->
+                            <!--<fkColumnName>lsid</fkColumnName>-->
+                        <!--</fk>-->
+                    <!--</column>                    -->
                 </columns>
                 <buttonBarOptions position="both" includeStandardButtons="false">
-                    <includeScript>/EHR_Reporting/studyButtons.js</includeScript>
+                    <includeScript>/ehr/studyButtons.js</includeScript>
                     <item text="Insert New">
                         <originalText>Insert New</originalText>
                     </item>
@@ -51,11 +71,19 @@
                     <item text="Delete">
                         <originalText>Delete</originalText>
                     </item>
+                    <!--<item requiresSelection="true" text="View Chart" insertAfter="Delete">-->
                     <item requiresSelection="true" text="View Chart">
                         <onClick>
                             historyHandler(dataRegion, dataRegionName);
                         </onClick>
                     </item>
+                    <!--<item requiresSelection="true" text="More Actions">-->
+                        <!--<item text="N/A">-->
+                            <!--<onClick>-->
+                                <!---->
+                            <!--</onClick>-->
+                        <!--</item>-->
+                    <!--</item>-->
                 </buttonBarOptions>
             </table>
         </tables>
