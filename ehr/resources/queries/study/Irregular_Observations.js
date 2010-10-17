@@ -13,8 +13,6 @@ function setDescription(row, errors){
     //we need to set description for every field
     var description = new Array();
 
-    if(row.userid)
-        description.push('UserID: '+row.userid);
     if(row.feces)
         description.push('Feces: '+row.feces);
     if(row.menses)

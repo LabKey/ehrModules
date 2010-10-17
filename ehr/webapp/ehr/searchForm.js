@@ -85,6 +85,8 @@ EHR.ext.customPanels.searchForm = Ext.extend(Ext.Panel, {
 
         EHR.ext.customPanels.searchForm.superclass.constructor.call(this, {
             items: [{html: 'Loading...'}],
+            border: true,
+            //bodyBorder: true,
             defaults: {
                 border: false
                 ,bodyBorder: false
@@ -114,7 +116,10 @@ EHR.ext.customPanels.searchForm = Ext.extend(Ext.Panel, {
         }
 
         this.panelConfig = {
-            frame:true,
+            frame: false,
+            border: true,
+            padding: '5px',            
+            bodyBorder: true,            
             title: this.config.title,
             forceLayout: true,
             layout: 'table',
@@ -122,7 +127,11 @@ EHR.ext.customPanels.searchForm = Ext.extend(Ext.Panel, {
             items: [],
             buttons: [
                 {text: 'Submit', scope: this, handler: this.onSubmit}
-            ]
+            ],
+            defaults: {
+                border: false,
+                bodyBorder: false
+            }
 
         };
 

@@ -411,8 +411,8 @@ function setDescription(row, errors){
         description.push('Route: '+ row.route);
     if(row.enddate)
         description.push('EndDate: '+ row.enddate);
-    if(row.frequency)
-        description.push('Frequency: '+ row.frequency);
+//    if(row.frequency)
+//        description.push('Frequency: '+ row.frequency);
 
     return description;
 }

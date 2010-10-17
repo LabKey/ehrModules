@@ -35,6 +35,10 @@ function createNavMenu()
                 {name: 'Search By Room, Floor or Cage', url: '<%=contextPath%>/ehr/WNPRC/EHR/animalHistory.view#_inputType:renderRoomCage'},
                 {name: 'Irregular Obs By Location', url: '<%=contextPath%>/ehr/WNPRC/EHR/animalHistory.view#_inputType:renderRoomCage&activeReport:obs'},
                 {name: 'Clincal Remarks By Location', url: '<%=contextPath%>/ehr/WNPRC/EHR/animalHistory.view#_inputType:renderRoomCage&activeReport:clinremarks'}
+            ]},
+            {header: 'Today At WNPRC',
+            items: [
+                {name: 'Treatment Schedule', url: '<%=contextPath%>/ehr/WNPRC/EHR/animalHistory.view#_inputType:renderRoomCage&activeReport:treatmentSchedule'}
             ]}
         ]
     });
@@ -84,8 +88,7 @@ function createNavMenu()
             items: [
                 {name: 'Manage EHR Study', url: '<%=contextPath%>/study/WNPRC/EHR/manageStudy.view?'},                
                 {name: 'EHR Admin Page', url: '<%=contextPath%>/ehr/WNPRC/EHR/ehrAdmin.view'},
-                {name: 'Form Test', url: '<%=contextPath%>/ehr/WNPRC/EHR/formTest.view'},
-                {name: 'Animal Care Staff', url: '<%=contextPath%>/ehr/WNPRC/EHR/animalCare.view?'}
+                {name: 'Form Test', url: '<%=contextPath%>/ehr/WNPRC/EHR/formTest.view'}
             ]
         })
 
@@ -104,14 +107,14 @@ function createNavMenu()
 </div>
 
 <table>
-<tr style="vertical-align:top">
-<td colspan="3">
-    <a class="labkey-main-title">
-        Electronic Health Record:
-    </a>
-    <p/>
-</td>
-</tr>
+<!--<tr style="vertical-align:top">-->
+<!--<td colspan="3">-->
+    <!--<a class="labkey-main-title">-->
+        <!--Electronic Health Record:-->
+    <!--</a>-->
+    <!--<p/>-->
+<!--</td>-->
+<!--</tr>-->
 <tr style="vertical-align:top">
     <td style="width:275px">
         <div id="ehrMenu1"></div>

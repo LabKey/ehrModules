@@ -17,6 +17,7 @@ EHR.reports.qwpConfig = {
     showUpdateColumn: false,
     showRecordSelectors: true,
     frame: 'portal',
+    linkTarget: '_new',  
     buttonBarPosition: 'top',
     //TODO: switch to 0 once bug is fixed
     timeout: 3000000,
@@ -32,6 +33,7 @@ EHR.reports.qwpConfig = {
 
 
 EHR.reports.abstract = function(tab, subject){
+console.log('subject')    
     var filterArray = this.getFilterArray(tab, subject);
     var title = (subject ? subject.join("; ") : '');
     tab.getTopToolbar().removeAll();
@@ -570,11 +572,7 @@ EHR.reports.irregularObs = function(tab, subject){
             filterArray.push(LABKEY.Filter.create('RoomAtTime', cage, LABKEY.Filter.Types.EQUAL));
         }
 
-        //we handle date
-        if (this.startDateField && this.startDateField.getValue())
-            filterArray.push(LABKEY.Filter.create(rowData.get("DateFieldName"), this.startDateField.getValue().format('Y-m-d'), LABKEY.Filter.Types.GREATER_THAN_OR_EQUAL));
-        if (this.endDateField && this.endDateField.getValue())
-            filterArray.push(LABKEY.Filter.create(rowData.get("DateFieldName"), this.endDateField.getValue().format('Y-m-d'), LABKEY.Filter.Types.LESS_THAN_OR_EQUAL));
+        filterArray.push(LABKEY.Filter.create(rowData.get("DateFieldName"), (new Date()).format('Y-m-d'), LABKEY.Filter.Types.DATE_EQUAL));
 
         tab.filterArray = filterArray;
 

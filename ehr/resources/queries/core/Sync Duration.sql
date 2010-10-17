@@ -39,4 +39,4 @@ SELECT c2.date, max(c3.date) as EndTime
 
 ON (c2.date = c1.date)
 
-WHERE c1.EventType = 'EHRSyncAuditEvent' AND c1.key1='FINISH'
+WHERE c1.EventType = 'EHRSyncAuditEvent' AND (c1.key1='FINISH' or c1.key1='FATAL ERROR')

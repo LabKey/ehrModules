@@ -1,7 +1,7 @@
 <customView xmlns="http://labkey.org/data/xml/queryCustomView">
    <columns>
        <column name="id"/>
-       <column name="date"/>
+       <column name="Date"/>
        <column name="project"/>
        <column name="dataset/label">
             <properties>
@@ -15,6 +15,6 @@
        <sort column="date" descending="true"/>
    </sorts>
    <filters>
-       <filter column="dataset/name" operator="in" value="assignments;behavetrem;biopsy;blood;clinremarks;drug;housing;necropsy;problem;weight;surgeries;tb"/>
+       <filter column="dataset/name" operator="in" value="assignments;behavetrem;biopsy;blood;clinremarks;drug;housing;necropsy;problem;weight;surgeries;tb;bacteriologyRuns;parasitologyRuns;virologyRuns;chemistryRuns;hematologyRuns;urinalysisRuns;immunologyRuns"/>
    </filters>
 </customView>

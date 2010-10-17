@@ -1,0 +1,10 @@
+<customView xmlns="http://labkey.org/data/xml/queryCustomView">
+    <columns>
+        <column name="Id"/>
+        <column name="Relationship"/>
+        <column name="Offspring"/>
+   </columns>
+   <sorts>
+       <sort column="Id" descending="true"/>
+   </sorts>
+</customView>

@@ -9,7 +9,16 @@ d.Id AS Id,
 
 d.date,
 
-round(timestampdiff('SQL_TSI_DAY', d.date, curdate())/7, 1) AS wpi,
+round(
+CASE
+  WHEN (id.dataset.demographics.death IS NULL)
+    THEN (timestampdiff('SQL_TSI_DAY', d.date, curdate())/7)
+   ELSE
+    --(timestampdiff('SQL_TSI_DAY', d.date, id.dataset.demographics.death)/7)
+    null
+END
+, 1)
+as WeeksSinceChallenge,
 
 d.code,
 d.remark,

@@ -20,8 +20,7 @@
       <column name="other"/>
       <column name="tlocation"/>
       <column name="Remark"/>
-      <column name="other"/>      
-      <column name="location"/>
+      <column name="otherbehavior"/>
   </columns>
    <sorts>
        <sort column="hasObs/DateOnly" descending="true"/>

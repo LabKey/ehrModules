@@ -12,7 +12,8 @@
        </column>
        <column name="id"/>       
        <column name="date"/>
-       <column name="enddate"/>
+       <!--<column name="enddate"/>-->
+       <column name="TimeOfDay"/>
        <column name="frequency"/>
        <column name="project"/>
        <column name="code"/>

@@ -2,7 +2,6 @@
 EHR_ComplianceDB/EHR_ComplianceDB.iml -text
 EHR_ComplianceDB/config/module.properties -text
 EHR_ComplianceDB/module_ehr_compliancedb.xml -text
-EHR_ComplianceDB/queries/lists/AgeTestfromFile.sql -text
 EHR_ComplianceDB/queries/lists/ComplianceRecentTests.query.xml -text
 EHR_ComplianceDB/queries/lists/ComplianceRecentTests.sql -text
 EHR_ComplianceDB/queries/lists/ComplianceRecentTests/.qview.xml -text
@@ -392,6 +391,7 @@ ehr/resources/queries/study/demographicsAssignmentHistory.query.xml -text
 ehr/resources/queries/study/demographicsAssignmentHistory.sql -text
 ehr/resources/queries/study/demographicsAssignmentSummary.query.xml -text
 ehr/resources/queries/study/demographicsAssignmentSummary.sql -text
+ehr/resources/queries/study/demographicsAssignmentSummary/.qview.xml -text
 ehr/resources/queries/study/demographicsBloodSummary.query.xml -text
 ehr/resources/queries/study/demographicsBloodSummary.sql -text
 ehr/resources/queries/study/demographicsCageClass.query.xml -text
@@ -405,6 +405,7 @@ ehr/resources/queries/study/demographicsDaysAlone.sql -text
 ehr/resources/queries/study/demographicsDaysAlone/.qview.xml -text
 ehr/resources/queries/study/demographicsFamily.query.xml -text
 ehr/resources/queries/study/demographicsFamily.sql -text
+ehr/resources/queries/study/demographicsFamily/.qview.xml -text
 ehr/resources/queries/study/demographicsLatestSIVChallenge.sql -text
 ehr/resources/queries/study/demographicsMHC.query.xml -text
 ehr/resources/queries/study/demographicsMHC.sql -text
@@ -414,6 +415,7 @@ ehr/resources/queries/study/demographicsMostRecentWeight.query.xml -text
 ehr/resources/queries/study/demographicsMostRecentWeight.sql -text
 ehr/resources/queries/study/demographicsOffspring.query.xml -text
 ehr/resources/queries/study/demographicsOffspring.sql -text
+ehr/resources/queries/study/demographicsOffspring/.qview.xml -text
 ehr/resources/queries/study/demographicsPedigree.query.xml -text
 ehr/resources/queries/study/demographicsPedigree.sql -text
 ehr/resources/queries/study/demographicsSiblings.query.xml -text
@@ -449,6 +451,11 @@ ehr/resources/queries/study/immunologyPivot.sql -text
 ehr/resources/queries/study/irregularObs.query.xml -text
 ehr/resources/queries/study/irregularObs.sql -text
 ehr/resources/queries/study/irregularObs/.qview.xml -text
+ehr/resources/queries/study/irregularObs/Detailed[!!-~]By[!!-~]Animal.qview.xml -text
+ehr/resources/queries/study/irregularObs/Detailed[!!-~]By[!!-~]Room.qview.xml -text
+ehr/resources/queries/study/irregularObsTreatment.query.xml -text
+ehr/resources/queries/study/irregularObsTreatment.sql -text
+ehr/resources/queries/study/irregularObsTreatment/.qview.xml -text
 ehr/resources/queries/study/majorEvents.query.xml -text
 ehr/resources/queries/study/majorEvents.sql -text
 ehr/resources/queries/study/mensesInterval.query.xml -text
@@ -518,6 +525,7 @@ ehr/resources/views/quickSearch.html -text
 ehr/resources/views/quickSearch.view.xml -text
 ehr/resources/views/quickSearch.webpart.xml -text
 ehr/resources/views/surgeryDetails.html -text
+ehr/resources/views/todaysTreatments.html -text
 ehr/resources/views/utilities.html -text
 ehr/resources/views/webDAV.html -text
 ehr/scripts/pg_backup/.project -text

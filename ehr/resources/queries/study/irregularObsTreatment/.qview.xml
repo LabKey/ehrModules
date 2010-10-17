@@ -14,6 +14,7 @@
       <column name="CageAtTime"/>      
       <column name="Id"/>
       <column name="date"/>
+      <column name="type"/>
       <!--<column name="userid"/>-->
       <!--<column name="feces"/>-->
       <!--<column name="menses"/>-->
@@ -21,14 +22,14 @@
       <!--<column name="breeding"/>-->
       <!--<column name="other"/>-->
       <!--<column name="tlocation"/>-->
-      <column name="Remark"/>
-      <!--<column name="otherbehavior"/>-->
-      <column name="description"/>
+      <column name="Remark"/>     
+      <column name="Description"/>
   </columns>
    <sorts>
        <sort column="DateOnly" descending="true"/>
        <sort column="RoomAtTime"/>
-       <sort column="CageAtTime"/>       
+       <sort column="CageAtTime"/>
+       <sort column="Id"/>
    </sorts>
    <!--<filters>-->
        <!--<filter column="hasObs/hasObs" operator="eq" value="true"/>-->

@@ -21,14 +21,16 @@ EHR.ext.customPanels.SingleAnimalReport = Ext.extend(Ext.Panel, {
             autoHeight: true
 //            ,autoWidth: true
             ,bodyBorder: false
+            ,bodyStyle: 'background-color : transparent;'
             ,width: '100%'
+            ,layout: 'anchor'
             ,border: false
             ,frame: false
             ,reports: {}
             ,defaults: {
-                border: false,
+                border: false
 //                autoHeight: true,
-                autoWidth: true
+//                autoWidth: true
                 //bodyStyle:'align: center;padding-bottom:30px, vertical-align:middle'
             }
             ,items: [
@@ -69,18 +71,23 @@ EHR.ext.customPanels.SingleAnimalReport = Ext.extend(Ext.Panel, {
                 tag: 'span',
                 style: 'padding: 10px'
             },{
-                xtype: 'tabpanel',
-                ref: 'tabPanel',
-                cls: 'extContainer',
-                //activeTab: 0,
-//                autoWidth: true,
-                bodyBorder: true,
-                width: '90%',
-                border: true,
-                autoHeight: true,
-                bodyStyle: 'padding-top: 5px;',
-                frame: true
+                layout: 'anchor',
+                width: '80%',
+                ref: 'theAnchor',
+                items: [{
+                    xtype: 'tabpanel',
+                    ref: '../tabPanel',
+                    activeTab: 0,
+                    cls: 'extContainer',
+                    plugins: ['fittoparent'],
+//                    anchor: '100%',
+        //            width: 400,
+                    autoHeight: true,
+                    bodyStyle: 'padding-top: 5px;',
+                    frame: true
+                }]
             }]
+
         });
 
         EHR.ext.customPanels.SingleAnimalReport.superclass.initComponent.call(this);
@@ -123,15 +130,11 @@ EHR.ext.customPanels.SingleAnimalReport = Ext.extend(Ext.Panel, {
                 boxLabel: 'Entire Colony',
                 inputValue: 'renderColony',
                 ref: '../renderColony'
-                //            },{
-//                name: 'selector',
-//                boxLabel: 'Complex',
-//                inputValue: 'renderComplex'
             }]
         });
 
         //now we add each component
-        this.renderDateRow();
+        //this.renderDateRow();
 //        this.renderCombineSubjects();
 
         //force filter area to render
@@ -491,7 +494,7 @@ EHR.ext.customPanels.SingleAnimalReport = Ext.extend(Ext.Panel, {
 
         this.endDateField = Ext.ComponentMgr.create({
             width:165
-            ,xtype: 'datetimefield'
+            ,xtype: 'datefield'
             ,name:'endDate'
             ,allowBlank:true
             ,vtype: 'daterange'
@@ -766,7 +769,10 @@ EHR.ext.customPanels.SingleAnimalReport = Ext.extend(Ext.Panel, {
                     var dt = new Date();
                     dt.setDate(dt.getDate() + timeShift);
                     dt = dt.format("Y-m-d");
-                    this.endDateField.setValue('');
+                    var now = new Date();
+                    now.setDate(now.getDate() + 1);
+                    now = now.format('Y-m-d');
+                    this.endDateField.setValue(now);
                     this.startDateField.setValue(dt);
                 }
             }            
@@ -999,12 +1005,13 @@ EHR.ext.customPanels.SingleAnimalReport = Ext.extend(Ext.Panel, {
         }
 
         //we handle date
-        if (rowData.get("DateFieldName"))
+        if (rowData.get("DateFieldName") && rowData.get("TodayOnly"))
         {
-            if (this.startDateField && this.startDateField.getValue())
-                filterArray.push(LABKEY.Filter.create(rowData.get("DateFieldName"), this.startDateField.getValue().format('Y-m-d'), LABKEY.Filter.Types.GREATER_THAN_OR_EQUAL));
-            if (this.endDateField && this.endDateField.getValue())
-                filterArray.push(LABKEY.Filter.create(rowData.get("DateFieldName"), this.endDateField.getValue().format('Y-m-d'), LABKEY.Filter.Types.LESS_THAN_OR_EQUAL));
+            filterArray.push(LABKEY.Filter.create(rowData.get("DateFieldName"), (new Date()).format('Y-m-d'), LABKEY.Filter.Types.DATE_EQUAL));            
+//            if (this.startDateField && this.startDateField.getValue())
+//                filterArray.push(LABKEY.Filter.create(rowData.get("DateFieldName"), this.startDateField.getValue().format('Y-m-d'), LABKEY.Filter.Types.GREATER_THAN_OR_EQUAL));
+//            if (this.endDateField && this.endDateField.getValue())
+//                filterArray.push(LABKEY.Filter.create(rowData.get("DateFieldName"), this.endDateField.getValue().format('Y-m-d'), LABKEY.Filter.Types.LESS_THAN_OR_EQUAL));
         }
 
         tab.filterArray = filterArray;
@@ -1050,12 +1057,16 @@ EHR.ext.customPanels.SingleAnimalReport = Ext.extend(Ext.Panel, {
             showDetailsColumn: true,
             showUpdateColumn: false,
             showRecordSelectors: true,
-            frame: (tab.combineSubj ? 'portal' : 'portal'),            
+            tab: tab,
+            frame: 'portal',            
             buttonBarPosition: 'top',
             //TODO: switch to 0 once bug is fixed
             timeout: 3000000,
             filters: filterArray,
+            //removeableFilters: filterArray,
+            linkTarget: '_new',            
             successCallback: function(c){
+                this.doLayout();
                 this.endMsg();
             },
             errorCallback: function(error){
@@ -1279,6 +1290,7 @@ EHR.ext.customPanels.SingleAnimalReport = Ext.extend(Ext.Panel, {
                     enableTabScroll: true,
                     autoHeight: true,
                     autoWidth: true,
+                    bodyStyle: 'background-color : transparent;',
                     frame:false
                 }))
             }
@@ -1296,6 +1308,7 @@ EHR.ext.customPanels.SingleAnimalReport = Ext.extend(Ext.Panel, {
                     bodyStyle:'padding:5px',
                     border: false,
                     autoWidth: true,
+                    autoScroll: true,
 //                    buttons: [
 //                        {text: 'Reload', ref: '../reload', handler: function(o){
 //                            this.loadTab(o.refOwner)
@@ -1327,8 +1340,6 @@ EHR.ext.customPanels.SingleAnimalReport = Ext.extend(Ext.Panel, {
             }
 
         }, this);
-
-        this.add(this.tabPanel);
 
         if(this.activeReport){
             console.log('setting tab');
@@ -1390,8 +1401,8 @@ EHR.ext.customPanels.SingleAnimalReport = Ext.extend(Ext.Panel, {
             cage : (this.cageField ? this.cageField.getValue() : null),
             area : (this.areaField ? this.areaField.getValue() : null),
             subject : this.subjectArray.join(';'),
-            startDate : (this.startDateField && this.startDateField.getValue()) ? this.startDateField.getValue().format('Y-m-d') : null,
-            endDate : (this.endDateField && this.endDateField.getValue()) ? this.endDateField.getValue().format('Y-m-d'): null,
+            //startDate : (this.startDateField && this.startDateField.getValue()) ? this.startDateField.getValue().format('Y-m-d') : null,
+            //endDate : (this.endDateField && this.endDateField.getValue()) ? this.endDateField.getValue().format('Y-m-d'): null,
             combineSubj : tab.combineSubj,
             activeReport: tab.rowData.get('ReportName')
         };

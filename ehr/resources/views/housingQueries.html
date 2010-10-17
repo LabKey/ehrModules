@@ -13,7 +13,15 @@ Ext.onReady(function(){
         ,defaultView: 'Current Housing'
         ,metadata: {
             Id: {lookups: false},
-            TotalRoommates: {isHidden: true}
+            TotalRoommates: {isHidden: true},
+            Created: {isHidden: true},
+            CreatedBy: {isHidden: true},
+            Modified: {isHidden: true},
+            ModifiedBy: {isHidden: true},
+            objectid: {isHidden: true},
+            isTemp: {isHidden: true},
+            ts: {isHidden: true},
+            Dataset: {isHidden: true}
         }
     }).render('housingPanel');
 
@@ -41,7 +49,7 @@ This page contains a series of queries to search animal housing data.  If there 
 </li>
 <br>
 <li>
-    <a href="<%=contextPath%>/ehr/WNPRC/EHR/animalHistory.view?report=23">View Roommate History for Animals</a>
+    <a href="<%=contextPath%>/ehr/WNPRC/EHR/animalHistory.view#_inputType:renderSingleSubject&activeReport:roommateHistory">View Roommate History for Animals</a>
 </li>
 
 <br>

@@ -25,9 +25,9 @@ Ext.menu.DateMenu.prototype.addClass('extContainer');
 EHR.ext.standardMetadata = {
     Id: {lookups: false, parentField: {queryName: 'encounters', field: 'id'}}
     ,Date: {parentField: {queryName: 'encounters', field: 'Date'}}
-    //,created: {isHidden: true}
+    ,created: {isHidden: true}
     ,AnimalVisit: {isHidden: true}
-    //,modified: {isHidden: true}
+    ,modified: {isHidden: true}
     //,SequenceNum: {isHidden: true}
     ,QCState: {parentField: {queryName: 'encounters', field: 'qcstate'}}
     //,QCState: {isHidden: true}

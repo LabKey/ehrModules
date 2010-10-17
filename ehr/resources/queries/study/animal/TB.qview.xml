@@ -58,7 +58,7 @@
         </column>
         <column name="MostRecentTB/MonthsSinceLastTB">
             <properties>
-                <property name="columnTitle" value="Months Since Weight"/>
+                <property name="columnTitle" value="Months Since TB Test"/>
             </properties>
         </column>
         <column name="Dataset/Demographics/Medical">

@@ -12,7 +12,8 @@
        </column>
        <column name="id"/>       
        <column name="date"/>
-       <column name="enddate"/>
+       <!--<column name="enddate"/>-->
+       <column name="TimeOfDay"/>
        <column name="frequency"/>
        <column name="project"/>
        <column name="code"/>
@@ -23,8 +24,8 @@
        <column name="amount"/>
        <column name="units"/>
        <column name="route"/>
-       <column name="userid"/>
        <column name="remark"/>
+       <column name="userid"/>
    </columns>
    <sorts>
        <sort column="date" descending="true"/>

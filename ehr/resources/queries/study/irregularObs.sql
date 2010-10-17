@@ -22,7 +22,8 @@ o.breeding,
 o.other,
 o.tlocation,
 o.otherbehavior,
-o.remark
+o.remark,
+o.description
 
 from study.obs o
 LEFT JOIN study.housing h
@@ -41,11 +42,11 @@ WHERE
 UNION ALL
 
 SELECT
-c.room,
-c.cage,
+c.room as RoomAtTime,
+c.cage as CageAtTime,
 null as id,
-null as room2,
-null as cage2,
+null as room,
+null as cage,
 c.date,
 -- -- convert((year(c.date) || '-' || month(c.date) || '-' || dayofmonth(c.date) || '-'), 'DATE') as DateOnly,
 cast(c.date as DATE) as DateOnly,
@@ -57,7 +58,9 @@ null as breeding,
 null as other,
 null as tlocation,
 null as otherbehavior,
-c.note as Remark
+c.note as Remark,
+null as description
+
 FROM lists.cagenotes c
 
 

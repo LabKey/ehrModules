@@ -1,11 +1,12 @@
-/*.extContainer fieldset, fieldset {*/
-/*margin-bottom:5px;*/
-/*padding-bottom:5px;*/
-/*height:auto*/
-/*}*/
-/*.x-form-item  {*/
-/*margin-bottom:4px*/
-/*}*/
+.extContainer fieldset, fieldset {
+    margin-bottom:5px;
+    padding-bottom:5px;
+    height:auto
+}
+
+.x-form-item  {
+    margin-bottom:4px
+}
 
 /*.x-menu-item ul {*/
 /*margin-bottom:0px;*/
@@ -161,4 +162,34 @@
 }
 .x-status-error-list li a {
     color: #15428B;
+}
+
+
+
+/*
+ * FileUploadField component styles
+ */
+.x-form-file-wrap {
+    position: relative;
+    height: 22px;
+}
+.x-form-file-wrap .x-form-file {
+	position: absolute;
+	right: 0;
+	-moz-opacity: 0;
+	filter:alpha(opacity: 0);
+	opacity: 0;
+	z-index: 2;
+    height: 22px;
+}
+.x-form-file-wrap .x-form-file-btn {
+	position: absolute;
+	right: 0;
+	z-index: 1;
+}
+.x-form-file-wrap .x-form-file-text {
+    position: absolute;
+    left: 0;
+    z-index: 3;
+    color: #777;
 }
