@@ -68,7 +68,7 @@ file with comments explaining each line.
 
 [general]
 compress = 1							;0 or 1.  determines whether DB dumps are compressed
-pg_dbname = labkey           			;name of postgres schema(s).  separate multiple schemas with whitespace (ie. 'labkey postgres')
+pg_dbname = labkey           			;name of postgres schema(s).  separate multiple schemas with whitespace (ie. 'labkey postgres').  the name 'globals' can be used to run pg_dumpall to backup global items
 pg_host = someserver.com	 			;the postgres host.  can be omitted if running on the same server
 pg_user = labkey						;user connecting to postgres. can be omitted if using IDENT or other form of authentication
 backupdir = /labkey/backup/  			;the directory where backups will be stored
@@ -138,7 +138,7 @@ if (!-e $config{backupdir}){
 }
 
 #check required params
-my @required = qw(pg_dbname backupdir pgdump_dir);
+my @required = qw(backupdir pgdump_dir);
 foreach (@required){
 	if (!$config{$_}){
 		$log->entry("Missing param: $_ from INI file");	
@@ -153,6 +153,7 @@ my @dbs = split(/\s/, $config{pg_dbname});
 foreach(@dbs){
 	runPgBackup($_);
 }
+
 
 #rsync
 if($config{file_root}){
@@ -184,15 +185,19 @@ sub runPgBackup
 	#run pg_dump and store in the daily backup folder
 	$path = $backupdir."/daily/";
 	checkFolder($path);
-	
+
 	my $dailyBackupFile = $path.$pg_filename;
-	_pg_dump($dailyBackupFile, $db);
+	if($db eq 'globals'){
+		_pg_dumpall($dailyBackupFile, $db);
+	}
+	else {
+		_pg_dump($dailyBackupFile, $db);
+	}
 	
 	if ($config{compress}){
 		$log->entry("Compressing file: $dailyBackupFile");
 		$dailyBackupFile = _compressFile($dailyBackupFile, 1);
 	}
-	
 	
 	#rotate daily backups	
 	$rotation{'maxDaily'} ||= 7;
@@ -217,12 +222,12 @@ sub runPgBackup
 			checkFolder($path);
 			copy($dailyBackupFile,$path.$pg_filename) or onExit("Monthly Pgsql File Copy failed: $!");
 			_rotateFiles($path, $rotation{'maxMonthly'}, $file_prefix);
-		}
-
+		}	
+		
 	$log->entry("Backup of $db was successful");
 }
 
-
+	
 =item onExit(string message, status)
 
 onExit() will log the given message and die.
@@ -311,6 +316,34 @@ sub _pg_dump
 	
 }
 
+
+=item _pg_dumpall($bkpostgresfile)
+
+_pg_dumpall() will backup global settings into the file specified by $bkpostgresfile 
+
+=cut
+
+sub _pg_dumpall
+{
+	my $bkpostgresfile = shift;
+	
+	# Postgres Backup
+	my $cmd = $config{pgdump_dir} . "pg_dumpall -g " . ($config{pg_host} ? " -U ".$config{pg_host}." " : "") . " -f ".$bkpostgresfile;
+	$cmd .= " -h ".$config{pg_host} if $config{pg_host};
+	 
+	my $pgout = system($cmd . " 2>&1");
+	$log->entry($cmd);
+	if( $? ){
+	    $log->entry("ERROR: pg_dumpall has returned an error: $pgout");
+
+	    onExit("Postgres Error: $pgout");
+	}
+	else{
+	    my $tm1 = localtime;
+	    $log->entry("pg_dumpall of globals complete");
+	}
+	
+}
 
 =item _compressFile(fileName, deleteOrig)
 
@@ -485,9 +518,10 @@ sub _rsync
 {
 	my $source = shift;
 	my $dest = shift;
-	
+	my $log_file = $config{backupdir} . "rsync.log";
+print $log_file;
 	# Postgres Backup
-	my $cmd = "rsync --executability --recursive --perms --times --dry-run --delete --itemize-changes $source $dest";
+	my $cmd = "rsync --executability --recursive --links --perms --times --delete --log-file='$log_file' $source $dest";
 
 	my $output = system($cmd . " 2>&1");
 	$log->entry($cmd);
