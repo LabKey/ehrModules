@@ -74,8 +74,9 @@ EHR.ext.customPanels.detailsView = function(config)
                 //TODO: switch to 0 once bug is fixed
                 timeout: 3000000
             })
-            
-            queryConfig.successCallback = null;
+
+            queryConfig.successCallback = queryConfig.success = null;
+
             new LABKEY.QueryWebPart(queryConfig).render(target);
             return;
         }
