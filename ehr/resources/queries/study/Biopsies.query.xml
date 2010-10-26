@@ -2,7 +2,7 @@
     <metadata> 
         <tables xmlns="http://labkey.org/data/xml">
             <table tableName="Biopsies" tableDbType="TABLE">
-                <tableUrl>/EHR_Reporting/biopsyDetails.view?key=${objectid}</tableUrl>
+                <tableUrl>/EHR/biopsyDetails.view?key=${objectid}</tableUrl>
             </table>
         </tables>
     </metadata>

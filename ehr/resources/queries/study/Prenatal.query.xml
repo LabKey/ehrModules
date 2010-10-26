@@ -52,7 +52,7 @@
                     <column columnName="room">
                         <datatype>varchar</datatype>
                         <columnTitle>Room</columnTitle>
-                        <url>/EHR_Reporting/cageDetails.view?
+                        <url>/EHR/cageDetails.view?
                             room=${room}&amp;
                             cage=${cage}&amp;
                         </url>
@@ -60,7 +60,7 @@
                     <column columnName="cage">
                         <datatype>varchar</datatype>
                         <columnTitle>Cage</columnTitle>
-                        <url>/EHR_Reporting/cageDetails.view?
+                        <url>/EHR/cageDetails.view?
                             room=${room}&amp;
                             cage=${cage}&amp;
                         </url>
@@ -74,7 +74,7 @@
                             <fkTable>cage</fkTable>
                             <fkColumnName>roomcage</fkColumnName>
                         </fk>
-                        <url>/EHR_Reporting/cageDetails.view?
+                        <url>/EHR/cageDetails.view?
                             room=${room}&amp;
                             cage=${cage}&amp;
                         </url>

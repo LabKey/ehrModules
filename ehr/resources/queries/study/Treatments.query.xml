@@ -2,7 +2,8 @@
     <metadata>
         <tables xmlns="http://labkey.org/data/xml">
             <table tableName="treatments" tableDbType="TABLE">
-                <tableUrl>/query/detailsQueryRow.view?schemaName=study&amp;query.queryName=treatments&amp;lsid=${lsid}</tableUrl>
+                <!--<tableUrl>/query/detailsQueryRow.view?schemaName=study&amp;query.queryName=treatments&amp;lsid=${lsid}</tableUrl>-->
+                <tableUrl>/EHR/treatmentDetails.view?key=${objectid}</tableUrl>
                 <columns>
                     <column columnName="parentId">
                         <fk>

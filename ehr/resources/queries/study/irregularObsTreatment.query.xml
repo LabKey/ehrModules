@@ -15,12 +15,16 @@
                         </fk>
                     </column>
                     <column columnName="RoomAtTime">
+                        <displayWidth>50</displayWidth>
                         <fk>
                           <fkDbSchema>lists</fkDbSchema>
                           <fkTable>rooms</fkTable>
                           <fkColumnName>Room</fkColumnName>
                         </fk>
-                    </column>                    
+                    </column>
+                    <column columnName="CageAtTime">
+                        <displayWidth>50</displayWidth>                        
+                    </column>
                     <column columnName="Remark">
                         <displayWidth>250</displayWidth>
                     </column>

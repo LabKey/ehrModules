@@ -21,6 +21,11 @@
                 <property name="columnTitle" value="Hold"/>
             </properties>
         </column>
+        <column name="Dataset/Demographics/species">
+            <properties>
+                <property name="columnTitle" value="Species"/>
+            </properties>
+        </column>
         <column name="Dataset/Demographics/Dam">
             <properties>
                 <property name="columnTitle" value="Dam"/>

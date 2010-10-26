@@ -10,7 +10,7 @@ LABKEY.requiresScript("/ehr/utilities.js");
 
 EHR.reports.qwpConfig = {
     allowChooseQuery: false,
-    allowChooseView: false,
+    allowChooseView: true,
     showInsertNewButton: false,
     showDeleteButton: false,
     showDetailsColumn: true,
@@ -33,7 +33,7 @@ EHR.reports.qwpConfig = {
 
 
 EHR.reports.abstract = function(tab, subject){
-console.log('subject')    
+console.log(subject)
     var filterArray = this.getFilterArray(tab, subject);
     var title = (subject ? subject.join("; ") : '');
     tab.getTopToolbar().removeAll();
@@ -69,7 +69,8 @@ console.log('subject')
         title: 'Unresolved Problems' + ": " + title,
         frame: true,
         schemaName: 'study',
-        queryName: 'problem',
+        allowChooseView: true,
+        queryName: 'Problem List',
         viewName: 'Unresolved Problems',
         //sort: '-date',
         filters: filterArray,
@@ -178,6 +179,7 @@ EHR.reports.weightGraph = function(tab, subject){
         autoLoad: true
     });
 
+    if(subject.length == 1){
     tab.chart = new Ext.chart.LineChart({
         xtype: 'linechart',
         height: 300,
@@ -257,27 +259,10 @@ EHR.reports.weightGraph = function(tab, subject){
             }
         }
     });
-    tab.on('show', function(c){
-        //c.chart.refresh();
-    });
-    
-//    tab.grid = new LABKEY.ext.EditorGridPanel({
-//        store: store
-//        //,title: 'Weights: '
-//        ,height: 270
-//        ,width: 400
-//        ,autoScroll: true
-//        ,editable: false
-//        ,stripeRows: true
-//        ,disableSelection: true
-//        ,style: 'padding-top: 10px'
-//        ,tbar: []
-//        ,bbar: []
-//        ,sm: new Ext.grid.RowSelectionModel()
-//        ,errorCallback: function(error){
-//            EHR.UTILITIES.onError(error)
-//        }
+//    tab.on('show', function(c){
+//        //c.chart.refresh();
 //    });
+    }    
 
     tab.add(new Ext.Panel({
         title: 'Weight: ' + title,
@@ -294,12 +279,6 @@ EHR.reports.weightGraph = function(tab, subject){
 //                ,
 //                tab.grid
         ]}
-//        ,{
-//            xtype: 'panel',
-////            autoHeight: true,
-//            ref: 'detailsPanel',
-//            autoScroll: true
-//        }
     ]}
             ));
 
@@ -314,7 +293,7 @@ EHR.reports.weightGraph = function(tab, subject){
     }, EHR.reports.qwpConfig);
 
     new LABKEY.QueryWebPart(config).render(target.id);
-}
+};
 
 EHR.reports.bloodChemistry = function(tab, subject){
 
@@ -476,64 +455,68 @@ EHR.reports.immunology = function(tab, subject){
 
 
 EHR.reports.viralLoads = function(tab, subject){
-    var filterArray = this.getFilterArray(tab, subject);
-    var title = (subject ? subject.join("; ") : '');
 
-    var store = new LABKEY.ext.Store({
-        schemaName: 'study',
-        queryName: 'ViralLoads',
-        filterArray: filterArray,
-        columns: 'Id,date,LogVL',
-        sort: 'Id,-date',
-        autoLoad: true
-    });
+    for (var i=0;i<subject.length;i++){
+        var filterArray = this.getFilterArray(tab, subject[i]);
+        var title = (subject[i] || '');
 
-    tab.chart = new Ext.chart.LineChart({
-        xtype: 'linechart',
-        height: 300,
-        width: 600,
-        store: store,
-        // The two following is not documented, but it's central for the linechart.
-        xField: "date",
-        yField: "LogVL",
-        xAxis: new Ext.chart.TimeAxis({
-            orientation: 'vertical',
-            title: 'Date',
-            labelRenderer: function(date) { return date.format("Y-m-d"); }
-        }),
-        yAxis: new Ext.chart.NumericAxis({
-            title: 'Log Copies/mL'
-        }),
-        listeners: {
-            scope: this,
-            itemmouseover: function(o) {
-                //var myGrid = Ext.getCmp('myGrid');
-                //myGrid.selModel.selectRow(o.index);
-            },
-            itemclick: function(o){
-                var rec = o.item;
+        var store = new LABKEY.ext.Store({
+            schemaName: 'study',
+            queryName: 'ViralLoads',
+            filterArray: filterArray,
+            columns: 'Id,date,LogVL',
+            sort: 'Id,-date',
+            autoLoad: true
+        });
+
+        tab.chart = new Ext.chart.LineChart({
+            xtype: 'linechart',
+            height: 300,
+            width: 600,
+            store: store,
+            // The two following is not documented, but it's central for the linechart.
+            xField: "date",
+            yField: "LogVL",
+            xAxis: new Ext.chart.TimeAxis({
+                orientation: 'vertical',
+                title: 'Date',
+                labelRenderer: function(date) { return date.format("Y-m-d"); }
+            }),
+            yAxis: new Ext.chart.NumericAxis({
+                title: 'Log Copies/mL'
+            }),
+            listeners: {
+                scope: this,
+                itemmouseover: function(o) {
+                    //var myGrid = Ext.getCmp('myGrid');
+                    //myGrid.selModel.selectRow(o.index);
+                },
+                itemclick: function(o){
+                    var rec = o.item;
+                }
             }
-        }
-    });
+        });
 
-    tab.add(new Ext.Panel({
-        title: 'Weight: ' + title,
-        autoScroll: true,
-        autoHeight: true,
-        //frame: true,
-        style: 'border:5px',
-        //border: true,
-        //layout: 'fit',
-        items: [{
-            layout: 'hbox',
-            items: [
-                tab.chart
-        ]}
-    ]}
-            ));
+        tab.add(new Ext.Panel({
+            title: 'Viral Loads: ' + title,
+            autoScroll: true,
+            autoHeight: true,
+            //frame: true,
+            style: 'border:5px',
+            //border: true,
+            //layout: 'fit',
+            items: [{
+                layout: 'hbox',
+                items: [
+                    tab.chart
+                ]}
+            ]}
+        ));
+    }
 
-    target = tab.add({tag: 'span', html: 'Loading...', cls: 'loading-indicator', style: 'padding-bottom: 20px'});
-    config = Ext.applyIf({
+    var target = tab.add({tag: 'span', html: 'Loading...', cls: 'loading-indicator', style: 'padding-bottom: 20px'});
+    var filterArray = this.getFilterArray(tab, subject);
+    var config = Ext.applyIf({
         title: 'Viral Load' + ": " + title,
         schemaName: 'study',
         queryName: 'ViralLoads',

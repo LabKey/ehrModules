@@ -26,7 +26,7 @@ xyplot(weight ~ date | id,
     #type="o",
     layout=c(1,size),
     xlab="Date",
-    type="cairo",
+    #type="cairo",
     ylab="Weight (kg)",
     scales=list(x=list(relation="free", tick.number=10)),
     par.settings = list(strip.background = list(col = c("light grey")) ) 

@@ -3,6 +3,52 @@
  *
  * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
  */
+
+
+
+function repairRow(row, errors){
+
+}
+
+function setDescription(row, errors){
+    //we need to set description for every field
+    var description = new Array();
+
+    description.push(EHR.validation.snomedString('Code', row.code,  row.meaning));
+
+    if(row.volume)
+        description.push('Volume: '+ row.volume+ ' '+ EHR.validation.null2string(row.vunits));
+    if(row.conc)
+        description.push('Conc: '+ row.conc+ ' '+ EHR.validation.null2string(row.cunits));
+    if(row.amount)
+        description.push('Amount: '+ row.amount+ ' '+ EHR.validation.null2string(row.units));
+    if(row.route)
+        description.push('Route: '+ row.route);
+    if(row.enddate)
+        description.push('EndDate: '+ row.enddate);
+//    if(row.frequency)
+//        description.push('Frequency: '+ row.frequency);
+
+    return description;
+}
+
+function beforeBoth(row, errors) {
+    EHR.validation.rowInit(row, errors);
+
+    EHR.validation.rowEnd(row, errors);
+}
+
+
+function beforeInsert(row, errors) {
+    beforeBoth(row, errors);
+
+}
+
+function beforeUpdate(row, oldRow, errors) {
+    beforeBoth(row, errors);
+
+}
+
 // ================================================
 
 //==includeStart
@@ -391,47 +437,5 @@ EHR.validation = {
 
 
 
-function repairRow(row, errors){
-
-}
-
-function setDescription(row, errors){
-    //we need to set description for every field
-    var description = new Array();
-
-    description.push(EHR.validation.snomedString('Code', row.code,  row.meaning));
-
-    if(row.volume)
-        description.push('Volume: '+ row.volume+ ' '+ EHR.validation.null2string(row.vunits));
-    if(row.conc)
-        description.push('Conc: '+ row.conc+ ' '+ EHR.validation.null2string(row.cunits));
-    if(row.amount)
-        description.push('Amount: '+ row.amount+ ' '+ EHR.validation.null2string(row.units));
-    if(row.route)
-        description.push('Route: '+ row.route);
-    if(row.enddate)
-        description.push('EndDate: '+ row.enddate);
-//    if(row.frequency)
-//        description.push('Frequency: '+ row.frequency);
-
-    return description;
-}
-
-function beforeBoth(row, errors) {
-    EHR.validation.rowInit(row, errors);
-
-    EHR.validation.rowEnd(row, errors);
-}
-
-
-function beforeInsert(row, errors) {
-    beforeBoth(row, errors);
-
-}
-
-function beforeUpdate(row, oldRow, errors) {
-    beforeBoth(row, errors);
-
-}
 
 

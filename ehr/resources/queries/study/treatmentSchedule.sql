@@ -4,7 +4,7 @@
  * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
  */
 SELECT
-t1.lsid,
+t1.objectid,
 t1.id,
 t1.id.curLocation.room as CurrentRoom,
 t1.id.curLocation.cage as CurrentCage,
@@ -49,7 +49,19 @@ CASE
     THEN 'PM'
   WHEN (t1.frequency=5)
     THEN 'Night'
-END as TimeOfDay
+END as TimeOfDay,
+
+CASE
+  WHEN (t1.frequency=1 OR t1.frequency=7 OR t1.frequency=8)
+    THEN 1
+  --these are the multiple per day options
+  WHEN (t1.frequency=2 OR t1.frequency=3 OR t1.frequency=6)
+    THEN 1
+  WHEN (t1.frequency=4)
+    THEN 2
+  WHEN (t1.frequency=5)
+    THEN 3
+END as SortOrder
 
 FROM lists.next30Days d
 
@@ -116,7 +128,14 @@ CASE
     THEN 'PM'
   WHEN (t1.frequency=6)
     THEN 'Night'
-END as TimeOfDay
+END as TimeOfDay,
+
+CASE
+  WHEN (t1.frequency=2 OR t1.frequency=3)
+    THEN 2
+  WHEN (t1.frequency=6)
+    THEN 3
+END as SortOrder
 
 FROM lists.next30Days d
 
@@ -167,7 +186,9 @@ t1.userid,
 t1.remark,
 t1.description,
 
-'Night' as TimeOfDay
+'Night' as TimeOfDay,
+
+3 as SortOrder
 
 FROM lists.next30Days d
 

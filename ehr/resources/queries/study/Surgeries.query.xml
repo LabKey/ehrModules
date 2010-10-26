@@ -2,7 +2,7 @@
     <metadata>
         <tables xmlns="http://labkey.org/data/xml">
             <table tableName="Surgeries" tableDbType="TABLE">
-                <tableUrl>/EHR_Reporting/surgeryDetails.view?key=${objectid}</tableUrl>
+                <tableUrl>/EHR/surgeryDetails.view?key=${objectid}</tableUrl>
                 <columns>
                     <column columnName="Project">
                         <fk>

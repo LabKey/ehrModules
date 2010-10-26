@@ -2,7 +2,7 @@
     <metadata>
         <tables xmlns="http://labkey.org/data/xml">
             <table tableName="chemistryRuns" tableDbType="TABLE">
-                <tableUrl>/EHR_Reporting/clinpathDetails.view?runId=${objectid}&amp;dataset=Blood Chemistry</tableUrl>
+                <tableUrl>/EHR/clinpathDetails.view?runId=${objectid}&amp;dataset=Blood Chemistry</tableUrl>
                 <columns>
                     <column columnName="date">
                         <formatString>yyyy-MM-dd HH:mm</formatString>

@@ -24,10 +24,13 @@ Ext.menu.DateMenu.prototype.addClass('extContainer');
 
 EHR.ext.standardMetadata = {
     Id: {lookups: false, parentField: {queryName: 'encounters', field: 'id'}}
-    ,Date: {parentField: {queryName: 'encounters', field: 'Date'}}
+    ,Date: {parentField: {queryName: 'encounters', field: 'date'}}
+    ,date: {parentField: {queryName: 'encounters', field: 'date'}}
     ,created: {isHidden: true}
+    ,CreatedBy: {isHidden: true}
     ,AnimalVisit: {isHidden: true}
     ,modified: {isHidden: true}
+    ,ModifiedBy: {isHidden: true}
     //,SequenceNum: {isHidden: true}
     ,QCState: {parentField: {queryName: 'encounters', field: 'qcstate'}}
     //,QCState: {isHidden: true}
@@ -75,8 +78,7 @@ Ext.override(Ext.layout.FormLayout, {
 
 EHR.ext.ParentFormPanel = Ext.extend(Ext.Panel, {
     initComponent: function(){
-
-        var loadDisabled = undefined!==this.uuid;
+        var loadDisabled = (undefined!==this.uuid);
         this.uuid = this.uuid || LABKEY.Utils.generateUUID();
 
         Ext.QuickTips.init();
@@ -91,9 +93,9 @@ EHR.ext.ParentFormPanel = Ext.extend(Ext.Panel, {
             ,collapsed: false
             ,defaultType: 'displayfield'
             ,bodyStyle: 'padding:5px 5px 5px 5px'
-            ,ref: '../abstract'
+            ,ref: '../../abstract'
             ,items: {html: 'No Animal Selected'}
-        }]
+        }];
 
         if (this.tabs)
             tabItems.push(this.tabs);
@@ -104,18 +106,18 @@ EHR.ext.ParentFormPanel = Ext.extend(Ext.Panel, {
 
         Ext.applyIf(this, {
             autoHeight: true
-            ,bodyBorder: true
-            ,border: true
+            ,layout: 'anchor'
             ,buttonAlign: 'left'
             ,canSubmit: false
-            ,frame:true
+            //,title: this.formType
             ,defaultType: 'textfield'
-            ,style: 'border-style:solid;border-width:1px'
             ,monitorValid: false
             ,monitorPoll : 200
-            ,deferredRender: false
+//            ,deferredRender: false
             ,defaults: {
                 msgTarget: 'side'
+                ,bodyBorder: false
+                ,border: false
                 ,validationDelay: 100
                 ,loadDisabled: loadDisabled 
             }
@@ -132,15 +134,15 @@ EHR.ext.ParentFormPanel = Ext.extend(Ext.Panel, {
                 text: 'Ready',
                 statusAlign: 'right',
                 iconCls: 'x-status-valid',
-                ref: 'statusBar',
-                items: [{
-                    text: 'Dirty',
-                    ref: '../dirtyState'
-                },{
-                    text: 'Valid',
-                    ref: '../validState'
-                }
-                ]
+                ref: 'statusBar'
+//                items: [{
+//                    text: 'Dirty',
+//                    ref: '../dirtyState'
+//                },{
+//                    text: 'Valid',
+//                    ref: '../validState'
+//                }
+//                ]
                 //iconCls: 'x-status-error',
 //                    sb.setStatus({
 //                            iconCls: 'x-status-saved',
@@ -153,31 +155,23 @@ EHR.ext.ParentFormPanel = Ext.extend(Ext.Panel, {
                     scope: this,
                     parent: this,
                     loadDisabled: loadDisabled,
+                    formType: this.formType,
                     ref: 'forms/encounters'
                 },
                 {
-                    xtype: 'tabpanel',
-                    activeTab: 0,
-                    deferredRender: false,
-                    ref: 'queryPanel',
-                    items: tabItems,
-                    cls: 'extContainer',
-                    scope: this
+                    layout: 'anchor',
+                    items: [{
+                        xtype: 'tabpanel',
+                        activeTab: 0,
+                        deferredRender: false,
+                        ref: '../queryPanel',
+                        items: tabItems,
+                        cls: 'extContainer',
+                        width: '80%',
+                        scope: this
+                    }]
                 }
             ],
-//            tbar: {
-//                xtype: 'statusbar',
-//                defaultText: 'Default text',
-//                text: 'Ready',
-//                iconCls: 'x-status-valid',
-//                ref: 'statusBar'
-//                //iconCls: 'x-status-error',
-////                    sb.setStatus({
-////                            iconCls: 'x-status-saved',
-////                            text: 'Draft auto-saved at ' + new Date().format('g:i:s A')
-////                        })
-//
-//            },
             store: new EHR.ext.ParentStore()
 //            ,listeners: {
 //                scope: this,
@@ -204,7 +198,13 @@ EHR.ext.ParentFormPanel = Ext.extend(Ext.Panel, {
 
         this.addEvents('beforesubmit');
         this.on('beforesubmit', this.updateQCState);
-        
+        this.store.on('commitcomplete', this.afterSubmit, this);
+        this.store.on('commitexception', this.afterSubmit, this);
+        this.store.on('beforecommit', function(r, s){
+            console.log(r);
+            console.log(s);
+        }, this);
+
         //monitor dirty state
         window.onbeforeunload = LABKEY.beforeunload(function () {
             if (this.isDirty())
@@ -221,10 +221,10 @@ EHR.ext.ParentFormPanel = Ext.extend(Ext.Panel, {
         }
     },
     onSubmit: function(o){
-        Ext.Msg.wait("Loading...");
+        Ext.Msg.wait("Loading2...");
         this.statusBar.showBusy();
 
-        this.updateQCState(o.id)
+        this.updateQCState(o.id);
 
         for (var i in this.forms){
             var f = this.forms[i];
@@ -235,7 +235,12 @@ EHR.ext.ParentFormPanel = Ext.extend(Ext.Panel, {
         this.store.commitChanges();
         Ext.Msg.hide();
     },
-    updateQCState: function(val){
+    afterSubmit: function(o, e){
+        console.log(o);
+        console.log(e);
+        this.statusBar.clearStatus();
+    },
+    updateQCState: function(records, val){
         if(!val){
             val = this.qcstate.getValue();
         }
@@ -256,7 +261,8 @@ EHR.ext.ParentFormPanel = Ext.extend(Ext.Panel, {
                     break;
             }
         }
-
+console.log('QCState: ');
+console.log(val);
         this.qcstate.setValue(val);
 
         //TODO: possibly include logic to flag children as needing review??
@@ -309,7 +315,7 @@ EHR.ext.ParentFormPanel = Ext.extend(Ext.Panel, {
         this.fireEvent('clientvalidation', this, valid);
 
         //TODO: possibly auto-save here?
-        var s = !dirty || !this.encounters.id.loadedId || !this.encounters.Date.getValue();
+        var s = !dirty || !this.encounters.id.loadedId || !this.encounters.date.getValue();
         this.saveDraftBtn.setDisabled(s);
 
         //set status bar
@@ -365,31 +371,38 @@ EHR.ext.ClinicalHeader = Ext.extend(Ext.FormPanel, {
     initComponent: function(){
         Ext.apply(this, {
             autoHeight: true
+            ,autoWidth: true
             ,id: 'encounters'
             ,name: 'encounters'
-            ,width: 'auto'
-            ,bodyBorder: true
-            ,border: true
+            ,bodyBorder: false
+            ,border: false
             ,buttons: []
             ,bodyStyle: 'padding:5px 5px 5px 5px'
             ,style: 'margin-bottom: 5px'
-            ,useFieldValues: true
+            //,useFieldValues: true
             ,plugins: [new EHR.ext.plugins.DataBind()]
             ,defaults: {
                 width: 'auto',
-                border: true,
+                border: false,
+                bodyBorder: false,   
                 parent: this.parent || this
             }
             ,items: [{
                 layout: 'column'
                 ,labelAlign: 'top'
+                ,defaults: {
+                    border: false,
+                    bodyBorder: false
+                }
                 ,items: [
                 {
                     columnWidth:'250px',
                     style:'padding-right:4px;padding-top:0px',
                     layout: 'form',
                     defaults: {
-                        parent: this.parent || this
+                        parent: this.parent || this,
+                        border: false,
+                        bodyBorder: false
                     },                    
                     items: [{
                         xtype:'ehr-animal',
@@ -433,20 +446,43 @@ EHR.ext.ClinicalHeader = Ext.extend(Ext.FormPanel, {
                                 queryName: 'QCState',
                                 sort: 'Label'
                             })
+                        },{
+                            xtype: (debug ? 'combo': 'hidden')
+                            ,fieldLabel: 'Type'
+                            ,ref: '../../../encounters/type'
+                            ,disabled: this.loadDisabled
+                            ,width: 140
+                            ,name: 'encounters.type'
+                            ,dataIndex: 'type'
+                            ,displayField:'category'
+                            ,valueField: 'category'
+                            ,forceSelection: true
+                            ,typeAhead: false
+                            ,triggerAction: 'all'
+                            ,mode: 'local'
+                            ,value: this.formType || 'Clinical'
+                            ,store: EHR.ext.getLookupStore({
+                                containerPath: 'WNPRC/EHR/',
+                                schemaName: 'lookups',
+                                queryName: 'encounter_types',
+                                sort: 'category'
+                            })
                         }
                     ]
                 },{
                     columnWidth:'300px',
                     layout: 'form',
+                    border: false,
+                    bodyBorder: false, 
                     defaults: {
                         parent: this.parent || this
                     },
                     items: [{
                         xtype:'xdatetime',
-                        name: 'encounters.Date',
-                        dataIndex: 'Date',
+                        name: 'encounters.date',
+                        dataIndex: 'date',
                         allowBlank: false,
-                        ref: '../../../encounters/Date',
+                        ref: '../../../encounters/date',
                         disabled: this.loadDisabled,
                         fieldLabel: 'Date/Time',
                         dateFormat: 'Y-m-d',
@@ -457,7 +493,9 @@ EHR.ext.ClinicalHeader = Ext.extend(Ext.FormPanel, {
                     style:'padding-left:5px;padding-top:0px',
                     layout: 'form',
                     defaults: {
-                        parent: this.parent || this
+                        parent: this.parent || this,
+                        border: false,
+                        bodyBorder: false                       
                     },                           
                     items: [{
                         xtype:'ehr-project',
@@ -485,10 +523,11 @@ EHR.ext.ClinicalHeader = Ext.extend(Ext.FormPanel, {
                 queryName: 'encounters',
                 columns: '*',
                 filterArray: [LABKEY.Filter.create('objectid', this.parent.uuid, LABKEY.Filter.Types.EQUAL)],
-                maxRows: 1,
+                //maxRows: 1,
                 storeId: 'study||encounters',
                 autoLoad: true,
                 parent: this,
+                isParent: true,
                 noValidationCheck: true
             })
         });
@@ -505,18 +544,18 @@ EHR.ext.ClinicalHeader = Ext.extend(Ext.FormPanel, {
             this.parent.relayEvents(this, ['animalvalid', 'animalinvalid']);
 
             this.parent.qcstate = this.parent.encounters.qcstate;
-        }        
+        }
 
         this.parent.store.addStore(this.store);
     },
     fetchAbstract: function(c){
         var id = c.getValue();
         if (!id){
-            this.refOwner.canSubmit = false;
+            this.parent.canSubmit = false;
             return false;
         }
 
-        var target = this.refOwner.abstract;
+        var target = this.parent.abstract;
 
         //no need to reload if ID is unchanged
         if (c.loadedId == id){
@@ -537,19 +576,19 @@ EHR.ext.ClinicalHeader = Ext.extend(Ext.FormPanel, {
         });
     },
     renderAbstract: function(data){
-        var target = this.refOwner.abstract;
+        var target = this.parent.abstract;
         target.removeAll();
 
         if(!data.rows.length){
             console.log('no id');
-            this.refOwner.encounters.id.markInvalid('Animal Id Not Found');
-            this.refOwner.canSubmit = false;
-            this.refOwner.stopMonitoring();
-            this.refOwner.submitBtn.setDisabled(true);
-            this.refOwner.snomedReview.setDisabled(true);
+            this.parent.encounters.id.markInvalid('Animal Id Not Found');
+            this.parent.canSubmit = false;
+            this.parent.stopMonitoring();
+            this.parent.submitBtn.setDisabled(true);
+            this.parent.snomedBtn.setDisabled(true);
         }
         else {
-            this.refOwner.canSubmit = true;
+            this.parent.canSubmit = true;
             var row = data.rows[0];
             Ext.each(data.metaData.fields, function(c){
                 if(c.isHidden)
@@ -561,12 +600,12 @@ EHR.ext.ClinicalHeader = Ext.extend(Ext.FormPanel, {
                     c.loadedId = row[c.name];
             }, this);
 
-            this.refOwner.startMonitoring();
+            this.parent.startMonitoring();
         }
 
         target.doLayout();
         target.expand();
-        this.refOwner.queryPanel.setActiveTab('abstract');
+        this.parent.queryPanel.setActiveTab('abstract');
     },
     clearAbstract: function(c){
         var target = this.parent.abstract;
@@ -758,19 +797,24 @@ EHR.ext.FormPanel = Ext.extend(Ext.FormPanel,
             ,width: 'auto'
             ,items: {xtype: 'displayfield', value: 'Loading...'}
             ,id: this.queryName
-            ,bodyBorder: true
+            ,bodyBorder: false
+            ,border: false
             ,bodyStyle: 'padding:5px 5px 5px 5px'
             //,style: 'margin-bottom: 5px;border-style:solid;border-width:1px'
-            ,ref: '../forms/'+this.queryName
             ,plugins: [new EHR.ext.plugins.DataBind()]
             ,deferredRender: false
             ,monitorValid: true
             ,trackResetOnLoad: true
         });
 
-        if(this.isChild){
-            var parent = this.ownerCt.ownerCt;
-            
+        if(this.isChild || this.parent){
+            var parent = this.parent || this.ownerCt.ownerCt;
+
+            if(!parent.forms)
+                parent.forms = {};
+
+            parent.forms[this.queryName] = this;
+
             this.store = new LABKEY.ext.Store({
                 xtype: 'labkey-store',
                 containerPath: 'WNPRC/EHR/',
@@ -819,7 +863,7 @@ EHR.ext.FormPanel = Ext.extend(Ext.FormPanel,
             if(this.metadata && this.metadata[c.name])
                 EHR.UTILITIES.rApply(c, this.metadata[c.name]);
             
-            if ((!c.isHidden && c.shownInInsertView) || c.parentField){
+            if ((!c.isHidden && c.shownInInsertView)){
 
                 if (c.inputType == 'textarea')
                     EHR.UTILITIES.rApply(c, {ext: {height: 100, width: '90%'}});
@@ -833,21 +877,21 @@ EHR.ext.FormPanel = Ext.extend(Ext.FormPanel,
                 }
                 var theField = LABKEY.ext.FormHelper.getFieldEditor(c);
 
-                //this is separated so that we dont accidentally replace another onValid handler
-                //TODO: should maybe be a plugin?
-                if (c.parentField){
-                    theField.parent = this.parent[c.parentField.queryName][c.parentField.field];
-
-                    theField.parent.on('change', function(c){
-                        this.setValue(c.getValue());
-                        this.fireEvent('change', this);
-                    }, theField);
-
-                    theField.on('render', function(c){
-                        c.setValue(c.parent.getValue());
-                        this.fireEvent('change', this);
-                    }, theField)
-                }
+//                //this is separated so that we dont accidentally replace another onValid handler
+//                //TODO: should maybe be a plugin?
+//                if (c.parentField){
+//                    theField.parent = this.parent[c.parentField.queryName][c.parentField.field];
+//
+//                    theField.parent.on('change', function(c){
+//                        this.setValue(c.getValue());
+//                        this.fireEvent('change', this);
+//                    }, theField);
+//
+//                    theField.on('render', function(c){
+//                        c.setValue(c.parent.getValue());
+//                        this.fireEvent('change', this);
+//                    }, theField)
+//                }
 
                 this.add(theField);
             }

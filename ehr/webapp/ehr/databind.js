@@ -119,9 +119,9 @@ EHR.ext.plugins.DataBind = Ext.extend(Ext.util.Observable, {
                 if (this.store)
                 {
                     console.log(this.store);
+                    console.log(this.store.totalLength);
                     this.store.each(function(rec)
                     {
-
                         console.log('record is new?: '+rec.isNew);
                         console.log('record is dirty?: '+rec.dirty);
                         console.log('record is phantom?: '+rec.phantom);
@@ -178,6 +178,7 @@ EHR.ext.plugins.DataBind = Ext.extend(Ext.util.Observable, {
                             else if (records.length == 0)
                             {
                                 //TODO: only create record on save/submit maybe?
+                                //or maybe on form dirty?
                                 store.createFormRecord();
                             }
                             else
@@ -188,9 +189,10 @@ EHR.ext.plugins.DataBind = Ext.extend(Ext.util.Observable, {
                         beforecommit: function(records, rows){
                             console.log('child store before commit');
                         },
-                        commitexception: function(m){
+                        commitexception: function(m, e){
                             console.log('child store commit exception');
                             console.log(m);
+                            console.log(e);
                         },
                         commitcomplete: function(){
                             console.log('child store commit complete');
@@ -228,9 +230,17 @@ EHR.ext.ParentStore = Ext.extend(Ext.util.Observable, {
 
         this.addEvents("beforecommit", "commitcomplete", "commitexception");
 
-        this.on('beforecommit', function(c){console.log('parent store before commit')});
-        this.on('commitcomplete', function(c){console.log('parent store commit complete!')});
-        this.on('commitexception', function(c){console.log('parent store commit exception')});
+//        this.on('beforecommit', function(c){
+//            console.log('parent store before commit')
+//        });
+        this.on('commitcomplete', function(c){
+            console.log('parent store commit complete!')
+        });
+        this.on('commitexception', function(c, o){
+            console.log('parent store commit exception');
+            console.log(c);
+            console.log(o);
+        });
 
     },
     addStore: function(store){
@@ -242,7 +252,7 @@ EHR.ext.ParentStore = Ext.extend(Ext.util.Observable, {
 
         //check whether container path matches
         if (store.containerPath != this.containerPath){
-            console.log('possible problem: container dont match');
+            console.log('possible problem: container doesnt match');
         }
 
         if (!this.storeMap[store.storeId]){
@@ -250,6 +260,19 @@ EHR.ext.ParentStore = Ext.extend(Ext.util.Observable, {
             this.storeMap[store.storeId] = store;
         }
 
+        if (store.isParent) {
+            this.parentStore = store;
+            for (var i=0;i<this.stores.length;i++){
+                var store = this.stores[i];
+                this.updateInheritance(store);
+            }
+        }
+        else {
+            if(store.data.length)
+                this.updateInheritance(store);
+            else
+                store.on('load', this.updateInheritance, this, store);
+        }
     },
     removeStore: function(store){
         store = Ext.StoreMgr.lookup(store);
@@ -258,6 +281,43 @@ EHR.ext.ParentStore = Ext.extend(Ext.util.Observable, {
                 this.store.remove(store);
 
             delete this.storeMap[store.storeId];
+        }
+
+        if (this.parentStore == store) {
+            delete this.parentStore;
+        }
+    },
+    updateInheritance: function(store){
+        if(!this.parentStore)
+            return;
+
+        if (store.isParent){
+            return;
+        }
+
+        for (var j in store.fields.map){
+            var field = store.fields.map[j];
+            var handler = (function(childStore, field){
+                return function(store){
+                    console.log('parent changed');
+                    var parentRecord = store.getAt(0);
+                    var val = parentRecord.get(field.parentField.id);
+
+                    console.log(val);
+                    childStore.each(function(rec){
+                        rec.set(field.dataIndex, val);
+                        console.log('setting record');                        
+                    }, this)
+
+                    console.log(childStore);
+                    console.log(parentRecord);
+
+                }
+            })(store, field);
+
+            if(field.parentField){
+                this.parentStore.on('datachanged', handler, this);
+            }
         }
     },
     getStores: function(){
@@ -295,7 +355,7 @@ EHR.ext.ParentStore = Ext.extend(Ext.util.Observable, {
             return;
         }
         
-        this.fireEvent("beforecommit", changed.records, changed.commands.rows);
+        this.fireEvent("beforecommit", changed.records, changed.commands);
 
         Ext.Ajax.request({
             url : LABKEY.ActionURL.buildURL("query", "saveRows", this.containerPath),
@@ -314,6 +374,8 @@ EHR.ext.ParentStore = Ext.extend(Ext.util.Observable, {
     },
     getOnCommitFailure : function(records) {
         return function(response, options) {
+            console.log(response)
+            console.log(options)
             //note: should not matter which child store they belong to
             for(var idx = 0; idx < records.length; ++idx)
                 delete records[idx].saveOperationInProgress;
@@ -321,9 +383,9 @@ EHR.ext.ParentStore = Ext.extend(Ext.util.Observable, {
             var json = this.getJson(response);
             var message = (json && json.exception) ? json.exception : response.statusText;
 
-            for(var i in this.storeMap){
-                this.storeMap[i].fireEvent("commitexception", message);
-            }
+//            for(var i in this.storeMap){
+//                this.storeMap[i].fireEvent("commitexception", message);
+//            }
 
             if(false !== this.fireEvent("commitexception", message))
                 Ext.Msg.alert("Error During Save", "Could not save changes due to the following error:\n" + message);
@@ -355,6 +417,9 @@ EHR.ext.ParentStore = Ext.extend(Ext.util.Observable, {
                 s.deleteRecords([r]);
             }, this);
         }, this);
+    },
+    inheritField: function(config){
+            
     },
     stores : [],
     storeMap : {}

@@ -2,12 +2,12 @@
     <metadata>
         <tables xmlns="http://labkey.org/data/xml">
             <table tableName="parasitologyRuns" tableDbType="TABLE">
-                <tableUrl>/EHR_Reporting/clinpathDetails.view?runId=${objectid}&amp;dataset=Parasitology</tableUrl>
+                <tableUrl>/EHR/clinpathDetails.view?runId=${objectid}&amp;dataset=Parasitology</tableUrl>
                 <columns>
                     <column columnName="room">
                         <datatype>varchar</datatype>
                         <columnTitle>Room</columnTitle>
-                        <url>/EHR_Reporting/cageDetails.view?
+                        <url>/EHR/cageDetails.view?
                             room=${room}&amp;
                             cage=${cage}
                         </url>

@@ -19,7 +19,7 @@ function makePanel(){
 
             Ext.apply(this, {
                 layout: 'table'
-                ,width: 250
+                ,width: 280
                 ,bodyBorder: false
                 ,border: false
                 ,defaults: {
@@ -60,7 +60,8 @@ function makePanel(){
 
             this.add(new Ext.Button({
                 text: 'Show Animal'
-                ,width: 80
+                ,width: 120
+                ,style: 'padding-left:5px'
                 ,handler: function(){
                     var value = this.animalField.getValue();
                     if (!value) return false;
@@ -98,7 +99,8 @@ function makePanel(){
 
             this.add(new Ext.Button({
                 text: 'Show Group'
-                ,width: 80
+                ,width: 120
+                ,style: 'padding-left:5px'
                 ,handler: function(){
                     var value = this.animalGroup.getValue();
                     if (!value) return false;
@@ -137,7 +139,8 @@ function makePanel(){
 
             this.add(new Ext.Button({
                 text: 'Show Project'
-                ,width: 80
+                ,width: 120
+                ,style: 'padding-left:5px'
                 ,handler: function(){
                     var value = this.projectField.getValue();
                     if (!value) return false;
@@ -174,7 +177,8 @@ function makePanel(){
 
             this.add(new Ext.Button({
                 text: 'Show Protocol'
-                ,width: 80
+                ,width: 120
+                ,style: 'padding-left:5px'
                 ,handler: function(){
                     var value = this.protocolField.getValue();
                     
@@ -207,7 +211,7 @@ function makePanel(){
 //                ,displayField:'room'
 //                ,valueField: 'room'
 //                ,typeAhead: true
-//                ,width: 100
+//                ,width: 120
 //                ,editable: true
 //                ,store: new LABKEY.ext.Store({
 //                    containerPath: 'WNPRC/EHR/',
@@ -219,7 +223,8 @@ function makePanel(){
 
             this.add(new Ext.Button({
                 text: 'Show Room'
-                ,width: 80
+                ,width: 120
+                ,style: 'padding-left:5px'
                 ,handler: function(){
                     var value = this.roomField.getValue();
                     if (!value) return false;

@@ -3,7 +3,7 @@
 # 
 #  Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
 ##
-#options(echo=TRUE);
+options(echo=TRUE);
 options(expressions = 1000);
 library(pedigree)
 library(Rlabkey)
@@ -19,7 +19,7 @@ ib = calcInbreeding(df);
 
 #we set date=now() as a timestamp
 date <- as.character( date() );
-newRecords = data.frame(Id=as.character(labkey.data$id), coefficient=ib, date=c(date), stringsAsFactors=FALSE);
+newRecords <- data.frame(Id=as.character(labkey.data$id), coefficient=ib, date=c(date), stringsAsFactors=FALSE);
 
 #find old records first
 oldRecords <- labkey.selectRows(
@@ -28,49 +28,64 @@ oldRecords <- labkey.selectRows(
     schemaName="study",
     queryName="inbreeding",
     colSelect=c('lsid', 'Id', 'date', 'coefficient'),
-    showHidden = TRUE
+    showHidden = TRUE,
+    colNameOpt = 'fieldname'  #rname
 )
+#str(oldRecords);
+#str(newRecords);
 
-#we need to find the intersect of oldRecords and newRecords based on Id and coefficient
-#which tells us records to update
+IdxToDelete <- setdiff(oldRecords$Id, newRecords$Id);
+#IdxToDelete
+toDelete <- oldRecords[match(IdxToDelete, oldRecords$Id),]
+#toDelete
 
-#if(length(toDelete$Id)){
-#    del <- labkey.deleteRows(
-#        baseUrl=labkey.url.base,
-#        folderPath="/WNPRC/EHR",
-#        schemaName="study",
-#        queryName="inbreeding",
-#        toDelete=data.frame(lsid=toDelete$Lsid)
-#    );
-#}
-
-
-
-#we need to find records present in oldRecords, but not newRecords, based on Id and coefficient
-#which tells us records to delete
-
-#if(length(toUpdate$Id)){
-#    del <- labkey.deleteRows(
-#        baseUrl=labkey.url.base,
-#        folderPath="/WNPRC/EHR",
-#        schemaName="study",
-#        queryName="inbreeding",
-#        toUpdate=toUpdate
-#    );
-#}
+if(length(toDelete$Id)){
+    del <- labkey.deleteRows(
+        baseUrl=labkey.url.base,
+        folderPath="/WNPRC/EHR",
+        schemaName="study",
+        queryName="inbreeding",
+        toDelete=data.frame(lsid=toDelete$Lsid)
+    );
+    del;
+}
 
 
-#we need to find records present in newRecords, but not oldRecords, based on Id and coefficient
-#which tells us records to insert
+IdxToUpdate <- intersect(oldRecords$Id, newRecords$Id);
+coefficient1 <- oldRecords[match(IdxToUpdate, oldRecords$Id),]
+#coefficient1
+coefficient2 <- newRecords[match(IdxToUpdate, newRecords$Id),]
+#coefficient2
 
-#if(length(toInsert$Id)){
-#    del <- labkey.insertRows(
-#        baseUrl=labkey.url.base,
-#        folderPath="/WNPRC/EHR",
-#        schemaName="study",
-#        queryName="inbreeding",
-#        toInsert=toInsert
-#    );
-#}
+toGet <- (!is.na(coefficient1$coefficient) & is.na(coefficient2$coefficient)) | (is.na(coefficient1$coefficient) & !is.na(coefficient2$coefficient)) | (!is.na(coefficient1$coefficient) & !is.na(coefficient2$coefficient) & coefficient1$coefficient != coefficient2$coefficient)
+toUpdate <- coefficient1[toGet,];
+toUpdate$coefficient <- coefficient2$coefficient[toGet];
+toUpdate$date <- c( as.character( date() ) );
 
+str(toUpdate);
 
+if(length(toUpdate$Id)){
+    update <- labkey.updateRows(
+        baseUrl=labkey.url.base,
+        folderPath="/WNPRC/EHR",
+        schemaName="study",
+        queryName="inbreeding",
+        toUpdate=toUpdate
+    );    
+    update
+}
+
+IdxToInsert <- setdiff(newRecords$Id, oldRecords$Id);
+toInsert <- newRecords[match(IdxToInsert, newRecords$Id),]
+#str(toInsert)
+
+if(length(toInsert$Id)){
+    ins <- labkey.insertRows(
+        baseUrl=labkey.url.base,
+        folderPath="/WNPRC/EHR",
+        schemaName="study",
+        queryName="inbreeding",
+        toInsert=toInsert
+    );
+    ins;
+}

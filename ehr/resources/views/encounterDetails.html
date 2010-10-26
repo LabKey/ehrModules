@@ -1,0 +1,64 @@
+<html>
+<head>
+
+<script type="text/javascript">
+
+LABKEY.requiresScript("/ehr/transposeRows.js");
+
+Ext.onReady(function ()
+{
+    if (!LABKEY.ActionURL.getParameter('lsid')){alert('Must Provide LSID'); return false;}
+
+    var filterArray = [LABKEY.Filter.create('lsid', LABKEY.ActionURL.getParameter('lsid'), LABKEY.Filter.Types.EQUAL)];
+
+    new EHR.ext.customPanels.detailsView({
+        schemaName: 'study',
+        queryName: 'encounters',
+        //title: 'Encounter Details:',
+        renderTo: 'encounterDetails',
+        filterArray: filterArray
+    });
+
+    var childDiv = document.getElementById('childTables');
+    var children = [
+        {queryName: ''
+    ];
+
+    for (var i=0;i<children.length;i++){
+        var div = childDiv.createChild('span');
+
+        new LABKEY.QueryWebPart({
+            title: 'All Animals Ever Housed',
+            schemaName: 'study',
+            queryName: 'Housing',
+            allowChooseQuery: false,
+            allowChooseView: true,
+            showInsertNewButton: false,
+            showDeleteButton: false,
+            showDetailsColumn: true,
+            showUpdateColumn: false,
+            showRecordSelectors: true,
+            buttonBarPosition: 'top',
+            filterArray: filterArray,
+            sort: '-Date',
+            scope: this,
+            errorCallback: EHR.UTILITIES.onError
+         }).render('allAnimals');
+
+
+    }
+
+});
+
+</script>
+</head>
+<body>
+    <p/>
+
+	<div id='encounterDetails'></div>
+
+    <p/>
+
+    <div id='childTables'></div>
+
+</html>

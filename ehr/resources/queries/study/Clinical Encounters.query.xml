@@ -2,7 +2,25 @@
     <metadata>
         <tables xmlns="http://labkey.org/data/xml">
             <table tableName="encounters" tableDbType="TABLE">
-                <tableUrl>/query/detailsQueryRow.view?schemaName=study&amp;query.queryName=encounters&amp;lsid=${lsid}</tableUrl>
+                <tableUrl>/ehr/encounterDetails.view?type=${type}&amp;lsid=${lsid}</tableUrl>
+                <columns>
+                    <column columnName="type">
+                        <isKeyField>true</isKeyField>
+                        <isHidden>true</isHidden>
+                        <fk>
+                            <fkDbSchema>lookups</fkDbSchema>
+                            <fkTable>encounter_types</fkTable>
+                            <fkColumnName>category</fkColumnName>
+                        </fk>
+                    </column>
+                </columns>
+                <buttonBarOptions includeStandardButtons="true">                    
+                    <item insertBefore="Views" text="Create New">                        
+                        <onClick>
+
+                        </onClick>
+                    </item>
+                </buttonBarOptions>
             </table>
         </tables>
     </metadata>

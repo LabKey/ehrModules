@@ -106,6 +106,6 @@
         <filter column="Status/WNPRC_Animal" operator="eq" value="true"/>
     </filters>
     <sorts>
-        <sort column="id" descending="false"/>
+        <sort column="Id" descending="false"/>
     </sorts>
 </customView>

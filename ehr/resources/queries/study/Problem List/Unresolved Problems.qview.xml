@@ -36,6 +36,6 @@
         <filter column="date_resolved" operator="isblank"/>
     </filters>
     <sorts>
-        <sort column="date_observed" descending="true"/>
+        <sort column="date" descending="true"/>
     </sorts>
 </customView>

@@ -1,6 +1,11 @@
 <customView xmlns="http://labkey.org/data/xml/queryCustomView">
     <columns>
         <column name="Id"/>
+        <column name="Id/curLocation/Area">
+            <properties>
+                <property name="columnTitle" value="Current Location"/>
+            </properties>
+        </column>
         <column name="Date"/>
         <!--<column name="dateCompleted"/>-->
         <column name="project"/>
@@ -14,6 +19,10 @@
             </properties>
         </column>
     </columns>
+    <filters>
+        <filter column="dateCompleted" operator="isblank"/>
+        <!--<filter column="QCState/label" operator="eq" value="In Progress"/>-->
+    </filters>
     <sorts>
         <sort column="date" descending="true"/>
     </sorts>

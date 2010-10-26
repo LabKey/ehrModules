@@ -11,7 +11,7 @@ d.date,
 
 round(
 CASE
-  WHEN (id.dataset.demographics.death IS NULL)
+  WHEN (d.id.dataset.demographics.death IS NULL)
     THEN (timestampdiff('SQL_TSI_DAY', d.date, curdate())/7)
    ELSE
     --(timestampdiff('SQL_TSI_DAY', d.date, id.dataset.demographics.death)/7)

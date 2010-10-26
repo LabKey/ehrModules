@@ -16,7 +16,7 @@ colors = c("darkblue","red","yellow","green");
 png(filename="${imgout:barchart}",
     width=1100,
     height=(500),
-    type="cairo"
+    #type="cairo"
     );
 
 data <- table(labkey.data$category, labkey.data$species);

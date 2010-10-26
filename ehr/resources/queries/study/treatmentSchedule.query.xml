@@ -1,10 +1,14 @@
 <query xmlns="http://labkey.org/data/xml/query">
     <metadata>
         <tables xmlns="http://labkey.org/data/xml">
-            <table tableName="treatment_order" tableDbType="TABLE">
-                <tableUrl>/query/detailsQueryRow.view?schemaName=study&amp;query.queryName=treatment_order&amp;lsid=${lsid}</tableUrl>
+            <table tableName="treatmentSchedule" tableDbType="TABLE">
+                <!--<tableUrl>/query/detailsQueryRow.view?schemaName=study&amp;query.queryName=treatment_order&amp;lsid=${lsid}</tableUrl>-->
+                <tableUrl>/EHR/treatmentDetails.view?key=${objectid}</tableUrl>
                 <columns>
                     <column columnName="lsid">
+                        <isHidden>true</isHidden>
+                    </column>
+                    <column columnName="objectid">
                         <isHidden>true</isHidden>
                     </column>
                     <column columnName="Id">
@@ -21,9 +25,9 @@
                             <fkColumnName>project</fkColumnName>
                         </fk>
                     </column>
-                    <column columnName="Date">
+                    <column columnName="StartDate">
                         <datatype>timestamp</datatype>
-                        <columnTitle>Begin Date</columnTitle>
+                        <columnTitle>Start Date</columnTitle>
                         <formatString>yyyy-MM-dd</formatString>
                     </column>
                     <column columnName="code">
@@ -54,6 +58,18 @@
                     <column columnName="remark">
                         <displayWidth>250</displayWidth>
                     </column>
+                    <column columnName="RoomAtTime">
+                        <displayWidth>50</displayWidth>
+                    </column>
+                    <column columnName="CageAtTime">
+                        <displayWidth>50</displayWidth>
+                    </column>
+                    <column columnName="CurrentRoom">
+                        <displayWidth>40</displayWidth>
+                    </column>
+                    <column columnName="CurrentCage">
+                        <displayWidth>40</displayWidth>
+                    </column>                    
                 </columns>
             </table>
         </tables>

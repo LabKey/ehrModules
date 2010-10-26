@@ -1,0 +1,54 @@
+<html>
+<head>
+
+<script type="text/javascript">
+
+LABKEY.requiresScript("/ehr/transposeRows.js");
+
+Ext.onReady(function ()
+{
+    if (!LABKEY.ActionURL.getParameter('key')){alert('Must Provide Treatment ID'); return false;}
+
+    var key = LABKEY.ActionURL.getParameter('key');
+
+    new EHR.ext.customPanels.detailsView({
+        schemaName: 'study',
+        queryName: 'Treatment Orders',
+        title: 'Treatment Details:',
+        renderTo: 'treatmentDetails',
+        filterArray: [LABKEY.Filter.create('objectId', key, LABKEY.Filter.Types.EQUAL)]
+    });
+
+    new LABKEY.QueryWebPart({
+        title: 'Treatment Schedule',
+        schemaName: 'study',
+        queryName: 'treatmentSchedule',
+        allowChooseQuery: false,
+        allowChooseView: true,
+        showInsertNewButton: false,
+        showDeleteButton: false,
+        showDetailsColumn: true,
+        showUpdateColumn: false,
+        showRecordSelectors: true,
+        buttonBarPosition: 'top',
+        filters: [LABKEY.Filter.create('objectId', key, LABKEY.Filter.Types.EQUAL)],
+        //sort: '-Date',
+        scope: this,
+        errorCallback: EHR.UTILITIES.onError
+     }).render('treatmentSchedule');
+
+});
+
+</script>
+</head>
+<body>
+    <p/>
+
+	<div id='treatmentDetails'></div>
+
+    <p/>
+
+    <div id='treatmentSchedule'></div>
+
+</body>
+</html>

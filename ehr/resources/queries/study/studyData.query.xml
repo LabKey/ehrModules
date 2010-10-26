@@ -21,6 +21,12 @@
                     <column columnName="parentId">
                         <isHidden>true</isHidden>
                     </column>
+                    <column columnName="account">
+                        <displayWidth>60</displayWidth>
+                    </column>
+                    <column columnName="userid">
+                        <displayWidth>100</displayWidth>
+                    </column>
                     <!--<column columnName="AgeAtTime" wrappedColumnName="lsid">-->
                         <!--<columnTitle>Age At The Time</columnTitle>-->
                         <!--<isHidden>false</isHidden>-->

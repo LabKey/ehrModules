@@ -2,7 +2,7 @@
     <metadata> 
         <tables xmlns="http://labkey.org/data/xml">
             <table tableName="hematologyRuns" tableDbType="TABLE">
-                <tableUrl>/EHR_Reporting/clinpathDetails.view?runId=${objectid}&amp;dataset=Hematology</tableUrl>
+                <tableUrl>/EHR/clinpathDetails.view?runId=${objectid}&amp;dataset=Hematology</tableUrl>
             </table>
         </tables>
     </metadata>

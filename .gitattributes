@@ -170,6 +170,7 @@ ehr/resources/queries/study/Blood_Draws.js -text
 ehr/resources/queries/study/Body[!!-~]Condition.query.xml -text
 ehr/resources/queries/study/Clinical[!!-~]Encounters.query.xml -text
 ehr/resources/queries/study/Clinical[!!-~]Encounters/.qview.xml -text
+ehr/resources/queries/study/Clinical[!!-~]Encounters/Active[!!-~]Forms.qview.xml -text
 ehr/resources/queries/study/Clinical[!!-~]Remarks.query.xml -text
 ehr/resources/queries/study/Clinical[!!-~]Remarks/.qview.xml -text
 ehr/resources/queries/study/Clinical[!!-~]Remarks/Biopsy[!!-~]Remarks.qview.xml -text
@@ -407,6 +408,8 @@ ehr/resources/queries/study/demographicsFamily.query.xml -text
 ehr/resources/queries/study/demographicsFamily.sql -text
 ehr/resources/queries/study/demographicsFamily/.qview.xml -text
 ehr/resources/queries/study/demographicsLatestSIVChallenge.sql -text
+ehr/resources/queries/study/demographicsLatestVL.query.xml -text
+ehr/resources/queries/study/demographicsLatestVL.sql -text
 ehr/resources/queries/study/demographicsMHC.query.xml -text
 ehr/resources/queries/study/demographicsMHC.sql -text
 ehr/resources/queries/study/demographicsMostRecentDeparture.query.xml -text
@@ -500,6 +503,8 @@ ehr/resources/views/biopsyDetails.html -text
 ehr/resources/views/cageDetails.html -text
 ehr/resources/views/clinicalOverview.html -text
 ehr/resources/views/clinpathDetails.html -text
+ehr/resources/views/dataEntry.html -text
+ehr/resources/views/dataEntry.view.xml -text
 ehr/resources/views/datasets.html -text
 ehr/resources/views/datasets.view.xml -text
 ehr/resources/views/datasets.webpart.xml -text
@@ -510,6 +515,7 @@ ehr/resources/views/ehrDatasetReport.view.xml -text
 ehr/resources/views/ehrNavigation.html -text
 ehr/resources/views/ehrNavigation.view.xml -text
 ehr/resources/views/ehrNavigation.webpart.xml -text
+ehr/resources/views/encounterDetails.html -text
 ehr/resources/views/formTest.html -text
 ehr/resources/views/housingQueries.html -text
 ehr/resources/views/lastSync.html -text
@@ -524,8 +530,12 @@ ehr/resources/views/protocolDetails.html -text
 ehr/resources/views/quickSearch.html -text
 ehr/resources/views/quickSearch.view.xml -text
 ehr/resources/views/quickSearch.webpart.xml -text
+ehr/resources/views/sponsors.html -text
+ehr/resources/views/sponsors.view.xml -text
+ehr/resources/views/sponsors.webpart.xml -text
 ehr/resources/views/surgeryDetails.html -text
 ehr/resources/views/todaysTreatments.html -text
+ehr/resources/views/treatmentDetails.html -text
 ehr/resources/views/utilities.html -text
 ehr/resources/views/webDAV.html -text
 ehr/scripts/pg_backup/.project -text
@@ -592,6 +602,8 @@ ehr/webapp/ehr/ext.ux.datetimefield.js -text
 ehr/webapp/ehr/ext.ux.multiselect.js -text
 ehr/webapp/ehr/ext.ux.statusbar.js -text
 ehr/webapp/ehr/formHelper.js -text
+ehr/webapp/ehr/images/accept.png -text
+ehr/webapp/ehr/images/ncrr.gif -text
 ehr/webapp/ehr/participantView.js -text
 ehr/webapp/ehr/reports.js -text
 ehr/webapp/ehr/searchForm.js -text

@@ -1,0 +1,34 @@
+<html>
+<script type="text/javascript">
+
+LABKEY.requiresScript("/WNPRC_Main/navMenu.js");
+
+
+Ext.onReady(function(){
+    var theDiv = document.getElementById('ehrDataEntry');
+
+    new LABKEY.QueryWebPart({
+        title: 'Active Forms:',
+        schemaName: 'study',
+        queryName: 'Clinical Encounters',
+        viewName: 'Active Forms',
+        allowChooseQuery: false,
+        allowChooseView: true,
+        showInsertNewButton: false,
+        showDeleteButton: false,
+        showDetailsColumn: true,
+        showUpdateColumn: false,
+        showRecordSelectors: true,
+        buttonBarPosition: 'top',
+        scope: this,
+        errorCallback: EHR.UTILITIES.onError
+     }).render('ehrDataEntry');
+});
+
+</script>
+<body>
+
+<div id="ehrDataEntry"/>
+
+</body>
+</html>

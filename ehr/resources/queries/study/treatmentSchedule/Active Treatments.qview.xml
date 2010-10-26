@@ -1,20 +1,20 @@
 <customView xmlns="http://labkey.org/data/xml/queryCustomView">
    <columns>
-       <column name="Id/curLocation/room">
-           <properties>
-               <property name="columnTitle" value="Current Room"/>
-           </properties>
+       <column name="CurrentRoom">
+           <!--<properties>-->
+               <!--<property name="columnTitle" value="Current Room"/>-->
+           <!--</properties>-->
        </column>
-       <column name="Id/curLocation/cage">
-           <properties>
-               <property name="columnTitle" value="Current Cage"/>
-           </properties>
+       <column name="CurrentCage">
+           <!--<properties>-->
+               <!--<property name="columnTitle" value="Current Cage"/>-->
+           <!--</properties>-->
        </column>
        <column name="id"/>       
        <column name="date"/>
-       <!--<column name="enddate"/>-->
+       <column name="enddate"/>
        <column name="TimeOfDay"/>
-       <column name="frequency"/>
+       <!--<column name="frequency"/>-->
        <column name="project"/>
        <column name="code"/>
        <column name="volume"/>
@@ -29,11 +29,11 @@
    </columns>
    <sorts>
        <sort column="date" descending="true"/>
-       <sort column="TimeOfDay" descending="false"/>
-       <sort column="Id/curLocation/cage" descending="false"/>
-       <sort column="Id/curLocation/room" descending="false"/>
+       <sort column="SortOrder" descending="false"/>
+       <sort column="CurrentRoom" descending="false"/>
+       <sort column="CurrentCage" descending="false"/>
    </sorts>
-   <filters>
-       <filter column="enddate" operator="isblank"/>
-   </filters>
+   <!--<filters>-->
+       <!--<filter column="enddate" operator="isblank"/>-->
+   <!--</filters>-->
 </customView>
