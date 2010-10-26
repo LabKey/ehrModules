@@ -25,6 +25,7 @@ import org.labkey.api.security.permissions.ReadPermission;
 import org.labkey.api.util.URLHelper;
 import org.labkey.api.view.JspView;
 import org.labkey.api.view.NavTree;
+import org.labkey.ehr.etl.ETL;
 import org.labkey.ehr.etl.ETLRunnable;
 import org.springframework.validation.BindException;
 import org.springframework.validation.Errors;
@@ -38,7 +39,6 @@ import java.util.Map;
 public class EHRController extends SpringActionController
 {
     private static final DefaultActionResolver _actionResolver = new DefaultActionResolver(EHRController.class);
-    static ETLStatus etlStatus = ETLStatus.Stop;
 
     public EHRController()
     {
@@ -119,9 +119,9 @@ public class EHRController extends SpringActionController
 
             String status = request.getParameter("etlStatus");
             if (status.equals("Run"))
-                EHRModule.startETL();
+                ETL.start();
             else if (status.equals("Stop"))
-                EHRModule.stopETL();
+                ETL.stop();
 
             return true;
         }
@@ -183,14 +183,5 @@ public class EHRController extends SpringActionController
 
     }
 
-    static public boolean isEtlRunning()
-    {
-        return etlStatus == ETLStatus.Run;
-    }
 
-
-    enum ETLStatus
-    {
-        Run, Stop;
-    }
 }

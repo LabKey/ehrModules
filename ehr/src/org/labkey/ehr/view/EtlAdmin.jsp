@@ -20,6 +20,7 @@
 <%@ page import="org.labkey.api.view.ViewContext"%>
 <%@ page import="org.labkey.api.view.ActionURL" %>
 <%@ page import="org.labkey.ehr.EHRController" %>
+<%@ page import="org.labkey.ehr.etl.ETL" %>
 <%@ page import="java.util.Map" %>
 <%@ page import="java.util.Date" %>
 <%@ page import="java.text.DateFormat" %>
@@ -37,10 +38,10 @@
 <b>Status:</b>
 <select name="etlStatus">
 <option
-<% if (EHRController.isEtlRunning()) { %>selected<% } %>
+<% if (ETL.isRunning()) { %>selected<% } %>
 >Run</option>
 <option
-<% if (!EHRController.isEtlRunning()) { %>selected<% } %>
+<% if (!ETL.isRunning()) { %>selected<% } %>
 >Stop</option>
 </select>
 
