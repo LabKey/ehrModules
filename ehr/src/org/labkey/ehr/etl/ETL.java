@@ -55,6 +55,7 @@ public class ETL
         }
     }
 
+    /// etlAdmin.jsp uses this.
     public static boolean isRunning()
     {
         return Status.Run == status;
