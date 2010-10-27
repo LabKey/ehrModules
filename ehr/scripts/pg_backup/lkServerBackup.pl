@@ -69,6 +69,7 @@ file with comments explaining each line.
 [general]
 compress = 1							;0 or 1.  determines whether DB dumps are compressed
 pg_dbname = labkey           			;name of postgres schema(s).  separate multiple schemas with whitespace (ie. 'labkey postgres').  the name 'globals' can be used to run pg_dumpall to backup global items
+pgdump_format = c           			;format used by pgdump.  see pgdump doc.  
 pg_host = someserver.com	 			;the postgres host.  can be omitted if running on the same server
 pg_user = labkey						;user connecting to postgres. can be omitted if using IDENT or other form of authentication
 backupdir = /labkey/backup/  			;the directory where backups will be stored
@@ -299,7 +300,7 @@ sub _pg_dump
 	my $pg_dbname = shift;
 	
 	# Postgres Backup
-	my $cmd = $config{pgdump_dir} . "pg_dump -F t " . ($config{pg_host} ? " -U ".$config{pg_host}." " : "") . $pg_dbname . " -f ".$bkpostgresfile;
+	my $cmd = $config{pgdump_dir} . "pg_dump -F ".($config{pgdump_format} ? $config{pgdump_format} : 't')." " . ($config{pg_host} ? " -U ".$config{pg_host}." " : "") . $pg_dbname . " -f ".$bkpostgresfile;
 	$cmd .= " -h ".$config{pg_host} if $config{pg_host};
 	 
 	my $pgout = system($cmd . " 2>&1");
