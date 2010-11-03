@@ -8,3 +8,4 @@ SELECT lower(id) as Id, FixDateTime(date, time) AS Date, (pno) AS project, FixNe
 null as parentid
 FROM behavetrem b1
 WHERE ts > ?
+AND length(id) > 1

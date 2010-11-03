@@ -22,9 +22,9 @@ function historyHandler(dataRegion, dataRegionName)
         if (ids.length){
             window.location = LABKEY.ActionURL.buildURL(
                 'ehr'
-                ,'animalHistory'
+                ,'animalHistory.view#activeReport:abstract&showReport:1&subject:'+ids.join(',')
                 ,'WNPRC/EHR/'
-                ,{showReport: 1, report: 1, participantId: ids.join(',')}
+
             );
         }
     }

@@ -17,6 +17,7 @@ FROM (
 SELECT id, date, account, remark, clinremark, max(ts) as ts, uuid
   FROM virserohead
   WHERE id IS NOT NULL AND id != "" AND date != '0000-00-00'
+  AND length(id) > 1
   group by id, date, account
   HAVING max(ts) > ?
 
@@ -25,6 +26,7 @@ UNION ALL
 SELECT id, date, account, remark, clinremark, max(ts) as ts, uuid
   FROM virisohead
   WHERE id IS NOT NULL AND id != "" AND date != '0000-00-00'
+  AND length(id) > 1
   group by id, date, account
   HAVING max(ts) > ?
 

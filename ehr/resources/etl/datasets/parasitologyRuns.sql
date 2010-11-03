@@ -7,4 +7,4 @@ SELECT lower(p.id) as Id, FixDate(p.date) as Date, room, lower(account) AS accou
 p.ts as ts, p.uuid AS objectid
 FROM parahead p
 WHERE ts > ?
-
+AND length(id) > 1

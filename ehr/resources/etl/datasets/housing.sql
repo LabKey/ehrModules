@@ -6,4 +6,4 @@
 SELECT lower(id) as Id, FixDateTime(idate, itime) AS Date, room, cage, cond, FixDateTime(odate, otime) AS odate,
 ts, uuid AS objectid
 FROM housing
-WHERE ts > ?
+WHERE ts > ? AND length(id) > 1

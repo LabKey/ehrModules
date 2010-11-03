@@ -42,12 +42,15 @@ Ext.onReady(function ()
             Ext.apply(this, {
                 autoHeight: true
                 ,bodyBorder: false
+                ,bodyStyle: 'background-color : transparent;'
+                ,width: '100%'
                 ,border: false
+                ,layout: 'anchor'
                 ,frame: false
                 ,reports: {}
                 ,defaults: {
                     border: false,
-                    autoWidth: true
+                    bodyStyle: 'background-color : transparent;'
                 }
                 ,items: [
                 {
@@ -70,15 +73,19 @@ Ext.onReady(function ()
                 },{
                     ref: 'idPanel'                        
                 },{
-                    xtype: 'tabpanel',
-                    ref: 'tabPanel',
-                    cls: 'extContainer',
-                    bodyBorder: true,
-                    width: '90%',
-                    border: true,
-                    autoHeight: true,
-                    bodyStyle: 'padding-top: 5px;',
-                    frame: true
+                    layout: 'anchor',
+                    width: '80%',
+                    ref: 'theAnchor',
+                    items: [{
+                        xtype: 'tabpanel',
+                        ref: '../tabPanel',
+                        activeTab: 0,
+                        cls: 'extContainer',
+                        plugins: ['fittoparent'],
+                        autoHeight: true,
+                        bodyStyle: 'padding-top: 5px;',
+                        frame: true
+                    }]                    
                 }]
             });
 

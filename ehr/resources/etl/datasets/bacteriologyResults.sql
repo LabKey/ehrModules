@@ -14,3 +14,4 @@ LEFT OUTER JOIN snomed s1 ON s1.code=b.source
 LEFT OUTER JOIN snomed s2 ON s2.code = b.result
 LEFT OUTER JOIN snomed s3 ON s3.code=b.antibiotic
 WHERE b.ts > ?
+AND length(b.id) > 1

@@ -32,6 +32,7 @@ LEFT JOIN
   group by id, date, account, suspvirus, remark, clinremark) t2
   ON (t1.id=t2.id AND t1.date=t2.date)
 WHERE t1.ts > ?
+AND length(t1.id) > 1
 
 UNION ALL
 
@@ -43,5 +44,6 @@ FROM
   WHERE id IS NOT NULL AND id != "" AND date IS NOT NULL AND date != '0000-00-00'
   group by id, date, seq, virus, result) t1
 WHERE t1.ts > ?
+AND length(t1.id) > 1
 
 ) x

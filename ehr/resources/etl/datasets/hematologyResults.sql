@@ -22,6 +22,7 @@ uuid as runId
 FROM hematology
 where wbc is not null and wbc != ""
 AND ts > ?
+AND length(id) > 1
 
 UNION ALL
 
@@ -36,7 +37,7 @@ concat(uuid,'rbc') as objectid, ts,
 uuid as runId
 FROM hematology
 where rbc is not null and rbc != ""
-AND ts > ?
+AND ts > ?  AND length(id) > 1
 
 UNION ALL
 
@@ -51,7 +52,7 @@ concat(uuid,'hgb') as objectid, ts,
 uuid as runId
 FROM hematology
 where hgb is not null and hgb != ""
-AND ts > ?
+AND ts > ? AND length(id) > 1
 
 UNION ALL
 
@@ -66,7 +67,7 @@ concat(uuid,'hct') as objectid, ts,
 uuid as runId
 FROM hematology
 where hct is not null and hct != ""
-AND ts > ?
+AND ts > ? AND length(id) > 1
 
 UNION ALL
 
@@ -81,7 +82,7 @@ concat(uuid,'mcv') as objectid, ts,
 uuid as runId
 FROM hematology
 where mcv is not null and mcv != ""
-AND ts > ?
+AND ts > ? AND length(id) > 1
 
 UNION ALL
 
@@ -96,7 +97,7 @@ concat(uuid,'mch') as objectid, ts,
 uuid as runId
 FROM hematology
 where mch is not null and mch != ""
-AND ts > ?
+AND ts > ? AND length(id) > 1
 
 UNION ALL
 
@@ -111,7 +112,7 @@ concat(uuid,'mchc') as objectid, ts,
 uuid as runId
 FROM hematology
 where mchc is not null and mchc != ""
-AND ts > ?
+AND ts > ? AND length(id) > 1
 
 UNION ALL
 
@@ -126,7 +127,7 @@ concat(uuid,'rdw') as objectid, ts,
 uuid as runId
 FROM hematology
 where rdw is not null and rdw != ""
-AND ts > ?
+AND ts > ? AND length(id) > 1
 
 UNION ALL
 
@@ -141,7 +142,7 @@ concat(uuid,'plt') as objectid, ts,
 uuid as runId
 FROM hematology
 where plt is not null and plt != ""
-AND ts > ?
+AND ts > ? AND length(id) > 1
 
 UNION ALL
 
@@ -156,7 +157,7 @@ concat(uuid,'mpv') as objectid, ts,
 uuid as runId
 FROM hematology
 where mpv is not null and mpv != ""
-AND ts > ?
+AND ts > ? AND length(id) > 1
 
 UNION ALL
 
@@ -171,7 +172,7 @@ concat(uuid,'pcv') as objectid, ts,
 uuid as runId
 FROM hematology
 where pcv is not null and pcv != ""
-AND ts > ?
+AND ts > ?  AND length(id) > 1
 
 UNION ALL
 
@@ -186,7 +187,7 @@ concat(uuid,'n') as objectid, ts,
 uuid as runId
 FROM hematology
 where n is not null and n != ""
-AND ts > ?
+AND ts > ? AND length(id) > 1
 
 UNION ALL
 
@@ -201,7 +202,7 @@ concat(uuid,'l') as objectid, ts,
 uuid as runId
 FROM hematology
 where l is not null and l != ""
-AND ts > ?
+AND ts > ?  AND length(id) > 1
 
 UNION ALL
 
@@ -216,7 +217,7 @@ concat(uuid,'m') as objectid, ts,
 uuid as runId
 FROM hematology
 where m is not null and m != ""
-AND ts > ?
+AND ts > ?  AND length(id) > 1
 
 UNION ALL
 
@@ -231,7 +232,7 @@ concat(uuid,'e') as objectid, ts,
 uuid as runId
 FROM hematology
 where e is not null and e != ""
-AND ts > ?
+AND ts > ? AND length(id) > 1
 
 UNION ALL
 
@@ -246,7 +247,7 @@ concat(uuid,'b') as objectid, ts,
 uuid as runId
 FROM hematology
 where b is not null and b != ""
-AND ts > ?
+AND ts > ? AND length(id) > 1
 
 UNION ALL
 
@@ -261,7 +262,7 @@ concat(uuid,'bands') as objectid, ts,
 uuid as runId
 FROM hematology
 where bands is not null and bands != ""
-AND ts > ?
+AND ts > ? AND length(id) > 1
 
 UNION ALL
 
@@ -276,7 +277,7 @@ concat(uuid,'metamyelo') as objectid, ts,
 uuid as runId
 FROM hematology
 where metamyelo is not null and metamyelo != ""
-AND ts > ?
+AND ts > ? AND length(id) > 1
 
 UNION ALL
 
@@ -291,7 +292,7 @@ concat(uuid,'myelo') as objectid, ts,
 uuid as runId
 FROM hematology
 where myelo is not null and myelo != ""
-AND ts > ?
+AND ts > ? AND length(id) > 1
 
 UNION ALL
 
@@ -306,7 +307,7 @@ concat(uuid,'tprotein') as objectid, ts,
 uuid as runId
 FROM hematology
 where tprotein is not null and tprotein != ""
-AND ts > ?
+AND ts > ? AND length(id) > 1
 
 UNION ALL
 
@@ -321,7 +322,7 @@ concat(uuid,'reticulo') as objectid, ts,
 uuid as runId
 FROM hematology
 where reticulo is not null and reticulo != ""
-AND ts > ?
+AND ts > ? AND length(id) > 1
 
 ) x
 

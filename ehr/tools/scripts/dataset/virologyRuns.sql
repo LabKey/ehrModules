@@ -4,15 +4,11 @@
  * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
  */
 SELECT
-lower(x.id) as id,
-FixDate(x.date) as date,
-x.account,
+lower(x.id) as Id,
+FixDate(x.date) as Date,
+lower(x.account) as account,
 x.remark,
 x.clinremark,
-concat_ws(',\n',
-     CONCAT('Remark: ', x.remark),
-     CONCAT('Clin Remark: ', x.clinremark)
-     ) AS Description,
 x.ts,
 x.uuid AS objectid
 
@@ -23,12 +19,14 @@ SELECT id, date, account, remark, clinremark, max(ts) as ts, uuid
   WHERE id IS NOT NULL AND id != "" AND date != '0000-00-00'
   group by id, date, account
 
+
 UNION ALL
 
 SELECT id, date, account, remark, clinremark, max(ts) as ts, uuid
   FROM virisohead
   WHERE id IS NOT NULL AND id != "" AND date != '0000-00-00'
   group by id, date, account
+
 
 ) x
 

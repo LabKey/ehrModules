@@ -12,3 +12,4 @@ FROM blood b
 LEFT OUTER JOIN snomed s1 ON s1.code=b.code
 
 WHERE b.ts > ?
+AND length(b.id) > 1

@@ -54,13 +54,13 @@ Ext.onReady(function(){
                     gingivitis: {requireSelection: true, lookupNullCaption: 'N/A', value: null},
                     tartar: {allowBlank: false, lookupNullCaption: 'N/A', ext: {value: null}}
                 })
-//            },{
-//                id: 'treatments',
-//                title: 'Treatments',
-//                xtype: 'ehr-gridformpanel',
-//                schemaName: 'study',
-//                queryName: 'treatments',
-//                metadata: EHR.ext.standardMetadata
+            },{
+                id: 'treatments',
+                title: 'Treatments',
+                xtype: 'ehr-gridformpanel',
+                schemaName: 'study',
+                queryName: 'treatments',
+                metadata: EHR.ext.standardMetadata
             }
         ]
     }).render('formDiv');

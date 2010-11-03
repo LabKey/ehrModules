@@ -11,6 +11,6 @@ p.ts, p.uuid AS objectid,
 FROM surgproc p
 LEFT OUTER JOIN snomed s1 on s1.code=p.code
 WHERE p.ts > ?
-
+AND length(p.id) > 1
 
 

@@ -10,4 +10,4 @@ FROM bacteriology b
 
 GROUP BY b.id, b.date, b.account
 HAVING max(ts) > ?
-
+AND length(id) > 1

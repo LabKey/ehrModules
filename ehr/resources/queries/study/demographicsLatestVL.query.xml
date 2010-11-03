@@ -8,7 +8,7 @@
                         <isHidden>true</isHidden>
                     </column>
                 </columns>
-                <titleColumn>LastestViralLoad</titleColumn>
+                <!--<titleColumn>LatestViralLoad</titleColumn>-->
             </table>
         </tables>
     </metadata>

@@ -59,6 +59,7 @@ uuid
 
 FROM clinhead
 WHERE ts > ?
+AND length(id) > 1
 GROUP BY id, date, time, pno
 
 UNION ALL
@@ -74,6 +75,7 @@ uuid
 
 FROM hormhead
 WHERE ts > ?
+AND length(id) > 1
 GROUP BY id, date, time, pno
 
 /*
@@ -105,6 +107,7 @@ pno,
 ts,
 uuid
 FROM surghead
+WHERE length(id) > 1
 GROUP BY id, surghead.date, surghead.time, pno
 HAVING max(ts) > ?
 

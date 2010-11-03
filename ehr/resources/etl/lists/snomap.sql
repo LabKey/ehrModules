@@ -5,3 +5,4 @@
  */
 SELECT ocode, ncode, meaning, FixDate(date) AS date, ts, uuid AS objectid FROM snomap s
 WHERE ts > ?
+AND length(ocode) > 1

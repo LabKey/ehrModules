@@ -19,7 +19,6 @@ EHR.ext.customPanels.SingleAnimalReport = Ext.extend(Ext.Panel, {
 
         Ext.apply(this, {
             autoHeight: true
-//            ,autoWidth: true
             ,bodyBorder: false
             ,bodyStyle: 'background-color : transparent;'
             ,width: '100%'
@@ -1051,7 +1050,7 @@ EHR.ext.customPanels.SingleAnimalReport = Ext.extend(Ext.Panel, {
             schemaName: tab.rowData.get("Schema"),
             queryName: tab.rowData.get("QueryName"),
             allowChooseQuery: false,
-            allowChooseView: true,
+            allowChooseView: false,
             showInsertNewButton: false,
             showDeleteButton: false,
             showDetailsColumn: true,

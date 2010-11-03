@@ -12,6 +12,7 @@ MYSQLHOST=saimiri.primate.wisc.edu
 SCRIPT=$1
 OUTFILE=$2
 #ROWCOUNT=${3:-10}
+ROWCOUNT=10
 FILENAME=${SCRIPT##*/}
 BASENAME=${FILENAME%%.*}
 
@@ -40,16 +41,8 @@ case $1 in
         #replace all of demographics
         ;;
 
-    scripts/dataset/assignment.sql )
-        #replace all of assignment
-        ;;
-
-    scripts/dataset/housing.sql )
-        #replace all of housing
-        ;;
-
     scripts/dataset/*.sql )
-        echo " WHERE date > '${DATE_CUTOFF}'" >> tempscript
+        #echo " WHERE date > '${DATE_CUTOFF}'" >> tempscript
         #echo " WHERE ts > '${DATE_CUTOFF}'" >> tempscript
         #echo " ORDER BY DATE DESC" >> tempscript
         ;;

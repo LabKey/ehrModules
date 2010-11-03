@@ -3,12 +3,13 @@
  *
  * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
  */
-SELECT lower(protocol) as protocol, uuid AS parentId, ts,
+SELECT lower(protocol) as protocol, uuid AS parentid, ts,
 FixSpecies(species1) AS species, c1 as allowed,
-null as StartDate, null as EndDate,
-concat(uuid, species1) as objectId
+null as startdate, null as enddate,
+concat(uuid, species1) as objectid
 FROM protocol p
 WHERE species1 != ""
+
 
 UNION ALL
 
@@ -19,6 +20,7 @@ concat(uuid, species2) as objectId
 FROM protocol p
 WHERE species2 != ""
 
+
 UNION ALL
 
 SELECT lower(protocol) as protocol, uuid AS parentId, ts,
@@ -27,6 +29,7 @@ null as StartDate, null as EndDate,
 concat(uuid, species3) as objectId
 FROM protocol p
 WHERE species3 != ""
+
 
 UNION ALL
 
@@ -37,6 +40,7 @@ concat(uuid, species4) as objectId
 FROM protocol p
 WHERE species4 != ""
 
+
 UNION ALL
 
 SELECT lower(protocol) as protocol, uuid AS parentId, ts,
@@ -45,3 +49,4 @@ null as StartDate, null as EndDate,
 concat(uuid, species5) as objectId
 FROM protocol p
 WHERE species5 != ""
+

@@ -5,16 +5,13 @@
  */
 SELECT
 
-lower(x.id) as id,
-x.date,
+lower(x.id) as Id,
+x.date as Date,
 x.enddate,
 x.pno as project,
-x.category,
+x.category as type,
 x.ts,
-x.uuid as objectid,
-( CONCAT_WS(',\n',
-     CONCAT('Clinical Encounter: ', x.category)
-     ) ) AS Description
+x.uuid as objectid
 
 FROM
 
@@ -61,6 +58,7 @@ ts,
 uuid
 
 FROM clinhead
+
 GROUP BY id, date, time, pno
 
 UNION ALL
@@ -75,6 +73,7 @@ ts,
 uuid
 
 FROM hormhead
+
 GROUP BY id, date, time, pno
 
 /*
@@ -93,6 +92,7 @@ ts,
 uuid
 
 FROM necropsyhead
+*/
 
 UNION ALL
 
@@ -101,21 +101,12 @@ id,
 FixDateTime(date, time) as date,
 FixDateTime(enddate, endtime) as enddate,
 pno,
-null as EncounterId,
-surgeon as PerformedBy,
 'Surgery' AS category,
-NULL AS account,
 ts,
 uuid
-
-/* major
-age
-inves
-remark,
-
 FROM surghead
 GROUP BY id, surghead.date, surghead.time, pno
-*/
+
 
 ) x
 

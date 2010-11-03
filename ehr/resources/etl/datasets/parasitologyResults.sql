@@ -21,3 +21,4 @@ ON (p1.id = p2.id AND p1.date = p2.date)
 
 LEFT OUTER JOIN snomed s1 ON s1.code=p1.code
 WHERE p1.maxts > ?
+AND length(p1.id) > 1

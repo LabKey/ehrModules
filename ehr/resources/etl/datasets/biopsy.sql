@@ -7,6 +7,7 @@
 SELECT lower(id) as Id, FixDate(date) AS Date, caseno, account,
 max(ts) as ts, uuid AS objectid
 FROM biopsyhead
+WHERE length(id) > 1
 
 GROUP BY id, date, caseno, account
 HAVING max(ts) > ?

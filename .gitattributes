@@ -89,6 +89,7 @@ ehr/resources/etl/datasets/urinalysisResults.sql -text
 ehr/resources/etl/datasets/urinalysisRuns.sql -text
 ehr/resources/etl/datasets/virologyResults.sql -text
 ehr/resources/etl/datasets/virologyRuns.sql -text
+ehr/resources/etl/lists/deleted_records.sql -text
 ehr/resources/folderTypes/Expt[!!-~]Workbook.folderType.xml -text
 ehr/resources/mySQL_edit.pl -text
 ehr/resources/queries/core/Last[!!-~]Backup.sql -text
@@ -123,6 +124,7 @@ ehr/resources/queries/lists/protocolTotalProjects.query.xml -text
 ehr/resources/queries/lists/protocolTotalProjects.sql -text
 ehr/resources/queries/lists/rooms.sql -text
 ehr/resources/queries/lists/snomed.query.xml -text
+ehr/resources/queries/lists/toDelete.sql -text
 ehr/resources/queries/lists/yearMonth.sql -text
 ehr/resources/queries/lookups/lab_test_range.query.xml -text
 ehr/resources/queries/pipeline/lastStudyUpload.sql -text
@@ -478,6 +480,7 @@ ehr/resources/queries/study/treatmentSchedule.query.xml -text
 ehr/resources/queries/study/treatmentSchedule.sql -text
 ehr/resources/queries/study/treatmentSchedule/.qview.xml -text
 ehr/resources/queries/study/treatmentSchedule/Active[!!-~]Treatments.qview.xml -text
+ehr/resources/queries/study/urinalysisPivot.sql -text
 ehr/resources/queries/study/weightPctChange.query.xml -text
 ehr/resources/queries/study/weightPctChange.sql -text
 ehr/resources/reports/schemas/study/Weight/Weight[!!-~]Graph.r -text
@@ -564,15 +567,6 @@ ehr/tools/scripts/dataset/bacteriologyResults.sql -text
 ehr/tools/scripts/dataset/behavetrem.sql -text
 ehr/tools/scripts/dataset/chemistryResults.sql -text
 ehr/tools/scripts/dataset/chemistryRuns.sql -text
-ehr/tools/scripts/dataset/depreciated/chemisc.sql -text
-ehr/tools/scripts/dataset/depreciated/chemisc_errors.sql -text
-ehr/tools/scripts/dataset/depreciated/chemistry.sql -text
-ehr/tools/scripts/dataset/depreciated/immunores.sql -text
-ehr/tools/scripts/dataset/depreciated/parasitology.sql -text
-ehr/tools/scripts/dataset/depreciated/urinalysis.sql -text
-ehr/tools/scripts/dataset/depreciated/viriso.sql -text
-ehr/tools/scripts/dataset/depreciated/virsero.sql -text
-ehr/tools/scripts/dataset/depreciated/virsero_errors.sql -text
 ehr/tools/scripts/dataset/encounters.sql -text
 ehr/tools/scripts/dataset/hematologyMorphology.sql -text
 ehr/tools/scripts/dataset/hematologyResults.sql -text
@@ -581,14 +575,11 @@ ehr/tools/scripts/dataset/immunologyResults.sql -text
 ehr/tools/scripts/dataset/immunologyRuns.sql -text
 ehr/tools/scripts/dataset/parasitologyResults.sql -text
 ehr/tools/scripts/dataset/parasitologyRuns.sql -text
-ehr/tools/scripts/dataset/testing/clinpathRequests.sql -text
-ehr/tools/scripts/dataset/testing/labresults.sql -text
-ehr/tools/scripts/dataset/testing/labruns.sql -text
-ehr/tools/scripts/dataset/testing/specimens.sql -text
 ehr/tools/scripts/dataset/urinalysisResults.sql -text
 ehr/tools/scripts/dataset/urinalysisRuns.sql -text
 ehr/tools/scripts/dataset/virologyResults.sql -text
 ehr/tools/scripts/dataset/virologyRuns.sql -text
+ehr/tools/scripts/lists/deleted_records.sql -text
 ehr/tools/scripts/setup/EHRStudy.dataset -text
 ehr/tools/scripts/setup/setup.sql -text
 ehr/tools/util.js -text
@@ -603,6 +594,7 @@ ehr/webapp/ehr/ext.ux.multiselect.js -text
 ehr/webapp/ehr/ext.ux.statusbar.js -text
 ehr/webapp/ehr/formHelper.js -text
 ehr/webapp/ehr/images/accept.png -text
+ehr/webapp/ehr/images/crest.png -text
 ehr/webapp/ehr/images/ncrr.gif -text
 ehr/webapp/ehr/participantView.js -text
 ehr/webapp/ehr/reports.js -text

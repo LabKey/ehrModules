@@ -10,5 +10,5 @@ s1.meaning,
 n.ts, n.uuid AS objectid
 FROM necropsydiag n
 LEFT JOIN snomed s1 on n.code =s1.code
-WHERE n.ts > ?
+WHERE n.ts > ? AND length(n.id) > 1
 /*HAVING parentid NOT LIKE "%,%"*/

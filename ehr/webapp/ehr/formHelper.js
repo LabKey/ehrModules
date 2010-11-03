@@ -17,13 +17,13 @@ var debug = 0;
 
 Ext.form.Field.prototype.msgTarget = 'side';
 
-
+Ext.Ajax.timeout = 3000000; //in milliseconds
 
 //a css fix for Ext datepicker
 Ext.menu.DateMenu.prototype.addClass('extContainer');
 
 EHR.ext.standardMetadata = {
-    Id: {lookups: false, parentField: {queryName: 'encounters', field: 'id'}}
+    Id: {lookups: false, parentField: {queryName: 'encounters', field: 'Id'}}
     ,Date: {parentField: {queryName: 'encounters', field: 'date'}}
     ,date: {parentField: {queryName: 'encounters', field: 'date'}}
     ,created: {isHidden: true}
@@ -32,9 +32,9 @@ EHR.ext.standardMetadata = {
     ,modified: {isHidden: true}
     ,ModifiedBy: {isHidden: true}
     //,SequenceNum: {isHidden: true}
-    ,QCState: {parentField: {queryName: 'encounters', field: 'qcstate'}}
+    ,QCState: {parentField: {queryName: 'encounters', field: 'QCState'}}
     //,QCState: {isHidden: true}
-    ,parentId: {parentField: {queryName: 'encounters', field: 'key'}, lookups: false}
+    ,parentId: {parentField: {queryName: 'encounters', field: 'objectid'}, lookups: false}
 
 
 
@@ -113,7 +113,7 @@ EHR.ext.ParentFormPanel = Ext.extend(Ext.Panel, {
             ,defaultType: 'textfield'
             ,monitorValid: false
             ,monitorPoll : 200
-//            ,deferredRender: false
+            ,deferredRender: false
             ,defaults: {
                 msgTarget: 'side'
                 ,bodyBorder: false
@@ -129,6 +129,26 @@ EHR.ext.ParentFormPanel = Ext.extend(Ext.Panel, {
             ],
             items: [
                 {
+                    xtype: 'ehr-clinheader',
+                    scope: this,
+                    parent: this,
+                    loadDisabled: loadDisabled,
+                    formType: this.formType,
+                    ref: 'forms/encounters'
+                },
+                {
+                    layout: 'anchor',
+                    items: [{
+                        xtype: 'tabpanel',
+                        activeTab: 0,
+                        deferredRender: false,
+                        ref: '../queryPanel',
+                        items: tabItems,
+                        cls: 'extContainer',
+                        width: '80%',
+                        scope: this
+                    }]
+            },{
                 xtype: 'statusbar',
                 defaultText: 'Default text',
                 text: 'Ready',
@@ -149,27 +169,6 @@ EHR.ext.ParentFormPanel = Ext.extend(Ext.Panel, {
 //                            text: 'Draft auto-saved at ' + new Date().format('g:i:s A')
 //                        })
 
-            }
-                ,{
-                    xtype: 'ehr-clinheader',
-                    scope: this,
-                    parent: this,
-                    loadDisabled: loadDisabled,
-                    formType: this.formType,
-                    ref: 'forms/encounters'
-                },
-                {
-                    layout: 'anchor',
-                    items: [{
-                        xtype: 'tabpanel',
-                        activeTab: 0,
-                        deferredRender: false,
-                        ref: '../queryPanel',
-                        items: tabItems,
-                        cls: 'extContainer',
-                        width: '80%',
-                        scope: this
-                    }]
                 }
             ],
             store: new EHR.ext.ParentStore()
@@ -221,7 +220,7 @@ EHR.ext.ParentFormPanel = Ext.extend(Ext.Panel, {
         }
     },
     onSubmit: function(o){
-        Ext.Msg.wait("Loading2...");
+        Ext.Msg.wait("Saving Changes...");
         this.statusBar.showBusy();
 
         this.updateQCState(o.id);
@@ -275,6 +274,7 @@ console.log(val);
                 function(v){
                     if(v == 'yes'){
                         this.store.deleteAllRecords();
+                        //window.location = '';
                     }
                 },
                 this);
@@ -286,18 +286,23 @@ console.log(val);
         }
         return forms;
     },
-    getStores: function(){
-        var stores = [];
-        for (var i in this.forms){
-            stores.push(this.forms[i].getStore());
-        }
-        return stores;
-    },
+//    getStores: function(){
+//        var stores = [];
+//        for (var i in this.forms){
+//            stores.push(this.forms[i].getStore());
+//        }
+//        return stores;
+//    },
     showStores: function(){
         for (var i in this.forms){
             console.log(this.forms[i].id);
             console.log(this.forms[i].showStore());
         }
+        for (var i in this.grids){
+            console.log(this.grids[i].id);
+            console.log(this.grids[i].showStore());
+        }
+
     },
     bindHandler : function(){
         var valid = this.isValid();
@@ -544,9 +549,10 @@ EHR.ext.ClinicalHeader = Ext.extend(Ext.FormPanel, {
             this.parent.relayEvents(this, ['animalvalid', 'animalinvalid']);
 
             this.parent.qcstate = this.parent.encounters.qcstate;
+            this.parent.store.addStore(this.store);
         }
 
-        this.parent.store.addStore(this.store);
+
     },
     fetchAbstract: function(c){
         var id = c.getValue();
@@ -660,7 +666,7 @@ EHR.ext.AnimalField = Ext.extend(Ext.form.TextField,
                 }
 
                 var species;
-                if (val.match(/(^rh([0-9]{4})$)|(^r([0-9]{5})$)/))
+                if (val.match(/(^rh([0-9]{4})$)|(^r([0-9]{5})$)|(^rh-([0-9]{3})$)/))
                     species = 'Rhesus';
                 else if (val.match(/^cy([0-9]{4})$/))
                     species = 'Cynomolgus';
@@ -863,36 +869,19 @@ EHR.ext.FormPanel = Ext.extend(Ext.FormPanel,
             if(this.metadata && this.metadata[c.name])
                 EHR.UTILITIES.rApply(c, this.metadata[c.name]);
             
-            if ((!c.isHidden && c.shownInInsertView)){
+            if ((!c.isHidden && c.shownInInsertView && !c.parentField)){
 
                 if (c.inputType == 'textarea')
                     EHR.UTILITIES.rApply(c, {ext: {height: 100, width: '90%'}});
                 else
                     EHR.UTILITIES.rApply(c, {ext: {width: 200}});
 
-                if (c.parentField){
-                    EHR.UTILITIES.rApply(c, {ext: {
-                        xtype: (debug ? 'displayfield': 'hidden')
-                    }});
-                }
-                var theField = LABKEY.ext.FormHelper.getFieldEditor(c);
-
-//                //this is separated so that we dont accidentally replace another onValid handler
-//                //TODO: should maybe be a plugin?
 //                if (c.parentField){
-//                    theField.parent = this.parent[c.parentField.queryName][c.parentField.field];
-//
-//                    theField.parent.on('change', function(c){
-//                        this.setValue(c.getValue());
-//                        this.fireEvent('change', this);
-//                    }, theField);
-//
-//                    theField.on('render', function(c){
-//                        c.setValue(c.parent.getValue());
-//                        this.fireEvent('change', this);
-//                    }, theField)
+//                    EHR.UTILITIES.rApply(c, {ext: {
+//                        xtype: (debug ? 'displayfield': 'hidden')
+//                    }});
 //                }
-
+                var theField = LABKEY.ext.FormHelper.getFieldEditor(c);
                 this.add(theField);
             }
         }, this);
@@ -1072,37 +1061,45 @@ EHR.ext.GridFormPanel = Ext.extend(Ext.Panel,
 
         Ext.apply(this, {
             autoHeight: true
-            ,width: 'auto'
+            ,xtype: 'panel'
+            ,width: '100%'
             ,id: this.queryName
+//            ,layout: 'table'
+//            ,columms: 2
             //,bodyStyle: 'padding:5px 5px 5px 5px'
             //,style: 'margin-bottom: 5px;border-style:solid;border-width:1px'
-            ,ref: '../grids/'+this.queryName
-            //,plugins: [new EHR.ext.plugins.DataBind()]
+            //,ref: '../grids/'+this.queryName
             ,deferredRender: false
             ,items: [{
-//                xtype: 'ehr-formpanel',
-//                name: this.queryName,
-//                ref: 'theForm',
-//                metadata: this.metadata,
-//                containerPath: 'WNPRC/EHR/',
-//                schemaName: this.schemaName,
-//                queryName: this.queryName,
-//                viewName: this.viewName,
-//                parent: this.parent || this.refOwner || this,
-//                items: {xtype: 'displayfield', value: 'Loading...'}
-//            },{
-                //title: 'Records',
+                xtype: 'ehr-formpanel',
+                //width: 300,
+                name: this.queryName,
+                enableOnBind: true,
+                ref: 'theForm',
+                metadata: this.metadata,
+                containerPath: 'WNPRC/EHR/',
+                schemaName: this.schemaName,
+                queryName: this.queryName,
+                viewName: this.viewName,
+                parent: this.parent || this.refOwner || this,
+                items: {xtype: 'displayfield', value: 'Loading...'}
+            },{
+                title: 'Records',
                 xtype: 'ehr-editorgrid',
+//                width: '100%',
                 store: this.store,
                 metadata: this.metadata,
                 ref: 'theGrid',
                 parent: this.parent || this.refOwner || this,
                 sm: new Ext.grid.RowSelectionModel({
                     listeners: {
-                        scope: this
-//                        rowselect: function(sm, row, rec) {
-//                            this.theForm.getForm().loadRecord(rec);
-//                        }
+                        scope: this,
+                        rowselect: function(sm, row, rec) {
+                            this.theForm.boundRecord = rec;
+                            this.theForm.updateBound();
+                            var form = this.theForm.getForm();
+                            form.loadRecord(rec);
+                        }
                     }
                 })
             }]
@@ -1110,8 +1107,12 @@ EHR.ext.GridFormPanel = Ext.extend(Ext.Panel,
         });
 
         if(this.parent){
-            this.parent.store.addStore(this.store);
+            if(!this.parent.grids)
+                this.parent.grids = {};
 
+            this.parent.grids[this.queryName] = this;
+            this.parent.store.addStore(this.store);
+            
             if(this.ownerCt instanceof Ext.TabPanel){
                 this.on('clientvalidation', this.markTabs);
             }
@@ -1119,10 +1120,26 @@ EHR.ext.GridFormPanel = Ext.extend(Ext.Panel,
 
         EHR.ext.GridFormPanel.superclass.initComponent.call(this);
 
-        //this.store.on('load', this.theForm.loadQuery, this.theForm);
         this.store.load();
-
         this.addEvents('beforesubmit');
+    },
+    showStore: function(c)
+    {
+        if (this.store)
+        {
+            console.log(this.store);
+            console.log(this.store.totalLength);
+            this.store.each(function(rec)
+            {
+                console.log('record is new?: '+rec.isNew);
+                console.log('record is dirty?: '+rec.dirty);
+                console.log('record is phantom?: '+rec.phantom);
+                Ext.each(rec.fields.keys, function(f)
+                {
+                    console.log(f + ': ' + rec.get(f));
+                }, this);
+            }, this)
+        }
     }
 });
 

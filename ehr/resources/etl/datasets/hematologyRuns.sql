@@ -9,4 +9,4 @@ uuid as requestId,
 ts,
 uuid AS objectid
 FROM hematology
-WHERE ts > ?
+WHERE ts > ?  AND length(id) > 1

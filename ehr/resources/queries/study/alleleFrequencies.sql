@@ -6,7 +6,7 @@
 
 --this query provides an overview of allele frequencies for WNPRC animals
 SELECT
- s.allele,
+ s.alleles,
 
   count(*) AS TotalPositive,
 
@@ -18,10 +18,10 @@ FROM study.SSP_Summary s
 
 LEFT JOIN
   --find total distinct animals from each allele
-  (SELECT s1.Allele, count(*) AS total FROM study.SSP_Summary s1 GROUP BY s1.Allele) s1
-  ON (s.Allele = s1.Allele)
+  (SELECT s1.Alleles, count(*) AS total FROM study.SSP_Summary s1 GROUP BY s1.Alleles) s1
+  ON (s.Alleles = s1.Alleles)
 
-WHERE s.Allele IS NOT NULL AND s.Status = 'POS'
+WHERE s.Alleles IS NOT NULL AND s.Status = 'POS'
 
-GROUP BY s.Allele
+GROUP BY s.Alleles
 

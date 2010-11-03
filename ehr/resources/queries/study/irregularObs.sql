@@ -6,8 +6,6 @@
 
 SELECT
 
-h.room as RoomAtTime,
-h.cage as CageAtTime,
 o.id,
 o.id.curLocation.room as Room,
 o.id.curLocation.cage as Cage,
@@ -26,8 +24,8 @@ o.remark,
 o.description
 
 from study.obs o
-LEFT JOIN study.housing h
-  ON (h.id=o.id AND h.date<=o.date AND (h.odate>=o.date or h.odate is null ))
+-- LEFT JOIN study.housing h
+--   ON (h.id=o.id AND h.date<=o.date AND (o.date<=coalesce(h.odate, now()) ))
 
 WHERE
   (o.feces is not null AND o.feces !='') OR
@@ -42,11 +40,10 @@ WHERE
 UNION ALL
 
 SELECT
-c.room as RoomAtTime,
-c.cage as CageAtTime,
+
 null as id,
-null as room,
-null as cage,
+c.room,
+c.cage,
 c.date,
 -- -- convert((year(c.date) || '-' || month(c.date) || '-' || dayofmonth(c.date) || '-'), 'DATE') as DateOnly,
 cast(c.date as DATE) as DateOnly,

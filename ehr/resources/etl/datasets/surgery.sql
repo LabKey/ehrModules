@@ -8,6 +8,7 @@ FixDateTime(enddate, endtime) AS enddate, major,
 /*FixNewlines(remark) AS remark,*/
 max(ts) as ts, uuid AS objectid
 FROM surghead s
+WHERE length(s.id) > 1
 GROUP BY s.id, s.date, s.time, s.age, s.inves, s.pno, s.surgeon, s.endtime, s.enddate
 HAVING max(ts) > ?
 

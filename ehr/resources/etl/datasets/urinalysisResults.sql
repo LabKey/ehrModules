@@ -23,6 +23,7 @@ uuid as runId
 FROM urine
 where bilirubin is not null and bilirubin != ""
 AND ts > ?
+AND length(id) > 1
 
 UNION ALL
 
@@ -39,6 +40,7 @@ uuid as runId
 FROM urine
 where ketone is not null and ketone != ""
 AND ts > ?
+AND length(id) > 1
 
 
 UNION ALL
@@ -56,6 +58,7 @@ uuid as runId
 FROM urine
 where sp_gravity is not null and sp_gravity != ""
 AND ts > ?
+AND length(id) > 1
 
 UNION ALL
 
@@ -72,6 +75,7 @@ uuid as runId
 FROM urine
 where blood is not null and blood != ""
 AND ts > ?
+AND length(id) > 1
 
 UNION ALL
 
@@ -88,6 +92,7 @@ uuid as runId
 FROM urine
 where ph is not null and ph != ""
 AND ts > ?
+AND length(id) > 1
 
 UNION ALL
 
@@ -104,6 +109,7 @@ uuid as runId
 FROM urine
 where protein is not null and protein != ""
 AND ts > ?
+AND length(id) > 1
 
 UNION ALL
 
@@ -120,6 +126,7 @@ uuid as runId
 FROM urine
 where urobilinogen is not null and urobilinogen != ""
 AND ts > ?
+AND length(id) > 1
 
 UNION ALL
 
@@ -136,6 +143,7 @@ uuid as runId
 FROM urine
 where nitrite is not null and nitrite != ""
 AND ts > ?
+AND length(id) > 1
 
 UNION ALL
 
@@ -153,6 +161,7 @@ uuid as runId
 FROM urine
 where leucocytes is not null and leucocytes != ""
 AND ts > ?
+AND length(id) > 1
 
 UNION ALL
 
@@ -169,6 +178,7 @@ uuid as runId
 FROM urine
 where appearance is not null and appearance != ""
 AND ts > ?
+AND length(id) > 1
 
 UNION ALL
 
@@ -185,6 +195,7 @@ uuid as runId
 FROM urine
 where microscopic is not null and microscopic != ""
 AND ts > ?
+AND length(id) > 1
 
 ) x
 

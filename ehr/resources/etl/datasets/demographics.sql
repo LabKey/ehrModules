@@ -21,4 +21,4 @@ END AS v_status, ts, uuid AS objectid, null as parentid
 
 FROM abstract
 WHERE ts > ?
-
+AND length(id) > 1

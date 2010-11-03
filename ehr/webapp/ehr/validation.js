@@ -68,7 +68,7 @@ EHR.validation = {
         }
     },
     snomedString: function (title, code, meaning){
-        return title+': ' + (meaning ? meaning+' ('+code+')' : code)
+        return title+': ' + (meaning ? meaning+(code ? ' ('+code+')' : '') : (code ? code : ''))
     },
     dateString: function (date){
         //TODO: do better once more date functions added
@@ -208,7 +208,7 @@ EHR.validation = {
     },
     fixUrineQuantity: function(row, errors){
         //we try to remove non-numeric characters from this field
-        if (row.quantity && !row.quantity.match(/^(\d*\.*\d*)$/)){
+        if (row.quantity && typeof(row.quantity) == 'string' && row.quantity.match(/^(\d*\.*\d*)$/)){
             //we need to manually split these into multiple rows
             if (row.quantity.match(/,/)){
                 row.quantity = null;

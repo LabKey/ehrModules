@@ -8,3 +8,4 @@ SELECT lower(id) as Id, FixDateTime(date, time) AS Date, authorize, destination,
 FROM departure
 
 WHERE ts > ?
+AND length(id) > 1

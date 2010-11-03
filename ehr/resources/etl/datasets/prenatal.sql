@@ -8,3 +8,4 @@ ts, uuid AS objectid
 
 FROM prenatal p
 WHERE ts > ?
+AND length(id) > 1

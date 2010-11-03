@@ -5,3 +5,4 @@
  */
 SELECT code, meaning, ts, uuid AS objectid FROM snomed s
 WHERE ts > ?
+AND length(code) > 1

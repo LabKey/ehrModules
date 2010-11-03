@@ -8,22 +8,23 @@
                         <formatString>yyyy-MM-dd HH:mm</formatString>
                     </column>
                     <column columnName="Id">
+                        <displayWidth>40</displayWidth>
                         <fk>
                           <fkDbSchema>study</fkDbSchema>
                           <fkTable>Animal</fkTable>
                           <fkColumnName>Id</fkColumnName>
                         </fk>
                     </column>
-                    <column columnName="RoomAtTime">
-                        <displayWidth>50</displayWidth>
+                    <column columnName="Room">
+                        <displayWidth>40</displayWidth>
                         <fk>
                           <fkDbSchema>lists</fkDbSchema>
                           <fkTable>rooms</fkTable>
                           <fkColumnName>Room</fkColumnName>
                         </fk>
                     </column>
-                    <column columnName="CageAtTime">
-                        <displayWidth>50</displayWidth>                        
+                    <column columnName="Cage">
+                        <displayWidth>40</displayWidth>                        
                     </column>
                     <column columnName="Remark">
                         <displayWidth>250</displayWidth>

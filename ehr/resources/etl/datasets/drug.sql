@@ -25,6 +25,7 @@ SELECT id, date, time, code, amount,units, route, FixBadTime(time2) as BeginTime
 null as remark
 FROM clindrug t1
 WHERE ts > ?
+AND length(id) > 1
 
 UNION ALL
 
@@ -35,6 +36,7 @@ SELECT h1.id, h1.date,h1.time, code, amount,units, route, FixBadTime(time2) as B
 FROM hormdrug h1
 /*left join hormtrem h2 on (h1.id=h2.id AND (h1.pno=h2.pno OR h1.pno is null) AND h1.date=h2.date AND h1.time=h2.time AND h2.remark != '')*/
 WHERE ts > ?
+AND length(id) > 1
 
 UNION ALL
 
@@ -44,6 +46,7 @@ SELECT id, date,time, code, amount,units, route, null as BeginTime, null as EndT
 remark
 FROM surgmed t1
 WHERE ts > ?
+AND length(id) > 1
 
 UNION ALL
 
@@ -53,6 +56,7 @@ SELECT id, date,time, code, amount,units, route, null as BeginTime, null as EndT
 remark
 FROM surganes t1
 WHERE ts > ?
+AND length(id) > 1
 
 UNION ALL
 
@@ -64,6 +68,7 @@ FixBadTime(endtime) AS endtime, 'surgfluid' as category, ts, uuid,
 null as remark
 FROM surgfluid t1
 WHERE ts > ?
+AND length(id) > 1
 
         ) x
 JOIN snomed s1 on x.code=s1.code

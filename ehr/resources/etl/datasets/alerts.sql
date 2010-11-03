@@ -15,6 +15,7 @@ d.ts,
 concat(d.uuid, 'p') as objectid
 FROM abstract d
 WHERE d.purchasedby != '' AND ts > ?
+AND length(d.id) > 1
 
 UNION ALL
 
@@ -27,6 +28,7 @@ d.ts,
 concat(d.uuid, 'm') as objectid
 FROM abstract d
 WHERE d.medical != '' AND ts > ?
+AND length(d.id) > 1
 
 UNION ALL
 
@@ -39,6 +41,7 @@ d.ts,
 concat(d.uuid, 'h') as objectid
 FROM abstract d
 WHERE d.hold != '' AND ts > ?
+AND length(d.id) > 1
 
 UNION ALL
 
@@ -52,6 +55,7 @@ concat(a.uuid, 'v') as objectid
 FROM assignment a
 left join project p on (a.pno=p.pno)
 where p.avail = 'v' and a.rdate IS NULL AND a.ts > ?
+AND length(a.id) > 1
 
 UNION ALL
 
@@ -65,4 +69,4 @@ concat(a.uuid, 'p') as objectid
 FROM assignment a
 left join project p on (a.pno=p.pno)
 where p.avail = 'p' and a.rdate IS NULL AND a.ts > ?
-
+AND length(a.id) > 1

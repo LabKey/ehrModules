@@ -9,6 +9,6 @@ ts, uuid AS objectid,
 (select UUID from surghead t2 WHERE s.id=t2.id AND s.date=t2.date AND s.time=t2.time GROUP BY s.id,s.date,s.time limit 1) as parentid
 FROM surgsum s
 WHERE id != '' and ts > ?
-
+AND length(id) > 1
 
 

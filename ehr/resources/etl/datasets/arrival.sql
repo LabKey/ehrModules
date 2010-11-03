@@ -7,3 +7,4 @@ SELECT lower(id) as Id, FixDateTime(date, time) AS Date, (source) AS source, Fix
 ts, uuid AS objectid
      FROM arrival
 WHERE ts > ?
+AND length(id) > 1

@@ -6,7 +6,8 @@
 SELECT
 
 b.lsid,
-max(w.date) as LastWeighDate
+max(w.date) as LastWeighDate,
+max(b.Modified) as Modified
 
 from study.blood b
 

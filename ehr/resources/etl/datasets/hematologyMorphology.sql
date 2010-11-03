@@ -10,3 +10,4 @@ uuid as objectid, ts
 FROM hemamisc t1
 
 WHERE ts > ?
+AND length(id) > 1

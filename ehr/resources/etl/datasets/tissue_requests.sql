@@ -7,3 +7,4 @@ SELECT lower(id) as Id, FixDateTime(date, time) AS Date, (sex) as gender, (lived
 ts, uuid AS objectid
 FROM tissue
 WHERE ts > ?
+AND length(id) > 1

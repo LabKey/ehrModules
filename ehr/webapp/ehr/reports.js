@@ -10,7 +10,7 @@ LABKEY.requiresScript("/ehr/utilities.js");
 
 EHR.reports.qwpConfig = {
     allowChooseQuery: false,
-    allowChooseView: true,
+    allowChooseView: false,
     showInsertNewButton: false,
     showDeleteButton: false,
     showDetailsColumn: true,
@@ -69,7 +69,7 @@ console.log(subject)
         title: 'Unresolved Problems' + ": " + title,
         frame: true,
         schemaName: 'study',
-        allowChooseView: true,
+        allowChooseView: false,
         queryName: 'Problem List',
         viewName: 'Unresolved Problems',
         //sort: '-date',
@@ -131,7 +131,7 @@ EHR.reports.family = function(tab, subject){
         schemaName: 'study',
         queryName: 'demographicsFamily',
         title: "Parents/Grandparents:",
-        titleField: 'Id',
+        titleField: 'id',
         renderTo: target.id,
         filterArray: filterArray,
         multiToGrid: true
@@ -530,52 +530,76 @@ EHR.reports.viralLoads = function(tab, subject){
 }
 
 
-EHR.reports.irregularObs = function(tab, subject){
-
-    var filterArray = [];
-        var rowData = tab.rowData;
-
-        var room = (this.roomField ? this.roomField.getValue() : null);
-        var cage = (this.cageField ? this.cageField.getValue() : null);
-        var area = (this.areaField ? this.areaField.getValue() : null);
-
-        if(tab.subjectArray && tab.subjectArray.length){
-            filterArray.push(LABKEY.Filter.create('Id', subject.join(';'), LABKEY.Filter.Types.EQUALS_ONE_OF));
-        }
-
-        if(area){
-            filterArray.push(LABKEY.Filter.create('RoomAtTime/area', area, LABKEY.Filter.Types.EQUAL));
-        }
-
-        if(room){
-            filterArray.push(LABKEY.Filter.create('RoomAtTime', room, LABKEY.Filter.Types.STARTS_WITH));
-        }
-
-        if(cage){
-            filterArray.push(LABKEY.Filter.create('RoomAtTime', cage, LABKEY.Filter.Types.EQUAL));
-        }
-
-        filterArray.push(LABKEY.Filter.create(rowData.get("DateFieldName"), (new Date()).format('Y-m-d'), LABKEY.Filter.Types.DATE_EQUAL));
-
-        tab.filterArray = filterArray;
+//EHR.reports.irregularObs = function(tab, subject){
+//    var filterArray = this.getFilterArray(tab, subject);
+//
+//    var title = (subject ? subject.join("; ") : '');
+//    this.addHeader(tab);
+//
+//    var target = tab.add({tag: 'span', html: 'Loading...', style: 'padding-bottom: 20px'});
+//    tab.doLayout();
+//
+//    var config = Ext.applyIf({
+//        schemaName: 'study',
+//        queryName: 'irregularObs',
+//        //viewName: tab.viewName,
+//        title: "Irregular Observations:",
+//        titleField: 'Id',
+//        filterArray: filterArray,
+//        scope: this
+//    }, EHR.reports.qwpConfig);
+//    new LABKEY.QueryWebPart(config).render(target.id);
+//
+//}
 
 
+EHR.reports.urinalysisResults = function(tab, subject){
 
-
-
-
+    var filterArray = this.getFilterArray(tab, subject);
     var title = (subject ? subject.join("; ") : '');
-    this.addHeader(tab);
+    tab.queryName = tab.queryName || 'urinalysisPivot';
+
+    this.addHeader(tab, [{
+        html: 'Choose Report:',
+        style: 'padding-left:10px'
+        },{
+        xtype: 'combo',
+        store: new Ext.data.ArrayStore({
+            fields: ['name', 'value'],
+            data: [['Panel','urinalysisPivot;'], ['Individual Results','Urinalysis Results;']]
+        }),
+        fieldName: 'Test',
+        mode: 'local',
+        displayField: 'name',
+        valueField: 'value',
+        forceSelection:false,
+        typeAhead: true,
+        triggerAction: 'all',
+        value: tab.query,
+        ref: '../reportSelector',
+        listeners: {
+            scope: this,
+            select: function(c){
+                var val = c.getValue().split(';');
+                c.refOwner.queryName = val[0];
+                c.refOwner.viewName = val[1];
+                c.refOwner.filters = [];
+                this.loadTab(c.refOwner);
+            }
+        }
+    }]);
 
     var target = tab.add({tag: 'span', html: 'Loading...', style: 'padding-bottom: 20px'});
     tab.doLayout();
 
     var config = Ext.applyIf({
         schemaName: 'study',
-        queryName: 'irregularObs',
-        //viewName: tab.viewName,
-        title: "Irregular Observations:",
+        queryName: tab.queryName,
+        viewName: tab.viewName,
+        title: "Urinalysis Results:",
         titleField: 'Id',
+        sort: '-date',
+        parent: this,
         filterArray: filterArray,
         scope: this
     }, EHR.reports.qwpConfig);

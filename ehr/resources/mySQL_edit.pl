@@ -17,6 +17,7 @@ cage
 cageclass
 cagenotes
 cases
+chem_ref_range
 chemisc
 chemisc2
 chemistry
@@ -97,20 +98,25 @@ my $sql = '';
 #";
 
 foreach my $tname (@tables)
-{
+{	
 #        print "DROP TRIGGER IF EXISTS $tname"."_uuid;\n";
 #        print "CREATE TRIGGER $triggername BEFORE INSERT ON $tname
 #                FOR EACH ROW
 #                SET NEW.uuid = UUID();\n";
 #        print "UPDATE $tname SET uuid = UUID(), ts = now();\n";
 
-#$sql .= "DROP TRIGGER IF EXISTS ${tname}_delete;
-#CREATE TRIGGER ${tname}_delete BEFORE DELETE ON $tname
-#FOR EACH ROW
-#insert into colony.deleted (uuid, tableName) values (OLD.uuid, '$tname')
-#;\n"
+$sql .= "DROP TRIGGER IF EXISTS ${tname}_delete;
+CREATE TRIGGER ${tname}_delete BEFORE DELETE ON $tname
+FOR EACH ROW
+insert into colony.deleted_records (uuid, tableName, labkeyTable, type) values (OLD.uuid, '$tname', '$tname', 'dataset')
+;\n"
 
-$sql .= "update $tname set ts = '2010-07-22' limit 10000;\n";
+#$sql .= "update $tname set ts = '2010-07-22' limit 10000;\n";
+
+#$sql .= "ALTER TABLE colony.$tname
+#ADD ts TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+#ADD uuid CHAR(36);\n";
+
 
 }
 

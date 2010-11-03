@@ -10,8 +10,8 @@
             <!--<property name="columnTitle" value="Current Cage"/>-->
           <!--</properties>-->
       <!--</column>-->
-      <column name="RoomAtTime"/>
-      <column name="CageAtTime"/>      
+      <column name="Room"/>
+      <column name="Cage"/>
       <column name="Id"/>
       <column name="date"/>
       <column name="userid"/>
@@ -27,8 +27,8 @@
   </columns>
    <sorts>
        <sort column="DateOnly" descending="true"/>
-       <sort column="RoomAtTime"/>
-       <sort column="CageAtTime"/>       
+       <sort column="Room"/>
+       <sort column="Cage"/>
    </sorts>
    <!--<filters>-->
        <!--<filter column="hasObs/hasObs" operator="eq" value="true"/>-->

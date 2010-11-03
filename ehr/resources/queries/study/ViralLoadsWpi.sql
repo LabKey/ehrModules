@@ -5,13 +5,13 @@
  */
 SELECT
   v.Id,
-  v.SampleDate,
+  v.Date,
   vc.date as ChallengeDate,
   vc.code,
   v.ViralLoad,
   v.LogVL,
-  TIMESTAMPDIFF('SQL_TSI_DAY', vc.date, v.SampleDate) as DPI,
-  TIMESTAMPDIFF('SQL_TSI_DAY', vc.date, v.SampleDate)/7 as WPI
+  TIMESTAMPDIFF('SQL_TSI_DAY', vc.date, v.Date) as DPI,
+  TIMESTAMPDIFF('SQL_TSI_DAY', vc.date, v.Date)/7 as WPI
 
 FROM study.ViralLoads v
 

@@ -9,3 +9,4 @@ ts, uuid AS objectid
 FROM birth
 
 WHERE ts > ?
+AND length(id) > 1

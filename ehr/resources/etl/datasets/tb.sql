@@ -8,3 +8,4 @@ ts, uuid AS objectid
 
 FROM tb
 WHERE id not like "|%" AND ts > ?
+AND length(id) > 1

@@ -7,15 +7,19 @@
 
 
 function repairRow(row, errors){
-
+    if(row.code == '00000000')
+        row.code = null;
+    
 }
 
 function setDescription(row, errors){
     //we need to set description for every field
     var description = new Array();
 
-    description.push(EHR.validation.snomedString('Code', row.code,  row.meaning));
-
+    description.push(EHR.validation.snomedString('Code', row.code,  row.snomedMeaning));
+    
+    if(row.meaning)
+        description.push('Meaning: '+ row.meaning);
     if(row.volume)
         description.push('Volume: '+ row.volume+ ' '+ EHR.validation.null2string(row.vunits));
     if(row.conc)
@@ -24,8 +28,9 @@ function setDescription(row, errors){
         description.push('Amount: '+ row.amount+ ' '+ EHR.validation.null2string(row.units));
     if(row.route)
         description.push('Route: '+ row.route);
-    if(row.enddate)
-        description.push('EndDate: '+ row.enddate);
+//    if(row.enddate)
+        description.push('EndDate: '+ (row.enddate ? row.enddate : 'none'));
+
 //    if(row.frequency)
 //        description.push('Frequency: '+ row.frequency);
 
@@ -122,7 +127,7 @@ EHR.validation = {
         }
     },
     snomedString: function (title, code, meaning){
-        return title+': ' + (meaning ? meaning+' ('+code+')' : code)
+        return title+': ' + (meaning ? meaning+(code ? ' ('+code+')' : '') : (code ? code : ''))
     },
     dateString: function (date){
         //TODO: do better once more date functions added

@@ -6,4 +6,4 @@
 SELECT lower(id) as Id, FixDate(date) AS Date, caseno, account,
 ts, uuid AS objectid
 FROM necropsyhead
-WHERE ts > ?
+WHERE ts > ?  AND length(id) > 1

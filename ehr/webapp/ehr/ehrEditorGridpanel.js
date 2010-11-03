@@ -30,12 +30,12 @@ EHR.ext.EditorGridPanel = Ext.extend(LABKEY.ext.EditorGridPanel,
         });
 
         Ext.apply(this, {
-            width: 'auto',
-            viewConfig: {
-                forceFit: true,
-                autoFill : true,
-                scrollOffset: 0
-            },
+            width: '100%',
+//            viewConfig: {
+//                forceFit: true,
+//                autoFill : true,
+//                scrollOffset: 0
+//            },
             autoHeight: true,
             autoWidth: true,
             plugins: ['autosizecolumns'],
@@ -47,10 +47,11 @@ EHR.ext.EditorGridPanel = Ext.extend(LABKEY.ext.EditorGridPanel,
                 scope: this
                 ,columnmodelcustomize: function(colModel, index){
                     Ext.each(colModel, function(c){
+                        var meta = this.metaMap[c.dataIndex];
                         delete c.scale;
                         delete c.width;
-                        
-                        if(!c.shownInInsertView || c.parentField)
+
+                        if(!meta.shownInInsertView)//|| meta.parentField
                             c.hidden = true;
                     }, this);
                 }
@@ -76,13 +77,39 @@ EHR.ext.EditorGridPanel = Ext.extend(LABKEY.ext.EditorGridPanel,
         });
 
         EHR.ext.EditorGridPanel.superclass.initComponent.apply(this, arguments);
-    },
-    onStoreLoad : function(store, records, options) {
-        this.store.un("load", this.onStoreLoad, this);
 
-        this.populateMetaMap();
-        this.setupColumnModel();
+        if(this.parent){
+            this.parent.addEvents('animalvalid', 'animalinvalid');
+            this.parent.relayEvents(this, ['animalvalid', 'animalinvalid']);    
+            this.parent.store.addStore(this.store);
+        }
+
+        this.store.on('load', this.storeLoad, this);
     },
+    storeLoad: function(){
+        Ext.each(this.store.fields.items, function(c){
+//            EHR.UTILITIES.rApply(c, {
+//                fieldLabel: c.label,
+//                queryName: this.queryName,
+//                schemaName: this.schemaName,
+//                ext: {
+//                    name: this.queryName+'.'+c.name,
+//                    fieldLabelTip: 'Type: '+c.type+'<br>'+c.name,
+//                    dataIndex: c.name
+//                }
+//            });
+
+            if(this.metadata && this.metadata[c.name])
+                EHR.UTILITIES.rApply(c, this.metadata[c.name]);
+            var x;
+        }, this);
+    },
+//    onStoreLoad : function(store, records, options) {
+//        this.store.un("load", this.onStoreLoad, this);
+//
+//        this.populateMetaMap();
+//        this.setupColumnModel();
+//    },
     populateMetaMap : function() {
         //the metaMap is a map from field name to meta data about the field
         //the meta data contains the following properties:
@@ -104,15 +131,15 @@ EHR.ext.EditorGridPanel = Ext.extend(LABKEY.ext.EditorGridPanel,
 
             this.metaMap[field.name] = field;
         }
-    },
-    getDefaultEditorConfig: LABKEY.ext.FormHelper.getFieldEditorConfig,
-    getDefaultEditor : function(col, meta) {
-        Ext.apply(col, meta);
-        console.log(col);
-        var s = LABKEY.ext.FormHelper.getFieldEditor(col);
-        console.log(s);
-        return s;
     }
+//    getDefaultEditorConfig: LABKEY.ext.FormHelper.getFieldEditorConfig,
+//    getDefaultEditor : function(col, meta) {
+//        Ext.apply(col, meta);
+//        console.log(col);
+//        var s = LABKEY.ext.FormHelper.getFieldEditorConfig(col);
+//        console.log(s);
+//        return s;
+//    }
 });
 Ext.reg('ehr-editorgrid', EHR.ext.EditorGridPanel);
 

@@ -7,3 +7,4 @@ SELECT lower(id) as Id, FixDateTime(date, time) AS Date, (userid) AS userid, (fe
 ts, uuid AS objectid
 FROM obs
 WHERE ts > ?
+AND length(id) > 1

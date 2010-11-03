@@ -58,16 +58,10 @@
                     <column columnName="remark">
                         <displayWidth>250</displayWidth>
                     </column>
-                    <column columnName="RoomAtTime">
-                        <displayWidth>50</displayWidth>
-                    </column>
-                    <column columnName="CageAtTime">
-                        <displayWidth>50</displayWidth>
-                    </column>
-                    <column columnName="CurrentRoom">
+                    <column columnName="Room">
                         <displayWidth>40</displayWidth>
                     </column>
-                    <column columnName="CurrentCage">
+                    <column columnName="Cage">
                         <displayWidth>40</displayWidth>
                     </column>                    
                 </columns>

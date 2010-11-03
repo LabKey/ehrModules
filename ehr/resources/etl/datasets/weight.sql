@@ -7,3 +7,4 @@ SELECT lower(id) as Id, FixDateTime(date, time) AS Date, (weight) AS weight, (ve
 ts, uuid AS objectid
 FROM weight
 WHERE ts > ?
+AND length(id) > 1

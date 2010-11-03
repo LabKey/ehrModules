@@ -6,8 +6,6 @@
 
 SELECT
 
-i.RoomAtTime,
-i.CageAtTime,
 i.id,
 i.Room,
 i.Cage,
@@ -24,16 +22,14 @@ UNION ALL
 
 SELECT
 
-t.CurrentRoom as RoomAtTime,
-t.CurrentCage as CageAtTime,
 t.id,
-t.CurrentRoom as Room,
+t.CurrentRoom as room,
 t.CurrentCage as Cage,
 t.date,
 t.date as DateOnly,
 'Treatment' as type,
 t.userid,
-t.remark,
+null as remark, -- t.remark,
 t.description
 
 FROM treatmentSchedule t

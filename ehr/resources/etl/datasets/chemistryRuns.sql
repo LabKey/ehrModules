@@ -8,5 +8,5 @@ SELECT lower(id) as Id, FixDate(date) AS Date, lower(account) AS account, FixNew
 uuid as requestId,
 ts, uuid AS objectid
 FROM chemistry
-WHERE ts > ?
+WHERE ts > ? AND length(id) > 1
 

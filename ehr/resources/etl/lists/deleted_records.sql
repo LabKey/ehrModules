@@ -3,9 +3,7 @@
  *
  * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
  */
-
-SELECT lower(id) as Id, FixDate(date) AS Date, 
-uuid as requestId,
-ts, uuid AS objectid
-FROM immunores
-where ts > ? AND length(id) > 1
+SELECT id, uuid, tableName, ts, orig_id
+FROM deleted_records
+WHERE ts > ?
+AND (length(orig_id) > 1 OR orig_id is null)

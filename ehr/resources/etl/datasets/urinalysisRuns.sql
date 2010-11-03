@@ -11,3 +11,4 @@ ts,
 uuid AS objectid
 FROM urine
 WHERE ts > ?
+AND length(id) > 1

@@ -28,6 +28,7 @@ ts, uuid AS objectid,
 'Clinical' AS category
 FROM clintrem t1
 WHERE id IS NOT NULL AND id != '' AND remark != '' AND remark IS NOT NULL AND ts > ? and (pno REGEXP '^[0-9]+$' OR pno IS NULL)
+AND length(id) > 1
 /*
 UNION ALL
 
@@ -69,6 +70,7 @@ ts, uuid AS objectid,
 'Surgery' AS category
 FROM surghead s1
 WHERE id IS NOT NULL AND id != '' AND remark != '' AND remark IS NOT NULL AND ts > ? AND (pno REGEXP '^[0-9]+$' OR pno IS NULL)
+AND length(id) > 1
 
 UNION ALL
 
@@ -83,6 +85,7 @@ ts, uuid AS objectid,
 'Necropsy' AS category
 FROM necropsyhead n1
 WHERE id IS NOT NULL AND id != '' AND remark != '' AND remark IS NOT NULL AND ts > ?
+AND length(id) > 1
 
 UNION ALL
 
@@ -97,6 +100,7 @@ ts, uuid AS objectid,
 'Biopsy' AS category
 FROM biopsyhead n1
 WHERE id IS NOT NULL AND id != '' AND remark != '' AND remark IS NOT NULL AND ts > ?
+AND length(id) > 1
 
 ) x
 

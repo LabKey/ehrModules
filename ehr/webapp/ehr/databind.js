@@ -89,11 +89,12 @@ EHR.ext.plugins.DataBind = Ext.extend(Ext.util.Observable, {
                             this.internalUpdate = true;
                             
                             this.boundRecord.set(f.dataIndex, f.getValue());
-
+                            this.boundRecord.store.fireEvent('datachanged', this.boundRecord.store);
                             this.internalUpdate = false;
                         }
                     }, this);
                     this.boundRecord.endEdit();
+                    this.boundRecord.store.fireEvent('datachanged', this.boundRecord.store);
                 }
             },
             addFieldListeners : function()
@@ -137,6 +138,7 @@ EHR.ext.plugins.DataBind = Ext.extend(Ext.util.Observable, {
                     var val = (field instanceof Ext.form.RadioGroup ? field.getValue().inputValue : field.getValue());
                     this.boundRecord.beginEdit();
                     this.boundRecord.set(field.dataIndex, val);
+                    this.boundRecord.store.fireEvent('datachanged', this.boundRecord.store);
                     this.boundRecord.endEdit();
                 }
             },
@@ -186,9 +188,9 @@ EHR.ext.plugins.DataBind = Ext.extend(Ext.util.Observable, {
                                 console.log('ERROR: Multiple records returned');
                             }
                         },
-                        beforecommit: function(records, rows){
-                            console.log('child store before commit');
-                        },
+//                        beforecommit: function(records, rows){
+//                            console.log('child store before commit');
+//                        },
                         commitexception: function(m, e){
                             console.log('child store commit exception');
                             console.log(m);
@@ -213,7 +215,6 @@ EHR.ext.plugins.DataBind = Ext.extend(Ext.util.Observable, {
                 c.updateInherited();
             
             c.updateStore();
-            console.log('child panel before submit');
         });
     }
 }); 
@@ -297,26 +298,18 @@ EHR.ext.ParentStore = Ext.extend(Ext.util.Observable, {
 
         for (var j in store.fields.map){
             var field = store.fields.map[j];
-            var handler = (function(childStore, field){
-                return function(store){
-                    console.log('parent changed');
-                    var parentRecord = store.getAt(0);
-                    var val = parentRecord.get(field.parentField.id);
-
-                    console.log(val);
-                    childStore.each(function(rec){
-                        rec.set(field.dataIndex, val);
-                        console.log('setting record');                        
-                    }, this)
-
-                    console.log(childStore);
-                    console.log(parentRecord);
-
-                }
-            })(store, field);
 
             if(field.parentField){
-                this.parentStore.on('datachanged', handler, this);
+                this.parentStore.on('datachanged', (function(childStore, field){return function(store){
+                    var parentRecord = store.getAt(0);
+                    var val = parentRecord.get(field.parentField.field);
+
+                    childStore.each(function(rec){
+                        rec.set(field.parentField.field, val);
+                    }, this);
+
+                    }
+                })(store, field), this);
             }
         }
     },
@@ -420,6 +413,12 @@ EHR.ext.ParentStore = Ext.extend(Ext.util.Observable, {
     },
     inheritField: function(config){
             
+    },
+    showStores: function(){
+        for (var i in this.storeMap){
+            console.log(this.storeMap[i].id);
+            console.log(this.storeMap[i]);
+        }
     },
     stores : [],
     storeMap : {}

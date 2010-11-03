@@ -23,6 +23,7 @@ uuid as runId
 FROM chemistry
 where glucose is not null and glucose != ""
 AND ts > ?
+AND length(id) > 1
 
 UNION ALL
 
@@ -38,7 +39,7 @@ concat(uuid,'bun') as objectid, ts,
 uuid as runId
 FROM chemistry
 where bun is not null and bun != ""
-AND ts > ?
+AND ts > ? AND length(id) > 1
 
 UNION ALL
 
@@ -54,7 +55,7 @@ concat(uuid,'creatinine') as objectid, ts,
 uuid as runId
 FROM chemistry
 where creatinine is not null and creatinine != ""
-AND ts > ?
+AND ts > ? AND length(id) > 1
 
 UNION ALL
 
@@ -70,7 +71,7 @@ concat(uuid,'ck_cpk') as objectid, ts,
 uuid as runId
 FROM chemistry
 where ck_cpk is not null and ck_cpk != ""
-AND ts > ?
+AND ts > ? AND length(id) > 1
 
 UNION ALL
 
@@ -86,7 +87,7 @@ concat(uuid,'uricacid') as objectid, ts,
 uuid as runId
 FROM chemistry
 where uricacid is not null and uricacid != ""
-AND ts > ?
+AND ts > ? AND length(id) > 1
 
 UNION ALL
 
@@ -102,7 +103,7 @@ concat(uuid,'cholesterol') as objectid, ts,
 uuid as runId
 FROM chemistry
 where cholesterol is not null and cholesterol != ""
-AND ts > ?
+AND ts > ? AND length(id) > 1
 
 UNION ALL
 
@@ -118,7 +119,7 @@ concat(uuid,'triglyc') as objectid, ts,
 uuid as runId
 FROM chemistry
 where triglyc is not null and triglyc != ""
-AND ts > ?
+AND ts > ? AND length(id) > 1
 
 UNION ALL
 
@@ -134,7 +135,7 @@ concat(uuid,'sgot') as objectid, ts,
 uuid as runId
 FROM chemistry
 where sgot_ast is not null and sgot_ast != ""
-AND ts > ?
+AND ts > ? AND length(id) > 1
 
 UNION ALL
 
@@ -150,7 +151,7 @@ concat(uuid,'tbili') as objectid, ts,
 uuid as runId
 FROM chemistry
 where tbili is not null and tbili != ""
-AND ts > ?
+AND ts > ? AND length(id) > 1
 
 UNION ALL
 
@@ -166,7 +167,7 @@ concat(uuid,'ggt') as objectid, ts,
 uuid as runId
 FROM chemistry
 where ggt is not null and ggt != ""
-AND ts > ?
+AND ts > ? AND length(id) > 1
 
 UNION ALL
 
@@ -182,7 +183,7 @@ concat(uuid,'sgpt_alt') as objectid, ts,
 uuid as runId
 FROM chemistry
 where sgpt_alt is not null and sgpt_alt != ""
-AND ts > ?
+AND ts > ? AND length(id) > 1
 
 UNION ALL
 
@@ -198,7 +199,7 @@ concat(uuid,'tprotein') as objectid, ts,
 uuid as runId
 FROM chemistry
 where tprotein is not null and tprotein != ""
-AND ts > ?
+AND ts > ?  AND length(id) > 1
 
 UNION ALL
 
@@ -214,7 +215,7 @@ concat(uuid,'albumin') as objectid, ts,
 uuid as runId
 FROM chemistry
 where albumin is not null and albumin != ""
-AND ts > ?
+AND ts > ? AND length(id) > 1
 
 UNION ALL
 
@@ -230,7 +231,7 @@ concat(uuid,'phosphatase') as objectid, ts,
 uuid as runId
 FROM chemistry
 where phosphatase is not null and phosphatase != ""
-AND ts > ?
+AND ts > ? AND length(id) > 1
 
 UNION ALL
 
@@ -246,7 +247,7 @@ concat(uuid,'calcium') as objectid, ts,
 uuid as runId
 FROM chemistry
 where calcium is not null and calcium != ""
-AND ts > ?
+AND ts > ? AND length(id) > 1
 
 UNION ALL
 
@@ -262,7 +263,7 @@ concat(uuid,'phosphorus') as objectid, ts,
 uuid as runId
 FROM chemistry
 where phosphorus is not null and phosphorus != ""
-AND ts > ?
+AND ts > ? AND length(id) > 1
 
 UNION ALL
 
@@ -278,7 +279,7 @@ concat(uuid,'iron') as objectid, ts,
 uuid as runId
 FROM chemistry
 where iron is not null and iron != ""
-AND ts > ?
+AND ts > ? AND length(id) > 1
 
 UNION ALL
 
@@ -294,7 +295,7 @@ concat(uuid,'sodium') as objectid, ts,
 uuid as runId
 FROM chemistry
 where sodium is not null and sodium != ""
-AND ts > ?
+AND ts > ? AND length(id) > 1
 
 UNION ALL
 
@@ -310,7 +311,7 @@ concat(uuid,'potassium') as objectid, ts,
 uuid as runId
 FROM chemistry
 where potassium is not null and potassium != ""
-AND ts > ?
+AND ts > ? AND length(id) > 1
 
 UNION ALL
 
@@ -326,7 +327,7 @@ concat(uuid,'chloride') as objectid, ts,
 uuid as runId
 FROM chemistry
 where chloride is not null and chloride != ""
-AND ts > ?
+AND ts > ? AND length(id) > 1
 
 UNION ALL
 
@@ -334,7 +335,7 @@ SELECT id, date, Upper(name) as TestID, null as Results, value as stringResults,
 uuid as objectId, ts,
 COALESCE((select UUID FROM chemistry t2 WHERE t1.id=t2.id and t1.date=t2.date limit 1), uuid) as runId
 FROM chemisc t1
-WHERE ts > ?
+WHERE ts > ? AND length(id) > 1
 
 UNION ALL
 
@@ -342,7 +343,7 @@ SELECT id, date, upper(name) as TestID, value as results, null as stringResults,
 uuid as objectId, ts,
 COALESCE((select UUID FROM chemistry t2 WHERE t1.id=t2.id and t1.date=t2.date limit 1), uuid) as runId
 FROM chemisc2 t1
-WHERE ts > ?
+WHERE ts > ? AND length(id) > 1
 
 ) x
 

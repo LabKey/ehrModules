@@ -3,21 +3,12 @@
  *
  * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
  */
-SELECT lower(id) as id, FixDateTime(date, time) AS Date, (age) AS age, (inves) AS inves, (pno) AS pno,
-(surgeon) AS surgeon,
-FixDateTime(enddate, endtime) AS enddate, (major) AS major,
+SELECT lower(id) as Id, FixDateTime(date, time) AS Date, age, inves, pno as project, surgeon,
+FixDateTime(enddate, endtime) AS enddate, major,
 /*FixNewlines(remark) AS remark,*/
-(CONCAT_WS(',\n',
-    CONCAT('Start: ', CAST(FixDateTime(date, time) AS CHAR)),
-    CONCAT('End: ', CAST(FixDateTime(enddate, endtime) AS CHAR)),
-    CONCAT('Age: ', CAST(age AS CHAR)),
-    CONCAT('Investigator: ', CAST(inves AS CHAR)),
-    CONCAT('Surgeon: ', CAST(surgeon AS CHAR)),
-    CONCAT('Major: ', CAST(major AS CHAR)),
-    CONCAT('Project: ', CAST(pno AS CHAR))
-)) AS Description,
 max(ts) as ts, uuid AS objectid
-FROM surghead
-GROUP BY id, date, time, age, inves, pno, surgeon, endtime, enddate
+FROM surghead s
+GROUP BY s.id, s.date, s.time, s.age, s.inves, s.pno, s.surgeon, s.endtime, s.enddate
+
 
 

@@ -7,3 +7,4 @@ SELECT lower(id) as Id, FixDate(adate) AS Date, pno as project, FixDate(rdate) A
 ts, uuid AS objectid
 FROM assignment
 WHERE ts > ?
+AND length(id) > 1

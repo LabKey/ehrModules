@@ -49,7 +49,7 @@ EHR.ext.customPanels.detailsView = function(config)
     }
 
     function onFinalRender(data){
-        var target = config.renderTo;
+        var target = new Ext.Panel();
 
         if (!data.rows.length){
             var header = document.createElement('span');
@@ -77,62 +77,51 @@ EHR.ext.customPanels.detailsView = function(config)
 
             queryConfig.successCallback = queryConfig.success = null;
 
-            new LABKEY.QueryWebPart(queryConfig).render(target);
+            new LABKEY.QueryWebPart(queryConfig).render(config.renderTo);
             return;
         }
 
-        target.innerHTML = '';
-        var title = '';
-        
         for (var j=0;j<data.rows.length;j++){
-
-            var table = document.createElement('table');
-
+            var thePanel = new Ext.Panel({
+                layout: 'form',
+                bodyStyle: 'padding:5px',
+                bodyBorder: true,
+                border: true,
+                title: 'Details',
+                frame: false,
+                labelWidth: 150,
+                defaults: {
+                    labelStyle: 'padding: 0px;'
+                }
+            });
+            
             for (var i=0;i<data.columnModel.length;i++){
                 var col = data.columnModel[i];
                 var meta = data.metaData.fields[i];
                 var row = data.rows[j];
                 var url = row['_labkeyurl_'+col.dataIndex];
 
-
                 if (!meta.hidden){
-                    var r = table.insertRow(i);
-                    var c0 = r.insertCell(0);
-                    //c0.setAttribute('class', 'labkey-form-label');
-                    c0.className = 'labkey-form-label';
-                    c0.innerHTML = '<b>'+col.header+':</b>';
-                    
-                    var c1 = r.insertCell(1);
-
                     var value = row[col.dataIndex];
-                    if (url){
-                        value = '<a href="'+url+'">'+value+'</a>';                        
-                    }
-                    c1.innerHTML = value;
+
+                    thePanel.add({
+                        fieldLabel: col.header,
+                        xtype: 'displayfield',
+                        value: (url ? '<a href="'+url+'" target="new">'+value+'</a>' : value)
+                    });
 
                     if (this.config.titleField == col.dataIndex){
-                        title = row[col.dataIndex];
+                        thePanel.title += ': '+row[col.dataIndex];
                     }
                 }
             }
 
-            var header = document.createElement('span');
-            header.innerHTML = '<table class="labkey-wp"><tbody><tr class="labkey-wp-header"><th class="labkey-wp-title-left">' +
-            (this.config.title || 'Details:')+ ' ' + title +'</th><th class="labkey-wp-title-right">&nbsp;</th></tr></tbody></table>';
-
-            target.appendChild(header);
-            target.appendChild(table);
-            target.appendChild(document.createElement('br'));
-            
-            if (j == data.rows.length-1){
-                //target.appendChild(document.createElement('br'));
-                //target.appendChild(document.createElement('br'));
-                //target.appendChild(document.createElement('hr'));
-            }
-
+            target.add(thePanel);
         };
 
-       //this.doLayout();
+        config.renderTo.innerHTML = '';        
+        target.render(config.renderTo);
+
     }
 
 };
