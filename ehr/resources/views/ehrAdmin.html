@@ -54,7 +54,8 @@ Ext.onReady(function (){
             },
             {header: 'Validation',
                 items: [
-                    {name: 'Validate Status', url: '<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=Validation'}
+                    {name: 'Validate Status', url: '<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=Validation'},
+                    {name: 'Records To Delete', url: '<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=lists&query.queryName=toDelete'}
                 ]
 
             }

@@ -10,7 +10,7 @@ LABKEY.requiresScript("/ehr/utilities.js");
 
 EHR.reports.qwpConfig = {
     allowChooseQuery: false,
-    allowChooseView: false,
+    allowChooseView: true,
     showInsertNewButton: false,
     showDeleteButton: false,
     showDetailsColumn: true,
@@ -46,7 +46,7 @@ console.log(subject)
         title: "Abstract:",
         titleField: 'Id',
         renderTo: target.id,
-        filterArray: filterArray,
+        filterArray: filterArray.removable.concat(filterArray.nonRemovable),
         multiToGrid: this.multiToGrid
     };
     new EHR.ext.customPanels.detailsView(config);
@@ -59,7 +59,8 @@ console.log(subject)
         queryName: 'assignment',
         viewName: 'Active Assignments',
         //sort: '-date',
-        filters: filterArray,
+        filters: filterArray.nonRemovable,
+        removeableFilters: filterArray.removable,
         scope: this
     }, EHR.reports.qwpConfig);
     new LABKEY.QueryWebPart(config).render(target.id);
@@ -69,11 +70,12 @@ console.log(subject)
         title: 'Unresolved Problems' + ": " + title,
         frame: true,
         schemaName: 'study',
-        allowChooseView: false,
+        allowChooseView: true,
         queryName: 'Problem List',
         viewName: 'Unresolved Problems',
         //sort: '-date',
-        filters: filterArray,
+        filters: filterArray.nonRemovable,
+        removeableFilters: filterArray.removable,
         scope: this
     }, EHR.reports.qwpConfig);
 
@@ -93,7 +95,8 @@ EHR.reports.arrivalDeparture = function(tab, subject){
         title: 'Arrivals' + ": " + title,
         schemaName: 'study',
         queryName: 'arrival',
-        filters: filterArray,
+        filters: filterArray.nonRemovable,
+        removeableFilters: filterArray.removable,
         scope: this,
         frame: true
     }, EHR.reports.qwpConfig);
@@ -105,7 +108,8 @@ EHR.reports.arrivalDeparture = function(tab, subject){
         title: 'Departures' + ": " + title,
         schemaName: 'study',
         queryName: 'departure',
-        filters: filterArray,
+        filters: filterArray.nonRemovable,
+        removeableFilters: filterArray.removable,
         scope: this,
         frame: true
     }, EHR.reports.qwpConfig);
@@ -133,7 +137,7 @@ EHR.reports.family = function(tab, subject){
         title: "Parents/Grandparents:",
         titleField: 'id',
         renderTo: target.id,
-        filterArray: filterArray,
+        filterArray: filterArray.removable.concat(filterArray.nonRemovable),
         multiToGrid: true
     };
     new EHR.ext.customPanels.detailsView(config);
@@ -143,7 +147,8 @@ EHR.reports.family = function(tab, subject){
         title: 'Offspring' + ": " + title,
         schemaName: 'study',
         queryName: 'demographicsOffspring',
-        filters: filterArray,
+        filters: filterArray.nonRemovable,
+        removeableFilters: filterArray.removable,
         scope: this,
         frame: true
     }, EHR.reports.qwpConfig);
@@ -155,7 +160,8 @@ EHR.reports.family = function(tab, subject){
         title: 'Siblings' + ": " + title,
         schemaName: 'study',
         queryName: 'demographicsSiblings',
-        filters: filterArray,
+        filters: filterArray.nonRemovable,
+        removeableFilters: filterArray.removable,
         scope: this,
         frame: true
     }, EHR.reports.qwpConfig);
@@ -173,7 +179,7 @@ EHR.reports.weightGraph = function(tab, subject){
     var store = new LABKEY.ext.Store({
         schemaName: 'study',
         queryName: 'weight',
-        filterArray: filterArray,
+        filterArray: filterArray.removable.concat(filterArray.nonRemovable),
         columns: 'id,date,weight',
         sort: 'Id,-date',
         autoLoad: true
@@ -287,7 +293,8 @@ EHR.reports.weightGraph = function(tab, subject){
         title: 'Weight' + ": " + title,
         schemaName: 'study',
         queryName: 'weight',
-        filters: filterArray,
+        filters: filterArray.nonRemovable,
+        removeableFilters: filterArray.removable,
         scope: this,
         frame: true
     }, EHR.reports.qwpConfig);
@@ -341,7 +348,8 @@ EHR.reports.bloodChemistry = function(tab, subject){
         title: "Blood Chemistry Results:",
         titleField: 'Id',
         sort: '-date',
-        filterArray: filterArray,
+        filters: filterArray.nonRemovable,
+        removeableFilters: filterArray.removable,
         scope: this
     }, EHR.reports.qwpConfig);
     new LABKEY.QueryWebPart(config).render(target.id);
@@ -393,7 +401,8 @@ EHR.reports.hematology = function(tab, subject){
         viewName: tab.viewName,
         title: "Hematology Results:",
         titleField: 'Id',
-        filterArray: filterArray,
+        filters: filterArray.nonRemovable,
+        removeableFilters: filterArray.removable,
         sort: '-date',
         scope: this
     }, EHR.reports.qwpConfig);
@@ -446,7 +455,8 @@ EHR.reports.immunology = function(tab, subject){
         viewName: tab.viewName,
         title: "Immunology Results:",
         titleField: 'Id',
-        filterArray: filterArray,
+        filters: filterArray.nonRemovable,
+        removeableFilters: filterArray.removable,
         scope: this
     }, EHR.reports.qwpConfig);
     new LABKEY.QueryWebPart(config).render(target.id);
@@ -463,7 +473,7 @@ EHR.reports.viralLoads = function(tab, subject){
         var store = new LABKEY.ext.Store({
             schemaName: 'study',
             queryName: 'ViralLoads',
-            filterArray: filterArray,
+            filterArray: filterArray.removable.concat(filterArray.nonRemovable),
             columns: 'Id,date,LogVL',
             sort: 'Id,-date',
             autoLoad: true
@@ -520,7 +530,8 @@ EHR.reports.viralLoads = function(tab, subject){
         title: 'Viral Load' + ": " + title,
         schemaName: 'study',
         queryName: 'ViralLoads',
-        filters: filterArray,
+        filters: filterArray.nonRemovable,
+        removeableFilters: filterArray.removable,
         sort: 'Id,-date',
         scope: this,
         frame: true
@@ -530,27 +541,28 @@ EHR.reports.viralLoads = function(tab, subject){
 }
 
 
-//EHR.reports.irregularObs = function(tab, subject){
-//    var filterArray = this.getFilterArray(tab, subject);
-//
-//    var title = (subject ? subject.join("; ") : '');
-//    this.addHeader(tab);
-//
-//    var target = tab.add({tag: 'span', html: 'Loading...', style: 'padding-bottom: 20px'});
-//    tab.doLayout();
-//
-//    var config = Ext.applyIf({
-//        schemaName: 'study',
-//        queryName: 'irregularObs',
-//        //viewName: tab.viewName,
-//        title: "Irregular Observations:",
-//        titleField: 'Id',
-//        filterArray: filterArray,
-//        scope: this
-//    }, EHR.reports.qwpConfig);
-//    new LABKEY.QueryWebPart(config).render(target.id);
-//
-//}
+EHR.reports.irregularObs = function(tab, subject){
+    var filterArray = this.getFilterArray(tab, subject);
+
+    var title = (subject ? subject.join("; ") : '');
+    this.addHeader(tab);
+
+    var target = tab.add({tag: 'span', html: 'Loading...', style: 'padding-bottom: 20px'});
+    tab.doLayout();
+
+    var config = Ext.applyIf({
+        schemaName: 'study',
+        queryName: 'irregularObs',
+        //viewName: tab.viewName,
+        title: "Irregular Observations:",
+        titleField: 'Id',
+        filters: filterArray.nonRemovable,
+        removeableFilters: filterArray.removable,
+        scope: this
+    }, EHR.reports.qwpConfig);
+    new LABKEY.QueryWebPart(config).render(target.id);
+
+}
 
 
 EHR.reports.urinalysisResults = function(tab, subject){
@@ -600,7 +612,8 @@ EHR.reports.urinalysisResults = function(tab, subject){
         titleField: 'Id',
         sort: '-date',
         parent: this,
-        filterArray: filterArray,
+        filters: filterArray.nonRemovable,
+        removeableFilters: filterArray.removable,
         scope: this
     }, EHR.reports.qwpConfig);
     new LABKEY.QueryWebPart(config).render(target.id);

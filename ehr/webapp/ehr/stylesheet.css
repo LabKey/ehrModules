@@ -8,6 +8,12 @@
     margin-bottom:4px
 }
 
+.x-panel-header {
+    padding-top: 2px;
+    padding-bottom: 2px;
+    padding-left: 6px;
+}
+
 /*.x-menu-item ul {*/
 /*margin-bottom:0px;*/
 /*margin-top:0px;*/
@@ -329,8 +335,9 @@ table#navBar
 table.labkey-wp
 {
     width: 100%;
-    border-spacing: 0; *border-collapse: collapse;
+    border-spacing: 0; border-collapse: collapse;
     border: 5px solid #FBF4EA;
+    /*border: 5px solid #900;*/
 }
 
 td.labkey-wp-body
@@ -521,7 +528,8 @@ fieldset
 /* #8DB2E3 -> CC9900 */
 /* E7EFF4 -> FBF4EA*/
 
-
+/* menu bar*/
+/* DAE1E6 -> FBF4EA */
 
 .labkey-app-bar
 {
@@ -530,7 +538,7 @@ fieldset
 
 .labkey-nav-bordered
 {
-    border: solid 1px #CC9900;
+    /*border: solid 1px #CC9900;*/
 }
 
 .labkey-data-region-header-container

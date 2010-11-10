@@ -281,6 +281,7 @@ ehr/resources/queries/study/SSP_Summary.query.xml -text
 ehr/resources/queries/study/SSP_Summary.sql -text
 ehr/resources/queries/study/SSP_Summary/.qview.xml -text
 ehr/resources/queries/study/StudyData/.qview.xml -text
+ehr/resources/queries/study/StudyData/Full[!!-~]History[!!-~]Plus[!!-~]Obs.qview.xml -text
 ehr/resources/queries/study/StudyData/Full[!!-~]History.qview.xml -text
 ehr/resources/queries/study/StudyData/Medical[!!-~]History.qview.xml -text
 ehr/resources/queries/study/StudyData/Review[!!-~]Required.qview.xml -text

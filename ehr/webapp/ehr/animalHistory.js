@@ -981,36 +981,36 @@ EHR.ext.customPanels.SingleAnimalReport = Ext.extend(Ext.Panel, {
 
     getFilterArray: function(tab, subject){
         var rowData = tab.rowData;
-        var filterArray = [];
+        var filterArray = {
+            removable: [],
+            nonRemovable: []
+        };
+
 
         var room = (this.roomField ? this.roomField.getValue() : null);
         var cage = (this.cageField ? this.cageField.getValue() : null);
         var area = (this.areaField ? this.areaField.getValue() : null);
 
         if(tab.subjectArray && tab.subjectArray.length){
-            filterArray.push(LABKEY.Filter.create('Id', subject.join(';'), LABKEY.Filter.Types.EQUALS_ONE_OF));
+            filterArray.nonRemovable.push(LABKEY.Filter.create('Id', subject.join(';'), LABKEY.Filter.Types.EQUALS_ONE_OF));
         }
 
         if(area){
-            filterArray.push(LABKEY.Filter.create('Id/curLocation/area', area, LABKEY.Filter.Types.EQUAL));
+            filterArray.nonRemovable.push(LABKEY.Filter.create('Id/curLocation/area', area, LABKEY.Filter.Types.EQUAL));
         }
 
         if(room){
-            filterArray.push(LABKEY.Filter.create('Id/curLocation/room', room, LABKEY.Filter.Types.STARTS_WITH));
+            filterArray.nonRemovable.push(LABKEY.Filter.create('Id/curLocation/room', room, LABKEY.Filter.Types.STARTS_WITH));
         }
 
         if(cage){
-            filterArray.push(LABKEY.Filter.create('Id/curLocation/cage', cage, LABKEY.Filter.Types.EQUAL));
+            filterArray.nonRemovable.push(LABKEY.Filter.create('Id/curLocation/cage', cage, LABKEY.Filter.Types.EQUAL));
         }
 
         //we handle date
         if (rowData.get("DateFieldName") && rowData.get("TodayOnly"))
         {
-            filterArray.push(LABKEY.Filter.create(rowData.get("DateFieldName"), (new Date()).format('Y-m-d'), LABKEY.Filter.Types.DATE_EQUAL));            
-//            if (this.startDateField && this.startDateField.getValue())
-//                filterArray.push(LABKEY.Filter.create(rowData.get("DateFieldName"), this.startDateField.getValue().format('Y-m-d'), LABKEY.Filter.Types.GREATER_THAN_OR_EQUAL));
-//            if (this.endDateField && this.endDateField.getValue())
-//                filterArray.push(LABKEY.Filter.create(rowData.get("DateFieldName"), this.endDateField.getValue().format('Y-m-d'), LABKEY.Filter.Types.LESS_THAN_OR_EQUAL));
+            filterArray.removable.push(LABKEY.Filter.create(rowData.get("DateFieldName"), (new Date()).format('Y-m-d'), LABKEY.Filter.Types.DATE_EQUAL));
         }
 
         tab.filterArray = filterArray;
@@ -1050,7 +1050,7 @@ EHR.ext.customPanels.SingleAnimalReport = Ext.extend(Ext.Panel, {
             schemaName: tab.rowData.get("Schema"),
             queryName: tab.rowData.get("QueryName"),
             allowChooseQuery: false,
-            allowChooseView: false,
+            allowChooseView: true,
             showInsertNewButton: false,
             showDeleteButton: false,
             showDetailsColumn: true,
@@ -1061,9 +1061,11 @@ EHR.ext.customPanels.SingleAnimalReport = Ext.extend(Ext.Panel, {
             buttonBarPosition: 'top',
             //TODO: switch to 0 once bug is fixed
             timeout: 3000000,
-            filters: filterArray,
-            //removeableFilters: filterArray,
-            linkTarget: '_new',            
+            filters: filterArray.nonRemovable,
+            removeableFilters: filterArray.removable,
+            linkTarget: '_new',
+            renderTo: target.id,
+            ref: 'qwp',
             successCallback: function(c){
                 this.doLayout();
                 this.endMsg();
@@ -1088,14 +1090,14 @@ EHR.ext.customPanels.SingleAnimalReport = Ext.extend(Ext.Panel, {
             queryConfig.containerPath = tab.rowData.get("ContainerPath");
         }
 
-        new LABKEY.QueryWebPart(queryConfig).render(target.id);
-
+        tab.QWP = new LABKEY.QueryWebPart(queryConfig);
     },
 
 
     loadReport: function(tab, subject, target)
     {
         var filterArray = this.getFilterArray(tab, subject);
+        filterArray = filterArray.nonRemovable.concat(filterArray.removable);
         var target = target || tab.add({tag: 'span', html: 'Loading...', cls: 'loading-indicator'});
         var title = (subject ? subject.join("; ") : '');
 
@@ -1144,6 +1146,8 @@ EHR.ext.customPanels.SingleAnimalReport = Ext.extend(Ext.Panel, {
     loadGrid: function(tab, subject, target)
     {
         var filterArray = this.getFilterArray(tab, subject);
+        filterArray = filterArray.nonRemovable.concat(filterArray.removable);
+
         var target = target || tab.add({tag: 'span', html: 'Loading...', cls: 'loading-indicator'});
         var title = (subject ? subject.join("; ") : '');
 
@@ -1182,6 +1186,7 @@ EHR.ext.customPanels.SingleAnimalReport = Ext.extend(Ext.Panel, {
     loadWebPart: function(tab, subject, target)
     {
         var filterArray = this.getFilterArray(tab, subject);
+        filterArray = filterArray.nonRemovable.concat(filterArray.removable);
         var target = target || tab.add({tag: 'span', html: 'Loading...', cls: 'loading-indicator'});
         var title = (subject ? subject.join("; ") : '');
 
@@ -1208,6 +1213,7 @@ EHR.ext.customPanels.SingleAnimalReport = Ext.extend(Ext.Panel, {
     loadDetails: function(tab, subject, target)
     {
         var filterArray = this.getFilterArray(tab, subject);
+        filterArray = filterArray.nonRemovable.concat(filterArray.removable);
         var target = target || tab.add({tag: 'span', html: 'Loading...', cls: 'loading-indicator'});
         var title = (subject ? subject.join("; ") : '');
 
@@ -1237,6 +1243,7 @@ EHR.ext.customPanels.SingleAnimalReport = Ext.extend(Ext.Panel, {
     loadChart: function(tab, subject, target)
     {
         var filterArray = this.getFilterArray(tab, subject);
+        filterArray = filterArray.nonRemovable.concat(filterArray.removable);
         var target = target || tab.add({tag: 'span', html: 'Loading...', cls: 'loading-indicator'});
         var title = (subject ? subject.join("; ") : '');
 
@@ -1290,7 +1297,16 @@ EHR.ext.customPanels.SingleAnimalReport = Ext.extend(Ext.Panel, {
                     autoHeight: true,
                     autoWidth: true,
                     bodyStyle: 'background-color : transparent;',
-                    frame:false
+                    frame:false,
+                    listeners: {
+                        scope: this,
+                        activate: function(t){
+                            if(t.activeTab){
+                                this.activeReport = t.activeTab;
+                                this.onSubmit();
+                            }
+                        }
+                    }
                 }))
             }
 
@@ -1314,7 +1330,7 @@ EHR.ext.customPanels.SingleAnimalReport = Ext.extend(Ext.Panel, {
 //                        }, scope: this}
 //                    ],
                     subjectArray: [],
-                    filterArray: [],
+                    filterArray: {},
                     tbar: new Ext.Toolbar({style: 'padding-left:10px'}),
                     listeners: {
                         scope: this,
@@ -1426,18 +1442,20 @@ EHR.ext.customPanels.SingleAnimalReport = Ext.extend(Ext.Panel, {
 
         tb.add({
                 html: 'Combine Subjects:'
-            },{
+            });
+        tb.add({
             xtype: 'radiogroup',
-            autoWidth: true,
             ref: 'combine',
             tab: tab,
-            style: 'margins:10px',
-            defaults: {
-                style: 'padding-right:10px',
-                labelWidth: 100,
-                labelStyle: 'padding:10px' 
-            },
-            //columns: 2,
+            style: 'padding-left:5px;padding-top:0px;padding-bottom:2px;',
+//            defaults: {
+//                style: 'padding-right:10px'
+//                //,labelWidth: 100
+//                //,labelStyle: 'padding:10px'
+//            },
+//            columns: 2,
+//            boxMinWidth: 300,
+            width: 90,
             listeners: {
                 scope: this,
                 change: function(o, s){
@@ -1453,14 +1471,14 @@ EHR.ext.customPanels.SingleAnimalReport = Ext.extend(Ext.Panel, {
                 name: 'combine',
                 boxLabel: 'No',
                 inputValue: false,
-                autoWidth: true,
+//                autoWidth: true,
                 ref: 'combine',
                 checked: !tab.combineSubj
             },{
                 name: 'combine',
                 boxLabel: 'Yes',
                 inputValue: true,
-                autoWidth: true,
+//                autoWidth: true,
                 ref: 'separate',
                 checked: tab.combineSubj
             }]

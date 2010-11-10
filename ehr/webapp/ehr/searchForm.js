@@ -135,7 +135,6 @@ EHR.ext.customPanels.searchForm = Ext.extend(Ext.Panel, {
 
         };
 
-
         for (var i=0;i<this.queryDetails.columns.length;i++){
             this.addRow(this.queryDetails.columns[i]);
         }

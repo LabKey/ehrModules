@@ -207,6 +207,8 @@ EHR.validation = {
     fixChemValue: function(row, errors){
         //we try to remove non-numeric characters from this field
         if (row.stringResults && !row.stringResults.match(/^[0-9]*$/)){
+console.log('starting');
+console.log(row.stringResults);
             //we need to manually split these into multiple rows
             if (row.stringResults.match(/,/) && row.stringResults.match(/[0-9]/)){
                 row.stringResults = null;
@@ -218,7 +220,7 @@ EHR.validation = {
                 row.stringResults = row.stringResults.replace('less than', '<');
 
                 var match = row.stringResults.match(/^([<>=]*)[ ]*(\d*\.*\d*)([-]*\d*\.*\d*)([+]*)[ ]*(.*)$/);
-
+console.log(match);
                 if (match[4])
                     row.resultOORIndicator = match[4];
                 //kinda weak, but we preferentially take the prefix.  should never have both
@@ -252,6 +254,7 @@ EHR.validation = {
             //this covers the situation where a mySQL string column contained a numeric value
             row.result = row.stringResults;
             delete row.stringResults;
+console.log('result is numeric')
         }
     },
     fixUrineQuantity: function(row, errors){

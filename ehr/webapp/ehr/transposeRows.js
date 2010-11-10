@@ -85,6 +85,7 @@ EHR.ext.customPanels.detailsView = function(config)
             var thePanel = new Ext.Panel({
                 layout: 'form',
                 bodyStyle: 'padding:5px',
+                bodyCssClass: 'labkey-wp',
                 bodyBorder: true,
                 border: true,
                 title: 'Details',

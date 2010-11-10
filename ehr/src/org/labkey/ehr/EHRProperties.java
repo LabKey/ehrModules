@@ -44,20 +44,33 @@ public class EHRProperties
         }
     };
 
-//    public static SystemProperty TASKID = new SystemProperty(URI + "TaskId", PropertyType.STRING)
-//    {
-//        @Override
-//        protected PropertyDescriptor constructPropertyDescriptor()
-//        {
-//            PropertyDescriptor pd = super.constructPropertyDescriptor();
-//            pd.setShownInInsertView(false);
-//            pd.setShownInUpdateView(false);
-//            pd.setShownInDetailsView(false);
-//            pd.setHidden(true);
-//            return pd;
-//        }
-//    };
+    public static SystemProperty TASKID = new SystemProperty(URI + "TaskId", PropertyType.STRING)
+    {
+        @Override
+        protected PropertyDescriptor constructPropertyDescriptor()
+        {
+            PropertyDescriptor pd = super.constructPropertyDescriptor();
+            pd.setShownInInsertView(false);
+            pd.setShownInUpdateView(false);
+            pd.setShownInDetailsView(false);
+            pd.setHidden(true);
+            return pd;
+        }
+    };
 
+    public static SystemProperty USERID = new SystemProperty(URI + "UserId", PropertyType.STRING)
+    {
+        @Override
+        protected PropertyDescriptor constructPropertyDescriptor()
+        {
+            PropertyDescriptor pd = super.constructPropertyDescriptor();
+            pd.setShownInInsertView(false);
+            pd.setShownInUpdateView(false);
+            pd.setShownInDetailsView(false);
+//            pd.setHidden(true);
+            return pd;
+        }
+    };
 
     public static SystemProperty DESCRIPTION = new SystemProperty(URI + "Description", PropertyType.MULTI_LINE)
     {
