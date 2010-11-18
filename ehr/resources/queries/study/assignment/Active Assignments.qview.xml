@@ -6,7 +6,7 @@
                 <property name="columnTitle" value="Gender"/>
             </properties>
         </column>
-        <column name="Project"/>
+        <column name="project"/>
         <column name="Project/protocol">
             <properties>
                 <property name="columnTitle" value="Protocol"/>

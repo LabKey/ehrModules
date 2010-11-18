@@ -5,7 +5,7 @@
  */
 
 SELECT
-
+o.lsid,
 o.id,
 o.id.curLocation.room as Room,
 o.id.curLocation.cage as Cage,
@@ -21,7 +21,9 @@ o.other,
 o.tlocation,
 o.otherbehavior,
 o.remark,
-o.description
+o.dataset,
+o.description,
+null as note
 
 from study.obs o
 -- LEFT JOIN study.housing h
@@ -40,7 +42,7 @@ WHERE
 UNION ALL
 
 SELECT
-
+c.objectid,
 null as id,
 c.room,
 c.cage,
@@ -56,8 +58,9 @@ null as other,
 null as tlocation,
 null as otherbehavior,
 c.note as Remark,
-null as description
-
+null as dataset,
+null as description,
+null as note
 FROM lists.cagenotes c
 
 

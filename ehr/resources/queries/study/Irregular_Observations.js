@@ -28,12 +28,31 @@ function setDescription(row, errors){
     if(row.otherbehavior)
         description.push('Other Behavior: '+row.otherbehavior);
 
+    if(!row.isIrregular)
+        description.push('No Irregular Observations');
+
     return description;
 }
 
 function beforeBoth(row, errors) {
     EHR.validation.rowInit(row, errors);
 
+    //unique to obs:
+    if (
+        row.feces ||
+        row.menses ||
+        row.behavior ||
+        row.breeding ||
+        row.other ||
+        row.tlocation ||
+        row.remark ||
+        row.otherbehavior        
+    ){
+        row.isIrregular = true;
+    }
+    else {
+        row.isIrregular = false;
+    }
     EHR.validation.rowEnd(row, errors);
 }
 

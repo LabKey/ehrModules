@@ -4,7 +4,8 @@
  * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
  */
 SELECT
-t1.objectid,
+t1.lsid,
+t1.dataset,
 t1.id,
 t1.id.curLocation.room as CurrentRoom,
 t1.id.curLocation.cage as CurrentCage,
@@ -90,6 +91,7 @@ UNION ALL
 
 SELECT
 t1.lsid,
+t1.dataset,
 t1.id,
 t1.id.curLocation.room as CurrentRoom,
 t1.id.curLocation.cage as CurrentCage,
@@ -153,6 +155,7 @@ UNION ALL
 
 SELECT
 t1.lsid,
+t1.dataset,
 t1.id,
 t1.id.curLocation.room as CurrentRoom,
 t1.id.curLocation.cage as CurrentCage,

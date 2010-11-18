@@ -15,6 +15,26 @@
                             query.age_class~eq=${ageClass}&amp;
                             query.gender~eq=${gender}&amp;
                         </url>
+                        <conditionalFormats>
+                            <conditionalFormat>
+                                <filters>
+                                    <filter operator="eq" value="Low"/>
+                                </filters>
+                                <backgroundColor>FBEC5D</backgroundColor>
+                            </conditionalFormat>
+                            <conditionalFormat>
+                                <filters>
+                                    <filter operator="eq" value="High"/>
+                                </filters>
+                                <backgroundColor>E3170D</backgroundColor>
+                            </conditionalFormat>
+                            <!--<conditionalFormat>-->
+                                <!--<filters>-->
+                                    <!--<filter operator="eq" value="Normal"/>-->
+                                <!--</filters>-->
+                                <!--<backgroundColor>FBEC5D</backgroundColor>-->
+                            <!--</conditionalFormat>-->
+                        </conditionalFormats>
                     </column>
                     <column columnName="species">
                         <isHidden>true</isHidden>

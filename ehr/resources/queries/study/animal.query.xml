@@ -48,6 +48,7 @@
                         <isHidden>false</isHidden>
                         <isUnselectable>true</isUnselectable>
                         <fk>
+                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                             <fkDbSchema>study</fkDbSchema>
                             <fkTable>demographicsSurgery</fkTable>
                             <fkColumnName>Id</fkColumnName>
@@ -58,6 +59,7 @@
                         <isHidden>false</isHidden>
                         <isUnselectable>true</isUnselectable>
                         <fk>
+                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                             <fkDbSchema>study</fkDbSchema>
                             <fkTable>demographicsAssignmentSummary</fkTable>
                             <fkColumnName>Id</fkColumnName>
@@ -68,6 +70,7 @@
                         <isHidden>false</isHidden>
                         <isUnselectable>true</isUnselectable>
                         <fk>
+                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                             <fkDbSchema>study</fkDbSchema>
                             <fkTable>demographicsAssignmentHistory</fkTable>
                             <fkColumnName>Id</fkColumnName>
@@ -78,6 +81,7 @@
                         <isHidden>false</isHidden>
                         <isUnselectable>true</isUnselectable>
                         <fk>
+                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                             <fkDbSchema>study</fkDbSchema>
                             <fkTable>demographicsCurLocation</fkTable>
                             <fkColumnName>Id</fkColumnName>
@@ -88,6 +92,7 @@
                         <isHidden>false</isHidden>
                         <isUnselectable>true</isUnselectable>
                         <fk>
+                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                             <fkDbSchema>study</fkDbSchema>
                             <fkTable>demographicsCurrentRoommates</fkTable>
                             <fkColumnName>Id</fkColumnName>
@@ -98,6 +103,7 @@
                         <isHidden>false</isHidden>
                         <isUnselectable>true</isUnselectable>
                         <fk>
+                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                             <fkDbSchema>study</fkDbSchema>
                             <fkTable>demographicsMostRecentWeight</fkTable>
                             <fkColumnName>Id</fkColumnName>
@@ -118,6 +124,7 @@
                         <isHidden>false</isHidden>
                         <isUnselectable>true</isUnselectable>
                         <fk>
+                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                             <fkDbSchema>study</fkDbSchema>
                             <fkTable>demographicsStatus</fkTable>
                             <fkColumnName>Id</fkColumnName>
@@ -128,6 +135,7 @@
                         <isHidden>false</isHidden>
                         <isUnselectable>true</isUnselectable>
                         <fk>
+                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                             <fkDbSchema>study</fkDbSchema>
                             <fkTable>demographicsTotalOffspring</fkTable>
                             <fkColumnName>Id</fkColumnName>
@@ -149,6 +157,7 @@
                         <isHidden>false</isHidden>
                         <isUnselectable>true</isUnselectable>
                         <fk>
+                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                             <fkDbSchema>study</fkDbSchema>
                             <fkTable>tbMostRecentTestDate</fkTable>
                             <fkColumnName>Id</fkColumnName>
@@ -159,6 +168,7 @@
                         <isHidden>false</isHidden>
                         <isUnselectable>true</isUnselectable>
                         <fk>
+                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                             <fkDbSchema>study</fkDbSchema>
                             <fkTable>demographicsArrival</fkTable>
                             <fkColumnName>Id</fkColumnName>
@@ -169,6 +179,7 @@
                         <isHidden>false</isHidden>
                         <isUnselectable>true</isUnselectable>
                         <fk>
+                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                             <fkDbSchema>study</fkDbSchema>
                             <fkTable>demographicsMostRecentDeparture</fkTable>
                             <fkColumnName>Id</fkColumnName>
@@ -179,6 +190,7 @@
                         <isHidden>false</isHidden>
                         <isUnselectable>true</isUnselectable>
                         <fk>
+                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                             <fkDbSchema>study</fkDbSchema>
                             <fkTable>demographicsMHC</fkTable>
                             <fkColumnName>Id</fkColumnName>
@@ -189,6 +201,7 @@
                         <isHidden>true</isHidden>
                         <isUnselectable>true</isUnselectable>
                         <fk>
+                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                             <fkDbSchema>study</fkDbSchema>
                             <fkTable>demographicsCageClass</fkTable>
                             <fkColumnName>Id</fkColumnName>
@@ -199,6 +212,7 @@
                         <isHidden>false</isHidden>
                         <isUnselectable>true</isUnselectable>
                         <fk>
+                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                             <fkDbSchema>study</fkDbSchema>
                             <fkTable>demographicsBloodSummary</fkTable>
                             <fkColumnName>Id</fkColumnName>
@@ -209,6 +223,7 @@
                         <isHidden>false</isHidden>
                         <isUnselectable>true</isUnselectable>
                         <fk>
+                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                             <fkDbSchema>study</fkDbSchema>
                             <fkTable>demographicsDaysAlone</fkTable>
                             <fkColumnName>Id</fkColumnName>
@@ -219,6 +234,7 @@
                         <isHidden>false</isHidden>
                         <isUnselectable>true</isUnselectable>
                         <fk>
+                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                             <fkDbSchema>study</fkDbSchema>
                             <fkTable>demographicsAgeClass</fkTable>
                             <fkColumnName>Id</fkColumnName>
@@ -229,6 +245,7 @@
                         <isHidden>false</isHidden>
                         <isUnselectable>true</isUnselectable>
                         <fk>
+                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                             <fkDbSchema>study</fkDbSchema>
                             <fkTable>demographicsLatestVL</fkTable>
                             <fkColumnName>Id</fkColumnName>

@@ -9,7 +9,7 @@ d.Id,
 
 max(d.date) as Date,
 
-min(d.wpi) as wpi,
+min(d.WeeksSinceChallenge) as WeeksSinceChallenge,
 
 d.ChallengeType,
 

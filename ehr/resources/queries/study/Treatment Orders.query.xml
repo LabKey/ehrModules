@@ -7,6 +7,7 @@
                 <columns>
                     <column columnName="project">
                         <fk>
+                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                             <fkDbSchema>lists</fkDbSchema>
                             <fkTable>project</fkTable>
                             <fkColumnName>project</fkColumnName>
@@ -22,6 +23,7 @@
                         <nullable>false</nullable>
                         <columnTitle>SNOMED</columnTitle>
                         <fk>
+                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                             <fkDbSchema>lists</fkDbSchema>
                             <fkTable>snomed</fkTable>
                             <fkColumnName>code</fkColumnName>
@@ -29,6 +31,7 @@
                     </column>
                     <column columnName="parentId">
                         <fk>
+                          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                           <fkDbSchema>study</fkDbSchema>
                           <fkTable>encounters</fkTable>
                           <fkColumnName>objectid</fkColumnName>
@@ -36,6 +39,7 @@
                     </column>
                     <column columnName="frequency">
                         <fk>
+                          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                           <fkDbSchema>lookups</fkDbSchema>
                           <fkTable>treatment_frequency</fkTable>
                           <fkColumnName>key</fkColumnName>
@@ -46,6 +50,7 @@
                         <isHidden>true</isHidden>
                         <isUnselectable>true</isUnselectable>
                         <fk>
+                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                             <fkDbSchema>study</fkDbSchema>
                             <fkTable>treatmentDate</fkTable>
                             <fkColumnName>lsid</fkColumnName>

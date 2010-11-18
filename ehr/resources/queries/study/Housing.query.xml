@@ -9,6 +9,7 @@
                         <isHidden>false</isHidden>
                         <isUnselectable>true</isUnselectable>
                         <fk>
+                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                             <fkDbSchema>study</fkDbSchema>
                             <fkTable>housingTotalRoommates</fkTable>
                             <fkColumnName>objectid</fkColumnName>
@@ -47,6 +48,7 @@
                         <datatype>varchar</datatype>
                         <columnTitle>Condition</columnTitle>
                         <fk>
+                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                             <fkDbSchema>lists</fkDbSchema>
                             <fkTable>condition</fkTable>
                             <fkColumnName>Code</fkColumnName>
@@ -54,6 +56,7 @@
                     </column>
                     <column columnName="parentId">
                         <fk>
+                          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                           <fkDbSchema>study</fkDbSchema>
                           <fkTable>encounters</fkTable>
                           <fkColumnName>objectid</fkColumnName>

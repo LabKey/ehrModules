@@ -13,6 +13,7 @@
     <dataset name='drug' id='1014' category="Clinical"/>
     <dataset name='encounters' id='1067' category="Clinical" />
     <dataset name='obs' id='1023' category="Clinical"/>
+    <dataset name='cageObs' id='1084' category="Clinical" showByDefault="false"/>
     <dataset name='prenatal' id='1029' category="Clinical"/>
     <dataset name='procedures' id='1033' category="Clinical" showByDefault="false"/>
     <dataset name='problem' id='1030' category="Clinical"/>

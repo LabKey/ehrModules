@@ -9,6 +9,7 @@
                         <isHidden>false</isHidden>
                         <isUnselectable>true</isUnselectable>
                         <fk>
+                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                             <fkDbSchema>study</fkDbSchema>
                             <fkTable>bloodSummary</fkTable>
                             <fkColumnName>lsid</fkColumnName>
@@ -16,6 +17,7 @@
                     </column>
                     <column columnName="project">
                         <fk>
+                          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                           <fkDbSchema>lists</fkDbSchema>
                           <fkTable>project</fkTable>
                           <fkColumnName>project</fkColumnName>
@@ -35,6 +37,7 @@
                     <!--</column>-->
                     <column columnName="parentId">
                         <fk>
+                          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                           <fkDbSchema>study</fkDbSchema>
                           <fkTable>encounters</fkTable>
                           <fkColumnName>objectid</fkColumnName>

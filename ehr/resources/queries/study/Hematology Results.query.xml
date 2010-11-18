@@ -9,6 +9,7 @@
                         <isHidden>false</isHidden>
                         <isUnselectable>true</isUnselectable>
                         <fk>
+                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                             <fkDbSchema>study</fkDbSchema>
                             <fkTable>hematologyRefRange</fkTable>
                             <fkColumnName>lsid</fkColumnName>
@@ -16,6 +17,7 @@
                     </column>
                     <column columnName="parentId">
                         <fk>
+                          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                           <fkDbSchema>study</fkDbSchema>
                           <fkTable>hematologyRuns</fkTable>
                           <fkColumnName>objectid</fkColumnName>

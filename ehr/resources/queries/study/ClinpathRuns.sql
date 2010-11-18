@@ -31,7 +31,9 @@ x.requestId,
 x.QCState,
 x.description,
 x.objectId,
-'bacteriology' as dataset
+x.lsid,
+'Bacteriology' as type,
+x.dataset.label as dataset
 FROM study.bacteriologyRuns x
 
 UNION ALL
@@ -48,7 +50,9 @@ x.requestId,
 x.QCState,
 x.description,
 x.objectId,
-'chemistry' as dataset
+x.lsid,
+'Chemistry' as type,
+x.dataset.label as dataset
 FROM study.chemistryRuns x
 
 UNION ALL
@@ -65,7 +69,9 @@ x.requestId,
 x.QCState,
 x.description,
 x.objectId,
-'hematology' as dataset
+x.lsid,
+'Hematology' as type,
+x.dataset.label as dataset
 FROM study.hematologyRuns x
 
 UNION ALL
@@ -82,7 +88,9 @@ x.requestId,
 x.QCState,
 x.description,
 x.objectId,
-'parasitology' as dataset
+x.lsid,
+'Parasitology' as type,
+x.dataset.label as dataset
 FROM study.parasitologyRuns x
 
 UNION ALL
@@ -99,7 +107,9 @@ x.requestId,
 x.QCState,
 x.description,
 x.objectId,
-'immunology' as dataset
+x.lsid,
+'Immunology' as type,
+x.dataset.label as dataset
 FROM study.immunologyRuns x
 
 UNION ALL
@@ -116,7 +126,9 @@ x.requestId,
 x.QCState,
 x.description,
 x.objectId,
-'urinalysis' as dataset
+x.lsid,
+'Urinalysis' as type,
+x.dataset.label as dataset
 FROM study.urinalysisRuns x
 
 UNION ALL
@@ -133,7 +145,9 @@ x.requestId,
 x.QCState,
 x.description,
 x.objectId,
-'virology' as dataset
+x.lsid,
+'Virology' as type,
+x.dataset.label as dataset
 FROM study.virologyRuns x
 
 -- ) x

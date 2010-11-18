@@ -16,7 +16,7 @@ Ext.onReady(function ()
         queryName: 'Treatment Orders',
         title: 'Treatment Details:',
         renderTo: 'treatmentDetails',
-        filterArray: [LABKEY.Filter.create('objectId', key, LABKEY.Filter.Types.EQUAL)]
+        filterArray: [LABKEY.Filter.create('lsid', key, LABKEY.Filter.Types.EQUAL)]
     });
 
     new LABKEY.QueryWebPart({

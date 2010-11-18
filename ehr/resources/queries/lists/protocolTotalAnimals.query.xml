@@ -6,6 +6,7 @@
                     <column columnName="protocol">
                         <isKeyField>true</isKeyField>
                         <fk>
+                          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                           <fkDbSchema>lists</fkDbSchema>
                           <fkTable>protocol</fkTable>
                           <fkColumnName>protocol</fkColumnName>
@@ -26,8 +27,9 @@
                             query.viewName=Active Assignments
                         </url>
                     </column>
-                    <titleColumn>TotalAnimals</titleColumn>
+
                 </columns>
+                <titleColumn>TotalAnimals</titleColumn>
             </table>
         </tables>
     </metadata>

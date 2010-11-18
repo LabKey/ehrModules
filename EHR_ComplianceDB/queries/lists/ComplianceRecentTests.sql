@@ -58,10 +58,15 @@ ON (rc.Requirement=rn.RequirementName AND (
       rc.Category IS NULL AND rc.unit = e.unit
       ))
 
---we add in misc requirements
+--we add in misc requirements specific per employee
 LEFT JOIN "/WNPRC/WNPRC_Units/Animal_Services/Compliance_Training/Private/EmployeeDB/".lists.EmployeeMiscRequirements mt
 ON (mt.RequirementName=rn.RequirementName AND mt.EmployeeId = e.Id)
 
+--we add employee exemptions
+LEFT JOIN "/WNPRC/WNPRC_Units/Animal_Services/Compliance_Training/Private/EmployeeDB/".lists.EmployeeRequirementExemptions ee
+ON (ee.RequirementName=rn.RequirementName AND ee.EmployeeId = e.Id)
+
+--we add the dates employees completed each requirement
 LEFT JOIN
 (SELECT max(t.date) AS MostRecentDate, t.RequirementName, t.EmployeeId FROM "/WNPRC/WNPRC_Units/Animal_Services/Compliance_Training/Private/EmployeeDB/".lists.CompletionDates t GROUP BY t.EmployeeId, t.RequirementName) T1
 ON (T1.RequirementName = rn.RequirementName AND T1.EmployeeId = e.Id)
@@ -69,8 +74,11 @@ ON (T1.RequirementName = rn.RequirementName AND T1.EmployeeId = e.Id)
 WHERE
   --we compute whether this person requires this test
   --and only show required tests
-  --the logic is defined by the Employee and TestName tables
+
   CASE
+    --if this employee/test appears in the exemptions table, it's not required
+    WHEN ee.RequirementName is not null
+      THEN false
     WHEN rn.Required IS TRUE
       THEN TRUE
     WHEN (e.Category.Barrier IS TRUE AND rn.Access IS TRUE)

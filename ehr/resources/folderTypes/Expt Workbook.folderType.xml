@@ -3,20 +3,21 @@
     <description>The default workbook</description>
     <requiredWebParts>
         <webPart>
-            <name>Query</name>
+            <name>Workbook Description</name>
             <location>body</location>
         </webPart>
     </requiredWebParts>
     <preferredWebParts>
         <webPart>
-            <name>Data Pipeline</name>
+            <name>Files</name>
             <location>body</location>
         </webPart>
     </preferredWebParts>
     <modules>
-        <moduleName>EHR</moduleName>
+        <moduleName>Pipeline</moduleName>
         <moduleName>Query</moduleName>
         <moduleName>Portal</moduleName>
     </modules>
     <defaultModule>Portal</defaultModule>
+    <workbookType>true</workbookType>
 </folderType>

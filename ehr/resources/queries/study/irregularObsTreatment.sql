@@ -14,7 +14,9 @@ i.DateOnly,
 'Obs' as type,
 i.userid,
 i.remark,
-i.description
+i.dataset,
+i.description,
+i.note
 
 from study.irregularObs i
 
@@ -30,7 +32,9 @@ t.date as DateOnly,
 'Treatment' as type,
 t.userid,
 null as remark, -- t.remark,
-t.description
+t.dataset,
+t.description,
+null as note
 
 FROM treatmentSchedule t
 

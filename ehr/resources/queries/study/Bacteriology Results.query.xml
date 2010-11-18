@@ -8,6 +8,7 @@
                         <datatype>varchar</datatype>
                         <columnTitle>Source SNOMED</columnTitle>
                         <fk>
+                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                             <fkDbSchema>lists</fkDbSchema>
                             <fkTable>snomed</fkTable>
                             <fkColumnName>code</fkColumnName>
@@ -17,6 +18,7 @@
                         <datatype>varchar</datatype>
                         <columnTitle>Result SNOMED</columnTitle>
                         <fk>
+                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                             <fkDbSchema>lists</fkDbSchema>
                             <fkTable>snomed</fkTable>
                             <fkColumnName>code</fkColumnName>
@@ -26,6 +28,7 @@
                         <datatype>varchar</datatype>
                         <columnTitle>Antibiotic SNOMED</columnTitle>
                         <fk>
+                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                             <fkDbSchema>lists</fkDbSchema>
                             <fkTable>snomed</fkTable>
                             <fkColumnName>code</fkColumnName>
@@ -37,6 +40,7 @@
                     </column>
                     <column columnName="runId">
                         <fk>
+                          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                           <fkDbSchema>study</fkDbSchema>
                           <fkTable>bacteriologyRuns</fkTable>
                           <fkColumnName>objectid</fkColumnName>
@@ -44,6 +48,7 @@
                     </column>
                     <column columnName="parentId">
                         <fk>
+                          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                           <fkDbSchema>study</fkDbSchema>
                           <fkTable>bacteriologyRuns</fkTable>
                           <fkColumnName>objectid</fkColumnName>

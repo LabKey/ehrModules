@@ -33,10 +33,10 @@ dev.off();
 theTable <- table(factor(labkey.data$species), labkey.data$category)
 theTable
 
+#write(theTable, file="${tsvout:table}")
+write.table(theTable, file = "${tsvout:tsvfile}", sep = "\t", qmethod = "double", col.names=NA)
 
-#txt = theTable
-#write(txt, file="${htmlout:output}")
-
+theTable;
 
 } else {
 

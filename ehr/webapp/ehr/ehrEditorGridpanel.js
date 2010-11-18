@@ -29,17 +29,17 @@ EHR.ext.EditorGridPanel = Ext.extend(LABKEY.ext.EditorGridPanel,
             }
         });
 
-        Ext.apply(this, {
-            width: '100%',
-//            viewConfig: {
-//                forceFit: true,
+        Ext.applyIf(this, {
+            viewConfig: {
+                forceFit: true,
 //                autoFill : true,
-//                scrollOffset: 0
-//            },
+                scrollOffset: 0
+            },
             autoHeight: true,
-            autoWidth: true,
-            plugins: ['autosizecolumns'],
+//            autoWidth: true,
+//            plugins: ['autosizecolumns'],
             autoSave: false,
+            deferRowRender : true,
             editable: true,
             stripeRows: true,
             enableHdMenu: false,
@@ -104,12 +104,6 @@ EHR.ext.EditorGridPanel = Ext.extend(LABKEY.ext.EditorGridPanel,
             var x;
         }, this);
     },
-//    onStoreLoad : function(store, records, options) {
-//        this.store.un("load", this.onStoreLoad, this);
-//
-//        this.populateMetaMap();
-//        this.setupColumnModel();
-//    },
     populateMetaMap : function() {
         //the metaMap is a map from field name to meta data about the field
         //the meta data contains the following properties:
@@ -129,6 +123,9 @@ EHR.ext.EditorGridPanel = Ext.extend(LABKEY.ext.EditorGridPanel,
             if(this.metadata && this.metadata[field.name])
                 EHR.UTILITIES.rApply(field, this.metadata[field.name]);
 
+            if(field.parentField)
+                field.hidden = true;
+            
             this.metaMap[field.name] = field;
         }
     }

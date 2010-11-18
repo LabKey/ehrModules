@@ -4,8 +4,6 @@
 
 Ext.onReady(function()
 {
-    var username;
-
     //we look up this employee's information
     LABKEY.Query.selectRows({
         schemaName: 'lists',
@@ -15,6 +13,7 @@ Ext.onReady(function()
         successCallback: onSuccess
     });
 
+    var username;
     function onSuccess(results)
     {
         if (results.rows.length < 1){alert('No Employee Record Found for User: '+LABKEY.Security.currentUser.email+'.\nPlease contact Sandra Boehm.');return;}
@@ -91,8 +90,6 @@ Ext.onReady(function()
             }
             submit.onclick = submitRequest
         }
-
-
     }
 
 
@@ -105,35 +102,33 @@ function markRead(dataRegion, dataRegionName) {
     if (!checked.length)
         return false;
 
-    var request = new LABKEY.MultiRequest({listeners: {'done': onComplete, scope: this}});
     var errorState = 0;
+    //var user = LABKEY.Security.currentUser.displayName;
 
     Ext.Msg.wait("Loading...");
-
+    var rows = [];
     for (var i=0;i<checked.length;i++){
-        // Insert form data into the list.
-        var value = checked[i].split(',');
-        var insertCfg = {
-             containerPath: 'WNPRC/WNPRC_Units/Animal_Services/Compliance_Training/Private/SOPs/',
-             schemaName: 'lists',
-             queryName: 'SOPDates',
-             rowDataArray: [{
-                SOP_ID: value[0]
-                ,EmployeeId: value[1]
-                ,Date: new Date().format("Y-m-d")
-                }],
-             failureCallback: function(errorInfo) {
-                errorState = 1;
-                Ext.Msg.hide();
-                Ext.Msg.alert("Error: please contact bimber@wisc.edu");
-                console.log(errorInfo)
-                }
-            };
-
-        request.add(LABKEY.Query.insertRows, insertCfg);
+        rows.push({
+            SOP_ID: checked[i]
+            ,EmployeeId: username
+            ,Date: new Date().format("Y-m-d")
+            });
     }
 
-    request.send({});
+    LABKEY.Query.insertRows({
+         containerPath: 'WNPRC/WNPRC_Units/Animal_Services/Compliance_Training/Private/SOPs/',
+         schemaName: 'lists',
+         queryName: 'SOPDates',
+         rowDataArray: rows,
+         scope: this,
+         failureCallback: function(errorInfo) {
+            errorState = 1;
+            Ext.Msg.hide();
+            Ext.Msg.alert("Error: please contact bimber@wisc.edu");
+            console.log(errorInfo)
+         },
+         successCallback: onComplete
+    });
 
     function onComplete(){
         dataRegion.selectNone();

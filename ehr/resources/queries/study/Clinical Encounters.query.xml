@@ -1,4 +1,4 @@
-<query xmlns="http://labkey.org/data/xml/query">
+    <query xmlns="http://labkey.org/data/xml/query">
     <metadata>
         <tables xmlns="http://labkey.org/data/xml">
             <table tableName="encounters" tableDbType="TABLE">
@@ -8,6 +8,7 @@
                         <isKeyField>true</isKeyField>
                         <isHidden>true</isHidden>
                         <fk>
+                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                             <fkDbSchema>lookups</fkDbSchema>
                             <fkTable>encounter_types</fkTable>
                             <fkColumnName>category</fkColumnName>

@@ -5,7 +5,7 @@
               <columns>
                   <column columnName="Id">
                       <fk>
-                          <fkFolderPath>WNPRC/EHR/</fkFolderPath>
+                          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                           <fkColumnName>Id</fkColumnName>
                           <fkTable>Animal</fkTable>
                           <fkDbSchema>study</fkDbSchema>

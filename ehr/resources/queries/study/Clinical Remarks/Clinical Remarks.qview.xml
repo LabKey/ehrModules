@@ -1,7 +1,7 @@
 <customView xmlns="http://labkey.org/data/xml/queryCustomView">
     <columns>
         <column name="Id"/>
-        <column name="Date"/>
+        <column name="date"/>
         <column name="project"/>
         <column name="Remark"/>
         <column name="userid"/>

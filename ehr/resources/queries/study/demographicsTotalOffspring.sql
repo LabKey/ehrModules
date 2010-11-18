@@ -6,13 +6,13 @@
 SELECT
 
 d.id,
-
+d.id as id2,
 count(d2.id)  AS TotalOffspring
 
 
 FROM study.Demographics d
 
-LEFT JOIN study.Demographics d2
+JOIN study.Demographics d2
   ON (d.Id = d2.sire OR d.Id = d2.dam)
 
 GROUP BY d.id

@@ -201,6 +201,7 @@
         <datatype>varchar</datatype>
         <columnTitle>Species</columnTitle>
         <fk>
+          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
           <fkDbSchema>lists</fkDbSchema>
           <fkTable>species</fkTable>
           <fkColumnName>common</fkColumnName>
@@ -393,6 +394,7 @@
           <datatype>varchar</datatype>
           <columnTitle>Protocol</columnTitle>
           <fk>
+            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
             <fkDbSchema>lists</fkDbSchema>
             <fkTable>protocol</fkTable>
             <fkColumnName>protocol</fkColumnName>
@@ -410,6 +412,7 @@
           <datatype>varchar</datatype>
           <columnTitle>Availability</columnTitle>
           <fk>
+            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
             <fkDbSchema>lists</fkDbSchema>
             <fkTable>avail</fkTable>
             <fkColumnName>code</fkColumnName>
@@ -559,6 +562,7 @@
           <columnTitle>Protocol</columnTitle>
           <nullable>false</nullable>
             <fk>
+              <fkFolderPath>/wnprc/ehr/</fkFolderPath>
               <fkDbSchema>lists</fkDbSchema>
               <fkTable>protocol</fkTable>
               <fkColumnName>protocol</fkColumnName>
@@ -568,6 +572,7 @@
           <datatype>varchar</datatype>
           <columnTitle>Species</columnTitle>
             <fk>
+              <fkFolderPath>/wnprc/ehr/</fkFolderPath>
               <fkDbSchema>lists</fkDbSchema>
               <fkTable>species</fkTable>
               <fkColumnName>common</fkColumnName>
@@ -625,6 +630,7 @@
         <datatype>varchar</datatype>
         <columnTitle>Species</columnTitle>
         <fk>
+          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
           <fkDbSchema>lists</fkDbSchema>
           <fkTable>species</fkTable>
           <fkColumnName>common</fkColumnName>
@@ -634,6 +640,7 @@
         <datatype>varchar</datatype>
         <columnTitle>Gender</columnTitle>
         <fk>
+            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
             <fkDbSchema>lists</fkDbSchema>
             <fkTable>gender_codes</fkTable>
             <fkColumnName>code</fkColumnName>
@@ -768,7 +775,8 @@
           <datatype>varchar</datatype>
           <columnTitle>Old Code</columnTitle>
           <fk>
-           <fkDbSchema>lists</fkDbSchema>
+            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
+            <fkDbSchema>lists</fkDbSchema>
             <fkTable>snomed</fkTable>
             <fkColumnName>code</fkColumnName>
           </fk>
@@ -777,7 +785,8 @@
           <datatype>varchar</datatype>
           <columnTitle>New Code</columnTitle>
           <fk>
-           <fkDbSchema>lists</fkDbSchema>
+            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
+            <fkDbSchema>lists</fkDbSchema>
             <fkTable>snomed</fkTable>
             <fkColumnName>code</fkColumnName>
           </fk>
@@ -891,6 +900,7 @@
         <datatype>varchar</datatype>
         <columnTitle>Species</columnTitle>
         <fk>
+          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
           <fkDbSchema>lists</fkDbSchema>
           <fkTable>species</fkTable>
           <fkColumnName>common</fkColumnName>

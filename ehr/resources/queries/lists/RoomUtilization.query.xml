@@ -6,6 +6,7 @@
                     <column columnName="room">
                         <isKeyField>true</isKeyField>
                         <fk>
+                          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                           <fkDbSchema>lists</fkDbSchema>
                           <fkTable>rooms</fkTable>
                           <fkColumnName>room</fkColumnName>

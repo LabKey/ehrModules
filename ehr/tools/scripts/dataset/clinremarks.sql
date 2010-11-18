@@ -9,7 +9,7 @@ lower(id) as Id,
 Date,
 pno as project,
 userid,
-SUBSTR(remark,1,4000) as remark,
+SUBSTR(remark,1,50) as remark,
 ts, objectid,
 parentid,
 category

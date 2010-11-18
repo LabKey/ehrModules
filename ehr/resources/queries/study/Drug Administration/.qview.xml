@@ -1,7 +1,7 @@
 <customView xmlns="http://labkey.org/data/xml/queryCustomView">
    <columns>
-       <column name="id"/>
-       <column name="Date"/>
+       <column name="Id"/>
+       <column name="date"/>
        <column name="BeginTime"/>
        <column name="EndTime"/>
        <column name="project"/>
@@ -14,7 +14,7 @@
        <column name="amount"/>
        <column name="units"/>
        <column name="route"/>
-       <column name="remark"/>
+       <column name="Remark"/>
        <column name="category"/>
    </columns>
    <sorts>

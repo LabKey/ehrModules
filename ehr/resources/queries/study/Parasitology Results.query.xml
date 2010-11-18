@@ -8,6 +8,7 @@
                     <datatype>varchar</datatype>
                     <columnTitle>Code</columnTitle>
                     <fk>
+                        <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                         <fkDbSchema>lists</fkDbSchema>
                         <fkTable>snomed</fkTable>
                         <fkColumnName>Code</fkColumnName>
@@ -16,6 +17,7 @@
                     </column>
                     <column columnName="parentId">
                         <fk>
+                          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                           <fkDbSchema>study</fkDbSchema>
                           <fkTable>parasitologyRuns</fkTable>
                           <fkColumnName>objectid</fkColumnName>
@@ -23,6 +25,7 @@
                     </column>
                     <column columnName="runId">
                         <fk>
+                          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                           <fkDbSchema>study</fkDbSchema>
                           <fkTable>parasitologyRuns</fkTable>
                           <fkColumnName>objectid</fkColumnName>

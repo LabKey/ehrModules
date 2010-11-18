@@ -3,19 +3,9 @@
  *
  * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
  */
-SELECT
-
-d.id,
-max(v.ViralLoad) as LatestViralLoad,
-max(v.date) as LatestViralLoadDate
-
-FROM study.Demographics d
-
-LEFT JOIN study.ViralLoads v
-  on (d.id = v.id)
-
-WHERE v.id is not null
-
-GROUP BY d.id
+SELECT v.id, v.date, v.ViralLoad
+FROM study.ViralLoads v JOIN
+   (SELECT id, MAX(date) as maxDate FROM study.ViralLoads GROUP BY id) m ON
+   v.id = m.id AND v.date = m.maxDate
 
 

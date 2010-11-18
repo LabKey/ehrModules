@@ -5,38 +5,39 @@
  */
 SELECT
 
-t.id,
+d1.id,
 
 CASE
-  WHEN (t.s1 = t.s2 and t.d1 = t.d2 AND t.s1!='' AND t.d1!='')
+  WHEN (COALESCE(d1.sire, '') = COALESCE(d2.sire, '') and COALESCE(d1.dam, '') = COALESCE(d2.dam, '') AND COALESCE(d1.sire, '')!='' AND COALESCE(d1.dam, '')!='')
     THEN 'Full Sib'
-  WHEN (t.s1 = t.s2 AND t.s1 != '' AND (t.d1 != t.d2 OR t.d1 = ''))
+  WHEN (COALESCE(d1.sire, '') = COALESCE(d2.sire, '') AND COALESCE(d1.sire, '') != '' AND (COALESCE(d1.dam, '') != COALESCE(d2.dam, '') OR COALESCE(d1.dam, '') = ''))
     THEN 'Half-Sib Paternal'
-  WHEN (t.d1 = t.d2 AND t.d1 != '' AND (t.s1 != t.s2 OR t.s1 = ''))
+  WHEN (COALESCE(d1.dam, '') = COALESCE(d2.dam, '') AND COALESCE(d1.dam, '') != '' AND (COALESCE(d1.sire, '') != COALESCE(d2.sire, '') OR COALESCE(d1.sire, '') = ''))
     THEN 'Half-Sib Maternal'
-  WHEN (t.s1 != t.s2 and t.d1 != t.d2)
+  WHEN (COALESCE(d1.sire, '') != COALESCE(d2.sire, '') and COALESCE(d1.dam, '') != COALESCE(d2.dam, ''))
     THEN 'ERROR'
   END AS Relationship,
 
-t.sib  AS Sibling,
+d2.id  AS Sibling,
 
 --t.d1,
---t.s1,
-t.dam2 AS SiblingDam,
-t.sire2 AS SiblingSire,
+--COALESCE(d1.sire, ''),
+d2.dam AS SiblingDam,
+d2.sire AS SiblingSire,
 
-FROM (
-
-SELECT d1.id, d2.id as sib, d2.dam as dam2, d2.sire as sire2,
---coalesce used to simplify CASE comparison above
-COALESCE(d1.dam, '') as d1, COALESCE(d2.dam, '') as d2, COALESCE(d1.sire, '') as s1, COALESCE(d2.sire, '') as s2
+-- FROM (
+--
+-- SELECT d1.id, d2.id as sib, d2.dam as dam2, d2.sire as sire2,
+-- --coalesce used to simplify CASE comparison above
+-- COALESCE(d1.dam, '') as d1, COALESCE(d2.dam, '') as d2, COALESCE(d1.sire, '') as s1, COALESCE(d2.sire, '') as s2
 
 FROM study.Demographics d1
 
-LEFT JOIN study.Demographics d2
+--removed left join
+JOIN study.Demographics d2
   ON ((d2.sire = d1.sire OR d2.dam = d1.dam) AND d1.id != d2.id)
 
 WHERE d2.id is not null
 
-) t
+-- ) t
 

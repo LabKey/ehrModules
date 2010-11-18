@@ -2,7 +2,7 @@
 <script type="text/javascript">
 
     new LABKEY.QueryWebPart({
-        renderTo: 'summaryQWP',
+        renderTo: 'summary',
         dataRegionName: 'summaryQWP',
         title: 'Summary of Requirements',
         containerPath: '/WNPRC/WNPRC_Units/Animal_Services/Compliance_Training/Private/EmployeeDB',
@@ -60,6 +60,7 @@
     });
 </script>
 <body>
+<ul>
 <li>
     This page provides a mechanism for WNPRC Trainers to directly enter the dates that staff complete training requirements.
 </li>
@@ -87,11 +88,35 @@
 <li>
     If you have questions or feature requests on this page, please contact Ben Bimber <a href="<%=contextPath%>/issues/WNPRC/WNPRC_Units/Research_Services/Research_Computing/Issue_Tracker/list.view?" target="new">here</a>
 </li>
+</ul>
+<br>
 <p/>
-<div id="summaryQWP"></div>
-<p/>
-<div id="trainingQWP"></div>
-<p/>
-<div id="employeeQWP"></div>
+
+<h3>Navigation:</h3>
+<ul>
+<li>
+<a href="#summary">
+    List of the requirements that each employee needs to complete
+</a>
+</li>
+<li>
+<a href="#trainingQWP">
+    List of the dates that employees completed requirements
+</a>
+</li>
+<li>
+<a href="#employeeQWP">
+    WNPRC Employee List and Employee Information
+</a>
+</li>
+</ul>
+
+<br>
+<div id="trainingQWP">Training</div>
+<br>
+<div id="employeeQWP">Employees</div>
+<br>
+<div id="summary">Summary</div>
+
 </body>
 </html>

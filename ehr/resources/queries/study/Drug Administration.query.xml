@@ -6,6 +6,7 @@
                 <columns>
                     <column columnName="project">
                         <fk>
+                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                             <fkDbSchema>lists</fkDbSchema>
                             <fkTable>project</fkTable>
                             <fkColumnName>project</fkColumnName>
@@ -19,6 +20,7 @@
                         <datatype>varchar</datatype>
                         <columnTitle>SNOMED</columnTitle>
                         <fk>
+                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                             <fkDbSchema>lists</fkDbSchema>
                             <fkTable>snomed</fkTable>
                             <fkColumnName>code</fkColumnName>
@@ -36,6 +38,7 @@
                     </column>
                     <column columnName="parentId">
                         <fk>
+                          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                           <fkDbSchema>study</fkDbSchema>
                           <fkTable>encounters</fkTable>
                           <fkColumnName>objectid</fkColumnName>

@@ -49,14 +49,17 @@ EHR.ext.customPanels.detailsView = function(config)
     }
 
     function onFinalRender(data){
-        var target = new Ext.Panel();
+        var target = new Ext.Panel({
+            bodyBorder: false,
+            border: false
+        });
 
         if (!data.rows.length){
-            var header = document.createElement('span');
-            header.innerHTML = '<table class="labkey-wp"><tbody><tr class="labkey-wp-header"><th class="labkey-wp-title-left">' +
+            //var header = document.createElement('span');
+            var innerHTML = '<table class="labkey-wp"><tbody><tr class="labkey-wp-header"><th class="labkey-wp-title-left">' +
             (this.config.title || 'Details:')+ '</th><th class="labkey-wp-title-right">&nbsp;</th></tr></tbody></table>No Records Found<p>';
-            target.innerHTML = '';
-            target.appendChild(header);
+
+            target.add({html: innerHTML});
 
             return;
         }
@@ -85,9 +88,9 @@ EHR.ext.customPanels.detailsView = function(config)
             var thePanel = new Ext.Panel({
                 layout: 'form',
                 bodyStyle: 'padding:5px',
-                bodyCssClass: 'labkey-wp',
-                bodyBorder: true,
-                border: true,
+                bodyBorder: false,
+                cls: 'x-labkey-wp',
+                border: false,
                 title: 'Details',
                 frame: false,
                 labelWidth: 150,
@@ -122,6 +125,7 @@ EHR.ext.customPanels.detailsView = function(config)
 
         config.renderTo.innerHTML = '';        
         target.render(config.renderTo);
+        return target;
 
     }
 

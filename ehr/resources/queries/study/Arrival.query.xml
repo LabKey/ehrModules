@@ -10,6 +10,7 @@
                     </column>
                     <column columnName="parentId">
                         <fk>
+                          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                           <fkDbSchema>study</fkDbSchema>
                           <fkTable>encounters</fkTable>
                           <fkColumnName>objectid</fkColumnName>

@@ -14,7 +14,20 @@ library(Rlabkey)
 
 #kinship coefficient between two individuals equals the inbreeding coefficient of a hypotheticial offspring between them
 
+#calculate kinship using an R package
 kin = kinship(labkey.data$id, labkey.data$dam, labkey.data$sire)
+
+#transform this matrix into a 3 column dataframe
+vec <- c(kin);
+#vec;
+
+cols<- length(colnames(kin))
+thin<-data.frame(cbind(row.names(kin)[rep(1:cols, each=cols)] , colnames(kin)), stringsAsFactors=FALSE)
+thin<- cbind(thin, matrix(as.matrix(kin), 16,1))
+colnames(thin)<-c("Id", "Id2", "kinship")
+thin
+
+#we now compare this dataframe with the existing dataset
 
 #labkey.deleteRows(
 #    baseUrl=labkey.url.base,
@@ -35,11 +48,3 @@ kin = kinship(labkey.data$id, labkey.data$dam, labkey.data$sire)
 #colnames(kin);
 #rownames(kin);
 
-vec <- c(kin);
-vec;
-
-cols<- length(colnames(kin))
-thin<-data.frame(cbind(row.names(kin)[rep(1:cols, each=cols)] , colnames(kin)), stringsAsFactors=FALSE)
-thin<- cbind(thin, matrix(as.matrix(kin), 16,1))
-colnames(thin)<-c("Id", "Id2", "kinship")
-thin

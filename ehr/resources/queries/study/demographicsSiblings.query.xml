@@ -17,6 +17,7 @@
                     </column>
                     <column columnName="Sibling">
                         <fk>
+                          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                           <fkDbSchema>study</fkDbSchema>
                           <fkTable>animal</fkTable>
                           <fkColumnName>Id</fkColumnName>
@@ -24,6 +25,7 @@
                     </column>
                     <column columnName="SiblingDam">
                         <fk>
+                          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                           <fkDbSchema>study</fkDbSchema>
                           <fkTable>animal</fkTable>
                           <fkColumnName>Id</fkColumnName>
@@ -31,6 +33,7 @@
                     </column>
                     <column columnName="SiblingSire">
                         <fk>
+                          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                           <fkDbSchema>study</fkDbSchema>
                           <fkTable>animal</fkTable>
                           <fkColumnName>Id</fkColumnName>

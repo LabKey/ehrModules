@@ -19,6 +19,7 @@ import com.google.common.base.Charsets;
 import com.google.common.io.Files;
 import org.apache.log4j.Logger;
 import org.labkey.api.collections.CaseInsensitiveHashMap;
+import org.labkey.api.data.ColumnInfo;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.ContainerManager;
 import org.labkey.api.data.DbSchema;
@@ -50,8 +51,10 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class ETLRunnable implements Runnable
 {
@@ -139,7 +142,7 @@ public class ETLRunnable implements Runnable
             // But we'd rather catch unexpected exceptions and continue trying,
             // to smooth over any transient issues like the remote datasource
             // being temporarily unavailable.
-            log.warn("Fatal incremental sync error", x);
+            log.error("Fatal incremental sync error", x);
             ETLAuditViewFactory.addAuditEntry(container, user, "FATAL ERROR", "Fatal error during EHR synchronization", 0, 0);
 
         }
@@ -185,8 +188,9 @@ public class ETLRunnable implements Runnable
                 // Optimizations below if true.
                 boolean isTargetEmpty = isEmpty(targetTable);
 
-                log.info("Connecting to remote and preparing query " + targetTableName);
                 originConnection = getOriginConnection();
+
+                log.info("Preparing query " + targetTableName);
                 ps = originConnection.prepareStatement(sql);
                 // Hack for MySQL. If setFetchSize is not set, or is set to any value other than Integer.MIN_VALUE,
                 // mysql driver will read the whole resultset into memory, potentially running out of heap.
@@ -200,22 +204,64 @@ public class ETLRunnable implements Runnable
                     ps.setTimestamp(i, fromDate);
                 }
 
+                // get deletes from the origin.
+                Set<String> deletedIds = getDeletes(originConnection, targetTableName, getLastTimestamp(targetTableName));
 
                 log.info("querying for " + targetTableName + " since " + new Date(fromDate.getTime()));
 
-                QueryUpdateService updater = targetTable.getUpdateService();
-                updater.setBulkLoad(true);
                 int updates = 0;
-
                 Long newBaselineTimestamp = getOriginDataSourceCurrentTime();
                 boolean rollback = false;
 
                 rs = ps.executeQuery();
                 log.info("query " + targetTableName + " returned");
 
+                QueryUpdateService updater = targetTable.getUpdateService();
+                updater.setBulkLoad(true);
+
                 try
                 {
                     scope.beginTransaction();
+                    // perform any deletes
+                    if (!deletedIds.isEmpty())
+                    {
+
+                        ColumnInfo objid = targetTable.getColumn("objectid");
+                        List<ColumnInfo> keys = targetTable.getPkColumns();
+                        Map<String, SQLFragment> joins = new HashMap<String, SQLFragment>();
+                        objid.declareJoins("t", joins);
+                        // Some ehr records are transformed into multiple records en route to labkey. the multiple records have objectids that
+                        // are constructed from the original objectid plus a suffix. If one of those original records gets deleted we only know the
+                        // original objectid. So we need to find the child ones with a LIKE objectid% query. Which is really complicated.
+                        SQLFragment like = new SQLFragment("SELECT ");
+                        String comma = "";
+                        for (ColumnInfo key : keys)
+                        {
+                            like.append(comma + " ");
+                            like.append(key.getValueSql("t"));
+                            like.append(" AS \"" + key.getName() + "\"");
+                            comma = ",";
+                        }
+                        like.append(" FROM ");
+                        like.append(targetTable.getFromSQL("t"));
+                        if (!joins.isEmpty())
+                            like.append(joins.values().iterator().next());
+                        like.append(" WHERE " + objid.getValueSql("t") + " LIKE ? || '%'");
+
+                        List<Map<String, Object>> deleteSelectors = new ArrayList<Map<String, Object>>();
+                        for (final String deletedId : deletedIds)
+                        {
+
+                            for (Map<String, Object> selector : Table.executeQuery(schema.getDbSchema(), like.getSQL(), new Object[]{deletedId}, Map.class))
+                            {
+                                deleteSelectors.add(selector);
+                            }
+                        }
+
+                        updater.deleteRows(user, container, deleteSelectors);
+                        log.info("deleted objectids " + deletedIds.toString());
+                    }
+
                     List<Map<String, Object>> sourceRows = new ArrayList<Map<String, Object>>();
                     // accumulating batches of rows. would employ ResultSet.isDone to manage the last remainder
                     // batch but the MySQL jdbc driver doesn't support that method if it is a streaming result set.
@@ -299,6 +345,44 @@ public class ETLRunnable implements Runnable
 
         } // each target collection
         return errorCount;
+    }
+
+    /**
+     *
+     * @param tableName for which to get deletes
+     * @param fromTime return deletes performed after this timestamp
+     * @return
+     * @throws SQLException
+     * @throws BadConfigException
+     */
+    Set<String> getDeletes(Connection originConnection, String tableName, long fromTime) throws SQLException, BadConfigException
+    {
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        Set<String> deletes = new HashSet<String>();
+
+        try
+        {
+            originConnection = getOriginConnection();
+            ps = originConnection.prepareStatement("SELECT uuid FROM deleted_records WHERE labkeyTable = ? AND ts > ?");
+            ps.setString(1, tableName);
+            ps.setTimestamp(2, new Timestamp(fromTime));
+            rs = ps.executeQuery();
+            while (rs.next())
+            {
+                deletes.add(rs.getString(1));
+            }
+
+            if (!deletes.isEmpty())
+                log.info(deletes.size() + " deletes pending for " + tableName);
+        }
+        finally
+        {
+            close(rs);
+            close(ps);
+        }
+
+        return deletes;
     }
 
     /**

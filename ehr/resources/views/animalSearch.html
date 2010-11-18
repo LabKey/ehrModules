@@ -48,10 +48,10 @@ Ext.onReady(function ()
             ,{caption: 'Num. of Roommates', name: 'numRoommates/numRoommates', jsonType: 'int'}
             ,{caption: 'Species', name: 'Species/species', lookup: {schemaName: 'lists', queryName: 'species', displayColumn: 'common', keyColumn: 'common'}
             }
-            ,{caption: 'Gender', name: 'DataSet/Demographics/gender', lookup: {schemaName: 'lists', queryName: 'gender_codes', displayColumn: 'code', keyColumn: 'meaning'}}
+            ,{caption: 'Gender', name: 'DataSet/Demographics/gender', lookup: {schemaName: 'lists', queryName: 'gender_codes', displayColumn: 'meaning', keyColumn: 'code'}}
             ,{caption: 'Dam', name: 'DataSet/Demographics/dam'}
             ,{caption: 'Sire', name: 'DataSet/Demographics/sire'}
-            ,{caption: 'Availability', name: 'DataSet/Demographics/avail', lookup: {schemaName: 'lists', queryName: 'avail', displayColumn: 'code', keyColumn: 'meaning'}}
+            ,{caption: 'Availability', name: 'DataSet/Demographics/avail', lookup: {schemaName: 'lists', queryName: 'avail', displayColumn: 'code', keyColumn: 'code'}}
             ,{caption: 'Hold', name: 'DataSet/Demographics/hold'}
             ,{caption: 'Birth', name: 'DataSet/Demographics/birth', jsonType: 'date'}
             ,{caption: 'Origin', name: 'DataSet/Demographics/origin', lookup: {schemaName: 'lists', queryName: 'origin', displayColumn: 'code', keyColumn: 'code'}}
@@ -71,7 +71,7 @@ Ext.onReady(function ()
 </script>
 </head>
 
-<body align="center">
+<body>
 <p>
     This page contains a prototype interface to identify animals based on multiple criteria.
 <p/>

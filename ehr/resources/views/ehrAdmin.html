@@ -10,6 +10,7 @@ Ext.onReady(function (){
     if (LABKEY.Security.currentUser.isAdmin){
     new EHR.UTILITIES.navMenu({
         target: 'adminLinks',
+        width: 350,
         sections: [
             {header: 'Admin',
                 items: [
@@ -26,6 +27,8 @@ Ext.onReady(function (){
             {header: 'Logs',
                 items: [
                     {name: 'Labkey.log', url: '<%=contextPath%>/files/WNPRC/EHR/Logs/%40filesets/Tomcat%20Logs/labkey.log?renderAs=DEFAULT'},
+                    {name: 'ETL Log', url: '<%=contextPath%>/files/WNPRC/EHR/Logs/%40filesets/Tomcat%20Logs/ehr-etl.log?renderAs=DEFAULT'},
+                    {name: 'ETL Errors Log', url: '<%=contextPath%>/files/WNPRC/EHR/Logs/%40filesets/Tomcat%20Logs/ehr-etl-errors.log?renderAs=DEFAULT'},
                     {name: 'ActiveMQ.log', url: '<%=contextPath%>/files/WNPRC/EHR/Logs/%40filesets/ActiveMQ/activemq.log?renderAs=DEFAULT'},
                     {name: 'Monit.log', url: '<%=contextPath%>/files/WNPRC/EHR/Logs/%40filesets/Monit/monit.log?renderAs=DEFAULT'},
                     {name: 'Munin.log', url: '<%=contextPath%>/files/WNPRC/EHR/Logs/%40filesets/Munin/munin.log?renderAs=DEFAULT'}
@@ -55,7 +58,8 @@ Ext.onReady(function (){
             {header: 'Validation',
                 items: [
                     {name: 'Validate Status', url: '<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=Validation'},
-                    {name: 'Records To Delete', url: '<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=lists&query.queryName=toDelete'}
+                    {name: 'Review Required', url: '<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=studyData&query.viewName=Review Required'},
+                    {name: 'Postgres/mySQL Comparison', url: '<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=col_dump&query.queryName=mysql_check'}
                 ]
 
             }
@@ -88,7 +92,7 @@ Ext.onReady(function (){
 </script>
 </head>
 
-<body align="center">
+<body>
 
 <div id="adminLinks"></div>
 <p/>

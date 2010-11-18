@@ -15,7 +15,9 @@ WHEN sum(convert(s.major, 'INTEGER')) > 0 THEN
     null
 END AS MajorSurgery,
 
-true As AnySurgery
+true As AnySurgery,
+
+count(*) as NumberOfSurgeries
 
 FROM study.surgery s
 

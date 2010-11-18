@@ -9,10 +9,17 @@
                     </column>
                     <column columnName="location">
                         <fk>
+                          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                           <fkDbSchema>lists</fkDbSchema>
                           <fkTable>cage</fkTable>
                           <fkColumnName>roomcage</fkColumnName>
                         </fk>
+                    </column>
+                    <column columnName="room">
+                        <displayWidth>40</displayWidth>
+                    </column>
+                    <column columnName="cage">
+                        <displayWidth>40</displayWidth>
                     </column>
                 </columns>
                 <titleColumn>Location</titleColumn>

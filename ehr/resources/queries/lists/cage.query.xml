@@ -2,7 +2,12 @@
     <metadata>
         <tables xmlns="http://labkey.org/data/xml">
             <table tableName="Cage" tableDbType="TABLE">
-                <tableUrl>/EHR_Reporting/cageDetails.view?room=${room}&amp;cage=${cage}</tableUrl>
+                <tableUrl>/EHR/cageDetails.view?room=${room}&amp;cage=${cage}</tableUrl>
+                <columns>
+                    <column columnName="location">
+                        <displayWidth>60</displayWidth>
+                    </column>
+                </columns>
             </table>
         </tables>
     </metadata>

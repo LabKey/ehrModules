@@ -8,6 +8,7 @@
                         <!--<nullable>false</nullable>-->
                         <columnTitle>Test Id</columnTitle>
                         <fk>
+                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                             <fkDbSchema>lists</fkDbSchema>
                             <fkTable>lab_tests</fkTable>
                             <fkColumnName>testid</fkColumnName>
@@ -17,6 +18,7 @@
                         <datatype>varchar</datatype>
                         <columnTitle>Species</columnTitle>
                         <fk>
+                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                             <fkDbSchema>lists</fkDbSchema>
                             <fkTable>species</fkTable>
                             <fkColumnName>common</fkColumnName>
@@ -26,6 +28,7 @@
                         <datatype>varchar</datatype>
                         <columnTitle>Gender</columnTitle>
                         <fk>
+                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                             <fkDbSchema>lists</fkDbSchema>
                             <fkTable>gender_codes</fkTable>
                             <fkColumnName>code</fkColumnName>

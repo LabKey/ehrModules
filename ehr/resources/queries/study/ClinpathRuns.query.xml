@@ -4,12 +4,21 @@
             <table tableName="ClinpathRuns" tableDbType="TABLE">
                 <tableUrl>/ehr/clinpathDetails.view?runId=${objectid}&amp;dataset=${dataset}</tableUrl>
                 <columns>
+                    <column columnName="Id">
+                        <fk>
+                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
+                            <fkColumnName>Id</fkColumnName>
+                            <fkTable>Animal</fkTable>
+                            <fkDbSchema>study</fkDbSchema>
+                        </fk>
+                    </column>
                     <column columnName="date">
                         <columnTitle>Date</columnTitle>
                         <formatString>yyyy-MM-dd HH:mm</formatString>
                     </column>
                     <column columnName="parentId">
                         <fk>
+                          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                           <fkDbSchema>study</fkDbSchema>
                           <fkTable>encounters</fkTable>
                           <fkColumnName>objectid</fkColumnName>
@@ -18,6 +27,7 @@
                     </column>
                     <column columnName="requestId">
                         <fk>
+                          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                           <fkDbSchema>study</fkDbSchema>
                           <fkTable>encounters</fkTable>
                           <fkColumnName>objectid</fkColumnName>
@@ -27,6 +37,9 @@
                     <column columnName="objectid">
                         <isHidden>true</isHidden>
                     </column>
+                    <column columnName="lsid">
+                        <isHidden>true</isHidden>
+                    </column>
                     <column columnName="QCState">
                         <isHidden>true</isHidden>
                     </column>
@@ -34,7 +47,8 @@
                         <isHidden>true</isHidden>
                     </column>
                     <column columnName="dataset">
-                        <columnTitle>Type</columnTitle>                        
+                        <isHidden>true</isHidden>
+                        <!--<columnTitle>Type</columnTitle>                        -->
                     </column>
                 </columns>
             </table>

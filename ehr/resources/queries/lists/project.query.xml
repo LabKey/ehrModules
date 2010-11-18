@@ -2,7 +2,7 @@
     <metadata>
         <tables xmlns="http://labkey.org/data/xml">
             <table tableName="project" tableDbType="TABLE">
-                <tableUrl>/EHR_Reporting/projectDetails.view?key=${project}</tableUrl>
+                <tableUrl>/EHR/projectDetails.view?key=${project}</tableUrl>
                 <titleColumn>project</titleColumn>
                 <columns>
                     <column columnName="totalAssigned" wrappedColumnName="project">
@@ -10,6 +10,7 @@
                       <isUnselectable>true</isUnselectable>
                       <columnTitle>Animals Assigned</columnTitle>
                       <fk>
+                        <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                         <fkDbSchema>lists</fkDbSchema>
                         <fkTable>projectTotalAssigned</fkTable>
                         <fkColumnName>project</fkColumnName>
@@ -19,6 +20,7 @@
                       <columnTitle>Last Assignment Date</columnTitle>
                       <isUnselectable>true</isUnselectable>
                       <fk>
+                        <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                         <fkDbSchema>lists</fkDbSchema>
                         <fkTable>projectLastAssignmentDate</fkTable>
                         <fkColumnName>project</fkColumnName>

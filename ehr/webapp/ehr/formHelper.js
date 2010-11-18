@@ -26,11 +26,12 @@ EHR.ext.standardMetadata = {
     Id: {lookups: false, parentField: {queryName: 'encounters', field: 'Id'}}
     ,Date: {parentField: {queryName: 'encounters', field: 'date'}}
     ,date: {parentField: {queryName: 'encounters', field: 'date'}}
-    ,created: {isHidden: true}
-    ,CreatedBy: {isHidden: true}
-    ,AnimalVisit: {isHidden: true}
-    ,modified: {isHidden: true}
-    ,ModifiedBy: {isHidden: true}
+    ,created: {hidden: true}
+    ,Created: {hidden: true}
+    ,CreatedBy: {hidden: true}
+    ,AnimalVisit: {hidden: true}
+    ,modified: {hidden: true}
+    ,ModifiedBy: {hidden: true}
     //,SequenceNum: {isHidden: true}
     ,QCState: {parentField: {queryName: 'encounters', field: 'QCState'}}
     //,QCState: {isHidden: true}
@@ -113,7 +114,7 @@ EHR.ext.ParentFormPanel = Ext.extend(Ext.Panel, {
             ,defaultType: 'textfield'
             ,monitorValid: false
             ,monitorPoll : 200
-            ,deferredRender: false
+            ,deferredRender: true
             ,defaults: {
                 msgTarget: 'side'
                 ,bodyBorder: false
@@ -141,7 +142,7 @@ EHR.ext.ParentFormPanel = Ext.extend(Ext.Panel, {
                     items: [{
                         xtype: 'tabpanel',
                         activeTab: 0,
-                        deferredRender: false,
+                        deferredRender: true,
                         ref: '../queryPanel',
                         items: tabItems,
                         cls: 'extContainer',
@@ -210,6 +211,11 @@ EHR.ext.ParentFormPanel = Ext.extend(Ext.Panel, {
                 return this.warningMessage || 'form dirty';
         }, this);
 
+        //TODO: some sort of indication the work is loading
+//        if(this.uuid){
+//            this.statusBar.showBusy();
+//        }
+        
         console.log("Parent UUID: "+this.uuid);
     },
     initEvents : function(){
@@ -597,7 +603,7 @@ EHR.ext.ClinicalHeader = Ext.extend(Ext.FormPanel, {
             this.parent.canSubmit = true;
             var row = data.rows[0];
             Ext.each(data.metaData.fields, function(c){
-                if(c.isHidden)
+                if(c.isHidden || c.hidden)
                     return false;
                 var value = row['_labkeyurl_'+c.name] ? '<a href="'+row['_labkeyurl_'+c.name]+'" target=new>'+row[c.name]+'</a>' : row[c.name];
                 target.add({id: c.name, xtype: 'displayfield', fieldLabel: c.caption, value: value, submitValue: false});
@@ -808,7 +814,7 @@ EHR.ext.FormPanel = Ext.extend(Ext.FormPanel,
             ,bodyStyle: 'padding:5px 5px 5px 5px'
             //,style: 'margin-bottom: 5px;border-style:solid;border-width:1px'
             ,plugins: [new EHR.ext.plugins.DataBind()]
-            ,deferredRender: false
+            ,deferredRender: true
             ,monitorValid: true
             ,trackResetOnLoad: true
         });
@@ -869,18 +875,16 @@ EHR.ext.FormPanel = Ext.extend(Ext.FormPanel,
             if(this.metadata && this.metadata[c.name])
                 EHR.UTILITIES.rApply(c, this.metadata[c.name]);
             
-            if ((!c.isHidden && c.shownInInsertView && !c.parentField)){
+            if ((!c.isHidden && !c.hidden && c.shownInInsertView && !c.parentField)){
 
                 if (c.inputType == 'textarea')
                     EHR.UTILITIES.rApply(c, {ext: {height: 100, width: '90%'}});
                 else
                     EHR.UTILITIES.rApply(c, {ext: {width: 200}});
 
-//                if (c.parentField){
-//                    EHR.UTILITIES.rApply(c, {ext: {
-//                        xtype: (debug ? 'displayfield': 'hidden')
-//                    }});
-//                }
+                if (this.enableOnBind && !this.boundRecord)
+                    c.ext.disabled = true;
+
                 var theField = LABKEY.ext.FormHelper.getFieldEditor(c);
                 this.add(theField);
             }
@@ -1019,27 +1023,27 @@ Ext.override(Ext.Component, {
     }
 });
 
-EHR.ext.StatusArea = Ext.extend(Ext.Panel, {
-    initComponent: function(){
-        Ext.apply(this, {
-            layout: 'form',
-            bodyBorder: true,
-            bodyStyle: 'padding:5px 5px 5px 5px',
-            items: [{
-                xtype: 'displayfield',
-                ref: '../../status',
-                fieldLabel: 'Status',
-                value: 'Unsaved'
-            }]
-        });
-        
-        EHR.ext.StatusArea.superclass.initComponent.call(this, arguments);
-
-    },
-    setStatus: function(){
-
-    }
-});
+//EHR.ext.StatusArea = Ext.extend(Ext.Panel, {
+//    initComponent: function(){
+//        Ext.apply(this, {
+//            layout: 'form',
+//            bodyBorder: true,
+//            bodyStyle: 'padding:5px 5px 5px 5px',
+//            items: [{
+//                xtype: 'displayfield',
+//                ref: '../../status',
+//                fieldLabel: 'Status',
+//                value: 'Unsaved'
+//            }]
+//        });
+//
+//        EHR.ext.StatusArea.superclass.initComponent.call(this, arguments);
+//
+//    },
+//    setStatus: function(){
+//
+//    }
+//});
 
 
 EHR.ext.GridFormPanel = Ext.extend(Ext.Panel,
@@ -1069,41 +1073,102 @@ EHR.ext.GridFormPanel = Ext.extend(Ext.Panel,
             //,bodyStyle: 'padding:5px 5px 5px 5px'
             //,style: 'margin-bottom: 5px;border-style:solid;border-width:1px'
             //,ref: '../grids/'+this.queryName
-            ,deferredRender: false
-            ,items: [{
-                xtype: 'ehr-formpanel',
-                //width: 300,
-                name: this.queryName,
-                enableOnBind: true,
-                ref: 'theForm',
-                metadata: this.metadata,
-                containerPath: 'WNPRC/EHR/',
-                schemaName: this.schemaName,
-                queryName: this.queryName,
-                viewName: this.viewName,
-                parent: this.parent || this.refOwner || this,
-                items: {xtype: 'displayfield', value: 'Loading...'}
-            },{
-                title: 'Records',
-                xtype: 'ehr-editorgrid',
-//                width: '100%',
-                store: this.store,
-                metadata: this.metadata,
-                ref: 'theGrid',
-                parent: this.parent || this.refOwner || this,
-                sm: new Ext.grid.RowSelectionModel({
-                    listeners: {
-                        scope: this,
-                        rowselect: function(sm, row, rec) {
-                            this.theForm.boundRecord = rec;
-                            this.theForm.updateBound();
-                            var form = this.theForm.getForm();
-                            form.loadRecord(rec);
-                        }
-                    }
-                })
-            }]
+            ,deferredRender: true
+            ,tbar: [
+                {
+                    text: 'Add Record',
+                    xtype: 'button',
+                    tooltip: 'Click to add a blank record',
+                    id: 'add-record-button',
+                    handler: function (){
+                        var store = this.theGrid.store;
+                        if(store.recordType) {
+                            var rec = new store.recordType({newRecord:true});
+                            rec.fields.each(function(f) {
+                                rec.data[f.name] = f.defaultValue || null;
+                            });
+                            rec.commit();
 
+                            this.theGrid.stopEditing();
+                            store.insert(0, rec);
+                            //this.theGrid.startEditing();
+                            this.theForm.focus();
+
+                            this.doLayout();
+                            
+                            return rec;
+                        }
+                        return false;
+                    },
+                    scope: this
+                },
+                    "-"
+                ,{
+                    text: 'Delete Selected',
+                    xtype: 'button',
+                    tooltip: 'Click to delete selected row(s)',
+                    id: 'delete-records-button',
+                    handler: function(){
+                        this.theGrid.stopEditing();
+                        var s = this.theGrid.getSelectionModel().getSelections();
+                        for (var i = 0, r; r = s[i]; i++){
+                            if(r.store.boundPanel){
+                                r.store.boundPanel.onUnbind();        
+                            }
+
+                            this.theGrid.getStore().remove(r);
+                        }
+                    },
+                    scope: this
+                }
+            ]
+            ,items: [{
+                layout: 'hbox'
+                ,autoHeight: true
+                ,items: [{
+                    xtype: 'ehr-formpanel',
+                    width: 330,
+                    name: this.queryName,
+                    enableOnBind: true,
+                    //disabled: true,
+                    ref: '../theForm',
+                    metadata: this.metadata,
+                    containerPath: 'WNPRC/EHR/',
+                    schemaName: this.schemaName,
+                    queryName: this.queryName,
+                    viewName: this.viewName,
+                    parent: this.parent || this.refOwner || this,
+                    items: {xtype: 'displayfield', value: 'Loading...'}
+                },{
+                    layout: 'fit',
+                    border: false,
+                    bodyBorder: false,
+                    items: [{
+                        xtype: 'ehr-editorgrid',
+                        title: 'Records',
+                        //width: 'auto',
+                        //autoWidth: true,
+                        store: this.store,
+
+                        style: 'margin: 5px',
+                        metadata: this.metadata,
+                        ref: '../../theGrid',
+                        parent: this.parent || this.refOwner || this,
+                        tbar: {},
+                        sm: new Ext.grid.RowSelectionModel({
+                            listeners: {
+                                scope: this,
+                                rowselect: function(sm, row, rec) {
+                                    this.theForm.boundRecord = rec;                                    
+                                    this.theForm.updateBound();
+                                    var form = this.theForm.getForm();
+                                    form.loadRecord(rec);
+                                }
+                            }
+                        })
+                    }]
+                }]
+            }]
         });
 
         if(this.parent){

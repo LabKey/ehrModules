@@ -20,22 +20,43 @@ Ext.onReady(function ()
     });
 
 
-//    LABKEY.Query.selectRows({
-//        schemaName: 'study',
-//        queryName: 'surgery',
-//        filterArray: [LABKEY.Filter.create('objectid', key, LABKEY.Filter.Types.EQUAL)],
-//        successCallback: loadQueries,
-//        errorCallback: EHR.UTILITIES.onError,
-//        scope: this
-//        //maxRows: 10
-//    });
-//
-//});
+    LABKEY.Query.selectRows({
+        schemaName: 'study',
+        queryName: 'surgery',
+        filterArray: [LABKEY.Filter.create('objectid', key, LABKEY.Filter.Types.EQUAL)],
+        successCallback: loadQueries,
+        errorCallback: EHR.UTILITIES.onError,
+        scope: this
+        //maxRows: 10
+    });
 
-//function loadQueries(data){
+    function loadQueries(data){
 
-//    if (data.rows.length){
-//        var row = data.rows[0];
+        if (!data.rows.length)
+            return;
+
+        var row = data.rows[0];
+console.log(row)
+         new LABKEY.QueryWebPart({
+            title: 'Clinical Remarks',
+            schemaName: 'study',
+            queryName: 'Clinical Remarks',
+            allowChooseQuery: false,
+            allowChooseView: true,
+            showInsertNewButton: false,
+            showDeleteButton: false,
+            showDetailsColumn: true,
+            showUpdateColumn: false,
+            buttonBarPosition: 'top',
+            filters: [
+                LABKEY.Filter.create('date', row.date, LABKEY.Filter.Types.EQUAL),
+                LABKEY.Filter.create('id', row.Id, LABKEY.Filter.Types.EQUAL)
+            ],
+            sort: '-Date,remark',
+            scope: this,
+            errorCallback: EHR.UTILITIES.onError
+         }).render('clinRemarks');
+    }
 
      new LABKEY.QueryWebPart({
         title: 'Fluids Administered',
@@ -146,30 +167,29 @@ Ext.onReady(function ()
      }).render('surgSum');
 
 
-    new LABKEY.QueryWebPart({
-        title: 'Surgery Remarks',
-        schemaName: 'study',
-        queryName: 'Clinical Remarks',
-        allowChooseQuery: false,
-        allowChooseView: true,
-        showInsertNewButton: false,
-        showDeleteButton: false,
-        showDetailsColumn: true,
-        showUpdateColumn: false,
-        buttonBarPosition: 'top',
-        filters: [
-            //LABKEY.Filter.create('parentid', row['objectid'], LABKEY.Filter.Types.EQUAL),
-            LABKEY.Filter.create('parentid', key, LABKEY.Filter.Types.EQUAL),
-            LABKEY.Filter.create('category', 'surgery', LABKEY.Filter.Types.EQUAL)
-        ],
-        //viewName: '',
-        sort: '-Date',
-        scope: this,
-        errorCallback: EHR.UTILITIES.onError
-     }).render('surgRemarks');
+//    new LABKEY.QueryWebPart({
+//        title: 'Surgery Remarks',
+//        schemaName: 'study',
+//        queryName: 'Clinical Remarks',
+//        allowChooseQuery: false,
+//        allowChooseView: true,
+//        showInsertNewButton: false,
+//        showDeleteButton: false,
+//        showDetailsColumn: true,
+//        showUpdateColumn: false,
+//        buttonBarPosition: 'top',
+//        filters: [
+//            //LABKEY.Filter.create('parentid', row['objectid'], LABKEY.Filter.Types.EQUAL),
+//            LABKEY.Filter.create('parentid', key, LABKEY.Filter.Types.EQUAL),
+//            LABKEY.Filter.create('category', 'surgery', LABKEY.Filter.Types.EQUAL)
+//        ],
+//        //viewName: '',
+//        sort: '-Date',
+//        scope: this,
+//        errorCallback: EHR.UTILITIES.onError
+//     }).render('surgRemarks');
 
 
-//    }
 });
 
 
@@ -185,6 +205,10 @@ Ext.onReady(function ()
 
     <div id='surgRemarks'></div>
     
+    <p/>
+
+    <div id='clinRemarks'></div>
+
     <p/>
 
     <div id='surgSum'></div>

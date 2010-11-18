@@ -5,13 +5,16 @@
  */
 SELECT
 
-d.id,
--- max(v.)
+v.id,
+v.LatestChallengeDate,
 
-FROM study.Demographics d
+FROM (
+SELECT
+  v.id,
+  max(v.ChallengeDate) as LatestChallengeDate,
+FROM study.ViralLoadsWpi v
+GROUP BY v.id
+) v
 
-LEFT JOIN study.ViralLoadsWpi v
-  on (d.id = v.id)
-GROUP BY d.id
-
-
+left join study.ViralLoadsWpi v2
+on (v.id = v2.id and v.LatestChallengeDate=v2.date)

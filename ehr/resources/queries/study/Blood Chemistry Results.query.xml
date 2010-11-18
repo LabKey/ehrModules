@@ -12,6 +12,7 @@
                         <isUnselectable>true</isUnselectable>
                         <isHidden>false</isHidden>
                         <fk>
+                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                             <fkDbSchema>study</fkDbSchema>
                             <fkTable>chemistryRefRange</fkTable>
                             <fkColumnName>lsid</fkColumnName>
@@ -19,6 +20,7 @@
                     </column>
                     <column columnName="parentId">
                         <fk>
+                          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                           <fkDbSchema>study</fkDbSchema>
                           <fkTable>chemistryRuns</fkTable>
                           <fkColumnName>objectid</fkColumnName>
@@ -26,6 +28,7 @@
                     </column>
                     <column columnName="runId">
                         <fk>
+                          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                           <fkDbSchema>study</fkDbSchema>
                           <fkTable>chemistryRuns</fkTable>
                           <fkColumnName>objectid</fkColumnName>

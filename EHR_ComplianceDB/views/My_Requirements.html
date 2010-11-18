@@ -6,7 +6,6 @@
         {
 
             var userName = LABKEY.Security.currentUser.email;
-
             //we find this employee's info
             var employeeRecord = new LABKEY.ext.Store({
                 schemaName: 'lists',
@@ -26,42 +25,20 @@
 
                 employeeRecord = employeeRecord.data.items[0];
 
-                //we display a list of all requirements for this person
-                var requirementStore = new LABKEY.ext.Store({
+                new LABKEY.QueryWebPart({
+                    renderTo: 'myRequirementsDiv',
+                    dataRegionName: 'myRequirementsDiv',
+                    title: 'My Requirements',
                     schemaName: 'lists',
                     queryName: 'ComplianceRecentTests',
                     containerPath: 'WNPRC/WNPRC_Units/Animal_Services/Compliance_Training/Private/EmployeeDB/',
-                    //TODO: need to update once we have real unique IDs in the tables
-                    columns: 'Id,requirementName,requirementName/type,ExpirePeriod,MostRecentDate,MonthsUntilRenewal',
-                    filterArray: [LABKEY.Filter.create('Id', employeeRecord.get('Id'), LABKEY.Filter.Types.EQUAL)
-                    ],
-                    sort: 'requirementName/type,RequirementName'
+                    filterArray: [LABKEY.Filter.create('Id', employeeRecord.get('Id'), LABKEY.Filter.Types.EQUAL)],
+                    buttonBarPosition: 'top',
+                    showRecordSelectors: true,
+                    allowChooseQuery: false,
+                    allowChooseView: true,
+                    showDetailsColumn: false
                 });
-
-                var requirementGrid = new LABKEY.ext.EditorGridPanel({
-                    store: requirementStore
-                    ,applyTo: 'myRequirementsDiv'
-                    ,width: 1200
-                    ,autoHeight: true
-                    ,title: 'My Requirements'
-                    ,editable: false
-                    ,stripeRows: true
-                    ,disableSelection: true
-                });
-                requirementGrid.on("columnmodelcustomize", customizeColumnModel);
-
-                function customizeColumnModel(colModel, index)
-                    {
-                        //apparently cannot do this prior to render
-                        index['Id']['width'] = 60;
-                        index['requirementName/type']['width'] = 60;
-                        index['requirementName/type']['header'] = 'Type';
-                        index['requirementName']['width'] = 200;
-                        index['ExpirePeriod']['width'] = 100;
-                        index['MostRecentDate']['width'] = 90;
-                        index['MonthsUntilRenewal']['width'] = 90;
-
-                    }
             }
 
         });

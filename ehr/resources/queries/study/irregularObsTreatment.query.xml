@@ -2,7 +2,7 @@
     <metadata>
         <tables xmlns="http://labkey.org/data/xml">
             <table tableName="irregularObsTreatment" tableDbType="TABLE">
-                <!--<tableUrl>/query/detailsQueryRow.view?schemaName=study&amp;query.queryName=obs&amp;lsid=${lsid}</tableUrl>-->
+                <tableUrl>/study/datasetDetailRedirect.view?datasetId=${dataset}&amp;lsid=${lsid}</tableUrl>
                 <columns>
                     <column columnName="date">
                         <formatString>yyyy-MM-dd HH:mm</formatString>
@@ -10,6 +10,7 @@
                     <column columnName="Id">
                         <displayWidth>40</displayWidth>
                         <fk>
+                          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                           <fkDbSchema>study</fkDbSchema>
                           <fkTable>Animal</fkTable>
                           <fkColumnName>Id</fkColumnName>
@@ -18,6 +19,7 @@
                     <column columnName="Room">
                         <displayWidth>40</displayWidth>
                         <fk>
+                          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                           <fkDbSchema>lists</fkDbSchema>
                           <fkTable>rooms</fkTable>
                           <fkColumnName>Room</fkColumnName>
@@ -32,6 +34,15 @@
                     <column columnName="Description">
                         <displayWidth>250</displayWidth>
                     </column>
+                    <column columnName="dataset">
+                        <isHidden>true</isHidden>
+                    </column>
+                    <column columnName="Notes" wrappedColumnName="date">
+                        <columnTitle>Notes</columnTitle>
+                        <formatString>'&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;'</formatString>
+                        <isHidden>false</isHidden>
+                        <displayWidth>200</displayWidth>
+                    </column>                    
                 </columns>
             </table>
         </tables>

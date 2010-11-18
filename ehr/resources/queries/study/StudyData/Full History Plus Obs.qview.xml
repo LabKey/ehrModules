@@ -16,5 +16,6 @@
    </sorts>
    <filters>
        <filter column="dataset/name" operator="in" value="assignments;behavetrem;biopsy;blood;clinremarks;drug;housing;necropsy;problem;weight;surgeries;tb;bacteriologyRuns;parasitologyRuns;virologyRuns;chemistryRuns;hematologyRuns;urinalysisRuns;immunologyRuns;obs"/>
+       <filter column="description"  operator="neq" value="No Irregular Observations"/>
    </filters>
 </customView>

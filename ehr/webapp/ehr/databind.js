@@ -49,7 +49,10 @@ EHR.ext.plugins.DataBind = Ext.extend(Ext.util.Observable, {
             onUnbind:function()
             {
                 this.internalUpdate = false;
-                this.boundRecord = null;
+
+                delete this.boundRecord.store.boundPanel;
+                delete this.boundRecord;
+                
                 Ext.each(this.getDataboundFields(), function(f)
                 {
                     if (this.enableOnBind)
@@ -62,6 +65,8 @@ EHR.ext.plugins.DataBind = Ext.extend(Ext.util.Observable, {
             },
             updateBound : function()
             {
+                this.boundRecord.store.boundPanel = this;
+
                 if (!this.internalUpdate)
                 {
                     this.cascade(function(f)
@@ -180,7 +185,6 @@ EHR.ext.plugins.DataBind = Ext.extend(Ext.util.Observable, {
                             else if (records.length == 0)
                             {
                                 //TODO: only create record on save/submit maybe?
-                                //or maybe on form dirty?
                                 store.createFormRecord();
                             }
                             else
@@ -302,6 +306,12 @@ EHR.ext.ParentStore = Ext.extend(Ext.util.Observable, {
             if(field.parentField){
                 this.parentStore.on('datachanged', (function(childStore, field){return function(store){
                     var parentRecord = store.getAt(0);
+                    if(!parentRecord){
+                        var record = new store.recordType();
+                        store.add(record);
+                        parentRecord = store.getAt(0);
+                    }
+
                     var val = parentRecord.get(field.parentField.field);
 
                     childStore.each(function(rec){
@@ -348,7 +358,9 @@ EHR.ext.ParentStore = Ext.extend(Ext.util.Observable, {
             return;
         }
         
-        this.fireEvent("beforecommit", changed.records, changed.commands);
+
+        if(this.fireEvent("beforecommit", changed.records, changed.commands)===false)
+            return;
 
         Ext.Ajax.request({
             url : LABKEY.ActionURL.buildURL("query", "saveRows", this.containerPath),

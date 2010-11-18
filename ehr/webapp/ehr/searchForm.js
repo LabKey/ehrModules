@@ -86,12 +86,12 @@ EHR.ext.customPanels.searchForm = Ext.extend(Ext.Panel, {
         EHR.ext.customPanels.searchForm.superclass.constructor.call(this, {
             items: [{html: 'Loading...'}],
             border: true,
-            //bodyBorder: true,
+            bodyBorder: false,
             defaults: {
                 border: false
                 ,bodyBorder: false
             },
-            width: 482,
+            width: 492,
             //width: 1200,
             forceLayout: true,
             autoHeight: true,
@@ -117,9 +117,11 @@ EHR.ext.customPanels.searchForm = Ext.extend(Ext.Panel, {
 
         this.panelConfig = {
             frame: false,
-            border: true,
+//            border: true,
             padding: '5px',            
-            bodyBorder: true,            
+            bodyBorder: false,
+            border: false,
+            cls: 'x-labkey-wp',
             title: this.config.title,
             forceLayout: true,
             layout: 'table',
@@ -203,7 +205,7 @@ EHR.ext.customPanels.searchForm = Ext.extend(Ext.Panel, {
             EHR.UTILITIES.rApply(meta, this.config.metadata[meta.name])
         }
 
-        if (!meta.isHidden == true){
+        if (!meta.isHidden){
             //TODO: can I make the cell autoWidth instead of using a fixed value?
             this.panelConfig.items.push({html: meta.caption+':', width: 150});
 
@@ -226,7 +228,7 @@ EHR.ext.customPanels.searchForm = Ext.extend(Ext.Panel, {
             }
             else {this.panelConfig.items.push({})}
 
-            this.panelConfig.items.push(new LABKEY.ext.FormHelper.getFieldEditor(meta));
+            this.panelConfig.items.push(LABKEY.ext.FormHelper.getFieldEditor(meta));
         }
     },
 

@@ -38,7 +38,7 @@ console.log(subject)
     var title = (subject ? subject.join("; ") : '');
     tab.getTopToolbar().removeAll();
     
-    var target = tab.add({tag: 'span', html: 'Loading...', style: 'padding-bottom: 10px'});
+    var target = tab.add({tag: 'span', html: '', style: 'padding-bottom: 10px'});
     tab.doLayout();
     var config = {
         schemaName: 'study',
@@ -51,7 +51,7 @@ console.log(subject)
     };
     new EHR.ext.customPanels.detailsView(config);
 
-    target = tab.add({tag: 'span', html: 'Loading...', cls: 'loading-indicator', style: 'padding-bottom: 20px'});
+    target = tab.add({tag: 'span', style: 'padding-bottom: 20px'});
     var config = Ext.applyIf({
         title: 'Active Assignments' + ": " + title,
         frame: true,
@@ -65,14 +65,13 @@ console.log(subject)
     }, EHR.reports.qwpConfig);
     new LABKEY.QueryWebPart(config).render(target.id);
 
-    target = tab.add({tag: 'span', html: 'Loading...', cls: 'loading-indicator', style: 'padding-bottom: 20px'});
+    target = tab.add({tag: 'span', style: 'padding-bottom: 20px'});
     var config = Ext.applyIf({
-        title: 'Unresolved Problems' + ": " + title,
+        title: 'Problem List' + ": " + title,
         frame: true,
         schemaName: 'study',
         allowChooseView: true,
         queryName: 'Problem List',
-        viewName: 'Unresolved Problems',
         //sort: '-date',
         filters: filterArray.nonRemovable,
         removeableFilters: filterArray.removable,
@@ -90,7 +89,7 @@ EHR.reports.arrivalDeparture = function(tab, subject){
     var filterArray = this.getFilterArray(tab, subject);
     var title = (subject ? subject.join("; ") : '');
 
-    var target = tab.add({tag: 'span', html: 'Loading...', cls: 'loading-indicator', style: 'padding-bottom: 20px'});
+    var target = tab.add({tag: 'span', style: 'padding-bottom: 20px'});
     var config = Ext.applyIf({
         title: 'Arrivals' + ": " + title,
         schemaName: 'study',
@@ -103,7 +102,7 @@ EHR.reports.arrivalDeparture = function(tab, subject){
 
     new LABKEY.QueryWebPart(config).render(target.id);
 
-    target = tab.add({tag: 'span', html: 'Loading...', cls: 'loading-indicator', style: 'padding-bottom: 20px'});
+    target = tab.add({tag: 'span', style: 'padding-bottom: 20px'});
     var config = Ext.applyIf({
         title: 'Departures' + ": " + title,
         schemaName: 'study',
@@ -142,7 +141,7 @@ EHR.reports.family = function(tab, subject){
     };
     new EHR.ext.customPanels.detailsView(config);
 
-    target = tab.add({tag: 'span', html: 'Loading...', cls: 'loading-indicator', style: 'padding-bottom: 20px'});
+    target = tab.add({tag: 'span', style: 'padding-bottom: 20px'});
     config = Ext.applyIf({
         title: 'Offspring' + ": " + title,
         schemaName: 'study',
@@ -155,7 +154,7 @@ EHR.reports.family = function(tab, subject){
 
     new LABKEY.QueryWebPart(config).render(target.id);
 
-    target = tab.add({tag: 'span', html: 'Loading...', cls: 'loading-indicator', style: 'padding-bottom: 20px'});
+    target = tab.add({tag: 'span', style: 'padding-bottom: 20px'});
     config = Ext.applyIf({
         title: 'Siblings' + ": " + title,
         schemaName: 'study',
@@ -185,7 +184,7 @@ EHR.reports.weightGraph = function(tab, subject){
         autoLoad: true
     });
 
-    if(subject.length == 1){
+    if(subject && subject.length == 1){
     tab.chart = new Ext.chart.LineChart({
         xtype: 'linechart',
         height: 300,
@@ -288,7 +287,7 @@ EHR.reports.weightGraph = function(tab, subject){
     ]}
             ));
 
-    target = tab.add({tag: 'span', html: 'Loading...', cls: 'loading-indicator', style: 'padding-bottom: 20px'});
+    target = tab.add({tag: 'span', style: 'padding-bottom: 20px'});
     config = Ext.applyIf({
         title: 'Weight' + ": " + title,
         schemaName: 'study',
@@ -338,7 +337,7 @@ EHR.reports.bloodChemistry = function(tab, subject){
         }
     }]);
 
-    var target = tab.add({tag: 'span', html: 'Loading...', style: 'padding-bottom: 20px'});
+    var target = tab.add({tag: 'span', style: 'padding-bottom: 20px'});
     tab.doLayout();
 
     var config = Ext.applyIf({
@@ -392,7 +391,7 @@ EHR.reports.hematology = function(tab, subject){
         }
     }]);
 
-    var target = tab.add({tag: 'span', html: 'Loading...', style: 'padding-bottom: 20px'});
+    var target = tab.add({tag: 'span', style: 'padding-bottom: 20px'});
     tab.doLayout();
 
     var config = Ext.applyIf({
@@ -446,7 +445,7 @@ EHR.reports.immunology = function(tab, subject){
         }
     }]);
 
-    var target = tab.add({tag: 'span', html: 'Loading...', style: 'padding-bottom: 20px'});
+    var target = tab.add({tag: 'span', style: 'padding-bottom: 20px'});
     tab.doLayout();
 
     var config = Ext.applyIf({
@@ -524,7 +523,7 @@ EHR.reports.viralLoads = function(tab, subject){
         ));
     }
 
-    var target = tab.add({tag: 'span', html: 'Loading...', cls: 'loading-indicator', style: 'padding-bottom: 20px'});
+    var target = tab.add({tag: 'span', style: 'padding-bottom: 20px'});
     var filterArray = this.getFilterArray(tab, subject);
     var config = Ext.applyIf({
         title: 'Viral Load' + ": " + title,
@@ -547,7 +546,7 @@ EHR.reports.irregularObs = function(tab, subject){
     var title = (subject ? subject.join("; ") : '');
     this.addHeader(tab);
 
-    var target = tab.add({tag: 'span', html: 'Loading...', style: 'padding-bottom: 20px'});
+    var target = tab.add({tag: 'span', style: 'padding-bottom: 20px'});
     tab.doLayout();
 
     var config = Ext.applyIf({
@@ -601,7 +600,7 @@ EHR.reports.urinalysisResults = function(tab, subject){
         }
     }]);
 
-    var target = tab.add({tag: 'span', html: 'Loading...', style: 'padding-bottom: 20px'});
+    var target = tab.add({tag: 'span', style: 'padding-bottom: 20px'});
     tab.doLayout();
 
     var config = Ext.applyIf({

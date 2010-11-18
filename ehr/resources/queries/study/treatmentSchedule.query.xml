@@ -2,8 +2,7 @@
     <metadata>
         <tables xmlns="http://labkey.org/data/xml">
             <table tableName="treatmentSchedule" tableDbType="TABLE">
-                <!--<tableUrl>/query/detailsQueryRow.view?schemaName=study&amp;query.queryName=treatment_order&amp;lsid=${lsid}</tableUrl>-->
-                <tableUrl>/EHR/treatmentDetails.view?key=${objectid}</tableUrl>
+                <tableUrl>/EHR/treatmentDetails.view?key=${lsid}</tableUrl>
                 <columns>
                     <column columnName="lsid">
                         <isHidden>true</isHidden>
@@ -13,6 +12,7 @@
                     </column>
                     <column columnName="Id">
                         <fk>
+                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                             <fkDbSchema>study</fkDbSchema>
                             <fkTable>animal</fkTable>
                             <fkColumnName>Id</fkColumnName>
@@ -20,6 +20,7 @@
                     </column>
                     <column columnName="project">
                         <fk>
+                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                             <fkDbSchema>lists</fkDbSchema>
                             <fkTable>project</fkTable>
                             <fkColumnName>project</fkColumnName>
@@ -35,6 +36,7 @@
                         <nullable>false</nullable>
                         <columnTitle>SNOMED</columnTitle>
                         <fk>
+                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                             <fkDbSchema>lists</fkDbSchema>
                             <fkTable>snomed</fkTable>
                             <fkColumnName>code</fkColumnName>
@@ -42,6 +44,7 @@
                     </column>
                     <column columnName="parentId">
                         <fk>
+                          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                           <fkDbSchema>study</fkDbSchema>
                           <fkTable>encounters</fkTable>
                           <fkColumnName>objectid</fkColumnName>
@@ -50,6 +53,7 @@
                     <column columnName="frequency">
                         <isHidden>true</isHidden>
                         <fk>
+                          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                           <fkDbSchema>lookups</fkDbSchema>
                           <fkTable>treatment_frequency</fkTable>
                           <fkColumnName>key</fkColumnName>
@@ -63,7 +67,10 @@
                     </column>
                     <column columnName="Cage">
                         <displayWidth>40</displayWidth>
-                    </column>                    
+                    </column>
+                    <column columnName="dataset">
+                        <isHidden>true</isHidden>
+                    </column>
                 </columns>
             </table>
         </tables>

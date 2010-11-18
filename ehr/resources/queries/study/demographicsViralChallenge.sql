@@ -29,4 +29,4 @@ v.pathogen,
 
 FROM study.drug d
 
-INNER JOIN lists.Virus_SNOMED v ON v.code = d.code
+JOIN lists.Virus_SNOMED v ON v.code = d.code

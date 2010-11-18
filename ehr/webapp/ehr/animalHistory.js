@@ -65,7 +65,7 @@ EHR.ext.customPanels.SingleAnimalReport = Ext.extend(Ext.Panel, {
                 ,handler: this.onSubmit
                 ,type: 'submit'
                 ,scope: this
-                ,style:'padding-top: 5px;margin-left:200px'
+                ,style:'margin-left:200px;'
             },{
                 tag: 'span',
                 style: 'padding: 10px'
@@ -79,8 +79,6 @@ EHR.ext.customPanels.SingleAnimalReport = Ext.extend(Ext.Panel, {
                     activeTab: 0,
                     cls: 'extContainer',
                     plugins: ['fittoparent'],
-//                    anchor: '100%',
-        //            width: 400,
                     autoHeight: true,
                     bodyStyle: 'padding-top: 5px;',
                     frame: true
@@ -996,15 +994,31 @@ EHR.ext.customPanels.SingleAnimalReport = Ext.extend(Ext.Panel, {
         }
 
         if(area){
-            filterArray.nonRemovable.push(LABKEY.Filter.create('Id/curLocation/area', area, LABKEY.Filter.Types.EQUAL));
+            if(rowData.get("QueryHasLocation")){
+                filterArray.nonRemovable.push(LABKEY.Filter.create('room/area', area, LABKEY.Filter.Types.STARTS_WITH));
+            }
+            else {
+                filterArray.nonRemovable.push(LABKEY.Filter.create('Id/curLocation/area', area, LABKEY.Filter.Types.EQUAL));
+            }
         }
 
         if(room){
-            filterArray.nonRemovable.push(LABKEY.Filter.create('Id/curLocation/room', room, LABKEY.Filter.Types.STARTS_WITH));
+            if(rowData.get("QueryHasLocation")){
+                filterArray.nonRemovable.push(LABKEY.Filter.create('room', room, LABKEY.Filter.Types.STARTS_WITH));
+            }
+            else {
+                filterArray.nonRemovable.push(LABKEY.Filter.create('Id/curLocation/room', room, LABKEY.Filter.Types.STARTS_WITH));
+            }
+
         }
 
         if(cage){
-            filterArray.nonRemovable.push(LABKEY.Filter.create('Id/curLocation/cage', cage, LABKEY.Filter.Types.EQUAL));
+            if(rowData.get("QueryHasLocation")){
+                filterArray.nonRemovable.push(LABKEY.Filter.create('cage', cage, LABKEY.Filter.Types.STARTS_WITH));
+            }
+            else {
+                filterArray.nonRemovable.push(LABKEY.Filter.create('Id/curLocation/cage', cage, LABKEY.Filter.Types.EQUAL));
+            }
         }
 
         //we handle date
@@ -1041,7 +1055,7 @@ EHR.ext.customPanels.SingleAnimalReport = Ext.extend(Ext.Panel, {
     loadQuery: function(tab, subject, target)
     {
         var filterArray = this.getFilterArray(tab, subject);
-        var target = target || tab.add({tag: 'span', html: 'Loading...', cls: 'loading-indicator', style: 'padding-bottom: 20px'});
+        var target = target || tab.add({tag: 'span', style: 'padding-bottom: 20px'});
 
         var title = this.makeTitle(tab, subject);
 
@@ -1274,6 +1288,64 @@ EHR.ext.customPanels.SingleAnimalReport = Ext.extend(Ext.Panel, {
             ]              
         });
 
+    },
+
+    loadProtovisChart: function(tab, subject, target)
+    {
+        var filterArray = this.getFilterArray(tab, subject);
+        filterArray = filterArray.nonRemovable.concat(filterArray.removable);
+        var target = target || tab.add({tag: 'span', html: 'Loading...', cls: 'loading-indicator'});
+        var title = (subject ? subject.join("; ") : '');
+
+        var store = LABKEY.Query.selectRows({
+            schemaName: tab.rowData.get("Schema"),
+            queryName: tab.rowData.get("QueryName"),
+            filterArray: filterArray,
+            successCallback: makeChart,
+            scope: this,
+            sort: 'Id',
+            autoLoad: true
+        });
+
+        var rows;
+        function makeChart(queryResults){
+            rows = queryResults.rows;
+
+            var chart = new LABKEY.vis.LineChart({
+               renderTo:target,
+               yAxis:{scale:'log', caption:'Viral Load'},
+               xAxis:{caption:'Week'},
+               series: generateSeries(rows, "Id", {
+                   xProperty:"week",
+                   yProperty:"virLdValue",
+                   dotShape: function (d) {
+                       return d.virLdModifier != "Equals" ? "triangle" : "circle"
+                   }
+               })
+           });
+
+           function generateSeries(rows, seriesCol, seriesProps)
+           {
+               var seriesMap = {};
+               var ret = [];
+               for (var i = 0; i < rows.length; i++)
+               {
+                   var row = rows[i];
+                   var ser = seriesMap[row[seriesCol]];
+                   if (null == ser) {
+                       ser = {caption: row[seriesCol], data:[]};
+                       for (var p in seriesProps)
+                           ser[p] = seriesProps[p];
+                       seriesMap[row[seriesCol]] = ser;
+                       ret.push(ser);
+                   }
+
+                   if (null != row[seriesProps.xProperty] && null !=row[seriesProps.yProperty])
+                       ser.data.push(row);
+               }
+               return ret;
+           }
+        }
     },
 
     endMsg: function(){

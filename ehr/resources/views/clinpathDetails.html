@@ -8,54 +8,52 @@ LABKEY.requiresScript("/ehr/transposeRows.js");
 Ext.onReady(function ()
 {
     if (!LABKEY.ActionURL.getParameter('runId')){alert('Must Provide Run #'); return false;}
-    if (!LABKEY.ActionURL.getParameter('dataset')){alert('Must Provide Assay Type'); return false;}
+    if (!LABKEY.ActionURL.getParameter('dataset')){alert('Must Provide Dataset Name'); return false;}
 
-    var dataset;
-    switch (LABKEY.ActionURL.getParameter('dataset')){
-        case 'chemistry':
-            dataset='Blood Chemistry';
-            break;
-        case 'parasitology':
-            dataset='Parasitology';
-            break;
-        case 'virology':
-            dataset='Virology';
-            break;
-        case 'hematology':
-            dataset='Hematology';
-            break;
-        case 'bacteriology':
-            dataset='Bacteriology';
-            break;
-        case 'immunology':
-            dataset='Immunology';
-            break;
-    };
-
-    new EHR.ext.customPanels.detailsView({
+    LABKEY.Query.selectRows({
         schemaName: 'study',
-        queryName: dataset+' Runs',
-        title: dataset+' Run Details:',
-        renderTo: 'runDetails',
-        filterArray: [LABKEY.Filter.create('objectid', LABKEY.ActionURL.getParameter('runId'), LABKEY.Filter.Types.EQUAL)]
+        queryName: 'DataSets',
+        containerPath: 'WNPRC/EHR/',
+        filterArray: [LABKEY.Filter.create('EntityId', LABKEY.ActionURL.getParameter('dataset'), LABKEY.Filter.Types.EQUAL)],
+        successCallback: onSuccess
     });
 
-    new LABKEY.QueryWebPart({
-        title: dataset+' Results:',
-        schemaName: 'study',
-        queryName: dataset+' Results',
-        allowChooseQuery: false,
-        allowChooseView: true,
-        showInsertNewButton: false,
-        showDeleteButton: false,
-        showDetailsColumn: true,
-        showUpdateColumn: false,
-        showRecordSelectors: true,
-        buttonBarPosition: 'top',
-        filterArray: [LABKEY.Filter.create('runId', LABKEY.ActionURL.getParameter('runId'), LABKEY.Filter.Types.EQUAL)],
-        scope: this,
-        errorCallback: EHR.UTILITIES.onError
-     }).render('resultDetails');
+    function onSuccess(data){
+        if(!data.rows.length){
+            alert('Unable to find dataset');
+            return;
+        }
+            
+        var row = data.rows[0];
+        var dataset = row.Label.split(' ');
+        dataset.pop();
+        dataset = dataset.join(' ');
+
+        new EHR.ext.customPanels.detailsView({
+            schemaName: 'study',
+            queryName: dataset+' Runs',
+            title: dataset+' Run Details:',
+            renderTo: 'runDetails',
+            filterArray: [LABKEY.Filter.create('objectid', LABKEY.ActionURL.getParameter('runId'), LABKEY.Filter.Types.EQUAL)]
+        });
+
+        new LABKEY.QueryWebPart({
+            title: dataset+' Results:',
+            schemaName: 'study',
+            queryName: dataset+' Results',
+            allowChooseQuery: false,
+            allowChooseView: true,
+            showInsertNewButton: false,
+            showDeleteButton: false,
+            showDetailsColumn: true,
+            showUpdateColumn: false,
+            showRecordSelectors: true,
+            buttonBarPosition: 'top',
+            filterArray: [LABKEY.Filter.create('runId', LABKEY.ActionURL.getParameter('runId'), LABKEY.Filter.Types.EQUAL)],
+            scope: this,
+            errorCallback: EHR.UTILITIES.onError
+         }).render('resultDetails');
+    }
 
 });
 

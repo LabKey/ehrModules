@@ -5,6 +5,7 @@
               <columns>
                   <column columnName="Allele">
                       <fk>
+
                           <fkColumnName>PrimerName</fkColumnName>
                           <fkTable>SSP_primers</fkTable>
                           <fkDbSchema>lists</fkDbSchema>

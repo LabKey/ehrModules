@@ -14,7 +14,7 @@ timestampadd('SQL_TSI_DAY', -30, b.date) as minDate,
 w3.date as WeightDate,
 w3.weight,
 round(w3.weight*0.2*60, 1) AS MaxBlood,
-sum(b0.quantity) as BloodLast30,
+sum(convert(b0.quantity,double)) as BloodLast30,
 round((w3.weight*0.2*60) - sum(b0.quantity), 1) AS AvailBlood,
 -- TIMESTAMPDIFF('SQL_TSI_DAY', b.date, now()) as time
 
