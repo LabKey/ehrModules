@@ -7,7 +7,7 @@ lkServerBackup.pl
 
 =head1 DESCRIPTION
 
-This script is used to backup the postgres db on LabKey Servers  
+This script is used to backup LabKey servers  
 
 One or more DB schemas can be selected. Each schema gets dumped into a separate file. These
 files are automatically rotated according to the user defined schedule. 
@@ -72,9 +72,9 @@ pg_dbname = labkey           			;name of postgres schema(s).  separate multiple 
 pgdump_format = c           			;format used by pgdump.  see pgdump doc.  
 pg_host = someserver.com	 			;the postgres host.  can be omitted if running on the same server
 pg_user = labkey						;user connecting to postgres. can be omitted if using IDENT or other form of authentication
-backupdir = /labkey/backup/  			;the directory where backups will be stored
+backup_dest = /labkey/backup/  			;the directory where backups will be stored
 pgdump_dir = /opt/PostgreSQL/8.4/bin/	;the location of pg_dump 
-file_root = /labkey/files/				;optional. a folder to be copied to the backupdir. for example the site root
+backup_dirs = /labkey/files/				;optional. a whitespace separated list of folders to be copied to the backupdir. ie. the site root
 
 [lk_config]                            ;Section Optional.  
 jobName = LK Daily Backup	 		   ;optional. will appear in logfile
@@ -107,6 +107,7 @@ use Log::Rolling;
 use Data::Dumper;
 use Labkey::Query;
 use File::Touch;
+use File::Path qw(make_path);
  
 
 # get INI file.  this should allow a filepath relative to this script
@@ -125,21 +126,21 @@ my $tm = localtime;
 my $datestr=sprintf("%04d%02d%02d_%02d%02d", $tm->year+1900, ($tm->mon)+1, $tm->mday, $tm->hour, $tm->min);
 
 # make sure the destination folder exists 
-checkFolder($config{backupdir});
+checkFolder($config{backup_dest});
 
 my $log = Log::Rolling->new(
-	log_file => $config{backupdir}."lk_backup.log", 
+	log_file => $config{backup_dest}."lk_backup.log", 
 	max_size=>5000
 );
 
 $log->entry("Backup is starting");
 
-if (!-e $config{backupdir}){
+if (!-e $config{backup_dest}){
 	onExit("Unable to create backup directory");	
 }
 
 #check required params
-my @required = qw(backupdir pgdump_dir);
+my @required = qw(backup_dest pgdump_dir);
 foreach (@required){
 	if (!$config{$_}){
 		$log->entry("Missing param: $_ from INI file");	
@@ -149,7 +150,7 @@ foreach (@required){
 
 	
 #the postgres backup
-checkFolder($config{backupdir} . "database/");
+checkFolder($config{backup_dest} . "database/");
 my @dbs = split(/\s/, $config{pg_dbname});
 foreach(@dbs){
 	runPgBackup($_);
@@ -157,10 +158,11 @@ foreach(@dbs){
 
 
 #rsync
-if($config{file_root}){
-	my $dest = $config{backupdir} . "files/";
+if($config{backup_dirs}){
+	my $dirs = qw($config{backup_dirs});
+	my $dest = $config{backup_dest} . "files/";
 	checkFolder($dest);
-	_rsync($config{file_root}, $dest);
+	_rsync($dirs, $dest);
 }
 
 onExit("Success", 1);
@@ -179,7 +181,7 @@ sub runPgBackup
 	my $file_prefix = $db."_";
 	my $pg_filename = $file_prefix . $datestr . ".tar";
 	
-	my $backupdir = File::Spec->catfile($config{backupdir}, "database");
+	my $backupdir = File::Spec->catfile($config{backup_dest}, "database");
 	
 	$log->entry("Starting pg_dump of: $db");
 			
@@ -262,7 +264,7 @@ sub onExit
 
 	# touch a file to indicate success.  can be used /w monit
 	if ($status eq "Success"){
-		touch($config{backupdir}.".last_backup");
+		touch($config{backup_dest}.".last_backup");
 	}
 	
 			
@@ -282,7 +284,7 @@ sub checkFolder
 
 	if (!-d $folder)
 	{
-		mkdir($folder) || onExit "Could not create '" . $folder . "'";
+		make_path($folder) || onExit "Could not create '" . $folder . "'";
 	chmod 0700,		
 	}
 	
@@ -519,8 +521,11 @@ sub _rsync
 {
 	my $source = shift;
 	my $dest = shift;
-	my $log_file = $config{backupdir} . "rsync.log";
-print $log_file;
+	$dest = File::Spec->catfile($dest, $source);
+	make_path($dest);
+print $dest;	
+	my $log_file = $config{backup_dest} . "rsync.log";
+	
 	# Postgres Backup
 	my $cmd = "rsync --executability --recursive --links --perms --times --delete --log-file='$log_file' $source $dest";
 
