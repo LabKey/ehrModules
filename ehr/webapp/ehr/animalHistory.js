@@ -9,6 +9,7 @@ LABKEY.requiresScript("/ehr/transposeRows.js");
 LABKEY.requiresScript("/ehr/utilities.js");
 LABKEY.requiresScript("/ehr/reports.js");
 LABKEY.requiresScript("/ehr/ext.ux.datetimefield.js");
+LABKEY.requiresScript("/vis/ChartComponent.js");
 
 EHR.ext.customPanels.SingleAnimalReport = Ext.extend(Ext.Panel, {
 
@@ -972,6 +973,9 @@ EHR.ext.customPanels.SingleAnimalReport = Ext.extend(Ext.Panel, {
             case 'chart':
                 this.loadChart(tab, subject);
                 break;
+            case 'ProtovisChart':
+                this.loadProtovisChart(tab, subject);
+                break;
             default:
                 EHR.UTILITIES.onError('Improper Report Type');
         }
@@ -1310,17 +1314,17 @@ EHR.ext.customPanels.SingleAnimalReport = Ext.extend(Ext.Panel, {
         var rows;
         function makeChart(queryResults){
             rows = queryResults.rows;
-
+            var cols = (tab.rowData.get("columns")).split(';');
             var chart = new LABKEY.vis.LineChart({
                renderTo:target,
                yAxis:{scale:'log', caption:'Viral Load'},
                xAxis:{caption:'Week'},
                series: generateSeries(rows, "Id", {
-                   xProperty:"week",
-                   yProperty:"virLdValue",
-                   dotShape: function (d) {
-                       return d.virLdModifier != "Equals" ? "triangle" : "circle"
-                   }
+                   xProperty: cols[0],
+                   yProperty: cols[1]
+//                   dotShape: function (d) {
+//                       return d.virLdModifier != "Equals" ? "triangle" : "circle"
+//                   }
                })
            });
 

@@ -33,7 +33,6 @@ EHR.reports.qwpConfig = {
 
 
 EHR.reports.abstract = function(tab, subject){
-console.log(subject)
     var filterArray = this.getFilterArray(tab, subject);
     var title = (subject ? subject.join("; ") : '');
     tab.getTopToolbar().removeAll();
@@ -466,7 +465,7 @@ EHR.reports.immunology = function(tab, subject){
 EHR.reports.viralLoads = function(tab, subject){
 
     for (var i=0;i<subject.length;i++){
-        var filterArray = this.getFilterArray(tab, subject[i]);
+        var filterArray = this.getFilterArray(tab, [subject[i]]);
         var title = (subject[i] || '');
 
         var store = new LABKEY.ext.Store({

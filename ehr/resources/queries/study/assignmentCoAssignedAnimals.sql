@@ -7,7 +7,7 @@
 --to be considered co-assigned, they only need to overlap by some period of time 
 
 SELECT
-  a1.objectid,
+  a1.lsid,
   a1.Id,
   a1.project,
   a1.date,

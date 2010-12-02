@@ -7,7 +7,7 @@
 --to be considered co-housed, they only need to overlap by any period of time
 
 SELECT
-  h1.objectid,
+  h1.lsid,
   --h1.id,
   --h1.StartDate,
   count(h1.RoommateId) AS TotalRoommates
@@ -18,6 +18,6 @@ FROM study.housingRoommates h1
 --where h1.id='r95061'
 
 GROUP BY
-  h1.objectid
+  h1.lsid
 
 

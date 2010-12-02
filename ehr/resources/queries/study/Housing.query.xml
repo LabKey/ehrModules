@@ -4,7 +4,7 @@
             <table tableName="housing" tableDbType="TABLE">
                 <tableUrl>/query/detailsQueryRow.view?schemaName=study&amp;query.queryName=housing&amp;lsid=${lsid}</tableUrl>
                 <columns>
-                    <column columnName="TotalRoommates" wrappedColumnName="objectid">
+                    <column columnName="TotalRoommates" wrappedColumnName="lsid">
                         <columnTitle>Total Roommates</columnTitle>
                         <isHidden>false</isHidden>
                         <isUnselectable>true</isUnselectable>

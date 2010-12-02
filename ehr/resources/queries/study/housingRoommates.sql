@@ -8,7 +8,7 @@
 
 SELECT
 
-h1.objectid,
+h1.lsid,
 h1.id,
 h1.date  AS StartDate,
 h1.odate AS RemovalDate,

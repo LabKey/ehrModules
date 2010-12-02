@@ -1,6 +1,6 @@
 <folderType xmlns="http://labkey.org/data/xml/folderType">
-    <name>Expt Workbook</name>
-    <description>The default workbook</description>
+    <name>File Workbook</name>
+    <description>Workbook template for files</description>
     <requiredWebParts>
         <webPart>
             <name>Workbook Description</name>

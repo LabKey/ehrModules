@@ -6,15 +6,14 @@
 SELECT
 
 d.id,
-
+d.species,
 d.birth,
 
---CONVERT(age(d.birth, COALESCE(d.death, curdate())), INTEGER) AS "AgeInYearsRounded",
-floor(age(d.birth, COALESCE(d.death, curdate()))) AS "AgeInYearsRounded",
+floor(age(d.birth, COALESCE(d.death, curdate()))) AS AgeInYearsRounded,
 
-CONVERT(age_in_months(d.birth, COALESCE(d.death, curdate())), INTEGER) AS "AgeInMonths",
+ROUND(CONVERT(age_in_months(d.birth, COALESCE(d.death, curdate())), DOUBLE), 1) AS AgeInMonths,
 
-ROUND(CONVERT(age_in_months(d.birth, COALESCE(d.death, curdate())), DOUBLE) / 12, 1) AS "AgeInYears",
+ROUND(CONVERT(age_in_months(d.birth, COALESCE(d.death, curdate())), DOUBLE) / 12, 1) AS AgeInYears,
 
 FROM study.Demographics d
 

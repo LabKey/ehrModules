@@ -120,7 +120,7 @@ EHR.validation = {
         }
     },
     snomedString: function (title, code, meaning){
-        return title+': ' + (meaning ? meaning+' ('+code+')' : code)
+        return title+': ' + (meaning ? meaning+(code ? ' ('+code+')' : '') : (code ? code : ''))
     },
     dateString: function (date){
         //TODO: do better once more date functions added
@@ -209,11 +209,13 @@ EHR.validation = {
     },
     fixChemValue: function(row, errors){
         //we try to remove non-numeric characters from this field
+        console.log('new script')
         if (row.stringResults && !row.stringResults.match(/^[0-9]*$/)){
             //we need to manually split these into multiple rows
+
             if (row.stringResults.match(/,/) && row.stringResults.match(/[0-9]/)){
-                row.stringResults = null;
                 row._warnings.push('ERROR problem with results: ' + row.stringResults);
+                row.stringResults = null;
                 row.QCStateLabel = errorQC;
             }
             else {
@@ -267,7 +269,6 @@ EHR.validation = {
                 row.QCStateLabel = errorQC;
             }
             else {
-
                 //did not find other strings in data
                 row.quantity = row.quantity.replace(' ', '');
                 row.quantity = row.quantity.replace('n/a', '');
@@ -276,6 +277,7 @@ EHR.validation = {
                 row.quantity = row.quantity.replace(/ml/i, '');
                 row.quantity = row.quantity.replace('prj31f', '');
 
+                //var match = row.quantity.match(/^([<>~]*)[ ]*(\d*\.*\d*)[ ]*(\+)*(.*)$/);
                 var match = row.quantity.match(/^\s*([<>~]*)\s*(\d*\.*\d*)\s*(\+)*(.*)$/);
                 if (match[1] || match[3])
                     row.quantityOORIndicator = match[1] || match[3];

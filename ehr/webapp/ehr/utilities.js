@@ -470,13 +470,13 @@ EHR.UTILITIES.rApply = function(o, c){
 EHR.ext.getLookupStore = function(c, uniqueName)
 {
     // normalize lookup
-    c.table = c.table || c.queryName;
-    c.schema = c.schema || c.schemaName;
-    c.view = c.view || c.viewName;
-    c.container = c.container || c.containerPath || LABKEY.container.path;
+    c.queryName = c.table || c.queryName;
+    c.schemaName = c.schema || c.schemaName;
+    c.viewName = c.view || c.viewName;
+    c.containerPath = c.container || c.containerPath || LABKEY.container.path;
 
     if (typeof(uniqueName) != 'string')
-        uniqueName = [c.container,c.schema,c.table,c.view,c.keyColumn,c.displayColumn].join('||');
+        uniqueName = [c.containerPath,c.schemaName,c.queryName,c.view,c.keyColumn,c.displayColumn].join('||');
 
     var store = Ext.StoreMgr.key(uniqueName);
     if (!store)
@@ -494,6 +494,7 @@ EHR.ext.getLookupStore = function(c, uniqueName)
         c.autoLoad = true;
         c.storeId = uniqueName;
         c.noValidationCheck = true;
+        
         store = new LABKEY.ext.Store(c);
     }
     return store;

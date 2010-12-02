@@ -3,11 +3,11 @@
  *
  * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
  */
---this query is designed to be joined into Assignment using objectid
+--this query is designed to be joined into Assignment using lsid
 --TODO: Add COALESCE
 
 SELECT
-  a1.objectid,
+  a1.lsid,
 
   --the total number of assignments overlapping with this record
   --COUNT(a2.Id) as OverlappingAssignments,
@@ -20,5 +20,5 @@ FROM study.assignmentCoAssignedAnimals a1
 
 WHERE a1.rdate IS NULL
 
-GROUP BY a1.objectid
+GROUP BY a1.lsid
 

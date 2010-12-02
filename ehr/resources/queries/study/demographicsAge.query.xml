@@ -19,6 +19,9 @@
                         <datatype>integer</datatype>
                         <columnTitle>Age (Months)</columnTitle>
                     </column>
+                    <column columnName="species">
+                        <isHidden>true</isHidden>
+                    </column>
                 </columns>
                 <titleColumn>AgeInYears</titleColumn>
             </table>

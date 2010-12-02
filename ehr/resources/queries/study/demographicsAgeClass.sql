@@ -7,13 +7,12 @@ SELECT
 
 d.id,
 ac.AgeClass,
---ac.dataset,
 
-FROM study.Demographics d
+FROM study.demographics d
 LEFT JOIN lists.ageclass ac
 ON (
-d.id.age.ageInYears IS NOT NULL AND
-d.id.age.ageInYears >= ac."min" AND
-(d.id.age.ageInYears <= ac."max" OR ac."max" is null) AND
+d.birth IS NOT NULL AND
+(CONVERT(age_in_months(d.birth, COALESCE(d.death, curdate())), DOUBLE) / 12) >= ac."min" AND
+((CONVERT(age_in_months(d.birth, COALESCE(d.death, curdate())), DOUBLE) / 12) <= ac."max" OR ac."max" is null) AND
 d.species = ac.species
 )

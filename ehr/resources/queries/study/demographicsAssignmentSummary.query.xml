@@ -7,7 +7,7 @@
                         <isKeyField>true</isKeyField>
                         <isHidden>true</isHidden>
                     </column>
-                    <column columnName="ActiveAssignments">
+                    <column columnName="NumActiveAssignments">
                         <datatype>integer</datatype>
                         <columnTitle>Active Assignments (avail=all)</columnTitle>
                         <displayWidth>110</displayWidth>
@@ -17,7 +17,7 @@
                             query.rdate~isblank&amp;
                         </url>
                     </column>
-                    <column columnName="PendingAssignments">
+                    <column columnName="NumPendingAssignments">
                         <datatype>integer</datatype>
                         <columnTitle>Total Pending Assignments (avail=p)</columnTitle>
                         <displayWidth>110</displayWidth>
@@ -28,7 +28,7 @@
                             query.project/avail~eq=p
                         </url>
                     </column>
-                    <column columnName="ActiveResearchAssignments">
+                    <column columnName="NumActiveResearchAssignments">
                         <datatype>integer</datatype>
                         <columnTitle>Total Active Research Assignments (avail=r or n)</columnTitle>
                         <displayWidth>110</displayWidth>
@@ -39,7 +39,7 @@
                             query.project/avail~in=r;e;n&amp;
                         </url>
                     </column>
-                    <column columnName="ActiveBreedingAssignments">
+                    <column columnName="NumActiveBreedingAssignments">
                         <datatype>varchar</datatype>
                         <columnTitle>Total Active Breeding Assignments (avail=b)</columnTitle>
                         <displayWidth>110</displayWidth>
@@ -50,7 +50,7 @@
                             query.project/avail~eq=b
                         </url>
                     </column>
-                    <column columnName="ActiveVetAssignments">
+                    <column columnName="NumActiveVetAssignments">
                         <datatype>varchar</datatype>
                         <columnTitle>Total Active Vet Exemptions (avail=v)</columnTitle>
                         <displayWidth>110</displayWidth>
@@ -61,7 +61,7 @@
                             query.project/avail~eq=v
                         </url>
                     </column>
-                    <column columnName="ActiveTrainingAssignments">
+                    <column columnName="NumActiveTrainingAssignments">
                         <datatype>varchar</datatype>
                         <columnTitle>Total Active Training Assignments (avail=t)</columnTitle>
                         <displayWidth>110</displayWidth>
@@ -105,7 +105,7 @@
                             query.project~eq=20070801
                         </url>
                     </column>
-                    <column columnName="ActiveStockAssignments">
+                    <column columnName="NumActiveStockAssignments">
                         <datatype>integer</datatype>
                         <columnTitle>Active Stock Assignments (any)?</columnTitle>
                         <displayWidth>110</displayWidth>
@@ -116,36 +116,103 @@
                             query.project~in=20020201;20070801;20070202
                         </url>
                     </column>
-                    <column columnName="ActiveAssignments2">
-                        <isHidden>true</isHidden>
-                    </column>
-                    <column columnName="PendingAssignments2">
-                        <isHidden>true</isHidden>
-                    </column>
-                    <column columnName="ActiveResearchAssignments2">
-                        <isHidden>true</isHidden>
-                    </column>
-                    <column columnName="ActiveVetAssignments2">
-                        <isHidden>true</isHidden>
-                    </column>
-                    <column columnName="ActiveTrainingAssignments2">
-                        <isHidden>true</isHidden>
-                    </column>
-                    <column columnName="ActiveSPF_StockAssignments2">
-                        <isHidden>true</isHidden>
-                    </column>
-                    <column columnName="ActiveConventionalStockAssignments2">
-                        <isHidden>true</isHidden>
-                    </column>
-                    <column columnName="ActiveMarmStockAssignments2">
-                        <isHidden>true</isHidden>
-                    </column>
-                    <column columnName="ActiveStockAssignments2">
-                        <isHidden>true</isHidden>
-                    </column>
-                    <column columnName="ActiveBreedingAssignments2">
-                        <isHidden>true</isHidden>
-                    </column>
+
+                    <column columnName="ActiveAssignments">
+                         <datatype>integer</datatype>
+                         <columnTitle>Active Assignments (avail=all)</columnTitle>
+                         <displayWidth>110</displayWidth>
+                         <url>/query/executeQuery.view?schemaName=study&amp;
+                             query.queryName=Assignment&amp;
+                             query.Id~eq=${Id}&amp;
+                             query.rdate~isblank&amp;
+                         </url>
+                     </column>
+                     <column columnName="PendingAssignments">
+                         <datatype>integer</datatype>
+                         <columnTitle>Pending Assignments (avail=p)</columnTitle>
+                         <displayWidth>110</displayWidth>
+                         <url>/query/executeQuery.view?schemaName=study&amp;
+                             query.queryName=Assignment&amp;
+                             query.Id~eq=${Id}&amp;
+                             query.rdate~isblank&amp;
+                             query.project/avail~eq=p
+                         </url>
+                     </column>
+                     <column columnName="ActiveResearchAssignments">
+                         <datatype>integer</datatype>
+                         <columnTitle>Active Research Assignments (avail=r or n)</columnTitle>
+                         <displayWidth>110</displayWidth>
+                         <url>/query/executeQuery.view?schemaName=study&amp;
+                             query.queryName=Assignment&amp;
+                             query.Id~eq=${Id}&amp;
+                             query.rdate~isblank&amp;
+                             query.project/avail~in=r;e;n&amp;
+                         </url>
+                     </column>
+                     <column columnName="ActiveBreedingAssignments">
+                         <datatype>varchar</datatype>
+                         <columnTitle>Active Breeding Assignments (avail=b)</columnTitle>
+                         <displayWidth>110</displayWidth>
+                         <url>/query/executeQuery.view?schemaName=study&amp;
+                             query.queryName=Assignment&amp;
+                             query.Id~eq=${Id}&amp;
+                             query.rdate~isblank&amp;
+                             query.project/avail~eq=b
+                         </url>
+                     </column>
+                     <column columnName="ActiveVetAssignments">
+                         <datatype>varchar</datatype>
+                         <columnTitle>Active Vet Exemptions (avail=v)</columnTitle>
+                         <displayWidth>110</displayWidth>
+                         <url>/query/executeQuery.view?schemaName=study&amp;
+                             query.queryName=Assignment&amp;
+                             query.Id~eq=${Id}&amp;
+                             query.rdate~isblank&amp;
+                             query.project/avail~eq=v
+                         </url>
+                     </column>
+                     <column columnName="ActiveTrainingAssignments">
+                         <datatype>varchar</datatype>
+                         <columnTitle>Active Training Assignments (avail=t)</columnTitle>
+                         <displayWidth>110</displayWidth>
+                         <url>/query/executeQuery.view?schemaName=study&amp;
+                             query.queryName=Assignment&amp;
+                             query.Id~eq=${Id}&amp;
+                             query.rdate~isblank&amp;
+                             query.project/avail~eq=t
+                         </url>
+                     </column>
+
+                    <!--<column columnName="ActiveAssignments2">-->
+                        <!--<isHidden>true</isHidden>-->
+                    <!--</column>-->
+                    <!--<column columnName="PendingAssignments2">-->
+                        <!--<isHidden>true</isHidden>-->
+                    <!--</column>-->
+                    <!--<column columnName="ActiveResearchAssignments2">-->
+                        <!--<isHidden>true</isHidden>-->
+                    <!--</column>-->
+                    <!--<column columnName="ActiveVetAssignments2">-->
+                        <!--<isHidden>true</isHidden>-->
+                    <!--</column>-->
+                    <!--<column columnName="ActiveTrainingAssignments2">-->
+                        <!--<isHidden>true</isHidden>-->
+                    <!--</column>-->
+                    <!--<column columnName="ActiveSPF_StockAssignments2">-->
+                        <!--<isHidden>true</isHidden>-->
+                    <!--</column>-->
+                    <!--<column columnName="ActiveConventionalStockAssignments2">-->
+                        <!--<isHidden>true</isHidden>-->
+                    <!--</column>-->
+                    <!--<column columnName="ActiveMarmStockAssignments2">-->
+                        <!--<isHidden>true</isHidden>-->
+                    <!--</column>-->
+                    <!--<column columnName="ActiveStockAssignments2">-->
+                        <!--<isHidden>true</isHidden>-->
+                    <!--</column>-->
+                    <!--<column columnName="ActiveBreedingAssignments2">-->
+                        <!--<isHidden>true</isHidden>-->
+                    <!--</column>-->
                 </columns>
                 <titleColumn>ActiveAssignments</titleColumn>
             </table>

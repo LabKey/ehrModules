@@ -44,6 +44,9 @@
                     </column>
                     <column columnName="DateOnly" wrappedColumnName="lsid">
                         <columnTitle>Date Only</columnTitle>
+                        <shownInDetailsView>false</shownInDetailsView>
+                        <shownInInsertView>false</shownInInsertView>
+                        <shownInUpdateView>false</shownInUpdateView>
                         <isHidden>false</isHidden>
                         <isUnselectable>true</isUnselectable>
                         <fk>
@@ -55,6 +58,9 @@
                     <column columnName="Notes" wrappedColumnName="date">
                         <columnTitle>Notes</columnTitle>
                         <formatString>'&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;'</formatString>
+                        <shownInDetailsView>false</shownInDetailsView>
+                        <shownInInsertView>false</shownInInsertView>
+                        <shownInUpdateView>false</shownInUpdateView>
                         <isHidden>false</isHidden>
                         <displayWidth>200</displayWidth>
                     </column>
@@ -62,6 +68,9 @@
                         <columnTitle>Survivorship</columnTitle>
                         <isHidden>false</isHidden>
                         <isUnselectable>true</isUnselectable>
+                        <shownInDetailsView>false</shownInDetailsView>
+                        <shownInInsertView>false</shownInInsertView>
+                        <shownInUpdateView>false</shownInUpdateView>
                         <fk>
                             <fkDbSchema>study</fkDbSchema>
                             <fkTable>studyDataSurvivorship</fkTable>
@@ -105,16 +114,16 @@
                                 historyHandler(dataRegion, dataRegionName);
                             </onClick>
                         </item>
-                        <!--<item text="Jump To Other Dataset">-->
-                            <!--<onClick>-->
-                                <!--datasetHandler(dataRegion, dataRegionName);-->
-                            <!--</onClick>-->
-                        <!--</item>-->
-                        <!--<item text="Return Distinct Values">-->
-                            <!--<onClick>-->
-                                <!--getDistinct(dataRegion, dataRegionName);-->
-                            <!--</onClick>-->
-                        <!--</item>                        -->
+                        <item text="Jump To Other Dataset">
+                            <onClick>
+                                datasetHandler(dataRegion, dataRegionName);
+                            </onClick>
+                        </item>
+                        <item text="Return Distinct Values">
+                            <onClick>
+                                getDistinct(dataRegion, dataRegionName);
+                            </onClick>
+                        </item>
                     </item>
                 </buttonBarOptions>
             </table>

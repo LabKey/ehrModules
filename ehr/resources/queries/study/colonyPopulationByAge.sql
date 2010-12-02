@@ -14,6 +14,6 @@ FROM study.Demographics d
 WHERE d.id.status.status = 'Alive' AND d.species != 'Unknown'
 
 GROUP BY d.species, d.gender, d.id.age.AgeInYearsRounded
--- ORDER BY d.id.species.species, d.gender, d.id.age.AgeInYears
+
 
 

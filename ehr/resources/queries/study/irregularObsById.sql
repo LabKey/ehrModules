@@ -57,10 +57,10 @@ null as tlocation,
 null as otherbehavior,
 cn.note as Remark,
 null as dataset,
-c.description
+'Cage Observation' as description
 
 FROM study.cageObs c
- JOIN lists.cagenotes cn ON (c.observationRecord = cn.key)
+ JOIN lists.cagenotes cn ON (c.observationRecord = cn.objectid)
 
 
 

@@ -4,10 +4,10 @@
  * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
  */
 --this query contains a handful of calculated fields for the weights table
---it is designed to be joined into weights using objectID
+--it is designed to be joined into weights using lsid
 
 SELECT
-  w.objectId,
+  w.lsid,
   w.Id,
   w.date,
   w.weight AS CurWeight,

@@ -3,14 +3,14 @@
         <tables xmlns="http://labkey.org/data/xml">
             <table tableName="assignmentTotalCoAssigned" tableDbType="NOT_IN_DB">
                 <columns>
-                    <column columnName="objectId">
+                    <column columnName="lsid">
                         <isKeyField>true</isKeyField>
                         <isHidden>true</isHidden>
                     </column>
                     <column columnName="ConcurrentAssignments">
                         <url>/query/executeQuery.view?schemaName=study&amp;
                             query.queryName=assignmentCoAssignedAnimals&amp;
-                            query.objectid~eq=${objectid}&amp;
+                            query.lsid~eq=${lsid}&amp;
                             query.sort=-Date
                         </url>
                     </column>

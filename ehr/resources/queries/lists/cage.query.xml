@@ -7,6 +7,16 @@
                     <column columnName="location">
                         <displayWidth>60</displayWidth>
                     </column>
+                    <column columnName="roomcage">
+                        <displayWidth>60</displayWidth>
+                        <columnTitle>Location</columnTitle>
+                    </column>
+                    <column columnName="room">
+                        <displayWidth>40</displayWidth>
+                    </column>
+                    <column columnName="cage">
+                        <displayWidth>40</displayWidth>
+                    </column>
                 </columns>
             </table>
         </tables>

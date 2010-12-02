@@ -6,7 +6,7 @@
 function historyHandler(dataRegion, dataRegionName)
 {
     var checked = dataRegion.getChecked();
-    var sql = "SELECT DISTINCT s.Id FROM study."+dataRegion.queryName+" s WHERE s.LSID IN ('" + checked.join("', '") + "')";
+    var sql = "SELECT DISTINCT s.Id FROM study.\""+dataRegion.queryName+"\" s WHERE s.LSID IN ('" + checked.join("', '") + "')";
 
     LABKEY.Query.executeSql({
          schemaName: 'study',
@@ -22,10 +22,14 @@ function historyHandler(dataRegion, dataRegionName)
         if (ids.length){
             window.location = LABKEY.ActionURL.buildURL(
                 'ehr'
-                ,'animalHistory.view#activeReport:abstract&showReport:1&subject:'+ids.join(',')
+                ,'animalHistory.view#_inputType:renderMultiSubject&showReport:1&subject:'+ids.join(',')
                 ,'WNPRC/EHR/'
 
             );
+
+            //force reload if on same page
+            if(LABKEY.ActionURL.getAction() == 'animalHistory')
+                location.reload( true );
         }
     }
 
@@ -75,7 +79,7 @@ function datasetHandler(dataRegion, dataRegionName)
         },{
             emptyText:''
             ,fieldLabel: 'Select Field'
-            ,ref: 'field'
+            ,ref: 'theField'
             ,xtype: 'combo'
             ,displayField:'name'
             ,valueField: 'value'
@@ -83,8 +87,8 @@ function datasetHandler(dataRegion, dataRegionName)
             ,triggerAction: 'all'
             ,mode: 'local'
             ,width: 150
-            ,editable: true
-            ,value: 'id'
+            ,editable: false
+//            ,value: 'id'
             ,required: true
             ,store: new Ext.data.ArrayStore({
                 fields: ['name', 'value'],
@@ -108,11 +112,11 @@ function datasetHandler(dataRegion, dataRegionName)
     });
     theWindow.show();
     
-    function runSQL(a,b){
+    function runSQL(){
         var checked = dataRegion.getChecked();
         var dataset = theWindow.dataset.getValue();
-        var field = theWindow.field.getValue();
-        var sql = "SELECT DISTINCT s."+field+" FROM study."+dataRegion.queryName+" s WHERE s.LSID IN ('" + checked.join("', '") + "')";
+        var theField = theWindow.theField.getValue();
+        var sql = "SELECT DISTINCT s."+theField+" as field FROM study.\""+dataRegion.queryName+"\" s WHERE s.LSID IN ('" + checked.join("', '") + "')";
 
         LABKEY.Query.executeSql({
              schemaName: 'study',
@@ -122,11 +126,13 @@ function datasetHandler(dataRegion, dataRegionName)
 
         function changeLocation(data){
             var ids = new Array();
-            for (var i = 0; i < data.rows.length; i++)
-                ids.push(data.rows[i].Id);
+            for (var i = 0; i < data.rows.length; i++){
+                if(data.rows[i].field)
+                    ids.push(data.rows[i].field);
+            }
 
             if (ids.length){
-                var fieldFilter = LABKEY.Filter.create(field, ids.join(';'), LABKEY.Filter.Types.IN);
+                var fieldFilter = LABKEY.Filter.create(theField, ids.join(';'), LABKEY.Filter.Types.IN);
                 var baseParams = {
                     'query.queryName': dataset,
                     schemaName: 'study'
@@ -137,7 +143,7 @@ function datasetHandler(dataRegion, dataRegionName)
 
                 var el = document.body.appendChild(document.createElement('form'));
                 el.setAttribute('method', 'POST');
-                el.setAttribute('action', LABKEY.ActionURL.buildURL('query', 'executeQuery'));
+                el.setAttribute('action', LABKEY.ActionURL.buildURL('ehr', 'executeQuery'));
                 var theElement = Ext.get(el);
 
                 for (var j in baseParams) {
@@ -170,53 +176,116 @@ function moreActionsHandler(dataRegion){
 //
 //})
 
-function getDistinct(dataRegion){
-    var checked = dataRegion.getChecked();
-    var sql = "SELECT DISTINCT s.Id FROM study."+dataRegion.queryName+" s WHERE s.LSID IN ('" + checked.join("', '") + "')";
+function getDistinct(dataRegion)
+{
 
-    LABKEY.Query.executeSql({
-         schemaName: 'study',
-         sql: sql,
-         successCallback: handler
-         });
+    var theWindow = new Ext.Window({
+        width: 280,
+        height: 130,
+        bodyStyle:'padding:5px',
+        closeAction:'hide',
+        plain: true,
+        keys: [
+            {
+                key: Ext.EventObject.ENTER,
+                handler: runSQL,
+                scope: this
+            }
+        ],
+        title: 'Select Field',
+        layout: 'form',
+        items: [{
+            emptyText:''
+            ,fieldLabel: 'Select Field'
+            ,ref: 'field'
+            ,xtype: 'combo'
+            ,displayField:'name'
+            ,valueField: 'value'
+            ,typeAhead: true
+            ,triggerAction: 'all'
+            ,mode: 'local'
+            ,width: 150
+            ,editable: true
+            ,value: 'id'
+            ,required: true
+            ,store: new Ext.data.ArrayStore({
+                fields: ['name', 'value'],
+                data: [['Animal Id','id'], ['Project','project'], ['Date','date']]
+            })
+        }],
+        buttons: [{
+            text:'Submit',
+            disabled:false,
+            formBind: true,
+            ref: '../submit',
+            scope: this,
+            handler: runSQL
+        },{
+            text: 'Close',
+            scope: this,
+            handler: function(){
+                theWindow.hide();
+            }
+        }]
+    });
+    theWindow.show();
 
-    function handler(data){
-        var ids = {};
-        for (var i = 0; i < data.rows.length; i++){
-            if (!ids[data.rows[i].Id])
-                ids[data.rows[i].Id] = 0;
+    function runSQL(a,b){
+        var checked = dataRegion.getChecked();
+        var field = theWindow.field.getValue();
+        var sql = "SELECT DISTINCT s."+field+" as field FROM study.\""+dataRegion.queryName+"\" s WHERE s.LSID IN ('" + checked.join("', '") + "')";
+        theWindow.hide();
+        
+        LABKEY.Query.executeSql({
+             schemaName: 'study',
+             sql: sql,
+             successCallback: changeLocation
+             });
 
-            ids[data.rows[i].Id] += 1;
+        function changeLocation(data){
+            var ids = {};
+            for (var i = 0; i < data.rows.length; i++){
+                if (!data.rows[i].field)
+                    continue;
+
+                if (data.rows[i].field && !ids[data.rows[i].field])
+                    ids[data.rows[i].field] = 0;
+
+                ids[data.rows[i].field] += 1;
+
+            }
+
+            var result = '';
+            for(var j in ids){
+                result += j + "\n";
+            }
+
+            var win = new Ext.Window({
+                width: 280,
+                autoHeight: true,
+                bodyStyle:'padding:5px',
+                closeAction:'hide',
+                plain: true,
+                title: 'Distinct Values',
+                //layout: 'form',
+                items: [{
+                    xtype: 'textarea',
+                    width: 260,
+                    height: 350,
+                    value: result
+                }],
+                buttons: [{
+                    text: 'Close',
+                    scope: this,
+                    handler: function(){
+                        win.hide();
+                    }
+                }]
+            });
+            win.show();
         }
-
-        var result = '';
-        for(var j in ids){
-            result += j + "\n";
-        }
-
-        var win = new Ext.Window({
-            width: 280,
-            autoHeight: true,
-            bodyStyle:'padding:5px',
-            closeAction:'hide',
-            plain: true,
-            title: 'Distinct Values',
-            //layout: 'form',
-            items: [{
-                xtype: 'textarea',
-                width: 260,
-                height: 350,
-                value: result
-            }],
-            buttons: [{
-                text: 'Close',
-                scope: this,
-                handler: function(){
-                    win.hide();
-                }
-            }]
-        });
-        win.show();
     }
-    
-}
+};
+
+
+

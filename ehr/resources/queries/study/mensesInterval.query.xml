@@ -3,7 +3,7 @@
         <tables xmlns="http://labkey.org/data/xml">
             <table tableName="mensesInterval" tableDbType="NOT_IN_DB">
                 <columns>
-                    <column columnName="objectId">
+                    <column columnName="lsid">
                         <isKeyField>true</isKeyField>
                         <isHidden>true</isHidden>
                     </column>

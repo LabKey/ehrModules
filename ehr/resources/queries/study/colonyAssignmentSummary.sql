@@ -8,17 +8,17 @@ SELECT
   d.id.species.species as species,
   count(coalesce(d.id.dataset.demographics.v_status, '')) as TotalAnimals,
 
-  count(d.ActiveAssignments2) AS ActiveAssignments,
-  count(coalesce(d.id.dataset.demographics.v_status, '')) - count(d.ActiveAssignments2) AS NoAssignments,
-  count(d.PendingAssignments2) AS PendingAssignments,
-  count(d.ActiveResearchAssignments2) as ActiveResearchAssignments,
-  count(d.ActiveBreedingAssignments2) as ActiveBreedingAssignments,
-  count(d.ActiveTrainingAssignments2) as ActiveTrainingAssignments,
+  count(d.ActiveAssignments) AS ActiveAssignments,
+  count(coalesce(d.id.dataset.demographics.v_status, '')) - count(d.ActiveAssignments) AS NoAssignments,
+  count(d.PendingAssignments) AS PendingAssignments,
+  count(d.ActiveResearchAssignments) as ActiveResearchAssignments,
+  count(d.ActiveBreedingAssignments) as ActiveBreedingAssignments,
+  count(d.ActiveTrainingAssignments) as ActiveTrainingAssignments,
 
   --count(T3.Total) as ActiveVetAssignments,
-  count(d.ActiveSPF_StockAssignments2) AS ActiveSPF_StockAssignments,
-  count(d.ActiveConventionalStockAssignments2) AS ActiveConventionalStockAssignments,
-  count(d.ActiveMarmStockAssignments2) AS ActiveMarmStockAssignments,
+  count(d.ActiveSPF_StockAssignments) AS ActiveSPF_StockAssignments,
+  count(d.ActiveConventionalStockAssignments) AS ActiveConventionalStockAssignments,
+  count(d.ActiveMarmStockAssignments) AS ActiveMarmStockAssignments,
 
 
 FROM study.demographicsAssignmentSummary d

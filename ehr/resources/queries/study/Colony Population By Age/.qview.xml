@@ -1,0 +1,7 @@
+<customView xmlns="http://labkey.org/data/xml/queryCustomView">
+   <sorts>
+       <sort column="species" descending="false"/>
+       <sort column="AgeInYears" descending="false"/>
+       <sort column="gender" descending="false"/>       
+   </sorts>
+</customView>

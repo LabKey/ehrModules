@@ -216,11 +216,13 @@ EHR.validation = {
     },
     fixChemValue: function(row, errors){
         //we try to remove non-numeric characters from this field
+        console.log('new script')
         if (row.stringResults && !row.stringResults.match(/^[0-9]*$/)){
             //we need to manually split these into multiple rows
+
             if (row.stringResults.match(/,/) && row.stringResults.match(/[0-9]/)){
-                row.stringResults = null;
                 row._warnings.push('ERROR problem with results: ' + row.stringResults);
+                row.stringResults = null;
                 row.QCStateLabel = errorQC;
             }
             else {
@@ -266,7 +268,7 @@ EHR.validation = {
     },
     fixUrineQuantity: function(row, errors){
         //we try to remove non-numeric characters from this field
-        if (row.quantity && !row.quantity.match(/^(\d*\.*\d*)$/)){
+        if (row.quantity && typeof(row.quantity) == 'string' && !row.quantity.match(/^(\d*\.*\d*)$/)){
             //we need to manually split these into multiple rows
             if (row.quantity.match(/,/)){
                 row.quantity = null;
@@ -282,8 +284,8 @@ EHR.validation = {
                 row.quantity = row.quantity.replace(/ml/i, '');
                 row.quantity = row.quantity.replace('prj31f', '');
 
-                var match = row.quantity.match(/^([<>~]*)[ ]*(\d*\.*\d*)[ ]*(\+)*(.*)$/);
-
+                //var match = row.quantity.match(/^([<>~]*)[ ]*(\d*\.*\d*)[ ]*(\+)*(.*)$/);
+                var match = row.quantity.match(/^\s*([<>~]*)\s*(\d*\.*\d*)\s*(\+)*(.*)$/);
                 if (match[1] || match[3])
                     row.quantityOORIndicator = match[1] || match[3];
 

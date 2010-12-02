@@ -494,7 +494,7 @@ date,
 ts,
 objectid,
 key2
-FROM col_dump.urinanlysisresults_mysql
+FROM col_dump.urinalysisresults_mysql
 
 UNION ALL
 

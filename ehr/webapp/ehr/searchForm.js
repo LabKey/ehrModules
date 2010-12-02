@@ -187,7 +187,7 @@ EHR.ext.customPanels.searchForm = Ext.extend(Ext.Panel, {
         var url = LABKEY.ActionURL.buildURL(
             'query',
             'executeQuery.view',
-            LABKEY.ActionURL.getContainer(),
+            (this.config.containerPath || LABKEY.ActionURL.getContainer()),
             params
             );
 

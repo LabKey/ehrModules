@@ -12,7 +12,7 @@
                           <fkColumnName>objectid</fkColumnName>
                         </fk>
                     </column>
-                    <column columnName="Interval" wrappedColumnName="lsid">
+                    <column columnName="Days Between" wrappedColumnName="lsid">
                         <columnTitle>Interval</columnTitle>
                         <isHidden>false</isHidden>
                         <isUnselectable>true</isUnselectable>

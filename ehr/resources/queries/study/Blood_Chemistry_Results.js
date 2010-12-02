@@ -117,7 +117,7 @@ EHR.validation = {
         }
     },
     snomedString: function (title, code, meaning){
-        return title+': ' + (meaning ? meaning+' ('+code+')' : code)
+        return title+': ' + (meaning ? meaning+(code ? ' ('+code+')' : '') : (code ? code : ''))
     },
     dateString: function (date){
         //TODO: do better once more date functions added
@@ -206,13 +206,13 @@ EHR.validation = {
     },
     fixChemValue: function(row, errors){
         //we try to remove non-numeric characters from this field
+        console.log('new script')
         if (row.stringResults && !row.stringResults.match(/^[0-9]*$/)){
-console.log('starting');
-console.log(row.stringResults);
             //we need to manually split these into multiple rows
+
             if (row.stringResults.match(/,/) && row.stringResults.match(/[0-9]/)){
-                row.stringResults = null;
                 row._warnings.push('ERROR problem with results: ' + row.stringResults);
+                row.stringResults = null;
                 row.QCStateLabel = errorQC;
             }
             else {
@@ -220,7 +220,7 @@ console.log(row.stringResults);
                 row.stringResults = row.stringResults.replace('less than', '<');
 
                 var match = row.stringResults.match(/^([<>=]*)[ ]*(\d*\.*\d*)([-]*\d*\.*\d*)([+]*)[ ]*(.*)$/);
-console.log(match);
+
                 if (match[4])
                     row.resultOORIndicator = match[4];
                 //kinda weak, but we preferentially take the prefix.  should never have both
@@ -254,12 +254,11 @@ console.log(match);
             //this covers the situation where a mySQL string column contained a numeric value
             row.result = row.stringResults;
             delete row.stringResults;
-console.log('result is numeric')
         }
     },
     fixUrineQuantity: function(row, errors){
         //we try to remove non-numeric characters from this field
-        if (row.quantity && !row.quantity.match(/^(\d*\.*\d*)$/)){
+        if (row.quantity && typeof(row.quantity) == 'string' && !row.quantity.match(/^(\d*\.*\d*)$/)){
             //we need to manually split these into multiple rows
             if (row.quantity.match(/,/)){
                 row.quantity = null;
@@ -275,8 +274,8 @@ console.log('result is numeric')
                 row.quantity = row.quantity.replace(/ml/i, '');
                 row.quantity = row.quantity.replace('prj31f', '');
 
-                var match = row.quantity.match(/^([<>~]*)[ ]*(\d*\.*\d*)[ ]*(\+)*(.*)$/);
-
+                //var match = row.quantity.match(/^([<>~]*)[ ]*(\d*\.*\d*)[ ]*(\+)*(.*)$/);
+                var match = row.quantity.match(/^\s*([<>~]*)\s*(\d*\.*\d*)\s*(\+)*(.*)$/);
                 if (match[1] || match[3])
                     row.quantityOORIndicator = match[1] || match[3];
 

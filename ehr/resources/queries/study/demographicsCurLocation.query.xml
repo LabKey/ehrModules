@@ -17,6 +17,12 @@
                     </column>
                     <column columnName="room">
                         <displayWidth>40</displayWidth>
+                        <fk>
+                          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
+                          <fkDbSchema>lists</fkDbSchema>
+                          <fkTable>rooms</fkTable>
+                          <fkColumnName>room</fkColumnName>
+                        </fk>
                     </column>
                     <column columnName="cage">
                         <displayWidth>40</displayWidth>

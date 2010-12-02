@@ -4,34 +4,38 @@
  * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
  */
 SELECT
-  d.Id AS Id,
+  b.lsid,
+  b.id,
+  b.date,
+  b.lastDate as MostRecentWeightDate,
+  b.weight as MostRecentWeight,
+  BloodLast30,
+  convert(b.weight*0.2*60, NUMERIC) AS MaxBlood,
+  convert(((b.weight*0.2*60) - b.BloodLast30), NUMERIC) AS AvailBlood,
 
-  COALESCE(T6.quantity, 0) AS BloodLast30,
+from (
+SELECT
+  b.lsid,
+  b.id,
+  b.date,
+  lastWeight.date as lastDate,
+  (
+    SELECT AVG(w.weight) AS _expr
+    FROM study.weight w
+    WHERE w.id=b.id AND w.date=lastWeight.date
+  ) AS weight,
+  (
+    SELECT SUM(draws.quantity) AS _expr
+    FROM study.blood draws
+    WHERE draws.id=b.id AND
+        draws.date BETWEEN TIMESTAMPADD('SQL_TSI_DAY', -30, b.date) AND b.date
+  ) AS BloodLast30
 
-  T9.weight AS MostRecentWeight,
+FROM
+    study.demographics b LEFT OUTER JOIN
+    (SELECT w.id, MAX(date) as date FROM study.weight w GROUP BY w.id) lastWeight ON b.id = lastWeight.id
 
-  T8.MostRecentWeightDate,
+-- WHERE b.date >= TIMESTAMPADD('SQL_TSI_DAY', -30, now())
+WHERE b.id.status.status = 'Alive'
 
-  round(T9.weight*0.2*60, 1) AS MaxBlood,
-
-  round((T9.weight*0.2*60) - COALESCE(T6.quantity, 0), 1) AS AvailBlood,
-
-
-
-FROM study.demographics d
-
---we calculate the total blood drawn in the last 30 days
-LEFT JOIN
-    (SELECT T6.Id, sum(T6.quantity) AS quantity FROM study.blood T6 where T6.date >= (curdate() - 30) GROUP BY T6.Id) T6
-    ON (T6.Id = d.Id)
-
---Find the most recent weight date
-LEFT JOIN
-  (select T8.Id, max(T8.date) as MostRecentWeightDate FROM study.weight T8 GROUP BY T8.Id) T8
-  ON (T8.Id = d.Id)
-
---find the most recent weight
-LEFT JOIN study.weight T9
-  ON (T8.MostRecentWeightDate = T9.date AND T9.Id = d.Id)
-
-WHERE d.id.status.status = 'Alive'
+) b

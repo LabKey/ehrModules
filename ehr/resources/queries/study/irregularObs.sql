@@ -59,7 +59,7 @@ null as tlocation,
 null as otherbehavior,
 c.note as Remark,
 null as dataset,
-null as description,
+'Cage Observation' as description,
 null as note
 FROM lists.cagenotes c
 

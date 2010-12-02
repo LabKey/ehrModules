@@ -1,0 +1,39 @@
+<html>
+<head>
+<script type="text/javascript">
+
+Ext.onReady(function (){
+    var query = LABKEY.postParameters['query.queryName'];
+    var schema = LABKEY.postParameters['schemaName'];
+
+    LABKEY.NavTrail.setTrail(LABKEY.postParameters['query.queryName']);
+
+    new LABKEY.QueryWebPart({
+        title: query,
+        schemaName: schema,
+        queryName: query,
+        allowChooseQuery: false,
+        allowChooseView: true,
+        showInsertNewButton: false,
+        showDeleteButton: false,
+        showDetailsColumn: true,
+        showUpdateColumn: false,
+        showRecordSelectors: true,
+        buttonBarPosition: 'top',
+        frame: 'none',
+        dataRegionName: 'query',
+        scope: this
+//        errorCallback: EHR.UTILITIES.onError
+     }).render('qwpDiv');
+});
+
+
+</script>
+</head>
+
+<body>
+
+<div id="qwpDiv"></div>
+
+</body>
+</html>
