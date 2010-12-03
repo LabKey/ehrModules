@@ -73,8 +73,8 @@ pgdump_format = c           			;format used by pgdump.  see pgdump doc.
 pg_host = someserver.com	 			;the postgres host.  can be omitted if running on the same server
 pg_user = labkey						;user connecting to postgres. can be omitted if using IDENT or other form of authentication
 backup_dest = /labkey/backup/  			;the directory where backups will be stored
-pgdump_dir = /opt/PostgreSQL/8.4/bin/	;the location of pg_dump 
-backup_dirs = /labkey/files/				;optional. a whitespace separated list of folders to be copied to the backupdir. ie. the site root
+backup_dirs = /labkey/files/			;optional. a whitespace separated list of folders to be archived into a TAR file.  
+excluded_dirs = /labkey/backup*			;optional. a whitespace separated list of patterns to be excluded from the TAR file.
 
 [lk_config]                            ;Section Optional.  
 jobName = LK Daily Backup	 		   ;optional. will appear in logfile
@@ -95,7 +95,7 @@ maxMonthly = 100	;maximum daily backups to keep.  default: 0
 
 #should be included with perl install
 use strict;
-#use Net::SMTP;
+
 use Time::localtime;
 use FileHandle;
 use File::Spec;        
@@ -127,7 +127,6 @@ my $datestr=sprintf("%04d%02d%02d_%02d%02d", $tm->year+1900, ($tm->mon)+1, $tm->
 
 # make sure the destination folder exists 
 checkFolder($config{backup_dest});
-
 my $log = Log::Rolling->new(
 	log_file => $config{backup_dest}."lk_backup.log", 
 	max_size=>5000
@@ -140,7 +139,7 @@ if (!-e $config{backup_dest}){
 }
 
 #check required params
-my @required = qw(backup_dest pgdump_dir);
+my @required = qw(backup_dest);
 foreach (@required){
 	if (!$config{$_}){
 		$log->entry("Missing param: $_ from INI file");	
@@ -157,12 +156,9 @@ foreach(@dbs){
 }
 
 
-#rsync
+#file backup
 if($config{backup_dirs}){
-	my $dirs = qw($config{backup_dirs});
-	my $dest = $config{backup_dest} . "files/";
-	checkFolder($dest);
-	_rsync($dirs, $dest);
+	runFileBackup();
 }
 
 onExit("Success", 1);
@@ -197,7 +193,7 @@ sub runPgBackup
 		_pg_dump($dailyBackupFile, $db);
 	}
 	
-	if ($config{compress}){
+	if ($config{compress} && $config{pgdump_format} != 'c'){
 		$log->entry("Compressing file: $dailyBackupFile");
 		$dailyBackupFile = _compressFile($dailyBackupFile, 1);
 	}
@@ -228,6 +224,65 @@ sub runPgBackup
 		}	
 		
 	$log->entry("Backup of $db was successful");
+}
+
+
+=item runFileBackup()
+
+runFileBackup() is the main sub to backup files
+
+=cut
+
+sub runFileBackup
+{		
+	my $file_prefix = "files_";
+	my $tar_filename = $file_prefix . $datestr . ".tar";
+	
+	my $backupdir = File::Spec->catfile($config{backup_dest}, "files");
+	
+	$log->entry("Starting backups of files");
+			
+	#run tar and store in the daily backup folder
+	$path = $backupdir."/daily/";
+	checkFolder($path);
+
+	my $dailyBackupFile = $path.$tar_filename;
+	my @files = split(' ', $config{backup_dirs});
+	my @exclude = split(' ', $config{excluded_dirs});
+	
+	_make_tar($dailyBackupFile, \@files, \@exclude);
+	
+	if ($config{compress}){
+		$log->entry("Compressing file: $dailyBackupFile");
+		$dailyBackupFile = _compressFile($dailyBackupFile, 1);
+	}
+	
+	#rotate daily backups	
+	$rotation{'maxDaily'} ||= 7;
+	_rotateFiles($path, $rotation{'maxDaily'}, $file_prefix);		
+		
+	#add/rotate weekly backups on saturday
+	if ($tm->wday == 6 && $rotation{'maxWeekly'} > 0)
+		{		
+			$path = $backupdir."/weekly/";
+			checkFolder($path);		
+			my $weeklyFile = $dailyBackupFile ;
+			$weeklyFile =~ s/daily/weekly/;
+			copy($dailyBackupFile,$weeklyFile ) or onExit("Weekly File Backup Copy failed: $!");
+			$rotation{'maxWeekly'} ||= 5;
+			_rotateFiles($path, $rotation{'maxWeekly'}, $file_prefix);
+		}
+	
+	#add monthly backups on the 1st of the month.  
+	if ($tm->mday == 1 && $rotation{'maxMonthly'} > 0)
+		{
+			$path = $backupdir."/monthly/";
+			checkFolder($path);
+			copy($dailyBackupFile,$path.$tar_filename) or onExit("Monthly File Backup Copy failed: $!");
+			_rotateFiles($path, $rotation{'maxMonthly'}, $file_prefix);
+		}	
+		
+	$log->entry("Backup of files was successful");
 }
 
 	
@@ -285,7 +340,7 @@ sub checkFolder
 	if (!-d $folder)
 	{
 		make_path($folder) || onExit "Could not create '" . $folder . "'";
-	chmod 0700,		
+		chmod 0700,		
 	}
 	
 }
@@ -302,10 +357,10 @@ sub _pg_dump
 	my $pg_dbname = shift;
 	
 	# Postgres Backup
-	my $cmd = $config{pgdump_dir} . "pg_dump -F ".($config{pgdump_format} ? $config{pgdump_format} : 't')." " . ($config{pg_host} ? " -U ".$config{pg_host}." " : "") . $pg_dbname . " -f ".$bkpostgresfile;
+	my $cmd = "su $config{pg_user} -c \"pg_dump -F ".($config{pgdump_format} ? $config{pgdump_format} : 't')." " . $pg_dbname . " -f ".$bkpostgresfile;
 	$cmd .= " -h ".$config{pg_host} if $config{pg_host};
-	 
-	my $pgout = system($cmd . " 2>&1");
+	$cmd .= "\"  2>&1";
+	my $pgout = system($cmd);
 	$log->entry($cmd);
 	if( $? ){
 	    $log->entry("ERROR: Database backup of $pg_dbname has returned an error: $pgout");
@@ -331,10 +386,10 @@ sub _pg_dumpall
 	my $bkpostgresfile = shift;
 	
 	# Postgres Backup
-	my $cmd = $config{pgdump_dir} . "pg_dumpall -g " . ($config{pg_host} ? " -U ".$config{pg_host}." " : "") . " -f ".$bkpostgresfile;
+	my $cmd = "su $config{pg_user} -c \"pg_dumpall -g" . " -f ".$bkpostgresfile;
 	$cmd .= " -h ".$config{pg_host} if $config{pg_host};
-	 
-	my $pgout = system($cmd . " 2>&1");
+	$cmd .= "\" 2>&1";	 
+	my $pgout = system($cmd);
 	$log->entry($cmd);
 	if( $? ){
 	    $log->entry("ERROR: pg_dumpall has returned an error: $pgout");
@@ -520,16 +575,12 @@ _rsync() will run rsync for the purposes of backing up the labkey file root
 sub _rsync
 {
 	my $source = shift;
-	my $dest = shift;
-	$dest = File::Spec->catfile($dest, $source);
-	make_path($dest);
-print $dest;	
+	my $dest = shift;	
 	my $log_file = $config{backup_dest} . "rsync.log";
 	
-	# Postgres Backup
-	my $cmd = "rsync --executability --recursive --links --perms --times --delete --log-file='$log_file' $source $dest";
+	my $cmd = "rsync --executability --recursive --links --perms --times --delete --log-file='$log_file' $source $dest  2>&1";
 
-	my $output = system($cmd . " 2>&1");
+	my $output = system($cmd);
 	$log->entry($cmd);
 	if( $? ){
 	    $log->entry("ERROR: Rsync returned an error: $output");
@@ -541,5 +592,39 @@ print $dest;
 	}
 }
 
+=item make_tar(database)
+
+_make_tar() creates a tar file
+
+=cut
+
+sub _make_tar
+{	
+	my $tarfile = shift;
+	my $files = shift;
+	my $exclude = shift;
+	
+	my $cmd = "tar -cpf $tarfile";
+	$cmd .= " --exclude='".join("' --exclude='", @$exclude)."'" if $exclude;
+	$cmd .= " @$files" . " 2>&1";
+	 
+	my $out = system($cmd);
+	$log->entry($cmd);
+	if ($? & 127) {
+        printf "child died with signal %d, %s coredump\n",
+            ($? & 127),  ($? & 128) ? 'with' : 'without';
+    }
+	elsif( $? ){
+	    $log->entry("ERROR: Tar archive of files has returned an error: $out");
+	    onExit("TAR Error: $out");
+	}
+#    else {
+#        printf "child exited with value %d\n", $? >> 8;
+#    }	
+	else{
+	    $log->entry("File backup complete");
+	}	
+	
+}	
 
 1;
