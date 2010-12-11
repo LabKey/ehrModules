@@ -127,6 +127,8 @@ my $datestr=sprintf("%04d%02d%02d_%02d%02d", $tm->year+1900, ($tm->mon)+1, $tm->
 
 # make sure the destination folder exists 
 checkFolder($config{backup_dest});
+chdir($config{backup_dest});
+
 my $log = Log::Rolling->new(
 	log_file => $config{backup_dest}."lk_backup.log", 
 	max_size=>5000
