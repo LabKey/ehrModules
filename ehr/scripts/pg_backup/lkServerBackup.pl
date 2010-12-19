@@ -67,11 +67,12 @@ You must also include a [lk_config] section in the INI file.  Below is an exampl
 file with comments explaining each line.
 
 [general]
-compress = 1							;0 or 1.  determines whether DB dumps are compressed
+compress = 1						;0 or 1.  determines whether DB dumps are compressed
 pg_dbname = labkey           			;name of postgres schema(s).  separate multiple schemas with whitespace (ie. 'labkey postgres').  the name 'globals' can be used to run pg_dumpall to backup global items
 pgdump_format = c           			;format used by pgdump.  see pgdump doc.  
 pg_host = someserver.com	 			;the postgres host.  can be omitted if running on the same server
-pg_user = labkey						;user connecting to postgres. can be omitted if using IDENT or other form of authentication
+pg_user = labkey					;user connecting to postgres. can be omitted if using IDENT or other form of authentication
+pg_path = /usr/local/pgsql/bin			;optional. the location of pg_dump
 backup_dest = /labkey/backup/  			;the directory where backups will be stored
 backup_dirs = /labkey/files/			;optional. a whitespace separated list of folders to be archived into a TAR file.  
 excluded_dirs = /labkey/backup*			;optional. a whitespace separated list of patterns to be excluded from the TAR file.
@@ -108,7 +109,8 @@ use Data::Dumper;
 use Labkey::Query;
 use File::Touch;
 use File::Path qw(make_path);
- 
+use Cwd;
+use Cwd qw(chdir); 
 
 # get INI file.  this should allow a filepath relative to this script
 my @fileparse = fileparse($0, qr/\.[^.]*/);
@@ -126,8 +128,8 @@ my $tm = localtime;
 my $datestr=sprintf("%04d%02d%02d_%02d%02d", $tm->year+1900, ($tm->mon)+1, $tm->mday, $tm->hour, $tm->min);
 
 # make sure the destination folder exists 
-checkFolder($config{backup_dest});
 chdir($config{backup_dest});
+checkFolder($config{backup_dest});
 
 my $log = Log::Rolling->new(
 	log_file => $config{backup_dest}."lk_backup.log", 
@@ -135,6 +137,12 @@ my $log = Log::Rolling->new(
 );
 
 $log->entry("Backup is starting");
+$log->entry("Current Working Dir: ".getcwd());
+
+my $errors = [];
+
+#add postgres to path
+$ENV{'PATH'} = $ENV{'PATH'}.':'.$config{pg_path};
 
 if (!-e $config{backup_dest}){
 	onExit("Unable to create backup directory");	
@@ -163,7 +171,7 @@ if($config{backup_dirs}){
 	runFileBackup();
 }
 
-onExit("Success", 1);
+onExit();
 
 
 =item runPgBackup(database)
@@ -178,6 +186,7 @@ sub runPgBackup
 	
 	my $file_prefix = $db."_";
 	my $pg_filename = $file_prefix . $datestr . ".tar";
+	my $result = 0;
 	
 	my $backupdir = File::Spec->catfile($config{backup_dest}, "database");
 	
@@ -189,12 +198,16 @@ sub runPgBackup
 
 	my $dailyBackupFile = $path.$pg_filename;
 	if($db eq 'globals'){
-		_pg_dumpall($dailyBackupFile, $db);
+		$result = _pg_dumpall($dailyBackupFile, $db);
 	}
 	else {
-		_pg_dump($dailyBackupFile, $db);
+		$result = _pg_dump($dailyBackupFile, $db);
 	}
 	
+	if(!$result){
+		onExit();
+	};
+
 	if ($config{compress} && $config{pgdump_format} != 'c'){
 		$log->entry("Compressing file: $dailyBackupFile");
 		$dailyBackupFile = _compressFile($dailyBackupFile, 1);
@@ -297,18 +310,20 @@ onExit() will log the given message and die.
 sub onExit
 {
 	my $msg = shift;
-	my $code = shift;
 	
-	if (!$code || $code != 1)
+	if (length(@$errors) > 0)
 	{
 		$status = "Error";	
+		$log->entry("Errors: "."@$errors");
 	}
 	else 
 	{
 		$status = "Success";
 	}
 	
-	$log->entry($msg);
+	if($msg){
+		$log->entry($msg);
+	}
 	
 	# Insert a record into a labkey list
 	if (%lk_config)
@@ -317,6 +332,7 @@ sub onExit
 	}
 	
 	# Write Log messages to log file 
+	$log->entry('Backup complete: '.$status);
 	$log->commit;
 
 	# touch a file to indicate success.  can be used /w monit
@@ -361,19 +377,19 @@ sub _pg_dump
 	# Postgres Backup
 	my $cmd = "su $config{pg_user} -c \"pg_dump -F ".($config{pgdump_format} ? $config{pgdump_format} : 't')." " . $pg_dbname . " -f ".$bkpostgresfile;
 	$cmd .= " -h ".$config{pg_host} if $config{pg_host};
-	$cmd .= "\"  2>&1";
+	$cmd .= "\""; # 2>&1";
+
 	my $pgout = system($cmd);
 	$log->entry($cmd);
 	if( $? ){
 	    $log->entry("ERROR: Database backup of $pg_dbname has returned an error: $pgout");
-
-	    onExit("Postgres Error: $pgout");
+	    push(@$errors, "ERROR: Database backup of $pg_dbname has returned an error: $pgout");
 	}
 	else{
 	    my $tm1 = localtime;
 	    $log->entry("pg_dump of $pg_dbname complete");
 	}
-	
+	return 1;	
 }
 
 
@@ -390,18 +406,18 @@ sub _pg_dumpall
 	# Postgres Backup
 	my $cmd = "su $config{pg_user} -c \"pg_dumpall -g" . " -f ".$bkpostgresfile;
 	$cmd .= " -h ".$config{pg_host} if $config{pg_host};
-	$cmd .= "\" 2>&1";	 
+	$cmd .= "\"";# 2>&1";	 
 	my $pgout = system($cmd);
 	$log->entry($cmd);
 	if( $? ){
 	    $log->entry("ERROR: pg_dumpall has returned an error: $pgout");
-
-	    onExit("Postgres Error: $pgout");
+	    push(@$errors, "ERROR: pg_dumpall has returned an error: $pgout");
 	}
 	else{
 	    my $tm1 = localtime;
 	    $log->entry("pg_dumpall of globals complete");
 	}
+	return 1;
 	
 }
 
@@ -586,8 +602,7 @@ sub _rsync
 	$log->entry($cmd);
 	if( $? ){
 	    $log->entry("ERROR: Rsync returned an error: $output");
-
-	    onExit("Rsync Error: $output");
+	    push(@$errors, "Rsync Error: $output");
 	}
 	else{
 	    $log->entry("rsync operation complete");
@@ -612,21 +627,13 @@ sub _make_tar
 	 
 	my $out = system($cmd);
 	$log->entry($cmd);
-	if ($? & 127) {
-        printf "child died with signal %d, %s coredump\n",
-            ($? & 127),  ($? & 128) ? 'with' : 'without';
-    }
-	elsif( $? ){
+	if( $? ){
 	    $log->entry("ERROR: Tar archive of files has returned an error: $out");
-	    onExit("TAR Error: $out");
+	    push(@$errors, "ERROR: Tar archive of files has returned an error: $out");
 	}
-#    else {
-#        printf "child exited with value %d\n", $? >> 8;
-#    }	
 	else{
 	    $log->entry("File backup complete");
 	}	
-	
 }	
 
 1;
