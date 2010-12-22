@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2010 LabKey Corporation
+ *
+ * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
+ */
 DROP TRIGGER IF EXISTS abstract_update;
 DELIMITER $$
 CREATE TRIGGER abstract_update BEFORE UPDATE ON abstract
