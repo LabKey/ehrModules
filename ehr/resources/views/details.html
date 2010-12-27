@@ -6,50 +6,26 @@ LABKEY.requiresScript("/ehr/transposeRows.js");
 
 Ext.onReady(function ()
 {
-    var detailsConfig = {
+    if (!LABKEY.ActionURL.getParameter('lsid')){alert('Must Provide LSID'); return false;}
+
+    var filterArray = [LABKEY.Filter.create('lsid', LABKEY.ActionURL.getParameter('lsid'), LABKEY.Filter.Types.EQUAL)];
+
+    new EHR.ext.customPanels.detailsView({
         schemaName: LABKEY.ActionURL.getParameter('schemaName'),
         queryName: LABKEY.ActionURL.getParameter('queryName'),
-        title: LABKEY.ActionURL.getParameter('title') || null,
-        filterArray: [],
-        renderTo: 'detailsView'
-    };
-
-    var paramArray = LABKEY.ActionURL.getParameters();
-    var ops = {
-        eq: 'EQUAL',
-        neqornull: 'DOES_NOT_EQUAL',
-        isblank: 'MISSING',
-        isnonblank: 'NOT_MISSING',
-        gt: 'GREATER_THAN',
-        lt: 'LESS_THAN',
-        gte: 'GREATER_THAN_OR_EQUAL',
-        lte: 'LESS_THAN_OR_EQUAL',
-        contains: 'CONTAINS',
-        doesnotcontains: 'DOES_NOT_CONTAIN',
-        startswith: 'STARTS_WITH',
-        doesnotstartswith: 'DOES_NOT_START_WITH',
-        'in': 'EQUALS_ONE_OF'
-    }
-
-    for (var i in paramArray){
-        if (/^query\./i.test(i)){
-            var r = i.replace(/^query\./i, '').split('~');
-            if (r.length != 2){alert('Something is wrong with the URL'+r.length);return;}
-
-            detailsConfig.filterArray.push(LABKEY.Filter.create(r[0], paramArray[i], LABKEY.Filter.Types[r[1]]));
-
-        }
-    }
-
-    new EHR.ext.customPanels.detailsView(detailsConfig);
-//.render('detailsView');
+        viewName: LABKEY.ActionURL.getParameter('viewName') || null,
+        title: LABKEY.ActionURL.getParameter('viewName') || LABKEY.ActionURL.getParameter('queryName')+' Details:',
+        renderTo: 'detailsView',
+        filterArray: filterArray
+    });
+    
 });
 
 
 </script>
 </head>
 
-<body align="center">
+<body>
 
 <div id="detailsView"></div>
 

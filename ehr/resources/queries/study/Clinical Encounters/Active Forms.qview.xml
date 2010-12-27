@@ -1,7 +1,7 @@
 <customView xmlns="http://labkey.org/data/xml/queryCustomView">
     <columns>
         <column name="Id"/>
-        <column name="Id/curLocation/Area">
+        <column name="Id/curLocation/Location">
             <properties>
                 <property name="columnTitle" value="Current Location"/>
             </properties>
@@ -12,16 +12,18 @@
         <column name="account"/>
         <column name="type"/>
         <!--<column name="Remark"/>-->
-        <column name="userid"/>
+        <!--<column name="userid"/>-->
         <column name="QCState/Label">
             <properties>
                 <property name="columnTitle" value="Status"/>
             </properties>
         </column>
+        <column name="CreatedBy"/>
+        <column name="Created"/>
     </columns>
     <filters>
         <filter column="dateCompleted" operator="isblank"/>
-        <!--<filter column="QCState/label" operator="eq" value="In Progress"/>-->
+        <filter column="QCState/label" operator="eq" value="In Progress"/>
     </filters>
     <sorts>
         <sort column="date" descending="true"/>

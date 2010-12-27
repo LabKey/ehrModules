@@ -12,17 +12,7 @@ Ext.onReady(function(){
         ,title: 'Search Housing'
         ,defaultView: 'Current Housing'
         ,metadata: {
-            Id: {lookups: false},
-            TotalRoommates: {isHidden: true},
-            Created: {isHidden: true},
-            CreatedBy: {isHidden: true},
-            Modified: {isHidden: true},
-            ModifiedBy: {isHidden: true},
-            objectid: {isHidden: true},
-            isTemp: {isHidden: true},
-            ts: {isHidden: true},
-            Dataset: {isHidden: true},
-            AgeAtTime: {isHidden: true}
+            isTemp: {hidden: true}
         }
     }).render('housingPanel');
 

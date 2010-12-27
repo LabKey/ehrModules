@@ -12,6 +12,54 @@
                           <fkColumnName>objectid</fkColumnName>
                         </fk>
                     </column>
+                  <column columnName="lot">
+                    <datatype>varchar</datatype>
+                    <columnTitle>Lot</columnTitle>
+                  </column>
+                  <column columnName="dilution">
+                    <datatype>varchar</datatype>
+                    <columnTitle>Dilution</columnTitle>
+                  </column>
+                  <column columnName="eye">
+                    <datatype>varchar</datatype>
+                    <columnTitle>Eye</columnTitle>
+                    <fk>
+                      <fkFolderPath>/wnprc/ehr/</fkFolderPath>
+                      <fkDbSchema>lookups</fkDbSchema>
+                      <fkTable>tb_eye</fkTable>
+                      <fkColumnName>eye</fkColumnName>
+                    </fk>
+                  </column>
+                  <column columnName="result1">
+                    <datatype>integer</datatype>
+                    <columnTitle>Result1</columnTitle>
+                    <fk>
+                      <fkFolderPath>/wnprc/ehr/</fkFolderPath>
+                      <fkDbSchema>lookups</fkDbSchema>
+                      <fkTable>tb_result</fkTable>
+                      <fkColumnName>result</fkColumnName>
+                    </fk>
+                  </column>
+                  <column columnName="result2">
+                    <datatype>integer</datatype>
+                    <columnTitle>Result2</columnTitle>
+                    <fk>
+                      <fkFolderPath>/wnprc/ehr/</fkFolderPath>
+                      <fkDbSchema>lookups</fkDbSchema>
+                      <fkTable>tb_result</fkTable>
+                      <fkColumnName>result</fkColumnName>
+                    </fk>
+                  </column>
+                  <column columnName="result3">
+                    <datatype>integer</datatype>
+                    <columnTitle>Result3</columnTitle>
+                    <fk>
+                      <fkFolderPath>/wnprc/ehr/</fkFolderPath>
+                      <fkDbSchema>lookups</fkDbSchema>
+                      <fkTable>tb_result</fkTable>
+                      <fkColumnName>result</fkColumnName>
+                    </fk>
+                  </column>
                 </columns>
             </table>
         </tables>

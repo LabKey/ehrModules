@@ -33,19 +33,8 @@
         ,queryName: 'assignment'
         ,title: 'Search Assignments'
         ,metadata: {
-            Id: {lookups: false}
-            ,project: {lookups: false}
-            ,Created: {isHidden: true}
-            ,CreatedBy: {isHidden: true}
-            ,Modified: {isHidden: true}
-            ,ModifiedBy: {isHidden: true}
-            ,objectid: {isHidden: true}
-            ,isTemp: {isHidden: true}
-            ,ts: {isHidden: true}
-            ,Dataset: {isHidden: true}
-            ,AgeAtTime: {isHidden: true}
+            project: {lookups: false}
         }
-        ,exclude: ['SequenceNum', 'AnimalVisit', 'created', 'modified', 'QCState']
         ,defaultView: 'Active Assignments'
         ,newFields: [
             {caption: 'Protocol', name: 'Project/protocol'}
@@ -64,27 +53,7 @@ This page contains a series of queries to search IACUC Protocols, RARC Projects 
 
 
 <p/>
-
-<p/>
-<!--<h2>Shortcuts:</h2>-->
-
-<!--<div id="projectSearch"></div>-->
-<!--<form action="<%=contextPath%>/ehr<%=containerPath%>/projectDetails.view">-->
-    <!--Enter Project Number: <input type="textbox" name="key"/>-->
-    <!--<input type="submit" value="View Project"/>-->
-<!--</form>-->
-<!--<p/>-->
-
-<!--<form action="<%=contextPath%>/ehr<%=containerPath%>/protocolDetails.view">-->
-    <!--Enter Protocol Number: <input type="textbox" name="key"/>-->
-    <!--<input type="submit" value="View Protocol"/>-->
-<!--</form>-->
-
-<!--<p/>-->
-
-
-<p/>
-<h2>IACUC Projects:</h2>
+<h2>WNPRC Projects:</h2>
 
 <div id='projectPanel'></div>
 <p/>

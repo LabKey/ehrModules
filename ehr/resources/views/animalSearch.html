@@ -12,30 +12,24 @@ Ext.onReady(function ()
         ,title: 'Search Animals'
         ,defaultView: 'Alive, at WNPRC'                
         ,metadata: {
-            Id: {lookups: false}
-            ,DataSet: {isHidden: true}
-            ,Cohort: {isHidden: true}
-            ,cohort: {isHidden: true}
-            ,InitialCohort: {isHidden: true}
-            ,Age: {isHidden: true}
-            ,Surgery: {isHidden: true}
-            ,activeAssignments: {isHidden: true}
-            ,curLocation: {isHidden: true}
-            ,numRoommates: {isHidden: true}
-            ,MostRecentWeight: {isHidden: true}
-            ,Species: {isHidden: true}
-            ,Status: {isHidden: true}
-            ,totalOffspring: {isHidden: true}
-            ,MostRecentTB: {isHidden: true}
-            ,MostRecentArrival: {isHidden: true}
-            ,MostRecentDeparture: {isHidden: true}
-            ,MHCtyping: {isHidden: true}
-            ,CageClass: {isHidden: true}
-            ,AvailBlood: {isHidden: true}
-            ,DaysAlone: {isHidden: true}
-            ,AgeClass: {isHidden: true}
-            ,totalAssignments: {isHidden: true}
-            ,ViralLoad: {isHidden: true} 
+            Surgery: {hidden: true}
+            ,activeAssignments: {hidden: true}
+            ,curLocation: {hidden: true}
+            ,numRoommates: {hidden: true}
+            ,MostRecentWeight: {hidden: true}
+            ,Species: {hidden: true}
+            ,Status: {hidden: true}
+            ,totalOffspring: {hidden: true}
+            ,MostRecentTB: {hidden: true}
+            ,MostRecentArrival: {hidden: true}
+            ,MostRecentDeparture: {hidden: true}
+            ,MHCtyping: {hidden: true}
+            ,CageClass: {hidden: true}
+            ,AvailBlood: {hidden: true}
+            ,DaysAlone: {hidden: true}
+            ,AgeClass: {hidden: true}
+            ,totalAssignments: {hidden: true}
+            ,ViralLoad: {hidden: true} 
         }
         ,newFields: [
             {caption: 'Cohort', name: 'Cohort/label'}
@@ -46,15 +40,15 @@ Ext.onReady(function ()
             //,{caption: 'Num. of Active Assignments', name: 'activeProjects/ActiveProjects (avail=all)'}
             ,{caption: 'Num. of Offspring', name: 'totalOffspring/TotalOffspring', jsonType: 'int'}
             ,{caption: 'Num. of Roommates', name: 'numRoommates/numRoommates', jsonType: 'int'}
-            ,{caption: 'Species', name: 'Species/species', lookup: {schemaName: 'lists', queryName: 'species', displayColumn: 'common', keyColumn: 'common'}
+            ,{caption: 'Species', name: 'Species/species', lookup: {schemaName: 'lookups', queryName: 'species', displayColumn: 'common', keyColumn: 'common'}
             }
-            ,{caption: 'Gender', name: 'DataSet/Demographics/gender', lookup: {schemaName: 'lists', queryName: 'gender_codes', displayColumn: 'meaning', keyColumn: 'code'}}
+            ,{caption: 'Gender', name: 'DataSet/Demographics/gender', lookup: {schemaName: 'lookups', queryName: 'gender_codes', displayColumn: 'meaning', keyColumn: 'code'}}
             ,{caption: 'Dam', name: 'DataSet/Demographics/dam'}
             ,{caption: 'Sire', name: 'DataSet/Demographics/sire'}
-            ,{caption: 'Availability', name: 'DataSet/Demographics/avail', lookup: {schemaName: 'lists', queryName: 'avail', displayColumn: 'code', keyColumn: 'code'}}
+            ,{caption: 'Availability', name: 'DataSet/Demographics/avail'}
             ,{caption: 'Hold', name: 'DataSet/Demographics/hold'}
             ,{caption: 'Birth', name: 'DataSet/Demographics/birth', jsonType: 'date'}
-            ,{caption: 'Origin', name: 'DataSet/Demographics/origin', lookup: {schemaName: 'lists', queryName: 'origin', displayColumn: 'code', keyColumn: 'code'}}
+            ,{caption: 'Origin', name: 'DataSet/Demographics/origin', lookup: {schemaName: 'lookups', queryName: 'origin_codes', displayColumn: 'code', keyColumn: 'code'}}
             ,{caption: 'Death', name: 'DataSet/Demographics/death', jsonType: 'date'}
             ,{caption: 'Viral Status', name: 'DataSet/Demographics/v_status', lookup: {schemaName: 'lookups', queryName: 'viral_status', displayColumn: 'viral_status', keyColumn: 'viral_status'}}
             ,{caption: 'Latest Weight', name: 'MostRecentWeight/MostRecentWeight', jsonType: 'float'}

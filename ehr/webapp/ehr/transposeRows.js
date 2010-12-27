@@ -7,128 +7,120 @@ Ext.namespace('EHR.ext.customPanels');
 
 LABKEY.requiresScript("/ehr/utilities.js");
 
-EHR.ext.customPanels.detailsView = function(config)
-{
+EHR.ext.customPanels.detailsView = Ext.extend(Ext.Panel, {
 
-    var required = ['schemaName', 'queryName', 'renderTo'];
+initComponent: function(){
+    this.panelTitle = this.title;
+    this.title = null;
+
+    Ext.applyIf(this, {
+        bodyBorder: false,
+        border: false
+    });
+
+    EHR.ext.customPanels.detailsView.superclass.initComponent.call(this, arguments);
+
+    var required = ['schemaName', 'queryName'];
     for (var i=0;i<required.length;i++){
-        if (!config[required[i]]){
+        if (!this[required[i]]){
             alert('Required: '+required[i]);
             return false;
         }
     }
 
-    this.config = config;
+    this.queryConfig = {
+        queryName: this.queryName,
+        schemaName: this.schemaName,
+        filterArray: this.filterArray,
+        successCallback: this.onFinalRender,
+        errorCallback: EHR.UTILITIES.onError,
+        scope: this,
+        maxRows: 100
+    };
 
-    switch (typeof(config.renderTo)){
-        case 'object':
-            break;
-        case 'string':
-            this.config.renderTo = document.getElementById(config.renderTo);
-            break;
+    if (!this.fields){
+        LABKEY.Query.selectRows(this.queryConfig);
     }
+},
 
-    config.renderTo.innerHTML = 'Loading...<p>';
+onFinalRender: function(data){
+    this.removeAll();
 
-    var queryConfig = {
-            queryName: this.config.queryName,
-            schemaName: this.config.schemaName,
-            filterArray: this.config.filterArray,
-            successCallback: onFinalRender,
-            errorCallback: EHR.UTILITIES.onError,
-            scope: this,
-            maxRows: 100
-        };
+    if (!data.rows.length){
+        var innerHTML = '<table class="labkey-wp"><tbody><tr class="labkey-wp-header"><th class="labkey-wp-title-left">' +
+        (this.title || 'Details:')+ '</th><th class="labkey-wp-title-right">&nbsp;</th></tr></tbody></table>No Records Found<p>';
 
-    if (this.config.viewName){
-        queryConfig.viewName = this.config.viewName;
+        this.add({html: innerHTML});
+
+        return;
     }
-
-    if (!this.config.fields){
-        LABKEY.Query.selectRows(queryConfig);
-    }
-
-    function onFinalRender(data){
-        var target = new Ext.Panel({
-            bodyBorder: false,
-            border: false
+    else if (data.rows.length > 1 && this.multiToGrid){
+        Ext.applyIf(this.queryConfig, {
+            allowChooseQuery: false,
+            allowChooseView: false,
+            showInsertNewButton: false,
+            showDeleteButton: false,
+            showDetailsColumn: true,
+            showUpdateColumn: false,
+            showRecordSelectors: true,
+            buttonBarPosition: 'top',
+            title: this.panelTitle,
+            //TODO: switch to 0 once bug is fixed
+            timeout: 3000000
         });
 
-        if (!data.rows.length){
-            //var header = document.createElement('span');
-            var innerHTML = '<table class="labkey-wp"><tbody><tr class="labkey-wp-header"><th class="labkey-wp-title-left">' +
-            (this.config.title || 'Details:')+ '</th><th class="labkey-wp-title-right">&nbsp;</th></tr></tbody></table>No Records Found<p>';
-
-            target.add({html: innerHTML});
-
-            return;
-        }
-        else if (data.rows.length > 1 && this.config.multiToGrid){
-            Ext.applyIf(queryConfig, {
-                allowChooseQuery: false,
-                allowChooseView: false,
-                showInsertNewButton: false,
-                showDeleteButton: false,
-                showDetailsColumn: true,
-                showUpdateColumn: false,
-                showRecordSelectors: true,
-                buttonBarPosition: 'top',
-                title: this.config.title,
-                //TODO: switch to 0 once bug is fixed
-                timeout: 3000000
-            })
-
-            queryConfig.successCallback = queryConfig.success = null;
-
-            new LABKEY.QueryWebPart(queryConfig).render(config.renderTo);
-            return;
+        if (this.viewName){
+            this.queryConfig.viewName = this.viewName;
         }
 
-        for (var j=0;j<data.rows.length;j++){
-            var thePanel = new Ext.Panel({
-                layout: 'form',
-                bodyStyle: 'padding:5px',
-                bodyBorder: false,
-                cls: 'x-labkey-wp',
-                border: false,
-                title: 'Details',
-                frame: false,
-                labelWidth: 150,
-                defaults: {
-                    labelStyle: 'padding: 0px;'
-                }
-            });
-            
-            for (var i=0;i<data.columnModel.length;i++){
-                var col = data.columnModel[i];
-                var meta = data.metaData.fields[i];
-                var row = data.rows[j];
-                var url = row['_labkeyurl_'+col.dataIndex];
+        this.queryConfig.successCallback = this.queryConfig.success = null;
 
-                if (!meta.hidden){
-                    var value = row[col.dataIndex];
-
-                    thePanel.add({
-                        fieldLabel: col.header,
-                        xtype: 'displayfield',
-                        value: (url ? '<a href="'+url+'" target="new">'+value+'</a>' : value)
-                    });
-
-                    if (this.config.titleField == col.dataIndex){
-                        thePanel.title += ': '+row[col.dataIndex];
-                    }
-                }
-            }
-
-            target.add(thePanel);
-        };
-
-        config.renderTo.innerHTML = '';        
-        target.render(config.renderTo);
-        return target;
-
+        var theDiv = this.add({tag: 'span'});
+        this.doLayout();
+        new LABKEY.QueryWebPart(this.queryConfig).render(theDiv.id);
+        return;
     }
 
-};
+    for (var j=0;j<data.rows.length;j++){
+        var thePanel = new Ext.Panel({
+            layout: 'form',
+            bodyStyle: 'padding:5px',
+            bodyBorder: false,
+            cls: 'x-labkey-wp',
+            border: false,
+            title: this.panelTitle || 'Details',
+            frame: false,
+            labelWidth: 150,
+            style: 'margin-bottom:20px',
+            defaults: {
+                labelStyle: 'padding: 0px;'
+            }
+        });
 
-Ext.reg('EHR_detailsView', EHR.ext.customPanels.detailsView);
+        for (var i=0;i<data.columnModel.length;i++){
+            var col = data.columnModel[i];
+            var meta = data.metaData.fields[i];
+            var row = data.rows[j];
+            var url = row['_labkeyurl_'+col.dataIndex];
+
+            if (!meta.hidden){
+                var value = row[col.dataIndex];
+
+                thePanel.add({
+                    fieldLabel: col.header,
+                    xtype: 'displayfield',
+                    value: (url ? '<a href="'+url+'" target="new">'+value+'</a>' : value)
+                });
+
+                if (this.titleField == col.dataIndex){
+                    thePanel.title += ': '+row[col.dataIndex];
+                }
+            }
+        }
+
+        this.add(thePanel);
+        this.doLayout()
+    };
+}
+
+});

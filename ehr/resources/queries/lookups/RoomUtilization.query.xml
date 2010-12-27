@@ -1,0 +1,56 @@
+<query xmlns="http://labkey.org/data/xml/query">
+    <metadata>
+        <tables xmlns="http://labkey.org/data/xml">
+            <table tableName="RoomUtilization" tableDbType="NOT_IN_DB">
+                <columns>
+                    <column columnName="room">
+                        <isKeyField>true</isKeyField>
+                        <fk>
+                          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
+                          <fkDbSchema>lookups</fkDbSchema>
+                          <fkTable>rooms</fkTable>
+                          <fkColumnName>room</fkColumnName>
+                        </fk>
+                    </column>
+                    <column columnName="TotalCages">
+                        <columnTitle>Total Cages</columnTitle>
+                        <url>/query/executeQuery.view?
+                            schemaName=lookups&amp;
+                            query.queryName=cages&amp;
+                            query.room~eq=${room}&amp;
+                            query.sort=cage&amp;
+                        </url>
+                    </column>
+                    <column columnName="CagesUsed">
+                        <columnTitle>Cages Used</columnTitle>
+                        <url>/query/executeQuery.view?
+                            schemaName=lookups&amp;
+                            query.queryName=cages&amp;
+                            query.room~eq=${room}&amp;
+                            query.sort=cage&amp;
+                        </url>
+                    </column>
+                    <column columnName="CagesEmpty">
+                        <columnTitle>Cages Empty</columnTitle>
+                        <url>/query/executeQuery.view?
+                            schemaName=lookups&amp;
+                            query.queryName=cages&amp;
+                            query.room~eq=${room}&amp;
+                            query.sort=cage&amp;
+                        </url>
+                    </column>
+                    <column columnName="TotalAnimals">
+                        <columnTitle>Total Animals</columnTitle>
+                        <url>/query/executeQuery.view?
+                            schemaName=study&amp;
+                            query.queryName=Housing&amp;
+                            query.room~eq=${room}&amp;
+                            query.sort=Id&amp;
+                            query.odate~isblank
+                        </url>
+                    </column>
+                </columns>
+            </table>
+        </tables>
+    </metadata>
+</query>

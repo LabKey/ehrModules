@@ -312,7 +312,7 @@ EHR.validation = {
         if(typeof(row.Date) == 'string'){
             row.Date = new java.util.Date(java.util.Date.parse(row.Date));
         }
-
+console.log(row)
         //flag any dates greater than 1 year from now
         var cal1 = new java.util.GregorianCalendar();
         cal1.add(java.util.Calendar.YEAR, 1);

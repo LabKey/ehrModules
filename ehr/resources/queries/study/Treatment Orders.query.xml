@@ -13,7 +13,7 @@
                             <fkColumnName>project</fkColumnName>
                         </fk>
                     </column>
-                    <column columnName="Date">
+                    <column columnName="date">
                         <datatype>timestamp</datatype>
                         <columnTitle>Begin Date</columnTitle>
                         <formatString>yyyy-MM-dd</formatString>
@@ -45,15 +45,54 @@
                           <fkColumnName>key</fkColumnName>
                         </fk>
                     </column>
-                    <column columnName="dateOnly" wrappedColumnName="lsid">
-                        <columnTitle>DateOnly</columnTitle>
-                        <isHidden>true</isHidden>
-                        <isUnselectable>true</isUnselectable>
+                    <!--<column columnName="dateOnly" wrappedColumnName="lsid">-->
+                        <!--<columnTitle>DateOnly</columnTitle>-->
+                        <!--<isHidden>true</isHidden>-->
+                        <!--<isUnselectable>true</isUnselectable>-->
+                        <!--<fk>-->
+                            <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
+                            <!--<fkDbSchema>study</fkDbSchema>-->
+                            <!--<fkTable>treatmentDate</fkTable>-->
+                            <!--<fkColumnName>lsid</fkColumnName>-->
+                        <!--</fk>-->
+                    <!--</column>-->
+                    <column columnName="route">
+                        <!--<columnTitle>Route</columnTitle>-->
                         <fk>
                             <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-                            <fkDbSchema>study</fkDbSchema>
-                            <fkTable>treatmentDate</fkTable>
-                            <fkColumnName>lsid</fkColumnName>
+                            <fkDbSchema>lookups</fkDbSchema>
+                            <fkTable>routes</fkTable>
+                            <fkColumnName>route</fkColumnName>
+                        </fk>
+                    </column>
+                    <column columnName="vunits">
+                        <columnTitle>Volume Units</columnTitle>
+                        <fk>
+                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
+                            <fkDbSchema>lookups</fkDbSchema>
+                            <fkTable>volume_units</fkTable>
+                            <fkColumnName>unit</fkColumnName>
+                        </fk>
+                    </column> 
+                    <column columnName="conc">
+                        <columnTitle>Drug Conc</columnTitle>
+                    </column>
+                    <column columnName="cunits">
+                        <columnTitle>Conc Units</columnTitle>
+                        <fk>
+                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
+                            <fkDbSchema>lookups</fkDbSchema>
+                            <fkTable>drug_units</fkTable>
+                            <fkColumnName>unit</fkColumnName>
+                        </fk>
+                    </column>
+                    <column columnName="units">
+                        <columnTitle>Amount Units</columnTitle>
+                        <fk>
+                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
+                            <fkDbSchema>lookups</fkDbSchema>
+                            <fkTable>dosage_units</fkTable>
+                            <fkColumnName>unit</fkColumnName>
                         </fk>
                     </column>
                 </columns>

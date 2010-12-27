@@ -23,6 +23,6 @@ SELECT
     ELSE null
   END as area
   
-FROM lists.cage c
+FROM lookups.cages c
 
 group by c.room

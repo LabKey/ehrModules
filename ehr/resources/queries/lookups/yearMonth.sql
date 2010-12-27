@@ -5,10 +5,10 @@
  */
 SELECT
   convert((year(curdate()) - i.key), integer) as year,
-  m.monthName,
-  m.key as MonthNum,
+  m.month,
+  m.rowid as MonthNum,
   
-FROM lists.integers i 
-LEFT OUTER JOIN lists.months m
+FROM lookups.integers i
+LEFT OUTER JOIN lookups.months m
 
 WHERE i.key < 5

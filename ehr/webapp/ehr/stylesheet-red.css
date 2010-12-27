@@ -13,6 +13,8 @@
 
 /*dae1e6 -> FBF4EA*/
 
+/* EBF4FF ->FBF4EA*/
+
 /*light red:*/
 
  /*e0e6ea -> FBF4EA*/
@@ -1357,4 +1359,22 @@ table.labkey-button-bar
     border-bottom-width: 2px !important;
     border-bottom-color: #CC9900 !important;
     font-weight: bold
+}
+
+
+fieldset
+{
+    border: #CC9900;
+}
+
+legend
+{
+    border: #CC9900;
+    background-color: #FBF4EA;
+}
+
+.x-fieldset legend {
+    /*color: #990000;*/
+    color: #000000;
+    
 }

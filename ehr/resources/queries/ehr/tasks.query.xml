@@ -1,0 +1,45 @@
+<query xmlns="http://labkey.org/data/xml/query">
+    <metadata>
+        <tables xmlns="http://labkey.org/data/xml">
+            <table tableName="tasks" tableDbType="TABLE">
+                <!--<tableUrl>/EHR/projectDetails.view?key=${project}</tableUrl>-->
+                <titleColumn>RowId</titleColumn>
+                <columns>
+                    <column columnName="type">
+                      <columnTitle>Task Type</columnTitle>
+                      <!--<fk>-->
+                        <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
+                        <!--<fkDbSchema>lookups</fkDbSchema>-->
+                        <!--<fkTable>type_types</fkTable>-->
+                        <!--<fkColumnName>type</fkColumnName>-->
+                      <!--</fk>-->
+                    </column>
+                    <column columnName="AssignedTo">
+                        <columnTitle>Assigned To</columnTitle>
+                        <fk>
+                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
+                            <fkDbSchema>core</fkDbSchema>
+                            <fkTable>users</fkTable>
+                            <fkColumnName>userid</fkColumnName>
+                        </fk>
+                    </column>
+                    <column columnName="DueDate">
+                        <columnTitle>Due Date</columnTitle>
+                    </column>
+                    <column columnName="CreatedBy">
+                        <columnTitle>Created By</columnTitle>
+                    </column>
+                    <column columnName="Created">
+                        <columnTitle>Created</columnTitle>
+                    </column>
+                    <column columnName="ModifiedBy">
+                        <columnTitle>Modified By</columnTitle>
+                    </column>
+                    <column columnName="Modified">
+                        <columnTitle>Modified</columnTitle>
+                    </column>
+                </columns>
+            </table>
+        </tables>
+    </metadata>
+</query>

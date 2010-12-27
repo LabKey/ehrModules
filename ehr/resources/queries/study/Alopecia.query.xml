@@ -12,6 +12,26 @@
                           <fkColumnName>objectid</fkColumnName>
                         </fk>
                     </column>
+                    <column columnName="score">
+                        <datatype>double</datatype>
+                        <columnTitle>Alopecia Score</columnTitle>
+                        <fk>
+                          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
+                          <fkDbSchema>lookups</fkDbSchema>
+                          <fkTable>alopecia_score</fkTable>
+                          <fkColumnName>score</fkColumnName>
+                        </fk>
+                    </column>
+                    <column columnName="cause">
+                        <datatype>varchar</datatype>
+                        <columnTitle>Cause</columnTitle>
+                        <fk>
+                          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
+                          <fkDbSchema>lookups</fkDbSchema>
+                          <fkTable>alopecia_cause</fkTable>
+                          <fkColumnName>cause</fkColumnName>
+                        </fk>
+                    </column>
                 </columns>
             </table>
         </tables>

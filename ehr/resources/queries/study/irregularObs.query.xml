@@ -20,7 +20,7 @@
                         <displayWidth>40</displayWidth>
                         <fk>
                           <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-                          <fkDbSchema>lists</fkDbSchema>
+                          <fkDbSchema>lookups</fkDbSchema>
                           <fkTable>rooms</fkTable>
                           <fkColumnName>Room</fkColumnName>
                         </fk>

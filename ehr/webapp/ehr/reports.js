@@ -37,20 +37,22 @@ EHR.reports.abstract = function(tab, subject){
     var title = (subject ? subject.join("; ") : '');
     tab.getTopToolbar().removeAll();
     
-    var target = tab.add({tag: 'span', html: '', style: 'padding-bottom: 10px'});
+    var target = tab.add({tag: 'div', html: '', style: 'padding-bottom: 10px'});
     tab.doLayout();
+
     var config = {
         schemaName: 'study',
         queryName: 'demographics',
-        title: "Abstract:",
+        title: "Abstract",
         titleField: 'Id',
         renderTo: target.id,
         filterArray: filterArray.removable.concat(filterArray.nonRemovable),
-        multiToGrid: this.multiToGrid
+        multiToGrid: true
     };
     new EHR.ext.customPanels.detailsView(config);
 
-    target = tab.add({tag: 'span', style: 'padding-bottom: 20px'});
+    target = tab.add({tag: 'div', style: 'padding-bottom: 20px'});
+    tab.doLayout();
     var config = Ext.applyIf({
         title: 'Active Assignments' + ": " + title,
         frame: true,
@@ -64,7 +66,8 @@ EHR.reports.abstract = function(tab, subject){
     }, EHR.reports.qwpConfig);
     new LABKEY.QueryWebPart(config).render(target.id);
 
-    target = tab.add({tag: 'span', style: 'padding-bottom: 20px'});
+    target = tab.add({tag: 'div', style: 'padding-bottom: 20px'});
+    tab.doLayout();
     var config = Ext.applyIf({
         title: 'Problem List' + ": " + title,
         frame: true,
@@ -89,6 +92,7 @@ EHR.reports.arrivalDeparture = function(tab, subject){
     var title = (subject ? subject.join("; ") : '');
 
     var target = tab.add({tag: 'span', style: 'padding-bottom: 20px'});
+    tab.doLayout();
     var config = Ext.applyIf({
         title: 'Arrivals' + ": " + title,
         schemaName: 'study',
@@ -102,6 +106,7 @@ EHR.reports.arrivalDeparture = function(tab, subject){
     new LABKEY.QueryWebPart(config).render(target.id);
 
     target = tab.add({tag: 'span', style: 'padding-bottom: 20px'});
+    tab.doLayout();
     var config = Ext.applyIf({
         title: 'Departures' + ": " + title,
         schemaName: 'study',
@@ -127,13 +132,13 @@ EHR.reports.family = function(tab, subject){
     var filterArray = this.getFilterArray(tab, subject);
     var title = (subject ? subject.join("; ") : '');
 
-    var target = tab.add({tag: 'span', html: 'Loading...', style: 'padding-bottom: 20px'});
+    var target = tab.add({tag: 'span', style: 'padding-bottom: 20px'});
     tab.doLayout();    
     var config = {
         schemaName: 'study',
         queryName: 'demographicsFamily',
-        title: "Parents/Grandparents:",
-        titleField: 'id',
+        title: "Parents/Grandparents",
+        titleField: 'Id',
         renderTo: target.id,
         filterArray: filterArray.removable.concat(filterArray.nonRemovable),
         multiToGrid: true
@@ -141,6 +146,7 @@ EHR.reports.family = function(tab, subject){
     new EHR.ext.customPanels.detailsView(config);
 
     target = tab.add({tag: 'span', style: 'padding-bottom: 20px'});
+    tab.doLayout();
     config = Ext.applyIf({
         title: 'Offspring' + ": " + title,
         schemaName: 'study',
@@ -154,6 +160,7 @@ EHR.reports.family = function(tab, subject){
     new LABKEY.QueryWebPart(config).render(target.id);
 
     target = tab.add({tag: 'span', style: 'padding-bottom: 20px'});
+    tab.doLayout();
     config = Ext.applyIf({
         title: 'Siblings' + ": " + title,
         schemaName: 'study',
@@ -287,6 +294,7 @@ EHR.reports.weightGraph = function(tab, subject){
             ));
 
     target = tab.add({tag: 'span', style: 'padding-bottom: 20px'});
+    tab.doLayout();
     config = Ext.applyIf({
         title: 'Weight' + ": " + title,
         schemaName: 'study',
@@ -462,7 +470,7 @@ EHR.reports.immunology = function(tab, subject){
 };
 
 
-EHR.reports.viralLoads = function(tab, subject){
+EHR.reports.ViralLoads = function(tab, subject){
 
     for (var i=0;i<subject.length;i++){
         var filterArray = this.getFilterArray(tab, [subject[i]]);
@@ -523,6 +531,7 @@ EHR.reports.viralLoads = function(tab, subject){
     }
 
     var target = tab.add({tag: 'span', style: 'padding-bottom: 20px'});
+    tab.doLayout();
     var filterArray = this.getFilterArray(tab, subject);
     var config = Ext.applyIf({
         title: 'Viral Load' + ": " + title,
@@ -548,11 +557,18 @@ EHR.reports.irregularObs = function(tab, subject){
     var target = tab.add({tag: 'span', style: 'padding-bottom: 20px'});
     tab.doLayout();
 
+    var queryName;
+    if(tab.filters._inputType == 'renderRoomCage'){
+        queryName = 'irregularObsByLocation';
+    }
+    else {
+        queryName = 'irregularObsById';
+    }
     var config = Ext.applyIf({
         schemaName: 'study',
-        queryName: 'irregularObs',
+        queryName: queryName,
         //viewName: tab.viewName,
-        title: "Irregular Observations:",
+        title: "Irregular Observations: "+title,
         titleField: 'Id',
         filters: filterArray.nonRemovable,
         removeableFilters: filterArray.removable,
@@ -562,6 +578,35 @@ EHR.reports.irregularObs = function(tab, subject){
 
 }
 
+EHR.reports.irregularObsTreatment = function(tab, subject){
+    var filterArray = this.getFilterArray(tab, subject);
+
+    var title = (subject ? subject.join("; ") : '');
+    this.addHeader(tab);
+
+    var target = tab.add({tag: 'span', style: 'padding-bottom: 20px'});
+    tab.doLayout();
+
+    var queryName;
+    if(tab.filters._inputType == 'renderRoomCage'){
+        queryName = 'irregularObsTreatmentByLocation';
+    }
+    else {
+        queryName = 'irregularObsTreatmentById';
+    }
+    var config = Ext.applyIf({
+        schemaName: 'study',
+        queryName: queryName,
+        //viewName: tab.viewName,
+        title: "Obs/Treatments: "+title,
+        titleField: 'Id',
+        filters: filterArray.nonRemovable,
+        removeableFilters: filterArray.removable,
+        scope: this
+    }, EHR.reports.qwpConfig);
+    new LABKEY.QueryWebPart(config).render(target.id);
+
+}
 
 EHR.reports.urinalysisResults = function(tab, subject){
 

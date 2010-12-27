@@ -6026,7 +6026,7 @@
                 <nullable>false</nullable>
                 <propertyURI>http://cpas.labkey.com/Study#VisitDate</propertyURI>
             </column>
-            <column columnName="bcs">
+            <column columnName="score">
                 <datatype>integer</datatype>
                 <columnTitle>BCS</columnTitle>
             </column>

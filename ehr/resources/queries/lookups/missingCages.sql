@@ -4,10 +4,13 @@
  * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
  */
 SELECT
+d.room,
+d.cage
 
-c.room,
-c.cage
+FROM study.demographics d
 
-FROM lists.cage c
+FULL JOIN lookups.cage c
 
-group by c.room, c.cage
+WHERE c.room is null
+
+group by d.room, d.cage

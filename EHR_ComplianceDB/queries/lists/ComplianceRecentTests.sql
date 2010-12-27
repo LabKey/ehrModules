@@ -9,6 +9,7 @@ SELECT
   rn.ExpirePeriod,
   T1.MostRecentDate,
 
+  --the following throws errors on my laptop
   --we calculate the time since that test in months
   --age_in_months(T1.MostRecentDate, curdate()) AS TimeSinceTest,
 
@@ -81,11 +82,11 @@ WHERE
       THEN false
     WHEN rn.Required IS TRUE
       THEN TRUE
-    WHEN (e.Category.Barrier IS TRUE AND rn.Access IS TRUE)
+    WHEN (e.Barrier IS TRUE AND rn.Access IS TRUE)
       THEN TRUE
-    WHEN (e.Category.Animals IS TRUE AND rn.Animals IS TRUE)
+    WHEN (e.Animals IS TRUE AND rn.Animals IS TRUE)
       THEN TRUE
-    WHEN (e.Category.Tissue IS TRUE AND rn.Tissues IS TRUE)
+    WHEN (e.Tissue IS TRUE AND rn.Tissues IS TRUE)
       THEN TRUE
     --if a requirement is mandatory for a given employee category/unit and this employee is one, it's required
     WHEN (rc.Requirement IS NOT NULL)

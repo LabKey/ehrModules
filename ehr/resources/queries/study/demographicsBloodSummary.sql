@@ -6,7 +6,7 @@
 SELECT
   b.lsid,
   b.id,
-  b.date,
+  --b.date,
   b.lastDate as MostRecentWeightDate,
   b.weight as MostRecentWeight,
   BloodLast30,
@@ -15,27 +15,27 @@ SELECT
 
 from (
 SELECT
-  b.lsid,
-  b.id,
-  b.date,
+  d.lsid,
+  d.id,
   lastWeight.date as lastDate,
   (
     SELECT AVG(w.weight) AS _expr
     FROM study.weight w
-    WHERE w.id=b.id AND w.date=lastWeight.date
+    WHERE w.id=d.id AND w.date=lastWeight.date
   ) AS weight,
   (
-    SELECT SUM(draws.quantity) AS _expr
-    FROM study.blood draws
-    WHERE draws.id=b.id AND
-        draws.date BETWEEN TIMESTAMPADD('SQL_TSI_DAY', -30, b.date) AND b.date
+    SELECT
+    SUM(bd.quantity) AS _expr
+    FROM study.blood bd
+    WHERE bd.id=d.id AND
+        bd.date BETWEEN TIMESTAMPADD('SQL_TSI_DAY', -30, now()) AND now()
   ) AS BloodLast30
 
 FROM
-    study.demographics b LEFT OUTER JOIN
-    (SELECT w.id, MAX(date) as date FROM study.weight w GROUP BY w.id) lastWeight ON b.id = lastWeight.id
+    study.demographics d LEFT OUTER JOIN
+    (SELECT w.id, MAX(date) as date FROM study.weight w GROUP BY w.id) lastWeight ON d.id = lastWeight.id
 
 -- WHERE b.date >= TIMESTAMPADD('SQL_TSI_DAY', -30, now())
-WHERE b.id.status.status = 'Alive'
+WHERE d.id.status.status = 'Alive'
 
 ) b

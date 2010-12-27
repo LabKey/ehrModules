@@ -5,7 +5,7 @@ LABKEY.requiresScript("/WNPRC_Main/navMenu.js");
 
 
 Ext.onReady(function(){
-    var theDiv = document.getElementById('ehrDataEntry');
+//    var theDiv = document.getElementById('ehrDataEntry');
 
     new LABKEY.QueryWebPart({
         title: 'Active Forms:',
@@ -14,21 +14,105 @@ Ext.onReady(function(){
         viewName: 'Active Forms',
         allowChooseQuery: false,
         allowChooseView: true,
-        showInsertNewButton: false,
-        showDeleteButton: false,
         showDetailsColumn: true,
         showUpdateColumn: false,
         showRecordSelectors: true,
-        buttonBarPosition: 'top',
+//        buttonBarPosition: 'top',
         scope: this,
         errorCallback: EHR.UTILITIES.onError
-     }).render('ehrDataEntry');
-});
+     }).render('ehrEncounters');
 
+    new LABKEY.QueryWebPart({
+        title: 'Active Tasks:',
+        schemaName: 'ehr',
+        queryName: 'Tasks',
+        //viewName: 'Active Forms',
+        allowChooseQuery: false,
+        allowChooseView: true,
+        showDetailsColumn: true,
+        showUpdateColumn: false,
+        showRecordSelectors: true,
+//        buttonBarPosition: 'top',
+        scope: this,
+        errorCallback: EHR.UTILITIES.onError
+     }).render('ehrTasks');
+
+
+});
 </script>
 <body>
 
-<div id="ehrDataEntry"/>
+<div id="ehrEncounters"></div>
 
+<p/>
+
+<div id="ehrTasks"></div>
+
+<p/>
+
+
+<div>Below are the forms that need to be generated</div>
+
+<h3>Clinical:</h3>
+<ul>
+    <li>Create New Project</li>
+    <li>Request/Approve Assignment</li>
+    <li>Update Abstract</li>
+    <li>Request/Approve Blood Draws</li>
+    <li>Enter Group Anesthesia</li>
+    <li>Infant Care Report</li>
+    <li><a href="<%=contextPath%>/ehr/WNPRC/EHR/insertTask.view?schemaName=study&queryName=Irregular%20Observations">Enter Irregular Obs</a></li>
+    <li>Enter MPR</li>
+    <li>Enter TB Test Results</li>
+    <li>Enter Weights</li>
+    <li>Enter Problem</li>
+    <li>Enter Note</li>
+    <li>Enter Clinical Remark</li>
+    <li><a href="<%=contextPath%>/ehr/WNPRC/EHR/clinicalEncounter.view?encounterType=Physical Exam">Enter Physical Exam</a></li>
+    <li>Enter Surgery</li>
+
+</ul>
+
+<h3>Colony Records:</h3>
+<ul>
+
+    <li>Manage Pending Records</li>
+    <li>Enter Error Report</li>
+    <li>Enter Death Record / Notification</li>
+    <li>Enter Arrival</li>
+    <li>Enter Departure</li>
+    <li>Enter Birth Record</li>
+    <li>Request/Approve Housing Change</li>
+
+</ul>
+
+<h3>Behavior / Colony Management:</h3>
+<ul>
+    <li>Enter Behavior Remark</li>
+    <li>Enter Menses Observation</li>
+    <li>Enter Pair Test Record</li>
+    <li>Enter Enrichment Record</li>
+    <li>Enter Food Intake Form</li>
+
+</ul>
+
+<h3>Pathology / ClinPath:</h3>
+<ul>
+    <li>Request Clinpath Services</li>
+    <li>Request Tissue</li>
+    <li>Request Necropsy</li>
+    <li>Request Biopsy</li>
+
+    <li>Enter Necropsy Report</li>
+    <li>Enter Biopsy Report</li>
+
+    <li>Enter Chemistry</li>
+    <li>Enter Virology</li>
+    <li>Enter Hematology</li>
+    <li>Enter Hematology</li>
+    <li>Request Tissue</li>
+
+
+</ul>
 </body>
 </html>

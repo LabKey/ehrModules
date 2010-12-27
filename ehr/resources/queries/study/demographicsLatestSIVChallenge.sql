@@ -11,12 +11,12 @@ max(d.date) as Date,
 
 min(d.WeeksSinceChallenge) as WeeksSinceChallenge,
 
-d.ChallengeType,
+d.Challenge_Type,
 
 d.pathogen,
 
 FROM study.demographicsViralChallenge d
 
-WHERE d.pathogen = 'SIV' AND d.challengeType = 'Challenge'
+WHERE d.pathogen = 'SIV' AND d.challenge_Type = 'Challenge'
 
-GROUP BY d.Id, d.pathogen, d.challengeType
+GROUP BY d.Id, d.pathogen, d.challenge_Type

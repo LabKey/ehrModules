@@ -22,8 +22,7 @@ o.tlocation,
 o.otherbehavior,
 o.remark,
 o.dataset,
-o.description,
-null as note
+o.description
 
 from study.obs o
 -- LEFT JOIN study.housing h
@@ -59,8 +58,7 @@ null as tlocation,
 null as otherbehavior,
 c.note as Remark,
 null as dataset,
-'Cage Observation' as description,
-null as note
+'Cage Observation' as description
 FROM lists.cagenotes c
 
 

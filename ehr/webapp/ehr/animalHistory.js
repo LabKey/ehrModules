@@ -9,7 +9,7 @@ LABKEY.requiresScript("/ehr/transposeRows.js");
 LABKEY.requiresScript("/ehr/utilities.js");
 LABKEY.requiresScript("/ehr/reports.js");
 LABKEY.requiresScript("/ehr/ext.ux.datetimefield.js");
-LABKEY.requiresScript("/vis/ChartComponent.js");
+//LABKEY.requiresScript("/vis/visualizationWizard.js");
 
 EHR.ext.customPanels.SingleAnimalReport = Ext.extend(Ext.Panel, {
 
@@ -145,11 +145,11 @@ EHR.ext.customPanels.SingleAnimalReport = Ext.extend(Ext.Panel, {
 
 
         this.allReports = new LABKEY.ext.Store({
-            schemaName: 'lists',
+            schemaName: 'lookups',
             queryName: 'reports',
-            filterArray: [LABKEY.Filter.create('Visible', true, LABKEY.Filter.Types.EQUAL)],
-            //, LABKEY.Filter.create('ReportCategory', 'AnimalReport', LABKEY.Filter.Types.EQUAL)
-            sort: 'Category,ReportTitle',
+            filterArray: [LABKEY.Filter.create('visible', true, LABKEY.Filter.Types.EQUAL)],
+//            , LABKEY.Filter.create('ReportCategory', 'AnimalReport', LABKEY.Filter.Types.EQUAL)
+            sort: 'category,reporttitle',
             autoLoad: true,
 //            listeners: {
 //                scope: this,
@@ -274,11 +274,12 @@ EHR.ext.customPanels.SingleAnimalReport = Ext.extend(Ext.Panel, {
             title: 'Search By Project/Protocol',
             layout: 'form',
 
-            items: [new EHR.ext.customFields.LabKeyCombo({
+            items: [{
                 emptyText:''
+                ,xtype: 'combo'
                 ,fieldLabel: 'Project'
                 ,ref: 'project'
-                ,xtype: 'combo'
+                ,triggerAction: 'all'
                 ,displayField:'project'
                 ,valueField: 'project'
                 ,typeAhead: true
@@ -292,8 +293,7 @@ EHR.ext.customPanels.SingleAnimalReport = Ext.extend(Ext.Panel, {
                     sort: 'project',
                     autoLoad: true
                 })
-            }),
-                new EHR.ext.customFields.LabKeyCombo({
+            },{
                 emptyText:''
                 ,fieldLabel: 'Protocol'
                 ,ref: 'protocol'
@@ -303,6 +303,7 @@ EHR.ext.customPanels.SingleAnimalReport = Ext.extend(Ext.Panel, {
                 ,typeAhead: true
                 ,width: 150
                 ,editable: true
+                ,triggerAction: 'all'
                 ,store: new LABKEY.ext.Store({
                     containerPath: 'WNPRC/EHR/',
                     schemaName: 'lists',
@@ -311,7 +312,7 @@ EHR.ext.customPanels.SingleAnimalReport = Ext.extend(Ext.Panel, {
                     sort: 'protocol',
                     autoLoad: true
                 })
-            })],
+            }],
             buttons: [{
                 text:'Submit',
                 disabled:false,
@@ -343,7 +344,7 @@ EHR.ext.customPanels.SingleAnimalReport = Ext.extend(Ext.Panel, {
             title: 'Search By Room/Cage',
             layout: 'form',
 
-            items: [new EHR.ext.customFields.LabKeyCombo({
+            items: [{
                 emptyText:''
                 ,fieldLabel: 'Room'
                 ,ref: 'room'
@@ -351,16 +352,19 @@ EHR.ext.customPanels.SingleAnimalReport = Ext.extend(Ext.Panel, {
                 ,displayField:'room'
                 ,valueField: 'room'
                 ,typeAhead: true
+                ,triggerAction: 'all'
                 ,width: 150
                 ,editable: true
                 ,store: new LABKEY.ext.Store({
                     containerPath: 'WNPRC/EHR/',
-                    schemaName: 'lists',
+                    schemaName: 'lookups',
+//                    queryName: 'RoomUtilization',
                     queryName: 'rooms',
                     sort: 'room',
+//                    filterArray: [LABKEY.Filter.create('TotalAnimals', 0, LABKEY.Filter.Types.NOT_EQUAL)],
                     autoLoad: true
                 })
-            }),{
+            },{
                 xtype: 'numberfield',
                 fieldLabel: 'Cage',
                 ref: 'cage'
@@ -421,7 +425,7 @@ EHR.ext.customPanels.SingleAnimalReport = Ext.extend(Ext.Panel, {
         });
 
         roomPanel.add({tag: 'div', html: 'Area:'});
-        roomPanel.add(new EHR.ext.customFields.LabKeyCombo({
+        roomPanel.add({
             xtype: 'combo'
             ,emptyText:''
             ,fieldLabel: 'Area'
@@ -440,7 +444,7 @@ EHR.ext.customPanels.SingleAnimalReport = Ext.extend(Ext.Panel, {
             ref: '../../../../areaField',
             width: 165
 
-        }));        
+        });
         roomPanel.add({tag: 'div', html: 'Room:'});
         roomPanel.add({
             xtype: 'textfield',
@@ -551,46 +555,16 @@ EHR.ext.customPanels.SingleAnimalReport = Ext.extend(Ext.Panel, {
 
         target.add(dateButtons);
     },
-//    renderReportRow: function(){
-//        //the report row
-//        this.add({html: 'Choose Report:'});
-//
-//        var reportStore = new LABKEY.ext.Store({
-//            schemaName: 'lists',
-//            queryName: 'reports',
-//            filterArray: [LABKEY.Filter.create('Visible', true, LABKEY.Filter.Types.EQUAL), LABKEY.Filter.create('ReportCategory', 'AnimalReport', LABKEY.Filter.Types.EQUAL)],
-//            sort: 'ReportName',
-//            autoLoad: true
-//        });
-//
-//        var comboConfig = {
-//            emptyText:'Select a report...'
-//            ,xtype: 'LabKeyCombo'
-//            ,displayField:'ReportName'
-//            ,id:'report'
-//            ,store: reportStore
-//        };
-//
-//        if (LABKEY.ActionURL.getParameter('report') && LABKEY.ActionURL.getParameter('report') != ''){
-//            comboConfig.value = LABKEY.ActionURL.getParameter('report')
-//        }
-//        else {
-//            comboConfig.value = 1;
-//        }
-//
-//        this.reportSelector = this.add(comboConfig);
-//        this.add({});
-//
-//    },
-    renderCombineSubjects: function(){
-        this.add({html: 'Combine Subjects Into Single Table:'});
-        this.combineSubj = this.add(new Ext.form.Checkbox());
 
-        if (LABKEY.ActionURL.getParameter('combineSubj')){
-            this.combineSubj.setValue(true);
-        }
-        this.add({});
-    },
+//    renderCombineSubjects: function(){
+//        this.add({html: 'Combine Subjects Into Single Table:'});
+//        this.combineSubj = this.add(new Ext.form.Checkbox());
+//
+//        if (LABKEY.ActionURL.getParameter('combineSubj')){
+//            this.combineSubj.setValue(true);
+//        }
+//        this.add({});
+//    },
     loadProject: function(o){
         var project = this.projectWin.project.getValue();
         var protocol = this.projectWin.protocol.getValue();
@@ -941,7 +915,7 @@ EHR.ext.customPanels.SingleAnimalReport = Ext.extend(Ext.Panel, {
 //        var selectedReport = this.reportSelector.getValue();
 //        selectedReport = reportStore.getById(selectedReport);
 //
-//        this.reportName = selectedReport.get("QueryName");
+//        this.reportName = selectedReport.get("queryname");
 //
 //        this._renderReport(selectedReport, subject);
 //
@@ -950,7 +924,7 @@ EHR.ext.customPanels.SingleAnimalReport = Ext.extend(Ext.Panel, {
     _renderReport: function(tab, subject)
     {
         Ext.Ajax.timeout = 3000000; //in milliseconds
-        switch (tab.rowData.get("ReportType"))
+        switch (tab.rowData.get("reporttype"))
         {
             case 'query':
                 this.loadQuery(tab, subject);
@@ -998,7 +972,7 @@ EHR.ext.customPanels.SingleAnimalReport = Ext.extend(Ext.Panel, {
         }
 
         if(area){
-            if(rowData.get("QueryHasLocation")){
+            if(rowData.get("queryhaslocation")){
                 filterArray.nonRemovable.push(LABKEY.Filter.create('room/area', area, LABKEY.Filter.Types.STARTS_WITH));
             }
             else {
@@ -1007,7 +981,7 @@ EHR.ext.customPanels.SingleAnimalReport = Ext.extend(Ext.Panel, {
         }
 
         if(room){
-            if(rowData.get("QueryHasLocation")){
+            if(rowData.get("queryhaslocation")){
                 filterArray.nonRemovable.push(LABKEY.Filter.create('room', room, LABKEY.Filter.Types.STARTS_WITH));
             }
             else {
@@ -1017,7 +991,7 @@ EHR.ext.customPanels.SingleAnimalReport = Ext.extend(Ext.Panel, {
         }
 
         if(cage){
-            if(rowData.get("QueryHasLocation")){
+            if(rowData.get("queryhaslocation")){
                 filterArray.nonRemovable.push(LABKEY.Filter.create('cage', cage, LABKEY.Filter.Types.STARTS_WITH));
             }
             else {
@@ -1026,9 +1000,9 @@ EHR.ext.customPanels.SingleAnimalReport = Ext.extend(Ext.Panel, {
         }
 
         //we handle date
-        if (rowData.get("DateFieldName") && rowData.get("TodayOnly"))
+        if (rowData.get("datefieldname") && rowData.get("todayonly"))
         {
-            filterArray.removable.push(LABKEY.Filter.create(rowData.get("DateFieldName"), (new Date()).format('Y-m-d'), LABKEY.Filter.Types.DATE_EQUAL));
+            filterArray.removable.push(LABKEY.Filter.create(rowData.get("datefieldname"), (new Date()).format('Y-m-d'), LABKEY.Filter.Types.DATE_EQUAL));
         }
 
         tab.filterArray = filterArray;
@@ -1064,9 +1038,9 @@ EHR.ext.customPanels.SingleAnimalReport = Ext.extend(Ext.Panel, {
         var title = this.makeTitle(tab, subject);
 
         var queryConfig = {
-            title: tab.rowData.get("ReportTitle") + ": " + title,
-            schemaName: tab.rowData.get("Schema"),
-            queryName: tab.rowData.get("QueryName"),
+            title: tab.rowData.get("reporttitle") + ": " + title,
+            schemaName: tab.rowData.get("schemaname"),
+            queryName: tab.rowData.get("queryname"),
             allowChooseQuery: false,
             allowChooseView: true,
             showInsertNewButton: false,
@@ -1098,14 +1072,14 @@ EHR.ext.customPanels.SingleAnimalReport = Ext.extend(Ext.Panel, {
             scope: this
         };
 
-        if (tab.rowData.get("View"))
+        if (tab.rowData.get("viewname"))
         {
-            queryConfig.viewName = tab.rowData.get("View")
+            queryConfig.viewName = tab.rowData.get("viewname")
         }
 
-        if (tab.rowData.get("ContainerPath"))
+        if (tab.rowData.get("containerpath"))
         {
-            queryConfig.containerPath = tab.rowData.get("ContainerPath");
+            queryConfig.containerPath = tab.rowData.get("containerpath");
         }
 
         tab.QWP = new LABKEY.QueryWebPart(queryConfig);
@@ -1123,10 +1097,10 @@ EHR.ext.customPanels.SingleAnimalReport = Ext.extend(Ext.Panel, {
             partName: 'Report',
             renderTo: target.id,
             partConfig: {
-                title: tab.rowData.get("ReportTitle") + ": " + title,
-                schemaName: tab.rowData.get("Schema"),
-                reportId : tab.rowData.get("Report"),
-                'query.queryName': tab.rowData.get("QueryName"),
+                title: tab.rowData.get("reporttitle") + ": " + title,
+                schemaName: tab.rowData.get("schemaname"),
+                reportId : tab.rowData.get("report"),
+                'query.queryName': tab.rowData.get("queryname"),
                 'query.Id~in': subject,
                 '_union.Id~in': subject,
                 '_select.Id~in': subject
@@ -1142,14 +1116,14 @@ EHR.ext.customPanels.SingleAnimalReport = Ext.extend(Ext.Panel, {
         };
 
 
-        if (tab.rowData.get("ContainerPath"))
+        if (tab.rowData.get("containerpath"))
         {
-            queryConfig.containerPath = tab.rowData.get("ContainerPath");
+            queryConfig.containerPath = tab.rowData.get("containerpath");
         }
 
-        if (tab.rowData.get("View"))
+        if (tab.rowData.get("viewname"))
         {
-            queryConfig.partConfig.showSection = tab.rowData.get("View");
+            queryConfig.partConfig.showSection = tab.rowData.get("viewname");
         }
 
         new LABKEY.WebPart(queryConfig).render();
@@ -1158,7 +1132,7 @@ EHR.ext.customPanels.SingleAnimalReport = Ext.extend(Ext.Panel, {
 
     loadJS: function(tab, subject, target)
     {
-        EHR.reports[tab.rowData.get('QueryName')].call(this, tab, subject, target);
+        EHR.reports[tab.rowData.get('queryname')].call(this, tab, subject, target);
     },
 
     loadGrid: function(tab, subject, target)
@@ -1170,20 +1144,20 @@ EHR.ext.customPanels.SingleAnimalReport = Ext.extend(Ext.Panel, {
         var title = (subject ? subject.join("; ") : '');
 
         var store = new LABKEY.ext.Store({
-            schemaName: tab.rowData.get("Schema"),
-            queryName: tab.rowData.get("QueryName"),
+            schemaName: tab.rowData.get("schemaname"),
+            queryName: tab.rowData.get("queryname"),
             filterArray: filterArray,
             sort: 'Id'
         });
 
-        if (tab.rowData.get("View"))
+        if (tab.rowData.get("viewname"))
         {
-            store.viewName = tab.rowData.get("View")
+            store.viewName = tab.rowData.get("viewname")
         }
 
         var grid = new LABKEY.ext.EditorGridPanel({
             store: store
-            ,title: tab.rowData.get("ReportTitle") + ": " + title
+            ,title: tab.rowData.get("reporttitle") + ": " + title
             ,width: 1000
             ,autoHeight: true
             ,editable: false
@@ -1213,10 +1187,10 @@ EHR.ext.customPanels.SingleAnimalReport = Ext.extend(Ext.Panel, {
         this.params.rowData = rowData;
 
         var WebPartRenderer = new LABKEY.WebPart({
-            partName: tab.rowData.get("QueryName"),
-            title: tab.rowData.get("ReportTitle") + ": " + title,
+            partName: tab.rowData.get("queryname"),
+            title: tab.rowData.get("reporttitle") + ": " + title,
             renderTo: target,
-            config: tab.rowData.get("Config"),
+//            config: tab.rowData.get("config"),
             successCallback: this.endMsg,
             errorCallback: function(error){
                 target.innerHTML = 'ERROR: ' + error.exception + '<br>';
@@ -1232,24 +1206,24 @@ EHR.ext.customPanels.SingleAnimalReport = Ext.extend(Ext.Panel, {
     {
         var filterArray = this.getFilterArray(tab, subject);
         filterArray = filterArray.nonRemovable.concat(filterArray.removable);
-        var target = target || tab.add({tag: 'span', html: 'Loading...', cls: 'loading-indicator'});
+        target = target || tab.add({tag: 'span', html: 'Loading...', cls: 'loading-indicator'});
         var title = (subject ? subject.join("; ") : '');
 
         tab.doLayout();
         
         var config = {
-            schemaName: tab.rowData.get("Schema"),
-            queryName: tab.rowData.get("QueryName"),
-            title: tab.rowData.get("ReportTitle") + ":",
+            schemaName: tab.rowData.get("schemaname"),
+            queryName: tab.rowData.get("queryname"),
+            title: tab.rowData.get("reporttitle") + ":",
             titleField: 'Id',
             renderTo: target.id,
             filterArray: filterArray,
             multiToGrid: this.multiToGrid
         };
 
-        if (tab.rowData.get("View"))
+        if (tab.rowData.get("viewname"))
         {
-            config.viewName = tab.rowData.get("View");
+            config.viewName = tab.rowData.get("viewname");
         }
 
         new EHR.ext.customPanels.detailsView(config);
@@ -1266,15 +1240,15 @@ EHR.ext.customPanels.SingleAnimalReport = Ext.extend(Ext.Panel, {
         var title = (subject ? subject.join("; ") : '');
 
         var store = new LABKEY.ext.Store({
-            schemaName: tab.rowData.get("Schema"),
-            queryName: tab.rowData.get("QueryName"),
+            schemaName: tab.rowData.get("schemaname"),
+            queryName: tab.rowData.get("queryname"),
             filterArray: filterArray,
             sort: 'Id',
             autoLoad: true
         });
         
         var chart = new Ext.Panel({
-            title: tab.rowData.get("ReportTitle") + ": " + title,
+            title: tab.rowData.get("reporttitle") + ": " + title,
             renderTo: target.id,
             //layout:'vbox',
             items: [
@@ -1298,55 +1272,78 @@ EHR.ext.customPanels.SingleAnimalReport = Ext.extend(Ext.Panel, {
     {
         var filterArray = this.getFilterArray(tab, subject);
         filterArray = filterArray.nonRemovable.concat(filterArray.removable);
-        var target = target || tab.add({tag: 'span', html: 'Loading...', cls: 'loading-indicator'});
+        var target = target || tab.add({tag: 'span', html: 'Loading...'});
         var title = (subject ? subject.join("; ") : '');
 
         var store = LABKEY.Query.selectRows({
-            schemaName: tab.rowData.get("Schema"),
-            queryName: tab.rowData.get("QueryName"),
+            schemaName: tab.rowData.get("schemaname"),
+            queryName: tab.rowData.get("queryname"),
             filterArray: filterArray,
             successCallback: makeChart,
             scope: this,
-            sort: 'Id',
+            sort: 'date',
             autoLoad: true
         });
 
+//        var store = new LABKEY.ext.Store({
+//            schemaName: tab.rowData.get("schemaname"),
+//            queryName: tab.rowData.get("queryname"),
+//            filterArray: filterArray,
+//            listeners: {
+//                load: makeChart,
+//                scope: this
+//            },
+//            //scope: this,
+//            sort: 'date',
+//            autoLoad: true
+//        });
+        
         var rows;
         function makeChart(queryResults){
-            rows = queryResults.rows;
             var cols = (tab.rowData.get("columns")).split(';');
+
+            //selectRows() returns dates as strings.  convert dates to date objects.  seems very ugly
+            Ext.each(cols, function(c){
+                Ext.each(queryResults.metaData.fields, function(f){
+                    if(f.name == c && f.jsonType == 'date'){
+                        Ext.each(queryResults.rows, function(r){
+                            r[c] = new Date(r[c]);
+                        });
+                    }
+                }, this);
+            }, this);
+
             var chart = new LABKEY.vis.LineChart({
-               renderTo:target,
-               yAxis:{scale:'log', caption:'Viral Load'},
+               yAxis:{caption:'Viral Load'}, //scale:'log', 
                xAxis:{caption:'Week'},
-               series: generateSeries(rows, "Id", {
+               renderTo: target.id,
+               main: {},
+               series: generateSeries(store, "Id", {
                    xProperty: cols[0],
-                   yProperty: cols[1]
-//                   dotShape: function (d) {
-//                       return d.virLdModifier != "Equals" ? "triangle" : "circle"
-//                   }
+                   yProperty: cols[1],
+                   dotShape: 'circle'
                })
            });
 
-           function generateSeries(rows, seriesCol, seriesProps)
+           function generateSeries(store, seriesCol, seriesProps)
            {
                var seriesMap = {};
                var ret = [];
-               for (var i = 0; i < rows.length; i++)
+               store.each(function(row)
                {
-                   var row = rows[i];
-                   var ser = seriesMap[row[seriesCol]];
+                   var ser = seriesMap[row.get(seriesCol)];
                    if (null == ser) {
-                       ser = {caption: row[seriesCol], data:[]};
+                       ser = {caption: row.get(seriesCol), data:[]};
                        for (var p in seriesProps)
                            ser[p] = seriesProps[p];
-                       seriesMap[row[seriesCol]] = ser;
+                       seriesMap[row.get(seriesCol)] = ser;
                        ret.push(ser);
                    }
 
-                   if (null != row[seriesProps.xProperty] && null !=row[seriesProps.yProperty])
+                   if (null != row.get(seriesProps.xProperty) && null !=row.get(seriesProps.yProperty))
                        ser.data.push(row);
-               }
+               }, this);
+
                return ret;
            }
         }
@@ -1357,12 +1354,12 @@ EHR.ext.customPanels.SingleAnimalReport = Ext.extend(Ext.Panel, {
 
 //        //log using analytics
 //        var loadTime = new Date().getTime() - this.startTime;
-//        pageTracker._trackEvent('AnimalReport', 'LoadTime', this.reportName, loadTime);
+//        pageTracker._trackEvent('AnimalReport', 'LoadTime', this.reportname, loadTime);
     },
 
     createTabPanel: function(){
         this.allReports.each(function(c){
-            var category = c.get('Category');
+            var category = c.get('category');
 
             //create top-level tab
             if(!this.tabPanel[category]){
@@ -1387,12 +1384,12 @@ EHR.ext.customPanels.SingleAnimalReport = Ext.extend(Ext.Panel, {
             }
 
             var subTab = this.tabPanel[category];
-            var report = c.get('ReportName');
+            var report = c.get('reportname');
 
             //create 2nd tier tab
             if(!subTab[report]){
                 var theTab = subTab.add(new Ext.Panel({
-                    title: c.get('ReportTitle'),
+                    title: c.get('reporttitle'),
                     ref: report,
                     rowData: c,
                     autoHeight: true,
@@ -1408,6 +1405,7 @@ EHR.ext.customPanels.SingleAnimalReport = Ext.extend(Ext.Panel, {
                     subjectArray: [],
                     filterArray: {},
                     tbar: new Ext.Toolbar({style: 'padding-left:10px'}),
+                    combineSubj: true,
                     listeners: {
                         scope: this,
                         activate: function(t){
@@ -1426,7 +1424,7 @@ EHR.ext.customPanels.SingleAnimalReport = Ext.extend(Ext.Panel, {
                     this.activeReport = theTab;
                 }
 
-                this.reports[c.get('ReportName')] = theTab;
+                this.reports[c.get('reportname')] = theTab;
 
             }
 
@@ -1451,7 +1449,7 @@ EHR.ext.customPanels.SingleAnimalReport = Ext.extend(Ext.Panel, {
 
     },
     loadTab: function(o){
-        o.combineSubj = o.combineSubj || false;
+        o.combineSubj = o.combineSubj;
         
         this.setFilters(o);
 
@@ -1495,7 +1493,7 @@ EHR.ext.customPanels.SingleAnimalReport = Ext.extend(Ext.Panel, {
             //startDate : (this.startDateField && this.startDateField.getValue()) ? this.startDateField.getValue().format('Y-m-d') : null,
             //endDate : (this.endDateField && this.endDateField.getValue()) ? this.endDateField.getValue().format('Y-m-d'): null,
             combineSubj : tab.combineSubj,
-            activeReport: tab.rowData.get('ReportName')
+            activeReport: tab.rowData.get('reportname')
         };
 
         this.processSubj();

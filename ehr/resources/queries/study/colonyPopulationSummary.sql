@@ -20,7 +20,7 @@ GROUP BY d.id.species.species
 
 UNION ALL
 (
-SELECT 'Total' as Species, count(*) as AnimalCount
+SELECT null as Species, count(*) as AnimalCount
 
 FROM study.Demographics d2
 

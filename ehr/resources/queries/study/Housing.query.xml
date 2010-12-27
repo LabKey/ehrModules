@@ -49,8 +49,8 @@
                         <columnTitle>Condition</columnTitle>
                         <fk>
                             <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-                            <fkDbSchema>lists</fkDbSchema>
-                            <fkTable>condition</fkTable>
+                            <fkDbSchema>lookups</fkDbSchema>
+                            <fkTable>condition_codes</fkTable>
                             <fkColumnName>Code</fkColumnName>
                         </fk>
                     </column>

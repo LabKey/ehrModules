@@ -101,6 +101,11 @@
                 <property name="columnTitle" value="Viral Status"/>
             </properties>
         </column>
+        <column name="activeAssignments/ActiveAssignments">
+            <properties>
+                <property name="columnTitle" value="Active Assignments"/>
+            </properties>
+        </column>        
     </columns>
     <sorts>
         <sort column="id" descending="false"/>

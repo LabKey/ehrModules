@@ -20,4 +20,4 @@ SELECT
 
 FROM study.Demographics d
 
--- LEFT JOIN lists.species s ON (d.id ~* s.prefix)
+-- LEFT JOIN lookups.species s ON (d.id ~* s.prefix)

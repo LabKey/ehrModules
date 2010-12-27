@@ -4,17 +4,18 @@
  * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
  */
 SELECT
+  c.roomcage,
   c.room,
   c.cage,
-  count(DISTINCT h.id) as Animals
+  count(DISTINCT h.id) as TotalAnimals
 
-FROM lists.cages c
+FROM lookups.cages c
 
-LEFT OUTER JOIN study.housing h
+LEFT JOIN study.housing h
 
 ON (c.room=h.room AND c.cage=h.cage)
 
 WHERE h.odate IS NULL
 
-GROUP BY c.room, c.cage
+GROUP BY c.roomcage, c.room, c.cage
 

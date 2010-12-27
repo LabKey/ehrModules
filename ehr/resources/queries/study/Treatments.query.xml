@@ -7,10 +7,40 @@
                 <columns>
                     <column columnName="parentId">
                         <fk>
-                          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-                          <fkDbSchema>study</fkDbSchema>
-                          <fkTable>encounters</fkTable>
-                          <fkColumnName>objectid</fkColumnName>
+                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
+                            <fkDbSchema>study</fkDbSchema>
+                            <fkTable>encounters</fkTable>
+                            <fkColumnName>objectid</fkColumnName>
+                        </fk>
+                    </column>
+                    <column columnName="vunits">
+                        <datatype>varchar</datatype>
+                        <columnTitle>Vol Units</columnTitle>
+                        <fk>
+                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
+                            <fkDbSchema>lookups</fkDbSchema>
+                            <fkTable>volume_units</fkTable>
+                            <fkColumnName>unit</fkColumnName>
+                        </fk>
+                    </column>
+                    <column columnName="units">
+                        <datatype>varchar</datatype>
+                        <columnTitle>Units</columnTitle>
+                        <fk>
+                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
+                            <fkDbSchema>lookups</fkDbSchema>
+                            <fkTable>drug_units</fkTable>
+                            <fkColumnName>unit</fkColumnName>
+                        </fk>
+                    </column>
+                    <column columnName="route">
+                        <datatype>varchar</datatype>
+                        <columnTitle>Route</columnTitle>
+                        <fk>
+                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
+                            <fkDbSchema>lookups</fkDbSchema>
+                            <fkTable>routes</fkTable>
+                            <fkColumnName>route</fkColumnName>
                         </fk>
                     </column>
                 </columns>

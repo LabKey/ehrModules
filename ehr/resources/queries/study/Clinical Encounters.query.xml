@@ -3,6 +3,7 @@
         <tables xmlns="http://labkey.org/data/xml">
             <table tableName="encounters" tableDbType="TABLE">
                 <tableUrl>/ehr/encounterDetails.view?type=${type}&amp;lsid=${lsid}</tableUrl>
+                <insertUrl>/ehr/clinicalEncounter.view?schemaName=study&amp;queryName=Clinical Encounters</insertUrl>
                 <columns>
                     <column columnName="type">
                         <isKeyField>true</isKeyField>
@@ -15,11 +16,52 @@
                         </fk>
                     </column>
                 </columns>
-                <buttonBarOptions includeStandardButtons="true">                    
-                    <item insertBefore="Views" text="Create New">                        
-                        <onClick>
-
-                        </onClick>
+                <buttonBarOptions includeStandardButtons="false">                    
+                    <includeScript>/ehr/studyButtons.js</includeScript>
+                    <!--<onRender>moreActionsHandler</onRender>-->
+                    <item text="Create New">
+                        <originalText>Insert New</originalText>
+                    </item>
+                    <item text="Views">
+                        <originalText>Views</originalText>
+                    </item>
+                    <!--<item text="Cohorts">-->
+                        <!--<originalText>Cohorts</originalText>-->
+                    <!--</item>-->
+                    <!--<item text="QCState">-->
+                        <!--<originalText>QC State</originalText>-->
+                    <!--</item>-->
+                    <item text="Export">
+                        <originalText>Export</originalText>
+                    </item>
+                    <item text="Print">
+                        <originalText>Print</originalText>
+                    </item>
+                    <!--<item text="Import Data">-->
+                        <!--<originalText>Import Data</originalText>-->
+                    <!--</item>-->
+                    <item text="Page Size">
+                        <originalText>Page Size</originalText>
+                    </item>
+                    <!--<item text="Delete">-->
+                        <!--<originalText>Delete</originalText>-->
+                    <!--</item>-->
+                    <item text="More Actions" insertPosition="end" >
+                        <item text="Jump To History">
+                            <onClick>
+                                historyHandler(dataRegion, dataRegionName);
+                            </onClick>
+                        </item>
+                        <item text="Jump To Other Dataset">
+                            <onClick>
+                                datasetHandler(dataRegion, dataRegionName);
+                            </onClick>
+                        </item>
+                        <item text="Return Distinct Values">
+                            <onClick>
+                                getDistinct(dataRegion, dataRegionName);
+                            </onClick>
+                        </item>
                     </item>
                 </buttonBarOptions>
             </table>

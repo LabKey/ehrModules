@@ -14,39 +14,30 @@ Ext.onReady(function ()
     new EHR.ext.customPanels.detailsView({
         schemaName: 'study',
         queryName: 'encounters',
-        //title: 'Encounter Details:',
+        title: 'Encounter Details:',
         renderTo: 'encounterDetails',
         filterArray: filterArray
     });
 
-    var childDiv = document.getElementById('childTables');
-    var children = [
-        {queryName: ''
-    ];
 
-    for (var i=0;i<children.length;i++){
-        var div = childDiv.createChild('span');
-
-        new LABKEY.QueryWebPart({
-            title: 'All Animals Ever Housed',
-            schemaName: 'study',
-            queryName: 'Housing',
-            allowChooseQuery: false,
-            allowChooseView: true,
-            showInsertNewButton: false,
-            showDeleteButton: false,
-            showDetailsColumn: true,
-            showUpdateColumn: false,
-            showRecordSelectors: true,
-            buttonBarPosition: 'top',
-            filterArray: filterArray,
-            sort: '-Date',
-            scope: this,
-            errorCallback: EHR.UTILITIES.onError
-         }).render('allAnimals');
-
-
-    }
+    new LABKEY.QueryWebPart({
+        title: 'Records',
+        schemaName: 'study',
+        queryName: 'StudyData',
+        allowChooseQuery: false,
+        allowChooseView: true,
+        showInsertNewButton: false,
+        showDeleteButton: false,
+        showDetailsColumn: true,
+        showUpdateColumn: false,
+        showRecordSelectors: true,
+        buttonBarPosition: 'top',
+        timeout: 0,
+        filterArray: [LABKEY.Filter.create('parentId', LABKEY.ActionURL.getParameter('lsid'), LABKEY.Filter.Types.EQUAL)],
+        sort: '-Date',
+        scope: this,
+        errorCallback: EHR.UTILITIES.onError
+     }).render('childTables');
 
 });
 
@@ -60,5 +51,5 @@ Ext.onReady(function ()
     <p/>
 
     <div id='childTables'></div>
-
+</body>
 </html>

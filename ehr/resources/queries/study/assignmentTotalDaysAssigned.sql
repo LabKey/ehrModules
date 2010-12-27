@@ -46,7 +46,7 @@ convert(year(coalesce(a.rdate, curdate())), 'INTEGER') as EndYear,
 
 --TIMESTAMPDIFF('SQL_TSI_DAY', a.date, coalesce(a.rdate, curdate())) AS TotalDaysAssigned,
 
-FROM (SELECT convert(year(curdate()), 'INTEGER')-i.key as Year FROM lists.integers i WHERE i.key <=5) i
+FROM (SELECT convert(year(curdate()), 'INTEGER')-i.key as Year FROM lookups.integers i WHERE i.key <=5) i
 LEFT JOIN study.assignment a
   ON (
   i.Year >= year(a.date)

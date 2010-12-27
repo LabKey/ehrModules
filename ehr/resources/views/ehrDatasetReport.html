@@ -32,17 +32,6 @@ Ext.onReady(function(){
               LABKEY.QueryWebPart.standardButtons.print,
               LABKEY.QueryWebPart.standardButtons.pageSize,
               {text: 'Animal History', handler: historyHandler}
-                //{text: 'Test', url: LABKEY.ActionURL.buildURL('project', 'begin')},
-              //{text: 'Test Script', onClick: "alert('Hello World!'); return false;"},
-              //{text: 'Test Handler', handler: onTestHandler},
-              //{text: 'More Actions', items: [
-
-                //{text: 'Fly Out', items: [
-                //  {text: 'Sub Item 1', handler: onItem1Handler}
-                //]},
-                //'-', //separator
-                //{text: 'Item 2', handler: onItem2Handler}
-              //]}
             ]
         }
      }).render('theGrid');
@@ -60,28 +49,11 @@ Ext.onReady(function(){
              successCallback: changeLocation
              });
 
-        //for (var i = 0; i < checked.length; i++)
-            //ids.push({Key:checked[i], Complete:true});
-
-        //window.location = '';
     }
 
     function changeLocation(data){
         alert(data)
     }
-
-//    function markComplete(dataRegion)
-//    {
-//        var checked = dataRegion.getChecked();
-//
-//        var rowsToUpdate = [];
-//        for (var i = 0; i < checked.length; i++)
-//            rowsToUpdate.push({Key:checked[i], Complete:true});
-//
-//        LABKEY.Query.updateRows({schemaName:'lists', queryName:'MyList', rowDataArray:rowsToUpdate, successCallback:renderList});
-//    }
-
-
 
 });
 

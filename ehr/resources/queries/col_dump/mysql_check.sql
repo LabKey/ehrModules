@@ -1,23 +1,20 @@
-/*
- * Copyright (c) 2010 LabKey Corporation
- *
- * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
- */
-SELECT
-id,
-date,
-ts,
-objectid,
-key2
-FROM col_dump.alerts_mysql
+-- SELECT
+-- id,
+-- date,
+-- ts,
+-- objectid,
+-- 'alerts' as type,
+-- key2
+-- FROM col_dump.alerts_mysql
 
-UNION ALL
+-- UNION ALL
 
 SELECT
 id,
 date,
 ts,
 objectid,
+'arrival' as type,
 key2
 FROM col_dump.arrival_mysql
 
@@ -28,6 +25,7 @@ id,
 date,
 ts,
 objectid,
+'assignment' as type,
 key2
 FROM col_dump.assignment_mysql
 
@@ -38,6 +36,7 @@ id,
 date,
 ts,
 objectid,
+'bactresults' as type,
 key2
 FROM col_dump.bacteriologyresults_mysql
 
@@ -48,6 +47,7 @@ id,
 date,
 ts,
 objectid,
+'bactruns' as type,
 key2
 FROM col_dump.bacteriologyruns_mysql
 
@@ -58,6 +58,7 @@ id,
 date,
 ts,
 objectid,
+'behave' as type,
 key2
 FROM col_dump.behavetrem_mysql
 
@@ -68,6 +69,7 @@ id,
 date,
 ts,
 objectid,
+'biopsy' as type,
 key2
 FROM col_dump.biopsy_mysql
 
@@ -78,6 +80,7 @@ id,
 date,
 ts,
 objectid,
+'biopsydiag' as type,
 key2
 FROM col_dump.biopsydiag_mysql
 
@@ -88,6 +91,7 @@ id,
 date,
 ts,
 objectid,
+'birth' as type,
 key2
 FROM col_dump.birth_mysql
 
@@ -98,6 +102,7 @@ id,
 date,
 ts,
 objectid,
+'blood' as type,
 key2
 FROM col_dump.blood_mysql
 
@@ -108,6 +113,7 @@ null as id,
 null as date,
 ts,
 objectid,
+'cage' as type,
 key2
 FROM col_dump.cage_mysql
 
@@ -118,6 +124,7 @@ null as id,
 null as date,
 ts,
 objectid,
+'cageclass' as type,
 key2
 FROM col_dump.cageclass_mysql
 
@@ -128,6 +135,7 @@ null as id,
 date,
 ts,
 objectid,
+'cagenotes' as type,
 key2
 FROM col_dump.cagenotes_mysql
 
@@ -138,6 +146,7 @@ id,
 date,
 ts,
 objectid,
+'chemresults' as type,
 key2
 FROM col_dump.chemistryresults_mysql
 
@@ -148,6 +157,7 @@ id,
 date,
 ts,
 objectid,
+'chemruns' as type,
 key2
 FROM col_dump.chemistryruns_mysql
 
@@ -158,6 +168,7 @@ null as id,
 null as date,
 ts,
 objectid,
+'chemnorm' as type,
 key2
 FROM col_dump.chemnorm_mysql
 
@@ -168,6 +179,7 @@ id,
 date,
 ts,
 objectid,
+'clinremarks' as type,
 key2
 FROM col_dump.clinremarks_mysql
 
@@ -178,6 +190,7 @@ id,
 date,
 ts,
 objectid,
+'demographics' as type,
 key2
 FROM col_dump.demographics_mysql
 
@@ -188,6 +201,7 @@ id,
 date,
 ts,
 objectid,
+'departure' as type,
 key2
 FROM col_dump.departure_mysql
 
@@ -198,6 +212,7 @@ id,
 date,
 ts,
 objectid,
+'drug' as type,
 key2
 FROM col_dump.drug_mysql
 
@@ -208,6 +223,7 @@ id,
 date,
 ts,
 objectid,
+'encounters' as type,
 key2
 FROM col_dump.encounters_mysql
 
@@ -218,6 +234,7 @@ id,
 date,
 ts,
 objectid,
+'hemamorph' as type,
 key2
 FROM col_dump.hematologymorphology_mysql
 
@@ -228,6 +245,7 @@ id,
 date,
 ts,
 objectid,
+'hemaresults' as type,
 key2
 FROM col_dump.hematologyresults_mysql
 
@@ -238,6 +256,7 @@ id,
 date,
 ts,
 objectid,
+'hemaruns' as type,
 key2
 FROM col_dump.hematologyruns_mysql
 
@@ -248,6 +267,7 @@ null as id,
 null as date,
 ts,
 objectid,
+'hold' as type,
 key2
 FROM col_dump.hold_mysql
 
@@ -258,6 +278,7 @@ id,
 date,
 ts,
 objectid,
+'housing' as type,
 key2
 FROM col_dump.housing_mysql
 
@@ -268,6 +289,7 @@ id,
 date,
 ts,
 objectid,
+'immunoresults' as type,
 key2
 FROM col_dump.immunologyresults_mysql
 
@@ -278,6 +300,7 @@ id,
 date,
 ts,
 objectid,
+'immunoruns' as type,
 key2
 FROM col_dump.immunologyruns_mysql
 
@@ -288,6 +311,7 @@ id,
 date,
 ts,
 objectid,
+'necropsy' as type,
 key2
 FROM col_dump.necropsy_mysql
 
@@ -298,6 +322,7 @@ id,
 date,
 ts,
 objectid,
+'necropsydiag' as type,
 key2
 FROM col_dump.necropsydiag_mysql
 
@@ -308,6 +333,7 @@ null as id,
 null as date,
 ts,
 objectid,
+'newsnomed' as type,
 key2
 FROM col_dump.newsnomed_mysql
 
@@ -318,6 +344,7 @@ id,
 date,
 ts,
 objectid,
+'obs' as type,
 key2
 FROM col_dump.obs_mysql
 
@@ -328,6 +355,7 @@ id,
 date,
 ts,
 objectid,
+'parasitologyresults' as type,
 key2
 FROM col_dump.parasitologyresults_mysql
 
@@ -338,6 +366,7 @@ id,
 date,
 ts,
 objectid,
+'parasitologyruns' as type,
 key2
 FROM col_dump.parasitologyruns_mysql
 
@@ -348,6 +377,7 @@ null as id,
 null as date,
 ts,
 objectid,
+'perdiem' as type,
 key2
 FROM col_dump.perdiemrates_mysql
 
@@ -358,6 +388,7 @@ id,
 date,
 ts,
 objectid,
+'prenatal' as type,
 key2
 FROM col_dump.prenatal_mysql
 
@@ -368,6 +399,7 @@ id,
 date,
 ts,
 objectid,
+'problem' as type,
 key2
 FROM col_dump.problem_mysql
 
@@ -378,6 +410,7 @@ id,
 date,
 ts,
 objectid,
+'procedures' as type,
 key2
 FROM col_dump.procedures_mysql
 
@@ -388,26 +421,29 @@ null as id,
 null as date,
 ts,
 objectid,
+'project' as type,
 key2
 FROM col_dump.project_mysql
 
 UNION ALL
 
+-- SELECT
+-- null as id,
+-- null as date,
+-- ts,
+-- objectid,
+-- 'protocol_counts' as type,
+-- key2
+-- FROM col_dump.protocol_counts_mysql
+--
+-- UNION ALL
+
 SELECT
 null as id,
 null as date,
 ts,
 objectid,
-key2
-FROM col_dump.protocol_counts_mysql
-
-UNION ALL
-
-SELECT
-null as id,
-null as date,
-ts,
-objectid,
+'protocol' as type,
 key2
 FROM col_dump.protocol_mysql
 
@@ -418,6 +454,7 @@ null as id,
 null as date,
 ts,
 objectid,
+'ref_range' as type,
 key2
 FROM col_dump.ref_range_mysql
 
@@ -428,6 +465,7 @@ null as id,
 null as date,
 ts,
 objectid,
+'rhesaux' as type,
 key2
 FROM col_dump.rhesaux_mysql
 
@@ -438,6 +476,7 @@ null as id,
 null as date,
 ts,
 objectid,
+'snomap' as type,
 key2
 FROM col_dump.snomap_mysql
 
@@ -448,6 +487,7 @@ null as id,
 null as date,
 ts,
 objectid,
+'snomed' as type,
 key2
 FROM col_dump.snomed_mysql
 
@@ -458,6 +498,7 @@ id,
 date,
 ts,
 objectid,
+'surgsum' as type,
 key2
 FROM col_dump.surgsum_mysql
 
@@ -468,6 +509,7 @@ id,
 date,
 ts,
 objectid,
+'tb' as type,
 key2
 FROM col_dump.tb_mysql
 
@@ -478,6 +520,7 @@ id,
 date,
 ts,
 objectid,
+'tissue_requests' as type,
 key2
 FROM col_dump.tissue_requests_mysql
 
@@ -488,6 +531,7 @@ id,
 date,
 ts,
 objectid,
+'treatments' as type,
 key2
 FROM col_dump.treatment_order_mysql
 
@@ -498,6 +542,7 @@ id,
 date,
 ts,
 objectid,
+'urinalysisresults' as type,
 key2
 FROM col_dump.urinalysisresults_mysql
 
@@ -508,8 +553,9 @@ id,
 date,
 ts,
 objectid,
+'urinalysisruns' as type,
 key2
-FROM col_dump.urinanlysisruns_mysql
+FROM col_dump.urinalysisruns_mysql
 
 UNION ALL
 
@@ -518,6 +564,7 @@ id,
 date,
 ts,
 objectid,
+'virologyresults' as type,
 key2
 FROM col_dump.virologyresults_mysql
 
@@ -528,6 +575,7 @@ id,
 date,
 ts,
 objectid,
+'virologyruns' as type,
 key2
 FROM col_dump.virologyruns_mysql
 
@@ -538,5 +586,6 @@ id,
 date,
 ts,
 objectid,
+'weight' as type,
 key2
 FROM col_dump.weight_mysql

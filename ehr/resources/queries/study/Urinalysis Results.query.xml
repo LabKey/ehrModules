@@ -22,7 +22,18 @@
                     </column>
                     <column columnName="result">
                         <columnTitle>Result</columnTitle>
-                    </column>                    
+                    </column>
+                    <column columnName="testid">
+                      <datatype>varchar</datatype>
+                      <!--<nullable>false</nullable>-->
+                      <columnTitle>Test Id</columnTitle>
+                      <fk>
+                        <fkFolderPath>/wnprc/ehr/</fkFolderPath>
+                        <fkDbSchema>lists</fkDbSchema>
+                        <fkTable>lab_tests</fkTable>
+                        <fkColumnName>testid</fkColumnName>
+                      </fk>
+                    </column>
                 </columns>
             </table>
         </tables>

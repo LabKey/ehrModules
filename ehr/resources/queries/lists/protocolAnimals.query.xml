@@ -23,7 +23,7 @@
                     <column columnName="Species">
                         <fk>
                           <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-                          <fkDbSchema>lists</fkDbSchema>
+                          <fkDbSchema>lookups</fkDbSchema>
                           <fkTable>species</fkTable>
                           <fkColumnName>common</fkColumnName>
                         </fk>

@@ -9,9 +9,9 @@ cd.id,
 
 cd.year,
 
-y.key as monthNum,
-y.monthName,
-convert((cd.year||'-'||y.key||'-01'), date) as date,
+y.rowid as monthNum,
+y.month,
+convert((cd.year||'-'||y.rowid||'-01'), date) as date,
 
 max(e."1") as "1",
 max(e."2") as "2",
@@ -45,14 +45,14 @@ max(e."29") as "29",
 max(e."30") as "30",
 max(e."31") as "31",
 
-FROM lists.months y
+FROM lookups.months y
 
 LEFT OUTER JOIN study.clintremMens cd
 
 LEFT JOIN study.clintremMensSummary e
 
-ON cd.id = e.id AND cd.year = e.year AND y.key = e.monthNum
+ON cd.id = e.id AND cd.year = e.year AND y.rowid = e.monthNum
 
-group by cd.id, cd.year, y.key, y.monthName
+group by cd.id, cd.year, y.rowid, y.month
 
-order by cd.id, cd.year, y.key
+order by cd.id, cd.year, y.rowid

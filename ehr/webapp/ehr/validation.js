@@ -9,7 +9,6 @@ console.log("** evaluating: " + this['javax.script.filename']);
 var errorQC = 'Review Required';
 var verbosity = 0;
 
-
 var EHR = {};
 EHR.validation = {
     rowInit: function(row, errors){
@@ -249,9 +248,13 @@ EHR.validation = {
             row.score = c[1];
     },
     suspDate: function(row, errors){
-        //TODO
+        //TODO: improve date manipulation code
         if(typeof(row.Date) == 'string'){
             row.Date = new java.util.Date(java.util.Date.parse(row.Date));
+        }
+        if(!row.Date){
+            errors.push('Missing Date');
+            return;
         }
 
         //flag any dates greater than 1 year from now

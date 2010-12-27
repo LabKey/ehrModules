@@ -2,21 +2,25 @@
     <metadata>
         <tables xmlns="http://labkey.org/data/xml">
             <table tableName="obs" tableDbType="TABLE">
-                <tableUrl>/query/detailsQueryRow.view?schemaName=study&amp;query.queryName=obs&amp;lsid=${lsid}</tableUrl>
+                <tableUrl>/query/detailsQueryRow.view?schemaName=study&amp;query.queryName=Irregular Observations&amp;lsid=${lsid}</tableUrl>
+                <insertUrl>/ehr/insertTask.view?schemaName=study&amp;queryName=Irregular Observations</insertUrl>
+                <!--<updateUrl>/query/detailsQueryRow.view?schemaName=study&amp;query.queryName=${dataset}&amp;lsid=${lsid}</updateUrl>-->
                 <columns>
                     <column columnName="date">
                         <formatString>yyyy-MM-dd HH:mm</formatString>
                     </column>
                     <column columnName="parentId">
                         <fk>
-                          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-                          <fkDbSchema>study</fkDbSchema>
-                          <fkTable>encounters</fkTable>
-                          <fkColumnName>objectid</fkColumnName>
+                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
+                            <fkDbSchema>study</fkDbSchema>
+                            <fkTable>encounters</fkTable>
+                            <fkColumnName>objectid</fkColumnName>
                         </fk>
                     </column>
                     <column columnName="Remark">
                         <displayWidth>250</displayWidth>
+                        <propertyURI>urn:ehr.labkey.org/#Remark</propertyURI>
+                        <inputType>textarea</inputType>
                     </column>
                     <column columnName="hasObs" wrappedColumnName="lsid">
                         <columnTitle>Has Obs?</columnTitle>
@@ -28,6 +32,68 @@
                             <fkTable>obsStatus</fkTable>
                             <fkColumnName>lsid</fkColumnName>
                         </fk>
+                    </column>
+                    <column columnName="feces">
+                        <datatype>varchar</datatype>
+                        <columnTitle>Feces</columnTitle>
+                        <fk>
+                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
+                            <fkDbSchema>lookups</fkDbSchema>
+                            <fkTable>obs_feces</fkTable>
+                            <fkColumnName>code</fkColumnName>
+                        </fk>
+                    </column>
+                    <column columnName="menses">
+                        <datatype>varchar</datatype>
+                        <columnTitle>Menses</columnTitle>
+                        <fk>
+                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
+                            <fkDbSchema>lookups</fkDbSchema>
+                            <fkTable>obs_mens</fkTable>
+                            <fkColumnName>code</fkColumnName>
+                        </fk>
+                    </column>
+                    <column columnName="behavior">
+                        <datatype>varchar</datatype>
+                        <columnTitle>Behavior</columnTitle>
+                        <fk>
+                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
+                            <fkDbSchema>lookups</fkDbSchema>
+                            <fkTable>obs_behavior</fkTable>
+                            <fkColumnName>code</fkColumnName>
+                        </fk>
+                    </column>
+                    <column columnName="breeding">
+                        <datatype>varchar</datatype>
+                        <columnTitle>Breeding</columnTitle>
+                        <fk>
+                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
+                            <fkDbSchema>lookups</fkDbSchema>
+                            <fkTable>obs_breeding</fkTable>
+                            <fkColumnName>code</fkColumnName>
+                        </fk>
+                    </column>
+                    <column columnName="other">
+                        <datatype>varchar</datatype>
+                        <columnTitle>Other</columnTitle>
+                        <fk>
+                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
+                            <fkDbSchema>lookups</fkDbSchema>
+                            <fkTable>obs_other</fkTable>
+                            <fkColumnName>code</fkColumnName>
+                        </fk>
+                    </column>
+                    <column columnName="tlocation">
+                        <datatype>varchar</datatype>
+                        <columnTitle>Trauma Location</columnTitle>
+                    </column>
+                    <column columnName="otherbehavior">
+                        <datatype>varchar</datatype>
+                        <columnTitle>Other Behavior</columnTitle>
+                    </column>
+                    <column columnName="isIrregular">
+                        <datatype>boolean</datatype>
+                        <columnTitle>Is Irregular?</columnTitle>
                     </column>
                 </columns>
             </table>

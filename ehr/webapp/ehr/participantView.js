@@ -92,11 +92,11 @@ Ext.onReady(function ()
             EHR.ext.customPanels.SingleAnimalReport.superclass.initComponent.call(this);
 
             this.allReports = new LABKEY.ext.Store({
-                schemaName: 'lists',
+                schemaName: 'lookups',
                 queryName: 'reports',
-                filterArray: [LABKEY.Filter.create('Visible', true, LABKEY.Filter.Types.EQUAL)],
+                filterArray: [LABKEY.Filter.create('visible', true, LABKEY.Filter.Types.EQUAL)],
                 //, LABKEY.Filter.create('ReportCategory', 'AnimalReport', LABKEY.Filter.Types.EQUAL)
-                sort: 'Category,ReportTitle',
+                sort: 'category,reporttitle',
                 autoLoad: true,
     //            listeners: {
     //                scope: this,

@@ -55,7 +55,7 @@ function createNavMenu()
                 {name: 'MHC Genotype Summary', url: '<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=alleleFrequencies'},
 //                {name: 'Population Summary', url: '<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=colonyPopulationSummary'},
                 {name: 'Population Summary', url: '<%=contextPath%>/ehr/WNPRC/EHR/populationOverview.view?'},
-                {name: 'Room Utilization', url: '<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=lists&query.queryName=RoomUtilization'},
+                {name: 'Room Utilization', url: '<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=lookups&query.queryName=RoomUtilization'},
                 {name: 'Viral Challenges', url: '<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=demographicsViralChallenge'}
             ]},
             {header: 'Checking and Alerts',
@@ -89,7 +89,7 @@ function createNavMenu()
             items: [
                 {name: 'Manage EHR Study', url: '<%=contextPath%>/study/WNPRC/EHR/manageStudy.view?'},                
                 {name: 'EHR Admin Page', url: '<%=contextPath%>/ehr/WNPRC/EHR/ehrAdmin.view'},
-                {name: 'Form Test', url: '<%=contextPath%>/ehr/WNPRC/EHR/formTest.view'},
+                {name: 'Form Test', url: '<%=contextPath%>/ehr/WNPRC/EHR/clinicalEncounter.view?encounterType=Physical%20Exam'},
                 {name: 'Data Entry', url: '<%=contextPath%>/ehr/WNPRC/EHR/dataEntry.view'}
             ]
         })

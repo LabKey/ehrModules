@@ -17,6 +17,17 @@
                     <column columnName="cage">
                         <displayWidth>40</displayWidth>
                     </column>
+                    <column columnName="totalAnimals" wrappedColumnName="roomcage">
+                      <columnTitle>Total Animals</columnTitle>
+                      <isUnselectable>true</isUnselectable>
+                      <fk>
+                        <fkFolderPath>/wnprc/ehr/</fkFolderPath>
+                        <fkDbSchema>lookups</fkDbSchema>
+                        <fkTable>CageUtilization</fkTable>
+                        <fkColumnName>roomcage</fkColumnName>
+                      </fk>
+                      <isHidden>false</isHidden>
+                    </column>
                 </columns>
             </table>
         </tables>

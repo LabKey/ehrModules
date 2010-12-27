@@ -1,0 +1,44 @@
+<html>
+<head>
+<script type="text/javascript">
+
+LABKEY.requiresScript("/ehr/ehrFormPanel.js");
+
+Ext.onReady(function ()
+{
+    LABKEY.NavTrail.setTrail('Enter Data: '+LABKEY.ActionURL.getParameter('queryName'));
+
+    new EHR.ext.ParentFormPanel({
+        title: 'Enter Data',
+        containerPath: 'WNPRC/EHR/',
+        uuid: LABKEY.ActionURL.getParameter('taskId'),
+        formType: LABKEY.ActionURL.getParameter('queryName'),
+        parentFieldName: 'taskid',
+        formHeader: 'ehr-taskheader',
+        formSections: [
+            {
+                xtype: 'ehr-gridformpanel',
+                queryName: LABKEY.ActionURL.getParameter('queryName'),
+                schemaName: LABKEY.ActionURL.getParameter('schemaName'),
+                title: LABKEY.ActionURL.getParameter('queryName'),
+                metadata: EHR.ext.standardTaskMetadata,
+                ref: 'gridPanel',
+                tbarBtns: ['add', 'addbatch', 'delete', 'next', 'previous']
+            },{
+                xtype: 'ehr-abstractpanel'
+            }                
+        ]
+    }).render('insertBatch');
+
+});
+
+
+</script>
+</head>
+
+<body>
+
+<div id="insertBatch"></div>
+
+</body>
+</html>

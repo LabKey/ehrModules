@@ -23,10 +23,10 @@ as WeeksSinceChallenge,
 d.code,
 d.remark,
 
-v.ChallengeType,
+v.challenge_type,
 
 v.pathogen,
 
 FROM study.drug d
 
-JOIN lists.Virus_SNOMED v ON v.code = d.code
+JOIN lookups.Virus_SNOMED v ON v.code = d.code

@@ -19,32 +19,80 @@ kin = kinship(labkey.data$id, labkey.data$dam, labkey.data$sire)
 
 #transform this matrix into a 3 column dataframe
 vec <- c(kin);
-#vec;
-
 cols<- length(colnames(kin))
-thin<-data.frame(cbind(row.names(kin)[rep(1:cols, each=cols)] , colnames(kin)), stringsAsFactors=FALSE)
-thin<- cbind(thin, matrix(as.matrix(kin), 16,1))
-colnames(thin)<-c("Id", "Id2", "kinship")
-thin
+newRecords<-data.frame(cbind(row.names(kin)[rep(1:cols, each=cols)] , colnames(kin), as.character( date() )), stringsAsFactors=FALSE);
+newRecords<- cbind(thin, matrix(as.matrix(kin), 16,1))
+colnames(newRecords)<-c("Id", "Id2", "date", "coefficient")
+#newRecords
 
 #we now compare this dataframe with the existing dataset
 
-#labkey.deleteRows(
-#    baseUrl=labkey.url.base,
-#    folderPath="/WNPRC/EHR",
-#    schemaName="study",
-#    queryName="kinship",
-#    toDelete=data.frame(lsid=labkey.data$lsid)
-#    );
+#find old records first
+oldRecords <- labkey.selectRows(
+    baseUrl=labkey.url.base,
+    folderPath="/WNPRC/EHR",
+    schemaName="study",
+    queryName="kinship",
+    colSelect=c('lsid', 'Id', 'Id2', 'date', 'coefficient'),
+    showHidden = TRUE,
+    colNameOpt = 'fieldname'  #rname
+)
+#str(oldRecords);
+#str(newRecords);
 
-#labkey.insertRows(
-#    baseUrl=labkey.url.base,
-#    folderPath="/WNPRC/EHR",
-#    schemaName="study",
-#    queryName="kinship",
-#    toInsert=kin
-#    );
+IdxToDelete <- setdiff(oldRecords$Id, newRecords$Id);
+#IdxToDelete
+toDelete <- oldRecords[match(IdxToDelete, oldRecords$Id),]
+#toDelete
 
-#colnames(kin);
-#rownames(kin);
+if(length(toDelete$Id)){
+    del <- labkey.deleteRows(
+        baseUrl=labkey.url.base,
+        folderPath="/WNPRC/EHR",
+        schemaName="study",
+        queryName="kinship",
+        toDelete=data.frame(lsid=toDelete$Lsid)
+    );
+    del;
+}
+
+
+IdxToUpdate <- intersect(oldRecords$Id, newRecords$Id);
+coefficient1 <- oldRecords[match(IdxToUpdate, oldRecords$Id),]
+#coefficient1
+coefficient2 <- newRecords[match(IdxToUpdate, newRecords$Id),]
+#coefficient2
+
+toGet <- (!is.na(coefficient1$coefficient) & is.na(coefficient2$coefficient)) | (is.na(coefficient1$coefficient) & !is.na(coefficient2$coefficient)) | (!is.na(coefficient1$coefficient) & !is.na(coefficient2$coefficient) & coefficient1$coefficient != coefficient2$coefficient)
+toUpdate <- coefficient1[toGet,];
+toUpdate$coefficient <- coefficient2$coefficient[toGet];
+toUpdate$date <- c( as.character( date() ) );
+
+str(toUpdate);
+
+#if(length(toUpdate$Id)){
+#    update <- labkey.updateRows(
+#        baseUrl=labkey.url.base,
+#        folderPath="/WNPRC/EHR",
+#        schemaName="study",
+#        queryName="kinship",
+#        toUpdate=toUpdate
+#    );
+#    update
+#}
+
+IdxToInsert <- setdiff(newRecords$Id, oldRecords$Id);
+toInsert <- newRecords[match(IdxToInsert, newRecords$Id),]
+#str(toInsert)
+
+#if(length(toInsert$Id)){
+#    ins <- labkey.insertRows(
+#        baseUrl=labkey.url.base,
+#        folderPath="/WNPRC/EHR",
+#        schemaName="study",
+#        queryName="kinship",
+#        toInsert=toInsert
+#    );
+#    ins;
+#}
 

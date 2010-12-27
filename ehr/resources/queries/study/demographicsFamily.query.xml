@@ -5,7 +5,7 @@
                 <columns>
                     <column columnName="Id">
                         <isKeyField>true</isKeyField>
-                        <isHidden>true</isHidden>
+                        <!--<isHidden>true</isHidden>-->
                         <fk>
                           <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                           <fkDbSchema>study</fkDbSchema>

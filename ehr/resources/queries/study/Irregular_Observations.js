@@ -27,7 +27,7 @@ function setDescription(row, errors){
         description.push('T Location: '+row.tlocation);
     if(row.otherbehavior)
         description.push('Other Behavior: '+row.otherbehavior);
-
+console.log(row);
     if(!row.isIrregular)
         description.push('No Irregular Observations');
 
@@ -36,7 +36,7 @@ function setDescription(row, errors){
 
 function beforeBoth(row, errors) {
     EHR.validation.rowInit(row, errors);
-
+console.log(row);
     //unique to obs:
     if (
         row.feces ||

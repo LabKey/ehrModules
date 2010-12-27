@@ -12,6 +12,16 @@
                           <fkColumnName>objectid</fkColumnName>
                         </fk>
                     </column>
+                    <column columnName="score">
+                        <datatype>double</datatype>
+                        <columnTitle>Body Condition Score</columnTitle>
+                        <fk>
+                          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
+                          <fkDbSchema>lookups</fkDbSchema>
+                          <fkTable>alopecia_score</fkTable>
+                          <fkColumnName>score</fkColumnName>
+                        </fk>
+                    </column>                       
                 </columns>
             </table>
         </tables>

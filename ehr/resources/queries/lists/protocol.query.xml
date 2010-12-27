@@ -13,7 +13,7 @@
                         <fkTable>protocolTotalAnimals</fkTable>
                         <fkColumnName>protocol</fkColumnName>
                       </fk>
-                      <isHidden>true</isHidden>
+                      <isHidden>false</isHidden>
                     </column>
                     <column columnName="totalProjects" wrappedColumnName="protocol">
                       <columnTitle>Total Projects</columnTitle>
@@ -24,7 +24,7 @@
                         <fkTable>protocolTotalProjects</fkTable>
                         <fkColumnName>protocol</fkColumnName>
                       </fk>
-                      <isHidden>true</isHidden>
+                      <isHidden>false</isHidden>
                     </column>
                 </columns>
             </table>

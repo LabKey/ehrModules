@@ -13,6 +13,6 @@ FROM (SELECT
 
 timestampadd('SQL_TSI_DAY', i.key-7, curdate()) as date,
 
-FROM lists.integers i
+FROM lookups.integers i
 
 WHERE i.key <= 35) i

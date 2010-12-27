@@ -10,7 +10,8 @@ Ext.onReady(function()
         queryName: 'Employees',
         containerPath: 'WNPRC/WNPRC_Units/Animal_Services/Compliance_Training/Private/EmployeeDB/',
         filterArray: [LABKEY.Filter.create('Email', LABKEY.Security.currentUser.email, LABKEY.Filter.Types.EQUAL)],
-        successCallback: onSuccess
+        successCallback: onSuccess,
+        timeout: 0
     });
 
     var username;
@@ -43,7 +44,8 @@ Ext.onReady(function()
             allowChooseQuery: false,
             //allowChooseView: false,
             //successCallback: function(){setButtons('sopGrid', [{text: 'Mark Read', onclick: "markRead('sopGrid')"}])},
-            filters: [LABKEY.Filter.create('email', email, LABKEY.Filter.Types.EQUAL), LABKEY.Filter.create('MonthsUntilRenewal', 10, LABKEY.Filter.Types.LESS_THAN)]
+            filters: [LABKEY.Filter.create('email', email, LABKEY.Filter.Types.EQUAL), LABKEY.Filter.create('MonthsUntilRenewal', 10, LABKEY.Filter.Types.LESS_THAN)],
+            timeout: 0
         });
 
         //then we display a list of all completed required SOPs
@@ -67,7 +69,8 @@ Ext.onReady(function()
             allowChooseQuery: false,
             //allowChooseView: false,
             //successCallback: function(){setButtons('sopGrid', [{text: 'Mark Read', onclick: "markRead('sopGrid')"}])},
-            filters: [LABKEY.Filter.create('email', email, LABKEY.Filter.Types.EQUAL), LABKEY.Filter.create('MonthsUntilRenewal', 10, LABKEY.Filter.Types.GREATER_THAN_OR_EQUAL)]
+            filters: [LABKEY.Filter.create('email', email, LABKEY.Filter.Types.EQUAL), LABKEY.Filter.create('MonthsUntilRenewal', 10, LABKEY.Filter.Types.GREATER_THAN_OR_EQUAL)],
+            timeout: 0
         });
 
 
@@ -77,7 +80,8 @@ Ext.onReady(function()
             queryName: 'SOPrequirements',
             containerPath: 'WNPRC/WNPRC_Units/Animal_Services/Compliance_Training/Private/SOPs/',
             filterArray: [LABKEY.Filter.create('email', email, LABKEY.Filter.Types.EQUAL), LABKEY.Filter.create('MonthsUntilRenewal', 10, LABKEY.Filter.Types.LESS_THAN)],
-            successCallback: makeForm
+            successCallback: makeForm,
+            timeout: 0
         });
 
         function makeForm(data){
@@ -205,7 +209,7 @@ function submitRequest() {
 </li>
 <br>
 <li>
-    IMPORTANT: Once you read all of your SOPs and have marked them as read, you need to check the box next to 'I Certify That I have read all the required SOPs', then hit submit.  The submit button will be greyed out until all of your SOPs have been marked read.
+    <font color="red">IMPORTANT: Once you read all of your SOPs and have marked them as read, you need to check the box next to 'I Certify That I have read all the required SOPs', then hit submit.  If you do not complete this step, your SOPs will not be marked complete.</font>
 </li>
 <p/>
 
@@ -217,21 +221,23 @@ function submitRequest() {
         <td>
             I certify that I have read all the required SOPs.
             <input type="checkbox" id="sopCheck" value="1"/>
-            <br><br>
+            <p/>
+            <i>**This buttom will be disabled until all your SOPs have been marked read.</i>
+            <br>
             <button id="SOPsubmitButton" disabled="true">Submit</button>
             <br>
-            <!--<i></i>**This buttom will be greyed out until all your SOPs have been marked read.</i>-->
+
         </td>
     </tr>
 </table>
 
 <br><br>
 
-<div id="sopDiv">Loading...</div>
+<div id="sopDiv"></div>
 
 <br><br>
 
-<div id="sopDiv2">Loading...</div>
+<div id="sopDiv2"></div>
 
 </body>
 </html>

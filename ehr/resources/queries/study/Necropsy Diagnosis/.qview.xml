@@ -7,7 +7,7 @@
               <property name="columnTitle" value="Case No"/>
           </properties>
       </column>
-      <column name="seq2"/>
+      <column name="seq1"/>
       <column name="seq2"/>
       <column name="code"/>
       <column name="code/code">

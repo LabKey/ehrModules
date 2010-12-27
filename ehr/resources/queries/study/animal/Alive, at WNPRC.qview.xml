@@ -101,9 +101,14 @@
                 <property name="columnTitle" value="Purchased By"/>
             </properties>
         </column>
-        <column name="Dataset/Demographics/v_status">
+        <!--<column name="Dataset/Demographics/v_status">-->
+            <!--<properties>-->
+                <!--<property name="columnTitle" value="Viral Status"/>-->
+            <!--</properties>-->
+        <!--</column>-->
+        <column name="activeAssignments/ActiveAssignments">
             <properties>
-                <property name="columnTitle" value="Viral Status"/>
+                <property name="columnTitle" value="Active Assignments"/>
             </properties>
         </column>
     </columns>

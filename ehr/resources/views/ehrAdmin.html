@@ -21,17 +21,18 @@ Ext.onReady(function (){
                     {name: 'ETL History', url: '<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=core&query.queryName=Sync History'},
                     {name: 'Manage EHR Study', url: '<%=contextPath%>/study/WNPRC/EHR/manageStudy.view?'},
                     {name: 'Reload Study', url: '<%=contextPath%>/pipeline/WNPRC/EHR/begin.view?'},
+                    {name: 'Generate Schema XML', url: '<%=contextPath%>/admin/getSchemaXmlDoc.view?dbSchema=core'},
                     {name: 'View Logs', url: '<%=contextPath%>/project/WNPRC/EHR/Logs/begin.view?'}
                 ]
             },
             {header: 'Logs',
                 items: [
-                    {name: 'Labkey.log', url: '<%=contextPath%>/files/WNPRC/EHR/Logs/%40filesets/Tomcat%20Logs/labkey.log?renderAs=DEFAULT'},
-                    {name: 'ETL Log', url: '<%=contextPath%>/files/WNPRC/EHR/Logs/%40filesets/Tomcat%20Logs/ehr-etl.log?renderAs=DEFAULT'},
-                    {name: 'ETL Errors Log', url: '<%=contextPath%>/files/WNPRC/EHR/Logs/%40filesets/Tomcat%20Logs/ehr-etl-errors.log?renderAs=DEFAULT'},
-                    {name: 'ActiveMQ.log', url: '<%=contextPath%>/files/WNPRC/EHR/Logs/%40filesets/ActiveMQ/activemq.log?renderAs=DEFAULT'},
-                    {name: 'Monit.log', url: '<%=contextPath%>/files/WNPRC/EHR/Logs/%40filesets/Monit/monit.log?renderAs=DEFAULT'},
-                    {name: 'Munin.log', url: '<%=contextPath%>/files/WNPRC/EHR/Logs/%40filesets/Munin/munin.log?renderAs=DEFAULT'}
+                    {name: 'Labkey.log', url: '<%=contextPath%>/files/WNPRC/EHR/Logs/%40filesets/Tomcat%20Logs/labkey.log'},
+                    {name: 'ETL Log', url: '<%=contextPath%>/files/WNPRC/EHR/Logs/%40filesets/Tomcat%20Logs/ehr-etl.log'},
+                    {name: 'ETL Errors Log', url: '<%=contextPath%>/files/WNPRC/EHR/Logs/%40filesets/Tomcat%20Logs/ehr-etl-errors.log'},
+                    {name: 'ActiveMQ.log', url: '<%=contextPath%>/files/WNPRC/EHR/Logs/%40filesets/ActiveMQ/activemq.log'},
+                    {name: 'Monit.log', url: '<%=contextPath%>/files/WNPRC/EHR/Logs/%40filesets/Monit/monit.log'},
+                    {name: 'Munin.log', url: '<%=contextPath%>/files/WNPRC/EHR/Logs/%40filesets/Munin/munin.log'}
                 ]
             },
             {header: 'Monit',

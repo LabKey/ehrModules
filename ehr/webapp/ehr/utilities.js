@@ -9,65 +9,65 @@ LABKEY.requiresScript("/ehr/arrayUtils.js");
 
 
 
-//this is a generic class for a combobox populated from a labkey store
-EHR.ext.customFields.LabKeyCombo = Ext.extend(Ext.form.ComboBox,
-{
-    constructor : function(config)
-    {
-        config = config || {};
-        var defaults = {
-            valueField:'Key'
-            ,typeAhead: false
-            ,mode: 'local'
-            ,width: 165
-            ,triggerAction: 'all'
-            ,forceSelection: true
-            ,editable: false
-            ,lazyRender: false
-            ,lazyInit: false
-            ,autoLoad: true
-        };
-        if (!config.store)
-        {
-            config.emptyText = 'Error: You Must Specify a Store'
-        }
-        else
-        {
-            config.store.load()
-        }
-        ;
-
-        Ext.applyIf(config, defaults);
-
-        //Ext.form.ComboBox.prototype.constructor(config);
-        EHR.ext.customFields.LabKeyCombo.superclass.constructor.call(this, config);
-
-        if (this.store && this.value && this.displayField && this.valueField && this.displayField != this.valueField)
-        {
-            this.initialValue = this.value;
-            if (this.store.getCount())
-                this.initialLoad();
-            else
-            {
-                this.store.on('load', this.initialLoad, this);
-                if (!this.store.proxy.activeRequest)
-                    this.store.load();
-            }
-        }
-
-    },
-
-    initialLoad : function()
-    {
-        this.store.un('load', this.initialLoad, this);
-        if (this.value === this.initialValue)
-        {
-            var v = this.value;
-            this.setValue(v);
-        }
-    }
-});
-Ext.reg('LabKeyCombo', EHR.ext.customFields.LabKeyCombo);
+////this is a generic class for a combobox populated from a labkey store
+//EHR.ext.customFields.LabKeyCombo = Ext.extend(Ext.form.ComboBox,
+//{
+//    constructor : function(config)
+//    {
+//        config = config || {};
+//        var defaults = {
+//            valueField:'Key'
+//            ,typeAhead: false
+//            ,mode: 'local'
+//            ,width: 165
+//            ,triggerAction: 'all'
+//            ,forceSelection: true
+//            ,editable: false
+//            ,lazyRender: false
+//            ,lazyInit: false
+//            ,autoLoad: true
+//        };
+//        if (!config.store)
+//        {
+//            config.emptyText = 'Error: You Must Specify a Store'
+//        }
+//        else
+//        {
+//            config.store.load()
+//        }
+//        ;
+//
+//        Ext.applyIf(config, defaults);
+//
+//        //Ext.form.ComboBox.prototype.constructor(config);
+//        EHR.ext.customFields.LabKeyCombo.superclass.constructor.call(this, config);
+//
+//        if (this.store && this.value && this.displayField && this.valueField && this.displayField != this.valueField)
+//        {
+//            this.initialValue = this.value;
+//            if (this.store.getCount())
+//                this.initialLoad();
+//            else
+//            {
+//                this.store.on('load', this.initialLoad, this);
+//                if (!this.store.proxy.activeRequest)
+//                    this.store.load();
+//            }
+//        }
+//
+//    },
+//
+//    initialLoad : function()
+//    {
+//        this.store.un('load', this.initialLoad, this);
+//        if (this.value === this.initialValue)
+//        {
+//            var v = this.value;
+//            this.setValue(v);
+//        }
+//    }
+//});
+//Ext.reg('LabKeyCombo', EHR.ext.customFields.LabKeyCombo);
 
 
 
@@ -127,225 +127,75 @@ EHR.ext.customFields.DateRangePanel = Ext.extend(Ext.Panel,
 });
 Ext.reg('DateRangePanel', EHR.ext.customFields.DateRangePanel);
 
-
 //this is a class for a combobox containing operators as might be used in a search form
-EHR.ext.customFields.OperatorCombo = Ext.extend(Ext.form.ComboBox,
-{
-    constructor : function(config)
-    {
-        config = config || {};
-        var defaults = {
-            valueField:'value'
-            ,typeAhead: false
-            ,mode: 'local'
-            ,width: 165
-            ,triggerAction: 'all'
-            ,editable: false
-            ,lazyRender: false
-            ,lazyInit: false
-            ,displayField:'displayText'
-            ,hiddenName:'operator'
-            ,value: 'startswith'
-            ,items: [
+EHR.ext.customFields.OperatorCombo = function(meta, value){
+    if(!meta) return;
 
-                ]
-            ,store: new Ext.data.SimpleStore({
-                fields: [
-                    'value',
-                    'displayText'
-                ],
-                data: [
-                    ['startswith', 'Starts With'],
-                    ['eq', 'Equals'],
-                    ['neqornull', 'Does Not Equal'],
-                    ['isblank', 'Is Blank'],
-                    ['isnonblank', 'Is Not Blank'],
-                    ['gt', 'Is Greater Than'],
-                    ['lt', 'Is Less Than'],
-                    ['gte', 'Is Greater Than or Equal To'],
-                    ['lte', 'Is Less Than or Equal To'],                        
-                    ['contains', 'Contains'],
-                    ['doesnotcontains', 'Does Not Contain'],                    
-                    ['doesnotstartswith', 'Does Not Start With'],
-                    ['in', 'Equals One Of (e.g. \'a;b;c\')']
-                ]
-            })
-        };
+    if(meta.jsonType == 'boolean')
+        return {};
 
-        Ext.applyIf(config, defaults);
+    meta.jsonType = meta.jsonType || 'string';
+    
+    if(!value){
+        switch(meta.jsonType){
+            case 'int':
+            case 'float':
+                value = 'eq';
+                break;
+            case 'date':
+                value = 'dateeq';
+                break;
+            case 'boolean':
+                value = 'startswith';
+                break;
+            default:
+                value = 'startswith';
+                break;
+        }
+    }
 
-        EHR.ext.customFields.OperatorCombo.superclass.constructor.call(this, config);
+    var combo = {
+        xtype: 'combo'
+        ,valueField:'value'
+        ,displayField:'text'
+        ,typeAhead: false
+        ,mode: 'local'
+        ,width: 165
+        ,triggerAction: 'all'
+        ,editable: false
+        ,lazyRender: false
+        ,lazyInit: false
+        ,hiddenName:'operator'
+        ,value: value
+        ,store: setOptions(meta, value)
+    };
 
-        if (this.store && this.value && this.displayField && this.valueField && this.displayField != this.valueField)
-        {
-            this.initialValue = this.value;
-            if (this.store.getCount())
-                this.initialLoad();
-            else
-            {
-                this.store.on('load', this.initialLoad, this);
-                if (!this.store.proxy.activeRequest)
-                    this.store.load();
+    function setOptions(meta, value) {
+        var found = false;
+        var options = [];
+        if (meta.jsonType)
+            Ext.each(LABKEY.Filter.getFilterTypesForType(meta.jsonType, meta.mvEnabled), function (filterType) {
+                if (value && value == filterType.getURLSuffix())
+                    found = true;
+                if (filterType.getURLSuffix())
+                    options.push([filterType.getURLSuffix(), filterType.getDisplayText()]);
+            });
+
+        if (!found) {
+            for (var key in LABKEY.Filter.Types) {
+                var filterType = LABKEY.Filter.Types[key];
+                if (filterType.getURLSuffix() == value) {
+                    options.unshift([filterType.getURLSuffix(), filterType.getDisplayText()]);
+                    break;
+                }
             }
         }
 
-    },
-
-    initialLoad : function()
-    {
-        this.store.un('load', this.initialLoad, this);
-        if (this.value === this.initialValue)
-        {
-            var v = this.value;
-            this.setValue(v);
-        }
+        return new Ext.data.SimpleStore({fields: ['value', 'text'], data: options });
     }
-});
-Ext.reg('OperatorCombo', EHR.ext.customFields.OperatorCombo);
 
-
-
-//this is a class for a combobox containing operators as might be used in a search form
-EHR.ext.customFields.OperatorComboDate = Ext.extend(Ext.form.ComboBox,
-{
-    constructor : function(config)
-    {
-        config = config || {};
-        var defaults = {
-            valueField:'value'
-            ,typeAhead: false
-            ,mode: 'local'
-            ,width: 165
-            ,triggerAction: 'all'
-            ,editable: false
-            ,lazyRender: false
-            ,lazyInit: false
-            ,displayField:'displayText'
-            ,hiddenName:'operator'
-            ,value: 'eq'
-            ,items: [
-
-                ]
-            ,store: new Ext.data.SimpleStore({
-                fields: [
-                    'value',
-                    'displayText'
-                ],
-                data: [
-                    ['eq', 'Equals'],
-                    ['neqornull', 'Does Not Equal'],
-                    ['isblank', 'Is Blank'],
-                    ['isnonblank', 'Is Not Blank'],
-                    ['gt', 'Is Greater Than'],
-                    ['lt', 'Is Less Than'],
-                    ['gte', 'Is Greater Than or Equal To'],
-                    ['lte', 'Is Less Than or Equal To']
-                ]
-            })
-        };
-
-        Ext.applyIf(config, defaults);
-
-        EHR.ext.customFields.OperatorCombo.superclass.constructor.call(this, config);
-
-        if (this.store && this.value && this.displayField && this.valueField && this.displayField != this.valueField)
-        {
-            this.initialValue = this.value;
-            if (this.store.getCount())
-                this.initialLoad();
-            else
-            {
-                this.store.on('load', this.initialLoad, this);
-                if (!this.store.proxy.activeRequest)
-                    this.store.load();
-            }
-        }
-
-    },
-
-    initialLoad : function()
-    {
-        this.store.un('load', this.initialLoad, this);
-        if (this.value === this.initialValue)
-        {
-            var v = this.value;
-            this.setValue(v);
-        }
-    }
-});
-Ext.reg('OperatorComboDate', EHR.ext.customFields.OperatorComboDate);
-
-
-//this is a class for a combobox containing operators as might be used in a search form
-EHR.ext.customFields.OperatorComboNum = Ext.extend(Ext.form.ComboBox,
-{
-    constructor : function(config)
-    {
-        config = config || {};
-        var defaults = {
-            valueField:'value'
-            ,typeAhead: false
-            ,mode: 'local'
-            ,width: 165
-            ,triggerAction: 'all'
-            ,editable: false
-            ,lazyRender: false
-            ,lazyInit: false
-            ,displayField:'displayText'
-            ,hiddenName:'operator'
-            ,value: 'eq'
-            ,items: [
-
-                ]
-            ,store: new Ext.data.SimpleStore({
-                fields: [
-                    'value',
-                    'displayText'
-                ],
-                data: [
-                    ['eq', 'Equals'],
-                    ['neqornull', 'Does Not Equal'],
-                    ['isblank', 'Is Blank'],
-                    ['isnonblank', 'Is Not Blank'],
-                    ['gt', 'Is Greater Than'],
-                    ['lt', 'Is Less Than'],
-                    ['gte', 'Is Greater Than or Equal To'],
-                    ['lte', 'Is Less Than or Equal To'],
-                    ['in', 'Equals One Of (e.g. \'a;b;c\')']
-                ]
-            })
-        };
-
-        Ext.applyIf(config, defaults);
-
-        EHR.ext.customFields.OperatorCombo.superclass.constructor.call(this, config);
-
-        if (this.store && this.value && this.displayField && this.valueField && this.displayField != this.valueField)
-        {
-            this.initialValue = this.value;
-            if (this.store.getCount())
-                this.initialLoad();
-            else
-            {
-                this.store.on('load', this.initialLoad, this);
-                if (!this.store.proxy.activeRequest)
-                    this.store.load();
-            }
-        }
-
-    },
-
-    initialLoad : function()
-    {
-        this.store.un('load', this.initialLoad, this);
-        if (this.value === this.initialValue)
-        {
-            var v = this.value;
-            this.setValue(v);
-        }
-    }
-});
-Ext.reg('OperatorComboNum', EHR.ext.customFields.OperatorComboNum);
+    return combo
+};
 
 
 EHR.UTILITIES.Header = function(title){
@@ -437,34 +287,42 @@ EHR.UTILITIES.onError = function(error){
     */
 };
 
-EHR.UTILITIES.rApplyIf = function(o, c){
+EHR.UTILITIES.rApplyIf = function(o, c, depth){
     if(o){
         for(var p in c){
-            if(!Ext.isDefined(o[p])){
+            if(!Ext.isDefined(o[p]))
                 o[p] = c[p];
-            }
             else if(Ext.type(o[p])=='object'){
-                EHR.UTILITIES.rApplyIf(o[p], c[p]);
+                EHR.UTILITIES.rApplyIf(o[p], c[p], depth+1);
             }
         }
     }
     return o;
-}
+};
 
-
-EHR.UTILITIES.rApply = function(o, c){
+EHR.UTILITIES.rApply = function(o, c, depth){
+    depth = depth || 0;
     if(o){
         for(var p in c){
             if(Ext.type(o[p])=='object'){
-                EHR.UTILITIES.rApply(o[p], c[p]);
+                EHR.UTILITIES.rApply(o[p], c[p], depth+1);
             }
-            else {
+            else
                 o[p] = c[p];
-            }
         }
     }
     return o;
-}
+};
+
+EHR.UTILITIES.isEmptyObj = function(ob){
+   for(var i in ob){ return false;}
+   return true;
+};
+
+
+//EHR.UTILITIES.getBaseUrl = function(){
+//    return window.location.protocol + '//' + window.location.host + '/' + LABKEY.ActionURL.getContextPath();
+//};
 
 
 EHR.ext.getLookupStore = function(c, uniqueName)

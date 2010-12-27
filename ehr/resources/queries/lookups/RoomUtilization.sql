@@ -10,7 +10,7 @@ SELECT
   count(DISTINCT c.cage) - count(DISTINCT h.cage) as CagesEmpty, 
   count(DISTINCT h.id) as TotalAnimals
 
-FROM lists.cages c
+FROM lookups.cage c
 
 LEFT JOIN study.housing h
 
