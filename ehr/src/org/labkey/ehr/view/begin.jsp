@@ -16,18 +16,16 @@
  */
 %>
 <%@ taglib prefix="labkey" uri="http://www.labkey.org/taglib" %>
-<%@ page import="org.labkey.api.view.HttpView"%>
-<%@ page import="org.labkey.api.view.ViewContext"%>
-<%@ page import="org.labkey.api.view.ActionURL" %>
-<%@ page import="org.labkey.ehr.EHRController" %>
-<%@ page import="org.labkey.api.data.Container" %>
-<%@ page import="org.labkey.api.security.permissions.AdminPermission" %>
-<%@ page import="org.labkey.api.security.User" %>
+<%@ page import="org.labkey.api.data.Container"%>
+<%@ page import="org.labkey.api.pipeline.PipeRoot"%>
 <%@ page import="org.labkey.api.pipeline.PipelineService" %>
-<%@ page import="org.labkey.api.pipeline.PipelineJobService" %>
-<%@ page import="org.labkey.api.util.PageFlowUtil" %>
 <%@ page import="org.labkey.api.pipeline.PipelineUrls" %>
-<%@ page import="org.labkey.api.pipeline.PipeRoot" %>
+<%@ page import="org.labkey.api.security.User" %>
+<%@ page import="org.labkey.api.security.permissions.AdminPermission" %>
+<%@ page import="org.labkey.api.view.ActionURL" %>
+<%@ page import="org.labkey.api.view.HttpView" %>
+<%@ page import="org.labkey.api.view.ViewContext" %>
+<%@ page import="org.labkey.ehr.EHRController" %>
 <%@ page extends="org.labkey.api.jsp.JspBase" %>
 <%
     ViewContext context = HttpView.currentContext();
@@ -35,8 +33,8 @@
     User user = context.getUser();
 
     PipeRoot pipeRoot = PipelineService.get().findPipelineRoot(c);
-    ActionURL pipelineSetupURL = PageFlowUtil.urlProvider(PipelineUrls.class).urlSetup(c);
-    ActionURL pipelineBeginURL = PageFlowUtil.urlProvider(PipelineUrls.class).urlBegin(c);
+    ActionURL pipelineSetupURL = urlProvider(PipelineUrls.class).urlSetup(c);
+    ActionURL pipelineBeginURL = urlProvider(PipelineUrls.class).urlBegin(c);
     ActionURL etlAdminURL = new ActionURL(EHRController.EtlAdminAction.class, c);
 
 %>
