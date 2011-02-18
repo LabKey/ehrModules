@@ -29,7 +29,7 @@ public class EHRSchema
 
     private EHRSchema()
     {
-        // private contructor to prevent instantiation from
+        // private constructor to prevent instantiation from
         // outside this class: this singleton should only be
         // accessed via org.labkey.ehr.EHRSchema.getInstance()
     }
