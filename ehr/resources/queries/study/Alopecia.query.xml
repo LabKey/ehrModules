@@ -17,7 +17,7 @@
                         <columnTitle>Alopecia Score</columnTitle>
                         <fk>
                           <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-                          <fkDbSchema>lookups</fkDbSchema>
+                          <fkDbSchema>ehr_lookups</fkDbSchema>
                           <fkTable>alopecia_score</fkTable>
                           <fkColumnName>score</fkColumnName>
                         </fk>
@@ -27,10 +27,120 @@
                         <columnTitle>Cause</columnTitle>
                         <fk>
                           <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-                          <fkDbSchema>lookups</fkDbSchema>
+                          <fkDbSchema>ehr_lookups</fkDbSchema>
                           <fkTable>alopecia_cause</fkTable>
                           <fkColumnName>cause</fkColumnName>
                         </fk>
+                    </column>
+                    <column columnName="head">
+                        <datatype>varchar</datatype>
+                        <fk>
+                          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
+                          <fkDbSchema>ehr_lookups</fkDbSchema>
+                          <fkTable>yesno</fkTable>
+                          <fkColumnName>value</fkColumnName>
+                        </fk>
+                        <columnTitle>Head</columnTitle>
+                    </column>
+                    <column columnName="dorsum">
+                        <datatype>varchar</datatype>
+                        <fk>
+                          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
+                          <fkDbSchema>ehr_lookups</fkDbSchema>
+                          <fkTable>yesno</fkTable>
+                          <fkColumnName>value</fkColumnName>
+                        </fk>
+                        <columnTitle>Dorsum</columnTitle>
+                    </column>
+                    <column columnName="rump">
+                        <datatype>varchar</datatype>
+                        <fk>
+                          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
+                          <fkDbSchema>ehr_lookups</fkDbSchema>
+                          <fkTable>yesno</fkTable>
+                          <fkColumnName>value</fkColumnName>
+                        </fk>
+                        <columnTitle>Rump</columnTitle>
+                    </column>
+                    <column columnName="shoulders">
+                        <datatype>varchar</datatype>
+                        <fk>
+                          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
+                          <fkDbSchema>ehr_lookups</fkDbSchema>
+                          <fkTable>yesno</fkTable>
+                          <fkColumnName>value</fkColumnName>
+                        </fk>
+                        <columnTitle>Shoulders</columnTitle>
+                    </column>
+                    <column columnName="upperArms">
+                        <datatype>varchar</datatype>
+                        <fk>
+                          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
+                          <fkDbSchema>ehr_lookups</fkDbSchema>
+                          <fkTable>yesno</fkTable>
+                          <fkColumnName>value</fkColumnName>
+                        </fk>
+                        <columnTitle>Upper Arms</columnTitle>
+                    </column>
+                    <column columnName="lowerArms">
+                        <datatype>varchar</datatype>
+                        <fk>
+                          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
+                          <fkDbSchema>ehr_lookups</fkDbSchema>
+                          <fkTable>yesno</fkTable>
+                          <fkColumnName>value</fkColumnName>
+                        </fk>
+                        <columnTitle>Lower Arms</columnTitle>
+                    </column>
+                    <column columnName="lowerArms">
+                        <datatype>varchar</datatype>
+                        <fk>
+                          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
+                          <fkDbSchema>ehr_lookups</fkDbSchema>
+                          <fkTable>yesno</fkTable>
+                          <fkColumnName>value</fkColumnName>
+                        </fk>
+                        <columnTitle>Lower Arms</columnTitle>
+                    </column>
+                    <column columnName="hips">
+                        <datatype>varchar</datatype>
+                        <fk>
+                          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
+                          <fkDbSchema>ehr_lookups</fkDbSchema>
+                          <fkTable>yesno</fkTable>
+                          <fkColumnName>value</fkColumnName>
+                        </fk>
+                        <columnTitle>Hips</columnTitle>
+                    </column>
+                    <column columnName="upperLegs">
+                        <datatype>varchar</datatype>
+                        <fk>
+                          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
+                          <fkDbSchema>ehr_lookups</fkDbSchema>
+                          <fkTable>yesno</fkTable>
+                          <fkColumnName>value</fkColumnName>
+                        </fk>
+                        <columnTitle>Upper Legs</columnTitle>
+                    </column>
+                    <column columnName="lowerLegs">
+                        <datatype>varchar</datatype>
+                        <fk>
+                          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
+                          <fkDbSchema>ehr_lookups</fkDbSchema>
+                          <fkTable>yesno</fkTable>
+                          <fkColumnName>value</fkColumnName>
+                        </fk>
+                        <columnTitle>Lower Legs</columnTitle>
+                    </column>
+                    <column columnName="other">
+                        <datatype>varchar</datatype>
+                        <fk>
+                          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
+                          <fkDbSchema>ehr_lookups</fkDbSchema>
+                          <fkTable>yesno</fkTable>
+                          <fkColumnName>value</fkColumnName>
+                        </fk>
+                        <columnTitle>Other</columnTitle>
                     </column>
                 </columns>
             </table>

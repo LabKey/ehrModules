@@ -1,7 +1,7 @@
 <html>
 <script type="text/javascript">
 
-LABKEY.requiresScript("/WNPRC_Main/navMenu.js");
+LABKEY.requiresScript("/ehr/navMenu.js");
 
 
 Ext.onReady(createNavMenu);
@@ -16,7 +16,7 @@ function createNavMenu()
 
 
     var menuCfg = {
-        target: 'ehrMenu',
+        renderTo: 'ehrMenu',
         sections: [
             {header: 'By Animal',
             items: [

@@ -1,50 +1,61 @@
 <html>
 <script type="text/javascript">
 
-LABKEY.requiresScript("/WNPRC_Main/navMenu.js");
+LABKEY.requiresScript("/ehr/navMenu.js");
 
 
 Ext.onReady(createNavMenu);
 
 function createNavMenu()
 {
-    if (!window.EHR || !window.EHR.UTILITIES || !window.EHR.UTILITIES.navMenu)
-    {
-        createNavMenu.defer(10);
-        return;
-    }
 
     var config = {displayField: 'Label', headerField: 'Category', target: 'ehrDatasets'};
     
     LABKEY.Query.selectRows({
-            schemaName: 'study',
-            queryName: 'DataSets',
-            successCallback: onSuccess,
-            scope: this,
-            errorCallback: EHR.UTILITIES.onError,
-            sort: config.headerField+','+config.displayField,
-            filterArray: config.filterArray
+        schemaName: 'study',
+        queryName: 'DataSets',
+        successCallback: onSuccess,
+        scope: this,
+        errorCallback: EHR.UTILITIES.onError,
+        sort: config.headerField+','+config.displayField,
+        filterArray: config.filterArray
     });
 
     function onSuccess(data){
-        var menuCfg = {target: config.target, sections: new Array()}
-        var prevHeader;
+        var menuCfg = {
+            renderTo: config.target,
+            sections: new Array(),
+            columns: 3,
+            colWidth: 400,
+            renderer: function(item){
+                return {
+                    html: '<div style="float:left;width:180px;">'+item.name+':</div> [<a href="<%=contextPath%>/ehr<%=containerPath%>/searchPanel.view?schemaName=study&queryName='+item.data.Label+'">Search</a>] [<a href="<%=contextPath%>/query<%=containerPath%>/executeQuery.view?schemaName=study&query.queryName='+item.data.Label+'">View All Records</a>]',
+                    style: 'padding-left:5px;padding-bottom:8px'
+                };
+            }
+        }
+
+        var sections = {};
         var section;
         for (var i=0;i<data.rows.length;i++){
-            var tmp = data.rows[i];
-
-            if (tmp[config.headerField] != prevHeader){
-                menuCfg.sections.push(section);
-                prevHeader = tmp[config.headerField];
-
-                section = {header: tmp[config.headerField], items: new Array()};
+            var row = data.rows[i];
+            if(!row.ShowByDefault){
+                continue;
             }
 
-            section.items.push({name: tmp[config.displayField], url: '<%=contextPath%>/study/WNPRC/EHR/defaultDatasetReport.view?datasetId='+tmp['DataSetId']})
+            if (!sections[row[config.headerField]]){
+                section = {header: row[config.headerField], items: []};
+                sections[row[config.headerField]] = section;
+
+                menuCfg.sections.push(section);
+            }
+            else
+                section = sections[row[config.headerField]];
+
+            section.items.push({name: row[config.displayField], data: row})
 
         }
 
-        menuCfg.sections.shift();
         new EHR.UTILITIES.navMenu(menuCfg);
     }
 

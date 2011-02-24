@@ -3,15 +3,12 @@
  *
  * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
  */
-Ext.namespace('EHR.ext.customPanels');
+Ext.namespace('EHR.ext');
 
-LABKEY.requiresScript("/ehr/transposeRows.js");
-LABKEY.requiresScript("/ehr/utilities.js");
+LABKEY.requiresScript("/ehr/ehrAPI.js");
 LABKEY.requiresScript("/ehr/reports.js");
-LABKEY.requiresScript("/ehr/ext.ux.datetimefield.js");
-//LABKEY.requiresScript("/vis/visualizationWizard.js");
 
-EHR.ext.customPanels.SingleAnimalReport = Ext.extend(Ext.Panel, {
+EHR.ext.SingleAnimalReport = Ext.extend(Ext.Panel, {
 
     initComponent: function()
     {
@@ -79,7 +76,7 @@ EHR.ext.customPanels.SingleAnimalReport = Ext.extend(Ext.Panel, {
                     ref: '../tabPanel',
                     activeTab: 0,
                     cls: 'extContainer',
-                    plugins: ['fittoparent'],
+//                    plugins: ['fittoparent'],
                     autoHeight: true,
                     bodyStyle: 'padding-top: 5px;',
                     frame: true
@@ -88,7 +85,7 @@ EHR.ext.customPanels.SingleAnimalReport = Ext.extend(Ext.Panel, {
 
         });
 
-        EHR.ext.customPanels.SingleAnimalReport.superclass.initComponent.call(this);
+        EHR.ext.SingleAnimalReport.superclass.initComponent.call(this);
 
         this.togglePanel.add({
             width: 200,
@@ -145,7 +142,7 @@ EHR.ext.customPanels.SingleAnimalReport = Ext.extend(Ext.Panel, {
 
 
         this.allReports = new LABKEY.ext.Store({
-            schemaName: 'lookups',
+            schemaName: 'ehr',
             queryName: 'reports',
             filterArray: [LABKEY.Filter.create('visible', true, LABKEY.Filter.Types.EQUAL)],
 //            , LABKEY.Filter.create('ReportCategory', 'AnimalReport', LABKEY.Filter.Types.EQUAL)
@@ -183,20 +180,19 @@ EHR.ext.customPanels.SingleAnimalReport = Ext.extend(Ext.Panel, {
 
         target.add({
             xtype: 'panel',
-            items: [
-                new Ext.form.TextField({
-                    name:"subjectBox",
-                    width:165,
-                    ref: '../../../../subjArea',
-                    value: (this.subjectArray && this.subjectArray.length ? this.subjectArray.join(';') : ''),
-                    keys: [
-                        {
-                            key: Ext.EventObject.ENTER,
-                            handler: this.onSubmit,
-                            scope: this
-                        }
-                    ]
-                })
+            items: [{
+                xtype: 'ehr-participant',
+                name:"subjectBox",
+                width:165,
+                ref: '../../../../subjArea',
+                value: (this.subjectArray && this.subjectArray.length ? this.subjectArray.join(';') : ''),
+                keys: [
+                    {
+                        key: Ext.EventObject.ENTER,
+                        handler: this.onSubmit,
+                        scope: this
+                    }
+                ]}
             ]});
 
         target.doLayout();
@@ -357,7 +353,7 @@ EHR.ext.customPanels.SingleAnimalReport = Ext.extend(Ext.Panel, {
                 ,editable: true
                 ,store: new LABKEY.ext.Store({
                     containerPath: 'WNPRC/EHR/',
-                    schemaName: 'lookups',
+                    schemaName: 'ehr_lookups',
 //                    queryName: 'RoomUtilization',
                     queryName: 'rooms',
                     sort: 'room',
@@ -436,7 +432,7 @@ EHR.ext.customPanels.SingleAnimalReport = Ext.extend(Ext.Panel, {
             ,triggerAction: 'all'
             ,store: new LABKEY.ext.Store({
                 containerPath: 'WNPRC/EHR/',
-                schemaName: 'lookups',
+                schemaName: 'ehr_lookups',
                 queryName: 'areas',
                 sort: 'area',
                 autoLoad: true
@@ -485,8 +481,8 @@ EHR.ext.customPanels.SingleAnimalReport = Ext.extend(Ext.Panel, {
             ,listeners: {
                 scope: this,
                 blur: function(o){
-                    o.fireEvent('change');
-                    o.endDateField.fireEvent('change');
+                    o.fireEvent('change', o, o.getValue());
+                    o.endDateField.fireEvent('change', o.endDateField, o.endDateField.getValue());
                     o.validate(o.getValue(), o);
                 }
             }
@@ -503,18 +499,9 @@ EHR.ext.customPanels.SingleAnimalReport = Ext.extend(Ext.Panel, {
             ,listeners: {
                 scope: this,
                 blur: function(o){
-                    o.fireEvent('change');
-                    o.startDateField.fireEvent('change');
+                    o.fireEvent('change', o, o.getValue());
+                    o.startDateField.fireEvent('change', o.startDateField, o.startDateField.getValue());
                     o.validate(o.getValue(), o);
-                    console.log('blur')
-                }
-//                ,change: function(c){
-//                    console.log('change');
-//                    if(c)
-//                        Ext.form.VTypes.daterange(c.getValue(), c);
-//                }
-                ,keyup: function(a,b){
-                    console.log('keyup')
                 }
             }
 //            ,validateOnBlur: true
@@ -1226,7 +1213,7 @@ EHR.ext.customPanels.SingleAnimalReport = Ext.extend(Ext.Panel, {
             config.viewName = tab.rowData.get("viewname");
         }
 
-        new EHR.ext.customPanels.detailsView(config);
+        new EHR.ext.DetailsView(config);
 
         this.endMsg();
 

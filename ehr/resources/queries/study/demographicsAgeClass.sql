@@ -9,7 +9,7 @@ d.id,
 ac.AgeClass,
 
 FROM study.demographics d
-LEFT JOIN lookups.ageclass ac
+LEFT JOIN ehr_lookups.ageclass ac
 ON (
 d.birth IS NOT NULL AND
 (CONVERT(age_in_months(d.birth, COALESCE(d.death, curdate())), DOUBLE) / 12) >= ac."min" AND

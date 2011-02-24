@@ -3,7 +3,7 @@
         <tables xmlns="http://labkey.org/data/xml">
             <table tableName="StudyData" tableDbType="TABLE">
                 <columns>
-                    <column columnName="Remark">
+                    <column columnName="remark">
                         <isHidden>false</isHidden>
                         <displayWidth>350</displayWidth>
                     </column>
@@ -11,7 +11,7 @@
                         <isHidden>false</isHidden>
                         <displayWidth>350</displayWidth>
                     </column>
-                    <column columnName="Project">
+                    <column columnName="project">
                         <fk>
                             <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                             <fkDbSchema>lists</fkDbSchema>
@@ -77,15 +77,29 @@
                             <fkColumnName>lsid</fkColumnName>
                         </fk>
                     </column>
+                    <column columnName="HousingAtTime" wrappedColumnName="lsid">
+                        <columnTitle>Housing At Time</columnTitle>
+                        <isHidden>false</isHidden>
+                        <isUnselectable>true</isUnselectable>
+                        <shownInDetailsView>false</shownInDetailsView>
+                        <shownInInsertView>false</shownInInsertView>
+                        <shownInUpdateView>false</shownInUpdateView>
+                        <fk>
+                            <fkDbSchema>study</fkDbSchema>
+                            <fkTable>studyDataRoomAtTime</fkTable>
+                            <fkColumnName>lsid</fkColumnName>
+                        </fk>
+                    </column>
                 </columns>
-                <buttonBarOptions position="both" includeStandardButtons="false">
+                <buttonBarOptions position="both" includeStandardButtons="true">
                     <includeScript>/ehr/studyButtons.js</includeScript>
                     <onRender>moreActionsHandler</onRender>
-                    <item text="Insert New">
-                        <originalText>Insert New</originalText>
-                    </item>
+
                     <item text="Views">
                         <originalText>Views</originalText>
+                    </item>
+                    <item text="Insert New">
+                        <originalText>Insert New</originalText>
                     </item>
                     <item text="Cohorts">
                         <originalText>Cohorts</originalText>

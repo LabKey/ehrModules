@@ -43,6 +43,21 @@
                           <fkColumnName>objectid</fkColumnName>
                         </fk>
                     </column>
+                    <column columnName="sampleId">
+                        <columnTitle>Sample Id</columnTitle>
+                    </column>
+                    <column columnName="tube_vol">
+                        <columnTitle>Tube Volume</columnTitle>
+                    </column>
+                    <column columnName="num_tubes">
+                        <columnTitle># of Tubes</columnTitle>
+                    </column>
+                    <column columnName="quantity">
+                        <columnTitle>Total Volume</columnTitle>
+                    </column>
+                    <column columnName="tube_type">
+                        <columnTitle>Tube Type</columnTitle>
+                    </column>
                 </columns>
             </table>
         </tables>

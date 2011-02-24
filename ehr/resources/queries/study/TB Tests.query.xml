@@ -25,37 +25,37 @@
                     <columnTitle>Eye</columnTitle>
                     <fk>
                       <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-                      <fkDbSchema>lookups</fkDbSchema>
+                      <fkDbSchema>ehr_lookups</fkDbSchema>
                       <fkTable>tb_eye</fkTable>
                       <fkColumnName>eye</fkColumnName>
                     </fk>
                   </column>
                   <column columnName="result1">
                     <datatype>integer</datatype>
-                    <columnTitle>Result1</columnTitle>
+                    <columnTitle>24 Hr</columnTitle>
                     <fk>
                       <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-                      <fkDbSchema>lookups</fkDbSchema>
+                      <fkDbSchema>ehr_lookups</fkDbSchema>
                       <fkTable>tb_result</fkTable>
                       <fkColumnName>result</fkColumnName>
                     </fk>
                   </column>
                   <column columnName="result2">
                     <datatype>integer</datatype>
-                    <columnTitle>Result2</columnTitle>
+                    <columnTitle>48 Hr</columnTitle>
                     <fk>
                       <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-                      <fkDbSchema>lookups</fkDbSchema>
+                      <fkDbSchema>ehr_lookups</fkDbSchema>
                       <fkTable>tb_result</fkTable>
                       <fkColumnName>result</fkColumnName>
                     </fk>
                   </column>
                   <column columnName="result3">
                     <datatype>integer</datatype>
-                    <columnTitle>Result3</columnTitle>
+                    <columnTitle>72 Hr</columnTitle>
                     <fk>
                       <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-                      <fkDbSchema>lookups</fkDbSchema>
+                      <fkDbSchema>ehr_lookups</fkDbSchema>
                       <fkTable>tb_result</fkTable>
                       <fkColumnName>result</fkColumnName>
                     </fk>

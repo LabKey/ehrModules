@@ -13,7 +13,7 @@
                         </fk>
                     </column>
                     <column columnName="date">
-                        <columnTitle>Header Date</columnTitle>
+                        <columnTitle>Begin Date</columnTitle>
                         <formatString>yyyy-MM-dd HH:mm</formatString>
                     </column>
                     <column columnName="code">
@@ -26,14 +26,14 @@
                             <fkColumnName>code</fkColumnName>
                         </fk>
                     </column>
-                    <column columnName="BeginTime">
+                    <column columnName="HeaderDate">
                         <datatype>timestamp</datatype>
-                        <columnTitle>Begin Time</columnTitle>
-                        <formatString>H:mm</formatString>
+                        <columnTitle>Header Date</columnTitle>
+                        <formatString>yyyy-MM-dd H:mm</formatString>
                     </column>
                     <column columnName="EndTime">
                         <datatype>timestamp</datatype>
-                        <columnTitle>End Time</columnTitle>
+                        <columnTitle>Administration End Time</columnTitle>
                         <formatString>H:mm</formatString>
                     </column>
                     <column columnName="parentId">
@@ -49,13 +49,13 @@
                         <columnTitle>Amount</columnTitle>
 
                     </column>
-                    <column columnName="units">
+                    <column columnName="amount_units">
                         <datatype>varchar</datatype>
-                        <columnTitle>Units</columnTitle>
+                        <columnTitle>Amount Units</columnTitle>
                         <fk>
                             <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-                            <fkDbSchema>lookups</fkDbSchema>
-                            <fkTable>drug_units</fkTable>
+                            <fkDbSchema>ehr_lookups</fkDbSchema>
+                            <fkTable>amount_units</fkTable>
                             <fkColumnName>unit</fkColumnName>
                         </fk>
                     </column>
@@ -64,9 +64,39 @@
                         <columnTitle>Route</columnTitle>
                         <fk>
                             <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-                            <fkDbSchema>lookups</fkDbSchema>
+                            <fkDbSchema>ehr_lookups</fkDbSchema>
                             <fkTable>routes</fkTable>
                             <fkColumnName>route</fkColumnName>
+                        </fk>
+                    </column>
+                    <column columnName="concentration">
+                        <columnTitle>Drug Conc</columnTitle>
+                    </column>
+                    <column columnName="conc_units">
+                        <columnTitle>Conc Units</columnTitle>
+                        <fk>
+                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
+                            <fkDbSchema>ehr_lookups</fkDbSchema>
+                            <fkTable>conc_units</fkTable>
+                            <fkColumnName>unit</fkColumnName>
+                        </fk>
+                    </column>
+                    <column columnName="dosage_units">
+                        <columnTitle>Dosage Units</columnTitle>
+                        <fk>
+                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
+                            <fkDbSchema>ehr_lookups</fkDbSchema>
+                            <fkTable>dosage_units</fkTable>
+                            <fkColumnName>unit</fkColumnName>
+                        </fk>
+                    </column>
+                    <column columnName="vol_units">
+                        <columnTitle>Vol Units</columnTitle>
+                        <fk>
+                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
+                            <fkDbSchema>ehr_lookups</fkDbSchema>
+                            <fkTable>volume_units</fkTable>
+                            <fkColumnName>unit</fkColumnName>
                         </fk>
                     </column>
                 </columns>

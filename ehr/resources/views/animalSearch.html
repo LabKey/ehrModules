@@ -2,11 +2,11 @@
 <head>
 <script type="text/javascript">
 
-LABKEY.requiresScript("/ehr/searchForm.js");
+LABKEY.requiresScript("/ehr/SearchPanel.js");
 
 Ext.onReady(function ()
 {
-    new EHR.ext.customPanels.searchForm({
+    new EHR.ext.SearchPanel({
         schemaName: 'study'
         ,queryName: 'Animal'
         ,title: 'Search Animals'
@@ -40,17 +40,17 @@ Ext.onReady(function ()
             //,{caption: 'Num. of Active Assignments', name: 'activeProjects/ActiveProjects (avail=all)'}
             ,{caption: 'Num. of Offspring', name: 'totalOffspring/TotalOffspring', jsonType: 'int'}
             ,{caption: 'Num. of Roommates', name: 'numRoommates/numRoommates', jsonType: 'int'}
-            ,{caption: 'Species', name: 'Species/species', lookup: {schemaName: 'lookups', queryName: 'species', displayColumn: 'common', keyColumn: 'common'}
+            ,{caption: 'Species', name: 'Species/species', lookup: {schemaName: 'ehr_lookups', queryName: 'species', displayColumn: 'common', keyColumn: 'common'}
             }
-            ,{caption: 'Gender', name: 'DataSet/Demographics/gender', lookup: {schemaName: 'lookups', queryName: 'gender_codes', displayColumn: 'meaning', keyColumn: 'code'}}
+            ,{caption: 'Gender', name: 'DataSet/Demographics/gender', lookup: {schemaName: 'ehr_lookups', queryName: 'gender_codes', displayColumn: 'meaning', keyColumn: 'code'}}
             ,{caption: 'Dam', name: 'DataSet/Demographics/dam'}
             ,{caption: 'Sire', name: 'DataSet/Demographics/sire'}
             ,{caption: 'Availability', name: 'DataSet/Demographics/avail'}
             ,{caption: 'Hold', name: 'DataSet/Demographics/hold'}
             ,{caption: 'Birth', name: 'DataSet/Demographics/birth', jsonType: 'date'}
-            ,{caption: 'Origin', name: 'DataSet/Demographics/origin', lookup: {schemaName: 'lookups', queryName: 'origin_codes', displayColumn: 'code', keyColumn: 'code'}}
+            ,{caption: 'Origin', name: 'DataSet/Demographics/origin', lookup: {schemaName: 'ehr_lookups', queryName: 'origin_codes', displayColumn: 'code', keyColumn: 'code'}}
             ,{caption: 'Death', name: 'DataSet/Demographics/death', jsonType: 'date'}
-            ,{caption: 'Viral Status', name: 'DataSet/Demographics/v_status', lookup: {schemaName: 'lookups', queryName: 'viral_status', displayColumn: 'viral_status', keyColumn: 'viral_status'}}
+            ,{caption: 'Viral Status', name: 'DataSet/Demographics/v_status', lookup: {schemaName: 'ehr_lookups', queryName: 'viral_status', displayColumn: 'viral_status', keyColumn: 'viral_status'}}
             ,{caption: 'Latest Weight', name: 'MostRecentWeight/MostRecentWeight', jsonType: 'float'}
             ,{caption: 'Latest Weight', name: 'MostRecentWeight/MostRecentWeight', jsonType: 'float'}
             //,{caption: 'Most Recent Weight Date', name: 'MostRecentWeight/MostRecentWeightDate', jsonType: 'date'}

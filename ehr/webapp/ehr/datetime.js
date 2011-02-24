@@ -84,6 +84,8 @@ Ext.ux.form.DateTime = Ext.extend(Ext.form.Field, {
                         ,width:this.timeWidth
                         ,selectOnFocus:this.selectOnFocus
                         ,allowBlank: this.allowBlank || false
+                        //NOTE: added by bbimber
+                        ,readOnly: this.readOnly || false
                         ,msgTarget: 'under'
                         ,listeners:{
                                   blur:{scope:this, fn:this.onBlur}
@@ -100,6 +102,8 @@ Ext.ux.form.DateTime = Ext.extend(Ext.form.Field, {
                         ,format:this.timeFormat || Ext.form.TimeField.prototype.format
                         ,width:this.timeWidth
                         ,selectOnFocus:this.selectOnFocus
+                        //NOTE: added by bbimber
+                        ,readOnly: this.readOnly || false
                         ,msgTarget: 'under'
                         ,listeners:{
                                   blur:{scope:this, fn:this.onBlur}
@@ -612,7 +616,6 @@ Ext.ux.form.DateTime = Ext.extend(Ext.form.Field, {
          * @private Updates all of Date, Time and Hidden
          */
         ,updateValue:function() {
-
                 this.updateDate();
                 this.updateTime();
                 this.updateHidden();

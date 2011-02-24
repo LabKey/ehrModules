@@ -3,6 +3,79 @@
         <tables xmlns="http://labkey.org/data/xml">
             <table tableName="histology" tableDbType="TABLE">
                 <tableUrl>/query/detailsQueryRow.view?schemaName=study&amp;query.queryName=histology&amp;lsid=${lsid}</tableUrl>
+                <columns>
+                    <column columnName="participantid">
+                        <datatype>varchar</datatype>
+                        <columnTitle>Participant ID</columnTitle>
+                        <description>Participant identifier</description>
+                        <nullable>false</nullable>
+                    </column>
+                    <column columnName="date">
+                        <datatype>timestamp</datatype>
+                        <formatString>yyyy-MM-dd HH:mm a</formatString>
+                        <columnTitle>Date</columnTitle>
+                        <nullable>false</nullable>
+                        <propertyURI>http://cpas.labkey.com/Study#VisitDate</propertyURI>
+                    </column>
+                    <column columnName="slideNum">
+                      <datatype>varchar</datatype>
+                      <columnTitle>Slide Number</columnTitle>
+                    </column>
+                    <column columnName="tissue">
+                      <datatype>varchar</datatype>
+                      <columnTitle>Organ/Tissue</columnTitle>
+                    </column>
+                    <column columnName="diagnosis">
+                      <datatype>varchar</datatype>
+                      <columnTitle>Diagnosis</columnTitle>
+                      <fk>
+                        <fkFolderPath>/wnprc/ehr/</fkFolderPath>
+                        <fkDbSchema>lists</fkDbSchema>
+                        <fkTable>snomed</fkTable>
+                        <fkColumnName>code</fkColumnName>
+                      </fk>
+                    </column>
+                    <column columnName="remark">
+                        <datatype>varchar</datatype>
+                        <columnTitle>Remark</columnTitle>
+                        <displayWidth>110</displayWidth>
+                        <propertyURI>urn:ehr.labkey.org/#Remark</propertyURI>
+                        <inputType>textarea</inputType>
+                    </column>
+                    <column columnName="description">
+                        <datatype>varchar</datatype>
+                        <columnTitle>Description</columnTitle>
+                        <shownInInsertView>false</shownInInsertView>
+                        <shownInUpdateView>false</shownInUpdateView>
+                        <shownInDetailsView>false</shownInDetailsView>
+                        <propertyURI>urn:ehr.labkey.org/#Description</propertyURI>
+                        <isHidden>true</isHidden>
+                        <inputType>textarea</inputType>
+                    </column>
+                    <column columnName="objectid">
+                        <datatype>entityId</datatype>
+                        <columnTitle>Key</columnTitle>
+                        <shownInInsertView>false</shownInInsertView>
+                        <shownInUpdateView>false</shownInUpdateView>
+                        <shownInDetailsView>false</shownInDetailsView>
+                        <isHidden>true</isHidden>
+                        <!--<isAutoInc>true</isAutoInc>-->
+                        <!--<isKeyField>true</isKeyField>-->
+                    </column>
+                    <column columnName="parentid">
+                      <datatype>varchar</datatype>
+                      <columnTitle>Parent Id</columnTitle>
+                      <propertyURI>urn:ehr.labkey.org/#ParentId</propertyURI>
+                        <fk>
+                          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
+                          <fkDbSchema>study</fkDbSchema>
+                          <fkTable>encounters</fkTable>
+                          <fkColumnName>objectid</fkColumnName>
+                        </fk>
+                    </column>
+                </columns>
+                <tableTitle>Histology</tableTitle>
+                <description>Histology</description>
             </table>
         </tables>
     </metadata>

@@ -1,7 +1,7 @@
 <html>
 <script type="text/javascript">
 
-LABKEY.requiresScript("/WNPRC_Main/navMenu.js");
+LABKEY.requiresScript("/ehr/navMenu.js");
 
 Ext.onReady(createNavMenu);
 
@@ -14,7 +14,7 @@ function createNavMenu()
     }
 
     new EHR.UTILITIES.navMenu({
-        target: 'complianceNav',
+        renderTo: 'complianceNav',
         width: 450,
         sections: [
             {header: 'Employee Information',

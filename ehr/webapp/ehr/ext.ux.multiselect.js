@@ -220,6 +220,12 @@ Ext.ux.form.MultiSelect = Ext.extend(Ext.form.Field, {
     this.hiddenField = this.el.createChild(hiddenTag);
     this.hiddenField.dom.disabled = this.hiddenName != this.name;
     fs.doLayout();
+
+    //value cannot be set unless rendered.  this is a quick way around that
+    if(this.value || this.initialValue){
+        this.setValue(this.value || this.initialValue);
+        delete this.initialValue;
+    }
   },
 
   // private
@@ -269,6 +275,10 @@ Ext.ux.form.MultiSelect = Ext.extend(Ext.form.Field, {
    * @return {Array} value An array of string data values
    */
   getValue : function(valueField) {
+    //if called prior to render
+    if(!this.rendered){
+        return this.value || this.initialValue;
+    }
     var returnArray = [];
     var selectionsArray = this.view.getSelectedIndexes();
     if (selectionsArray.length == 0) {
@@ -290,6 +300,18 @@ Ext.ux.form.MultiSelect = Ext.extend(Ext.form.Field, {
   setValue : function(values) {
     var index;
     var selections = [];
+    values = values || [];
+
+    if (!Ext.isArray(values)) {
+      values = values.split(this.delimiter);
+    }
+
+
+    if(!this.rendered){
+        this.initialValue = values.join(this.delimiter);
+        return;
+    };
+
     this.view.clearSelections();
     this.hiddenField.dom.value = '';
 
@@ -297,9 +319,6 @@ Ext.ux.form.MultiSelect = Ext.extend(Ext.form.Field, {
       return;
     }
 
-    if (!Ext.isArray(values)) {
-      values = values.split(this.delimiter);
-    }
     for (var i = 0; i < values.length; i++) {
       index = this.view.store.indexOf(this.view.store.query(this.valueField, new RegExp('^' + values[i] + '$', 'i')).itemAt(0));
       selections.push(index);
@@ -353,18 +372,18 @@ Ext.ux.form.MultiSelect = Ext.extend(Ext.form.Field, {
   },
 
   // inherit docs
-  disable : function() {
-    this.disabled = true;
-    this.hiddenField.dom.disabled = true;
-    this.fs.disable();
-  },
-
-  // inherit docs
-  enable : function() {
-    this.disabled = false;
-    this.hiddenField.dom.disabled = false;
-    this.fs.enable();
-  },
+//  disable : function() {
+//    this.disabled = true;
+//    this.hiddenField.dom.disabled = true;
+//    this.fs.disable();
+//  },
+//
+//  // inherit docs
+//  enable : function() {
+//    this.disabled = false;
+//    this.hiddenField.dom.disabled = false;
+//    this.fs.enable();
+//  },
 
   // inherit docs
   destroy : function() {

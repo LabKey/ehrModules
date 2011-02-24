@@ -35,7 +35,7 @@ function beforeBoth(row, errors) {
 
 function beforeInsert(row, errors) {
     beforeBoth(row, errors);
-
+    console.log(row);
 }
 
 function beforeUpdate(row, oldRow, errors) {
@@ -43,6 +43,16 @@ function beforeUpdate(row, oldRow, errors) {
 
 }
 
+function init(row, errors){
+    console.log('init');
+}
+
+
+function onComplete(row, errors){
+    console.log('on complete');
+    console.log(this);
+
+}
 
 // ================================================
 

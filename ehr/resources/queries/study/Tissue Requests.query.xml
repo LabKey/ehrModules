@@ -4,21 +4,112 @@
             <table tableName="tissue" tableDbType="TABLE">
                 <tableUrl>/query/detailsQueryRow.view?schemaName=study&amp;query.queryName=tissue&amp;lsid=${lsid}</tableUrl>
                 <columns>
-                    <column columnName="Date">
-                        <datatype>timestamp</datatype>
-                        <formatString>yyyy-MM-dd HH:mm</formatString>
-                    </column>
+                  <column columnName="participantid">
+                    <datatype>varchar</datatype>
+                    <columnTitle>Participant ID</columnTitle>
+                    <description>Participant identifier</description>
+                    <nullable>false</nullable>
+                  </column>
+                  <column columnName="date">
+                    <datatype>timestamp</datatype>
+                    <formatString>yyyy-MM-dd HH:mm</formatString>
+                    <columnTitle>Date</columnTitle>
+                    <nullable>false</nullable>
+                    <propertyURI>http://cpas.labkey.com/Study#VisitDate</propertyURI>
+                  </column>
                     <column columnName="gender">
                         <datatype>varchar</datatype>
                         <columnTitle>Gender</columnTitle>
                         <fk>
                             <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-                            <fkDbSchema>lookups</fkDbSchema>
+                            <fkDbSchema>ehr_lookups</fkDbSchema>
                             <fkTable>gender_codes</fkTable>
                             <fkColumnName>Code</fkColumnName>
                         </fk>
                     </column>
+                  <column columnName="livedead">
+                    <datatype>varchar</datatype>
+                    <columnTitle>Live/Dead</columnTitle>
+                  </column>
+                  <column columnName="wbo">
+                    <datatype>varchar</datatype>
+                    <columnTitle>WBO</columnTitle>
+                  </column>
+                  <column columnName="tissue">
+                    <datatype>varchar</datatype>
+                    <columnTitle>Tissue</columnTitle>
+                  </column>
+                  <column columnName="source">
+                    <datatype>varchar</datatype>
+                    <columnTitle>Source</columnTitle>
+                  </column>
+                  <column columnName="dest">
+                    <datatype>varchar</datatype>
+                    <columnTitle>Destination</columnTitle>
+                  </column>
+                  <column columnName="recip">
+                    <datatype>varchar</datatype>
+                    <columnTitle>Recipient</columnTitle>
+                  </column>
+                  <column columnName="affil">
+                    <datatype>varchar</datatype>
+                    <columnTitle>Affiliation</columnTitle>
+                  </column>
+                  <column columnName="remark">
+                    <datatype>varchar</datatype>
+                    <columnTitle>Remark</columnTitle>
+                    <displayWidth>110</displayWidth>
+                    <propertyURI>urn:ehr.labkey.org/#Remark</propertyURI>
+                    <inputType>textarea</inputType>
+                  </column>
+                  <column columnName="description">
+                    <datatype>varchar</datatype>
+                    <columnTitle>Description</columnTitle>
+                    <shownInInsertView>false</shownInInsertView>
+                    <shownInUpdateView>false</shownInUpdateView>
+                    <shownInDetailsView>false</shownInDetailsView>
+                    <propertyURI>urn:ehr.labkey.org/#Description</propertyURI>
+                    <isHidden>true</isHidden>
+                    <inputType>textarea</inputType>
+                  </column>
+                  <column columnName="objectid">
+                    <datatype>entityid</datatype>
+                    <columnTitle>Key</columnTitle>
+                    <shownInInsertView>false</shownInInsertView>
+                    <shownInUpdateView>false</shownInUpdateView>
+                    <shownInDetailsView>false</shownInDetailsView>
+                    <isHidden>true</isHidden>
+                    <!--<isKeyField>true</isKeyField>-->
+                  </column>
+                  <column columnName="requestid">
+                    <datatype>varchar</datatype>
+                    <columnTitle>Request Id</columnTitle>
+                    <isHidden>true</isHidden>
+                    <shownInInsertView>false</shownInInsertView>
+                    <shownInUpdateView>false</shownInUpdateView>
+                  </column>
+                  <column columnName="parentid">
+                    <datatype>varchar</datatype>
+                    <columnTitle>Parent Id</columnTitle>
+                    <propertyURI>urn:ehr.labkey.org/#ParentId</propertyURI>
+                      <fk>
+                          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
+                          <fkDbSchema>study</fkDbSchema>
+                          <fkTable>encounters</fkTable>
+                          <fkColumnName>objectid</fkColumnName>
+                      </fk>
+                  </column>
+                  <column columnName="ts">
+                    <datatype>timestamp</datatype>
+                    <columnTitle>Last Changed</columnTitle>
+                    <!--<nullable>false</nullable>-->
+                    <shownInInsertView>false</shownInInsertView>
+                    <shownInUpdateView>false</shownInUpdateView>
+                    <shownInDetailsView>false</shownInDetailsView>
+                    <isHidden>true</isHidden>
+                  </column>
                 </columns>
+                <tableTitle>Tissue Requests</tableTitle>
             </table>
         </tables>
     </metadata>

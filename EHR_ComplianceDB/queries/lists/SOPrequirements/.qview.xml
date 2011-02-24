@@ -12,6 +12,11 @@
                 <property name="columnTitle" value="PDF"/>
             </properties>
         </column>
+        <column name="SOP_ID/Spanish_PDF">
+            <properties>
+                <property name="columnTitle" value="Translated PDF"/>
+            </properties>
+        </column>
         <column name="LastRead"/>
         <column name="MonthsUntilRenewal"/>
     </columns>

@@ -16,8 +16,8 @@ Ext.onReady(function ()
     }
 
     if (LABKEY.ActionURL.getParameter('cage')){
-        new EHR.ext.customPanels.detailsView({
-            schemaName: 'lookups',
+        new EHR.ext.DetailsView({
+            schemaName: 'ehr_lookups',
             queryName: 'cage',
             title: 'Cage Details:',
             renderTo: 'cageDetails',
@@ -27,7 +27,7 @@ Ext.onReady(function ()
     else {
         new LABKEY.QueryWebPart({
             title: 'Cage Details:',
-            schemaName: 'lookups',
+            schemaName: 'ehr_lookups',
             queryName: 'cage',
             allowChooseQuery: false,
             allowChooseView: true,

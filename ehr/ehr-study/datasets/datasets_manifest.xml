@@ -57,7 +57,6 @@
     <dataset name='virologyRuns' id='1053' category="ClinPath" showByDefault="false"/>
     <dataset name='virologyResults' id='1054' category="ClinPath"/>
 
-    <dataset name='alerts' id='1068' category="ColonyManagement" showByDefault="false"/>
     <dataset name='arrival' id='1001' category="ColonyManagement"/>
     <dataset name='assignment' id='1002' category="ColonyManagement"/>
     <dataset name='behavetrem' id='1004' category="ColonyManagement"/>
@@ -67,6 +66,7 @@
     <dataset name='housing' id='1018' category="ColonyManagement"/>
     <dataset name='inbreeding' id='5001' category="ColonyManagement"/>
     <dataset name='menses' id='1060' category="ColonyManagement"/>
+    <dataset name='notes' id='1068' category="ColonyManagement" showByDefault="false"/>
     <dataset name='pairtest' id='1079' category="ColonyManagement"/>
 
     <dataset name='biopsy' id='1006' category="Pathology"/>

@@ -2,17 +2,16 @@
     <metadata>
         <tables xmlns="http://labkey.org/data/xml">
             <table tableName="encounters" tableDbType="TABLE">
-                <tableUrl>/ehr/encounterDetails.view?type=${type}&amp;lsid=${lsid}</tableUrl>
+                <tableUrl>/ehr/encounterDetails.view?type=${type}&amp;objectid=${objectid}</tableUrl>
                 <insertUrl>/ehr/clinicalEncounter.view?schemaName=study&amp;queryName=Clinical Encounters</insertUrl>
                 <columns>
                     <column columnName="type">
-                        <isKeyField>true</isKeyField>
                         <isHidden>true</isHidden>
                         <fk>
                             <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-                            <fkDbSchema>lookups</fkDbSchema>
+                            <fkDbSchema>ehr_lookups</fkDbSchema>
                             <fkTable>encounter_types</fkTable>
-                            <fkColumnName>category</fkColumnName>
+                            <fkColumnName>type</fkColumnName>
                         </fk>
                     </column>
                 </columns>

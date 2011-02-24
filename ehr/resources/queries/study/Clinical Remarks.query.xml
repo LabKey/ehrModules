@@ -23,50 +23,39 @@
                           <fkColumnName>objectid</fkColumnName>
                         </fk>
                     </column>
-                    <column columnName="Remark">
+                    <column columnName="remark">
                         <isHidden>false</isHidden>
                         <displayWidth>350</displayWidth>
                     </column>
-                      <column columnName="location">
-                         <datatype>varchar</datatype>
-                         <columnTitle>Location</columnTitle>
-                         <fk>
-                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-                            <fkDbSchema>lookups</fkDbSchema>
-                            <fkTable>pe_region</fkTable>
-                            <fkColumnName>region</fkColumnName>
-                         </fk>
-                      </column>
+                      <!--<column columnName="location">-->
+                         <!--<datatype>varchar</datatype>-->
+                         <!--<columnTitle>Location</columnTitle>-->
+                         <!--<fk>-->
+                            <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
+                            <!--<fkDbSchema>ehr_lookups</fkDbSchema>-->
+                            <!--<fkTable>pe_region</fkTable>-->
+                            <!--<fkColumnName>region</fkColumnName>-->
+                         <!--</fk>-->
+                      <!--</column>-->
                       <column columnName="category">
                         <datatype>varchar</datatype>
                         <!--<nullable>false</nullable>-->
                         <columnTitle>Category</columnTitle>
                         <fk>
                           <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-                          <fkDbSchema>lookups</fkDbSchema>
+                          <fkDbSchema>ehr_lookups</fkDbSchema>
                           <fkTable>clinremarks_category</fkTable>
                           <fkColumnName>category</fkColumnName>
                         </fk>
                       </column>
-                      <column columnName="code">
-                        <datatype>varchar</datatype>
-                        <columnTitle>SNOMED</columnTitle>
-                        <fk>
-                          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-                          <fkDbSchema>lists</fkDbSchema>
-                          <fkTable>snomed</fkTable>
-                          <fkColumnName>code</fkColumnName>
-                        </fk>
+                      <column columnName="so">
+                          <columnTitle>Subjective/Objective</columnTitle>
                       </column>
-                      <column columnName="qualifier">
-                        <datatype>varchar</datatype>
-                        <columnTitle>Qualifier</columnTitle>
-                        <fk>
-                          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-                          <fkDbSchema>lists</fkDbSchema>
-                          <fkTable>snomed</fkTable>
-                          <fkColumnName>code</fkColumnName>
-                        </fk>
+                      <column columnName="a">
+                          <columnTitle>Assessment</columnTitle>
+                      </column>
+                      <column columnName="p">
+                          <columnTitle>Plan</columnTitle>
                       </column>
                 </columns>
             </table>

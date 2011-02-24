@@ -7,50 +7,28 @@
 Ext.namespace('EHR.ext', 'EHR.ext.plugins');
 
 
-
-
 // this class will serve to monitor multiple child stores.
 // it will handle: preparing submission to server, commitChanges, decoding server response
 // also provides some level of validation over records
 // should delegate as much as reasonable to child stores
 // primarily tries to listen for events from child stores and aggregate info
 
-//events: 'beforecommit', 'commitcomplete', 'commitexception','update', 'valid', 'invalid'
+//events: 'beforecommit', 'commitcomplete', 'commitexception','update', 'validation'
 
 EHR.ext.StoreCollection = Ext.extend(Ext.util.MixedCollection, {
     constructor: function(config){
+        Ext.apply(this, config);
+
+        //inheritance code separated for now
         Ext.apply(this, EHR.ext.StoreInheritance);
 
-        EHR.ext.StoreCollection.superclass.constructor.call(this, arguments);
-
-        this.addEvents('beforecommit', 'commitcomplete', 'commitexception','update', 'valid', 'invalid');
-
-//NOTE: for development only
-//        this.on('beforecommit', function(c){
-//            console.log('parent store before commit')
-//        });
-        this.on('commitcomplete', function(c){
-            console.log('parent store commit complete!')
-        });
-        this.on('commitexception', function(c, o){
-            console.log('parent store commit exception');
-            console.log(c);
-            console.log(o);
-        });
-        this.on('update', function(store, rec){
-            console.log('store collection updated: '+store.storeId);
-        });
-//        this.on('invalid', function(store, recs){
-//            console.log('store collection invalid: '+store.storeId);
-//        });
-//        this.on('valid', function(store){
-//            console.log('store collection valid event: '+this.isValid());
-//        });
+        EHR.ext.StoreCollection.superclass.constructor.call(this, false, function(item){return item.storeId;});
+        this.addEvents('beforecommit', 'commitcomplete', 'commitexception', 'update', 'validation');
     },
     add: function(store){
         store = Ext.StoreMgr.lookup(store);
         if (this.contains(store)){
-            console.log('Store already added: '+store.queryName);
+            //console.log('Store already added: '+store.queryName);
             return;
         }
 
@@ -68,13 +46,40 @@ EHR.ext.StoreCollection = Ext.extend(Ext.util.MixedCollection, {
             monitorValid: this.monitorValid
         });
 
-        EHR.ext.StoreInheritance.initInheritance(store);
+        if(this.monitorValid){
+            store.on('validation', this.onValidation, this, {buffer: 30});
+            store.initMonitorValid();
+        }
 
-        this.relayEvents(store, ['invalid', 'valid', 'update']);
+        this.initInheritance(store);
+
+        this.relayEvents(store, ['update']);
+
+    },
+
+    initMonitorValid: function(){
+        this.monitorValid = true;
+        this.each(function(store){
+            store.on('validation', this.onValidation, this, {buffer: 30});
+        }, this);
+    },
+
+    stopMonitorValid: function(){
+        this.each(function(store){
+            this.store.un('validation', this.onValidation, this, {buffer: 30});
+        }, this);
+        this.monitorValid = false;
     },
 
     remove: function(store){
+        //TODO: this is done to undo relayEvents() set above.
+        if (store.hasListener('update')) {
+            store.events['update'].clearListeners();
+        }
+
+        store.un('validation', this.onValidation, this);
         delete store.parentStore;
+
         EHR.ext.StoreCollection.superclass.remove.call(store);
     },
 
@@ -86,12 +91,13 @@ EHR.ext.StoreCollection = Ext.extend(Ext.util.MixedCollection, {
             var records = s.getModifiedRecords();
             var commands = s.getChanges(records);
 
-            if (!commands.length){
-                return;
+            if (commands.length){
+                allCommands = allCommands.concat(commands);
+                allRecords = allRecords.concat(records);
             }
-
-            allCommands = allCommands.concat(commands);
-            allRecords = allRecords.concat(records);
+            else if (commands.length && !records.length){
+                console.log('there are modified records but no commands');
+            }
         }, this);
 
         return {
@@ -102,24 +108,37 @@ EHR.ext.StoreCollection = Ext.extend(Ext.util.MixedCollection, {
 
     commitChanges : function() {
         var changed = this.getChanged();
+        this.commit(changed.commands, changed.records);
+    },
 
-        if (!changed.commands.length){
+    commitRecord: function(record){
+        record.store.commitRecords([record]);
+    },
+
+    commit: function(commands, records){
+        if (!commands || !commands.length){
             console.log('no changes.  nothing to do');
+            this.fireEvent('commitcomplete');
             return;
         }
 
-        if(this.fireEvent('beforecommit', changed.records, changed.commands)===false)
+        if(debug)
+            console.log('commands to be sent: '+commands.length);
+            console.log(commands);
+            console.log(records);
+
+        if(this.fireEvent('beforecommit', records, commands)===false)
             return;
 
         Ext.Ajax.request({
             url : LABKEY.ActionURL.buildURL('query', 'saveRows', this.containerPath),
             method : 'POST',
             success: this.onCommitSuccess,
-            failure: this.getOnCommitFailure(changed.records),
+            failure: this.getOnCommitFailure(records),
             scope: this,
             jsonData : {
                 containerPath: this.containerPath,
-                commands: changed.commands
+                commands: commands
             },
             headers : {
                 'Content-Type' : 'application/json'
@@ -130,25 +149,90 @@ EHR.ext.StoreCollection = Ext.extend(Ext.util.MixedCollection, {
     isValid: function(){
         var valid = true;
         this.each(function(s){
-            if(!s.isValid())
+            if(!s.isValid()){
                 valid=false
+            }
         }, this);
-console.log('Valid: '+valid);
         return valid;
+    },
+
+    isDirty: function()
+    {
+        var dirty = false;
+        this.each(function(s){
+            if(s.getModifiedRecords().length)
+                dirty=true;
+        }, this);
+        return dirty;
+    },
+
+    isLoading: function(){
+        var isLoading = false;
+        this.each(function(s){
+            if(s.isLoading){
+                isLoading = true;
+                //console.log('store still loading: '+s.storeId);
+            }
+//            else {
+//                console.log('store loaded: '+s.storeId);
+//            }
+        }, this);
+
+        return isLoading;
+    },
+
+    onValidation: function(store, errors){
+        //check other stores
+        this.each(function(s){
+            if(s == store)
+                return;
+            if(s.errors && s.errors.length){
+                errors = errors.concat(s.errors);
+            }
+        }, this);
+
+        var maxSeverity = '';
+        Ext.each(errors, function(e){
+            maxSeverity = EHR.UTILITIES.maxError(maxSeverity, e.severity);
+        }, this);
+
+        this.errors = errors;
+        this.fireEvent('validation', this, errors, maxSeverity);
     },
 
     getOnCommitFailure : function(records) {
         return function(response, options) {
+console.log(response)
             //note: should not matter which child store they belong to
             for(var idx = 0; idx < records.length; ++idx)
                 delete records[idx].saveOperationInProgress;
 
             var json = this.getJson(response);
-            var message = (json && json.exception) ? json.exception : response.statusText;
 
-            if(false !== this.fireEvent("commitexception", message))
-                Ext.Msg.alert("Error During Save", "Could not save changes due to the following error:\n" + message);
+            //handle validation script errors and exceptions differently
+            if(json.errors && json.errors.length){
+                this.handleValidationErrors(records, json);
+            }
+            else {
+                if(false !== this.fireEvent("commitexception", message)){
+                    var message = (json && json.exception) ? json.exception : response.statusText;
+                    Ext.Msg.alert("Error During Save. Could not save changes due to the following error:\n" + message);
+                }
+            }
         };
+    },
+
+    handleValidationErrors: function(records, serverError){
+        if(serverError.rowNumber!==undefined)
+            serverError = {errors: [serverError], exception: serverError.exception};
+
+        Ext.each(serverError.errors, function(error){
+            var record = records[error.rowNumber];
+            if(record)
+                record.store.handleError(record, error);
+            else
+                console.log(error);
+        }, this);
     },
 
     onCommitSuccess : function(response, options){
@@ -185,140 +269,220 @@ console.log('Valid: '+valid);
             s.deleteRecords(records);
         }, this);
     },
+
     //NOTE: used for development.  should get removed eventually
     showStores: function(){
         this.each(function(s){
-            console.log(s.storeId);
-            console.log(s);
-            console.log('Num Records: '+s.getCount());
-            console.log('Total Records: '+s.getTotalCount());
-            s.each(function(rec)
-            {
-                console.log('record is dirty?: '+rec.dirty);
-                console.log('record is phantom?: '+rec.phantom);
-                console.log('saveOperationInProgress? '+rec.saveOperationInProgress);
-                Ext.each(rec.fields.keys, function(f){
-                    console.log(f + ': ' + rec.get(f));
-                }, s);
-            }, s)
+            if(s.getCount()){
+                console.log(s.storeId);
+                console.log(s);
+                console.log('Num Records: '+s.getCount());
+                console.log('Total Records: '+s.getTotalCount());
+                console.log('Modified Records:');
+                console.log(s.getModifiedRecords())
+                s.each(function(rec)
+                {
+                    console.log('record ID: '+rec.id);
+                    console.log('record is dirty?: '+rec.dirty);
+                    console.log('record is phantom?: '+rec.phantom);
+                    console.log('saveOperationInProgress? '+rec.saveOperationInProgress);
+                    Ext.each(rec.fields.keys, function(f){
+                        console.log(f + ': ' + rec.get(f));
+                    }, s);
+                }, s)
+            }
         }, this);
+    },
+    showErrors: function(){
+        console.log(this.errors);
     }
 });
 
 
-
-
-
-
 EHR.ext.StoreInheritance = {
     initInheritance: function(store) {
-        Ext.apply(store, {
-            addInheritanceListeners: function(store, meta){
-                Ext.each(meta.fields, function(f){
-                    if(f.parentConfig){
-                        if(!f.parentConfig.parent)
-                            this.findParent(f, meta);
+        //if the store is already loaded, we
+        if(store.reader.meta.fields){
+            this.addInheritanceListeners(store);
+        }
 
-                        if(f.parentConfig.parent)
-                            this.addInheritanceListener(f);
-                    }
-                }, this);
-            },
-            findParent: function(field, meta){
-                var targetStore;
-                if(Ext.isFunction(field.parentConfig.storeIdentifier)){
-                    targetStore = field.parentConfig.storeIdentifier();
-                }
-                else {
-                    targetStore = this.parentStore.find(function(s){
-                        for (var i in field.parentConfig.storeIdentifier){
-                            if(s[i] != field.parentConfig.storeIdentifier[i])
-                                return false;
-                        }
-                        return true;
-                    });
-                }
-                if(!targetStore){
-                    this.parentStore.on('add', function(){this.addInheritanceListeners(this, meta)}, this, {single: true});
-                    return;
-                }
-                if(targetStore == store){
-                    return;
-                }
-                if(!targetStore.getCount()){
-                    targetStore.on('load', function(){this.addInheritanceListeners(this, meta)}, this, {single: true});
-                    return;
-                }
-                field.parentConfig.parent = targetStore.getAt(0);
-            },
-            addInheritanceListener: function(field){
-                var listener;
-                var event;
-                var target;
-                var val;
+        store.on('beforemetachange', this.addInheritanceListeners, this, {buffer: 20});
+    },
+    relationships: new Ext.util.MixedCollection(false, function(s){return s.key}),
+    //NOTE: meta argument included b/c this gets called directly by the store's metachange event
+    addInheritanceListeners: function(store, meta, field){
+        if(!field){
+            store.fields.each(function(f){
+                this.handleField(store, meta, f);
+            }, this);
+        }
+        else {
+            this.handleField(store, meta, field);
+        }
+    },
+    handleField: function(store, meta, field){
+        if(field.parentConfig){
+            if(!field.parentConfig.parent)
+                this.findParent(store, meta, field);
 
-                field.oldSetInitialValue = field.setInitialValue;
-                var parent = field.parentConfig.parent;
-
-                if (parent instanceof Ext.form.Field){
-                    listener = function(field){
-                        this.each(function(rec){
-                            rec.set(field.dataIndex,  field.parentConfig.parent.getValue());
-                        }, this);
-                    };
-                    target = parent;
-                    event = 'change';
-                    val = parent.getValue();
-                    field.setInitialValue = function(parent){
-                        return function(v, rec){
-                            return parent.getValue();
-                        }
-                    }(parent);
+            if(field.parentConfig.parent)
+                this.addInheritanceListener(store, field);
+        }
+    },
+    findParent: function(store, meta, field){
+        var targetStore;
+        if(Ext.isFunction(field.parentConfig.storeIdentifier)){
+            targetStore = field.parentConfig.storeIdentifier();
+        }
+        else {
+            targetStore = this.find(function(s){
+                for (var i in field.parentConfig.storeIdentifier){
+                    if(s[i] != field.parentConfig.storeIdentifier[i])
+                        return false;
                 }
-                else if (parent instanceof Ext.data.Record){
-                    listener = function(store, recs, idx){
-                        Ext.each(recs, function(record){
-                            if(record === parent){
-                                this.each(function(rec){
-                                    rec.set(field.dataIndex, parent.get(field.parentConfig.dataIndex));
-                                }, this);
-                            }
-                        }, this);
-                    };
-                    target = parent.store;
-                    event = 'update';
-                    val = parent.get(field.parentConfig.dataIndex);
-                    field.setInitialValue = function(v, rec){
-                        //console.log(field.name + '/' +field.parentConfig.parent.id);
-                        return field.parentConfig.parent.get(field.parentConfig.dataIndex);
-                    }
+                return true;
+            });
+        }
+        if(!targetStore){
+            console.log('target store not found');
+            console.log(field.parentConfig)
+            this.on('add', function(){
+                this.addInheritanceListeners(store, meta, field)
+            }, this, {single: true});
+            return;
+        }
 
+        if(targetStore == store){
+            //console.log('target store is parent, skipping')
+            return;
+        }
+
+        //in this case the store has not loaded yet
+        if(!targetStore.fields){
+            targetStore.on('load', function(){
+                this.addInheritanceListeners(store, meta, field);
+            }, this, {single: true});
+            return;
+        }
+        //the store is loaded, but has no records
+        else if (!targetStore.getCount()){
+            console.log('no records in store: '+targetStore.storeId);
+            targetStore.on('add', function(){
+                console.log('retrying store: '+targetStore.storeId+' for field :'+field.name);
+                this.addInheritanceListeners(this, meta, field)
+            }, this, {single: true});
+            return;
+        }
+
+        //console.log('parent found: '+targetStore.storeId+" for table "+store.storeId+' for field '+field.name);
+        //TODO: we always assume we want the 1st record.  possibly extend to allow more complex logic
+        field.parentConfig.parent = targetStore.getAt(0);
+    },
+    addInheritanceListener: function(store, field){
+        var key = [store.storeId, field.name].join(':');
+        var config = {
+            key: key,
+            store: store,
+            field: field,
+            listeners: {},
+            listenerTarget: null,
+            parent: null
+        };
+
+        var initialVal;
+
+        field.oldSetInitialValue = field.setInitialValue;
+        var parent = field.parentConfig.parent;
+        config.parent = parent;
+
+        if (parent instanceof Ext.data.Record){
+            config.listenerTarget = parent.store;
+            //console.log('adding '+field.name+' from : '+parent.store.storeId + '/to: '+store.storeId);
+            config.listeners.update = function(parent, childStore){return function(store, rec, idx){
+                if(rec === parent){
+                    childStore.each(function(rec){
+//                        console.log('inheritance listener called on '+field.dataIndex+'/childStore: '+childStore.storeId+' /parentStore: '+store.storeId+'/rec: '+rec.id);
+                        //console.log('setting value to: '+parent.get(field.parentConfig.dataIndex));
+                        rec.set(field.dataIndex, parent.get(field.parentConfig.dataIndex));
+                    }, config);
                 }
+//                else
+//                    console.log('update, but not of the parent record')
 
-                target.on(event, listener, this);
-                field.removeInheritanceListener = function(field, target, event, listener, scope){
-                    return function(){
-                        target.un(event, listener, scope);
-                        field.setInitialValue = field.oldSetInitialValue;
-                    }(field, target, event, listener, this);
-                };
+            }}(parent, store);
+            config.listeners.remove = function(store, rec){
+                if(rec === field.parentConfig.parent){
+                    this.removeInheritanceListeners(store);
+                    this.addInheritanceListeners(store);
+                }
+            };
 
-                //update any pre-existing records
-                this.each(function(rec){
-                    rec.set(field.dataIndex,  val);
-                }, this);
-            },
-            removeInheritanceListeners: function(){
-                this.fields.each(function(f){
-                    f.removeInheritanceListener();
-                }, this);
+            initialVal = parent.get(field.parentConfig.dataIndex);
+            field.setInitialValue = function(v, rec, f){
+                //console.log('setting initial val for: '+f.name + ' to ' +f.parentConfig.parent.get(f.parentConfig.dataIndex));
+                return f.parentConfig.parent.get(f.parentConfig.dataIndex);
             }
-        });
+        }
+//        else if (parent instanceof Ext.form.Field){
+//            config.listenerTarget = parent;
+//            config.listeners.change = function(field){
+//                store.each(function(rec){
+//                    rec.set(field.dataIndex,  field.parentConfig.parent.getValue());
+//                }, this);
+//            };
+//
+//            initialVal = parent.getValue();
+//            field.setInitialValue = function(parent){
+//                return function(v, rec){
+//                    return parent.getValue();
+//                }
+//            }(parent);
+//        }
+        else {
+            console.log('problem with parent');
+            console.log(field.parentConfig.parent);
+            return;
+        }
 
-        store.on('beforemetachange', store.addInheritanceListeners, store);
+        if(this.relationships.contains(key)){
+            var oldConfig = this.relationships.get(key);
+            console.log('key already exists: '+key);
+            if(oldConfig.parent === config.parent){
+                console.log('same parent - aborting');
+                return;
+            }
+            else
+                this.removeInheritanceListener(key);
+        }
 
-        //will cause metadata to refresh
-        if(store.reader.meta.fields)
-            store.onProxyLoad();
+        this.relationships.add(config);
+        for (var l in config.listeners){
+            //console.log('adding  '+l+' listener from: '+config.store.storeId+' to: '+config.listenerTarget.storeId+'/'+config.field.name)
+            config.listenerTarget.on(l, config.listeners[l], this);
+        };
+
+        //update any pre-existing records
+        //if called before render the grid throws an error
+
+        store.each(function(rec){
+            rec.beginEdit();
+            if(rec.get(field.dataIndex) != initialVal){
+                rec.set(field.dataIndex, initialVal);
+            }
+            rec.endEdit();
+        }, this);
+
+    },
+    removeInheritanceListeners: function(store){
+        store.fields.each(function(f){
+            this.removeInheritanceListener([store.storeId, f.name].join(':'));
+        }, this);
+    },
+    removeInheritanceListener: function(key){
+        var config = this.relationships.get(key);
+        console.log('removing listener: '+key)
+        Ext.each(config.listeners, function(l){
+            config.listenerTarget.un(l, config.listeners[l], this);
+        }, this);
     }
 };

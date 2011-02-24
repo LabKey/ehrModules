@@ -50,7 +50,7 @@ LEFT OUTER JOIN study.Housing h2
       )
 
 --join to vet exemptions
-LEFT JOIN study.alerts a
+LEFT JOIN study.notes a
   ON (h1.id = a.id AND a.EndDate IS NULL and a.value LIKE '%pairing exempt%')
 
 WHERE

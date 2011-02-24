@@ -10,7 +10,7 @@
                 <description>Participant identifier</description>
                 <nullable>false</nullable>
             </column>
-            <column columnName="Date">
+            <column columnName="date">
                 <datatype>timestamp</datatype>
                 <formatString>yyyy-MM-dd HH:mm a</formatString>
                 <columnTitle>Date</columnTitle>
@@ -30,12 +30,12 @@
             </column>
             <column columnName="type">
                 <datatype>varchar</datatype>
-                <columnTitle>type</columnTitle>
+                <columnTitle>Type</columnTitle>
                 <fk>
                   <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-                  <fkDbSchema>lookups</fkDbSchema>
+                  <fkDbSchema>ehr_lookups</fkDbSchema>
                   <fkTable>restraint_type</fkTable>
-                  <fkColumnName>code</fkColumnName>
+                  <fkColumnName>type</fkColumnName>
                 </fk>
             </column>
             <column columnName="totalTime">
@@ -67,7 +67,7 @@
                 <shownInDetailsView>false</shownInDetailsView>
                 <isHidden>true</isHidden>
                 <!--<isAutoInc>true</isAutoInc>-->
-                <isKeyField>true</isKeyField>
+                <!--<isKeyField>true</isKeyField>-->
             </column>
                     <column columnName="parentId">
                         <fk>

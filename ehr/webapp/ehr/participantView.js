@@ -3,11 +3,9 @@
  *
  * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
  */
-Ext.namespace('EHR.ext.customPanels');
+Ext.namespace('EHR.ext');
 
-LABKEY.requiresScript("/ehr/transposeRows.js");
-LABKEY.requiresScript("/ehr/utilities.js");
-LABKEY.requiresScript("/ehr/animalHistory.js");
+LABKEY.requiresScript("/ehr/ehrAPI.js");
 
 
 Ext.onReady(function ()
@@ -19,7 +17,7 @@ Ext.onReady(function ()
 
     if (!participantId){alert('Must Provide Id'); return false;}
 
-//    new EHR.ext.customPanels.detailsView({
+//    new EHR.ext.DetailsView({
 //        schemaName: 'study',
 //        queryName: 'demographics',
 //        title: 'Animal Details:',
@@ -27,7 +25,7 @@ Ext.onReady(function ()
 //        filterArray: [LABKEY.Filter.create('Id', participantId, LABKEY.Filter.Types.EQUAL)]
 //    });
 
-    new EHR.ext.customPanels.SingleAnimalReport({
+    new EHR.ext.SingleAnimalReport({
         applyTo: 'participantView',
         initComponent: function()
         {
@@ -81,7 +79,7 @@ Ext.onReady(function ()
                         ref: '../tabPanel',
                         activeTab: 0,
                         cls: 'extContainer',
-                        plugins: ['fittoparent'],
+//                        plugins: ['fittoparent'],
                         autoHeight: true,
                         bodyStyle: 'padding-top: 5px;',
                         frame: true
@@ -89,10 +87,10 @@ Ext.onReady(function ()
                 }]
             });
 
-            EHR.ext.customPanels.SingleAnimalReport.superclass.initComponent.call(this);
+            EHR.ext.SingleAnimalReport.superclass.initComponent.call(this);
 
             this.allReports = new LABKEY.ext.Store({
-                schemaName: 'lookups',
+                schemaName: 'ehr',
                 queryName: 'reports',
                 filterArray: [LABKEY.Filter.create('visible', true, LABKEY.Filter.Types.EQUAL)],
                 //, LABKEY.Filter.create('ReportCategory', 'AnimalReport', LABKEY.Filter.Types.EQUAL)

@@ -17,7 +17,7 @@
                         <columnTitle>Priority</columnTitle>
                         <fk>
                           <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-                          <fkDbSchema>lookups</fkDbSchema>
+                          <fkDbSchema>ehr_lookups</fkDbSchema>
                           <fkTable>dental_priority</fkTable>
                           <fkColumnName>priority</fkColumnName>
                         </fk>
@@ -31,17 +31,18 @@
                         <columnTitle>Gingivitis</columnTitle>
                         <fk>
                           <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-                          <fkDbSchema>lookups</fkDbSchema>
+                          <fkDbSchema>ehr_lookups</fkDbSchema>
                           <fkTable>dental_gingivitis</fkTable>
                           <fkColumnName>result</fkColumnName>
                         </fk>
                     </column>
                     <column columnName="tartar">
                         <datatype>varchar</datatype>
+                        <nullable>true</nullable>
                         <columnTitle>Tartar</columnTitle>
                         <fk>
                           <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-                          <fkDbSchema>lookups</fkDbSchema>
+                          <fkDbSchema>ehr_lookups</fkDbSchema>
                           <fkTable>dental_tartar</fkTable>
                           <fkColumnName>result</fkColumnName>
                         </fk>
@@ -71,7 +72,7 @@
                         <shownInDetailsView>false</shownInDetailsView>
                         <isHidden>true</isHidden>
                         <!--<isAutoInc>true</isAutoInc>-->
-                        <isKeyField>true</isKeyField>
+                        <!--<isKeyField>true</isKeyField>-->
                     </column>
                 </columns>
             </table>

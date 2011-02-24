@@ -1,0 +1,1200 @@
+<ns:tables xmlns:ns="http://labkey.org/data/xml">
+  <ns:table tableName="pairtest_bhav" tableDbType="TABLE">
+    <ns:pkColumnName>value</ns:pkColumnName>
+    <ns:columns>
+      <ns:column columnName="value">
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>255</ns:scale>
+      </ns:column>
+    </ns:columns>
+  </ns:table>
+  <ns:table tableName="vl_sampletype" tableDbType="TABLE">
+    <ns:pkColumnName>sample_type</ns:pkColumnName>
+    <ns:columns>
+      <ns:column columnName="sample_type">
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>255</ns:scale>
+      </ns:column>
+    </ns:columns>
+  </ns:table>
+  <ns:table tableName="integers" tableDbType="TABLE">
+    <ns:pkColumnName>key</ns:pkColumnName>
+    <ns:columns>
+      <ns:column columnName="key">
+        <ns:datatype>int4</ns:datatype>
+        <ns:scale>10</ns:scale>
+      </ns:column>
+    </ns:columns>
+  </ns:table>
+  <ns:table tableName="dental_tartar" tableDbType="TABLE">
+    <ns:pkColumnName>result</ns:pkColumnName>
+    <ns:columns>
+      <ns:column columnName="result">
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>255</ns:scale>
+      </ns:column>
+    </ns:columns>
+  </ns:table>
+  <ns:table tableName="dental_status" tableDbType="TABLE">
+    <ns:pkColumnName>status</ns:pkColumnName>
+    <ns:columns>
+      <ns:column columnName="status">
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>255</ns:scale>
+      </ns:column>
+    </ns:columns>
+  </ns:table>
+  <ns:table tableName="obs_mens" tableDbType="TABLE">
+    <ns:pkColumnName>code</ns:pkColumnName>
+    <ns:columns>
+      <ns:column columnName="code">
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>2147483647</ns:scale>
+      </ns:column>
+      <ns:column columnName="meaning">
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>2147483647</ns:scale>
+      </ns:column>
+    </ns:columns>
+  </ns:table>
+  <ns:table tableName="obs_remarks" tableDbType="TABLE">
+    <ns:pkColumnName>remark</ns:pkColumnName>
+    <ns:columns>
+      <ns:column columnName="remark">
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>2147483647</ns:scale>
+      </ns:column>
+    </ns:columns>
+  </ns:table>
+  <ns:table tableName="tb_eye" tableDbType="TABLE">
+    <ns:pkColumnName>eye</ns:pkColumnName>
+    <ns:columns>
+      <ns:column columnName="eye">
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>255</ns:scale>
+      </ns:column>
+      <ns:column columnName="meaning">
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>255</ns:scale>
+      </ns:column>
+    </ns:columns>
+  </ns:table>
+  <ns:table tableName="dental_gingivitis" tableDbType="TABLE">
+    <ns:pkColumnName>result</ns:pkColumnName>
+    <ns:columns>
+      <ns:column columnName="result">
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>255</ns:scale>
+      </ns:column>
+      <ns:column columnName="sort_order">
+        <ns:datatype>integer</ns:datatype>
+        <ns:scale>20</ns:scale>
+      </ns:column>
+    </ns:columns>
+  </ns:table>
+  <ns:table tableName="arearooms" tableDbType="TABLE">
+    <ns:pkColumnName>rowid</ns:pkColumnName>
+    <ns:columns>
+      <ns:column columnName="rowid">
+        <ns:datatype>serial</ns:datatype>
+        <ns:isAutoInc>true</ns:isAutoInc>
+        <ns:scale>10</ns:scale>
+      </ns:column>
+      <ns:column columnName="area">
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>20</ns:scale>
+      </ns:column>
+      <ns:column columnName="room">
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>20</ns:scale>
+      </ns:column>
+    </ns:columns>
+  </ns:table>
+  <ns:table tableName="bcs_score" tableDbType="TABLE">
+    <ns:pkColumnName>score</ns:pkColumnName>
+    <ns:columns>
+      <ns:column columnName="score">
+        <ns:datatype>float8</ns:datatype>
+        <ns:scale>17</ns:scale>
+      </ns:column>
+      <ns:column columnName="meaning">
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>250</ns:scale>
+      </ns:column>
+      <ns:column columnName="description">
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>500</ns:scale>
+      </ns:column>
+    </ns:columns>
+  </ns:table>
+  <ns:table tableName="cageclass" tableDbType="TABLE">
+    <ns:pkColumnName>rowid</ns:pkColumnName>
+    <ns:columns>
+      <ns:column columnName="rowid">
+        <ns:datatype>serial</ns:datatype>
+        <ns:isAutoInc>true</ns:isAutoInc>
+        <ns:scale>10</ns:scale>
+      </ns:column>
+      <ns:column columnName="low">
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>float8</ns:datatype>
+        <ns:scale>17</ns:scale>
+      </ns:column>
+      <ns:column columnName="high">
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>float8</ns:datatype>
+        <ns:scale>17</ns:scale>
+      </ns:column>
+      <ns:column columnName="sqft">
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>float8</ns:datatype>
+        <ns:scale>17</ns:scale>
+      </ns:column>
+      <ns:column columnName="height">
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>float8</ns:datatype>
+        <ns:scale>17</ns:scale>
+      </ns:column>
+    </ns:columns>
+  </ns:table>
+  <ns:table tableName="obs_tlocation" tableDbType="TABLE">
+    <ns:pkColumnName>location</ns:pkColumnName>
+    <ns:columns>
+      <ns:column columnName="location">
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>20</ns:scale>
+      </ns:column>
+      <ns:column columnName="sort_order">
+        <ns:datatype>integer</ns:datatype>
+        <ns:scale>20</ns:scale>
+      </ns:column>
+      <ns:column columnName="code">
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>100</ns:scale>
+      </ns:column>
+    </ns:columns>
+  </ns:table>
+  <ns:table tableName="obs_remarks" tableDbType="TABLE">
+    <ns:pkColumnName>title</ns:pkColumnName>
+    <ns:columns>
+      <ns:column columnName="title">
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>50</ns:scale>
+      </ns:column>
+      <ns:column columnName="remark">
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>255</ns:scale>
+      </ns:column>
+    </ns:columns>
+  </ns:table>
+  <ns:table tableName="conc_units" tableDbType="TABLE">
+    <ns:pkColumnName>route</ns:pkColumnName>
+    <ns:columns>
+      <ns:column columnName="unit">
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>100</ns:scale>
+      </ns:column>
+      <ns:column columnName="denominator">
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>100</ns:scale>
+      </ns:column>
+      <ns:column columnName="numerator">
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>100</ns:scale>
+      </ns:column>
+    </ns:columns>
+  </ns:table>
+  <ns:table tableName="volume_units" tableDbType="TABLE">
+    <ns:pkColumnName>unit</ns:pkColumnName>
+    <ns:columns>
+      <ns:column columnName="unit">
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>100</ns:scale>
+      </ns:column>
+    </ns:columns>
+  </ns:table>
+  <ns:table tableName="cage" tableDbType="TABLE">
+    <ns:pkColumnName>roomcage</ns:pkColumnName>
+    <ns:columns>
+      <ns:column columnName="roomcage">
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>24</ns:scale>
+      </ns:column>
+      <ns:column columnName="room">
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>8</ns:scale>
+      </ns:column>
+      <ns:column columnName="cage">
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>8</ns:scale>
+      </ns:column>
+      <ns:column columnName="length">
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>float8</ns:datatype>
+        <ns:scale>17</ns:scale>
+      </ns:column>
+      <ns:column columnName="width">
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>float8</ns:datatype>
+        <ns:scale>17</ns:scale>
+      </ns:column>
+      <ns:column columnName="height">
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>float8</ns:datatype>
+        <ns:scale>17</ns:scale>
+      </ns:column>
+      <ns:column columnName="ts">
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>timestamp</ns:datatype>
+        <ns:scale>29</ns:scale>
+      </ns:column>
+      <ns:column columnName="uuid">
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>bpchar</ns:datatype>
+        <ns:scale>36</ns:scale>
+      </ns:column>
+      <ns:column columnName="rowid">
+        <ns:datatype>serial</ns:datatype>
+        <ns:isAutoInc>true</ns:isAutoInc>
+        <ns:scale>10</ns:scale>
+      </ns:column>
+    </ns:columns>
+  </ns:table>
+  <ns:table tableName="viral_status" tableDbType="TABLE">
+    <ns:pkColumnName>viral_status</ns:pkColumnName>
+    <ns:columns>
+      <ns:column columnName="viral_status">
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>255</ns:scale>
+      </ns:column>
+    </ns:columns>
+  </ns:table>
+  <ns:table tableName="obs_behavior" tableDbType="TABLE">
+    <ns:pkColumnName>code</ns:pkColumnName>
+    <ns:columns>
+      <ns:column columnName="code">
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>2147483647</ns:scale>
+      </ns:column>
+      <ns:column columnName="meaning">
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>2147483647</ns:scale>
+      </ns:column>
+    </ns:columns>
+  </ns:table>
+  <ns:table tableName="hold_codes" tableDbType="TABLE">
+    <ns:pkColumnName>code</ns:pkColumnName>
+    <ns:columns>
+      <ns:column columnName="code">
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>255</ns:scale>
+      </ns:column>
+      <ns:column columnName="meaning">
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>255</ns:scale>
+      </ns:column>
+    </ns:columns>
+  </ns:table>
+  <ns:table tableName="yesno" tableDbType="TABLE">
+    <ns:pkColumnName>value</ns:pkColumnName>
+    <ns:columns>
+      <ns:column columnName="value">
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>255</ns:scale>
+      </ns:column>
+    </ns:columns>
+  </ns:table>
+  <ns:table tableName="clinremarks_category" tableDbType="TABLE">
+    <ns:pkColumnName>category</ns:pkColumnName>
+    <ns:columns>
+      <ns:column columnName="category">
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>255</ns:scale>
+      </ns:column>
+    </ns:columns>
+  </ns:table>
+  <ns:table tableName="vl_category" tableDbType="TABLE">
+    <ns:pkColumnName>category</ns:pkColumnName>
+    <ns:columns>
+      <ns:column columnName="category">
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>255</ns:scale>
+      </ns:column>
+    </ns:columns>
+  </ns:table>
+  <ns:table tableName="restraint_type" tableDbType="TABLE">
+    <ns:pkColumnName>type</ns:pkColumnName>
+    <ns:titleColumn>type</ns:titleColumn>
+    <ns:columns>
+      <ns:column columnName="type">
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>255</ns:scale>
+      </ns:column>
+        <ns:column columnName="code">
+          <ns:datatype>varchar</ns:datatype>
+          <ns:scale>255</ns:scale>
+        </ns:column>
+    </ns:columns>
+  </ns:table>
+  <ns:table tableName="observations_anesthesia_recovery" tableDbType="TABLE">
+    <ns:pkColumnName>value</ns:pkColumnName>
+    <ns:titleColumn>value</ns:titleColumn>
+    <ns:columns>
+      <ns:column columnName="value">
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>255</ns:scale>
+      </ns:column>
+      <ns:column columnName="sort_order">
+        <ns:datatype>integer</ns:datatype>
+        <ns:scale>20</ns:scale>
+      </ns:column>
+    </ns:columns>
+  </ns:table>
+  <ns:table tableName="obs_breeding" tableDbType="TABLE">
+    <ns:pkColumnName>code</ns:pkColumnName>
+    <ns:columns>
+      <ns:column columnName="code">
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>2147483647</ns:scale>
+      </ns:column>
+      <ns:column columnName="meaning">
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>2147483647</ns:scale>
+      </ns:column>
+    </ns:columns>
+  </ns:table>
+  <ns:table tableName="death_codes" tableDbType="TABLE">
+    <ns:pkColumnName>code</ns:pkColumnName>
+    <ns:columns>
+      <ns:column columnName="code">
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>255</ns:scale>
+      </ns:column>
+      <ns:column columnName="meaning">
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>255</ns:scale>
+      </ns:column>
+    </ns:columns>
+  </ns:table>
+  <ns:table tableName="obs_other" tableDbType="TABLE">
+    <ns:pkColumnName>code</ns:pkColumnName>
+    <ns:columns>
+      <ns:column columnName="code">
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>2147483647</ns:scale>
+      </ns:column>
+      <ns:column columnName="meaning">
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>2147483647</ns:scale>
+      </ns:column>
+    </ns:columns>
+  </ns:table>
+  <ns:table tableName="pe_region" tableDbType="TABLE">
+    <ns:pkColumnName>region</ns:pkColumnName>
+    <ns:columns>
+      <ns:column columnName="region">
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>255</ns:scale>
+      </ns:column>
+    </ns:columns>
+  </ns:table>
+  <ns:table tableName="dental_priority" tableDbType="TABLE">
+    <ns:pkColumnName>priority</ns:pkColumnName>
+    <ns:columns>
+      <ns:column columnName="priority">
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>255</ns:scale>
+      </ns:column>
+      <ns:column columnName="sort_order">
+        <ns:datatype>integer</ns:datatype>
+        <ns:scale>20</ns:scale>
+      </ns:column>
+    </ns:columns>
+  </ns:table>
+  <ns:table tableName="mhc_institutions" tableDbType="TABLE">
+    <ns:pkColumnName>technique</ns:pkColumnName>
+    <ns:columns>
+      <ns:column columnName="technique">
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>255</ns:scale>
+      </ns:column>
+    </ns:columns>
+  </ns:table>
+  <ns:table tableName="routes" tableDbType="TABLE">
+    <ns:pkColumnName>route</ns:pkColumnName>
+    <ns:columns>
+      <ns:column columnName="route">
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>100</ns:scale>
+      </ns:column>
+    </ns:columns>
+  </ns:table>
+  <ns:table tableName="areas" tableDbType="TABLE">
+    <ns:pkColumnName>area</ns:pkColumnName>
+    <ns:columns>
+      <ns:column columnName="area">
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>20</ns:scale>
+      </ns:column>
+    </ns:columns>
+  </ns:table>
+  <ns:table tableName="bacteriology_sensitivity" tableDbType="TABLE">
+    <ns:pkColumnName>code</ns:pkColumnName>
+    <ns:columns>
+      <ns:column columnName="code">
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>4000</ns:scale>
+      </ns:column>
+      <ns:column columnName="meaning">
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>4000</ns:scale>
+      </ns:column>
+    </ns:columns>
+  </ns:table>
+  <ns:table tableName="clinpath_status" tableDbType="TABLE">
+    <ns:pkColumnName>status</ns:pkColumnName>
+    <ns:columns>
+      <ns:column columnName="status">
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>255</ns:scale>
+      </ns:column>
+    </ns:columns>
+  </ns:table>
+  <ns:table tableName="clinpath_priority" tableDbType="TABLE">
+    <ns:pkColumnName>status</ns:pkColumnName>
+    <ns:columns>
+      <ns:column columnName="priority">
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>255</ns:scale>
+      </ns:column>
+    </ns:columns>
+  </ns:table>
+  <ns:table tableName="clinpath_tests" tableDbType="TABLE">
+    <ns:pkColumnName>status</ns:pkColumnName>
+    <ns:columns>
+      <ns:column columnName="testName">
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>255</ns:scale>
+      </ns:column>
+    </ns:columns>
+  </ns:table>
+  <ns:table tableName="clinpath_request_type" tableDbType="TABLE">
+    <ns:pkColumnName>type</ns:pkColumnName>
+    <ns:columns>
+      <ns:column columnName="type">
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>255</ns:scale>
+      </ns:column>
+    </ns:columns>
+  </ns:table>
+  <ns:table tableName="lab_tests" tableDbType="TABLE">
+    <ns:pkColumnName>testid</ns:pkColumnName>
+    <ns:columns>
+      <ns:column columnName="testid">
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>100</ns:scale>
+      </ns:column>
+      <ns:column columnName="name">
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>100</ns:scale>
+      </ns:column>
+      <ns:column columnName="units">
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>100</ns:scale>
+      </ns:column>
+    </ns:columns>
+  </ns:table>
+  <ns:table tableName="alopecia_cause" tableDbType="TABLE">
+    <ns:pkColumnName>cause</ns:pkColumnName>
+    <ns:columns>
+      <ns:column columnName="cause">
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>4000</ns:scale>
+      </ns:column>
+    </ns:columns>
+  </ns:table>
+  <ns:table tableName="condition_codes" tableDbType="TABLE">
+    <ns:pkColumnName>code</ns:pkColumnName>
+    <ns:columns>
+      <ns:column columnName="code">
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>255</ns:scale>
+      </ns:column>
+      <ns:column columnName="meaning">
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>255</ns:scale>
+      </ns:column>
+    </ns:columns>
+  </ns:table>
+  <ns:table tableName="tb_result" tableDbType="TABLE">
+    <ns:pkColumnName>result</ns:pkColumnName>
+    <ns:columns>
+      <ns:column columnName="result">
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>255</ns:scale>
+      </ns:column>
+    </ns:columns>
+  </ns:table>
+  <ns:table tableName="species_codes" tableDbType="TABLE">
+    <ns:pkColumnName>code</ns:pkColumnName>
+    <ns:columns>
+      <ns:column columnName="code">
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>255</ns:scale>
+      </ns:column>
+      <ns:column columnName="scientific_name">
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>255</ns:scale>
+      </ns:column>
+      <ns:column columnName="common_name">
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>255</ns:scale>
+      </ns:column>
+    </ns:columns>
+  </ns:table>
+  <ns:table tableName="obs_feces" tableDbType="TABLE">
+    <ns:pkColumnName>code</ns:pkColumnName>
+    <ns:columns>
+      <ns:column columnName="code">
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>2147483647</ns:scale>
+      </ns:column>
+      <ns:column columnName="meaning">
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>2147483647</ns:scale>
+      </ns:column>
+    </ns:columns>
+  </ns:table>
+  <ns:table tableName="gender_codes" tableDbType="TABLE">
+    <ns:pkColumnName>code</ns:pkColumnName>
+    <ns:columns>
+      <ns:column columnName="code">
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>255</ns:scale>
+      </ns:column>
+      <ns:column columnName="meaning">
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>255</ns:scale>
+      </ns:column>
+      <ns:column columnName="origGender">
+        <ns:columnTitle>Original Gender</ns:columnTitle>
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>255</ns:scale>
+      </ns:column>
+    </ns:columns>
+  </ns:table>
+  <ns:table tableName="behavior_category" tableDbType="TABLE">
+    <ns:pkColumnName>category</ns:pkColumnName>
+    <ns:columns>
+      <ns:column columnName="category">
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>4000</ns:scale>
+      </ns:column>
+    </ns:columns>
+  </ns:table>
+  <ns:table tableName="dosage_units" tableDbType="TABLE">
+    <ns:pkColumnName>unit</ns:pkColumnName>
+    <ns:columns>
+      <ns:column columnName="unit">
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>100</ns:scale>
+      </ns:column>
+      <ns:column columnName="numerator">
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>100</ns:scale>
+      </ns:column>
+    </ns:columns>
+  </ns:table>
+  <ns:table tableName="amount_units" tableDbType="TABLE">
+    <ns:pkColumnName>unit</ns:pkColumnName>
+    <ns:columns>
+      <ns:column columnName="unit">
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>100</ns:scale>
+      </ns:column>
+    </ns:columns>
+  </ns:table>
+  <ns:table tableName="alopecia_score" tableDbType="TABLE">
+    <ns:pkColumnName>score</ns:pkColumnName>
+    <ns:columns>
+      <ns:column columnName="score">
+        <ns:datatype>int4</ns:datatype>
+        <ns:scale>10</ns:scale>
+      </ns:column>
+      <ns:column columnName="meaning">
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>250</ns:scale>
+      </ns:column>
+    </ns:columns>
+  </ns:table>
+  <ns:table tableName="origin_codes" tableDbType="TABLE">
+    <ns:pkColumnName>code</ns:pkColumnName>
+    <ns:columns>
+      <ns:column columnName="code">
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>255</ns:scale>
+      </ns:column>
+      <ns:column columnName="meaning">
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>255</ns:scale>
+      </ns:column>
+    </ns:columns>
+  </ns:table>
+  <ns:table tableName="hematology_score" tableDbType="TABLE">
+    <ns:pkColumnName>score</ns:pkColumnName>
+    <ns:columns>
+      <ns:column columnName="score">
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>255</ns:scale>
+      </ns:column>
+    </ns:columns>
+  </ns:table>
+  <ns:table tableName="necropsy_perfusion_area" tableDbType="TABLE">
+    <ns:pkColumnName>perfusion</ns:pkColumnName>
+    <ns:columns>
+      <ns:column columnName="perfusion">
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>255</ns:scale>
+      </ns:column>
+    </ns:columns>
+  </ns:table>
+  <ns:table tableName="hematology_morphology" tableDbType="TABLE">
+    <ns:pkColumnName>morphology</ns:pkColumnName>
+    <ns:columns>
+      <ns:column columnName="morphology">
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>255</ns:scale>
+      </ns:column>
+    </ns:columns>
+  </ns:table>
+  <ns:table tableName="vl_technique" tableDbType="TABLE">
+    <ns:pkColumnName>technique</ns:pkColumnName>
+    <ns:columns>
+      <ns:column columnName="technique">
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>255</ns:scale>
+      </ns:column>
+    </ns:columns>
+  </ns:table>
+  <!--<ns:table tableName="alopecia_area" tableDbType="TABLE">-->
+    <!--<ns:pkColumnName>area</ns:pkColumnName>-->
+    <!--<ns:columns>-->
+      <!--<ns:column columnName="area">-->
+        <!--<ns:datatype>varchar</ns:datatype>-->
+        <!--<ns:scale>4000</ns:scale>-->
+      <!--</ns:column>-->
+    <!--</ns:columns>-->
+  <!--</ns:table>-->
+  <ns:table tableName="virus_snomed" tableDbType="TABLE">
+    <ns:pkColumnName>rowid</ns:pkColumnName>
+    <ns:columns>
+      <ns:column columnName="pathogen">
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>255</ns:scale>
+      </ns:column>
+      <ns:column columnName="challenge_type">
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>255</ns:scale>
+      </ns:column>
+      <ns:column columnName="code">
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>255</ns:scale>
+      </ns:column>
+      <ns:column columnName="rowid">
+        <ns:datatype>serial</ns:datatype>
+        <ns:isAutoInc>true</ns:isAutoInc>
+        <ns:scale>10</ns:scale>
+      </ns:column>
+    </ns:columns>
+  </ns:table>
+  <ns:table tableName="pairtest_conclusion" tableDbType="TABLE">
+    <ns:pkColumnName>value</ns:pkColumnName>
+    <ns:columns>
+      <ns:column columnName="value">
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>255</ns:scale>
+      </ns:column>
+    </ns:columns>
+  </ns:table>
+  <ns:table tableName="lab_test_range" tableDbType="TABLE">
+    <ns:pkColumnName>rowid</ns:pkColumnName>
+    <ns:columns>
+      <ns:column columnName="test">
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>255</ns:scale>
+      </ns:column>
+      <ns:column columnName="species">
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>255</ns:scale>
+      </ns:column>
+      <ns:column columnName="gender">
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>255</ns:scale>
+      </ns:column>
+      <ns:column columnName="age_class">
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>int2</ns:datatype>
+        <ns:scale>5</ns:scale>
+      </ns:column>
+      <ns:column columnName="ref_range_min">
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>numeric</ns:datatype>
+        <ns:scale>255</ns:scale>
+      </ns:column>
+      <ns:column columnName="ref_range_max">
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>numeric</ns:datatype>
+        <ns:scale>255</ns:scale>
+      </ns:column>
+      <ns:column columnName="rowid">
+        <ns:datatype>serial</ns:datatype>
+        <ns:isAutoInc>true</ns:isAutoInc>
+        <ns:scale>10</ns:scale>
+      </ns:column>
+    </ns:columns>
+  </ns:table>
+  <ns:table tableName="necropsy_perfusion" tableDbType="TABLE">
+    <ns:pkColumnName>perfusion</ns:pkColumnName>
+    <ns:columns>
+      <ns:column columnName="perfusion">
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>255</ns:scale>
+      </ns:column>
+    </ns:columns>
+  </ns:table>
+  <ns:table tableName="species" tableDbType="TABLE">
+    <ns:pkColumnName>common</ns:pkColumnName>
+    <ns:columns>
+      <ns:column columnName="common">
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>255</ns:scale>
+      </ns:column>
+      <ns:column columnName="scientific_name">
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>255</ns:scale>
+      </ns:column>
+      <ns:column columnName="id_prefix">
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>255</ns:scale>
+      </ns:column>
+      <ns:column columnName="mhc_prefix">
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>255</ns:scale>
+      </ns:column>
+    </ns:columns>
+  </ns:table>
+  <ns:table tableName="dental_side" tableDbType="TABLE">
+    <ns:pkColumnName>side</ns:pkColumnName>
+    <ns:columns>
+      <ns:column columnName="side">
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>255</ns:scale>
+      </ns:column>
+    </ns:columns>
+  </ns:table>
+  <ns:table tableName="birth_type" tableDbType="TABLE">
+    <ns:pkColumnName>type</ns:pkColumnName>
+    <ns:columns>
+      <ns:column columnName="type">
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>45</ns:scale>
+      </ns:column>
+      <ns:column columnName="meaning">
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>text</ns:datatype>
+        <ns:scale>32767</ns:scale>
+      </ns:column>
+    </ns:columns>
+  </ns:table>
+  <ns:table tableName="dental_jaw" tableDbType="TABLE">
+    <ns:pkColumnName>jaw</ns:pkColumnName>
+    <ns:columns>
+      <ns:column columnName="jaw">
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>255</ns:scale>
+      </ns:column>
+    </ns:columns>
+  </ns:table>
+  <ns:table tableName="months" tableDbType="TABLE">
+    <ns:pkColumnName>rowid</ns:pkColumnName>
+    <ns:columns>
+      <ns:column columnName="rowid">
+        <ns:datatype>serial</ns:datatype>
+        <ns:isAutoInc>true</ns:isAutoInc>
+        <ns:scale>10</ns:scale>
+      </ns:column>
+      <ns:column columnName="month">
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>255</ns:scale>
+      </ns:column>
+    </ns:columns>
+  </ns:table>
+  <ns:table tableName="treatment_frequency" tableDbType="TABLE">
+    <ns:pkColumnName>rowid</ns:pkColumnName>
+    <ns:columns>
+      <ns:column columnName="rowid">
+        <ns:datatype>serial</ns:datatype>
+        <ns:isAutoInc>true</ns:isAutoInc>
+        <ns:scale>10</ns:scale>
+      </ns:column>
+      <ns:column columnName="meaning">
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>32</ns:scale>
+      </ns:column>
+    </ns:columns>
+  </ns:table>
+  <ns:table tableName="necropsy_condition" tableDbType="TABLE">
+    <ns:pkColumnName>score</ns:pkColumnName>
+    <ns:columns>
+      <ns:column columnName="score">
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>255</ns:scale>
+      </ns:column>
+    </ns:columns>
+  </ns:table>
+  <ns:table tableName="dental_teeth" tableDbType="TABLE">
+    <ns:pkColumnName>teeth</ns:pkColumnName>
+    <ns:columns>
+      <ns:column columnName="teeth">
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>2147483647</ns:scale>
+      </ns:column>
+      <ns:column columnName="seq_order">
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>int4</ns:datatype>
+        <ns:scale>10</ns:scale>
+      </ns:column>
+    </ns:columns>
+  </ns:table>
+  <ns:table tableName="avail_codes" tableDbType="TABLE">
+    <ns:pkColumnName>code</ns:pkColumnName>
+    <ns:columns>
+      <ns:column columnName="code">
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>4000</ns:scale>
+      </ns:column>
+      <ns:column columnName="meaning">
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>4000</ns:scale>
+      </ns:column>
+    </ns:columns>
+  </ns:table>
+  <ns:table tableName="status_codes" tableDbType="TABLE">
+    <ns:pkColumnName>code</ns:pkColumnName>
+    <ns:columns>
+      <ns:column columnName="code">
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>20</ns:scale>
+      </ns:column>
+      <ns:column columnName="meaning">
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>255</ns:scale>
+      </ns:column>
+    </ns:columns>
+  </ns:table>
+  <ns:table tableName="ageclass" tableDbType="TABLE">
+    <ns:pkColumnName>rowid</ns:pkColumnName>
+    <ns:columns>
+      <ns:column columnName="species">
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>255</ns:scale>
+      </ns:column>
+      <ns:column columnName="ageclass">
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>int2</ns:datatype>
+        <ns:scale>5</ns:scale>
+      </ns:column>
+      <ns:column columnName="min">
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>float8</ns:datatype>
+        <ns:scale>17</ns:scale>
+      </ns:column>
+      <ns:column columnName="max">
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>float8</ns:datatype>
+        <ns:scale>17</ns:scale>
+      </ns:column>
+      <ns:column columnName="rowid">
+        <ns:datatype>serial</ns:datatype>
+        <ns:isAutoInc>true</ns:isAutoInc>
+        <ns:scale>10</ns:scale>
+      </ns:column>
+    </ns:columns>
+  </ns:table>
+  <ns:table tableName="encounter_types" tableDbType="TABLE">
+    <ns:pkColumnName>type</ns:pkColumnName>
+    <ns:columns>
+      <ns:column columnName="type">
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>255</ns:scale>
+      </ns:column>
+    </ns:columns>
+  </ns:table>
+  <ns:table tableName="vl_virus" tableDbType="TABLE">
+    <ns:pkColumnName>virus</ns:pkColumnName>
+    <ns:columns>
+      <ns:column columnName="virus">
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>255</ns:scale>
+      </ns:column>
+    </ns:columns>
+  </ns:table>
+  <ns:table tableName="vl_instrument" tableDbType="TABLE">
+    <ns:pkColumnName>instrument</ns:pkColumnName>
+    <ns:columns>
+      <ns:column columnName="instrument">
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>255</ns:scale>
+      </ns:column>
+    </ns:columns>
+  </ns:table>
+  <ns:table tableName="charge_items" tableDbType="TABLE">
+    <ns:pkColumnName>rowid</ns:pkColumnName>
+    <ns:titleColumn>description</ns:titleColumn>
+    <ns:columns>
+      <ns:column columnName="rowid">
+        <ns:datatype>serial</ns:datatype>
+        <ns:isAutoInc>true</ns:isAutoInc>
+        <ns:scale>10</ns:scale>
+      </ns:column>
+      <ns:column columnName="category">
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>integer</ns:datatype>
+        <ns:scale>17</ns:scale>
+      </ns:column>
+      <ns:column columnName="description">
+        <ns:nullable>false</ns:nullable>
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>255</ns:scale>
+        <ns:inputType>textarea</ns:inputType>
+      </ns:column>
+      <ns:column columnName="cost">
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>double</ns:datatype>
+        <ns:scale>17</ns:scale>
+      </ns:column>
+      <ns:column columnName="container">
+        <ns:isUserEditable>false</ns:isUserEditable>
+        <ns:datatype>entityid</ns:datatype>
+        <ns:isHidden>true</ns:isHidden>
+        <ns:scale>36</ns:scale>
+      </ns:column>
+      <ns:column columnName="createdby">
+        <ns:isUserEditable>false</ns:isUserEditable>
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>userid</ns:datatype>
+        <ns:scale>4</ns:scale>
+        <ns:isHidden>true</ns:isHidden>
+      </ns:column>
+      <ns:column columnName="created">
+        <ns:isUserEditable>false</ns:isUserEditable>
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>timestamp</ns:datatype>
+        <ns:scale>29</ns:scale>
+        <ns:isHidden>true</ns:isHidden>
+      </ns:column>
+      <ns:column columnName="modifiedby">
+        <ns:isUserEditable>false</ns:isUserEditable>
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>userid</ns:datatype>
+        <ns:scale>4</ns:scale>
+        <ns:isHidden>true</ns:isHidden>
+      </ns:column>
+      <ns:column columnName="modified">
+        <ns:isUserEditable>false</ns:isUserEditable>
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>timestamp</ns:datatype>
+        <ns:scale>29</ns:scale>
+        <ns:isHidden>true</ns:isHidden>
+      </ns:column>
+    </ns:columns>
+  </ns:table>
+  <ns:table tableName="blood_draw_tube_type" tableDbType="TABLE">
+    <ns:pkColumnName>type</ns:pkColumnName>
+    <ns:columns>
+      <ns:column columnName="type">
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>255</ns:scale>
+      </ns:column>
+      <ns:column columnName="volume">
+        <ns:datatype>double</ns:datatype>
+        <ns:scale>50</ns:scale>
+      </ns:column>
+    </ns:columns>
+  </ns:table>
+  <ns:table tableName="snomed" tableDbType="TABLE">
+    <ns:pkColumnName>code</ns:pkColumnName>
+    <ns:columns>
+      <ns:column columnName="code">
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>255</ns:scale>
+      </ns:column>
+      <ns:column columnName="meaning">
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>2000</ns:scale>
+      </ns:column>
+      <ns:column columnName="container">
+        <ns:isUserEditable>false</ns:isUserEditable>
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>entityid</ns:datatype>
+        <ns:isHidden>true</ns:isHidden>
+        <ns:scale>36</ns:scale>
+      </ns:column>
+      <ns:column columnName="createdby">
+        <ns:isUserEditable>false</ns:isUserEditable>
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>userid</ns:datatype>
+        <ns:scale>4</ns:scale>
+        <ns:isHidden>true</ns:isHidden>
+      </ns:column>
+      <ns:column columnName="created">
+        <ns:isUserEditable>false</ns:isUserEditable>
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>timestamp</ns:datatype>
+        <ns:scale>29</ns:scale>
+        <ns:isHidden>true</ns:isHidden>
+      </ns:column>
+      <ns:column columnName="modifiedby">
+        <ns:isUserEditable>false</ns:isUserEditable>
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>userid</ns:datatype>
+        <ns:scale>4</ns:scale>
+        <ns:isHidden>true</ns:isHidden>
+      </ns:column>
+      <ns:column columnName="modified">
+        <ns:isUserEditable>false</ns:isUserEditable>
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>timestamp</ns:datatype>
+        <ns:scale>29</ns:scale>
+        <ns:isHidden>true</ns:isHidden>
+      </ns:column>
+    </ns:columns>
+  </ns:table>
+  <ns:table tableName="snomed_subset_codes" tableDbType="TABLE">
+    <ns:pkColumnName>rowid</ns:pkColumnName>
+    <ns:columns>
+        <ns:column columnName="rowid">
+          <ns:datatype>serial</ns:datatype>
+          <ns:isAutoInc>true</ns:isAutoInc>
+          <ns:scale>10</ns:scale>
+        </ns:column>
+      <ns:column columnName="code">
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>255</ns:scale>
+        <!--<ns:fk>-->
+            <!--<ns:fkDbSchema>ehr_lookups</ns:fkDbSchema>-->
+            <!--<ns:fkTable>snomed</ns:fkTable>-->
+            <!--<ns:fkColumnName>code</ns:fkColumnName>-->
+        <!--</ns:fk>-->
+      </ns:column>
+        <ns:column columnName="primaryCategory">
+          <ns:datatype>varchar</ns:datatype>
+          <ns:scale>100</ns:scale>
+        </ns:column>
+        <ns:column columnName="secondaryCategory">
+          <ns:datatype>varchar</ns:datatype>
+          <ns:scale>100</ns:scale>
+        </ns:column>
+      <ns:column columnName="container">
+        <ns:isUserEditable>false</ns:isUserEditable>
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>entityid</ns:datatype>
+        <ns:isHidden>true</ns:isHidden>
+        <ns:scale>36</ns:scale>
+      </ns:column>
+      <ns:column columnName="createdby">
+        <ns:isUserEditable>false</ns:isUserEditable>
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>userid</ns:datatype>
+        <ns:scale>4</ns:scale>
+        <ns:isHidden>true</ns:isHidden>
+      </ns:column>
+      <ns:column columnName="created">
+        <ns:isUserEditable>false</ns:isUserEditable>
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>timestamp</ns:datatype>
+        <ns:scale>29</ns:scale>
+        <ns:isHidden>true</ns:isHidden>
+      </ns:column>
+      <ns:column columnName="modifiedby">
+        <ns:isUserEditable>false</ns:isUserEditable>
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>userid</ns:datatype>
+        <ns:scale>4</ns:scale>
+        <ns:isHidden>true</ns:isHidden>
+      </ns:column>
+      <ns:column columnName="modified">
+        <ns:isUserEditable>false</ns:isUserEditable>
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>timestamp</ns:datatype>
+        <ns:scale>29</ns:scale>
+        <ns:isHidden>true</ns:isHidden>
+      </ns:column>
+    </ns:columns>
+  </ns:table>
+  <ns:table tableName="normal_abnormal" tableDbType="TABLE">
+    <ns:pkColumnName>state</ns:pkColumnName>
+    <ns:columns>
+      <ns:column columnName="state">
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>255</ns:scale>
+      </ns:column>
+    </ns:columns>
+  </ns:table>
+    <ns:table tableName="urine_method" tableDbType="TABLE">
+      <ns:pkColumnName>method</ns:pkColumnName>
+      <ns:columns>
+        <ns:column columnName="method">
+          <ns:datatype>varchar</ns:datatype>
+          <ns:scale>255</ns:scale>
+        </ns:column>
+      </ns:columns>
+    </ns:table>
+    <ns:table tableName="virology_source" tableDbType="TABLE">
+      <ns:pkColumnName>method</ns:pkColumnName>
+      <ns:columns>
+        <ns:column columnName="method">
+          <ns:datatype>varchar</ns:datatype>
+          <ns:scale>255</ns:scale>
+        </ns:column>
+          <ns:column columnName="code">
+            <ns:datatype>varchar</ns:datatype>
+            <ns:scale>255</ns:scale>
+          </ns:column>
+      </ns:columns>
+    </ns:table>
+</ns:tables>

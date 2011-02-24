@@ -3,77 +3,14 @@
  *
  * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
  */
-Ext.namespace('EHR.ext.customFields', 'EHR.ext.customPanels', 'EHR.UTILITIES');
+Ext.namespace('EHR.ext', 'EHR.UTILITIES');
 
 LABKEY.requiresScript("/ehr/arrayUtils.js");
 
 
 
-////this is a generic class for a combobox populated from a labkey store
-//EHR.ext.customFields.LabKeyCombo = Ext.extend(Ext.form.ComboBox,
-//{
-//    constructor : function(config)
-//    {
-//        config = config || {};
-//        var defaults = {
-//            valueField:'Key'
-//            ,typeAhead: false
-//            ,mode: 'local'
-//            ,width: 165
-//            ,triggerAction: 'all'
-//            ,forceSelection: true
-//            ,editable: false
-//            ,lazyRender: false
-//            ,lazyInit: false
-//            ,autoLoad: true
-//        };
-//        if (!config.store)
-//        {
-//            config.emptyText = 'Error: You Must Specify a Store'
-//        }
-//        else
-//        {
-//            config.store.load()
-//        }
-//        ;
-//
-//        Ext.applyIf(config, defaults);
-//
-//        //Ext.form.ComboBox.prototype.constructor(config);
-//        EHR.ext.customFields.LabKeyCombo.superclass.constructor.call(this, config);
-//
-//        if (this.store && this.value && this.displayField && this.valueField && this.displayField != this.valueField)
-//        {
-//            this.initialValue = this.value;
-//            if (this.store.getCount())
-//                this.initialLoad();
-//            else
-//            {
-//                this.store.on('load', this.initialLoad, this);
-//                if (!this.store.proxy.activeRequest)
-//                    this.store.load();
-//            }
-//        }
-//
-//    },
-//
-//    initialLoad : function()
-//    {
-//        this.store.un('load', this.initialLoad, this);
-//        if (this.value === this.initialValue)
-//        {
-//            var v = this.value;
-//            this.setValue(v);
-//        }
-//    }
-//});
-//Ext.reg('LabKeyCombo', EHR.ext.customFields.LabKeyCombo);
-
-
-
-
-//this is a generic class for a combobox populated from a labkey store
-EHR.ext.customFields.DateRangePanel = Ext.extend(Ext.Panel,
+//creates a pair of date fields that automatically set their min/max dates to create a date range
+EHR.ext.DateRangePanel = Ext.extend(Ext.Panel,
 {
     initComponent : function(config)
     {
@@ -91,7 +28,7 @@ EHR.ext.customFields.DateRangePanel = Ext.extend(Ext.Panel,
         
         Ext.apply(this, defaults);
 
-        EHR.ext.customFields.DateRangePanel.superclass.initComponent.call(this);
+        EHR.ext.DateRangePanel.superclass.initComponent.call(this);
 
         this.startDateField = new LABKEY.ext.DateField({
             format: 'Y-M-d' //YYYY-MMM-DD
@@ -125,86 +62,17 @@ EHR.ext.customFields.DateRangePanel = Ext.extend(Ext.Panel,
     }
 
 });
-Ext.reg('DateRangePanel', EHR.ext.customFields.DateRangePanel);
-
-//this is a class for a combobox containing operators as might be used in a search form
-EHR.ext.customFields.OperatorCombo = function(meta, value){
-    if(!meta) return;
-
-    if(meta.jsonType == 'boolean')
-        return {};
-
-    meta.jsonType = meta.jsonType || 'string';
-    
-    if(!value){
-        switch(meta.jsonType){
-            case 'int':
-            case 'float':
-                value = 'eq';
-                break;
-            case 'date':
-                value = 'dateeq';
-                break;
-            case 'boolean':
-                value = 'startswith';
-                break;
-            default:
-                value = 'startswith';
-                break;
-        }
-    }
-
-    var combo = {
-        xtype: 'combo'
-        ,valueField:'value'
-        ,displayField:'text'
-        ,typeAhead: false
-        ,mode: 'local'
-        ,width: 165
-        ,triggerAction: 'all'
-        ,editable: false
-        ,lazyRender: false
-        ,lazyInit: false
-        ,hiddenName:'operator'
-        ,value: value
-        ,store: setOptions(meta, value)
-    };
-
-    function setOptions(meta, value) {
-        var found = false;
-        var options = [];
-        if (meta.jsonType)
-            Ext.each(LABKEY.Filter.getFilterTypesForType(meta.jsonType, meta.mvEnabled), function (filterType) {
-                if (value && value == filterType.getURLSuffix())
-                    found = true;
-                if (filterType.getURLSuffix())
-                    options.push([filterType.getURLSuffix(), filterType.getDisplayText()]);
-            });
-
-        if (!found) {
-            for (var key in LABKEY.Filter.Types) {
-                var filterType = LABKEY.Filter.Types[key];
-                if (filterType.getURLSuffix() == value) {
-                    options.unshift([filterType.getURLSuffix(), filterType.getDisplayText()]);
-                    break;
-                }
-            }
-        }
-
-        return new Ext.data.SimpleStore({fields: ['value', 'text'], data: options });
-    }
-
-    return combo
-};
+Ext.reg('DateRangePanel', EHR.ext.DateRangePanel);
 
 
-EHR.UTILITIES.Header = function(title){
-    var header = document.createElement('span');
-    header.innerHTML = '<table class="labkey-wp"><tbody><tr class="labkey-wp-header"><th class="labkey-wp-title-left">' +
-    (title || 'Details:')+ '</th><th class="labkey-wp-title-right">&nbsp;</th></tr></tbody></table><p/>';
 
-    return header;
-}
+//EHR.UTILITIES.Header = function(title){
+//    var header = document.createElement('span');
+//    header.innerHTML = '<table class="labkey-wp"><tbody><tr class="labkey-wp-header"><th class="labkey-wp-title-left">' +
+//    (title || 'Details:')+ '</th><th class="labkey-wp-title-right">&nbsp;</th></tr></tbody></table><p/>';
+//
+//    return header;
+//}
 
 //function to test whether a user is a member of the allowed group array
 EHR.UTILITIES.isMemberOf = function(allowed, successCallback){
@@ -243,7 +111,7 @@ Ext.apply(Ext.form.VTypes, {
             (function(){start.validate()}).defer(10);
             this.dateRangeMax = date;
 
-            start.fireEvent('change', start);
+            start.fireEvent('change', start, start.getValue());
         }
         else if (field.endDateField && (!this.dateRangeMin || (date.getTime() != this.dateRangeMin.getTime())))
         {
@@ -253,13 +121,12 @@ Ext.apply(Ext.form.VTypes, {
             (function(){end.validate()}).defer(10);
             this.dateRangeMin = date;
 
-            end.fireEvent('change', end);
+            end.fireEvent('change', end, end.getValue());
         }
         /*
          * Always return true since we're only using this vtype to set the
          * min/max allowed values (these are tested for after the vtype test)
          */
-
 
         return true;
     }
@@ -276,43 +143,111 @@ EHR.UTILITIES.onError = function(error){
     /*
     LABKEY.Query.insertRows({
          containerPath: '/shared',
-         schemaName: 'lists',
-         queryName: 'errors',
+         schemaName: 'ehr',
+         queryName: 'client_errors',
          rowDataArray: [
-            {UserID:  LABKEY.Security.currentUser,
+        {
             Page: window.location
-            Timestamp: new Date(),
             Error: error.exception,
-            }]
+            User: '',
+            ContainerPath: ''
+        }]
     */
 };
 
-EHR.UTILITIES.rApplyIf = function(o, c, depth){
-    if(o){
-        for(var p in c){
-            if(!Ext.isDefined(o[p]))
+//NOTE: modified to accept a maxDepth argument to avoid excessive recursion
+EHR.UTILITIES.rApplyIf = function(o, c, maxDepth, depth){
+    maxDepth = maxDepth || 50;
+    depth = depth || 1;
+    o = o || {};
+    if(depth>6){
+        console.log('Warning: rApplyIf hit : '+depth);
+        console.log(o);
+        console.log(c);
+    }
+
+    for(var p in c){
+        if(!Ext.isDefined(o[p]) || depth >= maxDepth)
+            o[p] = c[p];
+        else if (Ext.type(o[p])=='object'){
+            EHR.UTILITIES.rApplyIf(o[p], c[p], maxDepth, depth+1);
+        }
+    }
+
+    return o;
+};
+
+//NOTE: modified to accept a maxDepth argument to avoid excessive recursion
+EHR.UTILITIES.rApply = function(o, c, maxDepth, depth){
+    maxDepth = maxDepth || 50;
+    depth = depth || 1;
+    if(depth>6){
+        console.log('Warning: rApply hit max: '+depth);
+        console.log(o);
+        console.log(c);
+    }
+    o = o || {};
+
+    for(var p in c){
+        if(Ext.type(o[p])!='object' || depth >= maxDepth)
                 o[p] = c[p];
-            else if(Ext.type(o[p])=='object'){
-                EHR.UTILITIES.rApplyIf(o[p], c[p], depth+1);
-            }
+        else {
+            EHR.UTILITIES.rApply(o[p], c[p], maxDepth, depth+1);
         }
     }
     return o;
 };
 
-EHR.UTILITIES.rApply = function(o, c, depth){
-    depth = depth || 0;
-    if(o){
-        for(var p in c){
-            if(Ext.type(o[p])=='object'){
-                EHR.UTILITIES.rApply(o[p], c[p], depth+1);
-            }
-            else
+
+EHR.UTILITIES.rApplyCloneIf = function(o, c, maxDepth, depth){
+    maxDepth = maxDepth || 50;
+    depth = depth || 1;
+    o = o || {};
+    if(depth>6){
+        console.log('Warning: rApplyCloneIf hit max: '+depth);
+        console.log(o);
+        console.log(c);
+    }
+
+    for(var p in c){
+        if((!Ext.isDefined(o[p]) && Ext.type(c[p])!='object') || depth >= maxDepth)
+            o[p] = c[p];
+        else if (!Ext.isDefined(o[p]) && Ext.type(c[p])=='object'){
+            o[p] = {};
+            EHR.UTILITIES.rApplyClone(o[p], c[p], maxDepth, depth+1);
+        }
+        else if (Ext.type(o[p])=='object'){
+            EHR.UTILITIES.rApplyCloneIf(o[p], c[p], maxDepth, depth+1);
+        }
+    }
+
+    return o;
+};
+
+//NOTE: modified to accept a maxDepth argument to avoid excessive recursion
+EHR.UTILITIES.rApplyClone = function(o, c, maxDepth, depth){
+    maxDepth = maxDepth || 50;
+    depth = depth || 1;
+    if(depth>6){
+        console.log('Warning: rApplyClone hit max: '+depth);
+        console.log(o);
+        console.log(c);
+    }
+    o = o || {};
+
+    for(var p in c){
+        if(Ext.type(c[p])!='object' || depth >= maxDepth)
                 o[p] = c[p];
+        else {
+            if(Ext.type(o[p])!='object')
+                o[p] = {};
+            EHR.UTILITIES.rApplyClone(o[p], c[p], maxDepth, depth+1);
         }
     }
     return o;
 };
+
+
 
 EHR.UTILITIES.isEmptyObj = function(ob){
    for(var i in ob){ return false;}
@@ -320,119 +255,104 @@ EHR.UTILITIES.isEmptyObj = function(ob){
 };
 
 
-//EHR.UTILITIES.getBaseUrl = function(){
-//    return window.location.protocol + '//' + window.location.host + '/' + LABKEY.ActionURL.getContextPath();
-//};
+EHR.UTILITIES.findWebPartTitle = function(childObj) {
+    var wp = childObj.findParentNode('table[class*=labkey-wp]', null, true);
+    return wp.child('th[class*=labkey-wp-title-left]', null, true);
+};
 
+EHR.UTILITIES.loadTemplateByName = function(title, formType){
+    LABKEY.Query.selectRows({
+        schemaName: 'ehr',
+        queryName: 'formtemplates',
+        filterArray: [
+            LABKEY.Filter.create('title', title, LABKEY.Filter.Types.EQUAL),
+            LABKEY.Filter.create('formType', formType, LABKEY.Filter.Types.EQUAL)
+        ],
+        success: onLoadTemplate
+    });
 
-EHR.ext.getLookupStore = function(c, uniqueName)
-{
-    // normalize lookup
-    c.queryName = c.table || c.queryName;
-    c.schemaName = c.schema || c.schemaName;
-    c.viewName = c.view || c.viewName;
-    c.containerPath = c.container || c.containerPath || LABKEY.container.path;
+    function onLoadTemplate(data){
+        if(!data || !data.rows.length)
+            return;
 
-    if (typeof(uniqueName) != 'string')
-        uniqueName = [c.containerPath,c.schemaName,c.queryName,c.view,c.keyColumn,c.displayColumn].join('||');
-
-    var store = Ext.StoreMgr.key(uniqueName);
-    if (!store)
-    {
-        var columns = [];
-        if (c.keyColumn)
-            columns.push(c.keyColumn);
-
-        if (c.displayColumn && c.displayColumn != c.keyColumn)
-            columns.push(c.displayColumn);
-
-        if(columns.length)
-            c.columns = columns.join(',');
-
-        c.autoLoad = true;
-        c.storeId = uniqueName;
-        c.noValidationCheck = true;
-        
-        store = new LABKEY.ext.Store(c);
+        EHR.UTILITIES.loadTemplate(data.rows[0].entityid)
     }
-    return store;
-}
+};
 
 
-Ext.namespace('Ext.ux');
-/**
- * @class Ext.ux.FitToParent
- * @extends Object
- * <p>Plugin for {@link Ext.BoxComponent BoxComponent} and descendants that adjusts the size of the component to fit inside a parent element</p>
- * <p>The following example will adjust the size of the panel to fit inside the element with id="some-el":<pre><code>
-var panel = new Ext.Panel({
-    title: 'Test',
-    renderTo: 'some-el',
-    plugins: ['fittoparent']
-});</code></pre></p>
- * <p>It is also possible to specify additional parameters:<pre><code>
-var panel = new Ext.Panel({
-    title: 'Test',
-    renderTo: 'other-el',
-    autoHeight: true,
-    plugins: [
-        new Ext.ux.FitToParent({
-            parent: 'parent-el',
-            fitHeight: false,
-            offsets: [10, 0]
-        })
-    ]
-});</code></pre></p>
- * <p>The element the component is rendered to needs to have <tt>style="overflow:hidden"</tt>, otherwise the component will only grow to fit the parent element, but it will never shrink.</p>
- * <p>Note: This plugin should not be used when the parent element is the document body. In this case you should use a {@link Ext.Viewport Viewport} container.</p>
- */
-Ext.ux.FitToParent = Ext.extend(Object, {
-    /**
-     * @cfg {HTMLElement/Ext.Element/String} parent The element to fit the component size to (defaults to the element the component is rendered to).
-     */
-    /**
-     * @cfg {Boolean} fitWidth If the plugin should fit the width of the component to the parent element (default <tt>true</tt>).
-     */
-    fitWidth: true,
-    /**
-     * @cfg {Boolean} fitHeight If the plugin should fit the height of the component to the parent element (default <tt>true</tt>).
-     */
-    fitHeight: true,
-    /**
-     * @cfg {Boolean} offsets Decreases the final size with [width, height] (default <tt>[0, 0]</tt>).
-     */
-    offsets: [0, 0],
-    /**
-     * @constructor
-     * @param {HTMLElement/Ext.Element/String/Object} config The parent element or configuration options.
-     * @ptype fittoparent
-     */
-    constructor: function(config) {
-        config = config || {};
-        if(config.tagName || config.dom || Ext.isString(config)){
-            config = {parent: config};
+EHR.UTILITIES.loadTemplate = function(templateId){
+    if(!templateId)
+        return;
+
+    LABKEY.Query.selectRows({
+        schemaName: 'ehr',
+        queryName: 'formtemplaterecords',
+        filterArray: [LABKEY.Filter.create('templateId', templateId, LABKEY.Filter.Types.EQUAL)],
+        sort: '-rowid',
+        success: onLoadTemplate
+        //scope: store
+    });
+
+    Ext.Msg.wait("Loading Template...");
+
+    function onLoadTemplate(data){
+        if(!data || !data.rows.length){
+            Ext.Msg.hide();
+            return;
         }
-        Ext.apply(this, config);
-    },
-    init: function(c) {
-        this.component = c;
-        c.on('render', function(c) {
-            this.parent = Ext.get(this.parent || c.getPositionEl().dom.parentNode);
-            if(c.doLayout){
-                c.monitorResize = true;
-                c.doLayout = c.doLayout.createInterceptor(this.fitSize, this);
-            } else {
-                this.fitSize();
-                Ext.EventManager.onWindowResize(this.fitSize, this);
-            }
-        }, this, {single: true});
-    },
-    fitSize: function() {
-        var pos = this.component.getPosition(true),
-            size = this.parent.getViewSize();
-        this.component.setSize(
-            this.fitWidth ? size.width - pos[0] - this.offsets[0] : undefined,
-            this.fitHeight ? size.height - pos[1] - this.offsets[1] : undefined);
+
+        var toAdd = {};
+
+        Ext.each(data.rows, function(row){
+            var data = Ext.util.JSON.decode(row.json);
+            var store = Ext.StoreMgr.get(row.storeid);
+
+            //verify store exists
+            if(!store){
+                Ext.StoreMgr.on('add', function(){
+                    onLoadTemplate(data);
+                }, this, {single: true, delay: 200});
+                return false;
+            };
+
+            //also verify it is loaded
+            if(!store.fields && store.fields.length){
+                store.on('load', function(){
+                    onLoadTemplate(data);
+                }, this, {single: true, delay: 200});
+                return false;
+            };
+
+            if(!toAdd[store.storeId])
+                toAdd[store.storeId] = [];
+
+            toAdd[store.storeId].push(data);
+        });
+
+        for (var i in toAdd){
+            var store = Ext.StoreMgr.get(i);
+            var recs = store.addRecords(toAdd[i])
+        }
+
+        Ext.Msg.hide();
     }
-});
-Ext.preg('fittoparent', Ext.ux.FitToParent);
+};
+
+EHR.UTILITIES.errorSeverity = {
+    DEBUG: 0,
+    INFO: 1,
+    WARN: 2,
+    ERROR: 3,
+    FATAL: 4
+};
+
+EHR.UTILITIES.maxError = function(severity1, severity2){
+    if (EHR.UTILITIES.errorSeverity[severity1] > EHR.UTILITIES.errorSeverity[severity2])
+        return severity1;
+    else
+        return severity2;
+};
+
+EHR.UTILITIES.roundNumber = function(num, dec){
+    return Math.round(num*Math.pow(10,dec))/Math.pow(10,dec);
+};

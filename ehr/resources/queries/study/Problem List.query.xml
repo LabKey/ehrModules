@@ -15,6 +15,19 @@
                           <fkColumnName>objectid</fkColumnName>
                         </fk>
                     </column>
+                    <column columnName="code">
+                        <datatype>varchar</datatype>
+                        <columnTitle>SNOMED</columnTitle>
+                        <fk>
+                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
+                            <fkDbSchema>lists</fkDbSchema>
+                            <fkTable>snomed</fkTable>
+                            <fkColumnName>code</fkColumnName>
+                        </fk>
+                    </column>
+                    <column columnName="enddate">
+                        <columnTitle>Date Resolved</columnTitle>
+                    </column>
                 </columns>
             </table>
         </tables>

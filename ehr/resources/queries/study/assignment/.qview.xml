@@ -1,7 +1,7 @@
 <customView xmlns="http://labkey.org/data/xml/queryCustomView">
     <columns>
         <column name="Id"/>
-        <column name="Dataset/Demographics/gender">
+        <column name="Id/Dataset/Demographics/gender">
             <properties>
                 <property name="columnTitle" value="Gender"/>
             </properties>
@@ -16,7 +16,17 @@
             <properties>
                 <property name="columnTitle" value="Title"/>
             </properties>
-        </column>   
+        </column>
+        <column name="Project/avail">
+            <properties>
+                <property name="columnTitle" value="Project Avail"/>
+            </properties>
+        </column>
+        <column name="Project/inves">
+            <properties>
+                <property name="columnTitle" value="Investigator"/>
+            </properties>
+        </column>
         <column name="date"/>
         <column name="rdate"/>
     </columns>

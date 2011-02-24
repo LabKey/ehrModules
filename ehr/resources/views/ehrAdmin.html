@@ -2,14 +2,14 @@
 <head>
 <script type="text/javascript">
 
-LABKEY.requiresScript("/WNPRC_Main/navMenu.js");
-LABKEY.requiresScript("/ehr/utilities.js");
+LABKEY.requiresScript("/ehr/navMenu.js");
+//LABKEY.requiresScript("/ehr/utilities.js");
 
 Ext.onReady(function (){
 
     if (LABKEY.Security.currentUser.isAdmin){
     new EHR.UTILITIES.navMenu({
-        target: 'adminLinks',
+        renderTo: 'adminLinks',
         width: 350,
         sections: [
             {header: 'Admin',
@@ -20,8 +20,9 @@ Ext.onReady(function (){
                     {name: 'ETL Duration', url: '<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=core&query.queryName=Sync Duration'},
                     {name: 'ETL History', url: '<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=core&query.queryName=Sync History'},
                     {name: 'Manage EHR Study', url: '<%=contextPath%>/study/WNPRC/EHR/manageStudy.view?'},
+                    {name: 'Populate Initial Data', url: '<%=contextPath%>/EHR/WNPRC/EHR/_initEHR.view?'},
                     {name: 'Reload Study', url: '<%=contextPath%>/pipeline/WNPRC/EHR/begin.view?'},
-                    {name: 'Generate Schema XML', url: '<%=contextPath%>/admin/getSchemaXmlDoc.view?dbSchema=core'},
+                    {name: 'Generate Schema XML', url: '<%=contextPath%>/admin/getSchemaXmlDoc.view?full=true&dbSchema=core'},
                     {name: 'View Logs', url: '<%=contextPath%>/project/WNPRC/EHR/Logs/begin.view?'}
                 ]
             },
@@ -58,32 +59,33 @@ Ext.onReady(function (){
             },
             {header: 'Validation',
                 items: [
-                    {name: 'Validate Status', url: '<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=Validation'},
+                    {name: 'Validate Status Field Calculation', url: '<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=Validation'},
                     {name: 'Review Required', url: '<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=studyData&query.viewName=Review Required'},
-                    {name: 'Postgres/mySQL Comparison', url: '<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=col_dump&query.queryName=mysql_check'}
+                    {name: 'Rooms/Cages Missing From List', url: '<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=ehr&query.queryName=RoomUtilization&query.TotalCages~eq=0'},
+                    {name: 'Postgres/mySQL Comparison', url: '<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=col_dump&query.queryName=mysql_check'},
+                    {name: 'Postgres/mySQL Comparison - To Excel', url: '<%=contextPath%>/query/WNPRC/EHR/exportRowsExcel.view?schemaName=col_dump&query.queryName=mysql_check'}
                 ]
-
             }
         ]
     })
     }
 
-    new LABKEY.QueryWebPart({
-        title: 'Maintenance History',
-        //containerPath: '/WNPRC/EHR/Backups',
-        schemaName: 'core',
-        queryName: 'Maintenance History',
-        allowChooseQuery: false,
-        allowChooseView: true,
-        showInsertNewButton: false,
-        showDeleteButton: false,
-        showDetailsColumn: true,
-        showUpdateColumn: false,
-        buttonBarPosition: 'top',
-        //maxRows: 2,
-        scope: this,
-        errorCallback: EHR.UTILITIES.onError
-     }).render('backupDate');
+//    new LABKEY.QueryWebPart({
+//        title: 'Maintenance History',
+//        //containerPath: '/WNPRC/EHR/Backups',
+//        schemaName: 'core',
+//        queryName: 'Maintenance History',
+//        allowChooseQuery: false,
+//        allowChooseView: true,
+//        showInsertNewButton: false,
+//        showDeleteButton: false,
+//        showDetailsColumn: true,
+//        showUpdateColumn: false,
+//        buttonBarPosition: 'top',
+//        //maxRows: 2,
+//        scope: this,
+//        errorCallback: EHR.UTILITIES.onError
+//     }).render('backupDate');
 
 
     
@@ -96,10 +98,10 @@ Ext.onReady(function (){
 <body>
 
 <div id="adminLinks"></div>
-<p/>
-<div id="backupDate"></div>
-<p/>
-<div id="syncDate"></div>
+<!--<p/>-->
+<!--<div id="backupDate"></div>-->
+<!--<p/>-->
+<!--<div id="syncDate"></div>-->
 
 
 

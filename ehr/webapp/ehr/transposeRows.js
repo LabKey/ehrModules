@@ -3,11 +3,11 @@
  *
  * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
  */
-Ext.namespace('EHR.ext.customPanels');
+Ext.namespace('EHR.ext');
 
 LABKEY.requiresScript("/ehr/utilities.js");
 
-EHR.ext.customPanels.detailsView = Ext.extend(Ext.Panel, {
+EHR.ext.DetailsView = Ext.extend(Ext.Panel, {
 
 initComponent: function(){
     this.panelTitle = this.title;
@@ -18,7 +18,7 @@ initComponent: function(){
         border: false
     });
 
-    EHR.ext.customPanels.detailsView.superclass.initComponent.call(this, arguments);
+    EHR.ext.DetailsView.superclass.initComponent.call(this, arguments);
 
     var required = ['schemaName', 'queryName'];
     for (var i=0;i<required.length;i++){
@@ -31,6 +31,7 @@ initComponent: function(){
     this.queryConfig = {
         queryName: this.queryName,
         schemaName: this.schemaName,
+        viewName: this.viewName,
         filterArray: this.filterArray,
         successCallback: this.onFinalRender,
         errorCallback: EHR.UTILITIES.onError,

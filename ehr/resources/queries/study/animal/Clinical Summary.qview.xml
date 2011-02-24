@@ -1,14 +1,19 @@
 <customView xmlns="http://labkey.org/data/xml/queryCustomView">
     <columns>
         <column name="Id"/>
-        <column name="Dataset/Demographics/Gender">
+        <column name="Status/Status">
             <properties>
-                <property name="columnTitle" value="Gender"/>
+                <property name="columnTitle" value="Calculated Status"/>
             </properties>
         </column>
         <column name="Dataset/Demographics/Status">
             <properties>
                 <property name="columnTitle" value="Status"/>
+            </properties>
+        </column>
+        <column name="Dataset/Demographics/Gender">
+            <properties>
+                <property name="columnTitle" value="Gender"/>
             </properties>
         </column>
         <column name="Dataset/Demographics/Avail">
@@ -46,15 +51,15 @@
                 <property name="columnTitle" value="Medical"/>
             </properties>
         </column>
-        <column name="Dataset/Demographics/v_status">
+        <column name="activeAssignments/ActiveAssignments">
             <properties>
-                <property name="columnTitle" value="Viral Status"/>
+                <property name="columnTitle" value="Active Assignments"/>
             </properties>
         </column>
     </columns>
-    <filters>
-        <filter column="Status/Status" operator="eq" value="Alive"/> 
-    </filters>
+    <!--<filters>-->
+        <!--<filter column="Status/Status" operator="eq" value="Alive"/> -->
+    <!--</filters>-->
     <sorts>
         <sort column="id" descending="false"/>
     </sorts>

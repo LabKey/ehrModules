@@ -2,20 +2,28 @@
     <metadata>
         <tables xmlns="http://labkey.org/data/xml">
             <table tableName="tasks" tableDbType="TABLE">
-                <!--<tableUrl>/EHR/projectDetails.view?key=${project}</tableUrl>-->
+                <tableUrl>/ehr/taskDetails.view?formtype=${formtype}&amp;taskid=${taskid}</tableUrl>
+                <updateUrl>/ehr/manageTask.view?formtype=${formtype}&amp;taskid=${taskid}</updateUrl>
+                <insertUrl>/ehr/manageTask.view</insertUrl>
                 <titleColumn>RowId</titleColumn>
                 <columns>
-                    <column columnName="type">
-                      <columnTitle>Task Type</columnTitle>
-                      <!--<fk>-->
-                        <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
-                        <!--<fkDbSchema>lookups</fkDbSchema>-->
-                        <!--<fkTable>type_types</fkTable>-->
-                        <!--<fkColumnName>type</fkColumnName>-->
-                      <!--</fk>-->
+                    <column columnName="rowid">
+                        <columnTitle>TaskId</columnTitle>
+                        <isAutoInc>true</isAutoInc>
+                        <nullable>true</nullable>
                     </column>
-                    <column columnName="AssignedTo">
+                    <column columnName="formtype">
+                        <columnTitle>Task Type</columnTitle>
+                        <fk>
+                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
+                            <fkDbSchema>ehr</fkDbSchema>
+                            <fkTable>formtypes</fkTable>
+                            <fkColumnName>type</fkColumnName>
+                        </fk>
+                    </column>
+                    <column columnName="assignedto">
                         <columnTitle>Assigned To</columnTitle>
+                        <nullable>true</nullable>
                         <fk>
                             <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                             <fkDbSchema>core</fkDbSchema>
@@ -23,22 +31,64 @@
                             <fkColumnName>userid</fkColumnName>
                         </fk>
                     </column>
-                    <column columnName="DueDate">
+                    <column columnName="duedate">
                         <columnTitle>Due Date</columnTitle>
+                        <nullable>true</nullable>
                     </column>
-                    <column columnName="CreatedBy">
+                    <column columnName="createdby">
                         <columnTitle>Created By</columnTitle>
+                        <fk>
+                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
+                            <fkDbSchema>core</fkDbSchema>
+                            <fkTable>users</fkTable>
+                            <fkColumnName>userid</fkColumnName>
+                        </fk>
                     </column>
-                    <column columnName="Created">
+                    <column columnName="created">
                         <columnTitle>Created</columnTitle>
+                        <formatString>yyyy-MM-dd HH:mm</formatString>
                     </column>
-                    <column columnName="ModifiedBy">
+                    <column columnName="modifiedby">
                         <columnTitle>Modified By</columnTitle>
                     </column>
-                    <column columnName="Modified">
+                    <column columnName="modified">
                         <columnTitle>Modified</columnTitle>
                     </column>
+                    <column columnName="qcstate">
+                        <columnTitle>Status</columnTitle>
+                        <fk>
+                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
+                            <fkDbSchema>study</fkDbSchema>
+                            <fkTable>qcstate</fkTable>
+                            <fkColumnName>rowid</fkColumnName>
+                        </fk>
+                    </column>
                 </columns>
+                <buttonBarOptions includeStandardButtons="false">
+                    <includeScript>/ehr/studyButtons.js</includeScript>
+                    <!--<onRender>moreActionsHandler</onRender>-->
+                    <item text="Create New">
+                        <originalText>Insert New</originalText>
+                    </item>
+                    <item text="Views">
+                        <originalText>Views</originalText>
+                    </item>
+                    <item text="Export">
+                        <originalText>Export</originalText>
+                    </item>
+                    <item text="Print">
+                        <originalText>Print</originalText>
+                    </item>
+                    <!--<item text="Import Data">-->
+                        <!--<originalText>Import Data</originalText>-->
+                    <!--</item>-->
+                    <item text="Page Size">
+                        <originalText>Page Size</originalText>
+                    </item>
+                    <!--<item text="Delete">-->
+                        <!--<originalText>Delete</originalText>-->
+                    <!--</item>-->
+                </buttonBarOptions>
             </table>
         </tables>
     </metadata>

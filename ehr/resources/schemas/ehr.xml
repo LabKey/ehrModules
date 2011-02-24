@@ -1,96 +1,5 @@
 <ns:tables xmlns:ns="http://labkey.org/data/xml">
-  <ns:table tableName="pairtest_bhav" tableDbType="TABLE">
-    <ns:pkColumnName>value</ns:pkColumnName>
-    <ns:columns>
-      <ns:column columnName="value">
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>255</ns:scale>
-      </ns:column>
-    </ns:columns>
-  </ns:table>
-  <ns:table tableName="vl_sampletype" tableDbType="TABLE">
-    <ns:pkColumnName>sample_type</ns:pkColumnName>
-    <ns:columns>
-      <ns:column columnName="sample_type">
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>255</ns:scale>
-      </ns:column>
-    </ns:columns>
-  </ns:table>
-  <ns:table tableName="integers" tableDbType="TABLE">
-    <ns:pkColumnName>key</ns:pkColumnName>
-    <ns:columns>
-      <ns:column columnName="key">
-        <ns:datatype>int4</ns:datatype>
-        <ns:scale>10</ns:scale>
-      </ns:column>
-    </ns:columns>
-  </ns:table>
-  <ns:table tableName="dental_tartar" tableDbType="TABLE">
-    <ns:pkColumnName>result</ns:pkColumnName>
-    <ns:columns>
-      <ns:column columnName="result">
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>255</ns:scale>
-      </ns:column>
-    </ns:columns>
-  </ns:table>
-  <ns:table tableName="dental_status" tableDbType="TABLE">
-    <ns:pkColumnName>status</ns:pkColumnName>
-    <ns:columns>
-      <ns:column columnName="status">
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>255</ns:scale>
-      </ns:column>
-    </ns:columns>
-  </ns:table>
-  <ns:table tableName="obs_mens" tableDbType="TABLE">
-    <ns:pkColumnName>code</ns:pkColumnName>
-    <ns:columns>
-      <ns:column columnName="code">
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>2147483647</ns:scale>
-      </ns:column>
-      <ns:column columnName="meaning">
-        <ns:nullable>true</ns:nullable>
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>2147483647</ns:scale>
-      </ns:column>
-    </ns:columns>
-  </ns:table>
-  <ns:table tableName="obs_remarks" tableDbType="TABLE">
-    <ns:pkColumnName>remark</ns:pkColumnName>
-    <ns:columns>
-      <ns:column columnName="remark">
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>2147483647</ns:scale>
-      </ns:column>
-    </ns:columns>
-  </ns:table>
-  <ns:table tableName="tb_eye" tableDbType="TABLE">
-    <ns:pkColumnName>eye</ns:pkColumnName>
-    <ns:columns>
-      <ns:column columnName="eye">
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>255</ns:scale>
-      </ns:column>
-      <ns:column columnName="meaning">
-        <ns:nullable>true</ns:nullable>
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>255</ns:scale>
-      </ns:column>
-    </ns:columns>
-  </ns:table>
-  <ns:table tableName="dental_gingivitis" tableDbType="TABLE">
-    <ns:pkColumnName>result</ns:pkColumnName>
-    <ns:columns>
-      <ns:column columnName="result">
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>255</ns:scale>
-      </ns:column>
-    </ns:columns>
-  </ns:table>
-  <ns:table tableName="arearooms" tableDbType="TABLE">
+  <ns:table tableName="module_properties" tableDbType="TABLE">
     <ns:pkColumnName>rowid</ns:pkColumnName>
     <ns:columns>
       <ns:column columnName="rowid">
@@ -98,132 +7,116 @@
         <ns:isAutoInc>true</ns:isAutoInc>
         <ns:scale>10</ns:scale>
       </ns:column>
-      <ns:column columnName="area">
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>20</ns:scale>
-      </ns:column>
-      <ns:column columnName="room">
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>20</ns:scale>
-      </ns:column>
-    </ns:columns>
-  </ns:table>
-  <ns:table tableName="bcs_score" tableDbType="TABLE">
-    <ns:pkColumnName>score</ns:pkColumnName>
-    <ns:columns>
-      <ns:column columnName="score">
-        <ns:datatype>float8</ns:datatype>
-        <ns:scale>17</ns:scale>
-      </ns:column>
-      <ns:column columnName="meaning">
+      <ns:column columnName="prop_name">
         <ns:nullable>true</ns:nullable>
         <ns:datatype>varchar</ns:datatype>
-        <ns:scale>250</ns:scale>
+        <ns:scale>255</ns:scale>
       </ns:column>
-      <ns:column columnName="description">
+      <ns:column columnName="stringvalue">
         <ns:nullable>true</ns:nullable>
         <ns:datatype>varchar</ns:datatype>
-        <ns:scale>500</ns:scale>
+        <ns:scale>255</ns:scale>
       </ns:column>
-    </ns:columns>
-  </ns:table>
-  <ns:table tableName="cageclass" tableDbType="TABLE">
-    <ns:pkColumnName>rowid</ns:pkColumnName>
-    <ns:columns>
-      <ns:column columnName="rowid">
-        <ns:datatype>serial</ns:datatype>
-        <ns:isAutoInc>true</ns:isAutoInc>
-        <ns:scale>10</ns:scale>
-      </ns:column>
-      <ns:column columnName="low">
+      <ns:column columnName="floatvalue">
         <ns:nullable>true</ns:nullable>
         <ns:datatype>float8</ns:datatype>
         <ns:scale>17</ns:scale>
       </ns:column>
-      <ns:column columnName="high">
+      <ns:column columnName="container">
+        <ns:isUserEditable>false</ns:isUserEditable>
+        <ns:datatype>entityid</ns:datatype>
+        <ns:isHidden>true</ns:isHidden>
+        <ns:scale>36</ns:scale>
+      </ns:column>
+      <ns:column columnName="createdby">
+        <ns:isUserEditable>false</ns:isUserEditable>
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>float8</ns:datatype>
-        <ns:scale>17</ns:scale>
+        <ns:datatype>userid</ns:datatype>
+        <ns:scale>4</ns:scale>
+        <ns:isHidden>true</ns:isHidden>
       </ns:column>
-      <ns:column columnName="sqft">
-        <ns:nullable>true</ns:nullable>
-        <ns:datatype>float8</ns:datatype>
-        <ns:scale>17</ns:scale>
-      </ns:column>
-      <ns:column columnName="height">
-        <ns:nullable>true</ns:nullable>
-        <ns:datatype>float8</ns:datatype>
-        <ns:scale>17</ns:scale>
-      </ns:column>
-    </ns:columns>
-  </ns:table>
-  <ns:table tableName="obs_tlocation" tableDbType="TABLE">
-    <ns:pkColumnName>code</ns:pkColumnName>
-    <ns:columns>
-      <ns:column columnName="code">
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>2147483647</ns:scale>
-      </ns:column>
-    </ns:columns>
-  </ns:table>
-  <ns:table tableName="drug_units" tableDbType="TABLE">
-    <ns:pkColumnName>route</ns:pkColumnName>
-    <ns:columns>
-      <ns:column columnName="route">
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>100</ns:scale>
-      </ns:column>
-    </ns:columns>
-  </ns:table>
-  <ns:table tableName="volume_units" tableDbType="TABLE">
-    <ns:pkColumnName>unit</ns:pkColumnName>
-    <ns:columns>
-      <ns:column columnName="unit">
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>100</ns:scale>
-      </ns:column>
-    </ns:columns>
-  </ns:table>
-  <ns:table tableName="cage" tableDbType="TABLE">
-    <ns:pkColumnName>roomcage</ns:pkColumnName>
-    <ns:columns>
-      <ns:column columnName="roomcage">
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>24</ns:scale>
-      </ns:column>
-      <ns:column columnName="room">
-        <ns:nullable>true</ns:nullable>
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>8</ns:scale>
-      </ns:column>
-      <ns:column columnName="cage">
-        <ns:nullable>true</ns:nullable>
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>8</ns:scale>
-      </ns:column>
-      <ns:column columnName="length">
-        <ns:nullable>true</ns:nullable>
-        <ns:datatype>float8</ns:datatype>
-        <ns:scale>17</ns:scale>
-      </ns:column>
-      <ns:column columnName="width">
-        <ns:nullable>true</ns:nullable>
-        <ns:datatype>float8</ns:datatype>
-        <ns:scale>17</ns:scale>
-      </ns:column>
-      <ns:column columnName="height">
-        <ns:nullable>true</ns:nullable>
-        <ns:datatype>float8</ns:datatype>
-        <ns:scale>17</ns:scale>
-      </ns:column>
-      <ns:column columnName="ts">
+      <ns:column columnName="created">
+        <ns:isUserEditable>false</ns:isUserEditable>
         <ns:nullable>true</ns:nullable>
         <ns:datatype>timestamp</ns:datatype>
         <ns:scale>29</ns:scale>
+        <ns:isHidden>true</ns:isHidden>
       </ns:column>
-      <ns:column columnName="uuid">
+      <ns:column columnName="modifiedby">
+        <ns:isUserEditable>false</ns:isUserEditable>
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>bpchar</ns:datatype>
+        <ns:datatype>userid</ns:datatype>
+        <ns:scale>4</ns:scale>
+        <ns:isHidden>true</ns:isHidden>
+      </ns:column>
+      <ns:column columnName="modified">
+        <ns:isUserEditable>false</ns:isUserEditable>
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>timestamp</ns:datatype>
+        <ns:scale>29</ns:scale>
+        <ns:isHidden>true</ns:isHidden>
+      </ns:column>
+    </ns:columns>
+  </ns:table>
+  <ns:table tableName="snomed_tags" tableDbType="TABLE">
+    <ns:pkColumnName>rowid</ns:pkColumnName>
+    <ns:columns>
+      <ns:column columnName="rowid">
+        <ns:datatype>serial</ns:datatype>
+        <ns:isAutoInc>true</ns:isAutoInc>
+        <ns:scale>10</ns:scale>
+      </ns:column>
+      <ns:column columnName="container">
+        <ns:isUserEditable>false</ns:isUserEditable>
+        <ns:datatype>entityid</ns:datatype>
+        <ns:isHidden>true</ns:isHidden>
+        <ns:scale>36</ns:scale>
+      </ns:column>
+      <ns:column columnName="createdby">
+        <ns:isUserEditable>false</ns:isUserEditable>
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>userid</ns:datatype>
+        <ns:scale>4</ns:scale>
+        <ns:isHidden>true</ns:isHidden>
+      </ns:column>
+      <ns:column columnName="created">
+        <ns:isUserEditable>false</ns:isUserEditable>
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>timestamp</ns:datatype>
+        <ns:scale>29</ns:scale>
+        <ns:isHidden>true</ns:isHidden>
+      </ns:column>
+      <ns:column columnName="modifiedby">
+        <ns:isUserEditable>false</ns:isUserEditable>
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>userid</ns:datatype>
+        <ns:scale>4</ns:scale>
+        <ns:isHidden>true</ns:isHidden>
+      </ns:column>
+      <ns:column columnName="modified">
+        <ns:isUserEditable>false</ns:isUserEditable>
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>timestamp</ns:datatype>
+        <ns:scale>29</ns:scale>
+        <ns:isHidden>true</ns:isHidden>
+      </ns:column>
+      <ns:column columnName="recordId">
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>32</ns:scale>
+      </ns:column>
+      <ns:column columnName="code">
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>32</ns:scale>
+      </ns:column>
+    </ns:columns>
+  </ns:table>
+  <ns:table tableName="tasks" tableDbType="TABLE">
+    <ns:pkColumnName>taskid</ns:pkColumnName>
+    <ns:columns>
+      <ns:column columnName="taskid">
+        <ns:datatype>entityid</ns:datatype>
         <ns:scale>36</ns:scale>
       </ns:column>
       <ns:column columnName="rowid">
@@ -231,14 +124,141 @@
         <ns:isAutoInc>true</ns:isAutoInc>
         <ns:scale>10</ns:scale>
       </ns:column>
-    </ns:columns>
-  </ns:table>
-  <ns:table tableName="viral_status" tableDbType="TABLE">
-    <ns:pkColumnName>viral_status</ns:pkColumnName>
-    <ns:columns>
-      <ns:column columnName="viral_status">
+      <ns:column columnName="title">
+        <ns:nullable>false</ns:nullable>
         <ns:datatype>varchar</ns:datatype>
         <ns:scale>255</ns:scale>
+      </ns:column>
+      <ns:column columnName="formtype">
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>100</ns:scale>
+      </ns:column>
+      <ns:column columnName="requestId">
+        <ns:datatype>entityid</ns:datatype>
+        <ns:scale>36</ns:scale>
+      </ns:column>
+      <ns:column columnName="qcstate">
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>int4</ns:datatype>
+        <ns:scale>10</ns:scale>
+      </ns:column>
+      <ns:column columnName="assignedto">
+        <ns:datatype>userid</ns:datatype>
+        <ns:nullable>true</ns:nullable>
+        <ns:scale>4</ns:scale>
+      </ns:column>
+      <ns:column columnName="duedate">
+        <ns:datatype>timestamp</ns:datatype>
+        <ns:nullable>true</ns:nullable>
+        <ns:scale>29</ns:scale>
+      </ns:column>
+      <ns:column columnName="container">
+        <ns:isUserEditable>false</ns:isUserEditable>
+        <ns:datatype>entityid</ns:datatype>
+        <ns:isHidden>true</ns:isHidden>
+        <ns:scale>36</ns:scale>
+      </ns:column>
+      <ns:column columnName="createdby">
+        <ns:isUserEditable>false</ns:isUserEditable>
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>userid</ns:datatype>
+        <ns:scale>4</ns:scale>
+        <ns:isHidden>true</ns:isHidden>
+      </ns:column>
+      <ns:column columnName="created">
+        <ns:isUserEditable>false</ns:isUserEditable>
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>timestamp</ns:datatype>
+        <ns:scale>29</ns:scale>
+        <ns:isHidden>true</ns:isHidden>
+      </ns:column>
+      <ns:column columnName="modifiedby">
+        <ns:isUserEditable>false</ns:isUserEditable>
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>userid</ns:datatype>
+        <ns:scale>4</ns:scale>
+        <ns:isHidden>true</ns:isHidden>
+      </ns:column>
+      <ns:column columnName="modified">
+        <ns:isUserEditable>false</ns:isUserEditable>
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>timestamp</ns:datatype>
+        <ns:scale>29</ns:scale>
+        <ns:isHidden>true</ns:isHidden>
+      </ns:column>
+      <ns:column columnName="description">
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>text</ns:datatype>
+        <ns:scale>255</ns:scale>
+      </ns:column>
+    </ns:columns>
+  </ns:table>
+  <ns:table tableName="requests" tableDbType="TABLE">
+    <ns:pkColumnName>requestid</ns:pkColumnName>
+    <ns:columns>
+      <ns:column columnName="requestid">
+        <ns:datatype>entityid</ns:datatype>
+        <ns:scale>36</ns:scale>
+      </ns:column>
+      <ns:column columnName="rowid">
+        <ns:datatype>serial</ns:datatype>
+        <ns:isAutoInc>true</ns:isAutoInc>
+        <ns:scale>10</ns:scale>
+      </ns:column>
+      <ns:column columnName="title">
+        <ns:nullable>false</ns:nullable>
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>255</ns:scale>
+      </ns:column>
+      <ns:column columnName="formtype">
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>100</ns:scale>
+      </ns:column>
+      <ns:column columnName="qcstate">
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>int4</ns:datatype>
+        <ns:scale>10</ns:scale>
+      </ns:column>
+      <ns:column columnName="description">
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>text</ns:datatype>
+        <ns:scale>255</ns:scale>
+      </ns:column>
+      <ns:column columnName="container">
+        <ns:isUserEditable>false</ns:isUserEditable>
+        <ns:datatype>entityid</ns:datatype>
+        <ns:isHidden>true</ns:isHidden>
+        <ns:scale>36</ns:scale>
+      </ns:column>
+      <ns:column columnName="createdby">
+        <ns:isUserEditable>false</ns:isUserEditable>
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>userid</ns:datatype>
+        <ns:scale>4</ns:scale>
+        <ns:isHidden>true</ns:isHidden>
+      </ns:column>
+      <ns:column columnName="created">
+        <ns:isUserEditable>false</ns:isUserEditable>
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>timestamp</ns:datatype>
+        <ns:scale>29</ns:scale>
+        <ns:isHidden>true</ns:isHidden>
+      </ns:column>
+      <ns:column columnName="modifiedby">
+        <ns:isUserEditable>false</ns:isUserEditable>
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>userid</ns:datatype>
+        <ns:scale>4</ns:scale>
+        <ns:isHidden>true</ns:isHidden>
+      </ns:column>
+      <ns:column columnName="modified">
+        <ns:isUserEditable>false</ns:isUserEditable>
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>timestamp</ns:datatype>
+        <ns:scale>29</ns:scale>
+        <ns:isHidden>true</ns:isHidden>
       </ns:column>
     </ns:columns>
   </ns:table>
@@ -315,372 +335,169 @@
         <ns:datatype>bool</ns:datatype>
         <ns:scale>1</ns:scale>
       </ns:column>
-    </ns:columns>
-  </ns:table>
-  <ns:table tableName="obs_behavior" tableDbType="TABLE">
-    <ns:pkColumnName>code</ns:pkColumnName>
-    <ns:columns>
-      <ns:column columnName="code">
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>2147483647</ns:scale>
+      <ns:column columnName="container">
+        <ns:isUserEditable>false</ns:isUserEditable>
+        <ns:datatype>entityid</ns:datatype>
+        <ns:isHidden>true</ns:isHidden>
+        <ns:scale>36</ns:scale>
       </ns:column>
-      <ns:column columnName="meaning">
+      <ns:column columnName="createdby">
+        <ns:isUserEditable>false</ns:isUserEditable>
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>2147483647</ns:scale>
+        <ns:datatype>userid</ns:datatype>
+        <ns:scale>4</ns:scale>
+        <ns:isHidden>true</ns:isHidden>
       </ns:column>
-    </ns:columns>
-  </ns:table>
-  <ns:table tableName="hold_codes" tableDbType="TABLE">
-    <ns:pkColumnName>code</ns:pkColumnName>
-    <ns:columns>
-      <ns:column columnName="code">
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>255</ns:scale>
-      </ns:column>
-      <ns:column columnName="meaning">
+      <ns:column columnName="created">
+        <ns:isUserEditable>false</ns:isUserEditable>
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>255</ns:scale>
+        <ns:datatype>timestamp</ns:datatype>
+        <ns:scale>29</ns:scale>
+        <ns:isHidden>true</ns:isHidden>
       </ns:column>
-    </ns:columns>
-  </ns:table>
-  <ns:table tableName="yesno" tableDbType="TABLE">
-    <ns:pkColumnName>value</ns:pkColumnName>
-    <ns:columns>
-      <ns:column columnName="value">
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>255</ns:scale>
-      </ns:column>
-    </ns:columns>
-  </ns:table>
-  <ns:table tableName="clinremarks_category" tableDbType="TABLE">
-    <ns:pkColumnName>category</ns:pkColumnName>
-    <ns:columns>
-      <ns:column columnName="category">
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>255</ns:scale>
-      </ns:column>
-    </ns:columns>
-  </ns:table>
-  <ns:table tableName="vl_category" tableDbType="TABLE">
-    <ns:pkColumnName>category</ns:pkColumnName>
-    <ns:columns>
-      <ns:column columnName="category">
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>255</ns:scale>
-      </ns:column>
-    </ns:columns>
-  </ns:table>
-  <ns:table tableName="restraint_type" tableDbType="TABLE">
-    <ns:pkColumnName>code</ns:pkColumnName>
-    <ns:columns>
-      <ns:column columnName="code">
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>255</ns:scale>
-      </ns:column>
-    </ns:columns>
-  </ns:table>
-  <ns:table tableName="obs_breeding" tableDbType="TABLE">
-    <ns:pkColumnName>code</ns:pkColumnName>
-    <ns:columns>
-      <ns:column columnName="code">
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>2147483647</ns:scale>
-      </ns:column>
-      <ns:column columnName="meaning">
+      <ns:column columnName="modifiedby">
+        <ns:isUserEditable>false</ns:isUserEditable>
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>2147483647</ns:scale>
+        <ns:datatype>userid</ns:datatype>
+        <ns:scale>4</ns:scale>
+        <ns:isHidden>true</ns:isHidden>
       </ns:column>
-    </ns:columns>
-  </ns:table>
-  <ns:table tableName="death_codes" tableDbType="TABLE">
-    <ns:pkColumnName>code</ns:pkColumnName>
-    <ns:columns>
-      <ns:column columnName="code">
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>255</ns:scale>
-      </ns:column>
-      <ns:column columnName="meaning">
+      <ns:column columnName="modified">
+        <ns:isUserEditable>false</ns:isUserEditable>
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>255</ns:scale>
+        <ns:datatype>timestamp</ns:datatype>
+        <ns:scale>29</ns:scale>
+        <ns:isHidden>true</ns:isHidden>
       </ns:column>
     </ns:columns>
   </ns:table>
-  <ns:table tableName="obs_other" tableDbType="TABLE">
-    <ns:pkColumnName>code</ns:pkColumnName>
+  <ns:table tableName="cage_observations" tableDbType="TABLE">
+    <ns:tableTitle>Cage Observations</ns:tableTitle>
     <ns:columns>
-      <ns:column columnName="code">
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>2147483647</ns:scale>
+      <ns:column columnName="date">
+        <ns:datatype>timestamp</ns:datatype>
+        <ns:nullable>false</ns:nullable>
+        <ns:formatString>yyyy-MM-dd</ns:formatString>
+        <ns:columnTitle>Date</ns:columnTitle>
       </ns:column>
-      <ns:column columnName="meaning">
+      <ns:column columnName="roomcage">
+        <ns:datatype>varchar</ns:datatype>
+        <ns:columnTitle>Room/Cage</ns:columnTitle>
+        <ns:nullable>false</ns:nullable>
+      </ns:column>
+      <ns:column columnName="room">
+        <ns:datatype>varchar</ns:datatype>
+        <ns:nullable>false</ns:nullable>
+        <ns:columnTitle>Room</ns:columnTitle>
+      </ns:column>
+      <ns:column columnName="cage">
+        <ns:datatype>varchar</ns:datatype>
+        <ns:columnTitle>Cage</ns:columnTitle>
+      </ns:column>
+      <ns:column columnName="remark">
+        <ns:datatype>varchar</ns:datatype>
+        <ns:columnTitle>Remark</ns:columnTitle>
+        <ns:propertyURI>urn:ehr.labkey.org/#Remark</ns:propertyURI>
+        <ns:inputType>textarea</ns:inputType>
+      </ns:column>
+      <ns:column columnName="userid">
+        <ns:datatype>varchar</ns:datatype>
+        <ns:columnTitle>UserID</ns:columnTitle>
+        <ns:fk>
+          <ns:fkDbSchema>core</ns:fkDbSchema>
+          <ns:fkTable>Users</ns:fkTable>
+          <ns:fkColumnName>UserId</ns:fkColumnName>
+        </ns:fk>
+      </ns:column>
+      <ns:column columnName="QCState">
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>2147483647</ns:scale>
+        <ns:datatype>integer</ns:datatype>
+        <!--<ns:scale>10</ns:scale>-->
       </ns:column>
-    </ns:columns>
-  </ns:table>
-  <ns:table tableName="pe_region" tableDbType="TABLE">
-    <ns:pkColumnName>region</ns:pkColumnName>
-    <ns:columns>
-      <ns:column columnName="region">
+      <ns:column columnName="objectid">
         <ns:datatype>varchar</ns:datatype>
-        <ns:scale>255</ns:scale>
+        <ns:columnTitle>ObjectId</ns:columnTitle>
+        <ns:shownInInsertView>false</ns:shownInInsertView>
+        <ns:shownInUpdateView>false</ns:shownInUpdateView>
+        <ns:shownInDetailsView>false</ns:shownInDetailsView>
+        <ns:isHidden>true</ns:isHidden>
+        <!--<ns:isKeyField>true</ns:isKeyField>-->
       </ns:column>
-    </ns:columns>
-  </ns:table>
-  <ns:table tableName="dental_priority" tableDbType="TABLE">
-    <ns:pkColumnName>priority</ns:pkColumnName>
-    <ns:columns>
-      <ns:column columnName="priority">
+      <ns:column columnName="rowid">
+        <ns:datatype>integer</ns:datatype>
+        <ns:columnTitle>Key</ns:columnTitle>
+        <ns:shownInInsertView>false</ns:shownInInsertView>
+        <ns:shownInUpdateView>false</ns:shownInUpdateView>
+        <ns:shownInDetailsView>false</ns:shownInDetailsView>
+        <ns:isHidden>true</ns:isHidden>
+        <ns:isKeyField>true</ns:isKeyField>
+      </ns:column>
+      <!--<ns:column columnName="ts">-->
+        <!--<ns:datatype>timestamp</ns:datatype>-->
+        <!--<ns:columnTitle>Last Changed</ns:columnTitle>-->
+        <!--<ns:shownInInsertView>false</ns:shownInInsertView>-->
+        <!--<ns:shownInUpdateView>false</ns:shownInUpdateView>-->
+        <!--<ns:shownInDetailsView>false</ns:shownInDetailsView>-->
+        <!--<ns:isHidden>true</ns:isHidden>-->
+      <!--</ns:column>-->
+      <ns:column columnName="description">
         <ns:datatype>varchar</ns:datatype>
-        <ns:scale>255</ns:scale>
+        <ns:columnTitle>Description</ns:columnTitle>
+        <ns:propertyURI>urn:ehr.labkey.org/#Description</ns:propertyURI>
+        <ns:shownInInsertView>false</ns:shownInInsertView>
+        <ns:shownInUpdateView>false</ns:shownInUpdateView>
+        <ns:shownInDetailsView>false</ns:shownInDetailsView>
+        <ns:isHidden>true</ns:isHidden>
+        <ns:inputType>textarea</ns:inputType>
       </ns:column>
-    </ns:columns>
-  </ns:table>
-  <ns:table tableName="mhc_institutions" tableDbType="TABLE">
-    <ns:pkColumnName>technique</ns:pkColumnName>
-    <ns:columns>
-      <ns:column columnName="technique">
+      <ns:column columnName="parentid">
         <ns:datatype>varchar</ns:datatype>
-        <ns:scale>255</ns:scale>
+        <ns:columnTitle>Parent Id</ns:columnTitle>
+        <ns:propertyURI>urn:ehr.labkey.org/#ParentId</ns:propertyURI>
       </ns:column>
-    </ns:columns>
-  </ns:table>
-  <ns:table tableName="routes" tableDbType="TABLE">
-    <ns:pkColumnName>route</ns:pkColumnName>
-    <ns:columns>
-      <ns:column columnName="route">
+      <ns:column columnName="taskid">
         <ns:datatype>varchar</ns:datatype>
-        <ns:scale>100</ns:scale>
+        <ns:columnTitle>Task Id</ns:columnTitle>
+        <ns:propertyURI>urn:ehr.labkey.org/#TaskId</ns:propertyURI>
       </ns:column>
-    </ns:columns>
-  </ns:table>
-  <ns:table tableName="areas" tableDbType="TABLE">
-    <ns:pkColumnName>area</ns:pkColumnName>
-    <ns:columns>
-      <ns:column columnName="area">
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>20</ns:scale>
+      <ns:column columnName="container">
+        <ns:isUserEditable>false</ns:isUserEditable>
+        <ns:datatype>entityid</ns:datatype>
+        <ns:isHidden>true</ns:isHidden>
+        <ns:scale>36</ns:scale>
       </ns:column>
-    </ns:columns>
-  </ns:table>
-  <ns:table tableName="bacteriology_sensitivity" tableDbType="TABLE">
-    <ns:pkColumnName>code</ns:pkColumnName>
-    <ns:columns>
-      <ns:column columnName="code">
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>4000</ns:scale>
-      </ns:column>
-      <ns:column columnName="meaning">
+      <ns:column columnName="createdby">
+        <ns:isUserEditable>false</ns:isUserEditable>
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>4000</ns:scale>
+        <ns:datatype>userid</ns:datatype>
+        <ns:scale>4</ns:scale>
+        <ns:isHidden>true</ns:isHidden>
       </ns:column>
-    </ns:columns>
-  </ns:table>
-  <ns:table tableName="clinpath_status" tableDbType="TABLE">
-    <ns:pkColumnName>status</ns:pkColumnName>
-    <ns:columns>
-      <ns:column columnName="status">
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>255</ns:scale>
-      </ns:column>
-    </ns:columns>
-  </ns:table>
-  <ns:table tableName="lab_tests" tableDbType="TABLE">
-    <ns:pkColumnName>testid</ns:pkColumnName>
-    <ns:columns>
-      <ns:column columnName="testid">
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>100</ns:scale>
-      </ns:column>
-      <ns:column columnName="name">
+      <ns:column columnName="created">
+        <ns:isUserEditable>false</ns:isUserEditable>
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>100</ns:scale>
+        <ns:datatype>timestamp</ns:datatype>
+        <ns:scale>29</ns:scale>
+        <ns:isHidden>true</ns:isHidden>
       </ns:column>
-      <ns:column columnName="units">
+      <ns:column columnName="modifiedby">
+        <ns:isUserEditable>false</ns:isUserEditable>
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>100</ns:scale>
+        <ns:datatype>userid</ns:datatype>
+        <ns:scale>4</ns:scale>
+        <ns:isHidden>true</ns:isHidden>
       </ns:column>
-    </ns:columns>
-  </ns:table>
-  <ns:table tableName="alopecia_cause" tableDbType="TABLE">
-    <ns:pkColumnName>cause</ns:pkColumnName>
-    <ns:columns>
-      <ns:column columnName="cause">
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>4000</ns:scale>
-      </ns:column>
-    </ns:columns>
-  </ns:table>
-  <ns:table tableName="condition_codes" tableDbType="TABLE">
-    <ns:pkColumnName>code</ns:pkColumnName>
-    <ns:columns>
-      <ns:column columnName="code">
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>255</ns:scale>
-      </ns:column>
-      <ns:column columnName="meaning">
+      <ns:column columnName="modified">
+        <ns:isUserEditable>false</ns:isUserEditable>
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>255</ns:scale>
+        <ns:datatype>timestamp</ns:datatype>
+        <ns:scale>29</ns:scale>
+        <ns:isHidden>true</ns:isHidden>
       </ns:column>
     </ns:columns>
+    <ns:pkColumnName>RowId</ns:pkColumnName>
   </ns:table>
-  <ns:table tableName="tb_result" tableDbType="TABLE">
-    <ns:pkColumnName>result</ns:pkColumnName>
-    <ns:columns>
-      <ns:column columnName="result">
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>255</ns:scale>
-      </ns:column>
-    </ns:columns>
-  </ns:table>
-  <ns:table tableName="species_codes" tableDbType="TABLE">
-    <ns:pkColumnName>code</ns:pkColumnName>
-    <ns:columns>
-      <ns:column columnName="code">
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>255</ns:scale>
-      </ns:column>
-      <ns:column columnName="scientific_name">
-        <ns:nullable>true</ns:nullable>
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>255</ns:scale>
-      </ns:column>
-      <ns:column columnName="common_name">
-        <ns:nullable>true</ns:nullable>
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>255</ns:scale>
-      </ns:column>
-    </ns:columns>
-  </ns:table>
-  <ns:table tableName="obs_feces" tableDbType="TABLE">
-    <ns:pkColumnName>code</ns:pkColumnName>
-    <ns:columns>
-      <ns:column columnName="code">
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>2147483647</ns:scale>
-      </ns:column>
-      <ns:column columnName="meaning">
-        <ns:nullable>true</ns:nullable>
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>2147483647</ns:scale>
-      </ns:column>
-    </ns:columns>
-  </ns:table>
-  <ns:table tableName="gender_codes" tableDbType="TABLE">
-    <ns:pkColumnName>code</ns:pkColumnName>
-    <ns:columns>
-      <ns:column columnName="code">
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>255</ns:scale>
-      </ns:column>
-      <ns:column columnName="meaning">
-        <ns:nullable>true</ns:nullable>
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>255</ns:scale>
-      </ns:column>
-    </ns:columns>
-  </ns:table>
-  <ns:table tableName="behavior_category" tableDbType="TABLE">
-    <ns:pkColumnName>category</ns:pkColumnName>
-    <ns:columns>
-      <ns:column columnName="category">
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>4000</ns:scale>
-      </ns:column>
-    </ns:columns>
-  </ns:table>
-  <ns:table tableName="dosage_units" tableDbType="TABLE">
-    <ns:pkColumnName>unit</ns:pkColumnName>
-    <ns:columns>
-      <ns:column columnName="unit">
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>100</ns:scale>
-      </ns:column>
-    </ns:columns>
-  </ns:table>
-  <ns:table tableName="alopecia_score" tableDbType="TABLE">
-    <ns:pkColumnName>score</ns:pkColumnName>
-    <ns:columns>
-      <ns:column columnName="score">
-        <ns:datatype>int4</ns:datatype>
-        <ns:scale>10</ns:scale>
-      </ns:column>
-      <ns:column columnName="meaning">
-        <ns:nullable>true</ns:nullable>
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>250</ns:scale>
-      </ns:column>
-    </ns:columns>
-  </ns:table>
-  <ns:table tableName="origin_codes" tableDbType="TABLE">
-    <ns:pkColumnName>code</ns:pkColumnName>
-    <ns:columns>
-      <ns:column columnName="code">
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>255</ns:scale>
-      </ns:column>
-      <ns:column columnName="meaning">
-        <ns:nullable>true</ns:nullable>
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>255</ns:scale>
-      </ns:column>
-    </ns:columns>
-  </ns:table>
-  <ns:table tableName="hematology_score" tableDbType="TABLE">
-    <ns:pkColumnName>score</ns:pkColumnName>
-    <ns:columns>
-      <ns:column columnName="score">
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>255</ns:scale>
-      </ns:column>
-    </ns:columns>
-  </ns:table>
-  <ns:table tableName="necropsy_perfusion_area" tableDbType="TABLE">
-    <ns:pkColumnName>perfusion</ns:pkColumnName>
-    <ns:columns>
-      <ns:column columnName="perfusion">
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>255</ns:scale>
-      </ns:column>
-    </ns:columns>
-  </ns:table>
-  <ns:table tableName="hematology_morphology" tableDbType="TABLE">
-    <ns:pkColumnName>morphology</ns:pkColumnName>
-    <ns:columns>
-      <ns:column columnName="morphology">
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>255</ns:scale>
-      </ns:column>
-    </ns:columns>
-  </ns:table>
-  <ns:table tableName="vl_technique" tableDbType="TABLE">
-    <ns:pkColumnName>technique</ns:pkColumnName>
-    <ns:columns>
-      <ns:column columnName="technique">
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>255</ns:scale>
-      </ns:column>
-    </ns:columns>
-  </ns:table>
-  <ns:table tableName="alopecia_area" tableDbType="TABLE">
-    <ns:pkColumnName>area</ns:pkColumnName>
-    <ns:columns>
-      <ns:column columnName="area">
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>4000</ns:scale>
-      </ns:column>
-    </ns:columns>
-  </ns:table>
-  <ns:table tableName="module_properties" tableDbType="TABLE">
+  <ns:table tableName="extracts" tableDbType="TABLE">
     <ns:pkColumnName>rowid</ns:pkColumnName>
     <ns:columns>
       <ns:column columnName="rowid">
@@ -688,20 +505,472 @@
         <ns:isAutoInc>true</ns:isAutoInc>
         <ns:scale>10</ns:scale>
       </ns:column>
-      <ns:column columnName="prop_name">
+      <ns:column columnName="queryname">
         <ns:nullable>true</ns:nullable>
         <ns:datatype>varchar</ns:datatype>
-        <ns:scale>255</ns:scale>
+        <ns:scale>100</ns:scale>
       </ns:column>
-      <ns:column columnName="stringvalue">
+      <ns:column columnName="schemaname">
         <ns:nullable>true</ns:nullable>
         <ns:datatype>varchar</ns:datatype>
-        <ns:scale>255</ns:scale>
+        <ns:scale>100</ns:scale>
       </ns:column>
-      <ns:column columnName="floatvalue">
+      <ns:column columnName="containerpath">
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>float8</ns:datatype>
-        <ns:scale>17</ns:scale>
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>100</ns:scale>
+      </ns:column>
+      <ns:column columnName="viewname">
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>100</ns:scale>
+      </ns:column>
+      <ns:column columnName="filename">
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>100</ns:scale>
+      </ns:column>
+      <ns:column columnName="columns">
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>500</ns:scale>
+      </ns:column>
+      <ns:column columnName="fieldstohash">
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>500</ns:scale>
+      </ns:column>
+      <ns:column columnName="container">
+        <ns:isUserEditable>false</ns:isUserEditable>
+        <ns:datatype>entityid</ns:datatype>
+        <ns:isHidden>true</ns:isHidden>
+        <ns:scale>36</ns:scale>
+      </ns:column>
+      <ns:column columnName="createdby">
+        <ns:isUserEditable>false</ns:isUserEditable>
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>userid</ns:datatype>
+        <ns:scale>4</ns:scale>
+        <ns:isHidden>true</ns:isHidden>
+      </ns:column>
+      <ns:column columnName="created">
+        <ns:isUserEditable>false</ns:isUserEditable>
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>timestamp</ns:datatype>
+        <ns:scale>29</ns:scale>
+        <ns:isHidden>true</ns:isHidden>
+      </ns:column>
+      <ns:column columnName="modifiedby">
+        <ns:isUserEditable>false</ns:isUserEditable>
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>userid</ns:datatype>
+        <ns:scale>4</ns:scale>
+        <ns:isHidden>true</ns:isHidden>
+      </ns:column>
+      <ns:column columnName="modified">
+        <ns:isUserEditable>false</ns:isUserEditable>
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>timestamp</ns:datatype>
+        <ns:scale>29</ns:scale>
+        <ns:isHidden>true</ns:isHidden>
+      </ns:column>
+    </ns:columns>
+  </ns:table>
+
+
+<ns:table tableName="formtemplates" tableDbType="TABLE">
+    <ns:pkColumnName>entityid</ns:pkColumnName>
+    <ns:columns>
+      <ns:column columnName="entityid">
+        <ns:datatype>entityid</ns:datatype>
+        <!--<ns:isAutoInc>true</ns:isAutoInc>-->
+        <ns:scale>50</ns:scale>
+      </ns:column>
+      <ns:column columnName="formtype">
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>4000</ns:scale>
+      </ns:column>
+      <ns:column columnName="userId">
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>100</ns:scale>
+      </ns:column>
+      <ns:column columnName="title">
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>4000</ns:scale>
+      </ns:column>
+      <ns:column columnName="description">
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>text</ns:datatype>
+        <ns:scale>32767</ns:scale>
+      </ns:column>
+      <ns:column columnName="container">
+        <ns:isUserEditable>false</ns:isUserEditable>
+        <ns:datatype>entityid</ns:datatype>
+        <ns:isHidden>true</ns:isHidden>
+        <ns:scale>36</ns:scale>
+      </ns:column>
+      <ns:column columnName="createdby">
+        <ns:isUserEditable>false</ns:isUserEditable>
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>userid</ns:datatype>
+        <ns:scale>4</ns:scale>
+        <ns:isHidden>true</ns:isHidden>
+      </ns:column>
+      <ns:column columnName="created">
+        <ns:isUserEditable>false</ns:isUserEditable>
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>timestamp</ns:datatype>
+        <ns:scale>29</ns:scale>
+        <ns:isHidden>true</ns:isHidden>
+      </ns:column>
+      <ns:column columnName="modifiedby">
+        <ns:isUserEditable>false</ns:isUserEditable>
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>userid</ns:datatype>
+        <ns:scale>4</ns:scale>
+        <ns:isHidden>true</ns:isHidden>
+      </ns:column>
+      <ns:column columnName="modified">
+        <ns:isUserEditable>false</ns:isUserEditable>
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>timestamp</ns:datatype>
+        <ns:scale>29</ns:scale>
+        <ns:isHidden>true</ns:isHidden>
+      </ns:column>
+    </ns:columns>
+  </ns:table>
+  <ns:table tableName="notificationrecipients" tableDbType="TABLE">
+    <ns:pkColumnName>rowid</ns:pkColumnName>
+    <ns:columns>
+      <ns:column columnName="rowid">
+        <ns:datatype>serial</ns:datatype>
+        <ns:isAutoInc>true</ns:isAutoInc>
+        <ns:scale>10</ns:scale>
+      </ns:column>
+      <ns:column columnName="notificationtype">
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>4000</ns:scale>
+      </ns:column>
+      <ns:column columnName="recipient">
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>4000</ns:scale>
+      </ns:column>
+      <ns:column columnName="container">
+        <ns:isUserEditable>false</ns:isUserEditable>
+        <ns:datatype>entityid</ns:datatype>
+        <ns:isHidden>true</ns:isHidden>
+        <ns:scale>36</ns:scale>
+      </ns:column>
+      <ns:column columnName="createdby">
+        <ns:isUserEditable>false</ns:isUserEditable>
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>userid</ns:datatype>
+        <ns:scale>4</ns:scale>
+        <ns:isHidden>true</ns:isHidden>
+      </ns:column>
+      <ns:column columnName="created">
+        <ns:isUserEditable>false</ns:isUserEditable>
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>timestamp</ns:datatype>
+        <ns:scale>29</ns:scale>
+        <ns:isHidden>true</ns:isHidden>
+      </ns:column>
+      <ns:column columnName="modifiedby">
+        <ns:isUserEditable>false</ns:isUserEditable>
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>userid</ns:datatype>
+        <ns:scale>4</ns:scale>
+        <ns:isHidden>true</ns:isHidden>
+      </ns:column>
+      <ns:column columnName="modified">
+        <ns:isUserEditable>false</ns:isUserEditable>
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>timestamp</ns:datatype>
+        <ns:scale>29</ns:scale>
+        <ns:isHidden>true</ns:isHidden>
+      </ns:column>
+    </ns:columns>
+  </ns:table>
+  <ns:table tableName="formpanelsections" tableDbType="TABLE">
+    <ns:pkColumnName>rowid</ns:pkColumnName>
+    <ns:columns>
+      <ns:column columnName="rowid">
+        <ns:datatype>serial</ns:datatype>
+        <ns:isAutoInc>true</ns:isAutoInc>
+        <ns:scale>10</ns:scale>
+      </ns:column>
+      <ns:column columnName="destination">
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>4000</ns:scale>
+      </ns:column>
+      <ns:column columnName="formtype">
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>4000</ns:scale>
+      </ns:column>
+      <ns:column columnName="xtype">
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>200</ns:scale>
+      </ns:column>
+      <ns:column columnName="sort_order">
+        <ns:datatype>integer</ns:datatype>
+        <ns:scale>50</ns:scale>
+      </ns:column>
+      <ns:column columnName="schemaName">
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>200</ns:scale>
+      </ns:column>
+      <ns:column columnName="queryName">
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>200</ns:scale>
+      </ns:column>
+      <ns:column columnName="title">
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>4000</ns:scale>
+      </ns:column>
+      <ns:column columnName="metadatasources">
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>4000</ns:scale>
+      </ns:column>
+      <ns:column columnName="buttons">
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>4000</ns:scale>
+      </ns:column>
+      <ns:column columnName="initialTemplates">
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>4000</ns:scale>
+      </ns:column>
+      <ns:column columnName="configJson">
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>text</ns:datatype>
+        <ns:scale>32767</ns:scale>
+      </ns:column>
+      <ns:column columnName="container">
+        <ns:isUserEditable>false</ns:isUserEditable>
+        <ns:datatype>entityid</ns:datatype>
+        <ns:isHidden>true</ns:isHidden>
+        <ns:scale>36</ns:scale>
+      </ns:column>
+      <ns:column columnName="createdby">
+        <ns:isUserEditable>false</ns:isUserEditable>
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>userid</ns:datatype>
+        <ns:scale>4</ns:scale>
+        <ns:isHidden>true</ns:isHidden>
+      </ns:column>
+      <ns:column columnName="created">
+        <ns:isUserEditable>false</ns:isUserEditable>
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>timestamp</ns:datatype>
+        <ns:scale>29</ns:scale>
+        <ns:isHidden>true</ns:isHidden>
+      </ns:column>
+      <ns:column columnName="modifiedby">
+        <ns:isUserEditable>false</ns:isUserEditable>
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>userid</ns:datatype>
+        <ns:scale>4</ns:scale>
+        <ns:isHidden>true</ns:isHidden>
+      </ns:column>
+      <ns:column columnName="modified">
+        <ns:isUserEditable>false</ns:isUserEditable>
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>timestamp</ns:datatype>
+        <ns:scale>29</ns:scale>
+        <ns:isHidden>true</ns:isHidden>
+      </ns:column>
+    </ns:columns>
+  </ns:table>
+  <ns:table tableName="formtemplaterecords" tableDbType="TABLE">
+    <ns:pkColumnName>rowid</ns:pkColumnName>
+    <ns:columns>
+      <ns:column columnName="rowid">
+        <ns:datatype>serial</ns:datatype>
+        <ns:isAutoInc>true</ns:isAutoInc>
+        <ns:scale>10</ns:scale>
+      </ns:column>
+      <ns:column columnName="templateid">
+        <ns:datatype>int4</ns:datatype>
+        <ns:scale>10</ns:scale>
+        <ns:fk>
+          <ns:fkDbSchema>ehr</ns:fkDbSchema>
+          <ns:fkTable>formtemplates</ns:fkTable>
+          <ns:fkColumnName>entityid</ns:fkColumnName>
+        </ns:fk>
+      </ns:column>
+      <ns:column columnName="storeid">
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>4000</ns:scale>
+      </ns:column>
+      <ns:column columnName="json">
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>text</ns:datatype>
+        <ns:scale>32767</ns:scale>
+      </ns:column>
+      <ns:column columnName="container">
+        <ns:isUserEditable>false</ns:isUserEditable>
+        <ns:datatype>entityid</ns:datatype>
+        <ns:isHidden>true</ns:isHidden>
+        <ns:scale>36</ns:scale>
+      </ns:column>
+      <ns:column columnName="createdby">
+        <ns:isUserEditable>false</ns:isUserEditable>
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>userid</ns:datatype>
+        <ns:scale>4</ns:scale>
+        <ns:isHidden>true</ns:isHidden>
+      </ns:column>
+      <ns:column columnName="created">
+        <ns:isUserEditable>false</ns:isUserEditable>
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>timestamp</ns:datatype>
+        <ns:scale>29</ns:scale>
+        <ns:isHidden>true</ns:isHidden>
+      </ns:column>
+      <ns:column columnName="modifiedby">
+        <ns:isUserEditable>false</ns:isUserEditable>
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>userid</ns:datatype>
+        <ns:scale>4</ns:scale>
+        <ns:isHidden>true</ns:isHidden>
+      </ns:column>
+      <ns:column columnName="modified">
+        <ns:isUserEditable>false</ns:isUserEditable>
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>timestamp</ns:datatype>
+        <ns:scale>29</ns:scale>
+        <ns:isHidden>true</ns:isHidden>
+      </ns:column>
+    </ns:columns>
+  </ns:table>
+  <ns:table tableName="notificationtypes" tableDbType="TABLE">
+    <ns:pkColumnName>notificationtype</ns:pkColumnName>
+    <ns:columns>
+      <ns:column columnName="notificationtype">
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>4000</ns:scale>
+      </ns:column>
+      <ns:column columnName="description">
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>text</ns:datatype>
+        <ns:scale>32767</ns:scale>
+      </ns:column>
+      <ns:column columnName="container">
+        <ns:isUserEditable>false</ns:isUserEditable>
+        <ns:datatype>entityid</ns:datatype>
+        <ns:isHidden>true</ns:isHidden>
+        <ns:scale>36</ns:scale>
+      </ns:column>
+      <ns:column columnName="createdby">
+        <ns:isUserEditable>false</ns:isUserEditable>
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>userid</ns:datatype>
+        <ns:scale>4</ns:scale>
+        <ns:isHidden>true</ns:isHidden>
+      </ns:column>
+      <ns:column columnName="created">
+        <ns:isUserEditable>false</ns:isUserEditable>
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>timestamp</ns:datatype>
+        <ns:scale>29</ns:scale>
+        <ns:isHidden>true</ns:isHidden>
+      </ns:column>
+      <ns:column columnName="modifiedby">
+        <ns:isUserEditable>false</ns:isUserEditable>
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>userid</ns:datatype>
+        <ns:scale>4</ns:scale>
+        <ns:isHidden>true</ns:isHidden>
+      </ns:column>
+      <ns:column columnName="modified">
+        <ns:isUserEditable>false</ns:isUserEditable>
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>timestamp</ns:datatype>
+        <ns:scale>29</ns:scale>
+        <ns:isHidden>true</ns:isHidden>
+      </ns:column>
+    </ns:columns>
+  </ns:table>
+  <ns:table tableName="formtypes" tableDbType="TABLE">
+    <ns:pkColumnName>formtype</ns:pkColumnName>
+    <ns:columns>
+      <ns:column columnName="formtype">
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>200</ns:scale>
+      </ns:column>
+      <ns:column columnName="category">
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>200</ns:scale>
+      </ns:column>
+      <ns:column columnName="description">
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>text</ns:datatype>
+        <ns:scale>32767</ns:scale>
+      </ns:column>
+      <ns:column columnName="container">
+        <ns:isUserEditable>false</ns:isUserEditable>
+        <ns:datatype>entityid</ns:datatype>
+        <ns:isHidden>true</ns:isHidden>
+        <ns:scale>36</ns:scale>
+      </ns:column>
+      <ns:column columnName="createdby">
+        <ns:isUserEditable>false</ns:isUserEditable>
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>userid</ns:datatype>
+        <ns:scale>4</ns:scale>
+        <ns:isHidden>true</ns:isHidden>
+      </ns:column>
+      <ns:column columnName="created">
+        <ns:isUserEditable>false</ns:isUserEditable>
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>timestamp</ns:datatype>
+        <ns:scale>29</ns:scale>
+        <ns:isHidden>true</ns:isHidden>
+      </ns:column>
+      <ns:column columnName="modifiedby">
+        <ns:isUserEditable>false</ns:isUserEditable>
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>userid</ns:datatype>
+        <ns:scale>4</ns:scale>
+        <ns:isHidden>true</ns:isHidden>
+      </ns:column>
+      <ns:column columnName="modified">
+        <ns:isUserEditable>false</ns:isUserEditable>
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>timestamp</ns:datatype>
+        <ns:scale>29</ns:scale>
+        <ns:isHidden>true</ns:isHidden>
+      </ns:column>
+    </ns:columns>
+  </ns:table>
+  <ns:table tableName="protocols" tableDbType="TABLE">
+    <ns:pkColumnName>protocol</ns:pkColumnName>
+    <ns:columns>
+      <ns:column columnName="protocol">
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>4000</ns:scale>
+      </ns:column>
+      <ns:column columnName="inves">
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>200</ns:scale>
+      </ns:column>
+      <ns:column columnName="approve">
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>timestamp</ns:datatype>
+        <ns:scale>29</ns:scale>
+      </ns:column>
+      <ns:column columnName="description">
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>text</ns:datatype>
+        <ns:scale>32767</ns:scale>
       </ns:column>
       <ns:column columnName="container">
         <ns:isUserEditable>false</ns:isUserEditable>
@@ -710,145 +979,68 @@
       </ns:column>
       <ns:column columnName="createdby">
         <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:nullable>true</ns:nullable>
         <ns:datatype>userid</ns:datatype>
         <ns:scale>4</ns:scale>
       </ns:column>
       <ns:column columnName="created">
         <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:nullable>true</ns:nullable>
         <ns:datatype>timestamp</ns:datatype>
         <ns:scale>29</ns:scale>
       </ns:column>
       <ns:column columnName="modifiedby">
         <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:nullable>true</ns:nullable>
         <ns:datatype>userid</ns:datatype>
         <ns:scale>4</ns:scale>
       </ns:column>
       <ns:column columnName="modified">
         <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:nullable>true</ns:nullable>
         <ns:datatype>timestamp</ns:datatype>
         <ns:scale>29</ns:scale>
       </ns:column>
     </ns:columns>
   </ns:table>
-  <ns:table tableName="virus_snomed" tableDbType="TABLE">
-    <ns:pkColumnName>rowid</ns:pkColumnName>
+  <ns:table tableName="project" tableDbType="TABLE">
+    <ns:pkColumnName>project</ns:pkColumnName>
     <ns:columns>
-      <ns:column columnName="pathogen">
+      <ns:column columnName="project">
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>200</ns:scale>
+      </ns:column>
+      <ns:column columnName="protocol">
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>200</ns:scale>
+      </ns:column>
+      <ns:column columnName="account">
         <ns:nullable>true</ns:nullable>
         <ns:datatype>varchar</ns:datatype>
-        <ns:scale>255</ns:scale>
+        <ns:scale>200</ns:scale>
       </ns:column>
-      <ns:column columnName="challenge_type">
+      <ns:column columnName="inves">
         <ns:nullable>true</ns:nullable>
         <ns:datatype>varchar</ns:datatype>
-        <ns:scale>255</ns:scale>
+        <ns:scale>4000</ns:scale>
       </ns:column>
-      <ns:column columnName="snomed">
+      <ns:column columnName="avail">
         <ns:nullable>true</ns:nullable>
         <ns:datatype>varchar</ns:datatype>
-        <ns:scale>255</ns:scale>
+        <ns:scale>100</ns:scale>
       </ns:column>
-      <ns:column columnName="rowid">
-        <ns:datatype>serial</ns:datatype>
-        <ns:isAutoInc>true</ns:isAutoInc>
-        <ns:scale>10</ns:scale>
-      </ns:column>
-    </ns:columns>
-  </ns:table>
-  <ns:table tableName="pairtest_conclusion" tableDbType="TABLE">
-    <ns:pkColumnName>value</ns:pkColumnName>
-    <ns:columns>
-      <ns:column columnName="value">
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>255</ns:scale>
-      </ns:column>
-    </ns:columns>
-  </ns:table>
-  <ns:table tableName="lab_test_range" tableDbType="TABLE">
-    <ns:pkColumnName>rowid</ns:pkColumnName>
-    <ns:columns>
-      <ns:column columnName="test">
+      <ns:column columnName="title">
         <ns:nullable>true</ns:nullable>
         <ns:datatype>varchar</ns:datatype>
-        <ns:scale>255</ns:scale>
+        <ns:scale>4000</ns:scale>
       </ns:column>
-      <ns:column columnName="species">
+      <ns:column columnName="research">
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>bool</ns:datatype>
+        <ns:scale>1</ns:scale>
+      </ns:column>
+      <ns:column columnName="reqname">
         <ns:nullable>true</ns:nullable>
         <ns:datatype>varchar</ns:datatype>
-        <ns:scale>255</ns:scale>
+        <ns:scale>4000</ns:scale>
       </ns:column>
-      <ns:column columnName="gender">
-        <ns:nullable>true</ns:nullable>
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>255</ns:scale>
-      </ns:column>
-      <ns:column columnName="age_class">
-        <ns:nullable>true</ns:nullable>
-        <ns:datatype>int2</ns:datatype>
-        <ns:scale>5</ns:scale>
-      </ns:column>
-      <ns:column columnName="ref_range_min">
-        <ns:nullable>true</ns:nullable>
-        <ns:datatype>numeric</ns:datatype>
-        <ns:scale>255</ns:scale>
-      </ns:column>
-      <ns:column columnName="ref_range_max">
-        <ns:nullable>true</ns:nullable>
-        <ns:datatype>numeric</ns:datatype>
-        <ns:scale>255</ns:scale>
-      </ns:column>
-      <ns:column columnName="rowid">
-        <ns:datatype>serial</ns:datatype>
-        <ns:isAutoInc>true</ns:isAutoInc>
-        <ns:scale>10</ns:scale>
-      </ns:column>
-    </ns:columns>
-  </ns:table>
-  <ns:table tableName="necropsy_perfusion" tableDbType="TABLE">
-    <ns:pkColumnName>perfusion</ns:pkColumnName>
-    <ns:columns>
-      <ns:column columnName="perfusion">
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>255</ns:scale>
-      </ns:column>
-    </ns:columns>
-  </ns:table>
-  <ns:table tableName="species" tableDbType="TABLE">
-    <ns:pkColumnName>common</ns:pkColumnName>
-    <ns:columns>
-      <ns:column columnName="common">
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>255</ns:scale>
-      </ns:column>
-      <ns:column columnName="scientific_name">
-        <ns:nullable>true</ns:nullable>
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>255</ns:scale>
-      </ns:column>
-      <ns:column columnName="id_prefix">
-        <ns:nullable>true</ns:nullable>
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>255</ns:scale>
-      </ns:column>
-      <ns:column columnName="mhc_prefix">
-        <ns:nullable>true</ns:nullable>
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>255</ns:scale>
-      </ns:column>
-    </ns:columns>
-  </ns:table>
-  <ns:table tableName="tasks" tableDbType="TABLE">
-    <ns:pkColumnName>taskid</ns:pkColumnName>
-    <ns:columns>
-      <ns:column columnName="taskid">
-        <ns:datatype>entityid</ns:datatype>
-        <ns:scale>36</ns:scale>
-      </ns:column>
-      <ns:column columnName="type">
+      <ns:column columnName="requestid">
         <ns:nullable>true</ns:nullable>
         <ns:datatype>varchar</ns:datatype>
         <ns:scale>100</ns:scale>
@@ -858,14 +1050,6 @@
         <ns:datatype>int4</ns:datatype>
         <ns:scale>10</ns:scale>
       </ns:column>
-      <ns:column columnName="assignedto">
-        <ns:datatype>userid</ns:datatype>
-        <ns:scale>4</ns:scale>
-      </ns:column>
-      <ns:column columnName="duedate">
-        <ns:datatype>timestamp</ns:datatype>
-        <ns:scale>29</ns:scale>
-      </ns:column>
       <ns:column columnName="container">
         <ns:isUserEditable>false</ns:isUserEditable>
         <ns:datatype>entityid</ns:datatype>
@@ -891,14 +1075,9 @@
         <ns:datatype>timestamp</ns:datatype>
         <ns:scale>29</ns:scale>
       </ns:column>
-      <ns:column columnName="description">
-        <ns:nullable>true</ns:nullable>
-        <ns:datatype>text</ns:datatype>
-        <ns:scale>32767</ns:scale>
-      </ns:column>
     </ns:columns>
   </ns:table>
-  <ns:table tableName="snomed_mapping" tableDbType="TABLE">
+  <ns:table tableName="protocol_counts" tableDbType="TABLE">
     <ns:pkColumnName>rowid</ns:pkColumnName>
     <ns:columns>
       <ns:column columnName="rowid">
@@ -906,208 +1085,42 @@
         <ns:isAutoInc>true</ns:isAutoInc>
         <ns:scale>10</ns:scale>
       </ns:column>
-      <ns:column columnName="container">
-        <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:datatype>entityid</ns:datatype>
-        <ns:scale>36</ns:scale>
-      </ns:column>
-      <ns:column columnName="createdby">
-        <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:datatype>userid</ns:datatype>
-        <ns:scale>4</ns:scale>
-      </ns:column>
-      <ns:column columnName="created">
-        <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:datatype>timestamp</ns:datatype>
-        <ns:scale>29</ns:scale>
-      </ns:column>
-      <ns:column columnName="modifiedby">
-        <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:datatype>userid</ns:datatype>
-        <ns:scale>4</ns:scale>
-      </ns:column>
-      <ns:column columnName="modified">
-        <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:datatype>timestamp</ns:datatype>
-        <ns:scale>29</ns:scale>
-      </ns:column>
-      <ns:column columnName="record">
-        <ns:nullable>true</ns:nullable>
+      <ns:column columnName="protocol">
         <ns:datatype>varchar</ns:datatype>
-        <ns:scale>32</ns:scale>
+        <ns:scale>4000</ns:scale>
       </ns:column>
-      <ns:column columnName="snomed">
-        <ns:nullable>true</ns:nullable>
+      <ns:column columnName="species">
         <ns:datatype>varchar</ns:datatype>
-        <ns:scale>32</ns:scale>
+        <ns:scale>200</ns:scale>
       </ns:column>
-    </ns:columns>
-  </ns:table>
-  <ns:table tableName="dental_side" tableDbType="TABLE">
-    <ns:pkColumnName>side</ns:pkColumnName>
-    <ns:columns>
-      <ns:column columnName="side">
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>255</ns:scale>
-      </ns:column>
-    </ns:columns>
-  </ns:table>
-  <ns:table tableName="birth_type" tableDbType="TABLE">
-    <ns:pkColumnName>type</ns:pkColumnName>
-    <ns:columns>
-      <ns:column columnName="type">
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>45</ns:scale>
-      </ns:column>
-      <ns:column columnName="meaning">
-        <ns:nullable>true</ns:nullable>
-        <ns:datatype>text</ns:datatype>
-        <ns:scale>32767</ns:scale>
-      </ns:column>
-    </ns:columns>
-  </ns:table>
-  <ns:table tableName="dental_jaw" tableDbType="TABLE">
-    <ns:pkColumnName>jaw</ns:pkColumnName>
-    <ns:columns>
-      <ns:column columnName="jaw">
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>255</ns:scale>
-      </ns:column>
-    </ns:columns>
-  </ns:table>
-  <ns:table tableName="months" tableDbType="TABLE">
-    <ns:pkColumnName>rowid</ns:pkColumnName>
-    <ns:columns>
-      <ns:column columnName="rowid">
-        <ns:datatype>serial</ns:datatype>
-        <ns:isAutoInc>true</ns:isAutoInc>
-        <ns:scale>10</ns:scale>
-      </ns:column>
-      <ns:column columnName="month">
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>255</ns:scale>
-      </ns:column>
-    </ns:columns>
-  </ns:table>
-  <ns:table tableName="treatment_frequency" tableDbType="TABLE">
-    <ns:pkColumnName>rowid</ns:pkColumnName>
-    <ns:columns>
-      <ns:column columnName="rowid">
-        <ns:datatype>serial</ns:datatype>
-        <ns:isAutoInc>true</ns:isAutoInc>
-        <ns:scale>10</ns:scale>
-      </ns:column>
-      <ns:column columnName="meaning">
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>32</ns:scale>
-      </ns:column>
-    </ns:columns>
-  </ns:table>
-  <ns:table tableName="necropsy_condition" tableDbType="TABLE">
-    <ns:pkColumnName>score</ns:pkColumnName>
-    <ns:columns>
-      <ns:column columnName="score">
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>255</ns:scale>
-      </ns:column>
-    </ns:columns>
-  </ns:table>
-  <ns:table tableName="dental_teeth" tableDbType="TABLE">
-    <ns:pkColumnName>teeth</ns:pkColumnName>
-    <ns:columns>
-      <ns:column columnName="teeth">
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>2147483647</ns:scale>
-      </ns:column>
-      <ns:column columnName="seq_order">
-        <ns:nullable>true</ns:nullable>
+      <ns:column columnName="allowed">
         <ns:datatype>int4</ns:datatype>
         <ns:scale>10</ns:scale>
       </ns:column>
-    </ns:columns>
-  </ns:table>
-  <ns:table tableName="avail_codes" tableDbType="TABLE">
-    <ns:pkColumnName>code</ns:pkColumnName>
-    <ns:columns>
-      <ns:column columnName="code">
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>4000</ns:scale>
+      <ns:column columnName="container">
+        <ns:isUserEditable>false</ns:isUserEditable>
+        <ns:datatype>entityid</ns:datatype>
+        <ns:scale>36</ns:scale>
       </ns:column>
-      <ns:column columnName="meaning">
-        <ns:nullable>true</ns:nullable>
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>4000</ns:scale>
+      <ns:column columnName="createdby">
+        <ns:isUserEditable>false</ns:isUserEditable>
+        <ns:datatype>userid</ns:datatype>
+        <ns:scale>4</ns:scale>
       </ns:column>
-    </ns:columns>
-  </ns:table>
-  <ns:table tableName="status_codes" tableDbType="TABLE">
-    <ns:pkColumnName>code</ns:pkColumnName>
-    <ns:columns>
-      <ns:column columnName="code">
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>20</ns:scale>
+      <ns:column columnName="created">
+        <ns:isUserEditable>false</ns:isUserEditable>
+        <ns:datatype>timestamp</ns:datatype>
+        <ns:scale>29</ns:scale>
       </ns:column>
-      <ns:column columnName="meaning">
-        <ns:nullable>true</ns:nullable>
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>255</ns:scale>
+      <ns:column columnName="modifiedby">
+        <ns:isUserEditable>false</ns:isUserEditable>
+        <ns:datatype>userid</ns:datatype>
+        <ns:scale>4</ns:scale>
       </ns:column>
-    </ns:columns>
-  </ns:table>
-  <ns:table tableName="ageclass" tableDbType="TABLE">
-    <ns:pkColumnName>rowid</ns:pkColumnName>
-    <ns:columns>
-      <ns:column columnName="species">
-        <ns:nullable>true</ns:nullable>
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>255</ns:scale>
-      </ns:column>
-      <ns:column columnName="ageclass">
-        <ns:nullable>true</ns:nullable>
-        <ns:datatype>int2</ns:datatype>
-        <ns:scale>5</ns:scale>
-      </ns:column>
-      <ns:column columnName="min">
-        <ns:nullable>true</ns:nullable>
-        <ns:datatype>float8</ns:datatype>
-        <ns:scale>17</ns:scale>
-      </ns:column>
-      <ns:column columnName="max">
-        <ns:nullable>true</ns:nullable>
-        <ns:datatype>float8</ns:datatype>
-        <ns:scale>17</ns:scale>
-      </ns:column>
-      <ns:column columnName="rowid">
-        <ns:datatype>serial</ns:datatype>
-        <ns:isAutoInc>true</ns:isAutoInc>
-        <ns:scale>10</ns:scale>
-      </ns:column>
-    </ns:columns>
-  </ns:table>
-  <ns:table tableName="encounter_types" tableDbType="TABLE">
-    <ns:pkColumnName>category</ns:pkColumnName>
-    <ns:columns>
-      <ns:column columnName="category">
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>255</ns:scale>
-      </ns:column>
-    </ns:columns>
-  </ns:table>
-  <ns:table tableName="vl_virus" tableDbType="TABLE">
-    <ns:pkColumnName>virus</ns:pkColumnName>
-    <ns:columns>
-      <ns:column columnName="virus">
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>255</ns:scale>
-      </ns:column>
-    </ns:columns>
-  </ns:table>
-  <ns:table tableName="vl_instrument" tableDbType="TABLE">
-    <ns:pkColumnName>instrument</ns:pkColumnName>
-    <ns:columns>
-      <ns:column columnName="instrument">
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>255</ns:scale>
+      <ns:column columnName="modified">
+        <ns:isUserEditable>false</ns:isUserEditable>
+        <ns:datatype>timestamp</ns:datatype>
+        <ns:scale>29</ns:scale>
       </ns:column>
     </ns:columns>
   </ns:table>

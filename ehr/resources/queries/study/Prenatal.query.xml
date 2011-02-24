@@ -10,7 +10,7 @@
                         <columnTitle>Species</columnTitle>
                         <fk>
                             <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-                            <fkDbSchema>lookups</fkDbSchema>
+                            <fkDbSchema>ehr_lookups</fkDbSchema>
                             <fkTable>species</fkTable>
                             <fkColumnName>common</fkColumnName>
                         </fk>
@@ -20,7 +20,7 @@
                         <columnTitle>Gender</columnTitle>
                         <fk>
                             <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-                            <fkDbSchema>lookups</fkDbSchema>
+                            <fkDbSchema>ehr_lookups</fkDbSchema>
                             <fkTable>gender_codes</fkTable>
                             <fkColumnName>code</fkColumnName>
                         </fk>
@@ -75,7 +75,7 @@
                         <isHidden>true</isHidden>
                         <fk>
                             <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-                            <fkDbSchema>lookups</fkDbSchema>
+                            <fkDbSchema>ehr_lookups</fkDbSchema>
                             <fkTable>cage</fkTable>
                             <fkColumnName>roomcage</fkColumnName>
                         </fk>

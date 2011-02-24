@@ -4,7 +4,8 @@
  * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
  */
 
-
+//TODO: once past a certain QC state, result1,result2,etc are non-editable
+//make calculated field showing 'missing a result'
 
 function repairRow(row, errors){
     if (row.result1 == '-') row.result1 = 0;
@@ -15,10 +16,11 @@ function repairRow(row, errors){
     if (row.result2 == '+') row.result2 = 5;
     if (row.result3 == '+') row.result3 = 5;
 
-    if (row.result1 == '') row.result1 = null;
-    if (row.result2 == '') row.result2 = null;
-    if (row.result3 == '') row.result3 = null;
-    
+//    handled in rowEnd();
+//    if (row.result1 === '') row.result1 = null;
+//    if (row.result2 === '') row.result2 = null;
+//    if (row.result3 === '') row.result3 = null;
+
 //    row.result1 = EHR.validation.fixTbResult(row.result1);
 //    row.result2 = EHR.validation.fixTbResult(row.result2);
 //    row.result3 = EHR.validation.fixTbResult(row.result3);
@@ -31,13 +33,13 @@ function setDescription(row, errors){
     if(row.eye)
         description.push('Eye: '+row.eye);
 
-    if(row.result1)
+    if(typeof(row.result1)!==undefined)
         description.push('Result1: '+row.result1);
 
-    if(row.result2)
+    if(typeof(row.result2)!==undefined)
         description.push('Result2: '+row.result2);
 
-    if(row.result3)
+    if(typeof(row.result3)!==undefined)
         description.push('Result3: '+row.result3);
 
     if(row.lot)
@@ -53,6 +55,7 @@ function beforeBoth(row, errors) {
     EHR.validation.rowInit(row, errors);
 
     EHR.validation.rowEnd(row, errors);
+
 }
 
 
@@ -124,7 +127,7 @@ EHR.validation = {
         }
 
         for (var i in row){
-            if (row[i] == ''){
+            if (row[i] === ''){
                 row[i] = null;
             }
         }

@@ -10,7 +10,7 @@ Ext.onReady(function ()
 
     var filterArray = [LABKEY.Filter.create('lsid', LABKEY.ActionURL.getParameter('lsid'), LABKEY.Filter.Types.EQUAL)];
 
-    new EHR.ext.customPanels.detailsView({
+    new EHR.ext.DetailsView({
         schemaName: LABKEY.ActionURL.getParameter('schemaName'),
         queryName: LABKEY.ActionURL.getParameter('queryName'),
         viewName: LABKEY.ActionURL.getParameter('viewName') || null,

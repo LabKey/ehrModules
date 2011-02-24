@@ -18,7 +18,7 @@
                         <columnTitle>Vol Units</columnTitle>
                         <fk>
                             <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-                            <fkDbSchema>lookups</fkDbSchema>
+                            <fkDbSchema>ehr_lookups</fkDbSchema>
                             <fkTable>volume_units</fkTable>
                             <fkColumnName>unit</fkColumnName>
                         </fk>
@@ -28,8 +28,8 @@
                         <columnTitle>Units</columnTitle>
                         <fk>
                             <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-                            <fkDbSchema>lookups</fkDbSchema>
-                            <fkTable>drug_units</fkTable>
+                            <fkDbSchema>ehr_lookups</fkDbSchema>
+                            <fkTable>conc_units</fkTable>
                             <fkColumnName>unit</fkColumnName>
                         </fk>
                     </column>
@@ -38,7 +38,7 @@
                         <columnTitle>Route</columnTitle>
                         <fk>
                             <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-                            <fkDbSchema>lookups</fkDbSchema>
+                            <fkDbSchema>ehr_lookups</fkDbSchema>
                             <fkTable>routes</fkTable>
                             <fkColumnName>route</fkColumnName>
                         </fk>

@@ -11,7 +11,7 @@ Ext.onReady(function ()
 
     var protocol = LABKEY.ActionURL.getParameter('key').toLowerCase();
 
-    new EHR.ext.customPanels.detailsView({
+    new EHR.ext.DetailsView({
         schemaName: 'lists',
         queryName: 'protocol',
         title: 'Protocol Details:',
@@ -59,7 +59,7 @@ Ext.onReady(function ()
 
 
     new LABKEY.QueryWebPart({
-        title: 'Total Historical Assignments By Species',
+        title: 'Historic Assignments By Species Since Approve Date',
         schemaName: 'lists',
         queryName: 'protocolTotalAnimalsBySpecies',
         allowChooseQuery: false,
@@ -75,6 +75,25 @@ Ext.onReady(function ()
         scope: this,
         errorCallback: EHR.UTILITIES.onError
      }).render('protocolTotalAnimalsBySpecies');
+
+
+    new LABKEY.QueryWebPart({
+        title: 'Total Historic Assignments By Species',
+        schemaName: 'lists',
+        queryName: 'protocolTotalHistoricAnimalsBySpecies',
+        allowChooseQuery: false,
+        allowChooseView: true,
+        showInsertNewButton: false,
+        showDeleteButton: false,
+        showDetailsColumn: true,
+        showUpdateColumn: false,
+        buttonBarPosition: 'top',
+        filters: [LABKEY.Filter.create('protocol', protocol, LABKEY.Filter.Types.EQUAL)],
+        //viewName: '',
+        //sort: '-Date',
+        scope: this,
+        errorCallback: EHR.UTILITIES.onError
+     }).render('protocolTotalHistoricAnimalsBySpecies');
 
 
 
@@ -121,6 +140,10 @@ Ext.onReady(function ()
     <p/>
 
     <div id="protocolTotalAnimalsBySpecies">Loading...</div>
+
+    <p/>
+
+    <div id="protocolTotalHistoricAnimalsBySpecies">Loading...</div>
 
     <p/>
 

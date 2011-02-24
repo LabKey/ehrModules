@@ -1,0 +1,89 @@
+<html>
+<head>
+<script type="text/javascript">
+
+/*!
+ * Ext JS Library 3.2.1
+ * Copyright(c) 2006-2010 Ext JS, Inc.
+ * licensing@extjs.com
+ * http://www.extjs.com/license
+ */
+
+LABKEY.requiresScript("/ehr/ehrApi.js");
+
+
+Ext.onReady(function(){
+
+    var formType = LABKEY.ActionURL.getParameter('formtype') || LABKEY.ActionURL.getParameter('queryName');
+    var formUUID = LABKEY.ActionURL.getParameter('requestid');
+
+    if(!formType){
+        makeFormSelectorPanel().render('taskForm');
+    }
+    else {
+        renderForm(formType);
+    }
+
+    function renderForm(formType){
+        EHR.ext.createTaskPanel({
+            formUUID: formUUID,
+            formType: formType,
+            target: 'taskForm'
+        });
+
+        LABKEY.NavTrail.setTrail('Request: '+(LABKEY.ActionURL.getParameter('title') || formType));
+    }
+
+    function makeFormSelectorPanel(){
+        return new Ext.FormPanel({
+            border: false
+            ,width: 320
+            ,labelWidth: 140
+            ,items: [{
+                xtype: 'combo'
+                ,fieldLabel: 'Choose Request Type'
+                ,ref: 'type'
+                ,allowBlank: false
+                ,width: 165
+                ,displayField:'formtype'
+                ,valueField: 'formtype'
+                ,forceSelection: true
+                ,typeAhead: false
+                ,triggerAction: 'all'
+                ,mode: 'local'
+                ,store: new LABKEY.ext.Store({
+                    containerPath: 'WNPRC/EHR/',
+                    schemaName: 'ehr',
+                    queryName: 'formtypes',
+                    sort: 'formtype',
+                    filterArray: [LABKEY.Filter.create('category', 'Request', LABKEY.Filter.Types.EQUAL)],
+                    autoLoad: true
+                  })
+            }]
+            ,buttons: [{
+                text: 'Submit'
+                ,scope: this
+                ,ref: 'submit'
+                ,handler: function(s){
+                    var val = s.refOwner.ownerCt.type.getValue();
+                    if(val)
+                        s.refOwner.ownerCt.destroy();
+                        renderForm(val);
+                }
+            }]
+        });
+    }
+});
+
+
+</script>
+</head>
+<body>
+<div id="taskForm"></div>
+
+
+
+</body>
+
+
+</html>

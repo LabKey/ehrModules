@@ -2,11 +2,11 @@
 <head>
 <script type="text/javascript">
 
-LABKEY.requiresScript("/ehr/searchForm.js");
+LABKEY.requiresScript("/ehr/SearchPanel.js");
 
 Ext.onReady(function(){
 
-    new EHR.ext.customPanels.searchForm({
+    new EHR.ext.SearchPanel({
         schemaName: 'study'
         ,queryName: 'Housing'
         ,title: 'Search Housing'

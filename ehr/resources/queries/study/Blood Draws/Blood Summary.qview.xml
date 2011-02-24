@@ -3,12 +3,17 @@
        <column name="Id" />
        <column name="date" />
        <column name="project" />
+       <column name="project/protocol">
+            <properties>
+                <property name="columnTitle" value="Protocol"/>
+            </properties>
+       </column>
        <column name="quantity" />
        <column name="done_by" />
        <column name="done_for" />
        <column name="p_s" />
        <column name="a_v" />
-       <column name="code" />
+       <column name="sampleId" />
        <column name="caretaker" />
        <column name="tube_type" />
        <column name="Remark" />

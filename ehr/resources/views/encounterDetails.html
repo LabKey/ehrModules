@@ -7,11 +7,11 @@ LABKEY.requiresScript("/ehr/transposeRows.js");
 
 Ext.onReady(function ()
 {
-    if (!LABKEY.ActionURL.getParameter('lsid')){alert('Must Provide LSID'); return false;}
+    if (!LABKEY.ActionURL.getParameter('objectid')){alert('Must Provide LSID'); return false;}
 
-    var filterArray = [LABKEY.Filter.create('lsid', LABKEY.ActionURL.getParameter('lsid'), LABKEY.Filter.Types.EQUAL)];
+    var filterArray = [LABKEY.Filter.create('objectid', LABKEY.ActionURL.getParameter('objectid'), LABKEY.Filter.Types.EQUAL)];
 
-    new EHR.ext.customPanels.detailsView({
+    new EHR.ext.DetailsView({
         schemaName: 'study',
         queryName: 'encounters',
         title: 'Encounter Details:',
@@ -33,7 +33,7 @@ Ext.onReady(function ()
         showRecordSelectors: true,
         buttonBarPosition: 'top',
         timeout: 0,
-        filterArray: [LABKEY.Filter.create('parentId', LABKEY.ActionURL.getParameter('lsid'), LABKEY.Filter.Types.EQUAL)],
+        filterArray: [LABKEY.Filter.create('parentId', LABKEY.ActionURL.getParameter('objectid'), LABKEY.Filter.Types.EQUAL)],
         sort: '-Date',
         scope: this,
         errorCallback: EHR.UTILITIES.onError

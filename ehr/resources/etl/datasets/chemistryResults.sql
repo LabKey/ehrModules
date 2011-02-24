@@ -142,6 +142,22 @@ UNION ALL
 SELECT
 id,
 date,
+'LDH' as TestID,
+ldh as Results,
+null as stringResults,
+null as Units,
+null as remark,
+concat(uuid,'ldh') as objectid, ts,
+uuid as runId
+FROM chemistry
+where ldh is not null and ldh != ""
+AND ts > ? AND length(id) > 1
+
+UNION ALL
+
+SELECT
+id,
+date,
 'TB' as TestID,
 tbili as Results,
 null as stringResults,

@@ -1,0 +1,100 @@
+<query xmlns="http://labkey.org/data/xml/query">
+    <metadata>
+        <tables xmlns="http://labkey.org/data/xml">
+            <table tableName="TasksById" tableDbType="NOT_IN_DB">
+                <tableUrl>/ehr/taskDetails.view?formtypetype=${formtype}&amp;taskid=${taskid}</tableUrl>
+                <updateUrl>/ehr/manageTask.view?formtype=${formtype}&amp;taskid=${taskid}</updateUrl>
+                <insertUrl>/ehr/manageTask.view</insertUrl>
+                <!--<titleColumn>RowId</titleColumn>-->
+                <columns>
+                    <column columnName="taskid">
+                        <columnTitle>Task Id</columnTitle>
+                        <isHidden>true</isHidden>
+                        <fk>
+                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
+                            <fkDbSchema>ehr</fkDbSchema>
+                            <fkTable>tasks</fkTable>
+                            <fkColumnName>taskid</fkColumnName>
+                        </fk>
+                    </column>
+                    <!--<column columnName="type">-->
+                        <!--<columnTitle>Task Type</columnTitle>-->
+                        <!--<fk>-->
+                            <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
+                            <!--<fkDbSchema>ehr</fkDbSchema>-->
+                            <!--<fkTable>type_types</fkTable>-->
+                            <!--<fkColumnName>type</fkColumnName>-->
+                        <!--</fk>-->
+                    <!--</column>-->
+                    <!--<column columnName="assignedto">-->
+                        <!--<columnTitle>Assigned To</columnTitle>-->
+                        <!--<nullable>true</nullable>-->
+                        <!--<fk>-->
+                            <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
+                            <!--<fkDbSchema>core</fkDbSchema>-->
+                            <!--<fkTable>users</fkTable>-->
+                            <!--<fkColumnName>userid</fkColumnName>-->
+                        <!--</fk>-->
+                    <!--</column>-->
+                    <!--<column columnName="duedate">-->
+                        <!--<columnTitle>Due Date</columnTitle>-->
+                        <!--<nullable>true</nullable>-->
+                    <!--</column>-->
+                    <!--<column columnName="createdby">-->
+                        <!--<columnTitle>Created By</columnTitle>-->
+                        <!--<fk>-->
+                            <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
+                            <!--<fkDbSchema>core</fkDbSchema>-->
+                            <!--<fkTable>users</fkTable>-->
+                            <!--<fkColumnName>userid</fkColumnName>-->
+                        <!--</fk>-->
+                    <!--</column>-->
+                    <!--<column columnName="created">-->
+                        <!--<columnTitle>Created</columnTitle>-->
+                        <!--<formatString>yyyy-MM-dd HH:mm</formatString>-->
+                    <!--</column>-->
+                    <!--<column columnName="modifiedby">-->
+                        <!--<columnTitle>Modified By</columnTitle>-->
+                    <!--</column>-->
+                    <!--<column columnName="modified">-->
+                        <!--<columnTitle>Modified</columnTitle>-->
+                    <!--</column>-->
+                    <!--<column columnName="qcstate">-->
+                        <!--<columnTitle>Status</columnTitle>-->
+                        <!--<fk>-->
+                            <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
+                            <!--<fkDbSchema>study</fkDbSchema>-->
+                            <!--<fkTable>qcstate</fkTable>-->
+                            <!--<fkColumnName>rowid</fkColumnName>-->
+                        <!--</fk>-->
+                    <!--</column>-->
+                </columns>
+                <buttonBarOptions includeStandardButtons="false">
+                    <includeScript>/ehr/studyButtons.js</includeScript>
+                    <!--<onRender>moreActionsHandler</onRender>-->
+                    <item text="Create New">
+                        <originalText>Insert New</originalText>
+                    </item>
+                    <item text="Views">
+                        <originalText>Views</originalText>
+                    </item>
+                    <item text="Export">
+                        <originalText>Export</originalText>
+                    </item>
+                    <item text="Print">
+                        <originalText>Print</originalText>
+                    </item>
+                    <!--<item text="Import Data">-->
+                        <!--<originalText>Import Data</originalText>-->
+                    <!--</item>-->
+                    <item text="Page Size">
+                        <originalText>Page Size</originalText>
+                    </item>
+                    <!--<item text="Delete">-->
+                        <!--<originalText>Delete</originalText>-->
+                    <!--</item>-->
+                </buttonBarOptions>
+            </table>
+        </tables>
+    </metadata>
+</query>

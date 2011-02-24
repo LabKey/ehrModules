@@ -4,299 +4,622 @@
  * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
  */
 
-//This will contain custom ext components and ext overrides
-Ext.namespace('EHR.ext');
+//This will contain custom ext components
+Ext.namespace('EHR.ext', 'EHR.ext.plugins', 'Ext.ux.form');
 
 
 LABKEY.requiresScript("/ehr/ext.ux.multiselect.js");
+LABKEY.requiresScript('Ext.ux.form.LovCombo.js');
+LABKEY.requiresCss('Ext.ux.form.LovCombo.css');
+
+LABKEY.requiresScript("/ehr/ext.ux.datetimefield.js");
 LABKEY.requiresScript("/ehr/datetime.js");
 
 
 
 //the first section is more generic and might make sense to include in labkey
 
-/**
- * The following overwrite allows tooltips on labels within form layouts.
- * The field have to have a property named "fieldLabelTip" in the corresponding
- * config object.
+
+/* options:
+valueField: the values of the checkbox
+displayField: the label of the checkbox
  */
-Ext.override(Ext.layout.FormLayout, {
-    fieldTpl: (function()
-    {
-        var t = new Ext.Template(
-                '<div class="x-form-item {itemCls}" tabIndex="-1">',
-                '<label for="{id}" style="{labelStyle}" class="x-form-item-label" {labelAttrs}>{label}{labelSeparator}</label>',
-                '<div class="x-form-element" id="x-form-el-{id}" style="{elementStyle}" {fieldAttrs}>',
-                '</div><div class="{clearCls}"></div>',
-                '</div>'
-                );
-        t.disableFormats = true;
-        return t.compile();
-    })(),
-    getTemplateArgs: function(field)
-    {
-        var noLabelSep = !field.fieldLabel || field.hideLabel;
-        return {
-            id            : field.id,
-            label         : field.fieldLabel,
-            labelAttrs    : field.fieldLabelTip ? 'ext:qtip="' + Ext.util.Format.htmlEncode(field.fieldLabelTip) + '"' : '',
-            itemCls       : (field.itemCls || this.container.itemCls || '') + (field.hideLabel ? ' x-hide-label' : ''),
-            clearCls      : field.clearCls || 'x-form-clear-left',
-            labelStyle    : this.getLabelStyle(field.labelStyle),
-            elementStyle  : this.elementStyle || '',
-            fieldAttrs    : field.helpPopup ? 'ext:qtip="' + Ext.util.Format.htmlEncode(field.helpPopup) + '"' : '',
-            labelSeparator: noLabelSep ? '' : (Ext.isDefined(field.labelSeparator) ? field.labelSeparator : this.labelSeparator)
-        };
-    }
-});
-
-//a css fix for Ext datepicker
-Ext.menu.DateMenu.prototype.addClass('extContainer');
-
-
-Ext.override(Ext.form.CheckboxGroup, {
-    getNames: function()
-    {
-        var n = [];
-
-        this.items.each(function(item)
-        {
-            if (item.getValue())
-            {
-                n.push(item.getName());
-            }
-        });
-
-        return n;
-    },
-
-    getValues: function()
-    {
-        var v = [];
-        this.items.each(function(item)
-        {
-            if (item.getValue())
-            {
-                v.push(item.getRawValue());
-            }
-        });
-
-        return v;
-    },
-
-    getStringValue: function(delim)
-    {
-        delim = delim || ',';
-        return this.getValues().join(delim);
-    },
-
-    setValues: function(v)
-    {
-        var r = new RegExp('(' + v.join('|') + ')');
-
-        this.items.each(function(item)
-        {
-            item.setValue(r.test(item.getRawValue()));
-        });
-    }
-});
-
-Ext.override(Ext.form.RadioGroup, {
-    getName: function()
-    {
-        return this.items.first().getName();
-    },
-
-    getValue: function()
-    {
-        var v;
-
-        this.items.each(function(item)
-        {
-            v = item.getRawValue();
-            return !item.getValue();
-        });
-
-        return v;
-    },
-
-    setValue: function(v)
-    {
-        this.items.each(function(item)
-        {          
-            item.setValue(item.getRawValue() == v);
-        });
-    }
-});
-
-
-EHR.ext.BooleanCombo = Ext.extend(LABKEY.ext.ComboBox,
+EHR.ext.RemoteCheckboxGroup = Ext.extend(Ext.form.CheckboxGroup,
 {
     initComponent: function()
     {
         Ext.apply(this, {
-            displayField: 'name',
-            valueField: 'value',
-            store: new Ext.data.ArrayStore({
-                fields: ['name', 'value'],
-                data: [
-                    ['N/A',null],
-                    ['No',false],
-                    ['Yes',true]
-                ]
-            }),
-            forceSelection:true,
-            typeAhead: false,
-            lazyInit: false,
-            mode: 'local',
-            triggerAction: 'all'
+            name: this.name || Ext.id(),
+            storeLoaded: false,
+            items: [{name: 'placeholder', fieldLabel: 'Loading..'}],
+            buffered: true,
+            tpl : new Ext.XTemplate('<tpl for=".">' +
+                  '{[values["' + this.valueField + '"] ? values["' + this.displayField + '"] : "'+ (this.lookupNullCaption ? this.lookupNullCaption : '[none]') +'"]}' +
+                    //allow a flag to display both display and value fields
+                    '<tpl if="'+this.showValueInList+'">{[values["' + this.valueField + '"] ? " ("+values["' + this.valueField + '"]+")" : ""]}</tpl>'+
+                    '</tpl>')
 
         });
 
-        EHR.ext.BooleanCombo.superclass.initComponent.call(this, arguments);
+        if(this.value){
+            this.value = [this.value];
+        }
+
+        EHR.ext.RemoteCheckboxGroup.superclass.initComponent.call(this, arguments);
+
+        if(this.store && !this.store.getCount()) {
+            this.store.on('load', this.onStoreLoad, this, {single: true});
+        }
+        else {
+            this.onStoreLoad();
+        }
+    }
+
+    ,onStoreLoad : function() {
+        var item;
+        this.store.each(function(record, idx){
+            item = this.newItem(record);
+
+            if(this.rendered){
+                this.items.add(item);
+                var col = (idx+this.columns.length) % this.columns.length;
+                var chk = this.panel.getComponent(col).add(item);
+                this.fireEvent('add', this, chk);
+            }
+            else {
+                this.items.push(item)
+            }
+        }, this);
+
+        //remove the placeholder checkbox
+        if(this.rendered) {
+            var item = this.items.first();
+            this.items.remove(item);
+            this.panel.getComponent(0).remove(item, true);
+            this.ownerCt.doLayout();
+        }
+        else
+            this.items.remove(this.items[0]);
+
+        this.storeLoaded = true;
+        this.buffered = false;
+
+        if(this.bufferedValue){
+            this.setValue(this.bufferedValue);
+        }
+    }
+    ,newItem: function(record){
+        return new Ext.form.Checkbox({
+            xtype: 'checkbox',
+            boxLabel: (this.tpl ? this.tpl.apply(record.data) : record.get(this.displayField)),
+            inputValue: record.get(this.valueField),
+            name: record.get(this.valueField),
+            disabled: this.disabled,
+            readOnly: this.readOnly || false,
+            listeners: {
+                scope: this,
+                change: function(self, val){
+                    this.fireEvent('change', this, this.getValue());
+                }
+            }
+        });
+
+    }
+    ,setValue: function(v)
+    {
+        //NOTE: we need to account for an initial value if store not loaded.
+        if(!this.storeLoaded){
+            this.buffered = true;
+            this.bufferedValue = v;
+        }
+        else {
+            EHR.ext.RemoteCheckboxGroup.superclass.setValue.apply(this, arguments);
+        }
     }
 });
-Ext.reg('ehr-booleancombo', EHR.ext.BooleanCombo);
+Ext.reg('ehr-remotecheckboxgroup', EHR.ext.RemoteCheckboxGroup);
 
 
-EHR.ext.BooleanRadioGroup = Ext.extend(Ext.form.RadioGroup,
+EHR.ext.DisplayField = Ext.extend(Ext.form.DisplayField,
 {
     initComponent: function()
     {
-        Ext.applyIf(this, {
-            id: this.name,
-            items: [
-                {boxLabel: 'N/A', name: this.name, inputValue: null, checked: true},
-                {boxLabel: 'No', name: this.name, inputValue: 'false'},
-                {boxLabel: 'Yes', name: this.name, inputValue: 'true'}
-            ],
-            columns: 1
-        });
-
-        EHR.ext.BooleanRadioGroup.superclass.initComponent.call(this, arguments);
+        this.tpl = '<div>hello</div>';
+        EHR.ext.DisplayField.superclass.initComponent.apply(this, arguments);
     },
-    setValue: function(v)
-    {
-        //NOTE: Ext doesnt seem to allow empty string as the inputValue, so we translate
-        if (Ext.isDefined(v) && !Ext.isString(v)) {
-            if(v===true)
-                v = 'true';
-            else if (v===false)
-                v = 'false';
-            else
-                v = ''
+    getDisplayValue: function(v){
+        if(this.lookup && lookups !== false){
+            return v;
         }
-        this.items.each(function(item)
-        {
-            item.setValue(item.getRawValue() == v);
-        });
+        else if(Ext.isDate(v)){
+            return this.format ? v.format(this.format) : v.format('Y-m-d H:i');
+        }
+        else
+            return v;
     },
-    getValue: function(){
-        var v = EHR.ext.BooleanRadioGroup.superclass.getValue.call(this);
-        if (Ext.isDefined(v) && Ext.isString(v)) {
-            if(v.toLowerCase() == 'true')
-                return true;
-            if(v.toLowerCase() == 'false')
-                return false;
-            else
-                return null;
-        }
+    setValue: function(v){
+        this.displayValue = this.getDisplayValue(v);
+        this.data = this.displayValue;
+        EHR.ext.DisplayField.superclass.setValue.apply(this, arguments);
     }
 });
-//EHR.ext.BooleanRadioGroup = Ext.extend(Ext.form.RadioGroup, {
-//    initComponent: function(){
-//        Ext.applyIf(this, {
-//            xtype: 'ehr-remoteradiogroup',
-//            labelField: 'meaning',
-//            valueField: 'value',
-//            columns: 3,
-//            store: new LABKEY.ext.Store({
-//                schemaName: 'lookups',
-//                queryName: 'yesno',
-//                autoLoad: true
-//            })
-//        });
-//
-//        EHR.ext.BooleanRadioGroup.superclass.initComponent.call(this);
-//    }
-//});
-Ext.reg('ehr-booleanradiogroup', EHR.ext.BooleanRadioGroup);
+Ext.reg('ehr-displayfield', EHR.ext.DisplayField);
 
 
 /* options:
 valueField: the values of the radio
-labelField: the label of the radio
-value: the inital value of the radiogroup
+displayField: the label of the radio
  */
+//adapted from:
+//http://www.sencha.com/forum/showthread.php?95860-Remote-Loading-Items-Remote-Checkbox-Group-Ext.ux.RemoteCheckboxGroup&highlight=checkboxgroup+event
 EHR.ext.RemoteRadioGroup = Ext.extend(Ext.form.RadioGroup,
 {
     initComponent: function()
     {
-        this.name = this.name || Ext.id();
-
-        Ext.applyIf(this, {
-            items: [{xtype: 'radio', hidden: true, name: this.name}]
+        Ext.apply(this, {
+            name: this.name || Ext.id(),
+            storeLoaded: false,
+            items: [{name: 'placeholder', fieldLabel: 'Loading..'}],
+            buffered: true,
+            tpl : new Ext.XTemplate('<tpl for=".">' +
+                  '{[values["' + this.valueField + '"] ? values["' + this.displayField + '"] : "'+ (this.lookupNullCaption ? this.lookupNullCaption : '[none]') +'"]}' +
+                    //allow a flag to display both display and value fields
+                    '<tpl if="'+this.showValueInList+'">{[values["' + this.valueField + '"] ? " ("+values["' + this.valueField + '"]+")" : ""]}</tpl>'+
+                    '</tpl>')
         });
 
+        if(this.value!==undefined){
+            this.value = [this.value];
+        }
+
         EHR.ext.RemoteRadioGroup.superclass.initComponent.call(this, arguments);
+
+        if(this.store && !this.store.getCount()) {
+            this.store.on('load', this.onStoreLoad, this, {single: true});
+        }
+        else {
+            this.onStoreLoad();
+        }
     },
 
-    onRender: function (ct, position) {
-        EHR.ext.RemoteRadioGroup.superclass.onRender.call(this, ct, position);
-        this.items = this.defaultItems || new Ext.util.MixedCollection();
-        this.removeAll();
+    onStoreLoad: function(){
+        var item;
+        this.store.each(function(record, idx){
+            item = this.newItem(record);
 
-        if(this.store && !this.store.getCount())
-            this.store.on('load', onStoreLoad, this);
-        else
-            onStoreLoad();
-
-        function onStoreLoad() {
-            var item;
-            this.store.each(function(record, idx){
-                item = {
-                    xtype: 'radio',
-                    boxLabel: record.get(this.labelField),
-                    inputValue: record.get(this.valueField),
-                    name: this.name,
-                    checked: record.get(this.valueField)==this.value
-                };
-
+            if(this.rendered){
+                this.items.add(item);
                 var col = (idx+this.columns.length) % this.columns.length;
                 var chk = this.panel.getComponent(col).add(item);
-                this.items.add(item);
                 this.fireEvent('add', this, chk);
-            }, this);
-
-            this.panel.doLayout();
-            EHR.ext.RemoteRadioGroup.superclass.onRender.call(this, ct, position);
-        }
-    },
-    removeAll: function () {
-        for (var j = 0; j < this.columns; j++) {
-            if (this.panel.getComponent(j).items.length > 0) {
-                this.panel.getComponent(j).items.each(function (i) {
-                    if (this.fireEvent('beforeremove', this, i) !== false) {
-                        i.destroy();
-                    }
-                }, this);
             }
+            else {
+                this.items.push(item)
+            }
+        }, this);
+
+        //remove the placeholder radio
+        if(this.rendered) {
+            var item = this.items.first();
+            this.items.remove(item);
+            this.panel.getComponent(0).remove(item, true);
+            this.ownerCt.doLayout();
+        }
+        else
+            this.items.remove(this.items[0]);
+
+        this.buffered = false;
+        this.storeLoaded = true;
+
+        if(this.initialValue!==undefined){
+            this.setValue(this.initialValue);
+        }
+
+        if(this.readOnly)
+            this.setReadOnly(true)
+
+    },
+    newItem: function(record){
+        return new Ext.form.Radio({
+            xtype: 'radio',
+            boxLabel: (this.tpl ? this.tpl.apply(record.data) : record.get(this.displayField)),
+            //NOTE: Ext is going to convert this to a string later anyway
+            //be careful will null and similar values
+            inputValue: record.get(this.valueField)===null ? '' : record.get(this.valueField),
+            name: this.name,
+            //checked: record.get(this.valueField)==this.initialValue,
+            readOnly: this.readOnly || false,
+            disabled: this.disabled,
+            //NOTE: checkboxgroup doesnt fire change otherwise
+            listeners: {
+                scope: this,
+                change: function(self, val){
+                    this.fireEvent('change', this, this.getValue());
+                }
+            }
+        });
+    },
+    setValue: function(v)
+    {
+        //NOTE: we need to account for an initial value if store not loaded.
+        if(!this.storeLoaded){
+            this.buffered = true;
+            this.value = [v];
+            this.bufferedValue = v;
+        }
+        else {
+            Ext.form.RadioGroup.superclass.setValue.apply(this, arguments);
         }
     }
-
 });
 Ext.reg('ehr-remoteradiogroup', EHR.ext.RemoteRadioGroup);
 
 
+//this is a combobox containing operators as might be used in a search form
+EHR.ext.OperatorCombo = Ext.extend(LABKEY.ext.ComboBox, {
+    initComponent: function(config){
+        this.meta = this.meta || {};
+        this.meta.jsonType = this.meta.jsonType || 'string';
+
+        if(!this.initialValue){
+            switch(this.meta.jsonType){
+                case 'int':
+                case 'float':
+                    this.initialValue = 'eq';
+                    break;
+                case 'date':
+                    this.initialValue = 'dateeq';
+                    break;
+                case 'boolean':
+                    this.initialValue = 'startswith';
+                    break;
+                default:
+                    this.initialValue = 'startswith';
+                    break;
+            }
+        }
+
+        Ext.apply(this, {
+            xtype: 'combo'
+            ,valueField:'value'
+            ,displayField:'text'
+            ,typeAhead: false
+            ,mode: 'local'
+            ,triggerAction: 'all'
+            ,editable: false
+            ,value: this.initialValue
+            ,store: this.setStore(this.meta, this.initialValue)
+        });
+
+        EHR.ext.OperatorCombo.superclass.initComponent.call(this)
+    },
+    setStore: function (meta, value) {
+        var found = false;
+        var options = [];
+        if (meta.jsonType)
+            Ext.each(LABKEY.Filter.getFilterTypesForType(meta.jsonType, meta.mvEnabled), function (filterType) {
+                if (value && value == filterType.getURLSuffix())
+                    found = true;
+                if (filterType.getURLSuffix())
+                    options.push([filterType.getURLSuffix(), filterType.getDisplayText()]);
+            });
+
+        if (!found) {
+            for (var key in LABKEY.Filter.Types) {
+                var filterType = LABKEY.Filter.Types[key];
+                if (filterType.getURLSuffix() == value) {
+                    options.unshift([filterType.getURLSuffix(), filterType.getDisplayText()]);
+                    break;
+                }
+            }
+        }
+
+        return new Ext.data.ArrayStore({fields: ['value', 'text'], data: options });
+    }
+});
+Ext.reg('ehr-operatorcombo', EHR.ext.OperatorCombo);
 
 
 
+EHR.ext.ViewCombo = Ext.extend(LABKEY.ext.ComboBox, {
+    initComponent: function(){
+        Ext.apply(this, {
+            displayField: 'displayText'
+            ,valueField: 'value'
+            ,triggerAction: 'all'
+            ,mode: 'local'
+            ,store: new Ext.data.ArrayStore({
+                fields: [
+                    'value',
+                    'displayText'
+                ],
+                idIndex: 0,
+                data: []
+            })
+        });
+
+        EHR.ext.ViewCombo.superclass.initComponent.call(this);
+
+        LABKEY.Query.getQueryViews({
+            containerPath: this.containerPath
+            ,queryName: this.queryName
+            ,schemaName: this.schemaName
+            ,successCallback: this.onViewLoad
+            ,errorCallback: EHR.UTILITIES.onError
+            ,scope: this
+        });
+
+    },
+    onViewLoad: function(data){
+        if(!data || !data.views)
+            return;
+
+        var recs = [];
+        var hasDefault = false;
+        Ext.each(data.views, function(s){
+            if(!s.name)
+                hasDefault = true;
+            recs.push([s.name, s.name || 'Default']);
+        }, this);
+
+        if(!hasDefault)
+            recs.push(['', 'Default']);
+
+        this.store.loadData(recs);
+        this.store.sort('value');
+    }
+});
+Ext.reg('ehr-viewcombo', EHR.ext.ViewCombo);
+
+
+//this is a component that will either be true or null.
+//this is done such that the box will fail client-side validation unless checked
+EHR.ext.ApproveRadio = Ext.extend(Ext.form.RadioGroup, {
+    initComponent: function() {
+        Ext.apply(this, {
+            allowBlank: false,
+            items: [{
+                xtype: 'radio',
+                name: this.id,
+                inputValue: '',
+                boxLabel: 'No',
+                checked: true
+            },{
+                xtype: 'radio',
+                name: this.id,
+                inputValue: 'true',
+                boxLabel: 'Yes',
+                allowBlank: false
+            }]
+        });
+
+        EHR.ext.ApproveRadio.superclass.initComponent.call(this, arguments);
+    },
+    setValue: function(v)
+    {
+        if(Ext.isBoolean(v)){
+            v = String(v);
+        }
+        if(v != 'true'){
+            v = '';
+        }
+        EHR.ext.ApproveRadio.superclass.setValue.apply(this, [v]);
+    },
+    getValue: function()
+    {
+        var val = EHR.ext.ApproveRadio.superclass.getValue.apply(this, arguments);
+        if(val && val.inputValue != 'true'){
+            val = null;
+        }
+        return val;
+
+    }
+
+});
+Ext.reg('ehr-approveradio', EHR.ext.ApproveRadio);
+
+
+EHR.ext.UserEditableCombo = Ext.extend(LABKEY.ext.ComboBox, {
+    initComponent: function(config){
+        this.plugins = this.plugins || [];
+        this.plugins.push('ehr-usereditablecombo');
+
+        EHR.ext.UserEditableCombo.superclass.initComponent.call(this, config);
+    }
+});
+Ext.reg('ehr-usereditablecombo', EHR.ext.UserEditableCombo);
+
+
+EHR.ext.plugins.UserEditableCombo = Ext.extend(Ext.util.Observable, {
+    init: function(combo) {
+        Ext.apply(combo, {
+            onSelect: function(cmp, idx){
+                var val;
+                if(idx)
+                    val = this.store.getAt(idx).get(this.valueField);
+
+                if(val == 'Other'){
+                    Ext.MessageBox.prompt('Enter Value', 'Enter value:', this.addNewValue, this);
+                }
+                LABKEY.ext.ComboBox.superclass.onSelect.apply(this, arguments);
+            },
+            setValue:     function(v){
+                var r = this.findRecord(this.valueField, v);
+                if(!r){
+                    this.addRecord(v, v);
+                }
+                LABKEY.ext.ComboBox.superclass.setValue.apply(this, arguments);
+            },
+            addNewValue: function(btn, val){
+                this.addRecord(val);
+                this.setValue(val);
+                this.fireEvent('change', this, val, 'Other');
+            },
+            addRecord: function(value){
+                if(!value)
+                    return;
+
+                var data = {};
+                data[this.valueField] = value;
+                if(this.displayField!=this.valueField){
+                    data[this.displayField] = value;
+                }
+                this.store.add((new this.store.recordType(data)));
+
+                //TODO: get combo's listview to reflect this
+                if(this.view){
+                    this.view.setStore(this.store);
+                    this.view.refresh()
+                }
+            }
+        });
+
+        if(combo.store.fields)
+            combo.addRecord('Other');
+        else
+            combo.store.on('load', function(){
+                combo.addRecord('Other');
+            }, this, {single: true});
+    }
+});
+Ext.preg('ehr-usereditablecombo', EHR.ext.plugins.UserEditableCombo);
 
 
 
+//these components tend to be EHR specific
 
 
-//these component tend to be EHR specific
+EHR.ext.SnomedCombo = Ext.extend(LABKEY.ext.ComboBox,
+{
+    initComponent: function()
+    {
+        Ext.apply(this, {
+            triggerAction: 'all',
+            displayField: 'code/meaning',
+            valueField: 'code',
+            mode: 'local',
+            store: new LABKEY.ext.Store({
+                //containerPath: rec.get('containerpath'),
+                schemaName: 'ehr_lookups',
+                queryName: 'snomed_subset_codes',
+                columns: 'secondaryCategory,code,code/meaning',
+                sort: 'secondaryCategory,code/meaning',
+                autoLoad: false
+            }),
+            tpl : function(){var tpl = new Ext.XTemplate(
+                    '<tpl for=".">' +
+                      '<div class="x-combo-list-item">{[ values["secondaryCategory"] ? "<b>"+values["secondaryCategory"]+":</b> "  : "" ]}{[ values["meaning"] || values["code/meaning"] ]}' +
+                        //allow a flag to display both display and value fields
+                        '{[" ("+values["code"]+")"]}'+
+                        '&nbsp;</div></tpl>'
+                );return tpl.compile()}()
+        });
+
+        EHR.ext.SnomedCombo.superclass.initComponent.call(this, arguments);
+
+        this.filterComboCfg = {};
+    },
+
+    onRender: function(){
+        EHR.ext.SnomedCombo.superclass.onRender.apply(this, arguments);
+
+        //if there is a storeCfg property, we render a combo with common remarks
+        if(this.filterComboCfg){
+            this.addCombo();
+        }
+
+    },
+    addCombo: function(){
+        var div = this.container.insertFirst({
+            tag: 'div',
+            style: 'padding-bottom: 5px;'
+        });
+
+        var config = Ext.applyIf(this.filterComboCfg, {
+            xtype: 'combo',
+            renderTo: div,
+            width: this.width,
+            disabled: this.disabled,
+            emptyText: 'Pick subset...',
+            typeAhead: true,
+            mode: 'local',
+            isFormField: false,
+            boxMaxWidth: 200,
+            valueField: 'primaryCategory',
+            displayField: 'primaryCategory',
+            triggerAction: 'all',
+            initialValue: this.defaultSubset,
+            nullCaption: 'All',
+            store: new LABKEY.ext.Store({
+                schemaName: 'ehr_lookups',
+                queryName: 'snomed_subsets',
+                autoLoad: true,
+                nullRecord: {
+                    displayColumn: 'primaryCategory',
+                    nullCaption: 'All'
+                }
+            }),
+            listeners: {
+                scope: this,
+                change: this.applyFilter
+            }
+        });
+
+        this.filterCombo = Ext.ComponentMgr.create(config);
+        if(this.defaultSubset){
+            this.applyFilter(this.filterCombo, this.defaultSubset)
+        }
+    },
+
+    applyFilter: function(combo, subset){
+        this.store.removeAll();
+        delete this.store.baseParams['query.maxRows'];
+
+        if(subset == 'All'){
+            this.store.baseParams.schemaName = 'lists';
+            this.store.baseParams['query.queryName'] = 'snomed';
+            this.store.baseParams['query.columns'] = 'code,meaning';
+            this.store.baseParams['query.sort'] = 'meaning';
+            this.displayField = 'meaning';
+        }
+        else {
+            this.store.baseParams.schemaName = 'ehr_lookups';
+            LABKEY.Filter.appendFilterParams(this.store.baseParams, [LABKEY.Filter.create('primaryCategory', subset, LABKEY.Filter.Types.EQUAL)]);
+            this.store.baseParams['query.queryName'] = 'snomed_subset_codes';
+            this.store.baseParams['query.columns'] = 'secondaryCategory,code,code/meaning';
+            this.store.baseParams['query.sort'] = 'secondaryCategory,code/meaning';
+            this.displayField = 'code/meaning';
+        }
+
+        this.store.load();
+
+        if(this.view)
+            this.view.setStore(this.store);
+
+    },
+
+    setDisabled: function(val){
+        EHR.ext.SnomedCombo.superclass.setDisabled.call(this, val);
+
+        if(this.filterCombo)
+            this.filterCombo.setDisabled(val);
+    },
+    setVisible: function(val){
+        EHR.ext.SnomedCombo.superclass.setVisible.call(this, val);
+
+        if(this.filterCombo)
+            this.filterCombo.setVisible(val);
+    },
+    reset: function(){
+        EHR.ext.SnomedCombo.superclass.reset.call(this);
+
+        if(this.filterCombo)
+            this.filterCombo.reset();
+    }
+});
+Ext.reg('ehr-snomedcombo', EHR.ext.SnomedCombo);
+
+
 
 EHR.ext.ParticipantField = Ext.extend(Ext.form.TextField,
 {
@@ -307,13 +630,20 @@ EHR.ext.ParticipantField = Ext.extend(Ext.form.TextField,
             ,fieldLabel: 'Id'
             ,allowBlank: false
             //,bubbleEvents: ['valid', 'invalid', 'added']
+            ,participantMap: new Ext.util.MixedCollection
             ,validationDelay: 1000
             ,validationEvent: 'blur'
-            ,validator: function(val, field)
+            ,validator: function(val)
             {
                 if (!val)
                 {
                     return 'This field is required';
+                }
+
+                //force lowercase
+                if(val != val.toLowerCase()){
+                    val = val.toLowerCase();
+                    this.setValue(val);
                 }
 
                 var species;
@@ -330,7 +660,16 @@ EHR.ext.ParticipantField = Ext.extend(Ext.form.TextField,
                 else if (val.match(/^pt([0-9]{4})$/))
                     species = 'Pigtail';
 
-                return species ? true : 'Invalid Id Format';
+                if(!species) return 'Invalid Id Format';
+
+                var row = this.participantMap.get(val);
+                if(row && !row.loading){
+                    if(!row.Id){
+                        return 'Id Not Found';
+                    }
+                }
+
+                return true;
 
             },
             listeners: {
@@ -338,6 +677,7 @@ EHR.ext.ParticipantField = Ext.extend(Ext.form.TextField,
                 valid: function(c)
                 {
                     var val = c.getValue();
+
                     if (val != c.loadedId)
                     {
                         this.fireEvent('participantvalid', c);
@@ -367,6 +707,7 @@ EHR.ext.ParticipantField = Ext.extend(Ext.form.TextField,
 Ext.reg('ehr-participant', EHR.ext.ParticipantField);
 
 
+
 EHR.ext.ProjectField = Ext.extend(LABKEY.ext.ComboBox,
 {
     initComponent: function()
@@ -374,8 +715,8 @@ EHR.ext.ProjectField = Ext.extend(LABKEY.ext.ComboBox,
 
         Ext.apply(this, {
             fieldLabel: 'Project'
-            ,width: 140
-            ,name: this.name || 'Project'
+            ,name: this.name || 'project'
+            ,dataIndex: 'project'
             ,emptyText:''
             ,displayField:'project'
             ,valueField: 'project'
@@ -387,52 +728,62 @@ EHR.ext.ProjectField = Ext.extend(LABKEY.ext.ComboBox,
             ,defaultProjects: [00300901]
             ,validationDelay: 500
             //NOTE: unless i have this empty store an error is thrown
-            ,store: new Ext.data.Store()
-        });
-
-        EHR.ext.ProjectField.superclass.initComponent.call(this, arguments);
-        if (this.parentPanel)
-        {
-            this.mon(this.parentPanel, 'participantvalid', function(c)
-            {
-                this.getProjects(c.getValue());
-            }, this);
-
-            this.mon(this.parentPanel, 'participantinvalid', function(c)
-            {
-                this.store = new Ext.data.Store();
-                this.setDisabled(true);
-                this.setValue(null);
-                this.emptyText = '';
-            }, this);
-        }
-    },
-    getProjects : function(id)
-    {
-        this.store = new EHR.ext.AdvancedStore({
-            containerPath: 'WNPRC/EHR/',
-            schemaName: 'study',
-            queryName: 'assignment',
-            viewName: 'Active Assignments',
-            sort: '-project',
-            tpl: '<tpl for="."><div class="x-combo-list-item">{' + this.displayField + '}</div></tpl>',
-            filterArray: [LABKEY.Filter.create('Id', id, LABKEY.Filter.Types.EQUAL)],
-            autoLoad: true,
-            listeners: {
-                scope: this,
-                load: function(s)
-                {
-                    if (this.defaultProjects)
+            ,store: new LABKEY.ext.Store({
+                containerPath: 'WNPRC/EHR/',
+                schemaName: 'study',
+                queryName: 'assignment',
+                viewName: 'Active Assignments',
+                sort: 'project',
+                columns: 'project,project/account',
+                //tpl: '<tpl for="."><div class="x-combo-list-item">{' + this.displayField + '}</div></tpl>',
+                filterArray: [LABKEY.Filter.create('Id', '', LABKEY.Filter.Types.EQUAL)],
+                autoLoad: true,
+                listeners: {
+                    scope: this,
+                    load: function(s)
                     {
-                        Ext.each(this.defaultProjects, function(p)
+                        if (this.defaultProjects)
                         {
-                            var rec = new s.recordType({project: p});
-                            s.addSorted(rec);
-                        }, this);
+                            Ext.each(this.defaultProjects, function(p)
+                            {
+                                var rec = new s.recordType({project: p});
+                                s.addSorted(rec);
+                            }, this);
+                        }
+                    }
+                }
+            })
+            ,listeners: {
+                select: function(combo, rec){
+                    if(this.ownerCt.boundRecord){
+                        this.ownerCt.boundRecord.set('project', rec.get('project'));
+                        this.ownerCt.boundRecord.set('account', rec.get('project/account'));
                     }
                 }
             }
         });
+
+        EHR.ext.ProjectField.superclass.initComponent.call(this, arguments);
+
+        this.mon(this.ownerCt, 'participantvalid', this.onParticipantValid, this);
+        this.mon(this.ownerCt, 'participantinvalid', this.onParticipantInValid, this);
+    },
+    onParticipantValid: function(c)
+    {
+        this.getProjects(c.getValue());
+    },
+    onParticipantInValid: function(c){
+        this.store.baseParams['query.Id~eq'] = id;
+        this.store.load();
+        this.setDisabled(true);
+        this.setValue(null);
+        this.emptyText = '';
+    },
+    getProjects : function(id)
+    {
+        this.store.baseParams['query.Id~eq'] = id;
+        this.store.baseParams['query.project/protocol~neq'] = 'wprc00';
+        this.store.load();
         this.emptyText = 'Select project...';
         this.setDisabled(false);
     }
@@ -454,7 +805,7 @@ EHR.ext.ProtocolField = Ext.extend(LABKEY.ext.ComboBox,
             ,triggerAction: 'all'
             ,typeAhead: true
             ,mode: 'local'
-            ,store: EHR.ext.getLookupStore({
+            ,store: EHR.ext.simpleLookupStore({
                 containerPath: 'WNPRC/EHR/',
                 schemaName: 'lists',
                 queryName: 'protocol',
@@ -469,19 +820,119 @@ Ext.reg('ehr-protocol', EHR.ext.ProtocolField);
 
 EHR.ext.RemarkField = Ext.extend(Ext.form.TextArea,
 {
-    onRender: function(ct, position){
-        EHR.ext.RemarkField.superclass.onRender.call(this, ct, position);
-        console.log(this);
-        var t = Ext.DomHelper.append(ct,
-             {tag: 'a', html: '[Toggle Remark]'}
-            , true);
-        Ext.DomHelper.append(ct, {tag: 'div', html: '<br>'});
+    onRender: function(){
+        EHR.ext.RemarkField.superclass.onRender.apply(this, arguments);
 
-        t.on('click', function(t){
-            this.container.setVisible(!this.container.isVisible());
-        }, this);
+        //if there is a storeCfg property, we render a combo with common remarks
+        if(this.storeCfg){
+            this.addCombo();
+        }
 
+    },
+    addCombo: function(){
+        var div = this.container.insertFirst({
+            tag: 'div',
+            style: 'padding-bottom: 5px;'
+        });
+
+        this.select = Ext.ComponentMgr.create({
+            xtype: 'combo',
+            renderTo: div,
+            emptyText: 'Common remarks...',
+            width: this.width,
+            disabled: this.disabled,
+            isFormField: false,
+            boxMaxWidth: 200,
+            valueField: this.storeCfg.valueField,
+            displayField: this.storeCfg.displayField,
+            triggerAction: 'all',
+            store: new LABKEY.ext.Store({
+                schemaName: this.storeCfg.schemaName,
+                queryName: this.storeCfg.queryName,
+                autoLoad: true
+            }),
+            listeners: {
+                scope: this,
+                select: function(combo, rec){
+                    var val = combo.getValue();
+                    this.setValue(val);
+                    this.fireEvent('change', this, val, this.startValue);
+                    combo.reset();
+                }
+            }
+        });
+    },
+
+    setDisabled: function(val){
+        EHR.ext.RemarkField.superclass.setDisabled.call(this, val);
+
+        if(this.select)
+            this.select.setDisabled(val);
+    },
+    setVisible: function(val){
+        EHR.ext.RemarkField.superclass.setVisible.call(this, val);
+
+        if(this.select)
+            this.select.setVisible(val);
     }
 });
 Ext.reg('ehr-remark', EHR.ext.RemarkField);
+
+
+EHR.ext.DrugDoseField = Ext.extend(Ext.form.TriggerField,
+{
+    initComponent: function(){
+        this.triggerClass = 'x-form-search-trigger';
+
+        EHR.ext.DrugDoseField.superclass.initComponent.call(this, arguments);
+    },
+    onRender: function(){
+        EHR.ext.DrugDoseField.superclass.onRender.apply(this, arguments);
+    },
+    onTriggerClick: function(){
+        var id, conc, dosage, conc_units;
+
+        var parent = this.findParentByType('ehr-formpanel');
+        if (parent){
+            if(!parent.boundRecord){
+                var form = parent.getForm();
+                var values = form.getFieldValues();
+                conc = values.concentration;
+                dosage = values.dosage;
+                conc_units = values.conc_units;
+                id = values.Id;
+            }
+            else {
+                conc = parent.boundRecord.get('concentration');
+                dosage = this.getValue();
+                id = parent.boundRecord.get('Id');
+            }
+            if(!conc || !dosage || !id){
+                Ext.Msg.alert('Error', 'Must supply Id, dosage and concentration');
+                return
+            }
+
+            if(parent.parentPanel.participantMap.get(id)){
+                var weight = parent.parentPanel.participantMap.get(id)['Dataset/Demographics/weight'];
+
+                if(this.msgDiv)
+                    this.msgDiv.replaceWholeText('Weight: '+weight+' kg');
+                else
+                    this.msgDiv = this.container.insertHtml('beforeEnd', 'Weight: '+weight+' kg');
+
+                var amount = EHR.UTILITIES.roundNumber(weight*dosage, 2);
+                var vol = EHR.UTILITIES.roundNumber(weight*dosage/conc, 2);
+                parent.boundRecord.set('amount', amount);
+                parent.boundRecord.set('volume', vol);
+                parent.boundRecord.set('dosage', dosage);
+                parent.boundRecord.set('concentration', conc);
+            }
+            else {
+                parent.parentPanel.participantMap.on('add', this.onTriggerClick, this, {single: true})
+            }
+        }
+    }
+});
+Ext.reg('ehr-drugdosefield', EHR.ext.DrugDoseField);
+
 

@@ -20,7 +20,7 @@
                         <displayWidth>40</displayWidth>
                         <fk>
                           <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-                          <fkDbSchema>lookups</fkDbSchema>
+                          <fkDbSchema>ehr_lookups</fkDbSchema>
                           <fkTable>rooms</fkTable>
                           <fkColumnName>Room</fkColumnName>
                         </fk>
@@ -28,7 +28,7 @@
                     <column columnName="cage">
                         <displayWidth>40</displayWidth>
                     </column>
-                    <column columnName="Remark">
+                    <column columnName="remark">
                         <displayWidth>250</displayWidth>
                     </column>
                     <column columnName="Description">

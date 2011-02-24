@@ -1,0 +1,57 @@
+<html>
+<head>
+<script type="text/javascript">
+
+/*!
+ * Ext JS Library 3.2.1
+ * Copyright(c) 2006-2010 Ext JS, Inc.
+ * licensing@extjs.com
+ * http://www.extjs.com/license
+ */
+
+LABKEY.requiresScript("/ehr/ehrApi.js");
+
+
+Ext.onReady(function(){
+
+    var formType = LABKEY.ActionURL.getParameter('formtype');
+    var formUUID = LABKEY.ActionURL.getParameter('taskid');
+    var queryName = LABKEY.ActionURL.getParameter('queryName');
+
+    if(!formUUID){
+        alert('Must provide form Id');
+        return;
+    }
+
+    if (!formType){
+        alert('Must provide form type');
+        return;
+    }
+
+    renderTaskForm(formType);
+
+    function renderTaskForm(formType){
+        EHR.ext.createTaskPanel({
+            formUUID: formUUID,
+            formType: formType,
+            renderTo: 'taskForm',
+            readOnly: true,
+            allowableButtons: 'EDIT'
+        });
+
+        LABKEY.NavTrail.setTrail('Task: '+(LABKEY.ActionURL.getParameter('title') || formType));
+    }
+});
+
+
+</script>
+</head>
+<body>
+<div id="taskForm"></div>
+
+
+
+</body>
+
+
+</html>

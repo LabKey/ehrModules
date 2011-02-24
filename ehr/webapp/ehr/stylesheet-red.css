@@ -196,12 +196,14 @@ td.labkey-app-button-bar-button a
 
 a.labkey-text-link, a.labkey-text-link:visited {
     color: #900;
-    background: url(../_images/arrow_link_button-red.jpg) top right no-repeat;
+    background: url(../ehr/images/arrow_link_button-red.jpg) top right no-repeat;
+    /*background: url(../_images/arrow_link_button-red.jpg)*/
 }
 
 a.labkey-text-link:hover {
 	color: #c90;
-    background: url(../_images/arrow_link_button_over-red.jpg) top right no-repeat;
+    /*background: url(../_images/arrow_link_button_over-red.jpg) top right no-repeat;*/
+    background: url(../ehr/images/arrow_link_button_over-red.jpg) top right no-repeat;
 }
 
 
@@ -306,7 +308,11 @@ table.labkey-expandable-nav
 
 }
 
-
+.labkey-nav-page-header
+{
+    /*color: #900*/
+    color:#000000;
+}
 
 tr.labkey-nav-tree-row
 
@@ -371,6 +377,7 @@ tr.labkey-wp-header
 {
 
     background-color: #faf1e3;
+    color:#900;
     /*background-color: #E7C995;*/
 
 }
@@ -385,12 +392,22 @@ tr.labkey-wp-header
 
 }
 
+.labkey-wp-header th
+{
+    /*color:#000000;*/
+    color:#900;
+}
 
+th.labkey-wp-title-left {
+
+    /*color: #900;*/
+    color:#000000;
+}
 
 th.labkey-wp-title-left a:hover {
 
     color: #900;
-
+    /*color:#000000;*/
 }
 
 
@@ -1333,11 +1350,14 @@ table.labkey-button-bar
 }
 
 .x-btn-tl, .x-btn-tr, .x-btn-tc, .x-btn-ml, .x-btn-mr, .x-btn-mc, .x-btn-bl, .x-btn-br, .x-btn-bc{
-	background-image:url(../gtheme/img/lkbtn-red.gif);
+	/*background-image:url(../gtheme/img/lkbtn-red.gif);*/
+    background-image:url(../ehr/images/lkbtn-red.gif);
 }
 
 .x-btn-with-menu .x-btn-center em {
-    background:transparent url(../gtheme/img/btn-arrow-red.gif) no-repeat scroll right 0;
+    /*background:transparent url(../gtheme/img/btn-arrow-red.gif) no-repeat scroll right 0;*/
+    /*TODO*/
+    background:transparent url(../ehr/images/btn-arrow-red.gif) no-repeat scroll right 0;
 }
 
 .labkey-button-bar .labkey-disabled-button,

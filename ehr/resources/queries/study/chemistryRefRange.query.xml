@@ -14,7 +14,7 @@
                         </fk>
                     </column>
                     <column columnName="status">
-                        <url>/query/executeQuery.view?schemaName=lookups&amp;
+                        <url>/query/executeQuery.view?schemaName=ehr_lookups&amp;
                             query.queryName=lab_test_range&amp;
                             query.test~eq=${testid}&amp;
                             query.species~eq=${species}&amp;

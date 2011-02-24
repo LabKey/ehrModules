@@ -18,7 +18,7 @@
                     <column columnName="category">
                         <fk>
                           <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-                          <fkDbSchema>lookups</fkDbSchema>
+                          <fkDbSchema>ehr_lookups</fkDbSchema>
                           <fkTable>behavior_category</fkTable>
                           <fkColumnName>category</fkColumnName>
                         </fk>
@@ -31,8 +31,26 @@
                           <fkColumnName>objectid</fkColumnName>
                         </fk>
                     </column>
-                    <column columnName="Remark">
+                    <column columnName="remark">
                         <displayWidth>350</displayWidth>
+                    </column>
+                    <!--<column columnName="code">-->
+                        <!--<datatype>varchar</datatype>-->
+                        <!--<columnTitle>SNOMED</columnTitle>-->
+                        <!--<fk>-->
+                            <!--<fkDbSchema>lists</fkDbSchema>-->
+                            <!--<fkTable>snomed</fkTable>-->
+                            <!--<fkColumnName>code</fkColumnName>-->
+                        <!--</fk>-->
+                    <!--</column>                    -->
+                    <column columnName="so">
+                        <columnTitle>Subjective/Objective</columnTitle>
+                    </column>
+                    <column columnName="a">
+                        <columnTitle>Assessment</columnTitle>
+                    </column>
+                    <column columnName="p">
+                        <columnTitle>Plan</columnTitle>
                     </column>
                 </columns>
             </table>

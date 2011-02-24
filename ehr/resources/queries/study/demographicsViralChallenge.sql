@@ -29,4 +29,4 @@ v.pathogen,
 
 FROM study.drug d
 
-JOIN lookups.Virus_SNOMED v ON v.code = d.code
+JOIN ehr_lookups.Virus_SNOMED v ON v.code = d.code

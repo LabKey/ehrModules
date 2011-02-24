@@ -2,10 +2,10 @@
 <head>
 <script type="text/javascript">
 //first we load JS
-LABKEY.requiresScript("/ehr/animalHistory.js");
-LABKEY.requiresScript("/WNPRC_Main/navMenu.js");
+LABKEY.requiresScript("/ehr/ehrAPI.js");
+
 Ext.onReady(function (){
-    new EHR.ext.customPanels.SingleAnimalReport({applyTo: 'animalHistory'});
+    new EHR.ext.SingleAnimalReport({applyTo: 'animalHistory'});
 });
 
 

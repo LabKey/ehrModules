@@ -3,14 +3,15 @@
  *
  * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
  */
-SELECT LOWER(id) AS Id, FixDateTime(date, time) AS Date, (pno) AS project, (x.code) AS code,
+SELECT LOWER(id) AS Id, (pno) AS project, (x.code) AS code,
 (amount) AS amount, (units) AS units, (route) AS route,
-FixDateTime(date, coalesce(BeginTime, time)) AS begintime,
+FixDateTime(date, coalesce(BeginTime, time)) AS date,
 date(CASE
   WHEN EndTime is null THEN null
   WHEN EndTime='' THEN null
   ELSE FixDateTime(date, coalesce(EndTime, time))
 END) AS endtime,
+FixDateTime(date, time) AS HeaderDate,
 FixNewlines(remark) AS remark, category,
 x.ts, x.uuid AS objectid, parentid,
 s1.meaning

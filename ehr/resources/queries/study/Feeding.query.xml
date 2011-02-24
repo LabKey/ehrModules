@@ -3,6 +3,17 @@
         <tables xmlns="http://labkey.org/data/xml">
             <table tableName="feeding" tableDbType="TABLE">
                 <tableUrl>/query/detailsQueryRow.view?schemaName=study&amp;query.queryName=feeding&amp;lsid=${lsid}</tableUrl>
+                <columns>
+                    <column columnName="type">
+                        <datatype>varchar</datatype>
+                        <columnTitle>Type</columnTitle>
+                        <fk>
+                            <fkDbSchema>lists</fkDbSchema>
+                            <fkTable>snomed</fkTable>
+                            <fkColumnName>code</fkColumnName>
+                        </fk>
+                    </column>
+                </columns>
             </table>
         </tables>
     </metadata>

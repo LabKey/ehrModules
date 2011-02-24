@@ -165,6 +165,7 @@ function moreActionsHandler(dataRegion){
     LABKEY.Security.getSecurableResources({
         includeEffectivePermissions: true,
         successCallback: function(data){
+            console.log('securable resources:')
             console.log(data);
         }
     });

@@ -36,14 +36,14 @@ FROM
              FROM hematologyResults c
           ) c
 
-LEFT JOIN lookups.ageclass ac
+LEFT JOIN ehr_lookups.ageclass ac
 ON (
 c.ageAtTime >= ac."min" AND
 (c.ageAtTime < ac."max" OR ac."max" is null) AND
 c.species = ac.species
 )
 
-LEFT JOIN lookups.lab_test_range r ON (
+LEFT JOIN ehr_lookups.lab_test_range r ON (
 c.testId = r.test AND
 c.species = r.species AND
 ac.ageClass = r.age_class AND

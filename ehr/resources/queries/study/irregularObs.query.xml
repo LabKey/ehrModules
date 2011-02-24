@@ -4,6 +4,14 @@
             <table tableName="irregularObs" tableDbType="TABLE">
                 <tableUrl>/study/datasetDetailRedirect.view?datasetId=${dataset}&amp;lsid=${lsid}</tableUrl>
                 <columns>
+                    <column columnName="lsid">
+                        <fk>
+                          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
+                          <fkDbSchema>study</fkDbSchema>
+                          <fkTable>studydata</fkTable>
+                          <fkColumnName>lsid</fkColumnName>
+                        </fk>
+                    </column>
                     <column columnName="date">
                         <formatString>yyyy-MM-dd HH:mm</formatString>
                     </column>
@@ -20,7 +28,7 @@
                         <displayWidth>40</displayWidth>
                         <fk>
                           <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-                          <fkDbSchema>lookups</fkDbSchema>
+                          <fkDbSchema>ehr_lookups</fkDbSchema>
                           <fkTable>rooms</fkTable>
                           <fkColumnName>Room</fkColumnName>
                         </fk>
@@ -28,7 +36,7 @@
                     <column columnName="cage">
                         <displayWidth>40</displayWidth>
                     </column>
-                    <column columnName="Remark">
+                    <column columnName="remark">
                         <displayWidth>250</displayWidth>
                     </column>
                     <column columnName="Description">

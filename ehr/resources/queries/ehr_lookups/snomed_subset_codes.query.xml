@@ -1,0 +1,25 @@
+<query xmlns="http://labkey.org/data/xml/query">
+    <metadata>
+        <tables xmlns="http://labkey.org/data/xml">
+            <table tableName="snomed_subset_codes" tableDbType="TABLE">
+                <!--<tableUrl>/ehr/taskDetails.view?type=${type}&amp;taskid=${taskid}</tableUrl>-->
+                <!--<insertUrl>/ehr/createTask.view</insertUrl>-->
+                <titleColumn>code</titleColumn>
+                <!--<tableTitle>Cage Notes</tableTitle>-->
+                <columns>
+                    <column columnName="code">
+                        <datatype>varchar</datatype>
+                        <!--<columnTitle>Room</columnTitle>-->
+                        <fk>
+                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
+                            <fkDbSchema>lists</fkDbSchema>
+                            <fkTable>snomed</fkTable>
+                            <fkColumnName>code</fkColumnName>
+                        </fk>
+                    </column>
+                </columns>
+                <pkColumnName>RowId</pkColumnName>
+            </table>
+        </tables>
+    </metadata>
+</query>

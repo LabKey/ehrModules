@@ -28,6 +28,7 @@ ts, uuid AS objectid,
 'Clinical' AS category
 FROM clintrem t1
 WHERE id IS NOT NULL AND id != '' AND remark != '' AND remark IS NOT NULL and (pno REGEXP '^[0-9]+$' OR pno IS NULL)
+AND length(id) > 1
 /*
 UNION ALL
 

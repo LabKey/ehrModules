@@ -17,7 +17,7 @@
                         <columnTitle>Body Condition Score</columnTitle>
                         <fk>
                           <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-                          <fkDbSchema>lookups</fkDbSchema>
+                          <fkDbSchema>ehr_lookups</fkDbSchema>
                           <fkTable>alopecia_score</fkTable>
                           <fkColumnName>score</fkColumnName>
                         </fk>

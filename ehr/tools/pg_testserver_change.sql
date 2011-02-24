@@ -26,7 +26,7 @@ a production server.  This script comes with no guarantee whatsoever.  Test prio
 
 
 UPDATE    prop.Properties p
-SET       Value = 'http://test-ehr.primate.wisc.edu:8443'
+SET       Value = 'https://test-ehr.primate.wisc.edu:8443'
 WHERE     (SELECT s.Category FROM prop.PropertySets s WHERE s.Set = p.Set) = 'SiteConfig'
           AND p.Name = 'baseServerURL'
 ;
@@ -44,7 +44,7 @@ WHERE     (SELECT s.Category FROM prop.PropertySets s WHERE s.Set = p.Set) = 'Lo
 ;
 
 UPDATE    prop.Properties p
-SET       Value = 'Blue'
+SET       Value = 'Seattle'
 WHERE     (SELECT s.Category FROM prop.PropertySets s WHERE s.Set = p.Set) = 'LookAndFeel'
           AND p.Name = 'themeName'
 ;

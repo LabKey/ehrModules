@@ -5,34 +5,35 @@
     /*color: #000000;*/
 /*}*/
 
-/* fix for the customize view field tree */
+/* fix for the customize view field tree to make the unselectable nodes more obvious */
 .x-tree-node .x-tree-node-disabled a span  {
     font-style: italic;
     color: #000000 !important;
 }
 
 
+/*the following 2 are used in EHR validation*/
+.x-grid3-row-invalid {
+    background-color: #f7d9d5;
+}
+
+.x-grid3-cell-invalid {
+    background-color: #f29c8d;
+}
 
 
-
-/*.field-meta-tree .x-tree-node-disabled  {*/
-    /*font-style: italic;*/
-    /*color: #000000 !important;*/
+/*.extContainer fieldset, fieldset {*/
+    /*margin-bottom:5px;*/
+    /*padding-bottom:5px;*/
+    /*height:auto*/
 /*}*/
 
-/*x-tree-node-anchor*/
-
-.extContainer fieldset, fieldset {
-    margin-bottom:5px;
-    padding-bottom:5px;
-    height:auto
-}
-
-.x-form-item  {
-    margin-bottom:4px
-}
+/*.x-form-item  {*/
+    /*margin-bottom:4px*/
+/*}*/
 
 
+/*causes headers on details panel to better match 10.3 style */
 .x-panel-header {
     padding-top: 4px;
     padding-bottom: 5px;
@@ -42,19 +43,27 @@
 }
 
 
-.x-form-invalid-msg {
-    padding-left:18px;
-    line-height:16px;
-    width:100%;
-}
+/*div.x-form-invalid-msg, td.x-form-invalid-msg  {*/
+    /*padding-left:18px;*/
+    /*line-height:16px;*/
+    /*width:100%;*/
+    /*white-space:pre-wrap;*/
+    /*height: auto;*/
+/*}*/
 
+/*gets rid of nav trail*/
 .labkey-crumb-trail {
     display: none
 }
 
-.x-grid3-cell-inner, .x-grid3-hd-inner {
-    white-space:normal !important;
-} 
+/*.x-grid3-cell-inner, .x-grid3-hd-inner {*/
+    /*white-space:normal !important;*/
+/*} */
+
+/*used so ehrGridFormPanel vertically aligns*/
+.ehr-gridpanel-cell {
+    vertical-align: top;
+}
 
 
 /*!
@@ -75,6 +84,7 @@
 .x-statusbar .x-status-busy {
     padding-left: 25px !important;
     background: transparent no-repeat 3px 2px;
+    background-image: url(../ext-3.2.2/resources/images/default/grid/loading.gif);
 }
 
 .x-toolbar div.xtb-text
@@ -108,10 +118,13 @@
     cursor: pointer;
     padding-left: 25px !important;
     background: transparent no-repeat 3px 2px;
+    background-image: url(../ext-3.2.2/resources/images/default/form/exclamation.gif);
 }
 .x-statusbar .x-status-valid {
     padding-left: 25px !important;
     background: transparent no-repeat 3px 2px;
+    /*background-image: url(../ehr/images/accept.png);*/
+    background-image: url(../ext-3.2.2/resources/images/default/dd/drop-yes.gif);
 }
 .x-status-error-list {
     font: 11px tahoma,arial,verdana,sans-serif;
@@ -143,9 +156,6 @@
 
 /* StatusBar - visual */
 
-.x-statusbar .x-status-busy {
-    background-image: url(../ext-3.2.2/resources/images/default/grid/loading.gif);
-}
 .x-statusbar .x-status-text-panel {
     border-color: #99bbe8 #fff #fff #99bbe8;
 }
@@ -154,22 +164,6 @@
 
 #word-status .x-status-text {
     color: #777;
-}
-/*#word-status .x-status-busy {*/
-    /*background-image: url(../images/saving.gif);*/
-/*}*/
-/*#word-status .x-status-saved {*/
-    /*background-image: url(../images/saved.png);*/
-/*}*/
-
-/* StatusBar form validation example styles */
-
-/*.x-statusbar .x-status-error {*/
-    /*color: #C33;*/
-    /*background-image: url(../ext-3.2.2/resources/images/default/form/exclamation.gif);*/
-/*}*/
-.x-statusbar .x-status-valid {
-    background-image: url(images/accept.png);
 }
 .x-status-error-list {
     border-color: #C33;

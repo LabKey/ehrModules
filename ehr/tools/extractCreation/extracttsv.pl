@@ -1,5 +1,23 @@
 #!/usr/bin/perl
 
+=head1 DESCRIPTION
+
+This script is designed to extract specific tables from LabKey to TSV files.  It will hash specific fields using the included java hasher.class file.
+
+
+=head1 LICENSE
+
+This package and its accompanying libraries are free software; you can
+redistribute it and/or modify it under the terms of the GPL (either
+version 1, or at your option, any later version) or the Artistic
+License 2.0.
+
+=head1 AUTHOR
+
+Ben Bimber
+
+=cut
+
 use Labkey::Query;
 use Data::Dumper;
 use File::Spec;
@@ -12,7 +30,8 @@ use File::Copy;
 my $output_dir = '/home/fedora/Desktop/labkey/extracts';
 my $final_dir = '/home/fedora/Desktop/labkey/birn/';
 my $default_container = '/WNPRC/EHR';
-
+my $prefix = 'WNPRC';
+my $delim = '.';
 
 make_path($output_dir);
 make_path($final_dir);
@@ -31,10 +50,11 @@ sub extractTSV {
 		-queryName => $args->{queryName},
 		-viewName => $args->{viewName},
 		-columns => $args->{columns},	
-		-maxRows => 1,		
+		#-maxRows => 1,		
 	);	
 
-	my $file = File::Spec->catfile($output_dir, ($args->{fileName} ? $args->{fileName} : $args->{queryName})."_$datestr.tsv");
+    my $fn = $args->{fileName} ? $args->{fileName} : join($delim, $prefix, $args->{queryName}, "$datestr.tsv");
+	my $file = File::Spec->catfile($output_dir, $fn);
 	open(OUTPUT, ,">", $file);
 
 	my @fields;
@@ -65,7 +85,7 @@ sub extractTSV {
 my $results = Labkey::Query::selectRows(
 	-baseUrl => 'https://xnight.primate.wisc.edu:8443/labkey/',
 	-containerPath => '/WNPRC/EHR',
-	-schemaName => 'lists',
+	-schemaName => 'ehr',
 	-queryName => 'extracts',
 #	-debug => 1,		
 );	

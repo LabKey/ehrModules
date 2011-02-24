@@ -4,15 +4,105 @@
             <table tableName="pairtest" tableDbType="TABLE">
                 <tableUrl>/query/detailsQueryRow.view?schemaName=study&amp;query.queryName=pairtest&amp;lsid=${lsid}</tableUrl>
                 <columns>
-                    <column columnName="parentId">
+                      <column columnName="participantid">
+                        <datatype>varchar</datatype>
+                        <columnTitle>Participant ID</columnTitle>
+                        <description>Participant identifier</description>
+                        <nullable>false</nullable>
+                      </column>
+                      <column columnName="date">
+                        <datatype>timestamp</datatype>
+                        <formatString>yyyy-MM-dd HH:mm</formatString>
+                        <columnTitle>Date</columnTitle>
+                        <nullable>false</nullable>
+                        <propertyURI>http://cpas.labkey.com/Study#VisitDate</propertyURI>
+                      </column>
+                      <column columnName="endDate">
+                        <datatype>timestamp</datatype>
+                        <formatString>yyyy-MM-dd HH:mm</formatString>
+                        <columnTitle>End Date</columnTitle>
+                      </column>
+                      <column columnName="bhav">
+                        <datatype>varchar</datatype>
+                        <columnTitle>BHAV</columnTitle>
+                        <fk>
+                          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
+                          <fkDbSchema>ehr_lookups</fkDbSchema>
+                          <fkTable>pairtest_bhav</fkTable>
+                          <fkColumnName>value</fkColumnName>
+                        </fk>
+                      </column>
+                      <column columnName="testNo">
+                        <datatype>integer</datatype>
+                        <columnTitle>Test Number</columnTitle>
+                      </column>
+                      <column columnName="conclusion">
+                        <datatype>varchar</datatype>
+                        <columnTitle>Test Conclusion</columnTitle>
+                        <fk>
+                          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
+                          <fkDbSchema>ehr_lookups</fkDbSchema>
+                          <fkTable>pairtest_conclusion</fkTable>
+                          <fkColumnName>value</fkColumnName>
+                        </fk>
+                      </column>
+                      <column columnName="sharedFood">
+                        <datatype>varchar</datatype>
+                        <columnTitle>Shared Food</columnTitle>
+                        <fk>
+                          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
+                          <fkDbSchema>ehr_lookups</fkDbSchema>
+                          <fkTable>yesno</fkTable>
+                          <fkColumnName>value</fkColumnName>
+                        </fk>
+                      </column>
+                      <column columnName="aggression">
+                        <datatype>boolean</datatype>
+                        <columnTitle>Aggression Demonstrated</columnTitle>
+                      </column>
+                      <column columnName="affiliation">
+                        <datatype>boolean</datatype>
+                        <columnTitle>Affiliation Demonstrated</columnTitle>
+                      </column>
+                      <column columnName="remark">
+                        <datatype>varchar</datatype>
+                        <columnTitle>Remark</columnTitle>
+                        <displayWidth>110</displayWidth>
+                        <inputType>textarea</inputType>
+                      </column>
+                      <column columnName="description">
+                        <datatype>varchar</datatype>
+                        <columnTitle>Description</columnTitle>
+                        <shownInInsertView>false</shownInInsertView>
+                        <shownInUpdateView>false</shownInUpdateView>
+                        <shownInDetailsView>false</shownInDetailsView>
+                        <propertyURI>urn:ehr.labkey.org/#Description</propertyURI>
+                        <isHidden>true</isHidden>
+                        <inputType>textarea</inputType>
+                      </column>
+                      <column columnName="objectid">
+                        <datatype>entityid</datatype>
+                        <columnTitle>Key</columnTitle>
+                        <shownInInsertView>false</shownInInsertView>
+                        <shownInUpdateView>false</shownInUpdateView>
+                        <shownInDetailsView>false</shownInDetailsView>
+                        <isHidden>true</isHidden>
+                        <!--<isKeyField>true</isKeyField>-->
+                      </column>
+                      <column columnName="parentid">
+                        <datatype>varchar</datatype>
+                        <columnTitle>Parent Id</columnTitle>
+                        <propertyURI>urn:ehr.labkey.org/#ParentId</propertyURI>
                         <fk>
                           <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                           <fkDbSchema>study</fkDbSchema>
                           <fkTable>encounters</fkTable>
                           <fkColumnName>objectid</fkColumnName>
                         </fk>
-                    </column>
-                </columns>
+                      </column>
+                    </columns>
+                    <tableTitle>Pair Tests</tableTitle>
+                    <description>Pair Tests</description>
             </table>
         </tables>
     </metadata>

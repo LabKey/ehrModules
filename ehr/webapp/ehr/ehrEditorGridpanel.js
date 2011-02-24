@@ -5,6 +5,7 @@
  */
 
 LABKEY.requiresScript("/ehr/utilities.js");
+LABKEY.requiresScript("/ehr/ehrMetaHelper.js");
 
 EHR.ext.EditorGridPanel = Ext.extend(LABKEY.ext.EditorGridPanel,
 {
@@ -15,8 +16,14 @@ EHR.ext.EditorGridPanel = Ext.extend(LABKEY.ext.EditorGridPanel,
         Ext.applyIf(this, {
             viewConfig: {
                 forceFit: true,
-//                autoFill : true,
-                scrollOffset: 0
+//                autoFill: true,
+                scrollOffset: 0,
+                getRowClass : function(record, rowIndex, rowParams, store){
+                    if(record.errors && record.errors.length){
+                        return 'x-grid3-row-invalid';
+                    }
+                    return '';
+                }
             },
             autoHeight: true,
             autoWidth: true,
@@ -30,7 +37,7 @@ EHR.ext.EditorGridPanel = Ext.extend(LABKEY.ext.EditorGridPanel,
                 {
                     text: 'Add Record',
                     tooltip: 'Click to add a blank record',
-                    id: 'add-record-button',
+                    name: 'add-record-button',
                     handler: this.onAddRecord,
                     scope: this
                 },
@@ -38,7 +45,7 @@ EHR.ext.EditorGridPanel = Ext.extend(LABKEY.ext.EditorGridPanel,
                 ,{
                     text: 'Delete Selected',
                     tooltip: 'Click to delete selected row(s)',
-                    id: 'delete-records-button',
+                    name: 'delete-records-button',
                     handler: this.onDeleteRecords,
                     scope: this
                 }
@@ -50,8 +57,26 @@ EHR.ext.EditorGridPanel = Ext.extend(LABKEY.ext.EditorGridPanel,
     }
 
     ,populateMetaMap : function() {
+        //not longer needed
     }
-
+    ,getDefaultEditor: function(){
+        //moved to EHR.ext.metaHelper
+    }
+    ,getLookupEditor: function(){
+        //moved to EHR.ext.metaHelper
+    }
+    ,setLongTextRenderers : function() {
+        //moved to EHR.ext.metaHelper
+    }
+    ,onLookupStoreError: function(){
+        //moved to EHR.ext.metaHelper
+    }
+    ,onLookupStoreLoad: function(){
+        //moved to EHR.ext.metaHelper
+    }
+    ,getLookupRenderer: function(){
+        //moved to EHR.ext.metaHelper
+    }
     ,setupColumnModel : function() {
         var columns = this.getColumnModelConfig();
 
@@ -68,159 +93,226 @@ EHR.ext.EditorGridPanel = Ext.extend(LABKEY.ext.EditorGridPanel,
         if(this.getSelectionModel().on && this.autoSave)
             this.getSelectionModel().on("rowselect", this.onRowSelect, this);
 
-        //add custom renderers for multiline/long-text columns
-        this.setLongTextRenderers(columns);
-
         //fire the "columnmodelcustomize" event to allow clients
         //to modify our default configuration of the column model
-//NOTE: I dont think this will be permissible b/c it's a public API,
-// but I would suggest changing the arguments on this event
-// might make more sense to pass 'this' and 'columns'.  can use getColumnById() method
+        //NOTE: I dont think this will be permissible b/c it's a public API,
+        // but I would suggest changing the arguments on this event
+        // might make more sense to pass 'this' and 'columns'.  can use getColumnById() method
         this.fireEvent("columnmodelcustomize", columns);
 
         //reset the column model
         this.reconfigure(this.store, new Ext.grid.ColumnModel(columns));
-    },
-    getColumnById: function(colName){
-        return this.getColumnModel().getColumnById(colName);
-    },
-    getColumnModelConfig: function(config){
-        var columns = this.store.reader.jsonData.columnModel;
-        var cols = new Array();
-        var meta;
+
+    }
+    ,getColumnModelConfig: function(){
+        var config = {
+            editable: this.editable
+        };
+
+        var columns = EHR.ext.metaHelper.getColumnModelConfig(this.store, config);
 
         Ext.each(columns, function(col, idx){
-            meta = this.store.findFieldMeta(col.dataIndex);
-
-            //this.updatable can override col.editable
-            col.editable = this.editable && col.editable && meta.userEditable;
-
-            if(meta.hidden || meta.shownInGrid===false)
-                col.hidden = true;
-
-            //if column type is boolean, substitute an Ext.grid.CheckColumn
-            switch(meta.jsonType){
-                case "boolean":
-                    if(col.editable){
-                        col.xtype = 'booleancolumn';
-                        //NOTE: I don't understand why this was included
-//                        if(col.editable)
-//                            col.init(this);
-//                        col.editable = false; //check columns apply edits immediately, so we don't want to go into edit mode
-                    }
-                    break;
-                case "int":
-                case "float":
-                    col.xtype = 'numbercolumn';
-                    break;
-                case "date":
-                    col.xtype = 'datecolumn';
-                    col.format = meta.format || Date.patterns.ISO8601Long;
-            }
-
-            if(meta.colWidth)
-                col.width = meta.colWidth;
-
-            if(col.editable && !col.editor)
-                col.editor = EHR.ext.metaHelper.getGridEditorConfig(meta);
-
-            if(!col.renderer)
-                col.renderer = this.getDefaultRenderer(col, meta);
+            var meta = this.store.findFieldMeta(col.dataIndex);
 
             //remember the first editable column (used during add record)
-            //TODO: check how editorGridpanel uses this
             if(!this.firstEditableColumn && col.editable)
                 this.firstEditableColumn = idx;
 
-            //HTML-encode the column header
-            if(col.header)
-                col.header = Ext.util.Format.htmlEncode(col.header);
-
-            //allow override of defaults
-            if(config && config[col.dataIndex])
-                EHR.UTILITIES.rApply(col, config[col.dataIndex]);
-
-            cols.push(col)
+            if(meta.isAutoExpandColumn && !col.hidden){
+                this.autoExpandColumn = idx;
+            }
 
         }, this);
 
-        return cols;
-    },
-
-    setLongTextRenderers : function(columns) {
-        var col;
-        for(var idx = 0; idx < columns.length; ++idx)
-        {
-            col = columns[idx];
-            if(col.multiline || (undefined === col.multiline && col.scale > 255 && this.store.findFieldMeta(col.dataIndex).jsonType === "string"))
-            {
-                col.renderer = function(data, metadata, record, rowIndex, colIndex, store)
-                {
-                    //set quick-tip attributes and let Ext QuickTips do the work
-                    metadata.attr = "ext:qtip=\"" + Ext.util.Format.htmlEncode(data || '') + "\"";
-                    return data;
-                };
-
-                if(col.editable)
-                    col.editor = new LABKEY.ext.LongTextField({
-                        columnName: col.dataIndex
-                    });
-            }
-        }
+        return columns;
     }
-
-
+    ,getColumnById: function(colName){
+        return this.getColumnModel().getColumnById(colName);
+    }
 });
 Ext.reg('ehr-editorgrid', EHR.ext.EditorGridPanel);
 
-
-
-
-//Ext.ns('Ext.ux.grid');
-//(function () {
-//    var cursorRe = /^(?:col|e|w)-resize$/;
-//    Ext.ux.grid.AutoSizeColumns = Ext.extend(Object, {
-//        cellPadding: 8,
-//        constructor: function (config) {
-//            Ext.apply(this, config);
-//        },
-//        init: function (grid) {
-//            var view = grid.getView();
-//            view.onHeaderClick = view.onHeaderClick.createInterceptor(this.onHeaderClick);
-//            grid.on('headerdblclick', this.onHeaderDblClick.createDelegate(view, [this.cellPadding], 3));
-//        },
-//        onHeaderClick: function (grid, colIndex) {
-//            var el = this.getHeaderCell(colIndex);
-//            if (cursorRe.test(el.style.cursor)) {
-//                return false;
+//EHR.ext.EditorGridPanel.gridButtons = {
+//    'add': {
+//        text: 'Add Record',
+//        xtype: 'button',
+//        tooltip: 'Click to add a blank record',
+//        name: 'add-record-button',
+//        handler: function ()
+//        {
+//            var store = this.store;
+//            if (store.recordType)
+//            {
+//                store.addRecord(undefined, 0);
+//                this.getSelectionModel().selectFirstRow();
 //            }
-//        },
-//        onHeaderDblClick: function (grid, colIndex, e, cellPadding) {
-//            var el = this.getHeaderCell(colIndex), width, rowIndex, count;
-//            if (!cursorRe.test(el.style.cursor)) {
-//                return;
-//            }
-//            if (e.getXY()[0] - Ext.lib.Dom.getXY(el)[0] <= 5) {
-//                colIndex--;
-//                el = this.getHeaderCell(colIndex);
-//            }
-//            if (this.cm.isFixed(colIndex) || this.cm.isHidden(colIndex)) {
-//                return;
-//            }
-//            el = el.firstChild;
-//            el.style.width = '0px';
-//            width = el.scrollWidth;
-//            el.style.width = 'auto';
-//            for (rowIndex = 0, count = this.ds.getCount(); rowIndex < count; rowIndex++) {
-//                el = this.getCell(rowIndex, colIndex).firstChild;
-//                el.style.width = '0px';
-//                width = Math.max(width, el.scrollWidth);
-//                el.style.width = 'auto';
-//            }
-//            this.onColumnSplitterMoved(colIndex, width + cellPadding);
 //        }
-//    });
-//})();
-//Ext.preg('autosizecolumns', Ext.ux.grid.AutoSizeColumns);
-
-
+//    },
+//    'delete': {
+//        text: 'Delete Selected',
+//        xtype: 'button',
+//        tooltip: 'Click to delete selected row(s)',
+//        name: 'delete-records-button',
+//        handler: function()
+//        {
+//            Ext.MessageBox.confirm(
+//                'Confirm',
+//                'You are about to permanently delete these records.  It cannot be undone.  Are you sure you want to do this?',
+//                function(val){
+//                    if(val=='yes'){
+//                        this.stopEditing();
+//                        var recs = this.getSelectionModel().getSelections();
+//                        //TODO
+//                        //this.theForm.unbindRecord();
+//
+//                        this.store.deleteRecords(recs);
+//                    }
+//                },
+//                this);
+//        }
+//    },
+//    'next': {
+//            text: 'Select Next',
+//            xtype: 'button',
+//            tooltip: 'Click to move one record forward',
+//            name: 'select-next-button',
+//            handler: function()
+//            {
+//                this.getSelectionModel().selectNext();
+//                //this.theForm.focusFirstField();
+//            },
+//            scope: this
+//    },
+//    'previous': {
+//            text: 'Select Previous',
+//            xtype: 'button',
+//            tooltip: 'Click to move one record backward',
+//            name: 'select-previous-button',
+//            handler: function()
+//            {
+//                this.getSelectionModel().selectPrevious();
+//                //this.theForm.focusFirstField();
+//            },
+//            scope: this
+//    },
+//    'duplicate': {
+//        text: 'Duplicate Selected',
+//        xtype: 'button',
+//        tooltip: 'Duplicate Selected Record',
+//        name: 'duplicate-button',
+//        handler: function()
+//        {
+//            var records = this.getSelectionModel().getSelections();
+//            if(!records || !records.length){
+//                return;
+//            }
+//
+//            var theWindow = new Ext.Window({
+//                closeAction:'hide',
+//                title: 'Choose Fields To Copy',
+//                width: 350,
+//                items: [{
+//                    xtype: 'ehr-recordduplicator',
+//                    ref: 'recordduplicator',
+//                    targetStore: this.store,
+//                    records: records
+//                }]
+//            });
+//
+//            theWindow.show();
+//        }
+//    },
+//    'addbatch': {
+//            text: 'Add Batch',
+//            xtype: 'button',
+//            scope: this,
+//            tooltip: 'Click to add a group of animals',
+//            name: 'add-batch-button',
+//            handler: function()
+//            {
+//                this.animalSelectorWin = new Ext.Window({
+//                    closeAction:'hide',
+//                    width: 350,
+//                    items: [{
+//                        xtype: 'ehr-animalselector',
+//                        ref: 'animalselector',
+//                        targetStore: this.store,
+//                        title: ''
+//                    }]
+//                });
+//
+//                this.animalSelectorWin.show();
+//            }
+//        },
+//        'order_clinpath': {
+//            text: 'Order Multiple Tests',
+//            xtype: 'button',
+//            scope: this,
+//            tooltip: 'Order Multiple Tests',
+//            title: 'Order Multiple Tests',
+//            name: 'order_clinpath-button',
+//            handler: function()
+//            {
+//                this.clinPath = new Ext.Window({
+//                    closeAction:'hide',
+//                    width: 350,
+//                    items: [{
+//                        xtype: 'ehr-clinpathorderpanel',
+//                        ref: 'theForm'
+//                    }]
+//                });
+//
+//                this.clinPath.show();
+//            }
+//        },
+//        'apply_template': {
+//            text: 'Apply Template',
+//            xtype: 'button',
+//            scope: this,
+//            tooltip: 'Add records to this grid based on a saved template',
+//            title: 'Apply Template',
+//            name: 'apply-template-button',
+//            handler: function()
+//            {
+//                var theWindow = new Ext.Window({
+//                    closeAction:'hide',
+//                    width: 350,
+//                    items: [{
+//                        xtype: 'ehr-applytemplatepanel',
+//                        formType: this.store.storeId,
+//                        ref: 'theForm'
+//                    }]
+//                });
+//
+//                theWindow.show();
+//            }
+//        },
+//        'save_template': {
+//            text: 'Save As Template',
+//            xtype: 'button',
+//            scope: this,
+//            tooltip: 'Save selected records as a template',
+//            title: 'Save Template',
+//            name: 'save-template-button',
+//            handler: function()
+//            {
+//                var theWindow = new Ext.Window({
+//                    closeAction:'hide',
+//                    width: 800,
+//                    minWidth: 300,
+//                    maxWidth: 800,
+//                    items: [{
+//                        xtype: 'ehr-savetemplatepanel',
+//                        //TODO
+//                        importPanel: this,
+//                        grid: this,
+//                        formType: this.store.storeId,
+//                        ref: 'theForm'
+//                    }]
+//                });
+//
+//                theWindow.show();
+//            }
+//        }
+//}
+//

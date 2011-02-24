@@ -20,4 +20,4 @@ SELECT
 
 FROM study.Demographics d
 
--- LEFT JOIN lookups.species s ON (d.id ~* s.prefix)
+-- LEFT JOIN ehr_lookups.species s ON (d.id ~* s.prefix)

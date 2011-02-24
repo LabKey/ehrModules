@@ -1,0 +1,146 @@
+<query xmlns="http://labkey.org/data/xml/query">
+    <metadata>
+        <tables xmlns="http://labkey.org/data/xml">
+            <table tableName="cagenotes" tableDbType="TABLE">
+                <!--<tableUrl>/ehr/taskDetails.view?type=${type}&amp;taskid=${taskid}</tableUrl>-->
+                <!--<insertUrl>/ehr/createTask.view</insertUrl>-->
+                <titleColumn>RowId</titleColumn>
+                <tableTitle>Cage Notes</tableTitle>
+                <columns>
+                    <column columnName="date">
+                        <datatype>timestamp</datatype>
+                        <nullable>false</nullable>
+                        <formatString>yyyy-MM-dd</formatString>
+                        <columnTitle>Date</columnTitle>
+                    </column>
+                    <column columnName="roomcage">
+                        <datatype>varchar</datatype>
+                        <columnTitle>Room/Cage</columnTitle>
+                        <nullable>true</nullable>
+                        <isHidden>true</isHidden>
+                        <isUserEditable>false</isUserEditable>
+                    </column>
+                    <column columnName="room">
+                        <datatype>varchar</datatype>
+                        <nullable>false</nullable>
+                        <columnTitle>Room</columnTitle>
+                        <!--NOTE: this lookup appears as '_select' due to a bug-->
+                        <fk>
+                          <fkFolderPath>/wnprc/ehr</fkFolderPath>
+                          <fkDbSchema>ehr_lookups</fkDbSchema>
+                          <fkTable>rooms</fkTable>
+                          <fkColumnName>room</fkColumnName>
+                        </fk>
+                    </column>
+                    <column columnName="cage">
+                        <datatype>varchar</datatype>
+                        <columnTitle>Cage</columnTitle>
+                    </column>
+                    <column columnName="remark">
+                        <datatype>varchar</datatype>
+                        <columnTitle>Remark</columnTitle>
+                        <propertyURI>urn:ehr.labkey.org/#Remark</propertyURI>
+                        <inputType>textarea</inputType>
+                    </column>
+                    <column columnName="userid">
+                        <datatype>varchar</datatype>
+                        <columnTitle>UserID</columnTitle>
+                        <!--<fk>-->
+                        <!--<fkDbSchema>core</fkDbSchema>-->
+                        <!--<fkTable>Users</fkTable>-->
+                        <!--<fkColumnName>UserId</fkColumnName>-->
+                        <!--</fk>-->
+                    </column>
+                    <column columnName="QCState">
+                        <nullable>true</nullable>
+                        <datatype>integer</datatype>
+                        <fk>
+                          <fkFolderPath>/wnprc/ehr</fkFolderPath>
+                          <fkDbSchema>study</fkDbSchema>
+                          <fkTable>qcstate</fkTable>
+                          <fkColumnName>rowid</fkColumnName>
+                        </fk>
+                    </column>
+                    <column columnName="objectid">
+                        <datatype>varchar</datatype>
+                        <columnTitle>ObjectId</columnTitle>
+                        <shownInInsertView>false</shownInInsertView>
+                        <shownInUpdateView>false</shownInUpdateView>
+                        <shownInDetailsView>false</shownInDetailsView>
+                        <isHidden>true</isHidden>
+                    </column>
+                    <column columnName="rowid">
+                        <datatype>integer</datatype>
+                        <columnTitle>Key</columnTitle>
+                        <shownInInsertView>false</shownInInsertView>
+                        <shownInUpdateView>false</shownInUpdateView>
+                        <shownInDetailsView>false</shownInDetailsView>
+                        <isHidden>true</isHidden>
+                        <isKeyField>true</isKeyField>
+                        <isUserEditable>false</isUserEditable>
+                    </column>
+                    <column columnName="ts">
+                        <datatype>timestamp</datatype>
+                        <columnTitle>Last Changed</columnTitle>
+                        <shownInInsertView>false</shownInInsertView>
+                        <shownInUpdateView>false</shownInUpdateView>
+                        <shownInDetailsView>false</shownInDetailsView>
+                        <isHidden>true</isHidden>
+                    </column>
+                    <column columnName="description">
+                        <datatype>varchar</datatype>
+                        <columnTitle>Description</columnTitle>
+                        <propertyURI>urn:ehr.labkey.org/#Description</propertyURI>
+                        <shownInInsertView>false</shownInInsertView>
+                        <shownInUpdateView>false</shownInUpdateView>
+                        <shownInDetailsView>false</shownInDetailsView>
+                        <isHidden>true</isHidden>
+                        <inputType>textarea</inputType>
+                    </column>
+                    <column columnName="parentId">
+                        <datatype>varchar</datatype>
+                        <columnTitle>Parent Id</columnTitle>
+                        <propertyURI>urn:ehr.labkey.org/#ParentId</propertyURI>
+                        <isHidden>true</isHidden>
+                    </column>
+                    <column columnName="taskid">
+                        <datatype>varchar</datatype>
+                        <columnTitle>Task Id</columnTitle>
+                        <propertyURI>urn:ehr.labkey.org/#TaskId</propertyURI>
+                        <isHidden>true</isHidden>
+                    </column>
+                    <column columnName="createdby">
+                        <isUserEditable>false</isUserEditable>
+                        <nullable>true</nullable>
+                        <datatype>userid</datatype>
+                        <scale>4</scale>
+                    </column>
+                    <column columnName="created">
+                        <isUserEditable>false</isUserEditable>
+                        <nullable>true</nullable>
+                        <datatype>timestamp</datatype>
+                        <isHidden>true</isHidden>
+                    </column>
+                    <column columnName="modifiedby">
+                        <isUserEditable>false</isUserEditable>
+                        <nullable>true</nullable>
+                        <datatype>userid</datatype>
+                        <isHidden>true</isHidden>
+                        <scale>4</scale>
+                    </column>
+                    <column columnName="modified">
+                        <isUserEditable>false</isUserEditable>
+                        <nullable>true</nullable>
+                        <datatype>timestamp</datatype>
+                        <isHidden>true</isHidden>
+                    </column>
+                    <column columnName="container">
+                        <isUserEditable>false</isUserEditable>
+                        <isHidden>true</isHidden>
+                    </column>
+                </columns>
+                <pkColumnName>RowId</pkColumnName>
+            </table>
+        </tables>
+    </metadata>
+</query>

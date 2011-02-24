@@ -40,7 +40,7 @@
                     <column columnName="frequency">
                         <fk>
                           <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-                          <fkDbSchema>lookups</fkDbSchema>
+                          <fkDbSchema>ehr_lookups</fkDbSchema>
                           <fkTable>treatment_frequency</fkTable>
                           <fkColumnName>key</fkColumnName>
                         </fk>
@@ -60,7 +60,7 @@
                         <!--<columnTitle>Route</columnTitle>-->
                         <fk>
                             <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-                            <fkDbSchema>lookups</fkDbSchema>
+                            <fkDbSchema>ehr_lookups</fkDbSchema>
                             <fkTable>routes</fkTable>
                             <fkColumnName>route</fkColumnName>
                         </fk>
@@ -69,7 +69,7 @@
                         <columnTitle>Volume Units</columnTitle>
                         <fk>
                             <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-                            <fkDbSchema>lookups</fkDbSchema>
+                            <fkDbSchema>ehr_lookups</fkDbSchema>
                             <fkTable>volume_units</fkTable>
                             <fkColumnName>unit</fkColumnName>
                         </fk>
@@ -81,8 +81,8 @@
                         <columnTitle>Conc Units</columnTitle>
                         <fk>
                             <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-                            <fkDbSchema>lookups</fkDbSchema>
-                            <fkTable>drug_units</fkTable>
+                            <fkDbSchema>ehr_lookups</fkDbSchema>
+                            <fkTable>conc_units</fkTable>
                             <fkColumnName>unit</fkColumnName>
                         </fk>
                     </column>
@@ -90,7 +90,7 @@
                         <columnTitle>Amount Units</columnTitle>
                         <fk>
                             <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-                            <fkDbSchema>lookups</fkDbSchema>
+                            <fkDbSchema>ehr_lookups</fkDbSchema>
                             <fkTable>dosage_units</fkTable>
                             <fkColumnName>unit</fkColumnName>
                         </fk>

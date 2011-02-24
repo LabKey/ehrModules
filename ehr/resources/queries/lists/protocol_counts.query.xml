@@ -1,0 +1,80 @@
+<query xmlns="http://labkey.org/data/xml/query">
+    <metadata>
+        <tables xmlns="http://labkey.org/data/xml">
+            <table tableName="protocol_counts" tableDbType="TABLE">
+              <tableTitle>RARC Protocol Allowable Animals</tableTitle>
+              <columns>
+                <!--<column columnName="Key">-->
+                  <!--<datatype>integer</datatype>-->
+                  <!--<columnTitle>Key</columnTitle>-->
+                  <!--<nullable>false</nullable>-->
+                  <!--<isKeyField>true</isKeyField>-->
+                  <!--<isAutoInc>true</isAutoInc>-->
+                <!--</column>-->
+                <column columnName="parentid">
+                  <datatype>varchar</datatype>
+                  <columnTitle>Key</columnTitle>
+                  <shownInInsertView>false</shownInInsertView>
+                  <shownInUpdateView>false</shownInUpdateView>
+                  <shownInDetailsView>false</shownInDetailsView>
+                  <isHidden>true</isHidden>
+                </column>
+                <column columnName="ts">
+                  <datatype>timestamp</datatype>
+                  <columnTitle>Last Changed</columnTitle>
+                  <!--<nullable>false</nullable>-->
+                  <shownInInsertView>false</shownInInsertView>
+                  <shownInUpdateView>false</shownInUpdateView>
+                  <shownInDetailsView>false</shownInDetailsView>
+                  <isHidden>true</isHidden>
+                </column>
+                <column columnName="protocol">
+                  <datatype>varchar</datatype>
+                  <columnTitle>Protocol</columnTitle>
+                  <nullable>false</nullable>
+                    <fk>
+                      <fkFolderPath>/wnprc/ehr/</fkFolderPath>
+                      <fkDbSchema>lists</fkDbSchema>
+                      <fkTable>protocol</fkTable>
+                      <fkColumnName>protocol</fkColumnName>
+                    </fk>
+                </column>
+                <column columnName="species">
+                  <datatype>varchar</datatype>
+                  <columnTitle>Species</columnTitle>
+                    <fk>
+                      <fkFolderPath>/wnprc/ehr/</fkFolderPath>
+                      <fkDbSchema>lists</fkDbSchema>
+                      <fkTable>species</fkTable>
+                      <fkColumnName>common</fkColumnName>
+                    </fk>
+                </column>
+                <column columnName="allowed">
+                  <datatype>integer</datatype>
+                  <columnTitle>Number Allowed</columnTitle>
+                </column>
+                <column columnName="startdate">
+                  <datatype>timestamp</datatype>
+                  <formatString>yyyy-MM-dd</formatString>
+                  <columnTitle>Start Date</columnTitle>
+                </column>
+                <column columnName="enddate">
+                  <datatype>timestamp</datatype>
+                  <formatString>yyyy-MM-dd</formatString>
+                  <columnTitle>EndDate</columnTitle>
+                </column>
+                  <column columnName="objectid">
+                    <datatype>varchar</datatype>
+                    <columnTitle>Key</columnTitle>
+                    <shownInInsertView>false</shownInInsertView>
+                    <shownInUpdateView>false</shownInUpdateView>
+                    <shownInDetailsView>false</shownInDetailsView>
+                    <isHidden>true</isHidden>
+                    <isKeyField>true</isKeyField>
+                  </column>
+              </columns>
+              <pkColumnName>objectid</pkColumnName>
+            </table>
+        </tables>
+    </metadata>
+</query>

@@ -64,7 +64,7 @@ CASE
     THEN 3
 END as SortOrder
 
-FROM lookups.next30Days d
+FROM ehr_lookups.next30Days d
 
 LEFT JOIN study.treatment_order t1
   ON (d.date >= t1.date and (d.date <= t1.enddate OR t1.enddate is null) AND (
@@ -139,7 +139,7 @@ CASE
     THEN 3
 END as SortOrder
 
-FROM lookups.next30Days d
+FROM ehr_lookups.next30Days d
 
 LEFT JOIN study.treatment_order t1
   ON (d.date >= t1.date and (d.date <= t1.enddate OR t1.enddate is null) AND (
@@ -193,7 +193,7 @@ t1.description,
 
 3 as SortOrder
 
-FROM lookups.next30Days d
+FROM ehr_lookups.next30Days d
 
 LEFT JOIN study.treatment_order t1
   ON (d.date >= t1.date and (d.date <= t1.enddate OR t1.enddate is null) AND 

@@ -1,0 +1,27 @@
+<html>
+<head>
+
+<script type="text/javascript">
+
+Ext.onReady(function (){
+
+new Ext.FormPanel({
+	renderTo: 'thePanel',
+	items: [{
+        fieldLabel: 'Template',
+		xtype: 'displayfield',
+		tpl: '<div>hello</div>',
+		value: 'Should this field render as \'Hello\'?'
+	}]
+});
+
+});
+
+</script>
+</head>
+<body>
+
+<div id="thePanel"></div>
+
+</body>
+</html>

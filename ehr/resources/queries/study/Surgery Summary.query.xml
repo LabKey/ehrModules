@@ -12,7 +12,7 @@
                             <fkColumnName>project</fkColumnName>
                         </fk>
                     </column>
-                    <column columnName="Date">
+                    <column columnName="date">
                         <formatString>yyyy-MM-dd HH:mm</formatString>
                     </column>
                     <column columnName="parentId">

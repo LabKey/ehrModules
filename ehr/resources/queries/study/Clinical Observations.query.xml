@@ -1,0 +1,14 @@
+    <query xmlns="http://labkey.org/data/xml/query">
+    <metadata>
+        <tables xmlns="http://labkey.org/data/xml">
+            <table tableName="clinical_observations" tableDbType="TABLE">
+                <tableUrl>/query/detailsQueryRow.view?schemaName=study&amp;query.queryName=Clinical%20Observations&amp;lsid=${lsid}</tableUrl>
+                <columns>
+                    <column columnName="date">
+                        <formatString>yyyy-MM-dd HH:mm</formatString>
+                    </column>
+                </columns>
+            </table>
+        </tables>
+    </metadata>
+</query>

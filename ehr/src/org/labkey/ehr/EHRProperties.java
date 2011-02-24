@@ -28,7 +28,16 @@ public class EHRProperties
 {
     static private String URI = "urn:ehr.labkey.org/#";
 
-    public static SystemProperty REMARK = new SystemProperty(URI + "Remark", PropertyType.MULTI_LINE);
+    public static SystemProperty REMARK = new SystemProperty(URI + "Remark", PropertyType.MULTI_LINE)
+    {
+        @Override
+        protected PropertyDescriptor constructPropertyDescriptor()
+        {
+            PropertyDescriptor pd = super.constructPropertyDescriptor();
+            pd.setName("remark");
+            return pd;
+        }
+    };
 
     public static SystemProperty PARENTID = new SystemProperty(URI + "ParentId", PropertyType.STRING)
     {
@@ -40,6 +49,7 @@ public class EHRProperties
             pd.setShownInUpdateView(false);
             pd.setShownInDetailsView(false);
             pd.setHidden(true);
+            pd.setName("parentId");
             return pd;
         }
     };
@@ -54,6 +64,22 @@ public class EHRProperties
             pd.setShownInUpdateView(false);
             pd.setShownInDetailsView(false);
             pd.setHidden(true);
+            pd.setName("taskid");
+            return pd;
+        }
+    };
+
+    public static SystemProperty REQUESTID = new SystemProperty(URI + "RequestId", PropertyType.STRING)
+    {
+        @Override
+        protected PropertyDescriptor constructPropertyDescriptor()
+        {
+            PropertyDescriptor pd = super.constructPropertyDescriptor();
+            pd.setShownInInsertView(false);
+            pd.setShownInUpdateView(false);
+            pd.setShownInDetailsView(false);
+            pd.setHidden(true);
+            pd.setName("requestid");
             return pd;
         }
     };
@@ -67,6 +93,7 @@ public class EHRProperties
             pd.setShownInInsertView(false);
             pd.setShownInUpdateView(false);
             pd.setShownInDetailsView(false);
+            pd.setName("userid");
 //            pd.setHidden(true);
             return pd;
         }
@@ -82,11 +109,22 @@ public class EHRProperties
             pd.setShownInUpdateView(false);
             pd.setShownInDetailsView(false);
             pd.setHidden(true);
+//            pd.setName("description");
             return pd;
         }
     };
 
-    public static SystemProperty ACCOUNT = new SystemProperty(URI + "Account", PropertyType.STRING);
+    public static SystemProperty ACCOUNT = new SystemProperty(URI + "Account", PropertyType.STRING)
+    {
+        @Override
+        protected PropertyDescriptor constructPropertyDescriptor()
+        {
+            PropertyDescriptor pd = super.constructPropertyDescriptor();
+            pd.setName("account");
+            return pd;
+        }
+    };
+
     public static SystemProperty PROJECT = new SystemProperty(URI + "Project", PropertyType.INTEGER)
     {
         @Override
@@ -94,13 +132,56 @@ public class EHRProperties
         {
             PropertyDescriptor pd = super.constructPropertyDescriptor();
             pd.setImportAliases("pno");
+            pd.setName("project");
             pd.setFormat("00000000");
             return pd;
         }
     };
 
+    public static SystemProperty OBJECTID = new SystemProperty(URI + "ObjectId", PropertyType.STRING)
+    {
+        @Override
+        protected PropertyDescriptor constructPropertyDescriptor()
+        {
+            PropertyDescriptor pd = super.constructPropertyDescriptor();
+            pd.setName("objectid");
+            pd.setLabel("Key");
+            pd.setHidden(true);
+            pd.setShownInInsertView(false);
+            pd.setShownInDetailsView(false);
+            pd.setShownInUpdateView(false);
+            return pd;
+        }
+    };
+
+    public static SystemProperty PERFORMEDBY = new SystemProperty(URI + "PerformedBy", PropertyType.STRING)
+    {
+        @Override
+        protected PropertyDescriptor constructPropertyDescriptor()
+        {
+            PropertyDescriptor pd = super.constructPropertyDescriptor();
+            pd.setName("performedby");
+            pd.setLabel("Performed By");
+            return pd;
+        }
+    };
+
+    public static SystemProperty ENDDATE = new SystemProperty(URI + "EndDate", PropertyType.DATE_TIME)
+    {
+        @Override
+        protected PropertyDescriptor constructPropertyDescriptor()
+        {
+            PropertyDescriptor pd = super.constructPropertyDescriptor();
+            pd.setName("enddate");
+            return pd;
+        }
+    };
+
+
     static public void register()
     {
         // do nothing
     }
+
+
 }

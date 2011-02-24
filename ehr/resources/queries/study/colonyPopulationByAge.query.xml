@@ -8,7 +8,7 @@
                         <columnTitle>Species</columnTitle>
                         <fk>
                           <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-                          <fkDbSchema>lookups</fkDbSchema>
+                          <fkDbSchema>ehr_lookups</fkDbSchema>
                           <fkTable>species</fkTable>
                           <fkColumnName>common</fkColumnName>
                         </fk>

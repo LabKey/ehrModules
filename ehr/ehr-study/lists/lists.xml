@@ -200,12 +200,12 @@
       <column columnName="species">
         <datatype>varchar</datatype>
         <columnTitle>Species</columnTitle>
-        <fk>
-          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-          <fkDbSchema>lists</fkDbSchema>
-          <fkTable>species</fkTable>
-          <fkColumnName>common</fkColumnName>
-        </fk>
+        <!--<fk>-->
+          <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
+          <!--<fkDbSchema>lists</fkDbSchema>-->
+          <!--<fkTable>species</fkTable>-->
+          <!--<fkColumnName>common</fkColumnName>-->
+        <!--</fk>-->
       </column>
       <column columnName="objectid">
         <datatype>varchar</datatype>
@@ -393,12 +393,12 @@
         <column columnName="protocol">
           <datatype>varchar</datatype>
           <columnTitle>Protocol</columnTitle>
-          <fk>
-            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-            <fkDbSchema>lists</fkDbSchema>
-            <fkTable>protocol</fkTable>
-            <fkColumnName>protocol</fkColumnName>
-          </fk>
+          <!--<fk>-->
+            <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
+            <!--<fkDbSchema>lists</fkDbSchema>-->
+            <!--<fkTable>protocol</fkTable>-->
+            <!--<fkColumnName>protocol</fkColumnName>-->
+          <!--</fk>-->
         </column>
         <column columnName="account">
           <datatype>varchar</datatype>
@@ -411,12 +411,12 @@
         <column columnName="avail">
           <datatype>varchar</datatype>
           <columnTitle>Availability</columnTitle>
-          <fk>
-            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-            <fkDbSchema>lists</fkDbSchema>
-            <fkTable>avail</fkTable>
-            <fkColumnName>code</fkColumnName>
-          </fk>
+          <!--<fk>-->
+            <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
+            <!--<fkDbSchema>lists</fkDbSchema>-->
+            <!--<fkTable>avail</fkTable>-->
+            <!--<fkColumnName>code</fkColumnName>-->
+          <!--</fk>-->
         </column>
         <column columnName="title">
           <datatype>varchar</datatype>
@@ -561,22 +561,22 @@
           <datatype>varchar</datatype>
           <columnTitle>Protocol</columnTitle>
           <nullable>false</nullable>
-            <fk>
-              <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-              <fkDbSchema>lists</fkDbSchema>
-              <fkTable>protocol</fkTable>
-              <fkColumnName>protocol</fkColumnName>
-            </fk>
+            <!--<fk>-->
+              <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
+              <!--<fkDbSchema>lists</fkDbSchema>-->
+              <!--<fkTable>protocol</fkTable>-->
+              <!--<fkColumnName>protocol</fkColumnName>-->
+            <!--</fk>-->
         </column>
         <column columnName="species">
           <datatype>varchar</datatype>
           <columnTitle>Species</columnTitle>
-            <fk>
-              <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-              <fkDbSchema>lists</fkDbSchema>
-              <fkTable>species</fkTable>
-              <fkColumnName>common</fkColumnName>
-            </fk>
+            <!--<fk>-->
+              <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
+              <!--<fkDbSchema>lists</fkDbSchema>-->
+              <!--<fkTable>species</fkTable>-->
+              <!--<fkColumnName>common</fkColumnName>-->
+            <!--</fk>-->
         </column>
         <column columnName="allowed">
           <datatype>integer</datatype>
@@ -629,22 +629,22 @@
       <column columnName="species">
         <datatype>varchar</datatype>
         <columnTitle>Species</columnTitle>
-        <fk>
-          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-          <fkDbSchema>lists</fkDbSchema>
-          <fkTable>species</fkTable>
-          <fkColumnName>common</fkColumnName>
-        </fk>
+        <!--<fk>-->
+          <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
+          <!--<fkDbSchema>lists</fkDbSchema>-->
+          <!--<fkTable>species</fkTable>-->
+          <!--<fkColumnName>common</fkColumnName>-->
+        <!--</fk>-->
       </column>
       <column columnName="gender">
         <datatype>varchar</datatype>
         <columnTitle>Gender</columnTitle>
-        <fk>
-            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-            <fkDbSchema>lists</fkDbSchema>
-            <fkTable>gender_codes</fkTable>
-            <fkColumnName>code</fkColumnName>
-        </fk>
+        <!--<fk>-->
+            <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
+            <!--<fkDbSchema>lists</fkDbSchema>-->
+            <!--<fkTable>gender_codes</fkTable>-->
+            <!--<fkColumnName>code</fkColumnName>-->
+        <!--</fk>-->
       </column>
       <column columnName="age_class">
         <datatype>integer</datatype>
@@ -774,22 +774,22 @@
         <column columnName="ocode">
           <datatype>varchar</datatype>
           <columnTitle>Old Code</columnTitle>
-          <fk>
-            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-            <fkDbSchema>lists</fkDbSchema>
-            <fkTable>snomed</fkTable>
-            <fkColumnName>code</fkColumnName>
-          </fk>
+          <!--<fk>-->
+            <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
+            <!--<fkDbSchema>lists</fkDbSchema>-->
+            <!--<fkTable>snomed</fkTable>-->
+            <!--<fkColumnName>code</fkColumnName>-->
+          <!--</fk>-->
         </column>
         <column columnName="ncode">
           <datatype>varchar</datatype>
           <columnTitle>New Code</columnTitle>
-          <fk>
-            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-            <fkDbSchema>lists</fkDbSchema>
-            <fkTable>snomed</fkTable>
-            <fkColumnName>code</fkColumnName>
-          </fk>
+          <!--<fk>-->
+            <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
+            <!--<fkDbSchema>lists</fkDbSchema>-->
+            <!--<fkTable>snomed</fkTable>-->
+            <!--<fkColumnName>code</fkColumnName>-->
+          <!--</fk>-->
         </column>
         <column columnName="meaning">
           <datatype>varchar</datatype>
@@ -899,12 +899,12 @@
       <column columnName="species">
         <datatype>varchar</datatype>
         <columnTitle>Species</columnTitle>
-        <fk>
-          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-          <fkDbSchema>lists</fkDbSchema>
-          <fkTable>species</fkTable>
-          <fkColumnName>common</fkColumnName>
-        </fk>
+        <!--<fk>-->
+          <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
+          <!--<fkDbSchema>lists</fkDbSchema>-->
+          <!--<fkTable>species</fkTable>-->
+          <!--<fkColumnName>common</fkColumnName>-->
+        <!--</fk>-->
       </column>
       <column columnName="ageclass">
         <datatype>integer</datatype>

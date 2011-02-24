@@ -9,6 +9,11 @@ console.log("** evaluating: " + this['javax.script.filename']);
 var errorQC = 'Review Required';
 var verbosity = 0;
 
+//NOTES:
+//set account based on project.  do different depending on insert/update.  maybe a flag?
+//is the row has id/currentroom, then populate using housing
+
+
 var EHR = {};
 EHR.validation = {
     rowInit: function(row, errors){
@@ -51,7 +56,7 @@ EHR.validation = {
         }
 
         for (var i in row){
-            if (row[i] == ''){
+            if (row[i] === ''){
                 row[i] = null;
             }
         }

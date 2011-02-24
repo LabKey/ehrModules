@@ -26,6 +26,26 @@
                         <fkColumnName>project</fkColumnName>
                       </fk>
                     </column>
+                    <column columnName="protocol">
+                      <datatype>varchar</datatype>
+                      <columnTitle>Protocol</columnTitle>
+                      <fk>
+                        <fkFolderPath>/wnprc/ehr/</fkFolderPath>
+                        <fkDbSchema>lists</fkDbSchema>
+                        <fkTable>protocol</fkTable>
+                        <fkColumnName>protocol</fkColumnName>
+                      </fk>
+                    </column>
+                    <column columnName="avail">
+                      <datatype>varchar</datatype>
+                      <columnTitle>Availability</columnTitle>
+                      <fk>
+                        <fkFolderPath>/wnprc/ehr/</fkFolderPath>
+                        <fkDbSchema>lists</fkDbSchema>
+                        <fkTable>avail</fkTable>
+                        <fkColumnName>code</fkColumnName>
+                      </fk>
+                    </column>
                 </columns>
             </table>
         </tables>

@@ -6,7 +6,7 @@
                 <!--<insertUrl>/ehr/insertQueryRow.view?schemaName=study&amp;query.queryName=obs&amp;</insertUrl>-->
                 <!--<updateUrl>/query/detailsQueryRow.view?schemaName=study&amp;query.queryName=obs&amp;lsid=${lsid}</updateUrl>-->
                 <columns>
-                    <column columnName="Date">
+                    <column columnName="date">
                         <columnTitle>Arrival Date</columnTitle>
                         <formatString>yyyy-MM-dd HH:mm</formatString>
                     </column>

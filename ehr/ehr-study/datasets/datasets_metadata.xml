@@ -89,12 +89,12 @@
       <column columnName="project">
         <datatype>integer</datatype>
         <columnTitle>Project</columnTitle>
-        <fk>
-          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-          <fkDbSchema>lists</fkDbSchema>
-          <fkTable>project</fkTable>
-          <fkColumnName>project</fkColumnName>
-        </fk>
+        <!--<fk>-->
+          <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
+          <!--<fkDbSchema>lists</fkDbSchema>-->
+          <!--<fkTable>project</fkTable>-->
+          <!--<fkColumnName>project</fkColumnName>-->
+        <!--</fk>-->
         <formatString>00000000</formatString>
         <!--<nullable>false</nullable>-->
         <propertyURI>urn:ehr.labkey.org/#Project</propertyURI>
@@ -160,12 +160,12 @@
       <column columnName="project">
         <datatype>integer</datatype>
         <columnTitle>Project</columnTitle>
-        <fk>
-          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-          <fkDbSchema>lists</fkDbSchema>
-          <fkTable>project</fkTable>
-          <fkColumnName>project</fkColumnName>
-        </fk>
+        <!--<fk>-->
+          <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
+          <!--<fkDbSchema>lists</fkDbSchema>-->
+          <!--<fkTable>project</fkTable>-->
+          <!--<fkColumnName>project</fkColumnName>-->
+        <!--</fk>-->
         <formatString>00000000</formatString>
         <propertyURI>urn:ehr.labkey.org/#Project</propertyURI>
       </column>
@@ -253,22 +253,22 @@
       <column columnName="source">
         <datatype>varchar</datatype>
         <columnTitle>Source SNOMED</columnTitle>
-        <fk>
-          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-          <fkDbSchema>lists</fkDbSchema>
-          <fkTable>snomed</fkTable>
-          <fkColumnName>code</fkColumnName>
-        </fk>
+        <!--<fk>-->
+          <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
+          <!--<fkDbSchema>lists</fkDbSchema>-->
+          <!--<fkTable>snomed</fkTable>-->
+          <!--<fkColumnName>code</fkColumnName>-->
+        <!--</fk>-->
       </column>
       <column columnName="result">
         <datatype>varchar</datatype>
         <columnTitle>Result SNOMED</columnTitle>
-        <fk>
-          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-          <fkDbSchema>lists</fkDbSchema>
-          <fkTable>snomed</fkTable>
-          <fkColumnName>code</fkColumnName>
-        </fk>
+        <!--<fk>-->
+          <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
+          <!--<fkDbSchema>lists</fkDbSchema>-->
+          <!--<fkTable>snomed</fkTable>-->
+          <!--<fkColumnName>code</fkColumnName>-->
+        <!--</fk>-->
       </column>
       <column columnName="remark">
         <datatype>varchar</datatype>
@@ -280,22 +280,22 @@
       <column columnName="antibiotic">
         <datatype>varchar</datatype>
         <columnTitle>Antibiotic SNOMED</columnTitle>
-        <fk>
-          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-          <fkDbSchema>lists</fkDbSchema>
-          <fkTable>snomed</fkTable>
-          <fkColumnName>code</fkColumnName>
-        </fk>
+        <!--<fk>-->
+          <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
+          <!--<fkDbSchema>lists</fkDbSchema>-->
+          <!--<fkTable>snomed</fkTable>-->
+          <!--<fkColumnName>code</fkColumnName>-->
+        <!--</fk>-->
       </column>
       <column columnName="sensitivity">
         <datatype>varchar</datatype>
         <columnTitle>Sensitivity</columnTitle>
-        <fk>
-          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-          <fkDbSchema>lookups</fkDbSchema>
-          <fkTable>bacteriology_sensitivity</fkTable>
-          <fkColumnName>code</fkColumnName>
-        </fk>
+        <!--<fk>-->
+          <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
+          <!--<fkDbSchema>lookups</fkDbSchema>-->
+          <!--<fkTable>bacteriology_sensitivity</fkTable>-->
+          <!--<fkColumnName>code</fkColumnName>-->
+        <!--</fk>-->
       </column>
       <column columnName="description">
         <datatype>varchar</datatype>
@@ -359,12 +359,12 @@
       <column columnName="project">
         <datatype>integer</datatype>
         <columnTitle>Project</columnTitle>
-        <fk>
-          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-          <fkDbSchema>lists</fkDbSchema>
-          <fkTable>project</fkTable>
-          <fkColumnName>project</fkColumnName>
-        </fk>
+        <!--<fk>-->
+          <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
+          <!--<fkDbSchema>lists</fkDbSchema>-->
+          <!--<fkTable>project</fkTable>-->
+          <!--<fkColumnName>project</fkColumnName>-->
+        <!--</fk>-->
         <formatString>00000000</formatString>
         <propertyURI>urn:ehr.labkey.org/#Project</propertyURI>
       </column>
@@ -372,12 +372,12 @@
           <datatype>varchar</datatype>
           <columnTitle>Category</columnTitle>
           <description>Category</description>
-            <fk>
-              <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-              <fkDbSchema>lookups</fkDbSchema>
-              <fkTable>behavior_category</fkTable>
-              <fkColumnName>category</fkColumnName>
-            </fk>
+            <!--<fk>-->
+              <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
+              <!--<fkDbSchema>lookups</fkDbSchema>-->
+              <!--<fkTable>behavior_category</fkTable>-->
+              <!--<fkColumnName>category</fkColumnName>-->
+            <!--</fk>-->
       </column>
       <column columnName="userid">
         <datatype>varchar</datatype>
@@ -392,12 +392,12 @@
         <datatype>varchar</datatype>
         <!--<nullable>false</nullable>-->
         <columnTitle>SNOMED</columnTitle>
-        <fk>
-          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-          <fkDbSchema>lists</fkDbSchema>
-          <fkTable>snomed</fkTable>
-          <fkColumnName>code</fkColumnName>
-        </fk>
+        <!--<fk>-->
+          <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
+          <!--<fkDbSchema>lists</fkDbSchema>-->
+          <!--<fkTable>snomed</fkTable>-->
+          <!--<fkColumnName>code</fkColumnName>-->
+        <!--</fk>-->
       </column>
       <column columnName="Remark">
         <datatype>varchar</datatype>
@@ -551,12 +551,12 @@
         <datatype>varchar</datatype>
         <!--<nullable>false</nullable>-->
         <columnTitle>SNOMED</columnTitle>
-        <fk>
-          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-          <fkDbSchema>lists</fkDbSchema>
-          <fkTable>snomed</fkTable>
-          <fkColumnName>code</fkColumnName>
-        </fk>
+        <!--<fk>-->
+          <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
+          <!--<fkDbSchema>lists</fkDbSchema>-->
+          <!--<fkTable>snomed</fkTable>-->
+          <!--<fkColumnName>code</fkColumnName>-->
+        <!--</fk>-->
       </column>
       <column columnName="parentid">
         <datatype>varchar</datatype>
@@ -613,12 +613,12 @@
       <column columnName="gender">
         <datatype>varchar</datatype>
         <columnTitle>Gender</columnTitle>
-        <fk>
-          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-          <fkDbSchema>lists</fkDbSchema>
-          <fkTable>gender_codes</fkTable>
-          <fkColumnName>Code</fkColumnName>
-        </fk>
+        <!--<fk>-->
+          <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
+          <!--<fkDbSchema>lists</fkDbSchema>-->
+          <!--<fkTable>gender_codes</fkTable>-->
+          <!--<fkColumnName>Code</fkColumnName>-->
+        <!--</fk>-->
       </column>
       <column columnName="weight">
         <datatype>double</datatype>
@@ -634,23 +634,23 @@
         <!--<nullable>false</nullable>-->
         <columnTitle>Dam</columnTitle>
         <isMvEnabled>true</isMvEnabled>
-        <fk>
-          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-          <fkDbSchema>study</fkDbSchema>
-          <fkTable>animal</fkTable>
-          <fkColumnName>id</fkColumnName>
-        </fk>
+        <!--<fk>-->
+          <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
+          <!--<fkDbSchema>study</fkDbSchema>-->
+          <!--<fkTable>animal</fkTable>-->
+          <!--<fkColumnName>id</fkColumnName>-->
+        <!--</fk>-->
       </column>
       <column columnName="sire">
         <datatype>varchar</datatype>
         <columnTitle>Sire</columnTitle>
         <isMvEnabled>true</isMvEnabled>
-        <fk>
-          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-          <fkDbSchema>study</fkDbSchema>
-          <fkTable>animal</fkTable>
-          <fkColumnName>id</fkColumnName>
-        </fk>
+        <!--<fk>-->
+          <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
+          <!--<fkDbSchema>study</fkDbSchema>-->
+          <!--<fkTable>animal</fkTable>-->
+          <!--<fkColumnName>id</fkColumnName>-->
+        <!--</fk>-->
       </column>
       <!--<column columnName="roomcage">-->
           <!--<datatype>varchar</datatype>-->
@@ -687,22 +687,22 @@
       <column columnName="cond">
         <datatype>varchar</datatype>
         <columnTitle>Condition</columnTitle>
-        <fk>
-          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-          <fkDbSchema>lists</fkDbSchema>
-          <fkTable>condition</fkTable>
-          <fkColumnName>Code</fkColumnName>
-        </fk>
+        <!--<fk>-->
+          <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
+          <!--<fkDbSchema>lists</fkDbSchema>-->
+          <!--<fkTable>condition</fkTable>-->
+          <!--<fkColumnName>Code</fkColumnName>-->
+        <!--</fk>-->
       </column>
       <column columnName="origin">
         <datatype>varchar</datatype>
         <columnTitle>Origin</columnTitle>
-        <fk>
-          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-          <fkDbSchema>lists</fkDbSchema>
-          <fkTable>origin</fkTable>
-          <fkColumnName>Code</fkColumnName>
-        </fk>
+        <!--<fk>-->
+          <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
+          <!--<fkDbSchema>lists</fkDbSchema>-->
+          <!--<fkTable>origin</fkTable>-->
+          <!--<fkColumnName>Code</fkColumnName>-->
+        <!--</fk>-->
       </column>
       <column columnName="conception">
         <datatype>timestamp</datatype>
@@ -712,12 +712,12 @@
       <column columnName="type">
         <datatype>varchar</datatype>
         <columnTitle>Type</columnTitle>
-        <fk>
-          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-          <fkDbSchema>lookups</fkDbSchema>
-          <fkTable>birth_type</fkTable>
-          <fkColumnName>type</fkColumnName>
-        </fk>
+        <!--<fk>-->
+          <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
+          <!--<fkDbSchema>lookups</fkDbSchema>-->
+          <!--<fkTable>birth_type</fkTable>-->
+          <!--<fkColumnName>type</fkColumnName>-->
+        <!--</fk>-->
       </column>
       <column columnName="remark">
         <datatype>varchar</datatype>
@@ -796,12 +796,12 @@
         <datatype>integer</datatype>
         <!--<nullable>false</nullable>-->
         <columnTitle>Project</columnTitle>
-        <fk>
-          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-          <fkDbSchema>lists</fkDbSchema>
-          <fkTable>project</fkTable>
-          <fkColumnName>project</fkColumnName>
-        </fk>
+        <!--<fk>-->
+          <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
+          <!--<fkDbSchema>lists</fkDbSchema>-->
+          <!--<fkTable>project</fkTable>-->
+          <!--<fkColumnName>project</fkColumnName>-->
+        <!--</fk>-->
         <formatString>00000000</formatString>
         <propertyURI>urn:ehr.labkey.org/#Project</propertyURI>
       </column>
@@ -1137,12 +1137,12 @@
       <column columnName="project">
         <datatype>integer</datatype>
         <columnTitle>Project</columnTitle>
-        <fk>
-          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-          <fkDbSchema>lists</fkDbSchema>
-          <fkTable>project</fkTable>
-          <fkColumnName>project</fkColumnName>
-        </fk>
+        <!--<fk>-->
+          <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
+          <!--<fkDbSchema>lists</fkDbSchema>-->
+          <!--<fkTable>project</fkTable>-->
+          <!--<fkColumnName>project</fkColumnName>-->
+        <!--</fk>-->
         <formatString>00000000</formatString>
         <propertyURI>urn:ehr.labkey.org/#Project</propertyURI>
       </column>
@@ -1236,12 +1236,12 @@
           <datatype>varchar</datatype>
           <!--<nullable>false</nullable>-->
           <columnTitle>Test Id</columnTitle>
-          <fk>
-            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-            <fkDbSchema>lists</fkDbSchema>
-            <fkTable>lab_tests</fkTable>
-            <fkColumnName>testid</fkColumnName>
-          </fk>
+          <!--<fk>-->
+            <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
+            <!--<fkDbSchema>lists</fkDbSchema>-->
+            <!--<fkTable>lab_tests</fkTable>-->
+            <!--<fkColumnName>testid</fkColumnName>-->
+          <!--</fk>-->
         </column>
         <column columnName="result">
           <datatype>double</datatype>
@@ -1329,12 +1329,12 @@
       <column columnName="project">
         <datatype>integer</datatype>
         <columnTitle>Project</columnTitle>
-        <fk>
-          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-          <fkDbSchema>lists</fkDbSchema>
-          <fkTable>project</fkTable>
-          <fkColumnName>project</fkColumnName>
-        </fk>
+        <!--<fk>-->
+          <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
+          <!--<fkDbSchema>lists</fkDbSchema>-->
+          <!--<fkTable>project</fkTable>-->
+          <!--<fkColumnName>project</fkColumnName>-->
+        <!--</fk>-->
         <formatString>00000000</formatString>
         <propertyURI>urn:ehr.labkey.org/#Project</propertyURI>
       </column>
@@ -1342,12 +1342,12 @@
         <datatype>varchar</datatype>
         <!--<nullable>false</nullable>-->
         <columnTitle>Category</columnTitle>
-        <fk>
-          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-          <fkDbSchema>lookups</fkDbSchema>
-          <fkTable>clinremarks_category</fkTable>
-          <fkColumnName>category</fkColumnName>
-        </fk>
+        <!--<fk>-->
+          <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
+          <!--<fkDbSchema>lookups</fkDbSchema>-->
+          <!--<fkTable>clinremarks_category</fkTable>-->
+          <!--<fkColumnName>category</fkColumnName>-->
+        <!--</fk>-->
       </column>
       <column columnName="userid">
         <datatype>varchar</datatype>
@@ -1362,12 +1362,12 @@
       <column columnName="location">
          <datatype>varchar</datatype>
          <columnTitle>Location</columnTitle>
-         <fk>
-            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-            <fkDbSchema>lookups</fkDbSchema>
-            <fkTable>pe_region</fkTable>
-            <fkColumnName>region</fkColumnName>
-         </fk>
+         <!--<fk>-->
+            <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
+            <!--<fkDbSchema>lookups</fkDbSchema>-->
+            <!--<fkTable>pe_region</fkTable>-->
+            <!--<fkColumnName>region</fkColumnName>-->
+         <!--</fk>-->
       </column>
       <column columnName="remark">
         <datatype>varchar</datatype>
@@ -1379,22 +1379,22 @@
       <column columnName="code">
         <datatype>varchar</datatype>
         <columnTitle>SNOMED</columnTitle>
-        <fk>
-          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-          <fkDbSchema>lists</fkDbSchema>
-          <fkTable>snomed</fkTable>
-          <fkColumnName>code</fkColumnName>
-        </fk>
+        <!--<fk>-->
+          <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
+          <!--<fkDbSchema>lists</fkDbSchema>-->
+          <!--<fkTable>snomed</fkTable>-->
+          <!--<fkColumnName>code</fkColumnName>-->
+        <!--</fk>-->
       </column>
       <column columnName="qualifier">
         <datatype>varchar</datatype>
         <columnTitle>Qualifier</columnTitle>
-        <fk>
-          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-          <fkDbSchema>lists</fkDbSchema>
-          <fkTable>snomed</fkTable>
-          <fkColumnName>code</fkColumnName>
-        </fk>
+        <!--<fk>-->
+          <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
+          <!--<fkDbSchema>lists</fkDbSchema>-->
+          <!--<fkTable>snomed</fkTable>-->
+          <!--<fkColumnName>code</fkColumnName>-->
+        <!--</fk>-->
       </column>
       <column columnName="description">
         <datatype>varchar</datatype>
@@ -1529,22 +1529,22 @@
       <column columnName="cause">
         <datatype>varchar</datatype>
         <columnTitle>Cause</columnTitle>
-        <fk>
-          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-          <fkDbSchema>lists</fkDbSchema>
-          <fkTable>death_codes</fkTable>
-          <fkColumnName>Code</fkColumnName>
-        </fk>
+        <!--<fk>-->
+          <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
+          <!--<fkDbSchema>lists</fkDbSchema>-->
+          <!--<fkTable>death_codes</fkTable>-->
+          <!--<fkColumnName>Code</fkColumnName>-->
+        <!--</fk>-->
       </column>
       <column columnName="necropsy">
         <datatype>varchar</datatype>
         <columnTitle>Necropsy</columnTitle>
-        <fk>
-          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-          <fkDbSchema>study</fkDbSchema>
-          <fkTable>necropsy</fkTable>
-          <fkColumnName>caseno</fkColumnName>
-        </fk>
+        <!--<fk>-->
+          <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
+          <!--<fkDbSchema>study</fkDbSchema>-->
+          <!--<fkTable>necropsy</fkTable>-->
+          <!--<fkColumnName>caseno</fkColumnName>-->
+        <!--</fk>-->
       </column>
       <column columnName="remark">
         <datatype>varchar</datatype>
@@ -1609,22 +1609,22 @@
       <column columnName="gender">
         <datatype>varchar</datatype>
         <columnTitle>Gender</columnTitle>
-        <fk>
-          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-          <fkDbSchema>lists</fkDbSchema>
-          <fkTable>gender_codes</fkTable>
-          <fkColumnName>Code</fkColumnName>
-        </fk>
+        <!--<fk>-->
+          <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
+          <!--<fkDbSchema>lists</fkDbSchema>-->
+          <!--<fkTable>gender_codes</fkTable>-->
+          <!--<fkColumnName>Code</fkColumnName>-->
+        <!--</fk>-->
       </column>
       <column columnName="status">
         <datatype>varchar</datatype>
         <columnTitle>Status</columnTitle>
-        <fk>
-          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-          <fkDbSchema>lists</fkDbSchema>
-          <fkTable>status</fkTable>
-          <fkColumnName>Code</fkColumnName>
-        </fk>
+        <!--<fk>-->
+          <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
+          <!--<fkDbSchema>lists</fkDbSchema>-->
+          <!--<fkTable>status</fkTable>-->
+          <!--<fkColumnName>Code</fkColumnName>-->
+        <!--</fk>-->
       </column>
       <column columnName="avail">
         <datatype>varchar</datatype>
@@ -1647,32 +1647,32 @@
       <column columnName="dam">
         <datatype>varchar</datatype>
         <columnTitle>Dam</columnTitle>
-        <fk>
-          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-          <fkDbSchema>study</fkDbSchema>
-          <fkTable>animal</fkTable>
-          <fkColumnName>id</fkColumnName>
-        </fk>
+        <!--<fk>-->
+          <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
+          <!--<fkDbSchema>study</fkDbSchema>-->
+          <!--<fkTable>animal</fkTable>-->
+          <!--<fkColumnName>id</fkColumnName>-->
+        <!--</fk>-->
       </column>
       <column columnName="sire">
         <datatype>varchar</datatype>
         <columnTitle>Sire</columnTitle>
-        <fk>
-          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-          <fkDbSchema>study</fkDbSchema>
-          <fkTable>animal</fkTable>
-          <fkColumnName>id</fkColumnName>
-        </fk>
+        <!--<fk>-->
+          <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
+          <!--<fkDbSchema>study</fkDbSchema>-->
+          <!--<fkTable>animal</fkTable>-->
+          <!--<fkColumnName>id</fkColumnName>-->
+        <!--</fk>-->
       </column>
       <column columnName="origin">
         <datatype>varchar</datatype>
         <columnTitle>Origin</columnTitle>
-        <fk>
-          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-          <fkDbSchema>lists</fkDbSchema>
-          <fkTable>origin</fkTable>
-          <fkColumnName>Code</fkColumnName>
-        </fk>
+        <!--<fk>-->
+          <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
+          <!--<fkDbSchema>lists</fkDbSchema>-->
+          <!--<fkTable>origin</fkTable>-->
+          <!--<fkColumnName>Code</fkColumnName>-->
+        <!--</fk>-->
       </column>
       <column columnName="geoOrigin">
         <datatype>varchar</datatype>
@@ -1717,12 +1717,12 @@
       <column columnName="cond">
         <datatype>varchar</datatype>
         <columnTitle>Condition</columnTitle>
-        <fk>
-          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-          <fkDbSchema>lists</fkDbSchema>
-          <fkTable>condition</fkTable>
-          <fkColumnName>Code</fkColumnName>
-        </fk>
+        <!--<fk>-->
+          <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
+          <!--<fkDbSchema>lists</fkDbSchema>-->
+          <!--<fkTable>condition</fkTable>-->
+          <!--<fkColumnName>Code</fkColumnName>-->
+        <!--</fk>-->
       </column>
       <column columnName="weight">
         <datatype>double</datatype>
@@ -1764,22 +1764,22 @@
         <datatype>varchar</datatype>
         <!--<nullable>false</nullable>-->
         <columnTitle>Species</columnTitle>
-        <fk>
-          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-          <fkDbSchema>lists</fkDbSchema>
-          <fkTable>species</fkTable>
-          <fkColumnName>common</fkColumnName>
-        </fk>
+        <!--<fk>-->
+          <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
+          <!--<fkDbSchema>lists</fkDbSchema>-->
+          <!--<fkTable>species</fkTable>-->
+          <!--<fkColumnName>common</fkColumnName>-->
+        <!--</fk>-->
       </column>        
       <column columnName="v_status">
         <datatype>varchar</datatype>
         <columnTitle>Viral Status</columnTitle>
-        <fk>
-          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-          <fkDbSchema>lookups</fkDbSchema>
-          <fkTable>viral_status</fkTable>
-          <fkColumnName>viral_status</fkColumnName>
-        </fk>
+        <!--<fk>-->
+          <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
+          <!--<fkDbSchema>lookups</fkDbSchema>-->
+          <!--<fkTable>viral_status</fkTable>-->
+          <!--<fkColumnName>viral_status</fkColumnName>-->
+        <!--</fk>-->
       </column>
       <column columnName="objectid">
         <datatype>entityid</datatype>
@@ -1899,24 +1899,24 @@
       <column columnName="project">
         <datatype>integer</datatype>
         <columnTitle>Project</columnTitle>
-        <fk>
-          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-          <fkDbSchema>lists</fkDbSchema>
-          <fkTable>project</fkTable>
-          <fkColumnName>project</fkColumnName>
-        </fk>
+        <!--<fk>-->
+          <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
+          <!--<fkDbSchema>lists</fkDbSchema>-->
+          <!--<fkTable>project</fkTable>-->
+          <!--<fkColumnName>project</fkColumnName>-->
+        <!--</fk>-->
         <formatString>00000000</formatString>
         <propertyURI>urn:ehr.labkey.org/#Project</propertyURI>
       </column>
       <column columnName="code">
         <datatype>varchar</datatype>
         <columnTitle>SNOMED</columnTitle>
-        <fk>
-          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-          <fkDbSchema>lists</fkDbSchema>
-          <fkTable>snomed</fkTable>
-          <fkColumnName>code</fkColumnName>
-        </fk>
+        <!--<fk>-->
+          <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
+          <!--<fkDbSchema>lists</fkDbSchema>-->
+          <!--<fkTable>snomed</fkTable>-->
+          <!--<fkColumnName>code</fkColumnName>-->
+        <!--</fk>-->
       </column>
       <column columnName="amount">
         <datatype>double</datatype>
@@ -2010,23 +2010,23 @@
         <datatype>varchar</datatype>
         <!--<nullable>false</nullable>-->
         <columnTitle>Morphology</columnTitle>
-        <fk>
-          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-          <fkDbSchema>lookups</fkDbSchema>
-          <fkTable>hematology_morphology</fkTable>
-          <fkColumnName>morphology</fkColumnName>
-        </fk>
+        <!--<fk>-->
+          <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
+          <!--<fkDbSchema>lookups</fkDbSchema>-->
+          <!--<fkTable>hematology_morphology</fkTable>-->
+          <!--<fkColumnName>morphology</fkColumnName>-->
+        <!--</fk>-->
       </column>
       <column columnName="score">
         <datatype>varchar</datatype>
         <!--<nullable>false</nullable>-->
         <columnTitle>Score</columnTitle>
-        <fk>
-          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-          <fkDbSchema>lookups</fkDbSchema>
-          <fkTable>hematology_score</fkTable>
-          <fkColumnName>score</fkColumnName>
-        </fk>
+        <!--<fk>-->
+          <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
+          <!--<fkDbSchema>lookups</fkDbSchema>-->
+          <!--<fkTable>hematology_score</fkTable>-->
+          <!--<fkColumnName>score</fkColumnName>-->
+        <!--</fk>-->
       </column>
       <column columnName="remark">
         <datatype>varchar</datatype>
@@ -2091,12 +2091,12 @@
           <datatype>varchar</datatype>
           <!--<nullable>false</nullable>-->
           <columnTitle>Test Id</columnTitle>
-          <fk>
-            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-            <fkDbSchema>lists</fkDbSchema>
-            <fkTable>lab_tests</fkTable>
-            <fkColumnName>testid</fkColumnName>
-          </fk>
+          <!--<fk>-->
+            <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
+            <!--<fkDbSchema>lists</fkDbSchema>-->
+            <!--<fkTable>lab_tests</fkTable>-->
+            <!--<fkColumnName>testid</fkColumnName>-->
+          <!--</fk>-->
         </column>
         <column columnName="result">
           <datatype>double</datatype>
@@ -2184,12 +2184,12 @@
       <column columnName="project">
         <datatype>integer</datatype>
         <columnTitle>Project</columnTitle>
-        <fk>
-          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-          <fkDbSchema>lists</fkDbSchema>
-          <fkTable>project</fkTable>
-          <fkColumnName>project</fkColumnName>
-        </fk>
+        <!--<fk>-->
+          <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
+          <!--<fkDbSchema>lists</fkDbSchema>-->
+          <!--<fkTable>project</fkTable>-->
+          <!--<fkColumnName>project</fkColumnName>-->
+        <!--</fk>-->
         <formatString>00000000</formatString>
         <propertyURI>urn:ehr.labkey.org/#Project</propertyURI>
       </column>
@@ -2556,12 +2556,12 @@
         <nullable>true</nullable>
         <datatype>varchar</datatype>
         <columnTitle>Condition</columnTitle>
-        <fk>
-          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-          <fkDbSchema>lists</fkDbSchema>
-          <fkTable>condition</fkTable>
-          <fkColumnName>Code</fkColumnName>
-        </fk>
+        <!--<fk>-->
+          <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
+          <!--<fkDbSchema>lists</fkDbSchema>-->
+          <!--<fkTable>condition</fkTable>-->
+          <!--<fkColumnName>Code</fkColumnName>-->
+        <!--</fk>-->
       </column>
       <column columnName="objectid">
         <datatype>entityid</datatype>
@@ -2721,12 +2721,12 @@
       <column columnName="project">
         <datatype>integer</datatype>
         <columnTitle>Project</columnTitle>
-        <fk>
-          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-          <fkDbSchema>lists</fkDbSchema>
-          <fkTable>project</fkTable>
-          <fkColumnName>project</fkColumnName>
-        </fk>
+        <!--<fk>-->
+          <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
+          <!--<fkDbSchema>lists</fkDbSchema>-->
+          <!--<fkTable>project</fkTable>-->
+          <!--<fkColumnName>project</fkColumnName>-->
+        <!--</fk>-->
         <formatString>00000000</formatString>
         <propertyURI>urn:ehr.labkey.org/#Project</propertyURI>
       </column>
@@ -2814,12 +2814,12 @@
           <datatype>varchar</datatype>
           <!--<nullable>false</nullable>-->
           <columnTitle>Test Id</columnTitle>
-          <fk>
-            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-            <fkDbSchema>lists</fkDbSchema>
-            <fkTable>lab_tests</fkTable>
-            <fkColumnName>testid</fkColumnName>
-          </fk>
+          <!--<fk>-->
+            <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
+            <!--<fkDbSchema>lists</fkDbSchema>-->
+            <!--<fkTable>lab_tests</fkTable>-->
+            <!--<fkColumnName>testid</fkColumnName>-->
+          <!--</fk>-->
         </column>
         <column columnName="result">
           <datatype>double</datatype>
@@ -2969,12 +2969,12 @@
       <column columnName="project">
         <datatype>integer</datatype>
         <columnTitle>Project</columnTitle>
-        <fk>
-          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-          <fkDbSchema>lists</fkDbSchema>
-          <fkTable>project</fkTable>
-          <fkColumnName>project</fkColumnName>
-        </fk>
+        <!--<fk>-->
+          <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
+          <!--<fkDbSchema>lists</fkDbSchema>-->
+          <!--<fkTable>project</fkTable>-->
+          <!--<fkColumnName>project</fkColumnName>-->
+        <!--</fk>-->
         <formatString>00000000</formatString>
         <propertyURI>urn:ehr.labkey.org/#Project</propertyURI>
       </column>
@@ -2999,32 +2999,32 @@
       <column columnName="perfusion_area">
         <datatype>varchar</datatype>
         <columnTitle>Perfusion</columnTitle>
-        <fk>
-          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-          <fkDbSchema>lookups</fkDbSchema>
-          <fkTable>necropsy_perfusion_area</fkTable>
-          <fkColumnName>perfusion</fkColumnName>
-        </fk>
+        <!--<fk>-->
+          <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
+          <!--<fkDbSchema>lookups</fkDbSchema>-->
+          <!--<fkTable>necropsy_perfusion_area</fkTable>-->
+          <!--<fkColumnName>perfusion</fkColumnName>-->
+        <!--</fk>-->
       </column>
       <column columnName="perfusion_soln">
         <datatype>varchar</datatype>
         <columnTitle>Perfusion Solution</columnTitle>
-        <fk>
-          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-          <fkDbSchema>lookups</fkDbSchema>
-          <fkTable>necropsy_perfusion</fkTable>
-          <fkColumnName>perfusion</fkColumnName>
-        </fk>
+        <!--<fk>-->
+          <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
+          <!--<fkDbSchema>lookups</fkDbSchema>-->
+          <!--<fkTable>necropsy_perfusion</fkTable>-->
+          <!--<fkColumnName>perfusion</fkColumnName>-->
+        <!--</fk>-->
       </column>
       <column columnName="bcs">
         <datatype>varchar</datatype>
         <columnTitle>Body Condition</columnTitle>
-        <fk>
-          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-          <fkDbSchema>lookups</fkDbSchema>
-          <fkTable>necropsy_condition</fkTable>
-          <fkColumnName>score</fkColumnName>
-        </fk>
+        <!--<fk>-->
+          <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
+          <!--<fkDbSchema>lookups</fkDbSchema>-->
+          <!--<fkTable>necropsy_condition</fkTable>-->
+          <!--<fkColumnName>score</fkColumnName>-->
+        <!--</fk>-->
       </column>
       <column columnName="gross_description">
         <datatype>varchar</datatype>
@@ -3098,32 +3098,32 @@
       <column columnName="tissue">
         <datatype>varchar</datatype>
         <columnTitle>Organ/Tissue</columnTitle>
-        <fk>
-          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-          <fkDbSchema>lists</fkDbSchema>
-          <fkTable>snomed</fkTable>
-          <fkColumnName>code</fkColumnName>
-        </fk>
+        <!--<fk>-->
+          <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
+          <!--<fkDbSchema>lists</fkDbSchema>-->
+          <!--<fkTable>snomed</fkTable>-->
+          <!--<fkColumnName>code</fkColumnName>-->
+        <!--</fk>-->
       </column>
       <column columnName="severity">
         <datatype>varchar</datatype>
         <columnTitle>Severity</columnTitle>
-        <fk>
-          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-          <fkDbSchema>lists</fkDbSchema>
-          <fkTable>snomed</fkTable>
-          <fkColumnName>code</fkColumnName>
-        </fk>
+        <!--<fk>-->
+          <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
+          <!--<fkDbSchema>lists</fkDbSchema>-->
+          <!--<fkTable>snomed</fkTable>-->
+          <!--<fkColumnName>code</fkColumnName>-->
+        <!--</fk>-->
       </column>
       <column columnName="Diagnosis">
         <datatype>varchar</datatype>
         <columnTitle>Diagnosis</columnTitle>
-        <fk>
-          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-          <fkDbSchema>lists</fkDbSchema>
-          <fkTable>snomed</fkTable>
-          <fkColumnName>code</fkColumnName>
-        </fk>          
+        <!--<fk>-->
+          <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
+          <!--<fkDbSchema>lists</fkDbSchema>-->
+          <!--<fkTable>snomed</fkTable>-->
+          <!--<fkColumnName>code</fkColumnName>-->
+        <!--</fk>          -->
       </column>
       <column columnName="remark">
         <datatype>varchar</datatype>
@@ -3144,12 +3144,12 @@
         <datatype>varchar</datatype>
         <!--<nullable>false</nullable>-->
         <columnTitle>SNOMED</columnTitle>
-        <fk>
-          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-          <fkDbSchema>lists</fkDbSchema>
-          <fkTable>snomed</fkTable>
-          <fkColumnName>code</fkColumnName>
-        </fk>
+        <!--<fk>-->
+          <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
+          <!--<fkDbSchema>lists</fkDbSchema>-->
+          <!--<fkTable>snomed</fkTable>-->
+          <!--<fkColumnName>code</fkColumnName>-->
+        <!--</fk>-->
       </column>
       <column columnName="description">
         <datatype>varchar</datatype>
@@ -3247,6 +3247,10 @@
       <column columnName="otherbehavior">
         <datatype>varchar</datatype>
         <columnTitle>Other Behavior</columnTitle>
+      </column>
+      <column columnName="certified">
+        <datatype>boolean</datatype>
+        <columnTitle>Certified</columnTitle>
       </column>
       <column columnName="isIrregular">
         <datatype>boolean</datatype>
@@ -3437,12 +3441,12 @@
       <column columnName="project">
         <datatype>integer</datatype>
         <columnTitle>Project</columnTitle>
-        <fk>
-          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-          <fkDbSchema>lists</fkDbSchema>
-          <fkTable>project</fkTable>
-          <fkColumnName>project</fkColumnName>
-        </fk>
+        <!--<fk>-->
+          <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
+          <!--<fkDbSchema>lists</fkDbSchema>-->
+          <!--<fkTable>project</fkTable>-->
+          <!--<fkColumnName>project</fkColumnName>-->
+        <!--</fk>-->
         <formatString>00000000</formatString>
         <propertyURI>urn:ehr.labkey.org/#Project</propertyURI>
       </column>
@@ -3535,12 +3539,12 @@
       <column columnName="code">
         <datatype>varchar</datatype>
         <columnTitle>Code</columnTitle>
-        <fk>
-          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-          <fkDbSchema>lists</fkDbSchema>
-          <fkTable>snomed</fkTable>
-          <fkColumnName>Code</fkColumnName>
-        </fk>
+        <!--<fk>-->
+          <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
+          <!--<fkDbSchema>lists</fkDbSchema>-->
+          <!--<fkTable>snomed</fkTable>-->
+          <!--<fkColumnName>Code</fkColumnName>-->
+        <!--</fk>-->
         <!--<nullable>false</nullable>-->
       </column>
       <column columnName="seq">
@@ -3730,22 +3734,22 @@
         <datatype>varchar</datatype>
         <!--<nullable>false</nullable>-->
         <columnTitle>Species</columnTitle>
-        <fk>
-          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-          <fkDbSchema>lists</fkDbSchema>
-          <fkTable>species</fkTable>
-          <fkColumnName>common</fkColumnName>
-        </fk>
+        <!--<fk>-->
+          <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
+          <!--<fkDbSchema>lists</fkDbSchema>-->
+          <!--<fkTable>species</fkTable>-->
+          <!--<fkColumnName>common</fkColumnName>-->
+        <!--</fk>-->
       </column>
       <column columnName="gender">
         <datatype>varchar</datatype>
         <columnTitle>Gender</columnTitle>
-        <fk>
-          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-          <fkDbSchema>lists</fkDbSchema>
-          <fkTable>gender_codes</fkTable>
-          <fkColumnName>code</fkColumnName>
-        </fk>
+        <!--<fk>-->
+          <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
+          <!--<fkDbSchema>lists</fkDbSchema>-->
+          <!--<fkTable>gender_codes</fkTable>-->
+          <!--<fkColumnName>code</fkColumnName>-->
+        <!--</fk>-->
       </column>
       <column columnName="weight">
         <datatype>double</datatype>
@@ -3758,22 +3762,22 @@
       <column columnName="dam">
         <datatype>varchar</datatype>
         <columnTitle>Dam</columnTitle>
-        <fk>
-          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-          <fkDbSchema>study</fkDbSchema>
-          <fkTable>animal</fkTable>
-          <fkColumnName>Id</fkColumnName>
-        </fk>
+        <!--<fk>-->
+          <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
+          <!--<fkDbSchema>study</fkDbSchema>-->
+          <!--<fkTable>animal</fkTable>-->
+          <!--<fkColumnName>Id</fkColumnName>-->
+        <!--</fk>-->
       </column>
       <column columnName="sire">
         <datatype>varchar</datatype>
         <columnTitle>Sire</columnTitle>
-        <fk>
-          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-          <fkDbSchema>study</fkDbSchema>
-          <fkTable>animal</fkTable>
-          <fkColumnName>Id</fkColumnName>
-        </fk>
+        <!--<fk>-->
+          <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
+          <!--<fkDbSchema>study</fkDbSchema>-->
+          <!--<fkTable>animal</fkTable>-->
+          <!--<fkColumnName>Id</fkColumnName>-->
+        <!--</fk>-->
       </column>
       <column columnName="room">
         <datatype>varchar</datatype>
@@ -3886,12 +3890,12 @@
       <column columnName="code">
         <datatype>varchar</datatype>
         <columnTitle>SNOMED</columnTitle>
-        <fk>
-          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-          <fkDbSchema>lists</fkDbSchema>
-          <fkTable>snomed</fkTable>
-          <fkColumnName>code</fkColumnName>
-        </fk>
+        <!--<fk>-->
+          <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
+          <!--<fkDbSchema>lists</fkDbSchema>-->
+          <!--<fkTable>snomed</fkTable>-->
+          <!--<fkColumnName>code</fkColumnName>-->
+        <!--</fk>-->
       </column>
       <column columnName="description">
         <datatype>varchar</datatype>
@@ -3956,12 +3960,12 @@
       <column columnName="project">
         <datatype>integer</datatype>
         <columnTitle>Project</columnTitle>
-        <fk>
-          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-          <fkDbSchema>lists</fkDbSchema>
-          <fkTable>project</fkTable>
-          <fkColumnName>project</fkColumnName>
-        </fk>
+        <!--<fk>-->
+          <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
+          <!--<fkDbSchema>lists</fkDbSchema>-->
+          <!--<fkTable>project</fkTable>-->
+          <!--<fkColumnName>project</fkColumnName>-->
+        <!--</fk>-->
         <formatString>00000000</formatString>
         <propertyURI>urn:ehr.labkey.org/#Project</propertyURI>
       </column>
@@ -4126,12 +4130,12 @@
       <column columnName="code">
         <datatype>varchar</datatype>
         <columnTitle>SNOMED</columnTitle>
-        <fk>
-          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-          <fkDbSchema>lists</fkDbSchema>
-          <fkTable>snomed</fkTable>
-          <fkColumnName>code</fkColumnName>
-        </fk>
+        <!--<fk>-->
+          <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
+          <!--<fkDbSchema>lists</fkDbSchema>-->
+          <!--<fkTable>snomed</fkTable>-->
+          <!--<fkColumnName>code</fkColumnName>-->
+        <!--</fk>-->
       </column>
       <column columnName="remark">
         <datatype>varchar</datatype>
@@ -4194,12 +4198,12 @@
       <column columnName="project">
         <datatype>integer</datatype>
         <columnTitle>Project</columnTitle>
-        <fk>
-          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-          <fkDbSchema>lists</fkDbSchema>
-          <fkTable>project</fkTable>
-          <fkColumnName>project</fkColumnName>
-        </fk>
+        <!--<fk>-->
+          <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
+          <!--<fkDbSchema>lists</fkDbSchema>-->
+          <!--<fkTable>project</fkTable>-->
+          <!--<fkColumnName>project</fkColumnName>-->
+        <!--</fk>-->
         <formatString>00000000</formatString>
         <propertyURI>urn:ehr.labkey.org/#Project</propertyURI>
       </column>
@@ -4282,42 +4286,42 @@
       <column columnName="eye">
         <datatype>varchar</datatype>
         <columnTitle>Eye</columnTitle>
-        <fk>
-          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-          <fkDbSchema>lookups</fkDbSchema>
-          <fkTable>tb_eye</fkTable>
-          <fkColumnName>eye</fkColumnName>
-        </fk>          
+        <!--<fk>-->
+          <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
+          <!--<fkDbSchema>lookups</fkDbSchema>-->
+          <!--<fkTable>tb_eye</fkTable>-->
+          <!--<fkColumnName>eye</fkColumnName>-->
+        <!--</fk>          -->
       </column>
       <column columnName="result1">
         <datatype>integer</datatype>
         <columnTitle>Result1</columnTitle>
-        <fk>
-          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-          <fkDbSchema>lookups</fkDbSchema>
-          <fkTable>tb_result</fkTable>
-          <fkColumnName>result</fkColumnName>
-        </fk>
+        <!--<fk>-->
+          <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
+          <!--<fkDbSchema>lookups</fkDbSchema>-->
+          <!--<fkTable>tb_result</fkTable>-->
+          <!--<fkColumnName>result</fkColumnName>-->
+        <!--</fk>-->
       </column>
       <column columnName="result2">
         <datatype>integer</datatype>
         <columnTitle>Result2</columnTitle>
-        <fk>
-          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-          <fkDbSchema>lookups</fkDbSchema>
-          <fkTable>tb_result</fkTable>
-          <fkColumnName>result</fkColumnName>
-        </fk>
+        <!--<fk>-->
+          <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
+          <!--<fkDbSchema>lookups</fkDbSchema>-->
+          <!--<fkTable>tb_result</fkTable>-->
+          <!--<fkColumnName>result</fkColumnName>-->
+        <!--</fk>-->
       </column>
       <column columnName="result3">
         <datatype>integer</datatype>
         <columnTitle>Result3</columnTitle>
-        <fk>
-          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-          <fkDbSchema>lookups</fkDbSchema>
-          <fkTable>tb_result</fkTable>
-          <fkColumnName>result</fkColumnName>
-        </fk>
+        <!--<fk>-->
+          <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
+          <!--<fkDbSchema>lookups</fkDbSchema>-->
+          <!--<fkTable>tb_result</fkTable>-->
+          <!--<fkColumnName>result</fkColumnName>-->
+        <!--</fk>-->
       </column>
       <column columnName="remark">
         <datatype>varchar</datatype>
@@ -4381,12 +4385,12 @@
       <column columnName="gender">
         <datatype>varchar</datatype>
         <columnTitle>Gender</columnTitle>
-        <fk>
-          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-          <fkDbSchema>lists</fkDbSchema>
-          <fkTable>gender_codes</fkTable>
-          <fkColumnName>Code</fkColumnName>
-        </fk>
+        <!--<fk>-->
+          <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
+          <!--<fkDbSchema>lists</fkDbSchema>-->
+          <!--<fkTable>gender_codes</fkTable>-->
+          <!--<fkColumnName>Code</fkColumnName>-->
+        <!--</fk>-->
       </column>
       <column columnName="livedead">
         <datatype>varchar</datatype>
@@ -4485,12 +4489,12 @@
       <column columnName="project">
         <datatype>integer</datatype>
         <columnTitle>Project</columnTitle>
-        <fk>
-          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-          <fkDbSchema>lists</fkDbSchema>
-          <fkTable>project</fkTable>
-          <fkColumnName>project</fkColumnName>
-        </fk>
+        <!--<fk>-->
+          <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
+          <!--<fkDbSchema>lists</fkDbSchema>-->
+          <!--<fkTable>project</fkTable>-->
+          <!--<fkColumnName>project</fkColumnName>-->
+        <!--</fk>-->
         <formatString>00000000</formatString>
         <!--<nullable>false</nullable>-->
         <propertyURI>urn:ehr.labkey.org/#Project</propertyURI>
@@ -4499,12 +4503,12 @@
         <datatype>varchar</datatype>
         <!--<nullable>false</nullable>-->
         <columnTitle>SNOMED</columnTitle>
-        <fk>
-          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-          <fkDbSchema>lists</fkDbSchema>
-          <fkTable>snomed</fkTable>
-          <fkColumnName>code</fkColumnName>
-        </fk>
+        <!--<fk>-->
+          <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
+          <!--<fkDbSchema>lists</fkDbSchema>-->
+          <!--<fkTable>snomed</fkTable>-->
+          <!--<fkColumnName>code</fkColumnName>-->
+        <!--</fk>-->
       </column>
       <column columnName="meaning">
         <datatype>varchar</datatype>
@@ -4762,12 +4766,12 @@
           <datatype>varchar</datatype>
           <!--<nullable>false</nullable>-->
           <columnTitle>Test Id</columnTitle>
-          <fk>
-            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-            <fkDbSchema>lists</fkDbSchema>
-            <fkTable>lab_tests</fkTable>
-            <fkColumnName>testid</fkColumnName>
-          </fk>
+          <!--<fk>-->
+            <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
+            <!--<fkDbSchema>lists</fkDbSchema>-->
+            <!--<fkTable>lab_tests</fkTable>-->
+            <!--<fkColumnName>testid</fkColumnName>-->
+          <!--</fk>-->
         </column>
         <column columnName="result">
           <datatype>double</datatype>
@@ -4855,12 +4859,12 @@
       <column columnName="project">
         <datatype>integer</datatype>
         <columnTitle>Project</columnTitle>
-        <fk>
-          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-          <fkDbSchema>lists</fkDbSchema>
-          <fkTable>project</fkTable>
-          <fkColumnName>project</fkColumnName>
-        </fk>
+        <!--<fk>-->
+          <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
+          <!--<fkDbSchema>lists</fkDbSchema>-->
+          <!--<fkTable>project</fkTable>-->
+          <!--<fkColumnName>project</fkColumnName>-->
+        <!--</fk>-->
         <formatString>00000000</formatString>
         <propertyURI>urn:ehr.labkey.org/#Project</propertyURI>
       </column>
@@ -4961,12 +4965,12 @@
       <column columnName="project">
         <datatype>integer</datatype>
         <columnTitle>Project</columnTitle>
-        <fk>
-          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-          <fkDbSchema>lists</fkDbSchema>
-          <fkTable>project</fkTable>
-          <fkColumnName>project</fkColumnName>
-        </fk>
+        <!--<fk>-->
+          <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
+          <!--<fkDbSchema>lists</fkDbSchema>-->
+          <!--<fkTable>project</fkTable>-->
+          <!--<fkColumnName>project</fkColumnName>-->
+        <!--</fk>-->
         <formatString>00000000</formatString>
         <propertyURI>urn:ehr.labkey.org/#Project</propertyURI>
       </column>
@@ -5681,55 +5685,121 @@
             <column columnName="cause">
                 <datatype>varchar</datatype>
                 <columnTitle>Cause</columnTitle>
-                <fk>
-                  <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-                  <fkDbSchema>lookups</fkDbSchema>
-                  <fkTable>alopecia_cause</fkTable>
-                  <fkColumnName>cause</fkColumnName>
-                </fk>
+                <!--<fk>-->
+                  <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
+                  <!--<fkDbSchema>lookups</fkDbSchema>-->
+                  <!--<fkTable>alopecia_cause</fkTable>-->
+                  <!--<fkColumnName>cause</fkColumnName>-->
+                <!--</fk>-->
             </column>
             <column columnName="head">
-                <datatype>boolean</datatype>
+                <datatype>varchar</datatype>
+                <!--<fk>-->
+                  <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
+                  <!--<fkDbSchema>lookups</fkDbSchema>-->
+                  <!--<fkTable>yesno</fkTable>-->
+                  <!--<fkColumnName>value</fkColumnName>-->
+                <!--</fk>-->
                 <columnTitle>Head</columnTitle>
             </column>
             <column columnName="dorsum">
-                <datatype>boolean</datatype>
+                <datatype>varchar</datatype>
+                <!--<fk>-->
+                  <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
+                  <!--<fkDbSchema>lookups</fkDbSchema>-->
+                  <!--<fkTable>yesno</fkTable>-->
+                  <!--<fkColumnName>value</fkColumnName>-->
+                <!--</fk>-->
                 <columnTitle>Dorsum</columnTitle>
             </column>
             <column columnName="rump">
-                <datatype>boolean</datatype>
+                <datatype>varchar</datatype>
+                <!--<fk>-->
+                  <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
+                  <!--<fkDbSchema>lookups</fkDbSchema>-->
+                  <!--<fkTable>yesno</fkTable>-->
+                  <!--<fkColumnName>value</fkColumnName>-->
+                <!--</fk>-->
                 <columnTitle>Rump</columnTitle>
             </column>
             <column columnName="shoulders">
-                <datatype>boolean</datatype>
+                <datatype>varchar</datatype>
+                <!--<fk>-->
+                  <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
+                  <!--<fkDbSchema>lookups</fkDbSchema>-->
+                  <!--<fkTable>yesno</fkTable>-->
+                  <!--<fkColumnName>value</fkColumnName>-->
+                <!--</fk>-->
                 <columnTitle>Shoulders</columnTitle>
             </column>
             <column columnName="upperArms">
-                <datatype>boolean</datatype>
+                <datatype>varchar</datatype>
+                <!--<fk>-->
+                  <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
+                  <!--<fkDbSchema>lookups</fkDbSchema>-->
+                  <!--<fkTable>yesno</fkTable>-->
+                  <!--<fkColumnName>value</fkColumnName>-->
+                <!--</fk>-->
                 <columnTitle>Upper Arms</columnTitle>
             </column>
             <column columnName="lowerArms">
-                <datatype>boolean</datatype>
+                <datatype>varchar</datatype>
+                <!--<fk>-->
+                  <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
+                  <!--<fkDbSchema>lookups</fkDbSchema>-->
+                  <!--<fkTable>yesno</fkTable>-->
+                  <!--<fkColumnName>value</fkColumnName>-->
+                <!--</fk>-->
                 <columnTitle>Lower Arms</columnTitle>
             </column>
             <column columnName="lowerArms">
-                <datatype>boolean</datatype>
+                <datatype>varchar</datatype>
+                <!--<fk>-->
+                  <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
+                  <!--<fkDbSchema>lookups</fkDbSchema>-->
+                  <!--<fkTable>yesno</fkTable>-->
+                  <!--<fkColumnName>value</fkColumnName>-->
+                <!--</fk>-->
                 <columnTitle>Lower Arms</columnTitle>
             </column>
             <column columnName="hips">
-                <datatype>boolean</datatype>
+                <datatype>varchar</datatype>
+                <!--<fk>-->
+                  <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
+                  <!--<fkDbSchema>lookups</fkDbSchema>-->
+                  <!--<fkTable>yesno</fkTable>-->
+                  <!--<fkColumnName>value</fkColumnName>-->
+                <!--</fk>-->
                 <columnTitle>Hips</columnTitle>
             </column>
             <column columnName="upperLegs">
-                <datatype>boolean</datatype>
+                <datatype>varchar</datatype>
+                <!--<fk>-->
+                  <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
+                  <!--<fkDbSchema>lookups</fkDbSchema>-->
+                  <!--<fkTable>yesno</fkTable>-->
+                  <!--<fkColumnName>value</fkColumnName>-->
+                <!--</fk>-->
                 <columnTitle>Upper Legs</columnTitle>
             </column>
             <column columnName="lowerLegs">
-                <datatype>boolean</datatype>
+                <datatype>varchar</datatype>
+                <!--<fk>-->
+                  <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
+                  <!--<fkDbSchema>lookups</fkDbSchema>-->
+                  <!--<fkTable>yesno</fkTable>-->
+                  <!--<fkColumnName>value</fkColumnName>-->
+                <!--</fk>-->
                 <columnTitle>Lower Legs</columnTitle>
             </column>
             <column columnName="other">
-                <datatype>boolean</datatype>
+                <datatype>varchar</datatype>
+                <!--<fk>-->
+                  <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
+                  <!--<fkDbSchema>lookups</fkDbSchema>-->
+                  <!--<fkTable>yesno</fkTable>-->
+                  <!--<fkColumnName>value</fkColumnName>-->
+                <!--</fk>-->
                 <columnTitle>Other</columnTitle>
             </column>
             <column columnName="remark">
@@ -5787,42 +5857,42 @@
             <column columnName="side">
                 <datatype>varchar</datatype>
                 <columnTitle>Side</columnTitle>
-                <fk>
-                  <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-                  <fkDbSchema>lookups</fkDbSchema>
-                  <fkTable>dental_side</fkTable>
-                  <fkColumnName>side</fkColumnName>
-                </fk>
+                <!--<fk>-->
+                  <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
+                  <!--<fkDbSchema>lookups</fkDbSchema>-->
+                  <!--<fkTable>dental_side</fkTable>-->
+                  <!--<fkColumnName>side</fkColumnName>-->
+                <!--</fk>-->
             </column>
             <column columnName="jaw">
                 <datatype>varchar</datatype>
                 <columnTitle>Upper/Lower</columnTitle>
-                <fk>
-                  <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-                  <fkDbSchema>lookups</fkDbSchema>
-                  <fkTable>dental_jaw</fkTable>
-                  <fkColumnName>jaw</fkColumnName>
-                </fk>
+                <!--<fk>-->
+                  <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
+                  <!--<fkDbSchema>lookups</fkDbSchema>-->
+                  <!--<fkTable>dental_jaw</fkTable>-->
+                  <!--<fkColumnName>jaw</fkColumnName>-->
+                <!--</fk>-->
             </column>
             <column columnName="tooth">
                 <datatype>varchar</datatype>
                 <columnTitle>Tooth</columnTitle>
-                <fk>
-                  <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-                  <fkDbSchema>lookups</fkDbSchema>
-                  <fkTable>dental_teeth</fkTable>
-                  <fkColumnName>teeth</fkColumnName>
-                </fk>
+                <!--<fk>-->
+                  <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
+                  <!--<fkDbSchema>lookups</fkDbSchema>-->
+                  <!--<fkTable>dental_teeth</fkTable>-->
+                  <!--<fkColumnName>teeth</fkColumnName>-->
+                <!--</fk>-->
             </column>
             <column columnName="status">
                 <datatype>varchar</datatype>
                 <columnTitle>Status</columnTitle>
-                <fk>
-                  <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-                  <fkDbSchema>lookups</fkDbSchema>
-                  <fkTable>dental_status</fkTable>
-                  <fkColumnName>status</fkColumnName>
-                </fk>
+                <!--<fk>-->
+                  <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
+                  <!--<fkDbSchema>lookups</fkDbSchema>-->
+                  <!--<fkTable>dental_status</fkTable>-->
+                  <!--<fkColumnName>status</fkColumnName>-->
+                <!--</fk>-->
             </column>
             <column columnName="remark">
                 <datatype>varchar</datatype>
@@ -5943,12 +6013,12 @@
             <column columnName="priority">
                 <datatype>varchar</datatype>
                 <columnTitle>Priority</columnTitle>
-                <fk>
-                  <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-                  <fkDbSchema>lookups</fkDbSchema>
-                  <fkTable>dental_priority</fkTable>
-                  <fkColumnName>priority</fkColumnName>
-                </fk>
+                <!--<fk>-->
+                  <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
+                  <!--<fkDbSchema>lookups</fkDbSchema>-->
+                  <!--<fkTable>dental_priority</fkTable>-->
+                  <!--<fkColumnName>priority</fkColumnName>-->
+                <!--</fk>-->
             </column>
             <column columnName="extractions">
                 <datatype>boolean</datatype>
@@ -5957,22 +6027,22 @@
             <column columnName="gingivitis">
                 <datatype>varchar</datatype>
                 <columnTitle>Gingivitis</columnTitle>
-                <fk>
-                  <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-                  <fkDbSchema>lookups</fkDbSchema>
-                  <fkTable>dental_gingivitis</fkTable>
-                  <fkColumnName>result</fkColumnName>
-                </fk>
+                <!--<fk>-->
+                  <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
+                  <!--<fkDbSchema>lookups</fkDbSchema>-->
+                  <!--<fkTable>dental_gingivitis</fkTable>-->
+                  <!--<fkColumnName>result</fkColumnName>-->
+                <!--</fk>-->
             </column>
             <column columnName="tartar">
                 <datatype>varchar</datatype>
                 <columnTitle>Tartar</columnTitle>
-                <fk>
-                  <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-                  <fkDbSchema>lookups</fkDbSchema>
-                  <fkTable>dental_tartar</fkTable>
-                  <fkColumnName>result</fkColumnName>
-                </fk>
+                <!--<fk>-->
+                  <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
+                  <!--<fkDbSchema>lookups</fkDbSchema>-->
+                  <!--<fkTable>dental_tartar</fkTable>-->
+                  <!--<fkColumnName>result</fkColumnName>-->
+                <!--</fk>-->
             </column>
             <column columnName="remark">
                 <datatype>varchar</datatype>
@@ -6131,8 +6201,8 @@
         <!--<tableTitle>PE Findings</tableTitle>-->
         <!--<description>PE Findings</description>-->
     <!--</table>-->
-    <table tableName="alerts" tableDbType="TABLE">
-      <tableUrl>/query/detailsQueryRow.view?schemaName=study&amp;query.queryName=alerts&amp;lsid=${lsid}</tableUrl>
+    <table tableName="notes" tableDbType="TABLE">
+      <tableUrl>/query/detailsQueryRow.view?schemaName=study&amp;query.queryName=notes&amp;lsid=${lsid}</tableUrl>
       <columns>
         <column columnName="participantid">
           <datatype>varchar</datatype>
@@ -6198,8 +6268,8 @@
           <isHidden>true</isHidden>
         </column>
       </columns>
-      <tableTitle>Alerts</tableTitle>
-      <description>Alerts About WNPRC Animals</description>
+      <tableTitle>Notes</tableTitle>
+      <description>Notes About WNPRC Animals</description>
     </table>
     <table tableName="encounters" tableDbType="TABLE">
       <tableUrl>/query/detailsQueryRow.view?schemaName=study&amp;query.queryName=encounters&amp;lsid=${lsid}</tableUrl>
@@ -6299,12 +6369,12 @@
             <column columnName="diagnosis">
               <datatype>varchar</datatype>
               <columnTitle>Diagnosis</columnTitle>
-              <fk>
-                <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-                <fkDbSchema>lists</fkDbSchema>
-                <fkTable>snomed</fkTable>
-                <fkColumnName>code</fkColumnName>
-              </fk>
+              <!--<fk>-->
+                <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
+                <!--<fkDbSchema>lists</fkDbSchema>-->
+                <!--<fkTable>snomed</fkTable>-->
+                <!--<fkColumnName>code</fkColumnName>-->
+              <!--</fk>-->
             </column>
             <column columnName="remark">
                 <datatype>varchar</datatype>
@@ -6361,22 +6431,22 @@
             <column columnName="tissue">
               <datatype>varchar</datatype>
               <columnTitle>Organ/Tissue</columnTitle>
-              <fk>
-                <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-                <fkDbSchema>lists</fkDbSchema>
-                <fkTable>snomed</fkTable>
-                <fkColumnName>code</fkColumnName>
-              </fk>
+              <!--<fk>-->
+                <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
+                <!--<fkDbSchema>lists</fkDbSchema>-->
+                <!--<fkTable>snomed</fkTable>-->
+                <!--<fkColumnName>code</fkColumnName>-->
+              <!--</fk>-->
             </column>
             <column columnName="diagnosis">
               <datatype>varchar</datatype>
               <columnTitle>Diagnosis</columnTitle>
-              <fk>
-                <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-                <fkDbSchema>lists</fkDbSchema>
-                <fkTable>snomed</fkTable>
-                <fkColumnName>code</fkColumnName>
-              </fk>
+              <!--<fk>-->
+                <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
+                <!--<fkDbSchema>lists</fkDbSchema>-->
+                <!--<fkTable>snomed</fkTable>-->
+                <!--<fkColumnName>code</fkColumnName>-->
+              <!--</fk>-->
             </column>
             <column columnName="remark">
                 <datatype>varchar</datatype>
@@ -6433,12 +6503,12 @@
             <column columnName="tissue">
               <datatype>varchar</datatype>
               <columnTitle>Organ/Tissue</columnTitle>
-              <fk>
-                <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-                <fkDbSchema>lists</fkDbSchema>
-                <fkTable>snomed</fkTable>
-                <fkColumnName>code</fkColumnName>
-              </fk>
+              <!--<fk>-->
+                <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
+                <!--<fkDbSchema>lists</fkDbSchema>-->
+                <!--<fkTable>snomed</fkTable>-->
+                <!--<fkColumnName>code</fkColumnName>-->
+              <!--</fk>-->
             </column>
             <column columnName="weight">
               <datatype>integer</datatype>
@@ -6535,12 +6605,12 @@
             <column columnName="status">
                 <datatype>varchar</datatype>
                 <columnTitle>status</columnTitle>
-                <fk>
-                  <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-                  <fkDbSchema>lookups</fkDbSchema>
-                  <fkTable>clinpath_status</fkTable>
-                  <fkColumnName>status</fkColumnName>
-                </fk>
+                <!--<fk>-->
+                  <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
+                  <!--<fkDbSchema>lookups</fkDbSchema>-->
+                  <!--<fkTable>clinpath_status</fkTable>-->
+                  <!--<fkColumnName>status</fkColumnName>-->
+                <!--</fk>-->
             </column>
             <column columnName="remark">
                 <datatype>varchar</datatype>
@@ -6608,12 +6678,12 @@
             <column columnName="type">
                 <datatype>varchar</datatype>
                 <columnTitle>type</columnTitle>
-                <fk>
-                  <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-                  <fkDbSchema>lookups</fkDbSchema>
-                  <fkTable>restraint_type</fkTable>
-                  <fkColumnName>code</fkColumnName>
-                </fk>
+                <!--<fk>-->
+                  <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
+                  <!--<fkDbSchema>lookups</fkDbSchema>-->
+                  <!--<fkTable>restraint_type</fkTable>-->
+                  <!--<fkColumnName>code</fkColumnName>-->
+                <!--</fk>-->
             </column>
             <column columnName="totalTime">
                 <datatype>double</datatype>
@@ -6739,22 +6809,22 @@
           <column columnName="treatment">
             <datatype>varchar</datatype>
             <columnTitle>Treatment</columnTitle>
-            <fk>
-              <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-              <fkDbSchema>lists</fkDbSchema>
-              <fkTable>snomed</fkTable>
-              <fkColumnName>code</fkColumnName>
-            </fk>
+            <!--<fk>-->
+              <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
+              <!--<fkDbSchema>lists</fkDbSchema>-->
+              <!--<fkTable>snomed</fkTable>-->
+              <!--<fkColumnName>code</fkColumnName>-->
+            <!--</fk>-->
           </column>
           <column columnName="qualifier">
             <datatype>varchar</datatype>
             <columnTitle>Qualifier</columnTitle>
-            <fk>
-              <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-              <fkDbSchema>lists</fkDbSchema>
-              <fkTable>snomed</fkTable>
-              <fkColumnName>code</fkColumnName>
-            </fk>
+            <!--<fk>-->
+              <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
+              <!--<fkDbSchema>lists</fkDbSchema>-->
+              <!--<fkTable>snomed</fkTable>-->
+              <!--<fkColumnName>code</fkColumnName>-->
+            <!--</fk>-->
           </column>
           <column columnName="remark">
             <datatype>varchar</datatype>
@@ -6932,12 +7002,12 @@
           <column columnName="type">
             <datatype>varchar</datatype>
             <columnTitle>Type</columnTitle>
-            <fk>
-              <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-              <fkDbSchema>lists</fkDbSchema>
-              <fkTable>snomed</fkTable>
-              <fkColumnName>code</fkColumnName>
-            </fk>
+            <!--<fk>-->
+              <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
+              <!--<fkDbSchema>lists</fkDbSchema>-->
+              <!--<fkTable>snomed</fkTable>-->
+              <!--<fkColumnName>code</fkColumnName>-->
+            <!--</fk>-->
           </column>
           <column columnName="amount">
             <datatype>double</datatype>
@@ -7010,12 +7080,12 @@
           <column columnName="bhav">
             <datatype>varchar</datatype>
             <columnTitle>BHAV</columnTitle>
-            <fk>
-              <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-              <fkDbSchema>lookups</fkDbSchema>
-              <fkTable>pairtest_bhav</fkTable>
-              <fkColumnName>value</fkColumnName>
-            </fk>
+            <!--<fk>-->
+              <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
+              <!--<fkDbSchema>lookups</fkDbSchema>-->
+              <!--<fkTable>pairtest_bhav</fkTable>-->
+              <!--<fkColumnName>value</fkColumnName>-->
+            <!--</fk>-->
           </column>
           <column columnName="testNo">
             <datatype>integer</datatype>
@@ -7024,22 +7094,22 @@
           <column columnName="conclusion">
             <datatype>varchar</datatype>
             <columnTitle>Test Conclusion</columnTitle>
-            <fk>
-              <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-              <fkDbSchema>lookups</fkDbSchema>
-              <fkTable>pairtest_conclusion</fkTable>
-              <fkColumnName>value</fkColumnName>
-            </fk>
+            <!--<fk>-->
+              <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
+              <!--<fkDbSchema>lookups</fkDbSchema>-->
+              <!--<fkTable>pairtest_conclusion</fkTable>-->
+              <!--<fkColumnName>value</fkColumnName>-->
+            <!--</fk>-->
           </column>
           <column columnName="sharedFood">
             <datatype>varchar</datatype>
             <columnTitle>Shared Food</columnTitle>
-            <fk>
-              <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-              <fkDbSchema>lookups</fkDbSchema>
-              <fkTable>yesno</fkTable>
-              <fkColumnName>value</fkColumnName>
-            </fk>
+            <!--<fk>-->
+              <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
+              <!--<fkDbSchema>lookups</fkDbSchema>-->
+              <!--<fkTable>yesno</fkTable>-->
+              <!--<fkColumnName>value</fkColumnName>-->
+            <!--</fk>-->
           </column>
           <column columnName="aggression">
             <datatype>boolean</datatype>
@@ -7118,22 +7188,22 @@
           <column columnName="observationRecord">
             <datatype>varchar</datatype>
             <columnTitle>Observation Record</columnTitle>
-            <fk>
-              <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-              <fkDbSchema>study</fkDbSchema>
-              <fkTable>obs</fkTable>
-              <fkColumnName>objectid</fkColumnName>
-            </fk>
+            <!--<fk>-->
+              <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
+              <!--<fkDbSchema>study</fkDbSchema>-->
+              <!--<fkTable>obs</fkTable>-->
+              <!--<fkColumnName>objectid</fkColumnName>-->
+            <!--</fk>-->
           </column>
           <column columnName="housingRecord">
             <datatype>varchar</datatype>
             <columnTitle>Housing Record</columnTitle>
-            <fk>
-              <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-              <fkDbSchema>study</fkDbSchema>
-              <fkTable>housing</fkTable>
-              <fkColumnName>objectid</fkColumnName>
-            </fk>
+            <!--<fk>-->
+              <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
+              <!--<fkDbSchema>study</fkDbSchema>-->
+              <!--<fkTable>housing</fkTable>-->
+              <!--<fkColumnName>objectid</fkColumnName>-->
+            <!--</fk>-->
           </column>
           <column columnName="description">
             <datatype>varchar</datatype>
@@ -7172,6 +7242,164 @@
         </columns>
         <tableTitle>Cage Observations</tableTitle>
         <description>Cage Observations</description>
+      </table>
+      <table tableName="charges" tableDbType="TABLE">
+        <tableUrl>/query/detailsQueryRow.view?schemaName=study&amp;query.queryName=charges&amp;lsid=${lsid}</tableUrl>
+        <columns>
+          <column columnName="participantid">
+            <datatype>varchar</datatype>
+            <columnTitle>Participant ID</columnTitle>
+            <description>Participant identifier</description>
+            <nullable>false</nullable>
+          </column>
+          <column columnName="Date">
+            <datatype>timestamp</datatype>
+            <formatString>yyyy-MM-dd HH:mm</formatString>
+            <columnTitle>Date</columnTitle>
+            <nullable>false</nullable>
+            <propertyURI>http://cpas.labkey.com/Study#VisitDate</propertyURI>
+          </column>
+          <column columnName="type">
+            <datatype>integer</datatype>
+            <columnTitle>Charge Type</columnTitle>
+          </column>
+          <column columnName="quantity">
+            <datatype>double</datatype>
+            <columnTitle>Cost</columnTitle>
+          </column>
+          <column columnName="unitCost">
+            <datatype>double</datatype>
+            <columnTitle>Unit Cost</columnTitle>
+          </column>
+          <column columnName="totalCost">
+            <datatype>double</datatype>
+            <columnTitle>Total Cost</columnTitle>
+            <shownInInsertView>false</shownInInsertView>
+            <shownInUpdateView>false</shownInUpdateView>
+            <isUserEditable>false</isUserEditable>
+          </column>
+          <column columnName="description">
+            <datatype>varchar</datatype>
+            <columnTitle>Description</columnTitle>
+            <shownInInsertView>false</shownInInsertView>
+            <shownInUpdateView>false</shownInUpdateView>
+            <shownInDetailsView>false</shownInDetailsView>
+            <propertyURI>urn:ehr.labkey.org/#Description</propertyURI>
+            <isHidden>true</isHidden>
+            <inputType>textarea</inputType>
+          </column>
+          <column columnName="objectid">
+            <datatype>entityid</datatype>
+            <columnTitle>Key</columnTitle>
+            <shownInInsertView>false</shownInInsertView>
+            <shownInUpdateView>false</shownInUpdateView>
+            <shownInDetailsView>false</shownInDetailsView>
+            <isHidden>true</isHidden>
+            <isKeyField>true</isKeyField>
+          </column>
+          <column columnName="parentid">
+            <datatype>varchar</datatype>
+            <columnTitle>Parent Id</columnTitle>
+            <propertyURI>urn:ehr.labkey.org/#ParentId</propertyURI>
+          </column>
+          <column columnName="taskid">
+            <datatype>varchar</datatype>
+            <columnTitle>Task Id</columnTitle>
+            <propertyURI>urn:ehr.labkey.org/#TaskId</propertyURI>
+          </column>
+          <column columnName="ts">
+            <datatype>timestamp</datatype>
+            <columnTitle>Last Changed</columnTitle>
+            <!--<nullable>false</nullable>-->
+            <shownInInsertView>false</shownInInsertView>
+            <shownInUpdateView>false</shownInUpdateView>
+            <shownInDetailsView>false</shownInDetailsView>
+            <isHidden>true</isHidden>
+          </column>
+          <column columnName="remark">
+            <datatype>varchar</datatype>
+            <columnTitle>Remark</columnTitle>
+            <displayWidth>110</displayWidth>
+            <propertyURI>urn:ehr.labkey.org/#Remark</propertyURI>
+            <inputType>textarea</inputType>
+          </column>
+        </columns>
+        <tableTitle>Charges</tableTitle>
+        <description>Charges</description>
+      </table>
+      <table tableName="coding" tableDbType="TABLE">
+        <tableUrl>/query/detailsQueryRow.view?schemaName=study&amp;query.queryName=coding&amp;lsid=${lsid}</tableUrl>
+        <columns>
+          <column columnName="participantid">
+            <datatype>varchar</datatype>
+            <columnTitle>Participant ID</columnTitle>
+            <description>Participant identifier</description>
+            <nullable>false</nullable>
+          </column>
+          <column columnName="Date">
+            <datatype>timestamp</datatype>
+            <formatString>yyyy-MM-dd HH:mm</formatString>
+            <columnTitle>Date</columnTitle>
+            <nullable>false</nullable>
+            <propertyURI>http://cpas.labkey.com/Study#VisitDate</propertyURI>
+          </column>
+          <column columnName="code">
+            <datatype>varchar</datatype>
+            <columnTitle>Primary SNOMED Code</columnTitle>
+          </column>
+          <column columnName="code2">
+            <datatype>varchar</datatype>
+            <columnTitle>Secondary SNOMED Code</columnTitle>
+          </column>
+          <column columnName="description">
+            <datatype>varchar</datatype>
+            <columnTitle>Description</columnTitle>
+            <shownInInsertView>false</shownInInsertView>
+            <shownInUpdateView>false</shownInUpdateView>
+            <shownInDetailsView>false</shownInDetailsView>
+            <propertyURI>urn:ehr.labkey.org/#Description</propertyURI>
+            <isHidden>true</isHidden>
+            <inputType>textarea</inputType>
+          </column>
+          <column columnName="objectid">
+            <datatype>entityid</datatype>
+            <columnTitle>Key</columnTitle>
+            <shownInInsertView>false</shownInInsertView>
+            <shownInUpdateView>false</shownInUpdateView>
+            <shownInDetailsView>false</shownInDetailsView>
+            <isHidden>true</isHidden>
+            <isKeyField>true</isKeyField>
+          </column>
+          <column columnName="parentid">
+            <datatype>varchar</datatype>
+            <columnTitle>Parent Id</columnTitle>
+            <propertyURI>urn:ehr.labkey.org/#ParentId</propertyURI>
+          </column>
+          <column columnName="taskid">
+            <datatype>varchar</datatype>
+            <columnTitle>Task Id</columnTitle>
+            <propertyURI>urn:ehr.labkey.org/#TaskId</propertyURI>
+          </column>
+          <column columnName="ts">
+            <datatype>timestamp</datatype>
+            <columnTitle>Last Changed</columnTitle>
+            <!--<nullable>false</nullable>-->
+            <shownInInsertView>false</shownInInsertView>
+            <shownInUpdateView>false</shownInUpdateView>
+            <shownInDetailsView>false</shownInDetailsView>
+            <isHidden>true</isHidden>
+          </column>
+            <column columnName="remark">
+              <datatype>varchar</datatype>
+              <columnTitle>Remark</columnTitle>
+              <displayWidth>110</displayWidth>
+              <propertyURI>urn:ehr.labkey.org/#Remark</propertyURI>
+              <inputType>textarea</inputType>
+            </column>
+
+        </columns>
+        <tableTitle>SNOMED Coding</tableTitle>
+        <description>SNOMED Coding</description>
       </table>
 </tables>
 

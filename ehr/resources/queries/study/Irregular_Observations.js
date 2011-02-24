@@ -4,7 +4,8 @@
  * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
  */
 
-
+//todo auto-update observations table with mens, diar.  cascade delete/update them too
+//store room at time / cage at time
 function repairRow(row, errors){
 
 }
@@ -27,7 +28,7 @@ function setDescription(row, errors){
         description.push('T Location: '+row.tlocation);
     if(row.otherbehavior)
         description.push('Other Behavior: '+row.otherbehavior);
-console.log(row);
+
     if(!row.isIrregular)
         description.push('No Irregular Observations');
 
@@ -36,7 +37,10 @@ console.log(row);
 
 function beforeBoth(row, errors) {
     EHR.validation.rowInit(row, errors);
-console.log(row);
+        console.log(row);
+//        errors[null] = ('An error');
+//        errors.Id = ('WARNING: A warning');
+
     //unique to obs:
     if (
         row.feces ||
@@ -133,6 +137,7 @@ EHR.validation = {
 
         if (verbosity > 0 )
             console.log("New: "+row);
+
     },
     antibioticSens: function(row, errors){
         if (row.sensitivity && row.antibiotic == null){

@@ -4,7 +4,7 @@
             <table tableName="Surgeries" tableDbType="TABLE">
                 <tableUrl>/EHR/surgeryDetails.view?key=${objectid}</tableUrl>
                 <columns>
-                    <column columnName="Project">
+                    <column columnName="project">
                         <fk>
                             <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                             <fkDbSchema>lists</fkDbSchema>
@@ -12,7 +12,7 @@
                             <fkColumnName>project</fkColumnName>
                         </fk>
                     </column>
-                    <column columnName="Date">
+                    <column columnName="date">
                         <formatString>yyyy-MM-dd HH:mm</formatString>
                     </column>
                     <column columnName="enddate">

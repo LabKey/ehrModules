@@ -34,7 +34,7 @@
                   </column>
                   <column columnName="remark">
                     <datatype>varchar</datatype>
-                    <columnTitle>Remark</columnTitle>
+                    <!--<columnTitle>Remark</columnTitle>-->
                     <displayWidth>110</displayWidth>
                     <inputType>textarea</inputType>
                   </column>
@@ -45,7 +45,7 @@
                     <shownInUpdateView>false</shownInUpdateView>
                     <shownInDetailsView>false</shownInDetailsView>
                     <isHidden>true</isHidden>
-                    <isKeyField>true</isKeyField>
+                    <!--<isKeyField>true</isKeyField>-->
                   </column>
                 </columns>
             </table>

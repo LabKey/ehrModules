@@ -12,6 +12,15 @@
                           <fkColumnName>objectid</fkColumnName>
                         </fk>
                     </column>
+                    <column columnName="code">
+                        <datatype>varchar</datatype>
+                        <columnTitle>SNOMED</columnTitle>
+                        <fk>
+                            <fkDbSchema>lists</fkDbSchema>
+                            <fkTable>snomed</fkTable>
+                            <fkColumnName>code</fkColumnName>
+                        </fk>
+                    </column>                    
                     <!--<column columnName="caseno">-->
                         <!--<fk>-->
                           <!--<fkDbSchema>study</fkDbSchema>-->

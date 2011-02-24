@@ -17,7 +17,7 @@
                             <fkColumnName>objectid</fkColumnName>
                         </fk>
                     </column>
-                    <column columnName="Remark">
+                    <column columnName="remark">
                         <displayWidth>250</displayWidth>
                         <propertyURI>urn:ehr.labkey.org/#Remark</propertyURI>
                         <inputType>textarea</inputType>
@@ -38,7 +38,7 @@
                         <columnTitle>Feces</columnTitle>
                         <fk>
                             <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-                            <fkDbSchema>lookups</fkDbSchema>
+                            <fkDbSchema>ehr_lookups</fkDbSchema>
                             <fkTable>obs_feces</fkTable>
                             <fkColumnName>code</fkColumnName>
                         </fk>
@@ -48,7 +48,7 @@
                         <columnTitle>Menses</columnTitle>
                         <fk>
                             <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-                            <fkDbSchema>lookups</fkDbSchema>
+                            <fkDbSchema>ehr_lookups</fkDbSchema>
                             <fkTable>obs_mens</fkTable>
                             <fkColumnName>code</fkColumnName>
                         </fk>
@@ -58,7 +58,7 @@
                         <columnTitle>Behavior</columnTitle>
                         <fk>
                             <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-                            <fkDbSchema>lookups</fkDbSchema>
+                            <fkDbSchema>ehr_lookups</fkDbSchema>
                             <fkTable>obs_behavior</fkTable>
                             <fkColumnName>code</fkColumnName>
                         </fk>
@@ -68,7 +68,7 @@
                         <columnTitle>Breeding</columnTitle>
                         <fk>
                             <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-                            <fkDbSchema>lookups</fkDbSchema>
+                            <fkDbSchema>ehr_lookups</fkDbSchema>
                             <fkTable>obs_breeding</fkTable>
                             <fkColumnName>code</fkColumnName>
                         </fk>
@@ -78,7 +78,7 @@
                         <columnTitle>Other</columnTitle>
                         <fk>
                             <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-                            <fkDbSchema>lookups</fkDbSchema>
+                            <fkDbSchema>ehr_lookups</fkDbSchema>
                             <fkTable>obs_other</fkTable>
                             <fkColumnName>code</fkColumnName>
                         </fk>
@@ -94,6 +94,11 @@
                     <column columnName="isIrregular">
                         <datatype>boolean</datatype>
                         <columnTitle>Is Irregular?</columnTitle>
+                    </column>
+                    <column columnName="certified">
+                        <datatype>boolean</datatype>
+                        <nullable>false</nullable>
+                        <columnTitle>Certified</columnTitle>
                     </column>
                 </columns>
             </table>

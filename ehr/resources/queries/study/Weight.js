@@ -5,6 +5,9 @@
  */
 
 
+//TODO: flag changes over 10%
+//maybe store flagged records in major events table?
+
 
 function repairRow(row, errors){
 

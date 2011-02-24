@@ -43,13 +43,14 @@ EHR.reports.abstract = function(tab, subject){
     var config = {
         schemaName: 'study',
         queryName: 'demographics',
+        viewName: 'Abstract',
         title: "Abstract",
         titleField: 'Id',
         renderTo: target.id,
         filterArray: filterArray.removable.concat(filterArray.nonRemovable),
         multiToGrid: true
     };
-    new EHR.ext.customPanels.detailsView(config);
+    new EHR.ext.DetailsView(config);
 
     target = tab.add({tag: 'div', style: 'padding-bottom: 20px'});
     tab.doLayout();
@@ -128,7 +129,7 @@ EHR.reports.Diagnostics = function(tab, subject){
 }
 
 
-EHR.reports.family = function(tab, subject){
+EHR.reports.pedigree = function(tab, subject){
     var filterArray = this.getFilterArray(tab, subject);
     var title = (subject ? subject.join("; ") : '');
 
@@ -143,7 +144,7 @@ EHR.reports.family = function(tab, subject){
         filterArray: filterArray.removable.concat(filterArray.nonRemovable),
         multiToGrid: true
     };
-    new EHR.ext.customPanels.detailsView(config);
+    new EHR.ext.DetailsView(config);
 
     target = tab.add({tag: 'span', style: 'padding-bottom: 20px'});
     tab.doLayout();
@@ -178,127 +179,134 @@ EHR.reports.family = function(tab, subject){
 
 
 EHR.reports.weightGraph = function(tab, subject){
+    subject = subject || [];
+
+    for (var i=0;i<subject.length;i++){
+        var filterArray = this.getFilterArray(tab, [subject[i]]);
+        var title = (subject[i] || '');
+
+        var store = new LABKEY.ext.Store({
+            schemaName: 'study',
+            queryName: 'weight',
+            filterArray: filterArray.removable.concat(filterArray.nonRemovable),
+            columns: 'id,date,weight',
+            sort: 'Id,-date',
+            autoLoad: true
+        });
+
+        tab.chart = new Ext.chart.LineChart({
+            xtype: 'linechart',
+            height: 300,
+            width: 600,
+            store: store,
+            // The two following is not documented, but it's central for the linechart.
+            xField: "date",
+            yField: "weight",
+            xAxis: new Ext.chart.TimeAxis({
+                orientation: 'vertical',
+                title: 'Date',
+                labelRenderer: function(date) { return date.format("Y-m-d"); }
+            }),
+            yAxis: new Ext.chart.NumericAxis({
+                title: 'Weight (kg)'
+            }),
+            listeners: {
+                scope: this,
+                itemmouseover: function(o) {
+                    //var myGrid = Ext.getCmp('myGrid');
+                    //myGrid.selModel.selectRow(o.index);
+                },
+                itemclick: function(o){
+                    var rec = o.item;
+
+                    var gridPanel = o.component.ownerCt.ownerCt.ownerCt.grid;
+                    var rowNum = gridPanel.view.findRowIndex(rec);
+                    gridPanel.view.focusRow(rowNum);
+
+                    var clinPanel = o.component.ownerCt.detailsPanel;
+                    clinPanel.removeAll();
+
+                    var store = new LABKEY.ext.Store({
+                        schemaName: 'study',
+                        queryName: 'Clinical Remarks',
+                        filterArray: [LABKEY.Filter.create('Id', rec.Id, LABKEY.Filter.Types.EQUAL), LABKEY.Filter.create('Date', rec.date, LABKEY.Filter.Types.DATE_EQUAL)],
+                        columns: 'category,remark',
+                        autoLoad: true,
+                        ownerCt: clinPanel
+                    });
+                    store.on('load', function(s){
+                        s.ownerCt.doLayout();
+                    }, this);
+
+                    var grid = new LABKEY.ext.EditorGridPanel({
+                        store: store
+                        ,title: 'Clinical Remarks: '+rec.date.format('Y-m-d')
+                        ,height: 300
+                        ,width: 600
+                        ,autoScroll: true
+                        ,editable: false
+                        ,stripeRows: true
+                        ,disableSelection: true
+                        ,style: 'padding-top: 10px'
+                        ,tbar: []
+                        ,bbar: []
+                        ,sm: new Ext.grid.RowSelectionModel()
+                        ,errorCallback: function(error){
+                            EHR.UTILITIES.onError(error)
+                        }
+                        ,scope: this
+                        ,listeners: {
+                            scope: this
+    //                                reconfigure: function(c){
+    //                                    console.log('reconfigure')
+    //                                    c.doLayout();
+    //                                },
+    //                                bodyresize: function(c){
+    //                                    console.log('resize')
+    //                                    c.doLayout();
+    //                                }
+                        }
+                    });
+
+                    clinPanel.add(grid);
+                    clinPanel.doLayout();
+                }
+            }
+        });
+    //    tab.on('show', function(c){
+    //        //c.chart.refresh();
+    //    });
+
+        tab.add(new Ext.Panel({
+            title: 'Weight: ' + title,
+            autoScroll: true,
+            autoHeight: true,
+            //frame: true,
+            style: 'border:5px',
+            //border: true,
+            //layout: 'fit',
+            items: [{
+                layout: 'hbox',
+                items: [
+                    tab.chart
+    //                ,
+    //                tab.grid
+            ]}
+        ]}
+        ));
+    }
+
+    var target = tab.add({tag: 'span', style: 'padding-bottom: 20px'});
+    tab.doLayout();
+
     var filterArray = this.getFilterArray(tab, subject);
     var title = (subject ? subject.join("; ") : '');
-    
-    var store = new LABKEY.ext.Store({
-        schemaName: 'study',
-        queryName: 'weight',
-        filterArray: filterArray.removable.concat(filterArray.nonRemovable),
-        columns: 'id,date,weight',
-        sort: 'Id,-date',
-        autoLoad: true
-    });
 
-    if(subject && subject.length == 1){
-    tab.chart = new Ext.chart.LineChart({
-        xtype: 'linechart',
-        height: 300,
-        width: 600,
-        store: store,
-        // The two following is not documented, but it's central for the linechart.
-        xField: "date",
-        yField: "weight",
-        xAxis: new Ext.chart.TimeAxis({
-            orientation: 'vertical',
-            title: 'Date',
-            labelRenderer: function(date) { return date.format("Y-m-d"); }
-        }),
-        yAxis: new Ext.chart.NumericAxis({
-            title: 'Weight (kg)'
-        }),
-        listeners: {
-            scope: this,
-            itemmouseover: function(o) {
-                //var myGrid = Ext.getCmp('myGrid');
-                //myGrid.selModel.selectRow(o.index);
-            },
-            itemclick: function(o){
-                var rec = o.item;
-
-                var gridPanel = o.component.ownerCt.ownerCt.ownerCt.grid;
-                var rowNum = gridPanel.view.findRowIndex(rec);
-                gridPanel.view.focusRow(rowNum);
-                
-                var clinPanel = o.component.ownerCt.detailsPanel;
-                clinPanel.removeAll();
-
-                var store = new LABKEY.ext.Store({
-                    schemaName: 'study',
-                    queryName: 'Clinical Remarks',
-                    filterArray: [LABKEY.Filter.create('Id', rec.Id, LABKEY.Filter.Types.EQUAL), LABKEY.Filter.create('Date', rec.date, LABKEY.Filter.Types.DATE_EQUAL)],
-                    columns: 'category,remark',
-                    autoLoad: true,
-                    ownerCt: clinPanel
-                });
-                store.on('load', function(s){
-                    s.ownerCt.doLayout();
-                }, this);
-
-                var grid = new LABKEY.ext.EditorGridPanel({
-                    store: store
-                    ,title: 'Clinical Remarks: '+rec.date.format('Y-m-d')
-                    ,height: 300
-                    ,width: 600
-                    ,autoScroll: true
-                    ,editable: false
-                    ,stripeRows: true
-                    ,disableSelection: true
-                    ,style: 'padding-top: 10px'
-                    ,tbar: []
-                    ,bbar: []
-                    ,sm: new Ext.grid.RowSelectionModel()
-                    ,errorCallback: function(error){
-                        EHR.UTILITIES.onError(error)
-                    }
-                    ,scope: this
-                    ,listeners: {
-                        scope: this
-//                                reconfigure: function(c){
-//                                    console.log('reconfigure')
-//                                    c.doLayout();
-//                                },
-//                                bodyresize: function(c){
-//                                    console.log('resize')
-//                                    c.doLayout();
-//                                }
-                    }
-                });
-
-                clinPanel.add(grid);
-                clinPanel.doLayout();
-            }
-        }
-    });
-//    tab.on('show', function(c){
-//        //c.chart.refresh();
-//    });
-    }    
-
-    tab.add(new Ext.Panel({
-        title: 'Weight: ' + title,
-        autoScroll: true,
-        autoHeight: true,
-        //frame: true,
-        style: 'border:5px',
-        //border: true,
-        //layout: 'fit',
-        items: [{
-            layout: 'hbox',
-            items: [
-                tab.chart
-//                ,
-//                tab.grid
-        ]}
-    ]}
-            ));
-
-    target = tab.add({tag: 'span', style: 'padding-bottom: 20px'});
-    tab.doLayout();
-    config = Ext.applyIf({
+    var config = Ext.applyIf({
         title: 'Weight' + ": " + title,
         schemaName: 'study',
         queryName: 'weight',
+        sort: 'id,-date',
         filters: filterArray.nonRemovable,
         removeableFilters: filterArray.removable,
         scope: this,
@@ -470,7 +478,8 @@ EHR.reports.immunology = function(tab, subject){
 };
 
 
-EHR.reports.ViralLoads = function(tab, subject){
+EHR.reports.viralLoads = function(tab, subject){
+    subject = subject || [];
 
     for (var i=0;i<subject.length;i++){
         var filterArray = this.getFilterArray(tab, [subject[i]]);
@@ -533,6 +542,7 @@ EHR.reports.ViralLoads = function(tab, subject){
     var target = tab.add({tag: 'span', style: 'padding-bottom: 20px'});
     tab.doLayout();
     var filterArray = this.getFilterArray(tab, subject);
+    var title = (subject.join(', ') || '');
     var config = Ext.applyIf({
         title: 'Viral Load' + ": " + title,
         schemaName: 'study',

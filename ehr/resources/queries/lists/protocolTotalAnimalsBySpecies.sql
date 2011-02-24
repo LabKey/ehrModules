@@ -6,6 +6,7 @@
 SELECT
 
 p.protocol,
+p.approve,
 p.species,
 pc.allowed,
 p.TotalAnimals,
@@ -14,13 +15,14 @@ FROM
 (
 SELECT
   coalesce(p.protocol, pa.protocol) as protocol,
+  p.approve,
   pa.species,
   CONVERT(Count(pa.id), INTEGER) AS TotalAnimals,
 
 FROM lists.protocol p
 LEFT OUTER JOIN lists.protocolAnimals pa ON (p.protocol = pa.protocol)
-
-GROUP BY coalesce(p.protocol, pa.protocol), pa.species
+--WHERE pa.LatestEnd >= p.approve
+GROUP BY coalesce(p.protocol, pa.protocol), p.approve, pa.species
 
 ) p
 

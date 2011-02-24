@@ -34,6 +34,7 @@ oldRecords <- labkey.selectRows(
 #str(oldRecords);
 #str(newRecords);
 
+
 IdxToDelete <- setdiff(oldRecords$Id, newRecords$Id);
 #IdxToDelete
 toDelete <- oldRecords[match(IdxToDelete, oldRecords$Id),]
@@ -61,8 +62,7 @@ toGet <- (!is.na(coefficient1$coefficient) & is.na(coefficient2$coefficient)) | 
 toUpdate <- coefficient1[toGet,];
 toUpdate$coefficient <- coefficient2$coefficient[toGet];
 toUpdate$date <- c( as.character( date() ) );
-
-str(toUpdate);
+#str(toUpdate);
 
 if(length(toUpdate$Id)){
     update <- labkey.updateRows(

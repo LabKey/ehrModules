@@ -4,15 +4,100 @@
             <table tableName="teeth" tableDbType="TABLE">
                 <tableUrl>/query/detailsQueryRow.view?schemaName=study&amp;query.queryName=teeth&amp;lsid=${lsid}</tableUrl>
                 <columns>
-                    <column columnName="parentId">
+                    <column columnName="participantid">
+                        <datatype>varchar</datatype>
+                        <columnTitle>Participant ID</columnTitle>
+                        <description>Participant identifier</description>
+                        <nullable>false</nullable>
+                    </column>
+                    <column columnName="date">
+                        <!--<datatype>timestamp</datatype>-->
+                        <formatString>yyyy-MM-dd HH:mm a</formatString>
+                        <!--<columnTitle>Date</columnTitle>-->
+                        <!--<nullable>false</nullable>-->
+                        <!--<propertyURI>http://cpas.labkey.com/Study#VisitDate</propertyURI>-->
+                    </column>
+                    <column columnName="side">
+                        <datatype>varchar</datatype>
+                        <columnTitle>Side</columnTitle>
                         <fk>
+                          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
+                          <fkDbSchema>ehr_lookups</fkDbSchema>
+                          <fkTable>dental_side</fkTable>
+                          <fkColumnName>side</fkColumnName>
+                        </fk>
+                    </column>
+                    <column columnName="jaw">
+                        <datatype>varchar</datatype>
+                        <columnTitle>Upper/Lower</columnTitle>
+                        <fk>
+                          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
+                          <fkDbSchema>ehr_lookups</fkDbSchema>
+                          <fkTable>dental_jaw</fkTable>
+                          <fkColumnName>jaw</fkColumnName>
+                        </fk>
+                    </column>
+                    <column columnName="tooth">
+                        <datatype>varchar</datatype>
+                        <columnTitle>Tooth</columnTitle>
+                        <fk>
+                          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
+                          <fkDbSchema>ehr_lookups</fkDbSchema>
+                          <fkTable>dental_teeth</fkTable>
+                          <fkColumnName>teeth</fkColumnName>
+                        </fk>
+                    </column>
+                    <column columnName="status">
+                        <datatype>varchar</datatype>
+                        <columnTitle>Status</columnTitle>
+                        <fk>
+                          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
+                          <fkDbSchema>ehr_lookups</fkDbSchema>
+                          <fkTable>dental_status</fkTable>
+                          <fkColumnName>status</fkColumnName>
+                        </fk>
+                    </column>
+                    <column columnName="remark">
+                        <datatype>varchar</datatype>
+                        <columnTitle>Remark</columnTitle>
+                        <displayWidth>110</displayWidth>
+                        <propertyURI>urn:ehr.labkey.org/#Remark</propertyURI>
+                        <inputType>textarea</inputType>
+                    </column>
+                    <column columnName="description">
+                        <datatype>varchar</datatype>
+                        <columnTitle>Description</columnTitle>
+                        <shownInInsertView>false</shownInInsertView>
+                        <shownInUpdateView>false</shownInUpdateView>
+                        <shownInDetailsView>false</shownInDetailsView>
+                        <propertyURI>urn:ehr.labkey.org/#Description</propertyURI>
+                        <isHidden>true</isHidden>
+                        <inputType>textarea</inputType>
+                    </column>
+                    <column columnName="objectid">
+                        <datatype>entityId</datatype>
+                        <columnTitle>Key</columnTitle>
+                        <shownInInsertView>false</shownInInsertView>
+                        <shownInUpdateView>false</shownInUpdateView>
+                        <shownInDetailsView>false</shownInDetailsView>
+                        <isHidden>true</isHidden>
+                        <!--<isAutoInc>true</isAutoInc>-->
+                        <!--<isKeyField>true</isKeyField>-->
+                    </column>
+                    <column columnName="parentid">
+                     <datatype>varchar</datatype>
+                      <columnTitle>Parent Id</columnTitle>
+                      <propertyURI>urn:ehr.labkey.org/#ParentId</propertyURI>
+                      <fk>
                           <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                           <fkDbSchema>study</fkDbSchema>
                           <fkTable>encounters</fkTable>
                           <fkColumnName>objectid</fkColumnName>
-                        </fk>
-                    </column>                    
+                      </fk>
+                    </column>
                 </columns>
+                <tableTitle>Teeth</tableTitle>
+                <description>Teeth</description>
             </table>
         </tables>
     </metadata>

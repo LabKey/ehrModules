@@ -29,7 +29,7 @@ Ext.onReady(function ()
         dataset.pop();
         dataset = dataset.join(' ');
 
-        new EHR.ext.customPanels.detailsView({
+        new EHR.ext.DetailsView({
             schemaName: 'study',
             queryName: dataset+' Runs',
             title: dataset+' Run Details:',

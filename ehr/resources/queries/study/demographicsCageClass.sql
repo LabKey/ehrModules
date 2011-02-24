@@ -14,7 +14,7 @@ c.height as ReqHeight
 
 from study.demographics d
 
-LEFT JOIN lookups.cageclass c
+LEFT JOIN ehr_lookups.cageclass c
 
 ON (c.low < d.id.MostRecentWeight.MostRecentWeight AND d.id.MostRecentWeight.MostRecentWeight <= c.high)
 

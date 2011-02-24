@@ -1,7 +1,7 @@
 <html>
 <script type="text/javascript">
 
-LABKEY.requiresScript("/WNPRC_Main/navMenu.js");
+LABKEY.requiresScript("/ehr/navMenu.js");
 
 Ext.onReady(createNavMenu);
 
@@ -14,13 +14,13 @@ function createNavMenu()
     }
 
     new EHR.UTILITIES.navMenu({
-        target: 'sopNav',
+        renderTo: 'sopNav',
         sections: [
             {header: 'SOPs',
             items: [
                 {name: 'View/Edit SOPs', url: '<%=contextPath%>/list/WNPRC/WNPRC_Units/Animal_Services/Compliance_Training/Private/SOPs/grid.view?listId=129'},
                 {name: 'View/Edit SOPs Required For Each Employee Category', url: '<%=contextPath%>/list/WNPRC/WNPRC_Units/Animal_Services/Compliance_Training/Private/SOPs/grid.view?listId=128'}
-            ]},
+            ]}
         ]
     });
 

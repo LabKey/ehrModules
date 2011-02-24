@@ -15,6 +15,7 @@
     </preferredWebParts>
     <modules>
         <moduleName>Pipeline</moduleName>
+        <moduleName>Experiment</moduleName>
         <moduleName>Query</moduleName>
         <moduleName>Portal</moduleName>
     </modules>

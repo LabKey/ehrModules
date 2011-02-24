@@ -10,37 +10,45 @@ CREATE SCHEMA ehr_compliancedb;
 
 DROP TABLE IF EXISTS ehr_compliancedb.CompletionDates;
 CREATE TABLE ehr_compliancedb.CompletionDates (
-    RowId SERIAL NOT NULL PRIMARY KEY,
+    RowId SERIAL NOT NULL,
     EmployeeId varchar(255) not null,
     RequirementName varchar(255) not null,
     Date timestamp,
     result varchar(500),
-    comment varchar(4000)
+    comment varchar(4000),
+
+    CONSTRAINT PK_CompletionDates PRIMARY KEY (rowid)
 );
 
 
 DROP TABLE IF EXISTS ehr_compliancedb.EmployeeCategory;
 CREATE TABLE ehr_compliancedb.EmployeeCategory (
-    CategoryName varchar(255) PRIMARY KEY
+    CategoryName varchar(255),
+
+    CONSTRAINT PK_EmployeeCategory PRIMARY KEY (CategoryName)
 );
 
 DROP TABLE IF EXISTS ehr_compliancedb.RequirementsPerEmployee;
 CREATE TABLE ehr_compliancedb.RequirementsPerEmployee (
-    RowId SERIAL NOT NULL PRIMARY KEY,
+    RowId SERIAL NOT NULL,
     EmployeeId varchar(255) not null,
-    RequirementName varchar(255) not null
+    RequirementName varchar(255) not null,
+
+    CONSTRAINT PK_RequirementsPerEmployee PRIMARY KEY (RowId)
 );
 
 DROP TABLE IF EXISTS ehr_compliancedb.EmployeeRequirementExemptions;
 CREATE TABLE ehr_compliancedb.EmployeeRequirementExemptions (
-    RowId SERIAL NOT NULL PRIMARY KEY,
+    RowId SERIAL NOT NULL,
     EmployeeId varchar(255) not null,
-    RequirementName varchar(255) not null
+    RequirementName varchar(255) not null,
+
+    CONSTRAINT PK_EmployeeRequirementExemptions PRIMARY KEY (RowId)
 );
 
 DROP TABLE IF EXISTS ehr_compliancedb.Employees;
 CREATE TABLE ehr_compliancedb.Employees (
-    EmployeeId varchar(255) not null PRIMARY KEY,
+    EmployeeId varchar(255) not null,
     LastName varchar(255) not null,
     FirstName varchar(255),
     Email varchar(255),
@@ -64,60 +72,78 @@ CREATE TABLE ehr_compliancedb.Employees (
     barrier boolean,
     animals boolean,
     tissue boolean,
-    isWNPRC boolean
+    isWNPRC boolean,
+
+    CONSTRAINT PK_Employees PRIMARY KEY (EmployeeId)
 );
 
 DROP TABLE IF EXISTS ehr_compliancedb.RequirementsPerCategory;
 CREATE TABLE ehr_compliancedb.RequirementsPerCategory (
-    RowId SERIAL NOT NULL PRIMARY KEY,
+    RowId SERIAL NOT NULL,
     RequirementName varchar(255) not null,
     Category varchar(255) not null,
-    Unit varchar(255) not null
+    Unit varchar(255) not null,
+
+    CONSTRAINT PK_RequirementsPerCategory PRIMARY KEY (RowId)
 );
 
 DROP TABLE IF EXISTS ehr_compliancedb.Requirements;
 CREATE TABLE ehr_compliancedb.Requirements (
-    RequirementName varchar(255) not null PRIMARY KEY,
+    RequirementName varchar(255) not null,
     Type varchar(255) not null,
     ExpirePeriod int4 not null,
     Required boolean,
     WNPRC_only boolean,
     Access boolean,
     Animals boolean,
-    Tissues boolean
+    Tissues boolean,
+
+    CONSTRAINT PK_Requirements PRIMARY KEY (RequirementName)
 );
 
 DROP TABLE IF EXISTS ehr_compliancedb.RequirementType;
 CREATE TABLE ehr_compliancedb.RequirementType (
-    Type varchar(255) not null PRIMARY KEY
+    Type varchar(255) not null,
+
+    CONSTRAINT PK_RequirementType PRIMARY KEY (Type)
 );
 
 DROP TABLE IF EXISTS ehr_compliancedb.SOPByCategory;
 CREATE TABLE ehr_compliancedb.SOPByCategory (
-    RowId SERIAL NOT NULL PRIMARY KEY,
+    RowId SERIAL NOT NULL,
     SOP_ID varchar(255) not null,
-    Category varchar(255) not null
+    Category varchar(255) not null,
+
+    CONSTRAINT PK_SOPByCategory PRIMARY KEY (RowId)
 );
 
 DROP TABLE IF EXISTS ehr_compliancedb.SOPs;
 CREATE TABLE ehr_compliancedb.SOPs (
-    Id varchar(255) not null,
+    SopId varchar(255) not null,
     Name varchar(255) not null,
-    PDF bytea
+    PDF bytea,
+
+    CONSTRAINT PK_SOPs PRIMARY KEY (SopId)
 );
 
 DROP TABLE IF EXISTS ehr_compliancedb.EmployeeLocations;
 CREATE TABLE ehr_compliancedb.EmployeeLocations (
-    location varchar(255) not null PRIMARY KEY
+    location varchar(255) not null,
+
+    CONSTRAINT PK_EmployeeLocations PRIMARY KEY (location)
 );
 
 DROP TABLE IF EXISTS ehr_compliancedb.EmployeeTypes;
 CREATE TABLE ehr_compliancedb.EmployeeTypes (
-    type varchar(255) not null PRIMARY KEY
+    type varchar(255) not null,
+
+    CONSTRAINT PK_EmployeeTypes PRIMARY KEY (type)
 );
 
 DROP TABLE IF EXISTS ehr_compliancedb.WNPRC_Units;
 CREATE TABLE ehr_compliancedb.WNPRC_Units (
-    unit varchar(255) not null PRIMARY KEY
+    unit varchar(255) not null,
+
+    CONSTRAINT PK_WNPRC_Units PRIMARY KEY (unit)
 );
 

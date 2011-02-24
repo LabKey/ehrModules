@@ -1,8 +1,10 @@
-/*
+    /*
  * Copyright (c) 2010 LabKey Corporation
  *
  * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
  */
+
+//TODO: check project, allowable blood vol
 
 function repairRow(row, errors){
 
@@ -34,7 +36,7 @@ function setDescription(row, errors){
 
 function beforeBoth(row, errors) {
     EHR.validation.rowInit(row, errors);
-
+//    errors.Id = "hello";
     EHR.validation.rowEnd(row, errors);
 }
 

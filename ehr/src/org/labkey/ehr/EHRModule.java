@@ -21,6 +21,10 @@ import org.labkey.api.data.ContainerManager;
 import org.labkey.api.data.DbSchema;
 import org.labkey.api.module.DefaultModule;
 import org.labkey.api.module.ModuleContext;
+import org.labkey.api.query.DefaultSchema;
+import org.labkey.api.query.QuerySchema;
+import org.labkey.api.query.QueryService;
+import org.labkey.api.util.PageFlowUtil;
 import org.labkey.api.view.WebPartFactory;
 import org.labkey.ehr.etl.ETL;
 import org.labkey.ehr.etl.ETLAuditViewFactory;
@@ -67,6 +71,23 @@ public class EHRModule extends DefaultModule
         ContainerManager.addContainerListener(new EHRContainerListener());
 
         AuditLogService.get().addAuditViewFactory(ETLAuditViewFactory.getInstance());
+
+        for (final String schemaName : getSchemaNames())
+        {
+            final DbSchema dbschema = DbSchema.get(schemaName);
+
+            DefaultSchema.registerProvider(schemaName, new DefaultSchema.SchemaProvider()
+            {
+                public QuerySchema getSchema(final DefaultSchema schema)
+                {
+                    if (schema.getContainer().getActiveModules().contains(EHRModule.this))
+                    {
+                        return QueryService.get().createSimpleUserSchema(schemaName, null, schema.getUser(), schema.getContainer(), dbschema);
+                    }
+                    return null;
+                }
+           });
+       }
     }
 
     @Override
@@ -85,8 +106,8 @@ public class EHRModule extends DefaultModule
     @Override
     public Set<String> getSchemaNames()
     {
-        //return Collections.singleton("ehr");
-        return Collections.emptySet();
+        return PageFlowUtil.set("ehr", "ehr_lookups");
+        //return Collections.emptySet();
     }
 
     @Override

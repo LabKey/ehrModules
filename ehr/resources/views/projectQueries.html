@@ -2,11 +2,11 @@
 <head>
 <script type="text/javascript">
 
-    LABKEY.requiresScript("/ehr/searchForm.js");
+    LABKEY.requiresScript("/ehr/SearchPanel.js");
 
     Ext.onReady(function(){
 
-    new EHR.ext.customPanels.searchForm({
+    new EHR.ext.SearchPanel({
         schemaName: 'lists'
         ,queryName: 'project'
         ,title: 'Search Projects'
@@ -21,14 +21,14 @@
         ]
     }).render('projectPanel');
 
-    new EHR.ext.customPanels.searchForm({
+    new EHR.ext.SearchPanel({
         schemaName: 'lists'
         ,queryName: 'protocol'
         ,title: 'Search Protocols'
         ,metadata: {}
     }).render('protocolPanel');                   
 
-    new EHR.ext.customPanels.searchForm({
+    new EHR.ext.SearchPanel({
         schemaName: 'study'
         ,queryName: 'assignment'
         ,title: 'Search Assignments'

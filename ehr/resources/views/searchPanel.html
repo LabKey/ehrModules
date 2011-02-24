@@ -1,0 +1,31 @@
+<html>
+<head>
+<script type="text/javascript">
+
+LABKEY.requiresScript("/ehr/SearchPanel.js");
+
+Ext.onReady(function(){
+    var config = {
+        schemaName: LABKEY.ActionURL.getParameter('schemaName')
+        ,queryName: LABKEY.ActionURL.getParameter('queryName')
+        ,viewName: LABKEY.ActionURL.getParameter('viewName')
+        ,columns: LABKEY.ActionURL.getParameter('columns')
+        ,title: 'Search '+LABKEY.ActionURL.getParameter('queryName')
+    }
+
+    new EHR.ext.SearchPanel(config).render('searchPanel');
+
+
+
+});
+</script>
+</head>
+
+<body>
+<p>
+
+<div id="searchPanel"></div>
+
+
+</body>
+</html>

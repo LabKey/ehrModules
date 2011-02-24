@@ -2,7 +2,6 @@
    <columns>
        <column name="Id"/>
        <column name="date"/>
-       <column name="BeginTime"/>
        <column name="EndTime"/>
        <column name="project"/>
        <column name="code"/>
@@ -16,6 +15,7 @@
        <column name="route"/>
        <column name="Remark"/>
        <column name="category"/>
+       <column name="HeaderDate"/>
    </columns>
    <sorts>
        <sort column="date" descending="true"/>

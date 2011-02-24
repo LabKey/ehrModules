@@ -45,7 +45,7 @@ max(e."29") as "29",
 max(e."30") as "30",
 max(e."31") as "31",
 
-FROM lookups.months y
+FROM ehr_lookups.months y
 
 LEFT OUTER JOIN study.clintremDiarrhea cd
 
