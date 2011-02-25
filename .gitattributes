@@ -698,6 +698,10 @@ ehr/src/org/labkey/ehr/EHRSchema.java -text
 ehr/src/org/labkey/ehr/etl/ETL.java -text
 ehr/src/org/labkey/ehr/etl/ETLAuditViewFactory.java -text
 ehr/src/org/labkey/ehr/etl/ETLRunnable.java -text
+ehr/src/org/labkey/ehr/security/AbstractEHRRole.java -text
+ehr/src/org/labkey/ehr/security/EHRDataAdminRole.java -text
+ehr/src/org/labkey/ehr/security/EHRRequestorRole.java -text
+ehr/src/org/labkey/ehr/security/EHRSubmitterRole.java -text
 ehr/src/org/labkey/ehr/view/EtlAdmin.jsp -text
 ehr/src/org/labkey/ehr/view/begin.jsp -text
 ehr/tools/FixTabs.java -text

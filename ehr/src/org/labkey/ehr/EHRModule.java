@@ -24,10 +24,14 @@ import org.labkey.api.module.ModuleContext;
 import org.labkey.api.query.DefaultSchema;
 import org.labkey.api.query.QuerySchema;
 import org.labkey.api.query.QueryService;
+import org.labkey.api.security.roles.RoleManager;
 import org.labkey.api.util.PageFlowUtil;
 import org.labkey.api.view.WebPartFactory;
 import org.labkey.ehr.etl.ETL;
 import org.labkey.ehr.etl.ETLAuditViewFactory;
+import org.labkey.ehr.security.EHRDataAdminRole;
+import org.labkey.ehr.security.EHRRequestorRole;
+import org.labkey.ehr.security.EHRSubmitterRole;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -86,8 +90,12 @@ public class EHRModule extends DefaultModule
                     }
                     return null;
                 }
-           });
-       }
+            });
+        }
+        
+        RoleManager.registerRole(new EHRDataAdminRole());
+        RoleManager.registerRole(new EHRRequestorRole());
+        RoleManager.registerRole(new EHRSubmitterRole());
     }
 
     @Override
