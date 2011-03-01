@@ -35,11 +35,11 @@ EHR.ext.getTableMetadata = function(queryName, sources)
 {
     var meta = {};
 
-    EHR.UTILITIES.rApplyClone(meta, EHR.ext.Metadata.Standard.allQueries);
+    EHR.utils.rApplyClone(meta, EHR.ext.Metadata.Standard.allQueries);
 //
     if (EHR.ext.Metadata.Standard.byQuery[queryName])
     {
-        EHR.UTILITIES.rApplyClone(meta, EHR.ext.Metadata.Standard.byQuery[queryName]);
+        EHR.utils.rApplyClone(meta, EHR.ext.Metadata.Standard.byQuery[queryName]);
     }
 
     if (sources && sources.length)
@@ -50,12 +50,12 @@ EHR.ext.getTableMetadata = function(queryName, sources)
             {
                 if (EHR.ext.Metadata[source].allQueries)
                 {
-                    EHR.UTILITIES.rApplyClone(meta, EHR.ext.Metadata[source].allQueries);
+                    EHR.utils.rApplyClone(meta, EHR.ext.Metadata[source].allQueries);
                 }
 
                 if (EHR.ext.Metadata[source].byQuery && EHR.ext.Metadata[source].byQuery[queryName])
                 {
-                    EHR.UTILITIES.rApplyClone(meta, EHR.ext.Metadata[source].byQuery[queryName]);
+                    EHR.utils.rApplyClone(meta, EHR.ext.Metadata[source].byQuery[queryName]);
                 }
 
             }
@@ -451,7 +451,9 @@ EHR.ext.Metadata.Standard = {
         },
         Arrival: {
             project: {hidden: true},
-            account: {hidden: true}
+            account: {hidden: true},
+            source: {allowBlank: false},
+            performedby: {hidden: true}
         },
         Departure: {
             project: {hidden: true},
@@ -1040,7 +1042,7 @@ EHR.ext.FormColumns = {
     'TB Tests': EHR.ext.sharedCols + ',lot,dilution,eye,result1,result2,result3',
     Weight: EHR.ext.sharedCols + ',weight',
     Charges: EHR.ext.topCols+',type,unitCost,quantity,remark,performedby'+EHR.ext.hiddenCols,
-    'Necropsy Diagnosis': 'tissue,duration,severity,distribution,process,'+EHR.ext.sharedCols,
+    'Necropsy Diagnosis': 'tissue,severity,duration,distribution,process,'+EHR.ext.sharedCols,
     'Tissue Samples': 'tissue,diagnosis,'+EHR.ext.sharedCols,
     'Organ Weights': 'tissue,weight,'+EHR.ext.sharedCols,
     Histology: 'slideNum,tissue,diagnosis,'+EHR.ext.sharedCols,

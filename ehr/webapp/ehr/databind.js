@@ -107,7 +107,7 @@ EHR.ext.plugins.DataBind = Ext.extend(Ext.util.Observable, {
                 };
 
                 //we only fire the update event if we actually made changes
-                if(!EHR.UTILITIES.isEmptyObj(values)){
+                if(!EHR.utils.isEmptyObj(values)){
                     //console.log('updating record');
                     //console.log(values);
                     this.boundRecord.beginEdit();

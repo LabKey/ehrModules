@@ -1185,9 +1185,9 @@
       </ns:columns>
     </ns:table>
     <ns:table tableName="virology_source" tableDbType="TABLE">
-      <ns:pkColumnName>method</ns:pkColumnName>
+      <ns:pkColumnName>source</ns:pkColumnName>
       <ns:columns>
-        <ns:column columnName="method">
+        <ns:column columnName="source">
           <ns:datatype>varchar</ns:datatype>
           <ns:scale>255</ns:scale>
         </ns:column>

@@ -5,7 +5,7 @@
  */
 Ext.namespace('EHR.ext');
 
-LABKEY.requiresScript("/ehr/utilities.js");
+LABKEY.requiresScript("/ehr/Utils.js");
 
 EHR.ext.DetailsView = Ext.extend(Ext.Panel, {
 
@@ -34,7 +34,7 @@ initComponent: function(){
         viewName: this.viewName,
         filterArray: this.filterArray,
         successCallback: this.onFinalRender,
-        errorCallback: EHR.UTILITIES.onError,
+        errorCallback: EHR.utils.onError,
         scope: this,
         maxRows: 100
     };

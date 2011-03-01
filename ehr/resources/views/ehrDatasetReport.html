@@ -2,7 +2,7 @@
 <head>
 <script type="text/javascript">
 
-LABKEY.requiresScript("/ehr/utilities.js");
+LABKEY.requiresScript("/ehr/utils.js");
 
 Ext.onReady(function(){
 
@@ -22,7 +22,7 @@ Ext.onReady(function(){
          showUpdateColumn: false,
          buttonBarPosition: 'top',
          showRecordSelectors: true,
-         errorCallback: EHR.UTILITIES.onError,
+         errorCallback: EHR.utils.onError,
          scope: this,
          buttonBar: {
             includeStandardButtons: true,

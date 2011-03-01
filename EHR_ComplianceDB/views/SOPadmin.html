@@ -7,13 +7,13 @@ Ext.onReady(createNavMenu);
 
 function createNavMenu()
 {
-    if (!window.EHR || !window.EHR.UTILITIES || !window.EHR.UTILITIES.navMenu)
+    if (!window.EHR || !window.EHR.utils || !window.EHR.utils.navMenu)
     {
         createNavMenu.defer(10);
         return;
     }
 
-    new EHR.UTILITIES.navMenu({
+    new EHR.utils.navMenu({
         renderTo: 'sopNav',
         sections: [
             {header: 'SOPs',

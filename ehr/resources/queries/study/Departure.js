@@ -8,8 +8,9 @@
 //todo update demographics
 
 
-// ================================================
 
+<<<<<<< .mine
+=======
 //==includeStart
 /*
  * Copyright (c) 2010-2011 LabKey Corporation
@@ -398,6 +399,7 @@ EHR.validation = {
 
 
 
+>>>>>>> .r15703
 function repairRow(row, errors){
 
 }
@@ -414,24 +416,6 @@ function setDescription(row, errors){
 
     return description;
 }
-
-function beforeBoth(row, errors) {
-    EHR.validation.rowInit(row, errors);
-
-    EHR.validation.rowEnd(row, errors);
-}
-
-
-function beforeInsert(row, errors) {
-    beforeBoth(row, errors);
-
-}
-
-function beforeUpdate(row, oldRow, errors) {
-    beforeBoth(row, errors);
-
-}
-
 
 
 

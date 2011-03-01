@@ -4,16 +4,19 @@
  * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
  */
 
-//todo update demographics
 
-function repairRow(row, errors){
+var {EHR, LABKEY, Ext, shared, console, init, beforeInsert, afterInsert, beforeUpdate, afterUpdate, beforeDelete, afterDelete, complete} = require("ehr/validation");
+
+console.log("** evaluating: " + this['javax.script.filename']);
+
+EHR.onETL = function(row, errors){
     if (!row.source){
         row.source = 'Unknown';
     }
 
-}
+};
 
-function setDescription(row, errors){
+EHR.setDescription = function(row, errors){
     //we need to set description for every field
     var description = new Array();
 
@@ -21,14 +24,34 @@ function setDescription(row, errors){
         description.push('Source: ' + row.source);
 
     return description;
-}
+};
 
+EHR.onComplete = function(event, errors){
+    //todo update demographics
+    var changedIds = [];
+    for(var i in shared.participantsModified){
+        changedIds.push(i);
+    }
 
-function beforeBoth(row, errors) {
-    EHR.validation.rowInit(row, errors);
+//changedIds = ['cy0113'];
 
-    EHR.validation.rowEnd(row, errors);
+    if(shared.verbosity > 0)
+        console.log(changedIds);
 
+<<<<<<< .mine
+    if(changedIds.length){
+        var demographicsMap = {};
+        LABKEY.Query.selectRows({
+            schemaName: 'study',
+            queryName: 'demographics',
+            filterArray: [LABKEY.Filter.create('Id', changedIds.join(';'), LABKEY.Filter.Types.EQUALS_ONE_OF)],
+            columns: 'lsid,arrivedate,Id',
+            success: function(data){
+                if(data.rows && data.rows.length){
+                    for (var i=0;i<data.rows.length;i++){
+                        demographicsMap[data.rows[i].Id] = data.rows[i];
+                    }
+=======
 }
 
 
@@ -193,242 +216,97 @@ EHR.validation = {
                 var tmp = match[3];
                 for (var i=0;i<(3-match[3].length);i++){
                     tmp = '0' + tmp;
+>>>>>>> .r15703
                 }
-                match[3] = tmp;
-            }
+            },
+            failure: EHR.onFailure
+        });
+        //find the most recent arrival date per participant
 
-            row.caseno = match[1] + match[2] + match[3];
-        }
-        
-    },
-    null2string: function(value){
-            return (value ? value : '');
-    },
-    fixChemValue: function(row, errors){
-        //we try to remove non-numeric characters from this field
-        console.log('new script')
-        if (row.stringResults && !row.stringResults.match(/^[0-9]*$/)){
-            //we need to manually split these into multiple rows
-
-            if (row.stringResults.match(/,/) && row.stringResults.match(/[0-9]/)){
-                row._warnings.push('ERROR problem with results: ' + row.stringResults);
-                row.stringResults = null;
-                row.QCStateLabel = errorQC;
-            }
-            else {
-                //did not find other strings in data
-                row.stringResults = row.stringResults.replace('less than', '<');
-
-                var match = row.stringResults.match(/^([<>=]*)[ ]*(\d*\.*\d*)([-]*\d*\.*\d*)([+]*)[ ]*(.*)$/);
-
-                if (match[4])
-                    row.resultOORIndicator = match[4];
-                //kinda weak, but we preferentially take the prefix.  should never have both
-                if (match[1])
-                    row.resultOORIndicator = match[1];
-
-                //these should be ranges
-                if(match[3])
-                    row.qualResult = match[2]+match[3];
-                else
-                    row.result = match[2];
-
-                //if there is a value plus a string, we assume it's units.  otherwise it's a remark
-                if (match[5]){
-                    if(match[2] && !match[5].match(/[;,]/)){
-                        row.units = match[5];
-                    }
-                    else {
-                        if(row.qualResult){
-                            row.Remark = match[5];                            
-                        }
-                        else {
-                            row.qualResult = match[5];
+        LABKEY.Query.executeSql({
+            schemaName: 'study',
+            sql: 'SELECT a.Id, max(a.date) as maxDate FROM study.arrival a WHERE a.id IN (\''+changedIds.join(',')+'\') GROUP BY a.id',
+            success: function(data){
+                if(data.rows && data.rows.length){
+                    for (var i=0;i<data.rows.length;i++){
+                        if(!demographicsMap[data.rows[i].Id]){
+                            demographicsMap[data.rows[i].Id] = {};
                         }
 
+                        demographicsMap[data.rows[i].Id]['maxArrivalDate'] = data.rows[i].maxDate;
                     }
                 }
+            },
+            failure: EHR.onFailure
+        });
+
+        var rowDataArray = [];
+        var missingIds = [];
+        for (var i=0;i<changedIds.length;i++){
+            var id = changedIds[i];
+
+            if(shared.verbosity > 0){
+                console.log('demographic map: for: '+id)
+                console.log(demographicsMap[id])
             }
-        }
-        else {
-            //this covers the situation where a mySQL string column contained a numeric value
-            row.result = row.stringResults;
-            delete row.stringResults;
-        }
-    },
-    fixUrineQuantity: function(row, errors){
-        //we try to remove non-numeric characters from this field
-        if (row.quantity && typeof(row.quantity) == 'string' && !row.quantity.match(/^(\d*\.*\d*)$/)){
-            //we need to manually split these into multiple rows
-            if (row.quantity.match(/,/)){
-                row.quantity = null;
-                row._warnings.push('ERROR problem with quantity: ' + row.quantity);
-                row.QCStateLabel = errorQC;
-            }
-            else {
-                //did not find other strings in data
-                row.quantity = row.quantity.replace(' ', '');
-                row.quantity = row.quantity.replace('n/a', '');
-                row.quantity = row.quantity.replace('N/A', '');
-                row.quantity = row.quantity.replace('na', '');
-                row.quantity = row.quantity.replace(/ml/i, '');
-                row.quantity = row.quantity.replace('prj31f', '');
 
-                //var match = row.quantity.match(/^([<>~]*)[ ]*(\d*\.*\d*)[ ]*(\+)*(.*)$/);
-                var match = row.quantity.match(/^\s*([<>~]*)\s*(\d*\.*\d*)\s*(\+)*(.*)$/);
-                if (match[1] || match[3])
-                    row.quantityOORIndicator = match[1] || match[3];
-
-                row.quantity = match[2];
-            }
-        }
-    },
-    fixDrugUnits: function(row, errors){
-        //TODO
-    },
-    fixHemaMiscMorphology: function(row, errors){
-        var c = row.morphology.split('_');
-        //changes by request of molly
-        //reverted.  will handle during data entry
-//        if(c[0]=='TOXIC GRANULES')
-//            c[0] = 'TOXIC CHANGE';
-
-        row.morphology = c[0];
-        if (c[1])
-            row.score = c[1];
-    },
-    suspDate: function(row, errors){
-        //TODO
-        if(typeof(row.Date) == 'string'){
-            row.Date = new java.util.Date(java.util.Date.parse(row.Date));
-        }
-
-        //flag any dates greater than 1 year from now
-        var cal1 = new java.util.GregorianCalendar();
-        cal1.add(java.util.Calendar.YEAR, 1);
-        var cal2 = new java.util.GregorianCalendar();
-        cal2.setTime(row.Date);
-        
-        if(cal2.after(cal1)){
-            row._warnings.push('Date is in future: '+row.Date);
-            row.QCStateLabel = errorQC;
-        }
-
-        cal1.add(java.util.Calendar.YEAR, -61);
-        if(cal1.after(cal2)){
-            row._warnings.push('Date is in distant past: '+row.Date);
-            row.QCStateLabel = errorQC;
-        }
-    },
-    suspImmunology: function(row, errors){
-        //TODO: flag abnormal values
-        //really could use sql...maybe hard encode for now?
-    },
-    suspHematology: function(row, errors){
-        //TODO: flag abnormal values
-        //same as above
-    },
-    fixNecropsyCase: function(row, errors){
-        //we try to clean up the caseno
-        var re = /([0-9]+)(a|c)([0-9]+)/i;
-        var match = row.caseno.match(re);
-        if (!match){
-            row._warnings.push('Error in caseno: '+row.caseno);
-            row.QCStateLabel = errorQC;
-        }
-        else {
-            //fix the year
-            if (match[1].length == 2){
-                //kind of a hack. we just assume records wont be that old
-                if (match[1] < 20)
-                    match[1] = '20' + match[1];
-                else
-                    match[1] = '19' + match[1];
-            }
-            else if (match[1].length == 4){
-                //these values are ok
+            if(!demographicsMap[id] || !demographicsMap[id].lsid){
+                missingIds.push(id);
             }
             else {
-                row._warnings.push('Unsure how to correct caseno year: '+match[1]);
-                row.QCStateLabel = errorQC;
+//                if(demographicsMap[id].arrivedate != demographicsMap[id].maxArrivalDate){
+                    rowDataArray.push({
+                        lsid: demographicsMap[id].lsid,
+                        arrivedate: demographicsMap[id].maxArrivalDate
+                    });
+//                }
             }
-
-            //standardize number to 3 digits
-            if (match[3].length != 3){
-                var tmp = match[3];
-                for (var i=0;i<(3-match[3].length);i++){
-                    tmp = '0' + tmp;
-                }
-                match[3] = tmp;
-            }
-            row.caseno = match[1] + match[2] + match[3];
         }
-    },
-    fixRoom: function(row, errors){
-         //TODO
-    },
-    fixCage: function(row, errors){
-         //TODO
-    },
-    fixSpecies: function(row, errors){
-         //TODO
-    },
-    fixSurgMajor: function(row, errors){
-        switch (row.major){
-            case 'y':
-            case 'Y':
-                row.major = true;
-                break;
-            default:
-                row.major = false;
+console.log(rowDataArray);
+console.log(missingIds);
+        if(rowDataArray.length){
+            LABKEY.Query.updateRows({
+                schemaName: 'study',
+                queryName: 'demographics',
+                rows: rowDataArray,
+                success: function(data){
+                    console.log('Success updating demographics')
+                },
+                failure: EHR.onFailure
+            });
         }
-    },
-    fixBirth: function(row, errors){
-        //TODO: figure out how to flag estimated birthdates
-        //row.birthmvIndicator = 'E';
-    },
-    setSpecies: function(row, errors){
-        if (row.Id.match(/(^rh([0-9]{4})$)|(^r([0-9]{5})$)/))
-            row.species = 'Rhesus';
-        else if (row.Id.match(/^cy([0-9]{4})$/))
-            row.species = 'Cynomolgus';
-        else if (row.Id.match(/^ag([0-9]{4})$/))
-            row.species = 'Vervet';
-        else if (row.Id.match(/^cj([0-9]{4})$/))
-            row.species = 'Marmoset';
-        else if (row.Id.match(/^so([0-9]{4})$/))
-            row.species = 'Cotton-top Tamarin';
-        else if (row.Id.match(/^pt([0-9]{4})$/))
-            row.species = 'Pigtail';
 
-        //these are to handle legacy data:
-        else if (row.Id.match(/(^rha([a-z]{1})([0-9]{2}))$/))
-            row.species = 'Rhesus';
-        else if (row.Id.match(/(^rh-([a-z]{1})([0-9]{2}))$/))
-            row.species = 'Rhesus';
-        else if (row.Id.match(/^cja([0-9]{3})$/))
-            row.species = 'Marmoset';
-        else if (row.Id.match(/^m([0-9]{5})$/))
-            row.species = 'Marmoset';
-        else if (row.Id.match(/^tx([0-9]{4})$/))
-            row.species = 'Marmoset';
+        //send email to colony records alerting that row is lacking from demographics
+        if(missingIds.length){
+            //find recipients:
+            var recipients = [];
+            LABKEY.Query.selectRows({
+                schemaName: 'ehr',
+                queryName: 'notificationRecipients',
+                filterArray: [LABKEY.Filter.create('notificationType', 'Colony Validation - General', LABKEY.Filter.Types.EQUAL)],
+                success: function(data){
+                    for(var i=0;i<data.rows.length;i++){
+                        recipients.push(LABKEY.Message.createRecipient(LABKEY.Message.recipientType.to, data.rows[i].recipient));
 
-        else
-            row.species = 'Unknown';
+                        if(shared.verbosity > 0)
+                            console.log('Sending email to: '+data.rows[i].recipient);
+                    }
+
+                    if(recipients.length){
+                        LABKEY.Message.sendMessage({
+                            msgFrom: 'admin@test.com',
+                            msgSubject: 'Ids missing from demographics table',
+                            msgRecipients: recipients,
+                            msgContent: [
+                                //LABKEY.Message.createMsgContent(LABKEY.Message.msgType.html, '<h2>This is a test message</h2>'),
+                                LABKEY.Message.createMsgContent(LABKEY.Message.msgType.plain, 'The following Ids were added to arrival, but do not have records in the demographics table: '+missingIds.join(','))
+                            ]
+                        });
+                    }
+                },
+                failure: EHR.onFailure
+            });
+        }
     }
+
 }
-
-
-
-// ================================================
-
-
-
-
-
-
-
-//==includeEnd
-
-// ================================================
-

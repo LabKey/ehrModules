@@ -66,10 +66,10 @@ EHR.ext.SearchPanel = Ext.extend(Ext.Panel, {
             }
             ,newFields: []
         };
-        EHR.UTILITIES.rApplyIf(this, metaDefaults);
+        EHR.utils.rApplyIf(this, metaDefaults);
 
         if(EHR.searchMetadata[this.queryName]){
-            EHR.UTILITIES.rApply(this, EHR.searchMetadata[this.queryName]);
+            EHR.utils.rApply(this, EHR.searchMetadata[this.queryName]);
         }
 
         LABKEY.Query.getQueryDetails({
@@ -79,7 +79,7 @@ EHR.ext.SearchPanel = Ext.extend(Ext.Panel, {
             ,viewName: this.viewName
             ,maxRows: 0
             ,successCallback: this.onLoad
-            ,errorCallback: EHR.UTILITIES.onError
+            ,errorCallback: EHR.utils.onError
             ,scope: this
         });
 
@@ -127,7 +127,7 @@ EHR.ext.SearchPanel = Ext.extend(Ext.Panel, {
 
         //allow metadata override
         if (this.metadata && this.metadata[meta.name]){
-            EHR.UTILITIES.rApply(meta, this.metadata[meta.name])
+            EHR.utils.rApply(meta, this.metadata[meta.name])
         }
 
        //TODO: hack way to avoid snomed lookup combos

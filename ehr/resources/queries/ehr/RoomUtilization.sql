@@ -13,8 +13,7 @@ SELECT
 FROM ehr_lookups.cage c
 
 FULL JOIN study.housing h
-
-ON (c.room=h.room AND c.cage=h.cage)
+  ON (c.room=h.room AND c.cage=h.cage)
 
 WHERE h.odate IS NULL
 

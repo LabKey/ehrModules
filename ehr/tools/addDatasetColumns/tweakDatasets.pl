@@ -25,6 +25,7 @@ use File::Spec;
 use File::Path qw(make_path);
 use Time::localtime;
 use File::Copy;
+use strict;
 #use DBI;
 #use DBD::PgDBI;
 
@@ -68,8 +69,19 @@ my $expected_columns = {
 	},
 	objectid	 => {
 		-propertyURI => 'urn:ehr.labkey.org/#ObjectId',
-	}			
+	},			
+	enddate => {
+		-propertyURI => 'urn:ehr.labkey.org/#EndDate',
+		-type => 'timestamp without time zone',
+#		-optional => 1,
+	},
+	daterequested => {
+		-propertyURI => 'urn:ehr.labkey.org/#DateRequested',
+		-type => 'timestamp without time zone',
+#		-optional => 1,
+	}	
 }; 
+
 
 my $dataset_hash = {};
 
@@ -89,19 +101,27 @@ foreach my $dataset (grep(/c108/, @$datasets)){
 	#add columns as needed
 	my $columns = runSQL("select column_name FROM information_schema.columns WHERE table_name = '$dataset'"); 
 	foreach my $col (keys %$expected_columns){
-		$sql .= "--$dataset, $col\n";
 		my $result = findPropDescriptor($dataset, $col);		
 		if(!$result){
-			$sql .= "\t--Cannot find property description\n";
+			print "ERROR: Cannot find property descriptor: $col\n";
 		};		
-				
-		if(!grep(/$col/, @$columns)){			
-			addColumn($dataset, $col);
+
+		if(!$$expected_columns{$col}{-optional}){				
+			$sql .= "--$dataset, $col\n";
+			if(!grep(/$col/, @$columns)){			
+				addColumn($dataset, $col);
+			}	
+			verifyPropDescriptor($dataset, $col);
 		}
-	
-		verifyPropDescriptor($dataset, $col);		
+		else {
+			#only add if the column already exists
+			if(grep(/$col/, @$columns)){
+				$sql .= "--$dataset, $col\n";			
+				verifyPropDescriptor($dataset, $col);
+			}			
+		}		
 	}		
-	
+		
 	#add index:
 #	my $fields_to_index = ['taskid', 'requestid', 'parentid', 'objectid'];
 #	foreach my $fn (@$fields_to_index){
@@ -117,7 +137,7 @@ print $sql."\n";
 
 sub findPropDescriptor {
 	my ($dataset, $col)	= @_;
-
+	
 	if(!$$expected_columns{$col}{-propertyId}){	
 		$$expected_columns{$col}{-propertyId} = runSQL("select propertyid from exp.propertydescriptor where propertyuri='".$$expected_columns{$col}{-propertyURI}."'");
 		$$expected_columns{$col}{-propertyId} = ${$$expected_columns{$col}{-propertyId}}[2];
@@ -174,6 +194,7 @@ sub verifyPropDescriptor {
 	
 	if ($count == 1) {
 		$sql .= "UPDATE exp.propertydomain SET propertyid=".$$expected_columns{$col}{-propertyId}." where domainId=".$$dataset_hash{$dataset}{-domainId}." AND propertyid IN ($oldId);\n";
+		$sql .= "DELETE FROM exp.propertydescriptor WHERE propertyid!=".$$expected_columns{$col}{-propertyId}." AND propertyid IN ($oldId);\n";
 	}		 			
 	else {
 		#if more than 1 row exists, this means we have duplicate property descriptors
@@ -182,6 +203,7 @@ sub verifyPropDescriptor {
 		$sql .= "--\tsort order: ".$min_sort."\n";
 		
 		$sql .= "UPDATE exp.propertydomain SET propertyid=".$$expected_columns{$col}{-propertyId}." where domainId=".$$dataset_hash{$dataset}{-domainId}." AND propertyid IN ($oldId) AND sortorder=$min_sort;\n";			
+		$sql .= "DELETE FROM exp.propertydescriptor WHERE propertyid!=".$$expected_columns{$col}{-propertyId}." AND propertyid IN ($oldId);\n";
 		$sql .= "DELETE FROM exp.propertydomain WHERE propertyid!=".$$expected_columns{$col}{-propertyId}." AND domainId=".$$dataset_hash{$dataset}{-domainId}." AND propertyid IN ($oldId) AND sortorder!=$min_sort;\n";										
 	}	
 }

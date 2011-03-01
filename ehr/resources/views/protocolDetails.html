@@ -34,7 +34,7 @@ Ext.onReady(function ()
         filters: [LABKEY.Filter.create('protocol', protocol, LABKEY.Filter.Types.EQUAL)],
         //sort: '-Date',
         scope: this,
-        errorCallback: EHR.UTILITIES.onError
+        errorCallback: EHR.utils.onError
      }).render('protocolProjects');
 
 
@@ -54,7 +54,7 @@ Ext.onReady(function ()
         viewName: 'Active Assignments',
         sort: '-Date',
         scope: this,
-        errorCallback: EHR.UTILITIES.onError
+        errorCallback: EHR.utils.onError
      }).render('protocolAssignments');
 
 
@@ -73,7 +73,7 @@ Ext.onReady(function ()
         //viewName: '',
         //sort: '-Date',
         scope: this,
-        errorCallback: EHR.UTILITIES.onError
+        errorCallback: EHR.utils.onError
      }).render('protocolTotalAnimalsBySpecies');
 
 
@@ -92,12 +92,12 @@ Ext.onReady(function ()
         //viewName: '',
         //sort: '-Date',
         scope: this,
-        errorCallback: EHR.UTILITIES.onError
+        errorCallback: EHR.utils.onError
      }).render('protocolTotalHistoricAnimalsBySpecies');
 
 
 
-    EHR.UTILITIES.isMemberOf(['vets (LDAP)', 'cpi (LDAP)', 'protocol (LDAP)', 'Site Administrators'], loadPdf);
+    EHR.utils.isMemberOf(['vets (LDAP)', 'cpi (LDAP)', 'protocol (LDAP)', 'Site Administrators'], loadPdf);
 
     function loadPdf(){
         new LABKEY.QueryWebPart({
@@ -114,7 +114,7 @@ Ext.onReady(function ()
             buttonBarPosition: 'none',
             filters: [LABKEY.Filter.create('protocol', protocol, LABKEY.Filter.Types.EQUAL)],
             scope: this,
-            errorCallback: EHR.UTILITIES.onError
+            errorCallback: EHR.utils.onError
          }).render('protocolPdf');
     }
 

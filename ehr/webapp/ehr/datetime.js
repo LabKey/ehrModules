@@ -274,6 +274,8 @@ Ext.ux.form.DateTime = Ext.extend(Ext.form.Field, {
                 this.disabled = true;
                 this.df.disabled = true;
                 this.tf.disabled = true;
+                //NOTE: following line added by bbimber b/c disabled fields should not show errors
+                this.clearInvalid();
         this.fireEvent("disable", this);
         return this;
     } // eo function disable

@@ -130,7 +130,7 @@ EHR.ext.StoreCollection = Ext.extend(Ext.util.MixedCollection, {
         if(this.fireEvent('beforecommit', records, commands)===false)
             return;
 
-        Ext.Ajax.request({
+        var request = Ext.Ajax.request({
             url : LABKEY.ActionURL.buildURL('query', 'saveRows', this.containerPath),
             method : 'POST',
             success: this.onCommitSuccess,
@@ -144,6 +144,10 @@ EHR.ext.StoreCollection = Ext.extend(Ext.util.MixedCollection, {
                 'Content-Type' : 'application/json'
             }
         });
+
+        Ext.each(records, function(rec){
+            rec.lastTransactionId = request.tId;
+        }, this);
     },
 
     isValid: function(){
@@ -181,23 +185,25 @@ EHR.ext.StoreCollection = Ext.extend(Ext.util.MixedCollection, {
         return isLoading;
     },
 
-    onValidation: function(store, errors){
+    onValidation: function(store, records){
         //check other stores
-        this.each(function(s){
-            if(s == store)
-                return;
-            if(s.errors && s.errors.length){
-                errors = errors.concat(s.errors);
-            }
-        }, this);
-
         var maxSeverity = '';
-        Ext.each(errors, function(e){
-            maxSeverity = EHR.UTILITIES.maxError(maxSeverity, e.severity);
+        this.each(function(store){
+            maxSeverity = EHR.utils.maxError(maxSeverity, store.maxErrorSeverity());
         }, this);
 
-        this.errors = errors;
-        this.fireEvent('validation', this, errors, maxSeverity);
+        this.fireEvent('validation', this, maxSeverity);
+    },
+
+    getErrors: function(){
+        var errors = [];
+        this.each(function(store){
+            store.errors.each(function(error){
+                errors.push(error);
+            }, this);
+        }, this);
+
+        return errors;
     },
 
     getOnCommitFailure : function(records) {
@@ -207,32 +213,49 @@ console.log(response)
             for(var idx = 0; idx < records.length; ++idx)
                 delete records[idx].saveOperationInProgress;
 
-            var json = this.getJson(response);
+            var serverError = this.getJson(response);
 
-            //handle validation script errors and exceptions differently
-            if(json.errors && json.errors.length){
-                this.handleValidationErrors(records, json);
+            //this is done because the structure of the error object differs depending on whether you sent a single row or multiple
+            //this is an attempt to normalize, but should be removed when possible
+            if(serverError.rowNumber!==undefined || !serverError.errors){
+                //this means either we only submitted 1 row, or there was an exception
+                serverError = {errors: [serverError], exception: serverError.exception};
             }
-            else {
-                if(false !== this.fireEvent("commitexception", message)){
-                    var message = (json && json.exception) ? json.exception : response.statusText;
-                    Ext.Msg.alert("Error During Save. Could not save changes due to the following error:\n" + message);
+
+            var msg;
+            Ext.each(serverError.errors, function(error){
+                //handle validation script errors and exceptions differently
+                if(error.errors && error.errors.length){
+                    this.handleValidationErrors(records, error, response);
+                    msg = "Could not save changes due to validation errors.";
                 }
+                else {
+                    //if an exception was thrown, I believe we automatically only have one error returned
+                    //this means this can only be called once
+                    msg = 'Could not save changes due to the following error:\n' + (serverError && serverError.exception) ? serverError.exception : response.statusText;
+                }
+            }, this);
+
+            //NOTE this should be keyed using the request context object
+//            if(!serverError._validateOnly){
+//                msg = '';
+//            }
+
+            if(false !== this.fireEvent("commitexception", msg) && msg){
+                Ext.Msg.alert("Error", "Error During Save. "+msg);
             }
         };
     },
 
-    handleValidationErrors: function(records, serverError){
-        if(serverError.rowNumber!==undefined)
-            serverError = {errors: [serverError], exception: serverError.exception};
-
-        Ext.each(serverError.errors, function(error){
-            var record = records[error.rowNumber];
-            if(record)
-                record.store.handleError(record, error);
-            else
-                console.log(error);
-        }, this);
+    handleValidationErrors: function(records, serverError, response){
+        var record = records[serverError.rowNumber];
+        if(record){
+            record.store.handleValidationError(record, serverError, response);
+        }
+        else {
+            console.log('ERROR: Record not found');
+            console.log(serverError);
+        }
     },
 
     onCommitSuccess : function(response, options){
@@ -294,7 +317,7 @@ console.log(response)
         }, this);
     },
     showErrors: function(){
-        console.log(this.errors);
+        console.log(this.getErrors());
     }
 });
 

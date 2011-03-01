@@ -4562,9 +4562,9 @@ VALUES
 DROP TABLE IF EXISTS ehr_lookups.drug_defaults;
 CREATE TABLE ehr_lookups.drug_defaults (
   code varchar(255) NOT NULL,
-  dosage double,
+  dosage float,
   dosage_units varchar(255),
-  concentration double,
+  concentration float,
   conc_units varchar(255),
 
   CONSTRAINT PK_drug_defaults PRIMARY KEY (code)

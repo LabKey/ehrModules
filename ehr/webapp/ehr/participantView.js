@@ -103,7 +103,7 @@ Ext.onReady(function ()
                 errorCallback: function(error){
                     console.log('Error callback called');
                     console.log(target);
-                    EHR.UTILITIES.onError(error)
+                    EHR.utils.onError(error)
                 }
             });
     //TODO: replace when store is fixed

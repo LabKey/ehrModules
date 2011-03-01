@@ -84,8 +84,15 @@ CREATE TABLE ehr.requests
     --DueDate TIMESTAMP,
     title varchar(4000),
     FormType character varying(200),
+
+    priority varchar(200),
+    notify1 varchar(200),
+    notify2 varchar(200),
+    pi varchar(200),
     QCState integer,
     Description text,
+    daterequested timestamp,
+    enddate timestamp,
 
     Container ENTITYID NOT NULL,
     CreatedBy USERID NOT NULL,
@@ -266,7 +273,7 @@ CREATE TABLE ehr.formPanelSections
 -- DROP TABLE IF EXISTS ehr.taskPanelSectionMapping;
 -- CREATE TABLE ehr.taskPanelSectionMapping
 -- (
---     RowId serial NOT NULL PRIMARY KEY,
+--     RowId serial NOT NULL,
 --     FormType varchar(4000) not null,
 --     SectionId int4,
 --     Destination varchar(4000) not null,
@@ -276,7 +283,9 @@ CREATE TABLE ehr.formPanelSections
 --     CreatedBy USERID NOT NULL,
 --     Created TIMESTAMP NOT NULL,
 --     ModifiedBy USERID NOT NULL,
---     Modified TIMESTAMP NOT NULL
+--     Modified TIMESTAMP NOT NULL,
+--
+--      CONSTRAINT PK_taskPanelSectionMapping PRIMARY KEY (RowId)
 -- );
 
 
@@ -371,3 +380,26 @@ CREATE TABLE ehr.project
 
     CONSTRAINT PK_project PRIMARY KEY (project)
 );
+
+-- DROP TABLE IF EXISTS ehr.error_reports;
+-- CREATE TABLE ehr.error_reports
+-- (
+--     id varchar (4000) not null,
+--     protocol varchar(200) NOT NULL,
+--     account varchar(200),
+--     inves varchar(4000),
+--     avail varchar(100),
+--     title varchar(4000),
+--     research boolean,
+--     reqname varchar(4000),
+--     requestId varchar(100),
+--     QCState integer,
+--
+--     Container ENTITYID NOT NULL,
+--     CreatedBy USERID NOT NULL,
+--     Created TIMESTAMP NOT NULL,
+--     ModifiedBy USERID NOT NULL,
+--     Modified TIMESTAMP NOT NULL,
+--
+--     CONSTRAINT PK_project PRIMARY KEY (project)
+-- );

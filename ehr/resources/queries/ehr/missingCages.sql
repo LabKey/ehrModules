@@ -9,7 +9,8 @@ d.cage
 
 FROM study.demographics d
 
-FULL JOIN ehr_lookups.cage c
+LEFT JOIN ehr_lookups.cage c
+  on (c.room=d.room and c.cage=d.cage)
 
 WHERE c.room is null
 

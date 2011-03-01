@@ -81,22 +81,15 @@ EHR.ext.FormPanel = Ext.extend(Ext.FormPanel,
         this.addEvents('beforesubmit', 'participantvalid', 'participantinvalid');
 
         if(this.showStatus){
-            this.on('recordchange', this.onRecordChange, this, {buffer: 100});
+            this.on('recordchange', this.onRecordChange, this, {buffer: 100, delay: 100});
             this.mon(this.store, 'validation', this.onStoreValidate, this);
         }
 
+        this.on('recordchange', this.markInvalid, this, {buffer: 100, delay: 100});
     },
     loadQuery: function(store)
     {
         this.removeAll();
-
-        //create a placeholder for error messages
-        this.add({
-            tag: 'div',
-            ref: 'errorEl',
-            border: false,
-            style: 'padding:5px;text-align:center;'
-        });
 
         var previousField;
         store.fields.each(function(c){
@@ -157,6 +150,14 @@ EHR.ext.FormPanel = Ext.extend(Ext.FormPanel,
             }
         }, this);
 
+        //create a placeholder for error messages
+        this.add({
+            tag: 'div',
+            ref: 'errorEl',
+            border: false,
+            style: 'padding:5px;text-align:center;'
+        });
+
         if(this.rendered){
             this.doLayout();
         }
@@ -167,64 +168,66 @@ EHR.ext.FormPanel = Ext.extend(Ext.FormPanel,
 
     onRecordChange: function(theForm){
         if(!this.boundRecord)
-            this.getBottomToolbar().setStatus({text: 'No Records'})
+            this.getBottomToolbar().setStatus({text: 'No Records'});
+
+        this.markInvalid();
     },
 
-    onStoreValidate: function(store, errors){
-        if(errors.length)
+    onStoreValidate: function(store, records){
+        if(store.errors.getCount())
             this.getBottomToolbar().setStatus({text: 'ERRORS', iconCls: 'x-status-error'});
         else
             this.getBottomToolbar().setStatus({text: 'Section OK', iconCls: 'x-status-valid'});
 
-        this.markInvalid(errors);
+        this.markInvalid();
     },
 
-    markInvalid : function(errors)
+    markInvalid : function()
     {
         var formMessages = [];
         var toMarkInvalid = {};
+        var errorsInHiddenRecords = false;
+console.log('Mark invalid: '+this.store.errors.getCount());
 
-        if (typeof errors == "string")
-        {
-            formMessages.push(errors);
-            errors = null;
-        }
-        else if (Ext.isArray(errors))
-        {
-            for (var i = 0, len = errors.length; i < len; i++)
-            {
-                var fieldError = errors[i];
-                var meta = fieldError.record.fields.get(fieldError.field);
+        this.store.errors.each(function(error){
+            var meta = error.record.fields.get(error.field);
 
-                if(meta && meta.hidden)
-                    continue;
+            if(meta && meta.hidden)
+                return;
 
-                if(this.boundRecord && fieldError.record===this.boundRecord){
-                    if ("field" in fieldError){
-                        if(toMarkInvalid[fieldError.field])
-                            toMarkInvalid[fieldError.field] += '<br>'+fieldError.message;
-                        else
-                            toMarkInvalid[fieldError.field] = fieldError.message;
+            if(this.boundRecord && error.record===this.boundRecord){
+                if ("field" in error){
+                    //these are generic form-wide errors
+                    if ("_form" == error.field){
+                        formMessages.push(error.message);
                     }
-                    else if ("_form" == fieldError.field){
-                        formMessages.push(fieldError.message);
+                    else {
+                        if(toMarkInvalid[error.field])
+                            toMarkInvalid[error.field] += '<br>'+error.message;
+                        else
+                            toMarkInvalid[error.field] = error.message;
                     }
                 }
-//                else {
-//                    formMessages.push(fieldError.field+': '+fieldError.message);
-//                }
+                else {
+                    formMessages.push(error.message);
+                }
             }
-        }
+            else {
+                errorsInHiddenRecords = true;
+            }
+        }, this);
 
-        if (!EHR.UTILITIES.isEmptyObj(toMarkInvalid)){
+        if (!EHR.utils.isEmptyObj(toMarkInvalid))
             this.getForm().markInvalid(toMarkInvalid);
-        }
 
-        formMessages = Ext.util.Format.htmlEncode(formMessages.join('\n'));
-        if (this.errorEl)
+        if(errorsInHiddenRecords)
+            formMessages.push('There are errors in one or more records.  Problem records should be highlighted in red.');
+
+        if (this.errorEl){
+            formMessages = Ext.util.Format.htmlEncode(formMessages.join('\n'));
             this.errorEl.update(formMessages);
+        }
     }
-
 });
 Ext.reg('ehr-formpanel', EHR.ext.FormPanel);
 

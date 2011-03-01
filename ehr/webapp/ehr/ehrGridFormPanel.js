@@ -138,13 +138,13 @@ EHR.ext.GridFormPanel = Ext.extend(Ext.Panel,
         if(!this.theForm.boundRecord)
             this.getBottomToolbar().setStatus({text: 'No Records'})
     },
-    onStoreValidate: function(store, errors){
-        if(errors.length)
+    onStoreValidate: function(store, records){
+        if(store.errors.getCount())
             this.getBottomToolbar().setStatus({text: 'ERRORS', iconCls: 'x-status-error'});
         else
             this.getBottomToolbar().setStatus({text: 'Section OK', iconCls: 'x-status-valid'});
 
-        this.theForm.markInvalid(errors);
+        this.theForm.markInvalid();
     },
 
     gridBtns: {

@@ -5,8 +5,7 @@
  */
 
 
-//TODO: flag changes over 10%
-//maybe store flagged records in major events table?
+
 
 
 function repairRow(row, errors){
@@ -22,6 +21,11 @@ function setDescription(row, errors){
     return description;
 }
 
+<<<<<<< .mine
+function onComplete(row, errors){
+    //TODO: flag changes over 10%
+    //maybe store flagged records in major events table?
+}=======
 function beforeBoth(row, errors) {
     EHR.validation.rowInit(row, errors);
 
@@ -432,3 +436,4 @@ EHR.validation = {
 // ================================================
 
 
+>>>>>>> .r15703

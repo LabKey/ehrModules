@@ -51,7 +51,7 @@ Ext.onReady(function ()
             buttonBarPosition: 'top',
             filterArray: [LABKEY.Filter.create('runId', LABKEY.ActionURL.getParameter('runId'), LABKEY.Filter.Types.EQUAL)],
             scope: this,
-            errorCallback: EHR.UTILITIES.onError
+            errorCallback: EHR.utils.onError
          }).render('resultDetails');
     }
 

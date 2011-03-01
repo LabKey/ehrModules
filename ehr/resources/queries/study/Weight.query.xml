@@ -15,6 +15,28 @@
                           <fkColumnName>objectid</fkColumnName>
                         </fk>
                     </column>
+                    <column columnName="percentChange" wrappedColumnName="lsid">
+                        <columnTitle>Percent Change</columnTitle>
+                        <isHidden>false</isHidden>
+                        <isUnselectable>true</isUnselectable>
+                        <fk>
+                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
+                            <fkDbSchema>study</fkDbSchema>
+                            <fkTable>weightPctChange</fkTable>
+                            <fkColumnName>Id</fkColumnName>
+                        </fk>
+                    </column>
+                    <column columnName="relChange" wrappedColumnName="lsid">
+                        <columnTitle>Relative Change</columnTitle>
+                        <isHidden>false</isHidden>
+                        <isUnselectable>true</isUnselectable>
+                        <fk>
+                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
+                            <fkDbSchema>study</fkDbSchema>
+                            <fkTable>weightRelChange</fkTable>
+                            <fkColumnName>Id</fkColumnName>
+                        </fk>
+                    </column>
                 </columns>
             </table>
         </tables>

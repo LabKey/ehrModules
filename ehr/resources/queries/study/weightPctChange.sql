@@ -19,12 +19,21 @@ SELECT
 
 
 FROM study.weight w
-  --Find the next most recent weight date
-  LEFT JOIN
+  --Find the next most recent weight date before this one
+  JOIN
     (SELECT T2.Id, T2.date, max(T1.date) as PrevDate
       FROM study.weight T1 JOIN study.weight T2 ON (T1.Id = T2.Id AND T1.date < T2.date) GROUP BY T2.Id, T2.date) w2
       ON (w.Id = w2.Id AND w.date = w2.date)
 
-  LEFT JOIN study.weight w3
-      ON (w.Id = w3.Id AND w3.date = w2.prevdate) 
+  JOIN study.weight w3
+      ON (w.Id = w3.Id AND w3.date = w2.prevdate)
 
+  --Find the current weight date
+  JOIN
+    (SELECT t1.Id, max(T1.date) as LastWeightDate
+      FROM study.weight T1 GROUP BY T1.Id) w4
+      ON (w.Id = w4.Id)
+
+
+  JOIN study.weight w5
+      ON (w5.Id = w.Id AND w5.date = w4.LastWeightDate)

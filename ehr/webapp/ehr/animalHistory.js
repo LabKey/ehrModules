@@ -155,7 +155,7 @@ EHR.ext.SingleAnimalReport = Ext.extend(Ext.Panel, {
             errorCallback: function(error){
                 console.log('Error callback called');
                 console.log(target);
-                EHR.UTILITIES.onError(error)
+                EHR.utils.onError(error)
             }
         });
 //TODO: replace when store is fixed
@@ -938,7 +938,7 @@ EHR.ext.SingleAnimalReport = Ext.extend(Ext.Panel, {
                 this.loadProtovisChart(tab, subject);
                 break;
             default:
-                EHR.UTILITIES.onError('Improper Report Type');
+                EHR.utils.onError('Improper Report Type');
         }
     },
 
@@ -1054,7 +1054,7 @@ EHR.ext.SingleAnimalReport = Ext.extend(Ext.Panel, {
                 console.log(target);
                 target.innerHTML = 'ERROR: ' + error.exception + '<br>';
                 this.endMsg();
-                EHR.UTILITIES.onError(error)
+                EHR.utils.onError(error)
             },
             scope: this
         };
@@ -1097,7 +1097,7 @@ EHR.ext.SingleAnimalReport = Ext.extend(Ext.Panel, {
             errorCallback: function(error){
                 target.innerHTML = 'ERROR: ' + error.exception + '<br>';
                 this.endMsg();
-                EHR.UTILITIES.onError(error)
+                EHR.utils.onError(error)
             },
             scope: this
         };
@@ -1154,7 +1154,7 @@ EHR.ext.SingleAnimalReport = Ext.extend(Ext.Panel, {
             ,errorCallback: function(error){
                 target.innerHTML = 'ERROR: ' + error.exception + '<br>';
                 this.endMsg();
-                EHR.UTILITIES.onError(error)
+                EHR.utils.onError(error)
             }
             ,scope: this
         });
@@ -1182,7 +1182,7 @@ EHR.ext.SingleAnimalReport = Ext.extend(Ext.Panel, {
             errorCallback: function(error){
                 target.innerHTML = 'ERROR: ' + error.exception + '<br>';
                 this.endMsg();
-                EHR.UTILITIES.onError(error)
+                EHR.utils.onError(error)
             },
             scope: this
         });

@@ -42,49 +42,49 @@ Ext.namespace('EHR.ext');
 //        };
 //    }
 //});
-Ext.override(Ext.layout.FormLayout,
-{
-    fieldTpl: (function()
-    {
-        var t = new Ext.Template(
-                '<div class="x-form-item {itemCls}" tabIndex="-1">',
-                '<label for="{id}" style="{labelStyle}" class="x-form-item-label" {labelAttrs}>{label}{labelSeparator}{helpPopup}</label>',
-                '<div class="x-form-element" id="x-form-el-{id}" style="{elementStyle}" {fieldAttrs}>',
-                '</div><div class="{clearCls}"></div>',
-                '</div>'
-                );
-        t.disableFormats = true;
-        return t.compile();
-    })(),
-
-    _origGetTemplateArgs : Ext.layout.FormLayout.prototype.getTemplateArgs,
-
-    _toQtip : function(o)
-    {
-        if(Ext.isString(o))
-            o = {html: o};
-
-        if (!o || !'html' in o || !o.html) return false;
-        var qtip = 'ext:qtip="' + o.html + '"';
-        if ('title' in o && o.title)
-            qtip += ' ext:qtitle="' + Ext.util.Format.htmlEncode(o.title) + '"';
-        return qtip;
-    },
-
-    getTemplateArgs: function(field)
-    {
-        var args = this._origGetTemplateArgs(field);
-        var noLabelSep = !field.fieldLabel || field.hideLabel;
-        var qtipPopup = this._toQtip(field.helpPopup);
-        var qtipField = this._toQtip(field.qtip || field.helpPopup);
-
-        return Ext.apply(args, {
-            labelAttrs    : '',
-            helpPopup     : (noLabelSep || !qtipPopup) ? '' : '<a href="#"><span class="labkey-help-pop-up" ' + qtipPopup + '>?</span></a>',
-            fieldAttrs    : '' // !qtipField ? '' : qtipField // doesn't work right (tip works over <div>, but not over <input>
-        });
-    }
-});
+//Ext.override(Ext.layout.FormLayout,
+//{
+//    fieldTpl: (function()
+//    {
+//        var t = new Ext.Template(
+//                '<div class="x-form-item {itemCls}" tabIndex="-1">',
+//                '<label for="{id}" style="{labelStyle}" class="x-form-item-label" {labelAttrs}>{label}{labelSeparator}{helpPopup}</label>',
+//                '<div class="x-form-element" id="x-form-el-{id}" style="{elementStyle}" {fieldAttrs}>',
+//                '</div><div class="{clearCls}"></div>',
+//                '</div>'
+//                );
+//        t.disableFormats = true;
+//        return t.compile();
+//    })(),
+//
+//    _origGetTemplateArgs : Ext.layout.FormLayout.prototype.getTemplateArgs,
+//
+//    _toQtip : function(o)
+//    {
+//        if(Ext.isString(o))
+//            o = {html: o};
+//
+//        if (!o || !'html' in o || !o.html) return false;
+//        var qtip = 'ext:qtip="' + o.html + '"';
+//        if ('title' in o && o.title)
+//            qtip += ' ext:qtitle="' + Ext.util.Format.htmlEncode(o.title) + '"';
+//        return qtip;
+//    },
+//
+//    getTemplateArgs: function(field)
+//    {
+//        var args = this._origGetTemplateArgs(field);
+//        var noLabelSep = !field.fieldLabel || field.hideLabel;
+//        var qtipPopup = this._toQtip(field.helpPopup);
+//        var qtipField = this._toQtip(field.qtip || field.helpPopup);
+//
+//        return Ext.apply(args, {
+//            labelAttrs    : '',
+//            helpPopup     : (noLabelSep || !qtipPopup) ? '' : '<a href="#"><span class="labkey-help-pop-up" ' + qtipPopup + '>?</span></a>',
+//            fieldAttrs    : '' // !qtipField ? '' : qtipField // doesn't work right (tip works over <div>, but not over <input>
+//        });
+//    }
+//});
 
 
 //a css fix for Ext datepicker and tabpanel

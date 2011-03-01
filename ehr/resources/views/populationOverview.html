@@ -3,7 +3,7 @@
 <script type="text/javascript">
 
 
-LABKEY.requiresScript("ehr/utilities.js");
+LABKEY.requiresScript("ehr/utils.js");
 Ext.Ajax.timeout = 120000; //in milliseconds
 
 </script>
@@ -22,7 +22,7 @@ Ext.onReady(function(){
          showDetailsColumn: false,
          showUpdateColumn: false,
          buttonBarPosition: 'top',
-         errorCallback: EHR.UTILITIES.onError,
+         errorCallback: EHR.utils.onError,
          //successCallback: this.endMsg,
          scope: this
      }).render('colonyPopulationSummary');
@@ -73,7 +73,7 @@ Ext.onReady(function(){
                     '_union.species~neq': 'Unknown',
                     '_select.species~neq': 'Unknown'
                 },
-                errorCallback: EHR.UTILITIES.onError
+                errorCallback: EHR.utils.onError
                 //,scope: this
             };
 

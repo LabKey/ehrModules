@@ -9,7 +9,7 @@
             </properties>
        </column>
        <column name="quantity" />
-       <column name="done_by" />
+       <column name="performedby" />
        <column name="done_for" />
        <column name="p_s" />
        <column name="a_v" />

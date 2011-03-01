@@ -137,6 +137,18 @@ EHR.ext.DisplayField = Ext.extend(Ext.form.DisplayField,
         else
             return v;
     },
+
+    setRawValue : function(v){
+        if(this.htmlEncode){
+            v = Ext.util.Format.htmlEncode(v);
+        }
+        if(this.rendered && this.tpl){
+            console.log(this.tpl);
+        }
+
+        return this.rendered ? (this.el.dom.innerHTML = (Ext.isEmpty(v) ? '' : v)) : (this.value = v);
+    },
+
     setValue: function(v){
         this.displayValue = this.getDisplayValue(v);
         this.data = this.displayValue;
@@ -345,7 +357,7 @@ EHR.ext.ViewCombo = Ext.extend(LABKEY.ext.ComboBox, {
             ,queryName: this.queryName
             ,schemaName: this.schemaName
             ,successCallback: this.onViewLoad
-            ,errorCallback: EHR.UTILITIES.onError
+            ,errorCallback: EHR.utils.onError
             ,scope: this
         });
 
@@ -920,8 +932,8 @@ EHR.ext.DrugDoseField = Ext.extend(Ext.form.TriggerField,
                 else
                     this.msgDiv = this.container.insertHtml('beforeEnd', 'Weight: '+weight+' kg');
 
-                var amount = EHR.UTILITIES.roundNumber(weight*dosage, 2);
-                var vol = EHR.UTILITIES.roundNumber(weight*dosage/conc, 2);
+                var amount = EHR.utils.roundNumber(weight*dosage, 2);
+                var vol = EHR.utils.roundNumber(weight*dosage/conc, 2);
                 parent.boundRecord.set('amount', amount);
                 parent.boundRecord.set('volume', vol);
                 parent.boundRecord.set('dosage', dosage);

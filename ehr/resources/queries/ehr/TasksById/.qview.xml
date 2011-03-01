@@ -46,7 +46,7 @@
    <!--<filters>-->
    <!--</filters>-->
    <sorts>
-       <sort column="DueDate" descending="true"/>
-       <sort column="created" descending="true"/>
+       <sort column="taskid/DueDate" descending="true"/>
+       <sort column="taskid/created" descending="true"/>
    </sorts>
 </customView>

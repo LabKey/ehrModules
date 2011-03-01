@@ -35,7 +35,11 @@ function btn1(){
         ['Weight', 'Task', '', ''],
         ['Housing', 'Task', '', ''],
         ['Blood Draw Request', 'Request', '', ''],
-        ['Housing Request', 'Request', '', '']
+        ['Housing Request', 'Request', '', ''],
+        ['Virology', 'Task', '', ''],
+        ['Hematology', 'Task', '', ''],
+        ['Immunology', 'Task', '', ''],
+        ['Blood Chemistry', 'Task', '', '']
     ];
 
     LABKEY.Query.insertRows(makeObject(config, data, fields));
@@ -97,7 +101,19 @@ function btn2(){
         ['Blood Draw Request' ,'formSections' ,'ehr-abstractpanel' ,'1' ,'', '', '', '', '', '{viewName: "Blood Draw Info", boxMinHeight: 290}', ''],
         ['Blood Draw Request' ,'formSections' ,'ehr-gridformpanel' ,'2' ,'Blood Draws', 'study', '', 'Task,Request', '', '', ''],
         ['Housing Request' ,'formSections' ,'ehr-abstractpanel' ,'1' ,'', '', '', '', '', '', ''],
-        ['Housing Request' ,'formSections' ,'ehr-gridformpanel' ,'2' ,'Housing', 'study', '', 'Task,Request', '', '', '']
+        ['Housing Request' ,'formSections' ,'ehr-gridformpanel' ,'2' ,'Housing', 'study', '', 'Task,Request', '', '', ''],
+        ['Virology' ,'formSections' ,'ehr-abstractpanel' ,'1' ,'', '', '', '', '', '', ''],
+        ['Virology' ,'formSections' ,'ehr-formpanel' ,'2' ,'Virology Runs', 'study', '', 'Task,Assay', '', '', ''],
+        ['Virology' ,'formSections' ,'ehr-gridformpanel' ,'' ,'Virology Results', 'study', '', 'Task,Assay', '', '', ''],
+        ['Hematology' ,'formSections' ,'ehr-abstractpanel' ,'1' ,'', '', '', '', '', '', ''],
+        ['Hematology' ,'formSections' ,'ehr-formpanel' ,'2' ,'Hematology Runs', 'study', '', 'Task,Assay', '', '', ''],
+        ['Hematology' ,'formSections' ,'ehr-gridformpanel' ,'3' ,'Hematology Results', 'study', '', 'Task,Assay', '', '', ''],
+        ['Immunology' ,'formSections' ,'ehr-abstractpanel' ,'1' ,'', '', '', '', '', '', ''],
+        ['Immunology' ,'formSections' ,'ehr-formpanel' ,'2' ,'Immunology Runs', 'study', '', 'Task,Assay', '', '', ''],
+        ['Immunology' ,'formSections' ,'ehr-gridformpanel' ,'3' ,'Immunology Results', 'study', '', 'Task,Assay', '', '', ''],
+        ['Blood Chemistry' ,'formSections' ,'ehr-abstractpanel' ,'1' ,'', '', '', '', '', '', ''],
+        ['Blood Chemistry' ,'formSections' ,'ehr-formpanel' ,'2' ,'Blood Chemistry Runs', 'study', '', 'Task,Assay', '', '', ''],
+        ['Blood Chemistry' ,'formSections' ,'ehr-gridformpanel' ,'3' ,'Blood Chemistry Results', 'study', '', 'Task,Assay', '', '', '']
     ];
     LABKEY.Query.insertRows(makeObject(config, data, fields));
 }
@@ -1911,6 +1927,24 @@ function btn7(){
     }
 
 
+function btn8(){
+    //records for task forms:
+    var config = {
+         schemaName: 'ehr',
+         queryName: 'notificationtypes',
+         rowDataArray: [],
+        success: onSuccess,
+        error: onError
+    };
+    var fields = ('NotificationType,description').split(',');
+    var data = [
+        ['Colony Validation - General', 'Subscribing to this notification will result in emails for general colony records issues like records needing attention, animals missing from the demographics table, etc.']
+    ];
+
+    LABKEY.Query.insertRows(makeObject(config, data, fields));
+}
+
+
 function makeObject(config, data, fields){
     Ext.each(data, function(row){
         var record = {};
@@ -1973,6 +2007,11 @@ var panel = new Ext.Panel({
         handler: btn6
     },{
         xtype: 'button',
+        text: 'Populate Notification Types Table',
+        scope: this,
+        handler: btn8
+    },{
+        xtype: 'button',
         text: 'Populate All',
         scope: this,
         handler: function(){
@@ -1983,6 +2022,7 @@ var panel = new Ext.Panel({
             btn5();
             btn6();
             btn7();
+            btn8();
         }
 
     }]

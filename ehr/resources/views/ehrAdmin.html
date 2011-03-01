@@ -3,12 +3,11 @@
 <script type="text/javascript">
 
 LABKEY.requiresScript("/ehr/navMenu.js");
-//LABKEY.requiresScript("/ehr/utilities.js");
 
 Ext.onReady(function (){
 
     if (LABKEY.Security.currentUser.isAdmin){
-    new EHR.UTILITIES.navMenu({
+    new EHR.utils.navMenu({
         renderTo: 'adminLinks',
         width: 350,
         sections: [
@@ -84,7 +83,7 @@ Ext.onReady(function (){
 //        buttonBarPosition: 'top',
 //        //maxRows: 2,
 //        scope: this,
-//        errorCallback: EHR.UTILITIES.onError
+//        errorCallback: EHR.utils.onError
 //     }).render('backupDate');
 
 

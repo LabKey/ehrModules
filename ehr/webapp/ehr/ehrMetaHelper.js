@@ -80,11 +80,11 @@ EHR.ext.metaHelper = {
 
         //now we allow overrides of default behavior, in order of precedence
         if(meta.editorConfig)
-            EHR.UTILITIES.rApply(editor, meta.editorConfig);
+            EHR.utils.rApply(editor, meta.editorConfig);
         if(meta.gridEditorConfig)
-            EHR.UTILITIES.rApply(editor, meta.gridEditorConfig);
+            EHR.utils.rApply(editor, meta.gridEditorConfig);
         if(config)
-            EHR.UTILITIES.rApply(editor, config);
+            EHR.utils.rApply(editor, config);
 
         return editor;
     },
@@ -94,11 +94,11 @@ EHR.ext.metaHelper = {
 
         //now we allow overrides of default behavior, in order of precedence
         if(meta.editorConfig)
-            EHR.UTILITIES.rApply(editor, meta.editorConfig);
+            EHR.utils.rApply(editor, meta.editorConfig);
         if(meta.formEditorConfig)
-            EHR.UTILITIES.rApply(editor, meta.formEditorConfig);
+            EHR.utils.rApply(editor, meta.formEditorConfig);
         if(config)
-            EHR.UTILITIES.rApply(editor, config);
+            EHR.utils.rApply(editor, config);
 
         return editor;
     },
@@ -379,12 +379,12 @@ EHR.ext.metaHelper = {
             delete col.width;
 
         if(meta.colModel) {
-            EHR.UTILITIES.rApply(col, meta.colModel);
+            EHR.utils.rApply(col, meta.colModel);
         }
 
         //allow override of defaults
         if(config && config[col.dataIndex])
-            EHR.UTILITIES.rApply(col, config[col.dataIndex]);
+            EHR.utils.rApply(col, config[col.dataIndex]);
 
         return col;
 

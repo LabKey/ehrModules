@@ -3,12 +3,12 @@
 
 <script type="text/javascript">
 
-LABKEY.requiresScript("/ehr/utilities.js");
+LABKEY.requiresScript("/ehr/utils.js");
 
 Ext.onReady(makePanel)
 
 function makePanel(){
-    if (!window.EHR || !window.EHR.ext || !window.EHR.UTILITIES)
+    if (!window.EHR || !window.EHR.ext || !window.EHR.utils)
     {
         makePanel.defer(10);
         return;

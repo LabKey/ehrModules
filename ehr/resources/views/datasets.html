@@ -16,7 +16,7 @@ function createNavMenu()
         queryName: 'DataSets',
         successCallback: onSuccess,
         scope: this,
-        errorCallback: EHR.UTILITIES.onError,
+        errorCallback: EHR.utils.onError,
         sort: config.headerField+','+config.displayField,
         filterArray: config.filterArray
     });
@@ -56,7 +56,7 @@ function createNavMenu()
 
         }
 
-        new EHR.UTILITIES.navMenu(menuCfg);
+        new EHR.utils.navMenu(menuCfg);
     }
 
 

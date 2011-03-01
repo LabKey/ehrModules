@@ -6,7 +6,7 @@
 
 Ext.namespace("EHR", "EHR.ext");
 
-LABKEY.requiresScript("/ehr/utilities.js");
+LABKEY.requiresScript("/ehr/Utils.js");
 LABKEY.requiresScript("/ehr/ehrMetaHelper.js");
 
 /**
@@ -23,13 +23,14 @@ LABKEY.requiresScript("/ehr/ehrMetaHelper.js");
  * @event
  * @description This will fire whenever the store's records are validated.
  * @param {Object} this The store object
- * @param {Boolean} valid The validation status of the store
+ * @param {Array} records Array of the records that were validated
  */
 
 EHR.ext.AdvancedStore = Ext.extend(LABKEY.ext.Store, {
     constructor: function(config){
         Ext.apply(this, {
-            pruneModifiedRecords: true
+            pruneModifiedRecords: true,
+            errors: new Ext.util.MixedCollection()
         });
 
 
@@ -55,7 +56,7 @@ EHR.ext.AdvancedStore = Ext.extend(LABKEY.ext.Store, {
 
     initMonitorValid: function(){
         this.on('update', this.validateRecord, this);
-        this.on('add', this.validateRecords, this);
+        //this.on('add', this.validateRecords, this);
         this.on('load', this.validateRecords, this);
         this.on('remove', this.onRemoveValidation, this);
 
@@ -70,7 +71,7 @@ EHR.ext.AdvancedStore = Ext.extend(LABKEY.ext.Store, {
     },
 
     onRemoveValidation: function(store, recs){
-        //validate all remaining records
+        //validate all remaining records, including refreshing all errors
         this.validateRecords(store);
     },
     onProxyLoad: function(proxy, response, options){
@@ -84,12 +85,12 @@ EHR.ext.AdvancedStore = Ext.extend(LABKEY.ext.Store, {
             //NOTE: perhaps move to this.fieldDefaults?
             if(this.metadata){
                 if(this.metadata['fieldDefaults']){
-                    EHR.UTILITIES.rApply(f, this.metadata['fieldDefaults']);
+                    EHR.utils.rApply(f, this.metadata['fieldDefaults']);
                 }
 
                 //allow more complex metadata, per field
                 if(this.metadata[f.name]){
-                    EHR.UTILITIES.rApply(f, this.metadata[f.name]);
+                    EHR.utils.rApply(f, this.metadata[f.name]);
                 }
             }
         }, this);
@@ -98,7 +99,7 @@ EHR.ext.AdvancedStore = Ext.extend(LABKEY.ext.Store, {
             var colModel = this.reader.jsonData.columnModel;
             Ext.each(colModel, function(col){
                 if(this.colModel[col.dataIndex]){
-                    EHR.UTILITIES.rApply(col, this.colModel[col.dataIndex]);
+                    EHR.utils.rApply(col, this.colModel[col.dataIndex]);
                 }
             }, this);
         }
@@ -192,31 +193,36 @@ EHR.ext.AdvancedStore = Ext.extend(LABKEY.ext.Store, {
 
     },
 
+    maxErrorSeverity: function(){
+        var maxSeverity;
+        this.errors.each(function(e){
+            maxSeverity = EHR.utils.maxError(maxSeverity, e.severity);
+        }, this);
+
+        return maxSeverity;
+    },
+
     validateRecords: function(store, recs, fireEvent){
         if(recs)
             Ext.each(recs, function(r){
-                var storeErrors = this.validateRecord(this, r, false);
+                this.validateRecord(this, r, false);
             }, this);
         else
+            //TODO: this will also clear server-side errors
+            this.errors.clear();
             this.each(function(r){
-                var storeErrors = this.validateRecord(this, r, false);
+                this.validateRecord(this, r, false);
             }, this);
 
-        var errors = [];
-        this.each(function(r){
-            if(r.errors && r.errors.length)
-                errors = errors.concat(r.errors);
-        }, this);
-
         if(fireEvent !== false){
-            this.errors = errors;
-            this.fireEvent('validation', this, errors);
+            this.fireEvent('validation', this, recs);
         }
-
-        return errors;
     },
 
     validateRecord: function(store, r, fireEvent){
+        if(debug)
+            console.log('Validating Record: '+r.id);
+
         r.errors = r.errors || [];
 
         //remove other client-side errors
@@ -226,12 +232,14 @@ EHR.ext.AdvancedStore = Ext.extend(LABKEY.ext.Store, {
         };
 
         r.fields.each(function(f) {
-            //NOTE: we use LABKEY's nullable here.  This allows fields to be set to 'allowBlank: false'
-            //which gives client-side errors, but allows form submission
-            //if the field is not userEditable, it will be set server-side
+            //NOTE: we're drawing a distinction between LABKEY's nullable and ext's allowBlank.
+            // This allows fields to be set to 'allowBlank: false', which throws a warning
+            // nullable:false will throw an error when null.
+            // also, if userEditable==false, we assume will be set server-side so we ignore it here
             if(f.userEditable!==false && Ext.isEmpty(r.data[f.name])){
                 if(f.nullable === false || f.allowBlank === false){
                     r.errors.push({
+                        id: LABKEY.Utils.generateUUID(),
                         field: f.name,
                         message: 'Field Is Required',
                         record: r,
@@ -243,14 +251,16 @@ EHR.ext.AdvancedStore = Ext.extend(LABKEY.ext.Store, {
             }
         },store);
 
+        //remove store errors from this record
+        //this should use the UUID given to each error
+        this.errors.each(function(item){
+            this.errors.remove(item);
+        }, this);
+        this.errors.addAll(r.errors);
+
         //this is designed such that validateRecords() can call validateRecord() multiple times without events firing
         if(fireEvent!==false){
-            this.errors = [];
-            this.each(function(r){
-                if(r.errors && r.errors.length)
-                    this.errors = this.errors.concat(r.errors);
-            }, this);
-            this.fireEvent('validation', this, this.errors);
+            this.fireEvent('validation', this, [r]);
         }
 
         return r.errors;
@@ -267,29 +277,13 @@ EHR.ext.AdvancedStore = Ext.extend(LABKEY.ext.Store, {
 
         //add a flag per command to make sure this record fails
         record._validateOnly = true;
-        record._validateStart = new Date();
         Ext.each(commands, function(c){
+            //TODO
             console.log('need to add context flag');
             console.log(c);
         }, this);
 
-        Ext.Ajax.request({
-            url : LABKEY.ActionURL.buildURL("query", "saveRows", this.containerPath),
-            method : 'POST',
-            success: function(){
-                console.log('this should not happen.  something went very wrong');
-            },
-            //this is actually the 'success'
-            failure: this.getOnCommitFailure([record]),
-            scope: this,
-            jsonData : {
-                containerPath: this.containerPath,
-                commands: commands
-            },
-            headers : {
-                'Content-Type' : 'application/json'
-            }
-        });
+        this.sendRequest([record], commands);
     },
 
 //    isValid: function(){
@@ -429,7 +423,11 @@ EHR.ext.AdvancedStore = Ext.extend(LABKEY.ext.Store, {
             return;
         }
 
-        Ext.Ajax.request({
+        this.sendRequest(records, commands);
+    },
+
+    sendRequest: function(records, commands){
+        var request = Ext.Ajax.request({
             url : LABKEY.ActionURL.buildURL("query", "saveRows", this.containerPath),
             method : 'POST',
             success: this.onCommitSuccess,
@@ -443,6 +441,10 @@ EHR.ext.AdvancedStore = Ext.extend(LABKEY.ext.Store, {
                 'Content-Type' : 'application/json'
             }
         });
+
+        Ext.each(records, function(rec){
+            rec.lastTransactionId = request.tId;
+        }, this);
     },
 
     //NOTE: overridden support different processing of exceptions and validation errors
@@ -452,54 +454,78 @@ EHR.ext.AdvancedStore = Ext.extend(LABKEY.ext.Store, {
             for(var idx = 0; idx < records.length; ++idx)
                 delete records[idx].saveOperationInProgress;
 
-            var json = this.getJson(response);
+            var serverError = this.getJson(response);
 
-            //handle validation script errors and exceptions differently
-            if(json.errors && json.errors.length){
-                this.handleValidationErrors(records, json);
+            //this is done because the structure of the error object differs depending on whether you sent a single row or multiple
+            //this is an attempt to normalize, but should be removed when possible
+            if(serverError.rowNumber!==undefined || !serverError.errors){
+                //this means either we only submitted 1 row, or there was an exception
+                serverError = {errors: [serverError], exception: serverError.exception};
             }
-            else {
-                if(false !== this.fireEvent("commitexception", message)){
-                    var message = (json && json.exception) ? json.exception : response.statusText;
-                    Ext.Msg.alert("Error During Save. Could not save changes due to the following error:\n" + message);
+
+            var msg;
+            Ext.each(serverError.errors, function(error){
+                //handle validation script errors and exceptions differently
+                if(error.errors && error.errors.length){
+                    this.handleValidationErrors(records, error, response);
+                    msg = "Could not save changes due to validation errors.";
                 }
+                else {
+                    //if an exception was thrown, I believe we automatically only have one error returned
+                    //this means this can only be called once
+                    msg = 'Could not save changes due to the following error:\n' + (serverError && serverError.exception) ? serverError.exception : response.statusText;
+                }
+            }, this);
+
+            //NOTE this should be keyed using the request context object
+            if(record._validateOnly){
+                msg = '';
+            }
+
+            if(false !== this.fireEvent("commitexception", msg) && msg){
+                Ext.Msg.alert("Error", "Error During Save. "+msg);
             }
         };
     },
 
-    handleValidationErrors: function(records, serverError){
-        if(serverError.rowNumber!==undefined)
-            serverError = {errors: [serverError], exception: serverError.exception};
-
-        Ext.each(serverError.errors, function(error){
-            var record = records[error.rowNumber];
-            record.store.handleError(record, error);
-        }, this);
+    handleValidationErrors: function(records, serverError, response){
+        var record = records[serverError.rowNumber];
+        if(record){
+            this.handleValidationError(record, serverError, response, response);
+        }
+        else {
+            console.log('ERROR: Record not found');
+            console.log(serverError);
+        }
     },
 
-    handleValidationError: function(record, serverError){
+    //this will process the errors associated with 1 record.
+    // this might be more than 1 error
+    handleValidationError: function(record, serverError, response, fireEvent){
+        //TODO: verify transaction Id matches the most recent attmept.
+        if(record.lastTransactionId != response.tId){
+            console.log('There has been a more recent transaction for this record');
+            return;
+        }
+
         //remove old errors
         record.errors = [];
 
-        //run client-side validation first
-        this.validateRecord(this, record, false);
-
         Ext.each(serverError.errors, function(e){
             record.errors.push({
-                field: e.field.name,
+                id: LABKEY.Utils.generateUUID(),
+                field: e.field,
                 //meta: e.field,
                 message: e.message,
                 record: record,
-                severity: (e.message.match(/^WARNING:/) ? 'WARN' : 'ERROR'),
+                severity: (e.message.match(/^WARN:/) ? 'WARN' : 'ERROR'),
                 fromServer: true
             });
         }, this);
 
-        if(!record._validateOnly){
-            Ext.Msg.alert("Error During Save", "Could not save changes due to validation errors. \n" );
-        }
-
-        record.store.fireEvent('validation', this, record.errors);
+        //re-run client-side validation.  this will fire the validation event
+        if(fireEvent!==false)
+            this.validateRecord(this, record);
     },
 
     //the following 2 methods are overriden because the old approach causes uncommitted client-side records to get destroyed

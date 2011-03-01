@@ -20,8 +20,8 @@ CASE d.gender
   ELSE 'unknown'
 END AS gender,
 */
-CONVERT(
-CASE d.gender
+-- CONVERT(
+CASE (d.gender)
   WHEN 'm' THEN 1
   WHEN 'f' THEN 2
   WHEN 'e' THEN 1
@@ -29,7 +29,7 @@ CASE d.gender
   WHEN 'v' THEN 1
   ELSE 3
 END
-, INTEGER)
+-- , INTEGER)
 AS gender
 
 FROM study.demographics d

@@ -34,7 +34,7 @@ Ext.onReady(function ()
         filters: [LABKEY.Filter.create('parentId', key, LABKEY.Filter.Types.EQUAL)],
         //sort: '-Date',
         scope: this,
-        errorCallback: EHR.UTILITIES.onError
+        errorCallback: EHR.utils.onError
      }).render('necropsyDiagnosis');
 
 
@@ -53,7 +53,7 @@ Ext.onReady(function ()
 //        filters: [LABKEY.Filter.create('parentId', key, LABKEY.Filter.Types.EQUAL)],
 //        sort: '-Date',
 //        scope: this,
-//        errorCallback: EHR.UTILITIES.onError
+//        errorCallback: EHR.utils.onError
 //     }).render('necropsyHistology');
 
 //    new LABKEY.QueryWebPart({
@@ -70,7 +70,7 @@ Ext.onReady(function ()
 //        filters: [LABKEY.Filter.create('parentId', key, LABKEY.Filter.Types.EQUAL)],
 //        sort: '-Date',
 //        scope: this,
-//        errorCallback: EHR.UTILITIES.onError
+//        errorCallback: EHR.utils.onError
 //     }).render('necropsyTissues');
 
 //    new LABKEY.QueryWebPart({
@@ -89,7 +89,7 @@ Ext.onReady(function ()
 //        filters: [LABKEY.Filter.create('caseno/objectid', key, LABKEY.Filter.Types.EQUAL)],
 //        //sort: '-Date',
 //        scope: this,
-//        errorCallback: EHR.UTILITIES.onError
+//        errorCallback: EHR.utils.onError
 //     }).render('necropsyImages');
 });
 

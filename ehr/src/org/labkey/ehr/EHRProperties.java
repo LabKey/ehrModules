@@ -173,6 +173,25 @@ public class EHRProperties
         {
             PropertyDescriptor pd = super.constructPropertyDescriptor();
             pd.setName("enddate");
+            pd.setShownInInsertView(false);
+            pd.setShownInUpdateView(false);
+            pd.setShownInDetailsView(false);
+            pd.setHidden(true);
+            return pd;
+        }
+    };
+
+    public static SystemProperty DATEREQUESTED = new SystemProperty(URI + "DateRequested", PropertyType.DATE_TIME)
+    {
+        @Override
+        protected PropertyDescriptor constructPropertyDescriptor()
+        {
+            PropertyDescriptor pd = super.constructPropertyDescriptor();
+            pd.setName("daterequested");
+            pd.setShownInInsertView(false);
+            pd.setShownInUpdateView(false);
+            pd.setShownInDetailsView(false);
+            pd.setHidden(true);
             return pd;
         }
     };

@@ -26,6 +26,8 @@ function setDescription(row, errors){
     return description;
 }
 
+<<<<<<< .mine
+=======
 function beforeBoth(row, errors) {
     EHR.validation.rowInit(row, errors);
 
@@ -445,3 +447,4 @@ EHR.validation = {
 
 
 
+>>>>>>> .r15703

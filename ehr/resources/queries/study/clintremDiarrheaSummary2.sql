@@ -47,11 +47,11 @@ max(e."31") as "31",
 
 FROM ehr_lookups.months y
 
-LEFT OUTER JOIN study.clintremDiarrhea cd
+JOIN study.clintremDiarrhea cd
+  ON (1=1)
 
 LEFT JOIN study.clintremDiarrheaSummary e
-
-ON cd.id = e.id AND cd.year = e.year AND y.rowid = e.monthNum
+  ON cd.id = e.id AND cd.year = e.year AND y.rowid = e.monthNum
 
 group by cd.id, cd.year, y.rowid, y.month
 

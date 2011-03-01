@@ -4,7 +4,7 @@
  * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
  */
 
-LABKEY.requiresScript("/ehr/utilities.js");
+LABKEY.requiresScript("/ehr/Utils.js");
 LABKEY.requiresScript("/ehr/ehrMetaHelper.js");
 
 EHR.ext.EditorGridPanel = Ext.extend(LABKEY.ext.EditorGridPanel,

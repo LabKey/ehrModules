@@ -56,6 +56,7 @@ EHR.ext.AnimalSelector = Ext.extend(Ext.Panel, {
                     ,displayField:'room'
                     ,valueField: 'room'
                     ,typeAhead: true
+                    ,mode: 'local'
                     ,triggerAction: 'all'
                     ,editable: true
                     ,store: new LABKEY.ext.Store({
@@ -246,7 +247,7 @@ EHR.ext.TaskHeader = Ext.extend(Ext.FormPanel, {
                 ,fieldLabel: 'Assigned To'
                 ,name: 'assignedto'
                 ,dataIndex: 'assignedto'
-                ,displayField:'DisplayName'
+                ,displayField:'Name'
                 ,valueField: 'UserId'
                 ,forceSelection: true
                 ,typeAhead: false
@@ -256,8 +257,8 @@ EHR.ext.TaskHeader = Ext.extend(Ext.FormPanel, {
                     xtype: 'labkey-store',
                     containerPath: 'WNPRC/EHR/',
                     schemaName: 'core',
-                    queryName: 'users',
-                    sort: 'DisplayName',
+                    queryName: 'Principals',
+                    sort: 'Type,Name',
                     autoLoad: true
                 }
             },{
@@ -297,7 +298,7 @@ EHR.ext.TaskHeader = Ext.extend(Ext.FormPanel, {
             }]
         });
 
-        EHR.UTILITIES.rApplyIf(this, {
+        EHR.utils.rApplyIf(this, {
             bindConfig: {
                 disableUnlessBound: false
                 ,bindOnChange: false
@@ -353,7 +354,7 @@ Ext.reg('ehr-taskheader', EHR.ext.TaskHeader);
 EHR.ext.ClinicalHeader = Ext.extend(Ext.FormPanel, {
     initComponent: function()
     {
-        EHR.UTILITIES.rApplyIf(this, {
+        EHR.utils.rApplyIf(this, {
             autoHeight: true
             ,autoWidth: true
             ,name: 'encounters'
@@ -579,7 +580,7 @@ EHR.ext.AbstractPanel = Ext.extend(Ext.FormPanel, {
                     renderTo: this.placeForQwp.id,
                     scope: this,
                     errorCallback: function(error){
-                        EHR.UTILITIES.onError(error)
+                        EHR.utils.onError(error)
                     }
                 };
                 Ext.apply(qwpConfig, this.queryConfig);
@@ -675,7 +676,7 @@ EHR.ext.QueryPanel = Ext.extend(Ext.Panel, {
             linkTarget: '_new',
             renderTo: target.id,
             errorCallback: function(error){
-                EHR.UTILITIES.onError(error)
+                EHR.utils.onError(error)
             },
             scope: this
         };
@@ -881,7 +882,7 @@ EHR.ext.ApplyTemplatePanel = Ext.extend(Ext.FormPanel, {
         if(!templateId)
             return;
 
-        EHR.UTILITIES.loadTemplate(templateId);
+        EHR.utils.loadTemplate(templateId);
     }
 });
 Ext.reg('ehr-applytemplatepanel', EHR.ext.ApplyTemplatePanel);
@@ -1104,13 +1105,13 @@ EHR.ext.SaveTemplatePanel = Ext.extend(Ext.Panel, {
                     schemaName: 'ehr',
                     queryName: 'formTemplateRecords',
                     rowDataArray: rows,
-                    failure: EHR.UTILITIES.onError,
+                    failure: EHR.utils.onError,
                     success: function(){
                         Ext.Msg.hide();
                     }
                 });
             }}(rows),
-            failure: EHR.UTILITIES.onError
+            failure: EHR.utils.onError
         });
     }
 });

@@ -4,7 +4,10 @@
  * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
  */
 
-
+var console = require("console");
+var LABKEY = require("labkey");
+var Ext = require("Ext").Ext;
+var EHR = require("ehr/validation");
 
 function repairRow(row, errors){
 
@@ -38,6 +41,10 @@ function beforeInsert(row, errors) {
 function beforeUpdate(row, oldRow, errors) {
     beforeBoth(row, errors);
 
+}
+
+function afterDelete(event, errors){
+    //cascade delete to all datasets??
 }
 
 

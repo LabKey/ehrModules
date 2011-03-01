@@ -2792,7 +2792,7 @@
           <isHidden>true</isHidden>
         </column>
       </columns>
-      <tableTitle>Immmunology Runs</tableTitle>
+      <tableTitle>Immunology Runs</tableTitle>
     </table>
     <table tableName="immunologyResults" tableDbType="TABLE">
       <tableUrl>/query/detailsQueryRow.view?schemaName=study&amp;query.queryName=immunologyResults&amp;lsid=${lsid}</tableUrl>

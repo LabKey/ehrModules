@@ -1,27 +1,35 @@
-<html>
-<head>
+<!--<html>-->
+<!--<head>-->
 
 <script type="text/javascript">
 
-Ext.onReady(function (){
+Ext.onReady(function ()
+{
+//  var reportWebPartRenderer = new LABKEY.WebPart({
+//         partName: 'Discussion',
+//         renderTo: 'clinRemarks',
+//         //containerPath: '/home/Study/demo/guestaccess',
+//         //frame: 'title',
+//         partConfig: {
+//             entityId: '1'
+//     }});
+//     reportWebPartRenderer.render();
 
-new Ext.FormPanel({
-	renderTo: 'thePanel',
-	items: [{
-        fieldLabel: 'Template',
-		xtype: 'displayfield',
-		tpl: '<div>hello</div>',
-		value: 'Should this field render as \'Hello\'?'
-	}]
+    LABKEY.Security.getUserPermissions({
+        userEmail: 'bimber@wisc.edu',
+        success: function(data, response){
+            console.log(arguments);
+        }
+    })
 });
 
-});
+
 
 </script>
-</head>
-<body>
+<!--</head>-->
+<!--<body>-->
 
-<div id="thePanel"></div>
+    <div id='clinRemarks'></div>
 
-</body>
-</html>
+<!--</body>-->
+<!--</html>-->

@@ -56,7 +56,7 @@
    <!--<filters>-->
    <!--</filters>-->
    <sorts>
-       <sort column="taskid/DueDate" descending="true"/>
-       <sort column="taskid/created" descending="true"/>
+       <sort column="room" descending="true"/>
+       <sort column="cage" descending="true"/>
    </sorts>
 </customView>

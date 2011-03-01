@@ -4,6 +4,9 @@
  * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
  */
 
+//include("/ehr/validation");
+
+
 //TODO: check number of allowed animals at assign/approve time
 
 function repairRow(row, errors){
@@ -19,6 +22,8 @@ function setDescription(row, errors){
 
     return description;
 }
+<<<<<<< .mine
+=======
 
 function beforeBoth(row, errors) {
     EHR.validation.rowInit(row, errors);
@@ -428,3 +433,4 @@ EHR.validation = {
 
 
 
+>>>>>>> .r15703

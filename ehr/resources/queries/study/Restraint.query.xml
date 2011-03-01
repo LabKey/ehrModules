@@ -17,7 +17,7 @@
                 <nullable>false</nullable>
                 <propertyURI>http://cpas.labkey.com/Study#VisitDate</propertyURI>
             </column>
-            <column columnName="endDate">
+            <column columnName="enddate">
               <datatype>timestamp</datatype>
               <columnTitle>End Date</columnTitle>
               <formatString>yyyy-MM-dd HH:mm a</formatString>

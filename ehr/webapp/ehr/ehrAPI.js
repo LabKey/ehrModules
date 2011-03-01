@@ -7,7 +7,7 @@ Ext.namespace('EHR.ext');
 
 LABKEY.requiresScript("/ehr/ExtOverrides.js");
 LABKEY.requiresScript("/ehr/ehrMetaHelper.js");
-LABKEY.requiresScript("/ehr/utilities.js");
+LABKEY.requiresScript("/ehr/Utils.js");
 LABKEY.requiresScript("/ehr/navMenu.js");
 LABKEY.requiresScript("/ehr/databind.js");
 LABKEY.requiresScript("/ehr/ehrStore.js");

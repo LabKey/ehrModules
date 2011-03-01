@@ -4,10 +4,12 @@
  * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
  */
 
-//todo update demographics
+
+//include("/ehr/validation");
 
 
-
+<<<<<<< .mine
+=======
 // ================================================
 
 //==includeStart
@@ -398,6 +400,7 @@ EHR.validation = {
 
 
 
+>>>>>>> .r15703
 function repairRow(row, errors){
 
 }
@@ -415,21 +418,6 @@ function setDescription(row, errors){
     return description;
 }
 
-function beforeBoth(row, errors) {
-    EHR.validation.rowInit(row, errors);
-
-    EHR.validation.rowEnd(row, errors);
+function onUpsert(row, errors){
+    //todo update demographics
 }
-
-
-function beforeInsert(row, errors) {
-    beforeBoth(row, errors);
-
-}
-
-function beforeUpdate(row, oldRow, errors) {
-    beforeBoth(row, errors);
-
-}
-
-

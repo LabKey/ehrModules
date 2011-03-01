@@ -5,7 +5,7 @@
  */
 
 //todo: deactivate any old housing records
-//set condition field.  update demographics
+//tod: set condition field.  update current housing in demographics
 
 function repairRow(row, errors){
 
@@ -27,6 +27,8 @@ function setDescription(row, errors){
 
     return description;
 }
+<<<<<<< .mine
+=======
 
 function beforeBoth(row, errors) {
     EHR.validation.rowInit(row, errors);
@@ -438,3 +440,4 @@ EHR.validation = {
 
 
 
+>>>>>>> .r15703

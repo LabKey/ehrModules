@@ -6,9 +6,9 @@
 
 
 EHR.ext.Buttons = {
-    SAVEDRAFT: function(){return {text: 'Save Draft', name: 'saveDraft', ref: 'saveDraftBtn', disabled: false, handler: this.onSubmit, scope: this}},
-    SUBMIT: function(){return {text: 'Submit Final', name: 'submit', ref: 'submitBtn', disabled: false, handler: this.onSubmit, scope: this}},
-    REVIEW: function(){return {text: 'Submit for Review', name: 'review', ref: 'reviewBtn', disabled: false, handler: this.onSubmit, scope: this}},
+    SAVEDRAFT: function(){return {text: 'Save Draft', name: 'saveDraft', disabled: true, ref: 'saveDraftBtn', disabled: false, handler: this.onSubmit, scope: this}},
+    SUBMIT: function(){return {text: 'Submit Final', name: 'submit', disabled: true, ref: 'submitBtn', disabled: false, handler: this.onSubmit, scope: this}},
+    REVIEW: function(){return {text: 'Submit for Review', name: 'review', disabled: true, ref: 'reviewBtn', disabled: false, handler: this.onSubmit, scope: this}},
     DISCARD: function(){return {text: 'Discard', name: 'discard', ref: 'discardBtn', handler: this.discard, scope: this}},
     CLOSE: function(){return {text: 'Close', name: 'close', ref: 'closeBtn', handler: function(){window.location = LABKEY.ActionURL.buildURL('ehr','dataEntry.view')}, scope: this}},
     PRINT: function(){return {text: 'Print', name: 'print', ref: 'printBtn', handler: function(){window.open(LABKEY.ActionURL.buildURL('ehr','printTask.view', null, {_print: 1, formtype:this.formType, taskid: this.formUUID}))}, scope: this}}
@@ -127,7 +127,6 @@ Ext.extend(EHR.ext.ImportPanelBase, Ext.Panel, {
                 if(EHR.ext.Buttons[b]){
                     buttonCfg = EHR.ext.Buttons[b].call(this);
                     buttonCfg.scope = this;
-                    buttonCfg.disabled = true;
                     buttons.push(buttonCfg);
                 }
             }, this);
@@ -158,7 +157,7 @@ Ext.extend(EHR.ext.ImportPanelBase, Ext.Panel, {
         }, this);
     },
     configureHeaderItem: function(c){
-        EHR.UTILITIES.rApplyIf(c, {
+        EHR.utils.rApplyIf(c, {
             bindConfig: {
                 autoBindRecord: true,
                 showDeleteBtn: false
@@ -166,7 +165,7 @@ Ext.extend(EHR.ext.ImportPanelBase, Ext.Panel, {
         });
     },
     configureItem: function(c){
-        EHR.UTILITIES.rApplyIf(c, {
+        EHR.utils.rApplyIf(c, {
             collapsible: true,
             border: true,
             //uuid: this.uuid,
@@ -203,7 +202,7 @@ Ext.extend(EHR.ext.ImportPanelBase, Ext.Panel, {
     applyTemplates: function(templates){
         templates = templates.split(',');
         Ext.each(templates, function(title){
-            EHR.UTILITIES.loadTemplateByName(title, this.formType);
+            EHR.utils.loadTemplateByName(title, this.formType);
         }, this);
     },
     initGlobalQCstate: function(){
@@ -276,11 +275,17 @@ Ext.extend(EHR.ext.ImportPanelBase, Ext.Panel, {
         }
         this.store.commitChanges();
     },
-    onStoreValidation: function(storeCollection, errors, maxSeverity)
+
+    onStoreValidation: function(storeCollection, maxSeverity)
     {
+        if(debug)
+            console.log('Error level: '+maxSeverity);
+
         //can only submit final if no errors and no warnings
-        if(this.submitBtn)
-            this.submitBtn.setDisabled(errors.length);
+        if(this.submitBtn){
+            //this.submitBtn.setDisabled(maxSeverity);
+            this.submitBtn.setDisabled(false);
+        }
 
         //can submit draft or review there's no errors
         if(this.saveDraftBtn)

@@ -3,10 +3,10 @@
  *
  * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
  */
-Ext.namespace('EHR.UTILITIES');
+Ext.namespace('EHR.utils');
 
 
-EHR.UTILITIES.navMenu = Ext.extend(Ext.Panel, {
+EHR.utils.navMenu = Ext.extend(Ext.Panel, {
     initComponent: function(){
         //calculate size
         var maxHeight = this.maxHeight || 15;
@@ -28,7 +28,7 @@ EHR.UTILITIES.navMenu = Ext.extend(Ext.Panel, {
             }
         });
 
-        EHR.UTILITIES.navMenu.superclass.initComponent.call(this);
+        EHR.utils.navMenu.superclass.initComponent.call(this);
 
         for (var i=0;i<this.sections.length;i++){
             var tmp = this.sections[i];
@@ -67,14 +67,14 @@ EHR.UTILITIES.navMenu = Ext.extend(Ext.Panel, {
 });
 
 
-//EHR.UTILITIES.navMenuFromQuery = function(config){
+//EHR.utils.navMenuFromQuery = function(config){
 //
 //    LABKEY.Query.selectRows({
 //            schemaName: config.schemaName,
 //            queryName: config.queryName,
 //            successCallback: onSuccess,
 //            scope: this,
-//            errorCallback: EHR.UTILITIES.onError,
+//            errorCallback: EHR.utils.onError,
 //            sort: config.headerField+','+config.displayField,
 //            filterArray: config.filterArray
 //    });

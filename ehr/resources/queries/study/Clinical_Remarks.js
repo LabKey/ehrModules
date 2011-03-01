@@ -4,23 +4,27 @@
  * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
  */
 
-//TODO: calculate description from SOAP
+//include("/ehr/validation");
 
 function repairRow(row, errors){
-
+    //TODO: convert existing SOAP remarks into 3 cols
 }
 
 function setDescription(row, errors){
     //we need to set description for every field
     var description = new Array();
 
-    if(row.snomed)
-        description.push(EHR.validation.snomedString('Code', row.code));
-    if(row.qualifier)
-        description.push('Qualifier: '+ row.qualifier);
+    if (row.so)
+        description.push('s/o: '+row.so);
+    if (row.a)
+        description.push('a: '+row.a);
+    if (row.p)
+        description.push('p: '+row.p);
 
     return description;
 }
+<<<<<<< .mine
+=======
 
 function beforeBoth(row, errors) {
     EHR.validation.rowInit(row, errors);
@@ -430,3 +434,4 @@ EHR.validation = {
 
 
 
+>>>>>>> .r15703

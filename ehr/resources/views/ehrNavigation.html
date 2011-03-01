@@ -8,7 +8,7 @@ Ext.onReady(createNavMenu);
 
 function createNavMenu()
 {
-    if (!window.EHR || !window.EHR.UTILITIES || !window.EHR.UTILITIES.navMenu)
+    if (!window.EHR || !window.EHR.utils || !window.EHR.utils.navMenu)
     {
         createNavMenu.defer(10);
         return;
@@ -56,7 +56,7 @@ function createNavMenu()
 
     }
 
-    new EHR.UTILITIES.navMenu(menuCfg);
+    new EHR.utils.navMenu(menuCfg);
 
 }
 

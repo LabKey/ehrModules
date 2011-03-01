@@ -9,6 +9,7 @@ SELECT
   m.rowid as MonthNum,
   
 FROM ehr_lookups.integers i
-LEFT OUTER JOIN ehr_lookups.months m
+CROSS JOIN ehr_lookups.months m
+
 
 WHERE i.key < 5

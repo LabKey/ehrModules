@@ -27,7 +27,7 @@
                         <fk>
                             <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                             <fkDbSchema>core</fkDbSchema>
-                            <fkTable>users</fkTable>
+                            <fkTable>Principals</fkTable>
                             <fkColumnName>userid</fkColumnName>
                         </fk>
                     </column>

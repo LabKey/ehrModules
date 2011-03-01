@@ -60,6 +60,11 @@
                       <fkColumnName>result</fkColumnName>
                     </fk>
                   </column>
+                    <column columnName="missingResults">
+                        <columnTitle>Missing Results?</columnTitle>
+                        <shownInInsertView>false</shownInInsertView>
+
+                    </column>
                 </columns>
             </table>
         </tables>

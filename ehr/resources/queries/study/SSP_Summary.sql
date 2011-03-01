@@ -5,19 +5,19 @@
  */
 --this query provides an overview of the MHC SSP results
 SELECT
-  m.Properties.Id,
-  --m.Properties.Institution AS Institution,
-  COALESCE(m.Properties.PrimerPair.ShortName, m.Properties.PrimerPair.Allele) AS ShortName,
-  m.Properties.PrimerPair.Allele AS Alleles,
+  m.Id,
+  --m.Institution AS Institution,
+  COALESCE(m.PrimerPair.ShortName, m.PrimerPair.Allele) AS ShortName,
+  m.PrimerPair.Allele AS Alleles,
+  --m.PrimerPair,
 
-
-  COALESCE(max(m.Properties.ReportDate), '1990-01-01') as Date,
+  COALESCE(max(m.ReportDate), '1990-01-01') as Date,
   count(*) as TotalRecords,
-  
+
   CASE
-    WHEN sum(m.Properties.Result)=0
+    WHEN sum(m.Result)=0
       THEN 'NEG'
-    WHEN sum(m.Properties.Result)=(count(*))
+    WHEN sum(m.Result)=(count(*))
       THEN 'POS'
     ELSE 'DISCREPANCY'
   END
@@ -25,6 +25,6 @@ SELECT
 
 FROM "/WNPRC/WNPRC_Units/Research_Services/MHC_SSP/Private/MHC_DB/".assay."MHC_SSP Data" m
 
-WHERE (m.Properties.Institution='Wisconsin NPRC' or m.Properties.Institution='Harlow')
+WHERE (m.Institution='Wisconsin NPRC' or m.Institution='Harlow')
 
-GROUP BY m.Properties.Id, m.Properties.PrimerPair.Allele, m.Properties.PrimerPair.ShortName
+GROUP BY m.Id, m.PrimerPair.Allele, m.PrimerPair.ShortName

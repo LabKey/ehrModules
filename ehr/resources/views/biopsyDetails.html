@@ -34,7 +34,7 @@ Ext.onReady(function ()
         filters: [LABKEY.Filter.create('parentId', key, LABKEY.Filter.Types.EQUAL)],
         //sort: '-Date',
         scope: this,
-        errorCallback: EHR.UTILITIES.onError
+        errorCallback: EHR.utils.onError
      }).render('biopsyDiagnosis');
 
 

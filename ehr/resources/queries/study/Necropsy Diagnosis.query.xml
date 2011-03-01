@@ -62,10 +62,54 @@
                     <datatype>integer</datatype>
                     <columnTitle>Diagnosis Code Number</columnTitle>
                   </column>
-                  <column columnName="code">
+                  <column columnName="tissue">
                     <datatype>varchar</datatype>
                     <!--<nullable>false</nullable>-->
-                    <columnTitle>SNOMED</columnTitle>
+                    <columnTitle>Process</columnTitle>
+                    <fk>
+                      <fkFolderPath>/wnprc/ehr/</fkFolderPath>
+                      <fkDbSchema>lists</fkDbSchema>
+                      <fkTable>snomed</fkTable>
+                      <fkColumnName>code</fkColumnName>
+                    </fk>
+                  </column>
+                  <column columnName="duration">
+                    <datatype>varchar</datatype>
+                    <!--<nullable>false</nullable>-->
+                    <columnTitle>Process</columnTitle>
+                    <fk>
+                      <fkFolderPath>/wnprc/ehr/</fkFolderPath>
+                      <fkDbSchema>lists</fkDbSchema>
+                      <fkTable>snomed</fkTable>
+                      <fkColumnName>code</fkColumnName>
+                    </fk>
+                  </column>
+                  <column columnName="severity">
+                    <datatype>varchar</datatype>
+                    <!--<nullable>false</nullable>-->
+                    <columnTitle>Process</columnTitle>
+                    <fk>
+                      <fkFolderPath>/wnprc/ehr/</fkFolderPath>
+                      <fkDbSchema>lists</fkDbSchema>
+                      <fkTable>snomed</fkTable>
+                      <fkColumnName>code</fkColumnName>
+                    </fk>
+                  </column>
+                  <column columnName="process">
+                    <datatype>varchar</datatype>
+                    <!--<nullable>false</nullable>-->
+                    <columnTitle>Process</columnTitle>
+                    <fk>
+                      <fkFolderPath>/wnprc/ehr/</fkFolderPath>
+                      <fkDbSchema>lists</fkDbSchema>
+                      <fkTable>snomed</fkTable>
+                      <fkColumnName>code</fkColumnName>
+                    </fk>
+                  </column>
+                  <column columnName="distribution">
+                    <datatype>varchar</datatype>
+                    <!--<nullable>false</nullable>-->
+                    <columnTitle>Process</columnTitle>
                     <fk>
                       <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                       <fkDbSchema>lists</fkDbSchema>

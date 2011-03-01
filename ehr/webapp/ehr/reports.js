@@ -6,7 +6,7 @@
 Ext.namespace('EHR.reports');
 
 LABKEY.requiresScript("/ehr/transposeRows.js");
-LABKEY.requiresScript("/ehr/utilities.js");
+LABKEY.requiresScript("/ehr/Utils.js");
 
 EHR.reports.qwpConfig = {
     allowChooseQuery: false,
@@ -27,7 +27,7 @@ EHR.reports.qwpConfig = {
     errorCallback: function(error){
         console.log('Error callback called');
         this.endMsg();
-        EHR.UTILITIES.onError(error)
+        EHR.utils.onError(error)
     }
 };
 
@@ -189,6 +189,7 @@ EHR.reports.weightGraph = function(tab, subject){
             schemaName: 'study',
             queryName: 'weight',
             filterArray: filterArray.removable.concat(filterArray.nonRemovable),
+            //columns: 'id,date,weight,percentChange/PctChange,percentChange/PrevWeight,relChange/PctChange',
             columns: 'id,date,weight',
             sort: 'Id,-date',
             autoLoad: true
@@ -205,77 +206,73 @@ EHR.reports.weightGraph = function(tab, subject){
             xAxis: new Ext.chart.TimeAxis({
                 orientation: 'vertical',
                 title: 'Date',
-                labelRenderer: function(date) { return date.format("Y-m-d"); }
+                labelRenderer: function(date) {
+                    return date.format("Y-m-d");
+                }
             }),
             yAxis: new Ext.chart.NumericAxis({
                 title: 'Weight (kg)'
             }),
-            listeners: {
-                scope: this,
-                itemmouseover: function(o) {
-                    //var myGrid = Ext.getCmp('myGrid');
-                    //myGrid.selModel.selectRow(o.index);
-                },
-                itemclick: function(o){
-                    var rec = o.item;
+            tipRenderer: function(chart, rec, axis){
+                var lines = [];
+                lines.push('Date: '+rec.get('date').format('Y-m-d'));
+                lines.push('Weight: '+rec.get('weight'));
+                //lines.push('Previous Weight: '+rec.get('percentChange/PrevWeight'));
 
-                    var gridPanel = o.component.ownerCt.ownerCt.ownerCt.grid;
-                    var rowNum = gridPanel.view.findRowIndex(rec);
-                    gridPanel.view.focusRow(rowNum);
-
-                    var clinPanel = o.component.ownerCt.detailsPanel;
-                    clinPanel.removeAll();
-
-                    var store = new LABKEY.ext.Store({
-                        schemaName: 'study',
-                        queryName: 'Clinical Remarks',
-                        filterArray: [LABKEY.Filter.create('Id', rec.Id, LABKEY.Filter.Types.EQUAL), LABKEY.Filter.create('Date', rec.date, LABKEY.Filter.Types.DATE_EQUAL)],
-                        columns: 'category,remark',
-                        autoLoad: true,
-                        ownerCt: clinPanel
-                    });
-                    store.on('load', function(s){
-                        s.ownerCt.doLayout();
-                    }, this);
-
-                    var grid = new LABKEY.ext.EditorGridPanel({
-                        store: store
-                        ,title: 'Clinical Remarks: '+rec.date.format('Y-m-d')
-                        ,height: 300
-                        ,width: 600
-                        ,autoScroll: true
-                        ,editable: false
-                        ,stripeRows: true
-                        ,disableSelection: true
-                        ,style: 'padding-top: 10px'
-                        ,tbar: []
-                        ,bbar: []
-                        ,sm: new Ext.grid.RowSelectionModel()
-                        ,errorCallback: function(error){
-                            EHR.UTILITIES.onError(error)
-                        }
-                        ,scope: this
-                        ,listeners: {
-                            scope: this
-    //                                reconfigure: function(c){
-    //                                    console.log('reconfigure')
-    //                                    c.doLayout();
-    //                                },
-    //                                bodyresize: function(c){
-    //                                    console.log('resize')
-    //                                    c.doLayout();
-    //                                }
-                        }
-                    });
-
-                    clinPanel.add(grid);
-                    clinPanel.doLayout();
-                }
+                return lines.join('\n');
             }
+//            ,listeners: {
+//                scope: this,
+//                itemmouseover: function(o) {
+//                    //var myGrid = Ext.getCmp('myGrid');
+//                    //myGrid.selModel.selectRow(o.index);
+//                }
+//                ,itemclick: function(o){
+//                    var rec = o.item;
+//
+//                    var gridPanel = o.component.ownerCt.ownerCt.ownerCt.grid;
+//                    var rowNum = gridPanel.view.findRowIndex(rec);
+//                    gridPanel.view.focusRow(rowNum);
+//
+//                    var clinPanel = o.component.ownerCt.detailsPanel;
+//                    clinPanel.removeAll();
+//
+//                    var store = new LABKEY.ext.Store({
+//                        schemaName: 'study',
+//                        queryName: 'Clinical Remarks',
+//                        filterArray: [LABKEY.Filter.create('Id', rec.Id, LABKEY.Filter.Types.EQUAL), LABKEY.Filter.create('Date', rec.date, LABKEY.Filter.Types.DATE_EQUAL)],
+//                        columns: 'category,remark',
+//                        autoLoad: true,
+//                        ownerCt: clinPanel
+//                    });
+//                    store.on('load', function(s){
+//                        s.ownerCt.doLayout();
+//                    }, this);
+//
+//                    var grid = new LABKEY.ext.EditorGridPanel({
+//                        store: store
+//                        ,title: 'Clinical Remarks: '+rec.date.format('Y-m-d')
+//                        ,height: 300
+//                        ,width: 600
+//                        ,autoScroll: true
+//                        ,editable: false
+//                        ,stripeRows: true
+//                        ,disableSelection: true
+//                        ,style: 'padding-top: 10px'
+//                        ,tbar: []
+//                        ,bbar: []
+//                        ,sm: new Ext.grid.RowSelectionModel()
+//                        ,errorCallback: function(error){
+//                            EHR.utils.onError(error)
+//                        }
+//                        ,scope: this
+//                    });
+//
+//                    clinPanel.add(grid);
+//                    clinPanel.doLayout();
+//                }
+//            }
         });
-    //    tab.on('show', function(c){
-    //        //c.chart.refresh();
-    //    });
 
         tab.add(new Ext.Panel({
             title: 'Weight: ' + title,
