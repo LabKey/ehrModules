@@ -14,6 +14,9 @@
                             <fkColumnName>type</fkColumnName>
                         </fk>
                     </column>
+                    <column columnName="serviceRequested">
+                        <columnTitle>Service Requested</columnTitle>
+                    </column>
                 </columns>
                 <buttonBarOptions includeStandardButtons="false">                    
                     <includeScript>/ehr/studyButtons.js</includeScript>

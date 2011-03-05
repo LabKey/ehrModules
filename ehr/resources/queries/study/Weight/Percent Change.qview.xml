@@ -1,0 +1,21 @@
+<customView xmlns="http://labkey.org/data/xml/queryCustomView">
+    <columns>
+        <column name="Id"/>
+        <column name="date" />
+        <column name="weight" />
+        <column name="remark" />
+        <column name="relChange/PctChange">
+            <properties>
+                <property name="columnTitle" value="Percent Change"/>
+            </properties>
+        </column>
+        <column name="relChange/IntervalInMonths">
+            <properties>
+                <property name="columnTitle" value="Interval (Months)"/>
+            </properties>
+        </column>
+   </columns>
+   <sorts>
+       <sort column="date" descending="true"/>
+   </sorts>
+</customView>

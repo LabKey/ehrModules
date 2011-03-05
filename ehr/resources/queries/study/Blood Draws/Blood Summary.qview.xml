@@ -10,7 +10,7 @@
        </column>
        <column name="quantity" />
        <column name="performedby" />
-       <column name="done_for" />
+       <column name="requestor" />
        <column name="p_s" />
        <column name="a_v" />
        <column name="sampleId" />

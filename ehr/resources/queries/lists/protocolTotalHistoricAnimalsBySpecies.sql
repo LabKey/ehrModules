@@ -10,6 +10,7 @@ p.approve,
 p.species,
 pc.allowed,
 p.TotalAnimals,
+--pc.allowed - p.TotalAnimals as TotalRemaining,
 
 FROM
 (

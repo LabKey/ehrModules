@@ -1,0 +1,86 @@
+<html>
+<script type="text/javascript">
+
+LABKEY.requiresScript("/ehr/ehrAPI.js");
+
+
+Ext.onReady(function(){
+    var taskpanel = new Ext.Panel({
+            border: false,
+            layout: 'anchor',
+            //autoWidth: true,
+            autoHeight: true,
+            width: '100%',
+            boxMinWidth: 1000,
+            items: [{
+                //layout: 'anchor',
+                border: false,
+                items: [{
+                    xtype: 'tabpanel',
+                    autoHeight: true,
+                    activeTab: 0,
+                    items: [{
+                        title: 'My Requests',
+                        xtype: 'ehr-qwppanel',
+                        queryConfig:  {
+                            schemaName: 'ehr',
+                            queryName: 'my_requests'
+                            //viewName: 'Pending Requests'
+                        }
+                    },{
+                        title: 'Pending Requests',
+                        xtype: 'ehr-qwppanel',
+                        queryConfig:  {
+                            schemaName: 'ehr',
+                            queryName: 'requests',
+                            viewName: 'Pending Requests'
+                        }
+                    },{
+                        title: 'Approved Requests',
+                        xtype: 'ehr-qwppanel',
+                        queryConfig:  {
+                            schemaName: 'ehr',
+                            queryName: 'requests',
+                            viewName: 'Approved Requests'
+                        }
+                    },{
+                        title: 'All Requests',
+                        xtype: 'ehr-qwppanel',
+                        queryConfig:  {
+                            schemaName: 'ehr',
+                            queryName: 'requests'
+                        }
+                    }]
+                }]
+            }]
+    }).render('ehrRequests');
+
+
+
+});
+</script>
+<body>
+
+
+<h3>Overview:</h3>
+
+<div id="ehrRequests"></div>
+
+
+<p/>
+
+
+<h3>Requests:</h3>
+<ul>
+
+    <li><a href="<%=contextPath%>/ehr/WNPRC/EHR/manageRequest.view?formtype=Project%20Request">Request New Project</a></li>
+    <li><a href="<%=contextPath%>/ehr/WNPRC/EHR/manageRequest.view?formtype=Assignment%20Request">Request/Approve Assignment</a></li>
+    <li><a href="<%=contextPath%>/ehr/WNPRC/EHR/manageRequest.view?formtype=Blood%20Draw%20Request">Request Blood Draws</a></li>
+    <li><a href="<%=contextPath%>/ehr/WNPRC/EHR/manageRequest.view?formtype=Housing%20Request">Request Housing Change</a></li>
+    <li><a href="<%=contextPath%>/ehr/WNPRC/EHR/manageRequest.view?formtype=Procedure%20Request">Request Procedure</a></li>
+<p/>
+
+    <li><a href="<%=contextPath%>/ehr/WNPRC/EHR/manageRequest.view?formtype=ClinPath%20Request">Request Clinpath Services</a></li>
+</ul>
+</body>
+</html>

@@ -6,15 +6,91 @@
 
 
 EHR.ext.Buttons = {
-    SAVEDRAFT: function(){return {text: 'Save Draft', name: 'saveDraft', disabled: true, ref: 'saveDraftBtn', disabled: false, handler: this.onSubmit, scope: this}},
-    SUBMIT: function(){return {text: 'Submit Final', name: 'submit', disabled: true, ref: 'submitBtn', disabled: false, handler: this.onSubmit, scope: this}},
-    REVIEW: function(){return {text: 'Submit for Review', name: 'review', disabled: true, ref: 'reviewBtn', disabled: false, handler: this.onSubmit, scope: this}},
-    DISCARD: function(){return {text: 'Discard', name: 'discard', ref: 'discardBtn', handler: this.discard, scope: this}},
-    CLOSE: function(){return {text: 'Close', name: 'close', ref: 'closeBtn', handler: function(){window.location = LABKEY.ActionURL.buildURL('ehr','dataEntry.view')}, scope: this}},
-    PRINT: function(){return {text: 'Print', name: 'print', ref: 'printBtn', handler: function(){window.open(LABKEY.ActionURL.buildURL('ehr','printTask.view', null, {_print: 1, formtype:this.formType, taskid: this.formUUID}))}, scope: this}}
-    //REQUEST:
-    //APPROVE:
-}
+    SAVEDRAFT: function(){return {
+        text: 'Save Draft',
+        name: 'saveDraft',
+        targetQC: 'In Progress',
+        disabled: true,
+        ref: 'saveDraftBtn',
+        handler: this.onSubmit,
+        disableOn: 'ERROR',
+        scope: this
+        }
+    },
+    SUBMIT: function(){return {
+        text: 'Submit Final',
+        name: 'submit',
+        targetQC: 'Approved',
+        disabled: true,
+        ref: 'submitBtn',
+        handler: this.onSubmit,
+        disableOn: 'WARN',
+        scope: this
+        }
+    },
+    REVIEW: function(){return {
+        text: 'Submit for Review',
+        name: 'review',
+        targetQC: 'Review Required',
+        disabled: true,
+        ref: 'reviewBtn',
+        disableOn: 'ERROR',
+        handler: this.onSubmit,
+        scope: this
+        }
+    },
+    DISCARD: function(){return {
+        text: 'Discard',
+        name: 'discard',
+        ref: 'discardBtn',
+        targetQC: 'Delete Requested',
+        handler: this.discard,
+        scope: this
+        }
+    },
+    CLOSE: function(){return {
+        text: 'Close',
+        name: 'close',
+        ref: 'closeBtn',
+        handler: function(){
+            window.location = LABKEY.ActionURL.buildURL('ehr','dataEntry.view')
+        },
+        scope: this
+        }
+    },
+    PRINT: function(){return {
+        text: 'Print',
+        name: 'print',
+        ref: 'printBtn',
+        handler: function(){
+            window.open(LABKEY.ActionURL.buildURL('ehr','printTask.view', null, {_print: 1, formtype:this.formType, taskid: this.formUUID}))
+        },
+        scope: this
+        }
+    },
+    REQUEST: function(){return {
+        text: 'Request',
+        name: 'request',
+        targetQC: 'Request: Pending',
+        disabled: true,
+        ref: 'requestBtn',
+        handler: this.onSubmit,
+        disableOn: 'ERROR',
+        scope: this
+        }
+    },
+    APPROVE: function(){return {
+        text: 'Approve Request',
+        name: 'approve',
+        targetQC: 'Request: Approved',
+        disabled: true,
+        ref: 'approveBtn',
+        handler: this.onSubmit,
+        disableOn: 'ERROR',
+        scope: this
+        }
+    }
+};
 
 
 
@@ -77,11 +153,12 @@ Ext.extend(EHR.ext.ImportPanelBase, Ext.Panel, {
             ,store: new EHR.ext.StoreCollection({
                 monitorValid: true
             })
+            ,fbar: []
         });
 
         EHR.ext.ImportPanelBase.superclass.initComponent.call(this);
 
-        this.addEvents('participantvalid', 'participantinvalid', 'participantloaded');
+        this.addEvents('participantchange', 'participantloaded');
         this.mon(this.store, 'validation', this.onStoreValidation, this);
 
 //        this.on('participantloaded', function(field, id, row){
@@ -92,7 +169,12 @@ Ext.extend(EHR.ext.ImportPanelBase, Ext.Panel, {
         this.mon(this.store, 'commitexception', this.afterSubmit, this);
 
         this.initGlobalQCstate();
-        this.populateButtons();
+
+        EHR.utils.getTablePermissions({
+            success: this.calculatePermissions,
+            failure: EHR.utils.onError,
+            scope: this
+        });
 
         //monitor dirty state
         window.onbeforeunload = LABKEY.beforeunload(function (){
@@ -107,54 +189,84 @@ Ext.extend(EHR.ext.ImportPanelBase, Ext.Panel, {
             this.applyTemplates(this.initialTemplates);
     },
 
-    populateButtons: function(){
-        LABKEY.Security.getSecurableResources({
-            includeEffectivePermissions: true,
-            successCallback: function(data){
-//                console.log('securable resources:');
-//                console.log(data);
-            }
-        });
+    calculatePermissions: function(qcMap, schemaMap){
+//console.log(arguments)
+        var tables = [];
+        var perms = {
+            editor: true,
+            dataAdmin: true,
+            requestor: true,
+            submittor: true
+        };
 
+        this.store.each(function(t){
+            tables.push(t.queryName);
+            if(schemaMap.schemas.study[t.queryName]){
+                console.log(schemaMap.schemas.study[t.queryName])
+            }
+
+        }, this);
+
+        this.populateButtons();
+    },
+
+    populateButtons: function(){
         //TODO: apply logic to see what buttons appear
-        var buttons = [];
+
         if(this.allowableButtons){
             if(!Ext.isArray(this.allowableButtons))
                 this.allowableButtons = this.allowableButtons.split(',');
-
-            var buttonCfg;
-            Ext.each(this.allowableButtons, function(b){
-                if(EHR.ext.Buttons[b]){
-                    buttonCfg = EHR.ext.Buttons[b].call(this);
-                    buttonCfg.scope = this;
-                    buttons.push(buttonCfg);
-                }
-            }, this);
         }
         else {
-            buttons = [
-                EHR.ext.Buttons.SAVEDRAFT.call(this),
-                EHR.ext.Buttons.REVIEW.call(this),
-                EHR.ext.Buttons.SUBMIT.call(this),
-                EHR.ext.Buttons.CLOSE.call(this),
-                EHR.ext.Buttons.DISCARD.call(this),
-                EHR.ext.Buttons.CLOSE.call(this)
+            this.allowableButtons = [
+                'SAVEDRAFT',
+                'REVIEW',
+                'SUBMIT',
+                //'PRINT',
+                'DISCARD',
+                'CLOSE'
             ];
         }
 
+        var buttonCfg;
+        var buttons = [];
+        Ext.each(this.allowableButtons, function(b){
+            if(EHR.ext.Buttons[b]){
+                buttonCfg = this.configureButton(b);
+                if(buttonCfg)
+                    buttons.push(buttonCfg);
+            }
+        }, this);
+
         if (debug){
             buttons.push([
-                {text: 'Stores?', name: 'stores', handler: this.store.showStores, scope: this.store},
+                //{text: 'Stores?', name: 'stores', handler: this.store.showStores, scope: this.store},
                 {text: 'Errors?', name: 'errors', handler: this.store.showErrors, scope: this.store}
             ])
         }
 
         var button;
         Ext.each(buttons, function(b){
-            button = this.addButton(b);
+            if(this.rendered)
+                button = this.getFooterToolbar().add(b);
+            else
+                button = this.addButton(b);
+
             if(b.ref)
                 this[b.ref] = button;
         }, this);
+        this.getFooterToolbar().doLayout();
+    },
+    configureButton: function(b){
+        var buttonCfg = EHR.ext.Buttons[b].call(this);
+        buttonCfg.scope = this;
+        buttonCfg.xtype = 'button';
+
+        if(buttonCfg.targetQC){
+            //TODO: only show if user can access this QCState
+        }
+
+        return buttonCfg;
     },
     configureHeaderItem: function(c){
         EHR.utils.rApplyIf(c, {
@@ -248,7 +360,7 @@ Ext.extend(EHR.ext.ImportPanelBase, Ext.Panel, {
         Ext.Msg.wait("Saving Changes...");
 
         var val;
-        switch (o.name)
+        switch (o.targetQC)
         {
             //TODO: values will be distinct per server...
             case 'submit':
@@ -278,20 +390,17 @@ Ext.extend(EHR.ext.ImportPanelBase, Ext.Panel, {
 
     onStoreValidation: function(storeCollection, maxSeverity)
     {
-        if(debug)
+        if(debug && maxSeverity)
             console.log('Error level: '+maxSeverity);
 
-        //can only submit final if no errors and no warnings
-        if(this.submitBtn){
-            //this.submitBtn.setDisabled(maxSeverity);
-            this.submitBtn.setDisabled(false);
-        }
-
-        //can submit draft or review there's no errors
-        if(this.saveDraftBtn)
-            this.saveDraftBtn.setDisabled(maxSeverity == 'ERROR');
-        if(this.reviewBtn)
-            this.reviewBtn.setDisabled(maxSeverity == 'ERROR');
+        this.getFooterToolbar().items.each(function(item){
+            if(item.disableOn){
+                if(maxSeverity && EHR.utils.errorSeverity[item.disableOn] <= EHR.utils.errorSeverity[maxSeverity])
+                    item.setDisabled(true);
+                else
+                    item.setDisabled(false);
+            }
+        }, this);
     },
 
     afterSubmit: function(o, e)
@@ -334,25 +443,61 @@ EHR.ext.TaskPanel = Ext.extend(EHR.ext.ImportPanelBase, {
     initComponent: function(){
 
         this.formUUID = this.formUUID || LABKEY.Utils.generateUUID();
-        this.items = this.items || [];
-        this.items.push({
-            xtype: 'ehr-taskheader',
+        this.formHeaders = this.formHeaders || [];
+        this.formHeaders.unshift({
+            xtype: 'ehr-importpanelheader',
             formType: this.formType,
-            ref: 'taskHeader',
+            schemaName: 'ehr',
+            queryName: 'tasks',
+            keyField: 'taskid',
+            ref: 'importPanelHeader',
             //uuid: this.uuid,
             formUUID: this.formUUID,
             parentPanel: this,
-            readOnly: this.readOnly
+            readOnly: this.readOnly,
+            metadata: EHR.ext.getTableMetadata('tasks', ['Task'])
         });
 
         EHR.ext.TaskPanel.superclass.initComponent.call(this, arguments);
     },
     initGlobalQCstate: function(){
-        this.qcstate = this.taskHeader.qcstate;
+        this.qcstate = this.importPanelHeader.qcstate;
     },
     configureItem: function(c){
         EHR.ext.TaskPanel.superclass.configureItem.apply(this, arguments);
         c.storeConfig.filterArray = [LABKEY.Filter.create('taskId', this.formUUID, LABKEY.Filter.Types.EQUAL)];
+    }
+});
+
+EHR.ext.RequestPanel = Ext.extend(EHR.ext.ImportPanelBase, {
+    initComponent: function(){
+
+        this.formUUID = this.formUUID || LABKEY.Utils.generateUUID();
+        this.formHeaders = this.formHeaders || [];
+
+        this.formHeaders.unshift({
+            xtype: 'ehr-importpanelheader',
+            formType: this.formType,
+            schemaName: 'ehr',
+            queryName: 'requests',
+            keyField: 'requestid',
+            ref: 'importPanelHeader',
+            formUUID: this.formUUID,
+            parentPanel: this,
+            readOnly: this.readOnly,
+            metadata: EHR.ext.getTableMetadata('requests', ['Request'])
+        });
+
+        this.allowableButtons = 'REQUEST,APPROVE,CLOSE';
+
+        EHR.ext.RequestPanel.superclass.initComponent.call(this, arguments);
+    },
+    initGlobalQCstate: function(){
+        this.qcstate = this.importPanelHeader.qcstate;
+    },
+    configureItem: function(c){
+        EHR.ext.RequestPanel.superclass.configureItem.apply(this, arguments);
+        c.storeConfig.filterArray = [LABKEY.Filter.create('requestId', this.formUUID, LABKEY.Filter.Types.EQUAL)];
     }
 });
 

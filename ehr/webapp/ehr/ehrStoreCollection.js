@@ -48,6 +48,7 @@ EHR.ext.StoreCollection = Ext.extend(Ext.util.MixedCollection, {
 
         if(this.monitorValid){
             store.on('validation', this.onValidation, this, {buffer: 30});
+            //store.on('validation', this.onValidation, this, {buffer: 30});
             store.initMonitorValid();
         }
 
@@ -122,10 +123,12 @@ EHR.ext.StoreCollection = Ext.extend(Ext.util.MixedCollection, {
             return;
         }
 
-        if(debug)
+        if(debug){
             console.log('commands to be sent: '+commands.length);
             console.log(commands);
+            console.log('records to be sent: '+records.length);
             console.log(records);
+        }
 
         if(this.fireEvent('beforecommit', records, commands)===false)
             return;
@@ -175,11 +178,7 @@ EHR.ext.StoreCollection = Ext.extend(Ext.util.MixedCollection, {
         this.each(function(s){
             if(s.isLoading){
                 isLoading = true;
-                //console.log('store still loading: '+s.storeId);
             }
-//            else {
-//                console.log('store loaded: '+s.storeId);
-//            }
         }, this);
 
         return isLoading;
@@ -208,7 +207,7 @@ EHR.ext.StoreCollection = Ext.extend(Ext.util.MixedCollection, {
 
     getOnCommitFailure : function(records) {
         return function(response, options) {
-console.log(response)
+
             //note: should not matter which child store they belong to
             for(var idx = 0; idx < records.length; ++idx)
                 delete records[idx].saveOperationInProgress;
@@ -218,7 +217,7 @@ console.log(response)
             //this is done because the structure of the error object differs depending on whether you sent a single row or multiple
             //this is an attempt to normalize, but should be removed when possible
             if(serverError.rowNumber!==undefined || !serverError.errors){
-                //this means either we only submitted 1 row, or there was an exception
+                //this means we only submitted 1 row, or there was an exception, which will only have one error
                 serverError = {errors: [serverError], exception: serverError.exception};
             }
 
@@ -227,7 +226,7 @@ console.log(response)
                 //handle validation script errors and exceptions differently
                 if(error.errors && error.errors.length){
                     this.handleValidationErrors(records, error, response);
-                    msg = "Could not save changes due to validation errors.";
+                    msg = "Could not save changes due to errors.  Please check the form for fields marked in red.";
                 }
                 else {
                     //if an exception was thrown, I believe we automatically only have one error returned
@@ -237,7 +236,7 @@ console.log(response)
             }, this);
 
             //NOTE this should be keyed using the request context object
-//            if(!serverError._validateOnly){
+//            if(serverError.silent){
 //                msg = '';
 //            }
 
@@ -247,6 +246,7 @@ console.log(response)
         };
     },
 
+    //TODO: there's a big problem here.  we have no obvious way to connect records to a command
     handleValidationErrors: function(records, serverError, response){
         var record = records[serverError.rowNumber];
         if(record){
@@ -392,7 +392,7 @@ EHR.ext.StoreInheritance = {
             console.log('no records in store: '+targetStore.storeId);
             targetStore.on('add', function(){
                 console.log('retrying store: '+targetStore.storeId+' for field :'+field.name);
-                this.addInheritanceListeners(this, meta, field)
+                this.addInheritanceListeners(store, meta, field)
             }, this, {single: true});
             return;
         }

@@ -2,11 +2,15 @@
    <columns>
         <column name="rowid"/>
         <column name="title" />
-        <column name="formtype" />
+        <!--<column name="formtype" />-->
+        <column name="priority"/>
+        <column name="notify1"/>
+        <column name="notify2"/>
+        <column name="pi"/>
 
         <column name="CreatedBy"/>
         <column name="Created"/>
-        <column name="QCState/Label">
+        <column name="QCState">
             <properties>
                 <property name="columnTitle" value="Status"/>
             </properties>
@@ -14,8 +18,10 @@
         <!--<column name="ModifiedBy"/>-->
         <!--<column name="Modified"/>-->
    </columns>
-   <!--<filters>-->
-   <!--</filters>-->
+    <filters>
+        <filter column="QCState/Label" operator="eq" value="Request: Pending"/>
+    </filters>
+
    <sorts>
        <sort column="created" descending="true"/>
    </sorts>

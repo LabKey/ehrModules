@@ -11,6 +11,11 @@
     color: #000000 !important;
 }
 
+.labkey-tree-unselectable {
+    font-style: italic;
+    color: #000000;
+}
+
 
 /*the following 2 are used in EHR validation*/
 .x-grid3-row-invalid {
@@ -172,10 +177,7 @@
     color: #15428B;
 }
 
-.labkey-tree-unselectable {
-    font-style: italic;
-    color: #000000;
-}
+
 
 
 /*

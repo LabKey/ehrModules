@@ -1,0 +1,97 @@
+<query xmlns="http://labkey.org/data/xml/query">
+    <metadata>
+        <tables xmlns="http://labkey.org/data/xml">
+            <table tableName="requests" tableDbType="TABLE">
+                <!--<tableUrl>/ehr/requestDetails.view?formtype=${formtype}&amp;requestid=${requestid}</tableUrl>-->
+                <updateUrl>/ehr/manageRequest.view?formtype=${formtype}&amp;requestid=${requestid}</updateUrl>
+                <insertUrl>/ehr/manageRequest.view</insertUrl>
+                <titleColumn>RowId</titleColumn>
+                <columns>
+                    <column columnName="requestid">
+                        <isHidden>true</isHidden>
+                    </column>
+                    <column columnName="rowid">
+                        <columnTitle>Request Id</columnTitle>
+                        <isAutoInc>true</isAutoInc>
+                        <nullable>true</nullable>
+                    </column>
+                    <column columnName="formtype">
+                        <columnTitle>Request Type</columnTitle>
+                        <fk>
+                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
+                            <fkDbSchema>ehr</fkDbSchema>
+                            <fkTable>formtypes</fkTable>
+                            <fkColumnName>type</fkColumnName>
+                        </fk>
+                    </column>
+                    <column columnName="createdby">
+                        <columnTitle>Created By</columnTitle>
+                        <fk>
+                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
+                            <fkDbSchema>core</fkDbSchema>
+                            <fkTable>users</fkTable>
+                            <fkColumnName>userid</fkColumnName>
+                        </fk>
+                    </column>
+                    <column columnName="notify1">
+                        <columnTitle>First Notification</columnTitle>
+                        <fk>
+                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
+                            <fkDbSchema>core</fkDbSchema>
+                            <fkTable>Principals</fkTable>
+                            <fkColumnName>userid</fkColumnName>
+                        </fk>
+                    </column>
+                    <column columnName="notify2">
+                        <columnTitle>Second Notification</columnTitle>
+                        <!--<fk>-->
+                            <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
+                            <!--<fkDbSchema>core</fkDbSchema>-->
+                            <!--<fkTable>Principals</fkTable>-->
+                            <!--<fkColumnName>userid</fkColumnName>-->
+                        <!--</fk>-->
+                    </column>
+                    <column columnName="pi">
+                        <columnTitle>PI</columnTitle>
+                    </column>
+                    <column columnName="priority">
+                        <fk>
+                            <fkDbSchema>ehr_lookups</fkDbSchema>
+                            <fkTable>request_priority</fkTable>
+                            <fkColumnName>priority</fkColumnName>
+                        </fk>
+                    </column>
+                    <column columnName="created">
+                        <columnTitle>Created</columnTitle>
+                        <formatString>yyyy-MM-dd HH:mm</formatString>
+                    </column>
+                    <column columnName="modifiedby">
+                        <columnTitle>Modified By</columnTitle>
+                    </column>
+                    <column columnName="modified">
+                        <columnTitle>Modified</columnTitle>
+                    </column>
+                    <column columnName="daterequested">
+                        <columnTitle>Date Requested</columnTitle>
+                    </column>
+                    <column columnName="qcstate">
+                        <columnTitle>Status</columnTitle>
+                        <fk>
+                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
+                            <fkDbSchema>study</fkDbSchema>
+                            <fkTable>qcstate</fkTable>
+                            <fkColumnName>rowid</fkColumnName>
+                        </fk>
+                    </column>
+                </columns>
+                <buttonBarOptions includeStandardButtons="true">
+                    <includeScript>/ehr/studyButtons.js</includeScript>
+                    <item text="Create New">
+                        <!--<originalText>Insert New</originalText>-->
+                        <target>/ehr/manageTask.view</target>
+                    </item>
+                </buttonBarOptions>
+            </table>
+        </tables>
+    </metadata>
+</query>

@@ -6,13 +6,13 @@ LABKEY.requiresScript("/ehr/ehrAPI.js");
 
 Ext.onReady(function(){
     var taskpanel = new Ext.Panel({
-            border: false,
-            //autoWidth: true,
-            autoHeight: true,
-            width: 1100,
+        border: false,
+        autoHeight: true,
+        layout: 'anchor',
+        width: '100%',
+        boxMinWidth: 1000,
             items: [{
-                layout: 'anchor',
-                width: '80%',
+//                layout: 'anchor',
                 border: false,
                 items: [{
                     xtype: 'tabpanel',
@@ -29,11 +29,11 @@ Ext.onReady(function(){
                             xtype: 'ehr-qwppanel',
                             queryConfig:  {
                                 schemaName: 'ehr',
-                                queryName: 'tasks',
-                                viewName: 'My Tasks'
+                                queryName: 'my_tasks',
+                                viewName: 'Active Tasks'
                             }
                         },{
-                            title: 'Active Tasks',
+                            title: 'All Active Tasks',
                             xtype: 'ehr-qwppanel',
                             queryConfig:  {
                                 schemaName: 'ehr',
@@ -191,14 +191,14 @@ Known problems and limitations:
     <li><a href="<%=contextPath%>/ehr/WNPRC/EHR/manageTask.view?formtype=Blood%20Draws">Enter Blood Draws</a></li>
     <li><a href="<%=contextPath%>/ehr/WNPRC/EHR/manageTask.view?schemaName=study&queryName=Clinical%20Remarks&keyField=lsid">Enter Clinical Remark</a></li>
 
-    <li>Enter Group Anesthesia</li>
+    <!--<li>Enter Group Anesthesia</li>-->
     <!--<li>Infant Care Report</li>-->
     <li><a href="<%=contextPath%>/ehr/WNPRC/EHR/manageTask.view?formtype=Irregular%20Observations">Enter Irregular Observations</a></li>
     <li><a href="<%=contextPath%>/ehr/WNPRC/EHR/manageTask.view?formtype=MPR">Enter MPR</a></li>
     <li><a href="<%=contextPath%>/ehr/WNPRC/EHR/manageRecord.view?schemaName=study&queryName=Notes&keyField=lsid">Enter Note</a></li>
     <li><a href="<%=contextPath%>/ehr/WNPRC/EHR/manageTask.view?formtype=Physical%20Exam">Enter Physical Exam</a></li>
     <li><a href="<%=contextPath%>/ehr/WNPRC/EHR/manageRecord.view?schemaName=study&queryName=Problem%20List&keyField=lsid">Enter Problem</a></li>
-    <li>Enter Surgery</li>
+    <!--<li>Enter Procedure</li>-->
     <li><a href="<%=contextPath%>/ehr/WNPRC/EHR/manageTask.view?formtype=TB%20Tests">Enter TB Test Results</a></li>
     <li><a href="<%=contextPath%>/ehr/WNPRC/EHR/manageTask.view?formtype=Weight">Enter Weights</a></li>
 
@@ -217,7 +217,7 @@ Known problems and limitations:
 <h3>Behavior / Colony Management:</h3>
 <ul>
     <li><a href="<%=contextPath%>/ehr/WNPRC/EHR/manageTask.view?schemaName=study&queryName=Behavior Remarks&keyField=lsid">Enter Behavior Remark</a></li>
-    <li><a href="<%=contextPath%>/ehr/WNPRC/EHR/manageRecord.view?schemaName=study&queryName=Menses&keyField=lsid">Enter Menses Observation</a></li>
+    <li><a href="<%=contextPath%>/ehr/WNPRC/EHR/manageTask.view?schemaName=study&queryName=Menses&keyField=lsid">Enter Menses Observation</a></li>
     <li><a href="<%=contextPath%>/ehr/WNPRC/EHR/manageRecord.view?schemaName=study&queryName=Pair%20Tests&keyField=lsid">Enter Pair Test Record</a></li>
     <li>Enter Enrichment Record</li>
     <li>Enter Food Intake Form</li>
@@ -228,29 +228,27 @@ Known problems and limitations:
 <ul>
     <li>Enter Biopsy Report</li>
 
-    <li>Enter Chemistry Results</li>
-    <li>Enter Hematology Results</li>
+    <li><a href="<%=contextPath%>/ehr/WNPRC/EHR/manageTask.view?formtype=Bacteriology">Enter Bacteriology Results</a></li>
+    <li><a href="<%=contextPath%>/ehr/WNPRC/EHR/manageTask.view?formtype=Blood Chemistry">Enter Chemistry Results</a></li>
+    <li><a href="<%=contextPath%>/ehr/WNPRC/EHR/manageTask.view?formtype=Hematology">Enter Hematology Results</a></li>
+    <li><a href="<%=contextPath%>/ehr/WNPRC/EHR/manageTask.view?formtype=Immunology">Enter Immunology Results</a></li>
     <li><a href="<%=contextPath%>/ehr/WNPRC/EHR/manageTask.view?formtype=Necropsy">Enter Necropsy Report</a></li>
-    <li>Enter Virology Results</li>
+    <li><a href="<%=contextPath%>/ehr/WNPRC/EHR/manageTask.view?formtype=Parasitology">Enter Parasitology Results</a></li>
+    <li><a href="<%=contextPath%>/ehr/WNPRC/EHR/manageTask.view?formtype=Urinalysis">Enter Urinalysis Results</a></li>
+    <li><a href="<%=contextPath%>/ehr/WNPRC/EHR/manageTask.view?formtype=Virology">Enter Virology Results</a></li>
 </ul>
 
 <h3>Requests:</h3>
 <ul>
-    <li>Request Clinpath Services</li>
-    <li>Request Biopsy</li>
-    <li>Request Necropsy</li>
-    <li>Request Tissue</li>
+
+    <li><a href="<%=contextPath%>/ehr/WNPRC/EHR/manageRequest.view?formtype=Project%20Request">Request New Project</a></li>
+    <li><a href="<%=contextPath%>/ehr/WNPRC/EHR/manageRequest.view?formtype=Assignment%20Request">Request/Approve Assignment</a></li>
+    <li><a href="<%=contextPath%>/ehr/WNPRC/EHR/manageRequest.view?formtype=Blood%20Draw%20Request">Request Blood Draws</a></li>
+    <li><a href="<%=contextPath%>/ehr/WNPRC/EHR/manageRequest.view?formtype=Housing%20Request">Request Housing Change</a></li>
+    <li><a href="<%=contextPath%>/ehr/WNPRC/EHR/manageRequest.view?formtype=Procedure%20Request">Request Procedure</a></li>
 <p/>
-    <li>Request Assignment</li>
-    <li>Request Blood Draws</li>
-    <li>Request Housing Change</li>
-    <li>Request Project</li>
 
-    <!--<li><a href="<%=contextPath%>/ehr/WNPRC/EHR/manageRecord.view?schemaName=lists&queryName=Project&keyField=project">Request New Project</a></li>-->
-    <!--<li><a href="<%=contextPath%>/ehr/WNPRC/EHR/manageRecord.view?schemaName=study&queryName=Assignment&keyField=lsid">Request/Approve Assignment</a></li>-->
-    <!--<li><a href="<%=contextPath%>/ehr/WNPRC/EHR/manageTask.view?schemaName=study&queryName=Blood%20Draw%20Request">Request Blood Draws</a></li>-->
-    <!--<li><a href="<%=contextPath%>/ehr/WNPRC/EHR/manageTask.view?formtype=Housing%20Request">Request Housing Change</a></li>-->
-
+    <li><a href="<%=contextPath%>/ehr/WNPRC/EHR/manageRequest.view?formtype=ClinPath%20Request">Request Clinpath Services</a></li>
 </ul>
 </body>
 </html>

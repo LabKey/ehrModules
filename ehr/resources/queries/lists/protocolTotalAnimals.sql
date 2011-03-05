@@ -12,6 +12,7 @@ SELECT
   a.LatestEnd,
 
   COALESCE(a.Total, 0) AS TotalAssignments,
+  --pc.allowed - p.TotalAnimals as TotalRemaining,
 
 FROM lists.protocol p
 

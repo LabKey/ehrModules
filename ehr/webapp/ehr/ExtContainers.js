@@ -190,23 +190,9 @@ Ext.reg('ehr-animalselector', EHR.ext.AnimalSelector);
 
 
 
-EHR.ext.TaskHeader = Ext.extend(Ext.FormPanel, {
+EHR.ext.ImportPanelHeader = Ext.extend(EHR.ext.FormPanel, {
     initComponent: function()
     {
-        this.store = new EHR.ext.AdvancedStore({
-            //xtype: 'ehr-store',
-            //containerPath: 'WNPRC/EHR/',
-            schemaName: 'ehr',
-            queryName: 'tasks',
-            columns: EHR.ext.FormColumns.tasks,
-            filterArray: [LABKEY.Filter.create('taskid', this.formUUID, LABKEY.Filter.Types.EQUAL)],
-            metadata: EHR.ext.getTableMetadata('tasks', ['Task']),
-            storeId: 'ehr||tasks||',
-            formUUID: this.formUUID,
-            autoLoad: true,
-            canSaveInTemplate: false
-        });
-
         Ext.apply(this, {
             autoHeight: true
             ,autoWidth: true
@@ -216,73 +202,9 @@ EHR.ext.TaskHeader = Ext.extend(Ext.FormPanel, {
             ,bodyStyle: 'padding:5px'
             ,style: 'margin-bottom: 15px'
             ,plugins: ['databind']
-            ,readOnly: true
+            ,readOnly: false
             ,buttonAlign: 'left'
             ,tbar: {hidden: true}
-            ,items: [{
-                xtype: 'displayfield',
-                fieldLabel: 'Task Id',
-                name: 'rowid',
-                dataIndex: 'rowid'
-            },{
-                xtype: 'displayfield',
-                fieldLabel: 'Task Type',
-                name: 'formtype',
-                dataIndex: 'formtype',
-                value: this.parentPanel.formType
-            },{
-                xtype: 'textfield',
-                fieldLabel: 'Task Title',
-                value: this.parentPanel.formType,
-                name: 'title',
-                dataIndex: 'title',
-                allowBlank: false
-            },{
-                xtype: 'datefield',
-                fieldLabel: 'Due Date',
-                name: 'duedate',
-                dataIndex: 'duedate'
-            },{
-                xtype: 'combo'
-                ,fieldLabel: 'Assigned To'
-                ,name: 'assignedto'
-                ,dataIndex: 'assignedto'
-                ,displayField:'Name'
-                ,valueField: 'UserId'
-                ,forceSelection: true
-                ,typeAhead: false
-                ,triggerAction: 'all'
-                ,mode: 'local'
-                ,store: {
-                    xtype: 'labkey-store',
-                    containerPath: 'WNPRC/EHR/',
-                    schemaName: 'core',
-                    queryName: 'Principals',
-                    sort: 'Type,Name',
-                    autoLoad: true
-                }
-            },{
-                xtype: (debug ? 'combo' : 'hidden')
-                ,fieldLabel: 'Status'
-                ,ref: 'qcstate'
-                ,name: 'qcstate'
-                ,dataIndex: 'qcstate'
-                ,displayField:'Label'
-                ,valueField: 'RowId'
-                ,forceSelection: true
-                ,typeAhead: false
-                ,triggerAction: 'all'
-                ,disabled: true
-                ,mode: 'local'
-                ,store: {
-                    xtype: 'labkey-store',
-                    containerPath: 'WNPRC/EHR/',
-                    schemaName: 'study',
-                    queryName: 'QCState',
-                    autoLoad: true,
-                    sort: 'Label'
-                }
-            }]
             ,buttons: [{
                 xtype: 'button',
                 text: 'Apply Template',
@@ -305,16 +227,16 @@ EHR.ext.TaskHeader = Ext.extend(Ext.FormPanel, {
                 ,autoBindRecord: true
                 ,showDeleteBtn: false
             }
-            ,ref: 'taskHeader'
+            ,ref: 'importPanelHeader'
             ,defaults: {
                 width: 160,
                 border: false,
-                bodyBorder: false
-                //parentPanel: this.parentPanel || this
+                bodyBorder: false,
+                importPanel: this.importPanel || this
             }
         });
 
-        EHR.ext.TaskHeader.superclass.initComponent.call(this, arguments);
+        EHR.ext.ImportPanelHeader.superclass.initComponent.call(this, arguments);
 
     },
     saveTemplate: function(){
@@ -327,7 +249,7 @@ EHR.ext.TaskHeader = Ext.extend(Ext.FormPanel, {
             items: [{
                 xtype: 'ehr-savetemplatepanel',
                 ref: 'theForm',
-                importPanel: this.parentPanel,
+                importPanel: this.importPanel,
                 formType: this.formType
             }]
         });
@@ -342,14 +264,14 @@ EHR.ext.TaskHeader = Ext.extend(Ext.FormPanel, {
             items: [{
                 xtype: 'ehr-applytemplatepanel',
                 ref: 'theForm',
-                importPanel: this.parentPanel,
+                importPanel: this.importPanel,
                 formType: this.formType
             }]
         });
         theWindow.show();
     }
 });
-Ext.reg('ehr-taskheader', EHR.ext.TaskHeader);
+Ext.reg('ehr-importpanelheader', EHR.ext.ImportPanelHeader);
 
 EHR.ext.ClinicalHeader = Ext.extend(Ext.FormPanel, {
     initComponent: function()
@@ -470,12 +392,12 @@ EHR.ext.ClinicalHeader = Ext.extend(Ext.FormPanel, {
 
         EHR.ext.ClinicalHeader.superclass.initComponent.call(this, arguments);
 
-        this.addEvents('participantvalid', 'participantinvalid');
-        this.projectCt.addEvents('participantvalid', 'participantinvalid');
-        this.projectCt.relayEvents(this, ['participantvalid', 'participantinvalid']);
+        this.addEvents('participantchange');
+        this.projectCt.addEvents('participantchange');
+        this.projectCt.relayEvents(this, ['participantchange']);
 
         if (this.parentPanel){
-            this.parentPanel.relayEvents(this, ['participantvalid', 'participantinvalid']);
+            this.parentPanel.relayEvents(this, ['participantchange']);
         }
     }
 });
@@ -523,17 +445,16 @@ EHR.ext.AbstractPanel = Ext.extend(Ext.FormPanel, {
         });
         EHR.ext.AbstractPanel.superclass.initComponent.call(this, arguments);
 
-        this.addEvents('participantvalid', 'participantinvalid', 'participantloaded');
+        this.addEvents('participantchange', 'participantloaded');
         this.enableBubble('participantloaded');
 
         if (this.parentPanel){
-            this.mon(this.parentPanel, 'participantvalid', this.fetchAbstract, this);
-            this.mon(this.parentPanel, 'participantinvalid', this.clearAbstract, this);
+            this.mon(this.parentPanel, 'participantchange', this.onParticipantChange, this);
             this.parentPanel.participantMap = this.participantMap;
         }
 
     },
-    fetchAbstract: function(field)
+    onParticipantChange: function(field)
     {
         field.participantMap = this.participantMap;
 
@@ -541,8 +462,11 @@ EHR.ext.AbstractPanel = Ext.extend(Ext.FormPanel, {
 
         //no need to reload if ID is unchanged
         if (this.loadedId == id){
+            console.log('animal id is the same, no reload needed');
             return;
         }
+
+        this.loadedId = id;
 
         this.placeForAbstract.removeAll();
         this.placeForQwp.update();
@@ -552,12 +476,11 @@ EHR.ext.AbstractPanel = Ext.extend(Ext.FormPanel, {
             this.doLayout();
         }
         else {
-            this.loadedId = id;
             this.participantMap.add(id, {loading: true});
 
             LABKEY.Query.selectRows({
                 schemaName: this.schemaName || 'study',
-                queryName: this.queryName || 'animal',
+                queryName: this.queryName || 'demographics',
                 viewName: this.viewName || 'Clinical Summary',
                 //columns: '',
                 containerPath: 'WNPRC/EHR/',
@@ -598,13 +521,12 @@ EHR.ext.AbstractPanel = Ext.extend(Ext.FormPanel, {
         if (!data.rows.length)
         {
             this.participantMap.replace(id, {});
-            this.add({html: 'Invalid ID'});
-            field.validate();
+            this.placeForAbstract.add({html: 'Id not found: '+id});
         }
         else
         {
             var row = data.rows[0];
-            if (row['Status/Status'] != 'Alive'){
+            if (!this.allowDeadAnimals && row['Id/Status/Status'] != 'Alive'){
                 alert('Animal: '+id+' is not currently alive and at WNPRC');
             }
 
@@ -623,18 +545,18 @@ EHR.ext.AbstractPanel = Ext.extend(Ext.FormPanel, {
 
         this.doLayout();
         this.expand();
-    },
-    clearAbstract: function(c)
-    {
-        delete c.loadedId;
-
-        if (c.getValue())
-        {
-            this.placeForAbstract.removeAll();
-            this.placeForQwp.update();
-            this.doLayout();
-        }
     }
+//    clearAbstract: function(c)
+//    {
+//        delete c.loadedId;
+//
+//        if (c.getValue())
+//        {
+//            this.placeForAbstract.removeAll();
+//            this.placeForQwp.update();
+//            this.doLayout();
+//        }
+//    }
 
 });
 Ext.reg('ehr-abstractpanel', EHR.ext.AbstractPanel);
@@ -645,6 +567,7 @@ EHR.ext.QueryPanel = Ext.extend(Ext.Panel, {
         Ext.applyIf(this, {
             width: 'auto',
             layout: 'anchor',
+            autoScroll: true,
             border: false,
             //headerStyle: 'background-color : transparent;background : transparent;',
             frame: false,
@@ -670,6 +593,8 @@ EHR.ext.QueryPanel = Ext.extend(Ext.Panel, {
             allowChooseQuery: false,
             allowChooseView: true,
             showRecordSelectors: true,
+            showDetailsColumn: false,
+            showUpdateColumn: false,
             frame: 'none',
             showDeleteButton: false,
             timeout: 0,
@@ -789,11 +714,11 @@ EHR.ext.ClinPathOrderPanel = Ext.extend(Ext.FormPanel, {
             },{
                 xtype: 'ehr-remotecheckboxgroup',
                 ref: 'testName',
-                displayField: 'type',
-                valueField: 'type',
+                displayField: 'label',
+                valueField: 'dataset',
                 store: new LABKEY.ext.Store({
                     schemaName: 'ehr_lookups',
-                    queryName: 'clinpath_request_type'
+                    queryName: 'clinpath_services'
                 })
             }]
             ,scope: this
@@ -828,6 +753,63 @@ EHR.ext.ClinPathOrderPanel = Ext.extend(Ext.FormPanel, {
     }
 });
 Ext.reg('ehr-clinpathorderpanel', EHR.ext.ClinPathOrderPanel);
+
+
+//creates a pair of date fields that automatically set their min/max dates to create a date range
+EHR.ext.DateRangePanel = Ext.extend(Ext.Panel,
+{
+    initComponent : function(config)
+    {
+        var defaults = {
+            //cls: 'extContainer',
+            bodyBorder: false,
+            border: false,
+            defaults: {
+                border: false,
+                bodyBorder: false
+            }
+        };
+
+        Ext.applyIf(defaults, config);
+
+        Ext.apply(this, defaults);
+
+        EHR.ext.DateRangePanel.superclass.initComponent.call(this);
+
+        this.startDateField = new LABKEY.ext.DateField({
+            format: 'Y-M-d' //YYYY-MMM-DD
+            ,width: 165
+            ,name:'startDate'
+            ,allowBlank:true
+            ,vtype: 'daterange'
+            ,scope: this
+            ,value: LABKEY.ActionURL.getParameter('startDate')
+        });
+
+        this.endDateField = new LABKEY.ext.DateField({
+            format: 'Y-M-d' //YYYY-MMM-DD
+            ,width:165
+            ,name:'endDate'
+            ,allowBlank:true
+            ,vtype: 'daterange'
+            ,scope: this
+            ,value: LABKEY.ActionURL.getParameter('endDate')
+        });
+
+        Ext.apply(this.endDateField, {startDateField: this.startDateField});
+        Ext.apply(this.startDateField, {endDateField: this.endDateField});
+
+        this.add({tag: 'div', html: 'From:'});
+        this.add(this.startDateField);
+        this.add({tag: 'div', html: 'To:'});
+        this.add(this.endDateField);
+        this.add({tag: 'div', html: '<br>'});
+
+    }
+
+});
+Ext.reg('DateRangePanel', EHR.ext.DateRangePanel);
+
 
 EHR.ext.ApplyTemplatePanel = Ext.extend(Ext.FormPanel, {
     initComponent: function()
@@ -1118,7 +1100,7 @@ EHR.ext.SaveTemplatePanel = Ext.extend(Ext.Panel, {
 Ext.reg('ehr-savetemplatepanel', EHR.ext.SaveTemplatePanel);
 
 
-EHR.ext.createTaskPanel = function(config){
+EHR.ext.createImportPanel = function(config){
 
     LABKEY.Query.selectRows({
         schemaName: 'ehr',
@@ -1133,7 +1115,10 @@ EHR.ext.createTaskPanel = function(config){
             //we assume this is a simple query:
             config.queryName = config.formType;
             config.schemaName = 'study';
-            EHR.ext.createSimpleTaskPanel(config);
+            if(config.panelType=='Task')
+                EHR.ext.createSimpleTaskPanel(config);
+            else
+                alert('Form type not found');
             return;
         }
 
@@ -1172,7 +1157,7 @@ EHR.ext.createTaskPanel = function(config){
             panelCfg[row.destination].push(obj);
         }, this);
 
-        return new EHR.ext.TaskPanel(panelCfg);
+        return new EHR.ext[config.panelType+'Panel'](panelCfg);
     }
 
 };

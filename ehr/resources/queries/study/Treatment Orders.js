@@ -4,9 +4,12 @@
  * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
  */
 
+var {EHR, LABKEY, Ext, shared, console, init, beforeInsert, afterInsert, beforeUpdate, afterUpdate, beforeDelete, afterDelete, complete} = require("ehr/validation");
 
 
-function repairRow(row, errors){
+
+
+function onETL(row, errors){
     if(row.code == '00000000')
         row.code = null;
     
@@ -16,8 +19,8 @@ function setDescription(row, errors){
     //we need to set description for every field
     var description = new Array();
 
-    description.push(EHR.validation.snomedString('Code', row.code,  row.snomedMeaning));
-    
+    if(row.code || row.snomedMeaning)
+        description.push('Code: '+EHR.validation.snomedToString(row.code,  row.snomedMeaning));
     if(row.meaning)
         description.push('Meaning: '+ row.meaning);
     if(row.volume)

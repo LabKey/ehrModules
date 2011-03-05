@@ -86,7 +86,7 @@ CREATE TABLE ehr.requests
     FormType character varying(200),
 
     priority varchar(200),
-    notify1 varchar(200),
+    notify1 integer,
     notify2 varchar(200),
     pi varchar(200),
     QCState integer,
@@ -403,3 +403,22 @@ CREATE TABLE ehr.project
 --
 --     CONSTRAINT PK_project PRIMARY KEY (project)
 -- );
+
+
+
+DROP TABLE IF EXISTS ehr.client_errors;
+CREATE TABLE ehr.client_errors
+(
+    rowid serial not null,
+    page varchar(4000),
+    exception varchar(4000),
+    json text,
+
+    Container ENTITYID NOT NULL,
+    CreatedBy USERID NOT NULL,
+    Created TIMESTAMP NOT NULL,
+    ModifiedBy USERID NOT NULL,
+    Modified TIMESTAMP NOT NULL,
+
+    CONSTRAINT PK_client_errors PRIMARY KEY (rowid)
+);

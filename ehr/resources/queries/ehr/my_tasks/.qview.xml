@@ -1,8 +1,8 @@
 <customView xmlns="http://labkey.org/data/xml/queryCustomView">
    <columns>
         <column name="rowid"/>
-        <column name="formtype" />
         <column name="title" />
+        <!--<column name="formtype" />-->
         <column name="AssignedTo" />
         <column name="DueDate"/>
         <column name="CreatedBy"/>
@@ -16,7 +16,6 @@
         <!--<column name="Modified"/>-->
    </columns>
    <!--<filters>-->
-       <!--<filter column="QCState/Label" operator="eq" value="In Progress"/>-->
    <!--</filters>-->
    <sorts>
        <sort column="DueDate" descending="true"/>

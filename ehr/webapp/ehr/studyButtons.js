@@ -162,13 +162,13 @@ function datasetHandler(dataRegion, dataRegionName)
 function moreActionsHandler(dataRegion){
     var menu = Ext.menu.MenuMgr.get(dataRegion.name + '.Menu.More Actions');
 
-    LABKEY.Security.getSecurableResources({
-        includeEffectivePermissions: true,
-        successCallback: function(data){
-            console.log('securable resources:')
-            console.log(data);
-        }
-    });
+//    LABKEY.Security.getSecurableResources({
+//        includeEffectivePermissions: true,
+//        successCallback: function(data){
+//            console.log('securable resources:')
+//            console.log(data);
+//        }
+//    });
 
     
 }

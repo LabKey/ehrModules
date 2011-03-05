@@ -8,9 +8,10 @@
                 <titleColumn>RowId</titleColumn>
                 <columns>
                     <column columnName="rowid">
-                        <columnTitle>TaskId</columnTitle>
+                        <columnTitle>Task Id</columnTitle>
                         <isAutoInc>true</isAutoInc>
                         <nullable>true</nullable>
+                        <url>/ehr/manageTask.view?formtype=${formtype}&amp;taskid=${taskid}</url>
                     </column>
                     <column columnName="formtype">
                         <columnTitle>Task Type</columnTitle>
@@ -62,6 +63,9 @@
                             <fkTable>qcstate</fkTable>
                             <fkColumnName>rowid</fkColumnName>
                         </fk>
+                    </column>
+                    <column columnName="title">
+                        <url>/ehr/manageTask.view?formtype=${formtype}&amp;taskid=${taskid}</url>
                     </column>
                 </columns>
                 <buttonBarOptions includeStandardButtons="false">

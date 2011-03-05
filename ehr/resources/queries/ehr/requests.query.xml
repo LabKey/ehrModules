@@ -3,12 +3,18 @@
         <tables xmlns="http://labkey.org/data/xml">
             <table tableName="requests" tableDbType="TABLE">
                 <!--<tableUrl>/ehr/requestDetails.view?formtype=${formtype}&amp;requestid=${requestid}</tableUrl>-->
-                <!--<updateUrl>/ehr/manageRequest.view?formtype=${formtype}&amp;requestid=${requestid}</updateUrl>-->
-                <!--<insertUrl>/ehr/manageRequest.view</insertUrl>-->
+                <updateUrl>/ehr/manageRequest.view?formtype=${formtype}&amp;requestid=${requestid}</updateUrl>
+                <insertUrl>/ehr/manageRequest.view</insertUrl>
                 <titleColumn>RowId</titleColumn>
                 <columns>
                     <column columnName="rowid">
                         <columnTitle>Request Id</columnTitle>
+                        <isAutoInc>true</isAutoInc>
+                        <nullable>true</nullable>
+                        <url>/ehr/manageRequest.view?formtype=${formtype}&amp;requestid=${requestid}</url>
+                    </column>
+                    <column columnName="title">
+                        <url>/ehr/manageRequest.view?formtype=${formtype}&amp;requestid=${requestid}</url>
                     </column>
                     <column columnName="formtype">
                         <columnTitle>Request Type</columnTitle>
@@ -28,6 +34,34 @@
                             <fkColumnName>userid</fkColumnName>
                         </fk>
                     </column>
+                    <column columnName="notify1">
+                        <columnTitle>First Notification</columnTitle>
+                        <fk>
+                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
+                            <fkDbSchema>core</fkDbSchema>
+                            <fkTable>Principals</fkTable>
+                            <fkColumnName>userid</fkColumnName>
+                        </fk>
+                    </column>
+                    <column columnName="notify2">
+                        <columnTitle>Second Notification</columnTitle>
+                        <!--<fk>-->
+                            <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
+                            <!--<fkDbSchema>core</fkDbSchema>-->
+                            <!--<fkTable>Principals</fkTable>-->
+                            <!--<fkColumnName>userid</fkColumnName>-->
+                        <!--</fk>-->
+                    </column>
+                    <column columnName="pi">
+                        <columnTitle>PI</columnTitle>
+                    </column>
+                    <column columnName="priority">
+                        <fk>
+                            <fkDbSchema>ehr_lookups</fkDbSchema>
+                            <fkTable>request_priority</fkTable>
+                            <fkColumnName>priority</fkColumnName>
+                        </fk>
+                    </column>
                     <column columnName="created">
                         <columnTitle>Created</columnTitle>
                         <formatString>yyyy-MM-dd HH:mm</formatString>
@@ -38,6 +72,9 @@
                     <column columnName="modified">
                         <columnTitle>Modified</columnTitle>
                     </column>
+                    <column columnName="daterequested">
+                        <columnTitle>Date Requested</columnTitle>
+                    </column>
                     <column columnName="qcstate">
                         <columnTitle>Status</columnTitle>
                         <fk>
@@ -46,6 +83,10 @@
                             <fkTable>qcstate</fkTable>
                             <fkColumnName>rowid</fkColumnName>
                         </fk>
+                        <displayWidth>200</displayWidth>
+                    </column>
+                    <column columnName="qcstate/Label">
+                        <displayWidth>200</displayWidth>
                     </column>
                 </columns>
                 <buttonBarOptions includeStandardButtons="false">

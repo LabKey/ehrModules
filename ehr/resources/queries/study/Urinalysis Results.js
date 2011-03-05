@@ -4,9 +4,13 @@
  * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
  */
 
+var {EHR, LABKEY, Ext, shared, console, init, beforeInsert, afterInsert, beforeUpdate, afterUpdate, beforeDelete, afterDelete, complete} = require("ehr/validation");
 
 
-function repairRow(row, errors){
+
+
+
+function onETL(row, errors){
     if(row.stringResults){
         EHR.validation.fixChemValue(row, errors);
     }

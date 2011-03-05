@@ -5,15 +5,12 @@
  */
 
 
-//EHR = require("/ehr/validation");
-//include("/ehr/validation");
+var {EHR, LABKEY, Ext, shared, console, init, beforeInsert, afterInsert, beforeUpdate, afterUpdate, beforeDelete, afterDelete, complete} = require("ehr/validation");
 
 
 
 
-function repairRow(row, errors){
 
-}
 
 function setDescription(row, errors){
     //we need to set description for every field

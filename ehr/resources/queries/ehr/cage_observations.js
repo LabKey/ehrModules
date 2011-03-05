@@ -4,14 +4,13 @@
  * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
  */
 
-//include("/ehr/validation");
+var {EHR, LABKEY, Ext, shared, console, init, beforeInsert, afterInsert, beforeUpdate, afterUpdate, beforeDelete, afterDelete, complete} = require("ehr/validation");
 
-//TODO: dont allow any deletes
-//cascade delete from ehr.cage_obs to this
+console.log("** evaluating: " + this['javax.script.filename']);
 
-function repairRow(row, errors){
 
-}
+//TODO: cascade deletes to ehr.cage_obs
+
 
 function setDescription(row, errors){
     //we need to set description for every field

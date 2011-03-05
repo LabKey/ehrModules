@@ -31,7 +31,8 @@ Ext.onReady(function(){
     renderTaskForm(formType);
 
     function renderTaskForm(formType){
-        EHR.ext.createTaskPanel({
+        EHR.ext.createImportPanel({
+            panelType: 'Task',
             formUUID: formUUID,
             formType: formType,
             renderTo: 'taskForm',

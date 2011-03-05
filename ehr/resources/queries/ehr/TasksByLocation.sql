@@ -10,7 +10,8 @@ SELECT
 
 --   t.title,
 --   t.formtype,
-  t.taskId
+  t.taskId,
+  t.formtype
 --   t.assignedTo,
 --   t.duedate,
 --   t.created,
@@ -23,5 +24,5 @@ JOIN study.studydata sd
 
 ON (t.taskid = sd.taskid)
 
-GROUP BY t.taskid, sd.id.curlocation.room, sd.id.curlocation.cage
+GROUP BY t.taskid, t.formtype, sd.id.curlocation.room, sd.id.curlocation.cage
 

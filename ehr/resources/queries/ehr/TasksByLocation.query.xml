@@ -16,83 +16,16 @@
                             <fkTable>tasks</fkTable>
                             <fkColumnName>taskid</fkColumnName>
                         </fk>
+                        <url>/ehr/manageTask.view?formtype=${formtype}&amp;taskid=${taskid}</url>
                     </column>
-                    <!--<column columnName="type">-->
-                        <!--<columnTitle>Task Type</columnTitle>-->
-                        <!--<fk>-->
-                            <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
-                            <!--<fkDbSchema>ehr</fkDbSchema>-->
-                            <!--<fkTable>type_types</fkTable>-->
-                            <!--<fkColumnName>type</fkColumnName>-->
-                        <!--</fk>-->
-                    <!--</column>-->
-                    <!--<column columnName="assignedto">-->
-                        <!--<columnTitle>Assigned To</columnTitle>-->
-                        <!--<nullable>true</nullable>-->
-                        <!--<fk>-->
-                            <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
-                            <!--<fkDbSchema>core</fkDbSchema>-->
-                            <!--<fkTable>users</fkTable>-->
-                            <!--<fkColumnName>userid</fkColumnName>-->
-                        <!--</fk>-->
-                    <!--</column>-->
-                    <!--<column columnName="duedate">-->
-                        <!--<columnTitle>Due Date</columnTitle>-->
-                        <!--<nullable>true</nullable>-->
-                    <!--</column>-->
-                    <!--<column columnName="createdby">-->
-                        <!--<columnTitle>Created By</columnTitle>-->
-                        <!--<fk>-->
-                            <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
-                            <!--<fkDbSchema>core</fkDbSchema>-->
-                            <!--<fkTable>users</fkTable>-->
-                            <!--<fkColumnName>userid</fkColumnName>-->
-                        <!--</fk>-->
-                    <!--</column>-->
-                    <!--<column columnName="created">-->
-                        <!--<columnTitle>Created</columnTitle>-->
-                        <!--<formatString>yyyy-MM-dd HH:mm</formatString>-->
-                    <!--</column>-->
-                    <!--<column columnName="modifiedby">-->
-                        <!--<columnTitle>Modified By</columnTitle>-->
-                    <!--</column>-->
-                    <!--<column columnName="modified">-->
-                        <!--<columnTitle>Modified</columnTitle>-->
-                    <!--</column>-->
-                    <!--<column columnName="qcstate">-->
-                        <!--<columnTitle>Status</columnTitle>-->
-                        <!--<fk>-->
-                            <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
-                            <!--<fkDbSchema>study</fkDbSchema>-->
-                            <!--<fkTable>qcstate</fkTable>-->
-                            <!--<fkColumnName>rowid</fkColumnName>-->
-                        <!--</fk>-->
-                    <!--</column>-->
+                    <column columnName="formtype">
+                        <isHidden>true</isHidden>
+                    </column>
                 </columns>
-                <buttonBarOptions includeStandardButtons="false">
-                    <includeScript>/ehr/studyButtons.js</includeScript>
-                    <!--<onRender>moreActionsHandler</onRender>-->
+                <buttonBarOptions includeStandardButtons="true">
                     <item text="Create New">
-                        <originalText>Insert New</originalText>
+                        <target>/ehr/manageTask.view</target>
                     </item>
-                    <item text="Views">
-                        <originalText>Views</originalText>
-                    </item>
-                    <item text="Export">
-                        <originalText>Export</originalText>
-                    </item>
-                    <item text="Print">
-                        <originalText>Print</originalText>
-                    </item>
-                    <!--<item text="Import Data">-->
-                        <!--<originalText>Import Data</originalText>-->
-                    <!--</item>-->
-                    <item text="Page Size">
-                        <originalText>Page Size</originalText>
-                    </item>
-                    <!--<item text="Delete">-->
-                        <!--<originalText>Delete</originalText>-->
-                    <!--</item>-->
                 </buttonBarOptions>
             </table>
         </tables>

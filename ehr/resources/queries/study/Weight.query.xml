@@ -23,7 +23,7 @@
                             <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                             <fkDbSchema>study</fkDbSchema>
                             <fkTable>weightPctChange</fkTable>
-                            <fkColumnName>Id</fkColumnName>
+                            <fkColumnName>lsid</fkColumnName>
                         </fk>
                     </column>
                     <column columnName="relChange" wrappedColumnName="lsid">
@@ -34,7 +34,7 @@
                             <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                             <fkDbSchema>study</fkDbSchema>
                             <fkTable>weightRelChange</fkTable>
-                            <fkColumnName>Id</fkColumnName>
+                            <fkColumnName>lsid</fkColumnName>
                         </fk>
                     </column>
                 </columns>

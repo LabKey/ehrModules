@@ -26,11 +26,14 @@ LABKEY.requiresScript("/ehr/ehrMetaHelper.js");
  * @param {Array} records Array of the records that were validated
  */
 
+//doServerValidation: boolean
+
 EHR.ext.AdvancedStore = Ext.extend(LABKEY.ext.Store, {
     constructor: function(config){
         Ext.apply(this, {
             pruneModifiedRecords: true,
-            errors: new Ext.util.MixedCollection()
+            errors: new Ext.util.MixedCollection(),
+            doServerValidation: true
         });
 
 
@@ -45,20 +48,21 @@ EHR.ext.AdvancedStore = Ext.extend(LABKEY.ext.Store, {
 
         if(this.monitorValid)
             this.initMonitorValid();
-
-//        this.on('beforeload', function(){
-//            console.log('beforeload: '+this.storeId)
-//        }, this)
-//        this.on('load', function(){
-//            console.log('load: '+this.storeId)
-//        }, this)
     },
 
     initMonitorValid: function(){
         this.on('update', this.validateRecord, this);
-        //this.on('add', this.validateRecords, this);
+        this.on('add', this.validateRecords, this);
         this.on('load', this.validateRecords, this);
-        this.on('remove', this.onRemoveValidation, this);
+        this.on('remove', this.validationOnRemove, this);
+
+        this.on('save', function(store, batch, data){
+            console.log('on save')
+            console.log(arguments)
+        }, this);
+
+//        if(this.doServerValidation)
+//            this.on('update', this.validateRecordOnServer, this, {buffer: 500, delay: 500});
 
         this.validateRecords(this);
     },
@@ -67,12 +71,19 @@ EHR.ext.AdvancedStore = Ext.extend(LABKEY.ext.Store, {
         this.un('update', this.validateRecord, this);
         this.un('add', this.validateRecords, this);
         this.un('load', this.validateRecords, this);
-        this.on('remove', this.onRemoveValidation, this);
+        this.on('remove', this.validationOnRemove, this);
+
+//        this.un('update', this.validateRecordOnServer, this);
     },
 
-    onRemoveValidation: function(store, recs){
-        //validate all remaining records, including refreshing all errors
-        this.validateRecords(store);
+    validationOnRemove: function(store, rec){
+        //we need to remove all errors from this record
+        this.errors.each(function(error){
+            if(error.record==rec){
+                this.errors.remove(error);
+            }
+        }, this);
+        this.fireEvent('validation', this);
     },
     onProxyLoad: function(proxy, response, options){
         var meta = this.reader.meta;
@@ -166,6 +177,8 @@ EHR.ext.AdvancedStore = Ext.extend(LABKEY.ext.Store, {
         }, this);
 
         this.insert(idx, records);
+        this.validateRecords(this, records);
+
         return records
     },
 
@@ -175,6 +188,7 @@ EHR.ext.AdvancedStore = Ext.extend(LABKEY.ext.Store, {
 
         r = this.newRecord(r);
         this.insert(idx, r);
+        this.validateRecords(this, [r]);
         return r;
     },
 
@@ -195,6 +209,8 @@ EHR.ext.AdvancedStore = Ext.extend(LABKEY.ext.Store, {
 
     maxErrorSeverity: function(){
         var maxSeverity;
+//console.log('errors:')
+//console.log(this.errors)
         this.errors.each(function(e){
             maxSeverity = EHR.utils.maxError(maxSeverity, e.severity);
         }, this);
@@ -205,13 +221,11 @@ EHR.ext.AdvancedStore = Ext.extend(LABKEY.ext.Store, {
     validateRecords: function(store, recs, fireEvent){
         if(recs)
             Ext.each(recs, function(r){
-                this.validateRecord(this, r, false);
+                this.validateRecord(this, r, null, {fireEvent: false});
             }, this);
         else
-            //TODO: this will also clear server-side errors
-            this.errors.clear();
             this.each(function(r){
-                this.validateRecord(this, r, false);
+                this.validateRecord(this, r, null, {fireEvent: false});
             }, this);
 
         if(fireEvent !== false){
@@ -219,17 +233,22 @@ EHR.ext.AdvancedStore = Ext.extend(LABKEY.ext.Store, {
         }
     },
 
-    validateRecord: function(store, r, fireEvent){
-        if(debug)
+    validateRecord: function(store, r, operation, config){
+        config = config || {};
+        if(debug){
             console.log('Validating Record: '+r.id);
+            console.log('Operation: '+operation);
+        }
 
         r.errors = r.errors || [];
 
-        //remove other client-side errors
+        //remove other client-side errors for this record
         for(var i = r.errors.length-1; i >= 0; i--){
-            if(!r.errors[i].fromServer)
+            if(!r.errors[i].fromServer){
+                this.errors.remove(r.errors[i]);
                 r.errors.splice(i, 1);
-        };
+            }
+        }
 
         r.fields.each(function(f) {
             //NOTE: we're drawing a distinction between LABKEY's nullable and ext's allowBlank.
@@ -241,49 +260,67 @@ EHR.ext.AdvancedStore = Ext.extend(LABKEY.ext.Store, {
                     r.errors.push({
                         id: LABKEY.Utils.generateUUID(),
                         field: f.name,
-                        message: 'Field Is Required',
+                        message: 'This field is required',
                         record: r,
-                        //meta: f,
+                        errorValue: r.get(f.dataIndex),
                         severity: (f.nullable === false ? 'ERROR' : 'WARN'),
                         fromServer: false
                     });
                 }
             }
+
+            //NOTE: if I could find the field editor, i could hook into getErrors() to find other validation errors
+            //should revisit in Ext 4 when validation is moved to dataModel
         },store);
 
-        //remove store errors from this record
-        //this should use the UUID given to each error
-        this.errors.each(function(item){
-            this.errors.remove(item);
-        }, this);
         this.errors.addAll(r.errors);
 
         //this is designed such that validateRecords() can call validateRecord() multiple times without events firing
-        if(fireEvent!==false){
-            this.fireEvent('validation', this, [r]);
+        if(config.fireEvent!==false){
+            this.fireEvent('validation', this, [r], config);
         }
 
-        return r.errors;
+        if(operation=='edit' && this.doServerValidation!==false){
+            this.validateRecordOnServer(this, [r], config);
+        }
     },
 
-    validateRecordOnServer: function(record){
-        r.serverValidationInProgress = true;
-        var commands = this.getChanges([record]);
+    validateRecordOnServer: function(store, records, config){
+        if(!records || !records.length)
+            return;
 
-        if (!commands.length){
-            console.log('No changes, nothing to do');
+        if(config && config.noServerValidation){
+            console.log('skipping server validation');
             return;
         }
 
+        console.log('starting server validation on: '+records.length);
+
+        var commands = this.getChanges(records);
+
+        if (!commands.length){
+            console.log('No changes, not going to validate on server');
+            return false;
+        }
+
         //add a flag per command to make sure this record fails
-        record._validateOnly = true;
-        Ext.each(commands, function(c){
-            //TODO
-            console.log('need to add context flag');
-            console.log(c);
+        Ext.each(commands, function(command){
+            Ext.each(command.rows, function(row){
+                row.values._validateOnly = true;
+            }, this);
         }, this);
 
-        this.sendRequest([record], commands);
+        Ext.each(records, function(record){
+            record.serverValidationInProgress = true;
+        }, this);
+
+        var extraContext = {validateOnly: true};
+
+        //TODO: send context to server to prevent commit
+//        Ext.each(commands, function(c){
+//        }, this);
+
+        this.sendRequest(records, commands, extraContext);
     },
 
 //    isValid: function(){
@@ -320,6 +357,7 @@ EHR.ext.AdvancedStore = Ext.extend(LABKEY.ext.Store, {
     },
 
     //the only reason this method is overridden is to delete record.phantom near the bottom.  see note
+    //second change: we also delete lastTransactionId
     processResponse : function(rows){
         var idCol = this.reader.jsonData.metaData.id;
         var row;
@@ -373,6 +411,7 @@ EHR.ext.AdvancedStore = Ext.extend(LABKEY.ext.Store, {
             //reset transitory flags and commit the record to let
             //bound controls know that it's now clean
             delete record.saveOperationInProgress;
+            delete record.lastTransactionId;
 
             //NOTE: this could probably be removed in favor of the Ext param
             //phantom is the built-in Ext version of labkey's isNew.  I delete here so we know the record exists on the server
@@ -419,14 +458,15 @@ EHR.ext.AdvancedStore = Ext.extend(LABKEY.ext.Store, {
         var commands = this.getChanges(records);
 
         if (!commands.length){
-            console.log('No changes, nothing to do');
+            console.log('No changes, nothing to do (from commitRecords)');
             return;
         }
 
         this.sendRequest(records, commands);
     },
 
-    sendRequest: function(records, commands){
+    //NOTE: split this into a separate method so validateOnServer() can call it separately
+    sendRequest: function(records, commands, extraContext){
         var request = Ext.Ajax.request({
             url : LABKEY.ActionURL.buildURL("query", "saveRows", this.containerPath),
             method : 'POST',
@@ -435,7 +475,8 @@ EHR.ext.AdvancedStore = Ext.extend(LABKEY.ext.Store, {
             scope: this,
             jsonData : {
                 containerPath: this.containerPath,
-                commands: commands
+                commands: commands,
+                extraContext: extraContext || {}
             },
             headers : {
                 'Content-Type' : 'application/json'
@@ -468,7 +509,7 @@ EHR.ext.AdvancedStore = Ext.extend(LABKEY.ext.Store, {
                 //handle validation script errors and exceptions differently
                 if(error.errors && error.errors.length){
                     this.handleValidationErrors(records, error, response);
-                    msg = "Could not save changes due to validation errors.";
+                    msg = "Could not save changes due to errors. Please check the form for fields marked in red.";
                 }
                 else {
                     //if an exception was thrown, I believe we automatically only have one error returned
@@ -478,9 +519,8 @@ EHR.ext.AdvancedStore = Ext.extend(LABKEY.ext.Store, {
             }, this);
 
             //NOTE this should be keyed using the request context object
-            if(record._validateOnly){
+            if(options.jsonData.extraContext.validateOnly)
                 msg = '';
-            }
 
             if(false !== this.fireEvent("commitexception", msg) && msg){
                 Ext.Msg.alert("Error", "Error During Save. "+msg);
@@ -501,31 +541,48 @@ EHR.ext.AdvancedStore = Ext.extend(LABKEY.ext.Store, {
 
     //this will process the errors associated with 1 record.
     // this might be more than 1 error
-    handleValidationError: function(record, serverError, response, fireEvent){
+    handleValidationError: function(record, serverError, response){
         //TODO: verify transaction Id matches the most recent attmept.
         if(record.lastTransactionId != response.tId){
             console.log('There has been a more recent transaction for this record');
             return;
         }
 
-        //remove old errors
+        //remove all old errors
         record.errors = [];
+        this.errors.each(function(error){
+            if(error.record==record){
+                this.errors.remove(error);
+            }
+        }, this);
 
         Ext.each(serverError.errors, function(e){
-            record.errors.push({
+            //this is a flag used by server-side validation scripts
+            if(e.field=='_validateOnly')
+                return;
+
+            var newError = {
                 id: LABKEY.Utils.generateUUID(),
                 field: e.field,
                 //meta: e.field,
                 message: e.message,
                 record: record,
-                severity: (e.message.match(/^WARN:/) ? 'WARN' : 'ERROR'),
+                severity: 'ERROR',
+                errorValue: record.get(e.field),
                 fromServer: true
-            });
+            }
+
+            var msg = e.message.split(': ');
+            if(msg.length>1){
+                newError.severity = msg.shift();
+                newError.message = msg.join('');
+            }
+
+            record.errors.push(newError);
         }, this);
 
-        //re-run client-side validation.  this will fire the validation event
-        if(fireEvent!==false)
-            this.validateRecord(this, record);
+        //re-run client-side validation.
+        this.validateRecord(this, record, null, {fireEvent: false, noServerValidation: true});
     },
 
     //the following 2 methods are overriden because the old approach causes uncommitted client-side records to get destroyed
@@ -544,7 +601,6 @@ EHR.ext.AdvancedStore = Ext.extend(LABKEY.ext.Store, {
             if(records[idx].phantom){
                 this.remove(records[idx]);
                 delete records[idx];
-console.log(this.getCount());
             }
             else {
                 key = {};

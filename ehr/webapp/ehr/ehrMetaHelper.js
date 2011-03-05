@@ -161,14 +161,15 @@ EHR.ext.metaHelper = {
                 //NOTE: supported for non-combo components
                 initialValue: field.value,
                 showValueInList: meta.showValueInList,
-                tpl : function(){var tpl = new Ext.XTemplate(
+                listClass: 'labkey-grid-editor',
+                //TODO: it would be better to put this in LABKEY.ext.Combo, so this tpl doesnt conflict with non-combo editors
+                tpl: function(){var tpl = new Ext.XTemplate(
                     '<tpl for=".">' +
-                      '<div class="x-combo-list-item">{[values["' + l.keyColumn + '"]!==null ? values["' + l.displayColumn + '"] : "'+ (meta.lookupNullCaption ? meta.lookupNullCaption : '[none]') +'"]}' +
-                        //allow a flag to display both display and value fields
-                        '<tpl if="'+meta.showValueInList+'">{[values["' + l.keyColumn + '"] ? " ("+values["' + l.keyColumn + '"]+")" : ""]}</tpl>'+
-                        '&nbsp;</div></tpl>'
-                );return tpl.compile()}(), //FIX: 5860
-                listClass: 'labkey-grid-editor'
+                    '<div class="x-combo-list-item">{[values["' + l.keyColumn + '"]!==null ? values["' + l.displayColumn + '"] : "'+ (meta.lookupNullCaption ? meta.lookupNullCaption : '[none]') +'"]}' +
+                    //allow a flag to display both display and value fields
+                    '<tpl if="'+meta.showValueInList+'">{[values["' + l.keyColumn + '"] ? " ("+values["' + l.keyColumn + '"]+")" : ""]}</tpl>'+
+                    '&nbsp;</div></tpl>'
+                    );return tpl.compile()}() //FIX: 5860
             });
         }
         else

@@ -115,6 +115,7 @@
                     </column>
                     <column columnName="cond">
                         <datatype>varchar</datatype>
+                        <displayWidth>30</displayWidth>
                         <columnTitle>Condition</columnTitle>
                         <fk>
                             <fkFolderPath>/wnprc/ehr/</fkFolderPath>

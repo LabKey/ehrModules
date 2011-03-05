@@ -1,0 +1,25 @@
+<customView xmlns="http://labkey.org/data/xml/queryCustomView">
+   <columns>
+        <column name="rowid"/>
+        <column name="title" />
+        <!--<column name="formtype" />-->
+        <column name="AssignedTo" />
+        <column name="DueDate"/>
+        <column name="CreatedBy"/>
+        <column name="Created"/>
+        <column name="QCState/Label">
+            <properties>
+                <property name="columnTitle" value="Status"/>
+            </properties>
+        </column>
+        <!--<column name="ModifiedBy"/>-->
+        <!--<column name="Modified"/>-->
+   </columns>
+   <filters>
+       <filter column="QCState/Label" operator="eq" value="In Progress"/>
+   </filters>
+   <sorts>
+       <sort column="DueDate" descending="true"/>
+       <sort column="created" descending="true"/>
+   </sorts>
+</customView>

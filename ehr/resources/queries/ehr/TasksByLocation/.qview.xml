@@ -1,5 +1,10 @@
 <customView xmlns="http://labkey.org/data/xml/queryCustomView">
    <columns>
+        <column name="taskid/rowid">
+            <properties>
+                <property name="columnTitle" value="Task Id"/>
+            </properties>
+        </column>
         <column name="room">
             <properties>
                 <property name="columnTitle" value="Room"/>
@@ -10,16 +15,11 @@
                 <property name="columnTitle" value="Cage"/>
             </properties>
         </column>
-        <column name="taskid/rowid">
-            <properties>
-                <property name="columnTitle" value="Task Id"/>
-            </properties>
-        </column>
-        <column name="taskid/formtype">
-            <properties>
-                <property name="columnTitle" value="Task Type"/>
-            </properties>
-        </column>
+        <!--<column name="taskid/formtype">-->
+            <!--<properties>-->
+                <!--<property name="columnTitle" value="Task Type"/>-->
+            <!--</properties>-->
+        <!--</column>-->
         <column name="taskid/title">
             <properties>
                 <property name="columnTitle" value="Title"/>
@@ -45,16 +45,12 @@
                 <property name="columnTitle" value="Created"/>
             </properties>
         </column>
-        <column name="taskid/QCState/Label">
+        <column name="taskid/QCState">
             <properties>
                 <property name="columnTitle" value="Status"/>
             </properties>
         </column>
-        <!--<column name="ModifiedBy"/>-->
-        <!--<column name="Modified"/>-->
    </columns>
-   <!--<filters>-->
-   <!--</filters>-->
    <sorts>
        <sort column="room" descending="true"/>
        <sort column="cage" descending="true"/>

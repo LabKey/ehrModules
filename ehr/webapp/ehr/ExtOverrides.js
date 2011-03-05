@@ -91,41 +91,41 @@ Ext.namespace('EHR.ext');
 Ext.menu.DateMenu.prototype.addClass('extContainer');
 Ext.TabPanel.prototype.addClass('extContainer');
 
-LABKEY.ext.ComboPlugin.measureList = function (){
-    if (!this.tm)
-    {
-        // XXX: should we share a TextMetrics instance across ComboBoxen using a hidden span?
-        var el = this.combo.el ? this.combo.el : Ext.DomHelper.append(document.body, {tag:'span', style:{display:'none'}});
-        this.tm = Ext.util.TextMetrics.createInstance(el);
-    }
+//LABKEY.ext.ComboPlugin.measureList = function (){
+//    if (!this.tm)
+//    {
+//        // XXX: should we share a TextMetrics instance across ComboBoxen using a hidden span?
+//        var el = this.combo.el ? this.combo.el : Ext.DomHelper.append(document.body, {tag:'span', style:{display:'none'}});
+//        this.tm = Ext.util.TextMetrics.createInstance(el);
+//    }
+//
+//    var w = this.combo.el ? this.combo.el.getWidth(true) : 0;
+//    this.combo.store.each(function (r) {
+//        var html;
+//        if(this.combo.view && this.combo.view.tpl && this.combo.rendered)
+//        if (this.combo.view && this.combo.view.tpl && this.combo.rendered)
+//            html = this.combo.tpl.apply(r.data);
+//        else
+//            html = r.get(this.combo.displayField);
+//        w = Math.max(w, Math.ceil(this.tm.getWidth(html)));
+//    }, this);
+//
+//    if (this.combo.list)
+//        w += this.combo.list.getFrameWidth('lr');
+//
+//    // for vertical scrollbar
+//    w += 20;
+//
+//    return w;
+//};
 
-    var w = this.combo.el ? this.combo.el.getWidth(true) : 0;
-    this.combo.store.each(function (r) {
-        var html;
-        if(this.combo.view && this.combo.view.tpl && this.combo.rendered)
-        if (this.combo.view && this.combo.view.tpl && this.combo.rendered)
-            html = this.combo.tpl.apply(r.data);
-        else
-            html = r.get(this.combo.displayField);
-        w = Math.max(w, Math.ceil(this.tm.getWidth(html)));
-    }, this);
 
-    if (this.combo.list)
-        w += this.combo.list.getFrameWidth('lr');
-
-    // for vertical scrollbar
-    w += 20;
-
-    return w;
-};
-
-
-//Ext's 3.1 documentation says this should be the code.  the purpose is to allow null values in integers
+//Ext's 3.1 documentation says this should be the code.  the purpose is to allow null values in integers fields
 Ext.data.Types.INT.convert = function(v){
     return v !== undefined && v !== null && v !== '' ?
         parseInt(String(v).replace(Ext.data.Types.stripRe, ''), 10) : (this.useNull ? null : 0);
 }
-
+Ext.form.Field.prototype.useNull = true;
 
 Ext.override(Ext.form.CheckboxGroup, {
     getValueAsString: function(delim)

@@ -1,0 +1,81 @@
+<customView xmlns="http://labkey.org/data/xml/queryCustomView">
+    <columns>
+        <column name="Id"/>
+        <column name="Id/Status/Status">
+            <properties>
+                <property name="columnTitle" value="Calculated Status"/>
+            </properties>
+        </column>
+        <column name="Status">
+            <properties>
+                <property name="columnTitle" value="Status"/>
+            </properties>
+        </column>
+        <column name="Gender">
+            <properties>
+                <property name="columnTitle" value="Gender"/>
+            </properties>
+        </column>
+        <column name="Avail">
+            <properties>
+                <property name="columnTitle" value="Avail"/>
+            </properties>
+        </column>
+        <column name="Birth">
+            <properties>
+                <property name="columnTitle" value="Birth"/>
+            </properties>
+        </column>
+        <column name="Room">
+            <properties>
+                <property name="columnTitle" value="Room"/>
+            </properties>
+        </column>
+        <column name="Cage">
+            <properties>
+                <property name="columnTitle" value="Cage"/>
+            </properties>
+        </column>
+        <column name="Cond">
+            <properties>
+                <property name="columnTitle" value="Condition"/>
+            </properties>
+        </column>
+        <column name="weight">
+            <properties>
+                <property name="columnTitle" value="Current Weight"/>
+            </properties>
+        </column>
+        <column name="Medical">
+            <properties>
+                <property name="columnTitle" value="Medical"/>
+            </properties>
+        </column>
+        <column name="Id/activeAssignments/ActiveAssignments">
+            <properties>
+                <property name="columnTitle" value="Active Assignments"/>
+            </properties>
+        </column>
+        <column name="Id/AvailBlood/MaxBlood">
+            <properties>
+                <property name="columnTitle" value="Max Blood Per 30 Days"/>
+            </properties>
+        </column>
+        <column name="Id/AvailBlood/BloodLast30">
+            <properties>
+                <property name="columnTitle" value="Blood Drawn in Last 30 Days"/>
+            </properties>
+        </column>
+        <column name="Id/AvailBlood/AvailBlood">
+            <properties>
+                <property name="columnTitle" value="Available Blood"/>
+            </properties>
+        </column>
+    </columns>
+    <!--<filters>-->
+        <!--<filter column="Status/Status" operator="eq" value="Alive"/> -->
+    <!--</filters>-->
+    <sorts>
+        <sort column="id" descending="false"/>
+    </sorts>
+</customView>

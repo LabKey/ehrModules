@@ -9,8 +9,11 @@ Ext.namespace('EHR.ext');
 LABKEY.requiresScript("/ehr/ehrAPI.js");
 
 
+EHR.ext.FormPanel = function(config){
+    EHR.ext.FormPanel.superclass.constructor.call(this, config);
+};
 
-EHR.ext.FormPanel = Ext.extend(Ext.FormPanel,
+Ext.extend(EHR.ext.FormPanel, Ext.FormPanel,
 {
     initComponent: function()
     {
@@ -35,6 +38,8 @@ EHR.ext.FormPanel = Ext.extend(Ext.FormPanel,
             autoLoad: true
         }));
 
+        this.store.parentPanel = this;
+
         Ext.apply(this, {
             plugins: ['databind']
             ,trackResetOnLoad: true
@@ -58,7 +63,7 @@ EHR.ext.FormPanel = Ext.extend(Ext.FormPanel,
                 showDeleteBtn: true
             }
             //,deferredRender: true
-            ,monitorValid: false
+            ,monitorValid: true
             ,bbar: this.showStatus ? {
                 xtype: 'statusbar',
                 defaultText: 'Default text',
@@ -78,7 +83,7 @@ EHR.ext.FormPanel = Ext.extend(Ext.FormPanel,
         }
 
         EHR.ext.FormPanel.superclass.initComponent.call(this);
-        this.addEvents('beforesubmit', 'participantvalid', 'participantinvalid');
+        this.addEvents('beforesubmit', 'participantchange');
 
         if(this.showStatus){
             this.on('recordchange', this.onRecordChange, this, {buffer: 100, delay: 100});
@@ -96,6 +101,7 @@ EHR.ext.FormPanel = Ext.extend(Ext.FormPanel,
             var config = {
                 queryName: this.queryName,
                 schemaName: this.schemaName
+//                msgTarget: 'side'
             };
 
             if (!c.hidden && c.shownInInsertView)
@@ -115,8 +121,10 @@ EHR.ext.FormPanel = Ext.extend(Ext.FormPanel,
                     theField.store.autoLoad = true;
                 }
 
-                if(this.readOnly)
+                if(this.readOnly){
                     theField.xtype = 'ehr-displayfield';
+                    console.log('is read only: '+this.queryName)
+                }
 
                 if(c.combineWithNext)
                     previousField = theField;
@@ -169,8 +177,6 @@ EHR.ext.FormPanel = Ext.extend(Ext.FormPanel,
     onRecordChange: function(theForm){
         if(!this.boundRecord)
             this.getBottomToolbar().setStatus({text: 'No Records'});
-
-        this.markInvalid();
     },
 
     onStoreValidate: function(store, records){
@@ -179,7 +185,7 @@ EHR.ext.FormPanel = Ext.extend(Ext.FormPanel,
         else
             this.getBottomToolbar().setStatus({text: 'Section OK', iconCls: 'x-status-valid'});
 
-        this.markInvalid();
+//        this.markInvalid();
     },
 
     markInvalid : function()
@@ -187,7 +193,9 @@ EHR.ext.FormPanel = Ext.extend(Ext.FormPanel,
         var formMessages = [];
         var toMarkInvalid = {};
         var errorsInHiddenRecords = false;
-console.log('Mark invalid: '+this.store.errors.getCount());
+
+        if(!this.boundRecord)
+            return;
 
         this.store.errors.each(function(error){
             var meta = error.record.fields.get(error.field);
@@ -195,18 +203,19 @@ console.log('Mark invalid: '+this.store.errors.getCount());
             if(meta && meta.hidden)
                 return;
 
-            if(this.boundRecord && error.record===this.boundRecord){
+            if(error.record===this.boundRecord){
                 if ("field" in error){
                     //these are generic form-wide errors
                     if ("_form" == error.field){
                         formMessages.push(error.message);
                     }
-                    else {
-                        if(toMarkInvalid[error.field])
-                            toMarkInvalid[error.field] += '<br>'+error.message;
-                        else
-                            toMarkInvalid[error.field] = error.message;
-                    }
+//                    //NOTE: we will override the field's .getErrors() method instead
+//                    else {
+//                        if(toMarkInvalid[error.field])
+//                            toMarkInvalid[error.field] += '<br>'+error.message;
+//                        else
+//                            toMarkInvalid[error.field] = error.message;
+//                    }
                 }
                 else {
                     formMessages.push(error.message);
@@ -217,8 +226,8 @@ console.log('Mark invalid: '+this.store.errors.getCount());
             }
         }, this);
 
-        if (!EHR.utils.isEmptyObj(toMarkInvalid))
-            this.getForm().markInvalid(toMarkInvalid);
+//        if (!EHR.utils.isEmptyObj(toMarkInvalid))
+//            this.getForm().markInvalid(toMarkInvalid);
 
         if(errorsInHiddenRecords)
             formMessages.push('There are errors in one or more records.  Problem records should be highlighted in red.');

@@ -4,10 +4,12 @@
  * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
  */
 
+var {EHR, LABKEY, Ext, shared, console, init, beforeInsert, afterInsert, beforeUpdate, afterUpdate, beforeDelete, afterDelete, complete} = require("ehr/validation");
 
-function repairRow(row, errors){
 
-}
+
+
+
 
 function setDescription(row, errors){
     //we need to set description for every field
@@ -22,6 +24,24 @@ function setDescription(row, errors){
     return description;
 }
 
-function onInsert(row, errors){
-    //TODO: autocalculate problem #
+
+EHR.onInsert = function(row, errors){
+    //TODO: untested
+
+    //autocalculate problem #
+    if(row.Id){
+        LABKEY.Query.executeSql({
+            schemaName: 'study',
+            sql: "SELECT MAX(problem_no) as problem_no FROM study.problem WHERE id='"+row.Id+"'",
+            success: function(data){
+                if(data && data.rows && data.rows.length==1){
+                    console.log('problemno: '+data.rows[0]);
+                    row.problem_no = data.rows[0].problem_no + 1;
+
+                }
+            },
+            failure: EHR.onFailure
+        });
+    }
+
 }

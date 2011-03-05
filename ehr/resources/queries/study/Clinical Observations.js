@@ -4,12 +4,11 @@
  * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
  */
 
-//include("/ehr/validation");
+var {EHR, LABKEY, Ext, shared, console, init, beforeInsert, afterInsert, beforeUpdate, afterUpdate, beforeDelete, afterDelete, complete} = require("ehr/validation");
 
 
-function repairRow(row, errors){
 
-}
+
 
 function setDescription(row, errors){
     //we need to set description for every field
@@ -17,7 +16,7 @@ function setDescription(row, errors){
 
     if(row.category)
         description.push('Category: ' + row.category);
-    if(row.type)
+    if(row.area)
         description.push('Area: ' + row.area);
     if(row.observation)
         description.push('Observation: ' + row.observation);

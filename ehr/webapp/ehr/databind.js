@@ -177,6 +177,11 @@ EHR.ext.plugins.DataBind = Ext.extend(Ext.util.Observable, {
                 }
             },
             addFieldListener: function(f){
+                if(f.hasDatabindListener){
+                    console.log('field already has listener');
+                    return;
+                }
+
                 if(f instanceof Ext.form.Checkbox){
                     f.on('check', this.fieldChange, this, {buffer: 40});
                 }
@@ -185,9 +190,35 @@ EHR.ext.plugins.DataBind = Ext.extend(Ext.util.Observable, {
                     f.on('change', this.fieldChange, this, {buffer: 40});
                 }
 
-                if(this.bindConfig.disableUnlessBound && !this.boundRecord && !this.bindConfig.bindOnChange){
+                //override getErrors(), so the field will display server-side errors
+                if(!f.oldGetErrors)
+                    f.oldGetErrors = f.getErrors;
+
+                f.getErrors = function(value){
+                    var errors = this.oldGetErrors.apply(this, arguments);
+
+                    if(this.ownerCt.boundRecord && this.ownerCt.boundRecord.errors){
+                        Ext.each(this.ownerCt.boundRecord.errors, function(error){
+                            if(error.field == this.name){
+                                errors.push(error.message);
+                            }
+                        }, this);
+                    }
+
+                    //if allowBlank==true, Ext.Form.TextField will return duplicate 'Field is required' messages
+                    errors = Ext.unique(errors);
+
+                    //the form will only display the first error, so we concat them
+                    if(errors.length)
+                        errors = [errors.join(";<br>")];
+
+                    return errors;
+                };
+
+                if(this.bindConfig.disableUnlessBound && !this.boundRecord && !this.bindConfig.bindOnChange)
                     f.setDisabled(true);
-                }
+
+                f.hasDatabindListener = true;
             },
             configureStore: function(){
                 if (this.store)
@@ -208,7 +239,6 @@ EHR.ext.plugins.DataBind = Ext.extend(Ext.util.Observable, {
                                     }, this);
                                     var rec = new this.store.recordType(values);
                                     rec.markDirty();
-
                                     this.store.addRecord(rec);
 
                                     //called to force record to store's modified list
@@ -238,26 +268,28 @@ EHR.ext.plugins.DataBind = Ext.extend(Ext.util.Observable, {
         o.addEvents('beforesubmit', 'recordchange', 'formchange');
 
         if(o.bindConfig.showDeleteBtn !== false){
-            o.getBottomToolbar().insert(0, {
-                xtype: 'button',
-                text: 'Clear Section',
-                ref: 'recordDeleteBtn',
-                scope: o,
-                disabled: true,
-                handler: function(){
-                    if(this.boundRecord){
-                        Ext.MessageBox.confirm(
-                            'Confirm',
-                            'You are about to clear this section.  This will permanently delete these values.  Are you sure you want to do this?',
-                            function(val){
-                                if(val=='yes')
-                                    this.unbindRecord({deleteRecord: true});
-                            },
-                            this
-                        );
+            if(o.getBottomToolbar())
+                o.getBottomToolbar().insert(0, {
+                    xtype: 'button',
+                    text: 'Clear Section',
+                    ref: 'recordDeleteBtn',
+                    scope: o,
+                    disabled: true,
+                    handler: function(){
+                        if(this.boundRecord){
+                            Ext.MessageBox.confirm(
+                                'Confirm',
+                                'You are about to clear this section.  This will permanently delete these values.  Are you sure you want to do this?',
+                                function(val){
+                                    if(val=='yes')
+                                        this.unbindRecord({deleteRecord: true});
+                                },
+                                this
+                            );
+                        }
                     }
-                }
-            });
+                });
+
             o.on('recordchange', function(form, record){
                 this.getBottomToolbar().recordDeleteBtn.setDisabled(record===undefined)
             }, o);

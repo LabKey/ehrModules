@@ -1,0 +1,77 @@
+<query xmlns="http://labkey.org/data/xml/query">
+    <metadata>
+        <tables xmlns="http://labkey.org/data/xml">
+            <table tableName="tasks" tableDbType="TABLE">
+                <tableUrl>/ehr/taskDetails.view?formtype=${formtype}&amp;taskid=${taskid}</tableUrl>
+                <updateUrl>/ehr/manageTask.view?formtype=${formtype}&amp;taskid=${taskid}</updateUrl>
+                <insertUrl>/ehr/manageTask.view</insertUrl>
+                <titleColumn>RowId</titleColumn>
+                <columns>
+                    <column columnName="rowid">
+                        <columnTitle>Task Id</columnTitle>
+                        <isAutoInc>true</isAutoInc>
+                        <nullable>true</nullable>
+                    </column>
+                    <column columnName="formtype">
+                        <columnTitle>Task Type</columnTitle>
+                        <fk>
+                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
+                            <fkDbSchema>ehr</fkDbSchema>
+                            <fkTable>formtypes</fkTable>
+                            <fkColumnName>type</fkColumnName>
+                        </fk>
+                    </column>
+                    <column columnName="assignedto">
+                        <columnTitle>Assigned To</columnTitle>
+                        <nullable>true</nullable>
+                        <fk>
+                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
+                            <fkDbSchema>core</fkDbSchema>
+                            <fkTable>Principals</fkTable>
+                            <fkColumnName>userid</fkColumnName>
+                        </fk>
+                    </column>
+                    <column columnName="duedate">
+                        <columnTitle>Due Date</columnTitle>
+                        <nullable>true</nullable>
+                    </column>
+                    <column columnName="createdby">
+                        <columnTitle>Created By</columnTitle>
+                        <fk>
+                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
+                            <fkDbSchema>core</fkDbSchema>
+                            <fkTable>users</fkTable>
+                            <fkColumnName>userid</fkColumnName>
+                        </fk>
+                    </column>
+                    <column columnName="created">
+                        <columnTitle>Created</columnTitle>
+                        <formatString>yyyy-MM-dd HH:mm</formatString>
+                    </column>
+                    <column columnName="modifiedby">
+                        <columnTitle>Modified By</columnTitle>
+                    </column>
+                    <column columnName="modified">
+                        <columnTitle>Modified</columnTitle>
+                    </column>
+                    <column columnName="qcstate">
+                        <columnTitle>Status</columnTitle>
+                        <fk>
+                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
+                            <fkDbSchema>study</fkDbSchema>
+                            <fkTable>qcstate</fkTable>
+                            <fkColumnName>rowid</fkColumnName>
+                        </fk>
+                    </column>
+                </columns>
+                <buttonBarOptions includeStandardButtons="true">
+                    <includeScript>/ehr/studyButtons.js</includeScript>
+                    <item text="Create New">
+                        <!--<originalText>Insert New</originalText>-->
+                        <target>/ehr/manageTask.view</target>
+                    </item>
+                </buttonBarOptions>
+            </table>
+        </tables>
+    </metadata>
+</query>

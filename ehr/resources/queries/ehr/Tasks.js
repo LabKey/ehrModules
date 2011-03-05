@@ -4,16 +4,13 @@
  * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
  */
 
-var console = require("console");
-var LABKEY = require("labkey");
-var Ext = require("Ext").Ext;
-var EHR = require("ehr/validation");
+var {EHR, LABKEY, Ext, shared, console, init, beforeInsert, afterInsert, beforeUpdate, afterUpdate, beforeDelete, afterDelete, complete} = require("ehr/validation");
 
-function repairRow(row, errors){
+console.log("** evaluating: " + this['javax.script.filename']);
 
-}
 
-function setTitle(row, errors){
+
+function onUpsert(row, errors, oldRow){
     row.title = row.title || '';
 
 }
@@ -24,39 +21,4 @@ function setDescription(row, errors){
     var description = new Array();
     return description.join(',\n');
 }
-
-function beforeBoth(row, errors) {
-    console.log('**evaluating tasks');
-    console.log(row);
-    setTitle(row, errors);
-    setDescription(row, errors);
-}
-
-
-function beforeInsert(row, errors) {
-    beforeBoth(row, errors);
-
-}
-
-function beforeUpdate(row, oldRow, errors) {
-    beforeBoth(row, errors);
-
-}
-
-function afterDelete(event, errors){
-    //cascade delete to all datasets??
-}
-
-
-
-
-// ================================================
-
-//==includeStart
-
-
-//==includeEnd
-
-// ================================================
-
 

@@ -9,71 +9,6 @@ LABKEY.requiresScript("/ehr/arrayUtils.js");
 
 
 
-//creates a pair of date fields that automatically set their min/max dates to create a date range
-EHR.ext.DateRangePanel = Ext.extend(Ext.Panel,
-{
-    initComponent : function(config)
-    {
-        var defaults = {
-            //cls: 'extContainer',
-            bodyBorder: false,
-            border: false,
-            defaults: {
-                border: false,
-                bodyBorder: false
-            }
-        };
-
-        Ext.applyIf(defaults, config);
-        
-        Ext.apply(this, defaults);
-
-        EHR.ext.DateRangePanel.superclass.initComponent.call(this);
-
-        this.startDateField = new LABKEY.ext.DateField({
-            format: 'Y-M-d' //YYYY-MMM-DD
-            ,width: 165
-            ,name:'startDate'
-            ,allowBlank:true
-            ,vtype: 'daterange'
-            ,scope: this
-            ,value: LABKEY.ActionURL.getParameter('startDate')
-        });
-
-        this.endDateField = new LABKEY.ext.DateField({
-            format: 'Y-M-d' //YYYY-MMM-DD
-            ,width:165
-            ,name:'endDate'
-            ,allowBlank:true
-            ,vtype: 'daterange'
-            ,scope: this
-            ,value: LABKEY.ActionURL.getParameter('endDate')
-        });
-
-        Ext.apply(this.endDateField, {startDateField: this.startDateField});
-        Ext.apply(this.startDateField, {endDateField: this.endDateField});
-
-        this.add({tag: 'div', html: 'From:'});
-        this.add(this.startDateField);
-        this.add({tag: 'div', html: 'To:'});
-        this.add(this.endDateField);
-        this.add({tag: 'div', html: '<br>'});
-
-    }
-
-});
-Ext.reg('DateRangePanel', EHR.ext.DateRangePanel);
-
-
-
-//EHR.utils.Header = function(title){
-//    var header = document.createElement('span');
-//    header.innerHTML = '<table class="labkey-wp"><tbody><tr class="labkey-wp-header"><th class="labkey-wp-title-left">' +
-//    (title || 'Details:')+ '</th><th class="labkey-wp-title-right">&nbsp;</th></tr></tbody></table><p/>';
-//
-//    return header;
-//}
-
 //function to test whether a user is a member of the allowed group array
 EHR.utils.isMemberOf = function(allowed, successCallback){
     if (typeof(allowed) != 'object')
@@ -92,67 +27,21 @@ EHR.utils.isMemberOf = function(allowed, successCallback){
 };
 
 
-//this vtype is used in date range panels
-Ext.apply(Ext.form.VTypes, {
-    daterange : function(val, field)
-    {
-        var date = field.parseDate(val);
-        console.log('validating');
-        if (!date)
-        {
-            console.log('returned');
-            return;
-        }
-        if (field.startDateField && (!this.dateRangeMax || (date.getTime() != this.dateRangeMax.getTime())))
-        {
-            //var start = Ext.getCmp(field.startDateField);
-            var start = field.startDateField;
-            start.setMaxValue(date);
-            (function(){start.validate()}).defer(10);
-            this.dateRangeMax = date;
-
-            start.fireEvent('change', start, start.getValue());
-        }
-        else if (field.endDateField && (!this.dateRangeMin || (date.getTime() != this.dateRangeMin.getTime())))
-        {
-            //var end = Ext.getCmp(field.endDateField);
-            var end = field.endDateField;
-            end.setMinValue(date);
-            (function(){end.validate()}).defer(10);
-            this.dateRangeMin = date;
-
-            end.fireEvent('change', end, end.getValue());
-        }
-        /*
-         * Always return true since we're only using this vtype to set the
-         * min/max allowed values (these are tested for after the vtype test)
-         */
-
-        return true;
-    }
-});
-
-
-
-
 //generic error handler
 EHR.utils.onError = function(error){
     console.log('ERROR: ' + error.exception);
     console.log(error);
-    
-    /*
+
     LABKEY.Query.insertRows({
          containerPath: '/shared',
          schemaName: 'ehr',
          queryName: 'client_errors',
-         rowDataArray: [
-        {
-            Page: window.location
-            Error: error.exception,
-            User: '',
-            ContainerPath: ''
+         rowDataArray: [{
+            page: window.location,
+            exception: error.exception || error.statusText,
+            json: Ext.util.JSON.encode(error)
         }]
-    */
+    });
 };
 
 //NOTE: modified to accept a maxDepth argument to avoid excessive recursion
@@ -160,10 +49,8 @@ EHR.utils.rApplyIf = function(o, c, maxDepth, depth){
     maxDepth = maxDepth || 50;
     depth = depth || 1;
     o = o || {};
-    if(depth>6){
+    if(depth>maxDepth){
         console.log('Warning: rApplyIf hit : '+depth);
-        console.log(o);
-        console.log(c);
     }
 
     for(var p in c){
@@ -181,16 +68,15 @@ EHR.utils.rApplyIf = function(o, c, maxDepth, depth){
 EHR.utils.rApply = function(o, c, maxDepth, depth){
     maxDepth = maxDepth || 50;
     depth = depth || 1;
-    if(depth>6){
+    if(depth>=maxDepth){
         console.log('Warning: rApply hit max: '+depth);
-        console.log(o);
-        console.log(c);
     }
     o = o || {};
 
     for(var p in c){
-        if(Ext.type(o[p])!='object' || depth >= maxDepth)
+        if(Ext.type(o[p])!='object' || Ext.type(c[p])!='object' || depth >= maxDepth){
                 o[p] = c[p];
+        }
         else {
             EHR.utils.rApply(o[p], c[p], maxDepth, depth+1);
         }
@@ -203,10 +89,8 @@ EHR.utils.rApplyCloneIf = function(o, c, maxDepth, depth){
     maxDepth = maxDepth || 50;
     depth = depth || 1;
     o = o || {};
-    if(depth>6){
+    if(depth>=maxDepth){
         console.log('Warning: rApplyCloneIf hit max: '+depth);
-        console.log(o);
-        console.log(c);
     }
 
     for(var p in c){
@@ -228,10 +112,8 @@ EHR.utils.rApplyCloneIf = function(o, c, maxDepth, depth){
 EHR.utils.rApplyClone = function(o, c, maxDepth, depth){
     maxDepth = maxDepth || 50;
     depth = depth || 1;
-    if(depth>6){
+    if(depth>maxDepth){
         console.log('Warning: rApplyClone hit max: '+depth);
-        console.log(o);
-        console.log(c);
     }
     o = o || {};
 
@@ -347,12 +229,151 @@ EHR.utils.errorSeverity = {
 };
 
 EHR.utils.maxError = function(severity1, severity2){
-    if (EHR.utils.errorSeverity[severity1] > EHR.utils.errorSeverity[severity2])
-        return severity1;
-    else
+    if (!severity1 || EHR.utils.errorSeverity[severity1] < EHR.utils.errorSeverity[severity2])
         return severity2;
+    else
+        return severity1;
 };
 
 EHR.utils.roundNumber = function(num, dec){
     return Math.round(num*Math.pow(10,dec))/Math.pow(10,dec);
 };
+
+EHR.utils.getQCStateMap = function(config){
+    if(!config || !config.success){
+        throw "Must provide a success callback"
+    }
+
+    var qcmap = {
+        label: {},
+        rowid: {}
+    };
+
+    LABKEY.Query.selectRows({
+        schemaName: 'study',
+        queryName: 'QCState',
+        sort: 'rowid',
+        columns: '*',
+        success: function(data){
+            var row;
+            if(data.rows && data.rows.length){
+                for (var i=0;i<data.rows.length;i++){
+                    row = data.rows[i];
+                    qcmap.label[row.Label] = row;
+                    qcmap.rowid[row.RowId] = row;
+                }
+
+                config.success.apply(config.scope || this, [qcmap]);
+            }
+        },
+        failure: EHR.utils.onError
+    });
+
+};
+
+EHR.utils.getTablePermissions = function(config) {
+    if(!config || !config.success){
+        throw "Must provide a success callback"
+    }
+
+    var qcMap;
+    var schemaMap;
+
+    var multi = new LABKEY.MultiRequest();
+    multi.add(EHR.utils.getQCStateMap, {
+        success: function(map){
+            qcMap = map;
+        }
+    });
+    multi.add(EHR.utils.getSchemaPermissions, {
+        schemaName: 'study',
+        success: function(map){
+            schemaMap = map;
+        }
+    });
+
+    function onSuccess(){
+        config.success.apply(config.scope || this, [qcMap, schemaMap]);
+    }
+
+    multi.send(onSuccess);
+}
+
+
+/**
+ * gets permissions for a set of tables within a schema.
+ * Currently only study tables have individual permissions so only works on the study schema
+ * @param config A configuration object with the following properties:
+ * @param {Function} config.success A reference to a function to call with the API results. This
+ * function will be passed the following parameters:
+ * <ul>
+ * <li><b>data:</b> an object with a property named "schemas" which contains one .
+ * Each schema one property with the name of each table. So
+ * schemas.study.Demographics would yield the following results
+ *  <ul>
+ *      <li>id: The unique id of the resource (String, typically a GUID).</li>
+ *      <li>name: The name of the resource suitable for showing to a user.</li>
+ *      <li>description: The description of the reosurce.</li>
+ *      <li>resourceClass: The fully-qualified Java class name of the resource.</li>
+ *      <li>sourceModule: The name of the module in which the resource is defined and managed</li>
+ *      <li>parentId: The parent resource's id (may be omitted if no parent)</li>
+ *      <li>parentContainerPath: The parent resource's container path (may be omitted if no parent)</li>
+ *      <li>children: An array of child resource objects.</li>
+ *      <li>effectivePermissions: An array of permission unique names the current user has on the resource. This will be
+ *          present only if the includeEffectivePermissions property was set to true on the config object.</li>
+ *      <li>permissionMap: An object with one property per effectivePermission allowed the user. This restates
+ *          effectivePermissions in a slightly more convenient way
+ *  </ul>
+ * </li>
+ * <li><b>response:</b> The XMLHttpResponse object</li>
+ * </ul>
+ * @param {Function} [config.failure] A reference to a function to call when an error occurs. This
+ * function will be passed the following parameters:
+ * <ul>
+ * <li><b>errorInfo:</b> an object containing detailed error information (may be null)</li>
+ * <li><b>response:</b> The XMLHttpResponse object</li>
+ * </ul>
+ * @param {object} [config.scope] An optional scoping object for the success and error callback functions (default to this).
+ * @param {string} [config.containerPath] An alternate container path to get permissions from. If not specified,
+ * the current container path will be used.
+ */
+EHR.utils.getSchemaPermissions = function(config) {
+    if (config.schemaName && config.schemaName != "study")
+        throw "Method only works for the study schema";
+
+    function successCallback(json, response) {
+console.log(arguments)
+        //First lets make sure there is a study in here.
+        var studyResource = null;
+        for (var i = 0; i < json.resources.children.length; i++)
+        {
+            var resource = json.resources.children[i];
+            if (resource.resourceClass == "org.labkey.study.model.StudyImpl"){
+                studyResource = resource;
+                break;
+            }
+        }
+
+        if (null == studyResource)
+        {
+            config.failure.apply({description:"No study found in container."}, response);
+            return;
+        }
+
+        var result = {};
+        Ext.each(studyResource.children, function (dataset) {
+            result[dataset.name] = dataset;
+            dataset.permissionMap = {};
+            Ext.each(dataset.effectivePermissions, function (perm) {
+                dataset.permissionMap[perm] = true;
+            })
+        });
+
+        config.success.apply(config.scope || this, [{schemas:{study:result}}, response]);
+    }
+
+    var myConfig = Ext.apply({}, config);
+    myConfig.includeEffectivePermissions = true;
+    myConfig.success = successCallback;
+    LABKEY.Security.getSecurableResources(myConfig);
+}

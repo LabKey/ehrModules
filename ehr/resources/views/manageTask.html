@@ -29,17 +29,19 @@ Ext.onReady(function(){
     }
 
     function renderTaskForm(formType){
-        EHR.ext.createTaskPanel({
+        EHR.ext.createImportPanel({
+            panelType: 'Task',
             formUUID: formUUID,
             formType: formType,
             renderTo: 'taskForm'
         });
 
-        LABKEY.NavTrail.setTrail('Task: '+(LABKEY.ActionURL.getParameter('title') || formType));
+        LABKEY.NavTrail.setTrail(LABKEY.ActionURL.getParameter('title') || formType);
     }
 
     function renderSimpleForm(queryName){
         EHR.ext.createSimpleTaskPanel({
+            panelType: 'Task',
             formType: LABKEY.ActionURL.getParameter('queryName'),
             formUUID: formUUID,
             queryName: LABKEY.ActionURL.getParameter('queryName'),
@@ -47,7 +49,7 @@ Ext.onReady(function(){
             renderTo: 'taskForm'
         });
 
-        LABKEY.NavTrail.setTrail('Task: '+(LABKEY.ActionURL.getParameter('title') || queryName));
+        LABKEY.NavTrail.setTrail(LABKEY.ActionURL.getParameter('title') || queryName);
     }
 
     function makeFormSelectorPanel(){
@@ -83,8 +85,12 @@ Ext.onReady(function(){
                 ,handler: function(s){
                     var val = s.refOwner.ownerCt.type.getValue();
                     if(val)
-                        s.refOwner.ownerCt.destroy();
-                        renderTaskForm(val);
+                        window.location = LABKEY.ActionURL.buildURL(
+                            'ehr',
+                            LABKEY.ActionURL.getAction(),
+                            null,
+                            {formtype: val, taskid: LABKEY.Utils.generateUUID()}
+                        )
                 }
             }]
         });

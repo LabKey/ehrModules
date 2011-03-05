@@ -5,9 +5,15 @@
  */
 
 
+var {EHR, LABKEY, Ext, shared, console, init, beforeInsert, afterInsert, beforeUpdate, afterUpdate, beforeDelete, afterDelete, complete} = require("ehr/validation");
 
-function repairRow(row, errors){
-    if(row.project && (row.project.match(/,00300901/) || row.project.match(/00300901,/))){
+
+
+
+function onETL(row, errors){
+    //sort of a hack.  since mySQL doesnt directly store project on these records, we need to calculate this in the ETL using group_concat
+    // 00300901 is a generic WNPRC project.  if it's present with other projects, it shouldnt be.
+    if(row.project && (row.project.match(/,/))){
         row.project.replace(/,00300901/, '');
         row.project.replace(/00300901,/, '');
     }
@@ -20,7 +26,7 @@ function setDescription(row, errors){
     var description = new Array();
 
     if(row.code)
-        description.push(EHR.validation.snomedString('Code', row.code,  row.meaning));
+        description.push('Code: '+EHR.validation.snomedToString(row.code,  row.meaning));
 
     if(row.amount)
         description.push('Amount: '+ row.amount+' '+EHR.validation.null2string(row.amount_units));

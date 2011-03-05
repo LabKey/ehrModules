@@ -5,12 +5,16 @@
  */
 
 //todo auto-update observations table with mens, diar.
-// cascade delete/update them too
-//todo: store room at time / cage at time
+//TODO: cascade delete/update them too
 
-//include("/ehr/validation");
 
-function repairRow(row, errors){
+var {EHR, LABKEY, Ext, shared, console, init, beforeInsert, afterInsert, beforeUpdate, afterUpdate, beforeDelete, afterDelete, complete} = require("ehr/validation");
+
+
+function onUpsert(row, errors, oldRow){
+    //todo: testing needed
+
+    //store room at time / cage at time
 
 }
 
@@ -29,7 +33,7 @@ function setDescription(row, errors){
     if(row.other)
         description.push('Other: '+row.other);
     if(row.tlocation)
-        description.push('T Location: '+row.tlocation);
+        description.push('Trauma Location: '+row.tlocation);
     if(row.otherbehavior)
         description.push('Other Behavior: '+row.otherbehavior);
 

@@ -4,7 +4,7 @@
     <ns:columns>
       <ns:column columnName="value">
         <ns:datatype>varchar</ns:datatype>
-        <ns:scale>255</ns:scale>
+        <ns:scale>100</ns:scale>
       </ns:column>
     </ns:columns>
   </ns:table>
@@ -13,7 +13,7 @@
     <ns:columns>
       <ns:column columnName="sample_type">
         <ns:datatype>varchar</ns:datatype>
-        <ns:scale>255</ns:scale>
+        <ns:scale>100</ns:scale>
       </ns:column>
     </ns:columns>
   </ns:table>
@@ -31,7 +31,7 @@
     <ns:columns>
       <ns:column columnName="result">
         <ns:datatype>varchar</ns:datatype>
-        <ns:scale>255</ns:scale>
+        <ns:scale>100</ns:scale>
       </ns:column>
     </ns:columns>
   </ns:table>
@@ -40,7 +40,7 @@
     <ns:columns>
       <ns:column columnName="status">
         <ns:datatype>varchar</ns:datatype>
-        <ns:scale>255</ns:scale>
+        <ns:scale>100</ns:scale>
       </ns:column>
     </ns:columns>
   </ns:table>
@@ -49,12 +49,12 @@
     <ns:columns>
       <ns:column columnName="code">
         <ns:datatype>varchar</ns:datatype>
-        <ns:scale>2147483647</ns:scale>
+        <ns:scale>255</ns:scale>
       </ns:column>
       <ns:column columnName="meaning">
         <ns:nullable>true</ns:nullable>
         <ns:datatype>varchar</ns:datatype>
-        <ns:scale>2147483647</ns:scale>
+        <ns:scale>255</ns:scale>
       </ns:column>
     </ns:columns>
   </ns:table>
@@ -63,7 +63,7 @@
     <ns:columns>
       <ns:column columnName="remark">
         <ns:datatype>varchar</ns:datatype>
-        <ns:scale>2147483647</ns:scale>
+        <ns:scale>255</ns:scale>
       </ns:column>
     </ns:columns>
   </ns:table>
@@ -72,12 +72,12 @@
     <ns:columns>
       <ns:column columnName="eye">
         <ns:datatype>varchar</ns:datatype>
-        <ns:scale>255</ns:scale>
+        <ns:scale>100</ns:scale>
       </ns:column>
       <ns:column columnName="meaning">
         <ns:nullable>true</ns:nullable>
         <ns:datatype>varchar</ns:datatype>
-        <ns:scale>255</ns:scale>
+        <ns:scale>100</ns:scale>
       </ns:column>
     </ns:columns>
   </ns:table>
@@ -86,7 +86,7 @@
     <ns:columns>
       <ns:column columnName="result">
         <ns:datatype>varchar</ns:datatype>
-        <ns:scale>255</ns:scale>
+        <ns:scale>100</ns:scale>
       </ns:column>
       <ns:column columnName="sort_order">
         <ns:datatype>integer</ns:datatype>
@@ -187,7 +187,7 @@
       </ns:column>
       <ns:column columnName="remark">
         <ns:datatype>varchar</ns:datatype>
-        <ns:scale>255</ns:scale>
+        <ns:scale>100</ns:scale>
       </ns:column>
     </ns:columns>
   </ns:table>
@@ -196,7 +196,7 @@
     <ns:columns>
       <ns:column columnName="unit">
         <ns:datatype>varchar</ns:datatype>
-        <ns:scale>100</ns:scale>
+        <ns:scale>30</ns:scale>
       </ns:column>
       <ns:column columnName="denominator">
         <ns:datatype>varchar</ns:datatype>
@@ -213,7 +213,7 @@
     <ns:columns>
       <ns:column columnName="unit">
         <ns:datatype>varchar</ns:datatype>
-        <ns:scale>100</ns:scale>
+        <ns:scale>30</ns:scale>
       </ns:column>
     </ns:columns>
   </ns:table>
@@ -271,7 +271,7 @@
     <ns:columns>
       <ns:column columnName="viral_status">
         <ns:datatype>varchar</ns:datatype>
-        <ns:scale>255</ns:scale>
+        <ns:scale>100</ns:scale>
       </ns:column>
     </ns:columns>
   </ns:table>
@@ -280,12 +280,12 @@
     <ns:columns>
       <ns:column columnName="code">
         <ns:datatype>varchar</ns:datatype>
-        <ns:scale>2147483647</ns:scale>
+        <ns:scale>255</ns:scale>
       </ns:column>
       <ns:column columnName="meaning">
         <ns:nullable>true</ns:nullable>
         <ns:datatype>varchar</ns:datatype>
-        <ns:scale>2147483647</ns:scale>
+        <ns:scale>255</ns:scale>
       </ns:column>
     </ns:columns>
   </ns:table>
@@ -294,12 +294,12 @@
     <ns:columns>
       <ns:column columnName="code">
         <ns:datatype>varchar</ns:datatype>
-        <ns:scale>255</ns:scale>
+        <ns:scale>100</ns:scale>
       </ns:column>
       <ns:column columnName="meaning">
         <ns:nullable>true</ns:nullable>
         <ns:datatype>varchar</ns:datatype>
-        <ns:scale>255</ns:scale>
+        <ns:scale>100</ns:scale>
       </ns:column>
     </ns:columns>
   </ns:table>
@@ -308,7 +308,7 @@
     <ns:columns>
       <ns:column columnName="value">
         <ns:datatype>varchar</ns:datatype>
-        <ns:scale>255</ns:scale>
+        <ns:scale>30</ns:scale>
       </ns:column>
     </ns:columns>
   </ns:table>
@@ -317,7 +317,7 @@
     <ns:columns>
       <ns:column columnName="category">
         <ns:datatype>varchar</ns:datatype>
-        <ns:scale>255</ns:scale>
+        <ns:scale>100</ns:scale>
       </ns:column>
     </ns:columns>
   </ns:table>
@@ -326,7 +326,7 @@
     <ns:columns>
       <ns:column columnName="category">
         <ns:datatype>varchar</ns:datatype>
-        <ns:scale>255</ns:scale>
+        <ns:scale>80</ns:scale>
       </ns:column>
     </ns:columns>
   </ns:table>
@@ -336,11 +336,11 @@
     <ns:columns>
       <ns:column columnName="type">
         <ns:datatype>varchar</ns:datatype>
-        <ns:scale>255</ns:scale>
+        <ns:scale>100</ns:scale>
       </ns:column>
         <ns:column columnName="code">
           <ns:datatype>varchar</ns:datatype>
-          <ns:scale>255</ns:scale>
+          <ns:scale>100</ns:scale>
         </ns:column>
     </ns:columns>
   </ns:table>
@@ -350,7 +350,7 @@
     <ns:columns>
       <ns:column columnName="value">
         <ns:datatype>varchar</ns:datatype>
-        <ns:scale>255</ns:scale>
+        <ns:scale>100</ns:scale>
       </ns:column>
       <ns:column columnName="sort_order">
         <ns:datatype>integer</ns:datatype>
@@ -363,12 +363,12 @@
     <ns:columns>
       <ns:column columnName="code">
         <ns:datatype>varchar</ns:datatype>
-        <ns:scale>2147483647</ns:scale>
+        <ns:scale>255</ns:scale>
       </ns:column>
       <ns:column columnName="meaning">
         <ns:nullable>true</ns:nullable>
         <ns:datatype>varchar</ns:datatype>
-        <ns:scale>2147483647</ns:scale>
+        <ns:scale>255</ns:scale>
       </ns:column>
     </ns:columns>
   </ns:table>
@@ -377,12 +377,12 @@
     <ns:columns>
       <ns:column columnName="code">
         <ns:datatype>varchar</ns:datatype>
-        <ns:scale>255</ns:scale>
+        <ns:scale>50</ns:scale>
       </ns:column>
       <ns:column columnName="meaning">
         <ns:nullable>true</ns:nullable>
         <ns:datatype>varchar</ns:datatype>
-        <ns:scale>255</ns:scale>
+        <ns:scale>100</ns:scale>
       </ns:column>
     </ns:columns>
   </ns:table>
@@ -391,12 +391,12 @@
     <ns:columns>
       <ns:column columnName="code">
         <ns:datatype>varchar</ns:datatype>
-        <ns:scale>2147483647</ns:scale>
+        <ns:scale>255</ns:scale>
       </ns:column>
       <ns:column columnName="meaning">
         <ns:nullable>true</ns:nullable>
         <ns:datatype>varchar</ns:datatype>
-        <ns:scale>2147483647</ns:scale>
+        <ns:scale>255</ns:scale>
       </ns:column>
     </ns:columns>
   </ns:table>
@@ -405,7 +405,7 @@
     <ns:columns>
       <ns:column columnName="region">
         <ns:datatype>varchar</ns:datatype>
-        <ns:scale>255</ns:scale>
+        <ns:scale>100</ns:scale>
       </ns:column>
     </ns:columns>
   </ns:table>
@@ -414,7 +414,7 @@
     <ns:columns>
       <ns:column columnName="priority">
         <ns:datatype>varchar</ns:datatype>
-        <ns:scale>255</ns:scale>
+        <ns:scale>100</ns:scale>
       </ns:column>
       <ns:column columnName="sort_order">
         <ns:datatype>integer</ns:datatype>
@@ -427,7 +427,7 @@
     <ns:columns>
       <ns:column columnName="technique">
         <ns:datatype>varchar</ns:datatype>
-        <ns:scale>255</ns:scale>
+        <ns:scale>100</ns:scale>
       </ns:column>
     </ns:columns>
   </ns:table>
@@ -454,12 +454,12 @@
     <ns:columns>
       <ns:column columnName="code">
         <ns:datatype>varchar</ns:datatype>
-        <ns:scale>4000</ns:scale>
+        <ns:scale>100</ns:scale>
       </ns:column>
       <ns:column columnName="meaning">
         <ns:nullable>true</ns:nullable>
         <ns:datatype>varchar</ns:datatype>
-        <ns:scale>4000</ns:scale>
+        <ns:scale>100</ns:scale>
       </ns:column>
     </ns:columns>
   </ns:table>
@@ -468,34 +468,55 @@
     <ns:columns>
       <ns:column columnName="status">
         <ns:datatype>varchar</ns:datatype>
-        <ns:scale>255</ns:scale>
+        <ns:scale>100</ns:scale>
       </ns:column>
     </ns:columns>
   </ns:table>
-  <ns:table tableName="clinpath_priority" tableDbType="TABLE">
-    <ns:pkColumnName>status</ns:pkColumnName>
+    <ns:table tableName="blood_draw_services" tableDbType="TABLE">
+      <ns:pkColumnName>service</ns:pkColumnName>
+      <ns:columns>
+        <ns:column columnName="service">
+          <ns:datatype>varchar</ns:datatype>
+          <ns:scale>100</ns:scale>
+        </ns:column>
+      </ns:columns>
+    </ns:table>
+  <ns:table tableName="request_priority" tableDbType="TABLE">
+    <ns:pkColumnName>priority</ns:pkColumnName>
     <ns:columns>
       <ns:column columnName="priority">
         <ns:datatype>varchar</ns:datatype>
-        <ns:scale>255</ns:scale>
+        <ns:scale>100</ns:scale>
       </ns:column>
     </ns:columns>
   </ns:table>
   <ns:table tableName="clinpath_tests" tableDbType="TABLE">
     <ns:pkColumnName>status</ns:pkColumnName>
     <ns:columns>
-      <ns:column columnName="testName">
+      <ns:column columnName="testname">
         <ns:datatype>varchar</ns:datatype>
-        <ns:scale>255</ns:scale>
+        <ns:scale>50</ns:scale>
+      </ns:column>
+      <ns:column columnName="units">
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>50</ns:scale>
+      </ns:column>
+      <ns:column columnName="dataset">
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>50</ns:scale>
       </ns:column>
     </ns:columns>
   </ns:table>
-  <ns:table tableName="clinpath_request_type" tableDbType="TABLE">
-    <ns:pkColumnName>type</ns:pkColumnName>
+  <ns:table tableName="clinpath_services" tableDbType="TABLE">
+    <ns:pkColumnName>dataset</ns:pkColumnName>
     <ns:columns>
-      <ns:column columnName="type">
+      <ns:column columnName="dataset">
         <ns:datatype>varchar</ns:datatype>
-        <ns:scale>255</ns:scale>
+        <ns:scale>50</ns:scale>
+      </ns:column>
+      <ns:column columnName="label">
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>50</ns:scale>
       </ns:column>
     </ns:columns>
   </ns:table>
@@ -523,7 +544,7 @@
     <ns:columns>
       <ns:column columnName="cause">
         <ns:datatype>varchar</ns:datatype>
-        <ns:scale>4000</ns:scale>
+        <ns:scale>100</ns:scale>
       </ns:column>
     </ns:columns>
   </ns:table>
@@ -532,12 +553,12 @@
     <ns:columns>
       <ns:column columnName="code">
         <ns:datatype>varchar</ns:datatype>
-        <ns:scale>255</ns:scale>
+        <ns:scale>100</ns:scale>
       </ns:column>
       <ns:column columnName="meaning">
         <ns:nullable>true</ns:nullable>
         <ns:datatype>varchar</ns:datatype>
-        <ns:scale>255</ns:scale>
+        <ns:scale>100</ns:scale>
       </ns:column>
     </ns:columns>
   </ns:table>
@@ -546,7 +567,7 @@
     <ns:columns>
       <ns:column columnName="result">
         <ns:datatype>varchar</ns:datatype>
-        <ns:scale>255</ns:scale>
+        <ns:scale>100</ns:scale>
       </ns:column>
     </ns:columns>
   </ns:table>
@@ -555,17 +576,17 @@
     <ns:columns>
       <ns:column columnName="code">
         <ns:datatype>varchar</ns:datatype>
-        <ns:scale>255</ns:scale>
+        <ns:scale>100</ns:scale>
       </ns:column>
       <ns:column columnName="scientific_name">
         <ns:nullable>true</ns:nullable>
         <ns:datatype>varchar</ns:datatype>
-        <ns:scale>255</ns:scale>
+        <ns:scale>100</ns:scale>
       </ns:column>
       <ns:column columnName="common_name">
         <ns:nullable>true</ns:nullable>
         <ns:datatype>varchar</ns:datatype>
-        <ns:scale>255</ns:scale>
+        <ns:scale>100</ns:scale>
       </ns:column>
     </ns:columns>
   </ns:table>
@@ -574,12 +595,12 @@
     <ns:columns>
       <ns:column columnName="code">
         <ns:datatype>varchar</ns:datatype>
-        <ns:scale>2147483647</ns:scale>
+        <ns:scale>255</ns:scale>
       </ns:column>
       <ns:column columnName="meaning">
         <ns:nullable>true</ns:nullable>
         <ns:datatype>varchar</ns:datatype>
-        <ns:scale>2147483647</ns:scale>
+        <ns:scale>255</ns:scale>
       </ns:column>
     </ns:columns>
   </ns:table>
@@ -588,17 +609,17 @@
     <ns:columns>
       <ns:column columnName="code">
         <ns:datatype>varchar</ns:datatype>
-        <ns:scale>255</ns:scale>
+        <ns:scale>30</ns:scale>
       </ns:column>
       <ns:column columnName="meaning">
         <ns:nullable>true</ns:nullable>
         <ns:datatype>varchar</ns:datatype>
-        <ns:scale>255</ns:scale>
+        <ns:scale>50</ns:scale>
       </ns:column>
       <ns:column columnName="origGender">
         <ns:columnTitle>Original Gender</ns:columnTitle>
         <ns:datatype>varchar</ns:datatype>
-        <ns:scale>255</ns:scale>
+        <ns:scale>50</ns:scale>
       </ns:column>
     </ns:columns>
   </ns:table>
@@ -607,7 +628,7 @@
     <ns:columns>
       <ns:column columnName="category">
         <ns:datatype>varchar</ns:datatype>
-        <ns:scale>4000</ns:scale>
+        <ns:scale>100</ns:scale>
       </ns:column>
     </ns:columns>
   </ns:table>
@@ -652,12 +673,12 @@
     <ns:columns>
       <ns:column columnName="code">
         <ns:datatype>varchar</ns:datatype>
-        <ns:scale>255</ns:scale>
+        <ns:scale>100</ns:scale>
       </ns:column>
       <ns:column columnName="meaning">
         <ns:nullable>true</ns:nullable>
         <ns:datatype>varchar</ns:datatype>
-        <ns:scale>255</ns:scale>
+        <ns:scale>100</ns:scale>
       </ns:column>
     </ns:columns>
   </ns:table>
@@ -666,7 +687,7 @@
     <ns:columns>
       <ns:column columnName="score">
         <ns:datatype>varchar</ns:datatype>
-        <ns:scale>255</ns:scale>
+        <ns:scale>100</ns:scale>
       </ns:column>
     </ns:columns>
   </ns:table>
@@ -675,7 +696,7 @@
     <ns:columns>
       <ns:column columnName="perfusion">
         <ns:datatype>varchar</ns:datatype>
-        <ns:scale>255</ns:scale>
+        <ns:scale>100</ns:scale>
       </ns:column>
     </ns:columns>
   </ns:table>
@@ -684,7 +705,7 @@
     <ns:columns>
       <ns:column columnName="morphology">
         <ns:datatype>varchar</ns:datatype>
-        <ns:scale>255</ns:scale>
+        <ns:scale>100</ns:scale>
       </ns:column>
     </ns:columns>
   </ns:table>
@@ -693,7 +714,7 @@
     <ns:columns>
       <ns:column columnName="technique">
         <ns:datatype>varchar</ns:datatype>
-        <ns:scale>255</ns:scale>
+        <ns:scale>100</ns:scale>
       </ns:column>
     </ns:columns>
   </ns:table>
@@ -702,7 +723,7 @@
     <!--<ns:columns>-->
       <!--<ns:column columnName="area">-->
         <!--<ns:datatype>varchar</ns:datatype>-->
-        <!--<ns:scale>4000</ns:scale>-->
+        <!--<ns:scale>100</ns:scale>-->
       <!--</ns:column>-->
     <!--</ns:columns>-->
   <!--</ns:table>-->
@@ -712,17 +733,17 @@
       <ns:column columnName="pathogen">
         <ns:nullable>true</ns:nullable>
         <ns:datatype>varchar</ns:datatype>
-        <ns:scale>255</ns:scale>
+        <ns:scale>100</ns:scale>
       </ns:column>
       <ns:column columnName="challenge_type">
         <ns:nullable>true</ns:nullable>
         <ns:datatype>varchar</ns:datatype>
-        <ns:scale>255</ns:scale>
+        <ns:scale>100</ns:scale>
       </ns:column>
       <ns:column columnName="code">
         <ns:nullable>true</ns:nullable>
         <ns:datatype>varchar</ns:datatype>
-        <ns:scale>255</ns:scale>
+        <ns:scale>100</ns:scale>
       </ns:column>
       <ns:column columnName="rowid">
         <ns:datatype>serial</ns:datatype>
@@ -736,7 +757,7 @@
     <ns:columns>
       <ns:column columnName="value">
         <ns:datatype>varchar</ns:datatype>
-        <ns:scale>255</ns:scale>
+        <ns:scale>100</ns:scale>
       </ns:column>
     </ns:columns>
   </ns:table>
@@ -746,17 +767,17 @@
       <ns:column columnName="test">
         <ns:nullable>true</ns:nullable>
         <ns:datatype>varchar</ns:datatype>
-        <ns:scale>255</ns:scale>
+        <ns:scale>100</ns:scale>
       </ns:column>
       <ns:column columnName="species">
         <ns:nullable>true</ns:nullable>
         <ns:datatype>varchar</ns:datatype>
-        <ns:scale>255</ns:scale>
+        <ns:scale>100</ns:scale>
       </ns:column>
       <ns:column columnName="gender">
         <ns:nullable>true</ns:nullable>
         <ns:datatype>varchar</ns:datatype>
-        <ns:scale>255</ns:scale>
+        <ns:scale>100</ns:scale>
       </ns:column>
       <ns:column columnName="age_class">
         <ns:nullable>true</ns:nullable>
@@ -766,12 +787,12 @@
       <ns:column columnName="ref_range_min">
         <ns:nullable>true</ns:nullable>
         <ns:datatype>numeric</ns:datatype>
-        <ns:scale>255</ns:scale>
+        <ns:scale>100</ns:scale>
       </ns:column>
       <ns:column columnName="ref_range_max">
         <ns:nullable>true</ns:nullable>
         <ns:datatype>numeric</ns:datatype>
-        <ns:scale>255</ns:scale>
+        <ns:scale>100</ns:scale>
       </ns:column>
       <ns:column columnName="rowid">
         <ns:datatype>serial</ns:datatype>
@@ -785,7 +806,7 @@
     <ns:columns>
       <ns:column columnName="perfusion">
         <ns:datatype>varchar</ns:datatype>
-        <ns:scale>255</ns:scale>
+        <ns:scale>100</ns:scale>
       </ns:column>
     </ns:columns>
   </ns:table>
@@ -794,22 +815,22 @@
     <ns:columns>
       <ns:column columnName="common">
         <ns:datatype>varchar</ns:datatype>
-        <ns:scale>255</ns:scale>
+        <ns:scale>100</ns:scale>
       </ns:column>
       <ns:column columnName="scientific_name">
         <ns:nullable>true</ns:nullable>
         <ns:datatype>varchar</ns:datatype>
-        <ns:scale>255</ns:scale>
+        <ns:scale>100</ns:scale>
       </ns:column>
       <ns:column columnName="id_prefix">
         <ns:nullable>true</ns:nullable>
         <ns:datatype>varchar</ns:datatype>
-        <ns:scale>255</ns:scale>
+        <ns:scale>100</ns:scale>
       </ns:column>
       <ns:column columnName="mhc_prefix">
         <ns:nullable>true</ns:nullable>
         <ns:datatype>varchar</ns:datatype>
-        <ns:scale>255</ns:scale>
+        <ns:scale>100</ns:scale>
       </ns:column>
     </ns:columns>
   </ns:table>
@@ -818,7 +839,7 @@
     <ns:columns>
       <ns:column columnName="side">
         <ns:datatype>varchar</ns:datatype>
-        <ns:scale>255</ns:scale>
+        <ns:scale>100</ns:scale>
       </ns:column>
     </ns:columns>
   </ns:table>
@@ -832,7 +853,7 @@
       <ns:column columnName="meaning">
         <ns:nullable>true</ns:nullable>
         <ns:datatype>text</ns:datatype>
-        <ns:scale>32767</ns:scale>
+        <ns:scale>255</ns:scale>
       </ns:column>
     </ns:columns>
   </ns:table>
@@ -841,7 +862,7 @@
     <ns:columns>
       <ns:column columnName="jaw">
         <ns:datatype>varchar</ns:datatype>
-        <ns:scale>255</ns:scale>
+        <ns:scale>100</ns:scale>
       </ns:column>
     </ns:columns>
   </ns:table>
@@ -855,7 +876,7 @@
       </ns:column>
       <ns:column columnName="month">
         <ns:datatype>varchar</ns:datatype>
-        <ns:scale>255</ns:scale>
+        <ns:scale>100</ns:scale>
       </ns:column>
     </ns:columns>
   </ns:table>
@@ -878,7 +899,7 @@
     <ns:columns>
       <ns:column columnName="score">
         <ns:datatype>varchar</ns:datatype>
-        <ns:scale>255</ns:scale>
+        <ns:scale>100</ns:scale>
       </ns:column>
     </ns:columns>
   </ns:table>
@@ -887,7 +908,7 @@
     <ns:columns>
       <ns:column columnName="teeth">
         <ns:datatype>varchar</ns:datatype>
-        <ns:scale>2147483647</ns:scale>
+        <ns:scale>100</ns:scale>
       </ns:column>
       <ns:column columnName="seq_order">
         <ns:nullable>true</ns:nullable>
@@ -901,12 +922,12 @@
     <ns:columns>
       <ns:column columnName="code">
         <ns:datatype>varchar</ns:datatype>
-        <ns:scale>4000</ns:scale>
+        <ns:scale>20</ns:scale>
       </ns:column>
       <ns:column columnName="meaning">
         <ns:nullable>true</ns:nullable>
         <ns:datatype>varchar</ns:datatype>
-        <ns:scale>4000</ns:scale>
+        <ns:scale>100</ns:scale>
       </ns:column>
     </ns:columns>
   </ns:table>
@@ -920,7 +941,7 @@
       <ns:column columnName="meaning">
         <ns:nullable>true</ns:nullable>
         <ns:datatype>varchar</ns:datatype>
-        <ns:scale>255</ns:scale>
+        <ns:scale>100</ns:scale>
       </ns:column>
     </ns:columns>
   </ns:table>
@@ -930,7 +951,7 @@
       <ns:column columnName="species">
         <ns:nullable>true</ns:nullable>
         <ns:datatype>varchar</ns:datatype>
-        <ns:scale>255</ns:scale>
+        <ns:scale>100</ns:scale>
       </ns:column>
       <ns:column columnName="ageclass">
         <ns:nullable>true</ns:nullable>
@@ -959,7 +980,7 @@
     <ns:columns>
       <ns:column columnName="type">
         <ns:datatype>varchar</ns:datatype>
-        <ns:scale>255</ns:scale>
+        <ns:scale>100</ns:scale>
       </ns:column>
     </ns:columns>
   </ns:table>
@@ -968,7 +989,7 @@
     <ns:columns>
       <ns:column columnName="virus">
         <ns:datatype>varchar</ns:datatype>
-        <ns:scale>255</ns:scale>
+        <ns:scale>100</ns:scale>
       </ns:column>
     </ns:columns>
   </ns:table>
@@ -977,7 +998,7 @@
     <ns:columns>
       <ns:column columnName="instrument">
         <ns:datatype>varchar</ns:datatype>
-        <ns:scale>255</ns:scale>
+        <ns:scale>100</ns:scale>
       </ns:column>
     </ns:columns>
   </ns:table>
@@ -1047,7 +1068,7 @@
     <ns:columns>
       <ns:column columnName="type">
         <ns:datatype>varchar</ns:datatype>
-        <ns:scale>255</ns:scale>
+        <ns:scale>100</ns:scale>
       </ns:column>
       <ns:column columnName="volume">
         <ns:datatype>double</ns:datatype>
@@ -1060,12 +1081,12 @@
     <ns:columns>
       <ns:column columnName="code">
         <ns:datatype>varchar</ns:datatype>
-        <ns:scale>255</ns:scale>
+        <ns:scale>100</ns:scale>
       </ns:column>
       <ns:column columnName="meaning">
         <ns:nullable>true</ns:nullable>
         <ns:datatype>varchar</ns:datatype>
-        <ns:scale>2000</ns:scale>
+        <ns:scale>255</ns:scale>
       </ns:column>
       <ns:column columnName="container">
         <ns:isUserEditable>false</ns:isUserEditable>
@@ -1092,7 +1113,7 @@
         <ns:isUserEditable>false</ns:isUserEditable>
         <ns:nullable>true</ns:nullable>
         <ns:datatype>userid</ns:datatype>
-        <ns:scale>4</ns:scale>
+        <ns:scale>100</ns:scale>
         <ns:isHidden>true</ns:isHidden>
       </ns:column>
       <ns:column columnName="modified">
@@ -1114,7 +1135,7 @@
         </ns:column>
       <ns:column columnName="code">
         <ns:datatype>varchar</ns:datatype>
-        <ns:scale>255</ns:scale>
+        <ns:scale>100</ns:scale>
         <!--<ns:fk>-->
             <!--<ns:fkDbSchema>ehr_lookups</ns:fkDbSchema>-->
             <!--<ns:fkTable>snomed</ns:fkTable>-->
@@ -1171,7 +1192,7 @@
     <ns:columns>
       <ns:column columnName="state">
         <ns:datatype>varchar</ns:datatype>
-        <ns:scale>255</ns:scale>
+        <ns:scale>100</ns:scale>
       </ns:column>
     </ns:columns>
   </ns:table>
@@ -1180,7 +1201,7 @@
       <ns:columns>
         <ns:column columnName="method">
           <ns:datatype>varchar</ns:datatype>
-          <ns:scale>255</ns:scale>
+          <ns:scale>100</ns:scale>
         </ns:column>
       </ns:columns>
     </ns:table>
@@ -1189,11 +1210,11 @@
       <ns:columns>
         <ns:column columnName="source">
           <ns:datatype>varchar</ns:datatype>
-          <ns:scale>255</ns:scale>
+          <ns:scale>100</ns:scale>
         </ns:column>
           <ns:column columnName="code">
             <ns:datatype>varchar</ns:datatype>
-            <ns:scale>255</ns:scale>
+            <ns:scale>100</ns:scale>
           </ns:column>
       </ns:columns>
     </ns:table>

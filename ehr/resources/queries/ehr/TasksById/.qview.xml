@@ -1,16 +1,26 @@
 <customView xmlns="http://labkey.org/data/xml/queryCustomView">
    <columns>
-        <column name="Id"/>
         <column name="taskid/rowid">
             <properties>
                 <property name="columnTitle" value="Task Id"/>
             </properties>
         </column>
-        <column name="taskid/formtype">
+        <column name="Id"/>
+        <column name="Id/curLocation/room">
             <properties>
-                <property name="columnTitle" value="Task Type"/>
+                <property name="columnTitle" value="Room"/>
             </properties>
         </column>
+        <column name="Id/curLocation/cage">
+            <properties>
+                <property name="columnTitle" value="Cage"/>
+            </properties>
+        </column>
+        <!--<column name="taskid/formtype">-->
+            <!--<properties>-->
+                <!--<property name="columnTitle" value="Task Type"/>-->
+            <!--</properties>-->
+        <!--</column>-->
         <column name="taskid/title">
             <properties>
                 <property name="columnTitle" value="Title"/>
@@ -36,7 +46,7 @@
                 <property name="columnTitle" value="Created"/>
             </properties>
         </column>
-        <column name="taskid/QCState/Label">
+        <column name="taskid/QCState">
             <properties>
                 <property name="columnTitle" value="Status"/>
             </properties>
@@ -46,7 +56,7 @@
    <!--<filters>-->
    <!--</filters>-->
    <sorts>
-       <sort column="taskid/DueDate" descending="true"/>
-       <sort column="taskid/created" descending="true"/>
+       <sort column="taskid/duedate" descending="true"/>
+       <sort column="Id" descending="true"/>
    </sorts>
 </customView>

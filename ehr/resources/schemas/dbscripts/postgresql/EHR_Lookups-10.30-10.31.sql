@@ -2064,23 +2064,45 @@ WITH (OIDS=FALSE)
 
 
 -- ----------------------------
--- Table structure for clinpath_priority
+-- Table structure for blood_draw_services
 -- ----------------------------
-DROP TABLE IF EXISTS ehr_lookups.clinpath_priority;
-CREATE TABLE ehr_lookups.clinpath_priority (
-priority varchar(255) NOT NULL,
+DROP TABLE IF EXISTS ehr_lookups.blood_draw_services;
+CREATE TABLE ehr_lookups.blood_draw_services (
+service varchar(255) NOT NULL,
 
-CONSTRAINT PK_clinpath_priority PRIMARY KEY (priority)
+CONSTRAINT PK_blood_draw_services PRIMARY KEY (service)
 )
 WITH (OIDS=FALSE)
 
 ;
 
 -- ----------------------------
--- Records of clinpath_priority
+-- Records of blood_draw_services
 -- ----------------------------
-INSERT INTO ehr_lookups.clinpath_priority VALUES ('Routine');
-INSERT INTO ehr_lookups.clinpath_priority VALUES ('Stat');
+INSERT INTO ehr_lookups.blood_draw_services
+(service) VALUES
+('CBC')
+;
+
+
+-- ----------------------------
+-- Table structure for request_priority
+-- ----------------------------
+DROP TABLE IF EXISTS ehr_lookups.request_priority;
+CREATE TABLE ehr_lookups.request_priority (
+priority varchar(255) NOT NULL,
+
+CONSTRAINT PK_request_priority PRIMARY KEY (priority)
+)
+WITH (OIDS=FALSE)
+
+;
+
+-- ----------------------------
+-- Records of request_priority
+-- ----------------------------
+INSERT INTO ehr_lookups.request_priority VALUES ('Routine');
+INSERT INTO ehr_lookups.request_priority VALUES ('Stat');
 
 
 --  --  --  -- ----------------------------
@@ -2089,8 +2111,10 @@ INSERT INTO ehr_lookups.clinpath_priority VALUES ('Stat');
 DROP TABLE IF EXISTS ehr_lookups.clinpath_tests;
 CREATE TABLE ehr_lookups.clinpath_tests (
 testName varchar(255) NOT NULL,
+units varchar(50) NOT NULL,
+dataset varchar(200),
 
-CONSTRAINT PK_testName PRIMARY KEY (testName)
+CONSTRAINT PK_testName PRIMARY KEY (testname)
 )
 WITH (OIDS=FALSE)
 
@@ -2098,26 +2122,29 @@ WITH (OIDS=FALSE)
 
 
 -- ----------------------------
--- Table structure for clinpath_request_type
+-- Table structure for clinpath_services
 -- ----------------------------
-DROP TABLE IF EXISTS ehr_lookups.clinpath_request_type;
-CREATE TABLE ehr_lookups.clinpath_request_type (
-type varchar(255) NOT NULL,
+DROP TABLE IF EXISTS ehr_lookups.clinpath_services;
+CREATE TABLE ehr_lookups.clinpath_services (
+dataset varchar(255) NOT NULL,
+label varchar(255) not null,
 category varchar(255),
 
-CONSTRAINT PK_clinpath_request_type PRIMARY KEY (type)
+CONSTRAINT PK_clinpath_services PRIMARY KEY (dataset)
 )
 WITH (OIDS=FALSE)
 
 ;
 
 -- ----------------------------
--- Records of clinpath_request_type
+-- Records of clinpath_services
 -- ----------------------------
--- INSERT into ehr_lookups.clinpath_request_type
--- (type, category)
--- VALUES
--- ()
+INSERT into ehr_lookups.clinpath_services
+(type, category)
+VALUES
+('CBC', 'Hematology'),
+('Vet 19', 'Blood Chemistry')
+;
 
 -- ----------------------------
 -- Table structure for clinremarks_category
@@ -4344,8 +4371,13 @@ WITH (OIDS=FALSE)
 -- ----------------------------
 -- Records of blood_draw_tube_type
 -- ----------------------------
-INSERT INTO ehr_lookups.blood_draw_tube_type VALUES ('6 ml EDTA', 6);
-INSERT INTO ehr_lookups.blood_draw_tube_type VALUES ('5 ml SST', 5);
+INSERT INTO ehr_lookups.blood_draw_tube_type VALUES ('EDTA - 0.5 ml', 0.5);
+INSERT INTO ehr_lookups.blood_draw_tube_type VALUES ('EDTA - 2 ml', 2);
+INSERT INTO ehr_lookups.blood_draw_tube_type VALUES ('EDTA - 6 ml', 6);
+INSERT INTO ehr_lookups.blood_draw_tube_type VALUES ('SST - 3.5 ml', 3.5);
+INSERT INTO ehr_lookups.blood_draw_tube_type VALUES ('SST - 5 ml SST', 5);
+INSERT INTO ehr_lookups.blood_draw_tube_type VALUES ('Hep - 4 ml', 4);
+INSERT INTO ehr_lookups.blood_draw_tube_type VALUES ('Hep - 6 ml', 6);
 INSERT INTO ehr_lookups.blood_draw_tube_type VALUES ('Other', null);
 
 

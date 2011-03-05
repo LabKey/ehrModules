@@ -7,29 +7,36 @@
                         <isKeyField>true</isKeyField>
                         <isHidden>true</isHidden>
                     </column>
-                    <column columnName="CurWeight">
-                        <url>/query/executeQuery.view?schemaName=study&amp;
-                            query.queryName=weight&amp;
-                            query.id~eq=${id}&amp;
-                            query.sort=-date
-                        </url>
+                    <column columnName="Id">
+                        <isHidden>true</isHidden>
                     </column>
-                    <column columnName="PrevWeight">
+                    <column columnName="date">
+                        <isHidden>true</isHidden>
+                    </column>
+                    <column columnName="LastestWeight">
                         <url>/query/executeQuery.view?schemaName=study&amp;
                             query.queryName=weight&amp;
-                            query.date~eq=${PrevDate}&amp;
+                            query.date~eq=${LastestWeightDate}&amp;
                             query.sort=-date
                         </url>
                     </column>
                     <column columnName="PctChange">
-                        <url>/query/executeQuery.view?schemaName=study&amp;
-                            query.queryName=weight&amp;
-                            query.lsid~eq=${lsid}&amp;
-                        </url>
                         <columnTitle>Percent Change</columnTitle>
+                        <conditionalFormats>
+                            <conditionalFormat>
+                                <filters>
+                                    <filter operator="lte" value="-10"/>
+                                </filters>
+                                <backgroundColor>FF0000</backgroundColor>
+                                <bold>true</bold>
+                            </conditionalFormat>
+                        </conditionalFormats>
                     </column>
-                    <column columnName="Interval">
+                    <column columnName="IntervalInDays">
                         <columnTitle>Interval (Days)</columnTitle>
+                    </column>
+                    <column columnName="IntervalInMonths">
+                        <columnTitle>Interval (Months)</columnTitle>
                     </column>
                 </columns>
                 <titleColumn>PctChange</titleColumn>

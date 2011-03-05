@@ -56,7 +56,7 @@ EHR.ext.GridFormPanel = Ext.extend(Ext.Panel,
             ,forceLayout: true
             ,layout: 'table'
             ,columns: 2
-            ,style: 'margin-bottom: 15px'
+            ,style: 'margin-bottom: 15px;'
             ,tbar: tbar
             ,defaults: {
                 border: false,
@@ -85,7 +85,7 @@ EHR.ext.GridFormPanel = Ext.extend(Ext.Panel,
                 items: {xtype: 'displayfield', value: 'Loading...'}
             },{
                 xtype: 'ehr-editorgrid',
-                style: 'margin-top: 5px',
+                style: 'margin-top: 5px;margin-left:15px',
                 //NOTE: this is done to make sure the grid aligns vertically
                 //TODO: might be better to just set style on cell directly
                 //style is: "vertical-align: top;"
@@ -422,6 +422,9 @@ EHR.ext.GridFormPanel = Ext.extend(Ext.Panel,
                         batchEditWin.fieldVal.reset();
                     }
                 }
+        },
+        order_treatment: {
+
         }
     }
 });

@@ -4,9 +4,14 @@
  * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
  */
 
-function repairRow(row, errors){
-    EHR.validation.fixSurgMajor(row, errors);
-}
+var {EHR, LABKEY, Ext, shared, console, init, beforeInsert, afterInsert, beforeUpdate, afterUpdate, beforeDelete, afterDelete, complete} = require("ehr/validation");
+
+
+
+
+//function onETL(row, errors){
+//    EHR.validation.fixSurgMajor(row, errors);
+//}
 
 function setDescription(row, errors){
     //we need to set description for every field
@@ -23,7 +28,7 @@ function setDescription(row, errors){
     if(row.surgeon)
         description.push('Surgeon: '+row.surgeon);
     if(row.major)
-        description.push('Major: '+row.major);
+        description.push('Is Major?: '+row.major);
 
     return description;
 }

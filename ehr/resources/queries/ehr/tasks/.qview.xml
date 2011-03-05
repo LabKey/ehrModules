@@ -2,12 +2,12 @@
    <columns>
         <column name="rowid"/>
         <column name="title" />
-        <column name="formtype" />
+        <!--<column name="formtype" />-->
         <column name="AssignedTo" />
         <column name="DueDate"/>
         <column name="CreatedBy"/>
         <column name="Created"/>
-        <column name="QCState/Label">
+        <column name="QCState">
             <properties>
                 <property name="columnTitle" value="Status"/>
             </properties>

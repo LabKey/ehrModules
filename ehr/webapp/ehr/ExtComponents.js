@@ -565,6 +565,7 @@ EHR.ext.SnomedCombo = Ext.extend(LABKEY.ext.ComboBox,
             store: new LABKEY.ext.Store({
                 schemaName: 'ehr_lookups',
                 queryName: 'snomed_subsets',
+                sort: 'primaryCategory',
                 autoLoad: true,
                 nullRecord: {
                     displayColumn: 'primaryCategory',
@@ -649,7 +650,8 @@ EHR.ext.ParticipantField = Ext.extend(Ext.form.TextField,
             {
                 if (!val)
                 {
-                    return 'This field is required';
+                    //we let the field's allowBlank handle this
+                    return true;
                 }
 
                 //force lowercase
@@ -686,24 +688,30 @@ EHR.ext.ParticipantField = Ext.extend(Ext.form.TextField,
             },
             listeners: {
                 scope: this,
+//                change: function(c, val, oldVal)
+//                {
+//                    if (val != c.loadedId)
+//                    {
+//                        this.fireEvent('participantchange', c);
+//                        c.loadedId = val;
+//                        //console.log('animal valid');
+//                    }
+//                },
                 valid: function(c)
                 {
-                    var val = c.getValue();
-
+                    var val = c.getRawValue();
                     if (val != c.loadedId)
                     {
-                        this.fireEvent('participantvalid', c);
+                        this.fireEvent('participantchange', this, val);
                         c.loadedId = val;
-                        //console.log('animal valid');
                     }
                 },
                 invalid: function(c)
                 {
                     var val = c.getRawValue();
                     if (val != c.loadedId){
-                        this.fireEvent('participantinvalid', c);
+                        this.fireEvent('participantchange', this, val);
                         c.loadedId = val;
-                        //console.log('animal invalid');
                     }
                 }
             }
@@ -711,8 +719,8 @@ EHR.ext.ParticipantField = Ext.extend(Ext.form.TextField,
 
         EHR.ext.ParticipantField.superclass.initComponent.call(this, arguments);
 
-        this.addEvents('participantvalid', 'participantinvalid');
-        this.enableBubble('participantvalid', 'participantinvalid');
+        this.addEvents('participantchange');
+        this.enableBubble('participantchange');
 
     }
 });
@@ -745,9 +753,9 @@ EHR.ext.ProjectField = Ext.extend(LABKEY.ext.ComboBox,
                 schemaName: 'study',
                 queryName: 'assignment',
                 viewName: 'Active Assignments',
+                //sql: "SELECT a.project FROM study.assignment a WHERE a.project='"+row.project+"' AND a.id='"+row.id+"' AND a.date <= '"+row.date+"' AND (a.rdate >= '"+row.date+"' OR a.rdate IS NULL)",
                 sort: 'project',
                 columns: 'project,project/account',
-                //tpl: '<tpl for="."><div class="x-combo-list-item">{' + this.displayField + '}</div></tpl>',
                 filterArray: [LABKEY.Filter.create('Id', '', LABKEY.Filter.Types.EQUAL)],
                 autoLoad: true,
                 listeners: {
@@ -777,22 +785,14 @@ EHR.ext.ProjectField = Ext.extend(LABKEY.ext.ComboBox,
 
         EHR.ext.ProjectField.superclass.initComponent.call(this, arguments);
 
-        this.mon(this.ownerCt, 'participantvalid', this.onParticipantValid, this);
-        this.mon(this.ownerCt, 'participantinvalid', this.onParticipantInValid, this);
+        this.mon(this.ownerCt, 'participantchange', this.getProjects, this);
     },
-    onParticipantValid: function(c)
+    getProjects : function(field, id)
     {
-        this.getProjects(c.getValue());
-    },
-    onParticipantInValid: function(c){
-        this.store.baseParams['query.Id~eq'] = id;
-        this.store.load();
-        this.setDisabled(true);
-        this.setValue(null);
-        this.emptyText = '';
-    },
-    getProjects : function(id)
-    {
+        if(!id && this.ownerCt.boundRecord)
+            id = this.ownerCt.boundRecord.get('Id');
+
+        //TODO: account for future assignments
         this.store.baseParams['query.Id~eq'] = id;
         this.store.baseParams['query.project/protocol~neq'] = 'wprc00';
         this.store.load();
@@ -947,4 +947,44 @@ EHR.ext.DrugDoseField = Ext.extend(Ext.form.TriggerField,
 });
 Ext.reg('ehr-drugdosefield', EHR.ext.DrugDoseField);
 
+
+//this vtype is used in date range panels
+Ext.apply(Ext.form.VTypes, {
+    daterange : function(val, field)
+    {
+        var date = field.parseDate(val);
+        console.log('validating');
+        if (!date)
+        {
+            console.log('returned');
+            return;
+        }
+        if (field.startDateField && (!this.dateRangeMax || (date.getTime() != this.dateRangeMax.getTime())))
+        {
+            //var start = Ext.getCmp(field.startDateField);
+            var start = field.startDateField;
+            start.setMaxValue(date);
+            (function(){start.validate()}).defer(10);
+            this.dateRangeMax = date;
+
+            start.fireEvent('change', start, start.getValue());
+        }
+        else if (field.endDateField && (!this.dateRangeMin || (date.getTime() != this.dateRangeMin.getTime())))
+        {
+            //var end = Ext.getCmp(field.endDateField);
+            var end = field.endDateField;
+            end.setMinValue(date);
+            (function(){end.validate()}).defer(10);
+            this.dateRangeMin = date;
+
+            end.fireEvent('change', end, end.getValue());
+        }
+        /*
+         * Always return true since we're only using this vtype to set the
+         * min/max allowed values (these are tested for after the vtype test)
+         */
+
+        return true;
+    }
+});
 

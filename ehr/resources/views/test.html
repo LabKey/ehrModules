@@ -1,35 +1,45 @@
-<!--<html>-->
-<!--<head>-->
-
 <script type="text/javascript">
 
 Ext.onReady(function ()
 {
-//  var reportWebPartRenderer = new LABKEY.WebPart({
-//         partName: 'Discussion',
-//         renderTo: 'clinRemarks',
-//         //containerPath: '/home/Study/demo/guestaccess',
-//         //frame: 'title',
-//         partConfig: {
-//             entityId: '1'
-//     }});
-//     reportWebPartRenderer.render();
 
-    LABKEY.Security.getUserPermissions({
-        userEmail: 'bimber@wisc.edu',
-        success: function(data, response){
-            console.log(arguments);
-        }
-    })
+    Ext.TabPanel.prototype.addClass('extContainer');
+    new Ext.Panel({
+        autoHeight: true,
+        layout: 'anchor',
+        width: '100%',
+        items: [{
+            layout: 'anchor',
+            items: [{
+                xtype: 'tabpanel',
+                //width: '50%',
+                //layout: 'fit',
+                activeTab: 0,
+                items: [{
+                    title: 'Width is extremely large',
+                    xtype: 'panel',
+                    html: 'test'
+                }]
+            }]
+        }]
+    }).render('testDiv');
+
+//    new Ext.Panel({
+//        autoHeight: true,
+//        //width: 1000,
+//        width: '100%',
+//        title: 'Will autosize properly',
+//        items: [{
+//            html: 'test2'
+//        }]
+//    }).render('testDiv2');
 });
 
 
 
 </script>
-<!--</head>-->
-<!--<body>-->
+    <div id='testDiv'></div>
+<p />
+    <div id='testDiv2'></div>
 
-    <div id='clinRemarks'></div>
 
-<!--</body>-->
-<!--</html>-->

@@ -37,6 +37,12 @@
                     <column columnName="sensitivity">
                         <datatype>varchar</datatype>
                         <columnTitle>Sensitivity</columnTitle>
+                        <fk>
+                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
+                            <fkDbSchema>ehr_lookups</fkDbSchema>
+                            <fkTable>bacteriology_sensitivity</fkTable>
+                            <fkColumnName>sensitivity</fkColumnName>
+                        </fk>
                     </column>
                     <column columnName="runId">
                         <fk>

@@ -13,9 +13,21 @@ initComponent: function(){
     this.panelTitle = this.title;
     this.title = null;
 
-    Ext.applyIf(this, {
+    Ext.apply(this, {
+        items: [{html: 'Loading...'}],
+        bodyStyle: 'padding:5px',
+        autoHeight: true,
         bodyBorder: false,
-        border: false
+        cls: 'x-labkey-wp',
+        border: false,
+        title: this.panelTitle || 'Details',
+        frame: false,
+        labelWidth: 150,
+        style: 'margin-bottom:20px',
+        defaults: {
+            labelStyle: 'padding: 0px;',
+            border: false
+        }
     });
 
     EHR.ext.DetailsView.superclass.initComponent.call(this, arguments);
@@ -48,11 +60,8 @@ onFinalRender: function(data){
     this.removeAll();
 
     if (!data.rows.length){
-        var innerHTML = '<table class="labkey-wp"><tbody><tr class="labkey-wp-header"><th class="labkey-wp-title-left">' +
-        (this.title || 'Details:')+ '</th><th class="labkey-wp-title-right">&nbsp;</th></tr></tbody></table>No Records Found<p>';
-
-        this.add({html: innerHTML});
-
+        this.add({html: 'No records found'});
+        this.doLayout();
         return;
     }
     else if (data.rows.length > 1 && this.multiToGrid){
@@ -85,14 +94,10 @@ onFinalRender: function(data){
     for (var j=0;j<data.rows.length;j++){
         var thePanel = new Ext.Panel({
             layout: 'form',
-            bodyStyle: 'padding:5px',
             bodyBorder: false,
-            cls: 'x-labkey-wp',
+            autoHeight: true,
             border: false,
-            title: this.panelTitle || 'Details',
-            frame: false,
             labelWidth: 150,
-            style: 'margin-bottom:20px',
             defaults: {
                 labelStyle: 'padding: 0px;'
             }

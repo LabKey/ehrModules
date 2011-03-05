@@ -172,18 +172,24 @@ ehr/resources/queries/ehr/cage_observations.js -text
 ehr/resources/queries/ehr/cage_observations.query.xml -text
 ehr/resources/queries/ehr/cage_observations/.qview.xml -text
 ehr/resources/queries/ehr/missingCages.sql -text
+ehr/resources/queries/ehr/missingRooms.sql -text
+ehr/resources/queries/ehr/my_requests.query.xml -text
+ehr/resources/queries/ehr/my_requests.sql -text
+ehr/resources/queries/ehr/my_tasks.query.xml -text
+ehr/resources/queries/ehr/my_tasks.sql -text
+ehr/resources/queries/ehr/my_tasks/.qview.xml -text
+ehr/resources/queries/ehr/my_tasks/Active[!!-~]Tasks.qview.xml -text
+ehr/resources/queries/ehr/my_tasks/Review[!!-~]Needed.qview.xml -text
 ehr/resources/queries/ehr/reports.xml -text
 ehr/resources/queries/ehr/requests.js -text
 ehr/resources/queries/ehr/requests.query.xml -text
 ehr/resources/queries/ehr/requests/.qview.xml -text
 ehr/resources/queries/ehr/requests/Approved[!!-~]Requests.qview.xml -text
 ehr/resources/queries/ehr/requests/Denied[!!-~]Requests.qview.xml -text
-ehr/resources/queries/ehr/requests/My[!!-~]Requests.qview.xml -text
 ehr/resources/queries/ehr/requests/Pending[!!-~]Requests.qview.xml -text
 ehr/resources/queries/ehr/tasks.query.xml -text
 ehr/resources/queries/ehr/tasks/.qview.xml -text
 ehr/resources/queries/ehr/tasks/Active[!!-~]Tasks.qview.xml -text
-ehr/resources/queries/ehr/tasks/My[!!-~]Tasks.qview.xml -text
 ehr/resources/queries/ehr/tasks/Review[!!-~]Needed.qview.xml -text
 ehr/resources/queries/ehr_lookups/ageclass.query.xml -text
 ehr/resources/queries/ehr_lookups/alopecia_score.query.xml -text
@@ -287,9 +293,8 @@ ehr/resources/queries/study/Clinical[!!-~]Remarks/Necropsy[!!-~]Remarks.qview.xm
 ehr/resources/queries/study/Clinical[!!-~]Remarks/Remark[!!-~]Only.qview.xml -text
 ehr/resources/queries/study/Clinical[!!-~]Remarks/Surgery[!!-~]Remarks.qview.xml -text
 ehr/resources/queries/study/Clinical_Remarks.js -text
-ehr/resources/queries/study/ClinpathRuns.query.xml -text
-ehr/resources/queries/study/ClinpathRuns.sql -text
-ehr/resources/queries/study/ClinpathRuns/.qview.xml -text
+ehr/resources/queries/study/Clinpath[!!-~]Runs.query.xml -text
+ehr/resources/queries/study/Clinpath[!!-~]Runs/.qview.xml -text
 ehr/resources/queries/study/Colony[!!-~]Population[!!-~]By[!!-~]Age/.qview.xml -text
 ehr/resources/queries/study/Datasets.query.xml -text
 ehr/resources/queries/study/Deaths.js -text
@@ -348,7 +353,7 @@ ehr/resources/queries/study/Menses.js -text
 ehr/resources/queries/study/Menses.query.xml -text
 ehr/resources/queries/study/Necropsies.js -text
 ehr/resources/queries/study/Necropsies.query.xml -text
-ehr/resources/queries/study/Necropsies2/.qview.xml -text
+ehr/resources/queries/study/Necropsies/.qview.xml -text
 ehr/resources/queries/study/Necropsy[!!-~]Diagnosis.js -text
 ehr/resources/queries/study/Necropsy[!!-~]Diagnosis.query.xml -text
 ehr/resources/queries/study/Necropsy[!!-~]Diagnosis/.qview.xml -text
@@ -379,6 +384,7 @@ ehr/resources/queries/study/Problem[!!-~]List/Unresolved[!!-~]Problems.qview.xml
 ehr/resources/queries/study/Procedure[!!-~]Codes.js -text
 ehr/resources/queries/study/Procedure[!!-~]Codes.query.xml -text
 ehr/resources/queries/study/Procedures/.qview.xml -text
+ehr/resources/queries/study/QCState.query.xml -text
 ehr/resources/queries/study/Restraint.js -text
 ehr/resources/queries/study/Restraint.query.xml -text
 ehr/resources/queries/study/SSP_Summary.query.xml -text
@@ -433,6 +439,8 @@ ehr/resources/queries/study/Vitals/.qview.xml -text
 ehr/resources/queries/study/Weight.js -text
 ehr/resources/queries/study/Weight.query.xml -text
 ehr/resources/queries/study/Weight/.qview.xml -text
+ehr/resources/queries/study/Weight/10[!!-~]Pct[!!-~]Drop[!!-~]in[!!-~]6[!!-~]Months.qview.xml -text
+ehr/resources/queries/study/Weight/Percent[!!-~]Change.qview.xml -text
 ehr/resources/queries/study/alleleFrequencies.query.xml -text
 ehr/resources/queries/study/alleleFrequencies.sql -text
 ehr/resources/queries/study/animal.query.xml -text
@@ -488,6 +496,8 @@ ehr/resources/queries/study/colonyPopulationSummary.sql -text
 ehr/resources/queries/study/demographics/.qview.xml -text
 ehr/resources/queries/study/demographics/Abstract.qview.xml -text
 ehr/resources/queries/study/demographics/Alive,[!!-~]at[!!-~]WNPRC.qview.xml -text
+ehr/resources/queries/study/demographics/Blood[!!-~]Draw[!!-~]Info.qview.xml -text
+ehr/resources/queries/study/demographics/Clinical[!!-~]Summary.qview.xml -text
 ehr/resources/queries/study/demographicsAge.query.xml -text
 ehr/resources/queries/study/demographicsAge.sql -text
 ehr/resources/queries/study/demographicsAgeClass.query.xml -text
@@ -612,7 +622,7 @@ ehr/resources/queries/study/urinalysisPivot.sql -text
 ehr/resources/queries/study/weightPctChange.query.xml -text
 ehr/resources/queries/study/weightPctChange.sql -text
 ehr/resources/queries/study/weightRelChange.query.xml -text
-ehr/resources/queries/study/weightRelWeight.sql -text
+ehr/resources/queries/study/weightRelChange.sql -text
 ehr/resources/reports/schemas/study/StudyData/Monthly[!!-~]Summary.r -text
 ehr/resources/reports/schemas/study/Weight/Weight[!!-~]Graph.r -text
 ehr/resources/reports/schemas/study/Weight/Weight[!!-~]Graph.report.xml -text
@@ -627,7 +637,6 @@ ehr/resources/schemas/dbscripts/postgresql/EHR-10.30-10.31.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-10.30-10.31.sql -text
 ehr/resources/schemas/ehr.xml -text
 ehr/resources/schemas/ehr_lookups.xml -text
-ehr/resources/scripts/ehr/ValidationScriptTemplate.js -text
 ehr/resources/scripts/ehr/validation.js -text
 ehr/resources/scripts/ehr/validation_old.js -text
 ehr/resources/stylesheet.css -text
@@ -676,6 +685,8 @@ ehr/resources/views/protocolDetails.html -text
 ehr/resources/views/quickSearch.html -text
 ehr/resources/views/quickSearch.view.xml -text
 ehr/resources/views/quickSearch.webpart.xml -text
+ehr/resources/views/requestServices.html -text
+ehr/resources/views/requestServices.view.xml -text
 ehr/resources/views/searchPanel.html -text
 ehr/resources/views/searchPanel.view.xml -text
 ehr/resources/views/sponsors.html -text
@@ -805,7 +816,6 @@ ehr/webapp/ehr/ExtComponents.js -text
 ehr/webapp/ehr/ExtContainers.js -text
 ehr/webapp/ehr/ExtOverrides.js -text
 ehr/webapp/ehr/SearchPanel.js -text
-ehr/webapp/ehr/ValidationScriptTemplate.js -text
 ehr/webapp/ehr/animalHistory.js -text
 ehr/webapp/ehr/arrayUtils.js -text
 ehr/webapp/ehr/databind.js -text

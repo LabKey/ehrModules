@@ -187,10 +187,11 @@ EHR.reports.weightGraph = function(tab, subject){
 
         var store = new LABKEY.ext.Store({
             schemaName: 'study',
-            queryName: 'weight',
+            queryName: 'weightRelChange',
+            //viewName: 'Percent Change',
             filterArray: filterArray.removable.concat(filterArray.nonRemovable),
             //columns: 'id,date,weight,percentChange/PctChange,percentChange/PrevWeight,relChange/PctChange',
-            columns: 'id,date,weight',
+            columns: 'id,date,weight,LatestWeight,LatestWeightDate,PctChange,IntervalInMonths',
             sort: 'Id,-date',
             autoLoad: true
         });
@@ -215,9 +216,13 @@ EHR.reports.weightGraph = function(tab, subject){
             }),
             tipRenderer: function(chart, rec, axis){
                 var lines = [];
+
                 lines.push('Date: '+rec.get('date').format('Y-m-d'));
                 lines.push('Weight: '+rec.get('weight'));
-                //lines.push('Previous Weight: '+rec.get('percentChange/PrevWeight'));
+                lines.push('Current Weight: '+rec.get('LatestWeight'));
+
+                lines.push('Percent Change: '+rec.get('PctChange'));
+                lines.push('Interval (Months): '+rec.get('IntervalInMonths'));
 
                 return lines.join('\n');
             }
@@ -303,6 +308,7 @@ EHR.reports.weightGraph = function(tab, subject){
         title: 'Weight' + ": " + title,
         schemaName: 'study',
         queryName: 'weight',
+        viewName: 'Percent Change',
         sort: 'id,-date',
         filters: filterArray.nonRemovable,
         removeableFilters: filterArray.removable,

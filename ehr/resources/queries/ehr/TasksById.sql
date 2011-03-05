@@ -11,6 +11,7 @@ SELECT
 --   t.title,
 --   t.formtype,
   t.taskId,
+  t.formtype,
 --   t.assignedTo,
 --   t.duedate,
 --   t.created,
@@ -23,5 +24,5 @@ JOIN study.studydata sd
 
 ON (t.taskid = sd.taskid)
 
-GROUP BY t.taskId, sd.id
+GROUP BY t.taskId, t.formtype, sd.id
 

@@ -58,7 +58,7 @@ function createNavMenu()
                 {name: 'Room Utilization', url: '<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=ehr&query.queryName=RoomUtilization'},
                 {name: 'Viral Challenges', url: '<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=demographicsViralChallenge'}
             ]},
-            {header: 'Checking and Alerts',
+            {header: 'Validation and Alerts',
              items: [
                  {name: 'Animal/Cage Size Check', url: '<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=roomCheck'},
                  {name: 'Loners', url: '<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=animal&query.viewName=Loners'},
@@ -79,6 +79,11 @@ function createNavMenu()
                 {name: 'Search WNPRC SNOMED Codes', url: '<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=lists&query.queryName=snomed'},
                 {name: 'Search ALL SNOMED Codes', url: '<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=lists&query.queryName=newsnomed'},                    
                 {name: 'Utilities', url: '<%=contextPath%>/ehr/WNPRC/EHR/utilities.view?'}
+            ]},
+            {header: 'Data Entry',
+            items: [
+                {name: 'Data Entry', url: '<%=contextPath%>/ehr/WNPRC/EHR/dataEntry.view'},
+                {name: 'Request Services', url: '<%=contextPath%>/ehr/WNPRC/EHR/requestServices.view'}
             ]}
         ]
     };
@@ -87,9 +92,8 @@ function createNavMenu()
         menuCfg.sections.push({
             header: 'Admin',
             items: [
-                {name: 'Manage EHR Study', url: '<%=contextPath%>/study/WNPRC/EHR/manageStudy.view?'},                
                 {name: 'EHR Admin Page', url: '<%=contextPath%>/ehr/WNPRC/EHR/ehrAdmin.view'},
-                {name: 'Data Entry', url: '<%=contextPath%>/ehr/WNPRC/EHR/dataEntry.view'}
+                {name: 'Manage EHR Study', url: '<%=contextPath%>/study/WNPRC/EHR/manageStudy.view?'}
             ]
         })
 

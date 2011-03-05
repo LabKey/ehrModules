@@ -13,26 +13,27 @@ Ext.onReady(function (){
         sections: [
             {header: 'Admin',
                 items: [
-                    {name: 'Backup History', url: '<%=contextPath%>/project/WNPRC/EHR/Backups/begin.view?'},
-                    {name: 'Development Notes', url: '<%=contextPath%>/project/WNPRC/EHR/Development Notes/begin.view?'},
-                    {name: 'ETL Admin', url: '<%=contextPath%>/EHR/WNPRC/EHR/etlAdmin.view?'},
-                    {name: 'ETL Duration', url: '<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=core&query.queryName=Sync Duration'},
-                    {name: 'ETL History', url: '<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=core&query.queryName=Sync History'},
-                    {name: 'Manage EHR Study', url: '<%=contextPath%>/study/WNPRC/EHR/manageStudy.view?'},
-                    {name: 'Populate Initial Data', url: '<%=contextPath%>/EHR/WNPRC/EHR/_initEHR.view?'},
-                    {name: 'Reload Study', url: '<%=contextPath%>/pipeline/WNPRC/EHR/begin.view?'},
+                    {name: 'Backup History', url: '<%=contextPath%>/project<%=containerPath%>/Backups/begin.view?'},
+                    {name: 'Client Errors', url: '<%=contextPath%>/query/shared/executeQuery.view?schemaName=ehr&query.queryName=client_errors'},
+                    {name: 'Development Notes', url: '<%=contextPath%>/project<%=containerPath%>/Development Notes/begin.view?'},
+                    {name: 'ETL Admin', url: '<%=contextPath%>/EHR<%=containerPath%>/etlAdmin.view?'},
+                    {name: 'ETL Duration', url: '<%=contextPath%>/query<%=containerPath%>/executeQuery.view?schemaName=core&query.queryName=Sync Duration'},
+                    {name: 'ETL History', url: '<%=contextPath%>/query<%=containerPath%>/executeQuery.view?schemaName=core&query.queryName=Sync History'},
+                    {name: 'Manage EHR Study', url: '<%=contextPath%>/study<%=containerPath%>/manageStudy.view?'},
+                    {name: 'Populate Initial Data', url: '<%=contextPath%>/EHR<%=containerPath%>/_initEHR.view?'},
+                    {name: 'Reload Study', url: '<%=contextPath%>/pipeline<%=containerPath%>/begin.view?'},
                     {name: 'Generate Schema XML', url: '<%=contextPath%>/admin/getSchemaXmlDoc.view?full=true&dbSchema=core'},
-                    {name: 'View Logs', url: '<%=contextPath%>/project/WNPRC/EHR/Logs/begin.view?'}
+                    {name: 'View Logs', url: '<%=contextPath%>/project<%=containerPath%>/Logs/begin.view?'}
                 ]
             },
             {header: 'Logs',
                 items: [
-                    {name: 'Labkey.log', url: '<%=contextPath%>/files/WNPRC/EHR/Logs/%40filesets/Tomcat%20Logs/labkey.log'},
-                    {name: 'ETL Log', url: '<%=contextPath%>/files/WNPRC/EHR/Logs/%40filesets/Tomcat%20Logs/ehr-etl.log'},
-                    {name: 'ETL Errors Log', url: '<%=contextPath%>/files/WNPRC/EHR/Logs/%40filesets/Tomcat%20Logs/ehr-etl-errors.log'},
-                    {name: 'ActiveMQ.log', url: '<%=contextPath%>/files/WNPRC/EHR/Logs/%40filesets/ActiveMQ/activemq.log'},
-                    {name: 'Monit.log', url: '<%=contextPath%>/files/WNPRC/EHR/Logs/%40filesets/Monit/monit.log'},
-                    {name: 'Munin.log', url: '<%=contextPath%>/files/WNPRC/EHR/Logs/%40filesets/Munin/munin.log'}
+                    {name: 'Labkey.log', url: '<%=contextPath%>/files<%=containerPath%>/Logs/%40filesets/Tomcat%20Logs/labkey.log'},
+                    {name: 'ETL Log', url: '<%=contextPath%>/files<%=containerPath%>/Logs/%40filesets/Tomcat%20Logs/ehr-etl.log'},
+                    {name: 'ETL Errors Log', url: '<%=contextPath%>/files<%=containerPath%>/Logs/%40filesets/Tomcat%20Logs/ehr-etl-errors.log'},
+                    {name: 'ActiveMQ.log', url: '<%=contextPath%>/files<%=containerPath%>/Logs/%40filesets/ActiveMQ/activemq.log'},
+                    {name: 'Monit.log', url: '<%=contextPath%>/files<%=containerPath%>/Logs/%40filesets/Monit/monit.log'},
+                    {name: 'Munin.log', url: '<%=contextPath%>/files<%=containerPath%>/Logs/%40filesets/Munin/munin.log'}
                 ]
             },
             {header: 'Monit',
@@ -51,43 +52,24 @@ Ext.onReady(function (){
             },
             {header: 'Usage',
                 items: [
-                    {name: 'Site Logins', url: '<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=core&query.queryName=SiteUsage'},
-                        {name: 'Site Logins By Month', url: '<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=core&query.queryName=SiteUsageByMonth'},
-                        {name: 'Site Logins By Group', url: '<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=core&query.queryName=SiteUsageByGroup'}
+                    {name: 'Site Logins', url: '<%=contextPath%>/query<%=containerPath%>/executeQuery.view?schemaName=core&query.queryName=SiteUsage'},
+                        {name: 'Site Logins By Month', url: '<%=contextPath%>/query<%=containerPath%>/executeQuery.view?schemaName=core&query.queryName=SiteUsageByMonth'},
+                        {name: 'Site Logins By Group', url: '<%=contextPath%>/query<%=containerPath%>/executeQuery.view?schemaName=core&query.queryName=SiteUsageByGroup'}
                 ]
             },
             {header: 'Validation',
                 items: [
-                    {name: 'Validate Status Field Calculation', url: '<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=Validation'},
-                    {name: 'Review Required', url: '<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=studyData&query.viewName=Review Required'},
-                    {name: 'Rooms/Cages Missing From List', url: '<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=ehr&query.queryName=RoomUtilization&query.TotalCages~eq=0'},
-                    {name: 'Postgres/mySQL Comparison', url: '<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=col_dump&query.queryName=mysql_check'},
-                    {name: 'Postgres/mySQL Comparison - To Excel', url: '<%=contextPath%>/query/WNPRC/EHR/exportRowsExcel.view?schemaName=col_dump&query.queryName=mysql_check'}
+                    {name: 'Validate Status Field Calculation', url: '<%=contextPath%>/query<%=containerPath%>/executeQuery.view?schemaName=study&query.queryName=Validation'},
+                    {name: 'Review Required', url: '<%=contextPath%>/query<%=containerPath%>/executeQuery.view?schemaName=study&query.queryName=studyData&query.viewName=Review Required'},
+                    {name: 'Rooms/Cages Missing From List', url: '<%=contextPath%>/query<%=containerPath%>/executeQuery.view?schemaName=ehr&query.queryName=RoomUtilization&query.TotalCages~eq=0'},
+                    {name: 'Postgres/mySQL Comparison', url: '<%=contextPath%>/query<%=containerPath%>/executeQuery.view?schemaName=col_dump&query.queryName=mysql_check'},
+                    {name: 'Postgres/mySQL Comparison - To Excel', url: '<%=contextPath%>/query<%=containerPath%>/exportRowsExcel.view?schemaName=col_dump&query.queryName=mysql_check'}
                 ]
             }
         ]
     })
     }
 
-//    new LABKEY.QueryWebPart({
-//        title: 'Maintenance History',
-//        //containerPath: '/WNPRC/EHR/Backups',
-//        schemaName: 'core',
-//        queryName: 'Maintenance History',
-//        allowChooseQuery: false,
-//        allowChooseView: true,
-//        showInsertNewButton: false,
-//        showDeleteButton: false,
-//        showDetailsColumn: true,
-//        showUpdateColumn: false,
-//        buttonBarPosition: 'top',
-//        //maxRows: 2,
-//        scope: this,
-//        errorCallback: EHR.utils.onError
-//     }).render('backupDate');
-
-
-    
 });
 
 
@@ -97,11 +79,6 @@ Ext.onReady(function (){
 <body>
 
 <div id="adminLinks"></div>
-<!--<p/>-->
-<!--<div id="backupDate"></div>-->
-<!--<p/>-->
-<!--<div id="syncDate"></div>-->
-
 
 
 </body>

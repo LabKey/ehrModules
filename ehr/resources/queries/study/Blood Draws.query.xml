@@ -23,6 +23,9 @@
                           <fkColumnName>project</fkColumnName>
                         </fk>
                     </column>
+                    <column columnName="additionalServices">
+                        <columnTitle>Additional Services</columnTitle>
+                    </column>
                     <column columnName="date">
                         <formatString>yyyy-MM-dd HH:mm</formatString>
                     </column>
