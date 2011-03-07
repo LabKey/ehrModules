@@ -49,6 +49,7 @@ import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -258,7 +259,7 @@ public class ETLRunnable implements Runnable
                             }
                         }
 
-                        updater.deleteRows(user, container, deleteSelectors);
+                        updater.deleteRows(user, container, deleteSelectors, Collections.<String, Object>emptyMap());
                         log.info("deleted objectids " + deletedIds.toString());
                     }
 
@@ -294,9 +295,9 @@ public class ETLRunnable implements Runnable
                         if (sourceRows.size() == UPSERT_BATCH_SIZE || isDone)
                         {
                             if (!isTargetEmpty) {
-                                updater.deleteRows(user, container, sourceRows);
+                                updater.deleteRows(user, container, sourceRows, Collections.<String, Object>emptyMap());
                             }
-                            updater.insertRows(user, container, sourceRows);
+                            updater.insertRows(user, container, sourceRows, Collections.<String, Object>emptyMap());
                             updates += sourceRows.size();
                             log.info("Updated " + updates + " records in " + targetTableName);
                             sourceRows.clear();
