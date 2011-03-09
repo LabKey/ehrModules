@@ -6,54 +6,66 @@
 
 var {EHR, LABKEY, Ext, shared, console, init, beforeInsert, afterInsert, beforeUpdate, afterUpdate, beforeDelete, afterDelete, complete} = require("ehr/validation");
 
-
-
+for(var i in this){
+    console.log(i)
+}
+    console.log("extraContext:", this.extraContext);
 
 function onUpsert(row, errors, oldRow){
     if(!row.quantity && row.num_tubes && row.tube_vol)
         row.quantity = row.num_tubes * row.tube_vol;
 
-    //TODO: verify needed
-    if(row.Id){
+    if(row.Id && row.date){
+        var minDate = new Date(row.Date);
+        minDate.setDate(minDate.getDate()-30);
+        minDate = EHR.validation.dateToString(minDate);
+
+        //TODO: account for QCstate
+        var sql = "SELECT b.BloodLast30, round((d.weight*0.2*60) - b.BloodLast30, 1) AS AvailBlood " +
+        "FROM (" +
+            "SELECT b.id, sum(b.quantity) as BloodLast30 " +
+            "FROM study.\"Blood Draws\" b " +
+            "WHERE b.id='"+row.Id+"' AND b.date >= '"+minDate+"' AND b.date <= '"+EHR.validation.dateToString(row.date) +"' " +
+            "GROUP BY b.id) b " +
+        "JOIN study.demographics d on (d.id=b.id)";
 
         // find all blood draws from this animal in 30 days prior to this date
-        LABKEY.Query.selectRows({
+        LABKEY.Query.executeSql({
             schemaName: 'study',
-            //TODO: account for QCstate
-            sql: "SELECT sum(quantity) as quantity FROM study.\"Blood Draws\" b WHERE id='"+row.Id+"' AND bd.date BETWEEN TIMESTAMPADD('SQL_TSI_DAY', -30, '"+row.date+"') AND '"+row.date+"'",
-            filterArray: [
-                LABKEY.Filter.create('id', row.Id, LABKEY.Filter.Types.EQUAL)
-            ],
+            sql: sql,
             success: function(data){
                 if(data && data.rows && data.rows.length)
                     var availBlood = data.rows[0].AvailBlood;
-                    console.log('AvailBlood: '+availBlood);
-
                     if(availBlood - row.quantity < 0)
-                       EHR.addError(errors, 'quantity', 'Volume exceeds available blood. Max allowable: '+availBlood, 'ERROR');
+                       EHR.addError(errors, 'num_tubes', 'Volume exceeds available blood. Max allowable is '+availBlood, 'ERROR');
             },
             failure: EHR.onFailure
         });
 
         // find all blood draws from this animal in 30 days after this date
-        LABKEY.Query.selectRows({
+        var maxDate = new Date(row.Date);
+        maxDate.setDate(maxDate.getDate()+30);
+        maxDate = EHR.validation.dateToString(maxDate);
+
+        //TODO: account for QCstate
+        sql = "SELECT b.BloodLast30, round((d.weight*0.2*60) - b.BloodLast30, 1) AS AvailBlood " +
+        "FROM (" +
+            "SELECT b.id, sum(b.quantity) as BloodLast30 " +
+            "FROM study.\"Blood Draws\" b " +
+            "WHERE b.id='"+row.Id+"' AND b.date >= '"+EHR.validation.dateToString(row.date) +"' AND b.date <= '"+maxDate+"' " +
+            "GROUP BY b.id) b " +
+        "JOIN study.demographics d on (d.id=b.id)";
+        LABKEY.Query.executeSql({
             schemaName: 'study',
-            //TODO: account for QCstate
-            sql: "SELECT sum(quantity) as quantity FROM study.\"Blood Draws\" b WHERE id='"+row.Id+"' AND bd.date BETWEEN TIMESTAMPADD('SQL_TSI_DAY', 30, '"+row.date+"') AND '"+row.date+"'",
-            filterArray: [
-                LABKEY.Filter.create('id', row.Id, LABKEY.Filter.Types.EQUAL)
-            ],
+            sql: sql,
             success: function(data){
                 if(data && data.rows && data.rows.length)
                     var availBlood = data.rows[0].AvailBlood;
-                    console.log('AvailBlood: '+availBlood);
-
                     if(availBlood - row.quantity < 0)
                        EHR.addError(errors, 'quantity', 'Volume conflicts with future blood draws. Max allowable: '+availBlood, 'ERROR');
             },
             failure: EHR.onFailure
         });
-
     }
 
 }

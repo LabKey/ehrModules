@@ -38,7 +38,7 @@ Ext.extend(EHR.ext.FormPanel, Ext.FormPanel,
             autoLoad: true
         }));
 
-        this.store.parentPanel = this;
+        this.store.importPanel = this.importPanel || this;
 
         Ext.apply(this, {
             plugins: ['databind']
@@ -132,7 +132,6 @@ Ext.extend(EHR.ext.FormPanel, Ext.FormPanel,
                     if(previousField){
                         previousField.width = (previousField.width-5)/2;
                         theField.width = (theField.width-5)/2;
-
                         var composite = this.add({
                             layout: 'column',
                             fieldLabel: previousField.fieldLabel,
@@ -149,7 +148,13 @@ Ext.extend(EHR.ext.FormPanel, Ext.FormPanel,
                                 items: [theField]
                             }]
                         });
+                        var msgTarget = this.add({
+                            tag: 'div',
+                            border: false
+                        });
                         composite.ownerCt = this;
+                        previousField.msgTarget = msgTarget.id;
+                        theField.msgTarget = msgTarget.id;
                         previousField = null;
                     }
                     else

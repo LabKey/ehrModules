@@ -72,9 +72,9 @@ EHR.ext.metaHelper = {
         var editor = EHR.ext.metaHelper.getDefaultEditorConfig(meta);
 
         //for multiline fields:
-        if(col.editable && (col.multiline || (undefined === col.multiline && col.scale > 255 && meta.jsonType === "string"))){
-            col.editor = new LABKEY.ext.LongTextField({
-                columnName: col.dataIndex
+        if(editor.editable && meta.inputType == 'textarea'){
+            editor = new LABKEY.ext.LongTextField({
+                columnName: editor.dataIndex
             });
         }
 
@@ -356,6 +356,9 @@ EHR.ext.metaHelper = {
                 }
                 break;
             case "int":
+                col.xtype = 'numbercolumn';
+                col.format = '0';
+                break;
             case "float":
                 col.xtype = 'numbercolumn';
                 break;
@@ -364,6 +367,7 @@ EHR.ext.metaHelper = {
                 col.format = meta.format || Date.patterns.ISO8601Long;
         }
 
+        //will use custom renderer
         if(meta.lookup && meta.lookups!==false)
             delete col.xtype;
 
@@ -423,9 +427,9 @@ EHR.ext.metaHelper = {
                     }
                     displayValue = date.format(format);
                     break;
+                case "int":
                 case "string":
                 case "boolean":
-                case "int":
                 case "float":
                 default:
                     displayValue = data.toString();

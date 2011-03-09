@@ -60,6 +60,7 @@
   </ns:table>
   <ns:table tableName="client_errors" tableDbType="TABLE">
     <ns:pkColumnName>rowid</ns:pkColumnName>
+    <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr&amp;query.queryName=client_errors&amp;rowid=${rowid}</ns:tableUrl>
     <ns:columns>
       <ns:column columnName="rowid">
         <ns:datatype>serial</ns:datatype>
@@ -119,6 +120,7 @@
   </ns:table>
   <ns:table tableName="snomed_tags" tableDbType="TABLE">
     <ns:pkColumnName>rowid</ns:pkColumnName>
+    <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr&amp;query.queryName=snomed_tags&amp;rowid=${rowid}</ns:tableUrl>
     <ns:columns>
       <ns:column columnName="rowid">
         <ns:datatype>serial</ns:datatype>
@@ -359,6 +361,7 @@
   </ns:table>
   <ns:table tableName="reports" tableDbType="TABLE">
     <ns:pkColumnName>rowid</ns:pkColumnName>
+    <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr&amp;query.queryName=reports&amp;rowid=${rowid}</ns:tableUrl>
     <ns:columns>
       <ns:column columnName="rowid">
         <ns:datatype>serial</ns:datatype>
@@ -468,6 +471,7 @@
   </ns:table>
   <ns:table tableName="cage_observations" tableDbType="TABLE">
     <ns:tableTitle>Cage Observations</ns:tableTitle>
+    <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr&amp;query.queryName=cage_observations&amp;rowid=${rowid}</ns:tableUrl>
     <ns:columns>
       <ns:column columnName="date">
         <ns:datatype>timestamp</ns:datatype>
@@ -594,6 +598,7 @@
   </ns:table>
   <ns:table tableName="extracts" tableDbType="TABLE">
     <ns:pkColumnName>rowid</ns:pkColumnName>
+    <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr&amp;query.queryName=extracts&amp;rowid=${rowid}</ns:tableUrl>
     <ns:columns>
       <ns:column columnName="rowid">
         <ns:datatype>serial</ns:datatype>
@@ -675,6 +680,7 @@
 
 <ns:table tableName="formtemplates" tableDbType="TABLE">
     <ns:pkColumnName>entityid</ns:pkColumnName>
+    <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr&amp;query.queryName=formtemplates&amp;entityid=${entityid}</ns:tableUrl>
     <ns:columns>
       <ns:column columnName="entityid">
         <ns:datatype>entityid</ns:datatype>
@@ -737,6 +743,7 @@
   </ns:table>
   <ns:table tableName="notificationrecipients" tableDbType="TABLE">
     <ns:pkColumnName>rowid</ns:pkColumnName>
+    <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr&amp;query.queryName=notificationrecipients&amp;rowid=${rowid}</ns:tableUrl>
     <ns:columns>
       <ns:column columnName="rowid">
         <ns:datatype>serial</ns:datatype>
@@ -790,6 +797,7 @@
   </ns:table>
   <ns:table tableName="formpanelsections" tableDbType="TABLE">
     <ns:pkColumnName>rowid</ns:pkColumnName>
+    <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr&amp;query.queryName=formtemplatesections&amp;rowid=${rowid}</ns:tableUrl>
     <ns:columns>
       <ns:column columnName="rowid">
         <ns:datatype>serial</ns:datatype>
@@ -885,6 +893,7 @@
   </ns:table>
   <ns:table tableName="formtemplaterecords" tableDbType="TABLE">
     <ns:pkColumnName>rowid</ns:pkColumnName>
+    <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr&amp;query.queryName=formtemplaterecords&amp;rowid=${rowid}</ns:tableUrl>
     <ns:columns>
       <ns:column columnName="rowid">
         <ns:datatype>serial</ns:datatype>
@@ -947,6 +956,7 @@
   </ns:table>
   <ns:table tableName="notificationtypes" tableDbType="TABLE">
     <ns:pkColumnName>notificationtype</ns:pkColumnName>
+    <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr&amp;query.queryName=notificationtypes&amp;notificationtype=${notificationtype}</ns:tableUrl>
     <ns:columns>
       <ns:column columnName="notificationtype">
         <ns:datatype>varchar</ns:datatype>
@@ -995,6 +1005,7 @@
   </ns:table>
   <ns:table tableName="formtypes" tableDbType="TABLE">
     <ns:pkColumnName>formtype</ns:pkColumnName>
+    <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr&amp;query.queryName=formtypes&amp;formtype=${formtype}</ns:tableUrl>
     <ns:columns>
       <ns:column columnName="formtype">
         <ns:datatype>varchar</ns:datatype>
@@ -1047,6 +1058,7 @@
   </ns:table>
   <ns:table tableName="protocols" tableDbType="TABLE">
     <ns:pkColumnName>protocol</ns:pkColumnName>
+    <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr&amp;query.queryName=protocols&amp;protocol=${protocol}</ns:tableUrl>
     <ns:columns>
       <ns:column columnName="protocol">
         <ns:datatype>varchar</ns:datatype>
@@ -1105,6 +1117,7 @@
   </ns:table>
   <ns:table tableName="project" tableDbType="TABLE">
     <ns:pkColumnName>project</ns:pkColumnName>
+    <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr&amp;query.queryName=projects&amp;project=${project}</ns:tableUrl>
     <ns:columns>
       <ns:column columnName="project">
         <ns:datatype>varchar</ns:datatype>
@@ -1192,6 +1205,7 @@
   </ns:table>
   <ns:table tableName="protocol_counts" tableDbType="TABLE">
     <ns:pkColumnName>rowid</ns:pkColumnName>
+    <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr&amp;query.queryName=protocol_counts&amp;rowid=${rowid}</ns:tableUrl>
     <ns:columns>
       <ns:column columnName="rowid">
         <ns:datatype>serial</ns:datatype>

@@ -4017,6 +4017,7 @@ WITH (OIDS=FALSE)
 INSERT INTO ehr_lookups.routes VALUES ('IM');
 INSERT INTO ehr_lookups.routes VALUES ('IT');
 INSERT INTO ehr_lookups.routes VALUES ('IV');
+INSERT INTO ehr_lookups.routes VALUES ('IVAG');
 INSERT INTO ehr_lookups.routes VALUES ('oral');
 INSERT INTO ehr_lookups.routes VALUES ('rectal');
 INSERT INTO ehr_lookups.routes VALUES ('SQ');

@@ -13,7 +13,7 @@ var {EHR, LABKEY, Ext, shared, console, init, beforeInsert, afterInsert, beforeU
 
 function onETL(row, errors){
     if(row.stringResults){
-        EHR.validation.fixChemValue(row, errors);
+        EHR.ETL.fixChemValue(row, errors);
     }
 
 }
@@ -23,10 +23,10 @@ function setDescription(row, errors){
     var description = new Array();
 
     if(row.testid)
-         description.push('Test: '+EHR.validation.null2string(row.testid));
+         description.push('Test: '+EHR.validation.nullToString(row.testid));
 
     if(row.results)
-        description.push('Value: '+EHR.validation.null2string(row.results)+' '+EHR.validation.null2string(row.units));
+        description.push('Value: '+EHR.validation.nullToString(row.results)+' '+EHR.validation.nullToString(row.units));
 
     return description;
 }

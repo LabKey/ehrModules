@@ -21,7 +21,6 @@ EHR.ext.AnimalSelector = Ext.extend(Ext.Panel, {
                 width: 200,
                 border: false,
                 bodyBorder: false
-                //parentPanel: this.parentPanel || this
             }
             ,items: [
                 {
@@ -240,18 +239,11 @@ EHR.ext.ImportPanelHeader = Ext.extend(EHR.ext.FormPanel, {
 
     },
     saveTemplate: function(){
-        var theWindow = new Ext.Window({
-            closeAction:'hide',
-            width: 800,
-            minWidth: 300,
-            maxWidth: 800,
-            title: 'Save As Template',
-            items: [{
-                xtype: 'ehr-savetemplatepanel',
-                ref: 'theForm',
-                importPanel: this.importPanel,
-                formType: this.formType
-            }]
+        var theWindow = new EHR.ext.SaveTemplatePanel({
+            width: 600,
+            height: 300,
+            importPanel: this.importPanel,
+            formType: this.formType
         });
         theWindow.show();
     },
@@ -297,7 +289,7 @@ EHR.ext.ClinicalHeader = Ext.extend(Ext.FormPanel, {
             ,defaults: {
                 border: false,
                 bodyBorder: false
-                //parentPanel: this.parentPanel || this
+                //importPanel: this.importPanel || this
             }
             ,items: [
                 {
@@ -313,7 +305,7 @@ EHR.ext.ClinicalHeader = Ext.extend(Ext.FormPanel, {
                         style:'padding-right:4px;padding-top:0px',
                         layout: 'form',
                         defaults: {
-                            //parentPanel: this.parentPanel || this,
+                            //importPanel: this.importPanel || this,
                             border: false,
                             bodyBorder: false
                         },
@@ -334,7 +326,7 @@ EHR.ext.ClinicalHeader = Ext.extend(Ext.FormPanel, {
                         border: false,
                         bodyBorder: false,
 //                        defaults: {
-//                            parentPanel: this.parentPanel || this
+//                            importPanel: this.importPanel || this
 //                        },
                         items: [
                             {
@@ -355,7 +347,7 @@ EHR.ext.ClinicalHeader = Ext.extend(Ext.FormPanel, {
                         layout: 'form',
                         ref: '../projectCt',
                         defaults: {
-//                            parentPanel: this.parentPanel || this,
+//                            importPanel: this.importPanel || this,
                             border: false,
                             bodyBorder: false
                         },
@@ -382,22 +374,22 @@ EHR.ext.ClinicalHeader = Ext.extend(Ext.FormPanel, {
             schemaName: 'study',
             queryName: 'Clinical Encounters',
             columns: EHR.ext.FormColumns['Clinical Encounters'],
-            filterArray: [LABKEY.Filter.create('taskId', this.parentPanel.formUUID, LABKEY.Filter.Types.EQUAL)],
+            filterArray: [LABKEY.Filter.create('taskId', this.importPanel.formUUID, LABKEY.Filter.Types.EQUAL)],
             metadata: this.metadata || EHR.ext.getTableMetadata('Clinical Encounters', ['Task,Encounter']),
             //maxRows: 1,
             storeId: 'study||Clinical Encounters||',
             autoLoad: true,
             canSaveInTemplate: false
         }
-
+console.log(this.store)
         EHR.ext.ClinicalHeader.superclass.initComponent.call(this, arguments);
 
         this.addEvents('participantchange');
         this.projectCt.addEvents('participantchange');
         this.projectCt.relayEvents(this, ['participantchange']);
 
-        if (this.parentPanel){
-            this.parentPanel.relayEvents(this, ['participantchange']);
+        if (this.importPanel){
+            this.importPanel.relayEvents(this, ['participantchange']);
         }
     }
 });
@@ -448,9 +440,9 @@ EHR.ext.AbstractPanel = Ext.extend(Ext.FormPanel, {
         this.addEvents('participantchange', 'participantloaded');
         this.enableBubble('participantloaded');
 
-        if (this.parentPanel){
-            this.mon(this.parentPanel, 'participantchange', this.onParticipantChange, this);
-            this.parentPanel.participantMap = this.participantMap;
+        if (this.importPanel){
+            this.mon(this.importPanel, 'participantchange', this.onParticipantChange, this);
+            this.importPanel.participantMap = this.participantMap;
         }
 
     },
@@ -869,26 +861,28 @@ EHR.ext.ApplyTemplatePanel = Ext.extend(Ext.FormPanel, {
 });
 Ext.reg('ehr-applytemplatepanel', EHR.ext.ApplyTemplatePanel);
 
-EHR.ext.SaveTemplatePanel = Ext.extend(Ext.Panel, {
+EHR.ext.SaveTemplatePanel = Ext.extend(Ext.Window, {
     initComponent: function()
     {
-        Ext.applyIf(this, {
-            //layout: 'form',
-            //labelAlign: 'top',
-            bodyBorder: false
-            ,border: false
-            //,width: 'auto'
-            ,minWidth: 300
-            ,minBoxWidth: 300
-            ,bodyStyle: 'padding:5px'
+        Ext.apply(this, {
+            closeAction:'hide'
+            ,title: 'Save As Template'
+            ,xtype: 'panel'
+            ,autoScroll: true
+            ,autoHeight: true
+            ,boxMaxHeight: 600
             ,defaults: {
-                //width: 200,
-                border: false,
-                bodyBorder: false
+                border: false
+                ,bodyStyle: 'padding: 5px;'
             }
             ,items: [{
                 layout: 'form',
+                autoScroll: true,
+                bodyStyle: 'padding: 5px;',
                 monitorValid: true,
+                defaults: {
+                    border: false
+                },
                 items: [{
                     xtype: 'textfield',
                     fieldLabel: 'Template Name',
@@ -905,10 +899,14 @@ EHR.ext.SaveTemplatePanel = Ext.extend(Ext.Panel, {
                     fieldLabel: 'Description',
                     width: 300,
                     ref: '../templateDescription'
+                },{
+                    html: 'You can elect to save either all or some of the records in this form as a template.  For each section, you can choose which fields to save.',
+                    style: 'padding-top:10px;'
                 }]
             },{
-                html: 'You can elect to save either all or some of the records in this form as a template.  For each section, you can choose which fields to save.',
-                style: 'padding-bottom:10px;padding-top:10px;'
+                xtype: 'panel',
+                ref: 'theForm',
+                autoScroll: true
             }]
             ,scope: this
             ,buttons: [{
@@ -917,16 +915,19 @@ EHR.ext.SaveTemplatePanel = Ext.extend(Ext.Panel, {
                 disabled: true,
                 handler: function(s){
                     this.onSubmit();
-                    this.ownerCt.hide();
+                    this.hide();
                 }
             },{
                 text: 'Close',
                 scope: this,
                 handler: function(){
-                    this.ownerCt.hide();
+                    this.hide();
                 }
             }]
+
         });
+
+        EHR.ext.SaveTemplatePanel.superclass.initComponent.call(this, arguments);
 
         if(!this.importPanel.store || !this.importPanel.store)
             return;
@@ -935,9 +936,7 @@ EHR.ext.SaveTemplatePanel = Ext.extend(Ext.Panel, {
         else if (this.importPanel.store instanceof LABKEY.ext.Store)
             this.populateFromStore();
 
-        EHR.ext.SaveTemplatePanel.superclass.initComponent.call(this, arguments);
-
-        this.ownerCt.on('show', function(){
+        this.on('show', function(){
             this.templateName.focus(false, 50);
         }, this);
     },
@@ -953,28 +952,33 @@ EHR.ext.SaveTemplatePanel = Ext.extend(Ext.Panel, {
         }, this);
 
         if(!hasRecords){
-            this.ownerCt.on('beforeshow', function(){return false}, this, {single: true});
-            this.ownerCt.hide();
+            this.on('beforeshow', function(){return false}, this, {single: true});
+            this.hide();
             Ext.Msg.alert('Error', 'There are no records to save.');
         }
     },
     populateFromStore: function(){
         if(!this.importPanel.store.getCount()){
-            this.ownerCt.on('beforeshow', function(){return false}, this, {single: true});
-            this.ownerCt.hide();
+            this.on('beforeshow', function(){return false}, this, {single: true});
+            this.hide();
             Ext.Msg.alert('Error', 'There are no records to save.');
         }
         else
             this.addStore(this.importPanel.store);
     },
     addStore: function(store){
-        this.items.push({
-            html: '<b>'+store.queryName + ':</b> '+store.getCount()+' Records',
+        var count = store.getCount();
+        this.theForm.add({
+            html: '<hr><b>'+store.queryName + ':</b> '+count+' Record' + (count==1 ? '' : 's'),
+            //style: 'padding: 5px;',
+            border: false,
             style: 'padding-bottom:5px;'
         },{
             xtype: 'radiogroup',
+            bodyStyle: 'padding: 5px;',
             ref: store.storeId+'-radio',
             columns: 3,
+            width: 400,
             items: [{
                 fieldLabel: 'Include All',
                 inputValue: 'all',
@@ -991,7 +995,7 @@ EHR.ext.SaveTemplatePanel = Ext.extend(Ext.Panel, {
             }]
         });
 
-        if(!store.getCount()){
+        if(!count){
             return
         }
 
@@ -1014,16 +1018,16 @@ EHR.ext.SaveTemplatePanel = Ext.extend(Ext.Panel, {
             }
         }, this);
 
-        this.items.push(toAdd);
+        this.theForm.add(toAdd);
     },
     onSubmit: function(){
-        this.ownerCt.hide();
+        this.hide();
         Ext.Msg.wait("Saving...");
 
         var tn = this.templateName.getValue();
         var rows = [];
 
-        this.items.each(function(item){
+        this.theForm.items.each(function(item){
             if(item.getXType() == 'checkboxgroup'){
                 var fields = item.getValue();
                 if(!fields.length)

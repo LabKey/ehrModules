@@ -116,7 +116,7 @@ EHR.ext.StoreCollection = Ext.extend(Ext.util.MixedCollection, {
         record.store.commitRecords([record]);
     },
 
-    commit: function(commands, records){
+    commit: function(commands, records, extraContext){
         if (!commands || !commands.length){
             console.log('no changes.  nothing to do');
             this.fireEvent('commitcomplete');
@@ -141,7 +141,8 @@ EHR.ext.StoreCollection = Ext.extend(Ext.util.MixedCollection, {
             scope: this,
             jsonData : {
                 containerPath: this.containerPath,
-                commands: commands
+                commands: commands,
+                extraContext: extraContext || {}
             },
             headers : {
                 'Content-Type' : 'application/json'
@@ -207,7 +208,7 @@ EHR.ext.StoreCollection = Ext.extend(Ext.util.MixedCollection, {
 
     getOnCommitFailure : function(records) {
         return function(response, options) {
-
+console.log(options);
             //note: should not matter which child store they belong to
             for(var idx = 0; idx < records.length; ++idx)
                 delete records[idx].saveOperationInProgress;
@@ -235,10 +236,11 @@ EHR.ext.StoreCollection = Ext.extend(Ext.util.MixedCollection, {
                 }
             }, this);
 
+console.log(response);
             //NOTE this should be keyed using the request context object
-//            if(serverError.silent){
-//                msg = '';
-//            }
+            if(response.extraContext && response.extraContext.silent){
+                msg = '';
+            }
 
             if(false !== this.fireEvent("commitexception", msg) && msg){
                 Ext.Msg.alert("Error", "Error During Save. "+msg);

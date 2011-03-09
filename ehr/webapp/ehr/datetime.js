@@ -338,8 +338,6 @@ Ext.ux.form.DateTime = Ext.extend(Ext.form.Field, {
          * @private Calls isValid methods of underlying DateField and TimeField and returns the result
          */
         ,isValid:function() {
-console.log('is valid')
-console.log(this.getErrors());
                 return this.df.isValid() && this.tf.isValid() && this.getErrors.length==0;
         } // eo function isValid
         // }}}
@@ -634,7 +632,7 @@ console.log(this.getErrors());
          * calls validate methods of DateField and TimeField
          */
         ,validate:function() {
-console.log('date validate')
+console.log('xdatetime validate')
                 return this.df.validate() && this.tf.validate();
         } // eo function validate
         // }}}

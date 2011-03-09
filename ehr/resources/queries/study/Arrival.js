@@ -7,11 +7,12 @@
 
 var {EHR, LABKEY, Ext, shared, console, init, beforeInsert, afterInsert, beforeUpdate, afterUpdate, beforeDelete, afterDelete, complete} = require("ehr/validation");
 
-function onETL(row, errors){
-    if (!row.source){
-        row.source = 'Unknown';
-    }
-};
+//NOTE: field is no longer required, so we dont need to set value
+//function onETL(row, errors){
+//    if (!row.source){
+//        row.source = 'Unknown';
+//    }
+//};
 
 function setDescription(row, errors){
     //we need to set description for every field
@@ -44,11 +45,11 @@ function onComplete(event, errors){
                             scope: this,
                             callback: function(data){
                                 if(data){
-                                    if(data.rows[i].maxDate != row.arrivedate)
-                                        toUpdate.push({arrivedate: data.rows[i].maxDate, lsid: data.rows[i].lsid});
+                                    if(row.maxDate != data.arrivedate)
+                                        toUpdate.push({arrivedate: row.maxDate, lsid: data.lsid});
                                 }
                                 else {
-                                    EHR.addError(errors, 'Id', 'Id not found in demographics table', 'INFO');
+                                    EHR.addError(errors, 'Id', 'Id not found in demographics table:'+row.Id, 'INFO');
                                 }
                             }
                         });
@@ -69,14 +70,5 @@ function onComplete(event, errors){
                 failure: EHR.onFailure
             });
         }
-
-        //send email to colony records alerting that row is lacking from demographics
-//        if(missingIds.length){
-//            EHR.sendEmail({
-//                notificationType: 'Colony Validation - General',
-//                msgSubject: 'Ids missing from demographics table',
-//                mgsContent: 'The following Ids were added to the arrival table, but do not have records in the demographics table: '+missingIds.join(',')
-//            });
-//        }
     }
 };

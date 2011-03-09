@@ -26,7 +26,7 @@ EHR.ext.SearchPanel = Ext.extend(Ext.Panel, {
             border: true,
             bodyBorder: false,
             width: 492,
-//            forceLayout: true,
+            //forceLayout: true,
             autoHeight: true,
             keys: [
                 {

@@ -6,9 +6,9 @@ Ext.onReady(function (){
     var query = LABKEY.postParameters['query.queryName'];
     var schema = LABKEY.postParameters['schemaName'];
 
-    LABKEY.NavTrail.setTrail(LABKEY.postParameters['query.queryName']);
+    LABKEY.NavTrail.setTrail(query);
 
-    new LABKEY.QueryWebPart({
+    var config = {
         title: query,
         schemaName: schema,
         queryName: query,
@@ -22,9 +22,16 @@ Ext.onReady(function (){
         buttonBarPosition: 'top',
         frame: 'none',
         dataRegionName: 'query',
-        scope: this
-//        errorCallback: EHR.utils.onError
-     }).render('qwpDiv');
+        scope: this,
+        timeout: 0,
+        errorCallback: EHR.utils.onError
+    };
+
+    if(schema=='study'){
+        config.filters = [LABKEY.Filter.create('QCState/PublicData', true, LABKEY.Filter.Types.EQUAL)]
+    }
+
+    new LABKEY.QueryWebPart(config).render('qwpDiv');
 });
 
 

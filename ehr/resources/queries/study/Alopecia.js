@@ -17,10 +17,10 @@ function setDescription(row, errors){
     var description = new Array();
 
     if(row.score)
-        description.push('Alopecia Score: ' + EHR.validation.dateTimeString(row.score));
+        description.push('Alopecia Score: ' + EHR.validation.dateTimeToString(row.score));
 
     if(row.cause)
-        description.push('Cause: ' + EHR.validation.null2string(row.cause));
+        description.push('Cause: ' + EHR.validation.nullToString(row.cause));
 
     return description;
 }

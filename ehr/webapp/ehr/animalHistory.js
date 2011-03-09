@@ -1418,7 +1418,7 @@ EHR.ext.SingleAnimalReport = Ext.extend(Ext.Panel, {
         }, this);
 
         if(this.activeReport){
-            console.log('setting tab');
+//            console.log('setting tab');
             this.tabPanel.setActiveTab(this.activeReport.ownerCt);
             this.activeReport.suspendEvents();
             this.activeReport.ownerCt.setActiveTab(this.activeReport);

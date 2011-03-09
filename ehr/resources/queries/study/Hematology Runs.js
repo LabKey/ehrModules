@@ -16,7 +16,7 @@ function setDescription(row, errors){
     var description = new Array();
 
     if(row.clinremark)
-        description.push('ClinRemark: '+EHR.validation.null2string(row.clinremark));
+        description.push('ClinRemark: '+EHR.validation.nullToString(row.clinremark));
 
     return description;
 }

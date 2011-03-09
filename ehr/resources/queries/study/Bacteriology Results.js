@@ -37,7 +37,7 @@ function setDescription(row, errors){
 
 
 function onUpsert(row, errors){
-    if (row.sensitivity != null && row.antibiotic == null){
+    if (row.sensitivity && row.antibiotic == null){
         EHR.addError(errors, 'sensitivity', "Must provide an antibiotic to go with sensitivity", 'WARN');
     }
 

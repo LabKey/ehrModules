@@ -53,7 +53,7 @@ EHR.ext.GridFormPanel = Ext.extend(Ext.Panel,
         Ext.applyIf(this, {
             autoHeight: true
             ,autoWidth: true
-            ,forceLayout: true
+            //,forceLayout: true
             ,layout: 'table'
             ,columns: 2
             ,style: 'margin-bottom: 15px;'
@@ -70,6 +70,7 @@ EHR.ext.GridFormPanel = Ext.extend(Ext.Panel,
                 schemaName: this.schemaName,
                 queryName: this.queryName,
                 viewName: this.viewName,
+                //forceLayout: true,
                 bindConfig: {
                     disableUnlessBound: true,
                     bindOnChange: false,
@@ -78,7 +79,7 @@ EHR.ext.GridFormPanel = Ext.extend(Ext.Panel,
                 ref: 'theForm',
                 metadata: this.metadata,
                 store: this.store,
-                parentPanel: this.parentPanel || this,
+                importPanel: this.importPanel || this,
                 border: false,
                 bodyBorder: false,
                 readOnly: this.readOnly,
@@ -92,14 +93,13 @@ EHR.ext.GridFormPanel = Ext.extend(Ext.Panel,
                 cellCls: 'ehr-gridpanel-cell',
                 //cellStyle: 'vertical-align: top;',
                 title: 'Records',
-                //TODO: be sure editable works
                 editable: false, //this.editable!==false ? true : false,
                 width: this.gridWidth || 700,
                 maxHeight: 500,
                 autoHeight: true,
                 store: this.store,
                 ref: 'theGrid',
-                parentPanel: this.parentPanel || this,
+                importPanel: this.importPanel || this,
                 readOnly: this.readOnly,
                 tbar: [],
                 sm: new Ext.grid.RowSelectionModel({

@@ -6,6 +6,11 @@
 function historyHandler(dataRegion, dataRegionName)
 {
     var checked = dataRegion.getChecked();
+    if(!checked || !checked.length){
+        alert('No records selected');
+        return;
+    }
+
     var sql = "SELECT DISTINCT s.Id FROM study.\""+dataRegion.queryName+"\" s WHERE s.LSID IN ('" + checked.join("', '") + "')";
 
     LABKEY.Query.executeSql({
@@ -20,16 +25,20 @@ function historyHandler(dataRegion, dataRegionName)
             ids.push(data.rows[i].Id);
 
         if (ids.length){
+            var hash = '_inputType:renderMultiSubject&showReport:1&subject:'+ids.join(',');
             window.location = LABKEY.ActionURL.buildURL(
                 'ehr'
-                ,'animalHistory.view#_inputType:renderMultiSubject&showReport:1&subject:'+ids.join(',')
+                ,'animalHistory.view#'+hash
                 ,'WNPRC/EHR/'
 
             );
 
             //force reload if on same page
-            if(LABKEY.ActionURL.getAction() == 'animalHistory')
-                location.reload( true );
+            if(LABKEY.ActionURL.getAction() == 'animalHistory'){
+                Ext.History.add(hash)
+                window.location.reload();
+            }
+
         }
     }
 
@@ -40,10 +49,15 @@ function historyHandler(dataRegion, dataRegionName)
 
 function datasetHandler(dataRegion, dataRegionName)
 {
+    var checked = dataRegion.getChecked();
+    if(!checked || !checked.length){
+        alert('No records selected');
+        return;
+    }
 
     var theWindow = new Ext.Window({
         width: 280,
-        height: 130,
+        autoHeight: true,
         bodyStyle:'padding:5px',
         closeAction:'hide',
         plain: true,
@@ -78,7 +92,7 @@ function datasetHandler(dataRegion, dataRegionName)
             })
         },{
             emptyText:''
-            ,fieldLabel: 'Select Field'
+            ,fieldLabel: 'Filter On'
             ,ref: 'theField'
             ,xtype: 'combo'
             ,displayField:'name'
@@ -94,6 +108,13 @@ function datasetHandler(dataRegion, dataRegionName)
                 fields: ['name', 'value'],
                 data: [['Animal Id','id'], ['Project','project'], ['Date','date']]
             })
+        },{
+            xtype: 'panel',
+            html: 'This will allow you to jump to a different dataset, filtered on the rows you checked.  For example, if you pick the dataset Blood Draws and \'Filter on Animal Id\', then you will be transported to the Blood Draw table, showing blood draws from all the distinct animals in the rows you selected.',
+            frame : false,
+            border: false,
+            cls: 'x-window-mc',
+            bodyCssClass: 'x-window-mc'
         }],
         buttons: [{
             text:'Submit',
@@ -179,6 +200,11 @@ function moreActionsHandler(dataRegion){
 
 function getDistinct(dataRegion)
 {
+    var checked = dataRegion.getChecked();
+    if(!checked || !checked.length){
+        alert('No records selected');
+        return;
+    }
 
     var theWindow = new Ext.Window({
         width: 280,
@@ -193,7 +219,7 @@ function getDistinct(dataRegion)
                 scope: this
             }
         ],
-        title: 'Select Field',
+        title: 'Return Distinct Values',
         layout: 'form',
         items: [{
             emptyText:''

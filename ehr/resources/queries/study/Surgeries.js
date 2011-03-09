@@ -9,18 +9,33 @@ var {EHR, LABKEY, Ext, shared, console, init, beforeInsert, afterInsert, beforeU
 
 
 
-//function onETL(row, errors){
-//    EHR.validation.fixSurgMajor(row, errors);
-//}
+function onETL(row, errors){
+    EHR.ETL.fixSurgMajor(row, errors);
+}
+
+function onInsert(row, errors){
+    if(row.Id && row.date){
+        LABKEY.Query.executeSql({
+            schemaName: 'study',
+            sql: "SELECT age_in_months(d.birth, CONVERT('"+EHR.validation.dateToString(row.date)+"', DATE)) as age FROM study.demographics d WHERE d.id='"+row.Id+"'",
+            success: function(data){
+                if(data && data.rows && data.rows.length){
+                    row.age = data.rows[0].age;
+                }
+            },
+            failure: EHR.onFailure
+        });
+    }
+}
 
 function setDescription(row, errors){
     //we need to set description for every field
     var description = new Array();
 
     if(row.Date)
-        description.push('Start: '+EHR.validation.dateTimeString(row.Date));
+        description.push('Start: '+EHR.validation.dateTimeToString(row.Date));
     if(row.enddate)
-        description.push('End: '+EHR.validation.dateTimeString(row.enddate));
+        description.push('End: '+EHR.validation.dateTimeToString(row.enddate));
     if(row.age)
         description.push('Age: '+row.age);
     if(row.inves)

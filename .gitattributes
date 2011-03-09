@@ -159,6 +159,8 @@ ehr/resources/queries/core/Sync[!!-~]Duration/.qview.xml -text
 ehr/resources/queries/core/Sync[!!-~]History.sql -text
 ehr/resources/queries/ehr/CageUtilization.query.xml -text
 ehr/resources/queries/ehr/CageUtilization.sql -text
+ehr/resources/queries/ehr/Project.query.xml -text
+ehr/resources/queries/ehr/Protocol.query.xml -text
 ehr/resources/queries/ehr/RoomUtilization.query.xml -text
 ehr/resources/queries/ehr/RoomUtilization.sql -text
 ehr/resources/queries/ehr/Tasks.js -text
@@ -180,6 +182,7 @@ ehr/resources/queries/ehr/my_tasks.sql -text
 ehr/resources/queries/ehr/my_tasks/.qview.xml -text
 ehr/resources/queries/ehr/my_tasks/Active[!!-~]Tasks.qview.xml -text
 ehr/resources/queries/ehr/my_tasks/Review[!!-~]Needed.qview.xml -text
+ehr/resources/queries/ehr/protocol_counts.query.xml -text
 ehr/resources/queries/ehr/reports.xml -text
 ehr/resources/queries/ehr/requests.js -text
 ehr/resources/queries/ehr/requests.query.xml -text
@@ -638,8 +641,6 @@ ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-10.30-10.31.sql -text
 ehr/resources/schemas/ehr.xml -text
 ehr/resources/schemas/ehr_lookups.xml -text
 ehr/resources/scripts/ehr/validation.js -text
-ehr/resources/scripts/ehr/validation_old.js -text
-ehr/resources/stylesheet.css -text
 ehr/resources/views/_initEHR.html -text
 ehr/resources/views/animalHistory.html -text
 ehr/resources/views/animalHistory.view.xml -text
@@ -810,6 +811,7 @@ ehr/tools/scripts/dataset/virologyRuns.sql -text
 ehr/tools/scripts/lists/deleted_records.sql -text
 ehr/tools/scripts/setup/EHRStudy.dataset -text
 ehr/tools/scripts/setup/setup.sql -text
+ehr/tools/stylesheet.css -text
 ehr/tools/util.js -text
 ehr/tools/validationHelper.pl -text
 ehr/webapp/ehr/ExtComponents.js -text

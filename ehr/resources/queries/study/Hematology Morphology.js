@@ -10,7 +10,7 @@ var {EHR, LABKEY, Ext, shared, console, init, beforeInsert, afterInsert, beforeU
 
 
 function onETL(row, errors){
-    EHR.validation.fixHemaMiscMorphology(row, errors);
+    EHR.ETL.fixHemaMiscMorphology(row, errors);
 }
 
 function setDescription(row, errors){

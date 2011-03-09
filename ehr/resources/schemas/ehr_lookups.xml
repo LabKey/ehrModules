@@ -1,6 +1,7 @@
 <ns:tables xmlns:ns="http://labkey.org/data/xml">
   <ns:table tableName="pairtest_bhav" tableDbType="TABLE">
     <ns:pkColumnName>value</ns:pkColumnName>
+    <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr_lookups&amp;query.queryName=pairtest_bhav&amp;value=${value}</ns:tableUrl>
     <ns:columns>
       <ns:column columnName="value">
         <ns:datatype>varchar</ns:datatype>
@@ -291,6 +292,7 @@
   </ns:table>
   <ns:table tableName="hold_codes" tableDbType="TABLE">
     <ns:pkColumnName>code</ns:pkColumnName>
+    <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr_lookups&amp;query.queryName=hold_codes&amp;code=${code}</ns:tableUrl>
     <ns:columns>
       <ns:column columnName="code">
         <ns:datatype>varchar</ns:datatype>
@@ -550,6 +552,7 @@
   </ns:table>
   <ns:table tableName="condition_codes" tableDbType="TABLE">
     <ns:pkColumnName>code</ns:pkColumnName>
+    <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr_lookups&amp;query.queryName=condition_codes&amp;code=${code}</ns:tableUrl>
     <ns:columns>
       <ns:column columnName="code">
         <ns:datatype>varchar</ns:datatype>
@@ -573,6 +576,7 @@
   </ns:table>
   <ns:table tableName="species_codes" tableDbType="TABLE">
     <ns:pkColumnName>code</ns:pkColumnName>
+    <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr_lookups&amp;query.queryName=species_codes&amp;code=${code}</ns:tableUrl>
     <ns:columns>
       <ns:column columnName="code">
         <ns:datatype>varchar</ns:datatype>
@@ -606,6 +610,7 @@
   </ns:table>
   <ns:table tableName="gender_codes" tableDbType="TABLE">
     <ns:pkColumnName>code</ns:pkColumnName>
+    <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr_lookups&amp;query.queryName=gender_codes&amp;code=${code}</ns:tableUrl>
     <ns:columns>
       <ns:column columnName="code">
         <ns:datatype>varchar</ns:datatype>
@@ -670,6 +675,7 @@
   </ns:table>
   <ns:table tableName="origin_codes" tableDbType="TABLE">
     <ns:pkColumnName>code</ns:pkColumnName>
+    <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr_lookups&amp;query.queryName=origin_codes&amp;code=${code}</ns:tableUrl>
     <ns:columns>
       <ns:column columnName="code">
         <ns:datatype>varchar</ns:datatype>
@@ -919,6 +925,7 @@
   </ns:table>
   <ns:table tableName="avail_codes" tableDbType="TABLE">
     <ns:pkColumnName>code</ns:pkColumnName>
+    <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr_lookups&amp;query.queryName=avail_codes&amp;code=${code}</ns:tableUrl>
     <ns:columns>
       <ns:column columnName="code">
         <ns:datatype>varchar</ns:datatype>
@@ -933,6 +940,7 @@
   </ns:table>
   <ns:table tableName="status_codes" tableDbType="TABLE">
     <ns:pkColumnName>code</ns:pkColumnName>
+    <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr_lookups&amp;query.queryName=status_codes&amp;code=${code}</ns:tableUrl>
     <ns:columns>
       <ns:column columnName="code">
         <ns:datatype>varchar</ns:datatype>
@@ -1005,6 +1013,7 @@
   <ns:table tableName="charge_items" tableDbType="TABLE">
     <ns:pkColumnName>rowid</ns:pkColumnName>
     <ns:titleColumn>description</ns:titleColumn>
+    <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr_lookups&amp;query.queryName=charge_items&amp;rowid=${rowid}</ns:tableUrl>
     <ns:columns>
       <ns:column columnName="rowid">
         <ns:datatype>serial</ns:datatype>
@@ -1065,6 +1074,7 @@
   </ns:table>
   <ns:table tableName="blood_draw_tube_type" tableDbType="TABLE">
     <ns:pkColumnName>type</ns:pkColumnName>
+    <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr_lookups&amp;query.queryName=blood_draw_tube_type&amp;type=${type}</ns:tableUrl>
     <ns:columns>
       <ns:column columnName="type">
         <ns:datatype>varchar</ns:datatype>
@@ -1078,6 +1088,7 @@
   </ns:table>
   <ns:table tableName="snomed" tableDbType="TABLE">
     <ns:pkColumnName>code</ns:pkColumnName>
+    <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr_lookups&amp;query.queryName=snomed&amp;code=${code}</ns:tableUrl>
     <ns:columns>
       <ns:column columnName="code">
         <ns:datatype>varchar</ns:datatype>

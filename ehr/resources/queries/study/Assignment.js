@@ -13,7 +13,7 @@ function setDescription(row, errors){
     //we need to set description for every field
     var description = new Array();
 
-    description.push('Start Date: ' + EHR.validation.dateString(row.Date));
+    description.push('Start Date: ' + EHR.validation.dateToString(row.Date));
     description.push('Removal Date: ' + (row.rdate ? EHR.validation.dateString(row.rdate) : ''));
 
     return description;
@@ -21,14 +21,12 @@ function setDescription(row, errors){
 
 function onUpsert(row, errors, oldRow){
     //check number of allowed animals at assign/approve time
-    //TODO: verify neeed
     if(row.project && row.date){
         var species;
         EHR.findDemographics({
             participant: row.Id,
             callback: function(data){
                 if(data){
-                    console.log('Species: '+species);
                     species = data.species;
                 }
             },
@@ -39,13 +37,13 @@ function onUpsert(row, errors, oldRow){
         LABKEY.Query.selectRows({
             schemaName: 'lists',
             queryName: 'project',
+            //columns: '*',
             filterArray: [
                 LABKEY.Filter.create('project', row.project, LABKEY.Filter.Types.EQUAL)
             ],
             success: function(data){
                 if(data && data.rows && data.rows.length)
                     protocol = data.rows[0].protocol;
-                    console.log('Protocol: '+protocol);
             },
             failure: EHR.onFailure
         });
@@ -59,9 +57,12 @@ function onUpsert(row, errors, oldRow){
                     LABKEY.Filter.create('protocol', protocol, LABKEY.Filter.Types.EQUAL)
                 ],
                 success: function(data){
-                    if(data && data.rows && data.rows.length==1){
+                    if(data && data.rows && data.rows.length){
                         if(data.rows[0].TotalRemaining <= 1)
-                            EHR.addError(errors, 'protocol', 'There are not enough spaces on protocol: '+protocol, 'WARN');
+                            EHR.addError(errors, 'project', 'There are not enough spaces on protocol: '+protocol, 'WARN');
+                    }
+                    else {
+                        console.log('there was an error finding allowable animals per assignment')
                     }
                 },
                 failure: EHR.onFailure

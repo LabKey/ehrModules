@@ -304,6 +304,14 @@ CREATE TABLE ehr.notificationTypes
     CONSTRAINT PK_notificationTypes PRIMARY KEY (NotificationType)
 );
 
+INSERT into ehr.notificationTypes
+(NotificationType, description)
+VALUES
+('Clinpath Service Request', ''),
+('Pathology Service Request', ''),
+('CPI Service Request', ''),
+('Animal Care Service Request', '')
+;
 
 DROP TABLE IF EXISTS ehr.notificationRecipients;
 CREATE TABLE ehr.notificationRecipients

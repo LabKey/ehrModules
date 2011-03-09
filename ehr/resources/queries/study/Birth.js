@@ -21,21 +21,21 @@ function setDescription(row, errors){
         description.push('Conception: '+ row.conception);
 
     if(row.gender)
-        description.push('Gender: '+ EHR.validation.null2string(row.gender));
+        description.push('Gender: '+ EHR.validation.nullToString(row.gender));
     if(row.dam)
-        description.push('Dam: '+ EHR.validation.null2string(row.dam));
+        description.push('Dam: '+ EHR.validation.nullToString(row.dam));
     if(row.sire)
-        description.push('Sire: '+ EHR.validation.null2string(row.sire));
+        description.push('Sire: '+ EHR.validation.nullToString(row.sire));
     if(row.room)
-        description.push('Room: '+ EHR.validation.null2string(row.room));
+        description.push('Room: '+ EHR.validation.nullToString(row.room));
     if(row.cage)
-        description.push('Cage: '+ EHR.validation.null2string(row.cage));
+        description.push('Cage: '+ EHR.validation.nullToString(row.cage));
     if(row.cond)
-        description.push('Cond: '+ EHR.validation.null2string(row.cond));
+        description.push('Cond: '+ EHR.validation.nullToString(row.cond));
     if(row.weight)
-        description.push('Weight: '+ EHR.validation.null2string(row.weight));
+        description.push('Weight: '+ EHR.validation.nullToString(row.weight));
     if(row.wdate)
-        description.push('Weigh Date: '+ EHR.validation.null2string(row.wdate));
+        description.push('Weigh Date: '+ EHR.validation.nullToString(row.wdate));
     if(row.origin)
         description.push('Origin: '+ row.origin);
     if(row.type)

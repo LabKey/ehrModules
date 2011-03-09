@@ -11,7 +11,7 @@ var {EHR, LABKEY, Ext, shared, console, init, beforeInsert, afterInsert, beforeU
 
 function onETL(row, errors){
     if(row.stringResults){
-        EHR.validation.fixChemValue(row, errors);
+        EHR.ETL.fixChemValue(row, errors);
     }
 }
 
@@ -20,13 +20,13 @@ function setDescription(row, errors){
     var description = new Array();
 
     if(row.testid)
-        description.push('Test: '+EHR.validation.null2string(row.testid));
+        description.push('Test: '+EHR.validation.nullToString(row.testid));
 
     if(row.result)
-        description.push('Result: '+EHR.validation.null2string(row.result));
+        description.push('Result: '+EHR.validation.nullToString(row.result));
 
     if(row.qualResult)
-        description.push('Qualitative Result: '+EHR.validation.null2string(row.qualResult));
+        description.push('Qualitative Result: '+EHR.validation.nullToString(row.qualResult));
 
     return description;
 }

@@ -228,10 +228,8 @@ EHR.ext.Metadata.Standard = {
             taskid: {
                 setInitialValue: function(v, rec)
                 {
-if(!v)
-    console.log('taskid inital value: '+v)
-                    v = v || this.parentPanel.formUUID || LABKEY.Utils.generateUUID();
-                    this.parentPanel.formUUID = v;
+                    v = v || this.importPanel.formUUID || LABKEY.Utils.generateUUID();
+                    this.importPanel.formUUID = v;
                     this.formUUID = v;
                     return v;
                 },
@@ -264,12 +262,12 @@ if(!v)
                 xtype: 'displayfield',
                 hidden: true,
                 setInitialValue: function(val, rec){
-                    return val || this.parentPanel.formType;
+                    return val || this.importPanel.formType;
                 }
             },
             title: {
                 setInitialValue: function(val, rec){
-                    return val || this.parentPanel.formType;
+                    return val || this.importPanel.formType;
                 }
             }
         },
@@ -277,8 +275,8 @@ if(!v)
             requestid: {
                 setInitialValue: function(v, rec)
                 {
-                    v = v || this.parentPanel.formUUID || LABKEY.Utils.generateUUID();
-                    this.parentPanel.formUUID = v;
+                    v = v || this.importPanel.formUUID || LABKEY.Utils.generateUUID();
+                    this.importPanel.formUUID = v;
                     this.formUUID = v;
                     return v;
                 },
@@ -308,12 +306,12 @@ if(!v)
                 xtype: 'displayfield',
                 hidden: true,
                 setInitialValue: function(val, rec){
-                    return val || this.parentPanel.formType;
+                    return val || this.importPanel.formType;
                 }
             },
             title: {
                 setInitialValue: function(val, rec){
-                    return val || this.parentPanel.formType;
+                    return val || this.importPanel.formType;
                 }
             },
             //NOTE: the case is different on hard tables than studies.
@@ -352,6 +350,11 @@ if(!v)
                 editorConfig: {
                     defaultSubset: 'Parasitology Results'
                 }
+            }
+        },
+        'Tissue Samples': {
+            diagnosis: {
+                xtype: 'ehr-snomedcombo'
             }
         },
         Histology: {
@@ -499,6 +502,7 @@ if(!v)
         Charges: {
             type: {
                 includeNullRecord: false,
+                allowBlank: false,
                 lookup: {
                     columns: 'category,description,cost',
                     sort: 'category,description',
@@ -519,8 +523,10 @@ if(!v)
                         {
                             if (this.ownerCt.boundRecord)
                             {
+                                this.ownerCt.boundRecord.beginEdit();
                                 this.ownerCt.boundRecord.set('unitCost', rec.get('cost'));
                                 this.ownerCt.boundRecord.set('type', rec.get('description'));
+                                this.ownerCt.boundRecord.endEdit();
                             }
                         }
                     }
@@ -538,6 +544,10 @@ if(!v)
             },
             remark: {
                 shownInGrid: false
+            },
+            date: {
+                xtype: 'datefield',
+                format: 'Y-m-d'
             }
         },
         'Irregular Observations': {
@@ -657,6 +667,7 @@ if(!v)
             ,project: {shownInGrid: false}
             ,requestor: {shownInGrid: false, formEditorConfig:{readOnly: true}}
             ,done_by: {shownInGrid: false}
+            ,performedby: {shownInGrid: false}
             ,sampleId: {shownInGrid: false}
             ,additionalServices: {
                 xtype: 'lovcombo',
@@ -684,17 +695,18 @@ if(!v)
                     listeners: {
                         select: function(field, rec){
                             if(this.ownerCt.boundRecord){
-                                //apply changes first
+                                this.ownerCt.boundRecord.beginEdit();
                                 this.ownerCt.boundRecord.set('tube_type', rec.get('type'));
                                 this.ownerCt.boundRecord.set('tube_vol', rec.get('volume'));
+                                this.ownerCt.boundRecord.endEdit();
                             }
                             else {
                                 var theField = this.ownerCt.getForm().findField('tube_vol');
-                                theField.setValue.defer(200, theField, [rec.get('volume')]);
+                                theField.setValue(rec.get('volume'));
                             }
 
                             var qField = this.ownerCt.getForm().findField('quantity');
-                            qField.calculateQuantity.defer(200, qField);
+                            qField.calculateQuantity();
                         }
                     }
                 }
@@ -710,9 +722,9 @@ if(!v)
                         var quantity = numTubes*tube_vol;
 
                         if(this.ownerCt.boundRecord)
-                            this.ownerCt.boundRecord.set.defer(200, this.ownerCt.boundRecord, ['quantity', quantity]);
+                            this.ownerCt.boundRecord.set.defer(100, this.ownerCt.boundRecord, ['quantity', quantity]);
                         else
-                            this.setValue.defer(200, this, [quantity]);
+                            this.setValue.defer(100, this, [quantity]);
                     }
                 }
             }
@@ -721,7 +733,7 @@ if(!v)
                     listeners: {
                         change: function(field, val){
                             var qField = this.ownerCt.getForm().findField('quantity');
-                            qField.calculateQuantity.defer(200, qField);
+                            qField.calculateQuantity();
                         }
                     }
                 }
@@ -731,14 +743,13 @@ if(!v)
                     listeners: {
                         change: function(field, val){
                             var qField = this.ownerCt.getForm().findField('quantity');
-                            qField.calculateQuantity.defer(200, qField);
+                            qField.calculateQuantity();
                         }
                     }
                 }
             }
         },
         'Procedure Codes': {
-            performedby: {hidden: true},
             code: {
                 editorConfig: {
                     defaultSubset: 'Procedures'
@@ -800,10 +811,12 @@ if(!v)
                             var parent = this.findParentByType('ehr-formpanel');
                             if (parent && parent.boundRecord)
                             {
+                                parent.boundRecord.beginEdit();
                                 parent.boundRecord.set('amount_units', rec.get('numerator'));
                                 parent.boundRecord.set('conc_units', rec.get('unit'));
                                 parent.boundRecord.set('vol_units', rec.get('denominator'));
                                 parent.boundRecord.set('dosage_units', rec.get('numerator')+'/kg');
+                                parent.boundRecord.endEdit();
                             }
 //                            else {
 //                            theField.setValue(rec.get('denominator'));
@@ -1249,12 +1262,12 @@ EHR.ext.Metadata.Necropsy = {
             },
             project: {
                 parentConfig: null,
-                allowBlank: false,
+                allowBlank: true,
                 hidden: false
             },
             account: {
                 parentConfig: null,
-                allowBlank: true,
+                allowBlank: false,
                 hidden: false
             },
             title: {
@@ -1262,6 +1275,9 @@ EHR.ext.Metadata.Necropsy = {
                     storeIdentifier:  {queryName: 'tasks', schemaName: 'ehr'}
                     ,dataIndex: 'title'
                 }
+            },
+            caseno: {
+                xtype: 'displayfield'
             }
         }
     }

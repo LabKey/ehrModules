@@ -10,38 +10,22 @@ var {EHR, LABKEY, Ext, shared, console, init, beforeInsert, afterInsert, beforeU
 
 
 function onETL(row, errors){
-    EHR.validation.fixBiopsyCase(row, errors);
+    if(row.caseno)
+        EHR.ETL.fixBiopsyCase(row, errors);
 }
 
 function setDescription(row, errors){
     //we need to set description for every field
     var description = new Array();
 
-    description.push('Case No: '+EHR.validation.null2string(row.caseno));
+    description.push('Case No: '+EHR.validation.nullToString(row.caseno));
 
     return description;
 }
 
-EHR.onInsert = function(row, errors){
-    //TODO: untested
-
+function onInsert(row, errors){
     // auto-calculate the CaseNo
-    if(row.date){
-        var year = row.date.getYear();
-        var procedureType = 'b';
-
-        LABKEY.Query.executeSql({
-            schemaName: 'study',
-            sql: "SELECT SUBSTRING(MAX(caseno), 5, 8) as caseno FROM study.biopsies WHERE caseno LIKE '" + year + procedureType + "%'",
-            success: function(data){
-                if(data && data.rows && data.rows.length==1){
-                    console.log('Caseno: '+data.rows[0]);
-                    row.caseno = year + procedureType + (data.rows[0].caseno + 1);
-
-                }
-            },
-            failure: EHR.onFailure
-        });
-    }
+    if(row.date)
+        EHR.validation.calculateCaseno(row, errors, 'biopsy', 'b')
 
 }

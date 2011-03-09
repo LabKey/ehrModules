@@ -57,6 +57,6 @@
    <!--</filters>-->
    <sorts>
        <sort column="taskid/duedate" descending="true"/>
-       <sort column="Id" descending="true"/>
+       <sort column="Id" />
    </sorts>
 </customView>

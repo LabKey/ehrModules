@@ -48,6 +48,6 @@ function onUpsert(row, errors){
     }
 }
 
-EHR.onUpdate = function(row, errors){
+function onUpdate(row, errors){
     //TODO: once past a certain QC state, result1,result2,etc are non-editable
 }

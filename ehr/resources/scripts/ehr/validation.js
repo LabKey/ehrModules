@@ -27,6 +27,7 @@ EHR.initShared = function(){
         PKsModified: [],
         publicParticipantsModified: [],
         publicPKsModified: [],
+        publicRequestsModified: {},
         demographicsMap: {},
         errorQcLabel: 'Review Required',
         qcStateMap: {},
@@ -61,6 +62,9 @@ exports.shared = shared;
 function init(event, errors){
     console.log("** evaluating: " + this['javax.script.filename']);
 
+    console.log(this.context);
+
+    console.log("extraContext:", this.extraContext);
 
 //    LABKEY.Query.insertRows({
 //        schemaName: 'ehr',
@@ -76,7 +80,22 @@ function init(event, errors){
 //        }
 //    });
 
+//    LABKEY.Query.updateRows({
+//        schemaName: 'ehr',
+//        queryName: 'module_properties',
+//        rowDataArray: [
+//            {rowid: 1, prop_name: 'test1', stringvalue: 'hello'}
+//        ],
+//        success: function(data){
+//            console.log('Success')
+//        },
+//        failure: function(error){
+//            console.log(error.exceptionClass)
+//        }
+//    });
+
     console.log("init: " + event);
+    console.log("** extraContext: ", this["extraContext"]);
 
     //figure out who the user is, user roles and calculate which QC states they can use
     LABKEY.Security.getUserPermissions({
@@ -117,7 +136,7 @@ function beforeInsert(row, errors){
     if(shared.verbosity > 0)
         console.log("beforeInsert: " + row);
 
-    if(Ext.isDefined(row.id))
+    if(row.hasOwnProperty('Id'))
         EHR.addError(errors, 'Id', 'A server-side error', 'WARN');
 
     //EHR.addError(errors, 'date', 'Another error', 'WARN');
@@ -138,17 +157,17 @@ function afterInsert(row, errors){
     if(shared.verbosity > 0)
         console.log("afterInsert: " + row);
 
-    if(shared.participantsModified.indexOf(row.id) != -1)
+    if(shared.participantsModified.indexOf(row.id) == -1)
         shared.participantsModified.push(row.id);
 
-    if(shared.PKsModified.indexOf(row.lsid) != -1)
+    if(shared.PKsModified.indexOf(row.lsid) == -1)
         shared.PKsModified.push(row.lsid);
 
     if(row.QCState && shared.qcStateMap[row.QCState].publicData){
-        if(shared.publicParticipantsModified.indexOf(row.id) != -1)
+        if(shared.publicParticipantsModified.indexOf(row.id) == -1)
             shared.publicParticipantsModified.push(row.id);
 
-        if(shared.publicPKsModified.indexOf(row.lsid) != -1)
+        if(shared.publicPKsModified.indexOf(row.lsid) == -1)
             shared.publicPKsModified.push(row.lsid);
     }
 }
@@ -173,21 +192,21 @@ exports.beforeUpdate = beforeUpdate;
 function afterUpdate(row, oldRow, errors){
     console.log("afterUpdate: " + row);
 
-    if(shared.participantsModified.indexOf(row.id) != -1)
+    if(shared.participantsModified.indexOf(row.id) == -1)
         shared.participantsModified.push(row.id);
-    if(shared.participantsModified.indexOf(oldRow.id) != -1)
+    if(shared.participantsModified.indexOf(oldRow.id) == -1)
         shared.participantsModified.push(oldRow.id);
 
-    if(shared.PKsModified.indexOf(row.lsid) != -1)
+    if(shared.PKsModified.indexOf(row.lsid) == -1)
         shared.PKsModified.push(row.lsid);
 
     if(row.QCState && shared.qcStateMap[row.QCState].publicData){
-        if(shared.publicParticipantsModified.indexOf(row.id) != -1)
+        if(shared.publicParticipantsModified.indexOf(row.id) == -1)
             shared.publicParticipantsModified.push(row.id);
-        if(shared.publicParticipantsModified.indexOf(oldRow.id) != -1)
+        if(shared.publicParticipantsModified.indexOf(oldRow.id) == -1)
             shared.publicParticipantsModified.push(oldRow.id);
 
-        if(shared.publicPKsModified.indexOf(row.lsid) != -1)
+        if(shared.publicPKsModified.indexOf(row.lsid) == -1)
             shared.publicPKsModified.push(row.lsid);
     }
 }
@@ -201,17 +220,17 @@ exports.beforeDelete = beforeDelete;
 function afterDelete(row, errors){
     console.log("afterDelete: " + row);
 
-    if(shared.participantsModified.indexOf(row.id) != -1)
+    if(shared.participantsModified.indexOf(row.id) == -1)
         shared.participantsModified.push(row.id);
 
-    if(shared.PKsModified.indexOf(row.lsid) != -1)
+    if(shared.PKsModified.indexOf(row.lsid) == -1)
         shared.PKsModified.push(row.lsid);
 
     if(row.QCState && shared.qcStateMap[row.QCState].publicData){
-        if(shared.publicParticipantsModified.indexOf(row.id) != -1)
+        if(shared.publicParticipantsModified.indexOf(row.id) == -1)
             shared.publicParticipantsModified.push(row.id);
 
-        if(shared.publicPKsModified.indexOf(row.lsid) != -1)
+        if(shared.publicPKsModified.indexOf(row.lsid) == -1)
             shared.publicPKsModified.push(row.lsid);
     }
 }
@@ -234,6 +253,20 @@ function complete(event, errors) {
 
     //also look to notificationRecipients array
 
+    if(shared.requestsModified && shared.requestsModified.length){
+
+    }
+
+        //TODO
+        //send email to colony records alerting that row is lacking from demographics
+//        if(missingIds.length){
+//            EHR.sendEmail({
+//                notificationType: 'Colony Validation - General',
+//                msgSubject: 'Ids missing from demographics table',
+//                mgsContent: 'The following Ids were added to the arrival table, but do not have records in the demographics table: '+missingIds.join(',')
+//            });
+//        }
+
 }
 exports.complete = complete;
 
@@ -254,13 +287,12 @@ EHR.rowInit = function(row, errors, oldRow){
     }
 
     //these are extra checks to fix mySQL data
+//TODO: this is only active for debugging purposes
 //    if (row.dataSource == 'etl')
         EHR.ETL.fixRow.call(this, row, errors);
 
 
     //these checks are always run:
-
-    //validate ID
 
 
     //certain forms display current location.  if the row has this property, but it is blank, we add it.
@@ -288,10 +320,11 @@ EHR.rowInit = function(row, errors, oldRow){
         LABKEY.Query.executeSql({
             schemaName: 'study',
             queryName: 'assignment',
+            scope: this,
             sql: "SELECT a.project FROM study.assignment a WHERE a.project='"+row.project+"' AND a.id='"+row.id+"' AND a.date <= '"+row.date+"' AND (a.rdate >= '"+row.date+"' OR a.rdate IS NULL) AND project.protocol!='wprc00'",
             success: function(data){
                 if(!data.rows || !data.rows.length){
-                    EHR.addError(errors, 'project', 'Not assigned to this project on this date', 'WARN');
+                    EHR.addError(errors, 'project', 'Not assigned to '+row.project+' on this date', 'WARN');
                 }
             },
             failure: EHR.onFailure
@@ -327,6 +360,7 @@ EHR.rowInit = function(row, errors, oldRow){
         EHR.addError(errors, 'enddate', 'End date cannot be before start date', 'WARN');
     }
 
+    //TODO: flag rows becoming public
     if(1==2){
         EHR.onBecomePublic(row, errors, oldRow);
     }
@@ -348,9 +382,10 @@ EHR.rowEnd = function(row, errors, oldRow){
     }
 
     //this converts error objects into an array of strings
+    //it also disards errors below the specified threshold
     var transformedErrors = EHR.validation.processErrors(row, errors, errorThreshold);
 
-    if (!transformedErrors.length){
+    if (transformedErrors){
         if(this.setDescription){
             row.Description = this.setDescription(row, errors).join(',\n');
             if (row.Description.length > 4000)
@@ -376,11 +411,12 @@ EHR.rowEnd = function(row, errors, oldRow){
 
     shared.rows.push(row);
 
+    //NOTE: not sure if this is needed.  should review how global errors object is handled
     errors = transformedErrors;
 };
 
 EHR.onBecomePublic = function(row, errors, oldRow){
-    //replace date with begindate if data is becoming public
+    //TODO: replace date with begindate if data is becoming public
 
     if(this.onBecomePublic)
         this.onBecomePublic(row, errors, oldRow);
@@ -421,14 +457,15 @@ EHR.findDemographics = function(config){
 
 EHR.updateDemographics = function(config){
     if(!config || !config.fieldName || !config.value || !config.participant)
-        throw "Missing config items: "+config;
+        throw "EHR.updateDemographics is missing config items: "+config;
 
 
 
 
 };
 
-
+//Note: while the row map is case insensitive, client-side code is not
+//therefore field names should be treated as case sensitive
 EHR.addError = function(errors, field, msg, severity){
     if(!errors[field])
         errors[field] = [];
@@ -470,6 +507,7 @@ EHR.sendEmail = function(config){
 
     if(config.recipients.length){
         LABKEY.Message.sendMessage({
+            //TODO: store in module properties table?
             msgFrom: 'EHR-do-not-reply@primate.wisc.edu',
             msgSubject: config.msgSubject,
             msgRecipients: config.recipients,
@@ -485,10 +523,12 @@ EHR.validation = {
     processErrors: function(row, errors, errorThreshold){
         var error;
         var transformedErrors = {};
+        var newErrors;
+        var fieldErrors;
 
         for(var i in errors){
-            var fieldErrors = errors[i];
-            var newErrors = [];
+            fieldErrors = errors[i];
+            newErrors = [];
 
             for(var j=0;j<fieldErrors.length;j++){
                 error = fieldErrors[j];
@@ -507,7 +547,10 @@ EHR.validation = {
             }
         }
 
-        return transformedErrors;
+        //tests whether transformedErrors is an empty object or not
+        for (var i in transformedErrors){
+            return transformedErrors;
+        }
     },
     errorSeverity: {
         DEBUG: 0,
@@ -526,6 +569,7 @@ EHR.validation = {
     snomedToString: function (code, meaning){
         if(!meaning){
             LABKEY.Query.selectRows({
+                //TODO: change to EHR_lookups eventually
                 schemaName: 'lists',
                 queryName: 'snomed',
                 filterArray: [LABKEY.Filter.create('code', code, LABKEY.Filter.Types.EQUALS_ONE_OF)],
@@ -545,8 +589,7 @@ EHR.validation = {
         //TODO: do better once more date functions added
         if(date){
             date = new Date(date);
-
-            return (date.getFullYear() ? date.getFullYear()+'-'+(date.getMonth()<10 ? 0:'')+date.getMonth()+'-'+(date.getDate()<10 ? 0:'')+date.getDate() : '');
+            return (date.getFullYear() ? date.getFullYear()+'-'+EHR.validation.padDigits(date.getMonth()+1, 2)+'-'+EHR.validation.padDigits(date.getDate(), 2) : '');
         }
         else
             return '';
@@ -554,7 +597,7 @@ EHR.validation = {
     dateTimeToString: function (date){
         if(date){
             date = new Date(date);
-            return date.getFullYear()+'-'+(date.getMonth()<10 ? 0:'')+date.getMonth()+'-'+(date.getDate()<10 ? 0:'')+date.getDate()
+            return date.getFullYear()+'-'+EHR.validation.padDigits(date.getMonth()+1, 2)+'-'+EHR.validation.padDigits(date.getDate(), 2)
                     ' '+date.getHours()+':'+date.getMinutes();
         }
         else
@@ -562,6 +605,33 @@ EHR.validation = {
     },
     nullToString: function(value){
             return (value ? value : '');
+    },
+    padDigits: function(n, totalDigits)
+    {
+        n = n.toString();
+        var pd = '';
+        if (totalDigits > n.length){
+            for (var i=0; i < (totalDigits-n.length); i++){
+                pd += '0';
+            }
+        }
+        return pd + n;
+    },
+    calculateCaseno: function(row, errors, table, procedureType){
+        var year = row.date.getYear()+1900;
+        LABKEY.Query.executeSql({
+            schemaName: 'study',
+            sql: "SELECT cast(SUBSTRING(MAX(caseno), 6, 8) AS INTEGER) as caseno FROM study."+table+" WHERE caseno LIKE '" + year + procedureType + "%'",
+            success: function(data){
+                if(data && data.rows && data.rows.length==1){
+                    var caseno = data.rows[0].caseno + 1;
+                    caseno = EHR.validation.padDigits(caseno, 3);
+                    row.caseno = year + procedureType + caseno;
+                }
+            },
+            failure: EHR.onFailure
+        });
+
     },
     flagSuspiciousDate: function(row, errors){
         //TODO
@@ -577,13 +647,11 @@ EHR.validation = {
 
         if(cal2.after(cal1)){
             EHR.addError(errors, 'Date', 'Date is more than 1 year in future: '+row.Date, 'WARN');
-            //row.QCStateLabel = errorQC;
         }
 
         cal1.add(java.util.Calendar.YEAR, -61);
         if(cal1.after(cal2)){
             EHR.addError(errors, 'Date', 'Date is more than 60 days in past: '+row.Date, 'WARN');
-            //row.QCStateLabel = errorQC;
         }
     },
     flagSuspImmunology: function(row, errors){
@@ -620,12 +688,30 @@ EHR.validation = {
 
         else
             row.species = 'Unknown';
+    },
+    verifyIsFemale: function(row, errors){
+        LABKEY.Query.selectRows({
+            schemaName: 'study',
+            queryName: 'demographics',
+            filterArray: [
+                LABKEY.Filter.create('Id', row.Id, LABKEY.Filter.Types.EQUAL)
+            ],
+            columns: 'Id,gender/origGender',
+            success: function(data){
+                if(data && data.rows && data.rows.length){
+                    console.log(data.rows[0]);
+                    if(data.rows[0]['gender/origGender'] && data.rows[0]['gender/origGender'] != 'f')
+                        EHR.addError(errors, 'Id', 'This animal is not female', 'ERROR');
+                }
+            },
+            failure: EHR.onFailure
+        });
     }
 };
 
 EHR.ETL = {
     fixRow: function(row, errors){
-        console.log('Running ETL repair:');
+        console.log('Running ETL repair on mySQL data:');
 
         //inserts a date if missing
         EHR.ETL.addDate(row, errors);
@@ -653,7 +739,7 @@ EHR.ETL = {
     fixParticipantId: function (row, errors){
         if (!row.Id){
             row.id = 'MISSING';
-            EHR.addError(errors, 'Id', 'ERROR: Missing Id', 'ERROR');
+            EHR.addError(errors, 'Id', 'Missing Id', 'ERROR');
             //row.QCStateLabel = errorQC;
         }
 
@@ -661,7 +747,7 @@ EHR.ETL = {
     },
     addDate: function (row, errors){
         if (!row.Date){
-            //we need to insert something...
+            //we need to insert something for a date...
             row.Date = new java.util.Date();
             EHR.addError(errors, 'Date', 'Missing Date', 'ERROR');
             //row.QCStateLabel = errorQC;
@@ -720,6 +806,7 @@ EHR.ETL = {
 
                 var match = row.stringResults.match(/^([<>=]*)[ ]*(\d*\.*\d*)([-]*\d*\.*\d*)([+]*)[ ]*(.*)$/);
 
+                //our old data can have the string modifier either before or after the numeric part
                 if (match[4])
                     row.resultOORIndicator = match[4];
                 //kinda weak, but we preferentially take the prefix.  should never have both
@@ -750,7 +837,7 @@ EHR.ETL = {
             }
         }
         else {
-            //this covers the situation where a mySQL string column contained a numeric value
+            //this covers the situation where a mySQL string column contained a numeric value without other characters
             row.result = row.stringResults;
             delete row.stringResults;
         }
@@ -838,8 +925,11 @@ EHR.ETL = {
             case 'Y':
                 row.major = true;
                 break;
-            default:
+            case 'n':
+            case 'N':
                 row.major = false;
+            default:
+                row.major = null;
         }
     },
     fixBirth: function(row, errors){

@@ -27,16 +27,16 @@
                                 <filters>
                                     <filter operator="lte" value="-10"/>
                                 </filters>
-                                <backgroundColor>FF0000</backgroundColor>
                                 <bold>true</bold>
+                                <backgroundColor>FF0000</backgroundColor>
                             </conditionalFormat>
                         </conditionalFormats>
                     </column>
                     <column columnName="IntervalInDays">
-                        <columnTitle>Interval (Days)</columnTitle>
+                        <columnTitle>Days Since Weight</columnTitle>
                     </column>
                     <column columnName="IntervalInMonths">
-                        <columnTitle>Interval (Months)</columnTitle>
+                        <columnTitle>Months Since Weight</columnTitle>
                     </column>
                 </columns>
                 <titleColumn>PctChange</titleColumn>

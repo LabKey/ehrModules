@@ -146,6 +146,7 @@ Ext.extend(EHR.ext.ImportPanelBase, Ext.Panel, {
 
         Ext.applyIf(this, {
             autoHeight: true
+            //,forceLayout: true
             ,defaults: {
                 bodyBorder: false
                 ,border: false
@@ -292,7 +293,7 @@ Ext.extend(EHR.ext.ImportPanelBase, Ext.Panel, {
                 bodyBorder: false
                 ,border: false
             },
-            parentPanel: this,
+            importPanel: this,
             showStatus: true,
             storeConfig: {
                 //xtype: 'ehr-store',
@@ -453,9 +454,12 @@ EHR.ext.TaskPanel = Ext.extend(EHR.ext.ImportPanelBase, {
             ref: 'importPanelHeader',
             //uuid: this.uuid,
             formUUID: this.formUUID,
-            parentPanel: this,
+            importPanel: this,
             readOnly: this.readOnly,
-            metadata: EHR.ext.getTableMetadata('tasks', ['Task'])
+            metadata: EHR.ext.getTableMetadata('tasks', ['Task']),
+            storeConfig: {
+                canSaveInTemplate: false
+            }
         });
 
         EHR.ext.TaskPanel.superclass.initComponent.call(this, arguments);
@@ -483,9 +487,12 @@ EHR.ext.RequestPanel = Ext.extend(EHR.ext.ImportPanelBase, {
             keyField: 'requestid',
             ref: 'importPanelHeader',
             formUUID: this.formUUID,
-            parentPanel: this,
+            importPanel: this,
             readOnly: this.readOnly,
-            metadata: EHR.ext.getTableMetadata('requests', ['Request'])
+            metadata: EHR.ext.getTableMetadata('requests', ['Request']),
+            storeConfig: {
+                canSaveInTemplate: false
+            }
         });
 
         this.allowableButtons = 'REQUEST,APPROVE,CLOSE';

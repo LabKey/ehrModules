@@ -5,7 +5,6 @@
  */
 SELECT
   sd.id.curlocation.room as room,
-  sd.id.curlocation.cage as cage,
   group_concat(DISTINCT sd.id) as Ids,
 
 --   t.title,
@@ -24,5 +23,5 @@ JOIN study.studydata sd
 
 ON (t.taskid = sd.taskid)
 
-GROUP BY t.taskid, t.formtype, sd.id.curlocation.room, sd.id.curlocation.cage
+GROUP BY t.taskid, t.formtype, sd.id.curlocation.room
 

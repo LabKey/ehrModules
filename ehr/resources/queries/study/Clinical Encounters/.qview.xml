@@ -2,17 +2,17 @@
     <columns>
         <column name="Id"/>
         <column name="Date"/>
-        <!--<column name="dateCompleted"/>-->
+        <column name="Enddate"/>
         <column name="project"/>
         <column name="account"/>
         <column name="type"/>
-        <!--<column name="Remark"/>-->
-        <column name="userid"/>
-        <column name="QCState/Label">
-            <properties>
-                <property name="columnTitle" value="Status"/>
-            </properties>
-        </column>
+        <column name="Remark"/>
+        <!--<column name="userid"/>-->
+        <!--<column name="QCState/Label">-->
+            <!--<properties>-->
+                <!--<property name="columnTitle" value="Status"/>-->
+            <!--</properties>-->
+        <!--</column>-->
     </columns>
     <sorts>
         <sort column="date" descending="true"/>

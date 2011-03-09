@@ -1,0 +1,33 @@
+<query xmlns="http://labkey.org/data/xml/query">
+    <metadata>
+        <tables xmlns="http://labkey.org/data/xml">
+            <table tableName="protocol" tableDbType="TABLE">
+                <tableUrl>/EHR/protocolDetails.view?key=${protocol}</tableUrl>
+                <columns>
+                    <column columnName="totalAnimals" wrappedColumnName="protocol">
+                      <columnTitle>Total Animals</columnTitle>
+                      <isUnselectable>true</isUnselectable>
+                      <fk>
+                        <fkFolderPath>/wnprc/ehr/</fkFolderPath>
+                        <fkDbSchema>lists</fkDbSchema>
+                        <fkTable>protocolTotalAnimals</fkTable>
+                        <fkColumnName>protocol</fkColumnName>
+                      </fk>
+                      <isHidden>false</isHidden>
+                    </column>
+                    <column columnName="totalProjects" wrappedColumnName="protocol">
+                      <columnTitle>Total Projects</columnTitle>
+                      <isUnselectable>true</isUnselectable>
+                      <fk>
+                        <fkFolderPath>/wnprc/ehr/</fkFolderPath>
+                        <fkDbSchema>lists</fkDbSchema>
+                        <fkTable>protocolTotalProjects</fkTable>
+                        <fkColumnName>protocol</fkColumnName>
+                      </fk>
+                      <isHidden>false</isHidden>
+                    </column>
+                </columns>
+            </table>
+        </tables>
+    </metadata>
+</query>

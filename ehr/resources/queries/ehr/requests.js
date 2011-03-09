@@ -16,9 +16,9 @@ function onUpsert(row, errors, oldRow){
 }
 
 
-function setDescription(row, errors){
-    //we need to set description for every field
-    var description = new Array();
-    return description.join(',\n');
-}
+//function setDescription(row, errors){
+//    //we need to set description for every field
+//    var description = new Array();
+//    return description;
+//}
 

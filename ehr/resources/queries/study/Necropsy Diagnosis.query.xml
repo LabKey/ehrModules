@@ -65,7 +65,7 @@
                   <column columnName="tissue">
                     <datatype>varchar</datatype>
                     <!--<nullable>false</nullable>-->
-                    <columnTitle>Process</columnTitle>
+                    <columnTitle>Tissue</columnTitle>
                     <fk>
                       <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                       <fkDbSchema>lists</fkDbSchema>
@@ -76,7 +76,7 @@
                   <column columnName="duration">
                     <datatype>varchar</datatype>
                     <!--<nullable>false</nullable>-->
-                    <columnTitle>Process</columnTitle>
+                    <columnTitle>Duration</columnTitle>
                     <fk>
                       <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                       <fkDbSchema>lists</fkDbSchema>
@@ -87,7 +87,7 @@
                   <column columnName="severity">
                     <datatype>varchar</datatype>
                     <!--<nullable>false</nullable>-->
-                    <columnTitle>Process</columnTitle>
+                    <columnTitle>Severity</columnTitle>
                     <fk>
                       <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                       <fkDbSchema>lists</fkDbSchema>
@@ -109,7 +109,7 @@
                   <column columnName="distribution">
                     <datatype>varchar</datatype>
                     <!--<nullable>false</nullable>-->
-                    <columnTitle>Process</columnTitle>
+                    <columnTitle>Distribution</columnTitle>
                     <fk>
                       <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                       <fkDbSchema>lists</fkDbSchema>

@@ -22,7 +22,6 @@
         <column name="Created"/>
     </columns>
     <filters>
-        <filter column="dateCompleted" operator="isblank"/>
         <filter column="QCState/label" operator="eq" value="In Progress"/>
     </filters>
     <sorts>

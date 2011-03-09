@@ -10,11 +10,6 @@
                 <property name="columnTitle" value="Room"/>
             </properties>
         </column>
-        <column name="cage">
-            <properties>
-                <property name="columnTitle" value="Cage"/>
-            </properties>
-        </column>
         <!--<column name="taskid/formtype">-->
             <!--<properties>-->
                 <!--<property name="columnTitle" value="Task Type"/>-->
@@ -52,7 +47,6 @@
         </column>
    </columns>
    <sorts>
-       <sort column="room" descending="true"/>
-       <sort column="cage" descending="true"/>
+       <sort column="room" />
    </sorts>
 </customView>

@@ -45,22 +45,28 @@
                     <column columnName="dam">
                         <datatype>varchar</datatype>
                         <columnTitle>Dam</columnTitle>
-                        <fk>
-                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-                            <fkDbSchema>study</fkDbSchema>
-                            <fkTable>animal</fkTable>
-                            <fkColumnName>id</fkColumnName>
-                        </fk>
+                        <!--<fk>-->
+                            <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
+                            <!--<fkDbSchema>study</fkDbSchema>-->
+                            <!--<fkTable>animal</fkTable>-->
+                            <!--<fkColumnName>id</fkColumnName>-->
+                        <!--</fk>-->
+                        <url>/study/participant.view?
+                            participantId=${dam}
+                        </url>
                     </column>
                     <column columnName="sire">
                         <datatype>varchar</datatype>
                         <columnTitle>Sire</columnTitle>
-                        <fk>
-                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-                            <fkDbSchema>study</fkDbSchema>
-                            <fkTable>animal</fkTable>
-                            <fkColumnName>id</fkColumnName>
-                        </fk>
+                        <!--<fk>-->
+                            <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
+                            <!--<fkDbSchema>study</fkDbSchema>-->
+                            <!--<fkTable>animal</fkTable>-->
+                            <!--<fkColumnName>id</fkColumnName>-->
+                        <!--</fk>-->
+                        <url>/study/participant.view?
+                            participantId=${sire}
+                        </url>
                     </column>
                     <column columnName="origin">
                         <datatype>varchar</datatype>

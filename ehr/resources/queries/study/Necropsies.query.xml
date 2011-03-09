@@ -20,11 +20,12 @@
                   <column columnName="caseno">
                     <datatype>varchar</datatype>
                     <columnTitle>Case Number</columnTitle>
-                    <nullable>false</nullable>
+                    <nullable>true</nullable>
                     <!--<isKeyField>true</isKeyField>-->
                   </column>
                   <column columnName="project">
                     <datatype>integer</datatype>
+                    <nullable>true</nullable>
                     <columnTitle>Project</columnTitle>
                     <fk>
                       <fkFolderPath>/wnprc/ehr/</fkFolderPath>
@@ -38,7 +39,7 @@
                   <column columnName="account">
                     <datatype>varchar</datatype>
                     <columnTitle>Account</columnTitle>
-                    <nullable>false</nullable>
+                    <nullable>true</nullable>
                     <propertyURI>urn:ehr.labkey.org/#Account</propertyURI>
                   </column>
                   <column columnName="pathologist">

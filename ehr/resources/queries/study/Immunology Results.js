@@ -16,10 +16,10 @@ function setDescription(row, errors){
     var description = new Array();
 
     if(row.testid)
-         description.push('Test: '+EHR.validation.null2string(row.testid));
+         description.push('Test: '+EHR.validation.nullToString(row.testid));
 
     if(row.results)
-        description.push('Value: '+EHR.validation.null2string(row.results)+' '+EHR.validation.null2string(row.units));
+        description.push('Value: '+EHR.validation.nullToString(row.results)+' '+EHR.validation.nullToString(row.units));
 
     return description;
 }

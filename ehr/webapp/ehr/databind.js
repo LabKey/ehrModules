@@ -178,7 +178,7 @@ EHR.ext.plugins.DataBind = Ext.extend(Ext.util.Observable, {
             },
             addFieldListener: function(f){
                 if(f.hasDatabindListener){
-                    console.log('field already has listener');
+                    //console.log('field already has listener');
                     return;
                 }
 

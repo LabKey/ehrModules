@@ -561,6 +561,7 @@ EHR.ext.SnomedCombo = Ext.extend(LABKEY.ext.ComboBox,
             displayField: 'primaryCategory',
             triggerAction: 'all',
             initialValue: this.defaultSubset,
+            value: this.defaultSubset,
             nullCaption: 'All',
             store: new LABKEY.ext.Store({
                 schemaName: 'ehr_lookups',
@@ -753,7 +754,7 @@ EHR.ext.ProjectField = Ext.extend(LABKEY.ext.ComboBox,
                 schemaName: 'study',
                 queryName: 'assignment',
                 viewName: 'Active Assignments',
-                //sql: "SELECT a.project FROM study.assignment a WHERE a.project='"+row.project+"' AND a.id='"+row.id+"' AND a.date <= '"+row.date+"' AND (a.rdate >= '"+row.date+"' OR a.rdate IS NULL)",
+                //sql: "SELECT a.project FROM study.assignment a WHERE a.id='"+row.Id+"' AND a.id='"+row.id+"' AND a.date <= '"+row.date+"' AND (a.rdate >= '"+row.date+"' OR a.rdate IS NULL)",
                 sort: 'project',
                 columns: 'project,project/account',
                 filterArray: [LABKEY.Filter.create('Id', '', LABKEY.Filter.Types.EQUAL)],
@@ -924,8 +925,9 @@ EHR.ext.DrugDoseField = Ext.extend(Ext.form.TriggerField,
                 return
             }
 
-            if(parent.parentPanel.participantMap.get(id)){
-                var weight = parent.parentPanel.participantMap.get(id)['Dataset/Demographics/weight'];
+            if(parent.importPanel.participantMap.get(id)){
+                //var weight = parent.importPanel.participantMap.get(id)['Dataset/Demographics/weight'];
+                var weight = parent.importPanel.participantMap.get(id)['weight'];
 
                 if(this.msgDiv)
                     this.msgDiv.replaceWholeText('Weight: '+weight+' kg');
@@ -940,7 +942,7 @@ EHR.ext.DrugDoseField = Ext.extend(Ext.form.TriggerField,
                 parent.boundRecord.set('concentration', conc);
             }
             else {
-                parent.parentPanel.participantMap.on('add', this.onTriggerClick, this, {single: true})
+                parent.importPanel.participantMap.on('add', this.onTriggerClick, this, {single: true})
             }
         }
     }

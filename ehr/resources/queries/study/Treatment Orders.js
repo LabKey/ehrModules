@@ -24,11 +24,11 @@ function setDescription(row, errors){
     if(row.meaning)
         description.push('Meaning: '+ row.meaning);
     if(row.volume)
-        description.push('Volume: '+ row.volume+ ' '+ EHR.validation.null2string(row.vunits));
+        description.push('Volume: '+ row.volume+ ' '+ EHR.validation.nullToString(row.vunits));
     if(row.conc)
-        description.push('Conc: '+ row.conc+ ' '+ EHR.validation.null2string(row.cunits));
+        description.push('Conc: '+ row.conc+ ' '+ EHR.validation.nullToString(row.cunits));
     if(row.amount)
-        description.push('Amount: '+ row.amount+ ' '+ EHR.validation.null2string(row.units));
+        description.push('Amount: '+ row.amount+ ' '+ EHR.validation.nullToString(row.units));
     if(row.route)
         description.push('Route: '+ row.route);
 

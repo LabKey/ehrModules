@@ -39,7 +39,7 @@ EHR.ext.AdvancedStore = Ext.extend(LABKEY.ext.Store, {
 
         EHR.ext.AdvancedStore.superclass.constructor.apply(this, arguments);
 
-        this.addEvents('beforemetachange', 'validation', 'commitvalidationfailure');
+        this.addEvents('beforemetachange', 'validation');
         this.proxy.on("load", this.onProxyLoad, this);
 
         if(config.maxRows !== undefined){
@@ -104,6 +104,11 @@ EHR.ext.AdvancedStore = Ext.extend(LABKEY.ext.Store, {
                     EHR.utils.rApply(f, this.metadata[f.name]);
                 }
             }
+
+if(f.lookup && f.lookup.queryName=='snomed' && f.lookups!=false && f.xtype!='ehr-snomedcombo'){
+    console.log('lookup to snomed');
+    console.log(f)
+}
         }, this);
 
         if(this.colModel){
@@ -117,13 +122,6 @@ EHR.ext.AdvancedStore = Ext.extend(LABKEY.ext.Store, {
 
         if(false===this.fireEvent('beforemetachange', this, meta))
             return;
-
-    for(var i in meta.fields){
-        if(meta.fields[i].lookup && meta.fields[i].lookup.queryName == 'snomed' && meta.fields[i].lookups!==false && !meta.fields[i].xtype){
-            console.log('lookup to snomed: '+this.storeId+'/'+meta.fields[i].name)
-            meta.fields[i].lookups = false;
-        }
-    }
 
         this.reader.onMetaChange(meta);
     },
@@ -236,8 +234,8 @@ EHR.ext.AdvancedStore = Ext.extend(LABKEY.ext.Store, {
     validateRecord: function(store, r, operation, config){
         config = config || {};
         if(debug){
-            console.log('Validating Record: '+r.id);
-            console.log('Operation: '+operation);
+//            console.log('Validating Record: '+r.id);
+//            console.log('Operation: '+operation);
         }
 
         r.errors = r.errors || [];
@@ -281,7 +279,7 @@ EHR.ext.AdvancedStore = Ext.extend(LABKEY.ext.Store, {
         }
 
         if(operation=='edit' && this.doServerValidation!==false){
-            this.validateRecordOnServer(this, [r], config);
+            this.validateRecordOnServer.defer(500, this, [this, [r], config]);
         }
     },
 
@@ -308,6 +306,8 @@ EHR.ext.AdvancedStore = Ext.extend(LABKEY.ext.Store, {
             Ext.each(command.rows, function(row){
                 row.values._validateOnly = true;
             }, this);
+
+            command.extraContext = {hello: 1};
         }, this);
 
         Ext.each(records, function(record){
@@ -503,7 +503,7 @@ EHR.ext.AdvancedStore = Ext.extend(LABKEY.ext.Store, {
                 //this means either we only submitted 1 row, or there was an exception
                 serverError = {errors: [serverError], exception: serverError.exception};
             }
-
+console.log(options);
             var msg;
             Ext.each(serverError.errors, function(error){
                 //handle validation script errors and exceptions differently

@@ -14,7 +14,7 @@ function setDescription(row, errors){
     //we need to set description for every field
     var description = new Array();
 
-    description.push('ClinRemark: '+EHR.validation.null2string(row.clinremark));
+    description.push('ClinRemark: '+EHR.validation.nullToString(row.clinremark));
 
     return description;
 }

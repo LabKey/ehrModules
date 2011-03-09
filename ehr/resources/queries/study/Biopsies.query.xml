@@ -3,6 +3,11 @@
         <tables xmlns="http://labkey.org/data/xml">
             <table tableName="Biopsies" tableDbType="TABLE">
                 <tableUrl>/EHR/biopsyDetails.view?key=${objectid}</tableUrl>
+                <columns>
+                    <column columnName="caseno">
+                        <nullable>true</nullable>
+                    </column>
+                </columns>
             </table>
         </tables>
     </metadata>
