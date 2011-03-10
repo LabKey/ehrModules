@@ -17,10 +17,10 @@ FROM study.demographics d
 
 --date of most recent arrival
 LEFT JOIN
-  (select T1.Id, max(T1.date) as MostRecentArrival FROM study.arrival T1 GROUP BY T1.Id) T1
+  (select T1.Id, max(T1.date) as MostRecentArrival FROM study.arrival T1 WHERE T1.qcstate.publicdata = true GROUP BY T1.Id) T1
   ON (T1.Id = d.Id)
 
 --date of first arrival
 LEFT JOIN
-  (select T1.Id, min(T1.date) as EarliestArrival FROM study.arrival T1 GROUP BY T1.Id) T2
+  (select T1.Id, min(T1.date) as EarliestArrival FROM study.arrival T1 WHERE T1.qcstate.publicdata = true GROUP BY T1.Id) T2
   ON (T2.Id = d.Id)

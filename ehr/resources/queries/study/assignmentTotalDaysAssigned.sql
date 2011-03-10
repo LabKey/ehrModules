@@ -53,7 +53,7 @@ LEFT JOIN study.assignment a
   AND i.year <= year(coalesce(a.rdate, curdate()))
   AND (a.project.avail = 'n' OR a.project.avail = 'r')
   )
-
+  WHERE a.qcstate.publicdata = true
 ) T1
 
 

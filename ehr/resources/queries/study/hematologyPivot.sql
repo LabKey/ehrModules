@@ -144,7 +144,7 @@ CASE WHEN h.testid='RETICULO'
 END as RETICULO,
 
 FROM study."Hematology Results" h
-
+WHERE h.qcstate.publicdata = true
 ) h
 
 GROUP BY h.id, h.date, h.runId

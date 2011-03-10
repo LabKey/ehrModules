@@ -10,7 +10,7 @@ console.log("** evaluating: " + this['javax.script.filename']);
 
 
 //TODO: cascade deletes to ehr.cage_obs
-
+//TODO: insert into ehr.cage_obs.
 
 function setDescription(row, errors){
     //we need to set description for every field

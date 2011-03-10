@@ -87,7 +87,7 @@ CREATE TABLE ehr.requests
 
     priority varchar(200),
     notify1 integer,
-    notify2 varchar(200),
+    notify2 integer,
     pi varchar(200),
     QCState integer,
     Description text,
@@ -304,14 +304,14 @@ CREATE TABLE ehr.notificationTypes
     CONSTRAINT PK_notificationTypes PRIMARY KEY (NotificationType)
 );
 
-INSERT into ehr.notificationTypes
-(NotificationType, description)
-VALUES
-('Clinpath Service Request', ''),
-('Pathology Service Request', ''),
-('CPI Service Request', ''),
-('Animal Care Service Request', '')
-;
+-- INSERT into ehr.notificationTypes
+-- (NotificationType, description)
+-- VALUES
+-- ('Clinpath Service Request', ''),
+-- ('Pathology Service Request', ''),
+-- ('CPI Service Request', ''),
+-- ('Animal Care Service Request', '')
+-- ;
 
 DROP TABLE IF EXISTS ehr.notificationRecipients;
 CREATE TABLE ehr.notificationRecipients
@@ -430,3 +430,44 @@ CREATE TABLE ehr.client_errors
 
     CONSTRAINT PK_client_errors PRIMARY KEY (rowid)
 );
+
+
+
+DROP TABLE IF EXISTS ehr.qcPermissionMap;
+CREATE TABLE ehr.qcPermissionMap
+(
+    rowid SERIAL NOT NULL,
+    role VARCHAR(4000) NOT NULL,
+    qcStateLabel VARCHAR(4000) NOT NULL,
+    permission VARCHAR(4000) NOT NULL,
+
+    CONSTRAINT PK_qcPermissionMap PRIMARY KEY (rowid)
+    --CONSTRAINT UNIQUE_qcPermissionMap UNIQUE (role, qcStateLabel)
+);
+
+
+DROP TABLE IF EXISTS ehr.qcStateMetadata;
+CREATE TABLE ehr.qcStateMetadata
+(
+    QCStateLabel varchar(4000) NOT NULL,
+    draftData boolean default false,
+    isDeleted boolean default false,
+    isRequest boolean default false,
+
+    CONSTRAINT PK_qcStateMetadata PRIMARY KEY (QCStateLabel)
+);
+
+INSERT INTO ehr.qcStateMetadata
+(QCStateLabel,draftData,isDeleted,isRequest)
+VALUES
+('Approved', FALSE, FALSE, FALSE),
+('In Progress', TRUE, FALSE, FALSE),
+('Abnormal', FALSE, FALSE, FALSE),
+('Review Required', FALSE, FALSE, FALSE),
+('Request: Pending', FALSE, FALSE, TRUE),
+('Delete Requested', TRUE, FALSE, FALSE),
+('Deleted', FALSE, TRUE, FALSE),
+('Request: Denied', FALSE, FALSE, TRUE),
+('Request: Approved', TRUE, FALSE, TRUE),
+('Request: Complete', FALSE, FALSE, TRUE)
+;

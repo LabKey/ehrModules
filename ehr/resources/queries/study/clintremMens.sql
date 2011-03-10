@@ -13,4 +13,6 @@ SELECT
 
   convert(dayofmonth(c.date), integer) as Day,
 
-FROM clinremarks c WHERE c.remark like 'mens.%' and c.category = 'Clinical'
+FROM clinremarks c
+WHERE c.remark like 'mens.%' and c.category = 'Clinical'
+AND c.qcstate.publicdata = true

@@ -21,14 +21,5 @@ SELECT
   Abs(Round(((w.weight - w.Id.dataset.demographics.weight) * 100 / w.Id.dataset.demographics.weight), 1)) AS AbsPctChange,
 
 FROM study.weight w
-  --Find the next most recent weight date
---   JOIN
---     (SELECT t1.Id, max(T1.date) as LatestWeightDate
---       FROM study.weight T1
---       WHERE t1.date > TIMESTAMPADD('SQL_TSI_DAY', -365, now())
---       GROUP BY T1.Id) w2
---       ON (w.Id = w2.Id)
 
---   JOIN study.weight w3
---       ON (w3.Id = w.Id AND w3.date = w.Id.dataset.demographics.wdate)
-
+WHERE w.qcstate.publicdata = true

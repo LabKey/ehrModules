@@ -26,6 +26,8 @@ LEFT JOIN study.Assignment a2
       OR
       (COALESCE(a2.rdate, curdate()) > a1.date AND COALESCE(a2.rdate, curdate()) <= COALESCE(a1.rdate, curdate()))
 
-      ) AND
-      a1.Id != a2.Id AND a1.project = a2.project
       )
+      AND a1.Id != a2.Id AND a1.project = a2.project
+      AND a1.qcstate.publicdata = true
+      AND a2.qcstate.publicdata = true
+    )

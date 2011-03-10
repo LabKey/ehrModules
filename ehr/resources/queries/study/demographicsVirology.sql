@@ -9,5 +9,6 @@ SELECT
   group_concat(DISTINCT v.virus) as pathogens
 
 FROM study.virologyResults v
+WHERE v.qcstate.publicdata = true
 
 GROUP BY v.id

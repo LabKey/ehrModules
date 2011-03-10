@@ -160,22 +160,10 @@ Ext.extend(EHR.ext.ImportPanelBase, Ext.Panel, {
         EHR.ext.ImportPanelBase.superclass.initComponent.call(this);
 
         this.addEvents('participantchange', 'participantloaded');
+
         this.mon(this.store, 'validation', this.onStoreValidation, this);
-
-//        this.on('participantloaded', function(field, id, row){
-//            console.log('Participant loaded: '+id);
-//        }, this);
-
         this.mon(this.store, 'commitcomplete', this.afterSubmit, this);
         this.mon(this.store, 'commitexception', this.afterSubmit, this);
-
-        this.initGlobalQCstate();
-
-        EHR.utils.getTablePermissions({
-            success: this.calculatePermissions,
-            failure: EHR.utils.onError,
-            scope: this
-        });
 
         //monitor dirty state
         window.onbeforeunload = LABKEY.beforeunload(function (){
@@ -186,27 +174,20 @@ Ext.extend(EHR.ext.ImportPanelBase, Ext.Panel, {
         //add stores to StoreCollection
         Ext.StoreMgr.each(this.addStore, this);
 
+        EHR.utils.getTablePermissions({
+            queries: this.store.getQueries(),
+            success: this.calculatePermissions,
+            failure: EHR.utils.onError,
+            scope: this
+        });
+
         if(this.initialTemplates)
             this.applyTemplates(this.initialTemplates);
     },
 
-    calculatePermissions: function(qcMap, schemaMap){
-//console.log(arguments)
-        var tables = [];
-        var perms = {
-            editor: true,
-            dataAdmin: true,
-            requestor: true,
-            submittor: true
-        };
-
-        this.store.each(function(t){
-            tables.push(t.queryName);
-            if(schemaMap.schemas.study[t.queryName]){
-                console.log(schemaMap.schemas.study[t.queryName])
-            }
-
-        }, this);
+    calculatePermissions: function(permmissionMap){
+        this.permmissionMap = permmissionMap;
+console.log(this.permmissionMap);
 
         this.populateButtons();
     },
@@ -318,9 +299,6 @@ Ext.extend(EHR.ext.ImportPanelBase, Ext.Panel, {
             EHR.utils.loadTemplateByName(title, this.formType);
         }, this);
     },
-    initGlobalQCstate: function(){
-        //designed to be overriden by subclasses
-    },
 
     render: function(ct, p){
         this.setLoadMask();
@@ -349,43 +327,19 @@ Ext.extend(EHR.ext.ImportPanelBase, Ext.Panel, {
 
     onRemove: function(o)
     {
-        if (o instanceof Ext.form.FormPanel){
-            if(o.store){
-                this.store.remove(o.store);
-            }
-        }
+        if(o.store)
+            this.store.remove(o.store);
     },
 
     onSubmit: function(o)
     {
         Ext.Msg.wait("Saving Changes...");
 
-        var val;
-        switch (o.targetQC)
-        {
-            //TODO: values will be distinct per server...
-            case 'submit':
-                val = 1;
-                break;
-            case 'review':
-                val = 4;
-                break;
-            case 'saveDraft':
-                val = 2;
-                break;
-            case 'abnormal':
-                val = 3;
-                break;
-        }
+        //add a context flag to the request to saveRows
+        this.store.on('beforecommit', function(records, commands, extraContext){
+            extraContext.targetQC = o.targetQC;
+        }, this, {single: true});
 
-        if(this.qcstate){
-            var oldVal = this.qcstate.getValue();
-            if(val != oldVal){
-                this.qcstate.setValue(val);
-                //allow store inheritance to propagate changes to child stores
-                this.qcstate.fireEvent('change', this.qcstate, val, oldVal);
-            }
-        }
         this.store.commitChanges();
     },
 
@@ -464,9 +418,6 @@ EHR.ext.TaskPanel = Ext.extend(EHR.ext.ImportPanelBase, {
 
         EHR.ext.TaskPanel.superclass.initComponent.call(this, arguments);
     },
-    initGlobalQCstate: function(){
-        this.qcstate = this.importPanelHeader.qcstate;
-    },
     configureItem: function(c){
         EHR.ext.TaskPanel.superclass.configureItem.apply(this, arguments);
         c.storeConfig.filterArray = [LABKEY.Filter.create('taskId', this.formUUID, LABKEY.Filter.Types.EQUAL)];
@@ -495,12 +446,9 @@ EHR.ext.RequestPanel = Ext.extend(EHR.ext.ImportPanelBase, {
             }
         });
 
-        this.allowableButtons = 'REQUEST,APPROVE,CLOSE';
+        this.allowableButtons = this.allowableButtons || 'REQUEST,APPROVE,CLOSE';
 
         EHR.ext.RequestPanel.superclass.initComponent.call(this, arguments);
-    },
-    initGlobalQCstate: function(){
-        this.qcstate = this.importPanelHeader.qcstate;
     },
     configureItem: function(c){
         EHR.ext.RequestPanel.superclass.configureItem.apply(this, arguments);

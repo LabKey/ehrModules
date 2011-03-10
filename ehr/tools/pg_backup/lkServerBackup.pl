@@ -176,7 +176,7 @@ sub runPgBackup
 	my $db = shift;
 	
 	my $file_prefix = $db."_";
-	my $pg_filename = $file_prefix . $datestr . ".tar";
+	my $pg_filename = $file_prefix . $datestr . ".pg";
 	
 	my $backupdir = File::Spec->catfile($config{backupdir}, "database");
 	
@@ -499,11 +499,11 @@ sub lk_log
 	my $date = sprintf("%04d-%02d-%02d %02d:%02d", $tm->year+1900, ($tm->mon)+1, $tm->mday, $tm->hour, $tm->min);
 	my $insert = Labkey::Query::insertRows(
 		-baseUrl => $lk_config{'baseURL'},
-		-containerPath => $lk_config{'containerPath'},
-		-schemaName => $lk_config{'schemaName'},
- 		-queryName => $lk_config{'queryName'},
-		-rows => [{"JobName" => $lk_config{'jobName'}, "Status" => $status, "Log" => '', "Date" => $date}]
-		);			
+		-containerPath => "shared",
+		-schemaName => "audit",
+ 		-queryName => "auditLog",
+		-rows => [{"EventType" => "Client API Actions", "Comment" => $status, "Date" => $date}]
+    );
  		 	
 	
 }

@@ -55,6 +55,9 @@ LEFT JOIN study.notes a
 
 WHERE
 h1.id.Status.Status = 'Alive'
+AND h1.qcstate.publicdata = true
+AND h2.qcstate.publicdata = true
+AND a.qcstate.publicdata = true
 
 --filter out pairing exempt animals
 --AND a.id IS NULL

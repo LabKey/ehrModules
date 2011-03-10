@@ -22,7 +22,10 @@ FROM study.weight w
   --Find the next most recent weight date before this one
   JOIN
     (SELECT T2.Id, T2.date, max(T1.date) as PrevDate
-      FROM study.weight T1 JOIN study.weight T2 ON (T1.Id = T2.Id AND T1.date < T2.date) GROUP BY T2.Id, T2.date) w2
+      FROM study.weight T1
+      JOIN study.weight T2 ON (T1.Id = T2.Id AND T1.date < T2.date)
+      WHERE t1.qcstate.publicdata = true AND t2.qcstate.publicdata = true
+      GROUP BY T2.Id, T2.date) w2
       ON (w.Id = w2.Id AND w.date = w2.date)
 
   JOIN study.weight w3
@@ -31,9 +34,16 @@ FROM study.weight w
   --Find the current weight date
   JOIN
     (SELECT t1.Id, max(T1.date) as LastWeightDate
-      FROM study.weight T1 GROUP BY T1.Id) w4
+      FROM study.weight T1
+      WHERE t1.qcstate.publicdata = true
+      GROUP BY T1.Id) w4
       ON (w.Id = w4.Id)
 
 
   JOIN study.weight w5
       ON (w5.Id = w.Id AND w5.date = w4.LastWeightDate)
+
+WHERE
+w.qcstate.publicdata = true
+AND w3.qcstate.publicdata = true
+AND w5.qcstate.publicdata = true

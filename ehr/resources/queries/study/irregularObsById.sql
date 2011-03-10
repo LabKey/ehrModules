@@ -27,6 +27,7 @@ from study.obs o
 
 WHERE
   o.isIrregular = true
+  AND o.qcstate.publicdata = true
 
 UNION ALL
 
@@ -45,12 +46,13 @@ null as breeding,
 null as other,
 null as tlocation,
 null as otherbehavior,
-c.observationRecord.note as Remark,
+c.Remark,
 --cn.note as Remark,
 null as dataset,
 'Cage Observation' as description
 
 FROM study."Cage Observations" c
+WHERE c.qcstate.publicdata = true
  --JOIN lists.cagenotes cn ON (c.observationRecord = cn.objectid)
 
 

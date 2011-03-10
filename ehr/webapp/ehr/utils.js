@@ -33,6 +33,7 @@ EHR.utils.onError = function(error){
     console.log(error);
 
     LABKEY.Query.insertRows({
+         //it would be nice to store them in the current folder, but we cant guarantee they have write access..
          containerPath: '/shared',
          schemaName: 'ehr',
          queryName: 'client_errors',
@@ -40,7 +41,13 @@ EHR.utils.onError = function(error){
             page: window.location,
             exception: error.exception || error.statusText,
             json: Ext.util.JSON.encode(error)
-        }]
+        }],
+        success: function(){
+            console.log('Error successfully logged')
+        },
+        failure: function(){
+            console.log('Problem logging error')
+        }
     });
 };
 
@@ -250,21 +257,20 @@ EHR.utils.getQCStateMap = function(config){
     };
 
     LABKEY.Query.selectRows({
-        schemaName: 'study',
-        queryName: 'QCState',
-        sort: 'rowid',
-        columns: '*',
+        schemaName: 'ehr',
+        queryName: 'qcpermissionmap',
+        sort: 'role',
+        columns: 'role,qcstate,qcstate/RowId,qcstate/Label,qcstate/PublicData,read,insert,update,del,readown,updateown,deleteown,admin,all',
         success: function(data){
             var row;
             if(data.rows && data.rows.length){
                 for (var i=0;i<data.rows.length;i++){
                     row = data.rows[i];
-                    qcmap.label[row.Label] = row;
-                    qcmap.rowid[row.RowId] = row;
+                    qcmap.label[row['qcstate/Label']] = row;
+                    qcmap.rowid[row['qcstate/RowId']] = row;
                 }
-
-                config.success.apply(config.scope || this, [qcmap]);
             }
+            config.success.apply(config.scope || this, [qcmap]);
         },
         failure: EHR.utils.onError
     });
@@ -273,31 +279,59 @@ EHR.utils.getQCStateMap = function(config){
 
 EHR.utils.getTablePermissions = function(config) {
     if(!config || !config.success){
-        throw "Must provide a success callback"
+        throw "Must provide a success callback";
+    }
+    if(!config.queries || !config.queries.length){
+        throw "config.queries must be an array of queries";
     }
 
-    var qcMap;
+    var qcMap = {};
     var schemaMap;
 
     var multi = new LABKEY.MultiRequest();
-    multi.add(EHR.utils.getQCStateMap, {
-        success: function(map){
-            qcMap = map;
-        }
+    multi.add(LABKEY.Query.selectRows, {
+        scope: this,
+        schemaName: 'ehr',
+        queryName: 'qcpermissionmap',
+        sort: 'role',
+        columns: 'role,qcstate,qcstate/RowId,qcstate/Label,qcstate/PublicData,read,insert,update,del,readown,updateown,deleteown,admin,all',
+        success: function(data){
+            Ext.each(data.rows, function(row){
+                qcMap[row.role][row['qcstate/Label']] = row;
+            }, this);
+        },
+        failure: EHR.utils.onError
     });
     multi.add(EHR.utils.getSchemaPermissions, {
         schemaName: 'study',
+        scope: this,
         success: function(map){
             schemaMap = map;
         }
     });
 
     function onSuccess(){
-        config.success.apply(config.scope || this, [qcMap, schemaMap]);
+        var map = {};
+        Ext.each(config.queries, function(q){
+            if(schemaMap.schemas[q.schemaName] && schemaMap.schemas[q.schemaName][q.queryName]){
+                Ext.each(schemaMap.schemas[q.schemaName][q.queryName].effectivePermissions, function(p){
+                    if(qcMap && qcMap[q]){
+                        Ext.each(qcMap[q], function(qcState){
+                            map[qcState] = map[qcState] || {};
+                            for(var j in LABKEY.Security.permissions){
+                                if(qcMap[q][qcState][j] || qcMap[q][qcState]['all'])
+                                    map[qcState][j] = true;
+                            }
+                        }, this);
+                    }
+                }, this)
+            }
+        }, this);
+        config.success.apply(config.scope || this, [map]);
     }
 
-    multi.send(onSuccess);
-}
+    multi.send(onSuccess, this);
+};
 
 
 /**
@@ -342,7 +376,6 @@ EHR.utils.getSchemaPermissions = function(config) {
         throw "Method only works for the study schema";
 
     function successCallback(json, response) {
-console.log(arguments)
         //First lets make sure there is a study in here.
         var studyResource = null;
         for (var i = 0; i < json.resources.children.length; i++)

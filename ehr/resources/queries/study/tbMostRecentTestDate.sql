@@ -15,5 +15,6 @@ FROM study.demographics a
 
 --date of most recent TB test
 LEFT JOIN
-  (select T11.Id, max(T11.date) as MostRecentTBDate FROM study.tb T11 GROUP BY T11.Id) T11
+  (select T11.Id, max(T11.date) as MostRecentTBDate FROM study.tb T11 WHERE T11.qcstate.publicdata = true GROUP BY T11.Id) T11
   ON (T11.Id = a.Id)
+

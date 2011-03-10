@@ -20,4 +20,5 @@ ON (c.low < d.id.MostRecentWeight.MostRecentWeight AND d.id.MostRecentWeight.Mos
 
 WHERE
 
+--TODO: use status instead
 d.death is null AND (d.departdate IS NULL OR d.departdate < d.arrivedate) AND (d.birth is not null or d.arrivedate is not null)

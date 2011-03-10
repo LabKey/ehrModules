@@ -6,6 +6,14 @@
                     <column columnName="Label">
                         <displayWidth>200</displayWidth>
                     </column>
+                    <column columnName="metadata" wrappedColumnName="Label">
+                        <isUnselectable>true</isUnselectable>
+                        <fk>
+                          <fkDbSchema>ehr</fkDbSchema>
+                          <fkTable>qcStateMetadata</fkTable>
+                          <fkColumnName>QCStateLabel</fkColumnName>
+                        </fk>
+                    </column>
                 </columns>
             </table>
         </tables>

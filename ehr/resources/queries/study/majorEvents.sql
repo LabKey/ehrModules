@@ -10,6 +10,7 @@ b.date,
 'Birth' as type,
 'Offspring: ' || b.id as comment
 from study.birth b
+WHERE b.qcstate.publicdata = true
 
 UNION ALL
 
@@ -28,5 +29,5 @@ s.date,
 'Surgery' as type,
 'Major: '||s.major as comment
 from surgery s
-
+where s.qcstate.publicdata = true
 

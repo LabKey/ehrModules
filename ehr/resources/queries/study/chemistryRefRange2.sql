@@ -34,6 +34,7 @@ FROM
             c.id,
               ROUND(CONVERT(age_in_months(c.id.dataset.demographics.birth, c.date), DOUBLE) / 12, 1) as AgeAtTime
              FROM chemistryResults c
+             WHERE c.qcstate.publicdata = true
           ) c
 
 LEFT JOIN ehr_lookups.ageclass ac

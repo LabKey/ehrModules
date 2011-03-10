@@ -84,6 +84,7 @@ END as microscopic
 
 
 FROM study."Urinalysis Results" b
+WHERE b.qcstate.publicdata = true
 
 ) b
 

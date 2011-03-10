@@ -13,5 +13,5 @@ FROM study.demographics d
 
 --date of most recent departure
 LEFT JOIN
-  (select T1.Id, max(T1.date) as MostRecentDeparture FROM study.departure T1 GROUP BY T1.Id) T1
+  (select T1.Id, max(T1.date) as MostRecentDeparture FROM study.departure T1 WHERE T1.qcstate.publicdata = true GROUP BY T1.Id) T1
   ON (T1.Id = d.Id)

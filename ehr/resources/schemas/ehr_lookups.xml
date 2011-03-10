@@ -510,7 +510,7 @@
     </ns:columns>
   </ns:table>
   <ns:table tableName="clinpath_services" tableDbType="TABLE">
-    <ns:pkColumnName>dataset</ns:pkColumnName>
+    <ns:pkColumnName>label</ns:pkColumnName>
     <ns:columns>
       <ns:column columnName="dataset">
         <ns:datatype>varchar</ns:datatype>

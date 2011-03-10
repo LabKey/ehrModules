@@ -23,7 +23,8 @@ Ext.onReady(function (){
                     {name: 'Populate Initial Data', url: '<%=contextPath%>/EHR<%=containerPath%>/_initEHR.view?'},
                     {name: 'Reload Study', url: '<%=contextPath%>/pipeline<%=containerPath%>/begin.view?'},
                     {name: 'Generate Schema XML', url: '<%=contextPath%>/admin/getSchemaXmlDoc.view?full=true&dbSchema=core'},
-                    {name: 'View Logs', url: '<%=contextPath%>/project<%=containerPath%>/Logs/begin.view?'}
+                    {name: 'View Logs', url: '<%=contextPath%>/project<%=containerPath%>/Logs/begin.view?'},
+                    {name: 'View Site Errors', url: '<%=contextPath%>/query/Shared/executeQuery.view?schemaName=ehr&query.queryName=client_errors'}
                 ]
             },
             {header: 'Logs',

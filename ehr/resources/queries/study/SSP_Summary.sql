@@ -26,5 +26,7 @@ SELECT
 FROM "/WNPRC/WNPRC_Units/Research_Services/MHC_SSP/Private/MHC_DB/".assay."MHC_SSP Data" m
 
 WHERE (m.Institution='Wisconsin NPRC' or m.Institution='Harlow')
+--TODO
+--AND m.qcstate.publicdata = true
 
 GROUP BY m.Id, m.PrimerPair.Allele, m.PrimerPair.ShortName

@@ -35,3 +35,5 @@ LEFT OUTER JOIN study.Housing h2
       )
 
 
+WHERE h1.qcstate.publicdata = true
+AND h2.qcstate.publicdata = true

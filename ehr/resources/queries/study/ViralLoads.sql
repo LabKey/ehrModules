@@ -26,5 +26,6 @@ SELECT
 
 FROM "/WNPRC/WNPRC_Units/Research_Services/Virology_Services/VL_DB/".assay."Viral_Load Data" v
 
-
+--TODO
+--WHERE v.qcstate.publicdata = true
 

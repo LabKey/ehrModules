@@ -27,6 +27,7 @@ FROM
 	    	(SELECT AVG(w.weight) AS _expr
 	    	FROM study.weight w
 		    WHERE w.id=b.id AND w.date=b.lastWeighDate
+		    AND w.qcstate.publicdata = true
 		   ), double )
 	  ) AS weight,
 	  b.BloodLast30
@@ -37,16 +38,20 @@ FROM
                       (SELECT MAX(w.date) as _expr
                         FROM study.weight w
                         WHERE w.id = bi.id AND w.date <= bi.date
+                        AND w.qcstate.publicdata = true
                       ), timestamp )
                   ) AS lastWeighDate
 	 		    , ( CONVERT(
 	    			(SELECT SUM(draws.quantity) AS _expr
-	    		      FROM study.blood draws
+	    		      FROM study."Blood Draws" draws
 	    			  WHERE draws.id=bi.id
                           AND draws.date BETWEEN TIMESTAMPADD('SQL_TSI_DAY', -30, bi.date) AND bi.date
+                          --TODO
+                          --AND (draws.qcstate.metadata.DraftData = true OR draws.qcstate.publicdata = true)
                      ), double )
 	  		      ) AS BloodLast30
 	     	FROM study.blood bi
+	     	--WHERE (bi.qcstate.metadata.DraftData = true OR bi.qcstate.publicdata = true)
 	    	) b
 	) bq
 WHERE bq.date >= TIMESTAMPADD('SQL_TSI_DAY', -180, now())

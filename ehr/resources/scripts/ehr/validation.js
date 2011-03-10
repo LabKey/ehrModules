@@ -62,9 +62,10 @@ exports.shared = shared;
 function init(event, errors){
     console.log("** evaluating: " + this['javax.script.filename']);
 
-    console.log(this.context);
+    this.test = 12;
+    console.log('init: '+this.test);
 
-    console.log("extraContext:", this.extraContext);
+    this.shared = EHR.initShared();
 
 //    LABKEY.Query.insertRows({
 //        schemaName: 'ehr',
@@ -95,7 +96,6 @@ function init(event, errors){
 //    });
 
     console.log("init: " + event);
-    console.log("** extraContext: ", this["extraContext"]);
 
     //figure out who the user is, user roles and calculate which QC states they can use
     LABKEY.Security.getUserPermissions({
@@ -134,7 +134,7 @@ exports.init = init;
 function beforeInsert(row, errors){
 
     if(shared.verbosity > 0)
-        console.log("beforeInsert: " + row);
+        console.log("beforeInsert: " + this.test +'/' + row);
 
     if(row.hasOwnProperty('Id'))
         EHR.addError(errors, 'Id', 'A server-side error', 'WARN');
@@ -155,7 +155,7 @@ exports.beforeInsert = beforeInsert;
 
 function afterInsert(row, errors){
     if(shared.verbosity > 0)
-        console.log("afterInsert: " + row);
+        console.log("afterInsert: " + this.test +'/' + row);
 
     if(shared.participantsModified.indexOf(row.id) == -1)
         shared.participantsModified.push(row.id);
@@ -175,7 +175,7 @@ exports.afterInsert = afterInsert;
 
 function beforeUpdate(row, oldRow, errors){
     if(shared.verbosity > 0)
-        console.log("beforeUpdate: " + row);
+        console.log("beforeUpdate: " + this.test +'/' + row);
 
     EHR.rowInit(row, errors, oldRow);
 
@@ -190,7 +190,7 @@ function beforeUpdate(row, oldRow, errors){
 exports.beforeUpdate = beforeUpdate;
 
 function afterUpdate(row, oldRow, errors){
-    console.log("afterUpdate: " + row);
+    console.log("afterUpdate: " + this.test +'/' + row);
 
     if(shared.participantsModified.indexOf(row.id) == -1)
         shared.participantsModified.push(row.id);
@@ -213,12 +213,12 @@ function afterUpdate(row, oldRow, errors){
 exports.afterUpdate = afterUpdate;
 
 function beforeDelete(row, errors){
-    console.log("beforeDelete: " + row);
+    console.log("beforeDelete: " + this.test +'/' + row);
 }
 exports.beforeDelete = beforeDelete;
 
 function afterDelete(row, errors){
-    console.log("afterDelete: " + row);
+    console.log("afterDelete: " + this.test +'/' + row);
 
     if(shared.participantsModified.indexOf(row.id) == -1)
         shared.participantsModified.push(row.id);
@@ -237,8 +237,12 @@ function afterDelete(row, errors){
 exports.afterDelete = afterDelete;
 
 function complete(event, errors) {
+//    for(var i=0;i<errors.length;i++){
+//        errors[i].queryName = this['javax.script.filename'];
+//    }
+
     if(shared.verbosity > 0){
-        console.log("complete: " + event);
+        console.log("complete: " + this.test +'/' + event);
         console.log('Participants modified: '+shared.participantsModified);
         console.log('PKs modified: '+shared.PKsModified);
     }
@@ -275,6 +279,8 @@ EHR.rowInit = function(row, errors, oldRow){
     if(oldRow && oldRow.QCState){
 
     }
+
+    console.log("row init: " + this.test);
 
     //take the current row's QC, compare with old Row's QC if updating
     //reject immediately if they do not have permissions
@@ -373,11 +379,14 @@ EHR.rowInit = function(row, errors, oldRow){
 
 
 EHR.rowEnd = function(row, errors, oldRow){
+    console.log("row end: " + this.test);
+
     //use flag in context
     var errorThreshold = 'INFO';
 
     //this flag is to let records be validated, but forces failure of validation
-    if(row._validateOnly){
+    if(this.extraContext && this.extraContext.validateOnly){
+        console.log('validate only');
         EHR.addError(errors, '_validateOnly', 'Ignore this error');
     }
 
@@ -416,6 +425,8 @@ EHR.rowEnd = function(row, errors, oldRow){
 };
 
 EHR.onBecomePublic = function(row, errors, oldRow){
+    console.log("onBecomePublic: " + this.test);
+
     //TODO: replace date with begindate if data is becoming public
 
     if(this.onBecomePublic)
@@ -646,12 +657,12 @@ EHR.validation = {
         cal2.setTime(row.Date);
 
         if(cal2.after(cal1)){
-            EHR.addError(errors, 'Date', 'Date is more than 1 year in future: '+row.Date, 'WARN');
+            EHR.addError(errors, 'date', 'Date is more than 1 year in future: '+row.Date, 'WARN');
         }
 
         cal1.add(java.util.Calendar.YEAR, -61);
         if(cal1.after(cal2)){
-            EHR.addError(errors, 'Date', 'Date is more than 60 days in past: '+row.Date, 'WARN');
+            EHR.addError(errors, 'date', 'Date is more than 60 days in past: '+row.Date, 'WARN');
         }
     },
     flagSuspImmunology: function(row, errors){
@@ -749,7 +760,7 @@ EHR.ETL = {
         if (!row.Date){
             //we need to insert something for a date...
             row.Date = new java.util.Date();
-            EHR.addError(errors, 'Date', 'Missing Date', 'ERROR');
+            EHR.addError(errors, 'date', 'Missing Date', 'ERROR');
             //row.QCStateLabel = errorQC;
         }
     },

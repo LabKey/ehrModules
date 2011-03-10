@@ -23,9 +23,12 @@ SELECT
   max(w.date) AS MostRecentWeightDate,
 
 FROM study.weight w
+WHERE w.qcstate.publicdata = true
 GROUP BY w.id
 ) w
 
 -- --find the most recent weight associated with that date
 LEFT JOIN study.weight T2
   ON (w.MostRecentWeightDate = t2.date AND w.Id = t2.Id)
+
+WHERE t2.qcstate.publicdata = true

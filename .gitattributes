@@ -388,6 +388,7 @@ ehr/resources/queries/study/Procedure[!!-~]Codes.js -text
 ehr/resources/queries/study/Procedure[!!-~]Codes.query.xml -text
 ehr/resources/queries/study/Procedures/.qview.xml -text
 ehr/resources/queries/study/QCState.query.xml -text
+ehr/resources/queries/study/QCState/.qview.xml -text
 ehr/resources/queries/study/Restraint.js -text
 ehr/resources/queries/study/Restraint.query.xml -text
 ehr/resources/queries/study/SSP_Summary.query.xml -text
@@ -470,7 +471,6 @@ ehr/resources/queries/study/assignmentTotalDaysAssigned.sql -text
 ehr/resources/queries/study/bloodSummary.query.xml -text
 ehr/resources/queries/study/bloodSummary.sql -text
 ehr/resources/queries/study/bloodSummary2.sql -text
-ehr/resources/queries/study/bloodSummary_old.sql -text
 ehr/resources/queries/study/chemPivot.sql -text
 ehr/resources/queries/study/chemistryRefRange.query.xml -text
 ehr/resources/queries/study/chemistryRefRange.sql -text
@@ -512,7 +512,6 @@ ehr/resources/queries/study/demographicsAssignmentHistory.sql -text
 ehr/resources/queries/study/demographicsAssignmentSummary.query.xml -text
 ehr/resources/queries/study/demographicsAssignmentSummary.sql -text
 ehr/resources/queries/study/demographicsAssignmentSummary/.qview.xml -text
-ehr/resources/queries/study/demographicsAssignmentSummary_old.sql -text
 ehr/resources/queries/study/demographicsBloodSummary.query.xml -text
 ehr/resources/queries/study/demographicsBloodSummary.sql -text
 ehr/resources/queries/study/demographicsCageClass.query.xml -text
@@ -537,7 +536,6 @@ ehr/resources/queries/study/demographicsMostRecentDeparture.query.xml -text
 ehr/resources/queries/study/demographicsMostRecentDeparture.sql -text
 ehr/resources/queries/study/demographicsMostRecentWeight.query.xml -text
 ehr/resources/queries/study/demographicsMostRecentWeight.sql -text
-ehr/resources/queries/study/demographicsMostRecentWeight_old.sql -text
 ehr/resources/queries/study/demographicsOffspring.query.xml -text
 ehr/resources/queries/study/demographicsOffspring.sql -text
 ehr/resources/queries/study/demographicsOffspring/.qview.xml -text
@@ -595,13 +593,10 @@ ehr/resources/queries/study/irregularObsTreatmentById.query.xml -text
 ehr/resources/queries/study/irregularObsTreatmentById.sql -text
 ehr/resources/queries/study/irregularObsTreatmentByLocation.query.xml -text
 ehr/resources/queries/study/irregularObsTreatmentByLocation.sql -text
-ehr/resources/queries/study/irregularObs_old.sql -text
 ehr/resources/queries/study/majorEvents.query.xml -text
 ehr/resources/queries/study/majorEvents.sql -text
 ehr/resources/queries/study/mensesInterval.query.xml -text
 ehr/resources/queries/study/mensesInterval.sql -text
-ehr/resources/queries/study/obsStatus.query.xml -text
-ehr/resources/queries/study/obsStatus.sql -text
 ehr/resources/queries/study/pairingSuccess.sql -text
 ehr/resources/queries/study/private.query.xml -text
 ehr/resources/queries/study/private.sql -text
@@ -616,7 +611,6 @@ ehr/resources/queries/study/studyDataSurvivorship.sql -text
 ehr/resources/queries/study/studydataRoomAtTime.sql -text
 ehr/resources/queries/study/tbMostRecentTestDate.query.xml -text
 ehr/resources/queries/study/tbMostRecentTestDate.sql -text
-ehr/resources/queries/study/treatmentDate.sql -text
 ehr/resources/queries/study/treatmentSchedule.query.xml -text
 ehr/resources/queries/study/treatmentSchedule.sql -text
 ehr/resources/queries/study/treatmentSchedule/.qview.xml -text
@@ -723,6 +717,10 @@ ehr/tools/extractCreation/extracttsv.pl -text
 ehr/tools/extractCreation/hasher.class -text
 ehr/tools/fixmeta.js -text
 ehr/tools/mySQL_edit.pl -text
+ehr/tools/mySQL_triggers/mySQL_edit.pl -text
+ehr/tools/mySQL_triggers/mysql_delete_triggers.sql -text
+ehr/tools/mySQL_triggers/mysql_insert_triggers.sql -text
+ehr/tools/mySQL_triggers/mysql_update_triggers.sql -text
 ehr/tools/mysql2pg/README.txt -text
 ehr/tools/mysql2pg/col_dump.sql -text
 ehr/tools/mysql2pg/scripts/dataset/alerts.sql -text
@@ -781,9 +779,6 @@ ehr/tools/mysql2pg/scripts/lists/rhesaux.sql -text
 ehr/tools/mysql2pg/scripts/lists/snomap.sql -text
 ehr/tools/mysql2pg/scripts/lists/snomed.sql -text
 ehr/tools/mysql2pg/scripts/setup/setup.sql -text
-ehr/tools/mysql_delete_triggers.sql -text
-ehr/tools/mysql_insert_triggers.sql -text
-ehr/tools/mysql_update_triggers.sql -text
 ehr/tools/notes -text
 ehr/tools/pg_backup/.project -text
 ehr/tools/pg_backup/_netrc -text

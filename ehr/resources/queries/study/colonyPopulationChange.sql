@@ -24,6 +24,7 @@ SELECT
 
 FROM study.Arrival T2
 WHERE T2.date IS NOT NULL
+AND T2.qcstate.publicdata = true
 
 UNION ALL
 
@@ -36,6 +37,7 @@ SELECT
 
 FROM study.Departure T3
 WHERE T3.date IS NOT NULL
+AND T3.qcstate.publicdata = true
 
 UNION ALL
 

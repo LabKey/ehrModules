@@ -143,6 +143,7 @@ CASE WHEN b.testid='CL'
 END as CL
 
 FROM study."Blood Chemistry Results" b
+WHERE b.qcstate.publicdata = true
 
 ) b
 

@@ -41,6 +41,7 @@ CASE WHEN h.testid='CD20'
 END as CD20
 
 FROM study."Immunology Results" h
+WHERE h.qcstate.publicdata = true
 
 ) h
 

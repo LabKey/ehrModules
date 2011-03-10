@@ -301,37 +301,13 @@ if(f.lookup && f.lookup.queryName=='snomed' && f.lookups!=false && f.xtype!='ehr
             return false;
         }
 
-        //add a flag per command to make sure this record fails
-        Ext.each(commands, function(command){
-            Ext.each(command.rows, function(row){
-                row.values._validateOnly = true;
-            }, this);
-
-            command.extraContext = {hello: 1};
-        }, this);
-
         Ext.each(records, function(record){
             record.serverValidationInProgress = true;
         }, this);
 
-        var extraContext = {validateOnly: true};
-
-        //TODO: send context to server to prevent commit
-//        Ext.each(commands, function(c){
-//        }, this);
-
-        this.sendRequest(records, commands, extraContext);
+        //add a flag per command to make sure this record fails
+        this.sendRequest(records, commands, {validateOnly: true, silent: true, targetQCState: null});
     },
-
-//    isValid: function(){
-//        var errors = this.validateRecords();
-//        Ext.each(errors, function(e){
-//            if(!e.warning){
-//                return false;
-//            }
-//        }, this);
-//        return true;
-//    },
 
     getFormEditorConfig: function(fieldName, config){
         var meta = this.findFieldMeta(fieldName);
@@ -519,7 +495,7 @@ console.log(options);
             }, this);
 
             //NOTE this should be keyed using the request context object
-            if(options.jsonData.extraContext.validateOnly)
+            if(options.jsonData.extraContext && options.jsonData.extraContext.silent)
                 msg = '';
 
             if(false !== this.fireEvent("commitexception", msg) && msg){
@@ -542,9 +518,9 @@ console.log(options);
     //this will process the errors associated with 1 record.
     // this might be more than 1 error
     handleValidationError: function(record, serverError, response){
-        //TODO: verify transaction Id matches the most recent attmept.
+        //verify transaction Id matches the most recent request
         if(record.lastTransactionId != response.tId){
-            console.log('There has been a more recent transaction for this record');
+            console.log('There has been a more recent transaction for this record.  Ignoring these errors.');
             return;
         }
 
@@ -585,7 +561,7 @@ console.log(options);
         this.validateRecord(this, record, null, {fireEvent: false, noServerValidation: true});
     },
 
-    //the following 2 methods are overriden because the old approach causes uncommitted client-side records to get destroyed
+    //NOTE: the following 2 methods are overriden because the old approach causes uncommitted client-side records to get destroyed on store load
     deleteRecords : function(records) {
         if (!this.updatable)
             throw "this LABKEY.ext.Store is not updatable!";
@@ -622,7 +598,7 @@ console.log(options);
             });
         }
         else {
-            //NOTE: should it really count as commitcomplete since we never hit the server?
+            //Question: should this really count as commitcomplete since we never hit the server?
             this.fireEvent("commitcomplete");
         }
     },

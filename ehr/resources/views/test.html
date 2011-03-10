@@ -3,26 +3,26 @@
 Ext.onReady(function ()
 {
 
-    Ext.TabPanel.prototype.addClass('extContainer');
-    new Ext.Panel({
-        autoHeight: true,
-        layout: 'anchor',
-        width: '100%',
-        items: [{
-            layout: 'anchor',
-            items: [{
-                xtype: 'tabpanel',
-                //width: '50%',
-                //layout: 'fit',
-                activeTab: 0,
-                items: [{
-                    title: 'Width is extremely large',
-                    xtype: 'panel',
-                    html: 'test'
-                }]
-            }]
-        }]
-    }).render('testDiv');
+//    Ext.TabPanel.prototype.addClass('extContainer');
+//    new Ext.Panel({
+//        autoHeight: true,
+//        layout: 'anchor',
+//        width: '100%',
+//        items: [{
+//            layout: 'anchor',
+//            items: [{
+//                xtype: 'tabpanel',
+//                //width: '50%',
+//                //layout: 'fit',
+//                activeTab: 0,
+//                items: [{
+//                    title: 'Width is extremely large',
+//                    xtype: 'panel',
+//                    html: 'test'
+//                }]
+//            }]
+//        }]
+//    }).render('testDiv');
 
 //    new Ext.Panel({
 //        autoHeight: true,
@@ -33,6 +33,26 @@ Ext.onReady(function ()
 //            html: 'test2'
 //        }]
 //    }).render('testDiv2');
+
+    var config = {
+       schemaName : "core",
+       queryName : 'users',
+       maxRows: 1,
+       success: function (data, options, response) {
+           console.log("selectRows success: " + data.rowCount);
+       },
+       failure: function (response, options) {
+           console.log("selectRows failure");
+       }
+     };
+
+     // add the requests and config arguments one by one
+     var multi = new LABKEY.MultiRequest();
+     multi.add(LABKEY.Query.selectRows, config);
+     multi.add(LABKEY.Query.selectRows, config);
+     multi.add(LABKEY.Query.selectRows, config);
+     multi.send(function () { console.log("send complete"); });
+
 });
 
 

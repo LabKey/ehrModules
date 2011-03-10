@@ -117,6 +117,8 @@ EHR.ext.StoreCollection = Ext.extend(Ext.util.MixedCollection, {
     },
 
     commit: function(commands, records, extraContext){
+        extraContext = extraContext || {};
+
         if (!commands || !commands.length){
             console.log('no changes.  nothing to do');
             this.fireEvent('commitcomplete');
@@ -130,7 +132,7 @@ EHR.ext.StoreCollection = Ext.extend(Ext.util.MixedCollection, {
             console.log(records);
         }
 
-        if(this.fireEvent('beforecommit', records, commands)===false)
+        if(this.fireEvent('beforecommit', records, commands, extraContext)===false)
             return;
 
         var request = Ext.Ajax.request({
@@ -185,6 +187,17 @@ EHR.ext.StoreCollection = Ext.extend(Ext.util.MixedCollection, {
         return isLoading;
     },
 
+    getQueries: function(){
+        var queries = [];
+        this.each(function(s){
+            queries.push({
+                schemaName: s.schemaName,
+                queryName: s.queryName
+            })
+        }, this);
+        return queries;
+    },
+
     onValidation: function(store, records){
         //check other stores
         var maxSeverity = '';
@@ -208,7 +221,6 @@ EHR.ext.StoreCollection = Ext.extend(Ext.util.MixedCollection, {
 
     getOnCommitFailure : function(records) {
         return function(response, options) {
-console.log(options);
             //note: should not matter which child store they belong to
             for(var idx = 0; idx < records.length; ++idx)
                 delete records[idx].saveOperationInProgress;
@@ -235,8 +247,7 @@ console.log(options);
                     msg = 'Could not save changes due to the following error:\n' + (serverError && serverError.exception) ? serverError.exception : response.statusText;
                 }
             }, this);
-
-console.log(response);
+console.log(response)
             //NOTE this should be keyed using the request context object
             if(response.extraContext && response.extraContext.silent){
                 msg = '';

@@ -2139,6 +2139,23 @@ function btn8(){
     LABKEY.Query.insertRows(makeObject(config, data, fields));
 }
 
+function btn9(){
+        //records for qcstate map:
+        var config = {
+             schemaName: 'ehr',
+             queryName: 'qcpermissionmap',
+             rowDataArray: [],
+            success: onSuccess,
+            error: onError
+        };
+        var fields = ('title,entityid,formtype,userid,description').split(',');
+        var data = [
+            ['PE Defaults', 'a456add8-1e6e-102e-8578-dedb35e6870c', 'Physical Exam', '', 'The initial template loaded with a PE'],
+            ['ket/dex/ati', 'c860f774-2015-102e-b638-079f4fb0c864', 'study||Drug Administration||', '', '']
+        ];
+
+        LABKEY.Query.insertRows(makeObject(config, data, fields));
+    }
 
 function makeObject(config, data, fields){
     Ext.each(data, function(row){

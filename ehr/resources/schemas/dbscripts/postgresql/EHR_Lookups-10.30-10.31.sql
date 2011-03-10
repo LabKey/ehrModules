@@ -2126,11 +2126,11 @@ WITH (OIDS=FALSE)
 -- ----------------------------
 DROP TABLE IF EXISTS ehr_lookups.clinpath_services;
 CREATE TABLE ehr_lookups.clinpath_services (
-dataset varchar(255) NOT NULL,
 label varchar(255) not null,
+dataset varchar(255) NOT NULL,
 category varchar(255),
 
-CONSTRAINT PK_clinpath_services PRIMARY KEY (dataset)
+CONSTRAINT PK_clinpath_services PRIMARY KEY (label)
 )
 WITH (OIDS=FALSE)
 
@@ -2140,10 +2140,10 @@ WITH (OIDS=FALSE)
 -- Records of clinpath_services
 -- ----------------------------
 INSERT into ehr_lookups.clinpath_services
-(type, category)
+(dataset, label, category)
 VALUES
-('CBC', 'Hematology'),
-('Vet 19', 'Blood Chemistry')
+('Immunology Results', 'CBC', 'Hematology'),
+('Blood Chemistry Results', 'Vet 19', 'Blood Chemistry')
 ;
 
 -- ----------------------------

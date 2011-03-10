@@ -1,0 +1,21 @@
+<customView xmlns="http://labkey.org/data/xml/queryCustomView">
+   <columns>
+       <column name="rowid"/>
+       <column name="label"/>
+       <column name="description"/>
+       <column name="publicdata"/>
+       <column name="metadata/draftData">
+            <properties>
+                <property name="columnTitle" value="DraftData"/>
+            </properties>
+       </column>
+       <column name="metadata/isDeleted">
+            <properties>
+                <property name="columnTitle" value="isDeleted"/>
+            </properties>
+       </column>
+   </columns>
+   <sorts>
+       <sort column="label"/>
+   </sorts>
+</customView>

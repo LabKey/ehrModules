@@ -22,18 +22,24 @@ SELECT
     SELECT AVG(w.weight) AS _expr
     FROM study.weight w
     WHERE w.id=d.id AND w.date=lastWeight.date
+    AND w.qcstate.publicdata = true
   ) AS weight,
   (
     SELECT
     SUM(bd.quantity) AS _expr
-    FROM study.blood bd
+    FROM study."Blood Draws" bd
     WHERE bd.id=d.id AND
+--TODO
+--         (bd.qcstate.publicdata = true OR bd.qcstate.metadata.draftData = true) AND
         bd.date BETWEEN TIMESTAMPADD('SQL_TSI_DAY', -30, now()) AND now()
+
   ) AS BloodLast30
 
 FROM
     study.demographics d LEFT OUTER JOIN
-    (SELECT w.id, MAX(date) as date FROM study.weight w GROUP BY w.id) lastWeight ON d.id = lastWeight.id
+    (SELECT w.id, MAX(date) as date FROM study.weight w
+    WHERE w.qcstate.publicdata = true
+    GROUP BY w.id) lastWeight ON d.id = lastWeight.id
 
 -- WHERE b.date >= TIMESTAMPADD('SQL_TSI_DAY', -30, now())
 WHERE d.id.status.status = 'Alive'

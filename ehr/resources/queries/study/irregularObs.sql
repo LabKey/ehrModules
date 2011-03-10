@@ -28,15 +28,8 @@ from study.obs o
 -- LEFT JOIN study.housing h
 --   ON (h.id=o.id AND h.date<=o.date AND (o.date<=coalesce(h.odate, now()) ))
 
-WHERE
-  (o.feces is not null AND o.feces !='') OR
-  (o.menses is not null AND o.menses !='') OR
-  (o.behavior is not null AND o.behavior !='') OR
-  (o.breeding is not null AND o.breeding !='') OR
-  (o.other is not null AND o.other !='') OR
-  (o.tlocation is not null AND o.tlocation !='') OR
-  (o.remark is not null AND o.remark !='') OR
-  (o.otherbehavior is not null AND o.otherbehavior !='')
+WHERE o.isIrregular = true
+AND o.qcstate.publicdata = true
 
 UNION ALL
 
@@ -56,10 +49,11 @@ null as breeding,
 null as other,
 null as tlocation,
 null as otherbehavior,
-c.note as Remark,
+c.remark,
 null as dataset,
 'Cage Observation' as description
-FROM lists.cagenotes c
+FROM ehr.cage_observations c
 
-
+--TODO: use to QCstate
+--WHERE c.qcstate.publicdata = true
 

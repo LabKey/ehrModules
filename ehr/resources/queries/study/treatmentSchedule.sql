@@ -84,7 +84,7 @@ LEFT JOIN study.treatment_order t1
   ))
 
 WHERE t1.date is not null
-
+AND t1.qcstate.publicdata = true
 
 --clunky, but it will add the second time for twice dailies
 UNION ALL
@@ -148,7 +148,7 @@ LEFT JOIN study.treatment_order t1
   ))
 
 WHERE t1.date is not null
-
+AND t1.qcstate.publicdata = true
 
 --clunkier still, but will add the third per day dose
 UNION ALL
@@ -201,3 +201,4 @@ LEFT JOIN study.treatment_order t1
     )
 
 WHERE t1.date is not null
+AND t1.qcstate.publicdata = true

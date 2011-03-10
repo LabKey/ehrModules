@@ -22,3 +22,4 @@ LEFT JOIN demographicsViralChallenge vc
 WHERE vc.pathogen = 'SIV' AND vc.challenge_Type = 'Challenge'
 
 AND vc.date is not null
+

@@ -3,6 +3,9 @@
  *
  * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
  */
+
+--NOTE: do not need to account for QCstate b/c study.demographics only allows 1 row per subject
+
 SELECT
 c.lsid,
 
