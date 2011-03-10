@@ -19,30 +19,30 @@ exports.EHR = EHR;
 
 
 //this is done strangely.  need to revisit
-EHR.initShared = function(){
-    return {
-        rows: [],
-        notificationRecipients : [],
-        participantsModified: [],
-        PKsModified: [],
-        publicParticipantsModified: [],
-        publicPKsModified: [],
-        publicRequestsModified: {},
-        demographicsMap: {},
-        errorQcLabel: 'Review Required',
-        qcStateMap: {},
-        verbosity: 1,
-        permissions: {},
-        qcStates: {
-            'Review Required': {
-
-            }
-        }
-    };
-}
-
-var shared = EHR.initShared();
-exports.shared = shared;
+//EHR.initShared = function(){
+//    return {
+//        rows: [],
+//        notificationRecipients : [],
+//        participantsModified: [],
+//        PKsModified: [],
+//        publicParticipantsModified: [],
+//        publicPKsModified: [],
+//        publicRequestsModified: {},
+//        demographicsMap: {},
+//        errorQcLabel: 'Review Required',
+//        qcStateMap: {},
+//        verbosity: 1,
+//        permissions: {},
+//        qcStates: {
+//            'Review Required': {
+//
+//            }
+//        }
+//    };
+//}
+//
+//var shared = EHR.initShared();
+//exports.shared = shared;
 
 //NOTES:
 //set account based on project.  do differently depending on insert/update.  maybe a flag?
@@ -62,10 +62,25 @@ exports.shared = shared;
 function init(event, errors){
     console.log("** evaluating: " + this['javax.script.filename']);
 
-    this.test = 12;
-    console.log('init: '+this.test);
+    this.scriptContext = {
+        rows: [],
+        notificationRecipients : [],
+        participantsModified: [],
+        PKsModified: [],
+        publicParticipantsModified: [],
+        publicPKsModified: [],
+        publicRequestsModified: {},
+        demographicsMap: {},
+        errorQcLabel: 'Review Required',
+        qcStateMap: {},
+        verbosity: 1,
+        permissions: {},
+        qcStates: {
+            'Review Required': {
 
-    this.shared = EHR.initShared();
+            }
+        }
+    };
 
 //    LABKEY.Query.insertRows({
 //        schemaName: 'ehr',
@@ -100,9 +115,9 @@ function init(event, errors){
     //figure out who the user is, user roles and calculate which QC states they can use
     LABKEY.Security.getUserPermissions({
         userId: LABKEY.Security.currentUser.id,
+        scope: this,
         success: function(data, response){
-            //console.log(arguments);
-            shared.permissions = data;
+            this.scriptContext.permissions = data;
         },
         failure: EHR.onFailure
     });
@@ -111,18 +126,18 @@ function init(event, errors){
     LABKEY.Query.selectRows({
         schemaName: 'study',
         queryName: 'QCState',
+        columns: 'RowId,Label,PublicData,metadata/DraftData,metadata/isDeleted',
+        scope: this,
         success: function(data){
             var row;
             for(var i=0;i<data.rows.length;i++){
                 row = data.rows[i];
-                shared.qcStateMap[row.RowId] = {
+                this.scriptContext.qcStateMap[row.RowId] = {
                     label: row.Label,
                     publicData: row.PublicData,
-                    //TODO: calculate these based on user roles
-                    userCanUpdate: true,
-                    userCanCreate: true,
-                    userCanDelete: true,
-                    isDraft: false
+                    draftData: row['metadata/DraftData']
+                    //TODO: calculate permissions based on user roles
+
                 }
             }
         },
@@ -132,106 +147,109 @@ function init(event, errors){
 exports.init = init;
 
 function beforeInsert(row, errors){
+    var scriptErrors = {};
 
-    if(shared.verbosity > 0)
-        console.log("beforeInsert: " + this.test +'/' + row);
+    if(this.scriptContext.verbosity > 0)
+        console.log("beforeInsert: " + row);
 
     if(row.hasOwnProperty('Id'))
-        EHR.addError(errors, 'Id', 'A server-side error', 'WARN');
+        EHR.addError(scriptErrors, 'Id', 'A server-side error', 'WARN');
 
-    //EHR.addError(errors, 'date', 'Another error', 'WARN');
+    //EHR.addError(scriptErrors, 'date', 'Another error', 'WARN');
 
-    EHR.rowInit.call(this, row, errors, null);
+    EHR.rowInit.call(this, row, scriptErrors, null);
 
     //dataset-specific beforeInsert
     if(this.onUpsert)
-        this.onUpsert(row, errors);
+        this.onUpsert(row, scriptErrors);
     if(this.onInsert)
-        this.onInsert(row, errors);
+        this.onInsert(row, scriptErrors);
 
-    EHR.rowEnd.call(this, row, errors, null);
+    EHR.rowEnd.call(this, row, null, errors, scriptErrors);
 }
 exports.beforeInsert = beforeInsert;
 
 function afterInsert(row, errors){
-    if(shared.verbosity > 0)
-        console.log("afterInsert: " + this.test +'/' + row);
+    if(this.scriptContext.verbosity > 0)
+        console.log("afterInsert: " + row);
 
-    if(shared.participantsModified.indexOf(row.id) == -1)
-        shared.participantsModified.push(row.id);
+    if(this.scriptContext.participantsModified.indexOf(row.id) == -1)
+        this.scriptContext.participantsModified.push(row.id);
 
-    if(shared.PKsModified.indexOf(row.lsid) == -1)
-        shared.PKsModified.push(row.lsid);
+    if(this.scriptContext.PKsModified.indexOf(row.lsid) == -1)
+        this.scriptContext.PKsModified.push(row.lsid);
 
-    if(row.QCState && shared.qcStateMap[row.QCState].publicData){
-        if(shared.publicParticipantsModified.indexOf(row.id) == -1)
-            shared.publicParticipantsModified.push(row.id);
+    if(row.QCState && this.scriptContext.qcStateMap[row.QCState].publicData){
+        if(this.scriptContext.publicParticipantsModified.indexOf(row.id) == -1)
+            this.scriptContext.publicParticipantsModified.push(row.id);
 
-        if(shared.publicPKsModified.indexOf(row.lsid) == -1)
-            shared.publicPKsModified.push(row.lsid);
+        if(this.scriptContext.publicPKsModified.indexOf(row.lsid) == -1)
+            this.scriptContext.publicPKsModified.push(row.lsid);
     }
 }
 exports.afterInsert = afterInsert;
 
 function beforeUpdate(row, oldRow, errors){
-    if(shared.verbosity > 0)
-        console.log("beforeUpdate: " + this.test +'/' + row);
+    var scriptErrors = {};
 
-    EHR.rowInit(row, errors, oldRow);
+    if(this.scriptContext.verbosity > 0)
+        console.log("beforeUpdate: " + row);
+
+    EHR.rowInit(row, scriptErrors, oldRow);
 
     //dataset-specific beforeUpdate
     if(this.onUpsert)
-        this.onUpsert(row, errors, oldRow);
+        this.onUpsert(row, scriptErrors, oldRow);
     if(this.onUpdate)
-        this.onUpdate(row, errors, oldRow);
+        this.onUpdate(row, scriptErrors, oldRow);
 
-    EHR.rowEnd(row, errors, oldRow);
+    EHR.rowEnd.call(this, row, oldRow, errors, scriptErrors);
 }
 exports.beforeUpdate = beforeUpdate;
 
 function afterUpdate(row, oldRow, errors){
-    console.log("afterUpdate: " + this.test +'/' + row);
+    console.log("afterUpdate: " + row);
 
-    if(shared.participantsModified.indexOf(row.id) == -1)
-        shared.participantsModified.push(row.id);
-    if(shared.participantsModified.indexOf(oldRow.id) == -1)
-        shared.participantsModified.push(oldRow.id);
+    if(this.scriptContext.participantsModified.indexOf(row.id) == -1)
+        this.scriptContext.participantsModified.push(row.id);
+    if(this.scriptContext.participantsModified.indexOf(oldRow.id) == -1)
+        this.scriptContext.participantsModified.push(oldRow.id);
 
-    if(shared.PKsModified.indexOf(row.lsid) == -1)
-        shared.PKsModified.push(row.lsid);
+    if(this.scriptContext.PKsModified.indexOf(row.lsid) == -1)
+        this.scriptContext.PKsModified.push(row.lsid);
 
-    if(row.QCState && shared.qcStateMap[row.QCState].publicData){
-        if(shared.publicParticipantsModified.indexOf(row.id) == -1)
-            shared.publicParticipantsModified.push(row.id);
-        if(shared.publicParticipantsModified.indexOf(oldRow.id) == -1)
-            shared.publicParticipantsModified.push(oldRow.id);
+    if(row.QCState && this.scriptContext.qcStateMap[row.QCState].publicData){
+        if(this.scriptContext.publicParticipantsModified.indexOf(row.id) == -1)
+            this.scriptContext.publicParticipantsModified.push(row.id);
+        if(this.scriptContext.publicParticipantsModified.indexOf(oldRow.id) == -1)
+            this.scriptContext.publicParticipantsModified.push(oldRow.id);
 
-        if(shared.publicPKsModified.indexOf(row.lsid) == -1)
-            shared.publicPKsModified.push(row.lsid);
+        if(this.scriptContext.publicPKsModified.indexOf(row.lsid) == -1)
+            this.scriptContext.publicPKsModified.push(row.lsid);
     }
 }
 exports.afterUpdate = afterUpdate;
 
 function beforeDelete(row, errors){
-    console.log("beforeDelete: " + this.test +'/' + row);
+    console.log("beforeDelete: " + row);
 }
 exports.beforeDelete = beforeDelete;
 
 function afterDelete(row, errors){
-    console.log("afterDelete: " + this.test +'/' + row);
+    console.log("afterDelete: " + row);
 
-    if(shared.participantsModified.indexOf(row.id) == -1)
-        shared.participantsModified.push(row.id);
+    if(this.scriptContext.participantsModified.indexOf(row.id) == -1)
+        this.scriptContext.participantsModified.push(row.id);
 
-    if(shared.PKsModified.indexOf(row.lsid) == -1)
-        shared.PKsModified.push(row.lsid);
+    if(this.scriptContext.PKsModified.indexOf(row.lsid) == -1)
+        this.scriptContext.PKsModified.push(row.lsid);
 
-    if(row.QCState && shared.qcStateMap[row.QCState].publicData){
-        if(shared.publicParticipantsModified.indexOf(row.id) == -1)
-            shared.publicParticipantsModified.push(row.id);
+    if(row.QCState && this.scriptContext.qcStateMap[row.QCState].publicData){
+        if(this.scriptContext.publicParticipantsModified.indexOf(row.id) == -1)
+            this.scriptContext.publicParticipantsModified.push(row.id);
 
-        if(shared.publicPKsModified.indexOf(row.lsid) == -1)
-            shared.publicPKsModified.push(row.lsid);
+        if(this.scriptContext.publicPKsModified.indexOf(row.lsid) == -1)
+            this.scriptContext.publicPKsModified.push(row.lsid);
     }
 }
 exports.afterDelete = afterDelete;
@@ -241,23 +259,23 @@ function complete(event, errors) {
 //        errors[i].queryName = this['javax.script.filename'];
 //    }
 
-    if(shared.verbosity > 0){
-        console.log("complete: " + this.test +'/' + event);
-        console.log('Participants modified: '+shared.participantsModified);
-        console.log('PKs modified: '+shared.PKsModified);
+    if(this.scriptContext.verbosity > 0){
+        console.log("complete: " + event);
+        console.log('Participants modified: '+this.scriptContext.participantsModified);
+        console.log('PKs modified: '+this.scriptContext.PKsModified);
     }
 
     if(this.onComplete)
         this.onComplete(event, errors);
 
     //send emails. query notificationRecipients table based on notification type(s)
-    if(EHR.notificationTypes || Ext.isEmpty(shared.notificationRecipients)){
+    if(EHR.notificationTypes || Ext.isEmpty(this.scriptContext.notificationRecipients)){
 
     }
 
     //also look to notificationRecipients array
 
-    if(shared.requestsModified && shared.requestsModified.length){
+    if(this.scriptContext.requestsModified && this.scriptContext.requestsModified.length){
 
     }
 
@@ -276,16 +294,20 @@ exports.complete = complete;
 
 
 EHR.rowInit = function(row, errors, oldRow){
+
     if(oldRow && oldRow.QCState){
-
+        //TODO: flag records becoming public
     }
+//    else if (!oldRow && row.QCState){
+//        //TODO: flag records becoming public
+//    }
 
-    console.log("row init: " + this.test);
+    console.log("row init: ");
 
     //take the current row's QC, compare with old Row's QC if updating
     //reject immediately if they do not have permissions
 
-    //empty strings can do funny things in grids...
+    //empty strings can do funny things, so we make them null
     for (var i in row){
         if (row[i] === ''){
             row[i] = null;
@@ -293,12 +315,9 @@ EHR.rowInit = function(row, errors, oldRow){
     }
 
     //these are extra checks to fix mySQL data
-//TODO: this is only active for debugging purposes
-//    if (row.dataSource == 'etl')
+    if (row.dataSource == 'etl')
         EHR.ETL.fixRow.call(this, row, errors);
 
-
-    //these checks are always run:
 
 
     //certain forms display current location.  if the row has this property, but it is blank, we add it.
@@ -378,8 +397,8 @@ EHR.rowInit = function(row, errors, oldRow){
 };
 
 
-EHR.rowEnd = function(row, errors, oldRow){
-    console.log("row end: " + this.test);
+EHR.rowEnd = function(row, oldRow, errors, scriptErrors){
+    console.log("row end: ");
 
     //use flag in context
     var errorThreshold = 'INFO';
@@ -387,14 +406,14 @@ EHR.rowEnd = function(row, errors, oldRow){
     //this flag is to let records be validated, but forces failure of validation
     if(this.extraContext && this.extraContext.validateOnly){
         console.log('validate only');
-        EHR.addError(errors, '_validateOnly', 'Ignore this error');
+        EHR.addError(scriptErrors, '_validateOnly', 'Ignore this error');
     }
 
     //this converts error objects into an array of strings
     //it also disards errors below the specified threshold
-    var transformedErrors = EHR.validation.processErrors(row, errors, errorThreshold);
+    var totalErrors = EHR.validation.processErrors(row, errors, scriptErrors, errorThreshold);
 
-    if (transformedErrors){
+    if (totalErrors){
         if(this.setDescription){
             row.Description = this.setDescription(row, errors).join(',\n');
             if (row.Description.length > 4000)
@@ -412,20 +431,17 @@ EHR.rowEnd = function(row, errors, oldRow){
         }
         row.Description = row.Description.join(',\n');
         delete row.QCState;
-        row.QCStateLabel = shared.errorQcLabel;
+        row.QCStateLabel = this.scriptContext.errorQcLabel;
     }
 
-    if (shared.verbosity > 0 )
+    if (this.scriptContext.verbosity > 0 )
         console.log("New row: "+row);
 
-    shared.rows.push(row);
-
-    //NOTE: not sure if this is needed.  should review how global errors object is handled
-    errors = transformedErrors;
+    this.scriptContext.rows.push(row);
 };
 
 EHR.onBecomePublic = function(row, errors, oldRow){
-    console.log("onBecomePublic: " + this.test);
+    console.log("onBecomePublic: ");
 
     //TODO: replace date with begindate if data is becoming public
 
@@ -443,8 +459,8 @@ EHR.findDemographics = function(config){
         throw 'Error in EHR.findDemographics: missing Id or callback';
     }
 
-    if(shared.demographicsMap[config.participant]){
-        config.callback.apply(config.scope || this, [shared.demographicsMap[config.participant]])
+    if(this.scriptContext.demographicsMap[config.participant]){
+        config.callback.apply(config.scope || this, [this.scriptContext.demographicsMap[config.participant]])
     }
     else {
         LABKEY.Query.selectRows({
@@ -455,8 +471,8 @@ EHR.findDemographics = function(config){
             success: function(data){
                 if(data && data.rows && data.rows.length==1){
                     var row = data.rows[0];
-                    shared.demographicsMap[row.Id] = row;
-                    config.callback.apply(config.scope || this, [shared.demographicsMap[row.Id]]);
+                    this.scriptContext.demographicsMap[row.Id] = row;
+                    config.callback.apply(config.scope || this, [this.scriptContext.demographicsMap[row.Id]]);
                 }
                 else
                     config.callback.apply(config.scope || this);
@@ -498,7 +514,7 @@ EHR.sendEmail = function(config){
     if(!config.recipients)
         config.recipients = [];
 
-    if(shared.verbosity > 0)
+    if(this.scriptContext.verbosity > 0)
         console.log('Sending email');
 
     LABKEY.Query.selectRows({
@@ -507,9 +523,9 @@ EHR.sendEmail = function(config){
         filterArray: [LABKEY.Filter.create('notificationType', config.notificationType, LABKEY.Filter.Types.EQUAL)],
         success: function(data){
             for(var i=0;i<data.rows.length;i++){
-                config.recipients.push(LABKEY.Message.createRecipient(LABKEY.Message.recipientType.to, data.rows[i].recipient));
+                config.recipients.push(LABKEY.Message.createPrincipalRecipient(LABKEY.Message.recipientType.to, data.rows[i].recipient));
 
-                if(shared.verbosity > 0)
+                if(this.scriptContext.verbosity > 0)
                     console.log('Recipient: '+data.rows[i].recipient);
             }
         },
@@ -531,37 +547,28 @@ EHR.sendEmail = function(config){
 };
 
 EHR.validation = {
-    processErrors: function(row, errors, errorThreshold){
+    processErrors: function(row, errors, scriptErrors, errorThreshold){
         var error;
-        var transformedErrors = {};
-        var newErrors;
-        var fieldErrors;
+        var totalErrors = 0;
 
-        for(var i in errors){
-            fieldErrors = errors[i];
-            newErrors = [];
-
-            for(var j=0;j<fieldErrors.length;j++){
-                error = fieldErrors[j];
+        for(var i in scriptErrors){
+            for(var j=0;j<scriptErrors[i].length;j++){
+                error = scriptErrors[i][j];
 
                 if (errorThreshold && EHR.validation.errorSeverity[error.severity] < EHR.validation.errorSeverity[errorThreshold]){
                     console.log('error below threshold');
                     continue;
                 }
 
-                newErrors.push(error.severity+': '+error.msg);
-            }
+                if(!errors[i])
+                    errors[i] = {};
 
-            if(newErrors.length){
-                errors[i] = newErrors;
-                transformedErrors[i] = newErrors;
+                errors[i].push(error.severity+': '+error.msg);
+                totalErrors++;
             }
         }
 
-        //tests whether transformedErrors is an empty object or not
-        for (var i in transformedErrors){
-            return transformedErrors;
-        }
+        return totalErrors;
     },
     errorSeverity: {
         DEBUG: 0,
@@ -736,7 +743,7 @@ EHR.ETL = {
         if(this.onETL)
             this.onETL(row, errors);
 
-        if(shared.verbosity > 0)
+        if(this.scriptContext.verbosity > 0)
             console.log('Repaired: '+row);
     },
     fixProject: function(row, errors){
@@ -748,20 +755,16 @@ EHR.ETL = {
         }
     },
     fixParticipantId: function (row, errors){
-        if (!row.Id){
+        if (row.hasOwnProperty('Id') && !row.Id){
             row.id = 'MISSING';
             EHR.addError(errors, 'Id', 'Missing Id', 'ERROR');
-            //row.QCStateLabel = errorQC;
         }
-
-        //TODO: regex validate patterns and warn
     },
     addDate: function (row, errors){
-        if (!row.Date){
-            //we need to insert something for a date...
-            row.Date = new java.util.Date();
+        if (row.hasOwnProperty('Date') && !row.Date){
+            //row will fail unless we add something in this field
+            row.date = new java.util.Date();
             EHR.addError(errors, 'date', 'Missing Date', 'ERROR');
-            //row.QCStateLabel = errorQC;
         }
     },
     fixBiopsyCase: function(row, errors){
