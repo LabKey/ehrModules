@@ -17,11 +17,10 @@ package org.labkey.ehr.security;
 
 import org.labkey.api.security.*;
 import org.labkey.api.security.permissions.AdminPermission;
+import org.labkey.api.security.permissions.DeletePermission;
 import org.labkey.api.security.permissions.InsertPermission;
 import org.labkey.api.security.permissions.ReadPermission;
 import org.labkey.api.security.permissions.UpdatePermission;
-import org.labkey.api.security.roles.AbstractRole;
-import org.labkey.ehr.EHRModule;
 
 /**
  * User: jeckels
@@ -35,7 +34,9 @@ public class EHRDataAdminRole extends AbstractEHRRole
                 AdminPermission.class,
                 ReadPermission.class,
                 InsertPermission.class,
-                UpdatePermission.class);
+                UpdatePermission.class,
+                DeletePermission.class
+        );
 
         addExcludedPrincipal(org.labkey.api.security.SecurityManager.getGroup(Group.groupGuests));
     }
