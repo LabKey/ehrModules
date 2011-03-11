@@ -9,6 +9,7 @@ Ext.namespace("EHR", "EHR.ext");
 LABKEY.requiresScript("/ehr/Utils.js");
 LABKEY.requiresScript("/ehr/ehrMetaHelper.js");
 
+
 /**
  * @memberOf LABKEY.ext.Store#
  * @name beforemetachange
@@ -53,16 +54,8 @@ EHR.ext.AdvancedStore = Ext.extend(LABKEY.ext.Store, {
     initMonitorValid: function(){
         this.on('update', this.validateRecord, this);
         this.on('add', this.validateRecords, this);
-        this.on('load', this.validateRecords, this);
+//        this.on('load', this.validateRecords, this);
         this.on('remove', this.validationOnRemove, this);
-
-        this.on('save', function(store, batch, data){
-            console.log('on save')
-            console.log(arguments)
-        }, this);
-
-//        if(this.doServerValidation)
-//            this.on('update', this.validateRecordOnServer, this, {buffer: 500, delay: 500});
 
         this.validateRecords(this);
     },
@@ -70,7 +63,7 @@ EHR.ext.AdvancedStore = Ext.extend(LABKEY.ext.Store, {
     stopMonitorValid: function(){
         this.un('update', this.validateRecord, this);
         this.un('add', this.validateRecords, this);
-        this.un('load', this.validateRecords, this);
+//        this.un('load', this.validateRecords, this);
         this.on('remove', this.validationOnRemove, this);
 
 //        this.un('update', this.validateRecordOnServer, this);
@@ -106,7 +99,7 @@ EHR.ext.AdvancedStore = Ext.extend(LABKEY.ext.Store, {
             }
 
 if(f.lookup && f.lookup.queryName=='snomed' && f.lookups!=false && f.xtype!='ehr-snomedcombo'){
-    console.log('lookup to snomed');
+    console.log('ERROR: lookup to snomed');
     console.log(f)
 }
         }, this);
@@ -207,8 +200,6 @@ if(f.lookup && f.lookup.queryName=='snomed' && f.lookups!=false && f.xtype!='ehr
 
     maxErrorSeverity: function(){
         var maxSeverity;
-//console.log('errors:')
-//console.log(this.errors)
         this.errors.each(function(e){
             maxSeverity = EHR.utils.maxError(maxSeverity, e.severity);
         }, this);
@@ -233,10 +224,11 @@ if(f.lookup && f.lookup.queryName=='snomed' && f.lookups!=false && f.xtype!='ehr
 
     validateRecord: function(store, r, operation, config){
         config = config || {};
-        if(debug){
+//        if(debug){
 //            console.log('Validating Record: '+r.id);
 //            console.log('Operation: '+operation);
-        }
+//            console.log(config)
+//        }
 
         r.errors = r.errors || [];
 
@@ -275,6 +267,8 @@ if(f.lookup && f.lookup.queryName=='snomed' && f.lookups!=false && f.xtype!='ehr
 
         //this is designed such that validateRecords() can call validateRecord() multiple times without events firing
         if(config.fireEvent!==false){
+            console.log('fire validation event: '+r.id)
+            console.log(config)
             this.fireEvent('validation', this, [r], config);
         }
 
@@ -292,12 +286,9 @@ if(f.lookup && f.lookup.queryName=='snomed' && f.lookups!=false && f.xtype!='ehr
             return;
         }
 
-        console.log('starting server validation on: '+records.length);
-
         var commands = this.getChanges(records);
-
         if (!commands.length){
-            console.log('No changes, not going to validate on server');
+//            console.log('No changes, not going to validate on server');
             return false;
         }
 
@@ -327,7 +318,7 @@ if(f.lookup && f.lookup.queryName=='snomed' && f.lookups!=false && f.xtype!='ehr
         return recs;
     },
 
-    //NOTE: removed unwanted checking from LABKEY store
+    //NOTE: removed unwanted checking contained in LABKEY store
     readyForSave: function(){
         return true;
     },
@@ -441,6 +432,18 @@ if(f.lookup && f.lookup.queryName=='snomed' && f.lookups!=false && f.xtype!='ehr
         this.sendRequest(records, commands);
     },
 
+    getChanges: function(records){
+        var commands = EHR.ext.AdvancedStore.superclass.getChanges.apply(this, arguments);
+        Ext.each(commands, function(command){
+            command.extraContext = {storeId: this.storeId};
+
+            Ext.each(command.rows, function(row){
+                row.values._recordId = row.oldKeys[this.reader.meta.id];
+            }, this);
+        }, this);
+        return commands;
+    },
+
     //NOTE: split this into a separate method so validateOnServer() can call it separately
     sendRequest: function(records, commands, extraContext){
         var request = Ext.Ajax.request({
@@ -473,18 +476,18 @@ if(f.lookup && f.lookup.queryName=='snomed' && f.lookups!=false && f.xtype!='ehr
 
             var serverError = this.getJson(response);
 
-            //this is done because the structure of the error object differs depending on whether you sent a single row or multiple
-            //this is an attempt to normalize, but should be removed when possible
-            if(serverError.rowNumber!==undefined || !serverError.errors){
-                //this means either we only submitted 1 row, or there was an exception
-                serverError = {errors: [serverError], exception: serverError.exception};
-            }
-console.log(options);
+//            //this is done because the structure of the error object differs depending on whether you sent a single row or multiple
+//            //this is an attempt to normalize, but should be removed when possible
+//            if(serverError.rowNumber!==undefined || !serverError.errors){
+//                //this means either we only submitted 1 row, or there was an exception
+//                serverError = {errors: [serverError], exception: serverError.exception};
+//            }
+
             var msg;
             Ext.each(serverError.errors, function(error){
                 //handle validation script errors and exceptions differently
                 if(error.errors && error.errors.length){
-                    this.handleValidationErrors(records, error, response);
+                    this.handleValidationErrors(error, response, serverError.extraContext);
                     msg = "Could not save changes due to errors. Please check the form for fields marked in red.";
                 }
                 else {
@@ -495,7 +498,7 @@ console.log(options);
             }, this);
 
             //NOTE this should be keyed using the request context object
-            if(options.jsonData.extraContext && options.jsonData.extraContext.silent)
+            if(serverError.extraContext && serverError.extraContext)
                 msg = '';
 
             if(false !== this.fireEvent("commitexception", msg) && msg){
@@ -504,10 +507,10 @@ console.log(options);
         };
     },
 
-    handleValidationErrors: function(records, serverError, response){
-        var record = records[serverError.rowNumber];
+    handleValidationErrors: function(serverError, response, extraContext){
+        var record = this.getById(serverError.row._recordId);
         if(record){
-            this.handleValidationError(record, serverError, response, response);
+            this.handleValidationError(record, serverError, response, extraContext);
         }
         else {
             console.log('ERROR: Record not found');
@@ -517,14 +520,14 @@ console.log(options);
 
     //this will process the errors associated with 1 record.
     // this might be more than 1 error
-    handleValidationError: function(record, serverError, response){
+    handleValidationError: function(record, serverError, response, extraContext){
         //verify transaction Id matches the most recent request
         if(record.lastTransactionId != response.tId){
-            console.log('There has been a more recent transaction for this record.  Ignoring these errors.');
+            console.log('There has been a more recent transaction for this record.  Ignoring this one.');
             return;
         }
 
-        //remove all old errors
+        //remove all old errors for this record
         record.errors = [];
         this.errors.each(function(error){
             if(error.record==record){
@@ -533,32 +536,40 @@ console.log(options);
         }, this);
 
         Ext.each(serverError.errors, function(e){
-            //this is a flag used by server-side validation scripts
-            if(e.field=='_validateOnly')
-                return;
-
-            var newError = {
-                id: LABKEY.Utils.generateUUID(),
-                field: e.field,
-                //meta: e.field,
-                message: e.message,
-                record: record,
-                severity: 'ERROR',
-                errorValue: record.get(e.field),
-                fromServer: true
-            }
-
-            var msg = e.message.split(': ');
-            if(msg.length>1){
-                newError.severity = msg.shift();
-                newError.message = msg.join('');
-            }
-
-            record.errors.push(newError);
+            this.processValidationError(record, e)
         }, this);
 
+        if(extraContext && extraContext.skippedErrors && extraContext.skippedErrors[record.id]){
+            Ext.each(extraContext.skippedErrors[record.id], function(e){
+                this.processValidationError(record, e, true)
+            }, this);
+        }
         //re-run client-side validation.
-        this.validateRecord(this, record, null, {fireEvent: false, noServerValidation: true});
+        this.validateRecord(this, record, null, {fireEvent: true, noServerValidation: true});
+    },
+
+    processValidationError: function(record, error, noParse){
+        //this is a flag used by server-side validation scripts
+        if(error.field=='_validateOnly')
+            return;
+
+        if(!noParse){
+            var msg = error.message.split(': ');
+            if(msg.length>1){
+                error.severity = msg.shift();
+                error.message = msg.join(': ');
+            }
+        }
+
+        record.errors.push({
+            id: LABKEY.Utils.generateUUID(),
+            field: error.field,
+            message: error.message,
+            record: record,
+            severity: error.severity || 'ERROR',
+            errorValue: record.get(error.field),
+            fromServer: true
+        });
     },
 
     //NOTE: the following 2 methods are overriden because the old approach causes uncommitted client-side records to get destroyed on store load

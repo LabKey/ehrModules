@@ -187,7 +187,7 @@ Ext.extend(EHR.ext.ImportPanelBase, Ext.Panel, {
 
     calculatePermissions: function(permmissionMap){
         this.permmissionMap = permmissionMap;
-console.log(this.permmissionMap);
+//console.log(this.permmissionMap);
 
         this.populateButtons();
     },

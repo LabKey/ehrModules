@@ -318,20 +318,13 @@ EHR.ext.GridFormPanel = Ext.extend(Ext.Panel,
                 name: 'save-template-button',
                 handler: function()
                 {
-                    var theWindow = new Ext.Window({
-                        closeAction:'hide',
-                        width: 800,
-                        minWidth: 300,
-                        maxWidth: 800,
-                        items: [{
-                            xtype: 'ehr-savetemplatepanel',
-                            importPanel: this,
-                            grid: this.theGrid,
-                            formType: this.store.storeId,
-                            ref: 'theForm'
-                        }]
+                    var theWindow = new EHR.ext.SaveTemplatePanel({
+                        width: 600,
+                        height: 300,
+                        importPanel: this.importPanel,
+                        grid: this.theGrid,
+                        formType: this.store.storeId
                     });
-
                     theWindow.show();
                 }
             },

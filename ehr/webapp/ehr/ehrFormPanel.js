@@ -45,6 +45,7 @@ Ext.extend(EHR.ext.FormPanel, Ext.FormPanel,
             ,trackResetOnLoad: true
             ,bubbleEvents: ['added']
             ,buttonAlign: 'left'
+            ,monitorValid: true
         });
 
         Ext.applyIf(this, {
@@ -63,7 +64,6 @@ Ext.extend(EHR.ext.FormPanel, Ext.FormPanel,
                 showDeleteBtn: true
             }
             //,deferredRender: true
-            ,monitorValid: true
             ,bbar: this.showStatus ? {
                 xtype: 'statusbar',
                 defaultText: 'Default text',
@@ -91,6 +91,10 @@ Ext.extend(EHR.ext.FormPanel, Ext.FormPanel,
         }
 
         this.on('recordchange', this.markInvalid, this, {buffer: 100, delay: 100});
+
+//        this.on('clientvalidation', function(){
+//            console.log('client validation')
+//        }, this);
     },
     loadQuery: function(store)
     {
@@ -168,6 +172,7 @@ Ext.extend(EHR.ext.FormPanel, Ext.FormPanel,
             tag: 'div',
             ref: 'errorEl',
             border: false,
+            width: 350,
             style: 'padding:5px;text-align:center;'
         });
 
@@ -189,8 +194,8 @@ Ext.extend(EHR.ext.FormPanel, Ext.FormPanel,
             this.getBottomToolbar().setStatus({text: 'ERRORS', iconCls: 'x-status-error'});
         else
             this.getBottomToolbar().setStatus({text: 'Section OK', iconCls: 'x-status-valid'});
-
-//        this.markInvalid();
+console.log('onStore validate')
+        this.markInvalid();
     },
 
     markInvalid : function()
@@ -214,13 +219,6 @@ Ext.extend(EHR.ext.FormPanel, Ext.FormPanel,
                     if ("_form" == error.field){
                         formMessages.push(error.message);
                     }
-//                    //NOTE: we will override the field's .getErrors() method instead
-//                    else {
-//                        if(toMarkInvalid[error.field])
-//                            toMarkInvalid[error.field] += '<br>'+error.message;
-//                        else
-//                            toMarkInvalid[error.field] = error.message;
-//                    }
                 }
                 else {
                     formMessages.push(error.message);
@@ -231,9 +229,6 @@ Ext.extend(EHR.ext.FormPanel, Ext.FormPanel,
             }
         }, this);
 
-//        if (!EHR.utils.isEmptyObj(toMarkInvalid))
-//            this.getForm().markInvalid(toMarkInvalid);
-
         if(errorsInHiddenRecords)
             formMessages.push('There are errors in one or more records.  Problem records should be highlighted in red.');
 
@@ -241,6 +236,11 @@ Ext.extend(EHR.ext.FormPanel, Ext.FormPanel,
             formMessages = Ext.util.Format.htmlEncode(formMessages.join('\n'));
             this.errorEl.update(formMessages);
         }
+
+        this.getForm().items.each(function(f){
+            f.isValid(false);
+        }, this);
+
     }
 });
 Ext.reg('ehr-formpanel', EHR.ext.FormPanel);

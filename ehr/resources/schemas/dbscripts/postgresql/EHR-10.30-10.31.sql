@@ -295,7 +295,7 @@ CREATE TABLE ehr.notificationTypes
     NotificationType varchar(4000) NOT NULL,
     description text,
 
-    Container ENTITYID NOT NULL,
+--     Container ENTITYID NOT NULL,
     CreatedBy USERID NOT NULL,
     Created TIMESTAMP NOT NULL,
     ModifiedBy USERID NOT NULL,
@@ -304,14 +304,15 @@ CREATE TABLE ehr.notificationTypes
     CONSTRAINT PK_notificationTypes PRIMARY KEY (NotificationType)
 );
 
--- INSERT into ehr.notificationTypes
--- (NotificationType, description)
--- VALUES
--- ('Clinpath Service Request', ''),
--- ('Pathology Service Request', ''),
--- ('CPI Service Request', ''),
--- ('Animal Care Service Request', '')
--- ;
+INSERT into ehr.notificationTypes
+(NotificationType, description)
+VALUES
+('Clinpath Service Request', ''),
+('Pathology Service Request', ''),
+('CPI Service Request', ''),
+('Animal Care Service Request', ''),
+('Colony Validation - General', 'Subscribing to this notification will result in emails for general colony records issues like records needing attention, animals missing from the demographics table, etc.')
+;
 
 DROP TABLE IF EXISTS ehr.notificationRecipients;
 CREATE TABLE ehr.notificationRecipients

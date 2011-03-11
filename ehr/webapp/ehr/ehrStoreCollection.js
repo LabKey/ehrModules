@@ -47,7 +47,7 @@ EHR.ext.StoreCollection = Ext.extend(Ext.util.MixedCollection, {
         });
 
         if(this.monitorValid){
-            store.on('validation', this.onValidation, this, {buffer: 30});
+            store.on('validation', this.onValidation, this);
             //store.on('validation', this.onValidation, this, {buffer: 30});
             store.initMonitorValid();
         }
@@ -61,13 +61,13 @@ EHR.ext.StoreCollection = Ext.extend(Ext.util.MixedCollection, {
     initMonitorValid: function(){
         this.monitorValid = true;
         this.each(function(store){
-            store.on('validation', this.onValidation, this, {buffer: 30});
+            store.on('validation', this.onValidation, this);
         }, this);
     },
 
     stopMonitorValid: function(){
         this.each(function(store){
-            this.store.un('validation', this.onValidation, this, {buffer: 30});
+            this.store.un('validation', this.onValidation, this);
         }, this);
         this.monitorValid = false;
     },
@@ -125,12 +125,12 @@ EHR.ext.StoreCollection = Ext.extend(Ext.util.MixedCollection, {
             return;
         }
 
-        if(debug){
-            console.log('commands to be sent: '+commands.length);
-            console.log(commands);
-            console.log('records to be sent: '+records.length);
-            console.log(records);
-        }
+//        if(debug){
+//            console.log('commands to be sent: '+commands.length);
+//            console.log(commands);
+//            console.log('records to be sent: '+records.length);
+//            console.log(records);
+//        }
 
         if(this.fireEvent('beforecommit', records, commands, extraContext)===false)
             return;
@@ -204,7 +204,7 @@ EHR.ext.StoreCollection = Ext.extend(Ext.util.MixedCollection, {
         this.each(function(store){
             maxSeverity = EHR.utils.maxError(maxSeverity, store.maxErrorSeverity());
         }, this);
-
+console.log('storecollection validation')
         this.fireEvent('validation', this, maxSeverity);
     },
 
@@ -227,18 +227,18 @@ EHR.ext.StoreCollection = Ext.extend(Ext.util.MixedCollection, {
 
             var serverError = this.getJson(response);
 
-            //this is done because the structure of the error object differs depending on whether you sent a single row or multiple
-            //this is an attempt to normalize, but should be removed when possible
-            if(serverError.rowNumber!==undefined || !serverError.errors){
-                //this means we only submitted 1 row, or there was an exception, which will only have one error
-                serverError = {errors: [serverError], exception: serverError.exception};
-            }
+//            //this is done because the structure of the error object differs depending on whether you sent a single row or multiple
+//            //this is an attempt to normalize, but should be removed when possible
+//            if(serverError.rowNumber!==undefined || !serverError.errors){
+//                //this means we only submitted 1 row, or there was an exception, which will only have one error
+//                serverError = {errors: [serverError], exception: serverError.exception};
+//            }
 
             var msg;
             Ext.each(serverError.errors, function(error){
                 //handle validation script errors and exceptions differently
                 if(error.errors && error.errors.length){
-                    this.handleValidationErrors(records, error, response);
+                    this.handleValidationErrors(error, response, serverError.extraContext);
                     msg = "Could not save changes due to errors.  Please check the form for fields marked in red.";
                 }
                 else {
@@ -247,9 +247,8 @@ EHR.ext.StoreCollection = Ext.extend(Ext.util.MixedCollection, {
                     msg = 'Could not save changes due to the following error:\n' + (serverError && serverError.exception) ? serverError.exception : response.statusText;
                 }
             }, this);
-console.log(response)
-            //NOTE this should be keyed using the request context object
-            if(response.extraContext && response.extraContext.silent){
+
+            if(serverError.extraContext && serverError.extraContext.silent){
                 msg = '';
             }
 
@@ -259,11 +258,11 @@ console.log(response)
         };
     },
 
-    //TODO: there's a big problem here.  we have no obvious way to connect records to a command
-    handleValidationErrors: function(records, serverError, response){
-        var record = records[serverError.rowNumber];
+    handleValidationErrors: function(serverError, response, extraContext){
+        var store = this.get(extraContext.storeId);
+        var record = store.getById(serverError.row._recordId);
         if(record){
-            record.store.handleValidationError(record, serverError, response);
+            store.handleValidationError(record, serverError, response, extraContext);
         }
         else {
             console.log('ERROR: Record not found');
@@ -315,7 +314,7 @@ console.log(response)
                 console.log('Num Records: '+s.getCount());
                 console.log('Total Records: '+s.getTotalCount());
                 console.log('Modified Records:');
-                console.log(s.getModifiedRecords())
+                console.log(s.getModifiedRecords());
                 s.each(function(rec)
                 {
                     console.log('record ID: '+rec.id);

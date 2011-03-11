@@ -193,6 +193,9 @@ EHR.ext.Metadata.Standard = {
         ,parentId: {
             lookups: false
         }
+        ,parentid: {
+            lookups: false
+        }
         ,taskid: {
             lookups: false,
             hidden: true
@@ -896,6 +899,7 @@ EHR.ext.Metadata.Standard = {
             }
             ,weight: {
                 allowBlank: false
+                ,useNull: true
             }
         }
     }
@@ -980,7 +984,7 @@ EHR.ext.Metadata.Encounter = {
                 storeIdentifier: {queryName: 'Clinical Encounters', schemaName: 'study'},
                 dataIndex: 'objectid'
             }
-            ,hidden: true
+            ,hidden: false
             ,shownInGrid: false
             ,allowBlank: false
         }
@@ -1292,7 +1296,7 @@ EHR.ext.Metadata.Anesthesia = {
         'Clinical Observations': {
             area: {
                 hidden: true,
-                preventMark: true,
+                //preventMark: true,
                 xtype: 'displayfield',
                 allowBlank: true,
                 defaultValue: 'Anesthesia'

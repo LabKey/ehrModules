@@ -5,9 +5,10 @@
         <column name="Enddate"/>
         <column name="project"/>
         <column name="account"/>
+        <column name="title"/>
         <column name="type"/>
         <column name="Remark"/>
-        <!--<column name="userid"/>-->
+        <column name="description"/>
         <!--<column name="QCState/Label">-->
             <!--<properties>-->
                 <!--<property name="columnTitle" value="Status"/>-->

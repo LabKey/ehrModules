@@ -17,14 +17,17 @@ function setDescription(row, errors){
 
     if(row.type)
         description.push('Type: '+row.type);
-    if(row.type)
+    if(row.quantity)
         description.push('Quantity: '+row.quantity);
-    if(row.type)
+    if(row.totalCost)
         description.push('Total Cost: '+row.totalCost);
 
     return description;
 }
 
 function onUpsert(row, errors){
-    row.totalCost = row.unitCost * row.quantity;
+    if(row.quantity && row.unitCost)
+        row.totalCost = row.unitCost * row.quantity;
+    else
+        row.totalCost = null;
 }

@@ -86,10 +86,13 @@ Ext.ux.form.DateTime = Ext.extend(Ext.form.Field, {
                         ,allowBlank: this.allowBlank || false
                         //NOTE: added by bbimber
                         ,readOnly: this.readOnly || false
-                        ,msgTarget: 'under'
+                        ,msgTarget: this.msgTarget || 'qtip'
                         ,listeners:{
                                   blur:{scope:this, fn:this.onBlur}
                                  ,focus:{scope:this, fn:this.onFocus}
+                        }
+                        ,getErrors: function(){
+                            return this.ownerCt.getErrors();
                         }
                 }, this.dateConfig);
                 this.df = new Ext.form.DateField(dateConfig);
@@ -104,10 +107,13 @@ Ext.ux.form.DateTime = Ext.extend(Ext.form.Field, {
                         ,selectOnFocus:this.selectOnFocus
                         //NOTE: added by bbimber
                         ,readOnly: this.readOnly || false
-                        ,msgTarget: 'under'
+                        ,msgTarget: this.msgTarget || 'qtip'
                         ,listeners:{
                                   blur:{scope:this, fn:this.onBlur}
                                  ,focus:{scope:this, fn:this.onFocus}
+                        }
+                        ,getErrors: function(){
+                            return this.ownerCt.getErrors();
                         }
                 }, this.timeConfig);
                 this.tf = new Ext.form.TimeField(timeConfig);
@@ -148,12 +154,12 @@ Ext.ux.form.DateTime = Ext.extend(Ext.form.Field, {
                                 {tag:'tr',children:[
                                 {tag:'td',style:'padding-right:4px;padding-top:0px', cls:'ux-datetime-date'}
                                 ,{tag:'td', style:'padding-top:0px', cls:'ux-datetime-time'}
-                                ,{tag:'tr',children:[{tag:'td', colspan:2, cls: 'x-form-invalid-msg'}]}
+                                ,{tag:'tr', children:[{tag:'td', colspan:2}]}  //cls: 'x-form-invalid-msg',
                                 ]}
                         ]}, true);
 
                         //set the msg location
-                        this.df.msgTarget = t.child('td.x-form-invalid-msg').id;
+                        //this.df.msgTarget = t.child('td.x-form-invalid-msg').id;
                 }
 
                 this.tableEl = t;
@@ -203,7 +209,7 @@ Ext.ux.form.DateTime = Ext.extend(Ext.form.Field, {
         /**
          * @private
          */
-    ,adjustSize:Ext.BoxComponent.prototype.adjustSize
+        ,adjustSize:Ext.BoxComponent.prototype.adjustSize
         // }}}
         // {{{
         /**
@@ -327,6 +333,7 @@ Ext.ux.form.DateTime = Ext.extend(Ext.form.Field, {
 /**
          * @return {Date/String} Returns value of this field
          */
+
         ,getValue:function() {
                 // create new instance of date
                 return this.dateValue ? new Date(this.dateValue) : '';
@@ -337,8 +344,11 @@ Ext.ux.form.DateTime = Ext.extend(Ext.form.Field, {
          * @return {Boolean} true = valid, false = invalid
          * @private Calls isValid methods of underlying DateField and TimeField and returns the result
          */
-        ,isValid:function() {
-                return this.df.isValid() && this.tf.isValid() && this.getErrors.length==0;
+        ,isValid:function(preventMark) {
+                //NOTE: separated so we guarantee both field get called
+                var df = this.df.isValid();
+                var tf = this.tf.isValid();
+                return df && tf && this.getErrors().length==0;
         } // eo function isValid
         // }}}
     // {{{
@@ -631,8 +641,7 @@ Ext.ux.form.DateTime = Ext.extend(Ext.form.Field, {
          * @return {Boolean} true = valid, false = invalid
          * calls validate methods of DateField and TimeField
          */
-        ,validate:function() {
-console.log('xdatetime validate')
+        ,validate:function(){
                 return this.df.validate() && this.tf.validate();
         } // eo function validate
         // }}}

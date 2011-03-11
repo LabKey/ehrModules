@@ -18,7 +18,7 @@
                     </column>
                     <column columnName="code">
                         <datatype>varchar</datatype>
-                        <columnTitle>SNOMED</columnTitle>
+                        <columnTitle>Code</columnTitle>
                         <fk>
                             <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                             <fkDbSchema>lists</fkDbSchema>

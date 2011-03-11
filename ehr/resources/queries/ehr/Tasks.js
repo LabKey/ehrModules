@@ -6,7 +6,7 @@
 
 var {EHR, LABKEY, Ext, shared, console, init, beforeInsert, afterInsert, beforeUpdate, afterUpdate, beforeDelete, afterDelete, complete} = require("ehr/validation");
 
-console.log("** evaluating: " + this['javax.script.filename']);
+
 
 
 

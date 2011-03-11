@@ -10,7 +10,6 @@
 
 var {EHR, LABKEY, Ext, shared, console, init, beforeInsert, afterInsert, beforeUpdate, afterUpdate, beforeDelete, afterDelete, complete} = require("ehr/validation");
 
-
 function onUpsert(row, errors, oldRow){
     if (
         row.feces ||
@@ -35,10 +34,11 @@ function onUpsert(row, errors, oldRow){
         //TODO: change odate to enddate
         //TODO: account for QCstate
         var sql = "SELECT h.room, h.cage FROM study.housing h " +
-            "WHERE h.id='"+row.Id+"' AND h.date <= '"+EHR.validation.dateTimeToString(row.date) +"' AND (h.odate > '"+EHR.validation.dateTimeToString(row.date)+"' OR h.odate IS NULL";
+            "WHERE h.id='"+row.Id+"' AND h.date <= '"+EHR.validation.dateTimeToString(row.date) +"' AND (h.odate > '"+EHR.validation.dateTimeToString(row.date)+"' OR h.odate IS NULL)";
         LABKEY.Query.executeSql({
             schemaName: 'study',
             sql: sql,
+            scope: this,
             success: function(data){
                 if(data && data.rows && data.rows.length){
                     row.RoomAtTime = data.rows[0].room;
@@ -72,6 +72,7 @@ function onBecomePublic(row, errors, oldRow){
             schemaName: 'study',
             queryName: 'Clinical Observations',
             rowDataArray: rowDataArray,
+            scope: this,
             success: function(data){
                 console.log('Success')
             },

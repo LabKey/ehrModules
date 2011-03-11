@@ -45,8 +45,9 @@ EHR.utils.onError = function(error){
         success: function(){
             console.log('Error successfully logged')
         },
-        failure: function(){
-            console.log('Problem logging error')
+        failure: function(error){
+            console.log('Problem logging error');
+            console.log(error)
         }
     });
 };

@@ -9,7 +9,7 @@
  * http://www.extjs.com/license
  */
 
-LABKEY.requiresScript("/ehr/ehrApi.js");
+LABKEY.requiresScript("/ehr/ehrAPI.js");
 
 
 Ext.onReady(function(){
@@ -63,7 +63,7 @@ function btn2(){
     };
     var fields = ('formtype,destination,xtype,sort_order,queryname,schemaname,title,metadatasources,initialTemplates,configJson,buttons').split(',');
     var data = [
-        ['Physical Exam' ,'formHeaders' ,'ehr-clinheader' ,'1' ,'Clinical Encounters', '', 'Header', 'Task,Encounter', '', '', ''],
+        ['Physical Exam' ,'formHeaders' ,'ehr-formpanel' ,'1' ,'Clinical Encounters', 'study', 'Header', 'Task,Encounter', '', '', ''],
         ['Physical Exam' ,'formSections' ,'ehr-abstractpanel' ,'2' ,'', '', '', '', '', '', ''],
         ['Physical Exam' ,'formSections' ,'ehr-gridformpanel' ,'3' ,'Clinical Remarks', 'study', '', 'Task,Encounter', '', '', ''],
         ['Physical Exam' ,'formSections' ,'ehr-formpanel' ,'4' ,'Vitals', 'study', '', 'Task,Encounter', '', '', ''],
@@ -72,9 +72,7 @@ function btn2(){
         ['Physical Exam' ,'formSections' ,'ehr-formpanel' ,'7' ,'Body Condition', 'study', '', 'Task,Encounter', '', '', ''],
         ['Physical Exam' ,'formSections' ,'ehr-formpanel' ,'8' ,'Alopecia', 'study', '', 'Task,Encounter', '', '', ''],
         ['Physical Exam' ,'formSections' ,'ehr-gridformpanel' ,'9' ,'Clinical Observations', 'study', '', 'Task,Encounter', 'PE Defaults', '', ''],
-        ['Physical Exam' ,'formSections' ,'ehr-gridformpanel' ,'10' ,'Clinpath Requests', 'study', 'Order ClinPath Tests', 'Task,Encounter', '', '{collapsed: true}', 'add,delete,apply_template,save_template,order_clinpath'],
-        ['Physical Exam' ,'formSections' ,'ehr-gridformpanel' ,'11' ,'Treatment Orders', 'study', 'Order Treatments', 'Task,Encounter', '', '{collapsed: true}', ''],
-        ['Physical Exam' ,'formSections' ,'ehr-gridformpanel' ,'12' ,'Charges', 'study', '', 'Task,Encounter', '', '{collapsed: true}', ''],
+        ['Physical Exam' ,'formSections' ,'ehr-gridformpanel' ,'10' ,'Charges', 'study', '', 'Task,Encounter', '', '{collapsed: true}', ''],
         ['Irregular Observations' ,'formSections' ,'ehr-abstractpanel' ,'1' ,'', '', '', '', '', '', ''],
         ['Irregular Observations' ,'formSections' ,'ehr-gridformpanel' ,'2' ,'Irregular Observations', 'study', '', 'Task', '', '', 'add,addbatch,delete,apply_template,save_template,duplicate'],
         ['Irregular Observations' ,'formSections' ,'ehr-gridformpanel' ,'3' ,'cage_observations', 'ehr', 'Cage Observations', 'Task', '', '', ''],
@@ -2122,22 +2120,22 @@ function btn7(){
     }
 
 
-function btn8(){
-    //records for task forms:
-    var config = {
-         schemaName: 'ehr',
-         queryName: 'notificationtypes',
-         rowDataArray: [],
-        success: onSuccess,
-        error: onError
-    };
-    var fields = ('NotificationType,description').split(',');
-    var data = [
-        ['Colony Validation - General', 'Subscribing to this notification will result in emails for general colony records issues like records needing attention, animals missing from the demographics table, etc.']
-    ];
-
-    LABKEY.Query.insertRows(makeObject(config, data, fields));
-}
+//function btn8(){
+//    //records for task forms:
+//    var config = {
+//         schemaName: 'ehr',
+//         queryName: 'notificationtypes',
+//         rowDataArray: [],
+//        success: onSuccess,
+//        error: onError
+//    };
+//    var fields = ('NotificationType,description').split(',');
+//    var data = [
+//        ['Colony Validation - General', 'Subscribing to this notification will result in emails for general colony records issues like records needing attention, animals missing from the demographics table, etc.']
+//    ];
+//
+//    LABKEY.Query.insertRows(makeObject(config, data, fields));
+//}
 
 function btn9(){
         //records for qcstate map:
@@ -2217,11 +2215,11 @@ var panel = new Ext.Panel({
         text: 'Populate Charge Items Table',
         scope: this,
         handler: btn6
-    },{
-        xtype: 'button',
-        text: 'Populate Notification Types Table',
-        scope: this,
-        handler: btn8
+//    },{
+//        xtype: 'button',
+//        text: 'Populate Notification Types Table',
+//        scope: this,
+//        handler: btn8
     },{
         xtype: 'button',
         text: 'Populate All',
@@ -2234,7 +2232,7 @@ var panel = new Ext.Panel({
             btn5();
             btn6();
             btn7();
-            btn8();
+//            btn8();
         }
 
     }]

@@ -483,7 +483,7 @@ EHR.ext.metaHelper = {
     },
 
     lookupRenderer : function(meta, data) {
-        var lookupStore = LABKEY.ext.FormHelper.getLookupStore(meta);
+        var lookupStore = EHR.ext.metaHelper.getLookupStore(meta);
         if(!lookupStore)
             return '';
 

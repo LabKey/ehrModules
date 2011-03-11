@@ -63,7 +63,7 @@ EHR.ext.plugins.DataBind = Ext.extend(Ext.util.Observable, {
 //                this.updateRecord();
 
                 //allow changes in the record to update the form
-                record.store.on('update', this.updateForm, this, {buffer: 40});
+                record.store.on('update', this.updateForm, this);
 
                 this.fireEvent('recordchange', this, record);
             },
@@ -92,24 +92,34 @@ EHR.ext.plugins.DataBind = Ext.extend(Ext.util.Observable, {
             },
             updateRecord : function()
             {
+                //create a record onChange if selected
+                if(!this.boundRecord && this.bindConfig.bindOnChange && this.store){
+                    var values = {};
+                    values[field.name] = this.getBoundFieldValue(field);
+                    var record = this.store.addRecord(values);
+                    record.markDirty();
+                    this.bindRecord(record);
+                }
+
+                if(!this.boundRecord)
+                    return;
+
                 var fields = this.getFieldsToBind();
                 var values = {};
                 for (var i=0;i<fields.length;i++){
                     var f = fields[i];
                     var val = this.getBoundFieldValue(f);
-                    if(this.boundRecord){
-                        var oldVal = this.boundRecord.get(f.dataIndex);
-                        //TODO: better logic??
-                        if(!(val===oldVal || String(val) == String(oldVal))){
-                            values[f.dataIndex] = val;
-                        }
+                    var oldVal = this.boundRecord.get(f.dataIndex);
+                    //TODO: better logic??
+                    if(!(val===oldVal || String(val) == String(oldVal))){
+                        values[f.dataIndex] = val;
+
                     }
-                };
+                }
 
                 //we only fire the update event if we actually made changes
                 if(!EHR.utils.isEmptyObj(values)){
-                    //console.log('updating record');
-                    //console.log(values);
+console.log('update record');
                     this.boundRecord.beginEdit();
                     for (var i in values){
                         this.boundRecord.set(i, values[i]);
@@ -117,9 +127,11 @@ EHR.ext.plugins.DataBind = Ext.extend(Ext.util.Observable, {
                     this.boundRecord.endEdit();
                 }
 
+                this.markInvalid();
             },
             updateForm: function(s, recs, idx)
             {
+console.log('update form');
                 Ext.each(recs, function(r){
                     if(r === this.boundRecord){
                         this.getForm().loadRecord(r);
@@ -132,21 +144,9 @@ EHR.ext.plugins.DataBind = Ext.extend(Ext.util.Observable, {
                     this.addFieldListener(f);
                 }, this);
             },
-            fieldChange: function(field){
-                //create a record onChange if selected
-                if(!this.boundRecord && this.bindConfig.bindOnChange && this.store){
-                    var values = {};
-                    values[field.name] = this.getBoundFieldValue(field);
-                    var record = this.store.addRecord(values);
-                    record.markDirty();
-                    this.bindRecord(record);
-                }
-
+            onFieldChange: function(field){
                 if(this.boundRecord) {
-                    var val = this.getBoundFieldValue(field);
-                    this.boundRecord.beginEdit();
-                    this.boundRecord.set(field.dataIndex, val);
-                    this.boundRecord.endEdit();
+                    this.fireEvent('fieldchange', field);
                 }
                 else {
                     console.log('field is unbound: '+field.name);
@@ -183,11 +183,11 @@ EHR.ext.plugins.DataBind = Ext.extend(Ext.util.Observable, {
                 }
 
                 if(f instanceof Ext.form.Checkbox){
-                    f.on('check', this.fieldChange, this, {buffer: 40});
+                    f.on('check', this.onFieldChange, this);
                 }
                 else {
                     //NOTE: use buffer so groups like checkboxgroup dont fire repeated events
-                    f.on('change', this.fieldChange, this, {buffer: 40});
+                    f.on('change', this.onFieldChange, this);
                 }
 
                 //override getErrors(), so the field will display server-side errors
@@ -265,7 +265,11 @@ EHR.ext.plugins.DataBind = Ext.extend(Ext.util.Observable, {
 
         o.configureStore();
         o.addFieldListeners();
-        o.addEvents('beforesubmit', 'recordchange', 'formchange');
+        o.addEvents('beforesubmit', 'recordchange', 'formchange', 'fieldchange');
+
+        //we queue changes from all fields into a single event
+        //this way batch updates of the form only trigger one record update
+        o.on('fieldchange', o.updateRecord, o, {buffer: 300});
 
         if(o.bindConfig.showDeleteBtn !== false){
             if(o.getBottomToolbar())

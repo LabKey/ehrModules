@@ -9,7 +9,7 @@
                     </column>
                     <column columnName="code">
                         <datatype>varchar</datatype>
-                        <columnTitle>SNOMED</columnTitle>
+                        <columnTitle>SNOMED Code</columnTitle>
                         <fk>
                             <fkDbSchema>lists</fkDbSchema>
                             <fkTable>snomed</fkTable>

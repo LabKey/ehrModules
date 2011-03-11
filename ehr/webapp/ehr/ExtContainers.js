@@ -830,6 +830,11 @@ EHR.ext.ApplyTemplatePanel = Ext.extend(Ext.FormPanel, {
                     autoLoad: true,
                     filterArray: [LABKEY.Filter.create('formtype', this.formType, LABKEY.Filter.Types.EQUAL)]
                 })
+            },{
+                xtype: 'checkbox',
+                fieldLabel: 'Customize Values',
+                ref: 'customizeValues',
+                checked: true
             }]
             ,scope: this
             ,buttons: [{
@@ -856,7 +861,180 @@ EHR.ext.ApplyTemplatePanel = Ext.extend(Ext.FormPanel, {
         if(!templateId)
             return;
 
-        EHR.utils.loadTemplate(templateId);
+        this.loadTemplate(templateId);
+    },
+
+    loadTemplate: function(templateId){
+        if(!templateId)
+            return;
+
+        LABKEY.Query.selectRows({
+            schemaName: 'ehr',
+            queryName: 'formtemplaterecords',
+            filterArray: [LABKEY.Filter.create('templateId', templateId, LABKEY.Filter.Types.EQUAL)],
+            sort: '-rowid',
+            success: this.onLoadTemplate,
+            scope: this
+        });
+
+        Ext.Msg.wait("Loading Template...");
+    },
+
+    onLoadTemplate: function(data){
+        if(!data || !data.rows.length){
+            Ext.Msg.hide();
+            return;
+        }
+
+        var toAdd = {};
+        Ext.each(data.rows, function(row){
+            var data = Ext.util.JSON.decode(row.json);
+            var store = Ext.StoreMgr.get(row.storeid);
+
+            //verify store exists
+            if(!store){
+                Ext.StoreMgr.on('add', function(){
+                    this.onLoadTemplate(data);
+                }, this, {single: true, delay: 200});
+                return false;
+            };
+
+            //also verify it is loaded
+            if(!store.fields && store.fields.length){
+                store.on('load', function(){
+                    this.onLoadTemplate(data);
+                }, this, {single: true, delay: 200});
+                return false;
+            };
+
+            if(!toAdd[store.storeId])
+                toAdd[store.storeId] = [];
+
+            toAdd[store.storeId].push(data);
+        });
+
+        if(this.customizeValues.checked)
+            this.customizeData(toAdd);
+        else
+            this.loadTemplateData(toAdd);
+    },
+
+    customizeData: function(toAdd){
+        Ext.Msg.hide();
+
+        //create window
+        this.theWindow = new Ext.Window({
+            closeAction:'hide',
+            title: 'Customize Values',
+            width: 350,
+            items: [{
+                xtype: 'tabpanel',
+                autoHeight: true,
+                ref: 'theForm',
+                activeTab: 0
+            }],
+            scope: this,
+            buttons: [{
+                text:'Submit',
+                disabled:false,
+                ref: '../submit',
+                scope: this,
+                handler: this.onCustomize
+            },{
+                text: 'Close',
+                scope: this,
+                handler: function(){
+                    this.theWindow.hide();
+                }
+            }]
+        });
+
+        for (var i in toAdd){
+            this.addStore(i, toAdd[i]);
+        }
+
+        this.theWindow.show();
+    },
+
+    addStore: function(storeId, records){
+        var store = Ext.StoreMgr.get(storeId);
+        if(!store){
+            alert('ERROR: Store not found');
+            return;
+        }
+
+        var toAdd = {
+            xtype: 'form',
+            //layout: 'form',
+            ref: 'thePanel',
+            autoHeight: true,
+            storeId: storeId,
+            records: records,
+            items: []
+        };
+
+        store.fields.each(function(f){
+            if(!f.hidden && f.shownInInsertView && f.allowSaveInTemplate!==false && f.allowDuplicate!==false){
+                var editor = store.getFormEditorConfig(f.name);
+                editor.width= 200;
+                if (f.inputType == 'textarea')
+                    editor.height = 100;
+
+                var values = [];
+                Ext.each(records, function(data){
+                    if(data[f.dataIndex]!==undefined && values.indexOf(data[f.dataIndex])==-1){
+                        values.push(f.convert(data[f.dataIndex], data));
+                    }
+                }, this);
+
+                if(values.length==1)
+                    editor.value=values[0];
+                else if (values.length > 1){
+                    editor.xtype = 'displayfield';
+                    editor.value = values.join(';');
+                }
+
+                toAdd.items.push(editor);
+            }
+        }, this);
+
+        this.theWindow.theForm.add({
+            bodyStyle: 'padding: 5px;',
+            title: store.queryName,
+            autoHeight: true,
+            defaults: {
+                border: false,
+                bodyStyle: 'padding: 5px;'
+            },
+            items: [{
+                html: '<b>'+records.length+' Record'+(records.length==1 ? '' : 's')+' will be added.</b><br>If you enter values below, these will be applied to all new records, overriding any saved values.'
+            },
+                toAdd
+            ]
+        });
+    },
+
+    loadTemplateData: function(toAdd){
+        for (var i in toAdd){
+            var store = Ext.StoreMgr.get(i);
+            store.addRecords(toAdd[i])
+        }
+
+        Ext.Msg.hide();
+    },
+
+    onCustomize: function(){
+        var toAdd = {};
+        this.theWindow.theForm.items.each(function(tab){
+            var values = tab.thePanel.getForm().getFieldValues(true);
+            toAdd[tab.thePanel.storeId] = tab.thePanel.records;
+            Ext.each(tab.thePanel.records, function(r){
+                Ext.apply(r, values);
+            }, this);
+        }, this);
+
+        this.loadTemplateData(toAdd);
+        this.theWindow.hide();
     }
 });
 Ext.reg('ehr-applytemplatepanel', EHR.ext.ApplyTemplatePanel);
@@ -879,7 +1057,7 @@ EHR.ext.SaveTemplatePanel = Ext.extend(Ext.Window, {
                 layout: 'form',
                 autoScroll: true,
                 bodyStyle: 'padding: 5px;',
-                monitorValid: true,
+                //monitorValid: true,
                 defaults: {
                     border: false
                 },
@@ -1034,7 +1212,7 @@ EHR.ext.SaveTemplatePanel = Ext.extend(Ext.Window, {
                     return;
 
                 var store = Ext.StoreMgr.get(item.name);
-                var selections = this[store.storeId+'-radio'].getValue().inputValue;
+                var selections = this.theForm[store.storeId+'-radio'].getValue().inputValue;
 
                 if(selections == 'none')
                     return;
@@ -1073,12 +1251,16 @@ EHR.ext.SaveTemplatePanel = Ext.extend(Ext.Window, {
             return;
         };
 
+        this.saveTemplate(rows);
+    },
+
+    saveTemplate: function(rows){
         LABKEY.Query.insertRows({
             schemaName: 'ehr',
             queryName: 'formtemplates',
             scope: this,
             rowDataArray: [{
-                title: tn,
+                title: this.templateName.getValue(),
                 description: this.templateDescription.getValue(),
                 formType: this.formType
             }],

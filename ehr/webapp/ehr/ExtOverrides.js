@@ -124,7 +124,13 @@ Ext.TabPanel.prototype.addClass('extContainer');
 Ext.data.Types.INT.convert = function(v){
     return v !== undefined && v !== null && v !== '' ?
         parseInt(String(v).replace(Ext.data.Types.stripRe, ''), 10) : (this.useNull ? null : 0);
-}
+};
+
+Ext.data.Types.FLOAT.convert = function(v){
+    return v !== undefined && v !== null && v !== '' ?
+        parseFloat(String(v).replace(Ext.data.Types.stripRe, ''), 10) : (this.useNull ? null : 0);
+};
+
 Ext.form.Field.prototype.useNull = true;
 
 Ext.override(Ext.form.CheckboxGroup, {
