@@ -63,7 +63,12 @@
         </column>
         <column name="AvailBlood/BloodLast30">
             <properties>
-                <property name="columnTitle" value="Blood Drawn in Last 30 Days"/>
+                <property name="columnTitle" value="Drawn in Last 30 Days"/>
+            </properties>
+        </column>
+        <column name="Id/AvailBlood/BloodNext30">
+            <properties>
+                <property name="columnTitle" value="Scheduled in Next 30 Days"/>
             </properties>
         </column>
         <column name="AvailBlood/AvailBlood">
@@ -73,7 +78,7 @@
         </column>
     </columns>
     <!--<filters>-->
-        <!--<filter column="Status/Status" operator="eq" value="Alive"/> -->
+        <!--<filter column="qcstate/publicdata" operator="eq" value="true"/>-->
     <!--</filters>-->
     <sorts>
         <sort column="id" descending="false"/>

@@ -34,10 +34,16 @@ EHR.ext.plugins.DataBind = Ext.extend(Ext.util.Observable, {
             },
             getFieldsToBind : function(){
                 var fields = [];
-                this.getForm().items.each(function(f){
-                    if (f instanceof Ext.form.Field && f.dataIndex)
-                        fields.push(f);
-                }, this);
+                var findMatchingField = function(f) {
+                    if (f.isFormField) {
+                        if (f.dataIndex) {
+                            fields.push(f);
+                        } else if (f.isComposite) {
+                            f.items.each(findMatchingField);
+                        }
+                    }
+                };
+                this.getForm().items.each(findMatchingField, this);
                 return fields;
             },
             bindRecord: function(record){
@@ -64,6 +70,8 @@ EHR.ext.plugins.DataBind = Ext.extend(Ext.util.Observable, {
 
                 //allow changes in the record to update the form
                 record.store.on('update', this.updateForm, this);
+                //record.store.on('validation', this.updateForm, this);
+                record.store.on('validation', this.markInvalid, this, {delay: 100});
 
                 this.fireEvent('recordchange', this, record);
             },
@@ -74,6 +82,8 @@ EHR.ext.plugins.DataBind = Ext.extend(Ext.util.Observable, {
                 this.updateRecord();
 
                 rec.store.un('update', this.updateForm, this);
+                //rec.store.un('validation', this.updateForm, this);
+                rec.store.un('validation', this.markInvalid, this);
                 this.boundRecord = undefined;
 
                 Ext.each(this.getFieldsToBind(), function(f){
@@ -92,10 +102,16 @@ EHR.ext.plugins.DataBind = Ext.extend(Ext.util.Observable, {
             },
             updateRecord : function()
             {
+                var fields = this.getFieldsToBind();
+
                 //create a record onChange if selected
                 if(!this.boundRecord && this.bindConfig.bindOnChange && this.store){
                     var values = {};
-                    values[field.name] = this.getBoundFieldValue(field);
+                    Ext.each(fields, function(f){
+                        var val = this.getBoundFieldValue(f);
+                        if(!Ext.isEmpty(val))
+                            values[f.name] = val;
+                    }, this);
                     var record = this.store.addRecord(values);
                     record.markDirty();
                     this.bindRecord(record);
@@ -104,26 +120,23 @@ EHR.ext.plugins.DataBind = Ext.extend(Ext.util.Observable, {
                 if(!this.boundRecord)
                     return;
 
-                var fields = this.getFieldsToBind();
-                var values = {};
-                for (var i=0;i<fields.length;i++){
-                    var f = fields[i];
+                values = {};
+                Ext.each(fields, function(f){
                     var val = this.getBoundFieldValue(f);
                     var oldVal = this.boundRecord.get(f.dataIndex);
                     //TODO: better logic??
-                    if(!(val===oldVal || String(val) == String(oldVal))){
+                    if(!(val===oldVal || String(val) == String(oldVal)))
                         values[f.dataIndex] = val;
-
-                    }
-                }
+                }, this);
 
                 //we only fire the update event if we actually made changes
                 if(!EHR.utils.isEmptyObj(values)){
-console.log('update record');
                     this.boundRecord.beginEdit();
                     for (var i in values){
                         this.boundRecord.set(i, values[i]);
                     }
+                    //the following is to prevent
+                    this.awatingUpdateEvent = true;
                     this.boundRecord.endEdit();
                 }
 
@@ -131,7 +144,12 @@ console.log('update record');
             },
             updateForm: function(s, recs, idx)
             {
-console.log('update form');
+
+                if(this.awatingUpdateEvent){
+                    delete this.awatingUpdateEvent;
+                    return;
+                }
+
                 Ext.each(recs, function(r){
                     if(r === this.boundRecord){
                         this.getForm().loadRecord(r);
@@ -144,13 +162,9 @@ console.log('update form');
                     this.addFieldListener(f);
                 }, this);
             },
+            //this is separated so that multiple fields in a single form are filtered into one event per panel
             onFieldChange: function(field){
-                if(this.boundRecord) {
-                    this.fireEvent('fieldchange', field);
-                }
-                else {
-                    console.log('field is unbound: '+field.name);
-                }
+                this.fireEvent('fieldchange', field);
             },
             getBoundFieldValue: function(f){
                 if (f instanceof Ext.form.RadioGroup){
@@ -247,14 +261,13 @@ console.log('update form');
                                     this.bindRecord(rec);
                                 }
                             }
-                            else if (records.length == 1)
-                            {
-                                this.bindRecord(records[0]);
-                            }
+//                            else if (records.length == 1)
+//                            {
+//                                this.bindRecord(records[0]);
+//                            }
                             else
                             {
                                 this.bindRecord(records[0]);
-                                //console.log('Multiple records returned');
                             }
                         }, this);
 
@@ -267,9 +280,9 @@ console.log('update form');
         o.addFieldListeners();
         o.addEvents('beforesubmit', 'recordchange', 'formchange', 'fieldchange');
 
-        //we queue changes from all fields into a single event
-        //this way batch updates of the form only trigger one record update
-        o.on('fieldchange', o.updateRecord, o, {buffer: 300});
+        //we queue changes from all fields into a single event using buffer
+        //this way batch updates of the form only trigger one record update/validation
+        o.on('fieldchange', o.updateRecord, o, {buffer: 100});
 
         if(o.bindConfig.showDeleteBtn !== false){
             if(o.getBottomToolbar())
@@ -300,22 +313,22 @@ console.log('update form');
         }
 
         o.on('beforesubmit', function(c){
-            console.log('updating record before submit');
+            console.log('updating record from form beforesubmit');
             c.updateRecord();
         });
 
         o.on('add', function(o, c, idx){
-            if (c instanceof Ext.form.Field && c.dataIndex){
-                this.addFieldListener(c);
-            }
-            if(Ext.isFunction(c.cascade)){
-                c.cascade(function(cmp){
-                    if (cmp instanceof Ext.form.Field && cmp.dataIndex){
-                        this.addFieldListener(cmp);
+            var findMatchingField = function(f) {
+                if (f.isFormField) {
+                    if (f.dataIndex) {
+                        this.addFieldListener(c);
+                    } else if (f.isComposite) {
+                        f.items.each(findMatchingField, this);
                     }
-                }, this);
-            }
-        }, o);
+                }
+            };
+            findMatchingField.call(this, c);
+        }, o, {delay: 300});
     }
 }); 
 Ext.preg('databind', EHR.ext.plugins.DataBind);

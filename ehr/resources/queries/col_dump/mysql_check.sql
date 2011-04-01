@@ -111,16 +111,16 @@ objectid AS LabKeyUUID,
 key2 AS mySQL_UUID
 FROM col_dump.blood_mysql
 
-UNION ALL
-
-SELECT
-null as id,
-null as date,
-ts,
-objectid AS LabKeyUUID,
-'cage' as type,
-key2 AS mySQL_UUID
-FROM col_dump.cage_mysql
+-- UNION ALL
+--
+-- SELECT
+-- null as id,
+-- null as date,
+-- ts,
+-- objectid AS LabKeyUUID,
+-- 'cage' as type,
+-- key2 AS mySQL_UUID
+-- FROM col_dump.cage_mysql
 
 UNION ALL
 
@@ -254,16 +254,16 @@ objectid AS LabKeyUUID,
 key2 AS mySQL_UUID
 FROM col_dump.hematologyruns_mysql
 
-UNION ALL
-
-SELECT
-null as id,
-null as date,
-ts,
-objectid AS LabKeyUUID,
-'hold' as type,
-key2 AS mySQL_UUID
-FROM col_dump.hold_mysql
+-- UNION ALL
+--
+-- SELECT
+-- null as id,
+-- null as date,
+-- ts,
+-- objectid AS LabKeyUUID,
+-- 'hold' as type,
+-- key2 AS mySQL_UUID
+-- FROM col_dump.hold_mysql
 
 UNION ALL
 
@@ -463,16 +463,16 @@ objectid AS LabKeyUUID,
 key2 AS mySQL_UUID
 FROM col_dump.rhesaux_mysql
 
-UNION ALL
-
-SELECT
-null as id,
-null as date,
-ts,
-objectid AS LabKeyUUID,
-'snomap' as type,
-key2 AS mySQL_UUID
-FROM col_dump.snomap_mysql
+-- UNION ALL
+--
+-- SELECT
+-- null as id,
+-- null as date,
+-- ts,
+-- objectid AS LabKeyUUID,
+-- 'snomap' as type,
+-- key2 AS mySQL_UUID
+-- FROM col_dump.snomap_mysql
 
 UNION ALL
 

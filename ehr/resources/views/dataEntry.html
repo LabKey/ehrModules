@@ -30,7 +30,9 @@ Ext.onReady(function(){
                             queryConfig:  {
                                 schemaName: 'ehr',
                                 queryName: 'my_tasks',
-                                viewName: 'Active Tasks'
+                                viewName: 'Active Tasks',
+                                showUpdateColumn: true,
+                                updateURL: '/ehr/manageTask.view?formtype=${formtype}&amp;taskid=${taskid}'
                             }
                         },{
                             title: 'All Active Tasks',
@@ -38,39 +40,43 @@ Ext.onReady(function(){
                             queryConfig:  {
                                 schemaName: 'ehr',
                                 queryName: 'tasks',
-                                viewName: 'Active Tasks'
+                                viewName: 'Active Tasks',
+                                updateURL: '/ehr/manageTask.view?formtype=${formtype}&amp;taskid=${taskid}'
                             }
                         },{
                             title: 'Active Tasks By Room',
                             xtype: 'ehr-qwppanel',
                             queryConfig:  {
                                 schemaName: 'ehr',
-                                queryName: 'TasksByLocation'
+                                queryName: 'TasksByLocation',
+                                updateURL: '/ehr/manageTask.view?formtype=${formtype}&amp;taskid=${taskid}'
                             }
                         },{
                             title: 'Active Tasks By Id',
                             xtype: 'ehr-qwppanel',
                             queryConfig:  {
                                 schemaName: 'ehr',
-                                queryName: 'TasksById'
+                                queryName: 'TasksById',
+                                updateURL: '/ehr/manageTask.view?formtype=${formtype}&amp;taskid=${taskid}'
                             }
                         },{
-                            title: 'Review Needed',
+                            title: 'Review Required',
                             xtype: 'ehr-qwppanel',
                             queryConfig:  {
                                 schemaName: 'ehr',
                                 queryName: 'tasks',
-                                viewName: 'Review Needed'
+                                viewName: 'Review Required',
+                                updateURL: '/ehr/manageTask.view?formtype=${formtype}&amp;taskid=${taskid}'
                             }
                         }]
                     },{
                         xtype: 'tabpanel',
                         activeTab: 0,
-                        title: 'Manage Requests',
+                        title: 'Manage Queues',
                         autoWidth: true,
                         autoHeight: true,
                         items: [{
-                            title: 'Pending Requests',
+                            title: 'All Requests',
                             xtype: 'ehr-qwppanel',
                             queryConfig:  {
                                 schemaName: 'ehr',
@@ -102,6 +108,28 @@ Ext.onReady(function(){
                                     LABKEY.Filter.create('QCState/Label', 'Request', LABKEY.Filter.Types.STARTS_WITH)
                                 ],
                                 viewName: 'Blood Summary'
+                            }
+                        },{
+                            title: 'Procedure Queue',
+                            xtype: 'ehr-qwppanel',
+                            queryConfig:  {
+                                schemaName: 'study',
+                                queryName: 'Clinical Encounters',
+                                filters: [
+                                    LABKEY.Filter.create('QCState/Label', 'Request', LABKEY.Filter.Types.STARTS_WITH),
+                                    LABKEY.Filter.create('taskid', null, LABKEY.Filter.Types.ISBLANK)
+                                ]
+                            }
+                        },{
+                            title: 'Treatment Queue',
+                            xtype: 'ehr-qwppanel',
+                            queryConfig:  {
+                                schemaName: 'study',
+                                queryName: 'treatmentSchedule'
+//                                filters: [
+//                                    LABKEY.Filter.create('QCState/Label', 'Request', LABKEY.Filter.Types.STARTS_WITH),
+//                                    LABKEY.Filter.create('taskid', null, LABKEY.Filter.Types.ISBLANK)
+//                                ],
                             }
                         }]
                     }]

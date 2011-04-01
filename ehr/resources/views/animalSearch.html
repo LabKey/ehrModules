@@ -9,6 +9,7 @@ Ext.onReady(function ()
     new EHR.ext.SearchPanel({
         schemaName: 'study'
         ,queryName: 'Animal'
+        ,viewName: 'Search Panel'
         ,title: 'Search Animals'
         ,defaultView: 'Alive, at WNPRC'                
         ,metadata: {
@@ -29,35 +30,37 @@ Ext.onReady(function ()
             ,DaysAlone: {hidden: true}
             ,AgeClass: {hidden: true}
             ,totalAssignments: {hidden: true}
-            ,ViralLoad: {hidden: true} 
+            ,ViralLoad: {hidden: true}
+            ,'age/AgeInYearsRounded': {duplicate: true}
+            ,'Dataset/Demographics/weight': {duplicate: true}
         }
-        ,newFields: [
-            {caption: 'Cohort', name: 'Cohort/label'}
-            ,{caption: 'Age', name: 'age/AgeInYearsRounded', jsonType: 'int'}
-            ,{caption: 'Age', name: 'age/AgeInYearsRounded', jsonType: 'int'}
-            ,{caption: 'Current Room', name: 'curLocation/room'}
-            //,{caption: 'Last TB Date', name: 'mostRecentTB'}
-            //,{caption: 'Num. of Active Assignments', name: 'activeProjects/ActiveProjects (avail=all)'}
-            ,{caption: 'Num. of Offspring', name: 'totalOffspring/TotalOffspring', jsonType: 'int'}
-            ,{caption: 'Num. of Roommates', name: 'numRoommates/numRoommates', jsonType: 'int'}
-            ,{caption: 'Species', name: 'Species/species', lookup: {schemaName: 'ehr_lookups', queryName: 'species', displayColumn: 'common', keyColumn: 'common'}
-            }
-            ,{caption: 'Gender', name: 'DataSet/Demographics/gender', lookup: {schemaName: 'ehr_lookups', queryName: 'gender_codes', displayColumn: 'meaning', keyColumn: 'code'}}
-            ,{caption: 'Dam', name: 'DataSet/Demographics/dam'}
-            ,{caption: 'Sire', name: 'DataSet/Demographics/sire'}
-            ,{caption: 'Availability', name: 'DataSet/Demographics/avail'}
-            ,{caption: 'Hold', name: 'DataSet/Demographics/hold'}
-            ,{caption: 'Birth', name: 'DataSet/Demographics/birth', jsonType: 'date'}
-            ,{caption: 'Origin', name: 'DataSet/Demographics/origin', lookup: {schemaName: 'ehr_lookups', queryName: 'origin_codes', displayColumn: 'code', keyColumn: 'code'}}
-            ,{caption: 'Death', name: 'DataSet/Demographics/death', jsonType: 'date'}
-            ,{caption: 'Viral Status', name: 'DataSet/Demographics/v_status', lookup: {schemaName: 'ehr_lookups', queryName: 'viral_status', displayColumn: 'viral_status', keyColumn: 'viral_status'}}
-            ,{caption: 'Latest Weight', name: 'MostRecentWeight/MostRecentWeight', jsonType: 'float'}
-            ,{caption: 'Latest Weight', name: 'MostRecentWeight/MostRecentWeight', jsonType: 'float'}
-            //,{caption: 'Most Recent Weight Date', name: 'MostRecentWeight/MostRecentWeightDate', jsonType: 'date'}
-            //major surgery
-            //blood summary
-            //mhc
-         ]
+//        ,newFields: [
+//            {caption: 'Cohort', name: 'Cohort/label'}
+//            ,{caption: 'Age', name: 'age/AgeInYearsRounded', jsonType: 'int'}
+//            ,{caption: 'Age', name: 'age/AgeInYearsRounded', jsonType: 'int'}
+//            ,{caption: 'Current Room', name: 'curLocation/room'}
+//            //,{caption: 'Last TB Date', name: 'mostRecentTB'}
+//            //,{caption: 'Num. of Active Assignments', name: 'activeProjects/ActiveProjects (avail=all)'}
+//            ,{caption: 'Num. of Offspring', name: 'totalOffspring/TotalOffspring', jsonType: 'int'}
+//            ,{caption: 'Num. of Roommates', name: 'numRoommates/numRoommates', jsonType: 'int'}
+//            ,{caption: 'Species', name: 'Species/species', lookup: {schemaName: 'ehr_lookups', queryName: 'species', displayColumn: 'common', keyColumn: 'common'}
+//            }
+//            ,{caption: 'Gender', name: 'DataSet/Demographics/gender', lookup: {schemaName: 'ehr_lookups', queryName: 'gender_codes', displayColumn: 'meaning', keyColumn: 'code'}}
+//            ,{caption: 'Dam', name: 'DataSet/Demographics/dam'}
+//            ,{caption: 'Sire', name: 'DataSet/Demographics/sire'}
+//            ,{caption: 'Availability', name: 'DataSet/Demographics/avail'}
+//            ,{caption: 'Hold', name: 'DataSet/Demographics/hold'}
+//            ,{caption: 'Birth', name: 'DataSet/Demographics/birth', jsonType: 'date'}
+//            ,{caption: 'Origin', name: 'DataSet/Demographics/origin', lookup: {schemaName: 'ehr_lookups', queryName: 'origin_codes', displayColumn: 'code', keyColumn: 'code'}}
+//            ,{caption: 'Death', name: 'DataSet/Demographics/death', jsonType: 'date'}
+//            ,{caption: 'Viral Status', name: 'DataSet/Demographics/v_status', lookup: {schemaName: 'ehr_lookups', queryName: 'viral_status', displayColumn: 'viral_status', keyColumn: 'viral_status'}}
+//            ,{caption: 'Latest Weight', name: 'MostRecentWeight/MostRecentWeight', jsonType: 'float'}
+//            ,{caption: 'Latest Weight', name: 'MostRecentWeight/MostRecentWeight', jsonType: 'float'}
+//            //,{caption: 'Most Recent Weight Date', name: 'MostRecentWeight/MostRecentWeightDate', jsonType: 'date'}
+//            //major surgery
+//            //blood summary
+//            //mhc
+//         ]
     }).render('animalSearch');
 });
 
@@ -71,13 +74,13 @@ Ext.onReady(function ()
 <p/>
     <ul>
         <li>
-            <a href="<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=Animal&query.viewName=Alive%2C at WNPRC">Browse All Animals Living at WNPRC</a>
+            <a href="<%=contextPath%>/ehr/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=Animal&query.viewName=Alive%2C at WNPRC">Browse All Animals Living at WNPRC</a>
         </li>
         <li>
-            <a href="<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=Animal&query.viewName=All WNPRC">Browse All WNPRC Animals</a>
+            <a href="<%=contextPath%>/ehr/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=Animal&query.viewName=All WNPRC">Browse All WNPRC Animals</a>
         </li>
         <li>
-            <a href="<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=Colony Population By Age">Population Summary By Species, Gender and Age</a>
+            <a href="<%=contextPath%>/ehr/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=Colony Population By Age">Population Summary By Species, Gender and Age</a>
         </li>
     </ul>
 <p/>

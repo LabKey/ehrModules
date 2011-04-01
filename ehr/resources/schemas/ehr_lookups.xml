@@ -73,7 +73,7 @@
     <ns:columns>
       <ns:column columnName="eye">
         <ns:datatype>varchar</ns:datatype>
-        <ns:scale>100</ns:scale>
+        <ns:scale>50</ns:scale>
       </ns:column>
       <ns:column columnName="meaning">
         <ns:nullable>true</ns:nullable>
@@ -219,6 +219,7 @@
     </ns:columns>
   </ns:table>
   <ns:table tableName="cage" tableDbType="TABLE">
+    <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr_lookups&amp;query.queryName=cage&amp;roomcage=${roomcage}</ns:tableUrl>
     <ns:pkColumnName>roomcage</ns:pkColumnName>
     <ns:columns>
       <ns:column columnName="roomcage">
@@ -277,6 +278,7 @@
     </ns:columns>
   </ns:table>
   <ns:table tableName="obs_behavior" tableDbType="TABLE">
+    <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr_lookups&amp;query.queryName=obs_behavior&amp;cage=${code}</ns:tableUrl>
     <ns:pkColumnName>code</ns:pkColumnName>
     <ns:columns>
       <ns:column columnName="code">
@@ -333,6 +335,7 @@
     </ns:columns>
   </ns:table>
   <ns:table tableName="restraint_type" tableDbType="TABLE">
+    <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr_lookups&amp;query.queryName=restraint_type&amp;type=${type}</ns:tableUrl>
     <ns:pkColumnName>type</ns:pkColumnName>
     <ns:titleColumn>type</ns:titleColumn>
     <ns:columns>
@@ -361,6 +364,7 @@
     </ns:columns>
   </ns:table>
   <ns:table tableName="obs_breeding" tableDbType="TABLE">
+    <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr_lookups&amp;query.queryName=obs_breeding&amp;code=${code}</ns:tableUrl>
     <ns:pkColumnName>code</ns:pkColumnName>
     <ns:columns>
       <ns:column columnName="code">
@@ -375,6 +379,7 @@
     </ns:columns>
   </ns:table>
   <ns:table tableName="death_codes" tableDbType="TABLE">
+    <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr_lookups&amp;query.queryName=death_codes&amp;code=${code}</ns:tableUrl>
     <ns:pkColumnName>code</ns:pkColumnName>
     <ns:columns>
       <ns:column columnName="code">
@@ -389,6 +394,7 @@
     </ns:columns>
   </ns:table>
   <ns:table tableName="obs_other" tableDbType="TABLE">
+    <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr_lookups&amp;query.queryName=obs_other&amp;code=${code}</ns:tableUrl>
     <ns:pkColumnName>code</ns:pkColumnName>
     <ns:columns>
       <ns:column columnName="code">
@@ -452,6 +458,7 @@
     </ns:columns>
   </ns:table>
   <ns:table tableName="bacteriology_sensitivity" tableDbType="TABLE">
+    <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr_lookups&amp;query.queryName=bacteriology_sensitivity&amp;code=${code}</ns:tableUrl>
     <ns:pkColumnName>code</ns:pkColumnName>
     <ns:columns>
       <ns:column columnName="code">
@@ -493,6 +500,7 @@
     </ns:columns>
   </ns:table>
   <ns:table tableName="clinpath_tests" tableDbType="TABLE">
+    <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr_lookups&amp;query.queryName=clinpath_tests&amp;testname=${testname}</ns:tableUrl>
     <ns:pkColumnName>status</ns:pkColumnName>
     <ns:columns>
       <ns:column columnName="testname">
@@ -523,6 +531,7 @@
     </ns:columns>
   </ns:table>
   <ns:table tableName="lab_tests" tableDbType="TABLE">
+    <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr_lookups&amp;query.queryName=lab_tests&amp;testid=${testid}</ns:tableUrl>
     <ns:pkColumnName>testid</ns:pkColumnName>
     <ns:columns>
       <ns:column columnName="testid">
@@ -570,7 +579,7 @@
     <ns:columns>
       <ns:column columnName="result">
         <ns:datatype>varchar</ns:datatype>
-        <ns:scale>100</ns:scale>
+        <ns:scale>50</ns:scale>
       </ns:column>
     </ns:columns>
   </ns:table>
@@ -595,6 +604,7 @@
     </ns:columns>
   </ns:table>
   <ns:table tableName="obs_feces" tableDbType="TABLE">
+    <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr_lookups&amp;query.queryName=obs_feces&amp;code=${code}</ns:tableUrl>
     <ns:pkColumnName>code</ns:pkColumnName>
     <ns:columns>
       <ns:column columnName="code">
@@ -660,6 +670,7 @@
     </ns:columns>
   </ns:table>
   <ns:table tableName="alopecia_score" tableDbType="TABLE">
+    <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr_lookups&amp;query.queryName=alopecia_score&amp;score=${score}</ns:tableUrl>
     <ns:pkColumnName>score</ns:pkColumnName>
     <ns:columns>
       <ns:column columnName="score">
@@ -733,31 +744,31 @@
       <!--</ns:column>-->
     <!--</ns:columns>-->
   <!--</ns:table>-->
-  <ns:table tableName="virus_snomed" tableDbType="TABLE">
-    <ns:pkColumnName>rowid</ns:pkColumnName>
-    <ns:columns>
-      <ns:column columnName="pathogen">
-        <ns:nullable>true</ns:nullable>
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>100</ns:scale>
-      </ns:column>
-      <ns:column columnName="challenge_type">
-        <ns:nullable>true</ns:nullable>
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>100</ns:scale>
-      </ns:column>
-      <ns:column columnName="code">
-        <ns:nullable>true</ns:nullable>
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>100</ns:scale>
-      </ns:column>
-      <ns:column columnName="rowid">
-        <ns:datatype>serial</ns:datatype>
-        <ns:isAutoInc>true</ns:isAutoInc>
-        <ns:scale>10</ns:scale>
-      </ns:column>
-    </ns:columns>
-  </ns:table>
+  <!--<ns:table tableName="virus_snomed" tableDbType="TABLE">-->
+    <!--<ns:pkColumnName>rowid</ns:pkColumnName>-->
+    <!--<ns:columns>-->
+      <!--<ns:column columnName="pathogen">-->
+        <!--<ns:nullable>true</ns:nullable>-->
+        <!--<ns:datatype>varchar</ns:datatype>-->
+        <!--<ns:scale>100</ns:scale>-->
+      <!--</ns:column>-->
+      <!--<ns:column columnName="challenge_type">-->
+        <!--<ns:nullable>true</ns:nullable>-->
+        <!--<ns:datatype>varchar</ns:datatype>-->
+        <!--<ns:scale>100</ns:scale>-->
+      <!--</ns:column>-->
+      <!--<ns:column columnName="code">-->
+        <!--<ns:nullable>true</ns:nullable>-->
+        <!--<ns:datatype>varchar</ns:datatype>-->
+        <!--<ns:scale>100</ns:scale>-->
+      <!--</ns:column>-->
+      <!--<ns:column columnName="rowid">-->
+        <!--<ns:datatype>serial</ns:datatype>-->
+        <!--<ns:isAutoInc>true</ns:isAutoInc>-->
+        <!--<ns:scale>10</ns:scale>-->
+      <!--</ns:column>-->
+    <!--</ns:columns>-->
+  <!--</ns:table>-->
   <ns:table tableName="pairtest_conclusion" tableDbType="TABLE">
     <ns:pkColumnName>value</ns:pkColumnName>
     <ns:columns>
@@ -887,7 +898,9 @@
     </ns:columns>
   </ns:table>
   <ns:table tableName="treatment_frequency" tableDbType="TABLE">
+    <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr_lookups&amp;query.queryName=treatment_frequency&amp;rowid=${rowid}</ns:tableUrl>
     <ns:pkColumnName>rowid</ns:pkColumnName>
+    <ns:titleColumn>meaning</ns:titleColumn>
     <ns:columns>
       <ns:column columnName="rowid">
         <ns:datatype>serial</ns:datatype>
@@ -1041,6 +1054,11 @@
         <ns:datatype>entityid</ns:datatype>
         <ns:isHidden>true</ns:isHidden>
         <ns:scale>36</ns:scale>
+        <ns:fk>
+          <ns:fkDbSchema>core</ns:fkDbSchema>
+          <ns:fkTable>containers</ns:fkTable>
+          <ns:fkColumnName>entityid</ns:fkColumnName>
+        </ns:fk>
       </ns:column>
       <ns:column columnName="createdby">
         <ns:isUserEditable>false</ns:isUserEditable>
@@ -1089,6 +1107,7 @@
   <ns:table tableName="snomed" tableDbType="TABLE">
     <ns:pkColumnName>code</ns:pkColumnName>
     <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr_lookups&amp;query.queryName=snomed&amp;code=${code}</ns:tableUrl>
+    <ns:titleColumn>meaning</ns:titleColumn>
     <ns:columns>
       <ns:column columnName="code">
         <ns:datatype>varchar</ns:datatype>
@@ -1099,13 +1118,13 @@
         <ns:datatype>varchar</ns:datatype>
         <ns:scale>255</ns:scale>
       </ns:column>
-      <ns:column columnName="container">
-        <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:nullable>true</ns:nullable>
-        <ns:datatype>entityid</ns:datatype>
-        <ns:isHidden>true</ns:isHidden>
-        <ns:scale>36</ns:scale>
-      </ns:column>
+      <!--<ns:column columnName="container">-->
+        <!--<ns:isUserEditable>false</ns:isUserEditable>-->
+        <!--<ns:nullable>true</ns:nullable>-->
+        <!--<ns:datatype>entityid</ns:datatype>-->
+        <!--<ns:isHidden>true</ns:isHidden>-->
+        <!--<ns:scale>36</ns:scale>-->
+      <!--</ns:column>-->
       <ns:column columnName="createdby">
         <ns:isUserEditable>false</ns:isUserEditable>
         <ns:nullable>true</ns:nullable>
@@ -1167,6 +1186,11 @@
         <ns:datatype>entityid</ns:datatype>
         <ns:isHidden>true</ns:isHidden>
         <ns:scale>36</ns:scale>
+        <ns:fk>
+          <ns:fkDbSchema>core</ns:fkDbSchema>
+          <ns:fkTable>containers</ns:fkTable>
+          <ns:fkColumnName>entityid</ns:fkColumnName>
+        </ns:fk>
       </ns:column>
       <ns:column columnName="createdby">
         <ns:isUserEditable>false</ns:isUserEditable>
@@ -1227,6 +1251,15 @@
             <ns:datatype>varchar</ns:datatype>
             <ns:scale>100</ns:scale>
           </ns:column>
+      </ns:columns>
+    </ns:table>
+    <ns:table tableName="oor_indicators" tableDbType="TABLE">
+      <ns:pkColumnName>indicator</ns:pkColumnName>
+      <ns:columns>
+        <ns:column columnName="indicator">
+          <ns:datatype>varchar</ns:datatype>
+          <ns:scale>50</ns:scale>
+        </ns:column>
       </ns:columns>
     </ns:table>
 </ns:tables>

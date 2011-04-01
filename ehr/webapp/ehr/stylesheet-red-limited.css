@@ -1,0 +1,467 @@
+
+
+ a:hover, a:visited:hover, .labkey-link:hover, .labkey-link:visited:hover
+
+{
+
+    color: #c90;
+
+}
+
+
+
+a.labkey-text-link:hover {
+	color: #c90;
+    /*background: url(../_images/arrow_link_button_over-red.jpg) top right no-repeat;*/
+    /*background: url(../ehr/images/arrow_link_button_over-red.jpg) top right no-repeat;*/
+}
+
+
+
+
+
+
+
+ /*The side panel with the navigation and admin expandable menus*/
+
+/*td.labkey-site-nav-panel {*/
+
+    /*background-color: #fffcf8;*/
+
+    /*border-top: 3px solid #C90;*/
+
+    /*border-right: 1px solid #f1da94;*/
+
+/*}*/
+
+#topmenu
+{
+    height: 22px;
+    /*border-bottom: 3px solid #C90 !important;*/
+}
+
+td.labkey-proj
+
+{
+    border-top: 3px solid #C90;
+}
+
+ /* Override for top bar */
+/*table#header*/
+/*{*/
+    /*border-bottom: 3px solid #C90;*/
+/*}*/
+
+
+td.labkey-main-menu
+
+{
+
+    border-top:1px solid #CC9900;
+
+
+}
+
+
+
+fieldset
+
+{
+
+    border: 1px solid #CC9900;
+
+}
+
+
+
+.labkey-app-bar
+
+{
+
+    border-top: 1px solid #CC9900;
+
+}
+
+
+
+.labkey-data-region-header-container
+
+{
+
+    /*background-color: #E7EFF4;*/
+
+    border: 1px solid #CC9900;
+
+}
+
+
+.labkey-customview-item.x-view-selected {
+
+    border-top: 1px solid #CC9900;
+
+    border-bottom: 1px solid #CC9900;
+
+}
+
+
+
+td.labkey-main-menu
+
+{
+
+    /*margin:4px;*/
+
+    /*padding:4px;*/
+
+    border-top:1px solid #CC9900;
+
+    /*background-color: #E7EFF4;*/
+
+    /*font-weight: normal;*/
+
+}
+
+
+
+.labkey-search-navresults
+
+{
+
+    /*padding-left:8px;*/
+
+    border-left:1px solid #CC9900;
+
+}
+
+
+
+#menuBarFolder_menu .labkey-expandable-nav
+
+{
+
+    border-left: 1px solid #CC9900;
+
+}
+
+
+
+.labkey-callout-tip {
+
+    border-left:1px dotted #CC9900;
+
+}
+
+
+
+.labkey-callout-tip-over {
+
+    background-color: #CC9900;
+
+}
+
+
+
+.gwt-DialogBox {
+
+  border: 8px solid #CC9900;
+
+
+
+}
+
+
+
+.gwt-DialogBox .Caption {
+
+
+  border: 1px solid #CC9900;
+
+}
+
+
+
+.gwt-HorizontalSplitter .Bar {
+
+  background-color: #CC9900;
+
+}
+
+
+
+.gwt-VerticalSplitter .Bar {
+
+  background-color: #CC9900;
+
+}
+
+
+
+.gwt-MenuBar {
+
+
+  border: 1px solid #CC9900;
+
+}
+
+
+
+.gwt-MenuBar .gwt-MenuItem-selected {
+
+  background-color: #CC9900;
+
+}
+
+
+
+div.yuimenu {
+
+
+
+    border:solid 1px #CC9900;
+
+}
+
+
+
+div.yuimenu h6,
+
+div.yuimenubar h6 {
+
+
+
+    border:solid 1px #CC9900;
+
+}
+
+
+
+div.yuimenu ul {
+
+    border:solid 1px #CC9900;
+
+}
+
+
+
+div.yuimenubar li.yuimenubaritem {
+
+
+
+    border-color:#CC9900;
+
+}
+
+
+
+.x-panel-header {
+
+	border: 1px solid #CC9900;
+
+}
+
+
+
+.x-grid-group-hd {
+
+    border-color: #CC9900;
+
+}
+
+
+
+.x-menu {
+
+    border-color: #CC9900;
+
+}
+
+
+
+.extContainer .x-menu-item-active {
+
+    border:1px solid #CC9900;
+
+}
+
+
+
+td.labkey-tab-selected, .labkey-tab-selected {
+
+    border-top: solid 1px #CC9900;
+
+    border-left: solid 1px #CC9900;
+
+    border-right: solid 1px #CC9900;
+
+    /*border-bottom: solid 1px #ffffff;*/
+
+}
+
+
+
+.labkey-tab-selected a {
+
+    border-top: solid 1px #CC9900;
+
+    /*border-bottom: solid 1px #ffffff;*/
+
+}
+
+
+
+td.labkey-tab, .labkey-tab {
+
+    border: solid 1px #CC9900;
+
+}
+
+
+
+ /*This tab has a bottom border and its text is shaded so it looks like it is back and unselectable*/
+
+td.labkey-tab-inactive {
+
+    border:solid 1px #CC9900;
+
+}
+
+
+
+td.labkey-tab-content, .labkey-tab-content {
+
+    border-left: solid 1px #CC9900;
+
+    border-right: solid 1px #CC9900;
+
+    border-bottom: solid 1px #CC9900;
+
+}
+
+
+
+td.labkey-tab-space, .labkey-tab-space
+
+{
+
+    border-bottom: 1px solid #CC9900;
+
+}
+
+
+ul.labkey-tab-strip a
+
+{
+
+    border-top : 1px solid #CC9900;
+
+    border-right : 1px solid #CC9900;
+
+    border-left : 1px solid #CC9900;
+
+}
+
+
+
+.labkey-tab-strip-spacer
+
+{
+
+	border-left : 1px solid #CC9900;
+
+	border-right : 1px solid #CC9900;
+
+}
+
+
+
+.labkey-tab-strip-content
+
+{
+
+	border: 1px solid #CC9900;
+
+}
+
+
+
+.gwt-TabPanelBottom {
+
+	border: 1px solid #CC9900;
+
+}
+
+
+
+.gwt-TabBar .gwt-TabBarItem {
+
+  border-top: 1px solid #CC9900;
+
+  border-left: 1px solid #CC9900;
+
+  border-right: 1px solid #CC9900;
+
+}
+
+
+
+.x-tab-panel-body {
+
+    border-color: #CC9900;
+
+}
+
+
+
+ul.x-tab-strip-top li {
+
+    border-top:1px solid #CC9900;
+
+    border-right:1px solid #CC9900;
+
+    border-left:1px solid #CC9900;
+
+}
+
+
+
+.x-tab-panel-header-plain .x-tab-strip-spacer,
+
+.x-tab-panel-footer-plain .x-tab-strip-spacer,
+
+.x-tab-panel-header .x-tab-strip-spacer
+
+{
+
+    border-left:1px solid #CC9900;
+
+	border-right:1px solid #CC9900;
+
+}
+
+
+
+
+ul.x-tab-strip-top {
+
+    border-bottom-color: #CC9900;
+
+}
+
+.ehr-nav-header.x-panel-header-noborder
+{
+    border-bottom-color: #CC9900 !important;
+
+}
+
+
+fieldset
+{
+    border: #CC9900;
+}
+
+legend
+{
+    border: #CC9900;
+
+}
+

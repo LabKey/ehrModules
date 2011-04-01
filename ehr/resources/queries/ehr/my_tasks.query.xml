@@ -3,8 +3,10 @@
         <tables xmlns="http://labkey.org/data/xml">
             <table tableName="tasks" tableDbType="TABLE">
                 <tableUrl>/ehr/taskDetails.view?formtype=${formtype}&amp;taskid=${taskid}</tableUrl>
-                <updateUrl>/ehr/manageTask.view?formtype=${formtype}&amp;taskid=${taskid}</updateUrl>
-                <insertUrl>/ehr/manageTask.view</insertUrl>
+                <!--<updateUrl>/ehr/manageTask.view?formtype=${formtype}&amp;taskid=${taskid}</updateUrl>-->
+                <!--<insertUrl>/ehr/manageTask.view</insertUrl>-->
+                <insertUrl />
+                <updateUrl />
                 <titleColumn>RowId</titleColumn>
                 <columns>
                     <column columnName="rowid">
@@ -64,13 +66,6 @@
                         </fk>
                     </column>
                 </columns>
-                <buttonBarOptions includeStandardButtons="true">
-                    <includeScript>/ehr/studyButtons.js</includeScript>
-                    <item text="Create New">
-                        <!--<originalText>Insert New</originalText>-->
-                        <target>/ehr/manageTask.view</target>
-                    </item>
-                </buttonBarOptions>
             </table>
         </tables>
     </metadata>

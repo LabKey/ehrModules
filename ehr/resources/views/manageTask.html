@@ -30,7 +30,7 @@ Ext.onReady(function(){
 
     function renderTaskForm(formType){
         EHR.ext.createImportPanel({
-            panelType: 'Task',
+            panelType: 'TaskPanel',
             formUUID: formUUID,
             formType: formType,
             renderTo: 'taskForm'
@@ -41,7 +41,7 @@ Ext.onReady(function(){
 
     function renderSimpleForm(queryName){
         EHR.ext.createSimpleTaskPanel({
-            panelType: 'Task',
+            panelType: 'TaskPanel',
             formType: LABKEY.ActionURL.getParameter('queryName'),
             formUUID: formUUID,
             queryName: LABKEY.ActionURL.getParameter('queryName'),
@@ -84,13 +84,14 @@ Ext.onReady(function(){
                 ,ref: 'submit'
                 ,handler: function(s){
                     var val = s.refOwner.ownerCt.type.getValue();
-                    if(val)
+                    if(val){
                         window.location = LABKEY.ActionURL.buildURL(
                             'ehr',
                             LABKEY.ActionURL.getAction(),
                             null,
                             {formtype: val, taskid: LABKEY.Utils.generateUUID()}
                         )
+                    }
                 }
             }]
         });

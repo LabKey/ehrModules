@@ -2,11 +2,13 @@
 <head>
 <script type="text/javascript">
 
-Ext.onReady(function (){
-    var query = LABKEY.postParameters['query.queryName'];
-    var schema = LABKEY.postParameters['schemaName'];
+LABKEY.requiresScript("/ehr/utils.js");
 
-    LABKEY.NavTrail.setTrail(query);
+Ext.onReady(function (){
+    var query = LABKEY.ActionURL.getParameter('query.queryName') || LABKEY.ActionURL.getParameter('queryName');
+    var schema = LABKEY.ActionURL.getParameter('schemaName');
+
+    LABKEY.NavTrail.setTrail(EHR.utils.toTitleCase(query));
 
     var config = {
         title: query,
@@ -28,10 +30,25 @@ Ext.onReady(function (){
     };
 
     if(schema=='study'){
-        config.filters = [LABKEY.Filter.create('QCState/PublicData', true, LABKEY.Filter.Types.EQUAL)]
+        LABKEY.Query.executeSql({
+            scope: this,
+            schemaName: 'study',
+            sql: "SELECT * FROM study.datasets WHERE label='"+query+"' OR name='"+query+"'",
+            error: EHR.utils.onError,
+            success: function(data){
+                if(data.rows && data.rows.length)
+                    config.filters = [LABKEY.Filter.create('QCState/PublicData', true, LABKEY.Filter.Types.EQUAL)];
+
+                new LABKEY.QueryWebPart(config).render('qwpDiv');
+            }
+        });
+
+    }
+    else {
+        new LABKEY.QueryWebPart(config).render('qwpDiv');
     }
 
-    new LABKEY.QueryWebPart(config).render('qwpDiv');
+
 });
 
 

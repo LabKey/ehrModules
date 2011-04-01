@@ -3,6 +3,11 @@
         <tables xmlns="http://labkey.org/data/xml">
             <table tableName="prenatal" tableDbType="TABLE">
                 <tableUrl>/query/detailsQueryRow.view?schemaName=study&amp;query.queryName=prenatal&amp;lsid=${lsid}</tableUrl>
+                <!--<insertUrl>/ehr/manageRecord.view?schemaName=study&amp;queryName=Prenatal&amp;keyField=lsid&amp;</insertUrl>-->
+                <!--<updateUrl>/ehr/manageRecord.view?schemaName=study&amp;queryName=Prenatal&amp;keyField=lsid&amp;key=${lsid}</updateUrl>-->
+                <insertUrl />
+                <updateUrl />
+                <!--<deleteUrl />-->
                 <columns>
                     <column columnName="species">
                         <datatype>varchar</datatype>
@@ -28,7 +33,7 @@
                     <column columnName="weight">
                         <datatype>double</datatype>
                         <columnTitle>Weight</columnTitle>
-                        <url>/query/executeQuery.view?schemaName=study&amp;
+                        <url>/ehr/executeQuery.view?schemaName=study&amp;
                             query.queryName=Weight&amp;
                             query.id~eq=${id}
                         </url>

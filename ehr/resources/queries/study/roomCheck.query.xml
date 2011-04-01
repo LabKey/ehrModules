@@ -6,6 +6,9 @@
                     <column columnName="Location">
                         <columnTitle>Current Location</columnTitle>
                     </column>
+                    <column columnName="MostRecentWeight">
+                        <columnTitle>Most Recent Weight</columnTitle>
+                    </column>
                     <column columnName="Length">
                         <columnTitle>Length (in)</columnTitle>
                     </column>

@@ -17,7 +17,9 @@ dam.sire AS MaternalGrandsire,
 
 sire.dam AS PaternalGranddam,
 
-sire.sire AS PaternalGrandsire
+sire.sire AS PaternalGrandsire,
+
+d1.qcstate
 
 FROM study.Demographics d1
 

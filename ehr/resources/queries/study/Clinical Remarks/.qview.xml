@@ -9,5 +9,9 @@
     </columns>
     <sorts>
            <sort column="date" descending="true"/>
+           <sort column="remark"/>
     </sorts>
+    <filters>
+        <filter column="qcstate/publicdata" operator="eq" value="true"/>
+    </filters>
 </customView>

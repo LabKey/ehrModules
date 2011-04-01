@@ -3,7 +3,7 @@
  *
  * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
  */
-Ext.namespace('EHR.ext', 'EHR.searchMetadata');
+Ext.namespace('EHR.ext');
 
 LABKEY.requiresScript("/ehr/ehrAPI.js");
 
@@ -39,40 +39,28 @@ EHR.ext.SearchPanel = Ext.extend(Ext.Panel, {
 
         EHR.ext.SearchPanel.superclass.initComponent.call(this);
 
-        //default labkey fields that are not terribly useful to end users
-        var metaDefaults = {
-            metadata: {
-                Id: {lookups: false}
-                ,TotalRoommates: {hidden: true}
-                ,Created: {hidden: true}
-                ,CreatedBy: {hidden: true}
-                ,Modified: {hidden: true}
-                ,ModifiedBy: {hidden: true}
-                ,objectid: {hidden: true}
-                ,ts: {hidden: true}
-                ,Dataset: {hidden: true}
-                ,AgeAtTime: {hidden: true}
-                ,QCState: {hidden: true}
-                ,created: {hidden: true}
-                ,modified: {hidden: true}
-                ,SequenceNum: {hidden: true}
-                ,AnimalVisit: {hidden: true}
-                ,EntityId: {hidden: true}
-                ,Notes: {hidden: true}
-                ,dam: {lookups: false}
-                ,sire: {lookups: false}
-                ,code: {lookups: false}
-                ,snomed: {lookups: false}
-            }
-            ,newFields: []
-        };
-        EHR.utils.rApplyIf(this, metaDefaults);
-
-        if(EHR.searchMetadata[this.queryName]){
-            EHR.utils.rApply(this, EHR.searchMetadata[this.queryName]);
-        }
+//        //default labkey fields that are not terribly useful to end users
+//        var metaDefaults = {
+//            metadata: {}
+//            ,newFields: []
+//        };
+//        EHR.utils.rApplyIf(this, metaDefaults);
 
         LABKEY.Query.getQueryDetails({
+            containerPath: this.containerPath
+            ,queryName: this.queryName
+            ,schemaName: this.schemaName
+            ,viewName: this.viewName
+            ,maxRows: 0
+//            ,successCallback: this.onLoad
+            ,successCallback: function(results){
+                console.log(results)
+            }
+            ,errorCallback: EHR.utils.onError
+            ,scope: this
+        });
+
+        this.store = new EHR.ext.AdvancedStore({
             containerPath: this.containerPath
             ,queryName: this.queryName
             ,schemaName: this.schemaName
@@ -81,28 +69,48 @@ EHR.ext.SearchPanel = Ext.extend(Ext.Panel, {
             ,successCallback: this.onLoad
             ,errorCallback: EHR.utils.onError
             ,scope: this
+            ,autoLoad: true
+            ,metadata: this.metadata
+            ,columns: this.columns
         });
+
+        this.store.on('load', this.onLoad, this);
 
         Ext.Ajax.timeout = 120000; //in milliseconds
     },
 
-    onLoad: function(results){
+    onLoad: function(store){
         this.removeAll();
 
-        if (!results || !results.columns){
+        if (!store || !store.fields){
             this.add({tag: 'div', html: 'Error loading data'});
             this.doLayout();            
             return;
         }
 
-        Ext.each(results.columns, function(c){
-            this.addRow(c);
+        store.fields.each(function(f){
+            this.createRow(f);
         }, this);
 
-        //append user-defined fields
-        Ext.each(this.newFields, function(c){
-            this.addRow(c);
-        }, this);
+//        //append user-defined fields
+//        Ext.each(this.newFields, function(c){
+//            if(!c.jsonType)
+//                c.jsonType = 'string';
+//            this.createRow(c);
+//        }, this);
+
+        if (this.useContainerFilter){
+            this.add({
+                html: 'Container Filter:', width: 125
+            },{
+                xtype: 'ehr-containerfiltercombo'
+                ,width: 165
+                ,value: this.defaultContainerFilter || ''
+                ,fieldType: 'containerFilterName'
+                ,ref: 'containerFilterName'
+            });
+            this.add({html: ''});
+        }
 
         if (this.allowSelectView!==false){
             this.add({
@@ -114,21 +122,18 @@ EHR.ext.SearchPanel = Ext.extend(Ext.Panel, {
                 ,schemaName: this.schemaName
                 ,width: 165
                 ,initialValue: this.defaultView || ''
+                ,fieldType: 'viewName'
+                ,ref: 'viewNameField'
             });
+            this.add({html: ''});
         }
 
         this.doLayout();
     },
 
-   addRow: function(meta){
-        Ext.apply(meta, {lookupNullCaption: '', ext: {width: 150, lazyInit: false, editable: false, type: 'formField'}});
+   createRow: function(meta){
         if(meta.inputType == 'textarea')
             meta.inputType = 'textbox';
-
-        //allow metadata override
-        if (this.metadata && this.metadata[meta.name]){
-            EHR.utils.rApply(meta, this.metadata[meta.name])
-        }
 
        //TODO: hack way to avoid snomed lookup combos
         if(meta.lookup && meta.lookup.queryName == 'snomed'){
@@ -136,58 +141,99 @@ EHR.ext.SearchPanel = Ext.extend(Ext.Panel, {
         }
 
         if (!meta.hidden && meta.selectable !== false){
+            var replicates = 1;
+            if(meta.duplicate)
+                replicates = 2;
+
+            for(var i=0;i<replicates;i++)
+                this.addRow(meta);
+
+        }
+   },
+
+   addRow: function(meta){
             //the label
             this.add({html: meta.caption+':', width: 150});
 
+            if (meta.lookup && meta.lookups!==false){
+                meta.xtype = 'lovcombo';
+                meta.editorConfig = meta.editorConfig || {};
+                meta.editorConfig.tpl = null;
+                meta.editorConfig.separator = ';';
+            }
+
+            //create the field
+            var theField = EHR.ext.metaHelper.getFormEditorConfig(meta);
+
+            Ext.apply(theField, {
+                nullable: true,
+                allowBlank: true,
+                width: 150,
+                isSearchField: true
+            });
+
             //the operator
-            if ((!meta.lookup || false === meta.lookups)){
-                this.add(meta.jsonType=='boolean' ? {} : new EHR.ext.OperatorCombo({
+            if(meta.jsonType=='boolean')
+                this.add({});
+            else if (theField.xtype == 'lovcombo'){
+                theField.opField = this.add({
+                    xtype: 'displayfield',
+                    value: 'in',
+                    hidden: true
+                });
+            }
+            else
+                theField.opField = this.add({
+                    xtype: 'ehr-operatorcombo',
                     meta: meta,
                     width: 165
-                }));
-            }
-            else {
-                this.add({html: ''})
-            }
+                });
+
             //the field itself
-            this.add(LABKEY.ext.FormHelper.getFieldEditor(meta));
-        }
+            this.add(theField);
     },
-    
     onSubmit: function(){
         var params = {
             schemaName: this.schemaName,
             'query.queryName': this.queryName
         };
 
-        var loops = (this.items.items.length - 2) /3;
+        if(this.schemaName=='study'){
+            params['qcstate/publicdata~eq'] = true;
+        }
 
-        for (var i=0;i<loops;i++){
+        if (this.containerFilterName && this.containerFilterName.getValue()){
+            params['query.containerFilterName'] = this.containerFilterName.getValue();
+        }
+
+        if (this.viewNameField && this.viewNameField.getValue()){
+            params['query.viewName'] = this.viewNameField.getValue();
+        }
+
+        this.items.each(function(item){
+            if(!item.isSearchField)
+                return;
+
             var op;
-            if (this.items.items[(i*3)+1].getValue){
-                op = this.items.items[(i*3)+1].getValue();
+            if (item.opField && item.opField.getValue()){
+                op = item.opField.getValue();
             }
             else {
                 op = 'eq';
             }
 
             //TODO: .selectText() for select menus?
-            var field = this.items.items[(i*3)+2];
-
-            if (i == (loops - 1) && this.items.items[(i*3)+4].getValue() != null){
-                params['query.viewName'] = this.items.items[(i*3)+4].getValue();
-            }
-
-            var val = field.getValue();
+            var val = item.getValue();
             if (val || op == 'isblank' || op == 'isnonblank'){
                 //NOTE: a hack to get around the null record display field of comboboxes
                 if (val != '[none]')
-                    params[('query.' + field.originalConfig.name + '~' + op)] = val;
+                    params[('query.' + item.dataIndex + '~' + op)] = val;
             }
-        }
+        }, this);
 
+//        console.log(params)
         window.location = LABKEY.ActionURL.buildURL(
-            'query',
+            'ehr',
             'executeQuery.view',
             (this.containerPath || LABKEY.ActionURL.getContainer()),
             params
@@ -199,71 +245,3 @@ Ext.reg('ehr-searchform', EHR.ext.SearchPanel);
 
 
 
-EHR.searchMetadata = {
-    Animal: {
-        defaultView: 'Alive, at WNPRC'
-        ,metadata: {
-            Surgery: {hidden: true}
-            ,activeAssignments: {hidden: true}
-            ,curLocation: {hidden: true}
-            ,numRoommates: {hidden: true}
-            ,MostRecentWeight: {hidden: true}
-            ,Species: {hidden: true}
-            ,Status: {hidden: true}
-            ,totalOffspring: {hidden: true}
-            ,MostRecentTB: {hidden: true}
-            ,MostRecentArrival: {hidden: true}
-            ,MostRecentDeparture: {hidden: true}
-            ,MHCtyping: {hidden: true}
-            ,CageClass: {hidden: true}
-            ,AvailBlood: {hidden: true}
-            ,DaysAlone: {hidden: true}
-            ,AgeClass: {hidden: true}
-            ,totalAssignments: {hidden: true}
-            ,ViralLoad: {hidden: true}
-        }
-        ,newFields: [
-            {caption: 'Cohort', name: 'Cohort/label'}
-            ,{caption: 'Age', name: 'age/AgeInYearsRounded', jsonType: 'int'}
-            ,{caption: 'Age', name: 'age/AgeInYearsRounded', jsonType: 'int'}
-            ,{caption: 'Current Room', name: 'curLocation/room'}
-            //,{caption: 'Last TB Date', name: 'mostRecentTB'}
-            //,{caption: 'Num. of Active Assignments', name: 'activeProjects/ActiveProjects (avail=all)'}
-            ,{caption: 'Num. of Offspring', name: 'totalOffspring/TotalOffspring', jsonType: 'int'}
-            ,{caption: 'Num. of Roommates', name: 'numRoommates/numRoommates', jsonType: 'int'}
-            ,{caption: 'Species', name: 'Species/species', lookup: {schemaName: 'ehr_lookups', queryName: 'species', displayColumn: 'common', keyColumn: 'common'}
-            }
-            ,{caption: 'Gender', name: 'DataSet/Demographics/gender', lookup: {schemaName: 'ehr_lookups', queryName: 'gender_codes', displayColumn: 'meaning', keyColumn: 'code'}}
-            ,{caption: 'Dam', name: 'DataSet/Demographics/dam'}
-            ,{caption: 'Sire', name: 'DataSet/Demographics/sire'}
-            ,{caption: 'Availability', name: 'DataSet/Demographics/avail'}
-            ,{caption: 'Hold', name: 'DataSet/Demographics/hold'}
-            ,{caption: 'Birth', name: 'DataSet/Demographics/birth', jsonType: 'date'}
-            ,{caption: 'Origin', name: 'DataSet/Demographics/origin', lookup: {schemaName: 'ehr_lookups', queryName: 'origin_codes', displayColumn: 'code', keyColumn: 'code'}}
-            ,{caption: 'Death', name: 'DataSet/Demographics/death', jsonType: 'date'}
-            ,{caption: 'Viral Status', name: 'DataSet/Demographics/v_status', lookup: {schemaName: 'ehr_lookups', queryName: 'viral_status', displayColumn: 'viral_status', keyColumn: 'viral_status'}}
-            ,{caption: 'Latest Weight', name: 'MostRecentWeight/MostRecentWeight', jsonType: 'float'}
-            ,{caption: 'Latest Weight', name: 'MostRecentWeight/MostRecentWeight', jsonType: 'float'}
-            //,{caption: 'Most Recent Weight Date', name: 'MostRecentWeight/MostRecentWeightDate', jsonType: 'date'}
-            //major surgery
-            //blood summary
-            //mhc
-         ]
-    },
-    Housing: {
-        defaultView: 'Current Housing'
-        ,metadata: {
-            isTemp: {hidden: true}
-        }
-    },
-    Alopecia: {
-        metadata: {
-            head: {lookups: false}
-        }
-    },
-    'Clinical Remarks': {
-        metadata: {
-            qualifier: {hidden: true}
-        }
-    }
-}

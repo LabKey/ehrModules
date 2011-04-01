@@ -31,11 +31,40 @@ public class EHRDataAdminRole extends AbstractEHRRole
     public EHRDataAdminRole()
     {
         super("EHR Data Admin", "Users with this role are permitted to make any edits to datasets",
-                AdminPermission.class,
+//                AdminPermission.class,
                 ReadPermission.class,
                 InsertPermission.class,
                 UpdatePermission.class,
-                DeletePermission.class
+                DeletePermission.class,
+
+                EHRAbnormalDeletePermission.class,
+                EHRAbnormalInsertPermission.class,
+                EHRAbnormalUpdatePermission.class,
+                EHRApprovedDeletePermission.class,
+                EHRApprovedInsertPermission.class,
+                EHRApprovedUpdatePermission.class,
+                EHRDeleteRequestedDeletePermission.class,
+                EHRDeleteRequestedInsertPermission.class,
+                EHRDeleteRequestedUpdatePermission.class,
+                EHRInProgressDeletePermission.class,
+                EHRInProgressInsertPermission.class,
+                EHRInProgressUpdatePermission.class,
+                EHRRequestApprovedDeletePermission.class,
+                EHRRequestApprovedInsertPermission.class,
+                EHRRequestApprovedUpdatePermission.class,
+                EHRRequestCompleteDeletePermission.class,
+                EHRRequestCompleteInsertPermission.class,
+                EHRRequestCompleteUpdatePermission.class,
+                EHRRequestDeniedDeletePermission.class,
+                EHRRequestDeniedInsertPermission.class,
+                EHRRequestDeniedUpdatePermission.class,
+                EHRRequestPendingDeletePermission.class,
+                EHRRequestPendingInsertPermission.class,
+                EHRRequestPendingUpdatePermission.class,
+                EHRReviewRequiredDeletePermission.class,
+                EHRReviewRequiredInsertPermission.class,
+                EHRReviewRequiredUpdatePermission.class
+
         );
 
         addExcludedPrincipal(org.labkey.api.security.SecurityManager.getGroup(Group.groupGuests));

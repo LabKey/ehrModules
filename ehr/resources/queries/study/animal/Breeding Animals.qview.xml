@@ -104,7 +104,7 @@
     </columns>
     <filters>
         <filter column="Status/Status" operator="eq" value="Alive"/>
-        <filter column="activeAssignments/ActiveBreedingAssignments" operator="gt" value="0"/>        
+        <filter column="activeAssignments/ActiveBreedingAssignments" operator="gt" value="0"/>
     </filters>
     <sorts>
         <sort column="id" descending="false"/>

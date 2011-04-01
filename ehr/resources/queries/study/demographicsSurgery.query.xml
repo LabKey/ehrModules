@@ -8,14 +8,14 @@
                         <isHidden>true</isHidden>
                     </column>
                     <column columnName="AnySurgery">
-                        <url>/query/executeQuery.view?schemaName=study&amp;
+                        <url>/ehr/executeQuery.view?schemaName=study&amp;
                             query.queryName=surgery&amp;
                             query.Id~eq=${Id}
                         </url>
                         <columnTitle>Had Any Surgery?</columnTitle>
                     </column>
                     <column columnName="MajorSurgery">
-                        <url>/query/executeQuery.view?schemaName=study&amp;
+                        <url>/ehr/executeQuery.view?schemaName=study&amp;
                             query.queryName=surgery&amp;
                             query.Id~eq=${Id}&amp;
                             query.Major~contains=y

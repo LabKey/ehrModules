@@ -4,8 +4,6 @@
  * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
  */
 --this query is designed to be joined into Assignment using lsid
---TODO: Add COALESCE
-
 SELECT
   a1.lsid,
 
@@ -14,9 +12,9 @@ SELECT
 
   --the total number of assignments on this animal overlapping with this record
   COUNT(a1.CoAssigned) as ConcurrentAssignments,
---   group_concat(DISTINCT a1.coassigned) as CoAssignedAnimals
+  group_concat(DISTINCT a1.coassigned) as CoAssignedAnimals
 
-FROM study.assignmentCoAssignedAnimals a1
+FROM study.CoAssignedAnimals a1
 
 WHERE a1.rdate IS NULL
 

@@ -17,6 +17,7 @@ package org.labkey.ehr.security;
 
 import org.labkey.api.security.*;
 import org.labkey.api.security.permissions.AdminPermission;
+import org.labkey.api.security.permissions.DeletePermission;
 import org.labkey.api.security.permissions.InsertPermission;
 import org.labkey.api.security.permissions.ReadPermission;
 import org.labkey.api.security.permissions.UpdatePermission;
@@ -31,10 +32,40 @@ public class EHRRequestorRole extends AbstractEHRRole
 {
     public EHRRequestorRole()
     {
-        super("EHR Requestor", "Users with this role are permitted to submit requests",
+        super("EHR Requestor", "Users with this role are permitted to submit requests, but not approve them",
                 ReadPermission.class,
                 InsertPermission.class,
-                UpdatePermission.class);
+                UpdatePermission.class,
+//                DeletePermission.class,
+
+//                EHRAbnormalDeletePermission.class,
+//                EHRAbnormalInsertPermission.class,
+//                EHRAbnormalUpdatePermission.class,
+//                EHRApprovedDeletePermission.class,
+//                EHRApprovedInsertPermission.class,
+//                EHRApprovedUpdatePermission.class,
+//                EHRDeleteRequestedDeletePermission.class,
+//                EHRDeleteRequestedInsertPermission.class,
+//                EHRDeleteRequestedUpdatePermission.class,
+//                EHRInProgressDeletePermission.class,
+//                EHRInProgressInsertPermission.class,
+//                EHRInProgressUpdatePermission.class,
+//                EHRRequestApprovedDeletePermission.class,
+//                EHRRequestApprovedInsertPermission.class,
+//                EHRRequestApprovedUpdatePermission.class,
+//                EHRRequestCompleteDeletePermission.class,
+//                EHRRequestCompleteInsertPermission.class,
+//                EHRRequestCompleteUpdatePermission.class,
+//                EHRRequestDeniedDeletePermission.class,
+//                EHRRequestDeniedInsertPermission.class,
+                EHRRequestDeniedUpdatePermission.class,
+//                EHRRequestPendingDeletePermission.class,
+                EHRRequestPendingInsertPermission.class,
+                EHRRequestPendingUpdatePermission.class
+//                EHRReviewRequiredDeletePermission.class,
+//                EHRReviewRequiredInsertPermission.class,
+//                EHRReviewRequiredUpdatePermission.class
+);
 
         addExcludedPrincipal(org.labkey.api.security.SecurityManager.getGroup(Group.groupGuests));
     }

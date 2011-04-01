@@ -29,7 +29,7 @@ function createNavMenu()
             colWidth: 400,
             renderer: function(item){
                 return {
-                    html: '<div style="float:left;width:180px;">'+item.name+':</div> [<a href="<%=contextPath%>/ehr<%=containerPath%>/searchPanel.view?schemaName=study&queryName='+item.data.Label+'">Search</a>] [<a href="<%=contextPath%>/query<%=containerPath%>/executeQuery.view?schemaName=study&query.queryName='+item.data.Label+'">View All Records</a>]',
+                    html: '<div style="float:left;width:180px;">'+item.name+':</div> [<a href="<%=contextPath%>/ehr<%=containerPath%>/searchPanel.view?schemaName=study&queryName='+item.data.Label+'">Search</a>] [<a href="<%=contextPath%>/ehr<%=containerPath%>/executeQuery.view?schemaName=study&query.queryName='+item.data.Label+'">View All Records</a>]',
                     style: 'padding-left:5px;padding-bottom:8px'
                 };
             }

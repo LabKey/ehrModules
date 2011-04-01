@@ -27,6 +27,59 @@
         <ns:datatype>entityid</ns:datatype>
         <ns:isHidden>true</ns:isHidden>
         <ns:scale>36</ns:scale>
+        <ns:fk>
+          <ns:fkDbSchema>core</ns:fkDbSchema>
+          <ns:fkTable>containers</ns:fkTable>
+          <ns:fkColumnName>entityid</ns:fkColumnName>
+        </ns:fk>
+      </ns:column>
+      <ns:column columnName="createdby">
+        <ns:isUserEditable>false</ns:isUserEditable>
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>userid</ns:datatype>
+        <ns:scale>4</ns:scale>
+        <ns:isHidden>true</ns:isHidden>
+      </ns:column>
+      <ns:column columnName="created">
+        <ns:isUserEditable>false</ns:isUserEditable>
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>timestamp</ns:datatype>
+        <ns:scale>29</ns:scale>
+        <ns:isHidden>true</ns:isHidden>
+      </ns:column>
+      <ns:column columnName="modifiedby">
+        <ns:isUserEditable>false</ns:isUserEditable>
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>userid</ns:datatype>
+        <ns:scale>4</ns:scale>
+        <ns:isHidden>true</ns:isHidden>
+      </ns:column>
+      <ns:column columnName="modified">
+        <ns:isUserEditable>false</ns:isUserEditable>
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>timestamp</ns:datatype>
+        <ns:scale>29</ns:scale>
+        <ns:isHidden>true</ns:isHidden>
+      </ns:column>
+    </ns:columns>
+  </ns:table>
+  <ns:table tableName="site_module_properties" tableDbType="TABLE">
+    <ns:pkColumnName>prop_name</ns:pkColumnName>
+    <ns:columns>
+      <ns:column columnName="prop_name">
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>100</ns:scale>
+      </ns:column>
+      <ns:column columnName="stringvalue">
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>100</ns:scale>
+      </ns:column>
+      <ns:column columnName="floatvalue">
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>float8</ns:datatype>
+        <ns:scale>17</ns:scale>
       </ns:column>
       <ns:column columnName="createdby">
         <ns:isUserEditable>false</ns:isUserEditable>
@@ -87,6 +140,11 @@
         <ns:datatype>entityid</ns:datatype>
         <ns:isHidden>true</ns:isHidden>
         <ns:scale>36</ns:scale>
+        <ns:fk>
+          <ns:fkDbSchema>core</ns:fkDbSchema>
+          <ns:fkTable>containers</ns:fkTable>
+          <ns:fkColumnName>entityid</ns:fkColumnName>
+        </ns:fk>
       </ns:column>
       <ns:column columnName="createdby">
         <ns:isUserEditable>false</ns:isUserEditable>
@@ -132,6 +190,11 @@
         <ns:datatype>entityid</ns:datatype>
         <ns:isHidden>true</ns:isHidden>
         <ns:scale>36</ns:scale>
+        <ns:fk>
+          <ns:fkDbSchema>core</ns:fkDbSchema>
+          <ns:fkTable>containers</ns:fkTable>
+          <ns:fkColumnName>entityid</ns:fkColumnName>
+        </ns:fk>
       </ns:column>
       <ns:column columnName="createdby">
         <ns:isUserEditable>false</ns:isUserEditable>
@@ -224,6 +287,11 @@
         <ns:datatype>entityid</ns:datatype>
         <ns:isHidden>true</ns:isHidden>
         <ns:scale>36</ns:scale>
+        <ns:fk>
+          <ns:fkDbSchema>core</ns:fkDbSchema>
+          <ns:fkTable>containers</ns:fkTable>
+          <ns:fkColumnName>entityid</ns:fkColumnName>
+        </ns:fk>
       </ns:column>
       <ns:column columnName="createdby">
         <ns:isUserEditable>false</ns:isUserEditable>
@@ -344,6 +412,11 @@
         <ns:datatype>entityid</ns:datatype>
         <ns:isHidden>true</ns:isHidden>
         <ns:scale>36</ns:scale>
+        <ns:fk>
+          <ns:fkDbSchema>core</ns:fkDbSchema>
+          <ns:fkTable>containers</ns:fkTable>
+          <ns:fkColumnName>entityid</ns:fkColumnName>
+        </ns:fk>
       </ns:column>
       <ns:column columnName="createdby">
         <ns:isUserEditable>false</ns:isUserEditable>
@@ -442,11 +515,19 @@
       <ns:column columnName="todayonly">
         <ns:nullable>true</ns:nullable>
         <ns:datatype>bool</ns:datatype>
+        <ns:columnTitle>By Default, This Query Should Be Filtered To Show Today's Data</ns:columnTitle>
         <ns:scale>1</ns:scale>
       </ns:column>
       <ns:column columnName="queryhaslocation">
         <ns:nullable>true</ns:nullable>
         <ns:datatype>bool</ns:datatype>
+        <ns:columnTitle>Query Contains Fields For Room/Cage?</ns:columnTitle>
+        <ns:scale>1</ns:scale>
+      </ns:column>
+      <ns:column columnName="QCStatePublicDataFieldName">
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>varchar</ns:datatype>
+        <ns:columnTitle>QCState PublicData Field Name</ns:columnTitle>
         <ns:scale>1</ns:scale>
       </ns:column>
       <ns:column columnName="container">
@@ -454,6 +535,11 @@
         <ns:datatype>entityid</ns:datatype>
         <ns:isHidden>true</ns:isHidden>
         <ns:scale>36</ns:scale>
+        <ns:fk>
+          <ns:fkDbSchema>core</ns:fkDbSchema>
+          <ns:fkTable>containers</ns:fkTable>
+          <ns:fkColumnName>entityid</ns:fkColumnName>
+        </ns:fk>
       </ns:column>
       <ns:column columnName="createdby">
         <ns:isUserEditable>false</ns:isUserEditable>
@@ -585,6 +671,11 @@
         <ns:datatype>entityid</ns:datatype>
         <ns:isHidden>true</ns:isHidden>
         <ns:scale>36</ns:scale>
+        <ns:fk>
+          <ns:fkDbSchema>core</ns:fkDbSchema>
+          <ns:fkTable>containers</ns:fkTable>
+          <ns:fkColumnName>entityid</ns:fkColumnName>
+        </ns:fk>
       </ns:column>
       <ns:column columnName="createdby">
         <ns:isUserEditable>false</ns:isUserEditable>
@@ -666,6 +757,11 @@
         <ns:datatype>entityid</ns:datatype>
         <ns:isHidden>true</ns:isHidden>
         <ns:scale>36</ns:scale>
+        <ns:fk>
+          <ns:fkDbSchema>core</ns:fkDbSchema>
+          <ns:fkTable>containers</ns:fkTable>
+          <ns:fkColumnName>entityid</ns:fkColumnName>
+        </ns:fk>
       </ns:column>
       <ns:column columnName="createdby">
         <ns:isUserEditable>false</ns:isUserEditable>
@@ -731,6 +827,11 @@
         <ns:datatype>entityid</ns:datatype>
         <ns:isHidden>true</ns:isHidden>
         <ns:scale>36</ns:scale>
+        <ns:fk>
+          <ns:fkDbSchema>core</ns:fkDbSchema>
+          <ns:fkTable>containers</ns:fkTable>
+          <ns:fkColumnName>entityid</ns:fkColumnName>
+        </ns:fk>
       </ns:column>
       <ns:column columnName="createdby">
         <ns:isUserEditable>false</ns:isUserEditable>
@@ -785,6 +886,11 @@
         <ns:datatype>entityid</ns:datatype>
         <ns:isHidden>true</ns:isHidden>
         <ns:scale>36</ns:scale>
+        <ns:fk>
+          <ns:fkDbSchema>core</ns:fkDbSchema>
+          <ns:fkTable>containers</ns:fkTable>
+          <ns:fkColumnName>entityid</ns:fkColumnName>
+        </ns:fk>
       </ns:column>
       <ns:column columnName="createdby">
         <ns:isUserEditable>false</ns:isUserEditable>
@@ -881,6 +987,11 @@
         <ns:datatype>entityid</ns:datatype>
         <ns:isHidden>true</ns:isHidden>
         <ns:scale>36</ns:scale>
+        <ns:fk>
+          <ns:fkDbSchema>core</ns:fkDbSchema>
+          <ns:fkTable>containers</ns:fkTable>
+          <ns:fkColumnName>entityid</ns:fkColumnName>
+        </ns:fk>
       </ns:column>
       <ns:column columnName="createdby">
         <ns:isUserEditable>false</ns:isUserEditable>
@@ -944,6 +1055,11 @@
         <ns:datatype>entityid</ns:datatype>
         <ns:isHidden>true</ns:isHidden>
         <ns:scale>36</ns:scale>
+        <ns:fk>
+          <ns:fkDbSchema>core</ns:fkDbSchema>
+          <ns:fkTable>containers</ns:fkTable>
+          <ns:fkColumnName>entityid</ns:fkColumnName>
+        </ns:fk>
       </ns:column>
       <ns:column columnName="createdby">
         <ns:isUserEditable>false</ns:isUserEditable>
@@ -988,40 +1104,6 @@
         <ns:datatype>text</ns:datatype>
         <ns:scale>32767</ns:scale>
       </ns:column>
-      <ns:column columnName="container">
-        <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:datatype>entityid</ns:datatype>
-        <ns:isHidden>true</ns:isHidden>
-        <ns:scale>36</ns:scale>
-      </ns:column>
-      <ns:column columnName="createdby">
-        <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:nullable>true</ns:nullable>
-        <ns:datatype>userid</ns:datatype>
-        <ns:scale>4</ns:scale>
-        <ns:isHidden>true</ns:isHidden>
-      </ns:column>
-      <ns:column columnName="created">
-        <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:nullable>true</ns:nullable>
-        <ns:datatype>timestamp</ns:datatype>
-        <ns:scale>29</ns:scale>
-        <ns:isHidden>true</ns:isHidden>
-      </ns:column>
-      <ns:column columnName="modifiedby">
-        <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:nullable>true</ns:nullable>
-        <ns:datatype>userid</ns:datatype>
-        <ns:scale>4</ns:scale>
-        <ns:isHidden>true</ns:isHidden>
-      </ns:column>
-      <ns:column columnName="modified">
-        <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:nullable>true</ns:nullable>
-        <ns:datatype>timestamp</ns:datatype>
-        <ns:scale>29</ns:scale>
-        <ns:isHidden>true</ns:isHidden>
-      </ns:column>
     </ns:columns>
   </ns:table>
   <ns:table tableName="formtypes" tableDbType="TABLE">
@@ -1046,6 +1128,11 @@
         <ns:datatype>entityid</ns:datatype>
         <ns:isHidden>true</ns:isHidden>
         <ns:scale>36</ns:scale>
+        <ns:fk>
+          <ns:fkDbSchema>core</ns:fkDbSchema>
+          <ns:fkTable>containers</ns:fkTable>
+          <ns:fkColumnName>entityid</ns:fkColumnName>
+        </ns:fk>
       </ns:column>
       <ns:column columnName="createdby">
         <ns:isUserEditable>false</ns:isUserEditable>
@@ -1105,6 +1192,11 @@
         <ns:datatype>entityid</ns:datatype>
         <ns:isHidden>true</ns:isHidden>
         <ns:scale>36</ns:scale>
+        <ns:fk>
+          <ns:fkDbSchema>core</ns:fkDbSchema>
+          <ns:fkTable>containers</ns:fkTable>
+          <ns:fkColumnName>entityid</ns:fkColumnName>
+        </ns:fk>
       </ns:column>
       <ns:column columnName="createdby">
         <ns:isUserEditable>false</ns:isUserEditable>
@@ -1198,6 +1290,11 @@
         <ns:datatype>entityid</ns:datatype>
         <ns:isHidden>true</ns:isHidden>
         <ns:scale>36</ns:scale>
+        <ns:fk>
+          <ns:fkDbSchema>core</ns:fkDbSchema>
+          <ns:fkTable>containers</ns:fkTable>
+          <ns:fkColumnName>entityid</ns:fkColumnName>
+        </ns:fk>
       </ns:column>
       <ns:column columnName="createdby">
         <ns:isUserEditable>false</ns:isUserEditable>
@@ -1255,6 +1352,11 @@
         <ns:datatype>entityid</ns:datatype>
         <ns:isHidden>true</ns:isHidden>
         <ns:scale>36</ns:scale>
+        <ns:fk>
+          <ns:fkDbSchema>core</ns:fkDbSchema>
+          <ns:fkTable>containers</ns:fkTable>
+          <ns:fkColumnName>entityid</ns:fkColumnName>
+        </ns:fk>
       </ns:column>
       <ns:column columnName="createdby">
         <ns:isUserEditable>false</ns:isUserEditable>
@@ -1286,33 +1388,33 @@
       </ns:column>
     </ns:columns>
   </ns:table>
-  <ns:table tableName="qcpermissionmap" tableDbType="TABLE">
-    <ns:pkColumnName>rowid</ns:pkColumnName>
-    <ns:columns>
-      <ns:column columnName="rowid">
-        <ns:datatype>serial</ns:datatype>
-        <ns:isAutoInc>true</ns:isAutoInc>
-        <ns:scale>10</ns:scale>
-      </ns:column>
-      <ns:column columnName="role">
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>100</ns:scale>
-      </ns:column>
-      <ns:column columnName="qcStateLabel">
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>100</ns:scale>
+  <!--<ns:table tableName="qcPermissionMap" tableDbType="TABLE">-->
+    <!--<ns:pkColumnName>rowid</ns:pkColumnName>-->
+    <!--<ns:columns>-->
+      <!--<ns:column columnName="rowid">-->
+        <!--<ns:datatype>serial</ns:datatype>-->
+        <!--<ns:isAutoInc>true</ns:isAutoInc>-->
+        <!--<ns:scale>10</ns:scale>-->
+      <!--</ns:column>-->
+      <!--<ns:column columnName="role">-->
+        <!--<ns:datatype>varchar</ns:datatype>-->
+        <!--<ns:scale>100</ns:scale>-->
+      <!--</ns:column>-->
+      <!--<ns:column columnName="qcStateLabel">-->
+        <!--<ns:datatype>varchar</ns:datatype>-->
+        <!--<ns:scale>100</ns:scale>-->
         <!--<ns:fk>-->
-          <!--<ns:fkDbSchema>study</ns:fkDbSchema>-->
-          <!--<ns:fkTable>QCState</ns:fkTable>-->
-          <!--<ns:fkColumnName>rowid</ns:fkColumnName>-->
+          <!--<ns:fkDbSchema>ehr</ns:fkDbSchema>-->
+          <!--<ns:fkTable>qcStateMetadata</ns:fkTable>-->
+          <!--<ns:fkColumnName>QCStateLabel</ns:fkColumnName>-->
         <!--</ns:fk>-->
-      </ns:column>
-      <ns:column columnName="permission">
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>100</ns:scale>
-      </ns:column>
-    </ns:columns>
-  </ns:table>
+      <!--</ns:column>-->
+      <!--<ns:column columnName="permission">-->
+        <!--<ns:datatype>varchar</ns:datatype>-->
+        <!--<ns:scale>100</ns:scale>-->
+      <!--</ns:column>-->
+    <!--</ns:columns>-->
+  <!--</ns:table>-->
     <ns:table tableName="qcStateMetadata" tableDbType="TABLE">
       <ns:pkColumnName>QCStateLabel</ns:pkColumnName>
       <ns:columns>

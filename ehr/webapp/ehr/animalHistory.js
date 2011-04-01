@@ -992,6 +992,12 @@ EHR.ext.SingleAnimalReport = Ext.extend(Ext.Panel, {
             filterArray.removable.push(LABKEY.Filter.create(rowData.get("datefieldname"), (new Date()).format('Y-m-d'), LABKEY.Filter.Types.DATE_EQUAL));
         }
 
+        //account for QCstate
+        if (rowData.get("QCStatePublicDataFieldName")){
+            filterArray.nonRemovable.push(LABKEY.Filter.create(rowData.get("QCStatePublicDataFieldName"), true, LABKEY.Filter.Types.EQUAL));
+            console.log('adding QC: '+rowData.get("QCStatePublicDataFieldName"));
+        }
+
         tab.filterArray = filterArray;
         return filterArray;
     },
@@ -1035,6 +1041,7 @@ EHR.ext.SingleAnimalReport = Ext.extend(Ext.Panel, {
             showDetailsColumn: true,
             showUpdateColumn: false,
             showRecordSelectors: true,
+            showReports: false,
             tab: tab,
             frame: 'portal',            
             buttonBarPosition: 'top',

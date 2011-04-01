@@ -1,6 +1,0 @@
-<customView xmlns="http://labkey.org/data/xml/queryCustomView">
-   <sorts>
-       <sort column="id" descending="false"/>
-       <sort column="ShortName" descending="false"/>
-   </sorts>
-</customView>

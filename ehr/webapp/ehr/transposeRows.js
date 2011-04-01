@@ -5,24 +5,24 @@
  */
 Ext.namespace('EHR.ext');
 
-LABKEY.requiresScript("/ehr/Utils.js");
+LABKEY.requiresScript("/ehr/utils.js");
 
 EHR.ext.DetailsView = Ext.extend(Ext.Panel, {
 
 initComponent: function(){
-    this.panelTitle = this.title;
-    this.title = null;
+    this.title = Ext.isDefined(this.title) ?  this.title : 'Details';
 
     Ext.apply(this, {
         items: [{html: 'Loading...'}],
+        layout: 'form',
         bodyStyle: 'padding:5px',
         autoHeight: true,
         bodyBorder: false,
         cls: 'x-labkey-wp',
         border: false,
-        title: this.panelTitle || 'Details',
         frame: false,
-        labelWidth: 150,
+        labelWidth: this.labelWidth || 150,
+//        labelStyle: 'background: red',
         style: 'margin-bottom:20px',
         defaults: {
             labelStyle: 'padding: 0px;',
@@ -45,7 +45,10 @@ initComponent: function(){
         schemaName: this.schemaName,
         viewName: this.viewName,
         filterArray: this.filterArray,
-        successCallback: this.onFinalRender,
+        successCallback: function(data){
+            this.queryData = data;
+            this.loadQuery();
+        },
         errorCallback: EHR.utils.onError,
         scope: this,
         maxRows: 100
@@ -56,7 +59,14 @@ initComponent: function(){
     }
 },
 
-onFinalRender: function(data){
+loadQuery: function(){
+
+    if(!this.rendered){
+        this.on('render', this.loadQuery, this, {single: true});
+        return;
+    }
+
+    var data = this.queryData;
     this.removeAll();
 
     if (!data.rows.length){
@@ -74,9 +84,8 @@ onFinalRender: function(data){
             showUpdateColumn: false,
             showRecordSelectors: true,
             buttonBarPosition: 'top',
-            title: this.panelTitle,
-            //TODO: switch to 0 once bug is fixed
-            timeout: 3000000
+            title: this.title,
+            timeout: 0
         });
 
         if (this.viewName){
@@ -92,21 +101,22 @@ onFinalRender: function(data){
     }
 
     for (var j=0;j<data.rows.length;j++){
-        var thePanel = new Ext.Panel({
-            layout: 'form',
-            bodyBorder: false,
-            autoHeight: true,
-            border: false,
-            labelWidth: 150,
-            defaults: {
-                labelStyle: 'padding: 0px;'
-            }
-        });
+//        var thePanel = new Ext.Panel({
+//            layout: 'form',
+//            bodyBorder: false,
+//            autoHeight: true,
+//            border: false,
+//            labelWidth: 150,
+//            defaults: {
+//                labelStyle: 'padding: 0px;'
+//            }
+//        });
+        var thePanel = this;
 
+        var row = data.rows[j];
         for (var i=0;i<data.columnModel.length;i++){
             var col = data.columnModel[i];
             var meta = data.metaData.fields[i];
-            var row = data.rows[j];
             var url = row['_labkeyurl_'+col.dataIndex];
 
             if (!meta.hidden){
@@ -124,9 +134,10 @@ onFinalRender: function(data){
             }
         }
 
-        this.add(thePanel);
+        //this.add(thePanel);
         this.doLayout()
     };
 }
 
 });
+Ext.reg('ehr-detailsview', EHR.ext.DetailsView);

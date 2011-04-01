@@ -55,6 +55,28 @@ EHR.ext.PrintTaskPanel = Ext.extend(Ext.Panel, {
             ,border: false
             ,bodyStyle: 'padding:5px'
             ,style: 'margin-bottom: 15px'
+            ,tbar: [{
+                xtype: 'button',
+                text: 'Add Rows',
+                scope: this,
+                handler: function(b){
+                    Ext.Msg.prompt('Number of Rows', 'How many rows do you want to add?', function(r, newRows){
+                        if(newRows){
+                            var table = this.body.dom.children[0];
+                            var width = table.rows[0].cells.length;
+                            for(var i=0;i<newRows;i++){
+                                var row = table.insertRow(table.rows.length);
+                                for(var j=0;j<width;j++){
+                                    var cell = row.insertCell(row.cells.length);
+                                    cell.innerHTML = ' ';
+                                    //console.log(cell)
+                                }
+                            }
+                        }
+                        //this.ownerCt.doLayout();
+                    }, this);
+                }
+            }]
         });
 
         EHR.ext.PrintTaskPanel.superclass.initComponent.call(this);

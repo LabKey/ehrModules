@@ -2,7 +2,12 @@
     <metadata> 
         <tables xmlns="http://labkey.org/data/xml">
             <table tableName="clinremarks" tableDbType="TABLE">
-                <tableUrl>/query/detailsQueryRow.view?schemaName=study&amp;query.queryName=clinremarks&amp;lsid=${lsid}</tableUrl>
+                <tableUrl>/query/detailsQueryRow.view?schemaName=study&amp;query.queryName=Clinical%20Remarks&amp;lsid=${lsid}</tableUrl>
+                <!--<insertUrl>/ehr/manageRecord.view?schemaName=study&amp;queryName=Clinical%20Remarks&amp;keyField=lsid&amp;</insertUrl>-->
+                <!--<updateUrl>/ehr/manageRecord.view?schemaName=study&amp;queryName=Clinical%20Remarks&amp;keyField=lsid&amp;key=${lsid}</updateUrl>-->
+                <insertUrl />
+                <updateUrl />
+                <!--<deleteUrl />-->
                 <columns>
                     <column columnName="project">
                         <fk>

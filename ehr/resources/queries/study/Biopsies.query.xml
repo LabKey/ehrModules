@@ -3,6 +3,10 @@
         <tables xmlns="http://labkey.org/data/xml">
             <table tableName="Biopsies" tableDbType="TABLE">
                 <tableUrl>/EHR/biopsyDetails.view?key=${objectid}</tableUrl>
+                <!--<insertUrl>/ehr/manageRecord.view?schemaName=study&amp;queryName=Biopsies&amp;keyField=lsid&amp;</insertUrl>-->
+                <!--<updateUrl>/ehr/manageRecord.view?schemaName=study&amp;queryName=Biopsies&amp;keyField=lsid&amp;key=${lsid}</updateUrl>-->
+                <insertUrl />
+                <updateUrl />
                 <columns>
                     <column columnName="caseno">
                         <nullable>true</nullable>

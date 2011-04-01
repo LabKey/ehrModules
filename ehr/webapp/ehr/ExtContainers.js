@@ -216,6 +216,11 @@ EHR.ext.ImportPanelHeader = Ext.extend(EHR.ext.FormPanel, {
                 scope: this,
                 disabled: !this.canUseTemplates===false,
                 handler: this.saveTemplate
+//            },{
+//                xtype: 'button',
+//                text: 'Print Form',
+//                scope: this,
+//                handler: this.printFormHandler
             }]
         });
 
@@ -261,6 +266,18 @@ EHR.ext.ImportPanelHeader = Ext.extend(EHR.ext.FormPanel, {
             }]
         });
         theWindow.show();
+    },
+    printFormHandler: function(){
+        window.location = LABKEY.ActionURL.buildURL(
+            'ehr',
+            'printTask.view',
+            (this.containerPath || LABKEY.ActionURL.getContainer()),
+            {
+                taskid: this.formUUID,
+                formtype: this.formType,
+                _print: 1
+            }
+        );
     }
 });
 Ext.reg('ehr-importpanelheader', EHR.ext.ImportPanelHeader);
@@ -381,7 +398,7 @@ EHR.ext.ClinicalHeader = Ext.extend(Ext.FormPanel, {
             autoLoad: true,
             canSaveInTemplate: false
         }
-console.log(this.store)
+
         EHR.ext.ClinicalHeader.superclass.initComponent.call(this, arguments);
 
         this.addEvents('participantchange');
@@ -573,20 +590,30 @@ EHR.ext.QueryPanel = Ext.extend(Ext.Panel, {
         });
 
         EHR.ext.QueryPanel.superclass.initComponent.call(this, arguments);
+
+        if(this.autoLoad){
+            this.loadQuery(this);
+        }
     },
     loadQuery: function(tab){
         if(tab.isLoaded)
             return;
 
+        if(!tab.rendered){
+            this.on('render', this.loadQuery, this, {single: true});
+            return;
+        }
+
         var target = tab.body;
         var qwpConfig = {
-            schemaName: 'ehr',
+            schemaName: tab.schemaName,
             queryName: tab.queryName,
+            filters: tab.filterArray,
             allowChooseQuery: false,
             allowChooseView: true,
             showRecordSelectors: true,
             showDetailsColumn: false,
-            showUpdateColumn: false,
+//            showUpdateColumn: false,
             frame: 'none',
             showDeleteButton: false,
             timeout: 0,
@@ -595,12 +622,15 @@ EHR.ext.QueryPanel = Ext.extend(Ext.Panel, {
             errorCallback: function(error){
                 EHR.utils.onError(error)
             },
+            success: function(result){
+                tab.isLoaded = true;
+            },
             scope: this
         };
         Ext.apply(qwpConfig, tab.queryConfig);
-
+console.log(qwpConfig)
         tab.QWP = new LABKEY.QueryWebPart(qwpConfig);
-        tab.isLoaded = true;
+
     }
 });
 Ext.reg('ehr-qwppanel', EHR.ext.QueryPanel);
@@ -687,64 +717,64 @@ EHR.ext.RecordDuplicator = Ext.extend(Ext.FormPanel, {
 });
 Ext.reg('ehr-recordduplicator', EHR.ext.RecordDuplicator);
 
-EHR.ext.ClinPathOrderPanel = Ext.extend(Ext.FormPanel, {
-    initComponent: function()
-    {
-        Ext.applyIf(this, {
-            layout: 'form'
-            ,bodyBorder: true
-            ,border: true
-            ,bodyStyle: 'padding:5px'
-            ,defaults: {
-                width: 200,
-                border: false,
-                bodyBorder: false
-            }
-            ,items: [{
-                xtype: 'ehr-participant',
-                value: this.defaultAnimal
-            },{
-                xtype: 'ehr-remotecheckboxgroup',
-                ref: 'testName',
-                displayField: 'label',
-                valueField: 'dataset',
-                store: new LABKEY.ext.Store({
-                    schemaName: 'ehr_lookups',
-                    queryName: 'clinpath_services'
-                })
-            }]
-            ,scope: this
-            ,buttons: [{
-                text:'Submit',
-                disabled:false,
-                ref: '../submit',
-                scope: this,
-                handler: function(s){
-                    this.onSubmit();
-                    this.ownerCt.hide();
-                }
-            },{
-                text: 'Close',
-                scope: this,
-                handler: function(){
-                    this.ownerCt.hide();
-                }
-            }]
-        });
-
-        EHR.ext.ClinPathOrderPanel.superclass.initComponent.call(this, arguments);
-    },
-
-    onSubmit: function(){
-        var data = this.getForm().getValues();
-        var tests  = this.testName.getValue()
-        console.log(data)
-
-
-
-    }
-});
-Ext.reg('ehr-clinpathorderpanel', EHR.ext.ClinPathOrderPanel);
+//EHR.ext.ClinPathOrderPanel = Ext.extend(Ext.FormPanel, {
+//    initComponent: function()
+//    {
+//        Ext.applyIf(this, {
+//            layout: 'form'
+//            ,bodyBorder: true
+//            ,border: true
+//            ,bodyStyle: 'padding:5px'
+//            ,defaults: {
+//                width: 200,
+//                border: false,
+//                bodyBorder: false
+//            }
+//            ,items: [{
+//                xtype: 'ehr-participant',
+//                value: this.defaultAnimal
+//            },{
+//                xtype: 'ehr-remotecheckboxgroup',
+//                ref: 'testName',
+//                displayField: 'label',
+//                valueField: 'dataset',
+//                store: new LABKEY.ext.Store({
+//                    schemaName: 'ehr_lookups',
+//                    queryName: 'clinpath_services'
+//                })
+//            }]
+//            ,scope: this
+//            ,buttons: [{
+//                text:'Submit',
+//                disabled:false,
+//                ref: '../submit',
+//                scope: this,
+//                handler: function(s){
+//                    this.onSubmit();
+//                    this.ownerCt.hide();
+//                }
+//            },{
+//                text: 'Close',
+//                scope: this,
+//                handler: function(){
+//                    this.ownerCt.hide();
+//                }
+//            }]
+//        });
+//
+//        EHR.ext.ClinPathOrderPanel.superclass.initComponent.call(this, arguments);
+//    },
+//
+//    onSubmit: function(){
+//        var data = this.getForm().getValues();
+//        var tests  = this.testName.getValue()
+//        console.log(data)
+//
+//
+//
+//    }
+//});
+//Ext.reg('ehr-clinpathorderpanel', EHR.ext.ClinPathOrderPanel);
 
 
 //creates a pair of date fields that automatically set their min/max dates to create a date range
@@ -834,7 +864,7 @@ EHR.ext.ApplyTemplatePanel = Ext.extend(Ext.FormPanel, {
                 xtype: 'checkbox',
                 fieldLabel: 'Customize Values',
                 ref: 'customizeValues',
-                checked: true
+                checked: false
             }]
             ,scope: this
             ,buttons: [{
@@ -982,10 +1012,12 @@ EHR.ext.ApplyTemplatePanel = Ext.extend(Ext.FormPanel, {
 
                 var values = [];
                 Ext.each(records, function(data){
-                    if(data[f.dataIndex]!==undefined && values.indexOf(data[f.dataIndex])==-1){
+                    if(data[f.dataIndex]!==undefined){
                         values.push(f.convert(data[f.dataIndex], data));
                     }
                 }, this);
+
+                values = Ext.unique(values);
 
                 if(values.length==1)
                     editor.value=values[0];
@@ -1057,7 +1089,7 @@ EHR.ext.SaveTemplatePanel = Ext.extend(Ext.Window, {
                 layout: 'form',
                 autoScroll: true,
                 bodyStyle: 'padding: 5px;',
-                //monitorValid: true,
+                monitorValid: true,
                 defaults: {
                     border: false
                 },
@@ -1082,7 +1114,8 @@ EHR.ext.SaveTemplatePanel = Ext.extend(Ext.Window, {
                     style: 'padding-top:10px;'
                 }]
             },{
-                xtype: 'panel',
+                xtype: 'tabpanel',
+                activeTab: 0,
                 ref: 'theForm',
                 autoScroll: true
             }]
@@ -1107,11 +1140,17 @@ EHR.ext.SaveTemplatePanel = Ext.extend(Ext.Window, {
 
         EHR.ext.SaveTemplatePanel.superclass.initComponent.call(this, arguments);
 
-        if(!this.importPanel.store || !this.importPanel.store)
+        //function differently depending on whether we're bound to a grid or import panel
+        if(this.grid)
+            this.targetStore = this.grid.store;
+        else
+            this.targetStore = this.importPanel.store;
+
+        if(!this.targetStore)
             return;
-        else if (this.importPanel.store instanceof EHR.ext.StoreCollection)
+        else if (this.targetStore instanceof EHR.ext.StoreCollection)
             this.populateFromStoreCollection();
-        else if (this.importPanel.store instanceof LABKEY.ext.Store)
+        else if (this.targetStore instanceof LABKEY.ext.Store)
             this.populateFromStore();
 
         this.on('show', function(){
@@ -1120,7 +1159,7 @@ EHR.ext.SaveTemplatePanel = Ext.extend(Ext.Window, {
     },
     populateFromStoreCollection: function(){
         var hasRecords = false;
-        this.importPanel.store.each(function(s){
+        this.targetStore.each(function(s){
             if(s.canSaveInTemplate === false)
                 return;
 
@@ -1136,52 +1175,66 @@ EHR.ext.SaveTemplatePanel = Ext.extend(Ext.Window, {
         }
     },
     populateFromStore: function(){
-        if(!this.importPanel.store.getCount()){
+        if(!this.targetStore.getCount()){
             this.on('beforeshow', function(){return false}, this, {single: true});
             this.hide();
             Ext.Msg.alert('Error', 'There are no records to save.');
         }
         else
-            this.addStore(this.importPanel.store);
+            this.addStore(this.targetStore);
     },
     addStore: function(store){
         var count = store.getCount();
-        this.theForm.add({
-            html: '<hr><b>'+store.queryName + ':</b> '+count+' Record' + (count==1 ? '' : 's'),
-            //style: 'padding: 5px;',
-            border: false,
-            style: 'padding-bottom:5px;'
-        },{
-            xtype: 'radiogroup',
-            bodyStyle: 'padding: 5px;',
-            ref: store.storeId+'-radio',
-            columns: 3,
-            width: 400,
-            items: [{
-                fieldLabel: 'Include All',
-                inputValue: 'all',
-                checked: true,
-                name: store.storeId+'-radio'
-            },{
-                fieldLabel: 'Include None',
-                inputValue: 'none',
-                name: store.storeId+'-radio'
-            },{
-                fieldLabel: 'Selected Only',
-                inputValue: 'selected',
-                name: store.storeId+'-radio'
-            }]
-        });
 
         if(!count){
             return
         }
+        var panel = {
+            xtype: 'panel',
+            title: store.queryName + ': '+count+' Record' + (count==1 ? '' : 's'),
+            border: false,
+            style: 'padding-bottom:10px;',
+            autoHeight: true,
+            storeId: store.storeId,
+            items: [{
+                xtype: 'fieldset',
+                title: 'Choose Records To Save',
+                items: [{
+                    xtype: 'radiogroup',
+                    style: 'padding-bottom:10px;',
+                    //bodyStyle: 'padding: 5px;',
+                    ref: '../recordSelector',
+                    columns: 3,
+                    //width: 400,
+                    items: [{
+                        fieldLabel: 'Include All',
+                        inputValue: 'all',
+                        checked: true,
+                        name: store.storeId+'-radio'
+                    },{
+                        fieldLabel: 'Include None',
+                        inputValue: 'none',
+                        name: store.storeId+'-radio'
+                    }]
+                }]
+            }]
+        };
+
+        if(this.grid){
+            panel.items[0].items.push({
+                fieldLabel: 'Selected Only',
+                inputValue: 'selected',
+                name: store.storeId+'-radio'
+            });
+        }
+
+        panel = this.theForm.add(panel);
 
         var toAdd = {
             xtype: 'checkboxgroup',
-            style: 'padding-left:10px;',
+            ref: '../fieldSelector',
             name: store.storeId,
-            columns: 4,
+            columns: 3,
             items: []
         };
         store.fields.each(function(f){
@@ -1196,7 +1249,11 @@ EHR.ext.SaveTemplatePanel = Ext.extend(Ext.Window, {
             }
         }, this);
 
-        this.theForm.add(toAdd);
+        panel.add({
+            xtype: 'fieldset',
+            title: 'Choose Fields to Save',
+            items: [toAdd]
+        });
     },
     onSubmit: function(){
         this.hide();
@@ -1205,44 +1262,41 @@ EHR.ext.SaveTemplatePanel = Ext.extend(Ext.Window, {
         var tn = this.templateName.getValue();
         var rows = [];
 
-        this.theForm.items.each(function(item){
-            if(item.getXType() == 'checkboxgroup'){
-                var fields = item.getValue();
-                if(!fields.length)
-                    return;
+        this.theForm.items.each(function(tab){
+            var selections = tab.recordSelector.getValue().inputValue;
+            var fields = tab.fieldSelector.getValue();
 
-                var store = Ext.StoreMgr.get(item.name);
-                var selections = this.theForm[store.storeId+'-radio'].getValue().inputValue;
+            if(!fields.length)
+                return;
+            if(selections == 'none')
+                return;
 
-                if(selections == 'none')
-                    return;
+            var store = Ext.StoreMgr.get(tab.storeId);
 
-                var records;
-
-                if(selections == 'selected'){
-                    records = this.grid.getSelectionModel().getSelections();
-                    if(!records.length){
-                        Ext.Msg.hide();
-                        Ext.Msg.alert('Error', 'No records were selected in the grid');
-                    }
+            var records = [];
+            if(selections == 'selected'){
+                records = this.grid.getSelectionModel().getSelections();
+                if(!records.length){
+                    Ext.Msg.hide();
+                    Ext.Msg.alert('Error', 'No records were selected in the grid');
                 }
-                else
-                    records = store.data.items;
-
-                Ext.each(records, function(rec){
-                    var json = {};
-                    Ext.each(fields, function(chk){
-                        json[chk.dataIndex] = rec.get(chk.dataIndex);
-                    }, this);
-
-                    rows.push({
-                        templateId: null,
-                        storeId: store.storeId,
-                        json: Ext.util.JSON.encode(json),
-                        templateName: tn
-                    })
-                }, this);
             }
+            else
+                records = store.data.items;
+
+            Ext.each(records, function(rec){
+                var json = {};
+                Ext.each(fields, function(chk){
+                    json[chk.dataIndex] = rec.get(chk.dataIndex);
+                }, this);
+
+                rows.push({
+                    templateId: null,
+                    storeId: store.storeId,
+                    json: Ext.util.JSON.encode(json),
+                    templateName: tn
+                })
+            }, this);
         }, this);
 
         if(!rows.length){
@@ -1259,7 +1313,7 @@ EHR.ext.SaveTemplatePanel = Ext.extend(Ext.Window, {
             schemaName: 'ehr',
             queryName: 'formtemplates',
             scope: this,
-            rowDataArray: [{
+            rows: [{
                 title: this.templateName.getValue(),
                 description: this.templateDescription.getValue(),
                 formType: this.formType
@@ -1272,7 +1326,7 @@ EHR.ext.SaveTemplatePanel = Ext.extend(Ext.Window, {
                 LABKEY.Query.insertRows({
                     schemaName: 'ehr',
                     queryName: 'formTemplateRecords',
-                    rowDataArray: rows,
+                    rows: rows,
                     failure: EHR.utils.onError,
                     success: function(){
                         Ext.Msg.hide();
@@ -1301,8 +1355,10 @@ EHR.ext.createImportPanel = function(config){
             //we assume this is a simple query:
             config.queryName = config.formType;
             config.schemaName = 'study';
-            if(config.panelType=='Task')
+            if(config.panelType=='TaskPanel')
                 EHR.ext.createSimpleTaskPanel(config);
+            else if (config.panelType=='TaskDetailsPanel')
+                EHR.ext.createSimpleTaskDetailsPanel(config);
             else
                 alert('Form type not found');
             return;
@@ -1343,7 +1399,7 @@ EHR.ext.createImportPanel = function(config){
             panelCfg[row.destination].push(obj);
         }, this);
 
-        return new EHR.ext[config.panelType+'Panel'](panelCfg);
+        return new EHR.ext[config.panelType](panelCfg);
     }
 
 };
@@ -1371,4 +1427,29 @@ EHR.ext.createSimpleTaskPanel = function(config){
     });
 
     return new EHR.ext.TaskPanel(panelCfg);
+};
+
+
+EHR.ext.createSimpleTaskDetailsPanel = function(config){
+    if(!config || !config.queryName){
+         alert('Must provide queryName');
+         return;
+    }
+
+    var panelCfg = Ext.apply({}, config);
+    Ext.apply(panelCfg, {
+        title: config.queryName,
+        formSections: [{
+            xtype: 'ehr-gridformpanel',
+            schemaName: config.schemaName,
+            queryName: config.queryName,
+            readOnly: true,
+            title: config.title || config.queryName,
+            columns: EHR.ext.FormColumns[config.queryName],
+            metadata: EHR.ext.getTableMetadata(config.queryName, ['Task'])
+        }],
+        formTabs: []
+    });
+
+    return new EHR.ext.TaskDetailsPanel(panelCfg);
 };

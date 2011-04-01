@@ -3,6 +3,11 @@
         <tables xmlns="http://labkey.org/data/xml">
             <table tableName="Demographics" tableDbType="TABLE">
                 <tableUrl>/query/detailsQueryRow.view?schemaName=study&amp;query.queryName=Demographics&amp;lsid=${lsid}</tableUrl>
+                <!--<insertUrl>/ehr/manageRecord.view?schemaName=study&amp;queryName=Demographics&amp;keyField=lsid&amp;</insertUrl>-->
+                <!--<updateUrl>/ehr/manageRecord.view?schemaName=study&amp;queryName=Demographics&amp;keyField=lsid&amp;key=${lsid}</updateUrl>-->
+                <insertUrl />
+                <updateUrl />
+                <!--<deleteUrl />-->
                 <columns>
                     <column columnName="gender">
                         <datatype>varchar</datatype>
@@ -133,7 +138,7 @@
                     <column columnName="weight">
                         <datatype>double</datatype>
                         <columnTitle>Current Weight</columnTitle>
-                        <url>/query/executeQuery.view?schemaName=study&amp;
+                        <url>/ehr/executeQuery.view?schemaName=study&amp;
                             query.queryName=Weight&amp;
                             query.id~eq=${id}
                         </url>
@@ -142,7 +147,7 @@
                         <datatype>timestamp</datatype>
                         <formatString>yyyy-MM-dd HH:mm</formatString>
                         <columnTitle>Weight Date</columnTitle>
-                        <url>/query/executeQuery.view?schemaName=study&amp;
+                        <url>/ehr/executeQuery.view?schemaName=study&amp;
                             query.queryName=Weight&amp;
                             query.id~eq=${id}&amp;
                             query.date~eq=${wdate}
@@ -152,7 +157,7 @@
                         <datatype>timestamp</datatype>
                         <formatString>yyyy-MM-dd</formatString>
                         <columnTitle>Last TB Date</columnTitle>
-                        <url>/query/executeQuery.view?schemaName=study&amp;
+                        <url>/ehr/executeQuery.view?schemaName=study&amp;
                             query.queryName=TB&amp;
                             query.id~eq=${id}&amp;
                             query.sort=-Date

@@ -1,4 +1,4 @@
-
+@import url("/labkey/ehr/stylesheet-red-limited.css");
 
 /*.field-meta-tree .x-tree-node-disabled {*/
     /*font-style: italic;*/
@@ -15,6 +15,11 @@
     font-style: italic;
     color: #000000;
 }
+
+
+/*.ehr-outer-tabpanel x-tab-strip-top{*/
+    /*background-color: #000000;*/
+/*}*/
 
 
 /*the following 2 are used in EHR validation*/

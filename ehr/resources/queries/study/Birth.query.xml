@@ -3,6 +3,10 @@
         <tables xmlns="http://labkey.org/data/xml">
             <table tableName="Birth" tableDbType="TABLE">
                 <tableUrl>/query/detailsQueryRow.view?schemaName=study&amp;query.queryName=Birth&amp;lsid=${lsid}</tableUrl>
+                <!--<insertUrl>/ehr/manageRecord.view?schemaName=study&amp;queryName=Birth&amp;keyField=lsid&amp;</insertUrl>-->
+                <!--<updateUrl>/ehr/manageRecord.view?schemaName=study&amp;queryName=Birth&amp;keyField=lsid&amp;key=${lsid}</updateUrl>-->
+                <insertUrl />
+                <updateUrl />
                 <columns>
                     <column columnName="gender">
                         <datatype>varchar</datatype>
@@ -84,6 +88,9 @@
                           <fkTable>encounters</fkTable>
                           <fkColumnName>objectid</fkColumnName>
                         </fk>
+                    </column>
+                    <column columnName="estimated">
+                        <columnTitle>Estimated Birthdate</columnTitle>
                     </column>
                 </columns>
             </table>

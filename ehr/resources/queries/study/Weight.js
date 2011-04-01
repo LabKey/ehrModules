@@ -7,10 +7,8 @@
 var {EHR, LABKEY, Ext, console, init, beforeInsert, afterInsert, beforeUpdate, afterUpdate, beforeDelete, afterDelete, complete} = require("ehr/validation");
 
 
-//TODO: update demographics
 
-
-function onUpsert(row, errors, scriptContext, oldRow){
+function onUpsert(context, errors, row, oldRow){
     //warn if more than 10% different from last weight
     if(row.Id && row.weight){
         EHR.findDemographics({
@@ -18,10 +16,10 @@ function onUpsert(row, errors, scriptContext, oldRow){
             callback: function(data){
                 if(data){
                     if(data.weight && (row.weight <= data.weight*0.9)){
-                        EHR.addError(errors, 'weight', 'Weight drop of >10%. Last weight: '+data.weight, 'INFO');
+                        EHR.addError(errors, 'weight', 'Weight drop of >10%. Last weight '+data.weight+' kg', 'INFO');
                     }
                     else if(data.weight && (row.weight >= data.weight/0.9)){
-                        EHR.addError(errors, 'weight', 'Weight gain of >10%. Last weight: '+data.weight, 'INFO');
+                        EHR.addError(errors, 'weight', 'Weight gain of >10%. Last weight '+data.weight+' kg', 'INFO');
                     }
                 }
             },
@@ -39,3 +37,74 @@ function setDescription(row, errors){
     return description;
 }
 
+function onComplete(event, errors, scriptContext){
+    //we will update the demographics table arrivedate field for all participantsModified
+    //TODO: only public modifications
+    if(scriptContext.participantsModified.length){
+        //find the most recent weight per participant
+        var toUpdate = [];
+        var idsFound = [];
+        LABKEY.Query.executeSql({
+            schemaName: 'study',
+            scope: this,
+            sql: 'SELECT w.Id, w.wdate, w2.weight ' +
+                'FROM (SELECT w.Id, max(w.date) as wdate FROM study.weight w WHERE w.id IN (\''+scriptContext.participantsModified.join(',')+'\') AND w.qcstate.publicdata = TRUE GROUP BY w.id) w ' +
+                'JOIN study.weight w2 ON (w.id=w2.id AND w.wdate = w2.date) ' +
+                'WHERE w2.qcstate.publicdata = TRUE',
+            success: function(data){
+                if(data.rows && data.rows.length){
+                    var row;
+                    for (var i=0;i<data.rows.length;i++){
+                        row = data.rows[i];
+                        idsFound.push(row.Id);
+                        EHR.findDemographics({
+                            participant: row.Id,
+                            scope: this,
+                            forceRefresh: true,
+                            callback: function(data){
+                                if(data){
+                                    if(row.wdate != data.wdate || row.weight != data.weight)
+                                        toUpdate.push({lsid: data.lsid, Id: row.Id, weight: row.weight, wdate: row.wdate});
+                                }
+                            }
+                        });
+                    }
+                }
+            },
+            failure: EHR.onFailure
+        });
+
+        if(toUpdate.length != scriptContext.publicParticipantsModified.length){
+            Ext.each(scriptContext.publicParticipantsModified, function(p){
+                if(idsFound.indexOf(p) == -1){
+                    EHR.findDemographics({
+                        participant: p,
+                        forceRefresh: true,
+                        scope: this,
+                        callback: function(data){
+                            if(data){
+                                toUpdate.push({weight: null, wdate: null, Id: data.Id, lsid: data.lsid});
+                            }
+                        }
+                    });
+                }
+            }, this);
+        }
+
+        if(toUpdate.length){
+            LABKEY.Query.updateRows({
+                schemaName: 'study',
+                queryName: 'demographics',
+                extraContext: {
+                    schemaName: 'study',
+                    queryName: 'Demographics'
+                },
+                rows: toUpdate,
+                success: function(data){
+                    console.log('Success updating demographics weight fields')
+                },
+                failure: EHR.onFailure
+            });
+        }
+    }
+};

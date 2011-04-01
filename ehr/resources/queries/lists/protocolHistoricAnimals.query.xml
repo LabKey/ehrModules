@@ -33,7 +33,7 @@
                     </column>
                     <column columnName="TotalAssignments">
                         <datatype>integer</datatype>
-                        <url>/query/executeQuery.view?schemaName=study&amp;
+                        <url>/ehr/executeQuery.view?schemaName=study&amp;
                             query.queryName=Assignment&amp;
                             query.project/protocol~eq=${protocol}&amp;
                             query.id~eq=${id}&amp;

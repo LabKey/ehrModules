@@ -31,7 +31,8 @@ import org.labkey.ehr.etl.ETL;
 import org.labkey.ehr.etl.ETLAuditViewFactory;
 import org.labkey.ehr.security.EHRDataAdminRole;
 import org.labkey.ehr.security.EHRRequestorRole;
-import org.labkey.ehr.security.EHRSubmitterRole;
+import org.labkey.ehr.security.EHRBasicSubmitterRole;
+import org.labkey.ehr.security.EHRFullSubmitterRole;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -95,7 +96,8 @@ public class EHRModule extends DefaultModule
         
         RoleManager.registerRole(new EHRDataAdminRole());
         RoleManager.registerRole(new EHRRequestorRole());
-        RoleManager.registerRole(new EHRSubmitterRole());
+        RoleManager.registerRole(new EHRBasicSubmitterRole());
+        RoleManager.registerRole(new EHRFullSubmitterRole());
     }
 
     @Override

@@ -16,7 +16,7 @@
                     </column>
                     <column columnName="TotalAnimals">
                       <columnTitle>Total Animals</columnTitle>
-                        <url>/query/executeQuery.view?
+                        <url>/ehr/executeQuery.view?
                             schemaName=study&amp;
                             query.queryName=Housing&amp;
                             query.room~eq=${room}&amp;

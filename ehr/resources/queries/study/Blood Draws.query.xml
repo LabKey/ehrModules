@@ -2,7 +2,11 @@
     <metadata> 
         <tables xmlns="http://labkey.org/data/xml">
             <table tableName="Blood Draws" tableDbType="TABLE">
-                <tableUrl>/query/detailsQueryRow.view?schemaName=study&amp;query.queryName=blood&amp;lsid=${lsid}</tableUrl>
+                <tableUrl>/query/detailsQueryRow.view?schemaName=study&amp;query.queryName=Blood Draws&amp;lsid=${lsid}</tableUrl>
+                <!--<insertUrl>/ehr/manageRecord.view?schemaName=study&amp;queryName=Blood Draws&amp;keyField=lsid&amp;</insertUrl>-->
+                <!--<updateUrl>/ehr/manageRecord.view?schemaName=study&amp;queryName=Blood Draws&amp;keyField=lsid&amp;key=${lsid}</updateUrl>-->
+                <insertUrl />
+                <updateUrl />
                 <columns>
                     <column columnName="BloodRemaining" wrappedColumnName="lsid">
                         <columnTitle>Blood Remaining</columnTitle>
@@ -50,13 +54,13 @@
                         <columnTitle>Sample Id</columnTitle>
                     </column>
                     <column columnName="tube_vol">
-                        <columnTitle>Tube Volume</columnTitle>
+                        <columnTitle>Tube Volume (mL)</columnTitle>
                     </column>
                     <column columnName="num_tubes">
                         <columnTitle># of Tubes</columnTitle>
                     </column>
                     <column columnName="quantity">
-                        <columnTitle>Total Volume</columnTitle>
+                        <columnTitle>Total Volume (mL)</columnTitle>
                     </column>
                     <column columnName="tube_type">
                         <columnTitle>Tube Type</columnTitle>

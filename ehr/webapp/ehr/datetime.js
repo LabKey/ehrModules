@@ -348,7 +348,7 @@ Ext.ux.form.DateTime = Ext.extend(Ext.form.Field, {
                 //NOTE: separated so we guarantee both field get called
                 var df = this.df.isValid();
                 var tf = this.tf.isValid();
-                return df && tf && this.getErrors().length==0;
+                return this.getErrors().length==0 && df && tf;
         } // eo function isValid
         // }}}
     // {{{

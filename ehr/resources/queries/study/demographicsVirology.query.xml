@@ -9,7 +9,7 @@
                     </column>
                     <column columnName="numResults">
                         <columnTitle>Number of Results</columnTitle>
-                        <url>/query/executeQuery.view?schemaName=study&amp;
+                        <url>/ehr/executeQuery.view?schemaName=study&amp;
                             query.queryName=Virology Results&amp;
                             query.Id~eq=${Id}
                         </url>

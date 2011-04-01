@@ -55,6 +55,7 @@ EHR.utils.navMenu = Ext.extend(Ext.Panel, {
                 else {
                    item = {
                         html: '<a href="'+tmp.items[j].url+'">'+tmp.items[j].name+'</a>',
+                       //html: LABKEY.Utils.textLink({href: '+tmp.items[j].url+', text: tmp.items[j].name}),
                         style: 'padding-left:5px;'
                     }
                 }

@@ -21,7 +21,8 @@ o.tlocation,
 o.otherbehavior,
 o.remark,
 o.dataset,
-o.description
+o.description,
+o.qcstate
 
 from study.obs o
 
@@ -49,7 +50,8 @@ null as otherbehavior,
 c.Remark,
 --cn.note as Remark,
 null as dataset,
-'Cage Observation' as description
+'Cage Observation' as description,
+c.qcstate
 
 FROM study."Cage Observations" c
 WHERE c.qcstate.publicdata = true

@@ -48,7 +48,6 @@ EHR.ext.StoreCollection = Ext.extend(Ext.util.MixedCollection, {
 
         if(this.monitorValid){
             store.on('validation', this.onValidation, this);
-            //store.on('validation', this.onValidation, this, {buffer: 30});
             store.initMonitorValid();
         }
 
@@ -84,12 +83,17 @@ EHR.ext.StoreCollection = Ext.extend(Ext.util.MixedCollection, {
         EHR.ext.StoreCollection.superclass.remove.call(store);
     },
 
-    getChanged: function(o){
+    getChanged: function(commitAll){
         var allCommands = [];
         var allRecords = [];
 
         this.each(function(s){
-            var records = s.getModifiedRecords();
+            var records;
+            if(commitAll)
+                records = s.getAllRecords();
+            else
+                records = s.getModifiedRecords();
+
             var commands = s.getChanges(records);
 
             if (commands.length){
@@ -97,7 +101,7 @@ EHR.ext.StoreCollection = Ext.extend(Ext.util.MixedCollection, {
                 allRecords = allRecords.concat(records);
             }
             else if (commands.length && !records.length){
-                console.log('there are modified records but no commands');
+                console.log('ERROR: there are modified records but no commands');
             }
         }, this);
 
@@ -107,30 +111,26 @@ EHR.ext.StoreCollection = Ext.extend(Ext.util.MixedCollection, {
         }
     },
 
-    commitChanges : function() {
-        var changed = this.getChanged();
-        this.commit(changed.commands, changed.records);
+    commitChanges : function(extraContext, commitAll) {
+        var changed = this.getChanged(commitAll);
+        this.commit(changed.commands, changed.records, extraContext);
     },
 
-    commitRecord: function(record){
-        record.store.commitRecords([record]);
+    commitRecord: function(record, extraContext){
+        record.store.commitRecords([record], extraContext);
     },
 
     commit: function(commands, records, extraContext){
         extraContext = extraContext || {};
 
         if (!commands || !commands.length){
-            console.log('no changes.  nothing to do');
             this.fireEvent('commitcomplete');
+
+            if(extraContext && extraContext.silent!==true)
+                Ext.Msg.alert('Alert', 'There are no changes to submit.');
+
             return;
         }
-
-//        if(debug){
-//            console.log('commands to be sent: '+commands.length);
-//            console.log(commands);
-//            console.log('records to be sent: '+records.length);
-//            console.log(records);
-//        }
 
         if(this.fireEvent('beforecommit', records, commands, extraContext)===false)
             return;
@@ -199,12 +199,12 @@ EHR.ext.StoreCollection = Ext.extend(Ext.util.MixedCollection, {
     },
 
     onValidation: function(store, records){
-        //check other stores
+        //check all stores
         var maxSeverity = '';
         this.each(function(store){
             maxSeverity = EHR.utils.maxError(maxSeverity, store.maxErrorSeverity());
         }, this);
-console.log('storecollection validation')
+
         this.fireEvent('validation', this, maxSeverity);
     },
 
@@ -226,34 +226,27 @@ console.log('storecollection validation')
                 delete records[idx].saveOperationInProgress;
 
             var serverError = this.getJson(response);
-
-//            //this is done because the structure of the error object differs depending on whether you sent a single row or multiple
-//            //this is an attempt to normalize, but should be removed when possible
-//            if(serverError.rowNumber!==undefined || !serverError.errors){
-//                //this means we only submitted 1 row, or there was an exception, which will only have one error
-//                serverError = {errors: [serverError], exception: serverError.exception};
-//            }
-
-            var msg;
+            var msg = '';
             Ext.each(serverError.errors, function(error){
                 //handle validation script errors and exceptions differently
                 if(error.errors && error.errors.length){
                     this.handleValidationErrors(error, response, serverError.extraContext);
                     msg = "Could not save changes due to errors.  Please check the form for fields marked in red.";
                 }
-                else {
-                    //if an exception was thrown, I believe we automatically only have one error returned
-                    //this means this can only be called once
-                    msg = 'Could not save changes due to the following error:\n' + (serverError && serverError.exception) ? serverError.exception : response.statusText;
-                }
+//                else {
+//                    //if an exception was thrown, I believe we automatically only have one error returned
+//                    //this means this can only be called once
+//                    msg = 'Could not save changes due to the following error:\n' + (serverError && serverError.exception) ? serverError.exception : response.statusText;
+//                }
             }, this);
 
-            if(serverError.extraContext && serverError.extraContext.silent){
-                msg = '';
+            if(!serverError.errors){
+                msg = 'Could not save changes due to the following error:\n' + serverError.exception;
             }
 
-            if(false !== this.fireEvent("commitexception", msg) && msg){
+            if(false !== this.fireEvent("commitexception", msg, serverError) && (options.jsonData.extraContext && !options.jsonData.extraContext.silent)){
                 Ext.Msg.alert("Error", "Error During Save. "+msg);
+                console.log(serverError);
             }
         };
     },
@@ -281,10 +274,12 @@ console.log('storecollection validation')
                 return s.queryName==result.queryName && s.schemaName==result.schemaName;
             });
             store.processResponse(result.rows);
-            store.fireEvent("commitcomplete");
         }
 
         this.fireEvent("commitcomplete");
+
+        if(options.jsonData && options.jsonData.extraContext && options.jsonData.extraContext.successURL)
+            window.location = options.jsonData.extraContext.successURL;
     },
 
     getJson : function(response) {
@@ -303,6 +298,16 @@ console.log('storecollection validation')
             }, this);
             s.deleteRecords(records);
         }, this);
+    },
+
+    getAllRecords: function(){
+        var records = [];
+        this.each(function(s){
+            s.each(function(r){
+                records.push(r)
+            }, this);
+        }, this);
+        return records;
     },
 
     //NOTE: used for development.  should get removed eventually
@@ -336,24 +341,28 @@ console.log('storecollection validation')
 
 EHR.ext.StoreInheritance = {
     initInheritance: function(store) {
-        //if the store is already loaded, we
+        store.on('beforemetachange', this.addInheritanceListeners, this);
+
+        //if the store is already loaded, we need to refresh metadata
         if(store.reader.meta.fields){
             this.addInheritanceListeners(store);
         }
-
-        store.on('beforemetachange', this.addInheritanceListeners, this, {buffer: 20});
     },
     relationships: new Ext.util.MixedCollection(false, function(s){return s.key}),
-    //NOTE: meta argument included b/c this gets called directly by the store's metachange event
     addInheritanceListeners: function(store, meta, field){
+        meta = meta || store.reader.meta;
+
         if(!field){
-            store.fields.each(function(f){
+            Ext.each(meta.fields, function(f){
                 this.handleField(store, meta, f);
             }, this);
         }
         else {
             this.handleField(store, meta, field);
         }
+        //b/c store.fields is read only, we need to manually reload metadata
+        //console.log('refreshing metadata for store: '+store.storeId);
+        store.reader.onMetaChange(meta);
     },
     handleField: function(store, meta, field){
         if(field.parentConfig){
@@ -436,7 +445,7 @@ EHR.ext.StoreInheritance = {
             config.listeners.update = function(parent, childStore){return function(store, rec, idx){
                 if(rec === parent){
                     childStore.each(function(rec){
-//                        console.log('inheritance listener called on '+field.dataIndex+'/childStore: '+childStore.storeId+' /parentStore: '+store.storeId+'/rec: '+rec.id);
+                        //console.log('inheritance listener called on '+field.dataIndex+'/childStore: '+childStore.storeId+' /parentStore: '+store.storeId+'/rec: '+rec.id);
                         //console.log('setting value to: '+parent.get(field.parentConfig.dataIndex));
                         rec.set(field.dataIndex, parent.get(field.parentConfig.dataIndex));
                     }, config);

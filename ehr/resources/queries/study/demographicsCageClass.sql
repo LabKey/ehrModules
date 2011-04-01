@@ -18,7 +18,4 @@ LEFT JOIN ehr_lookups.cageclass c
 
 ON (c.low < d.id.MostRecentWeight.MostRecentWeight AND d.id.MostRecentWeight.MostRecentWeight <= c.high)
 
-WHERE
-
---TODO: use status instead
-d.death is null AND (d.departdate IS NULL OR d.departdate < d.arrivedate) AND (d.birth is not null or d.arrivedate is not null)
+WHERE d.id.status.status = 'Alive'

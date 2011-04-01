@@ -34,24 +34,18 @@ Ext.onReady(function ()
 //        }]
 //    }).render('testDiv2');
 
-    var config = {
-       schemaName : "core",
-       queryName : 'users',
-       maxRows: 1,
-       success: function (data, options, response) {
-           console.log("selectRows success: " + data.rowCount);
-       },
-       failure: function (response, options) {
-           console.log("selectRows failure");
-       }
-     };
 
-     // add the requests and config arguments one by one
-     var multi = new LABKEY.MultiRequest();
-     multi.add(LABKEY.Query.selectRows, config);
-     multi.add(LABKEY.Query.selectRows, config);
-     multi.add(LABKEY.Query.selectRows, config);
-     multi.send(function () { console.log("send complete"); });
+
+    var start = new Date();
+    console.log(start)
+    LABKEY.Security.getSecurableResources({
+        includeEffectivePermissions : true,
+        scope: this,
+        success : function(result){
+            var stop = new Date();
+            console.log('Time: '+(stop-start))
+        }
+    });
 
 });
 

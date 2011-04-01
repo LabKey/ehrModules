@@ -16,6 +16,7 @@ EHR.reports.qwpConfig = {
     showDetailsColumn: true,
     showUpdateColumn: false,
     showRecordSelectors: true,
+    showReports: false,
     frame: 'portal',
     linkTarget: '_new',  
     buttonBarPosition: 'top',
@@ -218,65 +219,35 @@ EHR.reports.weightGraph = function(tab, subject){
                 var lines = [];
 
                 lines.push('Date: '+rec.get('date').format('Y-m-d'));
-                lines.push('Weight: '+rec.get('weight'));
-                lines.push('Current Weight: '+rec.get('LatestWeight'));
-
-                lines.push('Percent Change: '+rec.get('PctChange'));
+                lines.push('Weight: '+rec.get('weight')+' kg');
+                lines.push('Current Weight: '+rec.get('LatestWeight')+' kg');
+                if(rec.get('PctChange'))
+                    lines.push('Percent Change: '+rec.get('PctChange')+'%');
                 lines.push('Interval (Months): '+rec.get('IntervalInMonths'));
 
                 return lines.join('\n');
-            }
-//            ,listeners: {
-//                scope: this,
+            },
+            listeners: {
 //                itemmouseover: function(o) {
-//                    //var myGrid = Ext.getCmp('myGrid');
-//                    //myGrid.selModel.selectRow(o.index);
-//                }
-//                ,itemclick: function(o){
-//                    var rec = o.item;
 //
-//                    var gridPanel = o.component.ownerCt.ownerCt.ownerCt.grid;
-//                    var rowNum = gridPanel.view.findRowIndex(rec);
-//                    gridPanel.view.focusRow(rowNum);
-//
-//                    var clinPanel = o.component.ownerCt.detailsPanel;
-//                    clinPanel.removeAll();
-//
-//                    var store = new LABKEY.ext.Store({
-//                        schemaName: 'study',
-//                        queryName: 'Clinical Remarks',
-//                        filterArray: [LABKEY.Filter.create('Id', rec.Id, LABKEY.Filter.Types.EQUAL), LABKEY.Filter.create('Date', rec.date, LABKEY.Filter.Types.DATE_EQUAL)],
-//                        columns: 'category,remark',
-//                        autoLoad: true,
-//                        ownerCt: clinPanel
-//                    });
-//                    store.on('load', function(s){
-//                        s.ownerCt.doLayout();
-//                    }, this);
-//
-//                    var grid = new LABKEY.ext.EditorGridPanel({
-//                        store: store
-//                        ,title: 'Clinical Remarks: '+rec.date.format('Y-m-d')
-//                        ,height: 300
-//                        ,width: 600
-//                        ,autoScroll: true
-//                        ,editable: false
-//                        ,stripeRows: true
-//                        ,disableSelection: true
-//                        ,style: 'padding-top: 10px'
-//                        ,tbar: []
-//                        ,bbar: []
-//                        ,sm: new Ext.grid.RowSelectionModel()
-//                        ,errorCallback: function(error){
-//                            EHR.utils.onError(error)
-//                        }
-//                        ,scope: this
-//                    });
-//
-//                    clinPanel.add(grid);
-//                    clinPanel.doLayout();
-//                }
-//            }
+//                },
+                itemclick: function(o){
+                    var data = o.item;
+
+                    var lines = [];
+                    lines.push('Date: '+data['date'].format('Y-m-d'));
+                    lines.push('Weight: '+data.weight);
+                    lines.push('Current Weight: '+data.LatestWeight+' kg');
+                    if(data['PctChange'])
+                        lines.push('Percent Change: '+data.PctChange+'%');
+                    lines.push('Interval (Months): '+data.IntervalInMonths);
+
+                    var qtip = new Ext.ToolTip({
+                        html: lines.join('\n')
+                    });
+                    qtip.show();
+                }
+            }
         });
 
         tab.add(new Ext.Panel({
@@ -299,12 +270,34 @@ EHR.reports.weightGraph = function(tab, subject){
     }
 
     var target = tab.add({tag: 'span', style: 'padding-bottom: 20px'});
+    var target2 = tab.add({tag: 'span', style: 'padding-bottom: 20px'});
     tab.doLayout();
 
     var filterArray = this.getFilterArray(tab, subject);
     var title = (subject ? subject.join("; ") : '');
 
+    //remove the QCState filter
+    var filters= [];
+    Ext.each(filterArray.nonRemovable, function(f){
+        if(f.getColumnName() != 'qcstate/publicdata')
+            filters.push(f)
+    }, this);
+
     var config = Ext.applyIf({
+        title: 'Weight Summary' + ": " + title,
+        schemaName: 'study',
+        queryName: 'demographicsWeightChange',
+        sort: 'id',
+        columns: 'Id,wdate,MostRecentWeight,MinLast30,MaxLast30,MaxChange30,MinLast90,MaxLast90,MaxChange90,MinLast120,MaxLast120,MaxChange120',
+        filters: filters,
+        removeableFilters: filterArray.removable,
+        scope: this,
+        frame: true
+    }, EHR.reports.qwpConfig);
+    new LABKEY.QueryWebPart(config).render(target.id);
+
+    title = (subject ? subject.join("; ") : '');
+    config = Ext.applyIf({
         title: 'Weight' + ": " + title,
         schemaName: 'study',
         queryName: 'weight',
@@ -316,7 +309,7 @@ EHR.reports.weightGraph = function(tab, subject){
         frame: true
     }, EHR.reports.qwpConfig);
 
-    new LABKEY.QueryWebPart(config).render(target.id);
+    new LABKEY.QueryWebPart(config).render(target2.id);
 };
 
 EHR.reports.bloodChemistry = function(tab, subject){

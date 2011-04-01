@@ -6,24 +6,28 @@
         <column name="email"/>
         <column name="title"/>
         <column name="unit"/>
-        <!--<column name="UsernameStatus/HasUsername">-->
-            <!--<properties>-->
-                <!--<property name="columnTitle" value="HasUsername"/>-->
-            <!--</properties>-->
-        <!--</column>-->
-        <column name="UsernameStatus/EmailExists">
+        <column name="UsernameStatus/HasUsername">
             <properties>
-                <property name="columnTitle" value="Email Matches Login?"/>
+                <property name="columnTitle" value="Has A LabKey Username?"/>
             </properties>
         </column>
-        <!--<column name="UsernameStatus/BothCorrect">-->
-            <!--<properties>-->
-                <!--<property name="columnTitle" value="BothCorrect"/>-->
-            <!--</properties>-->
-        <!--</column>-->
+        <column name="UsernameStatus/EmailExists">
+            <properties>
+                <property name="columnTitle" value="Email Matches Their LabKey Username?"/>
+            </properties>
+        </column>
+        <column name="UsernameStatus/SOPAccess">
+            <properties>
+                <property name="columnTitle" value="Has SOP Access?"/>
+            </properties>
+        </column>
+        <column name="UsernameStatus/ColonyAccess">
+            <properties>
+                <property name="columnTitle" value="Has Colony Records Access?"/>
+            </properties>
+        </column>
     </columns>
     <sorts>
-        <sort column="UsernameStatus/BothCorrect" descending="true"/>
         <sort column="lastName" descending="false"/>
         <sort column="firstName" descending="false"/>
     </sorts>

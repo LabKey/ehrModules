@@ -4,14 +4,9 @@
  * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
  */
 
-var {EHR, LABKEY, Ext, shared, console, init, beforeInsert, afterInsert, beforeUpdate, afterUpdate, beforeDelete, afterDelete, complete} = require("ehr/validation");
+var {EHR, LABKEY, Ext, console, init, beforeInsert, afterInsert, beforeUpdate, afterUpdate, beforeDelete, afterDelete, complete} = require("ehr/validation");
 
-for(var i in this){
-    console.log(i)
-}
-    console.log("extraContext:", this.extraContext);
-
-function onUpsert(row, errors, oldRow){
+function onUpsert(context, errors, row, oldRow){
     if(!row.quantity && row.num_tubes && row.tube_vol)
         row.quantity = row.num_tubes * row.tube_vol;
 
@@ -20,24 +15,27 @@ function onUpsert(row, errors, oldRow){
         minDate.setDate(minDate.getDate()-30);
         minDate = EHR.validation.dateToString(minDate);
 
-        //TODO: account for QCstate
         var sql = "SELECT b.BloodLast30, round((d.weight*0.2*60) - b.BloodLast30, 1) AS AvailBlood " +
         "FROM (" +
             "SELECT b.id, sum(b.quantity) as BloodLast30 " +
             "FROM study.\"Blood Draws\" b " +
             "WHERE b.id='"+row.Id+"' AND b.date >= '"+minDate+"' AND b.date <= '"+EHR.validation.dateToString(row.date) +"' " +
+            "AND (b.qcstate.publicdata = true OR b.qcstate.metadata.DraftData = true) " +
             "GROUP BY b.id) b " +
         "JOIN study.demographics d on (d.id=b.id)";
-
+console.log(sql);
         // find all blood draws from this animal in 30 days prior to this date
         LABKEY.Query.executeSql({
             schemaName: 'study',
             sql: sql,
             success: function(data){
+console.log('on success');
+console.log(data.rows.length);
                 if(data && data.rows && data.rows.length)
                     var availBlood = data.rows[0].AvailBlood;
+console.log(data.rows[0]);
                     if(availBlood - row.quantity < 0)
-                       EHR.addError(errors, 'num_tubes', 'Volume exceeds available blood. Max allowable is '+availBlood, 'ERROR');
+                       EHR.addError(errors, 'num_tubes', 'Volume exceeds available blood. Max allowable is '+availBlood+' mL', 'ERROR');
             },
             failure: EHR.onFailure
         });
@@ -47,22 +45,25 @@ function onUpsert(row, errors, oldRow){
         maxDate.setDate(maxDate.getDate()+30);
         maxDate = EHR.validation.dateToString(maxDate);
 
-        //TODO: account for QCstate
         sql = "SELECT b.BloodLast30, round((d.weight*0.2*60) - b.BloodLast30, 1) AS AvailBlood " +
         "FROM (" +
             "SELECT b.id, sum(b.quantity) as BloodLast30 " +
             "FROM study.\"Blood Draws\" b " +
             "WHERE b.id='"+row.Id+"' AND b.date >= '"+EHR.validation.dateToString(row.date) +"' AND b.date <= '"+maxDate+"' " +
+            "AND (b.qcstate.publicdata = true OR b.qcstate.metadata.DraftData = true) " +
             "GROUP BY b.id) b " +
         "JOIN study.demographics d on (d.id=b.id)";
         LABKEY.Query.executeSql({
             schemaName: 'study',
             sql: sql,
             success: function(data){
+console.log('success');
+console.log(data.rows.length);
                 if(data && data.rows && data.rows.length)
                     var availBlood = data.rows[0].AvailBlood;
+console.log(data.rows[0]);
                     if(availBlood - row.quantity < 0)
-                       EHR.addError(errors, 'quantity', 'Volume conflicts with future blood draws. Max allowable: '+availBlood, 'ERROR');
+                       EHR.addError(errors, 'quantity', 'Volume conflicts with future blood draws. Max allowable: '+availBlood+' mL', 'ERROR');
             },
             failure: EHR.onFailure
         });

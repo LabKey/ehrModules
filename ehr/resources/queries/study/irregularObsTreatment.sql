@@ -16,7 +16,8 @@ i.userid,
 i.remark,
 i.dataset,
 i.description,
-i.description as description2
+i.description as description2,
+i.qcstate
 
 from study.irregularObs i
 
@@ -39,7 +40,8 @@ CASE WHEN t.enddate is null THEN
 ELSE
   ('Drug: ' || t.code || '
 End Date: ' || t.enddate)
-END AS description2
+END AS description2,
+t.qcstate
 
 FROM treatmentSchedule t
 

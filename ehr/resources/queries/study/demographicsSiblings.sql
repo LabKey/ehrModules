@@ -24,7 +24,7 @@ d2.id  AS Sibling,
 --COALESCE(d1.sire, ''),
 d2.dam AS SiblingDam,
 d2.sire AS SiblingSire,
-
+d1.qcstate
 -- FROM (
 --
 -- SELECT d1.id, d2.id as sib, d2.dam as dam2, d2.sire as sire2,

@@ -3,8 +3,10 @@
         <tables xmlns="http://labkey.org/data/xml">
             <table tableName="Arrival" tableDbType="TABLE">
                 <tableUrl>/query/detailsQueryRow.view?schemaName=study&amp;query.queryName=Arrival&amp;lsid=${lsid}</tableUrl>
-                <!--<insertUrl>/ehr/insertQueryRow.view?schemaName=study&amp;query.queryName=obs&amp;</insertUrl>-->
-                <!--<updateUrl>/query/detailsQueryRow.view?schemaName=study&amp;query.queryName=obs&amp;lsid=${lsid}</updateUrl>-->
+                <!--<insertUrl>/ehr/manageRecord.view?schemaName=study&amp;queryName=Arrival&amp;keyField=lsid&amp;</insertUrl>-->
+                <!--<updateUrl>/ehr/manageRecord.view?schemaName=study&amp;queryName=Arrival&amp;keyField=lsid&amp;key=${lsid}</updateUrl>-->
+                <insertUrl />
+                <updateUrl />
                 <columns>
                     <column columnName="date">
                         <columnTitle>Arrival Date</columnTitle>

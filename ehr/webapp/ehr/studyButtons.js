@@ -3,6 +3,11 @@
  *
  * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
  */
+
+Ext.namespace('EHR.ext', 'EHR.utils');
+
+LABKEY.requiresScript("/ehr/utils.js");
+
 function historyHandler(dataRegion, dataRegionName)
 {
     var checked = dataRegion.getChecked();
@@ -183,20 +188,71 @@ function datasetHandler(dataRegion, dataRegionName)
 function moreActionsHandler(dataRegion){
     var menu = Ext.menu.MenuMgr.get(dataRegion.name + '.Menu.More Actions');
 
-//    LABKEY.Security.getSecurableResources({
-//        includeEffectivePermissions: true,
-//        successCallback: function(data){
-//            console.log('securable resources:')
-//            console.log(data);
-//        }
-//    });
+    if(dataRegion.schemaName.match(/^study$/i) && dataRegion.queryName.match(/^weight$/i))
+        addWeightCompareBtn(dataRegion, menu);
 
-    
+
 }
 
-//EHR.buttons.bindManager = Ext.extend(Ext.Observable, {
-//
-//})
+function addWeightCompareBtn(dataRegion, menu){
+    menu.add({
+            text: 'Compare Weights',
+            dataRegion: dataRegion,
+            handler: function(){
+                var checked = this.dataRegion.getChecked();
+                if(!checked || !checked.length){
+                    alert('No records selected');
+                    return;
+                }
+
+                if(checked.length>2){
+                    Ext.Msg.alert('Error', 'More than 2 weights are checked.  Using the first 2.');
+                }
+
+                LABKEY.Query.selectRows({
+                    schemaName: 'study',
+                    queryName: 'weight',
+                    filterArray: [
+                        LABKEY.Filter.create('lsid', checked.join(';'), LABKEY.Filter.Types.EQUALS_ONE_OF)
+                    ],
+                    scope: this,
+                    maxRows: 2,
+                    success: onSuccess
+                    //failure: EHR.utils.onError
+                });
+
+                function onSuccess(data){
+                    if(!data || !data.rows){
+                        return;
+                    }
+
+                    //while we currently only allow 2 rows
+                    //this is written to support more
+
+                    var rows = ['<tr><td>'+['Weight1', 'Weight2', 'Pct Change'].join('</td><td>')+'</td></tr>'];
+                    var theRow;
+                    Ext.each(data.rows, function(row, idx){
+                        theRow = [row.weight];
+                        //get the next element
+                        var index = (idx+1) % data.rows.length;
+                        var weight2 = data.rows[index].weight;
+                        theRow.push(weight2);
+
+                        var pct = EHR.utils.roundNumber((((weight2-row.weight) / row.weight) * 100), 2);
+                        theRow.push(pct+'%');
+
+                        rows.push('<tr><td>'+theRow.join('</td><td>')+'</td></tr>');
+                    }, this);
+
+                    Ext.Msg.hide();
+                    Ext.Msg.alert('Weights', '<table border=1>'+rows.join('')+'</table>');
+
+
+
+                }
+            }
+        })
+}
 
 function getDistinct(dataRegion)
 {

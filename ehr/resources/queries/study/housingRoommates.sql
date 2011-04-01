@@ -19,8 +19,8 @@ h1.cond AS Condition,
 h2.id as RoommateId, 
 h2.date AS RoommateStart,
 h2.odate AS RoommateEnd,
-TIMESTAMPDIFF('SQL_TSI_DAY', h2.date, COALESCE(h2.odate, curdate())) + round(TIMESTAMPDIFF('SQL_TSI_HOUR', h2.date, COALESCE(h2.odate, curdate()))/24, 1) as DaysCoHoused
-
+TIMESTAMPDIFF('SQL_TSI_DAY', h2.date, COALESCE(h2.odate, curdate())) + round(TIMESTAMPDIFF('SQL_TSI_HOUR', h2.date, COALESCE(h2.odate, curdate()))/24, 1) as DaysCoHoused,
+h1.qcstate
 FROM study.Housing h1
 
 LEFT OUTER JOIN study.Housing h2

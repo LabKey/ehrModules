@@ -13,6 +13,24 @@ Ext.onReady(function(){
         ,defaultView: 'Current Housing'
         ,metadata: {
             isTemp: {hidden: true}
+            ,Id: {lookups: false}
+            ,room: {lookups: false}
+            ,project: {lookups: false}
+            ,Created: {hidden: true}
+            ,CreatedBy: {hidden: true}
+            ,Modified: {hidden: true}
+            ,ModifiedBy: {hidden: true}
+            ,objectid: {hidden: true}
+            ,ts: {hidden: true}
+            ,Dataset: {hidden: true}
+            ,AgeAtTime: {hidden: true}
+            ,QCState: {hidden: true}
+            ,created: {hidden: true}
+            ,modified: {hidden: true}
+            ,SequenceNum: {hidden: true}
+            ,AnimalVisit: {hidden: true}
+            ,EntityId: {hidden: true}
+            ,Notes: {hidden: true}
         }
     }).render('housingPanel');
 
@@ -36,7 +54,7 @@ This page contains a series of queries to search animal housing data.  If there 
     </li>
 <br>
     <li>
-        <a href="<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=Animal&query.viewName=Loners">List Single-housed Animals</a>
+        <a href="<%=contextPath%>/ehr/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=Animal&query.viewName=Loners">List Single-housed Animals</a>
     </li>
 <br>
     <li>

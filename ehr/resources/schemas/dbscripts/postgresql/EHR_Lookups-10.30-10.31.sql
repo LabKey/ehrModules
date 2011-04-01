@@ -3637,7 +3637,6 @@ INSERT INTO ehr_lookups.obs_remarks VALUES ('3 clo', '3 clo');
 -- ----------------------------
 DROP TABLE IF EXISTS ehr_lookups.obs_tlocation;
 CREATE TABLE ehr_lookups.obs_tlocation (
---code varchar PRIMARY KEY,
 location varchar NOT NULL,
 sort_order int4,
 code varchar(100),
@@ -4103,60 +4102,60 @@ INSERT INTO ehr_lookups.status_codes VALUES ('d-quar', 'died in quarantine');
 INSERT INTO ehr_lookups.status_codes VALUES ('shippd', 'shipped');
 
 
--- ----------------------------
--- Table structure for ehr_lookups.virus_snomed
--- ----------------------------
+-- -- ----------------------------
+-- -- Table structure for ehr_lookups.virus_snomed
+-- -- ----------------------------
 DROP TABLE IF EXISTS ehr_lookups.virus_snomed;
-CREATE TABLE ehr_lookups.virus_snomed (
-pathogen varchar(255) DEFAULT NULL,
-challenge_type varchar(255) DEFAULT NULL,
-code varchar(255) DEFAULT NULL,
-RowId serial NOT NULL,
-
-CONSTRAINT PK_virus_snomed PRIMARY KEY (rowid)
-)
-WITH (OIDS=FALSE)
-
-;
-
--- ----------------------------
--- Records of virus_snomed
--- ----------------------------
-INSERT INTO ehr_lookups.virus_snomed VALUES ('SIV', 'Challenge', 'l-35230');
-INSERT INTO ehr_lookups.virus_snomed VALUES ('SIV', 'Challenge', '@e-37301');
-INSERT INTO ehr_lookups.virus_snomed VALUES ('SIV', 'Challenge', 'l-35260');
-INSERT INTO ehr_lookups.virus_snomed VALUES ('SIV', 'Challenge', '@e-37302');
-INSERT INTO ehr_lookups.virus_snomed VALUES ('SIV', 'Vaccine', 'w-10049');
-INSERT INTO ehr_lookups.virus_snomed VALUES ('SIV', 'Vaccine', 'w-10050');
-INSERT INTO ehr_lookups.virus_snomed VALUES ('SIV', 'Vaccine', 'w-10154');
-INSERT INTO ehr_lookups.virus_snomed VALUES ('SIV', 'Vaccine', 'w-10156');
-INSERT INTO ehr_lookups.virus_snomed VALUES ('SIV', 'Challenge', 'w-10164');
-INSERT INTO ehr_lookups.virus_snomed VALUES ('SIV', 'Vaccine', 'w-10172');
-INSERT INTO ehr_lookups.virus_snomed VALUES ('SIV', 'Vaccine', 'w-10173');
-INSERT INTO ehr_lookups.virus_snomed VALUES ('SIV', 'Vaccine', 'w-10174');
-INSERT INTO ehr_lookups.virus_snomed VALUES ('SIV', 'Vaccine', 'w-10175');
-INSERT INTO ehr_lookups.virus_snomed VALUES ('SIV', 'Vaccine', 'w-10176');
-INSERT INTO ehr_lookups.virus_snomed VALUES ('SIV', 'Vaccine', 'w-10177');
-INSERT INTO ehr_lookups.virus_snomed VALUES ('SIV', 'Vaccine', 'w-10178');
-INSERT INTO ehr_lookups.virus_snomed VALUES ('SIV', 'Vaccine', 'w-10179');
-INSERT INTO ehr_lookups.virus_snomed VALUES ('SIV', 'Vaccine', 'w-10180');
-INSERT INTO ehr_lookups.virus_snomed VALUES ('SIV', 'Vaccine', 'w-10181');
-INSERT INTO ehr_lookups.virus_snomed VALUES ('SIV', 'Vaccine', 'w-10182');
-INSERT INTO ehr_lookups.virus_snomed VALUES ('SIV', 'Vaccine', 'w-10183');
-INSERT INTO ehr_lookups.virus_snomed VALUES ('SIV', 'Vaccine', 'w-10184');
-INSERT INTO ehr_lookups.virus_snomed VALUES ('SIV', 'Vaccine', 'w-10187');
-INSERT INTO ehr_lookups.virus_snomed VALUES ('SIV', 'Vaccine', 'w-10189');
-INSERT INTO ehr_lookups.virus_snomed VALUES ('SIV', 'Vaccine', 'w-10190');
-INSERT INTO ehr_lookups.virus_snomed VALUES ('SIV', 'Vaccine', 'w-10191');
-INSERT INTO ehr_lookups.virus_snomed VALUES ('SIV', 'Challenge', 'w-10196');
-INSERT INTO ehr_lookups.virus_snomed VALUES ('SIV', 'Challenge', 'w-10205');
-INSERT INTO ehr_lookups.virus_snomed VALUES ('SIV', 'Challenge', 'w-10253');
-INSERT INTO ehr_lookups.virus_snomed VALUES ('SIV', 'Challenge', 'w-10264');
-INSERT INTO ehr_lookups.virus_snomed VALUES ('SIV', 'Vaccine', 'w-10290');
-INSERT INTO ehr_lookups.virus_snomed VALUES ('SIV', 'Vaccine', 'w-10296');
-INSERT INTO ehr_lookups.virus_snomed VALUES ('SIV', 'Vaccine', 'w-10311');
-INSERT INTO ehr_lookups.virus_snomed VALUES ('SIV', 'Vaccine', 'w-10312');
-INSERT INTO ehr_lookups.virus_snomed VALUES ('SIV', 'Vaccine', 'w-10313');
+-- CREATE TABLE ehr_lookups.virus_snomed (
+-- pathogen varchar(255) DEFAULT NULL,
+-- challenge_type varchar(255) DEFAULT NULL,
+-- code varchar(255) DEFAULT NULL,
+-- RowId serial NOT NULL,
+--
+-- CONSTRAINT PK_virus_snomed PRIMARY KEY (rowid)
+-- )
+-- WITH (OIDS=FALSE)
+--
+-- ;
+--
+-- -- ----------------------------
+-- -- Records of virus_snomed
+-- -- ----------------------------
+-- INSERT INTO ehr_lookups.virus_snomed VALUES ('SIV', 'Challenge', 'l-35230');
+-- INSERT INTO ehr_lookups.virus_snomed VALUES ('SIV', 'Challenge', '@e-37301');
+-- INSERT INTO ehr_lookups.virus_snomed VALUES ('SIV', 'Challenge', 'l-35260');
+-- INSERT INTO ehr_lookups.virus_snomed VALUES ('SIV', 'Challenge', '@e-37302');
+-- INSERT INTO ehr_lookups.virus_snomed VALUES ('SIV', 'Vaccine', 'w-10049');
+-- INSERT INTO ehr_lookups.virus_snomed VALUES ('SIV', 'Vaccine', 'w-10050');
+-- INSERT INTO ehr_lookups.virus_snomed VALUES ('SIV', 'Vaccine', 'w-10154');
+-- INSERT INTO ehr_lookups.virus_snomed VALUES ('SIV', 'Vaccine', 'w-10156');
+-- INSERT INTO ehr_lookups.virus_snomed VALUES ('SIV', 'Challenge', 'w-10164');
+-- INSERT INTO ehr_lookups.virus_snomed VALUES ('SIV', 'Vaccine', 'w-10172');
+-- INSERT INTO ehr_lookups.virus_snomed VALUES ('SIV', 'Vaccine', 'w-10173');
+-- INSERT INTO ehr_lookups.virus_snomed VALUES ('SIV', 'Vaccine', 'w-10174');
+-- INSERT INTO ehr_lookups.virus_snomed VALUES ('SIV', 'Vaccine', 'w-10175');
+-- INSERT INTO ehr_lookups.virus_snomed VALUES ('SIV', 'Vaccine', 'w-10176');
+-- INSERT INTO ehr_lookups.virus_snomed VALUES ('SIV', 'Vaccine', 'w-10177');
+-- INSERT INTO ehr_lookups.virus_snomed VALUES ('SIV', 'Vaccine', 'w-10178');
+-- INSERT INTO ehr_lookups.virus_snomed VALUES ('SIV', 'Vaccine', 'w-10179');
+-- INSERT INTO ehr_lookups.virus_snomed VALUES ('SIV', 'Vaccine', 'w-10180');
+-- INSERT INTO ehr_lookups.virus_snomed VALUES ('SIV', 'Vaccine', 'w-10181');
+-- INSERT INTO ehr_lookups.virus_snomed VALUES ('SIV', 'Vaccine', 'w-10182');
+-- INSERT INTO ehr_lookups.virus_snomed VALUES ('SIV', 'Vaccine', 'w-10183');
+-- INSERT INTO ehr_lookups.virus_snomed VALUES ('SIV', 'Vaccine', 'w-10184');
+-- INSERT INTO ehr_lookups.virus_snomed VALUES ('SIV', 'Vaccine', 'w-10187');
+-- INSERT INTO ehr_lookups.virus_snomed VALUES ('SIV', 'Vaccine', 'w-10189');
+-- INSERT INTO ehr_lookups.virus_snomed VALUES ('SIV', 'Vaccine', 'w-10190');
+-- INSERT INTO ehr_lookups.virus_snomed VALUES ('SIV', 'Vaccine', 'w-10191');
+-- INSERT INTO ehr_lookups.virus_snomed VALUES ('SIV', 'Challenge', 'w-10196');
+-- INSERT INTO ehr_lookups.virus_snomed VALUES ('SIV', 'Challenge', 'w-10205');
+-- INSERT INTO ehr_lookups.virus_snomed VALUES ('SIV', 'Challenge', 'w-10253');
+-- INSERT INTO ehr_lookups.virus_snomed VALUES ('SIV', 'Challenge', 'w-10264');
+-- INSERT INTO ehr_lookups.virus_snomed VALUES ('SIV', 'Vaccine', 'w-10290');
+-- INSERT INTO ehr_lookups.virus_snomed VALUES ('SIV', 'Vaccine', 'w-10296');
+-- INSERT INTO ehr_lookups.virus_snomed VALUES ('SIV', 'Vaccine', 'w-10311');
+-- INSERT INTO ehr_lookups.virus_snomed VALUES ('SIV', 'Vaccine', 'w-10312');
+-- INSERT INTO ehr_lookups.virus_snomed VALUES ('SIV', 'Vaccine', 'w-10313');
 
 
 -- ----------------------------
@@ -4391,7 +4390,7 @@ CREATE TABLE ehr_lookups.snomed (
 code varchar(255) NOT NULL,
 meaning varchar(2000),
 
-Container ENTITYID,
+-- Container ENTITYID,
 CreatedBy USERID NOT NULL,
 Created TIMESTAMP NOT NULL,
 ModifiedBy USERID NOT NULL,
@@ -4604,4 +4603,26 @@ CREATE TABLE ehr_lookups.drug_defaults (
 )
 WITH (OIDS=FALSE)
 
+;
+
+
+
+-- ----------------------------
+-- Table structure for oor_indicators
+-- ----------------------------
+DROP TABLE IF EXISTS ehr_lookups.oor_indicators;
+CREATE TABLE ehr_lookups.oor_indicators (
+  indicator varchar(255) NOT NULL,
+
+  CONSTRAINT PK_oor_indicators PRIMARY KEY (indicator)
+)
+WITH (OIDS=FALSE)
+
+;
+
+INSERT INTO ehr_lookups.oor_indicators
+(indicator)
+VALUES
+('<'),
+('>')
 ;

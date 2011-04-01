@@ -14,14 +14,14 @@
                     </column>
                     <column columnName="TotalAnimals">
                         <datatype>integer</datatype>
-                        <url>/query/executeQuery.view?schemaName=study&amp;
+                        <url>/ehr/executeQuery.view?schemaName=study&amp;
                             query.queryName=assignment&amp;
                             query.project/protocol~eq=${protocol}&amp;   
                         </url>
                     </column>
                     <column columnName="ActiveAnimals">
                         <datatype>integer</datatype>
-                        <url>/query/executeQuery.view?schemaName=study&amp;
+                        <url>/ehr/executeQuery.view?schemaName=study&amp;
                             query.queryName=assignment&amp;
                             query.project/protocol~eq=${protocol}&amp;
                             query.viewName=Active Assignments

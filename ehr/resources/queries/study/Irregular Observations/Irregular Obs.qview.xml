@@ -29,5 +29,6 @@
    </sorts>
    <filters>
        <filter column="hasObs/hasObs" operator="eq" value="true"/>
+        <filter column="qcstate/publicdata" operator="eq" value="true"/>
    </filters>
 </customView>

@@ -21,7 +21,7 @@
                     <column columnName="Day">
                         <datatype>varchar</datatype>
                         <displayWidth>10</displayWidth>
-                        <url>/query/executeQuery.view?schemaName=study&amp;
+                        <url>/ehr/executeQuery.view?schemaName=study&amp;
                             query.queryName=clintremDiarrhea&amp;
                             query.Id~eq=${id}&amp;
                             query.Year~eq=${year}&amp;

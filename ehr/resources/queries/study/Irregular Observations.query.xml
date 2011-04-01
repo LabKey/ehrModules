@@ -3,8 +3,11 @@
         <tables xmlns="http://labkey.org/data/xml">
             <table tableName="obs" tableDbType="TABLE">
                 <tableUrl>/query/detailsQueryRow.view?schemaName=study&amp;query.queryName=Irregular Observations&amp;lsid=${lsid}</tableUrl>
-                <insertUrl>/ehr/insertTask.view?schemaName=study&amp;queryName=Irregular Observations</insertUrl>
-                <!--<updateUrl>/query/detailsQueryRow.view?schemaName=study&amp;query.queryName=${dataset}&amp;lsid=${lsid}</updateUrl>-->
+                <!--<insertUrl>/ehr/manageRecord.view?schemaName=study&amp;queryName=Irregular Observations&amp;keyField=lsid&amp;</insertUrl>-->
+                <!--<updateUrl>/ehr/manageRecord.view?schemaName=study&amp;queryName=Irregular Observations&amp;keyField=lsid&amp;key=${lsid}</updateUrl>-->
+                <insertUrl />
+                <updateUrl />
+                <!--<deleteUrl />-->
                 <columns>
                     <column columnName="date">
                         <formatString>yyyy-MM-dd HH:mm</formatString>

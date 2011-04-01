@@ -5,12 +5,9 @@
  */
 
 
-//TODO: cascade delete/update records in observations table
+var {EHR, LABKEY, Ext, console, init, beforeInsert, afterInsert, beforeUpdate, afterUpdate, beforeDelete, afterDelete, complete} = require("ehr/validation");
 
-
-var {EHR, LABKEY, Ext, shared, console, init, beforeInsert, afterInsert, beforeUpdate, afterUpdate, beforeDelete, afterDelete, complete} = require("ehr/validation");
-
-function onUpsert(row, errors, oldRow){
+function onUpsert(context, errors, row, oldRow){
     if (
         row.feces ||
         row.menses ||
@@ -32,9 +29,10 @@ function onUpsert(row, errors, oldRow){
     //store room at time / cage at time
     if(row.id && row.date){
         //TODO: change odate to enddate
-        //TODO: account for QCstate
         var sql = "SELECT h.room, h.cage FROM study.housing h " +
-            "WHERE h.id='"+row.Id+"' AND h.date <= '"+EHR.validation.dateTimeToString(row.date) +"' AND (h.odate > '"+EHR.validation.dateTimeToString(row.date)+"' OR h.odate IS NULL)";
+            "WHERE h.id='"+row.Id+"' AND h.date <= '"+EHR.validation.dateTimeToString(row.date) +"' " +
+                "AND (h.odate > '"+EHR.validation.dateTimeToString(row.date)+"' OR h.odate IS NULL) " +
+                "AND h.qcstate.publicdata = TRUE";
         LABKEY.Query.executeSql({
             schemaName: 'study',
             sql: sql,
@@ -56,22 +54,60 @@ function onUpsert(row, errors, oldRow){
 
 }
 
-function onBecomePublic(row, errors, oldRow){
-    var rowDataArray = [];
+//TODO: cascade delete/update records in observations table
+function onDelete(errors, context, row){
+    var toDelete = [];
+    var sql = "SELECT distinct lsid from study.\"Clinical Observations\" WHERE  parentid='"+row.lsid+"'";
+    LABKEY.Query.executeSql({
+        schemaName: 'study',
+        sql: sql,
+        scope: this,
+        success: function(data){
+            if(data && data.rows && data.rows.length){
+                toDelete.push({lsid: row.lsid});
+            }
+        },
+        failure: EHR.onFailure
+    });
+
+    if(toDelete.length){
+        LABKEY.Query.deleteRows({
+            schemaName: 'study',
+            queryName: 'Clinical Observations',
+            scope: this,
+            rows: toDelete,
+            extraContext: {
+                schemaName: 'study',
+                queryName: 'Clinical Observations'
+            },
+            success: function(data){
+                console.log('Deleted child records in clinical observations');
+            },
+            failure: EHR.onFailure
+        });
+    }
+}
+
+function onBecomePublic(errors, scriptContext, row, oldRow){
+    var rows = [];
     //auto-update observations table with mens, diar.
     if(row.menses){
-        rowDataArray.push({category: 'Irregular Obs', parentid: row.objectid, remark: 'mens: '+row.menses})
+        rows.push({category: 'Irregular Obs', parentid: row.objectid, remark: 'mens: '+row.menses, QCStateLabel: row.QCStateLabel})
     }
 
     if(row.feces){
-        rowDataArray.push({category: 'Irregular Obs', parentid: row.objectid, remark: 'diar: '+row.feces})
+        rows.push({category: 'Irregular Obs', parentid: row.objectid, remark: 'diar: '+row.feces, QCStateLabel: row.QCStateLabel})
     }
 
-    if(rowDataArray.length){
+    if(rows.length){
         LABKEY.Query.insertRows({
             schemaName: 'study',
             queryName: 'Clinical Observations',
-            rowDataArray: rowDataArray,
+            rows: rows,
+            extraContext: {
+                schemaName: 'study',
+                queryName: 'Clinical Observations'
+            },
             scope: this,
             success: function(data){
                 console.log('Success')

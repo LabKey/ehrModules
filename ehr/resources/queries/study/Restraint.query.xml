@@ -3,7 +3,12 @@
         <tables xmlns="http://labkey.org/data/xml">
             <table tableName="restraints" tableDbType="TABLE">
                 <tableUrl>/query/detailsQueryRow.view?schemaName=study&amp;query.queryName=restraints&amp;lsid=${lsid}</tableUrl>
-        <columns>
+                <!--<insertUrl>/ehr/manageRecord.view?schemaName=study&amp;queryName=Restraint&amp;keyField=lsid&amp;</insertUrl>-->
+                <!--<updateUrl>/ehr/manageRecord.view?schemaName=study&amp;queryName=Restraint&amp;keyField=lsid&amp;key=${lsid}</updateUrl>-->
+                <insertUrl />
+                <updateUrl />
+                <!--<deleteUrl />-->
+            <columns>
             <column columnName="participantid">
                 <datatype>varchar</datatype>
                 <columnTitle>Participant ID</columnTitle>
@@ -40,7 +45,7 @@
             </column>
             <column columnName="totalTime">
                 <datatype>double</datatype>
-                <columnTitle>Total Time</columnTitle>
+                <columnTitle>Minutes Restrained</columnTitle>
             </column>
             <column columnName="remark">
                 <datatype>varchar</datatype>

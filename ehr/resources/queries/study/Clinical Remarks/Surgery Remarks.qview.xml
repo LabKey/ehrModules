@@ -9,8 +9,10 @@
     </columns>    
     <filters>
         <filter column="category" operator="eq" value="Surgery"/>
+        <filter column="qcstate/publicdata" operator="eq" value="true"/>
     </filters>
     <sorts>
         <sort column="date" descending="true"/>
+        <sort column="remark"/>
     </sorts>
 </customView>

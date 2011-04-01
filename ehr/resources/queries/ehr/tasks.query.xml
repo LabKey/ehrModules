@@ -3,15 +3,20 @@
         <tables xmlns="http://labkey.org/data/xml">
             <table tableName="tasks" tableDbType="TABLE">
                 <tableUrl>/ehr/taskDetails.view?formtype=${formtype}&amp;taskid=${taskid}</tableUrl>
-                <updateUrl>/ehr/manageTask.view?formtype=${formtype}&amp;taskid=${taskid}</updateUrl>
-                <insertUrl>/ehr/manageTask.view</insertUrl>
+                <!--<updateUrl>/ehr/manageTask.view?formtype=${formtype}&amp;taskid=${taskid}</updateUrl>-->
+                <!--<insertUrl>/ehr/manageTask.view</insertUrl>-->
+                <insertUrl />
+                <updateUrl />
                 <titleColumn>RowId</titleColumn>
                 <columns>
                     <column columnName="rowid">
                         <columnTitle>Task Id</columnTitle>
                         <isAutoInc>true</isAutoInc>
                         <nullable>true</nullable>
-                        <url>/ehr/manageTask.view?formtype=${formtype}&amp;taskid=${taskid}</url>
+                        <url>/ehr/taskDetails.view?formtype=${formtype}&amp;taskid=${taskid}</url>
+                    </column>
+                    <column columnName="taskid">
+                        <isHidden>true</isHidden>
                     </column>
                     <column columnName="formtype">
                         <columnTitle>Task Type</columnTitle>
@@ -65,34 +70,34 @@
                         </fk>
                     </column>
                     <column columnName="title">
-                        <url>/ehr/manageTask.view?formtype=${formtype}&amp;taskid=${taskid}</url>
+                        <url>/ehr/taskDetails.view?formtype=${formtype}&amp;taskid=${taskid}</url>
                     </column>
                 </columns>
-                <buttonBarOptions includeStandardButtons="false">
-                    <includeScript>/ehr/studyButtons.js</includeScript>
-                    <!--<onRender>moreActionsHandler</onRender>-->
-                    <item text="Create New">
-                        <originalText>Insert New</originalText>
-                    </item>
-                    <item text="Views">
-                        <originalText>Views</originalText>
-                    </item>
-                    <item text="Export">
-                        <originalText>Export</originalText>
-                    </item>
-                    <item text="Print">
-                        <originalText>Print</originalText>
-                    </item>
-                    <!--<item text="Import Data">-->
-                        <!--<originalText>Import Data</originalText>-->
+                <!--<buttonBarOptions includeStandardButtons="false">-->
+                    <!--<includeScript>/ehr/studyButtons.js</includeScript>-->
+                    <!--&lt;!&ndash;<onRender>moreActionsHandler</onRender>&ndash;&gt;-->
+                    <!--&lt;!&ndash;<item text="Create New">&ndash;&gt;-->
+                        <!--&lt;!&ndash;<originalText>Insert New</originalText>&ndash;&gt;-->
+                    <!--&lt;!&ndash;</item>&ndash;&gt;-->
+                    <!--<item text="Views">-->
+                        <!--<originalText>Views</originalText>-->
                     <!--</item>-->
-                    <item text="Page Size">
-                        <originalText>Page Size</originalText>
-                    </item>
-                    <!--<item text="Delete">-->
-                        <!--<originalText>Delete</originalText>-->
+                    <!--<item text="Export">-->
+                        <!--<originalText>Export</originalText>-->
                     <!--</item>-->
-                </buttonBarOptions>
+                    <!--<item text="Print">-->
+                        <!--<originalText>Print</originalText>-->
+                    <!--</item>-->
+                    <!--&lt;!&ndash;<item text="Import Data">&ndash;&gt;-->
+                        <!--&lt;!&ndash;<originalText>Import Data</originalText>&ndash;&gt;-->
+                    <!--&lt;!&ndash;</item>&ndash;&gt;-->
+                    <!--<item text="Page Size">-->
+                        <!--<originalText>Page Size</originalText>-->
+                    <!--</item>-->
+                    <!--&lt;!&ndash;<item text="Delete">&ndash;&gt;-->
+                        <!--&lt;!&ndash;<originalText>Delete</originalText>&ndash;&gt;-->
+                    <!--&lt;!&ndash;</item>&ndash;&gt;-->
+                <!--</buttonBarOptions>-->
             </table>
         </tables>
     </metadata>

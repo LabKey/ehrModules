@@ -5,17 +5,115 @@
 LABKEY.requiresScript("/ehr/SearchPanel.js");
 
 Ext.onReady(function(){
+    var metadata;
+
     var config = {
         schemaName: LABKEY.ActionURL.getParameter('schemaName')
         ,queryName: LABKEY.ActionURL.getParameter('queryName')
         ,viewName: LABKEY.ActionURL.getParameter('viewName')
         ,columns: LABKEY.ActionURL.getParameter('columns')
         ,title: 'Search '+LABKEY.ActionURL.getParameter('queryName')
+        ,useContainerFilter: LABKEY.ActionURL.getParameter('useContainerFilter')
+        ,defaultContainerFilter: LABKEY.ActionURL.getParameter('defaultContainerFilter')
+        ,metadata: {
+            Id: {lookups: false}
+            ,TotalRoommates: {hidden: true}
+            ,Created: {hidden: true}
+            ,CreatedBy: {hidden: true}
+            ,Modified: {hidden: true}
+            ,ModifiedBy: {hidden: true}
+            ,objectid: {hidden: true}
+            ,ts: {hidden: true}
+            ,Dataset: {hidden: true}
+            ,AgeAtTime: {hidden: true}
+            ,QCState: {hidden: true}
+            ,created: {hidden: true}
+            ,modified: {hidden: true}
+            ,SequenceNum: {hidden: true}
+            ,AnimalVisit: {hidden: true}
+            ,EntityId: {hidden: true}
+            ,Notes: {hidden: true}
+            ,dam: {lookups: false}
+            ,sire: {lookups: false}
+    //                ,code: {lookups: false}
+            ,snomed: {lookups: false}
+        }
+    };
+
+    if(metadata[LABKEY.ActionURL.getParameter('queryName')]){
+        EHR.utils.rApply(config, metadata[LABKEY.ActionURL.getParameter('queryName')]);
     }
 
     new EHR.ext.SearchPanel(config).render('searchPanel');
 
-
+    metadata = {
+//        Animal: {
+//            defaultView: 'Alive, at WNPRC'
+//            ,metadata: {
+//                Surgery: {hidden: true}
+//                ,activeAssignments: {hidden: true}
+//                ,curLocation: {hidden: true}
+//                ,numRoommates: {hidden: true}
+//                ,MostRecentWeight: {hidden: true}
+//                ,Species: {hidden: true}
+//                ,Status: {hidden: true}
+//                ,totalOffspring: {hidden: true}
+//                ,MostRecentTB: {hidden: true}
+//                ,MostRecentArrival: {hidden: true}
+//                ,MostRecentDeparture: {hidden: true}
+//                ,MHCtyping: {hidden: true}
+//                ,CageClass: {hidden: true}
+//                ,AvailBlood: {hidden: true}
+//                ,DaysAlone: {hidden: true}
+//                ,AgeClass: {hidden: true}
+//                ,totalAssignments: {hidden: true}
+//                ,ViralLoad: {hidden: true}
+//            }
+//            ,newFields: [
+//                {caption: 'Cohort', name: 'Cohort/label'}
+//                ,{caption: 'Age', name: 'age/AgeInYearsRounded', jsonType: 'int'}
+//                ,{caption: 'Age', name: 'age/AgeInYearsRounded', jsonType: 'int'}
+//                ,{caption: 'Current Room', name: 'curLocation/room'}
+//                //,{caption: 'Last TB Date', name: 'mostRecentTB'}
+//                //,{caption: 'Num. of Active Assignments', name: 'activeProjects/ActiveProjects (avail=all)'}
+//                ,{caption: 'Num. of Offspring', name: 'totalOffspring/TotalOffspring', jsonType: 'int'}
+//                ,{caption: 'Num. of Roommates', name: 'numRoommates/numRoommates', jsonType: 'int'}
+//                ,{caption: 'Species', name: 'Species/species', lookup: {schemaName: 'ehr_lookups', queryName: 'species', displayColumn: 'common', keyColumn: 'common'}
+//                }
+//                ,{caption: 'Gender', name: 'DataSet/Demographics/gender', lookup: {schemaName: 'ehr_lookups', queryName: 'gender_codes', displayColumn: 'meaning', keyColumn: 'code'}}
+//                ,{caption: 'Dam', name: 'DataSet/Demographics/dam'}
+//                ,{caption: 'Sire', name: 'DataSet/Demographics/sire'}
+//                ,{caption: 'Availability', name: 'DataSet/Demographics/avail'}
+//                ,{caption: 'Hold', name: 'DataSet/Demographics/hold'}
+//                ,{caption: 'Birth', name: 'DataSet/Demographics/birth', jsonType: 'date'}
+//                ,{caption: 'Origin', name: 'DataSet/Demographics/origin', lookup: {schemaName: 'ehr_lookups', queryName: 'origin_codes', displayColumn: 'code', keyColumn: 'code'}}
+//                ,{caption: 'Death', name: 'DataSet/Demographics/death', jsonType: 'date'}
+//                ,{caption: 'Viral Status', name: 'DataSet/Demographics/v_status', lookup: {schemaName: 'ehr_lookups', queryName: 'viral_status', displayColumn: 'viral_status', keyColumn: 'viral_status'}}
+//                ,{caption: 'Latest Weight', name: 'MostRecentWeight/MostRecentWeight', jsonType: 'float'}
+//                ,{caption: 'Latest Weight', name: 'MostRecentWeight/MostRecentWeight', jsonType: 'float'}
+//                //,{caption: 'Most Recent Weight Date', name: 'MostRecentWeight/MostRecentWeightDate', jsonType: 'date'}
+//                //major surgery
+//                //blood summary
+//                //mhc
+//             ]
+//        },
+        Housing: {
+            defaultView: 'Current Housing'
+            ,metadata: {
+                isTemp: {hidden: true}
+            }
+        },
+        Alopecia: {
+            metadata: {
+                head: {lookups: false}
+            }
+        },
+        'Clinical Remarks': {
+            metadata: {
+                qualifier: {hidden: true}
+            }
+        }
+}
 
 });
 </script>

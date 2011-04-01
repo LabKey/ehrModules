@@ -57,6 +57,44 @@ Ext.onReady(function ()
         errorCallback: EHR.utils.onError
      }).render('projectTotalAssignments');
 
+    new Ext.Panel({
+        title: 'Project Information',
+        items: [{
+            xtype: 'button'
+            ,html: 'View Charges Under This Project'
+            ,handler: function(c){
+                var params = {schemaName: 'study'};
+                params['query.queryName'] = 'charges';
+                params['query.project~eq'] = project;
+
+                window.open(LABKEY.ActionURL.buildURL(
+                    'ehr',
+                    'executeQuery.view',
+                    LABKEY.ActionURL.getContainer(),
+                    params
+                ));
+            }
+            ,style: 'padding-bottom:10px'
+            ,buttonAlign: 'center'
+        },{
+            xtype: 'button'
+            ,html: 'View Procedures Under This Project'
+            ,handler: function(c){
+                var params = {schemaName: 'study'};
+                params['query.queryName'] = 'encounters';
+                params['query.project~eq'] = project;
+
+                window.open(LABKEY.ActionURL.buildURL(
+                    'ehr',
+                    'executeQuery.view',
+                    LABKEY.ActionURL.getContainer(),
+                    params
+                ));
+            }
+            ,style: 'padding-bottom:10px'
+            ,buttonAlign: 'center'
+        }]
+    }).render('projectLinks');
 });
 
 </script>
@@ -65,6 +103,10 @@ Ext.onReady(function ()
     <p/>
 
 	<div id='projectDetails'></div>
+
+    <p/>
+
+    <div id='projectLinks'></div>
 
     <p/>
 

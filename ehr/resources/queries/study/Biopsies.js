@@ -4,7 +4,7 @@
  * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
  */
 
-var {EHR, LABKEY, Ext, shared, console, init, beforeInsert, afterInsert, beforeUpdate, afterUpdate, beforeDelete, afterDelete, complete} = require("ehr/validation");
+var {EHR, LABKEY, Ext, console, init, beforeInsert, afterInsert, beforeUpdate, afterUpdate, beforeDelete, afterDelete, complete} = require("ehr/validation");
 
 
 
@@ -23,7 +23,7 @@ function setDescription(row, errors){
     return description;
 }
 
-function onInsert(row, errors){
+function onInsert(context, errors, row){
     // auto-calculate the CaseNo
     if(row.date)
         EHR.validation.calculateCaseno(row, errors, 'biopsy', 'b')

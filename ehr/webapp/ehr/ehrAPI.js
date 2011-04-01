@@ -8,6 +8,7 @@ Ext.namespace('EHR.ext');
 LABKEY.requiresScript("/ehr/ExtOverrides.js");
 LABKEY.requiresScript("/ehr/ehrMetaHelper.js");
 LABKEY.requiresScript("/ehr/Utils.js");
+LABKEY.requiresScript("/ehr/qcSecurity.js");
 LABKEY.requiresScript("/ehr/navMenu.js");
 LABKEY.requiresScript("/ehr/databind.js");
 LABKEY.requiresScript("/ehr/ehrStore.js");
@@ -28,5 +29,5 @@ LABKEY.requiresScript("/ehr/ext.ux.statusbar.js");
 
 var debug;
 
-if(LABKEY.Security.currentUser.isAdmin)
+if(LABKEY.Security.currentUser.isAdmin && LABKEY.ActionURL.getParameter('debug'))
     debug = 1;

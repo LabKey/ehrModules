@@ -22,5 +22,6 @@
     <filters>
         <filter column="relChange/PctChange" operator="lte" value="-10"/>
         <filter column="relChange/IntervalInMonths" operator="lte" value="6"/>
+        <filter column="qcstate/publicdata" operator="eq" value="true"/>
     </filters>
 </customView>

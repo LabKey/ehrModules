@@ -4,7 +4,7 @@
  * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
  */
 
-var {EHR, LABKEY, Ext, shared, console, init, beforeInsert, afterInsert, beforeUpdate, afterUpdate, beforeDelete, afterDelete, complete} = require("ehr/validation");
+var {EHR, LABKEY, Ext, console, init, beforeInsert, afterInsert, beforeUpdate, afterUpdate, beforeDelete, afterDelete, complete} = require("ehr/validation");
 
 
 
@@ -25,13 +25,13 @@ function setDescription(row, errors){
 }
 
 
-function onInsert(row, errors){
+function onInsert(context, errors, row){
     //autocalculate problem #
-    //TODO: account for QCstate
+    //TODO: testing needed
     if(row.Id){
         LABKEY.Query.executeSql({
             schemaName: 'study',
-            sql: "SELECT MAX(problem_no)+1 as problem_no FROM study.problem WHERE id='"+row.Id+"'",
+            sql: "SELECT MAX(problem_no)+1 as problem_no FROM study.problem WHERE id='"+row.Id+"' AND qcstate.publicdata = TRUE",
             success: function(data){
                 if(data && data.rows && data.rows.length==1){
                     console.log('problemno: '+data.rows[0]);

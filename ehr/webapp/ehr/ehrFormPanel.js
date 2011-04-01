@@ -45,13 +45,14 @@ Ext.extend(EHR.ext.FormPanel, Ext.FormPanel,
             ,trackResetOnLoad: true
             ,bubbleEvents: ['added']
             ,buttonAlign: 'left'
-            ,monitorValid: true
+            ,monitorValid: false
         });
 
         Ext.applyIf(this, {
             autoHeight: true
-            ,autoWidth: true
+            //,autoWidth: true
             ,labelWidth: 125
+            ,defaultFieldWidth: 200
             ,items: {xtype: 'displayfield', value: 'Loading...'}
             //,name: this.queryName
             ,bodyBorder: false
@@ -87,25 +88,41 @@ Ext.extend(EHR.ext.FormPanel, Ext.FormPanel,
 
         if(this.showStatus){
             this.on('recordchange', this.onRecordChange, this, {buffer: 100, delay: 100});
-            this.mon(this.store, 'validation', this.onStoreValidate, this);
+            this.mon(this.store, 'validation', this.onStoreValidate, this, {delay: 100});
         }
 
-        this.on('recordchange', this.markInvalid, this, {buffer: 100, delay: 100});
+        this.on('recordchange', this.markInvalid, this, {delay: 100});
 
-//        this.on('clientvalidation', function(){
-//            console.log('client validation')
-//        }, this);
     },
     loadQuery: function(store)
     {
         this.removeAll();
+        var toAdd = this.configureForm(store, this);
 
-        var previousField;
+        Ext.each(toAdd, function(item){
+            this.add(item);
+        }, this);
+
+        //create a placeholder for error messages
+        this.add({
+            tag: 'div',
+            ref: 'errorEl',
+            border: false,
+            width: 350,
+            style: 'padding:5px;text-align:center;'
+        });
+
+        if(this.rendered)
+            this.doLayout();
+
+    },
+    configureForm: function(store, formPanel){
+        var toAdd = [];
+        var compositeFields = {};
         store.fields.each(function(c){
             var config = {
-                queryName: this.queryName,
-                schemaName: this.schemaName
-//                msgTarget: 'side'
+                queryName: store.queryName,
+                schemaName: store.schemaName
             };
 
             if (!c.hidden && c.shownInInsertView)
@@ -113,8 +130,8 @@ Ext.extend(EHR.ext.FormPanel, Ext.FormPanel,
                 var theField = this.store.getFormEditorConfig(c.name, config);
 
                 if(!c.width){
-                    theField.width= 200
-                };
+                    theField.width = formPanel.defaultFieldWidth;
+                }
 
                 if (c.inputType == 'textarea' && !c.height){
                     Ext.apply(theField, {height: 100});
@@ -127,61 +144,72 @@ Ext.extend(EHR.ext.FormPanel, Ext.FormPanel,
 
                 if(this.readOnly){
                     theField.xtype = 'ehr-displayfield';
-                    console.log('is read only: '+this.queryName)
+                    console.log('is read only: '+store.queryName)
                 }
 
-                if(c.combineWithNext)
-                    previousField = theField;
+                if(!c.compositeField)
+                    toAdd.push(theField);
                 else {
-                    if(previousField){
-                        previousField.width = (previousField.width-5)/2;
-                        theField.width = (theField.width-5)/2;
-                        var composite = this.add({
-                            layout: 'column',
-                            fieldLabel: previousField.fieldLabel,
+                    theField.fieldLabel = undefined;
+                    if(!compositeFields[c.compositeField]){
+                        compositeFields[c.compositeField] = {
+                            xtype: 'panel',
+                            autoHeight: true,
+                            layout: 'hbox',
                             border: false,
-                            padding: '0px',
+                            fieldLabel: c.compositeField,
                             defaults: {
                                 border: false,
-                                bodyBorder: false,
-                                padding: '0px 2px 0px 0px'
+                                margins: '0px 4px 0px 0px '
                             },
-                            items: [{
-                                items: [previousField]
-                            },{
-                                items: [theField]
-                            }]
-                        });
-                        var msgTarget = this.add({
+                            width: formPanel.defaultFieldWidth,
+                            items: [theField]
+                        };
+                        toAdd.push(compositeFields[c.compositeField]);
+
+                        //create a div to hold error messages
+                        compositeFields[c.compositeField].msgTargetId = Ext.id();
+                        toAdd.push({
                             tag: 'div',
-                            border: false
+                            fieldLabel: null,
+                            border: false,
+                            id: compositeFields[c.compositeField].msgTargetId
                         });
-                        composite.ownerCt = this;
-                        previousField.msgTarget = msgTarget.id;
-                        theField.msgTarget = msgTarget.id;
-                        previousField = null;
                     }
-                    else
-                        theField = this.add(theField);
+                    else {
+                        compositeFields[c.compositeField].items.push(theField);
+                    }
+//                    theField.msgTarget = compositeFields[c.compositeField].msgTargetId;
                 }
             }
         }, this);
 
-        //create a placeholder for error messages
-        this.add({
-            tag: 'div',
-            ref: 'errorEl',
-            border: false,
-            width: 350,
-            style: 'padding:5px;text-align:center;'
-        });
+        //distribute width for compositeFields
+        for (var i in compositeFields){
+            var compositeField = compositeFields[i];
+            var toResize = [];
+            //this leaves a 2px buffer between each field
+            var availableWidth = formPanel.defaultFieldWidth - 4*(compositeFields[i].items.length-1);
+            for (var j=0;j<compositeFields[i].items.length;j++){
+                var field = compositeFields[i].items[j];
+                //if the field isnt using the default width, we assume it was deliberately customized
+                if(field.width && field.width!=formPanel.defaultFieldWidth){
+                    availableWidth = availableWidth - field.width;
+                }
+                else {
+                    toResize.push(field)
+                }
+            }
 
-        if(this.rendered){
-            this.doLayout();
+            if(toResize.length){
+                var newWidth = availableWidth/toResize.length;
+                for (var j=0;j<toResize.length;j++){
+                    toResize[j].width = newWidth;
+                }
+            }
         }
 
-//        if(this.readOnly)
-//            this.setReadOnly(true)
+        return toAdd;
     },
 
     onRecordChange: function(theForm){
@@ -194,7 +222,7 @@ Ext.extend(EHR.ext.FormPanel, Ext.FormPanel,
             this.getBottomToolbar().setStatus({text: 'ERRORS', iconCls: 'x-status-error'});
         else
             this.getBottomToolbar().setStatus({text: 'Section OK', iconCls: 'x-status-valid'});
-console.log('onStore validate')
+
         this.markInvalid();
     },
 
@@ -238,7 +266,7 @@ console.log('onStore validate')
         }
 
         this.getForm().items.each(function(f){
-            f.isValid(false);
+            f.validate();
         }, this);
 
     }

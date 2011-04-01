@@ -2,7 +2,11 @@
     <metadata> 
         <tables xmlns="http://labkey.org/data/xml">
             <table tableName="behavetrem" tableDbType="TABLE">
-                <tableUrl>/query/detailsQueryRow.view?schemaName=study&amp;query.queryName=behavetrem&amp;lsid=${lsid}</tableUrl>
+                <tableUrl>/query/detailsQueryRow.view?schemaName=study&amp;query.queryName=Behavior Remarks&amp;lsid=${lsid}</tableUrl>
+                <!--<insertUrl>/ehr/manageRecord.view?schemaName=study&amp;queryName=Behavior Remarks&amp;keyField=lsid&amp;</insertUrl>-->
+                <!--<updateUrl>/ehr/manageRecord.view?schemaName=study&amp;queryName=Behavior Remarks&amp;keyField=lsid&amp;key=${lsid}</updateUrl>-->
+                <insertUrl />
+                <updateUrl />
                 <columns>
                     <column columnName="date">
                         <formatString>yyyy-MM-dd HH:mm</formatString>

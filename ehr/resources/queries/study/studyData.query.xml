@@ -11,6 +11,9 @@
                         <isHidden>false</isHidden>
                         <displayWidth>350</displayWidth>
                     </column>
+                    <column columnName="enddate">
+                        <columnTitle>End Date</columnTitle>
+                    </column>
                     <column columnName="project">
                         <fk>
                             <fkFolderPath>/wnprc/ehr/</fkFolderPath>
@@ -127,6 +130,7 @@
                             <onClick>
                                 historyHandler(dataRegion, dataRegionName);
                             </onClick>
+                            <!--<target>javascript:void(0)</target>-->
                         </item>
                         <item text="Jump To Other Dataset">
                             <onClick>

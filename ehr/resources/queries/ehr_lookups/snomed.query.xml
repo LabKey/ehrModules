@@ -1,0 +1,10 @@
+<query xmlns="http://labkey.org/data/xml/query">
+    <metadata>
+        <tables xmlns="http://labkey.org/data/xml">
+            <table tableName="snomed" tableDbType="TABLE">
+                <tableUrl>/query/detailsQueryRow.view?schemaName=ehr_lookups&amp;query.queryName=snomed&amp;code=${code}</tableUrl>
+                <titleColumn>meaning</titleColumn>
+            </table>
+        </tables>
+    </metadata>
+</query>

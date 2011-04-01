@@ -8,7 +8,7 @@ SELECT
 b.dam as id,
 b.date,
 'Birth' as type,
-'Offspring: ' || b.id as comment
+'Offspring: ' || b.id as remark
 from study.birth b
 WHERE b.qcstate.publicdata = true
 
@@ -18,8 +18,8 @@ SELECT
 v.id,
 v.date,
 'Viral Challenge' as type,
-'Pathogen: ' || v.pathogen as comment
-from study.demographicsViralChallenge v
+v.remark
+from study.ViralChallenges v
 
 UNION ALL
 
@@ -27,7 +27,7 @@ SELECT
 s.id,
 s.date,
 'Surgery' as type,
-'Major: '||s.major as comment
+'Major: '||s.major
 from surgery s
 where s.qcstate.publicdata = true
 

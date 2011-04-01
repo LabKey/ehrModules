@@ -27,12 +27,12 @@
        <column name="remark"/>
    </columns>
    <sorts>
-       <sort column="dateOnly/DateOnly" descending="true"/>
+       <sort column="date" descending="true"/>
        <sort column="frequency" descending="true"/>
        <sort column="Id/curLocation/cage" descending="false"/>
        <sort column="Id/curLocation/room" descending="false"/>
    </sorts>
-   <filters>
-       <filter column="enddate" operator="isblank"/>
-   </filters>
+  <filters>
+      <filter column="qcstate/publicdata" operator="eq" value="true"/>
+  </filters>
 </customView>

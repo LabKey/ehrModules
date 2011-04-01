@@ -47,7 +47,16 @@ EHR.ext.RemoteCheckboxGroup = Ext.extend(Ext.form.CheckboxGroup,
 
         EHR.ext.RemoteCheckboxGroup.superclass.initComponent.call(this, arguments);
 
-        if(this.store && !this.store.getCount()) {
+        //we need to test whether the store has been created
+        if(!this.store){
+            console.log('EHR.ext.RemoteCheckboxGroup requires a store');
+            return;
+        }
+
+        if(this.store && !this.store.events)
+            this.store = Ext.create(this.store, 'labkey-store');
+
+        if(!this.store.getCount()) {
             this.store.on('load', this.onStoreLoad, this, {single: true});
         }
         else {
@@ -116,6 +125,10 @@ EHR.ext.RemoteCheckboxGroup = Ext.extend(Ext.form.CheckboxGroup,
             EHR.ext.RemoteCheckboxGroup.superclass.setValue.apply(this, arguments);
         }
     }
+    ,setReadOnly : function(readOnly){
+        EHR.ext.RemoteCheckboxGroup.superclass.setReadOnly.apply(this, arguments);
+        this.setDisabled(readOnly);
+    }
 });
 Ext.reg('ehr-remotecheckboxgroup', EHR.ext.RemoteCheckboxGroup);
 
@@ -142,10 +155,6 @@ EHR.ext.DisplayField = Ext.extend(Ext.form.DisplayField,
         if(this.htmlEncode){
             v = Ext.util.Format.htmlEncode(v);
         }
-        if(this.rendered && this.tpl){
-            console.log(this.tpl);
-        }
-
         return this.rendered ? (this.el.dom.innerHTML = (Ext.isEmpty(v) ? '' : v)) : (this.value = v);
     },
 
@@ -173,6 +182,15 @@ EHR.ext.RemoteRadioGroup = Ext.extend(Ext.form.RadioGroup,
             storeLoaded: false,
             items: [{name: 'placeholder', fieldLabel: 'Loading..'}],
             buffered: true,
+            listeners: {
+                scope: this,
+                change: function(c){
+                    console.log('remote radio on change')
+                },
+                blur: function(c){
+                    console.log('remote radio on blur')
+                }
+            },
             tpl : new Ext.XTemplate('<tpl for=".">' +
                   '{[values["' + this.valueField + '"] ? values["' + this.displayField + '"] : "'+ (this.lookupNullCaption ? this.lookupNullCaption : '[none]') +'"]}' +
                     //allow a flag to display both display and value fields
@@ -186,7 +204,16 @@ EHR.ext.RemoteRadioGroup = Ext.extend(Ext.form.RadioGroup,
 
         EHR.ext.RemoteRadioGroup.superclass.initComponent.call(this, arguments);
 
-        if(this.store && !this.store.getCount()) {
+        //we need to test whether the store has been created
+        if(!this.store){
+            console.log('EHR.ext.RemoteRadioGroup requires a store');
+            return;
+        }
+
+        if(this.store && !this.store.events)
+            this.store = Ext.create(this.store, 'labkey-store');
+
+        if(!this.store.getCount()) {
             this.store.on('load', this.onStoreLoad, this, {single: true});
         }
         else {
@@ -198,6 +225,7 @@ EHR.ext.RemoteRadioGroup = Ext.extend(Ext.form.RadioGroup,
         var item;
         this.store.each(function(record, idx){
             item = this.newItem(record);
+            //this.relayEvents(item, ['change', 'check']);
 
             if(this.rendered){
                 this.items.add(item);
@@ -212,7 +240,7 @@ EHR.ext.RemoteRadioGroup = Ext.extend(Ext.form.RadioGroup,
 
         //remove the placeholder radio
         if(this.rendered) {
-            var item = this.items.first();
+            item = this.items.first();
             this.items.remove(item);
             this.panel.getComponent(0).remove(item, true);
             this.ownerCt.doLayout();
@@ -228,7 +256,7 @@ EHR.ext.RemoteRadioGroup = Ext.extend(Ext.form.RadioGroup,
         }
 
         if(this.readOnly)
-            this.setReadOnly(true)
+            this.setReadOnly(true);
 
     },
     newItem: function(record){
@@ -241,11 +269,13 @@ EHR.ext.RemoteRadioGroup = Ext.extend(Ext.form.RadioGroup,
             name: this.name,
             //checked: record.get(this.valueField)==this.initialValue,
             readOnly: this.readOnly || false,
+            bubbleEvents: ['blur', 'change', 'check'],
             disabled: this.disabled,
             //NOTE: checkboxgroup doesnt fire change otherwise
             listeners: {
                 scope: this,
                 change: function(self, val){
+                    console.log(this.listeners)
                     this.fireEvent('change', this, this.getValue());
                 }
             }
@@ -262,6 +292,10 @@ EHR.ext.RemoteRadioGroup = Ext.extend(Ext.form.RadioGroup,
         else {
             Ext.form.RadioGroup.superclass.setValue.apply(this, arguments);
         }
+    },
+    setReadOnly : function(readOnly){
+        EHR.ext.RemoteCheckboxGroup.superclass.setReadOnly.apply(this, arguments);
+        this.setDisabled(readOnly);
     }
 });
 Ext.reg('ehr-remoteradiogroup', EHR.ext.RemoteRadioGroup);
@@ -295,6 +329,7 @@ EHR.ext.OperatorCombo = Ext.extend(LABKEY.ext.ComboBox, {
             xtype: 'combo'
             ,valueField:'value'
             ,displayField:'text'
+            ,listWidth: 200
             ,typeAhead: false
             ,mode: 'local'
             ,triggerAction: 'all'
@@ -369,6 +404,9 @@ EHR.ext.ViewCombo = Ext.extend(LABKEY.ext.ComboBox, {
         var recs = [];
         var hasDefault = false;
         Ext.each(data.views, function(s){
+            if(s.hidden)
+                return;
+
             if(!s.name)
                 hasDefault = true;
             recs.push([s.name, s.name || 'Default']);
@@ -379,10 +417,91 @@ EHR.ext.ViewCombo = Ext.extend(LABKEY.ext.ComboBox, {
 
         this.store.loadData(recs);
         this.store.sort('value');
+
+        if(this.initialValue || this.initialConfig.initialValue)
+            this.setValue(this.initialValue || this.initialConfig.initialValue)
     }
 });
 Ext.reg('ehr-viewcombo', EHR.ext.ViewCombo);
 
+
+EHR.ext.ContainerFilterCombo = Ext.extend(LABKEY.ext.ComboBox, {
+    initComponent: function(){
+        Ext.apply(this, {
+            displayField: 'displayText'
+            ,valueField: 'value'
+            ,triggerAction: 'all'
+            ,listWidth: 200
+            ,forceSelection: true
+            ,mode: 'local'
+            ,store: new Ext.data.ArrayStore({
+                fields: [
+                    'value',
+                    'displayText'
+                ],
+                idIndex: 0,
+                data: [
+                    ['', 'Current Folder Only'],
+                    ['CurrentAndSubfolders', 'Current Folder and Subfolders']
+                ]
+            })
+        });
+
+        EHR.ext.ContainerFilterCombo.superclass.initComponent.call(this);
+    }
+});
+Ext.reg('ehr-containerfiltercombo', EHR.ext.ContainerFilterCombo);
+
+
+
+EHR.ext.TriggerNumberField = function(config){
+    EHR.ext.TriggerNumberField.superclass.constructor.call(this, config);
+};
+Ext.extend(EHR.ext.TriggerNumberField, Ext.form.TriggerField, {
+    baseChars : "0123456789",
+
+
+/**
+     * @cfg {Boolean} autoStripChars True to automatically strip not allowed characters from the field. Defaults to false
+     */
+    autoStripChars: false,
+    allowDecimals : true,
+
+/**
+     * @cfg {String} decimalSeparator Character(s) to allow as the decimal separator (defaults to '.')
+     */
+    decimalSeparator : ".",
+
+/**
+     * @cfg {Number} decimalPrecision The maximum precision to display after the decimal separator (defaults to 2)
+     */
+    decimalPrecision : 2,
+
+/**
+     * @cfg {Boolean} allowNegative False to prevent entering a negative sign (defaults to true)
+     */
+    allowNegative : true,
+
+    // private
+    initEvents : function() {
+        var allowed = this.baseChars + '';
+        if (this.allowDecimals) {
+            allowed += this.decimalSeparator;
+        }
+        if (this.allowNegative) {
+            allowed += '-';
+        }
+        allowed = Ext.escapeRe(allowed);
+        this.maskRe = new RegExp('[' + allowed + ']');
+        if (this.autoStripChars) {
+            this.stripCharsRe = new RegExp('[^' + allowed + ']', 'gi');
+        }
+
+        Ext.form.NumberField.superclass.initEvents.call(this);
+    }
+
+});
+Ext.reg('ehr-triggernumberfield', EHR.ext.TriggerNumberField);
 
 //this is a component that will either be true or null.
 //this is done such that the box will fail client-side validation unless checked
@@ -511,11 +630,13 @@ EHR.ext.SnomedCombo = Ext.extend(LABKEY.ext.ComboBox,
             valueField: 'code',
             mode: 'local',
             store: new LABKEY.ext.Store({
-                //containerPath: rec.get('containerpath'),
+                xtype: 'labkey-store',
                 schemaName: 'ehr_lookups',
                 queryName: 'snomed_subset_codes',
                 columns: 'secondaryCategory,code,code/meaning',
                 sort: 'secondaryCategory,code/meaning',
+                storeId: ['ehr_lookups', 'snomed', 'code', 'meaning', this.queryName, (this.dataIndex || this.name)].join('||'),
+                maxRows: 0,
                 autoLoad: false
             }),
             tpl : function(){var tpl = new Ext.XTemplate(
@@ -567,6 +688,8 @@ EHR.ext.SnomedCombo = Ext.extend(LABKEY.ext.ComboBox,
                 schemaName: 'ehr_lookups',
                 queryName: 'snomed_subsets',
                 sort: 'primaryCategory',
+                //NOTE: this can potentially be a lot of records, so we initially load with zero
+                maxRows: 0,
                 autoLoad: true,
                 nullRecord: {
                     displayColumn: 'primaryCategory',
@@ -590,7 +713,7 @@ EHR.ext.SnomedCombo = Ext.extend(LABKEY.ext.ComboBox,
         delete this.store.baseParams['query.maxRows'];
 
         if(subset == 'All'){
-            this.store.baseParams.schemaName = 'lists';
+            this.store.baseParams.schemaName = 'ehr';
             this.store.baseParams['query.queryName'] = 'snomed';
             this.store.baseParams['query.columns'] = 'code,meaning';
             this.store.baseParams['query.sort'] = 'meaning';
@@ -777,8 +900,10 @@ EHR.ext.ProjectField = Ext.extend(LABKEY.ext.ComboBox,
             ,listeners: {
                 select: function(combo, rec){
                     if(this.ownerCt.boundRecord){
+                        this.ownerCt.boundRecord.beginEdit();
                         this.ownerCt.boundRecord.set('project', rec.get('project'));
                         this.ownerCt.boundRecord.set('account', rec.get('project/account'));
+                        this.ownerCt.boundRecord.endEdit();
                     }
                 }
             }
@@ -892,59 +1017,72 @@ EHR.ext.RemarkField = Ext.extend(Ext.form.TextArea,
 Ext.reg('ehr-remark', EHR.ext.RemarkField);
 
 
-EHR.ext.DrugDoseField = Ext.extend(Ext.form.TriggerField,
+EHR.ext.DrugDoseField = Ext.extend(EHR.ext.TriggerNumberField,
 {
     initComponent: function(){
         this.triggerClass = 'x-form-search-trigger';
 
         EHR.ext.DrugDoseField.superclass.initComponent.call(this, arguments);
     },
-    onRender: function(){
-        EHR.ext.DrugDoseField.superclass.onRender.apply(this, arguments);
-    },
     onTriggerClick: function(){
         var id, conc, dosage, conc_units;
-
         var parent = this.findParentByType('ehr-formpanel');
-        if (parent){
-            if(!parent.boundRecord){
-                var form = parent.getForm();
-                var values = form.getFieldValues();
-                conc = values.concentration;
-                dosage = values.dosage;
-                conc_units = values.conc_units;
-                id = values.Id;
-            }
-            else {
-                conc = parent.boundRecord.get('concentration');
-                dosage = this.getValue();
-                id = parent.boundRecord.get('Id');
-            }
-            if(!conc || !dosage || !id){
-                Ext.Msg.alert('Error', 'Must supply Id, dosage and concentration');
-                return
-            }
+        var theForm = parent.getForm();
 
-            if(parent.importPanel.participantMap.get(id)){
-                //var weight = parent.importPanel.participantMap.get(id)['Dataset/Demographics/weight'];
-                var weight = parent.importPanel.participantMap.get(id)['weight'];
+        var values = theForm.getFieldValues();
+        conc = values.concentration;
+        dosage = values.dosage;
 
-                if(this.msgDiv)
-                    this.msgDiv.replaceWholeText('Weight: '+weight+' kg');
-                else
-                    this.msgDiv = this.container.insertHtml('beforeEnd', 'Weight: '+weight+' kg');
+        //note: if this form is an encounter, Id might be inherited, so we use the record as a fallback
+        id = values.Id;
+        if(!id && parent.boundRecord)
+            id = parent.boundRecord.get('Id');
 
-                var amount = EHR.utils.roundNumber(weight*dosage, 2);
-                var vol = EHR.utils.roundNumber(weight*dosage/conc, 2);
-                parent.boundRecord.set('amount', amount);
-                parent.boundRecord.set('volume', vol);
-                parent.boundRecord.set('dosage', dosage);
-                parent.boundRecord.set('concentration', conc);
-            }
-            else {
-                parent.importPanel.participantMap.on('add', this.onTriggerClick, this, {single: true})
-            }
+        if(!conc || !dosage || !id){
+            Ext.Msg.alert('Error', 'Must supply Id, dosage and concentration');
+            return
         }
+
+        if(parent.importPanel.participantMap.get(id)){
+            var weight;
+            var weightStore = Ext.StoreMgr.find(function(s){
+                if(s.queryName=='Weight'){
+                    var r = s.find('Id', id);
+                    if(r != -1){
+                        r = s.getAt(r);
+                        weight = r.get('weight');
+                    }
+                }
+            }, this);
+
+            if(!weight)
+                weight = parent.importPanel.participantMap.get(id)['weight'];
+
+            var mt = Ext.form.MessageTargets.under;
+            var msg = 'Weight: '+weight+' kg';
+            if(mt){
+                mt.mark(this, msg);
+                this.ownerCt.doLayout();
+            }
+
+
+            var amount = EHR.utils.roundNumber(weight*dosage, 2);
+            var vol = EHR.utils.roundNumber(weight*dosage/conc, 2);
+
+            theForm.findField('amount').setValue(amount);
+            theForm.findField('volume').setValue(vol);
+            theForm.findField('dosage').setValue(dosage);
+
+            //we only fire 1 event b/c the databind plugin operates on the form as a whole
+            var concField = theForm.findField('concentration');
+            concField.setValue(conc);
+            concField.fireEvent('change', conc, concField.startValue);
+
+        }
+        else {
+            parent.importPanel.participantMap.on('add', this.onTriggerClick, this, {single: true})
+        }
+
     }
 });
 Ext.reg('ehr-drugdosefield', EHR.ext.DrugDoseField);
@@ -966,17 +1104,17 @@ Ext.apply(Ext.form.VTypes, {
             //var start = Ext.getCmp(field.startDateField);
             var start = field.startDateField;
             start.setMaxValue(date);
-            (function(){start.validate()}).defer(10);
+            //start.validate.defer(10);
             this.dateRangeMax = date;
 
-            start.fireEvent('change', start, start.getValue());
+            start.fireEvent('change', start, start.getValue(), start.startValue);
         }
         else if (field.endDateField && (!this.dateRangeMin || (date.getTime() != this.dateRangeMin.getTime())))
         {
             //var end = Ext.getCmp(field.endDateField);
             var end = field.endDateField;
             end.setMinValue(date);
-            (function(){end.validate()}).defer(10);
+            //end.validate.defer(10);
             this.dateRangeMin = date;
 
             end.fireEvent('change', end, end.getValue());

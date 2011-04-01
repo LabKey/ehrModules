@@ -78,7 +78,7 @@ Ext.onReady(function()
         LABKEY.Query.selectRows({
             schemaName: 'lists',
             queryName: 'SOPrequirements',
-            containerPath: 'WNPRC/WNPRC_Units/Animal_Services/Compliance_Training/Private/SOPs/',
+            //containerPath: 'WNPRC/WNPRC_Units/Animal_Services/Compliance_Training/Private/SOPs/',
             filterArray: [LABKEY.Filter.create('email', email, LABKEY.Filter.Types.EQUAL), LABKEY.Filter.create('MonthsUntilRenewal', 10, LABKEY.Filter.Types.LESS_THAN)],
             successCallback: makeForm,
             timeout: 0
@@ -123,7 +123,7 @@ function markRead(dataRegion, dataRegionName) {
          containerPath: 'WNPRC/WNPRC_Units/Animal_Services/Compliance_Training/Private/SOPs/',
          schemaName: 'lists',
          queryName: 'SOPDates',
-         rowDataArray: rows,
+         rows: rows,
          scope: this,
          failureCallback: function(errorInfo) {
             errorState = 1;
@@ -164,7 +164,7 @@ function submitRequest() {
          schemaName: 'lists',
          queryName: 'CompletionDates',
          scope: this,
-         rowDataArray: [{
+         rows: [{
             RequirementName: 'SOP Review'
             ,EmployeeId: username
             ,Date: new Date().format("Y-m-d")

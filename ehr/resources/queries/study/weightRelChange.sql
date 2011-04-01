@@ -17,8 +17,18 @@ SELECT
   age_in_months(w.date, w.Id.dataset.demographics.wdate) AS IntervalInMonths,
 
   w.weight,
-  Round(((w.weight - w.Id.dataset.demographics.weight) * 100 / w.Id.dataset.demographics.weight), 1) AS PctChange,
-  Abs(Round(((w.weight - w.Id.dataset.demographics.weight) * 100 / w.Id.dataset.demographics.weight), 1)) AS AbsPctChange,
+  CASE WHEN w.date >= timestampadd('SQL_TSI_YEAR', -2, w.Id.dataset.demographics.wdate) THEN
+    Round(((w.Id.dataset.demographics.weight - w.weight) * 100 / w.Id.dataset.demographics.weight), 1)
+  ELSE
+    null
+  END  AS PctChange,
+
+  CASE WHEN w.date >= timestampadd('SQL_TSI_YEAR', -2, w.Id.dataset.demographics.wdate) THEN
+    Abs(Round(((w.Id.dataset.demographics.weight - w.weight) * 100 / w.Id.dataset.demographics.weight), 1))
+  else
+    null
+  END  AS AbsPctChange,
+  w.qcstate
 
 FROM study.weight w
 

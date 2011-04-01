@@ -43,14 +43,25 @@
                             <fkColumnName>Id</fkColumnName>
                         </fk>
                     </column>
-                    <column columnName="Surgery" wrappedColumnName="id">
-                        <columnTitle>Surgery</columnTitle>
+                    <column columnName="AgeClass" wrappedColumnName="id">
+                        <columnTitle>Age Class</columnTitle>
                         <isHidden>false</isHidden>
                         <isUnselectable>true</isUnselectable>
                         <fk>
                             <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                             <fkDbSchema>study</fkDbSchema>
-                            <fkTable>demographicsSurgery</fkTable>
+                            <fkTable>demographicsAgeClass</fkTable>
+                            <fkColumnName>Id</fkColumnName>
+                        </fk>
+                    </column>
+                    <column columnName="MostRecentArrival" wrappedColumnName="id">
+                        <columnTitle>Arrival Date</columnTitle>
+                        <isHidden>false</isHidden>
+                        <isUnselectable>true</isUnselectable>
+                        <fk>
+                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
+                            <fkDbSchema>study</fkDbSchema>
+                            <fkTable>demographicsArrival</fkTable>
                             <fkColumnName>Id</fkColumnName>
                         </fk>
                     </column>
@@ -76,6 +87,28 @@
                             <fkColumnName>Id</fkColumnName>
                         </fk>
                     </column>
+                    <column columnName="AvailBlood" wrappedColumnName="id">
+                        <columnTitle>Blood Remaining</columnTitle>
+                        <isHidden>false</isHidden>
+                        <isUnselectable>true</isUnselectable>
+                        <fk>
+                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
+                            <fkDbSchema>study</fkDbSchema>
+                            <fkTable>demographicsBloodSummary</fkTable>
+                            <fkColumnName>Id</fkColumnName>
+                        </fk>
+                    </column>
+                    <column columnName="CageClass" wrappedColumnName="id">
+                        <columnTitle>Cage Class</columnTitle>
+                        <isHidden>true</isHidden>
+                        <isUnselectable>true</isUnselectable>
+                        <fk>
+                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
+                            <fkDbSchema>study</fkDbSchema>
+                            <fkTable>demographicsCageClass</fkTable>
+                            <fkColumnName>Id</fkColumnName>
+                        </fk>
+                    </column>
                     <column columnName="curLocation" wrappedColumnName="id">
                         <columnTitle>Current Location</columnTitle>
                         <isHidden>false</isHidden>
@@ -87,14 +120,58 @@
                             <fkColumnName>Id</fkColumnName>
                         </fk>
                     </column>
-                    <column columnName="numRoommates" wrappedColumnName="id">
-                        <columnTitle>Number of Roommates</columnTitle>
+                    <column columnName="DaysAlone" wrappedColumnName="id">
+                        <columnTitle>Days Alone</columnTitle>
                         <isHidden>false</isHidden>
                         <isUnselectable>true</isUnselectable>
                         <fk>
                             <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                             <fkDbSchema>study</fkDbSchema>
-                            <fkTable>demographicsCurrentRoommates</fkTable>
+                            <fkTable>demographicsDaysAlone</fkTable>
+                            <fkColumnName>Id</fkColumnName>
+                        </fk>
+                    </column>
+                    <column columnName="Demographics" wrappedColumnName="id">
+                        <columnTitle>Demographics</columnTitle>
+                        <isHidden>false</isHidden>
+                        <isUnselectable>true</isUnselectable>
+                        <fk>
+                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
+                            <fkDbSchema>study</fkDbSchema>
+                            <fkTable>demographics</fkTable>
+                            <fkColumnName>Id</fkColumnName>
+                        </fk>
+                    </column>
+                    <column columnName="MostRecentDeparture" wrappedColumnName="id">
+                        <columnTitle>Departure Date</columnTitle>
+                        <isHidden>false</isHidden>
+                        <isUnselectable>true</isUnselectable>
+                        <fk>
+                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
+                            <fkDbSchema>study</fkDbSchema>
+                            <fkTable>demographicsMostRecentDeparture</fkTable>
+                            <fkColumnName>Id</fkColumnName>
+                        </fk>
+                    </column>
+                    <column columnName="MostRecentTB" wrappedColumnName="id">
+                        <columnTitle>Last TB Test</columnTitle>
+                        <isHidden>false</isHidden>
+                        <isUnselectable>true</isUnselectable>
+                        <fk>
+                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
+                            <fkDbSchema>study</fkDbSchema>
+                            <fkTable>demographicsMostRecentTBDate</fkTable>
+                            <fkColumnName>Id</fkColumnName>
+                        </fk>
+                    </column>
+                    <column columnName="MHCtyping" wrappedColumnName="id">
+                        <columnTitle>MHC SSP Typing</columnTitle>
+                        <isHidden>false</isHidden>
+                        <isUnselectable>true</isUnselectable>
+                        <fk>
+                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
+                            <fkDbSchema>study</fkDbSchema>
+                            <fkTable>demographicsMHC</fkTable>
                             <fkColumnName>Id</fkColumnName>
                         </fk>
                     </column>
@@ -106,6 +183,28 @@
                             <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                             <fkDbSchema>study</fkDbSchema>
                             <fkTable>demographicsMostRecentWeight</fkTable>
+                            <fkColumnName>Id</fkColumnName>
+                        </fk>
+                    </column>
+                    <column columnName="totalOffspring" wrappedColumnName="id">
+                        <columnTitle>Number of Offspring</columnTitle>
+                        <isHidden>false</isHidden>
+                        <isUnselectable>true</isUnselectable>
+                        <fk>
+                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
+                            <fkDbSchema>study</fkDbSchema>
+                            <fkTable>demographicsTotalOffspring</fkTable>
+                            <fkColumnName>Id</fkColumnName>
+                        </fk>
+                    </column>
+                    <column columnName="numRoommates" wrappedColumnName="id">
+                        <columnTitle>Number of Roommates</columnTitle>
+                        <isHidden>false</isHidden>
+                        <isUnselectable>true</isUnselectable>
+                        <fk>
+                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
+                            <fkDbSchema>study</fkDbSchema>
+                            <fkTable>demographicsCurrentRoommates</fkTable>
                             <fkColumnName>Id</fkColumnName>
                         </fk>
                     </column>
@@ -130,113 +229,14 @@
                             <fkColumnName>Id</fkColumnName>
                         </fk>
                     </column>
-                    <column columnName="totalOffspring" wrappedColumnName="id">
-                        <columnTitle>Num Offspring</columnTitle>
+                    <column columnName="Surgery" wrappedColumnName="id">
+                        <columnTitle>Surgery</columnTitle>
                         <isHidden>false</isHidden>
                         <isUnselectable>true</isUnselectable>
                         <fk>
                             <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                             <fkDbSchema>study</fkDbSchema>
-                            <fkTable>demographicsTotalOffspring</fkTable>
-                            <fkColumnName>Id</fkColumnName>
-                        </fk>
-                    </column>
-                    <!--
-                    <column columnName="weightChange" wrappedColumnName="id">
-                        <columnTitle>Weight Change</columnTitle>
-                        <isHidden>true</isHidden>
-                        <fk>
-                            <fkDbSchema>study</fkDbSchema>
-                            <fkTable>demographicsWeightChange</fkTable>
-                            <fkColumnName>Id</fkColumnName>
-                        </fk>
-                    </column>
-                    -->
-                    <column columnName="MostRecentTB" wrappedColumnName="id">
-                        <columnTitle>Last TB Test</columnTitle>
-                        <isHidden>false</isHidden>
-                        <isUnselectable>true</isUnselectable>
-                        <fk>
-                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-                            <fkDbSchema>study</fkDbSchema>
-                            <fkTable>tbMostRecentTestDate</fkTable>
-                            <fkColumnName>Id</fkColumnName>
-                        </fk>
-                    </column>
-                    <column columnName="MostRecentArrival" wrappedColumnName="id">
-                        <columnTitle>Arrival Date</columnTitle>
-                        <isHidden>false</isHidden>
-                        <isUnselectable>true</isUnselectable>
-                        <fk>
-                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-                            <fkDbSchema>study</fkDbSchema>
-                            <fkTable>demographicsArrival</fkTable>
-                            <fkColumnName>Id</fkColumnName>
-                        </fk>
-                    </column>
-                    <column columnName="MostRecentDeparture" wrappedColumnName="id">
-                        <columnTitle>Departure Date</columnTitle>
-                        <isHidden>false</isHidden>
-                        <isUnselectable>true</isUnselectable>
-                        <fk>
-                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-                            <fkDbSchema>study</fkDbSchema>
-                            <fkTable>demographicsMostRecentDeparture</fkTable>
-                            <fkColumnName>Id</fkColumnName>
-                        </fk>
-                    </column>
-                    <column columnName="MHCtyping" wrappedColumnName="id">
-                        <columnTitle>MHC SSP Typing</columnTitle>
-                        <isHidden>false</isHidden>
-                        <isUnselectable>true</isUnselectable>
-                        <fk>
-                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-                            <fkDbSchema>study</fkDbSchema>
-                            <fkTable>demographicsMHC</fkTable>
-                            <fkColumnName>Id</fkColumnName>
-                        </fk>
-                    </column>
-                    <column columnName="CageClass" wrappedColumnName="id">
-                        <columnTitle>Cage Class</columnTitle>
-                        <isHidden>true</isHidden>
-                        <isUnselectable>true</isUnselectable>
-                        <fk>
-                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-                            <fkDbSchema>study</fkDbSchema>
-                            <fkTable>demographicsCageClass</fkTable>
-                            <fkColumnName>Id</fkColumnName>
-                        </fk>
-                    </column>
-                    <column columnName="AvailBlood" wrappedColumnName="id">
-                        <columnTitle>Blood Remaining</columnTitle>
-                        <isHidden>false</isHidden>
-                        <isUnselectable>true</isUnselectable>
-                        <fk>
-                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-                            <fkDbSchema>study</fkDbSchema>
-                            <fkTable>demographicsBloodSummary</fkTable>
-                            <fkColumnName>Id</fkColumnName>
-                        </fk>
-                    </column>
-                    <column columnName="DaysAlone" wrappedColumnName="id">
-                        <columnTitle>Days Alone</columnTitle>
-                        <isHidden>false</isHidden>
-                        <isUnselectable>true</isUnselectable>
-                        <fk>
-                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-                            <fkDbSchema>study</fkDbSchema>
-                            <fkTable>demographicsDaysAlone</fkTable>
-                            <fkColumnName>Id</fkColumnName>
-                        </fk>
-                    </column>
-                    <column columnName="AgeClass" wrappedColumnName="id">
-                        <columnTitle>Age Class</columnTitle>
-                        <isHidden>false</isHidden>
-                        <isUnselectable>true</isUnselectable>
-                        <fk>
-                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-                            <fkDbSchema>study</fkDbSchema>
-                            <fkTable>demographicsAgeClass</fkTable>
+                            <fkTable>demographicsSurgery</fkTable>
                             <fkColumnName>Id</fkColumnName>
                         </fk>
                     </column>
@@ -259,6 +259,16 @@
                             <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                             <fkDbSchema>study</fkDbSchema>
                             <fkTable>demographicsVirology</fkTable>
+                            <fkColumnName>Id</fkColumnName>
+                        </fk>
+                    </column>
+                    <column columnName="weightChange" wrappedColumnName="id">
+                        <columnTitle>Weight Change</columnTitle>
+                        <isHidden>false</isHidden>
+                        <isUnselectable>true</isUnselectable>
+                        <fk>
+                            <fkDbSchema>study</fkDbSchema>
+                            <fkTable>demographicsWeightChange</fkTable>
                             <fkColumnName>Id</fkColumnName>
                         </fk>
                     </column>

@@ -3,6 +3,10 @@
         <tables xmlns="http://labkey.org/data/xml">
             <table tableName="Biopsydiag" tableDbType="TABLE">
                 <tableUrl>/query/detailsQueryRow.view?schemaName=study&amp;query.queryName=Biopsydiag&amp;lsid=${lsid}</tableUrl>
+                <!--<insertUrl>/ehr/manageRecord.view?schemaName=study&amp;queryName=Biopsy Diagnosis&amp;keyField=lsid&amp;</insertUrl>-->
+                <!--<updateUrl>/ehr/manageRecord.view?schemaName=study&amp;queryName=Biopsy Diagnosis&amp;keyField=lsid&amp;key=${lsid}</updateUrl>-->
+                <insertUrl />
+                <updateUrl />
                 <columns>
                     <column columnName="parentId">
                         <fk>
@@ -16,7 +20,7 @@
                         <datatype>varchar</datatype>
                         <columnTitle>SNOMED</columnTitle>
                         <fk>
-                            <fkDbSchema>lists</fkDbSchema>
+                            <fkDbSchema>ehr_lookups</fkDbSchema>
                             <fkTable>snomed</fkTable>
                             <fkColumnName>code</fkColumnName>
                         </fk>

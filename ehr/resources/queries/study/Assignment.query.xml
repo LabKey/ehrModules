@@ -3,6 +3,10 @@
         <tables xmlns="http://labkey.org/data/xml">
             <table tableName="Assignment" tableDbType="TABLE">
                 <tableUrl>/query/detailsQueryRow.view?schemaName=study&amp;query.queryName=Assignment&amp;lsid=${lsid}</tableUrl>
+                <!--<insertUrl>/ehr/manageRecord.view?schemaName=study&amp;queryName=Assignment&amp;keyField=lsid&amp;</insertUrl>-->
+                <!--<updateUrl>/ehr/manageRecord.view?schemaName=study&amp;queryName=Assignment&amp;keyField=lsid&amp;key=${lsid}</updateUrl>-->
+                <insertUrl />
+                <updateUrl />
                 <columns>
                     <column columnName="project">
                         <fk>
@@ -26,6 +30,17 @@
                           <fkDbSchema>study</fkDbSchema>
                           <fkTable>encounters</fkTable>
                           <fkColumnName>objectid</fkColumnName>
+                        </fk>
+                    </column>
+                    <column columnName="CoAssignments" wrappedColumnName="lsid">
+                        <columnTitle>CoAssignments</columnTitle>
+                        <isHidden>false</isHidden>
+                        <isUnselectable>true</isUnselectable>
+                        <fk>
+                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
+                            <fkDbSchema>study</fkDbSchema>
+                            <fkTable>assignmentTotalCoAssigned</fkTable>
+                            <fkColumnName>lsid</fkColumnName>
                         </fk>
                     </column>
                 </columns>

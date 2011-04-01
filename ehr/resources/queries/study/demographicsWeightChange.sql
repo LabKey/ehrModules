@@ -6,22 +6,44 @@
 SELECT
   d.Id AS Id,
 
-  T1.MostRecentWeightDate,
+  d.wdate,
+  d.weight AS MostRecentWeight,
 
-  T2.weight AS MostRecentWeight,
+  T3.MinLast30,
+  T3.MaxLast30,
+
+  CASE WHEN (abs((T3.MinLast30 - d.weight) * 100 / d.weight) > abs((T3.MaxLast30 - d.weight) * 100 / d.weight))
+  THEN
+    Round(((T3.MinLast30 - d.weight) * 100 / d.weight), 1)
+  ELSE
+    Round(((T3.MaxLast30 - d.weight) * 100 / d.weight), 1)
+  END as MaxChange30,
+
+
+  T4.MinLast90,
+  T4.MaxLast90,
+
+  CASE WHEN (abs((T4.MinLast90 - d.weight) * 100 / d.weight) > abs((T4.MaxLast90 - d.weight) * 100 / d.weight))
+  THEN
+    Round(((T4.MinLast90 - d.weight) * 100 / d.weight), 1)
+  ELSE
+    Round(((T4.MaxLast90 - d.weight) * 100 / d.weight), 1)
+  END as MaxChange90,
+
+  T5.MinLast180,
+  T5.MaxLast180,
+
+  CASE WHEN (abs((T5.MinLast180 - d.weight) * 100 / d.weight) > abs((T5.MaxLast180 - d.weight) * 100 / d.weight))
+  THEN
+    Round(((T5.MinLast180 - d.weight) * 100 / d.weight), 1)
+  ELSE
+    Round(((T5.MaxLast180 - d.weight) * 100 / d.weight), 1)
+  END as MaxChange180
+
 
 FROM study.demographics d
 
---Find the most recent weight date
-LEFT OUTER JOIN
-  (select T1.Id, max(T1.date) as MostRecentWeightDate FROM study.weight T1 WHERE t1.qcstate.publicdata = true GROUP BY T1.Id) T1
-  ON (T1.Id = d.Id)
 
---TODO: this could introduce multiple rows
---find the most recent weight
-LEFT OUTER JOIN study.weight T2
-  ON (T1.MostRecentWeightDate = T2.date AND T2.Id = d.Id)
-  
 --Find the min/max weight over last 30 days
 LEFT OUTER JOIN
   (select T3.Id, max(T3.weight) as MaxLast30, min(T3.weight) as MinLast30 FROM study.weight T3 WHERE T3.qcstate.publicdata = true AND T3.date > (curdate()-30) GROUP BY T3.Id) T3
@@ -30,7 +52,11 @@ LEFT OUTER JOIN
 --Find the min/max weight over last 90 days
 LEFT OUTER JOIN
   (select T4.Id, max(T4.weight) as MaxLast90, min(T4.weight) as MinLast90 FROM study.weight T4 WHERE T4.qcstate.publicdata = true AND T4.date > (curdate()-90) GROUP BY T4.Id) T4
-  ON (T3.Id = d.Id)
+  ON (T4.Id = d.Id)
+
+--Find the min/max weight over last 180 days
+LEFT OUTER JOIN
+  (select T5.Id, max(T5.weight) as MaxLast180, min(T5.weight) as MinLast180 FROM study.weight T5 WHERE T5.qcstate.publicdata = true AND T5.date > (curdate()-180) GROUP BY T5.Id) T5
+  ON (T5.Id = d.Id)
 
 WHERE d.id.status.status = 'Alive'
-AND t2.qcstate.publicdata = true

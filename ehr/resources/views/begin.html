@@ -50,21 +50,21 @@ function createNavMenu()
         sections: [
             {header: 'Entire Colony',
             items: [
-                {name: 'Animal Utilization By Category', url: '<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=colonyAssignmentSummary'},
-                {name: 'Colony Population By Age', url: '<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=Colony Population By Age'},
-                {name: 'MHC Genotype Summary', url: '<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=alleleFrequencies'},
-//                {name: 'Population Summary', url: '<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=colonyPopulationSummary'},
+                {name: 'Animal Utilization By Category', url: '<%=contextPath%>/ehr/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=ColonyAssignmentSummary'},
+                {name: 'Colony Population By Age', url: '<%=contextPath%>/ehr/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=Colony Population By Age'},
+                {name: 'MHC Genotype Summary', url: '<%=contextPath%>/ehr/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=AlleleFrequencies'},
+//                {name: 'Population Summary', url: '<%=contextPath%>/ehr/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=colonyPopulationSummary'},
                 {name: 'Population Summary', url: '<%=contextPath%>/ehr/WNPRC/EHR/populationOverview.view?'},
                 {name: 'Room Utilization', url: '<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=ehr&query.queryName=RoomUtilization'},
-                {name: 'Viral Challenges', url: '<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=demographicsViralChallenge'}
+                {name: 'Viral Challenges', url: '<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=ViralChallenges'}
             ]},
             {header: 'Validation and Alerts',
              items: [
-                 {name: 'Animal/Cage Size Check', url: '<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=roomCheck'},
-                 {name: 'Loners', url: '<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=animal&query.viewName=Loners'},
+                 {name: 'Animal/Cage Size Check', url: '<%=contextPath%>/ehr/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=roomCheck'},
+                 {name: 'Loners', url: '<%=contextPath%>/ehr/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=animal&query.viewName=Loners'},
 //                 {name: 'Loners', url: '<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=demographicsDaysAlone'},
-                 {name: 'TB Tests', url: '<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=animal&query.viewName=TB'},
-                 {name: 'Unweighed Animals', url: '<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=animal&query.viewName=Unweighed'}
+                 {name: 'TB Tests', url: '<%=contextPath%>/ehr/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=animal&query.viewName=TB'},
+                 {name: 'Unweighed Animals', url: '<%=contextPath%>/ehr/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=animal&query.viewName=Unweighed'}
              ]}
 
         ]
@@ -76,8 +76,8 @@ function createNavMenu()
             {header: 'Misc',
             items: [
                 {name: 'About the EHR Project', url: '<%=contextPath%>/project/WNPRC/EHR/About The EHR/begin.view?'},
-                {name: 'Search WNPRC SNOMED Codes', url: '<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=lists&query.queryName=snomed'},
-                {name: 'Search ALL SNOMED Codes', url: '<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=lists&query.queryName=newsnomed'},                    
+                {name: 'Search WNPRC SNOMED Codes', url: '<%=contextPath%>/ehr/WNPRC/EHR/executeQuery.view?schemaName=lists&query.queryName=snomed'},
+                {name: 'Search ALL SNOMED Codes', url: '<%=contextPath%>/ehr/WNPRC/EHR/executeQuery.view?schemaName=lists&query.queryName=newsnomed'},
                 {name: 'Utilities', url: '<%=contextPath%>/ehr/WNPRC/EHR/utilities.view?'}
             ]},
             {header: 'Data Entry',

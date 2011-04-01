@@ -3,8 +3,8 @@
         <tables xmlns="http://labkey.org/data/xml">
             <table tableName="TasksByLocation" tableDbType="NOT_IN_DB">
                 <tableUrl>/ehr/taskDetails.view?formtype=${formtype}&amp;taskid=${taskid}</tableUrl>
-                <updateUrl>/ehr/manageTask.view?formtype=${formtype}&amp;taskid=${taskid}</updateUrl>
-                <insertUrl>/ehr/manageTask.view</insertUrl>
+                <!--<updateUrl>/ehr/manageTask.view?formtype=${formtype}&amp;taskid=${taskid}</updateUrl>-->
+                <!--<insertUrl>/ehr/manageTask.view</insertUrl>-->
                 <!--<titleColumn>RowId</titleColumn>-->
                 <columns>
                     <column columnName="taskid">
@@ -21,12 +21,16 @@
                     <column columnName="formtype">
                         <isHidden>true</isHidden>
                     </column>
+                    <column columnName="room">
+                        <fk>
+                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
+                            <fkDbSchema>ehr_lookups</fkDbSchema>
+                            <fkTable>rooms</fkTable>
+                            <fkColumnName>room</fkColumnName>
+                        </fk>
+                        <!--<url>/EHR/cageDetails.view?room=${room}</url>-->
+                    </column>
                 </columns>
-                <buttonBarOptions includeStandardButtons="true">
-                    <item text="Create New">
-                        <target>/ehr/manageTask.view</target>
-                    </item>
-                </buttonBarOptions>
             </table>
         </tables>
     </metadata>

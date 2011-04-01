@@ -16,7 +16,7 @@
                     <column columnName="animalCount">
                         <datatype>integer</datatype>
                         <columnTitle>Animal Count</columnTitle>
-                         <url>/query/executeQuery.view?schemaName=study&amp;
+                         <url>/ehr/executeQuery.view?schemaName=study&amp;
                             query.queryName=demographics&amp;
                             query.Id/Species/Species~eq=${species}&amp;
                             query.Id/Age/AgeInYears~eq=${AgeInYearsRounded}&amp;

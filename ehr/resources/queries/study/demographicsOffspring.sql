@@ -9,7 +9,9 @@ d.id,
 
 'Offspring' as Relationship,
 
-d2.id  AS Offspring
+d2.id  AS Offspring,
+
+d.qcstate
 
 FROM study.Demographics d
 

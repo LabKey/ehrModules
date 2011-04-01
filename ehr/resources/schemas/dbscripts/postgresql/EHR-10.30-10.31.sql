@@ -295,12 +295,6 @@ CREATE TABLE ehr.notificationTypes
     NotificationType varchar(4000) NOT NULL,
     description text,
 
---     Container ENTITYID NOT NULL,
-    CreatedBy USERID NOT NULL,
-    Created TIMESTAMP NOT NULL,
-    ModifiedBy USERID NOT NULL,
-    Modified TIMESTAMP NOT NULL,
-
     CONSTRAINT PK_notificationTypes PRIMARY KEY (NotificationType)
 );
 
@@ -433,18 +427,6 @@ CREATE TABLE ehr.client_errors
 );
 
 
-
-DROP TABLE IF EXISTS ehr.qcPermissionMap;
-CREATE TABLE ehr.qcPermissionMap
-(
-    rowid SERIAL NOT NULL,
-    role VARCHAR(4000) NOT NULL,
-    qcStateLabel VARCHAR(4000) NOT NULL,
-    permission VARCHAR(4000) NOT NULL,
-
-    CONSTRAINT PK_qcPermissionMap PRIMARY KEY (rowid)
-    --CONSTRAINT UNIQUE_qcPermissionMap UNIQUE (role, qcStateLabel)
-);
 
 
 DROP TABLE IF EXISTS ehr.qcStateMetadata;

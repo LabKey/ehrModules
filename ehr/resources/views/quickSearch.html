@@ -107,7 +107,7 @@ function makePanel(){
                     if (!value) return false;
 
                     window.location = LABKEY.ActionURL.buildURL(
-                        'query'
+                        'ehr'
                         ,'executeQuery'
                         ,'WNPRC/EHR/'
                         ,{schemaName: 'study', 'query.queryName': 'Animal', 'query.viewName': value}
@@ -117,7 +117,7 @@ function makePanel(){
                 })
             );
 
-            this.add({html: '<a href="'+(LABKEY.ActionURL.buildURL('query','executeQuery','WNPRC/EHR/',
+            this.add({html: '<a href="'+(LABKEY.ActionURL.buildURL('ehr','executeQuery','WNPRC/EHR/',
                 {
                     schemaName: 'study',
                     'query.queryName': 'Animal',
@@ -238,7 +238,7 @@ function makePanel(){
                     if (!value) return false;
 
                     window.location = LABKEY.ActionURL.buildURL(
-                        'query'
+                        'ehr'
                         ,'executeQuery'
                         ,'WNPRC/EHR/'
                         ,{'schemaName':'study', 'query.queryName':'Animal', 'query.Dataset/Demographics/Room~startswith': value, 'query.viewName': 'Alive, at WNPRC'});

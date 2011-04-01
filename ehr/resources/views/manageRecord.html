@@ -13,24 +13,23 @@ LABKEY.requiresScript("/ehr/ehrAPI.js");
 
 
 Ext.onReady(function(){
+    var panel = new EHR.ext.SimpleImportPanel({
+        containerPath: 'WNPRC/EHR/',
+        allowableButtons: 'SUBMIT,DISCARD',
+        formType: LABKEY.ActionURL.getParameter('queryName'),
+        formSections: [{
+            xtype: 'ehr-formpanel',
+            schemaName: LABKEY.ActionURL.getParameter('schemaName'),
+            queryName: LABKEY.ActionURL.getParameter('queryName'),
+            keyField: LABKEY.ActionURL.getParameter('keyField'),
+            keyValue: Ext.util.Format.htmlDecode(LABKEY.ActionURL.getParameter('key')),
+            title: LABKEY.ActionURL.getParameter('queryName'),
+            metadata: EHR.ext.getTableMetadata(LABKEY.ActionURL.getParameter('queryName'), ['SimpleForm'])
+        }]
 
-        var panel = new EHR.ext.SimpleImportPanel({
-            containerPath: 'WNPRC/EHR/',
-            allowableButtons: 'SUBMIT,DISCARD,CLOSE',
-            formType: LABKEY.ActionURL.getParameter('queryName'),
-            formSections: [{
-                xtype: 'ehr-formpanel',
-                schemaName: LABKEY.ActionURL.getParameter('schemaName'),
-                queryName: LABKEY.ActionURL.getParameter('queryName'),
-                keyField: LABKEY.ActionURL.getParameter('keyField'),
-                key: LABKEY.ActionURL.getParameter('key'),
-                title: LABKEY.ActionURL.getParameter('queryName'),
-                metadata: EHR.ext.getTableMetadata(LABKEY.ActionURL.getParameter('queryName'), ['SimpleForm'])
-            }]
-
-        });
-        panel.render('manageRecordDiv');
-        LABKEY.NavTrail.setTrail(LABKEY.ActionURL.getParameter('title') || LABKEY.ActionURL.getParameter('queryName'));
+    });
+    panel.render('manageRecordDiv');
+    LABKEY.NavTrail.setTrail(LABKEY.ActionURL.getParameter('title') || EHR.utils.toTitleCase(LABKEY.ActionURL.getParameter('queryName')));
 
 });
 

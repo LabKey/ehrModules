@@ -4,7 +4,7 @@
  * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
  */
 
-var {EHR, LABKEY, Ext, shared, console, init, beforeInsert, afterInsert, beforeUpdate, afterUpdate, beforeDelete, afterDelete, complete} = require("ehr/validation");
+var {EHR, LABKEY, Ext, console, init, beforeInsert, afterInsert, beforeUpdate, afterUpdate, beforeDelete, afterDelete, complete} = require("ehr/validation");
 
 
 
@@ -19,7 +19,7 @@ function setDescription(row, errors){
     return description;
 }
 
-function onUpsert(row, errors, oldRow){
+function onUpsert(context, errors, row, oldRow){
     //check number of allowed animals at assign/approve time
     if(row.project && row.date){
         var species;
@@ -34,10 +34,10 @@ function onUpsert(row, errors, oldRow){
         });
 
         var protocol;
+        //TODO: switch to EHR schema
         LABKEY.Query.selectRows({
             schemaName: 'lists',
             queryName: 'project',
-            //columns: '*',
             filterArray: [
                 LABKEY.Filter.create('project', row.project, LABKEY.Filter.Types.EQUAL)
             ],

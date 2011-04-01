@@ -53,7 +53,7 @@ EHR.ext.GridFormPanel = Ext.extend(Ext.Panel,
         Ext.applyIf(this, {
             autoHeight: true
             ,autoWidth: true
-            //,forceLayout: true
+            ,forceLayout: true
             ,layout: 'table'
             ,columns: 2
             ,style: 'margin-bottom: 15px;'
@@ -65,12 +65,12 @@ EHR.ext.GridFormPanel = Ext.extend(Ext.Panel,
             ,items: [{
                 xtype: 'ehr-formpanel',
                 cellCls: 'ehr-gridpanel-cell',
-                width: 330,
+                autoHeight: true,
+                width: 340,
                 name: this.queryName,
                 schemaName: this.schemaName,
                 queryName: this.queryName,
                 viewName: this.viewName,
-                //forceLayout: true,
                 bindConfig: {
                     disableUnlessBound: true,
                     bindOnChange: false,
@@ -127,8 +127,8 @@ EHR.ext.GridFormPanel = Ext.extend(Ext.Panel,
         EHR.ext.GridFormPanel.superclass.initComponent.call(this);
 
         if(this.showStatus){
-            this.mon(this.theForm, 'recordchange', this.onRecordChange, this, {buffer: 100});
-            this.mon(this.store, 'validation', this.onStoreValidate, this);
+            this.mon(this.theForm, 'recordchange', this.onRecordChange, this, {delay: 100});
+            this.mon(this.store, 'validation', this.onStoreValidate, this, {delay: 100});
         }
 
         this.addEvents('beforesubmit');
@@ -266,27 +266,27 @@ EHR.ext.GridFormPanel = Ext.extend(Ext.Panel,
                     this.animalSelectorWin.show();
                 }
             },
-            'order_clinpath': {
-                text: 'Order Multiple Tests',
-                xtype: 'button',
-                scope: this,
-                tooltip: 'Order Multiple Tests',
-                title: 'Order Multiple Tests',
-                name: 'order_clinpath-button',
-                handler: function()
-                {
-                    this.clinPath = new Ext.Window({
-                        closeAction:'hide',
-                        width: 350,
-                        items: [{
-                            xtype: 'ehr-clinpathorderpanel',
-                            ref: 'theForm'
-                        }]
-                    });
-
-                    this.clinPath.show();
-                }
-            },
+//            'order_clinpath': {
+//                text: 'Order Multiple Tests',
+//                xtype: 'button',
+//                scope: this,
+//                tooltip: 'Order Multiple Tests',
+//                title: 'Order Multiple Tests',
+//                name: 'order_clinpath-button',
+//                handler: function()
+//                {
+//                    this.clinPath = new Ext.Window({
+//                        closeAction:'hide',
+//                        width: 350,
+//                        items: [{
+//                            xtype: 'ehr-clinpathorderpanel',
+//                            ref: 'theForm'
+//                        }]
+//                    });
+//
+//                    this.clinPath.show();
+//                }
+//            },
             'apply_template': {
                 text: 'Apply Template',
                 xtype: 'button',
@@ -330,13 +330,29 @@ EHR.ext.GridFormPanel = Ext.extend(Ext.Panel,
             },
             bulk_edit: {
                 text: 'Bulk Edit',
-                disabled: true,
+                disabled: false,
                 tooltip: 'Click this to change values on all checked rows in bulk',
                 scope: this,
                 handler : function(c){
+                    if(!this.theGrid.getSelectionModel().getSelections().length){
+                        Ext.Msg.alert('Error', 'No rows selected');
+                        return;
+                    }
+
+                    var fields = [];
+                    this.store.fields.each(function(c){
+                        if(!c.hidden && !c.isReadOnly && c.isUserEditable!==false)
+                            fields.push([c.dataIndex, c.fieldLabel, c])
+                    }, this);
+
+                    var comboStore = new Ext.data.ArrayStore({
+                        fields: ['value', 'name', 'meta'],
+                        data: fields
+                    });
+
                     var batchEditWin = new Ext.Window({
-                        width: 280,
-                        height: 130,
+                        width: 350,
+                        autoHeight: true,
                         bodyStyle:'padding:5px',
                         closeAction:'hide',
                         scope: this,
@@ -360,23 +376,26 @@ EHR.ext.GridFormPanel = Ext.extend(Ext.Panel,
                             ,typeAhead: true
                             ,triggerAction: 'all'
                             ,mode: 'local'
-                            ,width: 150
+                            ,width: 200
                             ,editable: false
                             ,required: true
-                            ,store: new Ext.data.ArrayStore({
-                                fields: ['value', 'name'],
-                                data: (function(){
-                                    var values = [];
-                                    this.store.fields.each(function(c){
-                                        if(!c.hidden && c.editor)
-                                            values.push([c.dataIndex, c.header])
-                                    }, this);
-                                    return values;
-                                })()
-                            })
+                            ,store: comboStore
+                            ,listeners: {
+                                scope: this,
+                                select: function(combo, rec){
+                                    var editor = this.store.getFormEditorConfig(rec.get('value'));
+                                    editor.width = 200;
+                                    if(editor.originalConfig.inputType=='textarea')
+                                        editor.height = 100;
+
+                                    batchEditWin.remove(batchEditWin.items.last());
+                                    batchEditWin.fieldVal = batchEditWin.add(editor);
+                                    batchEditWin.doLayout();
+
+                                }
+                            }
                         },{
-                            xtype: 'textfield',
-                            ref: 'fieldVal',
+                            xtype: 'displayfield',
                             fieldLabel: 'Enter Value'
                         }],
                         buttons: [{
@@ -400,14 +419,11 @@ EHR.ext.GridFormPanel = Ext.extend(Ext.Panel,
 
                     function onEdit(){
                         batchEditWin.hide();
-                        if(!batchEditWin.fieldName)
+                        if(!batchEditWin.fieldName || !batchEditWin.fieldName.getValue())
                             return;
                         var f = batchEditWin.fieldName.getValue();
                         var v = batchEditWin.fieldVal.getValue();
-                        var s = this.getSelectionModel().getSelections();
-                        if(!s.length){
-                            Ext.Msg.alert('Error', 'No rows selected');
-                        }
+                        var s = this.theGrid.getSelectionModel().getSelections();
                         for (var i = 0, r; r = s[i]; i++){
                             r.set(f, v);
                         }

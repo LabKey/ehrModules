@@ -3,6 +3,11 @@
         <tables xmlns="http://labkey.org/data/xml">
             <table tableName="tissue" tableDbType="TABLE">
                 <tableUrl>/query/detailsQueryRow.view?schemaName=study&amp;query.queryName=tissue&amp;lsid=${lsid}</tableUrl>
+                <!--<insertUrl>/ehr/manageRecord.view?schemaName=study&amp;queryName=Tissue Requests&amp;keyField=lsid&amp;</insertUrl>-->
+                <!--<updateUrl>/ehr/manageRecord.view?schemaName=study&amp;queryName=Tissue Requests&amp;keyField=lsid&amp;key=${lsid}</updateUrl>-->
+                <insertUrl />
+                <updateUrl />
+                <!--<deleteUrl />-->
                 <columns>
                   <column columnName="participantid">
                     <datatype>varchar</datatype>
@@ -88,7 +93,7 @@
                     <shownInInsertView>false</shownInInsertView>
                     <shownInUpdateView>false</shownInUpdateView>
                   </column>
-                  <column columnName="parentid">
+                  <column columnName="parentId">
                     <datatype>varchar</datatype>
                     <columnTitle>Parent Id</columnTitle>
                     <propertyURI>urn:ehr.labkey.org/#ParentId</propertyURI>

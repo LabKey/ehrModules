@@ -4,7 +4,7 @@
  * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
  */
 
-var {EHR, LABKEY, Ext, shared, console, init, beforeInsert, afterInsert, beforeUpdate, afterUpdate, beforeDelete, afterDelete, complete} = require("ehr/validation");
+var {EHR, LABKEY, Ext, console, init, beforeInsert, afterInsert, beforeUpdate, afterUpdate, beforeDelete, afterDelete, complete} = require("ehr/validation");
 
 
 
@@ -36,7 +36,7 @@ function setDescription(row, errors){
 }
 
 
-function onUpsert(row, errors){
+function onUpsert(context, errors, row, oldRow){
     if (row.sensitivity && row.antibiotic == null){
         EHR.addError(errors, 'sensitivity', "Must provide an antibiotic to go with sensitivity", 'WARN');
     }

@@ -4,6 +4,11 @@
             <table tableName="treatment_order" tableDbType="TABLE">
                 <!--<tableUrl>/query/detailsQueryRow.view?schemaName=study&amp;query.queryName=treatment_order&amp;lsid=${lsid}</tableUrl>-->
                 <tableUrl>/EHR/treatmentDetails.view?key=${objectid}</tableUrl>
+                <!--<insertUrl>/ehr/manageRecord.view?schemaName=study&amp;queryName=Treatment Order&amp;keyField=lsid&amp;</insertUrl>-->
+                <!--<updateUrl>/ehr/manageRecord.view?schemaName=study&amp;queryName=Treatment Order&amp;keyField=lsid&amp;key=${lsid}</updateUrl>-->
+                <insertUrl />
+                <updateUrl />
+                <!--<deleteUrl />-->
                 <columns>
                     <column columnName="project">
                         <fk>
@@ -24,7 +29,7 @@
                         <columnTitle>SNOMED Code</columnTitle>
                         <fk>
                             <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-                            <fkDbSchema>lists</fkDbSchema>
+                            <fkDbSchema>ehr_lookups</fkDbSchema>
                             <fkTable>snomed</fkTable>
                             <fkColumnName>code</fkColumnName>
                         </fk>

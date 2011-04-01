@@ -16,7 +16,7 @@
         <!--<column name="Modified"/>-->
    </columns>
    <filters>
-       <filter column="QCState/Label" operator="eq" value="In Progress"/>
+       <filter column="QCState/PublicData" operator="eq" value="false"/>
    </filters>
    <sorts>
        <sort column="DueDate" descending="true"/>

@@ -8,17 +8,12 @@
 
     new EHR.ext.SearchPanel({
         schemaName: 'lists'
-        ,queryName: 'project'
+        ,queryName: 'Project'
+        ,viewName: 'Search Panel'
         ,title: 'Search Projects'
         ,metadata: {
             protocol: {lookups: false}
-            ,totalAssigned: {isHidden: true}
-            ,lastAssignment: {isHidden: true}
         }
-        ,newFields: [
-            {caption: 'Last Assignment Date', name: 'lastAssignment/LastAssignmentDate', jsonType: 'date'},
-            {caption: 'Animals Assigned', name: 'totalAssigned/ActiveAssignments', jsonType: 'int'}
-        ]
     }).render('projectPanel');
 
     new EHR.ext.SearchPanel({
@@ -34,11 +29,25 @@
         ,title: 'Search Assignments'
         ,metadata: {
             project: {lookups: false}
+            ,'project/Protocol': {lookups: false}
+            ,Id: {lookups: false}
+            ,Created: {hidden: true}
+            ,CreatedBy: {hidden: true}
+            ,Modified: {hidden: true}
+            ,ModifiedBy: {hidden: true}
+            ,objectid: {hidden: true}
+            ,ts: {hidden: true}
+            ,Dataset: {hidden: true}
+            ,AgeAtTime: {hidden: true}
+            ,QCState: {hidden: true}
+            ,created: {hidden: true}
+            ,modified: {hidden: true}
+            ,SequenceNum: {hidden: true}
+            ,AnimalVisit: {hidden: true}
+            ,EntityId: {hidden: true}
+            ,Notes: {hidden: true}
         }
         ,defaultView: 'Active Assignments'
-        ,newFields: [
-            {caption: 'Protocol', name: 'Project/protocol'}
-        ]
     }).render('assignmentPanel');
 
 
@@ -67,7 +76,7 @@ This page contains a series of queries to search IACUC Protocols, RARC Projects 
 <h3>Commonly Used Queries:</h3>
 <ul>
     <li>
-        <a href="<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=lists&query.queryName=protocolTotalAnimalsBySpecies">View Total Animals Assigned to Each Protocol, By Species</a>
+        <a href="<%=contextPath%>/ehr/WNPRC/EHR/executeQuery.view?schemaName=lists&query.queryName=protocolTotalAnimalsBySpecies">View Total Animals Assigned to Each Protocol, By Species</a>
     </li>
 </ul>
 <p/>
@@ -88,7 +97,7 @@ This page contains a series of queries to search IACUC Protocols, RARC Projects 
 
 <ul>
     <li>
-        <a href="<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=demographicsAssignmentSummary">Assignment Summary By Animal</a>
+        <a href="<%=contextPath%>/ehr/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=demographicsAssignmentSummary">Assignment Summary By Animal</a>
     </li>
 </ul>
 <p/>

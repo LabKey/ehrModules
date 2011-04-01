@@ -8,7 +8,7 @@
                         <isHidden>true</isHidden>
                     </column>
                     <column columnName="MostRecentDeparture">
-                        <url>/query/executeQuery.view?schemaName=study&amp;
+                        <url>/ehr/executeQuery.view?schemaName=study&amp;
                             query.queryName=departure&amp;
                             query.Id~eq=${Id}&amp;
                             query.sort=-Date&amp;

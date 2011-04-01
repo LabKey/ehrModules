@@ -11,7 +11,7 @@
                         <datatype>integer</datatype>
                         <columnTitle>Active Assignments (avail=all)</columnTitle>
                         <displayWidth>110</displayWidth>
-                        <url>/query/executeQuery.view?schemaName=study&amp;
+                        <url>/ehr/executeQuery.view?schemaName=study&amp;
                             query.queryName=Assignment&amp;
                             query.Id~eq=${Id}&amp;
                             query.rdate~isblank&amp;
@@ -21,7 +21,7 @@
                         <datatype>integer</datatype>
                         <columnTitle>Total Pending Assignments (avail=p)</columnTitle>
                         <displayWidth>110</displayWidth>
-                        <url>/query/executeQuery.view?schemaName=study&amp;
+                        <url>/ehr/executeQuery.view?schemaName=study&amp;
                             query.queryName=Assignment&amp;
                             query.Id~eq=${Id}&amp;
                             query.rdate~isblank&amp;
@@ -32,7 +32,7 @@
                         <datatype>integer</datatype>
                         <columnTitle>Total Active Research Assignments (avail=r or n)</columnTitle>
                         <displayWidth>110</displayWidth>
-                        <url>/query/executeQuery.view?schemaName=study&amp;
+                        <url>/ehr/executeQuery.view?schemaName=study&amp;
                             query.queryName=Assignment&amp;
                             query.Id~eq=${Id}&amp;
                             query.rdate~isblank&amp;
@@ -43,7 +43,7 @@
                         <datatype>varchar</datatype>
                         <columnTitle>Total Active Breeding Assignments (avail=b)</columnTitle>
                         <displayWidth>110</displayWidth>
-                        <url>/query/executeQuery.view?schemaName=study&amp;
+                        <url>/ehr/executeQuery.view?schemaName=study&amp;
                             query.queryName=Assignment&amp;
                             query.Id~eq=${Id}&amp;
                             query.rdate~isblank&amp;
@@ -54,7 +54,7 @@
                         <datatype>varchar</datatype>
                         <columnTitle>Total Active Vet Exemptions (avail=v)</columnTitle>
                         <displayWidth>110</displayWidth>
-                        <url>/query/executeQuery.view?schemaName=study&amp;
+                        <url>/ehr/executeQuery.view?schemaName=study&amp;
                             query.queryName=Assignment&amp;
                             query.Id~eq=${Id}&amp;
                             query.rdate~isblank&amp;
@@ -65,7 +65,7 @@
                         <datatype>varchar</datatype>
                         <columnTitle>Total Active Training Assignments (avail=t)</columnTitle>
                         <displayWidth>110</displayWidth>
-                        <url>/query/executeQuery.view?schemaName=study&amp;
+                        <url>/ehr/executeQuery.view?schemaName=study&amp;
                             query.queryName=Assignment&amp;
                             query.Id~eq=${Id}&amp;
                             query.rdate~isblank&amp;
@@ -76,7 +76,7 @@
                         <datatype>varchar</datatype>
                         <columnTitle>Assigned to SPF Stock?</columnTitle>
                         <displayWidth>110</displayWidth>
-                        <url>/query/executeQuery.view?schemaName=study&amp;
+                        <url>/ehr/executeQuery.view?schemaName=study&amp;
                             query.queryName=Assignment&amp;
                             query.Id~eq=${Id}&amp;
                             query.rdate~isblank&amp;
@@ -87,7 +87,7 @@
                         <datatype>varchar</datatype>
                         <columnTitle>Assigned to Conventional Stock?</columnTitle>
                         <displayWidth>110</displayWidth>
-                        <url>/query/executeQuery.view?schemaName=study&amp;
+                        <url>/ehr/executeQuery.view?schemaName=study&amp;
                             query.queryName=Assignment&amp;
                             query.Id~eq=${Id}&amp;
                             query.rdate~isblank&amp;
@@ -98,7 +98,7 @@
                         <datatype>varchar</datatype>
                         <columnTitle>Assigned to Marm Stock?</columnTitle>
                         <displayWidth>110</displayWidth>
-                        <url>/query/executeQuery.view?schemaName=study&amp;
+                        <url>/ehr/executeQuery.view?schemaName=study&amp;
                             query.queryName=Assignment&amp;
                             query.Id~eq=${Id}&amp;
                             query.rdate~isblank&amp;
@@ -109,7 +109,7 @@
                         <datatype>integer</datatype>
                         <columnTitle>Active Stock Assignments (any)?</columnTitle>
                         <displayWidth>110</displayWidth>
-                        <url>/query/executeQuery.view?schemaName=study&amp;
+                        <url>/ehr/executeQuery.view?schemaName=study&amp;
                             query.queryName=Assignment&amp;
                             query.Id~eq=${Id}&amp;
                             query.rdate~isblank&amp;
@@ -121,7 +121,7 @@
                          <!--<datatype>integer</datatype>-->
                          <columnTitle>Active Assignments (avail=all)</columnTitle>
                          <displayWidth>110</displayWidth>
-                         <!--<url>/query/executeQuery.view?schemaName=study&amp;-->
+                         <!--<url>/ehr/executeQuery.view?schemaName=study&amp;-->
                              <!--query.queryName=Assignment&amp;-->
                              <!--query.Id~eq=${Id}&amp;-->
                              <!--query.rdate~isblank&amp;-->
@@ -131,7 +131,7 @@
                          <!--<datatype>integer</datatype>-->
                          <columnTitle>Pending Assignments (avail=p)</columnTitle>
                          <displayWidth>110</displayWidth>
-                         <!--<url>/query/executeQuery.view?schemaName=study&amp;-->
+                         <!--<url>/ehr/executeQuery.view?schemaName=study&amp;-->
                              <!--query.queryName=Assignment&amp;-->
                              <!--query.Id~eq=${Id}&amp;-->
                              <!--query.rdate~isblank&amp;-->
@@ -142,7 +142,7 @@
                          <!--<datatype>integer</datatype>-->
                          <columnTitle>Active Research Assignments (avail=r or n)</columnTitle>
                          <displayWidth>110</displayWidth>
-                         <!--<url>/query/executeQuery.view?schemaName=study&amp;-->
+                         <!--<url>/ehr/executeQuery.view?schemaName=study&amp;-->
                              <!--query.queryName=Assignment&amp;-->
                              <!--query.Id~eq=${Id}&amp;-->
                              <!--query.rdate~isblank&amp;-->
@@ -153,7 +153,7 @@
                          <!--<datatype>varchar</datatype>-->
                          <columnTitle>Active Breeding Assignments (avail=b)</columnTitle>
                          <displayWidth>110</displayWidth>
-                         <!--<url>/query/executeQuery.view?schemaName=study&amp;-->
+                         <!--<url>/ehr/executeQuery.view?schemaName=study&amp;-->
                              <!--query.queryName=Assignment&amp;-->
                              <!--query.Id~eq=${Id}&amp;-->
                              <!--query.rdate~isblank&amp;-->
@@ -164,7 +164,7 @@
                          <!--<datatype>varchar</datatype>-->
                          <columnTitle>Active Vet Exemptions (avail=v)</columnTitle>
                          <displayWidth>110</displayWidth>
-                         <!--<url>/query/executeQuery.view?schemaName=study&amp;-->
+                         <!--<url>/ehr/executeQuery.view?schemaName=study&amp;-->
                              <!--query.queryName=Assignment&amp;-->
                              <!--query.Id~eq=${Id}&amp;-->
                              <!--query.rdate~isblank&amp;-->
@@ -175,7 +175,7 @@
                          <!--<datatype>varchar</datatype>-->
                          <columnTitle>Active Training Assignments (avail=t)</columnTitle>
                          <displayWidth>110</displayWidth>
-                         <!--<url>/query/executeQuery.view?schemaName=study&amp;-->
+                         <!--<url>/ehr/executeQuery.view?schemaName=study&amp;-->
                              <!--query.queryName=Assignment&amp;-->
                              <!--query.Id~eq=${Id}&amp;-->
                              <!--query.rdate~isblank&amp;-->

@@ -10,6 +10,8 @@ EHR.ext.Buttons = {
         text: 'Save Draft',
         name: 'saveDraft',
         targetQC: 'In Progress',
+        errorThreshold: 'WARN',
+        //successURL: LABKEY.ActionURL.buildURL("ehr", "dataEntry.view"),
         disabled: true,
         ref: 'saveDraftBtn',
         handler: this.onSubmit,
@@ -21,6 +23,8 @@ EHR.ext.Buttons = {
         text: 'Submit Final',
         name: 'submit',
         targetQC: 'Approved',
+        errorThreshold: 'INFO',
+        successURL: LABKEY.ActionURL.buildURL("ehr", "dataEntry.view"),
         disabled: true,
         ref: 'submitBtn',
         handler: this.onSubmit,
@@ -32,6 +36,8 @@ EHR.ext.Buttons = {
         text: 'Submit for Review',
         name: 'review',
         targetQC: 'Review Required',
+        errorThreshold: 'WARN',
+        successURL: LABKEY.ActionURL.buildURL("ehr", "dataEntry.view"),
         disabled: true,
         ref: 'reviewBtn',
         disableOn: 'ERROR',
@@ -44,17 +50,31 @@ EHR.ext.Buttons = {
         name: 'discard',
         ref: 'discardBtn',
         targetQC: 'Delete Requested',
+        successURL: LABKEY.ActionURL.buildURL("ehr", "dataEntry.view"),
         handler: this.discard,
         scope: this
         }
     },
+//    CLOSE: function(){return {
+//        text: 'Close',
+//        name: 'close',
+//        ref: 'closeBtn',
+//        handler: function(){
+//            window.location = LABKEY.ActionURL.buildURL('ehr','dataEntry.view')
+//        },
+//        scope: this
+//        }
+//    },
     CLOSE: function(){return {
-        text: 'Close',
-        name: 'close',
+        text: 'Save & Close',
+        name: 'closeBtn',
+        targetQC: 'In Progress',
+        errorThreshold: 'WARN',
+        successURL: LABKEY.ActionURL.buildURL("ehr", "dataEntry.view"),
+        disabled: true,
         ref: 'closeBtn',
-        handler: function(){
-            window.location = LABKEY.ActionURL.buildURL('ehr','dataEntry.view')
-        },
+        handler: this.onSubmit,
+        disableOn: 'ERROR',
         scope: this
         }
     },
@@ -72,6 +92,8 @@ EHR.ext.Buttons = {
         text: 'Request',
         name: 'request',
         targetQC: 'Request: Pending',
+        errorThreshold: 'WARN',
+        successURL: LABKEY.ActionURL.buildURL("ehr", "requestServices.view"),
         disabled: true,
         ref: 'requestBtn',
         handler: this.onSubmit,
@@ -83,11 +105,26 @@ EHR.ext.Buttons = {
         text: 'Approve Request',
         name: 'approve',
         targetQC: 'Request: Approved',
+        errorThreshold: 'WARN',
+        successURL: LABKEY.ActionURL.buildURL("ehr", "dataEntry.view"),
         disabled: true,
         ref: 'approveBtn',
         handler: this.onSubmit,
         disableOn: 'ERROR',
         scope: this
+        }
+    },
+    EDIT: function(){return {
+        text: 'Edit',
+        name: 'edit',
+        targetQC: 'Approved',
+        errorThreshold: 'WARN',
+        handler: function(){
+            window.location = LABKEY.ActionURL.buildURL('ehr','manageTask.view', null, {formtype:this.formType, taskid: this.formUUID});
+        },
+        disabled: false,
+        ref: 'editBtn',
+        disableOn: 'ERROR'
         }
     }
 };
@@ -109,40 +146,7 @@ EHR.ext.ImportPanelBase = function(config){
 Ext.extend(EHR.ext.ImportPanelBase, Ext.Panel, {
     initComponent: function()
     {
-        this.items = this.items || [];
-
         Ext.QuickTips.init();
-
-        if(this.formHeaders){
-            Ext.each(this.formHeaders, function(c){
-                this.configureItem(c);
-                this.configureHeaderItem(c);
-                this.items.push(c);
-            }, this);
-        }
-
-        if(this.formSections){
-            Ext.each(this.formSections, function(c){
-                this.configureItem(c);
-                this.items.push(c);
-            }, this);
-        }
-
-        if(this.formTabs && this.formTabs.length){
-            var tabs = [];
-            Ext.each(this.formTabs, function(c){
-                this.configureItem(c);
-                tabs.push(c);
-            }, this);
-
-            this.items.push({
-                xtype: 'tabpanel',
-                activeTab: 0,
-                ref: 'queryPanel',
-                items: tabs,
-                cls: 'extContainer'
-            });
-        }
 
         Ext.applyIf(this, {
             autoHeight: true
@@ -151,6 +155,7 @@ Ext.extend(EHR.ext.ImportPanelBase, Ext.Panel, {
                 bodyBorder: false
                 ,border: false
             }
+            ,items: []
             ,store: new EHR.ext.StoreCollection({
                 monitorValid: true
             })
@@ -168,33 +173,62 @@ Ext.extend(EHR.ext.ImportPanelBase, Ext.Panel, {
         //monitor dirty state
         window.onbeforeunload = LABKEY.beforeunload(function (){
             if (this.isDirty())
-                return this.warningMessage || 'form dirty';
+                return this.warningMessage || 'we should set a warning message somewhere';
         }, this);
 
-        //add stores to StoreCollection
-        Ext.StoreMgr.each(this.addStore, this);
-
         EHR.utils.getTablePermissions({
-            queries: this.store.getQueries(),
+            queries: this.getQueries(),
             success: this.calculatePermissions,
             failure: EHR.utils.onError,
             scope: this
         });
+    },
+
+    calculatePermissions: function(permissionMap){
+        this.permissionMap = permissionMap;
+
+        this.populateItems();
+
+        //add stores to StoreCollection
+        Ext.StoreMgr.each(this.addStore, this);
+
+        this.populateButtons();
 
         if(this.initialTemplates)
             this.applyTemplates(this.initialTemplates);
     },
 
-    calculatePermissions: function(permmissionMap){
-        this.permmissionMap = permmissionMap;
-//console.log(this.permmissionMap);
+    getQueries: function(){
+        var queries = [];
 
-        this.populateButtons();
+        if(this.formHeaders)
+            Ext.each(this.formHeaders, function(item){
+                if(item.schemaName && item.queryName)
+                    queries.push({
+                        schemaName: item.schemaName,
+                        queryName: item.queryName
+                    })
+            }, this);
+        if(this.formSections)
+            Ext.each(this.formSections, function(item){
+                if(item.schemaName && item.queryName)
+                    queries.push({
+                        schemaName: item.schemaName,
+                        queryName: item.queryName
+                    })
+            }, this);
+        if(this.formTabs)
+            Ext.each(this.formTabs, function(item){
+                if(item.schemaName && item.queryName)
+                    queries.push({
+                        schemaName: item.schemaName,
+                        queryName: item.queryName
+                    })
+            }, this);
+
+        return queries;
     },
-
     populateButtons: function(){
-        //TODO: apply logic to see what buttons appear
-
         if(this.allowableButtons){
             if(!Ext.isArray(this.allowableButtons))
                 this.allowableButtons = this.allowableButtons.split(',');
@@ -204,14 +238,13 @@ Ext.extend(EHR.ext.ImportPanelBase, Ext.Panel, {
                 'SAVEDRAFT',
                 'REVIEW',
                 'SUBMIT',
-                //'PRINT',
                 'DISCARD',
                 'CLOSE'
             ];
         }
-
-        var buttonCfg;
+console.log('buttons')
         var buttons = [];
+        var buttonCfg;
         Ext.each(this.allowableButtons, function(b){
             if(EHR.ext.Buttons[b]){
                 buttonCfg = this.configureButton(b);
@@ -244,11 +277,50 @@ Ext.extend(EHR.ext.ImportPanelBase, Ext.Panel, {
         buttonCfg.scope = this;
         buttonCfg.xtype = 'button';
 
+        //only show button if user can access this QCState
         if(buttonCfg.targetQC){
-            //TODO: only show if user can access this QCState
+            if(!this.permissionMap.hasPermission(buttonCfg.targetQC, 'insert', this.store.getQueries())){
+                buttonCfg.hidden = true;
+            }
         }
 
         return buttonCfg;
+    },
+    populateItems: function(){
+        var toAdd = [];
+        if(this.formHeaders){
+            Ext.each(this.formHeaders, function(c){
+                this.configureItem(c);
+                this.configureHeaderItem(c);
+                toAdd.push(c);
+            }, this);
+        }
+
+        if(this.formSections){
+            Ext.each(this.formSections, function(c){
+                this.configureItem(c);
+                toAdd.push(c);
+            }, this);
+        }
+
+        if(this.formTabs && this.formTabs.length){
+            var tabs = [];
+            Ext.each(this.formTabs, function(c){
+                this.configureItem(c);
+                tabs.push(c);
+            }, this);
+
+            toAdd.push({
+                xtype: 'tabpanel',
+                activeTab: 0,
+                ref: 'queryPanel',
+                items: tabs,
+                cls: 'extContainer'
+            });
+        }
+
+        this.add(toAdd);
+        this.doLayout();
     },
     configureHeaderItem: function(c){
         EHR.utils.rApplyIf(c, {
@@ -274,7 +346,6 @@ Ext.extend(EHR.ext.ImportPanelBase, Ext.Panel, {
                 bodyBorder: false
                 ,border: false
             },
-            importPanel: this,
             showStatus: true,
             storeConfig: {
                 //xtype: 'ehr-store',
@@ -284,15 +355,20 @@ Ext.extend(EHR.ext.ImportPanelBase, Ext.Panel, {
                 viewName: c.viewName,
                 columns: c.columns || EHR.ext.FormColumns[c.queryName] || '',
                 //autoLoad: true,
-                storeId: [c.schemaName,c.queryName,c.viewName].join('||'),
+                storeId: [c.schemaName,c.queryName,c.viewName,c.storeSuffix].join('||'),
                 metadata: c.metadata
             }
         });
+        c.importPanel = this;
 
         if(this.printFormat)
             c.xtype = 'ehr-printtaskpanel';
-    },
+        if(this.readOnly){
+            c.type = 'ehr-qwppanel';
+        }
 
+        c.storeConfig.permissionMap = this.permissionMap.getQueryPermissions(c.schemaName, c.queryName);
+    },
     applyTemplates: function(templates){
         templates = templates.split(',');
         Ext.each(templates, function(title){
@@ -301,12 +377,12 @@ Ext.extend(EHR.ext.ImportPanelBase, Ext.Panel, {
     },
 
     render: function(ct, p){
-        this.setLoadMask();
+//        this.setLoadMask();
         EHR.ext.ImportPanelBase.superclass.render.apply(this, arguments);
     },
 
     setLoadMask: function(){
-        if(!this.store.isLoading()){
+        if(!this.store.isLoading() && this.permissionMap){
             Ext.Msg.hide();
             delete this.loadMsg;
         }
@@ -336,11 +412,15 @@ Ext.extend(EHR.ext.ImportPanelBase, Ext.Panel, {
         Ext.Msg.wait("Saving Changes...");
 
         //add a context flag to the request to saveRows
-        this.store.on('beforecommit', function(records, commands, extraContext){
-            extraContext.targetQC = o.targetQC;
-        }, this, {single: true});
+        var extraContext = {
+            targetQC : o.targetQC,
+            errorThreshold: o.errorThreshold,
+            successURL : o.successURL,
+            importPathway: 'ehr-importPanel'
+        };
 
-        this.store.commitChanges();
+        //we delay this event so that any modified fields can fire their blur events and/or commit changes
+        this.store.commitChanges.defer(300, this.store, [extraContext, true]);
     },
 
     onStoreValidation: function(storeCollection, maxSeverity)
@@ -360,6 +440,9 @@ Ext.extend(EHR.ext.ImportPanelBase, Ext.Panel, {
 
     afterSubmit: function(o, e)
     {
+        console.log('after submit');
+        console.log(o);
+        console.log(e);
         Ext.Msg.hide();
     },
 
@@ -424,6 +507,52 @@ EHR.ext.TaskPanel = Ext.extend(EHR.ext.ImportPanelBase, {
     }
 });
 
+EHR.ext.TaskDetailsPanel = Ext.extend(EHR.ext.ImportPanelBase, {
+    initComponent: function(){
+        this.formUUID = this.formUUID || LABKEY.Utils.generateUUID();
+        this.formHeaders = this.formHeaders || [];
+        this.formHeaders.unshift({
+            xtype: 'ehr-detailsview',
+            title: '',
+            collapsible: false,
+            formType: this.formType,
+            schemaName: 'ehr',
+            queryName: 'tasks',
+            keyField: 'taskid',
+            ref: 'importPanelHeader',
+            formUUID: this.formUUID,
+            importPanel: this,
+            readOnly: this.readOnly,
+            storeConfig: {
+                canSaveInTemplate: false
+            }
+        });
+
+        EHR.ext.TaskDetailsPanel.superclass.initComponent.call(this, arguments);
+    },
+
+    configureItem: function(c){
+        if(!c.queryName || !c.schemaName){
+            c.hidden = true;
+            return;
+        }
+
+        EHR.ext.TaskDetailsPanel.superclass.configureItem.apply(this, arguments);
+        c.filterArray = [LABKEY.Filter.create('taskId', this.formUUID, LABKEY.Filter.Types.EQUAL)];
+
+        if(c.xtype != 'ehr-detailsview'){
+            c.xtype = 'ehr-qwppanel';
+            c.autoLoad = true;
+            c.collapsed = false;
+        }
+
+        c.storeConfig = null;
+        c.style = 'padding-bottom:20px;';
+
+    }
+});
+
+
 EHR.ext.RequestPanel = Ext.extend(EHR.ext.ImportPanelBase, {
     initComponent: function(){
 
@@ -463,12 +592,14 @@ EHR.ext.SimpleImportPanel = Ext.extend(EHR.ext.ImportPanelBase, {
     configureItem: function(c){
         EHR.ext.SimpleImportPanel.superclass.configureItem.apply(this, arguments);
         c.bindConfig.showDeleteBtn = false;
+        c.bindConfig.bindOnChange = true;
 
-        if(this.keyField){
-            c.storeConfig.filterArray = [LABKEY.Filter.create(this.keyField, this.keyValue, LABKEY.Filter.Types.EQUAL)];
+        if(c.keyField && c.keyValue){
+            c.storeConfig.filterArray = [LABKEY.Filter.create(c.keyField, c.keyValue, LABKEY.Filter.Types.EQUAL)];
         }
         else {
             delete c.storeConfig.filterArray;
+            c.storeConfig.maxRows = 0;
             c.storeConfig.loadMetadataOnly = true;
         }
     }

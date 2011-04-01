@@ -14,7 +14,7 @@
                     </column>
                     <column columnName="TotalProjects">
                         <datatype>integer</datatype>
-                        <url>/query/executeQuery.view?schemaName=lists&amp;
+                        <url>/ehr/executeQuery.view?schemaName=lists&amp;
                             query.queryName=project&amp;
                             query.protocol~eq=${protocol}&amp;
                             query.sort=project&amp;

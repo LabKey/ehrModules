@@ -30,7 +30,9 @@ CASE (d.gender)
   ELSE 3
 END
 -- , INTEGER)
-AS gender
+AS gender,
+
+d.qcstate
 
 FROM study.demographics d
 

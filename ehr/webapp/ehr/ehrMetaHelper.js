@@ -36,7 +36,7 @@ dataIndex -> name
 editable -> userEditable && readOnly
 editor -> getFormEditor()
 header -> caption
-renderer -> getDefaultRenderer()
+getRenderer ->
 tooltip -> description?
 xtype -> set using getDefaultEditorConfig()
 
@@ -127,7 +127,7 @@ EHR.ext.metaHelper = {
         if(field.description)
             field.helpPopup.push('Description: '+meta.description);
 
-        field.helpPopup = field.helpPopup.join('<br>');
+        field.helpPopup = {html: field.helpPopup.join('<br>')};
 
         if (meta.hidden)
         {
@@ -142,8 +142,9 @@ EHR.ext.metaHelper = {
             else
                 field.store = EHR.ext.metaHelper.getLookupStoreConfig(meta);
 
-            if (field.store && meta.lazyCreateStore === false)
+            if (field.store && meta.lazyCreateStore === false){
                 field.store = EHR.ext.metaHelper.getLookupStore(field);
+            }
 
             Ext.apply(field, {
                 //this purpose of this is to allow other editors like multiselect, checkboxGroup, etc.
@@ -162,10 +163,11 @@ EHR.ext.metaHelper = {
                 initialValue: field.value,
                 showValueInList: meta.showValueInList,
                 listClass: 'labkey-grid-editor',
+                lookupNullCaption: meta.lookupNullCaption,
                 //TODO: it would be better to put this in LABKEY.ext.Combo, so this tpl doesnt conflict with non-combo editors
                 tpl: function(){var tpl = new Ext.XTemplate(
                     '<tpl for=".">' +
-                    '<div class="x-combo-list-item">{[values["' + l.keyColumn + '"]!==null ? values["' + l.displayColumn + '"] : "'+ (meta.lookupNullCaption ? meta.lookupNullCaption : '[none]') +'"]}' +
+                    '<div class="x-combo-list-item">{[values["' + l.keyColumn + '"]!==null ? values["' + l.displayColumn + '"] : "'+ (Ext.isDefined(this.lookupNullCaption) ? this.lookupNullCaption : '[none2]') +'"]}' +
                     //allow a flag to display both display and value fields
                     '<tpl if="'+meta.showValueInList+'">{[values["' + l.keyColumn + '"] ? " ("+values["' + l.keyColumn + '"]+")" : ""]}</tpl>'+
                     '&nbsp;</div></tpl>'
@@ -300,7 +302,7 @@ EHR.ext.metaHelper = {
 
             config.nullRecord = c.nullRecord || {
                 displayColumn: l.displayColumn,
-                nullCaption: (l.displayColumn==l.keyColumn ? null : (c.lookupNullCaption!==undefined ? c.lookupNullCaption : '[none]'))
+                nullCaption: (l.displayColumn==l.keyColumn ? null : (c.lookupNullCaption!==undefined ? c.lookupNullCaption : '[none3]'))
             };
         }
 
@@ -374,6 +376,9 @@ EHR.ext.metaHelper = {
         if(col.editable && !col.editor)
             col.editor = EHR.ext.metaHelper.getGridEditorConfig(meta);
 
+        if(meta.getRenderer)
+            col.renderer = meta.getRenderer(col, meta);
+
         if(!col.renderer)
             col.renderer = EHR.ext.metaHelper.getDefaultRenderer(col, meta);
 
@@ -401,11 +406,15 @@ EHR.ext.metaHelper = {
             EHR.ext.metaHelper.buildQtip(data, cellMetaData, record, rowIndex, colIndex, store, col, meta);
 
             //NOTE: unsure what this is trying to do.  record.json might refer to record.data???
+            //should this actually point to store.reader.json?
             if(record.json && record.json[meta.name] && record.json[meta.name].displayValue)
                 return record.json[meta.name].displayValue;
 
             //NOTE: this is substantially changed over FormHelper
             if(meta.lookup && meta.lookups!==false){
+if(meta.lookup.queryName=='snomed'){
+    console.log('unfiltered snomed renderer')
+}
                 data = EHR.ext.metaHelper.lookupRenderer(meta, data);
             }
 

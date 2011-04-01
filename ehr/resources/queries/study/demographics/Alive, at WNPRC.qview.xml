@@ -104,7 +104,8 @@
         </column>
     </columns>
     <filters>
-        <filter column="id/Status/Status" operator="eq" value="Alive"/> 
+        <filter column="id/Status/Status" operator="eq" value="Alive"/>
+        <filter column="qcstate/publicdata" operator="eq" value="true"/>
     </filters>
     <sorts>
         <sort column="id" descending="false"/>

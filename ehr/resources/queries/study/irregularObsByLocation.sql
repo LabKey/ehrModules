@@ -21,7 +21,8 @@ o.tlocation,
 o.otherbehavior,
 o.remark,
 o.dataset,
-o.description
+o.description,
+o.qcstate
 
 from study.obs o
 
@@ -48,12 +49,12 @@ null as tlocation,
 null as otherbehavior,
 c.remark,
 null as dataset,
-null as description
+null as description,
+c.qcstate
 
 FROM ehr.cage_observations c
 
---TODO
---WHERE c.qcstate.publicdata = true
+WHERE c.qcstate.publicdata = true
 
 
 

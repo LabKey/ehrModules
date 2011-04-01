@@ -60,7 +60,7 @@ LEFT JOIN
     (SELECT T9.Id, count(DISTINCT T9.project) AS Total, group_concat(DISTINCT project) AS Projects FROM study.Assignment T9 WHERE T9.qcstate.publicdata = true AND T9.rdate IS NULL AND T9.project.avail = 'b' GROUP BY T9.Id) T9
     ON (T9.Id = d.Id)
 
---we find the number of active breeding project assignments
+--we find the number of active training project assignments
 LEFT JOIN
     (SELECT T10.Id, count(DISTINCT T10.project) AS Total, group_concat(DISTINCT project) AS Projects FROM study.Assignment T10 WHERE T10.qcstate.publicdata = true AND T10.rdate IS NULL AND T10.project.avail = 't' GROUP BY T10.Id) T10
     ON (T10.Id = d.Id)

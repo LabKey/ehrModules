@@ -34,6 +34,7 @@
    </columns>
    <filters>
        <filter column="odate" operator="isblank"/>
+        <filter column="qcstate/publicdata" operator="eq" value="true"/>
    </filters>
    <sorts>
        <sort column="date" descending="true"/>

@@ -39,6 +39,7 @@ t1.route,
 t1.userid,
 t1.remark,
 t1.description,
+t1.qcstate,
 
 CASE
   WHEN (t1.frequency=1 OR t1.frequency=7 OR t1.frequency=8)
@@ -124,6 +125,7 @@ t1.route,
 t1.userid,
 t1.remark,
 t1.description,
+t1.qcstate,
 
 CASE
   WHEN (t1.frequency=2 OR t1.frequency=3)
@@ -188,6 +190,7 @@ t1.route,
 t1.userid,
 t1.remark,
 t1.description,
+t1.qcstate,
 
 'Night' as TimeOfDay,
 

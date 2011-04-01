@@ -66,7 +66,7 @@ EHR.ext.AdvancedStore = Ext.extend(LABKEY.ext.Store, {
 //        this.un('load', this.validateRecords, this);
         this.on('remove', this.validationOnRemove, this);
 
-//        this.un('update', this.validateRecordOnServer, this);
+//        this.un('validation', this.validateRecordOnServer, this);
     },
 
     validationOnRemove: function(store, rec){
@@ -97,11 +97,6 @@ EHR.ext.AdvancedStore = Ext.extend(LABKEY.ext.Store, {
                     EHR.utils.rApply(f, this.metadata[f.name]);
                 }
             }
-
-if(f.lookup && f.lookup.queryName=='snomed' && f.lookups!=false && f.xtype!='ehr-snomedcombo'){
-    console.log('ERROR: lookup to snomed');
-    console.log(f)
-}
         }, this);
 
         if(this.colModel){
@@ -267,12 +262,10 @@ if(f.lookup && f.lookup.queryName=='snomed' && f.lookups!=false && f.xtype!='ehr
 
         //this is designed such that validateRecords() can call validateRecord() multiple times without events firing
         if(config.fireEvent!==false){
-            console.log('fire validation event: '+r.id)
-            console.log(config)
             this.fireEvent('validation', this, [r], config);
         }
 
-        if(operation=='edit' && this.doServerValidation!==false){
+        if(operation=='edit' && this.doServerValidation){
             this.validateRecordOnServer.defer(500, this, [this, [r], config]);
         }
     },
@@ -288,7 +281,6 @@ if(f.lookup && f.lookup.queryName=='snomed' && f.lookups!=false && f.xtype!='ehr
 
         var commands = this.getChanges(records);
         if (!commands.length){
-//            console.log('No changes, not going to validate on server');
             return false;
         }
 
@@ -415,32 +407,46 @@ if(f.lookup && f.lookup.queryName=='snomed' && f.lookups!=false && f.xtype!='ehr
     },
 
     //NOTE: split this method in two so they can be called independently
-    commitChanges : function(){
+    commitChanges : function(extraContext){
         var records = this.getModifiedRecords();
-        this.commitRecords(records);
+        this.commitRecords(records, extraContext);
     },
 
     //see above
-    commitRecords : function(records){
+    commitRecords : function(records, extraContext){
         var commands = this.getChanges(records);
 
         if (!commands.length){
-            console.log('No changes, nothing to do (from commitRecords)');
+            if(extraContext && extraContext.silent!==true)
+                Ext.alert('Alert', 'There are no changes to submit.');
+
             return;
         }
 
-        this.sendRequest(records, commands);
+        this.sendRequest(records, commands, extraContext);
     },
 
     getChanges: function(records){
         var commands = EHR.ext.AdvancedStore.superclass.getChanges.apply(this, arguments);
         Ext.each(commands, function(command){
-            command.extraContext = {storeId: this.storeId};
+            command.extraContext = {
+                storeId: this.storeId,
+                queryName: this.queryName,
+                schemaName: this.schemaName,
+                keyField: this.reader.meta.id
+            };
 
             Ext.each(command.rows, function(row){
                 row.values._recordId = row.oldKeys[this.reader.meta.id];
             }, this);
+
         }, this);
+
+        for(var i=0;i<commands.length;i++){
+            if(commands[i].rows.length > 0 && false === this.fireEvent("beforecommit", records, commands[i].rows))
+                return [];
+        }
+
         return commands;
     },
 
@@ -475,33 +481,25 @@ if(f.lookup && f.lookup.queryName=='snomed' && f.lookups!=false && f.xtype!='ehr
                 delete records[idx].saveOperationInProgress;
 
             var serverError = this.getJson(response);
-
-//            //this is done because the structure of the error object differs depending on whether you sent a single row or multiple
-//            //this is an attempt to normalize, but should be removed when possible
-//            if(serverError.rowNumber!==undefined || !serverError.errors){
-//                //this means either we only submitted 1 row, or there was an exception
-//                serverError = {errors: [serverError], exception: serverError.exception};
-//            }
-
-            var msg;
+            var msg = '';
             Ext.each(serverError.errors, function(error){
                 //handle validation script errors and exceptions differently
                 if(error.errors && error.errors.length){
                     this.handleValidationErrors(error, response, serverError.extraContext);
                     msg = "Could not save changes due to errors. Please check the form for fields marked in red.";
                 }
-                else {
-                    //if an exception was thrown, I believe we automatically only have one error returned
-                    //this means this can only be called once
-                    msg = 'Could not save changes due to the following error:\n' + (serverError && serverError.exception) ? serverError.exception : response.statusText;
-                }
+//                else {
+//                    //if an exception was thrown, I believe we automatically only have one error returned
+//                    //this means this can only be called once
+//                    msg = 'Could not save changes due to the following error:\n' + (serverError && serverError.exception) ? serverError.exception : response.statusText;
+//                }
             }, this);
 
-            //NOTE this should be keyed using the request context object
-            if(serverError.extraContext && serverError.extraContext)
-                msg = '';
+            if(!serverError.errors){
+                msg = 'Could not save changes due to the following error:\n' + serverError.exception;
+            }
 
-            if(false !== this.fireEvent("commitexception", msg) && msg){
+            if(false !== this.fireEvent("commitexception", msg) && (options.jsonData.extraContext && !options.jsonData.extraContext.silent)){
                 Ext.Msg.alert("Error", "Error During Save. "+msg);
             }
         };
@@ -602,7 +600,7 @@ if(f.lookup && f.lookup.queryName=='snomed' && f.lookups!=false && f.xtype!='ehr
                 schemaName: this.schemaName,
                 queryName: this.queryName,
                 containerPath: this.containerPath,
-                rowDataArray: deleteRowsKeys,
+                rows: deleteRowsKeys,
                 scope: this,
                 successCallback: this.getDeleteSuccessHandler(records),
                 action: "deleteRows" //hack for Query.js bug

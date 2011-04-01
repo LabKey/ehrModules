@@ -1,11 +1,11 @@
 <query xmlns="http://labkey.org/data/xml/query">
     <metadata>
         <tables xmlns="http://labkey.org/data/xml">
-            <table tableName="cagenotes" tableDbType="TABLE">
+            <table tableName="cage_observations" tableDbType="TABLE">
                 <!--<tableUrl>/ehr/taskDetails.view?type=${type}&amp;taskid=${taskid}</tableUrl>-->
                 <!--<insertUrl>/ehr/createTask.view</insertUrl>-->
                 <titleColumn>RowId</titleColumn>
-                <tableTitle>Cage Notes</tableTitle>
+                <tableTitle>Cage Observations</tableTitle>
                 <columns>
                     <column columnName="date">
                         <datatype>timestamp</datatype>

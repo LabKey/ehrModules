@@ -6511,7 +6511,7 @@
               <!--</fk>-->
             </column>
             <column columnName="weight">
-              <datatype>integer</datatype>
+              <datatype>double</datatype>
               <columnTitle>Weight (kg)</columnTitle>
             </column>
             <column columnName="remark">

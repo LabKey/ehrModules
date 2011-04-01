@@ -22,7 +22,8 @@ o.tlocation,
 o.otherbehavior,
 o.remark,
 o.dataset,
-o.description
+o.description,
+o.qcstate
 
 from study.obs o
 -- LEFT JOIN study.housing h
@@ -51,9 +52,8 @@ null as tlocation,
 null as otherbehavior,
 c.remark,
 null as dataset,
-'Cage Observation' as description
+'Cage Observation' as description,
+c.qcstate
 FROM ehr.cage_observations c
-
---TODO: use to QCstate
---WHERE c.qcstate.publicdata = true
+WHERE c.qcstate.publicdata = true
 

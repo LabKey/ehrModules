@@ -3,6 +3,11 @@
         <tables xmlns="http://labkey.org/data/xml">
             <table tableName="housing" tableDbType="TABLE">
                 <tableUrl>/query/detailsQueryRow.view?schemaName=study&amp;query.queryName=housing&amp;lsid=${lsid}</tableUrl>
+                <!--<insertUrl>/ehr/manageRecord.view?schemaName=study&amp;queryName=Housing&amp;keyField=lsid&amp;</insertUrl>-->
+                <!--<updateUrl>/ehr/manageRecord.view?schemaName=study&amp;queryName=Housing&amp;keyField=lsid&amp;key=${lsid}</updateUrl>-->
+                <insertUrl />
+                <updateUrl />
+                <!--<deleteUrl />-->
                 <columns>
                     <column columnName="TotalRoommates" wrappedColumnName="lsid">
                         <columnTitle>Total Roommates</columnTitle>
@@ -29,13 +34,13 @@
                         <datatype>varchar</datatype>
                         <nullable>false</nullable>
                         <columnTitle>Room</columnTitle>
-                        <url>/EHR/cageDetails.view?
-                            room=${room}&amp;
-                            cage=${cage}&amp;
-                        </url>
+                        <!--<url>/EHR/cageDetails.view?-->
+                            <!--room=${room}&amp;-->
+                            <!--cage=${cage}&amp;-->
+                        <!--</url>-->
                         <fk>
                             <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-                            <fkDbSchema>lists</fkDbSchema>
+                            <fkDbSchema>ehr_lookups</fkDbSchema>
                             <fkTable>rooms</fkTable>
                             <fkColumnName>room</fkColumnName>
                         </fk>
