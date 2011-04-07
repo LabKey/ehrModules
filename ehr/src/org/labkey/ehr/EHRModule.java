@@ -48,12 +48,12 @@ public class EHRModule extends DefaultModule
 
     public double getVersion()
     {
-        return 10.39;
+        return 11.102;
     }
 
     public boolean hasScripts()
     {
-        return false;
+        return true;
     }
 
     protected Collection<WebPartFactory> createWebPartFactories()

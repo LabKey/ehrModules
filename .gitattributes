@@ -626,9 +626,11 @@ ehr/resources/reports/schemas/study/demographicsPedigree/Pedigree.r -text
 ehr/resources/reports/schemas/study/demographicsPedigree/Pedigree2.r -text
 ehr/resources/reports/schemas/study/roomCheck/Cage[!!-~]Size[!!-~]Validation.r -text
 ehr/resources/reports/schemas/study/roomCheck/Cage[!!-~]Size[!!-~]Validation.report.xml -text
-ehr/resources/schemas/dbscripts/postgresql/EHR-10.30-10.31.sql -text
-ehr/resources/schemas/dbscripts/postgresql/EHR-10.31-10.32.sql -text
-ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-10.30-10.31.sql -text
+ehr/resources/schemas/dbscripts/postgresql/EHR-11.10-11.101.sql -text
+ehr/resources/schemas/dbscripts/postgresql/EHR-11.101-11.102.sql -text
+ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-11.10-11.101.sql -text
+ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-11.101-11.102.sql -text
+ehr/resources/schemas/dbscripts/sqlserver/EHR-11.10-11.102.sql -text
 ehr/resources/schemas/ehr.xml -text
 ehr/resources/schemas/ehr_lookups.xml -text
 ehr/resources/scripts/ehr/validation.js -text
@@ -657,6 +659,7 @@ ehr/resources/views/ehrNavigation.webpart.xml -text
 ehr/resources/views/encounterDetails.html -text
 ehr/resources/views/executeQuery.html -text
 ehr/resources/views/executeQuery.view.xml -text
+ehr/resources/views/executeSql.html -text
 ehr/resources/views/housingQueries.html -text
 ehr/resources/views/lastSync.html -text
 ehr/resources/views/lastSync.view.xml -text

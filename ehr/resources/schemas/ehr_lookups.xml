@@ -1262,4 +1262,23 @@
         </ns:column>
       </ns:columns>
     </ns:table>
+    <ns:table tableName="weight_ranges" tableDbType="TABLE">
+      <ns:pkColumnName>indicator</ns:pkColumnName>
+      <ns:columns>
+        <ns:column columnName="species">
+          <ns:datatype>varchar</ns:datatype>
+          <ns:scale>50</ns:scale>
+        </ns:column>
+        <ns:column columnName="min_weight">
+          <ns:nullable>true</ns:nullable>
+          <ns:datatype>float8</ns:datatype>
+          <ns:scale>17</ns:scale>
+        </ns:column>
+        <ns:column columnName="max_weight">
+          <ns:nullable>true</ns:nullable>
+          <ns:datatype>float8</ns:datatype>
+          <ns:scale>17</ns:scale>
+        </ns:column>
+      </ns:columns>
+    </ns:table>
 </ns:tables>

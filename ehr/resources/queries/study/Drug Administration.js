@@ -21,8 +21,8 @@ function onETL(row, errors){
     //sort of a hack.  since mySQL doesnt directly store project for these records, we need to calculate this in the ETL using group_concat
     // 00300901 is a generic WNPRC project.  if it's present with other projects, it shouldnt be.
     if(row.project && row.project.match && (row.project.match(/,/))){
-        row.project.replace(/,00300901/, '');
-        row.project.replace(/00300901,/, '');
+        row.project = row.project.replace(/,00300901/, '');
+        row.project = row.project.replace(/00300901,/, '');
     }
 
     EHR.ETL.fixDrugUnits(row, errors);

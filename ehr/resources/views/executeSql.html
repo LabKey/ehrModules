@@ -1,0 +1,77 @@
+<script type="text/javascript">
+
+Ext.onReady(function(){
+    new Ext.Panel({
+        border: false,
+        autoHeight: true,
+        defaults: {
+            border: false
+        },
+        items: [{
+            xtype: 'form',
+            title: 'Enter SQL',
+            buttonAlign: 'left',
+            border: true,
+            bodyStyle: 'padding:5px;',
+            autoHeight: true,
+            items: [{
+                xtype: 'textfield',
+                fieldLabel: 'Schema',
+                ref: 'schemaName',
+                width: 200,
+                value: (LABKEY.ActionURL.getParameter('schemaName') || 'study')
+            },{
+                xtype: 'textfield',
+                fieldLabel: 'Container Name',
+                ref: 'containerPath',
+                width: 200,
+                value: (LABKEY.ActionURL.getParameter('containerPath') || '')
+            },{
+                xtype: 'textarea',
+                width: 800,
+                height: 300,
+                fieldLabel: 'SQL',
+                ref: 'sql'
+            }],
+            buttons: [{
+                text: 'Execute SQL',
+                handler: function(b){
+                    var formPanel = b.ownerCt.ownerCt;
+                    var panel = formPanel.ownerCt;
+
+                    panel.dr = new LABKEY.ext.EditorGridPanel({
+                        store: new LABKEY.ext.Store({
+                            containerPath: formPanel.containerPath.getValue(),
+                            schemaName: formPanel.schemaName.getValue(),
+                            sql: formPanel.sql.getValue()
+                        }),
+                        renderTo: formPanel.ownerCt.grid.body.id,
+                        width: 800,
+                        height: 400,
+                        title: 'Results',
+                        editable: false
+                    });
+
+//                    if(panel.dr){
+//                        panel.remove(panel.dr);
+//                    }
+//
+//                    panel.dr = panel.add({
+//                        xtype: 'panel',
+//                        title: 'Results'
+//                    });
+                }
+            }]
+        },{
+            xtype: 'panel',
+            autoHeight: true,
+            //title: 'Results',
+            ref: 'grid'
+        }]
+    }).render('executeSqlDiv');
+});
+
+</script>
+
+<div id='executeSqlDiv'>
+</div>
