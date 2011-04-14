@@ -9,6 +9,8 @@ var {EHR, LABKEY, Ext, console, init, beforeInsert, afterInsert, beforeUpdate, a
 
 
 function onUpsert(context, errors, row, oldRow){
+    var species;
+
     //warn if more than 10% different from last weight
     if(row.Id && row.weight){
         EHR.findDemographics({
@@ -21,11 +23,36 @@ function onUpsert(context, errors, row, oldRow){
                     else if(data.weight && (row.weight >= data.weight/0.9)){
                         EHR.addError(errors, 'weight', 'Weight gain of >10%. Last weight '+data.weight+' kg', 'INFO');
                     }
+
+                    species = data.species;
                 }
             },
             scope: this
         });
+
+        if(species){
+            LABKEY.Query.selectRows({
+                schemaName: 'ehr_lookups',
+                queryName: 'weight_ranges',
+                scope: this,
+                filterArray: [LABKEY.Filter.create('species', species, LABKEY.Filter.Types.EQUAL)],
+                columns: '*',
+                success: function(data){
+                    if(data && data.rows && data.rows.length==1){
+                        var rowData = data.rows[0];
+                        if(rowData.min_weight!==undefined && row.weight < rowData.min_weight){
+                            EHR.addError(errors, 'weight', 'Weight below the allowable value of '+rowData.min_weight+' kg', 'WARN');
+                        }
+                        if(rowData.max_weight!==undefined && row.weight > rowData.max_weight){
+                            EHR.addError(errors, 'weight', 'Weight above the allowable value of '+rowData.max_weight+' kg', 'WARN');
+                        }
+                    }
+                },
+                failure: EHR.onFailure
+            });
+        }
     }
+
 }
 
 function setDescription(row, errors){

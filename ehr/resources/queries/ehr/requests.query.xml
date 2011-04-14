@@ -90,11 +90,11 @@
                     </column>
                 </columns>
                 <buttonBarOptions includeStandardButtons="false">
-                    <includeScript>/ehr/studyButtons.js</includeScript>
+                    <!--<includeScript>/ehr/studyButtons.js</includeScript>-->
                     <!--<onRender>moreActionsHandler</onRender>-->
-                    <item text="Create New">
-                        <originalText>Insert New</originalText>
-                    </item>
+                    <!--<item text="Create New">-->
+                        <!--<originalText>Insert New</originalText>-->
+                    <!--</item>-->
                     <item text="Views">
                         <originalText>Views</originalText>
                     </item>

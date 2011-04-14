@@ -287,7 +287,7 @@ EHR.rowEnd = function(errors, scriptErrors, row, oldRow){
 
     //this converts error objects into an array of strings
     //it also separates errors below the specified threshold
-    var totalErrors = EHR.validation.processErrors.call(this, row, errors, scriptErrors, errorThreshold);
+    var totalErrors = EHR.validation.processErrors.call(this, row, errors, scriptErrors, errorThreshold, this.extraContext);
 
     if (!totalErrors){
         if(this.setDescription){
@@ -343,6 +343,7 @@ EHR.afterEvent = function (event, errors, row, oldRow){
 
     if(this.extraContext.keyField){
         var key = row[this.extraContext.keyField];
+
         if(key && this.scriptContext.PKsModified.indexOf(key) == -1){
             this.scriptContext.PKsModified.push(key);
 
@@ -612,13 +613,13 @@ EHR.verifyPermissions = function(event, scriptContext, row, oldRow){
 };
 
 EHR.validation = {
-    processErrors: function(row, errors, scriptErrors, errorThreshold){
+    processErrors: function(row, errors, scriptErrors, errorThreshold, extraContext){
         var error;
         var totalErrors = 0;
 
         //extraContext will be roundtripped  back to the client
-        if(!this.extraContext.skippedErrors){
-            this.extraContext.skippedErrors = {};
+        if(!extraContext.skippedErrors){
+            extraContext.skippedErrors = {};
         }
 
         for(var i in scriptErrors){
@@ -627,12 +628,14 @@ EHR.validation = {
 
                 if (errorThreshold && EHR.validation.errorSeverity[error.severity] <= EHR.validation.errorSeverity[errorThreshold]){
                     console.log('error below threshold');
+                    if(row._recordId){
+                        if(!extraContext.skippedErrors[row._recordId])
+                            extraContext.skippedErrors[row._recordId] = [];
 
-                    if(!this.extraContext.skippedErrors[row._recordId])
-                        this.extraContext.skippedErrors[row._recordId] = [];
-
-                    error.field = i;
-                    this.extraContext.skippedErrors[row._recordId].push(error);
+                        error.field = i;
+                        extraContext.skippedErrors[row._recordId].push(error);
+                        console.log('skipping error')
+                    }
                     continue;
                 }
 

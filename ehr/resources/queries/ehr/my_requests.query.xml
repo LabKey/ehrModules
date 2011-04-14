@@ -84,13 +84,13 @@
                         </fk>
                     </column>
                 </columns>
-                <buttonBarOptions includeStandardButtons="true">
-                    <includeScript>/ehr/studyButtons.js</includeScript>
-                    <item text="Create New">
-                        <!--<originalText>Insert New</originalText>-->
-                        <target>/ehr/manageTask.view</target>
-                    </item>
-                </buttonBarOptions>
+                <!--<buttonBarOptions includeStandardButtons="true">-->
+                    <!--<includeScript>/ehr/studyButtons.js</includeScript>-->
+                    <!--<item text="Create New">-->
+                        <!--&lt;!&ndash;<originalText>Insert New</originalText>&ndash;&gt;-->
+                        <!--<target>/ehr/manageTask.view</target>-->
+                    <!--</item>-->
+                <!--</buttonBarOptions>-->
             </table>
         </tables>
     </metadata>

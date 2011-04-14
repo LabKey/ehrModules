@@ -7,6 +7,15 @@
 
 var {EHR, LABKEY, Ext, console, init, beforeInsert, afterInsert, beforeUpdate, afterUpdate, beforeDelete, afterDelete, complete} = require("ehr/validation");
 
+function onUpsert(context, errors, row, oldRow){
+    if(!row.amount && !row.volume){
+        EHR.addError(errors, 'amount', 'Must supply either amount or volume', 'WARN');
+    }
+
+    if(row.amount && row.volume && row.concentration && row.amount!=Math.round(row.volume*row.conc*100/2)){
+        EHR.addError(errors, 'amount', 'Amount does not match volume', 'WARN');
+    }
+}
 
 //TODO: consider how this should work
 function onBecomePublic(errors, scriptContext, row, oldRow){

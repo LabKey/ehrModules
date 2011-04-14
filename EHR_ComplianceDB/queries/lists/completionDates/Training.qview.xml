@@ -23,7 +23,7 @@
             </properties>
         </column>        
         <column name="date"/>
-        <column name="result"/>
+        <!--<column name="result"/>-->
         <column name="comment"/>
     </columns>
     <filters>

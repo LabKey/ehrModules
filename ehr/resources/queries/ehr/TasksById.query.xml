@@ -4,7 +4,7 @@
             <table tableName="TasksById" tableDbType="NOT_IN_DB">
                 <!--<tableUrl>/ehr/taskDetails.view?formtype=${formtype}&amp;taskid=${taskid}</tableUrl>-->
                 <!--<updateUrl>/ehr/manageTask.view?formtype=${formtype}&amp;taskid=${taskid}</updateUrl>-->
-                <insertUrl>/ehr/manageTask.view</insertUrl>
+                <!--<insertUrl>/ehr/manageTask.view</insertUrl>-->
                 <!--<titleColumn>RowId</titleColumn>-->
                 <columns>
                     <column columnName="taskid">

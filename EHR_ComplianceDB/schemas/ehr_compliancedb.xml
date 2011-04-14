@@ -1,0 +1,344 @@
+<ns:tables xmlns:ns="http://labkey.org/data/xml">
+  <ns:table tableName="sopbycategory" tableDbType="TABLE">
+    <ns:pkColumnName>rowid</ns:pkColumnName>
+    <ns:columns>
+      <ns:column columnName="rowid">
+        <ns:datatype>serial</ns:datatype>
+        <ns:isAutoInc>true</ns:isAutoInc>
+        <ns:scale>10</ns:scale>
+      </ns:column>
+      <ns:column columnName="sop_id">
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>255</ns:scale>
+      </ns:column>
+      <ns:column columnName="category">
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>255</ns:scale>
+      </ns:column>
+    </ns:columns>
+  </ns:table>
+  <ns:table tableName="employeecategory" tableDbType="TABLE">
+    <ns:pkColumnName>categoryname</ns:pkColumnName>
+    <ns:columns>
+      <ns:column columnName="categoryname">
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>255</ns:scale>
+      </ns:column>
+    </ns:columns>
+  </ns:table>
+  <ns:table tableName="requirementspercategory" tableDbType="TABLE">
+    <ns:pkColumnName>rowid</ns:pkColumnName>
+    <ns:columns>
+      <ns:column columnName="rowid">
+        <ns:datatype>serial</ns:datatype>
+        <ns:isAutoInc>true</ns:isAutoInc>
+        <ns:scale>10</ns:scale>
+      </ns:column>
+      <ns:column columnName="requirementname">
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>255</ns:scale>
+      </ns:column>
+      <ns:column columnName="category">
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>255</ns:scale>
+      </ns:column>
+      <ns:column columnName="unit">
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>255</ns:scale>
+      </ns:column>
+    </ns:columns>
+  </ns:table>
+  <ns:table tableName="requirementsperemployee" tableDbType="TABLE">
+    <ns:pkColumnName>rowid</ns:pkColumnName>
+    <ns:columns>
+      <ns:column columnName="rowid">
+        <ns:datatype>serial</ns:datatype>
+        <ns:isAutoInc>true</ns:isAutoInc>
+        <ns:scale>10</ns:scale>
+      </ns:column>
+      <ns:column columnName="employeeid">
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>255</ns:scale>
+      </ns:column>
+      <ns:column columnName="requirementname">
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>255</ns:scale>
+      </ns:column>
+    </ns:columns>
+  </ns:table>
+  <ns:table tableName="employeelocations" tableDbType="TABLE">
+    <ns:pkColumnName>location</ns:pkColumnName>
+    <ns:columns>
+      <ns:column columnName="location">
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>255</ns:scale>
+      </ns:column>
+    </ns:columns>
+  </ns:table>
+  <ns:table tableName="wnprc_units" tableDbType="TABLE">
+    <ns:pkColumnName>unit</ns:pkColumnName>
+    <ns:columns>
+      <ns:column columnName="unit">
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>255</ns:scale>
+      </ns:column>
+    </ns:columns>
+  </ns:table>
+  <ns:table tableName="requirements" tableDbType="TABLE">
+    <ns:pkColumnName>requirementname</ns:pkColumnName>
+    <ns:columns>
+      <ns:column columnName="requirementname">
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>255</ns:scale>
+      </ns:column>
+      <ns:column columnName="type">
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>255</ns:scale>
+      </ns:column>
+      <ns:column columnName="expireperiod">
+        <ns:datatype>int4</ns:datatype>
+        <ns:scale>10</ns:scale>
+      </ns:column>
+      <ns:column columnName="required">
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>bool</ns:datatype>
+        <ns:scale>1</ns:scale>
+      </ns:column>
+      <ns:column columnName="wnprc_only">
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>bool</ns:datatype>
+        <ns:scale>1</ns:scale>
+      </ns:column>
+      <ns:column columnName="access">
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>bool</ns:datatype>
+        <ns:scale>1</ns:scale>
+      </ns:column>
+      <ns:column columnName="animals">
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>bool</ns:datatype>
+        <ns:scale>1</ns:scale>
+      </ns:column>
+      <ns:column columnName="tissues">
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>bool</ns:datatype>
+        <ns:scale>1</ns:scale>
+      </ns:column>
+    </ns:columns>
+  </ns:table>
+  <ns:table tableName="sops" tableDbType="TABLE">
+    <ns:pkColumnName>sopid</ns:pkColumnName>
+    <ns:columns>
+      <ns:column columnName="sopid">
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>255</ns:scale>
+      </ns:column>
+      <ns:column columnName="name">
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>255</ns:scale>
+      </ns:column>
+      <ns:column columnName="pdf">
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>bytea</ns:datatype>
+        <ns:scale>2147483647</ns:scale>
+      </ns:column>
+    </ns:columns>
+  </ns:table>
+  <ns:table tableName="completiondates" tableDbType="TABLE">
+    <ns:pkColumnName>rowid</ns:pkColumnName>
+    <ns:columns>
+      <ns:column columnName="rowid">
+        <ns:datatype>serial</ns:datatype>
+        <ns:isAutoInc>true</ns:isAutoInc>
+        <ns:scale>10</ns:scale>
+      </ns:column>
+      <ns:column columnName="employeeid">
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>255</ns:scale>
+      </ns:column>
+      <ns:column columnName="requirementname">
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>255</ns:scale>
+      </ns:column>
+      <ns:column columnName="date">
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>timestamp</ns:datatype>
+        <ns:scale>29</ns:scale>
+      </ns:column>
+      <ns:column columnName="result">
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>500</ns:scale>
+      </ns:column>
+      <ns:column columnName="comment">
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>4000</ns:scale>
+      </ns:column>
+    </ns:columns>
+  </ns:table>
+  <ns:table tableName="employeerequirementexemptions" tableDbType="TABLE">
+    <ns:pkColumnName>rowid</ns:pkColumnName>
+    <ns:columns>
+      <ns:column columnName="rowid">
+        <ns:datatype>serial</ns:datatype>
+        <ns:isAutoInc>true</ns:isAutoInc>
+        <ns:scale>10</ns:scale>
+      </ns:column>
+      <ns:column columnName="employeeid">
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>255</ns:scale>
+      </ns:column>
+      <ns:column columnName="requirementname">
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>255</ns:scale>
+      </ns:column>
+    </ns:columns>
+  </ns:table>
+  <ns:table tableName="requirementtype" tableDbType="TABLE">
+    <ns:pkColumnName>type</ns:pkColumnName>
+    <ns:columns>
+      <ns:column columnName="type">
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>255</ns:scale>
+      </ns:column>
+    </ns:columns>
+  </ns:table>
+  <ns:table tableName="employeetypes" tableDbType="TABLE">
+    <ns:pkColumnName>type</ns:pkColumnName>
+    <ns:columns>
+      <ns:column columnName="type">
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>255</ns:scale>
+      </ns:column>
+    </ns:columns>
+  </ns:table>
+  <ns:table tableName="employees" tableDbType="TABLE">
+    <ns:pkColumnName>employeeid</ns:pkColumnName>
+    <ns:columns>
+      <ns:column columnName="employeeid">
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>255</ns:scale>
+      </ns:column>
+      <ns:column columnName="lastname">
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>255</ns:scale>
+      </ns:column>
+      <ns:column columnName="firstname">
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>255</ns:scale>
+      </ns:column>
+      <ns:column columnName="email">
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>255</ns:scale>
+      </ns:column>
+      <ns:column columnName="email2">
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>255</ns:scale>
+      </ns:column>
+      <ns:column columnName="personid">
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>int4</ns:datatype>
+        <ns:scale>10</ns:scale>
+      </ns:column>
+      <ns:column columnName="type">
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>255</ns:scale>
+      </ns:column>
+      <ns:column columnName="majorudds">
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>255</ns:scale>
+      </ns:column>
+      <ns:column columnName="title">
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>255</ns:scale>
+      </ns:column>
+      <ns:column columnName="unit">
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>255</ns:scale>
+      </ns:column>
+      <ns:column columnName="supervisor">
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>255</ns:scale>
+      </ns:column>
+      <ns:column columnName="emergencycontact">
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>255</ns:scale>
+      </ns:column>
+      <ns:column columnName="emergencycontactdaytimephone">
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>255</ns:scale>
+      </ns:column>
+      <ns:column columnName="emergencycontactnighttimephone">
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>255</ns:scale>
+      </ns:column>
+      <ns:column columnName="homephone">
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>255</ns:scale>
+      </ns:column>
+      <ns:column columnName="officephone">
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>255</ns:scale>
+      </ns:column>
+      <ns:column columnName="cellphone">
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>255</ns:scale>
+      </ns:column>
+      <ns:column columnName="location">
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>255</ns:scale>
+      </ns:column>
+      <ns:column columnName="startdate">
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>timestamp</ns:datatype>
+        <ns:scale>29</ns:scale>
+      </ns:column>
+      <ns:column columnName="enddate">
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>timestamp</ns:datatype>
+        <ns:scale>29</ns:scale>
+      </ns:column>
+      <ns:column columnName="notes">
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>255</ns:scale>
+      </ns:column>
+      <ns:column columnName="barrier">
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>bool</ns:datatype>
+        <ns:scale>1</ns:scale>
+      </ns:column>
+      <ns:column columnName="animals">
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>bool</ns:datatype>
+        <ns:scale>1</ns:scale>
+      </ns:column>
+      <ns:column columnName="tissue">
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>bool</ns:datatype>
+        <ns:scale>1</ns:scale>
+      </ns:column>
+      <ns:column columnName="iswnprc">
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>bool</ns:datatype>
+        <ns:scale>1</ns:scale>
+      </ns:column>
+    </ns:columns>
+  </ns:table>
+</ns:tables>

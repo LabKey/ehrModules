@@ -52,7 +52,7 @@ LEFT JOIN "/WNPRC/WNPRC_Units/Animal_Services/Compliance_Training/Private/Employ
 
 --we add in category/unit specific requirements
 LEFT JOIN "/WNPRC/WNPRC_Units/Animal_Services/Compliance_Training/Private/EmployeeDB/".lists.RequirementsByCategory rc
-ON (rc.Requirement=rn.RequirementName AND (
+ON (rc.RequirementName=rn.RequirementName AND (
       rc.Category = e.category AND rc.unit = e.unit OR
       rc.Category = e.category AND rc.unit IS NULL OR
       rc.Category IS NULL AND rc.unit = e.unit
@@ -88,7 +88,7 @@ WHERE
     WHEN (e.Tissue IS TRUE AND rn.Tissues IS TRUE)
       THEN TRUE
     --if a requirement is mandatory for a given employee category/unit and this employee is one, it's required
-    WHEN (rc.Requirement IS NOT NULL)
+    WHEN (rc.RequirementName IS NOT NULL)
       THEN TRUE
     --this allows to non-standard requirements to be tracked
     WHEN (mt.RequirementName IS NOT NULL)

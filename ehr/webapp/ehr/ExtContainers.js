@@ -591,11 +591,13 @@ EHR.ext.QueryPanel = Ext.extend(Ext.Panel, {
 
         EHR.ext.QueryPanel.superclass.initComponent.call(this, arguments);
 
-        if(this.autoLoad){
-            this.loadQuery(this);
+        if(this.autoLoadQuery){
+            this.on('render', this.loadQuery, this, {single: true});
         }
     },
     loadQuery: function(tab){
+        tab = tab || this;
+
         if(tab.isLoaded)
             return;
 
@@ -628,7 +630,7 @@ EHR.ext.QueryPanel = Ext.extend(Ext.Panel, {
             scope: this
         };
         Ext.apply(qwpConfig, tab.queryConfig);
-console.log(qwpConfig)
+
         tab.QWP = new LABKEY.QueryWebPart(qwpConfig);
 
     }
@@ -1244,7 +1246,7 @@ EHR.ext.SaveTemplatePanel = Ext.extend(Ext.Window, {
                     dataIndex: f.dataIndex,
                     name: f.dataIndex,
                     fieldLabel: f.fieldLabel || f.name,
-                    checked: !f.noDuplicateByDefault
+                    checked: !(f.noDuplicateByDefault || f.noSaveInTemplateByDefault)
                 })
             }
         }, this);

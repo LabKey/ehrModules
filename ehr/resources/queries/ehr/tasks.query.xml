@@ -69,35 +69,41 @@
                             <fkColumnName>rowid</fkColumnName>
                         </fk>
                     </column>
-                    <column columnName="title">
-                        <url>/ehr/taskDetails.view?formtype=${formtype}&amp;taskid=${taskid}</url>
+                    <!--<column columnName="title">-->
+                        <!--<url>/ehr/taskDetails.view?formtype=${formtype}&amp;taskid=${taskid}</url>-->
+                    <!--</column>-->
+                    <column columnName="updateTitle" wrappedColumnName="title">
+                        <columnTitle>Title</columnTitle>
+                        <url>/ehr/manageTask.view?formtype=${formtype}&amp;taskid=${taskid}</url>
+                        <isHidden>true</isHidden>
+                        <displayWidth>150</displayWidth>
                     </column>
                 </columns>
-                <!--<buttonBarOptions includeStandardButtons="false">-->
+                <buttonBarOptions includeStandardButtons="false">
                     <!--<includeScript>/ehr/studyButtons.js</includeScript>-->
-                    <!--&lt;!&ndash;<onRender>moreActionsHandler</onRender>&ndash;&gt;-->
-                    <!--&lt;!&ndash;<item text="Create New">&ndash;&gt;-->
-                        <!--&lt;!&ndash;<originalText>Insert New</originalText>&ndash;&gt;-->
-                    <!--&lt;!&ndash;</item>&ndash;&gt;-->
-                    <!--<item text="Views">-->
-                        <!--<originalText>Views</originalText>-->
+                    <!--<onRender>moreActionsHandler</onRender>-->
+                    <!--<item text="Create New">-->
+                        <!--<originalText>Insert New</originalText>-->
                     <!--</item>-->
-                    <!--<item text="Export">-->
-                        <!--<originalText>Export</originalText>-->
+                    <item text="Views">
+                        <originalText>Views</originalText>
+                    </item>
+                    <item text="Export">
+                        <originalText>Export</originalText>
+                    </item>
+                    <item text="Print">
+                        <originalText>Print</originalText>
+                    </item>
+                    <!--<item text="Import Data">-->
+                        <!--<originalText>Import Data</originalText>-->
                     <!--</item>-->
-                    <!--<item text="Print">-->
-                        <!--<originalText>Print</originalText>-->
+                    <item text="Page Size">
+                        <originalText>Page Size</originalText>
+                    </item>
+                    <!--<item text="Delete">-->
+                        <!--<originalText>Delete</originalText>-->
                     <!--</item>-->
-                    <!--&lt;!&ndash;<item text="Import Data">&ndash;&gt;-->
-                        <!--&lt;!&ndash;<originalText>Import Data</originalText>&ndash;&gt;-->
-                    <!--&lt;!&ndash;</item>&ndash;&gt;-->
-                    <!--<item text="Page Size">-->
-                        <!--<originalText>Page Size</originalText>-->
-                    <!--</item>-->
-                    <!--&lt;!&ndash;<item text="Delete">&ndash;&gt;-->
-                        <!--&lt;!&ndash;<originalText>Delete</originalText>&ndash;&gt;-->
-                    <!--&lt;!&ndash;</item>&ndash;&gt;-->
-                <!--</buttonBarOptions>-->
+                </buttonBarOptions>
             </table>
         </tables>
     </metadata>

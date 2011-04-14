@@ -200,7 +200,9 @@ EHR.reports.weightGraph = function(tab, subject){
         tab.chart = new Ext.chart.LineChart({
             xtype: 'linechart',
             height: 300,
-            width: 600,
+            width: 800,
+            //style: 'margins: 100px;',
+            //extraStyle: 'margins:100px;',
             store: store,
             // The two following is not documented, but it's central for the linechart.
             xField: "date",

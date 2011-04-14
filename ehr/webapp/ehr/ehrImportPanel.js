@@ -242,7 +242,7 @@ Ext.extend(EHR.ext.ImportPanelBase, Ext.Panel, {
                 'CLOSE'
             ];
         }
-console.log('buttons')
+
         var buttons = [];
         var buttonCfg;
         Ext.each(this.allowableButtons, function(b){
@@ -458,8 +458,8 @@ console.log('buttons')
                     this.store.each(function(s){
                         s.deleteRecords(s.getAllRecords());
                     }, this);
-                    window.onbeforeunload = null;
-                    window.location = LABKEY.ActionURL.buildURL("ehr", "dataEntry.view");
+                    //window.onbeforeunload = null;
+                    //window.location = LABKEY.ActionURL.buildURL("ehr", "dataEntry.view");
                 }
             },
         this);
@@ -542,8 +542,10 @@ EHR.ext.TaskDetailsPanel = Ext.extend(EHR.ext.ImportPanelBase, {
 
         if(c.xtype != 'ehr-detailsview'){
             c.xtype = 'ehr-qwppanel';
-            c.autoLoad = true;
+            c.autoLoadQuery = true;
             c.collapsed = false;
+            //TODO
+            c.filterArray.push(LABKEY.Filter.create('qcstate/publicdata', null, LABKEY.Filter.Types.HAS_ANY_VALUE));
         }
 
         c.storeConfig = null;

@@ -49,6 +49,7 @@ import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -247,19 +248,36 @@ public class ETLRunnable implements Runnable
                         like.append(targetTable.getFromSQL("t"));
                         if (!joins.isEmpty())
                             like.append(joins.values().iterator().next());
-                        like.append(" WHERE " + objid.getValueSql("t") + " LIKE ? || '%'");
+                        like.append(" WHERE ");
 
                         List<Map<String, Object>> deleteSelectors = new ArrayList<Map<String, Object>>();
+                        SQLFragment likeWithIds = new SQLFragment(like.getSQL(), new ArrayList<Object>(like.getParams()));
+                        int count = 0;
                         for (final String deletedId : deletedIds)
                         {
-
-                            for (Map<String, Object> selector : Table.executeQuery(schema.getDbSchema(), like.getSQL(), new Object[]{deletedId}, Map.class))
+                            // Do this query in batches no larger than 100 to prevent from building up too many JDBC
+                            // parameters
+                            likeWithIds.add(deletedId);
+                            if (count > 0)
                             {
-                                deleteSelectors.add(selector);
+                                likeWithIds.append(" OR ");
+                            }
+                            likeWithIds.append(objid.getValueSql("t") + " LIKE ? || '%' ");
+                            if (count++ > 100)
+                            {
+                                deleteSelectors.addAll(Arrays.asList((Map<String, Object>[])Table.executeQuery(schema.getDbSchema(), likeWithIds, Map.class)));
+                                // Reset the count and SQL
+                                likeWithIds = new SQLFragment(like.getSQL(), new ArrayList<Object>(like.getParams()));
+                                count = 0;
                             }
                         }
+                        if (count > 0)
+                        {
+                            // Do the SELECT for any remaining ids
+                            deleteSelectors.addAll(Arrays.asList((Map<String, Object>[])Table.executeQuery(schema.getDbSchema(), likeWithIds, Map.class)));
+                        }
 
-                        updater.deleteRows(user, container, deleteSelectors, Collections.<String, Object>emptyMap());
+                        updater.deleteRows(user, container, deleteSelectors, null);
                         log.info("deleted objectids " + deletedIds.toString());
                     }
 
@@ -295,9 +313,9 @@ public class ETLRunnable implements Runnable
                         if (sourceRows.size() == UPSERT_BATCH_SIZE || isDone)
                         {
                             if (!isTargetEmpty) {
-                                updater.deleteRows(user, container, sourceRows, Collections.<String, Object>emptyMap());
+                                updater.deleteRows(user, container, sourceRows, null);
                             }
-                            updater.insertRows(user, container, sourceRows, Collections.<String, Object>emptyMap());
+                            updater.insertRows(user, container, sourceRows, null);
                             updates += sourceRows.size();
                             log.info("Updated " + updates + " records in " + targetTableName);
                             sourceRows.clear();

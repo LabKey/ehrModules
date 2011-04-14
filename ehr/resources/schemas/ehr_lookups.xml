@@ -1263,11 +1263,15 @@
       </ns:columns>
     </ns:table>
     <ns:table tableName="weight_ranges" tableDbType="TABLE">
-      <ns:pkColumnName>indicator</ns:pkColumnName>
+      <ns:pkColumnName>species</ns:pkColumnName>
       <ns:columns>
         <ns:column columnName="species">
           <ns:datatype>varchar</ns:datatype>
           <ns:scale>50</ns:scale>
+          <ns:fk>
+              <ns:fkTable>species</ns:fkTable>
+              <ns:fkColumnName>common</ns:fkColumnName>
+          </ns:fk>
         </ns:column>
         <ns:column columnName="min_weight">
           <ns:nullable>true</ns:nullable>
@@ -1278,6 +1282,15 @@
           <ns:nullable>true</ns:nullable>
           <ns:datatype>float8</ns:datatype>
           <ns:scale>17</ns:scale>
+        </ns:column>
+      </ns:columns>
+    </ns:table>
+    <ns:table tableName="problem_list_category" tableDbType="TABLE">
+      <ns:pkColumnName>category</ns:pkColumnName>
+      <ns:columns>
+        <ns:column columnName="category">
+          <ns:datatype>varchar</ns:datatype>
+          <ns:scale>100</ns:scale>
         </ns:column>
       </ns:columns>
     </ns:table>

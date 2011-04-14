@@ -40,12 +40,6 @@ Ext.onReady(function(){
         }
     };
 
-    if(metadata[LABKEY.ActionURL.getParameter('queryName')]){
-        EHR.utils.rApply(config, metadata[LABKEY.ActionURL.getParameter('queryName')]);
-    }
-
-    new EHR.ext.SearchPanel(config).render('searchPanel');
-
     metadata = {
 //        Animal: {
 //            defaultView: 'Alive, at WNPRC'
@@ -113,7 +107,13 @@ Ext.onReady(function(){
                 qualifier: {hidden: true}
             }
         }
-}
+    }
+
+    if(metadata[LABKEY.ActionURL.getParameter('queryName')]){
+        EHR.utils.rApply(config, metadata[LABKEY.ActionURL.getParameter('queryName')]);
+    }
+
+    new EHR.ext.SearchPanel(config).render('searchPanel');
 
 });
 </script>

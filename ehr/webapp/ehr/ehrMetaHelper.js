@@ -302,7 +302,7 @@ EHR.ext.metaHelper = {
 
             config.nullRecord = c.nullRecord || {
                 displayColumn: l.displayColumn,
-                nullCaption: (l.displayColumn==l.keyColumn ? null : (c.lookupNullCaption!==undefined ? c.lookupNullCaption : '[none3]'))
+                nullCaption: (l.displayColumn==l.keyColumn ? null : (c.lookupNullCaption!==undefined ? c.lookupNullCaption : '[none]'))
             };
         }
 

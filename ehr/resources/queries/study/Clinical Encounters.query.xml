@@ -21,54 +21,54 @@
                         <columnTitle>Service Requested</columnTitle>
                     </column>
                 </columns>
-                <buttonBarOptions includeStandardButtons="false">                    
-                    <includeScript>/ehr/studyButtons.js</includeScript>
-                    <!--<onRender>moreActionsHandler</onRender>-->
-                    <item text="Create New">
-                        <originalText>Insert New</originalText>
-                    </item>
-                    <item text="Views">
-                        <originalText>Views</originalText>
-                    </item>
-                    <!--<item text="Cohorts">-->
-                        <!--<originalText>Cohorts</originalText>-->
+                <!--<buttonBarOptions includeStandardButtons="false">                    -->
+                    <!--<includeScript>/ehr/studyButtons.js</includeScript>-->
+                    <!--&lt;!&ndash;<onRender>moreActionsHandler</onRender>&ndash;&gt;-->
+                    <!--<item text="Create New">-->
+                        <!--<originalText>Insert New</originalText>-->
                     <!--</item>-->
-                    <!--<item text="QCState">-->
-                        <!--<originalText>QC State</originalText>-->
+                    <!--<item text="Views">-->
+                        <!--<originalText>Views</originalText>-->
                     <!--</item>-->
-                    <item text="Export">
-                        <originalText>Export</originalText>
-                    </item>
-                    <item text="Print">
-                        <originalText>Print</originalText>
-                    </item>
-                    <!--<item text="Import Data">-->
-                        <!--<originalText>Import Data</originalText>-->
+                    <!--&lt;!&ndash;<item text="Cohorts">&ndash;&gt;-->
+                        <!--&lt;!&ndash;<originalText>Cohorts</originalText>&ndash;&gt;-->
+                    <!--&lt;!&ndash;</item>&ndash;&gt;-->
+                    <!--&lt;!&ndash;<item text="QCState">&ndash;&gt;-->
+                        <!--&lt;!&ndash;<originalText>QC State</originalText>&ndash;&gt;-->
+                    <!--&lt;!&ndash;</item>&ndash;&gt;-->
+                    <!--<item text="Export">-->
+                        <!--<originalText>Export</originalText>-->
                     <!--</item>-->
-                    <item text="Page Size">
-                        <originalText>Page Size</originalText>
-                    </item>
-                    <!--<item text="Delete">-->
-                        <!--<originalText>Delete</originalText>-->
+                    <!--<item text="Print">-->
+                        <!--<originalText>Print</originalText>-->
                     <!--</item>-->
-                    <item text="More Actions" insertPosition="end" >
-                        <item text="Jump To History">
-                            <onClick>
-                                historyHandler(dataRegion, dataRegionName);
-                            </onClick>
-                        </item>
-                        <item text="Jump To Other Dataset">
-                            <onClick>
-                                datasetHandler(dataRegion, dataRegionName);
-                            </onClick>
-                        </item>
-                        <item text="Return Distinct Values">
-                            <onClick>
-                                getDistinct(dataRegion, dataRegionName);
-                            </onClick>
-                        </item>
-                    </item>
-                </buttonBarOptions>
+                    <!--&lt;!&ndash;<item text="Import Data">&ndash;&gt;-->
+                        <!--&lt;!&ndash;<originalText>Import Data</originalText>&ndash;&gt;-->
+                    <!--&lt;!&ndash;</item>&ndash;&gt;-->
+                    <!--<item text="Page Size">-->
+                        <!--<originalText>Page Size</originalText>-->
+                    <!--</item>-->
+                    <!--&lt;!&ndash;<item text="Delete">&ndash;&gt;-->
+                        <!--&lt;!&ndash;<originalText>Delete</originalText>&ndash;&gt;-->
+                    <!--&lt;!&ndash;</item>&ndash;&gt;-->
+                    <!--<item text="More Actions" insertPosition="end" >-->
+                        <!--<item text="Jump To History">-->
+                            <!--<onClick>-->
+                                <!--historyHandler(dataRegion, dataRegionName);-->
+                            <!--</onClick>-->
+                        <!--</item>-->
+                        <!--<item text="Jump To Other Dataset">-->
+                            <!--<onClick>-->
+                                <!--datasetHandler(dataRegion, dataRegionName);-->
+                            <!--</onClick>-->
+                        <!--</item>-->
+                        <!--<item text="Return Distinct Values">-->
+                            <!--<onClick>-->
+                                <!--getDistinct(dataRegion, dataRegionName);-->
+                            <!--</onClick>-->
+                        <!--</item>-->
+                    <!--</item>-->
+                <!--</buttonBarOptions>-->
             </table>
         </tables>
     </metadata>

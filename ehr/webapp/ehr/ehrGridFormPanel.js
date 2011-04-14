@@ -30,7 +30,7 @@ EHR.ext.GridFormPanel = Ext.extend(Ext.Panel,
 
         //set buttons
         var tbar = [];
-        this.tbarBtns = this.tbarBtns || ['add', 'delete', 'apply_template', 'save_template', 'duplicate', 'bulk_edit'];
+        this.tbarBtns = this.tbarBtns || ['add', 'addbatch', 'delete', 'apply_template', 'save_template', 'duplicate', 'bulk_edit'];
         for (var i=0;i<this.tbarBtns.length;i++){
             var btnCfg = this.gridBtns[this.tbarBtns[i]];
             btnCfg.scope = this;

@@ -35,7 +35,7 @@
                                     <filter operator="gte" value="10"/>
                                 </filters>
                                 <bold>true</bold>
-                                <backgroundColor>FF0000</backgroundColor>
+                                <backgroundColor>458B00</backgroundColor>
                             </conditionalFormat>
                         </conditionalFormats>
                     </column>

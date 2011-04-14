@@ -417,7 +417,7 @@ EHR.ext.Metadata.Standard = {
             collectedBy : {shownInGrid: false}
         },
         'Dental Status': {
-            gingivitis: {allowBlank: false, lookupNullCaption: 'N/A'},
+            gingivitis: {allowBlank: false, editorConfig: {lookupNullCaption: 'N/A'}},
             tartar: {allowBlank: false, lookupNullCaption: 'N/A'},
             performedby: {hidden: true}
         },
@@ -481,16 +481,16 @@ EHR.ext.Metadata.Standard = {
             performedby: {hidden: true}
         },
         Alopecia: {
-            head: {xtype: 'ehr-remoteradiogroup', includeNullRecord: false, defaultValue: 'NA', formEditorConfig: {columns: 3}},
-            dorsum: {xtype: 'ehr-remoteradiogroup', includeNullRecord: false, defaultValue: 'NA', formEditorConfig: {columns: 3}},
-            rump: {xtype: 'ehr-remoteradiogroup', includeNullRecord: false, defaultValue: 'NA', formEditorConfig: {columns: 3}},
-            shoulders: {xtype: 'ehr-remoteradiogroup', includeNullRecord: false, defaultValue: 'NA', formEditorConfig: {columns: 3}},
-            upperArms: {xtype: 'ehr-remoteradiogroup', includeNullRecord: false, defaultValue: 'NA', formEditorConfig: {columns: 3}},
-            lowerArms: {xtype: 'ehr-remoteradiogroup', includeNullRecord: false, defaultValue: 'NA', formEditorConfig: {columns: 3}},
-            hips: {xtype: 'ehr-remoteradiogroup', includeNullRecord: false, defaultValue: 'NA', formEditorConfig: {columns: 3}},
-            upperLegs: {xtype: 'ehr-remoteradiogroup', includeNullRecord: false, defaultValue: 'NA', formEditorConfig: {columns: 3}},
-            lowerLegs: {xtype: 'ehr-remoteradiogroup', includeNullRecord: false, defaultValue: 'NA', formEditorConfig: {columns: 3}},
-            other: {xtype: 'ehr-remoteradiogroup', includeNullRecord: false, defaultValue: 'NA', formEditorConfig: {columns: 3}},
+            head: {xtype: 'ehr-remoteradiogroup', includeNullRecord: false, defaultValue: 'No', formEditorConfig: {columns: 3}},
+            dorsum: {xtype: 'ehr-remoteradiogroup', includeNullRecord: false, defaultValue: 'No', formEditorConfig: {columns: 3}},
+            rump: {xtype: 'ehr-remoteradiogroup', includeNullRecord: false, defaultValue: 'No', formEditorConfig: {columns: 3}},
+            shoulders: {xtype: 'ehr-remoteradiogroup', includeNullRecord: false, defaultValue: 'No', formEditorConfig: {columns: 3}},
+            upperArms: {xtype: 'ehr-remoteradiogroup', includeNullRecord: false, defaultValue: 'No', formEditorConfig: {columns: 3}},
+            lowerArms: {xtype: 'ehr-remoteradiogroup', includeNullRecord: false, defaultValue: 'No', formEditorConfig: {columns: 3}},
+            hips: {xtype: 'ehr-remoteradiogroup', includeNullRecord: false, defaultValue: 'No', formEditorConfig: {columns: 3}},
+            upperLegs: {xtype: 'ehr-remoteradiogroup', includeNullRecord: false, defaultValue: 'No', formEditorConfig: {columns: 3}},
+            lowerLegs: {xtype: 'ehr-remoteradiogroup', includeNullRecord: false, defaultValue: 'No', formEditorConfig: {columns: 3}},
+            other: {xtype: 'ehr-remoteradiogroup', includeNullRecord: false, defaultValue: 'No', formEditorConfig: {columns: 3}},
             score: {lookupNullCaption: '', useNull: true},
             performedby: {hidden: true}
         },
@@ -756,6 +756,7 @@ EHR.ext.Metadata.Standard = {
             ,quantity: {
                 xtype: 'displayfield',
                 editorConfig: {
+                    allowNegative: false,
                     calculateQuantity: function(){
                         var form = this.ownerCt.getForm();
                         var numTubes = form.findField('num_tubes').getValue();
@@ -769,6 +770,7 @@ EHR.ext.Metadata.Standard = {
             }
             ,num_tubes: {
                 editorConfig: {
+                    allowNegative: false,
                     listeners: {
                         change: function(field, val){
                             this.ownerCt.getForm().findField('quantity').calculateQuantity();
@@ -780,6 +782,7 @@ EHR.ext.Metadata.Standard = {
             ,tube_vol: {
                 shownInGrid: false,
                 editorConfig: {
+                    allowNegative: false,
                     listeners: {
                         change: function(field, val){
                             this.ownerCt.getForm().findField('quantity').calculateQuantity();
@@ -862,7 +865,9 @@ EHR.ext.Metadata.Standard = {
             }
             ,route: {shownInGrid: false}
             ,volume: {
-                compositeField: 'Volume'
+                compositeField: 'Volume',
+                noDuplicateByDefault: true,
+                noSaveInTemplateByDefault: true
             }
             ,vol_units: {
                 compositeField: 'Volume'
@@ -872,7 +877,9 @@ EHR.ext.Metadata.Standard = {
             }
             ,amount: {
                 compositeField: 'Amount'
-                ,allowBlank: false
+                ,noDuplicateByDefault: true
+                ,noSaveInTemplateByDefault: true
+                //,allowBlank: false
                 ,shownInGrid: false
                 ,colModel: {
                     width: 40
@@ -898,6 +905,7 @@ EHR.ext.Metadata.Standard = {
             project: {hidden: true},
             account: {hidden: true},
             performedby: {hidden: true},
+            code: {hidden: true},
             problem_no: {shownInInsertView: false}
         },
         'Clinical Observations': {
@@ -961,6 +969,9 @@ EHR.ext.Metadata.Standard = {
             ,weight: {
                 allowBlank: false
                 ,useNull: true
+                ,editorConfig: {
+                    allowNegative: false
+                }
             }
             ,performedby: {allowBlank: false}
         }
@@ -1188,7 +1199,8 @@ EHR.ext.Metadata.Request = {
         },
         requests: {
             daterequested: {
-                xtype: 'datefield'
+                xtype: 'datefield',
+                nullable: false
             }
         },
         'Blood Draws': {
@@ -1480,7 +1492,7 @@ EHR.ext.FormColumns = {
     Necropsies: EHR.ext.topCols+',caseno,pathologist,assistant,billing,perfusion_area,perfusion_soln,bcs,'+EHR.ext.bottomCols,
     'Pair Tests': EHR.ext.topCols+',partner,bhav,testno,sharedFood,aggressions,affiliation,conclusion,'+EHR.ext.bottomCols,
     'Parasitology Results': EHR.ext.topCols+',code,'+EHR.ext.bottomCols,
-    'Problem List': EHR.ext.topCols+',date_resolved,code,'+EHR.ext.bottomCols,
+    'Problem List': EHR.ext.topCols+',date_resolved,category,'+EHR.ext.bottomCols,
     'Organ Weights': EHR.ext.topCols+',tissue,weight,'+EHR.ext.bottomCols,
     requests: 'rowid,title,formtype,daterequested,priority,notify1,notify2,pi,createdby,qcstate',
     Restraint: EHR.ext.topCols+',enddate,type,totaltime,'+EHR.ext.bottomCols,

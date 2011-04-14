@@ -7,6 +7,7 @@ SELECT
 
 taskid,
 rowid,
+updateTitle,
 category,
 title,
 formtype,

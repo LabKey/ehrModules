@@ -12,32 +12,32 @@ SELECT
   T3.MinLast30,
   T3.MaxLast30,
 
-  CASE WHEN (abs((T3.MinLast30 - d.weight) * 100 / d.weight) > abs((T3.MaxLast30 - d.weight) * 100 / d.weight))
+  CASE WHEN (abs((d.weight - T3.MinLast30) * 100 / d.weight) > abs((d.weight - T3.MaxLast30) * 100 / d.weight))
   THEN
-    Round(((T3.MinLast30 - d.weight) * 100 / d.weight), 1)
+    Round(((d.weight-T3.MinLast30) * 100 / d.weight), 1)
   ELSE
-    Round(((T3.MaxLast30 - d.weight) * 100 / d.weight), 1)
+    Round(((d.weight - T3.MaxLast30) * 100 / d.weight), 1)
   END as MaxChange30,
 
 
   T4.MinLast90,
   T4.MaxLast90,
 
-  CASE WHEN (abs((T4.MinLast90 - d.weight) * 100 / d.weight) > abs((T4.MaxLast90 - d.weight) * 100 / d.weight))
+  CASE WHEN (abs((d.weight - T4.MinLast90) * 100 / d.weight) > abs((d.weight - T4.MaxLast90) * 100 / d.weight))
   THEN
-    Round(((T4.MinLast90 - d.weight) * 100 / d.weight), 1)
+    Round(((d.weight - T4.MinLast90) * 100 / d.weight), 1)
   ELSE
-    Round(((T4.MaxLast90 - d.weight) * 100 / d.weight), 1)
+    Round(((d.weight - T4.MaxLast90) * 100 / d.weight), 1)
   END as MaxChange90,
 
   T5.MinLast180,
   T5.MaxLast180,
 
-  CASE WHEN (abs((T5.MinLast180 - d.weight) * 100 / d.weight) > abs((T5.MaxLast180 - d.weight) * 100 / d.weight))
+  CASE WHEN (abs((d.weight - T5.MinLast180) * 100 / d.weight) > abs((d.weight - T5.MaxLast180) * 100 / d.weight))
   THEN
-    Round(((T5.MinLast180 - d.weight) * 100 / d.weight), 1)
+    Round(((d.weight - T5.MinLast180) * 100 / d.weight), 1)
   ELSE
-    Round(((T5.MaxLast180 - d.weight) * 100 / d.weight), 1)
+    Round(((d.weight - T5.MaxLast180) * 100 / d.weight), 1)
   END as MaxChange180
 
 

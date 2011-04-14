@@ -1066,8 +1066,12 @@ EHR.ext.DrugDoseField = Ext.extend(EHR.ext.TriggerNumberField,
             }
 
 
-            var amount = EHR.utils.roundNumber(weight*dosage, 2);
+
             var vol = EHR.utils.roundNumber(weight*dosage/conc, 2);
+            //var amount = EHR.utils.roundNumber(weight*dosage, 2);
+
+            //NOTE: calculated from volume to avoid errors due to rounding
+            var amount = EHR.utils.roundNumber(vol*conc, 2);
 
             theForm.findField('amount').setValue(amount);
             theForm.findField('volume').setValue(vol);

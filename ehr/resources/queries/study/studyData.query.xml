@@ -122,9 +122,9 @@
                     <item text="Page Size">
                         <originalText>Page Size</originalText>
                     </item>
-                    <item text="Delete">
-                        <originalText>Delete</originalText>
-                    </item>
+                    <!--<item text="Delete">-->
+                        <!--<originalText>Delete</originalText>-->
+                    <!--</item>-->
                     <item text="More Actions" insertPosition="end" >
                         <item text="Jump To History">
                             <onClick>

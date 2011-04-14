@@ -16,6 +16,12 @@
                         <fkColumnName>id</fkColumnName>
                       </fk>
                 </column>
+                <column columnName="firstName">
+                    <displayWidth>100</displayWidth>
+                </column>
+                <column columnName="lastName">
+                    <displayWidth>100</displayWidth>
+                </column>
             </columns>
         </table>
     </tables>

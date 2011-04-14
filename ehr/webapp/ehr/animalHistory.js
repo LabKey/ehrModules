@@ -61,6 +61,7 @@ EHR.ext.SingleAnimalReport = Ext.extend(Ext.Panel, {
                 xtype: 'button'
                 ,text: 'Refresh'
                 ,handler: this.onSubmit
+                ,forceRefresh: true
                 ,type: 'submit'
                 ,scope: this
                 ,style:'margin-left:200px;'
@@ -820,11 +821,14 @@ EHR.ext.SingleAnimalReport = Ext.extend(Ext.Panel, {
         target.doLayout();
     },
 
-    onSubmit: function(){
+    onSubmit: function(b){
        if (!this.checkValid())
             return;
 
-       if (!this.activeReport){
+       if(b)
+            this.forceRefresh = b.forceRefresh;
+
+        if (!this.activeReport){
            this.activeReport = this.tabPanel['General']['abstract'];
            var parent = this.activeReport.ownerCt;
            this.tabPanel.activate(parent);
@@ -995,7 +999,6 @@ EHR.ext.SingleAnimalReport = Ext.extend(Ext.Panel, {
         //account for QCstate
         if (rowData.get("QCStatePublicDataFieldName")){
             filterArray.nonRemovable.push(LABKEY.Filter.create(rowData.get("QCStatePublicDataFieldName"), true, LABKEY.Filter.Types.EQUAL));
-            console.log('adding QC: '+rowData.get("QCStatePublicDataFieldName"));
         }
 
         tab.filterArray = filterArray;
@@ -1456,11 +1459,11 @@ EHR.ext.SingleAnimalReport = Ext.extend(Ext.Panel, {
         }
                 
         //indicates tab already has up to date content
-        if(reload == 0){
+        if(reload == 0 && !this.forceRefresh){
             console.log('no reload needed');
             return;
         }
-
+        this.forceRefresh = null;
 
 
         o.filters = this.filters;

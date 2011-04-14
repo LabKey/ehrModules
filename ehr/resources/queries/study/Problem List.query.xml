@@ -30,6 +30,16 @@
                             <fkColumnName>code</fkColumnName>
                         </fk>
                     </column>
+                    <column columnName="category">
+                        <datatype>varchar</datatype>
+                        <columnTitle>Category</columnTitle>
+                        <fk>
+                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
+                            <fkDbSchema>ehr_lookups</fkDbSchema>
+                            <fkTable>problem_list_category</fkTable>
+                            <fkColumnName>category</fkColumnName>
+                        </fk>
+                    </column>
                     <column columnName="enddate">
                         <columnTitle>Date Resolved</columnTitle>
                     </column>

@@ -66,4 +66,4 @@ SELECT
 	     	--WHERE (bi.qcstate.metadata.DraftData = true OR bi.qcstate.publicdata = true)
 	    	) b
 -- 	) bq
-WHERE b.date >= TIMESTAMPADD('SQL_TSI_DAY', -180, now())
+WHERE b.date >= TIMESTAMPADD('SQL_TSI_DAY', -30, now())
