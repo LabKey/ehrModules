@@ -1,0 +1,52 @@
+<customView xmlns="http://labkey.org/data/xml/queryCustomView" hidden="true">
+   <columns>
+        <column name="taskid/rowid">
+            <properties>
+                <property name="columnTitle" value="Task Id"/>
+            </properties>
+        </column>
+        <column name="Project"/>
+        <!--<column name="taskid/formtype">-->
+            <!--<properties>-->
+                <!--<property name="columnTitle" value="Task Type"/>-->
+            <!--</properties>-->
+        <!--</column>-->
+        <column name="taskid/updateTitle">
+            <properties>
+                <property name="columnTitle" value="Title"/>
+            </properties>
+        </column>
+        <column name="taskid/AssignedTo">
+            <properties>
+                <property name="columnTitle" value="Assigned To"/>
+            </properties>
+        </column>
+        <column name="taskid/DueDate">
+            <properties>
+                <property name="columnTitle" value="Due Date"/>
+            </properties>
+        </column>
+        <column name="taskid/CreatedBy">
+            <properties>
+                <property name="columnTitle" value="Created By"/>
+            </properties>
+        </column>
+        <column name="taskid/Created">
+            <properties>
+                <property name="columnTitle" value="Created"/>
+            </properties>
+        </column>
+        <column name="taskid/QCState">
+            <properties>
+                <property name="columnTitle" value="Status"/>
+            </properties>
+        </column>
+
+   </columns>
+   <!--<filters>-->
+   <!--</filters>-->
+   <sorts>
+       <sort column="taskid/duedate" descending="true"/>
+       <sort column="project" />
+   </sorts>
+</customView>

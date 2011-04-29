@@ -126,6 +126,7 @@ EHR.ext.Metadata.Standard = {
         }
         ,enddate: {
             xtype: 'xdatetime',
+            shownInInsertView: true,
             colModel: {
                 fixed: true,
                 width: 130
@@ -206,13 +207,11 @@ EHR.ext.Metadata.Standard = {
             allowBlank: false,
             defaultValue: 2,
             shownInGrid: false,
-            hidden: true,
+            hidden: false,
             editorConfig: {
+                editable: false,
                 disabled: true
             }
-        }
-        ,parentId: {
-            lookups: false
         }
         ,parentid: {
             lookups: false
@@ -239,6 +238,7 @@ EHR.ext.Metadata.Standard = {
         ,project: {
             xtype: 'ehr-project'
             ,shownInGrid: false
+            ,useNull: true
             ,lookup: {
                 columns: 'project,account'
             }
@@ -316,12 +316,14 @@ EHR.ext.Metadata.Standard = {
             },
             notify1: {
                 lookup: {
-                    sort: 'type,name'
+                    sort: 'type,name',
+                    filterArray: [LABKEY.Filter.create('name', 'Administrators', LABKEY.Filter.Types.NOT_EQUAL)]
                 }
             },
             notify2: {
                 lookup: {
-                    sort: 'type,name'
+                    sort: 'type,name',
+                    filterArray: [LABKEY.Filter.create('name', 'Administrators', LABKEY.Filter.Types.NOT_EQUAL)]
                 }
             },
             daterequested: {
@@ -397,6 +399,30 @@ EHR.ext.Metadata.Standard = {
                     var idx = Ext.StoreMgr.get('study||Histology||||').getCount()+1;
                     return v || idx;
                 }
+            }
+        },
+        Housing: {
+            odate: {
+                //hidden: true
+                xtype: 'xdatetime',
+                format: 'Y-m-d H:i',
+                shownInGrid: false
+            }
+            ,remark: {
+                shownInGrid: false
+            }
+            ,performedby: {
+                shownInGrid: false
+                ,allowBlank: false
+            }
+            ,cage: {
+                allowBlank: false
+            }
+            ,cond: {
+                allowBlank: false
+            }
+            ,reason: {
+                shownInGrid: false
             }
         },
         'Clinical Encounters': {
@@ -524,14 +550,23 @@ EHR.ext.Metadata.Standard = {
                     }
                 }
             },
-            //NOTE: labkey is reporting the table as '_select' otherwise
-            room: {
-                lookup: {queryName: 'rooms'}
-            },
-            cage: {
-                allowBlank: false
+            no_observations: {
+                formEditorConfig: {
+                    listeners: {
+                        check: function(field, val){
+                            var theForm = this.ownerCt.getForm();
+                            if(theForm){
+                                var rfield = theForm.findField('remark');
+
+                                if(val)
+                                    rfield.setValue('Everything OK');
+                                else if (rfield.getValue()=='Everything OK')
+                                    rfield.setValue('');
+                            }
+                        }
+                    }
+                }
             }
-            //,performedby: {allowBlank: false}
         },
         Charges: {
             type: {
@@ -605,9 +640,9 @@ EHR.ext.Metadata.Standard = {
         'Irregular Observations': {
             RoomAtTime: {hidden: true}
             ,CageAtTime: {hidden: true}
-            ,feces: {shownInGrid: false, xtype: 'ehr-remotecheckboxgroup', includeNullRecord: false, formEditorConfig: {columns: 3}}
-            ,menses: {shownInGrid: false, xtype: 'ehr-remoteradiogroup', defaultValue: null, value: null, includeNullRecord: true, formEditorConfig: {columns: 3}}
-            ,other: {shownInGrid: false, xtype: 'ehr-remotecheckboxgroup', includeNullRecord: false, formEditorConfig: {columns: 3}}
+            ,feces: {shownInGrid: false, xtype: 'ehr-remotecheckboxgroup', includeNullRecord: false, formEditorConfig: {columns: 1}}
+            ,menses: {shownInGrid: false, xtype: 'ehr-remoteradiogroup', defaultValue: null, value: null, includeNullRecord: true, formEditorConfig: {columns: 1}}
+            ,other: {shownInGrid: false, xtype: 'ehr-remotecheckboxgroup', includeNullRecord: false, formEditorConfig: {columns: 1}}
             ,tlocation: {
                 shownInGrid: false,
                 xtype: 'lovcombo',
@@ -618,12 +653,12 @@ EHR.ext.Metadata.Standard = {
 //                    height: 200
                 }
             }
-            ,breeding: {shownInGrid: false, xtype: 'ehr-remotecheckboxgroup', includeNullRecord: false, formEditorConfig: {columns: 3}}
+            ,breeding: {shownInGrid: false, xtype: 'ehr-remotecheckboxgroup', includeNullRecord: false, formEditorConfig: {columns: 1}}
             ,project: {hidden: true}
             ,account: {hidden: true}
             ,performedby: {allowBlank: false}
             ,remark: {
-                shownInGrid: false,
+                shownInGrid: true,
                 formEditorConfig: {
                     storeCfg: {
                         schemaName: 'ehr_lookups',
@@ -633,7 +668,7 @@ EHR.ext.Metadata.Standard = {
                     }
                 }
             }
-            ,behavior: {shownInGrid: false, xtype: 'ehr-remotecheckboxgroup', includeNullRecord: false, formEditorConfig: {columns: 3}}
+            ,behavior: {shownInGrid: false, xtype: 'ehr-remotecheckboxgroup', includeNullRecord: false, formEditorConfig: {columns: 1}}
             ,otherbehavior: {shownInGrid: false}
 //            ,certified: {
 //                xtype: 'ehr-approveradio',
@@ -714,9 +749,9 @@ EHR.ext.Metadata.Standard = {
             gender: {includeNullRecord: false, allowBlank: false}
         },
         'Blood Draws' : {
-            caretaker: {shownInGrid: false}
+            billedby: {shownInGrid: false}
             ,remark: {shownInGrid: false}
-            ,project: {shownInGrid: false}
+            ,project: {shownInGrid: false, allowBlank: false}
             ,requestor: {shownInGrid: false, formEditorConfig:{readOnly: true}}
             ,done_by: {shownInGrid: false}
             ,performedby: {shownInGrid: false}
@@ -754,7 +789,7 @@ EHR.ext.Metadata.Standard = {
                 }
             }
             ,quantity: {
-                xtype: 'displayfield',
+                //xtype: 'displayfield',
                 editorConfig: {
                     allowNegative: false,
                     calculateQuantity: function(){
@@ -804,7 +839,10 @@ EHR.ext.Metadata.Standard = {
         },
         'Drug Administration': {
             enddate: {
-                shownInGrid: false
+                shownInGrid: false,
+                hidden: false,
+                shownInInsertView: true,
+                label: 'End Time'
             }
             ,code: {
                 editorConfig: {
@@ -895,6 +933,9 @@ EHR.ext.Metadata.Standard = {
             ,performedby: {
                 allowBlank: false
             }
+            ,project: {
+                allowBlank: false
+            }
         },
         Notes: {
             performedby: {hidden: true},
@@ -912,7 +953,7 @@ EHR.ext.Metadata.Standard = {
             observation: {
                 xtype: 'ehr-remoteradiogroup',
                 //defaultValue: 'Normal',
-                allowBlank: false,
+                //allowBlank: false,
                 includeNullRecord: false,
                 editorConfig: {columns: 2},
                 lookup: {
@@ -981,11 +1022,11 @@ EHR.ext.Metadata.Standard = {
 EHR.ext.Metadata.Task = {
     allQueries: {
         QCState: {
-            parentConfig: {
-                storeIdentifier: {queryName: 'tasks', schemaName: 'ehr'},
-                dataIndex: 'qcstate'
-            }
-            ,hidden: true
+//            parentConfig: {
+//                storeIdentifier: {queryName: 'tasks', schemaName: 'ehr'},
+//                dataIndex: 'qcstate'
+//            }
+            hidden: false
             ,defaultValue: 2
         }
         ,taskid: {
@@ -1100,6 +1141,7 @@ EHR.ext.Metadata.Encounter = {
             }
             ,begindate: {
                 hidden: false
+                ,allowBlank: false
             }
         },
         'Clinical Encounters': {
@@ -1184,7 +1226,7 @@ EHR.ext.Metadata.Request = {
         },
         daterequested: {
             editorConfig: {
-                minValue: new Date()
+                minValue: (new Date()).add(Date.DAY, 2)
             }
         }
     },
@@ -1207,7 +1249,7 @@ EHR.ext.Metadata.Request = {
             requestor: {
                 defaultValue: LABKEY.Security.currentUser.displayName
             },
-            caretaker: {
+            billedby: {
                 hidden: true
             },
             sampleId: {
@@ -1215,6 +1257,9 @@ EHR.ext.Metadata.Request = {
             },
             performedby: {
                 allowBlank: true
+            },
+            quantity : {
+                xtype: 'displayfield'
             }
         },
         'Clinical Encounters': {
@@ -1464,7 +1509,7 @@ EHR.ext.Metadata.PE = {
 EHR.ext.hiddenCols = 'lsid,objectid,qcstate,parentid,taskid,requestid';
 EHR.ext.topCols = 'id,date,enddate,project,account';
 EHR.ext.bottomCols = 'remark,performedBy,'+EHR.ext.hiddenCols;
-EHR.ext.sharedCols = EHR.ext.hiddenCols + ',id,date,project,account,remark,performedby';
+EHR.ext.sharedCols = ',id,date,project,account,remark,performedby,'+EHR.ext.hiddenCols;
 
 EHR.ext.FormColumns = {
     Alopecia: EHR.ext.topCols+',score,cause,upperlegs,lowerarms,shoulders,rump,head,upperarms,lowerlegs,hips,dorsum,other,' + EHR.ext.bottomCols,
@@ -1473,8 +1518,8 @@ EHR.ext.FormColumns = {
     'Behavior Remarks': EHR.ext.topCols+',so,a,p,'+EHR.ext.bottomCols,
     Birth: EHR.ext.topCols+',estimated,gender,weight,wdate,dam,sire,room,cage,cond,origin,conception,type,'+EHR.ext.bottomCols,
     'Body Condition': EHR.ext.topCols+',score,weightstatus,' + EHR.ext.bottomCols,
-    'Blood Draws': EHR.ext.topCols+',tube_type,tube_vol,num_tubes,quantity,requestor,additionalServices,caretaker,sampleId,remark,performedby,' + EHR.ext.hiddenCols, //p_s,a_v,
-    cage_observations: 'room,cage,userId,' + EHR.ext.sharedCols,
+    'Blood Draws': EHR.ext.topCols+',tube_type,tube_vol,num_tubes,quantity,requestor,additionalServices,billedby,sampleId,remark,performedby,' + EHR.ext.hiddenCols, //p_s,a_v,
+    cage_observations: 'date,room,cage,userId,no_observations,' + EHR.ext.sharedCols,
     Charges: EHR.ext.topCols+',type,unitCost,quantity,remark,performedby'+EHR.ext.hiddenCols,
     'Chemistry Results': EHR.ext.topCols+',testname,result,units,qualResult,'+EHR.ext.bottomCols,
     'Clinical Encounters': EHR.ext.topCols + ',title,type,serviceRequested,'+EHR.ext.bottomCols,
@@ -1485,6 +1530,7 @@ EHR.ext.FormColumns = {
     'Drug Administration': 'id,date,begindate,enddate,project,account,code,route,concentration,conc_units,dosage,dosage_units,amount,amount_units,volume,vol_units,headerdate,remark,performedby,' + EHR.ext.hiddenCols,
     'Hematology Results': EHR.ext.topCols+',testname,result,units,qualResult,'+EHR.ext.bottomCols,
     'Hematology Morphology': EHR.ext.topCols+',morphology,score,'+EHR.ext.bottomCols,
+    'Housing': 'id,project,id/curlocation/location,date,odate,room,cage,cond,reason,'+EHR.ext.bottomCols,
     'Immunology Results': EHR.ext.topCols+',testname,result,units,qualResult,'+EHR.ext.bottomCols,
     'Irregular Observations': EHR.ext.topCols + ',id/curlocation/location,feces,menses,other,tlocation,behavior,otherbehavior,other,breeding,'+EHR.ext.bottomCols,
     Histology: EHR.ext.topCols+',slideNum,tissue,diagnosis,'+EHR.ext.bottomCols,

@@ -1,0 +1,42 @@
+ <query xmlns="http://labkey.org/data/xml/query">
+    <metadata> 
+        <tables xmlns="http://labkey.org/data/xml">
+            <table tableName="Pregnancies" tableDbType="TABLE">
+                <tableUrl>/query/detailsQueryRow.view?schemaName=study&amp;query.queryName=Pregnancies&amp;lsid=${lsid}</tableUrl>
+                <!--<insertUrl>/ehr/manageRecord.view?schemaName=study&amp;queryName=Teeth&amp;keyField=lsid&amp;</insertUrl>-->
+                <!--<updateUrl>/ehr/manageRecord.view?schemaName=study&amp;queryName=Teeth&amp;keyField=lsid&amp;key=${lsid}</updateUrl>-->
+                <insertUrl />
+                <updateUrl />
+                <deleteUrl />
+                <columns>
+                    <column columnName="participantid">
+                        <datatype>varchar</datatype>
+                        <columnTitle>Participant ID</columnTitle>
+                        <description>Participant identifier</description>
+                        <nullable>false</nullable>
+                    </column>
+                    <column columnName="date">
+                        <!--<datatype>timestamp</datatype>-->
+                        <formatString>yyyy-MM-dd HH:mm a</formatString>
+                        <!--<columnTitle>Date</columnTitle>-->
+                        <!--<nullable>false</nullable>-->
+                        <!--<propertyURI>http://cpas.labkey.com/Study#VisitDate</propertyURI>-->
+                    </column>
+                    <column columnName="parentId">
+                     <datatype>varchar</datatype>
+                      <columnTitle>Parent Id</columnTitle>
+                      <propertyURI>urn:ehr.labkey.org/#ParentId</propertyURI>
+                      <fk>
+                          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
+                          <fkDbSchema>study</fkDbSchema>
+                          <fkTable>studyDataParent</fkTable>
+                          <fkColumnName>objectid</fkColumnName>
+                      </fk>
+                    </column>
+                </columns>
+                <tableTitle>Ultrasound</tableTitle>
+                <description>Ultrasound</description>
+            </table>
+        </tables>
+    </metadata>
+</query>

@@ -7,13 +7,13 @@
                 <!--<updateUrl>/ehr/manageRecord.view?schemaName=study&amp;queryName=Deaths&amp;keyField=lsid&amp;key=${lsid}</updateUrl>-->
                 <insertUrl />
                 <updateUrl />
-                <!--<deleteUrl />-->
+                <deleteUrl />
                 <columns>
                     <column columnName="parentId">
                         <fk>
                           <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                           <fkDbSchema>study</fkDbSchema>
-                          <fkTable>encounters</fkTable>
+                          <fkTable>studyDataParent</fkTable>
                           <fkColumnName>objectid</fkColumnName>
                         </fk>
                     </column>
@@ -22,7 +22,7 @@
                     <columnTitle>Cause</columnTitle>
                     <fk>
                       <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-                      <fkDbSchema>lists</fkDbSchema>
+                      <fkDbSchema>ehr_lookups</fkDbSchema>
                       <fkTable>death_codes</fkTable>
                       <fkColumnName>Code</fkColumnName>
                     </fk>

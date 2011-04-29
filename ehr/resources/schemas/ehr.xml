@@ -233,6 +233,11 @@
         <ns:nullable>true</ns:nullable>
         <ns:datatype>varchar</ns:datatype>
         <ns:scale>32</ns:scale>
+          <ns:fk>
+            <ns:fkDbSchema>ehr_lookups</ns:fkDbSchema>
+            <ns:fkTable>snomed</ns:fkTable>
+            <ns:fkColumnName>code</ns:fkColumnName>
+          </ns:fk>
       </ns:column>
     </ns:columns>
   </ns:table>
@@ -257,6 +262,11 @@
         <ns:nullable>true</ns:nullable>
         <ns:datatype>varchar</ns:datatype>
         <ns:scale>100</ns:scale>
+          <ns:fk>
+            <ns:fkDbSchema>ehr</ns:fkDbSchema>
+            <ns:fkTable>formtypes</ns:fkTable>
+            <ns:fkColumnName>formtype</ns:fkColumnName>
+          </ns:fk>
       </ns:column>
       <ns:column columnName="requestId">
         <ns:datatype>entityid</ns:datatype>
@@ -350,7 +360,7 @@
         <ns:datatype>integer</ns:datatype>
         <ns:scale>50</ns:scale>
         <ns:fk>
-            <ns:fkFolderPath>/wnprc/ehr/</ns:fkFolderPath>
+            <!--<ns:fkFolderPath>/wnprc/ehr/</ns:fkFolderPath>-->
             <ns:fkDbSchema>core</ns:fkDbSchema>
             <ns:fkTable>Principals</ns:fkTable>
             <ns:fkColumnName>userid</ns:fkColumnName>
@@ -360,7 +370,7 @@
         <ns:nullable>true</ns:nullable>
         <ns:datatype>integer</ns:datatype>
         <ns:fk>
-            <ns:fkFolderPath>/wnprc/ehr/</ns:fkFolderPath>
+            <!--<ns:fkFolderPath>/wnprc/ehr/</ns:fkFolderPath>-->
             <ns:fkDbSchema>core</ns:fkDbSchema>
             <ns:fkTable>Principals</ns:fkTable>
             <ns:fkColumnName>userid</ns:fkColumnName>
@@ -381,6 +391,11 @@
         <ns:nullable>true</ns:nullable>
         <ns:datatype>varchar</ns:datatype>
         <ns:scale>100</ns:scale>
+          <ns:fk>
+            <ns:fkDbSchema>ehr</ns:fkDbSchema>
+            <ns:fkTable>formtypes</ns:fkTable>
+            <ns:fkColumnName>formtype</ns:fkColumnName>
+          </ns:fk>
       </ns:column>
       <ns:column columnName="daterequested">
         <ns:nullable>true</ns:nullable>
@@ -401,6 +416,11 @@
           <ns:fkTable>QCState</ns:fkTable>
           <ns:fkColumnName>rowid</ns:fkColumnName>
         </ns:fk>
+      </ns:column>
+      <ns:column columnName="remark">
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>text</ns:datatype>
+        <ns:scale>255</ns:scale>
       </ns:column>
       <ns:column columnName="description">
         <ns:nullable>true</ns:nullable>
@@ -530,6 +550,12 @@
         <ns:columnTitle>QCState PublicData Field Name</ns:columnTitle>
         <ns:scale>1</ns:scale>
       </ns:column>
+      <ns:column columnName="jsonConfig">
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>varchar</ns:datatype>
+        <ns:columnTitle>JSON Config</ns:columnTitle>
+        <ns:scale>255</ns:scale>
+      </ns:column>
       <ns:column columnName="container">
         <ns:isUserEditable>false</ns:isUserEditable>
         <ns:datatype>entityid</ns:datatype>
@@ -581,11 +607,11 @@
         <ns:formatString>yyyy-MM-dd</ns:formatString>
         <ns:columnTitle>Date</ns:columnTitle>
       </ns:column>
-      <ns:column columnName="roomcage">
-        <ns:datatype>varchar</ns:datatype>
-        <ns:columnTitle>Room/Cage</ns:columnTitle>
-        <ns:nullable>false</ns:nullable>
-      </ns:column>
+      <!--<ns:column columnName="roomcage">-->
+        <!--<ns:datatype>varchar</ns:datatype>-->
+        <!--<ns:columnTitle>Room/Cage</ns:columnTitle>-->
+        <!--<ns:nullable>false</ns:nullable>-->
+      <!--</ns:column>-->
       <ns:column columnName="room">
         <ns:datatype>varchar</ns:datatype>
         <ns:nullable>false</ns:nullable>
@@ -600,6 +626,11 @@
         <ns:columnTitle>Remark</ns:columnTitle>
         <ns:propertyURI>urn:ehr.labkey.org/#Remark</ns:propertyURI>
         <ns:inputType>textarea</ns:inputType>
+      </ns:column>
+      <ns:column columnName="no_observations">
+        <ns:datatype>boolean</ns:datatype>
+        <ns:nullable>true</ns:nullable>
+        <ns:columnTitle>Everything Is OK</ns:columnTitle>
       </ns:column>
       <ns:column columnName="userid">
         <ns:datatype>varchar</ns:datatype>
@@ -807,6 +838,11 @@
       <ns:column columnName="formtype">
         <ns:datatype>varchar</ns:datatype>
         <ns:scale>100</ns:scale>
+          <ns:fk>
+            <ns:fkDbSchema>ehr</ns:fkDbSchema>
+            <ns:fkTable>formtypes</ns:fkTable>
+            <ns:fkColumnName>formtype</ns:fkColumnName>
+          </ns:fk>
       </ns:column>
       <ns:column columnName="userId">
         <ns:nullable>true</ns:nullable>
@@ -876,10 +912,20 @@
         <ns:nullable>true</ns:nullable>
         <ns:datatype>varchar</ns:datatype>
         <ns:scale>100</ns:scale>
+          <ns:fk>
+            <ns:fkDbSchema>ehr</ns:fkDbSchema>
+            <ns:fkTable>notificationtypes</ns:fkTable>
+            <ns:fkColumnName>notificationtypes</ns:fkColumnName>
+          </ns:fk>
       </ns:column>
       <ns:column columnName="recipient">
         <ns:datatype>varchar</ns:datatype>
         <ns:scale>100</ns:scale>
+          <ns:fk>
+            <ns:fkDbSchema>core</ns:fkDbSchema>
+            <ns:fkTable>Principals</ns:fkTable>
+            <ns:fkColumnName>userid</ns:fkColumnName>
+          </ns:fk>
       </ns:column>
       <ns:column columnName="container">
         <ns:isUserEditable>false</ns:isUserEditable>
@@ -938,6 +984,11 @@
       <ns:column columnName="formtype">
         <ns:datatype>varchar</ns:datatype>
         <ns:scale>100</ns:scale>
+          <ns:fk>
+            <ns:fkDbSchema>ehr</ns:fkDbSchema>
+            <ns:fkTable>formtypes</ns:fkTable>
+            <ns:fkColumnName>formtype</ns:fkColumnName>
+          </ns:fk>
       </ns:column>
       <ns:column columnName="xtype">
         <ns:datatype>varchar</ns:datatype>
@@ -980,7 +1031,7 @@
       <ns:column columnName="configJson">
         <ns:nullable>true</ns:nullable>
         <ns:datatype>text</ns:datatype>
-        <ns:scale>32767</ns:scale>
+        <ns:scale>255</ns:scale>
       </ns:column>
       <ns:column columnName="container">
         <ns:isUserEditable>false</ns:isUserEditable>
@@ -1048,7 +1099,7 @@
       <ns:column columnName="json">
         <ns:nullable>true</ns:nullable>
         <ns:datatype>text</ns:datatype>
-        <ns:scale>32767</ns:scale>
+        <ns:scale>255</ns:scale>
       </ns:column>
       <ns:column columnName="container">
         <ns:isUserEditable>false</ns:isUserEditable>

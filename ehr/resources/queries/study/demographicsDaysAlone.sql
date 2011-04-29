@@ -10,7 +10,6 @@ SELECT
 
 h1.id,
 
--- convert(
 CASE
   --never had a roommate
   WHEN count(h2.id) = 0
@@ -32,9 +31,9 @@ CASE
     THEN 0
   ELSE
     TIMESTAMPDIFF('SQL_TSI_DAY', max(h2.odate), now())
-END, 'INTEGER') as DaysAlone,
+END, 'INTEGER') as DaysAlone
 
-max(a.value) as Exemptions
+-- max(a.value) as Exemptions
 
 FROM study.Housing h1
 
@@ -51,12 +50,12 @@ LEFT OUTER JOIN study.Housing h2
       )
 
 --join to vet exemptions
-LEFT JOIN study.notes a
-  ON (h1.id = a.id AND a.EndDate IS NULL and a.value LIKE '%pairing exempt%')
+-- LEFT JOIN study.notes a
+--   ON (h1.id = a.id AND a.EndDate IS NULL and a.value LIKE '%pairing exempt%')
 
 WHERE
 h1.id.Status.Status = 'Alive'
-AND a.qcstate.publicdata = true
+--AND a.qcstate.publicdata = true
 AND h1.qcstate.publicdata = true
 AND h2.qcstate.publicdata = true
 

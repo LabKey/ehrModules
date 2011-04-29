@@ -9,22 +9,24 @@ library(kinship)
 library(Rlabkey)
 #library(PAAFunction)
 
+str(labkey.data);
+
 #query all animals in the DB
 allPed <- labkey.selectRows(
     baseUrl=labkey.url.base,
     folderPath="/WNPRC/EHR",
     schemaName="study",
     queryName="demographicsPedigree",
-    #queryName="pedigree",
-    showHidden = FALSE
+    colSelect=c('Id', 'Sire', 'Dam', 'Gender'),
+    showHidden = TRUE,
+    colNameOpt = 'fieldname',  #rname
+    #showHidden = FALSE
 )
-#allPed$Gender <- as.integer(allPed$Genderint);
-#allPed$Genderint <- NULL;
-print("allPed")
-str(allPed)
+#print("allPed")
+#str(allPed)
 
-print("labkey.data")
-str(labkey.data)
+#print("labkey.data")
+#str(labkey.data)
 
 #this adds missing parents to the pedigree
 `addMissing` <-
@@ -32,27 +34,25 @@ function(ped)
   {
     if(ncol(ped)<4)stop("pedigree should have at least 4 columns")
     head <- names(ped)
-    ndams <- match(ped[,2],ped[,1])
-    ndams <- as.character(unique(ped[is.na(ndams),2]))
-    ndams <- ndams[!is.na(ndams)];
-    nsires <- match(ped[,3],ped[,1])
-    nsires <- as.character(unique(ped[is.na(nsires),3]))
+
+    nsires <- match(ped[,2],ped[,1])
+    nsires <- as.character(unique(ped[is.na(nsires),2]))
     nsires <- nsires[!is.na(nsires)]
-    nped <- data.frame(matrix(NA,nrow = length(ndams) + length(nsires),
-                              ncol = ncol(ped)))
-    names(nped) <- names(ped)
-    nped[,1] <- c(ndams,nsires)
-    nped[,4] <- c(rep(2, length(ndams)),rep(1, length(nsires)))
-    #nped[,4] <- c(rep("female", length(ndams)),rep("male", length(nsires)))
-    ped <- rbind(nped,ped)
+    ped <- rbind(ped,data.frame(Id=nsires, Sire=rep(NA, length(nsires)), Dam=rep(NA, length(nsires)), gender=rep(1, length(nsires))));
+
+    ndams <- match(ped[,3],ped[,1])
+    ndams <- as.character(unique(ped[is.na(ndams),3]))
+    ndams <- ndams[!is.na(ndams)];
+    ped <- rbind(ped,data.frame(Id=ndams, Sire=rep(NA, length(ndams)), Dam=rep(NA, length(ndams)), gender=rep(2, length(ndams))));
+
     names(ped) <- head
     return(ped)
   }
 
 
 #start the script
-ped = data.frame(Id=labkey.data$id, Dam=labkey.data$dam, Sire=labkey.data$sire, Gender=labkey.data$gender);
-#nrow(ped);
+ped = data.frame(Id=labkey.data$id, Dam=labkey.data$dam, Sire=labkey.data$sire, gender=labkey.data$gender);
+nrow(ped);
 print("initial ped:")
 str(ped)
 
@@ -65,14 +65,16 @@ for(i in 1:gens){
     if (length(queryIds) == 0){break};
 
     newRows <- subset(allPed, Id %in% queryIds);
-print("genR:",i)
-queryIds
-str(newRows);
+#    print("genR:",i)
+#    queryIds
+#    str(newRows);
+    if (nrow(newRows)==0){break};
+
     queryIds = c(newRows$Sire, newRows$Dam);
     queryIds <- !is.na(queryIds);
     ped <- unique(rbind(newRows,ped));
 }
-#nrow(ped);
+nrow(ped);
 
 #build forwards
 queryIds = unique(ped$Id);
@@ -80,28 +82,32 @@ for(i in 1:gens){
     if (length(queryIds)==0){break};
 
     newRows <- subset(allPed, Sire %in% queryIds | Dam %in% queryIds);
-print("genF:",i)
-queryIds
-str(newRows)
+#    print("genF:",i)
+#    queryIds
+#    str(newRows)
+    if (nrow(newRows)==0){break};
+
     queryIds = newRows$Id;
     queryIds <- !is.na(queryIds);
     ped <- unique(rbind(newRows,ped));
 }
 
-#nrow(ped);
-
+nrow(ped);
 #ped;
 
-ped$Gender <- as.integer(ped$Gender);
-print("pedEnd:")
-str(ped)
+ped$gender <- as.integer(ped$gender);
+#print("pedEnd:")
+#str(ped)
 fixedPed <- addMissing(ped)
 print("fixed ped:")
 str(fixedPed);
-#fixedPed;
+fixedPed$Dam[is.na(fixedPed$Sire)] <- NA
+fixedPed$Sire[is.na(fixedPed$Dam)] <- NA
+fixedPed;
+
 
 if(nrow(fixedPed)>1){
-    ptemp = pedigree(id=fixedPed$Id, momid=fixedPed$Dam, dadid=fixedPed$Sire, gender=fixedPed$Gender);
+    ptemp = pedigree(id=fixedPed$Id, momid=fixedPed$Dam, dadid=fixedPed$Sire, sex=fixedPed$gender);
 
     png(filename="${imgout:png_pedigree}");
     par(xpd=TRUE);    

@@ -73,6 +73,8 @@ function onComplete(event, errors, scriptContext){
                 failure: EHR.onFailure
             });
         }
+
+        //TODO: update housing table to end open housing records
     }
 };
 

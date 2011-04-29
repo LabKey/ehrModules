@@ -50,7 +50,7 @@ null as otherbehavior,
 c.Remark,
 --cn.note as Remark,
 null as dataset,
-'Cage Observation' as description,
+c.description,
 c.qcstate
 
 FROM study."Cage Observations" c

@@ -2,10 +2,12 @@
    <columns>
         <column name="Id"/>
         <column name="Date"/>
+        <column name="QCState"/>
         <column name="Odate"/>
         <column name="Room"/>
         <column name="Cage"/>
         <column name="Cond"/>
+        <column name="reason"/>
         <column name="Id/Dataset/Demographics/Status">
             <properties>
                 <property name="columnTitle" value="Status"/>
@@ -34,7 +36,7 @@
    </columns>
    <filters>
        <filter column="odate" operator="isblank"/>
-        <filter column="qcstate/publicdata" operator="eq" value="true"/>
+        <!--<filter column="qcstate/publicdata" operator="eq" value="true"/>-->
    </filters>
    <sorts>
        <sort column="date" descending="true"/>

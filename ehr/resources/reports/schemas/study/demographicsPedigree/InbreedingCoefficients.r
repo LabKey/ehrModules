@@ -3,7 +3,7 @@
 # 
 #  Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
 ##
-options(echo=TRUE);
+options(echo=FALSE);
 options(expressions = 1000);
 library(pedigree)
 library(Rlabkey)
@@ -38,15 +38,15 @@ oldRecords <- labkey.selectRows(
 IdxToDelete <- setdiff(oldRecords$Id, newRecords$Id);
 #IdxToDelete
 toDelete <- oldRecords[match(IdxToDelete, oldRecords$Id),]
-#toDelete
 
+#delete any animals present in the inbreeding table, but notthe p
 if(length(toDelete$Id)){
     del <- labkey.deleteRows(
         baseUrl=labkey.url.base,
         folderPath="/WNPRC/EHR",
         schemaName="study",
         queryName="inbreeding",
-        toDelete=data.frame(lsid=toDelete$Lsid)
+        toDelete=data.frame(lsid=toDelete$lsid)
     );
     del;
 }
@@ -62,7 +62,7 @@ toGet <- (!is.na(coefficient1$coefficient) & is.na(coefficient2$coefficient)) | 
 toUpdate <- coefficient1[toGet,];
 toUpdate$coefficient <- coefficient2$coefficient[toGet];
 toUpdate$date <- c( as.character( date() ) );
-#str(toUpdate);
+str(toUpdate);
 
 if(length(toUpdate$Id)){
     update <- labkey.updateRows(
@@ -77,7 +77,7 @@ if(length(toUpdate$Id)){
 
 IdxToInsert <- setdiff(newRecords$Id, oldRecords$Id);
 toInsert <- newRecords[match(IdxToInsert, newRecords$Id),]
-#str(toInsert)
+str(toInsert)
 
 if(length(toInsert$Id)){
     ins <- labkey.insertRows(

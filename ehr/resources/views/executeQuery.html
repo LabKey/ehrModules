@@ -29,24 +29,24 @@ Ext.onReady(function (){
         errorCallback: EHR.utils.onError
     };
 
-    if(schema=='study'){
-        LABKEY.Query.executeSql({
-            scope: this,
-            schemaName: 'study',
-            sql: "SELECT * FROM study.datasets WHERE label='"+query+"' OR name='"+query+"'",
-            error: EHR.utils.onError,
-            success: function(data){
-                if(data.rows && data.rows.length)
-                    config.filters = [LABKEY.Filter.create('QCState/PublicData', true, LABKEY.Filter.Types.EQUAL)];
-
-                new LABKEY.QueryWebPart(config).render('qwpDiv');
-            }
-        });
-
-    }
-    else {
+//    if(schema=='study'){
+//        LABKEY.Query.executeSql({
+//            scope: this,
+//            schemaName: 'study',
+//            sql: "SELECT * FROM study.datasets WHERE label='"+query+"' OR name='"+query+"'",
+//            error: EHR.utils.onError,
+//            success: function(data){
+//                if(data.rows && data.rows.length)
+//                    config.filters = [LABKEY.Filter.create('QCState/PublicData', true, LABKEY.Filter.Types.EQUAL)];
+//
+//                new LABKEY.QueryWebPart(config).render('qwpDiv');
+//            }
+//        });
+//
+//    }
+//    else {
         new LABKEY.QueryWebPart(config).render('qwpDiv');
-    }
+//    }
 
 
 });

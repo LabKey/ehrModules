@@ -12,7 +12,7 @@ library(Rlabkey)
 #print("It represents the probability that two genes, sampled at random from each individual are identical")
 #print("(e.g. the kinship coefficient between a parent and an offspring is 0.25)")
 
-#kinship coefficient between two individuals equals the inbreeding coefficient of a hypotheticial offspring between them
+#kinship coefficient between two individuals equals the inbreeding coefficient of a hypothetical offspring between them
 
 #calculate kinship using an R package
 kin = kinship(labkey.data$id, labkey.data$dam, labkey.data$sire)
@@ -20,12 +20,18 @@ kin = kinship(labkey.data$id, labkey.data$dam, labkey.data$sire)
 #transform this matrix into a 3 column dataframe
 vec <- c(kin);
 cols<- length(colnames(kin))
-newRecords<-data.frame(cbind(row.names(kin)[rep(1:cols, each=cols)] , colnames(kin), as.character( date() )), stringsAsFactors=FALSE);
-newRecords<- cbind(newRecords, matrix(as.matrix(kin), 16,1))
-colnames(newRecords)<-c("Id", "Id2", "date", "coefficient")
+newRecords<-data.frame(cbind(row.names(kin)[rep(1:cols, each=cols)] , colnames(kin)), stringsAsFactors=FALSE);
+newRecords<- cbind(newRecords, matrix(as.matrix(kin), cols,1))
 
-newRecords$key1 <- paste(newRecords$id, newRecords$id2, sep=":")
+colnames(newRecords)<-c("Id", "Id2", "coefficient")
+
+newRecords$key1 <- paste(newRecords$Id, newRecords$Id2, sep=":")
+print('Test0')
 newRecords$key2 <- paste(newRecords$key1, newRecords$coefficient, sep=":")
+print('Test')
+newRecords$date <- c(date())
+print('Test2')
+newRecords$date <- as.character(newRecords$date)
 
 str(newRecords);
 
@@ -97,7 +103,7 @@ coefficient2
 toGet <- (!is.na(coefficient1$coefficient) & is.na(coefficient2$coefficient)) | (is.na(coefficient1$coefficient) & !is.na(coefficient2$coefficient)) | (!is.na(coefficient1$coefficient) & !is.na(coefficient2$coefficient) & coefficient1$coefficient != coefficient2$coefficient)
 toUpdate <- coefficient1[toGet,];
 toUpdate$coefficient <- coefficient2$coefficient[toGet];
-toUpdate$date <- c( as.character( date() ) );
+toUpdate$date <- c(as.character(date()));
 str(toUpdate);
 toUpdate
 

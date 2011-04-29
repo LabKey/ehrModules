@@ -817,10 +817,10 @@
         <datatype>varchar</datatype>
         <columnTitle>Code</columnTitle>
       </column>
-      <column columnName="caretaker">
+      <column columnName="billedby">
         <datatype>varchar</datatype>
         <!--<nullable>false</nullable>-->
-        <columnTitle>Caretaker</columnTitle>
+        <columnTitle>Billed By</columnTitle>
       </column>
       <column columnName="tube_type">
         <datatype>varchar</datatype>

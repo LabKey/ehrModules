@@ -476,16 +476,16 @@ FROM col_dump.rhesaux_mysql
 
 UNION ALL
 
-SELECT
-null as id,
-null as date,
-ts,
-objectid AS LabKeyUUID,
-'snomed' as type,
-key2 AS mySQL_UUID
-FROM col_dump.snomed_mysql
-
-UNION ALL
+-- SELECT
+-- null as id,
+-- null as date,
+-- ts,
+-- objectid AS LabKeyUUID,
+-- 'snomed' as type,
+-- key2 AS mySQL_UUID
+-- FROM col_dump.snomed_mysql
+--
+-- UNION ALL
 
 SELECT
 id,

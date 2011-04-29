@@ -2,6 +2,6 @@
   <filters>
       <filter column="date" operator="dategte" value="-1m" />
       <!--<filter column="date" operator="dategt" value="-1" />-->
-        <filter column="qcstate/publicdata" operator="eq" value="true"/>
+        <!--<filter column="qcstate/publicdata" operator="eq" value="true"/>-->
     </filters>
 </customView>

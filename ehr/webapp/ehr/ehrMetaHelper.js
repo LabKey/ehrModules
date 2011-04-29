@@ -114,7 +114,7 @@ EHR.ext.metaHelper = {
             fieldLabel: h(meta.label || meta.caption || meta.header || meta.name),
             originalConfig: meta,
             //we assume the store's translateMeta() will handle this
-            allowBlank: meta.allowBlank,
+            allowBlank: meta.allowBlank!==false,
             disabled: meta.editable===false,
             name: meta.name,
             dataIndex: meta.dataIndex || meta.name,
@@ -243,6 +243,7 @@ EHR.ext.metaHelper = {
                         field.xtype = meta.xtype || 'textfield';
                     break;
                 default:
+                    field.xtype = meta.xtype || 'textfield';
             }
         }
 
@@ -275,6 +276,9 @@ EHR.ext.metaHelper = {
 
         if (l.viewName)
             config.viewName = l.viewName;
+
+        if (l.filterArray)
+            config.filterArray = l.filterArray;
 
         if (l.columns)
             config.columns = l.columns;
@@ -321,20 +325,20 @@ EHR.ext.metaHelper = {
         }
     },
 
-    getColumnModelConfig: function(store, config){
+    getColumnModelConfig: function(store, config, grid){
         config = config || {};
 
         var columns = store.reader.jsonData.columnModel;
         var cols = new Array();
 
         Ext.each(columns, function(col, idx){
-            cols.push(EHR.ext.metaHelper.getColumnConfig(store, col, config));
+            cols.push(EHR.ext.metaHelper.getColumnConfig(store, col, config, grid));
         }, this);
 
         return cols;
     },
 
-    getColumnConfig: function(store, col, config){
+    getColumnConfig: function(store, col, config, grid){
         var meta = store.findFieldMeta(col.dataIndex);
         col.customized = true;
 
@@ -377,10 +381,10 @@ EHR.ext.metaHelper = {
             col.editor = EHR.ext.metaHelper.getGridEditorConfig(meta);
 
         if(meta.getRenderer)
-            col.renderer = meta.getRenderer(col, meta);
+            col.renderer = meta.getRenderer(col, meta, grid);
 
         if(!col.renderer)
-            col.renderer = EHR.ext.metaHelper.getDefaultRenderer(col, meta);
+            col.renderer = EHR.ext.metaHelper.getDefaultRenderer(col, meta, grid);
 
         //HTML-encode the column header
         col.header = Ext.util.Format.htmlEncode(meta.header || col.header);
@@ -400,7 +404,7 @@ EHR.ext.metaHelper = {
 
     },
 
-    getDefaultRenderer : function(col, meta) {
+    getDefaultRenderer : function(col, meta, grid) {
         return function(data, cellMetaData, record, rowIndex, colIndex, store)
         {
             EHR.ext.metaHelper.buildQtip(data, cellMetaData, record, rowIndex, colIndex, store, col, meta);
@@ -412,10 +416,11 @@ EHR.ext.metaHelper = {
 
             //NOTE: this is substantially changed over FormHelper
             if(meta.lookup && meta.lookups!==false){
+
 if(meta.lookup.queryName=='snomed'){
     console.log('unfiltered snomed renderer')
 }
-                data = EHR.ext.metaHelper.lookupRenderer(meta, data);
+                data = EHR.ext.metaHelper.lookupRenderer(meta, data, grid, record, rowIndex);
             }
 
             if(null === data || undefined === data || data.toString().length == 0)
@@ -491,7 +496,7 @@ if(meta.lookup.queryName=='snomed'){
             cellMetaData.attr = "ext:qtip=\"" + Ext.util.Format.htmlEncode(qtip.join('<br>')) + "\"";
     },
 
-    lookupRenderer : function(meta, data) {
+    lookupRenderer : function(meta, data, grid, record, rowIndex) {
         var lookupStore = EHR.ext.metaHelper.getLookupStore(meta);
         if(!lookupStore)
             return '';
@@ -499,10 +504,20 @@ if(meta.lookup.queryName=='snomed'){
         var lookupRecord = lookupStore.getById(data);
         if (lookupRecord)
             return lookupRecord.data[meta.lookup.displayColumn];
-        else if (data)
-            return "[" + data + "]";
-        else
-            return meta.lookupNullCaption || "[none]";
+        else {
+            //if store not loaded yet, retry rendering on store load
+            if(grid && !lookupStore.fields){
+                lookupStore.on('load', function(store){
+                    grid.getView().refreshRow(rowIndex);
+                }, this, {single: true});
+            }
+            if (data!==null){
+                return "[" + data + "]";
+            }
+            else {
+                return meta.lookupNullCaption || "[none]";
+            }
+        }
     }
 };
 

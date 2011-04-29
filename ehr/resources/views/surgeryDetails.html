@@ -36,7 +36,7 @@ Ext.onReady(function ()
             return;
 
         var row = data.rows[0];
-console.log(row)
+
          new LABKEY.QueryWebPart({
             title: 'Clinical Remarks',
             schemaName: 'study',
@@ -83,7 +83,7 @@ console.log(row)
     new LABKEY.QueryWebPart({
         title: 'Procedures',
         schemaName: 'study',
-        queryName: 'procedures',
+        queryName: 'Procedure Codes',
         allowChooseQuery: false,
         allowChooseView: true,
         showInsertNewButton: false,

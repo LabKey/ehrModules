@@ -1,0 +1,47 @@
+<customView xmlns="http://labkey.org/data/xml/queryCustomView">
+    <columns>
+        <column name="Id"/>
+        <column name="Id/Dataset/Demographics/Gender">
+            <properties>
+                <property name="columnTitle" value="Gender"/>
+            </properties>
+        </column>
+        <column name="Id/Dataset/Demographics/Status">
+            <properties>
+                <property name="columnTitle" value="Status"/>
+            </properties>
+        </column>
+        <column name="Id/Dataset/Demographics/Room">
+            <properties>
+                <property name="columnTitle" value="Room"/>
+            </properties>
+        </column>
+        <column name="Id/Dataset/Demographics/Cage">
+            <properties>
+                <property name="columnTitle" value="Cage"/>
+            </properties>
+        </column>
+        <column name="Id/Dataset/Demographics/Cond">
+            <properties>
+                <property name="columnTitle" value="Condition"/>
+            </properties>
+        </column>
+        <column name="Id/Dataset/Demographics/weight">
+            <properties>
+                <property name="columnTitle" value="Current Weight"/>
+            </properties>
+        </column>
+        <column name="Id/Dataset/Demographics/wdate">
+            <properties>
+                <property name="columnTitle" value="Weight Date"/>
+            </properties>
+        </column>
+    </columns>
+    <filters>
+        <filter column="id/Status/Status" operator="eq" value="Alive"/>
+        <!--<filter column="qcstate/publicdata" operator="eq" value="true"/>-->
+    </filters>
+    <sorts>
+        <sort column="id" descending="false"/>
+    </sorts>
+</customView>

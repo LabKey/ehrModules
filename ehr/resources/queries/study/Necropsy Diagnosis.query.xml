@@ -7,7 +7,7 @@
                 <!--<updateUrl>/ehr/manageRecord.view?schemaName=study&amp;queryName=Necropsy Diagnosis&amp;keyField=lsid&amp;key=${lsid}</updateUrl>-->
                 <insertUrl />
                 <updateUrl />
-                <!--<deleteUrl />-->
+                <deleteUrl />
                 <columns>
                   <column columnName="participantid">
                     <datatype>varchar</datatype>
@@ -27,7 +27,7 @@
                     <columnTitle>Organ/Tissue</columnTitle>
                     <fk>
                       <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-                      <fkDbSchema>lists</fkDbSchema>
+                      <fkDbSchema>ehr_lookups</fkDbSchema>
                       <fkTable>snomed</fkTable>
                       <fkColumnName>code</fkColumnName>
                     </fk>
@@ -37,7 +37,7 @@
                     <columnTitle>Severity</columnTitle>
                     <fk>
                       <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-                      <fkDbSchema>lists</fkDbSchema>
+                      <fkDbSchema>ehr_lookups</fkDbSchema>
                       <fkTable>snomed</fkTable>
                       <fkColumnName>code</fkColumnName>
                     </fk>
@@ -47,7 +47,7 @@
                     <columnTitle>Diagnosis</columnTitle>
                     <fk>
                       <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-                      <fkDbSchema>lists</fkDbSchema>
+                      <fkDbSchema>ehr_lookups</fkDbSchema>
                       <fkTable>snomed</fkTable>
                       <fkColumnName>code</fkColumnName>
                     </fk>
@@ -62,6 +62,12 @@
                   <column columnName="seq1">
                     <datatype>integer</datatype>
                     <columnTitle>Diagnosis Number</columnTitle>
+                    <url>/ehr/executeQuery.view?schemaName=study&amp;
+                        query.queryName=Necropsy%20Diagnosis&amp;
+                        query.id~eq=${id}&amp;
+                        query.date~eq=${date}&amp;
+                        query.seq1~eq=${seq1}&amp;
+                    </url>
                   </column>
                   <column columnName="seq2">
                     <datatype>integer</datatype>
@@ -73,7 +79,7 @@
                     <columnTitle>Tissue</columnTitle>
                     <fk>
                       <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-                      <fkDbSchema>lists</fkDbSchema>
+                      <fkDbSchema>ehr_lookups</fkDbSchema>
                       <fkTable>snomed</fkTable>
                       <fkColumnName>code</fkColumnName>
                     </fk>
@@ -84,7 +90,7 @@
                     <columnTitle>Duration</columnTitle>
                     <fk>
                       <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-                      <fkDbSchema>lists</fkDbSchema>
+                      <fkDbSchema>ehr_lookups</fkDbSchema>
                       <fkTable>snomed</fkTable>
                       <fkColumnName>code</fkColumnName>
                     </fk>
@@ -95,7 +101,7 @@
                     <columnTitle>Severity</columnTitle>
                     <fk>
                       <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-                      <fkDbSchema>lists</fkDbSchema>
+                      <fkDbSchema>ehr_lookups</fkDbSchema>
                       <fkTable>snomed</fkTable>
                       <fkColumnName>code</fkColumnName>
                     </fk>
@@ -106,7 +112,7 @@
                     <columnTitle>Process</columnTitle>
                     <fk>
                       <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-                      <fkDbSchema>lists</fkDbSchema>
+                      <fkDbSchema>ehr_lookups</fkDbSchema>
                       <fkTable>snomed</fkTable>
                       <fkColumnName>code</fkColumnName>
                     </fk>
@@ -117,7 +123,7 @@
                     <columnTitle>Distribution</columnTitle>
                     <fk>
                       <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-                      <fkDbSchema>lists</fkDbSchema>
+                      <fkDbSchema>ehr_lookups</fkDbSchema>
                       <fkTable>snomed</fkTable>
                       <fkColumnName>code</fkColumnName>
                     </fk>
@@ -148,7 +154,7 @@
                     <fk>
                       <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                       <fkDbSchema>study</fkDbSchema>
-                      <fkTable>encounters</fkTable>
+                      <fkTable>studyDataParent</fkTable>
                       <fkColumnName>objectid</fkColumnName>
                     </fk>
                   </column>
@@ -160,6 +166,17 @@
                     <shownInUpdateView>false</shownInUpdateView>
                     <shownInDetailsView>false</shownInDetailsView>
                     <isHidden>true</isHidden>
+                  </column>
+                  <column columnName="necropsy" wrappedColumnName="parentId">
+                    <datatype>varchar</datatype>
+                    <isUnselectable>true</isUnselectable>
+                    <columnTitle>Necropsy</columnTitle>
+                    <fk>
+                      <fkFolderPath>/wnprc/ehr/</fkFolderPath>
+                      <fkDbSchema>study</fkDbSchema>
+                      <fkTable>necropsyParent</fkTable>
+                      <fkColumnName>objectid</fkColumnName>
+                    </fk>
                   </column>
                 </columns>
                 <tableTitle>Necropsy Diagnosis</tableTitle>

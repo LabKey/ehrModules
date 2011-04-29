@@ -180,7 +180,7 @@ EHR.ext.AdvancedStore = Ext.extend(LABKEY.ext.Store, {
 
     duplicateRecord: function(record, defaults){
         defaults  = defaults || {};
-        //NOTE: this is deliberate such that defaults is applied first.  if you want to null a value, this should work
+        //NOTE: this is deliberate such that defaults are applied first.  if you want the new record to have a null value, this should work
         var newData = Ext.apply({}, r.data);
         Ext.apply(newData, defaults);
         this.store.addRecord(newData);
@@ -190,7 +190,6 @@ EHR.ext.AdvancedStore = Ext.extend(LABKEY.ext.Store, {
         Ext.each(records, function(r){
             this.duplicateRecord(r, defaults);
         }, this);
-
     },
 
     maxErrorSeverity: function(){
@@ -219,11 +218,6 @@ EHR.ext.AdvancedStore = Ext.extend(LABKEY.ext.Store, {
 
     validateRecord: function(store, r, operation, config){
         config = config || {};
-//        if(debug){
-//            console.log('Validating Record: '+r.id);
-//            console.log('Operation: '+operation);
-//            console.log(config)
-//        }
 
         r.errors = r.errors || [];
 
@@ -254,7 +248,7 @@ EHR.ext.AdvancedStore = Ext.extend(LABKEY.ext.Store, {
                 }
             }
 
-            //NOTE: if I could find the field editor, i could hook into getErrors() to find other validation errors
+            //NOTE: if we had a reference to the field editor, i could hook into getErrors() to find other validation errors
             //should revisit in Ext 4 when validation is moved to dataModel
         },store);
 
@@ -378,7 +372,6 @@ EHR.ext.AdvancedStore = Ext.extend(LABKEY.ext.Store, {
             delete record.phantom;
             record.commit();
         }
-
     },
 
     getLookupStore: function(){
@@ -523,6 +516,10 @@ EHR.ext.AdvancedStore = Ext.extend(LABKEY.ext.Store, {
         if(record.lastTransactionId != response.tId){
             console.log('There has been a more recent transaction for this record.  Ignoring this one.');
             return;
+        }
+
+        if(serverError.row['id/curlocation/location'] && serverError.row['id/curlocation/location'] != record.get('id/curlocation/location')){
+            record.set('id/curlocation/location', serverError.row['id/curlocation/location']);
         }
 
         //remove all old errors for this record

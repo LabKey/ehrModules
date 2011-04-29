@@ -10,6 +10,8 @@
                     <column columnName="roomcage">
                         <displayWidth>60</displayWidth>
                         <columnTitle>Location</columnTitle>
+                        <shownInInsertView>false</shownInInsertView>
+                        <shownInUpdateView>false</shownInUpdateView>
                     </column>
                     <column columnName="room">
                         <displayWidth>40</displayWidth>

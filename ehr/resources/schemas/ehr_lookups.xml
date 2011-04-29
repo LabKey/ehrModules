@@ -9,15 +9,15 @@
       </ns:column>
     </ns:columns>
   </ns:table>
-  <ns:table tableName="vl_sampletype" tableDbType="TABLE">
-    <ns:pkColumnName>sample_type</ns:pkColumnName>
-    <ns:columns>
-      <ns:column columnName="sample_type">
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>100</ns:scale>
-      </ns:column>
-    </ns:columns>
-  </ns:table>
+  <!--<ns:table tableName="vl_sampletype" tableDbType="TABLE">-->
+    <!--<ns:pkColumnName>sample_type</ns:pkColumnName>-->
+    <!--<ns:columns>-->
+      <!--<ns:column columnName="sample_type">-->
+        <!--<ns:datatype>varchar</ns:datatype>-->
+        <!--<ns:scale>100</ns:scale>-->
+      <!--</ns:column>-->
+    <!--</ns:columns>-->
+  <!--</ns:table>-->
   <ns:table tableName="integers" tableDbType="TABLE">
     <ns:pkColumnName>key</ns:pkColumnName>
     <ns:columns>
@@ -47,6 +47,7 @@
   </ns:table>
   <ns:table tableName="obs_mens" tableDbType="TABLE">
     <ns:pkColumnName>code</ns:pkColumnName>
+    <ns:titleColumn>meaning</ns:titleColumn>
     <ns:columns>
       <ns:column columnName="code">
         <ns:datatype>varchar</ns:datatype>
@@ -142,11 +143,13 @@
       </ns:column>
       <ns:column columnName="low">
         <ns:nullable>true</ns:nullable>
+        <ns:columnTitle>Min Weight</ns:columnTitle>
         <ns:datatype>float8</ns:datatype>
         <ns:scale>17</ns:scale>
       </ns:column>
       <ns:column columnName="high">
         <ns:nullable>true</ns:nullable>
+        <ns:columnTitle>Max Weight</ns:columnTitle>
         <ns:datatype>float8</ns:datatype>
         <ns:scale>17</ns:scale>
       </ns:column>
@@ -280,6 +283,7 @@
   <ns:table tableName="obs_behavior" tableDbType="TABLE">
     <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr_lookups&amp;query.queryName=obs_behavior&amp;cage=${code}</ns:tableUrl>
     <ns:pkColumnName>code</ns:pkColumnName>
+    <ns:titleColumn>meaning</ns:titleColumn>
     <ns:columns>
       <ns:column columnName="code">
         <ns:datatype>varchar</ns:datatype>
@@ -325,15 +329,15 @@
       </ns:column>
     </ns:columns>
   </ns:table>
-  <ns:table tableName="vl_category" tableDbType="TABLE">
-    <ns:pkColumnName>category</ns:pkColumnName>
-    <ns:columns>
-      <ns:column columnName="category">
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>80</ns:scale>
-      </ns:column>
-    </ns:columns>
-  </ns:table>
+  <!--<ns:table tableName="vl_category" tableDbType="TABLE">-->
+    <!--<ns:pkColumnName>category</ns:pkColumnName>-->
+    <!--<ns:columns>-->
+      <!--<ns:column columnName="category">-->
+        <!--<ns:datatype>varchar</ns:datatype>-->
+        <!--<ns:scale>80</ns:scale>-->
+      <!--</ns:column>-->
+    <!--</ns:columns>-->
+  <!--</ns:table>-->
   <ns:table tableName="restraint_type" tableDbType="TABLE">
     <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr_lookups&amp;query.queryName=restraint_type&amp;type=${type}</ns:tableUrl>
     <ns:pkColumnName>type</ns:pkColumnName>
@@ -366,6 +370,7 @@
   <ns:table tableName="obs_breeding" tableDbType="TABLE">
     <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr_lookups&amp;query.queryName=obs_breeding&amp;code=${code}</ns:tableUrl>
     <ns:pkColumnName>code</ns:pkColumnName>
+    <ns:titleColumn>meaning</ns:titleColumn>
     <ns:columns>
       <ns:column columnName="code">
         <ns:datatype>varchar</ns:datatype>
@@ -396,6 +401,7 @@
   <ns:table tableName="obs_other" tableDbType="TABLE">
     <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr_lookups&amp;query.queryName=obs_other&amp;code=${code}</ns:tableUrl>
     <ns:pkColumnName>code</ns:pkColumnName>
+    <ns:titleColumn>meaning</ns:titleColumn>
     <ns:columns>
       <ns:column columnName="code">
         <ns:datatype>varchar</ns:datatype>
@@ -606,6 +612,7 @@
   <ns:table tableName="obs_feces" tableDbType="TABLE">
     <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr_lookups&amp;query.queryName=obs_feces&amp;code=${code}</ns:tableUrl>
     <ns:pkColumnName>code</ns:pkColumnName>
+    <ns:titleColumn>meaning</ns:titleColumn>
     <ns:columns>
       <ns:column columnName="code">
         <ns:datatype>varchar</ns:datatype>
@@ -726,15 +733,15 @@
       </ns:column>
     </ns:columns>
   </ns:table>
-  <ns:table tableName="vl_technique" tableDbType="TABLE">
-    <ns:pkColumnName>technique</ns:pkColumnName>
-    <ns:columns>
-      <ns:column columnName="technique">
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>100</ns:scale>
-      </ns:column>
-    </ns:columns>
-  </ns:table>
+  <!--<ns:table tableName="vl_technique" tableDbType="TABLE">-->
+    <!--<ns:pkColumnName>technique</ns:pkColumnName>-->
+    <!--<ns:columns>-->
+      <!--<ns:column columnName="technique">-->
+        <!--<ns:datatype>varchar</ns:datatype>-->
+        <!--<ns:scale>100</ns:scale>-->
+      <!--</ns:column>-->
+    <!--</ns:columns>-->
+  <!--</ns:table>-->
   <!--<ns:table tableName="alopecia_area" tableDbType="TABLE">-->
     <!--<ns:pkColumnName>area</ns:pkColumnName>-->
     <!--<ns:columns>-->
@@ -1005,24 +1012,24 @@
       </ns:column>
     </ns:columns>
   </ns:table>
-  <ns:table tableName="vl_virus" tableDbType="TABLE">
-    <ns:pkColumnName>virus</ns:pkColumnName>
-    <ns:columns>
-      <ns:column columnName="virus">
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>100</ns:scale>
-      </ns:column>
-    </ns:columns>
-  </ns:table>
-  <ns:table tableName="vl_instrument" tableDbType="TABLE">
-    <ns:pkColumnName>instrument</ns:pkColumnName>
-    <ns:columns>
-      <ns:column columnName="instrument">
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>100</ns:scale>
-      </ns:column>
-    </ns:columns>
-  </ns:table>
+  <!--<ns:table tableName="vl_virus" tableDbType="TABLE">-->
+    <!--<ns:pkColumnName>virus</ns:pkColumnName>-->
+    <!--<ns:columns>-->
+      <!--<ns:column columnName="virus">-->
+        <!--<ns:datatype>varchar</ns:datatype>-->
+        <!--<ns:scale>100</ns:scale>-->
+      <!--</ns:column>-->
+    <!--</ns:columns>-->
+  <!--</ns:table>-->
+  <!--<ns:table tableName="vl_instrument" tableDbType="TABLE">-->
+    <!--<ns:pkColumnName>instrument</ns:pkColumnName>-->
+    <!--<ns:columns>-->
+      <!--<ns:column columnName="instrument">-->
+        <!--<ns:datatype>varchar</ns:datatype>-->
+        <!--<ns:scale>100</ns:scale>-->
+      <!--</ns:column>-->
+    <!--</ns:columns>-->
+  <!--</ns:table>-->
   <ns:table tableName="charge_items" tableDbType="TABLE">
     <ns:pkColumnName>rowid</ns:pkColumnName>
     <ns:titleColumn>description</ns:titleColumn>
@@ -1289,6 +1296,28 @@
       <ns:pkColumnName>category</ns:pkColumnName>
       <ns:columns>
         <ns:column columnName="category">
+          <ns:datatype>varchar</ns:datatype>
+          <ns:scale>100</ns:scale>
+        </ns:column>
+      </ns:columns>
+    </ns:table>
+    <ns:table tableName="blood_billed_by" tableDbType="TABLE">
+      <ns:pkColumnName>code</ns:pkColumnName>
+      <ns:columns>
+        <ns:column columnName="code">
+          <ns:datatype>varchar</ns:datatype>
+          <ns:scale>100</ns:scale>
+        </ns:column>
+        <ns:column columnName="title">
+          <ns:datatype>varchar</ns:datatype>
+          <ns:scale>100</ns:scale>
+        </ns:column>
+      </ns:columns>
+    </ns:table>
+    <ns:table tableName="housing_reason" tableDbType="TABLE">
+      <ns:pkColumnName>reason</ns:pkColumnName>
+      <ns:columns>
+        <ns:column columnName="reason">
           <ns:datatype>varchar</ns:datatype>
           <ns:scale>100</ns:scale>
         </ns:column>

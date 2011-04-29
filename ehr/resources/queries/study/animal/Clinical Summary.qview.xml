@@ -1,11 +1,11 @@
 <customView xmlns="http://labkey.org/data/xml/queryCustomView">
     <columns>
         <column name="Id"/>
-        <column name="Status/Status">
-            <properties>
-                <property name="columnTitle" value="Calculated Status"/>
-            </properties>
-        </column>
+        <!--<column name="Status/Status">-->
+            <!--<properties>-->
+                <!--<property name="columnTitle" value="Calculated Status"/>-->
+            <!--</properties>-->
+        <!--</column>-->
         <column name="Dataset/Demographics/Status">
             <properties>
                 <property name="columnTitle" value="Status"/>
@@ -54,6 +54,11 @@
         <column name="activeAssignments/ActiveAssignments">
             <properties>
                 <property name="columnTitle" value="Active Assignments"/>
+            </properties>
+        </column>
+        <column name="IrregularObs/yesterdaysObs">
+            <properties>
+                <property name="columnTitle" value="Yesterdays Obs"/>
             </properties>
         </column>
     </columns>

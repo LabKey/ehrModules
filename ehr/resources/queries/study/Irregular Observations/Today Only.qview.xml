@@ -30,7 +30,7 @@
   <filters>
       <filter column="date" operator="dateeq" value="+0d" />
       <filter column="hasObs/hasObs" operator="eq" value="true"/>
-      <filter column="qcstate/publicdata" operator="eq" value="true"/>
+      <!--<filter column="qcstate/publicdata" operator="eq" value="true"/>-->
   </filters>
 
 </customView>

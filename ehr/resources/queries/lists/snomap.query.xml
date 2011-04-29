@@ -9,7 +9,7 @@
                   <columnTitle>Old Code</columnTitle>
                   <fk>
                     <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-                    <fkDbSchema>lists</fkDbSchema>
+                    <fkDbSchema>ehr_lookups</fkDbSchema>
                     <fkTable>snomed</fkTable>
                     <fkColumnName>code</fkColumnName>
                   </fk>
@@ -19,7 +19,7 @@
                   <columnTitle>New Code</columnTitle>
                   <fk>
                     <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-                    <fkDbSchema>lists</fkDbSchema>
+                    <fkDbSchema>ehr_lookups</fkDbSchema>
                     <fkTable>snomed</fkTable>
                     <fkColumnName>code</fkColumnName>
                   </fk>

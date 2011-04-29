@@ -2,12 +2,13 @@
     <metadata>
         <tables xmlns="http://labkey.org/data/xml">
             <table tableName="drug" tableDbType="TABLE">
-                <tableUrl>/query/detailsQueryRow.view?schemaName=study&amp;query.queryName=Drug Administration&amp;lsid=${lsid}</tableUrl>
+                <!--<tableUrl>/query/detailsQueryRow.view?schemaName=study&amp;query.queryName=Drug Administration&amp;lsid=${lsid}</tableUrl>-->
+                <tableUrl>/ehr/drugDetails.view?lsid=${lsid}</tableUrl>
                 <!--<insertUrl>/ehr/manageRecord.view?schemaName=study&amp;queryName=Drug Administration&amp;keyField=lsid&amp;</insertUrl>-->
                 <!--<updateUrl>/ehr/manageRecord.view?schemaName=study&amp;queryName=Drug Administration&amp;keyField=lsid&amp;key=${lsid}</updateUrl>-->
                 <insertUrl />
                 <updateUrl />
-                <!--<deleteUrl />-->
+                <deleteUrl />
                 <columns>
                     <column columnName="project">
                         <fk>
@@ -36,16 +37,16 @@
                         <columnTitle>Header Date</columnTitle>
                         <formatString>yyyy-MM-dd H:mm</formatString>
                     </column>
-                    <column columnName="EndTime">
-                        <datatype>timestamp</datatype>
+                    <column columnName="enddate">
                         <columnTitle>Administration End Time</columnTitle>
                         <formatString>H:mm</formatString>
+                        <isHidden>false</isHidden>
                     </column>
                     <column columnName="parentId">
                         <fk>
                             <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                             <fkDbSchema>study</fkDbSchema>
-                            <fkTable>encounters</fkTable>
+                            <fkTable>studyDataParent</fkTable>
                             <fkColumnName>objectid</fkColumnName>
                         </fk>
                     </column>

@@ -33,7 +33,7 @@
    </sorts>
   <filters>
       <filter column="date" operator="dateeq" value="+0d" />
-      <filter column="hasObs/hasObs" operator="eq" value="true"/>
+      <!--<filter column="hasObs/hasObs" operator="eq" value="true"/>-->
       <!--<filter column="date" operator="dategt" value="-1" />-->
   </filters>
 

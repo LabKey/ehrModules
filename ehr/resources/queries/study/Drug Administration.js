@@ -10,10 +10,12 @@ var {EHR, LABKEY, Ext, console, init, beforeInsert, afterInsert, beforeUpdate, a
 function onUpsert(context, errors, row, oldRow){
     if(!row.amount && !row.volume){
         EHR.addError(errors, 'amount', 'Must supply either amount or volume', 'WARN');
+        EHR.addError(errors, 'volume', 'Must supply either amount or volume', 'WARN');
     }
 
     if(row.amount && row.volume && row.concentration && row.amount!=Math.round(row.volume*row.conc*100/2)){
-        EHR.addError(errors, 'amount', 'Amount does not match volume', 'WARN');
+        EHR.addError(errors, 'amount', 'Amount does not match volume for this concentration', 'WARN');
+        EHR.addError(errors, 'volume', 'Volume does not match amount for this concentration', 'WARN');
     }
 }
 
@@ -27,13 +29,6 @@ function onBecomePublic(errors, scriptContext, row, oldRow){
 
 
 function onETL(row, errors){
-    //sort of a hack.  since mySQL doesnt directly store project for these records, we need to calculate this in the ETL using group_concat
-    // 00300901 is a generic WNPRC project.  if it's present with other projects, it shouldnt be.
-    if(row.project && row.project.match && (row.project.match(/,/))){
-        row.project = row.project.replace(/,00300901/, '');
-        row.project = row.project.replace(/00300901,/, '');
-    }
-
     EHR.ETL.fixDrugUnits(row, errors);
 }
 

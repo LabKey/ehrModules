@@ -7,6 +7,7 @@
                 <!--<updateUrl>/ehr/manageRecord.view?schemaName=study&amp;queryName=Bacteriology Results&amp;keyField=lsid&amp;key=${lsid}</updateUrl>-->
                 <insertUrl />
                 <updateUrl />
+                <deleteUrl />
                 <columns>
                     <column columnName="source">
                         <datatype>varchar</datatype>

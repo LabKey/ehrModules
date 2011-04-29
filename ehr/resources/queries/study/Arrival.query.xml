@@ -7,6 +7,7 @@
                 <!--<updateUrl>/ehr/manageRecord.view?schemaName=study&amp;queryName=Arrival&amp;keyField=lsid&amp;key=${lsid}</updateUrl>-->
                 <insertUrl />
                 <updateUrl />
+                <deleteUrl />
                 <columns>
                     <column columnName="date">
                         <columnTitle>Arrival Date</columnTitle>
@@ -16,7 +17,7 @@
                         <fk>
                           <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                           <fkDbSchema>study</fkDbSchema>
-                          <fkTable>encounters</fkTable>
+                          <fkTable>studyDataParent</fkTable>
                           <fkColumnName>objectid</fkColumnName>
                         </fk>
                     </column>

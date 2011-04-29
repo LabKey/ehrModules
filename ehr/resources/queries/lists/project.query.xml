@@ -41,7 +41,7 @@
                       <columnTitle>Availability</columnTitle>
                       <fk>
                         <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-                        <fkDbSchema>lists</fkDbSchema>
+                        <fkDbSchema>ehr_lookups</fkDbSchema>
                         <fkTable>avail</fkTable>
                         <fkColumnName>code</fkColumnName>
                       </fk>

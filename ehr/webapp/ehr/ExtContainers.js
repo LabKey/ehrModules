@@ -70,6 +70,11 @@ EHR.ext.AnimalSelector = Ext.extend(Ext.Panel, {
                     xtype: 'textfield',
                     ref: 'cageField',
                     fieldLabel: 'Cage'
+//                },
+//                {
+//                    xtype: 'textfield',
+//                    ref: 'projectField',
+//                    fieldLabel: 'Project'
                 }
             ],
 //            buttons: [
@@ -107,6 +112,7 @@ EHR.ext.AnimalSelector = Ext.extend(Ext.Panel, {
         var room = (this.roomField ? this.roomField.getValue() : null);
         var cage = (this.cageField ? this.cageField.getValue() : null);
         var area = (this.areaField ? this.areaField.getValue() : null);
+        var project = (this.projectField ? this.projectField.getValue() : null);
 
         //we clean up, combine subjects
         var subjectList = this.subjArea.getValue();
@@ -149,6 +155,7 @@ EHR.ext.AnimalSelector = Ext.extend(Ext.Panel, {
             schemaName: 'study',
             queryName: 'Animal',
             viewName: 'Alive, at WNPRC',
+            sort: '-Dataset/Demographics/Room,-Dataset/Demographics/Cage,-Id',
             //containerPath: 'WNPRC/EHR/',
             filterArray: filterArray,
             scope: this,
@@ -165,20 +172,18 @@ EHR.ext.AnimalSelector = Ext.extend(Ext.Panel, {
         }
 
         var ids = {};
+        var records = [];
+
         Ext.each(results.rows, function(row)
         {
-            if (!ids[row.Id])
+            if (!ids[row.Id]){
+                records.push({Id: row.Id, 'id/curlocation/location': row['Dataset/Demographics/Room']+'-'+row['Dataset/Demographics/Cage']});
                 ids[row.Id] = 0;
-
-            ids[row.Id] += 1;
+            }
         }, this);
 
-        if (this.targetStore)
-        {
-            var records = [];
-            for(var i in ids)
-                records.push({Id: i});
-            this.targetStore.addRecords(records, 0);
+        if (this.targetStore){
+            this.targetStore.addRecords(records);
         }
 
         Ext.Msg.hide();

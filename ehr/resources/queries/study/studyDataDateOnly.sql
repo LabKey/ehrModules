@@ -6,6 +6,6 @@
 SELECT
 
 s.lsid,
-cast(s.date as DATE) as DateOnly,
+cast(cast(s.date as DATE) AS timestamp) as DateOnly,
 
 FROM study.studydata s

@@ -98,7 +98,6 @@ Ext.extend(EHR.ext.FormPanel, Ext.FormPanel,
     {
         this.removeAll();
         var toAdd = this.configureForm(store, this);
-
         Ext.each(toAdd, function(item){
             this.add(item);
         }, this);

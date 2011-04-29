@@ -8,6 +8,46 @@ var {EHR, LABKEY, Ext, console, init, beforeInsert, afterInsert, beforeUpdate, a
 
 
 
+function onUpsert(context, errors, row, oldRow){
+    if(row.room && row.cage){
+        var cageRow;
+        LABKEY.Query.executeSql({
+            schemaName: 'study',
+            scope: this,
+            sql: "SELECT * from ehr_lookups.cage c WHERE c.room='"+row.room+"' AND c.cage='"+row.cage+"'",
+            success: function(data){
+                if(data.rows && data.rows.length){
+                    cageRow = data.rows[0];
+                }
+            },
+            failure: EHR.onFailure
+        });
+
+        if(cageRow){
+            LABKEY.Query.executeSql({
+                schemaName: 'study',
+                scope: this,
+                sql: "SELECT * from study.demographicsCageClass c WHERE c.id='"+row.Id+"'",
+                success: function(data){
+                    if(data.rows && data.rows.length){
+                        var r = data.rows[0];
+                        if(cageRow.length*cageRow.width < r.ReqSqFt){
+                            EHR.addError(errors, 'room', 'Animal too large for this cage. Required SqFt: '+r.ReqSqFt, 'INFO');
+                        }
+                        if(cageRow.height < r.ReqHeight){
+                            EHR.addError(errors, 'room', 'Animal too large for this cage. Required Height: '+r.ReqHeight, 'INFO');
+                        }
+
+                    }
+                },
+                failure: EHR.onFailure
+            });
+        }
+    }
+
+
+}
+
 
 function onComplete(event, errors, scriptContext){
     //NOTE: we assume that onBecomePublic() enforces only 1 active housing record per animal
@@ -29,7 +69,7 @@ function onComplete(event, errors, scriptContext){
 
                         if(totalIds[row.Id]){
                             //raise alert for duplicate active rooms
-                            throw "ERROR: there are two active housing records for: "+row.Id;
+                            //throw "ERROR: there are two active housing records for: "+row.Id;
                         }
 
                         totalIds[row.Id] = 1;
@@ -97,6 +137,7 @@ function onBecomePublic(errors, scriptContext, row, oldRow){
             filterArray: [
                 LABKEY.Filter.create('Id', row.Id, LABKEY.Filter.Types.EQUAL),
                 LABKEY.Filter.create('odate', null, LABKEY.Filter.Types.ISBLANK),
+                LABKEY.Filter.create('date', row.Date, LABKEY.Filter.Types.LESS_THAN),
                 LABKEY.Filter.create('lsid', row.lsid, LABKEY.Filter.Types.NEQ),
                 LABKEY.Filter.create('qcstate/publicdata', true, LABKEY.Filter.Types.EQUAL)
             ],
@@ -104,22 +145,19 @@ function onBecomePublic(errors, scriptContext, row, oldRow){
             success: function(data){
                 if(data && data.rows && data.rows.length){
                     Ext.each(data.rows, function(r){
-                        toUpdate.push({lsid: r.lsid, odate: row.date})
+                        toUpdate.push({lsid: r.lsid, odate: new Date(row.Date)})
                     }, this);
 
                 }
             },
             failure: EHR.onFailure
         });
-
+        console.log('to update')
+        console.log(toUpdate);
         if(toUpdate.length){
             LABKEY.Query.updateRows({
                 schemaName: 'study',
-                queryName: 'housing',
-                extraContext: {
-                    schemaName: 'study',
-                    queryName: 'Housing'
-                },
+                queryName: 'Housing',
                 rows: toUpdate,
                 success: function(data){
                     console.log('Success deactivating old housing records')
@@ -127,6 +165,7 @@ function onBecomePublic(errors, scriptContext, row, oldRow){
                 failure: EHR.onFailure
             });
         }
+
     }
 }
 

@@ -182,15 +182,15 @@ EHR.ext.RemoteRadioGroup = Ext.extend(Ext.form.RadioGroup,
             storeLoaded: false,
             items: [{name: 'placeholder', fieldLabel: 'Loading..'}],
             buffered: true,
-            listeners: {
-                scope: this,
-                change: function(c){
-                    console.log('remote radio on change')
-                },
-                blur: function(c){
-                    console.log('remote radio on blur')
-                }
-            },
+//            listeners: {
+//                scope: this,
+//                change: function(c){
+//                    console.log('remote radio on change')
+//                },
+//                blur: function(c){
+//                    console.log('remote radio on blur')
+//                }
+//            },
             tpl : new Ext.XTemplate('<tpl for=".">' +
                   '{[values["' + this.valueField + '"] ? values["' + this.displayField + '"] : "'+ (this.lookupNullCaption ? this.lookupNullCaption : '[none]') +'"]}' +
                     //allow a flag to display both display and value fields

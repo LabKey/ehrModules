@@ -14,7 +14,7 @@
                     </column>
                     <column columnName="Species">
                         <fk>
-                          <fkDbSchema>lists</fkDbSchema>
+                          <fkDbSchema>ehr_lookups</fkDbSchema>
                           <fkTable>species</fkTable>
                           <fkColumnName>common</fkColumnName>
                         </fk>

@@ -3,9 +3,9 @@
        <column name="project"/>
        <column name="protocol"/>
        <column name="totalAssigned/ActiveAssignments">
-           <!--<properties>-->
-               <!--<property name="columnTitle" value="Active Assignments"/>-->
-           <!--</properties>-->
+           <properties>
+               <property name="columnTitle" value="Animals Assigned"/>
+           </properties>
        </column>
        <column name="lastAssignment/LastAssignmentDate">
            <properties>

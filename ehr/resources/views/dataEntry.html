@@ -49,6 +49,7 @@ Ext.onReady(function(){
                             queryConfig:  {
                                 schemaName: 'ehr',
                                 queryName: 'TasksByLocation',
+                                viewName: 'Data Entry',
                                 updateURL: '/ehr/manageTask.view?formtype=${formtype}&amp;taskid=${taskid}'
                             }
                         },{
@@ -57,6 +58,7 @@ Ext.onReady(function(){
                             queryConfig:  {
                                 schemaName: 'ehr',
                                 queryName: 'TasksById',
+                                viewName: 'Data Entry',
                                 updateURL: '/ehr/manageTask.view?formtype=${formtype}&amp;taskid=${taskid}'
                             }
                         },{
@@ -230,6 +232,7 @@ Forms and data entry can go through several states called 'status':
 <h3>Behavior / Colony Management:</h3>
 <ul>
     <li><a href="<%=contextPath%>/ehr/WNPRC/EHR/manageTask.view?schemaName=study&queryName=Behavior Remarks&keyField=lsid">Enter Behavior Remark</a></li>
+    <li><a href="<%=contextPath%>/ehr/WNPRC/EHR/manageTask.view?formtype=Housing">Enter Housing Change</a></li>
     <li><a href="<%=contextPath%>/ehr/WNPRC/EHR/manageTask.view?schemaName=study&queryName=Menses&keyField=lsid">Enter Menses Observation</a></li>
     <li><a href="<%=contextPath%>/ehr/WNPRC/EHR/manageRecord.view?schemaName=study&queryName=Pair%20Tests&keyField=lsid">Enter Pair Test Record</a></li>
     <!--<li>Enter Enrichment Record</li>-->
@@ -254,9 +257,8 @@ Forms and data entry can go through several states called 'status':
 <h3>Requests:</h3>
 <ul>
 
-    <li>Request New Project</li>
-    <li>Request Assignment</li>
-    <li>Request Housing Change</li>
+    <!--<li>Request New Project</li>-->
+    <!--<li>Request Assignment</li>-->
     <p/>
     <!--<li><a href="<%=contextPath%>/ehr/WNPRC/EHR/manageRequest.view?formtype=Project%20Request">Request New Project</a></li>-->
     <!--<li><a href="<%=contextPath%>/ehr/WNPRC/EHR/manageRequest.view?formtype=Assignment%20Request">Request/Approve Assignment</a></li>-->

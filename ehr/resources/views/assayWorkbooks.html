@@ -1,0 +1,44 @@
+<html>
+<head>
+
+<script type="text/javascript">
+
+LABKEY.requiresScript("/ehr/AssayUtils.js");
+
+//TODO: toggle to select from available assays
+
+Ext.onReady(function ()
+{
+    var webPartRenderer = new LABKEY.WebPart({
+		partName: 'Workbooks',
+		renderTo: 'workbookDiv',
+        frame: 'none'
+		}).render();
+
+    if(LABKEY.ActionURL.getParameter('assayId')){
+        LABKEY.Assay.getById({
+            id: LABKEY.ActionURL.getParameter('assayId'),
+            successCallback: function(assay){
+                EHR.Assay.showButtonBar(assay[0]);
+            }
+        });
+    }
+
+
+
+
+
+});
+
+</script>
+</head>
+<body>
+    <p/>
+
+	<div id='workbookDiv'></div>
+
+
+
+
+</body>
+</html>

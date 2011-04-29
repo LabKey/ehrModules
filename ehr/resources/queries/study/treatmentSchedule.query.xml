@@ -46,7 +46,7 @@
                         <fk>
                           <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                           <fkDbSchema>study</fkDbSchema>
-                          <fkTable>encounters</fkTable>
+                          <fkTable>studyDataParent</fkTable>
                           <fkColumnName>objectid</fkColumnName>
                         </fk>
                     </column>

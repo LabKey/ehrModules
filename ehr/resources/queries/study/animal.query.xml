@@ -142,6 +142,16 @@
                             <fkColumnName>Id</fkColumnName>
                         </fk>
                     </column>
+                    <column columnName="IrregularObs" wrappedColumnName="id">
+                        <columnTitle>Irregular Obs</columnTitle>
+                        <isHidden>false</isHidden>
+                        <isUnselectable>true</isUnselectable>
+                        <fk>
+                            <fkDbSchema>study</fkDbSchema>
+                            <fkTable>demographicsObs</fkTable>
+                            <fkColumnName>Id</fkColumnName>
+                        </fk>
+                    </column>
                     <column columnName="MostRecentDeparture" wrappedColumnName="id">
                         <columnTitle>Departure Date</columnTitle>
                         <isHidden>false</isHidden>

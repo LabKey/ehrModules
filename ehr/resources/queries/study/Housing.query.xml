@@ -7,7 +7,7 @@
                 <!--<updateUrl>/ehr/manageRecord.view?schemaName=study&amp;queryName=Housing&amp;keyField=lsid&amp;key=${lsid}</updateUrl>-->
                 <insertUrl />
                 <updateUrl />
-                <!--<deleteUrl />-->
+                <deleteUrl />
                 <columns>
                     <column columnName="TotalRoommates" wrappedColumnName="lsid">
                         <columnTitle>Total Roommates</columnTitle>
@@ -65,11 +65,20 @@
                             <fkColumnName>Code</fkColumnName>
                         </fk>
                     </column>
+                    <column columnName="reason">
+                        <columnTitle>Reason For Move</columnTitle>
+                        <fk>
+                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
+                            <fkDbSchema>ehr_lookups</fkDbSchema>
+                            <fkTable>housing_reason</fkTable>
+                            <fkColumnName>reason</fkColumnName>
+                        </fk>
+                    </column>
                     <column columnName="parentId">
                         <fk>
                           <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                           <fkDbSchema>study</fkDbSchema>
-                          <fkTable>encounters</fkTable>
+                          <fkTable>studyDataParent</fkTable>
                           <fkColumnName>objectid</fkColumnName>
                         </fk>
                     </column>

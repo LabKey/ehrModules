@@ -18,7 +18,7 @@
                             query.Date~lte=${Date}&amp;
                             query.sort=-Date&amp;
                         </url>
-                        <columnTitle>Blood Drawn In Last 30 Days</columnTitle>
+                        <columnTitle>Blood Drawn In Previous 30 Days</columnTitle>
                     </column>
                     <column columnName="BloodNext30">
                         <columnTitle>Scheduled in Next 30 Days</columnTitle>
@@ -34,7 +34,7 @@
                         <columnTitle>Max Blood Per 30 Days (mL)</columnTitle>
                     </column>
                     <column columnName="AvailBlood">
-                        <columnTitle>Available Blood (mL)</columnTitle>
+                        <columnTitle>Available Blood At Time (mL)</columnTitle>
                     </column>
                 </columns>
                 <titleColumn>AvailBlood</titleColumn>

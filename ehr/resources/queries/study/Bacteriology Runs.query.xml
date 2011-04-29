@@ -7,6 +7,7 @@
                 <!--<updateUrl>/ehr/manageRecord.view?schemaName=study&amp;queryName=Bacteriology Runs&amp;keyField=lsid&amp;key=${lsid}</updateUrl>-->
                 <insertUrl />
                 <updateUrl />
+                <deleteUrl />
             </table>
         </tables>
     </metadata>

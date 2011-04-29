@@ -7,7 +7,7 @@
                 <!--<updateUrl>/ehr/manageRecord.view?schemaName=study&amp;queryName=Immunology Results&amp;keyField=lsid&amp;key=${lsid}</updateUrl>-->
                 <insertUrl />
                 <updateUrl />
-                <!--<deleteUrl />-->
+                <deleteUrl />
                 <columns>
                     <column columnName="parentId">
                         <fk>
@@ -34,7 +34,7 @@
                       <columnTitle>Test Id</columnTitle>
                       <fk>
                         <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-                        <fkDbSchema>lists</fkDbSchema>
+                        <fkDbSchema>ehr_lookups</fkDbSchema>
                         <fkTable>lab_tests</fkTable>
                         <fkColumnName>testid</fkColumnName>
                       </fk>

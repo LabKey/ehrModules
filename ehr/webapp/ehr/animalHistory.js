@@ -12,7 +12,6 @@ EHR.ext.SingleAnimalReport = Ext.extend(Ext.Panel, {
 
     initComponent: function()
     {
-
         Ext.Panel.prototype.bodyBorder = false;
 
         Ext.apply(this, {
@@ -997,9 +996,9 @@ EHR.ext.SingleAnimalReport = Ext.extend(Ext.Panel, {
         }
 
         //account for QCstate
-        if (rowData.get("QCStatePublicDataFieldName")){
-            filterArray.nonRemovable.push(LABKEY.Filter.create(rowData.get("QCStatePublicDataFieldName"), true, LABKEY.Filter.Types.EQUAL));
-        }
+//        if (rowData.get("QCStatePublicDataFieldName")){
+//            filterArray.nonRemovable.push(LABKEY.Filter.create(rowData.get("QCStatePublicDataFieldName"), true, LABKEY.Filter.Types.EQUAL));
+//        }
 
         tab.filterArray = filterArray;
         return filterArray;

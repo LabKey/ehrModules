@@ -7,7 +7,7 @@
                 <!--<updateUrl>/ehr/manageRecord.view?schemaName=study&amp;queryName=Clinical%20Runs&amp;keyField=lsid&amp;key=${lsid}</updateUrl>-->
                 <insertUrl />
                 <updateUrl />
-                <!--<deleteUrl />-->
+                <deleteUrl />
                 <columns>
                     <column columnName="date">
                         <columnTitle>Date</columnTitle>
@@ -17,7 +17,7 @@
                         <fk>
                           <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                           <fkDbSchema>study</fkDbSchema>
-                          <fkTable>encounters</fkTable>
+                          <fkTable>studyDataParent</fkTable>
                           <fkColumnName>objectid</fkColumnName>
                         </fk>
                         <isHidden>true</isHidden>
@@ -42,9 +42,6 @@
                         <isHidden>true</isHidden>
                     </column>
                     <column columnName="lsid">
-                        <isHidden>true</isHidden>
-                    </column>
-                    <column columnName="QCState">
                         <isHidden>true</isHidden>
                     </column>
                     <column columnName="description">

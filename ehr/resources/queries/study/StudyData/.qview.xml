@@ -12,7 +12,7 @@
    <sorts>
        <sort column="date" descending="true"/>
    </sorts>
-    <filters>
-        <filter column="qcstate/publicdata" operator="eq" value="true"/>
-    </filters>
+    <!--<filters>-->
+        <!--<filter column="qcstate/publicdata" operator="eq" value="true"/>-->
+    <!--</filters>-->
 </customView>

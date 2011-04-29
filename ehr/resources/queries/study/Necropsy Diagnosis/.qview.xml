@@ -2,24 +2,24 @@
   <columns>
       <column name="Id"/>
       <column name="date"/>
-      <column name="parentId/caseno">
+      <column name="necropsy/caseno">
           <properties>
               <property name="columnTitle" value="Case No"/>
           </properties>
       </column>
       <column name="seq1"/>
       <column name="seq2"/>
-      <column name="code"/>
-      <column name="code/code">
-          <properties>
-              <property name="columnTitle" value="SNOMED Code"/>
-          </properties>
-      </column>
-      <column name="parentId/caseno">
-          <properties>
-              <property name="columnTitle" value="Case No"/>
-          </properties>
-      </column>
+      <column name="tissue"/>
+      <column name="severity"/>
+      <column name="distribution"/>
+      <column name="duration"/>
+      <column name="diagnosis"/>
+      <column name="process"/>
+      <!--<column name="code/code">-->
+          <!--<properties>-->
+              <!--<property name="columnTitle" value="SNOMED Code"/>-->
+          <!--</properties>-->
+      <!--</column>-->
   </columns>
    <sorts>
        <sort column="id" />

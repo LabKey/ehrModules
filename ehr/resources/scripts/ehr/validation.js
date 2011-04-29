@@ -82,7 +82,13 @@ function beforeInsert(row, errors){
 exports.beforeInsert = beforeInsert;
 
 function afterInsert(row, errors){
+console.log('after insert')
     EHR.afterEvent.call(this, 'insert', errors, row);
+
+    if(this.onAfterUpsert)
+        this.onAfterUpsert(this.scriptContext, errors, row);
+    if(this.onAfterInsert)
+        this.onAfterInsert(this.scriptContext, errors, row);
 }
 exports.afterInsert = afterInsert;
 
@@ -102,11 +108,24 @@ function beforeUpdate(row, oldRow, errors){
         this.onUpdate(this.scriptContext, scriptErrors, row, oldRow);
 
     EHR.rowEnd.call(this, errors, scriptErrors, row, oldRow);
+
+    //NOTE: this is designed to merge the old row into the new one.
+    for (var prop in oldRow){
+        if(!row.hasOwnProperty(prop) && Ext.isDefined(oldRow[prop])){
+            row[prop] = oldRow[prop];
+        }
+    }
 }
 exports.beforeUpdate = beforeUpdate;
 
 function afterUpdate(row, oldRow, errors){
+console.log('after update')
     EHR.afterEvent.call(this, 'update', errors, row, oldRow);
+
+    if(this.onAfterUpsert)
+        this.onAfterUpsert(this.scriptContext, errors, row, oldRow);
+    if(this.onAfterUpdate)
+        this.onAfterUpdate(this.scriptContext, errors, row, oldRow);
 }
 exports.afterUpdate = afterUpdate;
 
@@ -122,6 +141,9 @@ exports.beforeDelete = beforeDelete;
 
 function afterDelete(row, errors){
     EHR.afterEvent.call(this, 'delete', errors, row);
+
+    if(this.onAfterDelete)
+        this.onAfterDelete(this.scriptContext, errors, row);
 }
 exports.afterDelete = afterDelete;
 
@@ -152,20 +174,6 @@ exports.complete = complete;
 
 
 EHR.rowInit = function(errors, row, oldRow){
-    //flag public status of rows
-    if(oldRow && oldRow.QCStateLabel && row.QCStateLabel){
-        if(!this.scriptContext.qcMap.label[oldRow.QCStateLabel].PublicData && this.scriptContext.qcMap.label[row.QCStateLabel].PublicData)
-            row._becomingPublicData = true;
-    }
-    if(row.QCStateLabel){
-        if(this.scriptContext.qcMap.label[row.QCStateLabel].PublicData)
-            row._publicData = true;
-    }
-    if(oldRow && oldRow.QCStateLabel){
-        if(this.scriptContext.qcMap.label[oldRow.QCStateLabel].PublicData)
-            oldRow._publicData = true;
-    }
-
     //empty strings can do funny things, so we make them null
     for (var i in row){
         if (row[i] === ''){
@@ -181,29 +189,28 @@ EHR.rowInit = function(errors, row, oldRow){
     }
 
 
-//    //certain forms display current location.  if the row has this property, but it is blank, we add it.
-//    //not validation per se, but useful to forms
-//    if(row.Id && row.hasOwnProperty('id/curlocation/location')){
-//        console.log('Setting current location:');
-//        EHR.findDemographics({
-//            participant: row.Id,
-//            scope: this,
-//            callback: function(data){
-//                if(data){
-//                    data.location = data.room + '-' + data.cage;
-//                    row['id/curlocation/location'] = data.location;
-//                }
-//                else {
-//                    EHR.addError(errors, 'Id', 'Id not found in demographics table', 'INFO');
-//                }
-//            }
-//        });
-//    }
+    //certain forms display current location.  if the row has this property, but it is blank, we add it.
+    //not validation per se, but useful to forms
+    if(row.Id && row.hasOwnProperty('id/curlocation/location')){
+        console.log('Setting current location:');
+        EHR.findDemographics({
+            participant: row.Id,
+            scope: this,
+            callback: function(data){
+                if(data){
+                    data.location = data.room + '-' + data.cage;
+                    row['id/curlocation/location'] = data.location;
+                }
+                else {
+                    EHR.addError(errors, 'Id', 'Id not found in demographics table', 'INFO');
+                }
+            }
+        });
+    }
 
     //validate project / assignment to that project
     //also add account if the project is found
     if(row.project && row.Id && row.date && row.project!=300901){
-        console.log('Verifying project assignment:');
         LABKEY.Query.executeSql({
             schemaName: 'study',
             queryName: 'assignment',
@@ -223,7 +230,7 @@ EHR.rowInit = function(errors, row, oldRow){
 
     //validate room / cage if present
     if(row.room && row.Id && row.date && (this.scriptContext.queryName && !this.scriptContext.queryName.match(/housing/i))){
-        console.log('Verifying room/cage:');
+        //console.log('Verifying room/cage:');
         var sql = "SELECT h.room FROM study.housing h WHERE ";
         if(row.room)
             sql += "h.room='"+row.room+"' AND ";
@@ -329,10 +336,16 @@ EHR.rowEnd = function(errors, scriptErrors, row, oldRow){
 //the purpose is primarily for bookkeeping.  these arrays are used to queue changed records.  when lots of records are submitted
 // in theory this allows some events to be moved to the complete function and run once time, making them more efficient
 EHR.afterEvent = function (event, errors, row, oldRow){
+    console.log('After Event: '+event);
+
     this.scriptContext.rows.push({
         row: row,
         oldRow: oldRow
     });
+console.log(row);
+    if(row._becomingPublicData && this.afterBecomePublic){
+        this.afterBecomePublic(errors, this.scriptContext, row, oldRow);
+    }
 
     if(this.scriptContext.participantsModified.indexOf(row.Id) == -1){
         this.scriptContext.participantsModified.push(row.Id);
@@ -386,6 +399,7 @@ EHR.afterEvent = function (event, errors, row, oldRow){
             this.scriptContext.tasksModified.push(oldRow.taskId);
         }
     }
+
 };
 
 EHR.onFailure = function(error){
@@ -526,34 +540,7 @@ EHR.sendEmail = function(config){
 };
 
 EHR.verifyPermissions = function(event, scriptContext, row, oldRow){
-    //calculate and normalize QCstate
-
-    if(scriptContext.extraContext.targetQC){
-        row.QCStateLabel = scriptContext.extraContext.targetQC;
-    }
-    else if (row.QCState){
-        if(scriptContext.qcMap.rowid[row.QCState]){
-            row.QCStateLabel = scriptContext.qcMap.rowid[row.QCState].Label;
-        }
-        else
-            console.log('Unknown QCState: '+row.QCState);
-
-        row.QCState = null;
-    }
-    else if (row.QCStateLabel){
-        //nothing needed
-    }
-    else {
-        if(scriptContext.extraContext.validateOnly)
-            row.QCStateLabel = 'In Progress';
-        else {
-            console.log('USING GENERIC QCSTATE: '+scriptContext.queryName);
-            row.QCStateLabel = 'Approved';
-            //throw "Unable to determine QCState for this row"
-        }
-
-    }
-
+    //first we normalize QCstate
     if(oldRow){
         if(oldRow.QCState){
             if(scriptContext.qcMap.rowid[oldRow.QCState]){
@@ -571,6 +558,40 @@ EHR.verifyPermissions = function(event, scriptContext, row, oldRow){
             oldRow.QCStateLabel = 'Approved';
         }
     }
+
+    if (row.QCState){
+        if(scriptContext.qcMap.rowid[row.QCState]){
+            row.QCStateLabel = scriptContext.qcMap.rowid[row.QCState].Label;
+        }
+        else
+            console.log('Unknown QCState: '+row.QCState);
+
+        row.QCState = null;
+    }
+    else if (row.QCStateLabel){
+        //nothing needed
+    }
+    else {
+        if(scriptContext.extraContext.validateOnly)
+            row.QCStateLabel = 'In Progress';
+        else {
+            if(oldRow && oldRow.QCStateLabel){
+                    row.QCStateLabel = oldRow.QCStateLabel;
+            }
+            else {
+                console.log('USING GENERIC QCSTATE: '+scriptContext.queryName);
+                row.QCStateLabel = 'Approved';
+            }
+        }
+    }
+
+    //next we determine whether to use row-level QC or the global target QCState
+    //for now we always prefer the global QC
+    if(scriptContext.extraContext.targetQC){
+        row.QCStateLabel = scriptContext.extraContext.targetQC;
+    }
+
+
 
     //handle updates
     if(event=='update' && oldRow && oldRow.QCStateLabel){
@@ -596,7 +617,7 @@ EHR.verifyPermissions = function(event, scriptContext, row, oldRow){
         else
             console.log('the user has update permissions');
     }
-    //handle updates and deletes
+    //handle inserts and deletes
     else {
         if(row.QCStateLabel){
             if(!scriptContext.permissionMap.hasPermission([{
@@ -609,6 +630,29 @@ EHR.verifyPermissions = function(event, scriptContext, row, oldRow){
             else
                 console.log('the user has '+event+' permissions');
         }
+    }
+
+    //flag public status of rows
+    if(oldRow && oldRow.QCStateLabel && row.QCStateLabel){
+        if(!scriptContext.qcMap.label[oldRow.QCStateLabel].PublicData && scriptContext.qcMap.label[row.QCStateLabel].PublicData)
+            row._becomingPublicData = true;
+    }
+
+    if(row.QCStateLabel){
+        if(scriptContext.qcMap.label[row.QCStateLabel].PublicData){
+            row._publicData = true;
+
+            //a row can be directly inserted as public
+            if(!oldRow)
+                row._becomingPublicData = true;
+        }
+        else
+            console.log(scriptContext.qcMap.label[row.QCStateLabel])
+    }
+
+    if(oldRow && oldRow.QCStateLabel){
+        if(scriptContext.qcMap.label[oldRow.QCStateLabel].PublicData)
+            oldRow._publicData = true;
     }
 };
 
@@ -825,6 +869,13 @@ EHR.ETL = {
             console.log('Repaired: '+row);
     },
     fixProject: function(row, errors){
+        //sort of a hack.  since mySQL doesnt directly store project for these records, we need to calculate this in the ETL using group_concat
+        // 00300901 is a generic WNPRC project.  if it's present with other projects, it shouldnt be.
+        if(row.project && row.project.match && (row.project.match(/,/))){
+            row.project = row.project.replace(/,00300901/, '');
+            row.project = row.project.replace(/00300901,/, '');
+        }
+
         //i think the ETL can return project as a string
         if (row.project && !/^\d*$/.test(row.project)){
             EHR.addError(errors, 'project', 'Bad Project#: '+row.project, 'ERROR');
@@ -1048,13 +1099,12 @@ EHR.ETL = {
 EHR.utils = {};
 EHR.utils.getQCStateMap = function(config){
     if(!config || !config.success){
-        throw "Must provide a success callback"
+        throw "Must provide a success callback";
     }
 
     LABKEY.Query.selectRows({
-        schemaName: 'ehr',
-        queryName: 'qcStateMap',
-        sort: 'role',
+        schemaName: 'study',
+        queryName: 'qcState',
         columns: '*',
         success: function(data){
             var qcmap = {

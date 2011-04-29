@@ -11,6 +11,11 @@
                         <isHidden>false</isHidden>
                         <displayWidth>350</displayWidth>
                     </column>
+                    <column columnName="QCState">
+                        <isHidden>false</isHidden>
+                        <shownInDetailsView>true</shownInDetailsView>
+                        <columnTitle>Status</columnTitle>
+                    </column>
                     <column columnName="enddate">
                         <columnTitle>End Date</columnTitle>
                     </column>
@@ -93,6 +98,54 @@
                             <fkColumnName>lsid</fkColumnName>
                         </fk>
                     </column>
+                    <column columnName="AssignmentAtTime" wrappedColumnName="lsid">
+                        <columnTitle>Assignment At Time</columnTitle>
+                        <isHidden>false</isHidden>
+                        <isUnselectable>true</isUnselectable>
+                        <shownInDetailsView>false</shownInDetailsView>
+                        <shownInInsertView>false</shownInInsertView>
+                        <shownInUpdateView>false</shownInUpdateView>
+                        <fk>
+                            <fkDbSchema>study</fkDbSchema>
+                            <fkTable>studyDataAssignmentAtTime</fkTable>
+                            <fkColumnName>lsid</fkColumnName>
+                        </fk>
+                    </column>
+                    <column columnName="QCState">
+                        <conditionalFormats>
+                            <conditionalFormat>
+                                <filters>
+                                    <filter operator="eq" value="In Progress"/>
+                                </filters>
+                                <backgroundColor>FBEC5D</backgroundColor>
+                            </conditionalFormat>
+                            <conditionalFormat>
+                                <filters>
+                                    <filter operator="eq" value="Review Required"/>
+                                </filters>
+                                <backgroundColor>FBEC5D</backgroundColor>
+                            </conditionalFormat>
+                            <!--<conditionalFormat>-->
+                                <!--<filters>-->
+                                    <!--<filter operator="eq" value="In Progress"/>-->
+                                <!--</filters>-->
+                                <!--<backgroundColor>FBEC5D</backgroundColor>-->
+                            <!--</conditionalFormat>-->
+                        </conditionalFormats>
+                    </column>
+                    <!--<column columnName="ParentRecord" wrappedColumnName="objectid">-->
+                        <!--<columnTitle>Parent Record</columnTitle>-->
+                        <!--<isHidden>false</isHidden>-->
+                        <!--<isUnselectable>true</isUnselectable>-->
+                        <!--<shownInDetailsView>false</shownInDetailsView>-->
+                        <!--<shownInInsertView>false</shownInInsertView>-->
+                        <!--<shownInUpdateView>false</shownInUpdateView>-->
+                        <!--<fk>-->
+                            <!--<fkDbSchema>study</fkDbSchema>-->
+                            <!--<fkTable>studyDataParent</fkTable>-->
+                            <!--<fkColumnName>objectid</fkColumnName>-->
+                        <!--</fk>-->
+                    <!--</column>-->
                 </columns>
                 <buttonBarOptions position="both" includeStandardButtons="true">
                     <includeScript>/ehr/studyButtons.js</includeScript>

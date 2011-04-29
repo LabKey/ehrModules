@@ -11,9 +11,10 @@ EHR.utils.getQCStateMap = function(config){
     }
 
     LABKEY.Query.selectRows({
-        schemaName: 'ehr',
-        queryName: 'qcStateMap',
-        sort: 'role',
+        schemaName: 'study',
+        queryName: 'qcState',
+        //queryName: 'qcStateMap',
+        //sort: 'role',
         columns: '*',
         success: function(data){
             var qcmap = {

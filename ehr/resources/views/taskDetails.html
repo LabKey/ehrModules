@@ -24,7 +24,28 @@ Ext.onReady(function(){
     }
 
     if (!formType){
-        alert('Must provide form type');
+        if(formUUID){
+            LABKEY.Query.selectRows({
+                schemaName: 'ehr',
+                queryName: 'tasks',
+                //containerPath: 'WNPRC/EHR/',
+                filterArray: [LABKEY.Filter.create('taskid', formUUID, LABKEY.Filter.Types.EQUAL)],
+                scope: this,
+                successCallback: function(data){
+                    if(!data.rows.length){
+                        alert('Must provide form type');
+                        return;
+                    }
+
+                    var row = data.rows[0];
+                    formType = row.formtype;
+                    renderTaskForm(formType);
+                }
+            });
+        }
+        else {
+            alert('Must provide form type');
+        }
         return;
     }
 

@@ -42,7 +42,7 @@ SELECT
     FROM study."Blood Draws" bd
     WHERE bd.id=d.id AND
         (bd.qcstate.publicdata = true OR bd.qcstate.metadata.DraftData = true) AND
-        bd.date BETWEEN TIMESTAMPADD('SQL_TSI_DAY', 30, now()) AND now()
+        bd.date BETWEEN now() AND TIMESTAMPADD('SQL_TSI_DAY', 30, now())
 
   ), 0) AS BloodNext30
 

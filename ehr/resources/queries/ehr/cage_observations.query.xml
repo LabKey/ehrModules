@@ -13,17 +13,18 @@
                         <formatString>yyyy-MM-dd</formatString>
                         <columnTitle>Date</columnTitle>
                     </column>
-                    <column columnName="roomcage">
-                        <datatype>varchar</datatype>
-                        <columnTitle>Room/Cage</columnTitle>
-                        <nullable>true</nullable>
-                        <isHidden>true</isHidden>
-                        <isUserEditable>false</isUserEditable>
-                    </column>
+                    <!--<column columnName="roomcage">-->
+                        <!--<datatype>varchar</datatype>-->
+                        <!--<columnTitle>Room/Cage</columnTitle>-->
+                        <!--<nullable>true</nullable>-->
+                        <!--<isHidden>true</isHidden>-->
+                        <!--<isUserEditable>false</isUserEditable>-->
+                    <!--</column>-->
                     <column columnName="room">
                         <datatype>varchar</datatype>
                         <nullable>false</nullable>
                         <columnTitle>Room</columnTitle>
+                        <displayWidth>50</displayWidth>
                         <!--NOTE: this lookup appears as '_select' due to a bug-->
                         <fk>
                           <fkFolderPath>/wnprc/ehr</fkFolderPath>
@@ -35,6 +36,7 @@
                     <column columnName="cage">
                         <datatype>varchar</datatype>
                         <columnTitle>Cage</columnTitle>
+                        <displayWidth>50</displayWidth>
                     </column>
                     <column columnName="remark">
                         <datatype>varchar</datatype>
@@ -53,6 +55,7 @@
                     </column>
                     <column columnName="QCState">
                         <nullable>true</nullable>
+                        <columnTitle>Status</columnTitle>
                         <datatype>integer</datatype>
                         <fk>
                           <fkFolderPath>/wnprc/ehr</fkFolderPath>
@@ -138,6 +141,10 @@
                         <isUserEditable>false</isUserEditable>
                         <isHidden>true</isHidden>
                     </column>
+                    <column columnName="no_observations">
+                        <shownInInsertView>true</shownInInsertView>
+                    </column>
+                    <housingRecord></housingRecord>
                 </columns>
                 <pkColumnName>RowId</pkColumnName>
             </table>

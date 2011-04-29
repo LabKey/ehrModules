@@ -109,7 +109,7 @@ EHR.ext.EditorGridPanel = Ext.extend(LABKEY.ext.EditorGridPanel,
             editable: this.editable
         };
 
-        var columns = EHR.ext.metaHelper.getColumnModelConfig(this.store, config);
+        var columns = EHR.ext.metaHelper.getColumnModelConfig(this.store, config, this);
 
         Ext.each(columns, function(col, idx){
             var meta = this.store.findFieldMeta(col.dataIndex);

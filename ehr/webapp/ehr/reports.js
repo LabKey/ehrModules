@@ -278,20 +278,13 @@ EHR.reports.weightGraph = function(tab, subject){
     var filterArray = this.getFilterArray(tab, subject);
     var title = (subject ? subject.join("; ") : '');
 
-    //remove the QCState filter
-    var filters= [];
-    Ext.each(filterArray.nonRemovable, function(f){
-        if(f.getColumnName() != 'qcstate/publicdata')
-            filters.push(f)
-    }, this);
-
     var config = Ext.applyIf({
         title: 'Weight Summary' + ": " + title,
         schemaName: 'study',
         queryName: 'demographicsWeightChange',
         sort: 'id',
         columns: 'Id,wdate,MostRecentWeight,MinLast30,MaxLast30,MaxChange30,MinLast90,MaxLast90,MaxChange90,MinLast120,MaxLast120,MaxChange120',
-        filters: filters,
+        filters: filterArray.nonRemovable,
         removeableFilters: filterArray.removable,
         scope: this,
         frame: true

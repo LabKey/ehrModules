@@ -7,13 +7,13 @@
                 <!--<updateUrl>/ehr/manageRecord.view?schemaName=study&amp;queryName=TB Tests&amp;keyField=lsid&amp;key=${lsid}</updateUrl>-->
                 <insertUrl />
                 <updateUrl />
-                <!--<deleteUrl />-->
+                <deleteUrl />
                 <columns>
                     <column columnName="parentId">
                         <fk>
                           <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                           <fkDbSchema>study</fkDbSchema>
-                          <fkTable>encounters</fkTable>
+                          <fkTable>studyDataParent</fkTable>
                           <fkColumnName>objectid</fkColumnName>
                         </fk>
                     </column>
@@ -24,10 +24,12 @@
                   <column columnName="dilution">
                     <datatype>varchar</datatype>
                     <columnTitle>Dilution</columnTitle>
+                    <displayWidth>50</displayWidth>
                   </column>
                   <column columnName="eye">
                     <datatype>varchar</datatype>
                     <columnTitle>Eye</columnTitle>
+                    <displayWidth>50</displayWidth>
                     <fk>
                       <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                       <fkDbSchema>ehr_lookups</fkDbSchema>

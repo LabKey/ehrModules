@@ -121,6 +121,45 @@ EHR.ext.GridFormPanel = Ext.extend(Ext.Panel,
                         }
                     }
                 })
+            }],
+            keys: [{
+                key: 'r',
+                ctrl: true,
+                alt: true,
+                handler: function(e, k){
+                    this.theGrid.getSelectionModel().selectPrevious();
+                    //this.theForm.focusFirstField.defer(30, this);
+                },
+                scope: this
+            },{
+                key: 'f',
+                ctrl: true,
+                alt: true,
+                handler: function(e, k){
+                    this.theGrid.getSelectionModel().selectNext();
+                    //this.theForm.focusFirstField.defer(30, this);
+                },
+                scope: this
+//            },{
+//                key: 'd',
+//                ctrl: true,
+//                alt: true,
+//                handler: function(e, k){
+//                    Ext.MessageBox.confirm(
+//                        'Confirm',
+//                        'You are about to permanently delete these records.  It cannot be undone.  Are you sure you want to do this?',
+//                        function(val){
+//                            if(val=='yes'){
+//                                this.theGrid.stopEditing();
+//                                var recs = this.theGrid.getSelectionModel().getSelections();
+//                                this.theForm.unbindRecord();
+//
+//                                this.store.deleteRecords(recs);
+//                            }
+//                        },
+//                    this);
+//                },
+//                scope: this
             }]
         });
 
@@ -423,6 +462,21 @@ EHR.ext.GridFormPanel = Ext.extend(Ext.Panel,
                             return;
                         var f = batchEditWin.fieldName.getValue();
                         var v = batchEditWin.fieldVal.getValue();
+                        if (batchEditWin.fieldVal instanceof Ext.form.RadioGroup){
+                            v = (batchEditWin.fieldVal.getValue() ? batchEditWin.fieldVal.getValue().inputValue : null);
+                        }
+                        else if (batchEditWin.fieldVal instanceof Ext.form.Radio){
+                            if(batchEditWin.fieldVal.checked)
+                                v = batchEditWin.fieldVal.getValue();
+                            else
+                                v = false;
+                        }
+                        else if (batchEditWin.fieldVal instanceof Ext.form.CheckboxGroup){
+                            v = batchEditWin.fieldVal.getValueAsString();
+                        }
+                        else
+                            v = batchEditWin.fieldVal.getValue();
+
                         var s = this.theGrid.getSelectionModel().getSelections();
                         for (var i = 0, r; r = s[i]; i++){
                             r.set(f, v);

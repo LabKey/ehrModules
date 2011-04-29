@@ -89,5 +89,5 @@ LEFT JOIN
     ON (T8.Id = d.Id)
 
 WHERE
-d.id.status.status = 'Alive'
-AND d.id.species.species != 'Unknown'
+--d.id.status.status = 'Alive' AND
+d.id.species.species != 'Unknown'

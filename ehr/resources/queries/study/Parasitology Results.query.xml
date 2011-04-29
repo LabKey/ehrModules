@@ -7,14 +7,14 @@
                 <!--<updateUrl>/ehr/manageRecord.view?schemaName=study&amp;queryName=Parasitology Results&amp;keyField=lsid&amp;key=${lsid}</updateUrl>-->
                 <insertUrl />
                 <updateUrl />
-                <!--<deleteUrl />-->
+                <deleteUrl />
                 <columns>
                     <column columnName="code">
                     <datatype>varchar</datatype>
                     <columnTitle>Code</columnTitle>
                     <fk>
                         <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-                        <fkDbSchema>lists</fkDbSchema>
+                        <fkDbSchema>ehr_lookups</fkDbSchema>
                         <fkTable>snomed</fkTable>
                         <fkColumnName>Code</fkColumnName>
                     </fk>

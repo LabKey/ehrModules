@@ -77,9 +77,9 @@
             </properties>
         </column>
     </columns>
-    <filters>
-        <filter column="qcstate/publicdata" operator="eq" value="true"/>
-    </filters>
+    <!--<filters>-->
+        <!--<filter column="qcstate/publicdata" operator="eq" value="true"/>-->
+    <!--</filters>-->
     <sorts>
         <sort column="id" descending="false"/>
     </sorts>

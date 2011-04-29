@@ -9,7 +9,8 @@ EHR.ext.Buttons = {
     SAVEDRAFT: function(){return {
         text: 'Save Draft',
         name: 'saveDraft',
-        targetQC: 'In Progress',
+        //targetQC: 'In Progress',
+        requiredQC: 'In Progress',
         errorThreshold: 'WARN',
         //successURL: LABKEY.ActionURL.buildURL("ehr", "dataEntry.view"),
         disabled: true,
@@ -22,9 +23,10 @@ EHR.ext.Buttons = {
     SUBMIT: function(){return {
         text: 'Submit Final',
         name: 'submit',
+        requiredQC: 'Approved',
         targetQC: 'Approved',
         errorThreshold: 'INFO',
-        successURL: LABKEY.ActionURL.buildURL("ehr", "dataEntry.view"),
+        //successURL: LABKEY.ActionURL.buildURL("ehr", "dataEntry.view"),
         disabled: true,
         ref: 'submitBtn',
         handler: this.onSubmit,
@@ -35,6 +37,7 @@ EHR.ext.Buttons = {
     REVIEW: function(){return {
         text: 'Submit for Review',
         name: 'review',
+        requiredQC: 'Review Required',
         targetQC: 'Review Required',
         errorThreshold: 'WARN',
         successURL: LABKEY.ActionURL.buildURL("ehr", "dataEntry.view"),
@@ -50,6 +53,7 @@ EHR.ext.Buttons = {
         name: 'discard',
         ref: 'discardBtn',
         targetQC: 'Delete Requested',
+        requiredQC: 'Delete Requested',
         successURL: LABKEY.ActionURL.buildURL("ehr", "dataEntry.view"),
         handler: this.discard,
         scope: this
@@ -68,7 +72,8 @@ EHR.ext.Buttons = {
     CLOSE: function(){return {
         text: 'Save & Close',
         name: 'closeBtn',
-        targetQC: 'In Progress',
+        //targetQC: 'In Progress',
+        requiredQC: 'In Progress',
         errorThreshold: 'WARN',
         successURL: LABKEY.ActionURL.buildURL("ehr", "dataEntry.view"),
         disabled: true,
@@ -92,6 +97,7 @@ EHR.ext.Buttons = {
         text: 'Request',
         name: 'request',
         targetQC: 'Request: Pending',
+        requiredQC: 'Request: Pending',
         errorThreshold: 'WARN',
         successURL: LABKEY.ActionURL.buildURL("ehr", "requestServices.view"),
         disabled: true,
@@ -118,6 +124,7 @@ EHR.ext.Buttons = {
         text: 'Edit',
         name: 'edit',
         targetQC: 'Approved',
+        requiredQC: 'Approved',
         errorThreshold: 'WARN',
         handler: function(){
             window.location = LABKEY.ActionURL.buildURL('ehr','manageTask.view', null, {formtype:this.formType, taskid: this.formUUID});
@@ -278,8 +285,8 @@ Ext.extend(EHR.ext.ImportPanelBase, Ext.Panel, {
         buttonCfg.xtype = 'button';
 
         //only show button if user can access this QCState
-        if(buttonCfg.targetQC){
-            if(!this.permissionMap.hasPermission(buttonCfg.targetQC, 'insert', this.store.getQueries())){
+        if(buttonCfg.requiredQC){
+            if(!this.permissionMap.hasPermission(buttonCfg.requiredQC, 'insert', this.store.getQueries())){
                 buttonCfg.hidden = true;
             }
         }
@@ -356,7 +363,8 @@ Ext.extend(EHR.ext.ImportPanelBase, Ext.Panel, {
                 columns: c.columns || EHR.ext.FormColumns[c.queryName] || '',
                 //autoLoad: true,
                 storeId: [c.schemaName,c.queryName,c.viewName,c.storeSuffix].join('||'),
-                metadata: c.metadata
+                metadata: c.metadata,
+                ignoreFilter: 1
             }
         });
         c.importPanel = this;
@@ -544,8 +552,6 @@ EHR.ext.TaskDetailsPanel = Ext.extend(EHR.ext.ImportPanelBase, {
             c.xtype = 'ehr-qwppanel';
             c.autoLoadQuery = true;
             c.collapsed = false;
-            //TODO
-            c.filterArray.push(LABKEY.Filter.create('qcstate/publicdata', null, LABKEY.Filter.Types.HAS_ANY_VALUE));
         }
 
         c.storeConfig = null;

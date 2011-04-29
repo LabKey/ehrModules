@@ -245,7 +245,23 @@ function addWeightCompareBtn(dataRegion, menu){
                     }, this);
 
                     Ext.Msg.hide();
-                    Ext.Msg.alert('Weights', '<table border=1>'+rows.join('')+'</table>');
+                    new Ext.Window({
+                        title: 'Weights',
+                        width: 200,
+                        //autoWidth: true,
+                        items: [{
+                            xtype: 'panel',
+                            html: '<table border=1>'+rows.join('')+'</table>'
+                        }],
+                        buttonAlign: 'center',
+                        buttons: [{
+                            text: 'OK',
+                            handler: function(win, button){
+                                win.ownerCt.ownerCt.hide();
+                            }
+                        }]
+
+                    }).show();
 
 
 

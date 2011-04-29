@@ -1,0 +1,72 @@
+<html>
+<head>
+
+<script type="text/javascript">
+
+LABKEY.requiresScript("/ehr/transposeRows.js");
+
+Ext.onReady(function ()
+{
+    if (!LABKEY.ActionURL.getParameter('lsid')){alert('Must Provide LSID'); return false;}
+
+    var filterArray = [LABKEY.Filter.create('lsid', LABKEY.ActionURL.getParameter('lsid'), LABKEY.Filter.Types.EQUAL)];
+
+    new EHR.ext.DetailsView({
+        schemaName: 'study',
+        queryName: 'Drug Administration',
+        title: 'Drug Details:',
+        renderTo: 'drugDetails',
+        filterArray: filterArray
+    });
+
+    LABKEY.Query.selectRows({
+        schemaName: 'study',
+        queryName: 'Drug Administration',
+        filterArray: filterArray,
+        successCallback: onSuccess
+    });
+
+    function onSuccess(data){
+        if(!data.rows.length){
+            alert('Unable to find record');
+            return;
+        }
+
+        var row = data.rows[0];
+
+        new LABKEY.QueryWebPart({
+            title: 'Clinical Remarks From '+(new Date(row.date).format('Y-m-d')),
+            schemaName: 'study',
+            queryName: 'Clinical Remarks',
+            allowChooseQuery: false,
+            allowChooseView: true,
+            showInsertNewButton: false,
+            showDeleteButton: false,
+            showDetailsColumn: true,
+            showUpdateColumn: false,
+            showRecordSelectors: true,
+            buttonBarPosition: 'top',
+            timeout: 0,
+            filterArray: [
+                LABKEY.Filter.create('date', row.date, LABKEY.Filter.Types.DATE_EQUAL),
+                LABKEY.Filter.create('id', row.Id, LABKEY.Filter.Types.EQUAL)
+            ],
+            sort: '-Date',
+            scope: this,
+            errorCallback: EHR.utils.onError
+         }).render('childTables');
+    }
+});
+
+</script>
+</head>
+<body>
+    <p/>
+
+	<div id='drugDetails'></div>
+
+    <p/>
+
+    <div id='childTables'></div>
+</body>
+</html>

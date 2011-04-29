@@ -12,6 +12,10 @@
             <name>Experiment Runs</name>
             <location>body</location>
         </webPart>
+        <webPart>
+            <name>Files</name>
+            <location>body</location>
+        </webPart>
     </preferredWebParts>
     <modules>
         <moduleName>Pipeline</moduleName>

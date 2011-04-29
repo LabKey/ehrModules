@@ -46,19 +46,19 @@ EHR.ext.SearchPanel = Ext.extend(Ext.Panel, {
 //        };
 //        EHR.utils.rApplyIf(this, metaDefaults);
 
-        LABKEY.Query.getQueryDetails({
-            containerPath: this.containerPath
-            ,queryName: this.queryName
-            ,schemaName: this.schemaName
-            ,viewName: this.viewName
-            ,maxRows: 0
-//            ,successCallback: this.onLoad
-            ,successCallback: function(results){
-                console.log(results)
-            }
-            ,errorCallback: EHR.utils.onError
-            ,scope: this
-        });
+//        LABKEY.Query.getQueryDetails({
+//            containerPath: this.containerPath
+//            ,queryName: this.queryName
+//            ,schemaName: this.schemaName
+//            ,viewName: this.viewName
+//            ,maxRows: 0
+////            ,successCallback: this.onLoad
+//            ,successCallback: function(results){
+//                console.log(results)
+//            }
+//            ,errorCallback: EHR.utils.onError
+//            ,scope: this
+//        });
 
         this.store = new EHR.ext.AdvancedStore({
             containerPath: this.containerPath
@@ -198,9 +198,9 @@ EHR.ext.SearchPanel = Ext.extend(Ext.Panel, {
             'query.queryName': this.queryName
         };
 
-        if(this.schemaName=='study'){
-            params['qcstate/publicdata~eq'] = true;
-        }
+//        if(this.schemaName=='study'){
+//            params['qcstate/publicdata~eq'] = true;
+//        }
 
         if (this.containerFilterName && this.containerFilterName.getValue()){
             params['query.containerFilterName'] = this.containerFilterName.getValue();

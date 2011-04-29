@@ -2,11 +2,12 @@
     <metadata>
         <tables xmlns="http://labkey.org/data/xml">
             <table tableName="encounters" tableDbType="TABLE">
-                <tableUrl>/ehr/taskDetails.view?formtype=${type}&amp;taskid=${taskid}</tableUrl>
+                <tableUrl>/ehr/taskDetails.view?formtype=${formtype}&amp;taskid=${taskid}</tableUrl>
                 <!--<insertUrl>/ehr/manageRecord.view?schemaName=study&amp;queryName=Clinical Encounters&amp;keyField=lsid&amp;</insertUrl>-->
                 <!--<updateUrl>/ehr/manageRecord.view?schemaName=study&amp;queryName=Clinical Encounters&amp;keyField=lsid&amp;key=${lsid}</updateUrl>-->
                 <insertUrl />
                 <updateUrl />
+                <deleteUrl />
                 <columns>
                     <column columnName="type">
                         <isHidden>true</isHidden>
@@ -19,6 +20,9 @@
                     </column>
                     <column columnName="serviceRequested">
                         <columnTitle>Service Requested</columnTitle>
+                    </column>
+                    <column columnName="enddate">
+                        <isHidden>false</isHidden>
                     </column>
                 </columns>
                 <!--<buttonBarOptions includeStandardButtons="false">                    -->
