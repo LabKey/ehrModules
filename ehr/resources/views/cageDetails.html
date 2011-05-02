@@ -79,7 +79,7 @@ Ext.onReady(function ()
         errorCallback: EHR.utils.onError
      }).render('cageNotes');
 
-    filterArray.push(LABKEY.Filter.create('odate', null, LABKEY.Filter.Types.ISBLANK));
+    filterArray.push(LABKEY.Filter.create('enddate', null, LABKEY.Filter.Types.ISBLANK));
     new LABKEY.QueryWebPart({
         title: 'Animals Currently Housed',
         schemaName: 'study',

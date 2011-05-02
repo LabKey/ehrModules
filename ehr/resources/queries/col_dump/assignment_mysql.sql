@@ -7,7 +7,7 @@ SELECT
 a.id,
 a.date,
 a.project,
-a.rdate,
+a.enddate,
 a.parentid,
 a.ts,
 a.objectid,

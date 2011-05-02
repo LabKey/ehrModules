@@ -42,7 +42,7 @@
                       <fkColumnName>code</fkColumnName>
                     </fk>
                   </column>
-                  <column columnName="Diagnosis">
+                  <column columnName="diagnosis">
                     <datatype>varchar</datatype>
                     <columnTitle>Diagnosis</columnTitle>
                     <fk>
@@ -72,17 +72,6 @@
                   <column columnName="seq2">
                     <datatype>integer</datatype>
                     <columnTitle>Diagnosis Code Number</columnTitle>
-                  </column>
-                  <column columnName="tissue">
-                    <datatype>varchar</datatype>
-                    <!--<nullable>false</nullable>-->
-                    <columnTitle>Tissue</columnTitle>
-                    <fk>
-                      <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-                      <fkDbSchema>ehr_lookups</fkDbSchema>
-                      <fkTable>snomed</fkTable>
-                      <fkColumnName>code</fkColumnName>
-                    </fk>
                   </column>
                   <column columnName="duration">
                     <datatype>varchar</datatype>

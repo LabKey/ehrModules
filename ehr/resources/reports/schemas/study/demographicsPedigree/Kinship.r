@@ -16,12 +16,15 @@ library(Rlabkey)
 
 #calculate kinship using an R package
 kin = kinship(labkey.data$id, labkey.data$dam, labkey.data$sire)
+remove(labkey.data)
 
 #transform this matrix into a 3 column dataframe
 vec <- c(kin);
 cols<- length(colnames(kin))
 newRecords<-data.frame(cbind(row.names(kin)[rep(1:cols, each=cols)] , colnames(kin)), stringsAsFactors=FALSE);
 newRecords<- cbind(newRecords, matrix(as.matrix(kin), cols,1))
+remove(kin);
+remove(cols)
 
 colnames(newRecords)<-c("Id", "Id2", "coefficient")
 
@@ -71,11 +74,12 @@ toDelete
 #    );
 #    del;
 #}
-
+remove(IdxToDelete)
+remove(toDelete)
 
 #find id pairs not present in the old records
-IdxToDelete <- setdiff(newRecords$key1, oldRecords$key1);
-IdxToDelete
+IdxToInsert <- setdiff(newRecords$key1, oldRecords$key1);
+IdxToInsert
 toInsert <- newRecords[match(IdxToInsert, newRecords$Id),]
 str(toInsert)
 toInsert
@@ -91,6 +95,8 @@ toInsert
 #    );
 #    ins;
 #}
+remove(IdxToInsert)
+remove(toInsert)
 
 
 SharedIdPairs <- intersect(oldRecords$key1, newRecords$key1);

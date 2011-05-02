@@ -15,7 +15,7 @@ FROM ehr_lookups.cage c
 FULL JOIN study.housing h
   ON (c.room=h.room AND c.cage=h.cage)
 
-WHERE h.odate IS NULL  and c.room is not null and c.room != ''
+WHERE h.enddate IS NULL  and c.room is not null and c.room != ''
 
 GROUP BY coalesce(h.room, c.room)
 

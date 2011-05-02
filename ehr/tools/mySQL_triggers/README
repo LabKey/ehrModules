@@ -1,0 +1,2 @@
+These are the SQL scripts used to add trigger to the WNPRC colony records mySQL db.  These triggers
+are used to timestamp records and identify deletes

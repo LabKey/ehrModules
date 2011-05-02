@@ -5,7 +5,7 @@
                 <columns>
                     <column columnName="Id">
                         <isKeyField>true</isKeyField>
-                        <isHidden>true</isHidden>
+                        <!--<isHidden>true</isHidden>-->
                     </column>
                 </columns>
                 <titleColumn>Id</titleColumn>

@@ -2,7 +2,8 @@
 
 =head1 DESCRIPTION
 
-This script is designed to extract specific tables from LabKey to TSV files.  It will hash specific fields using the included java hasher.class file.
+This script is designed to extract specific tables from LabKey to TSV files.
+It will hash specific fields using the included java hasher.class file.
 
 
 =head1 LICENSE

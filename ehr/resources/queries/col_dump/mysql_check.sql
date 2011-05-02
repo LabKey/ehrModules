@@ -3,16 +3,6 @@
  *
  * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
  */
--- SELECT
--- id,
--- date,
--- ts,
--- objectid,
--- 'alerts' as type,
--- key2 AS mySQL_UUID
--- FROM col_dump.alerts_mysql
-
--- UNION ALL
 
 SELECT
 id,
@@ -487,16 +477,16 @@ UNION ALL
 --
 -- UNION ALL
 
-SELECT
-id,
-date,
-ts,
-objectid AS LabKeyUUID,
-'surgsum' as type,
-key2 AS mySQL_UUID
-FROM col_dump.surgsum_mysql
-
-UNION ALL
+-- SELECT
+-- id,
+-- date,
+-- ts,
+-- objectid AS LabKeyUUID,
+-- 'surgsum' as type,
+-- key2 AS mySQL_UUID
+-- FROM col_dump.surgsum_mysql
+--
+-- UNION ALL
 
 SELECT
 id,

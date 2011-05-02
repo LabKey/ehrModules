@@ -86,7 +86,6 @@ ehr/ehr-study/study.xml -text
 ehr/module.properties -text
 ehr/resources/etl/datasets/bacteriologyResults.sql -text
 ehr/resources/etl/datasets/behavetrem.sql -text
-ehr/resources/etl/datasets/cageObs.sql -text
 ehr/resources/etl/datasets/chemistryResults.sql -text
 ehr/resources/etl/datasets/chemistryRuns.sql -text
 ehr/resources/etl/datasets/hematologyMorphology.sql -text
@@ -288,6 +287,8 @@ ehr/resources/queries/study/Biopsy[!!-~]Diagnosis.js -text
 ehr/resources/queries/study/Biopsy[!!-~]Diagnosis.query.xml -text
 ehr/resources/queries/study/Biopsy[!!-~]Diagnosis/.qview.xml -text
 ehr/resources/queries/study/Biopsy[!!-~]Diagnosis/In[!!-~]Progress.qview.xml -text
+ehr/resources/queries/study/BiopsyByDiagnosis.query.xml -text
+ehr/resources/queries/study/BiopsyByDiagnosis.sql -text
 ehr/resources/queries/study/Birth.js -text
 ehr/resources/queries/study/Birth.query.xml -text
 ehr/resources/queries/study/Birth/.qview.xml -text
@@ -338,6 +339,8 @@ ehr/resources/queries/study/Clinical[!!-~]Remarks/Surgery[!!-~]Remarks.qview.xml
 ehr/resources/queries/study/Clinpath[!!-~]Runs.query.xml -text
 ehr/resources/queries/study/Clinpath[!!-~]Runs/.qview.xml -text
 ehr/resources/queries/study/Clinpath[!!-~]Runs/In[!!-~]Progress.qview.xml -text
+ehr/resources/queries/study/ClinpathRuns.query.xml -text
+ehr/resources/queries/study/ClinpathRuns.sql -text
 ehr/resources/queries/study/CoAssignedAnimals.sql -text
 ehr/resources/queries/study/Colony[!!-~]Population[!!-~]By[!!-~]Age/.qview.xml -text
 ehr/resources/queries/study/Current[!!-~]Blood.query.xml -text
@@ -409,6 +412,7 @@ ehr/resources/queries/study/Irregular[!!-~]Observations/In[!!-~]Progress.qview.x
 ehr/resources/queries/study/Irregular[!!-~]Observations/Irregular[!!-~]Obs.qview.xml -text
 ehr/resources/queries/study/Irregular[!!-~]Observations/Today[!!-~]Only.qview.xml -text
 ehr/resources/queries/study/Irregular[!!-~]Observations/With[!!-~]Room.qview.xml -text
+ehr/resources/queries/study/Kinship/.qview.xml -text
 ehr/resources/queries/study/Menses[!!-~]Observations/.qview.xml -text
 ehr/resources/queries/study/Menses[!!-~]Observations/In[!!-~]Progress.qview.xml -text
 ehr/resources/queries/study/Menses.js -text
@@ -421,6 +425,8 @@ ehr/resources/queries/study/Necropsy[!!-~]Diagnosis.js -text
 ehr/resources/queries/study/Necropsy[!!-~]Diagnosis.query.xml -text
 ehr/resources/queries/study/Necropsy[!!-~]Diagnosis/.qview.xml -text
 ehr/resources/queries/study/Necropsy[!!-~]Diagnosis/In[!!-~]Progress.qview.xml -text
+ehr/resources/queries/study/NecropsyByDiagnosis.query.xml -text
+ehr/resources/queries/study/NecropsyByDiagnosis.sql -text
 ehr/resources/queries/study/Notes.js -text
 ehr/resources/queries/study/Notes.query.xml -text
 ehr/resources/queries/study/Notes/.qview.xml -text
@@ -703,8 +709,8 @@ ehr/resources/queries/study/weightRelChange.query.xml -text
 ehr/resources/queries/study/weightRelChange.sql -text
 ehr/resources/reports/schemas/study/Blood[!!-~]Chemistry[!!-~]Results/By[!!-~]Panel.js -text
 ehr/resources/reports/schemas/study/Blood[!!-~]Chemistry[!!-~]Results/By[!!-~]Panel.report.xml -text
-ehr/resources/reports/schemas/study/Blood[!!-~]Chemistry[!!-~]Results/Test.r -text
-ehr/resources/reports/schemas/study/Blood[!!-~]Chemistry[!!-~]Results/Test.report.xml -text
+ehr/resources/reports/schemas/study/CageReview/Cage[!!-~]Size[!!-~]Validation.r -text
+ehr/resources/reports/schemas/study/CageReview/Cage[!!-~]Size[!!-~]Validation.report.xml -text
 ehr/resources/reports/schemas/study/StudyData/Monthly[!!-~]Summary.r -text
 ehr/resources/reports/schemas/study/Weight/Weight[!!-~]Graph.r -text
 ehr/resources/reports/schemas/study/Weight/Weight[!!-~]Graph.report.xml -text
@@ -714,7 +720,6 @@ ehr/resources/reports/schemas/study/demographicsPedigree/InbreedingCoefficients.
 ehr/resources/reports/schemas/study/demographicsPedigree/Kinship.r -text
 ehr/resources/reports/schemas/study/demographicsPedigree/Kinship.report.xml -text
 ehr/resources/reports/schemas/study/demographicsPedigree/Pedigree.r -text
-ehr/resources/reports/schemas/study/demographicsPedigree/Pedigree2.r -text
 ehr/resources/reports/schemas/study/roomCheck/Cage[!!-~]Size[!!-~]Validation.r -text
 ehr/resources/reports/schemas/study/roomCheck/Cage[!!-~]Size[!!-~]Validation.report.xml -text
 ehr/resources/schemas/dbscripts/postgresql/EHR-11.10-11.101.sql -text
@@ -838,12 +843,14 @@ ehr/src/org/labkey/ehr/security/EHRReviewRequiredUpdatePermission.java -text
 ehr/src/org/labkey/ehr/view/EtlAdmin.jsp -text
 ehr/src/org/labkey/ehr/view/begin.jsp -text
 ehr/tools/FixTabs.java -text
+ehr/tools/PrePopulateData/README -text
 ehr/tools/PrePopulateData/Task[!!-~]Data.xlsx -text
-ehr/tools/addDatasetColumns/tweakDatasets.pl -text
+ehr/tools/addDatasetColumns/modifyPropertyDescriptors.pl -text
 ehr/tools/extractCreation/extracttsv.pl -text
 ehr/tools/extractCreation/hasher.class -text
 ehr/tools/fixmeta.js -text
 ehr/tools/mySQL_edit.pl -text
+ehr/tools/mySQL_triggers/README -text
 ehr/tools/mySQL_triggers/mySQL_edit.pl -text
 ehr/tools/mySQL_triggers/mysql_delete_triggers.sql -text
 ehr/tools/mySQL_triggers/mysql_insert_triggers.sql -text

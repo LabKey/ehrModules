@@ -19,12 +19,12 @@ function onAfterInsert(errors, scriptContext, row, oldRow){
         var sql = "SELECT * FROM study.housing h " +
         "WHERE h.room='"+row.room+"' AND " +
         "h.date <= '"+row.Date+"' AND " +
-        "(h.odate >= '"+row.Date+"' OR h.odate IS NULL) AND " +
+        "(h.enddate >= '"+row.Date+"' OR h.enddate IS NULL) AND " +
         "h.qcstate.publicdata = true ";
 
         if(row.cage)
             sql += " AND h.cage='"+row.cage+"'";
-        //console.log(sql);
+        console.log(sql);
         var toInsert = [];
         LABKEY.Query.executeSql({
             schemaName: 'study',
@@ -66,7 +66,7 @@ function onAfterInsert(errors, scriptContext, row, oldRow){
 }
 
 //TODO
-//insert into ehr.cage_obs
+//insert into study.cage_obs
 //function onAfterUpdate(errors, scriptContext, row, oldRow){
 //    //find animals overlapping with this record
 //    if(row.Date && row.room){
@@ -93,7 +93,7 @@ function onAfterInsert(errors, scriptContext, row, oldRow){
 //        var sql = "SELECT * FROM study.housing h " +
 //        "WHERE h.room='"+row.room+"' AND " +
 //        "h.date <= '"+row.Date+"' AND " +
-//        "(h.odate >= '"+row.Date+"' OR h.odate IS NULL) AND " +
+//        "(h.enddate >= '"+row.Date+"' OR h.enddate IS NULL) AND " +
 //        "h.qcstate.publicdata = true ";
 //
 //        if(row.cage)

@@ -1,0 +1,9 @@
+<customView xmlns="http://labkey.org/data/xml/queryCustomView">
+   <sorts>
+       <sort column="Id" />
+       <sort column="Id2" />
+   </sorts>
+    <!--<filters>-->
+        <!--<filter column="qcstate/publicdata" operator="eq" value="true"/>-->
+    <!--</filters>-->
+</customView>

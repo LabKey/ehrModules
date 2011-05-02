@@ -2,8 +2,54 @@
 
 =head1 DESCRIPTION
 
-This script is designed to manipulate datasets in LabKey.  It is designed to iterate through each table in the studydataset schema, then will build a SQL string.
-This script is designed to add new fields to a dataset using the EHR's shared property descriptors.  It could be modified to accomplish other objectives.
+Created 5-1-11 by bbimber
+
+This script is designed to massage datasets and property descriptors in a labkey study.  It was created
+specifically for EHR datasets, but could be modified.
+
+The purpose is twofold:
+
+1. add missing columns to datasets, if you want a consistent set of shared columns across all datasets in a study
+2. ensure shared columns use the same propery descriptor, which allows them to be unioned in studydata
+
+NOTE: this was only been tested on a site with 1 study.  May not perform as desired if your site has multiple studies
+
+It accepts the following variables as config:
+
+#the path / executable for psql
+my $pg_path = 'C:\Program Files (x86)\PostgreSQL\8.4\bin';
+my $pg_exe = "$pg_path\\psql.exe";
+
+#the name of the os user to execute psql
+my $user = "labkey";
+
+my $expected_columns = {
+	account => {
+		-propertyURI => 'urn:ehr.labkey.org/#Account',
+	},
+	project => {
+		-propertyURI => 'urn:ehr.labkey.org/#Project',
+		-type => 'integer',
+	},
+	remark => {
+		-propertyURI => 'urn:ehr.labkey.org/#Remark',
+	},
+	taskid => {
+		-propertyURI => 'urn:ehr.labkey.org/#TaskId',
+	},
+	daterequested => {
+		-propertyURI => 'urn:ehr.labkey.org/#DateRequested',
+		-type => 'timestamp without time zone',
+		-optional => 1,
+	}
+
+Where the keys are the column names with the following uptions:
+
+propertyURI: the name of the property URI to use.
+type: the data type of the pg column.  if omitted,  'character varying(4000)' will be used.
+optional: if selected, a dataset will only be modified if it has a column of that name.  the purpose of this
+  is when you do not want this property added to every dataset, but you do want those datasets with this property
+  to use a common property descriptor
 
 
 =head1 LICENSE
@@ -34,13 +80,15 @@ use strict;
 my $tm = localtime;
 my $datestr=sprintf("%04d%02d%02d_%02d%02d", $tm->year+1900, ($tm->mon)+1, $tm->mday, $tm->hour, $tm->min);
 
-my $pg_path = 'C:\Program Files (x86)\PostgreSQL\8.4\bin'; 
+#the path to psql
+my $pg_path = 'C:\Program Files (x86)\PostgreSQL\8.4\bin';
 my $pg_exe = "$pg_path\\psql.exe";
 #$pg_exe = 'psql';
 
+#the name of the os user to execute psql
 my $user = "labkey";
 my $sql = '';
-my $container = "29e3860b-02b5-102d-b524-493dbd27b599";
+#my $container = "29e3860b-02b5-102d-b524-493dbd27b599";
 my $expected_columns = {
 	account => {
 		-propertyURI => 'urn:ehr.labkey.org/#Account',

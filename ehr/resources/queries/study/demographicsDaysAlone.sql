@@ -15,10 +15,10 @@ CASE
   WHEN count(h2.id) = 0
     then min(h1.date)
   --has an active roommate
-  WHEN (max(coalesce(h2.odate, now())) = now()) OR (max(h2.date) >= max(coalesce(h2.odate, now())))
+  WHEN (max(coalesce(h2.enddate, now())) = now()) OR (max(h2.date) >= max(coalesce(h2.enddate, now())))
     THEN null
   ELSE
-    max(h2.odate)
+    max(h2.enddate)
 END as AloneSince,
 
 convert(
@@ -27,10 +27,10 @@ CASE
   WHEN count(h2.id) = 0
     then TIMESTAMPDIFF('SQL_TSI_DAY', min(h1.date), now())
   --has an active roommate
-  WHEN (max(coalesce(h2.odate, now())) = now()) OR (max(h2.date) >= max(coalesce(h2.odate, now())))
+  WHEN (max(coalesce(h2.enddate, now())) = now()) OR (max(h2.date) >= max(coalesce(h2.enddate, now())))
     THEN 0
   ELSE
-    TIMESTAMPDIFF('SQL_TSI_DAY', max(h2.odate), now())
+    TIMESTAMPDIFF('SQL_TSI_DAY', max(h2.enddate), now())
 END, 'INTEGER') as DaysAlone
 
 -- max(a.value) as Exemptions
@@ -41,9 +41,9 @@ FROM study.Housing h1
 LEFT OUTER JOIN study.Housing h2
     ON (
       (
-      (h2.Date >= h1.date AND h2.Date < COALESCE(h1.odate, curdate()))
+      (h2.Date >= h1.date AND h2.Date < COALESCE(h1.enddate, curdate()))
       OR
-      (COALESCE(h2.odate, curdate()) > h1.date AND COALESCE(h2.odate, curdate()) <= COALESCE(h1.odate, curdate()))
+      (COALESCE(h2.enddate, curdate()) > h1.date AND COALESCE(h2.enddate, curdate()) <= COALESCE(h1.enddate, curdate()))
 
       ) AND
       h1.id != h2.id AND h1.room = h2.room AND h1.cage = h2.cage

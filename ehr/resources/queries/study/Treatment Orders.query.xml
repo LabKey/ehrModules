@@ -70,7 +70,7 @@
                             <fkColumnName>route</fkColumnName>
                         </fk>
                     </column>
-                    <column columnName="vunits">
+                    <column columnName="vol_units">
                         <columnTitle>Volume Units</columnTitle>
                         <fk>
                             <fkFolderPath>/wnprc/ehr/</fkFolderPath>
@@ -79,10 +79,10 @@
                             <fkColumnName>unit</fkColumnName>
                         </fk>
                     </column> 
-                    <column columnName="conc">
+                    <column columnName="concentration">
                         <columnTitle>Drug Conc</columnTitle>
                     </column>
-                    <column columnName="cunits">
+                    <column columnName="conc_units">
                         <columnTitle>Conc Units</columnTitle>
                         <fk>
                             <fkFolderPath>/wnprc/ehr/</fkFolderPath>
@@ -91,7 +91,7 @@
                             <fkColumnName>unit</fkColumnName>
                         </fk>
                     </column>
-                    <column columnName="units">
+                    <column columnName="amount_units">
                         <columnTitle>Amount Units</columnTitle>
                         <fk>
                             <fkFolderPath>/wnprc/ehr/</fkFolderPath>

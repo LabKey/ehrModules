@@ -6,19 +6,19 @@
 SELECT
 d.Id AS Id,
 
---TODO: I dont think i should have to convert this.  bug??
-convert(COALESCE(T4.Total, 0), INTEGER) as HistoricAssignments,
-convert(COALESCE(T2.Total, 0), INTEGER) as PendingAssignments,
-convert(COALESCE(T1.Total, 0), INTEGER) as HistoricResearchAssignments,
-convert(COALESCE(T3.Total, 0), INTEGER) as HistoricVetAssignments,
-convert(COALESCE(T10.Total, 0), INTEGER) as HistoricTrainingAssignments,
-convert(COALESCE(T9.Total, 0), INTEGER) as HistoricBreedingAssignments,
+COALESCE(T4.Total, 0) as HistoricAssignments,
+COALESCE(T2.Total, 0) as PendingAssignments,
+COALESCE(T1.Total, 0) as HistoricResearchAssignments,
+COALESCE(T3.Total, 0) as HistoricVetAssignments,
+COALESCE(T10.Total, 0) as HistoricTrainingAssignments,
+COALESCE(T9.Total, 0) as HistoricBreedingAssignments,
 
 CASE WHEN T6.Total > 0 THEN 'Y' ELSE null END as HistoricSPF_StockAssignment,
 CASE WHEN T7.Total > 0 THEN 'Y' ELSE null END as HistoricConventionalStockAssignment,
 CASE WHEN T8.Total > 0 THEN 'Y' ELSE null END as HistoricMarmStockAssignment,
-convert(COALESCE(T5.Total, 0), INTEGER) as HistoricStockAssignments,
+COALESCE(T5.Total, 0) as HistoricStockAssignments,
 
+--NOTE: these are deliberately not COALESCED in order to preserve better readability
 T4.Total as HistoricAssignments2,
 T2.Total as PendingAssignments2,
 T1.Total as HistoricResearchAssignments2,

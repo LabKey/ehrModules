@@ -17,10 +17,13 @@ exports.Ext = Ext;
 var EHR = {};
 exports.EHR = EHR;
 
+
+
+
 //var map = new ScriptableMap(new org.labkey.api.collections.CaseInsensitiveHashMap());
 
 function init(event, errors){
-    console.log("** evaluating: " + this['javax.script.filename']);
+    console.log("** evaluating: " + this['javax.script.filename'] + ' for: '+event);
 
     var fileParse = (this['javax.script.filename']).split('/');
     this.extraContext.schemaName = fileParse[1];
@@ -41,7 +44,7 @@ function init(event, errors){
         publicPKsModified: [],
         demographicsMap: {},
         errorQcLabel: 'Review Required',
-        verbosity: 1
+        verbosity: 0
     };
 
     //figure out who the user is, user roles and calculate which QC states they can use
@@ -82,8 +85,10 @@ function beforeInsert(row, errors){
 exports.beforeInsert = beforeInsert;
 
 function afterInsert(row, errors){
-console.log('after insert')
-    EHR.afterEvent.call(this, 'insert', errors, row);
+    if(this.scriptContext.verbosity > 0)
+        console.log('after insert');
+
+    EHR.afterEvent.call(this, 'insert', errors, row, null, this.scriptContext);
 
     if(this.onAfterUpsert)
         this.onAfterUpsert(this.scriptContext, errors, row);
@@ -119,8 +124,10 @@ function beforeUpdate(row, oldRow, errors){
 exports.beforeUpdate = beforeUpdate;
 
 function afterUpdate(row, oldRow, errors){
-console.log('after update')
-    EHR.afterEvent.call(this, 'update', errors, row, oldRow);
+    if(this.scriptContext.verbosity > 0)
+        console.log('after update');
+
+    EHR.afterEvent.call(this, 'update', errors, row, oldRow, this.scriptContext);
 
     if(this.onAfterUpsert)
         this.onAfterUpsert(this.scriptContext, errors, row, oldRow);
@@ -130,9 +137,17 @@ console.log('after update')
 exports.afterUpdate = afterUpdate;
 
 function beforeDelete(row, errors){
-    console.log("beforeDelete: " + row);
+    if(this.scriptContext.verbosity > 0)
+        console.log("beforeDelete: ");
+
+    console.log('beforeDelete dataSource: '+row.dataSource);
 
     EHR.verifyPermissions('delete', this.scriptContext, row);
+
+    if (row.dataSource == 'etl'){
+        this.scriptContext = this.scriptContext || {};
+        this.scriptContext.dataSource = 'etl';
+    }
 
     if(this.onDelete)
         this.onDelete(errors, this.scriptContext, row);
@@ -140,10 +155,11 @@ function beforeDelete(row, errors){
 exports.beforeDelete = beforeDelete;
 
 function afterDelete(row, errors){
-    EHR.afterEvent.call(this, 'delete', errors, row);
+    //TODO: respect row.dataSource
+    //EHR.afterEvent.call(this, 'delete', errors, row, null, this.scriptContext);
 
-    if(this.onAfterDelete)
-        this.onAfterDelete(this.scriptContext, errors, row);
+//    if(this.onAfterDelete)
+//        this.onAfterDelete(this.scriptContext, errors, row);
 }
 exports.afterDelete = afterDelete;
 
@@ -183,7 +199,11 @@ EHR.rowInit = function(errors, row, oldRow){
 
     //these are extra checks to fix mySQL data
     if (row.dataSource == 'etl'){
+        if(this.scriptContext.verbosity > 0)
+            console.log('Row from ETL');
+
         this.scriptContext = this.scriptContext || {};
+        this.scriptContext.dataSource = 'etl';
         this.scriptContext.errorThreshold = 'WARN';
         EHR.ETL.fixRow.call(this, row, errors);
     }
@@ -210,12 +230,12 @@ EHR.rowInit = function(errors, row, oldRow){
 
     //validate project / assignment to that project
     //also add account if the project is found
-    if(row.project && row.Id && row.date && row.project!=300901){
+    if(row.dataSource != 'etl' && row.project && row.Id && row.date && row.project!=300901){
         LABKEY.Query.executeSql({
             schemaName: 'study',
             queryName: 'assignment',
             scope: this,
-            sql: "SELECT a.project, a.project.account FROM study.assignment a WHERE a.project='"+row.project+"' AND a.id='"+row.id+"' AND a.date <= '"+row.date+"' AND (a.rdate >= '"+row.date+"' OR a.rdate IS NULL) AND project.protocol!='wprc00' AND qcstate.publicdata = true",
+            sql: "SELECT a.project, a.project.account FROM study.assignment a WHERE a.project='"+row.project+"' AND a.id='"+row.id+"' AND a.date <= '"+row.date+"' AND (a.enddate >= '"+row.date+"' OR a.enddate IS NULL) AND project.protocol!='wprc00' AND qcstate.publicdata = true",
             success: function(data){
                 if(!data.rows || !data.rows.length){
                     EHR.addError(errors, 'project', 'Not assigned to '+row.project+' on this date', 'WARN');
@@ -229,15 +249,17 @@ EHR.rowInit = function(errors, row, oldRow){
     }
 
     //validate room / cage if present
-    if(row.room && row.Id && row.date && (this.scriptContext.queryName && !this.scriptContext.queryName.match(/housing/i))){
-        //console.log('Verifying room/cage:');
+    if(row.dataSource != 'etl' && row.room && row.Id && row.date && (this.scriptContext.queryName && !this.scriptContext.queryName.match(/housing/i))){
+        if(this.scriptContext.verbosity > 0)
+            console.log('Verifying room/cage:');
+
         var sql = "SELECT h.room FROM study.housing h WHERE ";
         if(row.room)
             sql += "h.room='"+row.room+"' AND ";
         if(row.cage)
             sql += "h.cage='"+row.cage+"' AND ";
 
-        sql += "h.id='"+row.id+"' AND h.date <= '"+row.date+"' AND (h.rdate >= '"+row.date+"' OR a.odate IS NULL) " +
+        sql += "h.id='"+row.id+"' AND h.date <= '"+row.date+"' AND (h.enddate >= '"+row.date+"' OR r.enddate IS NULL) " +
             "AND h.qcstate.publicdata = true";
         LABKEY.Query.executeSql({
             schemaName: 'study',
@@ -254,7 +276,7 @@ EHR.rowInit = function(errors, row, oldRow){
     }
 
     //enddate: verify either blank or not prior to date
-    if(row.enddate && row.date && row.enddate < row.date){
+    if(row.dataSource != 'etl' && row.enddate && row.date && row.enddate < row.date){
         EHR.addError(errors, 'enddate', 'End date cannot be before start date', 'WARN');
     }
 
@@ -262,8 +284,10 @@ EHR.rowInit = function(errors, row, oldRow){
         //set account based on project.  do differently depending on insert/update.
         //assignmentRecord should have been cached above
         //we only do this one time when the row becomes public, b/c project/account relationships can change
-        if(this.scriptContext.assignmentRecord && !row.account){
-            console.log('setting account to: '+this.scriptContext.assignmentRecord.account);
+        if(row.dataSource != 'etl' && this.scriptContext.assignmentRecord && !row.account){
+            if(this.scriptContext.verbosity > 0)
+                console.log('setting account to: '+this.scriptContext.assignmentRecord.account);
+
             row.account = this.scriptContext.assignmentRecord.account;
         }
 
@@ -274,18 +298,16 @@ EHR.rowInit = function(errors, row, oldRow){
     //flags dates more than 1 year in the future or 60 in the past
     if(row.date)
         EHR.validation.flagSuspiciousDate(row, errors);
-
-//    if(row.hasOwnProperty('Id'))
-//        EHR.addError(errors, 'Id', 'A server-side error', 'INFO');
-//
-//    if(row.hasOwnProperty('date'))
-//        EHR.addError(errors, 'date', 'Another error', 'INFO');
 };
 
 
 EHR.rowEnd = function(errors, scriptErrors, row, oldRow){
     //use this flag to filters errors below a given severity
     var errorThreshold = this.scriptContext.errorThreshold || 'WARN';
+
+    if(row.dataSource == 'etl'){
+        errorThreshold = 'FATAL';
+    }
 
     //this flag is to let records be validated, but forces failure of validation
     if(this.extraContext && this.extraContext.validateOnly){
@@ -335,68 +357,71 @@ EHR.rowEnd = function(errors, scriptErrors, row, oldRow){
 //NOTE: this is called after a successful insert/update/delete
 //the purpose is primarily for bookkeeping.  these arrays are used to queue changed records.  when lots of records are submitted
 // in theory this allows some events to be moved to the complete function and run once time, making them more efficient
-EHR.afterEvent = function (event, errors, row, oldRow){
-    console.log('After Event: '+event);
+EHR.afterEvent = function (event, errors, row, oldRow, scriptContext){
+    if(row.dataSource != 'etl' && scriptContext.dataSource != 'etl'){
+        if(scriptContext.verbosity > 0)
+            console.log('After Event: '+event);
 
-    this.scriptContext.rows.push({
-        row: row,
-        oldRow: oldRow
-    });
-console.log(row);
-    if(row._becomingPublicData && this.afterBecomePublic){
-        this.afterBecomePublic(errors, this.scriptContext, row, oldRow);
-    }
+        this.scriptContext.rows.push({
+            row: row,
+            oldRow: oldRow
+        });
 
-    if(this.scriptContext.participantsModified.indexOf(row.Id) == -1){
-        this.scriptContext.participantsModified.push(row.Id);
+        if(row._becomingPublicData && this.afterBecomePublic){
+            this.afterBecomePublic(errors, this.scriptContext, row, oldRow);
+        }
 
-        if(row._publicData)
-            this.scriptContext.publicParticipantsModified.push(row.Id);
-    }
-
-    if(this.extraContext.keyField){
-        var key = row[this.extraContext.keyField];
-
-        if(key && this.scriptContext.PKsModified.indexOf(key) == -1){
-            this.scriptContext.PKsModified.push(key);
+        if(this.scriptContext.participantsModified.indexOf(row.Id) == -1){
+            this.scriptContext.participantsModified.push(row.Id);
 
             if(row._publicData)
-                this.scriptContext.publicPKsModified.push(key);
-        }
-    }
-
-    if(row.requestId && this.scriptContext.requestsModified.indexOf(row.requestId) == -1){
-        this.scriptContext.requestsModified.push(row.requestId);
-    }
-
-    if(row.taskId && this.scriptContext.tasksModified.indexOf(row.taskId) == -1){
-        this.scriptContext.tasksModified.push(row.taskId);
-    }
-
-    if(oldRow){
-        if(this.scriptContext.participantsModified.indexOf(oldRow.Id) == -1){
-            this.scriptContext.participantsModified.push(oldRow.Id);
-
-            if(oldRow._publicData)
-                this.scriptContext.publicParticipantsModified.push(oldRow.Id);
+                this.scriptContext.publicParticipantsModified.push(row.Id);
         }
 
         if(this.extraContext.keyField){
-            var key = oldRow[this.extraContext.keyField];
+            var key = row[this.extraContext.keyField];
+
             if(key && this.scriptContext.PKsModified.indexOf(key) == -1){
                 this.scriptContext.PKsModified.push(key);
 
-                if(oldRow._publicData)
+                if(row._publicData)
                     this.scriptContext.publicPKsModified.push(key);
             }
         }
 
-        if(oldRow.requestId && this.scriptContext.requestsModified.indexOf(oldRow.requestId) == -1){
-            this.scriptContext.requestsModified.push(oldRow.requestId);
+        if(row.requestId && this.scriptContext.requestsModified.indexOf(row.requestId) == -1){
+            this.scriptContext.requestsModified.push(row.requestId);
         }
 
-        if(oldRow.taskId && this.scriptContext.tasksModified.indexOf(oldRow.taskId) == -1){
-            this.scriptContext.tasksModified.push(oldRow.taskId);
+        if(row.taskId && this.scriptContext.tasksModified.indexOf(row.taskId) == -1){
+            this.scriptContext.tasksModified.push(row.taskId);
+        }
+
+        if(oldRow){
+            if(this.scriptContext.participantsModified.indexOf(oldRow.Id) == -1){
+                this.scriptContext.participantsModified.push(oldRow.Id);
+
+                if(oldRow._publicData)
+                    this.scriptContext.publicParticipantsModified.push(oldRow.Id);
+            }
+
+            if(this.extraContext.keyField){
+                var key = oldRow[this.extraContext.keyField];
+                if(key && this.scriptContext.PKsModified.indexOf(key) == -1){
+                    this.scriptContext.PKsModified.push(key);
+
+                    if(oldRow._publicData)
+                        this.scriptContext.publicPKsModified.push(key);
+                }
+            }
+
+            if(oldRow.requestId && this.scriptContext.requestsModified.indexOf(oldRow.requestId) == -1){
+                this.scriptContext.requestsModified.push(oldRow.requestId);
+            }
+
+            if(oldRow.taskId && this.scriptContext.tasksModified.indexOf(oldRow.taskId) == -1){
+                this.scriptContext.tasksModified.push(oldRow.taskId);
+            }
         }
     }
 
@@ -486,6 +511,8 @@ recipients - array
 msgSubject - string
 msgContent - string
  */
+
+
 EHR.sendEmail = function(config){
     if(!config.recipients)
         config.recipients = [];
@@ -540,6 +567,7 @@ EHR.sendEmail = function(config){
 };
 
 EHR.verifyPermissions = function(event, scriptContext, row, oldRow){
+    console.log('Verifying permissions for: '+event)
     //first we normalize QCstate
     if(oldRow){
         if(oldRow.QCState){
@@ -646,8 +674,12 @@ EHR.verifyPermissions = function(event, scriptContext, row, oldRow){
             if(!oldRow)
                 row._becomingPublicData = true;
         }
-        else
+        else {
+            console.log('row lacks QCStateLabel');
+            console.log(row);
             console.log(scriptContext.qcMap.label[row.QCStateLabel])
+        }
+
     }
 
     if(oldRow && oldRow.QCStateLabel){
@@ -688,6 +720,12 @@ EHR.validation = {
 
                 errors[i].push(error.severity+': '+error.message);
                 totalErrors++;
+
+                if(row.dataSource == 'etl'){
+                    console.log('ETL ERROR');
+                    console.log(error.message);
+                    console.log(row);
+                }
             }
         }
 
@@ -775,6 +813,9 @@ EHR.validation = {
 
     },
     flagSuspiciousDate: function(row, errors){
+        if(!row.date)
+            return;
+
         if(typeof(row.Date) == 'string'){
             row.Date = new java.util.Date(java.util.Date.parse(row.Date));
         }
@@ -852,6 +893,7 @@ EHR.validation = {
 EHR.ETL = {
     fixRow: function(row, errors){
         console.log('Running ETL repair on mySQL data:');
+        console.log(row);
 
         //inserts a date if missing
         EHR.ETL.addDate(row, errors);
@@ -893,6 +935,7 @@ EHR.ETL = {
         if (row.hasOwnProperty('date') && !row.Date){
             //row will fail unless we add something in this field
             row.date = new java.util.Date();
+
             EHR.addError(errors, 'date', 'Missing Date', 'ERROR');
         }
     },
@@ -1076,20 +1119,37 @@ EHR.ETL = {
     },
     remarkToSoap: function(row, errors){
         //convert existing SOAP remarks into 3 cols
-        if(row.remark && row.remark.match(/^s\/o: /)){
+        if(row.remark && row.remark.match(/(^s\/o: )/)){
             console.log('converting string into SOAP Note');
-            var so = row.remark.match(/(^s\/o: )(.*)(; a: )/);
-            row.so = so[2];
-            var a = row.remark.match(/(; a: )(.*)(; p: )/);
-            row.a = a[2];
-            var p = row.remark.match(/(; p: )(.*)$/);
-            row.p = p[2];
-
-            if(row.so && row.a){
+            var so = row.remark.match(/(^s\/o: )(.*)(a:|p:|a\/p:)/);
+            if(!so){
+                row.so = row.remark;
                 row.remark = null;
             }
             else {
-                console.log('ERROR: missing s/o, or a: '+row)
+                row.so = so[2];
+
+                var a = row.remark.match(/(a:|p:|a\/p:)(.*)( p:|$)/);
+                if(a){
+                    if(a[2]){
+                        row.a = a[2];
+                    }
+                    else {
+                        console.log(row.remark);
+                        console.log(a)
+                    }
+                }
+
+                var p = row.remark.match(/( p: )(.*)$/);
+                if(p){
+                    if(p[2]){
+                        row.p = p[2];
+                    }
+                    else {
+                        console.log(row.remark);
+                        console.log(p)
+                    }
+                }
             }
         }
     }

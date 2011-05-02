@@ -12,7 +12,7 @@
 --
 -- cast((
 --   SELECT  group_concat(DISTINCT h.project) as project FROM study.Assignment h
---   WHERE sd.id = h.id AND h.date <= sd.date AND sd.date < COALESCE(h.rdate, curdate())
+--   WHERE sd.id = h.id AND h.date <= sd.date AND sd.date < COALESCE(h.enddate, curdate())
 --   AND h.qcstate.publicdata = true
 --   --GROUP BY h.id
 -- ) as varchar) as AssignmentsAtTime
@@ -29,7 +29,7 @@ group_concat(DISTINCT h.project) as AssignmentsAtTime
 FROM study.studydata sd
 JOIN study.assignment h
   ON (
-    sd.id = h.id AND h.date <= sd.date AND sd.date < COALESCE(h.rdate, curdate())
+    sd.id = h.id AND h.date <= sd.date AND sd.date < COALESCE(h.enddate, curdate())
     AND h.qcstate.publicdata = true
     )
 group by sd.lsid, sd.id, sd.date

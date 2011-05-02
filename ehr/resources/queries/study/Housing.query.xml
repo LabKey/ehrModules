@@ -24,11 +24,16 @@
                         <formatString>yyyy-MM-dd HH:mm</formatString>
                         <columnTitle>In Date</columnTitle>
                     </column>
-                    <column columnName="odate">
+                    <column columnName="enddate">
                         <nullable>true</nullable>
                         <datatype>timestamp</datatype>
                         <formatString>yyyy-MM-dd HH:mm</formatString>
                         <columnTitle>Out Date</columnTitle>
+                    </column>
+                    <column columnName="QCState">
+                        <isHidden>false</isHidden>
+                        <shownInDetailsView>true</shownInDetailsView>
+                        <columnTitle>Status</columnTitle>
                     </column>
                     <column columnName="room">
                         <datatype>varchar</datatype>

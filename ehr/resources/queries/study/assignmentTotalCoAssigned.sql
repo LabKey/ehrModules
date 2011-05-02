@@ -16,7 +16,7 @@ SELECT
 
 FROM study.CoAssignedAnimals a1
 
-WHERE a1.rdate IS NULL
+WHERE a1.enddate IS NULL
 
 GROUP BY a1.lsid
 

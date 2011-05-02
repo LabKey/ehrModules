@@ -25,7 +25,7 @@ function setDescription(row, errors){
 
 function onInsert(context, errors, row){
     // auto-calculate the CaseNo
-    if(row.date)
+    if(row.dataSource != 'etl' && row.date)
         EHR.validation.calculateCaseno(row, errors, 'biopsy', 'b')
 
 }

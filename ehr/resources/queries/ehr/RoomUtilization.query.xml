@@ -46,7 +46,7 @@
                             query.queryName=Housing&amp;
                             query.room~eq=${room}&amp;
                             query.sort=Id&amp;
-                            query.odate~isblank
+                            query.enddate~isblank
                         </url>
                     </column>
                 </columns>

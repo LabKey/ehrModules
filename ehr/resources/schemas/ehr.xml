@@ -548,7 +548,7 @@
         <ns:nullable>true</ns:nullable>
         <ns:datatype>varchar</ns:datatype>
         <ns:columnTitle>QCState PublicData Field Name</ns:columnTitle>
-        <ns:scale>1</ns:scale>
+        <ns:scale>100</ns:scale>
       </ns:column>
       <ns:column columnName="jsonConfig">
         <ns:nullable>true</ns:nullable>

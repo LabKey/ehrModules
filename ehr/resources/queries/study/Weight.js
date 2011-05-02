@@ -12,7 +12,7 @@ function onUpsert(context, errors, row, oldRow){
     var species;
 
     //warn if more than 10% different from last weight
-    if(row.Id && row.weight){
+    if(row.dataSource != 'etl' && row.Id && row.weight){
         EHR.findDemographics({
             participant: row.Id,
             callback: function(data){

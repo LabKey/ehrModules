@@ -14,7 +14,7 @@
                         <url>/ehr/executeQuery.view?schemaName=study&amp;
                             query.queryName=Assignment&amp;
                             query.Id~eq=${Id}&amp;
-                            query.rdate~isblank&amp;
+                            query.enddate~isblank&amp;
                         </url>
                     </column>
                     <column columnName="PendingAssignments">
@@ -24,7 +24,7 @@
                         <url>/ehr/executeQuery.view?schemaName=study&amp;
                             query.queryName=Assignment&amp;
                             query.Id~eq=${Id}&amp;
-                            query.rdate~isblank&amp;
+                            query.enddate~isblank&amp;
                             query.project/avail~eq=p
                         </url>
                     </column>
@@ -35,7 +35,7 @@
                         <url>/ehr/executeQuery.view?schemaName=study&amp;
                             query.queryName=Assignment&amp;
                             query.Id~eq=${Id}&amp;
-                            query.rdate~isblank&amp;
+                            query.enddate~isblank&amp;
                             query.project/avail~in=r;e;n&amp;
                         </url>
                     </column>
@@ -46,7 +46,7 @@
                         <url>/ehr/executeQuery.view?schemaName=study&amp;
                             query.queryName=Assignment&amp;
                             query.Id~eq=${Id}&amp;
-                            query.rdate~isblank&amp;
+                            query.enddate~isblank&amp;
                             query.project/avail~eq=b
                         </url>
                     </column>
@@ -57,7 +57,7 @@
                         <url>/ehr/executeQuery.view?schemaName=study&amp;
                             query.queryName=Assignment&amp;
                             query.Id~eq=${Id}&amp;
-                            query.rdate~isblank&amp;
+                            query.enddate~isblank&amp;
                             query.project/avail~eq=v
                         </url>
                     </column>
@@ -68,7 +68,7 @@
                         <url>/ehr/executeQuery.view?schemaName=study&amp;
                             query.queryName=Assignment&amp;
                             query.Id~eq=${Id}&amp;
-                            query.rdate~isblank&amp;
+                            query.enddate~isblank&amp;
                             query.project/avail~eq=t
                         </url>
                     </column>
@@ -79,7 +79,7 @@
                         <url>/ehr/executeQuery.view?schemaName=study&amp;
                             query.queryName=Assignment&amp;
                             query.Id~eq=${Id}&amp;
-                            query.rdate~isblank&amp;
+                            query.enddate~isblank&amp;
                             query.project~eq=20020201
                         </url>
                     </column>
@@ -90,7 +90,7 @@
                         <url>/ehr/executeQuery.view?schemaName=study&amp;
                             query.queryName=Assignment&amp;
                             query.Id~eq=${Id}&amp;
-                            query.rdate~isblank&amp;
+                            query.enddate~isblank&amp;
                             query.project~eq=20070202
                         </url>
                     </column>
@@ -101,7 +101,7 @@
                         <url>/ehr/executeQuery.view?schemaName=study&amp;
                             query.queryName=Assignment&amp;
                             query.Id~eq=${Id}&amp;
-                            query.rdate~isblank&amp;
+                            query.enddate~isblank&amp;
                             query.project~eq=20070801
                         </url>
                     </column>
@@ -112,7 +112,7 @@
                         <url>/ehr/executeQuery.view?schemaName=study&amp;
                             query.queryName=Assignment&amp;
                             query.Id~eq=${Id}&amp;
-                            query.rdate~isblank&amp;
+                            query.enddate~isblank&amp;
                             query.project~in=20020201;20070801;20070202
                         </url>
                     </column>

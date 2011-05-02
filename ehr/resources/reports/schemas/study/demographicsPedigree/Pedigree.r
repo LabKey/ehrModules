@@ -52,8 +52,10 @@ function(ped)
 
 #start the script
 ped = data.frame(Id=labkey.data$id, Dam=labkey.data$dam, Sire=labkey.data$sire, gender=labkey.data$gender);
-nrow(ped);
+remove(labkey.data)
+
 print("initial ped:")
+nrow(ped);
 str(ped)
 
 
@@ -91,6 +93,7 @@ for(i in 1:gens){
     queryIds <- !is.na(queryIds);
     ped <- unique(rbind(newRows,ped));
 }
+remove(allPed)
 
 nrow(ped);
 #ped;
@@ -98,11 +101,15 @@ nrow(ped);
 ped$gender <- as.integer(ped$gender);
 #print("pedEnd:")
 #str(ped)
+
 fixedPed <- addMissing(ped)
-print("fixed ped:")
-str(fixedPed);
+remove(ped)
+
 fixedPed$Dam[is.na(fixedPed$Sire)] <- NA
 fixedPed$Sire[is.na(fixedPed$Dam)] <- NA
+
+print("fixed ped:")
+str(fixedPed);
 fixedPed;
 
 

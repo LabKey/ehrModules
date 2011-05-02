@@ -22,7 +22,7 @@
                             query.room~eq=${room}&amp;
                             query.cage~eq=${cage}&amp;
                             query.sort=Id&amp;
-                            query.odate~isblank
+                            query.enddate~isblank
                         </url>
                     </column>
                 </columns>

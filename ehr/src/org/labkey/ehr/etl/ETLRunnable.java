@@ -35,6 +35,9 @@ import org.labkey.api.query.UserSchema;
 import org.labkey.api.security.User;
 import org.labkey.api.security.UserManager;
 import org.labkey.api.security.ValidEmail;
+import org.labkey.api.view.ActionURL;
+import org.labkey.api.view.HttpView;
+import org.labkey.api.view.ViewContext;
 
 import java.io.Closeable;
 import java.io.File;
@@ -109,9 +112,14 @@ public class ETLRunnable implements Runnable
         }
 
 
+        int stackSize = -1;
         try
         {
             log.info("Begin incremental sync from external datasource.");
+
+            // Push a fake ViewContext onto the HttpView stack
+            stackSize = HttpView.getStackSize();
+            ViewContext.getMockViewContext(user, container, new ActionURL("ehr", "fake.view", container), true);
 
             ETLAuditViewFactory.addAuditEntry(container, user, "START", "Starting EHR synchronization", 0, 0);
 
@@ -147,6 +155,11 @@ public class ETLRunnable implements Runnable
             log.error("Fatal incremental sync error", x);
             ETLAuditViewFactory.addAuditEntry(container, user, "FATAL ERROR", "Fatal error during EHR synchronization", 0, 0);
 
+        }
+        finally
+        {
+            if (stackSize > -1)
+                HttpView.resetStackSize(stackSize);
         }
 
     }

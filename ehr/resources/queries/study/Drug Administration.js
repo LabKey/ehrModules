@@ -8,14 +8,16 @@
 var {EHR, LABKEY, Ext, console, init, beforeInsert, afterInsert, beforeUpdate, afterUpdate, beforeDelete, afterDelete, complete} = require("ehr/validation");
 
 function onUpsert(context, errors, row, oldRow){
-    if(!row.amount && !row.volume){
-        EHR.addError(errors, 'amount', 'Must supply either amount or volume', 'WARN');
-        EHR.addError(errors, 'volume', 'Must supply either amount or volume', 'WARN');
-    }
+    if(row.dataSource != 'etl'){
+        if(!row.amount && !row.volume){
+            EHR.addError(errors, 'amount', 'Must supply either amount or volume', 'WARN');
+            EHR.addError(errors, 'volume', 'Must supply either amount or volume', 'WARN');
+        }
 
-    if(row.amount && row.volume && row.concentration && row.amount!=Math.round(row.volume*row.conc*100/2)){
-        EHR.addError(errors, 'amount', 'Amount does not match volume for this concentration', 'WARN');
-        EHR.addError(errors, 'volume', 'Volume does not match amount for this concentration', 'WARN');
+        if(row.amount && row.volume && row.concentration && row.amount!=Math.round(row.volume*row.conc*100/2)){
+            EHR.addError(errors, 'amount', 'Amount does not match volume for this concentration', 'WARN');
+            EHR.addError(errors, 'volume', 'Volume does not match amount for this concentration', 'WARN');
+        }
     }
 }
 
@@ -23,14 +25,14 @@ function onUpsert(context, errors, row, oldRow){
 function onBecomePublic(errors, scriptContext, row, oldRow){
     //we need to store something in the date field during the draft stage, so i use header date
     //we swap begindate in here instead
-    if(row.begindate)
+    if(row.dataSource != 'etl' && row.begindate)
         row.date = row.begindate
 }
 
 
-function onETL(row, errors){
-    EHR.ETL.fixDrugUnits(row, errors);
-}
+//function onETL(row, errors){
+//    EHR.ETL.fixDrugUnits(row, errors);
+//}
 
 function setDescription(row, errors){
     //we need to set description for every field

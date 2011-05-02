@@ -19,11 +19,11 @@
        <column name="project"/>
        <column name="code"/>
        <column name="volume"/>
-       <column name="vunits"/>
-       <column name="conc"/>
-       <column name="cunits"/>
+       <column name="vol_units"/>
+       <column name="concentration"/>
+       <column name="conc_units"/>
        <column name="amount"/>
-       <column name="units"/>
+       <column name="amount_units"/>
        <column name="route"/>
        <column name="remark"/>
        <column name="userid"/>

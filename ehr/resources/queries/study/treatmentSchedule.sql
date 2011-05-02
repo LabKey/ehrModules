@@ -20,19 +20,19 @@ case
   WHEN (t1.volume is null or t1.volume = 0)
     THEN null
   else
-    (CONVERT(t1.volume, NUMERIC) || ' ' || t1.vunits)
+    (CONVERT(t1.volume, NUMERIC) || ' ' || t1.vol_units)
 END as volume,
 case
-  WHEN (t1.conc is null or t1.conc = 0)
+  WHEN (t1.concentration is null or t1.concentration = 0)
     THEN null
   else
-    (CONVERT(t1.conc, NUMERIC) || ' ' || t1.cunits)
+    (CONVERT(t1.concentration, NUMERIC) || ' ' || t1.conc_units)
 END as conc,
 case
   WHEN (t1.amount is null or t1.amount = 0)
     THEN null
   else
-    (CONVERT(t1.amount, NUMERIC) || ' ' || t1.units)
+    (CONVERT(t1.amount, NUMERIC) || ' ' || t1.amount_units)
 END as amount,
 
 t1.route,
@@ -107,19 +107,19 @@ case
   WHEN (t1.volume is null or t1.volume = 0)
     THEN null
   else
-    (CONVERT(t1.volume, NUMERIC) || ' ' || t1.vunits)
+    (CONVERT(t1.volume, NUMERIC) || ' ' || t1.vol_units)
 END as volume,
 case
-  WHEN (t1.conc is null or t1.conc = 0)
+  WHEN (t1.concentration is null or t1.concentration = 0)
     THEN null
   else
-    (CONVERT(t1.conc, NUMERIC) || ' ' || t1.cunits)
+    (CONVERT(t1.concentration, NUMERIC) || ' ' || t1.conc_units)
 END as conc,
 case
   WHEN (t1.amount is null or t1.amount = 0)
     THEN null
   else
-    (CONVERT(t1.amount, NUMERIC) || ' ' || t1.units)
+    (CONVERT(t1.amount, NUMERIC) || ' ' || t1.amount_units)
 END as amount,
 t1.route,
 t1.userid,
@@ -172,19 +172,19 @@ case
   WHEN (t1.volume is null or t1.volume = 0)
     THEN null
   else
-    (CONVERT(t1.volume, NUMERIC) || ' ' || t1.vunits)
+    (CONVERT(t1.volume, NUMERIC) || ' ' || t1.vol_units)
 END as volume,
 case
-  WHEN (t1.conc is null or t1.conc = 0)
+  WHEN (t1.concentration is null or t1.concentration = 0)
     THEN null
   else
-    (CONVERT(t1.conc, NUMERIC) || ' ' || t1.cunits)
+    (CONVERT(t1.concentration, NUMERIC) || ' ' || t1.conc_units)
 END as conc,
 case
   WHEN (t1.amount is null or t1.amount = 0)
     THEN null
   else
-    (CONVERT(t1.amount, NUMERIC) || ' ' || t1.units)
+    (CONVERT(t1.amount, NUMERIC) || ' ' || t1.amount_units)
 END as amount,
 t1.route,
 t1.userid,

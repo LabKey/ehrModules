@@ -10,7 +10,7 @@ FixDateTime(arrivedate, arrivetime) AS arrivedate,
 FixDateTime(departdate, departtime) AS departdate,
 (room) AS room, (cage) AS cage, (cond) AS cond, 
 (weight) AS weight, FixDateTime(wdate, wtime) AS wdate, FixDate(tbdate) AS tbdate,
-(medical) AS medical, (purchasedby) AS purchasedby,
+(medical) AS medical, (purchasedby) AS prepaid,
 CASE
   WHEN (v_status = "" OR v_status IS NULL)
     then "Not Defined"

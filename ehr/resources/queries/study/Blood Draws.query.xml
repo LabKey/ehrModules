@@ -51,8 +51,8 @@
                           <fkColumnName>objectid</fkColumnName>
                         </fk>
                     </column>
-                    <column columnName="sampleId">
-                        <columnTitle>Sample Id</columnTitle>
+                    <column columnName="assayCode">
+                        <columnTitle>Assay Code</columnTitle>
                     </column>
                     <column columnName="tube_vol">
                         <columnTitle>Tube Volume (mL)</columnTitle>

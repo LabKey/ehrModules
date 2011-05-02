@@ -12,7 +12,7 @@
                             query.queryName=housing&amp;
                             query.room~eq=${Id/curLocation/room}&amp;
                             query.cage~eq=${Id/curLocation/cage}&amp;
-                            query.odate~isblank&amp;
+                            query.enddate~isblank&amp;
                             query.sort=Id&amp;
                         </url>
                     </column>

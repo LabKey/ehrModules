@@ -3,8 +3,13 @@
         <tables xmlns="http://labkey.org/data/xml">
             <table tableName="tasks" tableDbType="TABLE">
                 <columns>
+                    <column columnName="RowId">
+                        <isHidden>false</isHidden>
+                    </column>
                     <column columnName="Label">
                         <displayWidth>200</displayWidth>
+                        <shownInDetailsView>true</shownInDetailsView>
+                        <isHidden>false</isHidden>
                     </column>
                     <column columnName="metadata" wrappedColumnName="Label">
                         <isUnselectable>true</isUnselectable>

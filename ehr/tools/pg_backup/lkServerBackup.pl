@@ -56,12 +56,8 @@ machine labkey.com
 login backup_user@wisc.edu 
 password yourPassword
 
-To save a log in labkey, you must also create a list in labkey with the following fields:
-
-JobName (string)
-Status (string)
-Date (datetime)
-Log (multiline)
+To save a log in labkey, you must provide the baseURL and a containerPath for your labkey server.  Entries
+will be made in the audit.auditLog table.
  
 You must also include a [lk_config] section in the INI file.  Below is an example INI
 file with comments explaining each line.
@@ -75,12 +71,10 @@ backupdir = /labkey/backup/  			;the directory where backups will be stored
 pgdump_dir = /opt/PostgreSQL/8.4/bin/	;the location of pg_dump 
 file_root = /labkey/files/				;optional. a folder to be copied to the backupdir. for example the site root
 
-[lk_config]                            ;Section Optional.  
-jobName = LK Daily Backup	 		   ;optional. will appear in logfile
+[lk_config]                            ;Section Optional.
 baseURL= http://localhost:8080/labkey/ ;url of your server
-containerPath = Project/Folder1/	   ;the containerPath where your list is located
-schemaName = lists                     ;schema where list is located
-queryName = backup	                   ;name of the list itself
+containerPath = Project/Folder1/	   ;the containerPath where events will be logged
+
 
 [file_rotation]		;can be omited, which will use defaults
 maxDaily = 7		;maximum daily backups to keep.  default: 7
@@ -247,8 +241,10 @@ sub onExit
 	{
 		$status = "Success";
 	}
-	
-	$log->entry($msg);
+
+	if($log){
+	    $log->entry($msg);
+    }
 	
 	# Insert a record into a labkey list
 	if (%lk_config)
@@ -256,8 +252,10 @@ sub onExit
 		lk_log();
 	}
 	
-	# Write Log messages to log file 
-	$log->commit;
+	# Write Log messages to log file
+	if($log){
+	    $log->commit;
+	}
 
 	# touch a file to indicate success.  can be used /w monit
 	if ($status eq "Success"){
@@ -499,10 +497,10 @@ sub lk_log
 	my $date = sprintf("%04d-%02d-%02d %02d:%02d", $tm->year+1900, ($tm->mon)+1, $tm->mday, $tm->hour, $tm->min);
 	my $insert = Labkey::Query::insertRows(
 		-baseUrl => $lk_config{'baseURL'},
-		-containerPath => "shared",
+		-containerPath => $lk_config{'containerPath'} || "shared",
 		-schemaName => "audit",
  		-queryName => "auditLog",
-		-rows => [{"EventType" => "Client API Actions", "Comment" => $status, "Date" => $date}]
+		-rows => [{"EventType" => "Client API Actions", "Key1" => "LabKey Server Backup", "Comment" => $status, "Date" => $date}]
     );
  		 	
 	

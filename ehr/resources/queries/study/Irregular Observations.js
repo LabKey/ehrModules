@@ -27,11 +27,10 @@ function onUpsert(context, errors, row, oldRow){
     //todo: testing needed
 
     //store room at time / cage at time
-    if(row.id && row.date){
-        //TODO: change odate to enddate
+    if(row.dataSource != 'etl' && row.id && row.date){
         var sql = "SELECT h.room, h.cage FROM study.housing h " +
             "WHERE h.id='"+row.Id+"' AND h.date <= '"+EHR.validation.dateTimeToString(row.date) +"' " +
-                "AND (h.odate > '"+EHR.validation.dateTimeToString(row.date)+"' OR h.odate IS NULL) " +
+                "AND (h.enddate > '"+EHR.validation.dateTimeToString(row.date)+"' OR h.enddate IS NULL) " +
                 "AND h.qcstate.publicdata = TRUE";
         LABKEY.Query.executeSql({
             schemaName: 'study',
@@ -92,11 +91,11 @@ function onBecomePublic(errors, scriptContext, row, oldRow){
     var rows = [];
     //auto-update observations table with mens, diar.
     if(row.menses){
-        rows.push({category: 'Irregular Obs', parentid: row.objectid, remark: 'mens: '+row.menses, QCStateLabel: row.QCStateLabel})
+        rows.push({category: 'Irregular Obs', parentid: row.objectid, observation: row.mens, remark: 'mens: '+row.menses, QCStateLabel: row.QCStateLabel})
     }
 
     if(row.feces){
-        rows.push({category: 'Irregular Obs', parentid: row.objectid, remark: 'diar: '+row.feces, QCStateLabel: row.QCStateLabel})
+        rows.push({category: 'Irregular Obs', parentid: row.objectid, observation: row.feces, remark: 'diar: '+row.feces, QCStateLabel: row.QCStateLabel})
     }
 
     if(rows.length){
@@ -104,10 +103,6 @@ function onBecomePublic(errors, scriptContext, row, oldRow){
             schemaName: 'study',
             queryName: 'Clinical Observations',
             rows: rows,
-            extraContext: {
-                schemaName: 'study',
-                queryName: 'Clinical Observations'
-            },
             scope: this,
             success: function(data){
                 console.log('Success')

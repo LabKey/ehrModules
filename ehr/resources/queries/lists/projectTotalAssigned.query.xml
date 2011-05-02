@@ -13,7 +13,7 @@
                             query.queryName=Assignment&amp;
                             query.project~eq=${project}&amp;
                             query.sort=-Date&amp;
-                            query.rdate~isblank
+                            query.enddate~isblank
                         </url>
                     </column>
                 </columns>

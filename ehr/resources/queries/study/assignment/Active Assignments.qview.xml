@@ -28,10 +28,10 @@
             </properties>
         </column>
         <column name="date"/>
-        <column name="rdate"/>
+        <column name="enddate"/>
     </columns>
     <filters>
-        <filter column="rdate" operator="isblank"/>
+        <filter column="enddate" operator="isblank"/>
     </filters>
     <sorts>
         <sort column="date" descending="true"/>

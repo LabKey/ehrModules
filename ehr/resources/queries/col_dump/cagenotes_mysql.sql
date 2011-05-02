@@ -6,8 +6,8 @@
 SELECT
 a.cage,
 a.date,
---a.ts,
---a.objectid,
+t2.ts,
+null as objectid,
 t2.objectid as key2
 FROM ehr.cage_observations a
 full join col_dump.cagenotes t2

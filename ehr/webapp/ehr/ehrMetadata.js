@@ -402,7 +402,7 @@ EHR.ext.Metadata.Standard = {
             }
         },
         Housing: {
-            odate: {
+            enddate: {
                 //hidden: true
                 xtype: 'xdatetime',
                 format: 'Y-m-d H:i',
@@ -485,11 +485,11 @@ EHR.ext.Metadata.Standard = {
             ,CurrentRoom: {lookups: false}
             ,CurrentCage: {lookups: false}
             ,volume: {shownInGrid: false}
-            ,vunits: {shownInGrid: false}
-            ,conc: {shownInGrid: false}
-            ,cunits: {shownInGrid: false}
+            ,vol_units: {shownInGrid: false}
+            ,concentration: {shownInGrid: false}
+            ,conc_units: {shownInGrid: false}
             ,amount: {shownInGrid: false}
-            ,units: {shownInGrid: false}
+            ,amount_units: {shownInGrid: false}
             ,route: {shownInGrid: false}
             ,code: {
                 editorConfig: {
@@ -753,9 +753,8 @@ EHR.ext.Metadata.Standard = {
             ,remark: {shownInGrid: false}
             ,project: {shownInGrid: false, allowBlank: false}
             ,requestor: {shownInGrid: false, formEditorConfig:{readOnly: true}}
-            ,done_by: {shownInGrid: false}
             ,performedby: {shownInGrid: false}
-            ,sampleId: {shownInGrid: false}
+            ,assayCode: {shownInGrid: false}
             ,additionalServices: {
                 xtype: 'lovcombo',
                 includeNullRecord: false,
@@ -1252,7 +1251,7 @@ EHR.ext.Metadata.Request = {
             billedby: {
                 hidden: true
             },
-            sampleId: {
+            assayCode: {
                 hidden: true
             },
             performedby: {
@@ -1518,7 +1517,7 @@ EHR.ext.FormColumns = {
     'Behavior Remarks': EHR.ext.topCols+',so,a,p,'+EHR.ext.bottomCols,
     Birth: EHR.ext.topCols+',estimated,gender,weight,wdate,dam,sire,room,cage,cond,origin,conception,type,'+EHR.ext.bottomCols,
     'Body Condition': EHR.ext.topCols+',score,weightstatus,' + EHR.ext.bottomCols,
-    'Blood Draws': EHR.ext.topCols+',tube_type,tube_vol,num_tubes,quantity,requestor,additionalServices,billedby,sampleId,remark,performedby,' + EHR.ext.hiddenCols, //p_s,a_v,
+    'Blood Draws': EHR.ext.topCols+',tube_type,tube_vol,num_tubes,quantity,requestor,additionalServices,billedby,assayCode,remark,performedby,' + EHR.ext.hiddenCols, //p_s,a_v,
     cage_observations: 'date,room,cage,userId,no_observations,' + EHR.ext.sharedCols,
     Charges: EHR.ext.topCols+',type,unitCost,quantity,remark,performedby'+EHR.ext.hiddenCols,
     'Chemistry Results': EHR.ext.topCols+',testname,result,units,qualResult,'+EHR.ext.bottomCols,
@@ -1530,7 +1529,7 @@ EHR.ext.FormColumns = {
     'Drug Administration': 'id,date,begindate,enddate,project,account,code,route,concentration,conc_units,dosage,dosage_units,amount,amount_units,volume,vol_units,headerdate,remark,performedby,' + EHR.ext.hiddenCols,
     'Hematology Results': EHR.ext.topCols+',testname,result,units,qualResult,'+EHR.ext.bottomCols,
     'Hematology Morphology': EHR.ext.topCols+',morphology,score,'+EHR.ext.bottomCols,
-    'Housing': 'id,project,id/curlocation/location,date,odate,room,cage,cond,reason,'+EHR.ext.bottomCols,
+    'Housing': 'id,project,id/curlocation/location,date,enddate,room,cage,cond,reason,'+EHR.ext.bottomCols,
     'Immunology Results': EHR.ext.topCols+',testname,result,units,qualResult,'+EHR.ext.bottomCols,
     'Irregular Observations': EHR.ext.topCols + ',id/curlocation/location,feces,menses,other,tlocation,behavior,otherbehavior,other,breeding,'+EHR.ext.bottomCols,
     Histology: EHR.ext.topCols+',slideNum,tissue,diagnosis,'+EHR.ext.bottomCols,
@@ -1546,7 +1545,7 @@ EHR.ext.FormColumns = {
     'TB Tests': EHR.ext.topCols + ',lot,dilution,eye,result1,result2,result3,'+EHR.ext.bottomCols,
     'Teeth': EHR.ext.topCols+',jaw,side,tooth,status,' + EHR.ext.bottomCols,
     'Tissue Samples': EHR.ext.topCols+',tissue,diagnosis,'+EHR.ext.bottomCols,
-    'Treatment Orders': EHR.ext.topCols+',frequency,code,volume,vunits,conc,cunits,amount,units,route,' + EHR.ext.bottomCols,
+    'Treatment Orders': EHR.ext.topCols+',frequency,code,volume,vol_units,concentration,conc_units,amount,amount_units,route,' + EHR.ext.bottomCols,
     Vitals: EHR.ext.topCols+',temp,heartrate,resprate,' + EHR.ext.bottomCols,
     Weight: EHR.ext.topCols + ',weight,'+EHR.ext.bottomCols
 };

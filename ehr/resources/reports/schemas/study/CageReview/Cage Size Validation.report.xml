@@ -3,6 +3,6 @@
     <Properties>
         <Prop name="reportType">Query</Prop>
         <Prop name="dataRegionName">query</Prop>
-        <!--<Prop name="runInBackground">true</Prop>-->
+        <Prop name="runInBackground">true</Prop>
     </Properties>
 </ReportDescriptor>

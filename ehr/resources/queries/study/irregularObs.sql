@@ -7,8 +7,10 @@
 SELECT
 o.lsid,
 o.id,
-o.id.curLocation.room as Room,
-o.id.curLocation.cage as Cage,
+-- o.id.curLocation.room as Room,
+-- o.id.curLocation.cage as Cage,
+o.id.dataset.demographics.room as Room,
+o.id.dataset.demographics.cage as Cage,
 o.date,
 -- convert((year(o.date) || '-' || month(o.date) || '-' || dayofmonth(o.date) || '-'), 'DATE') as DateOnly,
 cast(o.date as DATE) as DateOnly,
@@ -27,7 +29,7 @@ o.qcstate
 
 from study.obs o
 -- LEFT JOIN study.housing h
---   ON (h.id=o.id AND h.date<=o.date AND (o.date<=coalesce(h.odate, now()) ))
+--   ON (h.id=o.id AND h.date<=o.date AND (o.date<=coalesce(h.enddate, now()) ))
 
 WHERE o.isIrregular = true
 AND o.qcstate.publicdata = true

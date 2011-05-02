@@ -9,9 +9,10 @@ var {EHR, LABKEY, Ext, console, init, beforeInsert, afterInsert, beforeUpdate, a
 
 
 
-function onETL(row, errors){
-    EHR.ETL.remarkToSoap(row, errors);
-}
+//function onETL(row, errors){
+    //NOTE: behavior likely will not use SOAP formats, so this is removed
+//    EHR.ETL.remarkToSoap(row, errors);
+//}
 
 function setDescription(row, errors){
     //we need to set description for every field
@@ -20,12 +21,12 @@ function setDescription(row, errors){
     if (row.category)
         description.push('Category: '+row.category);
 
-    if (row.so)
-        description.push('s/o: '+row.so);
-    if (row.a)
-        description.push('a: '+row.a);
-    if (row.p)
-        description.push('p: '+row.p);
+//    if (row.so)
+//        description.push('s/o: '+row.so);
+//    if (row.a)
+//        description.push('a: '+row.a);
+//    if (row.p)
+//        description.push('p: '+row.p);
 
 //    if (row.userid)
 //        description.push('UserId: '+row.userid);

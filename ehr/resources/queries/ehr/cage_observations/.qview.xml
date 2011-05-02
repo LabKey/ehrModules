@@ -3,7 +3,7 @@
        <column name="room"/>
        <column name="cage"/>
        <column name="date"/>
-       <column name="note"/>
+       <column name="remark"/>
        <column name="userid"/>
    </columns>
    <sorts>

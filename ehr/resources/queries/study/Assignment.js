@@ -14,14 +14,14 @@ function setDescription(row, errors){
     var description = new Array();
 
     description.push('Start Date: ' + EHR.validation.dateToString(row.Date));
-    description.push('Removal Date: ' + (row.rdate ? EHR.validation.dateString(row.rdate) : ''));
+    description.push('Removal Date: ' + (row.enddate ? EHR.validation.dateToString(row.enddate) : ''));
 
     return description;
 }
 
 function onUpsert(context, errors, row, oldRow){
     //check number of allowed animals at assign/approve time
-    if(row.project && row.date){
+    if(row.dataSource != 'etl' && row.project && row.date){
         var species;
         EHR.findDemographics({
             participant: row.Id,

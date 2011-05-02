@@ -28,7 +28,7 @@ function setDescription(row, errors){
 function onInsert(context, errors, row){
     //autocalculate problem #
     //TODO: testing needed
-    if(row.Id){
+    if(row.dataSource != 'etl' && row.Id){
         LABKEY.Query.executeSql({
             schemaName: 'study',
             sql: "SELECT MAX(problem_no)+1 as problem_no FROM study.problem WHERE id='"+row.Id+"' AND qcstate.publicdata = TRUE",

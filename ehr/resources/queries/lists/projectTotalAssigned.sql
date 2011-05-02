@@ -12,5 +12,5 @@ FROM lists.project proj
 
 --we find total active animals assigned to this project  
 LEFT JOIN
-  (SELECT count(*) AS Total, T2.project FROM study.Assignment T2 WHERE T2.rdate IS null GROUP BY T2.project) T2
+  (SELECT count(*) AS Total, T2.project FROM study.Assignment T2 WHERE T2.enddate IS null GROUP BY T2.project) T2
   ON (CONVERT(T2.project, INTEGER) = convert(proj.project, integer))

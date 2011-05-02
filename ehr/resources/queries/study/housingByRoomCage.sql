@@ -15,7 +15,7 @@ SELECT
 
 FROM study.Housing h1
 
-WHERE h1.odate IS NULL
+WHERE h1.enddate IS NULL
 AND h1.qcstate.publicdata = true
 
 GROUP BY h1.room, h1.cage

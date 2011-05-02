@@ -6,7 +6,7 @@
 
 Ext.namespace("EHR", "EHR.ext");
 
-LABKEY.requiresScript("/ehr/Utils.js");
+LABKEY.requiresScript("/ehr/utils.js");
 LABKEY.requiresScript("/ehr/ehrMetaHelper.js");
 
 
@@ -43,9 +43,9 @@ EHR.ext.AdvancedStore = Ext.extend(LABKEY.ext.Store, {
         this.addEvents('beforemetachange', 'validation');
         this.proxy.on("load", this.onProxyLoad, this);
 
-        if(config.maxRows !== undefined){
-            this.baseParams['query.maxRows'] = config.maxRows;
-        }
+//        if(config.maxRows !== undefined){
+//            this.baseParams['query.maxRows'] = config.maxRows;
+//        }
 
         if(this.monitorValid)
             this.initMonitorValid();

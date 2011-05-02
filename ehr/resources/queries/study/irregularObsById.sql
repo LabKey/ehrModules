@@ -7,8 +7,10 @@
 SELECT
 
 o.id,
-o.id.curLocation.room as Room,
-o.id.curLocation.cage as Cage,
+-- o.id.curLocation.room as Room,
+-- o.id.curLocation.cage as Cage,
+o.id.dataset.demographics.room as Room,
+o.id.dataset.demographics.cage as Cage,
 o.date,
 cast(o.date as DATE) as DateOnly,
 o.userid,
@@ -48,14 +50,13 @@ null as other,
 null as tlocation,
 null as otherbehavior,
 c.Remark,
---cn.note as Remark,
 null as dataset,
 c.description,
 c.qcstate
 
 FROM study."Cage Observations" c
 WHERE c.qcstate.publicdata = true
- --JOIN lists.cagenotes cn ON (c.observationRecord = cn.objectid)
+
 
 
 

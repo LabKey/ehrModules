@@ -1,6 +1,6 @@
 <customView xmlns="http://labkey.org/data/xml/queryCustomView">
    <filters>
-       <filter column="odate" operator="isblank"/>
+       <filter column="enddate" operator="isblank"/>
        <filter column="id/Status/Status" operator="eq" value="Alive"/>
         <!--<filter column="qcstate/publicdata" operator="eq" value="true"/>-->
    </filters>

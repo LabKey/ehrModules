@@ -7,10 +7,10 @@
 var {EHR, LABKEY, Ext, console, init, beforeInsert, afterInsert, beforeUpdate, afterUpdate, beforeDelete, afterDelete, complete} = require("ehr/validation");
 
 function onUpsert(context, errors, row, oldRow){
-    if(!row.quantity && row.num_tubes && row.tube_vol)
+    if(row.dataSource != 'etl' && !row.quantity && row.num_tubes && row.tube_vol)
         row.quantity = row.num_tubes * row.tube_vol;
 
-    if(row.Id && row.date && row.quantity){
+    if(row.dataSource != 'etl' && row.Id && row.date && row.quantity){
         var minDate = new Date(row.Date);
         minDate.setDate(minDate.getDate()-30);
         minDate = EHR.validation.dateToString(minDate);
@@ -46,6 +46,8 @@ function onUpsert(context, errors, row, oldRow){
         });
 
         // find all blood draws from this animal in 30 days after this date
+                        //TODO: verify date is working
+                        //might try: new Date(row.date.toGMTString())
         var maxDate = new Date(row.Date);
         maxDate.setDate(maxDate.getDate()+30);
         maxDate = EHR.validation.dateToString(maxDate);
@@ -94,8 +96,8 @@ function setDescription(row, errors){
         description.push('Requestor: '+ row.requestor);
     if (row.billedby)
         description.push('Billed By: '+ row.billedby);
-    if (row.sampleId)
-        description.push('SampleId', row.sampleId);
+    if (row.assayCode)
+        description.push('Assay Code', row.assayCode);
     if (row.tube_type)
         description.push('Tube Type: '+ row.tube_type);
     if (row.num_tubes)

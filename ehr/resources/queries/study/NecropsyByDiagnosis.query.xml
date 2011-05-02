@@ -1,0 +1,57 @@
+ <query xmlns="http://labkey.org/data/xml/query">
+    <metadata> 
+        <tables xmlns="http://labkey.org/data/xml">
+            <table tableName="NecropsyByDiagnosis" tableDbType="TABLE">
+                <!--<tableUrl>/query/detailsQueryRow.view?schemaName=study&amp;query.queryName=necropsydiag&amp;lsid=${lsid}</tableUrl>-->
+                <!--<insertUrl>/ehr/manageRecord.view?schemaName=study&amp;queryName=Necropsy Diagnosis&amp;keyField=lsid&amp;</insertUrl>-->
+                <!--<updateUrl>/ehr/manageRecord.view?schemaName=study&amp;queryName=Necropsy Diagnosis&amp;keyField=lsid&amp;key=${lsid}</updateUrl>-->
+                <insertUrl />
+                <updateUrl />
+                <deleteUrl />
+                <columns>
+                  <column columnName="participantid">
+                    <datatype>varchar</datatype>
+                    <columnTitle>Participant ID</columnTitle>
+                    <description>Participant identifier</description>
+                    <nullable>false</nullable>
+                  </column>
+                  <column columnName="date">
+                    <datatype>timestamp</datatype>
+                    <formatString>yyyy-MM-dd</formatString>
+                    <columnTitle>Date</columnTitle>
+                    <nullable>false</nullable>
+                    <propertyURI>http://cpas.labkey.com/Study#VisitDate</propertyURI>
+                  </column>
+                  <column columnName="remark">
+                    <datatype>varchar</datatype>
+                    <columnTitle>Remark</columnTitle>
+                    <displayWidth>110</displayWidth>
+                    <propertyURI>urn:ehr.labkey.org/#Remark</propertyURI>
+                    <inputType>textarea</inputType>
+                  </column>
+                  <column columnName="seq1">
+                    <datatype>integer</datatype>
+                    <columnTitle>Diagnosis Number</columnTitle>
+                    <url>/ehr/executeQuery.view?schemaName=study&amp;
+                        query.queryName=Necropsy%20Diagnosis&amp;
+                        query.id~eq=${id}&amp;
+                        query.date~eq=${date}&amp;
+                        query.seq1~eq=${seq1}&amp;
+                    </url>
+                  </column>
+                  <column columnName="description">
+                    <datatype>varchar</datatype>
+                    <columnTitle>Description</columnTitle>
+                    <shownInInsertView>false</shownInInsertView>
+                    <shownInUpdateView>false</shownInUpdateView>
+                    <shownInDetailsView>false</shownInDetailsView>
+                    <propertyURI>urn:ehr.labkey.org/#Description</propertyURI>
+                    <isHidden>true</isHidden>
+                    <inputType>textarea</inputType>
+                  </column>
+                </columns>
+                <tableTitle>Necropsy By Diagnosis</tableTitle>
+            </table>
+        </tables>
+    </metadata>
+</query>

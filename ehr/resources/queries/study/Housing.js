@@ -9,7 +9,7 @@ var {EHR, LABKEY, Ext, console, init, beforeInsert, afterInsert, beforeUpdate, a
 
 
 function onUpsert(context, errors, row, oldRow){
-    if(row.room && row.cage){
+    if(row.dataSource != 'etl' && row.room && row.cage){
         var cageRow;
         LABKEY.Query.executeSql({
             schemaName: 'study',
@@ -59,7 +59,7 @@ function onComplete(event, errors, scriptContext){
             schemaName: 'study',
             scope: this,
             sql: 'SELECT a.Id, a.room, a.cage, a.cond FROM study.housing a WHERE a.id IN (\''+scriptContext.publicParticipantsModified.join(',')+'\') ' +
-                'AND a.odate IS NULL AND a.qcstate.publicdata = true',
+                'AND a.enddate IS NULL AND a.qcstate.publicdata = true',
             success: function(data){
                 if(data.rows && data.rows.length){
                     var row;
@@ -127,16 +127,15 @@ function onComplete(event, errors, scriptContext){
 
 function onBecomePublic(errors, scriptContext, row, oldRow){
     //if this record is active and public, deactivate any old housing records
-    if(!row.odate){
+    if(row.dataSource != 'etl' && !row.enddate){
         var toUpdate = [];
-        //TODO: switch to use enddate instead of odate
         LABKEY.Query.selectRows({
             schemaName: 'study',
             queryName: 'housing',
             columns: 'lsid,id,date',
             filterArray: [
                 LABKEY.Filter.create('Id', row.Id, LABKEY.Filter.Types.EQUAL),
-                LABKEY.Filter.create('odate', null, LABKEY.Filter.Types.ISBLANK),
+                LABKEY.Filter.create('enddate', null, LABKEY.Filter.Types.ISBLANK),
                 LABKEY.Filter.create('date', row.Date, LABKEY.Filter.Types.LESS_THAN),
                 LABKEY.Filter.create('lsid', row.lsid, LABKEY.Filter.Types.NEQ),
                 LABKEY.Filter.create('qcstate/publicdata', true, LABKEY.Filter.Types.EQUAL)
@@ -145,7 +144,9 @@ function onBecomePublic(errors, scriptContext, row, oldRow){
             success: function(data){
                 if(data && data.rows && data.rows.length){
                     Ext.each(data.rows, function(r){
-                        toUpdate.push({lsid: r.lsid, odate: new Date(row.Date)})
+                        //TODO: verify date is working
+                        //might try: new Date(row.date.toGMTString())
+                        toUpdate.push({lsid: r.lsid, enddate: new Date(row.Date)})
                     }, this);
 
                 }
@@ -181,7 +182,7 @@ function setDescription(row, errors){
         description.push('Condition: '+ row.cond);
 
     description.push('In Time: '+ row.Date);
-    description.push('Out Time: '+ EHR.validation.nullToString(row.odate));
+    description.push('Out Time: '+ EHR.validation.nullToString(row.enddate));
 
     return description;
 }

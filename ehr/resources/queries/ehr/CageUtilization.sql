@@ -15,7 +15,7 @@ LEFT JOIN study.housing h
 
 ON (c.room=h.room AND c.cage=h.cage)
 
-WHERE h.odate IS NULL
+WHERE h.enddate IS NULL
 
 GROUP BY c.roomcage, c.room, c.cage
 

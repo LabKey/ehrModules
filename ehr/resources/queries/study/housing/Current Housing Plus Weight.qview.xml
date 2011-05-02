@@ -3,7 +3,7 @@
         <column name="Id"/>
         <column name="Date"/>
         <column name="QCState"/>
-        <column name="Odate"/>
+        <column name="enddate"/>
         <column name="Room"/>
         <column name="Cage"/>
         <column name="Cond"/>
@@ -35,7 +35,7 @@
         </column>
    </columns>
    <filters>
-       <filter column="odate" operator="isblank"/>
+       <filter column="enddate" operator="isblank"/>
         <!--<filter column="qcstate/publicdata" operator="eq" value="true"/>-->
    </filters>
    <sorts>

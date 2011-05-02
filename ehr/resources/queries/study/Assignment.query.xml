@@ -21,7 +21,7 @@
                         <formatString>yyyy-MM-dd</formatString>
                         <columnTitle>Assign Date</columnTitle>
                     </column>
-                    <column columnName="rdate">
+                    <column columnName="enddate">
                         <formatString>yyyy-MM-dd</formatString>
                         <columnTitle>Release Date</columnTitle>
                     </column>
