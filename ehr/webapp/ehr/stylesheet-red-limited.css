@@ -212,47 +212,6 @@ td.labkey-main-menu
 }
 
 
-
-div.yuimenu {
-
-
-
-    border:solid 1px #CC9900;
-
-}
-
-
-
-div.yuimenu h6,
-
-div.yuimenubar h6 {
-
-
-
-    border:solid 1px #CC9900;
-
-}
-
-
-
-div.yuimenu ul {
-
-    border:solid 1px #CC9900;
-
-}
-
-
-
-div.yuimenubar li.yuimenubaritem {
-
-
-
-    border-color:#CC9900;
-
-}
-
-
-
 .x-panel-header {
 
 	border: 1px solid #CC9900;

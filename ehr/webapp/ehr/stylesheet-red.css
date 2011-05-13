@@ -454,58 +454,6 @@ td.labkey-ms1-filter
 
 
 
-div.yuimenu h6,
-
-div.yuimenubar h6 {
-
-    color:#900;
-
-
-
-}
-
-
-
-div.yuimenu li a,
-
-div.yuimenubar li a {
-
-    color:#900;
-
-}
-
-
-
-div.yuimenu li.selected,
-
-div.yuimenubar li.selected {
-
-
-
-    background-color:#FBF4EA;
-
-
-
-}
-
-
-
-div.yuimenu li.selected a.selected,
-
-div.yuimenu li.selected em.selected,
-
-div.yuimenubar li.selected a.selected {
-
-
-
-    color:#900;
-
-
-
-}
-
-
-
 .x-panel-header {
 
     background: #FBF4EA;
@@ -881,47 +829,6 @@ td.labkey-main-menu
 
 
 
-div.yuimenu {
-
-
-
-    background-color:#FFFFFF;
-
-    border:solid 1px #CC9900;
-
-}
-
-
-
-div.yuimenu h6,
-
-div.yuimenubar h6 {
-
-
-
-    border:solid 1px #CC9900;
-
-}
-
-
-
-div.yuimenu ul {
-
-    border:solid 1px #CC9900;
-
-}
-
-
-
-div.yuimenubar li.yuimenubaritem {
-
-
-
-    border-color:#CC9900;
-
-}
-
-
 
 .x-panel-header {
 
@@ -1236,20 +1143,6 @@ td.labkey-ms1-filter
 .gwt-StackPanel .gwt-StackPanelItem {
 
   background-color: #FBF4EA;
-
-}
-
-
-
-div.yuimenu li.selected,
-
-div.yuimenubar li.selected {
-
-
-
-    background-color:#FBF4EA;
-
-
 
 }
 
