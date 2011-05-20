@@ -23,6 +23,23 @@
                         <columnTitle>Begin Date</columnTitle>
                         <formatString>yyyy-MM-dd</formatString>
                     </column>
+                    <column columnName="enddate">
+                        <datatype>timestamp</datatype>
+                        <columnTitle>End Date</columnTitle>
+                        <isHidden>false</isHidden>
+                        <formatString>yyyy-MM-dd</formatString>
+                    </column>
+                    <column columnName="performedby">
+                        <isHidden>true</isHidden>
+                    </column>
+                    <column columnName="lastAdministered">
+                        <shownInInsertView>false</shownInInsertView>
+                        <columnTitle>Last Administered</columnTitle>
+                        <url>/query/executeQuery.view?schemaName=study&amp;
+                            query.queryName=Drug%20Administration&amp;
+                            query.parentid~eq=${objectid}&amp;
+                        </url>
+                    </column>
                     <column columnName="code">
                         <datatype>varchar</datatype>
                         <nullable>false</nullable>
@@ -35,21 +52,22 @@
                         </fk>
                     </column>
                     <column columnName="parentId">
-                        <fk>
-                          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-                          <fkDbSchema>study</fkDbSchema>
-                          <fkTable>studyDataParent</fkTable>
-                          <fkColumnName>objectid</fkColumnName>
-                        </fk>
+                        <!--<fk>-->
+                          <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
+                          <!--<fkDbSchema>study</fkDbSchema>-->
+                          <!--<fkTable>studyDataParent</fkTable>-->
+                          <!--<fkColumnName>objectid</fkColumnName>-->
+                        <!--</fk>-->
                     </column>
                     <column columnName="frequency">
                         <fk>
                           <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                           <fkDbSchema>ehr_lookups</fkDbSchema>
                           <fkTable>treatment_frequency</fkTable>
-                          <fkColumnName>key</fkColumnName>
+                          <fkColumnName>rowid</fkColumnName>
                         </fk>
                     </column>
+
                     <!--<column columnName="dateOnly" wrappedColumnName="lsid">-->
                         <!--<columnTitle>DateOnly</columnTitle>-->
                         <!--<isHidden>true</isHidden>-->

@@ -75,9 +75,9 @@ id,
 date,
 ts,
 objectid AS LabKeyUUID,
-'biopsydiag' as type,
+'morphologicdiag' as type,
 key2 AS mySQL_UUID
-FROM col_dump.biopsydiag_mysql
+FROM col_dump.morphologicdiag_mysql
 
 UNION ALL
 
@@ -133,6 +133,28 @@ objectid AS LabKeyUUID,
 'cagenotes' as type,
 key2 AS mySQL_UUID
 FROM col_dump.cagenotes_mysql
+
+UNION ALL
+
+SELECT
+null as id,
+date,
+ts,
+objectid AS LabKeyUUID,
+'cageobservations' as type,
+key2 AS mySQL_UUID
+FROM col_dump.cageobservations_mysql
+
+UNION ALL
+
+SELECT
+null as id,
+date,
+ts,
+objectid AS LabKeyUUID,
+'clinpathRuns' as type,
+key2 AS mySQL_UUID
+FROM col_dump.clinpath_runs_mysql
 
 UNION ALL
 
@@ -301,16 +323,16 @@ FROM col_dump.necropsy_mysql
 
 UNION ALL
 
-SELECT
-id,
-date,
-ts,
-objectid AS LabKeyUUID,
-'necropsydiag' as type,
-key2 AS mySQL_UUID
-FROM col_dump.necropsydiag_mysql
-
-UNION ALL
+-- SELECT
+-- id,
+-- date,
+-- ts,
+-- objectid AS LabKeyUUID,
+-- 'necropsydiag' as type,
+-- key2 AS mySQL_UUID
+-- FROM col_dump.necropsydiag_mysql
+--
+-- UNION ALL
 
 SELECT
 null as id,

@@ -14,12 +14,12 @@
                         <formatString>yyyy-MM-dd HH:mm</formatString>
                     </column>
                     <column columnName="parentId">
-                        <fk>
-                          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-                          <fkDbSchema>study</fkDbSchema>
-                          <fkTable>studyDataParent</fkTable>
-                          <fkColumnName>objectid</fkColumnName>
-                        </fk>
+                        <!--<fk>-->
+                          <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
+                          <!--<fkDbSchema>study</fkDbSchema>-->
+                          <!--<fkTable>studyDataParent</fkTable>-->
+                          <!--<fkColumnName>objectid</fkColumnName>-->
+                        <!--</fk>-->
                         <isHidden>true</isHidden>
                     </column>
                     <column columnName="requestId">
@@ -50,6 +50,12 @@
                     <column columnName="dataset">
                         <isHidden>true</isHidden>
                         <!--<columnTitle>Type</columnTitle>                        -->
+                    </column>
+                    <column columnName="servicerequested">
+                        <columnTitle>Service Requested</columnTitle>
+                    </column>
+                    <column columnName="sampleType">
+                        <columnTitle>Sample Type</columnTitle>
                     </column>
                 </columns>
             </table>

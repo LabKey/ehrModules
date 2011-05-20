@@ -6,7 +6,7 @@
 SELECT
 d.room
 
-FROM study.demographics d
+FROM study.housing d
 
 LEFT JOIN ehr_lookups.cage c
   on (c.room=d.room)

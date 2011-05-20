@@ -13,8 +13,8 @@
         </column>
         <column name="problem_no"/>
         <column name="date"/>
-        <column name="date_resolved"/>
-        <column name="Remark"/>
+        <column name="enddate"/>
+        <column name="remark"/>
         <column name="code"/>
     </columns>
    <sorts>

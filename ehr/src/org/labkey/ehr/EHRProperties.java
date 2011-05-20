@@ -173,9 +173,9 @@ public class EHRProperties
         {
             PropertyDescriptor pd = super.constructPropertyDescriptor();
             pd.setName("enddate");
-            pd.setShownInInsertView(false);
-            pd.setShownInUpdateView(false);
-            pd.setShownInDetailsView(false);
+            pd.setShownInInsertView(true);
+            pd.setShownInUpdateView(true);
+            pd.setShownInDetailsView(true);
             pd.setHidden(true);
             return pd;
         }

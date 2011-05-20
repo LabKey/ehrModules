@@ -1,0 +1,127 @@
+<customView xmlns="http://labkey.org/data/xml/queryCustomView">
+    <columns>
+        <column name="Id"/>
+        <column name="Id/curLocation/Room">
+            <properties>
+                <property name="columnTitle" value="Room"/>
+            </properties>
+        </column>
+        <column name="Id/curLocation/Cage">
+            <properties>
+                <property name="columnTitle" value="Cage"/>
+            </properties>
+        </column>
+        <column name="Id/curLocation/Cond">
+            <properties>
+                <property name="columnTitle" value="Condition"/>
+            </properties>
+        </column>
+        <column name="gender">
+            <properties>
+                <property name="columnTitle" value="Gender"/>
+            </properties>
+        </column>
+        <!--<column name="Status">-->
+            <!--<properties>-->
+                <!--<property name="columnTitle" value="Status"/>-->
+            <!--</properties>-->
+        <!--</column>-->
+        <column name="calculated_status">
+            <properties>
+                <property name="columnTitle" value="Status"/>
+            </properties>
+        </column>
+        <column name="Id/currentAssignments/projects">
+            <properties>
+                <property name="columnTitle" value="Active Assignments"/>
+            </properties>
+        </column>
+        <column name="Id/currentAssignments/Availability">
+            <properties>
+                <property name="columnTitle" value="Avail"/>
+            </properties>
+        </column>
+        <column name="Hold">
+            <properties>
+                <property name="columnTitle" value="Hold"/>
+            </properties>
+        </column>
+        <column name="species">
+            <properties>
+                <property name="columnTitle" value="Species"/>
+            </properties>
+        </column>
+        <!--<column name="Dataset/Demographics/Dam">-->
+            <!--<properties>-->
+                <!--<property name="columnTitle" value="Dam"/>-->
+            <!--</properties>-->
+        <!--</column>-->
+        <!--<column name="Dataset/Demographics/Sire">-->
+            <!--<properties>-->
+                <!--<property name="columnTitle" value="Sire"/>-->
+            <!--</properties>-->
+        <!--</column>-->
+        <!--<column name="Dataset/Demographics/Origin">-->
+            <!--<properties>-->
+                <!--<property name="columnTitle" value="Origin"/>-->
+            <!--</properties>-->
+        <!--</column>-->
+        <column name="Birth">
+            <properties>
+                <property name="columnTitle" value="Birth"/>
+            </properties>
+        </column>
+        <!--<column name="Dataset/Demographics/Death">-->
+            <!--<properties>-->
+                <!--<property name="columnTitle" value="Death"/>-->
+            <!--</properties>-->
+        <!--</column>-->
+        <column name="Id/numRoommates/NumRoommates">
+            <properties>
+                <property name="columnTitle" value="Number of Cagemates"/>
+            </properties>
+        </column>
+        <!--<column name="Dataset/Demographics/departdate">-->
+            <!--<properties>-->
+                <!--<property name="columnTitle" value="Departure Date"/>-->
+            <!--</properties>-->
+        <!--</column>-->
+        <!--<column name="MostRecentWeight/MostRecentWeight">-->
+            <!--<properties>-->
+                <!--<property name="columnTitle" value="Current Weight"/>-->
+            <!--</properties>-->
+        <!--</column>-->
+        <!--<column name="MostRecentWeight/MostRecentWeightDate">-->
+            <!--<properties>-->
+                <!--<property name="columnTitle" value="Weight Date"/>-->
+            <!--</properties>-->
+        <!--</column>-->
+        <!--<column name="Dataset/Demographics/tbdate">-->
+            <!--<properties>-->
+                <!--<property name="columnTitle" value="Last TB Date"/>-->
+            <!--</properties>-->
+        <!--</column>-->
+        <column name="Medical">
+            <properties>
+                <property name="columnTitle" value="Medical"/>
+            </properties>
+        </column>
+        <!--<column name="Dataset/Demographics/purchasedby">-->
+            <!--<properties>-->
+                <!--<property name="columnTitle" value="Purchased By"/>-->
+            <!--</properties>-->
+        <!--</column>-->
+        <!--<column name="Dataset/Demographics/v_status">-->
+            <!--<properties>-->
+                <!--<property name="columnTitle" value="Viral Status"/>-->
+            <!--</properties>-->
+        <!--</column>-->
+    </columns>
+    <filters>
+        <filter column="Id/numRoommates/NumRoommates" operator="isblank"/>
+        <filter column="calculated_status" operator="eq" value="Alive"/>
+    </filters>
+    <sorts>
+        <sort column="Id" descending="false"/>
+    </sorts>
+</customView>

@@ -9,7 +9,7 @@
                     <column columnName="ActiveAssignments">
                         <columnTitle>Animals Assigned</columnTitle>
                         <datatype>integer</datatype>
-                        <url>/ehr/executeQuery.view?schemaName=study&amp;
+                        <url>/query/executeQuery.view?schemaName=study&amp;
                             query.queryName=Assignment&amp;
                             query.project~eq=${project}&amp;
                             query.sort=-Date&amp;

@@ -30,7 +30,7 @@ from study.obs o
 
 WHERE
   o.isIrregular = true
-  AND o.qcstate.publicdata = true
+  --AND o.qcstate.publicdata = true
 
 UNION ALL
 
@@ -51,12 +51,12 @@ null as tlocation,
 null as otherbehavior,
 c.remark,
 null as dataset,
-null as description,
+c.description,
 c.qcstate
 
 FROM ehr.cage_observations c
 
-WHERE c.qcstate.publicdata = true
+--WHERE c.qcstate.publicdata = true
 
 
 

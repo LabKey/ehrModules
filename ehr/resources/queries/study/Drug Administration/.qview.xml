@@ -4,6 +4,7 @@
        <column name="date"/>
        <column name="EndTime"/>
        <column name="project"/>
+       <column name="qcstate" />
        <column name="code"/>
        <column name="code/code">
            <properties>
@@ -15,7 +16,7 @@
        <column name="route"/>
        <column name="Remark"/>
        <column name="category"/>
-       <column name="HeaderDate"/>
+       <!--<column name="HeaderDate"/>-->
    </columns>
    <sorts>
        <sort column="date" descending="true"/>

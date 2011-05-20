@@ -8,7 +8,7 @@ Ext.namespace('EHR.ext', 'EHR.utils');
 
 LABKEY.requiresScript("/ehr/utils.js");
 
-function historyHandler(dataRegion, dataRegionName)
+function historyHandler(dataRegion, dataRegionName, queryName, schemaName)
 {
     var checked = dataRegion.getChecked();
     if(!checked || !checked.length){
@@ -16,7 +16,10 @@ function historyHandler(dataRegion, dataRegionName)
         return;
     }
 
-    var sql = "SELECT DISTINCT s.Id FROM study.\""+dataRegion.queryName+"\" s WHERE s.LSID IN ('" + checked.join("', '") + "')";
+    queryName = queryName || dataRegion.queryName;
+    schemaName = schemaName || dataRegion.schemaName;
+
+    var sql = "SELECT DISTINCT s.Id FROM "+schemaName+".\""+queryName+"\" s WHERE s.LSID IN ('" + checked.join("', '") + "')";
 
     LABKEY.Query.executeSql({
          schemaName: 'study',
@@ -52,13 +55,16 @@ function historyHandler(dataRegion, dataRegionName)
 
 }
 
-function datasetHandler(dataRegion, dataRegionName)
+function datasetHandler(dataRegion, dataRegionName, queryName, schemaName)
 {
     var checked = dataRegion.getChecked();
     if(!checked || !checked.length){
         alert('No records selected');
         return;
     }
+
+    queryName = queryName || dataRegion.queryName;
+    schemaName = schemaName || dataRegion.schemaName;
 
     var theWindow = new Ext.Window({
         width: 280,
@@ -132,7 +138,7 @@ function datasetHandler(dataRegion, dataRegionName)
             text: 'Close',
             scope: this,
             handler: function(){
-                theWindow.hide();
+                theWindow.destroy();
             }
         }]
     });
@@ -142,7 +148,7 @@ function datasetHandler(dataRegion, dataRegionName)
         var checked = dataRegion.getChecked();
         var dataset = theWindow.dataset.getValue();
         var theField = theWindow.theField.getValue();
-        var sql = "SELECT DISTINCT s."+theField+" as field FROM study.\""+dataRegion.queryName+"\" s WHERE s.LSID IN ('" + checked.join("', '") + "')";
+        var sql = "SELECT DISTINCT s."+theField+" as field FROM "+schemaName+".\""+queryName+"\" s WHERE s.LSID IN ('" + checked.join("', '") + "')";
 
         LABKEY.Query.executeSql({
              schemaName: 'study',
@@ -169,6 +175,8 @@ function datasetHandler(dataRegion, dataRegionName)
 
                 var el = document.body.appendChild(document.createElement('form'));
                 el.setAttribute('method', 'POST');
+                //NOTE: this uses a custom page with a QWP in order to support POST params
+                //might revisit at some future time if executeQuery is improved
                 el.setAttribute('action', LABKEY.ActionURL.buildURL('ehr', 'executeQuery'));
                 var theElement = Ext.get(el);
 
@@ -186,11 +194,19 @@ function datasetHandler(dataRegion, dataRegionName)
 }
 
 function moreActionsHandler(dataRegion){
-    var menu = Ext.menu.MenuMgr.get(dataRegion.name + '.Menu.More Actions');
+    //first we get the permission map
+    EHR.utils.getDatasetPermissions({
+        success: onSuccess,
+        failure: EHR.utils.onError,
+        scope: this
+    });
 
-    if(dataRegion.schemaName.match(/^study$/i) && dataRegion.queryName.match(/^weight$/i))
-        addWeightCompareBtn(dataRegion, menu);
+    function onSuccess(){
+        var menu = Ext.menu.MenuMgr.get(dataRegion.name + '.Menu.More Actions');
 
+        if(dataRegion.schemaName.match(/^study$/i) && dataRegion.queryName.match(/^weight$/i))
+            addWeightCompareBtn(dataRegion, menu);
+    }
 
 }
 
@@ -257,7 +273,7 @@ function addWeightCompareBtn(dataRegion, menu){
                         buttons: [{
                             text: 'OK',
                             handler: function(win, button){
-                                win.ownerCt.ownerCt.hide();
+                                win.ownerCt.ownerCt.destroy();
                             }
                         }]
 
@@ -270,13 +286,16 @@ function addWeightCompareBtn(dataRegion, menu){
         })
 }
 
-function getDistinct(dataRegion)
+function getDistinct(dataRegion, dataRegionName, queryName, schemaName)
 {
     var checked = dataRegion.getChecked();
     if(!checked || !checked.length){
         alert('No records selected');
         return;
     }
+
+    queryName = queryName || dataRegion.queryName;
+    schemaName = schemaName || dataRegion.schemaName;
 
     var theWindow = new Ext.Window({
         width: 280,
@@ -323,7 +342,7 @@ function getDistinct(dataRegion)
             text: 'Close',
             scope: this,
             handler: function(){
-                theWindow.hide();
+                theWindow.destroy();
             }
         }]
     });
@@ -332,7 +351,7 @@ function getDistinct(dataRegion)
     function runSQL(a,b){
         var checked = dataRegion.getChecked();
         var field = theWindow.field.getValue();
-        var sql = "SELECT DISTINCT s."+field+" as field FROM study.\""+dataRegion.queryName+"\" s WHERE s.LSID IN ('" + checked.join("', '") + "')";
+        var sql = "SELECT DISTINCT s."+field+" as field FROM "+schemaName+".\""+queryName+"\" s WHERE s.LSID IN ('" + checked.join("', '") + "')";
         theWindow.hide();
         
         LABKEY.Query.executeSql({
@@ -369,6 +388,7 @@ function getDistinct(dataRegion)
                 //layout: 'form',
                 items: [{
                     xtype: 'textarea',
+                    name: 'distinctValues',
                     width: 260,
                     height: 350,
                     value: result
@@ -377,7 +397,7 @@ function getDistinct(dataRegion)
                     text: 'Close',
                     scope: this,
                     handler: function(){
-                        win.hide();
+                        win.destroy();
                     }
                 }]
             });

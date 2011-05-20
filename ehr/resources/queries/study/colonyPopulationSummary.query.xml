@@ -16,7 +16,7 @@
                     <column columnName="AnimalCount">
                         <datatype>varchar</datatype>
                         <columnTitle>Animal Count</columnTitle>
-                         <url>/ehr/executeQuery.view?schemaName=study&amp;
+                         <url>/query/executeQuery.view?schemaName=study&amp;
                             query.queryName=demographics&amp;
                             query.Id/Species/Species~eq=${species}&amp;
                             query.viewName=Alive%2C at WNPRC

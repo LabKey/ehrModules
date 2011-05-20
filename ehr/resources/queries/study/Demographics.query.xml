@@ -21,6 +21,7 @@
                     </column>
                     <column columnName="status">
                         <datatype>varchar</datatype>
+                        <shownInInsertView>false</shownInInsertView>
                         <columnTitle>Status</columnTitle>
                         <fk>
                             <fkFolderPath>/wnprc/ehr/</fkFolderPath>
@@ -29,7 +30,20 @@
                             <fkColumnName>Code</fkColumnName>
                         </fk>
                     </column>
+                    <column columnName="calculated_status">
+                        <datatype>varchar</datatype>
+                        <shownInInsertView>false</shownInInsertView>
+                        <columnTitle>Status</columnTitle>
+                        <fk>
+                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
+                            <fkDbSchema>ehr_lookups</fkDbSchema>
+                            <fkTable>calculated_status_codes</fkTable>
+                            <fkColumnName>Code</fkColumnName>
+                        </fk>
+                    </column>
+                    <!--NOTE: being depreciated-->
                     <column columnName="avail">
+                        <isHidden>true</isHidden>
                         <datatype>varchar</datatype>
                         <columnTitle>Availability</columnTitle>
                         <!--<fk>-->
@@ -86,24 +100,45 @@
                     <column columnName="birth">
                         <datatype>timestamp</datatype>
                         <formatString>yyyy-MM-dd</formatString>
+                        <shownInInsertView>false</shownInInsertView>
                         <columnTitle>Birth</columnTitle>
+                         <url>/query/executeQuery.view?
+                            schemaName=study&amp;
+                            query.queryName=Birth&amp;
+                            query.Id~eq=${Id}
+                        </url>
                     </column>
                     <column columnName="death">
                         <datatype>timestamp</datatype>
                         <formatString>yyyy-MM-dd</formatString>
+                        <shownInInsertView>false</shownInInsertView>
                         <columnTitle>Death</columnTitle>
+                         <url>/query/executeQuery.view?
+                            schemaName=study&amp;
+                            query.queryName=Deaths&amp;
+                            query.Id~eq=${Id}
+                        </url>
                     </column>
+                    <!--NOTE: being depreciated-->
                     <column columnName="arrivedate">
+                        <isHidden>true</isHidden>
+                        <shownInInsertView>false</shownInInsertView>
                         <datatype>timestamp</datatype>
                         <formatString>yyyy-MM-dd HH:mm</formatString>
                         <columnTitle>Arrival Date</columnTitle>
                     </column>
+                    <!--NOTE: being depreciated-->
                     <column columnName="departdate">
+                        <isHidden>true</isHidden>
+                        <shownInInsertView>false</shownInInsertView>
                         <datatype>timestamp</datatype>
                         <formatString>yyyy-MM-dd HH:mm</formatString>
                         <columnTitle>Departure Date</columnTitle>
                     </column>
+                    <!--NOTE: being depreciated-->
                     <column columnName="room">
+                        <isHidden>true</isHidden>
+                        <shownInInsertView>false</shownInInsertView>
                         <datatype>varchar</datatype>
                         <columnTitle>Room</columnTitle>
                         <url>/ehr/cageDetails.view?
@@ -111,12 +146,15 @@
                         </url>
                         <fk>
                             <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-                            <fkDbSchema>ehr</fkDbSchema>
+                            <fkDbSchema>ehr_lookups</fkDbSchema>
                             <fkTable>rooms</fkTable>
                             <fkColumnName>room</fkColumnName>
                         </fk>
                     </column>
+                    <!--NOTE: being depreciated-->
                     <column columnName="cage">
+                        <isHidden>true</isHidden>
+                        <shownInInsertView>false</shownInInsertView>
                         <datatype>varchar</datatype>
                         <columnTitle>Cage</columnTitle>
                         <url>/ehr/cageDetails.view?
@@ -124,7 +162,10 @@
                             cage=${cage}&amp;
                         </url>
                     </column>
+                    <!--NOTE: being depreciated-->
                     <column columnName="cond">
+                        <isHidden>true</isHidden>
+                        <shownInInsertView>false</shownInInsertView>
                         <datatype>varchar</datatype>
                         <displayWidth>30</displayWidth>
                         <columnTitle>Condition</columnTitle>
@@ -135,19 +176,25 @@
                             <fkColumnName>Code</fkColumnName>
                         </fk>
                     </column>
+                    <!--NOTE: being depreciated-->
                     <column columnName="weight">
+                        <isHidden>true</isHidden>
+                        <shownInInsertView>false</shownInInsertView>
                         <datatype>double</datatype>
                         <columnTitle>Current Weight</columnTitle>
-                        <url>/ehr/executeQuery.view?schemaName=study&amp;
+                        <url>/query/executeQuery.view?schemaName=study&amp;
                             query.queryName=Weight&amp;
                             query.id~eq=${id}
                         </url>
                     </column>
+                    <!--NOTE: being depreciated-->
                     <column columnName="wdate">
                         <datatype>timestamp</datatype>
+                        <shownInInsertView>false</shownInInsertView>
+                        <isHidden>true</isHidden>
                         <formatString>yyyy-MM-dd HH:mm</formatString>
                         <columnTitle>Weight Date</columnTitle>
-                        <url>/ehr/executeQuery.view?schemaName=study&amp;
+                        <url>/query/executeQuery.view?schemaName=study&amp;
                             query.queryName=Weight&amp;
                             query.id~eq=${id}&amp;
                             query.date~eq=${wdate}
@@ -155,9 +202,11 @@
                     </column>
                     <column columnName="tbdate">
                         <datatype>timestamp</datatype>
+                        <shownInInsertView>false</shownInInsertView>
+                        <isHidden>true</isHidden>
                         <formatString>yyyy-MM-dd</formatString>
                         <columnTitle>Last TB Date</columnTitle>
-                        <url>/ehr/executeQuery.view?schemaName=study&amp;
+                        <url>/query/executeQuery.view?schemaName=study&amp;
                             query.queryName=TB&amp;
                             query.id~eq=${id}&amp;
                             query.sort=-Date
@@ -183,12 +232,12 @@
                         </fk>
                     </column>
                     <column columnName="parentId">
-                        <fk>
-                          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-                          <fkDbSchema>study</fkDbSchema>
-                          <fkTable>studyDataParent</fkTable>
-                          <fkColumnName>objectid</fkColumnName>
-                        </fk>
+                        <!--<fk>-->
+                          <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
+                          <!--<fkDbSchema>study</fkDbSchema>-->
+                          <!--<fkTable>studyDataParent</fkTable>-->
+                          <!--<fkColumnName>objectid</fkColumnName>-->
+                        <!--</fk>-->
                     </column>
                 </columns>
             </table>

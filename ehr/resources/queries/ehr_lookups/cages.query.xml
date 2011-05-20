@@ -6,10 +6,22 @@
                 <columns>
                     <column columnName="location">
                         <displayWidth>60</displayWidth>
+                        <fk>
+                          <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
+                          <fkDbSchema>ehr_lookups</fkDbSchema>
+                          <fkTable>cage</fkTable>
+                          <fkColumnName>roomcage</fkColumnName>
+                        </fk>
                     </column>
                     <column columnName="roomcage">
                         <displayWidth>60</displayWidth>
                         <columnTitle>Location</columnTitle>
+                        <fk>
+                          <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
+                          <fkDbSchema>ehr_lookups</fkDbSchema>
+                          <fkTable>cage</fkTable>
+                          <fkColumnName>roomcage</fkColumnName>
+                        </fk>
                     </column>
                     <column columnName="room">
                         <displayWidth>40</displayWidth>

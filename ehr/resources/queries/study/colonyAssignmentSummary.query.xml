@@ -11,7 +11,7 @@
                         <datatype>varchar</datatype>
                         <columnTitle>Total Animals</columnTitle>
                         <displayWidth>110</displayWidth>
-                        <url>/ehr/executeQuery.view?schemaName=study&amp;
+                        <url>/query/executeQuery.view?schemaName=study&amp;
                             query.queryName=demographicsAssignmentSummary&amp;
                             query.Id/DataSet/Demographics/v_status~eq=${v_status}&amp;
                             query.Id/DataSet/Demographics/species~eq=${species}&amp;
@@ -21,7 +21,7 @@
                         <datatype>varchar</datatype>
                         <columnTitle>Assigned To One Or More Projects</columnTitle>
                         <displayWidth>110</displayWidth>
-                        <url>/ehr/executeQuery.view?schemaName=study&amp;
+                        <url>/query/executeQuery.view?schemaName=study&amp;
                             query.queryName=demographicsAssignmentSummary&amp;
                             query.Id/DataSet/Demographics/v_status~eq=${v_status}&amp;
                             query.Id/DataSet/Demographics/species~eq=${species}&amp;
@@ -32,7 +32,7 @@
                         <datatype>varchar</datatype>
                         <columnTitle>No Active Assignment</columnTitle>
                         <displayWidth>110</displayWidth>
-                        <url>/ehr/executeQuery.view?schemaName=study&amp;
+                        <url>/query/executeQuery.view?schemaName=study&amp;
                             query.queryName=demographicsAssignmentSummary&amp;
                             query.Id/DataSet/Demographics/v_status~eq=${v_status}&amp;
                             query.Id/DataSet/Demographics/species~eq=${species}&amp;
@@ -43,7 +43,7 @@
                         <datatype>varchar</datatype>
                         <columnTitle>Pending Assignment</columnTitle>
                         <displayWidth>110</displayWidth>
-                        <url>/ehr/executeQuery.view?schemaName=study&amp;
+                        <url>/query/executeQuery.view?schemaName=study&amp;
                             query.queryName=demographicsAssignmentSummary&amp;
                             query.Id/DataSet/Demographics/v_status~eq=${v_status}&amp;
                             query.Id/DataSet/Demographics/species~eq=${species}&amp;
@@ -54,7 +54,7 @@
                         <datatype>varchar</datatype>
                         <columnTitle>Assigned To One Or More Research Projects (avail=r or n)</columnTitle>
                         <displayWidth>110</displayWidth>
-                        <url>/ehr/executeQuery.view?schemaName=study&amp;
+                        <url>/query/executeQuery.view?schemaName=study&amp;
                             query.queryName=demographicsAssignmentSummary&amp;
                             query.Id/DataSet/Demographics/v_status~eq=${v_status}&amp;
                             query.Id/DataSet/Demographics/species~eq=${species}&amp;
@@ -65,7 +65,7 @@
                         <datatype>varchar</datatype>
                         <columnTitle>Assigned to Breeding (avail=b)</columnTitle>
                         <displayWidth>110</displayWidth>
-                        <url>/ehr/executeQuery.view?schemaName=study&amp;
+                        <url>/query/executeQuery.view?schemaName=study&amp;
                             query.queryName=demographicsAssignmentSummary&amp;
                             query.Id/DataSet/Demographics/v_status~eq=${v_status}&amp;
                             query.Id/DataSet/Demographics/species~eq=${species}&amp;
@@ -76,7 +76,7 @@
                         <datatype>varchar</datatype>
                         <columnTitle>Assigned to Training (avail=t)</columnTitle>
                         <displayWidth>110</displayWidth>
-                        <url>/ehr/executeQuery.view?schemaName=study&amp;
+                        <url>/query/executeQuery.view?schemaName=study&amp;
                             query.queryName=demographicsAssignmentSummary&amp;
                             query.Id/DataSet/Demographics/v_status~eq=${v_status}&amp;
                             query.Id/DataSet/Demographics/species~eq=${species}&amp;
@@ -87,7 +87,7 @@
                         <datatype>varchar</datatype>
                         <columnTitle>Has Vet Exemption (avail=v)</columnTitle>
                         <displayWidth>110</displayWidth>
-                        <url>/ehr/executeQuery.view?schemaName=study&amp;
+                        <url>/query/executeQuery.view?schemaName=study&amp;
                             query.queryName=demographicsAssignmentSummary&amp;
                             query.Id/DataSet/Demographics/v_status~eq=${v_status}&amp;
                             query.Id/DataSet/Demographics/species~eq=${species}&amp;
@@ -98,7 +98,7 @@
                         <datatype>varchar</datatype>
                         <columnTitle>Assigned to SPF Stock</columnTitle>
                         <displayWidth>110</displayWidth>
-                        <url>/ehr/executeQuery.view?schemaName=study&amp;
+                        <url>/query/executeQuery.view?schemaName=study&amp;
                             query.queryName=demographicsAssignmentSummary&amp;
                             query.Id/DataSet/Demographics/v_status~eq=${v_status}&amp;
                             query.Id/DataSet/Demographics/species~eq=${species}&amp;
@@ -109,7 +109,7 @@
                         <datatype>varchar</datatype>
                         <columnTitle>Assigned to Conventional Stock</columnTitle>
                         <displayWidth>110</displayWidth>
-                        <url>/ehr/executeQuery.view?schemaName=study&amp;
+                        <url>/query/executeQuery.view?schemaName=study&amp;
                             query.queryName=demographicsAssignmentSummary&amp;
                             query.Id/DataSet/Demographics/v_status~eq=${v_status}&amp;
                             query.Id/DataSet/Demographics/species~eq=${species}&amp;
@@ -120,7 +120,7 @@
                         <datatype>varchar</datatype>
                         <columnTitle>Assigned to Marm Stock</columnTitle>
                         <displayWidth>110</displayWidth>
-                        <url>/ehr/executeQuery.view?schemaName=study&amp;
+                        <url>/query/executeQuery.view?schemaName=study&amp;
                             query.queryName=demographicsAssignmentSummary&amp;
                             query.Id/DataSet/Demographics/v_status~eq=${v_status}&amp;
                             query.Id/DataSet/Demographics/species~eq=${species}&amp;

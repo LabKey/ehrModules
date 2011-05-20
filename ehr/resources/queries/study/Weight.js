@@ -11,46 +11,61 @@ var {EHR, LABKEY, Ext, console, init, beforeInsert, afterInsert, beforeUpdate, a
 function onUpsert(context, errors, row, oldRow){
     var species;
 
-    //warn if more than 10% different from last weight
-    if(row.dataSource != 'etl' && row.Id && row.weight){
-        EHR.findDemographics({
-            participant: row.Id,
-            callback: function(data){
-                if(data){
-                    if(data.weight && (row.weight <= data.weight*0.9)){
-                        EHR.addError(errors, 'weight', 'Weight drop of >10%. Last weight '+data.weight+' kg', 'INFO');
-                    }
-                    else if(data.weight && (row.weight >= data.weight/0.9)){
-                        EHR.addError(errors, 'weight', 'Weight gain of >10%. Last weight '+data.weight+' kg', 'INFO');
-                    }
+    if(!row.weight){
+        EHR.addError(errors, 'weight', 'This field is required', 'WARN');
+    }
 
-                    species = data.species;
+    //warn if more than 10% different from last weight
+    if(context.extraContext.dataSource != 'etl' && row.Id && row.weight){
+        LABKEY.Query.selectRows({
+            schemaName: 'study',
+            queryName: 'demographicsMostRecentWeight',
+            scope: this,
+            filterArray: [LABKEY.Filter.create('Id', row.Id, LABKEY.Filter.Types.EQUAL)],
+            success: function(data){
+                if(data && data.rows.length){
+                    var r = data.rows[0];
+
+                    if(r.MostRecentWeight && (row.weight <= r.MostRecentWeight*0.9)){
+                        EHR.addError(errors, 'weight', 'Weight drop of >10%. Last weight '+r.MostRecentWeight+' kg', 'INFO');
+                    }
+                    else if(r.MostRecentWeight && (row.weight >= r.MostRecentWeight/0.9)){
+                        EHR.addError(errors, 'weight', 'Weight gain of >10%. Last weight '+r.MostRecentWeight+' kg', 'INFO');
+                    }
                 }
-            },
-            scope: this
+                else {
+                    console.log('not found')
+                }
+            }
         });
 
-        if(species){
-            LABKEY.Query.selectRows({
-                schemaName: 'ehr_lookups',
-                queryName: 'weight_ranges',
-                scope: this,
-                filterArray: [LABKEY.Filter.create('species', species, LABKEY.Filter.Types.EQUAL)],
-                columns: '*',
-                success: function(data){
-                    if(data && data.rows && data.rows.length==1){
-                        var rowData = data.rows[0];
-                        if(rowData.min_weight!==undefined && row.weight < rowData.min_weight){
-                            EHR.addError(errors, 'weight', 'Weight below the allowable value of '+rowData.min_weight+' kg', 'WARN');
-                        }
-                        if(rowData.max_weight!==undefined && row.weight > rowData.max_weight){
-                            EHR.addError(errors, 'weight', 'Weight above the allowable value of '+rowData.max_weight+' kg', 'WARN');
-                        }
-                    }
-                },
-                failure: EHR.onFailure
-            });
-        }
+        EHR.findDemographics({
+            participant: row.Id,
+            scope: this,
+            callback: function(data){
+                if(data && data.species){
+                    LABKEY.Query.selectRows({
+                        schemaName: 'ehr_lookups',
+                        queryName: 'weight_ranges',
+                        scope: this,
+                        filterArray: [LABKEY.Filter.create('species', data.species, LABKEY.Filter.Types.EQUAL)],
+                        columns: '*',
+                        success: function(results){
+                            if(results && results.rows && results.rows.length==1){
+                                var rowData = results.rows[0];
+                                if(rowData.min_weight!==undefined && row.weight < rowData.min_weight){
+                                    EHR.addError(errors, 'weight', 'Weight below the allowable value of '+rowData.min_weight+' kg for '+data.species, 'WARN');
+                                }
+                                if(rowData.max_weight!==undefined && row.weight > rowData.max_weight){
+                                    EHR.addError(errors, 'weight', 'Weight above the allowable value of '+rowData.max_weight+' kg for '+data.species, 'WARN');
+                                }
+                            }
+                        },
+                        failure: EHR.onFailure
+                    });
+                }
+            }
+        });
     }
 
 }
@@ -64,8 +79,10 @@ function setDescription(row, errors){
     return description;
 }
 
+/*
 function onComplete(event, errors, scriptContext){
-    //we will update the demographics table arrivedate field for all participantsModified
+    //NOTE: we will stop caching this info
+
     //TODO: only public modifications
     if(scriptContext.participantsModified.length){
         //find the most recent weight per participant
@@ -135,3 +152,4 @@ function onComplete(event, errors, scriptContext){
         }
     }
 };
+*/

@@ -1,0 +1,47 @@
+<html>
+<head>
+<script type="text/javascript">
+
+LABKEY.requiresScript("/ehr/utils.js");
+
+Ext.onReady(function (){
+    var query = LABKEY.ActionURL.getParameter('query.queryName') || LABKEY.ActionURL.getParameter('queryName');
+    var schema = LABKEY.ActionURL.getParameter('schemaName');
+
+    LABKEY.NavTrail.setTrail(EHR.utils.toTitleCase(query));
+
+    var updateURL = '/ehr/manageRecord.view?schemaName='+schema+'&queryName='+query+'&keyField='+LABKEY.ActionURL.getParameter('keyField')+'&key=${'+LABKEY.ActionURL.getParameter('keyField')+'}';
+    var config = {
+        title: query,
+        schemaName: schema,
+        queryName: query,
+        allowChooseQuery: false,
+        allowChooseView: true,
+        showInsertNewButton: false,
+        showDeleteButton: false,
+        showDetailsColumn: true,
+        showUpdateColumn: true,
+        showRecordSelectors: true,
+        buttonBarPosition: 'top',
+        frame: 'none',
+        dataRegionName: 'query',
+        updateURL: updateURL,
+        scope: this,
+        timeout: 0,
+        errorCallback: EHR.utils.onError
+    };
+
+    new LABKEY.QueryWebPart(config).render('qwpDiv');
+
+});
+
+
+</script>
+</head>
+
+<body>
+
+<div id="qwpDiv"></div>
+
+</body>
+</html>

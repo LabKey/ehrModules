@@ -8,16 +8,29 @@
 var {EHR, LABKEY, Ext, console, init, beforeInsert, afterInsert, beforeUpdate, afterUpdate, beforeDelete, afterDelete, complete} = require("ehr/validation");
 
 
+//TODO: update housing table to end open housing records & assignments
 
 function onComplete(event, errors, scriptContext){
-    //TODO: testing needed
+    if(scriptContext.publicParticipantsModified.length){
+        var valuesMap = {};
+        Ext.each(scriptContext.rows, function(r){
+            valuesMap[r.Id] = {};
+            valuesMap[r.Id].death = r.date;
+        }, this);
+        EHR.validation.updateStatusField(scriptContext.publicParticipantsModified, null, valuesMap);
+    }
+
+
+
+
+    /*
     if(scriptContext.publicParticipantsModified.length){
         var toUpdate = [];
         var idsFound = [];
         LABKEY.Query.executeSql({
             schemaName: 'study',
             scope: this,
-            sql: 'SELECT a.Id, a.date FROM study.deaths a WHERE a.id IN (\''+scriptContext.publicParticipantsModified.join(',')+'\') AND a.qcstate.publicdata = true',
+            sql: 'SELECT a.Id, a.date, a.cause FROM study.deaths a WHERE a.id IN (\''+scriptContext.publicParticipantsModified.join(',')+'\') AND a.qcstate.publicdata = true',
             success: function(data){
                 if(data.rows && data.rows.length){
                     var row;
@@ -31,7 +44,19 @@ function onComplete(event, errors, scriptContext){
                             callback: function(data){
                                 if(data){
                                     if(row.date != data.death)
-                                        toUpdate.push({death: row.date, Id: row.Id, lsid: data.lsid});
+                                        var status;
+                                        switch (row.cause){
+                                            case 'experimental':
+
+                                                break;
+                                            case 'other':
+
+                                                break;
+                                            case 'clinical':
+
+                                                break;
+                                        }
+                                        toUpdate.push({death: row.date, status: status, Id: row.Id, lsid: data.lsid});
                                 }
                             }
                         });
@@ -73,9 +98,8 @@ function onComplete(event, errors, scriptContext){
                 failure: EHR.onFailure
             });
         }
-
-        //TODO: update housing table to end open housing records
     }
+    */
 };
 
 

@@ -1,41 +1,36 @@
 <customView xmlns="http://labkey.org/data/xml/queryCustomView">
     <columns>
         <column name="Id"/>
+        <column name="curLocation/Room">
+            <properties>
+                <property name="columnTitle" value="Room"/>
+            </properties>
+        </column>
+        <column name="curLocation/Cage">
+            <properties>
+                <property name="columnTitle" value="Cage"/>
+            </properties>
+        </column>
+        <column name="curLocation/Cond">
+            <properties>
+                <property name="columnTitle" value="Condition"/>
+            </properties>
+        </column>
         <column name="Dataset/Demographics/Gender">
             <properties>
                 <property name="columnTitle" value="Gender"/>
             </properties>
         </column>
-        <column name="Dataset/Demographics/Status">
+        <!--<column name="Dataset/Demographics/Status">-->
+            <!--<properties>-->
+                <!--<property name="columnTitle" value="Status"/>-->
+            <!--</properties>-->
+        <!--</column>-->
+        <column name="Dataset/Demographics/calculated_status">
             <properties>
                 <property name="columnTitle" value="Status"/>
             </properties>
         </column>
-        <column name="Dataset/Demographics/Room">
-            <properties>
-                <property name="columnTitle" value="Room"/>
-            </properties>
-        </column>
-        <column name="Dataset/Demographics/Cage">
-            <properties>
-                <property name="columnTitle" value="Cage"/>
-            </properties>
-        </column>
-        <!--<column name="Dataset/Demographics/Cond">-->
-            <!--<properties>-->
-                <!--<property name="columnTitle" value="Condition"/>-->
-            <!--</properties>-->
-        <!--</column>-->
-        <!--<column name="Dataset/Demographics/Medical">-->
-            <!--<properties>-->
-                <!--<property name="columnTitle" value="Medical"/>-->
-            <!--</properties>-->
-        <!--</column>-->
-        <!--<column name="Dataset/Demographics/v_status">-->
-            <!--<properties>-->
-                <!--<property name="columnTitle" value="Viral Status"/>-->
-            <!--</properties>-->
-        <!--</column>-->
         <column name="DaysAlone/DaysAlone">
             <properties>
                 <property name="columnTitle" value="Days Alone"/>
@@ -56,7 +51,7 @@
         <filter column="DaysAlone/DaysAlone" operator="neq" value="0"/>
     </filters>
     <sorts>
-        <sort column="id" descending="false"/>
         <sort column="DaysAlone/DaysAlone" descending="true"/>
+        <sort column="id" descending="false"/>
     </sorts>
 </customView>

@@ -38,6 +38,10 @@ Ext.extend(EHR.ext.FormPanel, Ext.FormPanel,
             autoLoad: true
         }));
 
+        if(!EHR.ext.FormColumns[this.queryName]){
+            console.log('Columns not defined')
+        }
+
         this.store.importPanel = this.importPanel || this;
 
         Ext.apply(this, {
@@ -61,6 +65,7 @@ Ext.extend(EHR.ext.FormPanel, Ext.FormPanel,
             ,style: 'margin-bottom: 15px'
             ,bindConfig: {
                 disableUnlessBound: true,
+                autoBindRecord: true,
                 bindOnChange: false,
                 showDeleteBtn: true
             }

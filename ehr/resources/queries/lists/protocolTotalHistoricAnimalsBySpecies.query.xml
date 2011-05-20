@@ -21,7 +21,7 @@
                     </column>
                     <column columnName="TotalAnimals">
                         <datatype>integer</datatype>
-                        <url>/ehr/executeQuery.view?schemaName=lists&amp;
+                        <url>/query/executeQuery.view?schemaName=lists&amp;
                             query.queryName=protocolHistoricAnimals&amp;
                             query.protocol~eq=${protocol}&amp;
                             query.species~eq=${species}&amp;

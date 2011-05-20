@@ -7,12 +7,6 @@
 
 var {EHR, LABKEY, Ext, console, init, beforeInsert, afterInsert, beforeUpdate, afterUpdate, beforeDelete, afterDelete, complete} = require("ehr/validation");
 
-//NOTE: field is no longer required, so we dont need to set value
-//function onETL(row, errors){
-//    if (!row.source){
-//        row.source = 'Unknown';
-//    }
-//};
 
 function setDescription(row, errors){
     //we need to set description for every field
@@ -24,7 +18,13 @@ function setDescription(row, errors){
     return description;
 };
 
+
 function onComplete(event, errors, scriptContext){
+    if(scriptContext.publicParticipantsModified.length){
+        EHR.validation.updateStatusField(scriptContext.publicParticipantsModified);
+    }
+/*
+    //NOTE: we will no longer cache this in demographics
     //we will update the demographics table arrivedate field for all publicParticipantsModified
     if(scriptContext.publicParticipantsModified.length){
         //find the most recent arrival date per participant
@@ -91,4 +91,7 @@ function onComplete(event, errors, scriptContext){
             });
         }
     }
+*/
+
 };
+

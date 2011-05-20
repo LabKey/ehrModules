@@ -9,6 +9,17 @@
                 <updateUrl />
                 <deleteUrl />
                 <columns>
+                    <column columnName="billedby">
+                        <columnTitle>Billed By</columnTitle>
+                        <isHidden>false</isHidden>
+                        <isUnselectable>true</isUnselectable>
+                        <fk>
+                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
+                            <fkDbSchema>ehr_lookups</fkDbSchema>
+                            <fkTable>blood_billed_by</fkTable>
+                            <fkColumnName>code</fkColumnName>
+                        </fk>
+                    </column>
                     <column columnName="BloodRemaining" wrappedColumnName="lsid">
                         <columnTitle>Blood Remaining</columnTitle>
                         <isHidden>false</isHidden>
@@ -44,12 +55,12 @@
                         <!--</fk>-->
                     <!--</column>-->
                     <column columnName="parentId">
-                        <fk>
-                          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-                          <fkDbSchema>study</fkDbSchema>
-                          <fkTable>studyDataParent</fkTable>
-                          <fkColumnName>objectid</fkColumnName>
-                        </fk>
+                        <!--<fk>-->
+                          <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
+                          <!--<fkDbSchema>study</fkDbSchema>-->
+                          <!--<fkTable>studyDataParent</fkTable>-->
+                          <!--<fkColumnName>objectid</fkColumnName>-->
+                        <!--</fk>-->
                     </column>
                     <column columnName="assayCode">
                         <columnTitle>Assay Code</columnTitle>

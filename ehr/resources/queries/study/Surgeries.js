@@ -14,7 +14,7 @@ function onETL(row, errors){
 }
 
 function onInsert(context, errors, row){
-    if(row.dataSource != 'etl' && row.Id && row.date){
+    if(context.extraContext.dataSource != 'etl' && row.Id && row.date){
         LABKEY.Query.executeSql({
             schemaName: 'study',
             sql: "SELECT age_in_months(d.birth, CONVERT('"+EHR.validation.dateToString(row.date)+"', DATE)) as age FROM study.demographics d WHERE d.id='"+row.Id+"'",

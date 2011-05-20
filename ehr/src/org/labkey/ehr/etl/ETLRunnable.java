@@ -233,6 +233,8 @@ public class ETLRunnable implements Runnable
 
                 QueryUpdateService updater = targetTable.getUpdateService();
                 updater.setBulkLoad(true);
+                Map<String, Object> extraContext = new HashMap<String, Object>();
+                extraContext.put("dataSource", "etl");
 
                 try
                 {
@@ -290,7 +292,7 @@ public class ETLRunnable implements Runnable
                             deleteSelectors.addAll(Arrays.asList((Map<String, Object>[])Table.executeQuery(schema.getDbSchema(), likeWithIds, Map.class)));
                         }
 
-                        updater.deleteRows(user, container, deleteSelectors, null);
+                        updater.deleteRows(user, container, deleteSelectors, extraContext);
                         log.info("deleted objectids " + deletedIds.toString());
                     }
 
@@ -326,9 +328,9 @@ public class ETLRunnable implements Runnable
                         if (sourceRows.size() == UPSERT_BATCH_SIZE || isDone)
                         {
                             if (!isTargetEmpty) {
-                                updater.deleteRows(user, container, sourceRows, null);
+                                updater.deleteRows(user, container, sourceRows, extraContext);
                             }
-                            updater.insertRows(user, container, sourceRows, null);
+                            updater.insertRows(user, container, sourceRows, extraContext);
                             updates += sourceRows.size();
                             log.info("Updated " + updates + " records in " + targetTableName);
                             sourceRows.clear();
@@ -525,7 +527,6 @@ public class ETLRunnable implements Runnable
             // may have been aliased to match with its target in the dataset or list
             map.put(md.getColumnLabel(i), rs.getObject(i));
         }
-        map.put("dataSource", "etl");
         return map;
     }
 

@@ -14,7 +14,7 @@ Ext.onReady(function (){
             {header: 'Admin',
                 items: [
                     {name: 'Backup History', url: '<%=contextPath%>/project<%=containerPath%>/Backups/begin.view?'},
-                    {name: 'Client Errors', url: '<%=contextPath%>/query/shared/executeQuery.view?schemaName=ehr&query.queryName=client_errors'},
+                    {name: 'Client Errors', url: '<%=contextPath%>/query/shared/executeQuery.view?schemaName=auditlog&query.queryName=audit&query.key1~eq=Client Error'},
                     {name: 'Development Notes', url: '<%=contextPath%>/project<%=containerPath%>/Development Notes/begin.view?'},
                     {name: 'ETL Admin', url: '<%=contextPath%>/EHR<%=containerPath%>/etlAdmin.view?'},
                     {name: 'ETL Duration', url: '<%=contextPath%>/query<%=containerPath%>/executeQuery.view?schemaName=core&query.queryName=Sync Duration'},

@@ -54,7 +54,8 @@ LEFT OUTER JOIN study.Housing h2
 --   ON (h1.id = a.id AND a.EndDate IS NULL and a.value LIKE '%pairing exempt%')
 
 WHERE
-h1.id.Status.Status = 'Alive'
+--h1.id.Status.Status = 'Alive'
+h1.id.dataset.demographics.calculated_status = 'Alive'
 --AND a.qcstate.publicdata = true
 AND h1.qcstate.publicdata = true
 AND h2.qcstate.publicdata = true

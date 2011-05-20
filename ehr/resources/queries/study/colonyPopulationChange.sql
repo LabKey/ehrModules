@@ -17,7 +17,7 @@ UNION ALL
 
 SELECT
   T2.id,
-  T2.id.species.species,
+  T2.id.dataset.demographics.species,
   'Arrivals' AS Category,
   T2.date,
   convert(year(T2.date), INTEGER) AS Year,
@@ -30,7 +30,7 @@ UNION ALL
 
 SELECT
   T3.id,
-  T3.id.species.species,
+  T3.id.dataset.demographics.species,
   'Departures' AS Category,
   T3.Date,
   convert(year(T3.date), INTEGER) AS Year,
@@ -43,7 +43,7 @@ UNION ALL
 
 SELECT
   T4.id,
-  T4.id.species.species,
+  T4.id.dataset.demographics.species,
   'Deaths' AS Category,
   T4.death as Date,
   convert(year(T4.death), INTEGER) AS Year,

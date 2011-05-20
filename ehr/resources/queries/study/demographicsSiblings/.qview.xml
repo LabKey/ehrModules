@@ -3,7 +3,7 @@
         <column name="Id"/>
         <column name="Relationship"/>
         <column name="Sibling"/>
-        <column name="Sibling/Status/Status">
+        <column name="Sibling/Dataset/Demographics/calculated_status">
             <properties>
                 <property name="columnTitle" value="Sibling Status"/>
             </properties>

@@ -7,11 +7,14 @@
 var {EHR, LABKEY, Ext, console, init, beforeInsert, afterInsert, beforeUpdate, afterUpdate, beforeDelete, afterDelete, complete} = require("ehr/validation");
 
 
+function onInit(event, context){
+    context.allowDeadIds = true;
+}
 
 
 function onETL(row, errors){
     if(row.caseno)
-        EHR.ETL.fixNecropsyCase(row, errors);
+        EHR.ETL.fixPathCaseNo(row, errors, 'a|c|e');
 }
 
 function setDescription(row, errors){
@@ -24,8 +27,6 @@ function setDescription(row, errors){
 }
 
 function onInsert(context, errors, row){
-    // auto-calculate the CaseNo
-    if(row.dataSource != 'etl' && row.date)
-        EHR.validation.calculateCaseno(row, errors, 'necropsy', 'c')
-
+    if(context.extraContext.dataSource != 'etl' && row.caseno)
+        EHR.validation.verifyCasenoIsUnique(context, row, errors)
 }

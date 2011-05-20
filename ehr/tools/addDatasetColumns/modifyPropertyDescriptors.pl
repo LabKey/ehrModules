@@ -37,10 +37,24 @@ my $expected_columns = {
 	taskid => {
 		-propertyURI => 'urn:ehr.labkey.org/#TaskId',
 	},
+	objectid => {
+		-propertyURI => 'urn:ehr.labkey.org/#ObjectId',
+	},
+	description => {
+		-propertyURI => 'urn:ehr.labkey.org/#Description',
+	},
+	requestid => {
+		-propertyURI => 'urn:ehr.labkey.org/#RequestId',
+	},
 	daterequested => {
 		-propertyURI => 'urn:ehr.labkey.org/#DateRequested',
 		-type => 'timestamp without time zone',
 		-optional => 1,
+	},
+	enddate => {
+		-propertyURI => 'urn:ehr.labkey.org/#EndDate',
+		-type => 'timestamp without time zone',
+		#-optional => 1,
 	}
 
 Where the keys are the column names with the following uptions:
@@ -121,12 +135,12 @@ my $expected_columns = {
 	enddate => {
 		-propertyURI => 'urn:ehr.labkey.org/#EndDate',
 		-type => 'timestamp without time zone',
-#		-optional => 1,
+		#-optional => 1,
 	},
 	daterequested => {
 		-propertyURI => 'urn:ehr.labkey.org/#DateRequested',
 		-type => 'timestamp without time zone',
-#		-optional => 1,
+		-optional => 1,
 	}	
 }; 
 

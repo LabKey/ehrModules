@@ -39,6 +39,7 @@ Ext.onReady(function(){
                     var formPanel = b.ownerCt.ownerCt;
                     var panel = formPanel.ownerCt;
 
+                    formPanel.ownerCt.grid.body.update('Loading...');
                     LABKEY.Query.executeSql({
                         containerPath: formPanel.containerPath.getValue(),
                         schemaName: formPanel.schemaName.getValue(),

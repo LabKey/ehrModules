@@ -1323,3 +1323,59 @@ ALTER TABLE col_dump.virologyruns ADD PRIMARY KEY (objectid);
 -- Primary Key structure for table col_dump.weight
 -- ----------------------------
 ALTER TABLE col_dump.weight ADD PRIMARY KEY (objectid);
+
+
+
+DROP TABLE IF EXISTS col_dump.clinpathruns;
+CREATE TABLE col_dump.clinpathruns
+(
+  createdby integer,
+  modifiedby integer,
+  description character varying(4000),
+  date timestamp without time zone,
+  "type" character varying(4000),
+  remark character varying(4000),
+  id character varying(32),
+  project integer,
+  parentid character varying(4000),
+  enddate timestamp without time zone,
+  qcstate integer,
+  objectid character varying(4000),
+  ts timestamp(6) DEFAULT NULL::timestamp without time zone,
+  status character varying(4000),
+  account character varying(4000),
+  taskid character varying(4000),
+  priority character varying(4000),
+  sampleid character varying(4000),
+  sampletype character varying(4000),
+  collectionmethod character varying(4000),
+  servicerequested character varying(4000),
+  units character varying(4000),
+  collectiondate character varying(4000),
+  samplequantity character varying(4000),
+  collectedby character varying(4000),
+  performedby character varying(4000),
+  requestid character varying(4000)
+)
+WITH (
+  OIDS=FALSE
+);
+
+-- ----------------------------
+-- Table structure for col_dump.morphologicdiagnosis
+-- ----------------------------
+DROP TABLE IF EXISTS col_dump.morphologicdiagnosis;
+CREATE TABLE col_dump.morphologicdiagnosis (
+Id varchar(255) DEFAULT NULL::character varying,
+Date timestamp(6) DEFAULT NULL::timestamp without time zone,
+seq1 varchar(255) DEFAULT NULL::character varying,
+seq2 varchar(255) DEFAULT NULL::character varying,
+code varchar(255) DEFAULT NULL::character varying,
+parentid varchar(255) DEFAULT NULL::character varying,
+meaning varchar(255) DEFAULT NULL::character varying,
+ts timestamp(6) DEFAULT NULL::timestamp without time zone,
+objectid varchar(255) DEFAULT NULL::character varying NOT NULL
+)
+WITH (OIDS=FALSE)
+
+;

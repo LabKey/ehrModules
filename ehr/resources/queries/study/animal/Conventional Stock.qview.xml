@@ -6,12 +6,17 @@
                 <property name="columnTitle" value="Gender"/>
             </properties>
         </column>
-        <column name="Dataset/Demographics/Status">
+        <!--<column name="Dataset/Demographics/Status">-->
+            <!--<properties>-->
+                <!--<property name="columnTitle" value="Status"/>-->
+            <!--</properties>-->
+        <!--</column>-->
+        <column name="Dataset/Demographics/calculated_status">
             <properties>
                 <property name="columnTitle" value="Status"/>
             </properties>
         </column>
-        <column name="Dataset/Demographics/Availability">
+        <column name="currentAssignments/Availability">
             <properties>
                 <property name="columnTitle" value="Avail"/>
             </properties>
@@ -46,27 +51,27 @@
                 <property name="columnTitle" value="Death"/>
             </properties>
         </column>
-        <column name="Dataset/Demographics/Arrivedate">
-            <properties>
-                <property name="columnTitle" value="Arrival Date"/>
-            </properties>
-        </column>
-        <column name="Dataset/Demographics/departdate">
-            <properties>
-                <property name="columnTitle" value="Departure Date"/>
-            </properties>
-        </column>
-        <column name="Dataset/Demographics/Room">
+        <!--<column name="MostRecentArrival/MostRecentArrival">-->
+            <!--<properties>-->
+                <!--<property name="columnTitle" value="Most Recent Arrival"/>-->
+            <!--</properties>-->
+        <!--</column>-->
+        <!--<column name="MostRecentDeparture/MostRecentDeparture">-->
+            <!--<properties>-->
+                <!--<property name="columnTitle" value="Most Recent Departure"/>-->
+            <!--</properties>-->
+        <!--</column>-->
+        <column name="curLocation/Room">
             <properties>
                 <property name="columnTitle" value="Room"/>
             </properties>
         </column>
-        <column name="Dataset/Demographics/Cage">
+        <column name="curLocation/Cage">
             <properties>
                 <property name="columnTitle" value="Cage"/>
             </properties>
         </column>
-        <column name="Dataset/Demographics/Cond">
+        <column name="curLocation/Cond">
             <properties>
                 <property name="columnTitle" value="Condition"/>
             </properties>
@@ -81,14 +86,14 @@
                 <property name="columnTitle" value="Purchased By"/>
             </properties>
         </column>
-        <column name="Dataset/Demographics/v_status">
-            <properties>
-                <property name="columnTitle" value="Viral Status"/>
-            </properties>
-        </column>
+        <!--<column name="Dataset/Demographics/v_status">-->
+            <!--<properties>-->
+                <!--<property name="columnTitle" value="Viral Status"/>-->
+            <!--</properties>-->
+        <!--</column>-->
     </columns>
     <filters>
-        <filter column="Status/Status" operator="eq" value="Alive"/>
+        <filter column="Dataset/Demographics/calculated_status" operator="eq" value="Alive"/>
         <filter column="activeAssignments/ActiveConventionalStockAssignment" operator="eq" value="Y"/>
     </filters>
     <sorts>

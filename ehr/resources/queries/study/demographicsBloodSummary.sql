@@ -18,15 +18,15 @@ from (
 SELECT
   d.lsid,
   d.id,
-  d.weight,
-  d.wdate,
---   lastWeight.date as lastDate,
---   (
---     SELECT AVG(w.weight) AS _expr
---     FROM study.weight w
---     WHERE w.id=d.id AND w.date=lastWeight.date
---     AND w.qcstate.publicdata = true
---   ) AS weight,
+--   d.weight,
+--   d.wdate,
+  lastWeight.date as wdate,
+  (
+    SELECT AVG(w.weight) AS _expr
+    FROM study.weight w
+    WHERE w.id=d.id AND w.date=lastWeight.date
+    AND w.qcstate.publicdata = true
+  ) AS weight,
   COALESCE ((
     SELECT
     SUM(bd.quantity) AS _expr
@@ -48,12 +48,14 @@ SELECT
 
 FROM
     study.demographics d
---     LEFT OUTER JOIN
---     (SELECT w.id, MAX(date) as date FROM study.weight w
---     WHERE w.qcstate.publicdata = true
---     GROUP BY w.id) lastWeight ON d.id = lastWeight.id
+    LEFT OUTER JOIN
+    (SELECT w.id, MAX(date) as date FROM study.weight w
+    WHERE w.qcstate.publicdata = true
+    GROUP BY w.id) lastWeight ON d.id = lastWeight.id
 
 -- WHERE b.date >= TIMESTAMPADD('SQL_TSI_DAY', -30, now())
-WHERE d.id.status.status = 'Alive'
+WHERE
+--d.id.status.status = 'Alive'
+d.calculated_status = 'Alive'
 
 ) b

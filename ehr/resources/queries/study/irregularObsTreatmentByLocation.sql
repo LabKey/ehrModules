@@ -39,7 +39,7 @@ ELSE
   ('Drug: ' || t.code || '
 End Date: ' || t.enddate)
 END AS description2,
-t.qcstate
+null as qcstate
 
 FROM treatmentSchedule t
 

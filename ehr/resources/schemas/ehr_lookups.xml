@@ -254,18 +254,27 @@
         <ns:datatype>float8</ns:datatype>
         <ns:scale>17</ns:scale>
       </ns:column>
+      <ns:column columnName="joinToCage">
+          <ns:columnTitle>Can Join To This Cage</ns:columnTitle>
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>bool</ns:datatype>
+        <ns:scale>30</ns:scale>
+      </ns:column>
       <ns:column columnName="ts">
         <ns:nullable>true</ns:nullable>
+        <ns:isHidden>true</ns:isHidden>
         <ns:datatype>timestamp</ns:datatype>
         <ns:scale>29</ns:scale>
       </ns:column>
       <ns:column columnName="uuid">
         <ns:nullable>true</ns:nullable>
+        <ns:isHidden>true</ns:isHidden>
         <ns:datatype>bpchar</ns:datatype>
         <ns:scale>36</ns:scale>
       </ns:column>
       <ns:column columnName="rowid">
         <ns:datatype>serial</ns:datatype>
+        <ns:isHidden>true</ns:isHidden>
         <ns:isAutoInc>true</ns:isAutoInc>
         <ns:scale>10</ns:scale>
       </ns:column>
@@ -395,6 +404,16 @@
         <ns:nullable>true</ns:nullable>
         <ns:datatype>varchar</ns:datatype>
         <ns:scale>100</ns:scale>
+      </ns:column>
+    </ns:columns>
+  </ns:table>
+  <ns:table tableName="death_cause" tableDbType="TABLE">
+    <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr_lookups&amp;query.queryName=death_cause&amp;code=${code}</ns:tableUrl>
+    <ns:pkColumnName>cause</ns:pkColumnName>
+    <ns:columns>
+      <ns:column columnName="cause">
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>50</ns:scale>
       </ns:column>
     </ns:columns>
   </ns:table>
@@ -631,7 +650,7 @@
     <ns:columns>
       <ns:column columnName="code">
         <ns:datatype>varchar</ns:datatype>
-        <ns:scale>30</ns:scale>
+        <ns:scale>20</ns:scale>
       </ns:column>
       <ns:column columnName="meaning">
         <ns:nullable>true</ns:nullable>
@@ -916,6 +935,10 @@
       </ns:column>
       <ns:column columnName="meaning">
         <ns:datatype>varchar</ns:datatype>
+        <ns:scale>100</ns:scale>
+      </ns:column>
+      <ns:column columnName="sort_order">
+        <ns:datatype>integer</ns:datatype>
         <ns:scale>32</ns:scale>
       </ns:column>
     </ns:columns>
@@ -973,6 +996,21 @@
       </ns:column>
     </ns:columns>
   </ns:table>
+    <ns:table tableName="calculated_status_codes" tableDbType="TABLE">
+      <ns:pkColumnName>code</ns:pkColumnName>
+      <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr_lookups&amp;query.queryName=calculated_status_codes&amp;code=${code}</ns:tableUrl>
+      <ns:columns>
+        <ns:column columnName="code">
+          <ns:datatype>varchar</ns:datatype>
+          <ns:scale>20</ns:scale>
+        </ns:column>
+        <ns:column columnName="meaning">
+          <ns:nullable>true</ns:nullable>
+          <ns:datatype>varchar</ns:datatype>
+          <ns:scale>100</ns:scale>
+        </ns:column>
+      </ns:columns>
+    </ns:table>
   <ns:table tableName="ageclass" tableDbType="TABLE">
     <ns:pkColumnName>rowid</ns:pkColumnName>
     <ns:columns>

@@ -27,7 +27,7 @@ function onUpsert(context, errors, row, oldRow){
     //todo: testing needed
 
     //store room at time / cage at time
-    if(row.dataSource != 'etl' && row.id && row.date){
+    if(context.extraContext.dataSource != 'etl' && row.id && row.date){
         var sql = "SELECT h.room, h.cage FROM study.housing h " +
             "WHERE h.id='"+row.Id+"' AND h.date <= '"+EHR.validation.dateTimeToString(row.date) +"' " +
                 "AND (h.enddate > '"+EHR.validation.dateTimeToString(row.date)+"' OR h.enddate IS NULL) " +
@@ -49,7 +49,7 @@ function onUpsert(context, errors, row, oldRow){
 
     //if reporting menses, make sure the anmimal is female
     if(row.menses && row.id)
-        EHR.validation.verifyIsFemale(row, errors);
+        EHR.validation.verifyIsFemale(row, errors, 'menses');
 
 }
 

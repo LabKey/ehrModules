@@ -21,7 +21,7 @@ function setDescription(row, errors){
 
 function onUpsert(context, errors, row, oldRow){
     //check number of allowed animals at assign/approve time
-    if(row.dataSource != 'etl' && row.project && row.date){
+    if(context.extraContext.dataSource != 'etl' && row.project && row.date){
         var species;
         EHR.findDemographics({
             participant: row.Id,

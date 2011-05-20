@@ -233,7 +233,7 @@ EHR.ext.SearchPanel = Ext.extend(Ext.Panel, {
 
 //        console.log(params)
         window.location = LABKEY.ActionURL.buildURL(
-            'ehr',
+            'query',
             'executeQuery.view',
             (this.containerPath || LABKEY.ActionURL.getContainer()),
             params

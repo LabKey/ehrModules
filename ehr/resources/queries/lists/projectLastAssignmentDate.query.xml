@@ -7,7 +7,7 @@
                         <isKeyField>true</isKeyField>
                     </column>
                     <column columnName="LastAssignmentDate">
-                        <url>/ehr/executeQuery.view?schemaName=study&amp;
+                        <url>/query/executeQuery.view?schemaName=study&amp;
                             query.queryName=Assignment&amp;
                             query.project~eq=${project}&amp;
                             query.sort=-Date

@@ -24,7 +24,9 @@ EHR.utils.navMenu = Ext.extend(Ext.Panel, {
             border: false,
             width: this.width || '80%',
             defaults: {
-                border: false
+                border: false,
+                style: 'background-color: transparent;',
+                bodyStyle: 'background-color: transparent;'
             }
         });
 
@@ -37,7 +39,8 @@ EHR.utils.navMenu = Ext.extend(Ext.Panel, {
                 xtype: 'panel',
                 title: tmp.header + ':',
                 width: this.colWidth,
-                style: 'padding-bottom:15px;padding-right:10px;',
+                style: 'padding-bottom:15px;padding-right:10px;background-color: transparent;',
+                bodyStyle: 'background-color: transparent;',
                 headerCfg: {
                     cls: 'ehr-nav-header',
                     style: 'margin-bottom:5px;'

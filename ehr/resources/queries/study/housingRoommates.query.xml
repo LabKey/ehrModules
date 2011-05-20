@@ -12,6 +12,22 @@
 
                         </url>
                     </column>
+                    <column columnName="Id">
+                        <fk>
+                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
+                            <fkColumnName>Id</fkColumnName>
+                            <fkTable>Animal</fkTable>
+                            <fkDbSchema>study</fkDbSchema>
+                        </fk>
+                    </column>
+                    <column columnName="RoommateId">
+                        <fk>
+                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
+                            <fkColumnName>Id</fkColumnName>
+                            <fkTable>Animal</fkTable>
+                            <fkDbSchema>study</fkDbSchema>
+                        </fk>
+                    </column>
                     <!--<column columnName="qcstate">-->
                         <!--<isHidden>true</isHidden>-->
                     <!--</column>-->

@@ -9,14 +9,14 @@
                 <updateUrl />
                 <deleteUrl />
                 <columns>
-                    <column columnName="parentId">
-                        <fk>
-                          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-                          <fkDbSchema>study</fkDbSchema>
-                          <fkTable>studyDataParent</fkTable>
-                          <fkColumnName>objectid</fkColumnName>
-                        </fk>
-                    </column>
+                <column columnName="parentId">
+                    <!--<fk>-->
+                      <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
+                      <!--<fkDbSchema>study</fkDbSchema>-->
+                      <!--<fkTable>studyDataParent</fkTable>-->
+                      <!--<fkColumnName>objectid</fkColumnName>-->
+                    <!--</fk>-->
+                </column>
                   <column columnName="lot">
                     <datatype>varchar</datatype>
                     <columnTitle>Lot</columnTitle>
@@ -38,7 +38,7 @@
                     </fk>
                   </column>
                   <column columnName="result1">
-                    <datatype>integer</datatype>
+                    <datatype>varchar</datatype>
                     <columnTitle>24 Hr</columnTitle>
                     <fk>
                       <fkFolderPath>/wnprc/ehr/</fkFolderPath>
@@ -48,7 +48,7 @@
                     </fk>
                   </column>
                   <column columnName="result2">
-                    <datatype>integer</datatype>
+                    <datatype>varchar</datatype>
                     <columnTitle>48 Hr</columnTitle>
                     <fk>
                       <fkFolderPath>/wnprc/ehr/</fkFolderPath>
@@ -58,7 +58,7 @@
                     </fk>
                   </column>
                   <column columnName="result3">
-                    <datatype>integer</datatype>
+                    <datatype>varchar</datatype>
                     <columnTitle>72 Hr</columnTitle>
                     <fk>
                       <fkFolderPath>/wnprc/ehr/</fkFolderPath>

@@ -1,4 +1,22 @@
 <customView xmlns="http://labkey.org/data/xml/queryCustomView">
+   <columns>
+       <column name="Id" />
+       <column name="Date" />
+       <column name="QCState" />
+       <column name="estimated" />
+       <column name="gender" />
+       <column name="weight" />
+       <column name="wdate" />
+       <column name="dam" />
+       <column name="sire" />
+       <column name="room" />
+       <column name="cage" />
+       <column name="cond" />
+       <column name="origin" />
+       <column name="conception" />
+       <column name="type" />
+       <column name="remark" />
+   </columns>
   <filters>
       <filter column="date" operator="dategte" value="-1m" />
       <!--<filter column="date" operator="dategt" value="-1" />-->

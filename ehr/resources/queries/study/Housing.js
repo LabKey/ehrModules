@@ -9,12 +9,13 @@ var {EHR, LABKEY, Ext, console, init, beforeInsert, afterInsert, beforeUpdate, a
 
 
 function onUpsert(context, errors, row, oldRow){
-    if(row.dataSource != 'etl' && row.room && row.cage){
+    //determine whether the animal has enough room in this cage
+    if(context.extraContext.dataSource != 'etl' && row.room && row.cage){
         var cageRow;
         LABKEY.Query.executeSql({
             schemaName: 'study',
             scope: this,
-            sql: "SELECT * from ehr_lookups.cage c WHERE c.room='"+row.room+"' AND c.cage='"+row.cage+"'",
+            sql: "SELECT room, cage, length, height, width from ehr_lookups.cage c WHERE c.room='"+row.room+"' AND c.cage='"+row.cage+"'",
             success: function(data){
                 if(data.rows && data.rows.length){
                     cageRow = data.rows[0];
@@ -27,7 +28,7 @@ function onUpsert(context, errors, row, oldRow){
             LABKEY.Query.executeSql({
                 schemaName: 'study',
                 scope: this,
-                sql: "SELECT * from study.demographicsCageClass c WHERE c.id='"+row.Id+"'",
+                sql: "SELECT Id, ReqSqFt, ReqHeight from study.demographicsCageClass c WHERE c.id='"+row.Id+"'",
                 success: function(data){
                     if(data.rows && data.rows.length){
                         var r = data.rows[0];
@@ -50,6 +51,8 @@ function onUpsert(context, errors, row, oldRow){
 
 
 function onComplete(event, errors, scriptContext){
+    //NOTE: we will no longer cache housing this in demographics
+    /*
     //NOTE: we assume that onBecomePublic() enforces only 1 active housing record per animal
     if(scriptContext.publicParticipantsModified.length){
         var toUpdate = [];
@@ -122,31 +125,40 @@ function onComplete(event, errors, scriptContext){
                 failure: EHR.onFailure
             });
         }
+
     }
+    */
 };
 
 function onBecomePublic(errors, scriptContext, row, oldRow){
     //if this record is active and public, deactivate any old housing records
-    if(row.dataSource != 'etl' && !row.enddate){
+    if(scriptContext.extraContext.dataSource != 'etl' && !row.enddate){
         var toUpdate = [];
         LABKEY.Query.selectRows({
             schemaName: 'study',
             queryName: 'housing',
             columns: 'lsid,id,date',
+            ignoreFilter: 1,
             filterArray: [
                 LABKEY.Filter.create('Id', row.Id, LABKEY.Filter.Types.EQUAL),
                 LABKEY.Filter.create('enddate', null, LABKEY.Filter.Types.ISBLANK),
                 LABKEY.Filter.create('date', row.Date, LABKEY.Filter.Types.LESS_THAN),
-                LABKEY.Filter.create('lsid', row.lsid, LABKEY.Filter.Types.NEQ),
-                LABKEY.Filter.create('qcstate/publicdata', true, LABKEY.Filter.Types.EQUAL)
+                LABKEY.Filter.create('lsid', row.lsid, LABKEY.Filter.Types.NEQ)
+                //LABKEY.Filter.create('qcstate/publicdata', true, LABKEY.Filter.Types.EQUAL)
             ],
             scope: this,
             success: function(data){
                 if(data && data.rows && data.rows.length){
                     Ext.each(data.rows, function(r){
                         //TODO: verify date is working
-                        //might try: new Date(row.date.toGMTString())
-                        toUpdate.push({lsid: r.lsid, enddate: new Date(row.Date)})
+                        toUpdate.push({lsid: r.lsid, enddate: new Date(row.date.toGMTString())});
+console.log(r)
+                        //if there's an existing public active housing record
+                        if(r.date >= row.Date){
+                            EHR.addError(errors, 'Id', 'You cannot enter an open ended housing while there is another record starting on: '+r.Date);
+                            toUpdate = [];
+                            return false;
+                        }
                     }, this);
 
                 }

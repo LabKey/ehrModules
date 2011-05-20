@@ -39,7 +39,7 @@
                         <fk>
                             <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                             <fkDbSchema>core</fkDbSchema>
-                            <fkTable>Principals</fkTable>
+                            <fkTable>PrincipalsWithoutAdmin</fkTable>
                             <fkColumnName>userid</fkColumnName>
                         </fk>
                     </column>

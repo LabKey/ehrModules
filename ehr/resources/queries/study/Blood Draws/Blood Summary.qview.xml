@@ -2,15 +2,11 @@
    <columns>
        <column name="Id" />
        <column name="date" />
+       <column name="qcstate" />
        <column name="project" />
        <column name="project/protocol">
             <properties>
                 <property name="columnTitle" value="Protocol"/>
-            </properties>
-       </column>
-       <column name="qcstate">
-            <properties>
-                <property name="columnTitle" value="Status"/>
             </properties>
        </column>
        <column name="quantity" />

@@ -8,7 +8,7 @@
                         <isHidden>true</isHidden>
                     </column>
                     <column columnName="ConcurrentAssignments">
-                        <url>/ehr/executeQuery.view?schemaName=study&amp;
+                        <url>/query/executeQuery.view?schemaName=study&amp;
                             query.queryName=assignmentCoAssignedAnimals&amp;
                             query.lsid~eq=${lsid}&amp;
                             query.sort=-Date

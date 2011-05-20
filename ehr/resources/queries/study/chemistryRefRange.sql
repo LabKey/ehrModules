@@ -31,7 +31,7 @@ FROM
             SELECT
             c.lsid,
             c.id.dataset.demographics.gender as gender,
-            c.id.species.species as species,
+            c.id.dataset.demographics.species as species,
             c.testId,
             c.result,
             c.id,

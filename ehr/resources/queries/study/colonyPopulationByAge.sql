@@ -11,7 +11,10 @@ SELECT
 
 FROM study.Demographics d
 
-WHERE d.id.status.status = 'Alive' AND d.species != 'Unknown'
+WHERE
+d.calculated_status = 'Alive'
+--d.calculated_status = 'Alive'
+AND d.species != 'Unknown'
 
 GROUP BY d.species, d.gender, d.id.age.AgeInYearsRounded
 

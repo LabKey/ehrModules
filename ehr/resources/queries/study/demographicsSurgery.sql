@@ -19,8 +19,8 @@ true As AnySurgery,
 
 count(*) as NumberOfSurgeries
 
-FROM study.surgery s
-WHERE s.qcstate.publicdata = true
+FROM study."Clinical Encounters" s
+WHERE s.qcstate.publicdata = true AND type = 'Surgery'
 
 GROUP BY s.id
 

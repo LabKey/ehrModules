@@ -18,11 +18,19 @@
                             <fkColumnName>type</fkColumnName>
                         </fk>
                     </column>
+                    <column columnName="major">
+                        <columnTitle>Major Surgery?</columnTitle>
+                    </column>
                     <column columnName="serviceRequested">
                         <columnTitle>Service Requested</columnTitle>
                     </column>
+                    <column columnName="date">
+                        <columnTitle>Date</columnTitle>
+                        <formatString>yyyy-MM-dd HH:mm</formatString>
+                    </column>
                     <column columnName="enddate">
                         <isHidden>false</isHidden>
+                        <formatString>yyyy-MM-dd HH:mm</formatString>
                     </column>
                 </columns>
                 <!--<buttonBarOptions includeStandardButtons="false">                    -->

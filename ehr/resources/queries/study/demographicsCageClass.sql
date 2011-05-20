@@ -18,4 +18,6 @@ LEFT JOIN ehr_lookups.cageclass c
 
 ON (c.low < d.id.MostRecentWeight.MostRecentWeight AND d.id.MostRecentWeight.MostRecentWeight <= c.high)
 
-WHERE d.id.status.status = 'Alive'
+WHERE
+--d.id.status.status = 'Alive'
+d.calculated_status = 'Alive'

@@ -18,9 +18,9 @@
        <column name="avail"/>
        <column name="research"/>
    </columns>
-   <filters>
-       <filter column="totalAssigned/ActiveAssignments" operator="gt" value="0"/>
-   </filters>
+   <!--<filters>-->
+       <!--<filter column="totalAssigned/ActiveAssignments" operator="gt" value="0"/>-->
+   <!--</filters>-->
    <sorts>
        <sort column="project" descending="true"/>
    </sorts>

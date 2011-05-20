@@ -122,7 +122,7 @@ EHR.ext.SingleAnimalReport = Ext.extend(Ext.Panel, {
                 ref: '../renderRoomCage'
             },{
                 name: 'selector',
-                boxLabel: 'Entire Colony',
+                boxLabel: 'Entire Database',
                 inputValue: 'renderColony',
                 ref: '../renderColony'
             }]
@@ -422,6 +422,7 @@ EHR.ext.SingleAnimalReport = Ext.extend(Ext.Panel, {
 
         roomPanel.add({tag: 'div', html: 'Area:'});
         roomPanel.add({
+            name: 'areaField',
             xtype: 'combo'
             ,emptyText:''
             ,fieldLabel: 'Area'
@@ -443,6 +444,7 @@ EHR.ext.SingleAnimalReport = Ext.extend(Ext.Panel, {
         });
         roomPanel.add({tag: 'div', html: 'Room:'});
         roomPanel.add({
+            name: 'roomField',
             xtype: 'textfield',
             ref: '../../../../roomField',
             width: 165,
@@ -450,6 +452,7 @@ EHR.ext.SingleAnimalReport = Ext.extend(Ext.Panel, {
         });
         roomPanel.add({tag: 'div', html: 'Cage:'});
         roomPanel.add({
+            name: 'cageField',
             xtype: 'textfield',
             ref: '../../../../cageField',
             width: 165,
@@ -583,13 +586,15 @@ EHR.ext.SingleAnimalReport = Ext.extend(Ext.Panel, {
             queryName: 'assignment',
             viewName: 'Active Assignments',
             containerPath: 'WNPRC/EHR/',
+            sort: 'Id',
             filterArray: filters,
             scope: this,
             successCallback: function(rows){
                 var subjectArray = [];
                 Ext.each(rows.rows, function(r){
                     subjectArray.push(r.Id);
-                }, this)
+                }, this);
+                subjectArray = subjectArray.unique();
                 if(subjectArray.length){
                     this.subjectArray = subjectArray;
                     this.makeSubjGrid();
@@ -635,6 +640,7 @@ EHR.ext.SingleAnimalReport = Ext.extend(Ext.Panel, {
             schemaName: 'study',
             queryName: 'housing',
             viewName: 'Current Housing',
+            sort: 'Id',
             containerPath: 'WNPRC/EHR/',
             filterArray: filters,
             scope: this,
@@ -642,7 +648,8 @@ EHR.ext.SingleAnimalReport = Ext.extend(Ext.Panel, {
                 var subjectArray = [];
                 Ext.each(rows.rows, function(r){
                     subjectArray.push(r.Id);
-                }, this)
+                }, this);
+                subjectArray = subjectArray.unique();
                 if(subjectArray.length){
                     this.subjectArray = subjectArray;
                     this.makeSubjGrid();
@@ -1005,30 +1012,31 @@ EHR.ext.SingleAnimalReport = Ext.extend(Ext.Panel, {
     },
 
     makeTitle: function(tab, subject){
-        var title = '';
+        var title = [];
         var room = (this.roomField ? this.roomField.getValue() : null);
         var cage = (this.cageField ? this.cageField.getValue() : null);
         var area = (this.areaField ? this.areaField.getValue() : null);
 
+
         if(subject && subject.length)
-            title = subject.join("; ");
+            title.push(subject.join("; "));
 
         if (area)
-            title += 'Area: '+area;
+            title.push('Area: '+area);
 
         if (room)
-            title += 'Room: '+room;
+            title.push('Room: '+room);
 
         if (cage)
-            title += ', Cage: '+cage;            
+            title.push('Cage: '+cage);
 
-        return title;
+        return title.join(', ');
     },
 
     loadQuery: function(tab, subject, target)
     {
         var filterArray = this.getFilterArray(tab, subject);
-        var target = target || tab.add({tag: 'span', style: 'padding-bottom: 20px'});
+        var target = target || tab.add({tag: 'div', style: 'padding-bottom: 20px'});
 
         var title = this.makeTitle(tab, subject);
 
@@ -1097,9 +1105,9 @@ EHR.ext.SingleAnimalReport = Ext.extend(Ext.Panel, {
                 schemaName: tab.rowData.get("schemaname"),
                 reportId : tab.rowData.get("report"),
                 'query.queryName': tab.rowData.get("queryname"),
-                'query.Id~in': subject,
-                '_union.Id~in': subject,
-                '_select.Id~in': subject
+                'query.Id~in': subject.join(";"),
+                '_union.Id~in': subject.join(";"),
+                '_select.Id~in': subject.join(";")
             },
             filters: filterArray,
             successCallback: this.endMsg,

@@ -2,6 +2,7 @@
     <columns>
         <column name="Id"/>
         <column name="Date"/>
+        <column name="qcstate"/>
         <column name="project"/>
         <column name="Remark"/>
         <column name="userid"/>

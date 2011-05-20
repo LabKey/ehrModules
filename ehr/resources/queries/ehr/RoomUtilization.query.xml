@@ -14,7 +14,7 @@
                     </column>
                     <column columnName="TotalCages">
                         <columnTitle>Total Cages</columnTitle>
-                        <url>/ehr/executeQuery.view?
+                        <url>/query/executeQuery.view?
                             schemaName=ehr_lookups&amp;
                             query.queryName=cages&amp;
                             query.room~eq=${room}&amp;
@@ -23,7 +23,7 @@
                     </column>
                     <column columnName="CagesUsed">
                         <columnTitle>Cages Used</columnTitle>
-                        <url>/ehr/executeQuery.view?
+                        <url>/query/executeQuery.view?
                             schemaName=ehr_lookups&amp;
                             query.queryName=cages&amp;
                             query.room~eq=${room}&amp;
@@ -32,7 +32,7 @@
                     </column>
                     <column columnName="CagesEmpty">
                         <columnTitle>Cages Empty</columnTitle>
-                        <url>/ehr/executeQuery.view?
+                        <url>/query/executeQuery.view?
                             schemaName=ehr_lookups&amp;
                             query.queryName=cages&amp;
                             query.room~eq=${room}&amp;
@@ -41,7 +41,7 @@
                     </column>
                     <column columnName="TotalAnimals">
                         <columnTitle>Total Animals</columnTitle>
-                        <url>/ehr/executeQuery.view?
+                        <url>/query/executeQuery.view?
                             schemaName=study&amp;
                             query.queryName=Housing&amp;
                             query.room~eq=${room}&amp;

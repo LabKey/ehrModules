@@ -5,7 +5,7 @@
  */
 SELECT
   d.id.dataset.demographics.v_status as v_status,
-  d.id.species.species as species,
+  d.id.dataset.demographics.species as species,
   count(coalesce(d.id.dataset.demographics.v_status, '')) as TotalAnimals,
 
   count(d.ActiveAssignments) AS ActiveAssignments,
@@ -23,8 +23,10 @@ SELECT
 
 FROM study.demographicsAssignmentSummary d
 
-WHERE d.id.status.status = 'Alive'
-AND d.id.species.species != 'Unknown'
+WHERE
+d.id.dataset.demographics.calculated_status = 'Alive'
+--d.id.dataset.demographics.calculated_status = 'Alive'
+AND d.id.dataset.demographics.species != 'Unknown'
 
-GROUP BY d.id.dataset.demographics.v_status, d.id.species.species
+GROUP BY d.id.dataset.demographics.v_status, d.id.dataset.demographics.species
 

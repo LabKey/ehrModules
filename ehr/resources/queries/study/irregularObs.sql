@@ -28,11 +28,10 @@ o.description,
 o.qcstate
 
 from study.obs o
--- LEFT JOIN study.housing h
---   ON (h.id=o.id AND h.date<=o.date AND (o.date<=coalesce(h.enddate, now()) ))
+
 
 WHERE o.isIrregular = true
-AND o.qcstate.publicdata = true
+--AND o.qcstate.publicdata = true
 
 UNION ALL
 
@@ -57,5 +56,5 @@ null as dataset,
 'Cage Observation' as description,
 c.qcstate
 FROM ehr.cage_observations c
-WHERE c.qcstate.publicdata = true
+--WHERE c.qcstate.publicdata = true
 

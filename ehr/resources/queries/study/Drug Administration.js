@@ -8,7 +8,7 @@
 var {EHR, LABKEY, Ext, console, init, beforeInsert, afterInsert, beforeUpdate, afterUpdate, beforeDelete, afterDelete, complete} = require("ehr/validation");
 
 function onUpsert(context, errors, row, oldRow){
-    if(row.dataSource != 'etl'){
+    if(context.extraContext.dataSource != 'etl'){
         if(!row.amount && !row.volume){
             EHR.addError(errors, 'amount', 'Must supply either amount or volume', 'WARN');
             EHR.addError(errors, 'volume', 'Must supply either amount or volume', 'WARN');
@@ -25,14 +25,10 @@ function onUpsert(context, errors, row, oldRow){
 function onBecomePublic(errors, scriptContext, row, oldRow){
     //we need to store something in the date field during the draft stage, so i use header date
     //we swap begindate in here instead
-    if(row.dataSource != 'etl' && row.begindate)
+    if(scriptContext.extraContext.dataSource != 'etl' && row.begindate)
         row.date = row.begindate
 }
 
-
-//function onETL(row, errors){
-//    EHR.ETL.fixDrugUnits(row, errors);
-//}
 
 function setDescription(row, errors){
     //we need to set description for every field

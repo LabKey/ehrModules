@@ -5,7 +5,7 @@
  */
 SELECT
 
-d.id,
+d2.id,
 
 (d2.room || '-' || d2.cage) AS Location,
 
@@ -32,10 +32,9 @@ d2.cage,
 
 d2.cond
 
-FROM study.Demographics d
+FROM study.housing d2
 
-LEFT JOIN study.housing d2
-  ON (d.Id = d2.Id AND d2.enddate IS NULL)
+WHERE d2.enddate IS NULL
+AND d2.qcstate.publicdata = true
 
-WHERE d.death IS NULL AND (d.departdate IS NULL OR d.departdate < d.arrivedate)
- AND d2.qcstate.publicdata = true
+--GROUP BY d2.id

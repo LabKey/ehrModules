@@ -10,12 +10,12 @@
                 <deleteUrl />
                 <columns>
                     <column columnName="parentId">
-                        <fk>
-                          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-                          <fkDbSchema>study</fkDbSchema>
-                          <fkTable>studyDataParent</fkTable>
-                          <fkColumnName>objectid</fkColumnName>
-                        </fk>
+                        <!--<fk>-->
+                          <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
+                          <!--<fkDbSchema>study</fkDbSchema>-->
+                          <!--<fkTable>studyDataParent</fkTable>-->
+                          <!--<fkColumnName>objectid</fkColumnName>-->
+                        <!--</fk>-->
                     </column>
                   <column columnName="cause">
                     <datatype>varchar</datatype>
@@ -23,8 +23,8 @@
                     <fk>
                       <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                       <fkDbSchema>ehr_lookups</fkDbSchema>
-                      <fkTable>death_codes</fkTable>
-                      <fkColumnName>Code</fkColumnName>
+                      <fkTable>death_cause</fkTable>
+                      <fkColumnName>Cause</fkColumnName>
                     </fk>
                   </column>
                   <column columnName="necropsy">

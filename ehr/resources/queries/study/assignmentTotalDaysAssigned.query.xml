@@ -9,7 +9,7 @@
                     <column columnName="TotalDaysAssigned">
                         <datatype>varchar</datatype>
                         <columnTitle>Total Days Assigned (concurrent assignments count twice)</columnTitle>
-                        <url>/ehr/executeQuery.view?schemaName=study&amp;
+                        <url>/query/executeQuery.view?schemaName=study&amp;
                             query.queryName=Assignment&amp;
                             query.Id~eq=${id}&amp;
                             query.Project/avail/code~in=r;n&amp;

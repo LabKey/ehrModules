@@ -2,6 +2,7 @@
   <columns>
       <column name="Id"/>
       <column name="date"/>
+      <column name="qcstate" />
       <column name="parentId/caseno">
           <properties>
               <property name="columnTitle" value="Case No"/>

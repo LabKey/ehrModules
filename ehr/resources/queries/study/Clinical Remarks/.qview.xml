@@ -2,8 +2,10 @@
     <columns>
         <column name="Id"/>
         <column name="date"/>
-        <column name="project"/>
+        <column name="qcstate" />
+        <!--<column name="project"/>-->
         <column name="Remark"/>
+        <column name="description" />
         <column name="userid"/>
         <column name="category"/>
     </columns>

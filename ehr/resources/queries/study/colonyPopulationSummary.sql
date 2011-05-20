@@ -6,16 +6,17 @@
 (
 SELECT
 
-d.id.species.species,
+d.id.dataset.demographics.species,
 count(d.Id) AS AnimalCount
 
 FROM study.Demographics d
 
 WHERE
-d.id.status.status = 'Alive'
-AND d.id.species.species != 'Unknown'
+d.calculated_status = 'Alive'
+--d.calculated_status = 'Alive'
+AND d.id.dataset.demographics.species != 'Unknown'
 
-GROUP BY d.id.species.species
+GROUP BY d.id.dataset.demographics.species
 )
 
 UNION ALL
@@ -25,6 +26,7 @@ SELECT null as Species, count(*) as AnimalCount
 FROM study.Demographics d2
 
 WHERE
-d2.id.status.status = 'Alive'
-AND d2.id.species.species != 'Unknown'
+--d2.id.status.status = 'Alive'
+d2.calculated_status = 'Alive'
+AND d2.id.dataset.demographics.species != 'Unknown'
 )

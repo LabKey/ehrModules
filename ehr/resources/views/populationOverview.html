@@ -71,18 +71,21 @@ Ext.onReady(function(){
                     reportId : 'module:ehr/schemas/study/colonyPopulationChange/Bar Chart.r',
                     'query.queryName': 'colonyPopulationChange',
                     '_union.species~neq': 'Unknown',
-                    '_select.species~neq': 'Unknown'
+                    '_select.species~neq': 'Unknown',
+                    'query.species~neq': 'Unknown'
                 },
                 errorCallback: EHR.utils.onError
                 //,scope: this
             };
 
             if (this.datePanel.startDateField.getValue()){                
+                config.partConfig['query.date~gte'] = this.datePanel.startDateField.getValue();
                 config.partConfig['_select.date~gte'] = this.datePanel.startDateField.getValue();
                 config.partConfig['_union.date~gte'] = this.datePanel.startDateField.getValue();
             }
 
             if (this.datePanel.endDateField.getValue()){
+                config.partConfig['query.date~lte'] = this.datePanel.endDateField.getValue();
                 config.partConfig['_select.date~lte'] = this.datePanel.endDateField.getValue();
                 config.partConfig['_union.date~lte'] = this.datePanel.endDateField.getValue();
             }
@@ -136,7 +139,7 @@ Ext.onReady(function(){
     </table>
     <ul>
     <li>
-        <a href="<%=contextPath%>/ehr<%=containerPath%>/executeQuery.view?schemaName=study&query.queryName=Colony Population By Age">Population By Age and Species</a>
+        <a href="<%=contextPath%>/query<%=containerPath%>/executeQuery.view?schemaName=study&query.queryName=Colony Population By Age">Population By Age and Species</a>
     </li>
     </ul>
 

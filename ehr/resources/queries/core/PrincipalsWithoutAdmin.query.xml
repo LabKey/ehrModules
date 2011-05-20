@@ -1,0 +1,10 @@
+<query xmlns="http://labkey.org/data/xml/query">
+    <metadata>
+        <tables xmlns="http://labkey.org/data/xml">
+            <table tableName="PrincipalsWithoutAdmin" tableDbType="TABLE">
+                <!--<tableUrl>/EHR/cageDetails.view?room=${room}&amp;cage=${cage}</tableUrl>-->
+                <titleColumn>Name</titleColumn>
+            </table>
+        </tables>
+    </metadata>
+</query>

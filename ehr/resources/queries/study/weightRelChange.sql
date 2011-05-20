@@ -10,21 +10,23 @@ SELECT
   w.lsid,
   w.Id,
   w.date,
-  w.Id.dataset.demographics.wdate as LatestWeightDate,
-  w.Id.dataset.demographics.weight AS LatestWeight,
+--   w.Id.dataset.demographics.wdate as LatestWeightDate,
+--   w.Id.dataset.demographics.weight AS LatestWeight,
+  w.Id.MostRecentWeight.MostRecentWeightDate as LatestWeightDate,
+  w.Id.MostRecentWeight.MostRecentWeight AS LatestWeight,
 
-  timestampdiff('SQL_TSI_DAY', w.date, w.Id.dataset.demographics.wdate) AS IntervalInDays,
-  age_in_months(w.date, w.Id.dataset.demographics.wdate) AS IntervalInMonths,
+  timestampdiff('SQL_TSI_DAY', w.date, w.Id.MostRecentWeight.MostRecentWeightDate) AS IntervalInDays,
+  age_in_months(w.date, w.Id.MostRecentWeight.MostRecentWeightDate) AS IntervalInMonths,
 
   w.weight,
-  CASE WHEN w.date >= timestampadd('SQL_TSI_YEAR', -2, w.Id.dataset.demographics.wdate) THEN
-    Round(((w.Id.dataset.demographics.weight - w.weight) * 100 / w.Id.dataset.demographics.weight), 1)
+  CASE WHEN w.date >= timestampadd('SQL_TSI_YEAR', -2, w.Id.MostRecentWeight.MostRecentWeightDate) THEN
+    Round(((w.Id.MostRecentWeight.MostRecentWeight - w.weight) * 100 / w.Id.MostRecentWeight.MostRecentWeight), 1)
   ELSE
     null
   END  AS PctChange,
 
-  CASE WHEN w.date >= timestampadd('SQL_TSI_YEAR', -2, w.Id.dataset.demographics.wdate) THEN
-    Abs(Round(((w.Id.dataset.demographics.weight - w.weight) * 100 / w.Id.dataset.demographics.weight), 1))
+  CASE WHEN w.date >= timestampadd('SQL_TSI_YEAR', -2, w.Id.MostRecentWeight.MostRecentWeightDate) THEN
+    Abs(Round(((w.Id.MostRecentWeight.MostRecentWeight - w.weight) * 100 / w.Id.MostRecentWeight.MostRecentWeight), 1))
   else
     null
   END  AS AbsPctChange,

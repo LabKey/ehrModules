@@ -50,10 +50,9 @@ ts, uuid AS objectid,
 (select UUID from behavehead b2 WHERE b1.id=b2.id AND b1.date=b2.date AND b1.time=b2.time GROUP BY b1.id,b1.date,b1.time limit 1) as parentid,
 'Behavior' AS category
 FROM behavetrem b1
-*/
+
 UNION ALL
 
-/*
 SELECT id,
 FixDateTime(date, time) AS Date,
 (pno) AS pno,
@@ -69,7 +68,6 @@ FROM hormtrem h1
 WHERE remark != '' AND remark IS NOT NULL
 
 UNION ALL
-*/
 
 SELECT id,
 FixDateTime(date, time) AS Date,
@@ -139,7 +137,7 @@ ts, uuid AS objectid,
 FROM biopsyhead n1
 WHERE id IS NOT NULL AND id != '' AND remark != '' AND remark IS NOT NULL AND ts > ?
 AND length(id) > 1
-
+*/
 ) x
 
 /*

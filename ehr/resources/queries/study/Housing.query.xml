@@ -24,8 +24,14 @@
                         <formatString>yyyy-MM-dd HH:mm</formatString>
                         <columnTitle>In Date</columnTitle>
                     </column>
+                    <column columnName="isTemp">
+                        <isHidden>false</isHidden>
+                    </column>
                     <column columnName="enddate">
                         <nullable>true</nullable>
+                        <isHidden>false</isHidden>
+                        <shownInInsertView>true</shownInInsertView>
+                        <shownInDetailsView>true</shownInDetailsView>
                         <datatype>timestamp</datatype>
                         <formatString>yyyy-MM-dd HH:mm</formatString>
                         <columnTitle>Out Date</columnTitle>
@@ -79,14 +85,27 @@
                             <fkColumnName>reason</fkColumnName>
                         </fk>
                     </column>
-                    <column columnName="parentId">
+                    <column columnName="restraintType">
+                        <datatype>varchar</datatype>
+                        <columnTitle>Restraint Type</columnTitle>
                         <fk>
                           <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-                          <fkDbSchema>study</fkDbSchema>
-                          <fkTable>studyDataParent</fkTable>
-                          <fkColumnName>objectid</fkColumnName>
+                          <fkDbSchema>ehr_lookups</fkDbSchema>
+                          <fkTable>restraint_type</fkTable>
+                          <fkColumnName>type</fkColumnName>
                         </fk>
                     </column>
+                    <column columnName="cagesJoined">
+                        <columnTitle># of Connected Cages</columnTitle>
+                    </column>
+                    <!--<column columnName="parentId">-->
+                        <!--<fk>-->
+                          <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
+                          <!--<fkDbSchema>study</fkDbSchema>-->
+                          <!--<fkTable>studyDataParent</fkTable>-->
+                          <!--<fkColumnName>objectid</fkColumnName>-->
+                        <!--</fk>-->
+                    <!--</column>-->
                 </columns>
             </table>
         </tables>

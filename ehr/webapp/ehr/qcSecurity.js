@@ -5,6 +5,8 @@
  */
 Ext.namespace('EHR.utils');
 
+
+
 EHR.utils.getQCStateMap = function(config){
     if(!config || !config.success){
         throw "Must provide a success callback"
@@ -42,12 +44,16 @@ EHR.utils.getQCStateMap = function(config){
 
 };
 
-EHR.utils.getTablePermissions = function(config) {
-    if(!config || !config.success){
-        throw "Must provide a success callback";
-    }
-    if(!config.queries || !config.queries.length){
-        throw "config.queries must be an array of queries";
+EHR.utils.getDatasetPermissions = function(config) {
+    var schemaName = 'study';
+
+    //if already loaded, we reuse it
+    if(EHR.permissionMap){
+        //console.log('reusing existing permission map')
+        if(config.success)
+            config.success.apply(config.scope || this, [EHR.permissionMap]);
+
+        return;
     }
 
     var multi = new LABKEY.MultiRequest();
@@ -63,7 +69,7 @@ EHR.utils.getTablePermissions = function(config) {
     });
     //TODO: eventually accept other schemas
     multi.add(LABKEY.Security.getSchemaPermissions, {
-        schemaName: 'study',
+        schemaName: schemaName,
         scope: this,
         success: function(map){
             schemaMap = map;
@@ -83,33 +89,35 @@ EHR.utils.getTablePermissions = function(config) {
             };
             qcRow.effectivePermissions = {};
 
-            Ext.each(config.queries, function(q){
-                if(schemaMap.schemas[q.schemaName] && schemaMap.schemas[q.schemaName].queries[q.queryName]){
-                    var query = schemaMap.schemas[q.schemaName].queries[q.queryName];
+            if(schemaMap.schemas[schemaName] && schemaMap.schemas[schemaName].queries){
+                var queryCount = 0;
+                for(var queryName in schemaMap.schemas[schemaName].queries){
+                    var query = schemaMap.schemas[schemaName].queries[queryName];
+                    queryCount++;
                     query.permissionsByQCState = query.permissionsByQCState || {};
                     query.permissionsByQCState[qcState] = {};
 
                     //iterate over each permission this user has on this query
                     Ext.each(query.effectivePermissions, function(p){
                         if(p == qcRow.insertPermissionName){
-                            qcRow.permissionsByQuery.insert.push(q.queryName);
+                            qcRow.permissionsByQuery.insert.push(queryName);
                             query.permissionsByQCState[qcState].insert = true;
                         }
                         if(p == qcRow.updatePermissionName){
-                            qcRow.permissionsByQuery.update.push(q.queryName);
+                            qcRow.permissionsByQuery.update.push(queryName);
                             query.permissionsByQCState[qcState].update = true;
                         }
                         if(p == qcRow.deletePermissionName){
-                            qcRow.permissionsByQuery['delete'].push(q.queryName);
+                            qcRow.permissionsByQuery['delete'].push(queryName);
                             query.permissionsByQCState[qcState]['delete'] = true;
                         }
                     }, this);
                 }
-            }, this);
+            }
 
-            qcRow.effectivePermissions.insert = (qcRow.permissionsByQuery.insert.length == config.queries.length);
-            qcRow.effectivePermissions.update = (qcRow.permissionsByQuery.update.length == config.queries.length);
-            qcRow.effectivePermissions['delete'] = (qcRow.permissionsByQuery['delete'].length == config.queries.length);
+            qcRow.effectivePermissions.insert = (qcRow.permissionsByQuery.insert.length == queryCount);
+            qcRow.effectivePermissions.update = (qcRow.permissionsByQuery.update.length == queryCount);
+            qcRow.effectivePermissions['delete'] = (qcRow.permissionsByQuery['delete'].length == queryCount);
         }
 
         function hasPermission(qcStateLabel, permission, queries){
@@ -119,17 +127,12 @@ EHR.utils.getTablePermissions = function(config) {
             if(queries && !Ext.isArray(queries))
                 queries = [queries];
 
-            //if schemaName not supplied, we return based on all queries
             if(!queries.length){
-                if(!qcMap.label[qcState].effectivePermissions ||
-                   !qcMap.label[qcState].effectivePermissions[permission]
-                )
-                    return false;
-                else
-                    return true;
+                throw 'Must provide an array of query objects'
             }
 
             var result = true;
+            //var schemaName = 'study';
             Ext.each(queries, function(query){
                 //if this schema isnt present, it's not securable, so we allow anything
                 if(!schemaMap.schemas[query.schemaName])
@@ -155,12 +158,15 @@ EHR.utils.getTablePermissions = function(config) {
             return schemaMap.schemas[schemaName].queries[queryName].permissionsByQCState;
         }
 
-        config.success.apply(config.scope || this, [{
+        EHR.permissionMap = new function(){return {
             qcMap: qcMap,
             schemaMap: schemaMap,
             hasPermission: hasPermission,
             getQueryPermissions: getQueryPermissions
-        }]);
+        }};
+
+        if(config.success)
+            config.success.apply(config.scope || this, [EHR.permissionMap]);
     }
 
     multi.send(onSuccess, this);

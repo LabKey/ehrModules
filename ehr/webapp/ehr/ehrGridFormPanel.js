@@ -28,28 +28,64 @@ EHR.ext.GridFormPanel = Ext.extend(Ext.Panel,
             //autoLoad: true
         }));
 
+        if(!EHR.ext.FormColumns[this.queryName]){
+            console.log('Columns not defined')
+        }
+
         //set buttons
-        var tbar = [];
-        this.tbarBtns = this.tbarBtns || ['add', 'addbatch', 'delete', 'apply_template', 'save_template', 'duplicate', 'bulk_edit'];
+        var tbar = {xtype: 'toolbar', items: []};
+        this.tbarBtns = this.tbarBtns || ['add', 'addbatch', 'delete', 'selectall', 'duplicate', 'bulk_edit', 'apply_template', 'save_template'];
         for (var i=0;i<this.tbarBtns.length;i++){
             var btnCfg = this.gridBtns[this.tbarBtns[i]];
+            if(btnCfg.requiredQC){
+                if(!EHR.permissionMap.hasPermission(btnCfg.requiredQC, 'insert', {queryName: this.queryName, schemaName: this.schemaName}))
+                    btnCfg.disabled = true;
+            }
             btnCfg.scope = this;
-            tbar.push(btnCfg);
+            tbar.items.push(btnCfg);
             if(i != this.tbarBtns.length-1){
-                tbar.push('-');
+                tbar.items.push('-');
             }
         };
 
+        var bbar;
         if(this.showStatus){
-            this.bbar = {
+            bbar = {
                 xtype: 'statusbar',
                 defaultText: 'Default text',
                 text: 'No records',
-                statusAlign: 'left',
-                iconCls: 'x-status-valid'
+                statusAlign: 'right',
+                spacer: 'tbspacer',
+                iconCls: 'x-status-valid',
+                //items: [{xtype: 'tbspacer', width: 50}]
+                items: []
             };
         }
+        else {
+            bbar = [];
+        }
 
+        //var bbar = {xtype: 'toolbar', items: []};
+        this.bbarBtns = this.bbarBtns || []; //['markSelectedComplete', 'markComplete', 'validate'];
+        for (var i=0;i<this.bbarBtns.length;i++){
+            var btnCfg = this.gridBtns[this.bbarBtns[i]];
+            if(btnCfg.requiredQC){
+                if(!EHR.permissionMap.hasPermission(btnCfg.requiredQC, 'insert', {queryName: this.queryName, schemaName: this.schemaName}))
+                    btnCfg.disabled = true;
+            }
+            btnCfg.scope = this;
+            bbar.items.push(btnCfg);
+            if(i != this.bbarBtns.length-1){
+                bbar.items.push('-');
+            }
+            else {
+                bbar.items.push({xtype: 'tbspacer', width: 50});
+                bbar.items.push('->');
+            }
+        };
+
+
+        this.buttonAlign = 'left';
         Ext.applyIf(this, {
             autoHeight: true
             ,autoWidth: true
@@ -58,6 +94,8 @@ EHR.ext.GridFormPanel = Ext.extend(Ext.Panel,
             ,columns: 2
             ,style: 'margin-bottom: 15px;'
             ,tbar: tbar
+            ,bbar: bbar
+            ,border: true
             ,defaults: {
                 border: false,
                 bodyBorder: false
@@ -108,8 +146,11 @@ EHR.ext.GridFormPanel = Ext.extend(Ext.Panel,
                         scope: this,
                         rowselect: function(sm, row, rec)
                         {
-                            //NOTE: this allows any changes to values of select menus to commit before bindRecord() runs
-                            this.theForm.bindRecord.defer(200, this.theForm, [rec]);
+                            if(sm.getSelections().length == 1)
+                                //NOTE: this allows any changes to values of select menus to commit before bindRecord() runs
+                                this.theForm.bindRecord.defer(200, this.theForm, [rec]);
+                            else
+                                this.theForm.unbindRecord()
                         },
                         selectionchange: function(sm)
                         {
@@ -189,6 +230,7 @@ EHR.ext.GridFormPanel = Ext.extend(Ext.Panel,
     gridBtns: {
         'add': {
             text: 'Add Record',
+            requiredQC: 'In Progress',
             xtype: 'button',
             tooltip: 'Click to add a blank record',
             name: 'add-record-button',
@@ -220,10 +262,22 @@ EHR.ext.GridFormPanel = Ext.extend(Ext.Panel,
                     'You are about to permanently delete these records.  It cannot be undone.  Are you sure you want to do this?',
                     function(val){
                         if(val=='yes'){
+                            Ext.Msg.wait("Deleting Records...");
+
                             this.theGrid.stopEditing();
                             var recs = this.theGrid.getSelectionModel().getSelections();
                             this.theForm.unbindRecord();
 
+                            function onComplete(response){
+                                console.log(arguments)
+                                console.log(response)
+                                this.store.un('commitcomplete', onComplete);
+                                this.store.un('commitexception', onComplete);
+                                Ext.Msg.hide();
+                            }
+
+                            this.store.on('commitcomplete', onComplete, this, {single: true});
+                            this.store.on('commitexception', onComplete, this, {single: true});
                             this.store.deleteRecords(recs);
                         }
                     },
@@ -254,8 +308,20 @@ EHR.ext.GridFormPanel = Ext.extend(Ext.Panel,
                 },
                 scope: this
         },
+        'selectall': {
+                text: 'Select All',
+                xtype: 'button',
+                tooltip: 'Click to move one record backward',
+                name: 'select-previous-button',
+                handler: function()
+                {
+                    this.theGrid.getSelectionModel().selectAll();
+                },
+                scope: this
+        },
         'duplicate': {
             text: 'Duplicate Selected',
+            requiredQC: 'In Progress',
             xtype: 'button',
             tooltip: 'Duplicate Selected Record',
             name: 'duplicate-button',
@@ -285,6 +351,7 @@ EHR.ext.GridFormPanel = Ext.extend(Ext.Panel,
         },
         'addbatch': {
                 text: 'Add Batch',
+                requiredQC: 'In Progress',
                 xtype: 'button',
                 scope: this,
                 tooltip: 'Click to add a group of animals',
@@ -373,7 +440,8 @@ EHR.ext.GridFormPanel = Ext.extend(Ext.Panel,
                 tooltip: 'Click this to change values on all checked rows in bulk',
                 scope: this,
                 handler : function(c){
-                    if(!this.theGrid.getSelectionModel().getSelections().length){
+                    var totalRecs = this.theGrid.getSelectionModel().getSelections().length;
+                    if(!totalRecs){
                         Ext.Msg.alert('Error', 'No rows selected');
                         return;
                     }
@@ -406,6 +474,9 @@ EHR.ext.GridFormPanel = Ext.extend(Ext.Panel,
                         title: 'Batch Edit',
                         layout: 'form',
                         items: [{
+                            html: 'Editing '+totalRecs+' records',
+                            style: 'padding-bottom: 10px;background-color: transparent;'
+                        },{
                             emptyText:''
                             ,fieldLabel: 'Select Field'
                             ,ref: 'fieldName'
@@ -488,6 +559,57 @@ EHR.ext.GridFormPanel = Ext.extend(Ext.Panel,
         },
         order_treatment: {
 
+        },
+        validate: {
+            text: 'Validate Section',
+            xtype: 'button',
+            scope: this,
+            tooltip: 'Validate records',
+            title: 'Validate Section',
+            name: 'validate-button',
+            handler: function()
+            {
+                if(this.store.getCount()){
+                    this.store.each(function(r){
+                        this.store.validateRecordOnServer(r);
+                    }, this);
+                }
+            }
+        },
+        markComplete: {
+            text: 'Mark Section Complete',
+            xtype: 'button',
+            scope: this,
+            tooltip: 'Mark Section Complete',
+            title: 'Mark Section Complete',
+            name: 'mark-all-complete-button',
+            handler: function()
+            {
+                console.log(EHR.permissionMap)
+                this.store.each({
+
+                }, this);
+            }
+        },
+        markSelectedComplete: {
+            text: 'Mark Selected Complete',
+            xtype: 'button',
+            scope: this,
+            tooltip: 'Mark Selected Complete',
+            title: 'Mark Selected Complete',
+            name: 'mark-selected-complete-button',
+            handler: function()
+            {
+                var records = this.theGrid.getSelectionModel().getSelections();
+                if(!records || !records.length){
+                    Ext.Msg.alert('Error', 'No rows selected');
+                    return;
+                }
+
+                Ext.each(records, function(r){
+
+                }, this);
+            }
         }
     }
 });

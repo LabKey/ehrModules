@@ -18,8 +18,6 @@ var EHR = {};
 exports.EHR = EHR;
 
 
-
-
 //var map = new ScriptableMap(new org.labkey.api.collections.CaseInsensitiveHashMap());
 
 function init(event, errors){
@@ -47,21 +45,8 @@ function init(event, errors){
         verbosity: 0
     };
 
-    //figure out who the user is, user roles and calculate which QC states they can use
-    EHR.utils.getTablePermissions({
-        scope: this,
-        queries: [{
-            schemaName: this.extraContext.schemaName,
-            queryName: this.extraContext.queryName
-        }],
-        success: function(result){
-            this.scriptContext.qcMap = result.qcMap;
-            this.scriptContext.permissionMap = result;
-        }
-    });
-
     if(this.onInit)
-        this.onInit.call(this, event);
+        this.onInit.call(this, event, context);
 }
 exports.init = init;
 
@@ -88,7 +73,7 @@ function afterInsert(row, errors){
     if(this.scriptContext.verbosity > 0)
         console.log('after insert');
 
-    EHR.afterEvent.call(this, 'insert', errors, row, null, this.scriptContext);
+    EHR.afterEvent.call(this, 'insert', errors, row, null);
 
     if(this.onAfterUpsert)
         this.onAfterUpsert(this.scriptContext, errors, row);
@@ -127,7 +112,7 @@ function afterUpdate(row, oldRow, errors){
     if(this.scriptContext.verbosity > 0)
         console.log('after update');
 
-    EHR.afterEvent.call(this, 'update', errors, row, oldRow, this.scriptContext);
+    EHR.afterEvent.call(this, 'update', errors, row, oldRow);
 
     if(this.onAfterUpsert)
         this.onAfterUpsert(this.scriptContext, errors, row, oldRow);
@@ -140,14 +125,7 @@ function beforeDelete(row, errors){
     if(this.scriptContext.verbosity > 0)
         console.log("beforeDelete: ");
 
-    console.log('beforeDelete dataSource: '+row.dataSource);
-
     EHR.verifyPermissions('delete', this.scriptContext, row);
-
-    if (row.dataSource == 'etl'){
-        this.scriptContext = this.scriptContext || {};
-        this.scriptContext.dataSource = 'etl';
-    }
 
     if(this.onDelete)
         this.onDelete(errors, this.scriptContext, row);
@@ -155,16 +133,18 @@ function beforeDelete(row, errors){
 exports.beforeDelete = beforeDelete;
 
 function afterDelete(row, errors){
-    //TODO: respect row.dataSource
-    //EHR.afterEvent.call(this, 'delete', errors, row, null, this.scriptContext);
+    //console.log('after delete: ' +(new Date()));
+    EHR.afterEvent.call(this, 'delete', errors, row, null);
 
-//    if(this.onAfterDelete)
-//        this.onAfterDelete(this.scriptContext, errors, row);
+    if(this.scriptContext.extraContext.dataSource != 'etl' && this.onAfterDelete)
+        this.onAfterDelete(this.scriptContext, errors, row);
 }
 exports.afterDelete = afterDelete;
 
 function complete(event, errors) {
+    //console.log('complete: '+(new Date()));
     if(this.scriptContext.verbosity > 0){
+        console.log('Event complete: '+event);
         console.log('Participants modified: '+this.scriptContext.participantsModified);
         console.log('PKs modified: '+this.scriptContext.PKsModified);
     }
@@ -198,28 +178,41 @@ EHR.rowInit = function(errors, row, oldRow){
     }
 
     //these are extra checks to fix mySQL data
-    if (row.dataSource == 'etl'){
+    if (this.scriptContext.extraContext.dataSource == 'etl'){
         if(this.scriptContext.verbosity > 0)
             console.log('Row from ETL');
 
-        this.scriptContext = this.scriptContext || {};
-        this.scriptContext.dataSource = 'etl';
-        this.scriptContext.errorThreshold = 'WARN';
+        //we ignore all errors from ETL records.  they will get flagged as review required
+        this.scriptContext.errorThreshold = 'FATAL';
         EHR.ETL.fixRow.call(this, row, errors);
     }
 
+    //check Id format
+    if(this.scriptContext.extraContext.dataSource != 'etl'){
+        EHR.validation.verifyIdFormat(row, errors, this.scriptContext)
+    }
 
-    //certain forms display current location.  if the row has this property, but it is blank, we add it.
-    //not validation per se, but useful to forms
-    if(row.Id && row.hasOwnProperty('id/curlocation/location')){
-        console.log('Setting current location:');
+    if(row.Id && this.scriptContext.extraContext.dataSource != 'etl'){
         EHR.findDemographics({
             participant: row.Id,
             scope: this,
             callback: function(data){
                 if(data){
-                    data.location = data.room + '-' + data.cage;
-                    row['id/curlocation/location'] = data.location;
+                    //certain forms display current location.  if the row has this property, but it is blank, we add it.
+                    //not validation per se, but useful to forms
+                    if(row.Id && row.hasOwnProperty('id/curlocation/location')){
+                        var location = data["id/curlocation/room"] || '';
+
+                        if(data["id/curlocation/cage"])
+                            location += '-' + data["id/curlocation/cage"];
+
+                        row['id/curlocation/location'] = location;
+                    }
+
+                    if(data.calculated_status != 'Alive'){
+                        if(!this.scriptContext.allowDeadIds)
+                            EHR.addError(errors, 'Id', 'Status of this Id is: '+data.calculated_status, 'WARN');
+                    }
                 }
                 else {
                     EHR.addError(errors, 'Id', 'Id not found in demographics table', 'INFO');
@@ -230,7 +223,7 @@ EHR.rowInit = function(errors, row, oldRow){
 
     //validate project / assignment to that project
     //also add account if the project is found
-    if(row.dataSource != 'etl' && row.project && row.Id && row.date && row.project!=300901){
+    if(this.scriptContext.extraContext.dataSource != 'etl' && row.project && row.Id && row.date && row.project!=300901){
         LABKEY.Query.executeSql({
             schemaName: 'study',
             queryName: 'assignment',
@@ -249,7 +242,7 @@ EHR.rowInit = function(errors, row, oldRow){
     }
 
     //validate room / cage if present
-    if(row.dataSource != 'etl' && row.room && row.Id && row.date && (this.scriptContext.queryName && !this.scriptContext.queryName.match(/housing/i))){
+    if(this.scriptContext.extraContext.dataSource != 'etl' && row.room && row.Id && row.date && (this.scriptContext.queryName && !this.scriptContext.queryName.match(/housing/i))){
         if(this.scriptContext.verbosity > 0)
             console.log('Verifying room/cage:');
 
@@ -259,8 +252,9 @@ EHR.rowInit = function(errors, row, oldRow){
         if(row.cage)
             sql += "h.cage='"+row.cage+"' AND ";
 
-        sql += "h.id='"+row.id+"' AND h.date <= '"+row.date+"' AND (h.enddate >= '"+row.date+"' OR r.enddate IS NULL) " +
+        sql += "h.id='"+row.id+"' AND h.date <= '"+row.date+"' AND (h.enddate >= '"+row.date+"' OR h.enddate IS NULL) " +
             "AND h.qcstate.publicdata = true";
+        //console.log(sql)
         LABKEY.Query.executeSql({
             schemaName: 'study',
             queryName: 'housing',
@@ -276,15 +270,17 @@ EHR.rowInit = function(errors, row, oldRow){
     }
 
     //enddate: verify either blank or not prior to date
-    if(row.dataSource != 'etl' && row.enddate && row.date && row.enddate < row.date){
-        EHR.addError(errors, 'enddate', 'End date cannot be before start date', 'WARN');
+    if(this.scriptContext.extraContext.dataSource != 'etl' && row.enddate && row.date && row.date.compareTo){
+        if(row.date.compareTo(row.enddate)>=0){
+            EHR.addError(errors, 'enddate', 'End date must be after start date', 'WARN');
+        }
     }
 
     if(row._becomingPublicData){
         //set account based on project.  do differently depending on insert/update.
         //assignmentRecord should have been cached above
         //we only do this one time when the row becomes public, b/c project/account relationships can change
-        if(row.dataSource != 'etl' && this.scriptContext.assignmentRecord && !row.account){
+        if(this.scriptContext.extraContext.dataSource != 'etl' && this.scriptContext.assignmentRecord && !row.account){
             if(this.scriptContext.verbosity > 0)
                 console.log('setting account to: '+this.scriptContext.assignmentRecord.account);
 
@@ -304,10 +300,6 @@ EHR.rowInit = function(errors, row, oldRow){
 EHR.rowEnd = function(errors, scriptErrors, row, oldRow){
     //use this flag to filters errors below a given severity
     var errorThreshold = this.scriptContext.errorThreshold || 'WARN';
-
-    if(row.dataSource == 'etl'){
-        errorThreshold = 'FATAL';
-    }
 
     //this flag is to let records be validated, but forces failure of validation
     if(this.extraContext && this.extraContext.validateOnly){
@@ -357,74 +349,71 @@ EHR.rowEnd = function(errors, scriptErrors, row, oldRow){
 //NOTE: this is called after a successful insert/update/delete
 //the purpose is primarily for bookkeeping.  these arrays are used to queue changed records.  when lots of records are submitted
 // in theory this allows some events to be moved to the complete function and run once time, making them more efficient
-EHR.afterEvent = function (event, errors, row, oldRow, scriptContext){
-    if(row.dataSource != 'etl' && scriptContext.dataSource != 'etl'){
-        if(scriptContext.verbosity > 0)
-            console.log('After Event: '+event);
+EHR.afterEvent = function (event, errors, row, oldRow){
+    if(this.scriptContext.verbosity > 0)
+        console.log('After Event: '+event);
 
-        this.scriptContext.rows.push({
-            row: row,
-            oldRow: oldRow
-        });
+    this.scriptContext.rows.push({
+        row: row,
+        oldRow: oldRow
+    });
 
-        if(row._becomingPublicData && this.afterBecomePublic){
-            this.afterBecomePublic(errors, this.scriptContext, row, oldRow);
-        }
+    if(row._becomingPublicData && this.afterBecomePublic){
+        this.afterBecomePublic(errors, this.scriptContext, row, oldRow);
+    }
 
-        if(this.scriptContext.participantsModified.indexOf(row.Id) == -1){
-            this.scriptContext.participantsModified.push(row.Id);
+    if(this.scriptContext.participantsModified.indexOf(row.Id) == -1){
+        this.scriptContext.participantsModified.push(row.Id);
+
+        if(row._publicData)
+            this.scriptContext.publicParticipantsModified.push(row.Id);
+    }
+
+    if(this.extraContext.keyField){
+        var key = row[this.extraContext.keyField];
+
+        if(key && this.scriptContext.PKsModified.indexOf(key) == -1){
+            this.scriptContext.PKsModified.push(key);
 
             if(row._publicData)
-                this.scriptContext.publicParticipantsModified.push(row.Id);
+                this.scriptContext.publicPKsModified.push(key);
+        }
+    }
+
+    if(row.requestId && this.scriptContext.requestsModified.indexOf(row.requestId) == -1){
+        this.scriptContext.requestsModified.push(row.requestId);
+    }
+
+    if(row.taskId && this.scriptContext.tasksModified.indexOf(row.taskId) == -1){
+        this.scriptContext.tasksModified.push(row.taskId);
+    }
+
+    if(oldRow){
+        if(this.scriptContext.participantsModified.indexOf(oldRow.Id) == -1){
+            this.scriptContext.participantsModified.push(oldRow.Id);
+
+            if(oldRow._publicData)
+                this.scriptContext.publicParticipantsModified.push(oldRow.Id);
         }
 
         if(this.extraContext.keyField){
-            var key = row[this.extraContext.keyField];
-
+            var key = oldRow[this.extraContext.keyField];
             if(key && this.scriptContext.PKsModified.indexOf(key) == -1){
                 this.scriptContext.PKsModified.push(key);
 
-                if(row._publicData)
+                if(oldRow._publicData)
                     this.scriptContext.publicPKsModified.push(key);
             }
         }
 
-        if(row.requestId && this.scriptContext.requestsModified.indexOf(row.requestId) == -1){
-            this.scriptContext.requestsModified.push(row.requestId);
+        if(oldRow.requestId && this.scriptContext.requestsModified.indexOf(oldRow.requestId) == -1){
+            this.scriptContext.requestsModified.push(oldRow.requestId);
         }
 
-        if(row.taskId && this.scriptContext.tasksModified.indexOf(row.taskId) == -1){
-            this.scriptContext.tasksModified.push(row.taskId);
-        }
-
-        if(oldRow){
-            if(this.scriptContext.participantsModified.indexOf(oldRow.Id) == -1){
-                this.scriptContext.participantsModified.push(oldRow.Id);
-
-                if(oldRow._publicData)
-                    this.scriptContext.publicParticipantsModified.push(oldRow.Id);
-            }
-
-            if(this.extraContext.keyField){
-                var key = oldRow[this.extraContext.keyField];
-                if(key && this.scriptContext.PKsModified.indexOf(key) == -1){
-                    this.scriptContext.PKsModified.push(key);
-
-                    if(oldRow._publicData)
-                        this.scriptContext.publicPKsModified.push(key);
-                }
-            }
-
-            if(oldRow.requestId && this.scriptContext.requestsModified.indexOf(oldRow.requestId) == -1){
-                this.scriptContext.requestsModified.push(oldRow.requestId);
-            }
-
-            if(oldRow.taskId && this.scriptContext.tasksModified.indexOf(oldRow.taskId) == -1){
-                this.scriptContext.tasksModified.push(oldRow.taskId);
-            }
+        if(oldRow.taskId && this.scriptContext.tasksModified.indexOf(oldRow.taskId) == -1){
+            this.scriptContext.tasksModified.push(oldRow.taskId);
         }
     }
-
 };
 
 EHR.onFailure = function(error){
@@ -450,6 +439,7 @@ EHR.findDemographics = function(config){
         LABKEY.Query.selectRows({
             schemaName: 'study',
             queryName: 'demographics',
+            columns: 'lsid,Id,birth,death,species,dam,sire,id/curlocation/room,id/curlocation/cage',
             scope: this,
             filterArray: [LABKEY.Filter.create('Id', config.participant, LABKEY.Filter.Types.EQUAL)],
             //TODO: probably should explitly name columns?
@@ -486,21 +476,23 @@ EHR.addError = function(errors, field, msg, severity){
 
 EHR.logError = function(error){
     LABKEY.Query.insertRows({
+         //it would be nice to store them in the current folder, but we cant guarantee they have write access..
          containerPath: '/shared',
-         schemaName: 'ehr',
-         queryName: 'client_errors',
+         schemaName: 'auditlog',
+         queryName: 'audit',
          rows: [{
-            page: 'Validation Script',
-            exception: error.exception || error.msg || error.statusText,
-            json: Ext.util.JSON.encode(error)
-        }],
-        success: function(){
-            console.log('Error successfully logged');
-        },
-        failure: function(error){
+            EventType: "Client API Actions",
+            Key1: "Client Error In Validation Script",
+            Comment: error.exception || error.statusText,
+            Date: new Date()
+         }],
+         success: function(){
+             console.log('Error successfully logged')
+         },
+         failure: function(error){
             console.log('Problem logging error');
-            console.log(error);
-        }
+            console.log(error)
+         }
     });
 };
 
@@ -567,7 +559,21 @@ EHR.sendEmail = function(config){
 };
 
 EHR.verifyPermissions = function(event, scriptContext, row, oldRow){
-    console.log('Verifying permissions for: '+event)
+    //NOTE: this has been moved from init() b/c init() seems to get called during the ETL even
+    //if not importing any records
+    if(!scriptContext.permissionMap){
+        console.log('Verifying permissions for: '+event);
+
+        EHR.utils.getDatasetPermissions({
+            scope: this,
+            schemaName: scriptContext.extraContext.schemaName,
+            success: function(result){
+                scriptContext.qcMap = result.qcMap;
+                scriptContext.permissionMap = result;
+            }
+        });
+    }
+
     //first we normalize QCstate
     if(oldRow){
         if(oldRow.QCState){
@@ -583,7 +589,7 @@ EHR.verifyPermissions = function(event, scriptContext, row, oldRow){
             //nothing needed
         }
         else {
-            oldRow.QCStateLabel = 'Approved';
+            oldRow.QCStateLabel = 'Completed';
         }
     }
 
@@ -607,8 +613,8 @@ EHR.verifyPermissions = function(event, scriptContext, row, oldRow){
                     row.QCStateLabel = oldRow.QCStateLabel;
             }
             else {
-                console.log('USING GENERIC QCSTATE: '+scriptContext.queryName);
-                row.QCStateLabel = 'Approved';
+                //console.log('USING GENERIC QCSTATE: '+scriptContext.queryName);
+                row.QCStateLabel = 'Completed';
             }
         }
     }
@@ -625,38 +631,38 @@ EHR.verifyPermissions = function(event, scriptContext, row, oldRow){
     if(event=='update' && oldRow && oldRow.QCStateLabel){
         //updating a row to a new QC is the same as inserting into that QC state
         if(row.QCStateLabel != oldRow.QCStateLabel){
-            if(!scriptContext.permissionMap.hasPermission([{
+            if(!scriptContext.permissionMap.hasPermission(row.QCStateLabel, 'insert', [{
                 schemaName: scriptContext.extraContext.schemaName,
                 queryName: scriptContext.extraContext.queryName
-            }], row.QCStateLabel, 'insert')){
+            }])){
                 EHR.logError({msg: "The user "+LABKEY.Security.currentUser.id+" does not have insert privledges for the table: "+scriptContext.extraContext.queryName});
                 throw "This user does not have insert privledges for the table: "+scriptContext.extraContext.queryName;
             }
         }
 
         //the user also needs update permission on the old row's QCstate
-        if(!scriptContext.permissionMap.hasPermission([{
+        if(!scriptContext.permissionMap.hasPermission(oldRow.QCStateLabel, 'update', [{
             schemaName: scriptContext.extraContext.schemaName,
             queryName: scriptContext.extraContext.queryName
-        }], oldRow.QCStateLabel, 'update')){
+        }])){
             EHR.logError({msg: "The user "+LABKEY.Security.currentUser.id+" does not have update privledges for the table: "+scriptContext.extraContext.queryName});
             throw "This user does not have update privledges for the table: "+scriptContext.extraContext.queryName;
         }
-        else
-            console.log('the user has update permissions');
+//        else
+//            console.log('the user has update permissions');
     }
     //handle inserts and deletes
     else {
         if(row.QCStateLabel){
-            if(!scriptContext.permissionMap.hasPermission([{
+            if(!scriptContext.permissionMap.hasPermission(row.QCStateLabel, event, [{
                 schemaName: scriptContext.extraContext.schemaName,
                 queryName: scriptContext.extraContext.queryName
-            }], row.QCStateLabel, event)){
+            }])){
                 EHR.logError({msg: "The user "+LABKEY.Security.currentUser.id+" does not have "+event+" privledges for the table: "+scriptContext.extraContext.queryName});
                 throw "This user does not have "+event+" privledges for the table: "+scriptContext.extraContext.queryName;
             }
-            else
-                console.log('the user has '+event+' permissions');
+//            else
+//                console.log('the user has '+event+' permissions');
         }
     }
 
@@ -675,9 +681,7 @@ EHR.verifyPermissions = function(event, scriptContext, row, oldRow){
                 row._becomingPublicData = true;
         }
         else {
-            console.log('row lacks QCStateLabel');
-            console.log(row);
-            console.log(scriptContext.qcMap.label[row.QCStateLabel])
+            row._publicData = false;
         }
 
     }
@@ -703,7 +707,7 @@ EHR.validation = {
                 error = scriptErrors[i][j];
 
                 if (errorThreshold && EHR.validation.errorSeverity[error.severity] <= EHR.validation.errorSeverity[errorThreshold]){
-                    console.log('error below threshold');
+                    //console.log('error below threshold');
                     if(row._recordId){
                         if(!extraContext.skippedErrors[row._recordId])
                             extraContext.skippedErrors[row._recordId] = [];
@@ -721,7 +725,7 @@ EHR.validation = {
                 errors[i].push(error.severity+': '+error.message);
                 totalErrors++;
 
-                if(row.dataSource == 'etl'){
+                if(extraContext.dataSource == 'etl'){
                     console.log('ETL ERROR');
                     console.log(error.message);
                     console.log(row);
@@ -763,10 +767,19 @@ EHR.validation = {
 
         return meaning ? meaning+(code ? ' ('+code+')' : '') : (code ? code : '');
     },
+    verifyIdFormat: function(row, errors, scriptContext){
+        if(row.Id){
+            EHR.validation.setSpecies(row, errors);
+
+            if(!scriptContext.extraContext.skipIdFormatCheck && row.species == 'Unknown'){
+                EHR.addError(errors, 'Id', 'Invalid Id Format', 'WARN');
+            }
+        }
+    },
     dateToString: function (date){
         //TODO: do better once more date functions added
         if(date){
-            date = new Date(date);
+            date = new Date(date.toGMTString());
             return (date.getFullYear() ? date.getFullYear()+'-'+EHR.validation.padDigits(date.getMonth()+1, 2)+'-'+EHR.validation.padDigits(date.getDate(), 2) : '');
         }
         else
@@ -774,9 +787,8 @@ EHR.validation = {
     },
     dateTimeToString: function (date){
         if(date){
-            date = new Date(date);
-            return date.getFullYear()+'-'+EHR.validation.padDigits(date.getMonth()+1, 2)+'-'+EHR.validation.padDigits(date.getDate(), 2)
-                    ' '+date.getHours()+':'+date.getMinutes();
+            date = new Date(date.toGMTString());
+            return date.getFullYear()+'-'+EHR.validation.padDigits(date.getMonth()+1, 2)+'-'+EHR.validation.padDigits(date.getDate(), 2) + ' '+EHR.validation.padDigits(date.getHours(),2)+':'+EHR.validation.padDigits(date.getMinutes(),2);
         }
         else
             return '';
@@ -812,6 +824,24 @@ EHR.validation = {
         });
 
     },
+    verifyCasenoIsUnique: function(context, row, errors){
+        //find any existing rows with the same caseno
+        LABKEY.Query.selectRows({
+            schemaName: context.extraContext.schemaName,
+            queryName: context.extraContext.schemaName,
+            filterArray: [
+                LABKEY.Filter.create('caseno', row.caseno, LABKEY.Filter.Types.EQUAL),
+                LABKEY.Filter.create('lsid', row.lsid, LABKEY.Filter.Types.NOT_EQUAL)
+            ],
+            scope: this,
+            success: function(data){
+                if(data && data.rows && data.rows.length){
+                    EHR.addError(errors, 'caseno', 'One or more records already uses the caseno: '+row.caseno, 'ERROR');
+                }
+            },
+            failure: EHR.onFailure
+        });
+    },
     flagSuspiciousDate: function(row, errors){
         if(!row.date)
             return;
@@ -835,12 +865,6 @@ EHR.validation = {
             EHR.addError(errors, 'date', 'Date is more than 60 days in past: '+row.Date, 'WARN');
         }
     },
-//    flagSuspImmunology: function(row, errors){
-//        //flag abnormal values - query ref_range table using testId
-//    },
-//    flagSuspHematology: function(row, errors){
-//        //flag abnormal values - query ref_range table using testId
-//    },
     setSpecies: function(row, errors){
         if (row.Id.match(/(^rh([0-9]{4})$)|(^r([0-9]{5})$)/))
             row.species = 'Rhesus';
@@ -870,7 +894,7 @@ EHR.validation = {
         else
             row.species = 'Unknown';
     },
-    verifyIsFemale: function(row, errors){
+    verifyIsFemale: function(row, errors, targetField){
         LABKEY.Query.selectRows({
             schemaName: 'study',
             queryName: 'demographics',
@@ -882,19 +906,206 @@ EHR.validation = {
                 if(data && data.rows && data.rows.length){
                     console.log(data.rows[0]);
                     if(data.rows[0]['gender/origGender'] && data.rows[0]['gender/origGender'] != 'f')
-                        EHR.addError(errors, 'Id', 'This animal is not female', 'ERROR');
+                        EHR.addError(errors, (targetField || 'Id'), 'This animal is not female', 'ERROR');
                 }
             },
             failure: EHR.onFailure
         });
+    },
+    updateStatusField: function(publicParticipantsModified, demographicsRow, valuesMap){
+        var toUpdate = [];
+
+        var demographics = {};
+        Ext.each(publicParticipantsModified, function(id){
+            demographics[id] = {};
+        });
+
+        //NOTE: to improve efficiency when only 1 animal is present, we define the WHERE logic here:
+        var whereClause;
+        if(publicParticipantsModified.length==1)
+            whereClause = "= '"+publicParticipantsModified[0]+"'";
+        else
+            whereClause = "IN ('"+(publicParticipantsModified.join(','))+"')";
+
+        //we gather the pieces of information needed to calculate the status field
+        LABKEY.Query.executeSql({
+            schemaName: 'study',
+            sql: "select T1.Id, max(T1.date) as MostRecentArrival FROM study.arrival T1 WHERE T1.id "+whereClause+" AND T1.qcstate.publicdata = true GROUP BY T1.Id",
+            scope: this,
+            success: function(data){
+                if(!data.rows.length){
+//                    console.log('No rows returned for mostRecentArrival');
+                    return
+                }
+
+                Ext.each(data.rows, function(r){
+                    demographics[r.Id].arrival = new Date(r.MostRecentArrival);
+                }, this);
+            },
+            failure: EHR.onFailure
+        });
+
+        LABKEY.Query.executeSql({
+            schemaName: 'study',
+            //queryName: 'demographicsMostRecentDeparture',
+            //columns: 'Id,MostRecentDeparture',
+            //filterArray: [LABKEY.Filter.create('Id', publicParticipantsModified, LABKEY.Filter.Types.EQUALS_ONE_OF)],
+            sql: "select T1.Id, max(T1.date) as MostRecentDeparture FROM study.departure T1 WHERE T1.id "+whereClause+" AND T1.qcstate.publicdata = true GROUP BY T1.Id",
+            scope: this,
+            success: function(data){
+                if(!data.rows.length){
+//                    console.log('No rows returned for mostRecentDeparture');
+                    return;
+                }
+
+                Ext.each(data.rows, function(r){
+                    demographics[r.Id].departure = new Date(r.MostRecentDeparture);
+                }, this);
+            },
+            failure: EHR.onFailure
+        });
+
+        LABKEY.Query.executeSql({
+            schemaName: 'study',
+            //queryName: 'demographics',
+            //columns: 'Id,death,birth,calculated_status',
+            //filterArray: [LABKEY.Filter.create('Id', publicParticipantsModified, LABKEY.Filter.Types.EQUALS_ONE_OF)],
+            sql: "select T1.Id, T1.birth, T1.death, T1.calculated_status FROM study.demographics T1 WHERE T1.id "+whereClause,
+            scope: this,
+            success: function(data){
+                if(!data.rows.length){
+                    //TODO: maybe throw flag/email to alert colony records?
+                    return
+                }
+
+                Ext.each(data.rows, function(r){
+                    demographics[r.Id].birth = new Date(r.birth);
+                    demographics[r.Id].death = new Date(r.death);
+                    demographics[r.Id].lsid = r.lsid;
+                    demographics[r.Id].calculated_status = r.calculated_status;
+                }, this);
+            },
+            failure: EHR.onFailure
+        });
+
+        //NOTE: the ETL acts by deleting / inserting.
+        //this means the demographics row does not exist for cases when a update happens.
+        //therefore we re-query birth / death directly
+        LABKEY.Query.executeSql({
+            schemaName: 'study',
+            sql: "select T1.Id, max(T1.date) as date FROM study.birth T1 WHERE T1.id "+whereClause+" AND T1.qcstate.publicdata = true GROUP BY T1.Id",
+            scope: this,
+            success: function(data){
+                if(!data.rows.length){
+                    return;
+                }
+
+                Ext.each(data.rows, function(r){
+                    if(demographics[r.Id].birth && demographics[r.Id].birth != r.date){
+                        console.log('birth doesnt match for: '+r.Id);
+                    }
+                    demographics[r.Id].birth = new Date(r.date);
+                }, this);
+            },
+            failure: EHR.onFailure
+        });
+        LABKEY.Query.executeSql({
+            schemaName: 'study',
+            sql: "select T1.Id, max(T1.date) as date FROM study.deaths T1 WHERE T1.id "+whereClause+" AND T1.qcstate.publicdata = true GROUP BY T1.Id",
+            scope: this,
+            success: function(data){
+                if(!data.rows.length){
+                    return;
+                }
+
+                Ext.each(data.rows, function(r){
+                    if(demographics[r.Id].death && demographics[r.Id].death != r.date){
+                        console.log('death doesnt match for: '+r.Id);
+                    }
+                    demographics[r.Id].death = new Date(r.date);
+                }, this);
+            },
+            failure: EHR.onFailure
+        });
+
+        Ext.each(publicParticipantsModified, function(id){
+            var status;
+            var forceUpdate = false;
+
+            var r = demographics[id];
+
+            //when called by birth or death, we allow the script to pass in
+            //the values of the rows being changed
+            //this saves a duplicate insert/update on demographics
+            if(valuesMap && valuesMap[id]){
+                if(valuesMap[id].birth && valuesMap[id].birth != r.birth){
+                    r.birth = valuesMap[id].birth;
+                    r.updateBirth = true;
+                    forceUpdate = true;
+                }
+
+                if(valuesMap[id].death && valuesMap[id].death != r.death){
+                    r.death = valuesMap[id].death;
+                    r.updateDeath = true;
+                    forceUpdate = true;
+                }
+            }
+
+            if (r['death'])
+                status = 'Dead';
+            else if (r['departure'] && (!r['arrival'] || r['departure'] > r['arrival']))
+                status = 'Shipped';
+            else if ((r['birth'] || r['arrival']) && (!r['departure'] || r['departure'] < r['arrival']))
+                status = 'Alive';
+            else if (!r['birth'] && !r['arrival'])
+                status = 'No Record';
+            else
+                status = 'ERROR';
+
+//console.log(id+' status: '+status)
+
+            //NOTE: this is only used when called by the demographics validation script,
+            // which passes the row object directly, instead of using updateRows below
+            if(demographicsRow && id == demographicsRow.Id){
+                demographicsRow.calculated_status = status;
+                return;
+            }
+
+            if(status != r.calculated_status || forceUpdate){
+                //the following means no record exists in study.demographics for this ID
+                //TODO: maybe create row or send email?
+                if(!r.lsid){
+                    return;
+                }
+
+                var newRow = {Id: id, lsid: r.lsid, calculated_status: status};
+
+                if(r.updateBirth)
+                    newRow.birth = r.birth;
+                if(r.updateDeath)
+                    newRow.death = r.death;
+
+                toUpdate.push(newRow);
+            }
+        }, this);
+
+        if(toUpdate.length && !demographicsRow){
+            LABKEY.Query.updateRows({
+                schemaName: 'study',
+                queryName: 'demographics',
+                rows: toUpdate,
+                //success: function(data){
+                    //console.log('Success updating demographics status field');
+                //},
+                failure: EHR.onFailure
+            });
+        }
+
     }
 };
 
 EHR.ETL = {
     fixRow: function(row, errors){
-        console.log('Running ETL repair on mySQL data:');
-        console.log(row);
-
         //inserts a date if missing
         EHR.ETL.addDate(row, errors);
 
@@ -939,9 +1150,10 @@ EHR.ETL = {
             EHR.addError(errors, 'date', 'Missing Date', 'ERROR');
         }
     },
-    fixBiopsyCase: function(row, errors){
+    fixPathCaseNo: function(row, errors, code){
         //we try to clean up the biopsy ID
-        var re = /([0-9]+)(b)([0-9]+)/i;
+        var re = new RegExp('([0-9]+)('+code+')([0-9]+)', 'i');
+
         var match = row.caseno.match(re);
         if (!match){
             EHR.addError(errors, 'caseno', 'Error in CaseNo: '+row.caseno, 'WARN');
@@ -1069,46 +1281,48 @@ EHR.ETL = {
         if (c[1])
             row.score = c[1];
     },
-    fixNecropsyCase: function(row, errors){
-        //we try to clean up the caseno
-        var re = /([0-9]+)(a|c)([0-9]+)/i;
-        var match = row.caseno.match(re);
-        if (!match){
-            EHR.addError(errors, 'caseno', 'Malformed CaseNo: '+row.caseno, 'WARN');
-        }
-        else {
-            //fix the year
-            if (match[1].length == 2){
-                //kind of a hack. we just assume records wont be that old
-                if (match[1] < 20)
-                    match[1] = '20' + match[1];
-                else
-                    match[1] = '19' + match[1];
-            }
-            else if (match[1].length == 4){
-                //these values are ok
-            }
-            else {
-                EHR.addError(errors, 'caseno', 'Unsure how to correct year in CaseNo: '+match[1], 'WARN');
-            }
-
-            //standardize number to 3 digits
-            if (match[3].length != 3){
-                var tmp = match[3];
-                for (var i=0;i<(3-match[3].length);i++){
-                    tmp = '0' + tmp;
-                }
-                match[3] = tmp;
-            }
-            row.caseno = match[1] + match[2] + match[3];
-        }
-    },
+//    fixNecropsyCase: function(row, errors){
+//        //we try to clean up the caseno
+//        var re = /([0-9]+)(a|c)([0-9]+)/i;
+//        var match = row.caseno.match(re);
+//        if (!match){
+//            EHR.addError(errors, 'caseno', 'Malformed CaseNo: '+row.caseno, 'WARN');
+//        }
+//        else {
+//            //fix the year
+//            if (match[1].length == 2){
+//                //kind of a hack. we just assume records wont be that old
+//                if (match[1] < 20)
+//                    match[1] = '20' + match[1];
+//                else
+//                    match[1] = '19' + match[1];
+//            }
+//            else if (match[1].length == 4){
+//                //these values are ok
+//            }
+//            else {
+//                EHR.addError(errors, 'caseno', 'Unsure how to correct year in CaseNo: '+match[1], 'WARN');
+//            }
+//
+//            //standardize number to 3 digits
+//            if (match[3].length != 3){
+//                var tmp = match[3];
+//                for (var i=0;i<(3-match[3].length);i++){
+//                    tmp = '0' + tmp;
+//                }
+//                match[3] = tmp;
+//            }
+//            row.caseno = match[1] + match[2] + match[3];
+//        }
+//    },
     fixSurgMajor: function(row, errors){
         switch (row.major){
+            case true:
             case 'y':
             case 'Y':
                 row.major = true;
                 break;
+            case false:
             case 'n':
             case 'N':
                 row.major = false;
@@ -1119,37 +1333,62 @@ EHR.ETL = {
     },
     remarkToSoap: function(row, errors){
         //convert existing SOAP remarks into 3 cols
+        var origRemark = row.remark;
         if(row.remark && row.remark.match(/(^s\/o: )/)){
-            console.log('converting string into SOAP Note');
-            var so = row.remark.match(/(^s\/o: )(.*)(a:|p:|a\/p:)/);
+            var so = row.remark.match(/(^s\/o: )(.*?)( a:| p:| a\/p:)/);
             if(!so){
+                //this is a remark beginning with s/o:, but without a or p
                 row.so = row.remark;
                 row.remark = null;
             }
             else {
                 row.so = so[2];
+                row.so = row.so.replace(/^\s+|\s+$/g,"");
 
-                var a = row.remark.match(/(a:|p:|a\/p:)(.*)( p:|$)/);
+                row.remark = row.remark.replace(/^s\/o: /, '');
+                row.remark = row.remark.replace(so[2], '');
+
+                var a = row.remark.match(/^( a:| a\/p:)(.*?)( p:|$)/);
                 if(a){
                     if(a[2]){
                         row.a = a[2];
-                    }
-                    else {
-                        console.log(row.remark);
-                        console.log(a)
-                    }
-                }
+                        row.a = row.a.replace(/^\s+|\s+$/g,"");
 
-                var p = row.remark.match(/( p: )(.*)$/);
+                        row.remark = row.remark.replace(/^( a:| a\/p:)/, '');
+                        row.remark = row.remark.replace(a[2], '');
+                    }
+//                    else {
+//                        console.log('a not found')
+//                        console.log(origRemark);
+//                    }
+                }
+//                else {
+//                    console.log('a not found')
+//                    console.log(origRemark);
+//                }
+
+                //apparently some rows can lack an assessment
+                var p = row.remark.match(/^( p: )(.*)$/);
                 if(p){
                     if(p[2]){
                         row.p = p[2];
+                        row.p = row.p.replace(/^\s+|\s+$/g,"");
+
+                        row.remark = row.remark.replace(/^( p: )/, '');
+                        row.remark = row.remark.replace(p[2], '');
+                        row.remark = row.remark.replace(/^\s+|\s+$/g,"");
                     }
-                    else {
-                        console.log(row.remark);
-                        console.log(p)
-                    }
+//                    else {
+//                        console.log('p not found')
+//                        console.log(origRemark);
+//                    }
                 }
+
+            }
+
+            if(row.remark){
+                console.log('REMARK REMAINING:');
+                console.log(row.remark)
             }
         }
     }
@@ -1192,13 +1431,12 @@ EHR.utils.getQCStateMap = function(config){
 
 };
 
-EHR.utils.getTablePermissions = function(config) {
+EHR.utils.getDatasetPermissions = function(config) {
     if(!config || !config.success){
         throw "Must provide a success callback";
     }
-    if(!config.queries || !config.queries.length){
-        throw "config.queries must be an array of queries";
-    }
+
+    var schemaName = 'study';
 
     var schemaMap;
     var qcMap;
@@ -1232,33 +1470,35 @@ EHR.utils.getTablePermissions = function(config) {
             };
             qcRow.effectivePermissions = {};
 
-            Ext.each(config.queries, function(q){
-                if(schemaMap.schemas[q.schemaName] && schemaMap.schemas[q.schemaName].queries[q.queryName]){
-                    var query = schemaMap.schemas[q.schemaName].queries[q.queryName];
+            if(schemaMap.schemas[schemaName] && schemaMap.schemas[schemaName].queries){
+                var queryCount = 0;
+                for(var queryName in schemaMap.schemas[schemaName].queries){
+                    var query = schemaMap.schemas[schemaName].queries[queryName];
+                    queryCount++;
                     query.permissionsByQCState = query.permissionsByQCState || {};
                     query.permissionsByQCState[qcState] = {};
 
                     //iterate over each permission this user has on this query
                     Ext.each(query.effectivePermissions, function(p){
                         if(p == qcRow.insertPermissionName){
-                            qcRow.permissionsByQuery.insert.push(q.queryName);
+                            qcRow.permissionsByQuery.insert.push(queryName);
                             query.permissionsByQCState[qcState].insert = true;
                         }
                         if(p == qcRow.updatePermissionName){
-                            qcRow.permissionsByQuery.update.push(q.queryName);
+                            qcRow.permissionsByQuery.update.push(queryName);
                             query.permissionsByQCState[qcState].update = true;
                         }
                         if(p == qcRow.deletePermissionName){
-                            qcRow.permissionsByQuery['delete'].push(q.queryName);
+                            qcRow.permissionsByQuery['delete'].push(queryName);
                             query.permissionsByQCState[qcState]['delete'] = true;
                         }
                     }, this);
                 }
-            }, this);
+            }
 
-            qcRow.effectivePermissions.insert = (qcRow.permissionsByQuery.insert.length == config.queries.length);
-            qcRow.effectivePermissions.update = (qcRow.permissionsByQuery.update.length == config.queries.length);
-            qcRow.effectivePermissions['delete'] = (qcRow.permissionsByQuery['delete'].length == config.queries.length);
+            qcRow.effectivePermissions.insert = (qcRow.permissionsByQuery.insert.length == queryCount);
+            qcRow.effectivePermissions.update = (qcRow.permissionsByQuery.update.length == queryCount);
+            qcRow.effectivePermissions['delete'] = (qcRow.permissionsByQuery['delete'].length == queryCount);
         }
 
         function hasPermission(qcStateLabel, permission, queries){
@@ -1270,12 +1510,7 @@ EHR.utils.getTablePermissions = function(config) {
 
             //if schemaName not supplied, we return based on all queries
             if(!queries.length){
-                if(!qcMap.label[qcState].effectivePermissions ||
-                   !qcMap.label[qcState].effectivePermissions[permission]
-                )
-                    return false;
-                else
-                    return true;
+                throw 'Must provide an array of query objects'
             }
 
             var result = true;
@@ -1315,5 +1550,15 @@ EHR.utils.getTablePermissions = function(config) {
     onSuccess();
 };
 
+//generic error handler
+EHR.utils.onError = function(error){
+    console.log('ERROR: ' + error.exception);
+    console.log(error);
 
+    var logErrors = 0;
+
+     if(logErrors){
+        EHR.logError(error);
+     }
+};
 

@@ -1,14 +1,14 @@
 <customView xmlns="http://labkey.org/data/xml/queryCustomView">
     <columns>
         <column name="Id"/>
-        <!--<column name="Status/Status">-->
+        <!--<column name="Dataset/Demographics/Status">-->
             <!--<properties>-->
-                <!--<property name="columnTitle" value="Calculated Status"/>-->
+                <!--<property name="columnTitle" value="Status"/>-->
             <!--</properties>-->
         <!--</column>-->
-        <column name="Dataset/Demographics/Status">
+        <column name="Dataset/Demographics/calculated_status">
             <properties>
-                <property name="columnTitle" value="Status"/>
+                <property name="columnTitle" value="Calculated Status"/>
             </properties>
         </column>
         <column name="Dataset/Demographics/Gender">
@@ -16,7 +16,12 @@
                 <property name="columnTitle" value="Gender"/>
             </properties>
         </column>
-        <column name="Dataset/Demographics/Avail">
+        <column name="currentAssignments/projects">
+            <properties>
+                <property name="columnTitle" value="Active Assignments"/>
+            </properties>
+        </column>
+        <column name="currentAssignments/Availability">
             <properties>
                 <property name="columnTitle" value="Avail"/>
             </properties>
@@ -26,22 +31,27 @@
                 <property name="columnTitle" value="Birth"/>
             </properties>
         </column>
-        <column name="Dataset/Demographics/Room">
+        <column name="age/AgeInYears">
+            <properties>
+                <property name="columnTitle" value="Age (Years)"/>
+            </properties>
+        </column>
+        <column name="curLocation/Room">
             <properties>
                 <property name="columnTitle" value="Room"/>
             </properties>
         </column>
-        <column name="Dataset/Demographics/Cage">
+        <column name="curLocation/Cage">
             <properties>
                 <property name="columnTitle" value="Cage"/>
             </properties>
         </column>
-        <column name="Dataset/Demographics/Cond">
+        <column name="curLocation/Cond">
             <properties>
                 <property name="columnTitle" value="Condition"/>
             </properties>
         </column>
-        <column name="Dataset/Demographics/weight">
+        <column name="MostRecentWeight/MostRecentWeight">
             <properties>
                 <property name="columnTitle" value="Current Weight"/>
             </properties>
@@ -51,14 +61,9 @@
                 <property name="columnTitle" value="Medical"/>
             </properties>
         </column>
-        <column name="activeAssignments/ActiveAssignments">
+        <column name="IrregularObs/previousObs">
             <properties>
-                <property name="columnTitle" value="Active Assignments"/>
-            </properties>
-        </column>
-        <column name="IrregularObs/yesterdaysObs">
-            <properties>
-                <property name="columnTitle" value="Yesterdays Obs"/>
+                <property name="columnTitle" value="Yesterday's Obs"/>
             </properties>
         </column>
     </columns>

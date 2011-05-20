@@ -362,7 +362,7 @@
         <ns:fk>
             <!--<ns:fkFolderPath>/wnprc/ehr/</ns:fkFolderPath>-->
             <ns:fkDbSchema>core</ns:fkDbSchema>
-            <ns:fkTable>Principals</ns:fkTable>
+            <ns:fkTable>PrincipalsWithoutAdmin</ns:fkTable>
             <ns:fkColumnName>userid</ns:fkColumnName>
         </ns:fk>
       </ns:column>
@@ -372,7 +372,7 @@
         <ns:fk>
             <!--<ns:fkFolderPath>/wnprc/ehr/</ns:fkFolderPath>-->
             <ns:fkDbSchema>core</ns:fkDbSchema>
-            <ns:fkTable>Principals</ns:fkTable>
+            <ns:fkTable>PrincipalsWithoutAdmin</ns:fkTable>
             <ns:fkColumnName>userid</ns:fkColumnName>
         </ns:fk>
         <ns:scale>50</ns:scale>
@@ -635,11 +635,11 @@
       <ns:column columnName="userid">
         <ns:datatype>varchar</ns:datatype>
         <ns:columnTitle>UserID</ns:columnTitle>
-        <ns:fk>
-          <ns:fkDbSchema>core</ns:fkDbSchema>
-          <ns:fkTable>Users</ns:fkTable>
-          <ns:fkColumnName>UserId</ns:fkColumnName>
-        </ns:fk>
+        <!--<ns:fk>-->
+          <!--<ns:fkDbSchema>core</ns:fkDbSchema>-->
+          <!--<ns:fkTable>Users</ns:fkTable>-->
+          <!--<ns:fkColumnName>UserId</ns:fkColumnName>-->
+        <!--</ns:fk>-->
       </ns:column>
       <ns:column columnName="qcstate">
         <ns:nullable>true</ns:nullable>
@@ -923,7 +923,7 @@
         <ns:scale>100</ns:scale>
           <ns:fk>
             <ns:fkDbSchema>core</ns:fkDbSchema>
-            <ns:fkTable>Principals</ns:fkTable>
+            <ns:fkTable>PrincipalsWithoutAdmin</ns:fkTable>
             <ns:fkColumnName>userid</ns:fkColumnName>
           </ns:fk>
       </ns:column>
@@ -1030,7 +1030,8 @@
       </ns:column>
       <ns:column columnName="configJson">
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>text</ns:datatype>
+        <ns:datatype>varchar</ns:datatype>
+        <ns:columnTitle>JSON Config</ns:columnTitle>
         <ns:scale>255</ns:scale>
       </ns:column>
       <ns:column columnName="container">
@@ -1172,7 +1173,14 @@
       <ns:column columnName="description">
         <ns:nullable>true</ns:nullable>
         <ns:datatype>text</ns:datatype>
-        <ns:scale>32767</ns:scale>
+        <ns:scale>255</ns:scale>
+      </ns:column>
+      <ns:column columnName="configjson">
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>varchar</ns:datatype>
+        <ns:columnTitle>JSON Config</ns:columnTitle>
+        <ns:inputType>textarea</ns:inputType>
+        <ns:scale>255</ns:scale>
       </ns:column>
       <ns:column columnName="container">
         <ns:isUserEditable>false</ns:isUserEditable>

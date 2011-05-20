@@ -36,20 +36,9 @@ Ext.onReady(function ()
 
 
 
-    var start = new Date();
-    console.log(start)
-    LABKEY.Security.getSecurableResources({
-        includeEffectivePermissions : true,
-        scope: this,
-        success : function(result){
-            var stop = new Date();
-            console.log('Time: '+(stop-start))
-        }
-    });
+    var remark = 's/o: Cage and both animals reported for diarrhea: pan cleaned, no diarrhea observed.  Animal take treats readily  Active.  BAR. a: Diarrhea unconfirmed. p: Monitor as reported.  AMS'
 
 });
-
-
 
 </script>
     <div id='testDiv'></div>

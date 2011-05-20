@@ -23,12 +23,35 @@ EHR.ext.Buttons = {
     SUBMIT: function(){return {
         text: 'Submit Final',
         name: 'submit',
-        requiredQC: 'Approved',
-        targetQC: 'Approved',
+        requiredQC: 'Completed',
+        targetQC: 'Completed',
         errorThreshold: 'INFO',
-        //successURL: LABKEY.ActionURL.buildURL("ehr", "dataEntry.view"),
+        successURL: LABKEY.ActionURL.buildURL("ehr", "dataEntry.view"),
         disabled: true,
         ref: 'submitBtn',
+        handler: function(o){
+            Ext.Msg.confirm('Finalize Form', 'You are about to finalize this form.  Do you want to do this?', function(v){
+                if(v=='yes')
+                    this.onSubmit(o);
+            }, this);
+        },
+        disableOn: 'WARN',
+        scope: this
+        }
+    },
+    SUBMITANDNEXT: function(){return {
+        text: 'Submit And Next',
+        name: 'submit',
+        requiredQC: 'Completed',
+        targetQC: 'Completed',
+        errorThreshold: 'INFO',
+        successURL: LABKEY.ActionURL.buildURL("ehr", LABKEY.ActionURL.getAction(), null, {
+            schemaName: LABKEY.ActionURL.getParameter('schemaName'),
+            queryName: LABKEY.ActionURL.getParameter('queryName'),
+            formtype: LABKEY.ActionURL.getParameter('formtype')
+        }),
+        disabled: true,
+        ref: 'submitNextBtn',
         handler: this.onSubmit,
         disableOn: 'WARN',
         scope: this
@@ -48,6 +71,19 @@ EHR.ext.Buttons = {
         scope: this
         }
     },
+    VALIDATE: function(){return {
+        text: 'Validate',
+        name: 'validate',
+        //targetQC: 'In Progress',
+        //errorThreshold: 'WARN',
+        //successURL: LABKEY.ActionURL.buildURL("ehr", "dataEntry.view"),
+        disabled: false,
+        ref: 'validateBtn',
+        handler: this.validateAll,
+        //disableOn: 'ERROR',
+        scope: this
+        }
+    },
     DISCARD: function(){return {
         text: 'Discard',
         name: 'discard',
@@ -55,20 +91,11 @@ EHR.ext.Buttons = {
         targetQC: 'Delete Requested',
         requiredQC: 'Delete Requested',
         successURL: LABKEY.ActionURL.buildURL("ehr", "dataEntry.view"),
-        handler: this.discard,
+        handler: this.requestDelete,
+        //handler: this.onSubmit,
         scope: this
         }
     },
-//    CLOSE: function(){return {
-//        text: 'Close',
-//        name: 'close',
-//        ref: 'closeBtn',
-//        handler: function(){
-//            window.location = LABKEY.ActionURL.buildURL('ehr','dataEntry.view')
-//        },
-//        scope: this
-//        }
-//    },
     CLOSE: function(){return {
         text: 'Save & Close',
         name: 'closeBtn',
@@ -111,6 +138,7 @@ EHR.ext.Buttons = {
         text: 'Approve Request',
         name: 'approve',
         targetQC: 'Request: Approved',
+        requiredQC: 'Request: Approved',
         errorThreshold: 'WARN',
         successURL: LABKEY.ActionURL.buildURL("ehr", "dataEntry.view"),
         disabled: true,
@@ -123,8 +151,8 @@ EHR.ext.Buttons = {
     EDIT: function(){return {
         text: 'Edit',
         name: 'edit',
-        targetQC: 'Approved',
-        requiredQC: 'Approved',
+        targetQC: 'Completed',
+        requiredQC: 'Completed',
         errorThreshold: 'WARN',
         handler: function(){
             window.location = LABKEY.ActionURL.buildURL('ehr','manageTask.view', null, {formtype:this.formType, taskid: this.formUUID});
@@ -183,8 +211,8 @@ Ext.extend(EHR.ext.ImportPanelBase, Ext.Panel, {
                 return this.warningMessage || 'we should set a warning message somewhere';
         }, this);
 
-        EHR.utils.getTablePermissions({
-            queries: this.getQueries(),
+        EHR.utils.getDatasetPermissions({
+            //queries: this.getQueries(),
             success: this.calculatePermissions,
             failure: EHR.utils.onError,
             scope: this
@@ -242,6 +270,7 @@ Ext.extend(EHR.ext.ImportPanelBase, Ext.Panel, {
         }
         else {
             this.allowableButtons = [
+                'VALIDATE',
                 'SAVEDRAFT',
                 'REVIEW',
                 'SUBMIT',
@@ -332,6 +361,7 @@ Ext.extend(EHR.ext.ImportPanelBase, Ext.Panel, {
     configureHeaderItem: function(c){
         EHR.utils.rApplyIf(c, {
             bindConfig: {
+                createRecordOnLoad: true,
                 autoBindRecord: true,
                 showDeleteBtn: false
             }
@@ -374,8 +404,6 @@ Ext.extend(EHR.ext.ImportPanelBase, Ext.Panel, {
         if(this.readOnly){
             c.type = 'ehr-qwppanel';
         }
-
-        c.storeConfig.permissionMap = this.permissionMap.getQueryPermissions(c.schemaName, c.queryName);
     },
     applyTemplates: function(templates){
         templates = templates.split(',');
@@ -431,6 +459,29 @@ Ext.extend(EHR.ext.ImportPanelBase, Ext.Panel, {
         this.store.commitChanges.defer(300, this.store, [extraContext, true]);
     },
 
+    requestDelete: function(o)
+    {
+        Ext.Msg.wait("Discarding Form...");
+
+        //add a context flag to the request to saveRows
+        var extraContext = {
+            targetQC : 'Delete Requested',
+            errorThreshold: o.errorThreshold,
+            successURL : o.successURL,
+            importPathway: 'ehr-importPanel'
+        };
+
+        this.store.each(function(s){
+            s.removePhantomRecords();
+        }, this);
+
+        //we delay this event so that any modified fields can fire their blur events and/or commit changes
+        this.store.commitChanges.defer(300, this.store, [extraContext, true]);
+
+        //NOTE: since this will navigate away from this page, we dont need to bother removing
+        //these records from the store
+    },
+
     onStoreValidation: function(storeCollection, maxSeverity)
     {
         if(debug && maxSeverity)
@@ -443,6 +494,12 @@ Ext.extend(EHR.ext.ImportPanelBase, Ext.Panel, {
                 else
                     item.setDisabled(false);
             }
+        }, this);
+    },
+
+    validateAll: function(){
+        this.store.each(function(s){
+            s.validateRecords(s, null, true, {operation: 'edit'});
         }, this);
     },
 
@@ -463,11 +520,18 @@ Ext.extend(EHR.ext.ImportPanelBase, Ext.Panel, {
             {
                 if (v == 'yes')
                 {
-                    this.store.each(function(s){
-                        s.deleteRecords(s.getAllRecords());
-                    }, this);
-                    //window.onbeforeunload = null;
-                    //window.location = LABKEY.ActionURL.buildURL("ehr", "dataEntry.view");
+                    Ext.Msg.wait("Deleting Records...");
+
+                    //add a context flag to the request to saveRows
+                    var extraContext = {
+                        targetQC : o.targetQC,
+                        errorThreshold: o.errorThreshold,
+                        successURL : LABKEY.ActionURL.buildURL("ehr", "dataEntry.view"),
+                        importPathway: 'ehr-importPanel'
+                    };
+
+                    //we delay this event so that any modified fields can fire their blur events and/or commit changes
+                    this.store.deleteAllRecords.defer(300, this.store, [extraContext]);
                 }
             },
         this);
@@ -601,6 +665,7 @@ EHR.ext.SimpleImportPanel = Ext.extend(EHR.ext.ImportPanelBase, {
         EHR.ext.SimpleImportPanel.superclass.configureItem.apply(this, arguments);
         c.bindConfig.showDeleteBtn = false;
         c.bindConfig.bindOnChange = true;
+        c.bindConfig.autoBindRecord = true;
 
         if(c.keyField && c.keyValue){
             c.storeConfig.filterArray = [LABKEY.Filter.create(c.keyField, c.keyValue, LABKEY.Filter.Types.EQUAL)];
@@ -613,3 +678,4 @@ EHR.ext.SimpleImportPanel = Ext.extend(EHR.ext.ImportPanelBase, {
     }
 
 });
+

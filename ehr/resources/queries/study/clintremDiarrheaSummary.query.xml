@@ -21,7 +21,7 @@
                     <column columnName="Sun">
                         <datatype>varchar</datatype>
                         <displayWidth>40</displayWidth>
-                        <url>/ehr/executeQuery.view?schemaName=study&amp;
+                        <url>/query/executeQuery.view?schemaName=study&amp;
                             query.queryName=clintremDiarrhea&amp;
                             query.Id~eq=${id}&amp;
                             query.Year~eq=${year}&amp;
@@ -31,7 +31,7 @@
                     <!--<column columnName="Mon">-->
                         <!--<datatype>varchar</datatype>-->
                         <!--<displayWidth>40</displayWidth>-->
-                        <!--<url>/ehr/executeQuery.view?schemaName=study&amp;-->
+                        <!--<url>/query/executeQuery.view?schemaName=study&amp;-->
                             <!--query.queryName=clintremDiarrhea&amp;-->
                             <!--query.Id~eq=${id}&amp;-->
                             <!--query.Year~eq=${year}&amp;-->
@@ -41,7 +41,7 @@
                     <!--<column columnName="Tues">-->
                         <!--<datatype>varchar</datatype>-->
                         <!--<displayWidth>40</displayWidth>-->
-                        <!--<url>/ehr/executeQuery.view?schemaName=study&amp;-->
+                        <!--<url>/query/executeQuery.view?schemaName=study&amp;-->
                             <!--query.queryName=clintremDiarrhea&amp;-->
                             <!--query.Id~eq=${id}&amp;-->
                             <!--query.Year~eq=${year}&amp;-->
@@ -51,7 +51,7 @@
                     <!--<column columnName="Weds">-->
                         <!--<datatype>varchar</datatype>-->
                         <!--<displayWidth>40</displayWidth>-->
-                        <!--<url>/ehr/executeQuery.view?schemaName=study&amp;-->
+                        <!--<url>/query/executeQuery.view?schemaName=study&amp;-->
                             <!--query.queryName=clintremDiarrhea&amp;-->
                             <!--query.Id~eq=${id}&amp;-->
                             <!--query.Year~eq=${year}&amp;-->
@@ -61,7 +61,7 @@
                     <!--<column columnName="Thurs">-->
                         <!--<datatype>varchar</datatype>-->
                         <!--<displayWidth>40</displayWidth>-->
-                        <!--<url>/ehr/executeQuery.view?schemaName=study&amp;-->
+                        <!--<url>/query/executeQuery.view?schemaName=study&amp;-->
                             <!--query.queryName=clintremDiarrhea&amp;-->
                             <!--query.Id~eq=${id}&amp;-->
                             <!--query.Year~eq=${year}&amp;-->
@@ -71,7 +71,7 @@
                     <!--<column columnName="Fri">-->
                         <!--<datatype>varchar</datatype>-->
                         <!--<displayWidth>40</displayWidth>-->
-                        <!--<url>/ehr/executeQuery.view?schemaName=study&amp;-->
+                        <!--<url>/query/executeQuery.view?schemaName=study&amp;-->
                             <!--query.queryName=clintremDiarrhea&amp;-->
                             <!--query.Id~eq=${id}&amp;-->
                             <!--query.Year~eq=${year}&amp;-->
@@ -81,7 +81,7 @@
                     <!--<column columnName="Sat">-->
                         <!--<datatype>varchar</datatype>-->
                         <!--<displayWidth>40</displayWidth>-->
-                        <!--<url>/ehr/executeQuery.view?schemaName=study&amp;-->
+                        <!--<url>/query/executeQuery.view?schemaName=study&amp;-->
                             <!--query.queryName=clintremDiarrhea&amp;-->
                             <!--query.Id~eq=${id}&amp;-->
                             <!--query.Year~eq=${year}&amp;-->

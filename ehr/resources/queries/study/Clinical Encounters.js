@@ -7,6 +7,34 @@
 var {EHR, LABKEY, Ext, console, init, beforeInsert, afterInsert, beforeUpdate, afterUpdate, beforeDelete, afterDelete, complete} = require("ehr/validation");
 
 
+function onETL(row, errors){
+    //we grab the first sentence as title
+    if(row.type == 'Surgery' && !row.title && row.remark && row.remark.length > 200){
+        var match = row.remark.match(/^(.*?)\./);
+        if(match && match[1] && match[1].length < 35){
+            var title = match[1];
+
+            if(!title.match(/^\(con/) && !title.match(/^cont/)){
+                row.title = title;
+            }
+        }
+    }
+
+    EHR.ETL.fixSurgMajor(row, errors);
+
+    //applies to biopsy / necropsy
+    if(row.caseno){
+        var code;
+        if(row.type=='Necropsy')
+            code='a|c|e';
+        else if (row.type == 'Biopsy')
+            code = 'b';
+
+        if(code)
+            EHR.ETL.fixPathCaseNo(row, errors, code);
+    }
+
+}
 
 
 
@@ -16,10 +44,12 @@ function setDescription(row, errors){
 
     if(row.type)
         description.push('Type: ' + row.type);
-    if(row.type)
+    if(row.title)
         description.push('Title: ' + row.title);
-//    if(row.userid)
-//        description.push('UserId: ' + row.userid);
+    if(row.major)
+        description.push('Is Major?: '+row.major);
+    if(row.performedby)
+        description.push('Performed By: ' + row.performedby);
     if(row.enddate)
         description.push('Completed: ' + row.enddate);
 

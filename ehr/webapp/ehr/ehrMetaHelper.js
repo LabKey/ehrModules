@@ -167,7 +167,7 @@ EHR.ext.metaHelper = {
                 //TODO: it would be better to put this in LABKEY.ext.Combo, so this tpl doesnt conflict with non-combo editors
                 tpl: function(){var tpl = new Ext.XTemplate(
                     '<tpl for=".">' +
-                    '<div class="x-combo-list-item">{[values["' + l.keyColumn + '"]!==null ? values["' + l.displayColumn + '"] : "'+ (Ext.isDefined(this.lookupNullCaption) ? this.lookupNullCaption : '[none2]') +'"]}' +
+                    '<div class="x-combo-list-item">{[values["' + l.keyColumn + '"]!==null ? values["' + l.displayColumn + '"] : "'+ (Ext.isDefined(this.lookupNullCaption) ? this.lookupNullCaption : '[none]') +'"]}' +
                     //allow a flag to display both display and value fields
                     '<tpl if="'+meta.showValueInList+'">{[values["' + l.keyColumn + '"] ? " ("+values["' + l.keyColumn + '"]+")" : ""]}</tpl>'+
                     '&nbsp;</div></tpl>'
@@ -289,8 +289,9 @@ EHR.ext.metaHelper = {
                 columns.push(l.keyColumn);
             if (l.displayColumn && l.displayColumn != l.keyColumn)
                 columns.push(l.displayColumn);
-            if (columns.length == 0)
+            if (columns.length == 0){
                 columns = ['*'];
+            }
             config.columns = columns;
         }
 
@@ -459,7 +460,7 @@ if(meta.lookup.queryName=='snomed'){
 
             //wrap in <a> if url is present in the record's original JSON
             if(col.showLink !== false && record.json && record.json[meta.name] && record.json[meta.name].url)
-                return "<a href=\"" + record.json[meta.name].url + "\">" + displayValue + "</a>";
+                return "<a target=\"_new\" href=\"" + record.json[meta.name].url + "\">" + displayValue + "</a>";
             else
                 return displayValue;
         };

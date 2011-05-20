@@ -30,13 +30,13 @@ from study.obs o
 
 WHERE
   o.isIrregular = true
-  AND o.qcstate.publicdata = true
+  --AND o.qcstate.publicdata = true
 
 UNION ALL
 
 SELECT
 
-null as id,
+c.id as id,
 c.RoomAtTime as room,
 c.CageAtTime as cage,
 c.date,
@@ -49,13 +49,13 @@ null as breeding,
 null as other,
 null as tlocation,
 null as otherbehavior,
-c.Remark,
+c.remark,
 null as dataset,
 c.description,
 c.qcstate
 
 FROM study."Cage Observations" c
-WHERE c.qcstate.publicdata = true
+--WHERE c.qcstate.publicdata = true
 
 
 

@@ -1,4 +1,21 @@
 <customView xmlns="http://labkey.org/data/xml/queryCustomView">
+   <columns>
+       <column name="Id" />
+       <column name="Date" />
+       <column name="QCState" />
+       <column name="Score" />
+       <column name="Cause" />
+       <column name="head" />
+       <column name="shoulders" />
+       <column name="upperarms" />
+       <column name="lowerarms" />
+       <column name="hips" />
+       <column name="rump" />
+       <column name="dorsum" />
+       <column name="Upperlegs" />
+       <column name="lowerlegs" />
+       <column name="other" />
+   </columns>
    <sorts>
        <sort column="date" descending="true"/>
    </sorts>

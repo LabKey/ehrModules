@@ -55,7 +55,8 @@ Ext.override(Ext.form.RadioGroup, {
     setValueForItem: function(val){
         val = (val===null ? '' : val);
         Ext.form.RadioGroup.superclass.setValueForItem.call(this, val);
-    }
+    },
+    blankText: 'This field is required'
 });
 
 

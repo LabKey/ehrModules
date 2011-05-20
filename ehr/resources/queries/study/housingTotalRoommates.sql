@@ -14,8 +14,6 @@ SELECT
 
 FROM study.housingRoommates h1
 
---where h1.id='r95061'
-
 GROUP BY
   h1.lsid
 

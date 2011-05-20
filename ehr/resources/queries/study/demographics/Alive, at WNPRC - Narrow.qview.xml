@@ -1,44 +1,49 @@
 <customView xmlns="http://labkey.org/data/xml/queryCustomView">
     <columns>
         <column name="Id"/>
-        <column name="Id/Dataset/Demographics/Gender">
+        <column name="Gender">
             <properties>
                 <property name="columnTitle" value="Gender"/>
             </properties>
         </column>
-        <column name="Id/Dataset/Demographics/Status">
+        <!--<column name="Status">-->
+            <!--<properties>-->
+                <!--<property name="columnTitle" value="Status"/>-->
+            <!--</properties>-->
+        <!--</column>-->
+        <column name="calculated_status">
             <properties>
                 <property name="columnTitle" value="Status"/>
             </properties>
         </column>
-        <column name="Id/Dataset/Demographics/Room">
+        <column name="Id/curLocation/Room">
             <properties>
                 <property name="columnTitle" value="Room"/>
             </properties>
         </column>
-        <column name="Id/Dataset/Demographics/Cage">
+        <column name="Id/curLocation/Cage">
             <properties>
                 <property name="columnTitle" value="Cage"/>
             </properties>
         </column>
-        <column name="Id/Dataset/Demographics/Cond">
+        <column name="Id/curLocation/Cond">
             <properties>
                 <property name="columnTitle" value="Condition"/>
             </properties>
         </column>
-        <column name="Id/Dataset/Demographics/weight">
+        <column name="Id/MostRecentWeight/MostRecentWeight">
             <properties>
                 <property name="columnTitle" value="Current Weight"/>
             </properties>
         </column>
-        <column name="Id/Dataset/Demographics/wdate">
+        <column name="Id/MostRecentWeight/MostRecentWeightDate">
             <properties>
                 <property name="columnTitle" value="Weight Date"/>
             </properties>
         </column>
     </columns>
     <filters>
-        <filter column="id/Status/Status" operator="eq" value="Alive"/>
+        <filter column="calculated_status" operator="eq" value="Alive"/>
         <!--<filter column="qcstate/publicdata" operator="eq" value="true"/>-->
     </filters>
     <sorts>

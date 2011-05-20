@@ -51,9 +51,6 @@
                         <isHidden>false</isHidden>
                         <displayWidth>200</displayWidth>
                     </column>
-                    <!--<column columnName="qcstate">-->
-                        <!--<isHidden>true</isHidden>-->
-                    <!--</column>-->
                 </columns>
             </table>
         </tables>

@@ -1,22 +1,27 @@
 <customView xmlns="http://labkey.org/data/xml/queryCustomView">
     <columns>
         <column name="Id"/>
-        <column name="Id/Status/Status">
-            <properties>
-                <property name="columnTitle" value="Calculated Status"/>
-            </properties>
-        </column>
-        <column name="Status">
+        <column name="calculated_status">
             <properties>
                 <property name="columnTitle" value="Status"/>
             </properties>
         </column>
+        <!--<column name="Status">-->
+            <!--<properties>-->
+                <!--<property name="columnTitle" value="Status"/>-->
+            <!--</properties>-->
+        <!--</column>-->
         <column name="Gender">
             <properties>
                 <property name="columnTitle" value="Gender"/>
             </properties>
         </column>
-        <column name="Avail">
+        <column name="Id/currentAssignments/projects">
+            <properties>
+                <property name="columnTitle" value="Active Assignments"/>
+            </properties>
+        </column>
+        <column name="Id/currentAssignments/Availability">
             <properties>
                 <property name="columnTitle" value="Avail"/>
             </properties>
@@ -26,22 +31,27 @@
                 <property name="columnTitle" value="Birth"/>
             </properties>
         </column>
-        <column name="Room">
+        <column name="Id/age/AgeInYears">
+            <properties>
+                <property name="columnTitle" value="Age (Years)"/>
+            </properties>
+        </column>
+        <column name="Id/curLocation/Room">
             <properties>
                 <property name="columnTitle" value="Room"/>
             </properties>
         </column>
-        <column name="Cage">
+        <column name="Id/curLocation/Cage">
             <properties>
                 <property name="columnTitle" value="Cage"/>
             </properties>
         </column>
-        <column name="Cond">
+        <column name="Id/curLocation/Cond">
             <properties>
                 <property name="columnTitle" value="Condition"/>
             </properties>
         </column>
-        <column name="weight">
+        <column name="Id/mostRecentWeight/MostRecentWeight">
             <properties>
                 <property name="columnTitle" value="Current Weight"/>
             </properties>
@@ -51,14 +61,9 @@
                 <property name="columnTitle" value="Medical"/>
             </properties>
         </column>
-        <column name="Id/activeAssignments/ActiveAssignments">
+        <column name="Id/IrregularObs/previousObs">
             <properties>
-                <property name="columnTitle" value="Active Assignments"/>
-            </properties>
-        </column>
-        <column name="Id/IrregularObs/yesterdaysObs">
-            <properties>
-                <property name="columnTitle" value="Yesterdays Obs"/>
+                <property name="columnTitle" value="Yesterday's Obs"/>
             </properties>
         </column>
     </columns>

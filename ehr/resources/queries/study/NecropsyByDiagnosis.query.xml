@@ -32,7 +32,7 @@
                   <column columnName="seq1">
                     <datatype>integer</datatype>
                     <columnTitle>Diagnosis Number</columnTitle>
-                    <url>/ehr/executeQuery.view?schemaName=study&amp;
+                    <url>/query/executeQuery.view?schemaName=study&amp;
                         query.queryName=Necropsy%20Diagnosis&amp;
                         query.id~eq=${id}&amp;
                         query.date~eq=${date}&amp;

@@ -15,6 +15,42 @@ LABKEY.requiresScript("/ehr/ehrAPI.js");
 Ext.onReady(function(){
 
 
+function deleteAll(schemaName, queryName, pk){
+    LABKEY.Query.selectRows({
+        schemaName: schemaName,
+        queryName: queryName,
+        columns: '*',
+        success: function(data){
+            var rows = [];
+            if(data.rows && data.rows.length){
+                for (var i=0;i<data.rows.length;i++){
+                    var obj = {};
+                    obj[pk] = data.rows[i][pk];
+
+                    rows.push(obj);
+                }
+            }
+
+            if(rows.length){
+                LABKEY.Query.deleteRows({
+                    schemaName: schemaName,
+                    queryName: queryName,
+                    scope: this,
+                    rows: rows,
+                    success: function(data){
+                        console.log('success deleting rows: '+queryName);
+                    },
+                    failure: EHR.utils.onError
+                });
+            }
+            else {
+                console.log('nothing to delete: '+queryName)
+            }
+        },
+        failure: EHR.utils.onError
+    });
+}
+
 function btn1(){
     //records for task forms:
     var config = {
@@ -24,9 +60,9 @@ function btn1(){
         success: onSuccess,
         error: onError
     };
-    var fields = ('formtype,category,userid,description').split(',');
+    var fields = ('formtype,category,userid,description,configJson').split(',');
     var data = [
-        ['Physical Exam', 'Task', '', ''],
+        ['Physical Exam', 'Task', '', '', '{"allowableButtons":["VALIDATE","REVIEW","SUBMIT","DISCARD"]}'],
         ['Irregular Observations', 'Task', '', ''],
         ['Blood Draws', 'Task', '', ''],
         ['MPR', 'Task', '', ''],
@@ -47,7 +83,9 @@ function btn1(){
         ['Bacteriology', 'Task', '', ''],
         ['ClinPath Request', 'Request', '', ''],
         ['Parasitology', 'Task', '', ''],
-        ['Recovery', 'Task', '', '']
+        ['Recovery', 'Task', '', ''],
+        ['New Animal', 'Task', '', ''],
+        ['Problem List', 'Task', '', '']
     ];
 
     LABKEY.Query.insertRows(makeObject(config, data, fields));
@@ -66,37 +104,42 @@ function btn2(){
     var data = [
         ['Physical Exam' ,'formHeaders' ,'ehr-formpanel' ,'1' ,'Clinical Encounters', 'study', 'Header', 'Task,Encounter', '', '', ''],
         ['Physical Exam' ,'formSections' ,'ehr-abstractpanel' ,'2' ,'', '', '', '', '', '', ''],
-        ['Physical Exam' ,'formSections' ,'ehr-gridformpanel' ,'3' ,'Clinical Remarks', 'study', '', 'Task,Encounter', '', '', ''],
-        ['Physical Exam' ,'formSections' ,'ehr-formpanel' ,'4' ,'Vitals', 'study', '', 'Task,Encounter', '', '', ''],
-        ['Physical Exam' ,'formSections' ,'ehr-formpanel' ,'5' ,'Dental Status', 'study', '', 'Task,Encounter', '', '', ''],
-        ['Physical Exam' ,'formSections' ,'ehr-gridformpanel' ,'6' ,'Teeth', 'study', '', 'Task,Encounter', '', '', ''],
-        ['Physical Exam' ,'formSections' ,'ehr-formpanel' ,'7' ,'Body Condition', 'study', '', 'Task,Encounter', '', '', ''],
-        ['Physical Exam' ,'formSections' ,'ehr-formpanel' ,'8' ,'Alopecia', 'study', '', 'Task,Encounter', '', '', ''],
-        ['Physical Exam' ,'formSections' ,'ehr-gridformpanel' ,'9' ,'Clinical Observations', 'study', '', 'Task,Encounter', 'PE Defaults', '', ''],
-        ['Physical Exam' ,'formSections' ,'ehr-gridformpanel' ,'10' ,'Charges', 'study', '', 'Task,Encounter', '', '', ''],
+        ['Physical Exam' ,'formTabs' ,'ehr-formpanel' ,'3' ,'Vitals', 'study', '', 'Task,Encounter', '', '', ''],
+        ['Physical Exam' ,'formTabs' ,'ehr-formpanel' ,'4' ,'Dental Status', 'study', '', 'Task,Encounter', '', '', ''],
+        ['Physical Exam' ,'formTabs' ,'ehr-gridformpanel' ,'5' ,'Teeth', 'study', '', 'Task,Encounter', '', '', ''],
+        ['Physical Exam' ,'formTabs' ,'ehr-formpanel' ,'6' ,'Body Condition', 'study', '', 'Task,Encounter', '', '', ''],
+        ['Physical Exam' ,'formTabs' ,'ehr-formpanel' ,'7' ,'Alopecia', 'study', '', 'Task,Encounter', '', '', ''],
+        ['Physical Exam' ,'formTabs' ,'ehr-gridformpanel' ,'8' ,'Clinical Observations', 'study', '', 'Task,Encounter', 'PE Defaults', '', ''],
+        ['Physical Exam' ,'formTabs' ,'ehr-gridformpanel' ,'9' ,'Clinical Remarks', 'study', '', 'Task,Encounter', '', '', ''],
+        ['Physical Exam' ,'formTabs' ,'ehr-gridformpanel' ,'10' ,'Charges', 'study', '', 'Task,Encounter', '', '', ''],
         ['Irregular Observations' ,'formSections' ,'ehr-abstractpanel' ,'1' ,'', '', '', '', '', '', ''],
         ['Irregular Observations' ,'formSections' ,'ehr-gridformpanel' ,'2' ,'Irregular Observations', 'study', '', 'Task', '', '', ''],
         ['Irregular Observations' ,'formSections' ,'ehr-gridformpanel' ,'3' ,'cage_observations', 'ehr', 'Cage Observations', 'Task', '', '', ''],
-        ['Blood Draws' ,'formSections' ,'ehr-abstractpanel' ,'1' ,'', '', '', '', '', '{viewName: "Blood Draw Info", boxMinHeight: 290}', ''],
+        ['Blood Draws' ,'formSections' ,'ehr-abstractpanel' ,'1' ,'', '', '', '', '', '{viewName: "Blood Draw Info", boxMinHeight: 270}', ''],
         ['Blood Draws' ,'formSections' ,'ehr-gridformpanel' ,'2' ,'Blood Draws', 'study', '', 'Task', '', '', ''],
-        ['Blood Draws' ,'formSections' ,'ehr-gridformpanel' ,'3' ,'Weight', 'study', '', 'Task', '', '', ''],
-        ['Blood Draws' ,'formSections' ,'ehr-gridformpanel' ,'4' ,'Drug Administration', 'study', '', 'Task', '', '', ''],
-        ['Blood Draws' ,'formSections' ,'ehr-gridformpanel' ,'5' ,'Clinical Observations', 'study', 'Recovery Observations', 'Task,Anesthesia', '', '', ''],
-        ['Blood Draws' ,'formSections' ,'ehr-gridformpanel' ,'6' ,'Charges', 'study', '', 'Task', '', '', ''],
+        ['Blood Draws' ,'formTabs' ,'ehr-gridformpanel' ,'3' ,'Weight', 'study', '', 'Task', '', '', ''],
+        ['Blood Draws' ,'formTabs' ,'ehr-gridformpanel' ,'4' ,'Drug Administration', 'study', '', 'Task', '', '', ''],
+        ['Blood Draws' ,'formTabs' ,'ehr-gridformpanel' ,'5' ,'Clinical Observations', 'study', 'Recovery Observations', 'Task,Anesthesia', '', '', ''],
+        ['Blood Draws' ,'formTabs' ,'ehr-gridformpanel' ,'6' ,'Charges', 'study', '', 'Task', '', '', ''],
         ['MPR' ,'formHeaders' ,'ehr-formpanel' ,'1' ,'Clinical Encounters', 'study', 'Encounter Details', 'Task,Encounter', '', '', ''],
         ['MPR' ,'formSections' ,'ehr-abstractpanel' ,'2' ,'', '', '', 'Task,Encounter', '', '', ''],
-        ['MPR' ,'formSections' ,'ehr-formpanel' ,'3' ,'Restraint', 'study', '', 'Task,Encounter', '', '', ''],
-        ['MPR' ,'formSections' ,'ehr-gridformpanel' ,'4' ,'Drug Administration', 'study', '', 'Task,Encounter', '', '', ''],
-        ['MPR' ,'formSections' ,'ehr-gridformpanel' ,'6' ,'Clinical Observations', 'study', 'Recovery Observations', 'Task,Encounter,Anesthesia', '', '', ''],
-        ['MPR' ,'formSections' ,'ehr-gridformpanel' ,'5' ,'Procedure Codes', 'study', '', 'Task,Encounter', '', '', ''],
-        ['MPR' ,'formSections' ,'ehr-gridformpanel' ,'7' ,'Charges', 'study', '', 'Task,Encounter', '', '', ''],
+        ['MPR' ,'formTabs' ,'ehr-gridformpanel' ,'3' ,'Drug Administration', 'study', '', 'Task,Encounter', '', '', ''],
+        ['MPR' ,'formTabs' ,'ehr-gridformpanel' ,'4' ,'Blood Draws', 'study', '', 'Task,Encounter', '', '', ''],
+        ['MPR' ,'formTabs' ,'ehr-gridformpanel' ,'5' ,'Clinical Observations', 'study', 'Recovery Observations', 'Task,Encounter,Anesthesia', '', '', ''],
+        ['MPR' ,'formTabs' ,'ehr-gridformpanel' ,'6' ,'Procedure Codes', 'study', '', 'Task,Encounter', '', '', ''],
+        ['MPR' ,'formTabs' ,'ehr-gridformpanel' ,'7' ,'Housing', 'study', 'Housing Moves/Restraint', 'Task,Encounter', '', '', ''],
+        ['MPR' ,'formTabs' ,'ehr-gridformpanel' ,'8' ,'Weight', 'study', '', 'Task,Encounter', '', '', ''],
+        ['MPR' ,'formTabs' ,'ehr-gridformpanel' ,'9' ,'Charges', 'study', '', 'Task,Encounter', '', '', ''],
         ['Necropsy' ,'formHeaders' ,'ehr-formpanel' ,'1' ,'Necropsies', 'study', 'Necropsy Info', 'Task,Necropsy', '', '', ''],
-        ['Necropsy' ,'formSections' ,'ehr-abstractpanel' ,'2' ,'', '', '', '', '', '', ''],
-        ['Necropsy' ,'formTabs' ,'ehr-gridformpanel' ,'3' ,'Drug Administration', 'study', '', 'Task,Necropsy', '', '', ''],
-        ['Necropsy' ,'formTabs' ,'ehr-gridformpanel' ,'4' ,'Histology', 'study', '', 'Task,Necropsy', '', '', ''],
-        ['Necropsy' ,'formTabs' ,'ehr-gridformpanel' ,'5' ,'Organ Weights', 'study', '', 'Task,Necropsy', '', '', ''],
-        ['Necropsy' ,'formTabs' ,'ehr-gridformpanel' ,'6' ,'Tissue Samples', 'study', '', 'Task,Necropsy', '', '', ''],
-        ['Necropsy' ,'formTabs' ,'ehr-gridformpanel' ,'7' ,'Necropsy Diagnosis', 'study', '', 'Task,Necropsy', '', '', ''],
+        ['Necropsy' ,'formSections' ,'ehr-abstractpanel' ,'2' ,'', '', '', '', '', '{allowDeadAnimals: true}', ''],
+        ['Necropsy' ,'formTabs' ,'ehr-gridformpanel' ,'3' ,'Deaths', 'study', '', 'Task,Necropsy', '', '', ''],
+        ['Necropsy' ,'formTabs' ,'ehr-gridformpanel' ,'4' ,'Drug Administration', 'study', '', 'Task,Necropsy', '', '', ''],
+        ['Necropsy' ,'formTabs' ,'ehr-gridformpanel' ,'5' ,'Histology', 'study', '', 'Task,Necropsy', '', '', ''],
+        ['Necropsy' ,'formTabs' ,'ehr-gridformpanel' ,'6' ,'Organ Weights', 'study', '', 'Task,Necropsy', '', '', ''],
+        ['Necropsy' ,'formTabs' ,'ehr-gridformpanel' ,'7' ,'Tissue Samples', 'study', '', 'Task,Necropsy', '', '', ''],
+        ['Necropsy' ,'formTabs' ,'ehr-formpanel' ,'8' ,'Body Condition', 'study', '', 'Task,Necropsy', '', '', ''],
+        ['Necropsy' ,'formTabs' ,'ehr-formpanel' ,'9' ,'Alopecia', 'study', '', 'Task,Necropsy', '', '', ''],
+        ['Necropsy' ,'formTabs' ,'ehr-gridformpanel' ,'10' ,'Necropsy Diagnosis', 'study', 'Morphologic Diagnosis', 'Task,Necropsy', '', '', ''],
         ['Weight' ,'formSections' ,'ehr-abstractpanel' ,'1' ,'', '', '', '', '', '', ''],
         ['Weight' ,'formSections' ,'ehr-gridformpanel' ,'2' ,'Weight', 'study', '', 'Task', '', '', ''],
         ['TB Tests' ,'formSections' ,'ehr-abstractpanel' ,'1' ,'', '', '', '', '', '', ''],
@@ -105,22 +148,22 @@ function btn2(){
         ['TB Tests' ,'formSections' ,'ehr-gridformpanel' ,'4' ,'Procedure Codes', 'study', '', 'Task', '', '', ''],
         ['Housing' ,'formSections' ,'ehr-abstractpanel' ,'1' ,'', '', '', '', '', '', ''],
         ['Housing' ,'formSections' ,'ehr-gridformpanel' ,'2' ,'Housing', 'study', '', 'Task', '', '', ''],
-        ['Blood Draw Request' ,'formSections' ,'ehr-abstractpanel' ,'1' ,'', '', '', '', '', '{viewName: "Blood Draw Info", boxMinHeight: 310}', ''],
+        ['Blood Draw Request' ,'formSections' ,'ehr-abstractpanel' ,'1' ,'', '', '', '', '', '{viewName: "Blood Draw Info", boxMinHeight: 270}', ''],
         ['Blood Draw Request' ,'formSections' ,'ehr-gridformpanel' ,'2' ,'Blood Draws', 'study', '', 'Request', '', '', ''],
         ['Housing Request' ,'formSections' ,'ehr-abstractpanel' ,'1' ,'', '', '', '', '', '', ''],
         ['Housing Request' ,'formSections' ,'ehr-gridformpanel' ,'2' ,'Housing', 'study', '', 'Request', '', '', ''],
         ['Virology' ,'formSections' ,'ehr-abstractpanel' ,'1' ,'', '', '', '', '', '', ''],
-        ['Virology' ,'formSections' ,'ehr-formpanel' ,'2' ,'Clinpath Runs', 'study', '', 'Task,Assay', '', '', ''],
+        ['Virology' ,'formHeaders' ,'ehr-formpanel' ,'2' ,'Clinpath Runs', 'study', '', 'Task,Assay', '', '', ''],
         ['Virology' ,'formSections' ,'ehr-gridformpanel' ,'' ,'Virology Results', 'study', '', 'Task,Assay', '', '', ''],
         ['Hematology' ,'formSections' ,'ehr-abstractpanel' ,'1' ,'', '', '', '', '', '', ''],
-        ['Hematology' ,'formSections' ,'ehr-formpanel' ,'2' ,'Clinpath Runs', 'study', '', 'Task,Assay', '', '', ''],
+        ['Hematology' ,'formHeaders' ,'ehr-formpanel' ,'2' ,'Clinpath Runs', 'study', '', 'Task,Assay', '', '', ''],
         ['Hematology' ,'formSections' ,'ehr-gridformpanel' ,'3' ,'Hematology Results', 'study', '', 'Task,Assay', '', '', ''],
         ['Hematology' ,'formSections' ,'ehr-gridformpanel' ,'4' ,'Hematology Morphology', 'study', '', 'Task,Assay', '', '', ''],
         ['Immunology' ,'formSections' ,'ehr-abstractpanel' ,'1' ,'', '', '', '', '', '', ''],
-        ['Immunology' ,'formSections' ,'ehr-formpanel' ,'2' ,'Clinpath Runs', 'study', '', 'Task,Assay', '', '', ''],
+        ['Immunology' ,'formHeaders' ,'ehr-formpanel' ,'2' ,'Clinpath Runs', 'study', '', 'Task,Assay', '', '', ''],
         ['Immunology' ,'formSections' ,'ehr-gridformpanel' ,'3' ,'Immunology Results', 'study', '', 'Task,Assay', '', '', ''],
         ['Blood Chemistry' ,'formSections' ,'ehr-abstractpanel' ,'1' ,'', '', '', '', '', '', ''],
-        ['Blood Chemistry' ,'formSections' ,'ehr-formpanel' ,'2' ,'Clinpath Runs', 'study', '', 'Task,Assay', '', '', ''],
+        ['Blood Chemistry' ,'formHeaders' ,'ehr-formpanel' ,'2' ,'Clinpath Runs', 'study', '', 'Task,Assay', '', '', ''],
         ['Blood Chemistry' ,'formSections' ,'ehr-gridformpanel' ,'3' ,'Blood Chemistry Results', 'study', '', 'Task,Assay', '', '', ''],
         ['Assignment Request' ,'formSections' ,'ehr-abstractpanel' ,'1' ,'', '', '', '', '', '', ''],
         ['Assignment Request' ,'formSections' ,'ehr-gridformpanel' ,'2' ,'Assignment', 'study', '', 'Request', '', '', ''],
@@ -130,18 +173,23 @@ function btn2(){
         ['Procedure Request' ,'formSections' ,'ehr-gridformpanel' ,'2' ,'Clinical Encounters', 'study', 'Procedures Requested', 'Request', '', '', ''],
         ['Procedure Request' ,'formSections' ,'ehr-gridformpanel' ,'3' ,'Blood Draws', 'study', '', 'Request', '', '', ''],
         ['Urinalysis' ,'formSections' ,'ehr-abstractpanel' ,'1' ,'', '', '', '', '', '', ''],
-        ['Urinalysis' ,'formSections' ,'ehr-formpanel' ,'2' ,'Clinpath Runs', 'study', '', 'Task,Assay', '', '', ''],
+        ['Urinalysis' ,'formHeaders' ,'ehr-formpanel' ,'2' ,'Clinpath Runs', 'study', '', 'Task,Assay', '', '', ''],
         ['Urinalysis' ,'formSections' ,'ehr-gridformpanel' ,'3' ,'Urinalysis Results', 'study', '', 'Task,Assay', '', '', ''],
         ['Bacteriology' ,'formSections' ,'ehr-abstractpanel' ,'1' ,'', '', '', '', '', '', ''],
-        ['Bacteriology' ,'formSections' ,'ehr-formpanel' ,'2' ,'Clinpath Runs', 'study', '', 'Task,Assay', '', '', ''],
+        ['Bacteriology' ,'formHeaders' ,'ehr-formpanel' ,'2' ,'Clinpath Runs', 'study', '', 'Task,Assay', '', '', ''],
         ['Bacteriology' ,'formSections' ,'ehr-gridformpanel' ,'3' ,'Bacteriology Results', 'study', '', 'Task,Assay', '', '', ''],
         ['ClinPath Request' ,'formSections' ,'ehr-abstractpanel' ,'1' ,'', '', '', '', '', '', ''],
-        ['ClinPath Request' ,'formSections' ,'ehr-gridformpanel' ,'2' ,'Clinpath Runs', 'study', '', 'Request', '', '', ''],
+        ['ClinPath Request' ,'formHeaders' ,'ehr-gridformpanel' ,'2' ,'Clinpath Runs', 'study', '', 'Request', '', '', ''],
         ['Parasitology' ,'formSections' ,'ehr-abstractpanel' ,'1' ,'', '', '', '', '', '', ''],
-        ['Parasitology' ,'formSections' ,'ehr-formpanel' ,'2' ,'Clinpath Runs', 'study', '', 'Task,Assay', '', '', ''],
+        ['Parasitology' ,'formHeaders' ,'ehr-formpanel' ,'2' ,'Clinpath Runs', 'study', '', 'Task,Assay', '', '', ''],
         ['Parasitology' ,'formSections' ,'ehr-gridformpanel' ,'3' ,'Parasitology Results', 'study', '', 'Task,Assay', '', '', ''],
         ['Recovery' ,'formSections' ,'ehr-abstractpanel' ,'1' ,'', '', '', '', '', '', ''],
-        ['Recovery' ,'formSections' ,'ehr-gridformpanel' ,'2' ,'Clinical Observations', 'study', 'Recovery Observations', 'Task,Encounter', '', '', '']
+        ['Recovery' ,'formSections' ,'ehr-gridformpanel' ,'2' ,'Clinical Observations', 'study', 'Recovery Observations', 'Task,Encounter', '', '', ''],
+        ['New Animal' ,'formSections' ,'ehr-gridformpanel' ,'1' ,'Demographics', 'study', '', 'Task,NewAnimal', '', '', ''],
+        ['New Animal' ,'formSections' ,'ehr-gridformpanel' ,'2' ,'Birth', 'study', '', 'Task,NewAnimal', '', '', ''],
+        ['New Animal' ,'formSections' ,'ehr-gridformpanel' ,'3' ,'Arrival', 'study', '', 'Task,NewAnimal', '', '', ''],
+        ['Problem List' ,'formSections' ,'ehr-abstractpanel' ,'1' ,'', '', '', '', '', '{queryConfig: {schemaName: "study", queryName:  "Problem List", title: "Problem List"}}', ''],
+        ['Problem List' ,'formSections' ,'ehr-gridformpanel' ,'2' ,'Problem List', 'study', '', 'Task', '', '', '']
     ];
     LABKEY.Query.insertRows(makeObject(config, data, fields));
 }
@@ -175,74 +223,73 @@ function btn4(){
         };
         var fields = ('reportname,category,reporttype,reporttitle,visible,containerpath,schemaname,queryname,viewname,report,datefieldname,todayonly,queryhaslocation,QCStatePublicDataFieldName').split(',');
         var data = [
-            ['abstract' ,'General' ,'js' ,'Abstract' ,'true' ,'' ,'study' ,'abstract', '', '', '', 'false', 'false', 'qcstate/publicdata'],
-            ['abstractClin' ,'Clinical' ,'js' ,'Abstract' ,'true' ,'' ,'study' ,'abstract', '', '', 'date', 'false', 'false', 'qcstate/publicdata'],
-            ['activeAssignments' ,'Assignments' ,'query' ,'Active Assignments' ,'true' ,'' ,'study' ,'Assignment', 'Active Assignments', '', 'date', 'false', 'false', 'qcstate/publicdata'],
-            ['activeHousing' ,'Colony Management' ,'query' ,'Housing - Active' ,'true' ,'' ,'study' ,'housing', 'Current Housing', '', 'date', 'false', 'false', 'qcstate/publicdata'],
-            ['allObs' ,'Clinical' ,'query' ,'Irregular Obs' ,'true' ,'' ,'study' ,'irregularObs', '', '', 'date', 'false', 'true', ''],
-            ['alopecia' ,'Physical Exam' ,'query' ,'Alopecia' ,'true' ,'' ,'study' ,'Alopecia', '', '', 'date', 'false', 'false', 'qcstate/publicdata'],
-            ['arrivalDeparture' ,'Colony Management' ,'js' ,'Arrival/Departure' ,'true' ,'' ,'study' ,'arrivalDeparture', '', '', 'date', 'false', 'false', 'qcstate/publicdata'],
-            ['assignmentHistory' ,'Assignments' ,'query' ,'Assignment History' ,'true' ,'' ,'study' ,'Assignment', '', '', 'date', 'false', 'false', 'qcstate/publicdata'],
-            ['bacteriology' ,'Clin Path' ,'query' ,'Bacteriology' ,'true' ,'' ,'study' ,'Bacteriology Results', '', '', 'date', 'false', 'false', 'qcstate/publicdata'],
-            ['behaviorRemarks' ,'Colony Management' ,'query' ,'Behavior Remarks' ,'true' ,'' ,'study' ,'Behavior Remarks', '', '', 'date', 'false', 'false', 'qcstate/publicdata'],
-            ['biopsyDiag' ,'Pathology' ,'query' ,'Biopsy Diagnosis' ,'true' ,'' ,'study' ,'Biopsy Diagnosis', '', '', 'date', 'false', 'false', 'qcstate/publicdata'],
-            ['birth' ,'Colony Management' ,'query' ,'Birth Records' ,'true' ,'' ,'study' ,'birth', '', '', '', 'false', 'false', 'qcstate/publicdata'],
-            ['bloodChemistry' ,'Clin Path' ,'js' ,'Chemistry' ,'true' ,'' ,'study' ,'bloodChemistry', '', '', 'date', 'false', 'false', ''],
-            ['bloodDraws' ,'General' ,'query' ,'Blood Draw History' ,'true' ,'' ,'study' ,'Blood Draws', 'Blood Summary', '', 'date', 'false', 'false', ''],
-            ['bodyCondition' ,'Physical Exam' ,'query' ,'Body Condition' ,'true' ,'' ,'study' ,'Body Condition', '', '', 'date', 'false', 'false', 'qcstate/publicdata'],
-            ['charges' ,'General' ,'query' ,'Charges' ,'true' ,'' ,'study' ,'Charges', '', '', 'date', 'false', 'false', 'qcstate/publicdata'],
-            ['clinPathRuns' ,'Clin Path' ,'query' ,'Clinpath Runs' ,'true' ,'' ,'study' ,'ClinpathRuns', '', '', 'date', 'false', 'false', 'qcstate/publicdata'],
-            ['clinremarks' ,'Clinical' ,'query' ,'Clinical Remarks' ,'true' ,'' ,'study' ,'Clinical Remarks', '', '', 'date', 'false', 'false', 'qcstate/publicdata'],
-            ['currentBlood' ,'General' ,'query' ,'Current Blood' ,'true' ,'' ,'study' ,'Current Blood', '', '', 'date', 'false', 'false', ''],
-            ['deaths' ,'General' ,'query' ,'Deaths' ,'true' ,'' ,'study' ,'Deaths', '', '', 'date', 'false', 'false', 'qcstate/publicdata'],
-            ['demographics' ,'General' ,'query' ,'Demographics' ,'true' ,'' ,'study' ,'demographics', '', '', '', 'false', 'false', 'qcstate/publicdata'],
-            ['dentalStatus' ,'Physical Exam' ,'query' ,'Dental Status' ,'true' ,'' ,'study' ,'Dental Status', '', '', 'date', 'false', 'false', 'qcstate/publicdata'],
-            ['diagnostics' ,'Clin Path' ,'js' ,'Diagnostics' ,'false' ,'' ,'study' ,'Diagnostics', '', '', 'date', 'false', 'false', 'qcstate/publicdata'],
-            ['diarrheaReport' ,'Clinical' ,'query' ,'Diarrhea Report' ,'true' ,'' ,'study' ,'clintremDiarrheaSummary2', '', '', 'date', 'false', 'false', ''],
-            ['drug' ,'Clinical' ,'query' ,'Drug Administration' ,'true' ,'' ,'study' ,'Drug Administration', '', '', 'date', 'false', 'false', 'qcstate/publicdata'],
-            ['encounters' ,'Clinical' ,'query' ,'Clinical Encounters' ,'true' ,'' ,'study' ,'Clinical Encounters', '', '', 'date', 'false', 'false', 'qcstate/publicdata'],
-            ['extendedAbstract' ,'General' ,'query' ,'Extended Abstract' ,'false' ,'' ,'study' ,'animal', 'Extended Abstract', '', '', 'false', 'false', 'qcstate/publicdata'],
-            ['fullHistory' ,'Clinical' ,'query' ,'Full History' ,'true' ,'' ,'study' ,'StudyData', 'Full History', '', 'date', 'false', 'false', 'qcstate/publicdata'],
-            ['fullHistoryPlusObs' ,'Clinical' ,'query' ,'Full History Plus Obs' ,'true' ,'' ,'study' ,'StudyData', 'Full History Plus Obs', '', 'date', 'false', 'false', 'qcstate/publicdata'],
-            ['hematology' ,'Clin Path' ,'js' ,'Hematology' ,'true' ,'' ,'study' ,'hematology', '', '', 'date', 'false', 'false', ''],
-            ['histology' ,'Pathology' ,'query' ,'Histology' ,'true' ,'' ,'study' ,'Histology', '', '', 'date', 'false', 'false', 'qcstate/publicdata'],
-            ['hormone' ,'Clinical' ,'query' ,'Hormone' ,'false' ,'' ,'study' ,'Clinical Remarks', 'Hormone Remarks', '', 'date', 'false', 'false', 'qcstate/publicdata'],
-            ['housing' ,'Colony Management' ,'query' ,'Housing History' ,'true' ,'' ,'study' ,'housing', '', '', 'date', 'false', 'false', 'qcstate/publicdata'],
-            ['Immunology' ,'Clin Path' ,'js' ,'Immunology' ,'true' ,'' ,'study' ,'immunology', '', '', 'date', 'false', 'false', ''],
-            ['inbreeding' ,'Colony Management' ,'query' ,'Inbreeding Coefficients' ,'true' ,'' ,'study' ,'Inbreeding Coefficients', '', '', '', 'false', 'false', 'qcstate/publicdata'],
-            ['kinship' ,'Colony Management' ,'query' ,'Kinship' ,'true' ,'' ,'study' ,'Kinship', '', '', '', 'false', 'false', 'qcstate/publicdata'],
-            ['majorEvents' ,'General' ,'query' ,'Major Events' ,'true' ,'' ,'study' ,'majorEvents', '', '', 'date', 'false', 'false', ''],
-            ['medicalHistory' ,'Clinical' ,'query' ,'Medical History' ,'false' ,'' ,'study' ,'StudyData', 'Medical History', '', 'date', 'false', 'false', 'qcstate/publicdata'],
-            ['menstrualData' ,'Colony Management' ,'query' ,'Menstrual Data' ,'true' ,'' ,'study' ,'clintremMensSummary2', '', '', 'date', 'false', 'false', ''],
-            ['MHCSSP' ,'Assay' ,'query' ,'MHC SSP Typing' ,'true' ,'' ,'study' ,'MHC_SSP_Summary', '', '', '', 'false', 'false', ''],
-            ['necropsies' ,'Pathology' ,'query' ,'Necropsies' ,'true' ,'' ,'study' ,'Necropsies', '', '', 'date', 'false', 'false', 'qcstate/publicdata'],
-            ['necropsyDiagnosis' ,'Pathology' ,'query' ,'Necropsy Diagnosis' ,'true' ,'' ,'study' ,'Necropsy Diagnosis', '', '', 'date', 'false', 'false', 'qcstate/publicdata'],
-            ['notes' ,'General' ,'query' ,'Notes' ,'true' ,'' ,'study' ,'notes', '', '', 'date', 'false', 'false', 'qcstate/publicdata'],
-            ['obs' ,'Today At WNPRC' ,'query' ,'Irregular Observations' ,'true' ,'' ,'study' ,'irregularObs', '', '', 'date', 'true', 'true', ''],
-            ['obsTreatment' ,'Today At WNPRC' ,'query' ,'Obs/Treatment' ,'true' ,'' ,'study' ,'irregularObsTreatment', '', '', 'date', 'true', 'true', ''],
-            ['organWeights' ,'Pathology' ,'query' ,'Organ Weights' ,'false' ,'' ,'study' ,'Organ Weights', '', '', 'date', 'false', 'false', 'qcstate/publicdata'],
-            ['parasitology' ,'Clin Path' ,'query' ,'Parasitology' ,'true' ,'' ,'study' ,'Parasitology Results', '', '', 'date', 'false', 'false', 'qcstate/publicdata'],
-            ['pathology' ,'Pathology' ,'query' ,'Biopsies' ,'true' ,'' ,'study' ,'Biopsies', '', '', 'date', 'false', 'false', 'qcstate/publicdata'],
-            ['pe' ,'Physical Exam' ,'query' ,'Exams' ,'true' ,'' ,'study' ,'Clinical Encounters', 'PE', '', 'date', 'false', 'false', 'qcstate/publicdata'],
-            ['pedigree' ,'Colony Management' ,'js' ,'Pedigree' ,'true' ,'' ,'study' ,'pedigree', '', '', '', 'false', 'false', 'qcstate/publicdata'],
-            ['pedigreePlot' ,'Colony Management' ,'report' ,'Pedigree Plot' ,'false' ,'WNPRC/EHR/' ,'study' ,'pedigree', '', 'module:EHR/schemas/study/demographicsPedigree/Pedigree.r', '', 'false', 'false', 'qcstate/publicdata'],
-            ['problemList' ,'Today At WNPRC' ,'query' ,'Problem List' ,'true' ,'' ,'study' ,'Problem List', '', '', 'date', 'false', 'false', 'qcstate/publicdata'],
-            ['roommateHistory' ,'Colony Management' ,'query' ,'Roommate History' ,'true' ,'' ,'study' ,'housingRoommates', '', '', 'StartDate', 'false', 'false', 'qcstate/publicdata'],
-            ['surgicalHistory' ,'Clinical' ,'query' ,'Surgical History' ,'true' ,'' ,'study' ,'Surgeries', '', '', 'date', 'false', 'false', 'qcstate/publicdata'],
-            ['tasksById' ,'Clinical' ,'query' ,'Tasks' ,'true' ,'' ,'ehr' ,'TasksById', '', '', 'date', 'false', 'false', 'taskid/qcstate/publicdata'],
-            ['TB' ,'Colony Management' ,'query' ,'TB Tests' ,'true' ,'' ,'study' ,'TB Tests', '', '', 'date', 'false', 'false', 'qcstate/publicdata'],
-            ['teeth' ,'Physical Exam' ,'query' ,'Teeth' ,'true' ,'' ,'study' ,'Teeth', '', '', 'date', 'false', 'false', 'qcstate/publicdata'],
-            ['todaysHistory' ,'Today At WNPRC' ,'query' ,'Today\'s History' ,'true' ,'' ,'study' ,'StudyData', 'Full History', '', 'Date', 'true', 'false', 'qcstate/publicdata'],
-            ['Treatment Schedule' ,'Clinical' ,'query' ,'Treatment Schedule' ,'true' ,'' ,'study' ,'treatmentSchedule', '', '', 'date', 'false', 'false', 'qcstate/publicdata'],
-            ['treatments' ,'Clinical' ,'query' ,'Treatment Orders' ,'true' ,'' ,'study' ,'Treatment Orders', '', '', 'date', 'false', 'false', 'qcstate/publicdata'],
-            ['treatmentSchedule' ,'Today At WNPRC' ,'query' ,'Treatment Schedule' ,'true' ,'' ,'study' ,'treatmentSchedule', '', '', 'date', 'true', 'false', 'qcstate/publicdata'],
-            ['urinalysis' ,'Clin Path' ,'js' ,'Urinalysis' ,'true' ,'' ,'study' ,'urinalysisResults', '', '', 'date', 'false', 'false', ''],
-            ['viralChallenges' ,'Clin Path' ,'query' ,'Viral Challenges' ,'true' ,'' ,'study' ,'ViralChallenges', '', '', 'date', 'false', 'false', ''],
-            ['viralLoads' ,'Assay' ,'js' ,'Viral Loads' ,'true' ,'' ,'study' ,'viralLoads', '', '', 'date', 'false', 'false', ''],
-            ['virology' ,'Clin Path' ,'query' ,'Virology' ,'true' ,'' ,'study' ,'Virology Results', '', '', 'date', 'false', 'false', 'qcstate/publicdata'],
-            ['vitals' ,'Physical Exam' ,'query' ,'Vitals' ,'true' ,'' ,'study' ,'Vitals', '', '', 'date', 'false', 'false', 'qcstate/publicdata'],
-            ['weight' ,'Clinical' ,'js' ,'Weights' ,'true' ,'' ,'study' ,'weightGraph', '', '', 'date', 'false', 'false', 'qcstate/publicdata'],
-            ['pregnancies' ,'Colony Management' ,'query' ,'Pregnancies' ,'true' ,'' ,'study' ,'Pregnancies', '', '', 'date', 'false', 'false', 'qcstate/publicdata']
+            ['abstract' ,'General' ,'js' ,'Abstract' ,'true' ,'' ,'study' ,'abstract', '', '', '', 'false', 'false', 'qcstate/publicdata', 'This report contains a summary of the animal, including demographics, assignments and weight'],
+            ['abstractClin' ,'Clinical' ,'js' ,'Abstract' ,'true' ,'' ,'study' ,'abstract', '', '', 'date', 'false', 'false', 'qcstate/publicdata', 'This report contains a summary of the animal, including demographics, assignments and weight'],
+            ['activeAssignments' ,'Assignments' ,'query' ,'Active Assignments' ,'true' ,'' ,'study' ,'Assignment', 'Active Assignments', '', 'date', 'false', 'false', 'qcstate/publicdata', 'This report shows the active assignments for each animal'],
+            ['activeHousing' ,'Colony Management' ,'query' ,'Housing - Active' ,'true' ,'' ,'study' ,'housing', 'Current Housing', '', 'date', 'false', 'false', 'qcstate/publicdata', 'This report shows the active housing record for each animal'],
+            ['allObs' ,'Clinical' ,'js' ,'Irregular Obs' ,'true' ,'' ,'study' ,'irregularObs', '', '', 'date', 'false', 'true', '', 'This report displays irregular observations, including cage observations'],
+            ['alopecia' ,'Physical Exam' ,'query' ,'Alopecia' ,'true' ,'' ,'study' ,'Alopecia', '', '', 'date', 'false', 'false', 'qcstate/publicdata', 'Contains alopecia scores from the colony'],
+            ['arrivalDeparture' ,'Colony Management' ,'js' ,'Arrival/Departure' ,'true' ,'' ,'study' ,'arrivalDeparture', '', '', 'date', 'false', 'false', 'qcstate/publicdata', 'Displays arrival and departure dates'],
+            ['assignmentHistory' ,'Assignments' ,'query' ,'Assignment History' ,'true' ,'' ,'study' ,'Assignment', '', '', 'date', 'false', 'false', 'qcstate/publicdata', 'This report shows all assignments records for the animals'],
+            ['bacteriology' ,'Clin Path' ,'query' ,'Bacteriology' ,'true' ,'' ,'study' ,'Bacteriology Results', '', '', 'date', 'false', 'false', 'qcstate/publicdata', 'Contains results of cultures'],
+            ['behaviorRemarks' ,'Colony Management' ,'query' ,'Behavior Remarks' ,'true' ,'' ,'study' ,'Behavior Remarks', '', '', 'date', 'false', 'false', 'qcstate/publicdata', 'Contains remarks entered by Behavioral Management'],
+            ['biopsyDiag' ,'Pathology' ,'query' ,'Biopsy Diagnosis' ,'true' ,'' ,'study' ,'BiopsyByDiagnosis', '', '', 'date', 'false', 'false', 'qcstate/publicdata', 'Contains diagnoses associated with biopsies'],
+            ['birth' ,'Colony Management' ,'query' ,'Birth Records' ,'true' ,'' ,'study' ,'birth', '', '', '', 'false', 'false', 'qcstate/publicdata', 'Birth records'],
+            ['bloodChemistry' ,'Clin Path' ,'js' ,'Chemistry' ,'true' ,'' ,'study' ,'bloodChemistry', '', '', 'date', 'false', 'false', '', 'Contains results of blood chemistry panels.  Can be displayed either by panel, or showing reference ranges'],
+            ['bloodDraws' ,'General' ,'query' ,'Blood Draw History' ,'true' ,'' ,'study' ,'Blood Draws', '', '', 'date', 'false', 'false', '', 'Contains records of blood draws.  '],
+            ['bodyCondition' ,'Physical Exam' ,'query' ,'Body Condition' ,'true' ,'' ,'study' ,'Body Condition', '', '', 'date', 'false', 'false', 'qcstate/publicdata', 'Contains body condition scores captured during physical exams'],
+            ['charges' ,'General' ,'query' ,'Charges' ,'true' ,'' ,'study' ,'Charges', '', '', 'date', 'false', 'false', 'qcstate/publicdata', 'This report contains a list of charges attached to the animal\'s record'],
+            ['clinPathRuns' ,'Clin Path' ,'query' ,'Clinpath Runs' ,'true' ,'' ,'study' ,'ClinpathRuns', '', '', 'date', 'false', 'false', 'qcstate/publicdata', 'Contains all clinpath requests'],
+            ['clinremarks' ,'Clinical' ,'query' ,'Clinical Remarks' ,'true' ,'' ,'study' ,'Clinical Remarks', '', '', 'date', 'false', 'false', 'qcstate/publicdata', 'This report contains the clinical remarks entered about each animal'],
+            ['currentBlood' ,'General' ,'query' ,'Current Blood' ,'true' ,'' ,'study' ,'Current Blood', '', '', 'date', 'false', 'false', '', 'This report contains a summary of the current available blood for each animal'],
+            ['deaths' ,'General' ,'query' ,'Deaths' ,'true' ,'' ,'study' ,'Deaths', '', '', 'date', 'false', 'false', 'qcstate/publicdata', 'Contains a list of animal deaths'],
+            ['demographics' ,'General' ,'query' ,'Demographics' ,'true' ,'' ,'study' ,'demographics', '', '', '', 'false', 'false', 'qcstate/publicdata', 'This report displays the demographics data about each animal including species, gender and birth'],
+            ['dentalStatus' ,'Physical Exam' ,'query' ,'Dental Status' ,'true' ,'' ,'study' ,'Dental Status', '', '', 'date', 'false', 'false', 'qcstate/publicdata', 'Contains dental assessments captured during physical exams'],
+            ['diarrheaReport' ,'Clinical' ,'query' ,'Diarrhea Report' ,'true' ,'' ,'study' ,'clintremDiarrheaSummary2', '', '', 'date', 'false', 'false', '', 'Contains a calendar-like presentation of all diarrhea observations'],
+            ['drug' ,'Clinical' ,'query' ,'Drug Administration' ,'true' ,'' ,'study' ,'Drug Administration', '', '', 'date', 'false', 'false', 'qcstate/publicdata', 'This report contains records of all medications administered to each animal'],
+            ['encounters' ,'Clinical' ,'query' ,'Clinical Encounters' ,'true' ,'' ,'study' ,'Clinical Encounters', '', '', 'date', 'false', 'false', 'qcstate/publicdata', 'This report contains one record for each encounter with each animal, including surergies, exams, procedures, etc.'],
+            ['extendedAbstract' ,'General' ,'query' ,'Extended Abstract' ,'false' ,'' ,'study' ,'animal', 'Extended Abstract', '', '', 'false', 'false', 'qcstate/publicdata', ''],
+            ['fullHistory' ,'Clinical' ,'query' ,'Full History' ,'true' ,'' ,'study' ,'StudyData', 'Full History', '', 'date', 'false', 'false', 'qcstate/publicdata', 'Contains all clinical data on the animal'],
+            ['fullHistoryPlusObs' ,'Clinical' ,'query' ,'Full History Plus Obs' ,'true' ,'' ,'study' ,'StudyData', 'Full History Plus Obs', '', 'date', 'false', 'false', 'qcstate/publicdata', 'Similar to Full History, but also contains irregular observations'],
+            ['hematology' ,'Clin Path' ,'js' ,'Hematology' ,'true' ,'' ,'study' ,'hematology', '', '', 'date', 'false', 'false', '', 'Contains hematology data showing cell subsets'],
+            ['histology' ,'Pathology' ,'query' ,'Histology' ,'true' ,'' ,'study' ,'Histology', '', '', 'date', 'false', 'false', 'qcstate/publicdata', 'Histology records and associated diagnoses'],
+            ['housing' ,'Colony Management' ,'query' ,'Housing History' ,'true' ,'' ,'study' ,'housing', '', '', 'date', 'false', 'false', 'qcstate/publicdata', 'This report contains the housing history of each animal'],
+            ['Immunology' ,'Clin Path' ,'js' ,'Immunology' ,'true' ,'' ,'study' ,'immunology', '', '', 'date', 'false', 'false', '', 'Immunology results showing lymphocyte subsets'],
+            ['inbreeding' ,'Colony Management' ,'query' ,'Inbreeding Coefficients' ,'true' ,'' ,'study' ,'Inbreeding Coefficients', '', '', '', 'false', 'false', 'qcstate/publicdata', 'This report shows the inbreeding coefficient of each animal, where pedigree data is available. The inbreeding coefficient is the kinship coefficient between the individual\'s parents. It measures the probability that the two alleles of a gene are identical by descent in the same individual (autozygosity). It is zero if the individual is not inbred.'],
+            ['kinship' ,'Colony Management' ,'query' ,'Kinship' ,'true' ,'' ,'study' ,'Kinship', '', '', '', 'false', 'false', 'qcstate/publicdata', 'This report shows the kinship coefficient between every animal in the colony. The kinship coefficient is a measure of relatedness between two individuals. It represents the probability that two genes, sampled at random from each individual are identical (e.g. the kinship coefficient between a parent and an offspring is 0.25).'],
+            ['majorEvents' ,'General' ,'query' ,'Major Events' ,'true' ,'' ,'study' ,'majorEvents', '', '', 'date', 'false', 'false', '', 'This report attempts to identify major events in the history of the animal, including births and major surgeries'],
+            ['medicalHistory' ,'Clinical' ,'query' ,'Medical History' ,'false' ,'' ,'study' ,'StudyData', 'Medical History', '', 'date', 'false', 'false', 'qcstate/publicdata', 'This report is similar to the Full History, except will not contain housing or assigments.'],
+            ['menstrualData' ,'Colony Management' ,'query' ,'Menstrual Data' ,'true' ,'' ,'study' ,'clintremMensSummary2', '', '', 'date', 'false', 'false', '', 'Contains a calendar-like presentation of all mens observations'],
+            ['MHCSSP' ,'Assay' ,'query' ,'MHC SSP Typing' ,'true' ,'' ,'study' ,'MHC_SSP_Summary', '', '', '', 'false', 'false', '', 'This report contains MHC SSP typing data'],
+            ['necropsies' ,'Pathology' ,'query' ,'Necropsies' ,'true' ,'' ,'study' ,'Necropsies', '', '', 'date', 'false', 'false', 'qcstate/publicdata', 'Contains information about necropsies'],
+            ['necropsyDiagnosis' ,'Pathology' ,'query' ,'Necropsy Diagnosis' ,'true' ,'' ,'study' ,'NecropsyByDiagnosis', '', '', 'date', 'false', 'false', 'qcstate/publicdata', 'Contains diagnoses associated with necropsies'],
+            ['notes' ,'General' ,'query' ,'Notes' ,'true' ,'' ,'study' ,'notes', '', '', 'date', 'false', 'false', 'qcstate/publicdata', 'This report contains non-clinical notes entered into the animal\'s record'],
+            ['obs' ,'Today At WNPRC' ,'js' ,'Irregular Observations' ,'true' ,'' ,'study' ,'irregularObs', '', '', 'date', 'true', 'true', '', 'Displays irregular observations from today only'],
+            ['obsTreatment' ,'Today At WNPRC' ,'js' ,'Obs/Treatment' ,'true' ,'' ,'study' ,'irregularObsTreatment', '', '', 'date', 'true', 'true', '', 'Displays irregular observations and treatments for today'],
+            ['organWeights' ,'Pathology' ,'query' ,'Organ Weights' ,'false' ,'' ,'study' ,'Organ Weights', '', '', 'date', 'false', 'false', 'qcstate/publicdata', 'This report contains organ weights obtained at necropsy'],
+            ['parasitology' ,'Clin Path' ,'query' ,'Parasitology' ,'true' ,'' ,'study' ,'Parasitology Results', '', '', 'date', 'false', 'false', 'qcstate/publicdata', 'Contains results of parasitology testing'],
+            ['pathology' ,'Pathology' ,'query' ,'Biopsies' ,'true' ,'' ,'study' ,'Biopsies', '', '', 'date', 'false', 'false', 'qcstate/publicdata', 'Contains information about biopsies'],
+            ['pe' ,'Physical Exam' ,'query' ,'Exams' ,'true' ,'' ,'study' ,'Clinical Encounters', 'PE', '', 'date', 'false', 'false', 'qcstate/publicdata', 'A list of physical exams performed'],
+            ['pedigree' ,'Colony Management' ,'js' ,'Pedigree' ,'true' ,'' ,'study' ,'pedigree', '', '', '', 'false', 'false', 'qcstate/publicdata', 'This report displays pedigree data for animals, including parents, grandparents, siblings and offspring'],
+            ['pedigreePlot' ,'Colony Management' ,'report' ,'Pedigree Plot' ,'true' ,'WNPRC/EHR/' ,'study' ,'pedigree', '', 'module:EHR/schemas/study/demographicsPedigree/Pedigree.r', '', 'false', 'false', 'qcstate/publicdata', 'This report will generate a pedigree plot for the selected animal'],
+            ['problemList' ,'Today At WNPRC' ,'query' ,'Problem List' ,'true' ,'' ,'study' ,'Problem List', '', '', 'date', 'false', 'false', 'qcstate/publicdata', 'This displays the clinical problem list'],
+            ['roommateHistory' ,'Colony Management' ,'query' ,'Roommate History' ,'true' ,'' ,'study' ,'housingRoommates', '', '', 'StartDate', 'false', 'false', 'qcstate/publicdata', 'This report displays all animals that shared a cage, including the start date, stop date and days co-housed'],
+            ['surgicalHistory' ,'Clinical' ,'query' ,'Surgical History' ,'true' ,'' ,'study' ,'Surgeries', '', '', 'date', 'false', 'false', 'qcstate/publicdata', 'The surgical history of each animal'],
+            ['tasksById' ,'Clinical' ,'query' ,'Tasks' ,'true' ,'' ,'ehr' ,'TasksById', '', '', 'date', 'false', 'false', 'taskid/qcstate/publicdata', 'This report displays and forms that have been completed about each animal'],
+            ['TB' ,'Colony Management' ,'query' ,'TB Tests' ,'true' ,'' ,'study' ,'TB Tests', '', '', 'date', 'false', 'false', 'qcstate/publicdata', 'TB Test results'],
+            ['teeth' ,'Physical Exam' ,'query' ,'Teeth' ,'true' ,'' ,'study' ,'Teeth', '', '', 'date', 'false', 'false', 'qcstate/publicdata', 'Contains observations about teeth taken during physical exams'],
+            ['todaysHistory' ,'Today At WNPRC' ,'query' ,'Today\'s History' ,'true' ,'' ,'study' ,'StudyData', 'Full History', '', 'Date', 'true', 'false', 'qcstate/publicdata', 'This report contains the full history, filtered to show events that happened today only'],
+            ['Treatment Schedule' ,'Clinical' ,'query' ,'Treatment Schedule' ,'true' ,'' ,'study' ,'treatmentSchedule', '', '', 'date', 'false', 'false', 'qcstate/publicdata', 'This displays the schedule for current and future treatments'],
+            ['treatments' ,'Clinical' ,'query' ,'Treatment Orders' ,'true' ,'' ,'study' ,'Treatment Orders', '', '', 'date', 'false', 'false', 'qcstate/publicdata', 'Contains a list of all orders for treatments'],
+            ['treatmentSchedule' ,'Today At WNPRC' ,'query' ,'Treatment Schedule' ,'true' ,'' ,'study' ,'treatmentSchedule', '', '', 'date', 'true', 'false', 'qcstate/publicdata', 'The report displays all treatments scheduled for today'],
+            ['urinalysis' ,'Clin Path' ,'js' ,'Urinalysis' ,'true' ,'' ,'study' ,'urinalysisResults', '', '', 'date', 'false', 'false', '', 'Contains urinalysis results'],
+            ['viralChallenges' ,'Clin Path' ,'query' ,'Viral Challenges' ,'true' ,'' ,'study' ,'ViralChallenges', '', '', 'date', 'false', 'false', '', 'This report contains a list of all viral challenges, determined by comparing against known SNOMED codes'],
+            ['viralLoads' ,'Assay' ,'js' ,'Viral Loads' ,'true' ,'' ,'study' ,'viralLoads', '', '', 'date', 'false', 'false', '', 'Contains viral load data'],
+            ['virology' ,'Clin Path' ,'query' ,'Virology' ,'true' ,'' ,'study' ,'Virology Results', '', '', 'date', 'false', 'false', 'qcstate/publicdata', 'This report contains the results of serology and isolation virology tests for pathogens such as HBV'],
+            ['vitals' ,'Physical Exam' ,'query' ,'Vitals' ,'true' ,'' ,'study' ,'Vitals', '', '', 'date', 'false', 'false', 'qcstate/publicdata', 'Contains records of vitals, including heart rate and blood pressure'],
+            ['weight' ,'Clinical' ,'js' ,'Weights' ,'true' ,'' ,'study' ,'weightGraph', '', '', 'date', 'false', 'false', 'qcstate/publicdata', 'This report contains a summary of the animal\'s weight, including a graph'],
+            ['pregnancies' ,'Colony Management' ,'query' ,'Pregnancies' ,'true' ,'' ,'study' ,'Pregnancies', '', '', 'date', 'false', 'false', 'qcstate/publicdata', 'This report contains a list of known pregnancies, including conception dates and sire, where available'],
+            ['procedures' ,'Clinical' ,'query' ,'Procedures' ,'true' ,'' ,'study' ,'Procedure Codes', '', '', 'date', 'false', 'false', 'qcstate/publicdata', 'This report contains the SNOMED codes assigned to procedures']
         ];
 
         LABKEY.Query.insertRows(makeObject(config, data, fields));
@@ -6872,7 +6919,7 @@ function makeObject(config, data, fields){
 }
 
 function onSuccess(result){
-    console.log('Success');
+    console.log('Success: '+result.queryName);
 }
 
 function onError(result){
@@ -6892,9 +6939,23 @@ var panel = new Ext.Panel({
         handler: btn1
     },{
         xtype: 'button',
+        text: 'Delete Data From Form Types',
+        scope: this,
+        handler: function(){
+            deleteAll('ehr', 'formtypes', 'formtype')
+        }
+    },{
+        xtype: 'button',
         text: 'Populate Form Panel Sections',
         scope: this,
         handler: btn2
+    },{
+        xtype: 'button',
+        text: 'Delete Data From Form Panel Sections',
+        scope: this,
+        handler: function(){
+            deleteAll('ehr', 'formpanelsections', 'rowid')
+        }
     },{
         xtype: 'button',
         text: 'Populate Form Templates Table',
@@ -6902,9 +6963,23 @@ var panel = new Ext.Panel({
         handler: btn3
     },{
         xtype: 'button',
+        text: 'Delete Data From Form Templates',
+        scope: this,
+        handler: function(){
+            deleteAll('ehr', 'formtemplates', 'entityid')
+        }
+    },{
+        xtype: 'button',
         text: 'Populate Form Template Records Table',
         scope: this,
         handler: btn7
+    },{
+        xtype: 'button',
+        text: 'Delete Data From Form Template Records',
+        scope: this,
+        handler: function(){
+            deleteAll('ehr', 'formtemplaterecords', 'rowid')
+        }
     },{
         xtype: 'button',
         text: 'Populate Reports Table',
@@ -6912,9 +6987,23 @@ var panel = new Ext.Panel({
         handler: btn4
     },{
         xtype: 'button',
+        text: 'Delete Data From Reports',
+        scope: this,
+        handler: function(){
+            deleteAll('ehr', 'reports', 'rowid')
+        }
+    },{
+        xtype: 'button',
         text: 'Populate SNOMED Subset Codes Table',
         scope: this,
         handler: btn5
+    },{
+        xtype: 'button',
+        text: 'Delete Data From SNOMED Subset Codes',
+        scope: this,
+        handler: function(){
+            deleteAll('ehr_lookups', 'snomed_subset_codes', 'rowid')
+        }
     },{
         xtype: 'button',
         text: 'Populate Charge Items Table',
@@ -6922,14 +7011,35 @@ var panel = new Ext.Panel({
         handler: btn6
     },{
         xtype: 'button',
+        text: 'Delete Data From Charges',
+        scope: this,
+        handler: function(){
+            deleteAll('ehr_lookups', 'charge_items', 'rowid')
+        }
+    },{
+        xtype: 'button',
         text: 'Populate SNOMED Table',
         scope: this,
         handler: btn10
     },{
         xtype: 'button',
+        text: 'Delete Data From SNOMED',
+        scope: this,
+        handler: function(){
+            deleteAll('ehr_lookups', 'snomed', 'code')
+        }
+    },{
+        xtype: 'button',
         text: 'Populate Module Properties',
         scope: this,
         handler: btn11
+    },{
+        xtype: 'button',
+        text: 'Delete Data From Module Properties',
+        scope: this,
+        handler: function(){
+            deleteAll('ehr', 'module_properties', 'rowid')
+        }
     },{
         xtype: 'button',
         text: 'Populate All',
@@ -6945,7 +7055,21 @@ var panel = new Ext.Panel({
             btn10();
             btn11();
         }
-
+    },{
+        xtype: 'button',
+        text: 'Delete All',
+        scope: this,
+        handler: function(){
+            deleteAll('ehr', 'formtypes', 'formtype')
+            deleteAll('ehr', 'formpanelsections', 'rowid')
+            deleteAll('ehr', 'formtemplates', 'entityid')
+            deleteAll('ehr', 'formtemplaterecords', 'rowid')
+            deleteAll('ehr', 'reports', 'rowid')
+            deleteAll('ehr_lookups', 'snomed_subset_codes', 'rowid')
+            deleteAll('ehr_lookups', 'charge_items', 'rowid')
+            deleteAll('ehr_lookups', 'snomed', 'code')
+            deleteAll('ehr', 'module_properties', 'rowid')
+        }
     }]
 })
 

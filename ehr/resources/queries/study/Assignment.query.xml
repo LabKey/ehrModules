@@ -24,14 +24,17 @@
                     <column columnName="enddate">
                         <formatString>yyyy-MM-dd</formatString>
                         <columnTitle>Release Date</columnTitle>
+                        <isHidden>false</isHidden>
+                        <shownInInsertView>true</shownInInsertView>
+                        <shownInDetailsView>true</shownInDetailsView>
                     </column>
                     <column columnName="parentId">
-                        <fk>
-                          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-                          <fkDbSchema>study</fkDbSchema>
-                          <fkTable>studyDataParent</fkTable>
-                          <fkColumnName>objectid</fkColumnName>
-                        </fk>
+                        <!--<fk>-->
+                          <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
+                          <!--<fkDbSchema>study</fkDbSchema>-->
+                          <!--<fkTable>studyDataParent</fkTable>-->
+                          <!--<fkColumnName>objectid</fkColumnName>-->
+                        <!--</fk>-->
                     </column>
                     <column columnName="CoAssignments" wrappedColumnName="lsid">
                         <columnTitle>CoAssignments</columnTitle>

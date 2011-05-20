@@ -76,13 +76,15 @@ EHR.Assay.onError = function(error){
     /*
     LABKEY.Query.insertRows({
          containerPath: '/shared',
-         schemaName: 'lists',
-         queryName: 'SiteErrors',
-         rows: [
-            {"UserID":  ReagentReqForm.DisplayName.value,
-            "Timestamp": new Date(),
-            "Error": error.message,
-            }]
+         schemaName: 'auditlog',
+         queryName: 'audit',
+         rows: [{
+            EventType: "Client API Actions",
+            Key1: "Assay Client Error",
+            Comment: error.message,
+            Date: new Date()
+        }],
+    });
     */
 };
 

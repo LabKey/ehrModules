@@ -18,7 +18,7 @@ function setDescription(row, errors){
     if(row.problem_no)
         description.push('Problem No: '+row.problem_no);
 
-    description.push('Date Observed: '+EHR.validation.dateTimeToString(row.date_observed));
+    description.push('Date Observed: '+EHR.validation.dateTimeToString(row.date));
     description.push('Date Resolved: '+EHR.validation.dateTimeToString(row.enddate));
 
     return description;
@@ -28,15 +28,15 @@ function setDescription(row, errors){
 function onInsert(context, errors, row){
     //autocalculate problem #
     //TODO: testing needed
-    if(row.dataSource != 'etl' && row.Id){
+    if(context.extraContext.dataSource != 'etl' && row.Id){
         LABKEY.Query.executeSql({
             schemaName: 'study',
-            sql: "SELECT MAX(problem_no)+1 as problem_no FROM study.problem WHERE id='"+row.Id+"' AND qcstate.publicdata = TRUE",
+            sql: "SELECT MAX(problem_no)+1 as problem_no FROM study.problem WHERE id='"+row.Id+"'",
+            //NOTE: remove QC filter because of potential conflicts: +" AND qcstate.publicdata = TRUE",
             success: function(data){
                 if(data && data.rows && data.rows.length==1){
-                    console.log('problemno: '+data.rows[0]);
+                    //console.log('problemno: '+data.rows[0].problem_no);
                     row.problem_no = data.rows[0].problem_no;
-
                 }
             },
             failure: EHR.onFailure

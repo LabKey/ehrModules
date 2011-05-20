@@ -9,7 +9,7 @@
 SELECT
 d.Id,
 d.birth as Date,
-'Purchasing' as category,
+'Pre-Paid Replacement Fee' as category,
 d.purchasedby as value,
 d.ts,
 concat(d.uuid, 'p') as objectid

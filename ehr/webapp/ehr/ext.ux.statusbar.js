@@ -167,6 +167,12 @@ sb.setStatus({
      */
     autoClear : 5000,
 
+    //added by b bimber
+    /**
+     * @cfg {Number} spacer
+     * The style of spacer used between status area and other items
+     */
+    spacer: '->',
     /**
      * @cfg {String} emptyText
      * The text string to use if no text has been set.  Defaults to
@@ -202,11 +208,11 @@ sb.setStatus({
         });
 
         if(right){
-            this.add('->');
+            //this.add('->');
             this.add(this.statusEl);
         }else{
             this.insert(0, this.statusEl);
-            this.insert(1, '->');
+            //this.insert(1, '->');
         }
         this.doLayout();
     },

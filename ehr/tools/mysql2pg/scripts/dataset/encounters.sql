@@ -1,0 +1,72 @@
+/*
+ * Copyright (c) 2010 LabKey Corporation
+ *
+ * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
+ */
+/*SET GLOBAL group_concat_max_len = 4000;*/
+
+SELECT
+lower(id) as Id,
+'Surgery' as type,
+FixDateTime(date, time) AS Date,
+FixDateTime(enddate, endtime) AS enddate,
+pno as project,
+null as account,
+null as title,
+surgeon as performedby,
+major,
+
+/*inves,*/
+
+FixNewlines(left(group_concat(remark), 3999)) AS remark,
+max(ts) as ts,
+uuid AS objectid
+FROM surghead s
+WHERE length(s.id) > 1
+GROUP BY s.id, s.date, s.time, s.age, s.inves, s.pno, s.surgeon, s.endtime, s.enddate
+/*HAVING max(ts) > ?*/
+
+UNION ALL
+
+SELECT
+
+lower(id) as Id,
+'Necropsy' as type,
+FixDate(date) AS Date,
+null as enddate,
+null as project,
+account,
+caseno as title,
+null as performedby,
+null as major,
+FixNewlines(left(group_concat(remark), 3999)) AS remark,
+ts,
+uuid AS objectid
+FROM necropsyhead n
+WHERE length(id) > 1
+GROUP BY n.id, n.date, n.caseno, n.account
+
+/*HAVING ts > ?*/
+
+UNION ALL
+
+SELECT
+lower(id) as Id,
+'Biopsy' as type,
+FixDate(date) AS Date,
+null as enddate,
+null as project,
+account,
+caseno as title,
+null as performedby,
+null as major,
+FixNewlines(left(group_concat(remark), 3999)) AS remark,
+max(ts) as ts,
+uuid AS objectid
+FROM biopsyhead b
+WHERE length(id) > 1
+
+GROUP BY b.id, b.date, b.caseno, b.account
+/*HAVING max(ts) > ?*/
+
+

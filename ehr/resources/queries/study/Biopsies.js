@@ -11,7 +11,7 @@ var {EHR, LABKEY, Ext, console, init, beforeInsert, afterInsert, beforeUpdate, a
 
 function onETL(row, errors){
     if(row.caseno)
-        EHR.ETL.fixBiopsyCase(row, errors);
+        EHR.ETL.fixPathCaseNo(row, errors, 'b');
 }
 
 function setDescription(row, errors){
@@ -23,9 +23,9 @@ function setDescription(row, errors){
     return description;
 }
 
-function onInsert(context, errors, row){
-    // auto-calculate the CaseNo
-    if(row.dataSource != 'etl' && row.date)
-        EHR.validation.calculateCaseno(row, errors, 'biopsy', 'b')
-
-}
+//function onInsert(context, errors, row){
+//    // auto-calculate the CaseNo
+//    if(context.extraContext.dataSource != 'etl' && row.date)
+//        EHR.validation.calculateCaseno(row, errors, 'biopsy', 'b')
+//
+//}

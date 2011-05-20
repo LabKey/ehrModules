@@ -5,7 +5,7 @@
  */
 SELECT
 c.lsid,
-c.id.Status.Status as Status,
+c.id.dataset.demographics.calculated_status AS status,
 
 CASE
 WHEN c.date is not null

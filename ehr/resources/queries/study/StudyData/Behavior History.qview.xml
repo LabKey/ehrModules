@@ -8,6 +8,7 @@
                 <property name="columnTitle" value="Dataset"/>
             </properties>
        </column>
+       <column name="qcstate"/>
        <column name="remark"/>
        <column name="description"/>
    </columns>

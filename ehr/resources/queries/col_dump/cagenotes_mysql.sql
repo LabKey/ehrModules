@@ -9,7 +9,7 @@ a.date,
 t2.ts,
 null as objectid,
 t2.objectid as key2
-FROM ehr.cage_observations a
+FROM lists.cagenotes a
 full join col_dump.cagenotes t2
 on a.objectid = t2.objectid
-WHERE t2.objectid is null --or a.objectid is null --or a.ts != t2.ts
+WHERE t2.objectid is null or a.objectid is null --or a.ts != t2.ts

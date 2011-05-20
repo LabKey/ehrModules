@@ -9,7 +9,7 @@
                     </column>
                     <column columnName="BloodLast30">
                         <columnTitle>Drawn in Previous 30 Days</columnTitle>
-                        <url>/ehr/executeQuery.view?schemaName=study&amp;
+                        <url>/query/executeQuery.view?schemaName=study&amp;
                             query.queryName=Blood Draws&amp;
                             query.viewName=Blood Summary&amp;                            
                             query.Id~eq=${Id}&amp;
@@ -20,7 +20,7 @@
                     </column>                  
                     <column columnName="BloodNext30">
                         <columnTitle>Scheduled in Next 30 Days</columnTitle>
-                        <url>/ehr/executeQuery.view?schemaName=study&amp;
+                        <url>/query/executeQuery.view?schemaName=study&amp;
                             query.queryName=Blood Draws&amp;
                             query.viewName=Blood Summary&amp;
                             query.Id~eq=${Id}&amp;

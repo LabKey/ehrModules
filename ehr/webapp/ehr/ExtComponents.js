@@ -797,11 +797,15 @@ EHR.ext.ParticipantField = Ext.extend(Ext.form.TextField,
                     species = 'Cotton-top Tamarin';
                 else if (val.match(/^pt([0-9]{4})$/))
                     species = 'Pigtail';
+                else if (val.match(/^pd([0-9]{4})$/))
+                    species = '';
 
-                if(!species) return 'Invalid Id Format';
+                if(!species){
+                    return 'Invalid Id Format';
+                }
 
                 var row = this.participantMap.get(val);
-                if(row && !row.loading){
+                if(row && !row.loading && !this.allowAnyId){
                     if(!row.Id){
                         return 'Id Not Found';
                     }
@@ -812,15 +816,6 @@ EHR.ext.ParticipantField = Ext.extend(Ext.form.TextField,
             },
             listeners: {
                 scope: this,
-//                change: function(c, val, oldVal)
-//                {
-//                    if (val != c.loadedId)
-//                    {
-//                        this.fireEvent('participantchange', c);
-//                        c.loadedId = val;
-//                        //console.log('animal valid');
-//                    }
-//                },
                 valid: function(c)
                 {
                     var val = c.getRawValue();
@@ -868,7 +863,7 @@ EHR.ext.ProjectField = Ext.extend(LABKEY.ext.ComboBox,
             ,triggerAction: 'all'
             ,forceSelection: true
             ,mode: 'local'
-            ,disabled: true
+            ,disabled: false
             ,defaultProjects: [00300901]
             ,validationDelay: 500
             //NOTE: unless i have this empty store an error is thrown
@@ -907,6 +902,11 @@ EHR.ext.ProjectField = Ext.extend(LABKEY.ext.ComboBox,
                     }
                 }
             }
+            ,tpl: function(){var tpl = new Ext.XTemplate(
+                '<tpl for=".">' +
+                '<div class="x-combo-list-item">{[EHR.utils.padDigits(values["project"], 8)]}' +
+                '&nbsp;</div></tpl>'
+            );return tpl.compile()}() //FIX: 5860
         });
 
         EHR.ext.ProjectField.superclass.initComponent.call(this, arguments);
@@ -928,33 +928,6 @@ EHR.ext.ProjectField = Ext.extend(LABKEY.ext.ComboBox,
 });
 Ext.reg('ehr-project', EHR.ext.ProjectField);
 
-
-EHR.ext.ProtocolField = Ext.extend(LABKEY.ext.ComboBox,
-{
-    initComponent: function()
-    {
-        Ext.apply(this, {
-            fieldLabel: 'Protocol'
-            ,name: this.name || 'Protocol'
-            ,emptyText:'Select protocol...'
-            ,displayField:'protocol'
-            ,valueField: 'protocol'
-            ,forceSelection: true
-            ,triggerAction: 'all'
-            ,typeAhead: true
-            ,mode: 'local'
-            ,store: EHR.ext.simpleLookupStore({
-                containerPath: 'WNPRC/EHR/',
-                schemaName: 'lists',
-                queryName: 'protocol',
-                sort: 'protocol'
-            })
-        });
-
-        EHR.ext.ProjectField.superclass.initComponent.call(this, arguments);
-    }
-});
-Ext.reg('ehr-protocol', EHR.ext.ProtocolField);
 
 EHR.ext.RemarkField = Ext.extend(Ext.form.TextArea,
 {
@@ -1055,8 +1028,10 @@ EHR.ext.DrugDoseField = Ext.extend(EHR.ext.TriggerNumberField,
                 }
             }, this);
 
-            if(!weight)
-                weight = parent.importPanel.participantMap.get(id)['weight'];
+            if(!weight){
+                var record = parent.importPanel.participantMap.get(id);
+                weight = record['Id/availBlood/MostRecentWeight'] || record['MostRecentWeight/MostRecentWeight']  || record['Id/MostRecentWeight/MostRecentWeight'];
+            }
 
             var mt = Ext.form.MessageTargets.under;
             var msg = 'Weight: '+weight+' kg';

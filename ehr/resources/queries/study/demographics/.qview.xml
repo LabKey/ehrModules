@@ -7,12 +7,17 @@
                 <property name="columnTitle" value="Gender"/>
             </properties>
         </column>
-        <column name="Status">
+        <!--<column name="Status">-->
+            <!--<properties>-->
+                <!--<property name="columnTitle" value="Status"/>-->
+            <!--</properties>-->
+        <!--</column>-->
+        <column name="calculated_status">
             <properties>
                 <property name="columnTitle" value="Status"/>
             </properties>
         </column>
-        <column name="Avail">
+        <column name="currentAssignments/Availability">
             <properties>
                 <property name="columnTitle" value="Avail"/>
             </properties>
@@ -47,46 +52,46 @@
                 <property name="columnTitle" value="Death"/>
             </properties>
         </column>
-        <column name="Arrivedate">
-            <properties>
-                <property name="columnTitle" value="Arrival Date"/>
-            </properties>
-        </column>
-        <column name="departdate">
-            <properties>
-                <property name="columnTitle" value="Departure Date"/>
-            </properties>
-        </column>
-        <column name="Room">
+        <!--<column name="Id/MostRecentArrival/MostRecentArrival">-->
+            <!--<properties>-->
+                <!--<property name="columnTitle" value="Most Recent Arrival"/>-->
+            <!--</properties>-->
+        <!--</column>-->
+        <!--<column name="Id/MostRecentDeparture/MostRecentDeparture">-->
+            <!--<properties>-->
+                <!--<property name="columnTitle" value="Most Recent Departure"/>-->
+            <!--</properties>-->
+        <!--</column>-->
+        <column name="Id/curLocation/Room">
             <properties>
                 <property name="columnTitle" value="Room"/>
             </properties>
         </column>
-        <column name="Cage">
+        <column name="Id/curLocation/Cage">
             <properties>
                 <property name="columnTitle" value="Cage"/>
             </properties>
         </column>
-        <column name="Cond">
+        <column name="Id/curLocation/Cond">
             <properties>
                 <property name="columnTitle" value="Condition"/>
             </properties>
         </column>
-        <column name="weight">
+        <column name="Id/MostRecentWeight/MostRecentWeight">
             <properties>
                 <property name="columnTitle" value="Current Weight"/>
             </properties>
         </column>
-        <column name="wdate">
+        <column name="Id/MostRecentWeight/MostRecentWeightDate">
             <properties>
                 <property name="columnTitle" value="Weight Date"/>
             </properties>
         </column>
-        <column name="tbdate">
-            <properties>
-                <property name="columnTitle" value="Last TB Date"/>
-            </properties>
-        </column>
+        <!--<column name="tbdate">-->
+            <!--<properties>-->
+                <!--<property name="columnTitle" value="Last TB Date"/>-->
+            <!--</properties>-->
+        <!--</column>-->
         <column name="Medical">
             <properties>
                 <property name="columnTitle" value="Medical"/>
@@ -97,11 +102,11 @@
                 <property name="columnTitle" value="Purchased By"/>
             </properties>
         </column>
-        <column name="v_status">
-            <properties>
-                <property name="columnTitle" value="Viral Status"/>
-            </properties>
-        </column>
+        <!--<column name="v_status">-->
+            <!--<properties>-->
+                <!--<property name="columnTitle" value="Viral Status"/>-->
+            <!--</properties>-->
+        <!--</column>-->
     </columns>
     <sorts>
         <sort column="id" descending="false"/>

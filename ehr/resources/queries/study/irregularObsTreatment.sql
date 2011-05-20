@@ -32,7 +32,7 @@ t.date,
 t.date as DateOnly,
 'Treatment' as type,
 t.userid,
-null as remark, -- t.remark,
+t.remark,
 t.dataset,
 t.description,
 CASE WHEN t.enddate is null THEN
@@ -41,7 +41,7 @@ ELSE
   ('Drug: ' || t.code || '
 End Date: ' || t.enddate)
 END AS description2,
-t.qcstate
+null as qcstate
 
 FROM treatmentSchedule t
 

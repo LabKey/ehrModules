@@ -86,6 +86,8 @@ Ext.ux.form.DateTime = Ext.extend(Ext.form.Field, {
                         ,allowBlank: this.allowBlank || false
                         //NOTE: added by bbimber
                         ,readOnly: this.readOnly || false
+                        ,minValue: this.minValue || null
+                        ,maxValue: this.maxValue || null
                         ,msgTarget: this.msgTarget || 'qtip'
                         ,listeners:{
                                   blur:{scope:this, fn:this.onBlur}

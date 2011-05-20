@@ -7,28 +7,32 @@ SELECT
 
 a.id,
 
-a.id.curLocation.location as location,
+a.location as location,
 a.id.cageclass.MostRecentWeight as MostRecentWeight,
 
-a.id.curLocation.location.length as length,
-a.id.curLocation.location.width as width,
-round((a.id.curLocation.location.length * a.id.curLocation.location.width)/144, 1) as CageSqft,
+a.location.length as length,
+a.location.width as width,
+-- a.id.location.location.length as length,
+-- a.id.location.location.width as width,
 
+round((a.location.length * a.location.width)/144, 1) as CageSqft,
 a.id.cageclass.ReqSqft,
+a.id.cageclass.ReqSqft / (a.id.numRoommates.NumRoommates+1) as ReqSqFt2,
 
+a.location.height as CageHeight,
+a.id.cageclass.ReqHeight,
 
-a.id.curLocation.location.height as CageHeight,
-a.id.cageclass.ReqHeight
+a.id.numRoommates.NumRoommates
 
-FROM study.demographics a
+FROM study.demographicsCurLocation a
 
 WHERE
 
---dimensions in inches
-round((a.id.curLocation.location.length * a.id.curLocation.location.width)/144, 1) < a.id.cageclass.ReqSqFt
+-- NOTE: dimension is in inches
+--((a.location.length * a.location.width)/144) < ( a.id.cageclass.ReqSqft / (a.id.numRoommates.NumRoommates+1))
 
-OR
+-- OR
 
-a.id.curLocation.location.height < a.id.cageclass.ReqHeight
+a.location.height < a.id.cageclass.ReqHeight
 
 

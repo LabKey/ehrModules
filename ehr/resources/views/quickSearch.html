@@ -83,6 +83,7 @@ function makePanel(){
 
             this.animalGroup = this.add({
                 emptyText:''
+                ,name: 'animalGroup'
                 ,xtype: 'combo'
                 ,displayField:'label'
                 ,valueField: 'viewName'                
@@ -107,7 +108,7 @@ function makePanel(){
                     if (!value) return false;
 
                     window.location = LABKEY.ActionURL.buildURL(
-                        'ehr'
+                        'query'
                         ,'executeQuery'
                         ,'WNPRC/EHR/'
                         ,{schemaName: 'study', 'query.queryName': 'Animal', 'query.viewName': value}
@@ -117,7 +118,7 @@ function makePanel(){
                 })
             );
 
-            this.add({html: '<a href="'+(LABKEY.ActionURL.buildURL('ehr','executeQuery','WNPRC/EHR/',
+            this.add({html: '<a href="'+(LABKEY.ActionURL.buildURL('query','executeQuery','WNPRC/EHR/',
                 {
                     schemaName: 'study',
                     'query.queryName': 'Animal',
@@ -129,6 +130,7 @@ function makePanel(){
 
             this.projectField = this.add({
                 emptyText:''
+                ,name: 'projectField'
                 ,xtype: 'combo'
                 ,displayField:'project'
                 ,valueField: 'project'
@@ -168,6 +170,7 @@ function makePanel(){
 
             this.protocolField = this.add({
                 emptyText:''
+                ,name: 'protocolField'
                 ,xtype: 'combo'
                 ,displayField:'protocol'
                 ,valueField: 'protocol'
@@ -238,7 +241,7 @@ function makePanel(){
                     if (!value) return false;
 
                     window.location = LABKEY.ActionURL.buildURL(
-                        'ehr'
+                        'query'
                         ,'executeQuery'
                         ,'WNPRC/EHR/'
                         ,{'schemaName':'study', 'query.queryName':'Animal', 'query.Dataset/Demographics/Room~startswith': value, 'query.viewName': 'Alive, at WNPRC'});

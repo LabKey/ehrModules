@@ -50,21 +50,21 @@ function createNavMenu()
         sections: [
             {header: 'Entire Colony',
             items: [
-                {name: 'Animal Utilization By Category', url: '<%=contextPath%>/ehr/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=ColonyAssignmentSummary'},
-                {name: 'Colony Population By Age', url: '<%=contextPath%>/ehr/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=Colony Population By Age'},
-                {name: 'MHC Genotype Summary', url: '<%=contextPath%>/ehr/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=AlleleFrequencies'},
-//                {name: 'Population Summary', url: '<%=contextPath%>/ehr/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=colonyPopulationSummary'},
+                {name: 'Animal Utilization By Category', url: '<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=ColonyAssignmentSummary'},
+                {name: 'Colony Population By Age', url: '<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=Colony Population By Age'},
+                {name: 'MHC Genotype Summary', url: '<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=alleleFrequencies'},
+//                {name: 'Population Summary', url: '<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=colonyPopulationSummary'},
                 {name: 'Population Summary', url: '<%=contextPath%>/ehr/WNPRC/EHR/populationOverview.view?'},
                 {name: 'Room Utilization', url: '<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=ehr&query.queryName=RoomUtilization'},
                 {name: 'Viral Challenges', url: '<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=ViralChallenges'}
             ]},
             {header: 'Validation and Alerts',
              items: [
-                 {name: 'Cage Review', url: '<%=contextPath%>/ehr/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=CageReview'},
-                 {name: 'Loners', url: '<%=contextPath%>/ehr/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=animal&query.viewName=Loners'},
+                 {name: 'Cage Review', url: '<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=CageReview'},
+//                 {name: 'Loners', url: '<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=animal&query.viewName=Loners'},
 //                 {name: 'Loners', url: '<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=demographicsDaysAlone'},
-                 {name: 'TB Tests', url: '<%=contextPath%>/ehr/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=animal&query.viewName=TB'},
-                 {name: 'Unweighed Animals', url: '<%=contextPath%>/ehr/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=animal&query.viewName=Unweighed'}
+                 {name: 'TB Tests', url: '<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=animal&query.viewName=TB'},
+                 {name: 'Unweighed Animals', url: '<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=animal&query.viewName=Unweighed'}
              ]}
 
         ]
@@ -76,14 +76,23 @@ function createNavMenu()
             {header: 'Misc',
             items: [
                 {name: 'About the EHR Project', url: '<%=contextPath%>/project/WNPRC/EHR/About The EHR/begin.view?'},
-                {name: 'Search WNPRC SNOMED Codes', url: '<%=contextPath%>/ehr/WNPRC/EHR/executeQuery.view?schemaName=lists&query.queryName=snomed'},
-                {name: 'Search ALL SNOMED Codes', url: '<%=contextPath%>/ehr/WNPRC/EHR/executeQuery.view?schemaName=lists&query.queryName=newsnomed'},
-                {name: 'Utilities', url: '<%=contextPath%>/ehr/WNPRC/EHR/utilities.view?'}
+                {name: 'Compare Lists of Animals', url: '<%=contextPath%>/ehr/WNPRC/EHR/utilities.view?'},
+                {name: 'Run SQL Directly', url: '<%=contextPath%>/ehr/WNPRC/EHR/executeSql.view?'},
+                {name: 'Search WNPRC SNOMED Codes', url: '<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=lists&query.queryName=snomed'},
+                {name: 'Search ALL SNOMED Codes', url: '<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=lists&query.queryName=newsnomed'}
             ]},
             {header: 'Data Entry',
             items: [
-                {name: 'Data Entry', url: '<%=contextPath%>/ehr/WNPRC/EHR/dataEntry.view'},
-                {name: 'Request Services', url: '<%=contextPath%>/ehr/WNPRC/EHR/requestServices.view'}
+                {name: 'Enter Data', url: '<%=contextPath%>/ehr/WNPRC/EHR/dataEntry.view'},
+                {name: 'Download Paper Forms', url: 'http://wprcfs.primate.wisc.edu/qa/Forms/'}
+            ]},
+            {header: 'Request Services',
+            items: [
+                //{name: 'Request Services', url: '<%=contextPath%>/ehr/WNPRC/EHR/requestServices.view'},
+                {name: 'Request Biopsy', url: 'http://yakui.primate.wisc.edu/pathology/BiopsyForm.html'},
+                {name: 'Request Clinpath Services', url: 'http://www.primate.wisc.edu/clinpath/'},
+                {name: 'Request Necropsy', url: 'http://yakui.primate.wisc.edu/pathology/NecropsyForm.html'},
+                {name: 'Request Project', url: 'http://www.primate.wisc.edu/colony/project-form.html'}
             ]}
         ]
     };
@@ -93,7 +102,8 @@ function createNavMenu()
             header: 'Admin',
             items: [
                 {name: 'EHR Admin Page', url: '<%=contextPath%>/ehr/WNPRC/EHR/ehrAdmin.view'},
-                {name: 'Manage EHR Study', url: '<%=contextPath%>/study/WNPRC/EHR/manageStudy.view?'}
+                {name: 'Manage EHR Study', url: '<%=contextPath%>/study/WNPRC/EHR/manageStudy.view?'},
+                {name: 'Manage Lookup Tables', url: '<%=contextPath%>/ehr/WNPRC/EHR/dataAdmin.view'}
             ]
         })
 
@@ -107,7 +117,7 @@ function createNavMenu()
 <body>
 
 <div style="max-width:900px">
-    Below are the sections of the Electronic Health Record.  The EHR currently is a read-only mirror of WNPRC colony records.  It contains reports designed to mirror those available through the existing UNIX and web interfaces.  If there are additional reports you would like, please submit a request <a href="<%=contextPath%>/issues/WNPRC/WNPRC_Units/Research_Services/Research_Computing/Issue_Tracker/list.view?" target="new">here</a>
+    Below are the sections of the Electronic Health Record.  If there are additional reports you would like, please submit a request <a href="<%=contextPath%>/issues/WNPRC/WNPRC_Units/Research_Services/Research_Computing/Issue_Tracker/list.view?" target="new">here</a>.
     <br><br>
 </div>
 

@@ -37,15 +37,26 @@ EHR.ext.AdvancedStore = Ext.extend(LABKEY.ext.Store, {
             doServerValidation: true
         });
 
+        EHR.utils.getDatasetPermissions({
+            success: Ext.emptyFn,
+            failure: EHR.utils.onError,
+            scope: this
+        });
 
         EHR.ext.AdvancedStore.superclass.constructor.apply(this, arguments);
 
         this.addEvents('beforemetachange', 'validation');
         this.proxy.on("load", this.onProxyLoad, this);
 
-//        if(config.maxRows !== undefined){
-//            this.baseParams['query.maxRows'] = config.maxRows;
-//        }
+        this.on('update', this.verifyPermission, this);
+
+
+        //TODO: remove once added to labkey.ext.store
+        if(config.maxRows !== undefined){
+            this.baseParams['query.maxRows'] = config.maxRows;
+        }
+        if(config.ignoreFilter)
+            this.baseParams['query.ignoreFilter'] = 1;
 
         if(this.monitorValid)
             this.initMonitorValid();
@@ -112,6 +123,18 @@ EHR.ext.AdvancedStore = Ext.extend(LABKEY.ext.Store, {
             return;
 
         this.reader.onMetaChange(meta);
+    },
+
+    verifyPermission: function(store, rec, operation){
+        var qc;
+        if(EHR.permissionMap && rec.fields.get('QCState')){
+            qc = rec.get('QCState');
+            qc = EHR.permissionMap.qcMap.rowid[qc].Label;
+            if(!EHR.permissionMap.hasPermission(qc, 'update', {schemaName: this.schemaName, queryName: this.queryName})){
+                alert('You do not have permission to change this record');
+                rec.reject();
+            }
+        }
     },
 
     //NOTE: the intention of tihs method was to provide a standard, low-level way to translating Labkey metadata names into ext ones.
@@ -201,14 +224,16 @@ EHR.ext.AdvancedStore = Ext.extend(LABKEY.ext.Store, {
         return maxSeverity;
     },
 
-    validateRecords: function(store, recs, fireEvent){
+    validateRecords: function(store, recs, fireEvent, config){
+        config = config || {};
+
         if(recs)
             Ext.each(recs, function(r){
-                this.validateRecord(this, r, null, {fireEvent: false});
+                this.validateRecord(this, r, config.operation, {fireEvent: false});
             }, this);
         else
             this.each(function(r){
-                this.validateRecord(this, r, null, {fireEvent: false});
+                this.validateRecord(this, r, config.operation, {fireEvent: false});
             }, this);
 
         if(fireEvent !== false){
@@ -411,7 +436,7 @@ EHR.ext.AdvancedStore = Ext.extend(LABKEY.ext.Store, {
 
         if (!commands.length){
             if(extraContext && extraContext.silent!==true)
-                Ext.alert('Alert', 'There are no changes to submit.');
+                Ext.Msg.alert('Alert', 'There are no changes to submit.');
 
             return;
         }
@@ -568,7 +593,8 @@ EHR.ext.AdvancedStore = Ext.extend(LABKEY.ext.Store, {
     },
 
     //NOTE: the following 2 methods are overriden because the old approach causes uncommitted client-side records to get destroyed on store load
-    deleteRecords : function(records) {
+    //also added QCState permission checking
+    deleteRecords : function(records, extraContext) {
         if (!this.updatable)
             throw "this LABKEY.ext.Store is not updatable!";
 
@@ -576,20 +602,35 @@ EHR.ext.AdvancedStore = Ext.extend(LABKEY.ext.Store, {
             return;
 
         var deleteRowsKeys = [];
+        var canDelete = true;
         var key;
+        var qc;
         for(var idx = 0; idx < records.length; ++idx)
         {
             //server delete not required for phantom records
+            //we dont worry about permissions, since we assume the current user created it
             if(records[idx].phantom){
                 this.remove(records[idx]);
                 delete records[idx];
             }
             else {
-                key = {};
-                key[this.idName] = records[idx].id;
-                deleteRowsKeys[idx] = key;
+                if(EHR.permissionMap && records[idx].fields.get('QCState')){
+                    qc = records[idx].get('QCState');
+                    qc = EHR.permissionMap.qcMap.rowid[qc].Label;
+                    if(!EHR.permissionMap.hasPermission(qc, 'delete', {schemaName: this.schemaName, queryName: this.queryName})){
+                        canDelete = false;
+                    }
+                    else {
+                        key = {};
+                        key[this.idName] = records[idx].id;
+                        deleteRowsKeys[idx] = key;
+                    }
+                }
             }
         }
+
+        if(!canDelete)
+            alert('You do not have permission to delete one or more of the records');
 
         if(deleteRowsKeys.length){
             //send the delete
@@ -597,9 +638,11 @@ EHR.ext.AdvancedStore = Ext.extend(LABKEY.ext.Store, {
                 schemaName: this.schemaName,
                 queryName: this.queryName,
                 containerPath: this.containerPath,
+                extraContext: extraContext,
                 rows: deleteRowsKeys,
                 scope: this,
                 successCallback: this.getDeleteSuccessHandler(records),
+                failure: this.getOnCommitFailure(records),
                 action: "deleteRows" //hack for Query.js bug
             });
         }
@@ -618,6 +661,15 @@ EHR.ext.AdvancedStore = Ext.extend(LABKEY.ext.Store, {
                 delete rec;
             }, this);
         };
+    },
+
+    removePhantomRecords: function(){
+        this.each(function(r){
+            if(r.phantom){
+                this.remove(r);
+                delete r;
+            }
+        }, this);
     }
 
 });

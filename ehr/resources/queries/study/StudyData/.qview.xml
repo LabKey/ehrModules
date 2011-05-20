@@ -4,7 +4,7 @@
        <column name="Date"/>
        <column name="project"/>
        <column name="account"/>
-
+       <column name="qcstate"/>
        <column name="dataset"/>
        <column name="remark"/>
        <column name="description"/>

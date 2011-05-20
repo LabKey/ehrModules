@@ -1,17 +1,37 @@
 <customView xmlns="http://labkey.org/data/xml/queryCustomView">
     <columns>
         <column name="Id"/>
+        <column name="curLocation/Room">
+            <properties>
+                <property name="columnTitle" value="Room"/>
+            </properties>
+        </column>
+        <column name="curLocation/Cage">
+            <properties>
+                <property name="columnTitle" value="Cage"/>
+            </properties>
+        </column>
+        <column name="curLocation/Cond">
+            <properties>
+                <property name="columnTitle" value="Condition"/>
+            </properties>
+        </column>
         <column name="Dataset/Demographics/gender">
             <properties>
                 <property name="columnTitle" value="Gender"/>
             </properties>
         </column>
-        <column name="Dataset/Demographics/Status">
+        <!--<column name="Dataset/Demographics/Status">-->
+            <!--<properties>-->
+                <!--<property name="columnTitle" value="Status"/>-->
+            <!--</properties>-->
+        <!--</column>-->
+        <column name="Dataset/Demographics/calculated_status">
             <properties>
                 <property name="columnTitle" value="Status"/>
             </properties>
         </column>
-        <column name="Dataset/Demographics/Avail">
+        <column name="currentAssignments/Availability">
             <properties>
                 <property name="columnTitle" value="Avail"/>
             </properties>
@@ -46,44 +66,24 @@
                 <property name="columnTitle" value="Death"/>
             </properties>
         </column>
-        <column name="Dataset/Demographics/Arrivedate">
-            <properties>
-                <property name="columnTitle" value="Arrival Date"/>
-            </properties>
-        </column>
-        <column name="Dataset/Demographics/departdate">
-            <properties>
-                <property name="columnTitle" value="Departure Date"/>
-            </properties>
-        </column>
-        <column name="Dataset/Demographics/Room">
-            <properties>
-                <property name="columnTitle" value="Room"/>
-            </properties>
-        </column>
-        <column name="Dataset/Demographics/Cage">
-            <properties>
-                <property name="columnTitle" value="Cage"/>
-            </properties>
-        </column>
-        <column name="Dataset/Demographics/Cond">
-            <properties>
-                <property name="columnTitle" value="Condition"/>
-            </properties>
-        </column>
-        <column name="Dataset/Demographics/weight">
+        <!--<column name="Id/MostRecentArrival/MostRecentArrival">-->
+            <!--<properties>-->
+                <!--<property name="columnTitle" value="Most Recent Arrival"/>-->
+            <!--</properties>-->
+        <!--</column>-->
+        <!--<column name="Id/MostRecentDeparture/MostRecentDeparture">-->
+            <!--<properties>-->
+                <!--<property name="columnTitle" value="Most Recent Departure"/>-->
+            <!--</properties>-->
+        <!--</column>-->
+        <column name="MostRecentWeight/MostRecentWeight">
             <properties>
                 <property name="columnTitle" value="Current Weight"/>
             </properties>
         </column>
-        <column name="Dataset/Demographics/wdate">
+        <column name="MostRecentWeight/MostRecentWeightDate">
             <properties>
                 <property name="columnTitle" value="Weight Date"/>
-            </properties>
-        </column>
-        <column name="Dataset/Demographics/tbdate">
-            <properties>
-                <property name="columnTitle" value="Last TB Date"/>
             </properties>
         </column>
         <column name="Dataset/Demographics/Medical">
@@ -96,11 +96,11 @@
                 <property name="columnTitle" value="Purchased By"/>
             </properties>
         </column>
-        <column name="Dataset/Demographics/v_status">
-            <properties>
-                <property name="columnTitle" value="Viral Status"/>
-            </properties>
-        </column>
+        <!--<column name="Dataset/Demographics/v_status">-->
+            <!--<properties>-->
+                <!--<property name="columnTitle" value="Viral Status"/>-->
+            <!--</properties>-->
+        <!--</column>-->
     </columns>
     <filters>
         <filter column="Status/WNPRC_Animal" operator="eq" value="true"/>

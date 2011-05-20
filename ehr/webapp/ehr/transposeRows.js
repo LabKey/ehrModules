@@ -77,7 +77,7 @@ loadQuery: function(){
     else if (data.rows.length > 1 && this.multiToGrid){
         Ext.applyIf(this.queryConfig, {
             allowChooseQuery: false,
-            allowChooseView: false,
+            allowChooseView: true,
             showInsertNewButton: false,
             showDeleteButton: false,
             showDetailsColumn: true,

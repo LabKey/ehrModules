@@ -5,19 +5,19 @@
  */
 
 SELECT
-c.roomcage,
+(c.room || '-' || c.cage) AS roomcage,
 c.room,
-c.cage
+c.cage,
+max(c.joinToCage) as joinToCage
 
 FROM (
-SELECT
-coalesce(c.room, d.room) || '-' || coalesce(c.cage, d.cage) as roomcage,
-coalesce(c.room, d.room) as room,
-coalesce(c.cage, d.cage) as cage
 
-FROM ehr_lookups.cage c
-FULL JOIN study.demographics d
-  ON (c.room=d.room AND c.cage=d.cage)
+SELECT c.room, c.cage, c.joinToCage FROM ehr_lookups.cage c
+
+UNION ALL
+
+SELECT h.room, h.cage, null as joinToCage FROM study.housing h WHERE h.enddate is null
 
 ) c
-group by c.roomcage, c.room, c.cage
+WHERE c.room is not null and c.room != ''
+group by c.room, c.cage

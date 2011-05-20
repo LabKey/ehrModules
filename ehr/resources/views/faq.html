@@ -1,0 +1,32 @@
+<script type="text/javascript">
+
+LABKEY.requiresScript("/ehr/utils.js");
+
+Ext.onReady(function(){
+
+    new LABKEY.QueryWebPart({
+        title: 'Available Reports',
+        schemaName: 'ehr',
+        queryName: 'reports',
+        columns: 'category,reportname,description',
+        sort: 'category,reportname',
+        allowChooseQuery: false,
+        allowChooseView: false,
+        showInsertNewButton: false,
+        showDeleteButton: false,
+        showDetailsColumn: false,
+        showUpdateColumn: false,
+        showRecordSelectors: false,
+        buttonBarPosition: 'top',
+        filters: [LABKEY.Filter.create('visible', true, LABKEY.Filter.Types.EQUAL)],
+        //sort: '-Date',
+        scope: this,
+        errorCallback: EHR.utils.onError
+     }).render('faqDiv');
+
+});
+
+</script>
+
+<div id='faqDiv'></div>
+

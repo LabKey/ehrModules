@@ -1,13 +1,14 @@
 <query xmlns="http://labkey.org/data/xml/query">
     <metadata>
         <tables xmlns="http://labkey.org/data/xml">
-            <table tableName="tasks" tableDbType="TABLE">
+            <table tableName="QCState" tableDbType="TABLE">
+                <titleColumn>Label</titleColumn>
                 <columns>
                     <column columnName="RowId">
                         <isHidden>false</isHidden>
                     </column>
                     <column columnName="Label">
-                        <displayWidth>200</displayWidth>
+                        <displayWidth>50</displayWidth>
                         <shownInDetailsView>true</shownInDetailsView>
                         <isHidden>false</isHidden>
                     </column>

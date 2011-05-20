@@ -56,8 +56,11 @@ public class EHRBasicSubmitterRole extends AbstractEHRRole
                 EHRRequestPendingUpdatePermission.class,
 //                EHRReviewRequiredDeletePermission.class,
                 EHRReviewRequiredInsertPermission.class,
-                EHRReviewRequiredUpdatePermission.class
-);
+                EHRReviewRequiredUpdatePermission.class,
+//                EHRScheduledDeletePermission.class,
+                EHRScheduledInsertPermission.class,
+                EHRScheduledUpdatePermission.class
+        );
 
         addExcludedPrincipal(org.labkey.api.security.SecurityManager.getGroup(Group.groupGuests));
     }

@@ -47,7 +47,7 @@
                     <nullable>true</nullable>
                     <propertyURI>urn:ehr.labkey.org/#Account</propertyURI>
                   </column>
-                  <column columnName="pathologist">
+                  <column columnName="performedby">
                     <datatype>varchar</datatype>
                     <columnTitle>Pathologist</columnTitle>
                   </column>
@@ -58,6 +58,9 @@
                   <column columnName="billing">
                     <datatype>boolean</datatype>
                     <columnTitle>Billing Complete</columnTitle>
+                  </column>
+                  <column columnName="bcs">
+                    <isHidden>true</isHidden>
                   </column>
                   <column columnName="perfusion_area">
                     <datatype>varchar</datatype>
@@ -122,12 +125,12 @@
                     <datatype>varchar</datatype>
                     <columnTitle>Parent Id</columnTitle>
                     <propertyURI>urn:ehr.labkey.org/#ParentId</propertyURI>
-                    <fk>
-                      <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-                      <fkDbSchema>study</fkDbSchema>
-                      <fkTable>studyDataParent</fkTable>
-                      <fkColumnName>objectid</fkColumnName>
-                    </fk>
+                    <!--<fk>-->
+                      <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
+                      <!--<fkDbSchema>study</fkDbSchema>-->
+                      <!--<fkTable>studyDataParent</fkTable>-->
+                      <!--<fkColumnName>objectid</fkColumnName>-->
+                    <!--</fk>-->
                   </column>
                   <column columnName="requestid">
                     <datatype>varchar</datatype>

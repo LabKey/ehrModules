@@ -7,10 +7,29 @@
 var {EHR, LABKEY, Ext, console, init, beforeInsert, afterInsert, beforeUpdate, afterUpdate, beforeDelete, afterDelete, complete} = require("ehr/validation");
 
 
+function onUpsert(context, errors, row, oldRow){
+    //TODO: do we need this for every ETL record?
+    //NOTE: this should be getting set by the birth, death, arrival & departure tables
+    if(!row.calculated_status || context.extraContext.dataSource == 'etl'){
+        EHR.validation.updateStatusField([row.Id], row);
+    }
+}
 
 
 function onETL(row, errors){
     EHR.validation.setSpecies(row, errors);
+
+    //the ETL code is going to error if the row is missing a date.
+    //since demographics can have a blank date, we remove that:
+    if(errors['date']){
+        var obj = [];
+        Ext.each(errors['date'], function(e){
+            if(e.message!='Missing Date')
+                obj.push(e);
+        }, this);
+        errors.date = obj;
+    }
+
 }
 
 function setDescription(row, errors){

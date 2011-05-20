@@ -15,6 +15,7 @@
       <column name="duration"/>
       <column name="diagnosis"/>
       <column name="process"/>
+      <column name="qcstate"/>
       <!--<column name="code/code">-->
           <!--<properties>-->
               <!--<property name="columnTitle" value="SNOMED Code"/>-->

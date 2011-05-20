@@ -3,18 +3,22 @@
  *
  * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
  */
-SELECT
-  a.Id AS Id,
 
-  T11.MostRecentTBDate,
+ --NOTE: this is joined to demographics such that animals never tested for TB
+ --will still get a value for MonthsSinceLastTB
+select
+  d.Id,
+  max(T.date) as MostRecentTBDate,
+  case
+    WHEN max(T.date) IS NULL THEN 9999
+    ELSE age_in_months(max(T.date), curdate())
+  END AS MonthsSinceLastTB
 
-  age_in_months(T11.MostRecentTBDate, curdate()) AS MonthsSinceLastTB,
+from study.demographics d
+LEFT JOIN study.tb T
+ON (d.id = t.id AND T.qcstate.publicdata = true)
 
-FROM study.demographics a
 
+GROUP BY d.Id
 
---date of most recent TB test
-LEFT JOIN
-  (select T11.Id, max(T11.date) as MostRecentTBDate FROM study.tb T11 WHERE T11.qcstate.publicdata = true GROUP BY T11.Id) T11
-  ON (T11.Id = a.Id)
 

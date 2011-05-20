@@ -12,6 +12,7 @@
                 <property name="columnTitle" value="Protocol"/>
             </properties>
         </column>
+        <column name="qcstate" />
         <column name="Project/title">
             <properties>
                 <property name="columnTitle" value="Title"/>

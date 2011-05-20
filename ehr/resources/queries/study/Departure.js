@@ -7,9 +7,16 @@
 var {EHR, LABKEY, Ext, console, init, beforeInsert, afterInsert, beforeUpdate, afterUpdate, beforeDelete, afterDelete, complete} = require("ehr/validation");
 
 
-
-
 function onComplete(event, errors, scriptContext){
+    if(scriptContext.publicParticipantsModified.length){
+        EHR.validation.updateStatusField(scriptContext.publicParticipantsModified);
+    }
+}
+
+/*
+function onComplete(event, errors, scriptContext){
+    //NOTE: we will no longer cache this in demographics
+
     if(scriptContext.publicParticipantsModified.length){
         //find the most recent arrival date per participant
         var toUpdate = [];
@@ -74,8 +81,9 @@ function onComplete(event, errors, scriptContext){
             });
         }
     }
-};
 
+};
+*/
 
 
 

@@ -7,7 +7,11 @@
 var {EHR, LABKEY, Ext, console, init, beforeInsert, afterInsert, beforeUpdate, afterUpdate, beforeDelete, afterDelete, complete} = require("ehr/validation");
 
 
-
+function onUpsert(context, errors, row, oldRow){
+    if(!row.observation && !row.remark){
+        EHR.addError(errors, 'remark', 'Must enter observation or remark', 'WARN');
+    }
+}
 
 
 function setDescription(row, errors){

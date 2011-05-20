@@ -44,7 +44,7 @@ WHERE     (SELECT s.Category FROM prop.PropertySets s WHERE s.Set = p.Set) = 'Lo
 ;
 
 UPDATE    prop.Properties p
-SET       Value = 'Seattle'
+SET       Value = 'Blue'
 WHERE     (SELECT s.Category FROM prop.PropertySets s WHERE s.Set = p.Set) = 'LookAndFeel'
           AND p.Name = 'themeName'
 ;
@@ -61,6 +61,32 @@ UPDATE    prop.Properties p
 SET       Value = replace(Value, 'saimiri', 'colony-test')
 WHERE     (SELECT s.Category FROM prop.PropertySets s WHERE s.Set = p.Set) = 'wnprc.ehr.etl.config'
 	      AND p.Name = 'jdbcUrl'
+;
+
+--for a PC
+--set the R program path
+-- UPDATE    prop.Properties p
+-- SET       Value = 'C:\\Program Files\\R\\R-2.11.1-x64\\bin\\R.exe'
+-- WHERE     (SELECT s.Category FROM prop.PropertySets s WHERE s.Set = p.Set) = 'UserPreferencesMap'
+-- 	      AND p.Name = 'RReport.RExe'
+-- ;
+-- UPDATE    prop.Properties p
+-- SET       Value = 'C:\\Program Files\\R\\R-2.11.1-x64\\bin\\R.exe'
+-- WHERE     (SELECT s.Category FROM prop.PropertySets s WHERE s.Set = p.Set) = 'ScriptEngineDefinition_R,r'
+-- 	      AND p.Name = 'exePath'
+-- ;
+
+
+--set the R program path
+UPDATE    prop.Properties p
+SET       Value = '/usr/bin/R'
+WHERE     (SELECT s.Category FROM prop.PropertySets s WHERE s.Set = p.Set) = 'UserPreferencesMap'
+	      AND p.Name = 'RReport.RExe'
+;
+UPDATE    prop.Properties p
+SET       Value = '/usr/bin/R'
+WHERE     (SELECT s.Category FROM prop.PropertySets s WHERE s.Set = p.Set) = 'ScriptEngineDefinition_R,r'
+	      AND p.Name = 'exePath'
 ;
 
 
@@ -93,3 +119,5 @@ WHERE     (SELECT s.Category FROM prop.PropertySets s WHERE s.Set = p.Set) = 'wn
 -- INSERT into    core.Members m
 -- (GroupId, UserId) VALUES (-1, (select userId from core.users WHERE email='yourEmail@wisc.edu')
 -- ;
+
+--TODO: change logo link to remove /labkey

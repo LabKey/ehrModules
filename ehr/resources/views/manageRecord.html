@@ -15,7 +15,7 @@ LABKEY.requiresScript("/ehr/ehrAPI.js");
 Ext.onReady(function(){
     var panel = new EHR.ext.SimpleImportPanel({
         containerPath: 'WNPRC/EHR/',
-        allowableButtons: 'SUBMIT,DISCARD',
+        allowableButtons: 'VALIDATE,SUBMIT,SUBMITANDNEXT,DISCARD',
         formType: LABKEY.ActionURL.getParameter('queryName'),
         formSections: [{
             xtype: 'ehr-formpanel',

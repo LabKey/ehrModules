@@ -1,4 +1,18 @@
 <customView xmlns="http://labkey.org/data/xml/queryCustomView">
+   <columns>
+       <column name="Id" />
+       <column name="Date" />
+       <column name="QCState" />
+       <column name="species" />
+       <column name="gender" />
+       <column name="weight" />
+       <column name="dam" />
+       <column name="sire" />
+       <column name="room" />
+       <column name="cage" />
+       <column name="conception" />
+       <column name="remark" />
+   </columns>
    <sorts>
        <sort column="date" descending="true"/>
    </sorts>

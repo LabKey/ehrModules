@@ -41,9 +41,9 @@ public class EHRRequestorRole extends AbstractEHRRole
 //                EHRAbnormalDeletePermission.class,
 //                EHRAbnormalInsertPermission.class,
 //                EHRAbnormalUpdatePermission.class,
-//                EHRApprovedDeletePermission.class,
-//                EHRApprovedInsertPermission.class,
-//                EHRApprovedUpdatePermission.class,
+//                EHRCompletedDeletePermission.class,
+//                EHRCompletedInsertPermission.class,
+//                EHRCompletedUpdatePermission.class,
 //                EHRDeleteRequestedDeletePermission.class,
 //                EHRDeleteRequestedInsertPermission.class,
 //                EHRDeleteRequestedUpdatePermission.class,
@@ -64,7 +64,10 @@ public class EHRRequestorRole extends AbstractEHRRole
                 EHRRequestPendingUpdatePermission.class
 //                EHRReviewRequiredDeletePermission.class,
 //                EHRReviewRequiredInsertPermission.class,
-//                EHRReviewRequiredUpdatePermission.class
+//                EHRReviewRequiredUpdatePermission.class,
+//                EHRScheduledDeletePermission.class,
+//                EHRScheduledInsertPermission.class,
+//                EHRScheduledUpdatePermission.class
 );
 
         addExcludedPrincipal(org.labkey.api.security.SecurityManager.getGroup(Group.groupGuests));

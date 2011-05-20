@@ -7,6 +7,7 @@ SELECT
   h.id,
   group_concat(DISTINCT h.condition) as condition,
   count(DISTINCT h.RoommateId) AS NumRoommates,
+  count(DISTINCT h.RoommateId)+1 AS AnimalsInCage,
   group_concat(DISTINCT h.RoommateId) as Roommates
 
 FROM study.housingRoommates h

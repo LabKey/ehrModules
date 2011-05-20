@@ -4,7 +4,7 @@
             <table tableName="roomCheck" tableDbType="NOT_IN_DB">
                 <columns>
                     <column columnName="Location">
-                        <columnTitle>Current Location</columnTitle>
+                        <columnTitle>Location</columnTitle>
                     </column>
                     <column columnName="MostRecentWeight">
                         <columnTitle>Most Recent Weight</columnTitle>
@@ -26,6 +26,9 @@
                     </column>
                     <column columnName="ReqHeight">
                         <columnTitle>Min. Height Required</columnTitle>
+                    </column>
+                    <column columnName="TotalAnimalsOver6Months">
+                        <columnTitle>Total Animals Over 6 Months</columnTitle>
                     </column>
                 </columns>
             </table>

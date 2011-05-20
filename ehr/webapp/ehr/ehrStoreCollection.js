@@ -124,11 +124,10 @@ EHR.ext.StoreCollection = Ext.extend(Ext.util.MixedCollection, {
         extraContext = extraContext || {};
 
         if (!commands || !commands.length){
-            this.fireEvent('commitcomplete');
-
             if(extraContext && extraContext.silent!==true)
                 Ext.Msg.alert('Alert', 'There are no changes to submit.');
 
+            this.onComplete(extraContext);
             return;
         }
 
@@ -276,10 +275,14 @@ EHR.ext.StoreCollection = Ext.extend(Ext.util.MixedCollection, {
             store.processResponse(result.rows);
         }
 
+        this.onComplete((options.jsonData ? options.jsonData.extraContext : null));
+    },
+
+    onComplete: function(extraContext){
         this.fireEvent("commitcomplete");
 
-        if(options.jsonData && options.jsonData.extraContext && options.jsonData.extraContext.successURL)
-            window.location = options.jsonData.extraContext.successURL;
+        if(extraContext && extraContext.successURL)
+            window.location = extraContext.successURL;
     },
 
     getJson : function(response) {
@@ -289,14 +292,42 @@ EHR.ext.StoreCollection = Ext.extend(Ext.util.MixedCollection, {
                 : null;
     },
 
-    deleteAllRecords: function(){
-        //TODO: verify whether these are really deleted on server or not
+    deleteAllRecords: function(extraContext){
+        //NOTE: we delegate the deletion to each store, and track progress here so we can fire a single event
+        var storesPerformingDeletes = [];
+        var failures = 0;
+
         this.each(function(s){
             var records = [];
             s.each(function(r){
-                records.push(r)
+                records.push(r);
             }, this);
-            s.deleteRecords(records);
+
+            function onComplete(response){
+                s.un('commitcomplete', onComplete);
+                s.un('commitexception', onComplete);
+
+                if(storesPerformingDeletes.indexOf(s.storeId)!=-1){
+                    storesPerformingDeletes.remove(s.storeId)
+                }
+
+                if(!storesPerformingDeletes.length){
+                    console.log('commitcomplete');
+                    console.log(response);
+
+                    if(failures == 0){
+                        this.onComplete(extraContext);
+                    }
+                    else {
+                        this.fireEvent('commitexception');
+                    }
+                }
+            }
+            s.on('commitcomplete', onComplete, this, {single: true});
+            s.on('commitexception', onComplete, this, {single: true});
+
+            storesPerformingDeletes.push(s.storeId);
+            s.deleteRecords(records, extraContext);
         }, this);
     },
 
@@ -524,9 +555,10 @@ EHR.ext.StoreInheritance = {
     },
     removeInheritanceListener: function(key){
         var config = this.relationships.get(key);
-        console.log('removing listener: '+key)
-        Ext.each(config.listeners, function(l){
-            config.listenerTarget.un(l, config.listeners[l], this);
-        }, this);
+        if(config){
+            Ext.each(config.listeners, function(l){
+                config.listenerTarget.un(l, config.listeners[l], this);
+            }, this);
+        }
     }
 };

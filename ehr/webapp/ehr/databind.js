@@ -20,7 +20,8 @@ EHR.ext.plugins.DataBind = Ext.extend(Ext.util.Observable, {
                 disableUnlessBound: true,
                 bindOnChange: false,
                 showDeleteBtn: false,
-                autoBindRecord: false
+                autoBindRecord: false,
+                createRecordOnLoad: false
             },
             getStore : function()
             {
@@ -77,13 +78,18 @@ EHR.ext.plugins.DataBind = Ext.extend(Ext.util.Observable, {
             },
             unbindRecord: function(config)
             {
-                //console.log('unbinding record: '+this.boundRecord.id);
                 var rec = this.boundRecord;
-                this.updateRecord();
+                if(rec){
+                    this.updateRecord();
+                    rec.store.un('update', this.updateForm, this);
+                    //rec.store.un('validation', this.updateForm, this);
+                    rec.store.un('validation', this.markInvalid, this);
 
-                rec.store.un('update', this.updateForm, this);
-                //rec.store.un('validation', this.updateForm, this);
-                rec.store.un('validation', this.markInvalid, this);
+                    if(config && config.deleteRecord){
+                        rec.store.deleteRecords([rec]);
+                    }
+                }
+
                 this.boundRecord = undefined;
 
                 Ext.each(this.getFieldsToBind(), function(f){
@@ -93,11 +99,6 @@ EHR.ext.plugins.DataBind = Ext.extend(Ext.util.Observable, {
                 }, this);
 
                 this.form.reset();
-
-                if(config && config.deleteRecord){
-                    rec.store.deleteRecords([rec]);
-                }
-
                 this.fireEvent('recordchange', this);
             },
             updateRecord : function()
@@ -183,6 +184,11 @@ EHR.ext.plugins.DataBind = Ext.extend(Ext.util.Observable, {
                 else
                     return f.getValue();
             },
+            onRecordRemove: function(store, rec, idx){
+                if(this.boundRecord && rec == this.boundRecord){
+                    this.unbindRecord();
+                }
+            },
             focusFirstField: function(){
                 var firstFieldItem = this.getForm().items.first();
                 if(firstFieldItem && firstFieldItem.focus){
@@ -246,7 +252,7 @@ EHR.ext.plugins.DataBind = Ext.extend(Ext.util.Observable, {
                         {
                             // Can only contain one row of data.
                             if (records.length == 0){
-                                if(this.bindConfig.autoBindRecord){
+                                if(this.bindConfig.createRecordOnLoad){
                                     var values = {};
                                     Ext.each(this.getFieldsToBind(), function(item){
                                         values[item.name] = this.getBoundFieldValue(item);
@@ -261,17 +267,18 @@ EHR.ext.plugins.DataBind = Ext.extend(Ext.util.Observable, {
                                     this.bindRecord(rec);
                                 }
                             }
-//                            else if (records.length == 1)
-//                            {
-//                                this.bindRecord(records[0]);
-//                            }
-                            else
-                            {
-                                this.bindRecord(records[0]);
+                            else {
+                                //NOTE: I disabled this behavior b/c it was potentially
+                                //confusing if the user loads a saved page and automatically
+                                //has a previous record bound.
+                                if(this.bindConfig.autoBindRecord)
+                                    this.bindRecord(records[0]);
                             }
                         }, this);
 
                     this.store.on('beforecommit', this.updateRecord, this);
+
+                    this.store.on('remove', this.onRecordRemove, this);
                 }
             }
         });
@@ -282,10 +289,13 @@ EHR.ext.plugins.DataBind = Ext.extend(Ext.util.Observable, {
 
         //we queue changes from all fields into a single event using buffer
         //this way batch updates of the form only trigger one record update/validation
-        o.on('fieldchange', o.updateRecord, o, {buffer: 100});
+        o.on('fieldchange', o.updateRecord, o, {delay: 20, buffer: 100});
 
         if(o.bindConfig.showDeleteBtn !== false){
             if(o.getBottomToolbar())
+
+                o.getBottomToolbar().insert(0, {xtype: 'tbspacer', width: 100});
+
                 o.getBottomToolbar().insert(0, {
                     xtype: 'button',
                     text: 'Clear Section',

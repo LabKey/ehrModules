@@ -1,0 +1,63 @@
+<customView xmlns="http://labkey.org/data/xml/queryCustomView">
+   <columns>
+        <column name="taskid/rowid">
+            <properties>
+                <property name="columnTitle" value="Task Id"/>
+            </properties>
+        </column>
+        <column name="Id"/>
+        <column name="Id/curLocation/room">
+            <properties>
+                <property name="columnTitle" value="Room"/>
+            </properties>
+        </column>
+        <column name="Id/curLocation/cage">
+            <properties>
+                <property name="columnTitle" value="Cage"/>
+            </properties>
+        </column>
+        <!--<column name="taskid/formtype">-->
+            <!--<properties>-->
+                <!--<property name="columnTitle" value="Task Type"/>-->
+            <!--</properties>-->
+        <!--</column>-->
+        <column name="taskid/title">
+            <properties>
+                <property name="columnTitle" value="Title"/>
+            </properties>
+        </column>
+        <column name="taskid/AssignedTo">
+            <properties>
+                <property name="columnTitle" value="Assigned To"/>
+            </properties>
+        </column>
+        <column name="taskid/DueDate">
+            <properties>
+                <property name="columnTitle" value="Due Date"/>
+            </properties>
+        </column>
+        <column name="taskid/CreatedBy">
+            <properties>
+                <property name="columnTitle" value="Created By"/>
+            </properties>
+        </column>
+        <column name="taskid/Created">
+            <properties>
+                <property name="columnTitle" value="Created"/>
+            </properties>
+        </column>
+        <column name="taskid/QCState">
+            <properties>
+                <property name="columnTitle" value="Status"/>
+            </properties>
+        </column>
+
+   </columns>
+   <filters>
+       <filter column="taskid/QCState/PublicData" operator="eq" value="false"/>
+   </filters>
+   <sorts>
+       <sort column="taskid/duedate" descending="true"/>
+       <sort column="Id" />
+   </sorts>
+</customView>

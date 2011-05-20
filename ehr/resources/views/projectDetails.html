@@ -69,7 +69,7 @@ Ext.onReady(function ()
                 params['query.project~eq'] = project;
 
                 window.open(LABKEY.ActionURL.buildURL(
-                    'ehr',
+                    'query',
                     'executeQuery.view',
                     LABKEY.ActionURL.getContainer(),
                     params
@@ -86,7 +86,24 @@ Ext.onReady(function ()
                 params['query.project~eq'] = project;
 
                 window.open(LABKEY.ActionURL.buildURL(
-                    'ehr',
+                    'query',
+                    'executeQuery.view',
+                    LABKEY.ActionURL.getContainer(),
+                    params
+                ));
+            }
+            ,style: 'padding-bottom:10px'
+            ,buttonAlign: 'center'
+        },{
+            xtype: 'button'
+            ,html: 'View All Items Under This Project'
+            ,handler: function(c){
+                var params = {schemaName: 'study'};
+                params['query.queryName'] = 'studyData';
+                params['query.project~eq'] = project;
+
+                window.open(LABKEY.ActionURL.buildURL(
+                    'query',
                     'executeQuery.view',
                     LABKEY.ActionURL.getContainer(),
                     params

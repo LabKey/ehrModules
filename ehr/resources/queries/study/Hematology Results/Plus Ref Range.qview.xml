@@ -2,6 +2,7 @@
     <columns>
         <column name="Id"/>
         <column name="date"/>
+        <column name="qcstate" />
         <column name="TestId"/>
         <column name="Result"/>
         <column name="units"/>

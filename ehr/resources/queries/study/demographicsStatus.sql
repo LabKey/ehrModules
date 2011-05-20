@@ -31,17 +31,17 @@ CASE
     THEN 'Alive'
   ELSE
     'ERROR'
-END as Status,
+END as status
 
 --determine whether animal was ever at WNPRC
 --possibly also use housing as proxy?
-CASE
-  WHEN
-    (a.dataset.demographics.birth IS NOT NULL OR a.dataset.demographics.arrivedate IS NOT NULL)
-    THEN true
-  ELSE
-    false
-END AS WNPRC_Animal,
+-- CASE
+--   WHEN
+--     (a.dataset.demographics.birth IS NOT NULL OR a.dataset.demographics.arrivedate IS NOT NULL)
+--     THEN true
+--   ELSE
+--     false
+-- END AS WNPRC_Animal,
 
 FROM study.animal a
 

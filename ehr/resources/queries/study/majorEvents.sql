@@ -10,7 +10,7 @@ b.date,
 'Birth' as type,
 'Offspring: ' || b.id as remark
 from study.birth b
-WHERE b.qcstate.publicdata = true
+WHERE b.qcstate.publicdata = true AND b.dam is not null
 
 UNION ALL
 
@@ -28,6 +28,6 @@ s.id,
 s.date,
 'Surgery' as type,
 'Major: '||s.major
-from surgery s
-where s.qcstate.publicdata = true
+FROM study."Clinical Encounters" s
+WHERE s.qcstate.publicdata = true AND type = 'Surgery'
 

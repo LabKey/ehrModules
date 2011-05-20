@@ -6,9 +6,9 @@
 
 var {EHR, LABKEY, Ext, console, init, beforeInsert, afterInsert, beforeUpdate, afterUpdate, beforeDelete, afterDelete, complete} = require("ehr/validation");
 
-
+/*
 function onComplete(event, errors, scriptContext){
-    //TODO: untested
+    //NOTE: we will stop caching this in demographics
     if(scriptContext.publicParticipantsModified.length){
         //find the most recent TB date per participant
         var toUpdate = [];
@@ -75,12 +75,13 @@ console.log(row)
         }
     }
 };
-
+*/
 
 function onETL(row, errors){
-    if (row.result1 == '-') row.result1 = 0;
-    if (row.result2 == '-') row.result2 = 0;
-    if (row.result3 == '-') row.result3 = 0;
+//NOTE: hyphen means 'not going to perform'
+//    if (row.result1 == '-') row.result1 = 0;
+//    if (row.result2 == '-') row.result2 = 0;
+//    if (row.result3 == '-') row.result3 = 0;
 
     if (row.result1 == '+') row.result1 = 5;
     if (row.result2 == '+') row.result2 = 5;
@@ -108,14 +109,11 @@ function setDescription(row, errors){
 }
 
 function onUpsert(context, errors, row, oldRow){
-    if(row.result1===null && row.result2===null && row.result3===null){
-        row.missingResults = false
+    if(row.result1=='' || row.result2=='' || row.result3=='' || row.result1==null || row.result2==null || row.result3==null){
+        row.missingResults = true;
     }
     else {
-        row.missingResults = true
+        row.missingResults = false
     }
 }
 
-function onUpdate(context, errors, row, oldRow){
-    //TODO: once past a certain QC state, result1,result2,etc are non-editable
-}

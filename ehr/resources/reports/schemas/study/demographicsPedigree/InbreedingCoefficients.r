@@ -39,7 +39,7 @@ IdxToDelete <- setdiff(oldRecords$Id, newRecords$Id);
 #IdxToDelete
 toDelete <- oldRecords[match(IdxToDelete, oldRecords$Id),]
 
-#delete any animals present in the inbreeding table, but notthe p
+#delete any animals present in the inbreeding table, but not the dataframe
 if(length(toDelete$Id)){
     del <- labkey.deleteRows(
         baseUrl=labkey.url.base,

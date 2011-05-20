@@ -32,23 +32,27 @@ EHR.utils.onError = function(error){
     console.log('ERROR: ' + error.exception);
     console.log(error);
 
+
     LABKEY.Query.insertRows({
          //it would be nice to store them in the current folder, but we cant guarantee they have write access..
          containerPath: '/shared',
-         schemaName: 'ehr',
-         queryName: 'client_errors',
+         schemaName: 'auditlog',
+         queryName: 'audit',
          rows: [{
-            page: window.location,
-            exception: error.exception || error.statusText,
-            json: Ext.util.JSON.encode(error)
-        }],
-        success: function(){
-            console.log('Error successfully logged')
-        },
-        failure: function(error){
+            EventType: "Client API Actions",
+            Key1: "Client Error",
+            Key2: window.location.href,
+            Key3: window.location.hash,
+            Comment: error.exception || error.statusText,
+            Date: new Date()
+         }],
+         success: function(){
+             console.log('Error successfully logged')
+         },
+         failure: function(error){
             console.log('Problem logging error');
             console.log(error)
-        }
+         }
     });
 };
 
@@ -249,4 +253,15 @@ EHR.utils.roundNumber = function(num, dec){
 
 EHR.utils.toTitleCase = function(str){
     return str.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
+}
+
+EHR.utils.padDigits = function(n, totalDigits){
+    n = n.toString();
+    var pd = '';
+    if (totalDigits > n.length){
+        for (var i=0; i < (totalDigits-n.length); i++){
+            pd += '0';
+        }
+    }
+    return pd + n;
 }

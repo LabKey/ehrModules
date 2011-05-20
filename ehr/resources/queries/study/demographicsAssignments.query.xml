@@ -1,0 +1,34 @@
+<query xmlns="http://labkey.org/data/xml/query">
+    <metadata>
+        <tables xmlns="http://labkey.org/data/xml">
+            <table tableName="demographicsAssignments" tableDbType="NOT_IN_DB">
+                <columns>
+                    <column columnName="Id">
+                        <isKeyField>true</isKeyField>
+                        <isHidden>true</isHidden>
+                    </column>
+                    <column columnName="projects">
+                        <datatype>varchar</datatype>
+                        <columnTitle>Active Projects</columnTitle>
+                        <displayWidth>110</displayWidth>
+                        <!--<url>/query/executeQuery.view?schemaName=study&amp;-->
+                            <!--query.queryName=Assignment&amp;-->
+                            <!--query.Id~eq=${Id}&amp;-->
+                            <!--query.enddate~isblank&amp;-->
+                        <!--</url>-->
+                    </column>
+                    <column columnName="Availability">
+                        <datatype>varchar</datatype>
+                        <columnTitle>Availability</columnTitle>
+                        <!--<url>/query/executeQuery.view?schemaName=study&amp;-->
+                            <!--query.queryName=Assignment&amp;-->
+                            <!--query.Id~eq=${Id}&amp;-->
+                            <!--query.project~eq=20070202-->
+                        <!--</url>-->
+                    </column>
+                </columns>
+                <titleColumn>projects</titleColumn>
+            </table>
+        </tables>
+    </metadata>
+</query>

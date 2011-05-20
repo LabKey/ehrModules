@@ -7,11 +7,11 @@ SELECT
 d.room,
 d.cage
 
-FROM study.demographics d
+FROM study.housing d
 
 LEFT JOIN ehr_lookups.cage c
   on (c.room=d.room and c.cage=d.cage)
 
-WHERE c.room is null
+WHERE c.cage is null
 
 group by d.room, d.cage
