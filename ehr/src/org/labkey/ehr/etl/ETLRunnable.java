@@ -238,7 +238,7 @@ public class ETLRunnable implements Runnable
 
                 try
                 {
-                    scope.beginTransaction();
+                    scope.ensureTransaction();
                     // perform any deletes
                     if (!deletedIds.isEmpty())
                     {
@@ -349,7 +349,7 @@ public class ETLRunnable implements Runnable
                 {
                     if (rollback)
                     {
-                        if (scope.isTransactionActive()) scope.rollbackTransaction();
+                        scope.closeConnection();
                         log.warn("Rolled back update of " + targetTableName);
                     }
                     else
