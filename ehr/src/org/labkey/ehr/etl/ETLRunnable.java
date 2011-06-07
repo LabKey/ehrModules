@@ -618,7 +618,7 @@ public class ETLRunnable implements Runnable
             log.info("ANALYZE");
             try
             {
-                Table.execute(dbSchema, dbSchema.getSqlDialect().getAnalyzeCommandForTable(""), null);
+                Table.execute(dbSchema, dbSchema.getSqlDialect().getAnalyzeCommandForTable(""));
             }
             catch (SQLException e)
             {
