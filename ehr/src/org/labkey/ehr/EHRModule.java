@@ -65,7 +65,6 @@ public class EHRModule extends DefaultModule
     {
         addController("ehr", EHRController.class);
         EHRProperties.register();
-//        EHRQuerySchema.register();
     }
 
     @Override
