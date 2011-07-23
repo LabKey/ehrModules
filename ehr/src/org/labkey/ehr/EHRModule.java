@@ -15,6 +15,7 @@
 
 package org.labkey.ehr;
 
+import org.jetbrains.annotations.NotNull;
 import org.labkey.api.audit.AuditLogService;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.ContainerManager;
@@ -113,6 +114,7 @@ public class EHRModule extends DefaultModule
     }
 
     @Override
+    @NotNull
     public Set<String> getSchemaNames()
     {
         return PageFlowUtil.set("ehr", "ehr_lookups");
@@ -120,6 +122,7 @@ public class EHRModule extends DefaultModule
     }
 
     @Override
+    @NotNull
     public Set<DbSchema> getSchemasToTest()
     {
         //return PageFlowUtil.set(EHRSchema.getInstance().getSchema());
