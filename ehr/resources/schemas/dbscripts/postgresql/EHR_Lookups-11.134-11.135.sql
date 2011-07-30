@@ -10,6 +10,7 @@ INSERT INTO ehr_lookups.dental_side VALUES ('Both');
 INSERT INTO ehr_lookups.dental_status VALUES ('Pulpotomized');
 INSERT INTO ehr_lookups.dental_status VALUES ('Retained Deciduous');
 
+INSERT INTO ehr_lookups.condition_codes VALUES ('gmaf', 'in a group with the mother and adopted father');
 
 DROP TABLE IF EXISTS ehr_lookups.blood_code_prefixes;
 CREATE TABLE ehr_lookups.blood_code_prefixes (
