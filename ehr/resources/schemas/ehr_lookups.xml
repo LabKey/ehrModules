@@ -116,6 +116,7 @@
   </ns:table>
   <ns:table tableName="bcs_score" tableDbType="TABLE">
     <ns:pkColumnName>score</ns:pkColumnName>
+    <ns:titleColumn>score</ns:titleColumn>
     <ns:columns>
       <ns:column columnName="score">
         <ns:datatype>float8</ns:datatype>
@@ -139,6 +140,9 @@
       <ns:column columnName="rowid">
         <ns:datatype>serial</ns:datatype>
         <ns:isAutoInc>true</ns:isAutoInc>
+        <ns:shownInDetailsView>false</ns:shownInDetailsView>
+        <ns:shownInInsertView>false</ns:shownInInsertView>
+        <ns:isHidden>true</ns:isHidden>
         <ns:scale>10</ns:scale>
       </ns:column>
       <ns:column columnName="low">
@@ -156,11 +160,13 @@
       <ns:column columnName="sqft">
         <ns:nullable>true</ns:nullable>
         <ns:datatype>float8</ns:datatype>
+        <ns:columnTitle>Required Sq Ft</ns:columnTitle>
         <ns:scale>17</ns:scale>
       </ns:column>
       <ns:column columnName="height">
         <ns:nullable>true</ns:nullable>
         <ns:datatype>float8</ns:datatype>
+        <ns:columnTitle>Required Height (in)</ns:columnTitle>
         <ns:scale>17</ns:scale>
       </ns:column>
     </ns:columns>
@@ -263,19 +269,27 @@
       <ns:column columnName="ts">
         <ns:nullable>true</ns:nullable>
         <ns:isHidden>true</ns:isHidden>
+        <ns:shownInDetailsView>false</ns:shownInDetailsView>
+        <ns:shownInInsertView>false</ns:shownInInsertView>
+        <ns:shownInUpdateView>false</ns:shownInUpdateView>
         <ns:datatype>timestamp</ns:datatype>
         <ns:scale>29</ns:scale>
       </ns:column>
       <ns:column columnName="uuid">
         <ns:nullable>true</ns:nullable>
         <ns:isHidden>true</ns:isHidden>
-        <ns:datatype>bpchar</ns:datatype>
+        <ns:datatype>varchar</ns:datatype>
+        <ns:shownInDetailsView>false</ns:shownInDetailsView>
+        <ns:shownInInsertView>false</ns:shownInInsertView>
+        <ns:shownInUpdateView>false</ns:shownInUpdateView>
         <ns:scale>36</ns:scale>
       </ns:column>
       <ns:column columnName="rowid">
         <ns:datatype>serial</ns:datatype>
         <ns:isHidden>true</ns:isHidden>
         <ns:isAutoInc>true</ns:isAutoInc>
+        <ns:shownInInsertView>false</ns:shownInInsertView>
+        <ns:shownInUpdateView>false</ns:shownInUpdateView>
         <ns:scale>10</ns:scale>
       </ns:column>
     </ns:columns>
@@ -542,19 +556,34 @@
       </ns:column>
     </ns:columns>
   </ns:table>
-  <ns:table tableName="clinpath_services" tableDbType="TABLE">
-    <ns:pkColumnName>label</ns:pkColumnName>
-    <ns:columns>
-      <ns:column columnName="dataset">
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>50</ns:scale>
-      </ns:column>
-      <ns:column columnName="label">
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>50</ns:scale>
-      </ns:column>
-    </ns:columns>
-  </ns:table>
+  <!--<ns:table tableName="clinpath_services" tableDbType="TABLE">-->
+    <!--<ns:pkColumnName>type</ns:pkColumnName>-->
+    <!--<ns:columns>-->
+      <!--<ns:column columnName="type">-->
+        <!--<ns:datatype>varchar</ns:datatype>-->
+        <!--<ns:nullable>false</ns:nullable>-->
+        <!--<ns:isKeyField>true</ns:isKeyField>-->
+        <!--<ns:scale>100</ns:scale>-->
+        <!--<ns:columnTitle>Type</ns:columnTitle>-->
+      <!--</ns:column>-->
+      <!--<ns:column columnName="dataset">-->
+        <!--<ns:datatype>varchar</ns:datatype>-->
+        <!--<ns:nullable>false</ns:nullable>-->
+        <!--<ns:scale>100</ns:scale>-->
+        <!--<ns:columnTitle>Dataset</ns:columnTitle>-->
+      <!--</ns:column>-->
+      <!--<ns:column columnName="defaultLabware">-->
+        <!--<ns:datatype>varchar</ns:datatype>-->
+        <!--<ns:scale>100</ns:scale>-->
+        <!--<ns:columnTitle>Default Labware</ns:columnTitle>-->
+      <!--</ns:column>-->
+      <!--<ns:column columnName="defaultSource">-->
+        <!--<ns:datatype>varchar</ns:datatype>-->
+        <!--<ns:scale>100</ns:scale>-->
+        <!--<ns:columnTitle>Default Source</ns:columnTitle>-->
+      <!--</ns:column>-->
+    <!--</ns:columns>-->
+  <!--</ns:table>-->
   <ns:table tableName="lab_tests" tableDbType="TABLE">
     <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr_lookups&amp;query.queryName=lab_tests&amp;testid=${testid}</ns:tableUrl>
     <ns:pkColumnName>testid</ns:pkColumnName>
@@ -646,15 +675,18 @@
   </ns:table>
   <ns:table tableName="gender_codes" tableDbType="TABLE">
     <ns:pkColumnName>code</ns:pkColumnName>
+    <ns:titleColumn>meaning</ns:titleColumn>
     <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr_lookups&amp;query.queryName=gender_codes&amp;code=${code}</ns:tableUrl>
     <ns:columns>
       <ns:column columnName="code">
         <ns:datatype>varchar</ns:datatype>
+        <ns:displayWidth>20</ns:displayWidth>
         <ns:scale>20</ns:scale>
       </ns:column>
       <ns:column columnName="meaning">
         <ns:nullable>true</ns:nullable>
         <ns:datatype>varchar</ns:datatype>
+        <ns:displayWidth>50</ns:displayWidth>
         <ns:scale>50</ns:scale>
       </ns:column>
       <ns:column columnName="origGender">
@@ -684,6 +716,10 @@
         <ns:datatype>varchar</ns:datatype>
         <ns:scale>100</ns:scale>
       </ns:column>
+        <ns:column columnName="denominator">
+          <ns:datatype>varchar</ns:datatype>
+          <ns:scale>100</ns:scale>
+        </ns:column>
     </ns:columns>
   </ns:table>
   <ns:table tableName="amount_units" tableDbType="TABLE">
@@ -1143,10 +1179,10 @@
         <ns:datatype>varchar</ns:datatype>
         <ns:scale>100</ns:scale>
       </ns:column>
-      <ns:column columnName="volume">
-        <ns:datatype>double</ns:datatype>
-        <ns:scale>50</ns:scale>
-      </ns:column>
+      <!--<ns:column columnName="volume">-->
+        <!--<ns:datatype>double</ns:datatype>-->
+        <!--<ns:scale>50</ns:scale>-->
+      <!--</ns:column>-->
     </ns:columns>
   </ns:table>
   <ns:table tableName="snomed" tableDbType="TABLE">
@@ -1276,7 +1312,7 @@
       </ns:column>
     </ns:columns>
   </ns:table>
-    <ns:table tableName="urine_method" tableDbType="TABLE">
+    <ns:table tableName="urinalysis_method" tableDbType="TABLE">
       <ns:pkColumnName>method</ns:pkColumnName>
       <ns:columns>
         <ns:column columnName="method">
@@ -1361,4 +1397,351 @@
         </ns:column>
       </ns:columns>
     </ns:table>
+    <ns:table tableName="histology_stain" tableDbType="TABLE">
+      <ns:pkColumnName>stain</ns:pkColumnName>
+      <ns:columns>
+        <ns:column columnName="stain">
+          <ns:datatype>varchar</ns:datatype>
+          <ns:scale>100</ns:scale>
+        </ns:column>
+      </ns:columns>
+    </ns:table>
+    <ns:table tableName="virology_tests" tableDbType="TABLE">
+      <ns:pkColumnName>testid</ns:pkColumnName>
+      <ns:columns>
+        <ns:column columnName="testid">
+          <ns:datatype>varchar</ns:datatype>
+          <ns:scale>100</ns:scale>
+        </ns:column>
+      </ns:columns>
+    </ns:table>
+    <ns:table tableName="qualitative_results" tableDbType="TABLE">
+      <ns:pkColumnName>result</ns:pkColumnName>
+      <ns:columns>
+        <ns:column columnName="result">
+          <ns:datatype>varchar</ns:datatype>
+          <ns:scale>100</ns:scale>
+        </ns:column>
+      </ns:columns>
+    </ns:table>
+  <ns:table tableName="treatment_codes" tableDbType="TABLE">
+    <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr_lookups&amp;query.queryName=treatment_codes&amp;rowid=${rowid}</ns:tableUrl>
+    <ns:pkColumnName>meaning</ns:pkColumnName>
+    <ns:titleColumn>meaning</ns:titleColumn>
+    <ns:columns>
+      <ns:column columnName="meaning">
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>200</ns:scale>
+          <ns:isKeyField>true</ns:isKeyField>
+      </ns:column>
+      <ns:column columnName="category">
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>100</ns:scale>
+      </ns:column>
+      <ns:column columnName="code">
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>100</ns:scale>
+      </ns:column>
+      <ns:column columnName="route">
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>50</ns:scale>
+      </ns:column>
+      <ns:column columnName="amount">
+        <ns:datatype>numeric</ns:datatype>
+        <ns:scale>50</ns:scale>
+      </ns:column>
+      <ns:column columnName="concentration">
+        <ns:datatype>numeric</ns:datatype>
+        <ns:scale>50</ns:scale>
+      </ns:column>
+      <ns:column columnName="dosage">
+        <ns:datatype>numeric</ns:datatype>
+        <ns:scale>50</ns:scale>
+      </ns:column>
+      <ns:column columnName="volume">
+        <ns:datatype>numeric</ns:datatype>
+        <ns:scale>50</ns:scale>
+      </ns:column>
+      <ns:column columnName="amount_units">
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>50</ns:scale>
+      </ns:column>
+      <ns:column columnName="conc_units">
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>50</ns:scale>
+      </ns:column>
+      <ns:column columnName="vol_units">
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>50</ns:scale>
+      </ns:column>
+      <ns:column columnName="dosage_units">
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>50</ns:scale>
+      </ns:column>
+      <ns:column columnName="qualifier">
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>200</ns:scale>
+      </ns:column>
+      <ns:column columnName="frequency">
+        <ns:datatype>integer</ns:datatype>
+        <ns:scale>100</ns:scale>
+      </ns:column>
+    </ns:columns>
+  </ns:table>
+    <ns:table tableName="tissue_recipients" tableDbType="TABLE">
+      <ns:pkColumnName>result</ns:pkColumnName>
+      <ns:columns>
+        <ns:column columnName="recipient">
+          <ns:datatype>varchar</ns:datatype>
+          <ns:scale>100</ns:scale>
+        </ns:column>
+      </ns:columns>
+    </ns:table>
+  <ns:table tableName="parasitology_method" tableDbType="TABLE">
+    <ns:pkColumnName>method</ns:pkColumnName>
+    <ns:columns>
+      <ns:column columnName="method">
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>100</ns:scale>
+      </ns:column>
+    </ns:columns>
+  </ns:table>
+    <ns:table tableName="bacteriology_method" tableDbType="TABLE">
+      <ns:pkColumnName>method</ns:pkColumnName>
+      <ns:columns>
+        <ns:column columnName="method">
+          <ns:datatype>varchar</ns:datatype>
+          <ns:scale>100</ns:scale>
+        </ns:column>
+      </ns:columns>
+    </ns:table>
+    <ns:table tableName="clinpath_collection_method" tableDbType="TABLE">
+      <ns:pkColumnName>method</ns:pkColumnName>
+      <ns:columns>
+        <ns:column columnName="method">
+          <ns:datatype>varchar</ns:datatype>
+          <ns:scale>100</ns:scale>
+        </ns:column>
+      </ns:columns>
+    </ns:table>
+    <ns:table tableName="clinpath_sampletype" tableDbType="TABLE">
+      <ns:pkColumnName>method</ns:pkColumnName>
+      <ns:columns>
+        <ns:column columnName="sampletype">
+          <ns:datatype>varchar</ns:datatype>
+          <ns:scale>100</ns:scale>
+        </ns:column>
+      </ns:columns>
+    </ns:table>
+    <ns:table tableName="clinpath_types" tableDbType="TABLE">
+      <ns:pkColumnName>type</ns:pkColumnName>
+      <ns:columns>
+        <ns:column columnName="type">
+          <ns:datatype>varchar</ns:datatype>
+          <ns:scale>100</ns:scale>
+        </ns:column>
+      </ns:columns>
+    </ns:table>
+    <ns:table tableName="urinalysis_qualitative_results" tableDbType="TABLE">
+      <ns:pkColumnName>result</ns:pkColumnName>
+      <ns:columns>
+        <ns:column columnName="result">
+          <ns:datatype>varchar</ns:datatype>
+          <ns:scale>100</ns:scale>
+        </ns:column>
+      </ns:columns>
+    </ns:table>
+    <ns:table tableName="blood_tube_volumes" tableDbType="TABLE">
+      <ns:pkColumnName>volume</ns:pkColumnName>
+      <ns:columns>
+        <ns:column columnName="tube_types">
+          <ns:datatype>varchar</ns:datatype>
+          <ns:scale>50</ns:scale>
+        </ns:column>
+        <ns:column columnName="volume">
+          <ns:datatype>float</ns:datatype>
+          <ns:scale>50</ns:scale>
+        </ns:column>
+      </ns:columns>
+    </ns:table>
+    <ns:table tableName="tattoo_status" tableDbType="TABLE">
+      <ns:pkColumnName>status</ns:pkColumnName>
+      <ns:columns>
+        <ns:column columnName="status">
+          <ns:datatype>varchar</ns:datatype>
+          <ns:scale>80</ns:scale>
+        </ns:column>
+      </ns:columns>
+    </ns:table>
+    <ns:table tableName="pe_remarks" tableDbType="TABLE">
+      <ns:pkColumnName>remark</ns:pkColumnName>
+      <ns:columns>
+        <ns:column columnName="remark">
+          <ns:datatype>varchar</ns:datatype>
+          <ns:scale>200</ns:scale>
+        </ns:column>
+      </ns:columns>
+    </ns:table>
+
+    <ns:table tableName="blood_code_prefixes" tableDbType="TABLE">
+      <ns:pkColumnName>prefix</ns:pkColumnName>
+      <ns:columns>
+        <ns:column columnName="prefix">
+          <ns:datatype>varchar</ns:datatype>
+          <ns:scale>20</ns:scale>
+        </ns:column>
+      </ns:columns>
+    </ns:table>
+    <ns:table tableName="snomed_qualifiers" tableDbType="TABLE">
+      <ns:pkColumnName>qualifier</ns:pkColumnName>
+      <ns:columns>
+        <ns:column columnName="qualifier">
+          <ns:datatype>varchar</ns:datatype>
+          <ns:scale>200</ns:scale>
+        </ns:column>
+      </ns:columns>
+    </ns:table>
+    <ns:table tableName="preservation_solutions" tableDbType="TABLE">
+      <ns:pkColumnName>solution</ns:pkColumnName>
+      <ns:columns>
+        <ns:column columnName="solution">
+          <ns:datatype>varchar</ns:datatype>
+          <ns:scale>200</ns:scale>
+        </ns:column>
+      </ns:columns>
+    </ns:table>
+
+  <ns:table tableName="urinalysis_tests" tableDbType="TABLE">
+    <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr_lookups&amp;query.queryName=urinalysis_tests&amp;testid=${testid}</ns:tableUrl>
+    <ns:pkColumnName>testid</ns:pkColumnName>
+    <ns:columns>
+      <ns:column columnName="testid">
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>100</ns:scale>
+      </ns:column>
+      <ns:column columnName="name">
+        <ns:nullable>true</ns:nullable>
+        <ns:columnTitle>Full Name</ns:columnTitle>
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>100</ns:scale>
+      </ns:column>
+      <ns:column columnName="units">
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>100</ns:scale>
+      </ns:column>
+    </ns:columns>
+  </ns:table>
+  <ns:table tableName="immunology_tests" tableDbType="TABLE">
+    <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr_lookups&amp;query.queryName=immunology_tests&amp;testid=${testid}</ns:tableUrl>
+    <ns:pkColumnName>testid</ns:pkColumnName>
+    <ns:columns>
+      <ns:column columnName="testid">
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>100</ns:scale>
+      </ns:column>
+      <ns:column columnName="name">
+        <ns:nullable>true</ns:nullable>
+        <ns:columnTitle>Full Name</ns:columnTitle>
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>100</ns:scale>
+      </ns:column>
+      <ns:column columnName="units">
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>100</ns:scale>
+      </ns:column>
+    </ns:columns>
+  </ns:table>
+  <ns:table tableName="chemistry_tests" tableDbType="TABLE">
+    <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr_lookups&amp;query.queryName=chemistry_tests&amp;testid=${testid}</ns:tableUrl>
+    <ns:pkColumnName>testid</ns:pkColumnName>
+    <ns:columns>
+      <ns:column columnName="testid">
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>100</ns:scale>
+      </ns:column>
+      <ns:column columnName="name">
+        <ns:nullable>true</ns:nullable>
+        <ns:columnTitle>Full Name</ns:columnTitle>
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>100</ns:scale>
+      </ns:column>
+      <ns:column columnName="units">
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>100</ns:scale>
+      </ns:column>
+    </ns:columns>
+  </ns:table>
+  <ns:table tableName="hematology_tests" tableDbType="TABLE">
+    <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr_lookups&amp;query.queryName=hematology_tests&amp;testid=${testid}</ns:tableUrl>
+    <ns:pkColumnName>testid</ns:pkColumnName>
+    <ns:columns>
+      <ns:column columnName="testid">
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>100</ns:scale>
+      </ns:column>
+      <ns:column columnName="name">
+        <ns:nullable>true</ns:nullable>
+        <ns:columnTitle>Full Name</ns:columnTitle>
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>100</ns:scale>
+      </ns:column>
+      <ns:column columnName="units">
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>100</ns:scale>
+      </ns:column>
+    </ns:columns>
+  </ns:table>
+  <ns:table tableName="chemistry_method" tableDbType="TABLE">
+    <ns:pkColumnName>method</ns:pkColumnName>
+    <ns:columns>
+      <ns:column columnName="method">
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>100</ns:scale>
+      </ns:column>
+    </ns:columns>
+  </ns:table>
+  <ns:table tableName="immunology_method" tableDbType="TABLE">
+    <ns:pkColumnName>method</ns:pkColumnName>
+    <ns:columns>
+      <ns:column columnName="method">
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>100</ns:scale>
+      </ns:column>
+    </ns:columns>
+  </ns:table>
+  <ns:table tableName="virology_method" tableDbType="TABLE">
+    <ns:pkColumnName>method</ns:pkColumnName>
+    <ns:columns>
+      <ns:column columnName="method">
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>100</ns:scale>
+      </ns:column>
+    </ns:columns>
+  </ns:table>
+  <ns:table tableName="hematology_method" tableDbType="TABLE">
+    <ns:pkColumnName>method</ns:pkColumnName>
+    <ns:columns>
+      <ns:column columnName="method">
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>100</ns:scale>
+      </ns:column>
+    </ns:columns>
+  </ns:table>
+  <ns:table tableName="booleanCombo" tableDbType="TABLE">
+    <ns:pkColumnName>key</ns:pkColumnName>
+    <ns:columns>
+      <ns:column columnName="key">
+        <ns:datatype>bool</ns:datatype>
+        <ns:scale>20</ns:scale>
+      </ns:column>
+      <ns:column columnName="display">
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>100</ns:scale>
+      </ns:column>
+    </ns:columns>
+  </ns:table>
 </ns:tables>

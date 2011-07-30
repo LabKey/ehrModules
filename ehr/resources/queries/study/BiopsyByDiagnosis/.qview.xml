@@ -2,7 +2,6 @@
   <columns>
       <column name="Id"/>
       <column name="date"/>
-      <column name="qcstate" />
       <column name="caseno" />
       <column name="seq1"/>
       <column name="tissue"/>

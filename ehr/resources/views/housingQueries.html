@@ -11,6 +11,7 @@ Ext.onReady(function(){
         ,queryName: 'Housing'
         ,title: 'Search Housing'
         ,defaultView: 'Current Housing'
+        ,viewName: 'Search Panel'
         ,metadata: {
             isTemp: {hidden: true}
             ,Id: {lookups: false}
@@ -54,12 +55,15 @@ This page contains a series of queries to search animal housing data.  If there 
     </li>
 <br>
     <li>
-        <a href="<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=Animal&query.viewName=Loners">List Single-housed Animals</a>
+        <a href="<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=Demographics&query.viewName=Single%20Housed">List Single-housed Animals</a>
     </li>
-<br>
     <li>
         <a href="<%=contextPath%>/ehr/WNPRC/EHR/animalHistory.view#_inputType:renderSingleSubject&activeReport:roommateHistory">View Roommate History for Animals</a>
     </li>
+    <li>
+        <a href="<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=HousingOverlapsByRoom">Find Animals Housed In A Given Room/Cage At A Specific Time</a>
+    </li>
+
 </ul>
 
 <br>

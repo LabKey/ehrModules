@@ -5,7 +5,7 @@
  */
 
 SELECT lower(id) as Id, FixDate(date) AS Date, account, collected_by as userid, method, quantity, FixNewlines(clincomment) as remark,
-uuid as requestId,
+uuid as runId,
 uuid as parentId,
 ts,
 uuid AS objectid

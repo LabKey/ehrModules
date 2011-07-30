@@ -41,7 +41,6 @@ import java.util.Set;
 
 public class EHRModule extends DefaultModule
 {
-
     public String getName()
     {
         return "EHR";
@@ -49,7 +48,7 @@ public class EHRModule extends DefaultModule
 
     public double getVersion()
     {
-        return 11.113;
+        return 11.139;
     }
 
     public boolean hasScripts()

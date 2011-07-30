@@ -13,15 +13,17 @@
         </column>
         <column name="problem_no"/>
         <column name="date"/>
-        <column name="date_resolved"/>
+        <column name="enddate"/>
         <column name="Remark"/>
         <column name="code"/>
     </columns>
     <filters>
-        <filter column="date_resolved" operator="isblank"/>
+        <filter column="enddate" operator="isblank"/>
         <!--<filter column="qcstate/publicdata" operator="eq" value="true"/>-->
     </filters>
     <sorts>
-        <sort column="date" descending="true"/>
+        <sort column="Id/curLocation/room" descending="false"/>
+        <sort column="Id/curLocation/cage" descending="false"/>
+        <!--<sort column="date" descending="true"/>-->
     </sorts>
 </customView>

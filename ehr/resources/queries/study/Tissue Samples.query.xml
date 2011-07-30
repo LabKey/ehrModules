@@ -8,6 +8,28 @@
                 <insertUrl />
                 <updateUrl />
                 <deleteUrl />
+                <columns>
+                    <column columnName="qualifier">
+                      <datatype>varchar</datatype>
+                      <columnTitle>Qualifier</columnTitle>
+                      <fk>
+                        <fkFolderPath>/wnprc/ehr/</fkFolderPath>
+                        <fkDbSchema>ehr_lookups</fkDbSchema>
+                        <fkTable>snomed_qualifiers</fkTable>
+                        <fkColumnName>qualifier</fkColumnName>
+                      </fk>
+                    </column>
+                    <column columnName="preservation">
+                      <datatype>varchar</datatype>
+                      <columnTitle>Preservation</columnTitle>
+                      <fk>
+                        <fkFolderPath>/wnprc/ehr/</fkFolderPath>
+                        <fkDbSchema>ehr_lookups</fkDbSchema>
+                        <fkTable>preservation_solutions</fkTable>
+                        <fkColumnName>solution</fkColumnName>
+                      </fk>
+                    </column>
+                </columns>
             </table>
         </tables>
     </metadata>

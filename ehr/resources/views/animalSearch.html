@@ -8,59 +8,15 @@ Ext.onReady(function ()
 {
     new EHR.ext.SearchPanel({
         schemaName: 'study'
-        ,queryName: 'Animal'
+        ,queryName: 'Demographics'
         ,viewName: 'Search Panel'
         ,title: 'Search Animals'
         ,defaultView: 'Alive, at WNPRC'                
         ,metadata: {
-            Surgery: {hidden: true}
-            ,activeAssignments: {hidden: true}
-            ,curLocation: {hidden: true}
-            ,numRoommates: {hidden: true}
-            ,MostRecentWeight: {hidden: true}
-            ,Species: {hidden: true}
-            ,Status: {hidden: true}
-            ,totalOffspring: {hidden: true}
-            ,MostRecentTB: {hidden: true}
-            ,MostRecentArrival: {hidden: true}
-            ,MostRecentDeparture: {hidden: true}
-            ,MHCtyping: {hidden: true}
-            ,CageClass: {hidden: true}
-            ,AvailBlood: {hidden: true}
-            ,DaysAlone: {hidden: true}
-            ,AgeClass: {hidden: true}
-            ,totalAssignments: {hidden: true}
-            ,ViralLoad: {hidden: true}
-            ,'age/AgeInYearsRounded': {duplicate: true}
-            ,'Dataset/Demographics/weight': {duplicate: true}
+            Id: {lookups: false}
+            ,'Id/age/AgeInYearsRounded': {duplicate: true}
+            ,'Id/MostRecentWeight/MostRecentWeight': {duplicate: true}
         }
-//        ,newFields: [
-//            {caption: 'Cohort', name: 'Cohort/label'}
-//            ,{caption: 'Age', name: 'age/AgeInYearsRounded', jsonType: 'int'}
-//            ,{caption: 'Age', name: 'age/AgeInYearsRounded', jsonType: 'int'}
-//            ,{caption: 'Current Room', name: 'curLocation/room'}
-//            //,{caption: 'Last TB Date', name: 'mostRecentTB'}
-//            //,{caption: 'Num. of Active Assignments', name: 'activeProjects/ActiveProjects (avail=all)'}
-//            ,{caption: 'Num. of Offspring', name: 'totalOffspring/TotalOffspring', jsonType: 'int'}
-//            ,{caption: 'Num. of Roommates', name: 'numRoommates/numRoommates', jsonType: 'int'}
-//            ,{caption: 'Species', name: 'Species/species', lookup: {schemaName: 'ehr_lookups', queryName: 'species', displayColumn: 'common', keyColumn: 'common'}
-//            }
-//            ,{caption: 'Gender', name: 'DataSet/Demographics/gender', lookup: {schemaName: 'ehr_lookups', queryName: 'gender_codes', displayColumn: 'meaning', keyColumn: 'code'}}
-//            ,{caption: 'Dam', name: 'DataSet/Demographics/dam'}
-//            ,{caption: 'Sire', name: 'DataSet/Demographics/sire'}
-//            ,{caption: 'Availability', name: 'currentAssignments/availability'}
-//            ,{caption: 'Hold', name: 'DataSet/Demographics/hold'}
-//            ,{caption: 'Birth', name: 'DataSet/Demographics/birth', jsonType: 'date'}
-//            ,{caption: 'Origin', name: 'DataSet/Demographics/origin', lookup: {schemaName: 'ehr_lookups', queryName: 'origin_codes', displayColumn: 'code', keyColumn: 'code'}}
-//            ,{caption: 'Death', name: 'DataSet/Demographics/death', jsonType: 'date'}
-//            ,{caption: 'Viral Status', name: 'DataSet/Demographics/v_status', lookup: {schemaName: 'ehr_lookups', queryName: 'viral_status', displayColumn: 'viral_status', keyColumn: 'viral_status'}}
-//            ,{caption: 'Latest Weight', name: 'MostRecentWeight/MostRecentWeight', jsonType: 'float'}
-//            ,{caption: 'Latest Weight', name: 'MostRecentWeight/MostRecentWeight', jsonType: 'float'}
-//            //,{caption: 'Most Recent Weight Date', name: 'MostRecentWeight/MostRecentWeightDate', jsonType: 'date'}
-//            //major surgery
-//            //blood summary
-//            //mhc
-//         ]
     }).render('animalSearch');
 });
 
@@ -70,27 +26,42 @@ Ext.onReady(function ()
 
 <body>
 <p>
-    This page contains a prototype interface to identify animals based on multiple criteria.
+    This page contains reports identify animals based on multiple criteria.
 <p/>
 <b>Browse Animals:</b>
     <ul>
         <li>
-            <a href="<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=Animal&query.viewName=Alive%2C at WNPRC">All Living WNPRC Animals</a>
+            <a href="<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=Demographics&query.viewName=Alive%2C at WNPRC">All Living WNPRC Animals</a>
         </li>
         <li>
-            <a href="<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=Animal&query.viewName=All WNPRC">All WNPRC Animals</a>
-        </li>
-        <li>
-            <a href="<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=Demographics&query.viewName=Single Housed">Single Housed Animals</a>
+            <a href="<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=Demographics">All WNPRC Animals</a>
         </li>
         <li>
             <a href="<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=Demographics&query.viewName=Breeding Animals">Assigned To Breeding</a>
         </li>
         <li>
-            <a href="<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=Animal&query.viewName=TB">TB: Untested In Past 6 months</a>
+            <a href="<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=Demographics&query.viewName=Living Rhesus Plus MHC Typing">All Living WNPRC Macaques Plus MHC Typing</a>
         </li>
         <li>
-            <a href="<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=Animal&query.viewName=Unweighed">Unweighed In Past 60 Days</a>
+            <a href="<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=Demographics&query.viewName=Living With SIV">Living With SIV</a>
+        </li>
+        <li>
+            <a href="<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=SSP_Pivot">MHC SSP Data</a>
+        </li>
+        <li>
+            <a href="<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=Demographics&query.viewName=Single Housed">Single Housed Animals</a>
+        </li>
+        <li>
+            <a href="<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=Demographics&query.viewName=TB">TB: Untested In Past 4 months</a>
+        </li>
+        <li>
+            <a href="<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=Demographics&query.viewName=Unassigned%20Animals">Unassigned Animals</a>
+        </li>
+        <li>
+            <a href="<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=Demographics&query.viewName=Unassigned%20Rhesus%20With%20MHC%20Typing">Unassigned Rhesus Plus MHC Typing</a>
+        </li>
+        <li>
+            <a href="<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=Demographics&query.viewName=Unweighed%20Over%2045%20Days">Unweighed In Past 45 Days</a>
         </li>
     </ul>
 
@@ -100,7 +71,7 @@ Ext.onReady(function ()
             <a href="<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=Colony Population By Age">Population Summary By Species, Gender and Age</a>
         </li>
         <li>
-            <a href="<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=HousingOverlaps">Find Animals Housed At WNPRC Over A Date Range</a>
+            <a href="<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=HousingOverlapsById">Find Animals Housed At WNPRC Over A Date Range</a>
         </li>
 
     </ul>

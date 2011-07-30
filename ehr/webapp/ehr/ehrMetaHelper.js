@@ -343,9 +343,6 @@ EHR.ext.metaHelper = {
         var meta = store.findFieldMeta(col.dataIndex);
         col.customized = true;
 
-        //this.updatable can override col.editable
-        col.editable = config.editable && col.editable && meta.userEditable;
-
         if((meta.hidden || meta.shownInGrid===false) && !meta.shownInGrid){
             col.hidden = true;
         }
@@ -362,17 +359,20 @@ EHR.ext.metaHelper = {
                     //Ext 3.1 has a booleancolumn class.  we just use this instead
                 }
                 break;
-            case "int":
-                col.xtype = 'numbercolumn';
-                col.format = '0';
-                break;
-            case "float":
-                col.xtype = 'numbercolumn';
-                break;
-            case "date":
-                col.xtype = 'datecolumn';
-                col.format = meta.format || Date.patterns.ISO8601Long;
+//            case "int":
+//                col.xtype = 'numbercolumn';
+//                col.format = '0';
+//                break;
+//            case "float":
+//                col.xtype = 'numbercolumn';
+//                break;
+//            case "date":
+//                col.xtype = 'datecolumn';
+//                col.format = meta.format || Date.patterns.ISO8601Long;
         }
+
+        //this.updatable can override col.editable
+        col.editable = config.editable && col.editable && meta.userEditable;
 
         //will use custom renderer
         if(meta.lookup && meta.lookups!==false)
@@ -384,8 +384,7 @@ EHR.ext.metaHelper = {
         if(meta.getRenderer)
             col.renderer = meta.getRenderer(col, meta, grid);
 
-        if(!col.renderer)
-            col.renderer = EHR.ext.metaHelper.getDefaultRenderer(col, meta, grid);
+        col.renderer = EHR.ext.metaHelper.getDefaultRenderer(col, meta, col.renderer, grid);
 
         //HTML-encode the column header
         col.header = Ext.util.Format.htmlEncode(meta.header || col.header);
@@ -398,6 +397,9 @@ EHR.ext.metaHelper = {
         }
 
         //allow override of defaults
+        if(config && config.defaults)
+            EHR.utils.rApply(col, config.defaults);
+
         if(config && config[col.dataIndex])
             EHR.utils.rApply(col, config[col.dataIndex]);
 
@@ -405,22 +407,22 @@ EHR.ext.metaHelper = {
 
     },
 
-    getDefaultRenderer : function(col, meta, grid) {
+    getDefaultRenderer : function(col, meta, renderer, grid) {
         return function(data, cellMetaData, record, rowIndex, colIndex, store)
         {
             EHR.ext.metaHelper.buildQtip(data, cellMetaData, record, rowIndex, colIndex, store, col, meta);
 
-            //NOTE: unsure what this is trying to do.  record.json might refer to record.data???
-            //should this actually point to store.reader.json?
-            if(record.json && record.json[meta.name] && record.json[meta.name].displayValue)
-                return record.json[meta.name].displayValue;
+//            //NOTE: unsure what this is trying to do.  record.json might refer to record.data???
+//            //should this actually point to store.reader.json?
+//            if(record.json && record.json[meta.name] && record.json[meta.name].displayValue)
+//                return record.json[meta.name].displayValue;
 
             //NOTE: this is substantially changed over FormHelper
             if(meta.lookup && meta.lookups!==false){
 
-if(meta.lookup.queryName=='snomed'){
-    console.log('unfiltered snomed renderer')
-}
+//                if(meta.lookup.queryName=='snomed')
+//                    console.log('WARNING: unfiltered snomed renderer');
+
                 data = EHR.ext.metaHelper.lookupRenderer(meta, data, grid, record, rowIndex);
             }
 
@@ -429,30 +431,47 @@ if(meta.lookup.queryName=='snomed'){
 
             //format data into a string
             var displayValue;
-            switch (meta.type)
-            {
-                case "date":
-                    var date = new Date(data);
-                    var format = meta.format;
-                    if(!format){
-                        if (date.getHours() == 0 && date.getMinutes() == 0 && date.getSeconds() == 0)
-                            format = "Y-m-d";
-                        else
-                            format = "Y-m-d H:i:s";
-                    }
-                    displayValue = date.format(format);
-                    break;
-                case "int":
-                case "string":
-                case "boolean":
-                case "float":
-                default:
-                    displayValue = data.toString();
+            if(renderer){
+                displayValue = renderer(data, cellMetaData, record, rowIndex, colIndex, store);
+            }
+            else {
+                switch (meta.type)
+                {
+                    case "date":
+                        var date = new Date(data);
+                        var format = meta.format;
+                        if(!format){
+                            if (date.getHours() == 0 && date.getMinutes() == 0 && date.getSeconds() == 0)
+                                format = "Y-m-d";
+                            else
+                                format = "Y-m-d H:i:s";
+                        }
+                        displayValue = date.format(format);
+                        break;
+                    case "int":
+                        displayValue = (Ext.util.Format.numberRenderer(this.format || '0'))(data);
+                        break;
+                    case "boolean":
+                        var t = this.trueText || 'true', f = this.falseText || 'false', u = this.undefinedText || ' ';
+                        if(data === undefined){
+                            displayValue = u;
+                        }
+                        else if(!data || data === 'false'){
+                            displayValue = f;
+                        }
+                        else {
+                            displayValue = t;
+                        }
+                    case "float":
+                        displayValue = (Ext.util.Format.numberRenderer(this.format || '0,000.00'))(data);
+                    case "string":
+                    default:
+                        displayValue = data.toString();
+                }
             }
 
             //if meta.file is true, add an <img> for the file icon
-            if(meta.file)
-            {
+            if(meta.file){
                 displayValue = "<img src=\"" + LABKEY.Utils.getFileIconUrl(data) + "\" alt=\"icon\" title=\"Click to download file\"/>&nbsp;" + displayValue;
                 //since the icons are 16x16, cut the default padding down to just 1px
                 cellMetaData.attr = "style=\"padding: 1px 1px 1px 1px\"";
@@ -460,7 +479,7 @@ if(meta.lookup.queryName=='snomed'){
 
             //wrap in <a> if url is present in the record's original JSON
             if(col.showLink !== false && record.json && record.json[meta.name] && record.json[meta.name].url)
-                return "<a target=\"_new\" href=\"" + record.json[meta.name].url + "\">" + displayValue + "</a>";
+                return "<a target=\"_blank\" href=\"" + record.json[meta.name].url + "\">" + displayValue + "</a>";
             else
                 return displayValue;
         };
@@ -482,9 +501,10 @@ if(meta.lookup.queryName=='snomed'){
         }
 
         if(record.errors && record.errors.length){
+
             Ext.each(record.errors, function(e){
-                if(e.name==meta.name){
-                    qtip.push((e.severity || 'ERROR') +': '+e.text);
+                if(e.field==meta.name){
+                    qtip.push((e.severity || 'ERROR') +': '+e.message);
                     cellMetaData.css += ' x-grid3-cell-invalid';
                 }
             }, this);
@@ -499,8 +519,9 @@ if(meta.lookup.queryName=='snomed'){
 
     lookupRenderer : function(meta, data, grid, record, rowIndex) {
         var lookupStore = EHR.ext.metaHelper.getLookupStore(meta);
-        if(!lookupStore)
+        if(!lookupStore){
             return '';
+        }
 
         var lookupRecord = lookupStore.getById(data);
         if (lookupRecord)
@@ -508,15 +529,23 @@ if(meta.lookup.queryName=='snomed'){
         else {
             //if store not loaded yet, retry rendering on store load
             if(grid && !lookupStore.fields){
-                lookupStore.on('load', function(store){
-                    grid.getView().refreshRow(rowIndex);
-                }, this, {single: true});
+                this.lookupStoreLoadListeners = this.lookupStoreLoadListeners || [];
+                if(this.lookupStoreLoadListeners.indexOf(lookupStore.storeId) == -1){
+                    lookupStore.on('load', function(store){
+                        this.lookupStoreLoadListeners.remove(store.storeId);
+                        //console.log('refresh: '+store.storeId);
+
+                        grid.getView().refresh();
+
+                    }, this, {single: true});
+                    this.lookupStoreLoadListeners.push(lookupStore.storeId);
+                }
             }
             if (data!==null){
                 return "[" + data + "]";
             }
             else {
-                return meta.lookupNullCaption || "[none]";
+                return Ext.isDefined(meta.lookupNullCaption) ? meta.lookupNullCaption : "[none]";
             }
         }
     }

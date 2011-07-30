@@ -24,6 +24,7 @@
       <column name="description"/>
       <column name="Remark"/>
       <column name="qcstate" />
+      <column name="taskid" />
       <!--<column name="otherbehavior"/>-->
   </columns>
    <sorts>
@@ -31,7 +32,7 @@
        <sort column="Room"/>
        <sort column="Cage"/>
    </sorts>
-   <!--<filters>-->
-       <!--<filter column="hasObs/hasObs" operator="eq" value="true"/>-->
-   <!--</filters>-->
+   <filters>
+       <filter column="isIrregular" operator="eq" value="true"/>
+   </filters>
 </customView>

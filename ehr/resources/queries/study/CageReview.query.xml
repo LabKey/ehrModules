@@ -16,19 +16,57 @@
                         <columnTitle>Width (in)</columnTitle>
                     </column>
                     <column columnName="CageSqft">
-                        <columnTitle>Square Feet in Cage</columnTitle>
+                        <columnTitle>Square Feet in Cage(s)</columnTitle>
                     </column>
                     <column columnName="ReqSqft">
                         <columnTitle>Min. Square Feet Required</columnTitle>
                     </column>
+                    <column columnName="ReqSqfts">
+                        <columnTitle>Min. Square Feet Required Per Animal</columnTitle>
+                        <isHidden>true</isHidden>
+                    </column>
+                    <column columnName="Weights">
+                        <columnTitle>Weight of Each Animal</columnTitle>
+                        <isHidden>false</isHidden>
+                    </column>
+                    <column columnName="HeaviestWeight">
+                        <columnTitle>Heaviest Weight</columnTitle>
+                        <isHidden>true</isHidden>
+                    </column>
                     <column columnName="CageHeight">
                         <columnTitle>Height of Cage</columnTitle>
+                    </column>
+                    <column columnName="joinToCage">
+                        <columnTitle>Can Join To These Cage(s)</columnTitle>
+                    </column>
+                    <column columnName="JoinedCage">
+                        <columnTitle>Joined Cage(s)</columnTitle>
                     </column>
                     <column columnName="ReqHeight">
                         <columnTitle>Min. Height Required</columnTitle>
                     </column>
-                    <column columnName="TotalAnimalsOver6Months">
-                        <columnTitle>Total Animals Over 6 Months</columnTitle>
+                    <column columnName="TotalAnimalsOver5Months">
+                        <columnTitle>Total Animals Over 5.0 Months</columnTitle>
+                    </column>
+                    <column columnName="TotalAnimals5Months">
+                        <columnTitle>Total Animals 5-6 Months</columnTitle>
+                    </column>
+                    <column columnName="Animals5Mo">
+                        <columnTitle>Animals 5-6 Months Old</columnTitle>
+                    </column>
+                    <column columnName="cageStatus">
+                        <isHidden>false</isHidden>
+                        <shownInDetailsView>true</shownInDetailsView>
+                        <columnTitle>Status</columnTitle>
+                        <displayWidth>50</displayWidth>
+                        <conditionalFormats>
+                            <conditionalFormat>
+                                <filters>
+                                    <filter operator="eq" value="ERROR"/>
+                                </filters>
+                                <backgroundColor>FBEC5D</backgroundColor>
+                            </conditionalFormat>
+                        </conditionalFormats>
                     </column>
                 </columns>
             </table>

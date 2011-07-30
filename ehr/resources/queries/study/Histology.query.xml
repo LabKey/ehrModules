@@ -40,6 +40,15 @@
                         <fkColumnName>code</fkColumnName>
                       </fk>
                     </column>
+                    <column columnName="stain">
+                      <columnTitle>Stain</columnTitle>
+                      <fk>
+                        <fkFolderPath>/wnprc/ehr/</fkFolderPath>
+                        <fkDbSchema>ehr_lookups</fkDbSchema>
+                        <fkTable>histology_stain</fkTable>
+                        <fkColumnName>stain</fkColumnName>
+                      </fk>
+                    </column>
                     <column columnName="remark">
                         <datatype>varchar</datatype>
                         <columnTitle>Remark</columnTitle>
@@ -77,6 +86,19 @@
                           <!--<fkTable>studyDataParent</fkTable>-->
                           <!--<fkColumnName>objectid</fkColumnName>-->
                         <!--</fk>-->
+                    </column>
+                    <column columnName="trimdate">
+                        <columnTitle>Trim Date</columnTitle>
+                    </column>
+                    <column columnName="qualifier">
+                      <datatype>varchar</datatype>
+                      <columnTitle>Qualifier</columnTitle>
+                      <fk>
+                        <fkFolderPath>/wnprc/ehr/</fkFolderPath>
+                        <fkDbSchema>ehr_lookups</fkDbSchema>
+                        <fkTable>snomed_qualifiers</fkTable>
+                        <fkColumnName>qualifier</fkColumnName>
+                      </fk>
                     </column>
                 </columns>
                 <tableTitle>Histology</tableTitle>

@@ -948,8 +948,8 @@
         <!--<isHidden>true</isHidden>-->
       <!--</column>-->
     <!--</columns>-->
-    <!--<tableTitle>Blood Chemistry Misc</tableTitle>-->
-    <!--<description>Misc Blood Chemistry Tests</description>-->
+    <!--<tableTitle>Chemistry Misc</tableTitle>-->
+    <!--<description>Misc Chemistry Tests</description>-->
   <!--</table>-->
   <!--<table tableName="chemistry" tableDbType="TABLE">-->
     <!--<tableUrl>/query/detailsQueryRow.view?schemaName=study&amp;query.queryName=chemistry&amp;lsid=${lsid}</tableUrl>-->
@@ -1115,8 +1115,8 @@
         <!--<isHidden>true</isHidden>-->
       <!--</column>-->
     <!--</columns>-->
-    <!--<tableTitle>Blood Chemistry</tableTitle>-->
-    <!--<description>Blood Chemistry Data</description>-->
+    <!--<tableTitle>Chemistry</tableTitle>-->
+    <!--<description>Chemistry Data</description>-->
   <!--</table>-->
     <table tableName="chemistryRuns" tableDbType="TABLE">
       <tableUrl>/query/detailsQueryRow.view?schemaName=study&amp;query.queryName=chemistryRuns&amp;lsid=${lsid}</tableUrl>
@@ -1214,7 +1214,7 @@
           <isHidden>true</isHidden>
         </column>
       </columns>
-      <tableTitle>Blood Chemistry Runs</tableTitle>
+      <tableTitle>Chemistry Runs</tableTitle>
     </table>
     <table tableName="chemistryResults" tableDbType="TABLE">
       <tableUrl>/query/detailsQueryRow.view?schemaName=study&amp;query.queryName=chemistryResults&amp;lsid=${lsid}</tableUrl>
@@ -1307,8 +1307,8 @@
           <isHidden>true</isHidden>
         </column>
       </columns>
-      <tableTitle>Blood Chemistry Results</tableTitle>
-      <description>Blood Chemistry Results</description>
+      <tableTitle>Chemistry Results</tableTitle>
+      <description>Chemistry Results</description>
     </table>
   <table tableName="clinremarks" tableDbType="TABLE">
     <tableUrl>/query/detailsQueryRow.view?schemaName=study&amp;query.queryName=clinremarks&amp;lsid=${lsid}</tableUrl>

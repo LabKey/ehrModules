@@ -226,7 +226,7 @@ Ext.ux.form.DateTime = Ext.extend(Ext.form.Field, {
          * @private initializes internal dateValue
          */
         ,initDateValue:function() {
-                this.dateValue = this.otherToNow ? new Date() : new Date(1970, 0, 1, 0, 0, 0);
+                this.dateValue = this.otherToNow ? (new Date()) : new Date(1970, 0, 1, 0, 0, 0);
         }
         // }}}
         // {{{
@@ -670,3 +670,7 @@ Ext.ux.form.DateTime = Ext.extend(Ext.form.Field, {
 Ext.reg('xdatetime', Ext.ux.form.DateTime);
 
 
+//the following edits are separated to make it easier to identify them
+Ext.override(Ext.ux.form.DateTime, {
+
+});

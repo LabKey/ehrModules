@@ -21,11 +21,11 @@ else false END as Check,
 
 FROM "/WNPRC/WNPRC_Units/Animal_Services/Compliance_Training/Private/EmployeeDB/".lists.Employees e
 
-LEFT JOIN "/WNPRC/WNPRC_Units/Animal_Services/Compliance_Training/Private/SOPs/".lists.SOPbyCategory sc
+LEFT JOIN "/WNPRC/WNPRC_Units/Animal_Services/Compliance_Training/Private/EmployeeDB/".lists.SOPbyCategory sc
   ON (e.category = sc.category)
 
 LEFT JOIN
-  (SELECT max(t.date) AS LastRead, t.SOP_ID, t.EmployeeId FROM "/WNPRC/WNPRC_Units/Animal_Services/Compliance_Training/Private/SOPs/".lists.SOPdates t GROUP BY t.EmployeeId, t.SOP_ID) T1
+  (SELECT max(t.date) AS LastRead, t.SOP_ID, t.EmployeeId FROM "/WNPRC/WNPRC_Units/Animal_Services/Compliance_Training/Private/EmployeeDB/".lists.SOPdates t GROUP BY t.EmployeeId, t.SOP_ID) T1
   ON (T1.SOP_ID = sc.SOP_ID AND T1.EmployeeId = e.Id)
 
 LEFT JOIN lists.CompletionDates c

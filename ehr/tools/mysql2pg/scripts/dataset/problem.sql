@@ -7,3 +7,4 @@ SELECT lower(id) as Id, date(coalesce(FixDate(date_observed), '1979-01-01')) AS 
 ts, uuid AS objectid
 FROM cases c
 
+where length(id) > 1

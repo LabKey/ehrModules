@@ -5,7 +5,7 @@
  */
 
 SELECT lower(id) as Id, FixDate(date) AS Date, lower(account) AS account, FixNewlines(remark) AS remark, FixNewlines(clinremark) AS clinremark,
-uuid as requestId,
+uuid as runid,
 ts,
 uuid AS objectid
 FROM hematology

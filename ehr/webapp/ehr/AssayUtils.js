@@ -172,6 +172,7 @@ EHR.Assay.createRunsPage = function(){
        ,allowChooseQuery: false
        ,allowChooseView: true
        ,showDeleteButton: true
+       ,timeout: 0
     }).render();
 }
 
@@ -199,6 +200,7 @@ EHR.Assay.createResultsPage = function(){
              LABKEY.QueryWebPart.standardButtons.pageSize
            ]
        }
+       ,timeout: 0
     }).render();
 }
 
@@ -224,6 +226,7 @@ EHR.Assay.createBatchesPage = function(){
              LABKEY.QueryWebPart.standardButtons.print,
              LABKEY.QueryWebPart.standardButtons.pageSize
            ]
-           }
+       }
+       ,timeout: 0
     }).render();
 }

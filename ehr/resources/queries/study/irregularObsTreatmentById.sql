@@ -7,8 +7,9 @@
 SELECT
 
 i.id,
-i.Room,
-i.Cage,
+i.area,
+i.room,
+i.cage,
 i.date,
 i.DateOnly,
 'Obs' as type,
@@ -16,32 +17,27 @@ i.userid,
 i.remark,
 i.dataset,
 i.description,
-i.description as description2,
 i.qcstate
 
 from study.irregularObsById i
+where i.isIrregular = true
 
 UNION ALL
 
 SELECT
 
 t.id,
+t.CurrentArea as area,
 t.CurrentRoom as room,
 t.CurrentCage as Cage,
 t.date,
-t.date as DateOnly,
+cast(t.date as DATE) as DateOnly,
 'Treatment' as type,
-t.userid,
+t.performedby,
 t.remark,
 t.dataset,
-t.description,
-CASE WHEN t.enddate is null THEN
-  ('Drug: ' || t.code)
-ELSE
-  ('Drug: ' || t.code || '
-End Date: ' || t.enddate)
-END AS description2,
-null as qcstate
+t.description2,
+treatmentStatus as qcstate
 
 FROM treatmentSchedule t
 

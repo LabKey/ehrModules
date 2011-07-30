@@ -1,0 +1,1 @@
+select UserId.DisplayName as UserId from core.members m where m.groupid.name like '%pathology%';

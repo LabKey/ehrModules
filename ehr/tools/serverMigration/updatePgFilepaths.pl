@@ -36,7 +36,7 @@ my $old_path = '/Volumes/storagepool/';
 my $new_path = '/storagepool/';
 
 #for the labkey file root
-my $old_path = '/Volumes/storagepool/xnight/labkey/files/';
+my $old_path = '/Volumes/storagepool/labkey/files/';
 my $new_path = '/usr/local/labkey/files/';
 
 

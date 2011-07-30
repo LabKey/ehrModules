@@ -6,9 +6,11 @@
       <column name="seq1"/>
       <column name="tissue"/>
       <column name="severity"/>
-      <column name="distribution"/>
       <column name="duration"/>
-      <column name="diagnosis"/>
+      <column name="distribution"/>
+      <column name="distribution2"/>
+      <column name="inflammation"/>
+      <column name="etiology"/>
       <column name="process"/>
       <column name="qcstate"/>
       <!--<column name="code/code">-->

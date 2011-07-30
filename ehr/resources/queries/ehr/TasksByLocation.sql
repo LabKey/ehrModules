@@ -4,7 +4,10 @@
  * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
  */
 SELECT
-  sd.id.curlocation.room as room,
+  --sd.id.curlocation.room as room,
+
+  sd.id.dataset.activehousing.room as room,
+
   group_concat(DISTINCT sd.id) as Ids,
 
 --   t.title,
@@ -23,5 +26,10 @@ JOIN study.studydata sd
 
 ON (t.taskid = sd.taskid)
 
-GROUP BY t.taskid, t.formtype, sd.id.curlocation.room
+GROUP BY
+t.taskid,
+t.formtype,
+--sd.id.curlocation.room
+
+sd.id.dataset.activehousing.room
 

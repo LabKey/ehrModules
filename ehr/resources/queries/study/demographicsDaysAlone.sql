@@ -31,9 +31,10 @@ CASE
     THEN 0
   ELSE
     TIMESTAMPDIFF('SQL_TSI_DAY', max(h2.enddate), now())
-END, 'INTEGER') as DaysAlone
+END, 'INTEGER') as DaysAlone,
 
--- max(a.value) as Exemptions
+group_concat(distinct a.project) as Exemptions,
+group_concat(distinct a.project.title) as ExemptionTitles
 
 FROM study.Housing h1
 
@@ -50,8 +51,9 @@ LEFT OUTER JOIN study.Housing h2
       )
 
 --join to vet exemptions
--- LEFT JOIN study.notes a
---   ON (h1.id = a.id AND a.EndDate IS NULL and a.value LIKE '%pairing exempt%')
+LEFT JOIN study.assignment a
+  --ON (h1.id = a.id AND a.EndDate IS NULL and a.project.title LIKE '%pairing exempt%')
+  ON (h1.id = a.id AND a.EndDate IS NULL and a.project IN (19980301,19970301,20001001,20031101,20060202))
 
 WHERE
 --h1.id.Status.Status = 'Alive'

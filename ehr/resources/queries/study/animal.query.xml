@@ -1,5 +1,5 @@
  <query xmlns="http://labkey.org/data/xml/query">
-    <metadata> 
+    <metadata>
         <tables xmlns="http://labkey.org/data/xml">
             <table tableName="Animal" tableDbType="TABLE">
                 <columns>
@@ -34,6 +34,7 @@
                         <shownInDetailsView>false</shownInDetailsView>
                     </column>
                     <column columnName="Age" wrappedColumnName="id">
+                        <description>This calculates the age of the animal in year, months or days.  It shows the current age for living animals or age at time of death.</description>
                         <columnTitle>Age</columnTitle>
                         <isHidden>false</isHidden>
                         <isUnselectable>true</isUnselectable>
@@ -44,6 +45,7 @@
                         </fk>
                     </column>
                     <column columnName="AgeClass" wrappedColumnName="id">
+                        <description>Calculates the age class of the animal, which is used to calculate reference ranges</description>
                         <columnTitle>Age Class</columnTitle>
                         <isHidden>false</isHidden>
                         <isUnselectable>true</isUnselectable>
@@ -55,6 +57,7 @@
                         </fk>
                     </column>
                     <column columnName="MostRecentArrival" wrappedColumnName="id">
+                        <description>Calculates the most recent arrival per animal, if applicable, and most recent arrival at WNPRC</description>
                         <columnTitle>Arrival Date</columnTitle>
                         <isHidden>false</isHidden>
                         <isUnselectable>true</isUnselectable>
@@ -66,6 +69,7 @@
                         </fk>
                     </column>
                     <column columnName="currentAssignments" wrappedColumnName="id">
+                        <description>Contains summaries of the assignments for each animal, including the project numbers, availability codes and a count</description>
                         <columnTitle>Assignments - Active</columnTitle>
                         <isHidden>false</isHidden>
                         <isUnselectable>true</isUnselectable>
@@ -77,6 +81,7 @@
                         </fk>
                     </column>
                     <column columnName="activeAssignments" wrappedColumnName="id">
+                        <description>Contains more detailed summaries of the active assignments for each animal, including a breakdown between research, breeding, training, etc.</description>
                         <columnTitle>Assignments - Detailed</columnTitle>
                         <isHidden>false</isHidden>
                         <isUnselectable>true</isUnselectable>
@@ -88,6 +93,7 @@
                         </fk>
                     </column>
                     <column columnName="totalAssignments" wrappedColumnName="id">
+                        <description>Contains summaries of the total assignments this animal has ever had, including the project numbers and a count</description>
                         <columnTitle>Assignments - Total</columnTitle>
                         <isHidden>false</isHidden>
                         <isUnselectable>true</isUnselectable>
@@ -99,6 +105,7 @@
                         </fk>
                     </column>
                     <column columnName="AvailBlood" wrappedColumnName="id">
+                        <description>Calculates the total blood draw and remaining, which is determine by weight and blood drawn in the past 30 days.</description>
                         <columnTitle>Blood Remaining</columnTitle>
                         <isHidden>false</isHidden>
                         <isUnselectable>true</isUnselectable>
@@ -110,6 +117,7 @@
                         </fk>
                     </column>
                     <column columnName="CageClass" wrappedColumnName="id">
+                        <description>Calculates the cage class necessary for this animal, which is used to determine space requirements</description>
                         <columnTitle>Cage Class</columnTitle>
                         <isHidden>true</isHidden>
                         <isUnselectable>true</isUnselectable>
@@ -120,7 +128,20 @@
                             <fkColumnName>Id</fkColumnName>
                         </fk>
                     </column>
+                    <column columnName="numRoommates" wrappedColumnName="id">
+                        <description>Calculates the total number of roommates per animal and total animals per cage</description>
+                        <columnTitle>Cagemates</columnTitle>
+                        <isHidden>false</isHidden>
+                        <isUnselectable>true</isUnselectable>
+                        <fk>
+                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
+                            <fkDbSchema>study</fkDbSchema>
+                            <fkTable>demographicsCurrentRoommates</fkTable>
+                            <fkColumnName>Id</fkColumnName>
+                        </fk>
+                    </column>
                     <column columnName="DaysAlone" wrappedColumnName="id">
+                        <description>Calculates the total number of days each animal has been single housed, if applicable.</description>
                         <columnTitle>Days Alone</columnTitle>
                         <isHidden>false</isHidden>
                         <isUnselectable>true</isUnselectable>
@@ -132,6 +153,7 @@
                         </fk>
                     </column>
                     <column columnName="Demographics" wrappedColumnName="id">
+                        <description>Contains basic demographic information on the animals, including gender, dam, sire, etc.  This is similar to what was formerly called abstract.</description>
                         <columnTitle>Demographics</columnTitle>
                         <isHidden>false</isHidden>
                         <isUnselectable>true</isUnselectable>
@@ -143,6 +165,7 @@
                         </fk>
                     </column>
                     <column columnName="MostRecentDeparture" wrappedColumnName="id">
+                        <description>Calculates the most recent departure date for each animal</description>
                         <columnTitle>Departure Date</columnTitle>
                         <isHidden>false</isHidden>
                         <isUnselectable>true</isUnselectable>
@@ -154,6 +177,7 @@
                         </fk>
                     </column>
                     <column columnName="IrregularObs" wrappedColumnName="id">
+                        <description>Shows any irregular observations from each animal today or yesterday.</description>
                         <columnTitle>Irregular Obs</columnTitle>
                         <isHidden>false</isHidden>
                         <isUnselectable>true</isUnselectable>
@@ -164,6 +188,7 @@
                         </fk>
                     </column>
                     <column columnName="curLocation" wrappedColumnName="id">
+                        <description>The calculates the current housing location for each living animal.</description>
                         <columnTitle>Housing - Current</columnTitle>
                         <isHidden>false</isHidden>
                         <isUnselectable>true</isUnselectable>
@@ -174,7 +199,20 @@
                             <fkColumnName>Id</fkColumnName>
                         </fk>
                     </column>
+                    <column columnName="lastHousing" wrappedColumnName="id">
+                        <description>This calculates the last housing location for the animal.  This is distinct from active housing, because it will return a location for dead animals</description>
+                        <columnTitle>Housing - Last Location</columnTitle>
+                        <isHidden>false</isHidden>
+                        <isUnselectable>true</isUnselectable>
+                        <fk>
+                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
+                            <fkDbSchema>study</fkDbSchema>
+                            <fkTable>demographicsLastHousing</fkTable>
+                            <fkColumnName>Id</fkColumnName>
+                        </fk>
+                    </column>
                     <column columnName="MHCtyping" wrappedColumnName="id">
+                        <description>Summarizes MHC SSP typing results for the common alleles</description>
                         <columnTitle>MHC SSP Typing</columnTitle>
                         <isHidden>false</isHidden>
                         <isUnselectable>true</isUnselectable>
@@ -186,6 +224,7 @@
                         </fk>
                     </column>
                     <column columnName="totalOffspring" wrappedColumnName="id">
+                        <description>Shows the total offspring of each animal</description>
                         <columnTitle>Number of Offspring</columnTitle>
                         <isHidden>false</isHidden>
                         <isUnselectable>true</isUnselectable>
@@ -193,17 +232,6 @@
                             <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                             <fkDbSchema>study</fkDbSchema>
                             <fkTable>demographicsTotalOffspring</fkTable>
-                            <fkColumnName>Id</fkColumnName>
-                        </fk>
-                    </column>
-                    <column columnName="numRoommates" wrappedColumnName="id">
-                        <columnTitle>Number of Cagemates</columnTitle>
-                        <isHidden>false</isHidden>
-                        <isUnselectable>true</isUnselectable>
-                        <fk>
-                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-                            <fkDbSchema>study</fkDbSchema>
-                            <fkTable>demographicsCurrentRoommates</fkTable>
                             <fkColumnName>Id</fkColumnName>
                         </fk>
                     </column>
@@ -217,18 +245,20 @@
                             <!--<fkColumnName>Id</fkColumnName>-->
                         <!--</fk>-->
                     <!--</column>-->
-                    <column columnName="Status" wrappedColumnName="id">
-                        <columnTitle>Status</columnTitle>
-                        <isHidden>false</isHidden>
-                        <isUnselectable>true</isUnselectable>
-                        <fk>
-                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-                            <fkDbSchema>study</fkDbSchema>
-                            <fkTable>demographicsStatus</fkTable>
-                            <fkColumnName>Id</fkColumnName>
-                        </fk>
-                    </column>
+                    <!--<column columnName="Status" wrappedColumnName="id">-->
+                        <!--<description></description>-->
+                        <!--<columnTitle>Status</columnTitle>-->
+                        <!--<isHidden>false</isHidden>-->
+                        <!--<isUnselectable>true</isUnselectable>-->
+                        <!--<fk>-->
+                            <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
+                            <!--<fkDbSchema>study</fkDbSchema>-->
+                            <!--<fkTable>demographicsStatus</fkTable>-->
+                            <!--<fkColumnName>Id</fkColumnName>-->
+                        <!--</fk>-->
+                    <!--</column>-->
                     <column columnName="Surgery" wrappedColumnName="id">
+                        <description>Calculates whether this animal has ever had any surgery or a surgery flagged as major</description>
                         <columnTitle>Surgery</columnTitle>
                         <isHidden>false</isHidden>
                         <isUnselectable>true</isUnselectable>
@@ -240,6 +270,7 @@
                         </fk>
                     </column>
                     <column columnName="MostRecentTB" wrappedColumnName="id">
+                        <description>Calculates the most recent TB date for this animal, time since TB and the last eye TB tested</description>
                         <columnTitle>TB Tests</columnTitle>
                         <isHidden>false</isHidden>
                         <isUnselectable>true</isUnselectable>
@@ -251,17 +282,19 @@
                         </fk>
                     </column>
                     <column columnName="ViralLoad" wrappedColumnName="id">
+                        <description>This field calculates the most recent viral load for this animal</description>
                         <columnTitle>Viral Loads</columnTitle>
                         <isHidden>false</isHidden>
                         <isUnselectable>true</isUnselectable>
                         <fk>
                             <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                             <fkDbSchema>study</fkDbSchema>
-                            <fkTable>demographicsLatestVL</fkTable>
+                            <fkTable>demographicsVL</fkTable>
                             <fkColumnName>Id</fkColumnName>
                         </fk>
                     </column>
                     <column columnName="Virology" wrappedColumnName="id">
+                        <description>This calculates the distinct pathogens listed as positive for this animal from the virology table</description>
                         <columnTitle>Virology</columnTitle>
                         <isHidden>false</isHidden>
                         <isUnselectable>true</isUnselectable>
@@ -273,6 +306,7 @@
                         </fk>
                     </column>
                     <column columnName="weightChange" wrappedColumnName="id">
+                        <description>This calculates the percent change over the past 30, 90 or 180 days relative to the most recent weight</description>
                         <columnTitle>Weight Change</columnTitle>
                         <isHidden>false</isHidden>
                         <isUnselectable>true</isUnselectable>
@@ -283,6 +317,7 @@
                         </fk>
                     </column>
                     <column columnName="MostRecentWeight" wrappedColumnName="id">
+                        <description>This calculates the most recent weight for the animal, based on the weight table</description>
                         <columnTitle>Weight - Current</columnTitle>
                         <isHidden>false</isHidden>
                         <isUnselectable>true</isUnselectable>

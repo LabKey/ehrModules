@@ -7,18 +7,7 @@
 
 SELECT
 lower(id) as Id,
-'Surgery' as type,
 FixDateTime(date, time) AS Date,
-FixDateTime(enddate, endtime) AS enddate,
-pno as project,
-null as account,
-null as title,
-surgeon as performedby,
-major,
-
-/*inves,*/
-
-FixNewlines(left(group_concat(remark), 3999)) AS remark,
 max(ts) as ts,
 uuid AS objectid
 FROM surghead s
@@ -31,15 +20,7 @@ UNION ALL
 SELECT
 
 lower(id) as Id,
-'Necropsy' as type,
 FixDate(date) AS Date,
-null as enddate,
-null as project,
-account,
-caseno as title,
-null as performedby,
-null as major,
-FixNewlines(left(group_concat(remark), 3999)) AS remark,
 ts,
 uuid AS objectid
 FROM necropsyhead n
@@ -52,15 +33,7 @@ UNION ALL
 
 SELECT
 lower(id) as Id,
-'Biopsy' as type,
 FixDate(date) AS Date,
-null as enddate,
-null as project,
-account,
-caseno as title,
-null as performedby,
-null as major,
-FixNewlines(left(group_concat(remark), 3999)) AS remark,
 max(ts) as ts,
 uuid AS objectid
 FROM biopsyhead b

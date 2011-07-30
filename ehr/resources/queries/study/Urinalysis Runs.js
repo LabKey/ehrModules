@@ -8,7 +8,7 @@ var {EHR, LABKEY, Ext, console, init, beforeInsert, afterInsert, beforeUpdate, a
 
 
 function onETL(row, errors){
-    EHR.ETL.fixUrineQuantity(row, errors);
+    EHR.ETL.fixSampleQuantity(row, errors);
 }
 
 function setDescription(row, errors){

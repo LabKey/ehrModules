@@ -7,13 +7,19 @@
 var {EHR, LABKEY, Ext, console, init, beforeInsert, afterInsert, beforeUpdate, afterUpdate, beforeDelete, afterDelete, complete} = require("ehr/validation");
 
 
-
+function onUpsert(context, errors, row, oldRow){
+    if(context.extraContext.dataSource != 'etl')
+        EHR.validation.removeTimeFromDate(row, errors);
+}
 
 
 function onETL(row, errors){
     if(row.stringResults){
         EHR.ETL.fixChemValue(row, errors);
     }
+
+    if(row.quantity)
+        EHR.ETL.fixSampleQuantity(row, errors);
 
 }
 
@@ -22,9 +28,13 @@ function setDescription(row, errors){
 
     if(row.testid)
          description.push('Test: '+EHR.validation.nullToString(row.testid));
+    if (row.method)
+        description.push('Method: '+row.method);
 
-    if(row.results)
-        description.push('Value: '+EHR.validation.nullToString(row.results)+' '+EHR.validation.nullToString(row.units));
+    if(row.result)
+        description.push('Result: '+EHR.validation.nullToString(row.result)+' '+EHR.validation.nullToString(row.units));
+    if(row.qualResult)
+        description.push('Qual Result: '+EHR.validation.nullToString(row.qualResult));
 
     return description;
 }

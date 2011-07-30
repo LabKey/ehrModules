@@ -20,18 +20,26 @@ function setDescription(row, errors){
 }
 
 function onUpsert(context, errors, row, oldRow){
+
+    if(context.extraContext.dataSource != 'etl'){
+        EHR.validation.removeTimeFromDate(row, errors);
+        EHR.validation.removeTimeFromDate(row, errors, 'enddate');
+    }
+
     //check number of allowed animals at assign/approve time
     if(context.extraContext.dataSource != 'etl' && row.project && row.date){
         var species;
-        EHR.findDemographics({
-            participant: row.Id,
-            callback: function(data){
-                if(data){
-                    species = data.species;
-                }
-            },
-            scope: this
-        });
+        if(row.Id){
+            EHR.findDemographics({
+                participant: row.Id,
+                callback: function(data){
+                    if(data){
+                        species = data.species;
+                    }
+                },
+                scope: this
+            });
+        }
 
         var protocol;
         //TODO: switch to EHR schema

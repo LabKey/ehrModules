@@ -78,6 +78,19 @@ Ext.override(Ext.Panel, {
     }
 });
 
+//overridden b/c if you try to set the value of a combo prior to store loading, it will display
+//the raw value, not display value
+Ext.override(LABKEY.ext.ComboBox, {
+    setValue: function(v){
+        if(this.store && !this.store.fields){
+            this.initialValue = v;
+        }
+
+        LABKEY.ext.ComboBox.superclass.setValue.call(this, v);
+    }
+});
+
+
 //overridden b/c readOnly has no effect on checkboxes and radios.  this will disable the element, making it truly read only
 Ext.override(Ext.form.Checkbox, {
     setReadOnly: function(val){
@@ -85,3 +98,117 @@ Ext.override(Ext.form.Checkbox, {
         this.setDisabled(val);
     }
 });
+
+Ext.override(Ext.data.Store, {
+    add : function(records) {
+        var i, len, record, index;
+
+        records = [].concat(records);
+        if (records.length < 1) {
+            return;
+        }
+
+        for (i = 0, len = records.length; i < len; i++) {
+            record = records[i];
+
+            record.join(this);
+
+            if (record.dirty || record.phantom) {
+                this.modified.push(record);
+            }
+        }
+
+        index = this.data.length;
+        this.data.addAll(records);
+
+        if (this.snapshot) {
+            this.snapshot.addAll(records);
+        }
+
+        this.fireEvent('add', this, records, index);
+    },
+    insert : function(index, records) {
+        var i, len, record;
+
+        records = [].concat(records);
+        for (i = 0, len = records.length; i < len; i++) {
+            record = records[i];
+
+            this.data.insert(index + i, record);
+            record.join(this);
+
+            if (record.dirty || record.phantom) {
+                this.modified.push(record);
+            }
+        }
+
+        if (this.snapshot) {
+            this.snapshot.addAll(records);
+        }
+
+        this.fireEvent('add', this, records, index);
+    }
+});
+
+//only overriden to remove setting a default nullCaption.  this is moved to the combo tpl
+Ext.override(LABKEY.ext.Store, {
+    onLoad : function(store, records, options) {
+        this.isLoading = false;
+
+        //remeber the name of the id column
+        this.idName = this.reader.meta.id;
+
+        if(this.nullRecord)
+        {
+            //create an extra record with a blank id column
+            //and the null caption in the display column
+            var data = {};
+            data[this.reader.meta.id] = "";
+            data[this.nullRecord.displayColumn] = this.nullRecord.nullCaption || this.nullCaption || null;
+
+            var recordConstructor = Ext.data.Record.create(this.reader.meta.fields);
+            var record = new recordConstructor(data, -1);
+            this.insert(0, record);
+        }
+    }
+});
+
+//Ext.override(Ext.form.ComboBox, {
+//    doQuery : function(q, forceAll){
+//        q = Ext.isEmpty(q) ? '' : q;
+//        var qe = {
+//            query: q,
+//            forceAll: forceAll,
+//            combo: this,
+//            cancel:false
+//        };
+//        if(this.fireEvent('beforequery', qe)===false || qe.cancel){
+//            return false;
+//        }
+//        q = qe.query;
+//        forceAll = qe.forceAll;
+//        if(forceAll === true || (q.length >= this.minChars)){
+//            if(this.lastQuery !== q){
+//                this.lastQuery = q;
+//                if(this.mode == 'local'){
+//                    this.selectedIndex = -1;
+//                    if(forceAll){
+//                        this.store.clearFilter();
+//                    }else{
+//                        this.store.filter(this.displayField, q, this.allowAnyValue, this.caseSensitive);
+//                    }
+//                    this.onLoad();
+//                }else{
+//                    this.store.baseParams[this.queryParam] = q;
+//                    this.store.load({
+//                        params: this.getParams(q)
+//                    });
+//                    this.expand();
+//                }
+//            }else{
+//                this.selectedIndex = -1;
+//                this.onLoad();
+//            }
+//        }
+//    }
+//});

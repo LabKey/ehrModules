@@ -3,7 +3,7 @@
         <tables xmlns="http://labkey.org/data/xml">
             <table tableName="treatment_order" tableDbType="TABLE">
                 <!--<tableUrl>/query/detailsQueryRow.view?schemaName=study&amp;query.queryName=treatment_order&amp;lsid=${lsid}</tableUrl>-->
-                <tableUrl>/EHR/treatmentDetails.view?key=${objectid}</tableUrl>
+                <tableUrl>/EHR/treatmentDetails.view?key=${lsid}</tableUrl>
                 <!--<insertUrl>/ehr/manageRecord.view?schemaName=study&amp;queryName=Treatment Order&amp;keyField=lsid&amp;</insertUrl>-->
                 <!--<updateUrl>/ehr/manageRecord.view?schemaName=study&amp;queryName=Treatment Order&amp;keyField=lsid&amp;key=${lsid}</updateUrl>-->
                 <insertUrl />
@@ -21,16 +21,20 @@
                     <column columnName="date">
                         <datatype>timestamp</datatype>
                         <columnTitle>Begin Date</columnTitle>
-                        <formatString>yyyy-MM-dd</formatString>
+                        <formatString>yyyy-MM-dd HH:mm</formatString>
                     </column>
                     <column columnName="enddate">
                         <datatype>timestamp</datatype>
                         <columnTitle>End Date</columnTitle>
                         <isHidden>false</isHidden>
-                        <formatString>yyyy-MM-dd</formatString>
+                        <formatString>yyyy-MM-dd HH:mm</formatString>
+                    </column>
+                    <column columnName="meaning">
+                        <columnTitle>Short Name</columnTitle>
                     </column>
                     <column columnName="performedby">
-                        <isHidden>true</isHidden>
+                        <isHidden>false</isHidden>
+                        <columnTitle>Ordered By</columnTitle>
                     </column>
                     <column columnName="lastAdministered">
                         <shownInInsertView>false</shownInInsertView>
@@ -43,7 +47,7 @@
                     <column columnName="code">
                         <datatype>varchar</datatype>
                         <nullable>false</nullable>
-                        <columnTitle>SNOMED Code</columnTitle>
+                        <columnTitle>Treatment</columnTitle>
                         <fk>
                             <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                             <fkDbSchema>ehr_lookups</fkDbSchema>
@@ -87,6 +91,7 @@
                             <fkTable>routes</fkTable>
                             <fkColumnName>route</fkColumnName>
                         </fk>
+                        <displayWidth>40</displayWidth>
                     </column>
                     <column columnName="vol_units">
                         <columnTitle>Volume Units</columnTitle>
@@ -114,9 +119,24 @@
                         <fk>
                             <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                             <fkDbSchema>ehr_lookups</fkDbSchema>
+                            <fkTable>amount_units</fkTable>
+                            <fkColumnName>unit</fkColumnName>
+                        </fk>
+                    </column>
+                    <column columnName="amount">
+                        <columnTitle>Amount To Give</columnTitle>
+                    </column>
+                    <column columnName="dosage_units">
+                        <columnTitle>Dosage Units</columnTitle>
+                        <fk>
+                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
+                            <fkDbSchema>ehr_lookups</fkDbSchema>
                             <fkTable>dosage_units</fkTable>
                             <fkColumnName>unit</fkColumnName>
                         </fk>
+                    </column>
+                    <column columnName="userid">
+                        <columnTitle>Ordered By</columnTitle>
                     </column>
                 </columns>
             </table>

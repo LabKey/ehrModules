@@ -1,343 +1,921 @@
 <ns:tables xmlns:ns="http://labkey.org/data/xml">
-  <ns:table tableName="sopbycategory" tableDbType="TABLE">
-    <ns:pkColumnName>rowid</ns:pkColumnName>
-    <ns:columns>
-      <ns:column columnName="rowid">
-        <ns:datatype>serial</ns:datatype>
-        <ns:isAutoInc>true</ns:isAutoInc>
-        <ns:scale>10</ns:scale>
-      </ns:column>
-      <ns:column columnName="sop_id">
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>255</ns:scale>
-      </ns:column>
-      <ns:column columnName="category">
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>255</ns:scale>
-      </ns:column>
-    </ns:columns>
-  </ns:table>
   <ns:table tableName="employeecategory" tableDbType="TABLE">
+    <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr_compliancedb&amp;query.queryName=employeecategory&amp;categoryname=${categoryname}</ns:tableUrl>
     <ns:pkColumnName>categoryname</ns:pkColumnName>
+    <ns:tableTitle>Employee Categories</ns:tableTitle>
     <ns:columns>
       <ns:column columnName="categoryname">
         <ns:datatype>varchar</ns:datatype>
-        <ns:scale>255</ns:scale>
-      </ns:column>
-    </ns:columns>
-  </ns:table>
-  <ns:table tableName="requirementspercategory" tableDbType="TABLE">
-    <ns:pkColumnName>rowid</ns:pkColumnName>
-    <ns:columns>
-      <ns:column columnName="rowid">
-        <ns:datatype>serial</ns:datatype>
-        <ns:isAutoInc>true</ns:isAutoInc>
-        <ns:scale>10</ns:scale>
-      </ns:column>
-      <ns:column columnName="requirementname">
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>255</ns:scale>
-      </ns:column>
-      <ns:column columnName="category">
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>255</ns:scale>
-      </ns:column>
-      <ns:column columnName="unit">
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>255</ns:scale>
-      </ns:column>
-    </ns:columns>
-  </ns:table>
-  <ns:table tableName="requirementsperemployee" tableDbType="TABLE">
-    <ns:pkColumnName>rowid</ns:pkColumnName>
-    <ns:columns>
-      <ns:column columnName="rowid">
-        <ns:datatype>serial</ns:datatype>
-        <ns:isAutoInc>true</ns:isAutoInc>
-        <ns:scale>10</ns:scale>
-      </ns:column>
-      <ns:column columnName="employeeid">
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>255</ns:scale>
-      </ns:column>
-      <ns:column columnName="requirementname">
-        <ns:datatype>varchar</ns:datatype>
+        <ns:isKeyField>true</ns:isKeyField>
+        <ns:columnTitle>Category Name</ns:columnTitle>
         <ns:scale>255</ns:scale>
       </ns:column>
     </ns:columns>
   </ns:table>
   <ns:table tableName="employeelocations" tableDbType="TABLE">
+    <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr_compliancedb&amp;query.queryName=employeelocations&amp;location=${location}</ns:tableUrl>
+    <ns:tableTitle>Employee Locations</ns:tableTitle>
     <ns:pkColumnName>location</ns:pkColumnName>
     <ns:columns>
       <ns:column columnName="location">
         <ns:datatype>varchar</ns:datatype>
-        <ns:scale>255</ns:scale>
+        <ns:isKeyField>true</ns:isKeyField>
+        <ns:scale>200</ns:scale>
+        <ns:columnTitle>Location</ns:columnTitle>
       </ns:column>
     </ns:columns>
   </ns:table>
-  <ns:table tableName="wnprc_units" tableDbType="TABLE">
+  <ns:table tableName="unit_names" tableDbType="TABLE">
+    <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr_compliancedb&amp;query.queryName=unit_names&amp;unit=${unit}</ns:tableUrl>
+    <ns:tableTitle>Unit Names</ns:tableTitle>
     <ns:pkColumnName>unit</ns:pkColumnName>
     <ns:columns>
       <ns:column columnName="unit">
         <ns:datatype>varchar</ns:datatype>
-        <ns:scale>255</ns:scale>
-      </ns:column>
-    </ns:columns>
-  </ns:table>
-  <ns:table tableName="requirements" tableDbType="TABLE">
-    <ns:pkColumnName>requirementname</ns:pkColumnName>
-    <ns:columns>
-      <ns:column columnName="requirementname">
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>255</ns:scale>
-      </ns:column>
-      <ns:column columnName="type">
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>255</ns:scale>
-      </ns:column>
-      <ns:column columnName="expireperiod">
-        <ns:datatype>int4</ns:datatype>
-        <ns:scale>10</ns:scale>
-      </ns:column>
-      <ns:column columnName="required">
-        <ns:nullable>true</ns:nullable>
-        <ns:datatype>bool</ns:datatype>
-        <ns:scale>1</ns:scale>
-      </ns:column>
-      <ns:column columnName="wnprc_only">
-        <ns:nullable>true</ns:nullable>
-        <ns:datatype>bool</ns:datatype>
-        <ns:scale>1</ns:scale>
-      </ns:column>
-      <ns:column columnName="access">
-        <ns:nullable>true</ns:nullable>
-        <ns:datatype>bool</ns:datatype>
-        <ns:scale>1</ns:scale>
-      </ns:column>
-      <ns:column columnName="animals">
-        <ns:nullable>true</ns:nullable>
-        <ns:datatype>bool</ns:datatype>
-        <ns:scale>1</ns:scale>
-      </ns:column>
-      <ns:column columnName="tissues">
-        <ns:nullable>true</ns:nullable>
-        <ns:datatype>bool</ns:datatype>
-        <ns:scale>1</ns:scale>
-      </ns:column>
-    </ns:columns>
-  </ns:table>
-  <ns:table tableName="sops" tableDbType="TABLE">
-    <ns:pkColumnName>sopid</ns:pkColumnName>
-    <ns:columns>
-      <ns:column columnName="sopid">
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>255</ns:scale>
-      </ns:column>
-      <ns:column columnName="name">
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>255</ns:scale>
-      </ns:column>
-      <ns:column columnName="pdf">
-        <ns:nullable>true</ns:nullable>
-        <ns:datatype>bytea</ns:datatype>
-        <ns:scale>2147483647</ns:scale>
-      </ns:column>
-    </ns:columns>
-  </ns:table>
-  <ns:table tableName="completiondates" tableDbType="TABLE">
-    <ns:pkColumnName>rowid</ns:pkColumnName>
-    <ns:columns>
-      <ns:column columnName="rowid">
-        <ns:datatype>serial</ns:datatype>
-        <ns:isAutoInc>true</ns:isAutoInc>
-        <ns:scale>10</ns:scale>
-      </ns:column>
-      <ns:column columnName="employeeid">
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>255</ns:scale>
-      </ns:column>
-      <ns:column columnName="requirementname">
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>255</ns:scale>
-      </ns:column>
-      <ns:column columnName="date">
-        <ns:nullable>true</ns:nullable>
-        <ns:datatype>timestamp</ns:datatype>
-        <ns:scale>29</ns:scale>
-      </ns:column>
-      <ns:column columnName="result">
-        <ns:nullable>true</ns:nullable>
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>500</ns:scale>
-      </ns:column>
-      <ns:column columnName="comment">
-        <ns:nullable>true</ns:nullable>
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>4000</ns:scale>
-      </ns:column>
-    </ns:columns>
-  </ns:table>
-  <ns:table tableName="employeerequirementexemptions" tableDbType="TABLE">
-    <ns:pkColumnName>rowid</ns:pkColumnName>
-    <ns:columns>
-      <ns:column columnName="rowid">
-        <ns:datatype>serial</ns:datatype>
-        <ns:isAutoInc>true</ns:isAutoInc>
-        <ns:scale>10</ns:scale>
-      </ns:column>
-      <ns:column columnName="employeeid">
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>255</ns:scale>
-      </ns:column>
-      <ns:column columnName="requirementname">
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>255</ns:scale>
+        <ns:isKeyField>true</ns:isKeyField>
+        <ns:scale>100</ns:scale>
+        <ns:columnTitle>Unit</ns:columnTitle>
       </ns:column>
     </ns:columns>
   </ns:table>
   <ns:table tableName="requirementtype" tableDbType="TABLE">
+    <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr_compliancedb&amp;query.queryName=requirementtype&amp;type=${type}</ns:tableUrl>
+    <ns:tableTitle>Requirement Types</ns:tableTitle>
     <ns:pkColumnName>type</ns:pkColumnName>
     <ns:columns>
       <ns:column columnName="type">
         <ns:datatype>varchar</ns:datatype>
-        <ns:scale>255</ns:scale>
+        <ns:isKeyField>true</ns:isKeyField>
+        <ns:scale>100</ns:scale>
+        <ns:columnTitle>Type</ns:columnTitle>
       </ns:column>
     </ns:columns>
   </ns:table>
   <ns:table tableName="employeetypes" tableDbType="TABLE">
+    <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr_compliancedb&amp;query.queryName=employeetypes&amp;type=${type}</ns:tableUrl>
+    <ns:tableTitle>Employee Types</ns:tableTitle>
     <ns:pkColumnName>type</ns:pkColumnName>
     <ns:columns>
       <ns:column columnName="type">
         <ns:datatype>varchar</ns:datatype>
-        <ns:scale>255</ns:scale>
+        <ns:isKeyField>true</ns:isKeyField>
+        <ns:scale>100</ns:scale>
+        <ns:columnTitle>Type</ns:columnTitle>
       </ns:column>
     </ns:columns>
   </ns:table>
+
   <ns:table tableName="employees" tableDbType="TABLE">
+    <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr_compliancedb&amp;query.queryName=employees&amp;employeeid=${employeeid}</ns:tableUrl>
+    <ns:tableTitle>Employees</ns:tableTitle>
     <ns:pkColumnName>employeeid</ns:pkColumnName>
     <ns:columns>
       <ns:column columnName="employeeid">
         <ns:datatype>varchar</ns:datatype>
-        <ns:scale>255</ns:scale>
+        <ns:isKeyField>true</ns:isKeyField>
+        <ns:scale>100</ns:scale>
+        <ns:columnTitle>Employee Id</ns:columnTitle>
       </ns:column>
       <ns:column columnName="lastname">
         <ns:datatype>varchar</ns:datatype>
-        <ns:scale>255</ns:scale>
+        <ns:scale>100</ns:scale>
+        <ns:columnTitle>Last Name</ns:columnTitle>
       </ns:column>
       <ns:column columnName="firstname">
         <ns:nullable>true</ns:nullable>
         <ns:datatype>varchar</ns:datatype>
-        <ns:scale>255</ns:scale>
+        <ns:scale>100</ns:scale>
+        <ns:columnTitle>First Name</ns:columnTitle>
       </ns:column>
       <ns:column columnName="email">
         <ns:nullable>true</ns:nullable>
         <ns:datatype>varchar</ns:datatype>
-        <ns:scale>255</ns:scale>
+        <ns:scale>100</ns:scale>
+        <ns:columnTitle>Email</ns:columnTitle>
       </ns:column>
       <ns:column columnName="email2">
         <ns:nullable>true</ns:nullable>
         <ns:datatype>varchar</ns:datatype>
-        <ns:scale>255</ns:scale>
+        <ns:scale>100</ns:scale>
+        <ns:columnTitle>Alternate Email</ns:columnTitle>
       </ns:column>
       <ns:column columnName="personid">
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>int4</ns:datatype>
-        <ns:scale>10</ns:scale>
+        <ns:datatype>integer</ns:datatype>
+        <ns:scale>50</ns:scale>
+        <ns:columnTitle>Person Id</ns:columnTitle>
       </ns:column>
       <ns:column columnName="type">
         <ns:nullable>true</ns:nullable>
         <ns:datatype>varchar</ns:datatype>
-        <ns:scale>255</ns:scale>
+        <ns:scale>100</ns:scale>
+        <ns:columnTitle>Type</ns:columnTitle>
+        <ns:fk>
+            <ns:fkDbSchema>ehr_compliancedb</ns:fkDbSchema>
+            <ns:fkTable>employeetypes</ns:fkTable>
+            <ns:fkColumnName>type</ns:fkColumnName>
+        </ns:fk>
       </ns:column>
       <ns:column columnName="majorudds">
         <ns:nullable>true</ns:nullable>
         <ns:datatype>varchar</ns:datatype>
-        <ns:scale>255</ns:scale>
+        <ns:scale>100</ns:scale>
+        <ns:columnTitle>Major UDDS</ns:columnTitle>
       </ns:column>
       <ns:column columnName="title">
         <ns:nullable>true</ns:nullable>
         <ns:datatype>varchar</ns:datatype>
-        <ns:scale>255</ns:scale>
+        <ns:scale>200</ns:scale>
+        <ns:columnTitle>Title</ns:columnTitle>
+      </ns:column>
+      <ns:column columnName="category">
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>200</ns:scale>
+        <ns:columnTitle>Category</ns:columnTitle>
+        <ns:fk>
+            <ns:fkDbSchema>ehr_compliancedb</ns:fkDbSchema>
+            <ns:fkTable>employeecategory</ns:fkTable>
+            <ns:fkColumnName>categoryname</ns:fkColumnName>
+        </ns:fk>
       </ns:column>
       <ns:column columnName="unit">
         <ns:nullable>true</ns:nullable>
         <ns:datatype>varchar</ns:datatype>
-        <ns:scale>255</ns:scale>
+        <ns:scale>100</ns:scale>
+        <ns:columnTitle>Unit</ns:columnTitle>
+        <ns:fk>
+            <ns:fkDbSchema>ehr_compliancedb</ns:fkDbSchema>
+            <ns:fkTable>unit_names</ns:fkTable>
+            <ns:fkColumnName>unit</ns:fkColumnName>
+        </ns:fk>
       </ns:column>
       <ns:column columnName="supervisor">
         <ns:nullable>true</ns:nullable>
         <ns:datatype>varchar</ns:datatype>
-        <ns:scale>255</ns:scale>
+        <ns:scale>100</ns:scale>
+        <ns:columnTitle>Supervisor</ns:columnTitle>
       </ns:column>
       <ns:column columnName="emergencycontact">
         <ns:nullable>true</ns:nullable>
         <ns:datatype>varchar</ns:datatype>
-        <ns:scale>255</ns:scale>
+        <ns:scale>100</ns:scale>
+        <ns:columnTitle>Emergency Contact</ns:columnTitle>
       </ns:column>
       <ns:column columnName="emergencycontactdaytimephone">
         <ns:nullable>true</ns:nullable>
         <ns:datatype>varchar</ns:datatype>
-        <ns:scale>255</ns:scale>
+        <ns:scale>100</ns:scale>
+        <ns:columnTitle>Emergency Contact Daytime Phone</ns:columnTitle>
       </ns:column>
       <ns:column columnName="emergencycontactnighttimephone">
         <ns:nullable>true</ns:nullable>
         <ns:datatype>varchar</ns:datatype>
-        <ns:scale>255</ns:scale>
+        <ns:scale>100</ns:scale>
+        <ns:columnTitle>Emergency Contact Nighttime Phone</ns:columnTitle>
       </ns:column>
       <ns:column columnName="homephone">
         <ns:nullable>true</ns:nullable>
         <ns:datatype>varchar</ns:datatype>
-        <ns:scale>255</ns:scale>
+        <ns:scale>100</ns:scale>
+        <ns:columnTitle>Home Phone</ns:columnTitle>
       </ns:column>
       <ns:column columnName="officephone">
         <ns:nullable>true</ns:nullable>
         <ns:datatype>varchar</ns:datatype>
-        <ns:scale>255</ns:scale>
+        <ns:scale>100</ns:scale>
+        <ns:columnTitle>Office Phone</ns:columnTitle>
       </ns:column>
       <ns:column columnName="cellphone">
         <ns:nullable>true</ns:nullable>
         <ns:datatype>varchar</ns:datatype>
-        <ns:scale>255</ns:scale>
+        <ns:scale>100</ns:scale>
+        <ns:columnTitle>Cell Phone</ns:columnTitle>
       </ns:column>
       <ns:column columnName="location">
         <ns:nullable>true</ns:nullable>
         <ns:datatype>varchar</ns:datatype>
-        <ns:scale>255</ns:scale>
+        <ns:scale>100</ns:scale>
+        <ns:columnTitle>Location</ns:columnTitle>
+        <ns:fk>
+            <ns:fkDbSchema>ehr_compliancedb</ns:fkDbSchema>
+            <ns:fkTable>employeelocations</ns:fkTable>
+            <ns:fkColumnName>location</ns:fkColumnName>
+        </ns:fk>
       </ns:column>
       <ns:column columnName="startdate">
         <ns:nullable>true</ns:nullable>
         <ns:datatype>timestamp</ns:datatype>
         <ns:scale>29</ns:scale>
+        <ns:columnTitle>Start Date</ns:columnTitle>
       </ns:column>
       <ns:column columnName="enddate">
         <ns:nullable>true</ns:nullable>
         <ns:datatype>timestamp</ns:datatype>
         <ns:scale>29</ns:scale>
+        <ns:columnTitle>End Date</ns:columnTitle>
       </ns:column>
       <ns:column columnName="notes">
         <ns:nullable>true</ns:nullable>
         <ns:datatype>varchar</ns:datatype>
         <ns:scale>255</ns:scale>
+        <ns:columnTitle>Notes</ns:columnTitle>
       </ns:column>
       <ns:column columnName="barrier">
         <ns:nullable>true</ns:nullable>
         <ns:datatype>bool</ns:datatype>
-        <ns:scale>1</ns:scale>
+        <ns:scale>20</ns:scale>
+        <ns:columnTitle>Barrier Access?</ns:columnTitle>
       </ns:column>
       <ns:column columnName="animals">
         <ns:nullable>true</ns:nullable>
         <ns:datatype>bool</ns:datatype>
-        <ns:scale>1</ns:scale>
+        <ns:columnTitle>Contacts Animals?</ns:columnTitle>
+        <ns:scale>20</ns:scale>
       </ns:column>
       <ns:column columnName="tissue">
         <ns:nullable>true</ns:nullable>
         <ns:datatype>bool</ns:datatype>
-        <ns:scale>1</ns:scale>
+        <ns:scale>20</ns:scale>
+        <ns:columnTitle>Handles Tissue?</ns:columnTitle>
       </ns:column>
-      <ns:column columnName="iswnprc">
+      <ns:column columnName="isemployee">
         <ns:nullable>true</ns:nullable>
         <ns:datatype>bool</ns:datatype>
-        <ns:scale>1</ns:scale>
+        <ns:scale>20</ns:scale>
+        <ns:columnTitle>Is Center Employee?</ns:columnTitle>
+      </ns:column>
+      <ns:column columnName="container">
+        <ns:isUserEditable>false</ns:isUserEditable>
+        <ns:datatype>entityid</ns:datatype>
+        <ns:scale>36</ns:scale>
+        <ns:isHidden>true</ns:isHidden>
+        <ns:fk>
+          <ns:fkDbSchema>core</ns:fkDbSchema>
+          <ns:fkTable>containers</ns:fkTable>
+          <ns:fkColumnName>entityid</ns:fkColumnName>
+        </ns:fk>
+      </ns:column>
+      <ns:column columnName="createdby">
+        <ns:isUserEditable>false</ns:isUserEditable>
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>userid</ns:datatype>
+        <ns:scale>4</ns:scale>
+        <ns:isHidden>true</ns:isHidden>
+      </ns:column>
+      <ns:column columnName="created">
+        <ns:isUserEditable>false</ns:isUserEditable>
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>timestamp</ns:datatype>
+        <ns:scale>29</ns:scale>
+        <ns:isHidden>true</ns:isHidden>
+      </ns:column>
+      <ns:column columnName="modifiedby">
+        <ns:isUserEditable>false</ns:isUserEditable>
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>userid</ns:datatype>
+        <ns:scale>4</ns:scale>
+        <ns:isHidden>true</ns:isHidden>
+      </ns:column>
+      <ns:column columnName="modified">
+        <ns:isUserEditable>false</ns:isUserEditable>
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>timestamp</ns:datatype>
+        <ns:scale>29</ns:scale>
+        <ns:isHidden>true</ns:isHidden>
+      </ns:column>
+    </ns:columns>
+  </ns:table>
+  <ns:table tableName="requirements" tableDbType="TABLE">
+    <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr_compliancedb&amp;query.queryName=requirements&amp;requirementname=${requirementname}</ns:tableUrl>
+    <ns:tableTitle>Requirements</ns:tableTitle>
+    <ns:pkColumnName>requirementname</ns:pkColumnName>
+    <ns:columns>
+      <ns:column columnName="requirementname">
+        <ns:datatype>varchar</ns:datatype>
+        <ns:isKeyField>true</ns:isKeyField>
+        <ns:scale>200</ns:scale>
+        <ns:columnTitle>Requirement Name</ns:columnTitle>
+      </ns:column>
+      <ns:column columnName="type">
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>100</ns:scale>
+        <ns:columnTitle>Type</ns:columnTitle>
+        <ns:fk>
+            <ns:fkDbSchema>ehr_compliancedb</ns:fkDbSchema>
+            <ns:fkTable>employeetypes</ns:fkTable>
+            <ns:fkColumnName>type</ns:fkColumnName>
+        </ns:fk>
+      </ns:column>
+      <ns:column columnName="expireperiod">
+        <ns:datatype>int4</ns:datatype>
+        <ns:scale>50</ns:scale>
+        <ns:columnTitle>Expire Period (Months)</ns:columnTitle>
+      </ns:column>
+      <ns:column columnName="required">
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>bool</ns:datatype>
+        <ns:scale>20</ns:scale>
+        <ns:columnTitle>Required For Everyone?</ns:columnTitle>
+      </ns:column>
+      <ns:column columnName="access">
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>bool</ns:datatype>
+        <ns:scale>20</ns:scale>
+        <ns:columnTitle>Required If Has Barrier Access?</ns:columnTitle>
+      </ns:column>
+      <ns:column columnName="animals">
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>bool</ns:datatype>
+        <ns:scale>20</ns:scale>
+        <ns:columnTitle>Required If Contacts Animals?</ns:columnTitle>
+      </ns:column>
+      <ns:column columnName="tissues">
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>bool</ns:datatype>
+        <ns:scale>20</ns:scale>
+        <ns:columnTitle>Required If Handles Tissue?</ns:columnTitle>
+      </ns:column>
+      <ns:column columnName="container">
+        <ns:isUserEditable>false</ns:isUserEditable>
+        <ns:datatype>entityid</ns:datatype>
+        <ns:scale>36</ns:scale>
+        <ns:isHidden>true</ns:isHidden>
+        <ns:fk>
+          <ns:fkDbSchema>core</ns:fkDbSchema>
+          <ns:fkTable>containers</ns:fkTable>
+          <ns:fkColumnName>entityid</ns:fkColumnName>
+        </ns:fk>
+      </ns:column>
+      <ns:column columnName="createdby">
+        <ns:isUserEditable>false</ns:isUserEditable>
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>userid</ns:datatype>
+        <ns:scale>4</ns:scale>
+        <ns:isHidden>true</ns:isHidden>
+      </ns:column>
+      <ns:column columnName="created">
+        <ns:isUserEditable>false</ns:isUserEditable>
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>timestamp</ns:datatype>
+        <ns:scale>29</ns:scale>
+        <ns:isHidden>true</ns:isHidden>
+      </ns:column>
+      <ns:column columnName="modifiedby">
+        <ns:isUserEditable>false</ns:isUserEditable>
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>userid</ns:datatype>
+        <ns:scale>4</ns:scale>
+        <ns:isHidden>true</ns:isHidden>
+      </ns:column>
+      <ns:column columnName="modified">
+        <ns:isUserEditable>false</ns:isUserEditable>
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>timestamp</ns:datatype>
+        <ns:scale>29</ns:scale>
+        <ns:isHidden>true</ns:isHidden>
+      </ns:column>
+    </ns:columns>
+  </ns:table>
+
+  <ns:table tableName="requirementspercategory" tableDbType="TABLE">
+    <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr_compliancedb&amp;query.queryName=requirementspercategory&amp;rowid=${rowid}</ns:tableUrl>
+    <ns:tableTitle>Requirements Per Employee Category</ns:tableTitle>
+    <ns:pkColumnName>rowid</ns:pkColumnName>
+    <ns:columns>
+      <ns:column columnName="rowid">
+        <ns:datatype>serial</ns:datatype>
+        <ns:isAutoInc>true</ns:isAutoInc>
+        <ns:isKeyField>true</ns:isKeyField>
+        <ns:columnTitle>Key</ns:columnTitle>
+        <ns:scale>10</ns:scale>
+      </ns:column>
+      <ns:column columnName="requirementname">
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>100</ns:scale>
+        <ns:columnTitle>Requirement Name</ns:columnTitle>
+        <ns:fk>
+            <ns:fkDbSchema>ehr_compliancedb</ns:fkDbSchema>
+            <ns:fkTable>requirements</ns:fkTable>
+            <ns:fkColumnName>requirementname</ns:fkColumnName>
+        </ns:fk>
+      </ns:column>
+      <ns:column columnName="category">
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>100</ns:scale>
+        <ns:columnTitle>Category</ns:columnTitle>
+        <ns:fk>
+            <ns:fkDbSchema>ehr_compliancedb</ns:fkDbSchema>
+            <ns:fkTable>employeecategory</ns:fkTable>
+            <ns:fkColumnName>categoryname</ns:fkColumnName>
+        </ns:fk>
+      </ns:column>
+      <ns:column columnName="unit">
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>100</ns:scale>
+        <ns:columnTitle>Unit</ns:columnTitle>
+        <ns:fk>
+            <ns:fkDbSchema>ehr_compliancedb</ns:fkDbSchema>
+            <ns:fkTable>unit_names</ns:fkTable>
+            <ns:fkColumnName>unit</ns:fkColumnName>
+        </ns:fk>
+      </ns:column>
+      <ns:column columnName="container">
+        <ns:isUserEditable>false</ns:isUserEditable>
+        <ns:datatype>entityid</ns:datatype>
+        <ns:scale>36</ns:scale>
+        <ns:isHidden>true</ns:isHidden>
+        <ns:fk>
+          <ns:fkDbSchema>core</ns:fkDbSchema>
+          <ns:fkTable>containers</ns:fkTable>
+          <ns:fkColumnName>entityid</ns:fkColumnName>
+        </ns:fk>
+      </ns:column>
+      <ns:column columnName="createdby">
+        <ns:isUserEditable>false</ns:isUserEditable>
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>userid</ns:datatype>
+        <ns:scale>4</ns:scale>
+        <ns:isHidden>true</ns:isHidden>
+      </ns:column>
+      <ns:column columnName="created">
+        <ns:isUserEditable>false</ns:isUserEditable>
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>timestamp</ns:datatype>
+        <ns:scale>29</ns:scale>
+        <ns:isHidden>true</ns:isHidden>
+      </ns:column>
+      <ns:column columnName="modifiedby">
+        <ns:isUserEditable>false</ns:isUserEditable>
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>userid</ns:datatype>
+        <ns:scale>4</ns:scale>
+        <ns:isHidden>true</ns:isHidden>
+      </ns:column>
+      <ns:column columnName="modified">
+        <ns:isUserEditable>false</ns:isUserEditable>
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>timestamp</ns:datatype>
+        <ns:scale>29</ns:scale>
+        <ns:isHidden>true</ns:isHidden>
+      </ns:column>
+    </ns:columns>
+  </ns:table>
+  <ns:table tableName="requirementsperemployee" tableDbType="TABLE">
+    <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr_compliancedb&amp;query.queryName=requirementsperemployee&amp;rowid=${rowid}</ns:tableUrl>
+    <ns:tableTitle>Requirements Per Employee</ns:tableTitle>
+    <ns:pkColumnName>rowid</ns:pkColumnName>
+    <ns:columns>
+      <ns:column columnName="rowid">
+        <ns:datatype>serial</ns:datatype>
+        <ns:isAutoInc>true</ns:isAutoInc>
+        <ns:isKeyField>true</ns:isKeyField>
+        <ns:scale>10</ns:scale>
+        <ns:columnTitle>Key</ns:columnTitle>
+      </ns:column>
+      <ns:column columnName="employeeid">
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>200</ns:scale>
+        <ns:columnTitle>Employee Id</ns:columnTitle>
+        <ns:fk>
+            <ns:fkDbSchema>ehr_compliancedb</ns:fkDbSchema>
+            <ns:fkTable>employees</ns:fkTable>
+            <ns:fkColumnName>employeeid</ns:fkColumnName>
+        </ns:fk>
+      </ns:column>
+      <ns:column columnName="requirementname">
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>100</ns:scale>
+        <ns:columnTitle>Requirement Name</ns:columnTitle>
+        <ns:fk>
+            <ns:fkDbSchema>ehr_compliancedb</ns:fkDbSchema>
+            <ns:fkTable>requirements</ns:fkTable>
+            <ns:fkColumnName>requirementname</ns:fkColumnName>
+        </ns:fk>
+      </ns:column>
+      <ns:column columnName="container">
+        <ns:isUserEditable>false</ns:isUserEditable>
+        <ns:datatype>entityid</ns:datatype>
+        <ns:scale>36</ns:scale>
+        <ns:isHidden>true</ns:isHidden>
+        <ns:fk>
+          <ns:fkDbSchema>core</ns:fkDbSchema>
+          <ns:fkTable>containers</ns:fkTable>
+          <ns:fkColumnName>entityid</ns:fkColumnName>
+        </ns:fk>
+      </ns:column>
+      <ns:column columnName="createdby">
+        <ns:isUserEditable>false</ns:isUserEditable>
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>userid</ns:datatype>
+        <ns:scale>4</ns:scale>
+        <ns:isHidden>true</ns:isHidden>
+      </ns:column>
+      <ns:column columnName="created">
+        <ns:isUserEditable>false</ns:isUserEditable>
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>timestamp</ns:datatype>
+        <ns:scale>29</ns:scale>
+        <ns:isHidden>true</ns:isHidden>
+      </ns:column>
+      <ns:column columnName="modifiedby">
+        <ns:isUserEditable>false</ns:isUserEditable>
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>userid</ns:datatype>
+        <ns:scale>4</ns:scale>
+        <ns:isHidden>true</ns:isHidden>
+      </ns:column>
+      <ns:column columnName="modified">
+        <ns:isUserEditable>false</ns:isUserEditable>
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>timestamp</ns:datatype>
+        <ns:scale>29</ns:scale>
+        <ns:isHidden>true</ns:isHidden>
+      </ns:column>
+    </ns:columns>
+  </ns:table>
+  <ns:table tableName="completiondates" tableDbType="TABLE">
+    <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr_compliancedb&amp;query.queryName=completiondates&amp;rowid=${rowid}</ns:tableUrl>
+    <ns:tableTitle>Dates Employees Completed Requirements</ns:tableTitle>
+    <ns:pkColumnName>rowid</ns:pkColumnName>
+    <ns:columns>
+      <ns:column columnName="rowid">
+        <ns:datatype>serial</ns:datatype>
+        <ns:isAutoInc>true</ns:isAutoInc>
+        <ns:isKeyField>true</ns:isKeyField>
+        <ns:columnTitle>Key</ns:columnTitle>
+        <ns:scale>10</ns:scale>
+      </ns:column>
+      <ns:column columnName="employeeid">
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>200</ns:scale>
+        <ns:columnTitle>Employee Id</ns:columnTitle>
+        <ns:fk>
+            <ns:fkDbSchema>ehr_compliancedb</ns:fkDbSchema>
+            <ns:fkTable>employees</ns:fkTable>
+            <ns:fkColumnName>employeeid</ns:fkColumnName>
+        </ns:fk>
+      </ns:column>
+      <ns:column columnName="requirementname">
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>200</ns:scale>
+        <ns:columnTitle>Requirement Name</ns:columnTitle>
+        <ns:fk>
+            <ns:fkDbSchema>ehr_compliancedb</ns:fkDbSchema>
+            <ns:fkTable>requirements</ns:fkTable>
+            <ns:fkColumnName>requirementname</ns:fkColumnName>
+        </ns:fk>
+      </ns:column>
+      <ns:column columnName="date">
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>timestamp</ns:datatype>
+        <ns:scale>29</ns:scale>
+        <ns:columnTitle>Date Completed</ns:columnTitle>
+      </ns:column>
+      <ns:column columnName="result">
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>500</ns:scale>
+        <ns:columnTitle>Result</ns:columnTitle>
+      </ns:column>
+      <ns:column columnName="comment">
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>4000</ns:scale>
+        <ns:columnTitle>Comment</ns:columnTitle>
+      </ns:column>
+      <ns:column columnName="container">
+        <ns:isUserEditable>false</ns:isUserEditable>
+        <ns:datatype>entityid</ns:datatype>
+        <ns:scale>36</ns:scale>
+        <ns:isHidden>true</ns:isHidden>
+        <ns:fk>
+          <ns:fkDbSchema>core</ns:fkDbSchema>
+          <ns:fkTable>containers</ns:fkTable>
+          <ns:fkColumnName>entityid</ns:fkColumnName>
+        </ns:fk>
+      </ns:column>
+      <ns:column columnName="createdby">
+        <ns:isUserEditable>false</ns:isUserEditable>
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>userid</ns:datatype>
+        <ns:scale>4</ns:scale>
+        <ns:isHidden>true</ns:isHidden>
+      </ns:column>
+      <ns:column columnName="created">
+        <ns:isUserEditable>false</ns:isUserEditable>
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>timestamp</ns:datatype>
+        <ns:scale>29</ns:scale>
+        <ns:isHidden>true</ns:isHidden>
+      </ns:column>
+      <ns:column columnName="modifiedby">
+        <ns:isUserEditable>false</ns:isUserEditable>
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>userid</ns:datatype>
+        <ns:scale>4</ns:scale>
+        <ns:isHidden>true</ns:isHidden>
+      </ns:column>
+      <ns:column columnName="modified">
+        <ns:isUserEditable>false</ns:isUserEditable>
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>timestamp</ns:datatype>
+        <ns:scale>29</ns:scale>
+        <ns:isHidden>true</ns:isHidden>
+      </ns:column>
+    </ns:columns>
+  </ns:table>
+  <ns:table tableName="employeerequirementexemptions" tableDbType="TABLE">
+    <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr_compliancedb&amp;query.queryName=employeerequirementexemptions&amp;rowid=${rowid}</ns:tableUrl>
+    <ns:tableTitle>Employee Exemptions to Requirements</ns:tableTitle>
+    <ns:pkColumnName>rowid</ns:pkColumnName>
+    <ns:columns>
+      <ns:column columnName="rowid">
+        <ns:datatype>serial</ns:datatype>
+        <ns:isAutoInc>true</ns:isAutoInc>
+        <ns:isKeyField>true</ns:isKeyField>
+        <ns:scale>10</ns:scale>
+        <ns:columnTitle>Key</ns:columnTitle>
+      </ns:column>
+      <ns:column columnName="employeeid">
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>200</ns:scale>
+        <ns:columnTitle>Employee Id</ns:columnTitle>
+        <ns:fk>
+            <ns:fkDbSchema>ehr_compliancedb</ns:fkDbSchema>
+            <ns:fkTable>employees</ns:fkTable>
+            <ns:fkColumnName>employeeid</ns:fkColumnName>
+        </ns:fk>
+      </ns:column>
+      <ns:column columnName="requirementname">
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>200</ns:scale>
+        <ns:columnTitle>Requirement Name</ns:columnTitle>
+        <ns:fk>
+            <ns:fkDbSchema>ehr_compliancedb</ns:fkDbSchema>
+            <ns:fkTable>requirements</ns:fkTable>
+            <ns:fkColumnName>requirementname</ns:fkColumnName>
+        </ns:fk>
+      </ns:column>
+      <ns:column columnName="container">
+        <ns:isUserEditable>false</ns:isUserEditable>
+        <ns:datatype>entityid</ns:datatype>
+        <ns:scale>36</ns:scale>
+        <ns:isHidden>true</ns:isHidden>
+        <ns:fk>
+          <ns:fkDbSchema>core</ns:fkDbSchema>
+          <ns:fkTable>containers</ns:fkTable>
+          <ns:fkColumnName>entityid</ns:fkColumnName>
+        </ns:fk>
+      </ns:column>
+      <ns:column columnName="createdby">
+        <ns:isUserEditable>false</ns:isUserEditable>
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>userid</ns:datatype>
+        <ns:scale>4</ns:scale>
+        <ns:isHidden>true</ns:isHidden>
+      </ns:column>
+      <ns:column columnName="created">
+        <ns:isUserEditable>false</ns:isUserEditable>
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>timestamp</ns:datatype>
+        <ns:scale>29</ns:scale>
+        <ns:isHidden>true</ns:isHidden>
+      </ns:column>
+      <ns:column columnName="modifiedby">
+        <ns:isUserEditable>false</ns:isUserEditable>
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>userid</ns:datatype>
+        <ns:scale>4</ns:scale>
+        <ns:isHidden>true</ns:isHidden>
+      </ns:column>
+      <ns:column columnName="modified">
+        <ns:isUserEditable>false</ns:isUserEditable>
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>timestamp</ns:datatype>
+        <ns:scale>29</ns:scale>
+        <ns:isHidden>true</ns:isHidden>
+      </ns:column>
+    </ns:columns>
+  </ns:table>
+
+  <ns:table tableName="sops" tableDbType="TABLE">
+    <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr_compliancedb&amp;query.queryName=sops&amp;sopid=${sopid}</ns:tableUrl>
+    <ns:tableTitle>SOPs</ns:tableTitle>
+    <ns:pkColumnName>sopid</ns:pkColumnName>
+    <ns:columns>
+      <ns:column columnName="sopid">
+        <ns:datatype>varchar</ns:datatype>
+        <ns:isKeyField>true</ns:isKeyField>
+        <ns:scale>100</ns:scale>
+        <ns:columnTitle>SOP ID</ns:columnTitle>
+      </ns:column>
+      <ns:column columnName="name">
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>200</ns:scale>
+        <ns:columnTitle>Name</ns:columnTitle>
+      </ns:column>
+      <ns:column columnName="pdf">
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>integer</ns:datatype>
+        <ns:scale>200</ns:scale>
+        <ns:columnTitle>PDF</ns:columnTitle>
+        <ns:fk>
+          <ns:fkDbSchema>exp</ns:fkDbSchema>
+          <ns:fkTable>datas</ns:fkTable>
+          <ns:fkColumnName>rowid</ns:fkColumnName>
+        </ns:fk>
+      </ns:column>
+      <ns:column columnName="container">
+        <ns:isUserEditable>false</ns:isUserEditable>
+        <ns:datatype>entityid</ns:datatype>
+        <ns:scale>36</ns:scale>
+        <ns:isHidden>true</ns:isHidden>
+        <ns:fk>
+          <ns:fkDbSchema>core</ns:fkDbSchema>
+          <ns:fkTable>containers</ns:fkTable>
+          <ns:fkColumnName>entityid</ns:fkColumnName>
+        </ns:fk>
+      </ns:column>
+      <ns:column columnName="createdby">
+        <ns:isUserEditable>false</ns:isUserEditable>
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>userid</ns:datatype>
+        <ns:scale>4</ns:scale>
+        <ns:isHidden>true</ns:isHidden>
+      </ns:column>
+      <ns:column columnName="created">
+        <ns:isUserEditable>false</ns:isUserEditable>
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>timestamp</ns:datatype>
+        <ns:scale>29</ns:scale>
+        <ns:isHidden>true</ns:isHidden>
+      </ns:column>
+      <ns:column columnName="modifiedby">
+        <ns:isUserEditable>false</ns:isUserEditable>
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>userid</ns:datatype>
+        <ns:scale>4</ns:scale>
+        <ns:isHidden>true</ns:isHidden>
+      </ns:column>
+      <ns:column columnName="modified">
+        <ns:isUserEditable>false</ns:isUserEditable>
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>timestamp</ns:datatype>
+        <ns:scale>29</ns:scale>
+        <ns:isHidden>true</ns:isHidden>
+      </ns:column>
+    </ns:columns>
+  </ns:table>
+  <ns:table tableName="sopdates" tableDbType="TABLE">
+    <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr_compliancedb&amp;query.queryName=sopdates&amp;rowid=${rowid}</ns:tableUrl>
+    <ns:tableTitle>SOP Completion Dates</ns:tableTitle>
+    <ns:pkColumnName>rowid</ns:pkColumnName>
+    <ns:columns>
+      <ns:column columnName="rowid">
+        <ns:datatype>serial</ns:datatype>
+        <ns:isAutoInc>true</ns:isAutoInc>
+        <ns:isKeyField>true</ns:isKeyField>
+        <ns:scale>10</ns:scale>
+        <ns:columnTitle>Key</ns:columnTitle>
+      </ns:column>
+      <ns:column columnName="employeeid">
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>200</ns:scale>
+        <ns:columnTitle>Employee Id</ns:columnTitle>
+        <ns:fk>
+            <ns:fkDbSchema>ehr_compliancedb</ns:fkDbSchema>
+            <ns:fkTable>employees</ns:fkTable>
+            <ns:fkColumnName>employeeid</ns:fkColumnName>
+        </ns:fk>
+      </ns:column>
+      <ns:column columnName="sopid">
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>100</ns:scale>
+        <ns:columnTitle>SOP Id</ns:columnTitle>
+        <ns:fk>
+            <ns:fkDbSchema>ehr_compliancedb</ns:fkDbSchema>
+            <ns:fkTable>sops</ns:fkTable>
+            <ns:fkColumnName>sopid</ns:fkColumnName>
+        </ns:fk>
+      </ns:column>
+      <ns:column columnName="date">
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>timestamp</ns:datatype>
+        <ns:scale>29</ns:scale>
+        <ns:columnTitle>Date Completed</ns:columnTitle>
+      </ns:column>
+      <ns:column columnName="container">
+        <ns:isUserEditable>false</ns:isUserEditable>
+        <ns:datatype>entityid</ns:datatype>
+        <ns:scale>36</ns:scale>
+        <ns:isHidden>true</ns:isHidden>
+        <ns:fk>
+          <ns:fkDbSchema>core</ns:fkDbSchema>
+          <ns:fkTable>containers</ns:fkTable>
+          <ns:fkColumnName>entityid</ns:fkColumnName>
+        </ns:fk>
+      </ns:column>
+      <ns:column columnName="createdby">
+        <ns:isUserEditable>false</ns:isUserEditable>
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>userid</ns:datatype>
+        <ns:scale>4</ns:scale>
+        <ns:isHidden>true</ns:isHidden>
+      </ns:column>
+      <ns:column columnName="created">
+        <ns:isUserEditable>false</ns:isUserEditable>
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>timestamp</ns:datatype>
+        <ns:scale>29</ns:scale>
+        <ns:isHidden>true</ns:isHidden>
+      </ns:column>
+      <ns:column columnName="modifiedby">
+        <ns:isUserEditable>false</ns:isUserEditable>
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>userid</ns:datatype>
+        <ns:scale>4</ns:scale>
+        <ns:isHidden>true</ns:isHidden>
+      </ns:column>
+      <ns:column columnName="modified">
+        <ns:isUserEditable>false</ns:isUserEditable>
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>timestamp</ns:datatype>
+        <ns:scale>29</ns:scale>
+        <ns:isHidden>true</ns:isHidden>
+      </ns:column>
+    </ns:columns>
+  </ns:table>
+  <ns:table tableName="sopbycategory" tableDbType="TABLE">
+    <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr_compliancedb&amp;query.queryName=sopbycategory&amp;rowid=${rowid}</ns:tableUrl>
+    <ns:tableTitle>SOPs Per Employee Category</ns:tableTitle>
+    <ns:pkColumnName>rowid</ns:pkColumnName>
+    <ns:columns>
+      <ns:column columnName="rowid">
+        <ns:datatype>serial</ns:datatype>
+        <ns:isAutoInc>true</ns:isAutoInc>
+        <ns:isKeyField>true</ns:isKeyField>
+        <ns:columnTitle>Key</ns:columnTitle>
+        <ns:scale>10</ns:scale>
+      </ns:column>
+      <ns:column columnName="sop_id">
+        <ns:datatype>varchar</ns:datatype>
+        <ns:columnTitle>SOP ID</ns:columnTitle>
+        <ns:scale>200</ns:scale>
+        <ns:fk>
+            <ns:fkDbSchema>ehr_compliancedb</ns:fkDbSchema>
+            <ns:fkTable>sops</ns:fkTable>
+            <ns:fkColumnName>sopid</ns:fkColumnName>
+        </ns:fk>
+      </ns:column>
+      <ns:column columnName="category">
+        <ns:datatype>varchar</ns:datatype>
+        <ns:columnTitle>Employee Category</ns:columnTitle>
+        <ns:scale>100</ns:scale>
+        <ns:fk>
+            <ns:fkDbSchema>ehr_compliancedb</ns:fkDbSchema>
+            <ns:fkTable>employeecategory</ns:fkTable>
+            <ns:fkColumnName>categoryname</ns:fkColumnName>
+        </ns:fk>
+      </ns:column>
+      <ns:column columnName="container">
+        <ns:isUserEditable>false</ns:isUserEditable>
+        <ns:datatype>entityid</ns:datatype>
+        <ns:scale>36</ns:scale>
+        <ns:isHidden>true</ns:isHidden>
+        <ns:fk>
+          <ns:fkDbSchema>core</ns:fkDbSchema>
+          <ns:fkTable>containers</ns:fkTable>
+          <ns:fkColumnName>entityid</ns:fkColumnName>
+        </ns:fk>
+      </ns:column>
+      <ns:column columnName="createdby">
+        <ns:isUserEditable>false</ns:isUserEditable>
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>userid</ns:datatype>
+        <ns:scale>4</ns:scale>
+        <ns:isHidden>true</ns:isHidden>
+      </ns:column>
+      <ns:column columnName="created">
+        <ns:isUserEditable>false</ns:isUserEditable>
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>timestamp</ns:datatype>
+        <ns:scale>29</ns:scale>
+        <ns:isHidden>true</ns:isHidden>
+      </ns:column>
+      <ns:column columnName="modifiedby">
+        <ns:isUserEditable>false</ns:isUserEditable>
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>userid</ns:datatype>
+        <ns:scale>4</ns:scale>
+        <ns:isHidden>true</ns:isHidden>
+      </ns:column>
+      <ns:column columnName="modified">
+        <ns:isUserEditable>false</ns:isUserEditable>
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>timestamp</ns:datatype>
+        <ns:scale>29</ns:scale>
+        <ns:isHidden>true</ns:isHidden>
       </ns:column>
     </ns:columns>
   </ns:table>

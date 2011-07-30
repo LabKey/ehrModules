@@ -6,12 +6,15 @@
 
 var {EHR, LABKEY, Ext, console, init, beforeInsert, afterInsert, beforeUpdate, afterUpdate, beforeDelete, afterDelete, complete} = require("ehr/validation");
 
+function onInit(event, context){
+    context.allowAnyId = true;
+}
 
 function onUpsert(context, errors, row, oldRow){
     //TODO: do we need this for every ETL record?
     //NOTE: this should be getting set by the birth, death, arrival & departure tables
     if(!row.calculated_status || context.extraContext.dataSource == 'etl'){
-        EHR.validation.updateStatusField([row.Id], row);
+        row = EHR.validation.updateStatusField([row.Id], row);
     }
 }
 

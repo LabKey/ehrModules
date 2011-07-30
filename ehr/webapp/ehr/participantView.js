@@ -100,7 +100,7 @@ Ext.onReady(function ()
     //                scope: this,
     //                load: this.createTabPanel
     //            },
-                errorCallback: function(error){
+                failure: function(error){
                     console.log('Error callback called');
                     console.log(target);
                     EHR.utils.onError(error)

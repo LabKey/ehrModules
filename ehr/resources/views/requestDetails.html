@@ -1,0 +1,80 @@
+<html>
+<head>
+<script type="text/javascript">
+
+/*!
+ * Ext JS Library 3.2.1
+ * Copyright(c) 2006-2010 Ext JS, Inc.
+ * licensing@extjs.com
+ * http://www.extjs.com/license
+ */
+
+LABKEY.requiresScript("/ehr/ehrAPI.js");
+
+
+Ext.onReady(function(){
+
+    var formType = LABKEY.ActionURL.getParameter('formtype');
+    var formUUID = LABKEY.ActionURL.getParameter('requestid');
+    var queryName = LABKEY.ActionURL.getParameter('queryName');
+
+    if(!formUUID){
+        alert('Must provide form Id');
+        return;
+    }
+
+    if (!formType){
+        if(formUUID){
+            LABKEY.Query.selectRows({
+                schemaName: 'ehr',
+                queryName: 'requests',
+                //containerPath: 'WNPRC/EHR/',
+                filterArray: [LABKEY.Filter.create('requestid', formUUID, LABKEY.Filter.Types.EQUAL)],
+                scope: this,
+                successCallback: function(data){
+                    if(!data.rows.length){
+                        alert('Must provide form type');
+                        return;
+                    }
+
+                    var row = data.rows[0];
+                    formType = row.formtype;
+                    renderTaskForm(formType);
+                }
+            });
+        }
+        else {
+            alert('Must provide form type');
+        }
+        return;
+    }
+
+    renderTaskForm(formType);
+
+    function renderTaskForm(formType){
+        EHR.ext.createImportPanel({
+            panelType: 'RequestDetailsPanel',
+            formUUID: formUUID,
+            formType: formType,
+            renderTo: 'requestForm',
+            noTabs: true,
+            readOnly: true
+            //allowableButtons: 'EDIT'
+        });
+
+        LABKEY.NavTrail.setTrail('Task: '+(LABKEY.ActionURL.getParameter('title') || formType));
+    }
+});
+
+
+</script>
+</head>
+<body>
+<div id="requestForm"></div>
+
+
+
+</body>
+
+
+</html>

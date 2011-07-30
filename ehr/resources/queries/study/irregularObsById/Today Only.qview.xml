@@ -10,8 +10,8 @@
             <!--<property name="columnTitle" value="Current Cage"/>-->
           <!--</properties>-->
       <!--</column>-->
-      <column name="Room"/>
-      <column name="Cage"/>
+      <column name="room"/>
+      <column name="cage"/>
       <column name="Id"/>
       <column name="date"/>
       <column name="userid"/>
@@ -22,16 +22,18 @@
       <!--<column name="other"/>-->
       <!--<column name="tlocation"/>-->
       <column name="description"/>
-      <column name="Remark"/>
+      <column name="remark"/>
       <column name="qcstate" />
+      <column name="taskid" />
       <!--<column name="otherbehavior"/>-->
   </columns>
    <sorts>
        <sort column="DateOnly" descending="true"/>
-       <sort column="Room"/>
-       <sort column="Cage"/>
+       <sort column="room"/>
+       <sort column="cage"/>
    </sorts>
   <filters>
       <filter column="date" operator="dateeq" value="+0d" />
+      <filter column="isIrregular" operator="eq" value="true"/>
   </filters>
 </customView>

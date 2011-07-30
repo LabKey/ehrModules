@@ -12,6 +12,6 @@
         <column name="SiblingSire"/>
    </columns>
    <sorts>
-       <sort column="Id" descending="true"/>
+       <sort column="Id" />
    </sorts>
 </customView>

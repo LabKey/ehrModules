@@ -10,6 +10,7 @@ FOR EACH ROW
 BEGIN
 insert into colony.deleted_records (uuid, orig_id, tableName, labkeyTable, type) values (OLD.uuid, OLD.id, 'abstract', 'demographics', 'dataset');
 insert into colony.deleted_records (uuid, orig_id, tableName, labkeyTable, type) values (OLD.uuid, OLD.id, 'abstract', 'deaths', 'dataset');
+insert into colony.deleted_records (uuid, orig_id, tableName, labkeyTable, type) values (OLD.uuid, OLD.id, 'abstract', 'birth', 'dataset');
 insert into colony.deleted_records (uuid, orig_id, tableName, labkeyTable, type) values (OLD.uuid, OLD.id, 'abstract', 'alerts', 'dataset');
 END
 
@@ -520,3 +521,24 @@ CREATE TRIGGER weight_delete BEFORE DELETE ON weight
 FOR EACH ROW
 insert into colony.deleted_records (uuid, orig_id, tableName, labkeyTable, type) values (OLD.uuid, OLD.id, 'weight', 'weight', 'dataset')
 ;
+
+
+DROP TRIGGER IF EXISTS necropsydiag_delete;
+delimiter $$
+CREATE TRIGGER necropsydiag_delete BEFORE DELETE ON necropsydiag
+FOR EACH ROW
+BEGIN
+insert into colony.deleted_records (uuid, orig_id, tableName, labkeyTable, type) values (OLD.uuid, OLD.id, 'necropsydiag', 'necropsydiag', 'dataset');
+insert into colony.deleted_records (uuid, orig_id, tableName, labkeyTable, type) values (OLD.uuid, OLD.id, 'necropsydiag', 'morphologicDiagnosis', 'dataset');
+END
+;$$ DELIMITER ;
+
+DROP TRIGGER IF EXISTS biopsydiag_delete;
+delimiter $$
+CREATE TRIGGER biopsydiag_delete BEFORE DELETE ON biopsydiag
+FOR EACH ROW
+BEGIN
+insert into colony.deleted_records (uuid, orig_id, tableName, labkeyTable, type) values (OLD.uuid, OLD.id, 'biopsydiag', 'necropsydiag', 'dataset');
+insert into colony.deleted_records (uuid, orig_id, tableName, labkeyTable, type) values (OLD.uuid, OLD.id, 'biopsydiag', 'morphologicDiagnosis', 'dataset');
+END
+;$$ DELIMITER ;

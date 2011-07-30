@@ -7,7 +7,10 @@
 var {EHR, LABKEY, Ext, console, init, beforeInsert, afterInsert, beforeUpdate, afterUpdate, beforeDelete, afterDelete, complete} = require("ehr/validation");
 
 
-
+function onUpsert(context, errors, row, oldRow){
+    if(context.extraContext.dataSource != 'etl')
+        EHR.validation.removeTimeFromDate(row, errors);
+}
 
 function onETL(row, errors){
     if(row.stringResults){
@@ -21,6 +24,8 @@ function setDescription(row, errors){
 
     if(row.testid)
         description.push('Test: '+EHR.validation.nullToString(row.testid));
+    if (row.method)
+        description.push('Method: '+row.method);
 
     if(row.result)
         description.push('Result: '+EHR.validation.nullToString(row.result));

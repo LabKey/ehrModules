@@ -13,12 +13,12 @@
                         <formatString>yyyy-MM-dd HH:mm</formatString>
                     </column>
                     <column columnName="parentId">
-                        <!--<fk>-->
-                          <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
-                          <!--<fkDbSchema>study</fkDbSchema>-->
-                          <!--<fkTable>studyDataParent</fkTable>-->
-                          <!--<fkColumnName>objectid</fkColumnName>-->
-                        <!--</fk>-->
+                        <fk>
+                          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
+                          <fkDbSchema>study</fkDbSchema>
+                          <fkTable>encountersParent</fkTable>
+                          <fkColumnName>objectid</fkColumnName>
+                        </fk>
                     </column>
                     <column columnName="project">
                         <isHidden>true</isHidden>

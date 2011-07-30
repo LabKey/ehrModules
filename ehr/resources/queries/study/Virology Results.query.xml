@@ -9,20 +9,63 @@
                 <updateUrl />
                 <deleteUrl />
                 <columns>
+                    <column columnName="date">
+                        <formatString>yyyy-MM-dd</formatString>
+                    </column>
                     <column columnName="parentId">
+                        <!--<fk>-->
+                          <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
+                          <!--<fkDbSchema>study</fkDbSchema>-->
+                          <!--<fkTable>Clinpath Runs</fkTable>-->
+                          <!--<fkColumnName>objectid</fkColumnName>-->
+                        <!--</fk>-->
+                    </column>
+                    <column columnName="runId" wrappedColumnName="parentId">
+                        <isHidden>false</isHidden>
                         <fk>
                           <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                           <fkDbSchema>study</fkDbSchema>
-                          <fkTable>virologyRuns</fkTable>
+                          <fkTable>clinpathRunsParent</fkTable>
                           <fkColumnName>objectid</fkColumnName>
                         </fk>
                     </column>
-                    <column columnName="runId">
+                    <column columnName="method">
+                      <datatype>varchar</datatype>
+                      <!--<nullable>false</nullable>-->
+                      <columnTitle>Method</columnTitle>
+                      <fk>
+                        <fkFolderPath>/wnprc/ehr/</fkFolderPath>
+                        <fkDbSchema>ehr_lookups</fkDbSchema>
+                        <fkTable>virology_method</fkTable>
+                        <fkColumnName>method</fkColumnName>
+                      </fk>
+                    </column>
+                    <column columnName="virus">
                         <fk>
                           <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-                          <fkDbSchema>study</fkDbSchema>
-                          <fkTable>virologyRuns</fkTable>
-                          <fkColumnName>objectid</fkColumnName>
+                          <fkDbSchema>ehr_lookups</fkDbSchema>
+                          <fkTable>virology_tests</fkTable>
+                          <fkColumnName>testid</fkColumnName>
+                        </fk>
+                    </column>
+                    <column columnName="qualresult">
+                        <datatype>varchar</datatype>
+                        <columnTitle>Qualitative Result</columnTitle>
+                        <fk>
+                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
+                            <fkDbSchema>ehr_lookups</fkDbSchema>
+                            <fkTable>qualitative_results</fkTable>
+                            <fkColumnName>result</fkColumnName>
+                        </fk>
+                    </column>
+                    <column columnName="testid">
+                        <datatype>varchar</datatype>
+                        <columnTitle>Test Id</columnTitle>
+                        <fk>
+                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
+                            <fkDbSchema>ehr_lookups</fkDbSchema>
+                            <fkTable>virology_tests</fkTable>
+                            <fkColumnName>testid</fkColumnName>
                         </fk>
                     </column>
                 </columns>

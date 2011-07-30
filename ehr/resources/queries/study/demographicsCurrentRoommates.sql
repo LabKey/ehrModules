@@ -4,14 +4,16 @@
  * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
  */
 SELECT
-  h.id,
+  d.id,
   group_concat(DISTINCT h.condition) as condition,
-  count(DISTINCT h.RoommateId) AS NumRoommates,
-  count(DISTINCT h.RoommateId)+1 AS AnimalsInCage,
-  group_concat(DISTINCT h.RoommateId) as Roommates
+  count(DISTINCT h.RoommateId) as NumRoommates,
+  (count(DISTINCT h.RoommateId)+1) as AnimalsInCage,
+  group_concat(DISTINCT h.RoommateId) as cagemates
 
-FROM study.housingRoommates h
+FROM study.demographics d
+LEFT JOIN study.housingRoommates h
+  ON (h.id = d.id AND h.RemovalDate is null AND h.RoommateEnd is null)
 
-WHERE h.RemovalDate is null AND h.RoommateEnd is null
+WHERE d.calculated_status='Alive'
 
-GROUP BY h.id
+GROUP BY d.id

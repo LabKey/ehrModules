@@ -1,12 +1,14 @@
 <customView xmlns="http://labkey.org/data/xml/queryCustomView">
     <columns>
         <column name="Id"/>
-        <column name="Date"/>
-        <column name="qcstate"/>
+        <column name="date"/>
         <column name="project"/>
-        <column name="Remark"/>
-        <column name="userid"/>
+        <column name="remark"/>
+        <column name="description"/>
+        <column name="performedby"/>
         <column name="category"/>
+        <column name="qcstate"/>
+        <column name="taskid" />
     </columns>    
    <sorts>
        <sort column="date" descending="true"/>

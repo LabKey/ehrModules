@@ -10,7 +10,9 @@ FixDateTime(h1.date, h1.time) AS Date,
 h2.room as RoomAtTime,
 h2.cage as CageAtTime,
 h1.uuid as observationRecord,
+h1.userid as performedby,
 h2.uuid as housingRecord,
+FixNewLines(note) AS remark,
 h1.ts,
 concat(h1.uuid, h2.uuid) as objectid
 

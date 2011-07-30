@@ -6,7 +6,7 @@
 
 SELECT
 id,
-date,
+date as date,
 ts,
 objectid AS LabKeyUUID,
 'arrival' as type,
@@ -136,16 +136,16 @@ FROM col_dump.cagenotes_mysql
 
 UNION ALL
 
-SELECT
-null as id,
-date,
-ts,
-objectid AS LabKeyUUID,
-'cageobservations' as type,
-key2 AS mySQL_UUID
-FROM col_dump.cageobservations_mysql
-
-UNION ALL
+-- SELECT
+-- null as id,
+-- date,
+-- ts,
+-- objectid AS LabKeyUUID,
+-- 'cageobservations' as type,
+-- key2 AS mySQL_UUID
+-- FROM col_dump.cageobservations_mysql
+--
+-- UNION ALL
 
 SELECT
 null as id,

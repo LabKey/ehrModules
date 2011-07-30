@@ -2,12 +2,14 @@
     <columns>
         <column name="Id"/>
         <column name="date"/>
-        <column name="qcstate" />
-        <column name="TestId"/>
-        <column name="Result"/>
+        <column name="method" />
+        <column name="testid"/>
+        <column name="result"/>
         <column name="units"/>
         <column name="qualResult"/>
         <column name="remark"/>
+        <column name="qcstate" />
+        <column name="taskid" />
     </columns>
    <sorts>
        <sort column="date" descending="true"/>

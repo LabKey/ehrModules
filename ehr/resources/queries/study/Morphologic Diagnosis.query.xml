@@ -103,10 +103,54 @@
                         <fkColumnName>code</fkColumnName>
                       </fk>
                     </column>
+                    <column columnName="process2">
+                      <datatype>varchar</datatype>
+                      <!--<nullable>false</nullable>-->
+                      <columnTitle>Process 2</columnTitle>
+                      <fk>
+                        <fkFolderPath>/wnprc/ehr/</fkFolderPath>
+                        <fkDbSchema>ehr_lookups</fkDbSchema>
+                        <fkTable>snomed</fkTable>
+                        <fkColumnName>code</fkColumnName>
+                      </fk>
+                    </column>
                     <column columnName="distribution">
                       <datatype>varchar</datatype>
                       <!--<nullable>false</nullable>-->
-                      <columnTitle>Distribution</columnTitle>
+                      <columnTitle>Distribution/Pattern</columnTitle>
+                      <fk>
+                        <fkFolderPath>/wnprc/ehr/</fkFolderPath>
+                        <fkDbSchema>ehr_lookups</fkDbSchema>
+                        <fkTable>snomed</fkTable>
+                        <fkColumnName>code</fkColumnName>
+                      </fk>
+                    </column>
+                    <column columnName="distribution2">
+                      <datatype>varchar</datatype>
+                      <!--<nullable>false</nullable>-->
+                      <columnTitle>Distribution/Pattern 2</columnTitle>
+                      <fk>
+                        <fkFolderPath>/wnprc/ehr/</fkFolderPath>
+                        <fkDbSchema>ehr_lookups</fkDbSchema>
+                        <fkTable>snomed</fkTable>
+                        <fkColumnName>code</fkColumnName>
+                      </fk>
+                    </column>
+                    <column columnName="inflammation">
+                      <datatype>varchar</datatype>
+                      <!--<nullable>false</nullable>-->
+                      <columnTitle>Inflammation</columnTitle>
+                      <fk>
+                        <fkFolderPath>/wnprc/ehr/</fkFolderPath>
+                        <fkDbSchema>ehr_lookups</fkDbSchema>
+                        <fkTable>snomed</fkTable>
+                        <fkColumnName>code</fkColumnName>
+                      </fk>
+                    </column>
+                    <column columnName="etiology">
+                      <datatype>varchar</datatype>
+                      <!--<nullable>false</nullable>-->
+                      <columnTitle>Etiology</columnTitle>
                       <fk>
                         <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                         <fkDbSchema>ehr_lookups</fkDbSchema>

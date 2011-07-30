@@ -51,6 +51,7 @@ Ext.onReady(function (){
                 {queryName: 'alopecia_score', schemaName: 'ehr_lookups', title: 'Alopecia Score'},
                 {queryName: 'avail_codes', schemaName: 'ehr_lookups', title: 'Availability Codes'},
                 {queryName: 'bacteriology_sensitivity', schemaName: 'ehr_lookups', title: 'Bacteriology Sensitivity'},
+                {queryName: 'bacteriology_method', schemaName: 'ehr_lookups', title: 'Bacteriology Method Field'},
                 {queryName: 'bcs_score', schemaName: 'ehr_lookups', title: 'Body Condition Scores'},
                 {queryName: 'behavior_category', schemaName: 'ehr_lookups', title: 'Behavior Category Field'},
                 {queryName: 'birth_type', schemaName: 'ehr_lookups', title: 'Birth Type Field'},
@@ -59,10 +60,16 @@ Ext.onReady(function (){
                 {queryName: 'blood_draw_tube_type', schemaName: 'ehr_lookups', title: 'Blood Tube Types'},
                 {queryName: 'blood_billed_by', schemaName: 'ehr_lookups', title: 'Blood Billed By Field'},
                 {queryName: 'charge_items', schemaName: 'ehr_lookups', title: 'Charge Items and Prices'},
-                {queryName: 'clinpath_services', schemaName: 'ehr_lookups', title: 'Clinpath Services'},
+                //{queryName: 'clinpath_services', schemaName: 'ehr_lookups', title: 'Clinpath Services'},
+                {queryName: 'chemistry_method', schemaName: 'ehr_lookups', title: 'Chemistry Method'},
+                {queryName: 'chemistry_tests', schemaName: 'ehr_lookups', title: 'Chemistry Tests'},
+
+                {queryName: 'clinpath_collection_method', schemaName: 'ehr_lookups', title: 'Clinpath Collection Method Field'},
                 {queryName: 'clinpath_status', schemaName: 'ehr_lookups', title: 'Clinpath Request Status Field'},
                 {queryName: 'clinpath_tests', schemaName: 'ehr_lookups', title: 'Clinpath Tests'},
                 {queryName: 'clinremarks_category', schemaName: 'ehr_lookups', title: 'Clinremarks Category Field'},
+                {queryName: 'qualitative_results', schemaName: 'ehr_lookups', title: 'Clinpath Qualitative Results Field'},
+                {queryName: 'urinalysis_qualitative_results', schemaName: 'ehr_lookups', title: 'Clinpath Urinalysis Qualitative Results Field'},
 
                 {queryName: 'amount_units', schemaName: 'ehr_lookups', title: 'Drug Amount Units'},
                 {queryName: 'conc_units', schemaName: 'ehr_lookups', title: 'Drug Concentration Units'},
@@ -85,6 +92,8 @@ Ext.onReady(function (){
                 {queryName: 'encounter_types', schemaName: 'ehr_lookups', title: 'Encounter Types'},
                 {queryName: 'error_types', schemaName: 'ehr_lookups', title: 'Error Report Error Types'},
                 {queryName: 'gender_codes', schemaName: 'ehr_lookups', title: 'Gender Codes'},
+                {queryName: 'hematology_method', schemaName: 'ehr_lookups', title: 'Hematology Method'},
+                {queryName: 'hematology_tests', schemaName: 'ehr_lookups', title: 'Hematology Tests'},
                 {queryName: 'hematology_morphology', schemaName: 'ehr_lookups', title: 'Hematology Morphology'},
                 {queryName: 'hematology_score', schemaName: 'ehr_lookups', title: 'Hematology Scores'},
                 {queryName: 'hold_codes', schemaName: 'ehr_lookups', title: 'Hold Codes'},
@@ -92,6 +101,9 @@ Ext.onReady(function (){
                 {queryName: 'condition_codes', schemaName: 'ehr_lookups', title: 'Housing Condition Codes'},
                 {queryName: 'housing_reason', schemaName: 'ehr_lookups', title: 'Housing Reasons For Transfer'},
                 {queryName: 'restraint_type', schemaName: 'ehr_lookups', title: 'Restraint Types'},
+
+                {queryName: 'immunology_method', schemaName: 'ehr_lookups', title: 'Immunology Method'},
+                {queryName: 'immunology_tests', schemaName: 'ehr_lookups', title: 'Immunology Tests'},
 
                 {queryName: 'lab_test_range', schemaName: 'ehr_lookups', title: 'Lab Test Normal Ranges'},
                 {queryName: 'lab_tests', schemaName: 'ehr_lookups', title: 'Lab Tests'},
@@ -113,6 +125,7 @@ Ext.onReady(function (){
                 {queryName: 'pairtest_bhav', schemaName: 'ehr_lookups', title: 'Pairtest Behavior Remark'},
                 {queryName: 'pairtest_conclusion', schemaName: 'ehr_lookups', title: 'Pairtest Conclusion Field'},
 
+                {queryName: 'parasitology_method', schemaName: 'ehr_lookups', title: 'Parasitology Method Field'},
                 {queryName: 'pe_region', schemaName: 'ehr_lookups', title: 'PE Region Field'},
                 {queryName: 'problem_list_category', schemaName: 'ehr_lookups', title: 'Problem List Category Field'},
                 {queryName: 'procedures', schemaName: 'ehr_lookups', title: 'Known Procedures'},
@@ -121,12 +134,20 @@ Ext.onReady(function (){
                 {queryName: 'species', schemaName: 'ehr_lookups', title: 'Species'},
                 {queryName: 'species_codes', schemaName: 'ehr_lookups', title: 'Species Codes'},
                 {queryName: 'status_codes', schemaName: 'ehr_lookups', title: 'Status Codes'},
+                {queryName: 'tattoo_status', schemaName: 'ehr_lookups', title: 'Tattoo Status Field'},
                 {queryName: 'tb_eye', schemaName: 'ehr_lookups', title: 'TB Eye Field'},
-                {queryName: 'tb_results', schemaName: 'ehr_lookups', title: 'TB Results'},
-                {queryName: 'treatment_frequency', schemaName: 'ehr_lookups', title: 'Treatment Frequencies'},
-                {queryName: 'urine_method', schemaName: 'ehr_lookups', title: 'Urinalysis Method Field'},
                 {queryName: 'tb_result', schemaName: 'ehr_lookups', title: 'TB Results'},
-                {queryName: 'virology_source', schemaName: 'ehr_lookups', title: 'Virology Source'}
+                {queryName: 'treatment_codes', schemaName: 'ehr_lookups', title: 'Common Treatments'},
+                {queryName: 'treatment_frequency', schemaName: 'ehr_lookups', title: 'Treatment Frequencies'},
+
+                {queryName: 'urinalysis_method', schemaName: 'ehr_lookups', title: 'Urinalysis Method'},
+                {queryName: 'urinalysis_tests', schemaName: 'ehr_lookups', title: 'Urinalysis Tests'},
+
+                {queryName: 'urinalysis_method', schemaName: 'ehr_lookups', title: 'Urinalysis Method Field'},
+                {queryName: 'tb_result', schemaName: 'ehr_lookups', title: 'TB Results'},
+                {queryName: 'virology_method', schemaName: 'ehr_lookups', title: 'Virology Method'},
+                {queryName: 'virology_source', schemaName: 'ehr_lookups', title: 'Virology Source'},
+                {queryName: 'virology_tests', schemaName: 'ehr_lookups', title: 'Virology Tests'}
             ]
         }];
         var section;

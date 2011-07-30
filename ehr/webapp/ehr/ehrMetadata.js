@@ -70,6 +70,9 @@ EHR.ext.Metadata.Standard = {
         fieldDefaults: {
             //lazyCreateStore: false,
             ignoreColWidths: true
+//            colModel: {
+//                showLink: false
+//            }
         },
         Id: {
             xtype: 'ehr-participant',
@@ -79,6 +82,7 @@ EHR.ext.Metadata.Standard = {
             lookups: false,
             colModel: {
                 width: 70
+                ,showLink: false
             },
             noDuplicateByDefault: true
         },
@@ -87,12 +91,13 @@ EHR.ext.Metadata.Standard = {
             allowBlank: true,
             nullable: true,
             shownInGrid: true,
-            caption: 'Current Location',
-            header: 'Current Location',
+            caption: 'Location',
+            header: 'Location',
             lookups: false,
             allowDuplicateValue: false,
             colModel: {
-                width: 70
+                width: 70,
+                showLink: false
             }
         }
         ,date: {
@@ -102,6 +107,7 @@ EHR.ext.Metadata.Standard = {
             format: 'Y-m-d H:i',
             editorConfig: {
                 dateFormat: 'Y-m-d',
+                otherToNow: false,
                 timeFormat: 'H:i'
             },
             xtype: 'xdatetime',
@@ -113,6 +119,9 @@ EHR.ext.Metadata.Standard = {
             {
                 return v ? v : new Date()
             }
+        }
+        ,room: {
+            editorConfig: {listWidth: 200}
         }
         ,begindate: {
             xtype: 'xdatetime',
@@ -140,10 +149,17 @@ EHR.ext.Metadata.Standard = {
                 timeFormat: 'H:i'
             }
         }
-        ,serviceRequested: {
-            xtype: 'displayfield'
-            ,editorConfig: {
-                height: 100
+        ,cage: {
+            editorConfig: {
+                listeners: {
+                    change: function(field, val){
+                        if(val && !isNaN(val)){
+                            var newVal = EHR.utils.padDigits(val, 4);
+                            if(val != newVal)
+                                field.setValue(newVal);
+                        }
+                    }
+                }
             }
         }
         ,code: {
@@ -151,33 +167,34 @@ EHR.ext.Metadata.Standard = {
             //,lookups: false
             ,colModel: {
                 width: 150
+                ,showLink: false
             }
-            ,getRenderer: function(col, meta){
-                return function(data, cellMetaData, record, rowIndex, colIndex, store) {
-                    var storeId = ['ehr_lookups', 'snomed', 'code', 'meaning', store.queryName, (meta.dataIndex || meta.name)].join('||');
-                    var lookupStore = Ext.StoreMgr.get(storeId);
-
-                    if(!lookupStore)
-                        return '';
-
-                    var idx = lookupStore.find('code', data);
-                    var lookupRecord;
-                    if(idx != -1)
-                        lookupRecord = lookupStore.getAt(idx);
-
-                    if (lookupRecord)
-                        return lookupRecord.data['meaning'] || lookupRecord.data['code/meaning'];
-                    else if (data)
-                        return "[" + data + "]";
-                    else
-                        return meta.lookupNullCaption || "[none]";
-                }
-            }
+//            ,getRenderer: function(col, meta){
+//                return function(data, cellMetaData, record, rowIndex, colIndex, store) {
+//                    var storeId = ['ehr_lookups', 'snomed', 'code', 'meaning', store.queryName, (meta.dataIndex || meta.name)].join('||');
+//                    var lookupStore = Ext.StoreMgr.get(storeId);
+//
+//                    if(!lookupStore)
+//                        return '';
+//
+//                    var idx = lookupStore.find('code', data);
+//                    var lookupRecord;
+//                    if(idx != -1)
+//                        lookupRecord = lookupStore.getAt(idx);
+//
+//                    if (lookupRecord)
+//                        return lookupRecord.data['meaning'] || lookupRecord.data['code/meaning'];
+//                    else if (data)
+//                        return "[" + data + "]";
+//                    else
+//                        return meta.lookupNullCaption || "[none]";
+//                }
+//            }
         }
         ,tissue: {
             xtype: 'ehr-snomedcombo',
             editorConfig: {
-                defaultSubset: ''
+                defaultSubset: 'Organ/Tissue'
             }
         }
         ,performedby: {
@@ -190,31 +207,53 @@ EHR.ext.Metadata.Standard = {
             lookup: {
                 schemaName: 'core',
                 queryName: 'users',
-                displayColumn: 'Email',
-                keyColumn: 'UserId',
+                displayColumn: 'name',
+                keyColumn: 'name',
                 sort: 'Email'
             }
             ,formEditorConfig:{readOnly: true}
-            ,defaultValue: LABKEY.Security.currentUser.id
+            ,editorConfig: {listWidth: 200}
+            ,defaultValue: LABKEY.Security.currentUser.displayName
             ,shownInGrid: false
         }
-        ,created: {hidden: true}
-        //,CreatedBy: {hidden: true, shownInGrid: false}
+        ,CreatedBy: {
+            hidden: false
+            ,shownInInsertView: true
+            ,xtype: 'displayfield'
+            ,shownInGrid: false
+        }
+        ,ModifiedBy: {
+            hidden: false
+            ,shownInInsertView: true
+            ,xtype: 'displayfield'
+            ,shownInGrid: false
+        }
         ,AnimalVisit: {hidden: true}
-        ,Modified: {hidden: true}
-        ,ModifiedBy: {hidden: true, shownInGrid: false, useNull: true}
+        //,CreatedBy: {hidden: true, shownInGrid: false}
+        //,ModifiedBy: {hidden: true, shownInGrid: false, useNull: true}
         ,SequenceNum: {hidden: true}
         ,Description: {hidden: true}
         ,Dataset: {hidden: true}
-        ,category: {hidden: true}
+        //,category: {hidden: true}
         ,QCState: {
             allowBlank: false,
-            defaultValue: 2,
-            shownInGrid: true,
+            noDuplicateByDefault: true,
+            noSaveInTemplateByDefault: true,
+            setInitialValue: function(v){
+                var qc;
+                if(!v && EHR.permissionMap && EHR.permissionMap.qcMap && EHR.permissionMap.qcMap.label['In Progress'])
+                    qc = EHR.permissionMap.qcMap.label['In Progress'].RowId;
+                return v || qc;
+            },
+            shownInGrid: false,
             hidden: false,
             editorConfig: {
                 editable: false,
+                listWidth: 200,
                 disabled: true
+            },
+            colModel: {
+                width: 70
             }
         }
         ,parentid: {
@@ -234,13 +273,17 @@ EHR.ext.Metadata.Standard = {
         ,Survivorship: {hidden: true}
         ,remark: {
             xtype: 'ehr-remark',
-            isAutoExpandColumn: true
+            isAutoExpandColumn: true,
+            printWidth: 150
 //            editorConfig: {
 //                style: 'width: 100%;max-width: 600px;min-width: 200px;'
 //            }
         }
         ,project: {
             xtype: 'ehr-project'
+            ,editorConfig: {
+                defaultProjects: [00300901]
+            }
             ,shownInGrid: false
             ,useNull: true
             ,lookup: {
@@ -268,12 +311,18 @@ EHR.ext.Metadata.Standard = {
             //i tried to force hard tables to use QCState, but they kept reverting in odd places
             qcstate: {
                 allowBlank: false,
-                defaultValue: 2,
+                setInitialValue: function(v){
+                    var qc;
+                    if(EHR.permissionMap && EHR.permissionMap.qcMap && EHR.permissionMap.qcMap.label['In Progress'])
+                        qc = EHR.permissionMap.qcMap.label['In Progress'].RowId;
+                    return v || qc;
+                },
                 shownInGrid: false,
                 parentConfig: false,
                 hidden: false,
                 editorConfig: {
-                    disabled: true
+                    disabled: true,
+                    editorConfig: {listWidth: 200}
                 }
             },
             assignedto: {
@@ -283,14 +332,21 @@ EHR.ext.Metadata.Standard = {
                 },
                 lookup: {
                     sort: 'type,name'
-                }
+                },
+                editorConfig: {listWidth: 200}
             },
             duedate: {
                 xtype: 'xdatetime',
                 editorConfig: {
                     dateFormat: 'Y-m-d',
                     timeFormat: 'H:i'
+                },
+                setInitialValue: function(val){
+                    return val || new Date();
                 }
+            },
+            category: {
+                hidden: true
             },
             rowid: {
                 xtype: 'displayfield'
@@ -321,6 +377,7 @@ EHR.ext.Metadata.Standard = {
                 hidden: true
             },
             notify1: {
+                defaultValue: LABKEY.Security.currentUser.id,
                 lookup: {
                     sort: 'type,name',
                     filterArray: [LABKEY.Filter.create('name', 'Administrators', LABKEY.Filter.Types.NOT_EQUAL)]
@@ -333,7 +390,8 @@ EHR.ext.Metadata.Standard = {
                 }
             },
             daterequested: {
-                xtype: 'xdatetime'
+                xtype: 'xdatetime',
+                hidden: true
             },
             priority: {
                 defaultValue: 'Routine'
@@ -357,7 +415,12 @@ EHR.ext.Metadata.Standard = {
             //i tried to force hard tables to use QCState, but they kept reverting in odd places
             qcstate: {
                 allowBlank: false,
-                defaultValue: 5,
+                setInitialValue: function(v){
+                    var qc;
+                    if(!v && EHR.permissionMap && EHR.permissionMap.qcMap && EHR.permissionMap.qcMap.label['In Progress'])
+                        qc = EHR.permissionMap.qcMap.label['Request: Pending'].RowId;
+                    return v || qc;
+                },
                 shownInGrid: false,
                 parentConfig: false,
                 hidden: false,
@@ -368,30 +431,88 @@ EHR.ext.Metadata.Standard = {
         },
         'Bacteriology Results': {
             source: {
-                xtype: 'ehr-snomedcombo'
-            },
-            result: {
                 xtype: 'ehr-snomedcombo',
                 editorConfig: {
-                    defaultSubset: 'Bacteriology Results'
+                    defaultSubset: 'Culture Source'
+                }
+            },
+//            result: {
+//                xtype: 'ehr-snomedcombo',
+//                editorConfig: {
+//                    defaultSubset: 'Bacteriology Results'
+//                }
+//            },
+            organism: {
+                xtype: 'ehr-snomedcombo',
+                editorConfig: {
+                    defaultSubset: 'Organisms'
                 }
             },
             antibiotic: {
                 xtype: 'ehr-snomedcombo',
+                shownInGrid: false,
                 editorConfig: {
                     defaultSubset: 'Antibiotic'
                 }
+            },
+            sensitivity: {
+                shownInGrid: false
+            },
+            result: {
+                shownInGrid: false
+            },
+            units: {
+                shownInGrid: false
+            },
+            date: {
+                xtype: 'datefield'
+                ,format: 'Y-m-d'
             }
         },
         Demographics: {
             Id: {
-                editorConfig: {
+//                xtype: 'trigger'
+                allowBlank: false
+                ,editorConfig: {
+//                    triggerClass: 'x-form-search-trigger',
                     allowAnyId: true
+//                    ,onTriggerClick: function (){
+//                        var prefix = this.getValue();
+//
+//                        if(!prefix){
+//                            Ext.Msg.alert('Error', "Must enter prefix");
+//                            return
+//                        }
+//                        var sql = "SELECT max(cast(regexp_replace(SUBSTRING(Id, "+(prefix.length+1)+", 6), '[a-z\-]+', '') as integer)) as maxNumber FROM study.Demographics WHERE Id LIKE '" + prefix + "%' AND lcase(SUBSTRING(Id, "+(prefix.length+1)+", 6)) = ucase(SUBSTRING(Id, "+(prefix.length+1)+", 6))";
+//
+//                        LABKEY.Query.executeSql({
+//                            schemaName: 'study',
+//                            sql: sql,
+//                            scope: this,
+//                            success: function(data){
+//                                var number;
+//                                if(data.rows && data.rows.length==1){
+//                                    number = Number(data.rows[0].maxNumber)+1;
+//                                }
+//                                else {
+//                                    console.log('no mstching IDs found');
+//                                    number = 1;
+//                                }
+//
+//                                number = EHR.utils.padDigits(number, (6-prefix.length));
+//                                var id = prefix + number;
+//                                this.setValue(id.toLowerCase());
+//                            },
+//                            failure: EHR.onFailure
+//                        });
+//                    }
                 }
             },
             project: {hidden: true},
             performedby: {hidden: true},
-            account: {hidden: true}
+            account: {hidden: true},
+            species: {allowBlank: false},
+            gender: {allowBlank: false}
         },
         Prenatal: {
             Id: {
@@ -406,16 +527,23 @@ EHR.ext.Metadata.Standard = {
             account: {hidden: true}
         },
         'Parasitology Results': {
-            code: {
+            organism: {
                 xtype: 'ehr-snomedcombo',
                 editorConfig: {
                     defaultSubset: 'Parasitology Results'
                 }
             }
+            ,date: {
+                xtype: 'datefield'
+                ,format: 'Y-m-d'
+            }
         },
         'Tissue Samples': {
             diagnosis: {
                 xtype: 'ehr-snomedcombo'
+            },
+            performedby: {
+                hidden: true
             }
         },
         Histology: {
@@ -423,10 +551,13 @@ EHR.ext.Metadata.Standard = {
                 xtype: 'ehr-snomedcombo'
             },
             slideNum: {
-                setInitialValue: function(v, rec){
-                    var idx = Ext.StoreMgr.get('study||Histology||||').getCount()+1;
-                    return v || idx;
-                }
+//                setInitialValue: function(v, rec){
+//                    var idx = Ext.StoreMgr.get('study||Histology||||').getCount()+1;
+//                    return v || idx;
+//                }
+            },
+            performedby: {
+                hidden: true
             }
         },
         Housing: {
@@ -487,40 +618,98 @@ EHR.ext.Metadata.Standard = {
                     return v || LABKEY.Utils.generateUUID();
                 }
             }
+            ,serviceRequested: {
+                xtype: 'displayfield'
+                ,editorConfig: {
+                    height: 100
+                }
+            }
             ,performedby: {
+                allowBlank: false
+            }
+            ,type: {
                 allowBlank: false
             }
         },
         'Clinical Remarks': {
             performedby: {
-                hidden: true
+                hidden: false,
+                defaultValue: LABKEY.Security.currentUser.displayName
             },
             remark: {
                 hidden: true
+            },
+            date: {
+                setInitialValue: function(v, rec)
+                {
+                    return v ? v : (new Date((new Date().toDateString())));
+                }
+                ,noDuplicateByDefault: false
             },
             account: {
                 hidden: true
             },
             so: {
-                shownInGrid: false
+                shownInGrid: false,
+                //width: 300,
+                height: 150
             },
             a: {
-                shownInGrid: false
+                shownInGrid: false,
+                height: 150
             },
             p: {
-                shownInGrid: false
+                shownInGrid: false,
+                height: 150
             }
+//            userid: {
+//                defaultValue: LABKEY.Security.currentUser.displayName
+//            }
 
         },
         'Clinpath Runs': {
-            collectionDate : {shownInGrid: false},
             collectionMethod : {shownInGrid: false},
-            collectedBy : {shownInGrid: false},
+            //collectedBy : {shownInGrid: false},
+            //sampleType : {shownInGrid: false},
+            sampleId : {shownInGrid: false},
+            sampleQuantity: {shownInGrid: false},
+            quantityUnits : {shownInGrid: false},
+            serviceRequested: {
+                allowBlank: false,
+                editorConfig: {
+                    plugins: ['ehr-usereditablecombo'],
+                    listeners: {
+                        select: function(combo, rec)
+                        {
+                            var theForm = this.findParentByType('ehr-formpanel').getForm();
+                            theForm.findField('type').setValue(rec.get('dataset'));
+                        }
+                    }
+                },
+                lookup: {
+                    schemaName: 'ehr_lookups',
+                    queryName: 'clinpath_tests',
+                    displayColumn: 'testname',
+                    keyColumn: 'testname',
+                    sort: 'testname',
+                    columns: '*'
+                }
+            },
             project: {
-                allowBlank: true
+                allowBlank: true,
+                nullable: true
             },
             account: {
                 allowBlank: false
+            },
+            source: {
+                xtype: 'ehr-snomedcombo',
+                editorConfig: {
+                    defaultSubset: 'Organisms'
+                }
+            },
+            type: {
+                showInGrid: false
             }
         },
         'Dental Status': {
@@ -530,47 +719,57 @@ EHR.ext.Metadata.Standard = {
                 hidden: true
             }
         },
-        'Necropsy Diagnosis': {
-            duration: {
-                xtype: 'ehr-snomedcombo',
-                editorConfig: {
-                    defaultSubset: ''
-                }
-            },
-            severity: {
-                xtype: 'ehr-snomedcombo',
-                editorConfig: {
-                    defaultSubset: ''
-                }
-            },
-            distribution: {
-                xtype: 'ehr-snomedcombo',
-                editorConfig: {
-                    defaultSubset: ''
-                }
-            },
-            process: {
-                xtype: 'ehr-snomedcombo',
-                editorConfig: {
-                    defaultSubset: ''
-                }
-            }
-        },
         'Treatment Orders': {
             date: {
+                xtype: 'datefield',
+                format: 'Y-m-d',
                 allowBlank: false,
                 setInitialValue: function(v, rec)
                 {
                     return v ? v : new Date()
                 },
+                colModel: {
+                    fixed: true,
+                    width: 110
+                },
                 shownInGrid: true
+            }
+            ,enddate: {
+                xtype: 'datefield',
+                format: 'Y-m-d',
+                colModel: {
+                    fixed: true,
+                    width: 110
+                }
+                //shownInGrid: false
             }
             ,CurrentRoom: {lookups: false}
             ,CurrentCage: {lookups: false}
             ,volume: {
                 compositeField: 'Volume',
+                xtype: 'ehr-triggernumberfield',
                 noDuplicateByDefault: true,
-                noSaveInTemplateByDefault: true
+                noSaveInTemplateByDefault: true,
+                editorConfig: {
+                    triggerClass: 'x-form-search-trigger'
+                    ,onTriggerClick: function (){
+                        //recalculate amount if needed:
+                        var theForm = this.findParentByType('ehr-formpanel').getForm();
+                        var conc = theForm.findField('concentration').getValue();
+                        var val = this.getValue();
+
+                        if(!val || !conc){
+                            alert('Must supply volume and concentration');
+                            return;
+                        }
+
+                        if(val && conc){
+                            var amount = conc * val;
+                            theForm.findField('amount').setValue(amount);
+                        }
+                    }
+                    ,decimalPrecision: 3
+                }
             }
             ,vol_units: {
                 compositeField: 'Volume'
@@ -598,13 +797,13 @@ EHR.ext.Metadata.Standard = {
                             theForm.findField('conc_units').setValue(rec.get('unit'));
                             theForm.findField('vol_units').setValue(rec.get('denominator'));
 
-//                            var doseField = theForm.findField('dosage_units');
-//                            if(rec.get('numerator'))
-//                                doseField.setValue(rec.get('numerator')+'/kg');
-//                            else
-//                                doseField.setValue('');
+                            var doseField = theForm.findField('dosage_units');
+                            if(rec.get('numerator'))
+                                doseField.setValue(rec.get('numerator')+'/kg');
+                            else
+                                doseField.setValue('');
 
-//                            doseField.fireEvent('change', doseField.getValue(), doseField.startValue);
+                            doseField.fireEvent('change', doseField.getValue(), doseField.startValue);
 
                         }
                     }
@@ -618,6 +817,9 @@ EHR.ext.Metadata.Standard = {
                 ,shownInGrid: false
                 ,colModel: {
                     width: 40
+                }
+                ,editorConfig: {
+                    decimalPrecision: 3
                 }
             }
             ,amount_units: {
@@ -636,13 +838,77 @@ EHR.ext.Metadata.Standard = {
 
                 }
             }
-            ,code: {
+            ,dosage: {
+                xtype: 'ehr-drugdosefield',
+                shownInGrid: false,
+                compositeField: 'Dosage',
                 editorConfig: {
-                    defaultSubset: 'Treatment Codes'
+                    decimalPrecision: 3
+                }
+            }
+            ,dosage_units: {
+                shownInGrid: false,
+                compositeField: 'Dosage'
+            }
+            ,code: {
+                //shownInGrid: false,
+                editorConfig: {
+                    defaultSubset: 'Drugs and Procedures'
+                }
+            }
+            ,qualifier: {
+                shownInGrid: false
+            }
+            ,meaning: {
+                shownInGrid: false,
+                lookup: {
+                    schemaName: 'ehr_lookups',
+                    queryName: 'treatment_codes',
+                    displayColumn: 'meaning',
+                    keyColumn: 'meaning',
+                    sort: 'category,meaning',
+                    columns: '*'
+                }
+                ,editorConfig: {
+                    tpl : function()
+                    {
+                        var tpl = new Ext.XTemplate(
+                                '<tpl for=".">' +
+                                        '<div class="x-combo-list-item">{[ values["category"] ? "<b>"+values["category"]+":</b> "  : "" ]}{[ values["meaning"] ]}' +
+                                        '&nbsp;</div></tpl>'
+                                );
+                        return tpl.compile()
+                    }(),
+                    listeners: {
+                        select: function(combo, rec){
+                            var theForm = this.findParentByType('ehr-formpanel').getForm();
+
+                            theForm.findField('route').setValue(rec.get('route'));
+                            theForm.findField('qualifier').setValue(rec.get('qualifier'));
+                            theForm.findField('code').setValue(rec.get('code'));
+                            theForm.findField('frequency').setValue(rec.get('frequency'));
+
+                            theForm.findField('amount_units').setValue(rec.get('amount_units'));
+                            theForm.findField('conc_units').setValue(rec.get('conc_units'));
+                            theForm.findField('vol_units').setValue(rec.get('vol_units'));
+                            theForm.findField('dosage_units').setValue(rec.get('dosage_units'));
+
+                            theForm.findField('amount').setValue(rec.get('amount'));
+                            theForm.findField('concentration').setValue(rec.get('concentration'));
+                            theForm.findField('volume').setValue(rec.get('volume'));
+
+                            var doseField = theForm.findField('dosage');
+                            doseField.setValue(rec.get('dosage'));
+                            doseField.fireEvent('change', doseField.getValue(), doseField.startValue);
+                        }
+                    }
                 }
             }
             ,remark: {
                 shownInGrid: false
+            }
+            ,performedby: {
+                defaultValue: LABKEY.Security.currentUser.displayName
             }
         },
         Project: {
@@ -651,7 +917,62 @@ EHR.ext.Metadata.Standard = {
                 lookups: false
             }
         },
+        Assignment: {
+            project: {
+                shownInGrid: true,
+                xtype: 'combo',
+                lookup: {
+                    filterArray: [LABKEY.Filter.create('protocol/protocol', null, LABKEY.Filter.Types.NONBLANK)]
+                }
+            },
+            date: {
+                xtype: 'datefield',
+                format: 'Y-m-d'
+            }
+        },
         Necropsies: {
+            remark: {
+                height: 200,
+                width: 600
+            },
+            perfusion_soln1: {
+//                xtype: 'lovcombo',
+                editorConfig: {
+                    plugins: ['ehr-usereditablecombo']
+                },
+                lookup: {
+                    schemaName: 'ehr_lookups',
+                    queryName: 'necropsy_perfusion',
+                    keyColumn: 'perfusion',
+                    displayColumn: 'perfusion'
+                }
+            },
+            perfusion_soln2: {
+//                xtype: 'lovcombo',
+                editorConfig: {
+                    plugins: ['ehr-usereditablecombo']
+                },
+                lookup: {
+                    schemaName: 'ehr_lookups',
+                    queryName: 'necropsy_perfusion',
+                    keyColumn: 'perfusion',
+                    displayColumn: 'perfusion'
+                }
+            },
+            perfusion_time1: {
+                xtype: 'xdatetime'
+            },
+            perfusion_time2: {
+                xtype: 'xdatetime'
+            },
+            timeofdeath: {
+                xtype: 'xdatetime'
+            },
+            grossdescription: {
+                height: 200,
+                width: 600,
+                defaultValue: 'A ___ kg rhesus macaque is presented for necropsy in excellent post mortem condition.\n\nA ___ kg cynomolgus macaque is presented for necropsy in excellent post mortem condition.\n\nA ___ kg common marmoset is presented for necropsy in excellent post mortem condition.\n\nA ____ kg cynomolgus macaque is presented for perfusion and necropsy in excellent post mortem condition.\n\nA ____ kg rhesus macaque is presented for perfusion and necropsy in excellent post mortem condition.'
+            },
             caseno: {
                 xtype: 'trigger'
                 ,allowBlank: false
@@ -711,7 +1032,7 @@ EHR.ext.Metadata.Standard = {
                             var prefix = panel.prefix.getValue();
 
                             if(!year || !prefix){
-                                Ext.alert('Error', "Must supply both year and prefix");
+                                Ext.Msg.alert('Error', "Must supply both year and prefix");
                                 return
                             }
 
@@ -737,10 +1058,97 @@ EHR.ext.Metadata.Standard = {
                         };
                     }
                 }
+            },
+            performedby: {
+                lookup: {
+                    schemaName: 'ehr_lookups',
+                    queryName: 'pathologists',
+                    displayColumn: 'UserId',
+                    keyColumn: 'UserId'
+                }
+            },
+            assistant: {
+                xtype: 'lovcombo',
+                lookup: {
+                    schemaName: 'ehr_lookups',
+                    queryName: 'pathologists',
+                    displayColumn: 'UserId',
+                    keyColumn: 'UserId'
+                }
+            }
+        },
+        'Morphologic Diagnosis': {
+            duration: {
+                xtype: 'ehr-snomedcombo',
+                editorConfig: {
+                    defaultSubset: 'Duration'
+                }
+            },
+            severity: {
+                xtype: 'ehr-snomedcombo',
+                editorConfig: {
+                    defaultSubset: 'Severity'
+                }
+            },
+            etiology: {
+                xtype: 'ehr-snomedcombo',
+                editorConfig: {
+                    defaultSubset: 'Etiology'
+                }
+            },
+            distribution2: {
+                xtype: 'ehr-snomedcombo',
+                editorConfig: {
+                    defaultSubset: 'Distribution'
+                }
+            },
+            inflammation: {
+                xtype: 'ehr-snomedcombo',
+                editorConfig: {
+                    defaultSubset: 'Inflammation'
+                }
+            },
+            distribution: {
+                xtype: 'ehr-snomedcombo',
+                editorConfig: {
+                    defaultSubset: 'Distribution'
+                }
+            },
+            process: {
+                xtype: 'ehr-snomedcombo',
+                editorConfig: {
+                    defaultSubset: 'Process/Disorder'
+                }
+            },
+            process2: {
+                xtype: 'ehr-snomedcombo',
+                editorConfig: {
+                    defaultSubset: 'Process/Disorder'
+                }
+            },
+            performedby: {
+                hidden: true
+            }
+        },
+        'Organ Weights': {
+            performedby: {
+                hidden: true
             }
         },
         'Body Condition': {
-            performedby: {hidden: true}
+            performedby: {hidden: true},
+            weightStatus: {
+//                includeNullRecord: false,
+//                defaultValue: false,
+//                lookup: {
+//                    schemaName: 'ehr_lookups',
+//                    queryName: 'booleanCombo',
+//                    displayColumn: 'display',
+//                    keyColumn: 'key'
+//                }
+                xtype: 'ehr-booleancombo',
+                defaultValue: false
+            }
         },
         Alopecia: {
             head: {xtype: 'ehr-remoteradiogroup', includeNullRecord: false, defaultValue: 'No', formEditorConfig: {columns: 3}},
@@ -786,7 +1194,14 @@ EHR.ext.Metadata.Standard = {
                     }
                 }
             },
+            feces: {
+                shownInGrid: true,
+                xtype: 'ehr-remotecheckboxgroup', includeNullRecord: false,
+                formEditorConfig: {columns: 1},
+                lookup: {schemaName: 'ehr_lookups', queryName: 'obs_feces', displayColumn: 'meaning', keyColumn: 'code'}
+            },
             no_observations: {
+                shownInGrid: false,
                 formEditorConfig: {
                     listeners: {
                         check: function(field, val){
@@ -795,9 +1210,11 @@ EHR.ext.Metadata.Standard = {
                                 var rfield = theForm.findField('remark');
 
                                 if(val)
-                                    rfield.setValue('Everything OK');
-                                else if (rfield.getValue()=='Everything OK')
+                                    rfield.setValue('ok');
+                                else if (rfield.getValue()=='ok')
                                     rfield.setValue('');
+
+                                theForm.findField('feces').setValue();
                             }
                         }
                     }
@@ -854,7 +1271,90 @@ EHR.ext.Metadata.Standard = {
                 format: 'Y-m-d'
             }
         },
-        'Blood Chemistry Results': {
+        'Chemistry Results': {
+            resultOORIndicator: {
+                label: 'Result',
+                shownInGrid: false,
+                compositeField: 'Result',
+                width: 80,
+                includeNullRecord: false,
+                nullCaption: '',
+                lookup: {
+                    schemaName: 'ehr_lookups',
+                    queryName: 'oor_indicators',
+                    keyColumn: 'indicator',
+                    displayColumn: 'indicator'
+                }
+            }
+            ,result: {
+                compositeField: 'Result',
+                editorConfig: {
+                    decimalPrecision: 4
+                }
+            }
+            ,testid: {
+                lookup: {columns: '*'},
+                editorConfig: {
+                    plugins: ['ehr-usereditablecombo'],
+                    listeners: {
+                        select: function(combo, rec)
+                        {
+                            var theForm = this.findParentByType('ehr-formpanel').getForm();
+                            var unitField = theForm.findField('units');
+                            unitField.setValue(rec.get('units'));
+                            unitField.fireEvent('change', unitField.getValue(), unitField.startValue);
+                        }
+                    }
+                }
+            }
+            ,date: {
+                xtype: 'datefield'
+                ,format: 'Y-m-d'
+            }
+        },
+        'Immunology Results': {
+            testid: {
+                lookup: {columns: '*'},
+                editorConfig: {
+                    plugins: ['ehr-usereditablecombo'],
+                    listeners: {
+                        select: function(combo, rec)
+                        {
+                            var theForm = this.findParentByType('ehr-formpanel').getForm();
+                            var unitField = theForm.findField('units');
+                            unitField.setValue(rec.get('units'));
+                            unitField.fireEvent('change', unitField.getValue(), unitField.startValue);
+                        }
+                    }
+                }
+            }
+            ,date: {
+                xtype: 'datefield'
+                ,format: 'Y-m-d'
+            }
+        },
+        'Hematology Results': {
+            testid: {
+                lookup: {columns: '*'},
+                editorConfig: {
+                    plugins: ['ehr-usereditablecombo'],
+                    listeners: {
+                        select: function(combo, rec)
+                        {
+                            var theForm = this.findParentByType('ehr-formpanel').getForm();
+                            var unitField = theForm.findField('units');
+                            unitField.setValue(rec.get('units'));
+                            unitField.fireEvent('change', unitField.getValue(), unitField.startValue);
+                        }
+                    }
+                }
+            }
+            ,date: {
+                xtype: 'datefield'
+                ,format: 'Y-m-d'
+            }
+        },
+        'Urinalysis Results': {
             resultOORIndicator: {
                 label: 'Result',
                 shownInGrid: false,
@@ -871,6 +1371,40 @@ EHR.ext.Metadata.Standard = {
             }
             ,result: {
                 compositeField: 'Result'
+                ,editorConfig: {
+                    decimalPrecision: 4
+                }
+            }
+            ,testid: {
+                lookup: {columns: '*'},
+                editorConfig: {
+                    plugins: ['ehr-usereditablecombo'],
+                    listeners: {
+                        select: function(combo, rec)
+                        {
+                            var theForm = this.findParentByType('ehr-formpanel').getForm();
+                            var unitField = theForm.findField('units');
+                            unitField.setValue(rec.get('units'));
+                            unitField.fireEvent('change', unitField.getValue(), unitField.startValue);
+                        }
+                    }
+                }
+            }
+            ,date: {
+                xtype: 'datefield'
+                ,format: 'Y-m-d'
+            }
+        },
+        'Virology Results': {
+            date: {
+                xtype: 'datefield'
+                ,format: 'Y-m-d'
+            }
+        },
+        'Hematology Morphology': {
+            date: {
+                xtype: 'datefield'
+                ,format: 'Y-m-d'
             }
         },
         'Irregular Observations': {
@@ -881,9 +1415,28 @@ EHR.ext.Metadata.Standard = {
                 }
             }
             ,CageAtTime: {hidden: true}
-            ,feces: {shownInGrid: false, xtype: 'ehr-remotecheckboxgroup', includeNullRecord: false, formEditorConfig: {columns: 1}}
-            ,menses: {shownInGrid: false, xtype: 'ehr-remoteradiogroup', defaultValue: null, value: null, includeNullRecord: true, formEditorConfig: {columns: 1}}
-            ,other: {shownInGrid: false, xtype: 'ehr-remotecheckboxgroup', includeNullRecord: false, formEditorConfig: {columns: 1}}
+            ,feces: {
+                shownInGrid: true,
+                xtype: 'ehr-remotecheckboxgroup', includeNullRecord: false,
+                formEditorConfig: {columns: 1},
+                lookup: {schemaName: 'ehr_lookups', queryName: 'obs_feces', displayColumn: 'meaning', keyColumn: 'code'}
+            }
+            ,menses: {
+                shownInGrid: true,
+                xtype: 'ehr-remoteradiogroup',
+                defaultValue: null,
+                value: null,
+                includeNullRecord: true,
+                formEditorConfig: {columns: 1},
+                lookup: {schemaName: 'ehr_lookups', queryName: 'obs_mens', displayColumn: 'meaning', keyColumn: 'code'}
+            }
+            ,other: {
+                shownInGrid: true,
+                xtype: 'ehr-remotecheckboxgroup',
+                includeNullRecord: false,
+                formEditorConfig: {columns: 1},
+                lookup: {schemaName: 'ehr_lookups', queryName: 'obs_other', displayColumn: 'meaning', keyColumn: 'code'}
+            }
             ,tlocation: {
                 shownInGrid: false,
                 xtype: 'lovcombo',
@@ -894,12 +1447,22 @@ EHR.ext.Metadata.Standard = {
 //                    height: 200
                 }
             }
-            ,breeding: {shownInGrid: false, xtype: 'ehr-remotecheckboxgroup', includeNullRecord: false, formEditorConfig: {columns: 1}}
+            ,breeding: {
+                shownInGrid: false,
+                xtype: 'ehr-remotecheckboxgroup',
+                includeNullRecord: false,
+                formEditorConfig: {columns: 1},
+                lookup: {schemaName: 'ehr_lookups', queryName: 'obs_breeding', displayColumn: 'meaning', keyColumn: 'code'}
+            }
             ,project: {hidden: true}
             ,account: {hidden: true}
-            ,performedby: {allowBlank: true, hidden: true}
+            ,performedby: {
+                allowBlank: true,
+                hidden: false,
+                defaultValue: LABKEY.Security.currentUser.displayName
+            }
             ,remark: {
-                shownInGrid: true,
+                shownInGrid: false,
                 formEditorConfig: {
                     storeCfg: {
                         schemaName: 'ehr_lookups',
@@ -909,7 +1472,13 @@ EHR.ext.Metadata.Standard = {
                     }
                 }
             }
-            ,behavior: {shownInGrid: false, xtype: 'ehr-remotecheckboxgroup', includeNullRecord: false, formEditorConfig: {columns: 1}}
+            ,behavior: {
+                shownInGrid: false,
+                xtype: 'ehr-remotecheckboxgroup',
+                includeNullRecord: false,
+                formEditorConfig: {columns: 1},
+                lookup: {schemaName: 'ehr_lookups', queryName: 'obs_behavior', displayColumn: 'meaning', keyColumn: 'code'}
+            }
             ,otherbehavior: {shownInGrid: false}
 //            ,certified: {
 //                xtype: 'ehr-approveradio',
@@ -924,14 +1493,14 @@ EHR.ext.Metadata.Standard = {
 //                allowDuplicateValue: false
 //            }
         },
-        'Clinpath Requests': {
-            dateCompleted: {hidden: true}
-            ,status: {hidden: true}
-            ,requestor: {defaultValue: LABKEY.Security.currentUser.email}
-            ,notify1: {shownInGrid: false}
-            ,notify2: {shownInGrid: false}
-
-        },
+//        'Clinpath Requests': {
+//            dateCompleted: {hidden: true}
+//            ,status: {hidden: true}
+//            ,requestor: {defaultValue: LABKEY.Security.currentUser.email}
+//            ,notify1: {shownInGrid: false}
+//            ,notify2: {shownInGrid: false}
+//
+//        },
         Menses: {
             performedby: {hidden: true},
             project: {hidden: true},
@@ -944,10 +1513,24 @@ EHR.ext.Metadata.Standard = {
             account: {hidden: true}
         },
         'Behavior Remarks': {
-            performedby: {hidden: true},
+            performedby: {
+                hidden: false,
+                defaultValue: LABKEY.Security.currentUser.displayName
+            },
             project: {hidden: true},
             account: {hidden: true},
-            remark: {allowBlank: false}
+            remark: {
+                hidden: true
+            },
+            so: {
+                shownInGrid: false
+            },
+            a: {
+                shownInGrid: false
+            },
+            p: {
+                shownInGrid: false
+            }
         },
         Arrival: {
             Id: {
@@ -956,7 +1539,10 @@ EHR.ext.Metadata.Standard = {
             project: {hidden: true},
             account: {hidden: true},
             source: {allowBlank: false},
-            performedby: {hidden: true}
+            performedby: {hidden: true},
+            remark: {shownInGrid: false},
+            dam: {shownInGrid: false},
+            sire: {shownInGrid: false}
         },
         Departure: {
             performedby: {hidden: true},
@@ -969,7 +1555,13 @@ EHR.ext.Metadata.Standard = {
             performedby: {hidden: true}
         },
         Teeth: {
-            performedby: {hidden: true}
+            performedby: {hidden: true},
+            tooth: {
+                lookup: {
+                    columns: '*',
+                    sort: 'seq_order'
+                }
+            }
         },
         Deaths: {
             performedby: {hidden: true},
@@ -986,9 +1578,17 @@ EHR.ext.Metadata.Standard = {
             performedby: {hidden: true},
             project: {hidden: true},
             account: {hidden: true},
-            dam: {lookups: false, allowBlank: false},
-            sire: {lookups: false},
-            gender: {includeNullRecord: false, allowBlank: false}
+            dam: {shownInGrid: false, lookups: false},
+            sire: {shownInGrid: false, lookups: false},
+            gender: {includeNullRecord: false, allowBlank: false},
+            weight: {shownInGrid: false},
+            wdate: {shownInGrid: false},
+            room: {shownInGrid: false},
+            cage: {shownInGrid: false},
+            cond: {shownInGrid: false},
+            origin: {shownInGrid: false},
+            estimated: {shownInGrid: false},
+            conception: {shownInGrid: false}
         },
         'Blood Draws' : {
             billedby: {shownInGrid: false}
@@ -996,7 +1596,44 @@ EHR.ext.Metadata.Standard = {
             ,project: {shownInGrid: false, allowBlank: false}
             ,requestor: {shownInGrid: false, formEditorConfig:{readOnly: true}}
             ,performedby: {shownInGrid: false}
-            ,assayCode: {shownInGrid: false}
+            ,assayCode: {
+                xtype: 'trigger'
+                ,shownInGrid: false
+                ,editorConfig: {
+                    triggerClass: 'x-form-search-trigger',
+                    allowAnyId: true
+                    ,onTriggerClick: function (){
+                        var prefix = this.getValue();
+
+                        if(!prefix){
+                            Ext.Msg.alert('Error', "Must enter prefix");
+                            return
+                        }
+                        var sql = "SELECT max(cast(regexp_replace(SUBSTRING(assayCode, "+(prefix.length+1)+"), '[a-z\-]+', '') as integer)) as maxNumber FROM study.blood WHERE assayCode LIKE '" + prefix + "%'  AND lcase(SUBSTRING(assayCode, "+(prefix.length+1)+")) = ucase(SUBSTRING(assayCode, "+(prefix.length+1)+"))";
+                        //console.log(sql)
+                        LABKEY.Query.executeSql({
+                            schemaName: 'study',
+                            sql: sql,
+                            scope: this,
+                            success: function(data){
+                                var number;
+                                if(data.rows && data.rows.length==1){
+                                    number = Number(data.rows[0].maxNumber)+1;
+                                }
+                                else {
+                                    console.log('no mstching IDs found');
+                                    number = 1;
+                                }
+
+                                //number = EHR.utils.padDigits(number, (6-prefix.length));
+                                var id = prefix + number;
+                                this.setValue(id.toLowerCase());
+                            },
+                            failure: EHR.onFailure
+                        });
+                    }
+                }
+            }
             ,additionalServices: {
                 xtype: 'lovcombo',
                 includeNullRecord: false,
@@ -1024,8 +1661,10 @@ EHR.ext.Metadata.Standard = {
                     listeners: {
                         select: function(field, rec){
                             var theForm = this.ownerCt.getForm();
-                            theForm.findField('tube_vol').setValue(rec.get('volume'));
-                            theForm.findField('quantity').calculateQuantity();
+                            var tube_vol = theForm.findField('tube_vol');
+
+                            tube_vol.store.baseParams['query.tube_types~contains'] = rec.get('type');
+                            tube_vol.store.load();
                         }
                     }
                 }
@@ -1033,6 +1672,7 @@ EHR.ext.Metadata.Standard = {
             ,quantity: {
                 //xtype: 'displayfield',
                 shownInGrid: false,
+                allowBlank: false,
                 editorConfig: {
                     allowNegative: false,
                     calculateQuantity: function(){
@@ -1069,16 +1709,27 @@ EHR.ext.Metadata.Standard = {
                 ,allowBlank: true
             }
             ,tube_vol: {
-                shownInGrid: false,
-                editorConfig: {
-                    allowNegative: false,
-                    listeners: {
-                        change: function(field, val){
-                            this.ownerCt.getForm().findField('quantity').calculateQuantity();
-                        }
-                    }
-                }
+                shownInGrid: true
                 ,allowBlank: false
+                ,editorConfig: {
+                    plugins: ['ehr-usereditablecombo']
+//                    ,listeners: {
+//                        select: function(field, rec){
+//                            var theForm = this.ownerCt.getForm();
+//                        }
+//                    }
+                }
+                ,includeNullRecord: false
+                ,lookup: {
+                    schemaName: 'ehr_lookups',
+                    queryName: 'blood_tube_volumes',
+                    displayColumn: 'volume',
+                    keyColumn: 'volume',
+                    columns: '*',
+                    sort: 'volume'
+                }
+
+
             }
         },
         'Procedure Codes': {
@@ -1100,7 +1751,7 @@ EHR.ext.Metadata.Standard = {
             }
             ,code: {
                 editorConfig: {
-                    defaultSubset: 'Drugs'
+                    defaultSubset: 'Drugs and Procedures'
                 }
             }
             ,date: {
@@ -1117,7 +1768,10 @@ EHR.ext.Metadata.Standard = {
             ,dosage: {
                 xtype: 'ehr-drugdosefield',
                 shownInGrid: false,
-                compositeField: 'Dosage'
+                compositeField: 'Dosage',
+                editorConfig: {
+                    decimalPrecision: 3
+                }
             }
             ,dosage_units: {
                 shownInGrid: false,
@@ -1150,7 +1804,6 @@ EHR.ext.Metadata.Standard = {
                                 doseField.setValue('');
 
                             doseField.fireEvent('change', doseField.getValue(), doseField.startValue);
-
                         }
                     }
                 }
@@ -1158,17 +1811,39 @@ EHR.ext.Metadata.Standard = {
             ,route: {shownInGrid: false}
             ,volume: {
                 compositeField: 'Volume',
+                xtype: 'ehr-triggernumberfield',
                 noDuplicateByDefault: true,
-                noSaveInTemplateByDefault: true
+                noSaveInTemplateByDefault: true,
+                editorConfig: {
+                    triggerClass: 'x-form-search-trigger'
+                    ,onTriggerClick: function (){
+                        //recalculate amount if needed:
+                        var theForm = this.findParentByType('ehr-formpanel').getForm();
+                        var conc = theForm.findField('concentration').getValue();
+                        var val = this.getValue();
+
+                        if(!val || !conc){
+                            alert('Must supply volume and concentration');
+                            return;
+                        }
+
+                        if(val && conc){
+                            var amount = conc * val;
+                            theForm.findField('amount').setValue(amount);
+                        }
+                    }
+                    ,decimalPrecision: 3
+                }
             }
             ,vol_units: {
                 compositeField: 'Volume'
+                ,header: 'Units'
 //                editorConfig: {
 //                    fieldLabel: null
 //                }
             }
             ,amount: {
-                compositeField: 'Amount'
+                compositeField: 'Amount Given'
                 ,noDuplicateByDefault: true
                 ,noSaveInTemplateByDefault: true
                 //,allowBlank: false
@@ -1176,10 +1851,13 @@ EHR.ext.Metadata.Standard = {
                 ,colModel: {
                     width: 40
                 }
+                ,editorConfig: {
+                    decimalPrecision: 10
+                }
             }
             ,amount_units: {
                 shownInGrid: false
-                ,compositeField: 'Amount'
+                ,compositeField: 'Amount Given'
                 ,colModel: {
                     width: 70
                 }
@@ -1190,6 +1868,15 @@ EHR.ext.Metadata.Standard = {
             ,project: {
                 allowBlank: false
             }
+            ,restraint: {
+                shownInGrid: false
+            }
+            ,restraintTime: {
+                shownInGrid: false
+            }
+            ,qualifier: {
+                shownInGrid: false
+            }
         },
         Notes: {
             performedby: {hidden: true},
@@ -1197,6 +1884,14 @@ EHR.ext.Metadata.Standard = {
             account: {hidden: true}
         },
         'Problem List': {
+            date: {
+                xtype: 'datefield',
+                format: 'Y-m-d'
+            },
+            enddate: {
+                xtype: 'datefield',
+                format: 'Y-m-d'
+            },
             project: {hidden: true},
             account: {hidden: true},
             performedby: {hidden: true},
@@ -1258,6 +1953,10 @@ EHR.ext.Metadata.Standard = {
                 colModel: {
                     width: 40
                 }
+            },
+            date: {
+                xtype: 'datefield',
+                format: 'Y-m-d'
             }
         },
         Weight: {
@@ -1270,11 +1969,18 @@ EHR.ext.Metadata.Standard = {
             ,performedby: {
                 hidden: true
             }
+            ,'id/curlocation/location': {
+                shownInGrid: true
+            }
+            ,remark: {
+                shownInGrid: false
+            }
             ,weight: {
                 allowBlank: false
                 ,useNull: true
                 ,editorConfig: {
                     allowNegative: false
+                    ,decimalPrecision: 4
                 }
             }
             //,performedby: {allowBlank: true}
@@ -1290,7 +1996,7 @@ EHR.ext.Metadata.Task = {
 //                dataIndex: 'qcstate'
 //            }
             hidden: false
-            ,defaultValue: 2
+            //,defaultValue: 2
         }
         ,taskid: {
             parentConfig: {
@@ -1318,7 +2024,7 @@ EHR.ext.Metadata.SimpleForm = {
 //                dataIndex: 'qcstate'
 //            }
             hidden: true
-            ,defaultValue: 2
+            //,defaultValue: 2
             ,editorConfig: {
                 editable: true,
                 disabled: false
@@ -1415,6 +2121,10 @@ EHR.ext.Metadata.Encounter = {
                 hidden: false
                 ,allowBlank: false
             }
+            ,performedby: {
+                allowBlank: true,
+                hidden: true
+            }
         },
         'Clinical Encounters': {
             parentId: {
@@ -1487,13 +2197,13 @@ EHR.ext.Metadata.Request = {
             }
         },
         date: {
-            parentConfig: {
-                storeIdentifier:  {queryName: 'requests', schemaName: 'ehr'}
-                ,dataIndex: 'daterequested'
-            },
-            hidden: true,
+//            parentConfig: {
+//                storeIdentifier:  {queryName: 'requests', schemaName: 'ehr'}
+//                ,dataIndex: 'daterequested'
+//            },
+//            hidden: true,
             editorConfig: {
-                minValue: new Date()
+                minValue: (new Date()).add(Date.DAY, 2)
             }
         },
         performedby: {
@@ -1504,15 +2214,23 @@ EHR.ext.Metadata.Request = {
             hidden: true
         },
         serviceRequested: {
-            xtype: 'textarea'
-        },
-        daterequested: {
             editorConfig: {
-                minValue: (new Date()).add(Date.DAY, 2)
+                plugins: ['ehr-usereditablecombo']
             }
         },
+//        daterequested: {
+//            editorConfig: {
+//                minValue: (new Date()).add(Date.DAY, 2)
+//            }
+//        },
         QCState: {
-            defaultValue: 5
+            //defaultValue: 5,
+            setInitialValue: function(v){
+                var qc;
+                if(!v && EHR.permissionMap && EHR.permissionMap.qcMap && EHR.permissionMap.qcMap.label['In Progress'])
+                    qc = EHR.permissionMap.qcMap.label['Request: Pending'].RowId;
+                return v || qc;
+            }
         }
     },
     byQuery: {
@@ -1527,7 +2245,8 @@ EHR.ext.Metadata.Request = {
         requests: {
             daterequested: {
                 xtype: 'datefield',
-                nullable: false
+                format: 'Y-m-d'
+                //nullable: false
             }
         },
         'Blood Draws': {
@@ -1547,6 +2266,7 @@ EHR.ext.Metadata.Request = {
                 xtype: 'displayfield'
             },
             num_tubes: {
+                xtype: 'numberfield',
                 editorConfig: {
                     allowNegative: false,
                     listeners: {
@@ -1556,6 +2276,32 @@ EHR.ext.Metadata.Request = {
                     }
                 }
                 ,allowBlank: false
+            },
+            tube_vol: {
+                allowBlank: false,
+                editorConfig: {
+                    allowNegative: false,
+                    listeners: {
+                        change: function(field, val){
+                            this.ownerCt.getForm().findField('quantity').calculateQuantity();
+                        }
+                    }
+                }
+            },
+            date: {
+                editorConfig: {
+                    timeConfig: {
+                        minValue: '8:30',
+                        maxValue: '9:30',
+                        increment: 60
+                    }
+                },
+                setInitialValue: function(v){
+                    var date = (new Date()).add(Date.DAY, 2);
+                    date.setHours(9);
+                    date.setMinutes(30);
+                    return v || date;
+                }
             }
         },
         'Clinical Encounters': {
@@ -1564,6 +2310,25 @@ EHR.ext.Metadata.Request = {
             },
             performedby: {
                 allowBlank: true
+            },
+            enddate: {
+                hidden: true
+            },
+            restraint: {
+                hidden: true
+            },
+            restraintTime: {
+                hidden: true
+            }
+        },
+        'Clinpath Runs': {
+            date: {
+                editorConfig: {
+                    minValue: null
+                }
+            },
+            remark: {
+                hidden: false
             }
         },
         'Drug Administration': {
@@ -1577,53 +2342,48 @@ EHR.ext.Metadata.Request = {
 
 EHR.ext.Metadata.Assay = {
     allQueries: {
-        Id: {
-            parentConfig: {
-                storeIdentifier: {queryName: 'Clinpath Runs', schemaName: 'study'},
-                dataIndex: 'Id'
-            }
-            ,hidden: true
-            ,shownInGrid: false
-        }
-        ,date: {
-            parentConfig: {
-                storeIdentifier: {queryName: 'Clinpath Runs', schemaName: 'study'},
-                dataIndex: 'date'
-            }
-            ,hidden: true
-            ,shownInGrid: false
-        }
-        ,parentId: {
-            parentConfig: {
-                storeIdentifier: {queryName: 'Clinpath Runs', schemaName: 'study'},
-                dataIndex: 'objectid'
-            }
-            ,hidden: true
-            ,shownInGrid: false
-            ,allowBlank: false
-        }
-        ,project: {
-            parentConfig: {
-                storeIdentifier: {queryName: 'Clinpath Runs', schemaName: 'study'},
-                dataIndex: 'project'
-            }
-            ,hidden: true
+        project: {
+//            parentConfig: {
+//                storeIdentifier: {queryName: 'Clinpath Runs', schemaName: 'study'},
+//                recordIdentifier: function(parentRecord, childRecord){
+//                    console.log(parentRecord);
+//                    console.log(childRecord);
+//                    if(!childRecord || !parentRecord){
+//                        return;
+//                    }
+//                    if(childRecord.get('Id') && childRecord.get('Id') == parentRecord.get('Id')){
+//                        return true;
+//                    }
+//                },
+//                dataIndex: 'project'
+//            }
+            hidden: true
             ,shownInGrid: false
         }
         ,account: {
-            parentConfig: {
-                storeIdentifier: {queryName: 'Clinpath Runs', schemaName: 'study'},
-                dataIndex: 'account'
-            }
-            ,hidden: true
+//            parentConfig: {
+//                storeIdentifier: {queryName: 'Clinpath Runs', schemaName: 'study'},
+//                recordIdentifier: function(parentRecord, childRecord){
+//                    console.log(parentRecord);
+//                    console.log(childRecord);
+//                    if(!childRecord || !parentRecord){
+//                        return;
+//                    }
+//                    if(childRecord.get('Id') && childRecord.get('Id') == parentRecord.get('Id')){
+//                        return true;
+//                    }
+//                },
+//                dataIndex: 'account'
+//            }
+            hidden: true
             ,shownInGrid: false
         }
         ,performedby: {
             hidden: true
         }
-        ,serviceRequested: {
-            xtype: 'displayfield'
-        }
+//        ,serviceRequested: {
+//            xtype: 'displayfield'
+//        }
     },
     byQuery: {
         'Clinpath Runs': {
@@ -1641,7 +2401,6 @@ EHR.ext.Metadata.Assay = {
             },
             project: {
                 parentConfig: null,
-                allowBlank: false,
                 hidden: false
             },
             account: {
@@ -1734,7 +2493,8 @@ EHR.ext.Metadata.Necropsy = {
         },
         Deaths: {
             date: {
-                parentConfig: null
+                parentConfig: null,
+                hidden: false
             },
             caseno: {
                 parentConfig: {
@@ -1743,6 +2503,28 @@ EHR.ext.Metadata.Necropsy = {
                 },
                 xtype: 'displayfield'
             }
+        },
+        'Drug Administration': {
+            begindate: {
+                hidden: false
+            }
+            ,performedby: {
+                allowBlank: true,
+                hidden: true
+            }
+        },
+        Alopecia: {
+            head: {defaultValue: 'NA', hiddden: true},
+            dorsum: {defaultValue: 'NA', hiddden: true},
+            rump: {defaultValue: 'NA', hiddden: true},
+            shoulders: {defaultValue: 'NA', hiddden: true},
+            upperArms: {defaultValue: 'NA', hiddden: true},
+            lowerArms: {defaultValue: 'NA', hiddden: true},
+            hips: {defaultValue: 'NA', hiddden: true},
+            upperLegs: {defaultValue: 'NA', hiddden: true},
+            lowerLegs: {defaultValue: 'NA', hiddden: true},
+            other: {defaultValue: 'NA', hiddden: true}
+
         }
     }
 };
@@ -1790,9 +2572,17 @@ EHR.ext.Metadata.Anesthesia = {
     }
 };
 
+
 EHR.ext.Metadata.PE = {
     allQueries: {
-
+        performedby: {
+            parentConfig: {
+                storeIdentifier: {queryName: 'Clinical Encounters', schemaName: 'study'},
+                dataIndex: 'performedby'
+            }
+            //,hidden: true
+            ,shownInGrid: false
+        }
     },
     byQuery: {
         'Clinical Observations': {
@@ -1806,56 +2596,158 @@ EHR.ext.Metadata.PE = {
                     keyColumn: 'region',
                     sort: 'region'
                 }
+                ,colModel: {
+                    width: 60
+                }
+
+            },
+            observation: {
+                defaultValue: 'Normal'
+                ,colModel: {
+                    width: 40
+                }
+            },
+            remark: {
+                isAutoExpandColumn: true
+            },
+            code: {
+                hidden: true
+//                colModel: {
+//                    width: 120
+//                }
+            }
+        },
+        'Clinical Encounters': {
+            type: {
+                defaultValue: 'Physical Exam'
+            },
+            serviceRequested: {
+                hidden: true
+            },
+            enddate: {
+                hidden: true
+            },
+            remark: {
+                height: 100
+            },
+            performedby: {
+                defaultValue: LABKEY.Security.currentUser.displayName,
+                parentConfig: null
+            }
+        },
+        'Clinical Remarks': {
+            so: {
+                shownInGrid: true
+            },
+            a: {
+                shownInGrid: true
+            },
+            p: {
+                shownInGrid: true
             }
         }
     }
 };
 
-EHR.ext.hiddenCols = 'lsid,objectid,parentid,taskid,requestid';
+
+EHR.ext.Metadata.Treatments = {
+    allQueries: {
+
+    },
+    byQuery: {
+        'Drug Administration': {
+            'id/curlocation/location': {
+                shownInGrid: true
+            },
+            code: {
+                editorConfig: {
+                    defaultSubset: 'Drugs and Procedures'
+                }
+            },
+            volume: {
+                colModel: {
+                    width: 40
+                }
+            },
+            vol_units: {
+                colModel: {
+                    width: 40
+                }
+            },
+            performedby: {
+                shownInGrid: true,
+                defaultValue: null
+            }
+
+        }
+    }
+};
+
+EHR.ext.Metadata['New Animal'] = {
+    allQueries: {
+        project: {
+            allowBlank: true
+        },
+        account: {
+            allowBlank: true
+        }
+    },
+    byQuery: {
+
+    }
+};
+
+EHR.ext.hiddenCols = 'lsid,objectid,parentid,taskid,requestid'; //,createdby,modifiedby
 EHR.ext.topCols = 'id,date,enddate,project,account';
 EHR.ext.bottomCols = 'remark,performedBy,qcstate,'+EHR.ext.hiddenCols;
 EHR.ext.sharedCols = ',id,date,project,account,remark,performedby,'+EHR.ext.hiddenCols;
 
 EHR.ext.FormColumns = {
-    Alopecia: EHR.ext.topCols+',score,cause,head,shoulders,upperarms,lowerarms,hips,rump,dorsum,upperlegs,lowerlegs,other,' + EHR.ext.bottomCols,
-    Arrival: EHR.ext.topCols+',source,'+EHR.ext.bottomCols,
-    'Bacteriology Results': EHR.ext.topCols+',source,result,antibiotic,sensitivity,'+EHR.ext.bottomCols,
-    'Blood Chemistry Results': EHR.ext.topCols+',resultOORIndicator,testid,result,units,qualResult,'+EHR.ext.bottomCols,
-    'Behavior Remarks': EHR.ext.topCols+','+EHR.ext.bottomCols,
+    Alopecia: EHR.ext.topCols+',score,cause,head,shoulders,upperArms,lowerArms,hips,rump,dorsum,upperLegs,lowerLegs,other,' + EHR.ext.bottomCols,
+    Arrival: EHR.ext.topCols+',source,gender,birth,dam,sire,initialRoom,initialCage,initialCond,'+EHR.ext.bottomCols,
+    Assignment: EHR.ext.topCols+''+EHR.ext.bottomCols,
+    'Bacteriology Results': EHR.ext.topCols+',method,organism,source,qualresult,result,units,antibiotic,sensitivity,'+EHR.ext.bottomCols,
+    'Behavior Remarks': EHR.ext.topCols+',so,a,p,'+EHR.ext.bottomCols,
     Biopsies: EHR.ext.topCols+',caseno'+EHR.ext.bottomCols,
     Birth: EHR.ext.topCols+',estimated,gender,weight,wdate,dam,sire,room,cage,cond,origin,conception,type,'+EHR.ext.bottomCols,
-    'Body Condition': EHR.ext.topCols+',score,weightstatus,' + EHR.ext.bottomCols,
     'Blood Draws': EHR.ext.topCols+',tube_type,tube_vol,num_tubes,quantity,requestor,additionalServices,billedby,assayCode,' + EHR.ext.bottomCols, //p_s,a_v,
-    cage_observations: 'date,room,cage,userId,no_observations,' + EHR.ext.sharedCols,
+    'Body Condition': EHR.ext.topCols+',score,weightstatus,tattoo_chest,tattoo_thigh,' + EHR.ext.bottomCols,
+    cage_observations: 'date,room,cage,feces,userId,no_observations,' + EHR.ext.sharedCols,
     Charges: EHR.ext.topCols+',type,unitCost,quantity,'+EHR.ext.bottomCols,
-    'Chemistry Results': EHR.ext.topCols+',testname,result,units,qualResult,'+EHR.ext.bottomCols,
-    'Clinical Encounters': EHR.ext.topCols + ',title,type,serviceRequested,'+EHR.ext.bottomCols,
+    'Chemistry Results': EHR.ext.topCols+',testid,method,resultOORIndicator,result,units,qualResult,'+EHR.ext.bottomCols,
+    'Clinical Encounters': EHR.ext.topCols + ',title,type,serviceRequested,restraint,restraintTime,'+EHR.ext.bottomCols,
     'Clinical Remarks': EHR.ext.topCols+',so,a,p,'+EHR.ext.bottomCols,
     'Clinical Observations': EHR.ext.topCols+',area,observation,code,' + EHR.ext.bottomCols,
-    'Clinpath Runs': EHR.ext.topCols+',type,serviceRequested,sampleType,sampleId,collectionDate,collectionMethod,collectedBy,quantity,quantityUnits,'+EHR.ext.bottomCols,
-    Deaths: EHR.ext.topCols+',cause,necropsy,'+EHR.ext.bottomCols,
+    'Clinpath Runs': EHR.ext.topCols+',serviceRequested,type,sampletype,sampleId,collectionMethod,collectedBy,'+EHR.ext.bottomCols,
+    Deaths: EHR.ext.topCols+',cause,manner,'+EHR.ext.bottomCols,
+    Demographics: EHR.ext.topCols+',species,gender,birth,death,hold,dam,sire,origin,geographic_origin,cond,medical,prepaid,'+EHR.ext.bottomCols,
     'Dental Status': EHR.ext.topCols+',priority,extractions,gingivitis,tartar,' + EHR.ext.bottomCols,
-    'Drug Administration': 'id,date,begindate,enddate,project,account,code,route,concentration,conc_units,dosage,dosage_units,amount,amount_units,volume,vol_units,headerdate,remark,performedby,' + EHR.ext.bottomCols,
-    'Hematology Results': EHR.ext.topCols+',testname,result,units,qualResult,'+EHR.ext.bottomCols,
+    'Drug Administration': 'id/curlocation/location,'+'id,date,begindate,enddate,project,account'+',code,qualifier,route,concentration,conc_units,dosage,dosage_units,volume,vol_units,amount,amount_units,headerdate,restraint,restraintTime,remark,performedby,' + EHR.ext.bottomCols,
+    'Final Reports': EHR.ext.topCols+','+EHR.ext.bottomCols,
+    'Hematology Results': EHR.ext.topCols+',testid,method,result,units,qualResult,'+EHR.ext.bottomCols,
     'Hematology Morphology': EHR.ext.topCols+',morphology,score,'+EHR.ext.bottomCols,
-    Histology: EHR.ext.topCols+',slideNum,tissue,diagnosis,'+EHR.ext.bottomCols,
+    Histology: EHR.ext.topCols+',slideNum,stain,tissue,qualifier,trimdate,'+EHR.ext.bottomCols,
     'Housing': 'id,project,id/curlocation/location,date,enddate,room,cage,cond,reason,isTemp,restraintType,cagesJoined,'+EHR.ext.bottomCols,
-    'Immunology Results': EHR.ext.topCols+',testname,result,units,qualResult,'+EHR.ext.bottomCols,
+    'Immunology Results': EHR.ext.topCols+',testid,method,result,units,qualResult,'+EHR.ext.bottomCols,
     'Irregular Observations': 'id/curlocation/location,'+EHR.ext.topCols + ',feces,menses,other,tlocation,behavior,otherbehavior,other,breeding,'+EHR.ext.bottomCols,
     'Necropsy Diagnosis': EHR.ext.topCols+',tissue,severity,duration,distribution,process,'+EHR.ext.bottomCols,
-    Necropsies: EHR.ext.topCols+',caseno,performedby,assistant,billing,perfusion_area,perfusion_soln,bcs,'+EHR.ext.bottomCols,
+    Necropsies: EHR.ext.topCols+',caseno,performedby,assistant,billing,nhpbmd,timeofdeath,perfusion_area,perfusion_soln1,perfusion_time1,perfusion_soln2,perfusion_time2,grossdescription,'+EHR.ext.bottomCols,
+    'Notes': EHR.ext.topCols+',userid,category,value,'+EHR.ext.bottomCols,
+    'Morphologic Diagnosis': EHR.ext.topCols+',tissue,severity,duration,distribution,distribution2,inflammation,etiology,process,process2,'+EHR.ext.bottomCols,
     'Pair Tests': EHR.ext.topCols+',partner,bhav,testno,sharedFood,aggressions,affiliation,conclusion,'+EHR.ext.bottomCols,
-    'Parasitology Results': EHR.ext.topCols+',code,'+EHR.ext.bottomCols,
+    'Parasitology Results': EHR.ext.topCols+',organism,method,result,units,qualresult,'+EHR.ext.bottomCols,
     'Procedure Codes': EHR.ext.topCols+',code,'+EHR.ext.bottomCols,
     'Problem List': EHR.ext.topCols+',code,category,'+EHR.ext.bottomCols,
     'Organ Weights': EHR.ext.topCols+',tissue,weight,'+EHR.ext.bottomCols,
-    requests: 'rowid,title,formtype,daterequested,priority,notify1,notify2,pi,createdby,qcstate',
+    requests: 'rowid,title,formtype,daterequested,priority,notify1,notify2,createdby,qcstate',
     Restraint: EHR.ext.topCols+',enddate,type,totaltime,'+EHR.ext.bottomCols,
     tasks: 'rowid,title,formtype,created,createdby,assignedto,duedate,taskid,category,qcstate',
     'TB Tests': EHR.ext.topCols + ',lot,dilution,eye,result1,result2,result3,'+EHR.ext.bottomCols,
     'Teeth': EHR.ext.topCols+',jaw,side,tooth,status,' + EHR.ext.bottomCols,
-    'Tissue Samples': EHR.ext.topCols+',tissue,diagnosis,'+EHR.ext.bottomCols,
-    'Treatment Orders': EHR.ext.topCols+',a,code,route,concentration,conc_units,volume,vol_units,amount,amount_units,' + EHR.ext.bottomCols,
+    'Tissue Samples': EHR.ext.topCols+',tissue,qualifier,preservation,recipient,'+EHR.ext.bottomCols,
+    'Treatment Orders': EHR.ext.topCols+',meaning,code,qualifier,route,frequency,concentration,conc_units,dosage,dosage_units,volume,vol_units,amount,amount_units,' + EHR.ext.bottomCols,
+    'Urinalysis Results': EHR.ext.topCols+',testid,method,resultOORIndicator,result,units,qualResult,'+EHR.ext.bottomCols,
+    'Virology Results': EHR.ext.topCols+',virus,method,resultOORIndicator,result,units,qualResult,'+EHR.ext.bottomCols,
     Vitals: EHR.ext.topCols+',temp,heartrate,resprate,' + EHR.ext.bottomCols,
-    Weight: EHR.ext.topCols + ',weight,'+EHR.ext.bottomCols
+    Weight: 'id/curlocation/location,'+EHR.ext.topCols + ',weight,'+EHR.ext.bottomCols
 };

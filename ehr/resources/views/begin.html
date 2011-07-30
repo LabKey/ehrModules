@@ -26,7 +26,7 @@ function createNavMenu()
             {header: 'By Dataset',
             items: [
                 {name: 'Browse All Datasets', url: '<%=contextPath%>/ehr/WNPRC/EHR/datasets.view?'},
-                {name: 'Clincal Remarks', url: '<%=contextPath%>/study/WNPRC/EHR/defaultDatasetReport.view?datasetId=1067'},
+                {name: 'Clincal Remarks', url: '<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=Clinical%20Remarks'},
                 {name: 'Housing Queries', url: '<%=contextPath%>/ehr/WNPRC/EHR/housingQueries.view?'},
                 {name: 'Protocol and Project Queries', url: '<%=contextPath%>/ehr/WNPRC/EHR/projectQueries.view?'}
             ]},
@@ -39,7 +39,10 @@ function createNavMenu()
             {header: 'Today At WNPRC',
             items: [
                 {name: 'Irregular Observations', url: '<%=contextPath%>/ehr/WNPRC/EHR/animalHistory.view#_inputType:renderRoomCage&activeReport:obs'},
-                {name: 'Treatment Schedule', url: '<%=contextPath%>/ehr/WNPRC/EHR/animalHistory.view#_inputType:renderRoomCage&activeReport:treatmentSchedule'}
+                {name: 'Treatment Schedule - AM', url: '<%=contextPath%>/ehr/WNPRC/EHR/animalHistory.view#_inputType:renderRoomCage&activeReport:treatmentScheduleAM'},
+                {name: 'Treatment Schedule - PM', url: '<%=contextPath%>/ehr/WNPRC/EHR/animalHistory.view#_inputType:renderRoomCage&activeReport:treatmentSchedulePM'},
+                {name: 'Treatment Schedule - Night', url: '<%=contextPath%>/ehr/WNPRC/EHR/animalHistory.view#_inputType:renderRoomCage&activeReport:treatmentScheduleNight'},
+                {name: 'Treatment Schedule - All', url: '<%=contextPath%>/ehr/WNPRC/EHR/animalHistory.view#_inputType:renderRoomCage&activeReport:treatmentSchedule'}
             ]}
         ]
     });
@@ -50,21 +53,29 @@ function createNavMenu()
         sections: [
             {header: 'Entire Colony',
             items: [
-                {name: 'Animal Utilization By Category', url: '<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=ColonyAssignmentSummary'},
+                {name: 'Animal Utilization By Category', url: '<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=colonyAssignmentSummary'},
                 {name: 'Colony Population By Age', url: '<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=Colony Population By Age'},
                 {name: 'MHC Genotype Summary', url: '<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=alleleFrequencies'},
-//                {name: 'Population Summary', url: '<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=colonyPopulationSummary'},
                 {name: 'Population Summary', url: '<%=contextPath%>/ehr/WNPRC/EHR/populationOverview.view?'},
                 {name: 'Room Utilization', url: '<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=ehr&query.queryName=RoomUtilization'},
-                {name: 'Viral Challenges', url: '<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=ViralChallenges'}
+                {name: 'Viral Challenges', url: '<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=ViralChallenges'},
+                {name: 'Weight: 10% Drop In Last 30 Days', url: '<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=weightRelChange&query.viewName=10 Pct Drop In Last 30 Days'},
+                {name: 'Weight: 10% Drop In Last 90 Days', url: '<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=weightRelChange&query.viewName=10 Pct Drop In Last 90 Days'},
+                {name: 'Weight: 10% Drop In Last 6 Months', url: '<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=weightRelChange&query.viewName=10 Pct Drop In Last 6 Months'}
             ]},
             {header: 'Validation and Alerts',
              items: [
-                 {name: 'Cage Review', url: '<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=CageReview'},
-//                 {name: 'Loners', url: '<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=animal&query.viewName=Loners'},
-//                 {name: 'Loners', url: '<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=demographicsDaysAlone'},
-                 {name: 'TB Tests', url: '<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=animal&query.viewName=TB'},
-                 {name: 'Unweighed Animals', url: '<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=animal&query.viewName=Unweighed'}
+                 {name: 'Animals Without Assignments', url: '<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=Demographics&query.viewName=No Active Assignments'},
+                 {name: 'Cage Review', url: '<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=CageReview&query.viewName=Problem%20Cages'},
+                 {name: 'Cages Lacking Dimensions', url: '<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=ehr&query.queryName=missingCages'},
+
+                 {name: 'Housing: Condition Problems', url: '<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=housingConditionProblems&query.viewName=Problems'},
+                 {name: 'Housing: Double Entries', url: '<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=housingProblems'},
+                 {name: 'Loners', url: '<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=demographicsDaysAlone&query.viewName=Alone 30 Days'},
+
+                 {name: 'Rooms Without Obs Today', url: '<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=ehr&query.queryName=RoomsWithoutObsToday'},
+                 {name: 'TB: Untested In >4 Months', url: '<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=Demographics&query.viewName=TB'},
+                 {name: 'Unweighed In Past 45 Days', url: '<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=Demographics&query.viewName=Unweighed%20Over%2045%20Days'}
              ]}
 
         ]
@@ -92,7 +103,7 @@ function createNavMenu()
                 {name: 'Request Biopsy', url: 'http://yakui.primate.wisc.edu/pathology/BiopsyForm.html'},
                 {name: 'Request Clinpath Services', url: 'http://www.primate.wisc.edu/clinpath/'},
                 {name: 'Request Necropsy', url: 'http://yakui.primate.wisc.edu/pathology/NecropsyForm.html'},
-                {name: 'Request Project', url: 'http://www.primate.wisc.edu/colony/project-form.html'}
+                {name: 'Request Project', url: 'http://www.primate.wisc.edu/colony-old/project-form.html'}
             ]}
         ]
     };
@@ -116,8 +127,8 @@ function createNavMenu()
 </script>
 <body>
 
-<div style="max-width:900px">
-    Below are the sections of the Electronic Health Record.  If there are additional reports you would like, please submit a request <a href="<%=contextPath%>/issues/WNPRC/WNPRC_Units/Research_Services/Research_Computing/Issue_Tracker/list.view?" target="new">here</a>.
+<div style="max-width:920px">
+    Below are the sections of the Electronic Health Record.  If there are additional reports you would like, please submit a request <a href="<%=contextPath%>/issues/WNPRC/WNPRC_Units/Research_Services/Research_Computing/Issue_Tracker/list.view?" target="_blank">here</a>.
     <br><br>
 </div>
 
@@ -131,13 +142,13 @@ function createNavMenu()
 <!--</td>-->
 <!--</tr>-->
 <tr style="vertical-align:top">
-    <td style="width:275px">
+    <td style="width:300px">
         <div id="ehrMenu1"></div>
     </td>
-    <td style="width:275px;vertical-align:top">
+    <td style="width:300px;vertical-align:top">
         <div id="ehrMenu2"></div>
     </td>
-    <td style="width:275px">
+    <td style="width:300px">
         <div id="ehrMenu3"></div>
     </td>
 </tr>

@@ -1,8 +1,7 @@
 <customView xmlns="http://labkey.org/data/xml/queryCustomView">
    <columns>
        <column name="Id" />
-       <column name="Date" />
-       <column name="QCState" />
+       <column name="date" />
 	   <column name="lot" />
        <column name="eye" />
        <column name="dilution" />
@@ -11,6 +10,8 @@
        <column name="result3" />
        <column name="missingresults" />
        <column name="remark" />
+       <column name="qcstate" />
+       <column name="taskid" />
    </columns>
    <sorts>
        <sort column="date" descending="true"/>

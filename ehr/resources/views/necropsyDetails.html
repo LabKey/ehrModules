@@ -20,9 +20,9 @@ Ext.onReady(function ()
     });
 
     new LABKEY.QueryWebPart({
-        title: 'Necropsy Diagnoses',
+        title: 'Morphologic Diagnoses',
         schemaName: 'study',
-        queryName: 'Necropsy Diagnosis',
+        queryName: 'Morphologic Diagnosis',
         allowChooseQuery: false,
         allowChooseView: true,
         showInsertNewButton: false,
@@ -34,7 +34,7 @@ Ext.onReady(function ()
         filters: [LABKEY.Filter.create('parentId', key, LABKEY.Filter.Types.EQUAL)],
         //sort: '-Date',
         scope: this,
-        errorCallback: EHR.utils.onError
+        failure: EHR.utils.onError
      }).render('necropsyDiagnosis');
 
 
@@ -53,7 +53,7 @@ Ext.onReady(function ()
 //        filters: [LABKEY.Filter.create('parentId', key, LABKEY.Filter.Types.EQUAL)],
 //        sort: '-Date',
 //        scope: this,
-//        errorCallback: EHR.utils.onError
+//        failure: EHR.utils.onError
 //     }).render('necropsyHistology');
 
 //    new LABKEY.QueryWebPart({
@@ -70,7 +70,7 @@ Ext.onReady(function ()
 //        filters: [LABKEY.Filter.create('parentId', key, LABKEY.Filter.Types.EQUAL)],
 //        sort: '-Date',
 //        scope: this,
-//        errorCallback: EHR.utils.onError
+//        failure: EHR.utils.onError
 //     }).render('necropsyTissues');
 
 //    new LABKEY.QueryWebPart({
@@ -89,7 +89,7 @@ Ext.onReady(function ()
 //        filters: [LABKEY.Filter.create('caseno/objectid', key, LABKEY.Filter.Types.EQUAL)],
 //        //sort: '-Date',
 //        scope: this,
-//        errorCallback: EHR.utils.onError
+//        failure: EHR.utils.onError
 //     }).render('necropsyImages');
 });
 

@@ -2,17 +2,25 @@
   <metadata>
         <tables xmlns="http://labkey.org/data/xml">
             <table tableName="StudyData" tableDbType="TABLE">
+                <pkColumnName>lsid</pkColumnName>
                 <columns>
+                    <column columnName="lsid">
+                        <isKeyField>true</isKeyField>
+                    </column>
                     <column columnName="remark">
                         <isHidden>false</isHidden>
                         <displayWidth>350</displayWidth>
                     </column>
                     <column columnName="Description">
                         <isHidden>false</isHidden>
-                        <displayWidth>350</displayWidth>
+                        <displayWidth>300</displayWidth>
                     </column>
                     <column columnName="enddate">
                         <columnTitle>End Date</columnTitle>
+                        <formatString>yyyy-MM-dd HH:mm</formatString>
+                    </column>
+                    <column columnName="date">
+                        <formatString>yyyy-MM-dd HH:mm</formatString>
                     </column>
                     <column columnName="project">
                         <fk>
@@ -60,6 +68,7 @@
                     </column>
                     <column columnName="Notes" wrappedColumnName="date">
                         <columnTitle>Notes</columnTitle>
+                        <nullable>true</nullable>
                         <formatString>'&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;'</formatString>
                         <shownInDetailsView>false</shownInDetailsView>
                         <shownInInsertView>false</shownInInsertView>
@@ -106,11 +115,32 @@
                             <fkColumnName>lsid</fkColumnName>
                         </fk>
                     </column>
+                    <column columnName="taskid">
+                        <isHidden>false</isHidden>
+                        <columnTitle>Task Id</columnTitle>
+                        <fk>
+                            <fkDbSchema>ehr</fkDbSchema>
+                            <fkTable>tasks</fkTable>
+                            <fkColumnName>taskid</fkColumnName>
+                        </fk>
+                        <url>/ehr/taskDetails.view?formtype=${taskid/formtype}&amp;taskid=${taskid}</url>
+                    </column>
+                    <column columnName="requestid">
+                        <isHidden>false</isHidden>
+                        <columnTitle>Request Id</columnTitle>
+                        <fk>
+                            <fkDbSchema>ehr</fkDbSchema>
+                            <fkTable>requests</fkTable>
+                            <fkColumnName>requestid</fkColumnName>
+                        </fk>
+                        <url>/ehr/requestDetails.view?formtype=${requestid/formtype}&amp;requestid=${requestid}</url>
+                    </column>
                     <column columnName="QCState">
                         <isHidden>false</isHidden>
                         <shownInDetailsView>true</shownInDetailsView>
                         <columnTitle>Status</columnTitle>
                         <displayWidth>50</displayWidth>
+                        <!--<url>/ehr/taskDetails.view?formtype=${taskid/formtype}&amp;taskid=${taskid}</url>-->
                         <conditionalFormats>
                             <conditionalFormat>
                                 <filters>
@@ -156,6 +186,30 @@
                             </conditionalFormat>
                         </conditionalFormats>
                     </column>
+                    <column columnName="animalvisit">
+                        <isHidden>true</isHidden>
+                    </column>
+                    <column columnName="sequencenum">
+                        <isHidden>true</isHidden>
+                    </column>
+                    <column columnName="created">
+                        <isHidden>true</isHidden>
+                        <formatString>yyyy-MM-dd HH:mm</formatString>
+                    </column>
+                    <column columnName="createdby">
+                        <isHidden>true</isHidden>
+                    </column>
+                    <column columnName="modified">
+                        <isHidden>true</isHidden>
+                        <formatString>yyyy-MM-dd HH:mm</formatString>
+                    </column>
+                    <column columnName="modifiedby">
+                        <isHidden>true</isHidden>
+                    </column>
+                    <column columnName="ts">
+                        <formatString>yyyy-MM-dd HH:mm</formatString>
+                    </column>
+
                     <!--<column columnName="ParentRecord" wrappedColumnName="objectid">-->
                         <!--<columnTitle>Parent Record</columnTitle>-->
                         <!--<isHidden>false</isHidden>-->
@@ -170,22 +224,21 @@
                         <!--</fk>-->
                     <!--</column>-->
                 </columns>
-                <buttonBarOptions position="both" includeStandardButtons="true">
+                <buttonBarOptions position="both" includeStandardButtons="false">
                     <includeScript>/ehr/studyButtons.js</includeScript>
                     <onRender>moreActionsHandler</onRender>
-
                     <item text="Views">
                         <originalText>Views</originalText>
                     </item>
                     <item text="Insert New">
                         <originalText>Insert New</originalText>
                     </item>
-                    <item text="Cohorts">
-                        <originalText>Cohorts</originalText>
-                    </item>
-                    <item text="QCState">
-                        <originalText>QC State</originalText>
-                    </item>
+                    <!--<item text="Cohorts">-->
+                        <!--<originalText>Cohorts</originalText>-->
+                    <!--</item>-->
+                    <!--<item text="QCState">-->
+                        <!--<originalText>QC State</originalText>-->
+                    <!--</item>-->
                     <item text="Export">
                         <originalText>Export</originalText>
                     </item>
@@ -198,9 +251,9 @@
                     <item text="Page Size">
                         <originalText>Page Size</originalText>
                     </item>
-                    <!--<item text="Delete">-->
-                        <!--<originalText>Delete</originalText>-->
-                    <!--</item>-->
+                    <item text="Delete">
+                        <originalText>Delete</originalText>
+                    </item>
                     <item text="More Actions" insertPosition="end" >
                         <item text="Jump To History">
                             <onClick>
@@ -218,6 +271,14 @@
                                 getDistinct(dataRegion, dataRegionName);
                             </onClick>
                         </item>
+                        <item text="Show Record History">
+                            <onClick>
+                                showAuditHistory(dataRegion, dataRegionName);
+                            </onClick>
+                        </item>
+                    </item>
+                    <item text=" " requiresSelection="true" insertAfter="More Actions">
+                        <onClick>function(){return false}</onClick>
                     </item>
                 </buttonBarOptions>
             </table>

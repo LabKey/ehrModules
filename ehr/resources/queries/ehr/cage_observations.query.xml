@@ -38,6 +38,16 @@
                         <columnTitle>Cage</columnTitle>
                         <displayWidth>50</displayWidth>
                     </column>
+                    <column columnName="feces">
+                        <datatype>varchar</datatype>
+                        <columnTitle>Feces</columnTitle>
+                        <!--<fk>-->
+                            <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
+                            <!--<fkDbSchema>ehr_lookups</fkDbSchema>-->
+                            <!--<fkTable>obs_feces</fkTable>-->
+                            <!--<fkColumnName>code</fkColumnName>-->
+                        <!--</fk>-->
+                    </column>
                     <column columnName="remark">
                         <datatype>varchar</datatype>
                         <columnTitle>Remark</columnTitle>
@@ -111,6 +121,12 @@
                         <columnTitle>Task Id</columnTitle>
                         <propertyURI>urn:ehr.labkey.org/#TaskId</propertyURI>
                         <isHidden>true</isHidden>
+                        <fk>
+                          <fkFolderPath>/wnprc/ehr</fkFolderPath>
+                          <fkDbSchema>ehr</fkDbSchema>
+                          <fkTable>tasks</fkTable>
+                          <fkColumnName>taskid</fkColumnName>
+                        </fk>
                     </column>
                     <column columnName="createdby">
                         <isUserEditable>false</isUserEditable>
@@ -144,7 +160,7 @@
                     <column columnName="no_observations">
                         <shownInInsertView>true</shownInInsertView>
                     </column>
-                    <housingRecord></housingRecord>
+                    <!--<housingRecord></housingRecord>-->
                 </columns>
                 <pkColumnName>RowId</pkColumnName>
             </table>

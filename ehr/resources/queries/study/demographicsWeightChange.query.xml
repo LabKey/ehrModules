@@ -16,8 +16,34 @@
                     <column columnName="MaxLast30">
                         <columnTitle>Max Weight In Last 30 Days</columnTitle>
                     </column>
+                    <column columnName="MaxLoss30">
+                        <columnTitle>Max Weight Loss In Last 30 Days</columnTitle>
+                    </column>
+                    <column columnName="MaxGain30">
+                        <columnTitle>Max Weight Gain In Last 30 Days</columnTitle>
+                    </column>
                     <column columnName="MaxChange30">
                         <columnTitle>Max % Change In Last 30 Days</columnTitle>
+                        <conditionalFormats>
+                            <conditionalFormat>
+                                <filters>
+                                    <filter operator="lte" value="-10"/>
+                                </filters>
+                                <bold>true</bold>
+                                <backgroundColor>FF0000</backgroundColor>
+                            </conditionalFormat>
+                            <conditionalFormat>
+                                <filters>
+                                    <filter operator="gte" value="10"/>
+                                </filters>
+                                <bold>true</bold>
+                                <backgroundColor>458B00</backgroundColor>
+                            </conditionalFormat>
+                        </conditionalFormats>
+                    </column>
+                    <column columnName="Weights30">
+                        <columnTitle>Weights In the Last 30 Days</columnTitle>
+                        <displayWidth>140</displayWidth>
                     </column>
                     <column columnName="MinLast90">
                         <columnTitle>Min Weight In Last 90 Days</columnTitle>
@@ -25,8 +51,34 @@
                     <column columnName="MaxLast90">
                         <columnTitle>Max Weight In Last 90 Days</columnTitle>
                     </column>
+                    <column columnName="MaxLoss90">
+                        <columnTitle>Max Weight Loss In Last 90 Days</columnTitle>
+                    </column>
+                    <column columnName="MaxGain90">
+                        <columnTitle>Max Weight Gain In Last 90 Days</columnTitle>
+                    </column>
                     <column columnName="MaxChange90">
                         <columnTitle>Max % Change In Last 90 Days</columnTitle>
+                        <conditionalFormats>
+                            <conditionalFormat>
+                                <filters>
+                                    <filter operator="lte" value="-10"/>
+                                </filters>
+                                <bold>true</bold>
+                                <backgroundColor>FF0000</backgroundColor>
+                            </conditionalFormat>
+                            <conditionalFormat>
+                                <filters>
+                                    <filter operator="gte" value="10"/>
+                                </filters>
+                                <bold>true</bold>
+                                <backgroundColor>458B00</backgroundColor>
+                            </conditionalFormat>
+                        </conditionalFormats>
+                    </column>
+                    <column columnName="Weights90">
+                        <columnTitle>Weights In the Last 90 Days</columnTitle>
+                        <displayWidth>140</displayWidth>
                     </column>
                     <column columnName="MinLast180">
                         <columnTitle>Min Weight In Last 6 Months</columnTitle>
@@ -34,8 +86,34 @@
                     <column columnName="MaxLast180">
                         <columnTitle>Max Weight In Last 6 Months</columnTitle>
                     </column>
+                    <column columnName="MaxLoss180">
+                        <columnTitle>Max Weight Loss In Last 6 Months</columnTitle>
+                    </column>
+                    <column columnName="MaxGain180">
+                        <columnTitle>Max Weight Gain In Last 6 Months</columnTitle>
+                    </column>
                     <column columnName="MaxChange180">
                         <columnTitle>Max % Change In Last 6 Months</columnTitle>
+                        <conditionalFormats>
+                            <conditionalFormat>
+                                <filters>
+                                    <filter operator="lte" value="-10"/>
+                                </filters>
+                                <bold>true</bold>
+                                <backgroundColor>FF0000</backgroundColor>
+                            </conditionalFormat>
+                            <conditionalFormat>
+                                <filters>
+                                    <filter operator="gte" value="10"/>
+                                </filters>
+                                <bold>true</bold>
+                                <backgroundColor>458B00</backgroundColor>
+                            </conditionalFormat>
+                        </conditionalFormats>
+                    </column>
+                    <column columnName="Weights180">
+                        <columnTitle>Weights In the Last 6 Months</columnTitle>
+                        <displayWidth>140</displayWidth>
                     </column>
                 </columns>
                 <titleColumn>MostRecentWeight</titleColumn>

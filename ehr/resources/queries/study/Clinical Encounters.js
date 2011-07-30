@@ -46,12 +46,18 @@ function setDescription(row, errors){
         description.push('Type: ' + row.type);
     if(row.title)
         description.push('Title: ' + row.title);
+    if(row.caseno)
+        description.push('CaseNo: ' + row.caseno);
     if(row.major)
         description.push('Is Major?: '+row.major);
     if(row.performedby)
         description.push('Performed By: ' + row.performedby);
     if(row.enddate)
-        description.push('Completed: ' + row.enddate);
+        description.push('Completed: ' + EHR.validation.dateTimeToString(row.enddate));
+
+    //NOTE: only show this for non-final data
+    if(row.serviceRequested && row.QCStateLabel && this.scriptContext.qcMap.label[row.QCStateLabel].PublicData === false)
+        description.push('Service Requested: ' + row.serviceRequested);
 
     return description;
 }

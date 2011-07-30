@@ -17,8 +17,8 @@ function setDescription(row, errors){
 
     if(row.userid)
         description.push('UserId: '+row.userid);
-    if(row.requestId)
-        description.push('Request Id: '+row.requestId);
+//    if(row.requestId)
+//        description.push('Request Id: '+row.requestId);
     return description;
 }
 

@@ -24,52 +24,99 @@ EHR.ext.AnimalSelector = Ext.extend(Ext.Panel, {
             }
             ,items: [
                 {
-                    xtype: 'textfield',
+                    xtype: 'textarea',
+                    height: 100,
                     ref: 'subjArea',
                     fieldLabel: 'Id(s)'
                 },
-                {
-                    xtype: 'combo'
-                    ,emptyText:''
-                    ,fieldLabel: 'Area'
-                    ,displayField:'area'
-                    ,valueField: 'area'
-                    ,typeAhead: true
-                    ,editable: true
-                    ,triggerAction: 'all'
-                    ,store: new LABKEY.ext.Store({
-                        containerPath: 'WNPRC/EHR/',
-                        schemaName: 'ehr_lookups',
-                        queryName: 'areas',
-                        sort: 'area',
-                        autoLoad: true
-                    }),
-                    ref: 'areaField'
-
-                },
+//                {
+//                    xtype: 'combo'
+//                    ,emptyText:''
+//                    ,fieldLabel: 'Area'
+//                    ,displayField:'area'
+//                    ,valueField: 'area'
+//                    ,typeAhead: true
+//                    ,editable: true
+//                    ,triggerAction: 'all'
+//                    ,store: new LABKEY.ext.Store({
+//                        containerPath: 'WNPRC/EHR/',
+//                        schemaName: 'ehr_lookups',
+//                        queryName: 'areas',
+//                        sort: 'area',
+//                        autoLoad: true
+//                    }),
+//                    ref: 'areaField'
+//
+//                },
                 {
                     emptyText:''
-                    ,fieldLabel: 'Room'
+                    ,fieldLabel: 'Room(s)'
                     ,ref: 'roomField'
-                    ,xtype: 'combo'
-                    ,displayField:'room'
-                    ,valueField: 'room'
-                    ,typeAhead: true
-                    ,mode: 'local'
-                    ,triggerAction: 'all'
-                    ,editable: true
-                    ,store: new LABKEY.ext.Store({
-                    containerPath: 'WNPRC/EHR/',
-                    schemaName: 'ehr_lookups',
-                    queryName: 'rooms',
-                    sort: 'room',
-                    autoLoad: true
-                })
+                    ,xtype: 'textfield'
+//                    ,displayField:'room'
+//                    ,valueField: 'room'
+//                    ,typeAhead: true
+//                    ,lazyInit: false
+//                    ,mode: 'local'
+//                    ,triggerAction: 'all'
+//                    ,editable: true
+//                    ,store: new LABKEY.ext.Store({
+//                        containerPath: 'WNPRC/EHR/',
+//                        schemaName: 'ehr_lookups',
+//                        queryName: 'rooms',
+//                        sort: 'room',
+//                        autoLoad: true
+//                    })
+                    ,listeners: {
+                        render: function(field){
+                            field.el.set({autocomplete: 'off'});
+                        },
+                        change: function(field, room){
+                            if(room){
+                                room = room.replace(/[\s,;]+/g, ';');
+                                room = room.replace(/(^;|;$)/g, '');
+                                room = room.toLowerCase();
+                                field.setValue(room);
+                            }
+                        }
+                    }
                 },
                 {
                     xtype: 'textfield',
                     ref: 'cageField',
-                    fieldLabel: 'Cage'
+                    fieldLabel: 'Cage',
+                    listeners: {
+                        change: function(field, val){
+                            if(val && !isNaN(val)){
+                                var newVal = EHR.utils.padDigits(val, 4);
+                                if(val != newVal)
+                                    field.setValue(newVal);
+                            }
+                        },
+                        render: function(field){
+                            field.el.set({autocomplete: 'off'});
+                        }
+                    }
+//                },
+//                {
+//                    emptyText:''
+//                    ,fieldLabel: 'Project'
+//                    ,ref: 'projectField'
+//                    ,xtype: 'combo'
+//                    ,displayField:'project'
+//                    ,valueField: 'project'
+//                    ,typeAhead: true
+//                    ,mode: 'local'
+//                    ,triggerAction: 'all'
+//                    ,editable: true
+//                    ,store: new LABKEY.ext.Store({
+//                        containerPath: 'WNPRC/EHR/',
+//                        schemaName: 'lists',
+//                        queryName: 'project',
+//                        viewName: 'Projects With Active Assignments',
+//                        sort: 'project',
+//                        autoLoad: true
+//                    })
                 }
             ],
             buttons: [{
@@ -79,7 +126,6 @@ EHR.ext.AnimalSelector = Ext.extend(Ext.Panel, {
                 scope: this,
                 handler: function(s){
                     this.getAnimals();
-                    this.ownerCt.hide();
                 }
             },{
                 text: 'Close',
@@ -96,16 +142,10 @@ EHR.ext.AnimalSelector = Ext.extend(Ext.Panel, {
 
     getFilterArray: function(button)
     {
-        var room = (this.roomField ? this.roomField.getValue() : null);
-        var cage = (this.cageField ? this.cageField.getValue() : null);
+        var room = this.roomField.getValue();
+        var cage = this.cageField.getValue();
         var area = (this.areaField ? this.areaField.getValue() : null);
         var project = (this.projectField ? this.projectField.getValue() : null);
-
-        //we clean up, combine subjects
-        var subjectList = this.subjArea.getValue();
-        subjectList = subjectList.replace(/[\s,;]+/g, ';');
-        subjectList = subjectList.replace(/(^;|;$)/g, '');
-        subjectList = subjectList.toLowerCase();
 
         var filterArray = [];
 
@@ -113,13 +153,13 @@ EHR.ext.AnimalSelector = Ext.extend(Ext.Panel, {
             filterArray.push(LABKEY.Filter.create('area', area, LABKEY.Filter.Types.STARTS_WITH));
 
         if (room)
-            filterArray.push(LABKEY.Filter.create('room', room, LABKEY.Filter.Types.STARTS_WITH));
+            filterArray.push(LABKEY.Filter.create('room', room, LABKEY.Filter.Types.EQUALS_ONE_OF));
 
         if (cage)
             filterArray.push(LABKEY.Filter.create('cage', cage, LABKEY.Filter.Types.EQUAL));
 
-        if (subjectList)
-            filterArray.push(LABKEY.Filter.create('Id', subjectList, LABKEY.Filter.Types.EQUALS_ONE_OF));
+        if (project)
+            filterArray.push(LABKEY.Filter.create('Id/activeAssignments/projects', project, LABKEY.Filter.Types.CONTAINS));
 
         return filterArray;
     },
@@ -128,25 +168,52 @@ EHR.ext.AnimalSelector = Ext.extend(Ext.Panel, {
     {
         Ext.Msg.wait("Loading...");
 
-        var filterArray = this.getFilterArray();
+        //we clean up, combine subjects
+        var subjectList = this.subjArea.getValue();
+        if(subjectList){
+            subjectList = subjectList.replace(/[\s,;]+/g, ';');
+            subjectList = subjectList.replace(/(^;|;$)/g, '');
+            subjectList = subjectList.toLowerCase();
+            subjectList = subjectList.split(';');
+            if(subjectList.length && this.targetStore){
+                var records = [];
+                Ext.each(subjectList, function(s){
+                    records.push({Id: s});
+                }, this);
+                this.targetStore.addRecords(records);
+            }
+        }
 
-        if (!filterArray.length)
+        var filterArray = this.getFilterArray();
+        if (!subjectList && !subjectList.length && !filterArray.length)
         {
             Ext.Msg.hide();
-            alert('Must Enter A Filter');
+            if(!subjectList.length)
+                alert('Must Enter A Room or List of Animals');
             return;
         }
 
-        //find distinct animals matching criteria
-        LABKEY.Query.selectRows({
-            schemaName: 'study',
-            queryName: 'demographicsCurLocation',
-            sort: 'room,cage,Id',
-            filterArray: filterArray,
-            scope: this,
-            successCallback: this.onSuccess
-        });
+        this.ownerCt.hide();
 
+        if (filterArray.length){
+            //find distinct animals matching criteria
+            LABKEY.Query.selectRows({
+                schemaName: 'study',
+                queryName: 'demographicsCurLocation',
+                sort: 'room,cage,Id',
+                filterArray: filterArray,
+                scope: this,
+                timeout: 30000,
+                success: this.onSuccess,
+                failure: function(error){
+                    Ext.Msg.hide();
+                    alert(error.exception);
+                }
+            });
+        }
+        else {
+            Ext.Msg.hide();
+        }
     },
     onSuccess: function(results){
         if (!results.rows || !results.rows.length)
@@ -161,8 +228,13 @@ EHR.ext.AnimalSelector = Ext.extend(Ext.Panel, {
 
         Ext.each(results.rows, function(row)
         {
+            var obj;
             if (!ids[row.Id]){
-                records.push({Id: row.Id, 'id/curlocation/location': row['room']+'-'+row['cage']});
+                obj = {Id: row.Id};
+                if(row.room)
+                    obj['id/curlocation/location'] = row.room+'-'+row.cage;
+
+                records.push(obj);
                 ids[row.Id] = 0;
             }
         }, this);
@@ -178,13 +250,305 @@ EHR.ext.AnimalSelector = Ext.extend(Ext.Panel, {
 Ext.reg('ehr-animalselector', EHR.ext.AnimalSelector);
 
 
+EHR.ext.AddSeriesWin = Ext.extend(Ext.Panel, {
+    initComponent: function()
+    {
+        Ext.applyIf(this, {
+            layout: 'form'
+            ,title: 'Enter Series of IDs'
+            ,bodyBorder: true
+            ,border: true
+            //,frame: true
+            ,bodyStyle: 'padding:5px'
+            ,width: 350
+            ,defaults: {
+                width: 200,
+                border: false,
+                bodyBorder: false
+            }
+            ,items: [
+                {
+                    xtype: 'textfield',
+                    ref: 'prefix',
+                    fieldLabel: 'Prefix'
+                },{
+                    fieldLabel: 'Starting Number'
+                    ,ref: 'startNumber'
+                    ,xtype: 'numberfield'
+                },{
+                    xtype: 'numberfield'
+                    ,ref: 'totalIds'
+                    ,fieldLabel: 'Total IDs'
+                }
+            ],
+            buttons: [{
+                text:'Submit',
+                disabled:false,
+                ref: '../submit',
+                scope: this,
+                handler: function(s){
+                    this.getAnimals();
+                }
+            },{
+                text: 'Close',
+                scope: this,
+                handler: function(){
+                    this.ownerCt.hide();
+                }
+            }]
+            //buttonAlign: 'left'
+        });
+
+        EHR.ext.AddSeriesWin.superclass.initComponent.call(this, arguments);
+    },
+
+    getAnimals: function(button)
+    {
+        var prefix = this.prefix.getValue();
+        var startNumber = this.startNumber.getValue();
+        var totalIds = this.totalIds.getValue();
+
+        if (!prefix || !startNumber || !totalIds)
+        {
+            alert('Must Enter A Prefix and Number of Animals');
+            return;
+        }
+
+        this.ownerCt.hide();
+
+        var records = [];
+        var length = 6 - prefix.length;
+        for(var i=0;i<totalIds;i++){
+           records.push({Id: prefix+EHR.utils.padDigits(startNumber+i, length)});
+        }
+
+        if (this.targetStore)
+            this.targetStore.addRecords(records);
+    }
+
+});
+Ext.reg('ehr-addseries', EHR.ext.AddSeriesWin);
+
+
+
+EHR.ext.TreatmentSelector = Ext.extend(Ext.Panel, {
+    initComponent: function()
+    {
+        Ext.applyIf(this, {
+            layout: 'form'
+            ,title: 'Import Scheduled Treatments'
+            ,bodyBorder: true
+            ,border: true
+            //,frame: true
+            ,bodyStyle: 'padding:5px'
+            ,width: 350
+            ,defaults: {
+                width: 200,
+                border: false,
+                bodyBorder: false
+            }
+            ,items: [{
+//                xtype: 'combo'
+//                ,emptyText:''
+//                ,fieldLabel: 'Area'
+//                ,displayField:'area'
+//                ,valueField: 'area'
+//                ,typeAhead: true
+//                ,editable: true
+//                ,triggerAction: 'all'
+//                ,store: new LABKEY.ext.Store({
+//                    containerPath: 'WNPRC/EHR/',
+//                    schemaName: 'ehr_lookups',
+//                    queryName: 'areas',
+//                    sort: 'area',
+//                    autoLoad: true
+//                }),
+//                ref: 'areaField'
+//            },{
+                emptyText:''
+                ,fieldLabel: 'Room'
+                ,ref: 'roomField'
+                ,xtype: 'textfield'
+                ,listeners: {
+                    render: function(field){
+                        field.el.set({autocomplete: 'off'});
+                    },
+                    change: function(field, room){
+                        if(room){
+                            room = room.replace(/[\s,;]+/g, ';');
+                            room = room.replace(/(^;|;$)/g, '');
+                            room = room.toLowerCase();
+                            field.setValue(room);
+                        }
+                    }
+                }
+//                ,displayField:'room'
+//                ,valueField: 'room'
+//                ,typeAhead: true
+//                ,mode: 'local'
+//                ,triggerAction: 'all'
+//                ,editable: true
+//                ,store: new LABKEY.ext.Store({
+//                    containerPath: 'WNPRC/EHR/',
+//                    schemaName: 'ehr_lookups',
+//                    queryName: 'rooms',
+//                    sort: 'room',
+//                    autoLoad: true
+//                })
+            },{
+                emptyText:''
+                ,fieldLabel: 'Time of Day'
+                ,ref: 'timeField'
+                ,xtype: 'combo'
+                ,displayField:'time'
+                ,valueField: 'time'
+                ,typeAhead: true
+                ,mode: 'local'
+                ,triggerAction: 'all'
+                ,editable: true
+                ,store: new Ext.data.ArrayStore({
+                    fields: [
+                        'time'
+                    ],
+                    idIndex: 0,
+                    data: [
+                        ['AM'],
+                        //['Noon'],
+                        ['PM'],
+                        ['Night']
+                    ]
+                })
+            }],
+            buttons: [{
+                text:'Submit',
+                disabled:false,
+                ref: '../submit',
+                scope: this,
+                handler: function(s){
+                    this.getTreatments();
+                }
+            },{
+                text: 'Close',
+                scope: this,
+                handler: function(){
+                    this.ownerCt.hide();
+                }
+            }]
+        });
+
+        EHR.ext.TreatmentSelector.superclass.initComponent.call(this, arguments);
+    },
+
+    getFilterArray: function(button)
+    {
+        var room = (this.roomField ? this.roomField.getValue() : null);
+        var area = (this.areaField ? this.areaField.getValue() : null);
+        var time = (this.timeField ? this.timeField.getValue() : null);
+
+        if (!room || !time.length)
+        {
+            alert('Must provide room and time of day');
+            return;
+        }
+
+        var filterArray = [];
+
+        filterArray.push(LABKEY.Filter.create('date', new Date(), LABKEY.Filter.Types.DATE_EQUAL));
+        filterArray.push(LABKEY.Filter.create('treatmentStatus', '', LABKEY.Filter.Types.ISBLANK));
+
+        if (area)
+            filterArray.push(LABKEY.Filter.create('CurrentRoom/area', area, LABKEY.Filter.Types.EQUAL));
+
+        if (room)
+            filterArray.push(LABKEY.Filter.create('CurrentRoom', room, LABKEY.Filter.Types.EQUALS_ONE_OF));
+
+        if (time)
+            filterArray.push(LABKEY.Filter.create('TimeOfDay', time, LABKEY.Filter.Types.EQUAL));
+
+        return filterArray;
+    },
+
+    getTreatments: function(button)
+    {
+        var filterArray = this.getFilterArray();
+        if (!filterArray || !filterArray.length)
+        {
+            return;
+        }
+
+        Ext.Msg.wait("Loading...");
+        this.ownerCt.hide();
+
+        //find distinct animals matching criteria
+        LABKEY.Query.selectRows({
+            schemaName: 'study',
+            queryName: 'treatmentSchedule',
+            sort: 'date,CurrentRoom,CurrentCage,Id',
+            columns: 'primaryKey,lsid,Id,date,CurrentRoom,CurrentCage,project,project.account,meaning,code,qualifier,route,concentration,conc_units,amount,amount_units,dosage,dosage_units,volume,vol_units,remark',
+            filterArray: filterArray,
+            scope: this,
+            success: this.onSuccess,
+            failure: function(error){
+                Ext.Msg.hide();
+                alert(error.exception);
+            }
+        });
+
+    },
+    onSuccess: function(results){
+        if (!results.rows || !results.rows.length)
+        {
+            alert('No uncompleted treatments were found.');
+            Ext.Msg.hide();
+            return;
+        }
+
+        var ids = {};
+        var records = [];
+        var obj;
+        Ext.each(results.rows, function(row)
+        {
+            records.push({
+                Id: row.Id,
+                'id/curlocation/location': row.CurrentRoom+'-'+row.CurrentCage,
+                date: new Date(),
+                project: row.project,
+                account: row.account,
+                code: row.code,
+                qualifier: row.qualifier,
+                route: row.route,
+                concentration: row.concentration,
+                conc_units: row.conc_units,
+                amount: row.amount,
+                amount_units: row.amount_units,
+                volume: row.volume,
+                vol_units: row.vol_units,
+                dosage: row.dosage,
+                dosage_units: row.dosage_units,
+                parentId: row.primaryKey,
+                performedby: null,
+                remark: row.remark
+            });
+        }, this);
+
+        if (this.targetStore){
+            this.targetStore.addRecords(records);
+        }
+
+        Ext.Msg.hide();
+    }
+
+});
+Ext.reg('ehr-treatmentselector', EHR.ext.TreatmentSelector);
+
+
 
 EHR.ext.ImportPanelHeader = Ext.extend(EHR.ext.FormPanel, {
     initComponent: function()
     {
         Ext.apply(this, {
             autoHeight: true
-            ,autoWidth: true
+            //,autoWidth: true
             ,name: 'tasks'
             ,bodyBorder: false
             ,border: false
@@ -273,136 +637,6 @@ EHR.ext.ImportPanelHeader = Ext.extend(EHR.ext.FormPanel, {
 });
 Ext.reg('ehr-importpanelheader', EHR.ext.ImportPanelHeader);
 
-//EHR.ext.ClinicalHeader = Ext.extend(Ext.FormPanel, {
-//    initComponent: function()
-//    {
-//        EHR.utils.rApplyIf(this, {
-//            autoHeight: true
-//            ,autoWidth: true
-//            ,name: 'encounters'
-//            ,title: 'Header'
-//            ,bodyBorder: false
-//            ,border: false
-//            ,bodyStyle: 'padding:5px'
-//            ,buttons: []
-//            ,plugins: ['databind']
-//            //databind plugin options
-//            ,bindConfig: {
-//                disableUnlessBound: true
-//                ,bindOnChange: false
-//                ,autoBindRecord: true
-//                ,createRecordOnLoad: true
-//                ,showDeleteBtn: false
-//            }
-//            ,monitorValid: false
-//            ,defaults: {
-//                border: false,
-//                bodyBorder: false
-//                //importPanel: this.importPanel || this
-//            }
-//            ,items: [
-//                {
-//                    layout: 'column'
-//                    ,labelAlign: 'top'
-//                    ,defaults: {
-//                        border: false,
-//                        bodyBorder: false
-//                    }
-//                    ,items: [
-//                    {
-//                        columnWidth:'250px',
-//                        style:'padding-right:4px;padding-top:0px',
-//                        layout: 'form',
-//                        defaults: {
-//                            //importPanel: this.importPanel || this,
-//                            border: false,
-//                            bodyBorder: false
-//                        },
-//                        items: [
-//                            {
-//                                xtype:'ehr-participant',
-//                                name: 'Id',
-//                                dataIndex: 'Id',
-//                                allowBlank: false,
-//                                ref: '../../Id',
-//                                msgTarget: 'under'
-//                            }
-//                        ]
-//                    },
-//                    {
-//                        columnWidth:'300px',
-//                        layout: 'form',
-//                        border: false,
-//                        bodyBorder: false,
-////                        defaults: {
-////                            importPanel: this.importPanel || this
-////                        },
-//                        items: [
-//                            {
-//                                xtype:'xdatetime',
-//                                name: 'date',
-//                                dataIndex: 'date',
-//                                allowBlank: false,
-//                                ref: '../../date',
-//                                fieldLabel: 'Date/Time',
-//                                dateFormat: 'Y-m-d',
-//                                timeFormat: 'H:i'
-//                            }
-//                        ]
-//                    },
-//                    {
-//                        //columnWidth:'220px',
-//                        style:'padding-left:5px;padding-top:0px',
-//                        layout: 'form',
-//                        ref: '../projectCt',
-//                        defaults: {
-////                            importPanel: this.importPanel || this,
-//                            border: false,
-//                            bodyBorder: false
-//                        },
-//                        items: [
-//                            {
-//                                xtype:'ehr-project',
-//                                name: 'project',
-//                                width: 140,
-//                                dataIndex: 'project',
-//                                msgTarget: 'under',
-//                                allowBlank: false,
-//                                ref: '../../project'
-//                            }
-//                        ]
-//                    }
-//                ]
-//                }
-//            ]
-//        });
-//
-//        this.store = {
-//            xtype: 'ehr-store',
-//            containerPath: 'WNPRC/EHR/',
-//            schemaName: 'study',
-//            queryName: 'Clinical Encounters',
-//            columns: EHR.ext.FormColumns['Clinical Encounters'],
-//            filterArray: [LABKEY.Filter.create('taskId', this.importPanel.formUUID, LABKEY.Filter.Types.EQUAL)],
-//            metadata: this.metadata || EHR.ext.getTableMetadata('Clinical Encounters', ['Task,Encounter']),
-//            //maxRows: 1,
-//            storeId: 'study||Clinical Encounters||',
-//            autoLoad: true,
-//            canSaveInTemplate: false
-//        }
-//
-//        EHR.ext.ClinicalHeader.superclass.initComponent.call(this, arguments);
-//
-//        this.addEvents('participantchange');
-//        this.projectCt.addEvents('participantchange');
-//        this.projectCt.relayEvents(this, ['participantchange']);
-//
-//        if (this.importPanel){
-//            this.importPanel.relayEvents(this, ['participantchange']);
-//        }
-//    }
-//});
-//Ext.reg('ehr-clinheader', EHR.ext.ClinicalHeader);
 
 EHR.ext.AbstractPanel = Ext.extend(Ext.FormPanel, {
     initComponent: function()
@@ -418,7 +652,6 @@ EHR.ext.AbstractPanel = Ext.extend(Ext.FormPanel, {
             ,title: 'Animal Info'
             ,labelWidth: 120
             ,autoHeight: true
-            //,boxMinHeight: 255
             ,border: true
             ,bodyBorder: false
             ,participantMap: new Ext.util.MixedCollection(null, function(f){return f.Id})
@@ -433,8 +666,8 @@ EHR.ext.AbstractPanel = Ext.extend(Ext.FormPanel, {
                 labelWidth: 170,
                 defaults: panelDefaults,
                 ref: 'placeForAbstract',
-                //255 is the height of the Clinical Summary view
-                height: this.boxMinHeight || 255,
+                //275 is the height of the Clinical Summary view
+                height: this.boxMinHeight || 300,
                 items: [{html: 'No Animal Selected'}]
             },{
                 xtype: 'panel',
@@ -500,10 +733,10 @@ EHR.ext.AbstractPanel = Ext.extend(Ext.FormPanel, {
                     frame: 'none',
                     showDeleteButton: false,
                     timeout: 0,
-                    linkTarget: '_new',
+                    linkTarget: '_blank',
                     renderTo: this.placeForQwp.body.id,
                     scope: this,
-                    errorCallback: function(error){
+                    failure: function(error){
                         EHR.utils.onError(error)
                     }
                 };
@@ -535,7 +768,7 @@ EHR.ext.AbstractPanel = Ext.extend(Ext.FormPanel, {
             {
                 if (c.hidden)
                     return false;
-                var value = row['_labkeyurl_' + c.name] ? '<a href="' + row['_labkeyurl_' + c.name] + '" target=new>' + row[c.name] + '</a>' : row[c.name];
+                var value = row['_labkeyurl_' + c.name] ? '<a href="' + row['_labkeyurl_' + c.name] + '" target=_blank>' + row[c.name] + '</a>' : row[c.name];
                 this.placeForAbstract.add({id: c.name, xtype: 'displayfield', fieldLabel: c.caption, value: value, submitValue: false});
             }, this);
 
@@ -566,8 +799,8 @@ Ext.reg('ehr-abstractpanel', EHR.ext.AbstractPanel);
 EHR.ext.QueryPanel = Ext.extend(Ext.Panel, {
     initComponent: function(){
         Ext.applyIf(this, {
-            width: 'auto',
-            layout: 'anchor',
+            //width: 'auto',
+            layout: 'fit',
             autoScroll: true,
             border: false,
             //headerStyle: 'background-color : transparent;background : transparent;',
@@ -611,9 +844,9 @@ EHR.ext.QueryPanel = Ext.extend(Ext.Panel, {
             frame: 'none',
             showDeleteButton: false,
             timeout: 0,
-            linkTarget: '_new',
+            linkTarget: '_blank',
             renderTo: target.id,
-            errorCallback: function(error){
+            failure: function(error){
                 EHR.utils.onError(error)
             },
             success: function(result){
@@ -710,65 +943,6 @@ EHR.ext.RecordDuplicator = Ext.extend(Ext.FormPanel, {
     }
 });
 Ext.reg('ehr-recordduplicator', EHR.ext.RecordDuplicator);
-
-//EHR.ext.ClinPathOrderPanel = Ext.extend(Ext.FormPanel, {
-//    initComponent: function()
-//    {
-//        Ext.applyIf(this, {
-//            layout: 'form'
-//            ,bodyBorder: true
-//            ,border: true
-//            ,bodyStyle: 'padding:5px'
-//            ,defaults: {
-//                width: 200,
-//                border: false,
-//                bodyBorder: false
-//            }
-//            ,items: [{
-//                xtype: 'ehr-participant',
-//                value: this.defaultAnimal
-//            },{
-//                xtype: 'ehr-remotecheckboxgroup',
-//                ref: 'testName',
-//                displayField: 'label',
-//                valueField: 'dataset',
-//                store: new LABKEY.ext.Store({
-//                    schemaName: 'ehr_lookups',
-//                    queryName: 'clinpath_services'
-//                })
-//            }]
-//            ,scope: this
-//            ,buttons: [{
-//                text:'Submit',
-//                disabled:false,
-//                ref: '../submit',
-//                scope: this,
-//                handler: function(s){
-//                    this.onSubmit();
-//                    this.ownerCt.hide();
-//                }
-//            },{
-//                text: 'Close',
-//                scope: this,
-//                handler: function(){
-//                    this.ownerCt.hide();
-//                }
-//            }]
-//        });
-//
-//        EHR.ext.ClinPathOrderPanel.superclass.initComponent.call(this, arguments);
-//    },
-//
-//    onSubmit: function(){
-//        var data = this.getForm().getValues();
-//        var tests  = this.testName.getValue()
-//        console.log(data)
-//
-//
-//
-//    }
-//});
-//Ext.reg('ehr-clinpathorderpanel', EHR.ext.ClinPathOrderPanel);
 
 
 //creates a pair of date fields that automatically set their min/max dates to create a date range
@@ -898,6 +1072,10 @@ EHR.ext.ApplyTemplatePanel = Ext.extend(Ext.FormPanel, {
             filterArray: [LABKEY.Filter.create('templateId', templateId, LABKEY.Filter.Types.EQUAL)],
             sort: '-rowid',
             success: this.onLoadTemplate,
+            failure: function(error){
+                Ext.Msg.hide();
+                alert(error.exception);
+            },
             scope: this
         });
 
@@ -1215,7 +1393,7 @@ EHR.ext.SaveTemplatePanel = Ext.extend(Ext.Window, {
         };
 
         if(this.grid){
-            panel.items[0].items.push({
+            panel.items[0].items[0].items.push({
                 fieldLabel: 'Selected Only',
                 inputValue: 'selected',
                 name: store.storeId+'-radio'
@@ -1334,6 +1512,36 @@ EHR.ext.SaveTemplatePanel = Ext.extend(Ext.Window, {
 Ext.reg('ehr-savetemplatepanel', EHR.ext.SaveTemplatePanel);
 
 
+//EHR.ext.FormWindow = Ext.extend(Ext.Window, {
+//    initComponent: function()
+//    {
+//        Ext.apply(this, {
+//            closeAction:'hide'
+//            ,title: 'Enter Data'
+//            ,xtype: 'panel'
+//            ,autoScroll: true
+//            ,autoHeight: true
+//            ,boxMaxHeight: 600
+//            ,defaults: {
+//                border: false
+//                ,bodyStyle: 'padding: 5px;'
+//            }
+//            ,items: [{
+//                xtype: 'ehr-formpanel'
+//                ,schemaName: this.schemaName
+//                ,queryName: this.queryName
+//                ,columns: EHR.ext.FormColumns[this.queryName]
+//                ,metadata: EHR.ext.getTableMetadata(this.queryName, ['Task'])
+//            }]
+//            ,scope: this
+//        });
+//
+//        EHR.ext.FormWindow.superclass.initComponent.call(this, arguments);
+//    }
+//});
+//Ext.reg('ehr-formwindow', EHR.ext.FormWindow);
+
+
 EHR.ext.createImportPanel = function(config){
     var multi = new LABKEY.MultiRequest();
 
@@ -1346,6 +1554,10 @@ EHR.ext.createImportPanel = function(config){
         scope: this,
         successCallback: function(results){
             formSections = results.rows;
+        },
+        failure: function(error){
+            Ext.Msg.hide();
+            console.log(error.exception);
         }
     });
 
@@ -1358,6 +1570,12 @@ EHR.ext.createImportPanel = function(config){
         successCallback: function(results){
             if(results.rows.length)
                 formConfig = results.rows[0];
+            else
+                formConfig = {};
+        },
+        failure: function(error){
+            Ext.Msg.hide();
+            console.log(error.exception);
         }
     });
     multi.send(onSuccess, this);

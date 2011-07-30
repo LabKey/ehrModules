@@ -21,8 +21,8 @@ Ext.onReady(function (){
                     {name: 'ETL History', url: '<%=contextPath%>/query<%=containerPath%>/executeQuery.view?schemaName=core&query.queryName=Sync History'},
                     {name: 'Manage EHR Study', url: '<%=contextPath%>/study<%=containerPath%>/manageStudy.view?'},
                     {name: 'Populate Initial Data', url: '<%=contextPath%>/EHR<%=containerPath%>/_initEHR.view?'},
-                    {name: 'Recalculate Kinship Table', url: '<%=contextPath%>/query<%=containerPath%>/executeQuery.view?schemaName=study&query.queryName=demographicsPedigree&query.reportId=module%3AEHR%2Fschemas%2Fstudy%2FdemographicsPedigree%2FKinship.r'},
-                    {name: 'Recalculate Inbreeding Table', url: '<%=contextPath%>/query<%=containerPath%>/executeQuery.view?schemaName=study&query.queryName=demographicsPedigree&query.reportId=module%3AEHR%2Fschemas%2Fstudy%2FdemographicsPedigree%2FInbreedingCoefficients.r'},
+                    {name: 'Recalculate Kinship Table', url: '<%=contextPath%>/query<%=containerPath%>/executeQuery.view?schemaName=study&query.queryName=Pedigree&query.reportId=module%3AEHR%2Fschemas%2Fstudy%2FPedigree%2FKinship.r'},
+                    {name: 'Recalculate Inbreeding Table', url: '<%=contextPath%>/query<%=containerPath%>/executeQuery.view?schemaName=study&query.queryName=Pedigree&query.reportId=module%3AEHR%2Fschemas%2Fstudy%2FPedigree%2FInbreedingCoefficients.r'},
                     {name: 'Reload Study', url: '<%=contextPath%>/pipeline<%=containerPath%>/begin.view?'},
                     {name: 'Generate Schema XML', url: '<%=contextPath%>/admin/getSchemaXmlDoc.view?full=true&dbSchema=core'},
                     {name: 'View Logs', url: '<%=contextPath%>/project<%=containerPath%>/Logs/begin.view?'},
@@ -41,14 +41,14 @@ Ext.onReady(function (){
             },
             {header: 'Monit',
                 items: [
-                    {name: 'Xnight', url: 'http://xnight.primate.wisc.edu:2812/'},
+                    {name: 'EHR', url: 'http://ehr.primate.wisc.edu:2812/'},
                     {name: 'Test-EHR', url: 'http://test-ehr.primate.wisc.edu:2812/'},
                     {name: 'Gems', url: 'http://gems.primate.wisc.edu:2812/'}
                 ]
             },
             {header: 'Munin',
                 items: [
-                    {name: 'Xnight', url: 'https://xnight.primate.wisc.edu:4433/'},
+                    {name: 'EHR', url: 'http://ehr.primate.wisc.edu:8449/'},
                     {name: 'Test-EHR', url: 'http://test-ehr.primate.wisc.edu/munin/'},                                                
                     {name: 'Gems', url: 'http://gems.primate.wisc.edu/munin/'}
                 ]
@@ -62,9 +62,11 @@ Ext.onReady(function (){
             },
             {header: 'Validation',
                 items: [
-                    {name: 'Validate Status Field Calculation', url: '<%=contextPath%>/query<%=containerPath%>/executeQuery.view?schemaName=study&query.queryName=Validation'},
+                    {name: 'Validate Status Field Calculation', url: '<%=contextPath%>/query<%=containerPath%>/executeQuery.view?schemaName=study&query.queryName=Validate_status'},
                     {name: 'Review Required', url: '<%=contextPath%>/query<%=containerPath%>/executeQuery.view?schemaName=study&query.queryName=studyData&query.viewName=Review Required'},
-                    {name: 'Rooms/Cages Missing From List', url: '<%=contextPath%>/query<%=containerPath%>/executeQuery.view?schemaName=ehr&query.queryName=RoomUtilization&query.TotalCages~eq=0'},
+                    {name: 'Housing Problems', url: '<%=contextPath%>/query<%=containerPath%>/executeQuery.view?schemaName=study&query.queryName=housingProblems'},
+                    {name: 'Housing Condition Problems', url: '<%=contextPath%>/query<%=containerPath%>/executeQuery.view?schemaName=study&query.queryName=housingConditionProblems'},
+                    {name: 'Rooms/Cages Missing From List', url: '<%=contextPath%>/query<%=containerPath%>/executeQuery.view?schemaName=ehr&query.queryName=missingCages'},
                     {name: 'Postgres/mySQL Comparison', url: '<%=contextPath%>/query<%=containerPath%>/executeQuery.view?schemaName=col_dump&query.queryName=mysql_check'},
                     {name: 'Postgres/mySQL Comparison - To Excel', url: '<%=contextPath%>/query<%=containerPath%>/exportRowsExcel.view?schemaName=col_dump&query.queryName=mysql_check'}
                 ]

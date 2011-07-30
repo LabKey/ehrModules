@@ -6,10 +6,10 @@
 
 
 -- ----------------------------
--- Table structure for col_dump.alerts
+-- Table structure for col_dump.notes
 -- ----------------------------
-DROP TABLE IF EXISTS col_dump.alerts;
-CREATE TABLE col_dump.alerts (
+DROP TABLE IF EXISTS col_dump.notes;
+CREATE TABLE col_dump.notes (
 Id varchar(255) DEFAULT NULL::character varying,
 Date timestamp(6) DEFAULT NULL::timestamp without time zone,
 category varchar(255) DEFAULT NULL::character varying,
@@ -100,11 +100,8 @@ DROP TABLE IF EXISTS col_dump.behavetrem;
 CREATE TABLE col_dump.behavetrem (
 Id varchar(255) DEFAULT NULL::character varying,
 Date timestamp(6) DEFAULT NULL::timestamp without time zone,
-project varchar(255) DEFAULT NULL::character varying,
-remark varchar(4000) DEFAULT NULL::character varying,
 ts timestamp(6) DEFAULT NULL::timestamp without time zone,
-objectid varchar(255) DEFAULT NULL::character varying NOT NULL,
-parentid varchar(255) DEFAULT NULL::character varying
+objectid varchar(255) DEFAULT NULL::character varying NOT NULL
 )
 WITH (OIDS=FALSE)
 
@@ -152,19 +149,6 @@ DROP TABLE IF EXISTS col_dump.birth;
 CREATE TABLE col_dump.birth (
 Id varchar(255) DEFAULT NULL::character varying,
 Date timestamp(6) DEFAULT NULL::timestamp without time zone,
-gender varchar(255) DEFAULT NULL::character varying,
-weight varchar(255) DEFAULT NULL::character varying,
-wdate varchar(255) DEFAULT NULL::character varying,
-dam varchar(255) DEFAULT NULL::character varying,
-sire varchar(255) DEFAULT NULL::character varying,
-room varchar(255) DEFAULT NULL::character varying,
-cage varchar(255) DEFAULT NULL::character varying,
-cond varchar(255) DEFAULT NULL::character varying,
-origin varchar(255) DEFAULT NULL::character varying,
-conception varchar(255) DEFAULT NULL::character varying,
-type varchar(255) DEFAULT NULL::character varying,
-remark varchar(255) DEFAULT NULL::character varying,
-parentid varchar(255) DEFAULT NULL::character varying,
 ts timestamp(6) DEFAULT NULL::timestamp without time zone,
 objectid varchar(255) DEFAULT NULL::character varying NOT NULL
 )
@@ -256,14 +240,8 @@ DROP TABLE IF EXISTS col_dump.chemistryresults;
 CREATE TABLE col_dump.chemistryresults (
 Id varchar(255) DEFAULT NULL::character varying,
 Date timestamp(6) DEFAULT NULL::timestamp without time zone,
-testid varchar(255) DEFAULT NULL::character varying,
-result varchar(255) DEFAULT NULL::character varying,
-stringResults varchar(255) DEFAULT NULL::character varying,
-units varchar(255) DEFAULT NULL::character varying,
-remark varchar(255) DEFAULT NULL::character varying,
 ts timestamp(6) DEFAULT NULL::timestamp without time zone,
-objectid varchar(255) DEFAULT NULL::character varying NOT NULL,
-runid varchar(255) DEFAULT NULL::character varying
+objectid varchar(255) DEFAULT NULL::character varying NOT NULL
 )
 WITH (OIDS=FALSE)
 
@@ -276,10 +254,6 @@ DROP TABLE IF EXISTS col_dump.chemistryruns;
 CREATE TABLE col_dump.chemistryruns (
 Id varchar(255) DEFAULT NULL::character varying,
 Date timestamp(6) DEFAULT NULL::timestamp without time zone,
-account varchar(255) DEFAULT NULL::character varying,
-remark varchar(255) DEFAULT NULL::character varying,
-clinremark varchar(255) DEFAULT NULL::character varying,
-requestId varchar(255) DEFAULT NULL::character varying,
 ts timestamp(6) DEFAULT NULL::timestamp without time zone,
 objectid varchar(255) DEFAULT NULL::character varying NOT NULL
 )
@@ -315,13 +289,8 @@ DROP TABLE IF EXISTS col_dump.clinremarks;
 CREATE TABLE col_dump.clinremarks (
 Id varchar(255) DEFAULT NULL::character varying,
 Date timestamp(6) DEFAULT NULL::timestamp without time zone,
-project varchar(255) DEFAULT NULL::character varying,
-userid varchar(255) DEFAULT NULL::character varying,
-remark varchar(8000) DEFAULT NULL::character varying,
 ts timestamp(6) DEFAULT NULL::timestamp without time zone,
-objectid varchar(255) DEFAULT NULL::character varying NOT NULL,
-parentid varchar(255) DEFAULT NULL::character varying,
-category varchar(255) DEFAULT NULL::character varying
+objectid varchar(255) DEFAULT NULL::character varying NOT NULL
 )
 WITH (OIDS=FALSE)
 
@@ -383,12 +352,8 @@ DROP TABLE IF EXISTS col_dump.departure;
 CREATE TABLE col_dump.departure (
 Id varchar(255) DEFAULT NULL::character varying,
 Date timestamp(6) DEFAULT NULL::timestamp without time zone,
-authorize varchar(255) DEFAULT NULL::character varying,
-destination varchar(255) DEFAULT NULL::character varying,
-remark varchar(255) DEFAULT NULL::character varying,
 ts timestamp(6) DEFAULT NULL::timestamp without time zone,
-objectid varchar(255) DEFAULT NULL::character varying NOT NULL,
-parentid varchar(255) DEFAULT NULL::character varying
+objectid varchar(255) DEFAULT NULL::character varying NOT NULL
 )
 WITH (OIDS=FALSE)
 
@@ -426,9 +391,6 @@ DROP TABLE IF EXISTS col_dump.encounters;
 CREATE TABLE col_dump.encounters (
 Id varchar(255) DEFAULT NULL::character varying,
 Date timestamp(6) DEFAULT NULL::timestamp without time zone,
-enddate varchar(255) DEFAULT NULL::character varying,
-project varchar(255) DEFAULT NULL::character varying,
-type varchar(255) DEFAULT NULL::character varying,
 ts timestamp(6) DEFAULT NULL::timestamp without time zone,
 objectid varchar(255) DEFAULT NULL::character varying NOT NULL
 )
@@ -461,13 +423,8 @@ DROP TABLE IF EXISTS col_dump.hematologyresults;
 CREATE TABLE col_dump.hematologyresults (
 Id varchar(255) DEFAULT NULL::character varying,
 Date timestamp(6) DEFAULT NULL::timestamp without time zone,
-testid varchar(255) DEFAULT NULL::character varying,
-result varchar(255) DEFAULT NULL::character varying,
-units varchar(255) DEFAULT NULL::character varying,
-remark varchar(255) DEFAULT NULL::character varying,
 ts timestamp(6) DEFAULT NULL::timestamp without time zone,
-objectid varchar(255) DEFAULT NULL::character varying NOT NULL,
-runId varchar(255) DEFAULT NULL::character varying
+objectid varchar(255) DEFAULT NULL::character varying NOT NULL
 )
 WITH (OIDS=FALSE)
 
@@ -973,14 +930,8 @@ DROP TABLE IF EXISTS col_dump.urinalysisresults;
 CREATE TABLE col_dump.urinalysisresults (
 Id varchar(255) DEFAULT NULL::character varying,
 Date timestamp(6) DEFAULT NULL::timestamp without time zone,
-testid varchar(255) DEFAULT NULL::character varying,
-stringResults varchar(255) DEFAULT NULL::character varying,
-result varchar(255) DEFAULT NULL::character varying,
-units varchar(255) DEFAULT NULL::character varying,
-remark varchar(255) DEFAULT NULL::character varying,
 ts timestamp(6) DEFAULT NULL::timestamp without time zone,
-objectid varchar(255) DEFAULT NULL::character varying NOT NULL,
-runId varchar(255) DEFAULT NULL::character varying
+objectid varchar(255) DEFAULT NULL::character varying NOT NULL
 )
 WITH (OIDS=FALSE)
 
@@ -1063,11 +1014,6 @@ WITH (OIDS=FALSE)
 -- ----------------------------
 -- Alter Sequences Owned By 
 -- ----------------------------
-
--- ----------------------------
--- Primary Key structure for table col_dump.alerts
--- ----------------------------
-ALTER TABLE col_dump.alerts ADD PRIMARY KEY (objectid);
 
 -- ----------------------------
 -- Primary Key structure for table col_dump.arrival
@@ -1324,38 +1270,19 @@ ALTER TABLE col_dump.virologyruns ADD PRIMARY KEY (objectid);
 -- ----------------------------
 ALTER TABLE col_dump.weight ADD PRIMARY KEY (objectid);
 
+-- ----------------------------
+-- Primary Key structure for table col_dump.notes
+-- ----------------------------
+ALTER TABLE col_dump.notes ADD PRIMARY KEY (objectid);
 
 
 DROP TABLE IF EXISTS col_dump.clinpathruns;
 CREATE TABLE col_dump.clinpathruns
 (
-  createdby integer,
-  modifiedby integer,
-  description character varying(4000),
-  date timestamp without time zone,
-  "type" character varying(4000),
-  remark character varying(4000),
   id character varying(32),
-  project integer,
-  parentid character varying(4000),
-  enddate timestamp without time zone,
-  qcstate integer,
-  objectid character varying(4000),
+  date timestamp without time zone,
   ts timestamp(6) DEFAULT NULL::timestamp without time zone,
-  status character varying(4000),
-  account character varying(4000),
-  taskid character varying(4000),
-  priority character varying(4000),
-  sampleid character varying(4000),
-  sampletype character varying(4000),
-  collectionmethod character varying(4000),
-  servicerequested character varying(4000),
-  units character varying(4000),
-  collectiondate character varying(4000),
-  samplequantity character varying(4000),
-  collectedby character varying(4000),
-  performedby character varying(4000),
-  requestid character varying(4000)
+  objectid character varying(4000) primary key
 )
 WITH (
   OIDS=FALSE
@@ -1368,14 +1295,45 @@ DROP TABLE IF EXISTS col_dump.morphologicdiagnosis;
 CREATE TABLE col_dump.morphologicdiagnosis (
 Id varchar(255) DEFAULT NULL::character varying,
 Date timestamp(6) DEFAULT NULL::timestamp without time zone,
-seq1 varchar(255) DEFAULT NULL::character varying,
-seq2 varchar(255) DEFAULT NULL::character varying,
-code varchar(255) DEFAULT NULL::character varying,
-parentid varchar(255) DEFAULT NULL::character varying,
-meaning varchar(255) DEFAULT NULL::character varying,
 ts timestamp(6) DEFAULT NULL::timestamp without time zone,
-objectid varchar(255) DEFAULT NULL::character varying NOT NULL
+objectid varchar(255) DEFAULT NULL::character varying NOT NULL primary key
 )
 WITH (OIDS=FALSE)
 
 ;
+
+-- ----------------------------
+-- Table structure for col_dump.cageObs
+-- ----------------------------
+DROP TABLE IF EXISTS col_dump.cageObs;
+CREATE TABLE col_dump.cageObs (
+Id varchar(255) DEFAULT NULL::character varying,
+Date timestamp(6) DEFAULT NULL::timestamp without time zone,
+roomattime varchar(255) DEFAULT NULL::character varying,
+cageattime varchar(255) DEFAULT NULL::character varying,
+observationRecord varchar(255) DEFAULT NULL::character varying,
+housingRecord varchar(255) DEFAULT NULL::character varying,
+ts timestamp(6) DEFAULT NULL::timestamp without time zone,
+objectid varchar(255) DEFAULT NULL::character varying primary key
+)
+WITH (OIDS=FALSE)
+
+;
+
+
+-- ----------------------------
+-- Table structure for col_dump.deaths
+-- ----------------------------
+DROP TABLE IF EXISTS col_dump.deaths;
+CREATE TABLE col_dump.deaths (
+Id varchar(255) DEFAULT NULL::character varying,
+Date timestamp(6) DEFAULT NULL::timestamp without time zone,
+status varchar(255) DEFAULT NULL::character varying,
+cause varchar(255) DEFAULT NULL::character varying,
+ts timestamp(6) DEFAULT NULL::timestamp without time zone,
+objectid varchar(255) DEFAULT NULL::character varying primary key
+)
+WITH (OIDS=FALSE)
+
+;
+

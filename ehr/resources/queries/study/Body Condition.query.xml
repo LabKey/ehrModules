@@ -17,16 +17,38 @@
                           <!--<fkColumnName>objectid</fkColumnName>-->
                         <!--</fk>-->
                     </column>
+                    <column columnName="weightStatus">
+                        <datatype>boolean</datatype>
+                        <columnTitle>Weight Monitoring Needed</columnTitle>
+                    </column>
                     <column columnName="score">
                         <datatype>double</datatype>
                         <columnTitle>Body Condition Score</columnTitle>
                         <fk>
                           <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                           <fkDbSchema>ehr_lookups</fkDbSchema>
-                          <fkTable>alopecia_score</fkTable>
+                          <fkTable>bcs_score</fkTable>
                           <fkColumnName>score</fkColumnName>
                         </fk>
-                    </column>                       
+                    </column>
+                    <column columnName="tattoo_chest">
+                        <columnTitle>Tattoo - Chest</columnTitle>
+                        <fk>
+                          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
+                          <fkDbSchema>ehr_lookups</fkDbSchema>
+                          <fkTable>tattoo_status</fkTable>
+                          <fkColumnName>status</fkColumnName>
+                        </fk>
+                    </column>
+                    <column columnName="tattoo_thigh">
+                        <columnTitle>Tattoo - Thigh</columnTitle>
+                        <fk>
+                          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
+                          <fkDbSchema>ehr_lookups</fkDbSchema>
+                          <fkTable>tattoo_status</fkTable>
+                          <fkColumnName>status</fkColumnName>
+                        </fk>
+                    </column>
                 </columns>
             </table>
         </tables>

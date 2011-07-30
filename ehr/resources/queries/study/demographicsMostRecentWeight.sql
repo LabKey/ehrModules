@@ -9,13 +9,14 @@ w.id,
 w.MostRecentWeightDate,
 timestampdiff('SQL_TSI_DAY', w.MostRecentWeightDate, curdate()) AS DaysSinceWeight,
 
-t2.weight as MostRecentWeight,
+-- t2.weight as MostRecentWeight,
+null as weightField,
 -- could also be performed as a subquery
---   (
---     SELECT AVG(w2.weight) AS _expr
---     FROM study.weight w2
---     WHERE w.id=w2.id AND w.MostRecentWeightDate=w2.date
---   ) AS MostRecentWeight
+  (
+    SELECT AVG(w2.weight) AS _expr
+    FROM study.weight w2
+    WHERE w.id=w2.id AND w.MostRecentWeightDate=w2.date
+  ) AS MostRecentWeight
 
 FROM (
 SELECT
@@ -23,12 +24,13 @@ SELECT
   max(w.date) AS MostRecentWeightDate,
 
 FROM study.weight w
-WHERE w.qcstate.publicdata = true
+WHERE w.qcstate.publicdata = true and w.weight is not null
 GROUP BY w.id
 ) w
 
+--NOTE: altered to a subselect to avoid duplicate entries from weights with identical time
 -- --find the most recent weight associated with that date
-LEFT JOIN study.weight T2
-  ON (w.MostRecentWeightDate = t2.date AND w.Id = t2.Id)
-
-WHERE t2.qcstate.publicdata = true
+-- LEFT JOIN study.weight T2
+--   ON (w.MostRecentWeightDate = t2.date AND w.Id = t2.Id)
+--
+-- WHERE t2.qcstate.publicdata = true

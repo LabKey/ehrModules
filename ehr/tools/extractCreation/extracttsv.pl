@@ -45,7 +45,7 @@ my $datestr=sprintf("%04d%02d%02d_%02d%02d", $tm->year+1900, ($tm->mon)+1, $tm->
 sub extractTSV {
 	my $args = shift;
 	my $results = Labkey::Query::selectRows(
-		-baseUrl => 'https://xnight.primate.wisc.edu:8443/labkey/',
+		-baseUrl => 'https://ehr.primate.wisc.edu/',
 		-containerPath => $args->{containerPath} || $default_container,
 		-schemaName => $args->{schemaName},
 		-queryName => $args->{queryName},
@@ -84,7 +84,7 @@ sub extractTSV {
 }
 
 my $results = Labkey::Query::selectRows(
-	-baseUrl => 'https://xnight.primate.wisc.edu:8443/labkey/',
+	-baseUrl => 'https://ehr.primate.wisc.edu/',
 	-containerPath => '/WNPRC/EHR',
 	-schemaName => 'ehr',
 	-queryName => 'extracts',

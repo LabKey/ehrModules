@@ -10,6 +10,11 @@ function onUpsert(context, errors, row, oldRow){
     if(context.extraContext.dataSource != 'etl' && !row.quantity && row.num_tubes && row.tube_vol)
         row.quantity = row.num_tubes * row.tube_vol;
 
+    if(context.extraContext.dataSource != 'etl' && row.restraint && !Ext.isDefined(row.restraintTime)){
+        //console.log(row.restraint)
+        EHR.addError(errors, 'restraintTime', 'Must enter time restrained', 'WARN');
+    }
+
     if(context.extraContext.dataSource != 'etl' && row.Id && row.date && row.quantity){
         var minDate = new Date(row.date.toGMTString());
         minDate.setDate(minDate.getDate()-30);

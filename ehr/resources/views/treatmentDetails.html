@@ -9,14 +9,14 @@ Ext.onReady(function ()
 {
     if (!LABKEY.ActionURL.getParameter('key')){alert('Must Provide Treatment ID'); return false;}
 
-    var key = LABKEY.ActionURL.getParameter('key');
+    var lsid = LABKEY.ActionURL.getParameter('key');
 
     new EHR.ext.DetailsView({
         schemaName: 'study',
         queryName: 'Treatment Orders',
         title: 'Treatment Details:',
         renderTo: 'treatmentDetails',
-        filterArray: [LABKEY.Filter.create('lsid', key, LABKEY.Filter.Types.EQUAL)]
+        filterArray: [LABKEY.Filter.create('lsid', lsid, LABKEY.Filter.Types.EQUAL)]
     });
 
     new LABKEY.QueryWebPart({
@@ -31,12 +31,29 @@ Ext.onReady(function ()
         showUpdateColumn: false,
         showRecordSelectors: true,
         buttonBarPosition: 'top',
-        filters: [LABKEY.Filter.create('objectId', key, LABKEY.Filter.Types.EQUAL)],
+        filters: [LABKEY.Filter.create('lsid', lsid, LABKEY.Filter.Types.EQUAL)],
         //sort: '-Date',
         scope: this,
-        errorCallback: EHR.utils.onError
+        failure: EHR.utils.onError
      }).render('treatmentSchedule');
 
+    new LABKEY.QueryWebPart({
+        title: 'Treatment History',
+        schemaName: 'study',
+        queryName: 'Drug Administration',
+        allowChooseQuery: false,
+        allowChooseView: true,
+        showInsertNewButton: false,
+        showDeleteButton: false,
+        showDetailsColumn: true,
+        showUpdateColumn: false,
+        showRecordSelectors: true,
+        buttonBarPosition: 'top',
+        filters: [LABKEY.Filter.create('parentId', lsid, LABKEY.Filter.Types.STARTS_WITH)],
+        //sort: '-Date',
+        scope: this,
+        failure: EHR.utils.onError
+     }).render('treatmentHistory');
 });
 
 </script>
@@ -50,5 +67,8 @@ Ext.onReady(function ()
 
     <div id='treatmentSchedule'></div>
 
+    <p/>
+
+    <div id='treatmentHistory'></div>
 </body>
 </html>

@@ -1,8 +1,8 @@
 <customView xmlns="http://labkey.org/data/xml/queryCustomView">
    <!--<columns>-->
        <!--<column name="Id" />-->
-       <!--<column name="Date" />-->
-       <!--<column name="QCState" />-->
+       <!--<column name="date" />-->
+       <!--<column name="qcstate" />-->
        <!--<column name="remark" />-->
    <!--</columns>-->
    <sorts>

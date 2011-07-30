@@ -30,6 +30,9 @@
                         </fk>
                         <!--<url>/EHR/cageDetails.view?room=${room}</url>-->
                     </column>
+                    <column columnName="title">
+                        <url>/ehr/taskDetails.view?formtype=${formtype}&amp;taskid=${taskid}</url>
+                    </column>
                 </columns>
             </table>
         </tables>

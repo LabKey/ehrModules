@@ -28,7 +28,7 @@ EHR.Assay.UploadPanel = Ext.extend(Ext.FormPanel, {
             ,successCallback: function(results){
                 this.domains.Batch = results;
             }
-            ,errorCallback: EHR.Assay.onError
+            ,failure: EHR.Assay.onError
             ,scope: this
         });
         multi.add(LABKEY.Query.getQueryDetails, {
@@ -37,7 +37,7 @@ EHR.Assay.UploadPanel = Ext.extend(Ext.FormPanel, {
             ,successCallback: function(results){
                 this.domains.Run = results;
             }
-            ,errorCallback: EHR.Assay.onError
+            ,failure: EHR.Assay.onError
             ,scope: this
         });
         multi.add(LABKEY.Query.getQueryDetails, {
@@ -50,7 +50,7 @@ EHR.Assay.UploadPanel = Ext.extend(Ext.FormPanel, {
 //                })
                 this.domains.Results = results;
             }
-            ,errorCallback: EHR.Assay.onError
+            ,failure: EHR.Assay.onError
             ,scope: this
         });
 
@@ -215,7 +215,7 @@ EHR.Assay.UploadPanel = Ext.extend(Ext.FormPanel, {
 
         for (var i=0;i<this.importMethods.length;i++){
             if (this.importMethods[i].init){
-                this.importMethods[i].init();
+                this.importMethods[i].init(this);
             }
 
             if(this.importMethods[i].isDefault)
@@ -337,18 +337,16 @@ EHR.Assay.UploadPanel = Ext.extend(Ext.FormPanel, {
                 }
 
                 fieldObj.input = EHR.ext.metaHelper.getFormEditor.call(this, fieldObj);
-
-                console.log(fieldObj.input.allowBlank);
                 this.runFields.add(fieldObj.input);
             }
         }
     },
 
     templateURL: function(){
-        if (!this.selectedMethod.template)
+        if (!this.selectedMethod.createTemplate)
             this.makeExcel();
         else
-            this.selectedMethod.template();
+            this.selectedMethod.createTemplate.call(this);
     },
 
     makeExcel: function(){
@@ -730,13 +728,15 @@ EHR.Assay.UploadPanel = Ext.extend(Ext.FormPanel, {
             rowContent[header.name] = value;
         }
 
+        if(this.rowTransform){
+            rowContent = this.rowTransform.call(this, rowContent);
+        }
+
         return rowContent;
     },
     _fieldParse: function (field){
         //TODO: sort out when cells are returned as objects versus scalars
-        var value = field.formattedValue || field.value;
-
-        return value;
+        return field.formattedValue || field.value;
     },
 
     saveBatch: function()

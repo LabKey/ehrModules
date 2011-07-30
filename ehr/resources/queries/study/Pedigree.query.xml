@@ -1,13 +1,14 @@
- <query xmlns="http://labkey.org/data/xml/query">
-    <metadata> 
+<query xmlns="http://labkey.org/data/xml/query">
+    <metadata>
         <tables xmlns="http://labkey.org/data/xml">
-            <table tableName="Pedigree" tableDbType="TABLE">
-                <tableUrl>/query/detailsQueryRow.view?schemaName=study&amp;query.queryName=pedigree&amp;lsid=${lsid}</tableUrl>
-                <!--<insertUrl>/ehr/manageRecord.view?schemaName=study&amp;queryName=Pedigree&amp;keyField=lsid&amp;</insertUrl>-->
-                <!--<updateUrl>/ehr/manageRecord.view?schemaName=study&amp;queryName=Pedigree&amp;keyField=lsid&amp;key=${lsid}</updateUrl>-->
-                <insertUrl />
-                <updateUrl />
-                <deleteUrl />
+            <table tableName="Pedigree" tableDbType="NOT_IN_DB">
+                <columns>
+                    <column columnName="Id">
+                        <isKeyField>true</isKeyField>
+                        <!--<isHidden>true</isHidden>-->
+                    </column>
+                </columns>
+                <titleColumn>Id</titleColumn>
             </table>
         </tables>
     </metadata>

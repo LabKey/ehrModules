@@ -56,12 +56,16 @@ Ext.onReady(function(){
                                 frame: 'none',
                                 showDeleteButton: false,
                                 timeout: 0,
-                                linkTarget: '_new',
+                                linkTarget: '_blank',
                                 scope: this,
-                                errorCallback: function(error){
+                                failure: function(error){
                                     EHR.utils.onError(error)
                                 }
                             }).render(formPanel.ownerCt.grid.body.id)
+                        },
+                        failure: function(error){
+                            formPanel.ownerCt.grid.body.update('');
+                            alert(error.exception);
                         }
                     });
 

@@ -9,11 +9,11 @@
         <column name="pi"/>
         <column name="CreatedBy"/>
         <column name="Created"/>
-        <column name="QCState">
-            <properties>
-                <property name="columnTitle" value="Status"/>
-            </properties>
-        </column>
+        <!--<column name="QCState">-->
+            <!--<properties>-->
+                <!--<property name="columnTitle" value="Status"/>-->
+            <!--</properties>-->
+        <!--</column>-->
         <!--<column name="ModifiedBy"/>-->
         <!--<column name="Modified"/>-->
    </columns>

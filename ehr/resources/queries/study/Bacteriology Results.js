@@ -8,7 +8,6 @@ var {EHR, LABKEY, Ext, console, init, beforeInsert, afterInsert, beforeUpdate, a
 
 
 
-
 function onETL(row, errors){
     //this is a hack so mySQL records go in.
     EHR.validation.antibioticSens(row, errors);
@@ -22,9 +21,15 @@ function setDescription(row, errors){
 
     if (row.source)
         description.push('Source: '+EHR.validation.snomedToString(row.source,  row.sourceMeaning));
+    if (row.method)
+        description.push('Method: '+row.method);
 
-    if (row.result)
-        description.push('Result: '+EHR.validation.snomedToString(row.result,  row.resultMeaning));
+    if (row.organism)
+        description.push('Organism: '+EHR.validation.snomedToString(row.organism,  row.resultMeaning));
+    if(row.result)
+        description.push('Result: '+EHR.validation.nullToString(row.result)+' '+EHR.validation.nullToString(row.units));
+    if(row.qualResult)
+        description.push('Qual Result: '+EHR.validation.nullToString(row.qualResult));
 
     if (row.antibiotic)
         description.push('Antibiotic: '+EHR.validation.snomedToString(row.antibiotic, row.antibioticMeaning));
@@ -40,6 +45,9 @@ function onUpsert(context, errors, row, oldRow){
     if (row.sensitivity && row.antibiotic == null){
         EHR.addError(errors, 'sensitivity', "Must provide an antibiotic to go with sensitivity", 'WARN');
     }
+
+    if(context.extraContext.dataSource != 'etl')
+        EHR.validation.removeTimeFromDate(row, errors);
 
 }
 

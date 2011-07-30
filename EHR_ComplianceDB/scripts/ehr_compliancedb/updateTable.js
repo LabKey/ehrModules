@@ -6,11 +6,13 @@
 var LABKEY = require("labkey");
 var console = require("console");
 
-function updateTable(row, oldRow, schemaName, tableName, pk, sourceField, targetField){
+function updateTable(row, oldRow, schemaName, tableName, pk, sourceField, targetField, containerPath){
     var toUpdate = [];
-    console.log('Table: '+tableName);
+//    console.log('Table: '+tableName);
+//    console.log('containerpath: '+containerPath);
 
     LABKEY.Query.selectRows({
+        containerPath: containerPath,
         schemaName: schemaName,
         queryName: tableName,
         scope: this,
@@ -40,6 +42,7 @@ function updateTable(row, oldRow, schemaName, tableName, pk, sourceField, target
     if(toUpdate.length){
 //        console.log(toUpdate[0]);
         LABKEY.Query.updateRows({
+            containerPath: containerPath,
             schemaName: schemaName,
             queryName: tableName,
             rows: toUpdate,

@@ -1,13 +1,18 @@
 <customView xmlns="http://labkey.org/data/xml/queryCustomView">
    <columns>
        <column name="Id" />
-       <column name="Date" />
-       <column name="QCState" />
+       <column name="date" />
        <column name="source" />
+       <column name="method" />
+       <column name="organism" />
        <column name="result" />
+       <column name="units" />
+       <column name="qualResult" />
        <column name="antibiotic" />
        <column name="sensitivity" />
        <column name="remark" />
+       <column name="qcstate" />
+       <column name="taskid" />
    </columns>
    <sorts>
        <sort column="date" descending="true"/>

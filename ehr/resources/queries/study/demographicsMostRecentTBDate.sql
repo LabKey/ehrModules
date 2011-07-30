@@ -8,17 +8,22 @@
  --will still get a value for MonthsSinceLastTB
 select
   d.Id,
-  max(T.date) as MostRecentTBDate,
+  T2.lastDate as MostRecentTBDate,
   case
-    WHEN max(T.date) IS NULL THEN 9999
-    ELSE age_in_months(max(T.date), curdate())
-  END AS MonthsSinceLastTB
+    WHEN T2.lastDate IS NULL THEN 9999
+    ELSE age_in_months(T2.lastDate, curdate())
+  END AS MonthsSinceLastTB,
+  (select group_concat(tb.eye) as eyeTested FROM study.tb tb WHERE tb.id = d.id and tb.date = T2.lastdate) as eyeTested,
+  null as "24H",
+  null as "48H",
+  null as "72H"
 
 from study.demographics d
-LEFT JOIN study.tb T
-ON (d.id = t.id AND T.qcstate.publicdata = true)
+
+LEFT JOIN (select id, max(date) as lastDate from study.tb WHERE tb.qcstate.publicdata = true group by id) T2
+ON (d.id = t2.id)
 
 
-GROUP BY d.Id
+
 
 

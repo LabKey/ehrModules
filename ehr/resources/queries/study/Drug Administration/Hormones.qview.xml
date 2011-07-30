@@ -2,9 +2,8 @@
    <columns>
        <column name="Id"/>
        <column name="date"/>
-       <column name="EndTime"/>
+       <column name="enddate"/>
        <column name="project"/>
-       <column name="qcstate" />
        <column name="code"/>
        <column name="code/code">
            <properties>
@@ -12,11 +11,14 @@
            </properties>
        </column>
        <column name="amount"/>
-       <column name="units"/>
+       <column name="amount_units"/>
+       <column name="vol"/>
+       <column name="vol_units"/>
        <column name="route"/>
-       <column name="Remark"/>
+       <column name="remark"/>
        <column name="category"/>
        <!--<column name="HeaderDate"/>-->
+       <column name="qcstate" />
    </columns>
     <filters>
         <filter column="category" operator="eq" value="hormdrug"/>

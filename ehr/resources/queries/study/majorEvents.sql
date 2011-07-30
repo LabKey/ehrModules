@@ -5,17 +5,21 @@
  */
 
 SELECT
-b.dam as id,
+b.dam as Id,
 b.date,
 'Birth' as type,
-'Offspring: ' || b.id as remark
+case
+  when b.id.dataset.birth.weight is null
+    then ('Offspring: ' || b.id)
+  else ('Offspring: ' || b.id || chr(10) || 'Offspring Weight: ' || cast(b.id.dataset.birth.weight as numeric) || ' kg')
+END as remark
 from study.birth b
-WHERE b.qcstate.publicdata = true AND b.dam is not null
+WHERE b.qcstate.publicdata = true AND b.dam is not null and b.dam != ''
 
 UNION ALL
 
 SELECT
-v.id,
+v.Id,
 v.date,
 'Viral Challenge' as type,
 v.remark
@@ -27,7 +31,7 @@ SELECT
 s.id,
 s.date,
 'Surgery' as type,
-'Major: '||s.major
+'Major: '||s.major as remark
 FROM study."Clinical Encounters" s
 WHERE s.qcstate.publicdata = true AND type = 'Surgery'
 

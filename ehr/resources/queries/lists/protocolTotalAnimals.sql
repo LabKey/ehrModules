@@ -5,20 +5,15 @@
  */
 SELECT
   p.protocol,
-  p.approve,
-  a.id,
-  a.species,
-  a.LatestStart,
-  a.LatestEnd,
-
-  COALESCE(a.Total, 0) AS TotalAssignments,
+  count(a.TotalAssignments) AS TotalActiveAnimals,
   --pc.allowed - p.TotalAnimals as TotalRemaining,
 
 FROM lists.protocol p
 
 --we find total distinct animals ever assigned to this protocol
 LEFT JOIN
-  (SELECT a.Project.protocol as protocol, a.id, a.id.dataset.demographics.Species AS Species, count(*) AS Total, max(a.date) as LatestStart, max(coalesce(a.enddate, now())) as LatestEnd FROM study.assignment a GROUP BY a.project.protocol, a.id, a.id.dataset.demographics.species) a
+  (SELECT a.Project.protocol as protocol, a.id, count(*) AS TotalAssignments, max(a.date) as LatestStart, max(coalesce(a.enddate, now())) as LatestEnd FROM study.assignment a WHERE a.enddate is null GROUP BY a.project.protocol, a.id) a
   ON (p.protocol = a.protocol)
 
-WHERE a.Total > 0 --AND a.LatestEnd >= p.approve
+--WHERE a.Total > 0 --AND a.LatestEnd >= p.approve
+group by p.protocol

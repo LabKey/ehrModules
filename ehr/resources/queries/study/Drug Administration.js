@@ -14,9 +14,21 @@ function onUpsert(context, errors, row, oldRow){
             EHR.addError(errors, 'volume', 'Must supply either amount or volume', 'WARN');
         }
 
-        if(row.amount && row.volume && row.concentration && row.amount!=Math.round(row.volume*row.conc*100/2)){
-            EHR.addError(errors, 'amount', 'Amount does not match volume for this concentration', 'WARN');
-            EHR.addError(errors, 'volume', 'Volume does not match amount for this concentration', 'WARN');
+        if(row.volume && row.concentration){
+            var expected = Math.round(row.volume*row.concentration*1000)/1000;
+            if(row.amount!=expected){
+                EHR.addError(errors, 'amount', 'Amount does not match volume for this concentration. Expected: '+expected, 'WARN');
+                //EHR.addError(errors, 'volume', 'Volume does not match amount for this concentration. Expected: '+expected, 'WARN');
+            }
+        }
+
+        if(row.restraint && !Ext.isDefined(row.restraintTime)){
+            //console.log(row.restraint)
+            EHR.addError(errors, 'restraintTime', 'Must enter time restrained', 'WARN');
+        }
+
+        if(row.qualifier && row.qualifier.match(/\//)){
+            EHR.addError(errors, 'qualifier', 'This field contains a /. This likely means you need to pick one of the options', 'INFO');
         }
     }
 }
@@ -36,12 +48,13 @@ function setDescription(row, errors){
 
     if(row.code)
         description.push('Code: '+EHR.validation.snomedToString(row.code,  row.meaning));
-
+    if(row.route)
+        description.push('Route: '+row.route);
+    if(row.volume)
+        description.push('Volume: '+ row.volume+' '+EHR.validation.nullToString(row.vol_units));
     if(row.amount)
         description.push('Amount: '+ row.amount+' '+EHR.validation.nullToString(row.amount_units));
 
-    if(row.route)
-        description.push('Route: '+row.route);
 
     return description;
 }

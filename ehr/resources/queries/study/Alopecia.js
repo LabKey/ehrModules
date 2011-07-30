@@ -17,7 +17,7 @@ function setDescription(row, errors){
     var description = new Array();
 
     if(row.score)
-        description.push('Alopecia Score: ' + EHR.validation.dateTimeToString(row.score));
+        description.push('Alopecia Score: ' + EHR.validation.nullToString(row.score));
 
     if(row.cause)
         description.push('Cause: ' + EHR.validation.nullToString(row.cause));

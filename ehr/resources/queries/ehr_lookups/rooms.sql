@@ -7,11 +7,11 @@ SELECT
   DISTINCT c.room as room,
 
   CASE
-    WHEN c.room like 'ab10%' THEN 'SPF'
-    WHEN c.room like 'ab11%' THEN 'SPF'
-    WHEN c.room like 'ab12%' THEN 'SPF'
-    WHEN c.room like 'ab14%' THEN 'NSPF'
-    WHEN c.room like 'ab16%' THEN 'NSPF'
+    WHEN c.room like 'ab10%' THEN 'AB-Old'
+    WHEN c.room like 'ab11%' THEN 'AB-Old'
+    WHEN c.room like 'ab12%' THEN 'AB-Old'
+    WHEN c.room like 'ab14%' THEN 'AB-New'
+    WHEN c.room like 'ab16%' THEN 'AB-New'
     WHEN c.room like 'a1%' THEN 'A1/AB190'
     WHEN c.room like 'ab190%' THEN 'A1/AB190'
     WHEN c.room like 'a2%' THEN 'A2'
@@ -23,6 +23,6 @@ SELECT
     ELSE null
   END as area
   
-FROM ehr_lookups.cage c
+FROM ehr_lookups.cages c
 where c.room != '' and c.room is not null
 group by c.room

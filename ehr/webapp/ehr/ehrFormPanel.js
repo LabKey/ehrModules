@@ -39,7 +39,7 @@ Ext.extend(EHR.ext.FormPanel, Ext.FormPanel,
         }));
 
         if(!EHR.ext.FormColumns[this.queryName]){
-            console.log('Columns not defined')
+            console.log('Columns not defined: '+this.queryName)
         }
 
         this.store.importPanel = this.importPanel || this;
@@ -161,6 +161,7 @@ Ext.extend(EHR.ext.FormPanel, Ext.FormPanel,
                             autoHeight: true,
                             layout: 'hbox',
                             border: false,
+                            //msgTarget: c.msgTarget || 'qtip',
                             fieldLabel: c.compositeField,
                             defaults: {
                                 border: false,
@@ -171,19 +172,23 @@ Ext.extend(EHR.ext.FormPanel, Ext.FormPanel,
                         };
                         toAdd.push(compositeFields[c.compositeField]);
 
-                        //create a div to hold error messages
-                        compositeFields[c.compositeField].msgTargetId = Ext.id();
-                        toAdd.push({
-                            tag: 'div',
-                            fieldLabel: null,
-                            border: false,
-                            id: compositeFields[c.compositeField].msgTargetId
-                        });
+                        if(compositeFields[c.compositeField].msgTarget == 'below'){
+                            //create a div to hold error messages
+                            compositeFields[c.compositeField].msgTargetId = Ext.id();
+                            toAdd.push({
+                                tag: 'div',
+                                fieldLabel: null,
+                                border: false,
+                                id: compositeFields[c.compositeField].msgTargetId
+                            });
+                        }
+                        else {
+                            theField.msgTarget = 'qtip';
+                        }
                     }
                     else {
                         compositeFields[c.compositeField].items.push(theField);
                     }
-//                    theField.msgTarget = compositeFields[c.compositeField].msgTargetId;
                 }
             }
         }, this);

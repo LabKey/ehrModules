@@ -24,9 +24,9 @@ FROM study.demographics a
 WHERE a.status is not null AND
 
 (
-a.calculated_status is null
+--a.calculated_status is null
 
-OR
+--OR
 
 (a.status like 'Alive' AND a.calculated_status != 'Alive')
 
@@ -36,7 +36,7 @@ OR
 
 OR
 
-(a.status like '%shippd%' AND a.calculated_status != 'Shipped')
+(a.status like '%shippd%' AND a.calculated_status != 'Shipped' and a.death is null)
 
 OR
 

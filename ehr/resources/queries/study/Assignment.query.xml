@@ -47,6 +47,9 @@
                             <fkColumnName>lsid</fkColumnName>
                         </fk>
                     </column>
+                    <column columnName="performedby">
+                        <isHidden>true</isHidden>
+                    </column>
                 </columns>
             </table>
         </tables>

@@ -3,19 +3,20 @@
        <column name="protocol"/>
        <column name="inves"/>
        <column name="approve"/>
+       <column name="pdf"/>
        <column name="totalProjects/TotalProjects">
            <properties>
                <property name="columnTitle" value="Total Projects"/>
            </properties>
        </column>
-       <column name="totalAnimals/TotalAnimals">
+       <column name="totalAnimals/TotalActiveAnimals">
            <properties>
-               <property name="columnTitle" value="Total Animals"/>
+               <property name="columnTitle" value="Active Animals Assigned"/>
            </properties>
        </column>
    </columns>
    <filters>
-       <filter column="totalAnimals/totalAnimals" operator="gt" value="0"/>
+       <filter column="totalAnimals/TotalActiveAnimals" operator="gt" value="0"/>
    </filters>
    <sorts>
        <sort column="protocol" descending="true"/>

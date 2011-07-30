@@ -34,7 +34,8 @@ Ext.onReady(function(){
             formUUID: formUUID,
             formType: formType,
             renderTo: 'taskForm',
-            printFormat: true
+            printFormat: true,
+            allowableButtons: []
         });
 
         LABKEY.NavTrail.setTrail('Task: '+(LABKEY.ActionURL.getParameter('title') || formType));

@@ -4,45 +4,27 @@
  * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
  */
 SELECT
+b.id,
+b.date,
+b.testId,
+group_concat(b.result) as results
 
-h.id,
-h.date,
-max(h.CD3) as CD3,
-max(h.CD20) as CD20,
-max(h.CD4) as CD4,
-max(h.CD8) as CD8
+FROM (SELECT
+b.id,
+b.date,
+b.testId,
+coalesce(b.taskid, b.parentid, b.runId) as runId,
+b.resultoorindicator,
+CASE
+WHEN b.result IS NULL THEN  b.qualresult
+  ELSE CAST(CAST(b.result AS NUMERIC) AS VARCHAR)
+END as result
 
-FROM (
+FROM study."Immunology Results" b
 
-SELECT
+WHERE testId IN ('CD3', 'CD20', 'CD4', 'CD8')
+) b
 
-h.id,
-h.date,
-h.runId,
+GROUP BY b.id, b.date, b.runId, b.testId
+PIVOT results BY testId IN ('CD3', 'CD20', 'CD4', 'CD8')
 
-CASE WHEN h.testid='CD3'
-  THEN h.result
-  ELSE null
-END as CD3,
-
-CASE WHEN h.testid='CD4'
-  THEN h.result
-  ELSE null
-END as CD4,
-
-CASE WHEN h.testid='CD8'
-  THEN h.result
-  ELSE null
-END as CD8,
-
-CASE WHEN h.testid='CD20'
-  THEN h.result
-  ELSE null
-END as CD20
-
-FROM study."Immunology Results" h
-WHERE h.qcstate.publicdata = true
-
-) h
-
-GROUP BY h.id, h.date, h.runId

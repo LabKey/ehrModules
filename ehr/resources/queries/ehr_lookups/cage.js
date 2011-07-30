@@ -6,16 +6,25 @@
 // ================================================
 
 var console = require("console");
+var EHR = require("ehr/validation");
 
 console.log("** evaluating: " + this['javax.script.filename']);
 
 
 
 function beforeBoth(row, errors) {
-    //remove whitespace
     row.roomcage = row.room;
     if(row.cage)
         row.roomcage += '-' + row.cage;
+
+    //pad cage to 4 digits if numeric
+    if(row.cage && !isNaN(row.cage)){
+        row.cage = EHR.validation.padDigits(row.cage, 4);
+    }
+
+    //remove whitespace
+    if(row.joinToCage)
+        row.joinToCage = row.joinToCage.replace(/\s/g, '');
 }
 
 

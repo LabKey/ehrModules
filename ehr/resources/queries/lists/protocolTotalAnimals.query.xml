@@ -12,11 +12,12 @@
                           <fkColumnName>protocol</fkColumnName>
                         </fk>
                     </column>
-                    <column columnName="TotalAnimals">
+                    <column columnName="TotalActiveAnimals">
                         <datatype>integer</datatype>
                         <url>/query/executeQuery.view?schemaName=study&amp;
                             query.queryName=assignment&amp;
-                            query.project/protocol~eq=${protocol}&amp;   
+                            query.project/protocol~eq=${protocol}&amp;
+                            query.enddate~isblank&amp;
                         </url>
                     </column>
                     <column columnName="ActiveAnimals">

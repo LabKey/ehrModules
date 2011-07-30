@@ -3,7 +3,7 @@
 # Generate a valid tsv file from one of the queries in this directory
 # ./generatetsv.sh scripts/datasets/arrival.sql ../ehr-study/datasets/arrival.tsv
 #
-MYSQLPWD=BlackDog
+MYSQLPWD=password
 MYSQLDB=colony
 MYSQLUSER=root
 MYSQLHOST=saimiri.primate.wisc.edu

@@ -9,7 +9,9 @@ var {EHR, LABKEY, Ext, console, init, beforeInsert, afterInsert, beforeUpdate, a
 
 
 
-
+function onInit(event, context){
+    context.allowDeadIds = true;
+}
 
 
 function setDescription(row, errors){
@@ -24,6 +26,12 @@ function setDescription(row, errors){
         description.push('Duration: '+EHR.validation.snomedToString(row.duration));
     if (row.distribution)
         description.push('Distribution: '+EHR.validation.snomedToString(row.distribution));
+    if (row.distribution2)
+        description.push('Distribution: '+EHR.validation.snomedToString(row.distribution2));
+    if (row.inflammation)
+        description.push('Inflammation: '+EHR.validation.snomedToString(row.inflammation));
+    if (row.etiology)
+        description.push('Etiology: '+EHR.validation.snomedToString(row.etiology));
     if (row.process)
         description.push('Process: '+EHR.validation.snomedToString(row.process));
 

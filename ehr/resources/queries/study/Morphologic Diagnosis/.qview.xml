@@ -2,7 +2,6 @@
   <columns>
       <column name="Id"/>
       <column name="date"/>
-      <column name="qcstate" />
       <column name="caseNo/caseno">
           <properties>
               <property name="columnTitle" value="Case No"/>
@@ -12,11 +11,16 @@
       <column name="seq2"/>
       <column name="tissue"/>
       <column name="severity"/>
-      <column name="distribution"/>
       <column name="duration"/>
-      <column name="diagnosis"/>
+      <column name="distribution"/>
+      <column name="distribution2"/>
+      <column name="inflammation"/>
+      <column name="etiology"/>
       <column name="process"/>
+      <column name="process2"/>
+      <column name="remark"/>
       <column name="qcstate"/>
+      <column name="taskid" />
    </columns>
    <sorts>
        <sort column="id" />

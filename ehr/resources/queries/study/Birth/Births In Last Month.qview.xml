@@ -1,8 +1,7 @@
 <customView xmlns="http://labkey.org/data/xml/queryCustomView">
    <columns>
        <column name="Id" />
-       <column name="Date" />
-       <column name="QCState" />
+       <column name="date" />
        <column name="estimated" />
        <column name="gender" />
        <column name="weight" />
@@ -16,6 +15,7 @@
        <column name="conception" />
        <column name="type" />
        <column name="remark" />
+       <column name="qcstate" />
    </columns>
   <filters>
       <filter column="date" operator="dategte" value="-1m" />

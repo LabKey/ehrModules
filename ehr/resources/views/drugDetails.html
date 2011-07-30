@@ -53,7 +53,7 @@ Ext.onReady(function ()
             ],
             sort: '-Date',
             scope: this,
-            errorCallback: EHR.utils.onError
+            failure: EHR.utils.onError
          }).render('childTables');
     }
 });

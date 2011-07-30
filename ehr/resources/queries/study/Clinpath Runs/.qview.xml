@@ -1,19 +1,21 @@
 <customView xmlns="http://labkey.org/data/xml/queryCustomView">
    <columns>
        <column name="Id" />
-       <column name="Date" />
-       <column name="Project" />
-       <column name="Account" />
-       <column name="Type" />
+       <column name="date" />
+       <column name="project" />
+       <column name="account" />
+       <column name="type" />
        <column name="sampleType" />
-       <column name="servicesRequested" />
-       <column name="collectionDate" />
+       <column name="serviceRequested" />
+       <!--<column name="collectionDate" />-->
        <column name="collectionMethod" />
        <column name="collectedBy" />
-       <column name="quantity" />
-       <column name="quantityUnits" />
+       <!--<column name="quantity" />-->
+       <!--<column name="quantityUnits" />-->
        <column name="remark" />
        <column name="qcstate" />
+       <column name="taskid" />
+       <column name="requestid" />
    </columns>
    <sorts>
        <sort column="date" descending="true"/>

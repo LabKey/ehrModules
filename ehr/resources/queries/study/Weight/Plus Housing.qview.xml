@@ -2,12 +2,12 @@
    <columns>
         <column name="Id"/>
         <column name="date" />
-        <column name="Id/curLocation/Room">
+        <column name="Id/curLocation/room">
             <properties>
                 <property name="columnTitle" value="Room"/>
             </properties>
         </column>
-        <column name="Id/curLocation/Cage">
+        <column name="Id/curLocation/cage">
             <properties>
                 <property name="columnTitle" value="Cage"/>
             </properties>
@@ -15,6 +15,7 @@
         <column name="weight" />
         <column name="remark" />
        <column name="qcstate" />
+       <column name="taskid" />
    </columns>
    <sorts>
        <sort column="date" descending="true"/>

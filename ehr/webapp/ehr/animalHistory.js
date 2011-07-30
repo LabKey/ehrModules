@@ -16,10 +16,14 @@ EHR.ext.SingleAnimalReport = Ext.extend(Ext.Panel, {
 
         Ext.apply(this, {
             autoHeight: true
+            ,autoWidth: true
             ,bodyBorder: false
             ,bodyStyle: 'background-color : transparent;'
-            ,width: '100%'
+            //,width: '100%'
+            //,width: '1000'
+            ,boxMinWidth: 1000
             ,layout: 'anchor'
+            //,autoScroll: true
             ,border: false
             ,frame: false
             ,reports: {}
@@ -61,6 +65,8 @@ EHR.ext.SingleAnimalReport = Ext.extend(Ext.Panel, {
                 ,text: 'Refresh'
                 ,handler: this.onSubmit
                 ,forceRefresh: true
+                ,ref: 'submitBtn'
+                ,disabled: true
                 ,type: 'submit'
                 ,scope: this
                 ,style:'margin-left:200px;'
@@ -68,18 +74,17 @@ EHR.ext.SingleAnimalReport = Ext.extend(Ext.Panel, {
                 tag: 'span',
                 style: 'padding: 10px'
             },{
-                layout: 'anchor',
-                width: '80%',
-                ref: 'theAnchor',
+                layout: 'fit',
+                //width: 'auto',
                 items: [{
                     xtype: 'tabpanel',
                     ref: '../tabPanel',
+                    //autoScroll: true,
                     activeTab: 0,
                     cls: 'extContainer',
-//                    plugins: ['fittoparent'],
                     autoHeight: true,
-                    bodyStyle: 'padding-top: 5px;',
-                    frame: true
+                    //bodyStyle: 'padding-top: 5px;',
+                    frame: false
                 }]
             }]
 
@@ -146,25 +151,21 @@ EHR.ext.SingleAnimalReport = Ext.extend(Ext.Panel, {
             queryName: 'reports',
             filterArray: [LABKEY.Filter.create('visible', true, LABKEY.Filter.Types.EQUAL)],
 //            , LABKEY.Filter.create('ReportCategory', 'AnimalReport', LABKEY.Filter.Types.EQUAL)
-            sort: 'category,reporttitle',
+            sort: 'category,sort_order,reporttitle',
             autoLoad: true,
 //            listeners: {
 //                scope: this,
 //                load: this.createTabPanel
 //            },
-            errorCallback: function(error){
+            failure: function(error){
                 console.log('Error callback called');
                 console.log(target);
                 EHR.utils.onError(error)
             }
         });
-//TODO: replace when store is fixed
+
         this.allReports.on('load', this.createTabPanel, this);
-
-        this.doLayout();
-
-        this.on('beforeRender', this.restoreUrl);        
-
+        this.on('beforeRender', this.restoreUrl);
     },
     renderColony: function(){
         var target = this.filterPanel;
@@ -193,7 +194,15 @@ EHR.ext.SingleAnimalReport = Ext.extend(Ext.Panel, {
                         scope: this
                     }
                 ]}
-            ]});
+            ],
+            keys: [
+                {
+                    key: Ext.EventObject.ENTER,
+                    handler: this.onSubmit,
+                    scope: this
+                }
+            ]
+        });
 
         target.doLayout();
 
@@ -279,6 +288,7 @@ EHR.ext.SingleAnimalReport = Ext.extend(Ext.Panel, {
                 ,displayField:'project'
                 ,valueField: 'project'
                 ,typeAhead: true
+                ,mode: 'local'
                 ,width: 150
                 ,editable: true
                 ,store: new LABKEY.ext.Store({
@@ -300,6 +310,7 @@ EHR.ext.SingleAnimalReport = Ext.extend(Ext.Panel, {
                 ,width: 150
                 ,editable: true
                 ,triggerAction: 'all'
+                ,mode: 'local'
                 ,store: new LABKEY.ext.Store({
                     containerPath: 'WNPRC/EHR/',
                     schemaName: 'lists',
@@ -349,6 +360,7 @@ EHR.ext.SingleAnimalReport = Ext.extend(Ext.Panel, {
                 ,valueField: 'room'
                 ,typeAhead: true
                 ,triggerAction: 'all'
+                ,mode: 'local'
                 ,width: 150
                 ,editable: true
                 ,store: new LABKEY.ext.Store({
@@ -412,12 +424,19 @@ EHR.ext.SingleAnimalReport = Ext.extend(Ext.Panel, {
         target.removeAll();
         this.subjectArray = [];
 
-        target.add({width: 200, html: 'Search By Location:<br><i>(enter partial room name to search by floor)</i>'});
+        target.add({width: 200, html: 'Search By Location:<br><i>(enter multiple rooms by separating with commas or whitespace. Note: you must enter the entire cage #, such as 0001)</i>'});
         var roomPanel = target.add({
             xtype: 'panel',
             buttonAlign: 'center',
             bodyStyle:'align: center;padding-bottom:10px',
-            defaults: {cls: 'extContainer', bodyBorder: false}
+            defaults: {cls: 'extContainer', bodyBorder: false},
+            keys: [
+                {
+                    key: Ext.EventObject.ENTER,
+                    handler: this.onSubmit,
+                    scope: this
+                }
+            ]
         });
 
         roomPanel.add({tag: 'div', html: 'Area:'});
@@ -429,6 +448,7 @@ EHR.ext.SingleAnimalReport = Ext.extend(Ext.Panel, {
             ,displayField:'area'
             ,valueField: 'area'
             ,typeAhead: true
+            ,mode: 'local'
             ,editable: true
             ,triggerAction: 'all'
             ,store: new LABKEY.ext.Store({
@@ -448,7 +468,12 @@ EHR.ext.SingleAnimalReport = Ext.extend(Ext.Panel, {
             xtype: 'textfield',
             ref: '../../../../roomField',
             width: 165,
-            fieldLabel: 'Room'
+            fieldLabel: 'Room',
+            listeners: {
+                render: function(field){
+                    field.el.set({autocomplete: 'off'});
+                }
+            }
         });
         roomPanel.add({tag: 'div', html: 'Cage:'});
         roomPanel.add({
@@ -456,7 +481,20 @@ EHR.ext.SingleAnimalReport = Ext.extend(Ext.Panel, {
             xtype: 'textfield',
             ref: '../../../../cageField',
             width: 165,
-            fieldLabel: 'Cage'
+            fieldLabel: 'Cage',
+            listeners: {
+                scope: this,
+                change: function(field, val){
+                    if(val && !isNaN(val)){
+                        var newVal = EHR.utils.padDigits(val, 4);
+                        if(val != newVal)
+                            field.setValue(newVal);
+                    }
+                },
+                render: function(field){
+                    field.el.set({autocomplete: 'off'});
+                }
+            }
         });
 
         target.doLayout();
@@ -594,14 +632,14 @@ EHR.ext.SingleAnimalReport = Ext.extend(Ext.Panel, {
                 Ext.each(rows.rows, function(r){
                     subjectArray.push(r.Id);
                 }, this);
-                subjectArray = subjectArray.unique();
+                subjectArray = Ext.unique(subjectArray);
                 if(subjectArray.length){
                     this.subjectArray = subjectArray;
                     this.makeSubjGrid();
                 }
                 Ext.Msg.hide();
             },
-            errorCallback: function(e){
+            failure: function(e){
                 console.log(e);
                 Ext.Msg.hide();
             }
@@ -649,14 +687,14 @@ EHR.ext.SingleAnimalReport = Ext.extend(Ext.Panel, {
                 Ext.each(rows.rows, function(r){
                     subjectArray.push(r.Id);
                 }, this);
-                subjectArray = subjectArray.unique();
+                subjectArray = Ext.unique(subjectArray);
                 if(subjectArray.length){
                     this.subjectArray = subjectArray;
                     this.makeSubjGrid();
                 }
                 Ext.Msg.hide();
             },
-            errorCallback: function(e){
+            failure: function(e){
                 console.log(e);
                 Ext.Msg.hide();
             }
@@ -772,7 +810,7 @@ EHR.ext.SingleAnimalReport = Ext.extend(Ext.Panel, {
         }
 
         if (subjectArray.length != 0){
-            subjectArray = subjectArray.unique();
+            subjectArray = Ext.unique(subjectArray);
             subjectArray.sort();
         }
 
@@ -794,6 +832,11 @@ EHR.ext.SingleAnimalReport = Ext.extend(Ext.Panel, {
     {
         var target = this.idPanel;
         target.removeAll();
+
+        target.add({
+            tag: 'div',
+            html: 'Total IDs: '+this.subjectArray.length
+        });
 
         var thePanel = target.add({
             xtype: 'panel'
@@ -959,8 +1002,15 @@ EHR.ext.SingleAnimalReport = Ext.extend(Ext.Panel, {
             nonRemovable: []
         };
 
-
         var room = (this.roomField ? this.roomField.getValue() : null);
+
+        if(room){
+            room = room.replace(/[\s,;]+/g, ';');
+            room = room.replace(/(^;|;$)/g, '');
+            room = room.toLowerCase();
+            this.roomField.setValue(room);
+        }
+
         var cage = (this.cageField ? this.cageField.getValue() : null);
         var area = (this.areaField ? this.areaField.getValue() : null);
 
@@ -979,10 +1029,11 @@ EHR.ext.SingleAnimalReport = Ext.extend(Ext.Panel, {
 
         if(room){
             if(rowData.get("queryhaslocation")){
-                filterArray.nonRemovable.push(LABKEY.Filter.create('room', room, LABKEY.Filter.Types.STARTS_WITH));
+                console.log('room')
+                filterArray.nonRemovable.push(LABKEY.Filter.create('room', room, LABKEY.Filter.Types.EQUALS_ONE_OF));
             }
             else {
-                filterArray.nonRemovable.push(LABKEY.Filter.create('Id/curLocation/room', room, LABKEY.Filter.Types.STARTS_WITH));
+                filterArray.nonRemovable.push(LABKEY.Filter.create('Id/curLocation/room', room, LABKEY.Filter.Types.EQUALS_ONE_OF));
             }
 
         }
@@ -1036,7 +1087,18 @@ EHR.ext.SingleAnimalReport = Ext.extend(Ext.Panel, {
     loadQuery: function(tab, subject, target)
     {
         var filterArray = this.getFilterArray(tab, subject);
-        var target = target || tab.add({tag: 'div', style: 'padding-bottom: 20px'});
+        var targetId = Ext.id();
+        target = tab.add({
+            autoScroll : true,
+            border: false,
+            frame: false,
+            items : [{
+                layout : 'fit',
+                //autoScroll: true,
+                id : targetId,
+                border : false, frame : false
+            }]
+        });
 
         var title = this.makeTitle(tab, subject);
 
@@ -1055,22 +1117,20 @@ EHR.ext.SingleAnimalReport = Ext.extend(Ext.Panel, {
             tab: tab,
             frame: 'portal',            
             buttonBarPosition: 'top',
-            //TODO: switch to 0 once bug is fixed
-            timeout: 3000000,
+            timeout: 0,
             filters: filterArray.nonRemovable,
             removeableFilters: filterArray.removable,
-            linkTarget: '_new',
+            linkTarget: '_blank',
             renderTo: target.id,
             ref: 'qwp',
-            successCallback: function(c){
-                this.doLayout();
-                this.endMsg();
+            success: function(c){
+                target.doLayout();
+                console.log('success')
             },
-            errorCallback: function(error){
+            failure: function(error){
                 console.log('Error callback called');
                 console.log(target);
-                target.innerHTML = 'ERROR: ' + error.exception + '<br>';
-                this.endMsg();
+                //target.innerHTML = 'ERROR: ' + error.exception + '<br>';
                 EHR.utils.onError(error)
             },
             scope: this
@@ -1110,10 +1170,9 @@ EHR.ext.SingleAnimalReport = Ext.extend(Ext.Panel, {
                 '_select.Id~in': subject.join(";")
             },
             filters: filterArray,
-            successCallback: this.endMsg,
-            errorCallback: function(error){
-                target.innerHTML = 'ERROR: ' + error.exception + '<br>';
-                this.endMsg();
+            //successCallback: this.endMsg,
+            failure: function(error){
+                //target.innerHTML = 'ERROR: ' + error.exception + '<br>';
                 EHR.utils.onError(error)
             },
             scope: this
@@ -1167,10 +1226,9 @@ EHR.ext.SingleAnimalReport = Ext.extend(Ext.Panel, {
             ,editable: false
             ,stripeRows: true
             ,disableSelection: true
-            ,successCallback: this.endMsg
-            ,errorCallback: function(error){
-                target.innerHTML = 'ERROR: ' + error.exception + '<br>';
-                this.endMsg();
+            //,successCallback: this.endMsg
+            ,failure: function(error){
+                //target.innerHTML = 'ERROR: ' + error.exception + '<br>';
                 EHR.utils.onError(error)
             }
             ,scope: this
@@ -1195,10 +1253,9 @@ EHR.ext.SingleAnimalReport = Ext.extend(Ext.Panel, {
             title: tab.rowData.get("reporttitle") + ": " + title,
             renderTo: target,
 //            config: tab.rowData.get("config"),
-            successCallback: this.endMsg,
-            errorCallback: function(error){
-                target.innerHTML = 'ERROR: ' + error.exception + '<br>';
-                this.endMsg();
+            //success: this.endMsg,
+            failure: function(error){
+                //target.innerHTML = 'ERROR: ' + error.exception + '<br>';
                 EHR.utils.onError(error)
             },
             scope: this
@@ -1231,8 +1288,6 @@ EHR.ext.SingleAnimalReport = Ext.extend(Ext.Panel, {
         }
 
         new EHR.ext.DetailsView(config);
-
-        this.endMsg();
 
     },
 
@@ -1353,27 +1408,20 @@ EHR.ext.SingleAnimalReport = Ext.extend(Ext.Panel, {
         }
     },
 
-    endMsg: function(){
-        Ext.Msg.hide();
-
-//        //log using analytics
-//        var loadTime = new Date().getTime() - this.startTime;
-//        pageTracker._trackEvent('AnimalReport', 'LoadTime', this.reportname, loadTime);
-    },
-
     createTabPanel: function(){
         this.allReports.each(function(c){
             var category = c.get('category');
 
             //create top-level tab
             if(!this.tabPanel[category]){
-                this.tabPanel.add(new Ext.TabPanel({
+                this.tabPanel.add({
+                    xtype: 'tabpanel',
                     ref: category,
                     title: category,
                     enableTabScroll: true,
                     autoHeight: true,
                     autoWidth: true,
-                    bodyStyle: 'background-color : transparent;',
+                    //bodyStyle: 'background-color : transparent;',
                     frame:false,
                     listeners: {
                         scope: this,
@@ -1384,7 +1432,7 @@ EHR.ext.SingleAnimalReport = Ext.extend(Ext.Panel, {
                             }
                         }
                     }
-                }))
+                })
             }
 
             var subTab = this.tabPanel[category];
@@ -1392,14 +1440,15 @@ EHR.ext.SingleAnimalReport = Ext.extend(Ext.Panel, {
 
             //create 2nd tier tab
             if(!subTab[report]){
-                var theTab = subTab.add(new Ext.Panel({
+                var theTab = subTab.add({
+                    xtype: 'panel',
                     title: c.get('reporttitle'),
                     ref: report,
                     rowData: c,
                     autoHeight: true,
+                    autoWidth: true,
                     bodyStyle:'padding:5px',
                     border: false,
-                    autoWidth: true,
                     autoScroll: true,
 //                    buttons: [
 //                        {text: 'Reload', ref: '../reload', handler: function(o){
@@ -1408,7 +1457,7 @@ EHR.ext.SingleAnimalReport = Ext.extend(Ext.Panel, {
 //                    ],
                     subjectArray: [],
                     filterArray: {},
-                    tbar: new Ext.Toolbar({style: 'padding-left:10px'}),
+                    tbar: {style: 'padding-left:10px'},
                     combineSubj: true,
                     listeners: {
                         scope: this,
@@ -1422,7 +1471,7 @@ EHR.ext.SingleAnimalReport = Ext.extend(Ext.Panel, {
                             this.onSubmit();
                         }
                     }
-                }));
+                });
 
                 if(this.report==report){
                     this.activeReport = theTab;
@@ -1448,8 +1497,11 @@ EHR.ext.SingleAnimalReport = Ext.extend(Ext.Panel, {
             this.tabPanel.setActiveTab(this.tabPanel.General);
         }
 
-        this.doLayout();
-        this.tabPanel.doLayout();
+//        this.doLayout();
+//        this.tabPanel.doLayout();
+
+        if(this.submitBtn)
+            this.submitBtn.setDisabled(false);
 
     },
     loadTab: function(o){
@@ -1475,9 +1527,6 @@ EHR.ext.SingleAnimalReport = Ext.extend(Ext.Panel, {
 
         o.filters = this.filters;
         o.subjectArray = this.subjectArray;
-
-//        tab.loadMask = new Ext.LoadMask(tab.body);
-//        tab.loadMask.show();
         
         o.removeAll();
 
@@ -1514,7 +1563,7 @@ EHR.ext.SingleAnimalReport = Ext.extend(Ext.Panel, {
         tb.removeAll();
 
         //cannot separate subjects if filtering by room
-        if(this.roomField){
+        if(!this.subjArea){
             return;
         }
 

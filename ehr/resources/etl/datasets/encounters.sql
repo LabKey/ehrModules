@@ -37,11 +37,13 @@ FROM (SELECT
     WHEN remark LIKE "(%" THEN remark
     ELSE " ("
   END AS sort_order,
+  remark regexp '^\\(cont(inued)*(-*)([0-9]*)' as cont,
+  remark regexp '^\\(cont(inued)*(-*)([0-9][0-9])' as cont10,
   ts,
   uuid AS objectid
   FROM surghead s
   WHERE length(s.id) > 1
-  ORDER BY sort_order
+  ORDER BY cont,cont10,sort_order
 ) s
 GROUP BY s.id, s.date, s.enddate, s.project, s.performedby
 HAVING max(ts) > ?
@@ -65,7 +67,7 @@ SELECT
 FROM (SELECT
   lower(id) as Id,
   'Necropsy' as type,
-  FixDate(date) AS Date,
+  cast(FixDate(date) as datetime) AS Date,
   null as enddate,
   null as project,
   account,
@@ -78,11 +80,13 @@ FROM (SELECT
     WHEN remark LIKE "(%" THEN remark
     ELSE " ("
   END AS sort_order,
+  remark regexp '^\\(cont(inued)*(-*)([0-9]*)' as cont,
+  remark regexp '^\\(cont(inued)*(-*)([0-9][0-9])' as cont10,
   ts,
   uuid AS objectid
   FROM necropsyhead n
   WHERE length(id) > 1
-  ORDER BY sort_order
+  ORDER BY cont,cont10,sort_order
 ) n
 GROUP BY n.id, n.date, n.caseno, n.account
 HAVING max(ts) > ?
@@ -107,7 +111,7 @@ SELECT
 FROM (SELECT
   lower(id) as Id,
   'Biopsy' as type,
-  FixDate(date) AS Date,
+  cast(FixDate(date) as datetime) AS Date,
   null as enddate,
   null as project,
   account,
@@ -121,10 +125,12 @@ FROM (SELECT
     WHEN remark LIKE "(%" THEN remark
     ELSE " ("
   END AS sort_order,
+  remark regexp '^\\(cont(inued)*(-*)([0-9]*)' as cont,
+  remark regexp '^\\(cont(inued)*(-*)([0-9][0-9])' as cont10,
   uuid AS objectid
 FROM biopsyhead b
 WHERE length(id) > 1
-ORDER BY sort_order
+ORDER BY cont,cont10,sort_order
 ) b
 GROUP BY b.id, b.date, b.caseno, b.account
 HAVING max(ts) > ?

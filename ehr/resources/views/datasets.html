@@ -18,7 +18,7 @@ Ext.onReady(function () {
                     onSuccess(results)
                 },
                 scope: this,
-                errorCallback: EHR.utils.onError,
+                failure: EHR.utils.onError,
                 sort: config.headerField+','+config.displayField,
                 filterArray: config.filterArray
             });

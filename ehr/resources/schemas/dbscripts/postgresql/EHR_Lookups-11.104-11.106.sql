@@ -28,8 +28,9 @@ DELETE from ehr_lookups.obs_mens;
 INSERT INTO ehr_lookups.obs_mens VALUES ('M', 'Regular Mens');
 INSERT INTO ehr_lookups.obs_mens VALUES ('LM', 'Light Mens');
 INSERT INTO ehr_lookups.obs_mens VALUES ('HM', 'Heavy Mens');
-INSERT INTO ehr_lookups.obs_mens VALUES ('PPM', 'Light after birth bleeding');
+INSERT INTO ehr_lookups.obs_mens VALUES ('PPM', 'Regular after birth bleeding');
 INSERT INTO ehr_lookups.obs_mens VALUES ('HPPM', 'Heavy after birth bleeding');
+INSERT INTO ehr_lookups.obs_mens VALUES ('LPPM', 'Light after birth bleeding');
 
 -- ----------------------------
 -- Table structure for ehr_lookups.obs_other

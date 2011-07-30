@@ -19,6 +19,58 @@ function setDescription(row, errors){
 };
 
 
+function onBecomePublic(errors, scriptContext, row, oldRow){
+    if(scriptContext.extraContext.dataSource != 'etl'){
+        //if not already present, we insert into demographics
+        EHR.findDemographics({
+            participant: row.Id,
+            scope: this,
+            callback: function(data){
+                if(!data){
+                    LABKEY.Query.insertRows({
+                        schemaName: 'study',
+                        queryName: 'Demographics',
+                        extraContext: {
+                            schemaName: 'study',
+                            queryName: 'Demographics'
+                        },
+                        rows: [{Id: row.Id, gender: row.gender, species: row.species, dam: row.dam, sire: row.sire, birth: new Date(row.birth.toGMTString()), date: new Date(row.birth.toGMTString())}],
+                        success: function(data){
+                            console.log('Success inserting into demographics table from arrival')
+                        },
+                        failure: EHR.onFailure
+                    });
+
+//                    if(row.birth){
+//                        LABKEY.Query.insertRows({
+//                            schemaName: 'study',
+//                            queryName: 'Birth',
+//                            rows: [{Id: row.Id, date: new Date(row.birth.toGMTString()), dam: row.dam, sire: row.sire, skipDemographicsAdd: true}],
+//                            success: function(data){
+//                                console.log('Success inserting into birth table from arrival')
+//                            },
+//                            failure: EHR.onFailure
+//                        });
+//                    }
+                }
+            }
+        });
+
+        //if room provided, we insert into housing
+        if(row.initialRoom && row.initialCage){
+            LABKEY.Query.insertRows({
+                schemaName: 'study',
+                queryName: 'Housing',
+                rows: [{Id: row.Id, room: row.initialRoom, cage: row.initialCage, cond: row.initialCond, date: new Date(row.date.toGMTString())}],
+                success: function(data){
+                    console.log('Success inserting into housing table from arrival')
+                },
+                failure: EHR.onFailure
+            });
+        }
+    }
+}
+
 function onComplete(event, errors, scriptContext){
     if(scriptContext.publicParticipantsModified.length){
         EHR.validation.updateStatusField(scriptContext.publicParticipantsModified);

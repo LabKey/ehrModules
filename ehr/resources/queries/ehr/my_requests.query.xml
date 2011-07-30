@@ -3,8 +3,8 @@
         <tables xmlns="http://labkey.org/data/xml">
             <table tableName="requests" tableDbType="TABLE">
                 <!--<tableUrl>/ehr/requestDetails.view?formtype=${formtype}&amp;requestid=${requestid}</tableUrl>-->
-                <updateUrl>/ehr/manageRequest.view?formtype=${formtype}&amp;requestid=${requestid}</updateUrl>
-                <insertUrl>/ehr/manageRequest.view</insertUrl>
+                <updateUrl>/ehr/requestDetails.view?formtype=${formtype}&amp;requestid=${requestid}</updateUrl>
+                <!--<insertUrl>/ehr/manageRequest.view</insertUrl>-->
                 <titleColumn>RowId</titleColumn>
                 <columns>
                     <column columnName="requestid">
@@ -34,7 +34,7 @@
                         </fk>
                     </column>
                     <column columnName="notify1">
-                        <columnTitle>First Notification</columnTitle>
+                        <columnTitle>First Contact</columnTitle>
                         <fk>
                             <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                             <fkDbSchema>core</fkDbSchema>
@@ -43,13 +43,13 @@
                         </fk>
                     </column>
                     <column columnName="notify2">
-                        <columnTitle>Second Notification</columnTitle>
-                        <!--<fk>-->
-                            <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
-                            <!--<fkDbSchema>core</fkDbSchema>-->
-                            <!--<fkTable>Principals</fkTable>-->
-                            <!--<fkColumnName>userid</fkColumnName>-->
-                        <!--</fk>-->
+                        <columnTitle>Second Contact</columnTitle>
+                        <fk>
+                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
+                            <fkDbSchema>core</fkDbSchema>
+                            <fkTable>Principals</fkTable>
+                            <fkColumnName>userid</fkColumnName>
+                        </fk>
                     </column>
                     <column columnName="pi">
                         <columnTitle>PI</columnTitle>
@@ -75,6 +75,7 @@
                         <columnTitle>Date Requested</columnTitle>
                     </column>
                     <column columnName="qcstate">
+                        <isHidden>true</isHidden>
                         <columnTitle>Status</columnTitle>
                         <fk>
                             <fkFolderPath>/wnprc/ehr/</fkFolderPath>

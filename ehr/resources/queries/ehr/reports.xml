@@ -12,7 +12,7 @@
                     <column columnName="queryname">
                         <columnTitle>Query Name</columnTitle>
                     </column>
-                    <column columnName="reportname">
+                    <column columnName="report">
                         <columnTitle>Report Name</columnTitle>
                     </column>
                     <column columnName="containerpath">

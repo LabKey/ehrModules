@@ -42,9 +42,12 @@
                       <fk>
                         <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                         <fkDbSchema>ehr_lookups</fkDbSchema>
-                        <fkTable>avail</fkTable>
+                        <fkTable>avail_codes</fkTable>
                         <fkColumnName>code</fkColumnName>
                       </fk>
+                    </column>
+                    <column columnName="project">
+                        <formatString>00000000</formatString>
                     </column>
                 </columns>
             </table>

@@ -13,7 +13,7 @@
                             query.lsid~eq=${lsid}&amp;
                             query.sort=Id&amp;
                         </url>
-                        <columnTitle>Total Co-Housed</columnTitle>
+                        <columnTitle>Total Cagemates</columnTitle>
                     </column>
                 </columns>
                 <titleColumn>TotalRoommates</titleColumn>

@@ -7,7 +7,10 @@
 var {EHR, LABKEY, Ext, console, init, beforeInsert, afterInsert, beforeUpdate, afterUpdate, beforeDelete, afterDelete, complete} = require("ehr/validation");
 
 
-
+function onUpsert(context, errors, row, oldRow){
+    if(context.extraContext.dataSource != 'etl')
+        EHR.validation.removeTimeFromDate(row, errors);
+}
 
 
 
@@ -18,11 +21,19 @@ function setDescription(row, errors){
     if (row.source)
         description.push('Source: '+row.source);
 
+    if (row.testid)
+        description.push('Test: '+row.testid);
     if (row.virus)
-        description.push('Virus: '+row.virus);
+        description.push('Test: '+row.virus);
 
-    if (row.source)
-        description.push('Result: '+row.result);
+    if (row.method)
+        description.push('Method: '+row.method);
+
+    if(row.result)
+        description.push('Result: '+EHR.validation.nullToString(row.result)+' '+EHR.validation.nullToString(row.units));
+    if(row.qualResult)
+        description.push('Qual Result: '+EHR.validation.nullToString(row.qualResult));
+
 
     return description;
 }

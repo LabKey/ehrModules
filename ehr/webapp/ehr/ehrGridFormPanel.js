@@ -29,12 +29,12 @@ EHR.ext.GridFormPanel = Ext.extend(Ext.Panel,
         }));
 
         if(!EHR.ext.FormColumns[this.queryName]){
-            console.log('Columns not defined')
+            console.log('Columns not defined: '+this.queryName)
         }
 
         //set buttons
         var tbar = {xtype: 'toolbar', items: []};
-        this.tbarBtns = this.tbarBtns || ['add', 'addbatch', 'delete', 'selectall', 'duplicate', 'bulk_edit', 'apply_template', 'save_template'];
+        this.tbarBtns = this.tbarBtns || ['add', 'addbatch', 'requestdelete', 'selectall', 'duplicate', 'bulk_edit', 'apply_template', 'save_template'];
         for (var i=0;i<this.tbarBtns.length;i++){
             var btnCfg = this.gridBtns[this.tbarBtns[i]];
             if(btnCfg.requiredQC){
@@ -88,7 +88,7 @@ EHR.ext.GridFormPanel = Ext.extend(Ext.Panel,
         this.buttonAlign = 'left';
         Ext.applyIf(this, {
             autoHeight: true
-            ,autoWidth: true
+            //,autoWidth: true
             ,forceLayout: true
             ,layout: 'table'
             ,columns: 2
@@ -114,6 +114,7 @@ EHR.ext.GridFormPanel = Ext.extend(Ext.Panel,
                     bindOnChange: false,
                     showDeleteBtn: false
                 },
+                //buttonAlign: 'right',
                 ref: 'theForm',
                 metadata: this.metadata,
                 store: this.store,
@@ -128,11 +129,12 @@ EHR.ext.GridFormPanel = Ext.extend(Ext.Panel,
                 //NOTE: this is done to make sure the grid aligns vertically
                 //TODO: might be better to just set style on cell directly
                 //style is: "vertical-align: top;"
+                cls: 'ehr-' + this.queryName.toLowerCase().replace(' ', '_') + '-records-grid', // marker class for testing
                 cellCls: 'ehr-gridpanel-cell',
                 //cellStyle: 'vertical-align: top;',
                 title: 'Records',
                 editable: false, //this.editable!==false ? true : false,
-                width: this.gridWidth || 700,
+                width: this.gridWidth || 750,
                 maxHeight: 500,
                 autoHeight: true,
                 store: this.store,
@@ -142,25 +144,18 @@ EHR.ext.GridFormPanel = Ext.extend(Ext.Panel,
                 tbar: [],
                 sm: new Ext.grid.RowSelectionModel({
                     //singleSelect: true,
-                    listeners: {
-                        scope: this,
-                        rowselect: function(sm, row, rec)
-                        {
-                            if(sm.getSelections().length == 1)
-                                //NOTE: this allows any changes to values of select menus to commit before bindRecord() runs
-                                this.theForm.bindRecord.defer(200, this.theForm, [rec]);
-                            else
-                                this.theForm.unbindRecord()
-                        },
-                        selectionchange: function(sm)
-                        {
-                            var rec = sm.getSelected();
-                            if (rec != this.theForm.boundRecord)
-                            {
-                                this.theForm.focusFirstField();
-                            }
-                        }
-                    }
+//                    listeners: {
+//                        scope: this,
+//                        rowselect: function(sm, row, rec)
+//                        {
+//console.log(sm.getSelections())
+//                            if(sm.getSelections().length == 1)
+//                                //NOTE: this allows any changes to values of select menus to commit before bindRecord() runs
+//                                this.theForm.bindRecord.defer(200, this.theForm, [rec]);
+//                            else
+//                                this.theForm.unbindRecord()
+//                        },
+//                    }
                 })
             }],
             keys: [{
@@ -205,6 +200,22 @@ EHR.ext.GridFormPanel = Ext.extend(Ext.Panel,
         });
 
         EHR.ext.GridFormPanel.superclass.initComponent.call(this);
+
+        this.theGrid.getSelectionModel().on('selectionchange', function(sm){
+            //select the first record
+            var recs = sm.getSelections();
+
+            if (recs.length==1){
+                if(recs[0] != this.theForm.boundRecord){
+                    //NOTE: this allows any changes to values of select menus to commit before bindRecord() runs
+                    this.theForm.bindRecord.defer(200, this.theForm, [recs[0]]);
+                    this.theForm.focusFirstField.defer(250, this.theForm);
+                }
+            }
+            else {
+                this.theForm.unbindRecord();
+            }
+        }, this, {buffer: 20});
 
         if(this.showStatus){
             this.mon(this.theForm, 'recordchange', this.onRecordChange, this, {delay: 100});
@@ -269,8 +280,6 @@ EHR.ext.GridFormPanel = Ext.extend(Ext.Panel,
                             this.theForm.unbindRecord();
 
                             function onComplete(response){
-                                console.log(arguments)
-                                console.log(response)
                                 this.store.un('commitcomplete', onComplete);
                                 this.store.un('commitexception', onComplete);
                                 Ext.Msg.hide();
@@ -279,6 +288,43 @@ EHR.ext.GridFormPanel = Ext.extend(Ext.Panel,
                             this.store.on('commitcomplete', onComplete, this, {single: true});
                             this.store.on('commitexception', onComplete, this, {single: true});
                             this.store.deleteRecords(recs);
+                        }
+                    },
+                    this);
+            }
+        },
+        'requestdelete': {
+            text: 'Delete Selected',
+            xtype: 'button',
+            tooltip: 'Click to delete selected row(s)',
+            name: 'delete-records-button',
+            handler: function()
+            {
+                if(!this.theGrid.getSelectionModel().getSelections().length){
+                    Ext.Msg.alert('Error', 'No rows selected');
+                    return;
+                }
+
+                Ext.MessageBox.confirm(
+                    'Confirm',
+                    'You are about to permanently delete these records.  It cannot be undone.  Are you sure you want to do this?',
+                    function(val){
+                        if(val=='yes'){
+                            Ext.Msg.wait("Deleting Records...");
+
+                            this.theGrid.stopEditing();
+                            var recs = this.theGrid.getSelectionModel().getSelections();
+                            this.theForm.unbindRecord();
+
+                            function onComplete(){
+                                this.store.un('commitcomplete', onComplete);
+                                this.store.un('commitexception', onComplete);
+                                Ext.Msg.hide();
+                            }
+
+                            this.store.on('commitcomplete', onComplete, this, {single: true});
+                            this.store.on('commitexception', onComplete, this, {single: true});
+                            this.store.requestDeleteRecords(recs);
                         }
                     },
                     this);
@@ -372,27 +418,52 @@ EHR.ext.GridFormPanel = Ext.extend(Ext.Panel,
                     this.animalSelectorWin.show();
                 }
             },
-//            'order_clinpath': {
-//                text: 'Order Multiple Tests',
-//                xtype: 'button',
-//                scope: this,
-//                tooltip: 'Order Multiple Tests',
-//                title: 'Order Multiple Tests',
-//                name: 'order_clinpath-button',
-//                handler: function()
-//                {
-//                    this.clinPath = new Ext.Window({
-//                        closeAction:'hide',
-//                        width: 350,
-//                        items: [{
-//                            xtype: 'ehr-clinpathorderpanel',
-//                            ref: 'theForm'
-//                        }]
-//                    });
-//
-//                    this.clinPath.show();
-//                }
-//            },
+        'addseries': {
+                text: 'Add Series',
+                requiredQC: 'In Progress',
+                xtype: 'button',
+                scope: this,
+                tooltip: 'Click to add a series of IDs',
+                name: 'add-series-button',
+                handler: function()
+                {
+                    this.addSeriesWin = new Ext.Window({
+                        closeAction:'hide',
+                        width: 350,
+                        items: [{
+                            xtype: 'ehr-addseries',
+                            ref: 'addseries',
+                            targetStore: this.store,
+                            title: ''
+                        }]
+                    });
+
+                    this.addSeriesWin.show();
+                }
+            },
+        'addtreatments': {
+                text: 'Add Treatments',
+                requiredQC: 'In Progress',
+                xtype: 'button',
+                scope: this,
+                tooltip: 'Click to add scheduled treatments',
+                name: 'add-treatments-button',
+                handler: function()
+                {
+                    this.treatmentSelectorWin = new Ext.Window({
+                        closeAction:'hide',
+                        width: 350,
+                        items: [{
+                            xtype: 'ehr-treatmentselector',
+                            ref: 'treatmentselector',
+                            targetStore: this.store,
+                            title: ''
+                        }]
+                    });
+
+                    this.treatmentSelectorWin.show();
+                }
+            },
             'apply_template': {
                 text: 'Apply Template',
                 xtype: 'button',
@@ -525,6 +596,10 @@ EHR.ext.GridFormPanel = Ext.extend(Ext.Panel,
                         }]
                     });
 
+                    this.theGrid.stopEditing();
+                    var s = this.theGrid.getSelectionModel().getSelections();
+                    this.theGrid.getSelectionModel().clearSelections();
+
                     batchEditWin.show();
 
                     function onEdit(){
@@ -548,7 +623,7 @@ EHR.ext.GridFormPanel = Ext.extend(Ext.Panel,
                         else
                             v = batchEditWin.fieldVal.getValue();
 
-                        var s = this.theGrid.getSelectionModel().getSelections();
+
                         for (var i = 0, r; r = s[i]; i++){
                             r.set(f, v);
                         }
@@ -556,9 +631,6 @@ EHR.ext.GridFormPanel = Ext.extend(Ext.Panel,
                         batchEditWin.fieldVal.reset();
                     }
                 }
-        },
-        order_treatment: {
-
         },
         validate: {
             text: 'Validate Section',
@@ -585,7 +657,7 @@ EHR.ext.GridFormPanel = Ext.extend(Ext.Panel,
             name: 'mark-all-complete-button',
             handler: function()
             {
-                console.log(EHR.permissionMap)
+                //console.log(EHR.permissionMap)
                 this.store.each({
 
                 }, this);
@@ -608,6 +680,39 @@ EHR.ext.GridFormPanel = Ext.extend(Ext.Panel,
 
                 Ext.each(records, function(r){
 
+                }, this);
+            }
+        },
+        pruneObsRecords: {
+            text: 'Remove Blank',
+            xtype: 'button',
+            scope: this,
+            tooltip: 'Remove Blank Records',
+            title: 'Remove Blank',
+            name: 'remove-blank-records',
+            handler: function()
+            {
+                Ext.Msg.confirm('Remove Blank Records', 'This will remove any unsaved records that have no observations.  Do you want to do this?', function(v){
+                    if(v=='yes'){
+                        if(!this.store.getCount()){
+                            return;
+                        }
+
+                        this.store.each(function(r){
+                            if(r.phantom
+                                && !r.get('remark')
+                                && !r.get('feces')
+                                && !r.get('menses')
+                                && !r.get('other')
+                                && !r.get('tlocation')
+                                && !r.get('behavior')
+                                && !r.get('otherbehavior')
+                                && !r.get('breeding')
+                            ){
+                                this.store.remove(r);
+                            }
+                        }, this);
+                    }
                 }, this);
             }
         }

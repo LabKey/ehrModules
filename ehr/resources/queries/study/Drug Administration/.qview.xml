@@ -2,21 +2,27 @@
    <columns>
        <column name="Id"/>
        <column name="date"/>
-       <column name="EndTime"/>
+       <column name="enddate"/>
        <column name="project"/>
-       <column name="qcstate" />
        <column name="code"/>
        <column name="code/code">
            <properties>
                <property name="columnTitle" value="SNOMED Code"/>
            </properties>
        </column>
+       <column name="qualifier"/>
        <column name="amount"/>
-       <column name="units"/>
+       <column name="amount_units"/>
+       <column name="volume"/>
+       <column name="vol_units"/>
        <column name="route"/>
-       <column name="Remark"/>
+       <column name="remark"/>
        <column name="category"/>
+       <column name="restraint"/>
+       <column name="restraintTime"/>
        <!--<column name="HeaderDate"/>-->
+       <column name="qcstate" />
+       <column name="taskid" />
    </columns>
    <sorts>
        <sort column="date" descending="true"/>

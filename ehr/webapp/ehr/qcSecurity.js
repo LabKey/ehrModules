@@ -128,7 +128,8 @@ EHR.utils.getDatasetPermissions = function(config) {
                 queries = [queries];
 
             if(!queries.length){
-                throw 'Must provide an array of query objects'
+                console.log('Must provide an array of query objects');
+                return false;
             }
 
             var result = true;
@@ -141,8 +142,9 @@ EHR.utils.getDatasetPermissions = function(config) {
                 if(!schemaMap.schemas[query.schemaName].queries[query.queryName] ||
                    !schemaMap.schemas[query.schemaName].queries[query.queryName].permissionsByQCState[qcStateLabel] ||
                    !schemaMap.schemas[query.schemaName].queries[query.queryName].permissionsByQCState[qcStateLabel][permission]
-                )
+                ){
                     result = false;
+                }
             }, this);
 
             return result;

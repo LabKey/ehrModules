@@ -1,7 +1,7 @@
 <customView xmlns="http://labkey.org/data/xml/queryCustomView">
    <columns>
-       <column name="id"/>
-       <column name="Date"/>
+       <column name="Id"/>
+       <column name="date"/>
        <column name="project"/>
        <column name="dataset/label">
             <properties>
@@ -10,14 +10,15 @@
        </column>
        <column name="remark"/>
        <column name="description"/>
+       <column name="performedby"/>
        <column name="qcstate"/>
    </columns>
    <sorts>
        <sort column="date" descending="true"/>
    </sorts>
    <filters>
-       <filter column="dataset/name" operator="in" value="assignments;behavetrem;biopsy;blood;clinremarks;drug;encounters;housing;necropsy;problem;weight;surgeries;tb;bacteriologyRuns;parasitologyRuns;virologyRuns;chemistryRuns;hematologyRuns;urinalysisRuns;immunologyRuns;obs"/>
-       <filter column="description"  operator="neq" value="No Irregular Observations"/>
+       <filter column="dataset/name" operator="in" value="assignments;behavetrem;biopsy;blood;clinremarks;drug;encounters;housing;necropsy;problem;weight;surgery;tb;clinpathRuns;obs;Cage Observations"/>
+       <!--<filter column="description"  operator="neq" value="No Irregular Observations"/>-->
        <!--<filter column="qcstate/publicdata" operator="eq" value="true"/>-->
    </filters>
 </customView>

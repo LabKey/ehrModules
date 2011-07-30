@@ -26,6 +26,7 @@
     new EHR.ext.SearchPanel({
         schemaName: 'study'
         ,queryName: 'assignment'
+        ,viewName: 'Search Panel'
         ,title: 'Search Assignments'
         ,metadata: {
             project: {lookups: false}
@@ -63,6 +64,14 @@ This page contains a series of queries to search IACUC Protocols, RARC Projects 
 
 <p/>
 <h2>WNPRC Projects:</h2>
+<p/>
+<h3>Commonly Used Queries:</h3>
+<ul>
+    <li>
+        <a href="<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=lists&query.queryName=Project&query.viewName=Projects With Active Assignments">View All Projects With Active Assignments</a>
+    </li>
+</ul>
+<p/>
 
 <div id='projectPanel'></div>
 <p/>
@@ -101,6 +110,9 @@ This page contains a series of queries to search IACUC Protocols, RARC Projects 
     </li>
     <li>
         <a href="<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=AssignmentOverlaps">Find Assignments Overlapping A Date Range</a>
+    </li>
+    <li>
+        <a href="<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=Demographics&query.viewName=Unassigned%20Animals">Unassigned Animals</a>
     </li>
 </ul>
 <p/>

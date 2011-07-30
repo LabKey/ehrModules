@@ -25,6 +25,7 @@ EHR.ext.StoreCollection = Ext.extend(Ext.util.MixedCollection, {
         EHR.ext.StoreCollection.superclass.constructor.call(this, false, function(item){return item.storeId;});
         this.addEvents('beforecommit', 'commitcomplete', 'commitexception', 'update', 'validation');
     },
+    //timeout: 60000,
     add: function(store){
         store = Ext.StoreMgr.lookup(store);
         if (this.contains(store)){
@@ -43,7 +44,8 @@ EHR.ext.StoreCollection = Ext.extend(Ext.util.MixedCollection, {
 
         Ext.apply(store, {
             parentStore: this,
-            monitorValid: this.monitorValid
+            monitorValid: this.monitorValid,
+            allowOthersToEditRecords: this.allowOthersToEditRecords
         });
 
         if(this.monitorValid){
@@ -124,8 +126,8 @@ EHR.ext.StoreCollection = Ext.extend(Ext.util.MixedCollection, {
         extraContext = extraContext || {};
 
         if (!commands || !commands.length){
-            if(extraContext && extraContext.silent!==true)
-                Ext.Msg.alert('Alert', 'There are no changes to submit.');
+//            if(extraContext && extraContext.silent!==true)
+//                Ext.Msg.alert('Alert', 'There are no changes to submit.');
 
             this.onComplete(extraContext);
             return;
@@ -140,6 +142,7 @@ EHR.ext.StoreCollection = Ext.extend(Ext.util.MixedCollection, {
             success: this.onCommitSuccess,
             failure: this.getOnCommitFailure(records),
             scope: this,
+            timeout: this.timeout,
             jsonData : {
                 containerPath: this.containerPath,
                 commands: commands,
@@ -226,18 +229,20 @@ EHR.ext.StoreCollection = Ext.extend(Ext.util.MixedCollection, {
 
             var serverError = this.getJson(response);
             var msg = '';
-            Ext.each(serverError.errors, function(error){
-                //handle validation script errors and exceptions differently
-                if(error.errors && error.errors.length){
-                    this.handleValidationErrors(error, response, serverError.extraContext);
-                    msg = "Could not save changes due to errors.  Please check the form for fields marked in red.";
-                }
-//                else {
-//                    //if an exception was thrown, I believe we automatically only have one error returned
-//                    //this means this can only be called once
-//                    msg = 'Could not save changes due to the following error:\n' + (serverError && serverError.exception) ? serverError.exception : response.statusText;
-//                }
-            }, this);
+            if(serverError && serverError.errors){
+                Ext.each(serverError.errors, function(error){
+                    //handle validation script errors and exceptions differently
+                    if(error.errors && error.errors.length){
+                        this.handleValidationErrors(error, response, serverError.extraContext);
+                        msg = "Could not save changes due to errors.  Please check the form for fields marked in red.";
+                    }
+    //                else {
+    //                    //if an exception was thrown, I believe we automatically only have one error returned
+    //                    //this means this can only be called once
+    //                    msg = 'Could not save changes due to the following error:\n' + (serverError && serverError.exception) ? serverError.exception : response.statusText;
+    //                }
+                }, this);
+            }
 
             if(!serverError.errors){
                 msg = 'Could not save changes due to the following error:\n' + serverError.exception;
@@ -272,7 +277,9 @@ EHR.ext.StoreCollection = Ext.extend(Ext.util.MixedCollection, {
             var store = this.find(function(s){
                 return s.queryName==result.queryName && s.schemaName==result.schemaName;
             });
-            store.processResponse(result.rows);
+
+            if(!options.jsonData || !options.jsonData.extraContext || !options.jsonData.extraContext.successURL)
+                store.processResponse(result.rows);
         }
 
         this.onComplete((options.jsonData ? options.jsonData.extraContext : null));
@@ -281,8 +288,10 @@ EHR.ext.StoreCollection = Ext.extend(Ext.util.MixedCollection, {
     onComplete: function(extraContext){
         this.fireEvent("commitcomplete");
 
-        if(extraContext && extraContext.successURL)
+        if(extraContext && extraContext.successURL){
+            window.onbeforeunload = Ext.emptyFn;
             window.location = extraContext.successURL;
+        }
     },
 
     getJson : function(response) {
@@ -312,9 +321,6 @@ EHR.ext.StoreCollection = Ext.extend(Ext.util.MixedCollection, {
                 }
 
                 if(!storesPerformingDeletes.length){
-                    console.log('commitcomplete');
-                    console.log(response);
-
                     if(failures == 0){
                         this.onComplete(extraContext);
                     }
@@ -392,6 +398,7 @@ EHR.ext.StoreInheritance = {
             this.handleField(store, meta, field);
         }
         //b/c store.fields is read only, we need to manually reload metadata
+        //this is necessary for setInitialValue() to be copied
         //console.log('refreshing metadata for store: '+store.storeId);
         store.reader.onMetaChange(meta);
     },
@@ -419,8 +426,8 @@ EHR.ext.StoreInheritance = {
             });
         }
         if(!targetStore){
-            console.log('target store not found');
-            console.log(field.parentConfig)
+            console.log('ERROR: target store not found');
+            console.log(field.parentConfig);
             this.on('add', function(){
                 this.addInheritanceListeners(store, meta, field)
             }, this, {single: true});
@@ -432,26 +439,37 @@ EHR.ext.StoreInheritance = {
             return;
         }
 
-        //in this case the store has not loaded yet
-        if(!targetStore.fields){
-            targetStore.on('load', function(){
-                this.addInheritanceListeners(store, meta, field);
-            }, this, {single: true});
-            return;
-        }
-        //the store is loaded, but has no records
-        else if (!targetStore.getCount()){
-            console.log('no records in store: '+targetStore.storeId);
-            targetStore.on('add', function(){
-                console.log('retrying store: '+targetStore.storeId+' for field :'+field.name);
-                this.addInheritanceListeners(store, meta, field)
-            }, this, {single: true});
-            return;
+        //this function is used to retry a store when records are not found
+        function retryStore(){
+            //console.log('retrying store: '+targetStore.storeId+' for field :'+field.name);
+            this.addInheritanceListeners(store, meta, field)
         }
 
-        //console.log('parent found: '+targetStore.storeId+" for table "+store.storeId+' for field '+field.name);
-        //TODO: we always assume we want the 1st record.  possibly extend to allow more complex logic
-        field.parentConfig.parent = targetStore.getAt(0);
+        //in this case the store has not loaded yet
+        if(!targetStore.fields){
+            targetStore.on('load', retryStore, this, {single: true});
+            return;
+        }
+//        //the store is loaded, but has no records
+//        else if (!targetStore.getCount()){
+//            //console.log('no records in store: '+targetStore.storeId);
+//            targetStore.on('add', retryStore, this, {single: true});
+//            return;
+//        }
+//
+//        //console.log('parent found: '+targetStore.storeId+" for table "+store.storeId+' for field '+field.name);
+//        if(field.parentConfig.recordIdentifier){
+//            field.parentConfig.parent = field.parentConfig.recordIdentifier(targetStore);
+//            if(!field.parentConfig.parent){
+//                targetStore.on('add', retryStore, this, {single: true});
+//            }
+//        }
+//        else {
+//            //if recordIdentifier is not provided, we always take the first record
+//            field.parentConfig.parent = targetStore.getAt(0);
+//        }
+        field.parentConfig.parent = targetStore;
+
     },
     addInheritanceListener: function(store, field){
         var key = [store.storeId, field.name].join(':');
@@ -464,55 +482,62 @@ EHR.ext.StoreInheritance = {
             parent: null
         };
 
-        var initialVal;
-
         field.oldSetInitialValue = field.setInitialValue;
         var parent = field.parentConfig.parent;
         config.parent = parent;
 
-        if (parent instanceof Ext.data.Record){
-            config.listenerTarget = parent.store;
+        if (parent instanceof Ext.data.Store){
+            config.listenerTarget = parent;
+
+            function findParentRec(field, parent, childRecord){
+                var parentRec;
+                if(!field.parentConfig.recordIdentifier){
+                    parentRec = parent.getAt(0);
+                }
+                else {
+                    var idx = parent.findBy(function(record){return field.parentConfig.recordIdentifier.call(this, record, childRecord)}, this);
+                    if(idx != -1)
+                        parentRec = parent.getAt(idx);
+                }
+
+                return parentRec;
+            }
+
             //console.log('adding '+field.name+' from : '+parent.store.storeId + '/to: '+store.storeId);
             config.listeners.update = function(parent, childStore){return function(store, rec, idx){
-                if(rec === parent){
-                    childStore.each(function(rec){
-                        //console.log('inheritance listener called on '+field.dataIndex+'/childStore: '+childStore.storeId+' /parentStore: '+store.storeId+'/rec: '+rec.id);
-                        //console.log('setting value to: '+parent.get(field.parentConfig.dataIndex));
-                        rec.set(field.dataIndex, parent.get(field.parentConfig.dataIndex));
-                    }, config);
-                }
-//                else
-//                    console.log('update, but not of the parent record')
+                var parentRec;
+                childStore.each(function(rec){
+                    parentRec = findParentRec(field, parent, rec);
 
+                    if(!parentRec){
+                        console.log('No matching record');
+                        return;
+                    }
+
+                    //console.log('inheritance listener called on '+field.dataIndex+'/childStore: '+childStore.storeId+' /parentStore: '+store.storeId+'/rec: '+rec.id);
+                    //console.log('setting value to: '+parentRec.get(field.parentConfig.dataIndex));
+                    rec.set(field.dataIndex, parentRec.get(field.parentConfig.dataIndex));
+                }, config);
             }}(parent, store);
-            config.listeners.remove = function(store, rec){
-                if(rec === field.parentConfig.parent){
-                    this.removeInheritanceListeners(store);
-                    this.addInheritanceListeners(store);
-                }
-            };
 
-            initialVal = parent.get(field.parentConfig.dataIndex);
+            //TODO: we might need to account for the possibility of head records being deleted
+//            config.listeners.remove = function(store, rec){
+//                if(rec === field.parentConfig.parent){
+//                    this.removeInheritanceListeners(store);
+//                    this.addInheritanceListeners(store);
+//                }
+//            };
+
             field.setInitialValue = function(v, rec, f){
-                //console.log('setting initial val for: '+f.name + ' to ' +f.parentConfig.parent.get(f.parentConfig.dataIndex));
-                return f.parentConfig.parent.get(f.parentConfig.dataIndex);
+                var parentRec = findParentRec(field, parent, rec);
+                if(!parentRec){
+                    return;
+                }
+
+                //console.log('setting initial val for: '+f.name + ' to ' +parentRec.get(f.parentConfig.dataIndex));
+                return parentRec.get(f.parentConfig.dataIndex);
             }
         }
-//        else if (parent instanceof Ext.form.Field){
-//            config.listenerTarget = parent;
-//            config.listeners.change = function(field){
-//                store.each(function(rec){
-//                    rec.set(field.dataIndex,  field.parentConfig.parent.getValue());
-//                }, this);
-//            };
-//
-//            initialVal = parent.getValue();
-//            field.setInitialValue = function(parent){
-//                return function(v, rec){
-//                    return parent.getValue();
-//                }
-//            }(parent);
-//        }
         else {
             console.log('problem with parent');
             console.log(field.parentConfig.parent);
@@ -537,9 +562,14 @@ EHR.ext.StoreInheritance = {
         };
 
         //update any pre-existing records
-        //if called before render the grid throws an error
-
+        //NOTE: if called before render the grid throws an error
         store.each(function(rec){
+            var parentRec = findParentRec(field, parent, rec);
+            if(!parentRec)
+                return;
+
+            var initialVal = parentRec.get(field.parentConfig.dataIndex);
+
             rec.beginEdit();
             if(rec.get(field.dataIndex) != initialVal){
                 rec.set(field.dataIndex, initialVal);

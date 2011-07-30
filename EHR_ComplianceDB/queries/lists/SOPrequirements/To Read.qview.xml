@@ -2,26 +2,29 @@
     <columns>
         <column name="Id"/>
         <column name="SOP_ID"/>
-        <column name="SOP_ID/Name">
+        <column name="sop_id/Name">
             <properties>
                 <property name="columnTitle" value="Name"/>
             </properties>
         </column>
-        <column name="SOP_ID/PDF">
+        <column name="sop_id/PDF">
             <properties>
                 <property name="columnTitle" value="PDF"/>
             </properties>
         </column>
-        <column name="SOP_ID/Spanish_PDF">
+        <column name="sop_id/Spanish_PDF">
             <properties>
                 <property name="columnTitle" value="Translated PDF"/>
             </properties>
         </column>
         <column name="LastRead"/>
         <column name="MonthsUntilRenewal"/>
+        <column name="Required"/>
     </columns>
     <filters>
+        <filter column="required" operator="eq" value="true"/>
         <filter column="MonthsUntilRenewal" operator="lte" value="3"/>
+        <filter column="MonthsUntilRenewal" operator="isnonblank"/>
     </filters>
     <sorts>
         <sort column="MonthsUntilRenewal" descending="false"/>

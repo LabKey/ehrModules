@@ -13,12 +13,8 @@
                     <column columnName="date">
                         <isHidden>true</isHidden>
                     </column>
-                    <column columnName="LastestWeight">
-                        <url>/query/executeQuery.view?schemaName=study&amp;
-                            query.queryName=weight&amp;
-                            query.date~eq=${LastestWeightDate}&amp;
-                            query.sort=-date
-                        </url>
+                    <column columnName="weight">
+                        <columnTitle>Old Weight (kg)</columnTitle>
                     </column>
                     <column columnName="PctChange">
                         <columnTitle>Percent Change</columnTitle>
@@ -46,10 +42,15 @@
                         <columnTitle>Months Since Weight</columnTitle>
                     </column>
                     <column columnName="LatestWeight">
-                        <columnTitle>Current Weight (kg)</columnTitle>
+                        <columnTitle>Latest Weight (kg)</columnTitle>
+                        <url>/query/executeQuery.view?schemaName=study&amp;
+                            query.queryName=weight&amp;
+                            query.date~eq=${LastestWeightDate}&amp;
+                            query.sort=-date
+                        </url>
                     </column>
                     <column columnName="LatestWeightDate">
-                        <columnTitle>Weight Date</columnTitle>
+                        <columnTitle>Latest Weight Date</columnTitle>
                     </column>
                     <!--<column columnName="qcstate">-->
                         <!--<isHidden>true</isHidden>-->

@@ -15,6 +15,7 @@
             </properties>
         </column>
         <column name="qcstate" />
+        <column name="taskid" />
    </columns>
    <sorts>
        <sort column="Id" />

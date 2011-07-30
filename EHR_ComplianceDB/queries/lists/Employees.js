@@ -22,5 +22,8 @@ function afterUpdate(row, oldRow, errors){
         shared.updateTable(row, oldRow, schemaName, 'CompletionDates', 'Key', 'Id', 'EmployeeId');
         shared.updateTable(row, oldRow, schemaName, 'EmployeeMiscRequirements', 'Key', 'Id', 'EmployeeId');
         shared.updateTable(row, oldRow, schemaName, 'EmployeeRequirementExemptions', 'Key', 'Id', 'EmployeeId');
+
+        //var sopContainer = '/WNPRC/WNPRC_Units/Animal_Services/Compliance_Training/Public/SOPs/';
+        shared.updateTable(row, oldRow, schemaName, 'SOPDates', 'Key', 'Id', 'EmployeeId');
     }
 };

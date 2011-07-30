@@ -5,7 +5,7 @@
  */
 
 SELECT lower(id) as Id, FixDate(date) AS Date, 
-uuid as requestId,
+uuid as runId,
 ts, uuid AS objectid
 FROM immunores
 where ts > ? AND length(id) > 1

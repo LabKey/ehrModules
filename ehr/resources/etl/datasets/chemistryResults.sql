@@ -3,8 +3,18 @@
  *
  * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
  */
-SELECT lower(id) as Id, FixDate(date) AS Date, upper(testid) as testid, Results as result, stringResults, units, remark,
-ts, objectid, runid
+SELECT
+lower(id) as Id,
+FixDate(date) AS Date,
+upper(testid) as testid,
+Results as result,
+stringResults,
+units,
+remark,
+ts,
+objectid,
+runid,
+runid as parentId
 
 FROM
 

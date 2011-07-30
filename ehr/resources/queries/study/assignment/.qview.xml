@@ -12,7 +12,6 @@
                 <property name="columnTitle" value="Protocol"/>
             </properties>
         </column>
-        <column name="qcstate" />
         <column name="Project/title">
             <properties>
                 <property name="columnTitle" value="Title"/>
@@ -30,6 +29,8 @@
         </column>
         <column name="date"/>
         <column name="enddate"/>
+        <column name="qcstate" />
+        <column name="taskid" />
     </columns>
    <sorts>
        <sort column="date" descending="true"/>

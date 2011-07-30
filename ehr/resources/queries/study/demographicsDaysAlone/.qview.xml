@@ -1,26 +1,16 @@
 <customView xmlns="http://labkey.org/data/xml/queryCustomView">
     <columns>
         <column name="Id"/>
-        <!--<column name="Id/Dataset/Demographics/Gender">-->
-            <!--<properties>-->
-                <!--<property name="columnTitle" value="Gender"/>-->
-            <!--</properties>-->
-        <!--</column>-->
-        <!--<column name="Id/Dataset/Demographics/Status">-->
-            <!--<properties>-->
-                <!--<property name="columnTitle" value="Status"/>-->
-            <!--</properties>-->
-        <!--</column>-->
-        <!--<column name="Id/Dataset/Demographics/Room">-->
-            <!--<properties>-->
-                <!--<property name="columnTitle" value="Room"/>-->
-            <!--</properties>-->
-        <!--</column>-->
-        <!--<column name="Id/Dataset/Demographics/Cage">-->
-            <!--<properties>-->
-                <!--<property name="columnTitle" value="Cage"/>-->
-            <!--</properties>-->
-        <!--</column>-->
+        <column name="Id/curLocation/Room">
+            <properties>
+                <property name="columnTitle" value="Room"/>
+            </properties>
+        </column>
+        <column name="Id/curLocation/Cage">
+            <properties>
+                <property name="columnTitle" value="Cage"/>
+            </properties>
+        </column>
         <column name="DaysAlone">
             <properties>
                 <property name="columnTitle" value="Days Alone"/>
@@ -34,6 +24,11 @@
         <column name="Exemptions">
             <properties>
                 <property name="columnTitle" value="Exemptions"/>
+            </properties>
+        </column>
+        <column name="ExemptionTitles">
+            <properties>
+                <property name="columnTitle" value="Exemption Project Titles"/>
             </properties>
         </column>
     </columns>

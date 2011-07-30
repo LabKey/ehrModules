@@ -10,20 +10,22 @@
                <!--<property name="columnTitle" value="Current Cage"/>-->
            <!--</properties>-->
        </column>
-       <column name="id"/>       
+       <column name="Id"/>
        <column name="date"/>
-       <column name="startdate"/>
-       <column name="enddate"/>
+       <!--<column name="startdate"/>-->
+       <!--<column name="enddate"/>-->
        <column name="TimeOfDay"/>
        <!--<column name="frequency"/>-->
        <column name="project"/>
+       <column name="projectStatus"/>
+       <column name="meaning"/>
        <column name="code"/>
        <column name="volume"/>
-       <column name="vol_units"/>
-       <column name="concentration"/>
-       <column name="conc_units"/>
+       <!--<column name="vol_units"/>-->
+       <!--<column name="concentration"/>-->
+       <!--<column name="conc_units"/>-->
        <column name="amount"/>
-       <column name="amount_units"/>
+       <!--<column name="amount_units"/>-->
        <column name="route"/>
        <column name="remark"/>
        <column name="userid"/>
@@ -38,5 +40,6 @@
        <!--<filter column="date" operator="dategt" value="-1d" />-->
        <!--<filter column="date" operator="datelt" value="+1d" />-->
        <filter column="date" operator="dateeq" value="+0d" />
+       <filter column="Id/dataset/demographics/calculated_status" operator="eq" value="Alive"/>
    </filters>
 </customView>

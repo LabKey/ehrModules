@@ -29,6 +29,7 @@ EHR.utils.isMemberOf = function(allowed, successCallback){
 
 //generic error handler
 EHR.utils.onError = function(error){
+    Ext.Msg.hide();
     console.log('ERROR: ' + error.exception);
     console.log(error);
 
@@ -41,9 +42,9 @@ EHR.utils.onError = function(error){
          rows: [{
             EventType: "Client API Actions",
             Key1: "Client Error",
-            Key2: window.location.href,
-            Key3: window.location.hash,
-            Comment: error.exception || error.statusText,
+            Key2: window.location.href.substr(0,200),
+            Key3: window.location.hash.substr(0,200),
+            Comment: (error.exception || error.statusText),
             Date: new Date()
          }],
          success: function(){
@@ -210,7 +211,7 @@ EHR.utils.loadTemplate = function(templateId){
             };
 
             //also verify it is loaded
-            if(!store.fields && store.fields.length){
+            if(!store.fields || !store.fields.length){
                 store.on('load', function(){
                     onLoadTemplate(data);
                 }, this, {single: true, delay: 200});
@@ -225,6 +226,7 @@ EHR.utils.loadTemplate = function(templateId){
 
         for (var i in toAdd){
             var store = Ext.StoreMgr.get(i);
+            toAdd[i].reverse();
             var recs = store.addRecords(toAdd[i])
         }
 
@@ -265,3 +267,163 @@ EHR.utils.padDigits = function(n, totalDigits){
     }
     return pd + n;
 }
+
+
+EHR.utils.createTask = function(config){
+    config.initialQCState = config.initialQCState || 'In Progress';
+    config.taskId = LABKEY.Utils.generateUUID();
+    config.taskRecord = config.taskRecord || {};
+    config.taskRecord.taskId = config.taskId;
+    config.taskRecord.QCStateLabel = config.initialQCState;
+    config.containerPath = config.containerPath || LABKEY.ActionURL.getContainer();
+    config.childRecords = config.childRecords || [];
+
+    var commands = [{
+        schemaName: 'ehr',
+        queryName: 'tasks',
+        command: "insertWithKeys",
+        rows: [{values: config.taskRecord}]
+    }];
+
+    if(config.childRecords.length){
+        Ext.each(config.childRecords, function(r){
+            var rows = [];
+            Ext.each(r.rows, function(row){
+                row.taskId = config.taskId;
+                delete row.QCState;
+                delete row.qcstate;
+                row.QCStateLabel = config.initialQCState;
+                rows.push({values: row});
+            }, this);
+
+            commands.push({
+                schemaName: r.schemaName,
+                queryName: r.queryName,
+                command: "insertWithKeys",
+                rows: rows
+            });
+        });
+    }
+
+    if(config.existingRecords){
+        for(var dataset in config.existingRecords){
+            var rows = [];
+            var row;
+            Ext.each(config.existingRecords[dataset], function(lsid){
+                row = {taskId: config.taskId, lsid: lsid, QCStateLabel: config.initialQCState};
+                rows.push({values: row, oldKeys: {lsid: lsid}});
+            }, this);
+
+            commands.push({
+                schemaName: 'study',
+                queryName: dataset,
+                command: "updateChangingKeys",
+                rows: rows
+            });
+        }
+    }
+
+    if(commands.length){
+        Ext.Ajax.request({
+            url : LABKEY.ActionURL.buildURL("query", "saveRows", config.containerPath),
+            method : 'POST',
+            success: function(response, options){
+                if(config.success){
+                    config.success.call(this, response, options, config);
+                }
+            },
+            failure: function(){
+                if(config.failure){
+                    config.failure.call(this, arguments);
+                }
+            },
+            scope: this,
+            jsonData : {
+                containerPath: config.containerPath,
+                commands: commands
+            },
+            headers : {
+                'Content-Type' : 'application/json'
+            }
+        });
+    }
+}
+
+//taken from:
+//http://www.webmasterworld.com/javascript/4187508.htm
+
+EHR.utils.decfrac = function(DtF) {
+  var i,
+    j,
+    gcf,
+    whole = 0,
+    n = decimalPlaces(DtF), // the number of decimals
+    m = Math.pow(10,n),  // 10^n
+    numerator = Math.round(DtF * m), // Important to round the result
+    negative = numerator < 0,
+    denominator = 1 * (numerator != 0 ? m : 1)
+  // Save some work if numerator is zero
+  if (numerator == 0) {
+    return "0";
+  }
+  // Handle negative values
+  if (negative) {
+    // Temporarily convert to positive
+    numerator *= -1; // negative * negative = positive
+  }
+  // Get the Greatest Common Factor
+  for (i = (numerator > denominator ? numerator: denominator); i > 0; i--) {
+    if ((numerator % i == 0) && (denominator % i == 0)) {
+      gcf = i;
+      break;
+    }
+  }
+  numerator = numerator / gcf;
+  denominator = denominator / gcf;
+  if (numerator >= denominator) {
+    whole = Math.floor(numerator / denominator);
+    numerator = numerator % denominator;
+  }
+  return (negative ? "-" : "") +
+    (whole > 0 ? whole + " " : "") +
+    (numerator > 0 ? numerator + "/" + denominator : "");
+
+
+    function decimalPlaces(num) {
+      var decimalSeparator = '.',
+        tmp = num.toString(),
+        idx = tmp.indexOf(decimalSeparator);
+      if (idx >= 0) {
+        return (tmp.length - idx - 1);
+      }
+      return 0;
+    }
+
+    /**
+     * @param {String} input The id of the element containing the decimal input
+     * @param {String} output The id of the element to write the output to
+     */
+    function fractional_part(input, output) {
+      var elIn = document.getElementById(input),
+        elOut = document.getElementById(output),
+        val;
+      // Some basic validation
+      if (elIn && elOut) {
+        val = elIn.value;
+        val = val.replace(/^\s+|\s+$/g,""); // trim off whitespace
+        if (isNaN(val) || val.length == 0) {
+          alert('Enter a decimal number.');
+        }
+        else {
+          // Do the math
+          elOut.value = decfrac(val);
+        }
+      }
+      else {
+        alert('Input and output elements not found.');
+      }
+      return false;
+    }
+}
+
+

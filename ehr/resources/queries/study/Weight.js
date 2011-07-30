@@ -74,7 +74,8 @@ function setDescription(row, errors){
     //we need to set description for every field
     var description = new Array();
 
-	description.push('Weight: '+row.weight);
+    if(row.weight)
+	    description.push('Weight: '+row.weight);
 
     return description;
 }

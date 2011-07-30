@@ -18,8 +18,8 @@ initComponent: function(){
         bodyStyle: 'padding:5px',
         autoHeight: true,
         bodyBorder: false,
-        cls: 'x-labkey-wp',
-        border: false,
+        //cls: 'x-labkey-wp',
+        border: true,
         frame: false,
         labelWidth: this.labelWidth || 150,
 //        labelStyle: 'background: red',
@@ -49,7 +49,7 @@ initComponent: function(){
             this.queryData = data;
             this.loadQuery();
         },
-        errorCallback: EHR.utils.onError,
+        failure: EHR.utils.onError,
         scope: this,
         maxRows: 100
     };
@@ -85,6 +85,7 @@ loadQuery: function(){
             showRecordSelectors: true,
             buttonBarPosition: 'top',
             title: this.title,
+            //frame: 'none',
             timeout: 0
         });
 
@@ -101,16 +102,6 @@ loadQuery: function(){
     }
 
     for (var j=0;j<data.rows.length;j++){
-//        var thePanel = new Ext.Panel({
-//            layout: 'form',
-//            bodyBorder: false,
-//            autoHeight: true,
-//            border: false,
-//            labelWidth: 150,
-//            defaults: {
-//                labelStyle: 'padding: 0px;'
-//            }
-//        });
         var thePanel = this;
 
         var row = data.rows[j];

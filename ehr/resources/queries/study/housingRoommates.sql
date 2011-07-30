@@ -29,6 +29,10 @@ LEFT OUTER JOIN study.Housing h2
       (h2.Date >= h1.date AND h2.Date < COALESCE(h1.enddate, curdate()))
       OR
       (COALESCE(h2.enddate, curdate()) > h1.date AND COALESCE(h2.enddate, curdate()) <= COALESCE(h1.enddate, curdate()))
+      OR
+      (h2.Date <= h1.date AND COALESCE(h2.EndDate, curdate()) >= COALESCE(h1.enddate, curdate()))
+      OR
+      (h2.Date <= h1.date AND COALESCE(h2.EndDate, curdate()) >= COALESCE(h1.enddate, curdate()))
 
       ) AND
       h1.id != h2.id AND h1.room = h2.room AND h1.cage = h2.cage

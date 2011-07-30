@@ -3,12 +3,30 @@
  *
  * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
  */
-SELECT lower(id) as Id, FixDate(date) AS Date, upper(testid) as testid, Results as result, stringResults, units, remark,
-ts, objectid, runid
+SELECT
+lower(id) as Id,
+FixDate(date) AS Date,
+ts,
+objectid
 
 FROM
 
 (
+
+SELECT
+id,
+date,
+'LDH' as TestID,
+ldh as Results,
+null as stringResults,
+null as Units,
+null as remark,
+concat(uuid,'ldh') as objectid, ts,
+uuid as runId
+FROM chemistry
+where ldh is not null and ldh != ""
+
+UNION ALL
 
 SELECT
 id,
@@ -330,7 +348,7 @@ where chloride is not null and chloride != ""
 
 UNION ALL
 
-SELECT id, date, Upper(name) as TestID, null as Results, value as stringResults, NULL AS units, NULL as remark,
+SELECT id, date, Upper(name) as TestID, null as Results, null as stringResults, NULL AS units, NULL as remark,
 uuid as objectId, ts,
 COALESCE((select UUID FROM chemistry t2 WHERE t1.id=t2.id and t1.date=t2.date limit 1), uuid) as runId
 FROM chemisc t1

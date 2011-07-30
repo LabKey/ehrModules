@@ -21,6 +21,80 @@
                           <!--<fkColumnName>objectid</fkColumnName>-->
                         <!--</fk>-->
                     </column>
+                    <column columnName="initialRoom">
+                        <datatype>varchar</datatype>
+                        <nullable>true</nullable>
+                        <isHidden>true</isHidden>
+                        <columnTitle>Room</columnTitle>
+                        <!--<url>/EHR/cageDetails.view?-->
+                            <!--room=${room}&amp;-->
+                            <!--cage=${cage}&amp;-->
+                        <!--</url>-->
+                        <fk>
+                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
+                            <fkDbSchema>ehr_lookups</fkDbSchema>
+                            <fkTable>rooms</fkTable>
+                            <fkColumnName>room</fkColumnName>
+                        </fk>
+                    </column>
+                    <column columnName="initialCage">
+                        <datatype>varchar</datatype>
+                        <nullable>true</nullable>
+                        <isHidden>true</isHidden>
+                        <columnTitle>Cage</columnTitle>
+                        <url>/EHR/cageDetails.view?
+                            room=${room}&amp;
+                            cage=${cage}&amp;
+                        </url>
+                    </column>
+                    <column columnName="initialCond">
+                        <nullable>true</nullable>
+                        <datatype>varchar</datatype>
+                        <isHidden>true</isHidden>
+                        <columnTitle>Condition</columnTitle>
+                        <fk>
+                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
+                            <fkDbSchema>ehr_lookups</fkDbSchema>
+                            <fkTable>condition_codes</fkTable>
+                            <fkColumnName>Code</fkColumnName>
+                        </fk>
+                    </column>
+                    <column columnName="species">
+                        <datatype>varchar</datatype>
+                        <columnTitle>Species</columnTitle>
+                        <fk>
+                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
+                            <fkDbSchema>ehr_lookups</fkDbSchema>
+                            <fkTable>species</fkTable>
+                            <fkColumnName>common</fkColumnName>
+                        </fk>
+                    </column>
+                    <column columnName="dam">
+                        <datatype>varchar</datatype>
+                        <columnTitle>Dam</columnTitle>
+                        <!--<fk>-->
+                            <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
+                            <!--<fkDbSchema>study</fkDbSchema>-->
+                            <!--<fkTable>animal</fkTable>-->
+                            <!--<fkColumnName>id</fkColumnName>-->
+                        <!--</fk>-->
+                        <url>/study/participant.view?
+                            participantId=${dam}
+                        </url>
+                    </column>
+                    <column columnName="sire">
+                        <datatype>varchar</datatype>
+                        <columnTitle>Sire</columnTitle>
+                        <!--<fk>-->
+                            <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
+                            <!--<fkDbSchema>study</fkDbSchema>-->
+                            <!--<fkTable>animal</fkTable>-->
+                            <!--<fkColumnName>id</fkColumnName>-->
+                        <!--</fk>-->
+                        <url>/study/participant.view?
+                            participantId=${sire}
+                        </url>
+                    </column>
                 </columns>
             </table>
         </tables>

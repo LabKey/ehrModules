@@ -4,27 +4,29 @@
  * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
  */
 
+-- SELECT
+-- lower(id) as Id,
+-- Date,
+-- pno as project,
+-- userid,
+-- remark,
+-- so,
+-- a,
+-- p,
+-- ts,
+-- objectid,
+-- parentid,
+-- category
+-- FROM
+
+-- (
+
 SELECT
 lower(id) as Id,
-Date,
-pno as project,
-userid,
-remark,
-so,
-a,
-p,
-ts, objectid,
-parentid,
-category
-FROM
-
-(
-
-SELECT
-id,
 FixDateTime(date, time) AS Date,
-(pno) AS pno,
+(pno) AS project,
 (userid) AS userid,
+(userid) AS performedby,
 FixNewlines(left(remark, 4000)) as remark,
 null as so,
 null as a,
@@ -33,7 +35,13 @@ ts, uuid AS objectid,
 (select UUID from clinhead t2 WHERE t1.id=t2.id AND t1.date=t2.date AND t1.time=t2.time AND t1.pno=t2.pno GROUP BY t1.uuid limit 1) as parentid,
 'Clinical' AS category
 FROM clintrem t1
-WHERE id IS NOT NULL AND id != '' AND remark != '' AND remark IS NOT NULL AND ts > ? and (pno REGEXP '^[0-9]+$' OR pno IS NULL)
+WHERE
+id IS NOT NULL
+AND id != ''
+AND remark != ''
+AND remark IS NOT NULL
+AND ts > ?
+and (pno REGEXP '^[0-9]+$' OR pno IS NULL)
 AND length(id) > 1
 /*
 UNION ALL
@@ -138,7 +146,7 @@ FROM biopsyhead n1
 WHERE id IS NOT NULL AND id != '' AND remark != '' AND remark IS NOT NULL AND ts > ?
 AND length(id) > 1
 */
-) x
+-- ) x
 
 /*
 WHERE

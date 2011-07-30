@@ -6,38 +6,57 @@ LABKEY.requiresScript("/ehr/arrayUtils.js");
 
 function unique(){
     var input = document.getElementById('unique').value;
-    var input = cleanSplit(input);
+    input = cleanSplit(input);
 
-    input = input.unique();
-    input.sort();
+    var output = Ext.unique(input);
+    output.sort();
 
-    document.getElementById('uniqueTarget').value = input.join('\n');
+    document.getElementById('uniqueTarget').value = output.join('\n');
+    document.getElementById('uniqueTargetTotal').innerHTML = ' '+output.length+' total';
+    document.getElementById('uniqueInputTotal').innerHTML = ' '+input.length+' total';
 }
 
-function intersect(){
-    var input1 = document.getElementById('intersect1').value;
-    var input1 = cleanSplit(input1);
+//function intersect(){
+//    var input1 = document.getElementById('intersect1').value;
+//    input1 = cleanSplit(input1);
+//
+//    var input2 = document.getElementById('intersect2').value;
+//    input2 = cleanSplit(input2);
+//
+//    var output = input1.intersect(input2);
+//    output.sort();
+//
+//    document.getElementById('intersectTarget').value = output.join('\n');
+//    document.getElementById('intersectTargetTotal').innerHTML = ' '+output.length+' total';
+//
+//    document.getElementById('intersectList1Total').innerHTML = ' '+input1.length+' total';
+//    document.getElementById('intersectList2Total').innerHTML = ' '+input2.length+' total';
+//}
 
-    var input2 = document.getElementById('intersect2').value;
-    var input2 = cleanSplit(input2);
-
-    input1 = input1.intersect(input2);
-    input1.sort();
-
-    document.getElementById('intersectTarget').value = input1.join('\n');
-}
-
-function subtract(){
+function compare(){
     var input1 = document.getElementById('subtract1').value;
-    var input1 = cleanSplit(input1);
+    input1 = cleanSplit(input1);
 
     var input2 = document.getElementById('subtract2').value;
-    var input2 = cleanSplit(input2);
+    input2 = cleanSplit(input2);
     input1.sort();
 
-    input1 = input1.subtract(input2);
+    var intersect = input1.intersect(input2);
+    var output = input1.subtract(input2);
+    var output2 = input2.subtract(input1);
 
-    document.getElementById('subtractTarget').value = input1.join('\n');
+    document.getElementById('subtractTarget').value = output.join('\n');
+    document.getElementById('subtractTargetTotal').innerHTML = ' '+output.length+' total';
+
+    document.getElementById('subtractTarget2').value = output2.join('\n');
+    document.getElementById('subtractTargetTotal2').innerHTML = ' '+output2.length+' total';
+
+    document.getElementById('intersectTarget').value = intersect.join('\n');
+    document.getElementById('intersectTargetTotal').innerHTML = ' '+intersect.length+' total';
+
+    document.getElementById('subtractList1Total').innerHTML = ' '+input1.length+' total';
+    document.getElementById('subtractList2Total').innerHTML = ' '+input2.length+' total';
+
 }
 
 
@@ -58,27 +77,13 @@ This page contains an several basic utilities to process lists of animal names (
 <p/>
 To use, simply cut/paste or type a list of IDs into the box(es) on the left.  Hit the arrow to process.  Results will appear on the right.
 <p/>
-<h2>Return List of Unique IDs</h2>
+<h2>Return Unique Values</h2>
 
 <table>
 <tr>
-    <td>List of Animals:<br><textarea rows="10" cols="30" id="unique"></textarea></td>
+    <td>List 1:<span id="uniqueInputTotal"></span><br><textarea rows="10" cols="30" id="unique"></textarea></td>
     <td><button onclick=unique()>--></button></td>
-    <td>Unique IDs:<br><textarea rows="10" cols="30" id="uniqueTarget"></textarea></td>
-</tr>
-</table>
-
-<p/>
-<hr>
-<p/>
-<h2>Return Intersect of Two Lists</h2>
-
-<table>
-<tr>
-    <td>List 1:<br><textarea rows="10" cols="30" id="intersect1"></textarea></td>
-    <td>List 2:<br><textarea rows="10" cols="30" id="intersect2"></textarea></td>
-    <td><button onclick=intersect()>--></button></td>
-    <td>Shared IDs:<br><textarea rows="10" cols="30" id="intersectTarget"></textarea></td>
+    <td>Unique Values:<span id="uniqueTargetTotal"></span><br><textarea rows="10" cols="30" id="uniqueTarget"></textarea></td>
 </tr>
 </table>
 
@@ -86,14 +91,16 @@ To use, simply cut/paste or type a list of IDs into the box(es) on the left.  Hi
 <hr>
 <p/>
 
-<h2>Subtract List 2 from List 1</h2>
+<h2>Compare Lists</h2>
 
 <table>
 <tr>
-    <td>List 1:<br><textarea rows="10" cols="30" id="subtract1"></textarea></td>
-    <td>List 2:<br><textarea rows="10" cols="30" id="subtract2"></textarea></td>
-    <td><button onclick=subtract()>--></button></td>
-    <td>IDs:<br><textarea rows="10" cols="30" id="subtractTarget"></textarea></td>
+    <td>List 1:<span id="subtractList1Total"></span><br><textarea rows="10" cols="30" id="subtract1"></textarea></td>
+    <td>List 2:<span id="subtractList2Total"></span><br><textarea rows="10" cols="30" id="subtract2"></textarea></td>
+    <td><button onclick=compare()>--></button></td>
+    <td>Shared IDs:<span id="intersectTargetTotal"></span><br><textarea rows="10" cols="30" id="intersectTarget"></textarea></td>
+    <td>Present In List 1, but not List 2:<span id="subtractTargetTotal"></span><br><textarea rows="10" cols="30" id="subtractTarget"></textarea></td>
+    <td>Present In List 2, but not List 1:<span id="subtractTargetTotal2"></span><br><textarea rows="10" cols="30" id="subtractTarget2"></textarea></td>
 </tr>
 </table>
 

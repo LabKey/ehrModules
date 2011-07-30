@@ -16,6 +16,13 @@ console.log("** evaluating: " + this['javax.script.filename']);
 //we do this b/c that hard table is going to be used long term and the ETL doesnt support hard tables
 var toInsert = [];
 
+function onUpsert(context, errors, row, oldRow){
+    //auto populate the location
+    row.roomcage = row.room;
+    if(row.cage)
+        row.roomcage += '-'+row.cage;
+}
+
 function afterInsert(row, errors){
     LABKEY.Query.insertRows({
         schemaName: 'ehr',

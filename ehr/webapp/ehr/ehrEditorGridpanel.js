@@ -27,6 +27,7 @@ EHR.ext.EditorGridPanel = Ext.extend(LABKEY.ext.EditorGridPanel,
             },
             autoHeight: true,
             autoWidth: true,
+            pageSize: 200,
 //            plugins: ['autosizecolumns'],
             autoSave: false,
             deferRowRender : true,
@@ -53,6 +54,18 @@ EHR.ext.EditorGridPanel = Ext.extend(LABKEY.ext.EditorGridPanel,
         });
 
         EHR.ext.EditorGridPanel.superclass.initComponent.apply(this, arguments);
+
+        this.store.on('validation', this.onStoreValidate, this, {delay: 100});
+    }
+
+    ,onStoreValidate: function(store, records){
+        if(records && !Ext.isArray(records))
+            records = [records];
+
+        Ext.each(records, function(rec){
+            if(this.rendered)
+                this.getView().refreshRow(rec);
+        }, this);
 
     }
 
@@ -106,7 +119,10 @@ EHR.ext.EditorGridPanel = Ext.extend(LABKEY.ext.EditorGridPanel,
     }
     ,getColumnModelConfig: function(){
         var config = {
-            editable: this.editable
+            editable: this.editable,
+            defaults: {
+                sortable: false
+            }
         };
 
         var columns = EHR.ext.metaHelper.getColumnModelConfig(this.store, config, this);

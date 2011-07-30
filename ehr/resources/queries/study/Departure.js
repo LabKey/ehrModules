@@ -13,80 +13,11 @@ function onComplete(event, errors, scriptContext){
     }
 }
 
-/*
-function onComplete(event, errors, scriptContext){
-    //NOTE: we will no longer cache this in demographics
-
-    if(scriptContext.publicParticipantsModified.length){
-        //find the most recent arrival date per participant
-        var toUpdate = [];
-        var idsFound = [];
-        LABKEY.Query.executeSql({
-            schemaName: 'study',
-            scope: this,
-            sql: 'SELECT a.Id, max(a.date) as maxDate FROM study.departure a WHERE a.id IN (\''+scriptContext.publicParticipantsModified.join(',')+'\') AND a.qcstate.publicdata = true GROUP BY a.id',
-            success: function(data){
-                if(data.rows && data.rows.length){
-                    var row;
-                    for (var i=0;i<data.rows.length;i++){
-                        row = data.rows[i];
-                        idsFound.push(row.Id);
-                        EHR.findDemographics({
-                            participant: row.Id,
-                            forceRefresh: true,
-                            scope: this,
-                            callback: function(data){
-                                if(data){
-                                    if(row.maxDate != data.departdate)
-                                        toUpdate.push({departdate: row.maxDate, Id: row.Id, lsid: data.lsid});
-                                }
-                            }
-                        });
-                    }
-                }
-            },
-            failure: EHR.onFailure
-        });
-
-        if(toUpdate.length != scriptContext.publicParticipantsModified.length){
-            Ext.each(scriptContext.publicParticipantsModified, function(p){
-                if(idsFound.indexOf(p) == -1){
-                    EHR.findDemographics({
-                        participant: p,
-                        forceRefresh: true,
-                        scope: this,
-                        callback: function(data){
-                            if(data){
-                                toUpdate.push({departdate: null, Id: data.Id, lsid: data.lsid});
-                            }
-                        }
-                    });
-                }
-            }, this);
-        }
-
-        if(toUpdate.length){
-            LABKEY.Query.updateRows({
-                schemaName: 'study',
-                queryName: 'demographics',
-                extraContext: {
-                    schemaName: 'study',
-                    queryName: 'Demographics'
-                },
-                rows: toUpdate,
-                success: function(data){
-                    console.log('Success updating demographics for departure date')
-                },
-                failure: EHR.onFailure
-            });
-        }
-    }
-
-};
-*/
-
-
-
+function onBecomePublic(errors, scriptContext, row, oldRow){
+    //this will close any existing assignments, housing and treatment records
+    if(scriptContext.extraContext.dataSource != 'etl')
+        EHR.onDeathDeparture(row.Id, row.date);
+}
 
 function setDescription(row, errors){
     //we need to set description for every field

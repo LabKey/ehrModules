@@ -6,11 +6,19 @@
 
 var {EHR, LABKEY, Ext, console, init, beforeInsert, afterInsert, beforeUpdate, afterUpdate, beforeDelete, afterDelete, complete} = require("ehr/validation");
 
+function onInit(event, context){
+    context.allowDeadIds = true;
+}
 
 function onUpsert(context, errors, row, oldRow){
     if(!row.so && !row.a && !row.p && !row.remark){
         EHR.addError(errors, 'remark', 'Must enter at least one comment', 'WARN');
+        EHR.addError(errors, 'so', 'Must enter at least one comment', 'WARN');
     }
+
+    //for compatibility with old system
+    row.userid = row.performedby;
+
 }
 
 

@@ -5,6 +5,11 @@
  */
 Ext.namespace('EHR.ext');
 
+var debug;
+
+if(LABKEY.Security.currentUser.isAdmin && LABKEY.ActionURL.getParameter('debug'))
+    debug = 1;
+
 LABKEY.requiresScript("/ehr/ExtOverrides.js");
 LABKEY.requiresScript("/ehr/ehrMetaHelper.js");
 LABKEY.requiresScript("/ehr/Utils.js");
@@ -24,10 +29,7 @@ LABKEY.requiresScript("/ehr/ExtContainers.js");
 LABKEY.requiresScript("/ehr/ehrMetadata.js");
 LABKEY.requiresScript("/ehr/transposeRows.js");
 LABKEY.requiresScript("/ehr/searchPanel.js");
+LABKEY.requiresScript("/ehr/studyButtons.js");
 LABKEY.requiresScript("/ehr/animalHistory.js");
 LABKEY.requiresScript("/ehr/ext.ux.statusbar.js");
 
-var debug;
-
-if(LABKEY.Security.currentUser.isAdmin && LABKEY.ActionURL.getParameter('debug'))
-    debug = 1;

@@ -19,9 +19,13 @@
                             <fkColumnName>Code</fkColumnName>
                         </fk>
                     </column>
+                    <column columnName="QCState">
+                        <isHidden>true</isHidden>
+                    </column>
                     <column columnName="status">
                         <datatype>varchar</datatype>
                         <shownInInsertView>false</shownInInsertView>
+                        <isHidden>true</isHidden>
                         <columnTitle>Status</columnTitle>
                         <fk>
                             <fkFolderPath>/wnprc/ehr/</fkFolderPath>
@@ -60,6 +64,16 @@
                         <!--<fkTable>hold_codes</fkTable>-->
                         <!--<fkColumnName>Code</fkColumnName>-->
                         <!--</fk>-->
+                    </column>
+                    <column columnName="species">
+                        <datatype>varchar</datatype>
+                        <columnTitle>Species</columnTitle>
+                        <fk>
+                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
+                            <fkDbSchema>ehr_lookups</fkDbSchema>
+                            <fkTable>species</fkTable>
+                            <fkColumnName>common</fkColumnName>
+                        </fk>
                     </column>
                     <column columnName="dam">
                         <datatype>varchar</datatype>
@@ -100,7 +114,7 @@
                     <column columnName="birth">
                         <datatype>timestamp</datatype>
                         <formatString>yyyy-MM-dd</formatString>
-                        <shownInInsertView>false</shownInInsertView>
+                        <!--<shownInInsertView>false</shownInInsertView>-->
                         <columnTitle>Birth</columnTitle>
                          <url>/query/executeQuery.view?
                             schemaName=study&amp;
@@ -111,7 +125,7 @@
                     <column columnName="death">
                         <datatype>timestamp</datatype>
                         <formatString>yyyy-MM-dd</formatString>
-                        <shownInInsertView>false</shownInInsertView>
+                        <!--<shownInInsertView>false</shownInInsertView>-->
                         <columnTitle>Death</columnTitle>
                          <url>/query/executeQuery.view?
                             schemaName=study&amp;
@@ -181,7 +195,7 @@
                         <isHidden>true</isHidden>
                         <shownInInsertView>false</shownInInsertView>
                         <datatype>double</datatype>
-                        <columnTitle>Current Weight</columnTitle>
+                        <columnTitle>Current Weight (kg)</columnTitle>
                         <url>/query/executeQuery.view?schemaName=study&amp;
                             query.queryName=Weight&amp;
                             query.id~eq=${id}
@@ -207,7 +221,7 @@
                         <formatString>yyyy-MM-dd</formatString>
                         <columnTitle>Last TB Date</columnTitle>
                         <url>/query/executeQuery.view?schemaName=study&amp;
-                            query.queryName=TB&amp;
+                            query.queryName=TB Tests&amp;
                             query.id~eq=${id}&amp;
                             query.sort=-Date
                         </url>
@@ -216,9 +230,9 @@
                         <datatype>varchar</datatype>
                         <columnTitle>Medical</columnTitle>
                     </column>
-                    <column columnName="purchasedby">
+                    <column columnName="prepaid">
                         <datatype>varchar</datatype>
-                        <columnTitle>Pre-Paid Replacement Fee</columnTitle>
+                        <columnTitle>Replacement Prepaid By</columnTitle>
                     </column>
                     <column columnName="v_status">
                         <datatype>varchar</datatype>

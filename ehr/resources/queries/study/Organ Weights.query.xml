@@ -34,7 +34,7 @@
                     </column>
                     <column columnName="weight">
                       <datatype>integer</datatype>
-                      <columnTitle>Weight (kg)</columnTitle>
+                      <columnTitle>Weight (g)</columnTitle>
                     </column>
                     <column columnName="remark">
                         <datatype>varchar</datatype>

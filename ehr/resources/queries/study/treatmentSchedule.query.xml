@@ -3,12 +3,20 @@
         <tables xmlns="http://labkey.org/data/xml">
             <table tableName="treatmentSchedule" tableDbType="TABLE">
                 <tableUrl>/EHR/treatmentDetails.view?key=${lsid}</tableUrl>
+                <pkColumnName>primaryKey</pkColumnName>
                 <columns>
+                    <column columnName="primaryKey">
+                        <isHidden>true</isHidden>
+                        <isKeyField>true</isKeyField>
+                    </column>
                     <column columnName="lsid">
                         <isHidden>true</isHidden>
                     </column>
                     <column columnName="objectid">
                         <isHidden>true</isHidden>
+                    </column>
+                    <column columnName="date">
+                        <formatString>yyyy-MM-dd</formatString>
                     </column>
                     <column columnName="Id">
                         <fk>
@@ -28,7 +36,7 @@
                     </column>
                     <column columnName="StartDate">
                         <datatype>timestamp</datatype>
-                        <columnTitle>Start Date</columnTitle>
+                        <columnTitle>Treatment Start Date</columnTitle>
                         <formatString>yyyy-MM-dd</formatString>
                     </column>
                     <column columnName="code">
@@ -62,8 +70,14 @@
                     <column columnName="remark">
                         <displayWidth>250</displayWidth>
                     </column>
-                    <column columnName="Room">
+                    <column columnName="CurrentRoom">
                         <displayWidth>40</displayWidth>
+                        <fk>
+                          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
+                          <fkDbSchema>ehr_lookups</fkDbSchema>
+                          <fkTable>rooms</fkTable>
+                          <fkColumnName>Room</fkColumnName>
+                        </fk>
                     </column>
                     <column columnName="Cage">
                         <displayWidth>40</displayWidth>
@@ -80,7 +94,134 @@
                             <fkColumnName>rowid</fkColumnName>
                         </fk>
                     </column>
+                    <column columnName="projectStatus">
+                        <conditionalFormats>
+                            <conditionalFormat>
+                                <filters>
+                                    <filter operator="eq" value="NOT ASSIGNED"/>
+                                </filters>
+                                <backgroundColor>E3170D</backgroundColor>
+                            </conditionalFormat>
+                        </conditionalFormats>
+                    </column>
+                    <column columnName="conc2">
+                        <columnTitle>Concentration</columnTitle>
+                    </column>
+                    <column columnName="amount2">
+                        <columnTitle>Amount Given</columnTitle>
+                    </column>
+                    <column columnName="volume2">
+                        <columnTitle>Volume</columnTitle>
+                    </column>
+                    <column columnName="treatmentStatus">
+                        <isHidden>false</isHidden>
+                        <shownInDetailsView>true</shownInDetailsView>
+                        <columnTitle>Status</columnTitle>
+                        <displayWidth>50</displayWidth>
+                        <fk>
+                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
+                            <fkDbSchema>study</fkDbSchema>
+                            <fkTable>qcstate</fkTable>
+                            <fkColumnName>rowid</fkColumnName>
+                        </fk>
+                        <conditionalFormats>
+                            <conditionalFormat>
+                                <filters>
+                                    <filter operator="eq" value="In Progress"/>
+                                </filters>
+                                <backgroundColor>FBEC5D</backgroundColor>
+                            </conditionalFormat>
+                            <conditionalFormat>
+                                <filters>
+                                    <filter operator="eq" value="Review Required"/>
+                                </filters>
+                                <backgroundColor>FBEC5D</backgroundColor>
+                            </conditionalFormat>
+                            <conditionalFormat>
+                                <filters>
+                                    <filter operator="eq" value="Scheduled"/>
+                                </filters>
+                                <backgroundColor>FBEC5D</backgroundColor>
+                            </conditionalFormat>
+                            <conditionalFormat>
+                                <filters>
+                                    <filter operator="eq" value="Delete Requested"/>
+                                </filters>
+                                <backgroundColor>FF0000</backgroundColor>
+                            </conditionalFormat>
+                            <conditionalFormat>
+                                <filters>
+                                    <filter operator="eq" value="Request: Approved"/>
+                                </filters>
+                                <backgroundColor>FBEC5D</backgroundColor>
+                            </conditionalFormat>
+                            <conditionalFormat>
+                                <filters>
+                                    <filter operator="eq" value="Request: Denied"/>
+                                </filters>
+                                <backgroundColor>FBEC5D</backgroundColor>
+                            </conditionalFormat>
+                            <conditionalFormat>
+                                <filters>
+                                    <filter operator="eq" value="Request: Pending"/>
+                                </filters>
+                                <backgroundColor>FBEC5D</backgroundColor>
+                            </conditionalFormat>
+                        </conditionalFormats>
+                    </column>
                 </columns>
+                <buttonBarOptions position="both" includeStandardButtons="false">
+                    <includeScript>/ehr/studyButtons.js</includeScript>
+                    <onRender>moreActionsHandler</onRender>
+                    <item text="Views">
+                        <originalText>Views</originalText>
+                    </item>
+                    <item text="Insert New">
+                        <originalText>Insert New</originalText>
+                    </item>
+                    <!--<item text="Cohorts">-->
+                        <!--<originalText>Cohorts</originalText>-->
+                    <!--</item>-->
+                    <!--<item text="QCState">-->
+                        <!--<originalText>QC State</originalText>-->
+                    <!--</item>-->
+                    <item text="Export">
+                        <originalText>Export</originalText>
+                    </item>
+                    <item text="Print">
+                        <originalText>Print</originalText>
+                    </item>
+                    <item text="Import Data">
+                        <originalText>Import Data</originalText>
+                    </item>
+                    <item text="Page Size">
+                        <originalText>Page Size</originalText>
+                    </item>
+                    <item text="Delete">
+                        <originalText>Delete</originalText>
+                    </item>
+                    <item text="More Actions" insertPosition="end" >
+                        <item text="Jump To History">
+                            <onClick>
+                                historyHandler(dataRegion, dataRegionName);
+                            </onClick>
+                            <!--<target>javascript:void(0)</target>-->
+                        </item>
+                        <item text="Jump To Other Dataset">
+                            <onClick>
+                                datasetHandler(dataRegion, dataRegionName);
+                            </onClick>
+                        </item>
+                        <item text="Return Distinct Values">
+                            <onClick>
+                                getDistinct(dataRegion, dataRegionName);
+                            </onClick>
+                        </item>
+                    </item>
+                    <item text=" " requiresSelection="true" insertAfter="More Actions">
+                        <onClick>function(){return false}</onClick>
+                    </item>
+                </buttonBarOptions>
             </table>
         </tables>
     </metadata>

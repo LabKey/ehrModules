@@ -3,18 +3,24 @@
         <tables xmlns="http://labkey.org/data/xml">
             <table tableName="requests" tableDbType="TABLE">
                 <!--<tableUrl>/ehr/requestDetails.view?formtype=${formtype}&amp;requestid=${requestid}</tableUrl>-->
-                <updateUrl>/ehr/manageRequest.view?formtype=${formtype}&amp;requestid=${requestid}</updateUrl>
-                <insertUrl>/ehr/manageRequest.view</insertUrl>
+                <updateUrl>/ehr/requestDetails.view?formtype=${formtype}&amp;requestid=${requestid}</updateUrl>
+                <!--<insertUrl>/ehr/manageRequest.view</insertUrl>-->
                 <titleColumn>RowId</titleColumn>
+                <pkColumnName>requestid</pkColumnName>
                 <columns>
                     <column columnName="rowid">
                         <columnTitle>Request Id</columnTitle>
                         <isAutoInc>true</isAutoInc>
                         <nullable>true</nullable>
-                        <url>/ehr/manageRequest.view?formtype=${formtype}&amp;requestid=${requestid}</url>
+                        <url>/ehr/requestDetails.view?formtype=${formtype}&amp;requestid=${requestid}</url>
                     </column>
                     <column columnName="title">
-                        <url>/ehr/manageRequest.view?formtype=${formtype}&amp;requestid=${requestid}</url>
+                        <url>/ehr/requestDetails.view?formtype=${formtype}&amp;requestid=${requestid}</url>
+                    </column>
+                    <column columnName="requestid">
+                        <isHidden>true</isHidden>
+                        <isKeyField>true</isKeyField>
+                        <columnTitle>Request Id</columnTitle>
                     </column>
                     <column columnName="formtype">
                         <columnTitle>Request Type</columnTitle>
@@ -35,7 +41,7 @@
                         </fk>
                     </column>
                     <column columnName="notify1">
-                        <columnTitle>First Notification</columnTitle>
+                        <columnTitle>First Contact</columnTitle>
                         <fk>
                             <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                             <fkDbSchema>core</fkDbSchema>
@@ -44,7 +50,7 @@
                         </fk>
                     </column>
                     <column columnName="notify2">
-                        <columnTitle>Second Notification</columnTitle>
+                        <columnTitle>Second Contact</columnTitle>
                         <!--<fk>-->
                             <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
                             <!--<fkDbSchema>core</fkDbSchema>-->
@@ -76,6 +82,7 @@
                         <columnTitle>Date Requested</columnTitle>
                     </column>
                     <column columnName="qcstate">
+                        <isHidden>true</isHidden>
                         <columnTitle>Status</columnTitle>
                         <fk>
                             <fkFolderPath>/wnprc/ehr/</fkFolderPath>

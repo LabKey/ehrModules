@@ -18,7 +18,7 @@
                         <columnTitle>Animal Count</columnTitle>
                          <url>/query/executeQuery.view?schemaName=study&amp;
                             query.queryName=demographics&amp;
-                            query.Id/Species/Species~eq=${species}&amp;
+                            query.species~eq=${species}&amp;
                             query.viewName=Alive%2C at WNPRC
                         </url>
                     </column>

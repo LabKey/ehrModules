@@ -19,6 +19,14 @@
                         <datatype>integer</datatype>
                         <columnTitle>Age (Months)</columnTitle>
                     </column>
+                    <column columnName="AgeInDays">
+                        <datatype>integer</datatype>
+                        <columnTitle>Age (Days)</columnTitle>
+                    </column>
+                    <column columnName="AgeFriendly">
+                        <datatype>varchar</datatype>
+                        <columnTitle>Age</columnTitle>
+                    </column>
                     <column columnName="species">
                         <isHidden>true</isHidden>
                     </column>

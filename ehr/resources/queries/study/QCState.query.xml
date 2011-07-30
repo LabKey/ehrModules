@@ -6,9 +6,10 @@
                 <columns>
                     <column columnName="RowId">
                         <isHidden>false</isHidden>
+                        <displayWidth>50</displayWidth>
                     </column>
                     <column columnName="Label">
-                        <displayWidth>50</displayWidth>
+                        <displayWidth>80</displayWidth>
                         <shownInDetailsView>true</shownInDetailsView>
                         <isHidden>false</isHidden>
                     </column>

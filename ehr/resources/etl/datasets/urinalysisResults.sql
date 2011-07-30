@@ -3,8 +3,8 @@
  *
  * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
  */
-SELECT lower(id) as Id, FixDate(date) AS Date, upper(testid) as testid, stringResults, result, units, remark,
-     ts, objectid, runId
+SELECT lower(id) as Id, FixDate(date) AS Date, upper(testid) as testid, stringResults, result, units, remark, method, quantity,
+     ts, objectid, runid, runId as parentId
 
 FROM
 
@@ -18,6 +18,8 @@ bilirubin as stringResults,
 null as result,
 null as Units,
 null as remark,
+quantity,
+method,
 concat(uuid,'bilirubin') as objectid, ts,
 uuid as runId
 FROM urine
@@ -35,6 +37,8 @@ ketone as stringResults,
 null as result,
 null as Units,
 null as remark,
+quantity,
+method,
 concat(uuid,'ketone') as objectid, ts,
 uuid as runId
 FROM urine
@@ -53,6 +57,8 @@ null as stringResults,
 sp_gravity as result,
 null as Units,
 null as remark,
+quantity,
+method,
 concat(uuid,'sp_gravity') as objectid, ts,
 uuid as runId
 FROM urine
@@ -70,6 +76,8 @@ blood as stringResults,
 null as result,
 null as Units,
 null as remark,
+quantity,
+method,
 concat(uuid,'blood') as objectid, ts,
 uuid as runId
 FROM urine
@@ -87,6 +95,8 @@ null as stringResults,
 ph as result,
 null as Units,
 null as remark,
+quantity,
+method,
 concat(uuid,'ph') as objectid, ts,
 uuid as runId
 FROM urine
@@ -104,6 +114,8 @@ protein as stringResults,
 null as result,
 null as Units,
 null as remark,
+quantity,
+method,
 concat(uuid,'protein') as objectid, ts,
 uuid as runId
 FROM urine
@@ -121,6 +133,8 @@ urobilinogen as stringResults,
 null as result,
 null as Units,
 null as remark,
+quantity,
+method,
 concat(uuid,'urobilinogen') as objectid, ts,
 uuid as runId
 FROM urine
@@ -138,6 +152,8 @@ nitrite as stringResults,
 null as result,
 null as Units,
 null as remark,
+quantity,
+method,
 concat(uuid,'nitrite') as objectid, ts,
 uuid as runId
 FROM urine
@@ -156,6 +172,8 @@ leucocytes as stringResults,
 null as result,
 null as Units,
 null as remark,
+quantity,
+method,
 concat(uuid,'leukocytes') as objectid, ts,
 uuid as runId
 FROM urine
@@ -173,6 +191,8 @@ appearance as stringResults,
 null as result,
 null as Units,
 null as remark,
+quantity,
+method,
 concat(uuid,'appearance') as objectid, ts,
 uuid as runId
 FROM urine
@@ -190,12 +210,34 @@ microscopic as stringResults,
 null as result,
 null as Units,
 null as remark,
+quantity,
+method,
 concat(uuid,'microscopic') as objectid, ts,
 uuid as runId
 FROM urine
 where microscopic is not null and microscopic != ""
 AND ts > ?
 AND length(id) > 1
+
+UNION ALL
+
+SELECT
+id,
+date,
+'glucose' as TestID,
+glucose as stringResults,
+null as result,
+null as Units,
+null as remark,
+quantity,
+method,
+concat(uuid,'glucose') as objectid, ts,
+uuid as runId
+FROM urine
+where glucose is not null and glucose != ""
+AND ts > ?
+AND length(id) > 1
+
 
 ) x
 

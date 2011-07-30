@@ -1,10 +1,9 @@
 <customView xmlns="http://labkey.org/data/xml/queryCustomView">
    <columns>
        <column name="Id" />
-       <column name="Date" />
-       <column name="QCState" />
-       <column name="Score" />
-       <column name="Cause" />
+       <column name="date" />
+       <column name="score" />
+       <column name="cause" />
        <column name="head" />
        <column name="shoulders" />
        <column name="upperarms" />
@@ -12,9 +11,13 @@
        <column name="hips" />
        <column name="rump" />
        <column name="dorsum" />
-       <column name="Upperlegs" />
+       <column name="upperlegs" />
        <column name="lowerlegs" />
        <column name="other" />
+       <column name="remark" />
+       <column name="performedby" />
+       <column name="qcstate" />
+       <column name="taskid" />
    </columns>
    <sorts>
        <sort column="date" descending="true"/>

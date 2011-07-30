@@ -4,12 +4,14 @@
             <table tableName="majorEvents" tableDbType="NOT_IN_DB">
                 <columns>
                     <column columnName="Id">
+                        <columnTitle>Id</columnTitle>
                         <fk>
                             <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                             <fkDbSchema>study</fkDbSchema>
                             <fkTable>animal</fkTable>
                             <fkColumnName>Id</fkColumnName>
                         </fk>
+                        <url>/study/participant.view?participantId=${Id}</url>
                     </column>
                 </columns>
             </table>

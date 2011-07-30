@@ -8,7 +8,15 @@
 var {EHR, LABKEY, Ext, console, init, beforeInsert, afterInsert, beforeUpdate, afterUpdate, beforeDelete, afterDelete, complete} = require("ehr/validation");
 
 
+function onInit(event, scriptContext){
+     scriptContext.quickValidation = true;
+}
+
 function setDescription(row, errors){
-    console.log(row);
-    return ['Cage Observation'];
+    var description = ['Cage Observation'];
+
+    if(row.feces)
+        description.push('Feces: '+row.feces);
+
+    return description;
 }

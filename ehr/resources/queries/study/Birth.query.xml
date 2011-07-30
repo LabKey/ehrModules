@@ -49,13 +49,25 @@
                     <column columnName="room">
                         <datatype>varchar</datatype>
                         <columnTitle>Room</columnTitle>
-                        <url>/EHR/cageDetails.view?
-                            room=${room}&amp;
-                            cage=${cage}
-                        </url>
+                        <shownInInsertView>true</shownInInsertView>
+                        <shownInUpdateView>true</shownInUpdateView>
+                        <isHidden>false</isHidden>
+                        <!--<url>/EHR/cageDetails.view?-->
+                            <!--room=${room}&amp;-->
+                            <!--cage=${cage}-->
+                        <!--</url>-->
+                        <fk>
+                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
+                            <fkDbSchema>ehr_lookups</fkDbSchema>
+                            <fkTable>rooms</fkTable>
+                            <fkColumnName>room</fkColumnName>
+                        </fk>
                     </column>
                     <column columnName="cage">
                         <datatype>varchar</datatype>
+                        <shownInInsertView>true</shownInInsertView>
+                        <shownInUpdateView>true</shownInUpdateView>
+                        <isHidden>false</isHidden>
                         <columnTitle>Cage</columnTitle>
                         <url>/EHR/cageDetails.view?
                             room=${room}&amp;
@@ -82,6 +94,15 @@
                             <fkColumnName>Code</fkColumnName>
                         </fk>
                     </column>
+                    <column columnName="type">
+                        <columnTitle>Birth Type</columnTitle>
+                        <fk>
+                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
+                            <fkDbSchema>ehr_lookups</fkDbSchema>
+                            <fkTable>birth_type</fkTable>
+                            <fkColumnName>type</fkColumnName>
+                        </fk>
+                    </column>
                     <column columnName="parentId">
                         <!--<fk>-->
                           <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
@@ -91,7 +112,7 @@
                         <!--</fk>-->
                     </column>
                     <column columnName="estimated">
-                        <columnTitle>Estimated Birthdate</columnTitle>
+                        <columnTitle>Birthdate Is Estimated?</columnTitle>
                     </column>
                 </columns>
             </table>

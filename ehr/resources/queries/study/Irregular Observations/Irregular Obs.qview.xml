@@ -19,9 +19,10 @@
       <column name="breeding"/>
       <column name="other"/>
       <column name="tlocation"/>
-      <column name="Remark"/>
+      <column name="remark"/>
       <column name="otherbehavior"/>
       <column name="qcstate" />
+      <column name="taskid" />
   </columns>
    <sorts>
        <sort column="hasObs/DateOnly" descending="true"/>

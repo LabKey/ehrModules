@@ -4,6 +4,7 @@
     <ns:columns>
       <ns:column columnName="rowid">
         <ns:datatype>serial</ns:datatype>
+        <ns:shownInInsertView>false</ns:shownInInsertView>
         <ns:isAutoInc>true</ns:isAutoInc>
         <ns:scale>10</ns:scale>
       </ns:column>
@@ -117,6 +118,7 @@
     <ns:columns>
       <ns:column columnName="rowid">
         <ns:datatype>serial</ns:datatype>
+        <ns:shownInInsertView>false</ns:shownInInsertView>
         <ns:isAutoInc>true</ns:isAutoInc>
         <ns:scale>10</ns:scale>
       </ns:column>
@@ -182,6 +184,7 @@
     <ns:columns>
       <ns:column columnName="rowid">
         <ns:datatype>serial</ns:datatype>
+        <ns:shownInInsertView>false</ns:shownInInsertView>
         <ns:isAutoInc>true</ns:isAutoInc>
         <ns:scale>10</ns:scale>
       </ns:column>
@@ -250,6 +253,7 @@
       </ns:column>
       <ns:column columnName="rowid">
         <ns:datatype>serial</ns:datatype>
+        <ns:shownInInsertView>false</ns:shownInInsertView>
         <ns:isAutoInc>true</ns:isAutoInc>
         <ns:scale>10</ns:scale>
       </ns:column>
@@ -291,6 +295,11 @@
         <ns:datatype>timestamp</ns:datatype>
         <ns:nullable>true</ns:nullable>
         <ns:scale>29</ns:scale>
+      </ns:column>
+      <ns:column columnName="datecompleted">
+          <ns:datatype>timestamp</ns:datatype>
+          <ns:nullable>true</ns:nullable>
+          <ns:columnTitle>Date Finalized</ns:columnTitle>
       </ns:column>
       <ns:column columnName="container">
         <ns:isUserEditable>false</ns:isUserEditable>
@@ -347,6 +356,7 @@
       </ns:column>
       <ns:column columnName="rowid">
         <ns:datatype>serial</ns:datatype>
+        <ns:shownInInsertView>false</ns:shownInInsertView>
         <ns:isAutoInc>true</ns:isAutoInc>
         <ns:scale>10</ns:scale>
       </ns:column>
@@ -474,10 +484,12 @@
     <ns:columns>
       <ns:column columnName="rowid">
         <ns:datatype>serial</ns:datatype>
+        <ns:shownInInsertView>false</ns:shownInInsertView>
         <ns:isAutoInc>true</ns:isAutoInc>
         <ns:scale>10</ns:scale>
       </ns:column>
       <ns:column columnName="reportname">
+        <ns:columnTitle>Report Name</ns:columnTitle>
         <ns:nullable>true</ns:nullable>
         <ns:datatype>varchar</ns:datatype>
         <ns:scale>100</ns:scale>
@@ -488,11 +500,13 @@
         <ns:scale>100</ns:scale>
       </ns:column>
       <ns:column columnName="reporttype">
+        <ns:columnTitle>Report Type</ns:columnTitle>
         <ns:nullable>true</ns:nullable>
         <ns:datatype>varchar</ns:datatype>
         <ns:scale>100</ns:scale>
       </ns:column>
       <ns:column columnName="reporttitle">
+        <ns:columnTitle>Report Title</ns:columnTitle>
         <ns:nullable>true</ns:nullable>
         <ns:datatype>varchar</ns:datatype>
         <ns:scale>100</ns:scale>
@@ -502,32 +516,43 @@
         <ns:datatype>bool</ns:datatype>
         <ns:scale>1</ns:scale>
       </ns:column>
+        <ns:column columnName="sort_order">
+          <ns:nullable>true</ns:nullable>
+          <ns:datatype>integer</ns:datatype>
+          <ns:scale>10</ns:scale>
+        </ns:column>
       <ns:column columnName="containerpath">
+        <ns:columnTitle>Container Path</ns:columnTitle>
         <ns:nullable>true</ns:nullable>
         <ns:datatype>varchar</ns:datatype>
         <ns:scale>100</ns:scale>
       </ns:column>
       <ns:column columnName="schemaname">
+        <ns:columnTitle>Schema Name</ns:columnTitle>
         <ns:nullable>true</ns:nullable>
         <ns:datatype>varchar</ns:datatype>
         <ns:scale>100</ns:scale>
       </ns:column>
       <ns:column columnName="queryname">
+        <ns:columnTitle>Query Name</ns:columnTitle>
         <ns:nullable>true</ns:nullable>
         <ns:datatype>varchar</ns:datatype>
         <ns:scale>100</ns:scale>
       </ns:column>
       <ns:column columnName="viewname">
+        <ns:columnTitle>View Name</ns:columnTitle>
         <ns:nullable>true</ns:nullable>
         <ns:datatype>varchar</ns:datatype>
         <ns:scale>100</ns:scale>
       </ns:column>
       <ns:column columnName="report">
+        <ns:columnTitle>Report Path</ns:columnTitle>
         <ns:nullable>true</ns:nullable>
         <ns:datatype>varchar</ns:datatype>
         <ns:scale>100</ns:scale>
       </ns:column>
       <ns:column columnName="datefieldname">
+        <ns:columnTitle>Date Field Name</ns:columnTitle>
         <ns:nullable>true</ns:nullable>
         <ns:datatype>varchar</ns:datatype>
         <ns:scale>100</ns:scale>
@@ -620,6 +645,10 @@
       <ns:column columnName="cage">
         <ns:datatype>varchar</ns:datatype>
         <ns:columnTitle>Cage</ns:columnTitle>
+      </ns:column>
+      <ns:column columnName="feces">
+        <ns:datatype>varchar</ns:datatype>
+        <ns:columnTitle>Feces</ns:columnTitle>
       </ns:column>
       <ns:column columnName="remark">
         <ns:datatype>varchar</ns:datatype>
@@ -745,6 +774,7 @@
     <ns:columns>
       <ns:column columnName="rowid">
         <ns:datatype>serial</ns:datatype>
+        <ns:shownInInsertView>false</ns:shownInInsertView>
         <ns:isAutoInc>true</ns:isAutoInc>
         <ns:scale>10</ns:scale>
       </ns:column>
@@ -905,6 +935,7 @@
     <ns:columns>
       <ns:column columnName="rowid">
         <ns:datatype>serial</ns:datatype>
+        <ns:shownInInsertView>false</ns:shownInInsertView>
         <ns:isAutoInc>true</ns:isAutoInc>
         <ns:scale>10</ns:scale>
       </ns:column>
@@ -915,7 +946,7 @@
           <ns:fk>
             <ns:fkDbSchema>ehr</ns:fkDbSchema>
             <ns:fkTable>notificationtypes</ns:fkTable>
-            <ns:fkColumnName>notificationtypes</ns:fkColumnName>
+            <ns:fkColumnName>notificationtype</ns:fkColumnName>
           </ns:fk>
       </ns:column>
       <ns:column columnName="recipient">
@@ -1159,9 +1190,14 @@
     </ns:columns>
   </ns:table>
   <ns:table tableName="formtypes" tableDbType="TABLE">
-    <ns:pkColumnName>formtype</ns:pkColumnName>
-    <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr&amp;query.queryName=formtypes&amp;formtype=${formtype}</ns:tableUrl>
+    <ns:pkColumnName>rowid</ns:pkColumnName>
+    <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr&amp;query.queryName=formtypes&amp;rowid=${rowid}</ns:tableUrl>
     <ns:columns>
+      <ns:column columnName="rowid">
+        <ns:datatype>serial</ns:datatype>
+        <ns:isAutoInc>true</ns:isAutoInc>
+        <ns:scale>10</ns:scale>
+      </ns:column>
       <ns:column columnName="formtype">
         <ns:datatype>varchar</ns:datatype>
         <ns:scale>200</ns:scale>
@@ -1246,17 +1282,17 @@
         <ns:datatype>text</ns:datatype>
         <ns:scale>32767</ns:scale>
       </ns:column>
-      <ns:column columnName="container">
-        <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:datatype>entityid</ns:datatype>
-        <ns:isHidden>true</ns:isHidden>
-        <ns:scale>36</ns:scale>
-        <ns:fk>
-          <ns:fkDbSchema>core</ns:fkDbSchema>
-          <ns:fkTable>containers</ns:fkTable>
-          <ns:fkColumnName>entityid</ns:fkColumnName>
-        </ns:fk>
-      </ns:column>
+      <!--<ns:column columnName="container">-->
+        <!--<ns:isUserEditable>false</ns:isUserEditable>-->
+        <!--<ns:datatype>entityid</ns:datatype>-->
+        <!--<ns:isHidden>true</ns:isHidden>-->
+        <!--<ns:scale>36</ns:scale>-->
+        <!--<ns:fk>-->
+          <!--<ns:fkDbSchema>core</ns:fkDbSchema>-->
+          <!--<ns:fkTable>containers</ns:fkTable>-->
+          <!--<ns:fkColumnName>entityid</ns:fkColumnName>-->
+        <!--</ns:fk>-->
+      <!--</ns:column>-->
       <ns:column columnName="createdby">
         <ns:isUserEditable>false</ns:isUserEditable>
         <ns:nullable>true</ns:nullable>
@@ -1344,17 +1380,17 @@
           <ns:fkColumnName>rowid</ns:fkColumnName>
         </ns:fk>
       </ns:column>
-      <ns:column columnName="container">
-        <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:datatype>entityid</ns:datatype>
-        <ns:isHidden>true</ns:isHidden>
-        <ns:scale>36</ns:scale>
-        <ns:fk>
-          <ns:fkDbSchema>core</ns:fkDbSchema>
-          <ns:fkTable>containers</ns:fkTable>
-          <ns:fkColumnName>entityid</ns:fkColumnName>
-        </ns:fk>
-      </ns:column>
+      <!--<ns:column columnName="container">-->
+        <!--<ns:isUserEditable>false</ns:isUserEditable>-->
+        <!--<ns:datatype>entityid</ns:datatype>-->
+        <!--<ns:isHidden>true</ns:isHidden>-->
+        <!--<ns:scale>36</ns:scale>-->
+        <!--<ns:fk>-->
+          <!--<ns:fkDbSchema>core</ns:fkDbSchema>-->
+          <!--<ns:fkTable>containers</ns:fkTable>-->
+          <!--<ns:fkColumnName>entityid</ns:fkColumnName>-->
+        <!--</ns:fk>-->
+      <!--</ns:column>-->
       <ns:column columnName="createdby">
         <ns:isUserEditable>false</ns:isUserEditable>
         <ns:nullable>true</ns:nullable>
@@ -1496,6 +1532,223 @@
           <ns:datatype>bool</ns:datatype>
           <ns:scale>1</ns:scale>
         </ns:column>
+        <ns:column columnName="allowFutureDates">
+          <ns:nullable>true</ns:nullable>
+          <ns:datatype>bool</ns:datatype>
+          <ns:scale>1</ns:scale>
+        </ns:column>
       </ns:columns>
     </ns:table>
+  <ns:table tableName="animal_groups" tableDbType="TABLE">
+    <ns:pkColumnName>rowid</ns:pkColumnName>
+    <ns:columns>
+      <ns:column columnName="rowid">
+        <ns:datatype>serial</ns:datatype>
+        <ns:isAutoInc>true</ns:isAutoInc>
+        <ns:isKeyField>true</ns:isKeyField>
+        <ns:scale>10</ns:scale>
+      </ns:column>
+      <ns:column columnName="name">
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>200</ns:scale>
+      </ns:column>
+      <ns:column columnName="container">
+        <ns:isUserEditable>false</ns:isUserEditable>
+        <ns:datatype>entityid</ns:datatype>
+        <ns:isHidden>true</ns:isHidden>
+        <ns:scale>36</ns:scale>
+        <ns:fk>
+          <ns:fkDbSchema>core</ns:fkDbSchema>
+          <ns:fkTable>containers</ns:fkTable>
+          <ns:fkColumnName>entityid</ns:fkColumnName>
+        </ns:fk>
+      </ns:column>
+      <ns:column columnName="createdby">
+        <ns:isUserEditable>false</ns:isUserEditable>
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>userid</ns:datatype>
+        <ns:scale>4</ns:scale>
+        <ns:isHidden>true</ns:isHidden>
+      </ns:column>
+      <ns:column columnName="created">
+        <ns:isUserEditable>false</ns:isUserEditable>
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>timestamp</ns:datatype>
+        <ns:scale>29</ns:scale>
+        <ns:isHidden>true</ns:isHidden>
+      </ns:column>
+      <ns:column columnName="modifiedby">
+        <ns:isUserEditable>false</ns:isUserEditable>
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>userid</ns:datatype>
+        <ns:scale>4</ns:scale>
+        <ns:isHidden>true</ns:isHidden>
+      </ns:column>
+      <ns:column columnName="modified">
+        <ns:isUserEditable>false</ns:isUserEditable>
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>timestamp</ns:datatype>
+        <ns:scale>29</ns:scale>
+        <ns:isHidden>true</ns:isHidden>
+      </ns:column>
+    </ns:columns>
+  </ns:table>
+  <ns:table tableName="supplemental_pedigree" tableDbType="TABLE">
+    <ns:pkColumnName>rowid</ns:pkColumnName>
+    <ns:columns>
+      <ns:column columnName="rowid">
+        <ns:datatype>serial</ns:datatype>
+        <ns:isAutoInc>true</ns:isAutoInc>
+        <ns:isKeyField>true</ns:isKeyField>
+        <ns:shownInDetailsView>false</ns:shownInDetailsView>
+        <ns:shownInInsertView>false</ns:shownInInsertView>
+        <ns:shownInUpdateView>false</ns:shownInUpdateView>
+        <ns:scale>10</ns:scale>
+      </ns:column>
+      <ns:column columnName="Id">
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>100</ns:scale>
+      </ns:column>
+      <ns:column columnName="gender">
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>100</ns:scale>
+      </ns:column>
+      <ns:column columnName="dam">
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>100</ns:scale>
+      </ns:column>
+      <ns:column columnName="sire">
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>100</ns:scale>
+      </ns:column>
+      <ns:column columnName="birth">
+        <ns:datatype>timestamp</ns:datatype>
+        <ns:scale>100</ns:scale>
+      </ns:column>
+      <ns:column columnName="acquiredate">
+        <ns:datatype>timestamp</ns:datatype>
+        <ns:columnTitle>Acquire Date</ns:columnTitle>
+        <ns:scale>100</ns:scale>
+      </ns:column>
+      <ns:column columnName="departdate">
+        <ns:datatype>timestamp</ns:datatype>
+        <ns:columnTitle>Depart Date</ns:columnTitle>
+        <ns:scale>100</ns:scale>
+      </ns:column>
+      <ns:column columnName="createdby">
+        <ns:isUserEditable>false</ns:isUserEditable>
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>userid</ns:datatype>
+        <ns:scale>4</ns:scale>
+        <ns:isHidden>true</ns:isHidden>
+      </ns:column>
+      <ns:column columnName="created">
+        <ns:isUserEditable>false</ns:isUserEditable>
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>timestamp</ns:datatype>
+        <ns:scale>29</ns:scale>
+        <ns:isHidden>true</ns:isHidden>
+      </ns:column>
+      <ns:column columnName="modifiedby">
+        <ns:isUserEditable>false</ns:isUserEditable>
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>userid</ns:datatype>
+        <ns:scale>4</ns:scale>
+        <ns:isHidden>true</ns:isHidden>
+      </ns:column>
+      <ns:column columnName="modified">
+        <ns:isUserEditable>false</ns:isUserEditable>
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>timestamp</ns:datatype>
+        <ns:scale>29</ns:scale>
+        <ns:isHidden>true</ns:isHidden>
+      </ns:column>
+    </ns:columns>
+  </ns:table>
+
+  <ns:table tableName="automatic_alerts" tableDbType="TABLE">
+    <ns:pkColumnName>rowid</ns:pkColumnName>
+    <ns:columns>
+      <ns:column columnName="rowid">
+        <ns:datatype>serial</ns:datatype>
+        <ns:isAutoInc>true</ns:isAutoInc>
+        <ns:isKeyField>true</ns:isKeyField>
+        <ns:scale>10</ns:scale>
+      </ns:column>
+      <ns:column columnName="title">
+        <ns:columnTitle>Title</ns:columnTitle>
+        <ns:nullable>false</ns:nullable>
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>300</ns:scale>
+      </ns:column>
+        <ns:column columnName="containerpath">
+          <ns:columnTitle>Container Path</ns:columnTitle>
+          <ns:nullable>true</ns:nullable>
+          <ns:datatype>varchar</ns:datatype>
+          <ns:scale>100</ns:scale>
+        </ns:column>
+        <ns:column columnName="schemaname">
+          <ns:columnTitle>Schema Name</ns:columnTitle>
+          <ns:nullable>true</ns:nullable>
+          <ns:datatype>varchar</ns:datatype>
+          <ns:scale>100</ns:scale>
+        </ns:column>
+        <ns:column columnName="queryname">
+          <ns:columnTitle>Query Name</ns:columnTitle>
+          <ns:nullable>true</ns:nullable>
+          <ns:datatype>varchar</ns:datatype>
+          <ns:scale>100</ns:scale>
+        </ns:column>
+        <ns:column columnName="viewname">
+          <ns:columnTitle>View Name</ns:columnTitle>
+          <ns:nullable>true</ns:nullable>
+          <ns:datatype>varchar</ns:datatype>
+          <ns:scale>100</ns:scale>
+        </ns:column>
+        <ns:column columnName="notificationtype">
+          <ns:nullable>true</ns:nullable>
+          <ns:datatype>varchar</ns:datatype>
+          <ns:scale>100</ns:scale>
+            <ns:fk>
+              <ns:fkDbSchema>ehr</ns:fkDbSchema>
+              <ns:fkTable>notificationtypes</ns:fkTable>
+              <ns:fkColumnName>notificationtype</ns:fkColumnName>
+            </ns:fk>
+        </ns:column>
+      <ns:column columnName="email_html">
+        <ns:columnTitle>Email HTML</ns:columnTitle>
+        <ns:inputType>textarea</ns:inputType>
+        <ns:scale>4000</ns:scale>
+      </ns:column>
+
+      <ns:column columnName="createdby">
+        <ns:isUserEditable>false</ns:isUserEditable>
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>userid</ns:datatype>
+        <ns:scale>4</ns:scale>
+        <ns:isHidden>true</ns:isHidden>
+      </ns:column>
+      <ns:column columnName="created">
+        <ns:isUserEditable>false</ns:isUserEditable>
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>timestamp</ns:datatype>
+        <ns:scale>29</ns:scale>
+        <ns:isHidden>true</ns:isHidden>
+      </ns:column>
+      <ns:column columnName="modifiedby">
+        <ns:isUserEditable>false</ns:isUserEditable>
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>userid</ns:datatype>
+        <ns:scale>4</ns:scale>
+        <ns:isHidden>true</ns:isHidden>
+      </ns:column>
+      <ns:column columnName="modified">
+        <ns:isUserEditable>false</ns:isUserEditable>
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>timestamp</ns:datatype>
+        <ns:scale>29</ns:scale>
+        <ns:isHidden>true</ns:isHidden>
+      </ns:column>
+    </ns:columns>
+  </ns:table>
 </ns:tables>

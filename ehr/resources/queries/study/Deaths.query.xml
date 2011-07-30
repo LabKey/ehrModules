@@ -43,6 +43,12 @@
                     <displayWidth>110</displayWidth>
                     <inputType>textarea</inputType>
                   </column>
+                  <column columnName="roomattime">
+                      <columnTitle>Room At Time</columnTitle>
+                  </column>
+                  <column columnName="cageattime">
+                      <columnTitle>Cage At Time</columnTitle>
+                  </column>
                   <column columnName="objectid">
                     <datatype>entityid</datatype>
                     <columnTitle>Key</columnTitle>

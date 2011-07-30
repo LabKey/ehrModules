@@ -18,7 +18,7 @@ function setDescription(row, errors){
     if (row.score)
         description.push('BCS: '+ row.score);
     if (row.weightStatus)
-        description.push('Weight OK? '+ row.weightStatus);
+        description.push('Weight Monitoring Needed? '+ row.weightStatus);
 
     return description;
 }

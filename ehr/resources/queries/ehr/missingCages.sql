@@ -12,6 +12,7 @@ FROM study.housing d
 LEFT JOIN ehr_lookups.cage c
   on (c.room=d.room and c.cage=d.cage)
 
-WHERE c.cage is null
+WHERE c.cage is null and d.enddate is null
 
 group by d.room, d.cage
+order by d.room, d.cage

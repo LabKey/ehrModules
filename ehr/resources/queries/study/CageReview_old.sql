@@ -3,36 +3,123 @@
  *
  * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
  */
+
 SELECT
+  c.location,
+  c.room,
+  c.cage,
+  c.cagesCounted,
+  c.JoinedCage,
 
-a.id,
+  c.TotalAnimalsOver5Months,
+  c.animals,
+  c.TotalAnimals5Months,
+  c.Animals5Mo,
+  c.HeaviestWeight,
+  c.weights,
+  c.ReqSqFts,
+  round(c.sqft*c.cagesCounted, 1) as CageSqft,
+  round(c.ReqSqFt, 1) as ReqSqFt,
 
-a.location as location,
-a.id.cageclass.MostRecentWeight as MostRecentWeight,
+  c.height as CageHeight,
+  c.ReqHeight,
 
-a.location.length as length,
-a.location.width as width,
--- a.id.location.location.length as length,
--- a.id.location.location.width as width,
+  CASE WHEN c.sqft*c.cagesCounted <  c.ReqSqft
+    THEN 'Too Small'
+    ELSE null
+  END as sizeStatus,
 
-round((a.location.length * a.location.width)/144, 1) as CageSqft,
-a.id.cageclass.ReqSqft,
-a.id.cageclass.ReqSqft / (a.id.numRoommates.NumRoommates+1) as ReqSqFt2,
+  CASE WHEN c.height < c.ReqHeight
+    THEN 'Too Short'
+    ELSE null
+  END as heightStatus,
 
-a.location.height as CageHeight,
-a.id.cageclass.ReqHeight,
+  CASE WHEN c.height < c.ReqHeight OR c.sqft*c.cagesCounted <  c.ReqSqft
+    THEN 'ERROR'
+    ELSE 'OK'
+  END as cageStatus
 
-a.id.numRoommates.NumRoommates
+FROM (
 
-FROM study.demographicsCurLocation a
+SELECT
+  c.roomcage as location,
+  c.room,
+  c.cage,
+  c.roomcage.height as height,
+  ((c.roomcage.length * c.roomcage.width)/144) as sqft,
+  h.ReqHeight,
+  h.ReqSqFt,
 
-WHERE
+  CASE
+    WHEN h2.TotalAnimals IS NULL AND c2.cage is not null THEN 2
+    ELSE 1
+  END CagesCounted,
+  CASE
+    WHEN h2.TotalAnimals IS NULL THEN c2.cage
+    ELSE NULL
+  END JoinedCage,
+  h2.TotalAnimals as OccupantsInJoinedCage,
 
--- NOTE: dimension is in inches
---((a.location.length * a.location.width)/144) < ( a.id.cageclass.ReqSqft / (a.id.numRoommates.NumRoommates+1))
+  h.TotalAnimalsOver5Months,
+  h3.TotalAnimals5Months,
+  h.Animals,
+  h3.Animals5Mo,
+  h.HeaviestWeight,
+  h.weights,
+  h.ReqSqFts,
 
--- OR
+FROM ehr_lookups.cages c
 
-a.location.height < a.id.cageclass.ReqHeight
+LEFT JOIN (
+  SELECT
+    h.room,
+    h.cage,
+    count(DISTINCT h.id) as TotalAnimalsOver5Months,
+    group_concat(h.id) as Animals,
+    sum(c1.sqft) as ReqSqFt,
+    group_concat(c1.sqft) as ReqSqFts,
+    max(c1.height) as ReqHeight,
+    max(h.Id.mostRecentWeight.mostRecentWeight) as HeaviestWeight,
+    group_concat(h.Id.mostRecentWeight.mostRecentWeight) as Weights,
+    FROM study.housing h
+    LEFT JOIN ehr_lookups.cageclass c1
+    ON (c1.low < h.Id.mostRecentWeight.mostRecentWeight AND h.Id.mostRecentWeight.mostRecentWeight <= c1.high)
+    WHERE h.enddate IS NULL
+    AND h.id.age.ageInMonths >= 5.5
+    GROUP BY h.room, h.cage
+  ) h
+  ON (c.room=h.room AND c.cage=h.cage)
 
+LEFT JOIN (
+  SELECT
+    h.room,
+    h.cage,
+    count(DISTINCT h.id) as TotalAnimals5Months,
+    group_concat(h.id) as Animals5Mo,
+    FROM study.housing h
+    WHERE h.enddate IS NULL
+    AND h.id.age.ageInMonths < 6 AND h.id.age.ageInMonths >= 5.5
+    GROUP BY h.room, h.cage
+  ) h3
+  ON (c.room=h3.room AND c.cage=h3.cage)
+
+LEFT JOIN ehr_lookups.cages c2
+  ON (c.joinToCage IS NOT NULL AND c.room=c2.room and c2.cage IN c.joinToCage)
+--GROUP BY c.room, c.cage
+
+LEFT JOIN (
+  SELECT
+    h.room,
+    h.cage,
+    count(DISTINCT h.id) as TotalAnimals,
+    FROM study.housing h
+    WHERE h.enddate IS NULL
+
+    GROUP BY h.room, h.cage
+  ) h2
+ON (c.room=h2.room AND h2.cage IN c.joinToCage)
+
+WHERE h.TotalAnimalsOver5Months is not null
+--GROUP BY c.room, c.cage
+) c
 

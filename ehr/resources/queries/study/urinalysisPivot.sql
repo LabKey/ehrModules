@@ -4,88 +4,27 @@
  * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
  */
 SELECT
-
 b.id,
 b.date,
-max(b.bilirubin) as bilirubin,
-max(b.ketone) as ketone,
-max(b.sp_gravity) as sp_gravity,
-max(b.blood) as blood,
-max(b.ph) as pH,
-max(b.protein) as protein,
-max(b.urobilinogen) as urobilinogen,
-max(b.nitrite) as nitrite,
-max(b.leukocytes) as leukocytes,
-max(b.appearance) as appearance,
-max(b.microscopic) as microscopic
+b.testId,
+group_concat(b.result) as results
 
-FROM (
-
-SELECT
-
+FROM (SELECT
 b.id,
 b.date,
-b.runId,
-
-CASE WHEN b.testid='BILIRUBIN'
-  THEN b.qualResult
-  ELSE null
-END as bilirubin,
-
-CASE WHEN b.testid='KETONE'
-  THEN b.qualResult
-  ELSE null
-END as ketone,
-
-CASE WHEN b.testid='SP_GRAVITY'
-  THEN b.result
-  ELSE null
-END as sp_gravity,
-
-CASE WHEN b.testid='BLOOD'
-  THEN b.qualResult
-  ELSE null
-END as blood,
-
-CASE WHEN b.testid='PH'
-  THEN b.result
-  ELSE null
-END as ph,
-
-CASE WHEN b.testid='PROTEIN'
-  THEN b.qualResult
-  ELSE null
-END as protein,
-
-CASE WHEN b.testid='UROBILINOGEN'
-  THEN b.result
-  ELSE null
-END as urobilinogen,
-
-CASE WHEN b.testid='NITRITE'
-  THEN b.qualResult
-  ELSE null
-END as nitrite,
-
-CASE WHEN b.testid='LEUKOCYTES'
-  THEN b.qualResult
-  ELSE null
-END as leukocytes,
-
-CASE WHEN b.testid='APPEARANCE'
-  THEN b.qualResult
-  ELSE null
-END as appearance,
-
-CASE WHEN b.testid='MICROSCOPIC'
-  THEN b.qualResult
-  ELSE null
-END as microscopic
-
+b.testId,
+coalesce(b.taskid, b.parentid, b.runId) as runId,
+b.resultoorindicator,
+CASE
+WHEN b.result IS NULL THEN  b.qualresult
+  ELSE CAST(CAST(b.result AS NUMERIC) AS VARCHAR)
+END as result
 
 FROM study."Urinalysis Results" b
-WHERE b.qcstate.publicdata = true
 
+WHERE testId IN ('Bilirubin', 'Ketone', 'Sp Gravity', 'Blood', 'pH', 'Protein','Urobilogen', 'Nitrite', 'Leukocytes', 'Apprearance','Microscopic', 'Glucose')
 ) b
 
-GROUP BY b.id, b.date, b.runId
+GROUP BY b.id, b.date, b.runId, b.testId
+PIVOT results BY testId IN ('Bilirubin', 'Ketone', 'Sp Gravity', 'Blood', 'pH', 'Protein','Urobilogen', 'Nitrite', 'Leukocytes', 'Apprearance','Microscopic', 'Glucose')
+

@@ -10,8 +10,8 @@
             <!--<property name="columnTitle" value="Current Cage"/>-->
           <!--</properties>-->
       <!--</column>-->
-      <column name="Room"/>
-      <column name="Cage"/>
+      <column name="room"/>
+      <column name="cage"/>
       <column name="Id"/>
       <column name="date"/>
       <column name="type"/>
@@ -22,8 +22,8 @@
       <!--<column name="breeding"/>-->
       <!--<column name="other"/>-->
       <!--<column name="tlocation"/>-->
-      <column name="Description"/>
-      <column name="Remark"/>
+      <column name="description"/>
+      <column name="remark"/>
       <column name="qcstate" />
   </columns>
    <sorts>

@@ -8,7 +8,7 @@ SELECT
 d.Id AS Id,
 
 d.date,
-
+d.project,
 round(
 CASE
   WHEN (d.id.dataset.demographics.death IS NULL)

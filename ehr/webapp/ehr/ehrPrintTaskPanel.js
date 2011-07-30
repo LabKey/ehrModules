@@ -29,7 +29,8 @@ EHR.ext.PrintTaskPanel = Ext.extend(Ext.Panel, {
             columns: this.columns || EHR.ext.FormColumns[this.queryName] || '',
             storeId: [this.schemaName,this.queryName,this.viewName].join('||'),
             filterArray: this.filterArray || [],
-            metadata: this.metadata
+            metadata: Ext.apply(this.metadata, {fieldDefaults: {lookupNullCaption: ''}}),
+            timeout: 0
         }));
 
         if(this.store && this.queryName && this.schemaName){
@@ -50,73 +51,130 @@ EHR.ext.PrintTaskPanel = Ext.extend(Ext.Panel, {
 
         Ext.applyIf(this, {
             autoHeight: true
-            ,autoWidth: true
+            //,autoWidth: true
+            //,width: '7 in'
             ,bodyBorder: false
             ,border: false
             ,bodyStyle: 'padding:5px'
             ,style: 'margin-bottom: 15px'
+            ,items: [{
+                html: 'Loading...'
+            }]
             ,tbar: [{
                 xtype: 'button',
                 text: 'Add Rows',
                 scope: this,
                 handler: function(b){
                     Ext.Msg.prompt('Number of Rows', 'How many rows do you want to add?', function(r, newRows){
+                        var width = this.theTable.layout.columns;
                         if(newRows){
-                            var table = this.body.dom.children[0];
-                            var width = table.rows[0].cells.length;
                             for(var i=0;i<newRows;i++){
-                                var row = table.insertRow(table.rows.length);
                                 for(var j=0;j<width;j++){
-                                    var cell = row.insertCell(row.cells.length);
-                                    cell.innerHTML = ' ';
-                                    //console.log(cell)
+                                    this.theTable.add({style: 'height: 30px;'});
                                 }
                             }
                         }
-                        //this.ownerCt.doLayout();
+                        this.doLayout();
                     }, this);
                 }
             }]
         });
 
         EHR.ext.PrintTaskPanel.superclass.initComponent.call(this);
+
     },
     loadQuery: function(store){
         var fields = [];
+        var toAdd = [];
 
-        var rows = [{tag: 'tr', children: []}];
         store.fields.each(function(field){
             //TODO: better flags on whether to show in print
-            if(field.shownInInsertView && !field.hidden){
+            if((field.shownInInsertView && !field.hidden) || field.shownInGrid){
                 fields.push({
                     meta: field,
                     renderer: EHR.ext.metaHelper.getDefaultRenderer({}, field),
                     editor: EHR.ext.metaHelper.getFormEditorConfig(field)
                 });
-                rows[0].children.push({tag: 'td', html: field.caption});
+
+                var style = 'font-weight:bold;';
+                if(field.printWidth)
+                    style += 'width: '+field.printWidth+'px;';
+                else
+                    style += 'min-width: 60px;';
+
+                toAdd.push({html: field.caption, style: style});
+
+                if(field.name == 'date'){
+                    toAdd.push({html: 'Time', style: style});
+                }
             }
         }, this);
-        rows[0].children.push({tag: 'td', html: 'Notes'});
+
+        this.removeAll();
+        var theTable =  this.add({
+            layout: 'table',
+            ref: 'theTable',
+            layoutConfig: {
+                columns: (toAdd.length),
+                tableAttrs: {
+                    border: 1
+                }
+            },
+            defaults: {
+                border: false
+            },
+            border: true,
+            items: toAdd
+        });
 
         store.each(function(rec){
-            var row = {tag: 'tr', children: []};
             Ext.each(fields, function(field){
-                var html = field.renderer(rec.get(field.meta.name), {}, rec);
-                row.children.push({tag: 'td', html: html});
+                field.meta.type = field.meta.jsonType;
+                field.meta.lookupNullCaption = ' ';
 
-                //TODO: min width
+                if(field.meta.lookup)
+                    field.meta.lookup.autoLoad = true;
+
+                var val = rec.get(field.meta.name);
+
+                if(field.meta.name == 'date'){
+                    field.meta.format = 'Y-m-d';
+
+                    var html = field.renderer(val, field.meta, rec);
+                    theTable.add({html: html, style: 'height: 30px;'});
+
+                    field.meta.format = 'H:i';
+                }
+
+                var html = field.renderer(val, field.meta, rec);
+
+                if(field.meta.name == 'date' && html == '00:00'){
+                    html = '';
+                }
+                var cell = theTable.add({html: html, style: 'height: 30px;'});
+
+                if(field.meta.lookup){
+                    var lookupStore = EHR.ext.metaHelper.getLookupStore(field.meta);
+                    if(lookupStore){
+                        this.mon(lookupStore, 'load', function(store){
+                        var lookupRecord = lookupStore.getById(val);
+                        if (lookupRecord)
+                            cell.update(lookupRecord.data[field.meta.lookup.displayColumn]);
+                        }, this);
+                    }
+                }
 
             }, this);
-            row.children.push({tag: 'td', html: ''});
-            rows.push(row);
+            //row.children.push({tag: 'td', html: ''});
+            //rows.push(row);
         }, this);
 
-        this.body.createChild({
-            tag: 'table',
-            border: 1,
-            //style: 'border-width:1px;',
-            children: rows
-        });
+//        this.body.createChild({
+//            tag: 'table',
+//            border: 1,
+//            //style: 'border-width:1px;',
+//            children: rows
+//        });
         this.doLayout();
     }
 });

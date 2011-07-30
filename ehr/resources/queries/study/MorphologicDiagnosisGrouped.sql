@@ -12,6 +12,10 @@ group_concat(n.tissue.meaning) as tissue,
 group_concat(n.severity.meaning) as severity,
 group_concat(n.duration.meaning) as duration,
 group_concat(n.distribution.meaning) as distribution,
+group_concat(n.distribution2.meaning) as distribution2,
+group_concat(n.inflammation.meaning) as inflammation,
+group_concat(n.etiology.meaning) as etiology,
 group_concat(n.process.meaning) as process,
+group_concat(n.process2.meaning) as process2,
 FROM "Morphologic Diagnosis" n
 group by n.id, n.date, n.seq1, n.caseno.caseno

@@ -2,7 +2,7 @@
     <metadata>
         <tables xmlns="http://labkey.org/data/xml">
             <table tableName="ClinpathRuns" tableDbType="TABLE">
-                <tableUrl>/ehr/clinpathDetails.view?runId=${objectid}&amp;dataset=${dataset}</tableUrl>
+                <tableUrl>/ehr/clinpathDetails.view?lsid=${lsid}&amp;objectid=${objectid}</tableUrl>
                 <!--<insertUrl>/ehr/manageRecord.view?schemaName=study&amp;queryName=Clinical%20Runs&amp;keyField=lsid&amp;</insertUrl>-->
                 <!--<updateUrl>/ehr/manageRecord.view?schemaName=study&amp;queryName=Clinical%20Runs&amp;keyField=lsid&amp;key=${lsid}</updateUrl>-->
                 <insertUrl />
@@ -10,7 +10,7 @@
                 <deleteUrl />
                 <columns>
                     <column columnName="date">
-                        <columnTitle>Date</columnTitle>
+                        <columnTitle>Collection Date</columnTitle>
                         <formatString>yyyy-MM-dd HH:mm</formatString>
                     </column>
                     <column columnName="parentId">
@@ -22,20 +22,12 @@
                         <!--</fk>-->
                         <isHidden>true</isHidden>
                     </column>
-                    <column columnName="requestId">
-                        <fk>
-                          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-                          <fkDbSchema>ehr</fkDbSchema>
-                          <fkTable>requestid</fkTable>
-                          <fkColumnName>rowid</fkColumnName>
-                        </fk>
-                    </column>
                     <column columnName="type">
                         <fk>
                           <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                           <fkDbSchema>ehr_lookups</fkDbSchema>
-                          <fkTable>dataset</fkTable>
-                          <fkColumnName>rowid</fkColumnName>
+                          <fkTable>clinpath_types</fkTable>
+                          <fkColumnName>type</fkColumnName>
                         </fk>
                     </column>
                     <column columnName="objectid">
@@ -51,12 +43,55 @@
                         <isHidden>true</isHidden>
                         <!--<columnTitle>Type</columnTitle>                        -->
                     </column>
-                    <column columnName="servicerequested">
+                    <column columnName="serviceRequested">
                         <columnTitle>Service Requested</columnTitle>
+                        <!--<fk>-->
+                          <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
+                          <!--<fkDbSchema>ehr_lookups</fkDbSchema>-->
+                          <!--<fkTable>clinpath_tests</fkTable>-->
+                          <!--<fkColumnName>type</fkColumnName>-->
+                        <!--</fk>-->
                     </column>
                     <column columnName="sampleType">
                         <columnTitle>Sample Type</columnTitle>
+                            <fk>
+                              <fkFolderPath>/wnprc/ehr/</fkFolderPath>
+                              <fkDbSchema>ehr_lookups</fkDbSchema>
+                              <fkTable>clinpath_sampletype</fkTable>
+                              <fkColumnName>sampletype</fkColumnName>
+                            </fk>
                     </column>
+                    <column columnName="sampleQuantity">
+                        <columnTitle>Sample Quantity</columnTitle>
+                        <isHidden>true</isHidden>
+                    </column>
+                    <column columnName="quantityUnits">
+                        <columnTitle>Quantity Units</columnTitle>
+                        <isHidden>true</isHidden>
+                    </column>
+                    <column columnName="sampleUnits">
+                        <columnTitle>Sample Units</columnTitle>
+                        <isHidden>true</isHidden>
+                    </column>
+                    <column columnName="collectedBy">
+                        <columnTitle>Collected By</columnTitle>
+                    </column>
+                    <column columnName="collectionMethod">
+                        <columnTitle>Collection Method</columnTitle>
+                        <fk>
+                          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
+                          <fkDbSchema>ehr_lookups</fkDbSchema>
+                          <fkTable>clinpath_collection_method</fkTable>
+                          <fkColumnName>method</fkColumnName>
+                        </fk>
+                    </column>
+                    <!--<column columnName="collectionDate">-->
+                        <!--<columnTitle>Collection Date</columnTitle>-->
+                    <!--</column>-->
+                    <column columnName="ts">
+                        <isHidden>true</isHidden>
+                    </column>
+
                 </columns>
             </table>
         </tables>

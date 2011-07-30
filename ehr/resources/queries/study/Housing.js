@@ -9,50 +9,93 @@ var {EHR, LABKEY, Ext, console, init, beforeInsert, afterInsert, beforeUpdate, a
 
 
 function onUpsert(context, errors, row, oldRow){
-    //determine whether the animal has enough room in this cage
-    if(context.extraContext.dataSource != 'etl' && row.room && row.cage){
-        var cageRow;
-        LABKEY.Query.executeSql({
-            schemaName: 'study',
-            scope: this,
-            sql: "SELECT room, cage, length, height, width from ehr_lookups.cage c WHERE c.room='"+row.room+"' AND c.cage='"+row.cage+"'",
-            success: function(data){
-                if(data.rows && data.rows.length){
-                    cageRow = data.rows[0];
-                }
-            },
-            failure: EHR.onFailure
-        });
+//    //check for existing animals in this room/cage
+//    if(context.extraContext.dataSource != 'etl' && row.room && row.cage){
+//        LABKEY.Query.executeSql({
+//            schemaName: 'study',
+//            scope: this,
+//            sql: "SELECT group_concat(h.Id) as Ids FROM study.housing h WHERE c.room='"+row.room+"' AND c.cage='"+row.cage+"' AND id != '"+row.Id+"'",
+//            success: function(data){
+//                if(data.rows && data.rows.length){
+//                    row['Id/numRoommates/cagemates'] = data.rows[0].Ids;
+//                }
+//            },
+//            failure: EHR.onFailure
+//        });
+//
+//
+//    }
 
-        if(cageRow){
-            LABKEY.Query.executeSql({
-                schemaName: 'study',
-                scope: this,
-                sql: "SELECT Id, ReqSqFt, ReqHeight from study.demographicsCageClass c WHERE c.id='"+row.Id+"'",
-                success: function(data){
-                    if(data.rows && data.rows.length){
-                        var r = data.rows[0];
-                        if(cageRow.length*cageRow.width < r.ReqSqFt){
-                            EHR.addError(errors, 'room', 'Animal too large for this cage. Required SqFt: '+r.ReqSqFt, 'INFO');
-                        }
-                        if(cageRow.height < r.ReqHeight){
-                            EHR.addError(errors, 'room', 'Animal too large for this cage. Required Height: '+r.ReqHeight, 'INFO');
-                        }
 
-                    }
-                },
-                failure: EHR.onFailure
-            });
-        }
-    }
+//    //determine whether the animal has enough room in this cage
+//    if(context.extraContext.dataSource != 'etl' && row.room && row.cage){
+//        var cageRow;
+//        LABKEY.Query.executeSql({
+//            schemaName: 'study',
+//            scope: this,
+//            sql: "SELECT room, cage, length, height, width from ehr_lookups.cage c WHERE c.room='"+row.room+"' AND c.cage='"+row.cage+"'",
+//            success: function(data){
+//                if(data.rows && data.rows.length){
+//                    cageRow = data.rows[0];
+//                }
+//            },
+//            failure: EHR.onFailure
+//        });
+//
+//        if(cageRow){
+//            LABKEY.Query.executeSql({
+//                schemaName: 'study',
+//                scope: this,
+//                sql: "SELECT Id, ReqSqFt, ReqHeight from study.demographicsCageClass c WHERE c.id='"+row.Id+"'",
+//                success: function(data){
+//                    if(data.rows && data.rows.length){
+//                        var r = data.rows[0];
+//                        if(cageRow.length*cageRow.width < r.ReqSqFt){
+//                            EHR.addError(errors, 'room', 'Animal too large for this cage. Required SqFt: '+r.ReqSqFt, 'INFO');
+//                        }
+//                        if(cageRow.height < r.ReqHeight){
+//                            EHR.addError(errors, 'room', 'Animal too large for this cage. Required Height: '+r.ReqHeight, 'INFO');
+//                        }
+//
+//                    }
+//                },
+//                failure: EHR.onFailure
+//            });
+//        }
+//    }
 
 
 }
 
 
 function onComplete(event, errors, scriptContext){
-    //NOTE: we will no longer cache housing this in demographics
-    /*
+    //NOTE: because snapshots are not getting refreshed, we manually force it to reload
+//    var request = Ext.Ajax.request({
+//        url : LABKEY.ActionURL.buildURL("study", "editSnapshot", null, {
+//            schemaName: 'study',
+//            snapshotName: 'ActiveHousing',
+//            'query.queryName': 'ActiveHousing'
+//        }),
+//        method : 'GET',
+//        success: function(){
+//            console.log('success!')
+//        },
+//        failure: function(){
+//            console.log('failure!')
+//        },
+//        scope: this,
+////        jsonData : {
+////            schemaName: 'study',
+////            snapshotName: 'ActiveHousing',
+////            'query.queryName': 'ActiveHousing'
+////        },
+//        headers : {
+//            'Content-Type' : 'application/json'
+//        }
+//    });
+
+
+
     //NOTE: we assume that onBecomePublic() enforces only 1 active housing record per animal
     if(scriptContext.publicParticipantsModified.length){
         var toUpdate = [];
@@ -72,6 +115,7 @@ function onComplete(event, errors, scriptContext){
 
                         if(totalIds[row.Id]){
                             //raise alert for duplicate active rooms
+                            console.log("ERROR: there are two active housing records for: "+row.Id);
                             //throw "ERROR: there are two active housing records for: "+row.Id;
                         }
 
@@ -113,21 +157,20 @@ function onComplete(event, errors, scriptContext){
         if(toUpdate.length){
             LABKEY.Query.updateRows({
                 schemaName: 'study',
-                queryName: 'demographics',
+                queryName: 'ActiveHousing',
                 extraContext: {
                     schemaName: 'study',
-                    queryName: 'Demographics'
+                    queryName: 'ActiveHousing'
                 },
                 rows: toUpdate,
                 success: function(data){
-                    console.log('Success updating demographics')
+                    console.log('Success updating ActiveHousing')
                 },
                 failure: EHR.onFailure
             });
         }
 
     }
-    */
 };
 
 function onBecomePublic(errors, scriptContext, row, oldRow){

@@ -3,8 +3,7 @@
  *
  * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
  */
-SELECT lower(id) as Id, FixDate(date) AS Date, upper(testid) as testid, stringResults, result, units, remark,
-     ts, objectid, runId
+SELECT lower(id) as Id, FixDate(date) AS Date, ts, objectid
 
 FROM
 
@@ -14,7 +13,7 @@ SELECT
 id,
 date,
 'bilirubin' as TestID,
-bilirubin as stringResults,
+null as stringResults,
 null as result,
 null as Units,
 null as remark,
@@ -30,7 +29,7 @@ SELECT
 id,
 date,
 'ketone' as TestID,
-ketone as stringResults,
+null as stringResults,
 null as result,
 null as Units,
 null as remark,
@@ -63,7 +62,7 @@ SELECT
 id,
 date,
 'blood' as TestID,
-blood as stringResults,
+null as stringResults,
 null as result,
 null as Units,
 null as remark,
@@ -95,7 +94,7 @@ SELECT
 id,
 date,
 'protein' as TestID,
-protein as stringResults,
+null as stringResults,
 null as result,
 null as Units,
 null as remark,
@@ -111,7 +110,7 @@ SELECT
 id,
 date,
 'urobilinogen' as TestID,
-urobilinogen as stringResults,
+null as stringResults,
 null as result,
 null as Units,
 null as remark,
@@ -127,7 +126,7 @@ SELECT
 id,
 date,
 'nitrite' as TestID,
-nitrite as stringResults,
+null as stringResults,
 null as result,
 null as Units,
 null as remark,
@@ -144,7 +143,7 @@ SELECT
 id,
 date,
 'leukocytes' as TestID,
-leucocytes as stringResults,
+null as stringResults,
 null as result,
 null as Units,
 null as remark,
@@ -160,7 +159,7 @@ SELECT
 id,
 date,
 'appearance' as TestID,
-appearance as stringResults,
+null as stringResults,
 null as result,
 null as Units,
 null as remark,
@@ -176,7 +175,7 @@ SELECT
 id,
 date,
 'microscopic' as TestID,
-microscopic as stringResults,
+null as stringResults,
 null as result,
 null as Units,
 null as remark,
@@ -185,6 +184,20 @@ uuid as runId
 FROM urine
 where microscopic is not null and microscopic != ""
 
+UNION ALL
+
+SELECT
+id,
+date,
+'glucose' as TestID,
+glucose as stringResults,
+null as result,
+null as Units,
+null as remark,
+concat(uuid,'glucose') as objectid, ts,
+uuid as runId
+FROM urine
+where glucose is not null and glucose != ""
 
 ) x
 

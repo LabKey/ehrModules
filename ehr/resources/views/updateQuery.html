@@ -10,15 +10,19 @@ Ext.onReady(function (){
 
     LABKEY.NavTrail.setTrail(EHR.utils.toTitleCase(query));
 
-    var updateURL = '/ehr/manageRecord.view?schemaName='+schema+'&queryName='+query+'&keyField='+LABKEY.ActionURL.getParameter('keyField')+'&key=${'+LABKEY.ActionURL.getParameter('keyField')+'}';
+    var updateURL = '/ehr/manageRecord.view?schemaName='+schema+'&queryName='+query+'&keyField='+LABKEY.ActionURL.getParameter('keyField')+'&key=${'+LABKEY.ActionURL.getParameter('keyField')+'}&update=1';
+    var insertURL = '/ehr/manageRecord.view?schemaName='+schema+'&queryName='+query+'&keyField='+LABKEY.ActionURL.getParameter('keyField')+'&update=1';
+
+    var deleteURL = '/query/deleteQueryRows.view?schemaName='+schema+'&query.queryName='+query;
+
     var config = {
         title: query,
         schemaName: schema,
         queryName: query,
         allowChooseQuery: false,
         allowChooseView: true,
-        showInsertNewButton: false,
-        showDeleteButton: false,
+        //showInsertNewButton: false,
+        //showDeleteButton: false,
         showDetailsColumn: true,
         showUpdateColumn: true,
         showRecordSelectors: true,
@@ -26,9 +30,11 @@ Ext.onReady(function (){
         frame: 'none',
         dataRegionName: 'query',
         updateURL: updateURL,
+        insertURL: insertURL,
+        deleteURL: deleteURL,
         scope: this,
         timeout: 0,
-        errorCallback: EHR.utils.onError
+        failure: EHR.utils.onError
     };
 
     new LABKEY.QueryWebPart(config).render('qwpDiv');

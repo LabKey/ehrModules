@@ -34,9 +34,8 @@ Ext.onReady(function ()
         filters: [LABKEY.Filter.create('protocol', protocol, LABKEY.Filter.Types.EQUAL)],
         //sort: '-Date',
         scope: this,
-        errorCallback: EHR.utils.onError
+        failure: EHR.utils.onError
      }).render('protocolProjects');
-
 
     new LABKEY.QueryWebPart({
         title: 'Active Animal Assignments',
@@ -54,7 +53,7 @@ Ext.onReady(function ()
         viewName: 'Active Assignments',
         sort: '-Date',
         scope: this,
-        errorCallback: EHR.utils.onError
+        failure: EHR.utils.onError
      }).render('protocolAssignments');
 
 
@@ -73,7 +72,7 @@ Ext.onReady(function ()
         //viewName: '',
         //sort: '-Date',
         scope: this,
-        errorCallback: EHR.utils.onError
+        failure: EHR.utils.onError
      }).render('protocolTotalAnimalsBySpecies');
 
 
@@ -92,7 +91,7 @@ Ext.onReady(function ()
         //viewName: '',
         //sort: '-Date',
         scope: this,
-        errorCallback: EHR.utils.onError
+        failure: EHR.utils.onError
      }).render('protocolTotalHistoricAnimalsBySpecies');
 
     new Ext.Panel({
@@ -153,26 +152,26 @@ Ext.onReady(function ()
     }).render('protocolLinks');
 
 
-    EHR.utils.isMemberOf(['vets (LDAP)', 'cpi (LDAP)', 'protocol (LDAP)', 'Site Administrators'], loadPdf);
-
-    function loadPdf(){
-        new LABKEY.QueryWebPart({
-            title: 'Protocol PDF',
-            containerPath: '/WNPRC/WNPRC_Units/Animal_Services/Compliance_Training/Private/Protocols',
-            schemaName: 'lists',
-            queryName: 'Protocols',
-            allowChooseQuery: false,
-            allowChooseView: false,
-            showInsertNewButton: false,
-            showDeleteButton: false,
-            showDetailsColumn: false,
-            showUpdateColumn: false,
-            buttonBarPosition: 'none',
-            filters: [LABKEY.Filter.create('protocol', protocol, LABKEY.Filter.Types.EQUAL)],
-            scope: this,
-            errorCallback: EHR.utils.onError
-         }).render('protocolPdf');
-    }
+//    EHR.utils.isMemberOf(['vets (LDAP)', 'cpi (LDAP)', 'protocol (LDAP)', 'Site Administrators'], loadPdf);
+//
+//    function loadPdf(){
+//        new LABKEY.QueryWebPart({
+//            title: 'Protocol PDF',
+//            containerPath: '/WNPRC/WNPRC_Units/Animal_Services/Compliance_Training/Private/Protocols',
+//            schemaName: 'lists',
+//            queryName: 'Protocols',
+//            allowChooseQuery: false,
+//            allowChooseView: false,
+//            showInsertNewButton: false,
+//            showDeleteButton: false,
+//            showDetailsColumn: false,
+//            showUpdateColumn: false,
+//            buttonBarPosition: 'none',
+//            filters: [LABKEY.Filter.create('protocol', protocol, LABKEY.Filter.Types.EQUAL)],
+//            scope: this,
+//            failure: EHR.utils.onError
+//         }).render('protocolPdf');
+//    }
 
 
 
@@ -209,7 +208,7 @@ Ext.onReady(function ()
 
     <p/>
 
-	<div id='protocolPdf'></div>
+	<!--<div id='protocolPdf'></div>-->
 
 </body>
 </html>

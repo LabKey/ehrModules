@@ -11,6 +11,7 @@
                 <columns>
                     <column columnName="date">
                         <columnTitle>Date Observed</columnTitle>
+                        <formatString>yyyy-MM-dd</formatString>
                     </column>
                     <column columnName="parentId">
                         <!--<fk>-->
@@ -42,6 +43,7 @@
                     </column>
                     <column columnName="enddate">
                         <columnTitle>Date Resolved</columnTitle>
+                        <formatString>yyyy-MM-dd</formatString>
                         <isHidden>false</isHidden>
                     </column>
                 </columns>

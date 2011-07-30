@@ -10,32 +10,33 @@
                <!--<property name="columnTitle" value="Current Cage"/>-->
            <!--</properties>-->
        </column>
-       <column name="id"/>       
+       <column name="Id"/>
        <column name="date"/>
        <column name="startdate"/>
        <column name="enddate"/>
        <column name="TimeOfDay"/>
        <!--<column name="frequency"/>-->
        <column name="project"/>
-       <column name="code"/>
-       <column name="volume"/>
-       <column name="vol_units"/>
-       <column name="concentration"/>
-       <column name="conc_units"/>
-       <column name="amount"/>
-       <column name="amount_units"/>
+       <column name="projectStatus"/>
+       <column name="meaning"/>
+       <!--<column name="snomed"/>-->
+       <column name="volume2"/>
+       <column name="conc2"/>
        <column name="route"/>
+       <column name="amount2"/>
        <column name="remark"/>
        <column name="userid"/>
+       <column name="treatmentStatus"/>
        <!--<column name="qcstate"/>-->
    </columns>
    <sorts>
-       <sort column="date" descending="true"/>
-       <sort column="SortOrder" descending="false"/>
+       <sort column="date"/>
+       <!--<sort column="SortOrder" descending="false"/>-->
        <sort column="CurrentRoom" descending="false"/>
        <sort column="CurrentCage" descending="false"/>
    </sorts>
-   <!--<filters>-->
-       <!--<filter column="enddate" operator="isblank"/>-->
-   <!--</filters>-->
+    <filters>
+        <filter column="Id/dataset/demographics/calculated_status" operator="eq" value="Alive"/>
+        <!--<filter column="qcstate/publicdata" operator="eq" value="true"/>-->
+    </filters>
 </customView>

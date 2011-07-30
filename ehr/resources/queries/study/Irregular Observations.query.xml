@@ -48,12 +48,12 @@
                     <column columnName="feces">
                         <datatype>varchar</datatype>
                         <columnTitle>Feces</columnTitle>
-                        <fk>
-                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-                            <fkDbSchema>ehr_lookups</fkDbSchema>
-                            <fkTable>obs_feces</fkTable>
-                            <fkColumnName>code</fkColumnName>
-                        </fk>
+                        <!--<fk>-->
+                            <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
+                            <!--<fkDbSchema>ehr_lookups</fkDbSchema>-->
+                            <!--<fkTable>obs_feces</fkTable>-->
+                            <!--<fkColumnName>code</fkColumnName>-->
+                        <!--</fk>-->
                     </column>
                     <column columnName="menses">
                         <datatype>varchar</datatype>
@@ -68,12 +68,12 @@
                     <column columnName="behavior">
                         <datatype>varchar</datatype>
                         <columnTitle>Behavior</columnTitle>
-                        <fk>
-                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-                            <fkDbSchema>ehr_lookups</fkDbSchema>
-                            <fkTable>obs_behavior</fkTable>
-                            <fkColumnName>code</fkColumnName>
-                        </fk>
+                        <!--<fk>-->
+                            <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
+                            <!--<fkDbSchema>ehr_lookups</fkDbSchema>-->
+                            <!--<fkTable>obs_behavior</fkTable>-->
+                            <!--<fkColumnName>code</fkColumnName>-->
+                        <!--</fk>-->
                     </column>
                     <column columnName="breeding">
                         <datatype>varchar</datatype>
@@ -88,12 +88,12 @@
                     <column columnName="other">
                         <datatype>varchar</datatype>
                         <columnTitle>Other</columnTitle>
-                        <fk>
-                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-                            <fkDbSchema>ehr_lookups</fkDbSchema>
-                            <fkTable>obs_other</fkTable>
-                            <fkColumnName>code</fkColumnName>
-                        </fk>
+                        <!--<fk>-->
+                            <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
+                            <!--<fkDbSchema>ehr_lookups</fkDbSchema>-->
+                            <!--<fkTable>obs_other</fkTable>-->
+                            <!--<fkColumnName>code</fkColumnName>-->
+                        <!--</fk>-->
                     </column>
                     <column columnName="tlocation">
                         <datatype>varchar</datatype>

@@ -7,49 +7,58 @@
 var {EHR, LABKEY, Ext, console, init, beforeInsert, afterInsert, beforeUpdate, afterUpdate, beforeDelete, afterDelete, complete} = require("ehr/validation");
 
 
-//function onUpsert(context, errors, row, oldRow){
-//    if(row._publicData && !context.extraContext.validateOnly){
-//        var toUpdate = [];
-//
-//        EHR.findDemographics({
-//            participant: row.Id,
-//            forceRefresh: true,
-//            scope: this,
-//            callback: function(data){
-//                if(data){
-//                    if(row.date != data.birth){
-//                        var newRow = {birth: new Date(row.date.toGMTString()), Id: row.Id, lsid: data.lsid};
-//
-//                        //TODO: verify how we should handle this
-////                        if(row.dam && row.dam != data.dam)
-////                            newRow.dam = row.dam
-////                        if(row.sire && row.sire != data.sire)
-////                            newRow.sire = row.sire
-//
-//                        toUpdate.push(newRow);
-//                    }
-//                }
-//            }
-//        });
-//
-//        if(toUpdate.length){
-//            LABKEY.Query.updateRows({
-//                schemaName: 'study',
-//                queryName: 'demographics',
-//                extraContext: {
-//                    schemaName: 'study',
-//                    queryName: 'Demographics'
-//                },
-//                rows: toUpdate,
-//                success: function(data){
-//                    console.log('Success updating demographics for birth')
-//                },
-//                failure: EHR.onFailure
-//            });
-//        }
-//    };
-//}
+function onBecomePublic(errors, scriptContext, row, oldRow){
+    if(scriptContext.extraContext.dataSource != 'etl' && !row.skipDemographicsAdd){
+        //if a weight is provided, we insert into the weight table:
+        if(row.weight && row.wdate){
+            LABKEY.Query.insertRows({
+                schemaName: 'study',
+                queryName: 'Weight',
+                rows: [{Id: row.Id, date: new Date(row.wdate.toGMTString()), weight: row.weight}],
+                success: function(data){
+                    console.log('Success updating weight table from birth')
+                },
+                failure: EHR.onFailure
+            });
+        }
 
+        //if room provided, we insert into housing
+        if(row.room && row.cage){
+            LABKEY.Query.insertRows({
+                schemaName: 'study',
+                queryName: 'Housing',
+                rows: [{Id: row.Id, room: row.room, cage: row.cage, cond: row.cond, date: new Date(row.date.toGMTString())}],
+                success: function(data){
+                    console.log('Success updating housing table from birth')
+                },
+                failure: EHR.onFailure
+            });
+        }
+
+        //if not already present, we insert into demographics
+        EHR.findDemographics({
+            participant: row.Id,
+            scope: this,
+            callback: function(data){
+                if(!data){
+                    LABKEY.Query.insertRows({
+                        schemaName: 'study',
+                        queryName: 'Demographics',
+                        extraContext: {
+                            schemaName: 'study',
+                            queryName: 'Demographics'
+                        },
+                        rows: [{Id: row.Id, gender: row.gender, dam: row.dam, sire: row.sire, origin: row.origin, birth: new Date(row.date.toGMTString()), date: new Date(row.date.toGMTString())}],
+                        success: function(data){
+                            console.log('Success updating demographics table from birth')
+                        },
+                        failure: EHR.onFailure
+                    });
+                }
+            }
+        });
+    }
+}
 
 function onComplete(event, errors, scriptContext){
     if(scriptContext.publicParticipantsModified.length){

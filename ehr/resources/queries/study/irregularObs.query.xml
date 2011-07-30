@@ -51,6 +51,26 @@
                         <isHidden>false</isHidden>
                         <displayWidth>200</displayWidth>
                     </column>
+                    <column columnName="taskid">
+                        <datatype>varchar</datatype>
+                        <columnTitle>Task Id</columnTitle>
+                        <fk>
+                          <fkFolderPath>/wnprc/ehr</fkFolderPath>
+                          <fkDbSchema>ehr</fkDbSchema>
+                          <fkTable>tasks</fkTable>
+                          <fkColumnName>taskid</fkColumnName>
+                        </fk>
+                    </column>
+                    <column columnName="QCState">
+                        <datatype>varchar</datatype>
+                        <columnTitle>Status</columnTitle>
+                        <fk>
+                          <fkFolderPath>/wnprc/ehr</fkFolderPath>
+                          <fkDbSchema>study</fkDbSchema>
+                          <fkTable>qcstate</fkTable>
+                          <fkColumnName>rowid</fkColumnName>
+                        </fk>
+                    </column>
                 </columns>
             </table>
         </tables>

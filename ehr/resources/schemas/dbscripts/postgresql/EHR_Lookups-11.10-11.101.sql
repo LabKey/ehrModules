@@ -213,6 +213,7 @@ INSERT INTO ehr_lookups.bcs_score VALUES ('1.5', 'Very Thin', null);
 INSERT INTO ehr_lookups.bcs_score VALUES ('2', 'Thin', null);
 INSERT INTO ehr_lookups.bcs_score VALUES ('2.5', 'Lean', null);
 INSERT INTO ehr_lookups.bcs_score VALUES ('3', 'Optimum', null);
+INSERT INTO ehr_lookups.bcs_score VALUES ('3.5', 'Slightly Overweight', null);
 INSERT INTO ehr_lookups.bcs_score VALUES ('4', 'Heavy', null);
 INSERT INTO ehr_lookups.bcs_score VALUES ('4.5', 'Obese', null);
 INSERT INTO ehr_lookups.bcs_score VALUES ('5', 'Grossly Obese', null);
@@ -4525,7 +4526,6 @@ VALUES
 ('Catheter'),
 ('Cysto'),
 ('Free catch'),
-('Cysti'),
 ('CC'),
 ('From pan')
 ;

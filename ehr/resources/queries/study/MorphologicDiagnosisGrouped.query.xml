@@ -47,6 +47,12 @@
                     <isHidden>true</isHidden>
                     <inputType>textarea</inputType>
                   </column>
+                  <column columnName="caseno">
+                      <columnTitle>Case No</columnTitle>
+                  </column>
+                  <column columnName="distribution2">
+                      <columnTitle>Distribution 2</columnTitle>
+                  </column>
                 </columns>
                 <tableTitle>Morphologic Diagnosis Grouped</tableTitle>
             </table>

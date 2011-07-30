@@ -2,12 +2,13 @@
     <columns>
         <column name="Id"/>
         <column name="date"/>
-        <column name="qcstate" />
-        <!--<column name="project"/>-->
+        <column name="project"/>
         <column name="Remark"/>
         <column name="description" />
-        <column name="userid"/>
+        <column name="performedby"/>
         <column name="category"/>
+        <column name="qcstate" />
+        <column name="taskid" />
     </columns>
     <sorts>
            <sort column="date" descending="true"/>

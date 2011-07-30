@@ -70,8 +70,9 @@ pg_host = someserver.com	 			;the postgres host.  can be omitted if running on t
 pg_user = labkey	    				;user connecting to postgres. can be omitted if using IDENT or other form of authentication
 pg_path = /usr/local/pgsql/bin			;optional. the location of pg_dump
 backup_dest = /labkey/backup/  			;the directory where backups will be stored
-backup_dirs = /labkey/files/			;optional. a whitespace separated list of folders to be archived into a TAR file.  
-excluded_dirs = /labkey/backup*			;optional. a whitespace separated list of patterns to be excluded from the TAR file.
+tar_backup_dirs = /labkey/files/		;optional. a whitespace separated list of folders to be archived into a TAR file.  
+tar_excluded_dirs = /labkey/backup*		;optional. a whitespace separated list of patterns to be excluded from the TAR file.
+rsync_backup_dir = /usr/local/labkey	;optional. a folder to be copied using rsync
 
 [lk_config]                            ;Section Optional.
 baseURL= http://localhost:8080/labkey/ ;url of your server
@@ -142,6 +143,7 @@ my $log = Log::Rolling->new(
 
 $log->entry("Backup is starting");
 $log->entry("Current Working Dir: ".getcwd());
+$log->commit;
 
 my $errors = [];
 
@@ -159,7 +161,8 @@ if (!-e $config{backup_dest}){
 my @required = qw(backup_dest);
 foreach (@required){
 	if (!$config{$_}){
-		$log->entry("Missing param: $_ from INI file");	
+		$log->entry("Missing param: $_ from INI file");
+        $log->commit;
 		onExit("Improper INI file");
 	}	 
 }	
@@ -174,18 +177,19 @@ foreach(@dbs){
 
 
 #file backup
-if($config{backup_dirs}){
+if($config{tar_backup_dirs}){
 	runFileBackup();
+}
+
+#file backup
+if($config{rsync_backup_dir}){
+	runRsyncBackup();
 }
 
 onExit();
 
 
-=item runPgBackup(database)
 
-runPgBackup() is the main sub to backup each database
-
-=cut
 
 sub runPgBackup
 {	
@@ -198,7 +202,8 @@ sub runPgBackup
 	my $backupdir = File::Spec->catfile($config{backup_dest}, "database");
 	
 	$log->entry("Starting pg_dump of: $db");
-			
+	$log->commit;
+
 	#run pg_dump and store in the daily backup folder
 	$path = File::Spec->catfile($backupdir, "daily");
 	checkFolder($path);
@@ -217,6 +222,7 @@ sub runPgBackup
 
 	if ($config{compress} && $config{pgdump_format} != 'c'){
 		$log->entry("Compressing file: $dailyBackupFile");
+		$log->commit;
 		$dailyBackupFile = _compressFile($dailyBackupFile, 1);
 	}
 	
@@ -248,14 +254,9 @@ sub runPgBackup
 		}	
 		
 	$log->entry("Backup of $db was successful");
+	$log->commit;
 }
 
-
-=item runFileBackup()
-
-runFileBackup() is the main sub to backup files
-
-=cut
 
 sub runFileBackup
 {		
@@ -265,19 +266,21 @@ sub runFileBackup
 	my $backupdir = File::Spec->catfile($config{backup_dest}, "files");
 	
 	$log->entry("Starting backups of files");
+	$log->commit;
 			
 	#run tar and store in the daily backup folder
 	$path = File::Spec->catfile($backupdir, "daily");
 	checkFolder($path);
 
 	my $dailyBackupFile = File::Spec->catfile($path, $tar_filename);
-	my @files = split(' ', $config{backup_dirs});
-	my @exclude = split(' ', $config{excluded_dirs});
+	my @files = split(' ', $config{tar_backup_dirs});
+	my @exclude = split(' ', $config{tar_excluded_dirs});
 	
 	_make_tar($dailyBackupFile, \@files, \@exclude);
 	
 	if ($config{compress}){
 		$log->entry("Compressing file: $dailyBackupFile");
+		$log->commit;
 		$dailyBackupFile = _compressFile($dailyBackupFile, 1);
 	}
 	
@@ -307,8 +310,23 @@ sub runFileBackup
 		}	
 		
 	$log->entry("Backup of files was successful");
+	$log->commit;
 }
 
+
+sub runRsyncBackup
+{		
+	$log->entry("Starting rsync backups of files");
+	$log->commit;
+
+	my $backupdir = File::Spec->catfile($config{backup_dest}, "rsync");	
+	checkFolder($backupdir);
+
+	_rsync($backupdir, $config{rsync_backup_dir});
+	
+	$log->entry("Rsync command was successful");
+	$log->commit;
+}
 	
 =item onExit(string message, status)
 
@@ -324,6 +342,7 @@ sub onExit
 	{
 		$status = "Error";	
 		$log->entry("Errors: "."[@$errors]");
+		$log->commit;
 	}
 	else 
 	{
@@ -332,6 +351,7 @@ sub onExit
 	
 	if($msg){
 		$log->entry($msg);
+		$log->commit;
 	}
 	
 	# Insert a record into a labkey list
@@ -390,13 +410,16 @@ sub _pg_dump
 
 	my $pgout = system($cmd);
 	$log->entry($cmd);
+	$log->commit;
 	if( $? ){
 	    $log->entry("ERROR: Database backup of $pg_dbname has returned an error: $pgout");
+	    $log->commit;
 	    push(@$errors, "ERROR: Database backup of $pg_dbname has returned an error: $pgout");
 	}
 	else{
 	    my $tm1 = localtime;
 	    $log->entry("pg_dump of $pg_dbname complete");
+	    $log->commit;
 	}
 	return 1;	
 }
@@ -418,13 +441,16 @@ sub _pg_dumpall
 	$cmd .= "\"";# 2>&1";	 
 	my $pgout = system($cmd);
 	$log->entry($cmd);
+	$log->commit;
 	if( $? ){
 	    $log->entry("ERROR: pg_dumpall has returned an error: $pgout");
+	    $log->commit;
 	    push(@$errors, "ERROR: pg_dumpall has returned an error: $pgout");
 	}
 	else{
 	    my $tm1 = localtime;
 	    $log->entry("pg_dumpall of globals complete");
+	    $log->commit;
 	}
 	return 1;
 	
@@ -444,9 +470,10 @@ sub _compressFile
 
 	my $archive;
 	if ($^O eq "MacOS" || $^O eq 'linux' || $^O eq "darwin") {
-		my $archive = system("gzip $origFile 2>&1");
+		my $archive = system("gzip \"$origFile\" 2>&1");
 		if( $? ){
 			$log->entry("ERROR: Compression returned an error: $archive");
+			$log->commit;
 		    onExit("Compression Error: $archive");
 		}
 		$newFile .= '.gz';			
@@ -458,6 +485,7 @@ sub _compressFile
 		if( !$archive ){
 		    $log->entry("ERROR: Compression returned an error:");
 		    $log->entry($archive->error);
+		    $log->commit;
 	
 		    onExit("Compression Error: ".$archive->error);
 		}
@@ -468,6 +496,7 @@ sub _compressFile
 	}
 	
     $log->entry("Compression complete");
+    $log->commit;
     
     if ($deleteOrig == 1){
     	unlink $origFile;
@@ -496,6 +525,7 @@ sub _rotateFiles
 	{
 		my $msg = (-e _ ? "$dir: not a directory" : "$dir: does not exist");
 		$log->entry($msg);
+		$log->commit;
 		onExit($msg);
 	}
 
@@ -503,6 +533,7 @@ sub _rotateFiles
 	unless ( -w _ )
 	{
 		$log->entry("$dir: no write access");
+		$log->commit;
 		onExit("$dir: no write access");
 	}
 
@@ -510,6 +541,7 @@ sub _rotateFiles
 	unless ( -r _ )
 	{
 		$log->entry("$dir: no read access");
+		$log->commit;
 		onExit("$dir: no read access");
 	}
 
@@ -517,6 +549,7 @@ sub _rotateFiles
 	unless ( -x _ )
 	{
 		$log->entry("$dir: no access");
+		$log->commit;
 		onExit("$dir: no access");
 	}
 
@@ -535,11 +568,13 @@ sub _rotateFiles
 	closedir(DIR);
 
 	$log->entry("$dir: total of " . scalar(@files) . " files");
+	$log->commit;
 	
 	# Complete if file count below max
 	if ( @files <= abs($maxFiles) )
 	{
  		$log->entry("$dir: not rotated, below max limit");
+ 		$log->commit;
 		return 1;
 	}
 
@@ -593,36 +628,30 @@ sub lk_log
 	
 }
 
-=item _rsync()
-
-_rsync() will run rsync for the purposes of backing up the labkey file root
-
-=cut
 
 sub _rsync
 {
+	my $dest = shift;
 	my $source = shift;
-	my $dest = shift;	
+		
 	my $log_file = $config{backup_dest} . "rsync.log";
 	
-	my $cmd = "rsync --executability --recursive --links --perms --times --delete --log-file='$log_file' $source $dest  2>&1";
+	my $cmd = "rsync --executability --recursive --links --perms --owner --stats --times --delete $source $dest  2>&1";
 
 	my $output = system($cmd);
 	$log->entry($cmd);
+	$log->commit;
 	if( $? ){
 	    $log->entry("ERROR: Rsync returned an error: $output");
+	    $log->commit;
 	    push(@$errors, "Rsync Error: $output");
 	}
 	else{
 	    $log->entry("rsync operation complete");
+	    $log->commit;
 	}
 }
 
-=item make_tar(database)
-
-_make_tar() creates a tar file
-
-=cut
 
 sub _make_tar
 {	
@@ -630,18 +659,21 @@ sub _make_tar
 	my $files = shift;
 	my $exclude = shift;
 	
-	my $cmd = "tar -cpf $tarfile";
+	my $cmd = "tar -cpf \"$tarfile\";
 	$cmd .= " --exclude='".join("' --exclude='", @$exclude)."'" if $exclude;
 	$cmd .= " @$files" . " 2>&1";
 	 
 	my $out = system($cmd);
 	$log->entry($cmd);
+	$log->commit;
 	if( $? ){
 	    $log->entry("ERROR: Tar archive of files has returned an error: $out");
+	    $log->commit;
 	    push(@$errors, "ERROR: Tar archive of files has returned an error: $out");
 	}
 	else{
 	    $log->entry("File backup complete");
+	    $log->commit;
 	}	
 }	
 

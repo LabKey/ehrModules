@@ -78,7 +78,7 @@ EHR.utils.navMenu = Ext.extend(Ext.Panel, {
 //            queryName: config.queryName,
 //            successCallback: onSuccess,
 //            scope: this,
-//            errorCallback: EHR.utils.onError,
+//            failure: EHR.utils.onError,
 //            sort: config.headerField+','+config.displayField,
 //            filterArray: config.filterArray
 //    });

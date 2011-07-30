@@ -115,5 +115,9 @@ function onUpsert(context, errors, row, oldRow){
     else {
         row.missingResults = false
     }
+
+    if(context.extraContext.dataSource != 'etl')
+        EHR.validation.removeTimeFromDate(row, errors);
 }
+
 

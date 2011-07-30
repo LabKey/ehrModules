@@ -13,9 +13,11 @@ LABKEY.requiresScript("/ehr/ehrAPI.js");
 
 
 Ext.onReady(function(){
+    var btns = 'VALIDATE,SUBMIT,'+(LABKEY.ActionURL.getParameter('update') ? '' : 'SUBMITANDNEXT')+',DISCARD';
+
     var panel = new EHR.ext.SimpleImportPanel({
         containerPath: 'WNPRC/EHR/',
-        allowableButtons: 'VALIDATE,SUBMIT,SUBMITANDNEXT,DISCARD',
+        allowableButtons: btns,
         formType: LABKEY.ActionURL.getParameter('queryName'),
         formSections: [{
             xtype: 'ehr-formpanel',
@@ -26,7 +28,6 @@ Ext.onReady(function(){
             title: LABKEY.ActionURL.getParameter('queryName'),
             metadata: EHR.ext.getTableMetadata(LABKEY.ActionURL.getParameter('queryName'), ['SimpleForm'])
         }]
-
     });
     panel.render('manageRecordDiv');
     LABKEY.NavTrail.setTrail(LABKEY.ActionURL.getParameter('title') || EHR.utils.toTitleCase(LABKEY.ActionURL.getParameter('queryName')));

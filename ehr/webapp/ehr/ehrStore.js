@@ -37,19 +37,22 @@ EHR.ext.AdvancedStore = Ext.extend(LABKEY.ext.Store, {
             doServerValidation: true
         });
 
-        EHR.utils.getDatasetPermissions({
-            success: Ext.emptyFn,
-            failure: EHR.utils.onError,
-            scope: this
-        });
-
         EHR.ext.AdvancedStore.superclass.constructor.apply(this, arguments);
+
+        //NOTE: this is done so we can sort a store with records not existing on the server
+        //this.remoteSort = false;
 
         this.addEvents('beforemetachange', 'validation');
         this.proxy.on("load", this.onProxyLoad, this);
 
-        this.on('update', this.verifyPermission, this);
-
+        if(this.monitorPermissions){
+            EHR.utils.getDatasetPermissions({
+                success: Ext.emptyFn,
+                failure: EHR.utils.onError,
+                scope: this
+            });
+            this.on('update', this.verifyPermission, this);
+        }
 
         //TODO: remove once added to labkey.ext.store
         if(config.maxRows !== undefined){
@@ -119,9 +122,16 @@ EHR.ext.AdvancedStore = Ext.extend(LABKEY.ext.Store, {
             }, this);
         }
 
+        //console.log('beforemetachange:'+this.storeId);
         if(false===this.fireEvent('beforemetachange', this, meta))
             return;
 
+        //console.log('metachange:'+this.storeId);
+        this.reader.onMetaChange(meta);
+    },
+
+    changeMetadata: function(meta){
+        console.log('metachange:'+this.storeId);
         this.reader.onMetaChange(meta);
     },
 
@@ -129,11 +139,43 @@ EHR.ext.AdvancedStore = Ext.extend(LABKEY.ext.Store, {
         var qc;
         if(EHR.permissionMap && rec.fields.get('QCState')){
             qc = rec.get('QCState');
+            if(!qc)
+                return;
+
             qc = EHR.permissionMap.qcMap.rowid[qc].Label;
-            if(!EHR.permissionMap.hasPermission(qc, 'update', {schemaName: this.schemaName, queryName: this.queryName})){
+
+            var command = 'insert';
+            //TODO: it would be nice to be smarter about whether we test for insert or update.
+            //the server will enforce it, but stopping it on the client would be more friendly
+
+            if(!EHR.permissionMap.hasPermission(qc, command, {schemaName: this.schemaName, queryName: this.queryName})){
                 alert('You do not have permission to change this record');
                 rec.reject();
             }
+            /*
+            else {
+                //config option in store
+                if(!this.allowOthersToEditRecords){
+                    //one of the following must be true in order to edit
+                    if(
+                        //these dont exist on the server, so anyone can edit
+                        !rec.phantom &&
+                        //you can edit recs you created
+                        rec.get('created') != LABKEY.Security.currentUser.id &&
+                        //you can edit recs you modified
+                        rec.get('modified') != LABKEY.Security.currentUser.id &&
+                        //data admins can always edit
+                        !EHR.permissionMap.hasPermission(qc, 'admin', {schemaName: this.schemaName, queryName: this.queryName})
+                    ){
+                        //also allow editing of tasks assigned to you:
+                        //TODO
+
+                        alert('You do not have permission to change this record');
+                        rec.reject();
+                    }
+                }
+            }
+            */
         }
     },
 
@@ -185,6 +227,10 @@ EHR.ext.AdvancedStore = Ext.extend(LABKEY.ext.Store, {
             records[idx] = this.newRecord(r);
         }, this);
 
+        //NOTE: when you add an array of records, they get added in reverse order.
+        //therefore I reverse it here so it's added in the order submitted.
+        //records.reverse();
+
         this.insert(idx, records);
         this.validateRecords(this, records);
 
@@ -197,6 +243,7 @@ EHR.ext.AdvancedStore = Ext.extend(LABKEY.ext.Store, {
 
         r = this.newRecord(r);
         this.insert(idx, r);
+
         this.validateRecords(this, [r]);
         return r;
     },
@@ -255,12 +302,15 @@ EHR.ext.AdvancedStore = Ext.extend(LABKEY.ext.Store, {
         }
 
         r.fields.each(function(f) {
+            //apparently the store's metadata can be updated w/o the record's, so we use that
+            var meta = store.fields.map[f.name];
+
             //NOTE: we're drawing a distinction between LABKEY's nullable and ext's allowBlank.
             // This allows fields to be set to 'allowBlank: false', which throws a warning
             // nullable:false will throw an error when null.
             // also, if userEditable==false, we assume will be set server-side so we ignore it here
-            if(f.userEditable!==false && Ext.isEmpty(r.data[f.name])){
-                if(f.nullable === false || f.allowBlank === false){
+            if(meta.userEditable!==false && Ext.isEmpty(r.data[f.name])){
+                if(meta.nullable === false || meta.allowBlank === false){
                     r.errors.push({
                         id: LABKEY.Utils.generateUUID(),
                         field: f.name,
@@ -430,6 +480,7 @@ EHR.ext.AdvancedStore = Ext.extend(LABKEY.ext.Store, {
         this.commitRecords(records, extraContext);
     },
 
+
     //see above
     commitRecords : function(records, extraContext){
         var commands = this.getChanges(records);
@@ -590,6 +641,43 @@ EHR.ext.AdvancedStore = Ext.extend(LABKEY.ext.Store, {
             errorValue: record.get(error.field),
             fromServer: true
         });
+    },
+
+    requestDeleteRecords: function(records){
+        if (!this.updatable)
+            throw "this LABKEY.ext.Store is not updatable!";
+
+        if(!records || records.length == 0)
+            return;
+
+        var extraContext = {
+            targetQC : 'Delete Requested',
+            errorThreshold: 'SEVERE',
+            importPathway: 'ehr-importPanel'
+        };
+
+        var recs = [];
+        Ext.each(records, function(r){
+            if(r.phantom){
+                this.remove(r);
+                delete r;
+            }
+            else {
+                recs.push(r);
+            }
+        }, this);
+
+        if(recs.length){
+            function onComplete(response){
+                this.un('commitcomplete', onComplete);
+                this.remove(recs);
+            }
+            this.on('commitcomplete', onComplete, this, {single: true});
+            this.commitRecords(recs, extraContext);
+        }
+        else {
+            this.fireEvent("commitcomplete");
+        }
     },
 
     //NOTE: the following 2 methods are overriden because the old approach causes uncommitted client-side records to get destroyed on store load

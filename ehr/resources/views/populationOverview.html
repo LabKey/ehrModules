@@ -22,7 +22,7 @@ Ext.onReady(function(){
          showDetailsColumn: false,
          showUpdateColumn: false,
          buttonBarPosition: 'top',
-         errorCallback: EHR.utils.onError,
+         failure: EHR.utils.onError,
          //successCallback: this.endMsg,
          scope: this
      }).render('colonyPopulationSummary');
@@ -74,7 +74,7 @@ Ext.onReady(function(){
                     '_select.species~neq': 'Unknown',
                     'query.species~neq': 'Unknown'
                 },
-                errorCallback: EHR.utils.onError
+                failure: EHR.utils.onError
                 //,scope: this
             };
 

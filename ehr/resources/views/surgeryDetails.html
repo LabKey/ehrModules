@@ -25,7 +25,7 @@ Ext.onReady(function ()
         queryName: 'surgery',
         filterArray: [LABKEY.Filter.create('objectid', key, LABKEY.Filter.Types.EQUAL)],
         successCallback: loadQueries,
-        errorCallback: EHR.utils.onError,
+        failure: EHR.utils.onError,
         scope: this
         //maxRows: 10
     });
@@ -54,7 +54,7 @@ Ext.onReady(function ()
             ],
             sort: '-Date,remark',
             scope: this,
-            errorCallback: EHR.utils.onError
+            failure: EHR.utils.onError
          }).render('clinRemarks');
     }
 
@@ -77,7 +77,7 @@ Ext.onReady(function ()
         //viewName: '',
         sort: '-Date',
         scope: this,
-        errorCallback: EHR.utils.onError
+        failure: EHR.utils.onError
      }).render('surgFluid');
 
     new LABKEY.QueryWebPart({
@@ -98,7 +98,7 @@ Ext.onReady(function ()
         //viewName: '',
         sort: '-Date',
         scope: this,
-        errorCallback: EHR.utils.onError
+        failure: EHR.utils.onError
      }).render('procedures');
 
     new LABKEY.QueryWebPart({
@@ -120,7 +120,7 @@ Ext.onReady(function ()
         //viewName: '',
         sort: '-Date',
         scope: this,
-        errorCallback: EHR.utils.onError
+        failure: EHR.utils.onError
      }).render('surgMed');
 
     new LABKEY.QueryWebPart({
@@ -142,7 +142,7 @@ Ext.onReady(function ()
         //viewName: '',
         sort: '-Date',
         scope: this,
-        errorCallback: EHR.utils.onError
+        failure: EHR.utils.onError
      }).render('surgAnes');
 
     new LABKEY.QueryWebPart({
@@ -163,7 +163,7 @@ Ext.onReady(function ()
         //viewName: '',
         sort: '-Date',
         scope: this,
-        errorCallback: EHR.utils.onError
+        failure: EHR.utils.onError
      }).render('surgSum');
 
 
@@ -186,7 +186,7 @@ Ext.onReady(function ()
 //        //viewName: '',
 //        sort: '-Date',
 //        scope: this,
-//        errorCallback: EHR.utils.onError
+//        failure: EHR.utils.onError
 //     }).render('surgRemarks');
 
 

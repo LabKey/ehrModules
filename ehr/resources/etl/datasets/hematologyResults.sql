@@ -4,7 +4,7 @@
  * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
  */
 SELECT lower(id) as Id, FixDate(date) AS Date, upper(testid) as testid, Results as result, units, remark,
-ts, objectid, runId
+ts, objectid, runid, runId as parentId
 
 FROM
 

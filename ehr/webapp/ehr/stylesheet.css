@@ -1,4 +1,4 @@
-@import url("/labkey/ehr/stylesheet-red-limited.css");
+@import url("/ehr/stylesheet-red-limited.css");
 
 /*.field-meta-tree .x-tree-node-disabled {*/
     /*font-style: italic;*/
@@ -29,6 +29,7 @@
 
 .x-grid3-cell-invalid {
     background-color: #f29c8d;
+    /*background-color: #15428B;*/
 }
 
 
@@ -188,6 +189,7 @@
 /*
  * FileUploadField component styles
  */
+/*
 .x-form-file-wrap {
     position: relative;
     height: 22px;
@@ -213,3 +215,4 @@
     color: #777;
 }
 
+*/

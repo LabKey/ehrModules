@@ -29,29 +29,60 @@ use strict;
 use Labkey::Query;
 use Data::Dumper;
 use Time::localtime;
-#use File::Touch;
+use File::Touch;
+use Cwd;
+use File::Spec;
+use File::Copy;
+use File::Basename;
 
-my $log_file = '/usr/local/labkey/deletes/deleteLog.txt';
+
+my @fileparse = fileparse($0, qr/\.[^.]*/);
+my $folder = $fileparse[1];
+#print $folder.']';
+chdir($folder);
+
+my $log_file = File::Spec->catfile($folder, 'deleteLog.txt');
+#my $lock_file = File::Spec->catfile($folder, '.lock');
 
 my $default_container = '/WNPRC/EHR';
-#my $baseUrl = 'https://xnight.primate.wisc.edu:8443/labkey/';
-my $baseUrl = 'http://localhost:8080/labkey/';
+my $baseUrl = 'https://localhost/';
 
 # Find today's date to append to filenames
 my $tm = localtime;
 my $datestr=sprintf("%04d%02d%02d_%02d%02d", $tm->year+1900, ($tm->mon)+1, $tm->mday, $tm->hour, $tm->min);
 
+#if(-e $lock_file){
+#    print "$datestr\tLock file present\n";
+#    exit 0;
+#}
 
-open(OUTPUT,">", $log_file);
+#touch($lock_file);
+
+open(OUTPUT,">>", $log_file) || die "Unable to open file";
+flock(OUTPUT, 2) || die "Unable to open file";
+
+print OUTPUT "$datestr\tStarting\n";
+
 
 my $datasets = findDatasets();
+foreach my $dataset (@$datasets){
+    doDelete('study', $dataset, 'lsid')
+}
 
-foreach my $dataset (@$datasets){	
+doDelete('ehr', 'tasks', 'taskid');
+doDelete('ehr', 'requests', 'requestid');
+doDelete('ehr', 'cage_observations', 'rowid');
+
+sub doDelete {
+    my $schema = shift;
+    my $query = shift;
+    my $pk = shift;
+
 	my $results = Labkey::Query::selectRows(
 		-baseUrl => $baseUrl,
 		-containerPath => $default_container,
-		-schemaName => 'study',
-		-queryName => $dataset,
+		-schemaName => $schema,
+		-queryName => $query,
 		-filterArray => [['QCState/Label', 'eq', 'Delete Requested']]
 		#-columns => $args->{columns},			
 	);	
@@ -62,11 +93,11 @@ foreach my $dataset (@$datasets){
 		foreach my $field (@{$results->{metaData}->{fields}}){	
 			push(@fields, $field->{name});
 		};
-		print OUTPUT "\nSTART: $datestr, $dataset\n";
+		print OUTPUT "\nSTART: $datestr, $schema, $query\n";
 		print OUTPUT join("\t", @fields) . "\n";			
 		
 		foreach my $row (@{$results->{rows}}){	
-			push(@$toDelete, {lsid => $$row{'lsid'}});
+			push(@$toDelete, {$pk => $$row{$pk}});
 			
 			my @line;						
 			foreach (@fields){			
@@ -81,20 +112,20 @@ foreach my $dataset (@$datasets){
 			print OUTPUT "\n";				
 		}
 	}
-					
+				
 	if(@$toDelete){
 		my $results = Labkey::Query::deleteRows(
 			-baseUrl => $baseUrl,
 			-containerPath => $default_container,
-			-schemaName => 'study',
-			-queryName => $dataset,
-			-rows => $toDelete			
+		    	-schemaName => $schema,
+	    		-queryName => $query,
+			-rows => $toDelete,
 		);			
 		
 		my $tm = localtime;
 		my $datestr=sprintf("%04d%02d%02d_%02d%02d", $tm->year+1900, ($tm->mon)+1, $tm->mday, $tm->hour, $tm->min);
 		
-		print "Done Deleting ".@$toDelete." Rows For: $dataset, $datestr";
+		print OUTPUT "Done Deleting ".@$toDelete." Rows For: $schema . $query, $datestr";
 	}			
 }
  
@@ -115,6 +146,8 @@ sub findDatasets {
 	return $datasets;						
 }
 	
-#touch($log_file);	
-#close OUTPUT;
+touch($log_file);
+#unlink($lock_file);
+close OUTPUT;
+
 

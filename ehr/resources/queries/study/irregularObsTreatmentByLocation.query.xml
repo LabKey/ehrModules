@@ -21,8 +21,8 @@
                         <fk>
                           <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                           <fkDbSchema>ehr_lookups</fkDbSchema>
-                          <fkTable>rooms</fkTable>
-                          <fkColumnName>Room</fkColumnName>
+                          <fkTable>rooms_quick</fkTable>
+                          <fkColumnName>room</fkColumnName>
                         </fk>
                     </column>
                     <column columnName="Cage">
@@ -53,6 +53,58 @@
                         </fk>
                     </column>
                 </columns>
+                <buttonBarOptions position="both" includeStandardButtons="false">
+                    <includeScript>/ehr/studyButtons.js</includeScript>
+                    <onRender>moreActionsHandler</onRender>
+                    <item text="Views">
+                        <originalText>Views</originalText>
+                    </item>
+                    <item text="Insert New">
+                        <originalText>Insert New</originalText>
+                    </item>
+                    <!--<item text="Cohorts">-->
+                        <!--<originalText>Cohorts</originalText>-->
+                    <!--</item>-->
+                    <!--<item text="QCState">-->
+                        <!--<originalText>QC State</originalText>-->
+                    <!--</item>-->
+                    <item text="Export">
+                        <originalText>Export</originalText>
+                    </item>
+                    <item text="Print">
+                        <originalText>Print</originalText>
+                    </item>
+                    <item text="Import Data">
+                        <originalText>Import Data</originalText>
+                    </item>
+                    <item text="Page Size">
+                        <originalText>Page Size</originalText>
+                    </item>
+                    <item text="Delete">
+                        <originalText>Delete</originalText>
+                    </item>
+                    <item text="More Actions" insertPosition="end" >
+                        <item text="Jump To History">
+                            <onClick>
+                                historyHandler(dataRegion, dataRegionName);
+                            </onClick>
+                            <!--<target>javascript:void(0)</target>-->
+                        </item>
+                        <item text="Jump To Other Dataset">
+                            <onClick>
+                                datasetHandler(dataRegion, dataRegionName);
+                            </onClick>
+                        </item>
+                        <item text="Return Distinct Values">
+                            <onClick>
+                                getDistinct(dataRegion, dataRegionName);
+                            </onClick>
+                        </item>
+                    </item>
+                    <item text=" " requiresSelection="true" insertAfter="More Actions">
+                        <onClick>function(){return false}</onClick>
+                    </item>
+                </buttonBarOptions>
             </table>
         </tables>
     </metadata>

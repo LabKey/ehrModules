@@ -27,6 +27,12 @@
                           room=${RoomAtTime}&amp;
                           cage=${CageAtTime}&amp;
                       </url>
+                      <fk>
+                        <fkFolderPath>/wnprc/ehr/</fkFolderPath>
+                        <fkDbSchema>ehr_lookups</fkDbSchema>
+                        <fkTable>rooms</fkTable>
+                        <fkColumnName>room</fkColumnName>
+                      </fk>
                       <displayWidth>60</displayWidth>
                     </column>
                     <column columnName="CageAtTime">

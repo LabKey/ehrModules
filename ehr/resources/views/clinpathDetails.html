@@ -7,40 +7,35 @@ LABKEY.requiresScript("/ehr/transposeRows.js");
 
 Ext.onReady(function ()
 {
-    if (!LABKEY.ActionURL.getParameter('runId')){alert('Must Provide Run #'); return false;}
-    if (!LABKEY.ActionURL.getParameter('dataset')){alert('Must Provide Dataset Name'); return false;}
+    if (!LABKEY.ActionURL.getParameter('objectid')){alert('Must Provide Key'); return false;}
 
     LABKEY.Query.selectRows({
         schemaName: 'study',
-        queryName: 'DataSets',
-        containerPath: 'WNPRC/EHR/',
-        filterArray: [LABKEY.Filter.create('EntityId', LABKEY.ActionURL.getParameter('dataset'), LABKEY.Filter.Types.EQUAL)],
+        queryName: 'Clinpath Runs',
+        filterArray: [LABKEY.Filter.create('objectid', LABKEY.ActionURL.getParameter('objectid'), LABKEY.Filter.Types.EQUAL)],
         successCallback: onSuccess
     });
 
     function onSuccess(data){
         if(!data.rows.length){
-            alert('Unable to find dataset');
+            alert('Unable to find run');
             return;
         }
-            
-        var row = data.rows[0];
-        var dataset = row.Label.split(' ');
-        dataset.pop();
-        dataset = dataset.join(' ');
 
-        new EHR.ext.DetailsView({
-            schemaName: 'study',
-            queryName: dataset+' Runs',
-            title: dataset+' Run Details:',
-            renderTo: 'runDetails',
-            filterArray: [LABKEY.Filter.create('objectid', LABKEY.ActionURL.getParameter('runId'), LABKEY.Filter.Types.EQUAL)]
-        });
+        var row = data.rows[0];
+
+        var filterArray;
+        if(row.taskid){
+            filterArray = [LABKEY.Filter.create('taskId', row.taskid, LABKEY.Filter.Types.EQUAL), LABKEY.Filter.create('Id', row.Id, LABKEY.Filter.Types.EQUAL)];
+        }
+        else {
+            filterArray = [LABKEY.Filter.create('date', row.date, LABKEY.Filter.Types.DATE_EQUAL), LABKEY.Filter.create('Id', row.Id, LABKEY.Filter.Types.EQUAL)];
+        }
 
         new LABKEY.QueryWebPart({
-            title: dataset+' Results:',
+            title: 'Run Details:',
             schemaName: 'study',
-            queryName: dataset+' Results',
+            queryName: 'Clinpath Runs',
             allowChooseQuery: false,
             allowChooseView: true,
             showInsertNewButton: false,
@@ -49,10 +44,42 @@ Ext.onReady(function ()
             showUpdateColumn: false,
             showRecordSelectors: true,
             buttonBarPosition: 'top',
-            filterArray: [LABKEY.Filter.create('runId', LABKEY.ActionURL.getParameter('runId'), LABKEY.Filter.Types.EQUAL)],
+            filterArray: filterArray,
+            timeout: 0,
             scope: this,
-            errorCallback: EHR.utils.onError
-         }).render('resultDetails');
+            failure: EHR.utils.onError
+         }).render('runDetails');
+
+        var resultDiv = Ext.get('resultDivs');
+
+        Ext.each(['Bacteriology Results', 'Chemistry Results', 'Immunology Results', 'Hematology Results', 'Hematology Morphology', 'Parasitology Results', 'Urinalysis Results', 'Virology Results'], function(dataset){
+            var target = resultDiv.createChild({tag: 'span', style: 'padding-bottom:10px;'});
+            resultDiv.createChild({tag: 'p'});
+
+            var viewName;
+            if(['Chemistry Results', 'Immunology Results', 'Hematology Results'].indexOf(dataset)!=-1){
+                viewName = 'Plus Ref Range';
+            }
+
+            new LABKEY.QueryWebPart({
+                title: dataset+':',
+                schemaName: 'study',
+                queryName: dataset,
+                viewName: viewName,
+                allowChooseQuery: false,
+                allowChooseView: true,
+                showInsertNewButton: false,
+                showDeleteButton: false,
+                showDetailsColumn: true,
+                showUpdateColumn: false,
+                showRecordSelectors: true,
+                buttonBarPosition: 'top',
+                timeout: 0,
+                filterArray: filterArray,
+                scope: this,
+                failure: EHR.utils.onError
+             }).render(target.id);
+        }, this);
     }
 
 });
@@ -66,6 +93,6 @@ Ext.onReady(function ()
 
     <p/>
 
-    <div id='resultDetails'>Loading...</div>
-
+    <div id='resultDivs'></div>
+</body>
 </html>

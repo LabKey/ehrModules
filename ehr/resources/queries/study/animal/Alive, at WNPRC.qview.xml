@@ -88,7 +88,7 @@
         <!--</column>-->
         <column name="MostRecentWeight/MostRecentWeight">
             <properties>
-                <property name="columnTitle" value="Current Weight"/>
+                <property name="columnTitle" value="Current Weight (kg)"/>
             </properties>
         </column>
         <column name="MostRecentWeight/MostRecentWeightDate">
@@ -106,9 +106,9 @@
                 <property name="columnTitle" value="Medical"/>
             </properties>
         </column>
-        <column name="Dataset/Demographics/purchasedby">
+        <column name="Dataset/Demographics/prepaid">
             <properties>
-                <property name="columnTitle" value="Purchased By"/>
+                <property name="columnTitle" value="Replacement Prepaid By"/>
             </properties>
         </column>
         <!--<column name="Dataset/Demographics/v_status">-->

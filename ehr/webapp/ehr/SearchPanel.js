@@ -56,7 +56,7 @@ EHR.ext.SearchPanel = Ext.extend(Ext.Panel, {
 //            ,successCallback: function(results){
 //                console.log(results)
 //            }
-//            ,errorCallback: EHR.utils.onError
+//            ,failure: EHR.utils.onError
 //            ,scope: this
 //        });
 
@@ -66,8 +66,9 @@ EHR.ext.SearchPanel = Ext.extend(Ext.Panel, {
             ,schemaName: this.schemaName
             ,viewName: this.viewName
             ,maxRows: 0
+            ,timeout: 0
             ,successCallback: this.onLoad
-            ,errorCallback: EHR.utils.onError
+            ,failure: EHR.utils.onError
             ,scope: this
             ,autoLoad: true
             ,metadata: this.metadata
@@ -152,9 +153,6 @@ EHR.ext.SearchPanel = Ext.extend(Ext.Panel, {
    },
 
    addRow: function(meta){
-            //the label
-            this.add({html: meta.caption+':', width: 150});
-
             if (meta.lookup && meta.lookups!==false){
                 meta.xtype = 'lovcombo';
                 meta.editorConfig = meta.editorConfig || {};
@@ -164,6 +162,16 @@ EHR.ext.SearchPanel = Ext.extend(Ext.Panel, {
 
             //create the field
             var theField = EHR.ext.metaHelper.getFormEditorConfig(meta);
+
+            //difficult to differentiate between false and null.
+            //the former indicates user input, in which case a filter should be applied.
+            // the latter indicates the user did nothing and this field should be ignored
+            //for ease, we just skip them for now.  a future solution might use a combo instead
+            if(theField.xtype == 'checkbox')
+                return;
+
+            //the label
+            this.add({html: meta.caption+':', width: 150});
 
             Ext.apply(theField, {
                 nullable: true,
@@ -224,7 +232,7 @@ EHR.ext.SearchPanel = Ext.extend(Ext.Panel, {
 
             //TODO: .selectText() for select menus?
             var val = item.getValue();
-            if (val || op == 'isblank' || op == 'isnonblank'){
+            if (!Ext.isEmpty(val) || op == 'isblank' || op == 'isnonblank'){
                 //NOTE: a hack to get around the null record display field of comboboxes
                 if (val != '[none]')
                     params[('query.' + item.dataIndex + '~' + op)] = val;

@@ -53,8 +53,9 @@ EHR.ext.plugins.DataBind = Ext.extend(Ext.util.Observable, {
                 }
 
                 //commit the old record before loading a new one
-                if(this.boundRecord)
+                if(this.boundRecord){
                     this.unbindRecord();
+                }
 
                 this.boundRecord = record;
                 this.boundRecord.store.boundPanel = this;
@@ -64,7 +65,6 @@ EHR.ext.plugins.DataBind = Ext.extend(Ext.util.Observable, {
                         if(f.editable!==false)
                             f.setDisabled(false);
                     }
-
                     f.setValue(record.get(f.dataIndex));
                 }, this);
 //                this.updateRecord();
@@ -81,9 +81,14 @@ EHR.ext.plugins.DataBind = Ext.extend(Ext.util.Observable, {
                 var rec = this.boundRecord;
                 if(rec){
                     this.updateRecord();
-                    rec.store.un('update', this.updateForm, this);
-                    //rec.store.un('validation', this.updateForm, this);
-                    rec.store.un('validation', this.markInvalid, this);
+                    if(rec.store){
+                        rec.store.un('update', this.updateForm, this);
+                        rec.store.un('validation', this.markInvalid, this);
+                    }
+                    else if (config && config.store){
+                        config.store.un('update', this.updateForm, this);
+                        config.store.un('validation', this.markInvalid, this);
+                    }
 
                     if(config && config.deleteRecord){
                         rec.store.deleteRecords([rec]);
@@ -131,6 +136,7 @@ EHR.ext.plugins.DataBind = Ext.extend(Ext.util.Observable, {
                 }, this);
 
                 //we only fire the update event if we actually made changes
+                //console.log(values);
                 if(!EHR.utils.isEmptyObj(values)){
                     this.boundRecord.beginEdit();
                     for (var i in values){
@@ -186,7 +192,7 @@ EHR.ext.plugins.DataBind = Ext.extend(Ext.util.Observable, {
             },
             onRecordRemove: function(store, rec, idx){
                 if(this.boundRecord && rec == this.boundRecord){
-                    this.unbindRecord();
+                    this.unbindRecord({store: store});
                 }
             },
             focusFirstField: function(){
@@ -204,6 +210,7 @@ EHR.ext.plugins.DataBind = Ext.extend(Ext.util.Observable, {
 
                 if(f instanceof Ext.form.Checkbox){
                     f.on('check', this.onFieldChange, this);
+                    f.on('change', this.onFieldChange, this);
                 }
                 else {
                     //NOTE: use buffer so groups like checkboxgroup dont fire repeated events
@@ -216,9 +223,14 @@ EHR.ext.plugins.DataBind = Ext.extend(Ext.util.Observable, {
 
                 f.getErrors = function(value){
                     var errors = this.oldGetErrors.apply(this, arguments);
+                    var panel;
+                    if(this.ownerCt.isXType('ehr-formpanel'))
+                        panel = this.ownerCt;
+                    else
+                        panel = this.findParentByType('ehr-formpanel');
 
-                    if(this.ownerCt.boundRecord && this.ownerCt.boundRecord.errors){
-                        Ext.each(this.ownerCt.boundRecord.errors, function(error){
+                    if(panel.boundRecord && panel.boundRecord.errors){
+                        Ext.each(panel.boundRecord.errors, function(error){
                             if(error.field == this.name){
                                 errors.push(error.message);
                             }
@@ -271,12 +283,14 @@ EHR.ext.plugins.DataBind = Ext.extend(Ext.util.Observable, {
                                 //NOTE: I disabled this behavior b/c it was potentially
                                 //confusing if the user loads a saved page and automatically
                                 //has a previous record bound.
-                                if(this.bindConfig.autoBindRecord)
+                                if(this.bindConfig.autoBindRecord){
                                     this.bindRecord(records[0]);
+                                }
                             }
                         }, this);
 
-                    this.store.on('beforecommit', this.updateRecord, this);
+                    //NOTE: this is called too late for this to matter
+                    //this.store.on('beforecommit', this.updateRecord, this);
 
                     this.store.on('remove', this.onRecordRemove, this);
                 }

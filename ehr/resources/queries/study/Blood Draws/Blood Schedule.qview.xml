@@ -1,0 +1,46 @@
+<customView xmlns="http://labkey.org/data/xml/queryCustomView">
+   <columns>
+       <column name="Id" />
+      <column name="Id/curLocation/room">
+        <properties>
+            <property name="columnTitle" value="Current Room"/>
+        </properties>
+      </column>
+      <column name="Id/curLocation/cage">
+          <properties>
+            <property name="columnTitle" value="Current Cage"/>
+          </properties>
+      </column>
+       <column name="date" />
+       <column name="project" />
+      <column name="Id/mostRecentWeight/mostRecentWeight">
+        <properties>
+            <property name="columnTitle" value="Most Recent Weight"/>
+        </properties>
+      </column>
+       <!--<column name="project/protocol">-->
+            <!--<properties>-->
+                <!--<property name="columnTitle" value="Protocol"/>-->
+            <!--</properties>-->
+       <!--</column>-->
+       <column name="quantity" />
+       <column name="performedby" />
+       <!--<column name="requestor" />-->
+       <!--<column name="p_s" />-->
+       <!--<column name="a_v" />-->
+       <!--<column name="assayCode" />-->
+       <column name="billedby" />
+       <column name="tube_type" />
+       <column name="additionalServices" />
+       <column name="Remark" />
+       <column name="qcstate" />
+       <column name="taskid" />
+       <column name="requestid" />
+    </columns>
+   <sorts>
+       <sort column="date" descending="true"/>
+   </sorts>
+    <!--<filters>-->
+        <!--<filter column="qcstate/publicdata" operator="eq" value="true"/>-->
+    <!--</filters>-->
+</customView>

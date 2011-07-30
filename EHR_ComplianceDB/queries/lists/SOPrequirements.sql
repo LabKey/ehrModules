@@ -4,26 +4,13 @@
  * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
  */
 SELECT
-  sc.SOP_ID,
   e.Id,
+  sop.id as SOP_ID,
+  sop.name,
+  sop.pdf,
+  sop.Spanish_PDF,
   e.email,
   T1.LastRead,
-
-  --we calculate the time since that test in months
-  --age_in_months(T1.MostRecentDate, curdate()) AS TimeSinceTest,
-
-  --we calculate the time until renewal
-  --this throws an error on my laptop, but not the server
-  /*
-  CONVERT(
-  CASE
-    WHEN (T1.MostRecentDate IS NULL) THEN
-      0
-    ELSE
-     (12 - (age_in_months(T1.MostRecentDate, curdate())))
-  END, double)
-  AS TimeUntilRenewal,
-  */
 
   --we calculate the time until renewal
   --this subquery was written before I changed this to use joins
@@ -38,18 +25,26 @@ SELECT
 
       (SELECT (12 - age_in_months(sq1.MostRecentDate, curdate())) AS TimeUntilRenewal
       FROM
-        (SELECT max(t.date) AS MostRecentDate, t.SOP_ID, t.EmployeeId FROM "/WNPRC/WNPRC_Units/Animal_Services/Compliance_Training/Private/SOPs/".lists.SOPdates t GROUP BY t.EmployeeId, t.SOP_ID) sq1
+        (SELECT max(t.date) AS MostRecentDate, t.SOP_ID, t.EmployeeId FROM "/WNPRC/WNPRC_Units/Animal_Services/Compliance_Training/Private/EmployeeDB/".lists.SOPdates t GROUP BY t.EmployeeId, t.SOP_ID) sq1
         WHERE sq1.SOP_ID = sc.SOP_ID AND e.Id = sq1.EmployeeId), 0)
     END, double)
     AS MonthsUntilRenewal,
 
+    CASE
+      WHEN sc.sop_id IS NULL then FALSE
+      ELSE TRUE
+    END as required
+
 FROM "/WNPRC/WNPRC_Units/Animal_Services/Compliance_Training/Private/EmployeeDB/".lists.Employees e
 
-LEFT JOIN "/WNPRC/WNPRC_Units/Animal_Services/Compliance_Training/Private/SOPs/".lists.SOPbyCategory sc
-  ON (e.category = sc.category)
+CROSS JOIN "/WNPRC/WNPRC_Units/Animal_Services/Compliance_Training/Public/SOPs/".lists.SOPs sop
+  --ON (e.category = sc.category)
+
+LEFT JOIN "/WNPRC/WNPRC_Units/Animal_Services/Compliance_Training/Private/EmployeeDB/".lists.SOPbyCategory sc
+  ON (e.category = sc.category AND sop.id = sc.sop_id)
 
 LEFT JOIN
-  (SELECT max(t.date) AS LastRead, t.SOP_ID, t.EmployeeId FROM "/WNPRC/WNPRC_Units/Animal_Services/Compliance_Training/Private/SOPs/".lists.SOPdates t GROUP BY t.EmployeeId, t.SOP_ID) T1
+  (SELECT max(t.date) AS LastRead, t.SOP_ID, t.EmployeeId FROM "/WNPRC/WNPRC_Units/Animal_Services/Compliance_Training/Private/EmployeeDB/".lists.SOPdates t GROUP BY t.EmployeeId, t.SOP_ID) T1
   ON (T1.SOP_ID = sc.SOP_ID AND T1.EmployeeId = e.Id)
 
 WHERE

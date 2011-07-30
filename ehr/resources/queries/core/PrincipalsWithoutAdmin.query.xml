@@ -3,7 +3,12 @@
         <tables xmlns="http://labkey.org/data/xml">
             <table tableName="PrincipalsWithoutAdmin" tableDbType="TABLE">
                 <!--<tableUrl>/EHR/cageDetails.view?room=${room}&amp;cage=${cage}</tableUrl>-->
-                <titleColumn>Name</titleColumn>
+                <titleColumn>name</titleColumn>
+                <columns>
+                    <column columnName="name">
+                        <isDisplayColumn>true</isDisplayColumn>
+                    </column>
+                </columns>
             </table>
         </tables>
     </metadata>

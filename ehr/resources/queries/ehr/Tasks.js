@@ -13,6 +13,10 @@ var {EHR, LABKEY, Ext, console, init, beforeInsert, afterInsert, beforeUpdate, a
 function onUpsert(context, errors, row, oldRow){
     row.title = row.title || '';
 
+    if(row.QCStateLabel && context.qcMap.label[row.QCStateLabel].PublicData){
+        row.datecompleted = new Date();
+    }
+
 }
 
 

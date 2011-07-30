@@ -5,7 +5,7 @@
  */
 
 SELECT lower(id) as Id, FixDate(date) AS Date, lower(account) AS account, FixNewlines(remark) AS remark, FixNewlines(clinremark) as clinremark,
-uuid as requestId,
+uuid as runId,
 ts, uuid AS objectid
 FROM chemistry
 

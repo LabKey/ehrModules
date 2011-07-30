@@ -36,7 +36,7 @@ Ext.onReady(function ()
         filterArray: [LABKEY.Filter.create('parentId', LABKEY.ActionURL.getParameter('objectid'), LABKEY.Filter.Types.EQUAL)],
         sort: '-Date',
         scope: this,
-        errorCallback: EHR.utils.onError
+        failure: EHR.utils.onError
      }).render('childTables');
 
 });

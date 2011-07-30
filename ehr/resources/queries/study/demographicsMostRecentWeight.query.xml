@@ -17,13 +17,16 @@
                     </column>
                     <column columnName="MostRecentWeightDate">
                       <datatype>timestamp</datatype>
-                      <formatString>yyyy-mm-dd HH:mm a</formatString>
+                      <formatString>yyyy-MM-dd HH:mm a</formatString>
                       <columnTitle>Weight Date</columnTitle>
                       <url>/query/executeQuery.view?schemaName=study&amp;
                           query.queryName=Weight&amp;
                           query.id~eq=${id}&amp;
                           query.date~eq=${MostRecentWeightDate}
                       </url>
+                    </column>
+                    <column columnName="weightField">
+                        <isHidden>true</isHidden>
                     </column>
                 </columns>
                 <titleColumn>MostRecentWeight</titleColumn>

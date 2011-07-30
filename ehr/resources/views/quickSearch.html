@@ -42,21 +42,6 @@ function makePanel(){
                 })
             );
 
-//            this.animalField = this.add({
-//                emptyText:''
-//                ,xtype: 'combo'
-//                ,displayField:'protocol'
-//                ,typeAhead: true
-//                ,width: 100
-//                ,editable: true
-//                ,store: new LABKEY.ext.Store({
-//                    containerPath: 'WNPRC/EHR/',
-//                    schemaName: 'study',
-//                    queryName: 'animal',
-//                    sort: 'Id'
-//                })
-//            });
-
 
             this.add(new Ext.Button({
                 text: 'Show Animal'
@@ -85,17 +70,18 @@ function makePanel(){
                 emptyText:''
                 ,name: 'animalGroup'
                 ,xtype: 'combo'
-                ,displayField:'label'
-                ,valueField: 'viewName'                
-                ,typeAhead: true
+                ,displayField:'name'
+                ,valueField: 'name'
+                //,typeAhead: true
                 ,width: 160
                 ,editable: true
                 ,triggerAction: 'all'
                 ,store: new LABKEY.ext.Store({
                     containerPath: 'WNPRC/EHR/',
-                    schemaName: 'lists',
-                    queryName: 'animalGroups',
-                    sort: 'label'
+                    schemaName: 'ehr',
+                    queryName: 'animal_groups',
+                    sort: 'name',
+                    autoLoad: true
                 })
             });
 
@@ -111,7 +97,7 @@ function makePanel(){
                         'query'
                         ,'executeQuery'
                         ,'WNPRC/EHR/'
-                        ,{schemaName: 'study', 'query.queryName': 'Animal', 'query.viewName': value}
+                        ,{schemaName: 'study', 'query.queryName': 'Demographics', 'query.viewName': value}
                         );
                 }
                 ,scope: this
@@ -121,9 +107,9 @@ function makePanel(){
             this.add({html: '<a href="'+(LABKEY.ActionURL.buildURL('query','executeQuery','WNPRC/EHR/',
                 {
                     schemaName: 'study',
-                    'query.queryName': 'Animal',
+                    'query.queryName': 'Demographics',
                     'query.viewName': 'Alive, at WNPRC'
-                }))+'">View All WNPRC Animals</a>', colspan: 2});
+                }))+'">View All Living WNPRC Animals</a>', colspan: 2});
 
             this.add({html: '<Br>Project:', colspan: 2});
 
@@ -134,15 +120,17 @@ function makePanel(){
                 ,xtype: 'combo'
                 ,displayField:'project'
                 ,valueField: 'project'
-                ,typeAhead: true
+                //,typeAhead: true
                 ,width: 160
                 ,triggerAction: 'all'
+                ,mode: 'local'
                 ,editable: true
                 ,store: new LABKEY.ext.Store({
                     containerPath: 'WNPRC/EHR/',
                     schemaName: 'lists',
                     queryName: 'project',
-                    sort: 'project'
+                    sort: 'project',
+                    autoLoad: true
                 })
             });
 
@@ -174,15 +162,17 @@ function makePanel(){
                 ,xtype: 'combo'
                 ,displayField:'protocol'
                 ,valueField: 'protocol'
-                ,typeAhead: true
+                //,typeAhead: true
                 ,width: 160
                 ,triggerAction: 'all'
+                ,mode: 'local'
                 ,editable: true
                 ,store: new LABKEY.ext.Store({
                     containerPath: 'WNPRC/EHR/',
                     schemaName: 'lists',
                     queryName: 'protocol',
-                    sort: 'protocol'
+                    sort: 'protocol',
+                    autoLoad: true
                 })
             });
 
@@ -216,22 +206,6 @@ function makePanel(){
                 })
             );
 
-//            this.roomField = this.add({
-//                emptyText:''
-//                ,xtype: 'combo'
-//                ,displayField:'room'
-//                ,valueField: 'room'
-//                ,typeAhead: true
-//                ,width: 120
-//                ,editable: true
-//                ,store: new LABKEY.ext.Store({
-//                    containerPath: 'WNPRC/EHR/',
-//                    schemaName: 'study',
-//                    queryName: 'housing',
-//                    sort: 'room'
-//                })
-//            });
-
             this.add(new Ext.Button({
                 text: 'Show Room'
                 ,width: 120
@@ -244,7 +218,7 @@ function makePanel(){
                         'query'
                         ,'executeQuery'
                         ,'WNPRC/EHR/'
-                        ,{'schemaName':'study', 'query.queryName':'Animal', 'query.Dataset/Demographics/Room~startswith': value, 'query.viewName': 'Alive, at WNPRC'});
+                        ,{'schemaName':'study', 'query.queryName':'Demographics', 'query.Id/curLocation/Room~eq': value, 'query.viewName': 'Alive, at WNPRC'});
 
                 }
                 ,scope: this
@@ -258,7 +232,7 @@ function makePanel(){
 
     var panel = new thePanel();
 
-    panel.render('thePanel');
+    panel.render('quickSearchPanel');
 
 }
     
@@ -271,7 +245,7 @@ function makePanel(){
 </head>
 <body>
 
-<div id="thePanel"></div>
+<div id="quickSearchPanel"></div>
 
 </body>
 </html>

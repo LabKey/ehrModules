@@ -1,15 +1,14 @@
 <customView xmlns="http://labkey.org/data/xml/queryCustomView">
    <columns>
         <column name="Id"/>
-        <column name="Date"/>
+        <column name="date"/>
         <column name="enddate"/>
-        <column name="QCState"/>
-        <column name="Room"/>
-        <column name="Cage"/>
-        <column name="Cond"/>
+        <column name="room"/>
+        <column name="cage"/>
+        <column name="cond"/>
         <column name="reason"/>
-        <column name="isTemp"/>
-        <column name="restraintType"/>
+        <!--<column name="isTemp"/>-->
+        <!--<column name="restraintType"/>-->
         <column name="remark" />
         <!--<column name="Id/Dataset/Demographics/Status">-->
             <!--<properties>-->
@@ -36,6 +35,7 @@
                 <property name="columnTitle" value="Days Since Weight"/>
             </properties>
         </column>
+       <column name="qcstate"/>
    </columns>
    <filters>
        <filter column="enddate" operator="isblank"/>

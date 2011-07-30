@@ -21,9 +21,9 @@ Ext.onReady(function ()
     });
 
     new LABKEY.QueryWebPart({
-        title: 'Biopsy Diagnoses',
+        title: 'Morphologic Diagnoses',
         schemaName: 'study',
-        queryName: 'Biopsy Diagnosis',
+        queryName: 'Morphologic Diagnosis',
         allowChooseQuery: false,
         allowChooseView: true,
         showInsertNewButton: false,
@@ -35,7 +35,7 @@ Ext.onReady(function ()
         filters: [LABKEY.Filter.create('parentId', key, LABKEY.Filter.Types.EQUAL)],
         //sort: '-Date',
         scope: this,
-        errorCallback: EHR.utils.onError
+        failure: EHR.utils.onError
      }).render('biopsyDiagnosis');
 
 

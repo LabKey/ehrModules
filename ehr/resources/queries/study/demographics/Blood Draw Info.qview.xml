@@ -11,45 +11,45 @@
                 <!--<property name="columnTitle" value="Status"/>-->
             <!--</properties>-->
         <!--</column>-->
-        <column name="Gender">
-            <properties>
-                <property name="columnTitle" value="Gender"/>
-            </properties>
+        <column name="gender">
+            <!--<properties>-->
+                <!--<property name="columnTitle" value="Gender"/>-->
+            <!--</properties>-->
         </column>
-        <column name="Id/currentAssignments/Availability">
-            <properties>
-                <property name="columnTitle" value="Avail"/>
-            </properties>
-        </column>
+        <!--<column name="Id/currentAssignments/availability">-->
+            <!--<properties>-->
+                <!--<property name="columnTitle" value="Avail"/>-->
+            <!--</properties>-->
+        <!--</column>-->
         <column name="Birth">
             <properties>
                 <property name="columnTitle" value="Birth"/>
             </properties>
         </column>
-        <column name="Id/curLocation/Room">
+        <column name="Id/curLocation/room">
             <properties>
                 <property name="columnTitle" value="Room"/>
             </properties>
         </column>
-        <column name="Id/curLocation/Cage">
+        <column name="Id/curLocation/cage">
             <properties>
                 <property name="columnTitle" value="Cage"/>
             </properties>
         </column>
-        <column name="Id/curLocation/Cond">
+        <column name="Id/curLocation/cond">
             <properties>
                 <property name="columnTitle" value="Condition"/>
             </properties>
         </column>
         <column name="Id/availBlood/MostRecentWeight">
             <properties>
-                <property name="columnTitle" value="Current Weight"/>
+                <property name="columnTitle" value="Current Weight (kg)"/>
             </properties>
         </column>
-        <column name="Medical">
-            <properties>
-                <property name="columnTitle" value="Medical"/>
-            </properties>
+        <column name="medical">
+            <!--<properties>-->
+                <!--<property name="columnTitle" value="Medical"/>-->
+            <!--</properties>-->
         </column>
         <column name="Id/currentAssignments/projects">
             <properties>
