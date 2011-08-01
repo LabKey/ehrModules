@@ -117,6 +117,7 @@ ehr/resources/etl/datasets/hematologyResults.sql -text
 ehr/resources/etl/datasets/hematologyRuns.sql -text
 ehr/resources/etl/datasets/immunologyResults.sql -text
 ehr/resources/etl/datasets/immunologyRuns.sql -text
+ehr/resources/etl/datasets/morphologicDiagnosis.sql -text
 ehr/resources/etl/datasets/parasitologyResults.sql -text
 ehr/resources/etl/datasets/parasitologyRuns.sql -text
 ehr/resources/etl/datasets/urinalysisResults.sql -text
