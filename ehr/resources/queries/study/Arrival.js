@@ -34,7 +34,7 @@ function onBecomePublic(errors, scriptContext, row, oldRow){
                             schemaName: 'study',
                             queryName: 'Demographics'
                         },
-                        rows: [{Id: row.Id, gender: row.gender, species: row.species, dam: row.dam, sire: row.sire, birth: new Date(row.birth.toGMTString()), date: new Date(row.birth.toGMTString())}],
+                        rows: [{Id: row.Id, gender: row.gender, species: row.species, dam: row.dam, sire: row.sire, geoOrigin: row.geoOrigin, birth: new Date(row.birth.toGMTString()), date: new Date(row.birth.toGMTString())}],
                         success: function(data){
                             console.log('Success inserting into demographics table from arrival')
                         },

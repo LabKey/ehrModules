@@ -135,9 +135,9 @@ my $datestr=sprintf("%04d%02d%02d_%02d%02d", $tm->year+1900, ($tm->mon)+1, $tm->
 chdir($config{backup_dest});
 checkFolder($config{backup_dest});
 
-
+my $log_file = File::Spec->catfile($config{backup_dest}, "lk_backup.log");
 my $log = Log::Rolling->new(
-	log_file => File::Spec->catfile($config{backup_dest}, "lk_backup.log"),
+	log_file => $log_file,
 	max_size=>50000
 );
 
@@ -658,14 +658,15 @@ sub _make_tar
 	my $tarfile = shift;
 	my $files = shift;
 	my $exclude = shift;
-	
-	my $cmd = "tar -cpf \"$tarfile\";
+
+	my $cmd = "tar -cpf \"$tarfile\"";
 	$cmd .= " --exclude='".join("' --exclude='", @$exclude)."'" if $exclude;
-	$cmd .= " @$files" . " 2>&1";
-	 
-	my $out = system($cmd);
+	$cmd .= " @$files" . " 1>>\"$log_file\" 2>&1";
+
 	$log->entry($cmd);
 	$log->commit;
+	my $out = system($cmd);
+
 	if( $? ){
 	    $log->entry("ERROR: Tar archive of files has returned an error: $out");
 	    $log->commit;

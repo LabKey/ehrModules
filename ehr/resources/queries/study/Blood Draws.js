@@ -10,6 +10,11 @@ function onUpsert(context, errors, row, oldRow){
     if(context.extraContext.dataSource != 'etl' && !row.quantity && row.num_tubes && row.tube_vol)
         row.quantity = row.num_tubes * row.tube_vol;
 
+    if(context.extraContext.dataSource != 'etl' && row.quantity && row.tube_vol){
+        if(row.quantity != (row.num_tubes * row.tube_vol))
+            EHR.addError(errors, 'quantity', 'Quantity does not match tube vol / # tubes', 'INFO');
+    }
+
     if(context.extraContext.dataSource != 'etl' && row.restraint && !Ext.isDefined(row.restraintTime)){
         //console.log(row.restraint)
         EHR.addError(errors, 'restraintTime', 'Must enter time restrained', 'WARN');
@@ -58,7 +63,7 @@ function onUpsert(context, errors, row, oldRow){
         "FROM (" +
             "SELECT b.id, sum(b.quantity) as BloodLast30 " +
             "FROM study.\"Blood Draws\" b " +
-            "WHERE b.id='"+row.Id+"' AND b.date >= '"+EHR.validation.dateToString(row.date) +"' AND b.date <= '"+maxDate+"' " +
+            "WHERE b.id='"+row.Id+"' AND cast(b.date as date) >= '"+EHR.validation.dateToString(row.date) +"' AND cast(b.date as date) <= '"+maxDate+"' " +
             "AND (b.qcstate.publicdata = true OR b.qcstate.metadata.DraftData = true) " +
             "GROUP BY b.id) b " +
         "RIGHT JOIN study.demographicsMostRecentWeight d on (d.id=b.id) " +

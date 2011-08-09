@@ -95,6 +95,19 @@
                             participantId=${sire}
                         </url>
                     </column>
+                    <column columnName="geoOrigin">
+                        <columnTitle>Geographic Origin</columnTitle>
+                    </column>
+                    <column columnName="gender">
+                        <datatype>varchar</datatype>
+                        <columnTitle>Gender</columnTitle>
+                        <fk>
+                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
+                            <fkDbSchema>ehr_lookups</fkDbSchema>
+                            <fkTable>gender_codes</fkTable>
+                            <fkColumnName>Code</fkColumnName>
+                        </fk>
+                    </column>
                 </columns>
             </table>
         </tables>

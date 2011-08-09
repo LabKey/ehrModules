@@ -98,17 +98,21 @@ if(@{$results->{rows}}){
 
 	
 #we find treatments for each time of day:
-my $areas = ['Charmany'];
-$email_html .= "<b>Only the following areas are using online treatments: ".join(';', @$areas).", so this email will only include those areas.</b><p>";
+#my $areas = ['Charmany'];
+#$email_html .= "<b>Only the following areas are using online treatments: ".join(';', @$areas).", so this email will only include those areas.</b><p>";
 
 processTreatments('AM', 9);
+#processTreatments('Noon', 12);
 processTreatments('PM', 14);
+#processTreatments('Any Time', 14);
 processTreatments('Night', 15);
 
+my $hasTreatments = 0;
 
 sub processTreatments {
 	my $timeofday = shift;
 	my $minTime = shift;
+	my $noSendUnlessTreatments = shift;
 
 	$results = Labkey::Query::selectRows(
 	    -baseUrl => $baseUrl,
@@ -120,7 +124,7 @@ sub processTreatments {
 	    -filterArray => [
 	    	['date', 'dateeq', $datestr],
 	    	['timeofday', 'eq', $timeofday],
-	    	['CurrentArea', 'in', join(';', @$areas)],
+	    	#['CurrentArea', 'in', join(';', @$areas)],
 			['Id/DataSet/Demographics/calculated_status', 'eq', 'Alive'],   	
 	    ],    	   	          
 	    #-debug => 1,
@@ -138,14 +142,6 @@ sub processTreatments {
 	    foreach my $row (@{$results->{rows}}){    	
 			if($row->{'treatmentStatus/Label'} && $row->{'treatmentStatus/Label'} eq 'Completed'){
 				$complete++;
-#				if(!$$summary{$row->{'CurrentArea'}}){
-#					$$summary{$row->{'CurrentArea'}} = {};				
-#				}	
-#				if(!$$summary{$row->{'CurrentArea'}}{$row->{'CurrentRoom'}}){
-#					$$summary{$row->{'CurrentArea'}}{$row->{'CurrentRoom'}} = {complete=>0,incomplete=>0, incompleteRecords=>[]};				
-#				}	
-#				
-#				$$summary{$row->{'CurrentArea'}}{$row->{'CurrentRoom'}}{complete}++;
 			}   
 			else {
 				if(!$$summary{$row->{'CurrentArea'}}){
@@ -182,14 +178,14 @@ sub processTreatments {
 							$email_html .= "<table border=1><tr><td>Id</td><td>Treatment</td><td>Route</td><td>Concentration</td><td>Amount To Give</td><td>Volume</td><td>Instructions</td><td>Ordered By</td></tr>";
 							
 							foreach my $rec (@{$$rooms{$room}{incompleteRecords}}){
-								$email_html .= "<tr><td>".$$rec{Id}."</td><td>".($$rec{meaning} ? $$rec{meaning} : '')."</td><td>".($$rec{route} ? $$rec{route} : '')."</td><td>".($$rec{conc2} ? $$rec{conc2} : '')."</td><td>".($$rec{amount2} ? $$rec{amount2} : '')."</td><td>".($$rec{volume2} ? $$rec{volume2} : '')."</td><td>".($$rec{remark} ? $$rec{remark} : '')."</td><td>".($$rec{userid} ? $$rec{userid} : '')."</td></tr>";
+								$email_html .= "<tr><td>".$$rec{Id}."</td><td>".($$rec{meaning} ? $$rec{meaning} : '')."</td><td>".($$rec{route} ? $$rec{route} : '')."</td><td>".($$rec{conc2} ? $$rec{conc2} : '')."</td><td>".($$rec{amount2} ? $$rec{amount2} : '')."</td><td>".($$rec{volume2} ? $$rec{volume2} : '')."</td><td>".($$rec{remark} ? $$rec{remark} : '')."</td><td>".($$rec{performedby} ? $$rec{performedby} : '')."</td></tr>";
 							}
 							
 							$email_html .= "</table><p>\n";	    	
 						}
 	
 					}
-					$email_html .= '<p>';	
+					$email_html .= "<p>";	
 				}
 			}
 		}
@@ -197,7 +193,7 @@ sub processTreatments {
 			$email_html .= "It is too early in the day to send warnings about incomplete treatments\n";
 		}
 		
-		$email_html .= '<hr>';
+		$email_html .= "<hr>";
 	}
 }
 
@@ -215,12 +211,14 @@ $results = Labkey::Query::selectRows(
     #-debug => 1,
 );
 
-$email_html .= "<b>Treatments that differ from what was ordered:</b><br>";
+$email_html .= "<b>Treatments that differ from what was ordered:</b><p />";
 
 if(!@{$results->{rows}}){
 	$email_html .= "All entered treatments given match what was ordered.<hr>";	
 }		
 else {
+	$email_html .= "<a href='".$baseUrl."query/".$studyContainer."executeQuery.view?schemaName=study&query.queryName=TreatmentsThatDiffer&query.date~dateeq=$datestr"."'>Click here to view them</a><p />\n";
+	
 	my $summary = {};
     foreach my $row (@{$results->{rows}}){
 		if(!$$summary{$row->{'CurrentArea'}}){
@@ -235,46 +233,50 @@ else {
 	
 	my $prevRoom = '';
 	foreach my $area (sort(keys %$summary)){
-		my $rooms = $$summary{$area};			
+		my $rooms = $$summary{$area};
 		$email_html .= "<b>$area:</b><br>\n";
 		foreach my $room (sort(keys %$rooms)){
 			$email_html .= "$room: ".@{$$rooms{$room}}."<br>\n";
-				
+			$email_html .= "<table border=1>\n";
 			foreach my $rec (@{$$rooms{$room}}){
-				$email_html .= '<table border=1><tr><td>';
+				$email_html .= "<tr><td>";
 				$email_html .= 'Id: '.$$rec{id}."<br>\n";
+				$email_html .= 'Date: '.$$rec{date}."<br>\n";
 				$email_html .= 'Treatment: '.$$rec{meaning}."<br>\n";
 				$email_html .= 'Ordered By: '.$$rec{performedby}."<br>\n";
 				$email_html .= 'Performed By: '.$$rec{drug_performedby}."<br>\n";
 				
-
-				if($$rec{route} && $$rec{route} ne $$rec{drug_route}){
-					$email_html .= 'Route Ordered: '.$$rec{route}."<br>\n";					
+				if(defined $$rec{route} && $$rec{route} ne $$rec{drug_route}){
+					$email_html .= 'Route Ordered: '.$$rec{route}."<br>\n";
 					$email_html .= 'Route Entered: '.$$rec{drug_route}."<br>\n";
 				}
-				if($$rec{concentration} && ($$rec{concentration} != $$rec{drug_concentration} || $$rec{conc_units} ne $$rec{drug_conc_units})){
-					$email_html .= 'Concentration Ordered: '.$$rec{concentration}.' '.$$rec{conc_units}."<br>\n";					
+				if(defined $$rec{concentration} && ($$rec{concentration} != $$rec{drug_concentration} || $$rec{conc_units} ne $$rec{drug_conc_units})){
+					$email_html .= 'Concentration Ordered: '.$$rec{concentration}.' '.$$rec{conc_units}."<br>\n";
 					$email_html .= 'Concentration Entered: '.$$rec{drug_concentration}.' '.$$rec{drug_conc_units}."<br>\n";
 				}	
-				if($$rec{dosage} && ($$rec{dosage} != $$rec{drug_dosage} || $$rec{dosage_units} ne $$rec{drug_dosage_units})){
-					$email_html .= 'Dosage Ordered: '.$$rec{dosage}.' '.$$rec{dosage_units}."<br>\n";					
+				if(defined $$rec{dosage} && ($$rec{dosage} != $$rec{drug_dosage} || $$rec{dosage_units} ne $$rec{drug_dosage_units})){
+					$email_html .= 'Dosage Ordered: '.$$rec{dosage}.' '.$$rec{dosage_units}."<br>\n";
 					$email_html .= 'Dosage Entered: '.$$rec{drug_dosage}.' '.$$rec{drug_dosage_units}."<br>\n";
 				}
-				if($$rec{amount} && ($$rec{amount} != $$rec{drug_amount} || $$rec{amount_units} ne $$rec{drug_amount_units})){
-					$email_html .= 'Amount Ordered: '.$$rec{amount}.' '.$$rec{amount_units}."<br>\n";					
+				if(defined $$rec{amount} && ($$rec{amount} != $$rec{drug_amount} || $$rec{amount_units} ne $$rec{drug_amount_units})){
+					$email_html .= 'Amount Ordered: '.$$rec{amount}.' '.$$rec{amount_units}."<br>\n";
 					$email_html .= 'Amount Entered: '.$$rec{drug_amount}.' '.$$rec{drug_amount_units}."<br>\n";
 				}
-				if($$rec{volume} && ($$rec{volume} != $$rec{drug_volume} || $$rec{vol_units} ne $$rec{drug_vol_units})){
-					$email_html .= 'Volume Ordered: '.$$rec{volume}.' '.$$rec{vol_units}."<br>\n";					
+				if(defined $$rec{volume} && ($$rec{volume} != $$rec{drug_volume} || $$rec{vol_units} ne $$rec{drug_vol_units})){
+					$email_html .= 'Volume Ordered: '.$$rec{volume}.' '.$$rec{vol_units}."<br>\n";
 					$email_html .= 'Volume Entered: '.$$rec{drug_volume}.' '.$$rec{drug_vol_units}."<br>\n";
 				}
-			}
-			$email_html .= '</td></tr></table>';	
-			$email_html .= "<p>\n";	    	
+				
+				$email_html .= "</td></tr>\n";
+			}				
+			$email_html .= "</table>\n";
+			$email_html .= "<p>\n";
 		}
-					
-		$email_html .= '<p>';	
+
+		$email_html .= "<p>";
 	}
+
+	$email_html .= "<hr>";
 }
 
 
@@ -292,7 +294,7 @@ $results = Labkey::Query::selectRows(
 );
 
 if(@{$results->{rows}}){
-	$email_html .= "<b>WARNING: There are ".@{$results->{rows}}." active treatments for animals not currently at WNPRC.</b><br>";
+	$email_html .= "<b>WARNING: There are ".@{$results->{rows}}." active treatments for animals not currently at WNPRC.</b>";
 	$email_html .= "<p><a href='".$baseUrl."query/".$studyContainer."executeQuery.view?schemaName=study&query.queryName=Treatment Orders&query.enddate~isblank&query.Id/DataSet/Demographics/calculated_status~neq=Alive"."'>Click here to view and update them</a><br>\n";
 	$email_html .= "<hr>\n";			
 }	
@@ -311,7 +313,7 @@ $results = Labkey::Query::selectRows(
 );
 
 if(@{$results->{rows}}){
-	$email_html .= "<b>WARNING: There are ".@{$results->{rows}}." unresolved problems for animals not currently at WNPRC.</b><br>";
+	$email_html .= "<b>WARNING: There are ".@{$results->{rows}}." unresolved problems for animals not currently at WNPRC.</b>";
 	$email_html .= "<p><a href='".$baseUrl."query/".$studyContainer."executeQuery.view?schemaName=study&query.queryName=Problem List&query.enddate~isblank&query.Id/DataSet/Demographics/calculated_status~neq=Alive"."'>Click here to view and update them</a><br>\n";
 	$email_html .= "<hr>\n";			
 }
@@ -329,7 +331,7 @@ $smtp->mail( $from );
 $smtp->recipient(@email_recipients, { Notify => ['FAILURE'], SkipBad => 1 });  
 
 $smtp->data();
-$smtp->datasend("Subject: Daily Colony Alerts\n");
+$smtp->datasend("Subject: Daily Colony Alerts: $datestr\n");
 $smtp->datasend("Content-Transfer-Encoding: US-ASCII\n");
 $smtp->datasend("Content-Type: text/html; charset=\"US-ASCII\" \n");
 $smtp->datasend("\n");

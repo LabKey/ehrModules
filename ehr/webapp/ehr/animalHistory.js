@@ -20,10 +20,10 @@ EHR.ext.SingleAnimalReport = Ext.extend(Ext.Panel, {
             ,bodyBorder: false
             ,bodyStyle: 'background-color : transparent;'
             //,width: '100%'
-            //,width: '1000'
-            ,boxMinWidth: 1000
+//            ,width: '1000'
             ,layout: 'anchor'
-            //,autoScroll: true
+//            ,boxMaxWidth: 1000
+            ,autoScroll: true
             ,border: false
             ,frame: false
             ,reports: {}
@@ -74,8 +74,8 @@ EHR.ext.SingleAnimalReport = Ext.extend(Ext.Panel, {
                 tag: 'span',
                 style: 'padding: 10px'
             },{
-                layout: 'fit',
-                //width: 'auto',
+                layout: 'anchor',
+                ref: 'anchorLayout',
                 items: [{
                     xtype: 'tabpanel',
                     ref: '../tabPanel',
@@ -1099,9 +1099,7 @@ EHR.ext.SingleAnimalReport = Ext.extend(Ext.Panel, {
                 border : false, frame : false
             }]
         });
-
         var title = this.makeTitle(tab, subject);
-
         var queryConfig = {
             title: tab.rowData.get("reporttitle") + ": " + title,
             schemaName: tab.rowData.get("schemaname"),
@@ -1124,8 +1122,16 @@ EHR.ext.SingleAnimalReport = Ext.extend(Ext.Panel, {
             renderTo: target.id,
             ref: 'qwp',
             success: function(c){
-                target.doLayout();
-                console.log('success')
+                var width1 = Ext.get(c.id).getSize().width;
+                var width2 = Ext.get(target.id).getSize().width;
+
+                if(width1 > width2){
+                    this.anchorLayout.setWidth(width1+100);
+                    console.log('resizing')
+                }
+//                else {
+                    //this.anchorLayout.setWidth('100%');
+//                }
             },
             failure: function(error){
                 console.log('Error callback called');

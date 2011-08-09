@@ -25,8 +25,9 @@
        <column name="route"/>
        <column name="amount2"/>
        <column name="remark"/>
-       <column name="userid"/>
+       <!--<column name="performedby"/>-->
        <column name="treatmentStatus"/>
+       <column name="taskId"/>
        <!--<column name="qcstate"/>-->
    </columns>
    <sorts>

@@ -12,6 +12,7 @@ library(Matrix)
 
 #print('Labkey.data:')
 #str(labkey.data);
+#remove(labkey.data)
 
 #NOTE: to run directly in R instead of through labkey, uncomment this:
 #labkey.url.base = "https://ehr.primate.wisc.edu/"
@@ -138,14 +139,14 @@ newRecords$date <- as.character(newRecords$date)
 oldRecords <- labkey.selectRows(
     baseUrl=labkey.url.base,
     folderPath="/WNPRC/EHR",
-    schemaName="study",
+    schemaName="ehr",
     queryName="kinship",
-    colSelect=c('lsid', 'Id', 'Id2', 'date', 'coefficient'),
+    colSelect=c('rowid', 'Id', 'Id2', 'date', 'coefficient'),
     showHidden = TRUE,
     #stringsAsFactors = FALSE,
     colNameOpt = 'fieldname'  #rname
 )
-colnames(oldRecords)<-c('lsid', 'Id', 'Id2', 'date', 'coefficient');
+colnames(oldRecords)<-c('rowid', 'Id', 'Id2', 'date', 'coefficient');
 
 print("New Records")
 str(newRecords);
@@ -168,13 +169,13 @@ length(toDelete$Id)
 
 
 if(length(toDelete$Id)){
-#    del <- labkey.deleteRows(
-#        baseUrl=labkey.url.base,
-#        folderPath="/WNPRC/EHR",
-#        schemaName="study",
-#        queryName="kinship",
-#        toDelete=data.frame(lsid=toDelete$lsid)
-#    );
+    del <- labkey.deleteRows(
+        baseUrl=labkey.url.base,
+        folderPath="/WNPRC/EHR",
+        schemaName="ehr",
+        queryName="kinship",
+        toDelete=data.frame(rowid=toDelete$rowid)
+    );
 }
 remove(IdxToDelete)
 remove(toDelete)
@@ -188,10 +189,14 @@ toInsert <- newRecords[match(IdxToInsert, newRecords$key1),]
 print("Total To Insert:");
 length(toInsert$Id)
 
-#if(length(toInsert$Id) > 2000){
-     toInsert <- toInsert[1:500,];
-     length(toInsert$Id);
-#}
+if(length(toInsert$Id) > 2000){
+     write.table(toInsert, file = "/usr/local/labkey/kinship.tsv", quote = FALSE, sep = "\t");
+     print("NOTE: There are too many rows to import using the API.")
+     print("A TSV file has been written to /usr/local/labkey/kinship.tsv")
+     stop()
+     #toInsert <- toInsert[1:500,];
+     #length(toInsert$Id);
+}
 
 str(toInsert);
 
@@ -199,7 +204,7 @@ if(length(toInsert$Id)){
     ins <- labkey.insertRows(
         baseUrl=labkey.url.base,
         folderPath="/WNPRC/EHR",
-        schemaName="study",
+        schemaName="ehr",
         queryName="kinship",
         toInsert=toInsert
     );
@@ -224,11 +229,11 @@ print('Total To Update: ')
 length(toUpdate$Id)
 
 if(length(toUpdate$Id)){
-    toUpdate$date <- c(as.character(date()));
+#    toUpdate$date <- c(as.character(date()));
     update <- labkey.updateRows(
         baseUrl=labkey.url.base,
         folderPath="/WNPRC/EHR",
-        schemaName="study",
+        schemaName="ehr",
         queryName="kinship",
         toUpdate=toUpdate
     );

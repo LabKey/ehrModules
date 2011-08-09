@@ -13,12 +13,13 @@ Ext.onReady(function (){
         sections: [
             {header: 'Admin',
                 items: [
-                    {name: 'Backup History', url: '<%=contextPath%>/project<%=containerPath%>/Backups/begin.view?'},
                     {name: 'Client Errors', url: '<%=contextPath%>/query/shared/executeQuery.view?schemaName=auditlog&query.queryName=audit&query.key1~eq=Client Error'},
                     {name: 'Development Notes', url: '<%=contextPath%>/project<%=containerPath%>/Development Notes/begin.view?'},
+                    {name: 'EHR Backups', url: '<%=contextPath%>/project<%=containerPath%>/Backups/begin.view?'},
                     {name: 'ETL Admin', url: '<%=contextPath%>/EHR<%=containerPath%>/etlAdmin.view?'},
                     {name: 'ETL Duration', url: '<%=contextPath%>/query<%=containerPath%>/executeQuery.view?schemaName=core&query.queryName=Sync Duration'},
                     {name: 'ETL History', url: '<%=contextPath%>/query<%=containerPath%>/executeQuery.view?schemaName=core&query.queryName=Sync History'},
+                    {name: 'Gems Backups', url: '<%=contextPath%>/project<%=containerPath%>/Backups/Gems Backups/begin.view?'},
                     {name: 'Manage EHR Study', url: '<%=contextPath%>/study<%=containerPath%>/manageStudy.view?'},
                     {name: 'Populate Initial Data', url: '<%=contextPath%>/EHR<%=containerPath%>/_initEHR.view?'},
                     {name: 'Recalculate Kinship Table', url: '<%=contextPath%>/query<%=containerPath%>/executeQuery.view?schemaName=study&query.queryName=Pedigree&query.reportId=module%3AEHR%2Fschemas%2Fstudy%2FPedigree%2FKinship.r'},
@@ -26,7 +27,7 @@ Ext.onReady(function (){
                     {name: 'Reload Study', url: '<%=contextPath%>/pipeline<%=containerPath%>/begin.view?'},
                     {name: 'Generate Schema XML', url: '<%=contextPath%>/admin/getSchemaXmlDoc.view?full=true&dbSchema=core'},
                     {name: 'View Logs', url: '<%=contextPath%>/project<%=containerPath%>/Logs/begin.view?'},
-                    {name: 'View Site Errors', url: '<%=contextPath%>/query/Shared/executeQuery.view?schemaName=ehr&query.queryName=client_errors'}
+                    {name: 'View Site Errors', url: '<%=contextPath%>/query/Shared/executeQuery.view?schemaName=auditlog&query.queryName=audit&query.viewName=Client Errors'}
                 ]
             },
             {header: 'Logs',

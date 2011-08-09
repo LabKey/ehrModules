@@ -84,6 +84,7 @@ Ext.onReady(function ()
         title: 'Animals Currently Housed',
         schemaName: 'study',
         queryName: 'Housing',
+//        viewName: 'Current Housing Plus Weight',
         allowChooseQuery: false,
         allowChooseView: true,
         showInsertNewButton: false,
@@ -93,6 +94,7 @@ Ext.onReady(function ()
         buttonBarPosition: 'top',
         showRecordSelectors: true,
         filterArray: filterArray,
+        timeout: 0,
         sort: '-Date',
         scope: this,
         failure: EHR.utils.onError

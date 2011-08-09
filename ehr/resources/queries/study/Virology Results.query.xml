@@ -68,6 +68,16 @@
                             <fkColumnName>testid</fkColumnName>
                         </fk>
                     </column>
+                    <column columnName="source">
+                        <datatype>varchar</datatype>
+                        <columnTitle>Sample Type</columnTitle>
+                        <fk>
+                          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
+                          <fkDbSchema>ehr_lookups</fkDbSchema>
+                          <fkTable>clinpath_sampletype</fkTable>
+                          <fkColumnName>sampletype</fkColumnName>
+                        </fk>
+                    </column>
                 </columns>
             </table>
         </tables>

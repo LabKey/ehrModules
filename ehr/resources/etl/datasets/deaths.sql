@@ -10,10 +10,10 @@ status,
 CASE
   WHEN status = 'd-othr' THEN 'Other'
   WHEN status = 'd-expr' THEN 'Experimental'
-  WHEN status = 'd-qx' THEN 'QX'
-  WHEN status = 'd-qc' THEN 'QC'
-  WHEN status = 'd-quar' THEN 'Quarantine'
-  ELSE null
+  WHEN status = 'd-qx' THEN 'Quarantine Experimental (QX)'
+  WHEN status = 'd-qc' THEN 'Quarantine Clinical (QC)'
+  WHEN status = 'd-quar' THEN 'Quarantine Other'
+  ELSE status
 END as cause,
 ts,
 uuid AS objectid

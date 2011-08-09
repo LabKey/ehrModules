@@ -14,7 +14,8 @@
         <column name="problem_no"/>
         <column name="date"/>
         <column name="enddate"/>
-        <column name="Remark"/>
+        <column name="category"/>
+        <column name="remark"/>
         <column name="code"/>
     </columns>
     <filters>

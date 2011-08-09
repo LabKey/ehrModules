@@ -12,19 +12,37 @@ h.lsid,
 h.id,
 h.date,
 h.enddate,
+h.enddateCoalesce,
+h.StartDateParam,
+h.EndDateParam,
 h.project,
-h.project.protocol as protocol,
-h.project.avail as avail,
-h.project.title as title,
+h.protocol,
+h.avail,
+h.title,
 h.qcstate,
 
 CASE
-  WHEN cast(COALESCE(STARTDATE, '1900-01-01') AS TIMESTAMP) > h.date
-   THEN TIMESTAMPDIFF('SQL_TSI_DAY', CAST(COALESCE(STARTDATE, '1900-01-01') AS TIMESTAMP), CAST(COALESCE(ENDDATE, curdate())AS TIMESTAMP))
-   ELSE TIMESTAMPDIFF('SQL_TSI_DAY', h.date, CAST(COALESCE(ENDDATE, curdate())AS TIMESTAMP))
+  WHEN h.StartDateParam > h.date
+   THEN TIMESTAMPDIFF('SQL_TSI_DAY', cast(h.StartDateParam as TIMESTAMP), cast(h.enddateCoalesce as TIMESTAMP))
+   ELSE TIMESTAMPDIFF('SQL_TSI_DAY', cast(h.date as TIMESTAMP), cast(h.enddateCoalesce as TIMESTAMP))
 END as TotalDays
 
-FROM study.assignment h
+FROM (
+  SELECT
+  h.lsid,
+  h.id,
+  cast(h.date as date) as date,
+  cast(h.enddate as date) as enddate,
+  cast(coalesce(h.enddate, now()) as date) as enddateCoalesce,
+  h.project,
+  h.project.protocol as protocol,
+  h.project.avail as avail,
+  h.project.title as title,
+  h.qcstate,
+  cast(COALESCE(STARTDATE, '1900-01-01') as date) as StartDateParam,
+  cast(COALESCE(ENDDATE, curdate()) as date) as EndDateParam,
+  FROM study.assignment h
+) h
 
 WHERE
 
@@ -33,9 +51,9 @@ WHERE
 (h.project.protocol = PROTOCOL OR PROTOCOL IS NULL OR PROTOCOL = '') AND
 
 (
-(cast(COALESCE(STARTDATE, '1900-01-01') AS TIMESTAMP) >= h.date AND cast(COALESCE(STARTDATE, '1900-01-01') AS TIMESTAMP) < COALESCE(h.enddate, curdate()))
+(h.StartDateParam >= h.date AND h.StartDateParam < h.enddateCoalesce)
 OR
-(COALESCE(ENDDATE, curdate()) > h.date AND COALESCE(ENDDATE, curdate()) <= COALESCE(h.enddate, curdate()))
+(h.EndDateParam > h.date AND h.EndDateParam <= h.enddateCoalesce)
 OR
-(cast(COALESCE(STARTDATE, '1900-01-01') AS TIMESTAMP) <= h.date AND COALESCE(ENDDATE, curdate()) >= COALESCE(h.enddate, curdate()))
+(h.StartDateParam <= h.date AND h.EndDateParam >= h.enddateCoalesce)
 )

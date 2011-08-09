@@ -30,7 +30,7 @@ Ext.onReady(function(){
         };
 
         var sec1 = {
-            header: 'Clinical / CPI',
+            header: 'Clinical / SPI',
             items: []
         };
 
@@ -70,7 +70,7 @@ Ext.onReady(function(){
             {url: "<%=contextPath%>/ehr/WNPRC/EHR/manageTask.view?formtype=Arrival", title: 'Enter Arrivals', queries: ['Arrival']},
             {url: "<%=contextPath%>/ehr/WNPRC/EHR/updateQuery.view?schemaName=study&queryName=Assignment&keyField=lsid", title: 'Enter/Manage Assignments', queries: ['Assignment']},
             {url: "<%=contextPath%>/ehr/WNPRC/EHR/manageTask.view?formtype=Birth", title: 'Enter Births', queries: ['Birth']},
-            {url: "<%=contextPath%>/ehr/WNPRC/EHR/manageRecord.view?schemaName=study&queryName=Deaths&keyField=lsid", title: 'Enter Death Record', queries: ['Deaths']},
+            {url: "<%=contextPath%>/ehr/WNPRC/EHR/manageRecord.view?schemaName=study&queryName=Deaths&keyField=lsid&metaSources=Task", title: 'Enter Death Record', queries: ['Deaths']},
             {url: "<%=contextPath%>/ehr/WNPRC/EHR/updateQuery.view?schemaName=study&queryName=Demographics&keyField=lsid", title: 'Enter/Manage Demographics', queries: ['Demographics']},
             {url: "<%=contextPath%>/ehr/WNPRC/EHR/manageTask.view?schemaName=study&queryName=Departure&keyField=lsid", title: 'Enter Departures', queries: ['Departure']},
             {url: "<%=contextPath%>/ehr/WNPRC/EHR/manageRecord.view?schemaName=study&queryName=Prenatal&keyField=lsid", title: 'Enter Prenatal', queries: ['Prenatal']},
@@ -101,7 +101,7 @@ Ext.onReady(function(){
         Ext.each([
             {url: "<%=contextPath%>/ehr/WNPRC/EHR/manageTask.view?schemaName=study&queryName=Behavior Remarks&keyField=lsid", title: 'Enter Behavior Remark', queries: ['Behavior Remarks']},
             {url: "<%=contextPath%>/ehr/WNPRC/EHR/manageTask.view?formtype=Housing", title: 'Enter Housing Change', queries: ['Housing']},
-            {url: "<%=contextPath%>/ehr/WNPRC/EHR/manageTask.view?schemaName=study&queryName=Menses&keyField=lsid", title: 'Enter Menses Observation', queries: ['Menses']}
+            //{url: "<%=contextPath%>/ehr/WNPRC/EHR/manageTask.view?schemaName=study&queryName=Menses&keyField=lsid", title: 'Enter Menses Observation', queries: ['Menses']}
             //{url: "<%=contextPath%>/ehr/WNPRC/EHR/manageRecord.view?schemaName=study&queryName=Pair%20Tests&keyField=lsid", title: 'Enter Pair Test Record', queries: ['Housing', 'Behavior Remarks']}
         ], function(i){
             var q = [];
@@ -125,16 +125,9 @@ Ext.onReady(function(){
         };
 
         Ext.each([
-            //{url: "<%=contextPath%>/ehr/WNPRC/EHR/manageTask.view?formtype=Biopsy", title: 'Enter Biopsy', queries: ['Biopsies']},
-            //{url: "<%=contextPath%>/ehr/WNPRC/EHR/manageTask.view?formtype=Bacteriology", title: 'Enter Bacteriology Results', queries: ['Bacteriology Results']},
-            //{url: "<%=contextPath%>/ehr/WNPRC/EHR/manageTask.view?formtype=Chemistry", title: 'Enter Chemistry Results', queries: ['Chemistry Results']},
+            {url: "<%=contextPath%>/ehr/WNPRC/EHR/manageTask.view?formtype=Biopsy", title: 'Enter Biopsy', queries: ['Biopsies']},
             {url: "<%=contextPath%>/ehr/WNPRC/EHR/manageTask.view?formtype=Clinpath", title: 'Enter Clinpath Results', queries: ['Clinpath Runs'], qcstate: 'Completed'},
-            //{url: "<%=contextPath%>/ehr/WNPRC/EHR/manageTask.view?formtype=Hematology", title: 'Enter Hematology Results', queries: ['Hematology Results']},
-            //{url: "<%=contextPath%>/ehr/WNPRC/EHR/manageTask.view?formtype=Immunology", title: 'Enter Immunology Results', queries: ['Immunology Results']},
             {url: "<%=contextPath%>/ehr/WNPRC/EHR/manageTask.view?formtype=Necropsy", title: 'Enter Necropsy', queries: ['Necropsies']}
-            //{url: "<%=contextPath%>/ehr/WNPRC/EHR/manageTask.view?formtype=Parasitology", title: 'Enter Parasitology Results', queries: ['Parasitology Results']},
-            //{url: "<%=contextPath%>/ehr/WNPRC/EHR/manageTask.view?formtype=Urinalysis", title: 'Enter Urinalysis Results', queries: ['Urinalysis Results']},
-            //{url: "<%=contextPath%>/ehr/WNPRC/EHR/manageTask.view?formtype=Virology", title: 'Enter Virology Results', queries: ['Virology Results']}
         ], function(i){
             var q = [];
             Ext.each(i.queries, function(qn){
@@ -184,21 +177,77 @@ Ext.onReady(function(){
                 layout: 'anchor',
                 width: '100%',
                 boxMinWidth: 1000,
-                    items: [{
+                loadTab: function(t){
+                    if(this.parentTabPanel){
+                        var topTab = this.parentTabPanel.getActiveTab();
+                        if(topTab){
+                            var bottomTab = topTab.getActiveTab();
+                            if(bottomTab)
+                                Ext.History.add('topTab:'+topTab.itemId+'&activeReport:'+bottomTab.itemId);
+                        }
+                    }
+                },
+                restoreFromUrl: function(){
+                    if(document.location.hash){
+                        var token = document.location.hash.split('#');
+                        token = token[1].split('&');
+                        var topTab;
+                        var activeReport;
+                        for (var i=0;i<token.length;i++){
+                            var t = token[i].split(':');
+                            switch(t[0]){
+                                case 'activeReport':
+                                    activeReport = t[1];
+                                    break;
+                                case 'topTab':
+                                    topTab = t[1];
+                                    break;
+                            }
+                        }
+                    }
+
+                    if(topTab){
+                        this.parentTabPanel.setActiveTab(topTab);
+                        if(activeReport && this.parentTabPanel[topTab])
+                            this.parentTabPanel[topTab].setActiveTab(activeReport);
+                    }
+                    else {
+                        this.parentTabPanel.setActiveTab(0);
+                        this.parentTabPanel.items.get(0).setActiveTab(0)
+                    }
+
+                },
+                listeners: {
+                    render: function(r){
+                        this.restoreFromUrl();
+                    }
+                },
+                items: [{
         //                layout: 'anchor',
                         border: false,
                         items: [{
                             xtype: 'tabpanel',
                             autoHeight: true,
-                            activeTab: 0,
+                            ref: '../parentTabPanel',
+                            //activeTab: 0,
                             items: [{
                                 xtype: 'tabpanel',
-                                activeTab: 0,
+                                //activeTab: 0,
                                 title: 'Manage Tasks',
+                                ref: 'Tasks',
+                                itemId: 'Tasks',
                                 autoWidth: true,
                                 autoHeight: true,
+                                defaults: {
+                                    listeners: {
+                                        activate: onActivate,
+                                        click: onActivate
+                                    }
+                                },
                                 items: [{
                                     title: 'My Tasks',
+                                    ref: 'MyTasks',
+                                    itemId: 'MyTasks',
                                     xtype: 'ehr-qwppanel',
                                     cls: 'my-tasks-marker',
                                     queryConfig:  {
@@ -210,6 +259,8 @@ Ext.onReady(function(){
                                     }
                                 },{
                                     title: 'All Tasks',
+                                    ref: 'AllTasks',
+                                    itemId: 'AllTasks',
                                     xtype: 'ehr-qwppanel',
                                     cls: 'all-tasks-marker',
                                     queryConfig:  {
@@ -220,6 +271,8 @@ Ext.onReady(function(){
                                     }
                                 },{
                                     title: 'Tasks By Room',
+                                    ref: 'TasksByRoom',
+                                    itemId: 'TasksByRoom',
                                     xtype: 'ehr-qwppanel',
                                     cls: 'room-tasks-marker',
                                     queryConfig:  {
@@ -230,6 +283,8 @@ Ext.onReady(function(){
                                     }
                                 },{
                                     title: 'Tasks By Id',
+                                    ref: 'TasksById',
+                                    itemId: 'TasksById',
                                     xtype: 'ehr-qwppanel',
                                     cls: 'id-tasks-marker',
                                     queryConfig:  {
@@ -240,6 +295,8 @@ Ext.onReady(function(){
                                     }
                                 },{
                                     title: 'Review Required',
+                                    ref: 'ReviewRequired',
+                                    itemId: 'ReviewRequired',
                                     xtype: 'ehr-qwppanel',
                                     cls: 'review-requested-marker',
                                     queryConfig:  {
@@ -251,12 +308,22 @@ Ext.onReady(function(){
                                 }]
                             },{
                                 xtype: 'tabpanel',
-                                activeTab: 0,
-                                title: 'Manage Queues',
+                                //activeTab: 0,
+                                title: 'Manage Requests',
+                                ref: 'Requests',
+                                itemId: 'Requests',
                                 autoWidth: true,
                                 autoHeight: true,
+                                defaults: {
+                                    listeners: {
+                                        activate: onActivate,
+                                        click: onActivate
+                                    }
+                                },
                                 items: [{
                                     title: 'Pending Requests',
+                                    ref: 'PendingRequests',
+                                    itemId: 'PendingRequests',
                                     xtype: 'ehr-qwppanel',
                                     queryConfig:  {
                                         schemaName: 'study',
@@ -269,6 +336,8 @@ Ext.onReady(function(){
                                     }
                                 },{
                                     title: 'Approved Requests',
+                                    ref: 'ApprovedRequests',
+                                    itemId: 'ApprovedRequests',
                                     xtype: 'ehr-qwppanel',
                                     queryConfig:  {
                                         schemaName: 'study',
@@ -281,6 +350,8 @@ Ext.onReady(function(){
                                     }
                                 },{
                                     title: 'All Requests',
+                                    ref: 'AllRequests',
+                                    itemId: 'AllRequests',
                                     xtype: 'ehr-qwppanel',
                                     queryConfig:  {
                                         schemaName: 'study',
@@ -291,8 +362,10 @@ Ext.onReady(function(){
                                         ]
                                     }
                                 },{
-                                    title: 'Blood Draw Queue',
+                                    title: 'Blood Draw Requests',
                                     xtype: 'ehr-qwppanel',
+                                    ref: 'BloodDrawRequests',
+                                    itemId: 'BloodDrawRequests',
                                     queryConfig:  {
                                         schemaName: 'study',
                                         queryName: 'Blood Draws',
@@ -302,7 +375,9 @@ Ext.onReady(function(){
                                         //viewName: 'Blood Summary'
                                     }
                                 },{
-                                    title: 'Clinpath Queue',
+                                    title: 'Clinpath Requests',
+                                    ref: 'ClinpathRequests',
+                                    itemId: 'ClinpathRequests',
                                     xtype: 'ehr-qwppanel',
                                     queryConfig:  {
                                         schemaName: 'study',
@@ -313,7 +388,9 @@ Ext.onReady(function(){
                                         //viewName: 'Blood Summary'
                                     }
                                 },{
-                                    title: 'Procedure Queue',
+                                    title: 'Procedure Requests',
+                                    ref: 'ProcedureRequests',
+                                    itemId: 'ProcedureRequests',
                                     xtype: 'ehr-qwppanel',
                                     queryConfig:  {
                                         schemaName: 'study',
@@ -328,6 +405,9 @@ Ext.onReady(function(){
                     }]
             }).render('ehrTasks');
 
+            function onActivate(t){
+                this.ownerCt.ownerCt.ownerCt.ownerCt.loadTab(t);
+            }
         }
         else {
             alert('You do not have access to this page');

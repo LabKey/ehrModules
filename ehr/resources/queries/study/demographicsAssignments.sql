@@ -29,5 +29,5 @@ CASE
 END as AssignmentStatus
 
 FROM study.assignment a
-WHERE a.qcstate.publicdata = true and a.enddate is null
+WHERE a.qcstate.publicdata = true and (a.enddate is null or a.enddate > now())
 GROUP BY a.id

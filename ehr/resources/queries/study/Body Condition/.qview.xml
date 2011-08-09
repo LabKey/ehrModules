@@ -7,6 +7,7 @@
        <column name="weightStatus" />
        <column name="tattoo_chest" />
        <column name="tattoo_thigh" />
+       <column name="tattoo_remark" />
        <column name="Remark" />
        <column name="performedby" />
        <column name="qcstate" />

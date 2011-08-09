@@ -684,7 +684,7 @@ EHR.ext.SnomedCombo = Ext.extend(LABKEY.ext.ComboBox,
             valueField: 'code',
             typeAhead: true,
             mode: 'local',
-            listWidth: 200,
+            listWidth: 300,
             allowAnyValue: true,
             store: new LABKEY.ext.Store({
                 xtype: 'labkey-store',
@@ -769,19 +769,22 @@ EHR.ext.SnomedCombo = Ext.extend(LABKEY.ext.ComboBox,
         this.store.removeAll();
         delete this.store.baseParams['query.maxRows'];
 
-        if(subset == 'All'){
-            this.store.baseParams.schemaName = 'ehr';
+        if(!subset || subset == 'All'){
             this.store.baseParams['query.queryName'] = 'snomed';
             this.store.baseParams['query.columns'] = 'code,meaning';
             this.store.baseParams['query.sort'] = 'meaning';
+            this.store.sortInfo.field = 'meaning';
+            if(this.store.sortInfo)
+                delete this.store.baseParams['query.primaryCategory~eq'];
             this.displayField = 'meaning';
         }
         else {
-            this.store.baseParams.schemaName = 'ehr_lookups';
             LABKEY.Filter.appendFilterParams(this.store.baseParams, [LABKEY.Filter.create('primaryCategory', subset, LABKEY.Filter.Types.EQUAL)]);
             this.store.baseParams['query.queryName'] = 'snomed_subset_codes';
             this.store.baseParams['query.columns'] = 'secondaryCategory,code,code/meaning';
             this.store.baseParams['query.sort'] = 'secondaryCategory,code/meaning';
+            if(this.store.sortInfo)
+                this.store.sortInfo.field = 'secondaryCategory,code/meaning';
             this.displayField = 'code/meaning';
         }
 

@@ -20,6 +20,7 @@
                         </fk>
                     </column>
                     <column columnName="QCState">
+                        <columnTitle>Record Status</columnTitle>
                         <isHidden>true</isHidden>
                     </column>
                     <column columnName="status">
@@ -252,6 +253,9 @@
                           <!--<fkTable>studyDataParent</fkTable>-->
                           <!--<fkColumnName>objectid</fkColumnName>-->
                         <!--</fk>-->
+                    </column>
+                    <column columnName="geoOrigin">
+                        <columnTitle>Geographic Origin</columnTitle>
                     </column>
                 </columns>
             </table>

@@ -162,7 +162,7 @@ EHR.Assay.rApply = function(o, c){
 
 EHR.Assay.createRunsPage = function(){
 
-    EHR.Assay.showButtonBar(LABKEY.page.assay);
+//    EHR.Assay.showButtonBar(LABKEY.page.assay);
 
     var wp = new LABKEY.QueryWebPart({
         renderTo:"runsQWP"
@@ -178,7 +178,7 @@ EHR.Assay.createRunsPage = function(){
 
 EHR.Assay.createResultsPage = function(){
 
-    EHR.Assay.showButtonBar(LABKEY.page.assay);
+//    EHR.Assay.showButtonBar(LABKEY.page.assay);
 
     var wp = new LABKEY.QueryWebPart({
         renderTo:"resultsQWP"
@@ -206,7 +206,7 @@ EHR.Assay.createResultsPage = function(){
 
 EHR.Assay.createBatchesPage = function(){
 
-    EHR.Assay.showButtonBar(LABKEY.page.assay);
+//    EHR.Assay.showButtonBar(LABKEY.page.assay);
 
     var wp = new LABKEY.QueryWebPart({
         renderTo:"batchesQWP"

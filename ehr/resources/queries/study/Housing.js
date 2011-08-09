@@ -9,22 +9,22 @@ var {EHR, LABKEY, Ext, console, init, beforeInsert, afterInsert, beforeUpdate, a
 
 
 function onUpsert(context, errors, row, oldRow){
-//    //check for existing animals in this room/cage
-//    if(context.extraContext.dataSource != 'etl' && row.room && row.cage){
-//        LABKEY.Query.executeSql({
-//            schemaName: 'study',
-//            scope: this,
-//            sql: "SELECT group_concat(h.Id) as Ids FROM study.housing h WHERE c.room='"+row.room+"' AND c.cage='"+row.cage+"' AND id != '"+row.Id+"'",
-//            success: function(data){
-//                if(data.rows && data.rows.length){
-//                    row['Id/numRoommates/cagemates'] = data.rows[0].Ids;
-//                }
-//            },
-//            failure: EHR.onFailure
-//        });
-//
-//
-//    }
+    //check for existing animals in this room/cage
+    if(context.extraContext.dataSource != 'etl' && row.room && row.cage){
+        LABKEY.Query.executeSql({
+            schemaName: 'study',
+            scope: this,
+            sql: "SELECT group_concat(h.Id) as Ids, count(h.Id) as num FROM study.housing h WHERE h.room='"+row.room+"' AND h.cage='"+row.cage+"' AND h.id != '"+row.Id+"' and (h.enddate is null or h.enddate >= '"+row.date+"')",
+            success: function(data){
+                if(data.rows && data.rows.length){
+                    row['id/numroommates/cagemates'] = (data.rows[0].num ? ('('+data.rows[0].num+') ') + data.rows[0].Ids.join(',') : ' ');
+                }
+            },
+            failure: EHR.onFailure
+        });
+
+
+    }
 
 
 //    //determine whether the animal has enough room in this cage

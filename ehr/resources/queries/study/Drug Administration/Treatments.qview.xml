@@ -21,7 +21,7 @@
        <column name="qcstate" />
    </columns>
     <filters>
-        <filter column="category" operator="eq" value="surgfluid"/>
+        <filter column="category" operator="eq" value="Treatments"/>
         <!--<filter column="qcstate/publicdata" operator="eq" value="true"/>-->
     </filters>
     <sorts>

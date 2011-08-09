@@ -114,6 +114,7 @@
                         <columnTitle>Volume</columnTitle>
                     </column>
                     <column columnName="treatmentStatus">
+                        <!--<url>/ehr/taskDetails.view?formtype=${taskid/formtype}&amp;taskid=${taskid}</url>-->
                         <isHidden>false</isHidden>
                         <shownInDetailsView>true</shownInDetailsView>
                         <columnTitle>Status</columnTitle>
@@ -168,6 +169,16 @@
                                 <backgroundColor>FBEC5D</backgroundColor>
                             </conditionalFormat>
                         </conditionalFormats>
+                    </column>
+                    <column columnName="taskid">
+                        <isHidden>false</isHidden>
+                        <columnTitle>Task Id</columnTitle>
+                        <fk>
+                            <fkDbSchema>ehr</fkDbSchema>
+                            <fkTable>tasks</fkTable>
+                            <fkColumnName>taskid</fkColumnName>
+                        </fk>
+                        <url>/ehr/taskDetails.view?formtype=${taskid/formtype}&amp;taskid=${taskid}</url>
                     </column>
                 </columns>
                 <buttonBarOptions position="both" includeStandardButtons="false">

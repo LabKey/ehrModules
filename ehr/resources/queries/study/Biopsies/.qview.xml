@@ -3,6 +3,11 @@
        <column name="Id" />
        <column name="date" />
        <column name="caseno" />
+       <column name="type" />
+       <column name="nhpbmd" />
+       <column name="grossdescription" />
+       <column name="performedby" />
+       <column name="veterinarian" />
        <column name="remark" />
        <column name="qcstate" />
        <column name="taskid" />

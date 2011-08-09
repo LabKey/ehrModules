@@ -207,7 +207,9 @@ EHR.ext.AdvancedStore = Ext.extend(LABKEY.ext.Store, {
             rec = new this.recordType(data);
 
         this.fields.each(function(f) {
-            rec.data[f.name] = rec.data[f.name] || f.defaultValue || null;
+            rec.data[f.name] = Ext.isDefined(rec.data[f.name]) ? rec.data[f.name] :
+                               Ext.isDefined(f.defaultValue) ? f.defaultValue :
+                               null;
             if(Ext.isFunction(f.setInitialValue)){
                 rec.data[f.name] = f.setInitialValue.call(this, rec.data[f.name], rec, f);
             }
@@ -596,6 +598,10 @@ EHR.ext.AdvancedStore = Ext.extend(LABKEY.ext.Store, {
 
         if(serverError.row['id/curlocation/location'] && serverError.row['id/curlocation/location'] != record.get('id/curlocation/location')){
             record.set('id/curlocation/location', serverError.row['id/curlocation/location']);
+        }
+        if(serverError.row['id/numroommates/cagemates'] && serverError.row['id/numroommates/cagemates'] != record.get('id/numroommates/cagemates')){
+            console.log('setting: '+serverError.row['id/numroommates/cagemates']);
+            record.set('id/numroommates/cagemates', serverError.row['id/numroommates/cagemates']);
         }
 
         //remove all old errors for this record

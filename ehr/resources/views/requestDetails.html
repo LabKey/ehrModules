@@ -58,8 +58,8 @@ Ext.onReady(function(){
             formType: formType,
             renderTo: 'requestForm',
             noTabs: true,
-            readOnly: true
-            //allowableButtons: 'EDIT'
+            readOnly: true,
+            allowableButtons: []
         });
 
         LABKEY.NavTrail.setTrail('Task: '+(LABKEY.ActionURL.getParameter('title') || formType));

@@ -41,12 +41,12 @@ WHERE
 
 t.id != d.id OR
 t.code != d.code OR
-t.volume != d.volume OR
-t.vol_units != d.vol_units OR
-t.amount != d.amount OR
-t.amount_units != d.amount_units OR
-t.dosage != d.dosage OR
-t.dosage_units != d.dosage_units OR
-t.concentration != d.concentration OR
-t.conc_units != d.conc_units OR
+(t.volume is not null and t.volume != 0 and t.volume != d.volume) OR
+(t.vol_units is not null and t.vol_units != d.vol_units) OR
+(t.amount is not null and t.amount != 0 and t.amount != d.amount) OR
+(t.amount_units is not null and t.amount_units != d.amount_units) OR
+(t.dosage is not null and t.dosage != 0 and t.dosage != d.dosage) OR
+(t.dosage_units is not null and t.dosage_units != d.dosage_units) OR
+(t.concentration is not null and t.concentration != 0 and t.concentration != d.concentration) OR
+(t.conc_units is not null and t.conc_units != d.conc_units) OR
 t.route != d.route

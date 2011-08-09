@@ -8,7 +8,7 @@ var {EHR, LABKEY, Ext, console, init, beforeInsert, afterInsert, beforeUpdate, a
 
 
 function onUpsert(scriptContext, scriptErrors, row){
-    row.performedby = row.performedby || row.userid;
+    row.performedby = row.performedby || row.userid || null;
 
     if(row.cage && !isNaN(row.cage)){
         row.cage = EHR.validation.padDigits(row.cage, 4);

@@ -27,8 +27,9 @@
        <column name="amount2"/>
        <column name="remark"/>
        <column name="restraint"/>
-       <column name="initials"/>
+       <!--<column name="performedby"/>-->
        <column name="treatmentStatus"/>
+       <column name="taskId"/>
        <!--<column name="qcstate"/>-->
    </columns>
    <sorts>

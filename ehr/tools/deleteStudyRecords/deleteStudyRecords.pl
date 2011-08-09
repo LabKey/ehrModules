@@ -61,9 +61,6 @@ my $datestr=sprintf("%04d%02d%02d_%02d%02d", $tm->year+1900, ($tm->mon)+1, $tm->
 open(OUTPUT,">>", $log_file) || die "Unable to open file";
 flock(OUTPUT, 2) || die "Unable to open file";
 
-print OUTPUT "$datestr\tStarting\n";
-
-
 my $datasets = findDatasets();
 foreach my $dataset (@$datasets){
     doDelete('study', $dataset, 'lsid')
@@ -83,10 +80,11 @@ sub doDelete {
 		-containerPath => $default_container,
 		-schemaName => $schema,
 		-queryName => $query,
-		-filterArray => [['QCState/Label', 'eq', 'Delete Requested']]
+		-filterArray => [['QCState/Label', 'eq', 'Delete Requested']],
 		#-columns => $args->{columns},			
+		#-debug => 1,
 	);	
-				
+			
 	my $toDelete = [];
 	if(@{$results->{rows}}){
 		my @fields;
@@ -135,6 +133,7 @@ sub findDatasets {
 		-containerPath => $default_container,
 		-schemaName => 'study',
 		-queryName => 'datasets',
+		-filterArray => [['KeyManagementType', 'eq', 'GUID']],
 	);
 	
 	my $datasets = [];
@@ -147,7 +146,6 @@ sub findDatasets {
 }
 	
 touch($log_file);
-#unlink($lock_file);
 close OUTPUT;
 
 

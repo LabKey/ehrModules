@@ -497,7 +497,7 @@ my $smtp = Net::SMTP->new($mail_server,
 $smtp->mail( $from );
 my @goodrecips=$smtp->recipient(@email_recipients, { Notify => ['FAILURE'], SkipBad => 1 });  
 $smtp->data();
-$smtp->datasend("Subject: Daily Colony Alerts \n");
+$smtp->datasend("Subject: Daily Colony Alerts: $datestr\n");
 $smtp->datasend("Content-Type: text/html \n");
 $smtp->datasend("\n");
 $smtp->datasend($email_html);

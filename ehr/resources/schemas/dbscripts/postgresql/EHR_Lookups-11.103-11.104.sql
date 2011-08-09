@@ -19,7 +19,7 @@ WITH (OIDS=FALSE)
 INSERT INTO ehr_lookups.blood_billed_by
 (code, title) VALUES
 ('a', 'Animal Care'),
-('c', 'CPI'),
+('c', 'SPI'),
 ('n', 'Neither')
 ;
 

@@ -6,7 +6,12 @@
 
 var {EHR, LABKEY, Ext, console, init, beforeInsert, afterInsert, beforeUpdate, afterUpdate, beforeDelete, afterDelete, complete} = require("ehr/validation");
 
-
+function onInit(event, context){
+    context.allowDeadIds = true;
+    context.allowAnyId = true;
+    context.extraContext = context.extraContext || {};
+    context.extraContext.skipIdFormatCheck = true;
+}
 
 
 function onETL(row, errors){
@@ -18,14 +23,14 @@ function setDescription(row, errors){
     //we need to set description for every field
     var description = new Array();
 
-    description.push('Case No: '+EHR.validation.nullToString(row.caseno));
+    if(row.caseno)
+        description.push('Case No: '+EHR.validation.nullToString(row.caseno));
+    if(row.type)
+        description.push('Type: '+EHR.validation.nullToString(row.type));
+    if(row.veterinarian)
+        description.push('Veterinarian: '+EHR.validation.nullToString(row.veterinarian));
+    if(row.nhpbmd)
+        description.push('NHPBMD?: '+EHR.validation.nullToString(row.nhpbmd));
 
     return description;
 }
-
-//function onInsert(context, errors, row){
-//    // auto-calculate the CaseNo
-//    if(context.extraContext.dataSource != 'etl' && row.date)
-//        EHR.validation.calculateCaseno(row, errors, 'biopsy', 'b')
-//
-//}

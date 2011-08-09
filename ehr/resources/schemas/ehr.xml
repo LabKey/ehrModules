@@ -1720,7 +1720,71 @@
         <ns:inputType>textarea</ns:inputType>
         <ns:scale>4000</ns:scale>
       </ns:column>
-
+      <ns:column columnName="createdby">
+        <ns:isUserEditable>false</ns:isUserEditable>
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>userid</ns:datatype>
+        <ns:scale>4</ns:scale>
+        <ns:isHidden>true</ns:isHidden>
+      </ns:column>
+      <ns:column columnName="created">
+        <ns:isUserEditable>false</ns:isUserEditable>
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>timestamp</ns:datatype>
+        <ns:scale>29</ns:scale>
+        <ns:isHidden>true</ns:isHidden>
+      </ns:column>
+      <ns:column columnName="modifiedby">
+        <ns:isUserEditable>false</ns:isUserEditable>
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>userid</ns:datatype>
+        <ns:scale>4</ns:scale>
+        <ns:isHidden>true</ns:isHidden>
+      </ns:column>
+      <ns:column columnName="modified">
+        <ns:isUserEditable>false</ns:isUserEditable>
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>timestamp</ns:datatype>
+        <ns:scale>29</ns:scale>
+        <ns:isHidden>true</ns:isHidden>
+      </ns:column>
+    </ns:columns>
+  </ns:table>
+  <ns:table tableName="kinship" tableDbType="TABLE">
+    <ns:pkColumnName>rowid</ns:pkColumnName>
+    <ns:columns>
+      <ns:column columnName="rowid">
+        <ns:datatype>serial</ns:datatype>
+        <ns:shownInInsertView>false</ns:shownInInsertView>
+        <ns:isAutoInc>true</ns:isAutoInc>
+        <ns:scale>10</ns:scale>
+      </ns:column>
+      <ns:column columnName="Id">
+        <ns:nullable>false</ns:nullable>
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>100</ns:scale>
+      </ns:column>
+      <ns:column columnName="Id2">
+        <ns:nullable>false</ns:nullable>
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>100</ns:scale>
+      </ns:column>
+      <ns:column columnName="coefficient">
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>double</ns:datatype>
+        <ns:scale>10</ns:scale>
+      </ns:column>
+      <ns:column columnName="container">
+        <ns:isUserEditable>false</ns:isUserEditable>
+        <ns:datatype>entityid</ns:datatype>
+        <ns:isHidden>true</ns:isHidden>
+        <ns:scale>36</ns:scale>
+        <ns:fk>
+          <ns:fkDbSchema>core</ns:fkDbSchema>
+          <ns:fkTable>containers</ns:fkTable>
+          <ns:fkColumnName>entityid</ns:fkColumnName>
+        </ns:fk>
+      </ns:column>
       <ns:column columnName="createdby">
         <ns:isUserEditable>false</ns:isUserEditable>
         <ns:nullable>true</ns:nullable>

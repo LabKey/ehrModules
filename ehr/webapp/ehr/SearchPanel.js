@@ -66,9 +66,10 @@ EHR.ext.SearchPanel = Ext.extend(Ext.Panel, {
             ,schemaName: this.schemaName
             ,viewName: this.viewName
             ,maxRows: 0
+            ,includeTotalCount: false
             ,timeout: 0
-            ,successCallback: this.onLoad
-            ,failure: EHR.utils.onError
+            //,successCallback: this.onLoad
+            //,failure: EHR.utils.onError
             ,scope: this
             ,autoLoad: true
             ,metadata: this.metadata
@@ -76,6 +77,7 @@ EHR.ext.SearchPanel = Ext.extend(Ext.Panel, {
         });
 
         this.store.on('load', this.onLoad, this);
+        this.store.on('commitexception', EHR.utils.onError, this);
 
         Ext.Ajax.timeout = 120000; //in milliseconds
     },

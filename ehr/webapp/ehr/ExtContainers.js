@@ -527,7 +527,8 @@ EHR.ext.TreatmentSelector = Ext.extend(Ext.Panel, {
                 dosage_units: row.dosage_units,
                 parentId: row.primaryKey,
                 performedby: null,
-                remark: row.remark
+                remark: row.remark,
+                category: 'Treatments'
             });
         }, this);
 
@@ -541,6 +542,177 @@ EHR.ext.TreatmentSelector = Ext.extend(Ext.Panel, {
 });
 Ext.reg('ehr-treatmentselector', EHR.ext.TreatmentSelector);
 
+
+
+EHR.ext.BloodSelector = Ext.extend(Ext.Panel, {
+    initComponent: function()
+    {
+        Ext.applyIf(this, {
+            layout: 'form'
+            ,title: 'Import Scheduled Blood Draws'
+            ,bodyBorder: true
+            ,border: true
+            //,frame: true
+            ,bodyStyle: 'padding:5px'
+            ,width: 350
+            ,defaults: {
+                width: 200,
+                border: false,
+                bodyBorder: false
+            }
+            ,items: [{
+                emptyText:''
+                ,fieldLabel: 'Room'
+                ,ref: 'roomField'
+                ,xtype: 'textfield'
+                ,listeners: {
+                    render: function(field){
+                        field.el.set({autocomplete: 'off'});
+                    },
+                    change: function(field, room){
+                        if(room){
+                            room = room.replace(/[\s,;]+/g, ';');
+                            room = room.replace(/(^;|;$)/g, '');
+                            room = room.toLowerCase();
+                            field.setValue(room);
+                        }
+                    }
+                }
+//            },{
+//                emptyText:''
+//                ,fieldLabel: 'Time of Day'
+//                ,ref: 'timeField'
+//                ,xtype: 'combo'
+//                ,displayField:'time'
+//                ,valueField: 'time'
+//                ,typeAhead: true
+//                ,mode: 'local'
+//                ,triggerAction: 'all'
+//                ,editable: true
+//                ,store: new Ext.data.ArrayStore({
+//                    fields: [
+//                        'time'
+//                    ],
+//                    idIndex: 0,
+//                    data: [
+//                        ['AM'],
+//                        //['Noon'],
+//                        ['PM'],
+//                        ['Night']
+//                    ]
+//                })
+            }],
+            buttons: [{
+                text:'Submit',
+                disabled:false,
+                ref: '../submit',
+                scope: this,
+                handler: function(s){
+                    this.getRecords();
+                }
+            },{
+                text: 'Close',
+                scope: this,
+                handler: function(){
+                    this.ownerCt.hide();
+                }
+            }]
+        });
+
+        EHR.ext.BloodSelector.superclass.initComponent.call(this, arguments);
+    },
+
+    getFilterArray: function(button)
+    {
+        var room = (this.roomField ? this.roomField.getValue() : null);
+        var area = (this.areaField ? this.areaField.getValue() : null);
+
+        if (!room)
+        {
+            alert('Must provide room');
+            return;
+        }
+
+        var filterArray = [];
+
+        filterArray.push(LABKEY.Filter.create('date', new Date(), LABKEY.Filter.Types.DATE_EQUAL));
+        filterArray.push(LABKEY.Filter.create('taskid', null, LABKEY.Filter.Types.ISBLANK));
+        filterArray.push(LABKEY.Filter.create('drawStatus', 'Pending', LABKEY.Filter.Types.EQUAL));
+
+        if (area)
+            filterArray.push(LABKEY.Filter.create('CurrentRoom/area', area, LABKEY.Filter.Types.EQUAL));
+
+        if (room)
+            filterArray.push(LABKEY.Filter.create('CurrentRoom', room, LABKEY.Filter.Types.EQUALS_ONE_OF));
+
+        return filterArray;
+    },
+
+    getRecords: function(button)
+    {
+        var filterArray = this.getFilterArray();
+        if (!filterArray || !filterArray.length)
+        {
+            return;
+        }
+
+        Ext.Msg.wait("Loading...");
+        this.ownerCt.hide();
+
+        //find distinct animals matching criteria
+        LABKEY.Query.selectRows({
+            schemaName: 'study',
+            queryName: 'BloodSchedule',
+            sort: 'CurrentRoom,CurrentCage,Id',
+            columns: 'lsid,Id,date,CurrentRoom,CurrentCage',
+            filterArray: filterArray,
+            scope: this,
+            success: this.onSuccess,
+            failure: function(error){
+                Ext.Msg.hide();
+                alert(error.exception);
+            }
+        });
+
+    },
+    onSuccess: function(results){
+        if (!results.rows || !results.rows.length)
+        {
+            alert('No uncompleted blood draws were found.');
+            Ext.Msg.hide();
+            return;
+        }
+
+        var ids = {};
+        var records = [];
+        var obj;
+        Ext.each(results.rows, function(row){
+            records.push({
+                lsid: row.lsid,
+                taskid: this.taskId
+            });
+        }, this);
+
+        if (this.targetStore){
+            LABKEY.Query.updateRows({
+                schemaName: 'study',
+                queryName: 'Blood Draws',
+                scope: this,
+                rows: records,
+                success: function(data){
+                    this.targetStore.load();
+                    Ext.Msg.hide();
+                },
+                failure: function(error){
+                    Ext.Msg.hide();
+                    alert(error.exception);
+                }
+            });
+        }
+    }
+
+});
+Ext.reg('ehr-bloodselector', EHR.ext.BloodSelector);
 
 
 EHR.ext.ImportPanelHeader = Ext.extend(EHR.ext.FormPanel, {

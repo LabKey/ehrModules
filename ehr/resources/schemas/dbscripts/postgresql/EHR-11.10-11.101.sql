@@ -303,7 +303,7 @@ INSERT into ehr.notificationTypes
 VALUES
 ('Clinpath Service Request', ''),
 ('Pathology Service Request', ''),
-('CPI Service Request', ''),
+('SPI Service Request', ''),
 ('Animal Care Service Request', ''),
 ('Colony Validation - General', 'Subscribing to this notification will result in emails for general colony records issues like records needing attention, animals missing from the demographics table, etc.')
 ;

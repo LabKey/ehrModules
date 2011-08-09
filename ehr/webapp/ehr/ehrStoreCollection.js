@@ -337,6 +337,25 @@ EHR.ext.StoreCollection = Ext.extend(Ext.util.MixedCollection, {
         }, this);
     },
 
+    requestDeleteAllRecords: function(options){
+        options = options || {};
+
+        //add a context flag to the request to saveRows
+        var extraContext = Ext.apply({
+            importPathway: 'ehr-importPanel'
+        }, options);
+
+        this.each(function(s){
+            s.removePhantomRecords();
+        }, this);
+
+        //we delay this event so that any modified fields can fire their blur events and/or commit changes
+        this.commitChanges.defer(300, this, [extraContext, true]);
+
+        //NOTE: since this will navigate away from this page, we dont need to bother removing
+        //these records from the store
+    },
+
     getAllRecords: function(){
         var records = [];
         this.each(function(s){

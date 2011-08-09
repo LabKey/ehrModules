@@ -18,7 +18,7 @@
                   <column columnName="date">
                     <datatype>timestamp</datatype>
                     <formatString>yyyy-MM-dd</formatString>
-                    <columnTitle>Date</columnTitle>
+                    <columnTitle>Necropsy Date</columnTitle>
                     <nullable>false</nullable>
                     <propertyURI>http://cpas.labkey.com/Study#VisitDate</propertyURI>
                   </column>
@@ -98,10 +98,12 @@
                   <column columnName="perfusion_time1">
                     <datatype>varchar</datatype>
                     <columnTitle>Perfusion Time 1</columnTitle>
+                    <formatString>yyyy-MM-dd HH:mm</formatString>
                   </column>
                   <column columnName="perfusion_time2">
                     <datatype>varchar</datatype>
                     <columnTitle>Perfusion Time 2</columnTitle>
+                    <formatString>yyyy-MM-dd HH:mm</formatString>
                   </column>
                   <column columnName="bcs">
                     <datatype>varchar</datatype>
@@ -186,6 +188,29 @@
                       <columnTitle>Comments</columnTitle>
                       <inputType>textarea</inputType>
                   </column>
+                  <column columnName="causeofdeath">
+                    <datatype>varchar</datatype>
+                    <columnTitle>Type of Death</columnTitle>
+                    <fk>
+                      <fkFolderPath>/wnprc/ehr/</fkFolderPath>
+                      <fkDbSchema>ehr_lookups</fkDbSchema>
+                      <fkTable>death_cause</fkTable>
+                      <fkColumnName>cause</fkColumnName>
+                    </fk>
+                  </column>
+                  <column columnName="mannerofdeath">
+                    <datatype>varchar</datatype>
+                    <columnTitle>Manner of Death</columnTitle>
+                    <fk>
+                      <fkFolderPath>/wnprc/ehr/</fkFolderPath>
+                      <fkDbSchema>ehr_lookups</fkDbSchema>
+                      <fkTable>death_manner</fkTable>
+                      <fkColumnName>manner</fkColumnName>
+                    </fk>
+                  </column>
+                    <column columnName="tattoo">
+                      <columnTitle>Tattoo/Tag</columnTitle>
+                    </column>
                 </columns>
                 <tableTitle>Necropsies</tableTitle>
             </table>

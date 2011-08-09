@@ -12,6 +12,7 @@
       <column name="inflammation"/>
       <column name="etiology"/>
       <column name="process"/>
+      <column name="process2"/>
       <column name="qcstate"/>
       <!--<column name="code/code">-->
           <!--<properties>-->

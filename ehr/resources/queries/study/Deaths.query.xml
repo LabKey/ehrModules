@@ -19,12 +19,22 @@
                     </column>
                   <column columnName="cause">
                     <datatype>varchar</datatype>
-                    <columnTitle>Cause</columnTitle>
+                    <columnTitle>Type of Death</columnTitle>
                     <fk>
                       <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                       <fkDbSchema>ehr_lookups</fkDbSchema>
                       <fkTable>death_cause</fkTable>
-                      <fkColumnName>Cause</fkColumnName>
+                      <fkColumnName>cause</fkColumnName>
+                    </fk>
+                  </column>
+                  <column columnName="manner">
+                    <datatype>varchar</datatype>
+                    <columnTitle>Manner of Death</columnTitle>
+                    <fk>
+                      <fkFolderPath>/wnprc/ehr/</fkFolderPath>
+                      <fkDbSchema>ehr_lookups</fkDbSchema>
+                      <fkTable>death_manner</fkTable>
+                      <fkColumnName>manner</fkColumnName>
                     </fk>
                   </column>
                   <column columnName="necropsy">
@@ -43,9 +53,6 @@
                     <displayWidth>110</displayWidth>
                     <inputType>textarea</inputType>
                   </column>
-                  <column columnName="roomattime">
-                      <columnTitle>Room At Time</columnTitle>
-                  </column>
                   <column columnName="cageattime">
                       <columnTitle>Cage At Time</columnTitle>
                   </column>
@@ -58,6 +65,32 @@
                     <isHidden>true</isHidden>
                     <!--<isKeyField>true</isKeyField>-->
                   </column>
+                    <column columnName="tattoo">
+                        <columnTitle>Tattoo/Tag Number</columnTitle>
+                    </column>
+                    <column columnName="dam">
+                        <columnTitle>Dam (infants only)</columnTitle>
+                    </column>
+                    <column columnName="performedby">
+                        <columnTitle>Entered By</columnTitle>
+                    </column>
+                    <column columnName="roomattime">
+                        <datatype>varchar</datatype>
+                        <columnTitle>Room At Time</columnTitle>
+                        <!--<url>/EHR/cageDetails.view?-->
+                            <!--room=${room}&amp;-->
+                            <!--cage=${cage}&amp;-->
+                        <!--</url>-->
+                        <fk>
+                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
+                            <fkDbSchema>ehr_lookups</fkDbSchema>
+                            <fkTable>rooms</fkTable>
+                            <fkColumnName>room</fkColumnName>
+                        </fk>
+                    </column>
+                    <column columnName="notAtCenter">
+                        <columnTitle>Death Was Not At Center</columnTitle>
+                    </column>
                 </columns>
             </table>
         </tables>

@@ -110,6 +110,18 @@ EHR.ext.Buttons = {
         scope: this
         }
     },
+    DELETEBTN: function(){return {
+        text: 'Delete',
+        name: 'delete',
+        ref: 'deleteBtn',
+        targetQC: 'Delete Requested',
+        requiredQC: 'Delete Requested',
+        successURL: LABKEY.ActionURL.getParameter('srcURL') || LABKEY.ActionURL.buildURL("ehr", "dataEntry.view"),
+        handler: this.requestDelete,
+        //handler: this.onSubmit,
+        scope: this
+        }
+    },
     CLOSE: function(){return {
         text: 'Save & Close',
         name: 'closeBtn',
@@ -508,23 +520,13 @@ Ext.extend(EHR.ext.ImportPanelBase, Ext.Panel, {
                 {
                     Ext.Msg.wait("Discarding Form...");
 
-                    //add a context flag to the request to saveRows
                     var extraContext = {
-                        targetQC : 'Delete Requested',
                         errorThreshold: o.errorThreshold,
                         successURL : o.successURL,
                         importPathway: 'ehr-importPanel'
                     };
 
-                    this.store.each(function(s){
-                        s.removePhantomRecords();
-                    }, this);
-
-                    //we delay this event so that any modified fields can fire their blur events and/or commit changes
-                    this.store.commitChanges.defer(300, this.store, [extraContext, true]);
-
-                    //NOTE: since this will navigate away from this page, we dont need to bother removing
-                    //these records from the store
+                    this.store.requestDeleteAllRecords(extraContext);
                 }
             }, this);
     },
@@ -610,7 +612,7 @@ EHR.ext.TaskPanel = Ext.extend(EHR.ext.ImportPanelBase, {
             formUUID: this.formUUID,
             importPanel: this,
             readOnly: this.readOnly,
-            metadata: EHR.ext.getTableMetadata('tasks', ['Task']),
+            metadata: EHR.ext.getTableMetadata('tasks', this.taskHeaderMetaSources || ['Task']),
             storeConfig: {
                 canSaveInTemplate: false
             }

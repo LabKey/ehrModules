@@ -171,7 +171,7 @@ $smtp->mail( $from );
 $smtp->recipient(@email_recipients, { Notify => ['FAILURE'], SkipBad => 1 });  
 
 $smtp->data();
-$smtp->datasend("Subject: Weight Drops \n");
+$smtp->datasend("Subject: Weight Drops: $datestr\n");
 $smtp->datasend("Content-Transfer-Encoding: US-ASCII\n");
 $smtp->datasend("Content-Type: text/html; charset=\"US-ASCII\" \n");
 $smtp->datasend("\n");

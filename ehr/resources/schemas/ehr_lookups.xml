@@ -422,10 +422,20 @@
     </ns:columns>
   </ns:table>
   <ns:table tableName="death_cause" tableDbType="TABLE">
-    <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr_lookups&amp;query.queryName=death_cause&amp;code=${code}</ns:tableUrl>
+    <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr_lookups&amp;query.queryName=death_cause&amp;cause=${cause}</ns:tableUrl>
     <ns:pkColumnName>cause</ns:pkColumnName>
     <ns:columns>
       <ns:column columnName="cause">
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>50</ns:scale>
+      </ns:column>
+    </ns:columns>
+  </ns:table>
+  <ns:table tableName="death_manner" tableDbType="TABLE">
+    <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr_lookups&amp;query.queryName=death_manner&amp;manner=${manner}</ns:tableUrl>
+    <ns:pkColumnName>manner</ns:pkColumnName>
+    <ns:columns>
+      <ns:column columnName="manner">
         <ns:datatype>varchar</ns:datatype>
         <ns:scale>50</ns:scale>
       </ns:column>
@@ -1247,17 +1257,71 @@
       <ns:column columnName="code">
         <ns:datatype>varchar</ns:datatype>
         <ns:scale>100</ns:scale>
-        <!--<ns:fk>-->
-            <!--<ns:fkDbSchema>ehr_lookups</ns:fkDbSchema>-->
-            <!--<ns:fkTable>snomed</ns:fkTable>-->
-            <!--<ns:fkColumnName>code</ns:fkColumnName>-->
-        <!--</ns:fk>-->
+        <ns:fk>
+            <ns:fkDbSchema>ehr_lookups</ns:fkDbSchema>
+            <ns:fkTable>snomed</ns:fkTable>
+            <ns:fkColumnName>code</ns:fkColumnName>
+        </ns:fk>
       </ns:column>
         <ns:column columnName="primaryCategory">
           <ns:datatype>varchar</ns:datatype>
           <ns:scale>100</ns:scale>
+            <ns:fk>
+              <ns:fkDbSchema>ehr_lookups</ns:fkDbSchema>
+              <ns:fkTable>snomed_subsets</ns:fkTable>
+              <ns:fkColumnName>subset</ns:fkColumnName>
+            </ns:fk>
         </ns:column>
         <ns:column columnName="secondaryCategory">
+          <ns:datatype>varchar</ns:datatype>
+          <ns:scale>100</ns:scale>
+        </ns:column>
+      <ns:column columnName="container">
+        <ns:isUserEditable>false</ns:isUserEditable>
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>entityid</ns:datatype>
+        <ns:isHidden>true</ns:isHidden>
+        <ns:scale>36</ns:scale>
+        <ns:fk>
+          <ns:fkDbSchema>core</ns:fkDbSchema>
+          <ns:fkTable>containers</ns:fkTable>
+          <ns:fkColumnName>entityid</ns:fkColumnName>
+        </ns:fk>
+      </ns:column>
+      <ns:column columnName="createdby">
+        <ns:isUserEditable>false</ns:isUserEditable>
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>userid</ns:datatype>
+        <ns:scale>4</ns:scale>
+        <ns:isHidden>true</ns:isHidden>
+      </ns:column>
+      <ns:column columnName="created">
+        <ns:isUserEditable>false</ns:isUserEditable>
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>timestamp</ns:datatype>
+        <ns:scale>29</ns:scale>
+        <ns:isHidden>true</ns:isHidden>
+      </ns:column>
+      <ns:column columnName="modifiedby">
+        <ns:isUserEditable>false</ns:isUserEditable>
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>userid</ns:datatype>
+        <ns:scale>4</ns:scale>
+        <ns:isHidden>true</ns:isHidden>
+      </ns:column>
+      <ns:column columnName="modified">
+        <ns:isUserEditable>false</ns:isUserEditable>
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>timestamp</ns:datatype>
+        <ns:scale>29</ns:scale>
+        <ns:isHidden>true</ns:isHidden>
+      </ns:column>
+    </ns:columns>
+  </ns:table>
+  <ns:table tableName="snomed_subsets" tableDbType="TABLE">
+    <ns:pkColumnName>subset</ns:pkColumnName>
+    <ns:columns>
+        <ns:column columnName="subset">
           <ns:datatype>varchar</ns:datatype>
           <ns:scale>100</ns:scale>
         </ns:column>
@@ -1739,6 +1803,15 @@
         <ns:scale>20</ns:scale>
       </ns:column>
       <ns:column columnName="display">
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>100</ns:scale>
+      </ns:column>
+    </ns:columns>
+  </ns:table>
+  <ns:table tableName="biopsy_type" tableDbType="TABLE">
+    <ns:pkColumnName>type</ns:pkColumnName>
+    <ns:columns>
+      <ns:column columnName="type">
         <ns:datatype>varchar</ns:datatype>
         <ns:scale>100</ns:scale>
       </ns:column>

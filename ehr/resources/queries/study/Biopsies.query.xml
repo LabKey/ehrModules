@@ -12,6 +12,26 @@
                     <column columnName="caseno">
                         <nullable>true</nullable>
                     </column>
+                  <column columnName="nhpbmd">
+                      <columnTitle>NHPBMD</columnTitle>
+                  </column>
+                  <column columnName="remark">
+                      <columnTitle>Final Summary Comments</columnTitle>
+                  </column>
+                  <column columnName="grossdescription">
+                      <columnTitle>Gross Morphologic Description</columnTitle>
+                      <inputType>textarea</inputType>
+                  </column>
+                  <column columnName="type">
+                    <datatype>varchar</datatype>
+                    <columnTitle>Type</columnTitle>
+                    <fk>
+                      <fkFolderPath>/wnprc/ehr/</fkFolderPath>
+                      <fkDbSchema>ehr_lookups</fkDbSchema>
+                      <fkTable>biopsy_type</fkTable>
+                      <fkColumnName>type</fkColumnName>
+                    </fk>
+                  </column>
                 </columns>
             </table>
         </tables>

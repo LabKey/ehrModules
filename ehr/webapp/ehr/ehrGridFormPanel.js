@@ -10,6 +10,7 @@ LABKEY.requiresScript("/ehr/ehrFormPanel.js");
 
 
 
+
 EHR.ext.GridFormPanel = Ext.extend(Ext.Panel,
 {
     initComponent: function()
@@ -556,6 +557,7 @@ EHR.ext.GridFormPanel = Ext.extend(Ext.Panel,
                             ,valueField: 'value'
                             ,typeAhead: true
                             ,triggerAction: 'all'
+                            ,isFormField: false
                             ,mode: 'local'
                             ,width: 200
                             ,editable: false
@@ -568,18 +570,30 @@ EHR.ext.GridFormPanel = Ext.extend(Ext.Panel,
                                     editor.width = 200;
                                     if(editor.originalConfig.inputType=='textarea')
                                         editor.height = 100;
+                                    editor.ref = editor.name;
 
-                                    batchEditWin.remove(batchEditWin.items.last());
-                                    batchEditWin.fieldVal = batchEditWin.add(editor);
+                                    if(!batchEditWin[editor.name]){
+                                        batchEditWin.fieldVal = batchEditWin.add(editor);
+                                    }
+                                    combo.setValue('');
                                     batchEditWin.doLayout();
 
                                 }
                             }
-                        },{
-                            xtype: 'displayfield',
-                            fieldLabel: 'Enter Value'
                         }],
                         buttons: [{
+                            text:'Reset',
+                            disabled:false,
+                            ref: '../reset',
+                            scope: this,
+                            handler: function(){
+                                batchEditWin.items.each(function(item){
+                                    if(item.isFormField){
+                                        batchEditWin.remove(item);
+                                    }
+                                }, this);
+                            }
+                        },{
                             text:'Submit',
                             disabled:false,
                             formBind: true,
@@ -604,31 +618,44 @@ EHR.ext.GridFormPanel = Ext.extend(Ext.Panel,
 
                     function onEdit(){
                         batchEditWin.hide();
-                        if(!batchEditWin.fieldName || !batchEditWin.fieldName.getValue())
-                            return;
-                        var f = batchEditWin.fieldName.getValue();
-                        var v = batchEditWin.fieldVal.getValue();
-                        if (batchEditWin.fieldVal instanceof Ext.form.RadioGroup){
-                            v = (batchEditWin.fieldVal.getValue() ? batchEditWin.fieldVal.getValue().inputValue : null);
-                        }
-                        else if (batchEditWin.fieldVal instanceof Ext.form.Radio){
-                            if(batchEditWin.fieldVal.checked)
-                                v = batchEditWin.fieldVal.getValue();
-                            else
-                                v = false;
-                        }
-                        else if (batchEditWin.fieldVal instanceof Ext.form.CheckboxGroup){
-                            v = batchEditWin.fieldVal.getValueAsString();
-                        }
-                        else
-                            v = batchEditWin.fieldVal.getValue();
+                        var toChange = [];
+                        batchEditWin.items.each(function(item){
+                            if(item.isFormField){
+                                var v;
+                                if (item instanceof Ext.form.RadioGroup){
+                                    v = (item.getValue() ? item.getValue().inputValue : null);
+                                }
+                                else if (item instanceof Ext.form.Radio){
+                                    if(item.checked)
+                                        v = item.getValue();
+                                    else
+                                        v = false;
+                                }
+                                else if (item instanceof Ext.form.CheckboxGroup){
+                                    v = item.getValueAsString();
+                                }
+                                else
+                                    v = item.getValue();
 
+                                toChange.push([item.name, v]);
+                            }
+                        }, this);
 
                         for (var i = 0, r; r = s[i]; i++){
-                            r.set(f, v);
+                            r.beginEdit();
+                            Ext.each(toChange, function(i){
+                                r.set(i[0], i[1]);
+                            });
+                            r.endEdit();
                         }
-                        batchEditWin.fieldName.reset();
+
+                        //reset the form
                         batchEditWin.fieldVal.reset();
+                        batchEditWin.items.each(function(item){
+                            if(item.isFormField){
+                                batchEditWin.remove(item);
+                            }
+                        }, this);
                     }
                 }
         },
@@ -714,6 +741,30 @@ EHR.ext.GridFormPanel = Ext.extend(Ext.Panel,
                         }, this);
                     }
                 }, this);
+            }
+        },
+
+        addscheduledblood: {
+            text: 'Add Scheduled Blood',
+            requiredQC: 'In Progress',
+            xtype: 'button',
+            scope: this,
+            tooltip: 'Click to add scheduled blood draws',
+            name: 'add-blood-button',
+            handler: function()
+            {
+                this.bloodSelectorWin = new Ext.Window({
+                    closeAction:'hide',
+                    width: 350,
+                    items: [{
+                        xtype: 'ehr-bloodselector',
+                        ref: 'bloodselector',
+                        targetStore: this.store,
+                        title: ''
+                    }]
+                });
+
+                this.bloodSelectorWin.show();
             }
         }
     }

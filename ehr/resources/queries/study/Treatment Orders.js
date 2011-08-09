@@ -166,7 +166,7 @@ function onETL(row, errors){
 
     row.meaning = row.meaning || row.snomedMeaning || null;
 
-    row.performedby = row.performedby || row.userid;
+    row.performedby = row.performedby || row.userid || null;
 
 }
 

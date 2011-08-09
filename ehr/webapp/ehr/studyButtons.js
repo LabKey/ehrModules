@@ -58,6 +58,7 @@ function moreActionsHandler(dataRegion){
         if(dataRegion.schemaName.match(/^study$/i) && dataRegion.queryName.match(/^Assignment$/i)){
             if(EHR.permissionMap.hasPermission('Completed', 'update', {queryName: 'Assignment', schemaName: 'study'})){
                 markComplete(dataRegion, menu, 'study', 'Assignment');
+                addAssignmentTaskBtn(dataRegion, menu);
             }
         }
 
@@ -1132,6 +1133,23 @@ function changeQCStateBtn(dataRegion, menu){
                         displayField: 'Label',
                         valueField: 'RowId',
                         ref: 'qcstate'
+                    },{
+                        xtype: 'combo',
+                        width: 200,
+                        triggerAction: 'all',
+                        mode: 'local',
+                        fieldLabel: 'Billed By (for blood only)',
+                        store: new LABKEY.ext.Store({
+                            xtype: 'labkey-store',
+                            schemaName: 'ehr_lookups',
+                            queryName: 'blood_billed_by',
+                            columns: 'code,title',
+                            sort: 'title',
+                            autoLoad: true
+                        }),
+                        displayField: 'title',
+                        valueField: 'code',
+                        ref: 'billedby'
                     }]
                 }],
                 buttons: [{
@@ -1143,9 +1161,10 @@ function changeQCStateBtn(dataRegion, menu){
                     handler: function(o){
                         var qc = o.ownerCt.ownerCt.theForm.qcstate.getValue();
                         if(!qc){
-                            alert('Must [pick a status');
+                            alert('Must pick a status');
                         }
 
+                        var billedby = o.ownerCt.ownerCt.theForm.billedby.getValue();
                         Ext.Msg.wait('Loading...');
 
                         var multi = new LABKEY.MultiRequest();
@@ -1155,7 +1174,7 @@ function changeQCStateBtn(dataRegion, menu){
                             if(!toUpdate[rec['dataset/Label']])
                                 toUpdate[rec['dataset/Label']] = [];
 
-                            toUpdate[rec['dataset/Label']].push({lsid: rec.lsid, QCState: qc})
+                            toUpdate[rec['dataset/Label']].push({lsid: rec.lsid, QCState: qc, billedby: billedby})
                         }, this);
 
                         for(var i in toUpdate){
@@ -1188,11 +1207,164 @@ function changeQCStateBtn(dataRegion, menu){
     })
 }
 
+function addAssignmentTaskBtn(dataRegion, menu){
+    menu.add({
+        text: 'Add Batch of Assignments',
+        dataRegion: dataRegion,
+        handler: function(){
+            window.location = LABKEY.ActionURL.buildURL("ehr", "manageTask", null, {formtype: 'Assignment'});
+        }
+    });
+
+
+}
+
 function refreshDataRegion(dataRegion){
     if(dataRegion.qwp){
         dataRegion.qwp.render();
     }
     else if (LABKEY.ActionURL.getController() == 'executeQuery'){
         window.location.reload( false );
+    }
+}
+
+
+
+
+function duplicateTask(dataRegion){
+    var checked = dataRegion.getChecked();
+    if(!checked || !checked.length){
+        alert('No records selected');
+        return;
+    }
+    else if (checked.length > 1) {
+        alert('Can only select 1 task at a time');
+        return;
+    }
+
+    LABKEY.Query.selectRows({
+        schemaName: 'ehr',
+        queryName: 'tasks',
+        filterArray: [
+            LABKEY.Filter.create('taskid', checked[0], LABKEY.Filter.Types.EQUAL)
+        ],
+        scope: this,
+        success: onSuccess
+        //failure: EHR.utils.onError
+    });
+
+    function onSuccess(data){
+
+        if(!data || !data.rows){
+            alert('Task not found');
+            return;
+        }
+
+        new Ext.Window({
+            title: 'Duplicate Task',
+            width: 330,
+            autoHeight: true,
+            items: [{
+                xtype: 'form',
+                ref: 'theForm',
+                bodyStyle: 'padding: 5px;',
+                defaults: {
+                    border: false
+                },
+                items: [{
+                    html: 'Total Records: '+checked.length+'<br><br>',
+                    tag: 'div'
+                },{
+                    xtype: 'textfield',
+                    fieldLabel: 'Title',
+                    width: 200,
+                    value: config.formType,
+                    ref: 'titleField'
+                },{
+                    xtype: 'xdatetime',
+                    fieldLabel: 'Date',
+                    width: 200,
+                    value: new Date(),
+                    ref: 'date'
+                },{
+                    xtype: 'combo',
+                    fieldLabel: 'Assigned To',
+                    width: 200,
+                    value: LABKEY.Security.currentUser.id,
+                    triggerAction: 'all',
+                    mode: 'local',
+                    store: new LABKEY.ext.Store({
+                        xtype: 'labkey-store',
+                        schemaName: 'core',
+                        queryName: 'PrincipalsWithoutAdmin',
+                        columns: 'userid,name',
+                        sort: 'type,name',
+                        autoLoad: true
+                    }),
+                    displayField: 'name',
+                    valueField: 'UserId',
+                    ref: 'assignedTo'
+                }]
+            }],
+            buttons: [{
+                text:'Submit',
+                disabled:false,
+                formBind: true,
+                ref: '../submit',
+                scope: this,
+                handler: function(o){
+                    Ext.Msg.wait('Loading...');
+                    var date = o.ownerCt.ownerCt.theForm.date.getValue();
+                    date = date.toGMTString();
+                    if(!date){
+                        alert('Must enter a date');
+                        o.ownerCt.ownerCt.hide();
+                    }
+
+                    var assignedTo = o.ownerCt.ownerCt.theForm.assignedTo.getValue();
+                    if(!assignedTo){
+                        alert('Must assign to someone');
+                        o.ownerCt.ownerCt.hide();
+                    }
+                    var title = o.ownerCt.ownerCt.theForm.titleField.getValue();
+                    if(!title){
+                        alert('Must enter a title');
+                        o.ownerCt.ownerCt.hide();
+                    }
+
+                    o.ownerCt.ownerCt.hide();
+
+                    var existingRecords = {};
+                    existingRecords[dataRegion.queryName] = checked;
+
+                    EHR.utils.createTask({
+                        initialQCState: 'Scheduled',
+                        childRecords: null,
+                        existingRecords: existingRecords,
+                        taskRecord: {date: date, assignedTo: assignedTo, category: 'task', title: title, formType: config.formType},
+                        success: function(response, options, config){
+                            Ext.Msg.hide();
+                            Ext.Msg.confirm('View Task Now?', 'Do you want to view the task now?', function(btn){
+                                if(btn == 'yes'){
+                                    window.location = LABKEY.ActionURL.buildURL("ehr", "manageTask", null, {taskid: config.taskId, formtype: config.taskRecord.formType});
+                                }
+                                else {
+                                    refreshDataRegion(dataRegion);
+                                }
+                            }, this)
+                        },
+                        failure: function(){
+                            console.log('failure');
+                            Ext.Msg.hide();
+                        }
+                    });
+                }
+            },{
+                text: 'Close',
+                handler: function(o){
+                    o.ownerCt.ownerCt.hide();
+                }
+            }]
+        }).show();
     }
 }

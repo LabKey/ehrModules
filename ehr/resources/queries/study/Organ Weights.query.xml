@@ -74,6 +74,16 @@
                           <!--<fkColumnName>objectid</fkColumnName>-->
                         <!--</fk>-->
                     </column>
+                    <column columnName="qualifier">
+                      <datatype>varchar</datatype>
+                      <columnTitle>Qualifier</columnTitle>
+                      <fk>
+                        <fkFolderPath>/wnprc/ehr/</fkFolderPath>
+                        <fkDbSchema>ehr_lookups</fkDbSchema>
+                        <fkTable>snomed_qualifiers</fkTable>
+                        <fkColumnName>qualifier</fkColumnName>
+                      </fk>
+                    </column>
                 </columns>
                 <tableTitle>Organ Weights</tableTitle>
                 <description>Organ Weights</description>

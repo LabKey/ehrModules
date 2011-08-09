@@ -36,7 +36,7 @@ AND length(t1.id) > 1
 
 UNION ALL
 
-SELECT t1.id, t1.date, seq, result, 'Sera' as source, virus,
+SELECT t1.id, t1.date, seq, result, 'Blood - Serum' as source, virus,
 (SELECT group_concat(distinct uuid) as uuid FROM virserohead t2 WHERE t1.id=t2.id AND t1.DATE =t2.date group by id, date, account limit 1) as runId,
 t1.ts, t1.uuid
 FROM

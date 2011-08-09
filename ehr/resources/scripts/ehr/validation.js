@@ -226,11 +226,12 @@ EHR.rowInit = function(errors, row, oldRow){
     //also add account if the project is found
     //skip if doing assignments
     if(!this.scriptContext.quickValidation && this.scriptContext.extraContext.dataSource != 'etl' && row.project && row.Id && row.date && row.project!=300901  && (this.scriptContext.queryName && !this.scriptContext.queryName.match(/assignment/i))){
+        var date = EHR.validation.dateToString(row.date);
         LABKEY.Query.executeSql({
             schemaName: 'study',
             queryName: 'assignment',
             scope: this,
-            sql: "SELECT a.project, a.project.account FROM study.assignment a WHERE a.project='"+row.project+"' AND a.id='"+row.id+"' AND a.date <= '"+row.date+"' AND (a.enddate >= '"+row.date+"' OR a.enddate IS NULL) AND project.protocol!='wprc00' AND qcstate.publicdata = true",
+            sql: "SELECT a.project, a.project.account FROM study.assignment a WHERE a.project='"+row.project+"' AND a.id='"+row.id+"' AND a.date <= '"+date+"' AND (a.enddate >= '"+date+"' OR a.enddate IS NULL) AND project.protocol!='wprc00' AND qcstate.publicdata = true",
             success: function(data){
                 if(!data.rows || !data.rows.length){
                     EHR.addError(errors, 'project', 'Not assigned to '+row.project+' on this date', 'WARN');
@@ -276,6 +277,11 @@ EHR.rowInit = function(errors, row, oldRow){
         if(row.date.compareTo(row.enddate)>0){
             EHR.addError(errors, 'enddate', 'End date must be after start date', 'WARN');
         }
+    }
+
+    //force account to lowercase
+    if(row.account){
+        row.account = row.account.toLowerCase();
     }
 
     if(row._becomingPublicData){
@@ -798,13 +804,17 @@ EHR.validation = {
     },
     removeTimeFromDate: function(row, errors, fieldname){
         fieldname = fieldname || 'date';
+        var date = row[fieldname];
 
-        if(row[fieldname] && typeof row[fieldname] == 'date' && Ext.isDefined(row[fieldname].setHours)){
-//            row[fieldname].setHours(0);
-//            row[fieldname].setMinutes(0);
-//            row[fieldname].setSeconds(0);
-            row[fieldname] = new Date(row[fieldname].toDateString());
+        if(!date){
+            return;
         }
+
+        //normalize to a javascript date object
+        if(date instanceof java.util.Date){
+            date = new Date(date);
+        }
+        row[fieldname] = new Date(date.getFullYear(), date.getMonth(), date.getDate());
     },
     snomedToString: function (code, meaning){
         if(!meaning){
@@ -829,8 +839,14 @@ EHR.validation = {
         if(row.Id){
             EHR.validation.setSpecies(row, errors);
 
-            if(!scriptContext.extraContext.skipIdFormatCheck && row.species == 'Unknown'){
-                EHR.addError(errors, 'Id', 'Invalid Id Format', 'WARN');
+            if(row.species == 'Unknown'){
+                var severity;
+                if(!scriptContext.extraContext.skipIdFormatCheck)
+                    severity = 'WARN';
+                else
+                    severity = 'INFO';
+
+                EHR.addError(errors, 'Id', 'Invalid Id Format', severity);
             }
         }
     },
@@ -873,7 +889,8 @@ EHR.validation = {
             scope: this,
             success: function(data){
                 if(data && data.rows && data.rows.length==1){
-                    var caseno = data.rows[0].caseno + 1;
+                    var caseno = data.rows[0].caseno || 1;
+                    caseno++;
                     caseno = EHR.validation.padDigits(caseno, 3);
                     row.caseno = year + procedureType + caseno;
                 }
@@ -884,17 +901,20 @@ EHR.validation = {
     },
     verifyCasenoIsUnique: function(context, row, errors){
         //find any existing rows with the same caseno
+        var filterArray = [
+            LABKEY.Filter.create('caseno', row.caseno, LABKEY.Filter.Types.EQUAL)
+        ];
+        if(row.lsid)
+            filterArray.push(LABKEY.Filter.create('lsid', row.lsid, LABKEY.Filter.Types.NOT_EQUAL));
+
         LABKEY.Query.selectRows({
             schemaName: context.extraContext.schemaName,
-            queryName: context.extraContext.schemaName,
-            filterArray: [
-                LABKEY.Filter.create('caseno', row.caseno, LABKEY.Filter.Types.EQUAL),
-                LABKEY.Filter.create('lsid', row.lsid, LABKEY.Filter.Types.NOT_EQUAL)
-            ],
+            queryName: context.extraContext.queryName,
+            filterArray: filterArray,
             scope: this,
             success: function(data){
                 if(data && data.rows && data.rows.length){
-                    EHR.addError(errors, 'caseno', 'One or more records already uses the caseno: '+row.caseno, 'ERROR');
+                    EHR.addError(errors, 'caseno', 'One or more records already uses the caseno: '+row.caseno, 'INFO');
                 }
             },
             failure: EHR.onFailure

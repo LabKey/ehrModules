@@ -31,6 +31,7 @@ CASE (d.gender)
 END
 -- , INTEGER)
 AS gender,
+d.gender as gender_code,
 'Demographics' as source
 
 --d.qcstate
@@ -55,6 +56,7 @@ CASE (p.gender)
   WHEN 'v' THEN 1
   ELSE 3
 END AS gender,
+p.gender as gender_code,
 'Supplemental Pedigree' as source
 --null as qcstate
 

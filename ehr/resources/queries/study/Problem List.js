@@ -8,8 +8,10 @@ var {EHR, LABKEY, Ext, console, init, beforeInsert, afterInsert, beforeUpdate, a
 
 
 function onUpsert(context, errors, row, oldRow){
-    if(context.extraContext.dataSource != 'etl')
+    if(context.extraContext.dataSource != 'etl'){
         EHR.validation.removeTimeFromDate(row, errors);
+        EHR.validation.removeTimeFromDate(row, errors, 'enddate');
+    }
 }
 
 
@@ -38,7 +40,10 @@ function onInsert(context, errors, row){
             success: function(data){
                 if(data && data.rows && data.rows.length==1){
                     //console.log('problemno: '+data.rows[0].problem_no);
-                    row.problem_no = data.rows[0].problem_no;
+                    row.problem_no = data.rows[0].problem_no || 1;
+                }
+                else {
+                    row.problem_no = 1;
                 }
             },
             failure: EHR.onFailure

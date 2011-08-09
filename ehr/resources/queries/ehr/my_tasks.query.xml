@@ -110,6 +110,28 @@
                         <!--</conditionalFormats>-->
                     <!--</column>-->
                 </columns>
+                <buttonBarOptions includeStandardButtons="false">
+                    <includeScript>/ehr/studyButtons.js</includeScript>
+                    <!--<onRender>moreActionsHandler</onRender>-->
+                    <item text="Views">
+                        <originalText>Views</originalText>
+                    </item>
+                    <item text="Export">
+                        <originalText>Export</originalText>
+                    </item>
+                    <item text="Print">
+                        <originalText>Print</originalText>
+                    </item>
+                    <!--<item text="Import Data">-->
+                        <!--<originalText>Import Data</originalText>-->
+                    <!--</item>-->
+                    <item text="Page Size">
+                        <originalText>Page Size</originalText>
+                    </item>
+                    <item text="Duplicate" requiresSelection="true">
+                        <onClick>duplicateTask(dataRegion)</onClick>
+                    </item>
+                </buttonBarOptions>
             </table>
         </tables>
     </metadata>

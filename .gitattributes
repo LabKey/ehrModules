@@ -126,6 +126,7 @@ ehr/resources/etl/datasets/virologyResults.sql -text
 ehr/resources/etl/datasets/virologyRuns.sql -text
 ehr/resources/etl/lists/deleted_records.sql -text
 ehr/resources/queries/auditLog/DatasetAudits.sql -text
+ehr/resources/queries/auditLog/audit/EHR[!!-~]Client[!!-~]Errors.qview.xml -text
 ehr/resources/queries/col_dump/arrival_mysql.sql -text
 ehr/resources/queries/col_dump/assignment_mysql.sql -text
 ehr/resources/queries/col_dump/bacteriologyresults_mysql.sql -text
@@ -224,6 +225,9 @@ ehr/resources/queries/ehr/cage_observations.js -text
 ehr/resources/queries/ehr/cage_observations.query.xml -text
 ehr/resources/queries/ehr/cage_observations/.qview.xml -text
 ehr/resources/queries/ehr/client_errors.js -text
+ehr/resources/queries/ehr/kinship.query.xml -text
+ehr/resources/queries/ehr/kinship/.qview.xml -text
+ehr/resources/queries/ehr/kinship/With[!!-~]Gender.qview.xml -text
 ehr/resources/queries/ehr/missingCages.sql -text
 ehr/resources/queries/ehr/missingCages/.qview.xml -text
 ehr/resources/queries/ehr/missingRooms.sql -text
@@ -274,7 +278,8 @@ ehr/resources/queries/ehr_lookups/rooms_quick.query.xml -text
 ehr/resources/queries/ehr_lookups/rooms_quick.sql -text
 ehr/resources/queries/ehr_lookups/snomed.query.xml -text
 ehr/resources/queries/ehr_lookups/snomed_subset_codes.query.xml -text
-ehr/resources/queries/ehr_lookups/snomed_subsets.sql -text
+ehr/resources/queries/ehr_lookups/snomed_subsets/.qview.xml -text
+ehr/resources/queries/ehr_lookups/snomed_subsets_old.sql -text
 ehr/resources/queries/ehr_lookups/treatment_codes.query.xml -text
 ehr/resources/queries/ehr_lookups/yearMonth.sql -text
 ehr/resources/queries/lists/Project/Projects[!!-~]With[!!-~]Active[!!-~]Assignments.qview.xml -text
@@ -346,6 +351,9 @@ ehr/resources/queries/study/Blood[!!-~]Draws.query.xml -text
 ehr/resources/queries/study/Blood[!!-~]Draws/.qview.xml -text
 ehr/resources/queries/study/Blood[!!-~]Draws/Blood[!!-~]Schedule.qview.xml -text
 ehr/resources/queries/study/Blood[!!-~]Draws/Blood[!!-~]Summary.qview.xml -text
+ehr/resources/queries/study/BloodSchedule.query.xml -text
+ehr/resources/queries/study/BloodSchedule.sql -text
+ehr/resources/queries/study/BloodSchedule/.qview.xml -text
 ehr/resources/queries/study/Body[!!-~]Condition.js -text
 ehr/resources/queries/study/Body[!!-~]Condition.query.xml -text
 ehr/resources/queries/study/Body[!!-~]Condition/.qview.xml -text
@@ -408,9 +416,8 @@ ehr/resources/queries/study/Drug[!!-~]Administration.js -text
 ehr/resources/queries/study/Drug[!!-~]Administration.query.xml -text
 ehr/resources/queries/study/Drug[!!-~]Administration/.qview.xml -text
 ehr/resources/queries/study/Drug[!!-~]Administration/Hormones.qview.xml -text
-ehr/resources/queries/study/Drug[!!-~]Administration/Surgery[!!-~]Anesthesia.qview.xml -text
-ehr/resources/queries/study/Drug[!!-~]Administration/Surgery[!!-~]Fluids.qview.xml -text
-ehr/resources/queries/study/Drug[!!-~]Administration/Surgery[!!-~]Medications.qview.xml -text
+ehr/resources/queries/study/Drug[!!-~]Administration/Surgery[!!-~]Drugs.qview.xml -text
+ehr/resources/queries/study/Drug[!!-~]Administration/Treatments.qview.xml -text
 ehr/resources/queries/study/Final[!!-~]Reports/.qview.xml -text
 ehr/resources/queries/study/Hematology[!!-~]Morphology.js -text
 ehr/resources/queries/study/Hematology[!!-~]Morphology.query.xml -text
@@ -483,6 +490,8 @@ ehr/resources/queries/study/Parasitology[!!-~]Runs.query.xml -text
 ehr/resources/queries/study/Parasitology[!!-~]Runs/.qview.xml -text
 ehr/resources/queries/study/Pedigree.query.xml -text
 ehr/resources/queries/study/Pedigree.sql -text
+ehr/resources/queries/study/PerDiems.sql -text
+ehr/resources/queries/study/PerDiemsByDay.sql -text
 ehr/resources/queries/study/Pregnancies.js -text
 ehr/resources/queries/study/Pregnancies.query.xml -text
 ehr/resources/queries/study/Pregnancies/.qview.xml -text
@@ -524,6 +533,7 @@ ehr/resources/queries/study/Treatment[!!-~]Orders.js -text
 ehr/resources/queries/study/Treatment[!!-~]Orders.query.xml -text
 ehr/resources/queries/study/Treatment[!!-~]Orders/.qview.xml -text
 ehr/resources/queries/study/Treatment[!!-~]Orders/Active[!!-~]Treatments.qview.xml -text
+ehr/resources/queries/study/TreatmentHistory.query.xml -text
 ehr/resources/queries/study/TreatmentHistory.sql -text
 ehr/resources/queries/study/TreatmentHistory/.qview.xml -text
 ehr/resources/queries/study/TreatmentsThatDiffer.sql -text
@@ -586,15 +596,14 @@ ehr/resources/queries/study/colonyPopulationChange.query.xml -text
 ehr/resources/queries/study/colonyPopulationChange.sql -text
 ehr/resources/queries/study/colonyPopulationSummary.query.xml -text
 ehr/resources/queries/study/colonyPopulationSummary.sql -text
-ehr/resources/queries/study/concurrentAssignments.sql -text
 ehr/resources/queries/study/demographics/.qview.xml -text
 ehr/resources/queries/study/demographics/Abstract.qview.xml -text
 ehr/resources/queries/study/demographics/Alive,[!!-~]at[!!-~]WNPRC[!!-~]-[!!-~]Narrow.qview.xml -text
 ehr/resources/queries/study/demographics/Alive,[!!-~]at[!!-~]WNPRC.qview.xml -text
 ehr/resources/queries/study/demographics/Animal[!!-~]Locator.qview.xml -text
+ehr/resources/queries/study/demographics/Assignment[!!-~]Info.qview.xml -text
 ehr/resources/queries/study/demographics/Blood[!!-~]Draw[!!-~]Info.qview.xml -text
 ehr/resources/queries/study/demographics/Clinical[!!-~]Summary.qview.xml -text
-ehr/resources/queries/study/demographics/Days[!!-~]Since[!!-~]Weight.qview.xml -text
 ehr/resources/queries/study/demographics/Extended[!!-~]Abstract.qview.xml -text
 ehr/resources/queries/study/demographics/Living[!!-~]Rhesus[!!-~]Plus[!!-~]MHC[!!-~]Typing.qview.xml -text
 ehr/resources/queries/study/demographics/Living[!!-~]With[!!-~]SIV.qview.xml -text
@@ -602,10 +611,11 @@ ehr/resources/queries/study/demographics/No[!!-~]Active[!!-~]Assignments.qview.x
 ehr/resources/queries/study/demographics/Search[!!-~]Panel.qview.xml -text
 ehr/resources/queries/study/demographics/Single[!!-~]Housed.qview.xml -text
 ehr/resources/queries/study/demographics/TB[!!-~]Form.qview.xml -text
-ehr/resources/queries/study/demographics/TB.qview.xml -text
+ehr/resources/queries/study/demographics/TB[!!-~]Older[!!-~]Than[!!-~]4[!!-~]Months.qview.xml -text
 ehr/resources/queries/study/demographics/Unassigned[!!-~]Animals.qview.xml -text
 ehr/resources/queries/study/demographics/Unassigned[!!-~]Rhesus[!!-~]With[!!-~]MHC[!!-~]Typing.qview.xml -text
 ehr/resources/queries/study/demographics/Unweighed[!!-~]Over[!!-~]45[!!-~]Days.qview.xml -text
+ehr/resources/queries/study/demographics/Weight[!!-~]Detail.qview.xml -text
 ehr/resources/queries/study/demographics/Weight[!!-~]Form[!!-~]Plus[!!-~]Last[!!-~]Weights.qview.xml -text
 ehr/resources/queries/study/demographics/Weight[!!-~]Form.qview.xml -text
 ehr/resources/queries/study/demographicsAge.query.xml -text
@@ -771,7 +781,9 @@ ehr/resources/queries/study/treatmentSchedule.query.xml -text
 ehr/resources/queries/study/treatmentSchedule.sql -text
 ehr/resources/queries/study/treatmentSchedule/.qview.xml -text
 ehr/resources/queries/study/treatmentSchedule/AM[!!-~]Treatments.qview.xml -text
+ehr/resources/queries/study/treatmentSchedule/Incomplete[!!-~]Treatments.qview.xml -text
 ehr/resources/queries/study/treatmentSchedule/Night[!!-~]Treatments.qview.xml -text
+ehr/resources/queries/study/treatmentSchedule/Noon[!!-~]Treatments.qview.xml -text
 ehr/resources/queries/study/treatmentSchedule/PM[!!-~]Treatments.qview.xml -text
 ehr/resources/queries/study/treatmentSchedule/Today[!!-~]Only.qview.xml -text
 ehr/resources/queries/study/urinalysisPivot.sql -text
@@ -812,6 +824,7 @@ ehr/resources/schemas/dbscripts/postgresql/EHR-11.121-11.122.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR-11.133-11.134.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR-11.134-11.135.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR-11.137-11.138.sql -text
+ehr/resources/schemas/dbscripts/postgresql/EHR-11.138-11.139.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-11.10-11.101.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-11.101-11.102.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-11.102-11.103.sql -text
@@ -848,6 +861,10 @@ ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-11.135-11.136.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-11.136-11.137.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-11.137-11.138.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-11.138-11.139.sql -text
+ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-11.139-11.140.sql -text
+ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-11.140-11.141.sql -text
+ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-11.141-11.142.sql -text
+ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-11.142-11.143.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/EHR-11.10-11.102.sql -text
 ehr/resources/schemas/ehr.xml -text
 ehr/resources/schemas/ehr_lookups.xml -text
@@ -973,7 +990,9 @@ ehr/tools/PrePopulateData/README -text
 ehr/tools/PrePopulateData/Task[!!-~]Data.xlsx -text
 ehr/tools/addDatasetColumns/modifyPropertyDescriptors.pl -text
 ehr/tools/automaticAlerts/automaticAlerts.pl -text
+ehr/tools/automaticAlerts/bloodAlerts.pl -text
 ehr/tools/automaticAlerts/colonyAlerts.pl -text
+ehr/tools/automaticAlerts/tbAlerts.pl -text
 ehr/tools/automaticAlerts/treatmentAlerts.pl -text
 ehr/tools/automaticAlerts/weightAlerts.pl -text
 ehr/tools/deleteStudyRecords/deleteStudyRecords.pl -text
@@ -1080,6 +1099,7 @@ ehr/tools/util.js -text
 ehr/tools/validationHelper.pl -text
 ehr/webapp/ehr/AssayUpload.js -text
 ehr/webapp/ehr/AssayUtils.js -text
+ehr/webapp/ehr/ExcelUploadPanel.js -text
 ehr/webapp/ehr/ExtComponents.js -text
 ehr/webapp/ehr/ExtContainers.js -text
 ehr/webapp/ehr/ExtOverrides.js -text

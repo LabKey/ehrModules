@@ -21,6 +21,14 @@
                         <datatype>boolean</datatype>
                         <columnTitle>Weight Monitoring Needed</columnTitle>
                     </column>
+                    <column columnName="tattoo_remark">
+                        <datatype>varchar</datatype>
+                        <columnTitle>Tattoo Remark</columnTitle>
+                    </column>
+                    <column columnName="remark">
+                        <datatype>varchar</datatype>
+                        <columnTitle>Weight Remark</columnTitle>
+                    </column>
                     <column columnName="score">
                         <datatype>double</datatype>
                         <columnTitle>Body Condition Score</columnTitle>

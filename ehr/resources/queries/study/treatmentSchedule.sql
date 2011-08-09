@@ -10,7 +10,8 @@ s.lsid || '||' || s.date as primaryKey,
 null as initials,
 null as restraint,
 null as time,
-(SELECT max(d.qcstate) as label FROM study.drug d WHERE (s.lsid || '||' || s.date) = d.parentid) as treatmentStatus
+(SELECT max(d.qcstate) as label FROM study.drug d WHERE (s.lsid || '||' || s.date) = d.parentid) as treatmentStatus,
+(SELECT max(taskId) as taskId FROM study.drug d WHERE (s.lsid || '||' || s.date) = d.parentid) as taskId
 
 
 FROM (
@@ -28,11 +29,15 @@ t1.id.dataset.activehousing.room as CurrentRoom,
 t1.id.dataset.activehousing.cage as CurrentCage,
 
 CASE
-  WHEN (t1.frequency=1 OR t1.frequency=7 OR t1.frequency=8)
+  --these are AM,
+  WHEN (t1.frequency=1 OR t1.frequency=7 OR t1.frequency=8 or t1.frequency=9 or t1.frequency=12)
     THEN timestampadd('SQL_TSI_HOUR', 8, d.date)
   --these are the multiple per day options
   WHEN (t1.frequency=2 OR t1.frequency=3 OR t1.frequency=6)
     THEN timestampadd('SQL_TSI_HOUR', 8, d.date)
+  --noon
+  WHEN (t1.frequency=11)
+    THEN timestampadd('SQL_TSI_HOUR', 12, d.date)
   WHEN (t1.frequency=4)
     THEN timestampadd('SQL_TSI_HOUR', 14, d.date)
   WHEN (t1.frequency=5)
@@ -107,11 +112,15 @@ END AS description2,
 t1.qcstate,
 
 CASE
-  WHEN (t1.frequency=1 OR t1.frequency=7 OR t1.frequency=8)
+  WHEN (t1.frequency=1 OR t1.frequency=7 OR t1.frequency=8 or t1.frequency=9)
     THEN 'AM'
   --these are the multiple per day options
   WHEN (t1.frequency=2 OR t1.frequency=3 OR t1.frequency=6)
     THEN 'AM'
+  WHEN (t1.frequency=11)
+    THEN 'Noon'
+  WHEN (t1.frequency=12)
+    THEN 'Any Time'
   WHEN (t1.frequency=4)
     THEN 'PM'
   WHEN (t1.frequency=5)
@@ -119,7 +128,7 @@ CASE
 END as TimeOfDay,
 
 CASE
-  WHEN (t1.frequency=1 OR t1.frequency=7 OR t1.frequency=8)
+  WHEN (t1.frequency=1 OR t1.frequency=7 OR t1.frequency=8 OR t1.frequency=9 or t1.frequency=12  OR t1.frequency=11)
     THEN 1
   --these are the multiple per day options
   WHEN (t1.frequency=2 OR t1.frequency=3 OR t1.frequency=6)
@@ -135,7 +144,7 @@ FROM ehr_lookups.next30Days d
 LEFT JOIN study."Treatment Orders" t1
   ON (d.date >= t1.date and (d.date <= cast(t1.enddate as date) OR t1.enddate is null) AND (
   --daily
-  (t1.frequency=1 OR t1.frequency=2 OR t1.frequency=3 OR t1.frequency=4 OR t1.frequency=5 OR t1.frequency=6)
+  (t1.frequency=1 OR t1.frequency=2 OR t1.frequency=3 OR t1.frequency=4 OR t1.frequency=5 OR t1.frequency=6 OR t1.frequency=11 OR t1.frequency=12)
   OR
   --monthly
   --always 1st tues
@@ -149,7 +158,7 @@ LEFT JOIN study."Treatment Orders" t1
   (t1.frequency=9 AND mod(d.dayofyear,2)=mod(cast(dayofyear(t1.date) as integer),2))
   ))
 LEFT JOIN study.assignment a1
-  ON (a1.project = t1.project AND a1.date <= d.date AND COALESCE(a1.enddate, curdate()) >= d.date AND a1.id = t1.id)
+  ON (a1.project = t1.project AND a1.date <= d.date AND (a1.enddate is null or COALESCE(a1.enddate, curdate()) >= d.date) AND a1.id = t1.id)
 WHERE t1.date is not null
 AND t1.qcstate.publicdata = true
 
@@ -265,7 +274,7 @@ LEFT JOIN study."Treatment Orders" t1
   (t1.frequency=2 OR t1.frequency=3 OR t1.frequency=6)
   ))
 LEFT JOIN study.assignment a1
-  ON (a1.project = t1.project AND a1.date <= d.date AND COALESCE(a1.enddate, curdate()) >= d.date AND a1.id = t1.id)
+  ON (a1.project = t1.project AND a1.date <= d.date AND (a1.enddate is null or COALESCE(a1.enddate, curdate()) >= d.date) AND a1.id = t1.id)
 
 WHERE t1.date is not null
 AND t1.qcstate.publicdata = true
@@ -364,7 +373,7 @@ LEFT JOIN study."Treatment Orders" t1
     t1.frequency=3
   )
 LEFT JOIN study.assignment a1
-  ON (a1.project = t1.project AND a1.date <= d.date AND COALESCE(a1.enddate, curdate()) >= d.date AND a1.id = t1.id)
+  ON (a1.project = t1.project AND a1.date <= d.date AND (a1.enddate is null or COALESCE(a1.enddate, curdate()) >= d.date) AND a1.id = t1.id)
 
 WHERE t1.date is not null
 AND t1.qcstate.publicdata = true

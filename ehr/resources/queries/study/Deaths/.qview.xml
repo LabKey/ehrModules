@@ -2,11 +2,14 @@
    <columns>
        <column name="Id" />
        <column name="date" />
+       <column name="tattoo" />
        <column name="cause" />
+       <column name="manner" />
        <column name="necropsy" />
        <column name="roomattime" />
        <column name="cageattime" />
        <column name="remark" />
+       <column name="performedby" />
        <column name="qcstate" />
        <column name="taskid" />
    </columns>

@@ -20,5 +20,12 @@ function setDescription(row, errors){
     if (row.weightStatus)
         description.push('Weight Monitoring Needed? '+ row.weightStatus);
 
+    if(row.tattoo_chest)
+        description.push('Tattoo Chest '+ row.tattoo_chest);
+    if(row.tattoo_thigh)
+        description.push('Tattoo Thigh '+ row.tattoo_thigh);
+    if(row.tattoo_remark)
+        description.push('Tattoo Remark '+ row.tattoo_remark);
+
     return description;
 }
