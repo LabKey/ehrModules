@@ -32,7 +32,8 @@ Ext.onReady(function(){
             panelType: 'TaskPanel',
             formUUID: formUUID,
             formType: formType,
-            renderTo: 'taskForm'
+            renderTo: 'taskForm',
+            title: LABKEY.ActionURL.getParameter('title')
         });
 
         LABKEY.NavTrail.setTrail(LABKEY.ActionURL.getParameter('title') || formType);
@@ -45,6 +46,7 @@ Ext.onReady(function(){
             formUUID: formUUID,
             queryName: LABKEY.ActionURL.getParameter('queryName'),
             schemaName: LABKEY.ActionURL.getParameter('schemaName'),
+            title: LABKEY.ActionURL.getParameter('title') || queryName,
             renderTo: 'taskForm'
         });
 

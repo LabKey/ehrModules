@@ -7,12 +7,23 @@
 var {EHR, LABKEY, Ext, console, init, beforeInsert, afterInsert, beforeUpdate, afterUpdate, beforeDelete, afterDelete, complete} = require("ehr/validation");
 
 function onUpsert(context, errors, row, oldRow){
+    var errorQC;
+    if(context.qcMap.label[row.QCStateLabel]['metadata/isRequest'])
+        errorQC = 'ERROR';
+    else
+        errorQC = 'WARN';
+
+    if(context.extraContext.dataSource != 'etl' && row.date && !row.requestdate)
+        row.requestdate = row.date;
+
     if(context.extraContext.dataSource != 'etl' && !row.quantity && row.num_tubes && row.tube_vol)
         row.quantity = row.num_tubes * row.tube_vol;
 
     if(context.extraContext.dataSource != 'etl' && row.quantity && row.tube_vol){
-        if(row.quantity != (row.num_tubes * row.tube_vol))
+        if(row.quantity != (row.num_tubes * row.tube_vol)){
             EHR.addError(errors, 'quantity', 'Quantity does not match tube vol / # tubes', 'INFO');
+            EHR.addError(errors, 'num_tubes', 'Quantity does not match tube vol / # tubes', 'INFO');
+        }
     }
 
     if(context.extraContext.dataSource != 'etl' && row.restraint && !Ext.isDefined(row.restraintTime)){
@@ -24,6 +35,7 @@ function onUpsert(context, errors, row, oldRow){
         var minDate = new Date(row.date.toGMTString());
         minDate.setDate(minDate.getDate()-30);
         minDate = EHR.validation.dateToString(minDate);
+        var checkFutureRecords = true;
 
         var sql = "SELECT b.BloodLast30, d.MostRecentWeight, round((d.MostRecentWeight*0.2*60) - coalesce(b.BloodLast30, 0), 1) AS AvailBlood " +
         "FROM (" +
@@ -34,7 +46,7 @@ function onUpsert(context, errors, row, oldRow){
             "GROUP BY b.id) b " +
         "RIGHT JOIN study.demographicsMostRecentWeight d on (d.id=b.id) " +
         "WHERE d.id='"+row.Id+"' ";
-        //console.log(sql);
+        console.log(sql);
         // find all blood draws from this animal in 30 days prior to this date
         LABKEY.Query.executeSql({
             schemaName: 'study',
@@ -43,41 +55,9 @@ function onUpsert(context, errors, row, oldRow){
                 if(data && data.rows && data.rows.length){
                     var availBlood = data.rows[0].AvailBlood;
                     if(availBlood - row.quantity < 0){
-                       EHR.addError(errors, 'num_tubes', 'Volume conflicts with previous blood draws. Max allowable is '+availBlood+' mL', 'WARN');
-                       EHR.addError(errors, 'quantity', 'Volume conflicts with previous blood draws. Max allowable is '+availBlood+' mL', 'WARN');
-                    }
-                }
-                else {
-                    console.log('no rows found 1')
-                }
-            },
-            failure: EHR.onFailure
-        });
-
-        // find all blood draws from this animal in 30 days after this date
-        var maxDate = new Date(row.date.toGMTString());
-        maxDate.setDate(maxDate.getDate()+30);
-        maxDate = EHR.validation.dateToString(maxDate);
-
-        sql = "SELECT b.BloodLast30, d.MostRecentWeight, round((d.MostRecentWeight*0.2*60) - coalesce(b.BloodLast30, 0), 1) AS AvailBlood " +
-        "FROM (" +
-            "SELECT b.id, sum(b.quantity) as BloodLast30 " +
-            "FROM study.\"Blood Draws\" b " +
-            "WHERE b.id='"+row.Id+"' AND cast(b.date as date) >= '"+EHR.validation.dateToString(row.date) +"' AND cast(b.date as date) <= '"+maxDate+"' " +
-            "AND (b.qcstate.publicdata = true OR b.qcstate.metadata.DraftData = true) " +
-            "GROUP BY b.id) b " +
-        "RIGHT JOIN study.demographicsMostRecentWeight d on (d.id=b.id) " +
-        "WHERE d.id='"+row.Id+"' ";
-        //console.log(sql);
-        LABKEY.Query.executeSql({
-            schemaName: 'study',
-            sql: sql,
-            success: function(data){
-                if(data && data.rows && data.rows.length){
-                    var availBlood = data.rows[0].AvailBlood;
-                    if((availBlood - row.quantity) < 0){
-                       EHR.addError(errors, 'num_tubes', 'Volume conflicts with future blood draws. Max allowable: '+availBlood+' mL', 'WARN');
-                       EHR.addError(errors, 'quantity', 'Volume conflicts with future blood draws. Max allowable: '+availBlood+' mL', 'WARN');
+                       EHR.addError(errors, 'num_tubes', 'Volume conflicts with previous blood draws. Max allowable is '+availBlood+' mL', errorQC);
+                       EHR.addError(errors, 'quantity', 'Volume conflicts with previous blood draws. Max allowable is '+availBlood+' mL', errorQC);
+                       checkFutureRecords = false;
                     }
                 }
                 else {
@@ -86,6 +66,41 @@ function onUpsert(context, errors, row, oldRow){
             },
             failure: EHR.onFailure
         });
+
+        // find all blood draws from this animal in 30 days after this date
+        if(checkFutureRecords){
+            var maxDate = new Date(row.date.toGMTString());
+            maxDate.setDate(maxDate.getDate()+30);
+            maxDate = EHR.validation.dateToString(maxDate);
+
+            sql = "SELECT b.BloodLast30, d.MostRecentWeight, round((d.MostRecentWeight*0.2*60) - coalesce(b.BloodLast30, 0), 1) AS AvailBlood " +
+            "FROM (" +
+                "SELECT b.id, sum(b.quantity) as BloodLast30 " +
+                "FROM study.\"Blood Draws\" b " +
+                "WHERE b.id='"+row.Id+"' AND cast(b.date as date) >= '"+EHR.validation.dateToString(row.date) +"' AND cast(b.date as date) <= '"+maxDate+"' " +
+                "AND (b.qcstate.publicdata = true OR b.qcstate.metadata.DraftData = true) " +
+                "GROUP BY b.id) b " +
+            "RIGHT JOIN study.demographicsMostRecentWeight d on (d.id=b.id) " +
+            "WHERE d.id='"+row.Id+"' ";
+            console.log(sql);
+            LABKEY.Query.executeSql({
+                schemaName: 'study',
+                sql: sql,
+                success: function(data){
+                    if(data && data.rows && data.rows.length){
+                        var availBlood = data.rows[0].AvailBlood;
+                        if((availBlood - row.quantity) < 0){
+                           EHR.addError(errors, 'num_tubes', 'Volume conflicts with future blood draws. Max allowable: '+availBlood+' mL', errorQC);
+                           EHR.addError(errors, 'quantity', 'Volume conflicts with future blood draws. Max allowable: '+availBlood+' mL', errorQC);
+                        }
+                    }
+                    else {
+                        console.log('no rows found')
+                    }
+                },
+                failure: EHR.onFailure
+            });
+        }
     }
 
     if(row.quantity===0){

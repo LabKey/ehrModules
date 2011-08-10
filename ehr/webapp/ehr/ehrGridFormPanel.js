@@ -465,6 +465,29 @@ EHR.ext.GridFormPanel = Ext.extend(Ext.Panel,
                     this.treatmentSelectorWin.show();
                 }
             },
+        'addtreatments2': {
+                text: 'Add Treatments - Admin',
+                requiredQC: 'In Progress',
+                xtype: 'button',
+                scope: this,
+                tooltip: 'Click to add previously scheduled treatments',
+                name: 'add-treatments-button',
+                handler: function()
+                {
+                    this.treatmentSelectorWin = new Ext.Window({
+                        closeAction:'hide',
+                        width: 350,
+                        items: [{
+                            xtype: 'ehr-treatmentselector2',
+                            ref: 'treatmentselector',
+                            targetStore: this.store,
+                            title: ''
+                        }]
+                    });
+
+                    this.treatmentSelectorWin.show();
+                }
+            },
             'apply_template': {
                 text: 'Apply Template',
                 xtype: 'button',

@@ -142,7 +142,7 @@ EHR.ext.StoreCollection = Ext.extend(Ext.util.MixedCollection, {
             success: this.onCommitSuccess,
             failure: this.getOnCommitFailure(records),
             scope: this,
-            timeout: this.timeout,
+            timeout: this.timeout || 0,
             jsonData : {
                 containerPath: this.containerPath,
                 commands: commands,
@@ -236,16 +236,16 @@ EHR.ext.StoreCollection = Ext.extend(Ext.util.MixedCollection, {
                         this.handleValidationErrors(error, response, serverError.extraContext);
                         msg = "Could not save changes due to errors.  Please check the form for fields marked in red.";
                     }
-    //                else {
-    //                    //if an exception was thrown, I believe we automatically only have one error returned
-    //                    //this means this can only be called once
-    //                    msg = 'Could not save changes due to the following error:\n' + (serverError && serverError.exception) ? serverError.exception : response.statusText;
-    //                }
+//                    else {
+//                        //if an exception was thrown, I believe we automatically only have one error returned
+//                        //this means this can only be called once
+//                        msg = 'Could not save changes due to the following error:\n' + (serverError && serverError.exception) ? serverError.exception : response.statusText;
+//                    }
                 }, this);
-            }
 
-            if(!serverError.errors){
-                msg = 'Could not save changes due to the following error:\n' + serverError.exception;
+                if(!serverError.errors){
+                    msg = 'Could not save changes due to the following error:\n' + serverError.exception;
+                }
             }
 
             if(false !== this.fireEvent("commitexception", msg, serverError) && (options.jsonData.extraContext && !options.jsonData.extraContext.silent)){
@@ -343,17 +343,38 @@ EHR.ext.StoreCollection = Ext.extend(Ext.util.MixedCollection, {
         //add a context flag to the request to saveRows
         var extraContext = Ext.apply({
             importPathway: 'ehr-importPanel'
+            //,targetQC : 'Delete Requested'
         }, options);
 
+        var commands = [];
         this.each(function(s){
             s.removePhantomRecords();
-        }, this);
+            s.each(function(r){
+                var recs = [];
+                r.beginEdit();
+                if(r.get('requestid')){
+                    r.set('taskid', null);
+                    r.set('QCState', EHR.permissionMap.qcMap.label['Request: Approved'].RowId);
+                }
+                else {
+                    r.set('QCState', EHR.permissionMap.qcMap.label['Delete Requested'].RowId);
+                }
+                recs.push(r);
 
-        //we delay this event so that any modified fields can fire their blur events and/or commit changes
-        this.commitChanges.defer(300, this, [extraContext, true]);
+
+                if(recs.length){
+                    var changes = s.getChanges(recs);
+                    if(changes.length)
+                        commands.push(changes);
+                }
+            }, this);
+        }, this);
 
         //NOTE: since this will navigate away from this page, we dont need to bother removing
         //these records from the store
+        if(commands.length){
+            this.commit(commands.commands, commands.records, extraContext);
+        }
     },
 
     getAllRecords: function(){

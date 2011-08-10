@@ -330,8 +330,10 @@ EHR.ext.AddSeriesWin = Ext.extend(Ext.Panel, {
 Ext.reg('ehr-addseries', EHR.ext.AddSeriesWin);
 
 
-
-EHR.ext.TreatmentSelector = Ext.extend(Ext.Panel, {
+EHR.ext.TreatmentSelector = function(config){
+    EHR.ext.TreatmentSelector.superclass.constructor.call(this, config);
+};
+Ext.extend(EHR.ext.TreatmentSelector, Ext.Panel, {
     initComponent: function()
     {
         Ext.applyIf(this, {
@@ -348,23 +350,12 @@ EHR.ext.TreatmentSelector = Ext.extend(Ext.Panel, {
                 bodyBorder: false
             }
             ,items: [{
-//                xtype: 'combo'
-//                ,emptyText:''
-//                ,fieldLabel: 'Area'
-//                ,displayField:'area'
-//                ,valueField: 'area'
-//                ,typeAhead: true
-//                ,editable: true
-//                ,triggerAction: 'all'
-//                ,store: new LABKEY.ext.Store({
-//                    containerPath: 'WNPRC/EHR/',
-//                    schemaName: 'ehr_lookups',
-//                    queryName: 'areas',
-//                    sort: 'area',
-//                    autoLoad: true
-//                }),
-//                ref: 'areaField'
-//            },{
+                xtype: 'datefield',
+                fieldLabel: 'Date',
+                value: (new Date()),
+                hidden: true,
+                ref: 'dateField'
+            },{
                 emptyText:''
                 ,fieldLabel: 'Room'
                 ,ref: 'roomField'
@@ -382,19 +373,6 @@ EHR.ext.TreatmentSelector = Ext.extend(Ext.Panel, {
                         }
                     }
                 }
-//                ,displayField:'room'
-//                ,valueField: 'room'
-//                ,typeAhead: true
-//                ,mode: 'local'
-//                ,triggerAction: 'all'
-//                ,editable: true
-//                ,store: new LABKEY.ext.Store({
-//                    containerPath: 'WNPRC/EHR/',
-//                    schemaName: 'ehr_lookups',
-//                    queryName: 'rooms',
-//                    sort: 'room',
-//                    autoLoad: true
-//                })
             },{
                 emptyText:''
                 ,fieldLabel: 'Time of Day'
@@ -413,7 +391,8 @@ EHR.ext.TreatmentSelector = Ext.extend(Ext.Panel, {
                     idIndex: 0,
                     data: [
                         ['AM'],
-                        //['Noon'],
+                        ['Any Time'],
+                        ['Noon'],
                         ['PM'],
                         ['Night']
                     ]
@@ -444,6 +423,7 @@ EHR.ext.TreatmentSelector = Ext.extend(Ext.Panel, {
         var room = (this.roomField ? this.roomField.getValue() : null);
         var area = (this.areaField ? this.areaField.getValue() : null);
         var time = (this.timeField ? this.timeField.getValue() : null);
+        var date = (this.dateField ? this.dateField.getValue() : new Date());
 
         if (!room || !time.length)
         {
@@ -453,7 +433,7 @@ EHR.ext.TreatmentSelector = Ext.extend(Ext.Panel, {
 
         var filterArray = [];
 
-        filterArray.push(LABKEY.Filter.create('date', new Date(), LABKEY.Filter.Types.DATE_EQUAL));
+        filterArray.push(LABKEY.Filter.create('date', date, LABKEY.Filter.Types.DATE_EQUAL));
         filterArray.push(LABKEY.Filter.create('treatmentStatus', '', LABKEY.Filter.Types.ISBLANK));
 
         if (area)
@@ -506,12 +486,20 @@ EHR.ext.TreatmentSelector = Ext.extend(Ext.Panel, {
         var ids = {};
         var records = [];
         var obj;
+        var date;
         Ext.each(results.rows, function(row)
         {
+            row.date = new Date(row.date);
+            var date = new Date();
+
+            //if retroactively entering, we take the record's date.  otherwise we use the current time
+            if(row.date.getDate()!=date.getDate() || row.date.getMonth()!=date.getMonth() || row.date.getFullYear()!=date.getFullYear())
+                date = row.date;
+
             records.push({
                 Id: row.Id,
                 'id/curlocation/location': row.CurrentRoom+'-'+row.CurrentCage,
-                date: new Date(),
+                date: date,
                 project: row.project,
                 account: row.account,
                 code: row.code,
@@ -542,6 +530,15 @@ EHR.ext.TreatmentSelector = Ext.extend(Ext.Panel, {
 });
 Ext.reg('ehr-treatmentselector', EHR.ext.TreatmentSelector);
 
+
+EHR.ext.TreatmentSelector2 = Ext.extend(EHR.ext.TreatmentSelector, {
+    initComponent: function()
+    {
+        EHR.ext.TreatmentSelector2.superclass.initComponent.call(this, arguments);
+        this.dateField.setVisible(true);
+    }
+});
+Ext.reg('ehr-treatmentselector2', EHR.ext.TreatmentSelector2);
 
 
 EHR.ext.BloodSelector = Ext.extend(Ext.Panel, {

@@ -698,7 +698,7 @@ EHR.ext.RequestPanel = Ext.extend(EHR.ext.ImportPanelBase, {
             }
         });
 
-        this.allowableButtons = this.allowableButtons || 'REQUEST,APPROVE,CLOSE';
+        this.allowableButtons = this.allowableButtons || 'VALIDATE,REQUEST,APPROVE,CLOSE';
 
         EHR.ext.RequestPanel.superclass.initComponent.call(this, arguments);
     },

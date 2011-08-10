@@ -20,7 +20,8 @@ function onUpsert(context, errors, row, oldRow){
 
 
 function onETL(row, errors){
-    EHR.validation.setSpecies(row, errors);
+    var species = EHR.validation.getSpecies(row, errors);
+    row.species = row.species || species;
 
     //the ETL code is going to error if the row is missing a date.
     //since demographics can have a blank date, we remove that:

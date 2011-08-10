@@ -46,7 +46,7 @@
        <column name="taskid" />
        <column name="requestid" />
        <column name="qcstate" />
-       <column name="drawStatus" />
+       <!--<column name="drawStatus" />-->
     </columns>
    <sorts>
        <sort column="date" descending="true"/>

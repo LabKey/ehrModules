@@ -38,6 +38,6 @@
    </sorts>
     <filters>
         <filter column="Id/dataset/demographics/calculated_status" operator="eq" value="Alive"/>
-        <filter column="treatmentStatus" operator="neq" value="Completed"/>
+        <filter column="treatmentStatus/Label" operator="neqornull" value="Completed"/>
     </filters>
 </customView>

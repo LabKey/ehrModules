@@ -99,7 +99,8 @@ function btn1(){
         ['Irregular Observations2', 'Task', '', '', '{"allowableButtons":["VALIDATE","SAVEDRAFT","REVIEW","SUBMIT","DISCARD"]}'],
         ['Treatment Orders', 'Task', '', '', '{"allowableButtons":["VALIDATE","SUBMIT","DISCARD"]}'],
         ['Birth', 'Task', '', '', '{"allowableButtons":["VALIDATE","SUBMIT","DISCARD"]}'],
-        ['Biopsy', 'Task', '', '', '{"taskHeaderMetaSources":["Task","Encounter"]}']
+        ['Biopsy', 'Task', '', '', '{"taskHeaderMetaSources":["Task","Encounter"]}'],
+        ['Treatments2', 'Task', '', '', '{"allowableButtons":["VALIDATE","SUBMIT","DISCARD"]}']
     ];
 
     LABKEY.Query.insertRows(makeObject(config, data, fields));
@@ -226,7 +227,9 @@ function btn2(){
         ['Biopsy' ,'formTabs' ,'ehr-gridformpanel' ,'3' ,'Drug Administration', 'study', 'Treatments', 'Task,Biopsy', '', '', 'add,requestdelete,selectall,duplicate,bulk_edit,apply_template,save_template'],
         ['Biopsy' ,'formTabs' ,'ehr-gridformpanel' ,'4' ,'Tissue Samples', 'study', '', 'Task,Biopsy', '', '', 'add,requestdelete,selectall,duplicate,bulk_edit,apply_template,save_template'],
         ['Biopsy' ,'formTabs' ,'ehr-gridformpanel' ,'5' ,'Histology', 'study', '', 'Task,Biopsy', '', '', 'add,requestdelete,selectall,duplicate,bulk_edit,apply_template,save_template'],
-        ['Biopsy' ,'formTabs' ,'ehr-gridformpanel' ,'6' ,'Morphologic Diagnosis', 'study', '', 'Task,Biopsy', '', '', 'add,requestdelete,selectall,duplicate,bulk_edit,apply_template,save_template']
+        ['Biopsy' ,'formTabs' ,'ehr-gridformpanel' ,'6' ,'Morphologic Diagnosis', 'study', '', 'Task,Biopsy', '', '', 'add,requestdelete,selectall,duplicate,bulk_edit,apply_template,save_template'],
+        ['Treatments2' ,'formSections' ,'ehr-abstractpanel' ,'1' ,'', '', '', '', '', '', ''],
+        ['Treatments2' ,'formSections' ,'ehr-gridformpanel' ,'2' ,'Drug Administration', 'study', 'Treatments', 'Task,Treatments', '', '', 'addtreatments2,requestdelete,selectall,duplicate,bulk_edit']
     ];
     LABKEY.Query.insertRows(makeObject(config, data, fields));
 }

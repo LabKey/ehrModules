@@ -553,21 +553,23 @@ EHR.ext.AdvancedStore = Ext.extend(LABKEY.ext.Store, {
 
             var serverError = this.getJson(response);
             var msg = '';
-            Ext.each(serverError.errors, function(error){
-                //handle validation script errors and exceptions differently
-                if(error.errors && error.errors.length){
-                    this.handleValidationErrors(error, response, serverError.extraContext);
-                    msg = "Could not save changes due to errors. Please check the form for fields marked in red.";
-                }
-//                else {
-//                    //if an exception was thrown, I believe we automatically only have one error returned
-//                    //this means this can only be called once
-//                    msg = 'Could not save changes due to the following error:\n' + (serverError && serverError.exception) ? serverError.exception : response.statusText;
-//                }
-            }, this);
+            if(serverError && serverError.errors){
+                Ext.each(serverError.errors, function(error){
+                    //handle validation script errors and exceptions differently
+                    if(error.errors && error.errors.length){
+                        this.handleValidationErrors(error, response, serverError.extraContext);
+                        msg = "Could not save changes due to errors. Please check the form for fields marked in red.";
+                    }
+//                    else {
+//                        //if an exception was thrown, I believe we automatically only have one error returned
+//                        //this means this can only be called once
+//                        msg = 'Could not save changes due to the following error:\n' + (serverError && serverError.exception) ? serverError.exception : response.statusText;
+//                    }
+                }, this);
 
-            if(!serverError.errors){
-                msg = 'Could not save changes due to the following error:\n' + serverError.exception;
+                if(!serverError.errors){
+                   msg = 'Could not save changes due to the following error:\n' + serverError.exception;
+            }
             }
 
             if(false !== this.fireEvent("commitexception", msg) && (options.jsonData.extraContext && !options.jsonData.extraContext.silent)){
@@ -657,7 +659,7 @@ EHR.ext.AdvancedStore = Ext.extend(LABKEY.ext.Store, {
             return;
 
         var extraContext = {
-            targetQC : 'Delete Requested',
+            //targetQC : 'Delete Requested',
             errorThreshold: 'SEVERE',
             importPathway: 'ehr-importPanel'
         };
@@ -669,6 +671,14 @@ EHR.ext.AdvancedStore = Ext.extend(LABKEY.ext.Store, {
                 delete r;
             }
             else {
+                r.beginEdit();
+                if(r.get('requestid')){
+                    r.set('taskid', null);
+                    r.set('QCState', EHR.permissionMap.qcMap.label['Request: Approved'].RowId);
+                }
+                else {
+                    r.set('QCState', EHR.permissionMap.qcMap.label['Delete Requested'].RowId);
+                }
                 recs.push(r);
             }
         }, this);

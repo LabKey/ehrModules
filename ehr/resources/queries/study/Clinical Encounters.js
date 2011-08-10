@@ -6,6 +6,15 @@
 
 var {EHR, LABKEY, Ext, console, init, beforeInsert, afterInsert, beforeUpdate, afterUpdate, beforeDelete, afterDelete, complete} = require("ehr/validation");
 
+function onUpsert(context, errors, row, oldRow){
+    if(context.extraContext.dataSource != 'etl' && row.date && !row.requestdate){
+        row.requestdate = row.date;
+    }
+
+    if(context.extraContext.dataSource != 'etl' && row.restraint && !Ext.isDefined(row.restraintTime)){
+        EHR.addError(errors, 'restraintTime', 'Must enter time restrained', 'WARN');
+    }
+}
 
 function onETL(row, errors){
     //we grab the first sentence as title

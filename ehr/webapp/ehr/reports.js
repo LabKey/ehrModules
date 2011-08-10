@@ -632,7 +632,8 @@ EHR.reports.viralLoads = function(tab, subject){
     var config = Ext.applyIf({
         title: 'Viral Load' + ": " + title,
         schemaName: 'study',
-        queryName: 'ViralLoads',
+        queryName: 'ViralLoadsWpi',
+        //viewName: 'With WPI',
         filters: filterArray.nonRemovable,
         removeableFilters: filterArray.removable,
         sort: 'Id,-date',

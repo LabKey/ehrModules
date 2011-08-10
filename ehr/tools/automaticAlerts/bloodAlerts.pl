@@ -59,7 +59,7 @@ $results = Labkey::Query::selectRows(
     -schemaName => 'study',
     -queryName => 'Blood Draws',
     -filterArray => [
-    	['Id/DataSet/Demographics/calculated_status', 'neq', 'Alive'],
+    	['Id/DataSet/Demographics/calculated_status', 'neqornull', 'Alive'],
 		['date', 'dategte', $datestr],    			    	
     ],    
     #-debug => 1,
@@ -67,10 +67,31 @@ $results = Labkey::Query::selectRows(
 
 if(@{$results->{rows}}){
 	$email_html .= "<b>WARNING: There are ".@{$results->{rows}}." schedule blood draws for animals not currently at WNPRC.</b><br>";
-	$email_html .= "<p><a href='".$baseUrl."query/".$studyContainer."executeQuery.view?schemaName=study&query.queryName=Blood Draws&query.date~dategte=$datestr&query.Id/DataSet/Demographics/calculated_status~neq=Alive"."'>Click here to view and update them</a><br>\n";
+	$email_html .= "<p><a href='".$baseUrl."query/".$studyContainer."executeQuery.view?schemaName=study&query.queryName=Blood Draws&query.date~dategte=$datestr&query.Id/DataSet/Demographics/calculated_status~neqornull=Alive"."'>Click here to view them</a><br>\n";
 	$email_html .= "<hr>\n";			
 }
 
+
+#we find any blood draws over the allowable limit
+$results = Labkey::Query::selectRows(
+    -baseUrl => $baseUrl,
+    -containerPath => $studyContainer,
+    -schemaName => 'study',
+    -queryName => 'Blood Draws',
+    -filterArray => [
+    	['Id/DataSet/Demographics/calculated_status', 'neqornull', 'Alive'],
+		['date', 'dategte', $datestr],
+		['date', 'dategte', $datestr],    
+		['BloodRemaining/AvailBlood', 'lt', 0],    			    	
+    ],    
+    #-debug => 1,
+);
+
+if(@{$results->{rows}}){
+	$email_html .= "<b>WARNING: There are ".@{$results->{rows}}." schedule blood draws for animals not currently at WNPRC.</b><br>";
+	$email_html .= "<p><a href='".$baseUrl."query/".$studyContainer."executeQuery.view?schemaName=study&query.queryName=Blood Draws&query.viewName=Blood Summary&query.date~dategte=$datestr&query.Id/DataSet/Demographics/calculated_status~neqornull=Alive&query.BloodRemaining/AvailBlood~lt=0"."'>Click here to view them</a><br>\n";
+	$email_html .= "<hr>\n";			
+}
 
 
 #we find any blood draws where the animal is not assigned to that project

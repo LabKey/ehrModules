@@ -251,5 +251,10 @@ function onAfterDelete(scriptContext, errors, row, oldRow){
 
 
 function setDescription(row, errors){
-    return ['Cage Observation'];
+    var description = ['Cage Observation'];
+
+    if(row.feces)
+        description.push('Feces: '+row.feces);
+
+    return description;
 }

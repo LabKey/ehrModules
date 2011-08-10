@@ -2,9 +2,8 @@
 
 =head1 DESCRIPTION
 
-This script is designed to run as a cron job.  It will query a number of tables an email a report.
-The report is designed to identify potential problems with the colony, primarily related to weights, housing
-and assignments.
+This script is designed to run as a cron job.  It will query a number of tables an email a report
+summarizing daily treatments and related issues.
 
 
 =head1 LICENSE
@@ -26,7 +25,7 @@ my $studyContainer = 'WNPRC/EHR/';
 
 #whitespace separated list of emails
 my @email_recipients = qw(bimber@wisc.edu cm@primate.wisc.edu wnprcvets@primate.wisc.edu);
-@email_recipients = qw(bimber@wisc.edu);
+#@email_recipients = qw(bimber@wisc.edu);
 my $mail_server = 'smtp.primate.wisc.edu';
 
 #emails will be sent from this address
@@ -50,7 +49,7 @@ my $timeOfDay = $tm->hour;
 
 my $email_html = "This email contains any scheduled treatments not marked as completed.  It was run on: $datetimestr.<p>";
 my $results;
-
+my $send_email = 0;
 
 #we find any rooms lacking obs for today
 $results = Labkey::Query::selectRows(
@@ -58,12 +57,15 @@ $results = Labkey::Query::selectRows(
     -containerPath => $studyContainer,
     -schemaName => 'ehr',
     -queryName => 'RoomsWithoutObsToday',
+    -filterArray => [
+    	['status', 'isnonblank', ''],
+    ],
     #-debug => 1,
 );
 
 if(@{$results->{rows}}){
 	$email_html .= "<b>WARNING: The following rooms do not have any obs for today as of $timestr.</b><br>";
-	#$email_html .= "<p><a href='".$baseUrl."query/".$studyContainer."executeQuery.view?schemaName=ehr&query.queryName=RoomsWithoutObsToday"."'>Click here to view them</a><br>\n";
+	#$email_html .= "<p><a href='".$baseUrl."query/".$studyContainer."executeQuery.view?schemaName=ehr&query.queryName=RoomsWithoutObsToday&query.status~isnonblank"."'>Click here to view them</a><br>\n";
 
     foreach my $row (@{$results->{rows}}){
     	$email_html .= $row->{'room'}."<br>";				
@@ -71,9 +73,6 @@ if(@{$results->{rows}}){
 
 	$email_html .= "<hr>\n";			
 }
-else {
-	
-}	
 
 
 #we find any treatments where the animal is not assigned to that project
@@ -98,14 +97,11 @@ if(@{$results->{rows}}){
 
 	
 #we find treatments for each time of day:
-#my $areas = ['Charmany'];
-#$email_html .= "<b>Only the following areas are using online treatments: ".join(';', @$areas).", so this email will only include those areas.</b><p>";
-
 processTreatments('AM', 9);
-#processTreatments('Noon', 12);
+processTreatments('Noon', 12);
 processTreatments('PM', 14);
-#processTreatments('Any Time', 14);
-processTreatments('Night', 15);
+processTreatments('Any Time', 14);
+processTreatments('Night', 17, 1);
 
 my $hasTreatments = 0;
 
@@ -133,7 +129,10 @@ sub processTreatments {
 	$email_html .= "<b>$timeofday Treatments:</b><br>";
 	
 	if(!@{$results->{rows}}){
-		$email_html .= "There are no scheduled $timeofday treatments as of $timestr. Treatments could be added after this email was sent, so please check online closer to the time.<hr>";	
+		$email_html .= "There are no scheduled $timeofday treatments as of $timestr. Treatments could be added after this email was sent, so please check online closer to the time.<hr>";
+		if($timeOfDay >= $minTime && $noSendUnlessTreatments){				
+			$send_email = 0;		
+		}				
 	}		
 	else {
 		my $complete = 0;
@@ -163,11 +162,16 @@ sub processTreatments {
 	
 		if($timeOfDay >= $minTime){
 			if(!$incomplete){
-				$email_html .= "All scheduled $timeofday treatments have been marked complete as of $datetimestr.<p>\n";		
+				$email_html .= "All scheduled $timeofday treatments have been marked complete as of $datetimestr.<p>\n";
+				
+				if($noSendUnlessTreatments){		
+					$send_email = 0;		
+				}						
 			}
 			else {
 				$email_html .= "The following $timeofday treatments have not been marked complete as of $datetimestr:<p>\n";
-		
+				$send_email = 1;
+				
 				my $prevRoom = '';
 				foreach my $area (sort(keys %$summary)){
 					my $rooms = $$summary{$area};			
@@ -287,7 +291,7 @@ $results = Labkey::Query::selectRows(
     -schemaName => 'study',
     -queryName => 'Treatment Orders',
     -filterArray => [
-    	['Id/DataSet/Demographics/calculated_status', 'neq', 'Alive'],
+    	['Id/DataSet/Demographics/calculated_status', 'neqornull', 'Alive'],
 		['enddate', 'isblank', ''],    			    	
     ],    
     #-debug => 1,
@@ -295,7 +299,7 @@ $results = Labkey::Query::selectRows(
 
 if(@{$results->{rows}}){
 	$email_html .= "<b>WARNING: There are ".@{$results->{rows}}." active treatments for animals not currently at WNPRC.</b>";
-	$email_html .= "<p><a href='".$baseUrl."query/".$studyContainer."executeQuery.view?schemaName=study&query.queryName=Treatment Orders&query.enddate~isblank&query.Id/DataSet/Demographics/calculated_status~neq=Alive"."'>Click here to view and update them</a><br>\n";
+	$email_html .= "<p><a href='".$baseUrl."query/".$studyContainer."executeQuery.view?schemaName=study&query.queryName=Treatment Orders&query.enddate~isblank&query.Id/DataSet/Demographics/calculated_status~neqornull=Alive"."'>Click here to view and update them</a><br>\n";
 	$email_html .= "<hr>\n";			
 }	
 
@@ -306,7 +310,7 @@ $results = Labkey::Query::selectRows(
     -schemaName => 'study',
     -queryName => 'Problem List',
     -filterArray => [
-    	['Id/DataSet/Demographics/calculated_status', 'neq', 'Alive'],
+    	['Id/DataSet/Demographics/calculated_status', 'neqornull', 'Alive'],
 		['enddate', 'isblank', ''],    			    	
     ],    
     #-debug => 1,
@@ -314,30 +318,34 @@ $results = Labkey::Query::selectRows(
 
 if(@{$results->{rows}}){
 	$email_html .= "<b>WARNING: There are ".@{$results->{rows}}." unresolved problems for animals not currently at WNPRC.</b>";
-	$email_html .= "<p><a href='".$baseUrl."query/".$studyContainer."executeQuery.view?schemaName=study&query.queryName=Problem List&query.enddate~isblank&query.Id/DataSet/Demographics/calculated_status~neq=Alive"."'>Click here to view and update them</a><br>\n";
+	$email_html .= "<p><a href='".$baseUrl."query/".$studyContainer."executeQuery.view?schemaName=study&query.queryName=Problem List&query.enddate~isblank&query.Id/DataSet/Demographics/calculated_status~neqornull=Alive"."'>Click here to view and update them</a><br>\n";
 	$email_html .= "<hr>\n";			
 }
 
 
-#open(HTML, ">", "C:\\Users\\Admin\\Desktop\\test.html");
-#print HTML $email_html;
-#close HTML;
+if($send_email){
+	open(HTML, ">", "C:\\Users\\Admin\\Desktop\\test.html");
+	print HTML $email_html;
+	close HTML;
 
-my $smtp = Net::SMTP->new($mail_server,
-    Timeout => 30,
-    Debug   => 0,
-);
-$smtp->mail( $from );
-$smtp->recipient(@email_recipients, { Notify => ['FAILURE'], SkipBad => 1 });  
+#	my $smtp = Net::SMTP->new($mail_server,
+#	    Timeout => 30,
+#	    Debug   => 0,
+#	);
+#	$smtp->mail( $from );
+#	$smtp->recipient(@email_recipients, { Notify => ['FAILURE'], SkipBad => 1 });  
+#	
+#	$smtp->data();
+#	$smtp->datasend("Subject: Daily Colony Alerts: $datestr\n");
+#	$smtp->datasend("Content-Transfer-Encoding: US-ASCII\n");
+#	$smtp->datasend("Content-Type: text/html; charset=\"US-ASCII\" \n");
+#	$smtp->datasend("\n");
+#	$smtp->datasend($email_html);
+#	$smtp->dataend();
+#	
+#	$smtp->quit;
 
-$smtp->data();
-$smtp->datasend("Subject: Daily Colony Alerts: $datestr\n");
-$smtp->datasend("Content-Transfer-Encoding: US-ASCII\n");
-$smtp->datasend("Content-Type: text/html; charset=\"US-ASCII\" \n");
-$smtp->datasend("\n");
-$smtp->datasend($email_html);
-$smtp->dataend();
-
-$smtp->quit;
-
-
+}
+else {
+	
+}

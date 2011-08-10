@@ -195,7 +195,7 @@ $results = Labkey::Query::selectRows(
     -schemaName => 'study',
     -queryName => 'Housing',
     -filterArray => [
-    	['Id/Dataset/Demographics/calculated_status', 'neq', 'Alive'],
+    	['Id/Dataset/Demographics/calculated_status', 'neqornull', 'Alive'],
 		['enddate', 'isblank', ''],    			    	
     ],    
     #-debug => 1,
@@ -210,7 +210,7 @@ if(@{$results->{rows}}){
     };
     	
 	#$email_html .= "<b>WARNING: There are ".@{$results->{rows}}." housing records for animals not currently at WNPRC.</b><br>";
-	$email_html .= "<p><a href='".$baseUrl."query/".$studyContainer."executeQuery.view?schemaName=study&query.queryName=Housing&query.enddate~isblank&query.Id/Dataset/Demographics/calculated_status~neq=Alive"."'>Click here to view and update them</a><br>\n";
+	$email_html .= "<p><a href='".$baseUrl."query/".$studyContainer."executeQuery.view?schemaName=study&query.queryName=Housing&query.enddate~isblank&query.Id/Dataset/Demographics/calculated_status~neqornull=Alive"."'>Click here to view and update them</a><br>\n";
 	$email_html .= "<hr>\n";			
 }
 else {
@@ -336,7 +336,7 @@ $results = Labkey::Query::selectRows(
     -schemaName => 'study',
     -queryName => 'Assignment',
     -filterArray => [
-    	['Id/Dataset/Demographics/calculated_status', 'neq', 'Alive'],
+    	['Id/Dataset/Demographics/calculated_status', 'neqornull', 'Alive'],
 		['enddate', 'isblank', ''],    			    	
     ],    
     #-debug => 1,
@@ -344,7 +344,7 @@ $results = Labkey::Query::selectRows(
 
 if(@{$results->{rows}}){
 	$email_html .= "<b>WARNING: There are ".@{$results->{rows}}." active assignments for animals not currently at WNPRC.</b><br>";
-	$email_html .= "<p><a href='".$baseUrl."query/".$studyContainer."executeQuery.view?schemaName=study&query.queryName=Assignment&query.enddate~isblank&query.Id/Dataset/Demographics/calculated_status~neq=Alive"."'>Click here to view and update them</a><br>\n";
+	$email_html .= "<p><a href='".$baseUrl."query/".$studyContainer."executeQuery.view?schemaName=study&query.queryName=Assignment&query.enddate~isblank&query.Id/Dataset/Demographics/calculated_status~neqornull=Alive"."'>Click here to view and update them</a><br>\n";
 	$email_html .= "<hr>\n";			
 }	
 
@@ -355,7 +355,7 @@ $results = Labkey::Query::selectRows(
     -schemaName => 'study',
     -queryName => 'Assignment',
     -filterArray => [
-    	['Id/Dataset/Demographics/calculated_status', 'neq', 'Alive'],
+    	['Id/Dataset/Demographics/calculated_status', 'neqornull', 'Alive'],
 		['enddate', 'isblank', ''],
 		['protocol/protocol', 'isblank', ''],    			    	
     ],    
@@ -364,7 +364,7 @@ $results = Labkey::Query::selectRows(
 
 if(@{$results->{rows}}){
 	$email_html .= "<b>WARNING: There are ".@{$results->{rows}}." active assignments to a project without a valid protocol.</b><br>";
-	$email_html .= "<p><a href='".$baseUrl."query/".$studyContainer."executeQuery.view?schemaName=study&query.queryName=Assignment&query.enddate~isblank&query.Id/Dataset/Demographics/calculated_status~neq=Alive&query.protocol/protocol~isblank"."'>Click here to view them</a><br>\n";
+	$email_html .= "<p><a href='".$baseUrl."query/".$studyContainer."executeQuery.view?schemaName=study&query.queryName=Assignment&query.enddate~isblank&query.Id/Dataset/Demographics/calculated_status~neqornull=Alive&query.protocol/protocol~isblank"."'>Click here to view them</a><br>\n";
 	$email_html .= "<hr>\n";			
 }
 
@@ -375,7 +375,7 @@ $results = Labkey::Query::selectRows(
     -schemaName => 'study',
     -queryName => 'Treatment Orders',
     -filterArray => [
-    	['Id/Dataset/Demographics/calculated_status', 'neq', 'Alive'],
+    	['Id/Dataset/Demographics/calculated_status', 'neqornull', 'Alive'],
 		['enddate', 'isblank', ''],    			    	
     ],    
     #-debug => 1,
@@ -383,7 +383,7 @@ $results = Labkey::Query::selectRows(
 
 if(@{$results->{rows}}){
 	$email_html .= "<b>WARNING: There are ".@{$results->{rows}}." active treatments for animals not currently at WNPRC.</b><br>";
-	$email_html .= "<p><a href='".$baseUrl."query/".$studyContainer."executeQuery.view?schemaName=study&query.queryName=Treatment Orders&query.enddate~isblank&query.Id/Dataset/Demographics/calculated_status~neq=Alive"."'>Click here to view and update them</a><br>\n";
+	$email_html .= "<p><a href='".$baseUrl."query/".$studyContainer."executeQuery.view?schemaName=study&query.queryName=Treatment Orders&query.enddate~isblank&query.Id/Dataset/Demographics/calculated_status~neqornull=Alive"."'>Click here to view and update them</a><br>\n";
 	$email_html .= "<hr>\n";			
 }	
 
@@ -395,7 +395,7 @@ $results = Labkey::Query::selectRows(
     -schemaName => 'study',
     -queryName => 'Problem List',
     -filterArray => [
-    	['Id/Dataset/Demographics/calculated_status', 'neq', 'Alive'],
+    	['Id/Dataset/Demographics/calculated_status', 'neqornull', 'Alive'],
 		['enddate', 'isblank', ''],    			    	
     ],    
     #-debug => 1,
@@ -403,7 +403,7 @@ $results = Labkey::Query::selectRows(
 
 if(@{$results->{rows}}){
 	$email_html .= "<b>WARNING: There are ".@{$results->{rows}}." unresolved problems for animals not currently at WNPRC.</b><br>";
-	$email_html .= "<p><a href='".$baseUrl."query/".$studyContainer."executeQuery.view?schemaName=study&query.queryName=Problem List&query.enddate~isblank&query.Id/Dataset/Demographics/calculated_status~neq=Alive"."'>Click here to view and update them</a><br>\n";
+	$email_html .= "<p><a href='".$baseUrl."query/".$studyContainer."executeQuery.view?schemaName=study&query.queryName=Problem List&query.enddate~isblank&query.Id/Dataset/Demographics/calculated_status~neqornull=Alive"."'>Click here to view and update them</a><br>\n";
 	$email_html .= "<hr>\n";			
 }	
 
@@ -415,7 +415,7 @@ $results = Labkey::Query::selectRows(
     -schemaName => 'study',
     -queryName => 'Assignment',
     -filterArray => [
-    	['Id/Dataset/Demographics/calculated_status', 'neq', 'Alive'],
+    	['Id/Dataset/Demographics/calculated_status', 'neqornull', 'Alive'],
 		['enddate', 'isblank', ''],    			    	
     ],    
     #-debug => 1,
@@ -423,7 +423,7 @@ $results = Labkey::Query::selectRows(
 
 if(@{$results->{rows}}){
 	$email_html .= "<b>WARNING: There are ".@{$results->{rows}}." active assignments for animals not currently at WNPRC.</b><br>";
-	$email_html .= "<p><a href='".$baseUrl."query/".$studyContainer."executeQuery.view?schemaName=study&query.queryName=Assignment&query.enddate~isblank&query.Id/Dataset/Demographics/calculated_status~neq=Alive"."'>Click here to view and update them</a><br>\n";
+	$email_html .= "<p><a href='".$baseUrl."query/".$studyContainer."executeQuery.view?schemaName=study&query.queryName=Assignment&query.enddate~isblank&query.Id/Dataset/Demographics/calculated_status~neqornull=Alive"."'>Click here to view and update them</a><br>\n";
 	$email_html .= "<hr>\n";			
 }
 

@@ -1121,17 +1121,17 @@ EHR.ext.SingleAnimalReport = Ext.extend(Ext.Panel, {
             linkTarget: '_blank',
             renderTo: target.id,
             ref: 'qwp',
-            success: function(c){
-                var width1 = Ext.get(c.id).getSize().width;
-                var width2 = Ext.get(target.id).getSize().width;
+            success: function(dr){
+                var width1 = Ext.get(dr.id).getSize().width;
+                var width2 = Ext.get(this.anchorLayout.id).getSize().width;
 
                 if(width1 > width2){
-                    this.anchorLayout.setWidth(width1+100);
+                    this.anchorLayout.setWidth(width1+120);
                     console.log('resizing')
                 }
-//                else {
-                    //this.anchorLayout.setWidth('100%');
-//                }
+                else {
+                    this.anchorLayout.setWidth('100%');
+                }
             },
             failure: function(error){
                 console.log('Error callback called');

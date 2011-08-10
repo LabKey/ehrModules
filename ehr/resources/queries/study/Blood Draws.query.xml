@@ -77,6 +77,10 @@
                     <column columnName="tube_type">
                         <columnTitle>Tube Type</columnTitle>
                     </column>
+                    <column columnName="daterequested">
+                        <columnTitle>Date Requested</columnTitle>
+                        <isHidden>true</isHidden>
+                    </column>
                 </columns>
             </table>
         </tables>

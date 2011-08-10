@@ -45,55 +45,11 @@
                     <column columnName="restraintTime">
                         <columnTitle>Time Restrained (Mins)</columnTitle>
                     </column>
+                    <column columnName="daterequested">
+                        <columnTitle>Date Requested</columnTitle>
+                        <isHidden>true</isHidden>
+                    </column>
                 </columns>
-                <!--<buttonBarOptions includeStandardButtons="false">                    -->
-                    <!--<includeScript>/ehr/studyButtons.js</includeScript>-->
-                    <!--&lt;!&ndash;<onRender>moreActionsHandler</onRender>&ndash;&gt;-->
-                    <!--<item text="Create New">-->
-                        <!--<originalText>Insert New</originalText>-->
-                    <!--</item>-->
-                    <!--<item text="Views">-->
-                        <!--<originalText>Views</originalText>-->
-                    <!--</item>-->
-                    <!--&lt;!&ndash;<item text="Cohorts">&ndash;&gt;-->
-                        <!--&lt;!&ndash;<originalText>Cohorts</originalText>&ndash;&gt;-->
-                    <!--&lt;!&ndash;</item>&ndash;&gt;-->
-                    <!--&lt;!&ndash;<item text="QCState">&ndash;&gt;-->
-                        <!--&lt;!&ndash;<originalText>QC State</originalText>&ndash;&gt;-->
-                    <!--&lt;!&ndash;</item>&ndash;&gt;-->
-                    <!--<item text="Export">-->
-                        <!--<originalText>Export</originalText>-->
-                    <!--</item>-->
-                    <!--<item text="Print">-->
-                        <!--<originalText>Print</originalText>-->
-                    <!--</item>-->
-                    <!--&lt;!&ndash;<item text="Import Data">&ndash;&gt;-->
-                        <!--&lt;!&ndash;<originalText>Import Data</originalText>&ndash;&gt;-->
-                    <!--&lt;!&ndash;</item>&ndash;&gt;-->
-                    <!--<item text="Page Size">-->
-                        <!--<originalText>Page Size</originalText>-->
-                    <!--</item>-->
-                    <!--&lt;!&ndash;<item text="Delete">&ndash;&gt;-->
-                        <!--&lt;!&ndash;<originalText>Delete</originalText>&ndash;&gt;-->
-                    <!--&lt;!&ndash;</item>&ndash;&gt;-->
-                    <!--<item text="More Actions" insertPosition="end" >-->
-                        <!--<item text="Jump To History">-->
-                            <!--<onClick>-->
-                                <!--historyHandler(dataRegion, dataRegionName);-->
-                            <!--</onClick>-->
-                        <!--</item>-->
-                        <!--<item text="Jump To Other Dataset">-->
-                            <!--<onClick>-->
-                                <!--datasetHandler(dataRegion, dataRegionName);-->
-                            <!--</onClick>-->
-                        <!--</item>-->
-                        <!--<item text="Return Distinct Values">-->
-                            <!--<onClick>-->
-                                <!--getDistinct(dataRegion, dataRegionName);-->
-                            <!--</onClick>-->
-                        <!--</item>-->
-                    <!--</item>-->
-                <!--</buttonBarOptions>-->
             </table>
         </tables>
     </metadata>

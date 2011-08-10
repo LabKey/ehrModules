@@ -92,6 +92,7 @@ function moreActionsHandler(dataRegion){
             if(EHR.permissionMap.hasPermission('Scheduled', 'insert', {queryName: 'Blood Draws', schemaName: 'study'})){
                 createTaskBtn(dataRegion, menu, {queries: [{schemaName: 'study', queryName: 'Blood Draws'}], formType: 'Blood Draws'});
                 changeQCStateBtn(dataRegion, menu);
+                addBloodToTaskBtn(dataRegion, menu);
             }
         }
 
@@ -1318,18 +1319,21 @@ function duplicateTask(dataRegion){
                     date = date.toGMTString();
                     if(!date){
                         alert('Must enter a date');
-                        o.ownerCt.ownerCt.hide();
+                        Ext.Msg.hide();
+                        return;
                     }
 
                     var assignedTo = o.ownerCt.ownerCt.theForm.assignedTo.getValue();
                     if(!assignedTo){
                         alert('Must assign to someone');
-                        o.ownerCt.ownerCt.hide();
+                        Ext.Msg.hide();
+                        return;
                     }
                     var title = o.ownerCt.ownerCt.theForm.titleField.getValue();
                     if(!title){
                         alert('Must enter a title');
-                        o.ownerCt.ownerCt.hide();
+                        Ext.Msg.hide();
+                        return;
                     }
 
                     o.ownerCt.ownerCt.hide();
@@ -1368,3 +1372,103 @@ function duplicateTask(dataRegion){
         }).show();
     }
 }
+
+
+function addBloodToTaskBtn(dataRegion, menu){
+    menu.add({
+        text: 'Add To Existing Task',
+        dataRegion: dataRegion,
+        handler: function(){
+            var checked = dataRegion.getChecked();
+            if(!checked || !checked.length){
+                alert('No records selected');
+                return;
+            }
+
+            new Ext.Window({
+                title: 'Add To Existing Task',
+                width: 330,
+                autoHeight: true,
+                items: [{
+                    xtype: 'form',
+                    ref: 'theForm',
+                    bodyStyle: 'padding: 5px;',
+                    defaults: {
+                        border: false
+                    },
+                    items: [{
+                        html: 'Total Records: '+checked.length+'<br><br>',
+                        tag: 'div'
+                    },{
+                        xtype: 'combo',
+                        fieldLabel: 'Select Task',
+                        width: 200,
+                        triggerAction: 'all',
+                        mode: 'local',
+                        store: new LABKEY.ext.Store({
+                            xtype: 'labkey-store',
+                            schemaName: 'ehr',
+                            sql: "select t.taskid, t.rowid, t.title from ehr.tasks t where t.formtype IN ('Blood Draws','MPR') AND t.qcstate.label!='Completed'",
+                            sort: 'rowid',
+                            autoLoad: true
+                        }),
+                        displayField: 'rowid',
+                        valueField: 'rowid',
+                        ref: 'taskField',
+                        tpl: function(){var tpl = new Ext.XTemplate(
+                            '<tpl for=".">' +
+                            '<div class="x-combo-list-item">{[values["rowid"] +" - "+ values["title"]]}' +'&nbsp;</div>' +
+                            '</tpl>'
+                            );return tpl.compile()}() //FIX: 5860
+                    }]
+                }],
+                buttons: [{
+                    text:'Submit',
+                    disabled:false,
+                    formBind: true,
+                    ref: '../submit',
+                    scope: this,
+                    handler: function(o){
+                        Ext.Msg.wait('Saving...');
+
+                        var taskId = o.ownerCt.ownerCt.theForm.taskField.getValue();
+                        if(!taskId){
+                            alert('You must pick a task');
+                            Ext.Msg.hide();
+                            return;
+                        }
+
+                        var rec = o.ownerCt.ownerCt.theForm.taskField.getStore().find('rowid', taskId);
+                        rec = o.ownerCt.ownerCt.theForm.taskField.getStore().getAt(rec);
+
+                        o.ownerCt.ownerCt.hide();
+
+                        var records = [];
+                        Ext.each(checked, function(r){
+                            records.push({lsid: r, taskid: rec.get('taskid'), QCStateLabel: 'Scheduled'});
+                        }, this);
+
+                        LABKEY.Query.updateRows({
+                            schemaName: 'study',
+                            queryName: 'Blood Draws',
+                            rows: records,
+                            scope: this,
+                            success: function(data){
+                                Ext.Msg.hide();
+                                dataRegion.refresh();
+                            },
+                            failure: EHR.onFailure
+                        });
+
+                    }
+                },{
+                    text: 'Close',
+                    handler: function(o){
+                        o.ownerCt.ownerCt.hide();
+                    }
+                }]
+            }).show();
+        }
+    });
+}
+

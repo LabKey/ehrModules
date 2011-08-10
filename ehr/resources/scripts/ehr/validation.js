@@ -52,7 +52,6 @@ exports.init = init;
 
 function beforeInsert(row, errors){
     var scriptErrors = {};
-
     if(this.scriptContext.verbosity > 0)
         console.log("beforeInsert: " + row);
 
@@ -837,9 +836,9 @@ EHR.validation = {
     },
     verifyIdFormat: function(row, errors, scriptContext){
         if(row.Id){
-            EHR.validation.setSpecies(row, errors);
+            var species = EHR.validation.getSpecies(row, errors);
 
-            if(row.species == 'Unknown'){
+            if(species == 'Unknown'){
                 var severity;
                 if(!scriptContext.extraContext.skipIdFormatCheck)
                     severity = 'WARN';
@@ -848,6 +847,11 @@ EHR.validation = {
 
                 EHR.addError(errors, 'Id', 'Invalid Id Format', severity);
             }
+            else if (species == 'Infant') {
+                species = null;
+            }
+
+            row.species = row.species || species;
         }
     },
     dateToString: function (date){
@@ -964,19 +968,22 @@ EHR.validation = {
             EHR.addError(errors, 'date', 'Date is more than 60 days in past: '+row.Date, 'WARN');
         }
     },
-    setSpecies: function(row, errors){
+    getSpecies: function(row, errors){
+        var species;
         if (row.Id.match(/(^rh([0-9]{4})$)|(^r([0-9]{5})$)/))
-            row.species = 'Rhesus';
+            species = 'Rhesus';
         else if (row.Id.match(/^cy([0-9]{4})$/))
-            row.species = 'Cynomolgus';
+            species = 'Cynomolgus';
         else if (row.Id.match(/^ag([0-9]{4})$/))
-            row.species = 'Vervet';
+            species = 'Vervet';
         else if (row.Id.match(/^cj([0-9]{4})$/))
-            row.species = 'Marmoset';
+            species = 'Marmoset';
         else if (row.Id.match(/^so([0-9]{4})$/))
-            row.species = 'Cotton-top Tamarin';
+            species = 'Cotton-top Tamarin';
         else if (row.Id.match(/^pt([0-9]{4})$/))
-            row.species = 'Pigtail';
+            species = 'Pigtail';
+        else if (row.Id.match(/^pd([0-9]{4})$/))
+            species = 'Infant';
 
         //these are to handle legacy data:
         else if (row.Id.match(/(^rha([a-z]{1})([0-9]{2}))$/))

@@ -114,6 +114,11 @@ EHR.ext.Metadata.Standard = {
                 showLink: false
             }
         }
+        ,daterequested: {
+            xtype: 'xdatetime',
+            noDuplicateByDefault: true,
+            format: 'Y-m-d H:i'
+        }
         ,date: {
             allowBlank: false,
             nullable: false,
@@ -374,7 +379,7 @@ EHR.ext.Metadata.Standard = {
             },
             title: {
                 setInitialValue: function(val, rec){
-                    return val || this.importPanel.formType;
+                    return val || this.importPanel.title || this.importPanel.formType;
                 }
             }
         },
@@ -531,16 +536,55 @@ EHR.ext.Metadata.Standard = {
             gender: {allowBlank: false}
         },
         Prenatal: {
-            Id: {
-                editorConfig: {
-                    allowAnyId: true
+            conception: {
+                format: 'Y-m-d'
+            }
+            ,weight: {
+                useNull: true
+                ,editorConfig: {
+                    allowNegative: false
+                    ,decimalPrecision: 4
                 }
-            },
-            sire: {lookups: false},
-            dam: {lookups: false},
-            project: {hidden: true},
-            performedby: {hidden: true},
-            account: {hidden: true}
+            }
+            ,Id: {
+                xtype: 'trigger',
+                editorConfig: {
+                    triggerClass: 'x-form-search-trigger'
+                    ,onTriggerClick: function (){
+                        var prefix = 'pd';
+                        var year = new Date().getFullYear().toString().slice(2);
+                        var sql = "SELECT cast(SUBSTRING(MAX(id), 5, 6) AS INTEGER) as num FROM study.prenatal WHERE Id LIKE '" + prefix + year + "%'";
+                        LABKEY.Query.executeSql({
+                            schemaName: 'study',
+                            sql: sql,
+                            scope: this,
+                            success: function(data){
+                                var caseno;
+                                if(data.rows && data.rows.length==1){
+                                    caseno = data.rows[0].num;
+                                    caseno++;
+                                }
+                                else {
+                                    //console.log('no existing IDs found');
+                                    caseno = 1;
+                                }
+
+                                caseno = EHR.utils.padDigits(caseno, 2);
+                                var val = prefix + year + caseno;
+                                this.setValue(val);
+                                this.fireEvent('change', val)
+                            },
+                            failure: EHR.onFailure
+                        });
+                    }
+                    ,allowAnyId: true
+                }
+            }
+            ,sire: {lookups: false}
+            ,dam: {lookups: false}
+            ,project: {hidden: true}
+            ,performedby: {hidden: true}
+            ,account: {hidden: true}
         },
         'Parasitology Results': {
             organism: {
@@ -1776,7 +1820,7 @@ EHR.ext.Metadata.Standard = {
             project: {hidden: true},
             account: {hidden: true},
             necropsy: {lookups: false},
-            cause: {allowBlank: true},
+            cause: {allowBlank: false},
             tattoo: {
                 editorConfig: {
                     helpPopup: 'Please enter the color and number of the tag and/or all visible tattoos'
@@ -2232,11 +2276,11 @@ EHR.ext.Metadata.Task = {
         ,'Blood Draws': {
             requestor:{xtype: 'displayfield'}
         }
-        ,Deaths: {
-            cause: {
-                hidden: true
-            }
-        }
+//        ,Deaths: {
+//            cause: {
+//                hidden: true
+//            }
+//        }
     }
 };
 
@@ -2320,6 +2364,22 @@ EHR.ext.Metadata.Encounter = {
             ,hidden: true
             ,shownInGrid: false
         }
+        ,restraint: {
+            parentConfig: {
+                storeIdentifier: {queryName: 'Clinical Encounters', schemaName: 'study'},
+                dataIndex: 'restraint'
+            }
+            ,hidden: true
+            ,shownInGrid: false
+        }
+        ,restraintTime: {
+            parentConfig: {
+                storeIdentifier: {queryName: 'Clinical Encounters', schemaName: 'study'},
+                dataIndex: 'restraintTime'
+            }
+            ,hidden: true
+            ,shownInGrid: false
+        }
     },
     byQuery: {
         'Treatment Orders': {
@@ -2367,6 +2427,14 @@ EHR.ext.Metadata.Encounter = {
             project: {
                 parentConfig: null,
                 allowBlank: false,
+                hidden: false
+            },
+            restraint: {
+                parentConfig: null,
+                hidden: false
+            },
+            restraintTime: {
+                parentConfig: null,
                 hidden: false
             },
             type: {
@@ -2501,29 +2569,32 @@ EHR.ext.Metadata.Request = {
                 xtype: 'displayfield'
             },
             num_tubes: {
-                xtype: 'numberfield',
+                xtype: 'ehr-triggernumberfield',
                 editorConfig: {
                     allowNegative: false,
                     listeners: {
                         change: function(field, val){
-                            this.ownerCt.getForm().findField('quantity').calculateQuantity();
+                            if(this.ownerCt.getForm)
+                                this.ownerCt.getForm().findField('quantity').calculateQuantity();
                         }
                     }
                 }
-                ,allowBlank: false
+                ,nullable: false
             },
             tube_vol: {
-                allowBlank: false,
+                nullable: false,
                 editorConfig: {
                     allowNegative: false,
                     listeners: {
                         change: function(field, val){
-                            this.ownerCt.getForm().findField('quantity').calculateQuantity();
+                            if(this.ownerCt.getForm)
+                                this.ownerCt.getForm().findField('quantity').calculateQuantity();
                         }
                     }
                 }
             },
             date: {
+                nullable: false,
                 editorConfig: {
                     timeConfig: {
                         minValue: '8:30',
@@ -2539,7 +2610,10 @@ EHR.ext.Metadata.Request = {
                 }
             },
             tube_type: {
-                allowBlank: false
+                nullable: false
+            },
+            project: {
+                nullable: false
             }
         },
         'Clinical Encounters': {
@@ -2984,23 +3058,37 @@ EHR.ext.Metadata.Treatments = {
             code: {
                 editorConfig: {
                     defaultSubset: 'Drugs and Procedures'
+                },
+                colModel: {
+                    width: 120
                 }
             },
             volume: {
                 colModel: {
-                    width: 40
+                    width: 50
                 }
             },
             vol_units: {
                 colModel: {
-                    width: 40
+                    width: 50
                 }
             },
             performedby: {
-                shownInGrid: true,
+                shownInGrid: false,
                 defaultValue: null
+            },
+            remark: {
+                shownInGrid: true
+            },
+            date: {
+                editorConfig: {
+                    dateConfig: {
+                        editable: false,
+                        hideTrigger: true,
+                        onTriggerClick: Ext.emptyFn
+                    }
+                }
             }
-
         }
     }
 };
@@ -3058,6 +3146,7 @@ EHR.ext.FormColumns = {
     'Morphologic Diagnosis': EHR.ext.topCols+',tissue,severity,duration,distribution,distribution2,inflammation,etiology,process,process2,'+EHR.ext.bottomCols,
     'Pair Tests': EHR.ext.topCols+',partner,bhav,testno,sharedFood,aggressions,affiliation,conclusion,'+EHR.ext.bottomCols,
     'Parasitology Results': EHR.ext.topCols+',organism,method,result,units,qualresult,'+EHR.ext.bottomCols,
+    Prenatal: EHR.ext.topCols+',species,gender,weight,dam,sire,room,cage,conception,'+EHR.ext.bottomCols,
     'Procedure Codes': EHR.ext.topCols+',code,'+EHR.ext.bottomCols,
     'Problem List': EHR.ext.topCols+',code,category,'+EHR.ext.bottomCols,
     'Organ Weights': EHR.ext.topCols+',tissue,qualifier,weight,'+EHR.ext.bottomCols,
