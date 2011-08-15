@@ -61,10 +61,12 @@
                     <column columnName="room">
                         <datatype>varchar</datatype>
                         <columnTitle>Room</columnTitle>
-                        <url>/EHR/cageDetails.view?
-                            room=${room}&amp;
-                            cage=${cage}&amp;
-                        </url>
+                        <fk>
+                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
+                            <fkDbSchema>ehr_lookups</fkDbSchema>
+                            <fkTable>rooms</fkTable>
+                            <fkColumnName>room</fkColumnName>
+                        </fk>
                     </column>
                     <column columnName="cage">
                         <datatype>varchar</datatype>

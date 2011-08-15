@@ -25,7 +25,7 @@ my $baseUrl = 'https://ehr.primate.wisc.edu/';
 my $studyContainer = 'WNPRC/EHR/';
 
 #whitespace separated list of emails
-my @email_recipients = qw("bimber@wisc.edu");
+my @email_recipients = qw(bimber@wisc.edu);
 my $mail_server = 'smtp.primate.wisc.edu';
 
 #emails will be sent from this address
@@ -41,9 +41,18 @@ use Data::Dumper;
 use Time::localtime;
 
 # Find today's date
+# Find today's date
 my $tm = localtime;
-my $datestr=sprintf("%04d-%02d-%02d at %02d:%02d", $tm->year+1900, ($tm->mon)+1, $tm->mday, $tm->hour, $tm->min);
-my $email_html = "This email contains a series of automatic alerts about the WNPRC colony.  It was run on: $datestr.<p>";
+my $datestr = sprintf("%04d-%02d-%02d at %02d:%02d", $tm->year+1900, ($tm->mon)+1, $tm->mday, $tm->hour, $tm->min);
+
+my $yesterday = localtime( ( time() - ( 24 * 60 * 60 ) ) );
+$yesterday = sprintf("%04d-%02d-%02d", $yesterday->year+1900, ($yesterday->mon)+1, $yesterday->mday);
+
+my $threeDaysAgo = localtime( ( time() - ( 3 * 24 * 60 * 60 ) ) );
+$threeDaysAgo = sprintf("%04d-%02d-%02d", $threeDaysAgo->year+1900, ($threeDaysAgo->mon)+1, $threeDaysAgo->mday);
+
+
+my $email_html = "This email contains alerts of weight changes of +/- 10% or greater.  It was run on: $datestr.<p>";
 my $results;
 
 
@@ -76,90 +85,83 @@ else {
 
 
 #then we find all weight drops of >10% in the past 30 days
-$results = Labkey::Query::selectRows(
-    -baseUrl => $baseUrl,
-    -containerPath => $studyContainer,
-    -schemaName => 'study',
-    -queryName => 'weightRelChange',
-    -viewName => '10 Pct Drop In Last 30 Days'
-    #-debug => 1,
-);
+processWeights(0, 30, 'lte', -10);
+processWeights(0, 30, 'gte', 10);
 
-$email_html .= "<b>Weight drops of >10% in the past 30 days:</b><br>";
+#processWeights(7, 30, 'lte', -10);
+#processWeights(7, 30, 'gte', 10);
 
-if(!@{$results->{rows}}){
-	$email_html .= "There are no weight drops during this period.<hr>";	
-}		
-else {	
-	my %ids;
-    foreach my $row (@{$results->{rows}}){
-    	$ids{$row->{'Id'}} = 1;
-        #$email_html .= $row->{'Id'}."<br>";
-    };
-    $email_html .= join("<br>", sort(keys %ids))."<br>";
+#processWeights(30, 90, 'lte', -10);
+#processWeights(30, 90, 'gte', 10);
 
-    $email_html .= "<p><a href='".$baseUrl."query/".$studyContainer."executeQuery.view?schemaName=study&query.queryName=weightRelChange&query.viewName=10 Pct Drop In Last 30 Days"."'>Click here to view these animals</a></p>";
-    $email_html .= '<hr>';
+#processWeights(90, 180, 'le', -10);
+#processWeights(90, 180, 'gte', 10);
+
+
+sub processWeights {
+	my $min = shift;
+	my $max = shift;
+	my $pctFilter = shift;
+	my $pct = shift;
+	
+	$results = Labkey::Query::selectRows(
+	    -baseUrl => $baseUrl,
+	    -containerPath => $studyContainer,
+	    -schemaName => 'study',
+	    -queryName => 'weightRelChange',
+		-columns => 'Id,Id/curLocation/area,Id/curLocation/room,Id/curLocation/cage,LatestWeightDate,LatestWeight,date,weight,PctChange,IntervalInDays',
+		-sort => 'Id/curLocation/area,Id/curLocation/room,Id/curLocation/cage,Id',
+		-filterArray => [
+			['Id/DataSet/Demographics/calculated_status', 'eq', 'Alive'],
+			['PctChange', $pctFilter, $pct],
+			['LatestWeightDate', 'dategte', $threeDaysAgo],	
+			['IntervalInDays', 'gte', $min],
+			['IntervalInDays', 'lte', $max],	
+		],
+	    #-debug => 1,
+	);
+	
+	$email_html .= "<b>Weights since $threeDaysAgo representing changes of ".$pct."% in the past $max days:</b><br>";
+	
+	if(!@{$results->{rows}}){
+		$email_html .= "There are no changes during this period.<hr>";	
+	}		
+	else {	
+		my $total = 0;
+		my $summary;
+	    foreach my $row (@{$results->{rows}}){
+			if(!$$summary{$row->{'Id/curLocation/area'}}){
+				$$summary{$row->{'Id/curLocation/area'}} = {};				
+			}	
+			if(!$$summary{$row->{'Id/curLocation/area'}}{$row->{'Id/curLocation/room'}}){
+				$$summary{$row->{'Id/curLocation/area'}}{$row->{'Id/curLocation/room'}} = {records=>[]};				
+			}	
+			
+			push(@{$$summary{$row->{'Id/curLocation/area'}}{$row->{'Id/curLocation/room'}}{records}}, $row);		
+			$total++;	
+	    };
+	    
+		my $prevRoom = '';
+		$email_html .= "<table border=1><tr><td>Id</td><td>Area</td><td>Room</td><td>Cage</td><td>Current Weight (kg)</td><td>Weight Date</td><td>Previous Weight (kg)</td><td>Date</td><td>Percent Change</td><td>Days Between</td></tr>";
+		foreach my $area (sort(keys %$summary)){
+			my $rooms = $$summary{$area};			
+			foreach my $room (sort(keys %$rooms)){
+				foreach my $rec (@{$$rooms{$room}{records}}){			
+					$email_html .= "<tr><td><a href='".$baseUrl."ehr/".$studyContainer."animalHistory.view?#_inputType:renderSingleSubject&_showReport:1&subject:".$$rec{Id}."&combineSubj:true&activeReport:abstract'>".$$rec{Id}."</a></td><td>$area</td><td>$room</td><td>".$$rec{'Id/curLocation/cage'}."</td><td>".$$rec{LatestWeight}."</td><td>".$$rec{LatestWeightDate}."</td><td>".$$rec{weight}."</td><td>".$$rec{date}."</td><td>".$$rec{PctChange}."</td><td>".$$rec{IntervalInDays}."</td></tr>";
+				}								  	
+			}			
+		}
+		
+		$email_html .= "</table><p>\n";	  	    	
+#		$email_html .= "<p><a href='".$baseUrl."query/".$studyContainer."executeQuery.view?schemaName=study&query.queryName=weightRelChange&query.Id/DataSet/Demographics/calculated_status~eq=Alive&query.PctChange~$pctFilter=$pct&query.IntervalInDays~gte=".$min."&query.IntervalInDays~lte=".$max."&query.LatestWeightDate~dategte=$threeDaysAgo'>Click here to view these animals</a></p>";
+	    $email_html .= '<hr>';
+	}
 }
 
 
-#first we find all weight drops of >10% in the past 90 days
-$results = Labkey::Query::selectRows(
-    -baseUrl => $baseUrl,
-    -containerPath => $studyContainer,
-    -schemaName => 'study',
-    -queryName => 'weightRelChange',
-    -viewName => '10 Pct Drop In Last 90 Days'
-    #-debug => 1,
-);
-
-$email_html .= "<b>Weight drops of >10% in the past 90 days:</b><br>";
-
-if(!@{$results->{rows}}){
-	$email_html .= "There are no weight drops during this period.<hr>";	
-}		
-else {	
-	my %ids;
-    foreach my $row (@{$results->{rows}}){
-    	$ids{$row->{'Id'}} = 1;
-        #$email_html .= $row->{'Id'}."<br>";
-    };
-    $email_html .= join("<br>", sort(keys %ids))."<br>";
-
-    $email_html .= "<p><a href='".$baseUrl."query/".$studyContainer."executeQuery.view?schemaName=study&query.queryName=weightRelChange&query.viewName=10 Pct Drop In Last 90 Days"."'>Click here to view these animals</a></p>";
-    $email_html .= '<hr>';
-}
-
-
-#first we find all weight drops of >10% in the past 6 months
-$results = Labkey::Query::selectRows(
-    -baseUrl => $baseUrl,
-    -containerPath => $studyContainer,
-    -schemaName => 'study',
-    -queryName => 'weightRelChange',
-    -viewName => '10 Pct Drop In Last 6 Months'
-    #-debug => 1,
-);
-
-$email_html .= "<b>Weight drops of >10% in the past 6 months:</b><br>";
-
-if(!@{$results->{rows}}){
-	$email_html .= "There are no weight drops during this period.<hr>";	
-}		
-else {	
-	my %ids;
-    foreach my $row (@{$results->{rows}}){
-    	$ids{$row->{'Id'}} = 1;
-        #$email_html .= $row->{'Id'}."<br>";
-    };
-    $email_html .= join("<br>", sort(keys %ids))."<br>";
-
-    $email_html .= "<p><a href='".$baseUrl."query/".$studyContainer."executeQuery.view?schemaName=study&query.queryName=weightRelChange&query.viewName=10 Pct Drop In Last 6 Months"."'>Click here to view these animals</a></p>";
-    $email_html .= '<hr>';
-}
-
-
-print "\n\n".$email_html."\n\n";
+#open(HTML, ">", "C:\\Users\\Admin\\Desktop\\test.html");
+#print HTML $email_html;
+#close HTML;
 
 
 my $smtp = Net::SMTP->new($mail_server,
@@ -171,7 +173,7 @@ $smtp->mail( $from );
 $smtp->recipient(@email_recipients, { Notify => ['FAILURE'], SkipBad => 1 });  
 
 $smtp->data();
-$smtp->datasend("Subject: Weight Drops: $datestr\n");
+$smtp->datasend("Subject: Weight Alerts: $datestr\n");
 $smtp->datasend("Content-Transfer-Encoding: US-ASCII\n");
 $smtp->datasend("Content-Type: text/html; charset=\"US-ASCII\" \n");
 $smtp->datasend("\n");

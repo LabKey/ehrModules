@@ -96,7 +96,7 @@ EHR.ext.Metadata.Standard = {
             lookups: false,
             allowDuplicateValue: false,
             colModel: {
-                width: 70,
+                width: 75,
                 showLink: false
             }
         }
@@ -293,10 +293,34 @@ EHR.ext.Metadata.Standard = {
         ,remark: {
             xtype: 'ehr-remark',
             isAutoExpandColumn: true,
-            printWidth: 150
-//            editorConfig: {
-//                style: 'width: 100%;max-width: 600px;min-width: 200px;'
-//            }
+            printWidth: 150,
+            editorConfig: {
+                resizeDirections: 's'
+            }
+        }
+        ,so: {
+            xtype: 'ehr-remark',
+            isAutoExpandColumn: true,
+            printWidth: 150,
+            editorConfig: {
+                resizeDirections: 's'
+            }
+        }
+        ,a: {
+            xtype: 'ehr-remark',
+            isAutoExpandColumn: true,
+            printWidth: 150,
+            editorConfig: {
+                resizeDirections: 's'
+            }
+        }
+        ,p: {
+            xtype: 'ehr-remark',
+            isAutoExpandColumn: true,
+            printWidth: 150,
+            editorConfig: {
+                resizeDirections: 's'
+            }
         }
         ,project: {
             xtype: 'ehr-project'
@@ -2287,12 +2311,14 @@ EHR.ext.Metadata.Task = {
 EHR.ext.Metadata.SimpleForm = {
     allQueries: {
         QCState: {
-//            parentConfig: {
-//                storeIdentifier: {queryName: 'tasks', schemaName: 'ehr'},
-//                dataIndex: 'qcstate'
-//            }
-            hidden: true
-            //,defaultValue: 2
+            hidden: false
+            ,editable: true
+            ,setInitialValue: function(v){
+                var qc;
+                if(!v && EHR.permissionMap && EHR.permissionMap.qcMap && EHR.permissionMap.qcMap.label['In Progress'])
+                    qc = EHR.permissionMap.qcMap.label['Completed'].RowId;
+                return v || qc;
+            }
             ,editorConfig: {
                 editable: true,
                 disabled: false
@@ -3041,10 +3067,101 @@ EHR.ext.Metadata.PE = {
             p: {
                 shownInGrid: true
             }
+        },
+        'Body Condition': {
+            microchip: {
+                hidden: true
+            },
+            tag: {
+                hidden: true
+            }
         }
     }
 };
 
+EHR.ext.Metadata.NWM_PE = {
+    allQueries: {
+        performedby: {
+            parentConfig: {
+                storeIdentifier: {queryName: 'Clinical Encounters', schemaName: 'study'},
+                dataIndex: 'performedby'
+            }
+            //,hidden: true
+            ,shownInGrid: false
+        }
+    },
+    byQuery: {
+        'Clinical Observations': {
+            area: {
+                allowBlank: false,
+                includeNullRecord: false,
+                lookup: {
+                    schemaName: 'ehr_lookups',
+                    queryName: 'pe_region',
+                    displayColumn: 'region',
+                    keyColumn: 'region',
+                    sort: 'region'
+                }
+                ,colModel: {
+                    width: 60
+                }
+
+            },
+            observation: {
+                defaultValue: 'Normal'
+                ,colModel: {
+                    width: 40
+                }
+            },
+            remark: {
+                isAutoExpandColumn: true
+            },
+            code: {
+                hidden: true
+//                colModel: {
+//                    width: 120
+//                }
+            }
+        },
+        'Clinical Encounters': {
+            type: {
+                defaultValue: 'Physical Exam'
+            },
+            serviceRequested: {
+                hidden: true
+            },
+            enddate: {
+                hidden: true
+            },
+            remark: {
+                height: 100
+            },
+            performedby: {
+                defaultValue: LABKEY.Security.currentUser.displayName,
+                parentConfig: null
+            }
+        },
+        'Clinical Remarks': {
+            so: {
+                shownInGrid: true
+            },
+            a: {
+                shownInGrid: true
+            },
+            p: {
+                shownInGrid: true
+            }
+        },
+        'Body Condition': {
+            tattoo_chest: {
+                hidden: true
+            },
+            tattoo_thigh: {
+                hidden: true
+            }
+        }
+    }
+};
 
 EHR.ext.Metadata.Treatments = {
     allQueries: {
@@ -3121,7 +3238,7 @@ EHR.ext.FormColumns = {
     Biopsies: EHR.ext.topCols+',caseno,type,veterinarian,performedby,nhpbmd,grossdescription,'+EHR.ext.bottomCols,
     Birth: EHR.ext.topCols+',estimated,gender,weight,wdate,dam,sire,room,cage,cond,origin,conception,type,'+EHR.ext.bottomCols,
     'Blood Draws': EHR.ext.topCols+',tube_type,tube_vol,num_tubes,quantity,requestor,additionalServices,billedby,assayCode,' + EHR.ext.bottomCols, //p_s,a_v,
-    'Body Condition': EHR.ext.topCols+',score,weightstatus,remark,tattoo_chest,tattoo_thigh,tattoo_remark,' + EHR.ext.bottomCols,
+    'Body Condition': EHR.ext.topCols+',score,weightstatus,remark,tattoo_chest,tattoo_thigh,microchip,tag,tattoo_remark,' + EHR.ext.bottomCols,
     cage_observations: 'date,room,cage,feces,userId,no_observations,' + EHR.ext.sharedCols,
     Charges: EHR.ext.topCols+',type,unitCost,quantity,'+EHR.ext.bottomCols,
     'Chemistry Results': EHR.ext.topCols+',testid,method,resultOORIndicator,result,units,qualResult,'+EHR.ext.bottomCols,

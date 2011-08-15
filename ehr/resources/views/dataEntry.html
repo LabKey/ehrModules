@@ -40,7 +40,8 @@ Ext.onReady(function(){
             {url: "<%=contextPath%>/ehr/WNPRC/EHR/manageTask.view?formtype=Irregular%20Observations", title: 'Enter Irregular Observations', queries: ['Irregular Observations']},
             {url: "<%=contextPath%>/ehr/WNPRC/EHR/manageTask.view?formtype=MPR", title: 'Enter MPR', queries: ['Drug Administration', 'Procedure Codes']},
             {url: "<%=contextPath%>/ehr/WNPRC/EHR/manageRecord.view?schemaName=study&queryName=Notes&keyField=lsid", title: 'Enter Note', queries: ['Notes']},
-            {url: "<%=contextPath%>/ehr/WNPRC/EHR/manageTask.view?formtype=Physical%20Exam", title: 'Enter Physical Exam', queries: ['Alopecia','Clinical Remarks']},
+            {url: "<%=contextPath%>/ehr/WNPRC/EHR/manageTask.view?formtype=Physical%20Exam", title: 'Enter Physical Exam (OWM)', queries: ['Alopecia','Clinical Remarks']},
+            {url: "<%=contextPath%>/ehr/WNPRC/EHR/manageTask.view?formtype=Physical%20Exam - NWM", title: 'Enter Physical Exam (NWM)', queries: ['Alopecia','Clinical Remarks']},
             {url: "<%=contextPath%>/ehr/WNPRC/EHR/manageTask.view?formtype=Problem%20List", title: 'Enter Problem', queries: ['Problem List']},
             {url: "<%=contextPath%>/ehr/WNPRC/EHR/manageTask.view?formtype=TB%20Tests", title: 'Enter TB Tests', queries: ['TB Tests']},
             {url: "<%=contextPath%>/ehr/WNPRC/EHR/manageTask.view?formtype=Treatments", title: 'Enter Treatments', queries: ['Drug Administration']},
@@ -171,6 +172,10 @@ Ext.onReady(function(){
 
         //only give a task manager if they have access to at least 1 form
         if(menuCfg.sections.length){
+            function onActivate(t){
+                this.ownerCt.ownerCt.ownerCt.ownerCt.loadTab(t);
+            }
+
             var taskpanel = new Ext.Panel({
                 border: false,
                 autoHeight: true,
@@ -404,10 +409,6 @@ Ext.onReady(function(){
                         }]
                     }]
             }).render('ehrTasks');
-
-            function onActivate(t){
-                this.ownerCt.ownerCt.ownerCt.ownerCt.loadTab(t);
-            }
         }
         else {
             alert('You do not have access to this page');
@@ -431,7 +432,7 @@ Ext.onReady(function(){
 
 <b>Data Entry In Old System:</b>
 <ul>
-<li><a href="http://www.primate.wisc.edu/colony-old/vetstaff">Vet Entry In Old System</a></li>
+<!--<li><a href="http://www.primate.wisc.edu/colony-old/vetstaff">Vet Entry In Old System</a></li>-->
 <!--<li><a href="http://www.primate.wisc.edu/colony-old/bhav">Behavior Mgmt Entry In Old System</a></li>-->
 <li><a href="http://www.primate.wisc.edu/colony-old/clinpath">Clinpath Entry In Old System</a></li>
 </ul>

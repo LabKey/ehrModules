@@ -224,7 +224,12 @@ EHR.rowInit = function(errors, row, oldRow){
     //validate project / assignment to that project
     //also add account if the project is found
     //skip if doing assignments
-    if(!this.scriptContext.quickValidation && this.scriptContext.extraContext.dataSource != 'etl' && row.project && row.Id && row.date && row.project!=300901  && (this.scriptContext.queryName && !this.scriptContext.queryName.match(/assignment/i))){
+    if(!this.scriptContext.quickValidation &&
+        this.scriptContext.extraContext.dataSource != 'etl' &&
+        row.project && row.Id && row.date &&
+        row.project!=300901  &&
+        (this.scriptContext.queryName && !this.scriptContext.queryName.match(/assignment/i))
+    ){
         var date = EHR.validation.dateToString(row.date);
         LABKEY.Query.executeSql({
             schemaName: 'study',
@@ -316,6 +321,7 @@ EHR.rowEnd = function(errors, scriptErrors, row, oldRow){
 
     //this flag is to let records be validated, but forces failure of validation
     if(this.extraContext && this.extraContext.validateOnly){
+        console.log('validate only')
         EHR.addError(scriptErrors, '_validateOnly', 'Ignore this error');
     }
 
@@ -378,8 +384,9 @@ EHR.afterEvent = function (event, errors, row, oldRow){
     if(this.scriptContext.participantsModified.indexOf(row.Id) == -1){
         this.scriptContext.participantsModified.push(row.Id);
 
-        if(row._publicData)
+        if(row._publicData){
             this.scriptContext.publicParticipantsModified.push(row.Id);
+        }
     }
 
     if(this.extraContext.keyField){
@@ -767,7 +774,7 @@ EHR.validation = {
 
                         error.field = i;
                         extraContext.skippedErrors[row._recordId].push(error);
-                        console.log('skipping error')
+                        //console.log('skipping error')
                     }
                     continue;
                 }
@@ -987,21 +994,23 @@ EHR.validation = {
 
         //these are to handle legacy data:
         else if (row.Id.match(/(^rha([a-z]{1})([0-9]{2}))$/))
-            row.species = 'Rhesus';
+            species = 'Rhesus';
         else if (row.Id.match(/(^rh-([a-z]{1})([0-9]{2}))$/))
-            row.species = 'Rhesus';
+            species = 'Rhesus';
         else if (row.Id.match(/^cja([0-9]{3})$/))
-            row.species = 'Marmoset';
+            species = 'Marmoset';
         else if (row.Id.match(/^m([0-9]{5})$/))
-            row.species = 'Marmoset';
+            species = 'Marmoset';
         else if (row.Id.match(/^tx([0-9]{4})$/))
-            row.species = 'Marmoset';
+            species = 'Marmoset';
         //and this is to handle automated tests
         else if (row.Id.match(/^test[0-9]+$/))
-            row.species = 'Rhesus';
+            species = 'Rhesus';
 
         else
-            row.species = 'Unknown';
+            species = 'Unknown';
+
+        return species;
     },
     verifyIsFemale: function(row, errors, targetField){
         LABKEY.Query.selectRows({

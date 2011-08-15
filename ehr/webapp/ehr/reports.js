@@ -21,9 +21,17 @@ EHR.reports.qwpConfig = {
     linkTarget: '_blank',
     buttonBarPosition: 'top',
     timeout: 0,
-    success: function(c){
-        this.doLayout();
-        console.log('success');
+    success: function(dr){
+        var width1 = Ext.get(dr.id).getSize().width;
+        var width2 = Ext.get(this.anchorLayout.id).getSize().width;
+
+        if(width1 > width2){
+            this.anchorLayout.setWidth(width1+120);
+            console.log('resizing')
+        }
+        else {
+            this.anchorLayout.setWidth('100%');
+        }
     },
     failure: function(error){
         console.log('Error callback called');

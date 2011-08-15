@@ -108,6 +108,14 @@ EHR.Assay.UploadPanel = Ext.extend(Ext.FormPanel, {
     onMetaLoad: function(){
         this.handleImportMethods();
 
+        //set the initial import method
+        var defaultImportMethodIdx = 0;
+        for (var i=0;i<this.importMethods.length;i++){
+            if (this.importMethods[i].isDefault){
+                defaultImportMethodIdx = i;
+            }
+        }
+
         //create the panel:
         var radios = [];
         for (var i=0;i<this.importMethods.length;i++){
@@ -117,7 +125,8 @@ EHR.Assay.UploadPanel = Ext.extend(Ext.FormPanel, {
                 id:'importMethod'+i,
                 boxLabel: this.importMethods[i].label,
                 inputValue: i,
-                value: i,
+                checked: i==defaultImportMethodIdx,
+                //value: i,
                 scope: this,
                 listeners: {
                     scope: this,
@@ -163,17 +172,8 @@ EHR.Assay.UploadPanel = Ext.extend(Ext.FormPanel, {
         });
 
         this.renderFileArea();
-        this.doLayout();
+        this.toggleMethod();
 
-        for (var i=0;i<this.importMethods.length;i++){
-            var hasValue;
-            if (this.importMethods[i].isDefault){
-                this.importMethodRadio.setValue(i);
-                hasValue = true;
-            }
-            if(!hasValue)
-                this.importMethodRadio.setValue(0);
-        }
     },
 
 
@@ -272,8 +272,7 @@ EHR.Assay.UploadPanel = Ext.extend(Ext.FormPanel, {
                 });
         }
 
-
-        this.sampleDataArea.doLayout();
+        this.doLayout();
     },
 
     addDomain: function(domain){

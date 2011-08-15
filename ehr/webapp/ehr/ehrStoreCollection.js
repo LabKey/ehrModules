@@ -375,6 +375,9 @@ EHR.ext.StoreCollection = Ext.extend(Ext.util.MixedCollection, {
         if(commands.length){
             this.commit(commands.commands, commands.records, extraContext);
         }
+        else {
+            this.onComplete(extraContext);
+        }
     },
 
     getAllRecords: function(){

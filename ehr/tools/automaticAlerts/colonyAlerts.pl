@@ -25,8 +25,8 @@ my $baseUrl = 'https://ehr.primate.wisc.edu/';
 my $studyContainer = 'WNPRC/EHR/';
 
 #whitespace separated list of emails
-my @email_recipients = qw(bimber@wisc.edu frost@primate.wisc.edu friscino@primate.wisc.edu colrecords@primate.wisc.edu);
-#@email_recipients = qw(bimber@wisc.edu);
+my @am_email_recipients = qw(bimber@wisc.edu frost@primate.wisc.edu friscino@primate.wisc.edu colrecords@primate.wisc.edu);
+my @pm_email_recipients = qw(bimber@wisc.edu);
 my $mail_server = 'smtp.primate.wisc.edu';
 
 #emails will be sent from this address
@@ -368,6 +368,35 @@ if(@{$results->{rows}}){
 	$email_html .= "<hr>\n";			
 }
 
+
+#find animals not weighed in the past 60 days
+$results = Labkey::Query::selectRows(
+    -baseUrl => $baseUrl,
+    -containerPath => $studyContainer,
+    -schemaName => 'study',
+    -queryName => 'Demographics',
+    -filterArray => [
+    	['calculated_status', 'eq', 'Alive'],
+		['Id/MostRecentWeight/DaysSinceWeight', 'gt', 60],    			    	
+    ],    
+    #-debug => 1,
+);
+
+$email_html .= "<b>Living animals without a weight in the past 60 days:</b><br>";
+
+if(@{$results->{rows}}){	
+    foreach my $row (@{$results->{rows}}){
+        $email_html .= $row->{'Id'}."<br>";
+    };
+	
+	$email_html .= "<p><a href='".$baseUrl."query/".$studyContainer."executeQuery.view?schemaName=study&query.queryName=Demographics&query.Id/MostRecentWeight/DaysSinceWeight~gt=60&query.calculated_status~eq=Alive"."'>Click here to view them</a><br>\n";			
+}
+else {
+	$email_html .= "All animals have been weighed in the past 60 days\n";
+}
+
+$email_html .= "<hr>\n";
+
 #we find open ended treatments where the animal is not alive
 $results = Labkey::Query::selectRows(
     -baseUrl => $baseUrl,
@@ -488,6 +517,13 @@ if(@{$results->{rows}}){
 #print HTML $email_html;
 #close HTML;
 
+my @email_recipients;
+if($tm->hour > 12){
+	@email_recipients = @pm_email_recipients;	
+}
+else {
+	@email_recipients = @am_email_recipients;
+}
 
 my $smtp = Net::SMTP->new($mail_server,
     Timeout => 30,

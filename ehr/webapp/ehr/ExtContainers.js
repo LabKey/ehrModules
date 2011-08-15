@@ -353,6 +353,7 @@ Ext.extend(EHR.ext.TreatmentSelector, Ext.Panel, {
                 xtype: 'datefield',
                 fieldLabel: 'Date',
                 value: (new Date()),
+                maxValue: (new Date()),
                 hidden: true,
                 ref: 'dateField'
             },{
@@ -865,7 +866,7 @@ EHR.ext.AbstractPanel = Ext.extend(Ext.FormPanel, {
 
         //no need to reload if ID is unchanged
         if (this.loadedId == id){
-            console.log('animal id is the same, no reload needed');
+//            console.log('animal id is the same, no reload needed');
             return;
         }
 

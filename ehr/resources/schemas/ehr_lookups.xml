@@ -1817,4 +1817,13 @@
       </ns:column>
     </ns:columns>
   </ns:table>
+  <ns:table tableName="microchip_comments" tableDbType="TABLE">
+    <ns:pkColumnName>comment</ns:pkColumnName>
+    <ns:columns>
+      <ns:column columnName="comment">
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>100</ns:scale>
+      </ns:column>
+    </ns:columns>
+  </ns:table>
 </ns:tables>

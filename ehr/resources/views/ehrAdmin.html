@@ -13,7 +13,7 @@ Ext.onReady(function (){
         sections: [
             {header: 'Admin',
                 items: [
-                    {name: 'Client Errors', url: '<%=contextPath%>/query/shared/executeQuery.view?schemaName=auditlog&query.queryName=audit&query.key1~eq=Client Error'},
+                    {name: 'Client Errors', url: '<%=contextPath%>/query/shared/executeQuery.view?schemaName=auditlog&query.queryName=audit&query.viewName=EHR Client Errors'},
                     {name: 'Development Notes', url: '<%=contextPath%>/project<%=containerPath%>/Development Notes/begin.view?'},
                     {name: 'EHR Backups', url: '<%=contextPath%>/project<%=containerPath%>/Backups/begin.view?'},
                     {name: 'ETL Admin', url: '<%=contextPath%>/EHR<%=containerPath%>/etlAdmin.view?'},
@@ -63,13 +63,15 @@ Ext.onReady(function (){
             },
             {header: 'Validation',
                 items: [
-                    {name: 'Validate Status Field Calculation', url: '<%=contextPath%>/query<%=containerPath%>/executeQuery.view?schemaName=study&query.queryName=Validate_status'},
-                    {name: 'Review Required', url: '<%=contextPath%>/query<%=containerPath%>/executeQuery.view?schemaName=study&query.queryName=studyData&query.viewName=Review Required'},
                     {name: 'Housing Problems', url: '<%=contextPath%>/query<%=containerPath%>/executeQuery.view?schemaName=study&query.queryName=housingProblems'},
                     {name: 'Housing Condition Problems', url: '<%=contextPath%>/query<%=containerPath%>/executeQuery.view?schemaName=study&query.queryName=housingConditionProblems'},
-                    {name: 'Rooms/Cages Missing From List', url: '<%=contextPath%>/query<%=containerPath%>/executeQuery.view?schemaName=ehr&query.queryName=missingCages'},
                     {name: 'Postgres/mySQL Comparison', url: '<%=contextPath%>/query<%=containerPath%>/executeQuery.view?schemaName=col_dump&query.queryName=mysql_check'},
-                    {name: 'Postgres/mySQL Comparison - To Excel', url: '<%=contextPath%>/query<%=containerPath%>/exportRowsExcel.view?schemaName=col_dump&query.queryName=mysql_check'}
+                    {name: 'Postgres/mySQL Comparison - To Excel', url: '<%=contextPath%>/query<%=containerPath%>/exportRowsExcel.view?schemaName=col_dump&query.queryName=mysql_check'},
+                    {name: 'Review Required', url: '<%=contextPath%>/query<%=containerPath%>/executeQuery.view?schemaName=study&query.queryName=studyData&query.viewName=Review Required'},
+                    {name: 'Rooms/Cages Missing From List', url: '<%=contextPath%>/query<%=containerPath%>/executeQuery.view?schemaName=ehr&query.queryName=missingCages'},
+                    {name: 'Update Housing Snapshot', url: '<%=contextPath%>/study<%=containerPath%>/editSnapshot.view?schemaName=study&snapshotName=ActiveHousing&query.queryName=ActiveHousing'},
+                    {name: 'Validate Housing Snapshot', url: '<%=contextPath%>/query<%=containerPath%>/executeQuery.view?schemaName=study&query.queryName=ValidateHousingSnapshot'},
+                    {name: 'Validate Status Field Calculation', url: '<%=contextPath%>/query<%=containerPath%>/executeQuery.view?schemaName=study&query.queryName=Validate_status'}
                 ]
             }
         ]

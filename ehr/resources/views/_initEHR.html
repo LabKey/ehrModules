@@ -73,7 +73,7 @@ function btn1(){
     };
     var fields = ('formtype,category,userid,description,configJson').split(',');
     var data = [
-        ['Physical Exam', 'Task', '', '', '{"taskHeaderMetaSources":["Task","Encounter"]}'],
+        ['Physical Exam', 'Task', '', '', '{"taskHeaderMetaSources":["Task","Encounter","PE"]}'],
         ['Irregular Observations', 'Task', '', '', '{"allowableButtons":["VALIDATE","REVIEW","SUBMIT","DISCARD"]}'],
         ['Blood Draws', 'Task', '', '', ''],
         ['MPR', 'Task', '', '', '{"taskHeaderMetaSources":["Task","Encounter"]}'],
@@ -100,7 +100,8 @@ function btn1(){
         ['Treatment Orders', 'Task', '', '', '{"allowableButtons":["VALIDATE","SUBMIT","DISCARD"]}'],
         ['Birth', 'Task', '', '', '{"allowableButtons":["VALIDATE","SUBMIT","DISCARD"]}'],
         ['Biopsy', 'Task', '', '', '{"taskHeaderMetaSources":["Task","Encounter"]}'],
-        ['Treatments2', 'Task', '', '', '{"allowableButtons":["VALIDATE","SUBMIT","DISCARD"]}']
+        ['Treatments2', 'Task', '', '', '{"allowableButtons":["VALIDATE","SUBMIT","DISCARD"]}'],
+        ['Physical Exam - NWM', 'Task', '', '', '{"taskHeaderMetaSources":["Task","Encounter","NWM_PE"]}']
     ];
 
     LABKEY.Query.insertRows(makeObject(config, data, fields));
@@ -229,7 +230,15 @@ function btn2(){
         ['Biopsy' ,'formTabs' ,'ehr-gridformpanel' ,'5' ,'Histology', 'study', '', 'Task,Biopsy', '', '', 'add,requestdelete,selectall,duplicate,bulk_edit,apply_template,save_template'],
         ['Biopsy' ,'formTabs' ,'ehr-gridformpanel' ,'6' ,'Morphologic Diagnosis', 'study', '', 'Task,Biopsy', '', '', 'add,requestdelete,selectall,duplicate,bulk_edit,apply_template,save_template'],
         ['Treatments2' ,'formSections' ,'ehr-abstractpanel' ,'1' ,'', '', '', '', '', '', ''],
-        ['Treatments2' ,'formSections' ,'ehr-gridformpanel' ,'2' ,'Drug Administration', 'study', 'Treatments', 'Task,Treatments', '', '', 'addtreatments2,requestdelete,selectall,duplicate,bulk_edit']
+        ['Treatments2' ,'formSections' ,'ehr-gridformpanel' ,'2' ,'Drug Administration', 'study', 'Treatments', 'Task,Treatments', '', '', 'addtreatments2,requestdelete,selectall,duplicate,bulk_edit'],
+        ['Physical Exam - NWM' ,'formHeaders' ,'ehr-formpanel' ,'1' ,'Clinical Encounters', 'study', 'Header', 'Task,Encounter,NWM_PE', '', '', 'add,requestdelete,selectall,duplicate,bulk_edit,apply_template,save_template'],
+        ['Physical Exam - NWM' ,'formSections' ,'ehr-abstractpanel' ,'2' ,'', '', '', '', '', '', 'add,requestdelete,selectall,duplicate,bulk_edit,apply_template,save_template'],
+        ['Physical Exam - NWM' ,'formSections' ,'ehr-formpanel' ,'3' ,'Dental Status', 'study', '', 'Task,Encounter,NWM_PE', '', '', 'add,requestdelete,selectall,duplicate,bulk_edit,apply_template,save_template'],
+        ['Physical Exam - NWM' ,'formSections' ,'ehr-gridformpanel' ,'4' ,'Teeth', 'study', '', 'Task,Encounter,NWM_PE', '', '', 'add,requestdelete,selectall,duplicate,bulk_edit,apply_template,save_template'],
+        ['Physical Exam - NWM' ,'formSections' ,'ehr-formpanel' ,'5' ,'Body Condition', 'study', '', 'Task,Encounter,NWM_PE', '', '', 'add,requestdelete,selectall,duplicate,bulk_edit,apply_template,save_template'],
+        ['Physical Exam - NWM' ,'formSections' ,'ehr-gridformpanel' ,'6' ,'Clinical Observations', 'study', 'PE Findings', 'Task,Encounter,NWM_PE', 'PE Defaults', '', 'add,requestdelete,selectall,duplicate,bulk_edit,apply_template,save_template'],
+        ['Physical Exam - NWM' ,'formSections' ,'ehr-gridformpanel' ,'7' ,'Clinical Remarks', 'study', '', 'Task,Encounter,NWM_PE', '', '', 'add,requestdelete,selectall,duplicate,bulk_edit,apply_template,save_template'],
+        ['Physical Exam - NWM' ,'formSections' ,'ehr-gridformpanel' ,'8' ,'Charges', 'study', '', 'Task,Encounter,NWM_PE', '', '', 'add,requestdelete,selectall,duplicate,bulk_edit,apply_template,save_template']
     ];
     LABKEY.Query.insertRows(makeObject(config, data, fields));
 }
@@ -329,7 +338,7 @@ function btn4(){
             ['peObservations' ,'Physical Exam' ,'query' ,'PE Findings' ,'true' ,'' ,'study' ,'Clinical Observations', 'PE Observations', '', 'date', 'false', 'false', '', 'qcstate/publicdata', 'This report contains the clinical observations entered about each animal'],
             ['dentalStatus' ,'Physical Exam' ,'query' ,'Dental Status' ,'true' ,'' ,'study' ,'Dental Status', '', '', 'date', 'false', 'false', '', 'qcstate/publicdata', 'Contains dental assessments captured during physical exams'],
             ['pe' ,'Physical Exam' ,'query' ,'Exams' ,'true' ,'' ,'study' ,'Clinical Encounters', 'PE', '', 'date', 'false', 'false', '', 'qcstate/publicdata', 'A list of physical exams performed'],
-            ['teeth' ,'Physical Exam' ,'query' ,'Teeth' ,'true' ,'' ,'study' ,'Teeth', 'Status Not Blank', '', 'date', 'false', 'false', '', 'qcstate/publicdata', 'Contains observations about teeth taken during physical exams'],
+            ['teeth' ,'Physical Exam' ,'query' ,'Teeth' ,'true' ,'' ,'study' ,'Teeth', '', '', 'date', 'false', 'false', '', 'qcstate/publicdata', 'Contains observations about teeth taken during physical exams'],
             ['vitals' ,'Physical Exam' ,'query' ,'Vitals' ,'true' ,'' ,'study' ,'Vitals', '', '', 'date', 'false', 'false', '', 'qcstate/publicdata', 'Contains records of vitals, including heart rate and blood pressure'],
             ['obs' ,'Today At WNPRC' ,'js' ,'Irregular Observations' ,'true' ,'' ,'study' ,'irregularObs', '', '', 'date', 'true', 'true', '1', '', 'Displays irregular observations from today only'],
             ['obsTreatment' ,'Today At WNPRC' ,'js' ,'Obs/Treatment' ,'true' ,'' ,'study' ,'irregularObsTreatment', '', '', 'date', 'true', 'true', '2', '', 'Displays irregular observations and treatments for today'],
@@ -339,7 +348,8 @@ function btn4(){
             ['treatmentScheduleNight' ,'Today At WNPRC' ,'query' ,'Treatments - Evening' ,'true' ,'' ,'study' ,'treatmentSchedule', 'Night Treatments', '', 'date', 'true', 'false', '6', 'qcstate/publicdata', 'The report displays all treatments scheduled for today'],
             ['treatmentSchedule' ,'Today At WNPRC' ,'query' ,'Treatments - Master' ,'true' ,'' ,'study' ,'treatmentSchedule', '', '', 'date', 'true', 'false', '7', 'qcstate/publicdata', 'The report displays all treatments scheduled for today'],
             ['problemList' ,'Today At WNPRC' ,'query' ,'Unresolved Problem List' ,'true' ,'' ,'study' ,'Problem List', 'Unresolved Problems', '', 'date', 'false', 'false', '8', 'qcstate/publicdata', 'This displays the clinical problem list'],
-            ['todaysBlood' ,'Today At WNPRC' ,'query' ,'Today\'s Blood Draws' ,'true' ,'' ,'study' ,'BloodSchedule', '', '', 'date', 'TRUE', 'false', '9', 'qcstate/publicdata', 'Contains records of blood draws scheduled for today']
+            ['todaysBlood' ,'Today At WNPRC' ,'query' ,'Blood Draw Schedule' ,'true' ,'' ,'study' ,'BloodSchedule', '', '', 'date', 'TRUE', 'false', '9', 'qcstate/publicdata', 'Contains records of blood draws scheduled for today'],
+            ['treatmentsIncomplete' ,'Today At WNPRC' ,'query' ,'Treatments - Incomplete' ,'true' ,'' ,'study' ,'treatmentSchedule', 'Incomplete Treatments', '', 'date', 'true', 'false', '7', 'qcstate/publicdata', 'The report displays all incomplete treatments scheduled for today']
         ];
 
         LABKEY.Query.insertRows(makeObject(config, data, fields));

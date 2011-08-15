@@ -356,6 +356,9 @@ EHR.ext.AdvancedStore = Ext.extend(LABKEY.ext.Store, {
         }
 
         Ext.each(records, function(record){
+            //NOTE: we remove saveOperationInProgress b/c this transaction is going to fail
+            //therefore we do not want this flag to block a legitimate future save attempt.
+            delete record.saveOperationInProgress;
             record.serverValidationInProgress = true;
         }, this);
 
@@ -494,31 +497,112 @@ EHR.ext.AdvancedStore = Ext.extend(LABKEY.ext.Store, {
             return;
         }
 
-        this.sendRequest(records, commands, extraContext);
-    },
-
-    getChanges: function(records){
-        var commands = EHR.ext.AdvancedStore.superclass.getChanges.apply(this, arguments);
-        Ext.each(commands, function(command){
-            command.extraContext = {
-                storeId: this.storeId,
-                queryName: this.queryName,
-                schemaName: this.schemaName,
-                keyField: this.reader.meta.id
-            };
-
-            Ext.each(command.rows, function(row){
-                row.values._recordId = row.oldKeys[this.reader.meta.id];
-            }, this);
-
-        }, this);
-
         for(var i=0;i<commands.length;i++){
             if(commands[i].rows.length > 0 && false === this.fireEvent("beforecommit", records, commands[i].rows))
                 return [];
         }
 
+        this.sendRequest(records, commands, extraContext);
+    },
+
+    getChanges: function(records){
+        records = records || this.getModifiedRecords();
+
+        if(!records || records.length == 0)
+            return [];
+
+        if (!this.updatable)
+            throw "this LABKEY.ext.Store is not updatable!";
+
+        //build the json to send to the server
+        var record;
+        var skippedRecords = [];
+        var insertCommand =
+        {
+            schemaName: this.schemaName,
+            queryName: this.queryName,
+            command: "insertWithKeys",
+            rows: [],
+            extraContext: {
+                storeId: this.storeId,
+                queryName: this.queryName,
+                schemaName: this.schemaName,
+                keyField: this.reader.meta.id
+            }
+        };
+        var updateCommand =
+        {
+            schemaName: this.schemaName,
+            queryName: this.queryName,
+            command: "updateChangingKeys",
+            rows: [],
+            extraContext: {
+                storeId: this.storeId,
+                queryName: this.queryName,
+                schemaName: this.schemaName,
+                keyField: this.reader.meta.id
+            }
+        };
+        for(var idx = 0; idx < records.length; ++idx)
+        {
+            record = records[idx];
+
+            //if we are already in the process of saving this record, just continue
+            if(record.saveOperationInProgress){
+                skippedRecords.push(record);
+                continue;
+            }
+
+            //NOTE: this check could possibly be eliminated since the form/server should do the same thing
+            if(!this.readyForSave(record)){
+                skippedRecords.push(record);
+                continue;
+            }
+
+            record.saveOperationInProgress = true;
+            //NOTE: modified since ext uses the term phantom for any record not saved to server
+            if (record.isNew || record.phantom)
+            {
+                insertCommand.rows.push({
+                    values: this.getRowData(record),
+                    oldKeys : this.getOldKeys(record)
+                });
+            }
+            else
+            {
+                updateCommand.rows.push({
+                    values: this.getRowData(record),
+                    oldKeys : this.getOldKeys(record)
+                });
+            }
+        }
+
+        var commands = [];
+        if (insertCommand.rows.length > 0)
+        {
+            commands.push(insertCommand);
+        }
+        if (updateCommand.rows.length > 0)
+        {
+            commands.push(updateCommand);
+        }
+
+        if(skippedRecords.length){
+            console.log('Skipping records');
+            console.log(skippedRecords)
+        }
+        else {
+            console.log('sending');
+        }
+
         return commands;
+    },
+
+    //NOTE: we append the value of the key field to the record
+    getRowData : function(record) {
+        var values = EHR.ext.AdvancedStore.superclass.getRowData.apply(this, arguments);
+        values._recordId = record.id;
+        return values;
     },
 
     //NOTE: split this into a separate method so validateOnServer() can call it separately
@@ -602,7 +686,6 @@ EHR.ext.AdvancedStore = Ext.extend(LABKEY.ext.Store, {
             record.set('id/curlocation/location', serverError.row['id/curlocation/location']);
         }
         if(serverError.row['id/numroommates/cagemates'] && serverError.row['id/numroommates/cagemates'] != record.get('id/numroommates/cagemates')){
-            console.log('setting: '+serverError.row['id/numroommates/cagemates']);
             record.set('id/numroommates/cagemates', serverError.row['id/numroommates/cagemates']);
         }
 

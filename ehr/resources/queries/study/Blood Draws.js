@@ -7,106 +7,143 @@
 var {EHR, LABKEY, Ext, console, init, beforeInsert, afterInsert, beforeUpdate, afterUpdate, beforeDelete, afterDelete, complete} = require("ehr/validation");
 
 function onUpsert(context, errors, row, oldRow){
+    //create a placeholder for storing blood vols within this transaction
+    context.extraContext = context.extraContext || {};
+    context.extraContext.bloodTotals = context.extraContext.bloodTotals || {};
+    if(row.Id && !context.extraContext.bloodTotals[row.Id]){
+        context.extraContext.bloodTotals[row.Id] = [];
+    }
+
+
+    //overdraws are handled differently for requests vs actual draws
     var errorQC;
     if(context.qcMap.label[row.QCStateLabel]['metadata/isRequest'])
         errorQC = 'ERROR';
     else
         errorQC = 'WARN';
 
-    if(context.extraContext.dataSource != 'etl' && row.date && !row.requestdate)
-        row.requestdate = row.date;
-
-    if(context.extraContext.dataSource != 'etl' && !row.quantity && row.num_tubes && row.tube_vol)
-        row.quantity = row.num_tubes * row.tube_vol;
-
-    if(context.extraContext.dataSource != 'etl' && row.quantity && row.tube_vol){
-        if(row.quantity != (row.num_tubes * row.tube_vol)){
-            EHR.addError(errors, 'quantity', 'Quantity does not match tube vol / # tubes', 'INFO');
-            EHR.addError(errors, 'num_tubes', 'Quantity does not match tube vol / # tubes', 'INFO');
-        }
-    }
-
-    if(context.extraContext.dataSource != 'etl' && row.restraint && !Ext.isDefined(row.restraintTime)){
-        //console.log(row.restraint)
-        EHR.addError(errors, 'restraintTime', 'Must enter time restrained', 'WARN');
-    }
-
-    if(context.extraContext.dataSource != 'etl' && row.Id && row.date && row.quantity){
-        var minDate = new Date(row.date.toGMTString());
-        minDate.setDate(minDate.getDate()-30);
-        minDate = EHR.validation.dateToString(minDate);
-        var checkFutureRecords = true;
-
-        var sql = "SELECT b.BloodLast30, d.MostRecentWeight, round((d.MostRecentWeight*0.2*60) - coalesce(b.BloodLast30, 0), 1) AS AvailBlood " +
-        "FROM (" +
-            "SELECT b.id, sum(b.quantity) as BloodLast30 " +
-            "FROM study.\"Blood Draws\" b " +
-            "WHERE b.id='"+row.Id+"' AND b.date >= '"+minDate+"' AND b.date <= '"+EHR.validation.dateToString(row.date) +"' " +
-            "AND (b.qcstate.publicdata = true OR b.qcstate.metadata.DraftData = true) " +
-            "GROUP BY b.id) b " +
-        "RIGHT JOIN study.demographicsMostRecentWeight d on (d.id=b.id) " +
-        "WHERE d.id='"+row.Id+"' ";
-        console.log(sql);
-        // find all blood draws from this animal in 30 days prior to this date
-        LABKEY.Query.executeSql({
-            schemaName: 'study',
-            sql: sql,
-            success: function(data){
-                if(data && data.rows && data.rows.length){
-                    var availBlood = data.rows[0].AvailBlood;
-                    if(availBlood - row.quantity < 0){
-                       EHR.addError(errors, 'num_tubes', 'Volume conflicts with previous blood draws. Max allowable is '+availBlood+' mL', errorQC);
-                       EHR.addError(errors, 'quantity', 'Volume conflicts with previous blood draws. Max allowable is '+availBlood+' mL', errorQC);
-                       checkFutureRecords = false;
-                    }
-                }
-                else {
-                    console.log('no rows found')
-                }
-            },
-            failure: EHR.onFailure
-        });
-
-        // find all blood draws from this animal in 30 days after this date
-        if(checkFutureRecords){
-            var maxDate = new Date(row.date.toGMTString());
-            maxDate.setDate(maxDate.getDate()+30);
-            maxDate = EHR.validation.dateToString(maxDate);
-
-            sql = "SELECT b.BloodLast30, d.MostRecentWeight, round((d.MostRecentWeight*0.2*60) - coalesce(b.BloodLast30, 0), 1) AS AvailBlood " +
-            "FROM (" +
-                "SELECT b.id, sum(b.quantity) as BloodLast30 " +
-                "FROM study.\"Blood Draws\" b " +
-                "WHERE b.id='"+row.Id+"' AND cast(b.date as date) >= '"+EHR.validation.dateToString(row.date) +"' AND cast(b.date as date) <= '"+maxDate+"' " +
-                "AND (b.qcstate.publicdata = true OR b.qcstate.metadata.DraftData = true) " +
-                "GROUP BY b.id) b " +
-            "RIGHT JOIN study.demographicsMostRecentWeight d on (d.id=b.id) " +
-            "WHERE d.id='"+row.Id+"' ";
-            console.log(sql);
-            LABKEY.Query.executeSql({
-                schemaName: 'study',
-                sql: sql,
-                success: function(data){
-                    if(data && data.rows && data.rows.length){
-                        var availBlood = data.rows[0].AvailBlood;
-                        if((availBlood - row.quantity) < 0){
-                           EHR.addError(errors, 'num_tubes', 'Volume conflicts with future blood draws. Max allowable: '+availBlood+' mL', errorQC);
-                           EHR.addError(errors, 'quantity', 'Volume conflicts with future blood draws. Max allowable: '+availBlood+' mL', errorQC);
-                        }
-                    }
-                    else {
-                        console.log('no rows found')
-                    }
-                },
-                failure: EHR.onFailure
-            });
-        }
-    }
-
     if(row.quantity===0){
         EHR.addError(errors, 'quantity', 'This field is required', 'WARN');
     }
 
+    if(context.extraContext.dataSource != 'etl'){
+        if(row.date && !row.requestdate)
+            row.requestdate = row.date;
+
+        if(!row.quantity && row.num_tubes && row.tube_vol)
+            row.quantity = row.num_tubes * row.tube_vol;
+
+        if(row.quantity && row.tube_vol){
+            if(row.quantity != (row.num_tubes * row.tube_vol)){
+                EHR.addError(errors, 'quantity', 'Quantity does not match tube vol / # tubes', 'INFO');
+                EHR.addError(errors, 'num_tubes', 'Quantity does not match tube vol / # tubes', 'INFO');
+            }
+        }
+
+        if(row.restraint && !Ext.isDefined(row.restraintTime)){
+            EHR.addError(errors, 'restraintTime', 'Must enter time restrained', 'WARN');
+        }
+
+        if(row.Id && row.date && row.quantity){
+            var minDate = new Date(row.date.toGMTString());
+            minDate.setDate(minDate.getDate()-30);
+
+            var checkFutureRecords = true;
+
+            var sql = "SELECT b.BloodLast30, d.MostRecentWeight, round((d.MostRecentWeight*0.2*60) - coalesce(b.BloodLast30, 0), 1) AS AvailBlood " +
+            "FROM (" +
+                "SELECT b.id, sum(b.quantity) as BloodLast30 " +
+                "FROM study.\"Blood Draws\" b " +
+                "WHERE b.id='"+row.Id+"' AND b.date >= '"+EHR.validation.dateToString(minDate)+"' AND b.date <= '"+EHR.validation.dateToString(row.date) +"' " +
+                "AND (b.qcstate.publicdata = true OR b.qcstate.metadata.DraftData = true) " +
+                "GROUP BY b.id) b " +
+            "RIGHT OUTER JOIN study.demographicsMostRecentWeight d on (d.id=b.id) " +
+            "WHERE d.id='"+row.Id+"' ";
+            //console.log(sql);
+            // find all blood draws from this animal in 30 days prior to this date
+            LABKEY.Query.executeSql({
+                schemaName: 'study',
+                sql: sql,
+                success: function(data){
+                    var bloodInThisTransaction = 0;
+                    if(context.extraContext.bloodTotals[row.Id].length){
+                        var draw;
+                        for(var i=0;i<context.extraContext.bloodTotals[row.Id].length;i++){
+                            draw = context.extraContext.bloodTotals[row.Id][i];
+                            if(Date.parse(draw.date) >= Date.parse(minDate) && Date.parse(draw.date) <= Date.parse(row.date)){
+                                bloodInThisTransaction += draw.quantity;
+                            }
+                        }
+                    }
+
+                    if(data && data.rows && data.rows.length){
+                        var availBlood = data.rows[0].AvailBlood - bloodInThisTransaction;
+
+                        if(availBlood - row.quantity < 0){
+                           EHR.addError(errors, 'num_tubes', 'Blood in this form exceeds allowable. Max allowable is '+availBlood+' mL', errorQC);
+                           EHR.addError(errors, 'quantity', 'Blood in this form exceeds allowable. Max allowable is '+availBlood+' mL', errorQC);
+                           checkFutureRecords = false;
+                        }
+                    }
+                    else {
+                        console.log('no rows found.  blood draws.js line 90');
+                    }
+                },
+                failure: EHR.onFailure
+            });
+
+            // find all blood draws from this animal in 30 days after this date
+            if(checkFutureRecords){
+                var maxDate = new Date(row.date.toGMTString());
+                maxDate.setDate(maxDate.getDate()+30);
+
+                sql = "SELECT b.BloodLast30, d.MostRecentWeight, round((d.MostRecentWeight*0.2*60) - coalesce(b.BloodLast30, 0), 1) AS AvailBlood " +
+                "FROM (" +
+                    "SELECT b.id, sum(b.quantity) as BloodLast30 " +
+                    "FROM study.\"Blood Draws\" b " +
+                    "WHERE b.id='"+row.Id+"' AND cast(b.date as date) >= '"+EHR.validation.dateToString(row.date) +"' AND cast(b.date as date) <= '"+EHR.validation.dateToString(maxDate)+"' " +
+                    "AND (b.qcstate.publicdata = true OR b.qcstate.metadata.DraftData = true) " +
+                    "GROUP BY b.id) b " +
+                "RIGHT OUTER JOIN study.demographicsMostRecentWeight d on (d.id=b.id) " +
+                "WHERE d.id='"+row.Id+"' ";
+                //console.log(sql);
+                LABKEY.Query.executeSql({
+                    schemaName: 'study',
+                    sql: sql,
+                    success: function(data){
+                        var bloodInThisTransaction = 0;
+                        if(context.extraContext.bloodTotals[row.Id].length){
+                            var draw;
+                            for(var i=0;i<context.extraContext.bloodTotals[row.Id].length;i++){
+                                draw = context.extraContext.bloodTotals[row.Id][i];
+                                if(Date.parse(draw.date) <= Date.parse(maxDate) && Date.parse(draw.date) >= Date.parse(row.date)){
+                                    bloodInThisTransaction += draw.quantity;
+                                }
+                            }
+                        }
+                        if(data && data.rows && data.rows.length){
+                            var availBlood = data.rows[0].AvailBlood - bloodInThisTransaction;
+                            if((availBlood - row.quantity) < 0){
+                               EHR.addError(errors, 'num_tubes', 'Blood in this form conflicts with future draws. Max allowable: '+availBlood+' mL', errorQC);
+                               EHR.addError(errors, 'quantity', 'Blood in this form conflicts with future draws. Max allowable: '+availBlood+' mL', errorQC);
+                            }
+                        }
+                        else {
+                            console.log('no rows found: blood draws.js line 132');
+                        }
+                    },
+                    failure: EHR.onFailure
+                });
+            }
+        }
+
+        //keep track of blood per ID
+        if(row.Id){
+            context.extraContext.bloodTotals[row.Id].push(row);
+        }
+    }
+
+//    EHR.addError(errors, 'Id', 'error');
 }
 
 

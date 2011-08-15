@@ -30,7 +30,7 @@ SELECT
       ELSE 'normal'
     END as type,
     count(*) as totalAssignments,
-    1 / count(*) as totalDays,
+    1.0 / count(*) as effectiveDays,
     group_concat(h2.project) as assignments,
     group_concat(h2.project.protocol) as protcols
 FROM (

@@ -195,7 +195,9 @@ ehr/resources/queries/ehr/Requests_DataEntry.sql -text
 ehr/resources/queries/ehr/RoomUtilization.query.xml -text
 ehr/resources/queries/ehr/RoomUtilization.sql -text
 ehr/resources/queries/ehr/RoomUtilization/.qview.xml -text
+ehr/resources/queries/ehr/RoomsWithoutObsToday.query.xml -text
 ehr/resources/queries/ehr/RoomsWithoutObsToday.sql -text
+ehr/resources/queries/ehr/RoomsWithoutObsToday/.qview.xml -text
 ehr/resources/queries/ehr/Tasks.js -text
 ehr/resources/queries/ehr/TasksById.query.xml -text
 ehr/resources/queries/ehr/TasksById.sql -text
@@ -212,6 +214,7 @@ ehr/resources/queries/ehr/TasksByLocation.sql -text
 ehr/resources/queries/ehr/TasksByLocation/.qview.xml -text
 ehr/resources/queries/ehr/TasksByLocation/Active[!!-~]Tasks.qview.xml -text
 ehr/resources/queries/ehr/TasksByLocation/All[!!-~]Tasks.qview.xml -text
+ehr/resources/queries/ehr/TasksByLocation/Completion[!!-~]Times.qview.xml -text
 ehr/resources/queries/ehr/TasksByLocation_DataEntry.query.xml -text
 ehr/resources/queries/ehr/TasksByLocation_DataEntry.sql -text
 ehr/resources/queries/ehr/TasksByLocation_DataEntry/.qview.xml -text
@@ -643,6 +646,7 @@ ehr/resources/queries/study/demographicsCurrentRoommatesOver6mo.sql -text
 ehr/resources/queries/study/demographicsDaysAlone.query.xml -text
 ehr/resources/queries/study/demographicsDaysAlone.sql -text
 ehr/resources/queries/study/demographicsDaysAlone/.qview.xml -text
+ehr/resources/queries/study/demographicsDaysAlone/Alone[!!-~]30[!!-~]Days[!!-~]Without[!!-~]Exemption.qview.xml -text
 ehr/resources/queries/study/demographicsDaysAlone/Alone[!!-~]30[!!-~]Days.qview.xml -text
 ehr/resources/queries/study/demographicsFamily.query.xml -text
 ehr/resources/queries/study/demographicsFamily.sql -text
@@ -795,6 +799,9 @@ ehr/resources/queries/study/weightRelChange.sql -text
 ehr/resources/queries/study/weightRelChange/10[!!-~]Pct[!!-~]Drop[!!-~]In[!!-~]Last[!!-~]30[!!-~]Days.qview.xml -text
 ehr/resources/queries/study/weightRelChange/10[!!-~]Pct[!!-~]Drop[!!-~]In[!!-~]Last[!!-~]6[!!-~]Months.qview.xml -text
 ehr/resources/queries/study/weightRelChange/10[!!-~]Pct[!!-~]Drop[!!-~]In[!!-~]Last[!!-~]90[!!-~]Days.qview.xml -text
+ehr/resources/queries/study/weightRelChange/10[!!-~]Pct[!!-~]Gain[!!-~]In[!!-~]Last[!!-~]30[!!-~]Days.qview.xml -text
+ehr/resources/queries/study/weightRelChange/10[!!-~]Pct[!!-~]Gain[!!-~]In[!!-~]Last[!!-~]6[!!-~]Months.qview.xml -text
+ehr/resources/queries/study/weightRelChange/10[!!-~]Pct[!!-~]Gain[!!-~]In[!!-~]Last[!!-~]90[!!-~]Days.qview.xml -text
 ehr/resources/reports/schemas/study/Blood[!!-~]Chemistry[!!-~]Results/By[!!-~]Panel.js -text
 ehr/resources/reports/schemas/study/Blood[!!-~]Chemistry[!!-~]Results/By[!!-~]Panel.report.xml -text
 ehr/resources/reports/schemas/study/Pedigree/InbreedingCoefficients.r -text
@@ -865,6 +872,7 @@ ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-11.139-11.140.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-11.140-11.141.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-11.141-11.142.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-11.142-11.143.sql -text
+ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-11.143-11.144.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/EHR-11.10-11.102.sql -text
 ehr/resources/schemas/ehr.xml -text
 ehr/resources/schemas/ehr_lookups.xml -text

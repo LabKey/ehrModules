@@ -33,12 +33,12 @@
         </column>
     </columns>
     <filters>
-        <filter column="DaysAlone" operator="neq" value="0"/>
+        <filter column="DaysAlone" operator="gte" value="30"/>
+        <filter column="ExemptionTitles" operator="doesnotcontain" value="pairing except" />
     </filters>
     <sorts>
-        <!--<sort column="id" descending="false"/>-->
-        <sort column="DaysAlone" descending="true"/>
-        <sort column="room" descending="false"/>
-        <sort column="cage" descending="false"/>
+        <sort column="Id/curLocation/room" descending="false"/>
+        <sort column="Id/curLocation/cage" descending="false"/>
+        <!--<sort column="DaysAlone" descending="true"/>-->
     </sorts>
 </customView>

@@ -42,6 +42,7 @@
         <!--<filter column="qcstate/publicdata" operator="eq" value="true"/>-->
    </filters>
    <sorts>
-       <sort column="date" descending="true"/>
+       <sort column="room" descending="false"/>
+       <sort column="cage" descending="false"/>
    </sorts>
 </customView>

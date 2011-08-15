@@ -69,108 +69,84 @@ function onUpsert(context, errors, row, oldRow){
 
 
 function onComplete(event, errors, scriptContext){
-    //NOTE: because snapshots are not getting refreshed, we manually force it to reload
-//    var request = Ext.Ajax.request({
-//        url : LABKEY.ActionURL.buildURL("study", "editSnapshot", null, {
-//            schemaName: 'study',
-//            snapshotName: 'ActiveHousing',
-//            'query.queryName': 'ActiveHousing'
-//        }),
-//        method : 'GET',
-//        success: function(){
-//            console.log('success!')
-//        },
-//        failure: function(){
-//            console.log('failure!')
-//        },
-//        scope: this,
-////        jsonData : {
-////            schemaName: 'study',
-////            snapshotName: 'ActiveHousing',
-////            'query.queryName': 'ActiveHousing'
-////        },
-//        headers : {
-//            'Content-Type' : 'application/json'
-//        }
-//    });
-
-
 
     //NOTE: we assume that onBecomePublic() enforces only 1 active housing record per animal
-    if(scriptContext.publicParticipantsModified.length){
-        var toUpdate = [];
-        var idsFound = [];
-        var totalIds = {};
-        LABKEY.Query.executeSql({
-            schemaName: 'study',
-            scope: this,
-            sql: 'SELECT a.Id, a.room, a.cage, a.cond FROM study.housing a WHERE a.id IN (\''+scriptContext.publicParticipantsModified.join(',')+'\') ' +
-                'AND a.enddate IS NULL AND a.qcstate.publicdata = true',
-            success: function(data){
-                if(data.rows && data.rows.length){
-                    var row;
-                    for (var i=0;i<data.rows.length;i++){
-                        row = data.rows[i];
-                        idsFound.push(row.Id);
+//    if(scriptContext.publicParticipantsModified.length){
+//        var toUpdate = [];
+//        var idsFound = [];
+//        var totalIds = {};
+//        LABKEY.Query.executeSql({
+//            schemaName: 'study',
+//            scope: this,
+//            sql: 'SELECT a.Id, a.room, a.cage, a.cond FROM study.housing a WHERE a.id IN (\''+scriptContext.publicParticipantsModified.join(',')+'\') ' +
+//                'AND a.enddate IS NULL AND a.qcstate.publicdata = true',
+//            success: function(data){
+//                if(data.rows && data.rows.length){
+//                    var row;
+//                    for (var i=0;i<data.rows.length;i++){
+//                        row = data.rows[i];
+//                        idsFound.push(row.Id);
+//
+//                        if(totalIds[row.Id]){
+//                            //raise alert for duplicate active rooms
+//                            console.log("ERROR: there are two active housing records for: "+row.Id);
+//                            //throw "ERROR: there are two active housing records for: "+row.Id;
+//                        }
+//
+//                        totalIds[row.Id] = 1;
+//                        EHR.findDemographics({
+//                            participant: row.Id,
+//                            forceRefresh: true,
+//                            scope: this,
+//                            callback: function(data){
+//                                if(data){
+//console.log(data)
+//                                    if(row.room != data.room || row.cage != data.cage || row.cond != data.cond)
+//                                        toUpdate.push({room: row.room, cage: row.cage, cond: row.cond, Id: row.Id, lsid: data.lsid});
+//                                }
+//                            }
+//                        });
+//                    }
+//                }
+//            },
+//            failure: EHR.onFailure
+//        });
+//
+//        if(toUpdate.length != scriptContext.publicParticipantsModified.length){
+//            Ext.each(scriptContext.publicParticipantsModified, function(p){
+//                if(idsFound.indexOf(p) == -1){
+//                    EHR.findDemographics({
+//                        participant: p,
+//                        forceRefresh: true,
+//                        scope: this,
+//                        callback: function(data){
+//                            if(data){
+//                                toUpdate.push({room: null, cage: null, cond: null, Id: data.Id, lsid: data.lsid});
+//                            }
+//                        }
+//                    });
+//                }
+//            }, this);
+//        }
+//
+//        if(toUpdate.length){
+//            LABKEY.Query.updateRows({
+//                schemaName: 'study',
+//                queryName: 'ActiveHousing',
+//                extraContext: {
+//                    schemaName: 'study',
+//                    queryName: 'ActiveHousing'
+//                },
+//                rows: toUpdate,
+//                success: function(data){
+//                    console.log('Success updating ActiveHousing')
+//                },
+//                failure: EHR.onFailure
+//            });
+//        }
+//        throw 'error';
+//    }
 
-                        if(totalIds[row.Id]){
-                            //raise alert for duplicate active rooms
-                            console.log("ERROR: there are two active housing records for: "+row.Id);
-                            //throw "ERROR: there are two active housing records for: "+row.Id;
-                        }
-
-                        totalIds[row.Id] = 1;
-                        EHR.findDemographics({
-                            participant: row.Id,
-                            forceRefresh: true,
-                            scope: this,
-                            callback: function(data){
-                                if(data){
-                                    if(row.room != data.room || row.cage != data.cage || row.cond != data.cond)
-                                        toUpdate.push({room: row.room, cage: row.cage, cond: row.cond, Id: row.Id, lsid: data.lsid});
-                                }
-                            }
-                        });
-                    }
-                }
-            },
-            failure: EHR.onFailure
-        });
-
-        if(toUpdate.length != scriptContext.publicParticipantsModified.length){
-            Ext.each(scriptContext.publicParticipantsModified, function(p){
-                if(idsFound.indexOf(p) == -1){
-                    EHR.findDemographics({
-                        participant: p,
-                        forceRefresh: true,
-                        scope: this,
-                        callback: function(data){
-                            if(data){
-                                toUpdate.push({room: null, cage: null, cond: null, Id: data.Id, lsid: data.lsid});
-                            }
-                        }
-                    });
-                }
-            }, this);
-        }
-
-        if(toUpdate.length){
-            LABKEY.Query.updateRows({
-                schemaName: 'study',
-                queryName: 'ActiveHousing',
-                extraContext: {
-                    schemaName: 'study',
-                    queryName: 'ActiveHousing'
-                },
-                rows: toUpdate,
-                success: function(data){
-                    console.log('Success updating ActiveHousing')
-                },
-                failure: EHR.onFailure
-            });
-        }
-
-    }
 };
 
 function onBecomePublic(errors, scriptContext, row, oldRow){
@@ -195,7 +171,7 @@ function onBecomePublic(errors, scriptContext, row, oldRow){
                     Ext.each(data.rows, function(r){
                         //TODO: verify date is working
                         toUpdate.push({lsid: r.lsid, enddate: new Date(row.date.toGMTString())});
-console.log(r)
+
                         //if there's an existing public active housing record
                         if(r.date >= row.Date){
                             EHR.addError(errors, 'Id', 'You cannot enter an open ended housing while there is another record starting on: '+r.Date);

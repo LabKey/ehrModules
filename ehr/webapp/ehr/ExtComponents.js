@@ -20,8 +20,10 @@ LABKEY.requiresScript("/ehr/datetime.js");
 //the first section is more generic and might make sense to include in labkey
 
 
+
+
 /* options:
-valueField: the values of the checkbox
+valueField: the inputValue of the checkbox
 displayField: the label of the checkbox
  */
 EHR.ext.RemoteCheckboxGroup = Ext.extend(Ext.form.CheckboxGroup,
@@ -182,7 +184,7 @@ Ext.reg('ehr-displayfield', EHR.ext.DisplayField);
 
 
 /* options:
-valueField: the values of the radio
+valueField: the inputValue of the radio
 displayField: the label of the radio
  */
 //adapted from:
@@ -651,7 +653,6 @@ EHR.ext.plugins.UserEditableCombo = Ext.extend(Ext.util.Observable, {
                 }
                 this.store.add((new this.store.recordType(data)));
 
-                //TODO: get combo's listview to reflect this
                 if(this.view){
                     this.view.setStore(this.store);
                     this.view.refresh()
@@ -670,6 +671,25 @@ EHR.ext.plugins.UserEditableCombo = Ext.extend(Ext.util.Observable, {
 Ext.preg('ehr-usereditablecombo', EHR.ext.plugins.UserEditableCombo);
 
 
+
+EHR.ext.plugins.ResizableTextArea = Ext.extend(Ext.util.Observable, {
+    init: function(textArea){
+        textArea.resizeDirections = textArea.resizeDirections || 's,se,e';
+        textArea.on("render", function(f){
+            f.resizer=new Ext.Resizable(f.getEl(),{handles:this.resizeDirections,wrap:true});
+            f.resizer.on('resize',function(){delete f.anchor;});
+        }, textArea);
+
+        textArea.onResizeOld = textArea.onResize;
+        textArea.onResize = function(){
+            this.onResizeOld.apply(this, arguments);
+            var r = this.resizer;
+            var csize = r.getResizeChild().getSize();
+            r.el.setSize(csize.width, csize.height);
+        }
+    }
+});
+Ext.preg('ehr-resizabletextarea', EHR.ext.plugins.ResizableTextArea);
 
 //these components tend to be EHR specific
 
@@ -934,6 +954,9 @@ EHR.ext.ParticipantField = Ext.extend(Ext.form.TextField,
                         this.fireEvent('participantchange', this, val);
                         c.loadedId = val;
                     }
+                },
+                render: function(field){
+                    field.el.set({spellcheck: false});
                 }
             }
         });
@@ -1035,6 +1058,12 @@ Ext.reg('ehr-project', EHR.ext.ProjectField);
 
 EHR.ext.RemarkField = Ext.extend(Ext.form.TextArea,
 {
+    initComponent: function(){
+        this.plugins = this.plugins || [];
+        this.plugins.push('ehr-resizabletextarea');
+
+        EHR.ext.RemarkField.superclass.initComponent.call(this);
+    },
     onRender: function(){
         EHR.ext.RemarkField.superclass.onRender.apply(this, arguments);
 

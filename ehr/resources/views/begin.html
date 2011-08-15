@@ -42,7 +42,8 @@ function createNavMenu()
                 {name: 'Treatment Schedule - AM', url: '<%=contextPath%>/ehr/WNPRC/EHR/animalHistory.view#_inputType:renderRoomCage&activeReport:treatmentScheduleAM'},
                 {name: 'Treatment Schedule - PM', url: '<%=contextPath%>/ehr/WNPRC/EHR/animalHistory.view#_inputType:renderRoomCage&activeReport:treatmentSchedulePM'},
                 {name: 'Treatment Schedule - Night', url: '<%=contextPath%>/ehr/WNPRC/EHR/animalHistory.view#_inputType:renderRoomCage&activeReport:treatmentScheduleNight'},
-                {name: 'Treatment Schedule - All', url: '<%=contextPath%>/ehr/WNPRC/EHR/animalHistory.view#_inputType:renderRoomCage&activeReport:treatmentSchedule'}
+                {name: 'Treatment Schedule - All', url: '<%=contextPath%>/ehr/WNPRC/EHR/animalHistory.view#_inputType:renderRoomCage&activeReport:treatmentSchedule'},
+                {name: 'Forms Completed Today', url: '<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=ehr&query.queryName=TasksByLocation&query.viewName=Completion Times&query.taskid/Created~dateeq='+(new Date()).format('Y-m-d')},
             ]}
         ]
     });
@@ -71,7 +72,7 @@ function createNavMenu()
 
                  {name: 'Housing: Condition Problems', url: '<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=housingConditionProblems&query.viewName=Problems'},
                  {name: 'Housing: Double Entries', url: '<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=housingProblems'},
-                 {name: 'Loners', url: '<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=demographicsDaysAlone&query.viewName=Alone 30 Days'},
+                 {name: 'Loners', url: '<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=demographicsDaysAlone&query.viewName=Alone 30 Days Without Exemptions'},
 
                  {name: 'Rooms Without Obs Today', url: '<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=ehr&query.queryName=RoomsWithoutObsToday'},
                  {name: 'TB: Untested In >4 Months', url: '<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=Demographics&query.viewName=TB Older Than 4 Months'},

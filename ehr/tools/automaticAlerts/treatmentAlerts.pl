@@ -24,7 +24,7 @@ my $baseUrl = 'https://ehr.primate.wisc.edu/';
 my $studyContainer = 'WNPRC/EHR/';
 
 #whitespace separated list of emails
-my @email_recipients = qw(bimber@wisc.edu cm@primate.wisc.edu wnprcvets@primate.wisc.edu);
+my @email_recipients = qw(bimber@wisc.edu cm@primate.wisc.edu wnprcvets@primate.wisc.edu cfitz@primate.wisc.edu);
 #@email_recipients = qw(bimber@wisc.edu);
 my $mail_server = 'smtp.primate.wisc.edu';
 
@@ -58,14 +58,14 @@ $results = Labkey::Query::selectRows(
     -schemaName => 'ehr',
     -queryName => 'RoomsWithoutObsToday',
     -filterArray => [
-    	['status', 'isnonblank', ''],
+    	['hasObs', 'eq', 'N'],
     ],
     #-debug => 1,
 );
 
 if(@{$results->{rows}}){
-	$email_html .= "<b>WARNING: The following rooms do not have any obs for today as of $timestr.</b><br>";
-	#$email_html .= "<p><a href='".$baseUrl."query/".$studyContainer."executeQuery.view?schemaName=ehr&query.queryName=RoomsWithoutObsToday&query.status~isnonblank"."'>Click here to view them</a><br>\n";
+	$email_html .= "<b>WARNING: The following rooms do not have any obs for today as of $timestr.</b> ";
+	$email_html .= "<a href='".$baseUrl."query/".$studyContainer."executeQuery.view?schemaName=ehr&query.queryName=RoomsWithoutObsToday"."'>Click here to view them</a><p>\n";
 
     foreach my $row (@{$results->{rows}}){
     	$email_html .= $row->{'room'}."<br>";				
@@ -324,28 +324,25 @@ if(@{$results->{rows}}){
 
 
 if($send_email){
-	open(HTML, ">", "C:\\Users\\Admin\\Desktop\\test.html");
-	print HTML $email_html;
-	close HTML;
+#	open(HTML, ">", "C:\\Users\\Admin\\Desktop\\test.html");
+#	print HTML $email_html;
+#	close HTML;
 
-#	my $smtp = Net::SMTP->new($mail_server,
-#	    Timeout => 30,
-#	    Debug   => 0,
-#	);
-#	$smtp->mail( $from );
-#	$smtp->recipient(@email_recipients, { Notify => ['FAILURE'], SkipBad => 1 });  
-#	
-#	$smtp->data();
-#	$smtp->datasend("Subject: Daily Colony Alerts: $datestr\n");
-#	$smtp->datasend("Content-Transfer-Encoding: US-ASCII\n");
-#	$smtp->datasend("Content-Type: text/html; charset=\"US-ASCII\" \n");
-#	$smtp->datasend("\n");
-#	$smtp->datasend($email_html);
-#	$smtp->dataend();
-#	
-#	$smtp->quit;
+	my $smtp = Net::SMTP->new($mail_server,
+	    Timeout => 30,
+	    Debug   => 0,
+	);
+	$smtp->mail( $from );
+	$smtp->recipient(@email_recipients, { Notify => ['FAILURE'], SkipBad => 1 });
 
-}
-else {
-	
+	$smtp->data();
+	$smtp->datasend("Subject: Daily Colony Alerts: $datestr\n");
+	$smtp->datasend("Content-Transfer-Encoding: US-ASCII\n");
+	$smtp->datasend("Content-Type: text/html; charset=\"US-ASCII\" \n");
+	$smtp->datasend("\n");
+	$smtp->datasend($email_html);
+	$smtp->dataend();
+
+	$smtp->quit;
+
 }

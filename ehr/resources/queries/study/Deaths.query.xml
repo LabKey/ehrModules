@@ -17,6 +17,9 @@
                           <!--<fkColumnName>objectid</fkColumnName>-->
                         <!--</fk>-->
                     </column>
+                    <column columnName="date">
+                        <formatString>yyyy-MM-dd HH:mm</formatString>
+                    </column>
                   <column columnName="cause">
                     <datatype>varchar</datatype>
                     <columnTitle>Type of Death</columnTitle>

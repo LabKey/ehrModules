@@ -39,6 +39,24 @@ EHR.ext.Buttons = {
         scope: this
         }
     },
+    BASICSUBMIT: function(){return {
+        text: 'Submit',
+        name: 'basicsubmit',
+        requiredQC: 'Completed',
+        errorThreshold: 'INFO',
+        successURL: LABKEY.ActionURL.getParameter('srcURL') || LABKEY.ActionURL.buildURL("ehr", "dataEntry.view"),
+        disabled: true,
+        ref: 'submitBtn',
+        handler: function(o){
+//            Ext.Msg.confirm('Finalize Form', 'You are about to finalize this form.  Do you want to do this?', function(v){
+//                if(v=='yes')
+                    this.onSubmit(o);
+//            }, this);
+        },
+        disableOn: 'WARN',
+        scope: this
+        }
+    },
     SUBMITANDNEXT: function(){return {
         text: 'Submit And Next',
         name: 'submit',
@@ -167,7 +185,7 @@ EHR.ext.Buttons = {
         disabled: true,
         ref: 'requestBtn',
         handler: this.onSubmit,
-        disableOn: 'ERROR',
+        disableOn: 'WARN',
         scope: this
         }
     },

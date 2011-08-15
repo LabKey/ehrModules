@@ -7,12 +7,12 @@
 --to be considered co-housed, they only need to overlap by any period of time
 
 SELECT
-    h.id,
     --h.project,
     --h.project.protocol,
     h.account,
     h.type,
-    sum(h.totalDays) as totalDays
+    sum(h.effectiveDays) as effectiveDays,
+    group_concat(h.id) as animals
 FROM study.PerDiemsByDay h
 
-GROUP BY h.id, h.account, h.type
+GROUP BY h.account, h.type

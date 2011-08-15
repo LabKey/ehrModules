@@ -36,7 +36,8 @@
         <filter column="DaysAlone" operator="gte" value="30"/>
     </filters>
     <sorts>
-        <sort column="id" descending="false"/>
-        <sort column="DaysAlone" descending="true"/>
+        <sort column="Id/curLocation/room" descending="false"/>
+        <sort column="Id/curLocation/cage" descending="false"/>
+        <!--<sort column="DaysAlone" descending="true"/>-->
     </sorts>
 </customView>

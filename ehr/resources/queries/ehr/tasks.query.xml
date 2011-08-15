@@ -22,6 +22,7 @@
                     </column>
                     <column columnName="datecompleted">
                         <columnTitle>Date Finalized</columnTitle>
+                        <formatString>yyyy-MM-dd HH:mm</formatString>
                     </column>
                     <column columnName="formtype">
                         <columnTitle>Task Type</columnTitle>

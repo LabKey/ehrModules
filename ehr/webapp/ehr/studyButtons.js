@@ -344,7 +344,7 @@ function addFormButton(dataRegion, config, menu){
                                 this.ownerCt.hide();
 
                                 dataRegion.selectNone();
-                                refreshDataRegion(dataRegion);
+                                dataRegion.refresh();
                             }
 
                             function onException(error){
@@ -759,7 +759,7 @@ function markComplete(dataRegion, menu, schemaName, queryName){
                                 Ext.Msg.hide();
                                 dataRegion.selectNone();
 
-                                refreshDataRegion(dataRegion);
+                                dataRegion.refresh();
                             },
                             failure: EHR.utils.onError
                         });
@@ -903,7 +903,7 @@ function createTaskFromIdsBtn(dataRegion, menu, config){
                                         window.location = LABKEY.ActionURL.buildURL("ehr", "manageTask", null, {taskid: config.taskId, formtype: config.taskRecord.formType});
                                     }
                                     else {
-                                        refreshDataRegion(dataRegion);
+                                        dataRegion.refresh();
                                     }
                                 }, this)
                             },
@@ -937,6 +937,8 @@ function createTaskFromIdsBtn(dataRegion, menu, config){
 
 
 function createTaskBtn(dataRegion, menu, config){
+    config = config || {};
+
     menu.add({
         text: 'Schedule '+config.formType+' Task',
         dataRegion: dataRegion,
@@ -947,7 +949,18 @@ function createTaskBtn(dataRegion, menu, config){
                 return;
             }
 
-            new Ext.Window({
+            //NOTE: it might be a good idea to check that the dates match on input records and enforce this when making a task
+//            if(config.enforceDate){
+//
+//            }
+//            else {
+//                createWindow();
+//            }
+
+            createWindow();
+
+            function createWindow(){
+                new Ext.Window({
                 title: 'Schedule '+config.formType,
                 width: 330,
                 autoHeight: true,
@@ -1036,7 +1049,7 @@ function createTaskBtn(dataRegion, menu, config){
                                         window.location = LABKEY.ActionURL.buildURL("ehr", "manageTask", null, {taskid: config.taskId, formtype: config.taskRecord.formType});
                                     }
                                     else {
-                                        refreshDataRegion(dataRegion);
+                                        dataRegion.refresh();
                                     }
                                 }, this)
                             },
@@ -1053,8 +1066,7 @@ function createTaskBtn(dataRegion, menu, config){
                     }
                 }]
             }).show();
-
-
+            }
 
             function onSuccess(data){
                 if(!data || !data.rows){
@@ -1193,7 +1205,7 @@ function changeQCStateBtn(dataRegion, menu){
                             dataRegion.selectNone();
 
                             o.ownerCt.ownerCt.hide();
-                            refreshDataRegion(dataRegion);
+                            dataRegion.refresh();
                         }, this);
                     }
                 },{
@@ -1219,17 +1231,6 @@ function addAssignmentTaskBtn(dataRegion, menu){
 
 
 }
-
-function refreshDataRegion(dataRegion){
-    if(dataRegion.qwp){
-        dataRegion.qwp.render();
-    }
-    else if (LABKEY.ActionURL.getController() == 'executeQuery'){
-        window.location.reload( false );
-    }
-}
-
-
 
 
 function duplicateTask(dataRegion){
@@ -1353,7 +1354,7 @@ function duplicateTask(dataRegion){
                                     window.location = LABKEY.ActionURL.buildURL("ehr", "manageTask", null, {taskid: config.taskId, formtype: config.taskRecord.formType});
                                 }
                                 else {
-                                    refreshDataRegion(dataRegion);
+                                    dataRegion.refresh();
                                 }
                             }, this)
                         },

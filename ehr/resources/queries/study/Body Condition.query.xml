@@ -57,6 +57,24 @@
                           <fkColumnName>status</fkColumnName>
                         </fk>
                     </column>
+                    <column columnName="microchip">
+                        <columnTitle>Microchip</columnTitle>
+                        <fk>
+                          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
+                          <fkDbSchema>ehr_lookups</fkDbSchema>
+                          <fkTable>microchip_comments</fkTable>
+                          <fkColumnName>comment</fkColumnName>
+                        </fk>
+                    </column>
+                    <column columnName="tag">
+                        <columnTitle>Neck Tag</columnTitle>
+                        <fk>
+                          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
+                          <fkDbSchema>ehr_lookups</fkDbSchema>
+                          <fkTable>microchip_comments</fkTable>
+                          <fkColumnName>comment</fkColumnName>
+                        </fk>
+                    </column>
                 </columns>
             </table>
         </tables>

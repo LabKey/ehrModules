@@ -13,7 +13,7 @@ LABKEY.requiresScript("/ehr/ehrAPI.js");
 
 
 Ext.onReady(function(){
-    var btns = 'VALIDATE,SUBMIT,'+(LABKEY.ActionURL.getParameter('update') ? '' : 'SUBMITANDNEXT')+',DELETEBTN';
+    var btns = 'VALIDATE,BASICSUBMIT,'+(LABKEY.ActionURL.getParameter('update') ? '' : 'SUBMITANDNEXT')+',DELETEBTN';
 
     var metaSources = LABKEY.ActionURL.getParameter('metaSources') || '';
     metaSources = metaSources.split(';');

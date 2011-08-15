@@ -5,6 +5,8 @@
        <column name="project" />
        <column name="score" />
        <column name="weightStatus" />
+       <column name="microchip" />
+       <column name="tag" />
        <column name="tattoo_chest" />
        <column name="tattoo_thigh" />
        <column name="tattoo_remark" />

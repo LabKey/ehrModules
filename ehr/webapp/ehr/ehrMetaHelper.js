@@ -270,7 +270,7 @@ EHR.ext.metaHelper = {
             storeId: LABKEY.ext.FormHelper.getLookupStoreId(c),
             schemaName: l.schemaName,
             queryName: l.queryName,
-            containerPath: l.container || c.containerPath || LABKEY.container.path,
+            containerPath: l.container || l.containerPath || LABKEY.container.path,
             autoLoad: true
         };
 

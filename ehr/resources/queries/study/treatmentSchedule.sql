@@ -30,17 +30,17 @@ t1.id.dataset.activehousing.cage as CurrentCage,
 
 CASE
   --these are AM,
-  WHEN (t1.frequency=1 OR t1.frequency=7 OR t1.frequency=8 or t1.frequency=9 or t1.frequency=12)
+  WHEN (t1.frequency.meaning='Daily - AM' OR t1.frequency.meaning='Weekly' OR t1.frequency.meaning='Monthly' or t1.frequency.meaning='Alternating Days' or t1.frequency.meaning='Daily - Any Time')
     THEN timestampadd('SQL_TSI_HOUR', 8, d.date)
   --these are the multiple per day options
-  WHEN (t1.frequency=2 OR t1.frequency=3 OR t1.frequency=6)
+  WHEN (t1.frequency.meaning='Daily - AM/PM' OR t1.frequency.meaning='Daily - AM/PM/Night' OR t1.frequency.meaning='Daily - AM/Night')
     THEN timestampadd('SQL_TSI_HOUR', 8, d.date)
   --noon
-  WHEN (t1.frequency=11)
+  WHEN (t1.frequency.meaning='Daily - Noon')
     THEN timestampadd('SQL_TSI_HOUR', 12, d.date)
-  WHEN (t1.frequency=4)
+  WHEN (t1.frequency.meaning='Daily - PM')
     THEN timestampadd('SQL_TSI_HOUR', 14, d.date)
-  WHEN (t1.frequency=5)
+  WHEN (t1.frequency.meaning='Daily - Night')
     THEN timestampadd('SQL_TSI_HOUR', 19, d.date)
 END as date,
 
@@ -100,43 +100,42 @@ WHEN t1.enddate is null AND t1.meaning IS NOT null THEN
 WHEN t1.enddate is null AND t1.code.meaning IS NOT null THEN
   ('Drug: ' || t1.code.meaning || ' (' || t1.code || ')')
 WHEN t1.enddate is not null AND t1.meaning IS NOT null THEN
-  ('Drug: ' || t1.meaning || ' (' || t1.code || ')
-End Date: ' || t1.enddate)
+  ('Drug: ' || t1.meaning || ' (' || t1.code || ')' || chr(10) || 'End Date: ' || t1.enddate)
 WHEN t1.enddate is not null AND t1.code.meaning IS NOT null THEN
-  ('Drug: ' || t1.code.meaning || ' (' || t1.code || ')
-End Date: ' || t1.enddate)
+  ('Drug: ' || t1.code.meaning || ' (' || t1.code || ')' || chr(10) || 'End Date: ' || t1.enddate)
 ELSE
-  ('Drug: ' || t1.code || '
-End Date: ' || t1.enddate)
+  ('Drug: ' || t1.code || chr(10) || 'End Date: ' || t1.enddate)
 END AS description2,
 t1.qcstate,
 
 CASE
-  WHEN (t1.frequency=1 OR t1.frequency=7 OR t1.frequency=8 or t1.frequency=9)
+  WHEN (t1.frequency.meaning='Daily - AM' OR t1.frequency.meaning='Weekly' OR t1.frequency.meaning='Monthly' or t1.frequency.meaning='Alternating Days')
     THEN 'AM'
   --these are the multiple per day options
-  WHEN (t1.frequency=2 OR t1.frequency=3 OR t1.frequency=6)
+  WHEN (t1.frequency.meaning='Daily - AM/PM' OR t1.frequency.meaning='Daily - AM/PM/Night' OR t1.frequency.meaning='Daily - AM/Night')
     THEN 'AM'
-  WHEN (t1.frequency=11)
+  WHEN (t1.frequency.meaning='Daily - Noon')
     THEN 'Noon'
-  WHEN (t1.frequency=12)
+  WHEN (t1.frequency.meaning='Daily - Any Time')
     THEN 'Any Time'
-  WHEN (t1.frequency=4)
+  WHEN (t1.frequency.meaning='Daily - PM')
     THEN 'PM'
-  WHEN (t1.frequency=5)
+  WHEN (t1.frequency.meaning='Daily - Night')
     THEN 'Night'
 END as TimeOfDay,
 
 CASE
-  WHEN (t1.frequency=1 OR t1.frequency=7 OR t1.frequency=8 OR t1.frequency=9 or t1.frequency=12  OR t1.frequency=11)
+  WHEN (t1.frequency.meaning='Daily - AM' OR t1.frequency.meaning='Weekly' OR t1.frequency.meaning='Monthly' OR t1.frequency.meaning='Alternating Days' or t1.frequency.meaning='Daily - Any Time')
     THEN 1
   --these are the multiple per day options
-  WHEN (t1.frequency=2 OR t1.frequency=3 OR t1.frequency=6)
+  WHEN (t1.frequency.meaning='Daily - AM/PM' OR t1.frequency.meaning='Daily - AM/PM/Night' OR t1.frequency.meaning='Daily - AM/Night')
     THEN 1
-  WHEN (t1.frequency=4)
+  WHEN (t1.frequency.meaning='Daily - Noon')
     THEN 2
-  WHEN (t1.frequency=5)
+  WHEN (t1.frequency.meaning='Daily - PM')
     THEN 3
+  WHEN (t1.frequency.meaning='Daily - Night')
+    THEN 4
 END as SortOrder
 
 FROM ehr_lookups.next30Days d
@@ -144,18 +143,18 @@ FROM ehr_lookups.next30Days d
 LEFT JOIN study."Treatment Orders" t1
   ON (d.date >= t1.date and (d.date <= cast(t1.enddate as date) OR t1.enddate is null) AND (
   --daily
-  (t1.frequency=1 OR t1.frequency=2 OR t1.frequency=3 OR t1.frequency=4 OR t1.frequency=5 OR t1.frequency=6 OR t1.frequency=11 OR t1.frequency=12)
+  (t1.frequency.meaning='Daily - AM' OR t1.frequency.meaning='Daily - AM/PM' OR t1.frequency.meaning='Daily - AM/PM/Night' OR t1.frequency.meaning='Daily - PM' OR t1.frequency.meaning='Daily - Night' OR t1.frequency.meaning='Daily - AM/Night' OR t1.frequency.meaning='Daily - Noon' OR t1.frequency.meaning='Daily - Any Time')
   OR
   --monthly
   --always 1st tues
-  (t1.frequency=8 AND d.dayofmonth<=7 AND d.dayofweek=3)
+  (t1.frequency.meaning='Monthly' AND d.dayofmonth<=7 AND d.dayofweek=3)
   OR
   --weekly
   --always on same day as start date
-  (t1.frequency=7 AND d.dayofweek=dayofweek(t1.date))
+  (t1.frequency.meaning='Weekly' AND d.dayofweek=dayofweek(t1.date))
   OR
   --alternating days.  relative to start date
-  (t1.frequency=9 AND mod(d.dayofyear,2)=mod(cast(dayofyear(t1.date) as integer),2))
+  (t1.frequency.meaning='Alternating Days' AND mod(d.dayofyear,2)=mod(cast(dayofyear(t1.date) as integer),2))
   ))
 LEFT JOIN study.assignment a1
   ON (a1.project = t1.project AND a1.date <= d.date AND (a1.enddate is null or COALESCE(a1.enddate, curdate()) >= d.date) AND a1.id = t1.id)
@@ -179,9 +178,9 @@ t1.id.dataset.activehousing.room as CurrentRoom,
 t1.id.dataset.activehousing.cage as CurrentCage,
 
 CASE
-  WHEN (t1.frequency=2 OR t1.frequency=3)
+  WHEN (t1.frequency.meaning='Daily - AM/PM' OR t1.frequency.meaning='Daily - AM/PM/Night')
     THEN timestampadd('SQL_TSI_HOUR', 14, d.date)
-  WHEN (t1.frequency=6)
+  WHEN (t1.frequency.meaning='Daily - AM/Night')
     THEN timestampadd('SQL_TSI_HOUR', 19, d.date)
 END as date,
 
@@ -241,29 +240,26 @@ WHEN t1.enddate is null AND t1.meaning IS NOT null THEN
 WHEN t1.enddate is null AND t1.code.meaning IS NOT null THEN
   ('Drug: ' || t1.code.meaning || ' (' || t1.code || ')')
 WHEN t1.enddate is not null AND t1.meaning IS NOT null THEN
-  ('Drug: ' || t1.meaning || ' (' || t1.code || ')
-End Date: ' || t1.enddate)
+  ('Drug: ' || t1.meaning || ' (' || t1.code || ')' || chr(10) || 'End Date: ' || t1.enddate)
 WHEN t1.enddate is not null AND t1.code.meaning IS NOT null THEN
-  ('Drug: ' || t1.code.meaning || ' (' || t1.code || ')
-End Date: ' || t1.enddate)
+  ('Drug: ' || t1.code.meaning || ' (' || t1.code || ')' || chr(10) || 'End Date: ' || t1.enddate)
 ELSE
-  ('Drug: ' || t1.code || '
-End Date: ' || t1.enddate)
+  ('Drug: ' || t1.code || chr(10) || 'End Date: ' || t1.enddate)
 END AS description2,
 t1.qcstate,
 
 CASE
-  WHEN (t1.frequency=2 OR t1.frequency=3)
+  WHEN (t1.frequency.meaning='Daily - AM/PM' OR t1.frequency.meaning='Daily - AM/PM/Night')
     THEN 'PM'
-  WHEN (t1.frequency=6)
+  WHEN (t1.frequency.meaning='Daily - AM/Night')
     THEN 'Night'
 END as TimeOfDay,
 
 CASE
-  WHEN (t1.frequency=2 OR t1.frequency=3)
-    THEN 2
-  WHEN (t1.frequency=6)
+  WHEN (t1.frequency.meaning='Daily - AM/PM' OR t1.frequency.meaning='Daily - AM/PM/Night')
     THEN 3
+  WHEN (t1.frequency.meaning='Daily - AM/Night')
+    THEN 4
 END as SortOrder
 
 FROM ehr_lookups.next30Days d
@@ -271,7 +267,7 @@ FROM ehr_lookups.next30Days d
 LEFT JOIN study."Treatment Orders" t1
   ON (d.date >= t1.date and (d.date <= cast(t1.enddate as date) OR t1.enddate is null) AND (
   --duplicate the daily ones
-  (t1.frequency=2 OR t1.frequency=3 OR t1.frequency=6)
+  (t1.frequency.meaning='Daily - AM/PM' OR t1.frequency.meaning='Daily - AM/PM/Night' OR t1.frequency.meaning='Daily - AM/Night')
   ))
 LEFT JOIN study.assignment a1
   ON (a1.project = t1.project AND a1.date <= d.date AND (a1.enddate is null or COALESCE(a1.enddate, curdate()) >= d.date) AND a1.id = t1.id)
@@ -351,26 +347,23 @@ WHEN t1.enddate is null AND t1.meaning IS NOT null THEN
 WHEN t1.enddate is null AND t1.code.meaning IS NOT null THEN
   ('Drug: ' || t1.code.meaning || ' (' || t1.code || ')')
 WHEN t1.enddate is not null AND t1.meaning IS NOT null THEN
-  ('Drug: ' || t1.meaning || ' (' || t1.code || ')
-End Date: ' || t1.enddate)
+  ('Drug: ' || t1.meaning || ' (' || t1.code || ')' || chr(10) || 'End Date: ' || t1.enddate)
 WHEN t1.enddate is not null AND t1.code.meaning IS NOT null THEN
-  ('Drug: ' || t1.code.meaning || ' (' || t1.code || ')
-End Date: ' || t1.enddate)
+  ('Drug: ' || t1.code.meaning || ' (' || t1.code || ')' || chr(10) || 'End Date: ' || t1.enddate)
 ELSE
-  ('Drug: ' || t1.code || '
-End Date: ' || t1.enddate)
+  ('Drug: ' || t1.code || chr(10) || 'End Date: ' || t1.enddate)
 END AS description2,
 t1.qcstate,
 
 'Night' as TimeOfDay,
 
-3 as SortOrder
+4 as SortOrder
 
 FROM ehr_lookups.next30Days d
 
 LEFT JOIN study."Treatment Orders" t1
   ON (d.date >= t1.date and (d.date <= cast(t1.enddate as date) OR t1.enddate is null) AND
-    t1.frequency=3
+    t1.frequency.meaning='Daily - AM/PM/Night'
   )
 LEFT JOIN study.assignment a1
   ON (a1.project = t1.project AND a1.date <= d.date AND (a1.enddate is null or COALESCE(a1.enddate, curdate()) >= d.date) AND a1.id = t1.id)

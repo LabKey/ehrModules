@@ -28,13 +28,50 @@ VALUES
 (6, 'Daily - AM/Night', 6),
 (3, 'Daily - AM/PM/Night', 7),
 (12, 'Daily - Any Time', 8),
-(10, 'Weekly', 9),
+(7, 'Weekly', 9),
 (8, 'Monthly', 10),
 (9, 'Alternating Days', 11)
 ;
+
 
 delete from ehr_lookups.amount_units where unit = 'no units';
 INSERT INTO ehr_lookups.amount_units VALUES ('no units');
 
 delete from ehr_lookups.volume_units where unit = 'no units';
 INSERT INTO ehr_lookups.volume_units VALUES ('no units');
+
+
+delete from ehr_lookups.dental_teeth;
+INSERT INTO ehr_lookups.dental_teeth VALUES ('M3', '1');
+INSERT INTO ehr_lookups.dental_teeth VALUES ('M2', '2');
+INSERT INTO ehr_lookups.dental_teeth VALUES ('M1', '3');
+INSERT INTO ehr_lookups.dental_teeth VALUES ('PM3', '4');
+INSERT INTO ehr_lookups.dental_teeth VALUES ('PM2', '5');
+INSERT INTO ehr_lookups.dental_teeth VALUES ('PM1', '6');
+INSERT INTO ehr_lookups.dental_teeth VALUES ('K9', '7');
+INSERT INTO ehr_lookups.dental_teeth VALUES ('I2', '8');
+INSERT INTO ehr_lookups.dental_teeth VALUES ('I1', '9');
+
+
+DROP TABLE IF EXISTS ehr_lookups.microchip_comments;
+CREATE TABLE ehr_lookups.microchip_comments (
+comment varchar(100),
+
+CONSTRAINT PK_microchip_comments PRIMARY KEY (comment)
+)
+WITH (OIDS=FALSE)
+
+;
+
+insert into  ehr_lookups.microchip_comments
+(comment) VALUES
+('ok'),
+('placed today'),
+('not present')
+;
+
+
+INSERT INTO ehr_lookups.blood_tube_volumes
+(tube_types, volume) VALUES
+('EDTA', 3)
+;
