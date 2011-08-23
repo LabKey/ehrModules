@@ -12,7 +12,7 @@ FROM study.demographics d
 LEFT JOIN ehr_lookups.ageclass ac
 ON (
 d.birth IS NOT NULL AND
-(CONVERT(age_in_months(d.birth, COALESCE(d.death, curdate())), DOUBLE) / 12) >= ac."min" AND
-((CONVERT(age_in_months(d.birth, COALESCE(d.death, curdate())), DOUBLE) / 12) <= ac."max" OR ac."max" is null) AND
+(CONVERT(age_in_months(d.birth, COALESCE(d.death, now())), DOUBLE) / 12) >= ac."min" AND
+((CONVERT(age_in_months(d.birth, COALESCE(d.death, now())), DOUBLE) / 12) <= ac."max" OR ac."max" is null) AND
 d.species = ac.species
 )

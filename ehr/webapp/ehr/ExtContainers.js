@@ -378,7 +378,8 @@ Ext.extend(EHR.ext.TreatmentSelector, Ext.Panel, {
                 emptyText:''
                 ,fieldLabel: 'Time of Day'
                 ,ref: 'timeField'
-                ,xtype: 'combo'
+                ,xtype: 'lovcombo'
+                ,separator: ';'
                 ,displayField:'time'
                 ,valueField: 'time'
                 ,typeAhead: true
@@ -444,7 +445,7 @@ Ext.extend(EHR.ext.TreatmentSelector, Ext.Panel, {
             filterArray.push(LABKEY.Filter.create('CurrentRoom', room, LABKEY.Filter.Types.EQUALS_ONE_OF));
 
         if (time)
-            filterArray.push(LABKEY.Filter.create('TimeOfDay', time, LABKEY.Filter.Types.EQUAL));
+            filterArray.push(LABKEY.Filter.create('TimeOfDay', time, LABKEY.Filter.Types.EQUALS_ONE_OF));
 
         return filterArray;
     },
@@ -559,6 +560,23 @@ EHR.ext.BloodSelector = Ext.extend(Ext.Panel, {
                 bodyBorder: false
             }
             ,items: [{
+                xtype: 'combo'
+                ,emptyText:''
+                ,fieldLabel: 'Area (optional)'
+                ,displayField:'area'
+                ,valueField: 'area'
+                ,typeAhead: true
+                ,editable: true
+                ,triggerAction: 'all'
+                ,store: new LABKEY.ext.Store({
+                    containerPath: 'WNPRC/EHR/',
+                    schemaName: 'ehr_lookups',
+                    queryName: 'areas',
+                    sort: 'area',
+                    autoLoad: true
+                }),
+                ref: 'areaField'
+            },{
                 emptyText:''
                 ,fieldLabel: 'Room'
                 ,ref: 'roomField'
@@ -576,29 +594,24 @@ EHR.ext.BloodSelector = Ext.extend(Ext.Panel, {
                         }
                     }
                 }
-//            },{
-//                emptyText:''
-//                ,fieldLabel: 'Time of Day'
-//                ,ref: 'timeField'
-//                ,xtype: 'combo'
-//                ,displayField:'time'
-//                ,valueField: 'time'
-//                ,typeAhead: true
-//                ,mode: 'local'
-//                ,triggerAction: 'all'
-//                ,editable: true
-//                ,store: new Ext.data.ArrayStore({
-//                    fields: [
-//                        'time'
-//                    ],
-//                    idIndex: 0,
-//                    data: [
-//                        ['AM'],
-//                        //['Noon'],
-//                        ['PM'],
-//                        ['Night']
-//                    ]
-//                })
+            },{
+                emptyText:''
+                ,fieldLabel: 'Assigned To'
+                ,ref: 'billedbyField'
+                ,xtype: 'combo'
+                ,displayField:'title'
+                ,valueField: 'code'
+                ,typeAhead: true
+                ,mode: 'local'
+                ,triggerAction: 'all'
+                ,editable: true
+                ,value: 'a'
+                ,store: new LABKEY.ext.Store({
+                    schemaName: 'ehr_lookups',
+                    queryName: 'blood_billed_by',
+                    sort: 'title',
+                    autoLoad: true
+                })
             }],
             buttons: [{
                 text:'Submit',
@@ -624,16 +637,18 @@ EHR.ext.BloodSelector = Ext.extend(Ext.Panel, {
     {
         var room = (this.roomField ? this.roomField.getValue() : null);
         var area = (this.areaField ? this.areaField.getValue() : null);
+        var billedby = (this.billedbyField ? this.billedbyField.getValue() : null);
 
-        if (!room)
+        if ((!room && !area) || !billedby)
         {
-            alert('Must provide room');
+            alert('Must provide a room or area and complete the \'assigned to\' field');
             return;
         }
 
         var filterArray = [];
 
         filterArray.push(LABKEY.Filter.create('date', new Date(), LABKEY.Filter.Types.DATE_EQUAL));
+
         filterArray.push(LABKEY.Filter.create('taskid', null, LABKEY.Filter.Types.ISBLANK));
         filterArray.push(LABKEY.Filter.create('drawStatus', 'Pending', LABKEY.Filter.Types.EQUAL));
 
@@ -642,6 +657,9 @@ EHR.ext.BloodSelector = Ext.extend(Ext.Panel, {
 
         if (room)
             filterArray.push(LABKEY.Filter.create('CurrentRoom', room, LABKEY.Filter.Types.EQUALS_ONE_OF));
+
+        if(billedby)
+            filterArray.push(LABKEY.Filter.create('billedby', billedby, LABKEY.Filter.Types.EQUALS_ONE_OF));
 
         return filterArray;
     },
@@ -687,25 +705,41 @@ EHR.ext.BloodSelector = Ext.extend(Ext.Panel, {
         Ext.each(results.rows, function(row){
             records.push({
                 lsid: row.lsid,
-                taskid: this.taskId
+                taskid: this.parentPanel.formUUID
             });
         }, this);
 
         if (this.targetStore){
-            LABKEY.Query.updateRows({
-                schemaName: 'study',
-                queryName: 'Blood Draws',
-                scope: this,
-                rows: records,
-                success: function(data){
-                    this.targetStore.load();
-                    Ext.Msg.hide();
-                },
-                failure: function(error){
-                    Ext.Msg.hide();
-                    alert(error.exception);
-                }
-            });
+            //we save the task to be sure there is a record of it
+            var store = Ext.StoreMgr.get('ehr||tasks||||');
+            var record = store.getAt(0);
+            if(record.phantom){
+                Ext.Msg.wait('Saving...');
+                store.on('commitcomplete', function(c){
+                    doUpdate(this.targetStore);
+                }, this, {single: true});
+                store.commitRecords([record]);
+            }
+            else {
+                doUpdate(this.targetStore);
+            }
+
+            function doUpdate(targetStore){
+                LABKEY.Query.updateRows({
+                    schemaName: 'study',
+                    queryName: 'Blood Draws',
+                    scope: this,
+                    rows: records,
+                    success: function(data){
+                        targetStore.load();
+                        Ext.Msg.hide();
+                    },
+                    failure: function(error){
+                        Ext.Msg.hide();
+                        alert(error.exception);
+                    }
+                });
+            }
         }
     }
 
@@ -1790,8 +1824,17 @@ EHR.ext.createImportPanel = function(config){
             if(row.buttons)
                 obj.tbarBtns = row.buttons.split(',');
 
-            if(row.initialTemplates && !config.formUUID)
-                panelCfg.initialTemplates = (panelCfg.initialTemplates ? panelCfg.initialTemplates+','+row.initialTemplates : row.initialTemplates);
+            if(row.initialTemplates && !config.formUUID){
+                panelCfg.initialTemplates = panelCfg.initialTemplates || [];
+                var templates = row.initialTemplates.split(',');
+                var storeId;
+                Ext.each(templates, function(t){
+                    storeId = [row.schemaName, row.queryName, '', ''].join('||');
+                    console.log(storeId)
+                    panelCfg.initialTemplates.push({storeId: row.storeId, title: t});
+                }, this);
+
+            }
 
             if(row.configJson){
                 var json = Ext.util.JSON.decode(row.configJson);

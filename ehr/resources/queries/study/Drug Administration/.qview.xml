@@ -20,6 +20,7 @@
        <column name="category"/>
        <column name="restraint"/>
        <column name="restraintTime"/>
+       <column name="performedby"/>
        <!--<column name="HeaderDate"/>-->
        <column name="qcstate" />
        <column name="taskid" />

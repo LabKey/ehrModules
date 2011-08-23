@@ -901,6 +901,7 @@
   </ns:table>
   <ns:table tableName="species" tableDbType="TABLE">
     <ns:pkColumnName>common</ns:pkColumnName>
+    <ns:titleColumn>common</ns:titleColumn>
     <ns:columns>
       <ns:column columnName="common">
         <ns:datatype>varchar</ns:datatype>

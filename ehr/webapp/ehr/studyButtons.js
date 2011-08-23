@@ -91,7 +91,7 @@ function moreActionsHandler(dataRegion){
         if(LABKEY.ActionURL.getAction().match(/^dataEntry$/i) && dataRegion.schemaName.match(/^study$/i) && dataRegion.queryName.match(/^Blood Draws$/i)){
             if(EHR.permissionMap.hasPermission('Scheduled', 'insert', {queryName: 'Blood Draws', schemaName: 'study'})){
                 createTaskBtn(dataRegion, menu, {queries: [{schemaName: 'study', queryName: 'Blood Draws'}], formType: 'Blood Draws'});
-                changeQCStateBtn(dataRegion, menu);
+                changeBloodQCStateBtn(dataRegion, menu);
                 addBloodToTaskBtn(dataRegion, menu);
             }
         }
@@ -1080,9 +1080,7 @@ function createTaskBtn(dataRegion, menu, config){
     });
 }
 
-
-
-function changeQCStateBtn(dataRegion, menu){
+function changeBloodQCStateBtn(dataRegion, menu){
     menu.add({
         text: 'Change Request Status',
         dataRegion: dataRegion,
@@ -1163,6 +1161,11 @@ function changeQCStateBtn(dataRegion, menu){
                         displayField: 'title',
                         valueField: 'code',
                         ref: 'billedby'
+                    },{
+                        xtype: 'textarea',
+                        ref: 'instructions',
+                        fieldLabel: 'Instructions',
+                        width: 200
                     }]
                 }],
                 buttons: [{
@@ -1173,21 +1176,161 @@ function changeQCStateBtn(dataRegion, menu){
                     scope: this,
                     handler: function(o){
                         var qc = o.ownerCt.ownerCt.theForm.qcstate.getValue();
-                        if(!qc){
-                            alert('Must pick a status');
+                        var billedby = o.ownerCt.ownerCt.theForm.billedby.getValue();
+                        var instructions = o.ownerCt.ownerCt.theForm.instructions.getValue();
+
+                        if(!qc && !billedby && !instructions){
+                            alert('Must enter either status, billed by or instructions');
+                            return;
                         }
 
-                        var billedby = o.ownerCt.ownerCt.theForm.billedby.getValue();
                         Ext.Msg.wait('Loading...');
 
                         var multi = new LABKEY.MultiRequest();
 
                         var toUpdate = {};
+                        var obj;
                         Ext.each(records, function(rec){
                             if(!toUpdate[rec['dataset/Label']])
                                 toUpdate[rec['dataset/Label']] = [];
 
-                            toUpdate[rec['dataset/Label']].push({lsid: rec.lsid, QCState: qc, billedby: billedby})
+                            obj = {lsid: rec.lsid};
+                            if(qc)
+                                obj.QCState = qc;
+                            if(billedby)
+                                obj.billedby = billedby;
+                            if(instructions)
+                                obj.instructions = instructions;
+
+                            toUpdate[rec['dataset/Label']].push(obj)
+                        }, this);
+
+                        for(var i in toUpdate){
+                            multi.add(LABKEY.Query.updateRows, {
+                                schemaName: 'study',
+                                queryName: i,
+                                rows: toUpdate[i],
+                                scope: this,
+                                failure: EHR.utils.onError
+                            });
+                        }
+
+                        multi.send(function(){
+                            Ext.Msg.hide();
+                            dataRegion.selectNone();
+
+                            o.ownerCt.ownerCt.hide();
+                            dataRegion.refresh();
+                        }, this);
+                    }
+                },{
+                    text: 'Close',
+                    handler: function(o){
+                        o.ownerCt.ownerCt.hide();
+                    }
+                }]
+            }).show();
+            }
+        }
+    })
+}
+
+
+function changeQCStateBtn(dataRegion, menu){
+    menu.add({
+        text: 'Change Request Status',
+        dataRegion: dataRegion,
+        handler: function(){
+            var checked = dataRegion.getChecked();
+            if(!checked || !checked.length){
+                alert('No records selected');
+                return;
+            }
+
+            Ext.Msg.wait('Loading...');
+            LABKEY.Query.selectRows({
+                schemaName: dataRegion.schemaName,
+                queryName: dataRegion.queryName,
+                columns: 'lsid,dataset/Label,Id,date,requestid,taskid',
+                filterArray: [LABKEY.Filter.create('lsid', checked.join(';'), LABKEY.Filter.Types.EQUALS_ONE_OF)],
+                scope: this,
+                success: onSuccess,
+                failure: EHR.utils.onError
+            });
+
+            function onSuccess(data){
+                var records = data.rows;
+
+                if(!records || !records.length){
+                    Ext.Msg.hide();
+                    alert('No records found');
+                    return;
+                }
+
+                Ext.Msg.hide();
+                new Ext.Window({
+                title: 'Change Request Status',
+                width: 330,
+                autoHeight: true,
+                items: [{
+                    xtype: 'form',
+                    ref: 'theForm',
+                    bodyStyle: 'padding: 5px;',
+                    defaults: {
+                        border: false
+                    },
+                    items: [{
+                        html: 'Total Records: '+checked.length+'<br><br>',
+                        tag: 'div'
+                    },{
+                        xtype: 'combo',
+                        fieldLabel: 'Status',
+                        width: 200,
+                        triggerAction: 'all',
+                        mode: 'local',
+                        store: new LABKEY.ext.Store({
+                            xtype: 'labkey-store',
+                            schemaName: 'study',
+                            queryName: 'qcstate',
+                            columns: 'rowid,label',
+                            sort: 'label',
+                            filterArray: [LABKEY.Filter.create('label', 'Request', LABKEY.Filter.Types.STARTS_WITH)],
+                            autoLoad: true
+                        }),
+                        displayField: 'Label',
+                        valueField: 'RowId',
+                        ref: 'qcstate'
+                    }]
+                }],
+                buttons: [{
+                    text:'Submit',
+                    disabled:false,
+                    formBind: true,
+                    ref: '../submit',
+                    scope: this,
+                    handler: function(o){
+                        var qc = o.ownerCt.ownerCt.theForm.qcstate.getValue();
+
+                        if(!qc){
+                            alert('Must choose a status');
+                            return;
+                        }
+
+                        Ext.Msg.wait('Loading...');
+
+                        var multi = new LABKEY.MultiRequest();
+
+                        var toUpdate = {};
+                        var obj;
+                        Ext.each(records, function(rec){
+                            if(!toUpdate[rec['dataset/Label']])
+                                toUpdate[rec['dataset/Label']] = [];
+
+                            obj = {lsid: rec.lsid};
+                            if(qc)
+                                obj.QCState = qc;
+
+                            toUpdate[rec['dataset/Label']].push(obj)
                         }, this);
 
                         for(var i in toUpdate){
@@ -1251,16 +1394,18 @@ function duplicateTask(dataRegion){
             LABKEY.Filter.create('taskid', checked[0], LABKEY.Filter.Types.EQUAL)
         ],
         scope: this,
-        success: onSuccess
-        //failure: EHR.utils.onError
+        success: onSuccess,
+        failure: EHR.utils.onError
     });
 
     function onSuccess(data){
 
-        if(!data || !data.rows){
+        if(!data || data.rows.length!=1){
             alert('Task not found');
             return;
         }
+
+        var row = data.rows[0];
 
         new Ext.Window({
             title: 'Duplicate Task',
@@ -1280,7 +1425,7 @@ function duplicateTask(dataRegion){
                     xtype: 'textfield',
                     fieldLabel: 'Title',
                     width: 200,
-                    value: config.formType,
+                    value: row.formType,
                     ref: 'titleField'
                 },{
                     xtype: 'xdatetime',

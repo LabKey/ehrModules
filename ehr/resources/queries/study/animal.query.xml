@@ -223,6 +223,18 @@
                             <fkColumnName>Id</fkColumnName>
                         </fk>
                     </column>
+                    <!--<column columnName="MHCtyping2" wrappedColumnName="id">-->
+                        <!--<description>Summarizes MHC SSP typing results for the all MHC alleles</description>-->
+                        <!--<columnTitle>MHC SSP Typing - Full</columnTitle>-->
+                        <!--<isHidden>false</isHidden>-->
+                        <!--<isUnselectable>true</isUnselectable>-->
+                        <!--<fk>-->
+                            <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
+                            <!--<fkDbSchema>study</fkDbSchema>-->
+                            <!--<fkTable>SSP_Pivot</fkTable>-->
+                            <!--<fkColumnName>Id</fkColumnName>-->
+                        <!--</fk>-->
+                    <!--</column>-->
                     <column columnName="totalOffspring" wrappedColumnName="id">
                         <description>Shows the total offspring of each animal</description>
                         <columnTitle>Number of Offspring</columnTitle>

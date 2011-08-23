@@ -81,10 +81,10 @@ EHR.ext.Metadata.Standard = {
             allowBlank: false,
             lookups: false,
             colModel: {
-                width: 70
+                width: 65
                 ,showLink: false
-            },
-            noDuplicateByDefault: true
+            }
+            //noDuplicateByDefault: true
         },
         'id/curlocation/location': {
             hidden: true,
@@ -122,7 +122,7 @@ EHR.ext.Metadata.Standard = {
         ,date: {
             allowBlank: false,
             nullable: false,
-            noDuplicateByDefault: true,
+            //noDuplicateByDefault: true,
             format: 'Y-m-d H:i',
             editorConfig: {
                 dateFormat: 'Y-m-d',
@@ -154,6 +154,12 @@ EHR.ext.Metadata.Standard = {
                 fixed: true,
                 width: 130
             }
+        }
+        ,restraint: {
+            shownInGrid: false
+        }
+        ,restraintTime: {
+            shownInGrid: false
         }
         ,enddate: {
             xtype: 'xdatetime',
@@ -257,6 +263,7 @@ EHR.ext.Metadata.Standard = {
         ,QCState: {
             allowBlank: false,
             noDuplicateByDefault: true,
+            allowDuplicateValue: false,
             noSaveInTemplateByDefault: true,
             setInitialValue: function(v){
                 var qc;
@@ -354,6 +361,7 @@ EHR.ext.Metadata.Standard = {
             //i tried to force hard tables to use QCState, but they kept reverting in odd places
             qcstate: {
                 allowBlank: false,
+                allowDuplicateValue: false,
                 setInitialValue: function(v){
                     var qc;
                     if(EHR.permissionMap && EHR.permissionMap.qcMap && EHR.permissionMap.qcMap.label['In Progress'])
@@ -559,7 +567,7 @@ EHR.ext.Metadata.Standard = {
             species: {allowBlank: false},
             gender: {allowBlank: false}
         },
-        Prenatal: {
+        'Prenatal Deaths': {
             conception: {
                 format: 'Y-m-d'
             }
@@ -642,6 +650,9 @@ EHR.ext.Metadata.Standard = {
             },
             performedby: {
                 hidden: true
+            },
+            stain: {
+                defaultValue: 'Hematoxylin & Eosin'
             }
         },
         Housing: {
@@ -803,8 +814,8 @@ EHR.ext.Metadata.Standard = {
             }
         },
         'Dental Status': {
-            gingivitis: {allowBlank: false, editorConfig: {lookupNullCaption: 'N/A'}},
-            tartar: {allowBlank: false, lookupNullCaption: 'N/A'},
+            gingivitis: {allowBlank: false, includeNullRecord: false},
+            tartar: {allowBlank: false, includeNullRecord: false},
             performedby: {
                 hidden: true
             }
@@ -1405,7 +1416,7 @@ EHR.ext.Metadata.Standard = {
             upperLegs: {xtype: 'ehr-remoteradiogroup', includeNullRecord: false, defaultValue: 'No', formEditorConfig: {columns: 3}},
             lowerLegs: {xtype: 'ehr-remoteradiogroup', includeNullRecord: false, defaultValue: 'No', formEditorConfig: {columns: 3}},
             other: {xtype: 'ehr-remoteradiogroup', includeNullRecord: false, defaultValue: 'No', formEditorConfig: {columns: 3}},
-            score: {lookupNullCaption: '', useNull: true},
+            score: {lookupNullCaption: '', useNull: true, editorConfig: {useNull: true}},
             performedby: {hidden: true}
         },
         Restraint: {
@@ -1655,7 +1666,10 @@ EHR.ext.Metadata.Standard = {
             RoomAtTime: {hidden: true}
             ,date: {
                 editorConfig: {
-                    minValue: new Date()
+                    minValue: new Date(),
+                    dateConfig: {
+                        minValue: new Date()
+                    }
                 }
             }
             ,CageAtTime: {
@@ -1877,8 +1891,9 @@ EHR.ext.Metadata.Standard = {
             billedby: {shownInGrid: false}
             ,remark: {shownInGrid: false}
             ,project: {shownInGrid: false, allowBlank: false}
-            ,requestor: {shownInGrid: false, formEditorConfig:{readOnly: true}}
+            ,requestor: {shownInGrid: false, hidden: true, formEditorConfig:{readOnly: true}}
             ,performedby: {shownInGrid: false}
+            ,instructions: {shownInGrid: false, formEditorConfig:{xtype: 'displayfield', readOnly: true}}
             ,assayCode: {
                 xtype: 'trigger'
                 ,shownInGrid: false
@@ -1892,7 +1907,7 @@ EHR.ext.Metadata.Standard = {
                             Ext.Msg.alert('Error', "Must enter prefix");
                             return
                         }
-                        var sql = "SELECT max(cast(regexp_replace(SUBSTRING(assayCode, "+(prefix.length+1)+"), '[a-z\-]+', '') as integer)) as maxNumber FROM study.blood WHERE assayCode LIKE '" + prefix + "%'  AND lcase(SUBSTRING(assayCode, "+(prefix.length+1)+")) = ucase(SUBSTRING(assayCode, "+(prefix.length+1)+"))";
+                        var sql = "SELECT max(cast(regexp_replace(SUBSTRING(assayCode, "+(prefix.length+1)+"), '[a-z,\-]+', '') as integer)) as maxNumber FROM study.blood WHERE assayCode LIKE '" + prefix + "%'  AND lcase(SUBSTRING(assayCode, "+(prefix.length+1)+")) = ucase(SUBSTRING(assayCode, "+(prefix.length+1)+"))";
                         //console.log(sql)
                         LABKEY.Query.executeSql({
                             schemaName: 'study',
@@ -1951,6 +1966,10 @@ EHR.ext.Metadata.Standard = {
                             tube_vol.store.load();
                         }
                     }
+                },
+                colModel: {
+                    width: 60,
+                    showLink: false
                 }
             }
             ,quantity: {
@@ -1987,14 +2006,21 @@ EHR.ext.Metadata.Standard = {
                         }
 
                         var quantity = tube_vol.getValue() * this.getValue();
-                        theForm.findField('quantity').setValue(quantity);
+                        var quantityField = theForm.findField('quantity');
+                        quantityField.setValue(quantity);
+                        quantityField.fireEvent('change', quantity, quantityField.startValue);
                     }
                 }
                 ,allowBlank: true
+                ,colModel: {
+                    width: 55,
+                    header: '# Tubes',
+                    showLink: false
+                }
+
             }
             ,tube_vol: {
                 shownInGrid: true
-                ,allowBlank: false
                 ,editorConfig: {
                     plugins: ['ehr-usereditablecombo']
 //                    ,listeners: {
@@ -2012,8 +2038,11 @@ EHR.ext.Metadata.Standard = {
                     columns: '*',
                     sort: 'volume'
                 }
-
-
+                ,colModel: {
+                    width: 75,
+                    header: 'Tube Vol (mL)',
+                    showLink: false
+                }
             }
         },
         'Procedure Codes': {
@@ -2298,7 +2327,8 @@ EHR.ext.Metadata.Task = {
             category: {defaultValue: 'Task'}
         }
         ,'Blood Draws': {
-            requestor:{xtype: 'displayfield'}
+            requestor:{xtype: 'displayfield'},
+            performedby: {allowBlank: false}
         }
 //        ,Deaths: {
 //            cause: {
@@ -2532,7 +2562,10 @@ EHR.ext.Metadata.Request = {
 //            },
 //            hidden: true,
             editorConfig: {
-                minValue: (new Date()).add(Date.DAY, 2)
+                minValue: (new Date()).add(Date.DAY, 2),
+                dateConfig: {
+                    minValue: (new Date()).add(Date.DAY, 2)
+                }
             }
         },
         performedby: {
@@ -2560,6 +2593,15 @@ EHR.ext.Metadata.Request = {
                     qc = EHR.permissionMap.qcMap.label['Request: Pending'].RowId;
                 return v || qc;
             }
+        },
+        restraint: {
+            hidden: true
+        },
+        restraintTime: {
+            hidden: true
+        },
+        'id/curlocation/location': {
+            shownInGrid: false
         }
     },
     byQuery: {
@@ -2640,6 +2682,9 @@ EHR.ext.Metadata.Request = {
             },
             project: {
                 nullable: false
+            },
+            instructions: {
+                hidden: true
             }
         },
         'Clinical Encounters': {
@@ -3237,7 +3282,7 @@ EHR.ext.FormColumns = {
     'Behavior Remarks': EHR.ext.topCols+',so,a,p,'+EHR.ext.bottomCols,
     Biopsies: EHR.ext.topCols+',caseno,type,veterinarian,performedby,nhpbmd,grossdescription,'+EHR.ext.bottomCols,
     Birth: EHR.ext.topCols+',estimated,gender,weight,wdate,dam,sire,room,cage,cond,origin,conception,type,'+EHR.ext.bottomCols,
-    'Blood Draws': EHR.ext.topCols+',tube_type,tube_vol,num_tubes,quantity,requestor,additionalServices,billedby,assayCode,' + EHR.ext.bottomCols, //p_s,a_v,
+    'Blood Draws': 'id/curlocation/location,'+EHR.ext.topCols+',tube_type,tube_vol,num_tubes,quantity,requestor,additionalServices,billedby,assayCode,restraint,restraintTime,instructions,' + EHR.ext.bottomCols, //p_s,a_v,
     'Body Condition': EHR.ext.topCols+',score,weightstatus,remark,tattoo_chest,tattoo_thigh,microchip,tag,tattoo_remark,' + EHR.ext.bottomCols,
     cage_observations: 'date,room,cage,feces,userId,no_observations,' + EHR.ext.sharedCols,
     Charges: EHR.ext.topCols+',type,unitCost,quantity,'+EHR.ext.bottomCols,
@@ -3263,7 +3308,7 @@ EHR.ext.FormColumns = {
     'Morphologic Diagnosis': EHR.ext.topCols+',tissue,severity,duration,distribution,distribution2,inflammation,etiology,process,process2,'+EHR.ext.bottomCols,
     'Pair Tests': EHR.ext.topCols+',partner,bhav,testno,sharedFood,aggressions,affiliation,conclusion,'+EHR.ext.bottomCols,
     'Parasitology Results': EHR.ext.topCols+',organism,method,result,units,qualresult,'+EHR.ext.bottomCols,
-    Prenatal: EHR.ext.topCols+',species,gender,weight,dam,sire,room,cage,conception,'+EHR.ext.bottomCols,
+    'Prenatal Deaths': EHR.ext.topCols+',species,gender,weight,dam,sire,room,cage,conception,'+EHR.ext.bottomCols,
     'Procedure Codes': EHR.ext.topCols+',code,'+EHR.ext.bottomCols,
     'Problem List': EHR.ext.topCols+',code,category,'+EHR.ext.bottomCols,
     'Organ Weights': EHR.ext.topCols+',tissue,qualifier,weight,'+EHR.ext.bottomCols,

@@ -46,10 +46,16 @@ function onBecomePublic(errors, scriptContext, row, oldRow){
             parentid: row.objectid
         };
 
+        var queryName;
+        if(row.Id.match(/^pd/))
+            queryName = 'Prenatal Deaths';
+        else
+            queryName = 'Deaths';
+
         //we look for a deaths record
         LABKEY.Query.selectRows({
             schemaName: 'study',
-            queryName: 'Deaths',
+            queryName: queryName,
             filterArray: [
                 LABKEY.Filter.create('Id', row.Id, LABKEY.Filter.Types.EQUAL)
             ],
@@ -58,25 +64,26 @@ function onBecomePublic(errors, scriptContext, row, oldRow){
                     obj.lsid = data.rows[0].lsid;
                     LABKEY.Query.updateRows({
                         schemaName: 'study',
-                        queryName: 'Deaths',
+                        queryName: queryName,
                         rows: [obj],
                         success: function(data){
-                            console.log('Success updating deaths from necropsy for '+row.Id)
+                            console.log('Success updating '+queryName+' from necropsy for '+row.Id)
                         },
                         failure: EHR.onFailure
                     });
                 }
                 //otherwise we create a new record
                 else {
-                    LABKEY.Query.insertRows({
-                        schemaName: 'study',
-                        queryName: 'Deaths',
-                        rows: [obj],
-                        success: function(data){
-                            console.log('Success inserting into deaths from necropsy for '+row.Id)
-                        },
-                        failure: EHR.onFailure
-                    });
+//                    LABKEY.Query.insertRows({
+//                        schemaName: 'study',
+//                        queryName: queryName,
+//                        rows: [obj],
+//                        success: function(data){
+//                            console.log('Success inserting into '+queryName+' from necropsy for '+row.Id)
+//                        },
+//                        failure: EHR.onFailure
+//                    });
+                    EHR.addError(errors, 'Id', 'No death record exists.  Please use the button near the bottom of the page to create one.', 'ERROR');
                 }
             },
             failure: EHR.onFailure

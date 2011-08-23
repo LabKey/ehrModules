@@ -155,13 +155,13 @@ EHR.utils.findWebPartTitle = function(childObj) {
     return wp.child('th[class*=labkey-wp-title-left]', null, true);
 };
 
-EHR.utils.loadTemplateByName = function(title, formType){
+EHR.utils.loadTemplateByName = function(title, storeId){
     LABKEY.Query.selectRows({
         schemaName: 'ehr',
         queryName: 'formtemplates',
         filterArray: [
             LABKEY.Filter.create('title', title, LABKEY.Filter.Types.EQUAL),
-            LABKEY.Filter.create('formType', formType, LABKEY.Filter.Types.EQUAL)
+            LABKEY.Filter.create('storeId', storeId, LABKEY.Filter.Types.EQUAL)
         ],
         success: onLoadTemplate
     });

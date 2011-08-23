@@ -12,25 +12,25 @@ sd.date,
 
 cast((
   SELECT  group_concat(DISTINCT h.room) as room FROM study.Housing h
-  WHERE sd.id = h.id AND h.date <= sd.date AND sd.date < COALESCE(h.enddate, curdate())
+  WHERE sd.id = h.id AND h.date <= sd.date AND sd.date < COALESCE(h.enddate, now())
   AND h.qcstate.publicdata = true
   --GROUP BY h.id
 ) as varchar) as RoomAtTime,
 cast((
   SELECT  group_concat(h.cage) as cage FROM study.Housing h
-  WHERE sd.id = h.id AND h.date <= sd.date AND sd.date < COALESCE(h.enddate, curdate())
+  WHERE sd.id = h.id AND h.date <= sd.date AND sd.date < COALESCE(h.enddate, now())
   AND h.qcstate.publicdata = true
   --GROUP BY h.id
 ) as varchar) as CageAtTime,
 cast((
   SELECT  group_concat(h.room.area) as area FROM study.Housing h
-  WHERE sd.id = h.id AND h.date <= sd.date AND sd.date < COALESCE(h.enddate, curdate())
+  WHERE sd.id = h.id AND h.date <= sd.date AND sd.date < COALESCE(h.enddate, now())
   AND h.qcstate.publicdata = true
   --GROUP BY h.id
 ) as varchar) as AreaAtTime,
 -- cast((
 --   SELECT  group_concat((h.room || h.cage)) as location FROM study.Housing h
---   WHERE sd.id = h.id AND h.date <= sd.date AND sd.date < COALESCE(h.enddate, curdate())
+--   WHERE sd.id = h.id AND h.date <= sd.date AND sd.date < COALESCE(h.enddate, now())
 --   --GROUP BY h.id
 -- ) as varchar) as location,
 

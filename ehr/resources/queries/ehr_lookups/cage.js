@@ -6,7 +6,7 @@
 // ================================================
 
 var console = require("console");
-var EHR = require("ehr/validation");
+var {EHR} = require("ehr/validation");
 
 console.log("** evaluating: " + this['javax.script.filename']);
 

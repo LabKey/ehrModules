@@ -7,7 +7,7 @@ SELECT
 
 w.id,
 w.MostRecentWeightDate,
-timestampdiff('SQL_TSI_DAY', w.MostRecentWeightDate, curdate()) AS DaysSinceWeight,
+timestampdiff('SQL_TSI_DAY', w.MostRecentWeightDate, now()) AS DaysSinceWeight,
 
 -- t2.weight as MostRecentWeight,
 null as weightField,

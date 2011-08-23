@@ -9,21 +9,21 @@ d.id,
 d.species,
 d.birth,
 
-floor(age(d.birth, COALESCE(d.death, curdate()))) AS AgeInYearsRounded,
+floor(age(d.birth, COALESCE(d.death, now()))) AS AgeInYearsRounded,
 
-ROUND(CONVERT(age_in_months(d.birth, COALESCE(d.death, curdate())), DOUBLE), 1) AS AgeInMonths,
+ROUND(CONVERT(age_in_months(d.birth, COALESCE(d.death, now())), DOUBLE), 1) AS AgeInMonths,
 
-ROUND(CONVERT(age_in_months(d.birth, COALESCE(d.death, curdate())), DOUBLE) / 12, 1) AS AgeInYears,
+ROUND(CONVERT(age_in_months(d.birth, COALESCE(d.death, now())), DOUBLE) / 12, 1) AS AgeInYears,
 
-TIMESTAMPDIFF('SQL_TSI_DAY', d.birth, COALESCE(d.death, curdate())) as AgeInDays,
+TIMESTAMPDIFF('SQL_TSI_DAY', d.birth, COALESCE(d.death, now())) as AgeInDays,
 
 case
-  when (age_in_months(d.birth, COALESCE(d.death, curdate()))) < 1
-    then (CONVERT(TIMESTAMPDIFF('SQL_TSI_DAY', d.birth, COALESCE(d.death, curdate())), NUMERIC) || ' days')
-  when (age_in_months(d.birth, COALESCE(d.death, curdate()))) < 12
-    then (CONVERT(ROUND(age_in_months(d.birth, COALESCE(d.death, curdate())), 1), NUMERIC) || ' months')
+  when (age_in_months(d.birth, COALESCE(d.death, now()))) < 1
+    then (CONVERT(TIMESTAMPDIFF('SQL_TSI_DAY', d.birth, COALESCE(d.death, now())), NUMERIC) || ' days')
+  when (age_in_months(d.birth, COALESCE(d.death, now()))) < 12
+    then (CONVERT(ROUND(age_in_months(d.birth, COALESCE(d.death, now())), 1), NUMERIC) || ' months')
   else
-    (CONVERT(ROUND(age_in_months(d.birth, COALESCE(d.death, curdate())) / 12, 1), NUMERIC) || ' years')
+    (CONVERT(ROUND(age_in_months(d.birth, COALESCE(d.death, now())) / 12, 1), NUMERIC) || ' years')
 end as AgeFriendly
 
 FROM study.Demographics d

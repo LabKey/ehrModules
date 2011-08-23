@@ -347,25 +347,31 @@ EHR.ext.StoreCollection = Ext.extend(Ext.util.MixedCollection, {
         }, options);
 
         var commands = [];
+        var records = [];
         this.each(function(s){
             s.removePhantomRecords();
             s.each(function(r){
                 var recs = [];
                 r.beginEdit();
                 if(r.get('requestid')){
-                    r.set('taskid', null);
+                    if(s.queryName!='tasks')
+                        r.set('taskid', null);
                     r.set('QCState', EHR.permissionMap.qcMap.label['Request: Approved'].RowId);
+                    r.set('qcstate', EHR.permissionMap.qcMap.label['Request: Approved'].RowId);
                 }
                 else {
                     r.set('QCState', EHR.permissionMap.qcMap.label['Delete Requested'].RowId);
+                    r.set('qcstate', EHR.permissionMap.qcMap.label['Delete Requested'].RowId);
                 }
                 recs.push(r);
 
 
                 if(recs.length){
                     var changes = s.getChanges(recs);
-                    if(changes.length)
-                        commands.push(changes);
+                    if(changes.length){
+                        commands = commands.concat(changes);
+                        records = records.concat(recs);
+                    }
                 }
             }, this);
         }, this);
@@ -373,7 +379,7 @@ EHR.ext.StoreCollection = Ext.extend(Ext.util.MixedCollection, {
         //NOTE: since this will navigate away from this page, we dont need to bother removing
         //these records from the store
         if(commands.length){
-            this.commit(commands.commands, commands.records, extraContext);
+            this.commit(commands, records, extraContext);
         }
         else {
             this.onComplete(extraContext);

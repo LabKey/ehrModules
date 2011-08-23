@@ -664,6 +664,15 @@ Ext.ux.form.DateTime = Ext.extend(Ext.form.Field, {
         } // eo function renderer
         // }}}
 
+        //Added by bbimber
+//        ,getErrors:function(value){
+//            var errors = Ext.form.DateField.prototype.getErrors.apply(this.df, arguments);
+//            errors = errors.concat(Ext.form.TimeField.prototype.getErrors.apply(this.tf, arguments));
+//            return errors;
+//        } // eo function getErrors
+        // }}}
+        // {{{
+
 }); // eo extend
 
 // register xtype

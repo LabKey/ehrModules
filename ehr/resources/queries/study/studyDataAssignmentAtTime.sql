@@ -29,7 +29,7 @@ group_concat(DISTINCT h.project) as AssignmentsAtTime
 FROM study.studydata sd
 JOIN study.assignment h
   ON (
-    sd.id = h.id AND h.date <= sd.date AND sd.date < COALESCE(h.enddate, curdate())
+    sd.id = h.id AND h.date <= sd.date AND sd.date < COALESCE(h.enddate, now())
     AND h.qcstate.publicdata = true
     )
 group by sd.lsid, sd.id, sd.date

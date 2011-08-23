@@ -4,16 +4,19 @@
             <table tableName="protocol_counts" tableDbType="TABLE">
               <tableTitle>RARC Protocol Allowable Animals</tableTitle>
               <columns>
-                <!--<column columnName="Key">-->
-                  <!--<datatype>integer</datatype>-->
-                  <!--<columnTitle>Key</columnTitle>-->
-                  <!--<nullable>false</nullable>-->
-                  <!--<isKeyField>true</isKeyField>-->
-                  <!--<isAutoInc>true</isAutoInc>-->
-                <!--</column>-->
+                <column columnName="RowId">
+                  <datatype>integer</datatype>
+                  <columnTitle>Key</columnTitle>
+                  <nullable>false</nullable>
+                  <isKeyField>true</isKeyField>
+                  <isAutoInc>true</isAutoInc>
+                  <shownInInsertView>false</shownInInsertView>
+                  <shownInUpdateView>false</shownInUpdateView>
+                  <shownInDetailsView>false</shownInDetailsView>
+                </column>
                 <column columnName="parentid">
                   <datatype>varchar</datatype>
-                  <columnTitle>Key</columnTitle>
+                  <columnTitle>ParentId</columnTitle>
                   <shownInInsertView>false</shownInInsertView>
                   <shownInUpdateView>false</shownInUpdateView>
                   <shownInDetailsView>false</shownInDetailsView>
@@ -65,7 +68,7 @@
                 </column>
                   <column columnName="objectid">
                     <datatype>varchar</datatype>
-                    <columnTitle>Key</columnTitle>
+                    <columnTitle>Key2</columnTitle>
                     <shownInInsertView>false</shownInInsertView>
                     <shownInUpdateView>false</shownInUpdateView>
                     <shownInDetailsView>false</shownInDetailsView>

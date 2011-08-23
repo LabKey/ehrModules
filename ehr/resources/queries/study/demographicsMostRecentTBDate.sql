@@ -11,7 +11,7 @@ select
   T2.lastDate as MostRecentTBDate,
   case
     WHEN T2.lastDate IS NULL THEN 9999
-    ELSE age_in_months(T2.lastDate, curdate())
+    ELSE age_in_months(T2.lastDate, now())
   END AS MonthsSinceLastTB,
   (select group_concat(tb.eye) as eyeTested FROM study.tb tb WHERE tb.id = d.id and tb.date = T2.lastdate) as eyeTested,
   null as "24H",

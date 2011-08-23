@@ -134,9 +134,7 @@ function btn2(){
         ['Blood Draw Request' ,'formSections' ,'ehr-gridformpanel' ,'2' ,'Blood Draws', 'study', '', 'Request', '', '', ''],
         ['Blood Draws' ,'formSections' ,'ehr-abstractpanel' ,'1' ,'', '', '', '', '', '{viewName: "Blood Draw Info", boxMinHeight: 300}', ''],
         ['Blood Draws' ,'formSections' ,'ehr-gridformpanel' ,'2' ,'Blood Draws', 'study', '', 'Task', '', '', 'add,addscheduledblood,requestdelete,selectall,duplicate,bulk_edit,apply_template,save_template'],
-        ['Blood Draws' ,'formTabs' ,'ehr-gridformpanel' ,'3' ,'Weight', 'study', '', 'Task', '', '', ''],
         ['Blood Draws' ,'formTabs' ,'ehr-gridformpanel' ,'4' ,'Drug Administration', 'study', 'Treatments', 'Task', '', '', ''],
-        ['Blood Draws' ,'formTabs' ,'ehr-gridformpanel' ,'5' ,'Clinical Observations', 'study', 'Recovery Observations', 'Task,Anesthesia', '', '', ''],
         ['Blood Draws' ,'formTabs' ,'ehr-gridformpanel' ,'6' ,'Charges', 'study', '', 'Task', '', '', ''],
         ['Chemistry' ,'formSections' ,'ehr-abstractpanel' ,'1' ,'', '', '', '', '', '', ''],
         ['Chemistry' ,'formHeaders' ,'ehr-gridformpanel' ,'2' ,'Clinpath Runs', 'study', '', 'Task,Assay', '', '', ''],
@@ -174,8 +172,7 @@ function btn2(){
         ['MPR' ,'formHeaders' ,'ehr-formpanel' ,'1' ,'Clinical Encounters', 'study', 'Encounter Details', 'Task,Encounter', '', '', 'add,requestdelete,selectall,duplicate,bulk_edit,apply_template,save_template'],
         ['MPR' ,'formSections' ,'ehr-abstractpanel' ,'2' ,'', '', '', 'Task,Encounter', '', '', 'add,requestdelete,selectall,duplicate,bulk_edit,apply_template,save_template'],
         ['MPR' ,'formTabs' ,'ehr-gridformpanel' ,'3' ,'Drug Administration', 'study', 'Treatments', 'Task,Encounter', '', '', 'add,requestdelete,selectall,duplicate,bulk_edit,apply_template,save_template'],
-        ['MPR' ,'formTabs' ,'ehr-gridformpanel' ,'4' ,'Blood Draws', 'study', '', 'Task,Encounter', '', '', 'add,requestdelete,selectall,duplicate,bulk_edit,apply_template,save_template'],
-        ['MPR' ,'formTabs' ,'ehr-gridformpanel' ,'5' ,'Clinical Observations', 'study', 'Recovery Observations', 'Task,Encounter,Anesthesia', '', '', 'add,requestdelete,selectall,duplicate,bulk_edit,apply_template,save_template'],
+        ['MPR' ,'formTabs' ,'ehr-gridformpanel' ,'4' ,'Blood Draws', 'study', '', 'Task,Encounter', '', '', 'add,addscheduledblood,requestdelete,selectall,duplicate,bulk_edit,apply_template,save_template'],
         ['MPR' ,'formTabs' ,'ehr-gridformpanel' ,'6' ,'Procedure Codes', 'study', '', 'Task,Encounter', '', '', 'add,requestdelete,selectall,duplicate,bulk_edit,apply_template,save_template'],
         ['MPR' ,'formTabs' ,'ehr-gridformpanel' ,'8' ,'Weight', 'study', '', 'Task,Encounter', '', '', 'add,requestdelete,selectall,duplicate,bulk_edit,apply_template,save_template'],
         ['MPR' ,'formTabs' ,'ehr-gridformpanel' ,'9' ,'Charges', 'study', '', 'Task,Encounter', '', '', 'add,requestdelete,selectall,duplicate,bulk_edit,apply_template,save_template'],
@@ -256,7 +253,7 @@ function btn3(){
         };
         var fields = ('title,entityid,formtype,userid,description').split(',');
         var data = [
-            ['PE Defaults', 'a456add8-1e6e-102e-8578-dedb35e6870c', 'Physical Exam', '', 'The initial template loaded with a PE'],
+            ['PE Defaults', 'a456add8-1e6e-102e-8578-dedb35e6870c', 'study||Clinical Observations||||', '', 'The initial template loaded with a PE'],
             ['ket/dex/ati', 'c860f774-2015-102e-b638-079f4fb0c864', 'study||Drug Administration||||', '', '']
         ];
 
@@ -348,7 +345,7 @@ function btn4(){
             ['treatmentScheduleNight' ,'Today At WNPRC' ,'query' ,'Treatments - Evening' ,'true' ,'' ,'study' ,'treatmentSchedule', 'Night Treatments', '', 'date', 'true', 'false', '6', 'qcstate/publicdata', 'The report displays all treatments scheduled for today'],
             ['treatmentSchedule' ,'Today At WNPRC' ,'query' ,'Treatments - Master' ,'true' ,'' ,'study' ,'treatmentSchedule', '', '', 'date', 'true', 'false', '7', 'qcstate/publicdata', 'The report displays all treatments scheduled for today'],
             ['problemList' ,'Today At WNPRC' ,'query' ,'Unresolved Problem List' ,'true' ,'' ,'study' ,'Problem List', 'Unresolved Problems', '', 'date', 'false', 'false', '8', 'qcstate/publicdata', 'This displays the clinical problem list'],
-            ['todaysBlood' ,'Today At WNPRC' ,'query' ,'Blood Draw Schedule' ,'true' ,'' ,'study' ,'BloodSchedule', '', '', 'date', 'TRUE', 'false', '9', 'qcstate/publicdata', 'Contains records of blood draws scheduled for today'],
+            ['todaysBlood' ,'Today At WNPRC' ,'query' ,'Blood Draw Schedule' ,'true' ,'' ,'study' ,'Blood Draws', 'Blood Schedule', '', 'date', 'TRUE', 'false', '9', 'qcstate/publicdata', 'Contains records of blood draws scheduled for today'],
             ['treatmentsIncomplete' ,'Today At WNPRC' ,'query' ,'Treatments - Incomplete' ,'true' ,'' ,'study' ,'treatmentSchedule', 'Incomplete Treatments', '', 'date', 'true', 'false', '7', 'qcstate/publicdata', 'The report displays all incomplete treatments scheduled for today']
         ];
 
@@ -2589,7 +2586,10 @@ function btn5(){
 			['t-a5100', 'Organ/Tissue', ''],
 			['t-75001', 'Organ/Tissue', ''],
 			['@t-83000', 'Organ/Tissue', ''],
-            ['t-b1000', 'Organ/Tissue', '']
+            ['t-b1000', 'Organ/Tissue', ''],
+            ['t-d3400', 'Organ/Tissue', ''],
+            ['d7-71510', 'Process/Disorder', ''],
+            ['t-61303', 'Organ/Tissue', '']
     ];
 
     LABKEY.Query.insertRows(makeObject(config, data, fields));

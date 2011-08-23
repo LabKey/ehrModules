@@ -28,11 +28,11 @@ WHERE
 (h.cage = CAGE OR CAGE IS NULL OR CAGE = '') AND
 
 (
-  (cast(COALESCE(STARTDATE, '1900-01-01') AS TIMESTAMP) >= h.date AND cast(COALESCE(STARTDATE, '1900-01-01') AS TIMESTAMP) < COALESCE(h.enddate, curdate()))
+  (cast(COALESCE(STARTDATE, '1900-01-01') AS TIMESTAMP) >= h.date AND cast(COALESCE(STARTDATE, '1900-01-01') AS TIMESTAMP) < COALESCE(h.enddate, now()))
   OR
-  (COALESCE(ENDDATE, curdate()) > h.date AND COALESCE(ENDDATE, curdate()) <= COALESCE(h.enddate, curdate()))
+  (COALESCE(ENDDATE, now()) > h.date AND COALESCE(ENDDATE, now()) <= COALESCE(h.enddate, now()))
   OR
-  (cast(COALESCE(STARTDATE, '1900-01-01') AS TIMESTAMP) <= h.date AND COALESCE(ENDDATE, curdate()) >= COALESCE(h.enddate, curdate()))
+  (cast(COALESCE(STARTDATE, '1900-01-01') AS TIMESTAMP) <= h.date AND COALESCE(ENDDATE, now()) >= COALESCE(h.enddate, now()))
 )
 
 

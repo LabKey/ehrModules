@@ -29,6 +29,12 @@
                     <column columnName="tissue">
                       <datatype>varchar</datatype>
                       <columnTitle>Organ/Tissue</columnTitle>
+                      <fk>
+                        <fkFolderPath>/wnprc/ehr/</fkFolderPath>
+                        <fkDbSchema>ehr_lookups</fkDbSchema>
+                        <fkTable>snomed</fkTable>
+                        <fkColumnName>code</fkColumnName>
+                      </fk>
                     </column>
                     <column columnName="diagnosis">
                       <datatype>varchar</datatype>

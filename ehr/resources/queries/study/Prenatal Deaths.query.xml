@@ -2,7 +2,7 @@
     <metadata>
         <tables xmlns="http://labkey.org/data/xml">
             <table tableName="prenatal" tableDbType="TABLE">
-                <tableUrl>/query/detailsQueryRow.view?schemaName=study&amp;query.queryName=prenatal&amp;lsid=${lsid}</tableUrl>
+                <tableUrl>/query/detailsQueryRow.view?schemaName=study&amp;query.queryName=Prenatal Deaths&amp;lsid=${lsid}</tableUrl>
                 <!--<insertUrl>/ehr/manageRecord.view?schemaName=study&amp;queryName=Prenatal&amp;keyField=lsid&amp;</insertUrl>-->
                 <!--<updateUrl>/ehr/manageRecord.view?schemaName=study&amp;queryName=Prenatal&amp;keyField=lsid&amp;key=${lsid}</updateUrl>-->
                 <insertUrl />

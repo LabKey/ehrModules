@@ -17,6 +17,32 @@ function onUpsert(scriptContext, scriptErrors, row){
     if(row.no_observations && (row.feces || row.remark != 'ok')){
         row.no_observations = false;
     }
+
+    //verify an animal is housed here
+    if(row.Date && row.room){
+        var sql = "SELECT Id, room, cage, lsid FROM study.housing h " +
+        "WHERE h.room='"+row.room+"' AND " +
+        "h.date <= '"+row.Date+"' AND " +
+        "(h.enddate >= '"+row.Date+"' OR h.enddate IS NULL) AND " +
+        "h.qcstate.publicdata = true ";
+
+        if(row.cage)
+            sql += " AND h.cage='"+row.cage+"'";
+        //console.log(sql);
+        LABKEY.Query.executeSql({
+            schemaName: 'study',
+            sql: sql,
+            success: function(data){
+                if(!data || !data.rows || !data.rows.length){
+                    if(!row.cage)
+                        EHR.addError(scriptErrors, 'room', 'No animals are housed in this room on this date', 'WARN');
+                    else
+                        EHR.addError(scriptErrors, 'cage', 'No animals are housed in this cage on this date', 'WARN');
+                }
+            },
+            failure: EHR.onFailure
+        });
+    }
 }
 
 function onInsert(scriptContext, scriptErrors, row){

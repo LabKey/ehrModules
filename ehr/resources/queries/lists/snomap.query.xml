@@ -2,6 +2,9 @@
     <metadata>
         <tables xmlns="http://labkey.org/data/xml">
             <table tableName="snomap" tableDbType="TABLE">
+                <insertUrl />
+                <updateUrl />
+                <deleteUrl />
               <tableTitle>SNOMED Code Map</tableTitle>
               <columns>
                 <column columnName="ocode">

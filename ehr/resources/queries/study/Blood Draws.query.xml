@@ -81,6 +81,18 @@
                         <columnTitle>Date Requested</columnTitle>
                         <isHidden>true</isHidden>
                     </column>
+                    <column columnName="restraint">
+                        <columnTitle>Restraint</columnTitle>
+                        <fk>
+                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
+                            <fkDbSchema>ehr_lookups</fkDbSchema>
+                            <fkTable>restraint_type</fkTable>
+                            <fkColumnName>type</fkColumnName>
+                        </fk>
+                    </column>
+                    <column columnName="restraintTime">
+                        <columnTitle>Time Restrained (Mins)</columnTitle>
+                    </column>
                 </columns>
             </table>
         </tables>

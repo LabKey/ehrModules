@@ -43,12 +43,13 @@ use Time::localtime;
 
 # Find today's date
 my $tm = localtime;
-my $datestr = sprintf("%04d-%02d-%02d at %02d:%02d", $tm->year+1900, ($tm->mon)+1, $tm->mday, $tm->hour, $tm->min);
+my $datetimestr=sprintf("%04d-%02d-%02d at %02d:%02d", $tm->year+1900, ($tm->mon)+1, $tm->mday, $tm->hour, $tm->min);
+my $datestr=sprintf("%04d-%02d-%02d", $tm->year+1900, ($tm->mon)+1, $tm->mday);
 
 my $yesterday = localtime( ( time() - ( 24 * 60 * 60 ) ) );
 $yesterday = sprintf("%04d-%02d-%02d", $yesterday->year+1900, ($yesterday->mon)+1, $yesterday->mday);
 
-my $email_html = "This email contains a series of automatic alerts about the WNPRC colony.  It was run on: $datestr.<p>";
+my $email_html = "This email contains a series of automatic alerts about the WNPRC colony.  It was run on: $datetimestr.<p>";
 my $results;
 
 #first we find all living animals without a weight:
@@ -99,7 +100,7 @@ else {
     };
 
     $email_html .= "<p><a href='".$baseUrl."query/".$studyContainer."executeQuery.view?schemaName=ehr&query.queryName=missingCages"."'>Click here to view the problem cages</a></p>\n";
-    $email_html .= "<a href='".$baseUrl."query/".$studyContainer."executeQuery.view?schemaName=ehr_lookups&query.queryName=cages"."'>Click here to edit the cage list and fix the problem</a></p>\n";
+    $email_html .= "<a href='".$baseUrl."query/".$studyContainer."executeQuery.view?schemaName=ehr_lookups&query.queryName=cage"."'>Click here to edit the cage list and fix the problem</a></p>\n";
 
     $email_html .= '<hr>';
 }

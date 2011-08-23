@@ -209,13 +209,21 @@ EHR.rowInit = function(errors, row, oldRow){
                     }
 
                     if(data.calculated_status != 'Alive'){
-                        if(!this.scriptContext.allowDeadIds)
-                            EHR.addError(errors, 'Id', 'Status of this Id is: '+data.calculated_status, 'INFO');
+                        if(!this.scriptContext.allowDeadIds){
+                            if(this.scriptContext.qcMap.label[row.QCStateLabel]['metadata/isRequest'])
+                                EHR.addError(errors, 'Id', 'Status of this Id is: '+data.calculated_status, 'ERROR');
+                            else
+                                EHR.addError(errors, 'Id', 'Status of this Id is: '+data.calculated_status, 'INFO');
+                        }
                     }
                 }
                 else {
-                    if(!this.scriptContext.allowAnyId)
-                        EHR.addError(errors, 'Id', 'Id not found in demographics table', 'INFO');
+                    if(!this.scriptContext.allowAnyId){
+                        if(this.scriptContext.qcMap.label[row.QCStateLabel]['metadata/isRequest'])
+                            EHR.addError(errors, 'Id', 'Id not found in demographics table', 'ERROR');
+                        else
+                            EHR.addError(errors, 'Id', 'Id not found in demographics table', 'INFO');
+                    }
                 }
             }
         });
@@ -227,7 +235,7 @@ EHR.rowInit = function(errors, row, oldRow){
     if(!this.scriptContext.quickValidation &&
         this.scriptContext.extraContext.dataSource != 'etl' &&
         row.project && row.Id && row.date &&
-        row.project!=300901  &&
+        row.project!=300901 && row.project!='Other' &&
         (this.scriptContext.queryName && !this.scriptContext.queryName.match(/assignment/i))
     ){
         var date = EHR.validation.dateToString(row.date);
@@ -283,6 +291,13 @@ EHR.rowInit = function(errors, row, oldRow){
         }
     }
 
+//    if(this.scriptContext.qcMap.label[row.QCStateLabel]['metadata/isRequest']){
+//        var now = new Date();
+//        if(row.date && row.date.before(now)){
+//            EHR.addError(errors, 'date', 'Cannot place a request in the past', 'WARN');
+//        }
+//    }
+
     //force account to lowercase
     if(row.account){
         row.account = row.account.toLowerCase();
@@ -321,7 +336,7 @@ EHR.rowEnd = function(errors, scriptErrors, row, oldRow){
 
     //this flag is to let records be validated, but forces failure of validation
     if(this.extraContext && this.extraContext.validateOnly){
-        console.log('validate only')
+        //console.log('validate only')
         EHR.addError(scriptErrors, '_validateOnly', 'Ignore this error');
     }
 

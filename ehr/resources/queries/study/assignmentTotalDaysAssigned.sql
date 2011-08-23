@@ -39,10 +39,10 @@ a.id,
 i.year,
 
 a.date,
-coalesce(a.enddate, curdate()) AS enddate,
+coalesce(a.enddate, now()) AS enddate,
 
 convert(year(a.date), 'INTEGER') as StartYear,
-convert(year(coalesce(a.enddate, curdate())), 'INTEGER') as EndYear,
+convert(year(coalesce(a.enddate, now())), 'INTEGER') as EndYear,
 
 --TIMESTAMPDIFF('SQL_TSI_DAY', a.date, coalesce(a.enddate, curdate())) AS TotalDaysAssigned,
 

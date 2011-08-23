@@ -34,5 +34,5 @@ FROM study."Drug Administration" d
 
 WHERE
 cast(d.date as date) >= cast(COALESCE(STARTDATE, '1900-01-01') AS TIMESTAMP)
-AND cast(d.date as date) <= CAST(COALESCE(ENDDATE, curdate())AS TIMESTAMP)
+AND cast(d.date as date) <= CAST(COALESCE(ENDDATE, now())AS TIMESTAMP)
 -- AND (Area is null or d.HousingAtTime.AreaAtTime = Area)

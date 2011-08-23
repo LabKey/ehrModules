@@ -868,11 +868,11 @@
       <ns:column columnName="formtype">
         <ns:datatype>varchar</ns:datatype>
         <ns:scale>100</ns:scale>
-          <ns:fk>
-            <ns:fkDbSchema>ehr</ns:fkDbSchema>
-            <ns:fkTable>formtypes</ns:fkTable>
-            <ns:fkColumnName>formtype</ns:fkColumnName>
-          </ns:fk>
+          <!--<ns:fk>-->
+            <!--<ns:fkDbSchema>ehr</ns:fkDbSchema>-->
+            <!--<ns:fkTable>formtypes</ns:fkTable>-->
+            <!--<ns:fkColumnName>formtype</ns:fkColumnName>-->
+          <!--</ns:fk>-->
       </ns:column>
       <ns:column columnName="userId">
         <ns:nullable>true</ns:nullable>

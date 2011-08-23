@@ -19,20 +19,22 @@ h1.cond AS Condition,
 h2.id as RoommateId, 
 h2.date AS RoommateStart,
 h2.enddate AS RoommateEnd,
-TIMESTAMPDIFF('SQL_TSI_DAY', h2.date, COALESCE(h2.enddate, curdate())) + round(TIMESTAMPDIFF('SQL_TSI_HOUR', h2.date, COALESCE(h2.enddate, curdate()))/24, 1) as DaysCoHoused,
+TIMESTAMPDIFF('SQL_TSI_DAY', h2.date, COALESCE(h2.enddate, now())) + round(TIMESTAMPDIFF('SQL_TSI_HOUR', h2.date, COALESCE(h2.enddate, now()))/24, 1) as DaysCoHoused,
 h1.qcstate
 FROM study.Housing h1
 
 LEFT OUTER JOIN study.Housing h2
     ON (
       (
-      (h2.Date >= h1.date AND h2.Date < COALESCE(h1.enddate, curdate()))
+      (h2.Date >= h1.date AND h2.Date < COALESCE(h1.enddate, now()))
       OR
-      (COALESCE(h2.enddate, curdate()) > h1.date AND COALESCE(h2.enddate, curdate()) <= COALESCE(h1.enddate, curdate()))
+      (h1.Date >= h2.date AND h1.Date < COALESCE(h2.enddate, now()))
       OR
-      (h2.Date <= h1.date AND COALESCE(h2.EndDate, curdate()) >= COALESCE(h1.enddate, curdate()))
+      (COALESCE(h2.enddate, now()) > h1.date AND COALESCE(h2.enddate, now()) <= COALESCE(h1.enddate, now()))
       OR
-      (h2.Date <= h1.date AND COALESCE(h2.EndDate, curdate()) >= COALESCE(h1.enddate, curdate()))
+      (h2.Date <= h1.date AND COALESCE(h2.EndDate, now()) >= COALESCE(h1.enddate, now()))
+      OR
+      (h2.Date <= h1.date AND COALESCE(h2.EndDate, now()) >= COALESCE(h1.enddate, now()))
 
       ) AND
       h1.id != h2.id AND h1.room = h2.room AND h1.cage = h2.cage

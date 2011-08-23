@@ -1,0 +1,10 @@
+<customView xmlns="http://labkey.org/data/xml/queryCustomView">
+   <columns>
+       <column name="protocol"/>
+       <column name="species"/>
+       <column name="allowed"/>
+   </columns>
+   <sorts>
+       <sort column="protocol" descending="false"/>
+   </sorts>
+</customView>

@@ -34,7 +34,7 @@
     </columns>
     <filters>
         <filter column="DaysAlone" operator="gte" value="30"/>
-        <filter column="ExemptionTitles" operator="doesnotcontain" value="pairing except" />
+        <filter column="ExemptionTitles" operator="doesnotcontain" value="pairing exempt" />
     </filters>
     <sorts>
         <sort column="Id/curLocation/room" descending="false"/>

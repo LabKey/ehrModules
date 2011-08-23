@@ -43,7 +43,8 @@ use Time::localtime;
 # Find today's date
 # Find today's date
 my $tm = localtime;
-my $datestr = sprintf("%04d-%02d-%02d at %02d:%02d", $tm->year+1900, ($tm->mon)+1, $tm->mday, $tm->hour, $tm->min);
+my $datetimestr=sprintf("%04d-%02d-%02d at %02d:%02d", $tm->year+1900, ($tm->mon)+1, $tm->mday, $tm->hour, $tm->min);
+my $datestr=sprintf("%04d-%02d-%02d", $tm->year+1900, ($tm->mon)+1, $tm->mday);
 
 my $yesterday = localtime( ( time() - ( 24 * 60 * 60 ) ) );
 $yesterday = sprintf("%04d-%02d-%02d", $yesterday->year+1900, ($yesterday->mon)+1, $yesterday->mday);
@@ -52,7 +53,7 @@ my $threeDaysAgo = localtime( ( time() - ( 3 * 24 * 60 * 60 ) ) );
 $threeDaysAgo = sprintf("%04d-%02d-%02d", $threeDaysAgo->year+1900, ($threeDaysAgo->mon)+1, $threeDaysAgo->mday);
 
 
-my $email_html = "This email contains alerts of weight changes of +/- 10% or greater.  It was run on: $datestr.<p>";
+my $email_html = "This email contains alerts of weight changes of +/- 10% or greater.  It was run on: $datetimestr.<p>";
 my $results;
 
 

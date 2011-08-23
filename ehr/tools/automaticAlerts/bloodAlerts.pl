@@ -22,12 +22,14 @@ Ben Bimber
 
 #config options:
 my $baseUrl = 'https://ehr.primate.wisc.edu/';
-$baseUrl = 'http://localhost:8080/labkey/';
+#$baseUrl = 'http://localhost:8080/labkey/';
+
 my $studyContainer = 'WNPRC/EHR/';
 
 #whitespace separated list of emails
-my @email_recipients = qw(bimber@wisc.edu cm@primate.wisc.edu wnprcvets@primate.wisc.edu);
-@email_recipients = qw(bimber@wisc.edu);
+my @email_recipients = qw(bimber@wisc.edu kristins@primate.wisc.edu);
+#cpi@primate.wisc.edu wnprcvets@primate.wisc.edu
+#@email_recipients = qw(bimber@wisc.edu);
 my $mail_server = 'smtp.primate.wisc.edu';
 
 #emails will be sent from this address
@@ -52,7 +54,7 @@ my $email_html = "This email contains any scheduled blood draws not marked as co
 my $results;
 
 
-#we find any blood draws where the animal is not alive
+#we find any current or future blood draws where the animal is not alive
 $results = Labkey::Query::selectRows(
     -baseUrl => $baseUrl,
     -containerPath => $studyContainer,
@@ -66,7 +68,7 @@ $results = Labkey::Query::selectRows(
 );
 
 if(@{$results->{rows}}){
-	$email_html .= "<b>WARNING: There are ".@{$results->{rows}}." schedule blood draws for animals not currently at WNPRC.</b><br>";
+	$email_html .= "<b>WARNING: There are ".@{$results->{rows}}." current or scheduled blood draws for animals not currently at WNPRC.</b><br>";
 	$email_html .= "<p><a href='".$baseUrl."query/".$studyContainer."executeQuery.view?schemaName=study&query.queryName=Blood Draws&query.date~dategte=$datestr&query.Id/DataSet/Demographics/calculated_status~neqornull=Alive"."'>Click here to view them</a><br>\n";
 	$email_html .= "<hr>\n";			
 }
@@ -80,7 +82,6 @@ $results = Labkey::Query::selectRows(
     -queryName => 'Blood Draws',
     -filterArray => [
     	['Id/DataSet/Demographics/calculated_status', 'neqornull', 'Alive'],
-		['date', 'dategte', $datestr],
 		['date', 'dategte', $datestr],    
 		['BloodRemaining/AvailBlood', 'lt', 0],    			    	
     ],    
@@ -88,7 +89,7 @@ $results = Labkey::Query::selectRows(
 );
 
 if(@{$results->{rows}}){
-	$email_html .= "<b>WARNING: There are ".@{$results->{rows}}." schedule blood draws for animals not currently at WNPRC.</b><br>";
+	$email_html .= "<b>WARNING: There are ".@{$results->{rows}}." scheduled blood draws exceeding the allowable volume.</b><br>";
 	$email_html .= "<p><a href='".$baseUrl."query/".$studyContainer."executeQuery.view?schemaName=study&query.queryName=Blood Draws&query.viewName=Blood Summary&query.date~dategte=$datestr&query.Id/DataSet/Demographics/calculated_status~neqornull=Alive&query.BloodRemaining/AvailBlood~lt=0"."'>Click here to view them</a><br>\n";
 	$email_html .= "<hr>\n";			
 }
@@ -109,7 +110,7 @@ $results = Labkey::Query::selectRows(
 );
 
 if(@{$results->{rows}}){
-	$email_html .= "<b>WARNING: There are ".@{$results->{rows}}." scheduled blood draws where the animal is not assigned to the project.</b><br>";
+	$email_html .= "<b>WARNING: There are ".@{$results->{rows}}." blood draws scheduled today where the animal is not assigned to the project.</b><br>";
 	$email_html .= "<p><a href='".$baseUrl."query/".$studyContainer."executeQuery.view?schemaName=study&query.queryName=BloodSchedule&query.projectStatus~isnonblank&query.Id/DataSet/Demographics/calculated_status~eq=Alive&query.date~dateeq=$datestr"."'>Click here to view them</a><br>\n";
 	$email_html .= "<hr>\n";			
 }	
@@ -120,10 +121,10 @@ $results = Labkey::Query::selectRows(
     -baseUrl => $baseUrl,
     -containerPath => $studyContainer,
     -schemaName => 'study',
-    -queryName => 'BloodSchedule',
+    -queryName => 'Blood Draws',
     -filterArray => [    	
     	['Id/DataSet/Demographics/calculated_status', 'eq', 'Alive'],
-		['drawStatus', 'eq', 'Not Approved'],
+		['qcstate/label', 'eq', 'Request: Pending'],
 		['date', 'dategte', $datestr],		
     ],    
     #-debug => 1,
@@ -131,10 +132,29 @@ $results = Labkey::Query::selectRows(
 
 if(@{$results->{rows}}){
 	$email_html .= "<b>WARNING: There are ".@{$results->{rows}}." blood draws requested that have not been approved or denied yet.</b><br>";
-	$email_html .= "<p><a href='".$baseUrl."query/".$studyContainer."executeQuery.view?schemaName=study&query.queryName=BloodSchedule&query.drawStatus~eq=Not Approved&query.Id/DataSet/Demographics/calculated_status~eq=Alive&query.date~dateeq=$datestr"."'>Click here to view them</a><br>\n";
+	$email_html .= "<p><a href='".$baseUrl."ehr/".$studyContainer."dataEntry.view#topTab:Requests&activeReport:BloodDrawRequests"."'>Click here to view them</a><br>\n";
 	$email_html .= "<hr>\n";			
 }
 
+#we find any blood draws not yet assigned to either SPI or animal care
+$results = Labkey::Query::selectRows(
+    -baseUrl => $baseUrl,
+    -containerPath => $studyContainer,
+    -schemaName => 'study',
+    -queryName => 'Blood Draws',
+    -filterArray => [    	
+    	['Id/DataSet/Demographics/calculated_status', 'eq', 'Alive'],
+		['billedby', 'isblank', ''],
+		['date', 'dategte', $datestr],		
+    ],    
+    #-debug => 1,
+);
+
+if(@{$results->{rows}}){
+	$email_html .= "<b>WARNING: There are ".@{$results->{rows}}." blood draws requested that have not been assigned to SPI or Animal Care.</b><br>";
+	$email_html .= "<p><a href='".$baseUrl."ehr/".$studyContainer."dataEntry.view#topTab:Requests&activeReport:BloodDrawRequests'>Click here to view them</a><br>\n";
+	$email_html .= "<hr>\n";			
+}
 
 #we find any incomplete blood draws scheduled today, by area
 $results = Labkey::Query::selectRows(
@@ -142,7 +162,7 @@ $results = Labkey::Query::selectRows(
     -containerPath => $studyContainer,
     -schemaName => 'study',
     -queryName => 'BloodSchedule',
-    -columns => 'drawStatus,project,date,project/protocol,taskid,projectStatus,tube_type,billedby,num_tubes,Id/curLocation/area,Id/curLocation/room,Id/curLocation/cage,additionalServices,remark,Id,quantity,qcstate,qcstate/Label,requestid',
+    -columns => 'drawStatus,project,date,project/protocol,taskid,projectStatus,tube_vol,tube_type,billedby,num_tubes,Id/curLocation/area,Id/curLocation/room,Id/curLocation/cage,additionalServices,remark,Id,quantity,qcstate,qcstate/Label,requestid',
     -filterArray => [
     	['Id/DataSet/Demographics/calculated_status', 'eq', 'Alive'],
 		['date', 'dateeq', $datestr],
@@ -194,44 +214,44 @@ else {
 				foreach my $room (sort(keys %$rooms)){
 					if($$rooms{$room}{incomplete}){
 						$email_html .= "$room: ".$$rooms{$room}{incomplete}."<br>\n";
-						$email_html .= "<table border=1><tr><td>Id</td><td>Tube Type</td><td>Num Tubes</td><td>Quantity (mL)</td><td>Additional Services</td></tr>";
+						$email_html .= "<table border=1><tr><td>Id</td><td>Tube Vol</td><td>Tube Type</td><td># Tubes</td><td>Total Quantity</td><td>Additional Services</td></tr>\n";
 						
 						foreach my $rec (@{$$rooms{$room}{incompleteRecords}}){
-							$email_html .= "<tr><td>".$$rec{Id}."</td><td>".($$rec{tube_type} ? $$rec{tube_type} : '')."</td><td>".($$rec{num_tubes} ? $$rec{num_tubes} : '')."</td><td>".($$rec{quantity} ? $$rec{quantity} : '')."</td><td>".($$rec{additionalServices} ? $$rec{additionalServices} : '')."</td></tr>";
+							$email_html .= "<tr><td>".$$rec{Id}."</td><td>".($$rec{tube_vol} ? $$rec{tube_vol}.' mL' : '')."</td><td>".($$rec{tube_type} ? $$rec{tube_type} : '')."</td><td>".($$rec{num_tubes} ? $$rec{num_tubes} : '')."</td><td>".($$rec{quantity} ? $$rec{quantity}.' mL' : '')."</td><td>".($$rec{additionalServices} ? $$rec{additionalServices} : '')."</td></tr>\n";
 						}
 						
 						$email_html .= "</table><p>\n";	    	
 					}
 
 				}
-				$email_html .= "<p>";	
+				$email_html .= "<p>\n";	
 			}
 		}	
 	
-	$email_html .= "<hr>";	
+	$email_html .= "<hr>\n";	
 }	
 
 
 
-open(HTML, ">", "C:\\Users\\Admin\\Desktop\\test.html");
-print HTML $email_html;
-close HTML;
+#open(HTML, ">", "C:\\Users\\Admin\\Desktop\\test.html");
+#print HTML $email_html;
+#close HTML;
 
-#my $smtp = Net::SMTP->new($mail_server,
-#    Timeout => 30,
-#    Debug   => 0,
-#);
-#$smtp->mail( $from );
-#$smtp->recipient(@email_recipients, { Notify => ['FAILURE'], SkipBad => 1 });  
-#
-#$smtp->data();
-#$smtp->datasend("Subject: Daily Blood Draw Alerts: $datestr\n");
-#$smtp->datasend("Content-Transfer-Encoding: US-ASCII\n");
-#$smtp->datasend("Content-Type: text/html; charset=\"US-ASCII\" \n");
-#$smtp->datasend("\n");
-#$smtp->datasend($email_html);
-#$smtp->dataend();
-#
-#$smtp->quit;
+my $smtp = Net::SMTP->new($mail_server,
+    Timeout => 30,
+    Debug   => 0,
+);
+$smtp->mail( $from );
+$smtp->recipient(@email_recipients, { Notify => ['FAILURE'], SkipBad => 1 });  
+
+$smtp->data();
+$smtp->datasend("Subject: Daily Blood Draw Alerts: $datestr\n");
+$smtp->datasend("Content-Transfer-Encoding: US-ASCII\n");
+$smtp->datasend("Content-Type: text/html; charset=\"US-ASCII\" \n");
+$smtp->datasend("\n");
+$smtp->datasend($email_html);
+$smtp->dataend();
+
+$smtp->quit;
 
 

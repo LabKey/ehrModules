@@ -291,6 +291,7 @@ ehr/resources/queries/lists/Protocol/.qview.xml -text
 ehr/resources/queries/lists/Protocol/Protocols[!!-~]With[!!-~]Active[!!-~]Assignments.qview.xml -text
 ehr/resources/queries/lists/cagenotes.js -text
 ehr/resources/queries/lists/chemnorm.query.xml -text
+ehr/resources/queries/lists/newsnomed.query.xml -text
 ehr/resources/queries/lists/project.query.xml -text
 ehr/resources/queries/lists/projectLastAssignmentDate.query.xml -text
 ehr/resources/queries/lists/projectLastAssignmentDate.sql -text
@@ -310,6 +311,7 @@ ehr/resources/queries/lists/protocolTotalHistoricAnimalsBySpecies.sql -text
 ehr/resources/queries/lists/protocolTotalProjects.query.xml -text
 ehr/resources/queries/lists/protocolTotalProjects.sql -text
 ehr/resources/queries/lists/protocol_counts.query.xml -text
+ehr/resources/queries/lists/protocol_counts/.qview.xml -text
 ehr/resources/queries/lists/ref_range.query.xml -text
 ehr/resources/queries/lists/snomap.query.xml -text
 ehr/resources/queries/lists/snomed.js -text
@@ -498,9 +500,9 @@ ehr/resources/queries/study/PerDiemsByDay.sql -text
 ehr/resources/queries/study/Pregnancies.js -text
 ehr/resources/queries/study/Pregnancies.query.xml -text
 ehr/resources/queries/study/Pregnancies/.qview.xml -text
-ehr/resources/queries/study/Prenatal.js -text
-ehr/resources/queries/study/Prenatal.query.xml -text
-ehr/resources/queries/study/Prenatal/.qview.xml -text
+ehr/resources/queries/study/Prenatal[!!-~]Deaths.js -text
+ehr/resources/queries/study/Prenatal[!!-~]Deaths.query.xml -text
+ehr/resources/queries/study/Prenatal[!!-~]Deaths/.qview.xml -text
 ehr/resources/queries/study/Problem[!!-~]List.js -text
 ehr/resources/queries/study/Problem[!!-~]List.query.xml -text
 ehr/resources/queries/study/Problem[!!-~]List/.qview.xml -text
@@ -646,7 +648,7 @@ ehr/resources/queries/study/demographicsCurrentRoommatesOver6mo.sql -text
 ehr/resources/queries/study/demographicsDaysAlone.query.xml -text
 ehr/resources/queries/study/demographicsDaysAlone.sql -text
 ehr/resources/queries/study/demographicsDaysAlone/.qview.xml -text
-ehr/resources/queries/study/demographicsDaysAlone/Alone[!!-~]30[!!-~]Days[!!-~]Without[!!-~]Exemption.qview.xml -text
+ehr/resources/queries/study/demographicsDaysAlone/Alone[!!-~]30[!!-~]Days[!!-~]Without[!!-~]Exemptions.qview.xml -text
 ehr/resources/queries/study/demographicsDaysAlone/Alone[!!-~]30[!!-~]Days.qview.xml -text
 ehr/resources/queries/study/demographicsFamily.query.xml -text
 ehr/resources/queries/study/demographicsFamily.sql -text

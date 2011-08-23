@@ -22,9 +22,9 @@ FROM study.Assignment a1
 LEFT JOIN study.Assignment a2
     ON (
       (
-      (a2.Date >= a1.date AND a2.Date < COALESCE(a1.enddate, curdate()))
+      (a2.Date >= a1.date AND a2.Date < COALESCE(a1.enddate, now()))
       OR
-      (COALESCE(a2.enddate, curdate()) > a1.date AND COALESCE(a2.enddate, curdate()) <= COALESCE(a1.enddate, curdate()))
+      (COALESCE(a2.enddate, now()) > a1.date AND COALESCE(a2.enddate, now()) <= COALESCE(a1.enddate, now()))
 
       )
       AND a1.Id != a2.Id AND a1.project = a2.project

@@ -185,7 +185,7 @@ EHR.ext.Buttons = {
         disabled: true,
         ref: 'requestBtn',
         handler: this.onSubmit,
-        disableOn: 'WARN',
+        disableOn: 'INFO',
         scope: this
         }
     },
@@ -286,7 +286,7 @@ Ext.extend(EHR.ext.ImportPanelBase, Ext.Panel, {
 
         this.populateButtons();
 
-        if(this.initialTemplates)
+        if(this.initialTemplates && this.initialTemplates.length)
             this.applyTemplates(this.initialTemplates);
     },
 
@@ -474,9 +474,9 @@ Ext.extend(EHR.ext.ImportPanelBase, Ext.Panel, {
         }
     },
     applyTemplates: function(templates){
-        templates = templates.split(',');
-        Ext.each(templates, function(title){
-            EHR.utils.loadTemplateByName(title, this.formType);
+//        templates = templates.split(',');
+        Ext.each(templates, function(obj){
+            EHR.utils.loadTemplateByName(obj.title, obj.storeId);
         }, this);
     },
 
@@ -716,7 +716,7 @@ EHR.ext.RequestPanel = Ext.extend(EHR.ext.ImportPanelBase, {
             }
         });
 
-        this.allowableButtons = this.allowableButtons || 'VALIDATE,REQUEST,APPROVE,CLOSE';
+        this.allowableButtons = this.allowableButtons || 'VALIDATE,REQUEST';
 
         EHR.ext.RequestPanel.superclass.initComponent.call(this, arguments);
     },

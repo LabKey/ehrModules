@@ -783,6 +783,7 @@ EHR.ext.GridFormPanel = Ext.extend(Ext.Panel,
                         xtype: 'ehr-bloodselector',
                         ref: 'bloodselector',
                         targetStore: this.store,
+                        parentPanel: this,
                         title: ''
                     }]
                 });
