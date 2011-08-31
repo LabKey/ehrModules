@@ -26,7 +26,7 @@ my $baseUrl = 'https://ehr.primate.wisc.edu/';
 my $studyContainer = 'WNPRC/EHR/';
 
 #whitespace separated list of emails
-my @email_recipients = qw(bimber@wisc.edu cm@primate.wisc.edu wnprcvets@primate.wisc.edu);
+my @email_recipients = qw(bimber@wisc.edu cpi@primate.wisc.edu);
 #cpi@primate.wisc.edu wnprcvets@primate.wisc.edu
 #@email_recipients = qw(bimber@wisc.edu);
 my $mail_server = 'smtp.primate.wisc.edu';
@@ -47,7 +47,7 @@ use Time::localtime;
 my $tm = localtime;
 my $datetimestr=sprintf("%04d-%02d-%02d at %02d:%02d", $tm->year+1900, ($tm->mon)+1, $tm->mday, $tm->hour, $tm->min);
 my $datestr=sprintf("%04d-%02d-%02d", $tm->year+1900, ($tm->mon)+1, $tm->mday);
-$datestr='2011-08-30';
+
 my $timestr = sprintf("%02d:%02d", $tm->hour, $tm->min); 
 
 my $email_html = "This email contains any scheduled blood draws not marked as completed.  It was run on: $datetimestr.<p>";
@@ -222,14 +222,7 @@ else {
 						$email_html .= "<table border=1><tr><td>Time Requested</td><td>Id</td><td>Tube Vol</td><td>Tube Type</td><td># Tubes</td><td>Total Quantity</td><td>Additional Services</td></tr>\n";
 						
 						foreach my $rec (@{$$rooms{$room}{incompleteRecords}}){
-							$$rec{daterequested} =~ m/([0-9]{2}):([0-9]{2}):[0-9]{2}/;														
-						
-							my $color;
-							if($tm->hour >= int($1) || ($tm->hour == int($1) && ($tm->min + 15) >= int($2))){
-								$color = 'yellow';
-							}
-							
-							$email_html .= "<tr><td".($color ? " style='background:$color;'" : "").">".$$rec{daterequested}."</td><td>".$$rec{Id}."</td><td>".($$rec{tube_vol} ? $$rec{tube_vol}.' mL' : '')."</td><td>".($$rec{tube_type} ? $$rec{tube_type} : '')."</td><td>".($$rec{num_tubes} ? $$rec{num_tubes} : '')."</td><td>".($$rec{quantity} ? $$rec{quantity}.' mL' : '')."</td><td>".($$rec{additionalServices} ? $$rec{additionalServices} : '')."</td></tr>\n";
+							$email_html .= "<tr><td>".$$rec{daterequested}."</td><td>".$$rec{Id}."</td><td>".($$rec{tube_vol} ? $$rec{tube_vol}.' mL' : '')."</td><td>".($$rec{tube_type} ? $$rec{tube_type} : '')."</td><td>".($$rec{num_tubes} ? $$rec{num_tubes} : '')."</td><td>".($$rec{quantity} ? $$rec{quantity}.' mL' : '')."</td><td>".($$rec{additionalServices} ? $$rec{additionalServices} : '')."</td></tr>\n";
 						}
 						
 						$email_html .= "</table><p>\n";	    	
@@ -256,7 +249,7 @@ my $smtp = Net::SMTP->new($mail_server,
 $smtp->mail( $from );
 $smtp->recipient(@email_recipients, { Notify => ['FAILURE'], SkipBad => 1 });  
 $smtp->data();
-$smtp->datasend("Subject: Daily Blood Draw Alerts: $datestr\n");
+$smtp->datasend("Subject: Daily Blood Draw Schedule Alerts: $datestr\n");
 $smtp->datasend("Content-Transfer-Encoding: US-ASCII\n");
 $smtp->datasend("Content-Type: text/html; charset=\"US-ASCII\" \n");
 $smtp->datasend("\n");

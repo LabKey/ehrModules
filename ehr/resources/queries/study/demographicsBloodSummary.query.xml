@@ -34,7 +34,7 @@
                         <columnTitle>Max Blood Per 30 Days (mL)</columnTitle>
                     </column>
                     <column columnName="AvailBlood">
-                        <columnTitle>Available Blood At Time (mL)</columnTitle>
+                        <columnTitle>Available Blood (mL)</columnTitle>
                     </column>
                 </columns>
                 <titleColumn>AvailBlood</titleColumn>

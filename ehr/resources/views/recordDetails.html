@@ -43,8 +43,8 @@ Ext.onReady(function(){
             handler: function(b){
                 window.location = LABKEY.ActionURL.buildURL("query", "executeQuery", null, {
                     schemaName: 'auditLog',
-                    'query.queryName': 'DatasetAudits',
-                    'query.lsid~eq': LABKEY.ActionURL.getParameter('key')
+                    'query.queryName': 'DatasetAuditEvent',
+                    'query.key1~eq': LABKEY.ActionURL.getParameter('key')
                 });
             },
             text: 'Audit History'

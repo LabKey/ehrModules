@@ -7,6 +7,13 @@
 var {EHR, LABKEY, Ext, console, init, beforeInsert, afterInsert, beforeUpdate, afterUpdate, beforeDelete, afterDelete, complete} = require("ehr/validation");
 
 function onUpsert(context, errors, row, oldRow){
+    if(context.extraContext.dataSource != 'etl' && row.date && !row.daterequested){
+        if(!oldRow || !oldRow.daterequested){
+            console.log('setting date');
+            row.daterequested = row.date;
+        }
+    }
+
     //create a placeholder for storing blood vols within this transaction
     context.extraContext = context.extraContext || {};
     context.extraContext.bloodTotals = context.extraContext.bloodTotals || {};

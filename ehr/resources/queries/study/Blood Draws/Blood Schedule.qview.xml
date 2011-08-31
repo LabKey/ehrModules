@@ -46,9 +46,12 @@
       </column>
     </columns>
    <sorts>
-       <sort column="date" descending="true"/>
+       <sort column="date" descending="false"/>
+       <sort column="Id" descending="false"/>
    </sorts>
-    <!--<filters>-->
-        <!--<filter column="qcstate/publicdata" operator="eq" value="true"/>-->
-    <!--</filters>-->
+    <filters>
+        <filter column="qcstate/label" operator="neq" value="Delete Requested"/>
+        <filter column="qcstate/label" operator="neq" value="Request: Denied"/>
+        <filter column="qcstate/label" operator="neq" value="Request: Pending"/>
+    </filters>
 </customView>

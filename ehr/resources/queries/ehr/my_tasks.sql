@@ -15,6 +15,7 @@ qcstate,
 assignedto,
 duedate,
 requestid,
+datecompleted,
 createdby,
 created,
 description

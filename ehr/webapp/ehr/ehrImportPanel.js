@@ -85,7 +85,70 @@ EHR.ext.Buttons = {
         disabled: true,
         ref: 'reviewBtn',
         disableOn: 'ERROR',
-        handler: this.onSubmit,
+        handler: function(o){
+            var theWindow = new Ext.Window({
+                closeAction:'hide',
+                title: 'Submit For Review',
+                width: 350,
+                scope: this,
+                buttons: [{
+                    text:'Submit',
+                    disabled:false,
+                    ref: '../submit',
+                    scope: this,
+                    handler: function(btn){
+                        var assignedTo = btn.ownerCt.ownerCt.theForm.assignedTo.getValue();
+                        if(!assignedTo){
+                            alert('Must assign this task to someone');
+                            return;
+                        }
+                        var taskStore = Ext.StoreMgr.get('ehr||tasks||||');
+                        taskStore.getAt(0).set('assignedto', assignedTo);
+                        theWindow.hide();
+                        this.onSubmit(o);
+                    }
+                },{
+                    text: 'Cancel',
+                    scope: this,
+                    handler: function(){
+                        theWindow.hide();
+                    }
+                }],
+                items: [{
+                    xtype: 'form',
+                    ref: 'theForm',
+                    bodyStyle: 'padding:5px;',
+                    items: [{
+                        xtype: 'combo',
+                        fieldLabel: 'Assign To',
+                        width: 200,
+                        triggerAction: 'all',
+                        mode: 'local',
+                        store: new LABKEY.ext.Store({
+                            xtype: 'labkey-store',
+                            schemaName: 'core',
+                            queryName: 'PrincipalsWithoutAdmin',
+                            columns: 'userid,name',
+                            sort: 'type,name',
+                            autoLoad: true,
+                            listeners: {
+                                //scope: this,
+                                load: function(s){
+                                    var recIdx = s.find('name', (o.ownerCt.ownerCt.reviewRequiredRecipient || 'dataentry (LDAP)'));
+                                    if(recIdx!=-1){
+                                        theWindow.theForm.assignedTo.setValue(s.getAt(recIdx).get('UserId'));
+                                    }
+                                }
+                            }
+                        }),
+                        displayField: 'name',
+                        valueField: 'UserId',
+                        ref: 'assignedTo'
+                    }]
+                }]
+            });
+            theWindow.show();
+        },
         scope: this
         }
     },
@@ -328,7 +391,7 @@ Ext.extend(EHR.ext.ImportPanelBase, Ext.Panel, {
         else {
             this.allowableButtons = [
                 'VALIDATE',
-                'PRINT',
+                //'PRINT',
                 'SAVEDRAFT',
                 //'SCHEDULE',
                 'REVIEW',
@@ -531,7 +594,7 @@ Ext.extend(EHR.ext.ImportPanelBase, Ext.Panel, {
     {
         Ext.Msg.confirm(
             "Warning",
-            "You are about to discard this form.  All data will be deleted.  Are you sure you want to do this?",
+            "You are about to delete this form and all its data.  Are you sure you want to do this?",
             function(v)
             {
                 if (v == 'yes')

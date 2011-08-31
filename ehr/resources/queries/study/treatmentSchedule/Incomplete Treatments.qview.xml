@@ -15,7 +15,7 @@
        <column name="startdate"/>
        <column name="enddate"/>
        <column name="TimeOfDay"/>
-       <!--<column name="frequency"/>-->
+       <column name="frequency"/>
        <column name="project"/>
        <column name="projectStatus"/>
        <column name="meaning"/>

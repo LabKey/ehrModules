@@ -125,7 +125,9 @@ ehr/resources/etl/datasets/urinalysisRuns.sql -text
 ehr/resources/etl/datasets/virologyResults.sql -text
 ehr/resources/etl/datasets/virologyRuns.sql -text
 ehr/resources/etl/lists/deleted_records.sql -text
-ehr/resources/queries/auditLog/DatasetAudits.sql -text
+ehr/resources/queries/auditLog/DatasetAuditEvent.query.xml -text
+ehr/resources/queries/auditLog/DatasetAuditEvent/.qview.xml -text
+ehr/resources/queries/auditLog/DatasetAuditEvent/Detailed.qview.xml -text
 ehr/resources/queries/auditLog/audit/EHR[!!-~]Client[!!-~]Errors.qview.xml -text
 ehr/resources/queries/col_dump/arrival_mysql.sql -text
 ehr/resources/queries/col_dump/assignment_mysql.sql -text
@@ -511,6 +513,9 @@ ehr/resources/queries/study/Procedure[!!-~]Codes.js -text
 ehr/resources/queries/study/Procedure[!!-~]Codes.query.xml -text
 ehr/resources/queries/study/Procedure[!!-~]Codes/.qview.xml -text
 ehr/resources/queries/study/QCState.query.xml -text
+ehr/resources/queries/study/ScheduledBlood.query.xml -text
+ehr/resources/queries/study/ScheduledBlood.sql -text
+ehr/resources/queries/study/ScheduledBlood/.qview.xml -text
 ehr/resources/queries/study/StudyData/.qview.xml -text
 ehr/resources/queries/study/StudyData/Behavior[!!-~]History.qview.xml -text
 ehr/resources/queries/study/StudyData/Full[!!-~]History[!!-~]Plus[!!-~]Obs.qview.xml -text
@@ -708,6 +713,8 @@ ehr/resources/queries/study/housingConditionProblems.query.xml -text
 ehr/resources/queries/study/housingConditionProblems.sql -text
 ehr/resources/queries/study/housingConditionProblems/.qview.xml -text
 ehr/resources/queries/study/housingConditionProblems/Problems.qview.xml -text
+ehr/resources/queries/study/housingDuration.query.xml -text
+ehr/resources/queries/study/housingDuration.sql -text
 ehr/resources/queries/study/housingProblems.sql -text
 ehr/resources/queries/study/housingRoommates.query.xml -text
 ehr/resources/queries/study/housingRoommates.sql -text
@@ -1000,6 +1007,7 @@ ehr/tools/PrePopulateData/README -text
 ehr/tools/PrePopulateData/Task[!!-~]Data.xlsx -text
 ehr/tools/addDatasetColumns/modifyPropertyDescriptors.pl -text
 ehr/tools/automaticAlerts/automaticAlerts.pl -text
+ehr/tools/automaticAlerts/bloodAdminAlerts.pl -text
 ehr/tools/automaticAlerts/bloodAlerts.pl -text
 ehr/tools/automaticAlerts/colonyAlerts.pl -text
 ehr/tools/automaticAlerts/tbAlerts.pl -text

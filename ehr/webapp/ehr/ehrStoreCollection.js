@@ -379,6 +379,7 @@ EHR.ext.StoreCollection = Ext.extend(Ext.util.MixedCollection, {
         //NOTE: since this will navigate away from this page, we dont need to bother removing
         //these records from the store
         if(commands.length){
+console.log(commands);
             this.commit(commands, records, extraContext);
         }
         else {

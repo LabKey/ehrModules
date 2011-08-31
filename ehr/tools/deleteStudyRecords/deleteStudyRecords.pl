@@ -51,6 +51,9 @@ my $baseUrl = 'https://localhost/';
 my $tm = localtime;
 my $datestr=sprintf("%04d%02d%02d_%02d%02d", $tm->year+1900, ($tm->mon)+1, $tm->mday, $tm->hour, $tm->min);
 
+my $sevenDaysAgo = localtime( ( time() - ( 7 * 24 * 60 * 60 ) ) );
+$sevenDaysAgo = sprintf("%04d-%02d-%02d", $sevenDaysAgo->year+1900, ($sevenDaysAgo->mon)+1, $sevenDaysAgo->mday);
+
 #if(-e $lock_file){
 #    print "$datestr\tLock file present\n";
 #    exit 0;
@@ -66,25 +69,47 @@ foreach my $dataset (@$datasets){
     doDelete('study', $dataset, 'lsid')
 }
 
-doDelete('ehr', 'tasks', 'taskid');
-doDelete('ehr', 'requests', 'requestid');
-doDelete('ehr', 'cage_observations', 'rowid');
+doDelete('ehr', 'tasks', 'taskid', '*');
+doDelete('ehr', 'requests', 'requestid', '*');
+doDelete('ehr', 'cage_observations', 'rowid', '*');
 
 sub doDelete {
     my $schema = shift;
     my $query = shift;
     my $pk = shift;
+    my $columns = shift;
 
+	#we delete all rows with QCstate of "Delete Requested"
 	my $results = Labkey::Query::selectRows(
 		-baseUrl => $baseUrl,
 		-containerPath => $default_container,
 		-schemaName => $schema,
 		-queryName => $query,
 		-filterArray => [['QCState/Label', 'eq', 'Delete Requested']],
-		#-columns => $args->{columns},			
+		-columns => $columns,
 		#-debug => 1,
 	);	
-			
+	handleResults($results, $schema, $query, $pk);	
+
+	#and delete anything with a QCState of "Request: Denied" modified more than 7 days ago.
+	$results = Labkey::Query::selectRows(
+		-baseUrl => $baseUrl,
+		-containerPath => $default_container,
+		-schemaName => $schema,
+		-queryName => $query,
+		-filterArray => [['QCState/Label', 'eq', 'Request: Denied'], ['modified', 'datelt', $sevenDaysAgo]],
+		-columns => $columns,
+		#-debug => 1,
+	);	
+	handleResults($results, $schema, $query, $pk);		
+}
+
+sub handleResults {
+	my $results = shift;
+	my $schema = shift;
+	my $query = shift;
+	my $pk = shift;
+	
 	my $toDelete = [];
 	if(@{$results->{rows}}){
 		my @fields;
@@ -110,7 +135,7 @@ sub doDelete {
 			print OUTPUT "\n";				
 		}
 	}
-				
+			
 	if(@$toDelete){
 		my $results = Labkey::Query::deleteRows(
 			-baseUrl => $baseUrl,

@@ -1,32 +1,9 @@
 <customView xmlns="http://labkey.org/data/xml/queryCustomView">
-   <!--<columns>-->
-       <!--<column name="Id"/>-->
-       <!--<column name="date"/>-->
-       <!--<column name="enddate"/>-->
-       <!--<column name="project"/>-->
-       <!--<column name="code"/>-->
-       <!--<column name="code/code">-->
-           <!--<properties>-->
-               <!--<property name="columnTitle" value="SNOMED Code"/>-->
-           <!--</properties>-->
-       <!--</column>-->
-       <!--<column name="qualifier"/>-->
-       <!--<column name="amount"/>-->
-       <!--<column name="amount_units"/>-->
-       <!--<column name="volume"/>-->
-       <!--<column name="vol_units"/>-->
-       <!--<column name="route"/>-->
-       <!--<column name="remark"/>-->
-       <!--<column name="category"/>-->
-       <!--<column name="restraint"/>-->
-       <!--<column name="restraintTime"/>-->
-       <!--<column name="qcstate" />-->
-       <!--<column name="taskid" />-->
-   <!--</columns>-->
    <sorts>
        <sort column="date" descending="true"/>
+       <sort column="id/curLocation/area" descending="true"/>
    </sorts>
     <filters>
-        <filter column="taskid/formtype" operator="eq" value="Treatments"/>
+        <filter column="taskid/formtype" operator="startswith" value="Treatment"/>
     </filters>
 </customView>

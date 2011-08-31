@@ -7,7 +7,7 @@
                 <!--<insertUrl>/ehr/manageTask.view</insertUrl>-->
                 <insertUrl />
                 <updateUrl />
-                <titleColumn>RowId</titleColumn>
+                <titleColumn>rowid</titleColumn>
                 <pkColumnName>taskid</pkColumnName>
                 <columns>
                     <column columnName="rowid">

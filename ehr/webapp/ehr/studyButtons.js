@@ -163,8 +163,8 @@ function showAuditHistory(dataRegion, dataRegionName){
 
     window.location = LABKEY.ActionURL.buildURL("query", "executeQuery", null, {
         schemaName: 'auditLog',
-        'query.queryName': 'DatasetAudits',
-        'query.lsid~in': checked.join(';')
+        'query.queryName': 'DatasetAuditEvent',
+        'query.key1~in': checked.join(';')
     });
 }
 
@@ -1390,6 +1390,7 @@ function duplicateTask(dataRegion){
     LABKEY.Query.selectRows({
         schemaName: 'ehr',
         queryName: 'tasks',
+        columns: 'taskid,qcstate,title,formtype,formtype/',
         filterArray: [
             LABKEY.Filter.create('taskid', checked[0], LABKEY.Filter.Types.EQUAL)
         ],
@@ -1407,6 +1408,12 @@ function duplicateTask(dataRegion){
 
         var row = data.rows[0];
 
+        var idSection = {
+            xtype: 'textarea',
+            fieldLabel: 'ID(s)',
+            width: 200
+        }
+
         new Ext.Window({
             title: 'Duplicate Task',
             width: 330,
@@ -1419,20 +1426,11 @@ function duplicateTask(dataRegion){
                     border: false
                 },
                 items: [{
-                    html: 'Total Records: '+checked.length+'<br><br>',
-                    tag: 'div'
-                },{
                     xtype: 'textfield',
                     fieldLabel: 'Title',
                     width: 200,
                     value: row.formType,
                     ref: 'titleField'
-                },{
-                    xtype: 'xdatetime',
-                    fieldLabel: 'Date',
-                    width: 200,
-                    value: new Date(),
-                    ref: 'date'
                 },{
                     xtype: 'combo',
                     fieldLabel: 'Assigned To',
@@ -1451,6 +1449,17 @@ function duplicateTask(dataRegion){
                     displayField: 'name',
                     valueField: 'UserId',
                     ref: 'assignedTo'
+                },
+                    idSection
+                ,{
+                    xtype: 'xdatetime',
+                    fieldLabel: 'Date',
+                    width: 200,
+                    //value: new Date(),
+                    ref: 'date'
+                },{
+                    xtype: 'displayfield',
+                    value: '**Leave date blank to copy from existing records'
                 }]
             }],
             buttons: [{

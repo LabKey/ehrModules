@@ -13,14 +13,14 @@ console.log("** evaluating: " + this['javax.script.filename']);
 
 
 function beforeBoth(row, errors) {
-    row.roomcage = row.room;
-    if(row.cage)
-        row.roomcage += '-' + row.cage;
-
     //pad cage to 4 digits if numeric
     if(row.cage && !isNaN(row.cage)){
         row.cage = EHR.validation.padDigits(row.cage, 4);
     }
+
+    row.roomcage = row.room;
+    if(row.cage)
+        row.roomcage += '-' + row.cage;
 
     //remove whitespace
     if(row.joinToCage)

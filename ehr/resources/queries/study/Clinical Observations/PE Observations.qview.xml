@@ -22,6 +22,6 @@
            <sort column="date" descending="true"/>
     </sorts>
     <filters>
-        <filter column="taskid/formtype" operator="eq" value="Physical Exam"/>
+        <filter column="taskid/formtype" operator="startswith" value="Physical Exam"/>
     </filters>
 </customView>

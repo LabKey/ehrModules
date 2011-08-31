@@ -653,10 +653,10 @@ EHR.ext.BloodSelector = Ext.extend(Ext.Panel, {
         filterArray.push(LABKEY.Filter.create('drawStatus', 'Pending', LABKEY.Filter.Types.EQUAL));
 
         if (area)
-            filterArray.push(LABKEY.Filter.create('CurrentRoom/area', area, LABKEY.Filter.Types.EQUAL));
+            filterArray.push(LABKEY.Filter.create('Id/curLocation/area', area, LABKEY.Filter.Types.EQUAL));
 
         if (room)
-            filterArray.push(LABKEY.Filter.create('CurrentRoom', room, LABKEY.Filter.Types.EQUALS_ONE_OF));
+            filterArray.push(LABKEY.Filter.create('Id/curLocation/room', room, LABKEY.Filter.Types.EQUALS_ONE_OF));
 
         if(billedby)
             filterArray.push(LABKEY.Filter.create('billedby', billedby, LABKEY.Filter.Types.EQUALS_ONE_OF));
@@ -679,8 +679,8 @@ EHR.ext.BloodSelector = Ext.extend(Ext.Panel, {
         LABKEY.Query.selectRows({
             schemaName: 'study',
             queryName: 'BloodSchedule',
-            sort: 'CurrentRoom,CurrentCage,Id',
-            columns: 'lsid,Id,date,CurrentRoom,CurrentCage',
+            sort: 'Id/curLocation/Room,Id',
+            columns: 'lsid,Id,date',
             filterArray: filterArray,
             scope: this,
             success: this.onSuccess,
@@ -702,10 +702,12 @@ EHR.ext.BloodSelector = Ext.extend(Ext.Panel, {
         var ids = {};
         var records = [];
         var obj;
+        var dateVal = new Date();
         Ext.each(results.rows, function(row){
             records.push({
                 lsid: row.lsid,
-                taskid: this.parentPanel.formUUID
+                taskid: this.parentPanel.formUUID,
+                date: dateVal
             });
         }, this);
 

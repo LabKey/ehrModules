@@ -7,6 +7,7 @@ SELECT
 b.lsid,
 b.id,
 b.date,
+b.daterequested,
 b.project,
 b.performedby,
 b.assayCode,

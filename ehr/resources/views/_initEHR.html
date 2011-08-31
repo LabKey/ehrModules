@@ -83,18 +83,10 @@ function btn1(){
         ['Housing', 'Task', '', '', ''],
         ['Blood Draw Request', 'Request', '', '', ''],
         ['Housing Request', 'Request', '', '', '{"allowableButtons":["VALIDATE","SUBMIT","DISCARD"]}'],
-        ['Virology', 'Task', '', '', ''],
-        ['Hematology', 'Task', '', '', ''],
-        ['Immunology', 'Task', '', '', ''],
-        ['Chemistry', 'Task', '', '', ''],
         ['Procedure Request', 'Request', '', '', ''],
-        ['Urinalysis', 'Task', '', '', ''],
-        ['Bacteriology', 'Task', '', '', ''],
         ['Clinpath Request', 'Request', '', '', ''],
-        ['Parasitology', 'Task', '', '', ''],
-        ['Recovery', 'Task', '', '', ''],
         ['Problem List', 'Task', '', '', '{"allowableButtons":["VALIDATE","SUBMIT","DISCARD"]}'],
-        ['Clinpath', 'Task', '', '', ''],
+        ['Clinpath', 'Task', '', '', '{"reviewRequiredRecipient":"pathology admins"}'],
         ['Treatments', 'Task', '', '', '{"allowableButtons":["VALIDATE","SUBMIT","DISCARD"]}'],
         ['Irregular Observations2', 'Task', '', '', '{"allowableButtons":["VALIDATE","SAVEDRAFT","REVIEW","SUBMIT","DISCARD"]}'],
         ['Treatment Orders', 'Task', '', '', '{"allowableButtons":["VALIDATE","SUBMIT","DISCARD"]}'],
@@ -7841,18 +7833,18 @@ var panel = new Ext.Panel({
 //        handler: function(){
 //            deleteAll('ehr_lookups', 'snomed_subset_codes', 'rowid')
 //        }
-//    },{
-//        xtype: 'button',
-//        text: 'Populate SNOMED Subsets Table',
-//        scope: this,
-//        handler: btn13
-//    },{
-//        xtype: 'button',
-//        text: 'Delete Data From SNOMED Subsets',
-//        scope: this,
-//        handler: function(){
-//            deleteAll('ehr_lookups', 'snomed_subsets', 'subset')
-//        }
+    },{
+        xtype: 'button',
+        text: 'Populate SNOMED Subsets Table',
+        scope: this,
+        handler: btn13
+    },{
+        xtype: 'button',
+        text: 'Delete Data From SNOMED Subsets',
+        scope: this,
+        handler: function(){
+            deleteAll('ehr_lookups', 'snomed_subsets', 'subset')
+        }
     },{
         xtype: 'button',
         text: 'Populate Charge Items Table',

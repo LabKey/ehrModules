@@ -2328,7 +2328,14 @@ EHR.ext.Metadata.Task = {
         }
         ,'Blood Draws': {
             requestor:{xtype: 'displayfield'},
-            performedby: {allowBlank: false}
+            performedby: {allowBlank: false},
+            daterequested: {
+                hidden: false,
+                xtype: 'datefield',
+                editorConfig: {
+                    readOnly: true
+                }
+            }
         }
 //        ,Deaths: {
 //            cause: {
@@ -2623,6 +2630,9 @@ EHR.ext.Metadata.Request = {
         'Blood Draws': {
             requestor: {
                 defaultValue: LABKEY.Security.currentUser.displayName
+            },
+            daterequested: {
+                hidden: true
             },
             billedby: {
                 hidden: true
@@ -3272,7 +3282,7 @@ EHR.ext.Metadata['New Animal'] = {
 EHR.ext.hiddenCols = 'lsid,objectid,parentid,taskid,requestid'; //,createdby,modifiedby
 EHR.ext.topCols = 'id,date,enddate,project,account';
 EHR.ext.bottomCols = 'remark,performedBy,qcstate,'+EHR.ext.hiddenCols;
-EHR.ext.sharedCols = ',id,date,project,account,remark,performedby,'+EHR.ext.hiddenCols;
+EHR.ext.sharedCols = ',id,date,project,account,'+EHR.ext.bottomCols;
 
 EHR.ext.FormColumns = {
     Alopecia: EHR.ext.topCols+',score,cause,head,shoulders,upperArms,lowerArms,hips,rump,dorsum,upperLegs,lowerLegs,other,' + EHR.ext.bottomCols,
@@ -3282,7 +3292,7 @@ EHR.ext.FormColumns = {
     'Behavior Remarks': EHR.ext.topCols+',so,a,p,'+EHR.ext.bottomCols,
     Biopsies: EHR.ext.topCols+',caseno,type,veterinarian,performedby,nhpbmd,grossdescription,'+EHR.ext.bottomCols,
     Birth: EHR.ext.topCols+',estimated,gender,weight,wdate,dam,sire,room,cage,cond,origin,conception,type,'+EHR.ext.bottomCols,
-    'Blood Draws': 'id/curlocation/location,'+EHR.ext.topCols+',tube_type,tube_vol,num_tubes,quantity,requestor,additionalServices,billedby,assayCode,restraint,restraintTime,instructions,' + EHR.ext.bottomCols, //p_s,a_v,
+    'Blood Draws': 'id/curlocation/location,'+EHR.ext.topCols+',tube_type,tube_vol,num_tubes,quantity,requestor,additionalServices,billedby,assayCode,restraint,restraintTime,daterequested,instructions,' + EHR.ext.bottomCols, //p_s,a_v,
     'Body Condition': EHR.ext.topCols+',score,weightstatus,remark,tattoo_chest,tattoo_thigh,microchip,tag,tattoo_remark,' + EHR.ext.bottomCols,
     cage_observations: 'date,room,cage,feces,userId,no_observations,' + EHR.ext.sharedCols,
     Charges: EHR.ext.topCols+',type,unitCost,quantity,'+EHR.ext.bottomCols,

@@ -20,6 +20,17 @@
                             <fkColumnName>objectid</fkColumnName>
                         </fk>
                     </column>
+                    <column columnName="duration" wrappedColumnName="lsid">
+                        <columnTitle>Duration (Days)</columnTitle>
+                        <isHidden>false</isHidden>
+                        <isUnselectable>true</isUnselectable>
+                        <fk>
+                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
+                            <fkDbSchema>study</fkDbSchema>
+                            <fkTable>housingDuration</fkTable>
+                            <fkColumnName>lsid</fkColumnName>
+                        </fk>
+                    </column>
                     <column columnName="date">
                         <formatString>yyyy-MM-dd HH:mm</formatString>
                         <columnTitle>In Date</columnTitle>

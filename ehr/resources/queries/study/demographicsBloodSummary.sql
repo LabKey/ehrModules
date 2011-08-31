@@ -9,11 +9,15 @@ SELECT
   --b.date,
   b.wdate as MostRecentWeightDate,
   b.weight as MostRecentWeight,
-  BloodLast30,
-  BloodNext30,
+  convert(BloodLast30, NUMERIC) as BloodLast30,
+  convert(BloodNext30, NUMERIC) as BloodNext30,
   convert(b.weight*0.2*60, NUMERIC) AS MaxBlood,
-  convert(((b.weight*0.2*60) - b.BloodLast30 - b.BloodNext30), NUMERIC) AS AvailBlood,
-
+  convert(case
+    when (b.BloodLast30 > b.BloodNext30)
+      THEN ((b.weight*0.2*60) - b.BloodLast30)
+    else
+      ((b.weight*0.2*60) - b.BloodNext30)
+  end, NUMERIC) as AvailBlood
 from (
 SELECT
   d.lsid,

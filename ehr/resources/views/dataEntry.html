@@ -376,6 +376,9 @@ Ext.onReady(function(){
                                         queryName: 'Blood Draws',
                                         filters: [
                                             LABKEY.Filter.create('QCState/Label', 'Request', LABKEY.Filter.Types.STARTS_WITH)
+                                        ],
+                                        removeableFilters: [
+                                            LABKEY.Filter.create('billedby', null, LABKEY.Filter.Types.ISBLANK)
                                         ]
                                         //viewName: 'Blood Summary'
                                     }

@@ -16,7 +16,6 @@ function onUpsert(context, errors, row, oldRow){
     if(row.QCStateLabel && context.qcMap.label[row.QCStateLabel].PublicData){
         row.datecompleted = new Date();
     }
-
 }
 
 

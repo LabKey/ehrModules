@@ -73,7 +73,7 @@ Ext.onReady(function ()
                 },{
                     layout: 'anchor',
                     width: '80%',
-                    ref: 'theAnchor',
+                    ref: 'anchorLayout',
                     items: [{
                         xtype: 'tabpanel',
                         ref: '../tabPanel',

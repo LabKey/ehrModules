@@ -44,7 +44,7 @@ CASE
     THEN timestampadd('SQL_TSI_HOUR', 19, d.date)
 END as date,
 
-t1.frequency,
+t1.frequency.meaning as frequency,
 t1.date as StartDate,
 t1.enddate,
 t1.project,
@@ -184,7 +184,7 @@ CASE
     THEN timestampadd('SQL_TSI_HOUR', 19, d.date)
 END as date,
 
-t1.frequency,
+t1.frequency.meaning as frequency,
 t1.date as StartDate,
 t1.enddate,
 t1.project,
@@ -292,7 +292,7 @@ t1.id.dataset.activehousing.room as CurrentRoom,
 t1.id.dataset.activehousing.cage as CurrentCage,
 
 timestampadd('SQL_TSI_HOUR', 19, d.date) as date,
-t1.frequency,
+t1.frequency.meaning as frequency,
 t1.date as StartDate,
 t1.enddate,
 t1.project,

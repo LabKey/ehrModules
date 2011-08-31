@@ -207,10 +207,10 @@ EHR.ext.AdvancedStore = Ext.extend(LABKEY.ext.Store, {
             rec = new this.recordType(data);
 
         this.fields.each(function(f) {
-            rec.data[f.name] = Ext.isDefined(rec.data[f.name]) ? rec.data[f.name] :
+            rec.data[f.name] = Ext.isDefined(rec.data[f.name]) ? f.convert(rec.data[f.name]) :
                                Ext.isDefined(f.defaultValue) ? f.defaultValue :
                                null;
-            if(Ext.isFunction(f.setInitialValue)){
+            if(!rec.data[f.name] && Ext.isFunction(f.setInitialValue)){
                 rec.data[f.name] = f.setInitialValue.call(this, rec.data[f.name], rec, f);
             }
         }, this);
