@@ -17,7 +17,9 @@ FROM lists.protocol p
 
 --we find total distinct animals ever assigned to this protocol
 LEFT JOIN
-  (SELECT a.Project.protocol as protocol, a.id, a.id.dataset.demographics.Species AS Species, count(*) AS Total, max(a.date) as LatestStart, max(coalesce(a.enddate, now())) as LatestEnd FROM study.assignment a GROUP BY a.project.protocol, a.id, a.id.dataset.demographics.species) a
+  (SELECT a.Project.protocol as protocol, a.id, a.id.dataset.demographics.Species AS Species, count(*) AS Total, max(a.date) as LatestStart,
+  CASE WHEN min(a.enddate) is null then null ELSE max(a.enddate) END
+  as LatestEnd, FROM study.assignment a GROUP BY a.project.protocol, a.id, a.id.dataset.demographics.species) a
   ON (p.protocol = a.protocol)
 
-WHERE a.Total > 0 AND a.LatestEnd >= p.approve
+WHERE a.Total > 0 AND (a.LatestEnd >= p.approve or a.LatestEnd is null)

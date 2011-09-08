@@ -17,7 +17,11 @@ Ext.onReady(function(){
         ,defaultContainerFilter: LABKEY.ActionURL.getParameter('defaultContainerFilter')
         ,metadata: {
             Id: {lookups: false}
+            ,date: {duplicate: true}
             ,TotalRoommates: {hidden: true}
+            ,'project/protocol': {lookups: false}
+            ,'Project/protocol': {lookups: false}
+            ,protocol: {lookups: false}
             ,Created: {hidden: true}
             ,CreatedBy: {hidden: true}
             ,Modified: {hidden: true}

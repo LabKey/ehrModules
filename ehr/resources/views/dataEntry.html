@@ -101,7 +101,7 @@ Ext.onReady(function(){
 
         Ext.each([
             {url: "<%=contextPath%>/ehr/WNPRC/EHR/manageTask.view?schemaName=study&queryName=Behavior Remarks&keyField=lsid", title: 'Enter Behavior Remark', queries: ['Behavior Remarks']},
-            {url: "<%=contextPath%>/ehr/WNPRC/EHR/manageTask.view?formtype=Housing", title: 'Enter Housing Change', queries: ['Housing']},
+            {url: "<%=contextPath%>/ehr/WNPRC/EHR/manageTask.view?formtype=Housing", title: 'Enter Housing Change', queries: ['Housing']}
             //{url: "<%=contextPath%>/ehr/WNPRC/EHR/manageTask.view?schemaName=study&queryName=Menses&keyField=lsid", title: 'Enter Menses Observation', queries: ['Menses']}
             //{url: "<%=contextPath%>/ehr/WNPRC/EHR/manageRecord.view?schemaName=study&queryName=Pair%20Tests&keyField=lsid", title: 'Enter Pair Test Record', queries: ['Housing', 'Behavior Remarks']}
         ], function(i){
@@ -270,7 +270,7 @@ Ext.onReady(function(){
                                     cls: 'all-tasks-marker',
                                     queryConfig:  {
                                         schemaName: 'ehr',
-                                        queryName: 'tasks',
+                                        queryName: 'Tasks_DataEntry',
                                         viewName: 'Active Tasks'
                                         //updateURL: '/ehr/manageTask.view?formtype=${formtype}&amp;taskid=${taskid}'
                                     }
@@ -306,7 +306,7 @@ Ext.onReady(function(){
                                     cls: 'review-requested-marker',
                                     queryConfig:  {
                                         schemaName: 'ehr',
-                                        queryName: 'tasks',
+                                        queryName: 'Tasks_DataEntry',
                                         viewName: 'Review Required'
                                         //updateURL: '/ehr/manageTask.view?formtype=${formtype}&amp;taskid=${taskid}'
                                     }
@@ -326,6 +326,7 @@ Ext.onReady(function(){
                                     }
                                 },
                                 items: [{
+                                    /*
                                     title: 'Pending Requests',
                                     ref: 'PendingRequests',
                                     itemId: 'PendingRequests',
@@ -367,6 +368,7 @@ Ext.onReady(function(){
                                         ]
                                     }
                                 },{
+                                */
                                     title: 'Blood Draw Requests',
                                     xtype: 'ehr-qwppanel',
                                     ref: 'BloodDrawRequests',
@@ -374,13 +376,13 @@ Ext.onReady(function(){
                                     queryConfig:  {
                                         schemaName: 'study',
                                         queryName: 'Blood Draws',
+                                        viewName: 'Blood Requests',
                                         filters: [
                                             LABKEY.Filter.create('QCState/Label', 'Request', LABKEY.Filter.Types.STARTS_WITH)
                                         ],
                                         removeableFilters: [
                                             LABKEY.Filter.create('billedby', null, LABKEY.Filter.Types.ISBLANK)
                                         ]
-                                        //viewName: 'Blood Summary'
                                     }
                                 },{
                                     title: 'Clinpath Requests',
@@ -395,6 +397,7 @@ Ext.onReady(function(){
                                         ]
                                         //viewName: 'Blood Summary'
                                     }
+                                /*
                                 },{
                                     title: 'Procedure Requests',
                                     ref: 'ProcedureRequests',
@@ -407,6 +410,7 @@ Ext.onReady(function(){
                                             LABKEY.Filter.create('QCState/Label', 'Request', LABKEY.Filter.Types.STARTS_WITH)
                                         ]
                                     }
+                                */
                                 }]
                             }]
                         }]

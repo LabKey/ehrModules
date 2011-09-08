@@ -37,7 +37,8 @@ SELECT
     FROM study."Blood Draws" bd
     WHERE bd.id=d.id AND
         bd.qcstate.publicdata = true AND
-        bd.date BETWEEN TIMESTAMPADD('SQL_TSI_DAY', -30, now()) AND now()
+        --bd.date BETWEEN TIMESTAMPADD('SQL_TSI_DAY', -30, now()) AND now()
+        (cast(bd.date as date) >= cast(TIMESTAMPADD('SQL_TSI_DAY', -29, now()) as date) AND cast(bd.date as date) <= cast(curdate() as date))
 
   ), 0) AS BloodLast30,
   COALESCE ((
@@ -46,7 +47,8 @@ SELECT
     FROM study."Blood Draws" bd
     WHERE bd.id=d.id AND
         (bd.qcstate.publicdata = true OR bd.qcstate.metadata.DraftData = true) AND
-        bd.date BETWEEN now() AND TIMESTAMPADD('SQL_TSI_DAY', 30, now())
+        --bd.date BETWEEN now() AND TIMESTAMPADD('SQL_TSI_DAY', 30, now())
+        (cast(bd.date as date) >= cast(curdate() as date) AND cast(bd.date as date) <= cast(TIMESTAMPADD('SQL_TSI_DAY', 29, now()) as date))
 
   ), 0) AS BloodNext30
 
@@ -59,7 +61,7 @@ FROM
 
 -- WHERE b.date >= TIMESTAMPADD('SQL_TSI_DAY', -30, now())
 WHERE
---d.id.status.status = 'Alive'
+
 d.calculated_status = 'Alive'
 
 ) b

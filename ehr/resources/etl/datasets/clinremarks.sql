@@ -24,7 +24,8 @@
 SELECT
 lower(id) as Id,
 FixDateTime(date, time) AS Date,
-(pno) AS project,
+--(pno) AS project,
+coalesce(pno, (select group_concat(DISTINCT pno) as pno from clinhead t2 WHERE t1.id=t2.id AND t1.date=t2.date AND t1.time=t2.time AND (t1.pno=t2.pno OR t1.pno IS NULL) GROUP BY t1.uuid)) as project,
 (userid) AS userid,
 (userid) AS performedby,
 FixNewlines(left(remark, 4000)) as remark,
@@ -61,19 +62,30 @@ FROM behavetrem b1
 
 UNION ALL
 
+
 SELECT id,
 FixDateTime(date, time) AS Date,
-(pno) AS pno,
+--(pno) AS pno,
+coalesce(pno, (select group_concat(DISTINCT pno) as pno from hormhead t2 WHERE h1.id=t2.id AND h1.date=t2.date AND h1.time=t2.time AND (h1.pno=t2.pno OR h1.pno is null) GROUP BY h1.uuid)) as pno,
 NULL as userid,
+NULL as performedby,
 FixNewlines(remark) as remark,
 null as so,
 null as a,
 null as p,
-ts, uuid AS objectid,
+ts,
+uuid AS objectid,
 (select UUID from hormhead h2 WHERE h1.id=h2.id AND h1.date=h2.date AND h1.time=h2.time GROUP BY h1.id,h1.date,h1.time limit 1) as parentid,
 'Hormone' AS category
 FROM hormtrem h1
-WHERE remark != '' AND remark IS NOT NULL
+WHERE
+id IS NOT NULL
+AND remark != ''
+AND remark IS NOT NULL
+AND length(id) > 1
+AND id != ''
+AND ts > ?
+and (pno REGEXP '^[0-9]+$' OR pno IS NULL)
 
 UNION ALL
 

@@ -109,7 +109,7 @@ function setDescription(row, errors){
 }
 
 function onUpsert(context, errors, row, oldRow){
-    if(row.result1=='' || row.result2=='' || row.result3=='' || row.result1==null || row.result2==null || row.result3==null){
+    if(!row.notPerformedAtCenter && (row.result1=='' || row.result2=='' || row.result3=='' || row.result1==null || row.result2==null || row.result3==null)){
         row.missingResults = true;
     }
     else {

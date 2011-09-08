@@ -11,7 +11,7 @@
        </column>
        <column name="quantity" />
        <column name="performedby" />
-       <column name="requestor" />
+       <!--<column name="requestor" />-->
        <!--<column name="p_s" />-->
        <!--<column name="a_v" />-->
        <column name="assayCode" />

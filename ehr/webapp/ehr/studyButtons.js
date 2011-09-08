@@ -92,7 +92,7 @@ function moreActionsHandler(dataRegion){
             if(EHR.permissionMap.hasPermission('Scheduled', 'insert', {queryName: 'Blood Draws', schemaName: 'study'})){
                 createTaskBtn(dataRegion, menu, {queries: [{schemaName: 'study', queryName: 'Blood Draws'}], formType: 'Blood Draws'});
                 changeBloodQCStateBtn(dataRegion, menu);
-                addBloodToTaskBtn(dataRegion, menu);
+                //addBloodToTaskBtn(dataRegion, menu);
             }
         }
 
@@ -1387,12 +1387,18 @@ function duplicateTask(dataRegion){
         return;
     }
 
+    var existingQueries = [];
+    var existingRecords = {};
+    var pendingRequests = -1;
+    var taskid = checked[0];
+
     LABKEY.Query.selectRows({
         schemaName: 'ehr',
         queryName: 'tasks',
-        columns: 'taskid,qcstate,title,formtype,formtype/',
+        columns: 'taskid,qcstate,title,formtype,formtype/category,formtype/permitsSingleIdOnly',
         filterArray: [
-            LABKEY.Filter.create('taskid', checked[0], LABKEY.Filter.Types.EQUAL)
+            LABKEY.Filter.create('taskid', taskid, LABKEY.Filter.Types.EQUAL)
+            //LABKEY.Filter.create('category', 'Task', LABKEY.Filter.Types.EQUAL)
         ],
         scope: this,
         success: onSuccess,
@@ -1407,12 +1413,51 @@ function duplicateTask(dataRegion){
         }
 
         var row = data.rows[0];
+        var oldDate = row.duedate;
 
-        var idSection = {
-            xtype: 'textarea',
-            fieldLabel: 'ID(s)',
-            width: 200
-        }
+        LABKEY.Query.selectRows({
+            schemaName: 'ehr',
+            queryName: 'formpanelsections',
+            columns: 'schemaName,queryName',
+            filterArray: [
+                LABKEY.Filter.create('formtype', row.formtype, LABKEY.Filter.Types.EQUAL)
+            ],
+            scope: this,
+            success: function(data){
+                pendingRequests = 0;
+                Ext.each(data.rows, function(r){
+                    if(r.schemaName && r.schemaName.match(/study/i)){
+                        pendingRequests++;
+                        LABKEY.Query.selectRows({
+                            schemaName: 'study',
+                            queryName: r.queryName,
+                            columns: EHR.ext.FormColumns[r.queryName] || null,
+                            filterArray: [
+                                LABKEY.Filter.create('taskid', taskid, LABKEY.Filter.Types.EQUAL)
+                            ],
+                            scope: this,
+                            success: function(data){
+                                if(data.rows.length){
+                                    existingRecords[r.queryName] = [];
+                                    Ext.each(data.rows, function(rec){
+                                        delete rec.lsid;
+                                        delete rec.objectid;
+                                        delete rec.taskid;
+                                        delete rec.requestid;
+                                        delete rec.performedby;
+
+                                        existingRecords[r.queryName].push(rec);
+                                    }, this);
+                                }
+                                pendingRequests--;
+                            },
+                            failure: EHR.utils.onError
+                        });
+                    }
+                });
+            },
+            failure: EHR.utils.onError
+        });
 
         new Ext.Window({
             title: 'Duplicate Task',
@@ -1429,7 +1474,7 @@ function duplicateTask(dataRegion){
                     xtype: 'textfield',
                     fieldLabel: 'Title',
                     width: 200,
-                    value: row.formType,
+                    value: row.formtype,
                     ref: 'titleField'
                 },{
                     xtype: 'combo',
@@ -1449,9 +1494,13 @@ function duplicateTask(dataRegion){
                     displayField: 'name',
                     valueField: 'UserId',
                     ref: 'assignedTo'
-                },
-                    idSection
-                ,{
+                },{
+                    xtype: 'textarea',
+                    fieldLabel: 'ID(s)',
+                    ref: 'ids',
+                    width: 200,
+                    hidden: !row['formtype/permitsSingleIdOnly']
+                },{
                     xtype: 'xdatetime',
                     fieldLabel: 'Date',
                     width: 200,
@@ -1470,13 +1519,6 @@ function duplicateTask(dataRegion){
                 scope: this,
                 handler: function(o){
                     Ext.Msg.wait('Loading...');
-                    var date = o.ownerCt.ownerCt.theForm.date.getValue();
-                    date = date.toGMTString();
-                    if(!date){
-                        alert('Must enter a date');
-                        Ext.Msg.hide();
-                        return;
-                    }
 
                     var assignedTo = o.ownerCt.ownerCt.theForm.assignedTo.getValue();
                     if(!assignedTo){
@@ -1491,32 +1533,91 @@ function duplicateTask(dataRegion){
                         return;
                     }
 
+                    var date = o.ownerCt.ownerCt.theForm.date.getValue();
+
+                    var subjectArray = o.ownerCt.ownerCt.theForm.ids.getValue();
+                    if(subjectArray){
+                        subjectArray = subjectArray.replace(/[\s,;]+/g, ';');
+                        subjectArray = subjectArray.replace(/(^;|;$)/g, '');
+                        subjectArray = subjectArray.toLowerCase();
+                        subjectArray = subjectArray.split(';');
+                    }
+
                     o.ownerCt.ownerCt.hide();
 
-                    var existingRecords = {};
-                    existingRecords[dataRegion.queryName] = checked;
-
-                    EHR.utils.createTask({
-                        initialQCState: 'Scheduled',
-                        childRecords: null,
-                        existingRecords: existingRecords,
-                        taskRecord: {date: date, assignedTo: assignedTo, category: 'task', title: title, formType: config.formType},
-                        success: function(response, options, config){
-                            Ext.Msg.hide();
-                            Ext.Msg.confirm('View Task Now?', 'Do you want to view the task now?', function(btn){
-                                if(btn == 'yes'){
-                                    window.location = LABKEY.ActionURL.buildURL("ehr", "manageTask", null, {taskid: config.taskId, formtype: config.taskRecord.formType});
-                                }
-                                else {
-                                    dataRegion.refresh();
-                                }
-                            }, this)
+                    LABKEY.Utils.onTrue({
+                        testCallback: function(){
+                            return pendingRequests==0;
                         },
-                        failure: function(){
-                            console.log('failure');
-                            Ext.Msg.hide();
-                        }
+                        success: onTrue,
+                        scope: this,
+                        //successArguments: ['FileUploadField is ready to use!'],
+                        failure: EHR.utils.onError,
+                        maxTests: 1000
                     });
+
+                    function onTrue(){
+                        var toUpdate = [];
+                        var obj;
+                        for(var query in existingRecords){
+                            obj = {
+                                schemaName: 'study',
+                                queryName: query,
+                                rows: []
+                            }
+                            Ext.each(existingRecords[query], function(record){
+                                if(date)
+                                    record.date = date;
+
+                                obj.rows.push(record);
+                            }, this);
+                            if(obj.rows.length)
+                                toUpdate.push(obj);
+                        }
+
+                        var duedate = date || oldDate;
+                        if(duedate){ duedate = duedate.toGMTString()};
+
+                        var taskConfig = {
+                            initialQCState: 'Scheduled',
+                            childRecords: toUpdate,
+                            existingRecords: null,
+                            taskRecord: {duedate: duedate, assignedTo: assignedTo, category: 'task', title: title, formType: row.formtype},
+                            success: function(response, options, config){
+                                Ext.Msg.hide();
+                                Ext.Msg.confirm('View Task Now?', 'Do you want to view the task now?', function(btn){
+                                    if(btn == 'yes'){
+                                        window.location = LABKEY.ActionURL.buildURL("ehr", "manageTask", null, {taskid: config.taskId, formtype: config.taskRecord.formType});
+                                    }
+                                    else {
+                                        dataRegion.refresh();
+                                    }
+                                }, this)
+                            },
+                            failure: function(error){
+                                console.log('failure');
+                                console.log(error);
+                                Ext.Msg.hide();
+                            }
+                        }
+
+                        if(subjectArray.length){
+
+                            Ext.each(subjectArray, function(id){
+                               var cfg = Ext.apply({}, taskConfig);
+                               cfg.taskRecord.title = title + ': ' + id;
+                               Ext.each(cfg.childRecords, function(tableRecords){
+                                    Ext.each(tableRecords.rows, function(record){
+                                        record.Id = id;
+                                    }, this);
+                                }, this);
+                                EHR.utils.createTask(cfg);
+                            }, this);
+                        }
+                        else {
+                            EHR.utils.createTask(taskConfig);
+                        }
+                    }
                 }
             },{
                 text: 'Close',

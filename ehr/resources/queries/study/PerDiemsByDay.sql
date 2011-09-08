@@ -14,8 +14,8 @@ SELECT
     h.room,
     h.hold,
     h.project,
-    h.project.protocol,
-    h.project.account,
+    h.project.protocol as protocol,
+    h.project.account as account,
     CASE
       --zoo animals
       WHEN (h.room like 'zoo%') THEN 'zoo'

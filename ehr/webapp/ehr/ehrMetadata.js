@@ -520,6 +520,12 @@ EHR.ext.Metadata.Standard = {
             date: {
                 xtype: 'datefield'
                 ,format: 'Y-m-d'
+            },
+            method: {
+                shownInGrid: false
+            },
+            remark: {
+                shownInGrid: false
             }
         },
         Demographics: {
@@ -629,6 +635,12 @@ EHR.ext.Metadata.Standard = {
                 xtype: 'datefield'
                 ,format: 'Y-m-d'
             }
+            ,method: {
+                shownInGrid: false
+            }
+            ,remark: {
+                shownInGrid: false
+            }
         },
         'Tissue Samples': {
             diagnosis: {
@@ -636,6 +648,11 @@ EHR.ext.Metadata.Standard = {
             },
             performedby: {
                 hidden: true
+            },
+            preservation: {
+                editorConfig: {
+                    plugins: ['ehr-usereditablecombo']
+                }
             }
         },
         Histology: {
@@ -869,7 +886,9 @@ EHR.ext.Metadata.Standard = {
 
                         if(val && conc){
                             var amount = conc * val;
-                            theForm.findField('amount').setValue(amount);
+                            var amountField = theForm.findField('amount');
+                            amountField.setValue(amount);
+                            amountField.fireEvent('change', amount, amountField.startValue);
                         }
                     }
                     ,decimalPrecision: 3
@@ -1024,6 +1043,7 @@ EHR.ext.Metadata.Standard = {
         Assignment: {
             project: {
                 shownInGrid: true,
+                allowBlank: false,
                 xtype: 'combo',
                 lookup: {
                     filterArray: [LABKEY.Filter.create('protocol/protocol', null, LABKEY.Filter.Types.NONBLANK)]
@@ -1086,6 +1106,7 @@ EHR.ext.Metadata.Standard = {
             timeofdeath: {
                 xtype: 'xdatetime',
                 format: 'Y-m-d H:i',
+                allowBlank: false,
                 editorConfig: {
                     dateFormat: 'Y-m-d',
                     timeFormat: 'H:i'
@@ -1207,6 +1228,9 @@ EHR.ext.Metadata.Standard = {
                 {
                     return v || LABKEY.Utils.generateUUID();
                 }
+            },
+            causeofdeath: {
+                allowBlank: false
             }
         },
         Biopsies: {
@@ -1381,7 +1405,7 @@ EHR.ext.Metadata.Standard = {
                 hidden: true
             },
             remark: {
-                shownInGrid: false
+                shownInGrid: true
             }
         },
         'Organ Weights': {
@@ -1566,6 +1590,12 @@ EHR.ext.Metadata.Standard = {
                 xtype: 'datefield'
                 ,format: 'Y-m-d'
             }
+            ,method: {
+                shownInGrid: false
+            }
+            ,remark: {
+                shownInGrid: false
+            }
         },
         'Immunology Results': {
             testid: {
@@ -1587,6 +1617,12 @@ EHR.ext.Metadata.Standard = {
                 xtype: 'datefield'
                 ,format: 'Y-m-d'
             }
+            ,method: {
+                shownInGrid: false
+            }
+            ,remark: {
+                shownInGrid: false
+            }
         },
         'Hematology Results': {
             testid: {
@@ -1607,6 +1643,12 @@ EHR.ext.Metadata.Standard = {
             ,date: {
                 xtype: 'datefield'
                 ,format: 'Y-m-d'
+            }
+            ,method: {
+                shownInGrid: false
+            }
+            ,remark: {
+                shownInGrid: false
             }
         },
         'Urinalysis Results': {
@@ -1649,11 +1691,23 @@ EHR.ext.Metadata.Standard = {
                 xtype: 'datefield'
                 ,format: 'Y-m-d'
             }
+            ,method: {
+                shownInGrid: false
+            }
+            ,remark: {
+                shownInGrid: false
+            }
         },
         'Virology Results': {
             date: {
                 xtype: 'datefield'
                 ,format: 'Y-m-d'
+            },
+            method: {
+                shownInGrid: false
+            },
+            remark: {
+                shownInGrid: false
             }
         },
         'Hematology Morphology': {
@@ -1814,9 +1868,13 @@ EHR.ext.Metadata.Standard = {
             remark: {shownInGrid: false},
             dam: {shownInGrid: false},
             sire: {shownInGrid: false},
-            initialRoom: {hidden: false},
+            initialRoom: {
+                hidden: false,
+                allowBlank: false
+            },
             initialCage: {
                 hidden: false,
+                allowBlank: false,
                 editorConfig: {
                     listeners: {
                         change: function(field, val){
@@ -2091,7 +2149,10 @@ EHR.ext.Metadata.Standard = {
             }
             ,dosage_units: {
                 shownInGrid: false,
-                compositeField: 'Dosage'
+                compositeField: 'Dosage',
+                editorConfig: {
+                    plugins: ['ehr-usereditablecombo']
+                }
             }
             ,concentration: {
                 shownInGrid: false,
@@ -2105,6 +2166,7 @@ EHR.ext.Metadata.Standard = {
                 ,lookup: {columns: '*'}
                 ,compositeField: 'Drug Conc'
                 ,editorConfig: {
+                    plugins: ['ehr-usereditablecombo'],
                     listeners: {
                         select: function(combo, rec)
                         {
@@ -2124,7 +2186,12 @@ EHR.ext.Metadata.Standard = {
                     }
                 }
             }
-            ,route: {shownInGrid: false}
+            ,route: {
+                shownInGrid: false,
+                editorConfig: {
+                    plugins: ['ehr-usereditablecombo']
+                }
+            }
             ,volume: {
                 compositeField: 'Volume',
                 xtype: 'ehr-triggernumberfield',
@@ -2145,7 +2212,9 @@ EHR.ext.Metadata.Standard = {
 
                         if(val && conc){
                             var amount = conc * val;
-                            theForm.findField('amount').setValue(amount);
+                            var amountField = theForm.findField('amount');
+                            amountField.setValue(amount);
+                            amountField.fireEvent('change', amount, amountField.startValue);
                         }
                     }
                     ,decimalPrecision: 3
@@ -2154,9 +2223,9 @@ EHR.ext.Metadata.Standard = {
             ,vol_units: {
                 compositeField: 'Volume'
                 ,header: 'Units'
-//                editorConfig: {
-//                    fieldLabel: null
-//                }
+                ,editorConfig: {
+                    plugins: ['ehr-usereditablecombo']
+                }
             }
             ,amount: {
                 compositeField: 'Amount Given'
@@ -2176,6 +2245,9 @@ EHR.ext.Metadata.Standard = {
                 ,compositeField: 'Amount Given'
                 ,colModel: {
                     width: 70
+                }
+                ,editorConfig: {
+                    plugins: ['ehr-usereditablecombo']
                 }
             }
             ,performedby: {
@@ -2443,6 +2515,20 @@ EHR.ext.Metadata.Encounter = {
             ,hidden: true
             ,shownInGrid: false
         }
+        ,begindate: {
+            setInitialValue: function(v, rec){
+                var field = rec.fields.get('begindate');
+                var store = Ext.StoreMgr.get('study||Clinical Encounters||||');
+                if(store)
+                    var record = store.getAt(0);
+                if(record)
+                    var date = record.get('date');
+                if(date)
+                    date = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+
+                return v || date;
+            }
+        }
     },
     byQuery: {
         'Treatment Orders': {
@@ -2542,7 +2628,6 @@ EHR.ext.Metadata.Encounter = {
         },
         tasks: {
             duedate: {
-                fieldName: 'hello',
                 parentConfig: {
                     storeIdentifier: {queryName: 'Clinical Encounters', schemaName: 'study'},
                     dataIndex: 'date'
@@ -2582,11 +2667,6 @@ EHR.ext.Metadata.Request = {
         remark: {
             hidden: true
         },
-        serviceRequested: {
-            editorConfig: {
-                plugins: ['ehr-usereditablecombo']
-            }
-        },
 //        daterequested: {
 //            editorConfig: {
 //                minValue: (new Date()).add(Date.DAY, 2)
@@ -2596,7 +2676,7 @@ EHR.ext.Metadata.Request = {
             //defaultValue: 5,
             setInitialValue: function(v){
                 var qc;
-                if(!v && EHR.permissionMap && EHR.permissionMap.qcMap && EHR.permissionMap.qcMap.label['In Progress'])
+                if(!v && EHR.permissionMap && EHR.permissionMap.qcMap && EHR.permissionMap.qcMap.label['Request: Pending'])
                     qc = EHR.permissionMap.qcMap.label['Request: Pending'].RowId;
                 return v || qc;
             }
@@ -2694,7 +2774,9 @@ EHR.ext.Metadata.Request = {
                 nullable: false
             },
             instructions: {
-                hidden: true
+                hidden: false,
+                xtype: 'textarea',
+                formEditorConfig:{xtype: 'textarea', readOnly: false}
             }
         },
         'Clinical Encounters': {
@@ -2707,17 +2789,33 @@ EHR.ext.Metadata.Request = {
             enddate: {
                 hidden: true
             },
+            major: {
+                hidden: true
+            },
             restraint: {
                 hidden: true
             },
             restraintTime: {
                 hidden: true
+            },
+            serviceRequested: {
+                xtype: 'ehr-remark',
+                isAutoExpandColumn: true,
+                printWidth: 150,
+                editorConfig: {
+                    resizeDirections: 's'
+                }
             }
         },
         'Clinpath Runs': {
             date: {
                 editorConfig: {
                     minValue: null
+                }
+            },
+            serviceRequested: {
+                editorConfig: {
+                    plugins: ['ehr-usereditablecombo']
                 }
             },
             remark: {
@@ -2824,7 +2922,19 @@ EHR.ext.Metadata.Necropsy = {
             ,shownInGrid: false
         }
         ,begindate: {
-            hidden: false
+            setInitialValue: function(v, rec){
+                var field = rec.fields.get('begindate');
+                var store = Ext.StoreMgr.get('study||Necropsies||||');
+                if(store)
+                    var record = store.getAt(0);
+                if(record)
+                    var date = record.get('date');
+                if(date)
+                    date = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+
+                return v || date;
+            }
+            ,hidden: false
             ,allowBlank: false
         }
         ,parentId: {
@@ -2919,6 +3029,16 @@ EHR.ext.Metadata.Necropsy = {
             lowerLegs: {defaultValue: 'NA', hiddden: true},
             other: {defaultValue: 'NA', hiddden: true}
 
+        },
+        tasks: {
+            duedate: {
+                parentConfig: {
+                    storeIdentifier: {queryName: 'Necropsies', schemaName: 'study'},
+                    dataIndex: 'date'
+                }
+                ,hidden: true
+                ,shownInGrid: false
+            }
         }
     }
 };
@@ -2942,7 +3062,19 @@ EHR.ext.Metadata.Biopsy = {
             ,shownInGrid: false
         }
         ,begindate: {
-            hidden: false
+            setInitialValue: function(v, rec){
+                var field = rec.fields.get('begindate');
+                var store = Ext.StoreMgr.get('study||Biopsies||||');
+                if(store)
+                    var record = store.getAt(0);
+                if(record)
+                    var date = record.get('date');
+                if(date)
+                    date = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+
+                return v || date;
+            }
+            ,hidden: false
             ,allowBlank: false
         }
         ,parentId: {
@@ -3104,6 +3236,9 @@ EHR.ext.Metadata.PE = {
             enddate: {
                 hidden: true
             },
+            major: {
+                hidden: true
+            },
             remark: {
                 height: 100
             },
@@ -3186,6 +3321,9 @@ EHR.ext.Metadata.NWM_PE = {
                 hidden: true
             },
             enddate: {
+                hidden: true
+            },
+            major: {
                 hidden: true
             },
             remark: {
@@ -3279,6 +3417,59 @@ EHR.ext.Metadata['New Animal'] = {
     }
 };
 
+EHR.ext.Metadata.MPR = {
+    allQueries: {
+
+    },
+    byQuery: {
+        'Clinical Encounters': {
+            type: {
+                defaultValue: 'Procedure'
+            }
+        },
+        'Drug Administration': {
+            amount: {
+                shownInGrid: true,
+                header: 'Amount',
+                colModel: {
+                    width: 50
+                }
+            },
+            amount_units: {
+                shownInGrid: true,
+                header: 'Amt Units',
+                colModel: {
+                    width: 60
+                }
+            },
+            vol_units: {
+                header: 'Vol Units',
+                colModel: {
+                    width: 50
+                }
+            },
+            volume: {
+                colModel: {
+                    width: 50
+                }
+            }
+        }
+    }
+};
+
+EHR.ext.Metadata.Surgery = {
+    allQueries: {
+
+    },
+    byQuery: {
+        'Clinical Encounters': {
+            type: {
+                defaultValue: 'Surgery'
+            }
+        }
+    }
+};
+
 EHR.ext.hiddenCols = 'lsid,objectid,parentid,taskid,requestid'; //,createdby,modifiedby
 EHR.ext.topCols = 'id,date,enddate,project,account';
 EHR.ext.bottomCols = 'remark,performedBy,qcstate,'+EHR.ext.hiddenCols;
@@ -3297,7 +3488,7 @@ EHR.ext.FormColumns = {
     cage_observations: 'date,room,cage,feces,userId,no_observations,' + EHR.ext.sharedCols,
     Charges: EHR.ext.topCols+',type,unitCost,quantity,'+EHR.ext.bottomCols,
     'Chemistry Results': EHR.ext.topCols+',testid,method,resultOORIndicator,result,units,qualResult,'+EHR.ext.bottomCols,
-    'Clinical Encounters': EHR.ext.topCols + ',title,type,serviceRequested,restraint,restraintTime,'+EHR.ext.bottomCols,
+    'Clinical Encounters': EHR.ext.topCols + ',title,type,major,serviceRequested,restraint,restraintTime,'+EHR.ext.bottomCols,
     'Clinical Remarks': EHR.ext.topCols+',so,a,p,'+EHR.ext.bottomCols,
     'Clinical Observations': EHR.ext.topCols+',area,observation,code,' + EHR.ext.bottomCols,
     'Clinpath Runs': EHR.ext.topCols+',serviceRequested,type,sampletype,sampleId,collectionMethod,collectedBy,'+EHR.ext.bottomCols,
@@ -3315,7 +3506,8 @@ EHR.ext.FormColumns = {
     'Necropsy Diagnosis': EHR.ext.topCols+',tissue,severity,duration,distribution,process,'+EHR.ext.bottomCols,
     Necropsies: EHR.ext.topCols+',tattoo,caseno,performedby,assistant,billing,nhpbmd,timeofdeath,causeofdeath,mannerofdeath,perfusion_area,perfusion_soln1,perfusion_time1,perfusion_soln2,perfusion_time2,grossdescription,'+EHR.ext.bottomCols,
     'Notes': EHR.ext.topCols+',userid,category,value,'+EHR.ext.bottomCols,
-    'Morphologic Diagnosis': EHR.ext.topCols+',tissue,severity,duration,distribution,distribution2,inflammation,etiology,process,process2,'+EHR.ext.bottomCols,
+    'Morphologic Diagnosis': EHR.ext.topCols+',remark,tissue,inflammation,etiology,process,process2,performedBy,qcstate,'+EHR.ext.hiddenCols,
+    //,severity,duration,distribution,distribution2
     'Pair Tests': EHR.ext.topCols+',partner,bhav,testno,sharedFood,aggressions,affiliation,conclusion,'+EHR.ext.bottomCols,
     'Parasitology Results': EHR.ext.topCols+',organism,method,result,units,qualresult,'+EHR.ext.bottomCols,
     'Prenatal Deaths': EHR.ext.topCols+',species,gender,weight,dam,sire,room,cage,conception,'+EHR.ext.bottomCols,
@@ -3325,9 +3517,9 @@ EHR.ext.FormColumns = {
     requests: 'rowid,title,formtype,daterequested,priority,notify1,notify2,createdby,qcstate',
     Restraint: EHR.ext.topCols+',enddate,type,totaltime,'+EHR.ext.bottomCols,
     tasks: 'rowid,title,formtype,created,createdby,assignedto,duedate,taskid,category,qcstate',
-    'TB Tests': EHR.ext.topCols + ',lot,dilution,eye,result1,result2,result3,'+EHR.ext.bottomCols,
+    'TB Tests': EHR.ext.topCols + ',notPerformedAtCenter,lot,dilution,eye,result1,result2,result3,'+EHR.ext.bottomCols,
     'Teeth': EHR.ext.topCols+',jaw,side,tooth,status,' + EHR.ext.bottomCols,
-    'Tissue Samples': EHR.ext.topCols+',tissue,qualifier,preservation,recipient,'+EHR.ext.bottomCols,
+    'Tissue Samples': EHR.ext.topCols+',tissue,qualifier,preservation,quantity,recipient,'+EHR.ext.bottomCols,
     'Treatment Orders': EHR.ext.topCols+',meaning,code,qualifier,route,frequency,concentration,conc_units,dosage,dosage_units,volume,vol_units,amount,amount_units,' + EHR.ext.bottomCols,
     'Urinalysis Results': EHR.ext.topCols+',testid,method,resultOORIndicator,result,units,qualResult,'+EHR.ext.bottomCols,
     'Virology Results': EHR.ext.topCols+',virus,method,source,resultOORIndicator,result,units,qualResult,'+EHR.ext.bottomCols,

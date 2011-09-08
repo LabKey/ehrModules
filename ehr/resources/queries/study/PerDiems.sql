@@ -12,7 +12,7 @@ SELECT
     h.account,
     h.type,
     sum(h.effectiveDays) as effectiveDays,
-    group_concat(h.id) as animals
+    group_concat(DISTINCT h.id) as animals
 FROM study.PerDiemsByDay h
 
 GROUP BY h.account, h.type

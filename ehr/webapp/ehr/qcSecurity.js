@@ -30,6 +30,7 @@ EHR.utils.getQCStateMap = function(config){
                     row = data.rows[i];
 
                     var prefix = 'org.labkey.ehr.security.EHR'+(row.Label).replace(/[^a-zA-Z0-9-]/g, '');
+                    row.adminPermissionName = prefix+'AdminPermission';
                     row.insertPermissionName = prefix+'InsertPermission';
                     row.updatePermissionName = prefix+'UpdatePermission';
                     row.deletePermissionName = prefix+'DeletePermission';
@@ -83,6 +84,7 @@ EHR.utils.getDatasetPermissions = function(config) {
         for (var qcState in qcMap.label){
             var qcRow = qcMap.label[qcState];
             qcRow.permissionsByQuery = {
+                admin: [],
                 insert: [],
                 update: [],
                 'delete': []
@@ -99,6 +101,10 @@ EHR.utils.getDatasetPermissions = function(config) {
 
                     //iterate over each permission this user has on this query
                     Ext.each(query.effectivePermissions, function(p){
+                        if(p == qcRow.adminPermissionName){
+                            qcRow.permissionsByQuery.admin.push(queryName);
+                            query.permissionsByQCState[qcState].admin = true;
+                        }
                         if(p == qcRow.insertPermissionName){
                             qcRow.permissionsByQuery.insert.push(queryName);
                             query.permissionsByQCState[qcState].insert = true;
@@ -115,6 +121,7 @@ EHR.utils.getDatasetPermissions = function(config) {
                 }
             }
 
+            qcRow.effectivePermissions.admin = (qcRow.permissionsByQuery.admin.length == queryCount);
             qcRow.effectivePermissions.insert = (qcRow.permissionsByQuery.insert.length == queryCount);
             qcRow.effectivePermissions.update = (qcRow.permissionsByQuery.update.length == queryCount);
             qcRow.effectivePermissions['delete'] = (qcRow.permissionsByQuery['delete'].length == queryCount);

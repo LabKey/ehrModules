@@ -38,7 +38,7 @@ delete from ehr_lookups.conc_units where unit = 'g/mL';
 
 INSERT INTO ehr_lookups.conc_units
 (unit, denominator, numerator) VALUES
-('g/mL', 'g', 'piece(s)')
+('g/mL', 'g', 'mL')
 ;
 
 delete from ehr_lookups.treatment_codes where meaning = 'Inulin (Fiber Bites) ';

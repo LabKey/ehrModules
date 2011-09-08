@@ -6,7 +6,7 @@
 SELECT
 
 d.id,
-d.id as id2,
+group_concat(d2.id) as Offspring,
 count(d2.id)  AS TotalOffspring
 
 

@@ -20,6 +20,26 @@ EHR.ext.Buttons = {
         scope: this
         }
     },
+    SUBMITADMIN: function(){return {
+        text: 'Submit Final',
+        name: 'submit',
+        requiredQC: 'Completed',
+        targetQC: 'Completed',
+        requiresAdmin: true,
+        errorThreshold: 'INFO',
+        successURL: LABKEY.ActionURL.getParameter('srcURL') || LABKEY.ActionURL.buildURL("ehr", "dataEntry.view"),
+        disabled: true,
+        ref: 'submitBtn',
+        handler: function(o){
+            Ext.Msg.confirm('Finalize Form', 'You are about to finalize this form.  Do you want to do this?', function(v){
+                if(v=='yes')
+                    this.onSubmit(o);
+            }, this);
+        },
+        disableOn: 'WARN',
+        scope: this
+        }
+    },
     SUBMIT: function(){return {
         text: 'Submit Final',
         name: 'submit',
@@ -36,6 +56,91 @@ EHR.ext.Buttons = {
             }, this);
         },
         disableOn: 'WARN',
+        scope: this
+        }
+    },
+    FINALIZEDEATH: function(){return {
+        text: 'Finalize Death',
+        name: 'finalizeDeath',
+        requiredQC: 'Completed',
+        //targetQC: 'Completed',
+        errorThreshold: 'INFO',
+        //successURL: LABKEY.ActionURL.getParameter('srcURL') || LABKEY.ActionURL.buildURL("ehr", "dataEntry.view"),
+        disabled: true,
+        ref: 'finalizeDeathBtn',
+        handler: function(o){
+            Ext.Msg.confirm('Finalize Death', 'You are about to finalize this death record on this animal.  This will end all treatments, problems, assignments and housing. BE ABSOLUTELY SURE YOU WANT TO DO THIS BEFORE CLICKING SUBMIT.', function(v){
+                if(v=='yes'){
+                    var store = Ext.StoreMgr.get('study||Necropsies||||');
+                    var record = store.getAt(0);
+
+                    if(!record ||
+                        !record.get('Id') ||
+                        !record.get('causeofdeath') ||
+                        !record.get('timeofdeath')
+                    ){
+                        alert('Must provide Id, type of death, and time of death');
+                        return;
+                    }
+
+                    var Id = record.get('Id');
+                    var obj = {
+                        Id: Id,
+                        date: record.get('timeofdeath'),
+                        cause: record.get('causeofdeath'),
+                        manner: record.get('mannerofdeath'),
+                        necropsy: record.get('caseno'),
+                        parentid: record.get('objectid')
+                    };
+
+                    var queryName;
+                    if(Id.match(/^pd/))
+                        queryName = 'Prenatal Deaths';
+                    else
+                        queryName = 'Deaths';
+
+                    //we look for a death record
+                    LABKEY.Query.selectRows({
+                        schemaName: 'study',
+                        queryName: queryName,
+                        scope: this,
+                        filterArray: [
+                            LABKEY.Filter.create('Id', Id, LABKEY.Filter.Types.EQUAL)
+                        ],
+                        success: function(data){
+                            if(data && data.rows && data.rows.length){
+                                obj.lsid = data.rows[0].lsid;
+                                LABKEY.Query.updateRows({
+                                    schemaName: 'study',
+                                    queryName: queryName,
+                                    rows: [obj],
+                                    scope: this,
+                                    success: function(data){
+                                        alert('Success updating '+queryName+' from necropsy for '+Id)
+                                    },
+                                    failure: EHR.onFailure
+                                });
+                            }
+                            //otherwise we create a new record
+                            else {
+                                LABKEY.Query.insertRows({
+                                    schemaName: 'study',
+                                    queryName: queryName,
+                                    scope: this,
+                                    rows: [obj],
+                                    success: function(data){
+                                        alert('Success inserting into '+queryName+' from necropsy for '+Id)
+                                    },
+                                    failure: EHR.onFailure
+                                });
+                            }
+                        },
+                        failure: EHR.onFailure
+                    });
+                }
+            }, this);
+        },
+        disableOn: 'ERROR',
         scope: this
         }
     },
@@ -447,6 +552,12 @@ Ext.extend(EHR.ext.ImportPanelBase, Ext.Panel, {
             }
         }
 
+        if(buttonCfg.requiresAdmin){
+            if(!this.permissionMap.hasPermission('Completed', 'admin', this.store.getQueries())){
+                buttonCfg.hidden = true;
+            }
+        }
+
         return buttonCfg;
     },
     populateItems: function(){
@@ -707,7 +818,7 @@ EHR.ext.TaskPanel = Ext.extend(EHR.ext.ImportPanelBase, {
             LABKEY.Filter.create('taskId', this.formUUID, LABKEY.Filter.Types.EQUAL),
             LABKEY.Filter.create('qcstate/label', 'Delete Requested', LABKEY.Filter.Types.NEQ)
         ];
-        c.storeConfig.sort = 'id/curlocation/location';
+        c.storeConfig.sort = 'id/curlocation/location,id';
     }
 });
 

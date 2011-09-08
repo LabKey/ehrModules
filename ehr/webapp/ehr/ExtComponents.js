@@ -717,12 +717,13 @@ EHR.ext.SnomedCombo = Ext.extend(LABKEY.ext.ComboBox,
                 autoLoad: false
             }),
             tpl : function(){var tpl = new Ext.XTemplate(
-                    '<tpl for=".">' +
-                      '<div class="x-combo-list-item">{[ values["secondaryCategory"] ? "<b>"+values["secondaryCategory"]+":</b> "  : "" ]}{[ values["meaning"] || values["code/meaning"] ]}' +
-                        //allow a flag to display both display and value fields
-                        '{[" ("+values["code"]+")"]}'+
-                        '&nbsp;</div></tpl>'
-                );return tpl.compile()}()
+                '<tpl for=".">' +
+                  '<div class="x-combo-list-item">' +
+                    '{[ values["secondaryCategory"] ? "<b>"+values["secondaryCategory"]+":</b> "  : "" ]}' +
+                    '{[ (values["meaning"] || values["code/meaning"]) ? (values["meaning"] || values["code/meaning"])+" ("+values["code"]+")" : ' +
+                        'values["code"]]}' +
+                    '&nbsp;</div></tpl>'
+            );return tpl.compile()}()
         });
 
         EHR.ext.SnomedCombo.superclass.initComponent.call(this, arguments);
@@ -755,8 +756,8 @@ EHR.ext.SnomedCombo = Ext.extend(LABKEY.ext.ComboBox,
             mode: 'local',
             isFormField: false,
             boxMaxWidth: 200,
-            valueField: 'primaryCategory',
-            displayField: 'primaryCategory',
+            valueField: 'subset',
+            displayField: 'subset',
             triggerAction: 'all',
             initialValue: this.defaultSubset,
             value: this.defaultSubset,
@@ -764,12 +765,18 @@ EHR.ext.SnomedCombo = Ext.extend(LABKEY.ext.ComboBox,
             store: new LABKEY.ext.Store({
                 schemaName: 'ehr_lookups',
                 queryName: 'snomed_subsets',
-                sort: 'primaryCategory',
+                sort: 'subset',
                 //NOTE: this can potentially be a lot of records, so we initially load with zero
                 //maxRows: 0,
                 autoLoad: true,
+                listeners: {
+                    scope: this,
+                    load: function(s){
+                        s.addRecord({subset: 'SNOMED Codes'})
+                    }
+                },
                 nullRecord: {
-                    displayColumn: 'primaryCategory',
+                    displayColumn: 'subset',
                     nullCaption: 'All'
                 }
             }),
@@ -797,6 +804,15 @@ EHR.ext.SnomedCombo = Ext.extend(LABKEY.ext.ComboBox,
             if(this.store.sortInfo)
                 delete this.store.baseParams['query.primaryCategory~eq'];
             this.displayField = 'meaning';
+        }
+        else if (subset == 'SNOMED Codes'){
+             this.store.baseParams['query.queryName'] = 'snomed';
+            this.store.baseParams['query.columns'] = 'code';
+            this.store.baseParams['query.sort'] = 'code';
+            this.store.sortInfo.field = 'code';
+            if(this.store.sortInfo)
+                delete this.store.baseParams['query.primaryCategory~eq'];
+            this.displayField = 'code';
         }
         else {
             LABKEY.Filter.appendFilterParams(this.store.baseParams, [LABKEY.Filter.create('primaryCategory', subset, LABKEY.Filter.Types.EQUAL)]);
@@ -1025,6 +1041,10 @@ EHR.ext.ProjectField = Ext.extend(LABKEY.ext.ComboBox,
                 "WHERE a.id='"+id+"' " +
                 //this protocol contains tracking projects
                 "AND a.project.protocol != 'wprc00' ";
+
+        if(!this.allowAllProtocols){
+            sql += ' AND a.project.protocol IS NOT NULL '
+        }
 
         if(date)
             sql += "AND a.date <= '"+date.format('Y-m-d')+"' AND (a.enddate >= '"+date.format('Y-m-d')+"' OR a.enddate IS NULL)";

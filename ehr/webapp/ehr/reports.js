@@ -56,7 +56,22 @@ EHR.reports.abstract = function(tab, subject){
         titleField: 'Id',
         renderTo: target.id,
         filterArray: filterArray.removable.concat(filterArray.nonRemovable),
-        multiToGrid: true
+        multiToGrid: true,
+        qwpConfig: {
+            scope: this,
+            success: function(dr){
+                var width1 = Ext.get(dr.id).getSize().width;
+                var width2 = Ext.get(this.anchorLayout.id).getSize().width;
+
+                if(width1 > width2){
+                    this.anchorLayout.setWidth(width1+120);
+                    console.log('resizing')
+                }
+                else {
+                    this.anchorLayout.setWidth('100%');
+                }
+            }
+        }
     };
     new EHR.ext.DetailsView(config);
 

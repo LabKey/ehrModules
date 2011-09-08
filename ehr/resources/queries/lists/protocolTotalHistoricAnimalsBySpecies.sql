@@ -22,7 +22,7 @@ SELECT
 
 FROM lists.protocol p
 LEFT OUTER JOIN lists.protocolHistoricAnimals pa ON (p.protocol = pa.protocol)
---WHERE pa.LatestEnd >= p.approve
+
 GROUP BY coalesce(p.protocol, pa.protocol), p.approve, pa.species
 
 ) p

@@ -5,13 +5,13 @@
  */
 SELECT
   T1.id,
-  T1.species,
+  T1.id.dataset.demographics.species as species,
   'Births' AS Category,
-  T1.birth as Date,
-  convert(year(T1.birth), integer) AS Year,
+  T1.date,
+  convert(year(T1.date), integer) AS Year,
 
-FROM study.Demographics T1
-WHERE T1.birth IS NOT NULL
+FROM study.Birth T1
+--WHERE T1.birth IS NOT NULL
 
 UNION ALL
 

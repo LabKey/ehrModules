@@ -11,6 +11,7 @@ p.species,
 pc.allowed,
 p.TotalAnimals,
 pc.allowed - p.TotalAnimals as TotalRemaining,
+p.Animals,
 
 FROM
 (
@@ -18,11 +19,12 @@ SELECT
   coalesce(p.protocol, pa.protocol) as protocol,
   p.approve,
   pa.species,
+  group_concat(DISTINCT pa.id) as Animals,
   CONVERT(Count(pa.id), INTEGER) AS TotalAnimals,
 
 FROM lists.protocol p
 LEFT OUTER JOIN lists.protocolAnimals pa ON (p.protocol = pa.protocol)
---WHERE pa.LatestEnd >= p.approve
+
 GROUP BY coalesce(p.protocol, pa.protocol), p.approve, pa.species
 
 ) p

@@ -9,7 +9,6 @@ var {EHR, LABKEY, Ext, console, init, beforeInsert, afterInsert, beforeUpdate, a
 function onUpsert(context, errors, row, oldRow){
     if(context.extraContext.dataSource != 'etl' && row.date && !row.daterequested){
         if(!oldRow || !oldRow.daterequested){
-            console.log('setting date');
             row.daterequested = row.date;
         }
     }
@@ -18,13 +17,12 @@ function onUpsert(context, errors, row, oldRow){
     context.extraContext = context.extraContext || {};
     context.extraContext.bloodTotals = context.extraContext.bloodTotals || {};
     if(row.Id && !context.extraContext.bloodTotals[row.Id]){
-        context.extraContext.bloodTotals[row.Id] = [];
+        context.extraContext.bloodTotals[row.Id] = {rows: [], lsids: []};
     }
-
 
     //overdraws are handled differently for requests vs actual draws
     var errorQC;
-    if(context.qcMap.label[row.QCStateLabel]['metadata/isRequest'])
+    if(context.qcMap.label[row.QCStateLabel]['metadata/isRequest'] && !row.taskid)
         errorQC = 'ERROR';
     else
         errorQC = 'WARN';
@@ -47,9 +45,7 @@ function onUpsert(context, errors, row, oldRow){
             }
         }
 
-        if(row.restraint && !Ext.isDefined(row.restraintTime)){
-            EHR.addError(errors, 'restraintTime', 'Must enter time restrained', 'WARN');
-        }
+        EHR.validation.checkRestraint(row, errors);
 
         if(row.Id && row.date && row.quantity){
             var minDate = new Date(row.date.toGMTString());
@@ -62,26 +58,35 @@ function onUpsert(context, errors, row, oldRow){
                 "SELECT b.id, sum(b.quantity) as BloodLast30 " +
                 "FROM study.\"Blood Draws\" b " +
                 "WHERE b.id='"+row.Id+"' AND b.date >= '"+EHR.validation.dateToString(minDate)+"' AND b.date <= '"+EHR.validation.dateToString(row.date) +"' " +
-                "AND (b.qcstate.publicdata = true OR b.qcstate.metadata.DraftData = true) " +
-                "GROUP BY b.id) b " +
+                "AND (b.qcstate.publicdata = true OR b.qcstate.metadata.DraftData = true) ";
+
+            if(context.extraContext.bloodTotals[row.Id] && context.extraContext.bloodTotals[row.Id].lsids.length){
+                sql += ' AND b.lsid NOT IN (\''+context.extraContext.bloodTotals[row.Id].lsids.join("','")+'\') '
+            }
+
+            sql += "GROUP BY b.id) b " +
             "RIGHT OUTER JOIN study.demographicsMostRecentWeight d on (d.id=b.id) " +
             "WHERE d.id='"+row.Id+"' ";
+
             //console.log(sql);
+
             // find all blood draws from this animal in 30 days prior to this date
             LABKEY.Query.executeSql({
                 schemaName: 'study',
                 sql: sql,
+                scope: this,
                 success: function(data){
                     var bloodInThisTransaction = 0;
-                    if(context.extraContext.bloodTotals[row.Id].length){
+                    if(context.extraContext.bloodTotals[row.Id] && context.extraContext.bloodTotals[row.Id].rows.length){
                         var draw;
-                        for(var i=0;i<context.extraContext.bloodTotals[row.Id].length;i++){
-                            draw = context.extraContext.bloodTotals[row.Id][i];
+                        for(var i=0;i<context.extraContext.bloodTotals[row.Id].rows.length;i++){
+                            draw = context.extraContext.bloodTotals[row.Id].rows[i];
                             if(Date.parse(draw.date) >= Date.parse(minDate) && Date.parse(draw.date) <= Date.parse(row.date)){
                                 bloodInThisTransaction += draw.quantity;
                             }
                         }
                     }
+                    //console.log('other blood: '+bloodInThisTransaction);
 
                     if(data && data.rows && data.rows.length){
                         var availBlood = data.rows[0].AvailBlood - bloodInThisTransaction;
@@ -109,25 +114,34 @@ function onUpsert(context, errors, row, oldRow){
                     "SELECT b.id, sum(b.quantity) as BloodLast30 " +
                     "FROM study.\"Blood Draws\" b " +
                     "WHERE b.id='"+row.Id+"' AND cast(b.date as date) >= '"+EHR.validation.dateToString(row.date) +"' AND cast(b.date as date) <= '"+EHR.validation.dateToString(maxDate)+"' " +
-                    "AND (b.qcstate.publicdata = true OR b.qcstate.metadata.DraftData = true) " +
-                    "GROUP BY b.id) b " +
+                    "AND (b.qcstate.publicdata = true OR b.qcstate.metadata.DraftData = true) ";
+
+                if(context.extraContext.bloodTotals[row.Id] && context.extraContext.bloodTotals[row.Id].lsids.length){
+                    sql += ' AND b.lsid NOT IN (\''+context.extraContext.bloodTotals[row.Id].lsids.join("','")+'\') ';
+                }
+
+                sql += "GROUP BY b.id) b " +
                 "RIGHT OUTER JOIN study.demographicsMostRecentWeight d on (d.id=b.id) " +
                 "WHERE d.id='"+row.Id+"' ";
+
                 //console.log(sql);
+
                 LABKEY.Query.executeSql({
                     schemaName: 'study',
                     sql: sql,
+                    scope: this,
                     success: function(data){
                         var bloodInThisTransaction = 0;
-                        if(context.extraContext.bloodTotals[row.Id].length){
+                        if(context.extraContext.bloodTotals[row.Id].rows.length){
                             var draw;
-                            for(var i=0;i<context.extraContext.bloodTotals[row.Id].length;i++){
-                                draw = context.extraContext.bloodTotals[row.Id][i];
+                            for(var i=0;i<context.extraContext.bloodTotals[row.Id].rows.length;i++){
+                                draw = context.extraContext.bloodTotals[row.Id].rows[i];
                                 if(Date.parse(draw.date) <= Date.parse(maxDate) && Date.parse(draw.date) >= Date.parse(row.date)){
                                     bloodInThisTransaction += draw.quantity;
                                 }
                             }
                         }
+
                         if(data && data.rows && data.rows.length){
                             var availBlood = data.rows[0].AvailBlood - bloodInThisTransaction;
                             if((availBlood - row.quantity) < 0){
@@ -146,11 +160,12 @@ function onUpsert(context, errors, row, oldRow){
 
         //keep track of blood per ID
         if(row.Id){
-            context.extraContext.bloodTotals[row.Id].push(row);
+            context.extraContext.bloodTotals[row.Id].rows.push(row);
+            if(row.lsid){
+                context.extraContext.bloodTotals[row.Id].lsids.push(row.lsid);
+            }
         }
     }
-
-//    EHR.addError(errors, 'Id', 'error');
 }
 
 

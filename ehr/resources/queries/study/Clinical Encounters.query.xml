@@ -11,7 +11,7 @@
                 <deleteUrl />
                 <columns>
                     <column columnName="type">
-                        <isHidden>true</isHidden>
+                        <!--<isHidden>true</isHidden>-->
                         <fk>
                             <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                             <fkDbSchema>ehr_lookups</fkDbSchema>

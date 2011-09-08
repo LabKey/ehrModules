@@ -7,6 +7,14 @@
 var {EHR, LABKEY, Ext, console, init, beforeInsert, afterInsert, beforeUpdate, afterUpdate, beforeDelete, afterDelete, complete} = require("ehr/validation");
 
 
+function onInit(event, context){
+    context.allowDeadIds = true;
+    context.allowAnyId = true;
+    context.extraContext = context.extraContext || {};
+    context.extraContext.skipIdFormatCheck = true;
+}
+
+
 function onUpsert(context, errors, row, oldRow){
     if(context.extraContext.dataSource != 'etl')
         EHR.validation.removeTimeFromDate(row, errors);

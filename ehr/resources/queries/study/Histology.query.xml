@@ -57,7 +57,7 @@
                     </column>
                     <column columnName="remark">
                         <datatype>varchar</datatype>
-                        <columnTitle>Remark</columnTitle>
+                        <columnTitle>Histology Description</columnTitle>
                         <displayWidth>110</displayWidth>
                         <propertyURI>urn:ehr.labkey.org/#Remark</propertyURI>
                         <inputType>textarea</inputType>

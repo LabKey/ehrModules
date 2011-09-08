@@ -29,12 +29,7 @@
                     <column columnName="pdf" wrappedColumnName="protocol">
                         <columnTitle>PDF</columnTitle>
                         <url>http://www.primate.wisc.edu/colony-old/vetstaff/protocol.php?protocol=${protocol}</url>
-                        <!--<fk>-->
-                          <!--<fkFolderPath>/WNPRC/WNPRC_Units/Animal_Services/Compliance_Training/Private/Protocol_PDFs/</fkFolderPath>-->
-                          <!--<fkDbSchema>lists</fkDbSchema>-->
-                          <!--<fkTable>ProtocolPDFs</fkTable>-->
-                          <!--<fkColumnName>protocol</fkColumnName>-->
-                        <!--</fk>                        -->
+                        <!--<url>/query/WNPRC/WNPRC_Units/Animal_Services/Compliance_Training/Private/Protocol_PDFs/executeQuery.view?schemaName=lists&query.queryName=ProtocolPDFs&protocol=${protocol}</url>-->
                     </column>
                 </columns>
             </table>

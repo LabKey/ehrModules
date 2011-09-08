@@ -11,9 +11,7 @@ function onUpsert(context, errors, row, oldRow){
         row.requestdate = row.date;
     }
 
-    if(context.extraContext.dataSource != 'etl' && row.restraint && !Ext.isDefined(row.restraintTime)){
-        EHR.addError(errors, 'restraintTime', 'Must enter time restrained', 'WARN');
-    }
+    EHR.validation.checkRestraint(row, errors);
 }
 
 function onETL(row, errors){

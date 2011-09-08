@@ -9,37 +9,34 @@ var {EHR, LABKEY, Ext, console, init, beforeInsert, afterInsert, beforeUpdate, a
 
 function onUpsert(context, errors, row, oldRow){
     if(context.extraContext.dataSource != 'etl'){
-        if(!row.amount && !row.volume){
-            EHR.addError(errors, 'amount', 'Must supply either amount or volume', 'WARN');
-            EHR.addError(errors, 'volume', 'Must supply either amount or volume', 'WARN');
-        }
+//        if(!row.amount && !row.volume){
+//            EHR.addError(errors, 'amount', 'Must supply either amount or volume', 'INFO');
+//            EHR.addError(errors, 'volume', 'Must supply either amount or volume', 'INFO');
+//        }
 
         if(row.volume && row.concentration){
             var expected = Math.round(row.volume*row.concentration*1000)/1000;
             if(row.amount!=expected){
-                EHR.addError(errors, 'amount', 'Amount does not match volume for this concentration. Expected: '+expected, 'WARN');
+                EHR.addError(errors, 'amount', 'Amount does not match volume for this concentration. Expected: '+expected, 'INFO');
                 //EHR.addError(errors, 'volume', 'Volume does not match amount for this concentration. Expected: '+expected, 'WARN');
             }
         }
 
-        if(row.restraint && !Ext.isDefined(row.restraintTime)){
-            //console.log(row.restraint)
-            EHR.addError(errors, 'restraintTime', 'Must enter time restrained', 'WARN');
-        }
+        EHR.validation.checkRestraint(row, errors);
 
         if(row.qualifier && row.qualifier.match(/\//)){
             EHR.addError(errors, 'qualifier', 'This field contains a /. This likely means you need to pick one of the options', 'INFO');
         }
-    }
+
+        //we need to store something in the date field during the draft stage, so i use header date
+        //we swap begindate in here instead
+        //any form that is an encounter should show begindate, not date
+        //other forms will not show begindate, so this shouldnt matter here
+        if(row.begindate)
+            row.date = row.begindate;
+        }
 }
 
-//TODO: consider how this should work
-function onBecomePublic(errors, scriptContext, row, oldRow){
-    //we need to store something in the date field during the draft stage, so i use header date
-    //we swap begindate in here instead
-    if(scriptContext.extraContext.dataSource != 'etl' && row.begindate)
-        row.date = row.begindate
-}
 
 
 function setDescription(row, errors){

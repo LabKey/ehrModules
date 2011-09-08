@@ -154,24 +154,35 @@ Ext.onReady(function ()
 
 //    EHR.utils.isMemberOf(['vets (LDAP)', 'cpi (LDAP)', 'protocol (LDAP)', 'Site Administrators'], loadPdf);
 //
-//    function loadPdf(){
-//        new LABKEY.QueryWebPart({
-//            title: 'Protocol PDF',
-//            containerPath: '/WNPRC/WNPRC_Units/Animal_Services/Compliance_Training/Private/Protocols',
-//            schemaName: 'lists',
-//            queryName: 'Protocols',
-//            allowChooseQuery: false,
-//            allowChooseView: false,
-//            showInsertNewButton: false,
-//            showDeleteButton: false,
-//            showDetailsColumn: false,
-//            showUpdateColumn: false,
-//            buttonBarPosition: 'none',
-//            filters: [LABKEY.Filter.create('protocol', protocol, LABKEY.Filter.Types.EQUAL)],
-//            scope: this,
-//            failure: EHR.utils.onError
-//         }).render('protocolPdf');
-//    }
+    var pdfContainer = '/WNPRC/WNPRC_Units/Animal_Services/Compliance_Training/Private/Protocol_PDFs';
+    LABKEY.Security.getSecurableResources({
+        containerPath: pdfContainer,
+        includeEffectivePermissions: false,
+        scope: this,
+        success: function(map){
+            new LABKEY.QueryWebPart({
+                title: 'Protocol PDF',
+                containerPath: pdfContainer,
+                schemaName: 'lists',
+                queryName: 'ProtocolPDFs',
+                allowChooseQuery: false,
+                allowChooseView: false,
+                showInsertNewButton: false,
+                showDeleteButton: false,
+                showDetailsColumn: false,
+                showUpdateColumn: false,
+                buttonBarPosition: 'none',
+                filters: [LABKEY.Filter.create('protocol', protocol, LABKEY.Filter.Types.EQUAL)],
+                scope: this,
+                failure: EHR.utils.onError
+             }).render('protocolPdf');
+        },
+        failure: function(e){
+            console.log('Error with getSecurableResources');
+            console.log(e);
+        }
+    })
+
 
 
 
@@ -186,12 +197,15 @@ Ext.onReady(function ()
 
     <p/>
 
+	<div id='protocolPdf'></div>
+
+    <p/>
+
     <div id='protocolLinks'></div>
 
     <p/>
 
     <div id='protocolProjects'>Loading...</div>
-
 
 
     <p/>
@@ -206,9 +220,7 @@ Ext.onReady(function ()
 
     <div id="protocolTotalHistoricAnimalsBySpecies">Loading...</div>
 
-    <p/>
 
-	<!--<div id='protocolPdf'></div>-->
 
 </body>
 </html>

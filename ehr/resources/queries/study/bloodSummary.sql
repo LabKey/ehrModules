@@ -30,8 +30,8 @@ FROM
 	FROM
 	 	(
 			 SELECT bi.*
-			    ,timestampadd('SQL_TSI_DAY', -30, bi.date) as minDate
---  			    ,timestampadd('SQL_TSI_DAY', 30, bi.date) as maxDate
+			    ,timestampadd('SQL_TSI_DAY', -29, bi.date) as minDate
+--  			    ,timestampadd('SQL_TSI_DAY', 29, bi.date) as maxDate
 	 		    , ( CONVERT(
                       (SELECT MAX(w.date) as _expr
                         FROM study.weight w
@@ -46,8 +46,10 @@ FROM
 	    			(SELECT SUM(draws.quantity) AS _expr
 	    		      FROM study."Blood Draws" draws
 	    			  WHERE draws.id=bi.id
-                          AND draws.date BETWEEN TIMESTAMPADD('SQL_TSI_DAY', -30, bi.date) AND bi.date
-                          AND draws.qcstate.publicdata = true
+                          --AND draws.date BETWEEN TIMESTAMPADD('SQL_TSI_DAY', -30, bi.date) AND bi.date
+                          AND (cast(draws.date as date) >= cast(TIMESTAMPADD('SQL_TSI_DAY', -29, bi.date) as date) AND cast(draws.date as date) <= cast(bi.date as date))
+                          AND (draws.qcstate.metadata.DraftData = true OR draws.qcstate.publicdata = true)
+                          --AND draws.qcstate.publicdata = true
                      ), 0 )
 	  		      ) AS BloodLast30
 -- 	 		    , ( COALESCE (

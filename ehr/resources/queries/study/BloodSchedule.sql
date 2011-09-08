@@ -7,6 +7,7 @@ SELECT
 b.lsid,
 b.id,
 b.date,
+cast(b.date as DATE) as dateOnly,
 b.daterequested,
 b.project,
 b.performedby,

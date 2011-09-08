@@ -1001,7 +1001,7 @@
   </ns:table>
   <ns:table tableName="formpanelsections" tableDbType="TABLE">
     <ns:pkColumnName>rowid</ns:pkColumnName>
-    <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr&amp;query.queryName=formtemplatesections&amp;rowid=${rowid}</ns:tableUrl>
+    <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr&amp;query.queryName=formpanelsections&amp;rowid=${rowid}</ns:tableUrl>
     <ns:columns>
       <ns:column columnName="rowid">
         <ns:datatype>serial</ns:datatype>
@@ -1210,6 +1210,11 @@
         <ns:nullable>true</ns:nullable>
         <ns:datatype>text</ns:datatype>
         <ns:scale>255</ns:scale>
+      </ns:column>
+      <ns:column columnName="permitsSingleIdOnly">
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>bool</ns:datatype>
+        <ns:scale>20</ns:scale>
       </ns:column>
       <ns:column columnName="configjson">
         <ns:nullable>true</ns:nullable>

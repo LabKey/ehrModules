@@ -16,9 +16,10 @@
    </columns>
    <sorts>
        <sort column="date" descending="true"/>
+       <sort column="dataset/name" descending="false" />
    </sorts>
    <filters>
-       <filter column="dataset/name" operator="in" value="behavetrem;biopsy;clinremarks;encounters;drug;necropsy;problem;surgery;tb;weight;chemistryResults;bacteriologyResults;hematologyResults;parasitologyResults;virologyResults;"/>
+       <filter column="dataset/name" operator="in" value="behavetrem;biopsy;clinremarks;encounters;drug;necropsy;problem;tb;weight;bacteriologyResults;clinpathRuns;chemistryResults;hematologyResults;immunologyResults;parasitologyResults;urinalysisResults;virologyResults;alopecia;bcs;clinical_observations"/>
        <filter column="qcstate/publicdata" operator="eq" value="true"/>
    </filters>
 </customView>

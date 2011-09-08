@@ -45,7 +45,7 @@ initComponent: function(){
         schemaName: this.schemaName,
         viewName: this.viewName,
         filterArray: this.filterArray,
-        successCallback: function(data){
+        success: function(data){
             this.queryData = data;
             this.loadQuery();
         },
@@ -93,7 +93,11 @@ loadQuery: function(){
             this.queryConfig.viewName = this.viewName;
         }
 
-        this.queryConfig.successCallback = this.queryConfig.success = null;
+        this.queryConfig.success = null;
+
+        if(this.qwpConfig){
+            Ext.apply(this.queryConfig, this.qwpConfig);
+        }
 
         var theDiv = this.add({tag: 'span'});
         this.doLayout();

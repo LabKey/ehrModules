@@ -5,8 +5,9 @@
         <column name="tissue"/>
         <column name="qualifier"/>
         <column name="preservation"/>
+        <column name="quantity"/>
         <column name="recipient"/>
-        <column name="diagnosis"/>
+        <!--<column name="diagnosis"/>-->
     </columns>
    <sorts>
        <sort column="date" descending="true"/>

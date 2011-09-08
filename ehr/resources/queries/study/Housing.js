@@ -173,18 +173,25 @@ function onBecomePublic(errors, scriptContext, row, oldRow){
                         toUpdate.push({lsid: r.lsid, enddate: new Date(row.date.toGMTString())});
 
                         //if there's an existing public active housing record
-                        if(r.date >= row.Date){
-                            EHR.addError(errors, 'Id', 'You cannot enter an open ended housing while there is another record starting on: '+r.Date);
-                            toUpdate = [];
-                            return false;
+                        if(row.date.compareTo){
+                            if(row.date.compareTo(r.date)<0){
+                                EHR.addError(errors, 'Id', 'You cannot enter an open ended housing while there is another record starting on: '+r.Date);
+                                toUpdate = [];
+                                return false;
+                            }
                         }
+//                        if(r.date >= row.Date){
+//                            EHR.addError(errors, 'Id', 'You cannot enter an open ended housing while there is another record starting on: '+r.Date);
+//                            toUpdate = [];
+//                            return false;
+//                        }
                     }, this);
 
                 }
             },
             failure: EHR.onFailure
         });
-        console.log('to update')
+        console.log('housing to update')
         console.log(toUpdate);
         if(toUpdate.length){
             LABKEY.Query.updateRows({

@@ -374,6 +374,10 @@
           <ns:datatype>varchar</ns:datatype>
           <ns:scale>100</ns:scale>
         </ns:column>
+        <ns:column columnName="include">
+          <ns:datatype>bool</ns:datatype>
+          <ns:scale>100</ns:scale>
+        </ns:column>
     </ns:columns>
   </ns:table>
   <ns:table tableName="observations_anesthesia_recovery" tableDbType="TABLE">

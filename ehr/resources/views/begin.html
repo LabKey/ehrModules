@@ -38,6 +38,7 @@ function createNavMenu()
             ]},
             {header: 'Today At WNPRC',
             items: [
+                {name: 'Blood Draw Schedule', url: '<%=contextPath%>/ehr/WNPRC/EHR/animalHistory.view#_inputType:renderColony&_showReport:1&combineSubj:true&activeReport:todaysBlood'},
                 {name: 'Irregular Observations', url: '<%=contextPath%>/ehr/WNPRC/EHR/animalHistory.view#_inputType:renderRoomCage&activeReport:obs'},
                 {name: 'Treatment Schedule - AM', url: '<%=contextPath%>/ehr/WNPRC/EHR/animalHistory.view#_inputType:renderRoomCage&activeReport:treatmentScheduleAM'},
                 {name: 'Treatment Schedule - PM', url: '<%=contextPath%>/ehr/WNPRC/EHR/animalHistory.view#_inputType:renderRoomCage&activeReport:treatmentSchedulePM'},
@@ -103,7 +104,7 @@ function createNavMenu()
             items: [
                 //{name: 'Request Services', url: '<%=contextPath%>/ehr/WNPRC/EHR/requestServices.view'},
                 {name: 'Request Biopsy', url: 'http://yakui.primate.wisc.edu/pathology/BiopsyForm.html'},
-                {name: 'Request Clinpath Services', url: 'http://www.primate.wisc.edu/clinpath/'},
+                {name: 'Request Clinpath Services', url: '<%=contextPath%>/ehr/WNPRC/EHR/manageRequest.view?formtype=Clinpath%20Request'},
                 {name: 'Request Necropsy', url: 'http://yakui.primate.wisc.edu/pathology/NecropsyForm.html'},
                 {name: 'Request Project', url: 'http://www.primate.wisc.edu/colony-old/project-form.html'}
             ]}

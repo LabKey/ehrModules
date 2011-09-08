@@ -21,11 +21,11 @@ sum(b.total) as totalDraws
 from (
   select
   cast(b.date as date) as date,
-  chr(10) || b.requestid.notify1.name || ' (' || count(b.requestid.notify1) || ')' as requestors,
-  count(b.id) as total
+  chr(10) || b.requestid.notify1.name || ' (' || count(distinct b.id) || ')' as requestors,
+  count(distinct b.id) as total
 
   from study."Blood Draws" b
-  where (b.qcstate.metadata.DraftData = true OR b.qcstate.publicdata = true)  --AND b.date >= curdate()
+  where (b.qcstate.metadata.DraftData = true OR b.qcstate.publicdata = true)
   group by b.requestid.notify1.name, cast(b.date as date)
 ) b
 group by b.date

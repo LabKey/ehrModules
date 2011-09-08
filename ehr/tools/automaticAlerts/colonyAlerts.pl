@@ -457,6 +457,56 @@ if(@{$results->{rows}}){
 	$email_html .= "<hr>\n";			
 }
 
+#we find TB records lacking a results more than 30 days old, but less than 90
+$results = Labkey::Query::selectRows(
+    -baseUrl => $baseUrl,
+    -containerPath => $studyContainer,
+    -schemaName => 'study',
+    -queryName => 'TB Tests',
+    -filterArray => [
+        ['missingresults', 'eq', 'true'],
+        ['date', 'dategte', '-90d'],
+        ['date', 'datelte', '-10d'],
+    ],
+    #-debug => 1,
+);
+
+$email_html .= "<b>TB Tests Missing Results:</b><br>";
+
+if(!@{$results->{rows}}){
+	$email_html .= "There are no TB Tests in the past 10-90 days lacking a result.<hr>";	
+}		
+else {	
+	$email_html .= "<b>WARNING: There are ".@{$results->{rows}}." TB Tests in the past 10-90 days that are missing results.</b><br>";
+	$email_html .= "<p><a href='".$baseUrl."query/".$studyContainer."executeQuery.view?schemaName=study&query.queryName=TB Tests&query.date~datelte=-10d&query.date~dategte=-90d&query.missingresults~eq=true"."'>Click here to view them</a><br>\n";
+	$email_html .= "<hr>\n";	
+}
+
+
+
+#we find protocols nearing the animal limit
+$results = Labkey::Query::selectRows(
+    -baseUrl => $baseUrl,
+    -containerPath => $studyContainer,
+    -schemaName => 'lists',
+    -queryName => 'protocolTotalAnimalsBySpecies',
+    -filterArray => [
+        ['TotalRemaining', 'lt', '5'],
+    ],
+    #-debug => 1,
+);
+
+$email_html .= "<b>Protocols with fewer than 5 remaining animals:</b><br>";
+
+if(!@{$results->{rows}}){
+	$email_html .= "There are no protocols nearing the limit.<hr>";	
+}		
+else {	
+	$email_html .= "<b>WARNING: There are ".@{$results->{rows}}." protocols nearing the limit.</b><br>";
+	$email_html .= "<p><a href='".$baseUrl."query/".$studyContainer."executeQuery.view?schemaName=lists&query.queryName=protocolTotalAnimalsBySpecies&query.TotalRemaining~lt=5'>Click here to view them</a><br>\n";
+	$email_html .= "<hr>\n";	
+}
+
 
 #we print some stats on data entry:
 
@@ -514,13 +564,16 @@ if(@{$results->{rows}}){
 }
 
 
+
+
+
 #open(HTML, ">", "C:\\Users\\Admin\\Desktop\\test.html");
 #print HTML $email_html;
 #close HTML;
 
 my @email_recipients;
 if($tm->hour > 12){
-	@email_recipients = @pm_email_recipients;	
+	@email_recipients = @pm_email_recipients;
 }
 else {
 	@email_recipients = @am_email_recipients;
@@ -532,7 +585,7 @@ my $smtp = Net::SMTP->new($mail_server,
 );
 
 $smtp->mail( $from );
-my @goodrecips=$smtp->recipient(@email_recipients, { Notify => ['FAILURE'], SkipBad => 1 });  
+my @goodrecips=$smtp->recipient(@email_recipients, { Notify => ['FAILURE'], SkipBad => 1 });
 $smtp->data();
 $smtp->datasend("Subject: Daily Colony Alerts: $datestr\n");
 $smtp->datasend("Content-Type: text/html \n");

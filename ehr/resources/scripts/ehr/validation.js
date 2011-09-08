@@ -37,6 +37,7 @@ function init(event, errors){
         publicParticipantsModified: [],
         tasksModified: [],
         requestsModified: [],
+        requestsDenied: {},
         missingParticipants: [],
         PKsModified: [],
         publicPKsModified: [],
@@ -164,6 +165,49 @@ function complete(event, errors) {
 
     }
 
+    if(this.scriptContext.requestsDenied && !Ext.isEmpty(this.scriptContext.requestsDenied)){
+        var totalRequests = [];
+        for(var i in this.scriptContext.requestsDenied){
+            var rows = this.scriptContext.requestsDenied[i];
+            totalRequests.push(i);
+        }
+
+        LABKEY.Query.selectRows({
+            schemaName: 'ehr',
+            queryName: 'requests',
+            columns: '*',
+            scope: this,
+            filterArray: [
+                LABKEY.Filter.create('requestid', totalRequests, LABKEY.Filter.Types.EQUALS_ONE_OF)
+            ],
+            success: function(data){
+                if(data && data.rows && data.rows.length){
+                    var emails = [];
+                    var row;
+                    for(var i in data.rows){
+                        row = data.rows[i];
+                        var recipients = [];
+
+                        if(row.notify1)
+                            recipients.push(LABKEY.Message.createPrincipalIdRecipient(LABKEY.Message.recipientType.to, row.notify1));
+                        if(row.notify2)
+                            recipients.push(LABKEY.Message.createPrincipalIdRecipient(LABKEY.Message.recipientType.to, row.notify2));
+
+                        if(recipients.length){
+                            EHR.sendEmail({
+                                recipients: recipients,
+                                msgContent: 'One or more elements of the following '+row.formtype+' have been denied:<br>' +
+                                    '<a href="'+LABKEY.ActionURL.getBaseURL()+'ehr' + LABKEY.ActionURL.getContainer() + '/requestDetails.view?requestid='+row.requestid+'&formtype='+row.formtype +
+                                    '">Click here to view them</a>.  The requests that have been denied will say \'Request: Denied\' in the status column.  Please do not reply to this email, as this account is not read.',
+                                msgSubject: 'EHR Service Requests Were Denied'
+                            })
+                        }
+                    }
+                }
+            }
+        });
+    }
+
 }
 exports.complete = complete;
 
@@ -211,7 +255,7 @@ EHR.rowInit = function(errors, row, oldRow){
                     if(data.calculated_status != 'Alive'){
                         if(!this.scriptContext.allowDeadIds){
                             if(this.scriptContext.qcMap.label[row.QCStateLabel]['metadata/isRequest'])
-                                EHR.addError(errors, 'Id', 'Status of this Id is: '+data.calculated_status, 'ERROR');
+                                EHR.addError(errors, 'Id', 'Status of this Id is: '+data.calculated_status, 'INFO');
                             else
                                 EHR.addError(errors, 'Id', 'Status of this Id is: '+data.calculated_status, 'INFO');
                         }
@@ -387,6 +431,14 @@ EHR.afterEvent = function (event, errors, row, oldRow){
     if(this.scriptContext.verbosity > 0)
         console.log('After Event: '+event);
 
+    //normalize QCState
+    if(row.QCState && !row.QCStateLabel){
+        row.QCStateLabel = this.scriptContext.qcMap.rowid[row.QCState].Label
+    }
+    if(oldRow && oldRow.QCState && !oldRow.QCStateLabel){
+        oldRow.QCStateLabel = this.scriptContext.qcMap.rowid[oldRow.QCState].Label
+    }
+
     this.scriptContext.rows.push({
         row: row,
         oldRow: oldRow
@@ -417,6 +469,16 @@ EHR.afterEvent = function (event, errors, row, oldRow){
 
     if(row.requestId && this.scriptContext.requestsModified.indexOf(row.requestId) == -1){
         this.scriptContext.requestsModified.push(row.requestId);
+    }
+
+    //track requests being denied
+    if(row.requestId && row.QCStateLabel=='Request: Denied'){
+        if(oldRow && oldRow.QCStateLabel && oldRow.QCStateLabel!='Request: Denied'){
+            if(!this.scriptContext.requestsDenied[row.requestId])
+                this.scriptContext.requestsDenied[row.requestId] = [];
+
+            this.scriptContext.requestsDenied[row.requestId].push(row);
+        }
     }
 
     if(row.taskId && this.scriptContext.tasksModified.indexOf(row.taskId) == -1){
@@ -584,37 +646,40 @@ EHR.sendEmail = function(config){
     if(!config.recipients)
         config.recipients = [];
 
-    if(this.scriptContext.verbosity > 0)
-        console.log('Sending email');
 
-    LABKEY.Query.selectRows({
-        schemaName: 'ehr',
-        queryName: 'notificationRecipients',
-        filterArray: [LABKEY.Filter.create('notificationType', config.notificationType, LABKEY.Filter.Types.EQUAL)],
-        success: function(data){
-            for(var i=0;i<data.rows.length;i++){
-                config.recipients.push(LABKEY.Message.createPrincipalRecipient(LABKEY.Message.recipientType.to, data.rows[i].recipient));
-
-                if(this.scriptContext.verbosity > 0)
-                    console.log('Recipient: '+data.rows[i].recipient);
-            }
-        },
-        failure: EHR.onFailure
-    });
-
-    if(config.recipients.length){
-        var siteEmail;
+    if(config.notificationType){
         LABKEY.Query.selectRows({
             schemaName: 'ehr',
-            queryName: 'module_properties',
-            filterArray: [LABKEY.Filter.create('prop_name', 'site_email', LABKEY.Filter.Types.EQUAL)],
+            queryName: 'notificationRecipients',
+            filterArray: [LABKEY.Filter.create('notificationType', config.notificationType, LABKEY.Filter.Types.EQUAL)],
             success: function(data){
-                if(data && data.rows && data.rows.length){
-                    siteEmail = data.rows[0].stringvalue;
+                for(var i=0;i<data.rows.length;i++){
+                    config.recipients.push(LABKEY.Message.createPrincipalIdRecipient(LABKEY.Message.recipientType.to, data.rows[i].recipient));
+
+                    if(this.scriptContext.verbosity > 0)
+                        console.log('Recipient: '+data.rows[i].recipient);
                 }
             },
             failure: EHR.onFailure
         });
+    }
+
+    if(config.recipients.length){
+        var siteEmail = config.msgFrom;
+        if(!siteEmail){
+            LABKEY.Query.selectRows({
+                schemaName: 'ehr',
+                queryName: 'module_properties',
+                scope: this,
+                filterArray: [LABKEY.Filter.create('prop_name', 'site_email', LABKEY.Filter.Types.EQUAL)],
+                success: function(data){
+                    if(data && data.rows && data.rows.length){
+                        siteEmail = data.rows[0].stringvalue;
+                    }
+                },
+                failure: EHR.onFailure
+            });
+        }
 
         if(!siteEmail){
             console.log('ERROR: site email not found');
@@ -622,12 +687,13 @@ EHR.sendEmail = function(config){
         }
 
         LABKEY.Message.sendMessage({
-            msgFrom: siteEmail || 'EHR-do-not-reply@primate.wisc.edu',
+            msgFrom: siteEmail,
             msgSubject: config.msgSubject,
             msgRecipients: config.recipients,
+            allowUnregisteredUser: true,
             msgContent: [
-                //LABKEY.Message.createMsgContent(LABKEY.Message.msgType.html, '<h2>This is a test message</h2>'),
-                LABKEY.Message.createMsgContent(LABKEY.Message.msgType.plain, config.msgContent)
+                LABKEY.Message.createMsgContent(LABKEY.Message.msgType.html, config.msgContent)
+                //LABKEY.Message.createMsgContent(LABKEY.Message.msgType.plain, config.msgContent)
             ]
         });
     }
@@ -768,6 +834,11 @@ EHR.verifyPermissions = function(event, scriptContext, row, oldRow){
 };
 
 EHR.validation = {
+    checkRestraint: function(row, errors){
+        if(row.restraint && !Ext.isDefined(row.restraintTime)){
+            EHR.addError(errors, 'restraintTime', 'Must enter time restrained if more than 45 mins', 'INFO');
+        }
+    },
     processErrors: function(row, errors, scriptErrors, errorThreshold, extraContext){
         var error;
         var totalErrors = 0;
@@ -861,13 +932,7 @@ EHR.validation = {
             var species = EHR.validation.getSpecies(row, errors);
 
             if(species == 'Unknown'){
-                var severity;
-                if(!scriptContext.extraContext.skipIdFormatCheck)
-                    severity = 'WARN';
-                else
-                    severity = 'INFO';
-
-                EHR.addError(errors, 'Id', 'Invalid Id Format', severity);
+                EHR.addError(errors, 'Id', 'Invalid Id Format', 'INFO');
             }
             else if (species == 'Infant') {
                 species = null;
@@ -992,7 +1057,8 @@ EHR.validation = {
     },
     getSpecies: function(row, errors){
         var species;
-        if (row.Id.match(/(^rh([0-9]{4})$)|(^r([0-9]{5})$)/))
+        if (row.Id.match(/(^rh([0-9]{4})$)|(^r([0-9]{5})$)|(^rh-([0-9]{3})$)|(^rh[a-z]{2}([0-9]{2})$)/))
+        //if (row.Id.match(/(^rh([0-9]{4})$)|(^r([0-9]{5})$)/))
             species = 'Rhesus';
         else if (row.Id.match(/^cy([0-9]{4})$/))
             species = 'Cynomolgus';
@@ -1561,6 +1627,7 @@ EHR.utils.getQCStateMap = function(config){
                     row = data.rows[i];
 
                     var prefix = 'org.labkey.ehr.security.EHR'+(row.Label).replace(/[^a-zA-Z0-9-]/g, '');
+                    row.adminPermissionName = prefix+'AdminPermission';
                     row.insertPermissionName = prefix+'InsertPermission';
                     row.updatePermissionName = prefix+'UpdatePermission';
                     row.deletePermissionName = prefix+'DeletePermission';
@@ -1608,6 +1675,7 @@ EHR.utils.getDatasetPermissions = function(config) {
         for (var qcState in qcMap.label){
             var qcRow = qcMap.label[qcState];
             qcRow.permissionsByQuery = {
+                admin: [],
                 insert: [],
                 update: [],
                 'delete': []
@@ -1624,6 +1692,10 @@ EHR.utils.getDatasetPermissions = function(config) {
 
                     //iterate over each permission this user has on this query
                     Ext.each(query.effectivePermissions, function(p){
+                        if(p == qcRow.adminPermissionName){
+                            qcRow.permissionsByQuery.admin.push(queryName);
+                            query.permissionsByQCState[qcState].admin = true;
+                        }
                         if(p == qcRow.insertPermissionName){
                             qcRow.permissionsByQuery.insert.push(queryName);
                             query.permissionsByQCState[qcState].insert = true;
@@ -1640,6 +1712,7 @@ EHR.utils.getDatasetPermissions = function(config) {
                 }
             }
 
+            qcRow.effectivePermissions.admin = (qcRow.permissionsByQuery.admin.length == queryCount);
             qcRow.effectivePermissions.insert = (qcRow.permissionsByQuery.insert.length == queryCount);
             qcRow.effectivePermissions.update = (qcRow.permissionsByQuery.update.length == queryCount);
             qcRow.effectivePermissions['delete'] = (qcRow.permissionsByQuery['delete'].length == queryCount);

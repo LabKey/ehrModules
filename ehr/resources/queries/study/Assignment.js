@@ -20,7 +20,6 @@ function setDescription(row, errors){
 }
 
 function onUpsert(context, errors, row, oldRow){
-
     if(context.extraContext.dataSource != 'etl'){
         EHR.validation.removeTimeFromDate(row, errors);
         EHR.validation.removeTimeFromDate(row, errors, 'enddate');
@@ -56,18 +55,38 @@ function onUpsert(context, errors, row, oldRow){
             failure: EHR.onFailure
         });
 
+        if(!context.extraContext.newIdsAdded)
+            context.extraContext.newIdsAdded = {};
+
+        if(protocol && !context.extraContext.newIdsAdded[protocol])
+            context.extraContext.newIdsAdded[protocol] = [];
+
         if(species && protocol){
             LABKEY.Query.selectRows({
                 schemaName: 'lists',
                 queryName: 'protocolTotalAnimalsBySpecies',
+                viewName: 'With Animals',
+                scope: this,
                 filterArray: [
                     LABKEY.Filter.create('species', species, LABKEY.Filter.Types.EQUAL),
                     LABKEY.Filter.create('protocol', protocol, LABKEY.Filter.Types.EQUAL)
                 ],
                 success: function(data){
                     if(data && data.rows && data.rows.length){
-                        if(data.rows[0].TotalRemaining <= 1)
-                            EHR.addError(errors, 'project', 'There are not enough spaces on protocol: '+protocol, 'WARN');
+                        var remaining = data.rows[0].TotalRemaining;
+
+                        if(context.extraContext.newIdsAdded[protocol]){
+                            remaining += context.extraContext.newIdsAdded[protocol].length;
+                        }
+
+                        var animals = data.rows[0].Animals;
+                        if(animals && animals.indexOf(row.Id)==-1){
+                            if(remaining <= 1)
+                                EHR.addError(errors, 'project', 'There are not enough spaces on protocol: '+protocol, 'WARN');
+
+                                if(context.extraContext.newIdsAdded[protocol] && context.extraContext.newIdsAdded[protocol].indexOf(row.Id)==-1)
+                                    context.extraContext.newIdsAdded[protocol].push(row.Id);
+                        }
                     }
                     else {
                         console.log('there was an error finding allowable animals per assignment')

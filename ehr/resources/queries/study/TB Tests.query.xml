@@ -72,6 +72,9 @@
                         <shownInInsertView>false</shownInInsertView>
 
                     </column>
+                    <column columnName="notPerformedAtCenter">
+                        <columnTitle>Not Performed At Center</columnTitle>
+                    </column>
                 </columns>
             </table>
         </tables>

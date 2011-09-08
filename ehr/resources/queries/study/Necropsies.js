@@ -65,6 +65,7 @@ function onBecomePublic(errors, scriptContext, row, oldRow){
                     LABKEY.Query.updateRows({
                         schemaName: 'study',
                         queryName: queryName,
+                        scope: this,
                         rows: [obj],
                         success: function(data){
                             console.log('Success updating '+queryName+' from necropsy for '+row.Id)
@@ -77,6 +78,7 @@ function onBecomePublic(errors, scriptContext, row, oldRow){
 //                    LABKEY.Query.insertRows({
 //                        schemaName: 'study',
 //                        queryName: queryName,
+//                        scope: this,
 //                        rows: [obj],
 //                        success: function(data){
 //                            console.log('Success inserting into '+queryName+' from necropsy for '+row.Id)

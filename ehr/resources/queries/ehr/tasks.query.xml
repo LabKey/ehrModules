@@ -30,7 +30,7 @@
                             <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                             <fkDbSchema>ehr</fkDbSchema>
                             <fkTable>formtypes</fkTable>
-                            <fkColumnName>type</fkColumnName>
+                            <fkColumnName>formtype</fkColumnName>
                         </fk>
                     </column>
                     <column columnName="assignedto">

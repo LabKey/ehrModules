@@ -560,6 +560,12 @@ EHR.ext.BloodSelector = Ext.extend(Ext.Panel, {
                 bodyBorder: false
             }
             ,items: [{
+                xtype: 'datefield'
+                ,fieldLabel: 'Date'
+                ,value: new Date()
+                ,hidden: !EHR.permissionMap.hasPermission('In Progress', 'admin', {queryName: 'Blood Draws', schemaName: 'study'})
+                ,ref: 'dateField'
+            },{
                 xtype: 'combo'
                 ,emptyText:''
                 ,fieldLabel: 'Area (optional)'
@@ -594,6 +600,10 @@ EHR.ext.BloodSelector = Ext.extend(Ext.Panel, {
                         }
                     }
                 }
+            },{
+                xtype: 'textfield'
+                ,ref: 'idField'
+                ,fieldLabel: 'Id (optional)'
             },{
                 emptyText:''
                 ,fieldLabel: 'Assigned To'
@@ -638,16 +648,17 @@ EHR.ext.BloodSelector = Ext.extend(Ext.Panel, {
         var room = (this.roomField ? this.roomField.getValue() : null);
         var area = (this.areaField ? this.areaField.getValue() : null);
         var billedby = (this.billedbyField ? this.billedbyField.getValue() : null);
+        var Id = (this.idField ? this.idField.getValue() : null);
 
-        if ((!room && !area) || !billedby)
+        if ((!room && !area && !Id) || !billedby)
         {
-            alert('Must provide a room or area and complete the \'assigned to\' field');
+            alert('Must provide a room, area or Id and complete the \'assigned to\' field');
             return;
         }
 
         var filterArray = [];
 
-        filterArray.push(LABKEY.Filter.create('date', new Date(), LABKEY.Filter.Types.DATE_EQUAL));
+        filterArray.push(LABKEY.Filter.create('date', this.dateField.getValue(), LABKEY.Filter.Types.DATE_EQUAL));
 
         filterArray.push(LABKEY.Filter.create('taskid', null, LABKEY.Filter.Types.ISBLANK));
         filterArray.push(LABKEY.Filter.create('drawStatus', 'Pending', LABKEY.Filter.Types.EQUAL));
@@ -660,6 +671,9 @@ EHR.ext.BloodSelector = Ext.extend(Ext.Panel, {
 
         if(billedby)
             filterArray.push(LABKEY.Filter.create('billedby', billedby, LABKEY.Filter.Types.EQUALS_ONE_OF));
+
+        if(Id)
+            filterArray.push(LABKEY.Filter.create('Id', Id, LABKEY.Filter.Types.EQUALS_ONE_OF));
 
         return filterArray;
     },
@@ -704,11 +718,17 @@ EHR.ext.BloodSelector = Ext.extend(Ext.Panel, {
         var obj;
         var dateVal = new Date();
         Ext.each(results.rows, function(row){
-            records.push({
+            obj = {
                 lsid: row.lsid,
                 taskid: this.parentPanel.formUUID,
                 date: dateVal
-            });
+            };
+
+            if(EHR.permissionMap && EHR.permissionMap.qcMap && EHR.permissionMap.qcMap.label['In Progress']){
+                obj.qcState = EHR.permissionMap.qcMap.label['In Progress'].RowId;
+            }
+
+            records.push(obj);
         }, this);
 
         if (this.targetStore){

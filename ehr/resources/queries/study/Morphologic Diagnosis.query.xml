@@ -169,6 +169,9 @@
                         <fkColumnName>objectid</fkColumnName>
                       </fk>
                     </column>
+                    <column columnName="remark">
+                        <columnTitle>Diagnosis</columnTitle>
+                    </column>
                 </columns>
             </table>
         </tables>
