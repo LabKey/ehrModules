@@ -29,6 +29,7 @@ import org.labkey.api.data.SQLFragment;
 import org.labkey.api.data.Table;
 import org.labkey.api.data.TableInfo;
 import org.labkey.api.module.ModuleLoader;
+import org.labkey.api.query.BatchValidationException;
 import org.labkey.api.query.QueryService;
 import org.labkey.api.query.QueryUpdateService;
 import org.labkey.api.query.UserSchema;
@@ -330,7 +331,10 @@ public class ETLRunnable implements Runnable
                             if (!isTargetEmpty) {
                                 updater.deleteRows(user, container, sourceRows, extraContext);
                             }
-                            updater.insertRows(user, container, sourceRows, extraContext);
+                            BatchValidationException errors = new BatchValidationException();
+                            updater.insertRows(user, container, sourceRows, errors, extraContext);
+                            if (errors.hasErrors())
+                                throw errors;
                             updates += sourceRows.size();
                             log.info("Updated " + updates + " records in " + targetTableName);
                             sourceRows.clear();
