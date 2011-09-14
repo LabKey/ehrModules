@@ -13,7 +13,8 @@ Ext.onReady(function ()
 
     new EHR.ext.DetailsView({
         schemaName: 'study',
-        queryName: 'necropsy',
+        queryName: 'Necropsies',
+        viewName: 'Summary',
         title: 'Necropsy Details:',
         renderTo: 'necropsyDetails',
         filterArray: [LABKEY.Filter.create('objectId', key, LABKEY.Filter.Types.EQUAL)]
@@ -38,23 +39,23 @@ Ext.onReady(function ()
      }).render('necropsyDiagnosis');
 
 
-//    new LABKEY.QueryWebPart({
-//        title: 'Histology',
-//        schemaName: 'study',
-//        queryName: 'histology',
-//        allowChooseQuery: false,
-//        allowChooseView: true,
-//        showInsertNewButton: false,
-//        showDeleteButton: false,
-//        showDetailsColumn: true,
-//        showUpdateColumn: false,
-//        showRecordSelectors: true,
-//        buttonBarPosition: 'top',
-//        filters: [LABKEY.Filter.create('parentId', key, LABKEY.Filter.Types.EQUAL)],
-//        sort: '-Date',
-//        scope: this,
-//        failure: EHR.utils.onError
-//     }).render('necropsyHistology');
+    new LABKEY.QueryWebPart({
+        title: 'Histology',
+        schemaName: 'study',
+        queryName: 'histology',
+        allowChooseQuery: false,
+        allowChooseView: true,
+        showInsertNewButton: false,
+        showDeleteButton: false,
+        showDetailsColumn: true,
+        showUpdateColumn: false,
+        showRecordSelectors: true,
+        buttonBarPosition: 'top',
+        filters: [LABKEY.Filter.create('parentId', key, LABKEY.Filter.Types.EQUAL)],
+        sort: '-Date',
+        scope: this,
+        failure: EHR.utils.onError
+     }).render('necropsyHistology');
 
 //    new LABKEY.QueryWebPart({
 //        title: 'Tissues',

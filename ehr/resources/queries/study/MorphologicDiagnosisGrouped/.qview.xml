@@ -4,12 +4,15 @@
       <column name="date"/>
       <column name="caseno" />
       <column name="seq1"/>
+      <column name="diagnosis"/>
       <column name="tissue"/>
+      <column name="tissue_qualifier"/>
       <column name="severity"/>
       <column name="duration"/>
       <column name="distribution"/>
       <column name="distribution2"/>
       <column name="inflammation"/>
+      <column name="inflammation2"/>
       <column name="etiology"/>
       <column name="process"/>
       <column name="process2"/>

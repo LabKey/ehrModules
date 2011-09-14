@@ -102,3 +102,9 @@ function setDescription(row, errors){
     return description;
 }
 
+function onInit(event, context){
+    context.allowDeadIds = true;
+    context.allowAnyId = true;
+    context.extraContext = context.extraContext || {};
+    context.extraContext.skipIdFormatCheck = true;
+}

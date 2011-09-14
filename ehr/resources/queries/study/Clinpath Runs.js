@@ -18,6 +18,35 @@ function onInit(event, context){
 function onUpsert(context, errors, row, oldRow){
     if(context.extraContext.dataSource != 'etl')
         EHR.validation.removeTimeFromDate(row, errors);
+
+    //lookup test type if not supplied:
+    if(!row.type && row.servicerequested){
+        context.clinPathTests = context.clinPathTests || {};
+        if(Ext.isDefined(context.clinPathTests[row.servicerequested])){
+            row.type = context.clinPathTests[row.servicerequested];
+        }
+        else {
+            LABKEY.Query.selectRows({
+                schemaName: 'ehr_lookups',
+                queryName: 'clinpath_tests',
+                columns: '*',
+                scope: this,
+                filterArray: [
+                    LABKEY.Filter.create('testname', row.servicerequested, LABKEY.Filter.Types.EQUAL)
+                ],
+                success: function(data){
+                    if(data && data.rows && data.rows.length==1){
+                        context.clinPathTests[row.servicerequested] = data.rows[0].dataset;
+                        row.type = context.clinPathTests[row.servicerequested];
+                    }
+                    else {
+                        context.clinPathTests[row.servicerequested] = null;
+                    }
+                },
+                failure: EHR.onFailure
+            });
+        }
+    }
 }
 
 

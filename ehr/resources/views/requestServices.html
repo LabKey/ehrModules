@@ -33,10 +33,10 @@ Ext.onReady(function(){
                     queryConfig:  {
                         schemaName: 'study',
                         queryName: 'Blood Draws',
-                        filters: [
-                            LABKEY.Filter.create('QCState/Label', 'Request', LABKEY.Filter.Types.STARTS_WITH)
-                        ]
-                        //viewName: 'Blood Summary'
+//                        filterArray: [
+//                            LABKEY.Filter.create('QCState/Label', 'Completed', LABKEY.Filter.Types.NOT_EQUAL)
+//                        ]
+                        viewName: 'Blood Requests'
                     }
                 },{
                     title: 'Clinpath Queue',
@@ -47,7 +47,6 @@ Ext.onReady(function(){
                         filters: [
                             LABKEY.Filter.create('QCState/Label', 'Request', LABKEY.Filter.Types.STARTS_WITH)
                         ]
-                        //viewName: 'Blood Summary'
                     }
                 },{
                     title: 'Procedure Queue',
@@ -86,7 +85,7 @@ Ext.onReady(function(){
     <!--<li><a href="<%=contextPath%>/ehr/WNPRC/EHR/manageRequest.view?formtype=Assignment%20Request">Request/Approve Assignment</a></li>-->
     <li><a href="<%=contextPath%>/ehr/WNPRC/EHR/manageRequest.view?formtype=Blood%20Draw%20Request">Request Blood Draws</a></li>
     <!--<li><a href="<%=contextPath%>/ehr/WNPRC/EHR/manageRequest.view?formtype=Housing%20Request">Request Housing Change</a></li>-->
-    <li><a href="<%=contextPath%>/ehr/WNPRC/EHR/manageRequest.view?formtype=Procedure%20Request">Request Procedure</a></li>
+    <!--<li><a href="<%=contextPath%>/ehr/WNPRC/EHR/manageRequest.view?formtype=Procedure%20Request">Request Procedure</a></li>-->
 <p/>
 
     <li><a href="<%=contextPath%>/ehr/WNPRC/EHR/manageRequest.view?formtype=Clinpath%20Request">Request Clinpath Services</a></li>

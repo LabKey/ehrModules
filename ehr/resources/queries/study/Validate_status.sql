@@ -10,13 +10,15 @@ a.id,
 a.status,
 a.calculated_status,
 a.birth,
+a.id.dataset.birth.date as birthTable,
 a.death,
+a.id.dataset.deaths.date as deathTable,
+
 a.arrivedate,
-a.id.MostRecentArrival.MostRecentArrival,
+a.id.MostRecentArrival.MostRecentArrival as MostRecentArrival,
 
 a.departdate,
-a.id.MostRecentDeparture.MostRecentDeparture,
-
+a.id.MostRecentDeparture.MostRecentDeparture as MostRecentDeparture,
 
 
 FROM study.demographics a
@@ -33,6 +35,10 @@ WHERE a.status is not null AND
 OR
 
 (a.status like 'd-%' AND a.calculated_status != 'Dead')
+
+OR
+
+(a.id.dataset.deaths.date is not null AND a.calculated_status != 'Dead')
 
 OR
 

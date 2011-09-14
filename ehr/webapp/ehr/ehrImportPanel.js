@@ -59,6 +59,26 @@ EHR.ext.Buttons = {
         scope: this
         }
     },
+    FORCESUBMIT: function(){return {
+        text: 'Force Submit',
+        name: 'submit',
+        requiredQC: 'Completed',
+        targetQC: 'Completed',
+        requiresAdmin: true,
+        errorThreshold: 'ERROR',
+        successURL: LABKEY.ActionURL.getParameter('srcURL') || LABKEY.ActionURL.buildURL("ehr", "dataEntry.view"),
+        disabled: true,
+        ref: 'foreceSubmitBtn',
+        handler: function(o){
+            Ext.Msg.confirm('Force Finalize Form', 'You are about to finalize this form.  Do you want to do this?', function(v){
+                if(v=='yes')
+                    this.onSubmit(o);
+            }, this);
+        },
+        disableOn: 'SEVERE',
+        scope: this
+        }
+    },
     FINALIZEDEATH: function(){return {
         text: 'Finalize Death',
         name: 'finalizeDeath',
@@ -353,7 +373,7 @@ EHR.ext.Buttons = {
         disabled: true,
         ref: 'requestBtn',
         handler: this.onSubmit,
-        disableOn: 'INFO',
+        disableOn: 'WARN',
         scope: this
         }
     },
@@ -501,6 +521,7 @@ Ext.extend(EHR.ext.ImportPanelBase, Ext.Panel, {
                 //'SCHEDULE',
                 'REVIEW',
                 'SUBMIT',
+                'FORCESUBMIT',
                 'DISCARD',
                 'CLOSE'
             ];

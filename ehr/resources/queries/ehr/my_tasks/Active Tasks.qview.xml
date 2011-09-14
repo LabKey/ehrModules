@@ -20,7 +20,7 @@
        <filter column="QCState/PublicData" operator="eq" value="false"/>
    </filters>
    <sorts>
-       <sort column="DueDate" descending="true"/>
+       <!--<sort column="DueDate" descending="true"/>-->
        <sort column="created" descending="true"/>
    </sorts>
 </customView>

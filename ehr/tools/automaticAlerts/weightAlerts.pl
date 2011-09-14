@@ -25,7 +25,7 @@ my $baseUrl = 'https://ehr.primate.wisc.edu/';
 my $studyContainer = 'WNPRC/EHR/';
 
 #whitespace separated list of emails
-my @email_recipients = qw(bimber@wisc.edu);
+my @email_recipients = qw(bimber@wisc.edu aschara@primate.wisc.edu aseil@primate.wisc.edu jfrank@primate.wisc.edu jrose@primate.wisc.edu smaves@primate.wisc.edu tomczak@primate.wisc.edu urbanski@primate.wisc.edu);
 my $mail_server = 'smtp.primate.wisc.edu';
 
 #emails will be sent from this address
@@ -37,6 +37,7 @@ use strict;
 use warnings;
 use Labkey::Query;
 use Net::SMTP;
+use MIME::Lite;
 use Data::Dumper;
 use Time::localtime;
 
@@ -165,22 +166,16 @@ sub processWeights {
 #close HTML;
 
 
-my $smtp = Net::SMTP->new($mail_server,
-    Timeout => 30,
-    Debug   => 0,
-);
-
-$smtp->mail( $from );
-$smtp->recipient(@email_recipients, { Notify => ['FAILURE'], SkipBad => 1 });  
-
-$smtp->data();
-$smtp->datasend("Subject: Weight Alerts: $datestr\n");
-$smtp->datasend("Content-Transfer-Encoding: US-ASCII\n");
-$smtp->datasend("Content-Type: text/html; charset=\"US-ASCII\" \n");
-$smtp->datasend("\n");
-$smtp->datasend($email_html);
-$smtp->dataend();
-
-$smtp->quit;
+my $smtp = MIME::Lite->new(
+          To      =>join(", ", @email_recipients),
+          From    =>$from,
+          Subject =>"Subject: Weight Alerts: $datestr",
+          Type    =>'multipart/alternative'
+          );
+$smtp->attach(Type => 'text/html',
+          Encoding => 'quoted-printable',
+          Data	 => $email_html
+);         
+$smtp->send();
 
 

@@ -30,6 +30,8 @@ function setDescription(row, errors){
         description.push('Distribution: '+EHR.validation.snomedToString(row.distribution2));
     if (row.inflammation)
         description.push('Inflammation: '+EHR.validation.snomedToString(row.inflammation));
+    if (row.inflammation2)
+        description.push('Inflammation: '+EHR.validation.snomedToString(row.inflammation2));
     if (row.etiology)
         description.push('Etiology: '+EHR.validation.snomedToString(row.etiology));
     if (row.process)

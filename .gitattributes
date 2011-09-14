@@ -31,6 +31,7 @@ EHR_ComplianceDB/queries/lists/EmployeeUsers.query.xml -text
 EHR_ComplianceDB/queries/lists/EmployeeUsers.sql -text
 EHR_ComplianceDB/queries/lists/Employees.js -text
 EHR_ComplianceDB/queries/lists/Employees.query.xml -text
+EHR_ComplianceDB/queries/lists/ProtocolProcedures.query.xml -text
 EHR_ComplianceDB/queries/lists/RequirementsList.js -text
 EHR_ComplianceDB/queries/lists/SOP[!!-~]Comparison.sql -text
 EHR_ComplianceDB/queries/lists/SOPDateLastRead.sql -text
@@ -48,6 +49,7 @@ EHR_ComplianceDB/queries/lists/completionDates/.qview.xml -text
 EHR_ComplianceDB/queries/lists/completionDates/Training.qview.xml -text
 EHR_ComplianceDB/queries/lists/employees/LabKey[!!-~]User.qview.xml -text
 EHR_ComplianceDB/queries/lists/employees/No[!!-~]Personal[!!-~]Info.qview.xml -text
+EHR_ComplianceDB/schemas/dbscripts/postgresql/EHR_ComplianceDB-00.00-11.10.sql -text
 EHR_ComplianceDB/schemas/ehr_compliancedb.xml -text
 EHR_ComplianceDB/scripts/ehr_compliancedb/updateTable.js -text
 EHR_ComplianceDB/views/Guest_SOP_submission.html -text
@@ -228,10 +230,20 @@ ehr/resources/queries/ehr/TasksByProject/.qview.xml -text
 ehr/resources/queries/ehr/TasksByProject/Data[!!-~]Entry.qview.xml -text
 ehr/resources/queries/ehr/Tasks_DataEntry.query.xml -text
 ehr/resources/queries/ehr/Tasks_DataEntry.sql -text
+ehr/resources/queries/ehr/Tasks_DataEntry/.qview.xml -text
+ehr/resources/queries/ehr/Tasks_DataEntry/Active[!!-~]Tasks.qview.xml -text
+ehr/resources/queries/ehr/Tasks_DataEntry/All[!!-~]Tasks.qview.xml -text
+ehr/resources/queries/ehr/Tasks_DataEntry/Next[!!-~]7[!!-~]Days.qview.xml -text
+ehr/resources/queries/ehr/Tasks_DataEntry/Overdue[!!-~]Tasks.qview.xml -text
+ehr/resources/queries/ehr/Tasks_DataEntry/Previous[!!-~]30[!!-~]Days.qview.xml -text
+ehr/resources/queries/ehr/Tasks_DataEntry/Review[!!-~]Required.qview.xml -text
+ehr/resources/queries/ehr/Tasks_DataEntry/Today.qview.xml -text
 ehr/resources/queries/ehr/cage_observations.js -text
 ehr/resources/queries/ehr/cage_observations.query.xml -text
 ehr/resources/queries/ehr/cage_observations/.qview.xml -text
 ehr/resources/queries/ehr/client_errors.js -text
+ehr/resources/queries/ehr/formtemplates.js -text
+ehr/resources/queries/ehr/formtypes.js -text
 ehr/resources/queries/ehr/formtypes.query.xml -text
 ehr/resources/queries/ehr/kinship.query.xml -text
 ehr/resources/queries/ehr/kinship/.qview.xml -text
@@ -263,11 +275,8 @@ ehr/resources/queries/ehr/tasks.query.xml -text
 ehr/resources/queries/ehr/tasks/.qview.xml -text
 ehr/resources/queries/ehr/tasks/Active[!!-~]Tasks.qview.xml -text
 ehr/resources/queries/ehr/tasks/All[!!-~]Tasks.qview.xml -text
-ehr/resources/queries/ehr/tasks/Next[!!-~]7[!!-~]Days.qview.xml -text
 ehr/resources/queries/ehr/tasks/Overdue[!!-~]Tasks.qview.xml -text
-ehr/resources/queries/ehr/tasks/Previous[!!-~]30[!!-~]Days.qview.xml -text
 ehr/resources/queries/ehr/tasks/Review[!!-~]Required.qview.xml -text
-ehr/resources/queries/ehr/tasks/Today.qview.xml -text
 ehr/resources/queries/ehr_lookups/AbnormalCages.sql -text
 ehr/resources/queries/ehr_lookups/ageclass.query.xml -text
 ehr/resources/queries/ehr_lookups/alopecia_score.query.xml -text
@@ -487,6 +496,7 @@ ehr/resources/queries/study/MorphologicDiagnosisGrouped/.qview.xml -text
 ehr/resources/queries/study/Necropsies.js -text
 ehr/resources/queries/study/Necropsies.query.xml -text
 ehr/resources/queries/study/Necropsies/.qview.xml -text
+ehr/resources/queries/study/Necropsies/Summary.qview.xml -text
 ehr/resources/queries/study/Necropsy[!!-~]Diagnosis.js -text
 ehr/resources/queries/study/Necropsy[!!-~]Diagnosis.query.xml -text
 ehr/resources/queries/study/Necropsy[!!-~]Diagnosis/.qview.xml -text
@@ -618,6 +628,7 @@ ehr/resources/queries/study/colonyPopulationByAge.query.xml -text
 ehr/resources/queries/study/colonyPopulationByAge.sql -text
 ehr/resources/queries/study/colonyPopulationChange.query.xml -text
 ehr/resources/queries/study/colonyPopulationChange.sql -text
+ehr/resources/queries/study/colonyPopulationChange/.qview.xml -text
 ehr/resources/queries/study/colonyPopulationSummary.query.xml -text
 ehr/resources/queries/study/colonyPopulationSummary.sql -text
 ehr/resources/queries/study/demographics/.qview.xml -text
@@ -793,6 +804,9 @@ ehr/resources/queries/study/necropsyParent.query.xml -text
 ehr/resources/queries/study/necropsyParent.sql -text
 ehr/resources/queries/study/private.query.xml -text
 ehr/resources/queries/study/private.sql -text
+ehr/resources/queries/study/restraintUsed.query.xml -text
+ehr/resources/queries/study/restraintUsed.sql -text
+ehr/resources/queries/study/restraintUsed/.qview.xml -text
 ehr/resources/queries/study/studyData.query.xml -text
 ehr/resources/queries/study/studyDataAssignmentAtTime.query.xml -text
 ehr/resources/queries/study/studyDataAssignmentAtTime.sql -text
@@ -899,6 +913,8 @@ ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-11.142-11.143.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-11.143-11.144.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-11.144-11.145.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-11.145-11.146.sql -text
+ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-11.146-11.2.sql -text
+ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-11.2-11.21.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/EHR-11.10-11.102.sql -text
 ehr/resources/schemas/ehr.xml -text
 ehr/resources/schemas/ehr_lookups.xml -text
@@ -942,6 +958,7 @@ ehr/resources/views/manageRecord.html -text
 ehr/resources/views/manageRecord.view.xml -text
 ehr/resources/views/manageRequest.html -text
 ehr/resources/views/manageTask.html -text
+ehr/resources/views/moreReports.html -text
 ehr/resources/views/necropsyDetails.html -text
 ehr/resources/views/participantView.html -text
 ehr/resources/views/populationOverview.html -text

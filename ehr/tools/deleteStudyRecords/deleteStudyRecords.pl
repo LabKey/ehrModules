@@ -51,8 +51,8 @@ my $baseUrl = 'https://localhost/';
 my $tm = localtime;
 my $datestr=sprintf("%04d%02d%02d_%02d%02d", $tm->year+1900, ($tm->mon)+1, $tm->mday, $tm->hour, $tm->min);
 
-my $sevenDaysAgo = localtime( ( time() - ( 7 * 24 * 60 * 60 ) ) );
-$sevenDaysAgo = sprintf("%04d-%02d-%02d", $sevenDaysAgo->year+1900, ($sevenDaysAgo->mon)+1, $sevenDaysAgo->mday);
+my $twoDaysAgo = localtime( ( time() - ( 2 * 24 * 60 * 60 ) ) );
+$twoDaysAgo = sprintf("%04d-%02d-%02d", $twoDaysAgo->year+1900, ($twoDaysAgo->mon)+1, $twoDaysAgo->mday);
 
 #if(-e $lock_file){
 #    print "$datestr\tLock file present\n";
@@ -91,13 +91,13 @@ sub doDelete {
 	);	
 	handleResults($results, $schema, $query, $pk);	
 
-	#and delete anything with a QCState of "Request: Denied" modified more than 7 days ago.
+	#and delete anything with a QCState of "Request: Denied" modified more than 2 days ago.
 	$results = Labkey::Query::selectRows(
 		-baseUrl => $baseUrl,
 		-containerPath => $default_container,
 		-schemaName => $schema,
 		-queryName => $query,
-		-filterArray => [['QCState/Label', 'eq', 'Request: Denied'], ['modified', 'datelt', $sevenDaysAgo]],
+		-filterArray => [['QCState/Label', 'eq', 'Request: Denied'], ['modified', 'datelt', $twoDaysAgo]],
 		-columns => $columns,
 		#-debug => 1,
 	);	

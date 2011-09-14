@@ -41,6 +41,7 @@ initComponent: function(){
     }
 
     this.queryConfig = {
+        requiredVersion: 9.1,
         queryName: this.queryName,
         schemaName: this.schemaName,
         viewName: this.viewName,
@@ -112,19 +113,17 @@ loadQuery: function(){
         for (var i=0;i<data.columnModel.length;i++){
             var col = data.columnModel[i];
             var meta = data.metaData.fields[i];
-            var url = row['_labkeyurl_'+col.dataIndex];
 
             if (!meta.hidden){
-                var value = row[col.dataIndex];
-
+                var value = row[col.dataIndex].displayValue || row[col.dataIndex].value;
                 thePanel.add({
                     fieldLabel: col.header,
                     xtype: 'displayfield',
-                    value: (url ? '<a href="'+url+'" target="new">'+value+'</a>' : value)
+                    value: (row[col.dataIndex].url ? '<a href="'+row[col.dataIndex].url+'" target="new">'+value+'</a>' : value)
                 });
 
                 if (this.titleField == col.dataIndex){
-                    thePanel.title += ': '+row[col.dataIndex];
+                    thePanel.title += ': '+value;
                 }
             }
         }

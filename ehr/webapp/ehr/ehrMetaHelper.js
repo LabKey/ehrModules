@@ -417,13 +417,12 @@ EHR.ext.metaHelper = {
 //            if(record.json && record.json[meta.name] && record.json[meta.name].displayValue)
 //                return record.json[meta.name].displayValue;
 
+            var displayType = meta.type;
+
             //NOTE: this is substantially changed over FormHelper
             if(meta.lookup && meta.lookups!==false){
-
-//                if(meta.lookup.queryName=='snomed')
-//                    console.log('WARNING: unfiltered snomed renderer');
-
                 data = EHR.ext.metaHelper.lookupRenderer(meta, data, grid, record, rowIndex);
+                displayType = 'string';
             }
 
             if(null === data || undefined === data || data.toString().length == 0)
@@ -435,7 +434,7 @@ EHR.ext.metaHelper = {
                 displayValue = renderer(data, cellMetaData, record, rowIndex, colIndex, store);
             }
             else {
-                switch (meta.type)
+                switch (displayType)
                 {
                     case "date":
                         var date = new Date(data);

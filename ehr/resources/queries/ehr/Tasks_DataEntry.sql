@@ -22,5 +22,3 @@ description
 
 
 FROM ehr.tasks t
-
-WHERE ISMEMBEROF(t.assignedto)

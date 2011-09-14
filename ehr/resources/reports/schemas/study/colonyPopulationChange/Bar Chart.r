@@ -18,8 +18,9 @@ png(filename="${imgout:barchart}",
     height=(500),
     #type="cairo"
     );
+#print(str(labkey.data));
 
-data <- table(labkey.data$category, labkey.data$species);
+data <- table(labkey.data$category, labkey.data$id_dataset_demographics_species);
 barplot(data,
     main="Population Change By Species",
     xlab="Category",
@@ -30,7 +31,7 @@ barplot(data,
 
 dev.off();
 
-theTable <- table(factor(labkey.data$species), labkey.data$category)
+theTable <- table(factor(labkey.data$id_dataset_demographics_species), labkey.data$category)
 theTable
 
 #write(theTable, file="${tsvout:table}")

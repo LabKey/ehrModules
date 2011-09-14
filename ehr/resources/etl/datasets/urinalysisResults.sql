@@ -13,7 +13,7 @@ FROM
 SELECT
 id,
 date,
-'bilirubin' as TestID,
+'BILIRUBIN' as TestID,
 bilirubin as stringResults,
 null as result,
 null as Units,
@@ -32,7 +32,7 @@ UNION ALL
 SELECT
 id,
 date,
-'ketone' as TestID,
+'KETONE' as TestID,
 ketone as stringResults,
 null as result,
 null as Units,
@@ -52,7 +52,7 @@ UNION ALL
 SELECT
 id,
 date,
-'sp_gravity' as TestID,
+'SP_GRAVITY' as TestID,
 null as stringResults,
 sp_gravity as result,
 null as Units,
@@ -71,7 +71,7 @@ UNION ALL
 SELECT
 id,
 date,
-'blood' as TestID,
+'BLOOD' as TestID,
 blood as stringResults,
 null as result,
 null as Units,
@@ -109,7 +109,7 @@ UNION ALL
 SELECT
 id,
 date,
-'protein' as TestID,
+'PROTEIN' as TestID,
 protein as stringResults,
 null as result,
 null as Units,
@@ -128,7 +128,7 @@ UNION ALL
 SELECT
 id,
 date,
-'urobilinogen' as TestID,
+'UROBILINOGEN' as TestID,
 urobilinogen as stringResults,
 null as result,
 null as Units,
@@ -147,7 +147,7 @@ UNION ALL
 SELECT
 id,
 date,
-'nitrite' as TestID,
+'NITRITE' as TestID,
 nitrite as stringResults,
 null as result,
 null as Units,
@@ -167,7 +167,7 @@ UNION ALL
 SELECT
 id,
 date,
-'leukocytes' as TestID,
+'LEUKOCYTES' as TestID,
 leucocytes as stringResults,
 null as result,
 null as Units,
@@ -186,7 +186,7 @@ UNION ALL
 SELECT
 id,
 date,
-'appearance' as TestID,
+'APPEARANCE' as TestID,
 appearance as stringResults,
 null as result,
 null as Units,
@@ -205,7 +205,7 @@ UNION ALL
 SELECT
 id,
 date,
-'microscopic' as TestID,
+'MICROSCOPIC' as TestID,
 microscopic as stringResults,
 null as result,
 null as Units,
@@ -224,7 +224,7 @@ UNION ALL
 SELECT
 id,
 date,
-'glucose' as TestID,
+'GLUC' as TestID,
 glucose as stringResults,
 null as result,
 null as Units,

@@ -5,16 +5,19 @@
  */
 
 --PARAMETERS(StartDate TIMESTAMP DEFAULT '1990-01-01', EndDate TIMESTAMP DEFAULT '2015-01-01', PROTOCOL CHAR DEFAULT NULL, PROJECT INTEGER DEFAULT null)
-PARAMETERS(StartDate TIMESTAMP, EndDate TIMESTAMP, PROTOCOL CHAR, PROJECT INTEGER)
+PARAMETERS(StartDate TIMESTAMP, EndDate TIMESTAMP, PROTOCOL CHAR,
+PROJECT INTEGER DEFAULT null
+--PROJECT CHAR DEFAULT null
+)
 
 SELECT
 h.lsid,
 h.id,
 h.date,
 h.enddate,
-h.enddateCoalesce,
-h.StartDateParam,
-h.EndDateParam,
+-- h.enddateCoalesce,
+-- h.StartDateParam,
+-- h.EndDateParam,
 h.project,
 h.protocol,
 h.avail,
@@ -46,7 +49,7 @@ FROM (
 
 WHERE
 
-(h.project = CAST(PROJECT AS INTEGER) OR CAST(PROJECT AS INTEGER) is null) AND
+(h.project = PROJECT OR PROJECT is null) AND
 
 (h.project.protocol = PROTOCOL OR PROTOCOL IS NULL OR PROTOCOL = '') AND
 

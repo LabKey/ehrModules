@@ -234,7 +234,7 @@ EHR.ext.StoreCollection = Ext.extend(Ext.util.MixedCollection, {
                     //handle validation script errors and exceptions differently
                     if(error.errors && error.errors.length){
                         this.handleValidationErrors(error, response, serverError.extraContext);
-                        msg = "Could not save changes due to errors.  Please check the form for fields marked in red.";
+                        msg = error.exception || "Could not save changes due to errors.  Please check the form for fields marked in red.";
                     }
 //                    else {
 //                        //if an exception was thrown, I believe we automatically only have one error returned

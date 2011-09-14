@@ -1,0 +1,59 @@
+<query xmlns="http://labkey.org/data/xml/query">
+    <metadata>
+        <tables xmlns="http://labkey.org/data/xml">
+            <table tableName="restraintUsed" tableDbType="TABLE">
+                <columns>
+                    <column columnName="project">
+                        <fk>
+                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
+                            <fkDbSchema>lists</fkDbSchema>
+                            <fkTable>project</fkTable>
+                            <fkColumnName>project</fkColumnName>
+                        </fk>
+                    </column>
+                    <column columnName="date">
+                        <columnTitle>Begin Date</columnTitle>
+                        <formatString>yyyy-MM-dd HH:mm</formatString>
+                    </column>
+                    <column columnName="restraintCode">
+                        <datatype>varchar</datatype>
+                        <columnTitle>Code</columnTitle>
+                        <fk>
+                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
+                            <fkDbSchema>ehr_lookups</fkDbSchema>
+                            <fkTable>snomed</fkTable>
+                            <fkColumnName>code</fkColumnName>
+                        </fk>
+                    </column>
+                    <column columnName="enddate">
+                        <columnTitle>End Date</columnTitle>
+                        <formatString>yyyy-MM-dd H:mm</formatString>
+                        <isHidden>false</isHidden>
+                    </column>
+                    <column columnName="restraint">
+                        <columnTitle>Restraint</columnTitle>
+                        <fk>
+                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
+                            <fkDbSchema>ehr_lookups</fkDbSchema>
+                            <fkTable>restraint_type</fkTable>
+                            <fkColumnName>type</fkColumnName>
+                        </fk>
+                    </column>
+                    <column columnName="restraintTime">
+                        <columnTitle>Time Restrained (Mins)</columnTitle>
+                    </column>
+                  <column columnName="taskid">
+                    <datatype>varchar</datatype>
+                    <columnTitle>Task Id</columnTitle>
+                        <fk>
+                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
+                            <fkDbSchema>ehr</fkDbSchema>
+                            <fkTable>tasks</fkTable>
+                            <fkColumnName>taskid</fkColumnName>
+                        </fk>
+                  </column>
+                </columns>
+            </table>
+        </tables>
+    </metadata>
+</query>

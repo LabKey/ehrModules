@@ -142,6 +142,11 @@ EHR.ext.Metadata.Standard = {
         ,room: {
             editorConfig: {listWidth: 200}
         }
+        ,testid: {
+            colModel: {
+                showLink: false
+            }
+        }
         ,begindate: {
             xtype: 'xdatetime',
             hidden: true,
@@ -619,7 +624,10 @@ EHR.ext.Metadata.Standard = {
                 }
             }
             ,sire: {lookups: false}
-            ,dam: {lookups: false}
+            ,dam: {
+                lookups: false
+                ,allowBlank: false
+            }
             ,project: {hidden: true}
             ,performedby: {hidden: true}
             ,account: {hidden: true}
@@ -780,6 +788,10 @@ EHR.ext.Metadata.Standard = {
 
         },
         'Clinpath Runs': {
+            date: {
+                xtype: 'datefield',
+                format: 'Y-m-d'
+            },
             collectionMethod : {shownInGrid: false},
             //collectedBy : {shownInGrid: false},
             //sampleType : {shownInGrid: false},
@@ -821,7 +833,8 @@ EHR.ext.Metadata.Standard = {
                 }
             },
             type: {
-                showInGrid: false
+                showInGrid: false,
+                xtype: 'displayfield'
             },
             objectid: {
                 setInitialValue: function(v, rec)
@@ -847,8 +860,8 @@ EHR.ext.Metadata.Standard = {
                     return v ? v : new Date()
                 },
                 colModel: {
-                    fixed: true,
-                    width: 110
+                    //fixed: true,
+                    width: 100
                 },
                 shownInGrid: true
             }
@@ -856,8 +869,8 @@ EHR.ext.Metadata.Standard = {
                 xtype: 'datefield',
                 format: 'Y-m-d',
                 colModel: {
-                    fixed: true,
-                    width: 110
+                    //fixed: true,
+                    width: 100
                 }
                 //shownInGrid: false
             }
@@ -892,13 +905,21 @@ EHR.ext.Metadata.Standard = {
                         }
                     }
                     ,decimalPrecision: 3
+                },
+                header: 'Vol',
+                colModel: {
+                    width: 50
                 }
             }
             ,vol_units: {
-                compositeField: 'Volume'
+                compositeField: 'Volume',
 //                editorConfig: {
 //                    fieldLabel: null
 //                }
+                header: 'Vol Units',
+                colModel: {
+                    width: 50
+                }
             }
             ,concentration: {
                 shownInGrid: false,
@@ -1951,7 +1972,7 @@ EHR.ext.Metadata.Standard = {
             ,project: {shownInGrid: false, allowBlank: false}
             ,requestor: {shownInGrid: false, hidden: true, formEditorConfig:{readOnly: true}}
             ,performedby: {shownInGrid: false}
-            ,instructions: {shownInGrid: false, formEditorConfig:{xtype: 'displayfield', readOnly: true}}
+            ,instructions: {shownInGrid: false}
             ,assayCode: {
                 xtype: 'trigger'
                 ,shownInGrid: false
@@ -2401,6 +2422,7 @@ EHR.ext.Metadata.Task = {
         ,'Blood Draws': {
             requestor:{xtype: 'displayfield'},
             performedby: {allowBlank: false},
+            billedby: {allowBlank: false},
             daterequested: {
                 hidden: false,
                 xtype: 'datefield',
@@ -2409,11 +2431,11 @@ EHR.ext.Metadata.Task = {
                 }
             }
         }
-//        ,Deaths: {
-//            cause: {
-//                hidden: true
-//            }
-//        }
+        ,Deaths: {
+            tattoo: {
+                allowBlank: false
+            }
+        }
     }
 };
 
@@ -2971,7 +2993,43 @@ EHR.ext.Metadata.Necropsy = {
             },
             Id: {
                 parentConfig: null,
-                hidden: false
+                hidden: false,
+                allowAnyId: true
+//                xtype: 'trigger',
+//                editorConfig: {
+//                    triggerClass: 'x-form-search-trigger',
+//                    onTriggerClick: function (){
+//                        Ext.Msg.confirm('Find Next PD Number In Series', 'Clicking OK will find the next available PD number for infant deaths.', function(v){
+//                            if(v == 'yes'){
+//                                var prefix = 'pd';
+//                                var year = new Date().getFullYear().toString().slice(2);
+//                                var sql = "SELECT cast(SUBSTRING(MAX(id), 5, 6) AS INTEGER) as num FROM study.prenatal WHERE Id LIKE '" + prefix + year + "%'";
+//                                LABKEY.Query.executeSql({
+//                                    schemaName: 'study',
+//                                    sql: sql,
+//                                    scope: this,
+//                                    success: function(data){
+//                                        var caseno;
+//                                        if(data.rows && data.rows.length==1){
+//                                            caseno = data.rows[0].num;
+//                                            caseno++;
+//                                        }
+//                                        else {
+//                                            //console.log('no existing IDs found');
+//                                            caseno = 1;
+//                                        }
+//
+//                                        caseno = EHR.utils.padDigits(caseno, 2);
+//                                        var val = prefix + year + caseno;
+//                                        this.setValue(val);
+//                                        this.fireEvent('change', val)
+//                                    },
+//                                    failure: EHR.onFailure
+//                                });
+//                            }
+//                        }, this);
+//                    }
+//                },
             },
             date: {
                 parentConfig: null,
@@ -3506,7 +3564,7 @@ EHR.ext.FormColumns = {
     'Necropsy Diagnosis': EHR.ext.topCols+',tissue,severity,duration,distribution,process,'+EHR.ext.bottomCols,
     Necropsies: EHR.ext.topCols+',tattoo,caseno,performedby,assistant,billing,nhpbmd,timeofdeath,causeofdeath,mannerofdeath,perfusion_area,perfusion_soln1,perfusion_time1,perfusion_soln2,perfusion_time2,grossdescription,'+EHR.ext.bottomCols,
     'Notes': EHR.ext.topCols+',userid,category,value,'+EHR.ext.bottomCols,
-    'Morphologic Diagnosis': EHR.ext.topCols+',remark,tissue,inflammation,etiology,process,process2,performedBy,qcstate,'+EHR.ext.hiddenCols,
+    'Morphologic Diagnosis': EHR.ext.topCols+',remark,tissue,tissue_qualifier,inflammation,inflammation2,etiology,process,process2,performedBy,qcstate,'+EHR.ext.hiddenCols,
     //,severity,duration,distribution,distribution2
     'Pair Tests': EHR.ext.topCols+',partner,bhav,testno,sharedFood,aggressions,affiliation,conclusion,'+EHR.ext.bottomCols,
     'Parasitology Results': EHR.ext.topCols+',organism,method,result,units,qualresult,'+EHR.ext.bottomCols,

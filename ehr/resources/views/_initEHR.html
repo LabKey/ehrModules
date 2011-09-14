@@ -74,26 +74,30 @@ function btn1(){
     var fields = ('formtype,category,userid,description,permitsSingleIdOnly,configJson').split(',');
     var data = [
         ['Physical Exam', 'Task', '', '', 'TRUE', '{"taskHeaderMetaSources":["Task","Encounter","PE"]}'],
-        ['Irregular Observations', 'Task', '', '', '', '{"allowableButtons":["VALIDATE","REVIEW","SUBMIT","DISCARD"]}'],
+        ['Irregular Observations', 'Task', '', '', '', '{"allowableButtons":["VALIDATE","REVIEW","SUBMIT","FORCESUBMIT","DISCARD"]}'],
         ['Blood Draws', 'Task', '', '', '', ''],
-        ['MPR', 'Task', '', '', 'TRUE', '{"taskHeaderMetaSources":["Task","Encounter"],"allowableButtons":["VALIDATE","SAVEDRAFT","REVIEW","SUBMITADMIN","DISCARD","CLOSE"]}'],
-        ['Necropsy', 'Task', '', '', 'TRUE', '{"taskHeaderMetaSources":["Task","Encounter","Necropsy"],"allowableButtons":["VALIDATE","SAVEDRAFT","REVIEW","SUBMIT","FINALIZEDEATH","DISCARD","CLOSE"]}'],
+        ['MPR', 'Task', '', '', 'TRUE', '{"taskHeaderMetaSources":["Task","Encounter"],"allowableButtons":["VALIDATE","SAVEDRAFT","REVIEW","SUBMITADMIN","FORCESUBMIT","DISCARD","CLOSE"]}'],
+        ['Necropsy', 'Task', '', '', 'TRUE', '{"taskHeaderMetaSources":["Task","Encounter","Necropsy"],"allowableButtons":["VALIDATE","SAVEDRAFT","REVIEW","SUBMIT","FORCESUBMIT","FINALIZEDEATH","DISCARD","CLOSE"]}'],
         ['TB Tests', 'Task', '', '', '', ''],
         ['Weight', 'Task', '', '', '', ''],
-        ['Housing', 'Task', '', '', '', '{"allowableButtons":["VALIDATE","SUBMIT","DISCARD"]}'],
+        ['Housing', 'Task', '', '', '', '{"allowableButtons":["VALIDATE","SUBMIT","FORCESUBMIT","DISCARD"]}'],
         ['Blood Draw Request', 'Request', '', '', '', ''],
-        ['Housing Request', 'Request', '', '', '', '{"allowableButtons":["VALIDATE","SUBMIT","DISCARD"]}'],
+        ['Housing Request', 'Request', '', '', '', '{"allowableButtons":["VALIDATE","SUBMIT","FORCESUBMIT","DISCARD"]}'],
         ['Procedure Request', 'Request', '', '', '', ''],
         ['Clinpath Request', 'Request', '', '', '', ''],
-        ['Problem List', 'Task', '', '', '', '{"allowableButtons":["VALIDATE","SUBMIT","DISCARD"]}'],
+        ['Problem List', 'Task', '', '', '', '{"allowableButtons":["VALIDATE","SUBMIT","FORCESUBMIT","DISCARD"]}'],
         ['Clinpath', 'Task', '', '', '', '{"reviewRequiredRecipient":"pathology admins"}'],
-        ['Treatments', 'Task', '', '', '', '{"allowableButtons":["VALIDATE","SUBMIT","DISCARD"]}'],
-        ['Treatment Orders', 'Task', '', '', '', '{"allowableButtons":["VALIDATE","SUBMIT","DISCARD"]}'],
-        ['Birth', 'Task', '', '', '', '{"allowableButtons":["VALIDATE","SUBMIT","DISCARD"]}'],
+        ['Treatments', 'Task', '', '', '', '{"allowableButtons":["VALIDATE","SUBMIT","FORCESUBMIT","DISCARD"]}'],
+        ['Treatment Orders', 'Task', '', '', '', '{"allowableButtons":["VALIDATE","SUBMIT","FORCESUBMIT","DISCARD"]}'],
+        ['Birth', 'Task', '', '', '', '{"allowableButtons":["VALIDATE","SUBMIT","FORCESUBMIT","DISCARD"]}'],
         ['Biopsy', 'Task', '', '', 'TRUE', '{"taskHeaderMetaSources":["Task","Encounter"]}'],
-        ['Treatments2', 'Task', '', '', '', '{"allowableButtons":["VALIDATE","SUBMIT","DISCARD"]}'],
+        ['Treatments2', 'Task', '', '', '', '{"allowableButtons":["VALIDATE","SUBMIT","FORCESUBMIT","DISCARD"]}'],
         ['Physical Exam - NWM', 'Task', '', '', 'TRUE', '{"taskHeaderMetaSources":["Task","Encounter","NWM_PE"]}'],
-        ['Assignment', 'Task', '', '', '', '{"allowableButtons":["VALIDATE","SUBMIT","DISCARD"]}']
+        ['Assignment', 'Task', '', '', '', '{"allowableButtons":["VALIDATE","SUBMIT","FORCESUBMIT","DISCARD"]}'],
+        ['Surgery', 'Task', '', '', 'TRUE', '{"taskHeaderMetaSources":["Task","Encounter"],"allowableButtons":["VALIDATE","SAVEDRAFT","REVIEW","SUBMITADMIN","FORCESUBMIT","DISCARD","CLOSE"]}'],
+        ['Arrival', 'Task', '', '', '', '{"allowableButtons":["VALIDATE","SUBMIT","FORCESUBMIT","DISCARD"]}'],
+        ['SimpleRemark', 'Task', '', '', '', ''],
+        ['Death', 'Task', '', '', '', '{"allowableButtons":["VALIDATE","SUBMIT","DISCARD"]}']
     ];
 
     LABKEY.Query.insertRows(makeObject(config, data, fields));
@@ -128,8 +132,8 @@ function btn2(){
         ['Clinpath' ,'formSections' ,'ehr-abstractpanel' ,'1' ,'', '', '', '', '', '', ''],
         ['Clinpath' ,'formHeaders' ,'ehr-gridformpanel' ,'2' ,'Clinpath Runs', 'study', '', 'Task,Assay', '', '', ''],
         ['Clinpath' ,'formSections' ,'ehr-gridformpanel' ,'3' ,'Bacteriology Results', 'study', '', 'Task,Assay', '', '', 'add,requestdelete,selectall,duplicate,bulk_edit,apply_template,save_template'],
-        ['Clinpath' ,'formSections' ,'ehr-gridformpanel' ,'4' ,'Chemistry Results', 'study', '', 'Task,Assay', '', '', 'add,requestdelete,selectall,duplicate,bulk_edit,apply_template,save_template'],
-        ['Clinpath' ,'formSections' ,'ehr-gridformpanel' ,'5' ,'Hematology Results', 'study', '', 'Task,Assay', '', '', 'add,requestdelete,selectall,duplicate,bulk_edit,apply_template,save_template'],
+        ['Clinpath' ,'formSections' ,'ehr-gridformpanel' ,'4' ,'Chemistry Results', 'study', '', 'Task,Assay', '', '', 'add,addchemexcel,requestdelete,selectall,duplicate,bulk_edit,apply_template,save_template'],
+        ['Clinpath' ,'formSections' ,'ehr-gridformpanel' ,'5' ,'Hematology Results', 'study', '', 'Task,Assay', '', '', 'add,addhematologyexcel,requestdelete,selectall,duplicate,bulk_edit,apply_template,save_template'],
         ['Clinpath' ,'formSections' ,'ehr-gridformpanel' ,'6' ,'Hematology Morphology', 'study', '', 'Task,Assay', '', '', 'add,requestdelete,selectall,duplicate,bulk_edit,apply_template,save_template'],
         ['Clinpath' ,'formSections' ,'ehr-gridformpanel' ,'7' ,'Immunology Results', 'study', '', 'Task,Assay', '', '', 'add,requestdelete,selectall,duplicate,bulk_edit,apply_template,save_template'],
         ['Clinpath' ,'formSections' ,'ehr-gridformpanel' ,'8' ,'Parasitology Results', 'study', '', 'Task,Assay', '', '', 'add,requestdelete,selectall,duplicate,bulk_edit,apply_template,save_template'],
@@ -202,8 +206,10 @@ function btn2(){
         ['Surgery' ,'formTabs' ,'ehr-gridformpanel' ,'3' ,'Drug Administration', 'study', 'Treatments & Procedures', 'Task,Encounter,Surgery', '', '', 'add,requestdelete,selectall,duplicate,bulk_edit,apply_template,save_template'],
         ['Surgery' ,'formTabs' ,'ehr-gridformpanel' ,'4' ,'Weight', 'study', '', 'Task,Encounter,Surgery', '', '', 'add,requestdelete,selectall,duplicate,bulk_edit,apply_template,save_template'],
         ['Surgery' ,'formTabs' ,'ehr-gridformpanel' ,'5' ,'Charges', 'study', '', 'Task,Encounter,Surgery', '', '', 'add,requestdelete,selectall,duplicate,bulk_edit,apply_template,save_template'],
-        ['Assignment' ,'formSections' ,'ehr-abstractpanel' ,'1' ,'', '', '', '', '', '', ''],
-        ['Assignment' ,'formSections' ,'ehr-gridformpanel' ,'2' ,'Assignment', 'study', '', 'Task', '', '', 'add,addbatch,requestdelete,selectall,duplicate,bulk_edit,apply_template,save_template']
+        ['Assignment' ,'formSections' ,'ehr-abstractpanel' ,'1' ,'', '', '', '', '', '{queryConfig: {schemaName: "lists", queryName:  "protocolTotalAnimalsBySpecies", title: "Protocol",filterColumn: "protocol"}}', ''],
+        ['Assignment' ,'formSections' ,'ehr-gridformpanel' ,'2' ,'Assignment', 'study', '', 'Task', '', '', 'add,addbatch,requestdelete,selectall,duplicate,bulk_edit,apply_template,save_template'],
+        ['Death' ,'formSections' ,'ehr-abstractpanel' ,'1' ,'', '', '', '', '', '', ''],
+        ['Death' ,'formSections' ,'ehr-formpanel' ,'2' ,'Deaths', 'study', '', 'Task', '', '', '']
     ];
     LABKEY.Query.insertRows(makeObject(config, data, fields));
 }
@@ -314,7 +320,8 @@ function btn4(){
             ['treatmentSchedule' ,'Today At WNPRC' ,'query' ,'Treatments - Master' ,'true' ,'' ,'study' ,'treatmentSchedule', '', '', 'date', 'true', 'false', '7', 'qcstate/publicdata', 'The report displays all treatments scheduled for today'],
             ['problemList' ,'Today At WNPRC' ,'query' ,'Unresolved Problem List' ,'true' ,'' ,'study' ,'Problem List', 'Unresolved Problems', '', 'date', 'false', 'false', '8', 'qcstate/publicdata', 'This displays the clinical problem list'],
             ['todaysBlood' ,'Today At WNPRC' ,'query' ,'Blood Draw Schedule' ,'true' ,'' ,'study' ,'BloodSchedule', 'Blood Schedule', '', 'date', 'TRUE', 'false', '9', 'qcstate/publicdata', 'Contains records of blood draws scheduled for today'],
-            ['treatmentsIncomplete' ,'Today At WNPRC' ,'query' ,'Treatments - Incomplete' ,'true' ,'' ,'study' ,'treatmentSchedule', 'Incomplete Treatments', '', 'date', 'true', 'false', '7', 'qcstate/publicdata', 'The report displays all incomplete treatments scheduled for today']
+            ['treatmentsIncomplete' ,'Today At WNPRC' ,'query' ,'Treatments - Incomplete' ,'true' ,'' ,'study' ,'treatmentSchedule', 'Incomplete Treatments', '', 'date', 'true', 'false', '7', 'qcstate/publicdata', 'The report displays all incomplete treatments scheduled for today'],
+            ['diagnostics' ,'Clin Path' ,'js' ,'Diagnostics' ,'TRUE' ,'' ,'study' ,'diagnostics', '', '', 'date', 'FALSE', 'FALSE', '', 'qcstate/publicdata', 'This report contains summaries of the clinical pathology types']
         ];
 
         LABKEY.Query.insertRows(makeObject(config, data, fields));

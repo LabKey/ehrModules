@@ -164,7 +164,7 @@ $results = Labkey::Query::selectRows(
     -containerPath => $studyContainer,
     -schemaName => 'study',
     -queryName => 'BloodSchedule',
-    -columns => 'drawStatus,daterequested,project,date,project/protocol,taskid,projectStatus,tube_vol,tube_type,billedby,num_tubes,Id/curLocation/area,Id/curLocation/room,Id/curLocation/cage,additionalServices,remark,Id,quantity,qcstate,qcstate/Label,requestid',
+    -columns => 'drawStatus,daterequested,project,date,project/protocol,taskid,projectStatus,tube_vol,tube_type,billedby,billedby/title,num_tubes,Id/curLocation/area,Id/curLocation/room,Id/curLocation/cage,additionalServices,remark,Id,quantity,qcstate,qcstate/Label,requestid',
     -filterArray => [
     	['Id/DataSet/Demographics/calculated_status', 'eq', 'Alive'],
 		['date', 'dateeq', $datestr],
@@ -182,17 +182,24 @@ else {
 	my $complete = 0;
 	my $incomplete = 0;
 	my $summary = {};
+	my $counts = {};
     foreach my $row (@{$results->{rows}}){   	    	
 		if($row->{'qcstate/Label'} && $row->{'qcstate/Label'} eq 'Completed'){
 			$complete++;
 		}   
 		else {
 			if(!$$summary{$row->{'Id/curLocation/area'}}){
-				$$summary{$row->{'Id/curLocation/area'}} = {};				
+				$$summary{$row->{'Id/curLocation/area'}} = {};
+				$$counts{$row->{'Id/curLocation/area'}} = {};					
 			}	
 			if(!$$summary{$row->{'Id/curLocation/area'}}{$row->{'Id/curLocation/room'}}){
 				$$summary{$row->{'Id/curLocation/area'}}{$row->{'Id/curLocation/room'}} = {complete=>0,incomplete=>0,incompleteRecords=>[]};				
 			}	
+						
+			if(!$$counts{$row->{'Id/curLocation/area'}}{$row->{'billedby/title'} || 'Not Assigned'}){
+				$$counts{$row->{'Id/curLocation/area'}}{$row->{'billedby/title'} || 'Not Assigned'} = 0;				
+			}
+			$$counts{$row->{'Id/curLocation/area'}}{$row->{'billedby/title'} || 'Not Assigned'}++;
 			
 			$$summary{$row->{'Id/curLocation/area'}}{$row->{'Id/curLocation/room'}}{incomplete}++;
 			push(@{$$summary{$row->{'Id/curLocation/area'}}{$row->{'Id/curLocation/room'}}{incompleteRecords}}, $row);
@@ -209,7 +216,20 @@ else {
 		}
 		else {
 			$email_html .= "The following blood draws have not been marked complete as of $datetimestr:<p>\n";
-	
+
+			$email_html .= "<b>Totals by Area:</b><br>\n";
+			
+			foreach my $area (sort(keys %$counts)){
+				my $types = $$counts{$area};
+				$email_html .= $area.":<br>\n";
+				foreach my $type (sort(keys %$types)){
+					$email_html .= "$type: ".$$types{$type}."<br>\n";						
+				}							
+			}
+			
+			$email_html .= "<p>\n";
+			$email_html .= "<b>Individual Draws:</b><p>\n";
+				
 			my $prevRoom = '';
 			foreach my $area (sort(keys %$summary)){
 				my $rooms = $$summary{$area};			
@@ -227,7 +247,7 @@ else {
 								$color = 'yellow';
 							}
 							
-							$email_html .= "<tr><td".($color ? " style='background:$color;'" : "").">".$$rec{daterequested}."</td><td>".$$rec{Id}."</td><td>".($$rec{tube_vol} ? $$rec{tube_vol}.' mL' : '')."</td><td>".($$rec{tube_type} ? $$rec{tube_type} : '')."</td><td>".($$rec{num_tubes} ? $$rec{num_tubes} : '')."</td><td>".($$rec{quantity} ? $$rec{quantity}.' mL' : '')."</td><td>".($$rec{additionalServices} ? $$rec{additionalServices} : '')."</td><td>".($$rec{billedby} ? $$rec{billedby} : '')."</td></tr>\n";
+							$email_html .= "<tr><td".($color ? " style='background:$color;'" : "").">".$$rec{daterequested}."</td><td>".$$rec{Id}."</td><td>".($$rec{tube_vol} ? $$rec{tube_vol}.' mL' : '')."</td><td>".($$rec{tube_type} ? $$rec{tube_type} : '')."</td><td>".($$rec{num_tubes} ? $$rec{num_tubes} : '')."</td><td>".($$rec{quantity} ? $$rec{quantity}.' mL' : '')."</td><td>".($$rec{additionalServices} ? $$rec{additionalServices} : '')."</td><td>".($$rec{"billedby/title"} ? $$rec{"billedby/title"} : '')."</td></tr>\n";
 						}
 						
 						$email_html .= "</table><p>\n";	    	
@@ -247,19 +267,14 @@ else {
 #print HTML $email_html;
 #close HTML;
 
-my $smtp = Net::SMTP->new($mail_server,
-    Timeout => 30,
-    Debug   => 0,
-);
-$smtp->mail( $from );
-$smtp->recipient(@email_recipients, { Notify => ['FAILURE'], SkipBad => 1 });  
-$smtp->data();
-$smtp->datasend("Subject: Daily Blood Draw Alerts: $datestr\n");
-$smtp->datasend("Content-Transfer-Encoding: US-ASCII\n");
-$smtp->datasend("Content-Type: text/html; charset=\"US-ASCII\" \n");
-$smtp->datasend("\n");
-$smtp->datasend($email_html);
-$smtp->dataend();
-$smtp->quit;
-
-
+my $smtp = MIME::Lite->new(
+          To      =>join(", ", @email_recipients),
+          From    =>$from,
+          Subject =>"Subject: Daily Blood Draw Alerts: $datestr",
+          Type    =>'multipart/alternative'
+          );
+$smtp->attach(Type => 'text/html',
+          Encoding => 'quoted-printable',
+          Data	 => $email_html
+);         
+$smtp->send();

@@ -1,0 +1,36 @@
+<html>
+<script type="text/javascript">
+
+LABKEY.requiresScript("/ehr/navMenu.js");
+
+
+Ext.onReady(createNavMenu);
+
+function createNavMenu()
+{
+    if (!window.EHR || !window.EHR.utils || !window.EHR.utils.navMenu)
+    {
+        createNavMenu.defer(10);
+        return;
+    }
+
+
+    new EHR.utils.navMenu({
+        renderTo: 'moreReportsMenu',
+        sections: [
+            {header: 'More Reports',
+            items: [
+                {name: 'Per Diems (in testing)', url: '<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=perDiems'},
+                {name: 'Restraints Used', url: '<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=restraintUsed'}
+            ]}
+        ]
+    });
+}
+
+</script>
+<body>
+
+<div id="moreReportsMenu"></div>
+
+</body>
+</html>

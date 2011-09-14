@@ -3,6 +3,7 @@
        <column name="Id" />
        <column name="date" />
        <column name="caseno" />
+       <column name="remark" />
        <column name="project" />
        <column name="account" />
        <column name="performedby" />
@@ -15,7 +16,6 @@
        <column name="perfusion_soln2" />
        <column name="perfusion_time2" />
        <column name="bcs" />
-       <column name="remark" />
        <column name="qcstate" />
        <column name="taskid" />
    </columns>

@@ -9,16 +9,18 @@
       </column>
       <column name="seq1"/>
       <column name="seq2"/>
+      <column name="remark"/>
       <column name="tissue"/>
-      <column name="severity"/>
-      <column name="duration"/>
-      <column name="distribution"/>
-      <column name="distribution2"/>
+      <column name="tissue_qualifier"/>
+      <!--<column name="severity"/>-->
+      <!--<column name="duration"/>-->
+      <!--<column name="distribution"/>-->
+      <!--<column name="distribution2"/>-->
       <column name="inflammation"/>
+      <column name="inflammation2"/>
       <column name="etiology"/>
       <column name="process"/>
       <column name="process2"/>
-      <column name="remark"/>
       <column name="qcstate"/>
       <column name="taskid" />
    </columns>

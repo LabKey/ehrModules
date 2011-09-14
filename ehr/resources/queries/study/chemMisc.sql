@@ -8,10 +8,13 @@ SELECT
   b.date,
   b.testId,
   --b.runId,
+  b.resultOORIndicator,
   b.result,
   b.qualresult,
   b.qcstate
 FROM study."Chemistry Results" b
 
-WHERE b.testId NOT IN ('LDL', 'GLUC', 'BUN', 'CREAT', 'CPK', 'UA', 'CHOL', 'TRIG','SGOT', 'LDH', 'TB','GGT','SGPT','TP','ALB','ALKP','CA','PHOS','FE','NA','K','CL')
+WHERE
+b.testId NOT IN ('LDL', 'GLUC', 'BUN', 'CREAT', 'CPK', 'UA', 'CHOL', 'TRIG','SGOT', 'LDH', 'TB','GGT','SGPT','TP','ALB','ALKP','CA','PHOS','FE','NA','K','CL')
+or b.testid is null
 

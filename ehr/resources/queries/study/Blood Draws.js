@@ -25,7 +25,7 @@ function onUpsert(context, errors, row, oldRow){
     if(context.qcMap.label[row.QCStateLabel]['metadata/isRequest'] && !row.taskid)
         errorQC = 'ERROR';
     else
-        errorQC = 'WARN';
+        errorQC = 'INFO';
 
     if(row.quantity===0){
         EHR.addError(errors, 'quantity', 'This field is required', 'WARN');

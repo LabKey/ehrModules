@@ -31,7 +31,7 @@
                     <column columnName="date">
                         <datatype>timestamp</datatype>
                         <!--<columnTitle>Treatment Start Date</columnTitle>-->
-                        <formatString>yyyy-MM-dd H:m</formatString>
+                        <formatString>yyyy-MM-dd HH:mm</formatString>
                     </column>
                     <column columnName="remark">
                         <displayWidth>250</displayWidth>

@@ -8,10 +8,11 @@ SELECT
   b.date,
   b.testId,
   --b.runId,
+  b.resultOORIndicator,
   b.result,
   b.qualresult,
   b.qcstate
 FROM study."Hematology Results" b
 
 WHERE b.testId NOT IN ('WBC', 'RBC', 'HGB', 'HCT', 'MCV', 'MCH', 'MCHC', 'RDW', 'PLT', 'MPV', 'PCV', 'NE', 'NY', 'MN', 'EO', 'BS', 'BANDS', 'METAMYELO', 'MYELO', 'TP', 'RETICULO', 'LY')
-
+or b.testid is null

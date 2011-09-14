@@ -6,6 +6,7 @@
        <column name="allowed"/>
        <column name="TotalAnimals"/>
        <column name="TotalRemaining"/>
+       <column name="PercentUsed"/>
        <column name="Animals"/>
    </columns>
    <sorts>

@@ -14,7 +14,7 @@ Ext.onReady(function ()
 
     new EHR.ext.DetailsView({
         schemaName: 'study',
-        queryName: 'biopsy',
+        queryName: 'Biopsies',
         title: 'Biopsy Details:',
         renderTo: 'biopsyDetails',
         filterArray: [LABKEY.Filter.create('objectId', key, LABKEY.Filter.Types.EQUAL)]
@@ -39,6 +39,25 @@ Ext.onReady(function ()
      }).render('biopsyDiagnosis');
 
 
+    new LABKEY.QueryWebPart({
+        title: 'Histology',
+        schemaName: 'study',
+        queryName: 'Histology',
+        allowChooseQuery: false,
+        allowChooseView: true,
+        showInsertNewButton: false,
+        showDeleteButton: false,
+        showDetailsColumn: true,
+        showUpdateColumn: false,
+        showRecordSelectors: true,
+        buttonBarPosition: 'top',
+        filters: [LABKEY.Filter.create('parentId', key, LABKEY.Filter.Types.EQUAL)],
+        //sort: '-Date',
+        scope: this,
+        failure: EHR.utils.onError
+     }).render('histologyDiv');
+
+
 });
 
 </script>
@@ -57,6 +76,8 @@ Ext.onReady(function ()
     <div id='biopsyDiagnosis'></div>
 
     <p/>
+
+    <div id='histologyDiv'></div>
 
 </body>
 </html>

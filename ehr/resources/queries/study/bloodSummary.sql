@@ -11,7 +11,7 @@ SELECT
 -- 	bq.maxDate,
 	bq.weight,
 	bq.lastWeighDate,
-	bq.BloodLast30,
+	cast(bq.BloodLast30 as numeric) as BloodLast30,
 -- 	bq.BloodNext30,
 	round(bq.weight*0.2*60, 1) AS MaxBlood,
 	round((bq.weight*0.2*60) - bq.BloodLast30, 1) AS AvailBlood

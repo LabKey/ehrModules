@@ -34,22 +34,22 @@ FROM
                       ), timestamp )
                   ) AS lastWeighDate
 	 		    , ( COALESCE (
-	    			(SELECT SUM(draws.quantity) AS _expr
+	    			(SELECT SUM(coalesce(draws.quantity, 0)) AS _expr
 	    		      FROM study."Blood Draws" draws
 	    			  WHERE draws.id=bi.id
                           AND draws.date >= TIMESTAMPADD('SQL_TSI_DAY', -29, bi.date)
-                          AND draws.date <= bi.date
+                          AND cast(draws.date as date) <= bi.date
                           AND (draws.qcstate.metadata.DraftData = true OR draws.qcstate.publicdata = true)
                           --when counting backwards, dont include this date
                           --AND (draws.date != bi.date and draws.qcstate.label != bi.status)
                      ), 0 )
 	  		      ) AS BloodLast30
 	 		    , ( COALESCE (
-	    			(SELECT SUM(draws.quantity) AS _expr
+	    			(SELECT SUM(coalesce(draws.quantity, 0)) AS _expr
 	    		      FROM study."Blood Draws" draws
 	    			  WHERE draws.id=bi.id
                           AND draws.date <= TIMESTAMPADD('SQL_TSI_DAY', 29, bi.date)
-                          AND draws.date > bi.date
+                          AND cast(draws.date as date) >= bi.date
                           --AND draws.date BETWEEN bi.date AND TIMESTAMPADD('SQL_TSI_DAY', 29, bi.date)
                           AND (draws.qcstate.metadata.DraftData = true OR draws.qcstate.publicdata = true)
                           --when counting forwards, dont include this date
@@ -59,34 +59,34 @@ FROM
             from (
               SELECT
                   b.id,
-                  b.date,
+                  cast(b.date as date) as date,
                   --b.lsid,
                   --b.qcstate,
                   b.qcstate.label as status,
-                  sum(b.quantity) as quantity
+                  SUM(coalesce(b.quantity, 0)) as quantity
               FROM study.blood b
-	     	  WHERE b.date >= TIMESTAMPADD('SQL_TSI_DAY', -29, now())
+	     	  WHERE cast(b.date as date) >= TIMESTAMPADD('SQL_TSI_DAY', -29, now())
 	     	  AND (b.qcstate.metadata.DraftData = true OR b.qcstate.publicdata = true)
-	     	  group by b.id, b.date, b.qcstate.label
+	     	  group by b.id, cast(b.date as date), b.qcstate.label
 
 	     	  UNION ALL
               SELECT
                   b.id,
-                  TIMESTAMPADD('SQL_TSI_DAY', 30, b.date) as date,
+                  TIMESTAMPADD('SQL_TSI_DAY', 30, cast(cast(b.date as date) as timestamp)) as date,
                   --null as lsid,
                   --null as qcstate,
                   null as status,
                   0 as quantity
               FROM study.blood b
-	     	  WHERE b.date >= TIMESTAMPADD('SQL_TSI_DAY', -29, now())
+	     	  WHERE cast(b.date as date) >= TIMESTAMPADD('SQL_TSI_DAY', -29, now())
 	     	  AND (b.qcstate.metadata.DraftData = true OR b.qcstate.publicdata = true)
-	     	  GROUP BY b.id, b.date
+	     	  GROUP BY b.id, cast(b.date as date)
 
               --add one row per animal, showing todays date
 	     	  UNION ALL
               SELECT
                   b.id,
-                  now() as date,
+                  curdate() as date,
                   --null as lsid,
                   --null as qcstate,
                   null as status,

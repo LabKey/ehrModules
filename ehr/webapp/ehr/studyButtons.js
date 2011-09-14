@@ -45,7 +45,7 @@ function moreActionsHandler(dataRegion){
 
         if(dataRegion.schemaName.match(/^study$/i) && dataRegion.queryName.match(/^Problem List$/i)){
             if(EHR.permissionMap.hasPermission('Completed', 'update', {queryName: 'Problem List', schemaName: 'study'})){
-                markComplete(dataRegion, menu, 'study', 'Problem List');
+                markComplete(dataRegion, menu, 'study', 'Problem List', {xtype: 'datefield'});
             }
         }
 
@@ -57,7 +57,7 @@ function moreActionsHandler(dataRegion){
 
         if(dataRegion.schemaName.match(/^study$/i) && dataRegion.queryName.match(/^Assignment$/i)){
             if(EHR.permissionMap.hasPermission('Completed', 'update', {queryName: 'Assignment', schemaName: 'study'})){
-                markComplete(dataRegion, menu, 'study', 'Assignment');
+                markComplete(dataRegion, menu, 'study', 'Assignment', {xtype: 'datefield'});
                 addAssignmentTaskBtn(dataRegion, menu);
             }
         }
@@ -161,11 +161,12 @@ function showAuditHistory(dataRegion, dataRegionName){
         return;
     }
 
-    window.location = LABKEY.ActionURL.buildURL("query", "executeQuery", null, {
+    window.open(LABKEY.ActionURL.buildURL("query", "executeQuery", null, {
         schemaName: 'auditLog',
         'query.queryName': 'DatasetAuditEvent',
+        'query.viewName': 'Detailed',
         'query.key1~in': checked.join(';')
-    });
+    }));
 }
 
 function datasetHandler(dataRegion, dataRegionName, queryName, schemaName)
@@ -703,7 +704,9 @@ function getDistinct(dataRegion, dataRegionName, queryName, schemaName)
 
 
 
-function markComplete(dataRegion, menu, schemaName, queryName){
+function markComplete(dataRegion, menu, schemaName, queryName, config){
+    config = config || {};
+
     menu.add({
         text: 'Set End Date',
         dataRegion: dataRegion,
@@ -723,7 +726,7 @@ function markComplete(dataRegion, menu, schemaName, queryName){
                     ref: 'theForm',
                     bodyStyle: 'padding: 5px;',
                     items: [{
-                        xtype: 'xdatetime',
+                        xtype: (config.xtype || 'xdatetime'),
                         fieldLabel: 'Date',
                         width: 200,
                         value: new Date(),
@@ -743,23 +746,57 @@ function markComplete(dataRegion, menu, schemaName, queryName){
                             alert('Must enter a date');
                             o.ownerCt.ownerCt.hide();
                         }
-                        var toUpdate = [];
-                        Ext.each(checked, function(item){
-                            toUpdate.push({lsid: item, enddate: date});
-                        }, this);
 
                         o.ownerCt.ownerCt.hide();
 
-                        LABKEY.Query.updateRows({
+                        LABKEY.Query.selectRows({
                             schemaName: schemaName,
                             queryName: queryName,
-                            rows: toUpdate,
+                            filterArray: [
+                                LABKEY.Filter.create('lsid', checked.join(';'), LABKEY.Filter.Types.EQUALS_ONE_OF)
+                            ],
                             scope: this,
-                            success: function(){
-                                Ext.Msg.hide();
-                                dataRegion.selectNone();
+                            success: function(data){
+                                var toUpdate = [];
+                                var skipped = [];
 
-                                dataRegion.refresh();
+                                if(!data.rows || !data.rows.length){
+                                    Ext.Msg.hide();
+                                    dataRegion.selectNone();
+                                    dataRegion.refresh();
+                                    return;
+                                }
+
+                                Ext.each(data.rows, function(row){
+                                    if(!row.enddate)
+                                        toUpdate.push({lsid: row.lsid, enddate: date});
+                                    else
+                                        skipped.push(row.lsid)
+                                }, this);
+
+                                if(toUpdate.length){
+                                    LABKEY.Query.updateRows({
+                                        schemaName: schemaName,
+                                        queryName: queryName,
+                                        rows: toUpdate,
+                                        scope: this,
+                                        success: function(){
+                                            Ext.Msg.hide();
+                                            dataRegion.selectNone();
+                                            dataRegion.refresh();
+                                        },
+                                        failure: EHR.utils.onError
+                                    });
+                                }
+                                else {
+                                    Ext.Msg.hide();
+                                    dataRegion.selectNone();
+                                    dataRegion.refresh();
+                                }
+
+                                if(skipped.length){
+                                    alert('One or more rows was skipped because it already has an end date');
+                                }
                             },
                             failure: EHR.utils.onError
                         });

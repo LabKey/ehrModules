@@ -155,6 +155,27 @@ Ext.onReady(function ()
 //    EHR.utils.isMemberOf(['vets (LDAP)', 'cpi (LDAP)', 'protocol (LDAP)', 'Site Administrators'], loadPdf);
 //
     var pdfContainer = '/WNPRC/WNPRC_Units/Animal_Services/Compliance_Training/Private/Protocol_PDFs';
+
+    new LABKEY.QueryWebPart({
+        title: 'Procedures Allowed Under This Protocol',
+        containerPath: pdfContainer,
+        schemaName: 'lists',
+        queryName: 'ProtocolProcedures',
+        allowChooseQuery: false,
+        allowChooseView: true,
+        showInsertNewButton: false,
+        showDeleteButton: false,
+        showDetailsColumn: true,
+        showUpdateColumn: false,
+        buttonBarPosition: 'top',
+        filters: [LABKEY.Filter.create('protocol', protocol, LABKEY.Filter.Types.EQUAL)],
+        //viewName: '',
+        //sort: '-Date',
+        scope: this,
+        failure: EHR.utils.onError
+     }).render('protocolProcedures');
+
+
     LABKEY.Security.getSecurableResources({
         containerPath: pdfContainer,
         includeEffectivePermissions: false,
@@ -220,6 +241,9 @@ Ext.onReady(function ()
 
     <div id="protocolTotalHistoricAnimalsBySpecies">Loading...</div>
 
+    <p/>
+
+    <div id="protocolProcedures">Loading...</div>
 
 
 </body>

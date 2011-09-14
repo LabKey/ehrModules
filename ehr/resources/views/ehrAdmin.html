@@ -40,6 +40,11 @@ Ext.onReady(function (){
                     {name: 'Munin.log', url: '<%=contextPath%>/files<%=containerPath%>/Logs/%40filesets/Munin/munin.log'}
                 ]
             },
+            {header: 'Notifications',
+                items: [
+                    {name: 'Manage Notification Recipients', url: '<%=contextPath%>/query<%=containerPath%>/executeQuery.view?schemaName=ehr&query.queryName=NotificationRecipients'}
+                ]
+            },
             {header: 'Monit',
                 items: [
                     {name: 'EHR', url: 'http://ehr.primate.wisc.edu:2812/'},
@@ -57,8 +62,8 @@ Ext.onReady(function (){
             {header: 'Usage',
                 items: [
                     {name: 'Site Logins', url: '<%=contextPath%>/query<%=containerPath%>/executeQuery.view?schemaName=core&query.queryName=SiteUsage'},
-                        {name: 'Site Logins By Month', url: '<%=contextPath%>/query<%=containerPath%>/executeQuery.view?schemaName=core&query.queryName=SiteUsageByMonth'},
-                        {name: 'Site Logins By Group', url: '<%=contextPath%>/query<%=containerPath%>/executeQuery.view?schemaName=core&query.queryName=SiteUsageByGroup'}
+                    {name: 'Site Logins By Month', url: '<%=contextPath%>/query<%=containerPath%>/executeQuery.view?schemaName=core&query.queryName=SiteUsageByMonth'},
+                    {name: 'Site Logins By Group', url: '<%=contextPath%>/query<%=containerPath%>/executeQuery.view?schemaName=core&query.queryName=SiteUsageByGroup'}
                 ]
             },
             {header: 'Validation',

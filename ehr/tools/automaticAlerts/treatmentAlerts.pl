@@ -37,6 +37,7 @@ use strict;
 use warnings;
 use Labkey::Query;
 use Net::SMTP;
+use MIME::Lite;
 use Data::Dumper;
 use Time::localtime;
 
@@ -328,21 +329,15 @@ if($send_email){
 #	print HTML $email_html;
 #	close HTML;
 
-	my $smtp = Net::SMTP->new($mail_server,
-	    Timeout => 30,
-	    Debug   => 0,
-	);
-	$smtp->mail( $from );
-	$smtp->recipient(@email_recipients, { Notify => ['FAILURE'], SkipBad => 1 });
-
-	$smtp->data();
-	$smtp->datasend("Subject: Daily Colony Alerts: $datestr\n");
-	$smtp->datasend("Content-Transfer-Encoding: US-ASCII\n");
-	$smtp->datasend("Content-Type: text/html; charset=\"US-ASCII\" \n");
-	$smtp->datasend("\n");
-	$smtp->datasend($email_html);
-	$smtp->dataend();
-
-	$smtp->quit;
-
+	my $smtp = MIME::Lite->new(
+	          To      =>join(", ", @email_recipients),
+	          From    =>$from,
+	          Subject =>"Subject: Daily Colony Alerts: $datestr",
+	          Type    =>'multipart/alternative'
+	          );
+	$smtp->attach(Type => 'text/html',
+	          Encoding => 'quoted-printable',
+	          Data	 => $email_html
+	);         
+	$smtp->send();
 }

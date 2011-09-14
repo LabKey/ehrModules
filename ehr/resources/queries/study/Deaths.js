@@ -8,7 +8,16 @@
 var {EHR, LABKEY, Ext, console, init, beforeInsert, afterInsert, beforeUpdate, afterUpdate, beforeDelete, afterDelete, complete} = require("ehr/validation");
 
 
-//TODO: update housing table to end open housing records & assignments.  also treatments, problems
+function onUpsert(context, errors, row, oldRow){
+    if(row.Id && row.tattoo && context.extraContext.dataSource != 'etl'){
+        var regexp = row.Id.replace(/\D/, '');
+        regexp = new RegExp(regexp);
+
+        if(!row.tattoo.match(regexp)){
+            EHR.addError(errors, 'tattoo', 'Id not found in the tattoo', 'INFO');
+        }
+    }
+}
 
 function onComplete(event, errors, scriptContext){
     if(scriptContext.publicParticipantsModified.length){
@@ -34,6 +43,8 @@ function setDescription(row, errors){
 
     if(row.cause)
         description.push('Cause: '+row.cause);
+    if(row.manner)
+        description.push('Manner: '+row.manner);
     if(row.necropsy)
         description.push('Necropsy #: '+row.necropsy);
 

@@ -330,6 +330,420 @@ EHR.ext.AddSeriesWin = Ext.extend(Ext.Panel, {
 Ext.reg('ehr-addseries', EHR.ext.AddSeriesWin);
 
 
+
+EHR.ext.ChemExcelWin = Ext.extend(Ext.Panel, {
+    initComponent: function()
+    {
+        Ext.applyIf(this, {
+            //layout: 'form'
+            title: 'Enter Chemistry From Excel'
+            ,bodyBorder: true
+            ,border: true
+            //,frame: true
+            ,bodyStyle: 'padding:5px'
+            ,width: '100%'
+            ,defaults: {
+                border: false,
+                bodyBorder: false
+            }
+            ,items: [{
+                xtype: 'displayfield',
+                value: 'This allows bulk import of the text files provided by Meriter, without modifications.  These files should have 1 row per test, with values separated by commas.  Non-recognized tests or tests lacking a result will be skipped.'
+            },{
+                xtype: 'textarea',
+                ref: 'fileField',
+                height: 350,
+                width: 430
+            }],
+            buttons: [{
+                text:'Submit',
+                disabled:false,
+                ref: '../submit',
+                scope: this,
+                handler: function(s){
+                    this.doSubmit();
+                }
+            },{
+                text: 'Close',
+                scope: this,
+                handler: function(){
+                    this.ownerCt.hide();
+                }
+            }]
+            //buttonAlign: 'left'
+        });
+
+        EHR.ext.ChemExcelWin.superclass.initComponent.call(this, arguments);
+    },
+
+    doSubmit: function(button)
+    {
+        var fileContent = this.fileField.getValue();
+
+        if (!fileContent)
+        {
+            alert('Must Paste Contents of File');
+            return;
+        }
+
+        this.ownerCt.hide();
+        Ext.Msg.wait('Loading...');
+
+        Ext.Ajax.request({
+            url: LABKEY.ActionURL.buildURL("assay", "assayFileUpload"),
+            params: {
+                fileName: 'ChemistryUpload_'+(new Date()).format('Y-m-d_H:m:s')+'.csv',
+                fileContent: fileContent
+            },
+            success: this.onFileUpload,
+            failure: EHR.utils.onError,
+            scope: this
+        });
+    },
+    onFileUpload: function(response, options) {
+       var data = new LABKEY.Exp.Data(Ext.util.JSON.decode(response.responseText));
+       if(!data.content){
+            data.getContent({
+                //format: 'jsonTSVExtended',
+                format: 'jsonTSV',
+                scope: this,
+                successCallback: this.onGetContent,
+                failureCallback: EHR.utils.onError
+            });
+       }
+    },
+    onGetContent: function (content, format){
+        if (!content)
+        {
+            Ext.Msg.hide();
+            Ext.Msg.alert("Upload Failed", "The data file has no content");
+            return;
+        }
+        if (!content.sheets || content.sheets.length == 0)
+        {
+            // expected the data file to be parsed as jsonTSV
+            Ext.Msg.hide();
+            Ext.Msg.alert("Upload Failed", "The data file has no sheets of data");
+            return;
+        }
+
+        // User 1st sheet unless there's a sheet named "Data"
+        var sheet = content.sheets[0];
+        for (var index = 0; index < content.sheets.length; index++)
+        {
+            if (content.sheets[index].name == "Data")
+                sheet = content.sheets[index];
+        }
+
+        var data = sheet.data;
+        if (!data.length)
+        {
+            Ext.Msg.alert("Upload Failed", "The data file contains no rows");
+            return;
+        }
+
+        this.processData(data);
+
+        Ext.Msg.hide();
+    },
+    processData: function(data){
+        //remove header
+        var header = data.shift();
+        var skippedRows = [];
+        var runsStore = Ext.StoreMgr.get("study||Clinpath Runs||||");
+
+        var id;
+        var date;
+        var testId;
+        var result;
+        var units;
+        var qualResult;
+        var remark;
+        var panelType;
+
+        Ext.each(data, function(row, idx){
+            id = row[7];
+            id = id.replace(/(,)* MONKEY( )*/i, '');
+            id = id.toLowerCase();
+
+            if(runsStore.find('Id', id)==-1){
+                alert('ID: '+id+' not found in Clinpath Runs section. Records will not be added');
+                return false;
+            }
+
+            date = new Date(row[16]);
+            testId = row[22];
+            result = row[24];
+            units = row[25];
+            panelType = row[14];
+
+            if(testId && panelType=='V19SR'){
+                testId = testId.replace(/SR$/, '');
+            }
+
+            if(!id || !date || date=='Invalid Date' || !testId || !result){
+                skippedRows.push(['ID: '+id, 'Date: '+(date && (date.format ? date.format('Y-m-d') : date)), 'TestId: '+testId, 'Result: '+result].join('; '));
+                return;
+            }
+
+            this.targetStore.addRecord({
+                Id: id,
+                date: date,
+                testid: testId,
+                result: result,
+                units: units
+            })
+        }, this);
+
+        if(skippedRows.length){
+            alert('One or more rows were skipped:\n'+skippedRows.join('\n'));
+        }
+    }
+});
+Ext.reg('ehr-chemexcelwin', EHR.ext.ChemExcelWin);
+
+EHR.ext.HematologyExcelWin = Ext.extend(Ext.Panel, {
+    initComponent: function()
+    {
+        Ext.applyIf(this, {
+            //layout: 'form'
+            title: 'Enter Hematology From Analyzer'
+            ,bodyBorder: true
+            ,border: true
+            //,frame: true
+            ,bodyStyle: 'padding:5px'
+            ,width: '100%'
+            ,defaults: {
+                border: false,
+                bodyBorder: false
+            }
+            ,items: [{
+                xtype: 'displayfield',
+                value: 'This allows bulk import of hematology results using the output of a Sysmex Hematology Analyzer.  Cut/paste the contents of the output below.'
+            },{
+                xtype: 'textarea',
+                ref: 'fileField',
+                height: 350,
+                width: 430
+            }],
+            buttons: [{
+                text:'Submit',
+                disabled:false,
+                ref: '../submit',
+                scope: this,
+                handler: function(s){
+                    this.doSubmit();
+                }
+            },{
+                text: 'Close',
+                scope: this,
+                handler: function(){
+                    this.ownerCt.hide();
+                }
+            }]
+            //buttonAlign: 'left'
+        });
+
+        EHR.ext.HematologyExcelWin.superclass.initComponent.call(this, arguments);
+    },
+
+    doSubmit: function(button)
+    {
+        var fileContent = this.fileField.getValue();
+
+        if (!fileContent)
+        {
+            alert('Must Paste Contents of File');
+            return;
+        }
+
+        this.ownerCt.hide();
+//        Ext.Msg.wait('Loading...');
+
+        Ext.Ajax.request({
+            url: LABKEY.ActionURL.buildURL("assay", "assayFileUpload"),
+            params: {
+                fileName: 'HematologyUpload_'+(new Date()).format('Y-m-d_H:m:s')+'.tsv',
+                fileContent: fileContent
+            },
+            success: this.onFileUpload,
+            failure: EHR.utils.onError,
+            scope: this
+        });
+    },
+    onFileUpload: function(response, options) {
+       var data = new LABKEY.Exp.Data(Ext.util.JSON.decode(response.responseText));
+       if(!data.content){
+            data.getContent({
+                //format: 'jsonTSVExtended',
+                format: 'jsonTSV',
+                scope: this,
+                successCallback: this.onGetContent,
+                failureCallback: EHR.utils.onError
+            });
+       }
+    },
+    onGetContent: function (content, format){
+        if (!content)
+        {
+            Ext.Msg.hide();
+            Ext.Msg.alert("Upload Failed", "The data file has no content");
+            return;
+        }
+        if (!content.sheets || content.sheets.length == 0)
+        {
+            // expected the data file to be parsed as jsonTSV
+            Ext.Msg.hide();
+            Ext.Msg.alert("Upload Failed", "The data file has no sheets of data");
+            return;
+        }
+
+        // User 1st sheet unless there's a sheet named "Data"
+        var sheet = content.sheets[0];
+        for (var index = 0; index < content.sheets.length; index++)
+        {
+            if (content.sheets[index].name == "Data")
+                sheet = content.sheets[index];
+        }
+
+        var data = sheet.data;
+        if (!data.length)
+        {
+            Ext.Msg.alert("Upload Failed", "The data file contains no rows");
+            return;
+        }
+
+        this.processData(data);
+
+        Ext.Msg.hide();
+    },
+    processData: function(data){
+        //remove header
+        var header = data.shift();
+        var skippedRows = [];
+        var runsStore = Ext.StoreMgr.get("study||Clinpath Runs||||");
+        var unitStore = Ext.StoreMgr.get("ehr_lookups||hematology_tests||testid||testid");
+
+        var result;
+        var tests;
+        var row1;
+        var row2;
+        data = data[0][0].split(/D1U/i);
+
+        Ext.each(data, function(row, idx){
+            if(!row.match(/D2U/i))
+                return;
+
+            row = row.split(/D2U/i);
+            row1 = row[0];
+            row2 = row[1];
+            row1 = row1.split(/\s+/);
+            row2 = row2.split(/\s+/);
+
+            result = {};
+            tests = {};
+
+            result.animalId = row1[2].substr(0,6);
+            result.animalId = result.animalId.toLowerCase();
+
+            result.sequenceNo = row1[1].substr(20,4);
+//            result.date = row1[2].substr(10,2) + "/" + row1[2].substr(12,2) + "/" + row1[2].substr(6,4);
+            result.date = new Date(row1[2].substr(6,4), row1[2].substr(10,2), row1[2].substr(12,2));
+
+//            if(!result.animalId || runsStore.find('Id', result.animalId)==-1){
+//                alert('ID: '+result.animalId+' not found in Clinpath Runs section. Records will not be added');
+//                return false;
+//            }
+
+            tests['WBC'] = row2[2].substr(6,6);
+            tests['RBC'] = row2[2].substr(12,5);
+            tests['GLYCOSYLATED HGB'] = row2[2].substr(17,5);
+            tests['HCT'] = row2[2].substr(22,5);
+            tests['MCV'] = row2[2].substr(27,5);
+            tests['MCH'] = row2[2].substr(32,5);
+            tests['MCHC'] = row2[2].substr(37,5);
+            tests['PLT'] = row2[2].substr(42,5);
+
+            //tests['LYMPH%'] = row2[2].substr(47,5);
+            tests['LY'] = row2[2].substr(47,5);
+
+            //tests['MONO%'] = row2[2].substr(52,5);
+            tests['MN'] = row2[2].substr(52,5);
+
+            //tests['SEG%'] = row2[2].substr(57,5);
+            tests['NE'] = row2[2].substr(57,5);
+
+            //tests['EOSIN%'] = row2[2].substr(62,5);
+            tests['EO'] = row2[2].substr(62,5);
+
+            //tests['BASO%'] = row2[2].substr(67,5);
+            //tests['LYMPH#'] = row2[2].substr(72,6);
+            //tests['MONO#'] = row2[2].substr(78,6);
+            //tests['SEG#'] = row2[2].substr(84,6);
+            //tests['EOSIN#'] = row2[2].substr(90,6);
+            //tests['BASO#'] = row2[2].substr(96,6);
+            tests['RDW'] = row2[2].substr(102,5);
+            //tests'RDW-CV'] = row2[2].substr(102,5);
+            //tests['RDW-SD'] = row2[2].substr(107,5);
+            //tests['PDW'] = row2[2].substr(112,5);
+            tests['MPV'] = row2[2].substr(117,5);
+            //tests['P-LCR'] = row2[2].substr(122,5);
+
+            if(!id || !date || date=='Invalid Date' || !testId || !result){
+                skippedRows.push(['ID: '+id, 'Date: '+(date && (date.format ? date.format('Y-m-d') : date)), 'TestId: '+testId, 'Result: '+result].join('; '));
+                return;
+            }
+
+            var value;
+            for(var test in tests){
+                var origVal = tests[test]
+                value = tests[test];
+
+                if (value.match(/^00(\d){4}$/)) {
+                    tests[test] = value.substr(2,3) / 100;
+                }
+                else if (value.match(/^0(\d){4,}$/) && test=='WBC') {
+                    tests[test] = value.substr(1,3) / 10;
+                }
+                else if (value.match(/^0\d{4}$/)){
+                    if (test=='RBC') {
+                        tests[test] = value.substr(1,3) / 100;
+                    }
+                    else if (test=='PLT') {
+                        tests[test] = value.substr(1,3) / 1; //convert to number
+                    }
+                    else {
+                        tests[test] = value.substr(1,3) / 10;
+                    }
+                }
+
+                //find units
+                var idx = unitStore.find('testid', test);
+                var units;
+                if(idx!=-1){
+                    units = unitStore.getAt(idx).get('units');
+                }
+
+                if(tests[test] && !isNaN(tests[test]))
+                    this.targetStore.addRecord({
+                        Id: result.animalId,
+                        date: result.date,
+                        testid: test,
+                        result: tests[test],
+                        units: units
+                    });
+            }
+
+        }, this);
+
+        if(skippedRows.length){
+            alert('One or more rows were skipped:\n'+skippedRows.join('\n'));
+        }
+    }
+});
+Ext.reg('ehr-hematologyexcelwin', EHR.ext.HematologyExcelWin);
+
+
 EHR.ext.TreatmentSelector = function(config){
     EHR.ext.TreatmentSelector.superclass.constructor.call(this, config);
 };
@@ -353,8 +767,8 @@ Ext.extend(EHR.ext.TreatmentSelector, Ext.Panel, {
                 xtype: 'datefield',
                 fieldLabel: 'Date',
                 value: (new Date()),
+                hidden: !EHR.permissionMap.hasPermission('In Progress', 'admin', {queryName: 'Blood Draws', schemaName: 'study'}),
                 maxValue: (new Date()),
-                hidden: true,
                 ref: 'dateField'
             },{
                 emptyText:''
@@ -969,7 +1383,10 @@ EHR.ext.AbstractPanel = Ext.extend(Ext.FormPanel, {
                 Ext.apply(qwpConfig, this.queryConfig);
 
                 qwpConfig.filterArray = qwpConfig.filterArray || [];
-                qwpConfig.filterArray.push(LABKEY.Filter.create('Id', id, LABKEY.Filter.Types.EQUAL));
+                if(qwpConfig.filterColumn)
+                    qwpConfig.filterArray.push(LABKEY.Filter.create(qwpConfig.filterColumn, id, LABKEY.Filter.Types.EQUAL));
+                else
+                    qwpConfig.filterArray.push(LABKEY.Filter.create('Id', id, LABKEY.Filter.Types.EQUAL));
 
                 this.QWP = new LABKEY.QueryWebPart(qwpConfig);
             }
@@ -1421,7 +1838,7 @@ EHR.ext.ApplyTemplatePanel = Ext.extend(Ext.FormPanel, {
                     editor.value=values[0];
                 else if (values.length > 1){
                     editor.xtype = 'displayfield';
-                    editor.value = values.join(';');
+                    editor.value = values.join('/');
                 }
 
                 toAdd.items.push(editor);

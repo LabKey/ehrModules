@@ -1030,6 +1030,11 @@ EHR.ext.ProjectField = Ext.extend(LABKEY.ext.ComboBox,
 //                '<div class="x-combo-list-item">{[!isNaN(values["project"]) ? EHR.utils.padDigits(values["project"], 8) : values["project"]]}' +
 //                '&nbsp;</div></tpl>'
 //            );return tpl.compile()}()
+            ,tpl: function(){var tpl = new Ext.XTemplate(
+                '<tpl for=".">' +
+                '<div class="x-combo-list-item">{[values["project"] + " " + (values["protocol"] ? "("+values["protocol"]+")" : "")]}' +
+                '&nbsp;</div></tpl>'
+            );return tpl.compile()}()
         });
 
         EHR.ext.ProjectField.superclass.initComponent.call(this, arguments);
@@ -1037,7 +1042,7 @@ EHR.ext.ProjectField = Ext.extend(LABKEY.ext.ComboBox,
         this.mon(this.ownerCt, 'participantchange', this.getProjects, this);
     },
     makeSql: function(id, date){
-        var sql = "SELECT DISTINCT a.project, a.project.account FROM study.assignment a " +
+        var sql = "SELECT DISTINCT a.project, a.project.account, a.project.protocol as protocol FROM study.assignment a " +
                 "WHERE a.id='"+id+"' " +
                 //this protocol contains tracking projects
                 "AND a.project.protocol != 'wprc00' ";
@@ -1052,7 +1057,7 @@ EHR.ext.ProjectField = Ext.extend(LABKEY.ext.ComboBox,
             sql += "AND a.enddate IS NULL ";
 
         if(this.defaultProjects){
-            sql += " UNION ALL (SELECT project, account FROM lists.project WHERE project IN ('"+this.defaultProjects.join("','")+"'))";
+            sql += " UNION ALL (SELECT project, account, project.protocol as protocol FROM lists.project WHERE project IN ('"+this.defaultProjects.join("','")+"'))";
         }
 
         return sql;

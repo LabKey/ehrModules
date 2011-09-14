@@ -242,7 +242,7 @@ EHR.ext.GridFormPanel = Ext.extend(Ext.Panel,
     gridBtns: {
         'add': {
             text: 'Add Record',
-            requiredQC: 'In Progress',
+            //requiredQC: 'In Progress',
             xtype: 'button',
             tooltip: 'Click to add a blank record',
             name: 'add-record-button',
@@ -368,7 +368,7 @@ EHR.ext.GridFormPanel = Ext.extend(Ext.Panel,
         },
         'duplicate': {
             text: 'Duplicate Selected',
-            requiredQC: 'In Progress',
+            //requiredQC: 'In Progress',
             xtype: 'button',
             tooltip: 'Duplicate Selected Record',
             name: 'duplicate-button',
@@ -398,7 +398,7 @@ EHR.ext.GridFormPanel = Ext.extend(Ext.Panel,
         },
         'addbatch': {
                 text: 'Add Batch',
-                requiredQC: 'In Progress',
+                //requiredQC: 'In Progress',
                 xtype: 'button',
                 scope: this,
                 tooltip: 'Click to add a group of animals',
@@ -789,6 +789,147 @@ EHR.ext.GridFormPanel = Ext.extend(Ext.Panel,
                 });
 
                 this.bloodSelectorWin.show();
+            }
+        },
+
+        copyfromhistology: {
+            text: 'Copy From Histology',
+            //requiredQC: 'In Progress',
+            xtype: 'button',
+            scope: this,
+            tooltip: 'Click to copy records from the histology section',
+            name: 'add-blood-button',
+            handler: function()
+            {
+                var histStore = Ext.StoreMgr.get("study||Histology||||");
+                if(histStore){
+                    histStore.each(function(r){
+                        this.store.addRecord({
+                            Id: r.get('Id'),
+                            date: r.get('date'),
+                            tissue: r.get('tissue'),
+                            tissue_qualifier: r.get('qualifier')
+                        });
+                    }, this);
+                }
+            }
+        },
+
+        copyfromtissues: {
+            text: 'Copy From Tissues',
+            //requiredQC: 'In Progress',
+            xtype: 'button',
+            scope: this,
+            tooltip: 'Click to copy records from the tissue samples section',
+            name: 'add-blood-button',
+            handler: function()
+            {
+                var histStore = Ext.StoreMgr.get("study||Tissue Samples||||");
+                if(histStore){
+                    histStore.each(function(r){
+                        this.store.addRecord({
+                            Id: r.get('Id'),
+                            date: r.get('date'),
+                            tissue: r.get('tissue'),
+                            qualifier: r.get('qualifier')
+                        });
+                    }, this);
+                }
+            }
+        },
+
+        copyfromarrival: {
+            text: 'Copy From Arrival',
+            //requiredQC: 'In Progress',
+            xtype: 'button',
+            scope: this,
+            tooltip: 'Click to copy records from the arrivals section',
+            name: 'add-blood-button',
+            handler: function()
+            {
+                var store = Ext.StoreMgr.get("study||Arrival||||");
+                if(store){
+                    store.each(function(r){
+                        this.store.addRecord({
+                            Id: r.get('Id')
+                        });
+                    }, this);
+                }
+            }
+        },
+
+        copyfromclinpath: {
+            text: 'Copy From Clinpath Runs',
+            //requiredQC: 'In Progress',
+            xtype: 'button',
+            scope: this,
+            tooltip: 'Click to copy records from the clinpath runs section',
+            name: 'add-clinpath-button',
+            handler: function()
+            {
+                var store = Ext.StoreMgr.get("study||Clinpath Runs||||");
+                if(store){
+                    var type = this.store.queryName.split(' ');
+                    type = type[0];
+                    store.each(function(r){
+                        if(r.get('type') == type){
+                            this.store.addRecord({
+                                Id: r.get('Id'),
+                                date: r.get('date')
+                            });
+                        }
+                    }, this);
+                }
+            }
+        },
+
+        addchemexcel: {
+            text: 'Add Bulk',
+            requiredQC: 'In Progress',
+            xtype: 'button',
+            scope: this,
+            tooltip: 'Click to add results from a Meriter excel file',
+            name: 'add-blood-button',
+            handler: function()
+            {
+                this.selectorWin = new Ext.Window({
+                    closeAction:'hide',
+                    width: 450,
+                    items: [{
+                        xtype: 'ehr-chemexcelwin',
+                        ref: 'chemselector',
+                        targetStore: this.store,
+                        parentPanel: this,
+                        title: ''
+                    }]
+                });
+
+                this.selectorWin.show();
+            }
+        },
+
+        addhematologyexcel: {
+            text: 'Add Bulk',
+            requiredQC: 'In Progress',
+            xtype: 'button',
+            scope: this,
+            tooltip: 'Click to add results from a XS-1000 Hematology Analyzer',
+            name: 'add-hematology-button',
+            handler: function()
+            {
+                this.selectorWin = new Ext.Window({
+                    closeAction:'hide',
+                    width: 450,
+                    items: [{
+                        xtype: 'ehr-hematologyexcelwin',
+                        ref: 'hematologyselector',
+                        targetStore: this.store,
+                        parentPanel: this,
+                        title: ''
+                    }]
+                });
+
+                this.selectorWin.show();
             }
         }
     }

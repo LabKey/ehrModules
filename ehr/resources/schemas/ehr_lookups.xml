@@ -499,6 +499,10 @@
         <ns:datatype>varchar</ns:datatype>
         <ns:scale>100</ns:scale>
       </ns:column>
+        <ns:column columnName="meaning">
+          <ns:datatype>varchar</ns:datatype>
+          <ns:scale>100</ns:scale>
+        </ns:column>
     </ns:columns>
   </ns:table>
   <ns:table tableName="areas" tableDbType="TABLE">
@@ -1828,6 +1832,19 @@
       <ns:column columnName="comment">
         <ns:datatype>varchar</ns:datatype>
         <ns:scale>100</ns:scale>
+      </ns:column>
+    </ns:columns>
+  </ns:table>
+  <ns:table tableName="death_remarks" tableDbType="TABLE">
+    <ns:pkColumnName>title</ns:pkColumnName>
+    <ns:columns>
+        <ns:column columnName="title">
+          <ns:datatype>varchar</ns:datatype>
+          <ns:scale>200</ns:scale>
+        </ns:column>
+      <ns:column columnName="remark">
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>255</ns:scale>
       </ns:column>
     </ns:columns>
   </ns:table>

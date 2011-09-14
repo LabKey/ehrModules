@@ -26,7 +26,7 @@ EHR.reports.qwpConfig = {
         var width2 = Ext.get(this.anchorLayout.id).getSize().width;
 
         if(width1 > width2){
-            this.anchorLayout.setWidth(width1+120);
+            this.anchorLayout.setWidth(width1+140);
             console.log('resizing')
         }
         else {
@@ -64,7 +64,7 @@ EHR.reports.abstract = function(tab, subject){
                 var width2 = Ext.get(this.anchorLayout.id).getSize().width;
 
                 if(width1 > width2){
-                    this.anchorLayout.setWidth(width1+120);
+                    this.anchorLayout.setWidth(width1+140);
                     console.log('resizing')
                 }
                 else {
@@ -159,9 +159,154 @@ EHR.reports.arrivalDeparture = function(tab, subject){
 
 }
 
-EHR.reports.Diagnostics = function(tab, subject){
-    var target = tab.add({tag: 'span', html: 'In progress.  Will contain graphing'});
+EHR.reports.diagnostics = function(tab, subject){
+    var filterArray = this.getFilterArray(tab, subject);
+    var title = (subject ? subject.join("; ") : '');
+    tab.getTopToolbar().removeAll();
 
+    var target = tab.add({tag: 'div', style: 'padding-bottom: 20px'});
+    tab.doLayout();
+    var config = Ext.applyIf({
+        title: 'Bacteriology',
+        frame: true,
+        schemaName: 'study',
+        queryName: 'Bacteriology Results',
+        sort: '-date',
+        filters: filterArray.nonRemovable,
+        removeableFilters: filterArray.removable,
+        scope: this
+    }, EHR.reports.qwpConfig);
+    new LABKEY.QueryWebPart(config).render(target.id);
+
+    target = tab.add({tag: 'div', style: 'padding-bottom: 20px'});
+    tab.doLayout();
+    config = Ext.applyIf({
+        title: 'Chemistry',
+        frame: true,
+        schemaName: 'study',
+        queryName: 'chemPivot',
+        sort: '-date',
+        filters: filterArray.nonRemovable,
+        removeableFilters: filterArray.removable,
+        scope: this
+    }, EHR.reports.qwpConfig);
+    new LABKEY.QueryWebPart(config).render(target.id);
+
+    target = tab.add({tag: 'div', style: 'padding-bottom: 20px'});
+    tab.doLayout();
+    config = Ext.applyIf({
+        schemaName: 'study',
+        queryName: 'chemMisc',
+        title: "Misc Chemistry Tests:",
+        titleField: 'Id',
+        sort: '-date',
+        filters: filterArray.nonRemovable,
+        removeableFilters: filterArray.removable,
+        scope: this
+    }, EHR.reports.qwpConfig);
+    new LABKEY.QueryWebPart(config).render(target.id);
+
+    target = tab.add({tag: 'div', style: 'padding-bottom: 20px'});
+    tab.doLayout();
+    var config = Ext.applyIf({
+        title: 'Hematology',
+        frame: true,
+        schemaName: 'study',
+        allowChooseView: true,
+        queryName: 'hematologyPivot',
+        //sort: '-date',
+        filters: filterArray.nonRemovable,
+        removeableFilters: filterArray.removable,
+        scope: this
+    }, EHR.reports.qwpConfig);
+
+    new LABKEY.QueryWebPart(config).render(target.id);
+
+    target = tab.add({tag: 'span', style: 'padding-bottom: 20px'});
+    tab.doLayout();
+
+    config = Ext.applyIf({
+        schemaName: 'study',
+        queryName: 'hematologyMisc',
+        title: "Misc Hematology Tests:",
+        titleField: 'Id',
+        sort: '-date',
+        filters: filterArray.nonRemovable,
+        removeableFilters: filterArray.removable,
+        scope: this
+    }, EHR.reports.qwpConfig);
+    new LABKEY.QueryWebPart(config).render(target.id);
+
+    target = tab.add({tag: 'span', style: 'padding-bottom: 20px'});
+    tab.doLayout();
+
+    config = Ext.applyIf({
+        schemaName: 'study',
+        queryName: 'Hematology Morphology',
+        title: "Hematology Morphology:",
+        titleField: 'Id',
+        sort: '-date',
+        filters: filterArray.nonRemovable,
+        removeableFilters: filterArray.removable,
+        scope: this
+    }, EHR.reports.qwpConfig);
+    new LABKEY.QueryWebPart(config).render(target.id);
+
+    target = tab.add({tag: 'span', style: 'padding-bottom: 20px'});
+    tab.doLayout();
+
+    config = Ext.applyIf({
+        schemaName: 'study',
+        queryName: 'immunologyPivot',
+        title: "Immunology",
+        sort: '-date',
+        filters: filterArray.nonRemovable,
+        removeableFilters: filterArray.removable,
+        scope: this
+    }, EHR.reports.qwpConfig);
+    new LABKEY.QueryWebPart(config).render(target.id);
+
+    target = tab.add({tag: 'span', style: 'padding-bottom: 20px'});
+    tab.doLayout();
+
+    config = Ext.applyIf({
+        schemaName: 'study',
+        queryName: 'Parasitology Results',
+        title: "Parasitology",
+        sort: '-date',
+        filters: filterArray.nonRemovable,
+        removeableFilters: filterArray.removable,
+        scope: this
+    }, EHR.reports.qwpConfig);
+    new LABKEY.QueryWebPart(config).render(target.id);
+
+    target = tab.add({tag: 'span', style: 'padding-bottom: 20px'});
+    tab.doLayout();
+
+    config = Ext.applyIf({
+        schemaName: 'study',
+        queryName: 'urinalysisPivot',
+        title: "Urinalysis",
+        sort: '-date',
+        filters: filterArray.nonRemovable,
+        removeableFilters: filterArray.removable,
+        scope: this
+    }, EHR.reports.qwpConfig);
+    new LABKEY.QueryWebPart(config).render(target.id);
+
+    target = tab.add({tag: 'span', style: 'padding-bottom: 20px'});
+    tab.doLayout();
+
+    config = Ext.applyIf({
+        schemaName: 'study',
+        queryName: 'Virology Results',
+        title: "Virology",
+        sort: '-date',
+        filters: filterArray.nonRemovable,
+        removeableFilters: filterArray.removable,
+        scope: this
+    }, EHR.reports.qwpConfig);
+    new LABKEY.QueryWebPart(config).render(target.id);
 
 }
 

@@ -1,4 +1,4 @@
-#!/usr/bin/perl
+#!/usr/local/bin/perl
 
 =head1 DESCRIPTION
 
@@ -27,6 +27,7 @@ my $studyContainer = 'WNPRC/EHR/';
 #whitespace separated list of emails
 my @am_email_recipients = qw(bimber@wisc.edu frost@primate.wisc.edu friscino@primate.wisc.edu colrecords@primate.wisc.edu);
 my @pm_email_recipients = qw(bimber@wisc.edu);
+#@am_email_recipients = qw(bimber@wisc.edu);
 my $mail_server = 'smtp.primate.wisc.edu';
 
 #emails will be sent from this address
@@ -38,6 +39,7 @@ use strict;
 use warnings;
 use Labkey::Query;
 use Net::SMTP;
+use MIME::Lite;
 use Data::Dumper;
 use Time::localtime;
 
@@ -390,7 +392,7 @@ if(@{$results->{rows}}){
         $email_html .= $row->{'Id'}."<br>";
     };
 	
-	$email_html .= "<p><a href='".$baseUrl."query/".$studyContainer."executeQuery.view?schemaName=study&query.queryName=Demographics&query.Id/MostRecentWeight/DaysSinceWeight~gt=60&query.calculated_status~eq=Alive"."'>Click here to view them</a><br>\n";			
+	$email_html .= "<p><a href='".$baseUrl."query/".$studyContainer."executeQuery.view?schemaName=study&query.viewName=Weight Detail&query.queryName=Demographics&query.Id/MostRecentWeight/DaysSinceWeight~gt=60&query.calculated_status~eq=Alive"."'>Click here to view them</a><br>\n";
 }
 else {
 	$email_html .= "All animals have been weighed in the past 60 days\n";
@@ -499,11 +501,59 @@ $results = Labkey::Query::selectRows(
 $email_html .= "<b>Protocols with fewer than 5 remaining animals:</b><br>";
 
 if(!@{$results->{rows}}){
-	$email_html .= "There are no protocols nearing the limit.<hr>";	
+	$email_html .= "There are no protocols nearing this limit.<hr>";	
 }		
 else {	
 	$email_html .= "<b>WARNING: There are ".@{$results->{rows}}." protocols nearing the limit.</b><br>";
 	$email_html .= "<p><a href='".$baseUrl."query/".$studyContainer."executeQuery.view?schemaName=lists&query.queryName=protocolTotalAnimalsBySpecies&query.TotalRemaining~lt=5'>Click here to view them</a><br>\n";
+	$email_html .= "<hr>\n";	
+}
+
+#we find protocols nearing the animal limit
+$results = Labkey::Query::selectRows(
+    -baseUrl => $baseUrl,
+    -containerPath => $studyContainer,
+    -schemaName => 'lists',
+    -queryName => 'protocolTotalAnimalsBySpecies',
+    -filterArray => [
+        ['PercentUsed', 'gte', '95'],
+    ],
+    #-debug => 1,
+);
+
+$email_html .= "<b>Protocols with fewer than 5% of their animals remaining:</b><br>";
+
+if(!@{$results->{rows}}){
+	$email_html .= "There are no protocols nearing this limit.<hr>";	
+}		
+else {	
+	$email_html .= "<b>WARNING: There are ".@{$results->{rows}}." protocols nearing the limit.</b><br>";
+	$email_html .= "<p><a href='".$baseUrl."query/".$studyContainer."executeQuery.view?schemaName=lists&query.queryName=protocolTotalAnimalsBySpecies&query.PercentUsed~gte=95'>Click here to view them</a><br>\n";
+	$email_html .= "<hr>\n";	
+}
+
+
+#find the total finalized records with future dates 
+$results = Labkey::Query::selectRows(
+    -baseUrl => $baseUrl,
+    -containerPath => $studyContainer,
+    -schemaName => 'study',
+    -queryName => 'StudyData',
+    -filterArray => [
+        ['qcstate/PublicData', 'eq', 'true'],
+        ['date', 'dategt', $datestr],
+    ],
+    #-debug => 1,
+);
+
+$email_html .= "<b>Total Finalized Records With Future Dates:</b><br>";
+
+if(!@{$results->{rows}}){
+	$email_html .= "There are no finalized records with future dates.<hr>";	
+}		
+else {	
+	$email_html .= "<b>WARNING: There are ".@{$results->{rows}}." finalized records with future dates.</b><br>";
+	$email_html .= "<p><a href='".$baseUrl."query/".$studyContainer."executeQuery.view?schemaName=study&query.queryName=StudyData&query.date~dategt=$datestr&query.qcstate/PublicData~eq=true'>Click here to view them</a><br>\n";
 	$email_html .= "<hr>\n";	
 }
 
@@ -579,19 +629,14 @@ else {
 	@email_recipients = @am_email_recipients;
 }
 
-my $smtp = Net::SMTP->new($mail_server,
-    Timeout => 30,
-    Debug   => 0,
-);
-
-$smtp->mail( $from );
-my @goodrecips=$smtp->recipient(@email_recipients, { Notify => ['FAILURE'], SkipBad => 1 });
-$smtp->data();
-$smtp->datasend("Subject: Daily Colony Alerts: $datestr\n");
-$smtp->datasend("Content-Type: text/html \n");
-$smtp->datasend("\n");
-$smtp->datasend($email_html);
-$smtp->dataend();
-$smtp->quit;
-
-
+my $smtp = MIME::Lite->new(
+          To      =>join(", ", @email_recipients),
+          From    =>$from,
+          Subject =>"Subject: Daily Colony Alerts: $datestr",
+          Type    =>'multipart/alternative'
+          );
+$smtp->attach(Type => 'text/html',
+          Encoding => 'quoted-printable',
+          Data	 => $email_html
+);         
+$smtp->send();

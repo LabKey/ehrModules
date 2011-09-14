@@ -35,6 +35,14 @@
                     </column>
                     <column columnName="AvailBlood">
                         <columnTitle>Available Blood (mL)</columnTitle>
+                        <conditionalFormats>
+                            <conditionalFormat>
+                                <filters>
+                                    <filter operator="lt" value="0"/>
+                                </filters>
+                                <backgroundColor>FBEC5D</backgroundColor>
+                            </conditionalFormat>
+                        </conditionalFormats>
                     </column>
                 </columns>
                 <titleColumn>AvailBlood</titleColumn>

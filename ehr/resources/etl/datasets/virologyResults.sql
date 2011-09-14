@@ -7,7 +7,7 @@ SELECT
 lower(x.id) as Id,
 FixDate(x.date) as Date,
 x.seq,
-x.result,
+x.result as qualResult,
 x.source,
 x.method,
 upper(x.virus) as virus,

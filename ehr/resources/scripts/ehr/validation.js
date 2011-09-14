@@ -59,6 +59,17 @@ function beforeInsert(row, errors){
     EHR.verifyPermissions('insert', this.scriptContext, row);
     EHR.rowInit.call(this, scriptErrors, row, null);
 
+    if(row.date && this.scriptContext.qcMap.label[row.QCStateLabel]['metadata/isRequest']){
+        var now = new Date();
+        //if the row's date appears to be date-only, we adjust now accordingly
+        if(row.date.getHours()==0 && row.date.getMinutes()==0)
+            now = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+
+        if(row.date.compareTo(now) < 0){
+            EHR.addError(scriptErrors, 'date', 'Cannot place a request in the past', 'ERROR');
+        }
+    }
+
     //dataset-specific beforeInsert
     if(this.onUpsert)
         this.onUpsert(this.scriptContext, scriptErrors, row);
@@ -162,10 +173,14 @@ function complete(event, errors) {
     }
 
     if(this.scriptContext.requestsModified && this.scriptContext.requestsModified.length){
+        console.log('requests modified:');
+        console.log(this.scriptContext.requestsModified);
 
     }
 
-    if(this.scriptContext.requestsDenied && !Ext.isEmpty(this.scriptContext.requestsDenied)){
+    if(this.scriptContext.requestsDenied && !EHR.utils.isEmptyObj(this.scriptContext.requestsDenied)){
+        //console.log('requests denied:');
+        console.log(this.scriptContext.requestsDenied);
         var totalRequests = [];
         for(var i in this.scriptContext.requestsDenied){
             var rows = this.scriptContext.requestsDenied[i];
@@ -290,7 +305,11 @@ EHR.rowInit = function(errors, row, oldRow){
             sql: "SELECT a.project, a.project.account FROM study.assignment a WHERE a.project='"+row.project+"' AND a.id='"+row.id+"' AND a.date <= '"+date+"' AND (a.enddate >= '"+date+"' OR a.enddate IS NULL) AND project.protocol!='wprc00' AND qcstate.publicdata = true",
             success: function(data){
                 if(!data.rows || !data.rows.length){
-                    EHR.addError(errors, 'project', 'Not assigned to '+row.project+' on this date', 'WARN');
+                    var severity = 'WARN';
+                    if(this.scriptContext.qcMap.label[row.QCStateLabel]['metadata/isRequest'])
+                        severity = 'INFO';
+
+                    EHR.addError(errors, 'project', 'Not assigned to '+row.project+' on this date', severity);
                 }
                 else {
                     this.scriptContext.assignmentRecord = data.rows[0];
@@ -335,12 +354,13 @@ EHR.rowInit = function(errors, row, oldRow){
         }
     }
 
-//    if(this.scriptContext.qcMap.label[row.QCStateLabel]['metadata/isRequest']){
-//        var now = new Date();
-//        if(row.date && row.date.before(now)){
-//            EHR.addError(errors, 'date', 'Cannot place a request in the past', 'WARN');
-//        }
-//    }
+    //dont allow future dates on completed records
+    if(row.QCStateLabel == 'Completed'){
+        var now = new Date();
+        if(row.date && row.date.compareTo(now) > 0){
+            EHR.addError(errors, 'date', 'Date is in the future', 'INFO');
+        }
+    }
 
     //force account to lowercase
     if(row.account){
@@ -532,13 +552,17 @@ EHR.onDeathDeparture = function(participant, date){
             queryName: queryName,
             columns: 'lsid,Id',
             scope: this,
+            extraContext: {
+                quickValidation: true
+            },
             filterArray: [
                 LABKEY.Filter.create('Id', participant, LABKEY.Filter.Types.EQUAL),
-                LABKEY.Filter.create('endate', null, LABKEY.Filter.Types.ISBLANK)
+                LABKEY.Filter.create('enddate', '', LABKEY.Filter.Types.ISBLANK)
             ],
             success: function(data){
                 if(data && data.rows && data.rows.length){
                     var toUpdate = [];
+                    console.log(data.rows.length);
                     Ext.each(data.rows, function(r){
                         toUpdate.push({lsid: r.lsid, enddate: date.toGMTString()})
                     }, this);
@@ -685,6 +709,10 @@ EHR.sendEmail = function(config){
             console.log('ERROR: site email not found');
             EHR.logError({msg: 'ERROR: site email not found'});
         }
+
+console.log('sending email to: '+config.msgFrom);
+console.log(config.msgContent);
+console.log(config.recipients);
 
         LABKEY.Message.sendMessage({
             msgFrom: siteEmail,
@@ -1640,6 +1668,11 @@ EHR.utils.getQCStateMap = function(config){
         failure: EHR.utils.onError
     });
 
+};
+
+EHR.utils.isEmptyObj = function(ob){
+   for(var i in ob){ return false;}
+   return true;
 };
 
 EHR.utils.getDatasetPermissions = function(config) {

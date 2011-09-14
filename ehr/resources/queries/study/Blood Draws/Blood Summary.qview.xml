@@ -2,7 +2,7 @@
    <columns>
        <column name="Id" />
        <column name="date" />
-       <column name="qcstate" />
+       <!--<column name="qcstate" />-->
        <column name="project" />
        <column name="project/protocol">
             <properties>

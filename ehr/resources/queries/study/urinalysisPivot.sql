@@ -22,9 +22,9 @@ END as result
 
 FROM study."Urinalysis Results" b
 
-WHERE testId IN ('Bilirubin', 'Ketone', 'Sp Gravity', 'Blood', 'pH', 'Protein','Urobilogen', 'Nitrite', 'Leukocytes', 'Apprearance','Microscopic', 'Glucose')
+WHERE testId IN ('BILIRUBIN', 'KETONE', 'SP_GRAVITY', 'BLOOD', 'PH', 'PROTEIN','UROBILINOGEN', 'NITRITE', 'LEUKOCYTES', 'APPEARANCE','MICROSCOPIC', 'GLUC')
 ) b
 
 GROUP BY b.id, b.date, b.runId, b.testId
-PIVOT results BY testId IN ('Bilirubin', 'Ketone', 'Sp Gravity', 'Blood', 'pH', 'Protein','Urobilogen', 'Nitrite', 'Leukocytes', 'Apprearance','Microscopic', 'Glucose')
+PIVOT results BY testId IN ('BILIRUBIN', 'KETONE', 'SP_GRAVITY', 'BLOOD', 'PH', 'PROTEIN','UROBILINOGEN', 'NITRITE', 'LEUKOCYTES', 'APPEARANCE','MICROSCOPIC', 'GLUC')
 

@@ -147,6 +147,17 @@
                         <fkColumnName>code</fkColumnName>
                       </fk>
                     </column>
+                    <column columnName="inflammation2">
+                      <datatype>varchar</datatype>
+                      <!--<nullable>false</nullable>-->
+                      <columnTitle>Inflammation</columnTitle>
+                      <fk>
+                        <fkFolderPath>/wnprc/ehr/</fkFolderPath>
+                        <fkDbSchema>ehr_lookups</fkDbSchema>
+                        <fkTable>snomed</fkTable>
+                        <fkColumnName>code</fkColumnName>
+                      </fk>
+                    </column>
                     <column columnName="etiology">
                       <datatype>varchar</datatype>
                       <!--<nullable>false</nullable>-->

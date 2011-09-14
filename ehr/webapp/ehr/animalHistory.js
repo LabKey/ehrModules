@@ -1126,7 +1126,7 @@ EHR.ext.SingleAnimalReport = Ext.extend(Ext.Panel, {
                 var width2 = Ext.get(this.anchorLayout.id).getSize().width;
 
                 if(width1 > width2){
-                    this.anchorLayout.setWidth(width1+120);
+                    this.anchorLayout.setWidth(width1+140);
                     console.log('resizing')
                 }
                 else {

@@ -10,7 +10,7 @@ var {EHR, LABKEY, Ext, console, init, beforeInsert, afterInsert, beforeUpdate, a
 
 function onUpsert(context, errors, row, oldRow){
     //check for existing animals in this room/cage
-    if(context.extraContext.dataSource != 'etl' && row.room && row.cage){
+    if(context.extraContext.dataSource != 'etl' && !context.extraContext.quickValidation && row.room && row.cage){
         LABKEY.Query.executeSql({
             schemaName: 'study',
             scope: this,
@@ -150,6 +150,7 @@ function onComplete(event, errors, scriptContext){
 };
 
 function onBecomePublic(errors, scriptContext, row, oldRow){
+    console.log('on become public')
     //if this record is active and public, deactivate any old housing records
     if(scriptContext.extraContext.dataSource != 'etl' && !row.enddate){
         var toUpdate = [];
