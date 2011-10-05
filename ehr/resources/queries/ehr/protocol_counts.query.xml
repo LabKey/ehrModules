@@ -2,6 +2,10 @@
     <metadata>
         <tables xmlns="http://labkey.org/data/xml">
             <table tableName="protocol_counts" tableDbType="TABLE">
+              <insertUrl />
+              <importUrl />
+              <updateUrl />
+              <deleteUrl />
               <tableTitle>RARC Protocol Allowable Animals</tableTitle>
               <columns>
                 <column columnName="RowId">
@@ -37,7 +41,7 @@
                   <nullable>false</nullable>
                     <fk>
                       <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-                      <fkDbSchema>lists</fkDbSchema>
+                      <fkDbSchema>ehr</fkDbSchema>
                       <fkTable>protocol</fkTable>
                       <fkColumnName>protocol</fkColumnName>
                     </fk>

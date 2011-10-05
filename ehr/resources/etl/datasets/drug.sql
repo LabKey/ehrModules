@@ -19,7 +19,7 @@ FROM
 
 (
 
-SELECT id, date, time, code, amount,units as amount_units, route, FixBadTime(time2) as BeginTime, null as EndTime, 'clindrug' AS category, ts, uuid,
+SELECT id, date, time, code, amount,units as amount_units, route, FixBadTime(time2) as BeginTime, null as EndTime, 'Drug' AS category, ts, uuid,
 (select UUID as uuid from clinhead t2 WHERE t1.id=t2.id AND t1.date=t2.date AND t1.time=t2.time AND (t1.pno=t2.pno OR t1.pno IS NULL) GROUP BY t1.uuid) as parentid,
 coalesce(pno, (select group_concat(DISTINCT pno) as pno from clinhead t2 WHERE t1.id=t2.id AND t1.date=t2.date AND t1.time=t2.time AND (t1.pno=t2.pno OR t1.pno IS NULL) GROUP BY t1.uuid)) as pno,
 -- (select group_concat(distinct remark SEPERATOR ";") as remark from clintrem t2 WHERE t1.id=t2.id AND t1.date=t2.date AND t1.time=t2.time AND (t1.pno=t2.pno OR t1.pno is null) AND remark is not null and remark != '' AND remark not like "%s/o%" AND remark not like '%mens.%' AND remark not like '%blood draw%' AND userid is null GROUP BY t1.uuid) as remark
@@ -30,7 +30,7 @@ AND length(id) > 1
 
 UNION ALL
 
-SELECT h1.id, h1.date,h1.time, code, amount,units as amount_units, route, FixBadTime(time2) as BeginTime, null as EndTime, 'hormdrug' AS category, h1.ts as ts, h1.uuid,
+SELECT h1.id, h1.date,h1.time, code, amount,units as amount_units, route, FixBadTime(time2) as BeginTime, null as EndTime, 'Hormone' AS category, h1.ts as ts, h1.uuid,
 (select UUID as uuid from hormhead t2 WHERE h1.id=t2.id AND h1.date=t2.date AND h1.time=t2.time AND (h1.pno=t2.pno OR h1.pno is null) GROUP BY h1.uuid) as parentid,
 coalesce(pno, (select group_concat(DISTINCT pno) as pno from hormhead t2 WHERE h1.id=t2.id AND h1.date=t2.date AND h1.time=t2.time AND (h1.pno=t2.pno OR h1.pno is null) GROUP BY h1.uuid)) as pno,
 (select group_concat(distinct remark) as remark from hormtrem t2 WHERE h1.id=t2.id AND h1.date=t2.date AND h1.time=t2.time AND (h1.pno=t2.pno OR h1.pno is null) GROUP BY h1.uuid) as remark
@@ -41,7 +41,7 @@ AND length(id) > 1
 
 UNION ALL
 
-SELECT id, date,time, code, amount,units as amount_units, route, null as BeginTime, null as EndTime, 'surgmed' AS category, ts, uuid,
+SELECT id, date,time, code, amount,units as amount_units, route, null as BeginTime, null as EndTime, 'Surgery Medication' AS category, ts, uuid,
 (select UUID from surghead t2 WHERE t1.id=t2.id AND t1.date=t2.date AND t1.time=t2.time GROUP BY t1.uuid) as parentid,
 (select pno from surghead t2 WHERE t1.id=t2.id AND t1.date=t2.date AND t1.time=t2.time GROUP BY t1.uuid) as pno,
 remark
@@ -51,7 +51,7 @@ AND length(id) > 1
 
 UNION ALL
 
-SELECT id, date,time, code, amount,units as amount_units, route, null as BeginTime, null as EndTime, 'surganes' AS category, ts, uuid,
+SELECT id, date,time, code, amount,units as amount_units, route, null as BeginTime, null as EndTime, 'Surgery Anesthesia' AS category, ts, uuid,
 (select UUID from surghead t2 WHERE t1.id=t2.id AND t1.date=t2.date AND t1.time=t2.time GROUP BY t1.uuid) as parentid,
 (select pno from surghead t2 WHERE t1.id=t2.id AND t1.date=t2.date AND t1.time=t2.time GROUP BY t1.uuid) as pno,
 remark
@@ -63,7 +63,7 @@ UNION ALL
 
 SELECT id, date, time, code, amount, units as amount_units, route,
 FixBadTime(begintime) AS begintime,
-FixBadTime(endtime) AS endtime, 'surgfluid' as category, ts, uuid,
+FixBadTime(endtime) AS endtime, 'Surgery Fluid' as category, ts, uuid,
 (select UUID from surghead t2 WHERE t1.id=t2.id AND t1.date=t2.date AND t1.time=t2.time GROUP BY t1.id,t1.date,t1.time limit 1) as parentid,
 (select pno from surghead t2 WHERE t1.id=t2.id AND t1.date=t2.date AND t1.time=t2.time GROUP BY t1.uuid) as pno,
 null as remark
@@ -71,7 +71,19 @@ FROM surgfluid t1
 WHERE ts > ?
 AND length(id) > 1
 
-        ) x
+UNION ALL
+
+SELECT id, date, time, code, null as amount, null as amount_units, null as route,
+null as begintime,
+null as endtime, 'Procedure' as category,  ts, uuid,
+(select UUID from surghead t2 WHERE p.id=t2.id AND p.date=t2.date AND p.time=t2.time GROUP BY p.id,p.date,p.time limit 1) as parentid,
+(select pno from surghead t2 WHERE p.id=t2.id AND p.date=t2.date AND p.time=t2.time GROUP BY p.uuid) as pno,
+null as remark
+FROM surgproc p
+WHERE ts > ?
+AND length(id) > 1
+
+) x
 JOIN snomed s1 on x.code=s1.code
 
 

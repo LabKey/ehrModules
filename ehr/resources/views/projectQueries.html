@@ -7,7 +7,7 @@
     Ext.onReady(function(){
 
     new EHR.ext.SearchPanel({
-        schemaName: 'lists'
+        schemaName: 'ehr'
         ,queryName: 'Project'
         ,viewName: 'Search Panel'
         ,title: 'Search Projects'
@@ -17,7 +17,7 @@
     }).render('projectPanel');
 
     new EHR.ext.SearchPanel({
-        schemaName: 'lists'
+        schemaName: 'ehr'
         ,queryName: 'protocol'
         ,title: 'Search Protocols'
         ,metadata: {}
@@ -68,7 +68,7 @@ This page contains a series of queries to search IACUC Protocols, RARC Projects 
 <h3>Commonly Used Queries:</h3>
 <ul>
     <li>
-        <a href="<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=lists&query.queryName=Project&query.viewName=Projects With Active Assignments">View All Projects With Active Assignments</a>
+        <a href="<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=ehr&query.queryName=Project&query.viewName=Projects With Active Assignments">View All Projects With Active Assignments</a>
     </li>
 </ul>
 <p/>
@@ -85,7 +85,7 @@ This page contains a series of queries to search IACUC Protocols, RARC Projects 
 <h3>Commonly Used Queries:</h3>
 <ul>
     <li>
-        <a href="<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=lists&query.queryName=protocolTotalAnimalsBySpecies">View Total Animals Assigned to Each Protocol, By Species</a>
+        <a href="<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=ehr&query.queryName=protocolTotalAnimalsBySpecies">View Total Animals Assigned to Each Protocol, By Species</a>
     </li>
 </ul>
 <p/>

@@ -940,6 +940,7 @@
         <ns:scale>10</ns:scale>
       </ns:column>
       <ns:column columnName="notificationtype">
+        <ns:columnTitle>Notification Type</ns:columnTitle>
         <ns:nullable>true</ns:nullable>
         <ns:datatype>varchar</ns:datatype>
         <ns:scale>100</ns:scale>
@@ -1264,9 +1265,9 @@
       </ns:column>
     </ns:columns>
   </ns:table>
-  <ns:table tableName="protocols" tableDbType="TABLE">
+  <ns:table tableName="protocol" tableDbType="TABLE">
     <ns:pkColumnName>protocol</ns:pkColumnName>
-    <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr&amp;query.queryName=protocols&amp;protocol=${protocol}</ns:tableUrl>
+    <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr&amp;query.queryName=protocol&amp;protocol=${protocol}</ns:tableUrl>
     <ns:columns>
       <ns:column columnName="protocol">
         <ns:datatype>varchar</ns:datatype>
@@ -1333,8 +1334,8 @@
     <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr&amp;query.queryName=projects&amp;project=${project}</ns:tableUrl>
     <ns:columns>
       <ns:column columnName="project">
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>200</ns:scale>
+        <ns:datatype>integer</ns:datatype>
+        <ns:scale>100</ns:scale>
       </ns:column>
       <ns:column columnName="protocol">
         <ns:datatype>varchar</ns:datatype>
@@ -1790,6 +1791,84 @@
           <ns:fkColumnName>entityid</ns:fkColumnName>
         </ns:fk>
       </ns:column>
+      <ns:column columnName="createdby">
+        <ns:isUserEditable>false</ns:isUserEditable>
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>userid</ns:datatype>
+        <ns:scale>4</ns:scale>
+        <ns:isHidden>true</ns:isHidden>
+      </ns:column>
+      <ns:column columnName="created">
+        <ns:isUserEditable>false</ns:isUserEditable>
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>timestamp</ns:datatype>
+        <ns:scale>29</ns:scale>
+        <ns:isHidden>true</ns:isHidden>
+      </ns:column>
+      <ns:column columnName="modifiedby">
+        <ns:isUserEditable>false</ns:isUserEditable>
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>userid</ns:datatype>
+        <ns:scale>4</ns:scale>
+        <ns:isHidden>true</ns:isHidden>
+      </ns:column>
+      <ns:column columnName="modified">
+        <ns:isUserEditable>false</ns:isUserEditable>
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>timestamp</ns:datatype>
+        <ns:scale>29</ns:scale>
+        <ns:isHidden>true</ns:isHidden>
+      </ns:column>
+    </ns:columns>
+  </ns:table>
+  <ns:table tableName="protocolProcedures" tableDbType="TABLE">
+    <ns:pkColumnName>rowid</ns:pkColumnName>
+    <ns:columns>
+      <ns:column columnName="rowid">
+        <ns:datatype>serial</ns:datatype>
+        <ns:shownInInsertView>false</ns:shownInInsertView>
+        <ns:shownInUpdateView>false</ns:shownInUpdateView>
+        <ns:shownInDetailsView>false</ns:shownInDetailsView>
+        <ns:isAutoInc>true</ns:isAutoInc>
+        <ns:scale>10</ns:scale>
+      </ns:column>
+      <ns:column columnName="protocol">
+        <ns:nullable>false</ns:nullable>
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>100</ns:scale>
+      </ns:column>
+      <ns:column columnName="procedureName">
+        <ns:columnTitle>Procedure Name</ns:columnTitle>
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>100</ns:scale>
+      </ns:column>
+      <ns:column columnName="code">
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>100</ns:scale>
+      </ns:column>
+      <ns:column columnName="allowed">
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>double</ns:datatype>
+        <ns:scale>100</ns:scale>
+      </ns:column>
+      <ns:column columnName="frequency">
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>100</ns:scale>
+      </ns:column>
+      <!--<ns:column columnName="container">-->
+        <!--<ns:isUserEditable>false</ns:isUserEditable>-->
+        <!--<ns:datatype>entityid</ns:datatype>-->
+        <!--<ns:isHidden>true</ns:isHidden>-->
+        <!--<ns:scale>36</ns:scale>-->
+        <!--<ns:fk>-->
+          <!--<ns:fkDbSchema>core</ns:fkDbSchema>-->
+          <!--<ns:fkTable>containers</ns:fkTable>-->
+          <!--<ns:fkColumnName>entityid</ns:fkColumnName>-->
+        <!--</ns:fk>-->
+      <!--</ns:column>-->
       <ns:column columnName="createdby">
         <ns:isUserEditable>false</ns:isUserEditable>
         <ns:nullable>true</ns:nullable>

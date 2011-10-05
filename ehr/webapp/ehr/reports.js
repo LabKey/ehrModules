@@ -214,7 +214,7 @@ EHR.reports.diagnostics = function(tab, subject){
         schemaName: 'study',
         allowChooseView: true,
         queryName: 'hematologyPivot',
-        //sort: '-date',
+        sort: '-date',
         filters: filterArray.nonRemovable,
         removeableFilters: filterArray.removable,
         scope: this
@@ -527,46 +527,46 @@ EHR.reports.bloodChemistry = function(tab, subject){
 
     var filterArray = this.getFilterArray(tab, subject);
     var title = (subject ? subject.join("; ") : '');
-    tab.queryName = tab.queryName || 'chemPivot';
-    
-    this.addHeader(tab, [{
-        html: 'Choose Report:',
-        style: 'padding-left:10px'
-        },{
-        xtype: 'combo',
-        store: new Ext.data.ArrayStore({
-            fields: ['name', 'value'],
-            data: [['Panel','chemPivot;'], ['Ref Range','Chemistry Results;Plus Ref Range']]
-        }),
-        fieldName: 'Test',
-        mode: 'local',
-        displayField: 'name',
-        valueField: 'value',
-        forceSelection:false,
-        //typeAhead: true,
-        triggerAction: 'all',
-        value: tab.query,
-        ref: '../reportSelector',
-        listeners: {
-            scope: this,
-            select: function(c){
-                var val = c.getValue().split(';');
-                c.refOwner.queryName = val[0];
-                c.refOwner.viewName = val[1];
-                c.refOwner.filters = [];                
-                this.loadTab(c.refOwner);
-            }
-        }
-    }]);
+
+//    tab.queryName = tab.queryName || 'chemPivot';
+//    this.addHeader(tab, [{
+//        html: 'Choose Report:',
+//        style: 'padding-left:10px'
+//        },{
+//        xtype: 'combo',
+//        store: new Ext.data.ArrayStore({
+//            fields: ['name', 'value'],
+//            data: [['Panel','chemPivot;'], ['Ref Range','Chemistry Results;Plus Ref Range']]
+//        }),
+//        fieldName: 'Test',
+//        mode: 'local',
+//        displayField: 'name',
+//        valueField: 'value',
+//        forceSelection:false,
+//        //typeAhead: true,
+//        triggerAction: 'all',
+//        value: tab.query,
+//        ref: '../reportSelector',
+//        listeners: {
+//            scope: this,
+//            select: function(c){
+//                var val = c.getValue().split(';');
+//                c.refOwner.queryName = val[0];
+//                c.refOwner.viewName = val[1];
+//                c.refOwner.filters = [];
+//                this.loadTab(c.refOwner);
+//            }
+//        }
+//    }]);
 
     var target = tab.add({tag: 'span', style: 'padding-bottom: 20px'});
     tab.doLayout();
 
     var config = Ext.applyIf({
         schemaName: 'study',
-        queryName: tab.queryName,
-        viewName: tab.viewName,
-        title: "Chemistry Results:",
+        queryName: 'chemPivot',
+        //viewName: tab.viewName,
+        title: "By Panel:",
         titleField: 'Id',
         sort: '-date',
         filters: filterArray.nonRemovable,
@@ -575,7 +575,7 @@ EHR.reports.bloodChemistry = function(tab, subject){
     }, EHR.reports.qwpConfig);
     new LABKEY.QueryWebPart(config).render(target.id);
 
-    if(tab.queryName == 'chemPivot'){
+//    if(tab.queryName == 'chemPivot'){
         target = tab.add({tag: 'span', style: 'padding-bottom: 20px'});
         tab.doLayout();
 
@@ -590,7 +590,23 @@ EHR.reports.bloodChemistry = function(tab, subject){
             scope: this
         }, EHR.reports.qwpConfig);
         new LABKEY.QueryWebPart(config).render(target.id);
-    }
+//    }
+
+    target = tab.add({tag: 'span', style: 'padding-bottom: 20px'});
+    tab.doLayout();
+
+    config = Ext.applyIf({
+        schemaName: 'study',
+        queryName: 'Chemistry Results',
+        viewName: 'Plus Ref Range',
+        title: "Reference Ranges:",
+        titleField: 'Id',
+        sort: '-date',
+        filters: filterArray.nonRemovable,
+        removeableFilters: filterArray.removable,
+        scope: this
+    }, EHR.reports.qwpConfig);
+    new LABKEY.QueryWebPart(config).render(target.id);
 }
 
 
@@ -598,45 +614,45 @@ EHR.reports.hematology = function(tab, subject){
 
     var filterArray = this.getFilterArray(tab, subject);
     var title = (subject ? subject.join("; ") : '');
-    tab.queryName = tab.queryName || 'hematologyPivot';
 
-    this.addHeader(tab, [{
-        html: 'Choose Report:',
-        style: 'padding-left:10px'
-        },{
-        xtype: 'combo',
-        store: new Ext.data.ArrayStore({
-            fields: ['name', 'value'],
-            data: [['Panel','hematologyPivot;'], ['Ref Range','Hematology Results;Plus Ref Range']]
-        }),
-        mode: 'local',
-        displayField: 'name',
-        valueField: 'value',
-        forceSelection:false,
-        //typeAhead: true,
-        triggerAction: 'all',
-        value: tab.query,
-        ref: '../reportSelector',
-        listeners: {
-            scope: this,
-            select: function(c){
-                var val = c.getValue().split(';');
-                c.refOwner.queryName = val[0];
-                c.refOwner.viewName = val[1];
-                c.refOwner.filters = [];
-                this.loadTab(c.refOwner);
-            }
-        }
-    }]);
+//    tab.queryName = tab.queryName || 'hematologyPivot';
+//    this.addHeader(tab, [{
+//        html: 'Choose Report:',
+//        style: 'padding-left:10px'
+//        },{
+//        xtype: 'combo',
+//        store: new Ext.data.ArrayStore({
+//            fields: ['name', 'value'],
+//            data: [['Panel','hematologyPivot;'], ['Ref Range','Hematology Results;Plus Ref Range']]
+//        }),
+//        mode: 'local',
+//        displayField: 'name',
+//        valueField: 'value',
+//        forceSelection:false,
+//        //typeAhead: true,
+//        triggerAction: 'all',
+//        value: tab.query,
+//        ref: '../reportSelector',
+//        listeners: {
+//            scope: this,
+//            select: function(c){
+//                var val = c.getValue().split(';');
+//                c.refOwner.queryName = val[0];
+//                c.refOwner.viewName = val[1];
+//                c.refOwner.filters = [];
+//                this.loadTab(c.refOwner);
+//            }
+//        }
+//    }]);
 
     var target = tab.add({tag: 'span', style: 'padding-bottom: 20px'});
     tab.doLayout();
 
     var config = Ext.applyIf({
         schemaName: 'study',
-        queryName: tab.queryName,
-        viewName: tab.viewName,
-        title: "Hematology Results:",
+        queryName: 'hematologyPivot',
+        //viewName: tab.viewName,
+        title: "By Panel:",
         titleField: 'Id',
         filters: filterArray.nonRemovable,
         removeableFilters: filterArray.removable,
@@ -645,7 +661,7 @@ EHR.reports.hematology = function(tab, subject){
     }, EHR.reports.qwpConfig);
     new LABKEY.QueryWebPart(config).render(target.id);
 
-    if(tab.queryName == 'hematologyPivot'){
+//    if(tab.queryName == 'hematologyPivot'){
         target = tab.add({tag: 'span', style: 'padding-bottom: 20px'});
         tab.doLayout();
 
@@ -660,7 +676,7 @@ EHR.reports.hematology = function(tab, subject){
             scope: this
         }, EHR.reports.qwpConfig);
         new LABKEY.QueryWebPart(config).render(target.id);
-    }
+//    }
 
     target = tab.add({tag: 'span', style: 'padding-bottom: 20px'});
     tab.doLayout();
@@ -669,6 +685,22 @@ EHR.reports.hematology = function(tab, subject){
         schemaName: 'study',
         queryName: 'Hematology Morphology',
         title: "Morphology:",
+        titleField: 'Id',
+        sort: '-date',
+        filters: filterArray.nonRemovable,
+        removeableFilters: filterArray.removable,
+        scope: this
+    }, EHR.reports.qwpConfig);
+    new LABKEY.QueryWebPart(config).render(target.id);
+
+    target = tab.add({tag: 'span', style: 'padding-bottom: 20px'});
+    tab.doLayout();
+
+    config = Ext.applyIf({
+        schemaName: 'study',
+        queryName: 'Hematology Results',
+        viewName: 'Plus Ref Range',
+        title: "Reference Ranges:",
         titleField: 'Id',
         sort: '-date',
         filters: filterArray.nonRemovable,

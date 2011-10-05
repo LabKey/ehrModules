@@ -11,6 +11,7 @@ var {EHR, LABKEY, Ext, console, init, beforeInsert, afterInsert, beforeUpdate, a
 function onUpsert(context, errors, row, oldRow){
     if(row.Id && row.tattoo && context.extraContext.dataSource != 'etl'){
         var regexp = row.Id.replace(/\D/, '');
+        regexp = regexp.replace(/^0+/, '');
         regexp = new RegExp(regexp);
 
         if(!row.tattoo.match(regexp)){
@@ -22,12 +23,22 @@ function onUpsert(context, errors, row, oldRow){
 function onComplete(event, errors, scriptContext){
     if(scriptContext.publicParticipantsModified.length){
         var valuesMap = {};
-        Ext.each(scriptContext.rows, function(r){
+        var r;
+        for(var i=0;i<scriptContext.rows.length;i++){
+            r = scriptContext.rows[i];
             valuesMap[r.row.Id] = {};
             valuesMap[r.row.Id].death = r.row.date;
-        }, this);
-
+        }
         EHR.validation.updateStatusField(scriptContext.publicParticipantsModified, null, valuesMap);
+
+        EHR.sendEmail({
+            notificationType: 'Animal Death',
+            msgContent: 'The following animals have been marked as dead:<br>' +
+                 scriptContext.publicParticipantsModified.join(',<br>') +
+                '<p></p><a href="'+LABKEY.ActionURL.getBaseURL()+'ehr' + LABKEY.ActionURL.getContainer() + '/animalHistory.view#_inputType:renderMultiSubject&subject:'+scriptContext.publicParticipantsModified.join(';')+'&combineSubj:true&activeReport:abstract' +
+                '">Click here to view them</a>.',
+            msgSubject: 'Death Notification'
+        });
     }
 };
 

@@ -52,7 +52,7 @@
        <column name="instructions" />
        <!--<column name="Remark" />-->
 
-      <column name="requestid/notify1">
+      <column name="requestid/description">
         <properties>
             <property name="columnTitle" value="Requestor"/>
         </properties>

@@ -11,49 +11,68 @@ Ext.onReady(function ()
 
     var lsid = LABKEY.ActionURL.getParameter('key');
 
-    new EHR.ext.DetailsView({
+    LABKEY.Query.selectRows({
         schemaName: 'study',
         queryName: 'Treatment Orders',
-        title: 'Treatment Details:',
-        renderTo: 'treatmentDetails',
-        filterArray: [LABKEY.Filter.create('lsid', lsid, LABKEY.Filter.Types.EQUAL)]
+        scope: this,
+        filterArray: [LABKEY.Filter.create('lsid', lsid, LABKEY.Filter.Types.EQUAL)],
+        successCallback: onSuccess
     });
 
-    new LABKEY.QueryWebPart({
-        title: 'Treatment Schedule',
-        schemaName: 'study',
-        queryName: 'treatmentSchedule',
-        allowChooseQuery: false,
-        allowChooseView: true,
-        showInsertNewButton: false,
-        showDeleteButton: false,
-        showDetailsColumn: true,
-        showUpdateColumn: false,
-        showRecordSelectors: true,
-        buttonBarPosition: 'top',
-        filters: [LABKEY.Filter.create('lsid', lsid, LABKEY.Filter.Types.EQUAL)],
-        //sort: '-Date',
-        scope: this,
-        failure: EHR.utils.onError
-     }).render('treatmentSchedule');
 
-    new LABKEY.QueryWebPart({
-        title: 'Treatment History',
-        schemaName: 'study',
-        queryName: 'Drug Administration',
-        allowChooseQuery: false,
-        allowChooseView: true,
-        showInsertNewButton: false,
-        showDeleteButton: false,
-        showDetailsColumn: true,
-        showUpdateColumn: false,
-        showRecordSelectors: true,
-        buttonBarPosition: 'top',
-        filters: [LABKEY.Filter.create('parentId', lsid, LABKEY.Filter.Types.STARTS_WITH)],
-        //sort: '-Date',
-        scope: this,
-        failure: EHR.utils.onError
-     }).render('treatmentHistory');
+    function onSuccess(data){
+        if(!data || !data.rows.length){
+            alert('Error loading treatment');
+            return;
+        }
+
+        var row = data.rows[0];
+
+console.log(row);
+        new EHR.ext.DetailsView({
+            schemaName: 'study',
+            queryName: 'Treatment Orders',
+            title: 'Treatment Details:',
+            renderTo: 'treatmentDetails',
+            filterArray: [LABKEY.Filter.create('lsid', lsid, LABKEY.Filter.Types.EQUAL)]
+        });
+
+        new LABKEY.QueryWebPart({
+            title: 'Treatment Schedule',
+            schemaName: 'study',
+            queryName: 'treatmentSchedule',
+            allowChooseQuery: false,
+            allowChooseView: true,
+            showInsertNewButton: false,
+            showDeleteButton: false,
+            showDetailsColumn: true,
+            showUpdateColumn: false,
+            showRecordSelectors: true,
+            buttonBarPosition: 'top',
+            filters: [LABKEY.Filter.create('lsid', lsid, LABKEY.Filter.Types.EQUAL)],
+            //sort: '-Date',
+            scope: this,
+            failure: EHR.utils.onError
+         }).render('treatmentSchedule');
+
+        new LABKEY.QueryWebPart({
+            title: 'Treatment History',
+            schemaName: 'study',
+            queryName: 'Drug Administration',
+            allowChooseQuery: false,
+            allowChooseView: true,
+            showInsertNewButton: false,
+            showDeleteButton: false,
+            showDetailsColumn: true,
+            showUpdateColumn: false,
+            showRecordSelectors: true,
+            buttonBarPosition: 'top',
+            filters: [LABKEY.Filter.create('parentId', row.objectid, LABKEY.Filter.Types.STARTS_WITH)],
+            //sort: '-Date',
+            scope: this,
+            failure: EHR.utils.onError
+         }).render('treatmentHistory');
+    }
 });
 
 </script>

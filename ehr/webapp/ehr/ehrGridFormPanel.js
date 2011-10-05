@@ -792,48 +792,64 @@ EHR.ext.GridFormPanel = Ext.extend(Ext.Panel,
             }
         },
 
-        copyfromhistology: {
-            text: 'Copy From Histology',
+        copytodiagnosis: {
+            text: 'Copy To Diagnosis',
             //requiredQC: 'In Progress',
             xtype: 'button',
             scope: this,
-            tooltip: 'Click to copy records from the histology section',
+            tooltip: 'Click to copy records to the diagnosis section',
             name: 'add-blood-button',
             handler: function()
             {
-                var histStore = Ext.StoreMgr.get("study||Histology||||");
-                if(histStore){
-                    histStore.each(function(r){
-                        this.store.addRecord({
-                            Id: r.get('Id'),
-                            date: r.get('date'),
-                            tissue: r.get('tissue'),
-                            tissue_qualifier: r.get('qualifier')
-                        });
-                    }, this);
+                var targetStore = Ext.StoreMgr.get("study||Morphologic Diagnosis||||");
+                if(targetStore){
+                    var recs = this.theGrid.getSelectionModel().getSelections();
+                    if(!recs.length){
+                        alert('Must select one or more records.  Use the \'Select All\' button to choose all.');
+                        return;
+                    }
+
+                    if(recs.length){
+                        Ext.each(recs, function(r){
+                            targetStore.addRecord({
+                                Id: r.get('Id'),
+                                date: r.get('date'),
+                                tissue: r.get('tissue'),
+                                tissue_qualifier: r.get('qualifier')
+                            });
+                        }, this);
+                    }
                 }
             }
         },
 
-        copyfromtissues: {
-            text: 'Copy From Tissues',
+        copytohistology: {
+            text: 'Copy To Histology',
             //requiredQC: 'In Progress',
             xtype: 'button',
             scope: this,
-            tooltip: 'Click to copy records from the tissue samples section',
+            tooltip: 'Click to copy records to the histology section',
             name: 'add-blood-button',
             handler: function()
             {
-                var histStore = Ext.StoreMgr.get("study||Tissue Samples||||");
-                if(histStore){
-                    histStore.each(function(r){
-                        this.store.addRecord({
-                            Id: r.get('Id'),
-                            date: r.get('date'),
-                            tissue: r.get('tissue'),
-                            qualifier: r.get('qualifier')
-                        });
-                    }, this);
+                var targetStore = Ext.StoreMgr.get("study||Histology||||");
+                if(targetStore){
+                    var recs = this.theGrid.getSelectionModel().getSelections();
+                    if(!recs.length){
+                        alert('Must select one or more records.  Use the \'Select All\' button to choose all.');
+                        return;
+                    }
+
+                    if(recs.length){
+                        Ext.each(recs, function(r){
+                            targetStore.addRecord({
+                                Id: r.get('Id'),
+                                date: r.get('date'),
+                                tissue: r.get('tissue'),
+                                qualifier: r.get('qualifier')
+                            });
+                        }, this);
+                    }
                 }
             }
         },

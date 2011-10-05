@@ -293,7 +293,7 @@ EHR.ext.SingleAnimalReport = Ext.extend(Ext.Panel, {
                 ,editable: true
                 ,store: new LABKEY.ext.Store({
                     containerPath: 'WNPRC/EHR/',
-                    schemaName: 'lists',
+                    schemaName: 'ehr',
                     queryName: 'project',
                     viewName: 'Projects With Active Assignments',
                     sort: 'project',
@@ -313,7 +313,7 @@ EHR.ext.SingleAnimalReport = Ext.extend(Ext.Panel, {
                 ,mode: 'local'
                 ,store: new LABKEY.ext.Store({
                     containerPath: 'WNPRC/EHR/',
-                    schemaName: 'lists',
+                    schemaName: 'ehr',
                     queryName: 'protocol',
                     viewName: 'Protocols With Active Assignments',
                     sort: 'protocol',

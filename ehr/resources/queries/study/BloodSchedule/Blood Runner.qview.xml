@@ -54,7 +54,7 @@
        <column name="additionalServices" />
        <column name="instructions" />
        <!--<column name="remark" />-->
-      <column name="requestid/notify1">
+      <column name="requestid/description">
         <properties>
             <property name="columnTitle" value="Requestor"/>
         </properties>

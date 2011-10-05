@@ -36,7 +36,7 @@ CREATE FUNCTION FixSpecies(d VARCHAR(30))
     WHEN (d ='Cotton-top Tamarin' OR d = 'so') THEN
       'Cotton-top Tamarin'
     ELSE
-      NULL
+      d
     END;
 
 

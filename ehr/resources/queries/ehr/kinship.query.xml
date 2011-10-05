@@ -2,6 +2,10 @@
     <metadata>
         <tables xmlns="http://labkey.org/data/xml">
             <table tableName="kinship" tableDbType="TABLE">
+                <insertUrl />
+                <importUrl />
+                <updateUrl />
+                <deleteUrl />
                 <columns>
                     <column columnName="rowid">
                         <shownInDetailsView>false</shownInDetailsView>

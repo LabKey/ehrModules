@@ -13,12 +13,25 @@ SELECT
 	bq.lastWeighDate,
 	cast(bq.BloodLast30 as numeric) as BloodLast30,
 -- 	bq.BloodNext30,
-	round(bq.weight*0.2*60, 1) AS MaxBlood,
-	round((bq.weight*0.2*60) - bq.BloodLast30, 1) AS AvailBlood
+-- 	round(bq.weight*0.2*60, 1) AS MaxBlood,
+-- 	round((bq.weight*0.2*60) - bq.BloodLast30, 1) AS AvailBlood
+	cast(CASE
+	  WHEN bq.species = 'Marmoset'
+	    THEN round(bq.weight*0.15*60, 1)
+	  ELSE
+	    round(bq.weight*0.2*60, 1)
+    END as numeric) AS MaxBlood,
+	cast(CASE
+	  WHEN bq.species = 'Marmoset'
+	    THEN round((bq.weight*0.15*60) - bq.BloodLast30, 1)
+	  ELSE
+        round((bq.weight*0.2*60) - bq.BloodLast30, 1)
+    END AS numeric) AS AvailBlood
 FROM
 (
 	SELECT
 	  b.*,
+	  (select species from study.demographics d where d.id = b.id) as species,
 	  (
 	    CONVERT (
 	    	(SELECT AVG(w.weight) AS _expr

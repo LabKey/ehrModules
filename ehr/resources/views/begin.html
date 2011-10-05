@@ -26,7 +26,7 @@ function createNavMenu()
             {header: 'By Dataset',
             items: [
                 {name: 'Browse All Datasets', url: '<%=contextPath%>/ehr/WNPRC/EHR/datasets.view?'},
-                {name: 'Clincal Remarks', url: '<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=Clinical%20Remarks'},
+                {name: 'Clinical Remarks', url: '<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=Clinical%20Remarks'},
                 {name: 'Housing Queries', url: '<%=contextPath%>/ehr/WNPRC/EHR/housingQueries.view?'},
                 {name: 'Protocol and Project Queries', url: '<%=contextPath%>/ehr/WNPRC/EHR/projectQueries.view?'}
             ]},
@@ -34,7 +34,7 @@ function createNavMenu()
             items: [
                 {name: 'Search By Room, Floor or Cage', url: '<%=contextPath%>/ehr/WNPRC/EHR/animalHistory.view#_inputType:renderRoomCage'},
                 {name: 'Irregular Obs By Location', url: '<%=contextPath%>/ehr/WNPRC/EHR/animalHistory.view#_inputType:renderRoomCage&activeReport:obs'},
-                {name: 'Clincal Remarks By Location', url: '<%=contextPath%>/ehr/WNPRC/EHR/animalHistory.view#_inputType:renderRoomCage&activeReport:clinremarks'}
+                {name: 'Clinical Remarks By Location', url: '<%=contextPath%>/ehr/WNPRC/EHR/animalHistory.view#_inputType:renderRoomCage&activeReport:clinremarks'}
             ]},
             {header: 'Today At WNPRC',
             items: [
@@ -44,7 +44,7 @@ function createNavMenu()
                 {name: 'Treatment Schedule - PM', url: '<%=contextPath%>/ehr/WNPRC/EHR/animalHistory.view#_inputType:renderRoomCage&activeReport:treatmentSchedulePM'},
                 {name: 'Treatment Schedule - Night', url: '<%=contextPath%>/ehr/WNPRC/EHR/animalHistory.view#_inputType:renderRoomCage&activeReport:treatmentScheduleNight'},
                 {name: 'Treatment Schedule - All', url: '<%=contextPath%>/ehr/WNPRC/EHR/animalHistory.view#_inputType:renderRoomCage&activeReport:treatmentSchedule'},
-                {name: 'Forms Completed Today', url: '<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=ehr&query.queryName=TasksByLocation&query.viewName=Completion Times&query.taskid/Created~dateeq='+(new Date()).format('Y-m-d')},
+                {name: 'Forms Completed Today', url: '<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=ehr&query.queryName=TasksByLocation&query.viewName=Completion Times&query.taskid/Created~dateeq='+(new Date()).format('Y-m-d')}
             ]}
         ]
     });
@@ -93,8 +93,8 @@ function createNavMenu()
                 {name: 'About the EHR Project', url: '<%=contextPath%>/project/WNPRC/EHR/About The EHR/begin.view?'},
                 {name: 'Compare Lists of Animals', url: '<%=contextPath%>/ehr/WNPRC/EHR/utilities.view?'},
                 {name: 'Run SQL Directly', url: '<%=contextPath%>/ehr/WNPRC/EHR/executeSql.view?'},
-                {name: 'Search WNPRC SNOMED Codes', url: '<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=lists&query.queryName=snomed'},
-                {name: 'Search ALL SNOMED Codes', url: '<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=lists&query.queryName=newsnomed'}
+                {name: 'Search WNPRC SNOMED Codes', url: '<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=ehr_lookups&query.queryName=snomed'},
+                {name: 'Search ALL SNOMED Codes', url: '<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=ehr_lookups&query.queryName=full_snomed'}
             ]},
             {header: 'Data Entry',
             items: [

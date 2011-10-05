@@ -5,6 +5,7 @@
                 <!--<tableUrl>/ehr/requestDetails.view?formtype=${formtype}&amp;requestid=${requestid}</tableUrl>-->
                 <updateUrl>/ehr/manageRequest.view?formtype=${formtype}&amp;requestid=${requestid}</updateUrl>
                 <insertUrl>/ehr/manageRequest.view</insertUrl>
+                <importUrl />
                 <titleColumn>RowId</titleColumn>
                 <columns>
                     <column columnName="rowid">

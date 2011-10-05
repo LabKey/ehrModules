@@ -6,13 +6,14 @@
                 <!--<insertUrl>/ehr/manageRecord.view?schemaName=study&amp;queryName=Clinical%20Remarks&amp;keyField=lsid&amp;</insertUrl>-->
                 <!--<updateUrl>/ehr/manageRecord.view?schemaName=study&amp;queryName=Clinical%20Remarks&amp;keyField=lsid&amp;key=${lsid}</updateUrl>-->
                 <insertUrl />
+                <importUrl />
                 <updateUrl />
                 <deleteUrl />
                 <columns>
                     <column columnName="project">
                         <fk>
                           <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-                          <fkDbSchema>lists</fkDbSchema>
+                          <fkDbSchema>ehr</fkDbSchema>
                           <fkTable>project</fkTable>
                           <fkColumnName>project</fkColumnName>
                         </fk>

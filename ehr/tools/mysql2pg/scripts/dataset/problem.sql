@@ -8,3 +8,4 @@ ts, uuid AS objectid
 FROM cases c
 
 where length(id) > 1
+and description != '' and description is not null

@@ -595,3 +595,59 @@ objectid AS LabKeyUUID,
 'weight' as type,
 key2 AS mySQL_UUID
 FROM col_dump.weight_mysql
+
+
+UNION ALL
+
+SELECT
+null as id,
+null as date,
+ts,
+objectid AS LabKeyUUID,
+'snomap_list' as type,
+key2 AS mySQL_UUID
+FROM col_dump.snomap_list
+
+UNION ALL
+
+SELECT
+code as id,
+null as date,
+ts,
+code AS LabKeyUUID,
+'snomed_list' as type,
+key2 AS mySQL_UUID
+FROM col_dump.snomed_list
+
+UNION ALL
+
+SELECT
+code as id,
+null as date,
+ts,
+code AS LabKeyUUID,
+'full_snomed_list' as type,
+key2 AS mySQL_UUID
+FROM col_dump.full_snomed_list
+
+UNION ALL
+
+SELECT
+cast(project as varchar) as id,
+null as date,
+ts,
+project AS LabKeyUUID,
+'project_list' as type,
+key2 AS mySQL_UUID
+FROM col_dump.project_list
+
+UNION ALL
+
+SELECT
+protocol as id,
+null as date,
+ts,
+protocol AS LabKeyUUID,
+'protocol_list' as type,
+key2 AS mySQL_UUID
+FROM col_dump.protocol_list

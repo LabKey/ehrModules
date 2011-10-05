@@ -12,7 +12,7 @@ Ext.onReady(function ()
     var protocol = LABKEY.ActionURL.getParameter('key').toLowerCase();
 
     new EHR.ext.DetailsView({
-        schemaName: 'lists',
+        schemaName: 'ehr',
         queryName: 'protocol',
         title: 'Protocol Details:',
         renderTo: 'protocolDetails',
@@ -22,7 +22,7 @@ Ext.onReady(function ()
     
     new LABKEY.QueryWebPart({
         title: 'Projects Under This Protocol',
-        schemaName: 'lists',
+        schemaName: 'ehr',
         queryName: 'project',
         allowChooseQuery: false,
         allowChooseView: true,
@@ -59,8 +59,9 @@ Ext.onReady(function ()
 
     new LABKEY.QueryWebPart({
         title: 'Historic Assignments By Species Since Approve Date',
-        schemaName: 'lists',
+        schemaName: 'ehr',
         queryName: 'protocolTotalAnimalsBySpecies',
+        viewName: 'With Animals',
         allowChooseQuery: false,
         allowChooseView: true,
         showInsertNewButton: false,
@@ -78,7 +79,7 @@ Ext.onReady(function ()
 
     new LABKEY.QueryWebPart({
         title: 'Total Historic Assignments By Species',
-        schemaName: 'lists',
+        schemaName: 'ehr',
         queryName: 'protocolTotalHistoricAnimalsBySpecies',
         allowChooseQuery: false,
         allowChooseView: true,
@@ -158,8 +159,8 @@ Ext.onReady(function ()
 
     new LABKEY.QueryWebPart({
         title: 'Procedures Allowed Under This Protocol',
-        containerPath: pdfContainer,
-        schemaName: 'lists',
+        //containerPath: pdfContainer,
+        schemaName: 'ehr',
         queryName: 'ProtocolProcedures',
         allowChooseQuery: false,
         allowChooseView: true,

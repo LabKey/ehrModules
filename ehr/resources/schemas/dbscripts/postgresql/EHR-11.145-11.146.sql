@@ -9,3 +9,8 @@ alter table ehr.formtypes
   add column permitsSingleIdOnly bool
 ;
 
+
+
+UPDATE ehr.qcStateMetadata
+SET DraftData = TRUE
+WHERE QCStateLabel = 'Review Requested';

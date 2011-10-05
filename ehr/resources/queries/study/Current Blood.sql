@@ -5,12 +5,23 @@
  */
 SELECT
 	bq.*,
-	round(bq.weight*0.2*60, 1) AS MaxBlood,
-	round((bq.weight*0.2*60) - bq.BloodLast30, 1) AS AvailBlood
+	cast(CASE
+	  WHEN bq.species = 'Marmoset'
+	    THEN round(bq.weight*0.15*60, 1)
+	  ELSE
+	    round(bq.weight*0.2*60, 1)
+    END as numeric) AS MaxBlood,
+	cast(CASE
+	  WHEN bq.species = 'Marmoset'
+	    THEN round((bq.weight*0.15*60) - bq.BloodLast30, 1)
+	  ELSE
+        round((bq.weight*0.2*60) - bq.BloodLast30, 1)
+    END AS numeric) AS AvailBlood
 FROM
 (
 	SELECT
 	  b.*,
+	  (select species from study.demographics d where d.id = b.id) as species,
 	  (
 	    CONVERT (
 	    	(SELECT AVG(w.weight) AS _expr
@@ -59,6 +70,7 @@ FROM
             from (
               SELECT
                   b.id,
+                  --b.id.dataset.demographics.species as species,
                   cast(b.date as date) as date,
                   --b.lsid,
                   --b.qcstate,
@@ -72,6 +84,7 @@ FROM
 	     	  UNION ALL
               SELECT
                   b.id,
+                  --b.id.dataset.demographics.species as species,
                   TIMESTAMPADD('SQL_TSI_DAY', 30, cast(cast(b.date as date) as timestamp)) as date,
                   --null as lsid,
                   --null as qcstate,
@@ -86,6 +99,7 @@ FROM
 	     	  UNION ALL
               SELECT
                   b.id,
+                  --b.species,
                   curdate() as date,
                   --null as lsid,
                   --null as qcstate,

@@ -62,6 +62,12 @@ function moreActionsHandler(dataRegion){
             }
         }
 
+        if(dataRegion.schemaName.match(/^study$/i) && dataRegion.queryName.match(/^Feeding$/i)){
+            if(EHR.permissionMap.hasPermission('Completed', 'update', {queryName: 'Feeding', schemaName: 'study'})){
+                addFeedingTaskBtn(dataRegion, menu);
+            }
+        }
+
 //        if(dataRegion.schemaName.match(/^study$/i) && dataRegion.queryName.match(/^treatmentSchedule$/i)){
 //            if(EHR.permissionMap.hasPermission('Completed', 'insert', {queryName: 'Drug Administration', schemaName: 'study'})){
 //                addTreatmentCompleteBtn(dataRegion, menu);
@@ -1408,10 +1414,17 @@ function addAssignmentTaskBtn(dataRegion, menu){
             window.location = LABKEY.ActionURL.buildURL("ehr", "manageTask", null, {formtype: 'Assignment'});
         }
     });
-
-
 }
 
+function addFeedingTaskBtn(dataRegion, menu){
+    menu.add({
+        text: 'Add Batch of Records',
+        dataRegion: dataRegion,
+        handler: function(){
+            window.location = LABKEY.ActionURL.buildURL("ehr", "manageTask", null, {formtype: 'Feeding'});
+        }
+    });
+}
 
 function duplicateTask(dataRegion){
     var checked = dataRegion.getChecked();

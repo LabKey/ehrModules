@@ -6,6 +6,7 @@
                 <!--<updateUrl>/ehr/manageTask.view?formtype=${formtype}&amp;taskid=${taskid}</updateUrl>-->
                 <!--<insertUrl>/ehr/manageTask.view</insertUrl>-->
                 <insertUrl />
+                <importUrl />
                 <updateUrl />
                 <titleColumn>rowid</titleColumn>
                 <pkColumnName>taskid</pkColumnName>

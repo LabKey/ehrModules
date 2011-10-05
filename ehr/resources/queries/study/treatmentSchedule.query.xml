@@ -9,6 +9,10 @@
                         <isHidden>true</isHidden>
                         <isKeyField>true</isKeyField>
                     </column>
+                    <column columnName="primaryKey2">
+                        <isHidden>true</isHidden>
+                        <isKeyField>true</isKeyField>
+                    </column>
                     <column columnName="lsid">
                         <isHidden>true</isHidden>
                     </column>
@@ -29,7 +33,7 @@
                     <column columnName="project">
                         <fk>
                             <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-                            <fkDbSchema>lists</fkDbSchema>
+                            <fkDbSchema>ehr</fkDbSchema>
                             <fkTable>project</fkTable>
                             <fkColumnName>project</fkColumnName>
                         </fk>

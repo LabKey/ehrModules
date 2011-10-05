@@ -172,55 +172,58 @@ function complete(event, errors) {
 
     }
 
-    if(this.scriptContext.requestsModified && this.scriptContext.requestsModified.length){
-        console.log('requests modified:');
-        console.log(this.scriptContext.requestsModified);
+    //only do this if we're not in the ehr.requests script
+    if((this.scriptContext.queryName && !this.scriptContext.queryName.match(/requests/i))){
+        if(this.scriptContext.requestsModified && this.scriptContext.requestsModified.length){
+            console.log('requests modified:');
+            console.log(this.scriptContext.requestsModified);
 
-    }
-
-    if(this.scriptContext.requestsDenied && !EHR.utils.isEmptyObj(this.scriptContext.requestsDenied)){
-        //console.log('requests denied:');
-        console.log(this.scriptContext.requestsDenied);
-        var totalRequests = [];
-        for(var i in this.scriptContext.requestsDenied){
-            var rows = this.scriptContext.requestsDenied[i];
-            totalRequests.push(i);
         }
 
-        LABKEY.Query.selectRows({
-            schemaName: 'ehr',
-            queryName: 'requests',
-            columns: '*',
-            scope: this,
-            filterArray: [
-                LABKEY.Filter.create('requestid', totalRequests, LABKEY.Filter.Types.EQUALS_ONE_OF)
-            ],
-            success: function(data){
-                if(data && data.rows && data.rows.length){
-                    var emails = [];
-                    var row;
-                    for(var i in data.rows){
-                        row = data.rows[i];
-                        var recipients = [];
+        if(this.scriptContext.requestsDenied && !EHR.utils.isEmptyObj(this.scriptContext.requestsDenied)){
+            //console.log('requests denied:');
+            console.log(this.scriptContext.requestsDenied);
+            var totalRequests = [];
+            for(var i in this.scriptContext.requestsDenied){
+                var rows = this.scriptContext.requestsDenied[i];
+                totalRequests.push(i);
+            }
 
-                        if(row.notify1)
-                            recipients.push(LABKEY.Message.createPrincipalIdRecipient(LABKEY.Message.recipientType.to, row.notify1));
-                        if(row.notify2)
-                            recipients.push(LABKEY.Message.createPrincipalIdRecipient(LABKEY.Message.recipientType.to, row.notify2));
+            LABKEY.Query.selectRows({
+                schemaName: 'ehr',
+                queryName: 'requests',
+                columns: '*',
+                scope: this,
+                filterArray: [
+                    LABKEY.Filter.create('requestid', totalRequests, LABKEY.Filter.Types.EQUALS_ONE_OF)
+                ],
+                success: function(data){
+                    if(data && data.rows && data.rows.length){
+                        var emails = [];
+                        var row;
+                        for(var i in data.rows){
+                            row = data.rows[i];
+                            var recipients = [];
 
-                        if(recipients.length){
-                            EHR.sendEmail({
-                                recipients: recipients,
-                                msgContent: 'One or more elements of the following '+row.formtype+' have been denied:<br>' +
-                                    '<a href="'+LABKEY.ActionURL.getBaseURL()+'ehr' + LABKEY.ActionURL.getContainer() + '/requestDetails.view?requestid='+row.requestid+'&formtype='+row.formtype +
-                                    '">Click here to view them</a>.  The requests that have been denied will say \'Request: Denied\' in the status column.  Please do not reply to this email, as this account is not read.',
-                                msgSubject: 'EHR Service Requests Were Denied'
-                            })
+                            if(row.notify1)
+                                recipients.push(LABKEY.Message.createPrincipalIdRecipient(LABKEY.Message.recipientType.to, row.notify1));
+                            if(row.notify2)
+                                recipients.push(LABKEY.Message.createPrincipalIdRecipient(LABKEY.Message.recipientType.to, row.notify2));
+
+                            if(recipients.length){
+                                EHR.sendEmail({
+                                    recipients: recipients,
+                                    msgContent: 'One or more elements from a '+row.formtype+' have been denied:' +
+                                        '<a href="'+LABKEY.ActionURL.getBaseURL()+'ehr' + LABKEY.ActionURL.getContainer() + '/requestDetails.view?requestid='+row.requestid+'&formtype='+row.formtype +
+                                        '">Click here to view them</a>.  <p></p>The requests that have been denied will say \'Request: Denied\' in the status column.  Please do not reply to this email, as this account is not read.',
+                                    msgSubject: 'EHR Service Requests Were Denied'
+                                })
+                            }
                         }
                     }
                 }
-            }
-        });
+            });
+        }
     }
 
 }
@@ -267,12 +270,17 @@ EHR.rowInit = function(errors, row, oldRow){
                         row['id/curlocation/location'] = location;
                     }
 
-                    if(data.calculated_status != 'Alive'){
-                        if(!this.scriptContext.allowDeadIds){
-                            if(this.scriptContext.qcMap.label[row.QCStateLabel]['metadata/isRequest'])
+                    if(data.calculated_status != 'Alive' && !this.scriptContext.allowAnyId){
+                        if(data.calculated_status == 'Dead'){
+                            if(!this.scriptContext.allowDeadIds)
                                 EHR.addError(errors, 'Id', 'Status of this Id is: '+data.calculated_status, 'INFO');
-                            else
+                        }
+                        else if (data.calculated_status == 'Shipped'){
+                            if(!this.scriptContext.allowShippedIds)
                                 EHR.addError(errors, 'Id', 'Status of this Id is: '+data.calculated_status, 'INFO');
+                        }
+                        else {
+                            EHR.addError(errors, 'Id', 'Status of this Id is: '+data.calculated_status, 'INFO');
                         }
                     }
                 }
@@ -348,8 +356,11 @@ EHR.rowInit = function(errors, row, oldRow){
     }
 
     //enddate: verify either blank or not prior to date
-    if(this.scriptContext.extraContext.dataSource != 'etl' && row.enddate && row.date && row.date.compareTo){
-        if(row.date.compareTo(row.enddate)>0){
+    if(this.scriptContext.extraContext.dataSource != 'etl' && row.enddate && row.date){
+        var start = Date.parse(row.date.toGMTString());
+        var end = Date.parse(row.enddate.toGMTString());
+
+        if(start > end){
             EHR.addError(errors, 'enddate', 'End date must be after start date', 'WARN');
         }
     }
@@ -667,11 +678,15 @@ msgContent - string
 
 
 EHR.sendEmail = function(config){
+//    console.log('sending email');
+
     if(!config.recipients)
         config.recipients = [];
 
 
     if(config.notificationType){
+        console.log('notification type: '+config.notificationType);
+
         LABKEY.Query.selectRows({
             schemaName: 'ehr',
             queryName: 'notificationRecipients',
@@ -679,9 +694,7 @@ EHR.sendEmail = function(config){
             success: function(data){
                 for(var i=0;i<data.rows.length;i++){
                     config.recipients.push(LABKEY.Message.createPrincipalIdRecipient(LABKEY.Message.recipientType.to, data.rows[i].recipient));
-
-                    if(this.scriptContext.verbosity > 0)
-                        console.log('Recipient: '+data.rows[i].recipient);
+//                    console.log('Recipient: '+data.rows[i].recipient);
                 }
             },
             failure: EHR.onFailure
@@ -689,6 +702,7 @@ EHR.sendEmail = function(config){
     }
 
     if(config.recipients.length){
+        console.log('recipients: '+config.recipients.length);
         var siteEmail = config.msgFrom;
         if(!siteEmail){
             LABKEY.Query.selectRows({
@@ -710,9 +724,9 @@ EHR.sendEmail = function(config){
             EHR.logError({msg: 'ERROR: site email not found'});
         }
 
-console.log('sending email to: '+config.msgFrom);
-console.log(config.msgContent);
-console.log(config.recipients);
+//        console.log('sending email from: '+siteEmail);
+//        console.log(config.msgContent);
+//        console.log(config.recipients);
 
         LABKEY.Message.sendMessage({
             msgFrom: siteEmail,
@@ -721,7 +735,6 @@ console.log(config.recipients);
             allowUnregisteredUser: true,
             msgContent: [
                 LABKEY.Message.createMsgContent(LABKEY.Message.msgType.html, config.msgContent)
-                //LABKEY.Message.createMsgContent(LABKEY.Message.msgType.plain, config.msgContent)
             ]
         });
     }
@@ -863,9 +876,12 @@ EHR.verifyPermissions = function(event, scriptContext, row, oldRow){
 
 EHR.validation = {
     checkRestraint: function(row, errors){
-        if(row.restraint && !Ext.isDefined(row.restraintTime)){
-            EHR.addError(errors, 'restraintTime', 'Must enter time restrained if more than 45 mins', 'INFO');
-        }
+//        if(row.restraint && !Ext.isDefined(row.restraintTime)){
+//            EHR.addError(errors, 'restraintTime', 'Must enter time restrained if more than 45 mins', 'INFO');
+//        }
+        if(row.restraint && !Ext.isDefined(row.restraintDuration))
+            EHR.addError(errors, 'restraintDuration', 'Must enter time restrained', 'INFO');
+
     },
     processErrors: function(row, errors, scriptErrors, errorThreshold, extraContext){
         var error;
@@ -1634,6 +1650,32 @@ EHR.ETL = {
 
 
 EHR.utils = {};
+
+EHR.utils.findPrincipalName = function(id){
+    if(!EHR.utils.principalMap)
+        EHR.utils.principalMap = {};
+
+    if(EHR.utils.principalMap[id])
+        return EHR.utils.principalMap[id];
+
+    LABKEY.Query.selectRows({
+        schemaName: 'core',
+        queryName: 'principals',
+        columns: 'UserId,Name',
+        filterArray: [
+            LABKEY.Filter.create('UserId', id, LABKEY.Filter.Types.EQUAL)
+        ],
+        scope: this,
+        success: function(data){
+            if(data.rows && data.rows.length)
+                EHR.utils.principalMap[id] = data.rows[0].Name;
+        },
+        failure: EHR.utils.onError
+    });
+
+    return EHR.utils.principalMap[id] || '';
+};
+
 EHR.utils.getQCStateMap = function(config){
     if(!config || !config.success){
         throw "Must provide a success callback";

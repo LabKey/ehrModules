@@ -52,12 +52,12 @@ LEFT JOIN (
   FROM study.assignment h
 
   WHERE
-    (cast(COALESCE(STARTDATE, '1900-01-01') AS TIMESTAMP) >= h.date AND cast(COALESCE(STARTDATE, '1900-01-01') AS TIMESTAMP) < COALESCE(h.enddate, curdate()))
+    (cast(COALESCE(STARTDATE, '1900-01-01') AS TIMESTAMP) >= cast(h.date as date) AND cast(COALESCE(STARTDATE, '1900-01-01') AS TIMESTAMP) <= COALESCE(cast(h.enddate as date), curdate()))
   OR
-    (COALESCE(ENDDATE, curdate()) > h.date AND COALESCE(ENDDATE, curdate()) <= COALESCE(h.enddate, curdate()))
+    (COALESCE(ENDDATE, curdate()) >= cast(h.date as date) AND COALESCE(ENDDATE, curdate()) <= COALESCE(cast(h.enddate as date), curdate()))
   OR
-    (cast(COALESCE(STARTDATE, '1900-01-01') AS TIMESTAMP) <= h.date AND COALESCE(ENDDATE, curdate()) >= COALESCE(h.enddate, curdate()))
-) h ON (i.date >= h.date AND i.date <= COALESCE(h.enddate, curdate()))
+    (cast(COALESCE(STARTDATE, '1900-01-01') AS TIMESTAMP) <= cast(h.date as date) AND COALESCE(ENDDATE, curdate()) >= COALESCE(cast(h.enddate as date), curdate()))
+) h ON (i.date >= cast(h.date as date) AND i.date <= COALESCE(cast(h.enddate as date), curdate()))
 
 LEFT JOIN (
   SELECT

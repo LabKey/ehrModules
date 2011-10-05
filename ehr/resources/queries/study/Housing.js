@@ -25,46 +25,6 @@ function onUpsert(context, errors, row, oldRow){
 
 
     }
-
-
-//    //determine whether the animal has enough room in this cage
-//    if(context.extraContext.dataSource != 'etl' && row.room && row.cage){
-//        var cageRow;
-//        LABKEY.Query.executeSql({
-//            schemaName: 'study',
-//            scope: this,
-//            sql: "SELECT room, cage, length, height, width from ehr_lookups.cage c WHERE c.room='"+row.room+"' AND c.cage='"+row.cage+"'",
-//            success: function(data){
-//                if(data.rows && data.rows.length){
-//                    cageRow = data.rows[0];
-//                }
-//            },
-//            failure: EHR.onFailure
-//        });
-//
-//        if(cageRow){
-//            LABKEY.Query.executeSql({
-//                schemaName: 'study',
-//                scope: this,
-//                sql: "SELECT Id, ReqSqFt, ReqHeight from study.demographicsCageClass c WHERE c.id='"+row.Id+"'",
-//                success: function(data){
-//                    if(data.rows && data.rows.length){
-//                        var r = data.rows[0];
-//                        if(cageRow.length*cageRow.width < r.ReqSqFt){
-//                            EHR.addError(errors, 'room', 'Animal too large for this cage. Required SqFt: '+r.ReqSqFt, 'INFO');
-//                        }
-//                        if(cageRow.height < r.ReqHeight){
-//                            EHR.addError(errors, 'room', 'Animal too large for this cage. Required Height: '+r.ReqHeight, 'INFO');
-//                        }
-//
-//                    }
-//                },
-//                failure: EHR.onFailure
-//            });
-//        }
-//    }
-
-
 }
 
 
@@ -150,7 +110,7 @@ function onComplete(event, errors, scriptContext){
 };
 
 function onBecomePublic(errors, scriptContext, row, oldRow){
-    console.log('on become public')
+    //console.log('on become public')
     //if this record is active and public, deactivate any old housing records
     if(scriptContext.extraContext.dataSource != 'etl' && !row.enddate){
         var toUpdate = [];
@@ -162,42 +122,39 @@ function onBecomePublic(errors, scriptContext, row, oldRow){
             filterArray: [
                 LABKEY.Filter.create('Id', row.Id, LABKEY.Filter.Types.EQUAL),
                 LABKEY.Filter.create('enddate', null, LABKEY.Filter.Types.ISBLANK),
-                LABKEY.Filter.create('date', row.Date, LABKEY.Filter.Types.LESS_THAN),
+                //LABKEY.Filter.create('date', row.Date, LABKEY.Filter.Types.LESS_THAN),
                 LABKEY.Filter.create('lsid', row.lsid, LABKEY.Filter.Types.NEQ)
                 //LABKEY.Filter.create('qcstate/publicdata', true, LABKEY.Filter.Types.EQUAL)
             ],
             scope: this,
             success: function(data){
                 if(data && data.rows && data.rows.length){
-                    Ext.each(data.rows, function(r){
-                        //TODO: verify date is working
+                    var r;
+                    for(var i=0;i<data.rows.length;i++){
+                        r = data.rows[i];
+
                         toUpdate.push({lsid: r.lsid, enddate: new Date(row.date.toGMTString())});
 
                         //if there's an existing public active housing record
-                        if(row.date.compareTo){
-                            if(row.date.compareTo(r.date)<0){
-                                EHR.addError(errors, 'Id', 'You cannot enter an open ended housing while there is another record starting on: '+r.Date);
-                                toUpdate = [];
-                                return false;
-                            }
+                        if(Date.parse(row.date.toGMTString()) < Date.parse(r.date)){
+                            EHR.addError(errors, 'Id', 'You cannot enter an open ended housing while there is another record starting on: '+r.date);
+                            toUpdate = [];
+                            return false;
                         }
-//                        if(r.date >= row.Date){
-//                            EHR.addError(errors, 'Id', 'You cannot enter an open ended housing while there is another record starting on: '+r.Date);
-//                            toUpdate = [];
-//                            return false;
-//                        }
-                    }, this);
+                    };
 
                 }
             },
             failure: EHR.onFailure
         });
-        console.log('housing to update')
-        console.log(toUpdate);
+
         if(toUpdate.length){
             LABKEY.Query.updateRows({
                 schemaName: 'study',
                 queryName: 'Housing',
+                extraContext: {
+                    quickValidation: true
+                },
                 rows: toUpdate,
                 success: function(data){
                     console.log('Success deactivating old housing records')

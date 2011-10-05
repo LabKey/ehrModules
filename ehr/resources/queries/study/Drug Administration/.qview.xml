@@ -19,7 +19,7 @@
        <column name="remark"/>
        <column name="category"/>
        <column name="restraint"/>
-       <column name="restraintTime"/>
+       <column name="restraintDuration"/>
        <column name="performedby"/>
        <!--<column name="HeaderDate"/>-->
        <column name="qcstate" />

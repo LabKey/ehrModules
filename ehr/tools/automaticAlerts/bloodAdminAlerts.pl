@@ -26,8 +26,7 @@ my $baseUrl = 'https://ehr.primate.wisc.edu/';
 my $studyContainer = 'WNPRC/EHR/';
 
 #whitespace separated list of emails
-my @email_recipients = qw(bimber@wisc.edu cpi@primate.wisc.edu);
-#cpi@primate.wisc.edu wnprcvets@primate.wisc.edu
+my @email_recipients = qw(cpi@primate.wisc.edu);
 #@email_recipients = qw(bimber@wisc.edu);
 my $mail_server = 'smtp.primate.wisc.edu';
 
@@ -43,6 +42,10 @@ use Net::SMTP;
 use MIME::Lite;
 use Data::Dumper;
 use Time::localtime;
+use File::Touch;
+use File::Spec;
+use File::Basename;
+use Cwd 'abs_path';
 
 # Find today's date
 my $tm = localtime;
@@ -96,6 +99,10 @@ if(@{$results->{rows}}){
 	$email_html .= "<p><a href='".$baseUrl."query/".$studyContainer."executeQuery.view?schemaName=study&query.queryName=Blood Draws&query.viewName=Blood Summary&query.date~dategte=$datestr&query.Id/Dataset/Demographics/calculated_status~eq=Alive&query.BloodRemaining/AvailBlood~lt=0"."'>Click here to view them</a><br>\n";
 	$email_html .= "<hr>\n";			
 }
+else {
+	$email_html .= "<b>There are zero future blood draws exceeding the allowable amount based on current weights.</b><br>";
+	$email_html .= "<hr>\n";		
+}
 
 
 #we find any blood draws where the animal is not assigned to that project
@@ -118,7 +125,10 @@ if(@{$results->{rows}}){
 	$email_html .= "<p><a href='".$baseUrl."query/".$studyContainer."executeQuery.view?schemaName=study&query.queryName=BloodSchedule&query.projectStatus~isnonblank&query.Id/DataSet/Demographics/calculated_status~eq=Alive&query.date~dateeq=$datestr"."'>Click here to view them</a><br>\n";
 	$email_html .= "<hr>\n";			
 }	
-
+else {
+	$email_html .= "<b>All future blood draws have a valid project for the animal.</b><br>";
+	$email_html .= "<hr>\n";				
+}
 
 #we find any blood draws not yet approved
 $results = Labkey::Query::selectRows(
@@ -138,6 +148,10 @@ if(@{$results->{rows}}){
 	$email_html .= "<b>WARNING: There are ".@{$results->{rows}}." blood draws requested that have not been approved or denied yet.</b><br>";
 	$email_html .= "<p><a href='".$baseUrl."ehr/".$studyContainer."dataEntry.view#topTab:Requests&activeReport:BloodDrawRequests"."'>Click here to view them</a><br>\n";
 	$email_html .= "<hr>\n";			
+}
+else {
+	$email_html .= "<b>All requested blood draws have been either approved or denied.</b><br>";
+	$email_html .= "<hr>\n";				
 }
 
 #we find any blood draws not yet assigned to either SPI or animal care
@@ -159,6 +173,10 @@ if(@{$results->{rows}}){
 	$email_html .= "<b>WARNING: There are ".@{$results->{rows}}." blood draws requested that have not been assigned to SPI or Animal Care.</b><br>";
 	$email_html .= "<p><a href='".$baseUrl."ehr/".$studyContainer."dataEntry.view#topTab:Requests&activeReport:BloodDrawRequests'>Click here to view them</a><br>\n";
 	$email_html .= "<hr>\n";			
+}
+else {
+	$email_html .= "<b>All requested blood draws have been assigned to either SPI or Animal Care.</b><br>";
+	$email_html .= "<hr>\n";				
 }
 
 #we find any incomplete blood draws scheduled today, by area
@@ -242,7 +260,7 @@ else {
 #open(HTML, ">", "C:\\Users\\Admin\\Desktop\\test.html");
 #print HTML $email_html;
 #close HTML;
-
+#die;
 
 my $smtp = MIME::Lite->new(
           To      =>join(", ", @email_recipients),
@@ -254,8 +272,6 @@ $smtp->attach(Type => 'text/html',
           Encoding => 'quoted-printable',
           Data	 => $email_html
 );         
-$smtp->send();
+$smtp->send() || die;
 
-
-
-
+touch(File::Spec->catfile(dirname(abs_path($0)), '.bloodAdminAlertsLastRun'));

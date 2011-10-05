@@ -59,6 +59,25 @@ EHR.ext.Buttons = {
         scope: this
         }
     },
+    SUBMITDEATH: function(){return {
+        text: 'Submit Final',
+        name: 'submit',
+        requiredQC: 'Completed',
+        targetQC: 'Completed',
+        errorThreshold: 'INFO',
+        successURL: LABKEY.ActionURL.getParameter('srcURL') || LABKEY.ActionURL.buildURL("ehr", "dataEntry.view"),
+        disabled: true,
+        ref: 'submitBtn',
+        handler: function(o){
+            Ext.Msg.confirm('Finalize Death', 'You are about to finalize this death record on this animal.  This will end all treatments, problems, assignments and housing. BE ABSOLUTELY SURE YOU WANT TO DO THIS BEFORE CLICKING SUBMIT.', function(v){
+                if(v=='yes')
+                    this.onSubmit(o);
+            }, this);
+        },
+        disableOn: 'WARN',
+        scope: this
+        }
+    },
     FORCESUBMIT: function(){return {
         text: 'Force Submit',
         name: 'submit',

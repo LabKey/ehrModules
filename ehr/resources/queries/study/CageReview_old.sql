@@ -8,11 +8,13 @@ SELECT
   c.location,
   c.room,
   c.cage,
+  c.jointocage,
   c.cagesCounted,
   c.JoinedCage,
 
   c.TotalAnimalsOver5Months,
   c.animals,
+  c.Availabilities,
   c.TotalAnimals5Months,
   c.Animals5Mo,
   c.HeaviestWeight,
@@ -45,6 +47,7 @@ SELECT
   c.roomcage as location,
   c.room,
   c.cage,
+  c.jointocage,
   c.roomcage.height as height,
   ((c.roomcage.length * c.roomcage.width)/144) as sqft,
   h.ReqHeight,
@@ -63,6 +66,7 @@ SELECT
   h.TotalAnimalsOver5Months,
   h3.TotalAnimals5Months,
   h.Animals,
+  h.Availabilities,
   h3.Animals5Mo,
   h.HeaviestWeight,
   h.weights,
@@ -76,6 +80,7 @@ LEFT JOIN (
     h.cage,
     count(DISTINCT h.id) as TotalAnimalsOver5Months,
     group_concat(h.id) as Animals,
+    group_concat(h.id.currentAssignments.Availability) as Availabilities,
     sum(c1.sqft) as ReqSqFt,
     group_concat(c1.sqft) as ReqSqFts,
     max(c1.height) as ReqHeight,
@@ -83,9 +88,9 @@ LEFT JOIN (
     group_concat(h.Id.mostRecentWeight.mostRecentWeight) as Weights,
     FROM study.housing h
     LEFT JOIN ehr_lookups.cageclass c1
-    ON (c1.low < h.Id.mostRecentWeight.mostRecentWeight AND h.Id.mostRecentWeight.mostRecentWeight <= c1.high)
+    ON (c1.low <= h.Id.mostRecentWeight.mostRecentWeight AND h.Id.mostRecentWeight.mostRecentWeight < c1.high)
     WHERE h.enddate IS NULL
-    AND h.id.age.ageInMonths >= 5.5
+    AND h.id.age.ageInMonths >= 5.0
     GROUP BY h.room, h.cage
   ) h
   ON (c.room=h.room AND c.cage=h.cage)
@@ -98,28 +103,28 @@ LEFT JOIN (
     group_concat(h.id) as Animals5Mo,
     FROM study.housing h
     WHERE h.enddate IS NULL
-    AND h.id.age.ageInMonths < 6 AND h.id.age.ageInMonths >= 5.5
+    AND h.id.age.ageInMonths = 5.0
     GROUP BY h.room, h.cage
   ) h3
   ON (c.room=h3.room AND c.cage=h3.cage)
 
 LEFT JOIN ehr_lookups.cages c2
-  ON (c.joinToCage IS NOT NULL AND c.room=c2.room and c2.cage IN c.joinToCage)
---GROUP BY c.room, c.cage
+  ON (c.joinToCage IS NOT NULL AND c.room=c2.room and c2.cage LIKE c.joinToCage)
 
 LEFT JOIN (
   SELECT
     h.room,
     h.cage,
     count(DISTINCT h.id) as TotalAnimals,
+    --null as TotalAnimals
     FROM study.housing h
     WHERE h.enddate IS NULL
 
     GROUP BY h.room, h.cage
   ) h2
-ON (c.room=h2.room AND h2.cage IN c.joinToCage)
+  ON (c.room=h2.room AND h2.cage LIKE c.joinToCage)
 
 WHERE h.TotalAnimalsOver5Months is not null
---GROUP BY c.room, c.cage
+
 ) c
 

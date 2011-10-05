@@ -3,6 +3,7 @@
         <tables xmlns="http://labkey.org/data/xml">
             <table tableName="TreatmentHistory" tableDbType="TABLE">
                 <insertUrl />
+                <importUrl />
                 <updateUrl />
                 <deleteUrl />
                 <columns>

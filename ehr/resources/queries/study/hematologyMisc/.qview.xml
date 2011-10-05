@@ -1,0 +1,15 @@
+<customView xmlns="http://labkey.org/data/xml/queryCustomView">
+    <columns>
+        <column name="Id"/>
+        <column name="date"/>
+        <column name="testid"/>
+        <column name="result"/>
+        <column name="qualresult" />
+        <column name="qcstate" />
+        <column name="taskid" />
+    </columns>
+   <sorts>
+       <sort column="date" descending="true"/>
+       <sort column="id" descending="false"/>
+   </sorts>
+</customView>

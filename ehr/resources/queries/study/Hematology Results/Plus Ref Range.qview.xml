@@ -6,10 +6,9 @@
         <column name="result"/>
         <column name="units"/>
         <column name="qualResult"/>
-        <column name="remark"/>
-        <column name="RefRange/ageAtTime">
+        <column name="RefRange/status">
             <properties>
-                <property name="columnTitle" value="Age At Time"/>
+                <property name="columnTitle" value="Status"/>
             </properties>
         </column>
         <column name="RefRange/ref_range_min">
@@ -21,12 +20,13 @@
             <properties>
                 <property name="columnTitle" value="Normal Range Max"/>
             </properties>
-        </column>        
-        <column name="RefRange/status">
+        </column>
+        <column name="RefRange/ageAtTime">
             <properties>
-                <property name="columnTitle" value="Status"/>
+                <property name="columnTitle" value="Age At Time"/>
             </properties>
         </column>
+        <column name="remark"/>
         <column name="qcstate" />
         <column name="taskid" />
     </columns>

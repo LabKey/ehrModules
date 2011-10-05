@@ -4,6 +4,9 @@
             <table tableName="requests" tableDbType="TABLE">
                 <tableUrl>/ehr/requestDetails.view?formtype=${formtype}&amp;requestid=${requestid}</tableUrl>
                 <updateUrl>/ehr/requestDetails.view?formtype=${formtype}&amp;requestid=${requestid}</updateUrl>
+                <insertUrl />
+                <importUrl />
+                <deleteUrl />
                 <!--<insertUrl>/ehr/manageRequest.view</insertUrl>-->
                 <titleColumn>RowId</titleColumn>
                 <pkColumnName>requestid</pkColumnName>
@@ -94,6 +97,9 @@
                     </column>
                     <column columnName="qcstate/Label">
                         <displayWidth>200</displayWidth>
+                    </column>
+                    <column columnName="description">
+                        <inputType>textarea</inputType>
                     </column>
                 </columns>
                 <buttonBarOptions includeStandardButtons="false">

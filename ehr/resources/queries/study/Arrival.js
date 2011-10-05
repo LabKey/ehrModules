@@ -8,6 +8,11 @@
 var {EHR, LABKEY, Ext, console, init, beforeInsert, afterInsert, beforeUpdate, afterUpdate, beforeDelete, afterDelete, complete} = require("ehr/validation");
 
 
+function onInit(event, context){
+    context.allowAnyId = true;
+}
+
+
 function setDescription(row, errors){
     //we need to set description for every field
     var description = new Array();
@@ -31,8 +36,7 @@ function onBecomePublic(errors, scriptContext, row, oldRow){
                         schemaName: 'study',
                         queryName: 'Demographics',
                         extraContext: {
-                            schemaName: 'study',
-                            queryName: 'Demographics'
+                            quickValidation: true
                         },
                         rows: [{Id: row.Id, gender: row.gender, species: row.species, dam: row.dam, sire: row.sire, geoOrigin: row.geoOrigin, birth: new Date(row.birth.toGMTString()), date: new Date(row.birth.toGMTString())}],
                         success: function(data){
@@ -45,6 +49,9 @@ function onBecomePublic(errors, scriptContext, row, oldRow){
 //                        LABKEY.Query.insertRows({
 //                            schemaName: 'study',
 //                            queryName: 'Birth',
+//                            extraContext: {
+//                                quickValidation: true
+//                            },
 //                            rows: [{Id: row.Id, date: new Date(row.birth.toGMTString()), dam: row.dam, sire: row.sire, skipDemographicsAdd: true}],
 //                            success: function(data){
 //                                console.log('Success inserting into birth table from arrival')
@@ -61,6 +68,9 @@ function onBecomePublic(errors, scriptContext, row, oldRow){
             LABKEY.Query.insertRows({
                 schemaName: 'study',
                 queryName: 'Housing',
+                extraContext: {
+                    quickValidation: true
+                },
                 rows: [{Id: row.Id, room: row.initialRoom, cage: row.initialCage, cond: row.initialCond, date: new Date(row.date.toGMTString())}],
                 success: function(data){
                     console.log('Success inserting into housing table from arrival')

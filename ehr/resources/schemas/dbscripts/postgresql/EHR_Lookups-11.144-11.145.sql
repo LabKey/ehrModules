@@ -35,6 +35,6 @@ WITH (OIDS=FALSE)
 INSERT INTO ehr_lookups.restraint_type (type, code, include) VALUES ('Table-Top', 'w-10238', true);
 INSERT INTO ehr_lookups.restraint_type (type, code, include) VALUES ('Tube', '	w-10239', true);
 INSERT INTO ehr_lookups.restraint_type (type, code, include) VALUES ('Other', null, true);
-INSERT INTO ehr_lookups.restraint_type (type, code, include) VALUES ('Squeeze Back', '', false);
-INSERT INTO ehr_lookups.restraint_type (type, code, include) VALUES ('Manual', '', false);
-INSERT INTO ehr_lookups.restraint_type (type, code, include) VALUES ('Chemical', '', false);
+INSERT INTO ehr_lookups.restraint_type (type, code, include) VALUES ('Squeeze Back', null, false);
+INSERT INTO ehr_lookups.restraint_type (type, code, include) VALUES ('Manual', null, false);
+INSERT INTO ehr_lookups.restraint_type (type, code, include) VALUES ('Chemical', null, false);

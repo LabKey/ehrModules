@@ -6,6 +6,7 @@
                 <!--<insertUrl>/ehr/manageRecord.view?schemaName=study&amp;queryName=Virology Runs&amp;keyField=lsid&amp;</insertUrl>-->
                 <!--<updateUrl>/ehr/manageRecord.view?schemaName=study&amp;queryName=Virology Runs&amp;keyField=lsid&amp;key=${lsid}</updateUrl>-->
                 <insertUrl />
+                <importUrl />
                 <updateUrl />
                 <deleteUrl />
             </table>

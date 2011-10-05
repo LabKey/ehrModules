@@ -19,9 +19,6 @@ var toInsert = [];
 
 
 function afterInsert(row, errors){
-    console.log(row);
-console.log(row.code);
-    console.log(row.meaning);
     LABKEY.Query.insertRows({
         schemaName: 'ehr_lookups',
         queryName: 'snomed',

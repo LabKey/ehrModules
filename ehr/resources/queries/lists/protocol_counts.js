@@ -5,7 +5,7 @@
  */
 
 var console = require("console");
-//var LABKEY = require("labkey");
+var LABKEY = require("labkey");
 //var Ext = require("Ext").Ext;
 
 
@@ -41,6 +41,118 @@ function beforeBoth(errors, row, oldRow){
     }
 }
 
-//function beforeDelete(errors, row, oldRow){
-//
-//}
+function afterInsert(row, errors){
+    if(row.protocol && row.species){
+        LABKEY.Query.insertRows({
+            schemaName: 'ehr',
+            queryName: 'protocol_counts',
+            extraContext: {
+                dataSource: 'etl'
+            },
+            rows: [{
+                protocol: row.protocol,
+                species: row.species,
+                allowed: row.allowed
+            }],
+//            success: function(data){
+//                console.log('Success cascade inserting into ehr.protocol_counts')
+//            },
+            failure: function(error){
+                console.log(error.exception);
+                console.log(error);
+                throw "Error inserting into ehr.protocol_counts";
+            }
+        });
+    }
+    else {
+        console.log('ERROR: lacking protocol or species')
+        console.log(row);
+    }
+}
+
+function afterUpdate(row, errors){
+    var RowId;
+    LABKEY.Query.selectRows({
+        schemaName: 'ehr',
+        queryName: 'protocol_counts',
+        filterArray: [
+            LABKEY.Filter.create('protocol', row.protocol, LABKEY.Filter.Types.EQUAL),
+            LABKEY.Filter.create('species', row.species, LABKEY.Filter.Types.EQUAL)
+        ],
+        extraContext: {
+            dataSource: 'etl'
+        },
+        success: function(data){
+            if(data.rows && data.rows.length){
+                RowId = data.rows[0].RowId;
+            }
+        },
+        failure: function(error){
+            console.log(error.message);
+        }
+    });
+
+    if(RowId){
+        LABKEY.Query.updateRows({
+            schemaName: 'ehr',
+            queryName: 'protocol_counts',
+            extraContext: {
+                dataSource: 'etl'
+            },
+            rows: [{
+                protocol: row.protocol,
+                species: row.species,
+                allowed: row.allowed
+            }],
+//            success: function(data){
+//                console.log('Success cascade updating into ehr.protocol_counts')
+//            },
+            failure: function(error){
+                console.log(error.exception);
+                console.log(error);
+                throw "Error updating ehr.protocol_counts";
+            }
+        });
+    }
+}
+
+
+function afterDelete(row, errors){
+    var RowId;
+    LABKEY.Query.selectRows({
+        schemaName: 'ehr',
+        queryName: 'protocol_counts',
+        filterArray: [
+            LABKEY.Filter.create('protocol', row.protocol, LABKEY.Filter.Types.EQUAL),
+            LABKEY.Filter.create('species', row.species, LABKEY.Filter.Types.EQUAL)
+        ],
+        extraContext: {
+            dataSource: 'etl'
+        },
+        success: function(data){
+            if(data.rows && data.rows.length){
+                RowId = data.rows[0].RowId;
+            }
+        },
+        failure: function(error){
+            console.log(error.message);
+        }
+    });
+
+    if(RowId){
+        LABKEY.Query.deleteRows({
+            schemaName: 'ehr',
+            queryName: 'protocol_counts',
+            rows: [{
+                RowId: RowId
+            }],
+            extraContext: {
+                dataSource: 'etl'
+            },
+            failure: function(error){
+                console.log(error.message);
+            }
+        });
+    }
+}
+

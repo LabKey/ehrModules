@@ -161,10 +161,30 @@ EHR.ext.Metadata.Standard = {
             }
         }
         ,restraint: {
-            shownInGrid: false
+            shownInGrid: false,
+            editorConfig: {
+                listeners: {
+                    change: function(field, val){
+                        var theForm = this.ownerCt.getForm();
+                        if(theForm){
+                            var restraintDuration = theForm.findField('restraintDuration');
+
+                            if(val)
+                                restraintDuration.setValue('<30 min');
+                            else
+                                restraintDuration.setValue(null);
+
+                            restraintDuration.fireEvent('change', restraintDuration.getValue())
+                        }
+                    }
+                }
+            }
         }
-        ,restraintTime: {
+        ,restraintDuration: {
             shownInGrid: false
+            ,lookup: {
+                sort: 'sort_order'
+            }
         }
         ,enddate: {
             xtype: 'xdatetime',
@@ -1884,7 +1904,12 @@ EHR.ext.Metadata.Standard = {
             },
             project: {hidden: true},
             account: {hidden: true},
-            source: {allowBlank: false},
+            source: {
+                editorConfig: {
+                    plugins: ['ehr-usereditablecombo']
+                },
+                allowBlank: false
+            },
             performedby: {hidden: true},
             remark: {shownInGrid: false},
             dam: {shownInGrid: false},
@@ -1915,7 +1940,12 @@ EHR.ext.Metadata.Standard = {
             project: {hidden: true},
             account: {hidden: true},
             authorized_by: {allowBlank: false},
-            destination: {allowBlank: false}
+            destination: {
+                editorConfig: {
+                    plugins: ['ehr-usereditablecombo']
+                },
+                allowBlank: false
+            }
         },
         Vitals: {
             performedby: {hidden: true}
@@ -2280,7 +2310,7 @@ EHR.ext.Metadata.Standard = {
             ,restraint: {
                 shownInGrid: false
             }
-            ,restraintTime: {
+            ,restraintDuration: {
                 shownInGrid: false
             }
             ,qualifier: {
@@ -2529,10 +2559,10 @@ EHR.ext.Metadata.Encounter = {
             ,hidden: true
             ,shownInGrid: false
         }
-        ,restraintTime: {
+        ,restraintDuration: {
             parentConfig: {
                 storeIdentifier: {queryName: 'Clinical Encounters', schemaName: 'study'},
-                dataIndex: 'restraintTime'
+                dataIndex: 'restraintDuration'
             }
             ,hidden: true
             ,shownInGrid: false
@@ -2604,7 +2634,7 @@ EHR.ext.Metadata.Encounter = {
                 parentConfig: null,
                 hidden: false
             },
-            restraintTime: {
+            restraintDuration: {
                 parentConfig: null,
                 hidden: false
             },
@@ -2646,6 +2676,9 @@ EHR.ext.Metadata.Encounter = {
                 parentConfig: false,
                 hidden: false,
                 shownInGrid: true
+            },
+            performedby: {
+                allowBlank: false
             }
         },
         tasks: {
@@ -2706,7 +2739,7 @@ EHR.ext.Metadata.Request = {
         restraint: {
             hidden: true
         },
-        restraintTime: {
+        restraintDuration: {
             hidden: true
         },
         'id/curlocation/location': {
@@ -2817,7 +2850,7 @@ EHR.ext.Metadata.Request = {
             restraint: {
                 hidden: true
             },
-            restraintTime: {
+            restraintDuration: {
                 hidden: true
             },
             serviceRequested: {
@@ -2994,42 +3027,43 @@ EHR.ext.Metadata.Necropsy = {
             Id: {
                 parentConfig: null,
                 hidden: false,
-                allowAnyId: true
-//                xtype: 'trigger',
-//                editorConfig: {
-//                    triggerClass: 'x-form-search-trigger',
-//                    onTriggerClick: function (){
-//                        Ext.Msg.confirm('Find Next PD Number In Series', 'Clicking OK will find the next available PD number for infant deaths.', function(v){
-//                            if(v == 'yes'){
-//                                var prefix = 'pd';
-//                                var year = new Date().getFullYear().toString().slice(2);
-//                                var sql = "SELECT cast(SUBSTRING(MAX(id), 5, 6) AS INTEGER) as num FROM study.prenatal WHERE Id LIKE '" + prefix + year + "%'";
-//                                LABKEY.Query.executeSql({
-//                                    schemaName: 'study',
-//                                    sql: sql,
-//                                    scope: this,
-//                                    success: function(data){
-//                                        var caseno;
-//                                        if(data.rows && data.rows.length==1){
-//                                            caseno = data.rows[0].num;
-//                                            caseno++;
-//                                        }
-//                                        else {
-//                                            //console.log('no existing IDs found');
-//                                            caseno = 1;
-//                                        }
-//
-//                                        caseno = EHR.utils.padDigits(caseno, 2);
-//                                        var val = prefix + year + caseno;
-//                                        this.setValue(val);
-//                                        this.fireEvent('change', val)
-//                                    },
-//                                    failure: EHR.onFailure
-//                                });
-//                            }
-//                        }, this);
-//                    }
-//                },
+                allowAnyId: true,
+                xtype: 'trigger',
+                editorConfig: {
+                    plugins: ['ehr-participantfield'],
+                    triggerClass: 'x-form-search-trigger',
+                    onTriggerClick: function (){
+                        Ext.Msg.confirm('Find Next PD Number In Series', 'Clicking OK will find the next available PD number for infant deaths.', function(v){
+                            if(v == 'yes'){
+                                var prefix = 'pd';
+                                var year = new Date().getFullYear().toString().slice(2);
+                                var sql = "SELECT cast(SUBSTRING(MAX(id), 5, 6) AS INTEGER) as num FROM study.prenatal WHERE Id LIKE '" + prefix + year + "%'";
+                                LABKEY.Query.executeSql({
+                                    schemaName: 'study',
+                                    sql: sql,
+                                    scope: this,
+                                    success: function(data){
+                                        var caseno;
+                                        if(data.rows && data.rows.length==1){
+                                            caseno = data.rows[0].num;
+                                            caseno++;
+                                        }
+                                        else {
+                                            //console.log('no existing IDs found');
+                                            caseno = 1;
+                                        }
+
+                                        caseno = EHR.utils.padDigits(caseno, 2);
+                                        var val = prefix + year + caseno;
+                                        this.setValue(val);
+                                        this.fireEvent('change', val)
+                                    },
+                                    failure: EHR.onFailure
+                                });
+                            }
+                        }, this);
+                    }
+                },
             },
             date: {
                 parentConfig: null,
@@ -3095,6 +3129,16 @@ EHR.ext.Metadata.Necropsy = {
                     dataIndex: 'date'
                 }
                 ,hidden: true
+                ,shownInGrid: false
+            }
+        },
+        Weight: {
+            date: {
+                parentConfig: {
+                    storeIdentifier: {queryName: 'Necropsies', schemaName: 'study'},
+                    dataIndex: 'timeofdeath'
+                }
+                ,hidden: false
                 ,shownInGrid: false
             }
         }
@@ -3461,7 +3505,7 @@ EHR.ext.Metadata.Treatments = {
     }
 };
 
-EHR.ext.Metadata['New Animal'] = {
+EHR.ext.Metadata.NewAnimal = {
     allQueries: {
         project: {
             allowBlank: true
@@ -3471,7 +3515,20 @@ EHR.ext.Metadata['New Animal'] = {
         }
     },
     byQuery: {
-
+        'TB Tests': {
+            notPerformedAtCenter: {
+                defaultValue: true
+            },
+            result1: {
+                defaultValue: '-'
+            },
+            result2: {
+                defaultValue: '-'
+            },
+            result3: {
+                defaultValue: '-'
+            }
+        }
     }
 };
 
@@ -3510,6 +3567,9 @@ EHR.ext.Metadata.MPR = {
                 colModel: {
                     width: 50
                 }
+            },
+            category: {
+                hidden: false
             }
         }
     }
@@ -3524,6 +3584,11 @@ EHR.ext.Metadata.Surgery = {
             type: {
                 defaultValue: 'Surgery'
             }
+        },
+        'Drug Administration': {
+            category: {
+                hidden: false
+            }
         }
     }
 };
@@ -3535,25 +3600,27 @@ EHR.ext.sharedCols = ',id,date,project,account,'+EHR.ext.bottomCols;
 
 EHR.ext.FormColumns = {
     Alopecia: EHR.ext.topCols+',score,cause,head,shoulders,upperArms,lowerArms,hips,rump,dorsum,upperLegs,lowerLegs,other,' + EHR.ext.bottomCols,
-    Arrival: EHR.ext.topCols+',source,geoOrigin,gender,birth,dam,sire,initialRoom,initialCage,initialCond,'+EHR.ext.bottomCols,
-    Assignment: EHR.ext.topCols+''+EHR.ext.bottomCols,
+    Arrival: EHR.ext.topCols+',source,geoOrigin,gender,birth,dam,sire,initialRoom,initialCage,initialCond,id/numroommates/cagemates,'+EHR.ext.bottomCols,
+    Assignment: EHR.ext.topCols+',projectedRelease,'+EHR.ext.bottomCols,
     'Bacteriology Results': EHR.ext.topCols+',method,organism,source,qualresult,result,units,antibiotic,sensitivity,'+EHR.ext.bottomCols,
     'Behavior Remarks': EHR.ext.topCols+',so,a,p,'+EHR.ext.bottomCols,
     Biopsies: EHR.ext.topCols+',caseno,type,veterinarian,performedby,nhpbmd,grossdescription,'+EHR.ext.bottomCols,
     Birth: EHR.ext.topCols+',estimated,gender,weight,wdate,dam,sire,room,cage,cond,origin,conception,type,'+EHR.ext.bottomCols,
-    'Blood Draws': 'id/curlocation/location,'+EHR.ext.topCols+',tube_type,tube_vol,num_tubes,quantity,requestor,additionalServices,billedby,assayCode,restraint,restraintTime,daterequested,instructions,' + EHR.ext.bottomCols, //p_s,a_v,
+    'Blood Draws': 'id/curlocation/location,'+EHR.ext.topCols+',tube_type,tube_vol,num_tubes,quantity,requestor,additionalServices,billedby,assayCode,restraint,restraintDuration,daterequested,instructions,' + EHR.ext.bottomCols, //p_s,a_v,
     'Body Condition': EHR.ext.topCols+',score,weightstatus,remark,tattoo_chest,tattoo_thigh,microchip,tag,tattoo_remark,' + EHR.ext.bottomCols,
     cage_observations: 'date,room,cage,feces,userId,no_observations,' + EHR.ext.sharedCols,
     Charges: EHR.ext.topCols+',type,unitCost,quantity,'+EHR.ext.bottomCols,
     'Chemistry Results': EHR.ext.topCols+',testid,method,resultOORIndicator,result,units,qualResult,'+EHR.ext.bottomCols,
-    'Clinical Encounters': EHR.ext.topCols + ',title,type,major,serviceRequested,restraint,restraintTime,'+EHR.ext.bottomCols,
+    'Clinical Encounters': EHR.ext.topCols + ',title,type,major,serviceRequested,restraint,restraintDuration,'+EHR.ext.bottomCols,
     'Clinical Remarks': EHR.ext.topCols+',so,a,p,'+EHR.ext.bottomCols,
     'Clinical Observations': EHR.ext.topCols+',area,observation,code,' + EHR.ext.bottomCols,
     'Clinpath Runs': EHR.ext.topCols+',serviceRequested,type,sampletype,sampleId,collectionMethod,collectedBy,'+EHR.ext.bottomCols,
     Deaths: EHR.ext.topCols+',tattoo,dam,cause,manner,'+EHR.ext.bottomCols,
     Demographics: EHR.ext.topCols+',species,gender,birth,death,hold,dam,sire,origin,geographic_origin,cond,medical,prepaid,'+EHR.ext.bottomCols,
+    Departure: EHR.ext.topCols+',authorize,destination,'+EHR.ext.bottomCols,
     'Dental Status': EHR.ext.topCols+',priority,extractions,gingivitis,tartar,' + EHR.ext.bottomCols,
-    'Drug Administration': 'id/curlocation/location,'+'id,date,begindate,enddate,project,account'+',code,qualifier,route,concentration,conc_units,dosage,dosage_units,volume,vol_units,amount,amount_units,headerdate,restraint,restraintTime,remark,performedby,category,' + EHR.ext.bottomCols,
+    'Drug Administration': 'id/curlocation/location,'+'id,date,begindate,enddate,project,account'+',code,qualifier,category,route,concentration,conc_units,dosage,dosage_units,volume,vol_units,amount,amount_units,headerdate,restraint,restraintDuration,remark,performedby,' + EHR.ext.bottomCols,
+    Feeding: EHR.ext.topCols+',amount,type,'+EHR.ext.bottomCols,
     'Final Reports': EHR.ext.topCols+','+EHR.ext.bottomCols,
     'Hematology Results': EHR.ext.topCols+',testid,method,result,units,qualResult,'+EHR.ext.bottomCols,
     'Hematology Morphology': EHR.ext.topCols+',morphology,score,'+EHR.ext.bottomCols,

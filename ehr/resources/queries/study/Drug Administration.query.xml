@@ -7,13 +7,14 @@
                 <!--<insertUrl>/ehr/manageRecord.view?schemaName=study&amp;queryName=Drug Administration&amp;keyField=lsid&amp;</insertUrl>-->
                 <!--<updateUrl>/ehr/manageRecord.view?schemaName=study&amp;queryName=Drug Administration&amp;keyField=lsid&amp;key=${lsid}</updateUrl>-->
                 <insertUrl />
+                <importUrl />
                 <updateUrl />
                 <deleteUrl />
                 <columns>
                     <column columnName="project">
                         <fk>
                             <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-                            <fkDbSchema>lists</fkDbSchema>
+                            <fkDbSchema>ehr</fkDbSchema>
                             <fkTable>project</fkTable>
                             <fkColumnName>project</fkColumnName>
                         </fk>
@@ -113,8 +114,22 @@
                             <fkColumnName>type</fkColumnName>
                         </fk>
                     </column>
-                    <column columnName="restraintTime">
-                        <columnTitle>Time Restrained (Mins)</columnTitle>
+                    <column columnName="restraintDuration">
+                        <columnTitle>Time Restrained</columnTitle>
+                        <fk>
+                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
+                            <fkDbSchema>ehr_lookups</fkDbSchema>
+                            <fkTable>restraint_duration</fkTable>
+                            <fkColumnName>duration</fkColumnName>
+                        </fk>
+                    </column>
+                    <column columnName="category">
+                        <fk>
+                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
+                            <fkDbSchema>ehr_lookups</fkDbSchema>
+                            <fkTable>drug_categories</fkTable>
+                            <fkColumnName>category</fkColumnName>
+                        </fk>
                     </column>
                 </columns>
             </table>

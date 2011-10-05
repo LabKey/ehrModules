@@ -28,8 +28,8 @@
                     </column>
                     <column columnName="pdf" wrappedColumnName="protocol">
                         <columnTitle>PDF</columnTitle>
-                        <url>http://www.primate.wisc.edu/colony-old/vetstaff/protocol.php?protocol=${protocol}</url>
-                        <!--<url>/query/WNPRC/WNPRC_Units/Animal_Services/Compliance_Training/Private/Protocol_PDFs/executeQuery.view?schemaName=lists&query.queryName=ProtocolPDFs&protocol=${protocol}</url>-->
+                        <!--<url>http://www.primate.wisc.edu/colony-old/vetstaff/protocol.php?protocol=${protocol}</url>-->
+                        <url>/query/WNPRC/WNPRC_Units/Animal_Services/Compliance_Training/Private/Protocol_PDFs/executeQuery.view?schemaName=lists&query.queryName=ProtocolPDFs&protocol=${protocol}</url>
                     </column>
                 </columns>
             </table>

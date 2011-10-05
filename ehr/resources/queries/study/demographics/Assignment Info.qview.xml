@@ -43,11 +43,11 @@
                 <!--<property name="columnTitle" value="Sire"/>-->
             <!--</properties>-->
         </column>
-        <column name="origin">
+        <!--<column name="origin">-->
             <!--<properties>-->
                 <!--<property name="columnTitle" value="Origin"/>-->
             <!--</properties>-->
-        </column>
+        <!--</column>-->
         <column name="birth">
             <!--<properties>-->
                 <!--<property name="columnTitle" value="Birth"/>-->

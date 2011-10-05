@@ -26,7 +26,7 @@ my $baseUrl = 'https://ehr.primate.wisc.edu/';
 my $studyContainer = 'WNPRC/EHR/';
 
 #whitespace separated list of emails
-my @email_recipients = qw(bimber@wisc.edu mkelly@primate.wisc.edu);
+my @email_recipients = qw(bimber@wisc.edu clinpath@primate.wisc.edu);
 #@email_recipients = qw(bimber@wisc.edu);
 my $mail_server = 'smtp.primate.wisc.edu';
 
@@ -55,23 +55,19 @@ my $datetimestr=sprintf("%04d-%02d-%02d at %02d:%02d", $tm->year+1900, ($tm->mon
 my $datestr=sprintf("%04d-%02d-%02d", $tm->year+1900, ($tm->mon)+1, $tm->mday);
 my $timestr = sprintf("%02d:%02d", $tm->hour, $tm->min);
 
+my $email_html = "This email contains reports on Clinpath Requests.  It was run on: $datetimestr.<p>";
+my $results;
 
-my $file = File::Spec->catfile(dirname(abs_path($0)), '.clinpathLastRun');
+
+#touch a file when complete for monit
+my $file = File::Spec->catfile(dirname(abs_path($0)), '.clinpathAlertsLastRun');
 my $fh;
-open($fh, $file);
+
+open($fh, '>', $file);
 
 my $lastRun = localtime(stat($fh)->mtime);
 $lastRun = sprintf("%04d-%02d-%02d %02d:%02d", $lastRun->year+1900, ($lastRun->mon)+1, $lastRun->mday, $lastRun->hour, $lastRun->min); 
 close $fh;
-
-File::Touch->new(
-	reference => $file,
-    no_create => 0
-);
-
-my $email_html = "This email contains reports on Clinpath Requests.  It was run on: $datetimestr.<p>";
-my $results;
-
 
 #we find any record requested since the last email
 $results = Labkey::Query::selectRows(
@@ -138,7 +134,7 @@ $results = Labkey::Query::selectRows(
 
 if(@{$results->{rows}}){
 	$email_html .= "<b>WARNING: There are ".@{$results->{rows}}." requests that were requested for today or earlier, but have not been marked complete.</b><br>";
-	$email_html .= "<p><a href='".$baseUrl."query/".$studyContainer."executeQuery.view?schemaName=study&query.queryName=Clinpath Runs&qcstate/label~ne=Completed&query.date~datelte=$datestr"."'>Click here to view them</a><br>\n";
+	$email_html .= "<p><a href='".$baseUrl."query/".$studyContainer."executeQuery.view?schemaName=study&query.queryName=Clinpath Runs&query.qcstate/label~neq=Completed&query.date~datelte=$datestr"."'>Click here to view them</a><br>\n";
 	$email_html .= "<hr>\n";
 }
 
@@ -146,6 +142,7 @@ if(@{$results->{rows}}){
 #open(HTML, ">", "C:\\Users\\Admin\\Desktop\\test.html");
 #print HTML $email_html;
 #close HTML;
+#die;
 
 
 my $smtp = MIME::Lite->new(
@@ -158,4 +155,6 @@ $smtp->attach(Type => 'text/html',
           Encoding => 'quoted-printable',
           Data	 => $email_html
 );         
-$smtp->send();
+$smtp->send() || die;
+
+touch($file);

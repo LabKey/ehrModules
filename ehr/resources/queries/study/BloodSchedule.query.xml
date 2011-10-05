@@ -23,7 +23,7 @@
                     <column columnName="project">
                         <fk>
                             <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-                            <fkDbSchema>lists</fkDbSchema>
+                            <fkDbSchema>ehr</fkDbSchema>
                             <fkTable>project</fkTable>
                             <fkColumnName>project</fkColumnName>
                         </fk>
@@ -54,6 +54,23 @@
                                     <filter operator="eq" value="Not Approved"/>
                                 </filters>
                                 <backgroundColor>E3170D</backgroundColor>
+                            </conditionalFormat>
+                        </conditionalFormats>
+                    </column>
+                    <column columnName="billedby">
+                        <columnTitle>Assigned To</columnTitle>
+                        <conditionalFormats>
+                            <conditionalFormat>
+                                <filters>
+                                    <filter operator="eq" value="SPI"/>
+                                </filters>
+                                <backgroundColor>FFE303</backgroundColor>
+                            </conditionalFormat>
+                            <conditionalFormat>
+                                <filters>
+                                    <filter operator="eq" value="Animal Care"/>
+                                </filters>
+                                <backgroundColor>7CFC00</backgroundColor>
                             </conditionalFormat>
                         </conditionalFormats>
                     </column>

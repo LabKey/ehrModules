@@ -6,9 +6,9 @@
 
 var {EHR, LABKEY, Ext, console, init, beforeInsert, afterInsert, beforeUpdate, afterUpdate, beforeDelete, afterDelete, complete} = require("ehr/validation");
 
-function onInit(event, context){
-    context.allowAnyId = true;
-}
+//function onInit(event, context){
+//    context.allowAnyId = true;
+//}
 
 function onUpsert(context, errors, row, oldRow){
     //TODO: do we need this for every ETL record?

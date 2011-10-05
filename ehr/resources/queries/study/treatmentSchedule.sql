@@ -6,12 +6,13 @@
 
 SELECT
 *,
-s.lsid || '||' || s.date as primaryKey,
+s.lsid || '||' || s.date as primaryKey2,
+s.objectid || '||' || s.date as primaryKey,
 null as initials,
 null as restraint,
 null as time,
-(SELECT max(d.qcstate) as label FROM study.drug d WHERE (s.lsid || '||' || s.date) = d.parentid) as treatmentStatus,
-(SELECT max(taskId) as taskId FROM study.drug d WHERE (s.lsid || '||' || s.date) = d.parentid) as taskId
+(SELECT max(d.qcstate) as label FROM study.drug d WHERE (s.objectid || '||' || s.date) = d.parentid) as treatmentStatus,
+(SELECT max(taskId) as taskId FROM study.drug d WHERE (s.objectid || '||' || s.date) = d.parentid) as taskId
 
 
 FROM (

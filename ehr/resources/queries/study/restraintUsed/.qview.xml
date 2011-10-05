@@ -6,7 +6,7 @@
         <column name="project" />
         <column name="restraint" />
         <column name="restraintCode" />
-        <column name="restraintTime" />
+        <column name="restraintDuration"/>
         <column name="taskid" />
         <column name="taskid/title">
             <properties>

@@ -57,7 +57,7 @@
        <column name="taskid" />
        <column name="requestid" />
        <column name="qcstate" />
-      <column name="requestid/notify1">
+      <column name="requestid/description">
         <properties>
             <property name="columnTitle" value="Requestor"/>
         </properties>

@@ -11,12 +11,15 @@ SELECT
   c.jointocage,
   c.cagesCounted,
   c.JoinedCage,
+  --c.OccupantsInJoinedCage,
 
   c.TotalAnimalsOver5Months,
   c.animals,
   c.Availabilities,
   c.TotalAnimals5Months,
   c.Animals5Mo,
+  c.marmCount,
+
   c.HeaviestWeight,
   c.weights,
   c.ReqSqFts,
@@ -26,8 +29,10 @@ SELECT
   c.height as CageHeight,
   c.ReqHeight,
 
-  CASE WHEN c.sqft*c.cagesCounted <  c.ReqSqft
-    THEN 'Too Small'
+
+  CASE
+    WHEN c.sqft*c.cagesCounted <  c.ReqSqft THEN 'Too Small'
+--     WHEN c.marmCount > 0 AND c.sqft*c.cagesCounted < c.marmCount THEN 'Too Small For Marms'
     ELSE null
   END as sizeStatus,
 
@@ -36,8 +41,9 @@ SELECT
     ELSE null
   END as heightStatus,
 
-  CASE WHEN c.height < c.ReqHeight OR c.sqft*c.cagesCounted <  c.ReqSqft
-    THEN 'ERROR'
+  CASE
+    WHEN (c.height < c.ReqHeight OR c.sqft*c.cagesCounted <  c.ReqSqft) THEN 'ERROR'
+--     WHEN c.marmCount > 0 AND (c.height < c.ReqHeight OR c.sqft*c.cagesCounted < c.marmCount) THEN 'ERROR'
     ELSE 'OK'
   END as cageStatus
 
@@ -51,7 +57,11 @@ SELECT
   c.roomcage.height as height,
   ((c.roomcage.length * c.roomcage.width)/144) as sqft,
   h.ReqHeight,
-  h.ReqSqFt,
+  --NOTE: marms always get 1 sq ft per animal
+  cast(case
+    when h.marmCount > 1 then h.marmCount
+    else h.ReqSqFt
+  end as numeric) ReqSqFt,
 
   CASE
     WHEN h2.TotalAnimals IS NULL AND c2.cage is not null THEN 2
@@ -62,6 +72,7 @@ SELECT
     ELSE NULL
   END JoinedCage,
   h2.TotalAnimals as OccupantsInJoinedCage,
+  h.marmCount,
 
   h.TotalAnimalsOver5Months,
   h3.TotalAnimals5Months,
@@ -79,6 +90,12 @@ LEFT JOIN (
     h.room,
     h.cage,
     count(DISTINCT h.id) as TotalAnimalsOver5Months,
+    sum(
+      CASE
+        WHEN (h.id.dataset.demographics.species = 'Marmoset') THEN 1
+        ELSE 0
+      END
+    ) as marmCount,
     group_concat(h.id) as Animals,
     group_concat(h.id.currentAssignments.Availability) as Availabilities,
     sum(c1.sqft) as ReqSqFt,
@@ -95,6 +112,7 @@ LEFT JOIN (
   ) h
   ON (c.room=h.room AND c.cage=h.cage)
 
+--join 5 month old animals
 LEFT JOIN (
   SELECT
     h.room,
@@ -116,13 +134,13 @@ LEFT JOIN (
     h.room,
     h.cage,
     count(DISTINCT h.id) as TotalAnimals,
-    --null as TotalAnimals
+
     FROM study.housing h
     WHERE h.enddate IS NULL
 
     GROUP BY h.room, h.cage
   ) h2
-  ON (c.room=h2.room AND h2.cage LIKE c.joinToCage)
+  ON (c2.room=h2.room AND h2.cage=c2.cage)
 
 WHERE h.TotalAnimalsOver5Months is not null
 

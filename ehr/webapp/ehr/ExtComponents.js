@@ -746,6 +746,10 @@ EHR.ext.SnomedCombo = Ext.extend(LABKEY.ext.ComboBox,
             style: 'padding-bottom: 5px;'
         });
 
+        if(LABKEY.ActionURL.getParameter('useSnomedCodes')){
+            this.defaultSubset = 'SNOMED Codes';
+        }
+
         var config = Ext.applyIf(this.filterComboCfg, {
             xtype: 'combo',
             renderTo: div,
@@ -800,18 +804,20 @@ EHR.ext.SnomedCombo = Ext.extend(LABKEY.ext.ComboBox,
             this.store.baseParams['query.queryName'] = 'snomed';
             this.store.baseParams['query.columns'] = 'code,meaning';
             this.store.baseParams['query.sort'] = 'meaning';
-            this.store.sortInfo.field = 'meaning';
-            if(this.store.sortInfo)
+            if(this.store.sortInfo){
+                this.store.sortInfo.field = 'meaning';
                 delete this.store.baseParams['query.primaryCategory~eq'];
+            }
             this.displayField = 'meaning';
         }
         else if (subset == 'SNOMED Codes'){
              this.store.baseParams['query.queryName'] = 'snomed';
             this.store.baseParams['query.columns'] = 'code';
             this.store.baseParams['query.sort'] = 'code';
-            this.store.sortInfo.field = 'code';
-            if(this.store.sortInfo)
+            if(this.store.sortInfo){
+                this.store.sortInfo.field = 'code';
                 delete this.store.baseParams['query.primaryCategory~eq'];
+            }
             this.displayField = 'code';
         }
         else {
@@ -819,8 +825,10 @@ EHR.ext.SnomedCombo = Ext.extend(LABKEY.ext.ComboBox,
             this.store.baseParams['query.queryName'] = 'snomed_subset_codes';
             this.store.baseParams['query.columns'] = 'secondaryCategory,code,code/meaning';
             this.store.baseParams['query.sort'] = 'secondaryCategory,code/meaning';
-            if(this.store.sortInfo)
+            if(this.store.sortInfo){
+                this.store.sortInfo.field = 'meaning';
                 this.store.sortInfo.field = 'secondaryCategory,code/meaning';
+            }
             this.displayField = 'code/meaning';
         }
 
@@ -899,8 +907,19 @@ EHR.ext.ParticipantField = Ext.extend(Ext.form.TextField,
             labelAlign: 'top'
             ,fieldLabel: 'Id'
             ,allowBlank: false
-            //,bubbleEvents: ['valid', 'invalid', 'added']
-            ,participantMap: new Ext.util.MixedCollection
+            ,plugins: ['ehr-participantfield']
+        });
+
+        EHR.ext.ParticipantField.superclass.initComponent.call(this, arguments);
+    }
+});
+Ext.reg('ehr-participant', EHR.ext.ParticipantField);
+
+
+EHR.ext.plugins.ParticipantField = Ext.extend(Ext.util.Observable, {
+    init: function(combo) {
+        Ext.apply(combo, {
+            participantMap: new Ext.util.MixedCollection
             ,validationDelay: 1000
             ,validationEvent: 'blur'
             ,validator: function(val)
@@ -952,40 +971,34 @@ EHR.ext.ParticipantField = Ext.extend(Ext.form.TextField,
                 return true;
 //
             }
-            ,listeners: {
-                scope: this,
-                valid: function(c)
-                {
-                    var val = c.getRawValue();
-                    if (val != c.loadedId)
-                    {
-                        this.fireEvent('participantchange', this, val);
-                        c.loadedId = val;
-                    }
-                },
-                invalid: function(c)
-                {
-                    var val = c.getRawValue();
-                    if (val != c.loadedId){
-                        this.fireEvent('participantchange', this, val);
-                        c.loadedId = val;
-                    }
-                },
-                render: function(field){
-                    field.el.set({spellcheck: false});
-                }
-            }
         });
 
-        EHR.ext.ParticipantField.superclass.initComponent.call(this, arguments);
+        combo.on('valid', function(c){
+            var val = c.getRawValue();
+            if (val != c.loadedId)
+            {
+                this.fireEvent('participantchange', this, val);
+                c.loadedId = val;
+            }
+        }, combo);
 
-        this.addEvents('participantchange');
-        this.enableBubble('participantchange');
+        combo.on('invalid', function(c){
+            var val = c.getRawValue();
+            if (val != c.loadedId){
+                this.fireEvent('participantchange', this, val);
+                c.loadedId = val;
+            }
+        }, combo);
 
+        combo.on('render', function(field){
+            field.el.set({spellcheck: false});
+        }, combo);
+
+        combo.addEvents('participantchange');
+        combo.enableBubble('participantchange');
     }
 });
-Ext.reg('ehr-participant', EHR.ext.ParticipantField);
-
+Ext.preg('ehr-participantfield', EHR.ext.plugins.ParticipantField);
 
 
 EHR.ext.ProjectField = Ext.extend(LABKEY.ext.ComboBox,
@@ -1057,7 +1070,7 @@ EHR.ext.ProjectField = Ext.extend(LABKEY.ext.ComboBox,
             sql += "AND a.enddate IS NULL ";
 
         if(this.defaultProjects){
-            sql += " UNION ALL (SELECT project, account, project.protocol as protocol FROM lists.project WHERE project IN ('"+this.defaultProjects.join("','")+"'))";
+            sql += " UNION ALL (SELECT project, account, project.protocol as protocol FROM ehr.project WHERE project IN ('"+this.defaultProjects.join("','")+"'))";
         }
 
         return sql;

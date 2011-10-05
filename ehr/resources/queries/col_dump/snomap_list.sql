@@ -1,0 +1,13 @@
+/*
+ * Copyright (c) 2010-2011 LabKey Corporation
+ *
+ * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
+ */
+SELECT
+a.ts,
+a.objectid,
+t2.objectid as key2
+FROM lists.snomap a
+full join ehr_lookups.snomap t2
+on a.objectid = t2.objectid
+WHERE (t2.objectid is null or a.objectid is null)

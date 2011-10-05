@@ -39,6 +39,10 @@ use Net::SMTP;
 use MIME::Lite;
 use Data::Dumper;
 use Time::localtime;
+use File::Touch;
+use File::Spec;
+use File::Basename;
+use Cwd 'abs_path';
 
 # Find today's date
 my $tm = localtime;
@@ -262,4 +266,6 @@ $smtp->attach(Type => 'text/html',
           Encoding => 'quoted-printable',
           Data	 => $email_html
 );         
-$smtp->send();
+$smtp->send() || die;
+
+touch(File::Spec->catfile(dirname(abs_path($0)), '.tbAlertsLastRun'));

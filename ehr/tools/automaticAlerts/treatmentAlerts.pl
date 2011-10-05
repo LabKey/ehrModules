@@ -24,7 +24,7 @@ my $baseUrl = 'https://ehr.primate.wisc.edu/';
 my $studyContainer = 'WNPRC/EHR/';
 
 #whitespace separated list of emails
-my @email_recipients = qw(bimber@wisc.edu cm@primate.wisc.edu wnprcvets@primate.wisc.edu cfitz@primate.wisc.edu);
+my @email_recipients = qw(cm@primate.wisc.edu wnprcvets@primate.wisc.edu cfitz@primate.wisc.edu);
 #@email_recipients = qw(bimber@wisc.edu);
 my $mail_server = 'smtp.primate.wisc.edu';
 
@@ -40,6 +40,10 @@ use Net::SMTP;
 use MIME::Lite;
 use Data::Dumper;
 use Time::localtime;
+use File::Touch;
+use File::Spec;
+use File::Basename;
+use Cwd 'abs_path';
 
 # Find today's date
 my $tm = localtime;
@@ -328,6 +332,7 @@ if($send_email){
 #	open(HTML, ">", "C:\\Users\\Admin\\Desktop\\test.html");
 #	print HTML $email_html;
 #	close HTML;
+#	die;
 
 	my $smtp = MIME::Lite->new(
 	          To      =>join(", ", @email_recipients),
@@ -339,5 +344,7 @@ if($send_email){
 	          Encoding => 'quoted-printable',
 	          Data	 => $email_html
 	);         
-	$smtp->send();
+	$smtp->send() || die;
 }
+
+touch(File::Spec->catfile(dirname(abs_path($0)), '.treatmentAlertsLastRun'));

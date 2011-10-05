@@ -111,7 +111,7 @@ EHR.ext.AnimalSelector = Ext.extend(Ext.Panel, {
 //                    ,editable: true
 //                    ,store: new LABKEY.ext.Store({
 //                        containerPath: 'WNPRC/EHR/',
-//                        schemaName: 'lists',
+//                        schemaName: 'ehr',
 //                        queryName: 'project',
 //                        viewName: 'Projects With Active Assignments',
 //                        sort: 'project',
@@ -402,15 +402,13 @@ EHR.ext.ChemExcelWin = Ext.extend(Ext.Panel, {
     },
     onFileUpload: function(response, options) {
        var data = new LABKEY.Exp.Data(Ext.util.JSON.decode(response.responseText));
-       if(!data.content){
-            data.getContent({
-                //format: 'jsonTSVExtended',
-                format: 'jsonTSV',
-                scope: this,
-                successCallback: this.onGetContent,
-                failureCallback: EHR.utils.onError
-            });
-       }
+        data.getContent({
+            //format: 'jsonTSVExtended',
+            format: 'jsonTSV',
+            scope: this,
+            successCallback: this.onGetContent,
+            failureCallback: EHR.utils.onError
+        });
     },
     onGetContent: function (content, format){
         if (!content)
@@ -438,35 +436,48 @@ EHR.ext.ChemExcelWin = Ext.extend(Ext.Panel, {
         var data = sheet.data;
         if (!data.length)
         {
+            Ext.Msg.hide();
             Ext.Msg.alert("Upload Failed", "The data file contains no rows");
             return;
         }
 
-        this.processData(data);
-
         Ext.Msg.hide();
+        this.processData(data);
     },
     processData: function(data){
         //remove header
         var header = data.shift();
         var skippedRows = [];
         var runsStore = Ext.StoreMgr.get("study||Clinpath Runs||||");
+        var testsStore = Ext.StoreMgr.get("ehr_lookups||chemistry_tests||testid||testid");
 
         var id;
         var date;
         var testId;
         var result;
+        var resultOORIndicator;
         var units;
         var qualResult;
         var remark;
         var panelType;
+        var rec;
 
         Ext.each(data, function(row, idx){
             id = row[7];
+            if(!id){
+                alert('Something went wrong reading the file');
+                return;
+            }
+
+            if((typeof id == 'string') && id.match(/PatientName/i)){
+                return;
+            }
+
             id = id.replace(/(,)* MONKEY( )*/i, '');
             id = id.toLowerCase();
 
             if(runsStore.find('Id', id)==-1){
+                Ext.Msg.hide();
                 alert('ID: '+id+' not found in Clinpath Runs section. Records will not be added');
                 return false;
             }
@@ -474,6 +485,13 @@ EHR.ext.ChemExcelWin = Ext.extend(Ext.Panel, {
             date = new Date(row[16]);
             testId = row[22];
             result = row[24];
+            if(result && (typeof result == 'string') && result.match(/[<>]+/)){
+                resultOORIndicator = result.match(/[<>]+/)[0];
+                result = result.replace(/[<>]+/, '');
+            }
+            else
+                resultOORIndicator = null;
+
             units = row[25];
             panelType = row[14];
 
@@ -486,13 +504,41 @@ EHR.ext.ChemExcelWin = Ext.extend(Ext.Panel, {
                 return;
             }
 
-            this.targetStore.addRecord({
+            //attempt to find this test ID.  search aliases if not found
+            var idx = testsStore.find('testid', new RegExp('^'+testId+'$'));
+            if(idx==-1){
+                var recIdx = testsStore.findBy(function(r){
+                    var alias = r.get('aliases');
+                    if(!r.phantom && alias){
+                        alias = alias.split(',');
+                        if(alias.indexOf(testId)!=-1){
+                            return true;
+                        }
+                    }
+                }, this);
+
+                if(recIdx!=-1){
+                    testId = testsStore.getAt(recIdx).get('testid');
+                }
+
+                //return false;
+            }
+            else {
+                console.log('found test: '+testId);
+            }
+
+            rec = {
                 Id: id,
                 date: date,
                 testid: testId,
                 result: result,
                 units: units
-            })
+            };
+
+            if(resultOORIndicator)
+                rec.resultOORIndicator = resultOORIndicator;
+
+            this.targetStore.addRecord(rec);
         }, this);
 
         if(skippedRows.length){
@@ -507,7 +553,7 @@ EHR.ext.HematologyExcelWin = Ext.extend(Ext.Panel, {
     {
         Ext.applyIf(this, {
             //layout: 'form'
-            title: 'Enter Hematology From Analyzer'
+            title: 'Enter Hematology From Sysmex Analyzer'
             ,bodyBorder: true
             ,border: true
             //,frame: true
@@ -558,12 +604,12 @@ EHR.ext.HematologyExcelWin = Ext.extend(Ext.Panel, {
         }
 
         this.ownerCt.hide();
-//        Ext.Msg.wait('Loading...');
+        Ext.Msg.wait('Loading...');
 
         Ext.Ajax.request({
             url: LABKEY.ActionURL.buildURL("assay", "assayFileUpload"),
             params: {
-                fileName: 'HematologyUpload_'+(new Date()).format('Y-m-d_H:m:s')+'.tsv',
+                fileName: 'HematologyUpload_'+(new Date()).format('Y-m-d_H:m:s.u')+'.tsv',
                 fileContent: fileContent
             },
             success: this.onFileUpload,
@@ -573,15 +619,13 @@ EHR.ext.HematologyExcelWin = Ext.extend(Ext.Panel, {
     },
     onFileUpload: function(response, options) {
        var data = new LABKEY.Exp.Data(Ext.util.JSON.decode(response.responseText));
-       if(!data.content){
-            data.getContent({
-                //format: 'jsonTSVExtended',
-                format: 'jsonTSV',
-                scope: this,
-                successCallback: this.onGetContent,
-                failureCallback: EHR.utils.onError
-            });
-       }
+        data.getContent({
+            //format: 'jsonTSVExtended',
+            format: 'jsonTSV',
+            scope: this,
+            successCallback: this.onGetContent,
+            failureCallback: EHR.utils.onError
+        });
     },
     onGetContent: function (content, format){
         if (!content)
@@ -609,13 +653,13 @@ EHR.ext.HematologyExcelWin = Ext.extend(Ext.Panel, {
         var data = sheet.data;
         if (!data.length)
         {
+            Ext.Msg.hide();
             Ext.Msg.alert("Upload Failed", "The data file contains no rows");
             return;
         }
 
-        this.processData(data);
-
         Ext.Msg.hide();
+        this.processData(data);
     },
     processData: function(data){
         //remove header
@@ -628,6 +672,12 @@ EHR.ext.HematologyExcelWin = Ext.extend(Ext.Panel, {
         var tests;
         var row1;
         var row2;
+
+        if(!data.length || !data[0].length){
+            alert('Something went wrong processing the file');
+            return;
+        }
+
         data = data[0][0].split(/D1U/i);
 
         Ext.each(data, function(row, idx){
@@ -646,18 +696,18 @@ EHR.ext.HematologyExcelWin = Ext.extend(Ext.Panel, {
             result.animalId = row1[2].substr(0,6);
             result.animalId = result.animalId.toLowerCase();
 
-            result.sequenceNo = row1[1].substr(20,4);
-//            result.date = row1[2].substr(10,2) + "/" + row1[2].substr(12,2) + "/" + row1[2].substr(6,4);
+            //result.sequenceNo = row1[1].substr(20,4);
             result.date = new Date(row1[2].substr(6,4), row1[2].substr(10,2), row1[2].substr(12,2));
 
-//            if(!result.animalId || runsStore.find('Id', result.animalId)==-1){
-//                alert('ID: '+result.animalId+' not found in Clinpath Runs section. Records will not be added');
-//                return false;
-//            }
+            if(!result.animalId || runsStore.find('Id', result.animalId)==-1){
+                //alert('ID: '+result.animalId+' not found in Clinpath Runs section. Records will not be added');
+                skippedRows.push('Not found in Clinpath Runs: '+result.animalId);
+                return;
+            }
 
             tests['WBC'] = row2[2].substr(6,6);
             tests['RBC'] = row2[2].substr(12,5);
-            tests['GLYCOSYLATED HGB'] = row2[2].substr(17,5);
+            tests['HGB'] = row2[2].substr(17,5);
             tests['HCT'] = row2[2].substr(22,5);
             tests['MCV'] = row2[2].substr(27,5);
             tests['MCH'] = row2[2].substr(32,5);
@@ -677,6 +727,8 @@ EHR.ext.HematologyExcelWin = Ext.extend(Ext.Panel, {
             tests['EO'] = row2[2].substr(62,5);
 
             //tests['BASO%'] = row2[2].substr(67,5);
+            tests['BS'] = row2[2].substr(67,5);
+
             //tests['LYMPH#'] = row2[2].substr(72,6);
             //tests['MONO#'] = row2[2].substr(78,6);
             //tests['SEG#'] = row2[2].substr(84,6);
@@ -689,11 +741,6 @@ EHR.ext.HematologyExcelWin = Ext.extend(Ext.Panel, {
             tests['MPV'] = row2[2].substr(117,5);
             //tests['P-LCR'] = row2[2].substr(122,5);
 
-            if(!id || !date || date=='Invalid Date' || !testId || !result){
-                skippedRows.push(['ID: '+id, 'Date: '+(date && (date.format ? date.format('Y-m-d') : date)), 'TestId: '+testId, 'Result: '+result].join('; '));
-                return;
-            }
-
             var value;
             for(var test in tests){
                 var origVal = tests[test]
@@ -702,6 +749,7 @@ EHR.ext.HematologyExcelWin = Ext.extend(Ext.Panel, {
                 if (value.match(/^00(\d){4}$/)) {
                     tests[test] = value.substr(2,3) / 100;
                 }
+                //note: at the moment WBC is the only test with 6 chars, so this test is possibly redundant
                 else if (value.match(/^0(\d){4,}$/) && test=='WBC') {
                     tests[test] = value.substr(1,3) / 10;
                 }
@@ -717,14 +765,46 @@ EHR.ext.HematologyExcelWin = Ext.extend(Ext.Panel, {
                     }
                 }
 
+                //NOTE: the following is a possible replacement for the logic above
+                //it attempts to more clearly define how the parsing works
+                //so far as i can tell, specific tests return different sets of decimals
+                //and there is no clear way to determine decimal number without knowing the test name
+//                if(value.match(/^(\d){5,6}$/)){
+//                    //we drop the last digit in all cases
+//                    value = value.substr(0, value.length-1);
+//
+//                    var decimals = 1;
+//                    //WBC is output as 10^1/uL, but reported at 10^3/ul
+//                    //RBC is output as 10^4/ul, but reported at 10^6/ul
+//                    if(test=='WBC' || test=='RBC')
+//                        decimals = 2;
+//                    if(test=='PLT')
+//                        decimals = 0;
+//
+//                    value = value / Math.pow(10, decimals);
+//
+//                    value = EHR.utils.roundNumber(value, decimals);
+//                }
+//                else {
+//                    //alert('Value: '+value+' is not a number');
+//                    return;
+//                }
+//
+//                if(value != tests[test]){
+//                    console.log('error: '+test+'/'+tests[test]+'/'+value+'/'+decimals);
+//                }
+
                 //find units
                 var idx = unitStore.find('testid', test);
-                var units;
+                var units = null;
                 if(idx!=-1){
                     units = unitStore.getAt(idx).get('units');
                 }
 
-                if(tests[test] && !isNaN(tests[test]))
+                if(tests[test] && isNaN(tests[test])){
+                    skippedRows.push('Invalid Result for: '+result.animalId+', TestId: '+test+', '+tests[test]);
+                }
+                else {
                     this.targetStore.addRecord({
                         Id: result.animalId,
                         date: result.date,
@@ -732,6 +812,7 @@ EHR.ext.HematologyExcelWin = Ext.extend(Ext.Panel, {
                         result: tests[test],
                         units: units
                     });
+                }
             }
 
         }, this);

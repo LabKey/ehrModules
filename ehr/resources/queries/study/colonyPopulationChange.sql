@@ -14,7 +14,7 @@ SELECT
 
 FROM study.Birth T1
 WHERE T1.date IS NOT NULL
-and cast(COALESCE(STARTDATE, '1900-01-01') as date) < T1.date and  cast(COALESCE(ENDDATE, curdate()) as date) > T1.date
+and cast(COALESCE(STARTDATE, '1900-01-01') as date) <= T1.date and  cast(COALESCE(ENDDATE, curdate()) as date) >= cast(T1.date as date)
 
 UNION ALL
 
@@ -28,7 +28,7 @@ SELECT
 FROM study.Arrival T2
 WHERE T2.date IS NOT NULL
 AND T2.qcstate.publicdata = true
-and cast(COALESCE(STARTDATE, '1900-01-01') as date) < T2.date and  cast(COALESCE(ENDDATE, curdate()) as date) > T2.date
+and cast(COALESCE(STARTDATE, '1900-01-01') as date) <= T2.date and  cast(COALESCE(ENDDATE, curdate()) as date) >= cast(T2.date as date)
 group by id
 
 UNION ALL
@@ -43,7 +43,7 @@ SELECT
 FROM study.Departure T3
 WHERE T3.date IS NOT NULL
 AND T3.qcstate.publicdata = true
-and cast(COALESCE(STARTDATE, '1900-01-01') as date) < T3.date and  cast(COALESCE(ENDDATE, curdate()) as date) > T3.date
+and cast(COALESCE(STARTDATE, '1900-01-01') as date) <= T3.date and  cast(COALESCE(ENDDATE, curdate()) as date) >= cast(T3.date as date)
 group by id
 
 UNION ALL
@@ -52,9 +52,10 @@ SELECT
   T4.id,
 --   T4.id.dataset.demographics.species,
   'Deaths' AS Category,
-  T4.death as Date,
-  convert(year(T4.death), INTEGER) AS Year,
+  T4.date,
+  convert(year(T4.date), INTEGER) AS Year,
 
-FROM study.Demographics T4
-WHERE T4.death IS NOT NULL
-and cast(COALESCE(STARTDATE, '1900-01-01') as date) < T4.date and  cast(COALESCE(ENDDATE, curdate()) as date) > T4.date
+FROM study.Deaths T4
+WHERE T4.date IS NOT NULL
+and (t4.notAtCenter is null or t4.notAtCenter = false)
+and cast(COALESCE(STARTDATE, '1900-01-01') as date) <= T4.date and  cast(COALESCE(ENDDATE, curdate()) as date) >= cast(T4.date as date)

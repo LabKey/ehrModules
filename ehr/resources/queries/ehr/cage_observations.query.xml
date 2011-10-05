@@ -4,6 +4,7 @@
             <table tableName="cage_observations" tableDbType="TABLE">
                 <!--<tableUrl>/ehr/taskDetails.view?type=${type}&amp;taskid=${taskid}</tableUrl>-->
                 <!--<insertUrl>/ehr/createTask.view</insertUrl>-->
+                <importUrl />
                 <titleColumn>RowId</titleColumn>
                 <tableTitle>Cage Observations</tableTitle>
                 <columns>

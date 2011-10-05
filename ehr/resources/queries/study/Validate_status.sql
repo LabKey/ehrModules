@@ -3,27 +3,46 @@
  *
  * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
  */
+
+select * from (
+
 SELECT
 
 a.id,
-
-a.status,
+a.status as demographicsStatus,
 a.calculated_status,
-a.birth,
+a.birth as demographicsBirth,
 a.id.dataset.birth.date as birthTable,
-a.death,
+a.death as demographicsDeath,
 a.id.dataset.deaths.date as deathTable,
-
-a.arrivedate,
 a.id.MostRecentArrival.MostRecentArrival as MostRecentArrival,
-
-a.departdate,
 a.id.MostRecentDeparture.MostRecentDeparture as MostRecentDeparture,
 
+CASE
+  WHEN
+    (a.created IS NULL)
+    THEN 'No Information'
+  WHEN
+    (a.id.dataset.birth.date IS NULL AND a.id.MostRecentArrival.MostRecentArrival IS NULL)
+    THEN 'Never at WNPRC'
+  WHEN
+    (a.death IS NOT NULL)
+    THEN 'Dead'
+  WHEN
+    (a.id.MostRecentDeparture.MostRecentDeparture IS NOT NULL AND (a.id.MostRecentArrival.MostRecentArrival IS NULL OR a.id.MostRecentDeparture.MostRecentDeparture > a.id.MostRecentArrival.MostRecentArrival))
+    THEN 'Shipped'
+  WHEN
+    (a.id.dataset.birth.date IS NOT NULL OR a.id.MostRecentArrival.MostRecentArrival IS NOT NULL) AND (a.id.MostRecentDeparture.MostRecentDeparture IS NULL OR a.id.MostRecentDeparture.MostRecentDeparture < a.id.MostRecentArrival.MostRecentArrival)
+    THEN 'Alive'
+  ELSE
+    'ERROR'
+END as status,
 
 FROM study.demographics a
 
-WHERE a.status is not null AND
+) a
+
+WHERE
 
 (
 --a.calculated_status is null
@@ -34,15 +53,15 @@ WHERE a.status is not null AND
 
 OR
 
-(a.status like 'd-%' AND a.calculated_status != 'Dead')
+(a.status like 'Dead' AND a.calculated_status != 'Dead')
 
 OR
 
-(a.id.dataset.deaths.date is not null AND a.calculated_status != 'Dead')
+(a.deathTable is not null AND a.calculated_status != 'Dead')
 
 OR
 
-(a.status like '%shippd%' AND a.calculated_status != 'Shipped' and a.death is null)
+(a.status like 'Shipped' AND a.calculated_status != 'Shipped' and a.demographicsDeath is null)
 
 OR
 
@@ -52,5 +71,3 @@ OR
 
 a.calculated_status = 'ERROR'
 )
---status
---avail

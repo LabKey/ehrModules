@@ -23,6 +23,12 @@ function onUpsert(context, errors, row, oldRow){
     if(context.extraContext.dataSource != 'etl'){
         EHR.validation.removeTimeFromDate(row, errors);
         EHR.validation.removeTimeFromDate(row, errors, 'enddate');
+        EHR.validation.removeTimeFromDate(row, errors, 'projectedRelease');
+    }
+
+    //remove the projected release date if a true enddate is added
+    if(row.enddate && row.projectedRelease){
+        row.projectedRelease = null;
     }
 
     //check number of allowed animals at assign/approve time
@@ -43,7 +49,7 @@ function onUpsert(context, errors, row, oldRow){
         var protocol;
         //TODO: switch to EHR schema
         LABKEY.Query.selectRows({
-            schemaName: 'lists',
+            schemaName: 'ehr',
             queryName: 'project',
             filterArray: [
                 LABKEY.Filter.create('project', row.project, LABKEY.Filter.Types.EQUAL)
@@ -63,7 +69,7 @@ function onUpsert(context, errors, row, oldRow){
 
         if(species && protocol){
             LABKEY.Query.selectRows({
-                schemaName: 'lists',
+                schemaName: 'ehr',
                 queryName: 'protocolTotalAnimalsBySpecies',
                 viewName: 'With Animals',
                 scope: this,

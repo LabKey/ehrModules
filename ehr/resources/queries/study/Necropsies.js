@@ -37,58 +37,77 @@ function onUpsert(context, errors, row){
 
 function onBecomePublic(errors, scriptContext, row, oldRow){
     if(scriptContext.extraContext.dataSource != 'etl'){
-        var obj = {
-            Id: row.Id,
-            date: row.timeofdeath,
-            cause: row.causeofdeath,
-            manner: row.mannerofdeath,
-            necropsy: row.caseno,
-            parentid: row.objectid
-        };
-
-        var queryName;
-        if(row.Id.match(/^pd/))
-            queryName = 'Prenatal Deaths';
-        else
-            queryName = 'Deaths';
-
-        //we look for a deaths record
-        LABKEY.Query.selectRows({
-            schemaName: 'study',
-            queryName: queryName,
-            filterArray: [
-                LABKEY.Filter.create('Id', row.Id, LABKEY.Filter.Types.EQUAL)
-            ],
-            success: function(data){
-                if(data && data.rows && data.rows.length){
-                    obj.lsid = data.rows[0].lsid;
-                    LABKEY.Query.updateRows({
-                        schemaName: 'study',
-                        queryName: queryName,
-                        scope: this,
-                        rows: [obj],
-                        success: function(data){
-                            console.log('Success updating '+queryName+' from necropsy for '+row.Id)
-                        },
-                        failure: EHR.onFailure
-                    });
+        //if not already present, we insert into demographics
+        var doSubmit = false;
+        if(row.Id.match(/^pd/)){
+            doSubmit = true;
+        }
+        else {
+            EHR.findDemographics({
+                participant: row.Id,
+                scope: this,
+                callback: function(data){
+                    if(data){
+                        doSubmit = true;
+                    }
                 }
-                //otherwise we create a new record
-                else {
-//                    LABKEY.Query.insertRows({
-//                        schemaName: 'study',
-//                        queryName: queryName,
-//                        scope: this,
-//                        rows: [obj],
-//                        success: function(data){
-//                            console.log('Success inserting into '+queryName+' from necropsy for '+row.Id)
-//                        },
-//                        failure: EHR.onFailure
-//                    });
-                    EHR.addError(errors, 'Id', 'No death record exists.  Please use the button near the bottom of the page to create one.', 'ERROR');
-                }
-            },
-            failure: EHR.onFailure
-        });
+            });
+        }
+
+        if(doSubmit){
+            var obj = {
+                Id: row.Id,
+                date: (row.timeofdeath ? new Date(row.timeofdeath.toGMTString()) : null),
+                cause: row.causeofdeath,
+                manner: row.mannerofdeath,
+                necropsy: row.caseno,
+                parentid: row.objectid
+            };
+
+            var queryName;
+            if(row.Id.match(/^pd/))
+                queryName = 'Prenatal Deaths';
+            else
+                queryName = 'Deaths';
+
+            //we look for a deaths record
+            LABKEY.Query.selectRows({
+                schemaName: 'study',
+                queryName: queryName,
+                filterArray: [
+                    LABKEY.Filter.create('Id', row.Id, LABKEY.Filter.Types.EQUAL)
+                ],
+                success: function(data){
+                    if(data && data.rows && data.rows.length){
+                        obj.lsid = data.rows[0].lsid;
+                        LABKEY.Query.updateRows({
+                            schemaName: 'study',
+                            queryName: queryName,
+                            scope: this,
+                            rows: [obj],
+                            success: function(data){
+                                console.log('Success updating '+queryName+' from necropsy for '+row.Id)
+                            },
+                            failure: EHR.onFailure
+                        });
+                    }
+                    //otherwise we create a new record
+                    else {
+    //                    LABKEY.Query.insertRows({
+    //                        schemaName: 'study',
+    //                        queryName: queryName,
+    //                        scope: this,
+    //                        rows: [obj],
+    //                        success: function(data){
+    //                            console.log('Success inserting into '+queryName+' from necropsy for '+row.Id)
+    //                        },
+    //                        failure: EHR.onFailure
+    //                    });
+                        EHR.addError(errors, 'Id', 'No death record exists.  Please use the button near the bottom of the page to create one.', 'ERROR');
+                    }
+                },
+                failure: EHR.onFailure
+            });
+        }
     }
 }

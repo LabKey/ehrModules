@@ -37,12 +37,16 @@ Ext.onReady(function(){
         Ext.each([
             {url: "<%=contextPath%>/ehr/WNPRC/EHR/manageTask.view?formtype=Blood%20Draws", title: 'Enter Blood Draws', queries: ['Blood Draws']},
             {url: "<%=contextPath%>/ehr/WNPRC/EHR/manageTask.view?schemaName=study&queryName=Clinical%20Remarks&keyField=lsid", title: 'Enter Clinical Remark', queries: ['Clinical Remarks']},
+            {url: "<%=contextPath%>/ehr/WNPRC/EHR/updateQuery.view?schemaName=study&queryName=Feeding&keyField=lsid", title: 'Enter/Manage Feeding Orders', queries: ['Feeding']},
             {url: "<%=contextPath%>/ehr/WNPRC/EHR/manageTask.view?formtype=Irregular%20Observations", title: 'Enter Irregular Observations', queries: ['Irregular Observations']},
-            {url: "<%=contextPath%>/ehr/WNPRC/EHR/manageTask.view?formtype=MPR", title: 'Enter MPR', queries: ['Drug Administration', 'Procedure Codes']},
+            {url: "<%=contextPath%>/ehr/WNPRC/EHR/manageTask.view?formtype=MPR", title: 'Enter MPR', queries: ['Drug Administration']},
+            {url: "<%=contextPath%>/ehr/WNPRC/EHR/manageTask.view?formtype=MPR&useSnomedCodes=1", title: 'Enter MPR (using SNOMED codes)', queries: ['Drug Administration']},
             {url: "<%=contextPath%>/ehr/WNPRC/EHR/manageRecord.view?schemaName=study&queryName=Notes&keyField=lsid", title: 'Enter Note', queries: ['Notes']},
             {url: "<%=contextPath%>/ehr/WNPRC/EHR/manageTask.view?formtype=Physical%20Exam", title: 'Enter Physical Exam (OWM)', queries: ['Alopecia','Clinical Remarks']},
             {url: "<%=contextPath%>/ehr/WNPRC/EHR/manageTask.view?formtype=Physical%20Exam - NWM", title: 'Enter Physical Exam (NWM)', queries: ['Alopecia','Clinical Remarks']},
             {url: "<%=contextPath%>/ehr/WNPRC/EHR/manageTask.view?formtype=Problem%20List", title: 'Enter Problem', queries: ['Problem List']},
+            {url: "<%=contextPath%>/ehr/WNPRC/EHR/manageTask.view?formtype=Surgery", title: 'Enter Surgery', queries: ['Clinical Encounters']},
+            {url: "<%=contextPath%>/ehr/WNPRC/EHR/manageTask.view?formtype=Surgery&useSnomedCodes=1", title: 'Enter Surgery (using SNOMED codes)', queries: ['Clinical Encounters']},
             {url: "<%=contextPath%>/ehr/WNPRC/EHR/manageTask.view?formtype=TB%20Tests", title: 'Enter TB Tests', queries: ['TB Tests']},
             {url: "<%=contextPath%>/ehr/WNPRC/EHR/manageTask.view?formtype=Treatments", title: 'Enter Treatments', queries: ['Drug Administration']},
             {url: "<%=contextPath%>/ehr/WNPRC/EHR/manageTask.view?formtype=Treatment%20Orders", title: 'Enter Treatment Order', queries: ['Treatment Orders']},
@@ -77,6 +81,7 @@ Ext.onReady(function(){
             {url: "<%=contextPath%>/ehr/WNPRC/EHR/manageTask.view?schemaName=study&queryName=Departure&keyField=lsid", title: 'Enter Departures', queries: ['Departure']},
             {url: "<%=contextPath%>/ehr/WNPRC/EHR/manageRecord.view?schemaName=study&queryName=Prenatal Deaths&keyField=lsid", title: 'Enter Prenatal Death', queries: ['Prenatal Deaths']},
             {url: "<%=contextPath%>/ehr/WNPRC/EHR/updateQuery.view?schemaName=ehr&queryName=Project&keyField=project", title: 'Enter/Manage Projects', queries: ['Assignment']},
+            {url: "<%=contextPath%>/ehr/WNPRC/EHR/updateQuery.view?schemaName=ehr&queryName=Protocol&keyField=protocol", title: 'Enter/Manage Protocols', queries: ['Assignment']},
             {url: "<%=contextPath%>/ehr/WNPRC/EHR/manageTask.view?formtype=SimpleRemark&title=Remark", title: 'Enter Simple Remark', queries: ['Clinical Remarks']},
             {url: "<%=contextPath%>/ehr/WNPRC/EHR/updateQuery.view?schemaName=ehr&queryName=supplemental_pedigree&keyField=rowid", title: 'Enter/Manage Supplemental Pedigree', queries: ['Demographics']}
 
@@ -152,8 +157,8 @@ Ext.onReady(function(){
         };
 
         Ext.each([
-            {url: "<%=contextPath%>/ehr/WNPRC/EHR/manageRequest.view?formtype=Blood%20Draw%20Request", title: 'Request Blood Draws', queries: ['Blood Draws']}
-//            {url: "<%=contextPath%>/ehr/WNPRC/EHR/manageRequest.view?formtype=Clinpath%20Request", title: 'Request Clinpath Services', queries: ['Clinpath Runs']},
+            {url: "<%=contextPath%>/ehr/WNPRC/EHR/manageRequest.view?formtype=Blood%20Draw%20Request", title: 'Request Blood Draws', queries: ['Blood Draws']},
+            {url: "<%=contextPath%>/ehr/WNPRC/EHR/manageRequest.view?formtype=Clinpath%20Request", title: 'Request Clinpath Services', queries: ['Clinpath Runs']}
             //{url: "<%=contextPath%>/ehr/WNPRC/EHR/manageRequest.view?formtype=Housing%20Request", title: 'Request Housing Change', queries: ['Housing']},
 //            {url: "<%=contextPath%>/ehr/WNPRC/EHR/manageRequest.view?formtype=Procedure%20Request", title: 'Request Procedure', queries: ['Clinical Encounters']}
         ], function(i){
@@ -260,7 +265,20 @@ Ext.onReady(function(){
                                     queryConfig:  {
                                         schemaName: 'ehr',
                                         queryName: 'my_tasks',
-                                        viewName: 'Active Tasks'
+                                        viewName: 'Active Tasks',
+                                        scope: this,
+                                        success: function(dr){
+//                                            var width1 = Ext.get(dr.id).getSize().width;
+//                                            var width2 = Ext.get(this.anchorLayout.id).getSize().width;
+//
+//                                            if(width1 > width2){
+//                                                this.anchorLayout.setWidth(width1+140);
+//                                                console.log('resizing')
+//                                            }
+//                                            else {
+//                                                this.anchorLayout.setWidth('100%');
+//                                            }
+                                        }
                                         //showUpdateColumn: true
                                         //updateURL: '/ehr/manageTask.view?formtype=${formtype}&amp;taskid=${taskid}'
                                     }

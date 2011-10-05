@@ -6,6 +6,7 @@
                 <!--<insertUrl>/ehr/manageRecord.view?schemaName=study&amp;queryName=Departure&amp;keyField=lsid&amp;</insertUrl>-->
                 <!--<updateUrl>/ehr/manageRecord.view?schemaName=study&amp;queryName=Departure&amp;keyField=lsid&amp;key=${lsid}</updateUrl>-->
                 <insertUrl />
+                <importUrl />
                 <updateUrl />
                 <deleteUrl />
                 <columns>
@@ -19,6 +20,16 @@
                           <!--<fkTable>studyDataParent</fkTable>-->
                           <!--<fkColumnName>objectid</fkColumnName>-->
                         <!--</fk>-->
+                    </column>
+                    <column columnName="destination">
+                        <datatype>varchar</datatype>
+                        <columnTitle>Destination</columnTitle>
+                        <fk>
+                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
+                            <fkDbSchema>ehr_lookups</fkDbSchema>
+                            <fkTable>origin_codes</fkTable>
+                            <fkColumnName>Code</fkColumnName>
+                        </fk>
                     </column>
                 </columns>
             </table>

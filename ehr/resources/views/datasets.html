@@ -38,7 +38,7 @@ Ext.onReady(function () {
                     style: 'padding-left:5px;padding-bottom:8px'
                 };
 
-                if(EHR.permissionMap.hasPermission('Completed', 'update', {schemaName: 'study', queryName: item.data.Label})){
+                if(EHR.permissionMap.hasPermission('Completed', 'admin', {schemaName: 'study', queryName: item.data.Label})){
                     cfg.html += ' [<a href="<%=contextPath%>/ehr<%=containerPath%>/updateQuery.view?schemaName=study&query.queryName='+item.data.Label+'&keyField=lsid">Update Records</a>]';
                 }
                 return cfg;

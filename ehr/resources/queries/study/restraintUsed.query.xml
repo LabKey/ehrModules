@@ -6,7 +6,7 @@
                     <column columnName="project">
                         <fk>
                             <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-                            <fkDbSchema>lists</fkDbSchema>
+                            <fkDbSchema>ehr</fkDbSchema>
                             <fkTable>project</fkTable>
                             <fkColumnName>project</fkColumnName>
                         </fk>
@@ -39,8 +39,8 @@
                             <fkColumnName>type</fkColumnName>
                         </fk>
                     </column>
-                    <column columnName="restraintTime">
-                        <columnTitle>Time Restrained (Mins)</columnTitle>
+                    <column columnName="restraintDuration">
+                        <columnTitle>Time Restrained</columnTitle>
                     </column>
                   <column columnName="taskid">
                     <datatype>varchar</datatype>

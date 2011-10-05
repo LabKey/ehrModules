@@ -54,9 +54,9 @@ WHERE
 (h.project.protocol = PROTOCOL OR PROTOCOL IS NULL OR PROTOCOL = '') AND
 
 (
-(h.StartDateParam >= h.date AND h.StartDateParam < h.enddateCoalesce)
+(h.StartDateParam >= h.date AND h.StartDateParam <= h.enddateCoalesce)
 OR
-(h.EndDateParam > h.date AND h.EndDateParam <= h.enddateCoalesce)
+(h.EndDateParam >= h.date AND h.EndDateParam <= h.enddateCoalesce)
 OR
 (h.StartDateParam <= h.date AND h.EndDateParam >= h.enddateCoalesce)
 )

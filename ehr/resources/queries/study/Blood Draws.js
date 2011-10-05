@@ -6,6 +6,57 @@
 
 var {EHR, LABKEY, Ext, console, init, beforeInsert, afterInsert, beforeUpdate, afterUpdate, beforeDelete, afterDelete, complete} = require("ehr/validation");
 
+function onComplete(event, errors, scriptContext){
+    if(scriptContext && scriptContext.rows && scriptContext.rows.length){
+        var rowObj;
+        for(var i=0;i<scriptContext.rows.length;i++){
+            rowObj = scriptContext.rows[i];
+
+            //we auto-create a clinpath request if a test is newly added
+            if(rowObj.row.additionalServices && event=='insert'){
+                //NOTE: we will try supporting this from all paths
+                //scriptContext.qcMap.label[rowObj.row.QCStateLabel]['metadata/isRequest']
+
+                var tests = rowObj.row.additionalServices.split(',');
+
+                //request CBC
+                if(tests.indexOf('CBC')!=-1 || tests.indexOf('CBC with Differential')!=-1){
+                    console.log('Requesting CBC:');
+//                    LABKEY.Query.insertRows({
+//                        schemaName: 'study',
+//                        queryName: 'Clinpath Runs',
+//                        extraContext: {
+//                            quickValidation: true
+//                        },
+//                        rows: [{Id: rowObj.row.Id, date: new Date(rowObj.row.date.toGMTString()), project: rowObj.row.project, account: rowObj.row.account, requestId: rowObj.row.requestId, sampletype: 'Blood - EDTA Whole Blood', collectedBy: rowObj.row.performedby, serviceRequested: 'CBC with Differential', dataset: 'Hematology', QCStateLabel: 'Request: Pending'}],
+//                        success: function(data){
+//                            console.log('Success requesting CBC!')
+//                        },
+//                        failure: EHR.onFailure
+//                    });
+                }
+                //request Vet19
+                if(tests.indexOf('Vet-19')!=-1 || tests.indexOf('Vet-19 Chem Panel')!=-1){
+                    console.log('Requesting Vet-19:');
+//                    LABKEY.Query.insertRows({
+//                        schemaName: 'study',
+//                        queryName: 'Clinpath Runs',
+//                        extraContext: {
+//                            quickValidation: true
+//                        },
+//                        rows: [{Id: rowObj.row.Id, date: new Date(rowObj.row.date.toGMTString()), project: rowObj.row.project, account: rowObj.row.account, requestId: rowObj.row.requestId, sampletype: 'Blood - EDTA Whole Blood', collectedBy: rowObj.row.performedby, serviceRequested: 'Vet-19 Chem Panel', dataset: 'Chemistry', QCStateLabel: 'Request: Pending'}],
+//                        success: function(data){
+//                            console.log('Success requesting Vet-19!')
+//                        },
+//                        failure: EHR.onFailure
+//                    });
+                }
+            }
+        }
+    }
+}
+
+
 function onUpsert(context, errors, row, oldRow){
     if(context.extraContext.dataSource != 'etl' && row.date && !row.daterequested){
         if(!oldRow || !oldRow.daterequested){
@@ -53,7 +104,12 @@ function onUpsert(context, errors, row, oldRow){
 
             var checkFutureRecords = true;
 
-            var sql = "SELECT b.BloodLast30, d.MostRecentWeight, round((d.MostRecentWeight*0.2*60) - coalesce(b.BloodLast30, 0), 1) AS AvailBlood " +
+            var multiplier = 0.2;
+            if(row.species=='Marmoset'){
+                multiplier = 0.15;
+            }
+
+            var sql = "SELECT b.BloodLast30, d.MostRecentWeight, round((d.MostRecentWeight*"+multiplier+"*60) - coalesce(b.BloodLast30, 0), 1) AS AvailBlood " +
             "FROM (" +
                 "SELECT b.id, sum(b.quantity) as BloodLast30 " +
                 "FROM study.\"Blood Draws\" b " +
@@ -109,7 +165,7 @@ function onUpsert(context, errors, row, oldRow){
                 var maxDate = new Date(row.date.toGMTString());
                 maxDate.setDate(maxDate.getDate()+30);
 
-                sql = "SELECT b.BloodLast30, d.MostRecentWeight, round((d.MostRecentWeight*0.2*60) - coalesce(b.BloodLast30, 0), 1) AS AvailBlood " +
+                sql = "SELECT b.BloodLast30, d.MostRecentWeight, round((d.MostRecentWeight*"+multiplier+"*60) - coalesce(b.BloodLast30, 0), 1) AS AvailBlood " +
                 "FROM (" +
                     "SELECT b.id, sum(b.quantity) as BloodLast30 " +
                     "FROM study.\"Blood Draws\" b " +
