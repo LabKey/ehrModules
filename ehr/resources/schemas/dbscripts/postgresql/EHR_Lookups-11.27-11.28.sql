@@ -31,7 +31,7 @@ INSERT into ehr_lookups.snomed_qualifiers (qualifier) VALUES
 DROP TABLE IF EXISTS ehr_lookups.clinpath_tests;
 CREATE TABLE ehr_lookups.clinpath_tests (
 testName varchar(255) NOT NULL,
-units varchar(20) NOT NULL,
+units varchar(20),
 dataset varchar(200),
 
 CONSTRAINT PK_testName PRIMARY KEY (testname)
