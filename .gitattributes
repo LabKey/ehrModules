@@ -815,7 +815,6 @@ ehr/resources/schemas/dbscripts/postgresql/EHR-11.134-11.135.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR-11.137-11.138.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR-11.138-11.139.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR-11.145-11.146.sql -text
-ehr/resources/schemas/dbscripts/postgresql/EHR-11.146-11.24.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR-11.25-11.26.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR-11.26-11.27.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR-11.27-11.28.sql -text
