@@ -70,8 +70,6 @@ ehr/ehr-study/lists/lists.xml -text
 ehr/ehr-study/study.xml -text
 ehr/module.properties -text
 ehr/resources/etl/datasets/clinremarks.sql -text
-ehr/resources/etl/datasets/morphologicDiagnosis.sql -text
-ehr/resources/etl/datasets/virologyResults.sql -text
 ehr/resources/queries/auditLog/DatasetAuditEvent.query.xml -text
 ehr/resources/queries/auditLog/DatasetAuditEvent/.qview.xml -text
 ehr/resources/queries/auditLog/DatasetAuditEvent/Detailed.qview.xml -text
@@ -261,7 +259,6 @@ ehr/resources/queries/ehr_lookups/snomed_subsets/.qview.xml -text
 ehr/resources/queries/ehr_lookups/snomed_subsets_old.sql -text
 ehr/resources/queries/ehr_lookups/treatment_codes.query.xml -text
 ehr/resources/queries/ehr_lookups/yearMonth.sql -text
-ehr/resources/queries/lists/protocol_counts.js -text
 ehr/resources/queries/pipeline/lastStudyUpload.sql -text
 ehr/resources/queries/study/ActiveAssignments.query.xml -text
 ehr/resources/queries/study/ActiveAssignments.sql -text
@@ -548,7 +545,6 @@ ehr/resources/queries/study/clinpathRunsParent.sql -text
 ehr/resources/queries/study/colonyAssignmentSummary.query.xml -text
 ehr/resources/queries/study/colonyAssignmentSummary.sql -text
 ehr/resources/queries/study/colonyAssignmentSummary/.qview.xml -text
-ehr/resources/queries/study/colonyAssignmentSummary2/.qview.xml -text
 ehr/resources/queries/study/colonyAssignmentSummary_old.query.xml -text
 ehr/resources/queries/study/colonyAssignmentSummary_old.sql -text
 ehr/resources/queries/study/colonyAssignmentSummary_old/.qview.xml -text
