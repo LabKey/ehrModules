@@ -4,6 +4,89 @@
  * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
  */
 
+
+--
+DELETE FROM ehr_lookups.snomed_qualifiers where qualifier in (
+'right cranial lobe',
+'right middle lobe',
+'right caudal lobe',
+'left cranial lobe',
+'left middle lobe',
+'left caudal lobe',
+'accessory lobe'
+);
+
+INSERT into ehr_lookups.snomed_qualifiers (qualifier) VALUES
+('right cranial lobe'),
+('right middle lobe'),
+('right caudal lobe'),
+('left cranial lobe'),
+('left middle lobe'),
+('left caudal lobe'),
+('accessory lobe')
+;
+
+
+--drop/recreate table
+DROP TABLE IF EXISTS ehr_lookups.clinpath_tests;
+CREATE TABLE ehr_lookups.clinpath_tests (
+testName varchar(255) NOT NULL,
+units varchar(20) NOT NULL,
+dataset varchar(200),
+
+CONSTRAINT PK_testName PRIMARY KEY (testname)
+)
+WITH (OIDS=FALSE)
+
+;
+
+
+INSERT INTO ehr_lookups.clinpath_tests
+(testname, dataset) VALUES
+('ELISA - HBV', 'Virology'),
+('ELISA - SRV', 'Virology'),
+('ELISA - SIV', 'Virology'),
+('ELISA - STLV-1', 'Virology'),
+('ELISA - Measles', 'Virology'),
+('PCR - STLV-1', 'Virology'),
+('PCR - SRV 1,2,3,4,5', 'Virology'),
+('Isolation - HBV', 'Virology'),
+('CBC', 'Hematology'),
+('Glycosylated Hemoglobin', 'Hematology'),
+('Vet-19 Chem Panel', 'Chemistry'),
+('Lipid Panel', 'Chemistry'),
+('Prothrombin Time (PT) and Activated Partial Thromboplastin Time (APTT)', 'Chemistry'),
+('Ova and Parasite Antigen Panel (EIA)', 'Parasitology'),
+('Ova and Parasite Concentration (Fecal Float)', 'Parasitology'),
+('Ova and Parasite Wet Prep', 'Parasitology'),
+('Direct Smear for Protozoa', 'Parasitology'),
+('Culture, Enteric', 'Bacteriology'),
+('Culture, Bacterial/Smear', 'Bacteriology'),
+('Culture, Fungus, Dermal/Smear', 'Bacteriology'),
+('Culture, Sterile Fluid/Tissue/Smear', 'Bacteriology'),
+('Culture, Urine', 'Bacteriology'),
+('Culture, Wound/Smear', 'Bacteriology'),
+('Culture, Other', 'Bacteriology'),
+('Chlamydia trachomatis Detection by NAA', 'Bacteriology'),
+('GIFN for TB detection', 'Bacteriology'),
+('Occult Blood', 'Parasitology'),
+('Mycobacteria Smear and Culture', 'Bacteriology'),
+('PCR - Individual Bacterium', 'Bacteriology'),
+('Chol/HDL Ratio', 'Chemistry'),
+('Osmolarity', 'Chemistry')
+;
+
+alter table ehr_lookups.clinpath_tests
+  add column alertOnAbnormal bool default false,
+  add column alertOnComplete bool default false
+;
+
+
+
+--
+
+
+
 alter table ehr_lookups.lab_tests
   add column alertOnAbnormal bool default true,
   add column categories varchar(200),
