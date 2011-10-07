@@ -19,7 +19,7 @@ function onUpsert(context, errors, row, oldRow){
 function setDescription(row, errors){
     //we need to set description for every field
     var description = new Array();
-console.log('createdby: '+row.createdby);
+
     var createdby = row.createdby || LABKEY.Security.currentUser.id;
 
     if (createdby)
@@ -28,6 +28,8 @@ console.log('createdby: '+row.createdby);
         description.push('Notify 1: '+ EHR.utils.findPrincipalName(row.notify1));
     if (row.notify2)
         description.push('Notify 2: '+ EHR.utils.findPrincipalName(row.notify2));
+    if (row.notify3)
+        description.push('Notify 3: '+ EHR.utils.findPrincipalName(row.notify3));
 
     return description;
 }

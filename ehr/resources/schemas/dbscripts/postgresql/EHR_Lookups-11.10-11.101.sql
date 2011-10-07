@@ -2703,8 +2703,8 @@ test varchar(255) ,
 species varchar(255) ,
 gender varchar(255) ,
 age_class int2 DEFAULT NULL,
-ref_range_min numeric(255),
-ref_range_max numeric(255),
+ref_range_min double precision,
+ref_range_max double precision,
 RowId serial NOT NULL,
 
 CONSTRAINT PK_lab_test_range PRIMARY KEY (rowid)

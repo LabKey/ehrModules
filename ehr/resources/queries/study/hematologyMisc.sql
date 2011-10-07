@@ -15,5 +15,7 @@ SELECT
   b.taskid
 FROM study."Hematology Results" b
 
-WHERE b.testId NOT IN ('WBC', 'RBC', 'HGB', 'HCT', 'MCV', 'MCH', 'MCHC', 'RDW', 'PLT', 'MPV', 'PCV', 'NE', 'LY', 'MN', 'EO', 'BS', 'BANDS', 'METAMYELO', 'MYELO', 'TP', 'RETICULO', 'PRO MYELO', 'ATYL LYMPH', 'OTHER')
+WHERE (
+b.testId NOT IN ('WBC', 'RBC', 'HGB', 'HCT', 'MCV', 'MCH', 'MCHC', 'RDW', 'PLT', 'MPV', 'PCV', 'NE', 'LY', 'MN', 'EO', 'BS', 'BANDS', 'METAMYELO', 'MYELO', 'TP', 'RETICULO', 'PRO MYELO', 'ATYP', 'OTHER')
 or b.testid is null
+ )

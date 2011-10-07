@@ -37,27 +37,27 @@ FROM col_dump.bacteriologyresults_mysql
 
 UNION ALL
 
-SELECT
-id,
-date,
-ts,
-objectid AS LabKeyUUID,
-'bactruns' as type,
-key2 AS mySQL_UUID
-FROM col_dump.bacteriologyruns_mysql
+-- SELECT
+-- id,
+-- date,
+-- ts,
+-- objectid AS LabKeyUUID,
+-- 'bactruns' as type,
+-- key2 AS mySQL_UUID
+-- FROM col_dump.bacteriologyruns_mysql
+--
+-- UNION ALL
 
-UNION ALL
-
-SELECT
-id,
-date,
-ts,
-objectid AS LabKeyUUID,
-'behave' as type,
-key2 AS mySQL_UUID
-FROM col_dump.behavetrem_mysql
-
-UNION ALL
+-- SELECT
+-- id,
+-- date,
+-- ts,
+-- objectid AS LabKeyUUID,
+-- 'behave' as type,
+-- key2 AS mySQL_UUID
+-- FROM col_dump.behavetrem_mysql
+--
+-- UNION ALL
 
 SELECT
 id,
@@ -112,29 +112,29 @@ FROM col_dump.blood_mysql
 -- key2 AS mySQL_UUID
 -- FROM col_dump.cage_mysql
 
-UNION ALL
+-- UNION ALL
+--
+-- SELECT
+-- null as id,
+-- null as date,
+-- ts,
+-- objectid AS LabKeyUUID,
+-- 'cageclass' as type,
+-- key2 AS mySQL_UUID
+-- FROM col_dump.cageclass_mysql
 
-SELECT
-null as id,
-null as date,
-ts,
-objectid AS LabKeyUUID,
-'cageclass' as type,
-key2 AS mySQL_UUID
-FROM col_dump.cageclass_mysql
+-- UNION ALL
+--
+-- SELECT
+-- null as id,
+-- date,
+-- ts,
+-- objectid AS LabKeyUUID,
+-- 'cagenotes' as type,
+-- key2 AS mySQL_UUID
+-- FROM col_dump.cagenotes_mysql
 
-UNION ALL
-
-SELECT
-null as id,
-date,
-ts,
-objectid AS LabKeyUUID,
-'cagenotes' as type,
-key2 AS mySQL_UUID
-FROM col_dump.cagenotes_mysql
-
-UNION ALL
+-- UNION ALL
 
 -- SELECT
 -- null as id,
@@ -146,15 +146,15 @@ UNION ALL
 -- FROM col_dump.cageobservations_mysql
 --
 -- UNION ALL
-
-SELECT
-null as id,
-date,
-ts,
-objectid AS LabKeyUUID,
-'clinpathRuns' as type,
-key2 AS mySQL_UUID
-FROM col_dump.clinpath_runs_mysql
+--
+-- SELECT
+-- null as id,
+-- date,
+-- ts,
+-- objectid AS LabKeyUUID,
+-- 'clinpathRuns' as type,
+-- key2 AS mySQL_UUID
+-- FROM col_dump.clinpath_runs_mysql
 
 UNION ALL
 
@@ -167,27 +167,27 @@ objectid AS LabKeyUUID,
 key2 AS mySQL_UUID
 FROM col_dump.chemistryresults_mysql
 
-UNION ALL
+-- UNION ALL
+--
+-- SELECT
+-- id,
+-- date,
+-- ts,
+-- objectid AS LabKeyUUID,
+-- 'chemruns' as type,
+-- key2 AS mySQL_UUID
+-- FROM col_dump.chemistryruns_mysql
 
-SELECT
-id,
-date,
-ts,
-objectid AS LabKeyUUID,
-'chemruns' as type,
-key2 AS mySQL_UUID
-FROM col_dump.chemistryruns_mysql
-
-UNION ALL
-
-SELECT
-null as id,
-null as date,
-ts,
-objectid AS LabKeyUUID,
-'chemnorm' as type,
-key2 AS mySQL_UUID
-FROM col_dump.chemnorm_mysql
+-- UNION ALL
+--
+-- SELECT
+-- null as id,
+-- null as date,
+-- ts,
+-- objectid AS LabKeyUUID,
+-- 'chemnorm' as type,
+-- key2 AS mySQL_UUID
+-- FROM col_dump.chemnorm_mysql
 
 UNION ALL
 
@@ -202,16 +202,16 @@ FROM col_dump.clinremarks_mysql
 
 UNION ALL
 
-SELECT
-id,
-date,
-ts,
-objectid AS LabKeyUUID,
-'demographics' as type,
-key2 AS mySQL_UUID
-FROM col_dump.demographics_mysql
-
-UNION ALL
+-- SELECT
+-- id,
+-- date,
+-- ts,
+-- objectid AS LabKeyUUID,
+-- 'demographics' as type,
+-- key2 AS mySQL_UUID
+-- FROM col_dump.demographics_mysql
+--
+-- UNION ALL
 
 SELECT
 id,
@@ -235,16 +235,16 @@ FROM col_dump.drug_mysql
 
 UNION ALL
 
-SELECT
-id,
-date,
-ts,
-objectid AS LabKeyUUID,
-'hemamorph' as type,
-key2 AS mySQL_UUID
-FROM col_dump.hematologymorphology_mysql
-
-UNION ALL
+-- SELECT
+-- id,
+-- date,
+-- ts,
+-- objectid AS LabKeyUUID,
+-- 'hemamorph' as type,
+-- key2 AS mySQL_UUID
+-- FROM col_dump.hematologymorphology_mysql
+--
+-- UNION ALL
 
 SELECT
 id,
@@ -257,14 +257,14 @@ FROM col_dump.hematologyresults_mysql
 
 UNION ALL
 
-SELECT
-id,
-date,
-ts,
-objectid AS LabKeyUUID,
-'hemaruns' as type,
-key2 AS mySQL_UUID
-FROM col_dump.hematologyruns_mysql
+-- SELECT
+-- id,
+-- date,
+-- ts,
+-- objectid AS LabKeyUUID,
+-- 'hemaruns' as type,
+-- key2 AS mySQL_UUID
+-- FROM col_dump.hematologyruns_mysql
 
 -- UNION ALL
 --
@@ -277,7 +277,7 @@ FROM col_dump.hematologyruns_mysql
 -- key2 AS mySQL_UUID
 -- FROM col_dump.hold_mysql
 
-UNION ALL
+-- UNION ALL
 
 SELECT
 id,
@@ -301,16 +301,16 @@ FROM col_dump.immunologyresults_mysql
 
 UNION ALL
 
-SELECT
-id,
-date,
-ts,
-objectid AS LabKeyUUID,
-'immunoruns' as type,
-key2 AS mySQL_UUID
-FROM col_dump.immunologyruns_mysql
-
-UNION ALL
+-- SELECT
+-- id,
+-- date,
+-- ts,
+-- objectid AS LabKeyUUID,
+-- 'immunoruns' as type,
+-- key2 AS mySQL_UUID
+-- FROM col_dump.immunologyruns_mysql
+--
+-- UNION ALL
 
 SELECT
 id,
@@ -334,27 +334,27 @@ UNION ALL
 --
 -- UNION ALL
 
-SELECT
-null as id,
-null as date,
-ts,
-objectid AS LabKeyUUID,
-'newsnomed' as type,
-key2 AS mySQL_UUID
-FROM col_dump.newsnomed_mysql
+-- SELECT
+-- null as id,
+-- null as date,
+-- ts,
+-- objectid AS LabKeyUUID,
+-- 'newsnomed' as type,
+-- key2 AS mySQL_UUID
+-- FROM col_dump.newsnomed_mysql
 
-UNION ALL
+-- UNION ALL
+--
+-- SELECT
+-- id,
+-- date,
+-- ts,
+-- objectid AS LabKeyUUID,
+-- 'obs' as type,
+-- key2 AS mySQL_UUID
+-- FROM col_dump.obs_mysql
 
-SELECT
-id,
-date,
-ts,
-objectid AS LabKeyUUID,
-'obs' as type,
-key2 AS mySQL_UUID
-FROM col_dump.obs_mysql
-
-UNION ALL
+-- UNION ALL
 
 SELECT
 id,
@@ -366,28 +366,28 @@ key2 AS mySQL_UUID
 FROM col_dump.parasitologyresults_mysql
 
 UNION ALL
+--
+-- SELECT
+-- id,
+-- date,
+-- ts,
+-- objectid AS LabKeyUUID,
+-- 'parasitologyruns' as type,
+-- key2 AS mySQL_UUID
+-- FROM col_dump.parasitologyruns_mysql
 
-SELECT
-id,
-date,
-ts,
-objectid AS LabKeyUUID,
-'parasitologyruns' as type,
-key2 AS mySQL_UUID
-FROM col_dump.parasitologyruns_mysql
+-- UNION ALL
+--
+-- SELECT
+-- null as id,
+-- null as date,
+-- ts,
+-- objectid AS LabKeyUUID,
+-- 'perdiem' as type,
+-- key2 AS mySQL_UUID
+-- FROM col_dump.perdiemrates_mysql
 
-UNION ALL
-
-SELECT
-null as id,
-null as date,
-ts,
-objectid AS LabKeyUUID,
-'perdiem' as type,
-key2 AS mySQL_UUID
-FROM col_dump.perdiemrates_mysql
-
-UNION ALL
+-- UNION ALL
 
 SELECT
 id,
@@ -399,39 +399,39 @@ key2 AS mySQL_UUID
 FROM col_dump.prenatal_mysql
 
 UNION ALL
+--
+-- SELECT
+-- id,
+-- date,
+-- ts,
+-- objectid AS LabKeyUUID,
+-- 'problem' as type,
+-- key2 AS mySQL_UUID
+-- FROM col_dump.problem_mysql
 
-SELECT
-id,
-date,
-ts,
-objectid AS LabKeyUUID,
-'problem' as type,
-key2 AS mySQL_UUID
-FROM col_dump.problem_mysql
+-- UNION ALL
+--
+-- SELECT
+-- id,
+-- date,
+-- ts,
+-- objectid AS LabKeyUUID,
+-- 'procedures' as type,
+-- key2 AS mySQL_UUID
+-- FROM col_dump.procedures_mysql
 
-UNION ALL
+-- UNION ALL
 
-SELECT
-id,
-date,
-ts,
-objectid AS LabKeyUUID,
-'procedures' as type,
-key2 AS mySQL_UUID
-FROM col_dump.procedures_mysql
-
-UNION ALL
-
-SELECT
-null as id,
-null as date,
-ts,
-objectid AS LabKeyUUID,
-'project' as type,
-key2 AS mySQL_UUID
-FROM col_dump.project_mysql
-
-UNION ALL
+-- SELECT
+-- null as id,
+-- null as date,
+-- ts,
+-- objectid AS LabKeyUUID,
+-- 'project' as type,
+-- key2 AS mySQL_UUID
+-- FROM col_dump.project_mysql
+--
+-- UNION ALL
 
 -- SELECT
 -- null as id,
@@ -444,16 +444,16 @@ UNION ALL
 --
 -- UNION ALL
 
-SELECT
-null as id,
-null as date,
-ts,
-objectid AS LabKeyUUID,
-'protocol' as type,
-key2 AS mySQL_UUID
-FROM col_dump.protocol_mysql
-
-UNION ALL
+-- SELECT
+-- null as id,
+-- null as date,
+-- ts,
+-- objectid AS LabKeyUUID,
+-- 'protocol' as type,
+-- key2 AS mySQL_UUID
+-- FROM col_dump.protocol_mysql
+--
+-- UNION ALL
 
 -- SELECT
 -- null as id,
@@ -466,15 +466,15 @@ UNION ALL
 --
 -- UNION ALL
 
-SELECT
-null as id,
-null as date,
-ts,
-objectid AS LabKeyUUID,
-'rhesaux' as type,
-key2 AS mySQL_UUID
-FROM col_dump.rhesaux_mysql
-
+-- SELECT
+-- null as id,
+-- null as date,
+-- ts,
+-- objectid AS LabKeyUUID,
+-- 'rhesaux' as type,
+-- key2 AS mySQL_UUID
+-- FROM col_dump.rhesaux_mysql
+--
 -- UNION ALL
 --
 -- SELECT
@@ -486,7 +486,7 @@ FROM col_dump.rhesaux_mysql
 -- key2 AS mySQL_UUID
 -- FROM col_dump.snomap_mysql
 
-UNION ALL
+-- UNION ALL
 
 -- SELECT
 -- null as id,
@@ -521,16 +521,16 @@ FROM col_dump.tb_mysql
 
 UNION ALL
 
-SELECT
-id,
-date,
-ts,
-objectid AS LabKeyUUID,
-'tissue_requests' as type,
-key2 AS mySQL_UUID
-FROM col_dump.tissue_requests_mysql
-
-UNION ALL
+-- SELECT
+-- id,
+-- date,
+-- ts,
+-- objectid AS LabKeyUUID,
+-- 'tissue_requests' as type,
+-- key2 AS mySQL_UUID
+-- FROM col_dump.tissue_requests_mysql
+--
+-- UNION ALL
 
 SELECT
 id,
@@ -554,16 +554,16 @@ FROM col_dump.urinalysisresults_mysql
 
 UNION ALL
 
-SELECT
-id,
-date,
-ts,
-objectid AS LabKeyUUID,
-'urinalysisruns' as type,
-key2 AS mySQL_UUID
-FROM col_dump.urinalysisruns_mysql
-
-UNION ALL
+-- SELECT
+-- id,
+-- date,
+-- ts,
+-- objectid AS LabKeyUUID,
+-- 'urinalysisruns' as type,
+-- key2 AS mySQL_UUID
+-- FROM col_dump.urinalysisruns_mysql
+--
+-- UNION ALL
 
 SELECT
 id,
@@ -574,17 +574,17 @@ objectid AS LabKeyUUID,
 key2 AS mySQL_UUID
 FROM col_dump.virologyresults_mysql
 
-UNION ALL
+-- UNION ALL
 
-SELECT
-id,
-date,
-ts,
-objectid AS LabKeyUUID,
-'virologyruns' as type,
-key2 AS mySQL_UUID
-FROM col_dump.virologyruns_mysql
-
+-- SELECT
+-- id,
+-- date,
+-- ts,
+-- objectid AS LabKeyUUID,
+-- 'virologyruns' as type,
+-- key2 AS mySQL_UUID
+-- FROM col_dump.virologyruns_mysql
+--
 UNION ALL
 
 SELECT
@@ -597,57 +597,57 @@ key2 AS mySQL_UUID
 FROM col_dump.weight_mysql
 
 
-UNION ALL
+-- UNION ALL
+--
+-- SELECT
+-- null as id,
+-- null as date,
+-- ts,
+-- objectid AS LabKeyUUID,
+-- 'snomap_list' as type,
+-- key2 AS mySQL_UUID
+-- FROM col_dump.snomap_list
 
-SELECT
-null as id,
-null as date,
-ts,
-objectid AS LabKeyUUID,
-'snomap_list' as type,
-key2 AS mySQL_UUID
-FROM col_dump.snomap_list
+-- UNION ALL
+--
+-- SELECT
+-- code as id,
+-- null as date,
+-- ts,
+-- code AS LabKeyUUID,
+-- 'snomed_list' as type,
+-- key2 AS mySQL_UUID
+-- FROM col_dump.snomed_list
 
-UNION ALL
+-- UNION ALL
+--
+-- SELECT
+-- code as id,
+-- null as date,
+-- ts,
+-- code AS LabKeyUUID,
+-- 'full_snomed_list' as type,
+-- key2 AS mySQL_UUID
+-- FROM col_dump.full_snomed_list
 
-SELECT
-code as id,
-null as date,
-ts,
-code AS LabKeyUUID,
-'snomed_list' as type,
-key2 AS mySQL_UUID
-FROM col_dump.snomed_list
+-- UNION ALL
+--
+-- SELECT
+-- cast(project as varchar) as id,
+-- null as date,
+-- ts,
+-- cast(project as varchar) AS LabKeyUUID,
+-- 'project_list' as type,
+-- cast(key2 as varchar) AS mySQL_UUID
+-- FROM col_dump.project_list
 
-UNION ALL
-
-SELECT
-code as id,
-null as date,
-ts,
-code AS LabKeyUUID,
-'full_snomed_list' as type,
-key2 AS mySQL_UUID
-FROM col_dump.full_snomed_list
-
-UNION ALL
-
-SELECT
-cast(project as varchar) as id,
-null as date,
-ts,
-project AS LabKeyUUID,
-'project_list' as type,
-key2 AS mySQL_UUID
-FROM col_dump.project_list
-
-UNION ALL
-
-SELECT
-protocol as id,
-null as date,
-ts,
-protocol AS LabKeyUUID,
-'protocol_list' as type,
-key2 AS mySQL_UUID
-FROM col_dump.protocol_list
+-- UNION ALL
+--
+-- SELECT
+-- protocol as id,
+-- null as date,
+-- ts,
+-- protocol AS LabKeyUUID,
+-- 'protocol_list' as type,
+-- key2 AS mySQL_UUID
+-- FROM col_dump.protocol_list

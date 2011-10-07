@@ -113,6 +113,10 @@
     </ns:columns>
   </ns:table>
   <ns:table tableName="client_errors" tableDbType="TABLE">
+    <ns:importUrl></ns:importUrl>
+    <ns:insertUrl></ns:insertUrl>
+    <ns:updateUrl></ns:updateUrl>
+    <ns:deleteUrl></ns:deleteUrl>
     <ns:pkColumnName>rowid</ns:pkColumnName>
     <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr&amp;query.queryName=client_errors&amp;rowid=${rowid}</ns:tableUrl>
     <ns:columns>
@@ -179,6 +183,10 @@
     </ns:columns>
   </ns:table>
   <ns:table tableName="snomed_tags" tableDbType="TABLE">
+    <ns:importUrl></ns:importUrl>
+    <ns:insertUrl></ns:insertUrl>
+    <ns:updateUrl></ns:updateUrl>
+    <ns:deleteUrl></ns:deleteUrl>
     <ns:pkColumnName>rowid</ns:pkColumnName>
     <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr&amp;query.queryName=snomed_tags&amp;rowid=${rowid}</ns:tableUrl>
     <ns:columns>
@@ -387,6 +395,17 @@
         </ns:fk>
         <ns:scale>50</ns:scale>
       </ns:column>
+      <ns:column columnName="notify3">
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>integer</ns:datatype>
+        <ns:fk>
+            <!--<ns:fkFolderPath>/wnprc/ehr/</ns:fkFolderPath>-->
+            <ns:fkDbSchema>core</ns:fkDbSchema>
+            <ns:fkTable>PrincipalsWithoutAdmin</ns:fkTable>
+            <ns:fkColumnName>userid</ns:fkColumnName>
+        </ns:fk>
+        <ns:scale>50</ns:scale>
+      </ns:column>
       <ns:column columnName="pi">
         <ns:nullable>true</ns:nullable>
         <ns:datatype>varchar</ns:datatype>
@@ -479,6 +498,10 @@
     </ns:columns>
   </ns:table>
   <ns:table tableName="reports" tableDbType="TABLE">
+    <ns:importUrl></ns:importUrl>
+    <ns:insertUrl></ns:insertUrl>
+    <ns:updateUrl></ns:updateUrl>
+    <ns:deleteUrl></ns:deleteUrl>
     <ns:pkColumnName>rowid</ns:pkColumnName>
     <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr&amp;query.queryName=reports&amp;rowid=${rowid}</ns:tableUrl>
     <ns:columns>
@@ -623,6 +646,10 @@
     </ns:columns>
   </ns:table>
   <ns:table tableName="cage_observations" tableDbType="TABLE">
+    <ns:importUrl></ns:importUrl>
+    <ns:insertUrl></ns:insertUrl>
+    <ns:updateUrl></ns:updateUrl>
+    <ns:deleteUrl></ns:deleteUrl>
     <ns:tableTitle>Cage Observations</ns:tableTitle>
     <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr&amp;query.queryName=cage_observations&amp;rowid=${rowid}</ns:tableUrl>
     <ns:columns>
@@ -857,12 +884,17 @@
 
 
 <ns:table tableName="formtemplates" tableDbType="TABLE">
+    <ns:importUrl></ns:importUrl>
+    <ns:insertUrl></ns:insertUrl>
+    <ns:updateUrl></ns:updateUrl>
+    <ns:deleteUrl></ns:deleteUrl>
     <ns:pkColumnName>entityid</ns:pkColumnName>
     <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr&amp;query.queryName=formtemplates&amp;entityid=${entityid}</ns:tableUrl>
     <ns:columns>
       <ns:column columnName="entityid">
         <ns:datatype>entityid</ns:datatype>
         <!--<ns:isAutoInc>true</ns:isAutoInc>-->
+        <ns:isKeyField>true</ns:isKeyField>
         <ns:scale>50</ns:scale>
       </ns:column>
       <ns:column columnName="formtype">
@@ -930,6 +962,10 @@
     </ns:columns>
   </ns:table>
   <ns:table tableName="notificationrecipients" tableDbType="TABLE">
+    <ns:importUrl></ns:importUrl>
+    <ns:insertUrl></ns:insertUrl>
+    <ns:updateUrl></ns:updateUrl>
+    <ns:deleteUrl></ns:deleteUrl>
     <ns:pkColumnName>rowid</ns:pkColumnName>
     <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr&amp;query.queryName=notificationrecipients&amp;rowid=${rowid}</ns:tableUrl>
     <ns:columns>
@@ -951,7 +987,7 @@
           </ns:fk>
       </ns:column>
       <ns:column columnName="recipient">
-        <ns:datatype>varchar</ns:datatype>
+        <ns:datatype>integer</ns:datatype>
         <ns:scale>100</ns:scale>
           <ns:fk>
             <ns:fkDbSchema>core</ns:fkDbSchema>
@@ -1001,6 +1037,10 @@
     </ns:columns>
   </ns:table>
   <ns:table tableName="formpanelsections" tableDbType="TABLE">
+    <ns:importUrl></ns:importUrl>
+    <ns:insertUrl></ns:insertUrl>
+    <ns:updateUrl></ns:updateUrl>
+    <ns:deleteUrl></ns:deleteUrl>
     <ns:pkColumnName>rowid</ns:pkColumnName>
     <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr&amp;query.queryName=formpanelsections&amp;rowid=${rowid}</ns:tableUrl>
     <ns:columns>
@@ -1108,12 +1148,17 @@
     </ns:columns>
   </ns:table>
   <ns:table tableName="formtemplaterecords" tableDbType="TABLE">
+    <ns:importUrl></ns:importUrl>
+    <ns:insertUrl></ns:insertUrl>
+    <ns:updateUrl></ns:updateUrl>
+    <ns:deleteUrl></ns:deleteUrl>
     <ns:pkColumnName>rowid</ns:pkColumnName>
     <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr&amp;query.queryName=formtemplaterecords&amp;rowid=${rowid}</ns:tableUrl>
     <ns:columns>
       <ns:column columnName="rowid">
         <ns:datatype>serial</ns:datatype>
         <ns:isAutoInc>true</ns:isAutoInc>
+        <ns:isKeyField>true</ns:isKeyField>
         <ns:scale>10</ns:scale>
       </ns:column>
       <ns:column columnName="templateid">
@@ -1176,6 +1221,10 @@
     </ns:columns>
   </ns:table>
   <ns:table tableName="notificationtypes" tableDbType="TABLE">
+    <ns:importUrl></ns:importUrl>
+    <ns:insertUrl></ns:insertUrl>
+    <ns:updateUrl></ns:updateUrl>
+    <ns:deleteUrl></ns:deleteUrl>
     <ns:pkColumnName>notificationtype</ns:pkColumnName>
     <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr&amp;query.queryName=notificationtypes&amp;notificationtype=${notificationtype}</ns:tableUrl>
     <ns:columns>
@@ -1191,6 +1240,10 @@
     </ns:columns>
   </ns:table>
   <ns:table tableName="formtypes" tableDbType="TABLE">
+    <ns:importUrl></ns:importUrl>
+    <ns:insertUrl></ns:insertUrl>
+    <ns:updateUrl></ns:updateUrl>
+    <ns:deleteUrl></ns:deleteUrl>
     <ns:pkColumnName>rowid</ns:pkColumnName>
     <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr&amp;query.queryName=formtypes&amp;rowid=${rowid}</ns:tableUrl>
     <ns:columns>
@@ -1266,6 +1319,10 @@
     </ns:columns>
   </ns:table>
   <ns:table tableName="protocol" tableDbType="TABLE">
+    <ns:importUrl></ns:importUrl>
+    <ns:insertUrl></ns:insertUrl>
+    <ns:updateUrl></ns:updateUrl>
+    <ns:deleteUrl></ns:deleteUrl>
     <ns:pkColumnName>protocol</ns:pkColumnName>
     <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr&amp;query.queryName=protocol&amp;protocol=${protocol}</ns:tableUrl>
     <ns:columns>
@@ -1287,6 +1344,10 @@
         <ns:nullable>true</ns:nullable>
         <ns:datatype>text</ns:datatype>
         <ns:scale>32767</ns:scale>
+      </ns:column>
+      <ns:column columnName="maxAnimals">
+        <ns:datatype>integer</ns:datatype>
+        <ns:scale>60</ns:scale>
       </ns:column>
       <!--<ns:column columnName="container">-->
         <!--<ns:isUserEditable>false</ns:isUserEditable>-->
@@ -1330,6 +1391,10 @@
     </ns:columns>
   </ns:table>
   <ns:table tableName="project" tableDbType="TABLE">
+    <ns:importUrl></ns:importUrl>
+    <ns:insertUrl></ns:insertUrl>
+    <ns:updateUrl></ns:updateUrl>
+    <ns:deleteUrl></ns:deleteUrl>
     <ns:pkColumnName>project</ns:pkColumnName>
     <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr&amp;query.queryName=projects&amp;project=${project}</ns:tableUrl>
     <ns:columns>
@@ -1428,6 +1493,10 @@
     </ns:columns>
   </ns:table>
   <ns:table tableName="protocol_counts" tableDbType="TABLE">
+    <ns:importUrl></ns:importUrl>
+    <ns:insertUrl></ns:insertUrl>
+    <ns:updateUrl></ns:updateUrl>
+    <ns:deleteUrl></ns:deleteUrl>
     <ns:pkColumnName>rowid</ns:pkColumnName>
     <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr&amp;query.queryName=protocol_counts&amp;rowid=${rowid}</ns:tableUrl>
     <ns:columns>
@@ -1517,6 +1586,10 @@
     <!--</ns:columns>-->
   <!--</ns:table>-->
     <ns:table tableName="qcStateMetadata" tableDbType="TABLE">
+    <ns:importUrl></ns:importUrl>
+    <ns:insertUrl></ns:insertUrl>
+    <ns:updateUrl></ns:updateUrl>
+    <ns:deleteUrl></ns:deleteUrl>
       <ns:pkColumnName>QCStateLabel</ns:pkColumnName>
       <ns:columns>
         <ns:column columnName="QCStateLabel">
@@ -1546,6 +1619,10 @@
       </ns:columns>
     </ns:table>
   <ns:table tableName="animal_groups" tableDbType="TABLE">
+    <ns:importUrl></ns:importUrl>
+    <ns:insertUrl></ns:insertUrl>
+    <ns:updateUrl></ns:updateUrl>
+    <ns:deleteUrl></ns:deleteUrl>
     <ns:pkColumnName>rowid</ns:pkColumnName>
     <ns:columns>
       <ns:column columnName="rowid">
@@ -1600,6 +1677,10 @@
     </ns:columns>
   </ns:table>
   <ns:table tableName="supplemental_pedigree" tableDbType="TABLE">
+    <ns:importUrl></ns:importUrl>
+    <ns:insertUrl></ns:insertUrl>
+    <ns:updateUrl></ns:updateUrl>
+    <ns:deleteUrl></ns:deleteUrl>
     <ns:pkColumnName>rowid</ns:pkColumnName>
     <ns:columns>
       <ns:column columnName="rowid">
@@ -1757,6 +1838,10 @@
     </ns:columns>
   </ns:table>
   <ns:table tableName="kinship" tableDbType="TABLE">
+    <ns:importUrl></ns:importUrl>
+    <ns:insertUrl></ns:insertUrl>
+    <ns:updateUrl></ns:updateUrl>
+    <ns:deleteUrl></ns:deleteUrl>
     <ns:pkColumnName>rowid</ns:pkColumnName>
     <ns:columns>
       <ns:column columnName="rowid">
@@ -1822,6 +1907,10 @@
     </ns:columns>
   </ns:table>
   <ns:table tableName="protocolProcedures" tableDbType="TABLE">
+    <ns:importUrl></ns:importUrl>
+    <ns:insertUrl></ns:insertUrl>
+    <ns:updateUrl></ns:updateUrl>
+    <ns:deleteUrl></ns:deleteUrl>
     <ns:pkColumnName>rowid</ns:pkColumnName>
     <ns:columns>
       <ns:column columnName="rowid">

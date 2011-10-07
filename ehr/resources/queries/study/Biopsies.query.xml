@@ -9,6 +9,7 @@
                 <importUrl />
                 <updateUrl />
                 <deleteUrl />
+                <titleColumn>caseno</titleColumn>
                 <columns>
                     <column columnName="caseno">
                         <nullable>true</nullable>

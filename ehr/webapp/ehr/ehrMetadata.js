@@ -14,6 +14,8 @@ Ext.ns('EHR.ext.Metadata');
  noSaveInTemplateByDefault
  allowSaveInTemplate
 
+updateValueFromServer
+
  ignoreColWidths
  defaultValue
  colModel = {}
@@ -88,6 +90,7 @@ EHR.ext.Metadata.Standard = {
         },
         'id/curlocation/location': {
             hidden: true,
+            updateValueFromServer: true,
             allowBlank: true,
             nullable: true,
             shownInGrid: true,
@@ -102,6 +105,7 @@ EHR.ext.Metadata.Standard = {
         }
         ,'id/numroommates/cagemates': {
             hidden: true,
+            updateValueFromServer: true,
             allowBlank: true,
             nullable: true,
             shownInGrid: true,
@@ -127,7 +131,8 @@ EHR.ext.Metadata.Standard = {
             editorConfig: {
                 dateFormat: 'Y-m-d',
                 otherToNow: true,
-                timeFormat: 'H:i'
+                timeFormat: 'H:i',
+                plugins: ['ehr-participantfield-events']
             },
             xtype: 'xdatetime',
             colModel: {
@@ -245,6 +250,10 @@ EHR.ext.Metadata.Standard = {
             xtype: 'ehr-snomedcombo',
             editorConfig: {
                 defaultSubset: 'Organ/Tissue'
+            },
+            colModel: {
+                width: 150,
+                showLink: false
             }
         }
         ,performedby: {
@@ -440,6 +449,12 @@ EHR.ext.Metadata.Standard = {
                 }
             }
         },
+        'Final Reports': {
+            remark: {
+                height: 400,
+                width: 600
+            }
+        },
         requests: {
             requestid: {
                 setInitialValue: function(v, rec)
@@ -461,6 +476,13 @@ EHR.ext.Metadata.Standard = {
                 listWidth: 250
             },
             notify2: {
+                lookup: {
+                    sort: 'type,name',
+                    filterArray: [LABKEY.Filter.create('name', 'Administrators', LABKEY.Filter.Types.NOT_EQUAL)]
+                },
+                listWidth: 250
+            },
+            notify3: {
                 lookup: {
                     sort: 'type,name',
                     filterArray: [LABKEY.Filter.create('name', 'Administrators', LABKEY.Filter.Types.NOT_EQUAL)]
@@ -637,7 +659,7 @@ EHR.ext.Metadata.Standard = {
                                 this.setValue(val);
                                 this.fireEvent('change', val)
                             },
-                            failure: EHR.onFailure
+                            failure: EHR.utils.onError
                         });
                     }
                     ,allowAnyId: true
@@ -651,6 +673,11 @@ EHR.ext.Metadata.Standard = {
             ,project: {hidden: true}
             ,performedby: {hidden: true}
             ,account: {hidden: true}
+            ,room: {
+                editorConfig: {
+                    plugins: ['ehr-usereditablecombo']
+                }
+            }
         },
         'Parasitology Results': {
             organism: {
@@ -681,6 +708,16 @@ EHR.ext.Metadata.Standard = {
                 editorConfig: {
                     plugins: ['ehr-usereditablecombo']
                 }
+            },
+            qualifier: {
+                editorConfig: {
+                    plugins: ['ehr-usereditablecombo']
+                }
+            },
+            container_type: {
+                editorConfig: {
+                    plugins: ['ehr-usereditablecombo']
+                }
             }
         },
         Histology: {
@@ -697,7 +734,30 @@ EHR.ext.Metadata.Standard = {
                 hidden: true
             },
             stain: {
-                defaultValue: 'Hematoxylin & Eosin'
+                defaultValue: 'Hematoxylin & Eosin',
+                editorConfig: {
+                    plugins: ['ehr-usereditablecombo']
+                }
+            },
+            pathologist: {
+                shownInGrid: false
+            },
+            pathology: {
+                shownInGrid: false
+            },
+            trimdate: {
+                shownInGrid: false
+            },
+            trim_remark: {
+                shownInGrid: false
+            },
+            trimmed_by: {
+                shownInGrid: false
+            },
+            qualifier: {
+                editorConfig: {
+                    plugins: ['ehr-usereditablecombo']
+                }
             }
         },
         Housing: {
@@ -749,6 +809,11 @@ EHR.ext.Metadata.Standard = {
             }
             ,project: {
                 hidden: true
+            }
+            ,room: {
+                editorConfig: {
+                    plugins: ['ehr-usereditablecombo']
+                }
             }
         },
         'Clinical Encounters': {
@@ -814,7 +879,12 @@ EHR.ext.Metadata.Standard = {
             },
             collectionMethod : {shownInGrid: false},
             //collectedBy : {shownInGrid: false},
-            //sampleType : {shownInGrid: false},
+            sampleType : {
+                //shownInGrid: false
+                editorConfig: {
+                    plugins: ['ehr-usereditablecombo']
+                }
+            },
             sampleId : {shownInGrid: false},
             sampleQuantity: {shownInGrid: false},
             quantityUnits : {shownInGrid: false},
@@ -854,6 +924,7 @@ EHR.ext.Metadata.Standard = {
             },
             type: {
                 showInGrid: false,
+                updateValueFromServer: true,
                 xtype: 'displayfield'
             },
             objectid: {
@@ -1021,7 +1092,7 @@ EHR.ext.Metadata.Standard = {
                 }
             }
             ,qualifier: {
-                shownInGrid: false
+                 shownInGrid: false
             }
             ,meaning: {
                 shownInGrid: false,
@@ -1087,7 +1158,11 @@ EHR.ext.Metadata.Standard = {
                 allowBlank: false,
                 xtype: 'combo',
                 lookup: {
-                    filterArray: [LABKEY.Filter.create('protocol/protocol', null, LABKEY.Filter.Types.NONBLANK)]
+                    filterArray: [LABKEY.Filter.create('protocol/protocol', null, LABKEY.Filter.Types.NONBLANK)],
+                    columns: 'project,protocol,account'
+                },
+                editorConfig: {
+                    plugins: ['ehr-participantfield-events']
                 }
             },
             date: {
@@ -1104,46 +1179,46 @@ EHR.ext.Metadata.Standard = {
                 height: 200,
                 width: 600
             },
-            perfusion_soln1: {
-//                xtype: 'lovcombo',
-                editorConfig: {
-                    plugins: ['ehr-usereditablecombo']
-                },
-                lookup: {
-                    schemaName: 'ehr_lookups',
-                    queryName: 'necropsy_perfusion',
-                    keyColumn: 'perfusion',
-                    displayColumn: 'perfusion'
-                }
-            },
-            perfusion_soln2: {
-//                xtype: 'lovcombo',
-                editorConfig: {
-                    plugins: ['ehr-usereditablecombo']
-                },
-                lookup: {
-                    schemaName: 'ehr_lookups',
-                    queryName: 'necropsy_perfusion',
-                    keyColumn: 'perfusion',
-                    displayColumn: 'perfusion'
-                }
-            },
-            perfusion_time1: {
-                xtype: 'xdatetime',
-                format: 'Y-m-d H:i',
-                editorConfig: {
-                    dateFormat: 'Y-m-d',
-                    timeFormat: 'H:i'
-                }
-            },
-            perfusion_time2: {
-                xtype: 'xdatetime',
-                format: 'Y-m-d H:i',
-                editorConfig: {
-                    dateFormat: 'Y-m-d',
-                    timeFormat: 'H:i'
-                }
-            },
+//            perfusion_soln1: {
+////                xtype: 'lovcombo',
+//                editorConfig: {
+//                    plugins: ['ehr-usereditablecombo']
+//                },
+//                lookup: {
+//                    schemaName: 'ehr_lookups',
+//                    queryName: 'necropsy_perfusion',
+//                    keyColumn: 'perfusion',
+//                    displayColumn: 'perfusion'
+//                }
+//            },
+//            perfusion_soln2: {
+////                xtype: 'lovcombo',
+//                editorConfig: {
+//                    plugins: ['ehr-usereditablecombo']
+//                },
+//                lookup: {
+//                    schemaName: 'ehr_lookups',
+//                    queryName: 'necropsy_perfusion',
+//                    keyColumn: 'perfusion',
+//                    displayColumn: 'perfusion'
+//                }
+//            },
+//            perfusion_time1: {
+//                xtype: 'xdatetime',
+//                format: 'Y-m-d H:i',
+//                editorConfig: {
+//                    dateFormat: 'Y-m-d',
+//                    timeFormat: 'H:i'
+//                }
+//            },
+//            perfusion_time2: {
+//                xtype: 'xdatetime',
+//                format: 'Y-m-d H:i',
+//                editorConfig: {
+//                    dateFormat: 'Y-m-d',
+//                    timeFormat: 'H:i'
+//                }
+//            },
             timeofdeath: {
                 xtype: 'xdatetime',
                 format: 'Y-m-d H:i',
@@ -1151,6 +1226,16 @@ EHR.ext.Metadata.Standard = {
                 editorConfig: {
                     dateFormat: 'Y-m-d',
                     timeFormat: 'H:i'
+                }
+            },
+            tissue_distribution: {
+                xtype: 'lovcombo',
+                hasOwnTpl: true,
+                lookup: {
+                    schemaName: 'ehr_lookups',
+                    queryName: 'tissue_distribution',
+                    displayColumn: 'location',
+                    keyColumn: 'location'
                 }
             },
             grossdescription: {
@@ -1241,7 +1326,7 @@ EHR.ext.Metadata.Standard = {
                                     panel.theField.setValue(val);
                                     panel.theField.fireEvent('change', val)
                                 },
-                                failure: EHR.onFailure
+                                failure: EHR.utils.onError
                             });
                         };
                     }
@@ -1257,6 +1342,7 @@ EHR.ext.Metadata.Standard = {
             },
             assistant: {
                 xtype: 'lovcombo',
+                hasOwnTpl: true,
                 lookup: {
                     schemaName: 'ehr_lookups',
                     queryName: 'pathologists',
@@ -1366,7 +1452,7 @@ EHR.ext.Metadata.Standard = {
                                     panel.theField.setValue(val);
                                     panel.theField.fireEvent('change', val)
                                 },
-                                failure: EHR.onFailure
+                                failure: EHR.utils.onError
                             });
                         };
                     }
@@ -1423,6 +1509,13 @@ EHR.ext.Metadata.Standard = {
                     defaultSubset: 'Inflammation'
                 }
             },
+            inflammation2: {
+                xtype: 'ehr-snomedcombo',
+                shownInGrid: false,
+                editorConfig: {
+                    defaultSubset: 'Inflammation'
+                }
+            },
             distribution: {
                 xtype: 'ehr-snomedcombo',
                 shownInGrid: false,
@@ -1447,11 +1540,21 @@ EHR.ext.Metadata.Standard = {
             },
             remark: {
                 shownInGrid: true
+            },
+            tissue_qualifier: {
+                editorConfig: {
+                    plugins: ['ehr-usereditablecombo']
+                }
             }
         },
         'Organ Weights': {
             performedby: {
                 hidden: true
+            },
+            qualifier: {
+                editorConfig: {
+                    plugins: ['ehr-usereditablecombo']
+                }
             },
             weight: {
                 allowBlank: false,
@@ -1613,7 +1716,10 @@ EHR.ext.Metadata.Standard = {
                 }
             }
             ,testid: {
-                lookup: {columns: '*'},
+                lookup: {
+                    columns: '*',
+                    filterArray: [LABKEY.Filter.create('categories', 'chemistry', LABKEY.Filter.Types.CONTAINS)]
+                },
                 editorConfig: {
                     plugins: ['ehr-usereditablecombo'],
                     listeners: {
@@ -1640,7 +1746,10 @@ EHR.ext.Metadata.Standard = {
         },
         'Immunology Results': {
             testid: {
-                lookup: {columns: '*'},
+                lookup: {
+                    columns: '*',
+                    filterArray: [LABKEY.Filter.create('categories', 'immunology', LABKEY.Filter.Types.CONTAINS)]
+                },
                 editorConfig: {
                     plugins: ['ehr-usereditablecombo'],
                     listeners: {
@@ -1667,7 +1776,10 @@ EHR.ext.Metadata.Standard = {
         },
         'Hematology Results': {
             testid: {
-                lookup: {columns: '*'},
+                lookup: {
+                    columns: '*',
+                    filterArray: [LABKEY.Filter.create('categories', 'hematology', LABKEY.Filter.Types.CONTAINS)]
+                },
                 editorConfig: {
                     plugins: ['ehr-usereditablecombo'],
                     listeners: {
@@ -1714,7 +1826,10 @@ EHR.ext.Metadata.Standard = {
                 }
             }
             ,testid: {
-                lookup: {columns: '*'},
+                lookup: {
+                    columns: '*',
+                    filterArray: [LABKEY.Filter.create('categories', 'urinalysis', LABKEY.Filter.Types.CONTAINS)]
+                },
                 editorConfig: {
                     plugins: ['ehr-usereditablecombo'],
                     listeners: {
@@ -1806,6 +1921,7 @@ EHR.ext.Metadata.Standard = {
             ,tlocation: {
                 shownInGrid: false,
                 xtype: 'lovcombo',
+                hasOwnTpl: true,
                 includeNullRecord: false,
                 lookup: {schemaName: 'ehr_lookups', queryName: 'obs_tlocation', displayColumn: 'location', keyColumn: 'location', sort: 'sort_order'},
                 editorConfig: {
@@ -1964,7 +2080,10 @@ EHR.ext.Metadata.Standard = {
                 hidden: false,
                 defaultValue: LABKEY.Security.currentUser.displayName
             },
-            project: {hidden: true},
+            project: {
+                hidden: false,
+                allowBlank: false
+            },
             account: {hidden: true},
             necropsy: {lookups: false},
             cause: {allowBlank: false},
@@ -2037,13 +2156,14 @@ EHR.ext.Metadata.Standard = {
                                 this.setValue(id.toLowerCase());
                                 this.fireEvent('change', this.getValue());
                             },
-                            failure: EHR.onFailure
+                            failure: EHR.utils.onError
                         });
                     }
                 }
             }
             ,additionalServices: {
                 xtype: 'lovcombo',
+                hasOwnTpl: true,
                 includeNullRecord: false,
                 lookup: {
                     schemaName: 'ehr_lookups',
@@ -2977,18 +3097,7 @@ EHR.ext.Metadata.Necropsy = {
             ,shownInGrid: false
         }
         ,begindate: {
-            setInitialValue: function(v, rec){
-                var field = rec.fields.get('begindate');
-                var store = Ext.StoreMgr.get('study||Necropsies||||');
-                if(store)
-                    var record = store.getAt(0);
-                if(record)
-                    var date = record.get('date');
-                if(date)
-                    date = new Date(date.getFullYear(), date.getMonth(), date.getDate());
-
-                return v || date;
-            }
+            setInitialValue: null
             ,hidden: false
             ,allowBlank: false
         }
@@ -3058,12 +3167,12 @@ EHR.ext.Metadata.Necropsy = {
                                         this.setValue(val);
                                         this.fireEvent('change', val)
                                     },
-                                    failure: EHR.onFailure
+                                    failure: EHR.utils.onError
                                 });
                             }
                         }, this);
                     }
-                },
+                }
             },
             date: {
                 parentConfig: null,
@@ -3084,6 +3193,11 @@ EHR.ext.Metadata.Necropsy = {
                 parentConfig: {
                     storeIdentifier:  {queryName: 'tasks', schemaName: 'ehr'}
                     ,dataIndex: 'title'
+                }
+            },
+            mannerofdeath: {
+                editorConfig: {
+                    plugins: ['ehr-usereditablecombo']
                 }
             }
         },
@@ -3234,6 +3348,16 @@ EHR.ext.Metadata.Biopsy = {
                     storeIdentifier:  {queryName: 'tasks', schemaName: 'ehr'}
                     ,dataIndex: 'title'
                 }
+            }
+        },
+        tasks: {
+            duedate: {
+                parentConfig: {
+                    storeIdentifier: {queryName: 'Biopsies', schemaName: 'study'},
+                    dataIndex: 'date'
+                }
+                ,hidden: true
+                ,shownInGrid: false
             }
         }
     }
@@ -3583,6 +3707,9 @@ EHR.ext.Metadata.Surgery = {
         'Clinical Encounters': {
             type: {
                 defaultValue: 'Surgery'
+            },
+            major: {
+                allowBlank: false
             }
         },
         'Drug Administration': {
@@ -3616,7 +3743,7 @@ EHR.ext.FormColumns = {
     'Clinical Observations': EHR.ext.topCols+',area,observation,code,' + EHR.ext.bottomCols,
     'Clinpath Runs': EHR.ext.topCols+',serviceRequested,type,sampletype,sampleId,collectionMethod,collectedBy,'+EHR.ext.bottomCols,
     Deaths: EHR.ext.topCols+',tattoo,dam,cause,manner,'+EHR.ext.bottomCols,
-    Demographics: EHR.ext.topCols+',species,gender,birth,death,hold,dam,sire,origin,geographic_origin,cond,medical,prepaid,'+EHR.ext.bottomCols,
+    Demographics: EHR.ext.topCols+',species,gender,birth,death,hold,dam,sire,origin,geographic_origin,cond,medical,prepaid,v_status,'+EHR.ext.bottomCols,
     Departure: EHR.ext.topCols+',authorize,destination,'+EHR.ext.bottomCols,
     'Dental Status': EHR.ext.topCols+',priority,extractions,gingivitis,tartar,' + EHR.ext.bottomCols,
     'Drug Administration': 'id/curlocation/location,'+'id,date,begindate,enddate,project,account'+',code,qualifier,category,route,concentration,conc_units,dosage,dosage_units,volume,vol_units,amount,amount_units,headerdate,restraint,restraintDuration,remark,performedby,' + EHR.ext.bottomCols,
@@ -3624,12 +3751,12 @@ EHR.ext.FormColumns = {
     'Final Reports': EHR.ext.topCols+','+EHR.ext.bottomCols,
     'Hematology Results': EHR.ext.topCols+',testid,method,result,units,qualResult,'+EHR.ext.bottomCols,
     'Hematology Morphology': EHR.ext.topCols+',morphology,score,'+EHR.ext.bottomCols,
-    Histology: EHR.ext.topCols+',slideNum,stain,tissue,qualifier,trimdate,'+EHR.ext.bottomCols,
+    Histology: EHR.ext.topCols+',slideNum,stain,tissue,qualifier,container_type,pathologist,trimdate,trimmed_by,trim_remarks,'+EHR.ext.bottomCols,
     'Housing': 'id,project,date,enddate,room,cage,id/numroommates/cagemates,cond,reason,isTemp,'+EHR.ext.bottomCols,
     'Immunology Results': EHR.ext.topCols+',testid,method,result,units,qualResult,'+EHR.ext.bottomCols,
     'Irregular Observations': 'id/curlocation/location,'+EHR.ext.topCols + ',feces,menses,other,tlocation,behavior,otherbehavior,other,breeding,'+EHR.ext.bottomCols,
     'Necropsy Diagnosis': EHR.ext.topCols+',tissue,severity,duration,distribution,process,'+EHR.ext.bottomCols,
-    Necropsies: EHR.ext.topCols+',tattoo,caseno,performedby,assistant,billing,nhpbmd,timeofdeath,causeofdeath,mannerofdeath,perfusion_area,perfusion_soln1,perfusion_time1,perfusion_soln2,perfusion_time2,grossdescription,'+EHR.ext.bottomCols,
+    Necropsies: EHR.ext.topCols+',tattoo,caseno,performedby,assistant,billing,tissue_distribution,timeofdeath,causeofdeath,mannerofdeath,perfusion_area,grossdescription,'+EHR.ext.bottomCols,
     'Notes': EHR.ext.topCols+',userid,category,value,'+EHR.ext.bottomCols,
     'Morphologic Diagnosis': EHR.ext.topCols+',remark,tissue,tissue_qualifier,inflammation,inflammation2,etiology,process,process2,performedBy,qcstate,'+EHR.ext.hiddenCols,
     //,severity,duration,distribution,distribution2
@@ -3639,12 +3766,12 @@ EHR.ext.FormColumns = {
     'Procedure Codes': EHR.ext.topCols+',code,'+EHR.ext.bottomCols,
     'Problem List': EHR.ext.topCols+',code,category,'+EHR.ext.bottomCols,
     'Organ Weights': EHR.ext.topCols+',tissue,qualifier,weight,'+EHR.ext.bottomCols,
-    requests: 'rowid,title,formtype,daterequested,priority,notify1,notify2,createdby,qcstate',
+    requests: 'rowid,title,formtype,daterequested,priority,notify1,notify2,notify3,createdby,qcstate',
     Restraint: EHR.ext.topCols+',enddate,type,totaltime,'+EHR.ext.bottomCols,
     tasks: 'rowid,title,formtype,created,createdby,assignedto,duedate,taskid,category,qcstate',
     'TB Tests': EHR.ext.topCols + ',notPerformedAtCenter,lot,dilution,eye,result1,result2,result3,'+EHR.ext.bottomCols,
     'Teeth': EHR.ext.topCols+',jaw,side,tooth,status,' + EHR.ext.bottomCols,
-    'Tissue Samples': EHR.ext.topCols+',tissue,qualifier,preservation,quantity,recipient,'+EHR.ext.bottomCols,
+    'Tissue Samples': EHR.ext.topCols+',tissue,qualifier,preservation,quantity,recipient,ship_to,container_type,accountToCharge,'+EHR.ext.bottomCols,
     'Treatment Orders': EHR.ext.topCols+',meaning,code,qualifier,route,frequency,concentration,conc_units,dosage,dosage_units,volume,vol_units,amount,amount_units,' + EHR.ext.bottomCols,
     'Urinalysis Results': EHR.ext.topCols+',testid,method,resultOORIndicator,result,units,qualResult,'+EHR.ext.bottomCols,
     'Virology Results': EHR.ext.topCols+',virus,method,source,resultOORIndicator,result,units,qualResult,'+EHR.ext.bottomCols,

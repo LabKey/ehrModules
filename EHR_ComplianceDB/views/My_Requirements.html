@@ -4,13 +4,14 @@
 
         Ext.onReady(function()
         {
+            var employeeContainer = '/WNPRC/WNPRC_Units/Animal_Services/Compliance_Training/Private/EmployeeDB/';
 
             var userName = LABKEY.Security.currentUser.email;
             //we find this employee's info
             var employeeRecord = new LABKEY.ext.Store({
-                schemaName: 'lists',
+                schemaName: 'ehr_compliancedb',
                 queryName: 'Employees',
-                containerPath: 'WNPRC/WNPRC_Units/Animal_Services/Compliance_Training/Private/EmployeeDB/',
+                containerPath: employeeContainer,
                 //need to update once we have real unique IDs in the tables
                 filterArray: [LABKEY.Filter.create('Email', userName, LABKEY.Filter.Types.EQUAL)
                 ]
@@ -29,10 +30,10 @@
                     renderTo: 'myRequirementsDiv',
                     dataRegionName: 'myRequirementsDiv',
                     title: 'My Requirements',
-                    schemaName: 'lists',
+                    schemaName: 'ehr_compliancedb',
                     queryName: 'ComplianceRecentTests',
-                    containerPath: 'WNPRC/WNPRC_Units/Animal_Services/Compliance_Training/Private/EmployeeDB/',
-                    filterArray: [LABKEY.Filter.create('Id', employeeRecord.get('Id'), LABKEY.Filter.Types.EQUAL)],
+                    containerPath: employeeContainer,
+                    filterArray: [LABKEY.Filter.create('employeeid', employeeRecord.get('employeeid'), LABKEY.Filter.Types.EQUAL)],
                     buttonBarPosition: 'top',
                     showRecordSelectors: true,
                     allowChooseQuery: false,

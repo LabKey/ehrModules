@@ -42,7 +42,7 @@ function onBecomePublic(errors, scriptContext, row, oldRow){
         }
 
         //if not already present, we insert into demographics
-        if(!row.notAtCenter && row.gender){
+        if(!row.notAtCenter){
             EHR.findDemographics({
                 participant: row.Id,
                 scope: this,

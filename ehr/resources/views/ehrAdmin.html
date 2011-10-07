@@ -27,7 +27,7 @@ Ext.onReady(function (){
                     {name: 'Reload Study', url: '<%=contextPath%>/pipeline<%=containerPath%>/begin.view?'},
                     {name: 'Generate Schema XML', url: '<%=contextPath%>/admin/getSchemaXmlDoc.view?full=true&dbSchema=core'},
                     {name: 'View Logs', url: '<%=contextPath%>/project<%=containerPath%>/Logs/begin.view?'},
-                    {name: 'View Site Errors', url: '<%=contextPath%>/query/Shared/executeQuery.view?schemaName=auditlog&query.queryName=audit&query.viewName=Client Errors'}
+                    {name: 'View Site Errors', url: '<%=contextPath%>/query/Shared/executeQuery.view?schemaName=auditlog&query.queryName=audit&query.viewName=EHR Client Errors'}
                 ]
             },
             {header: 'Logs',
@@ -44,7 +44,7 @@ Ext.onReady(function (){
             },
             {header: 'Notifications',
                 items: [
-                    {name: 'Manage Notification Recipients', url: '<%=contextPath%>/query<%=containerPath%>/executeQuery.view?schemaName=ehr&query.queryName=NotificationRecipients'}
+                    {name: 'Manage Notification Recipients', url: '<%=contextPath%>/ehr<%=containerPath%>/updateTable.view?schemaName=ehr&query.queryName=NotificationRecipients'}
                 ]
             },
             {header: 'Monit',
@@ -61,9 +61,19 @@ Ext.onReady(function (){
                     {name: 'Gems', url: 'http://gems.primate.wisc.edu/munin/'}
                 ]
             },
+            {header: 'Other Table',
+                items: [
+                    {name: 'Manage Animal History Reports', url: '<%=contextPath%>/ehr<%=containerPath%>/updateTable.view?schemaName=ehr&query.queryName=reports'},
+                    {name: 'Manage Notification Types', url: '<%=contextPath%>/ehr<%=containerPath%>/updateTable.view?schemaName=ehr&query.queryName=NotificationTypes'},
+                    {name: 'Manage Form Types', url: '<%=contextPath%>/ehr<%=containerPath%>/updateTable.view?schemaName=ehr&query.queryName=formtypes'},
+                    {name: 'Manage Form Sections', url: '<%=contextPath%>/ehr<%=containerPath%>/updateTable.view?schemaName=ehr&query.queryName=FormPanelSections'},
+                    {name: 'Manage Templates', url: '<%=contextPath%>/ehr<%=containerPath%>/updateTable.view?schemaName=ehr&query.queryName=formtemplates'},
+                    {name: 'Manage Template Records', url: '<%=contextPath%>/ehr<%=containerPath%>/updateTable.view?schemaName=ehr&query.queryName=formtemplaterecords'}
+                ]
+            },
             {header: 'Usage',
                 items: [
-                    {name: 'Site Logins', url: '<%=contextPath%>/query<%=containerPath%>/executeQuery.view?schemaName=core&query.queryName=SiteUsage'},
+                    {name: 'Site Logins By Day', url: '<%=contextPath%>/query<%=containerPath%>/executeQuery.view?schemaName=core&query.queryName=SiteUsageByDay'},
                     {name: 'Site Logins By Month', url: '<%=contextPath%>/query<%=containerPath%>/executeQuery.view?schemaName=core&query.queryName=SiteUsageByMonth'},
                     {name: 'Site Logins By Group', url: '<%=contextPath%>/query<%=containerPath%>/executeQuery.view?schemaName=core&query.queryName=SiteUsageByGroup'}
                 ]

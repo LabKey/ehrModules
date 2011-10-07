@@ -1,17 +1,17 @@
 <customView xmlns="http://labkey.org/data/xml/queryCustomView">
     <columns>
-        <column name="Id"/>
-        <column name="Id/lastName">
+        <column name="employeeId"/>
+        <column name="employeeid/lastName">
             <properties>
                 <property name="columnTitle" value="Last Name"/>
             </properties>
         </column>
-        <column name="Id/firstName">
+        <column name="employeeid/firstName">
             <properties>
                 <property name="columnTitle" value="First Name"/>
             </properties>
         </column>
-        <column name="Id/unit">
+        <column name="employeeid/unit">
             <properties>
                 <property name="columnTitle" value="Unit"/>
             </properties>
@@ -27,8 +27,8 @@
         <column name="MonthsUntilRenewal"/>
     </columns>
     <sorts>
-        <sort column="id/lastName" descending="false"/>
-        <sort column="id/firstName" descending="false"/>
+        <sort column="employeeid/lastName" descending="false"/>
+        <sort column="employeeid/firstName" descending="false"/>
         <sort column="requirementName/Type" descending="false"/>
         <sort column="requirementName" descending="false"/>        
     </sorts>

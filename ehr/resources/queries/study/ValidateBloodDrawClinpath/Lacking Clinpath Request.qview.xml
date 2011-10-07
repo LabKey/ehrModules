@@ -1,0 +1,9 @@
+<customView xmlns="http://labkey.org/data/xml/queryCustomView">
+    <filters>
+        <filter column="path_lsid" operator="isblank"/>
+    </filters>
+    <sorts>
+        <sort column="id" descending="false"/>
+        <sort column="date" descending="false"/>
+    </sorts>
+</customView>

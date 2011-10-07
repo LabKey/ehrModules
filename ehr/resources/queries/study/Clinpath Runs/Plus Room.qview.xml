@@ -1,0 +1,54 @@
+<customView xmlns="http://labkey.org/data/xml/queryCustomView">
+   <columns>
+        <column name="Id/curLocation/Area">
+            <properties>
+                <property name="columnTitle" value="Area"/>
+            </properties>
+        </column>
+        <column name="Id/curLocation/Room">
+            <properties>
+                <property name="columnTitle" value="Room"/>
+            </properties>
+        </column>
+        <column name="Id/curLocation/Cage">
+            <properties>
+                <property name="columnTitle" value="Cage"/>
+            </properties>
+        </column>
+       <column name="Id" />
+       <column name="date" />
+       <column name="project" />
+       <column name="account" />
+       <column name="type" />
+       <column name="sampleType" />
+       <column name="serviceRequested" />
+       <!--<column name="collectionDate" />-->
+       <column name="collectionMethod" />
+       <column name="collectedBy" />
+       <!--<column name="quantity" />-->
+       <!--<column name="quantityUnits" />-->
+       <column name="remark" />
+        <!--<column name="Id/Dataset/Demographics/Birth">-->
+            <!--<properties>-->
+                <!--<property name="columnTitle" value="Birth"/>-->
+            <!--</properties>-->
+        <!--</column>-->
+       <column name="qcstate" />
+       <column name="taskid" />
+       <column name="requestid" />
+      <column name="requestid/description">
+        <properties>
+            <property name="columnTitle" value="Requestor"/>
+        </properties>
+      </column>
+   </columns>
+   <sorts>
+       <sort column="Id/curLocation/Area" descending="false"/>
+       <sort column="Id/curLocation/Room" descending="false"/>
+       <sort column="Id/curLocation/Cage" descending="false"/>
+       <sort column="Id" descending="false"/>
+   </sorts>
+    <!--<filters>-->
+        <!--<filter column="qcstate/publicdata" operator="eq" value="true"/>-->
+    <!--</filters>-->
+</customView>

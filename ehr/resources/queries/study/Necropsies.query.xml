@@ -9,6 +9,7 @@
                 <importUrl />
                 <updateUrl />
                 <deleteUrl />
+                <titleColumn>caseno</titleColumn>
                 <columns>
                   <column columnName="participantid">
                     <datatype>varchar</datatype>
@@ -60,6 +61,9 @@
                     <datatype>boolean</datatype>
                     <columnTitle>Billing Complete</columnTitle>
                   </column>
+                  <column columnName="tissue_distribution">
+                      <columnTitle>Tissue Distribution</columnTitle>
+                  </column>
                   <column columnName="bcs">
                     <isHidden>true</isHidden>
                   </column>
@@ -78,6 +82,7 @@
                   </column>
                   <column columnName="perfusion_soln1">
                     <datatype>varchar</datatype>
+                    <isHidden>true</isHidden>
                     <columnTitle>Perfusion Solution 1</columnTitle>
                     <fk>
                       <fkFolderPath>/wnprc/ehr/</fkFolderPath>
@@ -88,6 +93,7 @@
                   </column>
                   <column columnName="perfusion_soln2">
                     <datatype>varchar</datatype>
+                      <isHidden>true</isHidden>
                     <columnTitle>Perfusion Solution 2</columnTitle>
                     <fk>
                       <fkFolderPath>/wnprc/ehr/</fkFolderPath>
@@ -98,11 +104,13 @@
                   </column>
                   <column columnName="perfusion_time1">
                     <datatype>varchar</datatype>
+                      <isHidden>true</isHidden>
                     <columnTitle>Perfusion Time 1</columnTitle>
                     <formatString>yyyy-MM-dd HH:mm</formatString>
                   </column>
                   <column columnName="perfusion_time2">
                     <datatype>varchar</datatype>
+                      <isHidden>true</isHidden>
                     <columnTitle>Perfusion Time 2</columnTitle>
                     <formatString>yyyy-MM-dd HH:mm</formatString>
                   </column>

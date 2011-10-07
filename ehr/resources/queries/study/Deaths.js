@@ -10,7 +10,7 @@ var {EHR, LABKEY, Ext, console, init, beforeInsert, afterInsert, beforeUpdate, a
 
 function onUpsert(context, errors, row, oldRow){
     if(row.Id && row.tattoo && context.extraContext.dataSource != 'etl'){
-        var regexp = row.Id.replace(/\D/, '');
+        var regexp = row.Id.replace(/\D/g, '');
         regexp = regexp.replace(/^0+/, '');
         regexp = new RegExp(regexp);
 
@@ -29,6 +29,7 @@ function onComplete(event, errors, scriptContext){
             valuesMap[r.row.Id] = {};
             valuesMap[r.row.Id].death = r.row.date;
         }
+
         EHR.validation.updateStatusField(scriptContext.publicParticipantsModified, null, valuesMap);
 
         EHR.sendEmail({

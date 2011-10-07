@@ -53,6 +53,15 @@
                             <!--<fkColumnName>userid</fkColumnName>-->
                         <!--</fk>-->
                     </column>
+                    <column columnName="notify3">
+                        <columnTitle>Third Contact</columnTitle>
+                        <!--<fk>-->
+                            <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
+                            <!--<fkDbSchema>core</fkDbSchema>-->
+                            <!--<fkTable>Principals</fkTable>-->
+                            <!--<fkColumnName>userid</fkColumnName>-->
+                        <!--</fk>-->
+                    </column>
                     <column columnName="pi">
                         <columnTitle>PI</columnTitle>
                     </column>

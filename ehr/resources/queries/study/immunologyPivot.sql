@@ -23,6 +23,7 @@ END as result
 FROM study."Immunology Results" b
 
 WHERE testId IN ('CD3', 'CD20', 'CD4', 'CD8')
+and b.qcstate.publicdata = true
 ) b
 
 GROUP BY b.id, b.date, b.runId, b.testId

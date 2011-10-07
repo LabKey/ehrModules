@@ -37,7 +37,7 @@ function updateTable(row, oldRow, schemaName, tableName, pk, sourceField, target
         }
     });
 
-    console.log('Records to update: '+toUpdate.length);
+//    console.log('Records to update: '+toUpdate.length);
 
     if(toUpdate.length){
 //        console.log(toUpdate[0]);
@@ -50,7 +50,7 @@ function updateTable(row, oldRow, schemaName, tableName, pk, sourceField, target
                 console.log('Success updating '+tableName)
             },
             error: function(error){
-                console.log('updateRows Error');
+                console.log('EHR compliance db updateTable.js Error');
                 console.log(error);
             }
         });

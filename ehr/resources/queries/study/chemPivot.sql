@@ -22,6 +22,7 @@ END as result
 
 FROM study."Chemistry Results" b
 WHERE testId IN ('GLUC', 'BUN', 'CREAT', 'CPK', 'CHOL', 'TRIG','SGOT', 'LDH', 'LDL', 'TB','GGT','SGPT','TP','ALB','ALKP','CA','PHOS','FE','NA','K','CL', 'UA')
+and b.qcstate.publicdata = true
 
 ) b
 

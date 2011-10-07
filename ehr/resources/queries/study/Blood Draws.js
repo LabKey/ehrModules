@@ -6,56 +6,91 @@
 
 var {EHR, LABKEY, Ext, console, init, beforeInsert, afterInsert, beforeUpdate, afterUpdate, beforeDelete, afterDelete, complete} = require("ehr/validation");
 
-function onComplete(event, errors, scriptContext){
-    if(scriptContext && scriptContext.rows && scriptContext.rows.length){
-        var rowObj;
-        for(var i=0;i<scriptContext.rows.length;i++){
-            rowObj = scriptContext.rows[i];
 
-            //we auto-create a clinpath request if a test is newly added
-            if(rowObj.row.additionalServices && event=='insert'){
-                //NOTE: we will try supporting this from all paths
-                //scriptContext.qcMap.label[rowObj.row.QCStateLabel]['metadata/isRequest']
+function onBecomePublic(errors, scriptContext, row, oldRow){
+    if(scriptContext.extraContext.dataSource != 'etl' && row.additionalServices){
+        //we auto-create a clinpath request if a test is newly added, assuming it comes from a request
+        var tests = row.additionalServices.split(',');
 
-                var tests = rowObj.row.additionalServices.split(',');
+        //request CBC / Vet-19
+        if(tests.indexOf('CBC')!=-1 || tests.indexOf('CBC with Differential')!=-1 ||
+            tests.indexOf('Vet-19')!=-1 || tests.indexOf('Vet-19 Chem Panel')!=-1
+        ){
+            //first create the request
+            var requestId = LABKEY.Utils.generateUUID();
+            var dateRequested = new Date();
 
-                //request CBC
-                if(tests.indexOf('CBC')!=-1 || tests.indexOf('CBC with Differential')!=-1){
-                    console.log('Requesting CBC:');
-//                    LABKEY.Query.insertRows({
-//                        schemaName: 'study',
-//                        queryName: 'Clinpath Runs',
-//                        extraContext: {
-//                            quickValidation: true
-//                        },
-//                        rows: [{Id: rowObj.row.Id, date: new Date(rowObj.row.date.toGMTString()), project: rowObj.row.project, account: rowObj.row.account, requestId: rowObj.row.requestId, sampletype: 'Blood - EDTA Whole Blood', collectedBy: rowObj.row.performedby, serviceRequested: 'CBC with Differential', dataset: 'Hematology', QCStateLabel: 'Request: Pending'}],
-//                        success: function(data){
-//                            console.log('Success requesting CBC!')
-//                        },
-//                        failure: EHR.onFailure
-//                    });
-                }
-                //request Vet19
-                if(tests.indexOf('Vet-19')!=-1 || tests.indexOf('Vet-19 Chem Panel')!=-1){
-                    console.log('Requesting Vet-19:');
-//                    LABKEY.Query.insertRows({
-//                        schemaName: 'study',
-//                        queryName: 'Clinpath Runs',
-//                        extraContext: {
-//                            quickValidation: true
-//                        },
-//                        rows: [{Id: rowObj.row.Id, date: new Date(rowObj.row.date.toGMTString()), project: rowObj.row.project, account: rowObj.row.account, requestId: rowObj.row.requestId, sampletype: 'Blood - EDTA Whole Blood', collectedBy: rowObj.row.performedby, serviceRequested: 'Vet-19 Chem Panel', dataset: 'Chemistry', QCStateLabel: 'Request: Pending'}],
-//                        success: function(data){
-//                            console.log('Success requesting Vet-19!')
-//                        },
-//                        failure: EHR.onFailure
-//                    });
-                }
+            //if this is part of a request, inherit notify, etc from previous
+            var rowObj = {
+                daterequested: dateRequested,
+                requestid: requestId,
+                priority: 'Routine',
+                category: 'request',
+                formtype: 'Clinpath Request',
+                title: 'Clinpath Request: '+row.Id,
+                notify1: LABKEY.Security.currentUser.id
+            };
+
+            if(row.requestid){
+                LABKEY.Query.insertRows({
+                    schemaName: 'ehr',
+                    queryName: 'requests',
+                    filterArray: [
+                        LABKEY.Filter.create('requestid', row.requestid, LABKEY.Filter.Types.EQUAL)
+                    ],
+                    scope: this,
+                    success: function(data){
+                        if(data.rows && data.rows.length){
+                            var r = data.rows[0];
+
+                            rowObj.notify1 = r.notify1;
+                            rowObj.notify2 = r.notify2;
+                            rowObj.notify3 = r.notify3;
+                            rowObj.priority = r.priority;
+                        }
+                    },
+                    failure: EHR.onFailure
+                });
+            }
+
+            LABKEY.Query.insertRows({
+                schemaName: 'ehr',
+                queryName: 'requests',
+                extraContext: {
+                    quickValidation: true
+                },
+                rows: [rowObj],
+                success: function(data){
+                    console.log('Success creating request for blood tests')
+                },
+                failure: EHR.onFailure
+            });
+
+            var rows = [];
+            if(tests.indexOf('CBC')!=-1 || tests.indexOf('CBC with Differential')!=-1)
+                rows.push({Id: row.Id, date: dateRequested, project: row.project, account: row.account, requestId: requestId, sampletype: 'Blood - EDTA Whole Blood', collectedBy: row.performedby, serviceRequested: 'CBC with Differential', type: 'Hematology', QCStateLabel: 'Request: Pending'});
+
+            //request Vet19
+            if(tests.indexOf('Vet-19')!=-1 || tests.indexOf('Vet-19 Chem Panel')!=-1)
+                rows.push({Id: row.Id, date: dateRequested, project: row.project, account: row.account, requestId: requestId, sampletype: 'Blood - EDTA Whole Blood', collectedBy: row.performedby, serviceRequested: 'Vet-19 Chem Panel', type: 'Chemistry', QCStateLabel: 'Request: Pending'});
+
+            if(rows.length){
+                LABKEY.Query.insertRows({
+                    schemaName: 'study',
+                    queryName: 'Clinpath Runs',
+                    extraContext: {
+                        quickValidation: true
+                    },
+                    rows: rows,
+                    success: function(data){
+                        console.log('Success requesting clinpath tests!')
+                    },
+                    failure: EHR.onFailure
+                });
             }
         }
     }
 }
-
 
 function onUpsert(context, errors, row, oldRow){
     if(context.extraContext.dataSource != 'etl' && row.date && !row.daterequested){
@@ -109,22 +144,18 @@ function onUpsert(context, errors, row, oldRow){
                 multiplier = 0.15;
             }
 
-            var sql = "SELECT b.BloodLast30, d.MostRecentWeight, round((d.MostRecentWeight*"+multiplier+"*60) - coalesce(b.BloodLast30, 0), 1) AS AvailBlood " +
-            "FROM (" +
-                "SELECT b.id, sum(b.quantity) as BloodLast30 " +
+            var sql = "SELECT b.lsid, coalesce(b.id, d.id) as id, b.quantity, d.MostRecentWeight FROM (SELECT b.lsid, b.id, b.quantity " +
                 "FROM study.\"Blood Draws\" b " +
                 "WHERE b.id='"+row.Id+"' AND b.date >= '"+EHR.validation.dateToString(minDate)+"' AND b.date <= '"+EHR.validation.dateToString(row.date) +"' " +
-                "AND (b.qcstate.publicdata = true OR b.qcstate.metadata.DraftData = true) ";
+                "AND (b.qcstate.publicdata = true OR b.qcstate.metadata.DraftData = true) ) b ";
 
-            if(context.extraContext.bloodTotals[row.Id] && context.extraContext.bloodTotals[row.Id].lsids.length){
-                sql += ' AND b.lsid NOT IN (\''+context.extraContext.bloodTotals[row.Id].lsids.join("','")+'\') '
-            }
-
-            sql += "GROUP BY b.id) b " +
+            sql +=
             "RIGHT OUTER JOIN study.demographicsMostRecentWeight d on (d.id=b.id) " +
             "WHERE d.id='"+row.Id+"' ";
 
             //console.log(sql);
+            var availBlood = -1;
+            var bloodLast30 = 0;
 
             // find all blood draws from this animal in 30 days prior to this date
             LABKEY.Query.executeSql({
@@ -132,51 +163,63 @@ function onUpsert(context, errors, row, oldRow){
                 sql: sql,
                 scope: this,
                 success: function(data){
-                    var bloodInThisTransaction = 0;
-                    if(context.extraContext.bloodTotals[row.Id] && context.extraContext.bloodTotals[row.Id].rows.length){
-                        var draw;
-                        for(var i=0;i<context.extraContext.bloodTotals[row.Id].rows.length;i++){
-                            draw = context.extraContext.bloodTotals[row.Id].rows[i];
-                            if(Date.parse(draw.date) >= Date.parse(minDate) && Date.parse(draw.date) <= Date.parse(row.date)){
-                                bloodInThisTransaction += draw.quantity;
+                    if(data && data.rows && data.rows.length){
+                        var r;
+                        for (var i=0;i<data.rows.length;i++){
+                            r = data.rows[i];
+                            availBlood = r.MostRecentWeight * multiplier *60;
+
+                            //NOTE: if this blood draw is part of the current transaction, we skip it
+                            if(r.quantity){
+                                if(r.lsid && context.extraContext.bloodTotals[r.id].lsids.indexOf(r.lsid)==-1){
+                                    if(!(row.lsid && row.lsid==r.lsid))
+                                        bloodLast30 += r.quantity;
+                                }
                             }
                         }
                     }
-                    //console.log('other blood: '+bloodInThisTransaction);
-
-                    if(data && data.rows && data.rows.length){
-                        var availBlood = data.rows[0].AvailBlood - bloodInThisTransaction;
-
-                        if(availBlood - row.quantity < 0){
-                           EHR.addError(errors, 'num_tubes', 'Blood in this form exceeds allowable. Max allowable is '+availBlood+' mL', errorQC);
-                           EHR.addError(errors, 'quantity', 'Blood in this form exceeds allowable. Max allowable is '+availBlood+' mL', errorQC);
-                           checkFutureRecords = false;
-                        }
-                    }
                     else {
-                        console.log('no rows found.  blood draws.js line 90');
+                        console.log('no rows found.  blood draws.js line 204');
                     }
                 },
                 failure: EHR.onFailure
             });
+
+            //test within this transaction
+            var bloodInThisTransaction = 0;
+            if(context.extraContext.bloodTotals[row.Id] && context.extraContext.bloodTotals[row.Id].rows.length){
+                var draw;
+                for(var i=0;i<context.extraContext.bloodTotals[row.Id].rows.length;i++){
+                    draw = context.extraContext.bloodTotals[row.Id].rows[i];
+                    if(Date.parse(draw.date) >= Date.parse(minDate) && Date.parse(draw.date) <= Date.parse(row.date)){
+                        bloodInThisTransaction += draw.quantity;
+                    }
+                }
+            }
+            bloodLast30 += bloodInThisTransaction;
+            availBlood = Math.round(availBlood*Math.pow(10,2))/Math.pow(10,2);
+
+            if(availBlood > 0 && (availBlood - bloodLast30 - row.quantity) < 0){
+               EHR.addError(errors, 'num_tubes', 'Blood in this form exceeds allowable. Max allowable is '+availBlood+' mL', errorQC);
+               EHR.addError(errors, 'quantity', 'Blood in this form exceeds allowable. Max allowable is '+availBlood+' mL', errorQC);
+               checkFutureRecords = false;
+            }
+
 
             // find all blood draws from this animal in 30 days after this date
             if(checkFutureRecords){
                 var maxDate = new Date(row.date.toGMTString());
                 maxDate.setDate(maxDate.getDate()+30);
 
-                sql = "SELECT b.BloodLast30, d.MostRecentWeight, round((d.MostRecentWeight*"+multiplier+"*60) - coalesce(b.BloodLast30, 0), 1) AS AvailBlood " +
-                "FROM (" +
-                    "SELECT b.id, sum(b.quantity) as BloodLast30 " +
+                var availBlood = -1;
+                var bloodNext30 = 0;
+
+                var sql = "SELECT b.lsid, coalesce(b.id, d.id) as id, b.quantity, d.MostRecentWeight FROM (SELECT b.lsid, b.id, b.quantity " +
                     "FROM study.\"Blood Draws\" b " +
                     "WHERE b.id='"+row.Id+"' AND cast(b.date as date) >= '"+EHR.validation.dateToString(row.date) +"' AND cast(b.date as date) <= '"+EHR.validation.dateToString(maxDate)+"' " +
-                    "AND (b.qcstate.publicdata = true OR b.qcstate.metadata.DraftData = true) ";
+                    "AND (b.qcstate.publicdata = true OR b.qcstate.metadata.DraftData = true) ) b ";
 
-                if(context.extraContext.bloodTotals[row.Id] && context.extraContext.bloodTotals[row.Id].lsids.length){
-                    sql += ' AND b.lsid NOT IN (\''+context.extraContext.bloodTotals[row.Id].lsids.join("','")+'\') ';
-                }
-
-                sql += "GROUP BY b.id) b " +
+                sql +=
                 "RIGHT OUTER JOIN study.demographicsMostRecentWeight d on (d.id=b.id) " +
                 "WHERE d.id='"+row.Id+"' ";
 
@@ -187,40 +230,55 @@ function onUpsert(context, errors, row, oldRow){
                     sql: sql,
                     scope: this,
                     success: function(data){
-                        var bloodInThisTransaction = 0;
-                        if(context.extraContext.bloodTotals[row.Id].rows.length){
-                            var draw;
-                            for(var i=0;i<context.extraContext.bloodTotals[row.Id].rows.length;i++){
-                                draw = context.extraContext.bloodTotals[row.Id].rows[i];
-                                if(Date.parse(draw.date) <= Date.parse(maxDate) && Date.parse(draw.date) >= Date.parse(row.date)){
-                                    bloodInThisTransaction += draw.quantity;
+                        if(data && data.rows && data.rows.length){
+                            var r;
+                            for (var i=0;i<data.rows.length;i++){
+                                r = data.rows[i];
+                                availBlood = r.MostRecentWeight * multiplier *60;
+                                if(r.quantity){
+                                    //NOTE: if this blood draw is part of the current transaction, we skip it
+                                    if(r.lsid && context.extraContext.bloodTotals[r.id].lsids.indexOf(r.lsid)==-1){
+                                        if(!(row.lsid && row.lsid==r.lsid))
+                                            bloodNext30 += r.quantity;
+                                    }
                                 }
                             }
                         }
-
-                        if(data && data.rows && data.rows.length){
-                            var availBlood = data.rows[0].AvailBlood - bloodInThisTransaction;
-                            if((availBlood - row.quantity) < 0){
-                               EHR.addError(errors, 'num_tubes', 'Blood in this form conflicts with future draws. Max allowable: '+availBlood+' mL', errorQC);
-                               EHR.addError(errors, 'quantity', 'Blood in this form conflicts with future draws. Max allowable: '+availBlood+' mL', errorQC);
-                            }
-                        }
                         else {
-                            console.log('no rows found: blood draws.js line 132');
+                            console.log('no rows found.  blood draws.js line 246');
                         }
                     },
                     failure: EHR.onFailure
                 });
+
+                //test within this transaction
+                var bloodInThisTransaction = 0;
+                if(context.extraContext.bloodTotals[row.Id].rows.length){
+                    var draw;
+                    for(var i=0;i<context.extraContext.bloodTotals[row.Id].rows.length;i++){
+                        draw = context.extraContext.bloodTotals[row.Id].rows[i];
+                        if(Date.parse(draw.date) <= Date.parse(maxDate) && Date.parse(draw.date) >= Date.parse(row.date)){
+                            bloodInThisTransaction += draw.quantity;
+                        }
+                    }
+                }
+                bloodNext30 += bloodInThisTransaction;
+                availBlood = Math.round(availBlood*Math.pow(10,2))/Math.pow(10,2);
+                if(availBlood > 0 && (availBlood - bloodNext30 - row.quantity) < 0){
+                   EHR.addError(errors, 'num_tubes', 'Blood in this form conflicts with future draws. Max allowable: '+availBlood+' mL', errorQC);
+                   EHR.addError(errors, 'quantity', 'Blood in this form conflicts with future draws. Max allowable: '+availBlood+' mL', errorQC);
+                }
             }
         }
 
-        //keep track of blood per ID
+        //keep track of blood per ID.  this must happen after the earlier checks on volume
         if(row.Id){
             context.extraContext.bloodTotals[row.Id].rows.push(row);
             if(row.lsid){
                 context.extraContext.bloodTotals[row.Id].lsids.push(row.lsid);
             }
         }
+
     }
 }
 
@@ -233,8 +291,8 @@ function setDescription(row, errors){
         description.push('Total Quantity: '+ row.quantity);
     if (row.performedby)
         description.push('Performed By: '+ row.performedby);
-    if (row.requestor)
-        description.push('Requestor: '+ row.requestor);
+//    if (row.requestor)
+//        description.push('Requestor: '+ row.requestor);
     if (row.billedby)
         description.push('Billed By: '+ row.billedby);
     if (row.assayCode)

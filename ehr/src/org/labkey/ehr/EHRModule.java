@@ -31,9 +31,12 @@ import org.labkey.api.view.WebPartFactory;
 import org.labkey.ehr.etl.ETL;
 import org.labkey.ehr.etl.ETLAuditViewFactory;
 import org.labkey.ehr.security.EHRDataAdminRole;
+import org.labkey.ehr.security.EHRRequestAdminRole;
 import org.labkey.ehr.security.EHRRequestorRole;
 import org.labkey.ehr.security.EHRBasicSubmitterRole;
 import org.labkey.ehr.security.EHRFullSubmitterRole;
+import org.labkey.ehr.security.EHRFullUpdaterRole;
+import org.labkey.ehr.security.EHRRequestAdminRole;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -48,7 +51,7 @@ public class EHRModule extends DefaultModule
 
     public double getVersion()
     {
-        return 11.24;
+        return 11.293;
     }
 
     public boolean hasScripts()
@@ -97,6 +100,8 @@ public class EHRModule extends DefaultModule
         RoleManager.registerRole(new EHRRequestorRole());
         RoleManager.registerRole(new EHRBasicSubmitterRole());
         RoleManager.registerRole(new EHRFullSubmitterRole());
+        RoleManager.registerRole(new EHRFullUpdaterRole());
+        RoleManager.registerRole(new EHRRequestAdminRole());
     }
 
     @Override

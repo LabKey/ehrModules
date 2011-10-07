@@ -6,6 +6,7 @@
         <column name="priority"/>
         <column name="notify1"/>
         <column name="notify2"/>
+       <column name="notify3"/>
         <!--<column name="pi"/>-->
 
         <column name="CreatedBy"/>

@@ -163,16 +163,19 @@ EHR.ext.metaHelper = {
                 initialValue: field.value,
                 showValueInList: meta.showValueInList,
                 listClass: 'labkey-grid-editor',
-                lookupNullCaption: meta.lookupNullCaption,
+                lookupNullCaption: meta.lookupNullCaption
+            });
+
+            if(!meta.hasOwnTpl){
                 //TODO: it would be better to put this in LABKEY.ext.Combo, so this tpl doesnt conflict with non-combo editors
-                tpl: function(){var tpl = new Ext.XTemplate(
+                field.tpl = function(){var tpl = new Ext.XTemplate(
                     '<tpl for=".">' +
                     '<div class="x-combo-list-item">{[values["' + l.keyColumn + '"]!==null ? values["' + l.displayColumn + '"] : "'+ (Ext.isDefined(this.lookupNullCaption) ? this.lookupNullCaption : '[none]') +'"]}' +
                     //allow a flag to display both display and value fields
                     '<tpl if="'+meta.showValueInList+'">{[values["' + l.keyColumn + '"] ? " ("+values["' + l.keyColumn + '"]+")" : ""]}</tpl>'+
                     '&nbsp;</div></tpl>'
                     );return tpl.compile()}() //FIX: 5860
-            });
+            }
         }
         else
         {

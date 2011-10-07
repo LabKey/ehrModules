@@ -1,0 +1,90 @@
+<html>
+<head>
+<script type="text/javascript">
+
+LABKEY.requiresScript("/ehr/utils.js");
+LABKEY.requiresScript("/ehr/studyButtons.js");
+
+Ext.onReady(function (){
+    var query = LABKEY.ActionURL.getParameter('query.queryName') || LABKEY.ActionURL.getParameter('queryName');
+    var schema = LABKEY.ActionURL.getParameter('schemaName');
+
+    LABKEY.NavTrail.setTrail(query);
+
+    LABKEY.Query.getQueryDetails({
+        schemaName: schema
+        ,queryName: query
+        ,successCallback: function(data){
+            if(!data || !data.columns){
+                alert('Problem retrieving query\'s information');
+                return;
+            }
+
+            var keyField;
+            Ext.each(data.columns, function(f){
+                if(f.isKeyField){
+                    keyField = f.name;
+                    return false;
+                }
+            }, this);
+
+            var insertURL = '/query/insertQueryRow.view?schemaName='+schema+'&queryName='+query;
+            var importURL = '/query/import.view?schemaName='+schema+'&query.queryName='+query+'&query.sort=-'+keyField;
+            var updateURL = '/query/updateQueryRow.view?schemaName='+schema+'&queryName='+query+'&'+keyField+'=${'+keyField+'}';
+            var deleteURL = '/query/deleteQueryRows.view?schemaName='+schema+'&query.queryName='+query;
+
+            function importFunction(){
+                window.location = LABKEY.ActionURL.buildURL('query', 'import.view', null, {schemaName: schema, 'query.queryName': query});
+            }
+
+            var config = {
+                title: query,
+                schemaName: schema,
+                queryName: query,
+                allowChooseQuery: false,
+                allowChooseView: true,
+                showDetailsColumn: true,
+                showUpdateColumn: true,
+                showRecordSelectors: true,
+                buttonBarPosition: 'top',
+                frame: 'none',
+                dataRegionName: 'query',
+                updateURL: updateURL,
+                insertURL: insertURL,
+                importURL: importURL,
+                deleteURL: deleteURL,
+                buttonBar: {
+                    includeStandardButtons: true,
+                    items:[
+                        {
+                            text: 'Import Data',
+                            //url: importURL,
+                            insertPosition: 3,
+                            //scope: this,
+                            handler: importFunction
+                        }
+                    ]
+                },
+                scope: this,
+                timeout: 0,
+                linkTarget: '_blank',
+                failure: EHR.utils.onError
+            };
+
+            new LABKEY.QueryWebPart(config).render('queryDiv');
+        }
+        ,failure: EHR.utils.onError
+        ,scope: this
+    });
+});
+
+
+</script>
+</head>
+
+<body>
+
+<div id="queryDiv"></div>
+
+</body>
+</html>

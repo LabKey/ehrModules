@@ -24,9 +24,7 @@ Ben Bimber
 my $baseUrl = 'https://ehr.primate.wisc.edu/';
 my $studyContainer = 'WNPRC/EHR/';
 
-#whitespace separated list of emails
-my @email_recipients = qw(aschara@primate.wisc.edu aseil@primate.wisc.edu jfrank@primate.wisc.edu jrose@primate.wisc.edu smaves@primate.wisc.edu tomczak@primate.wisc.edu urbanski@primate.wisc.edu);
-#@email_recipients = qw(bimber@wisc.edu);
+my $notificationtypes = 'Weight Drops';
 my $mail_server = 'smtp.primate.wisc.edu';
 
 #emails will be sent from this address
@@ -45,6 +43,7 @@ use File::Touch;
 use File::Spec;
 use File::Basename;
 use Cwd 'abs_path';
+use List::MoreUtils qw/ uniq /;
 
 # Find today's date
 # Find today's date
@@ -73,6 +72,7 @@ $results = Labkey::Query::selectRows(
         ['calculated_status', 'eq', 'Alive'],
         ['Id/MostRecentWeight/MostRecentWeightDate', 'isblank', ''],
     ],
+    -requiredVersion => 8.3,
     #-debug => 1,
 );
 
@@ -125,6 +125,7 @@ sub processWeights {
 			['IntervalInDays', 'gte', $min],
 			['IntervalInDays', 'lte', $max],	
 		],
+		-requiredVersion => 8.3,
 	    #-debug => 1,
 	);
 	
@@ -170,18 +171,39 @@ sub processWeights {
 #print HTML $email_html;
 #close HTML;
 
-
-my $smtp = MIME::Lite->new(
-          To      =>join(", ", @email_recipients),
-          From    =>$from,
-          Subject =>"Subject: Weight Alerts: $datestr",
-          Type    =>'multipart/alternative'
-          );
-$smtp->attach(Type => 'text/html',
-          Encoding => 'quoted-printable',
-          Data	 => $email_html
-);         
-$smtp->send() || die;
+$results = Labkey::Query::selectRows(
+    -baseUrl => $baseUrl,
+    -requiredVersion => 8.3,
+    -containerPath => $studyContainer,
+    -schemaName => 'ehr',
+    -queryName => 'NotificationRecipientsExpanded',
+    -filterArray => [
+		['notificationtype', 'in', $notificationtypes],
+    ],
+    #-debug => 1,
+);	
+if(@{$results->{rows}}){	
+	my @email_recipients;
+	foreach my $row (@{$results->{rows}}){
+    	push(@email_recipients, $$row{email})		
+    }
+	
+	if(@email_recipients){
+		#print (@email_recipients);die;
+		@email_recipients = uniq @email_recipients;
+		my $smtp = MIME::Lite->new(
+		          To      =>join(", ", @email_recipients),
+		          From    =>$from,
+		          Subject =>"Subject: Weight Alerts: $datestr",
+		          Type    =>'multipart/alternative'
+		          );
+		$smtp->attach(Type => 'text/html',
+		          Encoding => 'quoted-printable',
+		          Data	 => $email_html
+		);         
+		$smtp->send() || die;
+	}
+}
 
 touch(File::Spec->catfile(dirname(abs_path($0)), '.weightAlertsLastRun'));
 

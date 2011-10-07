@@ -23,6 +23,7 @@ END as result
 FROM study."Urinalysis Results" b
 
 WHERE testId IN ('BILIRUBIN', 'KETONE', 'SP_GRAVITY', 'BLOOD', 'PH', 'PROTEIN','UROBILINOGEN', 'NITRITE', 'LEUKOCYTES', 'APPEARANCE','MICROSCOPIC', 'GLUC')
+and b.qcstate.publicdata = true
 ) b
 
 GROUP BY b.id, b.date, b.runId, b.testId

@@ -232,7 +232,7 @@ EHR.ext.plugins.DataBind = Ext.extend(Ext.util.Observable, {
                     if(panel.boundRecord && panel.boundRecord.errors){
                         Ext.each(panel.boundRecord.errors, function(error){
                             if(error.field == this.name){
-                                errors.push(error.message);
+                                errors.push((error.severity=='INFO' ? error.severity+': ' : '')+error.message);
                             }
                         }, this);
                     }

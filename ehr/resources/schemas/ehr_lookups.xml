@@ -1,6 +1,10 @@
 <ns:tables xmlns:ns="http://labkey.org/data/xml">
   <ns:table tableName="pairtest_bhav" tableDbType="TABLE">
     <ns:pkColumnName>value</ns:pkColumnName>
+    <ns:importUrl></ns:importUrl>
+    <ns:insertUrl></ns:insertUrl>
+    <ns:updateUrl></ns:updateUrl>
+    <ns:deleteUrl></ns:deleteUrl>
     <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr_lookups&amp;query.queryName=pairtest_bhav&amp;value=${value}</ns:tableUrl>
     <ns:columns>
       <ns:column columnName="value">
@@ -19,6 +23,10 @@
     <!--</ns:columns>-->
   <!--</ns:table>-->
   <ns:table tableName="integers" tableDbType="TABLE">
+    <ns:importUrl></ns:importUrl>
+    <ns:insertUrl></ns:insertUrl>
+    <ns:updateUrl></ns:updateUrl>
+    <ns:deleteUrl></ns:deleteUrl>
     <ns:pkColumnName>key</ns:pkColumnName>
     <ns:columns>
       <ns:column columnName="key">
@@ -28,6 +36,10 @@
     </ns:columns>
   </ns:table>
   <ns:table tableName="dental_tartar" tableDbType="TABLE">
+    <ns:importUrl></ns:importUrl>
+    <ns:insertUrl></ns:insertUrl>
+    <ns:updateUrl></ns:updateUrl>
+    <ns:deleteUrl></ns:deleteUrl>
     <ns:pkColumnName>result</ns:pkColumnName>
     <ns:columns>
       <ns:column columnName="result">
@@ -37,6 +49,10 @@
     </ns:columns>
   </ns:table>
   <ns:table tableName="dental_status" tableDbType="TABLE">
+    <ns:importUrl></ns:importUrl>
+    <ns:insertUrl></ns:insertUrl>
+    <ns:updateUrl></ns:updateUrl>
+    <ns:deleteUrl></ns:deleteUrl>
     <ns:pkColumnName>status</ns:pkColumnName>
     <ns:columns>
       <ns:column columnName="status">
@@ -46,6 +62,10 @@
     </ns:columns>
   </ns:table>
   <ns:table tableName="obs_mens" tableDbType="TABLE">
+    <ns:importUrl></ns:importUrl>
+    <ns:insertUrl></ns:insertUrl>
+    <ns:updateUrl></ns:updateUrl>
+    <ns:deleteUrl></ns:deleteUrl>
     <ns:pkColumnName>code</ns:pkColumnName>
     <ns:titleColumn>meaning</ns:titleColumn>
     <ns:columns>
@@ -61,6 +81,10 @@
     </ns:columns>
   </ns:table>
   <ns:table tableName="obs_remarks" tableDbType="TABLE">
+    <ns:importUrl></ns:importUrl>
+    <ns:insertUrl></ns:insertUrl>
+    <ns:updateUrl></ns:updateUrl>
+    <ns:deleteUrl></ns:deleteUrl>
     <ns:pkColumnName>remark</ns:pkColumnName>
     <ns:columns>
       <ns:column columnName="remark">
@@ -70,6 +94,10 @@
     </ns:columns>
   </ns:table>
   <ns:table tableName="tb_eye" tableDbType="TABLE">
+    <ns:importUrl></ns:importUrl>
+    <ns:insertUrl></ns:insertUrl>
+    <ns:updateUrl></ns:updateUrl>
+    <ns:deleteUrl></ns:deleteUrl>
     <ns:pkColumnName>eye</ns:pkColumnName>
     <ns:columns>
       <ns:column columnName="eye">
@@ -84,6 +112,10 @@
     </ns:columns>
   </ns:table>
   <ns:table tableName="dental_gingivitis" tableDbType="TABLE">
+    <ns:importUrl></ns:importUrl>
+    <ns:insertUrl></ns:insertUrl>
+    <ns:updateUrl></ns:updateUrl>
+    <ns:deleteUrl></ns:deleteUrl>
     <ns:pkColumnName>result</ns:pkColumnName>
     <ns:columns>
       <ns:column columnName="result">
@@ -97,6 +129,10 @@
     </ns:columns>
   </ns:table>
   <ns:table tableName="arearooms" tableDbType="TABLE">
+    <ns:importUrl></ns:importUrl>
+    <ns:insertUrl></ns:insertUrl>
+    <ns:updateUrl></ns:updateUrl>
+    <ns:deleteUrl></ns:deleteUrl>
     <ns:pkColumnName>rowid</ns:pkColumnName>
     <ns:columns>
       <ns:column columnName="rowid">
@@ -115,6 +151,10 @@
     </ns:columns>
   </ns:table>
   <ns:table tableName="bcs_score" tableDbType="TABLE">
+    <ns:importUrl></ns:importUrl>
+    <ns:insertUrl></ns:insertUrl>
+    <ns:updateUrl></ns:updateUrl>
+    <ns:deleteUrl></ns:deleteUrl>
     <ns:pkColumnName>score</ns:pkColumnName>
     <ns:titleColumn>score</ns:titleColumn>
     <ns:columns>
@@ -135,6 +175,10 @@
     </ns:columns>
   </ns:table>
   <ns:table tableName="cageclass" tableDbType="TABLE">
+    <ns:importUrl></ns:importUrl>
+    <ns:insertUrl></ns:insertUrl>
+    <ns:updateUrl></ns:updateUrl>
+    <ns:deleteUrl></ns:deleteUrl>
     <ns:pkColumnName>rowid</ns:pkColumnName>
     <ns:columns>
       <ns:column columnName="rowid">
@@ -172,6 +216,10 @@
     </ns:columns>
   </ns:table>
   <ns:table tableName="obs_tlocation" tableDbType="TABLE">
+    <ns:importUrl></ns:importUrl>
+    <ns:insertUrl></ns:insertUrl>
+    <ns:updateUrl></ns:updateUrl>
+    <ns:deleteUrl></ns:deleteUrl>
     <ns:pkColumnName>location</ns:pkColumnName>
     <ns:columns>
       <ns:column columnName="location">
@@ -189,6 +237,10 @@
     </ns:columns>
   </ns:table>
   <ns:table tableName="obs_remarks" tableDbType="TABLE">
+    <ns:importUrl></ns:importUrl>
+    <ns:insertUrl></ns:insertUrl>
+    <ns:updateUrl></ns:updateUrl>
+    <ns:deleteUrl></ns:deleteUrl>
     <ns:pkColumnName>title</ns:pkColumnName>
     <ns:columns>
       <ns:column columnName="title">
@@ -202,6 +254,10 @@
     </ns:columns>
   </ns:table>
   <ns:table tableName="conc_units" tableDbType="TABLE">
+    <ns:importUrl></ns:importUrl>
+    <ns:insertUrl></ns:insertUrl>
+    <ns:updateUrl></ns:updateUrl>
+    <ns:deleteUrl></ns:deleteUrl>
     <ns:pkColumnName>route</ns:pkColumnName>
     <ns:columns>
       <ns:column columnName="unit">
@@ -219,6 +275,10 @@
     </ns:columns>
   </ns:table>
   <ns:table tableName="volume_units" tableDbType="TABLE">
+    <ns:importUrl></ns:importUrl>
+    <ns:insertUrl></ns:insertUrl>
+    <ns:updateUrl></ns:updateUrl>
+    <ns:deleteUrl></ns:deleteUrl>
     <ns:pkColumnName>unit</ns:pkColumnName>
     <ns:columns>
       <ns:column columnName="unit">
@@ -228,7 +288,11 @@
     </ns:columns>
   </ns:table>
   <ns:table tableName="cage" tableDbType="TABLE">
-    <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr_lookups&amp;query.queryName=cage&amp;roomcage=${roomcage}</ns:tableUrl>
+    <ns:importUrl></ns:importUrl>
+    <ns:insertUrl></ns:insertUrl>
+    <ns:updateUrl></ns:updateUrl>
+    <ns:deleteUrl></ns:deleteUrl>
+    <!--<ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr_lookups&amp;query.queryName=cage&amp;roomcage=${roomcage}</ns:tableUrl>-->
     <ns:pkColumnName>roomcage</ns:pkColumnName>
     <ns:columns>
       <ns:column columnName="roomcage">
@@ -295,6 +359,10 @@
     </ns:columns>
   </ns:table>
   <ns:table tableName="viral_status" tableDbType="TABLE">
+    <ns:importUrl></ns:importUrl>
+    <ns:insertUrl></ns:insertUrl>
+    <ns:updateUrl></ns:updateUrl>
+    <ns:deleteUrl></ns:deleteUrl>
     <ns:pkColumnName>viral_status</ns:pkColumnName>
     <ns:columns>
       <ns:column columnName="viral_status">
@@ -304,6 +372,10 @@
     </ns:columns>
   </ns:table>
   <ns:table tableName="obs_behavior" tableDbType="TABLE">
+    <ns:importUrl></ns:importUrl>
+    <ns:insertUrl></ns:insertUrl>
+    <ns:updateUrl></ns:updateUrl>
+    <ns:deleteUrl></ns:deleteUrl>
     <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr_lookups&amp;query.queryName=obs_behavior&amp;cage=${code}</ns:tableUrl>
     <ns:pkColumnName>code</ns:pkColumnName>
     <ns:titleColumn>meaning</ns:titleColumn>
@@ -320,6 +392,10 @@
     </ns:columns>
   </ns:table>
   <ns:table tableName="hold_codes" tableDbType="TABLE">
+    <ns:importUrl></ns:importUrl>
+    <ns:insertUrl></ns:insertUrl>
+    <ns:updateUrl></ns:updateUrl>
+    <ns:deleteUrl></ns:deleteUrl>
     <ns:pkColumnName>code</ns:pkColumnName>
     <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr_lookups&amp;query.queryName=hold_codes&amp;code=${code}</ns:tableUrl>
     <ns:columns>
@@ -335,6 +411,10 @@
     </ns:columns>
   </ns:table>
   <ns:table tableName="yesno" tableDbType="TABLE">
+    <ns:importUrl></ns:importUrl>
+    <ns:insertUrl></ns:insertUrl>
+    <ns:updateUrl></ns:updateUrl>
+    <ns:deleteUrl></ns:deleteUrl>
     <ns:pkColumnName>value</ns:pkColumnName>
     <ns:columns>
       <ns:column columnName="value">
@@ -344,6 +424,10 @@
     </ns:columns>
   </ns:table>
   <ns:table tableName="clinremarks_category" tableDbType="TABLE">
+    <ns:importUrl></ns:importUrl>
+    <ns:insertUrl></ns:insertUrl>
+    <ns:updateUrl></ns:updateUrl>
+    <ns:deleteUrl></ns:deleteUrl>
     <ns:pkColumnName>category</ns:pkColumnName>
     <ns:columns>
       <ns:column columnName="category">
@@ -362,6 +446,10 @@
     <!--</ns:columns>-->
   <!--</ns:table>-->
   <ns:table tableName="restraint_type" tableDbType="TABLE">
+    <ns:importUrl></ns:importUrl>
+    <ns:insertUrl></ns:insertUrl>
+    <ns:updateUrl></ns:updateUrl>
+    <ns:deleteUrl></ns:deleteUrl>
     <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr_lookups&amp;query.queryName=restraint_type&amp;type=${type}</ns:tableUrl>
     <ns:pkColumnName>type</ns:pkColumnName>
     <ns:titleColumn>type</ns:titleColumn>
@@ -381,6 +469,10 @@
     </ns:columns>
   </ns:table>
   <ns:table tableName="observations_anesthesia_recovery" tableDbType="TABLE">
+    <ns:importUrl></ns:importUrl>
+    <ns:insertUrl></ns:insertUrl>
+    <ns:updateUrl></ns:updateUrl>
+    <ns:deleteUrl></ns:deleteUrl>
     <ns:pkColumnName>value</ns:pkColumnName>
     <ns:titleColumn>value</ns:titleColumn>
     <ns:columns>
@@ -395,6 +487,10 @@
     </ns:columns>
   </ns:table>
   <ns:table tableName="obs_breeding" tableDbType="TABLE">
+    <ns:importUrl></ns:importUrl>
+    <ns:insertUrl></ns:insertUrl>
+    <ns:updateUrl></ns:updateUrl>
+    <ns:deleteUrl></ns:deleteUrl>
     <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr_lookups&amp;query.queryName=obs_breeding&amp;code=${code}</ns:tableUrl>
     <ns:pkColumnName>code</ns:pkColumnName>
     <ns:titleColumn>meaning</ns:titleColumn>
@@ -411,6 +507,10 @@
     </ns:columns>
   </ns:table>
   <ns:table tableName="death_codes" tableDbType="TABLE">
+    <ns:importUrl></ns:importUrl>
+    <ns:insertUrl></ns:insertUrl>
+    <ns:updateUrl></ns:updateUrl>
+    <ns:deleteUrl></ns:deleteUrl>
     <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr_lookups&amp;query.queryName=death_codes&amp;code=${code}</ns:tableUrl>
     <ns:pkColumnName>code</ns:pkColumnName>
     <ns:columns>
@@ -426,6 +526,10 @@
     </ns:columns>
   </ns:table>
   <ns:table tableName="death_cause" tableDbType="TABLE">
+    <ns:importUrl></ns:importUrl>
+    <ns:insertUrl></ns:insertUrl>
+    <ns:updateUrl></ns:updateUrl>
+    <ns:deleteUrl></ns:deleteUrl>
     <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr_lookups&amp;query.queryName=death_cause&amp;cause=${cause}</ns:tableUrl>
     <ns:pkColumnName>cause</ns:pkColumnName>
     <ns:columns>
@@ -436,6 +540,10 @@
     </ns:columns>
   </ns:table>
   <ns:table tableName="death_manner" tableDbType="TABLE">
+    <ns:importUrl></ns:importUrl>
+    <ns:insertUrl></ns:insertUrl>
+    <ns:updateUrl></ns:updateUrl>
+    <ns:deleteUrl></ns:deleteUrl>
     <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr_lookups&amp;query.queryName=death_manner&amp;manner=${manner}</ns:tableUrl>
     <ns:pkColumnName>manner</ns:pkColumnName>
     <ns:columns>
@@ -446,6 +554,10 @@
     </ns:columns>
   </ns:table>
   <ns:table tableName="obs_other" tableDbType="TABLE">
+    <ns:importUrl></ns:importUrl>
+    <ns:insertUrl></ns:insertUrl>
+    <ns:updateUrl></ns:updateUrl>
+    <ns:deleteUrl></ns:deleteUrl>
     <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr_lookups&amp;query.queryName=obs_other&amp;code=${code}</ns:tableUrl>
     <ns:pkColumnName>code</ns:pkColumnName>
     <ns:titleColumn>meaning</ns:titleColumn>
@@ -462,6 +574,10 @@
     </ns:columns>
   </ns:table>
   <ns:table tableName="pe_region" tableDbType="TABLE">
+    <ns:importUrl></ns:importUrl>
+    <ns:insertUrl></ns:insertUrl>
+    <ns:updateUrl></ns:updateUrl>
+    <ns:deleteUrl></ns:deleteUrl>
     <ns:pkColumnName>region</ns:pkColumnName>
     <ns:columns>
       <ns:column columnName="region">
@@ -471,6 +587,10 @@
     </ns:columns>
   </ns:table>
   <ns:table tableName="dental_priority" tableDbType="TABLE">
+    <ns:importUrl></ns:importUrl>
+    <ns:insertUrl></ns:insertUrl>
+    <ns:updateUrl></ns:updateUrl>
+    <ns:deleteUrl></ns:deleteUrl>
     <ns:pkColumnName>priority</ns:pkColumnName>
     <ns:columns>
       <ns:column columnName="priority">
@@ -484,6 +604,10 @@
     </ns:columns>
   </ns:table>
   <ns:table tableName="mhc_institutions" tableDbType="TABLE">
+    <ns:importUrl></ns:importUrl>
+    <ns:insertUrl></ns:insertUrl>
+    <ns:updateUrl></ns:updateUrl>
+    <ns:deleteUrl></ns:deleteUrl>
     <ns:pkColumnName>technique</ns:pkColumnName>
     <ns:columns>
       <ns:column columnName="technique">
@@ -493,6 +617,10 @@
     </ns:columns>
   </ns:table>
   <ns:table tableName="routes" tableDbType="TABLE">
+    <ns:importUrl></ns:importUrl>
+    <ns:insertUrl></ns:insertUrl>
+    <ns:updateUrl></ns:updateUrl>
+    <ns:deleteUrl></ns:deleteUrl>
     <ns:pkColumnName>route</ns:pkColumnName>
     <ns:columns>
       <ns:column columnName="route">
@@ -506,6 +634,10 @@
     </ns:columns>
   </ns:table>
   <ns:table tableName="areas" tableDbType="TABLE">
+    <ns:importUrl></ns:importUrl>
+    <ns:insertUrl></ns:insertUrl>
+    <ns:updateUrl></ns:updateUrl>
+    <ns:deleteUrl></ns:deleteUrl>
     <ns:pkColumnName>area</ns:pkColumnName>
     <ns:columns>
       <ns:column columnName="area">
@@ -515,6 +647,10 @@
     </ns:columns>
   </ns:table>
   <ns:table tableName="bacteriology_sensitivity" tableDbType="TABLE">
+    <ns:importUrl></ns:importUrl>
+    <ns:insertUrl></ns:insertUrl>
+    <ns:updateUrl></ns:updateUrl>
+    <ns:deleteUrl></ns:deleteUrl>
     <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr_lookups&amp;query.queryName=bacteriology_sensitivity&amp;code=${code}</ns:tableUrl>
     <ns:pkColumnName>code</ns:pkColumnName>
     <ns:columns>
@@ -530,6 +666,10 @@
     </ns:columns>
   </ns:table>
   <ns:table tableName="clinpath_status" tableDbType="TABLE">
+    <ns:importUrl></ns:importUrl>
+    <ns:insertUrl></ns:insertUrl>
+    <ns:updateUrl></ns:updateUrl>
+    <ns:deleteUrl></ns:deleteUrl>
     <ns:pkColumnName>status</ns:pkColumnName>
     <ns:columns>
       <ns:column columnName="status">
@@ -539,6 +679,10 @@
     </ns:columns>
   </ns:table>
     <ns:table tableName="blood_draw_services" tableDbType="TABLE">
+    <ns:importUrl></ns:importUrl>
+    <ns:insertUrl></ns:insertUrl>
+    <ns:updateUrl></ns:updateUrl>
+    <ns:deleteUrl></ns:deleteUrl>
       <ns:pkColumnName>service</ns:pkColumnName>
       <ns:columns>
         <ns:column columnName="service">
@@ -548,6 +692,10 @@
       </ns:columns>
     </ns:table>
   <ns:table tableName="request_priority" tableDbType="TABLE">
+    <ns:importUrl></ns:importUrl>
+    <ns:insertUrl></ns:insertUrl>
+    <ns:updateUrl></ns:updateUrl>
+    <ns:deleteUrl></ns:deleteUrl>
     <ns:pkColumnName>priority</ns:pkColumnName>
     <ns:columns>
       <ns:column columnName="priority">
@@ -557,6 +705,10 @@
     </ns:columns>
   </ns:table>
   <ns:table tableName="clinpath_tests" tableDbType="TABLE">
+    <ns:importUrl></ns:importUrl>
+    <ns:insertUrl></ns:insertUrl>
+    <ns:updateUrl></ns:updateUrl>
+    <ns:deleteUrl></ns:deleteUrl>
     <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr_lookups&amp;query.queryName=clinpath_tests&amp;testname=${testname}</ns:tableUrl>
     <ns:pkColumnName>status</ns:pkColumnName>
     <ns:columns>
@@ -570,6 +722,10 @@
       </ns:column>
       <ns:column columnName="dataset">
         <ns:datatype>varchar</ns:datatype>
+        <ns:scale>50</ns:scale>
+      </ns:column>
+      <ns:column columnName="alertOnComplete">
+        <ns:datatype>bool</ns:datatype>
         <ns:scale>50</ns:scale>
       </ns:column>
     </ns:columns>
@@ -602,27 +758,50 @@
       <!--</ns:column>-->
     <!--</ns:columns>-->
   <!--</ns:table>-->
-  <ns:table tableName="lab_tests" tableDbType="TABLE">
-    <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr_lookups&amp;query.queryName=lab_tests&amp;testid=${testid}</ns:tableUrl>
-    <ns:pkColumnName>testid</ns:pkColumnName>
-    <ns:columns>
-      <ns:column columnName="testid">
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>100</ns:scale>
-      </ns:column>
-      <ns:column columnName="name">
-        <ns:nullable>true</ns:nullable>
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>100</ns:scale>
-      </ns:column>
-      <ns:column columnName="units">
-        <ns:nullable>true</ns:nullable>
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>100</ns:scale>
-      </ns:column>
-    </ns:columns>
-  </ns:table>
+  <!--<ns:table tableName="lab_tests" tableDbType="TABLE">-->
+    <!--<ns:importUrl></ns:importUrl>-->
+    <!--<ns:insertUrl></ns:insertUrl>-->
+    <!--<ns:updateUrl></ns:updateUrl>-->
+    <!--<ns:deleteUrl></ns:deleteUrl>-->
+    <!--<ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr_lookups&amp;query.queryName=lab_tests&amp;testid=${testid}</ns:tableUrl>-->
+    <!--<ns:pkColumnName>testid</ns:pkColumnName>-->
+    <!--<ns:columns>-->
+      <!--<ns:column columnName="testid">-->
+        <!--<ns:datatype>varchar</ns:datatype>-->
+        <!--<ns:scale>100</ns:scale>-->
+      <!--</ns:column>-->
+      <!--<ns:column columnName="name">-->
+        <!--<ns:nullable>true</ns:nullable>-->
+        <!--<ns:datatype>varchar</ns:datatype>-->
+        <!--<ns:scale>100</ns:scale>-->
+      <!--</ns:column>-->
+      <!--<ns:column columnName="units">-->
+        <!--<ns:nullable>true</ns:nullable>-->
+        <!--<ns:datatype>varchar</ns:datatype>-->
+        <!--<ns:scale>100</ns:scale>-->
+      <!--</ns:column>-->
+      <!--<ns:column columnName="alertOnAbnormal">-->
+        <!--<ns:columnTitle>Alert On Abnormal</ns:columnTitle>-->
+        <!--<ns:datatype>bool</ns:datatype>-->
+        <!--<ns:scale>50</ns:scale>-->
+      <!--</ns:column>-->
+      <!--<ns:column columnName="sort_order">-->
+        <!--<ns:nullable>true</ns:nullable>-->
+        <!--<ns:datatype>integer</ns:datatype>-->
+        <!--<ns:scale>100</ns:scale>-->
+      <!--</ns:column>-->
+      <!--<ns:column columnName="categories">-->
+        <!--<ns:nullable>true</ns:nullable>-->
+        <!--<ns:datatype>varchar</ns:datatype>-->
+        <!--<ns:scale>100</ns:scale>-->
+      <!--</ns:column>-->
+    <!--</ns:columns>-->
+  <!--</ns:table>-->
   <ns:table tableName="alopecia_cause" tableDbType="TABLE">
+    <ns:importUrl></ns:importUrl>
+    <ns:insertUrl></ns:insertUrl>
+    <ns:updateUrl></ns:updateUrl>
+    <ns:deleteUrl></ns:deleteUrl>
     <ns:pkColumnName>cause</ns:pkColumnName>
     <ns:columns>
       <ns:column columnName="cause">
@@ -632,6 +811,10 @@
     </ns:columns>
   </ns:table>
   <ns:table tableName="condition_codes" tableDbType="TABLE">
+    <ns:importUrl></ns:importUrl>
+    <ns:insertUrl></ns:insertUrl>
+    <ns:updateUrl></ns:updateUrl>
+    <ns:deleteUrl></ns:deleteUrl>
     <ns:pkColumnName>code</ns:pkColumnName>
     <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr_lookups&amp;query.queryName=condition_codes&amp;code=${code}</ns:tableUrl>
     <ns:columns>
@@ -647,6 +830,10 @@
     </ns:columns>
   </ns:table>
   <ns:table tableName="tb_result" tableDbType="TABLE">
+    <ns:importUrl></ns:importUrl>
+    <ns:insertUrl></ns:insertUrl>
+    <ns:updateUrl></ns:updateUrl>
+    <ns:deleteUrl></ns:deleteUrl>
     <ns:pkColumnName>result</ns:pkColumnName>
     <ns:columns>
       <ns:column columnName="result">
@@ -656,6 +843,10 @@
     </ns:columns>
   </ns:table>
   <ns:table tableName="species_codes" tableDbType="TABLE">
+    <ns:importUrl></ns:importUrl>
+    <ns:insertUrl></ns:insertUrl>
+    <ns:updateUrl></ns:updateUrl>
+    <ns:deleteUrl></ns:deleteUrl>
     <ns:pkColumnName>code</ns:pkColumnName>
     <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr_lookups&amp;query.queryName=species_codes&amp;code=${code}</ns:tableUrl>
     <ns:columns>
@@ -676,6 +867,10 @@
     </ns:columns>
   </ns:table>
   <ns:table tableName="obs_feces" tableDbType="TABLE">
+    <ns:importUrl></ns:importUrl>
+    <ns:insertUrl></ns:insertUrl>
+    <ns:updateUrl></ns:updateUrl>
+    <ns:deleteUrl></ns:deleteUrl>
     <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr_lookups&amp;query.queryName=obs_feces&amp;code=${code}</ns:tableUrl>
     <ns:pkColumnName>code</ns:pkColumnName>
     <ns:titleColumn>meaning</ns:titleColumn>
@@ -692,6 +887,10 @@
     </ns:columns>
   </ns:table>
   <ns:table tableName="gender_codes" tableDbType="TABLE">
+    <ns:importUrl></ns:importUrl>
+    <ns:insertUrl></ns:insertUrl>
+    <ns:updateUrl></ns:updateUrl>
+    <ns:deleteUrl></ns:deleteUrl>
     <ns:pkColumnName>code</ns:pkColumnName>
     <ns:titleColumn>meaning</ns:titleColumn>
     <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr_lookups&amp;query.queryName=gender_codes&amp;code=${code}</ns:tableUrl>
@@ -715,6 +914,10 @@
     </ns:columns>
   </ns:table>
   <ns:table tableName="behavior_category" tableDbType="TABLE">
+    <ns:importUrl></ns:importUrl>
+    <ns:insertUrl></ns:insertUrl>
+    <ns:updateUrl></ns:updateUrl>
+    <ns:deleteUrl></ns:deleteUrl>
     <ns:pkColumnName>category</ns:pkColumnName>
     <ns:columns>
       <ns:column columnName="category">
@@ -724,6 +927,10 @@
     </ns:columns>
   </ns:table>
   <ns:table tableName="dosage_units" tableDbType="TABLE">
+    <ns:importUrl></ns:importUrl>
+    <ns:insertUrl></ns:insertUrl>
+    <ns:updateUrl></ns:updateUrl>
+    <ns:deleteUrl></ns:deleteUrl>
     <ns:pkColumnName>unit</ns:pkColumnName>
     <ns:columns>
       <ns:column columnName="unit">
@@ -741,6 +948,10 @@
     </ns:columns>
   </ns:table>
   <ns:table tableName="amount_units" tableDbType="TABLE">
+    <ns:importUrl></ns:importUrl>
+    <ns:insertUrl></ns:insertUrl>
+    <ns:updateUrl></ns:updateUrl>
+    <ns:deleteUrl></ns:deleteUrl>
     <ns:pkColumnName>unit</ns:pkColumnName>
     <ns:columns>
       <ns:column columnName="unit">
@@ -750,6 +961,10 @@
     </ns:columns>
   </ns:table>
   <ns:table tableName="alopecia_score" tableDbType="TABLE">
+    <ns:importUrl></ns:importUrl>
+    <ns:insertUrl></ns:insertUrl>
+    <ns:updateUrl></ns:updateUrl>
+    <ns:deleteUrl></ns:deleteUrl>
     <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr_lookups&amp;query.queryName=alopecia_score&amp;score=${score}</ns:tableUrl>
     <ns:pkColumnName>score</ns:pkColumnName>
     <ns:columns>
@@ -765,6 +980,10 @@
     </ns:columns>
   </ns:table>
   <ns:table tableName="origin_codes" tableDbType="TABLE">
+    <ns:importUrl></ns:importUrl>
+    <ns:insertUrl></ns:insertUrl>
+    <ns:updateUrl></ns:updateUrl>
+    <ns:deleteUrl></ns:deleteUrl>
     <ns:pkColumnName>code</ns:pkColumnName>
     <ns:titleColumn>meaning</ns:titleColumn>
     <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr_lookups&amp;query.queryName=origin_codes&amp;code=${code}</ns:tableUrl>
@@ -781,6 +1000,10 @@
     </ns:columns>
   </ns:table>
   <ns:table tableName="hematology_score" tableDbType="TABLE">
+    <ns:importUrl></ns:importUrl>
+    <ns:insertUrl></ns:insertUrl>
+    <ns:updateUrl></ns:updateUrl>
+    <ns:deleteUrl></ns:deleteUrl>
     <ns:pkColumnName>score</ns:pkColumnName>
     <ns:columns>
       <ns:column columnName="score">
@@ -790,6 +1013,10 @@
     </ns:columns>
   </ns:table>
   <ns:table tableName="necropsy_perfusion_area" tableDbType="TABLE">
+    <ns:importUrl></ns:importUrl>
+    <ns:insertUrl></ns:insertUrl>
+    <ns:updateUrl></ns:updateUrl>
+    <ns:deleteUrl></ns:deleteUrl>
     <ns:pkColumnName>perfusion</ns:pkColumnName>
     <ns:columns>
       <ns:column columnName="perfusion">
@@ -799,6 +1026,10 @@
     </ns:columns>
   </ns:table>
   <ns:table tableName="hematology_morphology" tableDbType="TABLE">
+    <ns:importUrl></ns:importUrl>
+    <ns:insertUrl></ns:insertUrl>
+    <ns:updateUrl></ns:updateUrl>
+    <ns:deleteUrl></ns:deleteUrl>
     <ns:pkColumnName>morphology</ns:pkColumnName>
     <ns:columns>
       <ns:column columnName="morphology">
@@ -851,6 +1082,10 @@
     <!--</ns:columns>-->
   <!--</ns:table>-->
   <ns:table tableName="pairtest_conclusion" tableDbType="TABLE">
+    <ns:importUrl></ns:importUrl>
+    <ns:insertUrl></ns:insertUrl>
+    <ns:updateUrl></ns:updateUrl>
+    <ns:deleteUrl></ns:deleteUrl>
     <ns:pkColumnName>value</ns:pkColumnName>
     <ns:columns>
       <ns:column columnName="value">
@@ -860,6 +1095,10 @@
     </ns:columns>
   </ns:table>
   <ns:table tableName="lab_test_range" tableDbType="TABLE">
+    <ns:importUrl></ns:importUrl>
+    <ns:insertUrl></ns:insertUrl>
+    <ns:updateUrl></ns:updateUrl>
+    <ns:deleteUrl></ns:deleteUrl>
     <ns:pkColumnName>rowid</ns:pkColumnName>
     <ns:columns>
       <ns:column columnName="test">
@@ -884,14 +1123,19 @@
       </ns:column>
       <ns:column columnName="ref_range_min">
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>numeric</ns:datatype>
+        <ns:datatype>double</ns:datatype>
         <ns:scale>100</ns:scale>
       </ns:column>
       <ns:column columnName="ref_range_max">
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>numeric</ns:datatype>
+        <ns:datatype>double</ns:datatype>
         <ns:scale>100</ns:scale>
       </ns:column>
+        <ns:column columnName="type">
+          <ns:nullable>true</ns:nullable>
+          <ns:datatype>varchar</ns:datatype>
+          <ns:scale>100</ns:scale>
+        </ns:column>
       <ns:column columnName="rowid">
         <ns:datatype>serial</ns:datatype>
         <ns:isAutoInc>true</ns:isAutoInc>
@@ -900,6 +1144,10 @@
     </ns:columns>
   </ns:table>
   <ns:table tableName="necropsy_perfusion" tableDbType="TABLE">
+    <ns:importUrl></ns:importUrl>
+    <ns:insertUrl></ns:insertUrl>
+    <ns:updateUrl></ns:updateUrl>
+    <ns:deleteUrl></ns:deleteUrl>
     <ns:pkColumnName>perfusion</ns:pkColumnName>
     <ns:columns>
       <ns:column columnName="perfusion">
@@ -909,6 +1157,10 @@
     </ns:columns>
   </ns:table>
   <ns:table tableName="species" tableDbType="TABLE">
+    <ns:importUrl></ns:importUrl>
+    <ns:insertUrl></ns:insertUrl>
+    <ns:updateUrl></ns:updateUrl>
+    <ns:deleteUrl></ns:deleteUrl>
     <ns:pkColumnName>common</ns:pkColumnName>
     <ns:titleColumn>common</ns:titleColumn>
     <ns:columns>
@@ -934,6 +1186,10 @@
     </ns:columns>
   </ns:table>
   <ns:table tableName="dental_side" tableDbType="TABLE">
+    <ns:importUrl></ns:importUrl>
+    <ns:insertUrl></ns:insertUrl>
+    <ns:updateUrl></ns:updateUrl>
+    <ns:deleteUrl></ns:deleteUrl>
     <ns:pkColumnName>side</ns:pkColumnName>
     <ns:columns>
       <ns:column columnName="side">
@@ -943,6 +1199,10 @@
     </ns:columns>
   </ns:table>
   <ns:table tableName="birth_type" tableDbType="TABLE">
+    <ns:importUrl></ns:importUrl>
+    <ns:insertUrl></ns:insertUrl>
+    <ns:updateUrl></ns:updateUrl>
+    <ns:deleteUrl></ns:deleteUrl>
     <ns:pkColumnName>type</ns:pkColumnName>
     <ns:columns>
       <ns:column columnName="type">
@@ -957,6 +1217,10 @@
     </ns:columns>
   </ns:table>
   <ns:table tableName="dental_jaw" tableDbType="TABLE">
+    <ns:importUrl></ns:importUrl>
+    <ns:insertUrl></ns:insertUrl>
+    <ns:updateUrl></ns:updateUrl>
+    <ns:deleteUrl></ns:deleteUrl>
     <ns:pkColumnName>jaw</ns:pkColumnName>
     <ns:columns>
       <ns:column columnName="jaw">
@@ -966,6 +1230,10 @@
     </ns:columns>
   </ns:table>
   <ns:table tableName="months" tableDbType="TABLE">
+    <ns:importUrl></ns:importUrl>
+    <ns:insertUrl></ns:insertUrl>
+    <ns:updateUrl></ns:updateUrl>
+    <ns:deleteUrl></ns:deleteUrl>
     <ns:pkColumnName>rowid</ns:pkColumnName>
     <ns:columns>
       <ns:column columnName="rowid">
@@ -980,6 +1248,10 @@
     </ns:columns>
   </ns:table>
   <ns:table tableName="treatment_frequency" tableDbType="TABLE">
+    <ns:importUrl></ns:importUrl>
+    <ns:insertUrl></ns:insertUrl>
+    <ns:updateUrl></ns:updateUrl>
+    <ns:deleteUrl></ns:deleteUrl>
     <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr_lookups&amp;query.queryName=treatment_frequency&amp;rowid=${rowid}</ns:tableUrl>
     <ns:pkColumnName>rowid</ns:pkColumnName>
     <ns:titleColumn>meaning</ns:titleColumn>
@@ -1000,6 +1272,10 @@
     </ns:columns>
   </ns:table>
   <ns:table tableName="necropsy_condition" tableDbType="TABLE">
+    <ns:importUrl></ns:importUrl>
+    <ns:insertUrl></ns:insertUrl>
+    <ns:updateUrl></ns:updateUrl>
+    <ns:deleteUrl></ns:deleteUrl>
     <ns:pkColumnName>score</ns:pkColumnName>
     <ns:columns>
       <ns:column columnName="score">
@@ -1009,6 +1285,10 @@
     </ns:columns>
   </ns:table>
   <ns:table tableName="dental_teeth" tableDbType="TABLE">
+    <ns:importUrl></ns:importUrl>
+    <ns:insertUrl></ns:insertUrl>
+    <ns:updateUrl></ns:updateUrl>
+    <ns:deleteUrl></ns:deleteUrl>
     <ns:pkColumnName>teeth</ns:pkColumnName>
     <ns:columns>
       <ns:column columnName="teeth">
@@ -1023,6 +1303,10 @@
     </ns:columns>
   </ns:table>
   <ns:table tableName="avail_codes" tableDbType="TABLE">
+    <ns:importUrl></ns:importUrl>
+    <ns:insertUrl></ns:insertUrl>
+    <ns:updateUrl></ns:updateUrl>
+    <ns:deleteUrl></ns:deleteUrl>
     <ns:pkColumnName>code</ns:pkColumnName>
     <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr_lookups&amp;query.queryName=avail_codes&amp;code=${code}</ns:tableUrl>
     <ns:columns>
@@ -1038,6 +1322,10 @@
     </ns:columns>
   </ns:table>
   <ns:table tableName="status_codes" tableDbType="TABLE">
+    <ns:importUrl></ns:importUrl>
+    <ns:insertUrl></ns:insertUrl>
+    <ns:updateUrl></ns:updateUrl>
+    <ns:deleteUrl></ns:deleteUrl>
     <ns:pkColumnName>code</ns:pkColumnName>
     <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr_lookups&amp;query.queryName=status_codes&amp;code=${code}</ns:tableUrl>
     <ns:columns>
@@ -1053,6 +1341,10 @@
     </ns:columns>
   </ns:table>
     <ns:table tableName="calculated_status_codes" tableDbType="TABLE">
+    <ns:importUrl></ns:importUrl>
+    <ns:insertUrl></ns:insertUrl>
+    <ns:updateUrl></ns:updateUrl>
+    <ns:deleteUrl></ns:deleteUrl>
       <ns:pkColumnName>code</ns:pkColumnName>
       <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr_lookups&amp;query.queryName=calculated_status_codes&amp;code=${code}</ns:tableUrl>
       <ns:columns>
@@ -1068,6 +1360,10 @@
       </ns:columns>
     </ns:table>
   <ns:table tableName="ageclass" tableDbType="TABLE">
+    <ns:importUrl></ns:importUrl>
+    <ns:insertUrl></ns:insertUrl>
+    <ns:updateUrl></ns:updateUrl>
+    <ns:deleteUrl></ns:deleteUrl>
     <ns:pkColumnName>rowid</ns:pkColumnName>
     <ns:columns>
       <ns:column columnName="species">
@@ -1098,6 +1394,10 @@
     </ns:columns>
   </ns:table>
   <ns:table tableName="encounter_types" tableDbType="TABLE">
+    <ns:importUrl></ns:importUrl>
+    <ns:insertUrl></ns:insertUrl>
+    <ns:updateUrl></ns:updateUrl>
+    <ns:deleteUrl></ns:deleteUrl>
     <ns:pkColumnName>type</ns:pkColumnName>
     <ns:columns>
       <ns:column columnName="type">
@@ -1125,6 +1425,10 @@
     <!--</ns:columns>-->
   <!--</ns:table>-->
   <ns:table tableName="charge_items" tableDbType="TABLE">
+    <ns:importUrl></ns:importUrl>
+    <ns:insertUrl></ns:insertUrl>
+    <ns:updateUrl></ns:updateUrl>
+    <ns:deleteUrl></ns:deleteUrl>
     <ns:pkColumnName>rowid</ns:pkColumnName>
     <ns:titleColumn>description</ns:titleColumn>
     <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr_lookups&amp;query.queryName=charge_items&amp;rowid=${rowid}</ns:tableUrl>
@@ -1192,6 +1496,10 @@
     </ns:columns>
   </ns:table>
   <ns:table tableName="blood_draw_tube_type" tableDbType="TABLE">
+    <ns:importUrl></ns:importUrl>
+    <ns:insertUrl></ns:insertUrl>
+    <ns:updateUrl></ns:updateUrl>
+    <ns:deleteUrl></ns:deleteUrl>
     <ns:pkColumnName>type</ns:pkColumnName>
     <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr_lookups&amp;query.queryName=blood_draw_tube_type&amp;type=${type}</ns:tableUrl>
     <ns:columns>
@@ -1206,6 +1514,10 @@
     </ns:columns>
   </ns:table>
   <ns:table tableName="snomed" tableDbType="TABLE">
+    <ns:importUrl></ns:importUrl>
+    <ns:insertUrl></ns:insertUrl>
+    <ns:updateUrl></ns:updateUrl>
+    <ns:deleteUrl></ns:deleteUrl>
     <ns:pkColumnName>code</ns:pkColumnName>
     <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr_lookups&amp;query.queryName=snomed&amp;code=${code}</ns:tableUrl>
     <ns:titleColumn>meaning</ns:titleColumn>
@@ -1257,6 +1569,10 @@
     </ns:columns>
   </ns:table>
   <ns:table tableName="snomed_subset_codes" tableDbType="TABLE">
+    <ns:importUrl></ns:importUrl>
+    <ns:insertUrl></ns:insertUrl>
+    <ns:updateUrl></ns:updateUrl>
+    <ns:deleteUrl></ns:deleteUrl>
     <ns:pkColumnName>rowid</ns:pkColumnName>
     <ns:columns>
         <ns:column columnName="rowid">
@@ -1329,6 +1645,10 @@
     </ns:columns>
   </ns:table>
   <ns:table tableName="snomed_subsets" tableDbType="TABLE">
+    <ns:importUrl></ns:importUrl>
+    <ns:insertUrl></ns:insertUrl>
+    <ns:updateUrl></ns:updateUrl>
+    <ns:deleteUrl></ns:deleteUrl>
     <ns:pkColumnName>subset</ns:pkColumnName>
     <ns:columns>
         <ns:column columnName="subset">
@@ -1378,6 +1698,10 @@
     </ns:columns>
   </ns:table>
   <ns:table tableName="normal_abnormal" tableDbType="TABLE">
+    <ns:importUrl></ns:importUrl>
+    <ns:insertUrl></ns:insertUrl>
+    <ns:updateUrl></ns:updateUrl>
+    <ns:deleteUrl></ns:deleteUrl>
     <ns:pkColumnName>state</ns:pkColumnName>
     <ns:columns>
       <ns:column columnName="state">
@@ -1387,6 +1711,10 @@
     </ns:columns>
   </ns:table>
     <ns:table tableName="urinalysis_method" tableDbType="TABLE">
+    <ns:importUrl></ns:importUrl>
+    <ns:insertUrl></ns:insertUrl>
+    <ns:updateUrl></ns:updateUrl>
+    <ns:deleteUrl></ns:deleteUrl>
       <ns:pkColumnName>method</ns:pkColumnName>
       <ns:columns>
         <ns:column columnName="method">
@@ -1396,6 +1724,10 @@
       </ns:columns>
     </ns:table>
     <ns:table tableName="virology_source" tableDbType="TABLE">
+    <ns:importUrl></ns:importUrl>
+    <ns:insertUrl></ns:insertUrl>
+    <ns:updateUrl></ns:updateUrl>
+    <ns:deleteUrl></ns:deleteUrl>
       <ns:pkColumnName>source</ns:pkColumnName>
       <ns:columns>
         <ns:column columnName="source">
@@ -1409,6 +1741,10 @@
       </ns:columns>
     </ns:table>
     <ns:table tableName="oor_indicators" tableDbType="TABLE">
+    <ns:importUrl></ns:importUrl>
+    <ns:insertUrl></ns:insertUrl>
+    <ns:updateUrl></ns:updateUrl>
+    <ns:deleteUrl></ns:deleteUrl>
       <ns:pkColumnName>indicator</ns:pkColumnName>
       <ns:columns>
         <ns:column columnName="indicator">
@@ -1418,6 +1754,10 @@
       </ns:columns>
     </ns:table>
     <ns:table tableName="weight_ranges" tableDbType="TABLE">
+    <ns:importUrl></ns:importUrl>
+    <ns:insertUrl></ns:insertUrl>
+    <ns:updateUrl></ns:updateUrl>
+    <ns:deleteUrl></ns:deleteUrl>
       <ns:pkColumnName>species</ns:pkColumnName>
       <ns:columns>
         <ns:column columnName="species">
@@ -1441,6 +1781,10 @@
       </ns:columns>
     </ns:table>
     <ns:table tableName="problem_list_category" tableDbType="TABLE">
+    <ns:importUrl></ns:importUrl>
+    <ns:insertUrl></ns:insertUrl>
+    <ns:updateUrl></ns:updateUrl>
+    <ns:deleteUrl></ns:deleteUrl>
       <ns:pkColumnName>category</ns:pkColumnName>
       <ns:columns>
         <ns:column columnName="category">
@@ -1450,6 +1794,10 @@
       </ns:columns>
     </ns:table>
     <ns:table tableName="blood_billed_by" tableDbType="TABLE">
+    <ns:importUrl></ns:importUrl>
+    <ns:insertUrl></ns:insertUrl>
+    <ns:updateUrl></ns:updateUrl>
+    <ns:deleteUrl></ns:deleteUrl>
       <ns:pkColumnName>code</ns:pkColumnName>
       <ns:titleColumn>title</ns:titleColumn>
       <ns:columns>
@@ -1464,6 +1812,10 @@
       </ns:columns>
     </ns:table>
     <ns:table tableName="housing_reason" tableDbType="TABLE">
+    <ns:importUrl></ns:importUrl>
+    <ns:insertUrl></ns:insertUrl>
+    <ns:updateUrl></ns:updateUrl>
+    <ns:deleteUrl></ns:deleteUrl>
       <ns:pkColumnName>reason</ns:pkColumnName>
       <ns:columns>
         <ns:column columnName="reason">
@@ -1473,6 +1825,10 @@
       </ns:columns>
     </ns:table>
     <ns:table tableName="histology_stain" tableDbType="TABLE">
+    <ns:importUrl></ns:importUrl>
+    <ns:insertUrl></ns:insertUrl>
+    <ns:updateUrl></ns:updateUrl>
+    <ns:deleteUrl></ns:deleteUrl>
       <ns:pkColumnName>stain</ns:pkColumnName>
       <ns:columns>
         <ns:column columnName="stain">
@@ -1482,15 +1838,43 @@
       </ns:columns>
     </ns:table>
     <ns:table tableName="virology_tests" tableDbType="TABLE">
+    <ns:importUrl></ns:importUrl>
+    <ns:insertUrl></ns:insertUrl>
+    <ns:updateUrl></ns:updateUrl>
+    <ns:deleteUrl></ns:deleteUrl>
       <ns:pkColumnName>testid</ns:pkColumnName>
       <ns:columns>
         <ns:column columnName="testid">
           <ns:datatype>varchar</ns:datatype>
           <ns:scale>100</ns:scale>
         </ns:column>
+          <ns:column columnName="alertOnAbnormal">
+            <ns:columnTitle>Alert On Abnormal</ns:columnTitle>
+            <ns:datatype>bool</ns:datatype>
+            <ns:scale>50</ns:scale>
+          </ns:column>
+          <ns:column columnName="alertOnAny">
+            <ns:columnTitle>Alert On Any</ns:columnTitle>
+            <ns:datatype>bool</ns:datatype>
+            <ns:scale>50</ns:scale>
+          </ns:column>
+          <ns:column columnName="includeInPanel">
+            <ns:columnTitle>Include In Panel</ns:columnTitle>
+            <ns:datatype>bool</ns:datatype>
+            <ns:scale>50</ns:scale>
+          </ns:column>
+          <ns:column columnName="sort_order">
+            <ns:nullable>true</ns:nullable>
+            <ns:datatype>integer</ns:datatype>
+            <ns:scale>100</ns:scale>
+          </ns:column>
       </ns:columns>
     </ns:table>
     <ns:table tableName="qualitative_results" tableDbType="TABLE">
+    <ns:importUrl></ns:importUrl>
+    <ns:insertUrl></ns:insertUrl>
+    <ns:updateUrl></ns:updateUrl>
+    <ns:deleteUrl></ns:deleteUrl>
       <ns:pkColumnName>result</ns:pkColumnName>
       <ns:columns>
         <ns:column columnName="result">
@@ -1500,6 +1884,10 @@
       </ns:columns>
     </ns:table>
   <ns:table tableName="treatment_codes" tableDbType="TABLE">
+    <ns:importUrl></ns:importUrl>
+    <ns:insertUrl></ns:insertUrl>
+    <ns:updateUrl></ns:updateUrl>
+    <ns:deleteUrl></ns:deleteUrl>
     <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr_lookups&amp;query.queryName=treatment_codes&amp;rowid=${rowid}</ns:tableUrl>
     <ns:pkColumnName>meaning</ns:pkColumnName>
     <ns:titleColumn>meaning</ns:titleColumn>
@@ -1564,6 +1952,10 @@
     </ns:columns>
   </ns:table>
     <ns:table tableName="tissue_recipients" tableDbType="TABLE">
+    <ns:importUrl></ns:importUrl>
+    <ns:insertUrl></ns:insertUrl>
+    <ns:updateUrl></ns:updateUrl>
+    <ns:deleteUrl></ns:deleteUrl>
       <ns:pkColumnName>result</ns:pkColumnName>
       <ns:columns>
         <ns:column columnName="recipient">
@@ -1573,6 +1965,10 @@
       </ns:columns>
     </ns:table>
   <ns:table tableName="parasitology_method" tableDbType="TABLE">
+    <ns:importUrl></ns:importUrl>
+    <ns:insertUrl></ns:insertUrl>
+    <ns:updateUrl></ns:updateUrl>
+    <ns:deleteUrl></ns:deleteUrl>
     <ns:pkColumnName>method</ns:pkColumnName>
     <ns:columns>
       <ns:column columnName="method">
@@ -1582,6 +1978,10 @@
     </ns:columns>
   </ns:table>
     <ns:table tableName="bacteriology_method" tableDbType="TABLE">
+    <ns:importUrl></ns:importUrl>
+    <ns:insertUrl></ns:insertUrl>
+    <ns:updateUrl></ns:updateUrl>
+    <ns:deleteUrl></ns:deleteUrl>
       <ns:pkColumnName>method</ns:pkColumnName>
       <ns:columns>
         <ns:column columnName="method">
@@ -1591,6 +1991,10 @@
       </ns:columns>
     </ns:table>
     <ns:table tableName="clinpath_collection_method" tableDbType="TABLE">
+    <ns:importUrl></ns:importUrl>
+    <ns:insertUrl></ns:insertUrl>
+    <ns:updateUrl></ns:updateUrl>
+    <ns:deleteUrl></ns:deleteUrl>
       <ns:pkColumnName>method</ns:pkColumnName>
       <ns:columns>
         <ns:column columnName="method">
@@ -1600,6 +2004,10 @@
       </ns:columns>
     </ns:table>
     <ns:table tableName="clinpath_sampletype" tableDbType="TABLE">
+    <ns:importUrl></ns:importUrl>
+    <ns:insertUrl></ns:insertUrl>
+    <ns:updateUrl></ns:updateUrl>
+    <ns:deleteUrl></ns:deleteUrl>
       <ns:pkColumnName>method</ns:pkColumnName>
       <ns:columns>
         <ns:column columnName="sampletype">
@@ -1609,6 +2017,10 @@
       </ns:columns>
     </ns:table>
     <ns:table tableName="clinpath_types" tableDbType="TABLE">
+    <ns:importUrl></ns:importUrl>
+    <ns:insertUrl></ns:insertUrl>
+    <ns:updateUrl></ns:updateUrl>
+    <ns:deleteUrl></ns:deleteUrl>
       <ns:pkColumnName>type</ns:pkColumnName>
       <ns:columns>
         <ns:column columnName="type">
@@ -1618,6 +2030,10 @@
       </ns:columns>
     </ns:table>
     <ns:table tableName="urinalysis_qualitative_results" tableDbType="TABLE">
+    <ns:importUrl></ns:importUrl>
+    <ns:insertUrl></ns:insertUrl>
+    <ns:updateUrl></ns:updateUrl>
+    <ns:deleteUrl></ns:deleteUrl>
       <ns:pkColumnName>result</ns:pkColumnName>
       <ns:columns>
         <ns:column columnName="result">
@@ -1627,6 +2043,10 @@
       </ns:columns>
     </ns:table>
     <ns:table tableName="blood_tube_volumes" tableDbType="TABLE">
+    <ns:importUrl></ns:importUrl>
+    <ns:insertUrl></ns:insertUrl>
+    <ns:updateUrl></ns:updateUrl>
+    <ns:deleteUrl></ns:deleteUrl>
       <ns:pkColumnName>volume</ns:pkColumnName>
       <ns:columns>
         <ns:column columnName="tube_types">
@@ -1640,6 +2060,10 @@
       </ns:columns>
     </ns:table>
     <ns:table tableName="tattoo_status" tableDbType="TABLE">
+    <ns:importUrl></ns:importUrl>
+    <ns:insertUrl></ns:insertUrl>
+    <ns:updateUrl></ns:updateUrl>
+    <ns:deleteUrl></ns:deleteUrl>
       <ns:pkColumnName>status</ns:pkColumnName>
       <ns:columns>
         <ns:column columnName="status">
@@ -1649,6 +2073,10 @@
       </ns:columns>
     </ns:table>
     <ns:table tableName="pe_remarks" tableDbType="TABLE">
+    <ns:importUrl></ns:importUrl>
+    <ns:insertUrl></ns:insertUrl>
+    <ns:updateUrl></ns:updateUrl>
+    <ns:deleteUrl></ns:deleteUrl>
       <ns:pkColumnName>remark</ns:pkColumnName>
       <ns:columns>
         <ns:column columnName="remark">
@@ -1659,6 +2087,10 @@
     </ns:table>
 
     <ns:table tableName="blood_code_prefixes" tableDbType="TABLE">
+    <ns:importUrl></ns:importUrl>
+    <ns:insertUrl></ns:insertUrl>
+    <ns:updateUrl></ns:updateUrl>
+    <ns:deleteUrl></ns:deleteUrl>
       <ns:pkColumnName>prefix</ns:pkColumnName>
       <ns:columns>
         <ns:column columnName="prefix">
@@ -1668,6 +2100,10 @@
       </ns:columns>
     </ns:table>
     <ns:table tableName="snomed_qualifiers" tableDbType="TABLE">
+    <ns:importUrl></ns:importUrl>
+    <ns:insertUrl></ns:insertUrl>
+    <ns:updateUrl></ns:updateUrl>
+    <ns:deleteUrl></ns:deleteUrl>
       <ns:pkColumnName>qualifier</ns:pkColumnName>
       <ns:columns>
         <ns:column columnName="qualifier">
@@ -1677,6 +2113,10 @@
       </ns:columns>
     </ns:table>
     <ns:table tableName="preservation_solutions" tableDbType="TABLE">
+    <ns:importUrl></ns:importUrl>
+    <ns:insertUrl></ns:insertUrl>
+    <ns:updateUrl></ns:updateUrl>
+    <ns:deleteUrl></ns:deleteUrl>
       <ns:pkColumnName>solution</ns:pkColumnName>
       <ns:columns>
         <ns:column columnName="solution">
@@ -1687,6 +2127,10 @@
     </ns:table>
 
   <ns:table tableName="urinalysis_tests" tableDbType="TABLE">
+    <ns:importUrl></ns:importUrl>
+    <ns:insertUrl></ns:insertUrl>
+    <ns:updateUrl></ns:updateUrl>
+    <ns:deleteUrl></ns:deleteUrl>
     <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr_lookups&amp;query.queryName=urinalysis_tests&amp;testid=${testid}</ns:tableUrl>
     <ns:pkColumnName>testid</ns:pkColumnName>
     <ns:columns>
@@ -1705,9 +2149,33 @@
         <ns:datatype>varchar</ns:datatype>
         <ns:scale>100</ns:scale>
       </ns:column>
+      <ns:column columnName="alertOnAbnormal">
+        <ns:columnTitle>Alert On Abnormal</ns:columnTitle>
+        <ns:datatype>bool</ns:datatype>
+        <ns:scale>50</ns:scale>
+      </ns:column>
+      <ns:column columnName="alertOnAny">
+        <ns:columnTitle>Alert On Any</ns:columnTitle>
+        <ns:datatype>bool</ns:datatype>
+        <ns:scale>50</ns:scale>
+      </ns:column>
+      <ns:column columnName="includeInPanel">
+        <ns:columnTitle>Include In Panel</ns:columnTitle>
+        <ns:datatype>bool</ns:datatype>
+        <ns:scale>50</ns:scale>
+      </ns:column>
+      <ns:column columnName="sort_order">
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>integer</ns:datatype>
+        <ns:scale>100</ns:scale>
+      </ns:column>
     </ns:columns>
   </ns:table>
   <ns:table tableName="immunology_tests" tableDbType="TABLE">
+    <ns:importUrl></ns:importUrl>
+    <ns:insertUrl></ns:insertUrl>
+    <ns:updateUrl></ns:updateUrl>
+    <ns:deleteUrl></ns:deleteUrl>
     <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr_lookups&amp;query.queryName=immunology_tests&amp;testid=${testid}</ns:tableUrl>
     <ns:pkColumnName>testid</ns:pkColumnName>
     <ns:columns>
@@ -1726,9 +2194,33 @@
         <ns:datatype>varchar</ns:datatype>
         <ns:scale>100</ns:scale>
       </ns:column>
+      <ns:column columnName="alertOnAbnormal">
+        <ns:columnTitle>Alert On Abnormal</ns:columnTitle>
+        <ns:datatype>bool</ns:datatype>
+        <ns:scale>50</ns:scale>
+      </ns:column>
+      <ns:column columnName="alertOnAny">
+        <ns:columnTitle>Alert On Any</ns:columnTitle>
+        <ns:datatype>bool</ns:datatype>
+        <ns:scale>50</ns:scale>
+      </ns:column>
+      <ns:column columnName="includeInPanel">
+        <ns:columnTitle>Include In Panel</ns:columnTitle>
+        <ns:datatype>bool</ns:datatype>
+        <ns:scale>50</ns:scale>
+      </ns:column>
+      <ns:column columnName="sort_order">
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>integer</ns:datatype>
+        <ns:scale>100</ns:scale>
+      </ns:column>
     </ns:columns>
   </ns:table>
   <ns:table tableName="chemistry_tests" tableDbType="TABLE">
+    <ns:importUrl></ns:importUrl>
+    <ns:insertUrl></ns:insertUrl>
+    <ns:updateUrl></ns:updateUrl>
+    <ns:deleteUrl></ns:deleteUrl>
     <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr_lookups&amp;query.queryName=chemistry_tests&amp;testid=${testid}</ns:tableUrl>
     <ns:pkColumnName>testid</ns:pkColumnName>
     <ns:columns>
@@ -1752,9 +2244,33 @@
         <ns:datatype>varchar</ns:datatype>
         <ns:scale>500</ns:scale>
       </ns:column>
+      <ns:column columnName="alertOnAbnormal">
+        <ns:columnTitle>Alert On Abnormal</ns:columnTitle>
+        <ns:datatype>bool</ns:datatype>
+        <ns:scale>50</ns:scale>
+      </ns:column>
+      <ns:column columnName="alertOnAny">
+        <ns:columnTitle>Alert On Any</ns:columnTitle>
+        <ns:datatype>bool</ns:datatype>
+        <ns:scale>50</ns:scale>
+      </ns:column>
+      <ns:column columnName="includeInPanel">
+        <ns:columnTitle>Include In Panel</ns:columnTitle>
+        <ns:datatype>bool</ns:datatype>
+        <ns:scale>50</ns:scale>
+      </ns:column>
+      <ns:column columnName="sort_order">
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>integer</ns:datatype>
+        <ns:scale>100</ns:scale>
+      </ns:column>
     </ns:columns>
   </ns:table>
   <ns:table tableName="hematology_tests" tableDbType="TABLE">
+    <ns:importUrl></ns:importUrl>
+    <ns:insertUrl></ns:insertUrl>
+    <ns:updateUrl></ns:updateUrl>
+    <ns:deleteUrl></ns:deleteUrl>
     <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr_lookups&amp;query.queryName=hematology_tests&amp;testid=${testid}</ns:tableUrl>
     <ns:pkColumnName>testid</ns:pkColumnName>
     <ns:columns>
@@ -1773,9 +2289,34 @@
         <ns:datatype>varchar</ns:datatype>
         <ns:scale>100</ns:scale>
       </ns:column>
+      <ns:column columnName="alertOnAbnormal">
+        <ns:columnTitle>Alert On Abnormal</ns:columnTitle>
+        <ns:datatype>bool</ns:datatype>
+        <ns:scale>50</ns:scale>
+      </ns:column>
+      <ns:column columnName="alertOnAny">
+        <ns:columnTitle>Alert On Any</ns:columnTitle>
+        <ns:datatype>bool</ns:datatype>
+        <ns:scale>50</ns:scale>
+      </ns:column>
+      <ns:column columnName="includeInPanel">
+        <ns:columnTitle>Include In Panel</ns:columnTitle>
+        <ns:datatype>bool</ns:datatype>
+        <ns:scale>50</ns:scale>
+      </ns:column>
+      <ns:column columnName="sort_order">
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>integer</ns:datatype>
+        <ns:scale>100</ns:scale>
+      </ns:column>
+
     </ns:columns>
   </ns:table>
   <ns:table tableName="chemistry_method" tableDbType="TABLE">
+    <ns:importUrl></ns:importUrl>
+    <ns:insertUrl></ns:insertUrl>
+    <ns:updateUrl></ns:updateUrl>
+    <ns:deleteUrl></ns:deleteUrl>
     <ns:pkColumnName>method</ns:pkColumnName>
     <ns:columns>
       <ns:column columnName="method">
@@ -1785,6 +2326,10 @@
     </ns:columns>
   </ns:table>
   <ns:table tableName="immunology_method" tableDbType="TABLE">
+    <ns:importUrl></ns:importUrl>
+    <ns:insertUrl></ns:insertUrl>
+    <ns:updateUrl></ns:updateUrl>
+    <ns:deleteUrl></ns:deleteUrl>
     <ns:pkColumnName>method</ns:pkColumnName>
     <ns:columns>
       <ns:column columnName="method">
@@ -1794,6 +2339,10 @@
     </ns:columns>
   </ns:table>
   <ns:table tableName="virology_method" tableDbType="TABLE">
+    <ns:importUrl></ns:importUrl>
+    <ns:insertUrl></ns:insertUrl>
+    <ns:updateUrl></ns:updateUrl>
+    <ns:deleteUrl></ns:deleteUrl>
     <ns:pkColumnName>method</ns:pkColumnName>
     <ns:columns>
       <ns:column columnName="method">
@@ -1803,6 +2352,10 @@
     </ns:columns>
   </ns:table>
   <ns:table tableName="hematology_method" tableDbType="TABLE">
+    <ns:importUrl></ns:importUrl>
+    <ns:insertUrl></ns:insertUrl>
+    <ns:updateUrl></ns:updateUrl>
+    <ns:deleteUrl></ns:deleteUrl>
     <ns:pkColumnName>method</ns:pkColumnName>
     <ns:columns>
       <ns:column columnName="method">
@@ -1812,6 +2365,10 @@
     </ns:columns>
   </ns:table>
   <ns:table tableName="booleanCombo" tableDbType="TABLE">
+    <ns:importUrl></ns:importUrl>
+    <ns:insertUrl></ns:insertUrl>
+    <ns:updateUrl></ns:updateUrl>
+    <ns:deleteUrl></ns:deleteUrl>
     <ns:pkColumnName>key</ns:pkColumnName>
     <ns:columns>
       <ns:column columnName="key">
@@ -1825,6 +2382,10 @@
     </ns:columns>
   </ns:table>
   <ns:table tableName="biopsy_type" tableDbType="TABLE">
+    <ns:importUrl></ns:importUrl>
+    <ns:insertUrl></ns:insertUrl>
+    <ns:updateUrl></ns:updateUrl>
+    <ns:deleteUrl></ns:deleteUrl>
     <ns:pkColumnName>type</ns:pkColumnName>
     <ns:columns>
       <ns:column columnName="type">
@@ -1834,6 +2395,10 @@
     </ns:columns>
   </ns:table>
   <ns:table tableName="microchip_comments" tableDbType="TABLE">
+    <ns:importUrl></ns:importUrl>
+    <ns:insertUrl></ns:insertUrl>
+    <ns:updateUrl></ns:updateUrl>
+    <ns:deleteUrl></ns:deleteUrl>
     <ns:pkColumnName>comment</ns:pkColumnName>
     <ns:columns>
       <ns:column columnName="comment">
@@ -1843,6 +2408,10 @@
     </ns:columns>
   </ns:table>
   <ns:table tableName="death_remarks" tableDbType="TABLE">
+    <ns:importUrl></ns:importUrl>
+    <ns:insertUrl></ns:insertUrl>
+    <ns:updateUrl></ns:updateUrl>
+    <ns:deleteUrl></ns:deleteUrl>
     <ns:pkColumnName>title</ns:pkColumnName>
     <ns:columns>
         <ns:column columnName="title">
@@ -1856,6 +2425,10 @@
     </ns:columns>
   </ns:table>
   <ns:table tableName="restraint_duration" tableDbType="TABLE">
+    <ns:importUrl></ns:importUrl>
+    <ns:insertUrl></ns:insertUrl>
+    <ns:updateUrl></ns:updateUrl>
+    <ns:deleteUrl></ns:deleteUrl>
     <ns:pkColumnName>duration</ns:pkColumnName>
     <ns:columns>
         <ns:column columnName="duration">
@@ -1869,6 +2442,10 @@
     </ns:columns>
   </ns:table>
   <ns:table tableName="drug_categories" tableDbType="TABLE">
+    <ns:importUrl></ns:importUrl>
+    <ns:insertUrl></ns:insertUrl>
+    <ns:updateUrl></ns:updateUrl>
+    <ns:deleteUrl></ns:deleteUrl>
     <ns:pkColumnName>category</ns:pkColumnName>
     <ns:columns>
         <ns:column columnName="category">
@@ -1878,6 +2455,10 @@
     </ns:columns>
   </ns:table>
   <ns:table tableName="usda_codes" tableDbType="TABLE">
+    <ns:importUrl></ns:importUrl>
+    <ns:insertUrl></ns:insertUrl>
+    <ns:updateUrl></ns:updateUrl>
+    <ns:deleteUrl></ns:deleteUrl>
     <ns:pkColumnName>rowid</ns:pkColumnName>
     <ns:titleColumn>code</ns:titleColumn>
     <ns:columns>
@@ -1900,6 +2481,10 @@
               <ns:fkColumnName>code</ns:fkColumnName>
           </ns:fk>
         </ns:column>
+        <ns:column columnName="keyword">
+          <ns:datatype>varchar</ns:datatype>
+          <ns:scale>100</ns:scale>
+        </ns:column>
         <ns:column columnName="category">
           <ns:datatype>varchar</ns:datatype>
           <ns:scale>100</ns:scale>
@@ -1917,6 +2502,10 @@
     </ns:columns>
   </ns:table>
   <ns:table tableName="full_snomed" tableDbType="TABLE">
+    <ns:importUrl></ns:importUrl>
+    <ns:insertUrl></ns:insertUrl>
+    <ns:updateUrl></ns:updateUrl>
+    <ns:deleteUrl></ns:deleteUrl>
     <ns:pkColumnName>code</ns:pkColumnName>
     <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr_lookups&amp;query.queryName=full_snomed&amp;code=${code}</ns:tableUrl>
     <ns:titleColumn>meaning</ns:titleColumn>
@@ -1968,6 +2557,10 @@
     </ns:columns>
   </ns:table>
   <ns:table tableName="snomap" tableDbType="TABLE">
+    <ns:importUrl></ns:importUrl>
+    <ns:insertUrl></ns:insertUrl>
+    <ns:updateUrl></ns:updateUrl>
+    <ns:deleteUrl></ns:deleteUrl>
     <ns:pkColumnName>rowid</ns:pkColumnName>
     <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr_lookups&amp;query.queryName=snomap&amp;rowid=${rowid}</ns:tableUrl>
     <ns:titleColumn>meaning</ns:titleColumn>
@@ -2045,11 +2638,28 @@
     </ns:columns>
   </ns:table>
   <ns:table tableName="chow_types" tableDbType="TABLE">
+    <ns:importUrl></ns:importUrl>
+    <ns:insertUrl></ns:insertUrl>
+    <ns:updateUrl></ns:updateUrl>
+    <ns:deleteUrl></ns:deleteUrl>
     <ns:pkColumnName>typr</ns:pkColumnName>
     <ns:columns>
         <ns:column columnName="type">
           <ns:datatype>varchar</ns:datatype>
           <ns:scale>200</ns:scale>
+        </ns:column>
+    </ns:columns>
+  </ns:table>
+  <ns:table tableName="tissue_distribution" tableDbType="TABLE">
+    <ns:importUrl></ns:importUrl>
+    <ns:insertUrl></ns:insertUrl>
+    <ns:updateUrl></ns:updateUrl>
+    <ns:deleteUrl></ns:deleteUrl>
+    <ns:pkColumnName>typr</ns:pkColumnName>
+    <ns:columns>
+        <ns:column columnName="location">
+          <ns:datatype>varchar</ns:datatype>
+          <ns:scale>100</ns:scale>
         </ns:column>
     </ns:columns>
   </ns:table>

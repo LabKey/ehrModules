@@ -21,4 +21,5 @@ group_concat(n.etiology.meaning) as etiology,
 group_concat(n.process.meaning) as process,
 group_concat(n.process2.meaning) as process2,
 FROM "Morphologic Diagnosis" n
+where n.qcstate.publicdata = true
 group by n.id, n.date, n.seq1, n.caseno.caseno

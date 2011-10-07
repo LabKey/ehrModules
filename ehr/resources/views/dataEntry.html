@@ -36,6 +36,7 @@ Ext.onReady(function(){
 
         Ext.each([
             {url: "<%=contextPath%>/ehr/WNPRC/EHR/manageTask.view?formtype=Blood%20Draws", title: 'Enter Blood Draws', queries: ['Blood Draws']},
+            {url: "<%=contextPath%>/ehr/WNPRC/EHR/manageTask.view?schemaName=study&queryName=Charges&keyField=lsid", title: 'Enter Charges', queries: ['Charges']},
             {url: "<%=contextPath%>/ehr/WNPRC/EHR/manageTask.view?schemaName=study&queryName=Clinical%20Remarks&keyField=lsid", title: 'Enter Clinical Remark', queries: ['Clinical Remarks']},
             {url: "<%=contextPath%>/ehr/WNPRC/EHR/updateQuery.view?schemaName=study&queryName=Feeding&keyField=lsid", title: 'Enter/Manage Feeding Orders', queries: ['Feeding']},
             {url: "<%=contextPath%>/ehr/WNPRC/EHR/manageTask.view?formtype=Irregular%20Observations", title: 'Enter Irregular Observations', queries: ['Irregular Observations']},
@@ -57,7 +58,10 @@ Ext.onReady(function(){
                 q.push({schemaName: 'study', queryName: qn})
             }, this);
 
-            if(EHR.permissionMap.hasPermission('In Progress', 'insert', q)){
+            i.qcstate = i.qcstate || 'In Progress';
+            i.permission = i.permission || 'insert';
+
+            if(EHR.permissionMap.hasPermission(i.qcstate, i.permission, q)){
                 sec1.items.push(i)
             }
         }, this);
@@ -72,18 +76,17 @@ Ext.onReady(function(){
         };
 
         Ext.each([
-            {url: "<%=contextPath%>/ehr/WNPRC/EHR/manageTask.view?formtype=Arrival", title: 'Enter Arrivals', queries: ['Arrival']},
-            {url: "<%=contextPath%>/ehr/WNPRC/EHR/updateQuery.view?schemaName=study&queryName=Assignment&keyField=lsid", title: 'Enter/Manage Assignments', queries: ['Assignment']},
+            {url: "<%=contextPath%>/ehr/WNPRC/EHR/manageTask.view?formtype=Arrival", title: 'Enter Arrivals', qcstate: 'Completed', permission: 'admin', queries: ['Arrival']},
+            {url: "<%=contextPath%>/ehr/WNPRC/EHR/updateQuery.view?schemaName=study&queryName=Assignment&keyField=lsid", title: 'Enter/Manage Assignments', qcstate: 'Completed', permission: 'admin', queries: ['Assignment']},
             {url: "<%=contextPath%>/ehr/WNPRC/EHR/manageTask.view?formtype=Birth", title: 'Enter Births', queries: ['Birth']},
-            //{url: "<%=contextPath%>/ehr/WNPRC/EHR/manageRecord.view?schemaName=study&queryName=Deaths&keyField=lsid&metaSources=Task", title: 'Enter Death Record', queries: ['Deaths']},
-            {url: "<%=contextPath%>/ehr/WNPRC/EHR/manageTask.view?formtype=Death", title: 'Enter Death Record', queries: ['Deaths']},
-            {url: "<%=contextPath%>/ehr/WNPRC/EHR/updateQuery.view?schemaName=study&queryName=Demographics&keyField=lsid", title: 'Enter/Manage Demographics', queries: ['Demographics']},
-            {url: "<%=contextPath%>/ehr/WNPRC/EHR/manageTask.view?schemaName=study&queryName=Departure&keyField=lsid", title: 'Enter Departures', queries: ['Departure']},
-            {url: "<%=contextPath%>/ehr/WNPRC/EHR/manageRecord.view?schemaName=study&queryName=Prenatal Deaths&keyField=lsid", title: 'Enter Prenatal Death', queries: ['Prenatal Deaths']},
-            {url: "<%=contextPath%>/ehr/WNPRC/EHR/updateQuery.view?schemaName=ehr&queryName=Project&keyField=project", title: 'Enter/Manage Projects', queries: ['Assignment']},
-            {url: "<%=contextPath%>/ehr/WNPRC/EHR/updateQuery.view?schemaName=ehr&queryName=Protocol&keyField=protocol", title: 'Enter/Manage Protocols', queries: ['Assignment']},
+            {url: "<%=contextPath%>/ehr/WNPRC/EHR/updateQuery.view?schemaName=study&queryName=Demographics&keyField=lsid", title: 'Enter/Manage Demographics', qcstate: 'Completed', permission: 'admin', queries: ['Demographics']},
+            {url: "<%=contextPath%>/ehr/WNPRC/EHR/manageTask.view?schemaName=study&queryName=Departure&keyField=lsid", title: 'Enter Departures', qcstate: 'Completed', permission: 'admin', queries: ['Departure']},
+            {permission: 'admin', url: "<%=contextPath%>/ehr/WNPRC/EHR/manageTask.view?formtype=Multi-Animal MPR", title: 'Enter Multi-Animal MPR', queries: ['Drug Administration']},
+            {permission: 'admin', url: "<%=contextPath%>/ehr/WNPRC/EHR/manageTask.view?formtype=Multi-Animal MPR&useSnomedCodes=1", title: 'Enter Multi-Animal MPR (using SNOMED codes)', queries: ['Drug Administration']},
+            {url: "<%=contextPath%>/ehr/WNPRC/EHR/updateQuery.view?schemaName=ehr&queryName=Project&keyField=project", title: 'Enter/Manage Projects', qcstate: 'Completed', permission: 'admin', queries: ['Assignment']},
+            {url: "<%=contextPath%>/ehr/WNPRC/EHR/updateQuery.view?schemaName=ehr&queryName=Protocol&keyField=protocol", title: 'Enter/Manage Protocols', qcstate: 'Completed', permission: 'admin', queries: ['Assignment']},
             {url: "<%=contextPath%>/ehr/WNPRC/EHR/manageTask.view?formtype=SimpleRemark&title=Remark", title: 'Enter Simple Remark', queries: ['Clinical Remarks']},
-            {url: "<%=contextPath%>/ehr/WNPRC/EHR/updateQuery.view?schemaName=ehr&queryName=supplemental_pedigree&keyField=rowid", title: 'Enter/Manage Supplemental Pedigree', queries: ['Demographics']}
+            {url: "<%=contextPath%>/ehr/WNPRC/EHR/updateQuery.view?schemaName=ehr&queryName=supplemental_pedigree&keyField=rowid", title: 'Enter/Manage Supplemental Pedigree', qcstate: 'Completed', permission: 'admin', queries: ['Demographics']}
 
             //{url: "<%=contextPath%>/ehr/WNPRC/EHR/manageRecord.view?schemaName=ehr&queryName=Project&keyField=project", title: 'Enter Project', queries: ['Assignment']}
         ], function(i){
@@ -92,7 +95,10 @@ Ext.onReady(function(){
                 q.push({schemaName: 'study', queryName: qn})
             }, this);
 
-            if(EHR.permissionMap.hasPermission('In Progress', 'insert', q)){
+            i.qcstate = i.qcstate || 'In Progress';
+            i.permission = i.permission || 'insert';
+
+            if(EHR.permissionMap.hasPermission(i.qcstate, i.permission, q)){
                 sec2.items.push(i)
             }
         }, this);
@@ -108,17 +114,18 @@ Ext.onReady(function(){
 
         Ext.each([
             {url: "<%=contextPath%>/ehr/WNPRC/EHR/manageTask.view?schemaName=study&queryName=Behavior Remarks&keyField=lsid", title: 'Enter Behavior Remark', queries: ['Behavior Remarks']},
-            {url: "<%=contextPath%>/ehr/WNPRC/EHR/manageTask.view?formtype=Housing", title: 'Enter Housing Change', queries: ['Housing']}
-            //{url: "<%=contextPath%>/ehr/WNPRC/EHR/manageTask.view?schemaName=study&queryName=Menses&keyField=lsid", title: 'Enter Menses Observation', queries: ['Menses']}
-            //{url: "<%=contextPath%>/ehr/WNPRC/EHR/manageRecord.view?schemaName=study&queryName=Pair%20Tests&keyField=lsid", title: 'Enter Pair Test Record', queries: ['Housing', 'Behavior Remarks']}
+            {url: "<%=contextPath%>/ehr/WNPRC/EHR/manageTask.view?formtype=Housing", title: 'Enter Housing Change', qcstate: 'Completed', permission: 'admin', queries: ['Housing']}
+            //{url: "<%=contextPath%>/ehr/WNPRC/EHR/manageTask.view?schemaName=study&queryName=Pregnancies&keyField=lsid", title: 'Enter Pregnancies', queries: ['Pregnancies']}
         ], function(i){
             var q = [];
             Ext.each(i.queries, function(qn){
                 q.push({schemaName: 'study', queryName: qn})
             }, this);
 
-            var qc = i.qcstate || 'In Progress';
-            if(EHR.permissionMap.hasPermission(qc, 'insert', q)){
+            i.qcstate = i.qcstate || 'In Progress';
+            i.permission = i.permission || 'insert';
+
+            if(EHR.permissionMap.hasPermission(i.qcstate, i.permission, q)){
                 sec3.items.push(i)
             }
         }, this);
@@ -135,14 +142,19 @@ Ext.onReady(function(){
         Ext.each([
             {url: "<%=contextPath%>/ehr/WNPRC/EHR/manageTask.view?formtype=Biopsy", title: 'Enter Biopsy', queries: ['Biopsies']},
             {url: "<%=contextPath%>/ehr/WNPRC/EHR/manageTask.view?formtype=Clinpath", title: 'Enter Clinpath Results', queries: ['Clinpath Runs'], qcstate: 'Completed'},
-            {url: "<%=contextPath%>/ehr/WNPRC/EHR/manageTask.view?formtype=Necropsy", title: 'Enter Necropsy', queries: ['Necropsies']}
+            //{url: "<%=contextPath%>/ehr/WNPRC/EHR/manageRecord.view?schemaName=study&queryName=Deaths&keyField=lsid&metaSources=Task", title: 'Enter Death Record', queries: ['Deaths']},
+            {url: "<%=contextPath%>/ehr/WNPRC/EHR/manageTask.view?formtype=Death", title: 'Enter Death Record', queries: ['Deaths']},
+            {url: "<%=contextPath%>/ehr/WNPRC/EHR/manageTask.view?formtype=Necropsy", title: 'Enter Necropsy', queries: ['Necropsies']},
+            {url: "<%=contextPath%>/ehr/WNPRC/EHR/manageRecord.view?schemaName=study&queryName=Prenatal Deaths&keyField=lsid", title: 'Enter Prenatal Death', queries: ['Prenatal Deaths']}
         ], function(i){
             var q = [];
             Ext.each(i.queries, function(qn){
                 q.push({schemaName: 'study', queryName: qn})
             }, this);
 
-            if(EHR.permissionMap.hasPermission('In Progress', 'insert', q)){
+            i.qcstate = i.qcstate || 'In Progress';
+            i.permission = i.permission || 'insert';
+            if(EHR.permissionMap.hasPermission(i.qcstate, i.permission, q)){
                 sec4.items.push(i)
             }
         }, this);
@@ -167,7 +179,9 @@ Ext.onReady(function(){
                 q.push({schemaName: 'study', queryName: qn})
             }, this);
 
-            if(EHR.permissionMap.hasPermission('Request: Pending', 'insert', q)){
+            i.qcstate = i.qcstate || 'Request: Pending';
+            i.permission = i.permission || 'insert';
+            if(EHR.permissionMap.hasPermission(i.qcstate, i.permission, q)){
                 sec5.items.push(i)
             }
         }, this);
@@ -181,6 +195,40 @@ Ext.onReady(function(){
         if(menuCfg.sections.length){
             function onActivate(t){
                 this.ownerCt.ownerCt.ownerCt.ownerCt.loadTab(t);
+            }
+
+            var clinpathUpdateURL = '';
+            var clinpathInsertURL = '';
+            var clinpathDeleteURL = '';
+
+            if(EHR.permissionMap.hasPermission('Request: Approved', 'admin', {queryName: 'Clinpath Runs', schemaName: 'study'})){
+                clinpathUpdateURL = '/ehr/manageRecord.view?schemaName=study&queryName=Clinpath Runs&keyField=lsid&key=${lsid}&update=1';
+                clinpathInsertURL = '/ehr/manageRecord.view?schemaName=study&queryName=Clinpath Runs&keyField=lsid&update=1';
+                clinpathDeleteURL = '/query/deleteQueryRows.view?schemaName=study&query.queryName=Clinpath Runs';
+            }
+
+            var bloodUpdateURL = '';
+            var bloodInsertURL = '';
+            var bloodDeleteURL = '';
+
+            if(EHR.permissionMap.hasPermission('Request: Approved', 'admin', {queryName: 'Blood Draws', schemaName: 'study'})){
+                bloodUpdateURL = '/ehr/manageRecord.view?schemaName=study&queryName=Blood Draws&keyField=lsid&key=${lsid}&update=1';
+                bloodInsertURL = '/ehr/manageRecord.view?schemaName=study&queryName=Blood Draws&keyField=lsid&update=1';
+                bloodDeleteURL = '/query/deleteQueryRows.view?schemaName=study&query.queryName=Blood Draws';
+            }
+
+            function onSuccess(dr){
+                var width1 = Ext.get('dataregion_'+dr.id).getSize().width + 50;
+                var width2 = Ext.get(taskpanel.id).getSize().width;
+
+                if(width1 > width2){
+                    console.log(width1+'/'+width2)
+                    taskpanel.setWidth(width1+80);
+                    console.log('resizing')
+                }
+                else {
+                    taskpanel.setWidth('100%');
+                }
             }
 
             var taskpanel = new Ext.Panel({
@@ -267,18 +315,7 @@ Ext.onReady(function(){
                                         queryName: 'my_tasks',
                                         viewName: 'Active Tasks',
                                         scope: this,
-                                        success: function(dr){
-//                                            var width1 = Ext.get(dr.id).getSize().width;
-//                                            var width2 = Ext.get(this.anchorLayout.id).getSize().width;
-//
-//                                            if(width1 > width2){
-//                                                this.anchorLayout.setWidth(width1+140);
-//                                                console.log('resizing')
-//                                            }
-//                                            else {
-//                                                this.anchorLayout.setWidth('100%');
-//                                            }
-                                        }
+                                        success: onSuccess
                                         //showUpdateColumn: true
                                         //updateURL: '/ehr/manageTask.view?formtype=${formtype}&amp;taskid=${taskid}'
                                     }
@@ -291,7 +328,9 @@ Ext.onReady(function(){
                                     queryConfig:  {
                                         schemaName: 'ehr',
                                         queryName: 'Tasks_DataEntry',
-                                        viewName: 'Active Tasks'
+                                        viewName: 'Active Tasks',
+                                        scope: this,
+                                        success: onSuccess
                                         //updateURL: '/ehr/manageTask.view?formtype=${formtype}&amp;taskid=${taskid}'
                                     }
                                 },{
@@ -303,7 +342,9 @@ Ext.onReady(function(){
                                     queryConfig:  {
                                         schemaName: 'ehr',
                                         queryName: 'TasksByLocation_DataEntry',
-                                        viewName: 'Active Tasks'
+                                        viewName: 'Active Tasks',
+                                        scope: this,
+                                        success: onSuccess
                                         //updateURL: '/ehr/manageTask.view?formtype=${formtype}&amp;taskid=${taskid}'
                                     }
                                 },{
@@ -315,7 +356,9 @@ Ext.onReady(function(){
                                     queryConfig:  {
                                         schemaName: 'ehr',
                                         queryName: 'TasksById_DataEntry',
-                                        viewName: 'Active Tasks'
+                                        viewName: 'Active Tasks',
+                                        scope: this,
+                                        success: onSuccess
                                         //updateURL: '/ehr/manageTask.view?formtype=${formtype}&amp;taskid=${taskid}'
                                     }
                                 },{
@@ -327,7 +370,9 @@ Ext.onReady(function(){
                                     queryConfig:  {
                                         schemaName: 'ehr',
                                         queryName: 'Tasks_DataEntry',
-                                        viewName: 'Review Required'
+                                        viewName: 'Review Required',
+                                        scope: this,
+                                        success: onSuccess
                                         //updateURL: '/ehr/manageTask.view?formtype=${formtype}&amp;taskid=${taskid}'
                                     }
                                 }]
@@ -397,6 +442,10 @@ Ext.onReady(function(){
                                         schemaName: 'study',
                                         queryName: 'Blood Draws',
                                         viewName: 'Blood Requests',
+                                        scope: this,
+                                        success: onSuccess,
+                                        updateURL: bloodUpdateURL,
+                                        deleteURL: bloodDeleteURL,
                                         filters: [
                                             LABKEY.Filter.create('QCState/Label', 'Request', LABKEY.Filter.Types.STARTS_WITH)
                                         ],
@@ -412,6 +461,11 @@ Ext.onReady(function(){
                                     queryConfig:  {
                                         schemaName: 'study',
                                         queryName: 'Clinpath Runs',
+                                        viewName: 'Clinpath Requests',
+                                        updateURL: clinpathUpdateURL,
+                                        deleteURL: clinpathDeleteURL,
+                                        scope: this,
+                                        success: onSuccess,
                                         filters: [
                                             LABKEY.Filter.create('QCState/Label', 'Request', LABKEY.Filter.Types.STARTS_WITH)
                                         ]
@@ -457,13 +511,13 @@ Ext.onReady(function(){
 
 <p/>
 
-<b>Data Entry In Old System:</b>
-<ul>
+<!--<b>Data Entry In Old System:</b>-->
+<!--<ul>-->
 <!--<li><a href="http://www.primate.wisc.edu/colony-old/vetstaff">Vet Entry In Old System</a></li>-->
 <!--<li><a href="http://www.primate.wisc.edu/colony-old/bhav">Behavior Mgmt Entry In Old System</a></li>-->
-<li><a href="http://www.primate.wisc.edu/colony-old/clinpath">Clinpath Entry In Old System</a></li>
-</ul>
-<p/>
+<!--<li><a href="http://www.primate.wisc.edu/colony-old/clinpath">Clinpath Entry In Old System</a></li>-->
+<!--</ul>-->
+<!--<p/>-->
 
 
 

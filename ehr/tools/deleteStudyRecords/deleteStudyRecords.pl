@@ -87,6 +87,7 @@ sub doDelete {
 		-queryName => $query,
 		-filterArray => [['QCState/Label', 'eq', 'Delete Requested']],
 		-columns => $columns,
+		-requiredVersion => 8.3,
 		#-debug => 1,
 	);	
 	handleResults($results, $schema, $query, $pk);	
@@ -99,6 +100,7 @@ sub doDelete {
 		-queryName => $query,
 		-filterArray => [['QCState/Label', 'eq', 'Request: Denied'], ['modified', 'datelt', $twoDaysAgo]],
 		-columns => $columns,
+		-requiredVersion => 8.3,
 		#-debug => 1,
 	);	
 	handleResults($results, $schema, $query, $pk);		
@@ -159,6 +161,7 @@ sub findDatasets {
 		-schemaName => 'study',
 		-queryName => 'datasets',
 		-filterArray => [['KeyManagementType', 'eq', 'GUID']],
+		-requiredVersion => 8.3,
 	);
 	
 	my $datasets = [];

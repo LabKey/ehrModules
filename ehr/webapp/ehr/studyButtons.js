@@ -55,7 +55,7 @@ function moreActionsHandler(dataRegion){
             }
         }
 
-        if(dataRegion.schemaName.match(/^study$/i) && dataRegion.queryName.match(/^Assignment$/i)){
+        if(dataRegion.schemaName.match(/^study$/i) && (dataRegion.queryName.match(/^Assignment$/i) || dataRegion.queryName.match(/^ActiveAssignments$/i))){
             if(EHR.permissionMap.hasPermission('Completed', 'update', {queryName: 'Assignment', schemaName: 'study'})){
                 markComplete(dataRegion, menu, 'study', 'Assignment', {xtype: 'datefield'});
                 addAssignmentTaskBtn(dataRegion, menu);
@@ -91,6 +91,12 @@ function moreActionsHandler(dataRegion){
             if(EHR.permissionMap.hasPermission('Scheduled', 'insert', {queryName: 'Clinpath Runs', schemaName: 'study'})){
                 createTaskBtn(dataRegion, menu, {queries: [{schemaName: 'study', queryName: 'Clinpath Runs'}], formType: 'Clinpath'});
                 changeQCStateBtn(dataRegion, menu);
+            }
+        }
+
+        if(dataRegion.schemaName.match(/^study$/i) && dataRegion.queryName.match(/^Clinpath Runs$/i)){
+            if(EHR.permissionMap.hasPermission('Completed', 'update', {queryName: 'Clinpath Runs', schemaName: 'study'})){
+                markReviewed(dataRegion, menu);
             }
         }
 
@@ -167,12 +173,72 @@ function showAuditHistory(dataRegion, dataRegionName){
         return;
     }
 
-    window.open(LABKEY.ActionURL.buildURL("query", "executeQuery", null, {
-        schemaName: 'auditLog',
-        'query.queryName': 'DatasetAuditEvent',
-        'query.viewName': 'Detailed',
-        'query.key1~in': checked.join(';')
-    }));
+//    if(checked.length!=1){
+//        alert('Can only select 1 record at a time');
+//        return;
+//    }
+
+    Ext.Msg.wait('Loading...');
+
+    LABKEY.Query.selectRows({
+        schemaName: 'study',
+        queryName: 'StudyData',
+        columns: 'lsid,objectid',
+        filterArray: [
+            LABKEY.Filter.create('lsid', checked.join(';'), LABKEY.Filter.Types.EQUALS_ONE_OF)
+        ],
+        scope: this,
+        success: function(data){
+            Ext.Msg.hide();
+
+            if(data.rows.length){
+                var items = [{
+                    html: 'New browser windows or tabs should have opened to load the history of these records.  If this did not happen, please be sure popups are enabled.  You can also click the following links to view those records:',
+                    bodyStyle: 'padding: 5px;',
+                    border: false
+                }];
+
+                var url;
+                Ext.each(data.rows, function(row, idx){
+                    url = LABKEY.ActionURL.buildURL("query", "executeQuery", null, {
+                        schemaName: 'auditLog',
+                        'query.queryName': 'DatasetAuditEvent',
+                        'query.viewName': 'Detailed',
+                        'query.key1~contains': row.objectid
+                    });
+
+                    items.push({
+                        html: '<a target="_blank" href="'+url+'">'+'Record '+(idx+1)+'</a>',
+                        border: false
+                    })
+
+                    window.open(url);
+                }, this);
+
+
+
+
+                this.selectorWin = new Ext.Window({
+                    closeAction:'hide',
+                    title: 'Record History',
+                    width: 350,
+                    items: items,
+                    buttons: [{
+                        text: 'Close',
+                        handler: function(b){
+                            b.ownerCt.ownerCt.hide();
+                        }
+                    }]
+                }).show();
+
+            }
+            else {
+                alert('Record not found');
+            }
+        },
+        failure: EHR.utils.onError
+    });
+
 }
 
 function datasetHandler(dataRegion, dataRegionName, queryName, schemaName)
@@ -708,8 +774,6 @@ function getDistinct(dataRegion, dataRegionName, queryName, schemaName)
     }
 };
 
-
-
 function markComplete(dataRegion, menu, schemaName, queryName, config){
     config = config || {};
 
@@ -750,7 +814,7 @@ function markComplete(dataRegion, menu, schemaName, queryName, config){
                         var date = o.ownerCt.ownerCt.theForm.date.getValue();
                         if(!date){
                             alert('Must enter a date');
-                            o.ownerCt.ownerCt.hide();
+                            return;
                         }
 
                         o.ownerCt.ownerCt.hide();
@@ -802,6 +866,126 @@ function markComplete(dataRegion, menu, schemaName, queryName, config){
 
                                 if(skipped.length){
                                     alert('One or more rows was skipped because it already has an end date');
+                                }
+                            },
+                            failure: EHR.utils.onError
+                        });
+                    }
+                },{
+                    text: 'Close',
+                    handler: function(o){
+                        o.ownerCt.ownerCt.hide();
+                    }
+                }]
+            }).show();
+
+
+
+            function onSuccess(data){
+                if(!data || !data.rows){
+                    return;
+                }
+
+                Ext.Msg.hide();
+
+            }
+        }
+    })
+}
+
+
+function markReviewed(dataRegion, menu, schemaName, queryName, config){
+    config = config || {};
+
+    menu.add({
+        text: 'Mark Reviewed',
+        dataRegion: dataRegion,
+        handler: function(){
+            var checked = dataRegion.getChecked();
+            if(!checked || !checked.length){
+                alert('No records selected');
+                return;
+            }
+
+            new Ext.Window({
+                title: 'Mark Reviewed',
+                width: 330,
+                autoHeight: true,
+                items: [{
+                    xtype: 'form',
+                    ref: 'theForm',
+                    bodyStyle: 'padding: 5px;',
+                    items: [{
+                        xtype: 'textfield',
+                        fieldLabel: 'Initials',
+                        width: 200,
+                        value: LABKEY.Security.currentUser.displayName,
+                        ref: 'initials'
+                    }]
+                }],
+                buttons: [{
+                    text:'Submit',
+                    disabled:false,
+                    formBind: true,
+                    ref: '../submit',
+                    scope: this,
+                    handler: function(o){
+                        Ext.Msg.wait('Loading...');
+                        var initials = o.ownerCt.ownerCt.theForm.initials.getValue();
+                        if(!initials){
+                            alert('Must enter initials');
+                            return;
+                        }
+
+                        o.ownerCt.ownerCt.hide();
+
+                        LABKEY.Query.selectRows({
+                            schemaName: 'study',
+                            queryName: 'Clinpath Runs',
+                            filterArray: [
+                                LABKEY.Filter.create('lsid', checked.join(';'), LABKEY.Filter.Types.EQUALS_ONE_OF)
+                            ],
+                            scope: this,
+                            success: function(data){
+                                var toUpdate = [];
+                                var skipped = [];
+
+                                if(!data.rows || !data.rows.length){
+                                    Ext.Msg.hide();
+                                    dataRegion.selectNone();
+                                    dataRegion.refresh();
+                                    return;
+                                }
+
+                                Ext.each(data.rows, function(row){
+                                    if(!row.dateReviewed)
+                                        toUpdate.push({lsid: row.lsid, dateReviewed: new Date(), reviewedBy: initials});
+                                    else
+                                        skipped.push(row.lsid)
+                                }, this);
+
+                                if(toUpdate.length){
+                                    LABKEY.Query.updateRows({
+                                        schemaName: 'study',
+                                        queryName: 'Clinpath Runs',
+                                        rows: toUpdate,
+                                        scope: this,
+                                        success: function(){
+                                            Ext.Msg.hide();
+                                            dataRegion.selectNone();
+                                            dataRegion.refresh();
+                                        },
+                                        failure: EHR.utils.onError
+                                    });
+                                }
+                                else {
+                                    Ext.Msg.hide();
+                                    dataRegion.selectNone();
+                                    dataRegion.refresh();
+                                }
+
+                                if(skipped.length){
+                                    alert('One or more rows was skipped because it already has been reviewed');
                                 }
                             },
                             failure: EHR.utils.onError

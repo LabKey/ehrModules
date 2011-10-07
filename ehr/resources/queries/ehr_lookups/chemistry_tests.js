@@ -12,12 +12,14 @@ console.log("** evaluating: " + this['javax.script.filename']);
 
 
 function beforeBoth(row, errors) {
-    //remove whitespace
-    row.aliases = row.aliases.replace(/\s/g, '');
+    if(row.aliases){
+        //remove whitespace
+        row.aliases = row.aliases.replace(/\s/g, '');
 
-    //normalize punctutation
-    row.aliases = row.aliases.replace(/;/g, ',');
-    row.aliases = row.aliases.replace(/(,)+/g, ',');
+        //normalize punctutation
+        row.aliases = row.aliases.replace(/;/g, ',');
+        row.aliases = row.aliases.replace(/(,)+/g, ',');
+    }
 
     //NOTE: might be considered, but not currently enforced
     //row.testid = row.name.testid(/\s+/g, '_');

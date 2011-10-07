@@ -75,9 +75,7 @@ EHR.utils.getDatasetPermissions = function(config) {
         success: function(map){
             schemaMap = map;
         },
-        failure: function(error){
-            console.log(error)
-        }
+        failure: EHR.utils.onError
     });
 
     function onSuccess(){

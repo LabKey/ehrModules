@@ -19,7 +19,7 @@ Ext.onReady(function (){
             colWidth: 400,
             renderer: function(item){
                 var cfg = {
-                    html: '<a href="<%=contextPath%>/query<%=containerPath%>/executeQuery.view?schemaName='+item.schemaName+'&query.queryName='+item.queryName+'">'+item.title+'</a>',
+                    html: '<a href="<%=contextPath%>/ehr<%=containerPath%>/updateTable.view?schemaName='+item.schemaName+'&query.queryName='+item.queryName+'">'+item.title+'</a>',
                     style: 'padding-left:5px;padding-bottom:8px'
                 };
 
@@ -40,6 +40,9 @@ Ext.onReady(function (){
             header: 'Other Lists',
             items: [
                 {queryName: 'snomed', schemaName: 'ehr_lookups', title: 'SNOMED Codes'},
+                {queryName: 'full_snomed', schemaName: 'ehr_lookups', title: 'Full SNOMED Set'},
+                {queryName: 'snomap', schemaName: 'ehr_lookups', title: 'SNOMED Old/New Code Mapping'},
+                {queryName: 'snomed_qualifiers', schemaName: 'ehr_lookups', title: 'SNOMED Qualifiers'},
                 {queryName: 'snomed_subsets', schemaName: 'ehr_lookups', title: 'SNOMED Subsets'},
                 {queryName: 'snomed_subset_codes', schemaName: 'ehr_lookups', title: 'SNOMED Subset Codes'},
                 {queryName: 'weight_ranges', schemaName: 'ehr_lookups', title: 'Weight: Min/Max Allowable Per Species'}
@@ -65,21 +68,26 @@ Ext.onReady(function (){
                 //{queryName: 'clinpath_services', schemaName: 'ehr_lookups', title: 'Clinpath Services'},
                 {queryName: 'chemistry_method', schemaName: 'ehr_lookups', title: 'Chemistry Method'},
                 {queryName: 'chemistry_tests', schemaName: 'ehr_lookups', title: 'Chemistry Tests'},
+                {queryName: 'chow_types', schemaName: 'ehr_lookups', title: 'Chow Types'},
 
                 {queryName: 'clinpath_collection_method', schemaName: 'ehr_lookups', title: 'Clinpath Collection Method Field'},
                 {queryName: 'clinpath_status', schemaName: 'ehr_lookups', title: 'Clinpath Request Status Field'},
-                {queryName: 'clinpath_tests', schemaName: 'ehr_lookups', title: 'Clinpath Tests'},
+                {queryName: 'clinpath_tests', schemaName: 'ehr_lookups', title: 'Clinpath Services'},
                 {queryName: 'clinremarks_category', schemaName: 'ehr_lookups', title: 'Clinremarks Category Field'},
+                {queryName: 'container_types', schemaName: 'ehr_lookups', title: 'Container Types'},
                 {queryName: 'qualitative_results', schemaName: 'ehr_lookups', title: 'Clinpath Qualitative Results Field'},
                 {queryName: 'preservation_solutions', schemaName: 'ehr_lookups', title: 'Preservation Solutions'},
                 {queryName: 'urinalysis_qualitative_results', schemaName: 'ehr_lookups', title: 'Clinpath Urinalysis Qualitative Results Field'},
 
                 {queryName: 'amount_units', schemaName: 'ehr_lookups', title: 'Drug Amount Units'},
+                {queryName: 'drug_categories', schemaName: 'ehr_lookups', title: 'Drug Categories'},
                 {queryName: 'conc_units', schemaName: 'ehr_lookups', title: 'Drug Concentration Units'},
                 {queryName: 'dosage_units', schemaName: 'ehr_lookups', title: 'Drug Dosage Units'},
                 {queryName: 'volume_units', schemaName: 'ehr_lookups', title: 'Drug Volume Units'},
                 //{queryName: 'drug_defaults', schemaName: 'ehr_lookups', title: 'Drug Default Values'},
                 {queryName: 'routes', schemaName: 'ehr_lookups', title: 'Drug Routes'},
+
+
 
                 {queryName: 'death_cause', schemaName: 'ehr_lookups', title: 'Death Causes'},
                 {queryName: 'death_codes', schemaName: 'ehr_lookups', title: 'Death Codes'},
@@ -99,21 +107,27 @@ Ext.onReady(function (){
                 {queryName: 'hematology_tests', schemaName: 'ehr_lookups', title: 'Hematology Tests'},
                 {queryName: 'hematology_morphology', schemaName: 'ehr_lookups', title: 'Hematology Morphology'},
                 {queryName: 'hematology_score', schemaName: 'ehr_lookups', title: 'Hematology Scores'},
+
+                {queryName: 'histology_stain', schemaName: 'ehr_lookups', title: 'Histology Stains'},
+
                 {queryName: 'hold_codes', schemaName: 'ehr_lookups', title: 'Hold Codes'},
 
                 {queryName: 'condition_codes', schemaName: 'ehr_lookups', title: 'Housing Condition Codes'},
                 {queryName: 'housing_reason', schemaName: 'ehr_lookups', title: 'Housing Reasons For Transfer'},
                 {queryName: 'restraint_type', schemaName: 'ehr_lookups', title: 'Restraint Types'},
+                {queryName: 'restraint_duration', schemaName: 'ehr_lookups', title: 'Restraint Durations'},
+
 
                 {queryName: 'immunology_method', schemaName: 'ehr_lookups', title: 'Immunology Method'},
                 {queryName: 'immunology_tests', schemaName: 'ehr_lookups', title: 'Immunology Tests'},
 
                 {queryName: 'lab_test_range', schemaName: 'ehr_lookups', title: 'Lab Test Normal Ranges'},
-                {queryName: 'lab_tests', schemaName: 'ehr_lookups', title: 'Lab Tests'},
+//                {queryName: 'lab_tests', schemaName: 'ehr_lookups', title: 'Lab Tests'},
 
                 {queryName: 'necropsy_condition', schemaName: 'ehr_lookups', title: 'Necropsy Condition Field'},
                 {queryName: 'necropsy_perfusion', schemaName: 'ehr_lookups', title: 'Necropsy Perfusion Field'},
                 {queryName: 'necropsy_perfusion_area', schemaName: 'ehr_lookups', title: 'Necropsy Perfusion Area Field'},
+                {queryName: 'tissue_distribution', schemaName: 'ehr_lookups', title: 'Necropsy Tissue Distribution'},
 
                 {queryName: 'obs_behavior', schemaName: 'ehr_lookups', title: 'Obs Behavior Field'},
                 {queryName: 'obs_feces', schemaName: 'ehr_lookups', title: 'Obs Feces Field'},

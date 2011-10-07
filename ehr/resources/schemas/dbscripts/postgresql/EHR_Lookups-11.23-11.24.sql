@@ -123,3 +123,33 @@ CONSTRAINT PK_chow_types PRIMARY KEY (type)
 WITH (OIDS=FALSE)
 
 ;
+
+
+DELETE FROM ehr_lookups.snomed_qualifiers where qualifier in (
+'right cranial lobe',
+'right middle lobe',
+'right caudal lobe',
+'left cranial lobe',
+'left middle lobe',
+'left caudal lobe',
+'accessory lobe'
+);
+
+INSERT into ehr_lookups.snomed_qualifiers (qualifier) VALUES
+('right cranial lobe'),
+('right middle lobe'),
+('right caudal lobe'),
+('left cranial lobe'),
+('left middle lobe'),
+('left caudal lobe'),
+('accessory lobe')
+;
+
+
+
+
+
+alter table ehr_lookups.clinpath_tests
+  add column alertOnAbnormal bool default false,
+  add column alertOnComplete bool default false
+;

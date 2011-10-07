@@ -205,10 +205,7 @@ EHR.ext.AnimalSelector = Ext.extend(Ext.Panel, {
                 scope: this,
                 timeout: 30000,
                 success: this.onSuccess,
-                failure: function(error){
-                    Ext.Msg.hide();
-                    alert(error.exception);
-                }
+                failure: EHR.utils.onError
             });
         }
         else {
@@ -672,9 +669,11 @@ EHR.ext.HematologyExcelWin = Ext.extend(Ext.Panel, {
         var tests;
         var row1;
         var row2;
+        var toAdd = [];
 
         if(!data.length || !data[0].length){
             alert('Something went wrong processing the file');
+            console.log(data)
             return;
         }
 
@@ -685,19 +684,24 @@ EHR.ext.HematologyExcelWin = Ext.extend(Ext.Panel, {
                 return;
 
             row = row.split(/D2U/i);
+
             row1 = row[0];
             row2 = row[1];
-            row1 = row1.split(/\s+/);
+            row1 = row1.replace(/\s+/g, '');
             row2 = row2.split(/\s+/);
+            row2 = row2.slice(2, row2.length-1);
+            row2 = row2.join('');
 
             result = {};
             tests = {};
 
-            result.animalId = row1[2].substr(0,6);
+            //result.animalId = row1[2].substr(0,6);
+            result.animalId = row1.substr(27,6);
             result.animalId = result.animalId.toLowerCase();
 
             //result.sequenceNo = row1[1].substr(20,4);
-            result.date = new Date(row1[2].substr(6,4), row1[2].substr(10,2), row1[2].substr(12,2));
+            //result.date = new Date(row1[2].substr(6,4), row1[2].substr(10,2)-1, row1[2].substr(12,2));
+            result.date = new Date(row1.substr(33,4), row1.substr(37,2)-1, row1.substr(39,2));
 
             if(!result.animalId || runsStore.find('Id', result.animalId)==-1){
                 //alert('ID: '+result.animalId+' not found in Clinpath Runs section. Records will not be added');
@@ -705,45 +709,45 @@ EHR.ext.HematologyExcelWin = Ext.extend(Ext.Panel, {
                 return;
             }
 
-            tests['WBC'] = row2[2].substr(6,6);
-            tests['RBC'] = row2[2].substr(12,5);
-            tests['HGB'] = row2[2].substr(17,5);
-            tests['HCT'] = row2[2].substr(22,5);
-            tests['MCV'] = row2[2].substr(27,5);
-            tests['MCH'] = row2[2].substr(32,5);
-            tests['MCHC'] = row2[2].substr(37,5);
-            tests['PLT'] = row2[2].substr(42,5);
+            tests['WBC'] = row2.substr(6,6);
+            tests['RBC'] = row2.substr(12,5);
+            tests['HGB'] = row2.substr(17,5);
+            tests['HCT'] = row2.substr(22,5);
+            tests['MCV'] = row2.substr(27,5);
+            tests['MCH'] = row2.substr(32,5);
+            tests['MCHC'] = row2.substr(37,5);
+            tests['PLT'] = row2.substr(42,5);
 
-            //tests['LYMPH%'] = row2[2].substr(47,5);
-            tests['LY'] = row2[2].substr(47,5);
+            //tests['LYMPH%'] = row2.substr(47,5);
+            tests['LY'] = row2.substr(47,5);
 
-            //tests['MONO%'] = row2[2].substr(52,5);
-            tests['MN'] = row2[2].substr(52,5);
+            //tests['MONO%'] = row2.substr(52,5);
+            tests['MN'] = row2.substr(52,5);
 
-            //tests['SEG%'] = row2[2].substr(57,5);
-            tests['NE'] = row2[2].substr(57,5);
+            //tests['SEG%'] = row2.substr(57,5);
+            tests['NE'] = row2.substr(57,5);
 
-            //tests['EOSIN%'] = row2[2].substr(62,5);
-            tests['EO'] = row2[2].substr(62,5);
+            //tests['EOSIN%'] = row2.substr(62,5);
+            tests['EO'] = row2.substr(62,5);
 
-            //tests['BASO%'] = row2[2].substr(67,5);
-            tests['BS'] = row2[2].substr(67,5);
+            //tests['BASO%'] = row2.substr(67,5);
+            tests['BS'] = row2.substr(67,5);
 
-            //tests['LYMPH#'] = row2[2].substr(72,6);
-            //tests['MONO#'] = row2[2].substr(78,6);
-            //tests['SEG#'] = row2[2].substr(84,6);
-            //tests['EOSIN#'] = row2[2].substr(90,6);
-            //tests['BASO#'] = row2[2].substr(96,6);
-            tests['RDW'] = row2[2].substr(102,5);
-            //tests'RDW-CV'] = row2[2].substr(102,5);
-            //tests['RDW-SD'] = row2[2].substr(107,5);
-            //tests['PDW'] = row2[2].substr(112,5);
-            tests['MPV'] = row2[2].substr(117,5);
-            //tests['P-LCR'] = row2[2].substr(122,5);
+            //tests['LYMPH#'] = row2.substr(72,6);
+            //tests['MONO#'] = row2.substr(78,6);
+            //tests['SEG#'] = row2.substr(84,6);
+            //tests['EOSIN#'] = row2.substr(90,6);
+            //tests['BASO#'] = row2.substr(96,6);
+            tests['RDW'] = row2.substr(102,5);
+            //tests'RDW-CV'] = row2.substr(102,5);
+            //tests['RDW-SD'] = row2.substr(107,5);
+            //tests['PDW'] = row2.substr(112,5);
+            tests['MPV'] = row2.substr(117,5);
+            //tests['P-LCR'] = row2.substr(122,5);
 
             var value;
             for(var test in tests){
-                var origVal = tests[test]
+                var origVal = tests[test];
                 value = tests[test];
 
                 if (value.match(/^00(\d){4}$/)) {
@@ -797,25 +801,41 @@ EHR.ext.HematologyExcelWin = Ext.extend(Ext.Panel, {
                 //find units
                 var idx = unitStore.find('testid', test);
                 var units = null;
+                var sortOrder = null;
                 if(idx!=-1){
                     units = unitStore.getAt(idx).get('units');
+                    sortOrder = unitStore.getAt(idx).get('sort_order');
                 }
 
                 if(tests[test] && isNaN(tests[test])){
                     skippedRows.push('Invalid Result for: '+result.animalId+', TestId: '+test+', '+tests[test]);
+                    tests[test] = null;
                 }
-                else {
-                    this.targetStore.addRecord({
-                        Id: result.animalId,
-                        date: result.date,
-                        testid: test,
-                        result: tests[test],
-                        units: units
-                    });
-                }
+
+                toAdd.push({
+                    Id: result.animalId,
+                    date: result.date,
+                    testid: test,
+                    result: tests[test],
+                    units: units,
+                    sortOrder: sortOrder
+                });
             }
 
         }, this);
+
+        if(toAdd.length){
+            toAdd.sort(function(a, b){
+                return a.Id < b.Id ? -1 :
+                        a.Id > b.Id ? 1 :
+                        a.date < b.date ? -1 :
+                        a.date > b.date ? 1 :
+                        a.sortOrder < b.sortOrder ? -1 :
+                        a.sortOrder > b.sortOrder ? 1 :
+                        0
+            });
+            this.targetStore.addRecords(toAdd);
+        }
 
         if(skippedRows.length){
             alert('One or more rows were skipped:\n'+skippedRows.join('\n'));
@@ -848,7 +868,7 @@ Ext.extend(EHR.ext.TreatmentSelector, Ext.Panel, {
                 xtype: 'datefield',
                 fieldLabel: 'Date',
                 value: (new Date()),
-                hidden: !EHR.permissionMap.hasPermission('In Progress', 'admin', {queryName: 'Blood Draws', schemaName: 'study'}),
+                hidden: !EHR.permissionMap.hasPermission('Completed', 'update', {queryName: 'Blood Draws', schemaName: 'study'}),
                 maxValue: (new Date()),
                 ref: 'dateField'
             },{
@@ -965,10 +985,7 @@ Ext.extend(EHR.ext.TreatmentSelector, Ext.Panel, {
             filterArray: filterArray,
             scope: this,
             success: this.onSuccess,
-            failure: function(error){
-                Ext.Msg.hide();
-                alert(error.exception);
-            }
+            failure: EHR.utils.onError
         });
 
     },
@@ -1038,6 +1055,301 @@ EHR.ext.TreatmentSelector2 = Ext.extend(EHR.ext.TreatmentSelector, {
 Ext.reg('ehr-treatmentselector2', EHR.ext.TreatmentSelector2);
 
 
+EHR.ext.NecropsyCopyPanel = Ext.extend(Ext.Panel, {
+    initComponent: function()
+    {
+        Ext.apply(this, {
+            layout: 'form'
+            //,title: 'Copy Necropsy'
+            ,autoHeight: true
+            ,bodyBorder: true
+            ,border: true
+            //,frame: true
+            ,bodyStyle: 'padding:5px'
+            ,width: 350
+            ,defaults: {
+                width: 200,
+                border: false,
+                bodyBorder: false
+            }
+            ,items: [{
+                xtype: 'textfield',
+                fieldLabel: 'Case No',
+                ref: 'caseField'
+            },{
+                fieldLabel: 'Include Organ Weights?'
+                ,ref: 'Organ Weights Field'
+                ,xtype: 'checkbox'
+                ,checked: true
+            },{
+                fieldLabel: 'Include Tissues?'
+                ,ref: 'Tissue Samples Field'
+                ,xtype: 'checkbox'
+                ,checked: true
+            },{
+                fieldLabel: 'Include Histology?'
+                ,ref: 'Histology Field'
+                ,xtype: 'checkbox'
+                ,checked: true
+            }],
+            buttons: [{
+                text:'Submit',
+                disabled:false,
+                ref: '../submit',
+                scope: this,
+                handler: function(s){
+                    this.doQuery();
+                }
+            },{
+                text: 'Close',
+                scope: this,
+                handler: function(){
+                    this.ownerCt.hide();
+                }
+            }]
+        });
+
+        EHR.ext.NecropsyCopyPanel.superclass.initComponent.call(this, arguments);
+    },
+
+    doQuery: function(){
+        var caseno = this.caseField.getValue();
+        if(!caseno){
+            alert('Must enter case number');
+            return;
+        }
+
+        caseno = caseno.toLowerCase();
+
+        Ext.Msg.wait('Loading...');
+        this.ownerCt.hide();
+
+        LABKEY.Query.selectRows({
+            schemaName: 'study',
+            queryName: 'Necropsies',
+            columns: 'objectid',
+            filterArray: [
+                LABKEY.Filter.create('caseno', caseno, LABKEY.Filter.Types.EQUAL)
+            ],
+            scope: this,
+            success: this.onLoadNecropsy,
+            failure: EHR.utils.onError
+        });
+
+    },
+    onLoadNecropsy: function(data){
+        if(!data || !data.rows.length){
+            Ext.Msg.hide();
+            alert('Unable to find necropsy');
+            return;
+        }
+
+        this.necropsyObjectId = data.rows[0].objectid;
+
+        this.multi = new LABKEY.MultiRequest();
+        this.requestedDatasets = [];
+        Ext.each(['Histology', 'Tissue Samples', 'Organ Weights'], this.addDatasetQuery, this);
+        this.multi.send(this.onMultiLoad, this);
+
+
+    },
+    addDatasetQuery: function(queryName){
+        if(this[queryName+' Field'].checked){
+            this.requestedDatasets.push(queryName);
+            this.multi.add(LABKEY.Query.selectRows, {
+                schemaName: 'study',
+                queryName: queryName,
+                filterArray: [
+                    LABKEY.Filter.create('parentId', this.necropsyObjectId, LABKEY.Filter.Types.EQUAL)
+                ],
+                scope: this,
+                success: function(results){
+                    this[queryName+'Results'] = results;
+                },
+                failure: EHR.utils.onError
+            });
+        }
+    },
+    onMultiLoad: function(){
+        Ext.each(this.requestedDatasets, function(queryName){
+            var results = this[queryName+'Results'];
+            if(!results){
+                alert('No records found for ')
+            }
+            else {
+                var records = [];
+                Ext.each(results.rows, function(row)
+                {
+                    records.push({
+                        tissue: row.tissue,
+                        qualifier: row.qualifier,
+                        remark: row.remark,
+
+                        //tissues
+                        preservation: row.preservation,
+                        quantity: row.quantity,
+                        recipient: row.recipient,
+
+                        //histology
+                        slideNum: row.slideNum,
+                        stain: row.stain
+                    });
+                }, this);
+
+                if (records.length){
+                    var store = this.targetStore.get('study||'+queryName+'||||');
+                    if(store)
+                        store.addRecords(records);
+                }
+            }
+        }, this);
+
+        Ext.Msg.hide();
+    }
+});
+Ext.reg('ehr-necropsycopy', EHR.ext.NecropsyCopyPanel);
+
+
+
+EHR.ext.StoreSorter = Ext.extend(Ext.Panel, {
+    initComponent: function()
+    {
+        var storeData = [];
+        this.targetStore.fields.each(function(field){
+            if(!field.isHidden)
+                storeData.push([field.name, field.fieldLabel]);
+        }, this);
+
+        this.sortFields = new Ext.data.ArrayStore({
+            fields: [
+                'name',
+                'label'
+            ],
+            idIndex: 0,
+            data: storeData
+        });
+
+        Ext.apply(this, {
+            layout: 'form'
+            ,ref: 'theForm'
+            ,autoHeight: true
+            ,bodyBorder: true
+            ,border: true
+            //,frame: true
+            ,bodyStyle: 'padding:5px'
+            //,width: 250
+            ,defaults: {
+                width: 200,
+                border: false,
+                bodyBorder: false
+            }
+            ,items: [{
+                xtype: 'combo'
+                ,emptyText:''
+                ,fieldLabel: 'Sort 1'
+                ,displayField:'label'
+                ,valueField: 'name'
+                ,typeAhead: true
+                ,editable: true
+                ,mode: 'local'
+                ,triggerAction: 'all'
+                ,store: this.sortFields
+                ,ref: 'sortField'
+            },{
+                xtype: 'combo'
+                ,emptyText:''
+                ,fieldLabel: 'Sort 2'
+                ,displayField:'label'
+                ,valueField: 'name'
+                ,typeAhead: true
+                ,editable: true
+                ,mode: 'local'
+                ,triggerAction: 'all'
+                ,store: this.sortFields
+                ,ref: 'sortField2'
+            },{
+                xtype: 'combo'
+                ,emptyText:''
+                ,fieldLabel: 'Sort 3'
+                ,displayField:'label'
+                ,valueField: 'name'
+                ,typeAhead: true
+                ,editable: true
+                ,mode: 'local'
+                ,triggerAction: 'all'
+                ,store: this.sortFields
+                ,ref: 'sortField3'
+            }],
+            buttons: [{
+                text:'Submit',
+                disabled:false,
+                ref: '../submit',
+                scope: this,
+                handler: function(s){
+                    this.doSort();
+                }
+            },{
+                text: 'Close',
+                scope: this,
+                handler: function(){
+                    this.ownerCt.hide();
+                }
+            }]
+        });
+
+        EHR.ext.StoreSorter.superclass.initComponent.call(this);
+    },
+    doSort: function(){
+        var field1 = this.ownerCt.theForm.sortField.getValue();
+        var field2 = this.ownerCt.theForm.sortField2.getValue();
+        var field3 = this.ownerCt.theForm.sortField3.getValue();
+
+        if(!field1){
+            alert('Must pick a field');
+            return;
+        }
+
+        this.ownerCt.hide();
+
+        field1 = this.targetStore.fields.get(field1);
+        field2 = this.targetStore.fields.get(field2);
+        field3 = this.targetStore.fields.get(field3);
+
+        var sortArray = [];
+
+        sortArray.push({term: field1.dataIndex});
+        if(field1.lookup){
+            sortArray[0].storeId = LABKEY.ext.FormHelper.getLookupStoreId(field1);
+            sortArray[0].displayField = field1.lookup.displayColumn;
+            sortArray[0].valueField = field1.lookup.keyColumn;
+        }
+
+        if(field2){
+            sortArray.push({term: field2.dataIndex});
+            if(field2.lookup){
+                sortArray[1].storeId = LABKEY.ext.FormHelper.getLookupStoreId(field2);
+                sortArray[1].displayField = field2.lookup.displayColumn;
+                sortArray[1].valueField = field2.lookup.keyColumn;
+            }
+        }
+
+        if(field3){
+            sortArray.push({term: field3.dataIndex});
+            if(field3.lookup){
+                sortArray[2].storeId = LABKEY.ext.FormHelper.getLookupStoreId(field3);
+                sortArray[2].displayField = field3.lookup.displayColumn;
+                sortArray[2].valueField = field3.lookup.keyColumn;
+            }
+        }
+
+        this.targetStore.data.sort('ASC', EHR.utils.sortStore(sortArray));
+        this.targetStore.fireEvent('datachanged', this.targetStore);
+
+    }
+});
+Ext.reg('ehr-storesorter', EHR.ext.StoreSorter);
+
+
 EHR.ext.BloodSelector = Ext.extend(Ext.Panel, {
     initComponent: function()
     {
@@ -1058,7 +1370,7 @@ EHR.ext.BloodSelector = Ext.extend(Ext.Panel, {
                 xtype: 'datefield'
                 ,fieldLabel: 'Date'
                 ,value: new Date()
-                ,hidden: !EHR.permissionMap.hasPermission('In Progress', 'admin', {queryName: 'Blood Draws', schemaName: 'study'})
+                ,hidden: !EHR.permissionMap.hasPermission('Completed', 'update', {queryName: 'Blood Draws', schemaName: 'study'})
                 ,ref: 'dateField'
             },{
                 xtype: 'combo'
@@ -1193,10 +1505,7 @@ EHR.ext.BloodSelector = Ext.extend(Ext.Panel, {
             filterArray: filterArray,
             scope: this,
             success: this.onSuccess,
-            failure: function(error){
-                Ext.Msg.hide();
-                alert(error.exception);
-            }
+            failure: EHR.utils.onError
         });
 
     },
@@ -1251,10 +1560,7 @@ EHR.ext.BloodSelector = Ext.extend(Ext.Panel, {
                         targetStore.load();
                         Ext.Msg.hide();
                     },
-                    failure: function(error){
-                        Ext.Msg.hide();
-                        alert(error.exception);
-                    }
+                    failure: EHR.utils.onError
                 });
             }
         }
@@ -1359,7 +1665,10 @@ EHR.ext.ImportPanelHeader = Ext.extend(EHR.ext.FormPanel, {
 Ext.reg('ehr-importpanelheader', EHR.ext.ImportPanelHeader);
 
 
-EHR.ext.AbstractPanel = Ext.extend(Ext.FormPanel, {
+EHR.ext.AbstractPanel = function(config){
+    EHR.ext.AbstractPanel.superclass.constructor.call(this, config);
+};
+Ext.extend(EHR.ext.AbstractPanel, Ext.FormPanel, {
     initComponent: function()
     {
         var panelDefaults = {
@@ -1404,7 +1713,7 @@ EHR.ext.AbstractPanel = Ext.extend(Ext.FormPanel, {
         this.enableBubble('participantloaded');
 
         if (this.importPanel){
-            this.mon(this.importPanel, 'participantchange', this.onParticipantChange, this);
+            this.mon(this.importPanel, 'participantchange', this.onParticipantChange, this, {delay: 50});
             this.importPanel.participantMap = this.participantMap;
         }
 
@@ -1412,6 +1721,7 @@ EHR.ext.AbstractPanel = Ext.extend(Ext.FormPanel, {
     onParticipantChange: function(field)
     {
         field.participantMap = this.participantMap;
+        this.participantField = field;
 
         var id = field.getValue();
 
@@ -1457,9 +1767,7 @@ EHR.ext.AbstractPanel = Ext.extend(Ext.FormPanel, {
                     linkTarget: '_blank',
                     renderTo: this.placeForQwp.body.id,
                     scope: this,
-                    failure: function(error){
-                        EHR.utils.onError(error)
-                    }
+                    failure: EHR.utils.onError
                 };
                 Ext.apply(qwpConfig, this.queryConfig);
 
@@ -1504,21 +1812,86 @@ EHR.ext.AbstractPanel = Ext.extend(Ext.FormPanel, {
         this.doLayout();
         this.expand();
     }
-//    clearAbstract: function(c)
-//    {
-//        delete c.loadedId;
-//
-//        if (c.getValue())
-//        {
-//            this.placeForAbstract.removeAll();
-//            this.placeForQwp.update();
-//            this.doLayout();
-//        }
-//    }
-
 });
 Ext.reg('ehr-abstractpanel', EHR.ext.AbstractPanel);
 
+
+EHR.ext.AssignmentAbstractPanel = Ext.extend(EHR.ext.AbstractPanel, {
+    initComponent: function(){
+        EHR.ext.AssignmentAbstractPanel.superclass.initComponent.call(this, arguments);
+
+        this.setTitle('Protocol Details');
+
+        this.removeAll();
+        this.add({
+            xtype: 'panel',
+            ref: 'placeForQwp',
+            border: false,
+            defaults: {border: false},
+            items: [{
+                html: 'No Protocol Selected'
+            }]
+        });
+    },
+    onParticipantChange: function(field){
+        if(field){
+            var theForm = field.findParentByType('ehr-formpanel').getForm();
+            var projectField = theForm.findField('project');
+
+            if(projectField){
+                var proj = projectField.getValue();
+                if(!proj){
+                    this.doUpdate();
+                }
+                else {
+                    var projectRec = projectField.store.find('project', proj);
+                    if(projectRec!=-1){
+                        projectRec = projectField.store.getAt(projectRec);
+                        this.doUpdate(projectRec.get('protocol'));
+                    }
+                    else {
+                        this.doUpdate();
+                    }
+                }
+            }
+        }
+    },
+    doUpdate: function(protocol){
+        if(this.loadedProtocol == protocol){
+            return;
+        }
+
+        this.loadedProtocol = protocol;
+
+        this.placeForQwp.removeAll();
+        this.placeForQwp.body.update();
+
+        if(protocol){
+            this.QWP = new LABKEY.QueryWebPart({
+                allowChooseQuery: false,
+                allowChooseView: true,
+                showRecordSelectors: true,
+                frame: 'none',
+                showDeleteButton: false,
+                timeout: 0,
+                linkTarget: '_blank',
+                renderTo: this.placeForQwp.body.id,
+                schemaName: 'ehr',
+                queryName: 'protocolTotalAnimalsBySpecies',
+                //viewName: 'With Animals',
+                scope: this,
+                failure: EHR.utils.onError,
+                filterArray: [LABKEY.Filter.create('protocol', protocol, LABKEY.Filter.Types.EQUAL)]
+            });
+        }
+        else {
+            this.placeForQwp.add({html: 'No Protocol Selected'});
+        }
+
+        this.doLayout();
+    }
+});
+Ext.reg('ehr-assignmentabstractpanel', EHR.ext.AssignmentAbstractPanel);
 
 EHR.ext.QueryPanel = Ext.extend(Ext.Panel, {
     initComponent: function(){
@@ -1570,9 +1943,7 @@ EHR.ext.QueryPanel = Ext.extend(Ext.Panel, {
             timeout: 0,
             linkTarget: '_blank',
             renderTo: target.id,
-            failure: function(error){
-                EHR.utils.onError(error)
-            },
+            failure: EHR.utils.onError,
             success: function(result){
                 tab.isLoaded = true;
             },
@@ -1747,7 +2118,7 @@ EHR.ext.ApplyTemplatePanel = Ext.extend(Ext.FormPanel, {
                 ref: 'templateName',
                 store: new LABKEY.ext.Store({
                     schemaName: 'ehr',
-                    queryName: 'formtemplates',
+                    queryName: 'my_formtemplates',
                     sort: 'title',
                     autoLoad: true,
                     filterArray: [LABKEY.Filter.create('formtype', this.formType, LABKEY.Filter.Types.EQUAL)]
@@ -1793,13 +2164,12 @@ EHR.ext.ApplyTemplatePanel = Ext.extend(Ext.FormPanel, {
         LABKEY.Query.selectRows({
             schemaName: 'ehr',
             queryName: 'formtemplaterecords',
-            filterArray: [LABKEY.Filter.create('templateId', templateId, LABKEY.Filter.Types.EQUAL)],
+            filterArray: [
+                LABKEY.Filter.create('templateId', templateId, LABKEY.Filter.Types.EQUAL)
+            ],
             sort: '-rowid',
             success: this.onLoadTemplate,
-            failure: function(error){
-                Ext.Msg.hide();
-                alert(error.exception);
-            },
+            failure: EHR.utils.onError,
             scope: this
         });
 
@@ -1919,6 +2289,7 @@ EHR.ext.ApplyTemplatePanel = Ext.extend(Ext.FormPanel, {
                     editor.value=values[0];
                 else if (values.length > 1){
                     editor.xtype = 'displayfield';
+                    editor.store = null;
                     editor.value = values.join('/');
                 }
 
@@ -2000,6 +2371,26 @@ EHR.ext.SaveTemplatePanel = Ext.extend(Ext.Window, {
                             this.buttons[0].setDisabled(!f.getValue())
                         }
                     }
+                },{
+                    xtype: 'combo',
+                    displayField: 'name',
+                    valueField: 'UserId',
+                    triggerAction: 'all',
+                    mode: 'local',
+                    listWidth: 300,
+                    fieldLabel: 'User/Group',
+                    //value: 0,
+                    store: new LABKEY.ext.Store({
+                        schemaName: 'core',
+                        queryName: 'PrincipalsWithoutAdmin',
+                        columns: 'userid,name',
+                        sort: 'type,name',
+                        autoLoad: true
+                    }),
+                    ref: '../templateUser'
+                },{
+                    xtype: 'displayfield',
+                    value: 'NOTE: You can choose a user or group in order to limit which users can see the template.  Leave it blank to expose the template to everyone.  Pick your own user to make it visible to you only.  If you want to share it with a specific group (ie. vets or pathology), choose them from the list.'
                 },{
                     xtype: 'textarea',
                     fieldLabel: 'Description',
@@ -2211,6 +2602,7 @@ EHR.ext.SaveTemplatePanel = Ext.extend(Ext.Window, {
             scope: this,
             rows: [{
                 title: this.templateName.getValue(),
+                userid: this.templateUser.getValue(),
                 description: this.templateDescription.getValue(),
                 formType: this.formType
             }],
@@ -2279,10 +2671,7 @@ EHR.ext.createImportPanel = function(config){
         successCallback: function(results){
             formSections = results.rows;
         },
-        failure: function(error){
-            Ext.Msg.hide();
-            console.log(error.exception);
-        }
+        failure: EHR.utils.onError
     });
 
     var formConfig;
@@ -2297,10 +2686,7 @@ EHR.ext.createImportPanel = function(config){
             else
                 formConfig = {};
         },
-        failure: function(error){
-            Ext.Msg.hide();
-            console.log(error.exception);
-        }
+        failure: EHR.utils.onError
     });
     multi.send(onSuccess, this);
 
@@ -2350,7 +2736,6 @@ EHR.ext.createImportPanel = function(config){
                 var storeId;
                 Ext.each(templates, function(t){
                     storeId = [row.schemaName, row.queryName, '', ''].join('||');
-                    console.log(storeId)
                     panelCfg.initialTemplates.push({storeId: row.storeId, title: t});
                 }, this);
 

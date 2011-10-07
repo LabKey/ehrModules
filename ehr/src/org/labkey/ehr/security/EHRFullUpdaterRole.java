@@ -29,7 +29,7 @@ public class EHRFullUpdaterRole extends AbstractEHRRole
 {
     public EHRFullUpdaterRole()
     {
-        super("EHR Full Submitter", "Users with this role are permitted to submit and approve records.  They cannot modify public data.",
+        super("EHR Full Updater", "Users with this role are permitted to submit and approve records.  They can also update public data, but are not admins.",
                 ReadPermission.class,
                 InsertPermission.class,
                 UpdatePermission.class,

@@ -3,6 +3,7 @@
         <tables xmlns="http://labkey.org/data/xml">
             <table tableName="necropsyParent" tableDbType="TABLE">
                 <pkColumnName>objectid</pkColumnName>
+                <titleColumn>caseno</titleColumn>
                 <columns>
                     <column columnName="lsid">
                         <isKeyField>false</isKeyField>

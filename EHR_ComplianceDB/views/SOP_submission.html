@@ -9,7 +9,7 @@ Ext.onReady(function()
 
     //we look up this employee's information
     LABKEY.Query.selectRows({
-        schemaName: 'lists',
+        schemaName: 'ehr_compliancedb',
         queryName: 'Employees',
         containerPath: employeeContainer,
         filterArray: [LABKEY.Filter.create('Email', LABKEY.Security.currentUser.email, LABKEY.Filter.Types.EQUAL)],
@@ -22,7 +22,7 @@ Ext.onReady(function()
     {
         if (results.rows.length < 1){alert('No Employee Record Found for User: '+LABKEY.Security.currentUser.email+'.\nPlease contact Sandra Boehm.');return;}
 
-        username = results.rows[0].Id;
+        username = results.rows[0].employeeid;
 
         var email = LABKEY.Security.currentUser.email;
 
@@ -31,8 +31,8 @@ Ext.onReady(function()
             renderTo: 'sopDiv',
             dataRegionName: 'sopGrid',
             title: 'Unread SOPs (Less Than 10 Months Until Renewal)',
-            containerPath: sopContainer,
-            schemaName: 'lists',
+            containerPath: employeeContainer,
+            schemaName: 'ehr_compliancedb',
             queryName: 'SOPrequirements',
             viewName: 'To Read',
             buttonBarPosition: 'top',
@@ -51,7 +51,7 @@ Ext.onReady(function()
             //allowChooseView: false,
             //successCallback: function(){setButtons('sopGrid', [{text: 'Mark Read', onclick: "markRead('sopGrid')"}])},
             filters: [
-                LABKEY.Filter.create('Id', username, LABKEY.Filter.Types.EQUAL),
+                LABKEY.Filter.create('EmployeeId', username, LABKEY.Filter.Types.EQUAL),
                 LABKEY.Filter.create('MonthsUntilRenewal', 10, LABKEY.Filter.Types.LESS_THAN)
             ],
             timeout: 0
@@ -62,8 +62,8 @@ Ext.onReady(function()
             renderTo: 'sopDiv2',
             //dataRegionName: 'sopGrid',
             title: 'Dates SOPs Were Last Read',
-            containerPath: sopContainer,
-            schemaName: 'lists',
+            containerPath: employeeContainer,
+            schemaName: 'ehr_compliancedb',
             queryName: 'SOPDateLastRead',
             buttonBarPosition: 'top',
             showRecordSelectors: true,
@@ -78,12 +78,12 @@ Ext.onReady(function()
 
         //we find remaining SOPs
         LABKEY.Query.selectRows({
-            schemaName: 'lists',
+            schemaName: 'ehr_compliancedb',
             queryName: 'SOPrequirements',
             viewName: 'To Read',
-            containerPath: sopContainer,
+            containerPath: employeeContainer,
             filterArray: [
-                LABKEY.Filter.create('Id', username, LABKEY.Filter.Types.EQUAL),
+                LABKEY.Filter.create('employeeid', username, LABKEY.Filter.Types.EQUAL),
                 LABKEY.Filter.create('MonthsUntilRenewal', 10, LABKEY.Filter.Types.LESS_THAN)
             ],
             successCallback: makeForm,
@@ -119,7 +119,7 @@ function markRead(dataRegion, dataRegionName) {
     var rows = [];
     for (var i=0;i<checked.length;i++){
         rows.push({
-            SOP_ID: checked[i]
+            SOPID: checked[i]
             ,EmployeeId: username
             ,Date: new Date().format("Y-m-d")
             });
@@ -127,14 +127,14 @@ function markRead(dataRegion, dataRegionName) {
 
     LABKEY.Query.insertRows({
          containerPath: employeeContainer,
-         schemaName: 'lists',
+         schemaName: 'ehr_compliancedb',
          queryName: 'SOPDates',
          rows: rows,
          scope: this,
          failureCallback: function(errorInfo) {
             errorState = 1;
             Ext.Msg.hide();
-            Ext.Msg.alert("Error: please contact bimber@wisc.edu");
+            Ext.Msg.alert("Error: please contact the site admin");
             console.log(errorInfo)
          },
          successCallback: onComplete
@@ -148,7 +148,7 @@ function markRead(dataRegion, dataRegionName) {
             window.location.reload();
         }
         else {
-            alert('Something went wrong with the submission.  Please contact bimber@wisc.edu');
+            alert('Something went wrong with the submission.  Please contact the site admin');
         }
      }
  }
@@ -166,7 +166,7 @@ function submitRequest() {
 
     LABKEY.Query.insertRows({
          containerPath: employeeContainer,
-         schemaName: 'lists',
+         schemaName: 'ehr_compliancedb',
          queryName: 'CompletionDates',
          scope: this,
          rows: [{
@@ -185,7 +185,7 @@ function submitRequest() {
             window.location = url
          },
          errorCallback: function(errorInfo) {
-                Ext.Msg.alert("Error: please contact bimber@wisc.edu");
+                Ext.Msg.alert("Error: please contact the site admin");
                 console.log(errorInfo);
             }
         });

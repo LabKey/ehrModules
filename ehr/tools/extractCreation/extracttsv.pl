@@ -50,7 +50,8 @@ sub extractTSV {
 		-schemaName => $args->{schemaName},
 		-queryName => $args->{queryName},
 		-viewName => $args->{viewName},
-		-columns => $args->{columns},	
+		-columns => $args->{columns},
+        -requiredVersion => 8.3,
 		#-maxRows => 1,		
 	);	
 
@@ -88,6 +89,7 @@ my $results = Labkey::Query::selectRows(
 	-containerPath => '/WNPRC/EHR',
 	-schemaName => 'ehr',
 	-queryName => 'extracts',
+	-requiredVersion => 8.3,
 #	-debug => 1,		
 );	
 

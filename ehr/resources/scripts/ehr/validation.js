@@ -38,6 +38,7 @@ function init(event, errors){
         tasksModified: [],
         requestsModified: [],
         requestsDenied: {},
+        requestsCompleted: {},
         missingParticipants: [],
         PKsModified: [],
         publicPKsModified: [],
@@ -59,13 +60,18 @@ function beforeInsert(row, errors){
     EHR.verifyPermissions('insert', this.scriptContext, row);
     EHR.rowInit.call(this, scriptErrors, row, null);
 
+    //force newly entered requests to have future dates
     if(row.date && this.scriptContext.qcMap.label[row.QCStateLabel]['metadata/isRequest']){
         var now = new Date();
         //if the row's date appears to be date-only, we adjust now accordingly
         if(row.date.getHours()==0 && row.date.getMinutes()==0)
             now = new Date(now.getFullYear(), now.getMonth(), now.getDate());
 
-        if(row.date.compareTo(now) < 0){
+        now = now.getTime();
+        var rowDate = now - row.date.getTime();
+
+        //allow a 30 second window to support inserts from other scripts
+        if(rowDate > 30000){
             EHR.addError(scriptErrors, 'date', 'Cannot place a request in the past', 'ERROR');
         }
     }
@@ -182,7 +188,7 @@ function complete(event, errors) {
 
         if(this.scriptContext.requestsDenied && !EHR.utils.isEmptyObj(this.scriptContext.requestsDenied)){
             //console.log('requests denied:');
-            console.log(this.scriptContext.requestsDenied);
+            //console.log(this.scriptContext.requestsDenied);
             var totalRequests = [];
             for(var i in this.scriptContext.requestsDenied){
                 var rows = this.scriptContext.requestsDenied[i];
@@ -195,36 +201,123 @@ function complete(event, errors) {
                 columns: '*',
                 scope: this,
                 filterArray: [
-                    LABKEY.Filter.create('requestid', totalRequests, LABKEY.Filter.Types.EQUALS_ONE_OF)
+                    LABKEY.Filter.create('requestid', totalRequests.join(';'), LABKEY.Filter.Types.EQUALS_ONE_OF)
                 ],
                 success: function(data){
                     if(data && data.rows && data.rows.length){
                         var emails = [];
                         var row;
-                        for(var i in data.rows){
+
+                        for(var i=0;i<data.rows.length;i++){
                             row = data.rows[i];
                             var recipients = [];
+                            var rows = this.scriptContext.requestsDenied[row.requestid];
 
                             if(row.notify1)
                                 recipients.push(LABKEY.Message.createPrincipalIdRecipient(LABKEY.Message.recipientType.to, row.notify1));
                             if(row.notify2)
                                 recipients.push(LABKEY.Message.createPrincipalIdRecipient(LABKEY.Message.recipientType.to, row.notify2));
+                            if(row.notify3)
+                                recipients.push(LABKEY.Message.createPrincipalIdRecipient(LABKEY.Message.recipientType.to, row.notify3));
 
-                            if(recipients.length){
-                                EHR.sendEmail({
-                                    recipients: recipients,
-                                    msgContent: 'One or more elements from a '+row.formtype+' have been denied:' +
-                                        '<a href="'+LABKEY.ActionURL.getBaseURL()+'ehr' + LABKEY.ActionURL.getContainer() + '/requestDetails.view?requestid='+row.requestid+'&formtype='+row.formtype +
-                                        '">Click here to view them</a>.  <p></p>The requests that have been denied will say \'Request: Denied\' in the status column.  Please do not reply to this email, as this account is not read.',
-                                    msgSubject: 'EHR Service Requests Were Denied'
-                                })
+                            var msgContent = 'One or more elements from a '+row.formtype+(row.title ? ' titled: \''+row.title+'\'' : '')+' have been denied: ' +
+                                '<a href="'+LABKEY.ActionURL.getBaseURL()+'ehr' + LABKEY.ActionURL.getContainer() + '/requestDetails.view?requestid='+row.requestid+'&formtype='+row.formtype +
+                                '">Click here to view them</a>.  <p>';
+
+                            if(rows.length){
+                                msgContent += 'The following IDs have been marked complete:<br>';
+                                var req;
+                                for(var j=0;j<rows.length;j++){
+                                    req = rows[j];
+                                    msgContent += '<a href="'+LABKEY.ActionURL.getBaseURL()+'ehr' + LABKEY.ActionURL.getContainer() + '/requestDetails.view?requestid='+row.requestid+'&formtype='+row.formtype + '">' + req.Id+'</a><br>';
+                                    if(req.description){
+                                        msgContent += req.description.replace(/\n/g,'<br>');
+                                    }
+                                    msgContent += '<p>';
+                                }
                             }
+
+                            msgContent += '<p>The requests that have been denied will say \'Request: Denied\' in the status column.  Please do not reply to this email, as this account is not read.';
+
+                            EHR.sendEmail({
+                                recipients: recipients,
+                                msgContent: msgContent,
+                                msgSubject: 'EHR '+row.formtype+' Denied',
+                                notificationType: row.formtype+' Denied'
+                            })
                         }
                     }
                 }
             });
         }
+
+        if(this.scriptContext.requestsCompleted && !EHR.utils.isEmptyObj(this.scriptContext.requestsCompleted)){
+            //console.log('requests completed:');
+            //console.log(this.scriptContext.requestsCompleted);
+            var totalRequests = [];
+            for(var i in this.scriptContext.requestsCompleted){
+                totalRequests.push(i);
+            }
+
+            LABKEY.Query.selectRows({
+                schemaName: 'ehr',
+                queryName: 'requests',
+                columns: '*',
+                scope: this,
+                filterArray: [
+                    LABKEY.Filter.create('requestid', totalRequests.join(';'), LABKEY.Filter.Types.EQUALS_ONE_OF)
+                ],
+                success: function(data){
+                    if(data && data.rows && data.rows.length){
+                        var emails = [];
+                        var row;
+
+                        for(var i=0;i<data.rows.length;i++){
+                            row = data.rows[i];
+                            var recipients = [];
+                            var rows = this.scriptContext.requestsCompleted[row.requestid] || [];
+
+                            if(row.notify1)
+                                recipients.push(LABKEY.Message.createPrincipalIdRecipient(LABKEY.Message.recipientType.to, row.notify1));
+                            if(row.notify2)
+                                recipients.push(LABKEY.Message.createPrincipalIdRecipient(LABKEY.Message.recipientType.to, row.notify2));
+                            if(row.notify3)
+                                recipients.push(LABKEY.Message.createPrincipalIdRecipient(LABKEY.Message.recipientType.to, row.notify3));
+
+                           var msgContent = 'One or more elements from the '+row.formtype+(row.title ? ' titled: \''+row.title+'\'' : '')+' have been completed: ' +
+                                '<a href="'+LABKEY.ActionURL.getBaseURL()+'ehr' + LABKEY.ActionURL.getContainer() + '/requestDetails.view?requestid='+row.requestid+'&formtype='+row.formtype +
+                                '">Click here to view them</a>.  <p>';
+
+                            if(rows.length){
+                                msgContent += 'The following IDs have been marked complete:<br>';
+                                var req;
+                                for(var j=0;j<rows.length;j++){
+                                    req = rows[j];
+                                    msgContent += '<a href="'+LABKEY.ActionURL.getBaseURL()+'ehr' + LABKEY.ActionURL.getContainer() + '/requestDetails.view?requestid='+row.requestid+'&formtype='+row.formtype + '">' + req.Id+'</a><br>';
+                                    if(req.description){
+                                        msgContent += req.description.replace(/\n/g,'<br>');
+                                    }
+                                    msgContent += '<p>';
+                                }
+                            }
+
+                            msgContent += '<p>The requests that have been completed will say \'Completed\' in the status column.  Please do not reply directly to this email, as this account is not read.';
+
+                            EHR.sendEmail({
+                                recipients: recipients,
+                                msgContent: msgContent,
+                                msgSubject: 'EHR '+row.formtype+' Completed',
+                                notificationType: row.formtype+' Completed'
+                            })
+                         }
+                    }
+                }
+            });
+        }
+
     }
+
+
 
 }
 exports.complete = complete;
@@ -298,6 +391,12 @@ EHR.rowInit = function(errors, row, oldRow){
 
     //validate project / assignment to that project
     //also add account if the project is found
+
+    if(row.project && isNaN(row.project)){
+        EHR.addError(errors, 'project', 'Project must be numeric: '+row.project, 'ERROR');
+        delete row.project;
+    }
+
     //skip if doing assignments
     if(!this.scriptContext.quickValidation &&
         this.scriptContext.extraContext.dataSource != 'etl' &&
@@ -310,7 +409,7 @@ EHR.rowInit = function(errors, row, oldRow){
             schemaName: 'study',
             queryName: 'assignment',
             scope: this,
-            sql: "SELECT a.project, a.project.account FROM study.assignment a WHERE a.project='"+row.project+"' AND a.id='"+row.id+"' AND a.date <= '"+date+"' AND (a.enddate >= '"+date+"' OR a.enddate IS NULL) AND project.protocol!='wprc00' AND qcstate.publicdata = true",
+            sql: "SELECT a.project, a.project.account, a.project.protocol FROM study.assignment a WHERE a.project='"+row.project+"' AND a.id='"+row.id+"' AND cast(a.date as date) <= '"+date+"' AND (cast(a.enddate as date) >= '"+date+"' OR a.enddate IS NULL) AND project.protocol!='wprc00' AND qcstate.publicdata = true",
             success: function(data){
                 if(!data.rows || !data.rows.length){
                     var severity = 'WARN';
@@ -318,6 +417,7 @@ EHR.rowInit = function(errors, row, oldRow){
                         severity = 'INFO';
 
                     EHR.addError(errors, 'project', 'Not assigned to '+row.project+' on this date', severity);
+                    EHR.addError(errors, 'project', 'The '+row.project+' is not associated with a valid protocol', severity);
                 }
                 else {
                     this.scriptContext.assignmentRecord = data.rows[0];
@@ -366,7 +466,7 @@ EHR.rowInit = function(errors, row, oldRow){
     }
 
     //dont allow future dates on completed records
-    if(row.QCStateLabel == 'Completed'){
+    if(row.QCStateLabel == 'Completed' && !this.scriptContext.allowFutureDates){
         var now = new Date();
         if(row.date && row.date.compareTo(now) > 0){
             EHR.addError(errors, 'date', 'Date is in the future', 'INFO');
@@ -482,7 +582,8 @@ EHR.afterEvent = function (event, errors, row, oldRow){
     if(this.scriptContext.participantsModified.indexOf(row.Id) == -1){
         this.scriptContext.participantsModified.push(row.Id);
 
-        if(row._publicData){
+        //if(row._publicData){
+        if(row.QCStateLabel && this.scriptContext.qcMap.label[row.QCStateLabel].PublicData){
             this.scriptContext.publicParticipantsModified.push(row.Id);
         }
     }
@@ -493,7 +594,8 @@ EHR.afterEvent = function (event, errors, row, oldRow){
         if(key && this.scriptContext.PKsModified.indexOf(key) == -1){
             this.scriptContext.PKsModified.push(key);
 
-            if(row._publicData)
+            //if(row._publicData)
+            if(row.QCStateLabel && this.scriptContext.qcMap.label[row.QCStateLabel].PublicData)
                 this.scriptContext.publicPKsModified.push(key);
         }
     }
@@ -512,6 +614,16 @@ EHR.afterEvent = function (event, errors, row, oldRow){
         }
     }
 
+    //track requests being completed
+    if(row.requestId && row.QCStateLabel=='Completed'){
+        if(oldRow && oldRow.QCStateLabel && oldRow.QCStateLabel!='Completed'){
+            if(!this.scriptContext.requestsCompleted[row.requestId])
+                this.scriptContext.requestsCompleted[row.requestId] = [];
+
+            this.scriptContext.requestsCompleted[row.requestId].push(row);
+        }
+    }
+
     if(row.taskId && this.scriptContext.tasksModified.indexOf(row.taskId) == -1){
         this.scriptContext.tasksModified.push(row.taskId);
     }
@@ -520,7 +632,8 @@ EHR.afterEvent = function (event, errors, row, oldRow){
         if(this.scriptContext.participantsModified.indexOf(oldRow.Id) == -1){
             this.scriptContext.participantsModified.push(oldRow.Id);
 
-            if(oldRow._publicData)
+            //if(oldRow._publicData)
+            if(oldRow.QCStateLabel && this.scriptContext.qcMap.label[oldRow.QCStateLabel].PublicData)
                 this.scriptContext.publicParticipantsModified.push(oldRow.Id);
         }
 
@@ -529,7 +642,8 @@ EHR.afterEvent = function (event, errors, row, oldRow){
             if(key && this.scriptContext.PKsModified.indexOf(key) == -1){
                 this.scriptContext.PKsModified.push(key);
 
-                if(oldRow._publicData)
+                //if(oldRow._publicData)
+                if(oldRow.QCStateLabel && this.scriptContext.qcMap.label[oldRow.QCStateLabel].PublicData)
                     this.scriptContext.publicPKsModified.push(key);
             }
         }
@@ -556,6 +670,7 @@ EHR.onDeathDeparture = function(participant, date){
     closeRecord('Assignment');
     closeRecord('Housing');
     closeRecord('Treatment Orders');
+    closeRecord('Problem List');
 
     function closeRecord(queryName){
         LABKEY.Query.selectRows({
@@ -573,7 +688,7 @@ EHR.onDeathDeparture = function(participant, date){
             success: function(data){
                 if(data && data.rows && data.rows.length){
                     var toUpdate = [];
-                    console.log(data.rows.length);
+                    //console.log(data.rows.length);
                     Ext.each(data.rows, function(r){
                         toUpdate.push({lsid: r.lsid, enddate: date.toGMTString()})
                     }, this);
@@ -582,6 +697,9 @@ EHR.onDeathDeparture = function(participant, date){
                         schemaName: 'study',
                         queryName: queryName,
                         rows: toUpdate,
+                        extraContext: {
+                            quickValidation: true
+                        },
                         scope: this,
                         failure: EHR.onFailure,
                         success: function(data){
@@ -678,15 +796,11 @@ msgContent - string
 
 
 EHR.sendEmail = function(config){
-//    console.log('sending email');
-
     if(!config.recipients)
         config.recipients = [];
 
 
     if(config.notificationType){
-        console.log('notification type: '+config.notificationType);
-
         LABKEY.Query.selectRows({
             schemaName: 'ehr',
             queryName: 'notificationRecipients',
@@ -702,7 +816,6 @@ EHR.sendEmail = function(config){
     }
 
     if(config.recipients.length){
-        console.log('recipients: '+config.recipients.length);
         var siteEmail = config.msgFrom;
         if(!siteEmail){
             LABKEY.Query.selectRows({
@@ -724,10 +837,6 @@ EHR.sendEmail = function(config){
             EHR.logError({msg: 'ERROR: site email not found'});
         }
 
-//        console.log('sending email from: '+siteEmail);
-//        console.log(config.msgContent);
-//        console.log(config.recipients);
-
         LABKEY.Message.sendMessage({
             msgFrom: siteEmail,
             msgSubject: config.msgSubject,
@@ -735,7 +844,11 @@ EHR.sendEmail = function(config){
             allowUnregisteredUser: true,
             msgContent: [
                 LABKEY.Message.createMsgContent(LABKEY.Message.msgType.html, config.msgContent)
-            ]
+            ],
+            success: function(){
+                console.log('Success sending emails');
+            },
+            failure: EHR.onFailure
         });
     }
 };
@@ -1320,8 +1433,9 @@ EHR.validation = {
                 return demographicsRow;
             }
 
-            //console.log('status: '+status);
-            //console.log('calc status: '+r.calculated_status);
+//            console.log('status: '+status);
+//            console.log('forceUpdate: '+forceUpdate);
+//            console.log('calc status: '+r.calculated_status);
             if(status != r.calculated_status || forceUpdate){
                 //the following means no record exists in study.demographics for this ID
                 if(!r.lsid){
@@ -1345,12 +1459,13 @@ EHR.validation = {
                 queryName: 'Demographics',
                 rows: toUpdate,
                 scope: this,
+                extraContext: {
+                    quickValidation: true
+                },
                 success: function(data){
                     console.log('Success updating demographics status field');
                 },
-                failure: function(error){
-                    console.log('error: '+error.exception)
-                }
+                failure: EHR.onFailure
             });
         }
     }
@@ -1574,12 +1689,12 @@ EHR.ETL = {
             case true:
             case 'y':
             case 'Y':
-                row.major = true;
+                row.major = 'Yes';
                 break;
             case false:
             case 'n':
             case 'N':
-                row.major = false;
+                row.major = 'No';
                 break;
             default:
                 row.major = null;
@@ -1670,7 +1785,7 @@ EHR.utils.findPrincipalName = function(id){
             if(data.rows && data.rows.length)
                 EHR.utils.principalMap[id] = data.rows[0].Name;
         },
-        failure: EHR.utils.onError
+        failure: EHR.onFailure
     });
 
     return EHR.utils.principalMap[id] || '';
@@ -1707,7 +1822,7 @@ EHR.utils.getQCStateMap = function(config){
             }
             config.success.apply(config.scope || this, [qcmap]);
         },
-        failure: EHR.utils.onError
+        failure: EHR.onFailure
     });
 
 };
@@ -1732,7 +1847,7 @@ EHR.utils.getDatasetPermissions = function(config) {
         success: function(results){
             qcMap = results;
         },
-        failure: EHR.utils.onError
+        failure: EHR.onFailure
     });
     //TODO: eventually accept other schemas
     LABKEY.Security.getSchemaPermissions({
@@ -1847,12 +1962,7 @@ EHR.utils.getDatasetPermissions = function(config) {
 EHR.utils.onError = function(error){
     console.log('ERROR: ' + error.exception);
     console.log(error);
-
-    var logErrors = 0;
-
-     if(logErrors){
-        EHR.logError(error);
-     }
+    EHR.logError(error);
 };
 
 //Return new array with duplicate values removed

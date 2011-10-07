@@ -95,9 +95,7 @@ function onAfterInsert(scriptContext, errors, row, oldRow){
                     success: function(data){
                         console.log('Success Cascade Inserting')
                     },
-                    failure: function(error){
-                        console.log(error.exceptionClass)
-                    }
+                    failure: EHR.onFailure
                 });
             }
         }
@@ -199,9 +197,7 @@ function onAfterUpdate(errors, scriptContext, row, oldRow){
                 success: function(data){
                     console.log('Success Cascade Inserting')
                 },
-                failure: function(error){
-                    console.log(error.exceptionClass)
-                }
+                failure: EHR.onFailure
             });
         }
 
@@ -214,9 +210,7 @@ function onAfterUpdate(errors, scriptContext, row, oldRow){
                 success: function(data){
                     console.log('Success Cascade Updating')
                 },
-                failure: function(error){
-                    console.log(error.exceptionClass)
-                }
+                failure: EHR.onFailure
             });
         }
 
@@ -229,9 +223,7 @@ function onAfterUpdate(errors, scriptContext, row, oldRow){
                 success: function(data){
                     console.log('Success Cascade Deleting')
                 },
-                failure: function(error){
-                    console.log(error.exceptionClass)
-                }
+                failure: EHR.onFailure
             });
         }
     }
@@ -267,9 +259,7 @@ function onAfterDelete(scriptContext, errors, row, oldRow){
                 success: function(data){
                     console.log('Success Cascade Deleting');
                 },
-                failure: function(error){
-                    console.log(error.exceptionClass)
-                }
+                failure: EHR.onFailure
             });
         }
     }

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <study label="Primate Electronic Health Record" timepointType="CONTINUOUS" startDate="1990-01-01-08:00" securityType="ADVANCED_WRITE" subjectNounSingular="Animal" subjectNounPlural="Animals" subjectColumnName="Id" xmlns="http://labkey.org/study/xml">
-  <lists dir="lists"/>
+  <!--<lists dir="lists"/>-->
   <cohorts type="AUTOMATIC" mode="SIMPLE" datasetId="1012" datasetProperty="v_status"/>
   <!--<reports dir="reports"/>-->
   <!--removed to prevent resetting the other QC state prefs on import-->

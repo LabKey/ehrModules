@@ -19,8 +19,8 @@ function afterUpdate(row, oldRow, errors){
     var queryName = fileParse[2].replace(/\.js$/, '');
 
     if(oldRow.Id != row.Id){
-        shared.updateTable(row, oldRow, schemaName, 'CompletionDates', 'Key', 'Id', 'EmployeeId');
-        shared.updateTable(row, oldRow, schemaName, 'EmployeeMiscRequirements', 'Key', 'Id', 'EmployeeId');
-        shared.updateTable(row, oldRow, schemaName, 'EmployeeRequirementExemptions', 'Key', 'Id', 'EmployeeId');
+        shared.updateTable(row, oldRow, schemaName, 'CompletionDates', 'rowid', 'EmployeeId', 'EmployeeId');
+        shared.updateTable(row, oldRow, schemaName, 'RequirementsPerEmployee', 'rowid', 'EmployeeId', 'EmployeeId');
+        shared.updateTable(row, oldRow, schemaName, 'EmployeeRequirementExemptions', 'rowid', 'EmployeeId', 'EmployeeId');
     }
 };

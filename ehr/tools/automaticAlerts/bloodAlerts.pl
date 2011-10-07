@@ -25,9 +25,7 @@ my $baseUrl = 'https://ehr.primate.wisc.edu/';
 
 my $studyContainer = 'WNPRC/EHR/';
 
-#whitespace separated list of emails
-my @email_recipients = qw(cm@primate.wisc.edu wnprcvets@primate.wisc.edu);
-#@email_recipients = qw(bimber@wisc.edu);
+my $notificationtypes = 'Blood Alerts';
 my $mail_server = 'smtp.primate.wisc.edu';
 
 #emails will be sent from this address
@@ -46,6 +44,7 @@ use File::Touch;
 use File::Spec;
 use File::Basename;
 use Cwd 'abs_path';
+use List::MoreUtils qw/ uniq /;
 
 # Find today's date
 my $tm = localtime;
@@ -67,7 +66,8 @@ $results = Labkey::Query::selectRows(
     	['Id/DataSet/Demographics/calculated_status', 'neqornull', 'Alive'],
     	['qcstate/label', 'neq', 'Request: Denied'],
 		['date', 'dategte', $datestr],    			    	
-    ],    
+    ],
+    -requiredVersion => 8.3,
     #-debug => 1,
 );
 
@@ -89,12 +89,17 @@ $results = Labkey::Query::selectRows(
     	['qcstate/label', 'neq', 'Request: Denied'],
 		['date', 'dategte', $datestr],    
 		['BloodRemaining/AvailBlood', 'lt', 0],    			    	
-    ],    
+    ],
+    -requiredVersion => 8.3,
     #-debug => 1,
 );
 
 if(@{$results->{rows}}){
 	$email_html .= "<b>WARNING: There are ".@{$results->{rows}}." scheduled blood draws exceeding the allowable volume.</b><br>";
+    foreach my $row (@{$results->{rows}}){
+        $email_html .= $row->{'Id'}."<br>";
+    };
+	
 	$email_html .= "<p><a href='".$baseUrl."query/".$studyContainer."executeQuery.view?schemaName=study&query.queryName=Blood Draws&query.viewName=Blood Summary&query.date~dategte=$datestr&query.Id/DataSet/Demographics/calculated_status~neqornull=Alive&query.BloodRemaining/AvailBlood~lt=0"."'>Click here to view them</a><br>\n";
 	$email_html .= "<hr>\n";			
 }
@@ -111,12 +116,17 @@ $results = Labkey::Query::selectRows(
     	['qcstate/label', 'neq', 'Request: Denied'],
 		['projectStatus', 'isnonblank', ''],
 		['date', 'dateeq', $datestr],		
-    ],    
+    ],
+    -requiredVersion => 8.3,
     #-debug => 1,
 );
 
 if(@{$results->{rows}}){
-	$email_html .= "<b>WARNING: There are ".@{$results->{rows}}." blood draws scheduled today where the animal is not assigned to the project.</b><br>";
+	$email_html .= "<b>WARNING: There are ".@{$results->{rows}}." blood draws scheduled today where the animal is not assigned to the project. DO NOT DRAW FROM THESE ANIMALS UNTIL FIXED.</b><br>";
+    foreach my $row (@{$results->{rows}}){
+        $email_html .= $row->{'Id'}."<br>";
+    };
+	
 	$email_html .= "<p><a href='".$baseUrl."query/".$studyContainer."executeQuery.view?schemaName=study&query.queryName=BloodSchedule&query.projectStatus~isnonblank&query.Id/DataSet/Demographics/calculated_status~eq=Alive&query.date~dateeq=$datestr"."'>Click here to view them</a><br>\n";
 	$email_html .= "<hr>\n";			
 }	
@@ -132,7 +142,8 @@ $results = Labkey::Query::selectRows(
     	['Id/DataSet/Demographics/calculated_status', 'eq', 'Alive'],
 		['qcstate/label', 'eq', 'Request: Pending'],
 		['date', 'dategte', $datestr],		
-    ],    
+    ],
+    -requiredVersion => 8.3,
     #-debug => 1,
 );
 
@@ -153,7 +164,8 @@ $results = Labkey::Query::selectRows(
     	['qcstate/label', 'neq', 'Request: Denied'],
 		['billedby', 'isblank', ''],
 		['date', 'dategte', $datestr],		
-    ],    
+    ],
+    -requiredVersion => 8.3,
     #-debug => 1,
 );
 
@@ -176,6 +188,7 @@ $results = Labkey::Query::selectRows(
 		['qcstate', 'ne', 'Completed'],     			    	
     ],    
     -sort => 'daterequested',
+    -requiredVersion => 8.3,
     #-debug => 1,
 );
 
@@ -272,16 +285,38 @@ else {
 #print HTML $email_html;
 #close HTML;
 
-my $smtp = MIME::Lite->new(
-          To      =>join(", ", @email_recipients),
-          From    =>$from,
-          Subject =>"Subject: Daily Blood Draw Alerts: $datestr",
-          Type    =>'multipart/alternative'
-          );
-$smtp->attach(Type => 'text/html',
-          Encoding => 'quoted-printable',
-          Data	 => $email_html
-);         
-$smtp->send() || die;
+$results = Labkey::Query::selectRows(
+    -baseUrl => $baseUrl,
+    -requiredVersion => 8.3,
+    -containerPath => $studyContainer,
+    -schemaName => 'ehr',
+    -queryName => 'NotificationRecipientsExpanded',
+    -filterArray => [
+		['notificationtype', 'in', $notificationtypes],
+    ],
+    #-debug => 1,
+);	
+if(@{$results->{rows}}){	
+	my @email_recipients;
+	foreach my $row (@{$results->{rows}}){
+    	push(@email_recipients, $$row{email})		
+    }
+	
+	if(@email_recipients){
+		#print (@email_recipients);die;
+		@email_recipients = uniq @email_recipients;
+		my $smtp = MIME::Lite->new(
+		          To      =>join(", ", @email_recipients),
+		          From    =>$from,
+		          Subject =>"Subject: Daily Blood Draw Alerts: $datestr",
+		          Type    =>'multipart/alternative'
+		          );
+		$smtp->attach(Type => 'text/html',
+		          Encoding => 'quoted-printable',
+		          Data	 => $email_html
+		);         
+		$smtp->send() || die;
+	}
+}
 
 touch(File::Spec->catfile(dirname(abs_path($0)), '.bloodAlertsLastRun'));

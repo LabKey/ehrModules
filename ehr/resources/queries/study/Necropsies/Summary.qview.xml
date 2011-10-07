@@ -16,10 +16,10 @@
        <!--<column name="perfusion_time1" />-->
        <!--<column name="perfusion_soln2" />-->
        <!--<column name="perfusion_time2" />-->
-       <!--<column name="bcs" />-->
+       <column name="gross_description" />
        <column name="remark" />
        <column name="qcstate" />
-       <column name="taskid" />
+       <!--<column name="taskid" />-->
    </columns>
    <sorts>
        <sort column="date" descending="true"/>

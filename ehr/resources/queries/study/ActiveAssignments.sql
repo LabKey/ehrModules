@@ -6,4 +6,6 @@
 
 
 SELECT * from study.Assignment a
-WHERE a.enddate is null or a.enddate >= curdate()
+WHERE
+(a.enddate is null or a.enddate >= curdate())
+AND cast(a.date as date) <= curdate()

@@ -36,6 +36,22 @@
         <ns:scale>100</ns:scale>
         <ns:columnTitle>Unit</ns:columnTitle>
       </ns:column>
+      <ns:column columnName="supervisor">
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>100</ns:scale>
+        <ns:columnTitle>Supervisor</ns:columnTitle>
+      </ns:column>
+      <ns:column columnName="phone">
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>100</ns:scale>
+        <ns:columnTitle>Phone</ns:columnTitle>
+      </ns:column>
+      <ns:column columnName="address">
+        <ns:datatype>varchar</ns:datatype>
+        <ns:inputType>textarea</ns:inputType>
+        <ns:scale>200</ns:scale>
+        <ns:columnTitle>Address</ns:columnTitle>
+      </ns:column>
     </ns:columns>
   </ns:table>
   <ns:table tableName="requirementtype" tableDbType="TABLE">
@@ -303,7 +319,7 @@
         <ns:columnTitle>Type</ns:columnTitle>
         <ns:fk>
             <ns:fkDbSchema>ehr_compliancedb</ns:fkDbSchema>
-            <ns:fkTable>employeetypes</ns:fkTable>
+            <ns:fkTable>requirementtype</ns:fkTable>
             <ns:fkColumnName>type</ns:fkColumnName>
         </ns:fk>
       </ns:column>
@@ -792,12 +808,12 @@
       <ns:column columnName="sopid">
         <ns:datatype>varchar</ns:datatype>
         <ns:scale>100</ns:scale>
-        <ns:columnTitle>SOP Id</ns:columnTitle>
-        <ns:fk>
-            <ns:fkDbSchema>ehr_compliancedb</ns:fkDbSchema>
-            <ns:fkTable>sops</ns:fkTable>
-            <ns:fkColumnName>sopid</ns:fkColumnName>
-        </ns:fk>
+        <ns:columnTitle>SOP ID</ns:columnTitle>
+        <!--<ns:fk>-->
+            <!--<ns:fkDbSchema>ehr_compliancedb</ns:fkDbSchema>-->
+            <!--<ns:fkTable>sops</ns:fkTable>-->
+            <!--<ns:fkColumnName>sopid</ns:fkColumnName>-->
+        <!--</ns:fk>-->
       </ns:column>
       <ns:column columnName="date">
         <ns:nullable>true</ns:nullable>
@@ -862,11 +878,11 @@
         <ns:datatype>varchar</ns:datatype>
         <ns:columnTitle>SOP ID</ns:columnTitle>
         <ns:scale>200</ns:scale>
-        <ns:fk>
-            <ns:fkDbSchema>ehr_compliancedb</ns:fkDbSchema>
-            <ns:fkTable>sops</ns:fkTable>
-            <ns:fkColumnName>sopid</ns:fkColumnName>
-        </ns:fk>
+        <!--<ns:fk>-->
+            <!--<ns:fkDbSchema>ehr_compliancedb</ns:fkDbSchema>-->
+            <!--<ns:fkTable>sops</ns:fkTable>-->
+            <!--<ns:fkColumnName>sopid</ns:fkColumnName>-->
+        <!--</ns:fk>-->
       </ns:column>
       <ns:column columnName="category">
         <ns:datatype>varchar</ns:datatype>

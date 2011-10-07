@@ -9,12 +9,12 @@ select * from (
 SELECT
 
 a.id,
-a.status as demographicsStatus,
-a.calculated_status,
-a.birth as demographicsBirth,
-a.id.dataset.birth.date as birthTable,
-a.death as demographicsDeath,
-a.id.dataset.deaths.date as deathTable,
+a.status as StatusFromDemographicsTable,
+a.calculated_status as CalculatedStatus,
+a.birth as BirthFromDemographicsTable,
+a.id.dataset.birth.date as BirthFromBirthTable,
+a.death as DeathFromDemographicsTable,
+a.id.dataset.deaths.date as DeathFromDeathTable,
 a.id.MostRecentArrival.MostRecentArrival as MostRecentArrival,
 a.id.MostRecentDeparture.MostRecentDeparture as MostRecentDeparture,
 
@@ -36,7 +36,7 @@ CASE
     THEN 'Alive'
   ELSE
     'ERROR'
-END as status,
+END as suggested_status,
 
 FROM study.demographics a
 
@@ -49,25 +49,25 @@ WHERE
 
 --OR
 
-(a.status like 'Alive' AND a.calculated_status != 'Alive')
+(a.StatusFromDemographicsTable like 'Alive' AND a.CalculatedStatus != 'Alive')
 
 OR
 
-(a.status like 'Dead' AND a.calculated_status != 'Dead')
+(a.StatusFromDemographicsTable like 'Dead' AND a.CalculatedStatus != 'Dead')
 
 OR
 
-(a.deathTable is not null AND a.calculated_status != 'Dead')
+(a.DeathFromDeathTable is not null AND a.CalculatedStatus != 'Dead')
 
 OR
 
-(a.status like 'Shipped' AND a.calculated_status != 'Shipped' and a.demographicsDeath is null)
+(a.StatusFromDemographicsTable like 'Shipped' AND a.CalculatedStatus != 'Shipped' and a.DeathFromDemographicsTable is null)
 
 OR
 
-a.calculated_status = 'No Record At WNPRC'
+a.CalculatedStatus = 'No Record At WNPRC'
 
 OR
 
-a.calculated_status = 'ERROR'
+a.CalculatedStatus = 'ERROR'
 )

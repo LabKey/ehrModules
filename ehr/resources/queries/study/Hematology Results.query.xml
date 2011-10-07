@@ -21,6 +21,12 @@
                             <fkColumnName>lsid</fkColumnName>
                         </fk>
                     </column>
+                    <column columnName="qualResult">
+                        <displayWidth>120</displayWidth>
+                    </column>
+                    <column columnName="units">
+                        <displayWidth>60</displayWidth>
+                    </column>
                     <column columnName="parentId">
                         <!--<fk>-->
                           <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
@@ -45,6 +51,7 @@
                       <datatype>varchar</datatype>
                       <!--<nullable>false</nullable>-->
                       <columnTitle>Test Id</columnTitle>
+                        <displayWidth>120</displayWidth>
                       <fk>
                         <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                         <fkDbSchema>ehr_lookups</fkDbSchema>

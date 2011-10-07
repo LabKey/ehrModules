@@ -70,6 +70,13 @@ WHERE     (SELECT s.Category FROM prop.PropertySets s WHERE s.Set = p.Set) = 'wn
 	      AND p.Name = 'runIntervalInMinutes'
 ;
 
+UPDATE    ehr.module_properties p
+SET       Value = 'TestEHR-do-not-reply@primate.wisc.edu'
+WHERE     p.prop_name = 'site_email'
+;
+
+
+
 --for a PC
 --set the R program path
 -- UPDATE    prop.Properties p

@@ -6,14 +6,20 @@
 SELECT
 
 c.lsid,
+c.id,
+c.date,
 c.gender,
 c.species,
 c.testId,
+c.alertOnAbnormal,
+c.alertOnAny,
+c.result,
+c.resultOORIndicator,
 c.AgeAtTime,
 ac.ageClass,
 r.ref_range_min,
 r.ref_range_max,
-round(r.ref_range_min, 1) || '-' || round(r.ref_range_max, 1) as range,
+round(convert(r.ref_range_min, numeric), 2) || '-' || round(convert(r.ref_range_max, numeric), 2) as range,
 CASE
 WHEN convert(c.result, double) >= r.ref_range_min AND convert(c.result, double) <= r.ref_range_max
   THEN 'Normal'
@@ -21,7 +27,9 @@ WHEN convert(c.result, double) < r.ref_range_min
   THEN 'Low'
 WHEN convert(c.result, double) > r.ref_range_max
   THEN 'High'
-END as status
+END as status,
+c.taskid,
+c.qcstate
 
 FROM
           (
@@ -30,10 +38,16 @@ FROM
             c.id.dataset.demographics.gender as gender,
             c.id.dataset.demographics.species as species,
             c.testId,
+            c.testid.alertOnAbnormal as alertOnAbnormal,
+            c.testid.alertOnAny as alertOnAny,
             c.result,
+            c.resultOORIndicator,
+            c.taskid,
+            c.qcstate,
             c.id,
+            c.date,
               ROUND(CONVERT(age_in_months(c.id.dataset.demographics.birth, c.date), DOUBLE) / 12, 1) as AgeAtTime
-             FROM hematologyResults c
+             FROM "Hematology Results" c
              WHERE c.qcstate.publicdata = true
           ) c
 
@@ -48,5 +62,6 @@ LEFT JOIN ehr_lookups.lab_test_range r ON (
 c.testId = r.test AND
 c.species = r.species AND
 ac.ageClass = r.age_class AND
-c.gender = r.gender
+c.gender = r.gender and
+r.type = 'Hematology'
 )

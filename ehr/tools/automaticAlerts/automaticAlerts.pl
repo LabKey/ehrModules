@@ -41,6 +41,7 @@ my $results = Labkey::Query::selectRows(
 	-containerPath => '/WNPRC/EHR',
 	-schemaName => 'ehr',
 	-queryName => 'automatic_alerts',
+	-requiredVersion => 8.3,
 	#-debug => 1,
 );
 
@@ -62,6 +63,7 @@ sub processAlert {
 		-schemaName => $args->{schemaname},
 		-queryName => $args->{queryname},
 		-viewName => $args->{viewname},
+		-requiredVersion => 8.3,
 		#-maxRows => 1,		
 	);	
 

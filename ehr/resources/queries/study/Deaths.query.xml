@@ -45,12 +45,10 @@
                   <column columnName="necropsy">
                     <datatype>varchar</datatype>
                     <columnTitle>Necropsy Case No</columnTitle>
-                    <fk>
-                      <fkFolderPath>/wnprc/ehr/</fkFolderPath>
-                      <fkDbSchema>study</fkDbSchema>
-                      <fkTable>necropsy</fkTable>
-                      <fkColumnName>caseno</fkColumnName>
-                    </fk>
+                    <url>/query/executeQuery.view?schemaName=study&amp;
+                        query.queryName=Necropsies&amp;
+                        query.caseno~eq=${necropsy}&amp;
+                    </url>
                   </column>
                   <column columnName="remark">
                     <datatype>varchar</datatype>

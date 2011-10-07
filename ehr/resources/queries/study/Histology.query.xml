@@ -97,6 +97,15 @@
                     <column columnName="trimdate">
                         <columnTitle>Trim Date</columnTitle>
                     </column>
+                    <column columnName="trim_remarks">
+                        <columnTitle>Trim Remarks</columnTitle>
+                    </column>
+                    <column columnName="trimmed_by">
+                        <columnTitle>Trimmed By</columnTitle>
+                    </column>
+                    <column columnName="pathologist">
+                        <columnTitle>Pathologist</columnTitle>
+                    </column>
                     <column columnName="qualifier">
                       <datatype>varchar</datatype>
                       <columnTitle>Qualifier</columnTitle>
@@ -105,6 +114,16 @@
                         <fkDbSchema>ehr_lookups</fkDbSchema>
                         <fkTable>snomed_qualifiers</fkTable>
                         <fkColumnName>qualifier</fkColumnName>
+                      </fk>
+                    </column>
+                    <column columnName="container_type">
+                      <datatype>varchar</datatype>
+                      <columnTitle>Container Type</columnTitle>
+                      <fk>
+                        <fkFolderPath>/wnprc/ehr/</fkFolderPath>
+                        <fkDbSchema>ehr_lookups</fkDbSchema>
+                        <fkTable>container_types</fkTable>
+                        <fkColumnName>type</fkColumnName>
                       </fk>
                     </column>
                 </columns>

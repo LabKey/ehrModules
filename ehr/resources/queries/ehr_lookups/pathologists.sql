@@ -3,4 +3,10 @@
  *
  * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
  */
-select UserId.DisplayName as UserId from core.members m where m.groupid.name like '%pathology%';
+select
+UserId.DisplayName as UserId
+from core.members m
+where m.groupid.name like '%pathology%'
+and UserId.DisplayName is not null and UserId.DisplayName !=''
+group by UserId.DisplayName
+;

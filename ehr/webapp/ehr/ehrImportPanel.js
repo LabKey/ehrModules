@@ -24,8 +24,8 @@ EHR.ext.Buttons = {
         text: 'Submit Final',
         name: 'submit',
         requiredQC: 'Completed',
+        requiredPermission: 'admin',
         targetQC: 'Completed',
-        requiresAdmin: true,
         errorThreshold: 'INFO',
         successURL: LABKEY.ActionURL.getParameter('srcURL') || LABKEY.ActionURL.buildURL("ehr", "dataEntry.view"),
         disabled: true,
@@ -83,7 +83,7 @@ EHR.ext.Buttons = {
         name: 'submit',
         requiredQC: 'Completed',
         targetQC: 'Completed',
-        requiresAdmin: true,
+        requiredPermission: 'admin',
         errorThreshold: 'ERROR',
         successURL: LABKEY.ActionURL.getParameter('srcURL') || LABKEY.ActionURL.buildURL("ehr", "dataEntry.view"),
         disabled: true,
@@ -95,6 +95,27 @@ EHR.ext.Buttons = {
             }, this);
         },
         disableOn: 'SEVERE',
+        scope: this
+        }
+    },
+    COPYNECROPSY: function(){return {
+        text: 'Copy Necropsy',
+        name: 'copyNecropsy',
+        requiredQC: 'Completed',
+        disabled: false,
+        ref: 'copyNecropsyBtn',
+        handler: function(o){
+            var theWindow = new Ext.Window({
+                closeAction:'hide',
+                title: 'Copy From Necropsy',
+                //height: 900,
+                items: [{
+                    width: 350,
+                    xtype: 'ehr-necropsycopy',
+                    targetStore: this.store
+                }]
+            }).show();
+        },
         scope: this
         }
     },
@@ -110,21 +131,25 @@ EHR.ext.Buttons = {
         handler: function(o){
             Ext.Msg.confirm('Finalize Death', 'You are about to finalize this death record on this animal.  This will end all treatments, problems, assignments and housing. BE ABSOLUTELY SURE YOU WANT TO DO THIS BEFORE CLICKING SUBMIT.', function(v){
                 if(v=='yes'){
+                    Ext.Msg.wait('Saving...');
+
                     var store = Ext.StoreMgr.get('study||Necropsies||||');
                     var record = store.getAt(0);
 
                     if(!record ||
                         !record.get('Id') ||
                         !record.get('causeofdeath') ||
-                        !record.get('timeofdeath')
+                        !record.get('timeofdeath') ||
+                        !record.get('project')
                     ){
-                        alert('Must provide Id, type of death, and time of death');
+                        alert('Must provide Id, project, type of death, and time of death');
                         return;
                     }
 
                     var Id = record.get('Id');
                     var obj = {
                         Id: Id,
+                        project: record.get('project'),
                         date: record.get('timeofdeath'),
                         cause: record.get('causeofdeath'),
                         manner: record.get('mannerofdeath'),
@@ -155,26 +180,106 @@ EHR.ext.Buttons = {
                                     rows: [obj],
                                     scope: this,
                                     success: function(data){
-                                        alert('Success updating '+queryName+' from necropsy for '+Id)
+                                        Ext.Msg.hide();
+                                        alert('Success updating '+queryName+' from necropsy for '+Id);
                                     },
-                                    failure: EHR.onFailure
+                                    failure: EHR.utils.onError
                                 });
                             }
                             //otherwise we create a new record
                             else {
-                                LABKEY.Query.insertRows({
-                                    schemaName: 'study',
-                                    queryName: queryName,
-                                    scope: this,
-                                    rows: [obj],
-                                    success: function(data){
-                                        alert('Success inserting into '+queryName+' from necropsy for '+Id)
-                                    },
-                                    failure: EHR.onFailure
-                                });
+                                if(queryName=='Prenatal Deaths'){
+                                    var selectorWin = new Ext.Window({
+                                        closeAction:'hide',
+                                        title: 'Prenatal Death',
+                                        width: 450,
+                                        items: [{
+                                            xtype: 'form',
+                                            style: 'padding: 5px;',
+                                            items: [{
+                                                emptyText:''
+                                                ,fieldLabel: 'Species'
+                                                ,ref: '../speciesField'
+                                                ,xtype: 'combo'
+                                                ,displayField:'common'
+                                                ,valueField: 'common'
+                                                ,typeAhead: true
+                                                ,lazyInit: false
+                                                ,mode: 'local'
+                                                ,triggerAction: 'all'
+                                                ,editable: true
+                                                ,store: new LABKEY.ext.Store({
+                                                    containerPath: 'WNPRC/EHR/',
+                                                    schemaName: 'ehr_lookups',
+                                                    queryName: 'species',
+                                                    sort: 'common',
+                                                    autoLoad: true
+                                                })
+                                            },{
+                                                emptyText:''
+                                                ,fieldLabel: 'Gender'
+                                                ,ref: '../genderField'
+                                                ,xtype: 'combo'
+                                                ,displayField:'meaning'
+                                                ,valueField: 'code'
+                                                ,typeAhead: true
+                                                ,lazyInit: false
+                                                ,mode: 'local'
+                                                ,triggerAction: 'all'
+                                                ,editable: true
+                                                ,store: new LABKEY.ext.Store({
+                                                    containerPath: 'WNPRC/EHR/',
+                                                    schemaName: 'ehr_lookups',
+                                                    queryName: 'gender_codes',
+                                                    sort: 'meaning',
+                                                    autoLoad: true
+                                                })
+                                            }]
+                                        }],
+                                        buttons: [{
+                                            text:'Submit',
+                                            disabled:false,
+                                            ref: '../submit',
+                                            scope: this,
+                                            handler: function(s){
+                                                obj.gender = s.ownerCt.ownerCt.genderField.getValue();
+                                                obj.species = s.ownerCt.ownerCt.speciesField.getValue();
+
+                                                doInsert();
+
+                                                s.ownerCt.ownerCt.hide();
+                                            }
+                                        },{
+                                            text: 'Close',
+                                            scope: this,
+                                            handler: function(){
+                                                s.ownerCt.ownerCt.hide();
+                                            }
+                                        }]
+                                    });
+
+                                    selectorWin.show();
+                                }
+                                else {
+                                    doInsert();
+                                }
+
+                                function doInsert(){
+                                    LABKEY.Query.insertRows({
+                                        schemaName: 'study',
+                                        queryName: queryName,
+                                        scope: this,
+                                        rows: [obj],
+                                        success: function(data){
+                                            Ext.Msg.hide();
+                                            alert('Success inserting into '+queryName+' from necropsy for '+Id)
+                                        },
+                                        failure: EHR.utils.onError
+                                    });
+                                }
                             }
                         },
-                        failure: EHR.onFailure
+                        failure: EHR.utils.onError
                     });
                 }
             }, this);
@@ -424,6 +529,21 @@ EHR.ext.Buttons = {
         ref: 'editBtn',
         disableOn: 'ERROR'
         }
+    },
+    EDITCONTACTS: function(){return {
+        text: 'Edit Contacts',
+        name: 'edit',
+        requiredQC: 'Request: Approved',
+        requiredPermission: 'admin',
+        errorThreshold: 'WARN',
+        handler: function(){
+            window.onbeforeunload = Ext.emptyFn;
+            window.location = LABKEY.ActionURL.buildURL('ehr','manageRecord.view', null, {schemaName: 'ehr', queryName: 'Requests', keyField: 'requestid', key: this.formUUID});
+        },
+        disabled: false,
+        ref: 'editBtn',
+        disableOn: 'ERROR'
+        }
     }
 };
 
@@ -463,7 +583,7 @@ Ext.extend(EHR.ext.ImportPanelBase, Ext.Panel, {
 
         EHR.ext.ImportPanelBase.superclass.initComponent.call(this);
 
-        this.addEvents('participantchange', 'participantloaded');
+        this.addEvents('participantchange', 'participantloaded','participantrefresh');
 
         this.mon(this.store, 'validation', this.onStoreValidation, this);
         this.mon(this.store, 'commitcomplete', this.afterSubmit, this);
@@ -587,13 +707,7 @@ Ext.extend(EHR.ext.ImportPanelBase, Ext.Panel, {
 
         //only show button if user can access this QCState
         if(buttonCfg.requiredQC){
-            if(!this.permissionMap.hasPermission(buttonCfg.requiredQC, 'insert', this.store.getQueries())){
-                buttonCfg.hidden = true;
-            }
-        }
-
-        if(buttonCfg.requiresAdmin){
-            if(!this.permissionMap.hasPermission('Completed', 'admin', this.store.getQueries())){
+            if(!this.permissionMap.hasPermission(buttonCfg.requiredQC, (buttonCfg.requiredPermission || 'insert'), this.store.getQueries())){
                 buttonCfg.hidden = true;
             }
         }
@@ -858,7 +972,23 @@ EHR.ext.TaskPanel = Ext.extend(EHR.ext.ImportPanelBase, {
             LABKEY.Filter.create('taskId', this.formUUID, LABKEY.Filter.Types.EQUAL),
             LABKEY.Filter.create('qcstate/label', 'Delete Requested', LABKEY.Filter.Types.NEQ)
         ];
-        c.storeConfig.sort = 'id/curlocation/location,id';
+
+        var sortCol = [];
+        if(c.storeConfig && c.storeConfig.columns){
+            var cols = c.storeConfig.columns.split(',');
+            Ext.each(['id', 'id/curlocation/location'], function(item){
+                Ext.each(cols, function(o){
+                    if(o && o.match(new RegExp('^'+item+'$', 'i'))){
+                        sortCol.push(item)
+                    }
+                }, this);
+            }, this);
+
+        }
+        if(sortCol.length){
+            sortCol = sortCol.unique();
+            c.storeConfig.sort = sortCol.join(',');
+        }
     }
 });
 
@@ -952,6 +1082,9 @@ EHR.ext.RequestDetailsPanel = Ext.extend(EHR.ext.ImportPanelBase, {
             title: '',
             collapsible: false,
             formType: this.formType,
+            queryConfig: {
+                showDetailsColumn: true
+            },
             schemaName: 'ehr',
             queryName: 'requests',
             keyField: 'requestid',
@@ -963,6 +1096,18 @@ EHR.ext.RequestDetailsPanel = Ext.extend(EHR.ext.ImportPanelBase, {
                 canSaveInTemplate: false
             }
         });
+
+        this.store = new Ext.util.MixedCollection();
+        this.store.getQueries = function(){
+            var queries = [];
+            this.each(function(s){
+                queries.push({
+                    schemaName: s.schemaName,
+                    queryName: s.queryName
+                })
+            }, this);
+            return queries;
+        };
 
         EHR.ext.RequestDetailsPanel .superclass.initComponent.call(this, arguments);
     },
@@ -980,11 +1125,20 @@ EHR.ext.RequestDetailsPanel = Ext.extend(EHR.ext.ImportPanelBase, {
             c.xtype = 'ehr-qwppanel';
             c.autoLoadQuery = true;
             c.collapsed = false;
+            c.queryConfig = {
+                showDetailsColumn: true
+            }
         }
 
         c.storeConfig = null;
         c.style = 'padding-bottom:20px;';
 
+        if(c.queryName && c.schemaName){
+            this.store.add({
+                schemaName: c.schemaName,
+                queryName: c.queryName
+            })
+        }
     }
 });
 
@@ -1001,8 +1155,8 @@ EHR.ext.SimpleImportPanel = Ext.extend(EHR.ext.ImportPanelBase, {
 
         if(c.keyField && c.keyValue){
             c.storeConfig.filterArray = [
-                LABKEY.Filter.create(c.keyField, c.keyValue, LABKEY.Filter.Types.EQUAL),
-                LABKEY.Filter.create('qcstate/label', 'Delete Requested', LABKEY.Filter.Types.NEQ)
+                LABKEY.Filter.create(c.keyField, c.keyValue, LABKEY.Filter.Types.EQUAL)
+                //,LABKEY.Filter.create('qcstate/label', 'Delete Requested', LABKEY.Filter.Types.NEQ)
             ];
         }
         else {

@@ -22,7 +22,7 @@ EHR.reports.qwpConfig = {
     buttonBarPosition: 'top',
     timeout: 0,
     success: function(dr){
-        var width1 = Ext.get(dr.id).getSize().width;
+        var width1 = Ext.get('dataregion_'+dr.id).getSize().width+50;
         var width2 = Ext.get(this.anchorLayout.id).getSize().width;
 
         if(width1 > width2){
@@ -60,7 +60,7 @@ EHR.reports.abstract = function(tab, subject){
         qwpConfig: {
             scope: this,
             success: function(dr){
-                var width1 = Ext.get(dr.id).getSize().width;
+                var width1 = Ext.get('dataregion_'+dr.id).getSize().width+50;
                 var width2 = Ext.get(this.anchorLayout.id).getSize().width;
 
                 if(width1 > width2){
@@ -95,8 +95,8 @@ EHR.reports.abstract = function(tab, subject){
         title: 'Active Assignments' + ": " + title,
         frame: true,
         schemaName: 'study',
-        queryName: 'assignment',
-        viewName: 'Active Assignments',
+        queryName: 'ActiveAssignments',
+        //viewName: 'Active Assignments',
         //sort: '-date',
         filters: filterArray.nonRemovable,
         removeableFilters: filterArray.removable,
@@ -715,46 +715,79 @@ EHR.reports.immunology = function(tab, subject){
 
     var filterArray = this.getFilterArray(tab, subject);
     var title = (subject ? subject.join("; ") : '');
-    tab.queryName = tab.queryName || 'immunologyPivot';
+//    tab.queryName = tab.queryName || 'immunologyPivot';
 
-    this.addHeader(tab, [{
-        html: 'Choose Report:',
-        style: 'padding-left:10px'
-        },{
-        xtype: 'combo',
-        store: new Ext.data.ArrayStore({
-            fields: ['name', 'value'],
-            data: [['Panel','immunologyPivot;'], ['Ref Range','Immunology Results;']]
-        }),
-        mode: 'local',
-        displayField: 'name',
-        valueField: 'value',
-        forceSelection:false,
-        //typeAhead: true,
-        triggerAction: 'all',
-        value: tab.query,
-        ref: '../reportSelector',
-        listeners: {
-            scope: this,
-            select: function(c){
-                var val = c.getValue().split(';');
-                c.refOwner.queryName = val[0];
-                c.refOwner.viewName = val[1];
-                c.refOwner.filters = [];
-                this.loadTab(c.refOwner);
-            }
-        }
-    }]);
+//    this.addHeader(tab, [{
+//        html: 'Choose Report:',
+//        style: 'padding-left:10px'
+//        },{
+//        xtype: 'combo',
+//        store: new Ext.data.ArrayStore({
+//            fields: ['name', 'value'],
+//            data: [['Panel','immunologyPivot;'], ['Ref Range','Immunology Results;']]
+//        }),
+//        mode: 'local',
+//        displayField: 'name',
+//        valueField: 'value',
+//        forceSelection:false,
+//        //typeAhead: true,
+//        triggerAction: 'all',
+//        value: tab.query,
+//        ref: '../reportSelector',
+//        listeners: {
+//            scope: this,
+//            select: function(c){
+//                var val = c.getValue().split(';');
+//                c.refOwner.queryName = val[0];
+//                c.refOwner.viewName = val[1];
+//                c.refOwner.filters = [];
+//                this.loadTab(c.refOwner);
+//            }
+//        }
+//    }]);
 
     var target = tab.add({tag: 'span', style: 'padding-bottom: 20px'});
     tab.doLayout();
 
     var config = Ext.applyIf({
         schemaName: 'study',
-        queryName: tab.queryName,
-        viewName: tab.viewName,
-        title: "Immunology Results:",
+        queryName: 'immunologyPivot',
+        //viewName: tab.viewName,
+        title: "By Panel:",
         titleField: 'Id',
+        filters: filterArray.nonRemovable,
+        removeableFilters: filterArray.removable,
+        scope: this
+    }, EHR.reports.qwpConfig);
+    new LABKEY.QueryWebPart(config).render(target.id);
+
+    target = tab.add({tag: 'span', style: 'padding-bottom: 20px'});
+
+    config = Ext.applyIf({
+        schemaName: 'study',
+        queryName: 'immunologyMisc',
+        //viewName: tab.viewName,
+        title: "Immunology Misc:",
+        titleField: 'Id',
+        sort: '-date',
+        parent: this,
+        filters: filterArray.nonRemovable,
+        removeableFilters: filterArray.removable,
+        scope: this
+    }, EHR.reports.qwpConfig);
+    new LABKEY.QueryWebPart(config).render(target.id);
+
+    target = tab.add({tag: 'span', style: 'padding-bottom: 20px'});
+    tab.doLayout();
+
+    config = Ext.applyIf({
+        schemaName: 'study',
+        queryName: 'Immunology Results',
+        viewName: 'Plus Ref Range',
+        title: "Reference Ranges:",
+        titleField: 'Id',
+        sort: '-date',
+        parent: this,
         filters: filterArray.nonRemovable,
         removeableFilters: filterArray.removable,
         scope: this
@@ -918,44 +951,78 @@ EHR.reports.urinalysisResults = function(tab, subject){
     var title = (subject ? subject.join("; ") : '');
     tab.queryName = tab.queryName || 'urinalysisPivot';
 
-    this.addHeader(tab, [{
-        html: 'Choose Report:',
-        style: 'padding-left:10px'
-        },{
-        xtype: 'combo',
-        store: new Ext.data.ArrayStore({
-            fields: ['name', 'value'],
-            data: [['Panel','urinalysisPivot;'], ['Individual Results','Urinalysis Results;']]
-        }),
-        fieldName: 'Test',
-        mode: 'local',
-        displayField: 'name',
-        valueField: 'value',
-        forceSelection:false,
-        //typeAhead: true,
-        triggerAction: 'all',
-        value: tab.query,
-        ref: '../reportSelector',
-        listeners: {
-            scope: this,
-            select: function(c){
-                var val = c.getValue().split(';');
-                c.refOwner.queryName = val[0];
-                c.refOwner.viewName = val[1];
-                c.refOwner.filters = [];
-                this.loadTab(c.refOwner);
-            }
-        }
-    }]);
+//    this.addHeader(tab, [{
+//        html: 'Choose Report:',
+//        style: 'padding-left:10px'
+//        },{
+//        xtype: 'combo',
+//        store: new Ext.data.ArrayStore({
+//            fields: ['name', 'value'],
+//            data: [['Panel','urinalysisPivot;'], ['Individual Results','Urinalysis Results;']]
+//        }),
+//        fieldName: 'Test',
+//        mode: 'local',
+//        displayField: 'name',
+//        valueField: 'value',
+//        forceSelection:false,
+//        //typeAhead: true,
+//        triggerAction: 'all',
+//        value: tab.query,
+//        ref: '../reportSelector',
+//        listeners: {
+//            scope: this,
+//            select: function(c){
+//                var val = c.getValue().split(';');
+//                c.refOwner.queryName = val[0];
+//                c.refOwner.viewName = val[1];
+//                c.refOwner.filters = [];
+//                this.loadTab(c.refOwner);
+//            }
+//        }
+//    }]);
 
     var target = tab.add({tag: 'span', style: 'padding-bottom: 20px'});
     tab.doLayout();
 
     var config = Ext.applyIf({
         schemaName: 'study',
-        queryName: tab.queryName,
-        viewName: tab.viewName,
-        title: "Urinalysis Results:",
+        queryName: 'urinalysisPivot',
+        //viewName: tab.viewName,
+        title: "By Panel:",
+        titleField: 'Id',
+        sort: '-date',
+        parent: this,
+        filters: filterArray.nonRemovable,
+        removeableFilters: filterArray.removable,
+        scope: this
+    }, EHR.reports.qwpConfig);
+    new LABKEY.QueryWebPart(config).render(target.id);
+
+    target = tab.add({tag: 'span', style: 'padding-bottom: 20px'});
+    tab.doLayout();
+
+    config = Ext.applyIf({
+        schemaName: 'study',
+        queryName: 'urinalysisMisc',
+        //viewName: tab.viewName,
+        title: "Urinalysis Misc:",
+        titleField: 'Id',
+        sort: '-date',
+        parent: this,
+        filters: filterArray.nonRemovable,
+        removeableFilters: filterArray.removable,
+        scope: this
+    }, EHR.reports.qwpConfig);
+    new LABKEY.QueryWebPart(config).render(target.id);
+
+    target = tab.add({tag: 'span', style: 'padding-bottom: 20px'});
+    tab.doLayout();
+
+    config = Ext.applyIf({
+        schemaName: 'study',
+        queryName: 'Urinalysis Results',
+        viewName: 'Plus Ref Range',
+        title: "Reference Ranges:",
         titleField: 'Id',
         sort: '-date',
         parent: this,

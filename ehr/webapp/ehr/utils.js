@@ -6,7 +6,7 @@
 Ext.namespace('EHR.ext', 'EHR.utils');
 
 LABKEY.requiresScript("/ehr/arrayUtils.js");
-
+LABKEY.requiresScript("/ehr/qcSecurity.js");
 
 
 //function to test whether a user is a member of the allowed group array
@@ -426,4 +426,68 @@ EHR.utils.decfrac = function(DtF) {
     }
 }
 
+EHR.utils.sortStore = function(fieldObj){
+    return function(a, b){
+        var retVal = 0;
+        Ext.each(fieldObj, function(item){
+            var val1 = '';
+            var val2 = '';
+            if(!item.storeId){
+                val1 = a.get(item.term) || '';
+                val2 = b.get(item.term) || '';
+            }
+            else {
+                var store = Ext.StoreMgr.get(item.storeId);
+                var rec1;
+                var rec2;
+                rec1 = store.find(item.valueField, a.get(item.term));
+                if(rec1 != -1){
+                    rec1 = store.getAt(rec1);
+                    val1 = rec1.get(item.displayField) || '';
+                }
+                rec2 = store.find(item.valueField, b.get(item.term));
+                if(rec2 != -1){
+                    rec2 = store.getAt(rec2);
+                    val2 = rec2.get(item.displayField) || '';
+                }
+            }
 
+            if(val1 < val2){
+                retVal = -1;
+                return false;
+            }
+            else if (val1 > val2){
+                retVal = 1;
+                return false;
+            }
+            else {
+                retVal = 0;
+            }
+        }, this);
+        return retVal;
+    }
+}
+
+EHR.utils.normalizeSpecies= function(species){
+    if(!species){
+        return;
+    }
+
+    if(species.match(/cyno/i)){
+        species = 'Cynomolgus';
+    }
+    else if(species.match(/rhesus/i)){
+        species = 'Rhesus';
+    }
+    if(species.match(/vervet/i)){
+        species = 'Vervet';
+    }
+    if(species.match(/pigtail/i)){
+        species = 'Pigtail';
+    }
+    if(species.match(/marmoset/i)){
+        species = 'Marmoset';
+    }
+
+    return species;
+};

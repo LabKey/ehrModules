@@ -19,30 +19,30 @@ function createNavMenu()
         sections: [
             {header: 'Employee Information',
             items: [
-                {name: 'WNPRC Employee Information', url: '<%=contextPath%>/list/WNPRC/WNPRC_Units/Animal_Services/Compliance_Training/Private/EmployeeDB/grid.view?listId=141&query.viewName=Active%20Employees'},
+                {name: 'WNPRC Employee Information', url: '<%=contextPath%>/query/WNPRC/WNPRC_Units/Animal_Services/Compliance_Training/Private/EmployeeDB/executeQuery.view?schemaName=ehr_compliancedb&query.queryName=Employees&query.viewName=Active%20Employees'},
                 {name: 'View LabKey Logins and Emails', url: '<%=contextPath%>/query/WNPRC/WNPRC_Units/Animal_Services/Compliance_Training/Private/EmployeeDB/executeQuery.view?schemaName=core&query.queryName=Users'}
             ]},
             {header: 'Employee Requirements',
             items: [
-                {name: 'View/Edit Dates Employees Completed Requirements', url: '<%=contextPath%>/list/WNPRC/WNPRC_Units/Animal_Services/Compliance_Training/Private/EmployeeDB/grid.view?listId=145'},
-                {name: 'Summary of Requirements By Employee', url: '<%=contextPath%>/query/WNPRC/WNPRC_Units/Animal_Services/Compliance_Training/Private/EmployeeDB/executeQuery.view?schemaName=lists&query.queryName=ComplianceRecentTests'},
-                {name: 'Requirements Overdue/Due Soon', url: '<%=contextPath%>/query/WNPRC/WNPRC_Units/Animal_Services/Compliance_Training/Private/EmployeeDB/executeQuery.view?schemaName=lists&query.queryName=ComplianceRecentTests&query.viewName=Overdue%2FDue%20Soon'}
+                {name: 'View/Edit Dates Employees Completed Requirements', url: '<%=contextPath%>/query/WNPRC/WNPRC_Units/Animal_Services/Compliance_Training/Private/EmployeeDB/executeQuery.view?schemaName=ehr_compliancedb&query.queryName=CompletionDates'},
+                {name: 'Summary of Requirements By Employee', url: '<%=contextPath%>/query/WNPRC/WNPRC_Units/Animal_Services/Compliance_Training/Private/EmployeeDB/executeQuery.view?schemaName=ehr_compliancedb&query.queryName=ComplianceRecentTests'},
+                {name: 'Requirements Overdue/Due Soon', url: '<%=contextPath%>/query/WNPRC/WNPRC_Units/Animal_Services/Compliance_Training/Private/EmployeeDB/executeQuery.view?schemaName=ehr_compliancedb&query.queryName=ComplianceRecentTests&query.viewName=Overdue and Due Soon'}
             ]},
                         
             {header: 'Configuration of Requirements',
             items: [
-                {name: 'View/Edit Requirements Tracked In System', url: '<%=contextPath%>/list/WNPRC/WNPRC_Units/Animal_Services/Compliance_Training/Private/EmployeeDB/grid.view?listId=146'},
-                {name: 'View/Edit Requirements For Specific Units/Categories', url: '<%=contextPath%>/list/WNPRC/WNPRC_Units/Animal_Services/Compliance_Training/Private/EmployeeDB/grid.view?listId=1270'},
-                {name: 'View/Edit Requirements For Specific Employees', url: '<%=contextPath%>/list/WNPRC/WNPRC_Units/Animal_Services/Compliance_Training/Private/EmployeeDB/grid.view?listId=142'},
-                {name: 'View/Edit Exemptions To Requirements', url: '<%=contextPath%>/list/WNPRC/WNPRC_Units/Animal_Services/Compliance_Training/Private/EmployeeDB/grid.view?listId=1316'}
+                {name: 'View/Edit Requirements Tracked In System', url: '<%=contextPath%>/query/WNPRC/WNPRC_Units/Animal_Services/Compliance_Training/Private/EmployeeDB/executeQuery.view?schemaName=ehr_compliancedb&query.queryName=Requirements'},
+                {name: 'View/Edit Requirements For Specific Units/Categories', url: '<%=contextPath%>/query/WNPRC/WNPRC_Units/Animal_Services/Compliance_Training/Private/EmployeeDB/executeQuery.view?schemaName=ehr_compliancedb&query.queryName=RequirementsPerCategory'},
+                {name: 'View/Edit Requirements For Specific Employees', url: '<%=contextPath%>/query/WNPRC/WNPRC_Units/Animal_Services/Compliance_Training/Private/EmployeeDB/executeQuery.view?schemaName=ehr_compliancedb&query.queryName=RequirementsPerEmployee'},
+                {name: 'View/Edit Exemptions To Requirements', url: '<%=contextPath%>/query/WNPRC/WNPRC_Units/Animal_Services/Compliance_Training/Private/EmployeeDB/executeQuery.view?schemaName=ehr_compliancedb&query.queryName=EmployeeRequirementExemptions'}
             ]},
             {header: 'Other Pages',
             items: [
-                {name: 'View/Edit Allowable Employee Categories', url: '<%=contextPath%>/list/WNPRC/WNPRC_Units/Animal_Services/Compliance_Training/Private/EmployeeDB/grid.view?listId=144'},
-                {name: 'View/Edit Allowable Employee Types', url: '<%=contextPath%>/list/WNPRC/WNPRC_Units/Animal_Services/Compliance_Training/Private/EmployeeDB/grid.view?listId=143'},
-                {name: 'View/Edit Allowable Requirement Types', url: '<%=contextPath%>/list/WNPRC/WNPRC_Units/Animal_Services/Compliance_Training/Private/EmployeeDB/grid.view?listId=1234'},
-                {name: 'View/Edit Allowable WNPRC Locations', url: '<%=contextPath%>/list/WNPRC/WNPRC_Units/Animal_Services/Compliance_Training/Private/EmployeeDB/grid.view?listId=140'},
-                {name: 'View/Edit Allowable WNPRC Unit Names', url: '<%=contextPath%>/list/WNPRC/WNPRC_Units/Animal_Services/Compliance_Training/Private/EmployeeDB/grid.view?listId=147'}
+                {name: 'View/Edit Allowable Employee Categories', url: '<%=contextPath%>/query/WNPRC/WNPRC_Units/Animal_Services/Compliance_Training/Private/EmployeeDB/executeQuery.view?schemaName=ehr_compliancedb&query.queryName=EmployeeCategory'},
+                {name: 'View/Edit Allowable Employee Types', url: '<%=contextPath%>/query/WNPRC/WNPRC_Units/Animal_Services/Compliance_Training/Private/EmployeeDB/executeQuery.view?schemaName=ehr_compliancedb&query.queryName=EmployeeTypes'},
+                {name: 'View/Edit Allowable Requirement Types', url: '<%=contextPath%>/query/WNPRC/WNPRC_Units/Animal_Services/Compliance_Training/Private/EmployeeDB/executeQuery.view?schemaName=ehr_compliancedb&query.queryName=RequirementType'},
+                {name: 'View/Edit Allowable WNPRC Locations', url: '<%=contextPath%>/query/WNPRC/WNPRC_Units/Animal_Services/Compliance_Training/Private/EmployeeDB/executeQuery.view?schemaName=ehr_compliancedb&query.queryName=EmployeeLocations'},
+                {name: 'View/Edit Allowable WNPRC Unit Names', url: '<%=contextPath%>/query/WNPRC/WNPRC_Units/Animal_Services/Compliance_Training/Private/EmployeeDB/executeQuery.view?schemaName=ehr_compliancedb&query.queryName=Unit_Names'}
             ]}
         ]
     });

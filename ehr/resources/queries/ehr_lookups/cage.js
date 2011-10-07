@@ -18,13 +18,30 @@ function beforeBoth(row, errors) {
         row.cage = EHR.validation.padDigits(row.cage, 4);
     }
 
+    if(row.room)
+        row.room = row.room.toLowerCase();
+
     row.roomcage = row.room;
     if(row.cage)
         row.roomcage += '-' + row.cage;
 
-    //remove whitespace
-    if(row.joinToCage)
+    //remove whitespace, normalize punctuation and pad digits
+    if(row.joinToCage){
         row.joinToCage = row.joinToCage.replace(/\s/g, '');
+        row.joinToCage = row.joinToCage.replace(/[;,]+/g, ',');
+        row.joinToCage = row.joinToCage.split(',');
+        var newArray = [];
+        for(var i=0;i<row.joinToCage.length;i++){
+            var item = row.joinToCage[i] ;
+            if(item){
+                if(!isNaN(item))
+                    newArray.push(EHR.validation.padDigits(item, 4));
+                else
+                    newArray.push(item);
+            }
+        };
+        row.joinToCage = newArray.join(',');
+    }
 }
 
 

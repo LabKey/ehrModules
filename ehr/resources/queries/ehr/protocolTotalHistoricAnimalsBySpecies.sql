@@ -30,3 +30,20 @@ GROUP BY coalesce(p.protocol, pa.protocol), p.approve, pa.species
 LEFT JOIN ehr.protocol_counts pc ON (p.protocol = pc.protocol AND pc.species = p.species)
 
 WHERE p.species IS NOT NULL
+
+UNION ALL
+
+
+SELECT
+  p.protocol,
+  p.approve,
+  'All Species' as species,
+  p.maxAnimals as allowed,
+  CONVERT(Count(pa.id), INTEGER) AS TotalAnimals,
+
+FROM ehr.protocol p
+LEFT OUTER JOIN ehr.protocolHistoricAnimals pa ON (p.protocol = pa.protocol)
+WHERE p.maxAnimals IS NOT NULL
+GROUP BY p.protocol, p.approve, p.maxAnimals
+
+

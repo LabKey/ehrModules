@@ -24,9 +24,7 @@ Ben Bimber
 my $baseUrl = 'https://ehr.primate.wisc.edu/';
 my $studyContainer = 'WNPRC/EHR/';
 
-#whitespace separated list of emails
-my @email_recipients = qw(bimber@wisc.edu colrecords@primate.wisc.edu);
-#@email_recipients = qw(bimber@wisc.edu);
+my $notificationtypes = 'Colony Alerts Lite';
 my $mail_server = 'smtp.primate.wisc.edu';
 
 #emails will be sent from this address
@@ -45,6 +43,7 @@ use File::Touch;
 use File::Spec;
 use File::Basename;
 use Cwd 'abs_path';
+use List::MoreUtils qw/ uniq /;
 
 # Find today's date
 my $tm = localtime;
@@ -65,6 +64,7 @@ $results = Labkey::Query::selectRows(
     -containerPath => $studyContainer,
     -schemaName => 'study',
     -queryName => 'housingProblems',
+    -requiredVersion => 8.3,
     #-debug => 1,
 );
 
@@ -91,6 +91,7 @@ $results = Labkey::Query::selectRows(
     -containerPath => $studyContainer,
     -schemaName => 'study',
     -queryName => 'ValidateHousingSnapshot',
+    -requiredVersion => 8.3,
     #-debug => 1,
 );
 
@@ -113,6 +114,7 @@ $results = Labkey::Query::selectRows(
     -schemaName => 'study',
     -queryName => 'housingConditionProblems',
     -viewName => 'Problems',
+    -requiredVersion => 8.3,
     #-debug => 1,
 );
 
@@ -134,6 +136,31 @@ if(@{$results->{rows}}){
     $email_html .= '<hr>';
 }
 
+#we find non-continguous housing records
+my $paramVal = localtime( ( time() - ( 7 * 24 * 60 * 60 ) ) );
+$paramVal=sprintf("%02d/%02d/%04d", ($paramVal->mon)+1, $paramVal->mday, $paramVal->year+1900);
+
+$results = Labkey::Query::selectRows(
+    -baseUrl => $baseUrl,
+    -containerPath => $studyContainer,
+    -schemaName => 'study',
+    -queryName => 'HousingCheck',
+    -parameters => [
+    	['MINDATE', $paramVal]
+    ],
+    -requiredVersion => 8.3,
+    #-debug => 1,
+);
+
+if(@{$results->{rows}}){
+	$doSend = 1;
+	
+	$email_html .= "<b>WARNING: There are ".@{$results->{rows}}." housing records since $paramVal that do not have a contiguous previous or next record.</b><br>";
+	$email_html .= "<p><a href='".$baseUrl."query/".$studyContainer."executeQuery.view?schemaName=study&query.queryName=HousingCheck&query.param.MINDATE=$paramVal"."'>Click here to view and update them</a><br>\n";
+	$email_html .= "<hr>\n";			
+}	
+
+
 #we find open housing records where the animal is not alive
 $results = Labkey::Query::selectRows(
     -baseUrl => $baseUrl,
@@ -143,7 +170,8 @@ $results = Labkey::Query::selectRows(
     -filterArray => [
     	['Id/Dataset/Demographics/calculated_status', 'neqornull', 'Alive'],
 		['enddate', 'isblank', ''],    			    	
-    ],    
+    ],
+    -requiredVersion => 8.3,
     #-debug => 1,
 );
 
@@ -170,7 +198,8 @@ $results = Labkey::Query::selectRows(
     -filterArray => [
     	['Id/Dataset/Demographics/calculated_status', 'eq', 'Alive'],
     	['Id/curLocation/room', 'isblank', ''],
-    ],    
+    ],
+    -requiredVersion => 8.3,
     #-debug => 1,
 );
 
@@ -193,6 +222,7 @@ $results = Labkey::Query::selectRows(
     -containerPath => $studyContainer,
     -schemaName => 'study',
     -queryName => 'Validate_status',
+    -requiredVersion => 8.3,
     #-debug => 1,
 );
 
@@ -218,6 +248,7 @@ $results = Labkey::Query::selectRows(
     -containerPath => $studyContainer,
     -schemaName => 'study',
     -queryName => 'Validate_status_mysql',
+    -requiredVersion => 8.3,
     #-debug => 1,
 );
 
@@ -247,7 +278,8 @@ $results = Labkey::Query::selectRows(
     -filterArray => [
     	['Id/Dataset/Demographics/calculated_status', 'neqornull', 'Alive'],
 		['enddate', 'isblank', ''],    			    	
-    ],    
+    ],
+    -requiredVersion => 8.3,
     #-debug => 1,
 );
 
@@ -269,7 +301,8 @@ $results = Labkey::Query::selectRows(
     	['Id/Dataset/Demographics/calculated_status', 'neqornull', 'Alive'],
 		['enddate', 'isblank', ''],
 		['protocol/protocol', 'isblank', ''],    			    	
-    ],    
+    ],
+    -requiredVersion => 8.3,
     #-debug => 1,
 );
 
@@ -287,6 +320,7 @@ $results = Labkey::Query::selectRows(
     -containerPath => $studyContainer,
     -schemaName => 'study',
     -queryName => 'duplicateAssignments',
+    -requiredVersion => 8.3,
     #-debug => 1,
 );
 
@@ -307,17 +341,39 @@ if(@{$results->{rows}}){
 #die;
 
 if($doSend){
-    my $smtp = MIME::Lite->new(
-              To      =>join(", ", @email_recipients),
-              From    =>$from,
-              Subject =>"Subject: Colony Alerts: $datestr",
-              Type    =>'multipart/alternative'
-              );
-    $smtp->attach(Type => 'text/html',
-              Encoding => 'quoted-printable',
-              Data	 => $email_html
-    );
-    $smtp->send() || die;
+	$results = Labkey::Query::selectRows(
+	    -baseUrl => $baseUrl,
+	    -requiredVersion => 8.3,
+	    -containerPath => $studyContainer,
+	    -schemaName => 'ehr',
+	    -queryName => 'NotificationRecipientsExpanded',
+	    -filterArray => [
+			['notificationtype', 'in', $notificationtypes],
+	    ],
+	    #-debug => 1,
+	);	
+	if(@{$results->{rows}}){	
+		my @email_recipients;
+		foreach my $row (@{$results->{rows}}){
+	    	push(@email_recipients, $$row{email})		
+	    }
+		
+		if(@email_recipients){
+			#print (@email_recipients);die;
+			@email_recipients = uniq @email_recipients;	
+		    my $smtp = MIME::Lite->new(
+		              To      =>join(", ", @email_recipients),
+		              From    =>$from,
+		              Subject =>"Subject: Colony Alerts: $datestr",
+		              Type    =>'multipart/alternative'
+		              );
+		    $smtp->attach(Type => 'text/html',
+		              Encoding => 'quoted-printable',
+		              Data	 => $email_html
+		    );
+		    $smtp->send() || die;
+		}
+	}
 }
 
 

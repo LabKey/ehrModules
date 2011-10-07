@@ -353,9 +353,18 @@ EHR.ext.StoreCollection = Ext.extend(Ext.util.MixedCollection, {
             s.each(function(r){
                 var recs = [];
                 r.beginEdit();
-                if(r.get('requestid')){
+                if(r.get('requestid') || r.get('requestId')){
+                    //note: we reject changes since we dont want to retain modifications made in this form
+                    r.reject();
+
+                    //reset the date
+                    if(r.get('daterequested'))
+                        r.set('date', r.get('daterequested'));
+
+                    //remove from this task
                     if(s.queryName!='tasks')
                         r.set('taskid', null);
+
                     r.set('QCState', EHR.permissionMap.qcMap.label['Request: Approved'].RowId);
                     r.set('qcstate', EHR.permissionMap.qcMap.label['Request: Approved'].RowId);
                 }
@@ -379,7 +388,6 @@ EHR.ext.StoreCollection = Ext.extend(Ext.util.MixedCollection, {
         //NOTE: since this will navigate away from this page, we dont need to bother removing
         //these records from the store
         if(commands.length){
-console.log(commands);
             this.commit(commands, records, extraContext);
         }
         else {

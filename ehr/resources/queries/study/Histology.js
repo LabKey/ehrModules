@@ -18,7 +18,7 @@ function setDescription(row, errors){
     if(row.slideNum)
         description.push('Slide No: ' + row.slideNum);
     if(row.tissue)
-        description.push('Tissue: ' + row.tissue);
+        description.push('Tissue: ' + EHR.validation.snomedToString(row.tissue));
     if(row.diagnosis)
         description.push('Diagnosis: ' + row.diagnosis);
 

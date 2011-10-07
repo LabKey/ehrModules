@@ -1,0 +1,44 @@
+<customView xmlns="http://labkey.org/data/xml/queryCustomView">
+    <columns>
+        <column name="employeeid"/>
+        <column name="employeeid/email">
+            <properties>
+                <property name="columnTitle" value="Email"/>
+            </properties>
+        </column>
+        <column name="employeeid/lastName">
+            <properties>
+                <property name="columnTitle" value="Last Name"/>
+            </properties>
+        </column>
+        <column name="employeeid/firstName">
+            <properties>
+                <property name="columnTitle" value="First Name"/>
+            </properties>
+        </column>
+        <!--<column name="employeeid/category">-->
+            <!--<properties>-->
+                <!--<property name="columnTitle" value="Category"/>-->
+            <!--</properties>-->
+        <!--</column>-->
+        <column name="RequirementName"/>
+        <!--<column name="requirementName/Type">-->
+            <!--<properties>-->
+                <!--<property name="columnTitle" value="Requirement Type"/>-->
+            <!--</properties>-->
+        <!--</column>        -->
+        <column name="ExpirePeriod"/>
+        <column name="MostRecentDate"/>
+        <column name="MonthsUntilRenewal"/>
+    </columns>
+    <sorts>
+        <sort column="employeeid/lastName" descending="false"/>
+        <sort column="employeeid/firstName" descending="false"/>
+        <sort column="requirementName" descending="false"/>
+    </sorts>
+    <filters>
+        <filter column="MonthsUntilRenewal" operator="lte" value="2"/>
+        <filter column="employeeid/enddate" operator="isblank" value=""/>
+        <filter column="requirementname" operator="contains" value="sop review"/>
+    </filters>
+</customView>

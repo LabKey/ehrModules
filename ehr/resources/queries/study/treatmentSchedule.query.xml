@@ -164,7 +164,7 @@
                                 <filters>
                                     <filter operator="eq" value="Request: Denied"/>
                                 </filters>
-                                <backgroundColor>FBEC5D</backgroundColor>
+                                <backgroundColor>FF0000</backgroundColor>
                             </conditionalFormat>
                             <conditionalFormat>
                                 <filters>

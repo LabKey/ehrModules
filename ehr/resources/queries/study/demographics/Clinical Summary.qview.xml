@@ -1,4 +1,4 @@
-<customView xmlns="http://labkey.org/data/xml/queryCustomView">
+<customView xmlns="http://labkey.org/data/xml/queryCustomView" hidden="true">
     <columns>
         <column name="Id"/>
         <column name="calculated_status">

@@ -89,7 +89,7 @@ Ext.extend(EHR.ext.FormPanel, Ext.FormPanel,
         }
 
         EHR.ext.FormPanel.superclass.initComponent.call(this);
-        this.addEvents('beforesubmit', 'participantchange');
+        this.addEvents('beforesubmit', 'participantchange','participantrefresh');
 
         if(this.showStatus){
             this.on('recordchange', this.onRecordChange, this, {buffer: 100, delay: 100});
@@ -227,8 +227,9 @@ Ext.extend(EHR.ext.FormPanel, Ext.FormPanel,
     },
 
     onStoreValidate: function(store, records){
-        if(store.errors.getCount())
-            this.getBottomToolbar().setStatus({text: 'ERRORS', iconCls: 'x-status-error'});
+        if(store.errors.getCount()){
+            this.getBottomToolbar().setStatus({text: store.maxErrorSeverity(), iconCls: 'x-status-error'});
+        }
         else
             this.getBottomToolbar().setStatus({text: 'Section OK', iconCls: 'x-status-valid'});
 
@@ -254,11 +255,11 @@ Ext.extend(EHR.ext.FormPanel, Ext.FormPanel,
                 if ("field" in error){
                     //these are generic form-wide errors
                     if ("_form" == error.field){
-                        formMessages.push(error.message);
+                        formMessages.push((error.severity=='INFO' ? 'INFO: ' : '')+error.message);
                     }
                 }
                 else {
-                    formMessages.push(error.message);
+                    formMessages.push((error.severity=='INFO' ? 'INFO: ' : '')+error.message);
                 }
             }
             else {

@@ -17,6 +17,9 @@
                             <fkColumnName>code</fkColumnName>
                         </fk>
                     </column>
+                    <column columnName="primaryCategory">
+                        <columnTitle>Subset</columnTitle>
+                    </column>
                 </columns>
                 <pkColumnName>RowId</pkColumnName>
             </table>

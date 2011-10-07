@@ -1122,7 +1122,7 @@ EHR.ext.SingleAnimalReport = Ext.extend(Ext.Panel, {
             renderTo: target.id,
             ref: 'qwp',
             success: function(dr){
-                var width1 = Ext.get(dr.id).getSize().width;
+                var width1 = Ext.get('dataregion_'+dr.id).getSize().width+50;
                 var width2 = Ext.get(this.anchorLayout.id).getSize().width;
 
                 if(width1 > width2){
@@ -1179,7 +1179,7 @@ EHR.ext.SingleAnimalReport = Ext.extend(Ext.Panel, {
             //successCallback: this.endMsg,
             failure: function(error){
                 //target.innerHTML = 'ERROR: ' + error.exception + '<br>';
-                EHR.utils.onError(error)
+                EHR.utils.onError(error);
             },
             scope: this
         };

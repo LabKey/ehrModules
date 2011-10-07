@@ -31,7 +31,21 @@ function setDescription(row, errors){
 
 function onUpsert(context, errors, row){
     if(context.extraContext.dataSource != 'etl' && row.caseno)
-        EHR.validation.verifyCasenoIsUnique(context, row, errors)
+        EHR.validation.verifyCasenoIsUnique(context, row, errors);
+
+    if(row.Id){
+        EHR.findDemographics({
+            participant: row.Id,
+            scope: this,
+            callback: function(data){
+                if(data){
+                    if(!row.project){
+                        EHR.addError(errors, 'project', 'Must enter a project for all WNPRC animals.', 'WARN');
+                    }
+                }
+            }
+        });
+    }
 }
 
 
@@ -57,6 +71,7 @@ function onBecomePublic(errors, scriptContext, row, oldRow){
         if(doSubmit){
             var obj = {
                 Id: row.Id,
+                project: row.project,
                 date: (row.timeofdeath ? new Date(row.timeofdeath.toGMTString()) : null),
                 cause: row.causeofdeath,
                 manner: row.mannerofdeath,

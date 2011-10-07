@@ -5,6 +5,11 @@
         <column name="enddate"/>
         <!--<column name="caseno"/>-->
         <column name="project"/>
+       <column name="project/inves">
+            <properties>
+                <property name="columnTitle" value="Investigator"/>
+            </properties>
+       </column>
         <column name="account"/>
         <!--<column name="type"/>-->
         <!--<column name="title"/>-->
@@ -21,6 +26,6 @@
         <sort column="date" descending="true"/>
     </sorts>
     <filters>
-        <filter column="type" operator="eq" value="Surgery"/>
+        <filter column="type" operator="contains" value="Surgery"/>
     </filters>
 </customView>

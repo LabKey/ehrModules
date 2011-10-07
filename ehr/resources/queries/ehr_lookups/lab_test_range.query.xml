@@ -34,6 +34,16 @@
                             <fkColumnName>code</fkColumnName>
                         </fk>
                     </column>
+                    <column columnName="type">
+                        <datatype>varchar</datatype>
+                        <columnTitle>Type</columnTitle>
+                        <fk>
+                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
+                            <fkDbSchema>ehr_lookups</fkDbSchema>
+                            <fkTable>clinpath_types</fkTable>
+                            <fkColumnName>type</fkColumnName>
+                        </fk>
+                    </column>
                     <column columnName="age_class">
                         <datatype>integer</datatype>
                         <columnTitle>Age Class</columnTitle>

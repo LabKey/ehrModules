@@ -17,9 +17,19 @@ function setDescription(row, errors){
     var description = new Array();
 
     if(row.tissue)
-        description.push('Tissue: ' + row.tissue);
+        description.push('Tissue: ' + EHR.validation.snomedToString(row.tissue));
+    if(row.qualifier)
+        description.push('Qualifier: ' + row.qualifier);
     if(row.diagnosis)
         description.push('Diagnosis: ' + row.diagnosis);
+    if(row.recipient)
+        description.push('Recipient: ' + row.recipient);
+    if(row.container_type)
+        description.push('Container: ' + row.container_type);
+    if(row.accountToCharge)
+        description.push('Account to Charge: ' + row.accountToCharge);
+    if(row.ship_to)
+        description.push('Ship To: ' + row.ship_to);
 
     return description;
 }

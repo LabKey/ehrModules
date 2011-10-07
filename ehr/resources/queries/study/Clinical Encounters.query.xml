@@ -22,6 +22,12 @@
                     </column>
                     <column columnName="major">
                         <columnTitle>Major Surgery?</columnTitle>
+                        <fk>
+                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
+                            <fkDbSchema>ehr_lookups</fkDbSchema>
+                            <fkTable>yesno</fkTable>
+                            <fkColumnName>value</fkColumnName>
+                        </fk>
                     </column>
                     <column columnName="serviceRequested">
                         <columnTitle>Service Requested</columnTitle>

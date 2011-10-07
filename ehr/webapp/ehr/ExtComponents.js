@@ -611,61 +611,67 @@ Ext.reg('ehr-usereditablecombo', EHR.ext.UserEditableCombo);
 
 EHR.ext.plugins.UserEditableCombo = Ext.extend(Ext.util.Observable, {
     init: function(combo) {
-        Ext.apply(combo, {
-            onSelect: function(cmp, idx){
-                var val;
-                if(idx)
-                    val = this.store.getAt(idx).get(this.valueField);
+        if((combo instanceof Ext.form.ComboBox)){
+            Ext.apply(combo, {
+                onSelect: function(cmp, idx){
+                    var val;
+                    if(idx)
+                        val = this.store.getAt(idx).get(this.valueField);
 
-                if(val == 'Other'){
-                    Ext.MessageBox.prompt('Enter Value', 'Enter value:', this.addNewValue, this);
-                }
-                LABKEY.ext.ComboBox.superclass.onSelect.apply(this, arguments);
-            },
-            setValue:     function(v){
-                var r = this.findRecord(this.valueField, v);
-                if(!r){
-                    this.addRecord(v, v);
-                }
-                LABKEY.ext.ComboBox.superclass.setValue.apply(this, arguments);
-            },
-            addNewValue: function(btn, val){
-                this.addRecord(val);
-                this.setValue(val);
-                this.fireEvent('change', this, val, 'Other');
-            },
-            addRecord: function(value){
-                if(!value)
-                    return;
+                    if(val == 'Other'){
+                        Ext.MessageBox.prompt('Enter Value', 'Enter value:', this.addNewValue, this);
+                    }
+                    LABKEY.ext.ComboBox.superclass.onSelect.apply(this, arguments);
+                },
+                setValue:     function(v){
+                    var r = this.findRecord(this.valueField, v);
+                    if(!r){
+                        this.addRecord(v, v);
+                    }
+                    LABKEY.ext.ComboBox.superclass.setValue.apply(this, arguments);
+                },
+                addNewValue: function(btn, val){
+                    this.addRecord(val);
+                    this.setValue(val);
+                    this.fireEvent('change', this, val, 'Other');
+                },
+                addRecord: function(value){
+                    if(!value)
+                        return;
 
-                var data = {};
-                data[this.valueField] = value;
-                if(this.displayField!=this.valueField){
-                    data[this.displayField] = value;
-                }
+                    var data = {};
+                    data[this.valueField] = value;
+                    if(this.displayField!=this.valueField){
+                        data[this.displayField] = value;
+                    }
 
-                if(!this.store || !this.store.fields){
-                    this.store.on('load', function(store){
-                        this.addRecord(value);
-                    }, this, {single: true});
-                    console.log('unable to add record: '+this.store.storeId+'/'+value);
-                    return;
-                }
-                this.store.add((new this.store.recordType(data)));
+                    if(!this.store || !this.store.fields){
+                        this.store.on('load', function(store){
+                            this.addRecord(value);
+                        }, this, {single: true});
+                        console.log('unable to add record: '+this.store.storeId+'/'+value);
+                        return;
+                    }
+                    this.store.add((new this.store.recordType(data)));
 
-                if(this.view){
-                    this.view.setStore(this.store);
-                    this.view.refresh()
+                    if(this.view){
+                        this.view.setStore(this.store);
+                        this.view.refresh()
+                    }
                 }
-            }
-        });
+            });
 
-        if(combo.store.fields)
-            combo.addRecord('Other');
-        else
-            combo.store.on('load', function(){
+            if(combo.store.fields)
                 combo.addRecord('Other');
-            }, this);
+            else {
+                if (!combo.store.on)
+                    combo.store = Ext.ComponentMgr.create(combo.store);
+
+                combo.store.on('load', function(){
+                    combo.addRecord('Other');
+                }, this);
+            }
+        }
     }
 });
 Ext.preg('ehr-usereditablecombo', EHR.ext.plugins.UserEditableCombo);
@@ -1001,6 +1007,26 @@ EHR.ext.plugins.ParticipantField = Ext.extend(Ext.util.Observable, {
 Ext.preg('ehr-participantfield', EHR.ext.plugins.ParticipantField);
 
 
+EHR.ext.plugins.ParticipantFieldEvents = Ext.extend(Ext.util.Observable, {
+    init: function(combo) {
+        combo.on('change', function(c){
+            var theForm = c.findParentByType('ehr-formpanel').getForm();
+            var idField = theForm.findField('Id');
+
+            if(idField)
+                idField.fireEvent('participantchange', idField);
+        }, combo);
+        combo.on('select', function(c){
+            var theForm = c.findParentByType('ehr-formpanel').getForm();
+            var idField = theForm.findField('Id');
+
+            if(idField)
+                idField.fireEvent('participantchange', idField);
+        }, combo);
+    }
+});
+Ext.preg('ehr-participantfield-events', EHR.ext.plugins.ParticipantFieldEvents);
+
 EHR.ext.ProjectField = Ext.extend(LABKEY.ext.ComboBox,
 {
     initComponent: function()
@@ -1065,7 +1091,7 @@ EHR.ext.ProjectField = Ext.extend(LABKEY.ext.ComboBox,
         }
 
         if(date)
-            sql += "AND a.date <= '"+date.format('Y-m-d')+"' AND (a.enddate >= '"+date.format('Y-m-d')+"' OR a.enddate IS NULL)";
+            sql += "AND cast(a.date as date) <= '"+date.format('Y-m-d')+"' AND (cast(a.enddate as date) >= '"+date.format('Y-m-d')+"' OR a.enddate IS NULL)";
         else
             sql += "AND a.enddate IS NULL ";
 

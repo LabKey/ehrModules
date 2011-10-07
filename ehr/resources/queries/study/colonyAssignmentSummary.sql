@@ -4,29 +4,45 @@
  * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
  */
 SELECT
-  d.id.dataset.demographics.v_status as v_status,
-  d.id.dataset.demographics.species as species,
-  count(coalesce(d.id.dataset.demographics.v_status, '')) as TotalAnimals,
+d.species, d.viralstatus, d.assignmentstatus, count(*) as total
 
-  count(d.ActiveAssignments) AS ActiveAssignments,
-  count(coalesce(d.id.dataset.demographics.v_status, '')) - count(d.ActiveAssignments) AS NoAssignments,
-  count(d.PendingAssignments) AS PendingAssignments,
-  count(d.ActiveResearchAssignments) as ActiveResearchAssignments,
-  count(d.ActiveBreedingAssignments) as ActiveBreedingAssignments,
-  count(d.ActiveTrainingAssignments) as ActiveTrainingAssignments,
+FROM (
 
-  --count(T3.Total) as ActiveVetAssignments,
-  count(d.ActiveSPF_StockAssignments) AS ActiveSPF_StockAssignments,
-  count(d.ActiveConventionalStockAssignments) AS ActiveConventionalStockAssignments,
-  count(d.ActiveMarmStockAssignments) AS ActiveMarmStockAssignments,
+SELECT
+a.Id,
+coalesce(a.id.viralstatus.viralstatus, 'Unknown') as viralstatus,
+-- a.id.viralstatus.viralstatus || a.id.dataset.demographics.species as keyField,
+a.id.dataset.demographics.species as species,
 
+CASE
+  WHEN (
+    group_concat(DISTINCT a.project.avail) LIKE '%b%' AND
+    (group_concat(DISTINCT a.project.avail) LIKE '%r%' or group_concat(DISTINCT a.project.avail) LIKE '%n%')
+    ) THEN 'Breeding and Research'
+  WHEN (
+    group_concat(DISTINCT a.project.avail) LIKE '%r%' or
+    group_concat(DISTINCT a.project.avail) LIKE '%n%'
+    ) THEN 'Research'
+  WHEN group_concat(DISTINCT a.project.avail) LIKE '%b%' THEN 'Breeding'
+  --this project is pre-assignment physicals
+  WHEN group_concat(a.project) like '%20050602%' THEN 'Pending'
+  WHEN group_concat(DISTINCT a.project.avail) LIKE '%p%' THEN 'Pending'
 
-FROM study.demographicsAssignmentSummary d
+   ELSE 'None of These'
+END as AssignmentStatus
 
+FROM study.assignment a
 WHERE
-d.id.dataset.demographics.calculated_status = 'Alive'
---d.id.dataset.demographics.calculated_status = 'Alive'
-AND d.id.dataset.demographics.species != 'Unknown'
+a.qcstate.publicdata = true
+and cast(a.date as date) <= curdate()
+AND (a.enddate is null or a.enddate > now())
+and a.id.dataset.demographics.calculated_status = 'Alive'
+AND a.id.dataset.demographics.species != 'Unknown'
 
-GROUP BY d.id.dataset.demographics.v_status, d.id.dataset.demographics.species
+GROUP BY a.id, a.id.viralstatus.viralstatus, a.id.dataset.demographics.species, (a.id.viralstatus.viralstatus || a.id.dataset.demographics.species)
 
+) d
+
+GROUP BY d.viralstatus, d.species, d.assignmentstatus
+
+PIVOT total by assignmentstatus

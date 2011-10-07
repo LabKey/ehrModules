@@ -70,7 +70,7 @@
                                 <filters>
                                     <filter operator="eq" value="Animal Care"/>
                                 </filters>
-                                <backgroundColor>7CFC00</backgroundColor>
+                                <backgroundColor>BF5FFF</backgroundColor>
                             </conditionalFormat>
                         </conditionalFormats>
                     </column>

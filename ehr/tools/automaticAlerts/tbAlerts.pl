@@ -23,8 +23,7 @@ Ben Bimber
 my $baseUrl = 'https://ehr.primate.wisc.edu/';
 my $studyContainer = 'WNPRC/EHR/';
 
-#whitespace separated list of emails
-my @email_recipients = qw(bimber@wisc.edu);
+my $notificationtypes = 'TB Alerts';
 my $mail_server = 'smtp.primate.wisc.edu';
 
 #emails will be sent from this address
@@ -43,6 +42,7 @@ use File::Touch;
 use File::Spec;
 use File::Basename;
 use Cwd 'abs_path';
+use List::MoreUtils qw/ uniq /;
 
 # Find today's date
 my $tm = localtime;
@@ -68,7 +68,8 @@ $results = Labkey::Query::selectRows(
     	['Id/Dataset/Demographics/calculated_status', 'eq', 'Alive'],
 		['date', 'dateeq', $startDate],
 		['result1', 'isblank', ''],		
-    ],      
+    ],
+    -requiredVersion => 8.3,
     #-debug => 1,
 );
 
@@ -101,7 +102,8 @@ $results = Labkey::Query::selectRows(
     	['Id/Dataset/Demographics/calculated_status', 'eq', 'Alive'],
 		['date', 'dateeq', $startDate],
 		['result2', 'isblank', ''],		
-    ],      
+    ],
+    -requiredVersion => 8.3,
     #-debug => 1,
 );
 
@@ -133,7 +135,8 @@ $results = Labkey::Query::selectRows(
     	['Id/Dataset/Demographics/calculated_status', 'eq', 'Alive'],
 		['date', 'dateeq', $startDate],
 		['missingResults', 'eq', 'true'],		
-    ],      
+    ],
+    -requiredVersion => 8.3,
     #-debug => 1,
 );
 
@@ -165,7 +168,8 @@ $results = Labkey::Query::selectRows(
     	['Id/Dataset/Demographics/calculated_status', 'eq', 'Alive'],
 		['date', 'dateeq', $startDate],
 		['result1', 'in', '4;5'],		
-    ],      
+    ],
+    -requiredVersion => 8.3,
     #-debug => 1,
 );
 
@@ -198,7 +202,8 @@ $results = Labkey::Query::selectRows(
     	['Id/Dataset/Demographics/calculated_status', 'eq', 'Alive'],
 		['date', 'dateeq', $startDate],
 		['result2', 'in', '3;4;5'],		
-    ],      
+    ],
+    -requiredVersion => 8.3,
     #-debug => 1,
 );
 
@@ -231,7 +236,8 @@ $results = Labkey::Query::selectRows(
     	['Id/Dataset/Demographics/calculated_status', 'eq', 'Alive'],
 		['date', 'dateeq', $startDate],
 		['result3', 'in', '3;4;5'],		
-    ],      
+    ],
+    -requiredVersion => 8.3,
     #-debug => 1,
 );
 
@@ -255,17 +261,38 @@ else {
 #print HTML $email_html;
 #close HTML;
 
-
-my $smtp = MIME::Lite->new(
-          To      =>join(", ", @email_recipients),
-          From    =>$from,
-          Subject =>"Subject: Daily TB Alerts: $datestr",
-          Type    =>'multipart/alternative'
-          );
-$smtp->attach(Type => 'text/html',
-          Encoding => 'quoted-printable',
-          Data	 => $email_html
-);         
-$smtp->send() || die;
+$results = Labkey::Query::selectRows(
+    -baseUrl => $baseUrl,
+    -requiredVersion => 8.3,
+    -containerPath => $studyContainer,
+    -schemaName => 'ehr',
+    -queryName => 'NotificationRecipientsExpanded',
+    -filterArray => [
+		['notificationtype', 'in', $notificationtypes],
+    ],
+    #-debug => 1,
+);	
+if(@{$results->{rows}}){	
+	my @email_recipients;
+	foreach my $row (@{$results->{rows}}){
+    	push(@email_recipients, $$row{email})		
+    }
+	
+	if(@email_recipients){
+		print (@email_recipients);die;
+		@email_recipients = uniq @email_recipients;
+		my $smtp = MIME::Lite->new(
+		          To      =>join(", ", @email_recipients),
+		          From    =>$from,
+		          Subject =>"Subject: TB Alerts: $datestr",
+		          Type    =>'multipart/alternative'
+		          );
+		$smtp->attach(Type => 'text/html',
+		          Encoding => 'quoted-printable',
+		          Data	 => $email_html
+		);         
+		$smtp->send() || die;
+	}
+}
 
 touch(File::Spec->catfile(dirname(abs_path($0)), '.tbAlertsLastRun'));

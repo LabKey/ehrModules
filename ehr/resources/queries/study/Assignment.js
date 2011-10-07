@@ -7,6 +7,9 @@
 var {EHR, LABKEY, Ext, console, init, beforeInsert, afterInsert, beforeUpdate, afterUpdate, beforeDelete, afterDelete, complete} = require("ehr/validation");
 
 
+function onInit(event, context){
+    context.allowFutureDates = true;
+}
 
 
 function setDescription(row, errors){
@@ -32,7 +35,10 @@ function onUpsert(context, errors, row, oldRow){
     }
 
     //check number of allowed animals at assign/approve time
-    if(context.extraContext.dataSource != 'etl' && !context.extraContext.quickValidation && row.project && row.date){
+    if(context.extraContext.dataSource != 'etl' &&
+            !context.extraContext.quickValidation &&
+            !(oldRow && oldRow.Id && oldRow.Id==row.Id) &&
+            row.project && row.date){
         var species;
         if(row.Id){
             EHR.findDemographics({
@@ -47,7 +53,6 @@ function onUpsert(context, errors, row, oldRow){
         }
 
         var protocol;
-        //TODO: switch to EHR schema
         LABKEY.Query.selectRows({
             schemaName: 'ehr',
             queryName: 'project',
@@ -65,7 +70,7 @@ function onUpsert(context, errors, row, oldRow){
             context.extraContext.newIdsAdded = {};
 
         if(protocol && !context.extraContext.newIdsAdded[protocol])
-            context.extraContext.newIdsAdded[protocol] = [];
+            context.extraContext.newIdsAdded[protocol] = {};
 
         if(species && protocol){
             LABKEY.Query.selectRows({
@@ -74,24 +79,30 @@ function onUpsert(context, errors, row, oldRow){
                 viewName: 'With Animals',
                 scope: this,
                 filterArray: [
-                    LABKEY.Filter.create('species', species, LABKEY.Filter.Types.EQUAL),
+                    LABKEY.Filter.create('species', species+';All Species', LABKEY.Filter.Types.EQUALS_ONE_OF),
                     LABKEY.Filter.create('protocol', protocol, LABKEY.Filter.Types.EQUAL)
                 ],
                 success: function(data){
                     if(data && data.rows && data.rows.length){
-                        var remaining = data.rows[0].TotalRemaining;
+                        for(var i=0;i<data.rows.length;i++){
+                            var remaining = data.rows[i].TotalRemaining;
+                            var species = data.rows[i].Species;
 
-                        if(context.extraContext.newIdsAdded[protocol]){
-                            remaining += context.extraContext.newIdsAdded[protocol].length;
-                        }
+                            if(!context.extraContext.newIdsAdded[protocol][species])
+                                context.extraContext.newIdsAdded[protocol][species] = [];
 
-                        var animals = data.rows[0].Animals;
-                        if(animals && animals.indexOf(row.Id)==-1){
-                            if(remaining <= 1)
-                                EHR.addError(errors, 'project', 'There are not enough spaces on protocol: '+protocol, 'WARN');
+                            if(context.extraContext.newIdsAdded[protocol] && context.extraContext.newIdsAdded[protocol][species]){
+                                remaining -= context.extraContext.newIdsAdded[protocol][species].length;
+                            }
 
-                                if(context.extraContext.newIdsAdded[protocol] && context.extraContext.newIdsAdded[protocol].indexOf(row.Id)==-1)
-                                    context.extraContext.newIdsAdded[protocol].push(row.Id);
+                            var animals = data.rows[i].Animals;
+                            if(animals && animals.indexOf(row.Id)==-1){
+                                if(remaining <= 1)
+                                    EHR.addError(errors, 'project', 'There are not enough spaces on protocol: '+protocol, 'WARN');
+
+                                if(context.extraContext.newIdsAdded[protocol][species] && context.extraContext.newIdsAdded[protocol][species].indexOf(row.Id)==-1)
+                                    context.extraContext.newIdsAdded[protocol][species].push(row.Id);
+                            }
                         }
                     }
                     else {

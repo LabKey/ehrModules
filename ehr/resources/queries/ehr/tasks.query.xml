@@ -8,6 +8,7 @@
                 <insertUrl />
                 <importUrl />
                 <updateUrl />
+                <deleteUrl />
                 <titleColumn>rowid</titleColumn>
                 <pkColumnName>taskid</pkColumnName>
                 <columns>

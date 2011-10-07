@@ -24,10 +24,7 @@ my $baseUrl = 'https://ehr.primate.wisc.edu/';
 #$baseUrl = 'http://localhost:8080/labkey/';
 
 my $studyContainer = 'WNPRC/EHR/';
-
-#whitespace separated list of emails
-my @email_recipients = qw(bimber@wisc.edu clinpath@primate.wisc.edu);
-#@email_recipients = qw(bimber@wisc.edu);
+my $notificationtypes = 'Clinpath Admin Alerts';
 my $mail_server = 'smtp.primate.wisc.edu';
 
 #emails will be sent from this address
@@ -47,6 +44,7 @@ use File::Touch;
 use Cwd 'abs_path';
 use File::Basename;
 use File::Spec;
+use List::MoreUtils qw/ uniq /;
 
 
 # Find today's date
@@ -61,13 +59,12 @@ my $results;
 
 #touch a file when complete for monit
 my $file = File::Spec->catfile(dirname(abs_path($0)), '.clinpathAlertsLastRun');
-my $fh;
-
-open($fh, '>', $file);
-
-my $lastRun = localtime(stat($fh)->mtime);
+if(!-e $file){
+	touch($file);
+}
+my $lastRun = localtime(stat($file)->mtime);
 $lastRun = sprintf("%04d-%02d-%02d %02d:%02d", $lastRun->year+1900, ($lastRun->mon)+1, $lastRun->mday, $lastRun->hour, $lastRun->min); 
-close $fh;
+
 
 #we find any record requested since the last email
 $results = Labkey::Query::selectRows(
@@ -79,6 +76,7 @@ $results = Labkey::Query::selectRows(
 		['qcstate/label', 'eq', 'Request: Pending'],
 		['created', 'gte', $lastRun],
     ],
+    -requiredVersion => 8.3,
     #-debug => 1,
 );
 
@@ -104,7 +102,8 @@ $results = Labkey::Query::selectRows(
     -filterArray => [
 		['qcstate/label', 'eq', 'Request: Pending'],
 		['date', 'dategte', $datestr],		
-    ],    
+    ],
+    -requiredVersion => 8.3,
     #-debug => 1,
 );
 
@@ -129,6 +128,7 @@ $results = Labkey::Query::selectRows(
 		['qcstate/label', 'neq', 'Completed'],
 		['date', 'datelte', $datestr],
     ],
+    -requiredVersion => 8.3,
     #-debug => 1,
 );
 
@@ -144,17 +144,38 @@ if(@{$results->{rows}}){
 #close HTML;
 #die;
 
-
-my $smtp = MIME::Lite->new(
-          To      =>join(", ", @email_recipients),
-          From    =>$from,
-          Subject =>"Subject: Daily Clinpath Alerts: $datestr",
-          Type    =>'multipart/alternative'
-          );
-$smtp->attach(Type => 'text/html',
-          Encoding => 'quoted-printable',
-          Data	 => $email_html
-);         
-$smtp->send() || die;
+$results = Labkey::Query::selectRows(
+    -baseUrl => $baseUrl,
+    -requiredVersion => 8.3,
+    -containerPath => $studyContainer,
+    -schemaName => 'ehr',
+    -queryName => 'NotificationRecipientsExpanded',
+    -filterArray => [
+		['notificationtype', 'in', $notificationtypes],
+    ],
+    #-debug => 1,
+);	
+if(@{$results->{rows}}){	
+	my @email_recipients;
+	foreach my $row (@{$results->{rows}}){
+    	push(@email_recipients, $$row{email})		
+    }
+	
+	if(@email_recipients){
+		#print (@email_recipients);die;
+		@email_recipients = uniq @email_recipients;
+		my $smtp = MIME::Lite->new(
+		          To      =>join(", ", @email_recipients),
+		          From    =>$from,
+		          Subject =>"Subject: Daily Clinpath Alerts: $datestr",
+		          Type    =>'multipart/alternative'
+		          );
+		$smtp->attach(Type => 'text/html',
+		          Encoding => 'quoted-printable',
+		          Data	 => $email_html
+		);         
+		$smtp->send() || die;
+	}
+}
 
 touch($file);

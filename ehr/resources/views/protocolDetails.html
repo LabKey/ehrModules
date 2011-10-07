@@ -40,7 +40,7 @@ Ext.onReady(function ()
     new LABKEY.QueryWebPart({
         title: 'Active Animal Assignments',
         schemaName: 'study',
-        queryName: 'Assignment',
+        queryName: 'ActiveAssignments',
         allowChooseQuery: false,
         allowChooseView: true,
         showInsertNewButton: false,
@@ -50,7 +50,7 @@ Ext.onReady(function ()
         showUpdateColumn: false,
         buttonBarPosition: 'top',
         filters: [LABKEY.Filter.create('project/protocol', protocol, LABKEY.Filter.Types.EQUAL)],
-        viewName: 'Active Assignments',
+        //viewName: 'Active Assignments',
         sort: '-Date',
         scope: this,
         failure: EHR.utils.onError

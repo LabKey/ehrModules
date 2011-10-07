@@ -18,6 +18,23 @@
                           <!--<fkColumnName>objectid</fkColumnName>-->
                         <!--</fk>-->
                     </column>
+                    <column columnName="RefRange" wrappedColumnName="lsid">
+                        <columnTitle>Ref Range</columnTitle>
+                        <isHidden>false</isHidden>
+                        <isUnselectable>true</isUnselectable>
+                        <fk>
+                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
+                            <fkDbSchema>study</fkDbSchema>
+                            <fkTable>immunologyRefRange</fkTable>
+                            <fkColumnName>lsid</fkColumnName>
+                        </fk>
+                    </column>
+                    <column columnName="qualResult">
+                        <displayWidth>120</displayWidth>
+                    </column>
+                    <column columnName="units">
+                        <displayWidth>60</displayWidth>
+                    </column>
                     <column columnName="runId" wrappedColumnName="parentId">
                         <isHidden>false</isHidden>
                         <fk>
@@ -32,6 +49,7 @@
                     </column>
                     <column columnName="testid">
                       <datatype>varchar</datatype>
+                        <displayWidth>120</displayWidth>
                       <!--<nullable>false</nullable>-->
                       <columnTitle>Test Id</columnTitle>
                       <fk>

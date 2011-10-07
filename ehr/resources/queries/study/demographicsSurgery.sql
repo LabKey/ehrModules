@@ -8,9 +8,8 @@ SELECT
 s.id,
 
 CASE
-WHEN sum(convert(s.major, 'INTEGER')) > 0 THEN
-  --WHEN max(s.major) = 'y' THEN
-    true
+WHEN (group_concat(s.major) like 'Yes') THEN
+    'Yes'
       ELSE
     null
 END AS MajorSurgery,

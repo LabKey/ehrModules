@@ -24,9 +24,7 @@ Ben Bimber
 my $baseUrl = 'https://ehr.primate.wisc.edu/';
 my $studyContainer = 'WNPRC/EHR/';
 
-#whitespace separated list of emails
-my @email_recipients = qw(bimber@wisc.edu colrecords@primate.wisc.edu);
-#@email_recipients = qw(bimber@wisc.edu);
+my $notificationtypes = 'Colony Alerts';
 my $mail_server = 'smtp.primate.wisc.edu';
 
 #emails will be sent from this address
@@ -45,6 +43,7 @@ use File::Touch;
 use File::Spec;
 use File::Basename;
 use Cwd 'abs_path';
+use List::MoreUtils qw/ uniq /;
 
 # Find today's date
 my $tm = localtime;
@@ -67,10 +66,12 @@ $results = Labkey::Query::selectRows(
     -containerPath => $studyContainer,
     -schemaName => 'study',
     -queryName => 'Demographics',
+    -sort => 'Id',
     -filterArray => [
         ['calculated_status', 'eq', 'Alive'],
         ['Id/MostRecentWeight/MostRecentWeightDate', 'isblank', ''],
     ],
+    -requiredVersion => 8.3,
     #-debug => 1,
 );
 
@@ -93,6 +94,7 @@ $results = Labkey::Query::selectRows(
     -containerPath => $studyContainer,
     -schemaName => 'ehr',
     -queryName => 'missingCages',
+    -requiredVersion => 8.3,
     #-debug => 1,
 );
 
@@ -116,11 +118,13 @@ $results = Labkey::Query::selectRows(
     -containerPath => $studyContainer,
     -schemaName => 'study',
     -queryName => 'Housing',
+    -sort => 'Id',
     -filterArray => [
     	['Id/Dataset/Demographics/calculated_status', 'eq', 'Alive'],
     	['cond', 'eq', 'pc'],
     	['enddate', 'isblank', ''],
-    ],      
+    ],
+    -requiredVersion => 8.3,
     #-debug => 1,
 );
 
@@ -166,6 +170,8 @@ $results = Labkey::Query::selectRows(
     -containerPath => $studyContainer,
     -schemaName => 'study',
     -queryName => 'housingProblems',
+    -sort => 'Id',
+    -requiredVersion => 8.3,
     #-debug => 1,
 );
 
@@ -190,6 +196,7 @@ $results = Labkey::Query::selectRows(
     -containerPath => $studyContainer,
     -schemaName => 'study',
     -queryName => 'ValidateHousingSnapshot',
+    -requiredVersion => 8.3,
     #-debug => 1,
 );
 
@@ -208,7 +215,9 @@ $results = Labkey::Query::selectRows(
     -containerPath => $studyContainer,
     -schemaName => 'study',
     -queryName => 'housingConditionProblems',
+    -sort => 'Id',
     -viewName => 'Problems',
+    -requiredVersion => 8.3,
     #-debug => 1,
 );
 
@@ -236,10 +245,12 @@ $results = Labkey::Query::selectRows(
     -containerPath => $studyContainer,
     -schemaName => 'study',
     -queryName => 'Housing',
+    -sort => 'Id',
     -filterArray => [
     	['Id/Dataset/Demographics/calculated_status', 'neqornull', 'Alive'],
 		['enddate', 'isblank', ''],    			    	
-    ],    
+    ],
+    -requiredVersion => 8.3,
     #-debug => 1,
 );
 
@@ -262,10 +273,12 @@ $results = Labkey::Query::selectRows(
     -containerPath => $studyContainer,
     -schemaName => 'study',
     -queryName => 'Demographics',
+    -sort => 'Id',
     -filterArray => [
     	['Id/Dataset/Demographics/calculated_status', 'eq', 'Alive'],
     	['Id/curLocation/room', 'isblank', ''],
-    ],    
+    ],
+    -requiredVersion => 8.3,
     #-debug => 1,
 );
 
@@ -288,6 +301,7 @@ $results = Labkey::Query::selectRows(
     -containerPath => $studyContainer,
     -schemaName => 'study',
     -queryName => 'Validate_status',
+    -requiredVersion => 8.3,
     #-debug => 1,
 );
 
@@ -303,33 +317,34 @@ if(@{$results->{rows}}){
     };
 
     $email_html .= "<p><a href='".$baseUrl."query/".$studyContainer."executeQuery.view?schemaName=study&query.queryName=Validate_status'>Click here to view these records</a></p>\n";
-    $email_html .= "<a href='".$baseUrl."ehr/".$studyContainer."updateQuery.view?schemaName=study&query.queryName=Demographics&query.Id~in=".join(';', @ids)."'>Click here to edit demographics to fix the problems</a><p>";
+    $email_html .= "When you see these problems, it usually happens because the automatic process of calculating this field, which is triggered by births, deaths, departures or arrivals, didnt work right.  To force it to re-calculate, just edit the animal's record on one of these tables, maybe no changes, then hit submit.  That should force a re-calculation of the status field.<p>";
     $email_html .= "<hr>";
 }
 
-
-#then we find all records with problems in the calculated_status field
-$results = Labkey::Query::selectRows(
-    -baseUrl => $baseUrl,
-    -containerPath => $studyContainer,
-    -schemaName => 'study',
-    -queryName => 'Validate_status_mysql',
-    #-debug => 1,
-);
-
-if(@{$results->{rows}}){
-	my @ids;
-
-    foreach my $row (@{$results->{rows}}){
-    	push(@ids, $row->{'id'});
-        $email_html .= $row->{'id'}."<br>";
-    };
-
-	$email_html .= "<b>WARNING: There are ".@{$results->{rows}}." animals with potential problems in the status field (based on old system).</b><br>";
-    $email_html .= "<p><a href='".$baseUrl."query/".$studyContainer."executeQuery.view?schemaName=study&query.queryName=Validate_status_mysql'>Click here to view these records</a></p>\n";
-    $email_html .= "<a href='".$baseUrl."ehr/".$studyContainer."updateQuery.view?schemaName=study&query.queryName=Demographics&query.Id~in=".join(';', @ids)."'>Click here to edit demographics to fix the problems</a><p>";
-    $email_html .= "<hr>";
-}
+#NOTE: depreciated
+##then we find all records with problems in the calculated_status field
+#$results = Labkey::Query::selectRows(
+#    -baseUrl => $baseUrl,
+#    -containerPath => $studyContainer,
+#    -schemaName => 'study',
+#    -queryName => 'Validate_status_mysql',
+#    -requiredVersion => 8.3,
+#    #-debug => 1,
+#);
+#
+#if(@{$results->{rows}}){
+#	my @ids;
+#
+#    foreach my $row (@{$results->{rows}}){
+#    	push(@ids, $row->{'id'});
+#        $email_html .= $row->{'id'}."<br>";
+#    };
+#
+#	$email_html .= "<b>WARNING: There are ".@{$results->{rows}}." animals with potential problems in the status field (based on old system).</b><br>";
+#    $email_html .= "<p><a href='".$baseUrl."query/".$studyContainer."executeQuery.view?schemaName=study&query.queryName=Validate_status_mysql'>Click here to view these records</a></p>\n";
+#    $email_html .= "When you see these problems, it usually happens because the automatic process of calculating this field, which is triggered by births, deaths, departures or arrivals, didnt work right.  To force it to re-calculate, just edit the animal's record on one of these tables, maybe no changes, then hit submit.  That should force a re-calculation of the status field.<p>";
+#    $email_html .= "<hr>";
+#}
 
 #then we find all animals lacking any assignments
 $results = Labkey::Query::selectRows(
@@ -338,6 +353,8 @@ $results = Labkey::Query::selectRows(
     -schemaName => 'study',
     -queryName => 'Demographics',
     -viewName => 'No Active Assignments',
+    -sort => 'Id',
+    -requiredVersion => 8.3,
     #-debug => 1,
 );
 
@@ -366,7 +383,8 @@ $results = Labkey::Query::selectRows(
     -filterArray => [
     	['Id/Dataset/Demographics/calculated_status', 'neqornull', 'Alive'],
 		['enddate', 'isblank', ''],    			    	
-    ],    
+    ],
+    -requiredVersion => 8.3,
     #-debug => 1,
 );
 
@@ -386,7 +404,8 @@ $results = Labkey::Query::selectRows(
     	['Id/Dataset/Demographics/calculated_status', 'neqornull', 'Alive'],
 		['enddate', 'isblank', ''],
 		['protocol/protocol', 'isblank', ''],    			    	
-    ],    
+    ],
+    -requiredVersion => 8.3,
     #-debug => 1,
 );
 
@@ -402,6 +421,7 @@ $results = Labkey::Query::selectRows(
     -containerPath => $studyContainer,
     -schemaName => 'study',
     -queryName => 'duplicateAssignments',
+    -requiredVersion => 8.3,
     #-debug => 1,
 );
 
@@ -412,7 +432,49 @@ if(@{$results->{rows}}){
 }
 
 
+#then we find all living siv+ animals not exempt from pair housing (20060202)
+$results = Labkey::Query::selectRows(
+    -baseUrl => $baseUrl,
+    -containerPath => $studyContainer,
+    -schemaName => 'study',
+    -queryName => 'Demographics',
+    -filterArray => [
+    	['calculated_status', 'neqornull', 'Alive'],
+		['medical', 'contains', 'siv'],
+		['Id/activeAssignments/ActiveVetAssignments', 'doesnotcontain', '20060202'],    			    	
+    ],
+    -requiredVersion => 8.3,
+    #-debug => 1,
+);
 
+
+if(@{$results->{rows}}){
+	$email_html .= "<b>WARNING: There are ".@{$results->{rows}}." animals with SIV in the medical field, but not actively assigned to exempt from paired housing (20060202):</b><br>";	
+    $email_html .= "<p><a href='".$baseUrl."query/".$studyContainer."executeQuery.view?schemaName=study&query.queryName=Demographics&query.viewName=Alive%2C%20at%20WNPRC&query.medical~contains=siv&query.Id%2FactiveAssignments%2FActiveVetAssignments~doesnotcontain=20060202"."'>Click here to view them</a></p>\n";
+    $email_html .= '<hr>';
+}
+
+#then we find all living shiv+ animals not exempt from pair housing (20060202)
+$results = Labkey::Query::selectRows(
+    -baseUrl => $baseUrl,
+    -containerPath => $studyContainer,
+    -schemaName => 'study',
+    -queryName => 'Demographics',
+    -filterArray => [
+    	['calculated_status', 'neqornull', 'Alive'],
+		['medical', 'contains', 'shiv'],
+		['Id/activeAssignments/ActiveVetAssignments', 'doesnotcontain', '20060202'],    			    	
+    ],
+    -requiredVersion => 8.3,
+    #-debug => 1,
+);
+
+
+if(@{$results->{rows}}){
+	$email_html .= "<b>WARNING: There are ".@{$results->{rows}}." animals with SHIV in the medical field, but not actively assigned to exempt from paired housing (20060202):</b><br>";	
+    $email_html .= "<p><a href='".$baseUrl."query/".$studyContainer."executeQuery.view?schemaName=study&query.queryName=Demographics&query.viewName=Alive%2C%20at%20WNPRC&query.medical~contains=shiv&query.Id%2FactiveAssignments%2FActiveVetAssignments~doesnotcontain=20060202"."'>Click here to view them</a></p>\n";
+    $email_html .= '<hr>';
+}
 
 #we find open ended treatments where the animal is not alive
 $results = Labkey::Query::selectRows(
@@ -423,7 +485,8 @@ $results = Labkey::Query::selectRows(
     -filterArray => [
     	['Id/Dataset/Demographics/calculated_status', 'neqornull', 'Alive'],
 		['enddate', 'isblank', ''],    			    	
-    ],    
+    ],
+    -requiredVersion => 8.3,
     #-debug => 1,
 );
 
@@ -443,7 +506,8 @@ $results = Labkey::Query::selectRows(
     -filterArray => [
     	['Id/Dataset/Demographics/calculated_status', 'neqornull', 'Alive'],
 		['enddate', 'isblank', ''],    			    	
-    ],    
+    ],
+    -requiredVersion => 8.3,
     #-debug => 1,
 );
 
@@ -463,7 +527,8 @@ $results = Labkey::Query::selectRows(
     -filterArray => [
     	['Id/Dataset/Demographics/calculated_status', 'neqornull', 'Alive'],
 		['enddate', 'isblank', ''],    			    	
-    ],    
+    ],
+    -requiredVersion => 8.3,
     #-debug => 1,
 );
 
@@ -471,6 +536,157 @@ if(@{$results->{rows}}){
 	$email_html .= "<b>WARNING: There are ".@{$results->{rows}}." active assignments for animals not currently at WNPRC.</b><br>";
 	$email_html .= "<p><a href='".$baseUrl."query/".$studyContainer."executeQuery.view?schemaName=study&query.queryName=Assignment&query.enddate~isblank&query.Id/Dataset/Demographics/calculated_status~neqornull=Alive"."'>Click here to view and update them</a><br>\n";
 	$email_html .= "<hr>\n";			
+}
+
+#we find non-continguous housing records
+my $paramVal=sprintf("%02d/%02d/%04d", ($tm->mon)+1, $tm->mday, $tm->year+1900-1);
+
+$results = Labkey::Query::selectRows(
+    -baseUrl => $baseUrl,
+    -containerPath => $studyContainer,
+    -schemaName => 'study',
+    -queryName => 'HousingCheck',
+    -parameters => [
+    	['MINDATE', $paramVal]
+    ],
+    -requiredVersion => 8.3,
+    #-debug => 1,
+);
+
+if(@{$results->{rows}}){
+	$email_html .= "<b>WARNING: There are ".@{$results->{rows}}." housing records since $paramVal that do not have a contiguous previous or next record.</b><br>";
+	$email_html .= "<p><a href='".$baseUrl."query/".$studyContainer."executeQuery.view?schemaName=study&query.queryName=HousingCheck&query.param.MINDATE=$paramVal"."'>Click here to view and update them</a><br>\n";
+	$email_html .= "<hr>\n";			
+}	
+
+#we find birth records in the past 90 days missing a gender
+$results = Labkey::Query::selectRows(
+    -baseUrl => $baseUrl,
+    -containerPath => $studyContainer,
+    -schemaName => 'study',
+    -queryName => 'Birth',
+    -filterArray => [
+        ['gender', 'isblank', ''],
+        ['date', 'dategte', '-90d'],
+    ],
+    -requiredVersion => 8.3,
+    #-debug => 1,
+);
+
+
+if(@{$results->{rows}}){
+	$email_html .= "<b>WARNING: The following birth records were entered in the last 90 days, but are missing a gender:</b><br>";
+
+    foreach my $row (@{$results->{rows}}){
+        $email_html .= $row->{'Id'}.' ('.$row->{'date'}.")<br>";
+    };
+
+    $email_html .= "<p><a href='".$baseUrl."query/".$studyContainer."executeQuery.view?schemaName=study&query.queryName=Birth&query.gender~isblank=&query.date~dategte=-90d"."'>Click here to view these animals</a></p>\n";
+    $email_html .= '<hr>';
+}
+
+#we find demographics records in the past 90 days missing a gender
+$results = Labkey::Query::selectRows(
+    -baseUrl => $baseUrl,
+    -containerPath => $studyContainer,
+    -schemaName => 'study',
+    -queryName => 'Demographics',
+    -sort => 'Id',
+    -filterArray => [
+        ['gender', 'isblank', ''],
+        ['created', 'dategte', '-90d'],
+    ],
+    -requiredVersion => 8.3,
+    #-debug => 1,
+);
+
+
+if(@{$results->{rows}}){
+	$email_html .= "<b>WARNING: The following demographics records were entered in the last 90 days, but are missing a gender:</b><br>";
+
+    foreach my $row (@{$results->{rows}}){
+        $email_html .= $row->{'Id'}.($row->{'birth'} ? ' ('.$row->{'birth'}.')' : '')."<br>";
+    };
+
+    $email_html .= "<p><a href='".$baseUrl."query/".$studyContainer."executeQuery.view?schemaName=study&query.queryName=Demographics&query.gender~isblank=&query.created~dategte=-90d"."'>Click here to view these animals</a></p>\n";
+    $email_html .= '<hr>';
+}
+
+#we find prenatal records in the past 90 days missing a gender
+$results = Labkey::Query::selectRows(
+    -baseUrl => $baseUrl,
+    -containerPath => $studyContainer,
+    -schemaName => 'study',
+    -queryName => 'Prenatal Deaths',
+    -sort => 'Id',
+    -filterArray => [
+        ['gender', 'isblank', ''],
+        ['date', 'dategte', '-90d'],
+    ],
+    -requiredVersion => 8.3,
+    #-debug => 1,
+);
+
+
+if(@{$results->{rows}}){
+	$email_html .= "<b>WARNING: The following prenatal death records were entered in the last 90 days, but are missing a gender:</b><br>";
+
+    foreach my $row (@{$results->{rows}}){
+        $email_html .= $row->{'Id'}.' ('.$row->{'date'}.")<br>";
+    };
+
+    $email_html .= "<p><a href='".$baseUrl."query/".$studyContainer."executeQuery.view?schemaName=study&query.queryName=Prenatal Deaths&query.gender~isblank=&query.date~dategte=-90d"."'>Click here to view these animals</a></p>\n";
+    $email_html .= '<hr>';
+}
+
+#we find prenatal records in the past 90 days missing species
+$results = Labkey::Query::selectRows(
+    -baseUrl => $baseUrl,
+    -containerPath => $studyContainer,
+    -schemaName => 'study',
+    -queryName => 'Prenatal Deaths',
+    -sort => 'Id',
+    -filterArray => [
+        ['species', 'isblank', ''],
+        ['date', 'dategte', '-90d'],
+    ],
+    -requiredVersion => 8.3,
+    #-debug => 1,
+);
+
+
+if(@{$results->{rows}}){
+	$email_html .= "<b>WARNING: The following prenatal death records were entered in the last 90 days, but are missing the species:</b><br>";
+
+    foreach my $row (@{$results->{rows}}){
+        $email_html .= $row->{'Id'}.' ('.$row->{'date'}.")<br>";
+    };
+
+    $email_html .= "<p><a href='".$baseUrl."query/".$studyContainer."executeQuery.view?schemaName=study&query.queryName=Prenatal Deaths&query.species~isblank=&query.date~dategte=-90d"."'>Click here to view these animals</a></p>\n";
+    $email_html .= '<hr>';
+}
+
+
+#we find all animals that died in the past 90 days where there isnt a weight within 7 days of death:
+$results = Labkey::Query::selectRows(
+    -baseUrl => $baseUrl,
+    -containerPath => $studyContainer,
+    -schemaName => 'study',
+    -sort => 'Id',
+    -queryName => 'validateFinalWeights',
+    -filterArray => [
+        ['death', 'dategte', '-90d'],
+    ],
+    -requiredVersion => 8.3,
+    #-debug => 1,
+);
+
+
+if(@{$results->{rows}}){
+	$email_html .= "<b>WARNING: There are ".@{$results->{rows}}." animals that are dead, but do not have a weight within the previous 7 days:</b><br>";
+
+    $email_html .= "<p><a href='".$baseUrl."query/".$studyContainer."executeQuery.view?schemaName=study&query.queryName=validateFinalWeights&query.death~dategte=-90d"."'>Click here to view them</a></p>\n";
+    $email_html .= '<hr>';
 }
 
 #we find TB records lacking a results more than 30 days old, but less than 90
@@ -484,6 +700,7 @@ $results = Labkey::Query::selectRows(
         ['date', 'dategte', '-90d'],
         ['date', 'datelte', '-10d'],
     ],
+    -requiredVersion => 8.3,
     #-debug => 1,
 );
 
@@ -506,6 +723,7 @@ $results = Labkey::Query::selectRows(
     -filterArray => [
         ['TotalRemaining', 'lt', '5'],
     ],
+    -requiredVersion => 8.3,
     #-debug => 1,
 );
 
@@ -524,6 +742,7 @@ $results = Labkey::Query::selectRows(
     -filterArray => [
         ['PercentUsed', 'gte', '95'],
     ],
+    -requiredVersion => 8.3,
     #-debug => 1,
 );
 
@@ -541,9 +760,11 @@ $results = Labkey::Query::selectRows(
     -containerPath => $studyContainer,
     -schemaName => 'study',
     -queryName => 'Birth',
+    -sort => 'Id',
     -filterArray => [
     	['Id/Dataset/Demographics/Id', 'isblank', '']	 	
-    ],    
+    ],
+    -requiredVersion => 8.3,
     #-debug => 1,
 );
 
@@ -559,10 +780,12 @@ $results = Labkey::Query::selectRows(
     -containerPath => $studyContainer,
     -schemaName => 'study',
     -queryName => 'Deaths',
+    -sort => 'Id',
     -filterArray => [
     	['Id/Dataset/Demographics/Id', 'isblank', ''],
     	['notAtCenter', 'neqornull', 'true'] 	 	
-    ],    
+    ],
+    -requiredVersion => 8.3,
     #-debug => 1,
 );
 
@@ -577,20 +800,18 @@ $results = Labkey::Query::selectRows(
     -baseUrl => $baseUrl,
     -containerPath => $studyContainer,
     -schemaName => 'study',
-    -queryName => 'Demographics',    
+    -queryName => 'Demographics',   
+    -sort => 'Id', 
     -filterArray => [
     	['hold', 'isnonblank', ''],
 		['Id/activeAssignments/NumPendingAssignments', 'eq', 0],    	 	 	
-    ],    
+    ],
+    -requiredVersion => 8.3,
     #-debug => 1,
 );
 
 if(@{$results->{rows}}){
 	$email_html .= "<b>WARNING: There are ".@{$results->{rows}}." animals with a hold code, but not on the pending project.</b><br>";
-
-    foreach my $row (@{$results->{rows}}){
-        $email_html .= $row->{'Id'}." (".$row->{'hold'}.")<br>";
-    };
 	$email_html .= "<p><a href='".$baseUrl."query/".$studyContainer."executeQuery.view?schemaName=study&query.queryName=Demographics&query.hold~isnonblank&query.Id/activeAssignments/NumPendingAssignments~eq=0"."'>Click here to view them</a><br>\n";
 	$email_html .= "<hr>\n";			
 }
@@ -601,10 +822,12 @@ $results = Labkey::Query::selectRows(
     -containerPath => $studyContainer,
     -schemaName => 'study',
     -queryName => 'Assignment',    
+    -sort => 'Id',
     -filterArray => [
     	['projectedRelease', 'dateeq', $datestr],
     	['enddate', 'isnonblank', ''],    	 	 	
-    ],    
+    ],
+    -requiredVersion => 8.3,
     #-debug => 1,
 );
 
@@ -624,7 +847,8 @@ $results = Labkey::Query::selectRows(
     -queryName => 'Assignment',    
     -filterArray => [
     	['projectedRelease', 'dateeq', $tomorrow],    	 	 	
-    ],    
+    ],
+    -requiredVersion => 8.3,
     #-debug => 1,
 );
 
@@ -648,9 +872,11 @@ $results = Labkey::Query::selectRows(
     -containerPath => $studyContainer,
     -schemaName => 'study',
     -queryName => 'Birth',
+    -sort => 'Id',
     -filterArray => [
     	['date', 'dategte', $mindate] 	
-    ],    
+    ],
+    -requiredVersion => 8.3,
     #-debug => 1,
 );
 
@@ -662,7 +888,7 @@ if(@{$results->{rows}}){
         $email_html .= $row->{'Id'}."<br>";
     };
 
-	$email_html .= "<p><a href='".$baseUrl."query/".$studyContainer."executeQuery.view?schemaName=study&query.queryName=Birth&query.date~dategte=$mindate"."'>Click here to view them</a><br>\n";
+	$email_html .= "<p><a href='".$baseUrl."query/".$studyContainer."executeQuery.view?schemaName=study&query.queryName=Birth&query.date~dategte=$mindate"."'>Click here to view them</a><p>\n";
 #    $email_html .= '<hr>';
 }
 
@@ -673,9 +899,11 @@ $results = Labkey::Query::selectRows(
     -containerPath => $studyContainer,
     -schemaName => 'study',
     -queryName => 'Deaths',
+    -sort => 'Id',
     -filterArray => [
     	['date', 'dategte', $mindate] 	
-    ],    
+    ],
+    -requiredVersion => 8.3,
     #-debug => 1,
 );
 
@@ -687,7 +915,7 @@ if(@{$results->{rows}}){
         $email_html .= $row->{'Id'}."<br>";
     };
 
-	$email_html .= "<p><a href='".$baseUrl."query/".$studyContainer."executeQuery.view?schemaName=study&query.queryName=Deaths&query.date~dategte=$mindate"."'>Click here to view them</a><br>\n";
+	$email_html .= "<p><a href='".$baseUrl."query/".$studyContainer."executeQuery.view?schemaName=study&query.queryName=Deaths&query.date~dategte=$mindate"."'>Click here to view them</a><p>\n";
     #$email_html .= '<hr>';
 }
 
@@ -697,9 +925,11 @@ $results = Labkey::Query::selectRows(
     -containerPath => $studyContainer,
     -schemaName => 'study',
     -queryName => 'Prenatal Deaths',
+    -sort => 'Id',
     -filterArray => [
     	['date', 'dategte', $mindate]
     ],
+    -requiredVersion => 8.3,
     #-debug => 1,
 );
 
@@ -711,7 +941,7 @@ if(@{$results->{rows}}){
         $email_html .= $row->{'Id'}."<br>";
     };
 
-	$email_html .= "<p><a href='".$baseUrl."query/".$studyContainer."executeQuery.view?schemaName=study&query.queryName=Prenatal Deaths&query.date~dategte=$mindate"."'>Click here to view them</a><br>\n";
+	$email_html .= "<p><a href='".$baseUrl."query/".$studyContainer."executeQuery.view?schemaName=study&query.queryName=Prenatal Deaths&query.date~dategte=$mindate"."'>Click here to view them</a><p>\n";
     #$email_html .= '<hr>';
 }
 
@@ -728,74 +958,19 @@ $results = Labkey::Query::selectRows(
     -filterArray => [
         ['qcstate/PublicData', 'eq', 'true'],
         ['date', 'dategt', $datestr],
+        ['dataset/label', 'neq', 'Treatment Orders'],
+        ['dataset/label', 'neq', 'Assignment'],
     ],
+    -requiredVersion => 8.3,
     #-debug => 1,
 );
 
 
 if(@{$results->{rows}}){
 	$email_html .= "<b>WARNING: There are ".@{$results->{rows}}." finalized records with future dates.</b><br>";
-	$email_html .= "<p><a href='".$baseUrl."query/".$studyContainer."executeQuery.view?schemaName=study&query.queryName=StudyData&query.date~dategt=$datestr&query.qcstate/PublicData~eq=true'>Click here to view them</a><br>\n";
+	$email_html .= "<p><a href='".$baseUrl."query/".$studyContainer."executeQuery.view?schemaName=study&query.queryName=StudyData&query.date~dategt=$datestr&query.qcstate/PublicData~eq=true&query.dataset/label~neq=Treatment Orders&query.dataset/label~neq=Assignment'>Click here to view them</a><br>\n";
 	$email_html .= "<hr>\n";	
 }
-
-
-#we print some stats on data entry:
-
-$email_html .= "<b>Data Entry Stats:</b><p>";
-
-$results = Labkey::Query::executeSql(
-    -baseUrl => $baseUrl,
-    -containerPath => $studyContainer,
-    -schemaName => 'ehr',
-    -sql => "SELECT formtype, count(*) as total FROM ehr.tasks WHERE cast(created as date) = '$yesterday' GROUP BY formtype ORDER BY formtype",    
-    #-debug => 1,
-);
-
-if(@{$results->{rows}}){	
-	$email_html .= "Number of Forms Created Yesterday: <br>\n";
-    foreach my $row (@{$results->{rows}}){
-        $email_html .= $row->{'formtype'}.": ".$row->{'total'}."<br>\n";
-    };
-	
-	$email_html .= "<p>\n";			
-}
-
-$results = Labkey::Query::executeSql(
-    -baseUrl => $baseUrl,
-    -containerPath => $studyContainer,
-    -schemaName => 'ehr',
-    -sql => "SELECT Dataset.Label as label, count(*) as total FROM study.studydata WHERE cast(created as date) = '$yesterday' and taskid is not null GROUP BY Dataset.Label ORDER BY Dataset.Label",    
-    #-debug => 1,
-);
-
-if(@{$results->{rows}}){	
-	$email_html .= "Number of Records Created Yesterday Through Labkey: <br>\n";
-    foreach my $row (@{$results->{rows}}){
-        $email_html .= $row->{'label'}.": ".$row->{'total'}."<br>\n";
-    };
-	
-	$email_html .= "<p>\n";			
-}
-
-$results = Labkey::Query::executeSql(
-    -baseUrl => $baseUrl,
-    -containerPath => $studyContainer,
-    -schemaName => 'ehr',
-    -sql => "SELECT DataSet.Label as label, count(*) as total FROM study.studydata WHERE cast(created as date) = '$yesterday' and taskid is null GROUP BY DataSet.Label ORDER BY DataSet.Label",    
-    #-debug => 1,
-);
-
-if(@{$results->{rows}}){	
-	$email_html .= "Number of Records Created Yesterday Through MySQL: <br>\n";
-    foreach my $row (@{$results->{rows}}){
-        $email_html .= $row->{'label'}.": ".$row->{'total'}."<br>\n";
-    };
-	
-	$email_html .= "<p>\n";			
-}
-
-
 
 
 
@@ -804,17 +979,38 @@ if(@{$results->{rows}}){
 #close HTML;
 #die;
 
-
-my $smtp = MIME::Lite->new(
-          To      =>join(", ", @email_recipients),
-          From    =>$from,
-          Subject =>"Subject: Daily Colony Alerts: $datestr",
-          Type    =>'multipart/alternative'
-          );
-$smtp->attach(Type => 'text/html',
-          Encoding => 'quoted-printable',
-          Data	 => $email_html
-);         
-$smtp->send() || die;
+$results = Labkey::Query::selectRows(
+    -baseUrl => $baseUrl,
+    -requiredVersion => 8.3,
+    -containerPath => $studyContainer,
+    -schemaName => 'ehr',
+    -queryName => 'NotificationRecipientsExpanded',
+    -filterArray => [
+		['notificationtype', 'in', $notificationtypes],
+    ],
+    #-debug => 1,
+);	
+if(@{$results->{rows}}){	
+	my @email_recipients;
+	foreach my $row (@{$results->{rows}}){
+    	push(@email_recipients, $$row{email})		
+    }
+	
+	if(@email_recipients){
+		#print (@email_recipients);die;
+		@email_recipients = uniq @email_recipients;
+		my $smtp = MIME::Lite->new(
+		          To      =>join(", ", @email_recipients),
+		          From    =>$from,
+		          Subject =>"Subject: Daily Colony Alerts: $datestr",
+		          Type    =>'multipart/alternative'
+		          );
+		$smtp->attach(Type => 'text/html',
+		          Encoding => 'quoted-printable',
+		          Data	 => $email_html
+		);         
+		$smtp->send() || die;
+	}
+}
 
 touch(File::Spec->catfile(dirname(abs_path($0)), '.colonyAlertsLastRun'));

@@ -4,7 +4,8 @@
         <column name="Date"/>
         <column name="EventType"/>
         <column name="Key1"/>
-        <column name="Comment"/>
+        <column name="Key2"/>
+        <!--<column name="Key3"/>-->
 
         <column name="Comment" />
     </columns>

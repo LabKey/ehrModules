@@ -14,7 +14,7 @@ function onUpsert(context, errors, row, oldRow){
         LABKEY.Query.executeSql({
             schemaName: 'study',
             scope: this,
-            sql: "SELECT group_concat(h.Id) as Ids, count(h.Id) as num FROM study.housing h WHERE h.room='"+row.room+"' AND h.cage='"+row.cage+"' AND h.id != '"+row.Id+"' and (h.enddate is null or h.enddate >= '"+row.date+"')",
+            sql: "SELECT group_concat(h.Id) as Ids, count(h.Id) as num FROM (select case when (enddate is null) then (h.Id||'*') else h.Id end as id from study.housing h WHERE h.room='"+row.room+"' AND h.cage='"+row.cage+"' AND h.id != '"+row.Id+"' and (h.enddate is null or h.enddate >= '"+row.date+"')) h",
             success: function(data){
                 if(data.rows && data.rows.length){
                     row['id/numroommates/cagemates'] = (data.rows[0].num ? ('('+data.rows[0].num+') ') + data.rows[0].Ids.join(',') : ' ');
@@ -23,7 +23,12 @@ function onUpsert(context, errors, row, oldRow){
             failure: EHR.onFailure
         });
 
+    }
 
+    if(context.extraContext.dataSource != 'etl'){
+        if(row.cond && row.cond.match(/x/) && !row.remark){
+            EHR.addError(errors, 'cond', 'If you pick a special housing condition (x), you need to enter a remark stating the type');
+        }
     }
 }
 

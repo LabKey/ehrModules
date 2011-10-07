@@ -13,9 +13,22 @@
                             <fkColumnName>lsid</fkColumnName>
                         </fk>
                     </column>
+                    <column columnName="resultOORIndicator">
+                        <isHidden>true</isHidden>
+                    </column>
+                    <column columnName="alertOnAbnormal">
+                        <isHidden>true</isHidden>
+                    </column>
+                    <column columnName="alertOnAny">
+                        <isHidden>true</isHidden>
+                    </column>
+                    <column columnName="alertStatus">
+                        <isHidden>true</isHidden>
+                    </column>
                     <column columnName="status">
                         <url>/query/executeQuery.view?schemaName=ehr_lookups&amp;
                             query.queryName=lab_test_range&amp;
+                            query.type~eq=Chemistry&amp;
                             query.test~eq=${testid}&amp;
                             query.species~eq=${species}&amp;
                             query.age_class~eq=${ageClass}&amp;

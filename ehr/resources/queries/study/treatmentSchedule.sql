@@ -158,7 +158,7 @@ LEFT JOIN study."Treatment Orders" t1
   (t1.frequency.meaning='Alternating Days' AND mod(d.dayofyear,2)=mod(cast(dayofyear(t1.date) as integer),2))
   ))
 LEFT JOIN study.assignment a1
-  ON (a1.project = t1.project AND a1.date <= d.date AND (a1.enddate is null or COALESCE(a1.enddate, curdate()) >= d.date) AND a1.id = t1.id)
+  ON (a1.project = t1.project AND cast(a1.date as date) <= cast(d.date as date) AND (a1.enddate is null or COALESCE(a1.enddate, curdate()) >= d.date) AND a1.id = t1.id)
 WHERE t1.date is not null
 AND t1.qcstate.publicdata = true
 
@@ -271,7 +271,7 @@ LEFT JOIN study."Treatment Orders" t1
   (t1.frequency.meaning='Daily - AM/PM' OR t1.frequency.meaning='Daily - AM/PM/Night' OR t1.frequency.meaning='Daily - AM/Night')
   ))
 LEFT JOIN study.assignment a1
-  ON (a1.project = t1.project AND a1.date <= d.date AND (a1.enddate is null or COALESCE(a1.enddate, curdate()) >= d.date) AND a1.id = t1.id)
+  ON (a1.project = t1.project AND cast(a1.date as date) <= cast(d.date as date) AND (a1.enddate is null or COALESCE(a1.enddate, curdate()) >= d.date) AND a1.id = t1.id)
 
 WHERE t1.date is not null
 AND t1.qcstate.publicdata = true
@@ -367,7 +367,7 @@ LEFT JOIN study."Treatment Orders" t1
     t1.frequency.meaning='Daily - AM/PM/Night'
   )
 LEFT JOIN study.assignment a1
-  ON (a1.project = t1.project AND a1.date <= d.date AND (a1.enddate is null or COALESCE(a1.enddate, curdate()) >= d.date) AND a1.id = t1.id)
+  ON (a1.project = t1.project AND cast(a1.date as date) <= cast(d.date as date) AND (a1.enddate is null or COALESCE(a1.enddate, curdate()) >= d.date) AND a1.id = t1.id)
 
 WHERE t1.date is not null
 AND t1.qcstate.publicdata = true

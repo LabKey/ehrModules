@@ -4,7 +4,7 @@
  * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
  */
 SELECT
-  e.Id,
+  e.employeeid,
   rn.RequirementName,
   rn.ExpirePeriod,
   T1.MostRecentDate,
@@ -24,13 +24,13 @@ SELECT
   END, double)
   AS MonthsUntilRenewal,
 
-FROM "/WNPRC/WNPRC_Units/Animal_Services/Compliance_Training/Private/EmployeeDB/".ehr_compliancedb.Employees e
+FROM ehr_compliancedb.Employees e
 
-LEFT JOIN "/WNPRC/WNPRC_Units/Animal_Services/Compliance_Training/Private/EmployeeDB/".ehr_compliancedb.RequirementsList rn
+LEFT JOIN ehr_compliancedb.Requirements rn
   ON (1=1)
 
 --we add in category/unit specific requirements
-LEFT JOIN "/WNPRC/WNPRC_Units/Animal_Services/Compliance_Training/Private/EmployeeDB/".ehr_compliancedb.RequirementsByCategory rc
+LEFT JOIN ehr_compliancedb.requirementspercategory rc
 ON (rc.RequirementName=rn.RequirementName AND (
       rc.Category = e.category AND rc.unit = e.unit OR
       rc.Category = e.category AND rc.unit IS NULL OR
@@ -38,17 +38,17 @@ ON (rc.RequirementName=rn.RequirementName AND (
       ))
 
 --we add in misc requirements specific per employee
-LEFT JOIN "/WNPRC/WNPRC_Units/Animal_Services/Compliance_Training/Private/EmployeeDB/".ehr_compliancedb.EmployeeMiscRequirements mt
-  ON (mt.RequirementName=rn.RequirementName AND mt.EmployeeId = e.Id)
+LEFT JOIN ehr_compliancedb.requirementsperemployee mt
+  ON (mt.RequirementName=rn.RequirementName AND mt.EmployeeId = e.employeeid)
 
 --we add employee exemptions
-LEFT JOIN "/WNPRC/WNPRC_Units/Animal_Services/Compliance_Training/Private/EmployeeDB/".ehr_compliancedb.EmployeeRequirementExemptions ee
-  ON (ee.RequirementName=rn.RequirementName AND ee.EmployeeId = e.Id)
+LEFT JOIN ehr_compliancedb.EmployeeRequirementExemptions ee
+  ON (ee.RequirementName=rn.RequirementName AND ee.EmployeeId = e.employeeid)
 
 --we add the dates employees completed each requirement
 LEFT JOIN
-(SELECT max(t.date) AS MostRecentDate, t.RequirementName, t.EmployeeId FROM "/WNPRC/WNPRC_Units/Animal_Services/Compliance_Training/Private/EmployeeDB/".ehr_compliancedb.CompletionDates t GROUP BY t.EmployeeId, t.RequirementName) T1
-  ON (T1.RequirementName = rn.RequirementName AND T1.EmployeeId = e.Id)
+(SELECT max(t.date) AS MostRecentDate, t.RequirementName, t.EmployeeId FROM ehr_compliancedb.CompletionDates t GROUP BY t.EmployeeId, t.RequirementName) T1
+  ON (T1.RequirementName = rn.RequirementName AND T1.EmployeeId = e.employeeid)
 
 WHERE
   --we compute whether this person requires this test

@@ -305,6 +305,18 @@
                             <fkColumnName>Id</fkColumnName>
                         </fk>
                     </column>
+                    <column columnName="ViralStatus" wrappedColumnName="id">
+                        <description>This calculates the viral status of the animal based on tracking project assignments</description>
+                        <columnTitle>Viral Status</columnTitle>
+                        <isHidden>false</isHidden>
+                        <isUnselectable>true</isUnselectable>
+                        <fk>
+                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
+                            <fkDbSchema>study</fkDbSchema>
+                            <fkTable>demographicsViralStatus</fkTable>
+                            <fkColumnName>Id</fkColumnName>
+                        </fk>
+                    </column>
                     <column columnName="Virology" wrappedColumnName="id">
                         <description>This calculates the distinct pathogens listed as positive for this animal from the virology table</description>
                         <columnTitle>Virology</columnTitle>

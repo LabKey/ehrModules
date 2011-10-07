@@ -209,8 +209,8 @@ EHR.ext.GridFormPanel = Ext.extend(Ext.Panel,
             if (recs.length==1){
                 if(recs[0] != this.theForm.boundRecord){
                     //NOTE: this allows any changes to values of select menus to commit before bindRecord() runs
-                    this.theForm.bindRecord.defer(200, this.theForm, [recs[0]]);
-                    this.theForm.focusFirstField.defer(250, this.theForm);
+                    this.theForm.bindRecord.defer(100, this.theForm, [recs[0]]);
+                    //this.theForm.focusFirstField.defer(250, this.theForm);
                 }
             }
             else {
@@ -231,8 +231,9 @@ EHR.ext.GridFormPanel = Ext.extend(Ext.Panel,
             this.getBottomToolbar().setStatus({text: 'No Records'})
     },
     onStoreValidate: function(store, records){
-        if(store.errors.getCount())
-            this.getBottomToolbar().setStatus({text: 'ERRORS', iconCls: 'x-status-error'});
+        if(store.errors.getCount()){
+            this.getBottomToolbar().setStatus({text: store.maxErrorSeverity(), iconCls: 'x-status-error'});
+        }
         else
             this.getBottomToolbar().setStatus({text: 'Section OK', iconCls: 'x-status-valid'});
 
@@ -946,6 +947,36 @@ EHR.ext.GridFormPanel = Ext.extend(Ext.Panel,
                 });
 
                 this.selectorWin.show();
+            }
+        },
+
+        sortany: {
+            text: 'Sort',
+            xtype: 'button',
+            scope: this,
+            tooltip: 'Sort records',
+            name: 'sort-button',
+            handler: function()
+            {
+                this.selectorWin = new Ext.Window({
+                    closeAction:'hide',
+                    title: 'Sort',
+                    width: 350,
+                    items: [{
+                        xtype: 'ehr-storesorter',
+                        targetStore: this.store,
+                        parentPanel: this
+                    }]
+                });
+
+                this.selectorWin.show();
+
+//                this.store.data.sort('ASC', EHR.utils.sortStore([
+//                    {term: 'slideNum'},
+//                    {term: 'tissue', storeId: 'ehr_lookups||snomed||code||meaning', displayField: 'meaning', valueField: 'code'},
+//                    {term: 'qualifier'}
+//                ]));
+//                this.store.fireEvent('datachanged', this.store);
             }
         }
     }

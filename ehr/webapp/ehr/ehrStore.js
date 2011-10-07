@@ -40,6 +40,7 @@ EHR.ext.AdvancedStore = Ext.extend(LABKEY.ext.Store, {
         EHR.ext.AdvancedStore.superclass.constructor.apply(this, arguments);
 
         //NOTE: this is done so we can sort a store with records not existing on the server
+        //I disabled it b/c you cannot sort on 2 columns
         //this.remoteSort = false;
 
         this.addEvents('beforemetachange', 'validation');
@@ -705,12 +706,15 @@ EHR.ext.AdvancedStore = Ext.extend(LABKEY.ext.Store, {
             return;
         }
 
-        if(serverError.row['id/curlocation/location'] && serverError.row['id/curlocation/location'] != record.get('id/curlocation/location')){
-            record.set('id/curlocation/location', serverError.row['id/curlocation/location']);
-        }
-        if(serverError.row['id/numroommates/cagemates'] && serverError.row['id/numroommates/cagemates'] != record.get('id/numroommates/cagemates')){
-            record.set('id/numroommates/cagemates', serverError.row['id/numroommates/cagemates']);
-        }
+        //allow the server to return values for fields
+        this.fields.each(function(field){
+            if(field.updateValueFromServer &&
+                serverError.row[field.dataIndex] &&
+                serverError.row[field.dataIndex] != record.get(field.dataIndex)
+            ){
+                record.set(field.dataIndex, serverError.row[field.dataIndex]);
+            }
+        }, this);
 
         //remove all old errors for this record
         record.errors = [];
@@ -778,13 +782,25 @@ EHR.ext.AdvancedStore = Ext.extend(LABKEY.ext.Store, {
             }
             else {
                 r.beginEdit();
-                if(r.get('requestid')){
-                    r.set('taskid', null);
+                if(r.get('requestid') || r.get('requestId')){
+                    //note: we reject changes since we dont want to retain modifications made in this form
+                    r.reject();
+
+                    //reset the date
+                    if(r.get('daterequested'))
+                        r.set('date', r.get('daterequested'));
+
+                    //remove from this task
+                    if(this.queryName!='tasks')
+                        r.set('taskid', null);
+
                     r.set('QCState', EHR.permissionMap.qcMap.label['Request: Approved'].RowId);
                 }
                 else {
                     r.set('QCState', EHR.permissionMap.qcMap.label['Delete Requested'].RowId);
                 }
+                r.commit();
+
                 recs.push(r);
             }
         }, this);

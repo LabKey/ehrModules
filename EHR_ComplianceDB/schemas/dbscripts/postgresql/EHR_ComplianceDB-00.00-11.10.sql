@@ -121,7 +121,7 @@ CREATE TABLE ehr_compliancedb.RequirementsPerCategory (
 DROP TABLE IF EXISTS ehr_compliancedb.Requirements;
 CREATE TABLE ehr_compliancedb.Requirements (
     RequirementName varchar(255) not null,
-    Type varchar(255) not null,
+    Type varchar(255),
     ExpirePeriod integer,
     Required boolean,
     Access boolean,
@@ -191,6 +191,9 @@ CREATE TABLE ehr_compliancedb.EmployeeTypes (
 DROP TABLE IF EXISTS ehr_compliancedb.unit_names;
 CREATE TABLE ehr_compliancedb.unit_names (
     unit varchar(255) not null,
+    supervisor varchar(255),
+    phone varchar(255),
+    address varchar(100),
 
     CONSTRAINT PK_unit_names PRIMARY KEY (unit)
 );

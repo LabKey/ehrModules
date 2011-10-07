@@ -18,8 +18,8 @@ function afterUpdate(row, oldRow, errors){
     var schemaName = fileParse[1];
     var queryName = fileParse[2].replace(/\.js$/, '');
 
-    if(oldRow.Id != row.Id){
-        shared.updateTable(row, oldRow, schemaName, 'Employees', 'Id', 'Category', 'Category');
-        shared.updateTable(row, oldRow, schemaName, 'RequirementsByCategory', 'Key', 'Category', 'Category');
+    if(oldRow.categoryname != row.categoryname){
+        shared.updateTable(row, oldRow, schemaName, 'Employees', 'EmployeeId', 'Category', 'Category');
+        shared.updateTable(row, oldRow, schemaName, 'RequirementsPerCategory', 'rowid', 'Category', 'Category');
     }
 };

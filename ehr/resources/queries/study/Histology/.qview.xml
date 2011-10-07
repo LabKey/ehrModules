@@ -7,6 +7,9 @@
        <column name="tissue" />
        <column name="qualifier"/>
        <column name="trimdate" />
+       <column name="trimmed_by" />
+       <column name="trim_remarks" />
+       <column name="pathologist" />
        <column name="remark" />
        <column name="qcstate" />
        <column name="taskid" />

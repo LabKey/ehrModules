@@ -40,6 +40,24 @@
                         <fkColumnName>code</fkColumnName>
                       </fk>
                     </column>
+                    <column columnName="container_type">
+                        <columnTitle>Container Type</columnTitle>
+                          <fk>
+                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
+                            <fkDbSchema>ehr_lookups</fkDbSchema>
+                            <fkTable>container_types</fkTable>
+                            <fkColumnName>type</fkColumnName>
+                          </fk>
+                    </column>
+                    <column columnName="ship_to">
+                        <columnTitle>Ship To</columnTitle>
+                    </column>
+                    <column columnName="accountToCharge">
+                        <columnTitle>Account To Charge</columnTitle>
+                    </column>
+                    <!--<column columnName="container_type">-->
+                        <!--<columnTitle>Container Type</columnTitle>-->
+                    <!--</column>                    -->
                 </columns>
             </table>
         </tables>

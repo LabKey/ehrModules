@@ -19,6 +19,6 @@ function afterUpdate(row, oldRow, errors){
     var queryName = fileParse[2].replace(/\.js$/, '');
 
     if(oldRow.Id != row.Id){
-        shared.updateTable(row, oldRow, schemaName, 'Employees', 'Id', 'Unit', 'Unit');
+        shared.updateTable(row, oldRow, schemaName, 'Employees', 'EmployeeId', 'Unit', 'Unit');
     }
 };

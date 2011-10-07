@@ -40,3 +40,16 @@ function setDescription(row, errors){
     return description;
 }
 
+
+function onComplete(event, errors, scriptContext){
+    if(scriptContext.publicParticipantsModified.length){
+        EHR.sendEmail({
+            notificationType: 'Prenatal Death',
+            msgContent: 'The following prenatal deaths have been reported:<br>' +
+                 scriptContext.publicParticipantsModified.join(',<br>') +
+                '<p></p><a href="'+LABKEY.ActionURL.getBaseURL()+'ehr' + LABKEY.ActionURL.getContainer() + '/animalHistory.view#_inputType:renderMultiSubject&subject:'+scriptContext.publicParticipantsModified.join(';')+'&combineSubj:true&activeReport:abstract' +
+                '">Click here to view them</a>.',
+            msgSubject: 'Prenatal Death Notification'
+        });
+    }
+};

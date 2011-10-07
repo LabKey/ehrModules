@@ -33,5 +33,5 @@ s.date,
 'Surgery' as type,
 'Major: '||s.major as remark
 FROM study."Clinical Encounters" s
-WHERE s.qcstate.publicdata = true AND type = 'Surgery'
+WHERE s.qcstate.publicdata = true AND type like '%surgery%'
 
