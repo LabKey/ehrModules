@@ -186,6 +186,7 @@ ehr/resources/queries/ehr/my_tasks/Today.qview.xml -text
 ehr/resources/queries/ehr/notificationRecipients/.qview.xml -text
 ehr/resources/queries/ehr/notificationRecipientsExpanded.sql -text
 ehr/resources/queries/ehr/notificationTypes/.qview.xml -text
+ehr/resources/queries/ehr/project.query.xml -text
 ehr/resources/queries/ehr/project/Projects[!!-~]With[!!-~]Active[!!-~]Assignments.qview.xml -text
 ehr/resources/queries/ehr/project/Search[!!-~]Panel.qview.xml -text
 ehr/resources/queries/ehr/projectLastAssignmentDate.query.xml -text
@@ -193,6 +194,7 @@ ehr/resources/queries/ehr/projectLastAssignmentDate.sql -text
 ehr/resources/queries/ehr/projectTotalActivelyAssigned.query.xml -text
 ehr/resources/queries/ehr/projectTotalActivelyAssigned.sql -text
 ehr/resources/queries/ehr/protocol.js -text
+ehr/resources/queries/ehr/protocol.query.xml -text
 ehr/resources/queries/ehr/protocol/.qview.xml -text
 ehr/resources/queries/ehr/protocol/Protocols[!!-~]With[!!-~]Active[!!-~]Assignments.qview.xml -text
 ehr/resources/queries/ehr/protocolActiveAnimals.query.xml -text

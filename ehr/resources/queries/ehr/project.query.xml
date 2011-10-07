@@ -1,0 +1,69 @@
+<query xmlns="http://labkey.org/data/xml/query">
+    <metadata>
+        <tables xmlns="http://labkey.org/data/xml">
+            <table tableName="project" tableDbType="TABLE">
+                <tableUrl>/EHR/projectDetails.view?key=${project}</tableUrl>
+                <insertUrl />
+                <importUrl />
+                <updateUrl />
+                <deleteUrl />
+                <titleColumn>project</titleColumn>
+                <columns>
+                    <column columnName="activelyAssigned" wrappedColumnName="project">
+                      <datatype>integer</datatype>
+                      <isUnselectable>true</isUnselectable>
+                      <columnTitle>Animals Actively Assigned</columnTitle>
+                      <fk>
+                        <fkFolderPath>/wnprc/ehr/</fkFolderPath>
+                        <fkDbSchema>ehr</fkDbSchema>
+                        <fkTable>projectTotalActivelyAssigned</fkTable>
+                        <fkColumnName>project</fkColumnName>
+                      </fk>
+                    </column>
+                    <column columnName="lastAssignment" wrappedColumnName="project">
+                      <columnTitle>Last Assignment Date</columnTitle>
+                      <isUnselectable>true</isUnselectable>
+                      <fk>
+                        <fkFolderPath>/wnprc/ehr/</fkFolderPath>
+                        <fkDbSchema>ehr</fkDbSchema>
+                        <fkTable>projectLastAssignmentDate</fkTable>
+                        <fkColumnName>project</fkColumnName>
+                      </fk>
+                    </column>
+                    <column columnName="protocol">
+                      <datatype>varchar</datatype>
+                      <columnTitle>Protocol</columnTitle>
+                      <fk>
+                        <fkFolderPath>/wnprc/ehr/</fkFolderPath>
+                        <fkDbSchema>ehr</fkDbSchema>
+                        <fkTable>protocol</fkTable>
+                        <fkColumnName>protocol</fkColumnName>
+                      </fk>
+                    </column>
+                    <column columnName="avail">
+                      <datatype>varchar</datatype>
+                      <columnTitle>Availability</columnTitle>
+                      <fk>
+                        <fkFolderPath>/wnprc/ehr/</fkFolderPath>
+                        <fkDbSchema>ehr_lookups</fkDbSchema>
+                        <fkTable>avail_codes</fkTable>
+                        <fkColumnName>code</fkColumnName>
+                      </fk>
+                    </column>
+                    <column columnName="project">
+                        <formatString>00000000</formatString>
+                    </column>
+                    <column columnName="qcstate">
+                        <isHidden>true</isHidden>
+                    </column>
+                    <column columnName="inves">
+                        <columnTitle>Investigator</columnTitle>
+                    </column>
+                    <column columnName="reqname">
+                        <columnTitle>Requestor Name</columnTitle>
+                    </column>
+                </columns>
+            </table>
+        </tables>
+    </metadata>
+</query>
