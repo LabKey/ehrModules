@@ -6,7 +6,26 @@
 
 
 --NOTE: the following from moved form EHR-11.146-11.24.sql to this script due to an issue with the 11.2 -> trunk merge
-alter table ehr.protocols rename to protocol;
+-- alter table ehr.protocols rename to protocol;
+
+DROP TABLE IF EXISTS ehr.protocols;
+DROP TABLE IF EXISTS ehr.protocol;
+CREATE TABLE ehr.protocol
+(
+    protocol varchar(4000) NOT NULL,
+    inves varchar(200),
+    approve TIMESTAMP,
+    description text,
+
+    --Container ENTITYID NOT NULL,
+    CreatedBy USERID NOT NULL,
+    Created TIMESTAMP NOT NULL,
+    ModifiedBy USERID NOT NULL,
+    Modified TIMESTAMP NOT NULL,
+
+    CONSTRAINT PK_protocol PRIMARY KEY (protocol)
+);
+
 
 DROP TABLE IF EXISTS ehr.project;
 CREATE TABLE ehr.project
