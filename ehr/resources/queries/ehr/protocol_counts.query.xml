@@ -7,8 +7,9 @@
               <updateUrl />
               <deleteUrl />
               <tableTitle>RARC Protocol Allowable Animals</tableTitle>
+              <pkColumnName>rowid</pkColumnName>
               <columns>
-                <column columnName="RowId">
+                <column columnName="rowid">
                   <datatype>integer</datatype>
                   <columnTitle>Key</columnTitle>
                   <nullable>false</nullable>
@@ -77,10 +78,8 @@
                     <shownInUpdateView>false</shownInUpdateView>
                     <shownInDetailsView>false</shownInDetailsView>
                     <isHidden>true</isHidden>
-                    <isKeyField>true</isKeyField>
                   </column>
               </columns>
-              <pkColumnName>objectid</pkColumnName>
             </table>
         </tables>
     </metadata>

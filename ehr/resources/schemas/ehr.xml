@@ -6,11 +6,13 @@
         <ns:datatype>serial</ns:datatype>
         <ns:shownInInsertView>false</ns:shownInInsertView>
         <ns:isAutoInc>true</ns:isAutoInc>
+        <ns:isKeyField>true</ns:isKeyField>
         <ns:scale>10</ns:scale>
       </ns:column>
       <ns:column columnName="prop_name">
         <ns:nullable>true</ns:nullable>
         <ns:datatype>varchar</ns:datatype>
+        <ns:isKeyField>true</ns:isKeyField>
         <ns:scale>100</ns:scale>
       </ns:column>
       <ns:column columnName="stringvalue">
@@ -124,6 +126,7 @@
         <ns:datatype>serial</ns:datatype>
         <ns:shownInInsertView>false</ns:shownInInsertView>
         <ns:isAutoInc>true</ns:isAutoInc>
+        <ns:isKeyField>true</ns:isKeyField>
         <ns:scale>10</ns:scale>
       </ns:column>
       <ns:column columnName="page">
@@ -194,6 +197,7 @@
         <ns:datatype>serial</ns:datatype>
         <ns:shownInInsertView>false</ns:shownInInsertView>
         <ns:isAutoInc>true</ns:isAutoInc>
+        <ns:isKeyField>true</ns:isKeyField>
         <ns:scale>10</ns:scale>
       </ns:column>
       <ns:column columnName="container">
@@ -257,6 +261,7 @@
     <ns:columns>
       <ns:column columnName="taskid">
         <ns:datatype>entityid</ns:datatype>
+        <ns:isKeyField>true</ns:isKeyField>
         <ns:scale>36</ns:scale>
       </ns:column>
       <ns:column columnName="rowid">
@@ -360,6 +365,7 @@
     <ns:columns>
       <ns:column columnName="requestid">
         <ns:datatype>entityid</ns:datatype>
+        <ns:isKeyField>true</ns:isKeyField>
         <ns:scale>36</ns:scale>
       </ns:column>
       <ns:column columnName="rowid">
@@ -509,6 +515,7 @@
         <ns:datatype>serial</ns:datatype>
         <ns:shownInInsertView>false</ns:shownInInsertView>
         <ns:isAutoInc>true</ns:isAutoInc>
+        <ns:isKeyField>true</ns:isKeyField>
         <ns:scale>10</ns:scale>
       </ns:column>
       <ns:column columnName="reportname">
@@ -793,7 +800,7 @@
         <ns:isHidden>true</ns:isHidden>
       </ns:column>
     </ns:columns>
-    <ns:pkColumnName>RowId</ns:pkColumnName>
+    <ns:pkColumnName>rowid</ns:pkColumnName>
   </ns:table>
   <ns:table tableName="extracts" tableDbType="TABLE">
     <ns:pkColumnName>rowid</ns:pkColumnName>
@@ -803,6 +810,7 @@
         <ns:datatype>serial</ns:datatype>
         <ns:shownInInsertView>false</ns:shownInInsertView>
         <ns:isAutoInc>true</ns:isAutoInc>
+        <ns:isKeyField>true</ns:isKeyField>
         <ns:scale>10</ns:scale>
       </ns:column>
       <ns:column columnName="queryname">
@@ -974,6 +982,7 @@
         <ns:shownInInsertView>false</ns:shownInInsertView>
         <ns:isAutoInc>true</ns:isAutoInc>
         <ns:scale>10</ns:scale>
+        <ns:isKeyField>true</ns:isKeyField>
       </ns:column>
       <ns:column columnName="notificationtype">
         <ns:columnTitle>Notification Type</ns:columnTitle>
@@ -1047,6 +1056,7 @@
       <ns:column columnName="rowid">
         <ns:datatype>serial</ns:datatype>
         <ns:isAutoInc>true</ns:isAutoInc>
+        <ns:isKeyField>true</ns:isKeyField>
         <ns:scale>10</ns:scale>
       </ns:column>
       <ns:column columnName="destination">
@@ -1230,6 +1240,7 @@
     <ns:columns>
       <ns:column columnName="notificationtype">
         <ns:datatype>varchar</ns:datatype>
+        <ns:isKeyField>true</ns:isKeyField>
         <ns:scale>100</ns:scale>
       </ns:column>
       <ns:column columnName="description">
@@ -1250,6 +1261,9 @@
       <ns:column columnName="rowid">
         <ns:datatype>serial</ns:datatype>
         <ns:isAutoInc>true</ns:isAutoInc>
+        <ns:isKeyField>true</ns:isKeyField>
+        <ns:shownInInsertView>false</ns:shownInInsertView>
+        <ns:shownInUpdateView>false</ns:shownInUpdateView>
         <ns:scale>10</ns:scale>
       </ns:column>
       <ns:column columnName="formtype">
@@ -1328,6 +1342,7 @@
     <ns:columns>
       <ns:column columnName="protocol">
         <ns:datatype>varchar</ns:datatype>
+        <ns:isKeyField>true</ns:isKeyField>
         <ns:scale>100</ns:scale>
       </ns:column>
       <ns:column columnName="inves">
@@ -1400,6 +1415,7 @@
     <ns:columns>
       <ns:column columnName="project">
         <ns:datatype>integer</ns:datatype>
+        <ns:isKeyField>true</ns:isKeyField>
         <ns:scale>100</ns:scale>
       </ns:column>
       <ns:column columnName="protocol">
@@ -1503,6 +1519,9 @@
       <ns:column columnName="rowid">
         <ns:datatype>serial</ns:datatype>
         <ns:isAutoInc>true</ns:isAutoInc>
+        <ns:isKeyField>true</ns:isKeyField>
+        <ns:shownInInsertView>false</ns:shownInInsertView>
+        <ns:shownInUpdateView>false</ns:shownInUpdateView>
         <ns:scale>10</ns:scale>
       </ns:column>
       <ns:column columnName="protocol">
@@ -1594,6 +1613,7 @@
       <ns:columns>
         <ns:column columnName="QCStateLabel">
           <ns:datatype>varchar</ns:datatype>
+          <ns:isKeyField>true</ns:isKeyField>
           <ns:scale>100</ns:scale>
         </ns:column>
         <ns:column columnName="draftData">
@@ -1629,6 +1649,8 @@
         <ns:datatype>serial</ns:datatype>
         <ns:isAutoInc>true</ns:isAutoInc>
         <ns:isKeyField>true</ns:isKeyField>
+        <ns:shownInInsertView>false</ns:shownInInsertView>
+        <ns:shownInUpdateView>false</ns:shownInUpdateView>
         <ns:scale>10</ns:scale>
       </ns:column>
       <ns:column columnName="name">
@@ -1760,6 +1782,8 @@
         <ns:datatype>serial</ns:datatype>
         <ns:isAutoInc>true</ns:isAutoInc>
         <ns:isKeyField>true</ns:isKeyField>
+        <ns:shownInInsertView>false</ns:shownInInsertView>
+        <ns:shownInUpdateView>false</ns:shownInUpdateView>
         <ns:scale>10</ns:scale>
       </ns:column>
       <ns:column columnName="title">
@@ -1846,8 +1870,10 @@
     <ns:columns>
       <ns:column columnName="rowid">
         <ns:datatype>serial</ns:datatype>
-        <ns:shownInInsertView>false</ns:shownInInsertView>
         <ns:isAutoInc>true</ns:isAutoInc>
+        <ns:isKeyField>true</ns:isKeyField>
+        <ns:shownInInsertView>false</ns:shownInInsertView>
+        <ns:shownInUpdateView>false</ns:shownInUpdateView>
         <ns:scale>10</ns:scale>
       </ns:column>
       <ns:column columnName="Id">
@@ -1919,6 +1945,7 @@
         <ns:shownInUpdateView>false</ns:shownInUpdateView>
         <ns:shownInDetailsView>false</ns:shownInDetailsView>
         <ns:isAutoInc>true</ns:isAutoInc>
+        <ns:isKeyField>true</ns:isKeyField>
         <ns:scale>10</ns:scale>
       </ns:column>
       <ns:column columnName="protocol">

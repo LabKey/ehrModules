@@ -3,8 +3,9 @@
         <tables xmlns="http://labkey.org/data/xml">
             <table tableName="requests" tableDbType="TABLE">
                 <tableUrl>/ehr/requestDetails.view?formtype=${formtype}&amp;requestid=${requestid}</tableUrl>
-                <updateUrl>/ehr/requestDetails.view?formtype=${formtype}&amp;requestid=${requestid}</updateUrl>
+                <!--<updateUrl>/ehr/requestDetails.view?formtype=${formtype}&amp;requestid=${requestid}</updateUrl>-->
                 <insertUrl />
+                <updateUrl />
                 <importUrl />
                 <deleteUrl />
                 <!--<insertUrl>/ehr/manageRequest.view</insertUrl>-->

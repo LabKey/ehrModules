@@ -6,7 +6,7 @@
                 <column columnName="sop_id">
                     <fk>
                         <fkFolderPath>/WNPRC/WNPRC_Units/Animal_Services/Compliance_Training/Public/SOPs/</fkFolderPath>
-                        <fkDbSchema>ehr_compliancedb</fkDbSchema>
+                        <fkDbSchema>lists</fkDbSchema>
                         <fkTable>sops</fkTable>
                         <fkColumnName>id</fkColumnName>
                     </fk>

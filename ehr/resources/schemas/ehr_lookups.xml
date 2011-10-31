@@ -10,6 +10,7 @@
       <ns:column columnName="value">
         <ns:datatype>varchar</ns:datatype>
         <ns:scale>100</ns:scale>
+        <ns:isKeyField>true</ns:isKeyField>
       </ns:column>
     </ns:columns>
   </ns:table>
@@ -32,6 +33,7 @@
       <ns:column columnName="key">
         <ns:datatype>int4</ns:datatype>
         <ns:scale>10</ns:scale>
+        <ns:isKeyField>true</ns:isKeyField>
       </ns:column>
     </ns:columns>
   </ns:table>
@@ -45,6 +47,7 @@
       <ns:column columnName="result">
         <ns:datatype>varchar</ns:datatype>
         <ns:scale>100</ns:scale>
+        <ns:isKeyField>true</ns:isKeyField>
       </ns:column>
     </ns:columns>
   </ns:table>
@@ -58,6 +61,7 @@
       <ns:column columnName="status">
         <ns:datatype>varchar</ns:datatype>
         <ns:scale>100</ns:scale>
+        <ns:isKeyField>true</ns:isKeyField>
       </ns:column>
     </ns:columns>
   </ns:table>
@@ -72,6 +76,7 @@
       <ns:column columnName="code">
         <ns:datatype>varchar</ns:datatype>
         <ns:scale>255</ns:scale>
+        <ns:isKeyField>true</ns:isKeyField>
       </ns:column>
       <ns:column columnName="meaning">
         <ns:nullable>true</ns:nullable>
@@ -90,6 +95,7 @@
       <ns:column columnName="remark">
         <ns:datatype>varchar</ns:datatype>
         <ns:scale>255</ns:scale>
+        <ns:isKeyField>true</ns:isKeyField>
       </ns:column>
     </ns:columns>
   </ns:table>
@@ -103,6 +109,7 @@
       <ns:column columnName="eye">
         <ns:datatype>varchar</ns:datatype>
         <ns:scale>50</ns:scale>
+        <ns:isKeyField>true</ns:isKeyField>
       </ns:column>
       <ns:column columnName="meaning">
         <ns:nullable>true</ns:nullable>
@@ -121,6 +128,7 @@
       <ns:column columnName="result">
         <ns:datatype>varchar</ns:datatype>
         <ns:scale>100</ns:scale>
+        <ns:isKeyField>true</ns:isKeyField>
       </ns:column>
       <ns:column columnName="sort_order">
         <ns:datatype>integer</ns:datatype>
@@ -139,6 +147,9 @@
         <ns:datatype>serial</ns:datatype>
         <ns:isAutoInc>true</ns:isAutoInc>
         <ns:scale>10</ns:scale>
+        <ns:shownInUpdateView>false</ns:shownInUpdateView>
+        <ns:shownInInsertView>false</ns:shownInInsertView>
+        <ns:isKeyField>true</ns:isKeyField>
       </ns:column>
       <ns:column columnName="area">
         <ns:datatype>varchar</ns:datatype>
@@ -161,6 +172,7 @@
       <ns:column columnName="score">
         <ns:datatype>float8</ns:datatype>
         <ns:scale>17</ns:scale>
+        <ns:isKeyField>true</ns:isKeyField>
       </ns:column>
       <ns:column columnName="meaning">
         <ns:nullable>true</ns:nullable>
@@ -187,6 +199,7 @@
         <ns:shownInDetailsView>false</ns:shownInDetailsView>
         <ns:shownInInsertView>false</ns:shownInInsertView>
         <ns:isHidden>true</ns:isHidden>
+        <ns:isKeyField>true</ns:isKeyField>
         <ns:scale>10</ns:scale>
       </ns:column>
       <ns:column columnName="low">
@@ -225,6 +238,7 @@
       <ns:column columnName="location">
         <ns:datatype>varchar</ns:datatype>
         <ns:scale>20</ns:scale>
+        <ns:isKeyField>true</ns:isKeyField>
       </ns:column>
       <ns:column columnName="sort_order">
         <ns:datatype>integer</ns:datatype>
@@ -246,6 +260,7 @@
       <ns:column columnName="title">
         <ns:datatype>varchar</ns:datatype>
         <ns:scale>50</ns:scale>
+        <ns:isKeyField>true</ns:isKeyField>
       </ns:column>
       <ns:column columnName="remark">
         <ns:datatype>varchar</ns:datatype>
@@ -258,11 +273,12 @@
     <ns:insertUrl></ns:insertUrl>
     <ns:updateUrl></ns:updateUrl>
     <ns:deleteUrl></ns:deleteUrl>
-    <ns:pkColumnName>route</ns:pkColumnName>
+    <ns:pkColumnName>unit</ns:pkColumnName>
     <ns:columns>
       <ns:column columnName="unit">
         <ns:datatype>varchar</ns:datatype>
         <ns:scale>30</ns:scale>
+        <ns:isKeyField>true</ns:isKeyField>
       </ns:column>
       <ns:column columnName="denominator">
         <ns:datatype>varchar</ns:datatype>
@@ -284,6 +300,7 @@
       <ns:column columnName="unit">
         <ns:datatype>varchar</ns:datatype>
         <ns:scale>30</ns:scale>
+        <ns:isKeyField>true</ns:isKeyField>
       </ns:column>
     </ns:columns>
   </ns:table>
@@ -298,6 +315,9 @@
       <ns:column columnName="roomcage">
         <ns:datatype>varchar</ns:datatype>
         <ns:scale>24</ns:scale>
+        <ns:isKeyField>true</ns:isKeyField>
+        <ns:shownInUpdateView>false</ns:shownInUpdateView>
+        <ns:shownInInsertView>false</ns:shownInInsertView>
       </ns:column>
       <ns:column columnName="room">
         <ns:nullable>true</ns:nullable>
@@ -368,6 +388,7 @@
       <ns:column columnName="viral_status">
         <ns:datatype>varchar</ns:datatype>
         <ns:scale>100</ns:scale>
+        <ns:isKeyField>true</ns:isKeyField>
       </ns:column>
     </ns:columns>
   </ns:table>
@@ -383,6 +404,7 @@
       <ns:column columnName="code">
         <ns:datatype>varchar</ns:datatype>
         <ns:scale>255</ns:scale>
+        <ns:isKeyField>true</ns:isKeyField>
       </ns:column>
       <ns:column columnName="meaning">
         <ns:nullable>true</ns:nullable>
@@ -402,6 +424,7 @@
       <ns:column columnName="code">
         <ns:datatype>varchar</ns:datatype>
         <ns:scale>100</ns:scale>
+        <ns:isKeyField>true</ns:isKeyField>
       </ns:column>
       <ns:column columnName="meaning">
         <ns:nullable>true</ns:nullable>
@@ -420,6 +443,7 @@
       <ns:column columnName="value">
         <ns:datatype>varchar</ns:datatype>
         <ns:scale>30</ns:scale>
+        <ns:isKeyField>true</ns:isKeyField>
       </ns:column>
     </ns:columns>
   </ns:table>
@@ -433,6 +457,7 @@
       <ns:column columnName="category">
         <ns:datatype>varchar</ns:datatype>
         <ns:scale>100</ns:scale>
+        <ns:isKeyField>true</ns:isKeyField>
       </ns:column>
     </ns:columns>
   </ns:table>
@@ -457,6 +482,7 @@
       <ns:column columnName="type">
         <ns:datatype>varchar</ns:datatype>
         <ns:scale>100</ns:scale>
+        <ns:isKeyField>true</ns:isKeyField>
       </ns:column>
         <ns:column columnName="code">
           <ns:datatype>varchar</ns:datatype>
@@ -479,6 +505,7 @@
       <ns:column columnName="value">
         <ns:datatype>varchar</ns:datatype>
         <ns:scale>100</ns:scale>
+        <ns:isKeyField>true</ns:isKeyField>
       </ns:column>
       <ns:column columnName="sort_order">
         <ns:datatype>integer</ns:datatype>
@@ -498,6 +525,7 @@
       <ns:column columnName="code">
         <ns:datatype>varchar</ns:datatype>
         <ns:scale>255</ns:scale>
+        <ns:isKeyField>true</ns:isKeyField>
       </ns:column>
       <ns:column columnName="meaning">
         <ns:nullable>true</ns:nullable>
@@ -517,6 +545,7 @@
       <ns:column columnName="code">
         <ns:datatype>varchar</ns:datatype>
         <ns:scale>50</ns:scale>
+        <ns:isKeyField>true</ns:isKeyField>
       </ns:column>
       <ns:column columnName="meaning">
         <ns:nullable>true</ns:nullable>
@@ -536,6 +565,7 @@
       <ns:column columnName="cause">
         <ns:datatype>varchar</ns:datatype>
         <ns:scale>50</ns:scale>
+        <ns:isKeyField>true</ns:isKeyField>
       </ns:column>
     </ns:columns>
   </ns:table>
@@ -550,6 +580,7 @@
       <ns:column columnName="manner">
         <ns:datatype>varchar</ns:datatype>
         <ns:scale>50</ns:scale>
+        <ns:isKeyField>true</ns:isKeyField>
       </ns:column>
     </ns:columns>
   </ns:table>
@@ -565,6 +596,7 @@
       <ns:column columnName="code">
         <ns:datatype>varchar</ns:datatype>
         <ns:scale>255</ns:scale>
+        <ns:isKeyField>true</ns:isKeyField>
       </ns:column>
       <ns:column columnName="meaning">
         <ns:nullable>true</ns:nullable>
@@ -583,6 +615,7 @@
       <ns:column columnName="region">
         <ns:datatype>varchar</ns:datatype>
         <ns:scale>100</ns:scale>
+        <ns:isKeyField>true</ns:isKeyField>
       </ns:column>
     </ns:columns>
   </ns:table>
@@ -596,6 +629,7 @@
       <ns:column columnName="priority">
         <ns:datatype>varchar</ns:datatype>
         <ns:scale>100</ns:scale>
+        <ns:isKeyField>true</ns:isKeyField>
       </ns:column>
       <ns:column columnName="sort_order">
         <ns:datatype>integer</ns:datatype>
@@ -613,6 +647,7 @@
       <ns:column columnName="technique">
         <ns:datatype>varchar</ns:datatype>
         <ns:scale>100</ns:scale>
+        <ns:isKeyField>true</ns:isKeyField>
       </ns:column>
     </ns:columns>
   </ns:table>
@@ -626,6 +661,7 @@
       <ns:column columnName="route">
         <ns:datatype>varchar</ns:datatype>
         <ns:scale>100</ns:scale>
+        <ns:isKeyField>true</ns:isKeyField>
       </ns:column>
         <ns:column columnName="meaning">
           <ns:datatype>varchar</ns:datatype>
@@ -643,6 +679,7 @@
       <ns:column columnName="area">
         <ns:datatype>varchar</ns:datatype>
         <ns:scale>20</ns:scale>
+        <ns:isKeyField>true</ns:isKeyField>
       </ns:column>
     </ns:columns>
   </ns:table>
@@ -657,6 +694,7 @@
       <ns:column columnName="code">
         <ns:datatype>varchar</ns:datatype>
         <ns:scale>100</ns:scale>
+        <ns:isKeyField>true</ns:isKeyField>
       </ns:column>
       <ns:column columnName="meaning">
         <ns:nullable>true</ns:nullable>
@@ -675,6 +713,7 @@
       <ns:column columnName="status">
         <ns:datatype>varchar</ns:datatype>
         <ns:scale>100</ns:scale>
+        <ns:isKeyField>true</ns:isKeyField>
       </ns:column>
     </ns:columns>
   </ns:table>
@@ -688,6 +727,7 @@
         <ns:column columnName="service">
           <ns:datatype>varchar</ns:datatype>
           <ns:scale>100</ns:scale>
+          <ns:isKeyField>true</ns:isKeyField>
         </ns:column>
       </ns:columns>
     </ns:table>
@@ -701,6 +741,7 @@
       <ns:column columnName="priority">
         <ns:datatype>varchar</ns:datatype>
         <ns:scale>100</ns:scale>
+        <ns:isKeyField>true</ns:isKeyField>
       </ns:column>
     </ns:columns>
   </ns:table>
@@ -715,6 +756,7 @@
       <ns:column columnName="testname">
         <ns:datatype>varchar</ns:datatype>
         <ns:scale>50</ns:scale>
+        <ns:isKeyField>true</ns:isKeyField>
       </ns:column>
       <ns:column columnName="units">
         <ns:datatype>varchar</ns:datatype>
@@ -807,6 +849,7 @@
       <ns:column columnName="cause">
         <ns:datatype>varchar</ns:datatype>
         <ns:scale>100</ns:scale>
+        <ns:isKeyField>true</ns:isKeyField>
       </ns:column>
     </ns:columns>
   </ns:table>
@@ -821,6 +864,7 @@
       <ns:column columnName="code">
         <ns:datatype>varchar</ns:datatype>
         <ns:scale>100</ns:scale>
+        <ns:isKeyField>true</ns:isKeyField>
       </ns:column>
       <ns:column columnName="meaning">
         <ns:nullable>true</ns:nullable>
@@ -839,6 +883,7 @@
       <ns:column columnName="result">
         <ns:datatype>varchar</ns:datatype>
         <ns:scale>50</ns:scale>
+        <ns:isKeyField>true</ns:isKeyField>
       </ns:column>
     </ns:columns>
   </ns:table>
@@ -853,6 +898,7 @@
       <ns:column columnName="code">
         <ns:datatype>varchar</ns:datatype>
         <ns:scale>100</ns:scale>
+        <ns:isKeyField>true</ns:isKeyField>
       </ns:column>
       <ns:column columnName="scientific_name">
         <ns:nullable>true</ns:nullable>
@@ -878,6 +924,7 @@
       <ns:column columnName="code">
         <ns:datatype>varchar</ns:datatype>
         <ns:scale>255</ns:scale>
+        <ns:isKeyField>true</ns:isKeyField>
       </ns:column>
       <ns:column columnName="meaning">
         <ns:nullable>true</ns:nullable>
@@ -899,6 +946,7 @@
         <ns:datatype>varchar</ns:datatype>
         <ns:displayWidth>20</ns:displayWidth>
         <ns:scale>20</ns:scale>
+        <ns:isKeyField>true</ns:isKeyField>
       </ns:column>
       <ns:column columnName="meaning">
         <ns:nullable>true</ns:nullable>
@@ -923,6 +971,7 @@
       <ns:column columnName="category">
         <ns:datatype>varchar</ns:datatype>
         <ns:scale>100</ns:scale>
+        <ns:isKeyField>true</ns:isKeyField>
       </ns:column>
     </ns:columns>
   </ns:table>
@@ -936,6 +985,7 @@
       <ns:column columnName="unit">
         <ns:datatype>varchar</ns:datatype>
         <ns:scale>100</ns:scale>
+        <ns:isKeyField>true</ns:isKeyField>
       </ns:column>
       <ns:column columnName="numerator">
         <ns:datatype>varchar</ns:datatype>
@@ -957,6 +1007,7 @@
       <ns:column columnName="unit">
         <ns:datatype>varchar</ns:datatype>
         <ns:scale>100</ns:scale>
+        <ns:isKeyField>true</ns:isKeyField>
       </ns:column>
     </ns:columns>
   </ns:table>
@@ -971,6 +1022,7 @@
       <ns:column columnName="score">
         <ns:datatype>int4</ns:datatype>
         <ns:scale>10</ns:scale>
+        <ns:isKeyField>true</ns:isKeyField>
       </ns:column>
       <ns:column columnName="meaning">
         <ns:nullable>true</ns:nullable>
@@ -991,6 +1043,7 @@
       <ns:column columnName="code">
         <ns:datatype>varchar</ns:datatype>
         <ns:scale>100</ns:scale>
+        <ns:isKeyField>true</ns:isKeyField>
       </ns:column>
       <ns:column columnName="meaning">
         <ns:nullable>true</ns:nullable>
@@ -1009,6 +1062,7 @@
       <ns:column columnName="score">
         <ns:datatype>varchar</ns:datatype>
         <ns:scale>100</ns:scale>
+        <ns:isKeyField>true</ns:isKeyField>
       </ns:column>
     </ns:columns>
   </ns:table>
@@ -1022,6 +1076,7 @@
       <ns:column columnName="perfusion">
         <ns:datatype>varchar</ns:datatype>
         <ns:scale>100</ns:scale>
+        <ns:isKeyField>true</ns:isKeyField>
       </ns:column>
     </ns:columns>
   </ns:table>
@@ -1035,6 +1090,7 @@
       <ns:column columnName="morphology">
         <ns:datatype>varchar</ns:datatype>
         <ns:scale>100</ns:scale>
+        <ns:isKeyField>true</ns:isKeyField>
       </ns:column>
     </ns:columns>
   </ns:table>
@@ -1091,6 +1147,7 @@
       <ns:column columnName="value">
         <ns:datatype>varchar</ns:datatype>
         <ns:scale>100</ns:scale>
+        <ns:isKeyField>true</ns:isKeyField>
       </ns:column>
     </ns:columns>
   </ns:table>
@@ -1140,6 +1197,9 @@
         <ns:datatype>serial</ns:datatype>
         <ns:isAutoInc>true</ns:isAutoInc>
         <ns:scale>10</ns:scale>
+        <ns:isKeyField>true</ns:isKeyField>
+        <ns:shownInUpdateView>false</ns:shownInUpdateView>
+        <ns:shownInInsertView>false</ns:shownInInsertView>
       </ns:column>
     </ns:columns>
   </ns:table>
@@ -1153,6 +1213,7 @@
       <ns:column columnName="perfusion">
         <ns:datatype>varchar</ns:datatype>
         <ns:scale>100</ns:scale>
+        <ns:isKeyField>true</ns:isKeyField>
       </ns:column>
     </ns:columns>
   </ns:table>
@@ -1195,6 +1256,7 @@
       <ns:column columnName="side">
         <ns:datatype>varchar</ns:datatype>
         <ns:scale>100</ns:scale>
+        <ns:isKeyField>true</ns:isKeyField>
       </ns:column>
     </ns:columns>
   </ns:table>
@@ -1208,6 +1270,7 @@
       <ns:column columnName="type">
         <ns:datatype>varchar</ns:datatype>
         <ns:scale>45</ns:scale>
+        <ns:isKeyField>true</ns:isKeyField>
       </ns:column>
       <ns:column columnName="meaning">
         <ns:nullable>true</ns:nullable>
@@ -1226,6 +1289,7 @@
       <ns:column columnName="jaw">
         <ns:datatype>varchar</ns:datatype>
         <ns:scale>100</ns:scale>
+        <ns:isKeyField>true</ns:isKeyField>
       </ns:column>
     </ns:columns>
   </ns:table>
@@ -1240,6 +1304,7 @@
         <ns:datatype>serial</ns:datatype>
         <ns:isAutoInc>true</ns:isAutoInc>
         <ns:scale>10</ns:scale>
+        <ns:isKeyField>true</ns:isKeyField>
       </ns:column>
       <ns:column columnName="month">
         <ns:datatype>varchar</ns:datatype>
@@ -1260,6 +1325,9 @@
         <ns:datatype>serial</ns:datatype>
         <ns:isAutoInc>true</ns:isAutoInc>
         <ns:scale>10</ns:scale>
+        <ns:isKeyField>true</ns:isKeyField>
+        <ns:shownInInsertView>false</ns:shownInInsertView>
+        <ns:shownInUpdateView>false</ns:shownInUpdateView>
       </ns:column>
       <ns:column columnName="meaning">
         <ns:datatype>varchar</ns:datatype>
@@ -1281,6 +1349,7 @@
       <ns:column columnName="score">
         <ns:datatype>varchar</ns:datatype>
         <ns:scale>100</ns:scale>
+        <ns:isKeyField>true</ns:isKeyField>
       </ns:column>
     </ns:columns>
   </ns:table>
@@ -1294,6 +1363,7 @@
       <ns:column columnName="teeth">
         <ns:datatype>varchar</ns:datatype>
         <ns:scale>100</ns:scale>
+        <ns:isKeyField>true</ns:isKeyField>
       </ns:column>
       <ns:column columnName="seq_order">
         <ns:nullable>true</ns:nullable>
@@ -1313,6 +1383,7 @@
       <ns:column columnName="code">
         <ns:datatype>varchar</ns:datatype>
         <ns:scale>20</ns:scale>
+        <ns:isKeyField>true</ns:isKeyField>
       </ns:column>
       <ns:column columnName="meaning">
         <ns:nullable>true</ns:nullable>
@@ -1332,6 +1403,7 @@
       <ns:column columnName="code">
         <ns:datatype>varchar</ns:datatype>
         <ns:scale>20</ns:scale>
+        <ns:isKeyField>true</ns:isKeyField>
       </ns:column>
       <ns:column columnName="meaning">
         <ns:nullable>true</ns:nullable>
@@ -1351,6 +1423,7 @@
         <ns:column columnName="code">
           <ns:datatype>varchar</ns:datatype>
           <ns:scale>20</ns:scale>
+          <ns:isKeyField>true</ns:isKeyField>
         </ns:column>
         <ns:column columnName="meaning">
           <ns:nullable>true</ns:nullable>
@@ -1390,6 +1463,9 @@
         <ns:datatype>serial</ns:datatype>
         <ns:isAutoInc>true</ns:isAutoInc>
         <ns:scale>10</ns:scale>
+        <ns:isKeyField>true</ns:isKeyField>
+        <ns:shownInInsertView>false</ns:shownInInsertView>
+        <ns:shownInUpdateView>false</ns:shownInUpdateView>
       </ns:column>
     </ns:columns>
   </ns:table>
@@ -1403,6 +1479,7 @@
       <ns:column columnName="type">
         <ns:datatype>varchar</ns:datatype>
         <ns:scale>100</ns:scale>
+        <ns:isKeyField>true</ns:isKeyField>
       </ns:column>
     </ns:columns>
   </ns:table>
@@ -1437,6 +1514,9 @@
         <ns:datatype>serial</ns:datatype>
         <ns:isAutoInc>true</ns:isAutoInc>
         <ns:scale>10</ns:scale>
+        <ns:isKeyField>true</ns:isKeyField>
+        <ns:shownInInsertView>false</ns:shownInInsertView>
+        <ns:shownInUpdateView>false</ns:shownInUpdateView>
       </ns:column>
       <ns:column columnName="category">
         <ns:nullable>true</ns:nullable>
@@ -1506,6 +1586,7 @@
       <ns:column columnName="type">
         <ns:datatype>varchar</ns:datatype>
         <ns:scale>100</ns:scale>
+        <ns:isKeyField>true</ns:isKeyField>
       </ns:column>
       <!--<ns:column columnName="volume">-->
         <!--<ns:datatype>double</ns:datatype>-->
@@ -1525,6 +1606,7 @@
       <ns:column columnName="code">
         <ns:datatype>varchar</ns:datatype>
         <ns:scale>100</ns:scale>
+        <ns:isKeyField>true</ns:isKeyField>
       </ns:column>
       <ns:column columnName="meaning">
         <ns:nullable>true</ns:nullable>
@@ -1579,6 +1661,9 @@
           <ns:datatype>serial</ns:datatype>
           <ns:isAutoInc>true</ns:isAutoInc>
           <ns:scale>10</ns:scale>
+          <ns:isKeyField>true</ns:isKeyField>
+          <ns:shownInInsertView>false</ns:shownInInsertView>
+          <ns:shownInUpdateView>false</ns:shownInUpdateView>
         </ns:column>
       <ns:column columnName="code">
         <ns:datatype>varchar</ns:datatype>
@@ -1654,6 +1739,7 @@
         <ns:column columnName="subset">
           <ns:datatype>varchar</ns:datatype>
           <ns:scale>100</ns:scale>
+          <ns:isKeyField>true</ns:isKeyField>
         </ns:column>
       <ns:column columnName="container">
         <ns:isUserEditable>false</ns:isUserEditable>
@@ -1707,6 +1793,7 @@
       <ns:column columnName="state">
         <ns:datatype>varchar</ns:datatype>
         <ns:scale>100</ns:scale>
+        <ns:isKeyField>true</ns:isKeyField>
       </ns:column>
     </ns:columns>
   </ns:table>
@@ -1720,6 +1807,7 @@
         <ns:column columnName="method">
           <ns:datatype>varchar</ns:datatype>
           <ns:scale>100</ns:scale>
+          <ns:isKeyField>true</ns:isKeyField>
         </ns:column>
       </ns:columns>
     </ns:table>
@@ -1733,6 +1821,7 @@
         <ns:column columnName="source">
           <ns:datatype>varchar</ns:datatype>
           <ns:scale>100</ns:scale>
+          <ns:isKeyField>true</ns:isKeyField>
         </ns:column>
           <ns:column columnName="code">
             <ns:datatype>varchar</ns:datatype>
@@ -1750,6 +1839,7 @@
         <ns:column columnName="indicator">
           <ns:datatype>varchar</ns:datatype>
           <ns:scale>50</ns:scale>
+          <ns:isKeyField>true</ns:isKeyField>
         </ns:column>
       </ns:columns>
     </ns:table>
@@ -1763,6 +1853,7 @@
         <ns:column columnName="species">
           <ns:datatype>varchar</ns:datatype>
           <ns:scale>50</ns:scale>
+          <ns:isKeyField>true</ns:isKeyField>
           <ns:fk>
               <ns:fkTable>species</ns:fkTable>
               <ns:fkColumnName>common</ns:fkColumnName>
@@ -1790,6 +1881,7 @@
         <ns:column columnName="category">
           <ns:datatype>varchar</ns:datatype>
           <ns:scale>100</ns:scale>
+          <ns:isKeyField>true</ns:isKeyField>
         </ns:column>
       </ns:columns>
     </ns:table>
@@ -1804,6 +1896,7 @@
         <ns:column columnName="code">
           <ns:datatype>varchar</ns:datatype>
           <ns:scale>100</ns:scale>
+          <ns:isKeyField>true</ns:isKeyField>
         </ns:column>
         <ns:column columnName="title">
           <ns:datatype>varchar</ns:datatype>
@@ -1821,6 +1914,7 @@
         <ns:column columnName="reason">
           <ns:datatype>varchar</ns:datatype>
           <ns:scale>100</ns:scale>
+          <ns:isKeyField>true</ns:isKeyField>
         </ns:column>
       </ns:columns>
     </ns:table>
@@ -1834,6 +1928,7 @@
         <ns:column columnName="stain">
           <ns:datatype>varchar</ns:datatype>
           <ns:scale>100</ns:scale>
+          <ns:isKeyField>true</ns:isKeyField>
         </ns:column>
       </ns:columns>
     </ns:table>
@@ -1847,6 +1942,7 @@
         <ns:column columnName="testid">
           <ns:datatype>varchar</ns:datatype>
           <ns:scale>100</ns:scale>
+          <ns:isKeyField>true</ns:isKeyField>
         </ns:column>
           <ns:column columnName="alertOnAbnormal">
             <ns:columnTitle>Alert On Abnormal</ns:columnTitle>
@@ -1880,6 +1976,7 @@
         <ns:column columnName="result">
           <ns:datatype>varchar</ns:datatype>
           <ns:scale>100</ns:scale>
+          <ns:isKeyField>true</ns:isKeyField>
         </ns:column>
       </ns:columns>
     </ns:table>
@@ -1895,7 +1992,7 @@
       <ns:column columnName="meaning">
         <ns:datatype>varchar</ns:datatype>
         <ns:scale>200</ns:scale>
-          <ns:isKeyField>true</ns:isKeyField>
+        <ns:isKeyField>true</ns:isKeyField>
       </ns:column>
       <ns:column columnName="category">
         <ns:datatype>varchar</ns:datatype>
@@ -1961,6 +2058,7 @@
         <ns:column columnName="recipient">
           <ns:datatype>varchar</ns:datatype>
           <ns:scale>100</ns:scale>
+          <ns:isKeyField>true</ns:isKeyField>
         </ns:column>
       </ns:columns>
     </ns:table>
@@ -1974,6 +2072,7 @@
       <ns:column columnName="method">
         <ns:datatype>varchar</ns:datatype>
         <ns:scale>100</ns:scale>
+        <ns:isKeyField>true</ns:isKeyField>
       </ns:column>
     </ns:columns>
   </ns:table>
@@ -1987,6 +2086,7 @@
         <ns:column columnName="method">
           <ns:datatype>varchar</ns:datatype>
           <ns:scale>100</ns:scale>
+          <ns:isKeyField>true</ns:isKeyField>
         </ns:column>
       </ns:columns>
     </ns:table>
@@ -2000,6 +2100,7 @@
         <ns:column columnName="method">
           <ns:datatype>varchar</ns:datatype>
           <ns:scale>100</ns:scale>
+          <ns:isKeyField>true</ns:isKeyField>
         </ns:column>
       </ns:columns>
     </ns:table>
@@ -2013,6 +2114,7 @@
         <ns:column columnName="sampletype">
           <ns:datatype>varchar</ns:datatype>
           <ns:scale>100</ns:scale>
+          <ns:isKeyField>true</ns:isKeyField>
         </ns:column>
       </ns:columns>
     </ns:table>
@@ -2026,6 +2128,7 @@
         <ns:column columnName="type">
           <ns:datatype>varchar</ns:datatype>
           <ns:scale>100</ns:scale>
+          <ns:isKeyField>true</ns:isKeyField>
         </ns:column>
       </ns:columns>
     </ns:table>
@@ -2039,6 +2142,7 @@
         <ns:column columnName="result">
           <ns:datatype>varchar</ns:datatype>
           <ns:scale>100</ns:scale>
+          <ns:isKeyField>true</ns:isKeyField>
         </ns:column>
       </ns:columns>
     </ns:table>
@@ -2056,6 +2160,7 @@
         <ns:column columnName="volume">
           <ns:datatype>float</ns:datatype>
           <ns:scale>50</ns:scale>
+          <ns:isKeyField>true</ns:isKeyField>
         </ns:column>
       </ns:columns>
     </ns:table>
@@ -2069,6 +2174,7 @@
         <ns:column columnName="status">
           <ns:datatype>varchar</ns:datatype>
           <ns:scale>80</ns:scale>
+          <ns:isKeyField>true</ns:isKeyField>
         </ns:column>
       </ns:columns>
     </ns:table>
@@ -2081,6 +2187,7 @@
       <ns:columns>
         <ns:column columnName="remark">
           <ns:datatype>varchar</ns:datatype>
+          <ns:isKeyField>true</ns:isKeyField>
           <ns:scale>200</ns:scale>
         </ns:column>
       </ns:columns>
@@ -2096,6 +2203,7 @@
         <ns:column columnName="prefix">
           <ns:datatype>varchar</ns:datatype>
           <ns:scale>20</ns:scale>
+          <ns:isKeyField>true</ns:isKeyField>
         </ns:column>
       </ns:columns>
     </ns:table>
@@ -2109,6 +2217,7 @@
         <ns:column columnName="qualifier">
           <ns:datatype>varchar</ns:datatype>
           <ns:scale>200</ns:scale>
+          <ns:isKeyField>true</ns:isKeyField>
         </ns:column>
       </ns:columns>
     </ns:table>
@@ -2122,6 +2231,7 @@
         <ns:column columnName="solution">
           <ns:datatype>varchar</ns:datatype>
           <ns:scale>200</ns:scale>
+          <ns:isKeyField>true</ns:isKeyField>
         </ns:column>
       </ns:columns>
     </ns:table>
@@ -2137,6 +2247,7 @@
       <ns:column columnName="testid">
         <ns:datatype>varchar</ns:datatype>
         <ns:scale>100</ns:scale>
+        <ns:isKeyField>true</ns:isKeyField>
       </ns:column>
       <ns:column columnName="name">
         <ns:nullable>true</ns:nullable>
@@ -2182,6 +2293,7 @@
       <ns:column columnName="testid">
         <ns:datatype>varchar</ns:datatype>
         <ns:scale>100</ns:scale>
+        <ns:isKeyField>true</ns:isKeyField>
       </ns:column>
       <ns:column columnName="name">
         <ns:nullable>true</ns:nullable>
@@ -2227,6 +2339,7 @@
       <ns:column columnName="testid">
         <ns:datatype>varchar</ns:datatype>
         <ns:scale>100</ns:scale>
+        <ns:isKeyField>true</ns:isKeyField>
       </ns:column>
       <ns:column columnName="name">
         <ns:nullable>true</ns:nullable>
@@ -2277,6 +2390,7 @@
       <ns:column columnName="testid">
         <ns:datatype>varchar</ns:datatype>
         <ns:scale>100</ns:scale>
+        <ns:isKeyField>true</ns:isKeyField>
       </ns:column>
       <ns:column columnName="name">
         <ns:nullable>true</ns:nullable>
@@ -2322,6 +2436,7 @@
       <ns:column columnName="method">
         <ns:datatype>varchar</ns:datatype>
         <ns:scale>100</ns:scale>
+        <ns:isKeyField>true</ns:isKeyField>
       </ns:column>
     </ns:columns>
   </ns:table>
@@ -2335,6 +2450,7 @@
       <ns:column columnName="method">
         <ns:datatype>varchar</ns:datatype>
         <ns:scale>100</ns:scale>
+        <ns:isKeyField>true</ns:isKeyField>
       </ns:column>
     </ns:columns>
   </ns:table>
@@ -2348,6 +2464,7 @@
       <ns:column columnName="method">
         <ns:datatype>varchar</ns:datatype>
         <ns:scale>100</ns:scale>
+        <ns:isKeyField>true</ns:isKeyField>
       </ns:column>
     </ns:columns>
   </ns:table>
@@ -2361,6 +2478,7 @@
       <ns:column columnName="method">
         <ns:datatype>varchar</ns:datatype>
         <ns:scale>100</ns:scale>
+        <ns:isKeyField>true</ns:isKeyField>
       </ns:column>
     </ns:columns>
   </ns:table>
@@ -2374,6 +2492,7 @@
       <ns:column columnName="key">
         <ns:datatype>bool</ns:datatype>
         <ns:scale>20</ns:scale>
+        <ns:isKeyField>true</ns:isKeyField>
       </ns:column>
       <ns:column columnName="display">
         <ns:datatype>varchar</ns:datatype>
@@ -2391,6 +2510,7 @@
       <ns:column columnName="type">
         <ns:datatype>varchar</ns:datatype>
         <ns:scale>100</ns:scale>
+        <ns:isKeyField>true</ns:isKeyField>
       </ns:column>
     </ns:columns>
   </ns:table>
@@ -2404,6 +2524,7 @@
       <ns:column columnName="comment">
         <ns:datatype>varchar</ns:datatype>
         <ns:scale>100</ns:scale>
+        <ns:isKeyField>true</ns:isKeyField>
       </ns:column>
     </ns:columns>
   </ns:table>
@@ -2417,6 +2538,7 @@
         <ns:column columnName="title">
           <ns:datatype>varchar</ns:datatype>
           <ns:scale>200</ns:scale>
+          <ns:isKeyField>true</ns:isKeyField>
         </ns:column>
       <ns:column columnName="remark">
         <ns:datatype>varchar</ns:datatype>
@@ -2434,6 +2556,7 @@
         <ns:column columnName="duration">
           <ns:datatype>varchar</ns:datatype>
           <ns:scale>200</ns:scale>
+          <ns:isKeyField>true</ns:isKeyField>
         </ns:column>
         <ns:column columnName="sort_order">
           <ns:datatype>integer</ns:datatype>
@@ -2451,6 +2574,7 @@
         <ns:column columnName="category">
           <ns:datatype>varchar</ns:datatype>
           <ns:scale>200</ns:scale>
+          <ns:isKeyField>true</ns:isKeyField>
         </ns:column>
     </ns:columns>
   </ns:table>
@@ -2470,6 +2594,7 @@
           <ns:shownInInsertView>false</ns:shownInInsertView>
           <ns:shownInUpdateView>false</ns:shownInUpdateView>
           <ns:scale>200</ns:scale>
+          <ns:isKeyField>true</ns:isKeyField>
         </ns:column>
         <ns:column columnName="code">
           <ns:columnTitle>SNOMED Code</ns:columnTitle>
@@ -2513,6 +2638,7 @@
       <ns:column columnName="code">
         <ns:datatype>varchar</ns:datatype>
         <ns:scale>100</ns:scale>
+        <ns:isKeyField>true</ns:isKeyField>
       </ns:column>
       <ns:column columnName="meaning">
         <ns:nullable>true</ns:nullable>
@@ -2573,6 +2699,7 @@
         <ns:shownInUpdateView>false</ns:shownInUpdateView>
         <ns:isHidden>true</ns:isHidden>
         <ns:scale>10</ns:scale>
+        <ns:isKeyField>true</ns:isKeyField>
       </ns:column>
       <ns:column columnName="ocode">
         <ns:datatype>varchar</ns:datatype>
@@ -2642,11 +2769,12 @@
     <ns:insertUrl></ns:insertUrl>
     <ns:updateUrl></ns:updateUrl>
     <ns:deleteUrl></ns:deleteUrl>
-    <ns:pkColumnName>typr</ns:pkColumnName>
+    <ns:pkColumnName>type</ns:pkColumnName>
     <ns:columns>
         <ns:column columnName="type">
           <ns:datatype>varchar</ns:datatype>
           <ns:scale>200</ns:scale>
+          <ns:isKeyField>true</ns:isKeyField>
         </ns:column>
     </ns:columns>
   </ns:table>
@@ -2655,11 +2783,12 @@
     <ns:insertUrl></ns:insertUrl>
     <ns:updateUrl></ns:updateUrl>
     <ns:deleteUrl></ns:deleteUrl>
-    <ns:pkColumnName>typr</ns:pkColumnName>
+    <ns:pkColumnName>location</ns:pkColumnName>
     <ns:columns>
         <ns:column columnName="location">
           <ns:datatype>varchar</ns:datatype>
           <ns:scale>100</ns:scale>
+          <ns:isKeyField>true</ns:isKeyField>
         </ns:column>
     </ns:columns>
   </ns:table>

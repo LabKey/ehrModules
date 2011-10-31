@@ -5,7 +5,7 @@
                 <!--<tableUrl>/ehr/taskDetails.view?type=${type}&amp;taskid=${taskid}</tableUrl>-->
                 <!--<insertUrl>/ehr/createTask.view</insertUrl>-->
                 <importUrl />
-                <titleColumn>RowId</titleColumn>
+                <titleColumn>rowid</titleColumn>
                 <tableTitle>Cage Observations</tableTitle>
                 <columns>
                     <column columnName="date">
@@ -163,7 +163,7 @@
                     </column>
                     <!--<housingRecord></housingRecord>-->
                 </columns>
-                <pkColumnName>RowId</pkColumnName>
+                <pkColumnName>rowid</pkColumnName>
             </table>
         </tables>
     </metadata>

@@ -538,7 +538,7 @@ EHR.ext.Buttons = {
         errorThreshold: 'WARN',
         handler: function(){
             window.onbeforeunload = Ext.emptyFn;
-            window.location = LABKEY.ActionURL.buildURL('ehr','manageRecord.view', null, {schemaName: 'ehr', queryName: 'Requests', keyField: 'requestid', key: this.formUUID});
+            window.location = LABKEY.ActionURL.buildURL('ehr','manageRecord.view', null, {schemaName: 'ehr', queryName: 'Requests', keyField: 'requestid', key: this.formUUID, update: 1});
         },
         disabled: false,
         ref: 'editBtn',
