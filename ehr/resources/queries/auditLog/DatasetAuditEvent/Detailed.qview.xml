@@ -21,15 +21,15 @@
             </properties>
         </column>
         <column name="Comment" />
-        <column name="property/oldRecordMap">
+        <column name="property/oldValues">
             <properties>
-                <property name="columnTitle" value="Old Record Map"/>
+                <property name="columnTitle" value="Old Values"/>
             </properties>
         </column>
 
-        <column name="property/newRecordMap">
+        <column name="property/newValues">
             <properties>
-                <property name="columnTitle" value="New Record Map"/>
+                <property name="columnTitle" value="New Values"/>
             </properties>
         </column>
     </columns>
