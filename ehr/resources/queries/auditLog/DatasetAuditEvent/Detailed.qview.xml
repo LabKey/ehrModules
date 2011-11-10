@@ -21,13 +21,13 @@
             </properties>
         </column>
         <column name="Comment" />
-        <column name="property/oldValues">
+        <column name="oldValues">
             <properties>
                 <property name="columnTitle" value="Old Values"/>
             </properties>
         </column>
 
-        <column name="property/newValues">
+        <column name="newValues">
             <properties>
                 <property name="columnTitle" value="New Values"/>
             </properties>
