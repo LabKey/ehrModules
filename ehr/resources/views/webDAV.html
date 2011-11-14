@@ -15,8 +15,8 @@ Ext.onReady(function(){
 
             try
             {
-                var resourcePath = this.concatPaths(this.prefixUrl, encodePath(source));
-                var destinationPath = this.concatPaths(this.prefixUrl, encodePath(dest));
+                var resourcePath = this.concatPaths(this.prefixUrl, LABKEY.ActionURL.encodePath(source));
+                var destinationPath = this.concatPaths(this.prefixUrl, LABKEY.ActionURL.encodePath(dest));
                 var fileSystem = this;
                 var connection = new Ext.data.Connection();
                 connection.handleResponse = function(response)
