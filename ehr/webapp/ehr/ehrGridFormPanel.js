@@ -55,7 +55,7 @@ EHR.ext.GridFormPanel = Ext.extend(Ext.Panel,
                 xtype: 'statusbar',
                 defaultText: 'Default text',
                 text: 'No records',
-                statusAlign: 'right',
+                statusAlign: 'left',
                 spacer: 'tbspacer',
                 iconCls: 'x-status-valid',
                 //items: [{xtype: 'tbspacer', width: 50}]

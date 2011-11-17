@@ -31,5 +31,5 @@ LABKEY.requiresScript("/ehr/transposeRows.js");
 LABKEY.requiresScript("/ehr/searchPanel.js");
 LABKEY.requiresScript("/ehr/studyButtons.js");
 LABKEY.requiresScript("/ehr/animalHistory.js");
-LABKEY.requiresScript("/ehr/ext.ux.statusbar.js");
+LABKEY.requiresScript("StatusBar.js");
 

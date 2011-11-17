@@ -1157,7 +1157,6 @@ ehr/webapp/ehr/ehrStore.js -text
 ehr/webapp/ehr/ehrStoreCollection.js -text
 ehr/webapp/ehr/ext.ux.datetimefield.js -text
 ehr/webapp/ehr/ext.ux.multiselect.js -text
-ehr/webapp/ehr/ext.ux.statusbar.js -text
 ehr/webapp/ehr/images/accept.png -text
 ehr/webapp/ehr/images/arrow_link_button-red.jpg -text
 ehr/webapp/ehr/images/arrow_link_button_over-red.jpg -text
