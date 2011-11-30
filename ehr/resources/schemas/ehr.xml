@@ -285,6 +285,11 @@
             <ns:fkColumnName>formtype</ns:fkColumnName>
           </ns:fk>
       </ns:column>
+      <ns:column columnName="category">
+        <ns:nullable>false</ns:nullable>
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>100</ns:scale>
+      </ns:column>
       <ns:column columnName="requestId">
         <ns:datatype>entityid</ns:datatype>
         <ns:scale>36</ns:scale>
@@ -611,6 +616,11 @@
         <ns:columnTitle>JSON Config</ns:columnTitle>
         <ns:scale>255</ns:scale>
       </ns:column>
+      <ns:column columnName="description">
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>text</ns:datatype>
+        <ns:scale>100</ns:scale>
+      </ns:column>
       <ns:column columnName="container">
         <ns:isUserEditable>false</ns:isUserEditable>
         <ns:datatype>entityid</ns:datatype>
@@ -915,6 +925,11 @@
           <!--</ns:fk>-->
       </ns:column>
       <ns:column columnName="userId">
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>100</ns:scale>
+      </ns:column>
+      <ns:column columnName="template">
         <ns:nullable>true</ns:nullable>
         <ns:datatype>varchar</ns:datatype>
         <ns:scale>100</ns:scale>
@@ -1830,6 +1845,17 @@
         <ns:columnTitle>Email HTML</ns:columnTitle>
         <ns:inputType>textarea</ns:inputType>
         <ns:scale>4000</ns:scale>
+      </ns:column>
+      <ns:column columnName="container">
+        <ns:isUserEditable>false</ns:isUserEditable>
+        <ns:datatype>entityid</ns:datatype>
+        <ns:isHidden>true</ns:isHidden>
+        <ns:scale>36</ns:scale>
+        <ns:fk>
+          <ns:fkDbSchema>core</ns:fkDbSchema>
+          <ns:fkTable>containers</ns:fkTable>
+          <ns:fkColumnName>entityid</ns:fkColumnName>
+        </ns:fk>
       </ns:column>
       <ns:column columnName="createdby">
         <ns:isUserEditable>false</ns:isUserEditable>

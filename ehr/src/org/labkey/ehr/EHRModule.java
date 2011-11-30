@@ -129,7 +129,13 @@ public class EHRModule extends DefaultModule
     @NotNull
     public Set<DbSchema> getSchemasToTest()
     {
-        //return PageFlowUtil.set(EHRSchema.getInstance().getSchema());
-        return Collections.emptySet();
+        if(EHRSchema.getInstance().getSqlDialect().isPostgreSQL())
+        {
+            return PageFlowUtil.set(EHRSchema.getInstance().getSchema());
+        }
+        else
+        {
+            return Collections.emptySet();
+        }
     }
 }
