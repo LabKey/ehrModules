@@ -274,12 +274,18 @@ EHR.ext.Buttons = {
                                             Ext.Msg.hide();
                                             alert('Success inserting into '+queryName+' from necropsy for '+Id)
                                         },
-                                        failure: EHR.utils.onError
+                                        failure: function(error){
+                                            alert('ERROR: ' + (error.msg || error.exception));
+                                            EHR.utils.onError(error);
+                                        }
                                     });
                                 }
                             }
                         },
-                        failure: EHR.utils.onError
+                        failure: function(error){
+                            alert('ERROR: ' + (error.msg || error.exception));
+                            EHR.utils.onError(error);
+                        }
                     });
                 }
             }, this);
