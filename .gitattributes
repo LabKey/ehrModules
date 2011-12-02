@@ -40,6 +40,7 @@ EHR_ComplianceDB/queries/ehr_compliancedb/unit_names.js -text
 EHR_ComplianceDB/queries/lists/SOP_PDFs.query.xml -text
 EHR_ComplianceDB/queries/lists/SOP_PDFs.sql -text
 EHR_ComplianceDB/schemas/dbscripts/postgresql/EHR_ComplianceDB-00.00-11.10.sql -text
+EHR_ComplianceDB/schemas/dbscripts/sqlserver/EHR_ComplianceDB-00.00-11.10.sql -text
 EHR_ComplianceDB/schemas/ehr_compliancedb.xml -text
 EHR_ComplianceDB/scripts/ehr_compliancedb/updateTable.js -text
 EHR_ComplianceDB/views/Guest_SOP_submission.html -text
