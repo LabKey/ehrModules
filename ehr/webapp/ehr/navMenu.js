@@ -3,10 +3,55 @@
  *
  * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
  */
-Ext.namespace('EHR.utils');
+Ext.namespace('EHR.ext');
+
+/**
+ * Constructs a new EHR NavMenu using the supplied configuration.
+ * @class
+ * EHR extension to Ext.Panel, which is designed to create simple, consistently formatted lists of links for navigation.
+ * @constructor
+ * @augments Ext.Panel
+ * @param config Configuration properties. This may contain any of the configuration properties supported by the Ext.Panel, plus those listed here.
+ *
+ * @param {Integer} [config.colWidth] The width of the NavPanel
+ * @param {Function} [config.renderer] A function that will be used to render each section item.  It will be passed the item object (see config.sections) and should return an object suitable to add() to an Ext.Panel.  If not renderer is provided, the a default renderer will be used.
+ * @param {Array} [config.sections] An array of objects describing the sections in this NavMenu.  Each section will be given a header line.  Each section config object should contain the following properties:
+ * <li>header: The string to be used as the header for this section</li>
+ * <li>items: An array of objects describing the items in the section.  Each item is usually one link or row of links.  The item objects can contain any properties that will be interpreted by the renderer function.  If the default renderer is used, the item objects only need to contain name and url properties.
+ *
+ * @example &lt;script type="text/javascript"&gt;
+    Ext.onReady(function(){
+        var panel = new EHR.ext.NavMenu({
+            renderTo: 'targetDiv',
+            width: 800,
+            autoHeight: true,
+            sections: [{
+                header: 'Section 1',
+                items: [{
+                    name: 'Link 1',
+                    url: 'http://labkey.com'
+                },{
+                    name: 'Link 2',
+                    url: 'http://yourSite.com'
+                }],
+            },{
+                header: 'Section 2',
+                items: [{
+                 name: 'Link 1',
+                 url: 'http://labkey.com'
+                },{
+                 name: 'Link 2',
+                 url: 'http://yourSite.com'
+                }]
+            }]
+        });
+    });
 
 
-EHR.utils.navMenu = Ext.extend(Ext.Panel, {
+&lt;/script&gt;
+&lt;div id='targetDiv'/&gt;
+ */
+EHR.ext.NavMenu = Ext.extend(Ext.Panel, {
     initComponent: function(){
         //calculate size
         var maxHeight = this.maxHeight || 15;
@@ -30,7 +75,7 @@ EHR.utils.navMenu = Ext.extend(Ext.Panel, {
             }
         });
 
-        EHR.utils.navMenu.superclass.initComponent.call(this);
+        EHR.ext.NavMenu.superclass.initComponent.call(this);
 
         for (var i=0;i<this.sections.length;i++){
             var tmp = this.sections[i];
@@ -56,6 +101,7 @@ EHR.utils.navMenu = Ext.extend(Ext.Panel, {
                     item = this.renderer(tmp.items[j])
                 }
                 else {
+                   //NOTE: this is the default renderer
                    item = {
                        //Creates links for the navegation panel
                         html: '<a href="'+tmp.items[j].url+'">'+tmp.items[j].name+'</a>',
@@ -72,36 +118,3 @@ EHR.utils.navMenu = Ext.extend(Ext.Panel, {
 });
 
 
-//EHR.utils.navMenuFromQuery = function(config){
-//
-//    LABKEY.Query.selectRows({
-//            schemaName: config.schemaName,
-//            queryName: config.queryName,
-//            successCallback: onSuccess,
-//            scope: this,
-//            failure: EHR.utils.onError,
-//            sort: config.headerField+','+config.displayField,
-//            filterArray: config.filterArray
-//    });
-//
-//    function onSuccess(data){
-//        var menuCfg = {target: config.target, sections: []}
-//        var prevHeader;
-//        var section;
-//        for (var i=0;i<data.rows.length;i++){
-//            var tmp = data.rows[i];
-//
-//            if (tmp[config.headerField] != prevHeader){
-//                menuCfg.sections.push(section);
-//                prevHeader = tmp[config.headerField];
-//
-//                section = {header: tmp[config.headerField], items: []};
-//            }
-//
-//            section.items.push({name: tmp[config.displayField], url: null})
-//
-//        }
-//    }
-//
-//
-//};

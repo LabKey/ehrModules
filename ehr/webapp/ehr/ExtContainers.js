@@ -5,8 +5,18 @@
  */
 
 
+/*
+ * This file contains miscellaneous Ext containers used throughout the EHR.  These tend to be single-user Panels, such as the UI
+ * that appears when a button is clicked or other popup windows.
+ */
 
-EHR.ext.AnimalSelector = Ext.extend(Ext.Panel, {
+
+/**
+ * @class
+ * This is the panel that appears when hitting the 'Add Batch' button on EHR grids.  It provides a popup to find the set of
+ * distinct animal IDs based on room, case, etc.
+ */
+EHR.ext.AnimalSelectorPanel = Ext.extend(Ext.Panel, {
     initComponent: function()
     {
         Ext.applyIf(this, {
@@ -137,7 +147,7 @@ EHR.ext.AnimalSelector = Ext.extend(Ext.Panel, {
             //buttonAlign: 'left'
         });
 
-        EHR.ext.AnimalSelector.superclass.initComponent.call(this, arguments);
+        EHR.ext.AnimalSelectorPanel.superclass.initComponent.call(this, arguments);
     },
 
     getFilterArray: function(button)
@@ -212,7 +222,9 @@ EHR.ext.AnimalSelector = Ext.extend(Ext.Panel, {
             Ext.Msg.hide();
         }
     },
-    onSuccess: function(results){
+
+    onSuccess: function(results)
+    {
         if (!results.rows || !results.rows.length)
         {
             alert('No matching animals were found.');
@@ -244,9 +256,15 @@ EHR.ext.AnimalSelector = Ext.extend(Ext.Panel, {
     }
 
 });
-Ext.reg('ehr-animalselector', EHR.ext.AnimalSelector);
+Ext.reg('ehr-animalselector', EHR.ext.AnimalSelectorPanel);
 
 
+/**
+ * @class
+ * This is the panel that appears when hitting the 'Add Series' button.  It provides UI that allows the user to generate a consecutive
+ * series of animal IDs, (ie. cy0114, cy0115, cy0116, ....).  It is used on the arrival form (among others).  In this workflow we receive
+ * some number of animals and they are often assigned consecutive IDs.  It is a helper function only, and does not validate these IDs.
+ */
 EHR.ext.AddSeriesWin = Ext.extend(Ext.Panel, {
     initComponent: function()
     {
@@ -327,7 +345,13 @@ EHR.ext.AddSeriesWin = Ext.extend(Ext.Panel, {
 Ext.reg('ehr-addseries', EHR.ext.AddSeriesWin);
 
 
-
+/**
+ * @class
+ * This window will allow clinpath staff to import chemistry results from a tabular excel format.  It is designed to directly
+ * parse the output provided by Meriter (circa 2011).  It will validate the incoming test IDs and resolve/normalize the
+ * TestIDs based on known aliases.  The latter is governed by ehr_lookups.chemistry_tests.  This panel is connected to the 'Add Bulk' button
+ * in the chemistry section of the ClinPath form.
+ */
 EHR.ext.ChemExcelWin = Ext.extend(Ext.Panel, {
     initComponent: function()
     {
@@ -545,6 +569,14 @@ EHR.ext.ChemExcelWin = Ext.extend(Ext.Panel, {
 });
 Ext.reg('ehr-chemexcelwin', EHR.ext.ChemExcelWin);
 
+
+/**
+ * @class
+ * This window will allow clinpath staff to import hematology results from a text-based format.  It is designed to directly
+ * parse the output provided by the cytometer.  It will parse/validate the incoming records and normalize their values
+ * and Test IDs.  It will also add units according to the data in ehr_lookups.hematology_tests.  This panel is connected to the
+ * 'Add Bulk' button in the hematology section in the ClinPath form.
+ */
 EHR.ext.HematologyExcelWin = Ext.extend(Ext.Panel, {
     initComponent: function()
     {
@@ -845,6 +877,11 @@ EHR.ext.HematologyExcelWin = Ext.extend(Ext.Panel, {
 Ext.reg('ehr-hematologyexcelwin', EHR.ext.HematologyExcelWin);
 
 
+/**
+ * @class
+ * This window will allow users to query the treatment schedule and add records to a task based on the scheduled treatments
+ * that match their criteria.  It is connected to the 'Add Treatments' button in the treatments form.
+ */
 EHR.ext.TreatmentSelector = function(config){
     EHR.ext.TreatmentSelector.superclass.constructor.call(this, config);
 };
@@ -868,7 +905,7 @@ Ext.extend(EHR.ext.TreatmentSelector, Ext.Panel, {
                 xtype: 'datefield',
                 fieldLabel: 'Date',
                 value: (new Date()),
-                hidden: !EHR.permissionMap.hasPermission('Completed', 'update', {queryName: 'Blood Draws', schemaName: 'study'}),
+                hidden: !EHR.Security.hasPermission('Completed', 'update', {queryName: 'Blood Draws', schemaName: 'study'}),
                 maxValue: (new Date()),
                 ref: 'dateField'
             },{
@@ -1044,7 +1081,12 @@ Ext.extend(EHR.ext.TreatmentSelector, Ext.Panel, {
 });
 Ext.reg('ehr-treatmentselector', EHR.ext.TreatmentSelector);
 
-
+/**
+ * This should probably be depreciated.  It was originally created to supplement EHR.ext.TreatmentSelector
+ * by allowing admin users to pick a date (the normal one will only query treatments on the current date.
+ * This was necessary to allow users to retroactively mark treatments as complete.  However, EHR.ext.TreatmentSelector
+ * was modified to conditionally show the date field, which is probably a better solution.
+ */
 EHR.ext.TreatmentSelector2 = Ext.extend(EHR.ext.TreatmentSelector, {
     initComponent: function()
     {
@@ -1055,6 +1097,12 @@ EHR.ext.TreatmentSelector2 = Ext.extend(EHR.ext.TreatmentSelector, {
 Ext.reg('ehr-treatmentselector2', EHR.ext.TreatmentSelector2);
 
 
+/*
+ * @class
+ * This provides the UI to copy records from a previous necropsy into the current one.  The users selects which dataset(s) to copy from
+ * The code then selects all records from these datasets.  It will only copy the fields specified in .onMultiLoad(), since it would
+ * not make sense to copy Id/Date/Caseno, etc.  It is connected to the 'Copy From Necropsy' button in the necropsy form.
+ */
 EHR.ext.NecropsyCopyPanel = Ext.extend(Ext.Panel, {
     initComponent: function()
     {
@@ -1210,8 +1258,13 @@ EHR.ext.NecropsyCopyPanel = Ext.extend(Ext.Panel, {
 Ext.reg('ehr-necropsycopy', EHR.ext.NecropsyCopyPanel);
 
 
-
-EHR.ext.StoreSorter = Ext.extend(Ext.Panel, {
+/**
+ * @class
+ * This is designed to be generic UI to sort a store client-side, based on multiple fields.  At time of writing, this is
+ * only used in necropsy and biopsy for the purpose of sorting histology, tissues, etc.  However, it could in theory be added
+ * as an option to any EHR form section.
+ */
+EHR.ext.StoreSorterPanel = Ext.extend(Ext.Panel, {
     initComponent: function()
     {
         var storeData = [];
@@ -1297,7 +1350,7 @@ EHR.ext.StoreSorter = Ext.extend(Ext.Panel, {
             }]
         });
 
-        EHR.ext.StoreSorter.superclass.initComponent.call(this);
+        EHR.ext.StoreSorterPanel.superclass.initComponent.call(this);
     },
     doSort: function(){
         var field1 = this.ownerCt.theForm.sortField.getValue();
@@ -1347,10 +1400,19 @@ EHR.ext.StoreSorter = Ext.extend(Ext.Panel, {
 
     }
 });
-Ext.reg('ehr-storesorter', EHR.ext.StoreSorter);
+Ext.reg('ehr-storesorterpanel', EHR.ext.StoreSorterPanel);
 
 
-EHR.ext.BloodSelector = Ext.extend(Ext.Panel, {
+/**
+ * @class
+ * This provides the UI which allows the user to import scheduled blood draws to the current task.  Note that this works slightly
+ * differently than adding scheduled treatments.  For blood, adding a request creates an actual record in study.blood draws.  This request
+ * does not initiall have a taskId.  When the user attempts to add scheduled blood to a task, it will query all blood records
+ * that are approved requests, but lack a taskId (aka not already assigned to a different task).  It will update these records with the taskId of the
+ * current task, and also change the date to reflect the current time.  It then reloads the active blood draws store, which will cause it to
+ * load these records (because we just updated their taskId field).
+ */
+EHR.ext.BloodSelectorPanel = Ext.extend(Ext.Panel, {
     initComponent: function()
     {
         Ext.applyIf(this, {
@@ -1370,7 +1432,7 @@ EHR.ext.BloodSelector = Ext.extend(Ext.Panel, {
                 xtype: 'datefield'
                 ,fieldLabel: 'Date'
                 ,value: new Date()
-                ,hidden: !EHR.permissionMap.hasPermission('Completed', 'update', {queryName: 'Blood Draws', schemaName: 'study'})
+                ,hidden: !EHR.Security.hasPermission('Completed', 'update', {queryName: 'Blood Draws', schemaName: 'study'})
                 ,ref: 'dateField'
             },{
                 xtype: 'combo'
@@ -1447,7 +1509,7 @@ EHR.ext.BloodSelector = Ext.extend(Ext.Panel, {
             }]
         });
 
-        EHR.ext.BloodSelector.superclass.initComponent.call(this, arguments);
+        EHR.ext.BloodSelectorPanel.superclass.initComponent.call(this, arguments);
     },
 
     getFilterArray: function(button)
@@ -1528,8 +1590,8 @@ EHR.ext.BloodSelector = Ext.extend(Ext.Panel, {
                 date: dateVal
             };
 
-            if(EHR.permissionMap && EHR.permissionMap.qcMap && EHR.permissionMap.qcMap.label['In Progress']){
-                obj.qcState = EHR.permissionMap.qcMap.label['In Progress'].RowId;
+            if(EHR.Security.getQCStateByLabel('In Progress')){
+                obj.qcState = EHR.Security.getQCStateByLabel('In Progress').RowId;
             }
 
             records.push(obj);
@@ -1567,10 +1629,15 @@ EHR.ext.BloodSelector = Ext.extend(Ext.Panel, {
     }
 
 });
-Ext.reg('ehr-bloodselector', EHR.ext.BloodSelector);
+Ext.reg('ehr-bloodselector', EHR.ext.BloodSelectorPanel);
 
 
-EHR.ext.ImportPanelHeader = Ext.extend(EHR.ext.FormPanel, {
+/**
+ * @class
+ * This is a subclass of EHR.ext.FormPanel designed to be used by the top-most section of TaskPanels.  The primary purpose was to allow distinct
+ * buttons to be present in this form secion; however, many of these buttons have been disabled in favor of other mechanisms.
+ */
+EHR.ext.HeaderFormPanel = Ext.extend(EHR.ext.FormPanel, {
     initComponent: function()
     {
         Ext.apply(this, {
@@ -1622,7 +1689,7 @@ EHR.ext.ImportPanelHeader = Ext.extend(EHR.ext.FormPanel, {
             }
         });
 
-        EHR.ext.ImportPanelHeader.superclass.initComponent.call(this, arguments);
+        EHR.ext.HeaderFormPanel.superclass.initComponent.call(this, arguments);
 
     },
     saveTemplate: function(){
@@ -1662,9 +1729,15 @@ EHR.ext.ImportPanelHeader = Ext.extend(EHR.ext.FormPanel, {
         );
     }
 });
-Ext.reg('ehr-importpanelheader', EHR.ext.ImportPanelHeader);
+Ext.reg('ehr-headerformpanel', EHR.ext.HeaderFormPanel);
 
 
+/**
+ * @class
+ * This panel is designed to display the animal's abstract in an ImportPanel.  It listens for the participantchange event on the bound
+ * ImportPanel and will fire participantloaded when the participant's information is available.
+ *
+ */
 EHR.ext.AbstractPanel = function(config){
     EHR.ext.AbstractPanel.superclass.constructor.call(this, config);
 };
@@ -1816,6 +1889,11 @@ Ext.extend(EHR.ext.AbstractPanel, Ext.FormPanel, {
 Ext.reg('ehr-abstractpanel', EHR.ext.AbstractPanel);
 
 
+/**
+ * @class
+ * A subclass of EHR.ext.Abstract panel.  Instead of simply displaying the abstract, this panel also displays information
+ * about the selected protocol, including number assigned and distinct assignments by species
+ */
 EHR.ext.AssignmentAbstractPanel = Ext.extend(EHR.ext.AbstractPanel, {
     initComponent: function(){
         EHR.ext.AssignmentAbstractPanel.superclass.initComponent.call(this, arguments);
@@ -1893,6 +1971,13 @@ EHR.ext.AssignmentAbstractPanel = Ext.extend(EHR.ext.AbstractPanel, {
 });
 Ext.reg('ehr-assignmentabstractpanel', EHR.ext.AssignmentAbstractPanel);
 
+
+/**
+ * @class
+ * This is an ext panel designed to load a LABKEY QueryWebPart.  The advantage of using this panel is that it will fit into a larger
+ * Ext layout more easily and can be manipulated like a normal Ext container.  In the EHR it is used primarily by the UI on the 'Enter Data'
+ * or Manage Requests pages.
+ */
 EHR.ext.QueryPanel = Ext.extend(Ext.Panel, {
     initComponent: function(){
         Ext.applyIf(this, {
@@ -1957,7 +2042,12 @@ EHR.ext.QueryPanel = Ext.extend(Ext.Panel, {
 });
 Ext.reg('ehr-qwppanel', EHR.ext.QueryPanel);
 
-EHR.ext.RecordDuplicator = Ext.extend(Ext.FormPanel, {
+/**
+ * @class
+ * This provides the UI to duplicate one or more records from an EHR.ext.GridFormPanel.  It allows the user to pick the number of copies
+ * per record and which fields to copy
+ */
+EHR.ext.RecordDuplicatorPanel = Ext.extend(Ext.FormPanel, {
     initComponent: function()
     {
         Ext.applyIf(this, {
@@ -2004,7 +2094,7 @@ EHR.ext.RecordDuplicator = Ext.extend(Ext.FormPanel, {
         if(!this.records || !this.records.length){
             this.ownerCt.hide();
         }
-        EHR.ext.RecordDuplicator.superclass.initComponent.call(this, arguments);
+        EHR.ext.RecordDuplicatorPanel.superclass.initComponent.call(this, arguments);
     },
 
     populateForm: function(){
@@ -2037,10 +2127,14 @@ EHR.ext.RecordDuplicator = Ext.extend(Ext.FormPanel, {
         }
     }
 });
-Ext.reg('ehr-recordduplicator', EHR.ext.RecordDuplicator);
+Ext.reg('ehr-recordduplicator', EHR.ext.RecordDuplicatorPanel);
 
 
-//creates a pair of date fields that automatically set their min/max dates to create a date range
+/**
+ * @class
+ * Creates a pair of date fields that automatically set their min/max dates to create a date range.  This was originally used in the AnimalHistory
+ * page, but has since been removed.  Could potentially be removed.
+ */
 EHR.ext.DateRangePanel = Ext.extend(Ext.Panel,
 {
     initComponent : function(config)
@@ -2096,6 +2190,11 @@ EHR.ext.DateRangePanel = Ext.extend(Ext.Panel,
 Ext.reg('DateRangePanel', EHR.ext.DateRangePanel);
 
 
+/**
+ * @class
+ * This panel provides the UI that allows the user to apply a saved template to the current form.  It also provides UI to let the user
+ * override existing values on this saved template.
+ */
 EHR.ext.ApplyTemplatePanel = Ext.extend(Ext.FormPanel, {
     initComponent: function()
     {
@@ -2338,6 +2437,12 @@ EHR.ext.ApplyTemplatePanel = Ext.extend(Ext.FormPanel, {
 });
 Ext.reg('ehr-applytemplatepanel', EHR.ext.ApplyTemplatePanel);
 
+
+/**
+ * @class
+ * This panel provides the UI which allows the user to save existing records in a Form or Form section as a template.  It
+ * gives the ability to choose which section(s) (ie. queries) should be saved and which field(s) per section to save.
+ */
 EHR.ext.SaveTemplatePanel = Ext.extend(Ext.Window, {
     initComponent: function()
     {
@@ -2628,6 +2733,12 @@ EHR.ext.SaveTemplatePanel = Ext.extend(Ext.Window, {
 Ext.reg('ehr-savetemplatepanel', EHR.ext.SaveTemplatePanel);
 
 
+/*
+ * Although this has been commented out, this is designed to present a basic EHR.ext.Formpanel to the user in an Ext window.  This
+ * can be useful to allow fast insertion of records into a table.  It was originally used to allow vets to enter clinical remarks;
+ * however, this was removed in favor of all remarks going through the Task pathway.  This code was note removed because the basic
+ * mechanism was prove useful in other contexts.
+ */
 //EHR.ext.FormWindow = Ext.extend(Ext.Window, {
 //    initComponent: function()
 //    {
@@ -2646,8 +2757,8 @@ Ext.reg('ehr-savetemplatepanel', EHR.ext.SaveTemplatePanel);
 //                xtype: 'ehr-formpanel'
 //                ,schemaName: this.schemaName
 //                ,queryName: this.queryName
-//                ,columns: EHR.ext.FormColumns[this.queryName]
-//                ,metadata: EHR.ext.getTableMetadata(this.queryName, ['Task'])
+//                ,columns: EHR.Metadata.Columns[this.queryName]
+//                ,metadata: EHR.Metadata.getTableMetadata(this.queryName, ['Task'])
 //            }]
 //            ,scope: this
 //        });
@@ -2658,151 +2769,3 @@ Ext.reg('ehr-savetemplatepanel', EHR.ext.SaveTemplatePanel);
 //Ext.reg('ehr-formwindow', EHR.ext.FormWindow);
 
 
-EHR.ext.createImportPanel = function(config){
-    var multi = new LABKEY.MultiRequest();
-
-    var formSections;
-    multi.add(LABKEY.Query.selectRows, {
-        schemaName: 'ehr',
-        queryName: 'formpanelsections',
-        filterArray: [LABKEY.Filter.create('formType', config.formType, LABKEY.Filter.Types.EQUAL)],
-        sort: 'destination,sort_order',
-        scope: this,
-        successCallback: function(results){
-            formSections = results.rows;
-        },
-        failure: EHR.utils.onError
-    });
-
-    var formConfig;
-    multi.add(LABKEY.Query.selectRows, {
-        schemaName: 'ehr',
-        queryName: 'formtypes',
-        filterArray: [LABKEY.Filter.create('formType', config.formType, LABKEY.Filter.Types.EQUAL)],
-        scope: this,
-        successCallback: function(results){
-            if(results.rows.length)
-                formConfig = results.rows[0];
-            else
-                formConfig = {};
-        },
-        failure: EHR.utils.onError
-    });
-    multi.send(onSuccess, this);
-
-    function onSuccess(){
-        if(!formSections.length){
-            //we assume this is a simple query:
-            config.queryName = config.formType;
-            config.schemaName = 'study';
-            if(config.panelType=='TaskPanel')
-                EHR.ext.createSimpleTaskPanel(config);
-            else if (config.panelType=='TaskDetailsPanel')
-                EHR.ext.createSimpleTaskDetailsPanel(config);
-            else
-                alert('Form type not found');
-            return;
-        }
-
-        var panelCfg = formConfig.configjson ? Ext.util.JSON.decode(formConfig.configjson) : {};
-        panelCfg = Ext.apply(panelCfg, config);
-
-        Ext.applyIf(panelCfg, {
-            title: config.formType,
-            formHeaders: [],
-            formSections: [],
-            formTabs: []
-        });
-
-        Ext.each(formSections, function(row){
-            var metaSources;
-            if(row.metadatasources)
-                metaSources = row.metadatasources.split(',');
-
-            var obj = {
-                xtype: row.xtype,
-                schemaName: row.schemaName,
-                queryName: row.queryName,
-                title: row.title || row.queryName,
-                metadata: EHR.ext.getTableMetadata(row.queryName, metaSources)
-            };
-
-            if(row.buttons)
-                obj.tbarBtns = row.buttons.split(',');
-
-            if(row.initialTemplates && !config.formUUID){
-                panelCfg.initialTemplates = panelCfg.initialTemplates || [];
-                var templates = row.initialTemplates.split(',');
-                var storeId;
-                Ext.each(templates, function(t){
-                    storeId = [row.schemaName, row.queryName, '', ''].join('||');
-                    panelCfg.initialTemplates.push({storeId: row.storeId, title: t});
-                }, this);
-
-            }
-
-            if(row.configJson){
-                var json = Ext.util.JSON.decode(row.configJson);
-                Ext.apply(obj, json);
-            }
-
-            if(config.noTabs && row.destination == 'formTabs')
-                panelCfg['formSections'].push(obj);
-            else
-                panelCfg[row.destination].push(obj);
-        }, this);
-
-        return new EHR.ext[config.panelType](panelCfg);
-    }
-
-};
-
-
-EHR.ext.createSimpleTaskPanel = function(config){
-    if(!config || !config.queryName){
-         alert('Must provide queryName');
-         return;
-    }
-
-    var panelCfg = Ext.apply({}, config);
-    Ext.apply(panelCfg, {
-        title: config.queryName,
-        formHeaders: [{xtype: 'ehr-abstractpanel'}],
-        formSections: [{
-            xtype: 'ehr-gridformpanel',
-            schemaName: config.schemaName,
-            queryName: config.queryName,
-            title: config.title || config.queryName,
-            columns: EHR.ext.FormColumns[config.queryName],
-            metadata: EHR.ext.getTableMetadata(config.queryName, ['Task'])
-        }],
-        formTabs: []
-    });
-
-    return new EHR.ext.TaskPanel(panelCfg);
-};
-
-
-EHR.ext.createSimpleTaskDetailsPanel = function(config){
-    if(!config || !config.queryName){
-         alert('Must provide queryName');
-         return;
-    }
-
-    var panelCfg = Ext.apply({}, config);
-    Ext.apply(panelCfg, {
-        title: config.queryName,
-        formSections: [{
-            xtype: 'ehr-gridformpanel',
-            schemaName: config.schemaName,
-            queryName: config.queryName,
-            readOnly: true,
-            title: config.title || config.queryName,
-            columns: EHR.ext.FormColumns[config.queryName],
-            metadata: EHR.ext.getTableMetadata(config.queryName, ['Task'])
-        }],
-        formTabs: []
-    });
-
-    return new EHR.ext.TaskDetailsPanel(panelCfg);
-};

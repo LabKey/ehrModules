@@ -7,6 +7,49 @@ Ext.namespace('EHR.ext');
 
 LABKEY.requiresScript("/ehr/ehrAPI.js");
 
+/**
+ * Constructs a new EHR SearchPanel using the supplied configuration.
+ * @class
+ * EHR extension to Ext.Panel, which constructs a search page for a single query, based on the query's metadata.
+ *
+ * <p>If you use any of the LabKey APIs that extend Ext APIs, you must either make your code open source or
+ * <a href="https://www.labkey.org/wiki/home/Documentation/page.view?name=extDevelopment">purchase an Ext license</a>.</p>
+ *            <p>Additional Documentation:
+ *              <ul>
+ *                  <li><a href="https://www.labkey.org/wiki/home/Documentation/page.view?name=javascriptTutorial">LabKey JavaScript API Tutorial</a></li>
+ *                  <li><a href="https://www.labkey.org/wiki/home/Documentation/page.view?name=labkeyExt">Tips for Using Ext to Build LabKey Views</a></li>
+ *              </ul>
+ *           </p>
+ * @constructor
+ * @augments Ext.Panel
+ * @param config Configuration properties. This may contain any of the configuration properties supported by the Ext.Panel, plus those listed here.
+ * @param {String} [config.containerPath] The container path from which to query the server. If not specified, the current container is used.
+ * @param {String} [config.schemaName] The LabKey schema to query.
+ * @param {String} [config.queryName] The query name within the schema to fetch.
+ * @param {String} [config.viewName] A saved custom view of the specified query to use if desired.
+ * @param {Object} [config.metadata] A metadata object that will be applied to the default metadata returned by the server.  See EHR.Metadata or EHR.ext.AdvancedStore for more information.
+ * @param {String} [config.columns] A comma separated list of columns to display.
+ * @param (boolean) [config.useContainerFilter] Dictates whether a combobox appears to let the user pick a container filter when searching.
+ * @param (string) [config.defaultContainerFilter] The default container filter in the combo.  If provided, but showContainerFilter is false, this container filter will be silently applied to the search.
+ * @param (boolean) [config.allowSelectView] Dictates whether a combobox appears to let the user pick a view.
+ * @param (string) [config.defaultView] If provided, this view will be initially selected in the views combo.
+ * @example &lt;script type="text/javascript"&gt;
+    var panel;
+    Ext.onReady(function(){
+        var panel = new EHR.ext.SearchPanel({
+            schemaName: 'core',
+            queryName: 'users'
+            renderTo: 'targetDiv',
+            width: 800,
+            autoHeight: true,
+            title: 'Search Users'
+        });
+    });
+
+
+&lt;/script&gt;
+&lt;div id='targetDiv'/&gt;
+ */
 EHR.ext.SearchPanel = Ext.extend(Ext.Panel, {
 
     initComponent: function(){
@@ -39,27 +82,6 @@ EHR.ext.SearchPanel = Ext.extend(Ext.Panel, {
 
         EHR.ext.SearchPanel.superclass.initComponent.call(this);
 
-//        //default labkey fields that are not terribly useful to end users
-//        var metaDefaults = {
-//            metadata: {}
-//            ,newFields: []
-//        };
-//        EHR.utils.rApplyIf(this, metaDefaults);
-
-//        LABKEY.Query.getQueryDetails({
-//            containerPath: this.containerPath
-//            ,queryName: this.queryName
-//            ,schemaName: this.schemaName
-//            ,viewName: this.viewName
-//            ,maxRows: 0
-////            ,successCallback: this.onLoad
-//            ,successCallback: function(results){
-//                console.log(results)
-//            }
-//            ,failure: EHR.utils.onError
-//            ,scope: this
-//        });
-
         this.store = new EHR.ext.AdvancedStore({
             containerPath: this.containerPath
             ,queryName: this.queryName
@@ -68,8 +90,6 @@ EHR.ext.SearchPanel = Ext.extend(Ext.Panel, {
             ,maxRows: 0
             ,includeTotalCount: false
             ,timeout: 0
-            //,successCallback: this.onLoad
-            //,failure: EHR.utils.onError
             ,scope: this
             ,autoLoad: true
             ,metadata: this.metadata
@@ -94,13 +114,6 @@ EHR.ext.SearchPanel = Ext.extend(Ext.Panel, {
         store.fields.each(function(f){
             this.createRow(f);
         }, this);
-
-//        //append user-defined fields
-//        Ext.each(this.newFields, function(c){
-//            if(!c.jsonType)
-//                c.jsonType = 'string';
-//            this.createRow(c);
-//        }, this);
 
         if (this.useContainerFilter){
             this.add({

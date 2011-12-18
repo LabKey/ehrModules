@@ -9,26 +9,35 @@ Ext.namespace("EHR", "EHR.ext");
 LABKEY.requiresScript("/ehr/utils.js");
 LABKEY.requiresScript("/ehr/ehrMetaHelper.js");
 
-
 /**
- * @memberOf LABKEY.ext.Store#
- * @name beforemetachange
- * @event
- * @description Fires after the HTTP proxy loads metadata from the server, but before it is applied to the store
- * @param {Object} this The store object
- * @param {Object} meta The metadata object that will be applied to the store
+ * Constructs a new EHR AdvancedStore using the supplied configuration.
+ * @class
+ * EHR extension to the LABKEY.ext.Store, which constructs a store, configured based on the query's metadata.
+ * This class understands various LabKey metadata formats and is able to transmit data to/from the server using the saveRows() API.
+ * There are several key differeces between this class and LABKEY.ext.Store:
+ * <li>Many internal methods of this store have been divded to permit a collection of stores to be more easily controlled by an EHR.ext.StoreCollection</li>
+ * <li>This store accepts a metadata object that will be applied directly to the server-supplied metadata.  This metadata is interpreted by other EHR/Ext components such as FormPanel to EditorGrid</li>
+ * <li>This store supports the concept of 'validation' which submits a record to the server through the normal save pathway.  This record will enter the validation script; however, there is a flag to force it to fail.  This allows server-side validation / error generation to be performed and for a single code path to be used for commits and validation.</li>
+ * <li>This store is designed to parse the response from the server to allow two-way communication between validation scripts and the store.</li>
+ *
+ * <p>If you use any of the LabKey APIs that extend Ext APIs, you must either make your code open source or
+ * <a href="https://www.labkey.org/wiki/home/Documentation/page.view?name=extDevelopment">purchase an Ext license</a>.</p>
+ *            <p>Additional Documentation:
+ *              <ul>
+ *                  <li><a href="https://www.labkey.org/wiki/home/Documentation/page.view?name=javascriptTutorial">LabKey JavaScript API Tutorial</a></li>
+ *                  <li><a href="https://www.labkey.org/wiki/home/Documentation/page.view?name=labkeyExt">Tips for Using Ext to Build LabKey Views</a></li>
+ *              </ul>
+ *           </p>
+ * @constructor
+ * @augments LABKEY.ext.Store
+ * @param config Configuration properties. This may contain any of the configuration properties supported by the LABKEY.ext.Store plus those listed here.
+ * @param {String} [config.containerPath] The container path from which to query the server. If not specified, the current container is used.
+ * @param {String} [config.schemaName] The LabKey schema to query.
+ * @param {String} [config.queryName] The query name within the schema to fetch.
+ * @param {String} [config.viewName] A saved custom view of the specified query to use if desired.
+ * @param {Object} [config.metadata] A metadata object that will be applied to the default metadata returned by the server.  See EHR.Metadata for more information.
+ * @param {Boolean} [config.doServerValidation] If true, whenever a record is modified it will be validated on the server.
  */
-/**
- * @memberOf LABKEY.ext.Store#
- * @name validation
- * @event
- * @description This will fire whenever the store's records are validated.
- * @param {Object} this The store object
- * @param {Array} records Array of the records that were validated
- */
-
-//doServerValidation: boolean
-
 EHR.ext.AdvancedStore = Ext.extend(LABKEY.ext.Store, {
     constructor: function(config){
         Ext.apply(this, {
@@ -39,15 +48,28 @@ EHR.ext.AdvancedStore = Ext.extend(LABKEY.ext.Store, {
 
         EHR.ext.AdvancedStore.superclass.constructor.apply(this, arguments);
 
-        //NOTE: this is done so we can sort a store with records not existing on the server
-        //I disabled it b/c you cannot sort on 2 columns
-        //this.remoteSort = false;
-
+        /**
+         * @memberOf EHR.ext.AdvancedStore#
+         * @name beforemetachange
+         * @event
+         * @description Fires after the HTTP proxy loads metadata from the server, but before it is applied to the store
+         * @param {Object} this The store object
+         * @param {Object} meta The metadata object that will be applied to the store
+         */
+        /**
+         * @memberOf EHR.ext.AdvancedStore#
+         * @name validation
+         * @event
+         * @description This will fire whenever the store's records are validated.
+         * @param {Object} this The store object
+         * @param {Array} records Array of the records that were validated
+         */
         this.addEvents('beforemetachange', 'validation');
         this.proxy.on("load", this.onProxyLoad, this);
 
+        //@depreciated
         if(this.monitorPermissions){
-            EHR.utils.getDatasetPermissions({
+            EHR.Security.init({
                 success: Ext.emptyFn,
                 failure: EHR.utils.onError,
                 scope: this
@@ -66,6 +88,8 @@ EHR.ext.AdvancedStore = Ext.extend(LABKEY.ext.Store, {
             this.initMonitorValid();
     },
 
+    //private
+    //creates the listeners needed to validate records on the server
     initMonitorValid: function(){
         this.on('update', this.validateRecord, this);
         this.on('add', this.validateRecords, this);
@@ -75,6 +99,7 @@ EHR.ext.AdvancedStore = Ext.extend(LABKEY.ext.Store, {
         this.validateRecords(this);
     },
 
+    //private
     stopMonitorValid: function(){
         this.un('update', this.validateRecord, this);
         this.un('add', this.validateRecords, this);
@@ -84,6 +109,7 @@ EHR.ext.AdvancedStore = Ext.extend(LABKEY.ext.Store, {
 //        this.un('validation', this.validateRecordOnServer, this);
     },
 
+    //private
     validationOnRemove: function(store, rec){
         //we need to remove all errors from this record
         this.errors.each(function(error){
@@ -93,6 +119,8 @@ EHR.ext.AdvancedStore = Ext.extend(LABKEY.ext.Store, {
         }, this);
         this.fireEvent('validation', this);
     },
+
+    //private
     onProxyLoad: function(proxy, response, options){
         var meta = this.reader.meta;
 
@@ -131,25 +159,28 @@ EHR.ext.AdvancedStore = Ext.extend(LABKEY.ext.Store, {
         this.reader.onMetaChange(meta);
     },
 
+    //private
     changeMetadata: function(meta){
         console.log('metachange:'+this.storeId);
         this.reader.onMetaChange(meta);
     },
 
+    //@depreciated
+    //the original intent was to enforce QCState permissions in the store, but it was never fully implemented
     verifyPermission: function(store, rec, operation){
         var qc;
-        if(EHR.permissionMap && rec.fields.get('QCState')){
+        if(EHR.Security.hasLoaded() && rec.fields.get('QCState')){
             qc = rec.get('QCState');
             if(!qc)
                 return;
 
-            qc = EHR.permissionMap.qcMap.rowid[qc].Label;
+            qc = EHR.Security.getQCStateByRowId(qc).Label;
 
             var command = 'insert';
             //TODO: it would be nice to be smarter about whether we test for insert or update.
             //the server will enforce it, but stopping it on the client would be more friendly
 
-            if(!EHR.permissionMap.hasPermission(qc, command, {schemaName: this.schemaName, queryName: this.queryName})){
+            if(!EHR.Security.hasPermission(qc, command, {schemaName: this.schemaName, queryName: this.queryName})){
                 alert('You do not have permission to change this record');
                 rec.reject();
             }
@@ -166,7 +197,7 @@ EHR.ext.AdvancedStore = Ext.extend(LABKEY.ext.Store, {
                         //you can edit recs you modified
                         rec.get('modified') != LABKEY.Security.currentUser.id &&
                         //data admins can always edit
-                        !EHR.permissionMap.hasPermission(qc, 'admin', {schemaName: this.schemaName, queryName: this.queryName})
+                        !EHR.Security.hasPermission(qc, 'admin', {schemaName: this.schemaName, queryName: this.queryName})
                     ){
                         //also allow editing of tasks assigned to you:
                         //TODO
@@ -180,8 +211,8 @@ EHR.ext.AdvancedStore = Ext.extend(LABKEY.ext.Store, {
         }
     },
 
-    //NOTE: the intention of tihs method was to provide a standard, low-level way to translating Labkey metadata names into ext ones.
-    //I am less convinced that this is really the way to go; however, there's a handlful of params where translation makes sense
+    //private
+    //the intention of this method was to provide a standard, low-level way to translating Labkey metadata names into ext ones.
     translateMetaData: function(meta){
         Ext.each(meta.fields, function(field){
             var h = Ext.util.Format.htmlEncode;
@@ -197,6 +228,7 @@ EHR.ext.AdvancedStore = Ext.extend(LABKEY.ext.Store, {
         }, this);
     },
 
+    //private
     //TODO: would be better to just override this.recordType
     //the primary purpose of this method is to improve handling of default values and allow a setInitialValue() function
     //holding off on improving until I see ext 4
@@ -219,6 +251,7 @@ EHR.ext.AdvancedStore = Ext.extend(LABKEY.ext.Store, {
         return rec;
     },
 
+    //private
     addRecords: function(records, idx){
         if(undefined === idx)
             idx = this.getCount();
@@ -240,6 +273,7 @@ EHR.ext.AdvancedStore = Ext.extend(LABKEY.ext.Store, {
         return records
     },
 
+    //private
     addRecord: function(r, idx){
         if(undefined === idx)
             idx = this.getCount();
@@ -251,6 +285,7 @@ EHR.ext.AdvancedStore = Ext.extend(LABKEY.ext.Store, {
         return r;
     },
 
+    //private
     duplicateRecord: function(record, defaults){
         defaults  = defaults || {};
         //NOTE: this is deliberate such that defaults are applied first.  if you want the new record to have a null value, this should work
@@ -259,12 +294,14 @@ EHR.ext.AdvancedStore = Ext.extend(LABKEY.ext.Store, {
         this.store.addRecord(newData);
     },
 
+    //private
     duplicateRecords: function(records, defaults){
         Ext.each(records, function(r){
             this.duplicateRecord(r, defaults);
         }, this);
     },
 
+    //private
     maxErrorSeverity: function(){
         var maxSeverity;
         this.errors.each(function(e){
@@ -274,6 +311,7 @@ EHR.ext.AdvancedStore = Ext.extend(LABKEY.ext.Store, {
         return maxSeverity;
     },
 
+    //private
     validateRecords: function(store, recs, fireEvent, config){
         config = config || {};
 
@@ -291,6 +329,8 @@ EHR.ext.AdvancedStore = Ext.extend(LABKEY.ext.Store, {
         }
     },
 
+    //private
+    //this method performs simple checks client-side then will submit the record for server-validation if selected
     validateRecord: function(store, r, operation, config){
         config = config || {};
 
@@ -365,6 +405,7 @@ EHR.ext.AdvancedStore = Ext.extend(LABKEY.ext.Store, {
         }
     },
 
+    //private
     validateRecordOnServer: function(store, records, config){
         if(!records || !records.length)
             return;
@@ -390,16 +431,27 @@ EHR.ext.AdvancedStore = Ext.extend(LABKEY.ext.Store, {
         this.sendRequest(records, commands, {validateOnly: true, silent: true, targetQCState: null});
     },
 
+    /**
+     * This is a convenience wrapper for EHR.ext.metaHelper.getFormEditorConfig()
+     * @param {string] fieldName The name of the field
+     * @param {object} config Optional.  This config object will be merged with the output of getFormEditorConfig()
+     */
     getFormEditorConfig: function(fieldName, config){
         var meta = this.findFieldMeta(fieldName);
         return EHR.ext.metaHelper.getFormEditorConfig(meta, config);
     },
 
+    /**
+     * This is a convenience wrapper for EHR.ext.metaHelper.getGridEditorConfig()
+     * @param {string] fieldName The name of the field
+     * @param {object} config Optional.  This config object will be merged with the output of getGridEditorConfig()
+     */
     getGridEditorConfig: function(fieldName, config){
         var meta = this.findFieldMeta(fieldName);
         return EHR.ext.metaHelper.getGridEditorConfig(meta, config);
     },
 
+    //private
     getAllRecords: function(){
         var recs = [];
         this.each(function(r){
@@ -413,8 +465,9 @@ EHR.ext.AdvancedStore = Ext.extend(LABKEY.ext.Store, {
         return true;
     },
 
-    //the only reason this method is overridden is to delete record.phantom near the bottom.  see note
-    //second change: we also delete lastTransactionId
+    //private
+    //@override
+    //the only reason this method is overridden is to delete record.phantom near the bottom (see note).  we also delete lastTransactionId
     processResponse : function(rows){
         var idCol = this.reader.jsonData.metaData.id;
         var row;
@@ -478,11 +531,13 @@ EHR.ext.AdvancedStore = Ext.extend(LABKEY.ext.Store, {
         }
     },
 
+    //@depreciated
     getLookupStore: function(){
         //not needed .  used in editorgridpanel.  should be shifted to metaHelper.
     },
 
-    //only overriden to remove setting a default nullCaption.  this is moved to the combo tpl
+    //@override
+    // overriden to remove setting a default nullCaption.  this is moved to the combo tpl
     onLoad : function(store, records, options) {
         this.isLoading = false;
 
@@ -503,13 +558,14 @@ EHR.ext.AdvancedStore = Ext.extend(LABKEY.ext.Store, {
         }
     },
 
+    //private
     //NOTE: split this method in two so they can be called independently
     commitChanges : function(extraContext){
         var records = this.getModifiedRecords();
         this.commitRecords(records, extraContext);
     },
 
-
+    //private
     //see above
     commitRecords : function(records, extraContext){
         var commands = this.getChanges(records);
@@ -529,6 +585,7 @@ EHR.ext.AdvancedStore = Ext.extend(LABKEY.ext.Store, {
         this.sendRequest(records, commands, extraContext);
     },
 
+    //private
     getChanges: function(records){
         records = records || this.getModifiedRecords();
 
@@ -622,6 +679,7 @@ EHR.ext.AdvancedStore = Ext.extend(LABKEY.ext.Store, {
         return commands;
     },
 
+    //private
     //NOTE: we append the value of the key field to the record
     getRowData : function(record) {
         var values = EHR.ext.AdvancedStore.superclass.getRowData.apply(this, arguments);
@@ -629,6 +687,7 @@ EHR.ext.AdvancedStore = Ext.extend(LABKEY.ext.Store, {
         return values;
     },
 
+    //private
     //NOTE: split this into a separate method so validateOnServer() can call it separately
     sendRequest: function(records, commands, extraContext){
         var request = Ext.Ajax.request({
@@ -652,6 +711,7 @@ EHR.ext.AdvancedStore = Ext.extend(LABKEY.ext.Store, {
         }, this);
     },
 
+    //private
     //NOTE: overridden support different processing of exceptions and validation errors
     getOnCommitFailure : function(records) {
         return function(response, options) {
@@ -686,6 +746,7 @@ EHR.ext.AdvancedStore = Ext.extend(LABKEY.ext.Store, {
         };
     },
 
+    //private
     handleValidationErrors: function(serverError, response, extraContext){
         var record = this.getById(serverError.row._recordId);
         if(record){
@@ -697,8 +758,8 @@ EHR.ext.AdvancedStore = Ext.extend(LABKEY.ext.Store, {
         }
     },
 
-    //this will process the errors associated with 1 record.
-    // this might be more than 1 error
+    //private
+    //this will process the errors associated with 1 record.  there might be more than 1 error per record
     handleValidationError: function(record, serverError, response, extraContext){
         //verify transaction Id matches the most recent request
         if(record.lastTransactionId != response.tId){
@@ -761,6 +822,9 @@ EHR.ext.AdvancedStore = Ext.extend(LABKEY.ext.Store, {
         });
     },
 
+    //private
+    //NOTE: instead of directly deleting the records, this method converts them to a QCState of 'Delete Requested'.  This is for historic reasons
+    //that no longer apply.  At some point this code should probably be changed to directly delete the records.
     requestDeleteRecords: function(records){
         if (!this.updatable)
             throw "this LABKEY.ext.Store is not updatable!";
@@ -794,10 +858,10 @@ EHR.ext.AdvancedStore = Ext.extend(LABKEY.ext.Store, {
                     if(this.queryName!='tasks')
                         r.set('taskid', null);
 
-                    r.set('QCState', EHR.permissionMap.qcMap.label['Request: Approved'].RowId);
+                    r.set('QCState', EHR.Security.getQCStateByLabel('Request: Approved').RowId);
                 }
                 else {
-                    r.set('QCState', EHR.permissionMap.qcMap.label['Delete Requested'].RowId);
+                    r.set('QCState', EHR.Security.getQCStateByLabel('Delete Requested').RowId);
                 }
                 r.commit();
 
@@ -818,6 +882,7 @@ EHR.ext.AdvancedStore = Ext.extend(LABKEY.ext.Store, {
         }
     },
 
+    //private
     //NOTE: the following 2 methods are overriden because the old approach causes uncommitted client-side records to get destroyed on store load
     //also added QCState permission checking
     deleteRecords : function(records, extraContext) {
@@ -840,10 +905,10 @@ EHR.ext.AdvancedStore = Ext.extend(LABKEY.ext.Store, {
                 delete records[idx];
             }
             else {
-                if(EHR.permissionMap && records[idx].fields.get('QCState')){
+                if(EHR.Security.hasLoaded() && records[idx].fields.get('QCState')){
                     qc = records[idx].get('QCState');
-                    qc = EHR.permissionMap.qcMap.rowid[qc].Label;
-                    if(!EHR.permissionMap.hasPermission(qc, 'delete', {schemaName: this.schemaName, queryName: this.queryName})){
+                    qc = EHR.Security.getQCStateByRowId(qc).Label;
+                    if(!EHR.Security.hasPermission(qc, 'delete', {schemaName: this.schemaName, queryName: this.queryName})){
                         canDelete = false;
                     }
                     else {
@@ -878,6 +943,7 @@ EHR.ext.AdvancedStore = Ext.extend(LABKEY.ext.Store, {
         }
     },
 
+    //private
     getDeleteSuccessHandler : function(records) {
         var store = this;
         return function(results) {
@@ -889,6 +955,7 @@ EHR.ext.AdvancedStore = Ext.extend(LABKEY.ext.Store, {
         };
     },
 
+    //private
     removePhantomRecords: function(){
         this.each(function(r){
             if(r.phantom){

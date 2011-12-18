@@ -29,7 +29,7 @@ Ext.onReady(function(){
     }
 
     function renderTaskForm(formType){
-        EHR.ext.createImportPanel({
+        EHR.utils.createImportPanel({
             panelType: 'TaskPanel',
             formUUID: formUUID,
             formType: formType,
@@ -42,7 +42,7 @@ Ext.onReady(function(){
     }
 
     function renderSimpleForm(queryName){
-        EHR.ext.createSimpleTaskPanel({
+        EHR.utils.createSimpleTaskPanel({
             formType: LABKEY.ActionURL.getParameter('queryName'),
             formUUID: formUUID,
             queryName: LABKEY.ActionURL.getParameter('queryName'),

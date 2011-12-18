@@ -22,9 +22,15 @@ LABKEY.requiresScript("/ehr/datetime.js");
 
 
 
-/* options:
-valueField: the inputValue of the checkbox
-displayField: the label of the checkbox
+/*
+ * Contructs a CheckboxGroup where each radio is populated from a LabKey store.
+ * This is an alternative to a combobox.
+ * @class
+ * @augments Ext.form.CheckboxGroup
+ * @param {object} config The configuation object.  Will accept all config options from Ext.form.CheckboxGroup along with those listed here.
+ * @param {object} [config.store] A LABKEY.ext.Store.  Each record will be used to
+ * @param {string} [config.valueField] The name of the field to use as the inputValue
+ * @param {string} [config.displayField] The name of the field to use as the label
  */
 EHR.ext.RemoteCheckboxGroup = Ext.extend(Ext.form.CheckboxGroup,
 {
@@ -149,46 +155,52 @@ EHR.ext.RemoteCheckboxGroup = Ext.extend(Ext.form.CheckboxGroup,
 Ext.reg('ehr-remotecheckboxgroup', EHR.ext.RemoteCheckboxGroup);
 
 
-EHR.ext.DisplayField = Ext.extend(Ext.form.DisplayField,
-{
-    initComponent: function()
-    {
-        this.tpl = '<div>hello</div>';
-        EHR.ext.DisplayField.superclass.initComponent.apply(this, arguments);
-    },
-    getDisplayValue: function(v){
-        if(this.lookup && lookups !== false){
-            return v;
-        }
-        else if(Ext.isDate(v)){
-            return this.format ? v.format(this.format) : v.format('Y-m-d H:i');
-        }
-        else
-            return v;
-    },
+//EHR.ext.DisplayField = Ext.extend(Ext.form.DisplayField,
+//{
+//    initComponent: function()
+//    {
+//        this.tpl = '<div>hello</div>';
+//        EHR.ext.DisplayField.superclass.initComponent.apply(this, arguments);
+//    },
+//    getDisplayValue: function(v){
+//        if(this.lookup && this.lookups !== false){
+//            return v;
+//        }
+//        else if(Ext.isDate(v)){
+//            return this.format ? v.format(this.format) : v.format('Y-m-d H:i');
+//        }
+//        else
+//            return v;
+//    },
+//
+//    setRawValue : function(v){
+//        if(this.htmlEncode){
+//            v = Ext.util.Format.htmlEncode(v);
+//        }
+//        return this.rendered ? (this.el.dom.innerHTML = (Ext.isEmpty(v) ? '' : v)) : (this.value = v);
+//    },
+//
+//    setValue: function(v){
+//        this.displayValue = this.getDisplayValue(v);
+//        this.data = this.displayValue;
+//        EHR.ext.DisplayField.superclass.setValue.apply(this, arguments);
+//    }
+//});
+//Ext.reg('ehr-displayfield', EHR.ext.DisplayField);
 
-    setRawValue : function(v){
-        if(this.htmlEncode){
-            v = Ext.util.Format.htmlEncode(v);
-        }
-        return this.rendered ? (this.el.dom.innerHTML = (Ext.isEmpty(v) ? '' : v)) : (this.value = v);
-    },
 
-    setValue: function(v){
-        this.displayValue = this.getDisplayValue(v);
-        this.data = this.displayValue;
-        EHR.ext.DisplayField.superclass.setValue.apply(this, arguments);
-    }
-});
-Ext.reg('ehr-displayfield', EHR.ext.DisplayField);
-
-
-/* options:
-valueField: the inputValue of the radio
-displayField: the label of the radio
+/*
+ * Contructs a RadioGroup where each radio is populated from a LabKey store.
+ * This is an alternative to a combobox.
+ * Adapted from:
+ * http://www.sencha.com/forum/showthread.php?95860-Remote-Loading-Items-Remote-Checkbox-Group-Ext.ux.RemoteCheckboxGroup&highlight=checkboxgroup+event
+ * @class
+ * @augments Ext.form.RadioGroup
+ * @param {object} config The configuation object.  Will accept all config options from Ext.form.RadioGroup along with those listed here.
+ * @param {object} [config.store] A LABKEY.ext.Store.  Each record will be used to
+ * @param {string} [config.valueField] The name of the field to use as the inputValue
+ * @param {string} [config.displayField] The name of the field to use as the label
  */
-//adapted from:
-//http://www.sencha.com/forum/showthread.php?95860-Remote-Loading-Items-Remote-Checkbox-Group-Ext.ux.RemoteCheckboxGroup&highlight=checkboxgroup+event
 EHR.ext.RemoteRadioGroup = Ext.extend(Ext.form.RadioGroup,
 {
     initComponent: function()
@@ -323,6 +335,19 @@ EHR.ext.RemoteRadioGroup = Ext.extend(Ext.form.RadioGroup,
 });
 Ext.reg('ehr-remoteradiogroup', EHR.ext.RemoteRadioGroup);
 
+
+/*
+ * Contructs a RadioGroup where each radio is populated from a LabKey store.
+ * This is an alternative to a combobox.
+ * Adapted from:
+ * http://www.sencha.com/forum/showthread.php?95860-Remote-Loading-Items-Remote-Checkbox-Group-Ext.ux.RemoteCheckboxGroup&highlight=checkboxgroup+event
+ * @class
+ * @augments Ext.form.RadioGroup
+ * @param {object} config The configuation object.  Will accept all config options from Ext.form.RadioGroup along with those listed here.
+ * @param {object} [config.store] A LABKEY.ext.Store.  Each record will be used to
+ * @param {string} [config.valueField] The name of the field to use as the inputValue
+ * @param {string} [config.displayField] The name of the field to use as the label
+ */
 
 //this is a combobox containing operators as might be used in a search form
 EHR.ext.OperatorCombo = Ext.extend(LABKEY.ext.ComboBox, {

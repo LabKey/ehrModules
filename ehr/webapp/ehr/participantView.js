@@ -7,23 +7,17 @@ Ext.namespace('EHR.ext');
 
 LABKEY.requiresScript("/ehr/ehrAPI.js");
 
+/*
+ * This is a subclass of the AnimalHistory page, used as the details page for all study participants.
+ * It should display the same set of reports, except it does not allow the user to toggle between participants or rooms
+ */
 
 Ext.onReady(function ()
 {
     /* get the participant id from the request URL: this parameter is required. */
     var participantId = LABKEY.ActionURL.getParameter('participantId');
-    /* get the dataset id from the request URL: this is used to remember expand/collapse
-       state per-dataset.  This parameter is optional; we use -1 if it isn't provided. */
 
     if (!participantId){alert('Must Provide Id'); return false;}
-
-//    new EHR.ext.DetailsView({
-//        schemaName: 'study',
-//        queryName: 'demographics',
-//        title: 'Animal Details:',
-//        renderTo: 'participantDetails',
-//        filterArray: [LABKEY.Filter.create('Id', participantId, LABKEY.Filter.Types.EQUAL)]
-//    });
 
     new EHR.ext.SingleAnimalReport({
         applyTo: 'participantView',
@@ -50,23 +44,16 @@ Ext.onReady(function ()
                     border: false,
                     bodyStyle: 'background-color : transparent;'
                 }
-                ,items: [
-                {
-//                    layout: 'column'
-//                    ,defaults: {
-//                        autoHeight: true
-//                    }
-//                    ,items: [{
-                        width: 500,
-                        items: [{
-                            xtype: 'hidden',
-                            ref: '../inputType',
-                            value: 'renderSingleSubject'
-                        },{
-                            xtype: 'hidden',
-                            ref: '../subjArea',
-                            value: LABKEY.ActionURL.getParameter('participantId')
-//                        }]
+                ,items: [{
+                    width: 500,
+                    items: [{
+                        xtype: 'hidden',
+                        ref: '../inputType',
+                        value: 'renderSingleSubject'
+                    },{
+                        xtype: 'hidden',
+                        ref: '../subjArea',
+                        value: LABKEY.ActionURL.getParameter('participantId')
                     }]
                 },{
                     ref: 'idPanel'                        
@@ -93,20 +80,15 @@ Ext.onReady(function ()
                 schemaName: 'ehr',
                 queryName: 'reports',
                 filterArray: [LABKEY.Filter.create('visible', true, LABKEY.Filter.Types.EQUAL)],
-                //, LABKEY.Filter.create('ReportCategory', 'AnimalReport', LABKEY.Filter.Types.EQUAL)
                 sort: 'category,reporttitle',
                 autoLoad: true,
-    //            listeners: {
-    //                scope: this,
-    //                load: this.createTabPanel
-    //            },
                 failure: function(error){
                     console.log('Error callback called');
                     console.log(target);
                     EHR.utils.onError(error)
                 }
             });
-    //TODO: replace when store is fixed
+
             this.allReports.on('load', this.createTabPanel, this);
 
             this.on('afterLayout', this.restoreUrl);  

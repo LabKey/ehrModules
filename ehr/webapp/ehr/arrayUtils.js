@@ -3,6 +3,14 @@
  *
  * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
  */
+
+/*
+ * This file contains a series of basic methods to augment arrays.  They are primarily used on utilities.html, which
+ * is a page allowing users to compare lists of animals.  Many of these functions are provided by Ext (see Ext.Array)
+ * and it may be a good idea to remove these in favor of the Ext versions.
+ */
+
+
 //Compute the intersection of n arrays
 Array.prototype.intersect = function()
 {

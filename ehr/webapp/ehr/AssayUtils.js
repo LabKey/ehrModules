@@ -6,6 +6,9 @@
  */
 Ext.namespace('EHR', 'EHR.Assay');
 
+//NOTE: this entire file has been depreciated in favor of newer version in the Laboratory module.
+//It can likely be removed once the Viral Load and MHC SSP assays have been validated
+
 EHR.Assay.showButtonBar = function(assay)
 {
     var id = (typeof assay == "object") ? assay.id : LABKEY.ActionURL.getParameter("rowId");

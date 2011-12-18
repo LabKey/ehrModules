@@ -6,15 +6,38 @@
 
 Ext.namespace('EHR.ext.plugins');
 
+/**
+ * @name EHR.ext.plugins
+ * @namespace A namespace containing various Ext plugins used in the EHR.
+ *
+ */
 
-//adapted from:
-//http://www.sencha.com/forum/showthread.php?83770-Ext-Databinding&highlight=Ext-Databinding
+/**
+ * A plugin for EHR.ext.FormPanel that will allow the panel to 'bind' to an Ext record, which allows changes on either the panel or record to alter the other.
+ * @name EHR.ext.plugins.DataBind
+ * @augments Ext.util.Observable
+ * @description
+ *
+ * This plugin is adapted from the plugin found <a href="http://www.sencha.com/forum/showthread.php?83770-Ext-Databinding&highlight=Ext-Databinding">here</a>.
+ * It is used heavily throughout the EHR data entry UI.  This allows the forms to consist of a store (which holds one or more records) and various
+ * UI elements (FormPanel or GridPanel) which display them.  Changes made in either the store record or through the form/grid will be reflected on
+ * the other side.  This allows a form to bind() or unbind() records, which lets the form toggle between many records.
+ * <p>
+ * This plugin creates a new param in the FormPanel called bindConfig.  This parameter is an object with the following options:<br>
+ * <li>disableUnlessBound: If true, inputs in the form will be disabled unless a reord is bound</li>
+ * <li>bindOnChange: If true, a new record will be created and bound to the form (if no record is already bound) whenever the value of one of the fields changes</li>
+ * <li>showDeleteBtn: If true, a button will be added to the bbar of the form that will delete the bound record</li>
+ * <li>autoBindRecord: If true, when the store loads the form will automatically bind the first record of the store</li>
+ * <li>createRecordOnLoad: If true, when the store loads a new record will be created and bound unless the store already has records</li>
+ */
 
-//this plugin will allow an EHR.ext.FormPanel to become bound to an Ext.data.Record
 //this sets up listeners to automatically update the record or form based on changes in the other
 
 EHR.ext.plugins.DataBind = Ext.extend(Ext.util.Observable, {
     init:function(o) {
+        /*
+         * This plugin adds a series of new methods to the bound form panel:
+         */
         Ext.applyIf(o, {
             bindConfig: {
                 disableUnlessBound: true,
@@ -23,16 +46,23 @@ EHR.ext.plugins.DataBind = Ext.extend(Ext.util.Observable, {
                 autoBindRecord: false,
                 createRecordOnLoad: false
             },
+            //private
+            //returns the bound store
             getStore : function()
             {
                 return this.store;
             },
+            //private
+            //removes the bound store and record
             removeStore: function(){
                 if(!this.store) return;
 
                 delete this.store.boundPanel;
                 delete this.store;
             },
+            //private
+            // a helper to identify all fields that should have listeners added.
+            // used because CheckboxGroups and RadioGroups are tricky to monitor correctly
             getFieldsToBind : function(){
                 var fields = [];
                 var findMatchingField = function(f) {
@@ -47,6 +77,9 @@ EHR.ext.plugins.DataBind = Ext.extend(Ext.util.Observable, {
                 this.getForm().items.each(findMatchingField, this);
                 return fields;
             },
+            //private
+            //This will bind the supplied record to this form.  If bound, changes in the record will be reflected in the form
+            //and vise versa.
             bindRecord: function(record){
                 if (!record || (this.boundRecord === record)){
                     return;
@@ -76,6 +109,10 @@ EHR.ext.plugins.DataBind = Ext.extend(Ext.util.Observable, {
 
                 this.fireEvent('recordchange', this, record);
             },
+
+            //private
+            //unbinds a record from the store, if present.  will disable fields if bindConfig.disableUnlessBound is true
+            //fires the recordchange event
             unbindRecord: function(config)
             {
                 var rec = this.boundRecord;
@@ -106,6 +143,9 @@ EHR.ext.plugins.DataBind = Ext.extend(Ext.util.Observable, {
                 this.form.reset();
                 this.fireEvent('recordchange', this);
             },
+
+            //private
+            //when a field changes, this updates the bound record
             updateRecord : function()
             {
                 var fields = this.getFieldsToBind();
@@ -149,6 +189,9 @@ EHR.ext.plugins.DataBind = Ext.extend(Ext.util.Observable, {
 
                 this.markInvalid();
             },
+
+            //private
+            //when a record changes, this updates the fields on the form
             updateForm: function(s, recs, idx)
             {
 
@@ -163,16 +206,25 @@ EHR.ext.plugins.DataBind = Ext.extend(Ext.util.Observable, {
                     }
                 }, this);
             },
+
+            //private
+            //when configuring a form, this adds listeners to all fields to monitor for change events
             addFieldListeners: function()
             {
                 Ext.each(this.getFieldsToBind(), function(f){
                     this.addFieldListener(f);
                 }, this);
             },
-            //this is separated so that multiple fields in a single form are filtered into one event per panel
+
+            //private
+            //the handler for field onChange events.  this is separated so that multiple fields in a single form are filtered into one event per panel
             onFieldChange: function(field){
                 this.fireEvent('fieldchange', field);
             },
+
+            //private
+            //called to convert the value returned by the field to the value stored in the record.  this is separated because complex field
+            //types like RadioGroups and CheckboxGroups.
             getBoundFieldValue: function(f){
                 if (f instanceof Ext.form.RadioGroup){
                     //QUESTION: safe to make the assumption we only allow 1 checked at once?
@@ -190,11 +242,15 @@ EHR.ext.plugins.DataBind = Ext.extend(Ext.util.Observable, {
                 else
                     return f.getValue();
             },
+
+            //private
             onRecordRemove: function(store, rec, idx){
                 if(this.boundRecord && rec == this.boundRecord){
                     this.unbindRecord({store: store});
                 }
             },
+
+            //private
             focusFirstField: function(){
                 var firstFieldItem = this.getForm().items.first();
                 if(firstFieldItem && firstFieldItem.focus){
@@ -202,6 +258,8 @@ EHR.ext.plugins.DataBind = Ext.extend(Ext.util.Observable, {
                     firstFieldItem.focus(false,500);
                 }
             },
+
+            //private
             addFieldListener: function(f){
                 if(f.hasDatabindListener){
                     //console.log('field already has listener');
@@ -217,7 +275,7 @@ EHR.ext.plugins.DataBind = Ext.extend(Ext.util.Observable, {
                     f.on('change', this.onFieldChange, this);
                 }
 
-                //override getErrors(), so the field will display server-side errors
+                //NOTE: override getErrors(), so the field can be made to display server-side errors
                 if(!f.oldGetErrors)
                     f.oldGetErrors = f.getErrors;
 
@@ -252,6 +310,9 @@ EHR.ext.plugins.DataBind = Ext.extend(Ext.util.Observable, {
 
                 f.hasDatabindListener = true;
             },
+
+            //private
+            //Configures the store with listeners to monitor record changes
             configureStore: function(){
                 if (this.store)
                 {

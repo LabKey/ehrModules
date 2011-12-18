@@ -6,7 +6,7 @@ LABKEY.requiresScript("/ehr/ehrAPI.js");
 
 Ext.onReady(function (){
 
-    EHR.utils.getDatasetPermissions({
+    EHR.Security.init({
         success: onSuccess,
         scope: this
     });
@@ -169,7 +169,7 @@ Ext.onReady(function (){
         }];
         var section;
 
-        new EHR.utils.navMenu(menuCfg);
+        new EHR.ext.NavMenu(menuCfg);
     }
 
 });

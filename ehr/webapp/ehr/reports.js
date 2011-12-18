@@ -5,9 +5,14 @@
  */
 Ext.namespace('EHR.reports');
 
-LABKEY.requiresScript("/ehr/transposeRows.js");
+LABKEY.requiresScript("/ehr/ehrDetailsPanel.js");
 LABKEY.requiresScript("/ehr/Utils.js");
+/*
+ * This file contains a series of JS-baed reports used in the Animal History page
+ *
+ */
 
+//a standardized config object used in QWPs
 EHR.reports.qwpConfig = {
     allowChooseQuery: false,
     allowChooseView: true,
@@ -38,7 +43,6 @@ EHR.reports.qwpConfig = {
         EHR.utils.onError(error)
     }
 };
-
 
 EHR.reports.abstract = function(tab, subject){
     var filterArray = this.getFilterArray(tab, subject);
@@ -123,7 +127,6 @@ EHR.reports.abstract = function(tab, subject){
     EHR.reports.weightGraph.call(this, tab, subject);
        
 };
-
 
 EHR.reports.arrivalDeparture = function(tab, subject){
     var filterArray = this.getFilterArray(tab, subject);
@@ -310,7 +313,6 @@ EHR.reports.diagnostics = function(tab, subject){
 
 }
 
-
 EHR.reports.pedigree = function(tab, subject){
     var filterArray = this.getFilterArray(tab, subject);
     var title = (subject ? subject.join("; ") : '');
@@ -358,7 +360,6 @@ EHR.reports.pedigree = function(tab, subject){
 
 
 }
-
 
 EHR.reports.weightGraph = function(tab, subject){
     subject = subject || [];
@@ -609,7 +610,6 @@ EHR.reports.bloodChemistry = function(tab, subject){
     new LABKEY.QueryWebPart(config).render(target.id);
 }
 
-
 EHR.reports.hematology = function(tab, subject){
 
     var filterArray = this.getFilterArray(tab, subject);
@@ -710,7 +710,6 @@ EHR.reports.hematology = function(tab, subject){
     new LABKEY.QueryWebPart(config).render(target.id);
 }
 
-
 EHR.reports.immunology = function(tab, subject){
 
     var filterArray = this.getFilterArray(tab, subject);
@@ -796,7 +795,6 @@ EHR.reports.immunology = function(tab, subject){
 
 };
 
-
 EHR.reports.viralLoads = function(tab, subject){
     subject = subject || [];
 
@@ -876,7 +874,6 @@ EHR.reports.viralLoads = function(tab, subject){
 
     new LABKEY.QueryWebPart(config).render(target.id);
 }
-
 
 EHR.reports.irregularObs = function(tab, subject){
     var filterArray = this.getFilterArray(tab, subject);
@@ -1033,7 +1030,6 @@ EHR.reports.urinalysisResults = function(tab, subject){
     new LABKEY.QueryWebPart(config).render(target.id);
 
 }
-
 
 EHR.reports.treatmentSchedule = function(tab, subject){
     var filterArray = this.getFilterArray(tab, subject);

@@ -5,7 +5,7 @@ LABKEY.requiresScript("/ehr/ehrAPI.js");
 
 
 Ext.onReady(function(){
-    EHR.utils.getDatasetPermissions({
+    EHR.Security.init({
         success: onSuccess,
         scope: this
     });
@@ -61,7 +61,7 @@ Ext.onReady(function(){
             i.qcstate = i.qcstate || 'In Progress';
             i.permission = i.permission || 'insert';
 
-            if(EHR.permissionMap.hasPermission(i.qcstate, i.permission, q)){
+            if(EHR.Security.hasPermission(i.qcstate, i.permission, q)){
                 sec1.items.push(i)
             }
         }, this);
@@ -98,7 +98,7 @@ Ext.onReady(function(){
             i.qcstate = i.qcstate || 'In Progress';
             i.permission = i.permission || 'insert';
 
-            if(EHR.permissionMap.hasPermission(i.qcstate, i.permission, q)){
+            if(EHR.Security.hasPermission(i.qcstate, i.permission, q)){
                 sec2.items.push(i)
             }
         }, this);
@@ -125,7 +125,7 @@ Ext.onReady(function(){
             i.qcstate = i.qcstate || 'In Progress';
             i.permission = i.permission || 'insert';
 
-            if(EHR.permissionMap.hasPermission(i.qcstate, i.permission, q)){
+            if(EHR.Security.hasPermission(i.qcstate, i.permission, q)){
                 sec3.items.push(i)
             }
         }, this);
@@ -154,7 +154,7 @@ Ext.onReady(function(){
 
             i.qcstate = i.qcstate || 'In Progress';
             i.permission = i.permission || 'insert';
-            if(EHR.permissionMap.hasPermission(i.qcstate, i.permission, q)){
+            if(EHR.Security.hasPermission(i.qcstate, i.permission, q)){
                 sec4.items.push(i)
             }
         }, this);
@@ -181,7 +181,7 @@ Ext.onReady(function(){
 
             i.qcstate = i.qcstate || 'Request: Pending';
             i.permission = i.permission || 'insert';
-            if(EHR.permissionMap.hasPermission(i.qcstate, i.permission, q)){
+            if(EHR.Security.hasPermission(i.qcstate, i.permission, q)){
                 sec5.items.push(i)
             }
         }, this);
@@ -189,7 +189,7 @@ Ext.onReady(function(){
         if(sec5.items.length)
             menuCfg.sections.push(sec5);
 
-        new EHR.utils.navMenu(menuCfg).render();
+        new EHR.ext.NavMenu(menuCfg).render();
 
         //only give a task manager if they have access to at least 1 form
         if(menuCfg.sections.length){
@@ -201,7 +201,7 @@ Ext.onReady(function(){
             var clinpathInsertURL = '';
             var clinpathDeleteURL = '';
 
-            if(EHR.permissionMap.hasPermission('Request: Approved', 'admin', {queryName: 'Clinpath Runs', schemaName: 'study'})){
+            if(EHR.Security.hasPermission('Request: Approved', 'admin', {queryName: 'Clinpath Runs', schemaName: 'study'})){
                 clinpathUpdateURL = '/ehr/manageRecord.view?schemaName=study&queryName=Clinpath Runs&keyField=lsid&key=${lsid}&update=1';
                 clinpathInsertURL = '/ehr/manageRecord.view?schemaName=study&queryName=Clinpath Runs&keyField=lsid&update=1';
                 clinpathDeleteURL = '/query/deleteQueryRows.view?schemaName=study&query.queryName=Clinpath Runs';
@@ -211,7 +211,7 @@ Ext.onReady(function(){
             var bloodInsertURL = '';
             var bloodDeleteURL = '';
 
-            if(EHR.permissionMap.hasPermission('Request: Approved', 'admin', {queryName: 'Blood Draws', schemaName: 'study'})){
+            if(EHR.Security.hasPermission('Request: Approved', 'admin', {queryName: 'Blood Draws', schemaName: 'study'})){
                 bloodUpdateURL = '/ehr/manageRecord.view?schemaName=study&queryName=Blood Draws&keyField=lsid&key=${lsid}&update=1';
                 bloodInsertURL = '/ehr/manageRecord.view?schemaName=study&queryName=Blood Draws&keyField=lsid&update=1';
                 bloodDeleteURL = '/query/deleteQueryRows.view?schemaName=study&query.queryName=Blood Draws';

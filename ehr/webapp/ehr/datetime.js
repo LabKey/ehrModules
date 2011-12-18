@@ -4,7 +4,7 @@
  * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
  */
 /**
- * Creates new DateTime
+ * Creates new DateTime field
  * @constructor
  * @param {Object} config A config object
  */

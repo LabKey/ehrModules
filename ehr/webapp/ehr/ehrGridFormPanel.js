@@ -8,8 +8,65 @@ Ext.namespace('EHR.ext');
 
 LABKEY.requiresScript("/ehr/ehrFormPanel.js");
 
+/**
+ * Constructs a new EHR GridFormPanel using the supplied configuration.
+ * @class
+ * EHR extension to the Ext.Panel class, which constructs a panel containing an EHR.ext.FormPanel and EHR.ext.EditorGridPanel, configured based on the query's metadata.
+ * The GridFormPanel is a combination of an EHR.ext.FormPanel and EHR.ext.EditorGridPanel.  The combined unit shares a single Ext store.
+ * It is designed to provide a mechanism to work with and edit multiple records at a time.  When a record is selected, it
+ * becomes 'bound' to the FormPanel and can be edited.  The user can click between any records in the grid, editing them in the FormPanel as they go along.
+ * <p>
+ * This class attempts to outsource as much to the GridFormPanel and FormPanel as possible.  It does contain its own button bars (so that they will span both components),
+ * and had to override the child components' handling of these.
+ *
+ * <p>If you use any of the LabKey APIs that extend Ext APIs, you must either make your code open source or
+ * <a href="https://www.labkey.org/wiki/home/Documentation/page.view?name=extDevelopment">purchase an Ext license</a>.</p>
+ *            <p>Additional Documentation:
+ *              <ul>
+ *                  <li><a href="https://www.labkey.org/wiki/home/Documentation/page.view?name=javascriptTutorial">LabKey JavaScript API Tutorial</a></li>
+ *                  <li><a href="https://www.labkey.org/wiki/home/Documentation/page.view?name=labkeyExt">Tips for Using Ext to Build LabKey Views</a></li>
+ *              </ul>
+ *           </p>
+ * @constructor
+ * @augments Ext.Panel
+ * @param config Configuration properties. This may contain any of the configuration properties supported
+ * by the <a href="http://www.extjs.com/deploy/dev/docs/?class=Ext.Panel">Ext.Panel</a>, plus those listed here.
+ * You may construct a GridFormPanel by either supplying a store or by supplying a schema/query (in which case a store will be automatically created).  Also, be aware that
+ * the internal FormPanel automatically uses the plugin EHR.ext.plugins.DataBind to bind form entry to an Ext record.  Please see documentation for this plugin for more information.
+ *
+ * @param {String} [config.store] An EHR.ext.AdvancedStore configured for a LabKey query.
+ * @param {String} [config.containerPath] The container path from which to get the data. If not specified, the current container is used.  Will be ignored if a store is provided.
+ * @param {String} [config.schemaName] The LabKey schema to query.  Will be ignored if a store is provided.
+ * @param {String} [config.queryName] The query name within the schema to fetch.  Will be ignored if a store is provided.
+ * @param {String} [config.viewName] A saved custom view of the specified query to use if desired.  Will be ignored if a store is provided.
+ * @param {String} [config.columns] A comma separated list of columns for the store to use.  Will be ignored if a store is provided.
+ * @param {String} [config.tbarBtns] A commas separated list of the buttons to display in the grid.  These strings refer to the static button configs defined in EHR.ext.GridFormPanel.gridBtns.  This mechanism was designed to provide most convient usage within the EHR (which has many forms sharing few buttons)
+ * @param {String} [config.bbarBtns] Similar to tbatBtns, except configures buttons in the bottom toolbar (bbar).  See tbarBtns for more information.
+ * @param {Boolean} [config.showStatus] If true, a status bar will appear below the grid providing information about validation status.
+ * @param {Boolean} [config.readOnly] If true, the fields on the FormPanel will be read-only.
+ * @param {Integer} [config.gridWidth] The width of the EditorGridPanel created by this class.
+ * @param {Object} [config.metadata] A metadata object that will be applied to the default metadata returned by the server.  See EHR.ext.AdvancedStore for more detail on metadata.
+ * @param {Object} [config.storeConfig] A config object for EHR.ext.AdvancedStore that will be used to create the store.  Will only be used if no store is provided.
+ * @example &lt;script type="text/javascript"&gt;
+    var grid, store;
+    Ext.onReady(function(){
 
+        //create a Store bound to the 'Users' list in the 'core' schema
+        var store = new EHR.ext.AdvancedStore({
+            schemaName: 'study',
+            queryName: 'Demographics'
+        });
 
+        //create a grid using that store as the data source
+        var grid = new EHR.ext.GridFormPanel({
+            store: store,
+            renderTo: 'grid'
+        });
+    });
+
+&lt;/script&gt;
+&lt;div id='grid'/&gt;
+ */
 
 EHR.ext.GridFormPanel = Ext.extend(Ext.Panel,
 {
@@ -22,14 +79,14 @@ EHR.ext.GridFormPanel = Ext.extend(Ext.Panel,
             schemaName: this.schemaName,
             queryName: this.queryName,
             viewName: this.viewName,
-            columns: this.columns || EHR.ext.FormColumns[this.queryName] || '',
+            columns: this.columns || EHR.Metadata.Columns[this.queryName] || '',
             storeId: [this.schemaName,this.queryName,this.viewName].join('||'),
             filterArray: this.filterArray || [],
             metadata: this.metadata
             //autoLoad: true
         }));
 
-        if(!EHR.ext.FormColumns[this.queryName]){
+        if(!EHR.Metadata.Columns[this.queryName]){
             console.log('Columns not defined: '+this.queryName)
         }
 
@@ -39,7 +96,7 @@ EHR.ext.GridFormPanel = Ext.extend(Ext.Panel,
         for (var i=0;i<this.tbarBtns.length;i++){
             var btnCfg = this.gridBtns[this.tbarBtns[i]];
             if(btnCfg.requiredQC){
-                if(!EHR.permissionMap.hasPermission(btnCfg.requiredQC, 'insert', {queryName: this.queryName, schemaName: this.schemaName}))
+                if(!EHR.Security.hasPermission(btnCfg.requiredQC, 'insert', {queryName: this.queryName, schemaName: this.schemaName}))
                     btnCfg.disabled = true;
             }
             btnCfg.scope = this;
@@ -71,7 +128,7 @@ EHR.ext.GridFormPanel = Ext.extend(Ext.Panel,
         for (var i=0;i<this.bbarBtns.length;i++){
             var btnCfg = this.gridBtns[this.bbarBtns[i]];
             if(btnCfg.requiredQC){
-                if(!EHR.permissionMap.hasPermission(btnCfg.requiredQC, 'insert', {queryName: this.queryName, schemaName: this.schemaName}))
+                if(!EHR.Security.hasPermission(btnCfg.requiredQC, 'insert', {queryName: this.queryName, schemaName: this.schemaName}))
                     btnCfg.disabled = true;
             }
             btnCfg.scope = this;
@@ -143,21 +200,7 @@ EHR.ext.GridFormPanel = Ext.extend(Ext.Panel,
                 importPanel: this.importPanel || this,
                 readOnly: this.readOnly,
                 tbar: [],
-                sm: new Ext.grid.RowSelectionModel({
-                    //singleSelect: true,
-//                    listeners: {
-//                        scope: this,
-//                        rowselect: function(sm, row, rec)
-//                        {
-//console.log(sm.getSelections())
-//                            if(sm.getSelections().length == 1)
-//                                //NOTE: this allows any changes to values of select menus to commit before bindRecord() runs
-//                                this.theForm.bindRecord.defer(200, this.theForm, [rec]);
-//                            else
-//                                this.theForm.unbindRecord()
-//                        },
-//                    }
-                })
+                sm: new Ext.grid.RowSelectionModel()
             }],
             keys: [{
                 key: 'r',
@@ -177,26 +220,6 @@ EHR.ext.GridFormPanel = Ext.extend(Ext.Panel,
                     //this.theForm.focusFirstField.defer(30, this);
                 },
                 scope: this
-//            },{
-//                key: 'd',
-//                ctrl: true,
-//                alt: true,
-//                handler: function(e, k){
-//                    Ext.MessageBox.confirm(
-//                        'Confirm',
-//                        'You are about to permanently delete these records.  It cannot be undone.  Are you sure you want to do this?',
-//                        function(val){
-//                            if(val=='yes'){
-//                                this.theGrid.stopEditing();
-//                                var recs = this.theGrid.getSelectionModel().getSelections();
-//                                this.theForm.unbindRecord();
-//
-//                                this.store.deleteRecords(recs);
-//                            }
-//                        },
-//                    this);
-//                },
-//                scope: this
             }]
         });
 
@@ -226,11 +249,18 @@ EHR.ext.GridFormPanel = Ext.extend(Ext.Panel,
         this.addEvents('beforesubmit');
     },
 
-    onRecordChange: function(){
+    //private
+    //updates the status bar when no records are bound
+    onRecordChange: function()
+    {
         if(!this.theForm.boundRecord)
             this.getBottomToolbar().setStatus({text: 'No Records'})
     },
-    onStoreValidate: function(store, records){
+
+    //private
+    //updates the status bar when a record is validated.  delegates markInvalid() to the FormPanel
+    onStoreValidate: function(store, records)
+    {
         if(store.errors.getCount()){
             this.getBottomToolbar().setStatus({text: store.maxErrorSeverity(), iconCls: 'x-status-error'});
         }
@@ -240,6 +270,9 @@ EHR.ext.GridFormPanel = Ext.extend(Ext.Panel,
         this.theForm.markInvalid();
     },
 
+    //private
+    //static config objects used to create buttons.  the intent is to have the code behind buttons centralized such that buttons
+    //can be more easily reused between forms.  the config 'tbarBtns' and bbarBtns can reference these buttons used their string names
     gridBtns: {
         'add': {
             text: 'Add Record',
@@ -466,6 +499,9 @@ EHR.ext.GridFormPanel = Ext.extend(Ext.Panel,
                     this.treatmentSelectorWin.show();
                 }
             },
+        //NOTE: this was originally created as an admin mechanism to allow certain users to retroactively enter treatments
+        //I since edited to primary AddTreatments btn to conditionally show a date picker for admins, so this button can probably
+        //be depriciated.
         'addtreatments2': {
                 text: 'Add Treatments - Admin',
                 requiredQC: 'In Progress',
@@ -708,7 +744,6 @@ EHR.ext.GridFormPanel = Ext.extend(Ext.Panel,
             name: 'mark-all-complete-button',
             handler: function()
             {
-                //console.log(EHR.permissionMap)
                 this.store.each({
 
                 }, this);
@@ -963,7 +998,7 @@ EHR.ext.GridFormPanel = Ext.extend(Ext.Panel,
                     title: 'Sort',
                     width: 350,
                     items: [{
-                        xtype: 'ehr-storesorter',
+                        xtype: 'ehr-storesorterpanel',
                         targetStore: this.store,
                         parentPanel: this
                     }]

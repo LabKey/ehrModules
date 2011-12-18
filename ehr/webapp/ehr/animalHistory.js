@@ -8,6 +8,13 @@ Ext.namespace('EHR.ext');
 LABKEY.requiresScript("/ehr/ehrAPI.js");
 LABKEY.requiresScript("/ehr/reports.js");
 
+/**
+ * Constructs a new EHR SingleAnimalReport
+ * @class
+ * An EHR class that provides a data-driven tabbed report panel.  It is used on the AnimalHistory page, and a subclass defined in participantView.js is used as the participant details page.
+ * The set of reports is determined by the records in ehr.reports.  Each record supplies a schema/query and report type, along with other options.
+ *
+ */
 EHR.ext.SingleAnimalReport = Ext.extend(Ext.Panel, {
 
     initComponent: function()

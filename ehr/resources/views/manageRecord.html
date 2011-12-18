@@ -20,7 +20,7 @@ Ext.onReady(function(){
     if(metaSources.indexOf('SimpleForm') == -1)
         metaSources.push('SimpleForm');
 
-    var panel = new EHR.ext.SimpleImportPanel({
+    var panel = new EHR.ext.ImportPanel.SimpleImportPanel({
         containerPath: 'WNPRC/EHR/',
         allowableButtons: btns,
         formType: LABKEY.ActionURL.getParameter('queryName'),
@@ -31,7 +31,7 @@ Ext.onReady(function(){
             keyField: LABKEY.ActionURL.getParameter('keyField'),
             keyValue: Ext.util.Format.htmlDecode(LABKEY.ActionURL.getParameter('key')),
             title: LABKEY.ActionURL.getParameter('queryName'),
-            metadata: EHR.ext.getTableMetadata(LABKEY.ActionURL.getParameter('queryName'), metaSources)
+            metadata: EHR.Metadata.getTableMetadata(LABKEY.ActionURL.getParameter('queryName'), metaSources)
         }]
     });
     panel.render('manageRecordDiv');

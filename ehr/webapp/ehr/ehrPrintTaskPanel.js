@@ -8,7 +8,14 @@ Ext.namespace('EHR.ext');
 
 LABKEY.requiresScript("/ehr/ehrFormPanel.js");
 
-
+/**
+ * This class was never completed.  The intent was to try to create a variant of a normal Task ImportPanel which would
+ * display records in a read-only manner suitable for printing.  The thought was that in some cases paper was going to be
+ * necesary.  The user could start the task in LabKey, fill out as much as possible, then print.  The printout should have
+ * space to fill in necessary values.  The user could take this printout back to the computer and fill in missing values.
+ *
+ * There may be use for this concept; however, other items were prioritized higher.
+ */
 
 EHR.ext.PrintTaskPanel = Ext.extend(Ext.Panel, {
     initComponent: function(){
@@ -26,7 +33,7 @@ EHR.ext.PrintTaskPanel = Ext.extend(Ext.Panel, {
             schemaName: this.schemaName,
             queryName: this.queryName,
             viewName: this.viewName,
-            columns: this.columns || EHR.ext.FormColumns[this.queryName] || '',
+            columns: this.columns || EHR.Metadata.Columns[this.queryName] || '',
             storeId: [this.schemaName,this.queryName,this.viewName].join('||'),
             filterArray: this.filterArray || [],
             metadata: Ext.apply(this.metadata, {fieldDefaults: {lookupNullCaption: ''}}),

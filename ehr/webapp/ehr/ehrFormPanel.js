@@ -8,7 +8,64 @@ Ext.namespace('EHR.ext');
 
 LABKEY.requiresScript("/ehr/ehrAPI.js");
 
-//builds a LabKey formpanel with the supplied configuration (config)
+/**
+ * Constructs a new LabKey FormPanel using the supplied configuration.
+ * @class
+ * EHR extension to the Ext.FormPanel class, which constructs a form panel, configured based on the query's metadata.
+ * This class understands various LabKey metadata formats and can simplify generating basic forms. When a LABKEY.ext.FormPanel is created with additional metadata, it will try to intelligently construct fields of the appropriate type.
+ * While the purpose of this class is similar to LABKEY.ext.FormPanel, it operates somewhat differently.  Notably, the FormPanel will automatically
+ * construct an Ext.data.Record and bind the form input to this record.  This allows the Form to more easily communicate with an Ext Store and to operate on many records at once.
+ * This class also delegates most of the work involved with interpreting metadata to EHR.ext.Metahelper, which allows the code of this class to be relatively basic.
+ *
+ * <p>If you use any of the LabKey APIs that extend Ext APIs, you must either make your code open source or
+ * <a href="https://www.labkey.org/wiki/home/Documentation/page.view?name=extDevelopment">purchase an Ext license</a>.</p>
+ *            <p>Additional Documentation:
+ *              <ul>
+ *                  <li><a href="https://www.labkey.org/wiki/home/Documentation/page.view?name=javascriptTutorial">LabKey JavaScript API Tutorial</a></li>
+ *                  <li><a href="https://www.labkey.org/wiki/home/Documentation/page.view?name=labkeyExt">Tips for Using Ext to Build LabKey Views</a></li>
+ *              </ul>
+ *           </p>
+ * @constructor
+ * @augments Ext.FormPanel
+ * @param config Configuration properties. This may contain any of the configuration properties supported
+ * by the <a href="http://www.extjs.com/deploy/dev/docs/?class=Ext.form.FormPanel">Ext.form.FormPanel</a>,
+ * plus those listed here.
+ * <p>
+ * Note:
+ * <ul>
+ *  <li>You may construct a FormPanel by either supplying a store or by supplying a schema/query, in which case a store will be automatically created.</li>
+ *  <li>FormPanel automatically uses the plugin EHR.ext.plugins.DataBind to bind form entry to an Ext record.  Please see documentation for this plugin for more information.
+ * </ul>
+ *
+ * @param {String} [config.store] An EHR.ext.AdvancedStore configured for a LabKey query.
+ * @param {String} [config.containerPath] The container path from which to query the server. If not specified, the current container is used.  Will be ignored if a store is provided.
+ * @param {String} [config.schemaName] The LabKey schema to query.  Will be ignored if a store is provided.
+ * @param {String} [config.queryName] The query name within the schema to fetch.  Will be ignored if a store is provided.
+ * @param {String} [config.viewName] A saved custom view of the specified query to use if desired.  Will be ignored if a store is provided.
+ * @param {Integer} [config.defaultFieldWidth] If provided, this will be used as the default width of fields in this form.
+ * @param {Object} [config.metadata] A metadata object that will be applied to the default metadata returned by the server.  See EHR.Metadata or EHR.ext.AdvancedStore for more information.
+ * @param {Object} [config.storeConfig] A config object passed directly to the EHR.ext.AdvancedStore that will be used to create the store.  Will only be used if no store is provided.
+ * @param {Object} [config.bindConfig] A config object passed to EHR.ext.plugins.DataBind plugin.  See documention on this plugin for more information.
+ * @example &lt;script type="text/javascript"&gt;
+    var panel;
+    Ext.onReady(function(){
+        var panel = new EHR.ext.FormPanel({
+            store: new EHR.ext.AdvancedStore({
+                schemaName: 'core',
+                queryName: 'users'
+            }),
+            renderTo: 'targetDiv',
+            width: 800,
+            autoHeight: true,
+            title: 'Example'
+        });
+    });
+
+
+&lt;/script&gt;
+&lt;div id='targetDiv'/&gt;
+ */
+
 EHR.ext.FormPanel = function(config){
     EHR.ext.FormPanel.superclass.constructor.call(this, config);
 };
@@ -31,14 +88,14 @@ Ext.extend(EHR.ext.FormPanel, Ext.FormPanel,
             schemaName: this.schemaName,
             queryName: this.queryName,
             viewName: this.viewName,
-            columns: this.columns || EHR.ext.FormColumns[this.queryName] || '',
+            columns: this.columns || EHR.Metadata.Columns[this.queryName] || '',
             storeId: [this.schemaName,this.queryName,this.viewName].join('||'),
             filterArray: this.filterArray || [],
             metadata: this.metadata,
             autoLoad: true
         }));
 
-        if(!EHR.ext.FormColumns[this.queryName]){
+        if(!this.columns && !EHR.Metadata.Columns[this.queryName]){
             console.log('Columns not defined: '+this.queryName)
         }
 
@@ -89,9 +146,12 @@ Ext.extend(EHR.ext.FormPanel, Ext.FormPanel,
         }
 
         EHR.ext.FormPanel.superclass.initComponent.call(this);
+
+        //NOTE: participantchange and participantrefres are likely not used and can be removed after testing
         this.addEvents('beforesubmit', 'participantchange','participantrefresh');
 
         if(this.showStatus){
+            //NOTE: recordchange is described in the DataBind plugin
             this.on('recordchange', this.onRecordChange, this, {buffer: 100, delay: 100});
             this.mon(this.store, 'validation', this.onStoreValidate, this, {delay: 100});
         }
@@ -99,6 +159,8 @@ Ext.extend(EHR.ext.FormPanel, Ext.FormPanel,
         this.on('recordchange', this.markInvalid, this, {delay: 100});
 
     },
+
+    //private
     loadQuery: function(store)
     {
         this.removeAll();
@@ -120,7 +182,11 @@ Ext.extend(EHR.ext.FormPanel, Ext.FormPanel,
             this.doLayout();
 
     },
-    configureForm: function(store, formPanel){
+
+    //private
+    //This method iterates the fields of the form and created the appropriate Ext field editor, based on the field's metadata
+    configureForm: function(store, formPanel)
+    {
         var toAdd = [];
         var compositeFields = {};
         store.fields.each(function(c){
@@ -147,7 +213,7 @@ Ext.extend(EHR.ext.FormPanel, Ext.FormPanel,
                 }
 
                 if(this.readOnly){
-                    theField.xtype = 'ehr-displayfield';
+                    theField.xtype = 'displayfield';
                     console.log('is read only: '+store.queryName)
                 }
 
@@ -221,12 +287,19 @@ Ext.extend(EHR.ext.FormPanel, Ext.FormPanel,
         return toAdd;
     },
 
-    onRecordChange: function(theForm){
+    //private
+    //Updates the statusbar icon if the bound record changes
+    onRecordChange: function(theForm)
+    {
         if(!this.boundRecord)
             this.getBottomToolbar().setStatus({text: 'No Records'});
     },
 
-    onStoreValidate: function(store, records){
+    //private
+    //updates the statusbar area depending on the validation status of the record(s) in the store
+    //because more than 1 error can occur, the store reports the max severity, meaning the most severe error
+    onStoreValidate: function(store, records)
+    {
         if(store.errors.getCount()){
             this.getBottomToolbar().setStatus({text: store.maxErrorSeverity(), iconCls: 'x-status-error'});
         }
@@ -236,6 +309,8 @@ Ext.extend(EHR.ext.FormPanel, Ext.FormPanel,
         this.markInvalid();
     },
 
+    //private
+    //updates the field error mesages based on the errors object returned by the store
     markInvalid : function()
     {
         var formMessages = [];

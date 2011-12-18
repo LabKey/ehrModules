@@ -26,6 +26,8 @@ Ext.data.Types.FLOAT.convert = function(v){
     return v !== undefined && v !== null && v !== '' ?
         parseFloat(String(v).replace(Ext.data.Types.stripRe, ''), 10) : (this.useNull ? null : 0);
 };
+
+//if not set to true, null numeric values will automatically be coerced to zero
 Ext.data.Field.prototype.useNull = true;
 
 

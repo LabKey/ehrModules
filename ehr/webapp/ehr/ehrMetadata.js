@@ -3,61 +3,64 @@
  *
  * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
  */
-Ext.ns('EHR.ext.Metadata');
+Ext.ns('EHR.Metadata.Sources');
 
-/*
- new properties:
-
- noDuplicateByDefault
- allowDuplicateValue
-
- noSaveInTemplateByDefault
- allowSaveInTemplate
-
-updateValueFromServer
-
- ignoreColWidths
- defaultValue
- colModel = {}
- setInitialValue()
- parentConfig: {
- storeIdentifier:  {queryName: 'tasks', schemaName: 'ehr'}
- ,dataIndex: 'taskid'
- }
- shownInGrid
- shownInForm
- useNull  //this is ext, but not documented
- editorConfig
- gridEditorConfig
- formEditorConfig
- isAutoExpandColumn
-
+/**
+ * @class
+ * @name EHR.Metadata
+ * @description The EHR UI is heavily driven by metadata.  EHR.Metadata provides a number of static config objects that
+ * are merged to provide the final config object used to generate the Ext-based forms.  These are organized into 'Metadata sources'.
+ * Each source is a node under EHR.Metadata.Sources.  They can be requested used .getTableMetadata() and will be merged in order to form
+ * the final Ext config object.  The purpose of this system is to allow sharing/inheritance of complex configuration between many forms.
  */
-EHR.ext.getTableMetadata = function(queryName, sources)
+
+
+/**
+ * @memberOf EHR.Metadata
+ * @param {String} queryName The name of the query for which to retrieve metadata
+ * @param {Array} sources An array of metadata sources (in order) from which to retrieve metadata.  If the metadata source has metadata on this query, these will be merged with the default metadata in the order provided.
+ * @description If the following is called:
+ * <p>
+ * EHR.Metadata.getTableMetadata('Necropsies', ['Task', 'Necropsy'])
+ * <p>
+ * Then the following config objects will be merged, in order, if they are present, to form the final config object:
+ * <p>
+ * EHR.Metadata.Sources.Standard.allQueries
+ * EHR.Metadata.Sources.Standard['Necropsies']
+ * EHR.Metadata.Sources.Task.allQueries
+ * EHR.Metadata.Sources.Task['Necropsies']
+ * EHR.Metadata.Sources.Necropsy.allQueries
+ * EHR.Metadata.Sources.Necropsies['Necropsies']
+ * <p>
+ * The purpose is to allow layering on config objects and inheritance such tht different forms can support highly customized behaviors per field.
+ * <p>
+ * Also, arbitrary new additional metadata sources can be added in the future, should they become required.
+ */
+EHR.Metadata.getTableMetadata = function(queryName, sources)
 {
     var meta = {};
 
-    EHR.utils.rApplyClone(meta, EHR.ext.Metadata.Standard.allQueries);
+    EHR.utils.rApplyClone(meta, EHR.Metadata.Sources.Standard.allQueries);
 //
-    if (EHR.ext.Metadata.Standard.byQuery[queryName])
+    if (EHR.Metadata.Sources.Standard.byQuery[queryName])
     {
-        EHR.utils.rApplyClone(meta, EHR.ext.Metadata.Standard.byQuery[queryName]);
+        EHR.utils.rApplyClone(meta, EHR.Metadata.Sources.Standard.byQuery[queryName]);
     }
 
     if (sources && sources.length)
     {
         Ext.each(sources, function(source)
         {
-            if (EHR.ext.Metadata[source])
+            if (EHR.Metadata.Sources[source])
             {
-                if (EHR.ext.Metadata[source].allQueries)
+                if (EHR.Metadata.Sources[source].allQueries)
                 {
-                    EHR.utils.rApplyClone(meta, EHR.ext.Metadata[source].allQueries);
+                    EHR.utils.rApplyClone(meta, EHR.Metadata.Sources[source].allQueries);
                 }
 
-                if (EHR.ext.Metadata[source].byQuery && EHR.ext.Metadata[source].byQuery[queryName])
+                if (EHR.Metadata.Sources[source].byQuery && EHR.Metadata.Sources[source].byQuery[queryName])
                 {
-                    EHR.utils.rApplyClone(meta, EHR.ext.Metadata[source].byQuery[queryName]);
+                    EHR.utils.rApplyClone(meta, EHR.Metadata.Sources[source].byQuery[queryName]);
                 }
 
             }
@@ -67,7 +70,164 @@ EHR.ext.getTableMetadata = function(queryName, sources)
     return meta;
 };
 
-EHR.ext.Metadata.Standard = {
+/**
+ * Describes the metadata of a single field.  It includes any fields in LABKEY.Query.FieldMetaData, along with those described here.
+ * @name EHR.Metadata.FieldMetadata
+ * @class Describes the metadata of a single field.  It includes any fields in LABKEY.Query.FieldMetaData, along with those described here.
+ *
+ */
+
+/**#@+
+ * @memberOf EHR.Metadata.FieldMetadata
+ * @field
+ * @name allowDuplicateValue
+ * @description If false, the EHR.ext.RecordDuplicatorPanel will not give the option to duplicate the value in this field
+ * @type Boolean
+ */
+/**#@+
+ * @memberOf EHR.Metadata.FieldMetadata
+ * @field
+ * @name noDuplicateByDefault
+ * @description If true, this field will not be checked by default in an EHR.ext.RecordDuplicatorPanel, which provides a mechanism to duplicate records in a data entry panel.
+ * @type Boolean
+ */
+/**#@+
+ * @memberOf EHR.Metadata.FieldMetadata
+ * @field
+ * @name noSaveInTemplateByDefault
+ * @description If true, this field will not be checked by default in an EHR.ext.SaveTemplatePanel, which provides a mechanism to save templates from a data entry panel.
+ * @type Boolean
+ */
+/**#@+
+ * @memberOf EHR.Metadata.FieldMetadata
+ * @field
+ * @name allowSaveInTemplate
+ * @description If false, an EHR.ext.SaveTemplatePanel will not give the option to include this field in saved templates
+ * @type Boolean
+ */
+/**#@+
+ * @memberOf EHR.Metadata.FieldMetadata
+ * @field
+ * @name updateValueFromServer
+ * @description If true, when a record is validated on the server, if this validated record contains a value for this field then it will be applied to the record on the client.  Currently used to automatically populate location, cagemates or active assignments.
+ * @type Boolean
+ */
+/**#@+
+ * @memberOf EHR.Metadata.FieldMetadata
+ * @field
+ * @name ignoreColWidths
+ * @description If true, the LabKey-provided column widths will be deleted.  The effect is to auto-size columns equally based on available width.
+ * @type Boolean
+ */
+/**#@+
+ * @memberOf EHR.Metadata.FieldMetadata
+ * @field
+ * @name defaultValue
+ * @description A value to use as the default for any newly created records
+ * @type Mixed
+ */
+/**#@+
+ * @memberOf EHR.Metadata.FieldMetadata
+ * @field
+ * @name colModel
+ * @description A config object that will be used when a column config is created from this metadata object using EHR.ext.metaHelper.getColumnConfig().  This can contain any properties that will be interpreted by Ext or your custom code.
+ * @type Object
+ */
+/**#@+
+ * @memberOf EHR.Metadata.FieldMetadata
+ * @field
+ * @name setInitialValue
+ * @description A function that will be called to set the initial value of this field.  Similar to defaultValue, except more complex values can be generated.  This function will be passed 2 arguments: value (the current value.  if defaultValue is defined, value will be the defaultValue) and rec (the Ext.data.Record)
+ * @type Function
+ */
+/**#@+
+ * @memberOf EHR.Metadata.FieldMetadata
+ * @field
+ * @name  parentConfig
+ * @description A object used by EHR.ext.StoreInheritance to configure parent/child relationships between fields.  It is an object containing the following:
+ * <br>
+ * <li>storeIdentifier: An object with the properties: queryName and schemaName</li>
+ * <li>dataIndex: The dataIndex of the field in the parent record that will be used as the value on this field</li>
+ * @type Object
+ */
+/**#@+
+ * @memberOf EHR.Metadata.FieldMetadata
+ * @field
+ * @name shownInGrid
+ * @description If false, this field will not be shown in the default grid view
+ * @type String
+ */
+/**#@+
+ * @memberOf EHR.Metadata.FieldMetadata
+ * @field
+ * @name shownInForm
+ * @description If false, this field will not be shown in the default form panel
+ * @type String
+ */
+/**#@+
+ * @memberOf EHR.Metadata.FieldMetadata
+ * @field
+ * @name editorConfig
+ * @description A config object that will be used when an editor config is created from this metadata object using EHR.ext.metaHelper.getDefaultEditor() or any derivatives such as getFormEditor() or getGridEditor().  This can contain any properties that will be interpreted by Ext or your custom code.
+ * @type Object
+ */
+/**#@+
+ * @memberOf EHR.Metadata.FieldMetadata
+ * @field
+ * @name formEditorConfig
+ * @description Similar to editorConfig, except will only be applied when the editor is created through getFormEditor() or getFormEditorConfig().
+ * @type Object
+ */
+/**#@+
+ * @memberOf EHR.Metadata.FieldMetadata
+ * @field
+ * @name gridEditorConfig
+ * @description Similar to editorConfig, except will only be applied when the editor is created through getGridEditor() or getGridEditorConfig();
+ * @type Object
+ */
+/**#@+
+ * @memberOf EHR.Metadata.FieldMetadata
+ * @field
+ * @name isAutoExpandColumn
+ * @description If true, then this column will auto-expand to will available width in an EditorGrid
+ * @type Boolean
+ */
+/**#@+
+ * @memberOf EHR.Metadata.FieldMetadata
+ * @field
+ * @name qtipRenderer
+ * @description A function to override the default qtipRender created in EHR.metaHelper.buildQtip().  See this method for more detail.
+ * @type Function
+ */
+
+
+
+/**
+ * A set of static config objects of metadata used in data entry forms, among other places.
+ * @name EHR.Metadata.Sources
+ * @description
+ * Each property of EHR.Metadata.Sources is a 'metadata source', which can be requested by name in EHR.Metadata.getTableMetadata().
+ * Each metadata source should have 2 properties: allQueries and byQuery.
+ * <p>
+ * allQueries is an object with metadata to be applied to every
+ * query requesting this metadata source.  Properties of allQueries should match field names.
+ * <br>
+ * byQuery is a map of additional metadata applied only to specific queries.  The keys of this object should match query names.  Each of these should be
+ * an object describing metadata per field, using field name as the key.  It is identical in structure to the allQueries object.
+ * <p>
+ * NOTE: these metadata config objects will be layered, so it is important to consider where it is most appropriate to defined a given attribute.
+ *
+ */
+
+
+/**
+ * The default metadata applied to all queries when using getTableMetadata().
+ * @memberOf EHR.Metadata.Sources
+ * @description
+ * This is the default metadata applied to all queries when using getTableMetadata().  If adding attributes designed to be applied
+ * to a given query in all contexts, they should be added here
+ */
+EHR.Metadata.Sources.Standard = {
     allQueries: {
         fieldDefaults: {
             //lazyCreateStore: false,
@@ -301,8 +461,8 @@ EHR.ext.Metadata.Standard = {
             noSaveInTemplateByDefault: true,
             setInitialValue: function(v){
                 var qc;
-                if(!v && EHR.permissionMap && EHR.permissionMap.qcMap && EHR.permissionMap.qcMap.label['In Progress'])
-                    qc = EHR.permissionMap.qcMap.label['In Progress'].RowId;
+                if(!v && EHR.Security.getQCStateByLabel('In Progress'))
+                    qc = EHR.Security.getQCStateByLabel('In Progress').RowId;
                 return v || qc;
             },
             shownInGrid: false,
@@ -398,8 +558,8 @@ EHR.ext.Metadata.Standard = {
                 allowDuplicateValue: false,
                 setInitialValue: function(v){
                     var qc;
-                    if(EHR.permissionMap && EHR.permissionMap.qcMap && EHR.permissionMap.qcMap.label['In Progress'])
-                        qc = EHR.permissionMap.qcMap.label['In Progress'].RowId;
+                    if(EHR.Security.getQCStateByLabel('In Progress'))
+                        qc = EHR.Security.getQCStateByLabel('In Progress').RowId;
                     return v || qc;
                 },
                 shownInGrid: false,
@@ -517,8 +677,8 @@ EHR.ext.Metadata.Standard = {
                 allowBlank: false,
                 setInitialValue: function(v){
                     var qc;
-                    if(!v && EHR.permissionMap && EHR.permissionMap.qcMap && EHR.permissionMap.qcMap.label['In Progress'])
-                        qc = EHR.permissionMap.qcMap.label['Request: Pending'].RowId;
+                    if(!v && EHR.Security.getQCStateByLabel('In Progress'))
+                        qc = EHR.Security.getQCStateByLabel('In Progress').RowId;
                     return v || qc;
                 },
                 shownInGrid: false,
@@ -1242,10 +1402,6 @@ EHR.ext.Metadata.Standard = {
                 height: 200,
                 width: 600,
                 defaultValue: 'A ___ kg rhesus macaque is presented for necropsy in excellent post mortem condition.\n\nA ___ kg cynomolgus macaque is presented for necropsy in excellent post mortem condition.\n\nA ___ kg common marmoset is presented for necropsy in excellent post mortem condition.\n\nA ____ kg cynomolgus macaque is presented for perfusion and necropsy in excellent post mortem condition.\n\nA ____ kg rhesus macaque is presented for perfusion and necropsy in excellent post mortem condition.'
-            },
-            patho_notes: {
-                height: 200,
-                width: 600
             },
             caseno: {
                 xtype: 'trigger'
@@ -2551,7 +2707,12 @@ EHR.ext.Metadata.Standard = {
     }
 };
 
-EHR.ext.Metadata.Task = {
+/**
+ * @name EHR.Metadata.Sources.Task
+ * This is the default metadata applied to all Tasks when using getTableMetadata().
+ * Among other things, it sets of the parent/child relationship for cild records to inherit taskId from the ehr.tasks record.
+ */
+EHR.Metadata.Sources.Task = {
     allQueries: {
         QCState: {
 //            parentConfig: {
@@ -2593,15 +2754,19 @@ EHR.ext.Metadata.Task = {
     }
 };
 
-EHR.ext.Metadata.SimpleForm = {
+/**
+ * @name EHR.Metadata.Sources.SimpleForm
+ * This is the default metadata applied any record when displayed in the context of a single record (ie. not part of a task or request)
+ */
+EHR.Metadata.Sources.SimpleForm = {
     allQueries: {
         QCState: {
             hidden: false
             ,editable: true
             ,setInitialValue: function(v){
                 var qc;
-                if(!v && EHR.permissionMap && EHR.permissionMap.qcMap && EHR.permissionMap.qcMap.label['In Progress'])
-                    qc = EHR.permissionMap.qcMap.label['Completed'].RowId;
+                if(!v && EHR.Security.getQCStateByLabel('In Progress'))
+                    qc = EHR.Security.getQCStateByLabel('In Progress').RowId;
                 return v || qc;
             }
             ,editorConfig: {
@@ -2631,8 +2796,12 @@ EHR.ext.Metadata.SimpleForm = {
     }
 };
 
-
-EHR.ext.Metadata.Encounter = {
+/**
+ * @name EHR.Metadata.Sources.Encounter
+ * This is the default metadata applied any record when displayed in the context of an encounter.  An encounter is the special situation in which
+ * a task only refers to one ID.  In these cases, there is a single study.Clinical Encounters record, and Id/Date/Project are inherited from this record to children.
+ */
+EHR.Metadata.Sources.Encounter = {
     allQueries: {
         Id: {
             parentConfig: {
@@ -2818,7 +2987,12 @@ EHR.ext.Metadata.Encounter = {
     }
 };
 
-EHR.ext.Metadata.Request = {
+/**
+ * @name EHR.Metadata.Sources.Request
+ * This is the default metadata applied any record when displayed in the context of a request.  Metadata placed here
+ * can be used to hide fields not editable at time of request.  It also configured a parent/child relationship between the ehr.reqeusts record and dataset records.
+ */
+EHR.Metadata.Sources.Request = {
     allQueries: {
         requestid: {
             parentConfig: {
@@ -2855,8 +3029,8 @@ EHR.ext.Metadata.Request = {
             //defaultValue: 5,
             setInitialValue: function(v){
                 var qc;
-                if(!v && EHR.permissionMap && EHR.permissionMap.qcMap && EHR.permissionMap.qcMap.label['Request: Pending'])
-                    qc = EHR.permissionMap.qcMap.label['Request: Pending'].RowId;
+                if(!v && EHR.Security.getQCStateByLabel('Request: Pending'))
+                    qc = EHR.Security.getQCStateByLabel('Request: Pending').RowId;
                 return v || qc;
             }
         },
@@ -3009,8 +3183,11 @@ EHR.ext.Metadata.Request = {
     }
 };
 
-
-EHR.ext.Metadata.Assay = {
+/**
+ * @name EHR.Metadata.Sources.Assay
+ * This is the default metadata applied to records in the context of an assay, which currently is used by the ClinPath task.
+ */
+EHR.Metadata.Sources.Assay = {
     allQueries: {
         project: {
 //            parentConfig: {
@@ -3081,8 +3258,12 @@ EHR.ext.Metadata.Assay = {
     }
 };
 
-
-EHR.ext.Metadata.Necropsy = {
+/**
+ * @name EHR.Metadata.Sources.Necropsy
+ * This is the default metadata applied to records in the context of a necropsy task.  Among other things, it configured a parent/child relationship
+ * between the study.necropsies record and other dataset records.  It is similar to Encounter, except the parent record is from study.Necropsies.
+ */
+EHR.Metadata.Sources.Necropsy = {
     allQueries: {
         Id: {
             parentConfig: {
@@ -3263,7 +3444,12 @@ EHR.ext.Metadata.Necropsy = {
     }
 };
 
-EHR.ext.Metadata.Biopsy = {
+/**
+ * @name EHR.Metadata.Sources.Biopsy
+ * This is the default metadata applied to records in the context of a biopsy task.  Among other things, it configured a parent/child relationship
+ * between the study.biopsies record and other dataset records.  It is similar to Encounter, except the parent record is from study.biopsies.
+ */
+EHR.Metadata.Sources.Biopsy = {
     allQueries: {
         Id: {
             parentConfig: {
@@ -3367,12 +3553,15 @@ EHR.ext.Metadata.Biopsy = {
     }
 };
 
+/**
+ * @name EHR.Metadata.Sources.Anesthesia
+ * This is the default metadata applied to records in the context of anesthesia.  It was originally created for the purpose of adding recovery observations
+ * to an MPR form; however, the hope is to perform these using paper.
+ */
+EHR.Metadata.Sources.Anesthesia = {
+    allQueries: {
 
-
-EHR.ext.Metadata.Anesthesia = {
-//    allQueries: {
-//
-//    },
+    },
     byQuery: {
         'Clinical Observations': {
             area: {
@@ -3411,8 +3600,11 @@ EHR.ext.Metadata.Anesthesia = {
     }
 };
 
-
-EHR.ext.Metadata.PE = {
+/**
+ * @name EHR.Metadata.Sources.PE
+ * This is the default metadata applied to records in the context of physical exam.
+ */
+EHR.Metadata.Sources.PE = {
     allQueries: {
         performedby: {
             parentConfig: {
@@ -3499,7 +3691,11 @@ EHR.ext.Metadata.PE = {
     }
 };
 
-EHR.ext.Metadata.NWM_PE = {
+/**
+ * @name EHR.Metadata.Sources.NWM_PE
+ * This is the default metadata applied to records in the context of physical exam of new world monkeys (NWM).
+ */
+EHR.Metadata.Sources.NWM_PE = {
     allQueries: {
         performedby: {
             parentConfig: {
@@ -3586,7 +3782,7 @@ EHR.ext.Metadata.NWM_PE = {
     }
 };
 
-EHR.ext.Metadata.Treatments = {
+EHR.Metadata.Sources.Treatments = {
     allQueries: {
 
     },
@@ -3633,7 +3829,7 @@ EHR.ext.Metadata.Treatments = {
     }
 };
 
-EHR.ext.Metadata.NewAnimal = {
+EHR.Metadata.Sources.NewAnimal = {
     allQueries: {
         project: {
             allowBlank: true
@@ -3660,7 +3856,11 @@ EHR.ext.Metadata.NewAnimal = {
     }
 };
 
-EHR.ext.Metadata.MPR = {
+/**
+ * @name EHR.Metadata.Sources.MPR
+ * This is the default metadata applied to records in the context of an MPR task.
+ */
+EHR.Metadata.Sources.MPR = {
     allQueries: {
 
     },
@@ -3703,7 +3903,11 @@ EHR.ext.Metadata.MPR = {
     }
 };
 
-EHR.ext.Metadata.Surgery = {
+/**
+ * @name EHR.Metadata.Sources.Surgery
+ * This is the default metadata applied to records in the context of a Surgery task.
+ */
+EHR.Metadata.Sources.Surgery = {
     allQueries: {
 
     },
@@ -3724,61 +3928,72 @@ EHR.ext.Metadata.Surgery = {
     }
 };
 
-EHR.ext.hiddenCols = 'lsid,objectid,parentid,taskid,requestid'; //,createdby,modifiedby
-EHR.ext.topCols = 'id,date,enddate,project,account';
-EHR.ext.bottomCols = 'remark,performedBy,qcstate,'+EHR.ext.hiddenCols;
-EHR.ext.sharedCols = ',id,date,project,account,'+EHR.ext.bottomCols;
+EHR.Metadata.hiddenCols = 'lsid,objectid,parentid,taskid,requestid'; //,createdby,modifiedby
+EHR.Metadata.topCols = 'id,date,enddate,project,account';
+EHR.Metadata.bottomCols = 'remark,performedBy,qcstate,'+EHR.Metadata.hiddenCols;
+EHR.Metadata.sharedCols = ',id,date,project,account,'+EHR.Metadata.bottomCols;
 
-EHR.ext.FormColumns = {
-    Alopecia: EHR.ext.topCols+',score,cause,head,shoulders,upperArms,lowerArms,hips,rump,dorsum,upperLegs,lowerLegs,other,' + EHR.ext.bottomCols,
-    Arrival: EHR.ext.topCols+',source,geoOrigin,gender,birth,dam,sire,initialRoom,initialCage,initialCond,id/numroommates/cagemates,'+EHR.ext.bottomCols,
-    Assignment: EHR.ext.topCols+',projectedRelease,'+EHR.ext.bottomCols,
-    'Bacteriology Results': EHR.ext.topCols+',method,organism,source,qualresult,result,units,antibiotic,sensitivity,'+EHR.ext.bottomCols,
-    'Behavior Remarks': EHR.ext.topCols+',so,a,p,'+EHR.ext.bottomCols,
-    Biopsies: EHR.ext.topCols+',caseno,type,veterinarian,performedby,nhpbmd,grossdescription,'+EHR.ext.bottomCols,
-    Birth: EHR.ext.topCols+',estimated,gender,weight,wdate,dam,sire,room,cage,cond,origin,conception,type,'+EHR.ext.bottomCols,
-    'Blood Draws': 'id/curlocation/location,'+EHR.ext.topCols+',tube_type,tube_vol,num_tubes,quantity,requestor,additionalServices,billedby,assayCode,restraint,restraintDuration,daterequested,instructions,' + EHR.ext.bottomCols, //p_s,a_v,
-    'Body Condition': EHR.ext.topCols+',score,weightstatus,remark,tattoo_chest,tattoo_thigh,microchip,tag,tattoo_remark,' + EHR.ext.bottomCols,
-    cage_observations: 'date,room,cage,feces,userId,no_observations,' + EHR.ext.sharedCols,
-    Charges: EHR.ext.topCols+',type,unitCost,quantity,'+EHR.ext.bottomCols,
-    'Chemistry Results': EHR.ext.topCols+',testid,method,resultOORIndicator,result,units,qualResult,'+EHR.ext.bottomCols,
-    'Clinical Encounters': EHR.ext.topCols + ',title,type,major,serviceRequested,restraint,restraintDuration,'+EHR.ext.bottomCols,
-    'Clinical Remarks': EHR.ext.topCols+',so,a,p,'+EHR.ext.bottomCols,
-    'Clinical Observations': EHR.ext.topCols+',area,observation,code,' + EHR.ext.bottomCols,
-    'Clinpath Runs': EHR.ext.topCols+',serviceRequested,type,sampletype,sampleId,collectionMethod,collectedBy,'+EHR.ext.bottomCols,
-    Deaths: EHR.ext.topCols+',tattoo,dam,cause,manner,'+EHR.ext.bottomCols,
-    Demographics: EHR.ext.topCols+',species,gender,birth,death,hold,dam,sire,origin,geographic_origin,cond,medical,prepaid,v_status,'+EHR.ext.bottomCols,
-    Departure: EHR.ext.topCols+',authorize,destination,'+EHR.ext.bottomCols,
-    'Dental Status': EHR.ext.topCols+',priority,extractions,gingivitis,tartar,' + EHR.ext.bottomCols,
-    'Drug Administration': 'id/curlocation/location,'+'id,date,begindate,enddate,project,account'+',code,qualifier,category,route,concentration,conc_units,dosage,dosage_units,volume,vol_units,amount,amount_units,headerdate,restraint,restraintDuration,remark,performedby,' + EHR.ext.bottomCols,
-    Feeding: EHR.ext.topCols+',amount,type,'+EHR.ext.bottomCols,
-    'Final Reports': EHR.ext.topCols+','+EHR.ext.bottomCols,
-    'Hematology Results': EHR.ext.topCols+',testid,method,result,units,qualResult,'+EHR.ext.bottomCols,
-    'Hematology Morphology': EHR.ext.topCols+',morphology,score,'+EHR.ext.bottomCols,
-    Histology: EHR.ext.topCols+',slideNum,stain,tissue,qualifier,container_type,pathologist,trimdate,trimmed_by,trim_remarks,'+EHR.ext.bottomCols,
-    'Housing': 'id,project,date,enddate,room,cage,id/numroommates/cagemates,cond,reason,isTemp,'+EHR.ext.bottomCols,
-    'Immunology Results': EHR.ext.topCols+',testid,method,result,units,qualResult,'+EHR.ext.bottomCols,
-    'Irregular Observations': 'id/curlocation/location,'+EHR.ext.topCols + ',feces,menses,other,tlocation,behavior,otherbehavior,other,breeding,'+EHR.ext.bottomCols,
-    'Necropsy Diagnosis': EHR.ext.topCols+',tissue,severity,duration,distribution,process,'+EHR.ext.bottomCols,
-    Necropsies: EHR.ext.topCols+',tattoo,caseno,performedby,assistant,billing,tissue_distribution,timeofdeath,causeofdeath,mannerofdeath,perfusion_area,grossdescription,patho_notes,'+EHR.ext.bottomCols,
-    'Notes': EHR.ext.topCols+',userid,category,value,'+EHR.ext.bottomCols,
-    'Morphologic Diagnosis': EHR.ext.topCols+',remark,tissue,tissue_qualifier,inflammation,inflammation2,etiology,process,process2,performedBy,qcstate,'+EHR.ext.hiddenCols,
+/**
+ * A static object that specifies the default columns to be used in data entry forms.
+ * When adding a new dataset or adding columns to an existing dataset, this should be modified.
+ * Columns are hard-coded here because a number of otherwise hidden columns are required by data entry.
+ * A newer option that may be available would be to create a hidden view of a consistent name (ie. 'Data Entry') for
+ * each dataset and use this view to manage the column list.
+ * @name EHR.Metadata.Columns
+ * @class
+ *
+ *
+ */
+EHR.Metadata.Columns = {
+    Alopecia: EHR.Metadata.topCols+',score,cause,head,shoulders,upperArms,lowerArms,hips,rump,dorsum,upperLegs,lowerLegs,other,' + EHR.Metadata.bottomCols,
+    Arrival: EHR.Metadata.topCols+',source,geoOrigin,gender,birth,dam,sire,initialRoom,initialCage,initialCond,id/numroommates/cagemates,'+EHR.Metadata.bottomCols,
+    Assignment: EHR.Metadata.topCols+',projectedRelease,'+EHR.Metadata.bottomCols,
+    'Bacteriology Results': EHR.Metadata.topCols+',method,organism,source,qualresult,result,units,antibiotic,sensitivity,'+EHR.Metadata.bottomCols,
+    'Behavior Remarks': EHR.Metadata.topCols+',so,a,p,'+EHR.Metadata.bottomCols,
+    Biopsies: EHR.Metadata.topCols+',caseno,type,veterinarian,performedby,nhpbmd,grossdescription,'+EHR.Metadata.bottomCols,
+    Birth: EHR.Metadata.topCols+',estimated,gender,weight,wdate,dam,sire,room,cage,cond,origin,conception,type,'+EHR.Metadata.bottomCols,
+    'Blood Draws': 'id/curlocation/location,'+EHR.Metadata.topCols+',tube_type,tube_vol,num_tubes,quantity,requestor,additionalServices,billedby,assayCode,restraint,restraintDuration,daterequested,instructions,' + EHR.Metadata.bottomCols, //p_s,a_v,
+    'Body Condition': EHR.Metadata.topCols+',score,weightstatus,remark,tattoo_chest,tattoo_thigh,microchip,tag,tattoo_remark,' + EHR.Metadata.bottomCols,
+    cage_observations: 'date,room,cage,feces,userId,no_observations,' + EHR.Metadata.sharedCols,
+    Charges: EHR.Metadata.topCols+',type,unitCost,quantity,'+EHR.Metadata.bottomCols,
+    'Chemistry Results': EHR.Metadata.topCols+',testid,method,resultOORIndicator,result,units,qualResult,'+EHR.Metadata.bottomCols,
+    'Clinical Encounters': EHR.Metadata.topCols + ',title,type,major,serviceRequested,restraint,restraintDuration,'+EHR.Metadata.bottomCols,
+    'Clinical Remarks': EHR.Metadata.topCols+',so,a,p,'+EHR.Metadata.bottomCols,
+    'Clinical Observations': EHR.Metadata.topCols+',area,observation,code,' + EHR.Metadata.bottomCols,
+    'Clinpath Runs': EHR.Metadata.topCols+',serviceRequested,type,sampletype,sampleId,collectionMethod,collectedBy,'+EHR.Metadata.bottomCols,
+    Deaths: EHR.Metadata.topCols+',tattoo,dam,cause,manner,'+EHR.Metadata.bottomCols,
+    Demographics: EHR.Metadata.topCols+',species,gender,birth,death,hold,dam,sire,origin,geographic_origin,cond,medical,prepaid,v_status,'+EHR.Metadata.bottomCols,
+    Departure: EHR.Metadata.topCols+',authorize,destination,'+EHR.Metadata.bottomCols,
+    'Dental Status': EHR.Metadata.topCols+',priority,extractions,gingivitis,tartar,' + EHR.Metadata.bottomCols,
+    'Drug Administration': 'id/curlocation/location,'+'id,date,begindate,enddate,project,account'+',code,qualifier,category,route,concentration,conc_units,dosage,dosage_units,volume,vol_units,amount,amount_units,headerdate,restraint,restraintDuration,remark,performedby,' + EHR.Metadata.bottomCols,
+    Feeding: EHR.Metadata.topCols+',amount,type,'+EHR.Metadata.bottomCols,
+    'Final Reports': EHR.Metadata.topCols+','+EHR.Metadata.bottomCols,
+    'Hematology Results': EHR.Metadata.topCols+',testid,method,result,units,qualResult,'+EHR.Metadata.bottomCols,
+    'Hematology Morphology': EHR.Metadata.topCols+',morphology,score,'+EHR.Metadata.bottomCols,
+    Histology: EHR.Metadata.topCols+',slideNum,stain,tissue,qualifier,container_type,pathologist,trimdate,trimmed_by,trim_remarks,'+EHR.Metadata.bottomCols,
+    'Housing': 'id,project,date,enddate,room,cage,id/numroommates/cagemates,cond,reason,isTemp,'+EHR.Metadata.bottomCols,
+    'Immunology Results': EHR.Metadata.topCols+',testid,method,result,units,qualResult,'+EHR.Metadata.bottomCols,
+    'Irregular Observations': 'id/curlocation/location,'+EHR.Metadata.topCols + ',feces,menses,other,tlocation,behavior,otherbehavior,other,breeding,'+EHR.Metadata.bottomColsmCols,
+    'Necropsy Diagnosis': EHR.Metadata.topCols+',tissue,severity,duration,distribution,process,'+EHR.Metadata.bottomCols,
+    Necropsies: EHR.Metadata.topCols+',tattoo,caseno,performedby,assistant,billing,tissue_distribution,timeofdeath,causeofdeath,mannerofdeath,perfusion_area,grossdescription,'+EHR.Metadata.bottomCols,
+    'Notes': EHR.Metadata.topCols+',userid,category,value,'+EHR.Metadata.bottomCols,
+    'Morphologic Diagnosis': EHR.Metadata.topCols+',remark,tissue,tissue_qualifier,inflammation,inflammation2,etiology,process,process2,performedBy,qcstate,'+EHR.Metadata.hiddenCols,
     //,severity,duration,distribution,distribution2
-    'Pair Tests': EHR.ext.topCols+',partner,bhav,testno,sharedFood,aggressions,affiliation,conclusion,'+EHR.ext.bottomCols,
-    'Parasitology Results': EHR.ext.topCols+',organism,method,result,units,qualresult,'+EHR.ext.bottomCols,
-    'Prenatal Deaths': EHR.ext.topCols+',species,gender,weight,dam,sire,room,cage,conception,'+EHR.ext.bottomCols,
-    'Procedure Codes': EHR.ext.topCols+',code,'+EHR.ext.bottomCols,
-    'Problem List': EHR.ext.topCols+',code,category,'+EHR.ext.bottomCols,
-    'Organ Weights': EHR.ext.topCols+',tissue,qualifier,weight,'+EHR.ext.bottomCols,
+    'Pair Tests': EHR.Metadata.topCols+',partner,bhav,testno,sharedFood,aggressions,affiliation,conclusion,'+EHR.Metadata.bottomCols,
+    'Parasitology Results': EHR.Metadata.topCols+',organism,method,result,units,qualresult,'+EHR.Metadata.bottomCols,
+    'Prenatal Deaths': EHR.Metadata.topCols+',species,gender,weight,dam,sire,room,cage,conception,'+EHR.Metadata.bottomCols,
+    'Procedure Codes': EHR.Metadata.topCols+',code,'+EHR.Metadata.bottomCols,
+    'Problem List': EHR.Metadata.topCols+',code,category,'+EHR.Metadata.bottomCols,
+    'Organ Weights': EHR.Metadata.topCols+',tissue,qualifier,weight,'+EHR.Metadata.bottomCols,
     requests: 'rowid,title,formtype,daterequested,priority,notify1,notify2,notify3,createdby,qcstate',
-    Restraint: EHR.ext.topCols+',enddate,type,totaltime,'+EHR.ext.bottomCols,
+    Restraint: EHR.Metadata.topCols+',enddate,type,totaltime,'+EHR.Metadata.bottomCols,
     tasks: 'rowid,title,formtype,created,createdby,assignedto,duedate,taskid,category,qcstate',
-    'TB Tests': EHR.ext.topCols + ',notPerformedAtCenter,lot,dilution,eye,result1,result2,result3,'+EHR.ext.bottomCols,
-    'Teeth': EHR.ext.topCols+',jaw,side,tooth,status,' + EHR.ext.bottomCols,
-    'Tissue Samples': EHR.ext.topCols+',tissue,qualifier,preservation,quantity,recipient,ship_to,container_type,accountToCharge,'+EHR.ext.bottomCols,
-    'Treatment Orders': EHR.ext.topCols+',meaning,code,qualifier,route,frequency,concentration,conc_units,dosage,dosage_units,volume,vol_units,amount,amount_units,' + EHR.ext.bottomCols,
-    'Urinalysis Results': EHR.ext.topCols+',testid,method,resultOORIndicator,result,units,qualResult,'+EHR.ext.bottomCols,
-    'Virology Results': EHR.ext.topCols+',virus,method,source,resultOORIndicator,result,units,qualResult,'+EHR.ext.bottomCols,
-    Vitals: EHR.ext.topCols+',temp,heartrate,resprate,' + EHR.ext.bottomCols,
-    Weight: 'id/curlocation/location,'+EHR.ext.topCols + ',weight,'+EHR.ext.bottomCols
+    'TB Tests': EHR.Metadata.topCols + ',notPerformedAtCenter,lot,dilution,eye,result1,result2,result3,'+EHR.Metadata.bottomCols,
+    'Teeth': EHR.Metadata.topCols+',jaw,side,tooth,status,' + EHR.Metadata.bottomCols,
+    'Tissue Samples': EHR.Metadata.topCols+',tissue,qualifier,preservation,quantity,recipient,ship_to,container_type,accountToCharge,'+EHR.Metadata.bottomCols,
+    'Treatment Orders': EHR.Metadata.topCols+',meaning,code,qualifier,route,frequency,concentration,conc_units,dosage,dosage_units,volume,vol_units,amount,amount_units,' + EHR.Metadata.bottomCols,
+    'Urinalysis Results': EHR.Metadata.topCols+',testid,method,resultOORIndicator,result,units,qualResult,'+EHR.Metadata.bottomCols,
+    'Virology Results': EHR.Metadata.topCols+',virus,method,source,resultOORIndicator,result,units,qualResult,'+EHR.Metadata.bottomCols,
+    Vitals: EHR.Metadata.topCols+',temp,heartrate,resprate,' + EHR.Metadata.bottomCols,
+    Weight: 'id/curlocation/location,'+EHR.Metadata.topCols + ',weight,'+EHR.Metadata.bottomCols
 };

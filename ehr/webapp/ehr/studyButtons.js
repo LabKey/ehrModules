@@ -11,7 +11,7 @@ LABKEY.requiresScript("/ehr/ehrAPI.js");
 
 function moreActionsHandler(dataRegion){
     //first we get the permission map
-    EHR.utils.getDatasetPermissions({
+    EHR.Security.init({
         success: onSuccess,
         failure: function(error){
             console.log(error)
@@ -30,7 +30,7 @@ function moreActionsHandler(dataRegion){
 //            ,{queryName: 'Treatment Orders', schemaName: 'study'}
         ];
 //        Ext.each(tables, function(t){
-//            if(EHR.permissionMap.hasPermission('Completed', 'insert', t))
+//            if(EHR.Security.hasPermission('Completed', 'insert', t))
 //                addFormButton(dataRegion, t, menu);
 //        }, this);
 
@@ -38,70 +38,70 @@ function moreActionsHandler(dataRegion){
             addWeightCompareBtn(dataRegion, menu);
 
 //        if(dataRegion.schemaName.match(/^study$/i) && dataRegion.queryName.match(/^treatmentSchedule$/i)){
-//            if(EHR.permissionMap.hasPermission('Completed', 'insert', 'Drug Administration')){
+//            if(EHR.Security.hasPermission('Completed', 'insert', 'Drug Administration')){
 //                addTreatmentCompleteBtn(dataRegion, menu);
 //            }
 //        }
 
         if(dataRegion.schemaName.match(/^study$/i) && dataRegion.queryName.match(/^Problem List$/i)){
-            if(EHR.permissionMap.hasPermission('Completed', 'update', {queryName: 'Problem List', schemaName: 'study'})){
+            if(EHR.Security.hasPermission('Completed', 'update', {queryName: 'Problem List', schemaName: 'study'})){
                 markComplete(dataRegion, menu, 'study', 'Problem List', {xtype: 'datefield'});
             }
         }
 
         if(dataRegion.schemaName.match(/^study$/i) && dataRegion.queryName.match(/^Treatment Orders$/i)){
-            if(EHR.permissionMap.hasPermission('Completed', 'update', {queryName: 'Treatment Orders', schemaName: 'study'})){
+            if(EHR.Security.hasPermission('Completed', 'update', {queryName: 'Treatment Orders', schemaName: 'study'})){
                 markComplete(dataRegion, menu, 'study', 'Treatment Orders');
             }
         }
 
         if(dataRegion.schemaName.match(/^study$/i) && (dataRegion.queryName.match(/^Assignment$/i) || dataRegion.queryName.match(/^ActiveAssignments$/i))){
-            if(EHR.permissionMap.hasPermission('Completed', 'update', {queryName: 'Assignment', schemaName: 'study'})){
+            if(EHR.Security.hasPermission('Completed', 'update', {queryName: 'Assignment', schemaName: 'study'})){
                 markComplete(dataRegion, menu, 'study', 'Assignment', {xtype: 'datefield'});
                 addAssignmentTaskBtn(dataRegion, menu);
             }
         }
 
         if(dataRegion.schemaName.match(/^study$/i) && dataRegion.queryName.match(/^Feeding$/i)){
-            if(EHR.permissionMap.hasPermission('Completed', 'update', {queryName: 'Feeding', schemaName: 'study'})){
+            if(EHR.Security.hasPermission('Completed', 'update', {queryName: 'Feeding', schemaName: 'study'})){
                 addFeedingTaskBtn(dataRegion, menu);
             }
         }
 
 //        if(dataRegion.schemaName.match(/^study$/i) && dataRegion.queryName.match(/^treatmentSchedule$/i)){
-//            if(EHR.permissionMap.hasPermission('Completed', 'insert', {queryName: 'Drug Administration', schemaName: 'study'})){
+//            if(EHR.Security.hasPermission('Completed', 'insert', {queryName: 'Drug Administration', schemaName: 'study'})){
 //                addTreatmentCompleteBtn(dataRegion, menu);
 //            }
 //        }
 
 //        if(dataRegion.schemaName.match(/^study$/i) && dataRegion.queryName.match(/^Notes$/i)){
-//            if(EHR.permissionMap.hasPermission('Completed', 'update', {queryName: 'Notes', schemaName: 'study'})){
+//            if(EHR.Security.hasPermission('Completed', 'update', {queryName: 'Notes', schemaName: 'study'})){
 //                markComplete(dataRegion, menu, 'study', 'Notes');
 //            }
 //        }
 
 
         if(dataRegion.schemaName.match(/^study$/i) && dataRegion.queryName.match(/^Demographics$/i)){
-            if(EHR.permissionMap.hasPermission('Scheduled', 'insert', {queryName: 'Weight', schemaName: 'study'})){
+            if(EHR.Security.hasPermission('Scheduled', 'insert', {queryName: 'Weight', schemaName: 'study'})){
                 createTaskFromIdsBtn(dataRegion, menu, {queries: [{schemaName: 'study', queryName: 'Weight'}], formType: 'Weight'});
             }
         }
 
         if(LABKEY.ActionURL.getAction().match(/^dataEntry$/i) && dataRegion.schemaName.match(/^study$/i) && dataRegion.queryName.match(/^Clinpath Runs$/i)){
-            if(EHR.permissionMap.hasPermission('Scheduled', 'insert', {queryName: 'Clinpath Runs', schemaName: 'study'})){
+            if(EHR.Security.hasPermission('Scheduled', 'insert', {queryName: 'Clinpath Runs', schemaName: 'study'})){
                 createTaskBtn(dataRegion, menu, {queries: [{schemaName: 'study', queryName: 'Clinpath Runs'}], formType: 'Clinpath'});
                 changeQCStateBtn(dataRegion, menu);
             }
         }
 
         if(dataRegion.schemaName.match(/^study$/i) && dataRegion.queryName.match(/^Clinpath Runs$/i)){
-            if(EHR.permissionMap.hasPermission('Completed', 'update', {queryName: 'Clinpath Runs', schemaName: 'study'})){
+            if(EHR.Security.hasPermission('Completed', 'update', {queryName: 'Clinpath Runs', schemaName: 'study'})){
                 markReviewed(dataRegion, menu);
             }
         }
 
         if(LABKEY.ActionURL.getAction().match(/^dataEntry$/i) && dataRegion.schemaName.match(/^study$/i) && dataRegion.queryName.match(/^Blood Draws$/i)){
-            if(EHR.permissionMap.hasPermission('Scheduled', 'insert', {queryName: 'Blood Draws', schemaName: 'study'})){
+            if(EHR.Security.hasPermission('Scheduled', 'insert', {queryName: 'Blood Draws', schemaName: 'study'})){
                 createTaskBtn(dataRegion, menu, {queries: [{schemaName: 'study', queryName: 'Blood Draws'}], formType: 'Blood Draws'});
                 changeBloodQCStateBtn(dataRegion, menu);
                 //addBloodToTaskBtn(dataRegion, menu);
@@ -109,7 +109,7 @@ function moreActionsHandler(dataRegion){
         }
 
         if(LABKEY.ActionURL.getAction().match(/^dataEntry$/i) && dataRegion.schemaName.match(/^study$/i) && dataRegion.queryName.match(/^Study( )*Data$/i)){
-            if(EHR.permissionMap.hasPermission('Scheduled', 'insert', {queryName: 'Blood Draws', schemaName: 'study'})){
+            if(EHR.Security.hasPermission('Scheduled', 'insert', {queryName: 'Blood Draws', schemaName: 'study'})){
                 //createTaskBtn(dataRegion, menu, {queries: [{schemaName: 'study', queryName: 'Blood Draws'}], formType: 'Blood Draws'});
                 changeQCStateBtn(dataRegion, menu);
             }
@@ -402,7 +402,7 @@ function addFormButton(dataRegion, config, menu){
                     border: false
                     ,bodyStyle: 'padding: 5px;'
                 }
-                ,items: [new EHR.ext.SimpleImportPanel({
+                ,items: [new EHR.ext.ImportPanel.SimpleImportPanel({
                     showStatus: false,
                     allowableButtons: [{
                         text: 'Submit',
@@ -451,9 +451,9 @@ function addFormButton(dataRegion, config, menu){
                         ,showStatus: false
                         ,schemaName: config.schemaName
                         ,queryName: config.queryName
-                        ,columns: EHR.ext.FormColumns[config.queryName]
+                        ,columns: EHR.Metadata.Columns[config.queryName]
                         ,collapsible: false
-                        ,metadata: EHR.ext.getTableMetadata(config.queryName, ['SimpleForm'])
+                        ,metadata: EHR.Metadata.getTableMetadata(config.queryName, ['SimpleForm'])
                         ,keyField: 'lsid'
                         ,keyValue: null
                     }]
@@ -1665,7 +1665,7 @@ function duplicateTask(dataRegion){
                         LABKEY.Query.selectRows({
                             schemaName: 'study',
                             queryName: r.queryName,
-                            columns: EHR.ext.FormColumns[r.queryName] || null,
+                            columns: EHR.Metadata.Columns[r.queryName] || null,
                             filterArray: [
                                 LABKEY.Filter.create('taskid', taskid, LABKEY.Filter.Types.EQUAL)
                             ],

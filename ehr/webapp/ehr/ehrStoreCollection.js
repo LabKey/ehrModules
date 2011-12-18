@@ -7,14 +7,17 @@
 Ext.namespace('EHR.ext', 'EHR.ext.plugins');
 
 
-// this class will serve to monitor multiple child stores.
-// it will handle: preparing submission to server, commitChanges, decoding server response
-// also provides some level of validation over records
-// should delegate as much as reasonable to child stores
-// primarily tries to listen for events from child stores and aggregate info
-
-//events: 'beforecommit', 'commitcomplete', 'commitexception','update', 'validation'
-
+/**
+ * This class will manage a collection of child EHR.ext.AdvancedStores.  When a store is registered with the StoreCollection then StoreCollection will
+ * manage commit records and interpret the response.  Where possible, this class seeks to delegate processing to the child stores.  An instance of
+ * this class is automatically created by EHR.ext.ImportPanels, which is the primary use case; however, it could be created directly.
+ * @class
+ * @name EHR.ext.StoreCollection
+ * @aguments Ext.util.MixedCollection
+ * @param {object} config Configuration object.
+ * @param {boolean} [config.monitorValid] If true, this store will monitor the valid status of record in child stores.  See EHR.ext.AdvancedStore for more on validation.
+ *
+ */
 EHR.ext.StoreCollection = Ext.extend(Ext.util.MixedCollection, {
     constructor: function(config){
         Ext.apply(this, config);
@@ -25,7 +28,12 @@ EHR.ext.StoreCollection = Ext.extend(Ext.util.MixedCollection, {
         EHR.ext.StoreCollection.superclass.constructor.call(this, false, function(item){return item.storeId;});
         this.addEvents('beforecommit', 'commitcomplete', 'commitexception', 'update', 'validation');
     },
-    //timeout: 60000,
+
+    /**
+     * Add a store to this collection
+     * @memberOf EHR.ext.StoreCollection
+     * @param store The store to add.
+     */
     add: function(store){
         store = Ext.StoreMgr.lookup(store);
         if (this.contains(store)){
@@ -44,8 +52,8 @@ EHR.ext.StoreCollection = Ext.extend(Ext.util.MixedCollection, {
 
         Ext.apply(store, {
             parentStore: this,
-            monitorValid: this.monitorValid,
-            allowOthersToEditRecords: this.allowOthersToEditRecords
+            monitorValid: this.monitorValid
+            //allowOthersToEditRecords: this.allowOthersToEditRecords
         });
 
         if(this.monitorValid){
@@ -59,6 +67,7 @@ EHR.ext.StoreCollection = Ext.extend(Ext.util.MixedCollection, {
 
     },
 
+    //private
     initMonitorValid: function(){
         this.monitorValid = true;
         this.each(function(store){
@@ -66,6 +75,7 @@ EHR.ext.StoreCollection = Ext.extend(Ext.util.MixedCollection, {
         }, this);
     },
 
+    //private
     stopMonitorValid: function(){
         this.each(function(store){
             this.store.un('validation', this.onValidation, this);
@@ -73,6 +83,11 @@ EHR.ext.StoreCollection = Ext.extend(Ext.util.MixedCollection, {
         this.monitorValid = false;
     },
 
+    /**
+     * Removes a child store from this collection
+     * @memberOf EHR.ext.StoreCollection
+     * @param store The store to remove.
+     */
     remove: function(store){
         //TODO: this is done to undo relayEvents() set above.
         if (store.hasListener('update')) {
@@ -85,6 +100,7 @@ EHR.ext.StoreCollection = Ext.extend(Ext.util.MixedCollection, {
         EHR.ext.StoreCollection.superclass.remove.call(store);
     },
 
+    //private
     getChanged: function(commitAll){
         var allCommands = [];
         var allRecords = [];
@@ -122,6 +138,7 @@ EHR.ext.StoreCollection = Ext.extend(Ext.util.MixedCollection, {
         record.store.commitRecords([record], extraContext);
     },
 
+    //private
     commit: function(commands, records, extraContext){
         extraContext = extraContext || {};
 
@@ -157,7 +174,11 @@ EHR.ext.StoreCollection = Ext.extend(Ext.util.MixedCollection, {
             rec.lastTransactionId = request.tId;
         }, this);
     },
-
+    /**
+     * Will test whether all records in this store collection pass validation or not.
+     * @memberOf EHR.ext.StoreCollection
+     * @returns {Boolean} True/false depending on whether all records in this StoreCollection pass validation
+     */
     isValid: function(){
         var valid = true;
         this.each(function(s){
@@ -167,7 +188,10 @@ EHR.ext.StoreCollection = Ext.extend(Ext.util.MixedCollection, {
         }, this);
         return valid;
     },
-
+    /**
+     * Tests whether any records in this store collection are dirty
+     * @returns {boolean} True/false depending on whether any records in the collection are dirty.
+     */
     isDirty: function()
     {
         var dirty = false;
@@ -178,6 +202,8 @@ EHR.ext.StoreCollection = Ext.extend(Ext.util.MixedCollection, {
         return dirty;
     },
 
+    //private
+    //tests whether any store are loading or not
     isLoading: function(){
         var isLoading = false;
         this.each(function(s){
@@ -189,6 +215,8 @@ EHR.ext.StoreCollection = Ext.extend(Ext.util.MixedCollection, {
         return isLoading;
     },
 
+    //private
+    //returns an array of the queries represented in this store
     getQueries: function(){
         var queries = [];
         this.each(function(s){
@@ -200,6 +228,7 @@ EHR.ext.StoreCollection = Ext.extend(Ext.util.MixedCollection, {
         return queries;
     },
 
+    //private
     onValidation: function(store, records){
         //check all stores
         var maxSeverity = '';
@@ -210,6 +239,7 @@ EHR.ext.StoreCollection = Ext.extend(Ext.util.MixedCollection, {
         this.fireEvent('validation', this, maxSeverity);
     },
 
+    //private
     getErrors: function(){
         var errors = [];
         this.each(function(store){
@@ -221,6 +251,7 @@ EHR.ext.StoreCollection = Ext.extend(Ext.util.MixedCollection, {
         return errors;
     },
 
+    //private
     getOnCommitFailure : function(records) {
         return function(response, options) {
             //note: should not matter which child store they belong to
@@ -255,6 +286,7 @@ EHR.ext.StoreCollection = Ext.extend(Ext.util.MixedCollection, {
         };
     },
 
+    //private
     handleValidationErrors: function(serverError, response, extraContext){
         var store = this.get(extraContext.storeId);
         var record = store.getById(serverError.row._recordId);
@@ -267,6 +299,7 @@ EHR.ext.StoreCollection = Ext.extend(Ext.util.MixedCollection, {
         }
     },
 
+    //private
     onCommitSuccess : function(response, options){
         var json = this.getJson(response);
         if(!json || !json.result)
@@ -285,6 +318,7 @@ EHR.ext.StoreCollection = Ext.extend(Ext.util.MixedCollection, {
         this.onComplete((options.jsonData ? options.jsonData.extraContext : null));
     },
 
+    //private
     onComplete: function(extraContext){
         this.fireEvent("commitcomplete");
 
@@ -294,6 +328,7 @@ EHR.ext.StoreCollection = Ext.extend(Ext.util.MixedCollection, {
         }
     },
 
+    //private
     getJson : function(response) {
         return (response && undefined != response.getResponseHeader && undefined != response.getResponseHeader('Content-Type')
                 && response.getResponseHeader('Content-Type').indexOf('application/json') >= 0)
@@ -301,6 +336,7 @@ EHR.ext.StoreCollection = Ext.extend(Ext.util.MixedCollection, {
                 : null;
     },
 
+    //private
     deleteAllRecords: function(extraContext){
         //NOTE: we delegate the deletion to each store, and track progress here so we can fire a single event
         var storesPerformingDeletes = [];
@@ -337,6 +373,10 @@ EHR.ext.StoreCollection = Ext.extend(Ext.util.MixedCollection, {
         }, this);
     },
 
+    //private
+    //this is distinct from deleteAllRecords.  instead of deleting the records, it changes the QCState to 'Delete Requested'.  these
+    //records are deleted periodically by a separate cron script.  this exists b/c historically delete performance was extrememly poor.
+    //this has been fixed and the data entry code should probably be refactored to directly delete the records.
     requestDeleteAllRecords: function(options){
         options = options || {};
 
@@ -365,12 +405,12 @@ EHR.ext.StoreCollection = Ext.extend(Ext.util.MixedCollection, {
                     if(s.queryName!='tasks')
                         r.set('taskid', null);
 
-                    r.set('QCState', EHR.permissionMap.qcMap.label['Request: Approved'].RowId);
-                    r.set('qcstate', EHR.permissionMap.qcMap.label['Request: Approved'].RowId);
+                    r.set('QCState', EHR.Security.getQCStateByLabel('Request: Approved').RowId);
+                    r.set('qcstate', EHR.Security.getQCStateByLabel('Request: Approved').RowId);
                 }
                 else {
-                    r.set('QCState', EHR.permissionMap.qcMap.label['Delete Requested'].RowId);
-                    r.set('qcstate', EHR.permissionMap.qcMap.label['Delete Requested'].RowId);
+                    r.set('QCState', EHR.Security.getQCStateByLabel('Delete Requested').RowId);
+                    r.set('qcstate', EHR.Security.getQCStateByLabel('Delete Requested').RowId);
                 }
                 recs.push(r);
 
@@ -395,6 +435,8 @@ EHR.ext.StoreCollection = Ext.extend(Ext.util.MixedCollection, {
         }
     },
 
+    //private
+    //returns all records in all child stores
     getAllRecords: function(){
         var records = [];
         this.each(function(s){
@@ -405,6 +447,7 @@ EHR.ext.StoreCollection = Ext.extend(Ext.util.MixedCollection, {
         return records;
     },
 
+    //private
     //NOTE: used for development.  should get removed eventually
     showStores: function(){
         this.each(function(s){
@@ -428,12 +471,18 @@ EHR.ext.StoreCollection = Ext.extend(Ext.util.MixedCollection, {
             }
         }, this);
     },
+
+    //private
+    //for debugging purposes
     showErrors: function(){
         console.log(this.getErrors());
     }
 });
 
-
+/*
+ * A plugin applied to EHR.ext.StoreCollection that allows field metadata to specificy parent/child relationships between records
+  * See EHR.Metadata.FieldMetadata.parentConfig
+ */
 EHR.ext.StoreInheritance = {
     initInheritance: function(store) {
         store.on('beforemetachange', this.addInheritanceListeners, this);
