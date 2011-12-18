@@ -124,10 +124,10 @@
                       <fkColumnName>score</fkColumnName>
                     </fk>
                   </column>
-                  <column columnName="gross_description">
+                  <column columnName="patho_notes">
                     <datatype>varchar</datatype>
                     <inputType>textarea</inputType>
-                    <columnTitle>Gross Description</columnTitle>
+                    <columnTitle>Pathology Unit Notes</columnTitle>
                   </column>
                   <column columnName="histopathologic">
                       <columnTitle>Histopathologic Description</columnTitle>

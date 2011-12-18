@@ -32,7 +32,7 @@ function onBecomePublic(errors, scriptContext, row, oldRow){
             };
 
             if(row.requestid){
-                LABKEY.Query.insertRows({
+                LABKEY.Query.selectRows({
                     schemaName: 'ehr',
                     queryName: 'requests',
                     filterArray: [

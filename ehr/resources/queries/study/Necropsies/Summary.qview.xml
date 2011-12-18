@@ -17,6 +17,7 @@
        <!--<column name="perfusion_soln2" />-->
        <!--<column name="perfusion_time2" />-->
        <column name="gross_description" />
+       <column name="patho_notes" />
        <column name="remark" />
        <column name="qcstate" />
        <!--<column name="taskid" />-->

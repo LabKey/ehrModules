@@ -144,17 +144,18 @@ str(oldRecords);
 
 #first we find any cases where an Id existing in oldRecords, but not newRecords.  These need to be deleted
 IdxToDelete <- setdiff(oldRecords$key1, newRecords$key1);
-toDelete <- oldRecords[IdxToDelete,]
+toDelete <- oldRecords[match(IdxToDelete, oldRecords$key1),]
 print('Total To Delete: ')
 length(toDelete$Id)
 
 if(length(toDelete$Id)){
+    toDelete <- data.frame(rowid=toDelete$rowid)
     del <- labkey.deleteRows(
         baseUrl=labkey.url.base,
         folderPath="/WNPRC/EHR",
         schemaName="ehr",
         queryName="kinship",
-        toDelete=data.frame(rowid=toDelete$rowid)
+        toDelete=toDelete
     );
 }
 remove(IdxToDelete)
@@ -201,14 +202,13 @@ if(length(toInsert$Id) > 5000){
      write.table(toInsert, file = "/usr/local/labkey/kinship/kinship.tsv", quote = FALSE, sep = "\t");
      print("NOTE: There are too many rows to import using the API.")
      print("A TSV file has been written to /usr/local/labkey/kinship.tsv")
+     print("It can be imported here: https://ehr.primate.wisc.edu/query/WNPRC/EHR/import.view?schemaName=ehr&query.queryName=kinship")
      stop()
      #toInsert <- toInsert[1:500,];
      #length(toInsert$Id);
 }
 
 if(length(toInsert$Id) <= 5000){
-    str(toInsert);
-
     if(length(toInsert$Id)){
         ins <- labkey.insertRows(
             baseUrl=labkey.url.base,

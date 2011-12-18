@@ -5,6 +5,7 @@
        <column name="caseno" />
        <column name="remark" />
        <column name="gross_description" />
+       <column name="patho_notes" />
        <column name="project" />
        <column name="account" />
        <column name="performedby" />

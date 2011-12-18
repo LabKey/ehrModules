@@ -8,7 +8,7 @@ Ext.namespace('EHR.ext');
 
 LABKEY.requiresScript("/ehr/ehrAPI.js");
 
-
+//builds a LabKey formpanel with the supplied configuration (config)
 EHR.ext.FormPanel = function(config){
     EHR.ext.FormPanel.superclass.constructor.call(this, config);
 };

@@ -949,6 +949,32 @@ Ext.extend(EHR.ext.ImportPanelBase, Ext.Panel, {
 
 
 EHR.ext.TaskPanel = Ext.extend(EHR.ext.ImportPanelBase, {
+
+    //listener to makes the title of the task the title of the browser window
+    //The functions calls the parent function to access the title of the browser page
+    addStore:function(c){
+         //call parent
+        //based on the extend method from TaskPanel allows for calling the super class
+        EHR.ext.TaskPanel.superclass.addStore.apply(this, arguments);
+        //setup a listener
+        //only when the storeid is a ehr task
+        if (c.storeId == 'ehr||tasks||||'){
+            //
+            // Calls mon from Components.js that accepts item, ename, function
+            // mon adds a listener to the component that is removed when the component is destroyed
+            this.mon(c, 'load', function(store){
+
+                //getCount() gets the number of cache records from store
+                if(store.getCount()){
+                    //getAt() - returns record at specified index
+                    var rec= store.getAt(0);
+                    //Set the title of the page calls NavTrail.js - funtion probided by LabKey
+                    LABKEY.NavTrail.setTrail(rec.get('title'));
+                }
+            },this)
+        }
+    },
+
     initComponent: function(){
 
         this.formUUID = this.formUUID || LABKEY.Utils.generateUUID();

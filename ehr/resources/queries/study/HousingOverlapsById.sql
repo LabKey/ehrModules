@@ -22,6 +22,9 @@ OR
 
 OR
 
-(cast(COALESCE(STARTDATE, '1900-01-01') AS TIMESTAMP) <= h.date AND COALESCE(ENDDATE, now()) >= COALESCE(h.enddate, now()))
+(cast(COALESCE(STARTDATE, '1900-01-01') AS TIMESTAMP) <= h.date AND COALESCE(ENDDATE, now()) <= COALESCE(h.enddate, now()))
+/*This query does not include a clear definition of the end date, a lot of the housing records do not have
+*end dates in the system, probably the query is adding today date to the query
+*/
 
 GROUP BY h.id

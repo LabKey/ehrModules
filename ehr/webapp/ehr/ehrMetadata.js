@@ -1243,6 +1243,10 @@ EHR.ext.Metadata.Standard = {
                 width: 600,
                 defaultValue: 'A ___ kg rhesus macaque is presented for necropsy in excellent post mortem condition.\n\nA ___ kg cynomolgus macaque is presented for necropsy in excellent post mortem condition.\n\nA ___ kg common marmoset is presented for necropsy in excellent post mortem condition.\n\nA ____ kg cynomolgus macaque is presented for perfusion and necropsy in excellent post mortem condition.\n\nA ____ kg rhesus macaque is presented for perfusion and necropsy in excellent post mortem condition.'
             },
+            patho_notes: {
+                height: 200,
+                width: 600
+            },
             caseno: {
                 xtype: 'trigger'
                 ,allowBlank: false
@@ -3756,7 +3760,7 @@ EHR.ext.FormColumns = {
     'Immunology Results': EHR.ext.topCols+',testid,method,result,units,qualResult,'+EHR.ext.bottomCols,
     'Irregular Observations': 'id/curlocation/location,'+EHR.ext.topCols + ',feces,menses,other,tlocation,behavior,otherbehavior,other,breeding,'+EHR.ext.bottomCols,
     'Necropsy Diagnosis': EHR.ext.topCols+',tissue,severity,duration,distribution,process,'+EHR.ext.bottomCols,
-    Necropsies: EHR.ext.topCols+',tattoo,caseno,performedby,assistant,billing,tissue_distribution,timeofdeath,causeofdeath,mannerofdeath,perfusion_area,grossdescription,'+EHR.ext.bottomCols,
+    Necropsies: EHR.ext.topCols+',tattoo,caseno,performedby,assistant,billing,tissue_distribution,timeofdeath,causeofdeath,mannerofdeath,perfusion_area,grossdescription,patho_notes,'+EHR.ext.bottomCols,
     'Notes': EHR.ext.topCols+',userid,category,value,'+EHR.ext.bottomCols,
     'Morphologic Diagnosis': EHR.ext.topCols+',remark,tissue,tissue_qualifier,inflammation,inflammation2,etiology,process,process2,performedBy,qcstate,'+EHR.ext.hiddenCols,
     //,severity,duration,distribution,distribution2
