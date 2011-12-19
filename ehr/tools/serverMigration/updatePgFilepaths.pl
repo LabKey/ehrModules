@@ -7,6 +7,8 @@ Created 5-1-11 by bbimber
 This script is designed to update hard-coded filepaths in a labkey server db.  It will generate a SQL
 script that can be run outside of this script.
 
+It was originally needed because when we migrated from xnight (OSX server) to ehr (linux server) the local filepath of the labkey root changed.
+This script served to update any hard-coded filepaths stored in postgres.
 
 =head1 LICENSE
 

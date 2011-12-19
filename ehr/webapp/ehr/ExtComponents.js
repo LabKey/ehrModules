@@ -4,7 +4,9 @@
  * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
  */
 
-//This will contain custom ext components
+/*
+ * This file contains custom ext components.
+ */
 Ext.namespace('EHR.ext', 'EHR.ext.plugins', 'Ext.ux.form');
 
 
@@ -16,13 +18,7 @@ LABKEY.requiresScript("/ehr/ext.ux.datetimefield.js");
 LABKEY.requiresScript("/ehr/datetime.js");
 
 
-
-//the first section is more generic and might make sense to include in labkey
-
-
-
-
-/*
+/**
  * Contructs a CheckboxGroup where each radio is populated from a LabKey store.
  * This is an alternative to a combobox.
  * @class
@@ -189,7 +185,7 @@ Ext.reg('ehr-remotecheckboxgroup', EHR.ext.RemoteCheckboxGroup);
 //Ext.reg('ehr-displayfield', EHR.ext.DisplayField);
 
 
-/*
+/**
  * Contructs a RadioGroup where each radio is populated from a LabKey store.
  * This is an alternative to a combobox.
  * Adapted from:
@@ -337,19 +333,13 @@ Ext.reg('ehr-remoteradiogroup', EHR.ext.RemoteRadioGroup);
 
 
 /*
- * Contructs a RadioGroup where each radio is populated from a LabKey store.
- * This is an alternative to a combobox.
- * Adapted from:
- * http://www.sencha.com/forum/showthread.php?95860-Remote-Loading-Items-Remote-Checkbox-Group-Ext.ux.RemoteCheckboxGroup&highlight=checkboxgroup+event
+ * Contructs a combobox containing operators as might be used in a search form.
  * @class
- * @augments Ext.form.RadioGroup
- * @param {object} config The configuation object.  Will accept all config options from Ext.form.RadioGroup along with those listed here.
- * @param {object} [config.store] A LABKEY.ext.Store.  Each record will be used to
- * @param {string} [config.valueField] The name of the field to use as the inputValue
- * @param {string} [config.displayField] The name of the field to use as the label
+ * @augments Ext.form.ComboBox
+ * @param {object} config The configuation object.
+ * @param {string} [config.initialValue] The initial value to use in this combo.
+ * @param {string} [config.meta] The metadata object for this field, as supplied by LABKEY.Query.selectRows() or similar APIs.
  */
-
-//this is a combobox containing operators as might be used in a search form
 EHR.ext.OperatorCombo = Ext.extend(LABKEY.ext.ComboBox, {
     initComponent: function(config){
         this.meta = this.meta || {};
@@ -414,6 +404,12 @@ EHR.ext.OperatorCombo = Ext.extend(LABKEY.ext.ComboBox, {
 });
 Ext.reg('ehr-operatorcombo', EHR.ext.OperatorCombo);
 
+
+/*
+ * Contructs a combobox suitable to use with a boolean field.  It will display the strings Yes/No bound to the values true/false.
+ * @class
+ * @augments Ext.form.ComboBox
+ */
 EHR.ext.BooleanCombo = Ext.extend(LABKEY.ext.ComboBox, {
     initComponent: function(){
         Ext.apply(this, {
@@ -441,6 +437,17 @@ EHR.ext.BooleanCombo = Ext.extend(LABKEY.ext.ComboBox, {
 });
 Ext.reg('ehr-booleancombo', EHR.ext.BooleanCombo);
 
+
+/*
+ * Contructs a combobox displaying the list of saved views for a given query
+ * @class
+ * @augments Ext.form.ComboBox
+ * @param {object} config The configuation object.
+ * @param {string} [config.containerPath] The containerPath to query
+ * @param {string} [config.schemaName] The schema of the query
+ * @param {string} [config.queryName] The name of the query
+ * @param {string} [config.initialValue] The initial value for this combobox
+ */
 EHR.ext.ViewCombo = Ext.extend(LABKEY.ext.ComboBox, {
     initComponent: function(){
         Ext.apply(this, {
@@ -498,6 +505,11 @@ EHR.ext.ViewCombo = Ext.extend(LABKEY.ext.ComboBox, {
 Ext.reg('ehr-viewcombo', EHR.ext.ViewCombo);
 
 
+/*
+ * Contructs a combobox displaying the list of container filters, suitable for a search panel.
+ * @class
+ * @augments Ext.form.ComboBox
+ */
 EHR.ext.ContainerFilterCombo = Ext.extend(LABKEY.ext.ComboBox, {
     initComponent: function(){
         Ext.apply(this, {
@@ -526,14 +538,17 @@ EHR.ext.ContainerFilterCombo = Ext.extend(LABKEY.ext.ComboBox, {
 Ext.reg('ehr-containerfiltercombo', EHR.ext.ContainerFilterCombo);
 
 
-
+/*
+ * Contructs a triggerfield that is regex filtered to only accept digits (0-9).  Used in several EHR forms where a trigger button was required,
+ * such as drug dose inputs.
+ * @class
+ * @augments Ext.form.TriggerField
+ */
 EHR.ext.TriggerNumberField = function(config){
     EHR.ext.TriggerNumberField.superclass.constructor.call(this, config);
 };
 Ext.extend(EHR.ext.TriggerNumberField, Ext.form.TriggerField, {
     baseChars : "0123456789",
-
-
 /**
      * @cfg {Boolean} autoStripChars True to automatically strip not allowed characters from the field. Defaults to false
      */
@@ -576,8 +591,12 @@ Ext.extend(EHR.ext.TriggerNumberField, Ext.form.TriggerField, {
 });
 Ext.reg('ehr-triggernumberfield', EHR.ext.TriggerNumberField);
 
-//this is a component that will either be true or null.
-//this is done such that the box will fail client-side validation unless checked
+
+/**
+ * This is a RadioGroup that will either be true or null.  It was originally designed to be an option on data entry forms,
+ * but the conversion between null and false proves difficult and this was never used.
+ * @depreciated
+ */
 EHR.ext.ApproveRadio = Ext.extend(Ext.form.RadioGroup, {
     initComponent: function() {
         Ext.apply(this, {
@@ -623,6 +642,10 @@ EHR.ext.ApproveRadio = Ext.extend(Ext.form.RadioGroup, {
 Ext.reg('ehr-approveradio', EHR.ext.ApproveRadio);
 
 
+/**
+ * Creates a combobox which includes a special entry in the menu called 'Other'.  If selected, a popup appears allowing
+ * the user to enter in a new value, not present in the list.  This value is added to the store and will be saved.
+ */
 EHR.ext.UserEditableCombo = Ext.extend(LABKEY.ext.ComboBox, {
     initComponent: function(config){
         this.plugins = this.plugins || [];
@@ -702,7 +725,9 @@ EHR.ext.plugins.UserEditableCombo = Ext.extend(Ext.util.Observable, {
 Ext.preg('ehr-usereditablecombo', EHR.ext.plugins.UserEditableCombo);
 
 
-
+/**
+ * A plugin for Ext.form.TextArea that will allow the box to be resized by the user.
+ */
 EHR.ext.plugins.ResizableTextArea = Ext.extend(Ext.util.Observable, {
     init: function(textArea){
         textArea.resizeDirections = textArea.resizeDirections || 's,se,e';
@@ -722,9 +747,17 @@ EHR.ext.plugins.ResizableTextArea = Ext.extend(Ext.util.Observable, {
 });
 Ext.preg('ehr-resizabletextarea', EHR.ext.plugins.ResizableTextArea);
 
-//these components tend to be EHR specific
 
-
+/**
+ * This creates a combobox suitable to display SNOMED results.  It is a 2-part field, where the top combo allows you to
+ * select the 'snomed subset'.  When a subset is picked, the bottom combo loads that subset of codes.  This is designed as
+ * a mechanism to support more managable sets of allowable values for SNOMED entry.  It is heavily tied to ehr_lookups.snomed_subsets
+ * and ehr_lookups.snomed_subset_codes.
+ * @param {object} config The configuation object.
+ * @param {string} [config.defaultSubset] The default SNOMED subset to load
+ * @param {object} [config.filterComboCfg] An Ext ComboBox config object that will be used when creating the top-combo of this field.
+ *
+ */
 EHR.ext.SnomedCombo = Ext.extend(LABKEY.ext.ComboBox,
 {
     initComponent: function()
@@ -929,7 +962,10 @@ EHR.ext.SnomedCombo = Ext.extend(LABKEY.ext.ComboBox,
 Ext.reg('ehr-snomedcombo', EHR.ext.SnomedCombo);
 
 
-
+/**
+ * This field is used for EHR animal IDs.  It contains regular expression validation and fires events when the participant changes.
+ * See EHR.ext.plugins.ParticipantField and EHR.ext.plugins.ParticipantFieldEvents
+ */
 EHR.ext.ParticipantField = Ext.extend(Ext.form.TextField,
 {
     initComponent: function()
@@ -947,6 +983,10 @@ EHR.ext.ParticipantField = Ext.extend(Ext.form.TextField,
 Ext.reg('ehr-participant', EHR.ext.ParticipantField);
 
 
+/**
+ * This is a plugin that supplies many of the characteristics required for an EHR ParticipantField.  It provides
+ * regular expression-based validation, normalizes the case of animal IDs and adds a 'participantchange' event.
+ */
 EHR.ext.plugins.ParticipantField = Ext.extend(Ext.util.Observable, {
     init: function(combo) {
         Ext.apply(combo, {
@@ -1032,6 +1072,10 @@ EHR.ext.plugins.ParticipantField = Ext.extend(Ext.util.Observable, {
 Ext.preg('ehr-participantfield', EHR.ext.plugins.ParticipantField);
 
 
+/**
+ * This is a plugin for EHR ParticipantField, although it can be added to other fields.
+ * It configures a 'participantchange' event that will fire whenever the value of this field changes
+ */
 EHR.ext.plugins.ParticipantFieldEvents = Ext.extend(Ext.util.Observable, {
     init: function(combo) {
         combo.on('change', function(c){
@@ -1052,6 +1096,11 @@ EHR.ext.plugins.ParticipantFieldEvents = Ext.extend(Ext.util.Observable, {
 });
 Ext.preg('ehr-participantfield-events', EHR.ext.plugins.ParticipantFieldEvents);
 
+
+/**
+ * This field is used to diplay EHR projects.  It contains a custom template for the combo list which displays both the project and protocol.
+ * It also listens for participantchange events and will display only the set of allowable projects for the selected animal.
+ */
 EHR.ext.ProjectField = Ext.extend(LABKEY.ext.ComboBox,
 {
     initComponent: function()
@@ -1145,6 +1194,17 @@ EHR.ext.ProjectField = Ext.extend(LABKEY.ext.ComboBox,
 Ext.reg('ehr-project', EHR.ext.ProjectField);
 
 
+/**
+ * This field is used for EHR remarks.  It automatically used the ResizableTextArea plugin.  Also, if this field is created
+ * with a storeCfg object, a combo will be created above the store that allows the user to pick from a set of pre-defined remarks
+ * stored in the specified table
+ * @param config The configuration object.  Allows any parameters from the superclass as well as those defined here
+ * @param {object} [config.storeCfg] This is a config object used to create a LABKEY.ext.Combobox displaying the saved remarks for this field.
+ * @param {object} [config.storeCfg.schemaName] The schema from which to query saved remarks
+ * @param {object} [config.storeCfg.queryName] The query from which to retrieve saved remarks
+ * @param {object} [config.storeCfg.displayField] The field of this query to display in the combo
+ * @param {object} [config.storeCfg.valueField] The value of the combo.  When this combo option selected, the value of this field will be used as the value of the textarea
+ */
 EHR.ext.RemarkField = Ext.extend(Ext.form.TextArea,
 {
     initComponent: function(){
@@ -1212,6 +1272,11 @@ EHR.ext.RemarkField = Ext.extend(Ext.form.TextArea,
 Ext.reg('ehr-remark', EHR.ext.RemarkField);
 
 
+/**
+ * This field is used for data entry on the Drug Administration dataset.  It creates a numerfield with a trigger button.
+ * When this trigger is selected, the weight of the current animal is identified, along with the concentration and dosage entered
+ * into the current form.  These values are combined (weight*dosage/conc) to find the volume and amount.
+ */
 EHR.ext.DrugDoseField = Ext.extend(EHR.ext.TriggerNumberField,
 {
     initComponent: function(){
@@ -1310,6 +1375,7 @@ Ext.reg('ehr-drugdosefield', EHR.ext.DrugDoseField);
 
 
 //this vtype is used in date range panels
+//@depreciated
 Ext.apply(Ext.form.VTypes, {
     daterange : function(val, field)
     {

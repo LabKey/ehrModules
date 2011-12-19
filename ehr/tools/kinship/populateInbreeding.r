@@ -3,6 +3,14 @@
 # 
 #  Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
 ##
+
+# This R script will calculate and store inbreeding coefficients for all animals in the colony.  This data will be compared against
+# the information currently stored in the DB and the minimal number of inserts/updates/deletes are then performed.  This script is designed
+# to run as a daily cron job.
+
+# When the script runs it outputs the log to /usr/local/labkey/kinship/inbreedingOut.txt.  This file is monitored by monit and an alert will be through
+# if the timestamp does not change once per day.  This monitors whether the script is running, but does not directly monitor for errors.
+
 options(echo=FALSE);
 options(expressions = 1000);
 library(pedigree)

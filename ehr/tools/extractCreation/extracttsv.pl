@@ -5,6 +5,9 @@
 This script is designed to extract specific tables from LabKey to TSV files.
 It will hash specific fields using the included java hasher.class file.
 
+It was originally created for the purpose of automating anonymized extracts to be placed on the BIRN.
+It could be modified to output any sort of TSV.  It is designed to be connected to the table ehr.extracts,
+which would have 1 row per query to be output.  This part could be modified as needed.
 
 =head1 LICENSE
 

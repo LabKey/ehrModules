@@ -6,7 +6,9 @@
 /*
 This script is designed to alter postgres settings on a staging/development server following a full postgres dump from
 a production server.  This script comes with no guarantee whatsoever.  Test prior to use.
-  
+
+Sections below can be commented/uncommented depending on your needs
+
 */
 
 --use labkey;

@@ -9,3 +9,6 @@ batchtsv.sh will dump all mySQL tables to TSV files
 generatetsv.sh is called by batchtsv.sh
 
 importdata.sh should be run second.  it will import all of the TSV files created above and import into postgres
+
+these scripts were originally created during the period when the mySQL system was being synced daily into LabKey.
+they are no longer necessary, as the legacy mySQL system has been turned off.

@@ -57,7 +57,11 @@ function beforeInsert(row, errors){
     if(this.scriptContext.verbosity > 0)
         console.log("beforeInsert: " + row);
 
-    EHR.verifyPermissions('insert', this.scriptContext, row);
+    if(EHR.verifyPermissions('insert', this.scriptContext, row) === false){
+        errors._form = 'Insufficent permissions';
+        return;
+    }
+
     EHR.rowInit.call(this, scriptErrors, row, null);
 
     //force newly entered requests to have future dates
@@ -105,7 +109,11 @@ function beforeUpdate(row, oldRow, errors){
     if(this.scriptContext.verbosity > 0)
         console.log("beforeUpdate: " + row);
 
-    EHR.verifyPermissions('update', this.scriptContext, row, oldRow);
+    if(EHR.verifyPermissions('update', this.scriptContext, row, oldRow) === false){
+        errors._form = 'Insufficent permissions';
+        return;
+    }
+
     EHR.rowInit.call(this, scriptErrors, row, oldRow);
 
     //dataset-specific beforeUpdate
@@ -142,7 +150,10 @@ function beforeDelete(row, errors){
     if(this.scriptContext.verbosity > 0)
         console.log("beforeDelete: ");
 
-    EHR.verifyPermissions('delete', this.scriptContext, row);
+    if(EHR.verifyPermissions('delete', this.scriptContext, row) === false){
+        errors._form = 'Insufficent permissions';
+        return;
+    }
 
     if(this.onDelete)
         this.onDelete(errors, this.scriptContext, row);
@@ -859,7 +870,7 @@ EHR.verifyPermissions = function(event, scriptContext, row, oldRow){
     if(!scriptContext.permissionMap){
         console.log('Verifying permissions for: '+event);
 
-        EHR.utils.getDatasetPermissions({
+        EHR.Security.init({
             scope: this,
             schemaName: scriptContext.extraContext.schemaName,
             success: function(result){
@@ -930,8 +941,10 @@ EHR.verifyPermissions = function(event, scriptContext, row, oldRow){
                 schemaName: scriptContext.extraContext.schemaName,
                 queryName: scriptContext.extraContext.queryName
             }])){
-                EHR.logError({msg: "The user "+LABKEY.Security.currentUser.id+" does not have insert privledges for the table: "+scriptContext.extraContext.queryName});
-                throw "This user does not have insert privledges for the table: "+scriptContext.extraContext.queryName+' on qcStateLabel: '+row.QCStateLabel;
+                var msg = "The user "+LABKEY.Security.currentUser.id+" does not have insert privledges for the table: "+scriptContext.extraContext.queryName;
+                EHR.logError({msg: msg});
+                console.log(msg);
+                return false;
             }
         }
 
@@ -940,8 +953,10 @@ EHR.verifyPermissions = function(event, scriptContext, row, oldRow){
             schemaName: scriptContext.extraContext.schemaName,
             queryName: scriptContext.extraContext.queryName
         }])){
-            EHR.logError({msg: "The user "+LABKEY.Security.currentUser.id+" does not have update privledges for the table: "+scriptContext.extraContext.queryName});
-            throw "This user does not have update privledges for the table: "+scriptContext.extraContext.queryName;
+            var msg = "The user "+LABKEY.Security.currentUser.id+" does not have update privledges for the table: "+scriptContext.extraContext.queryName;
+            EHR.logError({msg: msg});
+            console.log(msg);
+            return false;
         }
 //        else
 //            console.log('the user has update permissions');
@@ -953,8 +968,10 @@ EHR.verifyPermissions = function(event, scriptContext, row, oldRow){
                 schemaName: scriptContext.extraContext.schemaName,
                 queryName: scriptContext.extraContext.queryName
             }])){
-                EHR.logError({msg: "The user "+LABKEY.Security.currentUser.id+" does not have "+event+" privledges for the table: "+scriptContext.extraContext.queryName});
-                throw "This user does not have "+event+" privledges for the table: "+scriptContext.extraContext.queryName;
+                var msg = "The user "+LABKEY.Security.currentUser.id+" does not have "+event+" privledges for the table: "+scriptContext.extraContext.queryName;
+                EHR.logError({msg: msg});
+                console.log(msg);
+                return false;
             }
 //            else
 //                console.log('the user has '+event+' permissions');
@@ -1765,6 +1782,7 @@ EHR.ETL = {
 
 
 EHR.utils = {};
+EHR.Security = {};
 
 EHR.utils.findPrincipalName = function(id){
     if(!EHR.utils.principalMap)
@@ -1791,7 +1809,7 @@ EHR.utils.findPrincipalName = function(id){
     return EHR.utils.principalMap[id] || '';
 };
 
-EHR.utils.getQCStateMap = function(config){
+EHR.Security.getQCStateMap = function(config){
     if(!config || !config.success){
         throw "Must provide a success callback";
     }
@@ -1832,7 +1850,7 @@ EHR.utils.isEmptyObj = function(ob){
    return true;
 };
 
-EHR.utils.getDatasetPermissions = function(config) {
+EHR.Security.init = function(config) {
     if(!config || !config.success){
         throw "Must provide a success callback";
     }
@@ -1842,7 +1860,7 @@ EHR.utils.getDatasetPermissions = function(config) {
     var schemaMap;
     var qcMap;
 
-    EHR.utils.getQCStateMap({
+    EHR.Security.getQCStateMap({
         scope: this,
         success: function(results){
             qcMap = results;

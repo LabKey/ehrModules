@@ -6,7 +6,7 @@ use File::Copy;
 use File::Basename;
 
 #a very crude script to standardize code across all EHR validation scripts...
-
+# this was used because validation scripts supported includes, and can be depreciated
 
 # this should allow a filepath relative to this script
 my @fileparse = fileparse($0, qr/\.[^.]*/);

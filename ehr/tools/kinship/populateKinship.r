@@ -4,6 +4,18 @@
 #  Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
 ##
 
+# This R script will calculate and store kinship coefficients (aka. relatedness) for all animals in the colony.  This is a large, sparse matrix.
+# The matrix is converted into a very long 3-column dataframe (animal1, animal2, coefficient).  This dataframe is compared to the data
+# already present in the system.  The minimal number of inserts/updates/deletes are then performed.  This script is designed
+# to run as a daily cron job.  If it runs frequently enough, the number of updates should remain small.  If more than 5000 inserts need to be performed,
+# the script will output a TSV file to /usr/local/labkey/kinship/.  This file can be manually imported into LabKey.  The threshold of 5000 is probably
+# too conservative, but large imports using the HTTP API can be problematic.
+
+# When the script runs it outputs the log to /usr/local/labkey/kinship/kinshipOut.txt.  This file is monitored by monit and an alert will be through
+# if the timestamp does not change once per day.  This monitors whether the script is running, but does not directly monitor for errors.
+# Monit also monitors checksum changes on the TSV output file.  If this file changes, an alert email will be triggered, in which case someone
+# should import this file into the DB.
+
 #options(echo=TRUE);
 library(kinship)
 library(Rlabkey)

@@ -7,10 +7,16 @@ Created 5-1-11 by bbimber
 This script is designed to massage datasets and property descriptors in a labkey study.  It was created
 specifically for EHR datasets, but could be modified.
 
+If you add a new dataset you should run this script to produce SQL, then review and run this resulting SQL directly.
+If you do not know what the term property descriptor means in the context of LabKey, or otherwise do not
+fully understand what this script is doing, you should not run the SQL it generates.  Because this script does not
+directly modifiy the DB, it is safe to run for testing purposes.  The resulting SQL can be inspected for learning purposes,
+but it should be reviewed by someone familiar with LabKey prior to attempting to run it.
+
 The purpose is twofold:
 
 1. add missing columns to datasets, if you want a consistent set of shared columns across all datasets in a study
-2. ensure shared columns use the same propery descriptor, which allows them to be unioned in studydata
+2. ensure shared columns use the same propery descriptor, which allows them to be unioned in studydata.
 
 NOTE: this was only been tested on a site with 1 study.  May not perform as desired if your site has multiple studies
 

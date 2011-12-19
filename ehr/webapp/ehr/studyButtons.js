@@ -4,11 +4,22 @@
  * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
  */
 
+/**
+ *
+ * @name EHR.DatasetButtons
+ */
 Ext.namespace('EHR.ext', 'EHR.utils');
 
 LABKEY.requiresScript("/ehr/utils.js");
 LABKEY.requiresScript("/ehr/ehrAPI.js");
 
+/**
+ * This is the onRender handler that should be used by all datasets.  It will modify the More Actions button and add
+ * menu items.  Different items are added depending on the identity of the query and permissions of the current user.
+ * These buttons are added here, as opposed to coding the XML metadata, because we needed code to run to manage these permissions.
+ * If a new button or action is to be added to the More Actions button, it should be added here.
+ * @param dataRegion
+ */
 function moreActionsHandler(dataRegion){
     //first we get the permission map
     EHR.Security.init({
@@ -45,19 +56,19 @@ function moreActionsHandler(dataRegion){
 
         if(dataRegion.schemaName.match(/^study$/i) && dataRegion.queryName.match(/^Problem List$/i)){
             if(EHR.Security.hasPermission('Completed', 'update', {queryName: 'Problem List', schemaName: 'study'})){
-                markComplete(dataRegion, menu, 'study', 'Problem List', {xtype: 'datefield'});
+                addMarkCompleteBtn(dataRegion, menu, 'study', 'Problem List', {xtype: 'datefield'});
             }
         }
 
         if(dataRegion.schemaName.match(/^study$/i) && dataRegion.queryName.match(/^Treatment Orders$/i)){
             if(EHR.Security.hasPermission('Completed', 'update', {queryName: 'Treatment Orders', schemaName: 'study'})){
-                markComplete(dataRegion, menu, 'study', 'Treatment Orders');
+                addMarkCompleteBtn(dataRegion, menu, 'study', 'Treatment Orders');
             }
         }
 
         if(dataRegion.schemaName.match(/^study$/i) && (dataRegion.queryName.match(/^Assignment$/i) || dataRegion.queryName.match(/^ActiveAssignments$/i))){
             if(EHR.Security.hasPermission('Completed', 'update', {queryName: 'Assignment', schemaName: 'study'})){
-                markComplete(dataRegion, menu, 'study', 'Assignment', {xtype: 'datefield'});
+                addMarkCompleteBtn(dataRegion, menu, 'study', 'Assignment', {xtype: 'datefield'});
                 addAssignmentTaskBtn(dataRegion, menu);
             }
         }
@@ -76,7 +87,7 @@ function moreActionsHandler(dataRegion){
 
 //        if(dataRegion.schemaName.match(/^study$/i) && dataRegion.queryName.match(/^Notes$/i)){
 //            if(EHR.Security.hasPermission('Completed', 'update', {queryName: 'Notes', schemaName: 'study'})){
-//                markComplete(dataRegion, menu, 'study', 'Notes');
+//                addMarkCompleteBtn(dataRegion, menu, 'study', 'Notes');
 //            }
 //        }
 
@@ -96,7 +107,7 @@ function moreActionsHandler(dataRegion){
 
         if(dataRegion.schemaName.match(/^study$/i) && dataRegion.queryName.match(/^Clinpath Runs$/i)){
             if(EHR.Security.hasPermission('Completed', 'update', {queryName: 'Clinpath Runs', schemaName: 'study'})){
-                markReviewed(dataRegion, menu);
+                addMarkReviewedBtn(dataRegion, menu);
             }
         }
 
@@ -117,8 +128,14 @@ function moreActionsHandler(dataRegion){
     }
 }
 
-function historyHandler(dataRegion, dataRegionName, queryName, schemaName)
-{
+/**
+ * This helper will find the distinct IDs from the currently selected rows, then load the animal history page filtered on these IDs.
+ * @param dataRegion
+ * @param dataRegionName
+ * @param queryName
+ * @param schemaName
+ */
+function historyHandler(dataRegion, dataRegionName, queryName, schemaName){
     var checked = dataRegion.getChecked();
     if(!checked || !checked.length){
         alert('No records selected');
@@ -158,13 +175,16 @@ function historyHandler(dataRegion, dataRegionName, queryName, schemaName)
 
         }
     }
-
-
-
-
 }
 
-
+/**
+ * This button should appear on all datasets and will allow the user to load the audit history of the selected record(s).  NOTE: because LabKey's PKs
+ * (lsid) are based on Id + Date, they can change.  As a result, this helper first queries the DB to find the objectId of the selected records, then loads
+ * the audit table filted on "lsid LIKE objectId".  This removes the need to include Id/Date in the search.  It's awkward and slow, but will give you the
+ * correct history of a record, even if the Id or date changed.
+ * @param dataRegion
+ * @param dataRegionName
+ */
 function showAuditHistory(dataRegion, dataRegionName){
 
     var checked = dataRegion.getChecked();
@@ -241,8 +261,16 @@ function showAuditHistory(dataRegion, dataRegionName){
 
 }
 
-function datasetHandler(dataRegion, dataRegionName, queryName, schemaName)
-{
+/**
+ * This is a helper that appears on all datasets.  It will allow you to jump from the current dataset to any other dataset, filtered based
+ * on the distinct set of currently checked IDs.  The purpose is similar to 'Jump To History'.  It allows you to take a single set of IDs and jump
+ * across different types of data.  Can be useful for certain cross-colony queries.
+ * @param dataRegion
+ * @param dataRegionName
+ * @param queryName
+ * @param schemaName
+ */
+function datasetHandler(dataRegion, dataRegionName, queryName, schemaName){
     var checked = dataRegion.getChecked();
     if(!checked || !checked.length){
         alert('No records selected');
@@ -386,6 +414,16 @@ function datasetHandler(dataRegion, dataRegionName, queryName, schemaName)
     }
 }
 
+/**
+ * This a adds a button to More Actions that will generate a popup window allowing the user to enter a single record into a single dataset.
+ * It was originally created to allows vets and others to directly enter clinical remarks from any page, without the overhead of needing
+ * to create a new task for each single remark.  The concept should work; however, it was removed because there were advantages to forcing
+ * all records to go through the task pathway.  In practice, most comments were too involved for the popup to be effective.  Most vets have
+ * ended up opening 2 browser windows: one for entering the remarks and one to browser Animal History or other records.
+ * @param dataRegion
+ * @param config
+ * @param menu
+ */
 function addFormButton(dataRegion, config, menu){
     menu.add({
         text: 'Enter '+(config.title || config.queryName),
@@ -464,6 +502,12 @@ function addFormButton(dataRegion, config, menu){
     })
 }
 
+/**
+ * This button appears on weight dataregions.  It allows the user to pick 2 arbitrary weights and it will calculate
+ * the percent difference between the two.
+ * @param dataRegion
+ * @param menu
+ */
 function addWeightCompareBtn(dataRegion, menu){
     menu.add({
             text: 'Compare Weights',
@@ -536,6 +580,12 @@ function addWeightCompareBtn(dataRegion, menu){
         })
 }
 
+/**
+ * Add a button originally designed to allows users to mark scheduled treatments 'complete' from the dataregion.  However,
+ * it was ultimately decided to let the user do this through a task instead.  This button is not used.
+ * @param dataRegion
+ * @param menu
+ */
 function addTreatmentCompleteBtn(dataRegion, menu){
     menu.add({
             text: 'Mark Treatment(s) Complete',
@@ -650,8 +700,15 @@ function addTreatmentCompleteBtn(dataRegion, menu){
         })
 }
 
-function getDistinct(dataRegion, dataRegionName, queryName, schemaName)
-{
+/**
+ * This is a helper used by the 'Get Distinct' button, which will return the distinct Animal IDs, project, etc,
+ * based on the rows checked on a dataregion.
+ * @param dataRegion
+ * @param dataRegionName
+ * @param queryName
+ * @param schemaName
+ */
+function getDistinct(dataRegion, dataRegionName, queryName, schemaName){
     var checked = dataRegion.getChecked();
     if(!checked || !checked.length){
         alert('No records selected');
@@ -774,7 +831,15 @@ function getDistinct(dataRegion, dataRegionName, queryName, schemaName)
     }
 };
 
-function markComplete(dataRegion, menu, schemaName, queryName, config){
+/**
+ * This adds a button that will allow the user to set the end date on records.  It is used by Treatments, Problem List and Assignments.
+ * @param dataRegion
+ * @param menu
+ * @param schemaName
+ * @param queryName
+ * @param config
+ */
+function addMarkCompleteBtn(dataRegion, menu, schemaName, queryName, config){
     config = config || {};
 
     menu.add({
@@ -893,8 +958,16 @@ function markComplete(dataRegion, menu, schemaName, queryName, config){
     })
 }
 
-
-function markReviewed(dataRegion, menu, schemaName, queryName, config){
+/**
+ * Adds a button to a dataRegion that will allow the user to mark Clinpath Runs records as 'reviewed' (which means updating the reviewedBy field).
+ * This was intended as a mechanism for vets to indicate that they have viewed clinpath results.
+ * @param dataRegion
+ * @param menu
+ * @param schemaName
+ * @param queryName
+ * @param config
+ */
+function addMarkReviewedBtn(dataRegion, menu, schemaName, queryName, config){
     config = config || {};
 
     menu.add({
@@ -1013,6 +1086,14 @@ function markReviewed(dataRegion, menu, schemaName, queryName, config){
     })
 }
 
+/**
+ * This add a button that allows the user to create a task from a list of IDs, that contains one record per ID.  It was originally
+ * created to allow users to create a weight task based on a list of IDs (like animals needed weights).
+ * @param dataRegion
+ * @param menu
+ * @param config
+ * @param [config.formType]
+ */
 function createTaskFromIdsBtn(dataRegion, menu, config){
     menu.add({
         text: 'Schedule '+config.formType,
@@ -1162,7 +1243,14 @@ function createTaskFromIdsBtn(dataRegion, menu, config){
     });
 }
 
-
+/**
+ * This add a button that allows the user to create a task from requested records.  It was originally created to allow users to create Blood Draw or ClinPath
+ * tasks from requested records.
+ * @param dataRegion
+ * @param menu
+ * @param config
+ * @param [config.formType]
+ */
 function createTaskBtn(dataRegion, menu, config){
     config = config || {};
 
@@ -1307,6 +1395,12 @@ function createTaskBtn(dataRegion, menu, config){
     });
 }
 
+/**
+ * This add a button to a dataset that allows the user to change the QCState of the records, designed to approve or deny blood requests.
+ * It also captures values for 'billedBy' and 'instructions'.
+ * @param dataRegion
+ * @param menu
+ */
 function changeBloodQCStateBtn(dataRegion, menu){
     menu.add({
         text: 'Change Request Status',
@@ -1462,7 +1556,11 @@ function changeBloodQCStateBtn(dataRegion, menu){
     })
 }
 
-
+/**
+ * This add a button to a dataset that allows the user to change the QCState of the records, designed to approve or deny clinpath requests.
+ * @param dataRegion
+ * @param menu
+ */
 function changeQCStateBtn(dataRegion, menu){
     menu.add({
         text: 'Change Request Status',
@@ -1590,6 +1688,11 @@ function changeQCStateBtn(dataRegion, menu){
     })
 }
 
+/**
+ * This button will shift the user to a Task page for assignments, allowing them to enter a batch of assignments at once.
+ * @param dataRegion
+ * @param menu
+ */
 function addAssignmentTaskBtn(dataRegion, menu){
     menu.add({
         text: 'Add Batch of Assignments',
@@ -1600,6 +1703,11 @@ function addAssignmentTaskBtn(dataRegion, menu){
     });
 }
 
+/**
+ * This button will shift the user to a Feeding task, allowing them to add a batch of records.
+ * @param dataRegion
+ * @param menu
+ */
 function addFeedingTaskBtn(dataRegion, menu){
     menu.add({
         text: 'Add Batch of Records',
@@ -1610,6 +1718,14 @@ function addFeedingTaskBtn(dataRegion, menu){
     });
 }
 
+/**
+ * Designed to duplicate a previously saved task.  It appears on the Task dataregions of the data entry page.
+ * It allows the user to pick a default date for all new records.  If the task type is an encounter (ie. one animal per form)
+ * then it will let the user enter a list of animals and one task will be created per animal.  If not, then all animal IDs will be copied
+ * exactly from the previous task.
+ *
+ * @param dataRegion
+ */
 function duplicateTask(dataRegion){
     var checked = dataRegion.getChecked();
     if(!checked || !checked.length){
@@ -1863,7 +1979,14 @@ function duplicateTask(dataRegion){
     }
 }
 
-
+/**
+ * Originally created for the purpose of allowing users to append blood to an existing task.  There were enough complexities to this (for example, what if that
+ * task is completed?), that rather than 'pushing' blood to tasks, we allow users to 'pull' records into a task from that form.  This side-stepped
+ * many potential issues.
+ * @depreciated
+ * @param dataRegion
+ * @param menu
+ */
 function addBloodToTaskBtn(dataRegion, menu){
     menu.add({
         text: 'Add To Existing Task',
