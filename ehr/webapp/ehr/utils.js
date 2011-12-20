@@ -3,17 +3,17 @@
  *
  * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
  */
-Ext.namespace('EHR.ext', 'EHR.utils');
+Ext.namespace('EHR.ext', 'EHR.Utils');
 
 LABKEY.requiresScript("/ehr/arrayUtils.js");
 LABKEY.requiresScript("/ehr/Security.js");
 
 /**
  * @namespace Utils static class to provide miscellaneous utility functions.
- * @name EHR.utils
+ * @name EHR.Utils
  */
 
-EHR.utils = new function(){
+EHR.Utils = new function(){
     return {
 
         /**
@@ -41,7 +41,7 @@ EHR.utils = new function(){
 
         /**
          * A generic error handler.  This function will insert a record into the audit table, which provides a mechanism to monitor client-side errors.
-         * Can be used directly as the failure callback for asyc calls (ie. failure: EHR.utils.onError).  However, this could also be used directly by passing in an object with the property 'exception'.
+         * Can be used directly as the failure callback for asyc calls (ie. failure: EHR.Utils.onError).  However, this could also be used directly by passing in an object with the property 'exception'.
          * @param {object} error The error object passed to failure callbacks.
          */
         onError: function(error){
@@ -58,9 +58,10 @@ EHR.utils = new function(){
                  rows: [{
                     EventType: "Client API Actions",
                     Key1: "Client Error",
-                    Key2: window.location.href.substr(0,200),
-                    Key3: window.location.hash.substr(0,200),
-                    Comment: (error.exception || error.statusText),
+                    //NOTE: labkey should automatically crop these strings to the allowable length for that field
+                    Key2: window.location.href,
+                    Key3: (error.stackTrace && Ext.isArray(error.stackTrace) ? error.stackTrace.join('\n') : null),
+                    Comment: (error.exception || error.statusText || error.message),
                     Date: new Date()
                  }],
                  success: function(){
@@ -92,7 +93,7 @@ EHR.utils = new function(){
                 if(!Ext.isDefined(o[p]) || depth >= maxDepth)
                     o[p] = c[p];
                 else if (Ext.type(o[p])=='object'){
-                    EHR.utils.rApplyIf(o[p], c[p], maxDepth, depth+1);
+                    EHR.Utils.rApplyIf(o[p], c[p], maxDepth, depth+1);
                 }
             }
 
@@ -119,7 +120,7 @@ EHR.utils = new function(){
                         o[p] = c[p];
                 }
                 else {
-                    EHR.utils.rApply(o[p], c[p], maxDepth, depth+1);
+                    EHR.Utils.rApply(o[p], c[p], maxDepth, depth+1);
                 }
             }
             return o;
@@ -145,10 +146,10 @@ EHR.utils = new function(){
                     o[p] = c[p];
                 else if (!Ext.isDefined(o[p]) && Ext.type(c[p])=='object'){
                     o[p] = {};
-                    EHR.utils.rApplyClone(o[p], c[p], maxDepth, depth+1);
+                    EHR.Utils.rApplyClone(o[p], c[p], maxDepth, depth+1);
                 }
                 else if (Ext.type(o[p])=='object'){
-                    EHR.utils.rApplyCloneIf(o[p], c[p], maxDepth, depth+1);
+                    EHR.Utils.rApplyCloneIf(o[p], c[p], maxDepth, depth+1);
                 }
             }
 
@@ -176,7 +177,7 @@ EHR.utils = new function(){
                 else {
                     if(Ext.type(o[p])!='object')
                         o[p] = {};
-                    EHR.utils.rApplyClone(o[p], c[p], maxDepth, depth+1);
+                    EHR.Utils.rApplyClone(o[p], c[p], maxDepth, depth+1);
                 }
             }
             return o;
@@ -225,7 +226,7 @@ EHR.utils = new function(){
                 if(!data || !data.rows.length)
                     return;
 
-                EHR.utils.loadTemplate(data.rows[0].entityid)
+                EHR.Utils.loadTemplate(data.rows[0].entityid)
             }
         },
 
@@ -307,7 +308,7 @@ EHR.utils = new function(){
         //private
         //a helper that will compare two errors and return the most severe
         maxError: function(severity1, severity2){
-            if (!severity1 || EHR.utils.errorSeverity[severity1] < EHR.utils.errorSeverity[severity2])
+            if (!severity1 || EHR.Utils.errorSeverity[severity1] < EHR.Utils.errorSeverity[severity2])
                 return severity2;
             else
                 return severity1;
@@ -551,7 +552,7 @@ EHR.utils = new function(){
                 successCallback: function(results){
                     formSections = results.rows;
                 },
-                failure: EHR.utils.onError
+                failure: EHR.Utils.onError
             });
 
             var formConfig;
@@ -566,7 +567,7 @@ EHR.utils = new function(){
                     else
                         formConfig = {};
                 },
-                failure: EHR.utils.onError
+                failure: EHR.Utils.onError
             });
             multi.send(onSuccess, this);
 
@@ -576,9 +577,9 @@ EHR.utils = new function(){
                     config.queryName = config.formType;
                     config.schemaName = 'study';
                     if(config.panelType=='TaskPanel')
-                        EHR.utils.createSimpleTaskPanel(config);
+                        EHR.Utils.createSimpleTaskPanel(config);
                     else if (config.panelType=='TaskDetailsPanel')
-                        EHR.utils.createSimpleTaskDetailsPanel(config);
+                        EHR.Utils.createSimpleTaskDetailsPanel(config);
                     else
                         alert('Form type not found');
                     return;

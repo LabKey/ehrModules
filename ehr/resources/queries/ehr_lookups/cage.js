@@ -15,7 +15,7 @@ console.log("** evaluating: " + this['javax.script.filename']);
 function beforeBoth(row, errors) {
     //pad cage to 4 digits if numeric
     if(row.cage && !isNaN(row.cage)){
-        row.cage = EHR.validation.padDigits(row.cage, 4);
+        row.cage = EHR.Server.Validation.padDigits(row.cage, 4);
     }
 
     if(row.room)
@@ -35,7 +35,7 @@ function beforeBoth(row, errors) {
             var item = row.joinToCage[i] ;
             if(item){
                 if(!isNaN(item))
-                    newArray.push(EHR.validation.padDigits(item, 4));
+                    newArray.push(EHR.Server.Validation.padDigits(item, 4));
                 else
                     newArray.push(item);
             }

@@ -17,7 +17,7 @@ function onInit(event, context){
 
 function onUpsert(context, errors, row, oldRow){
     if(context.extraContext.dataSource != 'etl')
-        EHR.validation.removeTimeFromDate(row, errors);
+        EHR.Server.Validation.removeTimeFromDate(row, errors);
 
     //lookup test type if not supplied:
     if(!row.type && row.servicerequested){
@@ -43,7 +43,7 @@ function onUpsert(context, errors, row, oldRow){
                         context.clinPathTests[row.servicerequested] = null;
                     }
                 },
-                failure: EHR.onFailure
+                failure: EHR.Server.Utils.onFailure
             });
         }
     }

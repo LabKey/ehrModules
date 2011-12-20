@@ -12,7 +12,7 @@ function onUpsert(context, errors, row, oldRow){
     var species;
 
     if(!row.weight){
-        EHR.addError(errors, 'weight', 'This field is required', 'WARN');
+        EHR.Server.Validation.addError(errors, 'weight', 'This field is required', 'WARN');
     }
 
     //warn if more than 10% different from last weight
@@ -27,20 +27,21 @@ function onUpsert(context, errors, row, oldRow){
                     var r = data.rows[0];
 
                     if(r.MostRecentWeight && (row.weight <= r.MostRecentWeight*0.9)){
-                        EHR.addError(errors, 'weight', 'Weight drop of >10%. Last weight '+r.MostRecentWeight+' kg', 'INFO');
+                        EHR.Server.Validation.addError(errors, 'weight', 'Weight drop of >10%. Last weight '+r.MostRecentWeight+' kg', 'INFO');
                     }
                     else if(r.MostRecentWeight && (row.weight >= r.MostRecentWeight/0.9)){
-                        EHR.addError(errors, 'weight', 'Weight gain of >10%. Last weight '+r.MostRecentWeight+' kg', 'INFO');
+                        EHR.Server.Validation.addError(errors, 'weight', 'Weight gain of >10%. Last weight '+r.MostRecentWeight+' kg', 'INFO');
                     }
                 }
                 else {
-                    console.log('not found')
+                    console.log('WARN: Most recent weight not found for ' + row.Id);
                 }
             }
         });
 
-        EHR.findDemographics({
+        EHR.Server.Validation.findDemographics({
             participant: row.Id,
+            scriptContext: context,
             scope: this,
             callback: function(data){
                 if(data && data.species){
@@ -54,14 +55,14 @@ function onUpsert(context, errors, row, oldRow){
                             if(results && results.rows && results.rows.length==1){
                                 var rowData = results.rows[0];
                                 if(rowData.min_weight!==undefined && row.weight < rowData.min_weight){
-                                    EHR.addError(errors, 'weight', 'Weight below the allowable value of '+rowData.min_weight+' kg for '+data.species, 'WARN');
+                                    EHR.Server.Validation.addError(errors, 'weight', 'Weight below the allowable value of '+rowData.min_weight+' kg for '+data.species, 'WARN');
                                 }
                                 if(rowData.max_weight!==undefined && row.weight > rowData.max_weight){
-                                    EHR.addError(errors, 'weight', 'Weight above the allowable value of '+rowData.max_weight+' kg for '+data.species, 'WARN');
+                                    EHR.Server.Validation.addError(errors, 'weight', 'Weight above the allowable value of '+rowData.max_weight+' kg for '+data.species, 'WARN');
                                 }
                             }
                         },
-                        failure: EHR.onFailure
+                        failure: EHR.Server.Utils.onFailure
                     });
                 }
             }
@@ -102,8 +103,9 @@ function onComplete(event, errors, scriptContext){
                     for (var i=0;i<data.rows.length;i++){
                         row = data.rows[i];
                         idsFound.push(row.Id);
-                        EHR.findDemographics({
+                        EHR.Server.Validation.findDemographics({
                             participant: row.Id,
+                            scriptContext: context,
                             scope: this,
                             forceRefresh: true,
                             callback: function(data){
@@ -116,14 +118,15 @@ function onComplete(event, errors, scriptContext){
                     }
                 }
             },
-            failure: EHR.onFailure
+            failure: EHR.Server.Utils.onFailure
         });
 
         if(toUpdate.length != scriptContext.publicParticipantsModified.length){
             Ext.each(scriptContext.publicParticipantsModified, function(p){
                 if(idsFound.indexOf(p) == -1){
-                    EHR.findDemographics({
+                    EHR.Server.Validation.findDemographics({
                         participant: p,
+                        scriptContext: context,
                         forceRefresh: true,
                         scope: this,
                         callback: function(data){
@@ -148,7 +151,7 @@ function onComplete(event, errors, scriptContext){
                 success: function(data){
                     console.log('Success updating demographics weight fields')
                 },
-                failure: EHR.onFailure
+                failure: EHR.Server.Utils.onFailure
             });
         }
     }

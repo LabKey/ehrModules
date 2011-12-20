@@ -39,8 +39,8 @@ function onUpsert(context, errors, row, oldRow){
 //        }
 //        else {
 //            var sql = "SELECT h.room, h.cage FROM study.housing h " +
-//                "WHERE h.id='"+row.Id+"' AND h.date <= '"+EHR.validation.dateTimeToString(row.date) +"' " +
-//                    "AND (h.enddate > '"+EHR.validation.dateTimeToString(row.date)+"' OR h.enddate IS NULL) " +
+//                "WHERE h.id='"+row.Id+"' AND h.date <= '"+EHR.Server.Validation.dateTimeToString(row.date) +"' " +
+//                    "AND (h.enddate > '"+EHR.Server.Validation.dateTimeToString(row.date)+"' OR h.enddate IS NULL) " +
 //                    "AND h.qcstate.publicdata = TRUE";
 //            LABKEY.Query.executeSql({
 //                schemaName: 'study',
@@ -52,14 +52,14 @@ function onUpsert(context, errors, row, oldRow){
 //                        row.CageAtTime = data.rows[0].cage;
 //                    }
 //                },
-//                failure: EHR.onFailure
+//                failure: EHR.Server.Utils.onFailure
 //            });
 //        }
 //    }
 
     //if reporting menses, make sure the anmimal is female
     if(row.menses && row.id)
-        EHR.validation.verifyIsFemale(row, errors, 'menses');
+        EHR.Server.Validation.verifyIsFemale(row, errors, 'menses');
 
 }
 
@@ -76,7 +76,7 @@ function onUpsert(context, errors, row, oldRow){
 //                toDelete.push({lsid: row.lsid});
 //            }
 //        },
-//        failure: EHR.onFailure
+//        failure: EHR.Server.Utils.onFailure
 //    });
 //
 //    if(toDelete.length){
@@ -92,7 +92,7 @@ function onUpsert(context, errors, row, oldRow){
 //            success: function(data){
 //                console.log('Deleted child records in clinical observations');
 //            },
-//            failure: EHR.onFailure
+//            failure: EHR.Server.Utils.onFailure
 //        });
 //    }
 //}

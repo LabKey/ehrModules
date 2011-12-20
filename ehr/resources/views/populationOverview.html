@@ -22,7 +22,7 @@ Ext.onReady(function(){
          showDetailsColumn: false,
          showUpdateColumn: false,
          buttonBarPosition: 'top',
-         failure: EHR.utils.onError,
+         failure: EHR.Utils.onError,
          //successCallback: this.endMsg,
          scope: this
      }).render('colonyPopulationSummary');
@@ -72,7 +72,7 @@ Ext.onReady(function(){
                     'query.queryName': 'colonyPopulationChange',
                     'query.Id/dataset/demographics/species~neq': 'Unknown'
                 },
-                failure: EHR.utils.onError
+                failure: EHR.Utils.onError
                 //,scope: this
             };
 

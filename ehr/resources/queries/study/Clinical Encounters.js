@@ -11,7 +11,7 @@ function onUpsert(context, errors, row, oldRow){
         row.requestdate = row.date;
     }
 
-    EHR.validation.checkRestraint(row, errors);
+    EHR.Server.Validation.checkRestraint(row, errors);
 }
 
 function onETL(row, errors){
@@ -60,10 +60,10 @@ function setDescription(row, errors){
     if(row.performedby)
         description.push('Performed By: ' + row.performedby);
     if(row.enddate)
-        description.push('Completed: ' + EHR.validation.dateTimeToString(row.enddate));
+        description.push('Completed: ' + EHR.Server.Validation.dateTimeToString(row.enddate));
 
     //NOTE: only show this for non-final data
-    if(row.serviceRequested && row.QCStateLabel && this.scriptContext.qcMap.label[row.QCStateLabel].PublicData === false)
+    if(row.serviceRequested && row.QCStateLabel && EHR.Server.Security.getQCStateByLabel(row.QCStateLabel).PublicData === false)
         description.push('Service Requested: ' + row.serviceRequested);
 
     return description;

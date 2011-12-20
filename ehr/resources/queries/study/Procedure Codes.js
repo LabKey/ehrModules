@@ -16,7 +16,7 @@ function setDescription(row, errors){
     var description = new Array();
 
     if(row.code)
-        description.push('Code: '+EHR.validation.snomedToString(row.code,  row.meaning));
+        description.push('Code: '+EHR.Server.Validation.snomedToString(row.code,  row.meaning));
 
     return description;
 }

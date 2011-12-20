@@ -24,8 +24,9 @@ function onComplete(event, errors, scriptContext){
                         row = data.rows[i];
 console.log(row)
                         idsFound.push(row.Id);
-                        EHR.findDemographics({
+                        EHR.Server.Validation.findDemographics({
                             participant: row.Id,
+                            scriptContext: scriptContext,
                             forceRefresh: true,
                             scope: this,
                             callback: function(data){
@@ -38,14 +39,15 @@ console.log(row)
                     }
                 }
             },
-            failure: EHR.onFailure
+            failure: EHR.Server.Utils.onFailure
         });
 
         if(toUpdate.length != scriptContext.publicParticipantsModified.length){
             Ext.each(scriptContext.publicParticipantsModified, function(p){
                 if(idsFound.indexOf(p) == -1){
-                    EHR.findDemographics({
+                    EHR.Server.Validation.findDemographics({
                         participant: p,
+                        scriptContext: scriptContext,
                         forceRefresh: true,
                         scope: this,
                         callback: function(data){
@@ -70,7 +72,7 @@ console.log(row)
                 success: function(data){
                     console.log('Success updating demographics for TB')
                 },
-                failure: EHR.onFailure
+                failure: EHR.Server.Utils.onFailure
             });
         }
     }
@@ -117,7 +119,7 @@ function onUpsert(context, errors, row, oldRow){
     }
 
     if(context.extraContext.dataSource != 'etl')
-        EHR.validation.removeTimeFromDate(row, errors);
+        EHR.Server.Validation.removeTimeFromDate(row, errors);
 }
 
 

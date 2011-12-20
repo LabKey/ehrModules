@@ -24,13 +24,13 @@ function setDescription(row, errors){
     var description = new Array();
 
     if(row.caseno)
-        description.push('Case No: '+EHR.validation.nullToString(row.caseno));
+        description.push('Case No: '+EHR.Server.Validation.nullToString(row.caseno));
     if(row.type)
-        description.push('Type: '+EHR.validation.nullToString(row.type));
+        description.push('Type: '+EHR.Server.Validation.nullToString(row.type));
     if(row.veterinarian)
-        description.push('Veterinarian: '+EHR.validation.nullToString(row.veterinarian));
+        description.push('Veterinarian: '+EHR.Server.Validation.nullToString(row.veterinarian));
     if(row.nhpbmd)
-        description.push('NHPBMD?: '+EHR.validation.nullToString(row.nhpbmd));
+        description.push('NHPBMD?: '+EHR.Server.Validation.nullToString(row.nhpbmd));
 
     return description;
 }

@@ -16,8 +16,8 @@ function setDescription(row, errors){
     //we need to set description for every field
     var description = new Array();
 
-    description.push('Start Date: ' + (row.Date ? EHR.validation.dateTimeToString(row.Date) : ''));
-    description.push('End Date: ' + (row.EndDate ? EHR.validation.dateTimeToString(row.EndDate) : ''));
+    description.push('Start Date: ' + (row.Date ? EHR.Server.Validation.dateTimeToString(row.Date) : ''));
+    description.push('End Date: ' + (row.EndDate ? EHR.Server.Validation.dateTimeToString(row.EndDate) : ''));
 
     if(row.category)
         description.push('Category: ' + row.category);

@@ -39,7 +39,7 @@ Ext.onReady(function ()
             buttonBarPosition: 'top',
             filterArray: filterArray,
             scope: this,
-            failure: EHR.utils.onError
+            failure: EHR.Utils.onError
          }).render('cageDetails');
     }
 
@@ -58,7 +58,7 @@ Ext.onReady(function ()
         filterArray: filterArray,
         sort: '-Date',
         scope: this,
-        failure: EHR.utils.onError
+        failure: EHR.Utils.onError
      }).render('allAnimals');
 
 
@@ -76,7 +76,7 @@ Ext.onReady(function ()
         filterArray: filterArray,
         sort: '-Date',
         scope: this,
-        failure: EHR.utils.onError
+        failure: EHR.Utils.onError
      }).render('cageNotes');
 
     filterArray.push(LABKEY.Filter.create('enddate', null, LABKEY.Filter.Types.ISBLANK));
@@ -97,7 +97,7 @@ Ext.onReady(function ()
         timeout: 0,
         sort: '-Date',
         scope: this,
-        failure: EHR.utils.onError
+        failure: EHR.Utils.onError
      }).render('activeAnimals');
 
 });

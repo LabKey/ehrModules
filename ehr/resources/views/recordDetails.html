@@ -65,12 +65,12 @@ Ext.onReady(function(){
         success: function(results){
             panel.detailsDiv.update(results.responseText+'<br>');
         },
-        failure: EHR.utils.onError,
+        failure: EHR.Utils.onError,
         scope: this
     });
 
 
-LABKEY.NavTrail.setTrail(LABKEY.ActionURL.getParameter('title') || EHR.utils.toTitleCase(LABKEY.ActionURL.getParameter('queryName')));
+LABKEY.NavTrail.setTrail(LABKEY.ActionURL.getParameter('title') || EHR.Utils.toTitleCase(LABKEY.ActionURL.getParameter('queryName')));
 
 });
 

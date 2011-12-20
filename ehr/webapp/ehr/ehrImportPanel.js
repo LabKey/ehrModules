@@ -76,7 +76,7 @@ Ext.extend(EHR.ext.ImportPanel.Base, Ext.Panel, {
 
         EHR.Security.init({
             success: this.calculatePermissions,
-            failure: EHR.utils.onError,
+            failure: EHR.Utils.onError,
             scope: this
         });
     },
@@ -250,7 +250,7 @@ Ext.extend(EHR.ext.ImportPanel.Base, Ext.Panel, {
     //@private
     configureHeaderItem: function(c)
     {
-        EHR.utils.rApplyIf(c, {
+        EHR.Utils.rApplyIf(c, {
             bindConfig: {
                 createRecordOnLoad: true,
                 autoBindRecord: true,
@@ -262,7 +262,7 @@ Ext.extend(EHR.ext.ImportPanel.Base, Ext.Panel, {
     //@private
     configureItem: function(c)
     {
-        EHR.utils.rApplyIf(c, {
+        EHR.Utils.rApplyIf(c, {
             collapsible: true,
             border: true,
             //uuid: this.uuid,
@@ -308,7 +308,7 @@ Ext.extend(EHR.ext.ImportPanel.Base, Ext.Panel, {
     applyTemplates: function(templates)
     {
         Ext.each(templates, function(obj){
-            EHR.utils.loadTemplateByName(obj.title, obj.storeId);
+            EHR.Utils.loadTemplateByName(obj.title, obj.storeId);
         }, this);
     },
 
@@ -399,7 +399,7 @@ Ext.extend(EHR.ext.ImportPanel.Base, Ext.Panel, {
 
         this.getFooterToolbar().items.each(function(item){
             if(item.disableOn){
-                if(maxSeverity && EHR.utils.errorSeverity[item.disableOn] <= EHR.utils.errorSeverity[maxSeverity])
+                if(maxSeverity && EHR.Utils.errorSeverity[item.disableOn] <= EHR.Utils.errorSeverity[maxSeverity])
                     item.setDisabled(true);
                 else
                     item.setDisabled(false);
@@ -971,7 +971,7 @@ EHR.ext.ImportPanel.Buttons = {
                                         Ext.Msg.hide();
                                         alert('Success updating '+queryName+' from necropsy for '+Id);
                                     },
-                                    failure: EHR.utils.onError
+                                    failure: EHR.Utils.onError
                                 });
                             }
                             //otherwise we create a new record
@@ -1064,7 +1064,7 @@ EHR.ext.ImportPanel.Buttons = {
                                         },
                                         failure: function(error){
                                             alert('ERROR: ' + (error.msg || error.exception));
-                                            EHR.utils.onError(error);
+                                            EHR.Utils.onError(error);
                                         }
                                     });
                                 }
@@ -1072,7 +1072,7 @@ EHR.ext.ImportPanel.Buttons = {
                         },
                         failure: function(error){
                             alert('ERROR: ' + (error.msg || error.exception));
-                            EHR.utils.onError(error);
+                            EHR.Utils.onError(error);
                         }
                     });
                 }

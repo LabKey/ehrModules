@@ -118,7 +118,7 @@ Ext.onReady(function(){
     }
 
     if(metadata[LABKEY.ActionURL.getParameter('queryName')]){
-        EHR.utils.rApply(config, metadata[LABKEY.ActionURL.getParameter('queryName')]);
+        EHR.Utils.rApply(config, metadata[LABKEY.ActionURL.getParameter('queryName')]);
     }
 
     new EHR.ext.SearchPanel(config).render('searchPanel');

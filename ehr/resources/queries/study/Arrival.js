@@ -27,8 +27,9 @@ function setDescription(row, errors){
 function onBecomePublic(errors, scriptContext, row, oldRow){
     if(scriptContext.extraContext.dataSource != 'etl'){
         //if not already present, we insert into demographics
-        EHR.findDemographics({
+        EHR.Server.Validation.findDemographics({
             participant: row.Id,
+            scriptContext: scriptContext,
             scope: this,
             callback: function(data){
                 if(!data){
@@ -42,7 +43,7 @@ function onBecomePublic(errors, scriptContext, row, oldRow){
                         success: function(data){
                             console.log('Success inserting into demographics table from arrival')
                         },
-                        failure: EHR.onFailure
+                        failure: EHR.Server.Utils.onFailure
                     });
 
 //                    if(row.birth){
@@ -56,7 +57,7 @@ function onBecomePublic(errors, scriptContext, row, oldRow){
 //                            success: function(data){
 //                                console.log('Success inserting into birth table from arrival')
 //                            },
-//                            failure: EHR.onFailure
+//                            failure: EHR.Server.Utils.onFailure
 //                        });
 //                    }
                 }
@@ -75,7 +76,7 @@ function onBecomePublic(errors, scriptContext, row, oldRow){
                 success: function(data){
                     console.log('Success inserting into housing table from arrival')
                 },
-                failure: EHR.onFailure
+                failure: EHR.Server.Utils.onFailure
             });
         }
     }
@@ -83,7 +84,7 @@ function onBecomePublic(errors, scriptContext, row, oldRow){
 
 function onComplete(event, errors, scriptContext){
     if(scriptContext.publicParticipantsModified.length){
-        EHR.validation.updateStatusField(scriptContext.publicParticipantsModified);
+        EHR.Server.Validation.updateStatusField(scriptContext.publicParticipantsModified);
     }
 /*
     //NOTE: we will no longer cache this in demographics
@@ -103,9 +104,10 @@ function onComplete(event, errors, scriptContext){
                     var row;
                     for (var i=0;i<data.rows.length;i++){
                         row = data.rows[i];
-                        EHR.findDemographics({
+                        EHR.Server.Validation.findDemographics({
                             participant: row.Id,
                             scope: this,
+                            scriptContext: scriptContext,
                             forceRefresh: true,
                             callback: function(data){
                                 if(data){
@@ -117,15 +119,16 @@ function onComplete(event, errors, scriptContext){
                     }
                 }
             },
-            failure: EHR.onFailure
+            failure: EHR.Server.Utils.onFailure
         });
 
         if(toUpdate.length != scriptContext.publicParticipantsModified.length){
             Ext.each(scriptContext.publicParticipantsModified, function(p){
                 if(idsFound.indexOf(p) == -1){
-                    EHR.findDemographics({
+                    EHR.Server.Validation.findDemographics({
                         participant: p,
                         forceRefresh: true,
+                        scriptContext: scriptContext,
                         scope: this,
                         callback: function(data){
                             if(data){
@@ -149,7 +152,7 @@ function onComplete(event, errors, scriptContext){
                 success: function(data){
                     console.log('Success updating demographics')
                 },
-                failure: EHR.onFailure
+                failure: EHR.Server.Utils.onFailure
             });
         }
     }

@@ -19,23 +19,23 @@ function setDescription(row, errors){
     var description = new Array();
 
     if (row.tissue)
-        description.push('Tissue: '+EHR.validation.snomedToString(row.tissue));
+        description.push('Tissue: '+EHR.Server.Validation.snomedToString(row.tissue));
     if (row.severity)
-        description.push('Severity: '+EHR.validation.snomedToString(row.severity));
+        description.push('Severity: '+EHR.Server.Validation.snomedToString(row.severity));
     if (row.duration)
-        description.push('Duration: '+EHR.validation.snomedToString(row.duration));
+        description.push('Duration: '+EHR.Server.Validation.snomedToString(row.duration));
     if (row.distribution)
-        description.push('Distribution: '+EHR.validation.snomedToString(row.distribution));
+        description.push('Distribution: '+EHR.Server.Validation.snomedToString(row.distribution));
     if (row.distribution2)
-        description.push('Distribution: '+EHR.validation.snomedToString(row.distribution2));
+        description.push('Distribution: '+EHR.Server.Validation.snomedToString(row.distribution2));
     if (row.inflammation)
-        description.push('Inflammation: '+EHR.validation.snomedToString(row.inflammation));
+        description.push('Inflammation: '+EHR.Server.Validation.snomedToString(row.inflammation));
     if (row.inflammation2)
-        description.push('Inflammation: '+EHR.validation.snomedToString(row.inflammation2));
+        description.push('Inflammation: '+EHR.Server.Validation.snomedToString(row.inflammation2));
     if (row.etiology)
-        description.push('Etiology: '+EHR.validation.snomedToString(row.etiology));
+        description.push('Etiology: '+EHR.Server.Validation.snomedToString(row.etiology));
     if (row.process)
-        description.push('Process: '+EHR.validation.snomedToString(row.process));
+        description.push('Process: '+EHR.Server.Validation.snomedToString(row.process));
 
     return description;
 }

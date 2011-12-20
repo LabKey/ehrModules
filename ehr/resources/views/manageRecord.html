@@ -35,7 +35,7 @@ Ext.onReady(function(){
         }]
     });
     panel.render('manageRecordDiv');
-    LABKEY.NavTrail.setTrail(LABKEY.ActionURL.getParameter('title') || EHR.utils.toTitleCase(LABKEY.ActionURL.getParameter('queryName')));
+    LABKEY.NavTrail.setTrail(LABKEY.ActionURL.getParameter('title') || EHR.Utils.toTitleCase(LABKEY.ActionURL.getParameter('queryName')));
 
 });
 

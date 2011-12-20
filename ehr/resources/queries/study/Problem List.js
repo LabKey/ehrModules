@@ -9,8 +9,8 @@ var {EHR, LABKEY, Ext, console, init, beforeInsert, afterInsert, beforeUpdate, a
 
 function onUpsert(context, errors, row, oldRow){
     if(context.extraContext.dataSource != 'etl'){
-        EHR.validation.removeTimeFromDate(row, errors);
-        EHR.validation.removeTimeFromDate(row, errors, 'enddate');
+        EHR.Server.Validation.removeTimeFromDate(row, errors);
+        EHR.Server.Validation.removeTimeFromDate(row, errors, 'enddate');
     }
 }
 
@@ -22,8 +22,8 @@ function setDescription(row, errors){
     if(row.problem_no)
         description.push('Problem No: '+row.problem_no);
 
-    description.push('Date Observed: '+EHR.validation.dateTimeToString(row.date));
-    description.push('Date Resolved: '+EHR.validation.dateTimeToString(row.enddate));
+    description.push('Date Observed: '+EHR.Server.Validation.dateTimeToString(row.date));
+    description.push('Date Resolved: '+EHR.Server.Validation.dateTimeToString(row.enddate));
 
     return description;
 }
@@ -46,7 +46,7 @@ function onInsert(context, errors, row){
                     row.problem_no = 1;
                 }
             },
-            failure: EHR.onFailure
+            failure: EHR.Server.Utils.onFailure
         });
     }
 

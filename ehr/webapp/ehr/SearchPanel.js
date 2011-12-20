@@ -97,7 +97,7 @@ EHR.ext.SearchPanel = Ext.extend(Ext.Panel, {
         });
 
         this.store.on('load', this.onLoad, this);
-        this.store.on('commitexception', EHR.utils.onError, this);
+        this.store.on('commitexception', EHR.Utils.onError, this);
 
         Ext.Ajax.timeout = 120000; //in milliseconds
     },

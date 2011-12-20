@@ -8,7 +8,7 @@
  *
  * @name EHR.DatasetButtons
  */
-Ext.namespace('EHR.ext', 'EHR.utils');
+Ext.namespace('EHR.ext', 'EHR.Utils');
 
 LABKEY.requiresScript("/ehr/utils.js");
 LABKEY.requiresScript("/ehr/ehrAPI.js");
@@ -256,7 +256,7 @@ function showAuditHistory(dataRegion, dataRegionName){
                 alert('Record not found');
             }
         },
-        failure: EHR.utils.onError
+        failure: EHR.Utils.onError
     });
 
 }
@@ -532,7 +532,7 @@ function addWeightCompareBtn(dataRegion, menu){
                     scope: this,
                     maxRows: 2,
                     success: onSuccess
-                    //failure: EHR.utils.onError
+                    //failure: EHR.Utils.onError
                 });
 
                 function onSuccess(data){
@@ -552,7 +552,7 @@ function addWeightCompareBtn(dataRegion, menu){
                         var weight2 = data.rows[index].weight;
                         theRow.push(weight2);
 
-                        var pct = EHR.utils.roundNumber((((weight2-row.weight) / row.weight) * 100), 2);
+                        var pct = EHR.Utils.roundNumber((((weight2-row.weight) / row.weight) * 100), 2);
                         theRow.push(pct+'%');
 
                         rows.push('<tr><td>'+theRow.join('</td><td>')+'</td></tr>');
@@ -623,7 +623,7 @@ function addTreatmentCompleteBtn(dataRegion, menu){
                     scope: this,
                     //maxRows: 2,
                     success: onSuccess,
-                    failure: EHR.utils.onError
+                    failure: EHR.Utils.onError
                 });
 
                 function onSuccess(data){
@@ -920,7 +920,7 @@ function addMarkCompleteBtn(dataRegion, menu, schemaName, queryName, config){
                                             dataRegion.selectNone();
                                             dataRegion.refresh();
                                         },
-                                        failure: EHR.utils.onError
+                                        failure: EHR.Utils.onError
                                     });
                                 }
                                 else {
@@ -933,7 +933,7 @@ function addMarkCompleteBtn(dataRegion, menu, schemaName, queryName, config){
                                     alert('One or more rows was skipped because it already has an end date');
                                 }
                             },
-                            failure: EHR.utils.onError
+                            failure: EHR.Utils.onError
                         });
                     }
                 },{
@@ -1048,7 +1048,7 @@ function addMarkReviewedBtn(dataRegion, menu, schemaName, queryName, config){
                                             dataRegion.selectNone();
                                             dataRegion.refresh();
                                         },
-                                        failure: EHR.utils.onError
+                                        failure: EHR.Utils.onError
                                     });
                                 }
                                 else {
@@ -1061,7 +1061,7 @@ function addMarkReviewedBtn(dataRegion, menu, schemaName, queryName, config){
                                     alert('One or more rows was skipped because it already has been reviewed');
                                 }
                             },
-                            failure: EHR.utils.onError
+                            failure: EHR.Utils.onError
                         });
                     }
                 },{
@@ -1200,7 +1200,7 @@ function createTaskFromIdsBtn(dataRegion, menu, config){
 
                         o.ownerCt.ownerCt.hide();
 
-                        EHR.utils.createTask({
+                        EHR.Utils.createTask({
                             initialQCState: 'Scheduled',
                             childRecords: toUpdate,
                             taskRecord: {date: date, assignedTo: assignedTo, category: 'task', title: title, formType: config.formType},
@@ -1352,7 +1352,7 @@ function createTaskBtn(dataRegion, menu, config){
                         var existingRecords = {};
                         existingRecords[dataRegion.queryName] = checked;
 
-                        EHR.utils.createTask({
+                        EHR.Utils.createTask({
                             initialQCState: 'Scheduled',
                             childRecords: null,
                             existingRecords: existingRecords,
@@ -1420,7 +1420,7 @@ function changeBloodQCStateBtn(dataRegion, menu){
                 filterArray: [LABKEY.Filter.create('lsid', checked.join(';'), LABKEY.Filter.Types.EQUALS_ONE_OF)],
                 scope: this,
                 success: onSuccess,
-                failure: EHR.utils.onError
+                failure: EHR.Utils.onError
             });
 
             function onSuccess(data){
@@ -1532,7 +1532,7 @@ function changeBloodQCStateBtn(dataRegion, menu){
                                 queryName: i,
                                 rows: toUpdate[i],
                                 scope: this,
-                                failure: EHR.utils.onError
+                                failure: EHR.Utils.onError
                             });
                         }
 
@@ -1580,7 +1580,7 @@ function changeQCStateBtn(dataRegion, menu){
                 filterArray: [LABKEY.Filter.create('lsid', checked.join(';'), LABKEY.Filter.Types.EQUALS_ONE_OF)],
                 scope: this,
                 success: onSuccess,
-                failure: EHR.utils.onError
+                failure: EHR.Utils.onError
             });
 
             function onSuccess(data){
@@ -1664,7 +1664,7 @@ function changeQCStateBtn(dataRegion, menu){
                                 queryName: i,
                                 rows: toUpdate[i],
                                 scope: this,
-                                failure: EHR.utils.onError
+                                failure: EHR.Utils.onError
                             });
                         }
 
@@ -1752,7 +1752,7 @@ function duplicateTask(dataRegion){
         ],
         scope: this,
         success: onSuccess,
-        failure: EHR.utils.onError
+        failure: EHR.Utils.onError
     });
 
     function onSuccess(data){
@@ -1801,12 +1801,12 @@ function duplicateTask(dataRegion){
                                 }
                                 pendingRequests--;
                             },
-                            failure: EHR.utils.onError
+                            failure: EHR.Utils.onError
                         });
                     }
                 });
             },
-            failure: EHR.utils.onError
+            failure: EHR.Utils.onError
         });
 
         new Ext.Window({
@@ -1902,7 +1902,7 @@ function duplicateTask(dataRegion){
                         success: onTrue,
                         scope: this,
                         //successArguments: ['FileUploadField is ready to use!'],
-                        failure: EHR.utils.onError,
+                        failure: EHR.Utils.onError,
                         maxTests: 1000
                     });
 
@@ -1961,11 +1961,11 @@ function duplicateTask(dataRegion){
                                         record.Id = id;
                                     }, this);
                                 }, this);
-                                EHR.utils.createTask(cfg);
+                                EHR.Utils.createTask(cfg);
                             }, this);
                         }
                         else {
-                            EHR.utils.createTask(taskConfig);
+                            EHR.Utils.createTask(taskConfig);
                         }
                     }
                 }
@@ -2070,7 +2070,7 @@ function addBloodToTaskBtn(dataRegion, menu){
                                 Ext.Msg.hide();
                                 dataRegion.refresh();
                             },
-                            failure: EHR.onFailure
+                            failure: EHR.Utils.onError
                         });
 
                     }

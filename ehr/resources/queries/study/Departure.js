@@ -9,14 +9,14 @@ var {EHR, LABKEY, Ext, console, init, beforeInsert, afterInsert, beforeUpdate, a
 
 function onComplete(event, errors, scriptContext){
     if(scriptContext.publicParticipantsModified.length){
-        EHR.validation.updateStatusField(scriptContext.publicParticipantsModified);
+        EHR.Server.Validation.updateStatusField(scriptContext.publicParticipantsModified);
     }
 }
 
 function onBecomePublic(errors, scriptContext, row, oldRow){
     //this will close any existing assignments, housing and treatment records
     if(scriptContext.extraContext.dataSource != 'etl')
-        EHR.onDeathDeparture(row.Id, row.date);
+        EHR.Server.Validation.onDeathDeparture(row.Id, row.date);
 }
 
 function setDescription(row, errors){

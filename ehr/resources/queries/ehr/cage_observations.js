@@ -11,7 +11,7 @@ function onUpsert(scriptContext, scriptErrors, row){
     row.performedby = row.performedby || row.userid || null;
 
     if(row.cage && !isNaN(row.cage)){
-        row.cage = EHR.validation.padDigits(row.cage, 4);
+        row.cage = EHR.Server.Validation.padDigits(row.cage, 4);
     }
 
     if(row.no_observations && (row.feces || row.remark != 'ok')){
@@ -35,12 +35,12 @@ function onUpsert(scriptContext, scriptErrors, row){
             success: function(data){
                 if(!data || !data.rows || !data.rows.length){
                     if(!row.cage)
-                        EHR.addError(scriptErrors, 'room', 'No animals are housed in this room on this date', 'WARN');
+                        EHR.Server.Validation.addError(scriptErrors, 'room', 'No animals are housed in this room on this date', 'WARN');
                     else
-                        EHR.addError(scriptErrors, 'cage', 'No animals are housed in this cage on this date', 'WARN');
+                        EHR.Server.Validation.addError(scriptErrors, 'cage', 'No animals are housed in this cage on this date', 'WARN');
                 }
             },
-            failure: EHR.onFailure
+            failure: EHR.Server.Utils.onFailure
         });
     }
 }
@@ -83,7 +83,7 @@ function onAfterInsert(scriptContext, errors, row, oldRow){
                         console.log('No animals found in this room/cage: '+row.room + '/'+row.cage)
                     }
                 },
-                failure: EHR.onFailure
+                failure: EHR.Server.Utils.onFailure
             });
 
             if(toInsert.length){
@@ -95,7 +95,7 @@ function onAfterInsert(scriptContext, errors, row, oldRow){
                     success: function(data){
                         console.log('Success Cascade Inserting')
                     },
-                    failure: EHR.onFailure
+                    failure: EHR.Server.Utils.onFailure
                 });
             }
         }
@@ -126,9 +126,10 @@ function onAfterUpdate(errors, scriptContext, row, oldRow){
                     existingRecords.push(r);
                 }, this);
 
-                distinctIds = distinctIds.unique();
+                //distinctIds = distinctIds.unique();
+                distinctIds = Ext.unique(distinctIds);
             },
-            failure: EHR.onFailure
+            failure: EHR.Server.Utils.onFailure
         });
 
         //then we find records that should exist
@@ -173,7 +174,7 @@ function onAfterUpdate(errors, scriptContext, row, oldRow){
                     console.log('No animals found in this room/cage: '+row.room + '/'+row.cage)
                 }
             },
-            failure: EHR.onFailure
+            failure: EHR.Server.Utils.onFailure
         });
 
 
@@ -197,7 +198,7 @@ function onAfterUpdate(errors, scriptContext, row, oldRow){
                 success: function(data){
                     console.log('Success Cascade Inserting')
                 },
-                failure: EHR.onFailure
+                failure: EHR.Server.Utils.onFailure
             });
         }
 
@@ -210,7 +211,7 @@ function onAfterUpdate(errors, scriptContext, row, oldRow){
                 success: function(data){
                     console.log('Success Cascade Updating')
                 },
-                failure: EHR.onFailure
+                failure: EHR.Server.Utils.onFailure
             });
         }
 
@@ -223,7 +224,7 @@ function onAfterUpdate(errors, scriptContext, row, oldRow){
                 success: function(data){
                     console.log('Success Cascade Deleting')
                 },
-                failure: EHR.onFailure
+                failure: EHR.Server.Utils.onFailure
             });
         }
     }
@@ -246,7 +247,7 @@ function onAfterDelete(scriptContext, errors, row, oldRow){
                         toDelete.push({lsid: r.lsid});
                     }, this);
                 },
-                failure: EHR.onFailure
+                failure: EHR.Server.Utils.onFailure
             });
         }
         //console.log(toDelete);
@@ -259,7 +260,7 @@ function onAfterDelete(scriptContext, errors, row, oldRow){
                 success: function(data){
                     console.log('Success Cascade Deleting');
                 },
-                failure: EHR.onFailure
+                failure: EHR.Server.Utils.onFailure
             });
         }
     }

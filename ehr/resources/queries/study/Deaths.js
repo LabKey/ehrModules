@@ -15,7 +15,7 @@ function onUpsert(context, errors, row, oldRow){
         regexp = new RegExp(regexp);
 
         if(!row.tattoo.match(regexp)){
-            EHR.addError(errors, 'tattoo', 'Id not found in the tattoo', 'INFO');
+            EHR.Server.Validation.addError(errors, 'tattoo', 'Id not found in the tattoo', 'INFO');
         }
     }
 }
@@ -30,9 +30,9 @@ function onComplete(event, errors, scriptContext){
             valuesMap[r.row.Id].death = r.row.date;
         }
 
-        EHR.validation.updateStatusField(scriptContext.publicParticipantsModified, null, valuesMap);
+        EHR.Server.Validation.updateStatusField(scriptContext.publicParticipantsModified, null, valuesMap);
 
-        EHR.sendEmail({
+        EHR.Server.Validation.sendEmail({
             notificationType: 'Animal Death',
             msgContent: 'The following animals have been marked as dead:<br>' +
                  scriptContext.publicParticipantsModified.join(',<br>') +
@@ -46,7 +46,7 @@ function onComplete(event, errors, scriptContext){
 function onBecomePublic(errors, scriptContext, row, oldRow){
     //this will close any existing assignments, housing and treatment records
     if(scriptContext.extraContext.dataSource != 'etl')
-        EHR.onDeathDeparture(row.Id, row.date);
+        EHR.Server.Validation.onDeathDeparture(row.Id, row.date);
 }
 
 function setDescription(row, errors){

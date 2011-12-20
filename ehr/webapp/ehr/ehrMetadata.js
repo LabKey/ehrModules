@@ -40,11 +40,11 @@ EHR.Metadata.getTableMetadata = function(queryName, sources)
 {
     var meta = {};
 
-    EHR.utils.rApplyClone(meta, EHR.Metadata.Sources.Standard.allQueries);
+    EHR.Utils.rApplyClone(meta, EHR.Metadata.Sources.Standard.allQueries);
 //
     if (EHR.Metadata.Sources.Standard.byQuery[queryName])
     {
-        EHR.utils.rApplyClone(meta, EHR.Metadata.Sources.Standard.byQuery[queryName]);
+        EHR.Utils.rApplyClone(meta, EHR.Metadata.Sources.Standard.byQuery[queryName]);
     }
 
     if (sources && sources.length)
@@ -55,12 +55,12 @@ EHR.Metadata.getTableMetadata = function(queryName, sources)
             {
                 if (EHR.Metadata.Sources[source].allQueries)
                 {
-                    EHR.utils.rApplyClone(meta, EHR.Metadata.Sources[source].allQueries);
+                    EHR.Utils.rApplyClone(meta, EHR.Metadata.Sources[source].allQueries);
                 }
 
                 if (EHR.Metadata.Sources[source].byQuery && EHR.Metadata.Sources[source].byQuery[queryName])
                 {
-                    EHR.utils.rApplyClone(meta, EHR.Metadata.Sources[source].byQuery[queryName]);
+                    EHR.Utils.rApplyClone(meta, EHR.Metadata.Sources[source].byQuery[queryName]);
                 }
 
             }
@@ -369,7 +369,7 @@ EHR.Metadata.Sources.Standard = {
                 listeners: {
                     change: function(field, val){
                         if(val && !isNaN(val)){
-                            var newVal = EHR.utils.padDigits(val, 4);
+                            var newVal = EHR.Utils.padDigits(val, 4);
                             if(val != newVal)
                                 field.setValue(newVal);
                         }
@@ -765,11 +765,11 @@ EHR.Metadata.Sources.Standard = {
 //                                    number = 1;
 //                                }
 //
-//                                number = EHR.utils.padDigits(number, (6-prefix.length));
+//                                number = EHR.Utils.padDigits(number, (6-prefix.length));
 //                                var id = prefix + number;
 //                                this.setValue(id.toLowerCase());
 //                            },
-//                            failure: EHR.onFailure
+//                            failure: EHR.Utils.onError
 //                        });
 //                    }
                 }
@@ -814,12 +814,12 @@ EHR.Metadata.Sources.Standard = {
                                     caseno = 1;
                                 }
 
-                                caseno = EHR.utils.padDigits(caseno, 2);
+                                caseno = EHR.Utils.padDigits(caseno, 2);
                                 var val = prefix + year + caseno;
                                 this.setValue(val);
                                 this.fireEvent('change', val)
                             },
-                            failure: EHR.utils.onError
+                            failure: EHR.Utils.onError
                         });
                     }
                     ,allowAnyId: true
@@ -1481,12 +1481,12 @@ EHR.Metadata.Sources.Standard = {
                                         caseno = 1;
                                     }
 
-                                    caseno = EHR.utils.padDigits(caseno, 3);
+                                    caseno = EHR.Utils.padDigits(caseno, 3);
                                     var val = year + prefix + caseno;
                                     panel.theField.setValue(val);
                                     panel.theField.fireEvent('change', val)
                                 },
-                                failure: EHR.utils.onError
+                                failure: EHR.Utils.onError
                             });
                         };
                     }
@@ -1607,12 +1607,12 @@ EHR.Metadata.Sources.Standard = {
                                         caseno = 1;
                                     }
 
-                                    caseno = EHR.utils.padDigits(caseno, 3);
+                                    caseno = EHR.Utils.padDigits(caseno, 3);
                                     var val = year + prefix + caseno;
                                     panel.theField.setValue(val);
                                     panel.theField.fireEvent('change', val)
                                 },
-                                failure: EHR.utils.onError
+                                failure: EHR.Utils.onError
                             });
                         };
                     }
@@ -1829,7 +1829,6 @@ EHR.Metadata.Sources.Standard = {
                             var theForm = this.ownerCt.getForm();
                             if(theForm){
                                 theForm.findField('unitCost').setValue(rec.get('cost'));
-                                theForm.findField('type').setValue(rec.get('description'));
                             }
                         }
                     }
@@ -2048,7 +2047,7 @@ EHR.Metadata.Sources.Standard = {
                     listeners: {
                         change: function(field, val){
                             if(val && !isNaN(val)){
-                                var newVal = EHR.utils.padDigits(val, 4);
+                                var newVal = EHR.Utils.padDigits(val, 4);
                                 if(val != newVal)
                                     field.setValue(newVal);
                             }
@@ -2201,7 +2200,7 @@ EHR.Metadata.Sources.Standard = {
                     listeners: {
                         change: function(field, val){
                             if(val && !isNaN(val)){
-                                var newVal = EHR.utils.padDigits(val, 4);
+                                var newVal = EHR.Utils.padDigits(val, 4);
                                 if(val != newVal)
                                     field.setValue(newVal);
                             }
@@ -2311,12 +2310,12 @@ EHR.Metadata.Sources.Standard = {
                                     number = 1;
                                 }
 
-                                //number = EHR.utils.padDigits(number, (6-prefix.length));
+                                //number = EHR.Utils.padDigits(number, (6-prefix.length));
                                 var id = prefix + number;
                                 this.setValue(id.toLowerCase());
                                 this.fireEvent('change', this.getValue());
                             },
-                            failure: EHR.utils.onError
+                            failure: EHR.Utils.onError
                         });
                     }
                 }
@@ -3347,12 +3346,12 @@ EHR.Metadata.Sources.Necropsy = {
                                             caseno = 1;
                                         }
 
-                                        caseno = EHR.utils.padDigits(caseno, 2);
+                                        caseno = EHR.Utils.padDigits(caseno, 2);
                                         var val = prefix + year + caseno;
                                         this.setValue(val);
                                         this.fireEvent('change', val)
                                     },
-                                    failure: EHR.utils.onError
+                                    failure: EHR.Utils.onError
                                 });
                             }
                         }, this);

@@ -98,7 +98,7 @@ EHR.ext.AnimalSelectorPanel = Ext.extend(Ext.Panel, {
                     listeners: {
                         change: function(field, val){
                             if(val && !isNaN(val)){
-                                var newVal = EHR.utils.padDigits(val, 4);
+                                var newVal = EHR.Utils.padDigits(val, 4);
                                 if(val != newVal)
                                     field.setValue(newVal);
                             }
@@ -215,7 +215,7 @@ EHR.ext.AnimalSelectorPanel = Ext.extend(Ext.Panel, {
                 scope: this,
                 timeout: 30000,
                 success: this.onSuccess,
-                failure: EHR.utils.onError
+                failure: EHR.Utils.onError
             });
         }
         else {
@@ -334,7 +334,7 @@ EHR.ext.AddSeriesWin = Ext.extend(Ext.Panel, {
         var records = [];
         var length = 6 - prefix.length;
         for(var i=0;i<totalIds;i++){
-           records.push({Id: prefix+EHR.utils.padDigits(startNumber+i, length)});
+           records.push({Id: prefix+EHR.Utils.padDigits(startNumber+i, length)});
         }
 
         if (this.targetStore)
@@ -417,7 +417,7 @@ EHR.ext.ChemExcelWin = Ext.extend(Ext.Panel, {
                 fileContent: fileContent
             },
             success: this.onFileUpload,
-            failure: EHR.utils.onError,
+            failure: EHR.Utils.onError,
             scope: this
         });
     },
@@ -428,7 +428,7 @@ EHR.ext.ChemExcelWin = Ext.extend(Ext.Panel, {
             format: 'jsonTSV',
             scope: this,
             successCallback: this.onGetContent,
-            failureCallback: EHR.utils.onError
+            failureCallback: EHR.Utils.onError
         });
     },
     onGetContent: function (content, format){
@@ -642,7 +642,7 @@ EHR.ext.HematologyExcelWin = Ext.extend(Ext.Panel, {
                 fileContent: fileContent
             },
             success: this.onFileUpload,
-            failure: EHR.utils.onError,
+            failure: EHR.Utils.onError,
             scope: this
         });
     },
@@ -653,7 +653,7 @@ EHR.ext.HematologyExcelWin = Ext.extend(Ext.Panel, {
             format: 'jsonTSV',
             scope: this,
             successCallback: this.onGetContent,
-            failureCallback: EHR.utils.onError
+            failureCallback: EHR.Utils.onError
         });
     },
     onGetContent: function (content, format){
@@ -819,7 +819,7 @@ EHR.ext.HematologyExcelWin = Ext.extend(Ext.Panel, {
 //
 //                    value = value / Math.pow(10, decimals);
 //
-//                    value = EHR.utils.roundNumber(value, decimals);
+//                    value = EHR.Utils.roundNumber(value, decimals);
 //                }
 //                else {
 //                    //alert('Value: '+value+' is not a number');
@@ -1022,7 +1022,7 @@ Ext.extend(EHR.ext.TreatmentSelector, Ext.Panel, {
             filterArray: filterArray,
             scope: this,
             success: this.onSuccess,
-            failure: EHR.utils.onError
+            failure: EHR.Utils.onError
         });
 
     },
@@ -1181,7 +1181,7 @@ EHR.ext.NecropsyCopyPanel = Ext.extend(Ext.Panel, {
             ],
             scope: this,
             success: this.onLoadNecropsy,
-            failure: EHR.utils.onError
+            failure: EHR.Utils.onError
         });
 
     },
@@ -1214,7 +1214,7 @@ EHR.ext.NecropsyCopyPanel = Ext.extend(Ext.Panel, {
                 success: function(results){
                     this[queryName+'Results'] = results;
                 },
-                failure: EHR.utils.onError
+                failure: EHR.Utils.onError
             });
         }
     },
@@ -1395,7 +1395,7 @@ EHR.ext.StoreSorterPanel = Ext.extend(Ext.Panel, {
             }
         }
 
-        this.targetStore.data.sort('ASC', EHR.utils.sortStore(sortArray));
+        this.targetStore.data.sort('ASC', EHR.Utils.sortStore(sortArray));
         this.targetStore.fireEvent('datachanged', this.targetStore);
 
     }
@@ -1567,7 +1567,7 @@ EHR.ext.BloodSelectorPanel = Ext.extend(Ext.Panel, {
             filterArray: filterArray,
             scope: this,
             success: this.onSuccess,
-            failure: EHR.utils.onError
+            failure: EHR.Utils.onError
         });
 
     },
@@ -1622,7 +1622,7 @@ EHR.ext.BloodSelectorPanel = Ext.extend(Ext.Panel, {
                         targetStore.load();
                         Ext.Msg.hide();
                     },
-                    failure: EHR.utils.onError
+                    failure: EHR.Utils.onError
                 });
             }
         }
@@ -1672,7 +1672,7 @@ EHR.ext.HeaderFormPanel = Ext.extend(EHR.ext.FormPanel, {
 //            }]
         });
 
-        EHR.utils.rApplyIf(this, {
+        EHR.Utils.rApplyIf(this, {
             bindConfig: {
                 disableUnlessBound: false
                 ,bindOnChange: false
@@ -1840,7 +1840,7 @@ Ext.extend(EHR.ext.AbstractPanel, Ext.FormPanel, {
                     linkTarget: '_blank',
                     renderTo: this.placeForQwp.body.id,
                     scope: this,
-                    failure: EHR.utils.onError
+                    failure: EHR.Utils.onError
                 };
                 Ext.apply(qwpConfig, this.queryConfig);
 
@@ -1958,7 +1958,7 @@ EHR.ext.AssignmentAbstractPanel = Ext.extend(EHR.ext.AbstractPanel, {
                 queryName: 'protocolTotalAnimalsBySpecies',
                 //viewName: 'With Animals',
                 scope: this,
-                failure: EHR.utils.onError,
+                failure: EHR.Utils.onError,
                 filterArray: [LABKEY.Filter.create('protocol', protocol, LABKEY.Filter.Types.EQUAL)]
             });
         }
@@ -2028,7 +2028,7 @@ EHR.ext.QueryPanel = Ext.extend(Ext.Panel, {
             timeout: 0,
             linkTarget: '_blank',
             renderTo: target.id,
-            failure: EHR.utils.onError,
+            failure: EHR.Utils.onError,
             success: function(result){
                 tab.isLoaded = true;
             },
@@ -2268,7 +2268,7 @@ EHR.ext.ApplyTemplatePanel = Ext.extend(Ext.FormPanel, {
             ],
             sort: '-rowid',
             success: this.onLoadTemplate,
-            failure: EHR.utils.onError,
+            failure: EHR.Utils.onError,
             scope: this
         });
 
@@ -2720,13 +2720,13 @@ EHR.ext.SaveTemplatePanel = Ext.extend(Ext.Window, {
                     schemaName: 'ehr',
                     queryName: 'formTemplateRecords',
                     rows: rows,
-                    failure: EHR.utils.onError,
+                    failure: EHR.Utils.onError,
                     success: function(){
                         Ext.Msg.hide();
                     }
                 });
             }}(rows),
-            failure: EHR.utils.onError
+            failure: EHR.Utils.onError
         });
     }
 });

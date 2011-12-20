@@ -472,7 +472,7 @@ EHR.ext.ViewCombo = Ext.extend(LABKEY.ext.ComboBox, {
             ,queryName: this.queryName
             ,schemaName: this.schemaName
             ,successCallback: this.onViewLoad
-            ,failure: EHR.utils.onError
+            ,failure: EHR.Utils.onError
             ,scope: this
         });
 
@@ -1140,7 +1140,7 @@ EHR.ext.ProjectField = Ext.extend(LABKEY.ext.ComboBox,
             }
 //            ,tpl: function(){var tpl = new Ext.XTemplate(
 //                '<tpl for=".">' +
-//                '<div class="x-combo-list-item">{[!isNaN(values["project"]) ? EHR.utils.padDigits(values["project"], 8) : values["project"]]}' +
+//                '<div class="x-combo-list-item">{[!isNaN(values["project"]) ? EHR.Utils.padDigits(values["project"], 8) : values["project"]]}' +
 //                '&nbsp;</div></tpl>'
 //            );return tpl.compile()}()
             ,tpl: function(){var tpl = new Ext.XTemplate(
@@ -1351,11 +1351,11 @@ EHR.ext.DrugDoseField = Ext.extend(EHR.ext.TriggerNumberField,
                 }
             }
 
-            var vol = EHR.utils.roundNumber(weight*dosage/conc, 2);
-            //var amount = EHR.utils.roundNumber(weight*dosage, 2);
+            var vol = EHR.Utils.roundNumber(weight*dosage/conc, 2);
+            //var amount = EHR.Utils.roundNumber(weight*dosage, 2);
 
             //NOTE: calculated from volume to avoid errors due to rounding
-            var amount = EHR.utils.roundNumber(vol*conc, 2);
+            var amount = EHR.Utils.roundNumber(vol*conc, 2);
 
             theForm.findField('amount').setValue(amount);
             theForm.findField('volume').setValue(vol);

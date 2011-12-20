@@ -9,7 +9,7 @@ Ext.onReady(function (){
     var query = LABKEY.ActionURL.getParameter('query.queryName') || LABKEY.ActionURL.getParameter('queryName');
     var schema = LABKEY.ActionURL.getParameter('schemaName');
 
-    LABKEY.NavTrail.setTrail(EHR.utils.toTitleCase(query));
+    LABKEY.NavTrail.setTrail(EHR.Utils.toTitleCase(query));
 
     var updateURL = '/ehr/manageRecord.view?schemaName='+schema+'&queryName='+query+'&keyField='+LABKEY.ActionURL.getParameter('keyField')+'&key=${'+LABKEY.ActionURL.getParameter('keyField')+'}&update=1';
     var insertURL = '/ehr/manageRecord.view?schemaName='+schema+'&queryName='+query+'&keyField='+LABKEY.ActionURL.getParameter('keyField')+'&update=1';
@@ -35,7 +35,7 @@ Ext.onReady(function (){
         scope: this,
         timeout: 0,
         linkTarget: '_blank',
-        failure: EHR.utils.onError
+        failure: EHR.Utils.onError
     };
 
     new LABKEY.QueryWebPart(config).render('qwpDiv');

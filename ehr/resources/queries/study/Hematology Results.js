@@ -9,7 +9,7 @@ var {EHR, LABKEY, Ext, console, init, beforeInsert, afterInsert, beforeUpdate, a
 
 function onUpsert(context, errors, row, oldRow){
     if(context.extraContext.dataSource != 'etl')
-        EHR.validation.removeTimeFromDate(row, errors);
+        EHR.Server.Validation.removeTimeFromDate(row, errors);
 }
 
 function onETL(row, errors){
@@ -23,15 +23,15 @@ function setDescription(row, errors){
     var description = new Array();
 
     if(row.testid)
-        description.push('Test: '+EHR.validation.nullToString(row.testid));
+        description.push('Test: '+EHR.Server.Validation.nullToString(row.testid));
     if (row.method)
         description.push('Method: '+row.method);
 
     if(row.result)
-        description.push('Result: '+EHR.validation.nullToString(row.result));
+        description.push('Result: '+EHR.Server.Validation.nullToString(row.result));
 
     if(row.qualResult)
-        description.push('Qualitative Result: '+EHR.validation.nullToString(row.qualResult));
+        description.push('Qualitative Result: '+EHR.Server.Validation.nullToString(row.qualResult));
 
     return description;
 }

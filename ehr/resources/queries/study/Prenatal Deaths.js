@@ -43,7 +43,7 @@ function setDescription(row, errors){
 
 function onComplete(event, errors, scriptContext){
     if(scriptContext.publicParticipantsModified.length){
-        EHR.sendEmail({
+        EHR.Server.Validation.sendEmail({
             notificationType: 'Prenatal Death',
             msgContent: 'The following prenatal deaths have been reported:<br>' +
                  scriptContext.publicParticipantsModified.join(',<br>') +

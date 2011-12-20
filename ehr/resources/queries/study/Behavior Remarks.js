@@ -15,8 +15,8 @@ function onETL(row, errors){
 
 function onUpsert(context, errors, row, oldRow){
     if(!row.so && !row.a && !row.p && !row.remark){
-        EHR.addError(errors, 'remark', 'Must enter at least one comment', 'WARN');
-        EHR.addError(errors, 'so', 'Must enter at least one comment', 'WARN');
+        EHR.Server.Validation.addError(errors, 'remark', 'Must enter at least one comment', 'WARN');
+        EHR.Server.Validation.addError(errors, 'so', 'Must enter at least one comment', 'WARN');
     }
 }
 

@@ -16,17 +16,17 @@ function setDescription(row, errors){
     //we need to set description for every field
     var description = new Array();
 
-    description.push('Start Date: ' + EHR.validation.dateToString(row.Date));
-    description.push('Removal Date: ' + (row.enddate ? EHR.validation.dateToString(row.enddate) : ''));
+    description.push('Start Date: ' + EHR.Server.Validation.dateToString(row.Date));
+    description.push('Removal Date: ' + (row.enddate ? EHR.Server.Validation.dateToString(row.enddate) : ''));
 
     return description;
 }
 
 function onUpsert(context, errors, row, oldRow){
     if(context.extraContext.dataSource != 'etl'){
-        EHR.validation.removeTimeFromDate(row, errors);
-        EHR.validation.removeTimeFromDate(row, errors, 'enddate');
-        EHR.validation.removeTimeFromDate(row, errors, 'projectedRelease');
+        EHR.Server.Validation.removeTimeFromDate(row, errors);
+        EHR.Server.Validation.removeTimeFromDate(row, errors, 'enddate');
+        EHR.Server.Validation.removeTimeFromDate(row, errors, 'projectedRelease');
     }
 
     //remove the projected release date if a true enddate is added
@@ -41,8 +41,9 @@ function onUpsert(context, errors, row, oldRow){
             row.project && row.date){
         var species;
         if(row.Id){
-            EHR.findDemographics({
+            EHR.Server.Validation.findDemographics({
                 participant: row.Id,
+                scriptContext: context,
                 callback: function(data){
                     if(data){
                         species = data.species;
@@ -63,7 +64,7 @@ function onUpsert(context, errors, row, oldRow){
                 if(data && data.rows && data.rows.length)
                     protocol = data.rows[0].protocol;
             },
-            failure: EHR.onFailure
+            failure: EHR.Server.Utils.onFailure
         });
 
         if(!context.extraContext.newIdsAdded)
@@ -98,7 +99,7 @@ function onUpsert(context, errors, row, oldRow){
                             var animals = data.rows[i].Animals;
                             if(animals && animals.indexOf(row.Id)==-1){
                                 if(remaining <= 1)
-                                    EHR.addError(errors, 'project', 'There are not enough spaces on protocol: '+protocol, 'WARN');
+                                    EHR.Server.Validation.addError(errors, 'project', 'There are not enough spaces on protocol: '+protocol, 'WARN');
 
                                 if(context.extraContext.newIdsAdded[protocol][species] && context.extraContext.newIdsAdded[protocol][species].indexOf(row.Id)==-1)
                                     context.extraContext.newIdsAdded[protocol][species].push(row.Id);
@@ -109,7 +110,7 @@ function onUpsert(context, errors, row, oldRow){
                         console.log('there was an error finding allowable animals per assignment')
                     }
                 },
-                failure: EHR.onFailure
+                failure: EHR.Server.Utils.onFailure
             });
         }
     }

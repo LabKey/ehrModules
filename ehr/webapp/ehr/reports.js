@@ -40,7 +40,7 @@ EHR.reports.qwpConfig = {
     },
     failure: function(error){
         console.log('Error callback called');
-        EHR.utils.onError(error)
+        EHR.Utils.onError(error)
     }
 };
 

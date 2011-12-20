@@ -23,13 +23,13 @@ function setDescription(row, errors){
     var createdby = row.createdby || LABKEY.Security.currentUser.id;
 
     if (createdby)
-        description.push('Created By: '+ EHR.utils.findPrincipalName(createdby));
+        description.push('Created By: '+ EHR.Server.Utils.findPrincipalName(createdby));
     if (row.notify1)
-        description.push('Notify 1: '+ EHR.utils.findPrincipalName(row.notify1));
+        description.push('Notify 1: '+ EHR.Server.Utils.findPrincipalName(row.notify1));
     if (row.notify2)
-        description.push('Notify 2: '+ EHR.utils.findPrincipalName(row.notify2));
+        description.push('Notify 2: '+ EHR.Server.Utils.findPrincipalName(row.notify2));
     if (row.notify3)
-        description.push('Notify 3: '+ EHR.utils.findPrincipalName(row.notify3));
+        description.push('Notify 3: '+ EHR.Server.Utils.findPrincipalName(row.notify3));
 
     return description;
 }

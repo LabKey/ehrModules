@@ -14,13 +14,13 @@ function onUpsert(context, errors, row, oldRow){
     //TODO: do we need this for every ETL record?
     //NOTE: this should be getting set by the birth, death, arrival & departure tables
     if(!row.calculated_status || context.extraContext.dataSource == 'etl'){
-        row = EHR.validation.updateStatusField([row.Id], row);
+        row = EHR.Server.Validation.updateStatusField([row.Id], row);
     }
 }
 
 
 function onETL(row, errors){
-    var species = EHR.validation.getSpecies(row, errors);
+    var species = EHR.Server.Validation.getSpecies(row, errors);
     row.species = row.species || species;
 
     //the ETL code is going to error if the row is missing a date.

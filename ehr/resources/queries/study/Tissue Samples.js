@@ -17,7 +17,7 @@ function setDescription(row, errors){
     var description = new Array();
 
     if(row.tissue)
-        description.push('Tissue: ' + EHR.validation.snomedToString(row.tissue));
+        description.push('Tissue: ' + EHR.Server.Validation.snomedToString(row.tissue));
     if(row.qualifier)
         description.push('Qualifier: ' + row.qualifier);
     if(row.diagnosis)

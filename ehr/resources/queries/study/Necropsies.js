@@ -24,23 +24,24 @@ function setDescription(row, errors){
     //we need to set description for every field
     var description = new Array();
 
-    description.push('Case No: '+EHR.validation.nullToString(row.caseno));
+    description.push('Case No: '+EHR.Server.Validation.nullToString(row.caseno));
 
     return description;
 }
 
 function onUpsert(context, errors, row){
     if(context.extraContext.dataSource != 'etl' && row.caseno)
-        EHR.validation.verifyCasenoIsUnique(context, row, errors);
+        EHR.Server.Validation.verifyCasenoIsUnique(context, row, errors);
 
     if(row.Id){
-        EHR.findDemographics({
+        EHR.Server.Validation.findDemographics({
             participant: row.Id,
+            scriptContext: context,
             scope: this,
             callback: function(data){
                 if(data){
                     if(!row.project){
-                        EHR.addError(errors, 'project', 'Must enter a project for all WNPRC animals.', 'WARN');
+                        EHR.Server.Validation.addError(errors, 'project', 'Must enter a project for all WNPRC animals.', 'WARN');
                     }
                 }
             }
@@ -57,8 +58,9 @@ function onBecomePublic(errors, scriptContext, row, oldRow){
             doSubmit = true;
         }
         else {
-            EHR.findDemographics({
+            EHR.Server.Validation.findDemographics({
                 participant: row.Id,
+                scriptContext: scriptContext,
                 scope: this,
                 callback: function(data){
                     if(data){
@@ -103,7 +105,7 @@ function onBecomePublic(errors, scriptContext, row, oldRow){
                             success: function(data){
                                 console.log('Success updating '+queryName+' from necropsy for '+row.Id)
                             },
-                            failure: EHR.onFailure
+                            failure: EHR.Server.Utils.onFailure
                         });
                     }
                     //otherwise we create a new record
@@ -116,12 +118,12 @@ function onBecomePublic(errors, scriptContext, row, oldRow){
     //                        success: function(data){
     //                            console.log('Success inserting into '+queryName+' from necropsy for '+row.Id)
     //                        },
-    //                        failure: EHR.onFailure
+    //                        failure: EHR.Server.Utils.onFailure
     //                    });
-                        EHR.addError(errors, 'Id', 'No death record exists.  Please use the button near the bottom of the page to create one.', 'ERROR');
+                        EHR.Server.Validation.addError(errors, 'Id', 'No death record exists.  Please use the button near the bottom of the page to create one.', 'ERROR');
                     }
                 },
-                failure: EHR.onFailure
+                failure: EHR.Server.Utils.onFailure
             });
         }
     }

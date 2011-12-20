@@ -91,7 +91,7 @@ EHR.ext.DetailsView = Ext.extend(Ext.Panel, {
                 this.queryData = data;
                 this.loadQuery();
             },
-            failure: EHR.utils.onError,
+            failure: EHR.Utils.onError,
             scope: this,
             maxRows: 100
         };

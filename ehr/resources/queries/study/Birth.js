@@ -21,7 +21,7 @@ function onBecomePublic(errors, scriptContext, row, oldRow){
                 success: function(data){
                     console.log('Success updating weight table from birth')
                 },
-                failure: EHR.onFailure
+                failure: EHR.Server.Utils.onFailure
             });
         }
 
@@ -37,14 +37,15 @@ function onBecomePublic(errors, scriptContext, row, oldRow){
                 success: function(data){
                     console.log('Success updating housing table from birth')
                 },
-                failure: EHR.onFailure
+                failure: EHR.Server.Utils.onFailure
             });
         }
 
         //if not already present, we insert into demographics
         if(!row.notAtCenter){
-            EHR.findDemographics({
+            EHR.Server.Validation.findDemographics({
                 participant: row.Id,
+                scriptContext: scriptContext,
                 scope: this,
                 callback: function(data){
                     if(!data){
@@ -58,7 +59,7 @@ function onBecomePublic(errors, scriptContext, row, oldRow){
                             success: function(data){
                                 console.log('Success updating demographics table from birth')
                             },
-                            failure: EHR.onFailure
+                            failure: EHR.Server.Utils.onFailure
                         });
                     }
                 }
@@ -76,7 +77,7 @@ function onComplete(event, errors, scriptContext){
             valuesMap[r.row.Id] = {};
             valuesMap[r.row.Id].birth = r.row.date;
         };
-        EHR.validation.updateStatusField(scriptContext.publicParticipantsModified, null, valuesMap);
+        EHR.Server.Validation.updateStatusField(scriptContext.publicParticipantsModified, null, valuesMap);
     }
 }
 
@@ -88,21 +89,21 @@ function setDescription(row, errors){
         description.push('Conception: '+ row.conception);
 
     if(row.gender)
-        description.push('Gender: '+ EHR.validation.nullToString(row.gender));
+        description.push('Gender: '+ EHR.Server.Validation.nullToString(row.gender));
     if(row.dam)
-        description.push('Dam: '+ EHR.validation.nullToString(row.dam));
+        description.push('Dam: '+ EHR.Server.Validation.nullToString(row.dam));
     if(row.sire)
-        description.push('Sire: '+ EHR.validation.nullToString(row.sire));
+        description.push('Sire: '+ EHR.Server.Validation.nullToString(row.sire));
     if(row.room)
-        description.push('Room: '+ EHR.validation.nullToString(row.room));
+        description.push('Room: '+ EHR.Server.Validation.nullToString(row.room));
     if(row.cage)
-        description.push('Cage: '+ EHR.validation.nullToString(row.cage));
+        description.push('Cage: '+ EHR.Server.Validation.nullToString(row.cage));
     if(row.cond)
-        description.push('Cond: '+ EHR.validation.nullToString(row.cond));
+        description.push('Cond: '+ EHR.Server.Validation.nullToString(row.cond));
     if(row.weight)
-        description.push('Weight: '+ EHR.validation.nullToString(row.weight));
+        description.push('Weight: '+ EHR.Server.Validation.nullToString(row.weight));
     if(row.wdate)
-        description.push('Weigh Date: '+ EHR.validation.nullToString(row.wdate));
+        description.push('Weigh Date: '+ EHR.Server.Validation.nullToString(row.wdate));
     if(row.origin)
         description.push('Origin: '+ row.origin);
     if(row.type)

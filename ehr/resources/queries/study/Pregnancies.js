@@ -10,7 +10,7 @@ var {EHR, LABKEY, Ext, console, init, beforeInsert, afterInsert, beforeUpdate, a
 function onUpsert(context, errors, row, oldRow){
     //make sure the anmimal is female
     if(row.id)
-        EHR.validation.verifyIsFemale(row, errors);
+        EHR.Server.Validation.verifyIsFemale(row, errors);
 
 }
 

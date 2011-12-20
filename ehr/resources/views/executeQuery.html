@@ -8,7 +8,7 @@ Ext.onReady(function (){
     var query = LABKEY.ActionURL.getParameter('query.queryName') || LABKEY.ActionURL.getParameter('queryName');
     var schema = LABKEY.ActionURL.getParameter('schemaName');
 
-    LABKEY.NavTrail.setTrail(EHR.utils.toTitleCase(query));
+    LABKEY.NavTrail.setTrail(EHR.Utils.toTitleCase(query));
 
     var config = {
         title: query,
@@ -26,7 +26,7 @@ Ext.onReady(function (){
         dataRegionName: 'query',
         scope: this,
         timeout: 0,
-        failure: EHR.utils.onError
+        failure: EHR.Utils.onError
     };
 
     new LABKEY.QueryWebPart(config).render('qwpDiv');

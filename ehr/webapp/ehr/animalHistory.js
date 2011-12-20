@@ -167,7 +167,7 @@ EHR.ext.SingleAnimalReport = Ext.extend(Ext.Panel, {
             failure: function(error){
                 console.log('Error callback called');
                 console.log(target);
-                EHR.utils.onError(error)
+                EHR.Utils.onError(error)
             }
         });
 
@@ -493,7 +493,7 @@ EHR.ext.SingleAnimalReport = Ext.extend(Ext.Panel, {
                 scope: this,
                 change: function(field, val){
                     if(val && !isNaN(val)){
-                        var newVal = EHR.utils.padDigits(val, 4);
+                        var newVal = EHR.Utils.padDigits(val, 4);
                         if(val != newVal)
                             field.setValue(newVal);
                     }
@@ -998,7 +998,7 @@ EHR.ext.SingleAnimalReport = Ext.extend(Ext.Panel, {
                 this.loadProtovisChart(tab, subject);
                 break;
             default:
-                EHR.utils.onError('Improper Report Type');
+                EHR.Utils.onError('Improper Report Type');
         }
     },
 
@@ -1144,7 +1144,7 @@ EHR.ext.SingleAnimalReport = Ext.extend(Ext.Panel, {
                 console.log('Error callback called');
                 console.log(target);
                 //target.innerHTML = 'ERROR: ' + error.exception + '<br>';
-                EHR.utils.onError(error)
+                EHR.Utils.onError(error)
             },
             scope: this
         };
@@ -1186,7 +1186,7 @@ EHR.ext.SingleAnimalReport = Ext.extend(Ext.Panel, {
             //successCallback: this.endMsg,
             failure: function(error){
                 //target.innerHTML = 'ERROR: ' + error.exception + '<br>';
-                EHR.utils.onError(error);
+                EHR.Utils.onError(error);
             },
             scope: this
         };
@@ -1242,7 +1242,7 @@ EHR.ext.SingleAnimalReport = Ext.extend(Ext.Panel, {
             //,successCallback: this.endMsg
             ,failure: function(error){
                 //target.innerHTML = 'ERROR: ' + error.exception + '<br>';
-                EHR.utils.onError(error)
+                EHR.Utils.onError(error)
             }
             ,scope: this
         });
@@ -1269,7 +1269,7 @@ EHR.ext.SingleAnimalReport = Ext.extend(Ext.Panel, {
             //success: this.endMsg,
             failure: function(error){
                 //target.innerHTML = 'ERROR: ' + error.exception + '<br>';
-                EHR.utils.onError(error)
+                EHR.Utils.onError(error)
             },
             scope: this
         });

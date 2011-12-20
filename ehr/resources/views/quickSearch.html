@@ -8,7 +8,7 @@ LABKEY.requiresScript("/ehr/utils.js");
 Ext.onReady(makePanel)
 
 function makePanel(){
-    if (!window.EHR || !window.EHR.ext || !window.EHR.utils)
+    if (!window.EHR || !window.EHR.ext || !window.EHR.Utils)
     {
         makePanel.defer(10);
         return;

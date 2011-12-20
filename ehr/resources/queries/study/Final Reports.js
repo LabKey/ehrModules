@@ -15,7 +15,7 @@ function setDescription(row, errors){
     var description = new Array();
 
     if(row.performedby)
-        description.push('Entered By: ' + EHR.validation.nullToString(row.performedby));
+        description.push('Entered By: ' + EHR.Server.Validation.nullToString(row.performedby));
 
     return description;
 }

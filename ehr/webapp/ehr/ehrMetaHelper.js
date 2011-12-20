@@ -58,11 +58,11 @@ EHR.ext.metaHelper = new function(){
 
             //now we allow overrides of default behavior, in order of precedence
             if(meta.editorConfig)
-                EHR.utils.rApply(editor, meta.editorConfig);
+                EHR.Utils.rApply(editor, meta.editorConfig);
             if(meta.gridEditorConfig)
-                EHR.utils.rApply(editor, meta.gridEditorConfig);
+                EHR.Utils.rApply(editor, meta.gridEditorConfig);
             if(config)
-                EHR.utils.rApply(editor, config);
+                EHR.Utils.rApply(editor, config);
 
             return editor;
         },
@@ -78,11 +78,11 @@ EHR.ext.metaHelper = new function(){
 
             //now we allow overrides of default behavior, in order of precedence
             if(meta.editorConfig)
-                EHR.utils.rApply(editor, meta.editorConfig);
+                EHR.Utils.rApply(editor, meta.editorConfig);
             if(meta.formEditorConfig)
-                EHR.utils.rApply(editor, meta.formEditorConfig);
+                EHR.Utils.rApply(editor, meta.formEditorConfig);
             if(config)
-                EHR.utils.rApply(editor, config);
+                EHR.Utils.rApply(editor, config);
 
             return editor;
         },
@@ -395,15 +395,15 @@ EHR.ext.metaHelper = new function(){
                 delete col.width;
 
             if(meta.colModel) {
-                EHR.utils.rApply(col, meta.colModel);
+                EHR.Utils.rApply(col, meta.colModel);
             }
 
             //allow override of defaults
             if(config && config.defaults)
-                EHR.utils.rApply(col, config.defaults);
+                EHR.Utils.rApply(col, config.defaults);
 
             if(config && config[col.dataIndex])
-                EHR.utils.rApply(col, config[col.dataIndex]);
+                EHR.Utils.rApply(col, config[col.dataIndex]);
 
             return col;
 

@@ -68,12 +68,12 @@ Ext.onReady(function (){
                 scope: this,
                 timeout: 0,
                 linkTarget: '_blank',
-                failure: EHR.utils.onError
+                failure: EHR.Utils.onError
             };
 
             new LABKEY.QueryWebPart(config).render('queryDiv');
         }
-        ,failure: EHR.utils.onError
+        ,failure: EHR.Utils.onError
         ,scope: this
     });
 });

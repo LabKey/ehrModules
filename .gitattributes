@@ -514,6 +514,7 @@ ehr/resources/queries/study/Weight/10[!!-~]Pct[!!-~]Drop[!!-~]in[!!-~]6[!!-~]Mon
 ehr/resources/queries/study/Weight/Percent[!!-~]Change[!!-~]Compared[!!-~]To[!!-~]Previous.qview.xml -text
 ehr/resources/queries/study/Weight/Percent[!!-~]Change.qview.xml -text
 ehr/resources/queries/study/Weight/Plus[!!-~]Housing.qview.xml -text
+ehr/resources/queries/study/_scriptTemplate.js -text
 ehr/resources/queries/study/activeHousingQuery.sql -text
 ehr/resources/queries/study/animal.query.xml -text
 ehr/resources/queries/study/animal/.qview.xml -text
@@ -871,6 +872,8 @@ ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-11.292-11.293.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/EHR-11.10-11.102.sql -text
 ehr/resources/schemas/ehr.xml -text
 ehr/resources/schemas/ehr_lookups.xml -text
+ehr/resources/scripts/ehr/security.js -text
+ehr/resources/scripts/ehr/utils.js -text
 ehr/resources/scripts/ehr/validation.js -text
 ehr/resources/views/_initEHR.html -text
 ehr/resources/views/animalHistory.html -text

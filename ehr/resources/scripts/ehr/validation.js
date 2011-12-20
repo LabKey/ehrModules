@@ -4,7 +4,9 @@
  * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
  */
 
-
+/*
+ * Include the appropriate external scripts and export them
+ */
 var console = require("console");
 exports.console = console;
 
@@ -17,10 +19,49 @@ exports.Ext = Ext;
 var EHR = {};
 exports.EHR = EHR;
 
+/**
+ * A namespace for server-side JS code that is used in trigger/validation scripts.
+ * @namespace
+ */
+EHR.Server = {};
 
-//var map = new ScriptableMap(new org.labkey.api.collections.CaseInsensitiveHashMap());
+EHR.Server.Utils = require("ehr/utils").EHR.Server.Utils;
 
-function init(event, errors){
+EHR.Server.Security = require("ehr/security").EHR.Server.Security;
+
+
+/**
+ * This class handles the serer-side validation/transform that occurs in the EHR's trigger scripts.  It should be used by every EHR dataset.  The purpose is to centralize
+ * complex code into one single pathway for all incoming records.  The trigger scripts of individual records can include this code (see example script below).  This
+ * replaces the default functions LabKey expects including beforeInsert, beforeUpdate, etc.  Without the dataset's trigger script, you will include this code, then
+ * create functions only to handle the dataset-specific needs.  For example, the Blood Draws dataset contains extra validation that is needed prior to every insert/update.
+ * As a result, this script includes an additional onUpsert() function that will get called.  The minimal code needed in each dataset's validation script is:
+ * <p>
+ *
+ * var {EHR, LABKEY, Ext, console, init, beforeInsert, afterInsert, beforeUpdate, afterUpdate, beforeDelete, afterDelete, complete} = require("ehr/validation");
+ *
+ * <p>
+ * This line of code will uses javascript <a href="https://developer.mozilla.org/en/New_in_JavaScript_1.7#Destructuring_assignment_(Merge_into_own_page.2Fsection)">destructuring assignment</a>
+ * import to import properties of the exports object from validation.js into the desired local variables.  With one line of code you inherit all
+ * the defaults specified in EHR.Server.Triggers.
+ *
+ * @name EHR.Server.Triggers
+ * @class
+ */
+EHR.Server.Triggers = {};
+
+
+/**
+ * This overrides the default init() function on scripts inheriting this code.  It performs the following:
+ * <br>1. Sets up this.scriptContext, which is a map used to pass information between functions and to track information such as the distinct participants modified in this script
+ * <br>2. If the dataset's trigger script contains a function named onInit(), it will be called and passed the following arguments:
+ * <br>
+ * <li>event: the name of this event (ie. insert, update, delete)</li>
+ * <li>scriptContext: a map containing information about the current script session, as well as objects to track participants and requests modified in this script.
+ * @param {string} event The name of the event, as passed from LabKey.
+ * @param {object} errors The errors object, as passed from LabKey.
+ */
+EHR.Server.Triggers.init = function(event, errors){
     console.log("** evaluating: " + this['javax.script.filename'] + ' for: '+event);
 
     var fileParse = (this['javax.script.filename']).split('/');
@@ -50,22 +91,38 @@ function init(event, errors){
     if(this.onInit)
         this.onInit.call(this, event, this.scriptContext);
 }
-exports.init = init;
+exports.init = EHR.Server.Triggers.init;
 
-function beforeInsert(row, errors){
+
+/**
+ * This should override the default beforeInsert() function on scripts inheriting this code.  Will be called once for each row being inserted.  It performs the following:
+ * <br>1. Verifies permissions for the current dataset / action / QCState
+ * <br>2. Calls EHR.Server.Triggers.rowInit(), which is a method shared by both insert/update actions.
+ * <br>3. If the incoming record is a request, it forces this newly inserted record to have a future date
+ * <br>4. If the dataset's trigger script contains a function named onUpsert(), it will be called and passed the following arguments:
+ * <br>
+ * <li>scriptContext: A map containing information about the current script session, as well as objects to track participants and requests modified in this script.
+ * <li>scriptErrors: An error object that should be used identically to the default errors object.  It is separate from LabKey's error object and handled using EHR.Server.Triggers.processErrors()</li>
+ * <li>row: The row object, as passed by LabKey</li>
+ * <br>5. If the dataset's trigger script contains a function named onInsert(), it will be called and pass the same arguments as onUpsert():
+ * <br>6. Calls EHR.Server.Triggers.rowEnd(), which is a method shared by both insert/update actions.
+ * @param {object} row The row object, as passed from LabKey.
+ * @param {object} errors The errors object, as passed from LabKey.
+ */
+EHR.Server.Triggers.beforeInsert = function(row, errors){
     var scriptErrors = {};
     if(this.scriptContext.verbosity > 0)
         console.log("beforeInsert: " + row);
 
-    if(EHR.verifyPermissions('insert', this.scriptContext, row) === false){
+    if(EHR.Server.Security.verifyPermissions('insert', this.scriptContext, row) === false){
         errors._form = 'Insufficent permissions';
         return;
     }
 
-    EHR.rowInit.call(this, scriptErrors, row, null);
+    EHR.Server.Triggers.rowInit.call(this, scriptErrors, row, null);
 
     //force newly entered requests to have future dates
-    if(row.date && this.scriptContext.qcMap.label[row.QCStateLabel]['metadata/isRequest']){
+    if(row.date && EHR.Server.Security.getQCStateByLabel(row.QCStateLabel)['metadata/isRequest']){
         var now = new Date();
         //if the row's date appears to be date-only, we adjust now accordingly
         if(row.date.getHours()==0 && row.date.getMinutes()==0)
@@ -76,7 +133,7 @@ function beforeInsert(row, errors){
 
         //allow a 30 second window to support inserts from other scripts
         if(rowDate > 30000){
-            EHR.addError(scriptErrors, 'date', 'Cannot place a request in the past', 'ERROR');
+            EHR.Server.Validation.addError(scriptErrors, 'date', 'Cannot place a request in the past', 'ERROR');
         }
     }
 
@@ -86,35 +143,65 @@ function beforeInsert(row, errors){
     if(this.onInsert)
         this.onInsert(this.scriptContext, scriptErrors, row);
 
-    EHR.rowEnd.call(this, errors, scriptErrors, row, null);
+    EHR.Server.Triggers.rowEnd.call(this, errors, scriptErrors, row, null);
 }
-exports.beforeInsert = beforeInsert;
+exports.beforeInsert = EHR.Server.Triggers.beforeInsert;
 
-function afterInsert(row, errors){
+
+/**
+ * This should override the default afterInsert() function on scripts inheriting this code.  Will be called once for each row being inserted.  It performs the following:
+ * <br>1. Calls EHR.Server.Triggers.afterEvent(), which is a method shared by insert/update/delete actions.
+ * <br>2. If the dataset's trigger script contains a function named onAfterUpsert(), it will be called and passed the following arguments:
+ * <br>
+ * <li>scriptContext: A map containing information about the current script session, as well as objects to track participants and requests modified in this script.
+ * <li>errors: The LabKey error object</li>
+ * <li>row: The row object, as passed by LabKey</li>
+ * <br>3. If the dataset's trigger script contains a function named onAfterInsert(), it will be called and passed the same arguments as onAfterUpsert().
+ * @param {object} row The row object, as passed from LabKey.
+ * @param {object} errors The errors object, as passed from LabKey.
+ */
+EHR.Server.Triggers.afterInsert = function(row, errors){
     if(this.scriptContext.verbosity > 0)
         console.log('after insert');
 
-    EHR.afterEvent.call(this, 'insert', errors, row, null);
+    EHR.Server.Triggers.afterEvent.call(this, 'insert', errors, row, null);
 
     if(this.onAfterUpsert)
         this.onAfterUpsert(this.scriptContext, errors, row);
     if(this.onAfterInsert)
         this.onAfterInsert(this.scriptContext, errors, row);
 }
-exports.afterInsert = afterInsert;
+exports.afterInsert = EHR.Server.Triggers.afterInsert;
 
-function beforeUpdate(row, oldRow, errors){
+
+/**
+ * This should override the default beforeUpdate() function on scripts inheriting this code.  Will be called once for each row being updated.  It performs the following:
+ * <br>1. Verifies permissions for the current dataset / action / QCState
+ * <br>2. Calls EHR.Server.Triggers.rowInit(), which is a method shared by both insert/update actions.
+ * <br>3. If the dataset's trigger script contains a function named onUpsert(), it will be called and passed the following arguments:
+ * <br>
+ * <li>scriptContext: A map containing information about the current script session, as well as objects to track participants and requests modified in this script.
+ * <li>scriptErrors: An error object that should be used identically to the default errors object.  It is separate from LabKey's error object and handled using EHR.Server.Triggers.processErrors()</li>
+ * <li>row: The row object, as passed by LabKey</li>
+ * <li>oldRow: The original row object (prior to update), as passed by LabKey</li>
+ * <br>4. If the dataset's trigger script contains a function named onUpdate(), it will be called and pass the same arguments as onUpsert():
+ * <br>5. Calls EHR.Server.Triggers.rowEnd(), which is a method shared by both insert/update actions.
+ * @param {object} row The row object, as passed from LabKey.
+ * @param {object} oldRow The original row object (prior to update), as passed from LabKey.
+ * @param {object} errors The errors object, as passed from LabKey.
+ */
+EHR.Server.Triggers.beforeUpdate = function(row, oldRow, errors){
     var scriptErrors = {};
 
     if(this.scriptContext.verbosity > 0)
         console.log("beforeUpdate: " + row);
 
-    if(EHR.verifyPermissions('update', this.scriptContext, row, oldRow) === false){
+    if(EHR.Server.Security.verifyPermissions('update', this.scriptContext, row, oldRow) === false){
         errors._form = 'Insufficent permissions';
         return;
     }
 
-    EHR.rowInit.call(this, scriptErrors, row, oldRow);
+    EHR.Server.Triggers.rowInit.call(this, scriptErrors, row, oldRow);
 
     //dataset-specific beforeUpdate
     if(this.onUpsert)
@@ -122,7 +209,7 @@ function beforeUpdate(row, oldRow, errors){
     if(this.onUpdate)
         this.onUpdate(this.scriptContext, scriptErrors, row, oldRow);
 
-    EHR.rowEnd.call(this, errors, scriptErrors, row, oldRow);
+    EHR.Server.Triggers.rowEnd.call(this, errors, scriptErrors, row, oldRow);
 
     //NOTE: this is designed to merge the old row into the new one.
     for (var prop in oldRow){
@@ -131,26 +218,53 @@ function beforeUpdate(row, oldRow, errors){
         }
     }
 }
-exports.beforeUpdate = beforeUpdate;
+exports.beforeUpdate = EHR.Server.Triggers.beforeUpdate;
 
-function afterUpdate(row, oldRow, errors){
+
+/**
+ * This should override the default afterUpdate() function on scripts inheriting this code.  Will be called once for each row being updated.  It performs the following:
+ * <br>1. Calls EHR.Server.Triggers.afterEvent(), which is a method shared by insert/update/delete actions.
+ * <br>2. If the dataset's trigger script contains a function named onAfterUpsert(), it will be called and passed the following arguments:
+ * <br>
+ * <li>scriptContext: A map containing information about the current script session, as well as objects to track participants and requests modified in this script.
+ * <li>errors: The LabKey error object</li>
+ * <li>row: The row object, as passed by LabKey</li>
+ * <li>oldRow: The original row object (prior to update), as passed by LabKey</li>
+ * <br>3. If the dataset's trigger script contains a function named onAfterUpdate(), it will be called and passed the same arguments as onAfterUpsert().
+ * @param {object} row The row object, as passed from LabKey.
+ * @param {object} oldRow The original row object (prior to update), as passed from LabKey.
+ * @param {object} errors The errors object, as passed from LabKey.
+ */
+EHR.Server.Triggers.afterUpdate = function(row, oldRow, errors){
     if(this.scriptContext.verbosity > 0)
         console.log('after update');
 
-    EHR.afterEvent.call(this, 'update', errors, row, oldRow);
+    EHR.Server.Triggers.afterEvent.call(this, 'update', errors, row, oldRow);
 
     if(this.onAfterUpsert)
         this.onAfterUpsert(this.scriptContext, errors, row, oldRow);
     if(this.onAfterUpdate)
         this.onAfterUpdate(this.scriptContext, errors, row, oldRow);
 }
-exports.afterUpdate = afterUpdate;
+exports.afterUpdate = EHR.Server.Triggers.afterUpdate;
 
-function beforeDelete(row, errors){
+
+/**
+ * This should override the default beforeDelete() function on scripts inheriting this code.  Will be called once for each row being deleted.  It performs the following:
+ * <br>1. Verifies permissions for the current dataset / action / QCState
+ * <br>2. If the dataset's trigger script contains a function named onDelete(), it will be called and passed the following arguments:
+ * <br>
+ * <li>scriptErrors: An error object that should be used identically to the default errors object.  It is separate from LabKey's error object and handled using EHR.Server.Triggers.processErrors()</li>
+ * <li>scriptContext: A map containing information about the current script session, as well as objects to track participants and requests modified in this script.
+ * <li>row: The row object, as passed by LabKey</li>
+ * @param {object} row The row object, as passed from LabKey.
+ * @param {object} errors The errors object, as passed from LabKey.
+ */
+EHR.Server.Triggers.beforeDelete = function(row, errors){
     if(this.scriptContext.verbosity > 0)
         console.log("beforeDelete: ");
 
-    if(EHR.verifyPermissions('delete', this.scriptContext, row) === false){
+    if(EHR.Server.Security.verifyPermissions('delete', this.scriptContext, row) === false){
         errors._form = 'Insufficent permissions';
         return;
     }
@@ -158,19 +272,41 @@ function beforeDelete(row, errors){
     if(this.onDelete)
         this.onDelete(errors, this.scriptContext, row);
 }
-exports.beforeDelete = beforeDelete;
+exports.beforeDelete = EHR.Server.Triggers.beforeDelete;
 
-function afterDelete(row, errors){
-    //console.log('after delete: ' +(new Date()));
-    EHR.afterEvent.call(this, 'delete', errors, row, null);
+
+/**
+ * This should override the default afterDelete() function on scripts inheriting this code.  Will be called once for each row being deleted.  It performs the following:
+ * <br>1. Calls EHR.Server.Triggers.afterEvent(), which is a method shared by insert/update/delete actions.
+ * <br>2. If the dataset's trigger script contains a function named onAfterDelete(), it will be called and passed the following arguments:
+ * <br>
+ * <li>scriptContext: A map containing information about the current script session, as well as objects to track participants and requests modified in this script.
+ * <li>errors: The LabKey error object</li>
+ * <li>row: The row object, as passed by LabKey</li>
+ * @param {object} row The row object, as passed from LabKey.
+ * @param {object} errors The errors object, as passed from LabKey.
+ */
+EHR.Server.Triggers.afterDelete = function(row, errors){
+    EHR.Server.Triggers.afterEvent.call(this, 'delete', errors, row, null);
 
     if(this.scriptContext.extraContext.dataSource != 'etl' && this.onAfterDelete)
         this.onAfterDelete(this.scriptContext, errors, row);
 }
-exports.afterDelete = afterDelete;
+exports.afterDelete = EHR.Server.Triggers.afterDelete;
 
-function complete(event, errors) {
-    //console.log('complete: '+(new Date()));
+
+/**
+ * This should override the default complete() function on scripts inheriting this code.  It performs the following:
+ * <br>1. If the dataset's trigger script contains a function named onComplete(), it will be called and passed the following arguments:
+ * <br>
+ * <li>event: the name of this event (ie. insert, update, delete)</li>
+ * <li>errors: the LabKey errors object</li>
+ * <li>scriptContext: a map containing information about the current script session, as well as objects to track participants and requests modified in this script.
+ * <br>2. If the current table is not ehr.requests, and if scriptContext.requestsCompleted or scriptContext.requestsDenied have items, then emails will be sent to the notification recipients for each completed/denied request
+ * @param {string} event The name of the event, as passed from LabKey.
+ * @param {object} errors The errors object, as passed from LabKey.
+ */
+EHR.Server.Triggers.complete = function(event, errors) {
     if(this.scriptContext.verbosity > 0){
         console.log('Event complete: '+event);
         console.log('Participants modified: '+this.scriptContext.participantsModified);
@@ -182,11 +318,11 @@ function complete(event, errors) {
 
     //send emails. query notificationRecipients table based on notification type(s)
     if(this.scriptContext.notificationTypes){
-
+        //NOTE: this is being handled by each dataset's script, if needed
     }
 
     if(this.scriptContext.notificationRecipients && !Ext.isEmpty(this.scriptContext.notificationRecipients)){
-
+        //NOTE: this is being handled by each dataset's script, if needed
     }
 
     //only do this if we're not in the ehr.requests script
@@ -197,7 +333,7 @@ function complete(event, errors) {
 
         }
 
-        if(this.scriptContext.requestsDenied && !EHR.utils.isEmptyObj(this.scriptContext.requestsDenied)){
+        if(this.scriptContext.requestsDenied && !EHR.Server.Utils.isEmptyObj(this.scriptContext.requestsDenied)){
             //console.log('requests denied:');
             //console.log(this.scriptContext.requestsDenied);
             var totalRequests = [];
@@ -250,7 +386,7 @@ function complete(event, errors) {
 
                             msgContent += '<p>The requests that have been denied will say \'Request: Denied\' in the status column.  Please do not reply to this email, as this account is not read.';
 
-                            EHR.sendEmail({
+                            EHR.Server.Validation.sendEmail({
                                 recipients: recipients,
                                 msgContent: msgContent,
                                 msgSubject: 'EHR '+row.formtype+' Denied',
@@ -262,7 +398,7 @@ function complete(event, errors) {
             });
         }
 
-        if(this.scriptContext.requestsCompleted && !EHR.utils.isEmptyObj(this.scriptContext.requestsCompleted)){
+        if(this.scriptContext.requestsCompleted && !EHR.Server.Utils.isEmptyObj(this.scriptContext.requestsCompleted)){
             //console.log('requests completed:');
             //console.log(this.scriptContext.requestsCompleted);
             var totalRequests = [];
@@ -314,7 +450,7 @@ function complete(event, errors) {
 
                             msgContent += '<p>The requests that have been completed will say \'Completed\' in the status column.  Please do not reply directly to this email, as this account is not read.';
 
-                            EHR.sendEmail({
+                            EHR.Server.Validation.sendEmail({
                                 recipients: recipients,
                                 msgContent: msgContent,
                                 msgSubject: 'EHR '+row.formtype+' Completed',
@@ -331,10 +467,40 @@ function complete(event, errors) {
 
 
 }
-exports.complete = complete;
+exports.complete = EHR.Server.Triggers.complete;
 
 
-EHR.rowInit = function(errors, row, oldRow){
+/**
+ * This performs a set of checks shared by both beforeInsert() and beforeUpdate().  It is meant to be called internally and should not be used directly.
+ * It includes the following:
+ * <br>1. Converts any empty strings in the row to null
+ * <br>2. Verify the format of the ID using EHR.Server.Validation.verifyIdFormat()
+ * <br>3. Queries and caches the study.demographics record (if extraContext.quickValidation is not true).  If this record is found, it performes the following:
+ * <br>
+ * <li>If the row has a property called 'id/curlocation/location', this will be populated with the current room/cage of the animal/</li>
+ * <li>Checks whether this ID exists in study.demographics and is currently located at the center.  If not, it will return an error of severity INFO.  However, if this record is a request QCState, the error will be a warning, which prevents submission.</li>
+ * <br>4. If a project is provided and it is not numeric, an error is thrown
+ * <br>5. If an Id, date and project are provided, it checks whether the current animal is assigned to that project on the supplied date.  This is skipped for the assignment table or if scriptContext.quickValidation is true.
+ * <br>6. If Id, Date and room or cage are provided it will verify whether the animal was housed in the specified room/cage at the date provided.  This is skipped for the house & birth tables or if scriptContext.quickValidation is true.
+ * <br>7. If enddate is supplied, verify it is after the start date
+ * <br>8. If the QCState is 'Completed', it will not allow future dates
+ * <br>9. The account will be converted to lowercase, if provided
+ * <br>10. Dates more than 1 year in the future or 60 in the past will be flagged as suspicious
+ * <br>11. If this record is becoming public (meaning either it is inserted as a public QCState or it is updated from a non-public QCState to a public one), then the following occurs:
+ * <li>If the current row has a value for project, it will store the account associated with this record.  This is useful as the 'account at the time', since the account associated with a project could change at future dates</li>
+ * <li>If the script contains a function called onBecomePublic(), it will be called with the following arguments:</li>
+ * <ul>
+ * <li>errors: An error object that should be used identically to the default errors object.  It is separate from LabKey's error object and handled using EHR.Server.Triggers.processErrors()</li>
+ * <li>scriptContext: A map containing information about the current script session, as well as objects to track participants and requests modified in this script.
+ * <li>row: The row object, as passed by LabKey</li>
+ * <li>oldRow: The original row object (prior to update), as passed by LabKey</li>
+ * </ul>
+ *
+ * @param {object} row The row object, as passed from LabKey.
+ * @param {object} oldRow The original row object (prior to update), as passed from LabKey.
+ * @param {object} errors The errors object, as passed from LabKey.
+ */
+EHR.Server.Triggers.rowInit = function(errors, row, oldRow){
     //empty strings can do funny things, so we make them null
     for (var i in row){
         if (row[i] === ''){
@@ -343,6 +509,8 @@ EHR.rowInit = function(errors, row, oldRow){
     }
 
     //these are extra checks to fix mySQL data
+    //@depreciated
+    //should be removed from this code at some point
     if (this.scriptContext.extraContext.dataSource == 'etl'){
         if(this.scriptContext.verbosity > 0)
             console.log('Row from ETL');
@@ -354,12 +522,13 @@ EHR.rowInit = function(errors, row, oldRow){
 
     //check Id format
     if(this.scriptContext.extraContext.dataSource != 'etl'){
-        EHR.validation.verifyIdFormat(row, errors, this.scriptContext)
+        EHR.Server.Validation.verifyIdFormat(row, errors, this.scriptContext)
     }
 
     if(row.Id && !this.scriptContext.quickValidation && this.scriptContext.extraContext.dataSource != 'etl'){
-        EHR.findDemographics({
+        EHR.Server.Validation.findDemographics({
             participant: row.Id,
+            scriptContext: this.scriptContext,
             scope: this,
             callback: function(data){
                 if(data){
@@ -377,23 +546,23 @@ EHR.rowInit = function(errors, row, oldRow){
                     if(data.calculated_status != 'Alive' && !this.scriptContext.allowAnyId){
                         if(data.calculated_status == 'Dead'){
                             if(!this.scriptContext.allowDeadIds)
-                                EHR.addError(errors, 'Id', 'Status of this Id is: '+data.calculated_status, 'INFO');
+                                EHR.Server.Validation.addError(errors, 'Id', 'Status of this Id is: '+data.calculated_status, 'INFO');
                         }
                         else if (data.calculated_status == 'Shipped'){
                             if(!this.scriptContext.allowShippedIds)
-                                EHR.addError(errors, 'Id', 'Status of this Id is: '+data.calculated_status, 'INFO');
+                                EHR.Server.Validation.addError(errors, 'Id', 'Status of this Id is: '+data.calculated_status, 'INFO');
                         }
                         else {
-                            EHR.addError(errors, 'Id', 'Status of this Id is: '+data.calculated_status, 'INFO');
+                            EHR.Server.Validation.addError(errors, 'Id', 'Status of this Id is: '+data.calculated_status, 'INFO');
                         }
                     }
                 }
                 else {
                     if(!this.scriptContext.allowAnyId){
-                        if(this.scriptContext.qcMap.label[row.QCStateLabel]['metadata/isRequest'])
-                            EHR.addError(errors, 'Id', 'Id not found in demographics table', 'ERROR');
+                        if(EHR.Server.Security.getQCStateByLabel(row.QCStateLabel)['metadata/isRequest'])
+                            EHR.Server.Validation.addError(errors, 'Id', 'Id not found in demographics table', 'ERROR');
                         else
-                            EHR.addError(errors, 'Id', 'Id not found in demographics table', 'INFO');
+                            EHR.Server.Validation.addError(errors, 'Id', 'Id not found in demographics table', 'INFO');
                     }
                 }
             }
@@ -404,7 +573,7 @@ EHR.rowInit = function(errors, row, oldRow){
     //also add account if the project is found
 
     if(row.project && isNaN(row.project)){
-        EHR.addError(errors, 'project', 'Project must be numeric: '+row.project, 'ERROR');
+        EHR.Server.Validation.addError(errors, 'project', 'Project must be numeric: '+row.project, 'ERROR');
         delete row.project;
     }
 
@@ -415,7 +584,7 @@ EHR.rowInit = function(errors, row, oldRow){
         row.project!=300901 && row.project!='Other' &&
         (this.scriptContext.queryName && !this.scriptContext.queryName.match(/assignment/i))
     ){
-        var date = EHR.validation.dateToString(row.date);
+        var date = EHR.Server.Validation.dateToString(row.date);
         LABKEY.Query.executeSql({
             schemaName: 'study',
             queryName: 'assignment',
@@ -424,17 +593,17 @@ EHR.rowInit = function(errors, row, oldRow){
             success: function(data){
                 if(!data.rows || !data.rows.length){
                     var severity = 'WARN';
-                    if(this.scriptContext.qcMap.label[row.QCStateLabel]['metadata/isRequest'])
+                    if(EHR.Server.Security.getQCStateByLabel(row.QCStateLabel)['metadata/isRequest'])
                         severity = 'INFO';
 
-                    EHR.addError(errors, 'project', 'Not assigned to '+row.project+' on this date', severity);
-                    EHR.addError(errors, 'project', 'The '+row.project+' is not associated with a valid protocol', severity);
+                    EHR.Server.Validation.addError(errors, 'project', 'Not assigned to '+row.project+' on this date', severity);
+                    EHR.Server.Validation.addError(errors, 'project', 'The '+row.project+' is not associated with a valid protocol', severity);
                 }
                 else {
                     this.scriptContext.assignmentRecord = data.rows[0];
                 }
             },
-            failure: EHR.onFailure
+            failure: EHR.Server.Utils.onFailure
         });
     }
 
@@ -459,10 +628,10 @@ EHR.rowInit = function(errors, row, oldRow){
             sql: sql,
             success: function(data){
                 if(!data.rows || !data.rows.length){
-                    EHR.addError(errors, 'room', 'Not housed in this room on this date', 'WARN');
+                    EHR.Server.Validation.addError(errors, 'room', 'Not housed in this room on this date', 'WARN');
                 }
             },
-            failure: EHR.onFailure
+            failure: EHR.Server.Utils.onFailure
         });
     }
 
@@ -472,7 +641,7 @@ EHR.rowInit = function(errors, row, oldRow){
         var end = Date.parse(row.enddate.toGMTString());
 
         if(start > end){
-            EHR.addError(errors, 'enddate', 'End date must be after start date', 'WARN');
+            EHR.Server.Validation.addError(errors, 'enddate', 'End date must be after start date', 'WARN');
         }
     }
 
@@ -480,7 +649,7 @@ EHR.rowInit = function(errors, row, oldRow){
     if(row.QCStateLabel == 'Completed' && !this.scriptContext.allowFutureDates){
         var now = new Date();
         if(row.date && row.date.compareTo(now) > 0){
-            EHR.addError(errors, 'date', 'Date is in the future', 'INFO');
+            EHR.Server.Validation.addError(errors, 'date', 'Date is in the future', 'INFO');
         }
     }
 
@@ -507,28 +676,46 @@ EHR.rowInit = function(errors, row, oldRow){
 
     if(row.date){
         //flags dates more than 1 year in the future or 60 in the past
-        EHR.validation.flagSuspiciousDate(row, errors);
+        EHR.Server.Validation.flagSuspiciousDate(row, errors);
 
 //        if(this.scriptContext.extraContext.dataSource != 'etl'){
-//            EHR.validation.verifyDate(row, errors, this.scriptContext)
+//            EHR.Server.Validation.verifyDate(row, errors, this.scriptContext)
 //        }
     }
 };
 
 
-EHR.rowEnd = function(errors, scriptErrors, row, oldRow){
+/**
+ * This performs a set of checks shared by both beforeInsert() and beforeUpdate().  It is run as the final step of each row's validation.  It should not be called directly.
+ * It includes the following:
+ * <br>1. If scriptContext.validateOnly is true, it will add an additional error to force the operation to fail.
+ * <br>2. If will prune any errors from scriptErrors with threshold below that specified in scriptContext.errorThreshold.  This value defaults to 'WARN'.
+ * <br>3.
+ * <br>
+ * <li>If the row has a property called 'id/curlocation/location', this will be populated with the current room/cage of the animal/</li>
+ * <li>Checks whether this ID exists in study.demographics and is currently located at the center.  If not, it will return an error of severity INFO.  However, if this record is a request QCState, the error will be a warning, which prevents submission.</li>
+ * <br>4. If a project is provided and it is not numeric, an error is thrown
+ * <br>5. If an Id, date and project are provided, it checks whether the current animal is assigned to that project on the supplied date.  This is skipped for the assignment table or if scriptContext.quickValidation is true.
+ * <br>6. If Id, Date and room or cage are provided it will verify whether the animal was housed in the specified room/cage at the date provided.  This is skipped for the house & birth tables or if scriptContext.quickValidation is true.
+ *
+ * @param {object} errors The errors object, as passed from LabKey.
+ * @param {object} scriptErrors The errors object used during rowInit()
+ * @param {object} row The row object, as passed from LabKey.
+ * @param {object} oldRow The original row object (prior to update), as passed from LabKey.
+ */
+EHR.Server.Triggers.rowEnd = function(errors, scriptErrors, row, oldRow){
     //use this flag to filters errors below a given severity
     var errorThreshold = this.scriptContext.errorThreshold || 'WARN';
 
     //this flag is to let records be validated, but forces failure of validation
     if(this.extraContext && this.extraContext.validateOnly){
         //console.log('validate only')
-        EHR.addError(scriptErrors, '_validateOnly', 'Ignore this error');
+        EHR.Server.Validation.addError(scriptErrors, '_validateOnly', 'Ignore this error');
     }
 
     //this converts error objects into an array of strings
     //it also separates errors below the specified threshold
-    var totalErrors = EHR.validation.processErrors.call(this, row, errors, scriptErrors, errorThreshold, this.extraContext);
+    var totalErrors = EHR.Server.Validation.processErrors.call(this, row, errors, scriptErrors, errorThreshold, this.extraContext);
 
     if (!totalErrors){
         if(this.setDescription){
@@ -539,7 +726,7 @@ EHR.rowEnd = function(errors, scriptErrors, row, oldRow){
         else
             row.Description = '';
 
-        row.QCState = this.scriptContext.qcMap.label[row.QCStateLabel].RowId || null;
+        row.QCState = EHR.Server.Security.getQCStateByLabel(row.QCStateLabel).RowId || null;
     }
     else {
         row.Description = [];
@@ -549,7 +736,7 @@ EHR.rowEnd = function(errors, scriptErrors, row, oldRow){
             }
         }
         row.Description = row.Description.join(',\n');
-        row.QCState = this.scriptContext.qcMap.label[this.scriptContext.errorQcLabel].RowId || null;
+        row.QCState = EHR.Server.Security.getQCStateByLabel(this.scriptContext.errorQcLabel).RowId || null;
     }
 
     if(this.scriptContext.verbosity > 0)
@@ -564,21 +751,49 @@ EHR.rowEnd = function(errors, scriptErrors, row, oldRow){
 
     if (this.scriptContext.verbosity > 0 )
         console.log("New row: "+row);
+
+    if(row.objectid)
+        console.log('ObjectId Before Event for '+this.extraContext.queryName + ': ' +row.objectid);
+
 };
 
-//NOTE: this is called after a successful insert/update/delete
-//the purpose is primarily for bookkeeping.  these arrays are used to queue changed records.  when lots of records are submitted
-// in theory this allows some events to be moved to the complete function and run once time, making them more efficient
-EHR.afterEvent = function (event, errors, row, oldRow){
+
+/**
+ * This primarily handles bookkeeping necessary to track event between individual rows.  The purpose is to track
+ * a number of values across all the rows in a given action.  In theory this allows certain actions to be batched
+ * and performed once per set of imports, rather than once per record.  This method performs the following:
+ * 1. Normalizes the QCState and/or QCStateLabel (this also happened earlier in the script, but this work would be reset after the event completed)
+ * 2. Adds a reference to the row and oldRow (if present) objects to this.scriptContext.rows
+ * 3. If a function called afterBecomePublic() is defined, it will be called with the following arguments:
+ * <li>errors: An error object that should be used identically to the default errors object.  It is separate from LabKey's error object and handled using EHR.Server.Triggers.processErrors()</li>
+ * <li>scriptContext: A map containing information about the current script session, as well as objects to track participants and requests modified in this script.
+ * <li>row: The row object, as passed by LabKey</li>
+ * <li>oldRow: The original row object (prior to update), as passed by LabKey</li>
+ * 4. If not already present, the value of row.Id will be added to the array this.scriptContext.participantsModified
+ * 5. If the current QCstate is public, and if row.Id is not already present, the value of row.Id will be added to the array this.scriptContext.publicParticipantsModified
+ * 6. If this.extraContext.keyField is defined, row[this.extraContext.keyField] will be appended to the array the array this.scriptContext.PKsModified
+ * 7. If the current QCstate is public, and if this.extraContext.keyField is defined, row[this.extraContext.keyField] will be appended to the array the array this.scriptContext.PublicPKsModified
+ * 8. If row.requestId is defined, the request Id will be added to this.scriptContext.requestsModified
+ * 9. If row.requestId is defined and this request is was denied in this transaction then the requestId is added to the array at this.scriptContext.requestsDenied
+ * 10. If row.requestId is defined and this request is was marked complete in this transaction then the requestId is added to the array at this.scriptContext.requestsCompleted
+ * 11. If row.taskId is defined, then it is added to the array at this.scriptContext.tasksModified
+ * 12. If oldRow is defined, steps 4-8 and 11 are performed using the value from oldRow.
+ * @param {string} event The event, as pased from LabKey
+ * @param {object} errors The errors object, as passed from LabKey.
+ * @param {object} row The row object, as passed from LabKey.
+ * @param {object} oldRow The original row object (prior to update), as passed from LabKey.
+ * */
+EHR.Server.Triggers.afterEvent = function (event, errors, row, oldRow){
     if(this.scriptContext.verbosity > 0)
         console.log('After Event: '+event);
+console.log('ObjectId: '+row.objectid);
 
     //normalize QCState
     if(row.QCState && !row.QCStateLabel){
-        row.QCStateLabel = this.scriptContext.qcMap.rowid[row.QCState].Label
+        row.QCStateLabel = EHR.Server.Security.getQCStateByRowId(row.QCState).Label
     }
     if(oldRow && oldRow.QCState && !oldRow.QCStateLabel){
-        oldRow.QCStateLabel = this.scriptContext.qcMap.rowid[oldRow.QCState].Label
+        oldRow.QCStateLabel = EHR.Server.Security.getQCStateByRowId(oldRow.QCState).Label
     }
 
     this.scriptContext.rows.push({
@@ -594,7 +809,7 @@ EHR.afterEvent = function (event, errors, row, oldRow){
         this.scriptContext.participantsModified.push(row.Id);
 
         //if(row._publicData){
-        if(row.QCStateLabel && this.scriptContext.qcMap.label[row.QCStateLabel].PublicData){
+        if(row.QCStateLabel && EHR.Server.Security.getQCStateByLabel(row.QCStateLabel).PublicData){
             this.scriptContext.publicParticipantsModified.push(row.Id);
         }
     }
@@ -606,7 +821,7 @@ EHR.afterEvent = function (event, errors, row, oldRow){
             this.scriptContext.PKsModified.push(key);
 
             //if(row._publicData)
-            if(row.QCStateLabel && this.scriptContext.qcMap.label[row.QCStateLabel].PublicData)
+            if(row.QCStateLabel && EHR.Server.Security.getQCStateByLabel(row.QCStateLabel).PublicData)
                 this.scriptContext.publicPKsModified.push(key);
         }
     }
@@ -644,7 +859,7 @@ EHR.afterEvent = function (event, errors, row, oldRow){
             this.scriptContext.participantsModified.push(oldRow.Id);
 
             //if(oldRow._publicData)
-            if(oldRow.QCStateLabel && this.scriptContext.qcMap.label[oldRow.QCStateLabel].PublicData)
+            if(oldRow.QCStateLabel && EHR.Server.Security.getQCStateByLabel(oldRow.QCStateLabel).PublicData)
                 this.scriptContext.publicParticipantsModified.push(oldRow.Id);
         }
 
@@ -654,7 +869,7 @@ EHR.afterEvent = function (event, errors, row, oldRow){
                 this.scriptContext.PKsModified.push(key);
 
                 //if(oldRow._publicData)
-                if(oldRow.QCStateLabel && this.scriptContext.qcMap.label[oldRow.QCStateLabel].PublicData)
+                if(oldRow.QCStateLabel && EHR.Server.Security.getQCStateByLabel(oldRow.QCStateLabel).PublicData)
                     this.scriptContext.publicPKsModified.push(key);
             }
         }
@@ -669,350 +884,30 @@ EHR.afterEvent = function (event, errors, row, oldRow){
     }
 };
 
-EHR.onFailure = function(error){
-    console.log('ERROR: '+error.exception);
-    console.log(error);
 
-    EHR.logError(error);
-};
-
-EHR.onDeathDeparture = function(participant, date){
-    //close housing, assignments, treatments
-    closeRecord('Assignment');
-    closeRecord('Housing');
-    closeRecord('Treatment Orders');
-    closeRecord('Problem List');
-
-    function closeRecord(queryName){
-        LABKEY.Query.selectRows({
-            schemaName: 'study',
-            queryName: queryName,
-            columns: 'lsid,Id',
-            scope: this,
-            extraContext: {
-                quickValidation: true
-            },
-            filterArray: [
-                LABKEY.Filter.create('Id', participant, LABKEY.Filter.Types.EQUAL),
-                LABKEY.Filter.create('enddate', '', LABKEY.Filter.Types.ISBLANK)
-            ],
-            success: function(data){
-                if(data && data.rows && data.rows.length){
-                    var toUpdate = [];
-                    //console.log(data.rows.length);
-                    Ext.each(data.rows, function(r){
-                        toUpdate.push({lsid: r.lsid, enddate: date.toGMTString()})
-                    }, this);
-
-                    LABKEY.Query.updateRows({
-                        schemaName: 'study',
-                        queryName: queryName,
-                        rows: toUpdate,
-                        extraContext: {
-                            quickValidation: true
-                        },
-                        scope: this,
-                        failure: EHR.onFailure,
-                        success: function(data){
-                            console.log('Success closing '+queryName+' records: '+toUpdate.length);
-                        }
-                    });
-                }
-            },
-            failure: EHR.onFailure
-        });
-    }
-}
-
-EHR.findDemographics = function(config){
-    if(!config || !config.participant || !config.callback || !config.scope){
-        EHR.logError({
-            msg: 'Error in EHR.findDemographics(): missing Id, scope or callback'
-        });
-        throw 'Error in EHR.findDemographics(): missing Id, scope or callback';
-    }
-    var scriptContext = config.scope.scriptContext || this.scriptContext;
-
-    if(scriptContext.demographicsMap[config.participant] && !config.forceRefresh){
-        config.callback.apply(config.scope || this, [scriptContext.demographicsMap[config.participant]])
-    }
-    else {
-        LABKEY.Query.selectRows({
-            schemaName: 'study',
-            queryName: 'demographics',
-            columns: 'lsid,Id,birth,death,species,dam,calculated_status,sire,id/curlocation/room,id/curlocation/cage',
-            scope: this,
-            filterArray: [LABKEY.Filter.create('Id', config.participant, LABKEY.Filter.Types.EQUAL)],
-            //TODO: probably should explitly name columns?
-            //columns: '*',
-            success: function(data){
-                if(data && data.rows && data.rows.length==1){
-                    var row = data.rows[0];
-                    scriptContext.demographicsMap[row.Id] = row;
-                    config.callback.apply(config.scope || this, [scriptContext.demographicsMap[row.Id]]);
-                }
-                else {
-                    if(scriptContext.missingParticipants.indexOf(config.participant) == -1)
-                        scriptContext.missingParticipants.push(config.participant);
-
-                    config.callback.apply(config.scope || this);
-                }
-            },
-            failure: EHR.onFailure
-        });
-    }
-};
-
-//Note: while the row map is case insensitive, client-side code is not
-//therefore field names should be treated as case sensitive
-EHR.addError = function(errors, field, msg, severity){
-    if(!errors[field])
-        errors[field] = [];
-
-    errors[field].push({
-        message: msg,
-        severity: severity || 'ERROR'
-    });
-};
-
-EHR.logError = function(error){
-    LABKEY.Query.insertRows({
-         //it would be nice to store them in the current folder, but we cant guarantee they have write access..
-         containerPath: '/shared',
-         schemaName: 'auditlog',
-         queryName: 'audit',
-         rows: [{
-            EventType: "Client API Actions",
-            Key1: "Client Error In Validation Script",
-            Comment: error.exception || error.statusText,
-            Date: new Date()
-         }],
-         success: function(){
-             console.log('Error successfully logged')
-         },
-         failure: function(error){
-            console.log('Problem logging error');
-            console.log(error)
-         }
-    });
-};
-
-/*
-config:
-notificationType - string
-recipients - array
-msgSubject - string
-msgContent - string
+/**
+ * This class contains static methods used for server-side validation of incoming data.
+ * @class
  */
-
-
-EHR.sendEmail = function(config){
-    if(!config.recipients)
-        config.recipients = [];
-
-
-    if(config.notificationType){
-        LABKEY.Query.selectRows({
-            schemaName: 'ehr',
-            queryName: 'notificationRecipients',
-            filterArray: [LABKEY.Filter.create('notificationType', config.notificationType, LABKEY.Filter.Types.EQUAL)],
-            success: function(data){
-                for(var i=0;i<data.rows.length;i++){
-                    config.recipients.push(LABKEY.Message.createPrincipalIdRecipient(LABKEY.Message.recipientType.to, data.rows[i].recipient));
-//                    console.log('Recipient: '+data.rows[i].recipient);
-                }
-            },
-            failure: EHR.onFailure
-        });
-    }
-
-    if(config.recipients.length){
-        var siteEmail = config.msgFrom;
-        if(!siteEmail){
-            LABKEY.Query.selectRows({
-                schemaName: 'ehr',
-                queryName: 'module_properties',
-                scope: this,
-                filterArray: [LABKEY.Filter.create('prop_name', 'site_email', LABKEY.Filter.Types.EQUAL)],
-                success: function(data){
-                    if(data && data.rows && data.rows.length){
-                        siteEmail = data.rows[0].stringvalue;
-                    }
-                },
-                failure: EHR.onFailure
-            });
-        }
-
-        if(!siteEmail){
-            console.log('ERROR: site email not found');
-            EHR.logError({msg: 'ERROR: site email not found'});
-        }
-
-        LABKEY.Message.sendMessage({
-            msgFrom: siteEmail,
-            msgSubject: config.msgSubject,
-            msgRecipients: config.recipients,
-            allowUnregisteredUser: true,
-            msgContent: [
-                LABKEY.Message.createMsgContent(LABKEY.Message.msgType.html, config.msgContent)
-            ],
-            success: function(){
-                console.log('Success sending emails');
-            },
-            failure: EHR.onFailure
-        });
-    }
-};
-
-EHR.verifyPermissions = function(event, scriptContext, row, oldRow){
-    //NOTE: this has been moved from init() b/c init() seems to get called during the ETL even
-    //if not importing any records
-    if(!scriptContext.permissionMap){
-        console.log('Verifying permissions for: '+event);
-
-        EHR.Security.init({
-            scope: this,
-            schemaName: scriptContext.extraContext.schemaName,
-            success: function(result){
-                scriptContext.qcMap = result.qcMap;
-                scriptContext.permissionMap = result;
-            }
-        });
-    }
-
-    //first we normalize QCstate
-    if(oldRow){
-        if(oldRow.QCState){
-            if(scriptContext.qcMap.rowid[oldRow.QCState]){
-                oldRow.QCStateLabel = scriptContext.qcMap.rowid[oldRow.QCState].Label;
-            }
-            else
-                console.log('Unknown QCState: '+oldRow.QCState);
-
-            oldRow.QCState = null;
-        }
-        else if (oldRow.QCStateLabel){
-            //nothing needed
-        }
-        else {
-            oldRow.QCStateLabel = 'Completed';
-        }
-    }
-
-    if (row.QCState){
-        if(scriptContext.qcMap.rowid[row.QCState]){
-            row.QCStateLabel = scriptContext.qcMap.rowid[row.QCState].Label;
-        }
-        else
-            console.log('Unknown QCState: '+row.QCState);
-
-        row.QCState = null;
-    }
-    else if (row.QCStateLabel){
-        //nothing needed
-    }
-    else {
-        if(scriptContext.extraContext.validateOnly)
-            row.QCStateLabel = 'In Progress';
-        else {
-            if(oldRow && oldRow.QCStateLabel){
-                    row.QCStateLabel = oldRow.QCStateLabel;
-            }
-            else {
-                //console.log('USING GENERIC QCSTATE: '+scriptContext.queryName);
-                row.QCStateLabel = 'Completed';
-            }
-        }
-    }
-
-    //next we determine whether to use row-level QC or the global target QCState
-    //for now we always prefer the global QC
-    if(scriptContext.extraContext.targetQC){
-        row.QCStateLabel = scriptContext.extraContext.targetQC;
-    }
-
-    //console.log('qcstate: '+row.qcstate+'/'+row.qcstatelabel);
-
-    //handle updates
-    if(event=='update' && oldRow && oldRow.QCStateLabel){
-        //updating a row to a new QC is the same as inserting into that QC state
-        if(row.QCStateLabel != oldRow.QCStateLabel){
-            if(!scriptContext.permissionMap.hasPermission(row.QCStateLabel, 'insert', [{
-                schemaName: scriptContext.extraContext.schemaName,
-                queryName: scriptContext.extraContext.queryName
-            }])){
-                var msg = "The user "+LABKEY.Security.currentUser.id+" does not have insert privledges for the table: "+scriptContext.extraContext.queryName;
-                EHR.logError({msg: msg});
-                console.log(msg);
-                return false;
-            }
-        }
-
-        //the user also needs update permission on the old row's QCstate
-        if(!scriptContext.permissionMap.hasPermission(oldRow.QCStateLabel, 'update', [{
-            schemaName: scriptContext.extraContext.schemaName,
-            queryName: scriptContext.extraContext.queryName
-        }])){
-            var msg = "The user "+LABKEY.Security.currentUser.id+" does not have update privledges for the table: "+scriptContext.extraContext.queryName;
-            EHR.logError({msg: msg});
-            console.log(msg);
-            return false;
-        }
-//        else
-//            console.log('the user has update permissions');
-    }
-    //handle inserts and deletes
-    else {
-        if(row.QCStateLabel){
-            if(!scriptContext.permissionMap.hasPermission(row.QCStateLabel, event, [{
-                schemaName: scriptContext.extraContext.schemaName,
-                queryName: scriptContext.extraContext.queryName
-            }])){
-                var msg = "The user "+LABKEY.Security.currentUser.id+" does not have "+event+" privledges for the table: "+scriptContext.extraContext.queryName;
-                EHR.logError({msg: msg});
-                console.log(msg);
-                return false;
-            }
-//            else
-//                console.log('the user has '+event+' permissions');
-        }
-    }
-
-    //flag public status of rows
-    if(oldRow && oldRow.QCStateLabel && row.QCStateLabel){
-        if(!scriptContext.qcMap.label[oldRow.QCStateLabel].PublicData && scriptContext.qcMap.label[row.QCStateLabel].PublicData)
-            row._becomingPublicData = true;
-    }
-
-    if(row.QCStateLabel){
-        if(scriptContext.qcMap.label[row.QCStateLabel].PublicData){
-            row._publicData = true;
-
-            //a row can be directly inserted as public
-            if(!oldRow)
-                row._becomingPublicData = true;
-        }
-        else {
-            row._publicData = false;
-        }
-
-    }
-
-    if(oldRow && oldRow.QCStateLabel){
-        if(scriptContext.qcMap.label[oldRow.QCStateLabel].PublicData)
-            oldRow._publicData = true;
-    }
-};
-
-EHR.validation = {
+EHR.Server.Validation = {
+    /**
+     * A helper that adds an error if restraint is used, but no time is entered
+     * @param row The row object
+     * @param errors The errors object
+     */
     checkRestraint: function(row, errors){
-//        if(row.restraint && !Ext.isDefined(row.restraintTime)){
-//            EHR.addError(errors, 'restraintTime', 'Must enter time restrained if more than 45 mins', 'INFO');
-//        }
         if(row.restraint && !Ext.isDefined(row.restraintDuration))
-            EHR.addError(errors, 'restraintDuration', 'Must enter time restrained', 'INFO');
+            EHR.Server.Validation.addError(errors, 'restraintDuration', 'Must enter time restrained', 'INFO');
 
     },
+    /**
+     * A helper used to process errors generated internally in EHR.Server.Triggers into the errors object returned to LabKey.  Primarily used internally by rowEnd()
+     * @param row The row object, provided by LabKey
+     * @param errors The errors object, provided by LabKey
+     * @param scriptErrors The errors object passed internally in rowEnd()
+     * @param errorThreshold Any errors below this threshold will be discarded.  Should match a value from EHR.Server.Validation.errorSeverity
+     * @param extraContext The extraContext object provided by LabKey.
+     */
     processErrors: function(row, errors, scriptErrors, errorThreshold, extraContext){
         var error;
         var totalErrors = 0;
@@ -1026,14 +921,14 @@ EHR.validation = {
             for(var j=0;j<scriptErrors[i].length;j++){
                 error = scriptErrors[i][j];
 
-                if (errorThreshold && EHR.validation.errorSeverity[error.severity] <= EHR.validation.errorSeverity[errorThreshold]){
+                if (errorThreshold && EHR.Server.Validation.errorSeverity[error.severity] <= EHR.Server.Validation.errorSeverity[errorThreshold]){
                     //console.log('error below threshold');
-                    if(row._recordId){
-                        if(!extraContext.skippedErrors[row._recordId])
-                            extraContext.skippedErrors[row._recordId] = [];
+                    if(row._recordid){
+                        if(!extraContext.skippedErrors[row._recordid])
+                            extraContext.skippedErrors[row._recordid] = [];
 
                         error.field = i;
-                        extraContext.skippedErrors[row._recordId].push(error);
+                        extraContext.skippedErrors[row._recordid].push(error);
                         //console.log('skipping error')
                     }
                     continue;
@@ -1055,6 +950,10 @@ EHR.validation = {
 
         return totalErrors;
     },
+    /**
+     * Assigns numeric values to error severity strings
+     * @private
+     */
     errorSeverity: {
         DEBUG: 0,
         INFO: 1,
@@ -1062,12 +961,23 @@ EHR.validation = {
         ERROR: 3,
         FATAL: 4
     },
+    /**
+     * A helper that adds an error if an antibiotic sensitivity is provided without the antibiotic name
+     * @param row The row object
+     * @param errors The errors object
+     */
     antibioticSens: function(row, errors){
         if (row.sensitivity && row.antibiotic == null){
             row.antibiotic = 'Unknown';
-            EHR.addError(errors, '_form', 'Row has sensitivity, but no antibiotic', 'WARN');
+            EHR.Server.Validation.addError(errors, '_form', 'Row has sensitivity, but no antibiotic', 'WARN');
         }
     },
+    /**
+     * A helper to remove the time-portion of a datetime field.
+     * @param row The row object
+     * @param errors The errors object
+     * @param fieldname The name of the field from which to remove the time portion
+     */
     removeTimeFromDate: function(row, errors, fieldname){
         fieldname = fieldname || 'date';
         var date = row[fieldname];
@@ -1082,6 +992,11 @@ EHR.validation = {
         }
         row[fieldname] = new Date(date.getFullYear(), date.getMonth(), date.getDate());
     },
+    /**
+     * A helper to return a display string based on a SNOMED code.  It will normally display the meaning of the code, followed by the code in parenthesis.
+     * @param code The SNOMED code
+     * @param meaning The meaning.  This is optional and will be queried if not present.  However, if the incoming row has the meaning, this saves overhead.
+     */
     snomedToString: function (code, meaning){
         if(!meaning){
             LABKEY.Query.selectRows({
@@ -1095,18 +1010,24 @@ EHR.validation = {
                         meaning = data.rows[0].meaning;
                     }
                 },
-                failure: EHR.onFailure
+                failure: EHR.Server.Utils.onFailure
             });
         }
 
         return meaning ? meaning+(code ? ' ('+code+')' : '') : (code ? code : '');
     },
+    /**
+     * A helper that will verify the ID format of an animal ID based on known regular expressions
+     * @param row The row object
+     * @param errors The errors object
+     * @param scriptContext The scriptContext object.  See rowInit()
+     */
     verifyIdFormat: function(row, errors, scriptContext){
         if(row.Id){
-            var species = EHR.validation.getSpecies(row, errors);
+            var species = EHR.Server.Validation.getSpecies(row, errors);
 
             if(species == 'Unknown'){
-                EHR.addError(errors, 'Id', 'Invalid Id Format', 'INFO');
+                EHR.Server.Validation.addError(errors, 'Id', 'Invalid Id Format', 'INFO');
             }
             else if (species == 'Infant') {
                 species = null;
@@ -1115,28 +1036,48 @@ EHR.validation = {
             row.species = row.species || species;
         }
     },
+    /**
+     * A helper to convert a date object into a display string.  By default is will use YYYY-mm-dd.
+     * @param date The date to convert
+     * @returns {string} The display string for this date or an empty string if unable to convert
+     */
     dateToString: function (date){
         //TODO: do better once more date functions added
         if(date){
             date = new Date(date.toGMTString());
-            return (date.getFullYear() ? date.getFullYear()+'-'+EHR.validation.padDigits(date.getMonth()+1, 2)+'-'+EHR.validation.padDigits(date.getDate(), 2) : '');
+            return (date.getFullYear() ? date.getFullYear()+'-'+EHR.Server.Validation.padDigits(date.getMonth()+1, 2)+'-'+EHR.Server.Validation.padDigits(date.getDate(), 2) : '');
         }
         else
             return '';
     },
+    /**
+     * A helper to convert a datetime object into a display string.  By default is will use YYYY-mm-dd H:m.
+     * @param date The date to convert
+     * @returns {string} The display string for this date or an empty string if unable to convert
+     */
     dateTimeToString: function (date){
         if(date){
             date = new Date(date.toGMTString());
-            return date.getFullYear()+'-'+EHR.validation.padDigits(date.getMonth()+1, 2)+'-'+EHR.validation.padDigits(date.getDate(), 2) + ' '+EHR.validation.padDigits(date.getHours(),2)+':'+EHR.validation.padDigits(date.getMinutes(),2);
+            return date.getFullYear()+'-'+EHR.Server.Validation.padDigits(date.getMonth()+1, 2)+'-'+EHR.Server.Validation.padDigits(date.getDate(), 2) + ' '+EHR.Server.Validation.padDigits(date.getHours(),2)+':'+EHR.Server.Validation.padDigits(date.getMinutes(),2);
         }
         else
             return '';
     },
+    /**
+     * Converts an input value into a display string.  Used to generate description fields when the input value could potentially be null.
+     * @param value The value to convert
+     * @returns {string} The string value or an empty string
+     */
     nullToString: function(value){
             return (value ? value : '');
     },
-    padDigits: function(n, totalDigits)
-    {
+    /**
+     * A utility that will take an input value and pad with left-hand zeros until the string is of the desired length
+     * @param {number} n The input number
+     * @param {integer} totalDigits The desired length of the string.  The input will be padded with zeros until it reaches this length
+     * @returns {number} The padded number
+     */
+    padDigits: function(n, totalDigits){
         n = n.toString();
         var pd = '';
         if (totalDigits > n.length){
@@ -1146,6 +1087,13 @@ EHR.validation = {
         }
         return pd + n;
     },
+    /**
+     * A helper that will find the next available necropsy or biopsy case number, based on the desired year and type of procedure.
+     * @param row The labkey row object
+     * @param errors The errors object
+     * @param table The queryName (Necropies or Biopsies) to search
+     * @param procedureType The single character identifier for the type of procedure.  At time of writing, these were b, c or n.
+     */
     calculateCaseno: function(row, errors, table, procedureType){
         var year = row.date.getYear()+1900;
         LABKEY.Query.executeSql({
@@ -1156,14 +1104,20 @@ EHR.validation = {
                 if(data && data.rows && data.rows.length==1){
                     var caseno = data.rows[0].caseno || 1;
                     caseno++;
-                    caseno = EHR.validation.padDigits(caseno, 3);
+                    caseno = EHR.Server.Validation.padDigits(caseno, 3);
                     row.caseno = year + procedureType + caseno;
                 }
             },
-            failure: EHR.onFailure
+            failure: EHR.Server.Utils.onFailure
         });
 
     },
+    /**
+     * A helper that will verify whether the caseno on the provided row is unique in the given table.
+     * @param context The scriptContext object (see rowInit()).  This is used to identify the queryName.
+     * @param row The row object, provided by LabKey
+     * @param errors The errors object, provided by LabKey
+     */
     verifyCasenoIsUnique: function(context, row, errors){
         //find any existing rows with the same caseno
         var filterArray = [
@@ -1179,12 +1133,18 @@ EHR.validation = {
             scope: this,
             success: function(data){
                 if(data && data.rows && data.rows.length){
-                    EHR.addError(errors, 'caseno', 'One or more records already uses the caseno: '+row.caseno, 'INFO');
+                    EHR.Server.Validation.addError(errors, 'caseno', 'One or more records already uses the caseno: '+row.caseno, 'INFO');
                 }
             },
-            failure: EHR.onFailure
+            failure: EHR.Server.Utils.onFailure
         });
     },
+    /**
+     * A helper that will flag a date if it is in the future (unless the QCState allows them) or if it is a QCState of 'Scheduled' and has a date in the past.
+     * @param row The row object, provided by LabKey
+     * @param errors The errors object, provided by LabKey
+     * @param scriptContext The scriptContext object created in rowInit()
+     */
     verifyDate: function(row, errors, scriptContext){
         if(!row.date)
             return;
@@ -1198,14 +1158,19 @@ EHR.validation = {
         var cal2 = new java.util.GregorianCalendar();
         cal2.setTime(row.Date);
 
-        if(!scriptContext.extraContext.validateOnly && cal2.after(cal1) && !scriptContext.qcMap.label[row.QCStateLabel]['metadata/allowFutureDates']){
-            EHR.addError(errors, 'date', 'Date is in future', 'ERROR');
+        if(!scriptContext.extraContext.validateOnly && cal2.after(cal1) && !EHR.Server.Security.getQCStateByLabel(row.QCStateLabel)['metadata/allowFutureDates']){
+            EHR.Server.Validation.addError(errors, 'date', 'Date is in future', 'ERROR');
         }
 
         if(!cal1.after(cal2) && row.QCStateLabel == 'Scheduled'){
-            EHR.addError(errors, 'date', 'Date is in past, but is scheduled', 'ERROR');
+            EHR.Server.Validation.addError(errors, 'date', 'Date is in past, but is scheduled', 'ERROR');
         }
     },
+    /**
+     * A helper that will flag any dates more than 1 year in the future or 60 days in the past.
+     * @param row The row object, provided by LabKey
+     * @param errors The errors object, provided by LabKey
+     */
     flagSuspiciousDate: function(row, errors){
         if(!row.date)
             return;
@@ -1221,14 +1186,19 @@ EHR.validation = {
         cal2.setTime(row.Date);
 
         if(cal2.after(cal1)){
-            EHR.addError(errors, 'date', 'Date is more than 1 year in future: '+row.Date, 'WARN');
+            EHR.Server.Validation.addError(errors, 'date', 'Date is more than 1 year in future: '+row.Date, 'WARN');
         }
 
         cal1.add(java.util.Calendar.YEAR, -61);
         if(cal1.after(cal2)){
-            EHR.addError(errors, 'date', 'Date is more than 60 days in past: '+row.Date, 'WARN');
+            EHR.Server.Validation.addError(errors, 'date', 'Date is more than 60 days in past: '+row.Date, 'WARN');
         }
     },
+    /**
+     * A helper that will infer the species based on regular expression patterns and the animal ID
+     * @param row The row object, provided by LabKey
+     * @param errors The errors object, provided by LabKey
+     */
     getSpecies: function(row, errors){
         var species;
         if (row.Id.match(/(^rh([0-9]{4})$)|(^r([0-9]{5})$)|(^rh-([0-9]{3})$)|(^rh[a-z]{2}([0-9]{2})$)/))
@@ -1267,6 +1237,12 @@ EHR.validation = {
 
         return species;
     },
+    /**
+     * A helper that will verify that the ID located in the specified field is female.
+     * @param row The row object, provided by LabKey
+     * @param errors The errors object, provided by LabKey
+     * @param targetField The field containing the ID string to verify.
+     */
     verifyIsFemale: function(row, errors, targetField){
         LABKEY.Query.selectRows({
             schemaName: 'study',
@@ -1278,12 +1254,22 @@ EHR.validation = {
             success: function(data){
                 if(data && data.rows && data.rows.length){
                     if(data.rows[0]['gender/origGender'] && data.rows[0]['gender/origGender'] != 'f')
-                        EHR.addError(errors, (targetField || 'Id'), 'This animal is not female', 'ERROR');
+                        EHR.Server.Validation.addError(errors, (targetField || 'Id'), 'This animal is not female', 'ERROR');
                 }
             },
-            failure: EHR.onFailure
+            failure: EHR.Server.Utils.onFailure
         });
     },
+    /**
+     * This is a helper designed to recalculate and update the value for calculatedStatus in study.demographics.  The value of this
+     * field depends on the birth, death, arrivals and departures.  It is stored as a quick method to identify which animals are currently
+     * alive and at the center.  Because animals can arrive or depart multiple times in their lives, this is more difficult than you might think.
+     * Because a given transaction could have more than 1 row modified, we cache a list of modified participants and only run this once during
+     * the complete() handler.
+     * @param publicParticipantsModified The array of public (based on QCState) participants that were modified during this transaction.
+     * @param demographicsRow If called from the demographics query, we pass the current row.  This is because selectRows() will run as a separate transaction and would not pick up changes made during this transaction.
+     * @param valuesMap If the current query is death, arrival, departure or birth, the values updated in this transaction will not appear for the calls to selectRows() (this is run in a separate transaction i believe).  Therefore we provide a mechanism for these scripts to pass in the values of their current row, which will be used instead.
+     */
     updateStatusField: function(publicParticipantsModified, demographicsRow, valuesMap){
         var toUpdate = [];
         var demographics = {};
@@ -1315,7 +1301,7 @@ EHR.validation = {
                         demographics[r.Id].arrival = new Date(r.MostRecentArrival);
                 }, this);
             },
-            failure: EHR.onFailure
+            failure: EHR.Server.Utils.onFailure
         });
 
         LABKEY.Query.executeSql({
@@ -1333,7 +1319,7 @@ EHR.validation = {
                         demographics[r.Id].departure = new Date(r.MostRecentDeparture);
                 }, this);
             },
-            failure: EHR.onFailure
+            failure: EHR.Server.Utils.onFailure
         });
 
         LABKEY.Query.executeSql({
@@ -1356,7 +1342,7 @@ EHR.validation = {
                     demographics[r.Id].calculated_status = r.calculated_status;
                 }, this);
             },
-            failure: EHR.onFailure
+            failure: EHR.Server.Utils.onFailure
         });
 
         //NOTE: the ETL acts by deleting / inserting.
@@ -1382,7 +1368,7 @@ EHR.validation = {
                            demographics[r.Id].birth = new Date(r.date);
                 }, this);
             },
-            failure: EHR.onFailure
+            failure: EHR.Server.Utils.onFailure
         });
         LABKEY.Query.executeSql({
             schemaName: 'study',
@@ -1404,7 +1390,7 @@ EHR.validation = {
                         demographics[r.Id].death = new Date(r.date);
                 }, this);
             },
-            failure: EHR.onFailure
+            failure: EHR.Server.Utils.onFailure
         });
 
         Ext.each(publicParticipantsModified, function(id){
@@ -1482,12 +1468,201 @@ EHR.validation = {
                 success: function(data){
                     console.log('Success updating demographics status field');
                 },
-                failure: EHR.onFailure
+                failure: EHR.Server.Utils.onFailure
+            });
+        }
+    },
+    /**
+     * A helper that will return and cache the row in study.demographics for the provided animal.  These rows are stored in scriptContext.demographicsMap,
+     * so subsequent calls do not need to hit the server.
+     * @param config The configuration object
+     * @param [config.participant] The participant (aka animal ID) to return
+     * @param [config.callback] The success callback function
+     * @param [config.scope] The scope to use for the callback
+     * @param [config.scriptContext] The scriptContext object created in rowInit()
+     */
+    findDemographics: function(config){
+        if(!config || !config.participant || !config.callback || !config.scope){
+            EHR.Server.Utils.onFailure({
+                msg: 'Error in EHR.Server.Validation.findDemographics(): missing Id, scope or callback'
+            });
+            throw 'Error in EHR.Server.Validation.findDemographics(): missing Id, scope or callback';
+        }
+        var scriptContext = config.scriptContext || config.scope.scriptContext;
+
+        if(!scriptContext){
+            throw "Error in EHR.Server.Validation.findDemographics(): No scriptContext provided";
+        }
+
+        if(scriptContext.demographicsMap[config.participant] && !config.forceRefresh){
+            config.callback.apply(config.scope || this, [scriptContext.demographicsMap[config.participant]])
+        }
+        else {
+            LABKEY.Query.selectRows({
+                schemaName: 'study',
+                queryName: 'demographics',
+                columns: 'lsid,Id,birth,death,species,dam,calculated_status,sire,id/curlocation/room,id/curlocation/cage',
+                scope: this,
+                filterArray: [LABKEY.Filter.create('Id', config.participant, LABKEY.Filter.Types.EQUAL)],
+                success: function(data){
+                    if(data && data.rows && data.rows.length==1){
+                        var row = data.rows[0];
+                        scriptContext.demographicsMap[row.Id] = row;
+                        config.callback.apply(config.scope || this, [scriptContext.demographicsMap[row.Id]]);
+                    }
+                    else {
+                        if(scriptContext.missingParticipants.indexOf(config.participant) == -1)
+                            scriptContext.missingParticipants.push(config.participant);
+
+                        config.callback.apply(config.scope || this);
+                    }
+                },
+                failure: EHR.Server.Utils.onFailure
+            });
+        }
+    },
+    /**
+     * A helper designed to simplify appending errors to the error object.  You should exclusively use this to append errors rather than interacting with the error object directly.
+     * @param {object} errors The errors object.  In most cases, this is the scriptErrors object passed internally within rowInit(), not the labkey-provided errors object.
+     * @param {string}field The name of the field for which to add the error.  Treat as case-sensitive, because client-side code will be case-sensitive.
+     * @param {string} msg The message associated with this error
+     * @param {string} severity The error severity.  Should match a value from EHR.Server.Validation.errorSeverities.
+     */
+    addError: function(errors, field, msg, severity){
+        if(!errors[field])
+            errors[field] = [];
+
+        errors[field].push({
+            message: msg,
+            severity: severity || 'ERROR'
+        });
+    },
+    /**
+     * When an animal dies or leaves the center, this will close any open records (ie. the death/depart time inserted into the enddate field) for any records in assignment, housing, problem list and treatment orders.
+     * @param participant The Id of the participant
+     * @param date The date of the event.
+     */
+    onDeathDeparture: function(participant, date){
+        //close housing, assignments, treatments
+        closeRecord('Assignment');
+        closeRecord('Housing');
+        closeRecord('Treatment Orders');
+        closeRecord('Problem List');
+
+        function closeRecord(queryName){
+            LABKEY.Query.selectRows({
+                schemaName: 'study',
+                queryName: queryName,
+                columns: 'lsid,Id',
+                scope: this,
+                extraContext: {
+                    quickValidation: true
+                },
+                filterArray: [
+                    LABKEY.Filter.create('Id', participant, LABKEY.Filter.Types.EQUAL),
+                    LABKEY.Filter.create('enddate', '', LABKEY.Filter.Types.ISBLANK)
+                ],
+                success: function(data){
+                    if(data && data.rows && data.rows.length){
+                        var toUpdate = [];
+                        //console.log(data.rows.length);
+                        Ext.each(data.rows, function(r){
+                            toUpdate.push({lsid: r.lsid, enddate: date.toGMTString()})
+                        }, this);
+
+                        LABKEY.Query.updateRows({
+                            schemaName: 'study',
+                            queryName: queryName,
+                            rows: toUpdate,
+                            extraContext: {
+                                quickValidation: true
+                            },
+                            scope: this,
+                            failure: EHR.Server.Utils.onFailure,
+                            success: function(data){
+                                console.log('Success closing '+queryName+' records: '+toUpdate.length);
+                            }
+                        });
+                    }
+                },
+                failure: EHR.Server.Utils.onFailure
+            });
+        }
+    },
+    /**
+     * A helper for sending emails from validation scripts that wraps LABKEY.Message.  The primary purpose is that this allows emails to be sent based on EHR notification types (see ehr.notificationtypes table).  Any emails should use this helper.
+     * @param config The configuration object
+     * {Array} [config.recipients] An array of recipient object to receive this email.  The should have been created using LABKEY.Message.createRecipient() or LABKEY.Message.createPrincipalIdRecipient()
+     * {String} [config.notificationType] The notificationType to use, which should match a record in ehr.notificationtypes.  If provided, any users/groups 'subscribed' to this notification type (ie. containing a record in ehr.notificationrecipients for this notification type) will receive this email.
+     * {String} [config.msgFrom] The email address from which to send this message
+     * {String} [config.msgSubject] The subject line of the email
+     * {String} [config.msgContent] The content for the body of this email
+     */
+    sendEmail: function(config){
+        if(!config.recipients)
+            config.recipients = [];
+
+        if(config.notificationType){
+            LABKEY.Query.selectRows({
+                schemaName: 'ehr',
+                queryName: 'notificationRecipients',
+                filterArray: [LABKEY.Filter.create('notificationType', config.notificationType, LABKEY.Filter.Types.EQUAL)],
+                success: function(data){
+                    for(var i=0;i<data.rows.length;i++){
+                        config.recipients.push(LABKEY.Message.createPrincipalIdRecipient(LABKEY.Message.recipientType.to, data.rows[i].recipient));
+//                    console.log('Recipient: '+data.rows[i].recipient);
+                    }
+                },
+                failure: EHR.Server.Utils.onFailure
+            });
+        }
+
+        if(config.recipients.length){
+            var siteEmail = config.msgFrom;
+            if(!siteEmail){
+                LABKEY.Query.selectRows({
+                    schemaName: 'ehr',
+                    queryName: 'module_properties',
+                    scope: this,
+                    filterArray: [LABKEY.Filter.create('prop_name', 'site_email', LABKEY.Filter.Types.EQUAL)],
+                    success: function(data){
+                        if(data && data.rows && data.rows.length){
+                            siteEmail = data.rows[0].stringvalue;
+                        }
+                    },
+                    failure: EHR.Server.Utils.onFailure
+                });
+            }
+
+            if(!siteEmail){
+                console.log('ERROR: site email not found');
+                EHR.Server.Validation.logError({msg: 'ERROR: site email not found'});
+            }
+
+            LABKEY.Message.sendMessage({
+                msgFrom: siteEmail,
+                msgSubject: config.msgSubject,
+                msgRecipients: config.recipients,
+                allowUnregisteredUser: true,
+                msgContent: [
+                    LABKEY.Message.createMsgContent(LABKEY.Message.msgType.html, config.msgContent)
+                ],
+                success: function(){
+                    console.log('Success sending emails');
+                },
+                failure: EHR.Server.Utils.onFailure
             });
         }
     }
 };
 
+
+
+/**
+ * @depreciated
+ * This was originally used to transform data being imported from the legacy mySQL system.
+ * It should be written out of the validation script at some point.
+ */
 EHR.ETL = {
     fixRow: function(row, errors){
         //inserts a date if missing
@@ -1515,7 +1690,7 @@ EHR.ETL = {
 
         //i think the ETL can return project as a string
         if (row.project && !/^\d*$/.test(row.project)){
-            EHR.addError(errors, 'project', 'Bad Project#: '+row.project, 'ERROR');
+            EHR.Server.Validation.addError(errors, 'project', 'Bad Project#: '+row.project, 'ERROR');
             row.project = null;
             //row.QCStateLabel = errorQC;
         }
@@ -1523,7 +1698,7 @@ EHR.ETL = {
     fixParticipantId: function (row, errors){
         if (row.hasOwnProperty('Id') && !row.Id){
             row.id = 'MISSING';
-            EHR.addError(errors, 'Id', 'Missing Id', 'ERROR');
+            EHR.Server.Validation.addError(errors, 'Id', 'Missing Id', 'ERROR');
         }
     },
     addDate: function (row, errors){
@@ -1531,7 +1706,7 @@ EHR.ETL = {
             //row will fail unless we add something in this field
             row.date = new java.util.Date();
 
-            EHR.addError(errors, 'date', 'Missing Date', 'ERROR');
+            EHR.Server.Validation.addError(errors, 'date', 'Missing Date', 'ERROR');
         }
     },
     fixPathCaseNo: function(row, errors, code){
@@ -1540,7 +1715,7 @@ EHR.ETL = {
 
         var match = row.caseno.match(re);
         if (!match){
-            EHR.addError(errors, 'caseno', 'Error in CaseNo: '+row.caseno, 'WARN');
+            EHR.Server.Validation.addError(errors, 'caseno', 'Error in CaseNo: '+row.caseno, 'WARN');
             //row.QCStateLabel = errorQC;
         }
         else {
@@ -1555,7 +1730,7 @@ EHR.ETL = {
                 //these values are ok
             }
             else {
-                EHR.addError(errors, 'caseno', 'Unsure how to correct year in CaseNo: '+match[1], 'WARN');
+                EHR.Server.Validation.addError(errors, 'caseno', 'Unsure how to correct year in CaseNo: '+match[1], 'WARN');
                 //row.QCStateLabel = errorQC;
             }
 
@@ -1578,7 +1753,7 @@ EHR.ETL = {
             //we need to manually split these into multiple rows
 
             if (row.stringResults.match(/,/) && row.stringResults.match(/[0-9]/)){
-                EHR.addError(errors, 'result', 'Problem with result: ' + row.stringResults, 'WARN');
+                EHR.Server.Validation.addError(errors, 'result', 'Problem with result: ' + row.stringResults, 'WARN');
                 row.stringResults = null;
                 //row.QCStateLabel = errorQC;
             }
@@ -1632,7 +1807,7 @@ EHR.ETL = {
             //we need to manually split these into multiple rows
             if (row[fieldName].match(/,/)){
                 row[fieldName] = null;
-                EHR.addError(errors, fieldName, 'Problem with quantity: ' + row[fieldName], 'WARN');
+                EHR.Server.Validation.addError(errors, fieldName, 'Problem with quantity: ' + row[fieldName], 'WARN');
                 //row.QCStateLabel = errorQC;
             }
             else {
@@ -1672,7 +1847,7 @@ EHR.ETL = {
 //        var re = /([0-9]+)(a|c)([0-9]+)/i;
 //        var match = row.caseno.match(re);
 //        if (!match){
-//            EHR.addError(errors, 'caseno', 'Malformed CaseNo: '+row.caseno, 'WARN');
+//            EHR.Server.Validation.addError(errors, 'caseno', 'Malformed CaseNo: '+row.caseno, 'WARN');
 //        }
 //        else {
 //            //fix the year
@@ -1687,7 +1862,7 @@ EHR.ETL = {
 //                //these values are ok
 //            }
 //            else {
-//                EHR.addError(errors, 'caseno', 'Unsure how to correct year in CaseNo: '+match[1], 'WARN');
+//                EHR.Server.Validation.addError(errors, 'caseno', 'Unsure how to correct year in CaseNo: '+match[1], 'WARN');
 //            }
 //
 //            //standardize number to 3 digits
@@ -1781,222 +1956,4 @@ EHR.ETL = {
 };
 
 
-EHR.utils = {};
-EHR.Security = {};
 
-EHR.utils.findPrincipalName = function(id){
-    if(!EHR.utils.principalMap)
-        EHR.utils.principalMap = {};
-
-    if(EHR.utils.principalMap[id])
-        return EHR.utils.principalMap[id];
-
-    LABKEY.Query.selectRows({
-        schemaName: 'core',
-        queryName: 'principals',
-        columns: 'UserId,Name',
-        filterArray: [
-            LABKEY.Filter.create('UserId', id, LABKEY.Filter.Types.EQUAL)
-        ],
-        scope: this,
-        success: function(data){
-            if(data.rows && data.rows.length)
-                EHR.utils.principalMap[id] = data.rows[0].Name;
-        },
-        failure: EHR.onFailure
-    });
-
-    return EHR.utils.principalMap[id] || '';
-};
-
-EHR.Security.getQCStateMap = function(config){
-    if(!config || !config.success){
-        throw "Must provide a success callback";
-    }
-
-    LABKEY.Query.selectRows({
-        schemaName: 'study',
-        queryName: 'qcState',
-        columns: 'RowId,Label,Description,Description,PublicData,metadata/draftData,metadata/isDeleted,metadata/isRequest,metadata/allowFutureDates',
-        success: function(data){
-            var qcmap = {
-                label: {},
-                rowid: {}
-            };
-
-            var row;
-            if(data.rows && data.rows.length){
-                for (var i=0;i<data.rows.length;i++){
-                    row = data.rows[i];
-
-                    var prefix = 'org.labkey.ehr.security.EHR'+(row.Label).replace(/[^a-zA-Z0-9-]/g, '');
-                    row.adminPermissionName = prefix+'AdminPermission';
-                    row.insertPermissionName = prefix+'InsertPermission';
-                    row.updatePermissionName = prefix+'UpdatePermission';
-                    row.deletePermissionName = prefix+'DeletePermission';
-                    qcmap.label[row.Label] = row;
-                    qcmap.rowid[row.RowId] = row;
-                }
-            }
-            config.success.apply(config.scope || this, [qcmap]);
-        },
-        failure: EHR.onFailure
-    });
-
-};
-
-EHR.utils.isEmptyObj = function(ob){
-   for(var i in ob){ return false;}
-   return true;
-};
-
-EHR.Security.init = function(config) {
-    if(!config || !config.success){
-        throw "Must provide a success callback";
-    }
-
-    var schemaName = 'study';
-
-    var schemaMap;
-    var qcMap;
-
-    EHR.Security.getQCStateMap({
-        scope: this,
-        success: function(results){
-            qcMap = results;
-        },
-        failure: EHR.onFailure
-    });
-    //TODO: eventually accept other schemas
-    LABKEY.Security.getSchemaPermissions({
-        schemaName: 'study',
-        scope: this,
-        success: function(map){
-            schemaMap = map;
-        },
-        failure: function(error){
-            console.log(error)
-        }
-    });
-
-    function onSuccess(){
-        for (var qcState in qcMap.label){
-            var qcRow = qcMap.label[qcState];
-            qcRow.permissionsByQuery = {
-                admin: [],
-                insert: [],
-                update: [],
-                'delete': []
-            };
-            qcRow.effectivePermissions = {};
-
-            if(schemaMap.schemas[schemaName] && schemaMap.schemas[schemaName].queries){
-                var queryCount = 0;
-                for(var queryName in schemaMap.schemas[schemaName].queries){
-                    var query = schemaMap.schemas[schemaName].queries[queryName];
-                    queryCount++;
-                    query.permissionsByQCState = query.permissionsByQCState || {};
-                    query.permissionsByQCState[qcState] = {};
-
-                    //iterate over each permission this user has on this query
-                    Ext.each(query.effectivePermissions, function(p){
-                        if(p == qcRow.adminPermissionName){
-                            qcRow.permissionsByQuery.admin.push(queryName);
-                            query.permissionsByQCState[qcState].admin = true;
-                        }
-                        if(p == qcRow.insertPermissionName){
-                            qcRow.permissionsByQuery.insert.push(queryName);
-                            query.permissionsByQCState[qcState].insert = true;
-                        }
-                        if(p == qcRow.updatePermissionName){
-                            qcRow.permissionsByQuery.update.push(queryName);
-                            query.permissionsByQCState[qcState].update = true;
-                        }
-                        if(p == qcRow.deletePermissionName){
-                            qcRow.permissionsByQuery['delete'].push(queryName);
-                            query.permissionsByQCState[qcState]['delete'] = true;
-                        }
-                    }, this);
-                }
-            }
-
-            qcRow.effectivePermissions.admin = (qcRow.permissionsByQuery.admin.length == queryCount);
-            qcRow.effectivePermissions.insert = (qcRow.permissionsByQuery.insert.length == queryCount);
-            qcRow.effectivePermissions.update = (qcRow.permissionsByQuery.update.length == queryCount);
-            qcRow.effectivePermissions['delete'] = (qcRow.permissionsByQuery['delete'].length == queryCount);
-        }
-
-        function hasPermission(qcStateLabel, permission, queries){
-            if(!qcStateLabel || !permission)
-                throw "Must provide a QC State label and permission name";
-
-            if(queries && !Ext.isArray(queries))
-                queries = [queries];
-
-            //if schemaName not supplied, we return based on all queries
-            if(!queries.length){
-                throw 'Must provide an array of query objects'
-            }
-
-            var result = true;
-            Ext.each(queries, function(query){
-                //if this schema isnt present, it's not securable, so we allow anything
-                if(!schemaMap.schemas[query.schemaName])
-                    return true;
-
-                if(!schemaMap.schemas[query.schemaName].queries[query.queryName] ||
-                   !schemaMap.schemas[query.schemaName].queries[query.queryName].permissionsByQCState[qcStateLabel] ||
-                   !schemaMap.schemas[query.schemaName].queries[query.queryName].permissionsByQCState[qcStateLabel][permission]
-                ){
-                    result = false;
-                }
-            }, this);
-
-            return result;
-        }
-
-        function getQueryPermissions(schemaName, queryName){
-            if(!schemaMap.schemas[schemaName] ||
-               !schemaMap.schemas[schemaName].queries[queryName] ||
-               !schemaMap.schemas[schemaName].queries[queryName].permissionsByQCState
-            )
-                return {};
-
-            return schemaMap.schemas[schemaName].queries[queryName].permissionsByQCState;
-        }
-
-        config.success.apply(config.scope || this, [{
-            qcMap: qcMap,
-            schemaMap: schemaMap,
-            hasPermission: hasPermission,
-            getQueryPermissions: getQueryPermissions
-        }]);
-    }
-
-    onSuccess();
-};
-
-//generic error handler
-EHR.utils.onError = function(error){
-    console.log('ERROR: ' + error.exception);
-    console.log(error);
-    EHR.logError(error);
-};
-
-//Return new array with duplicate values removed
-Array.prototype.unique = function()
-{
-    var a = [];
-    var l = this.length;
-    for (var i = 0; i < l; i++)
-    {
-        for (var j = i + 1; j < l; j++)
-        {
-            // If this[i] is found later in the array
-            if (this[i] === this[j])
-                j = ++i;
-        }
-        a.push(this[i]);
-    }
-    return a;
-};

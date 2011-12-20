@@ -34,7 +34,7 @@ Ext.onReady(function ()
         filters: [LABKEY.Filter.create('protocol', protocol, LABKEY.Filter.Types.EQUAL)],
         //sort: '-Date',
         scope: this,
-        failure: EHR.utils.onError
+        failure: EHR.Utils.onError
      }).render('protocolProjects');
 
     new LABKEY.QueryWebPart({
@@ -53,7 +53,7 @@ Ext.onReady(function ()
         //viewName: 'Active Assignments',
         sort: '-Date',
         scope: this,
-        failure: EHR.utils.onError
+        failure: EHR.Utils.onError
      }).render('protocolAssignments');
 
 
@@ -73,7 +73,7 @@ Ext.onReady(function ()
         //viewName: '',
         //sort: '-Date',
         scope: this,
-        failure: EHR.utils.onError
+        failure: EHR.Utils.onError
      }).render('protocolTotalAnimalsBySpecies');
 
 
@@ -92,7 +92,7 @@ Ext.onReady(function ()
         //viewName: '',
         //sort: '-Date',
         scope: this,
-        failure: EHR.utils.onError
+        failure: EHR.Utils.onError
      }).render('protocolTotalHistoricAnimalsBySpecies');
 
     new Ext.Panel({
@@ -153,7 +153,7 @@ Ext.onReady(function ()
     }).render('protocolLinks');
 
 
-//    EHR.utils.isMemberOf(['vets (LDAP)', 'cpi (LDAP)', 'protocol (LDAP)', 'Site Administrators'], loadPdf);
+//    EHR.Utils.isMemberOf(['vets (LDAP)', 'cpi (LDAP)', 'protocol (LDAP)', 'Site Administrators'], loadPdf);
 //
     var pdfContainer = '/WNPRC/WNPRC_Units/Animal_Services/Compliance_Training/Private/Protocol_PDFs';
 
@@ -173,7 +173,7 @@ Ext.onReady(function ()
         //viewName: '',
         //sort: '-Date',
         scope: this,
-        failure: EHR.utils.onError
+        failure: EHR.Utils.onError
      }).render('protocolProcedures');
 
 
@@ -196,7 +196,7 @@ Ext.onReady(function ()
                 buttonBarPosition: 'none',
                 filters: [LABKEY.Filter.create('protocol', protocol, LABKEY.Filter.Types.EQUAL)],
                 scope: this,
-                failure: EHR.utils.onError
+                failure: EHR.Utils.onError
              }).render('protocolPdf');
         },
         failure: function(e){

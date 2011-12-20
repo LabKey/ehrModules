@@ -46,7 +46,7 @@ function deleteAll(schemaName, queryName, pk){
                             document.getElementById('_init_ehr_success').innerHTML = 'Delete Complete';
                         }
                     },
-                    failure: EHR.utils.onError
+                    failure: EHR.Utils.onError
                 });
             }
             else {
@@ -57,7 +57,7 @@ function deleteAll(schemaName, queryName, pk){
                 }
             }
         },
-        failure: EHR.utils.onError
+        failure: EHR.Utils.onError
     });
 }
 
@@ -7742,6 +7742,7 @@ function onError(result){
     pendingInserts--;
 
     console.log('Error Loading Data: '+result.queryName);
+    console.log(result);
 
     if(pendingInserts==0){
         Ext.get('_init_ehr_success').update('Populate Complete');
@@ -7818,18 +7819,18 @@ var panel = new Ext.Panel({
         handler: function(){
             deleteAll('ehr', 'reports', 'rowid')
         }
-//    },{
-//        xtype: 'button',
-//        text: 'Populate SNOMED Subset Codes Table',
-//        scope: this,
-//        handler: btn5
-//    },{
-//        xtype: 'button',
-//        text: 'Delete Data From SNOMED Subset Codes',
-//        scope: this,
-//        handler: function(){
-//            deleteAll('ehr_lookups', 'snomed_subset_codes', 'rowid')
-//        }
+    },{
+        xtype: 'button',
+        text: 'Populate SNOMED Subset Codes Table',
+        scope: this,
+        handler: btn5
+    },{
+        xtype: 'button',
+        text: 'Delete Data From SNOMED Subset Codes',
+        scope: this,
+        handler: function(){
+            deleteAll('ehr_lookups', 'snomed_subset_codes', 'rowid')
+        }
     },{
         xtype: 'button',
         text: 'Populate SNOMED Subsets Table',

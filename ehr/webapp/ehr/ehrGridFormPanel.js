@@ -1006,7 +1006,7 @@ EHR.ext.GridFormPanel = Ext.extend(Ext.Panel,
 
                 this.selectorWin.show();
 
-//                this.store.data.sort('ASC', EHR.utils.sortStore([
+//                this.store.data.sort('ASC', EHR.Utils.sortStore([
 //                    {term: 'slideNum'},
 //                    {term: 'tissue', storeId: 'ehr_lookups||snomed||code||meaning', displayField: 'meaning', valueField: 'code'},
 //                    {term: 'qualifier'}

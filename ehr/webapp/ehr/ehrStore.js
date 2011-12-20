@@ -71,7 +71,7 @@ EHR.ext.AdvancedStore = Ext.extend(LABKEY.ext.Store, {
         if(this.monitorPermissions){
             EHR.Security.init({
                 success: Ext.emptyFn,
-                failure: EHR.utils.onError,
+                failure: EHR.Utils.onError,
                 scope: this
             });
             this.on('update', this.verifyPermission, this);
@@ -132,12 +132,12 @@ EHR.ext.AdvancedStore = Ext.extend(LABKEY.ext.Store, {
             //NOTE: perhaps move to this.fieldDefaults?
             if(this.metadata){
                 if(this.metadata['fieldDefaults']){
-                    EHR.utils.rApply(f, this.metadata['fieldDefaults']);
+                    EHR.Utils.rApply(f, this.metadata['fieldDefaults']);
                 }
 
                 //allow more complex metadata, per field
                 if(this.metadata[f.name]){
-                    EHR.utils.rApply(f, this.metadata[f.name]);
+                    EHR.Utils.rApply(f, this.metadata[f.name]);
                 }
             }
         }, this);
@@ -146,7 +146,7 @@ EHR.ext.AdvancedStore = Ext.extend(LABKEY.ext.Store, {
             var colModel = this.reader.jsonData.columnModel;
             Ext.each(colModel, function(col){
                 if(this.colModel[col.dataIndex]){
-                    EHR.utils.rApply(col, this.colModel[col.dataIndex]);
+                    EHR.Utils.rApply(col, this.colModel[col.dataIndex]);
                 }
             }, this);
         }
@@ -305,7 +305,7 @@ EHR.ext.AdvancedStore = Ext.extend(LABKEY.ext.Store, {
     maxErrorSeverity: function(){
         var maxSeverity;
         this.errors.each(function(e){
-            maxSeverity = EHR.utils.maxError(maxSeverity, e.severity);
+            maxSeverity = EHR.Utils.maxError(maxSeverity, e.severity);
         }, this);
 
         return maxSeverity;
@@ -683,7 +683,7 @@ EHR.ext.AdvancedStore = Ext.extend(LABKEY.ext.Store, {
     //NOTE: we append the value of the key field to the record
     getRowData : function(record) {
         var values = EHR.ext.AdvancedStore.superclass.getRowData.apply(this, arguments);
-        values._recordId = record.id;
+        values._recordid = record.id;
         return values;
     },
 
@@ -722,17 +722,18 @@ EHR.ext.AdvancedStore = Ext.extend(LABKEY.ext.Store, {
             var serverError = this.getJson(response);
             var msg = '';
             if(serverError && serverError.errors){
-                Ext.each(serverError.errors, function(error){
+                //each error should represent 1 row.  there can be multiple errors per row
+                Ext.each(serverError.errors, function(rowError){
                     //handle validation script errors and exceptions differently
-                    if(error.errors && error.errors.length){
-                        this.handleValidationErrors(error, response, serverError.extraContext);
+                    if(rowError.errors && rowError.errors.length && rowError.row){
+                        this.handleValidationErrors(rowError, response, serverError.extraContext);
                         msg = "Could not save changes due to errors. Please check the form for fields marked in red.";
                     }
-//                    else {
-//                        //if an exception was thrown, I believe we automatically only have one error returned
-//                        //this means this can only be called once
-//                        msg = 'Could not save changes due to the following error:\n' + (serverError && serverError.exception) ? serverError.exception : response.statusText;
-//                    }
+                    else {
+                        //if an exception was thrown, I believe we automatically only have one error returned
+                        //this means this can only be called once
+                        msg = 'Could not save changes due to the following error:\n' + (serverError && serverError.exception) ? serverError.exception : response.statusText;
+                    }
                 }, this);
 
                 if(!serverError.errors){
@@ -748,7 +749,7 @@ EHR.ext.AdvancedStore = Ext.extend(LABKEY.ext.Store, {
 
     //private
     handleValidationErrors: function(serverError, response, extraContext){
-        var record = this.getById(serverError.row._recordId);
+        var record = this.getById(serverError.row._recordid);
         if(record){
             this.handleValidationError(record, serverError, response, extraContext);
         }

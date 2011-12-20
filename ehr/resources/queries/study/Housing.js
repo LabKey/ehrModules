@@ -20,14 +20,14 @@ function onUpsert(context, errors, row, oldRow){
                     row['id/numroommates/cagemates'] = (data.rows[0].num ? ('('+data.rows[0].num+') ') + data.rows[0].Ids.join(',') : ' ');
                 }
             },
-            failure: EHR.onFailure
+            failure: EHR.Server.Utils.onFailure
         });
 
     }
 
     if(context.extraContext.dataSource != 'etl'){
         if(row.cond && row.cond.match(/x/) && !row.remark){
-            EHR.addError(errors, 'cond', 'If you pick a special housing condition (x), you need to enter a remark stating the type');
+            EHR.Server.Validation.addError(errors, 'cond', 'If you pick a special housing condition (x), you need to enter a remark stating the type');
         }
     }
 }
@@ -59,8 +59,9 @@ function onComplete(event, errors, scriptContext){
 //                        }
 //
 //                        totalIds[row.Id] = 1;
-//                        EHR.findDemographics({
+//                        EHR.Server.Validation.findDemographics({
 //                            participant: row.Id,
+//                            scriptContext: scriptContext,
 //                            forceRefresh: true,
 //                            scope: this,
 //                            callback: function(data){
@@ -74,14 +75,15 @@ function onComplete(event, errors, scriptContext){
 //                    }
 //                }
 //            },
-//            failure: EHR.onFailure
+//            failure: EHR.Server.Utils.onFailure
 //        });
 //
 //        if(toUpdate.length != scriptContext.publicParticipantsModified.length){
 //            Ext.each(scriptContext.publicParticipantsModified, function(p){
 //                if(idsFound.indexOf(p) == -1){
-//                    EHR.findDemographics({
+//                    EHR.Server.Validation.findDemographics({
 //                        participant: p,
+//                        scriptContext: scriptContext,
 //                        forceRefresh: true,
 //                        scope: this,
 //                        callback: function(data){
@@ -106,7 +108,7 @@ function onComplete(event, errors, scriptContext){
 //                success: function(data){
 //                    console.log('Success updating ActiveHousing')
 //                },
-//                failure: EHR.onFailure
+//                failure: EHR.Server.Utils.onFailure
 //            });
 //        }
 //        throw 'error';
@@ -142,7 +144,7 @@ function onBecomePublic(errors, scriptContext, row, oldRow){
 
                         //if there's an existing public active housing record
                         if(Date.parse(row.date.toGMTString()) < Date.parse(r.date)){
-                            EHR.addError(errors, 'Id', 'You cannot enter an open ended housing while there is another record starting on: '+r.date);
+                            EHR.Server.Validation.addError(errors, 'Id', 'You cannot enter an open ended housing while there is another record starting on: '+r.date);
                             toUpdate = [];
                             return false;
                         }
@@ -150,7 +152,7 @@ function onBecomePublic(errors, scriptContext, row, oldRow){
 
                 }
             },
-            failure: EHR.onFailure
+            failure: EHR.Server.Utils.onFailure
         });
 
         if(toUpdate.length){
@@ -164,7 +166,7 @@ function onBecomePublic(errors, scriptContext, row, oldRow){
                 success: function(data){
                     console.log('Success deactivating old housing records')
                 },
-                failure: EHR.onFailure
+                failure: EHR.Server.Utils.onFailure
             });
         }
 
@@ -183,7 +185,7 @@ function setDescription(row, errors){
         description.push('Condition: '+ row.cond);
 
     description.push('In Time: '+ row.Date);
-    description.push('Out Time: '+ EHR.validation.nullToString(row.enddate));
+    description.push('Out Time: '+ EHR.Server.Validation.nullToString(row.enddate));
 
     return description;
 }

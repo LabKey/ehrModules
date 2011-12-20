@@ -47,7 +47,7 @@ Ext.onReady(function ()
             filterArray: filterArray,
             timeout: 0,
             scope: this,
-            failure: EHR.utils.onError
+            failure: EHR.Utils.onError
          }).render('runDetails');
 
         var resultDiv = Ext.get('resultDivs');
@@ -77,7 +77,7 @@ Ext.onReady(function ()
                 timeout: 0,
                 filterArray: filterArray,
                 scope: this,
-                failure: EHR.utils.onError
+                failure: EHR.Utils.onError
              }).render(target.id);
         }, this);
     }

@@ -9,7 +9,7 @@ var {EHR, LABKEY, Ext, console, init, beforeInsert, afterInsert, beforeUpdate, a
 
 function onUpsert(context, errors, row, oldRow){
     if(context.extraContext.dataSource != 'etl')
-        EHR.validation.removeTimeFromDate(row, errors);
+        EHR.Server.Validation.removeTimeFromDate(row, errors);
 }
 
 

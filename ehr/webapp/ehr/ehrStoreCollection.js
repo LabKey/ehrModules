@@ -233,7 +233,7 @@ EHR.ext.StoreCollection = Ext.extend(Ext.util.MixedCollection, {
         //check all stores
         var maxSeverity = '';
         this.each(function(store){
-            maxSeverity = EHR.utils.maxError(maxSeverity, store.maxErrorSeverity());
+            maxSeverity = EHR.Utils.maxError(maxSeverity, store.maxErrorSeverity());
         }, this);
 
         this.fireEvent('validation', this, maxSeverity);
@@ -261,17 +261,18 @@ EHR.ext.StoreCollection = Ext.extend(Ext.util.MixedCollection, {
             var serverError = this.getJson(response);
             var msg = '';
             if(serverError && serverError.errors){
-                Ext.each(serverError.errors, function(error){
+                //each error should represent 1 row.  there can be multiple errors per row
+                Ext.each(serverError.errors, function(rowError){
                     //handle validation script errors and exceptions differently
-                    if(error.errors && error.errors.length){
-                        this.handleValidationErrors(error, response, serverError.extraContext);
-                        msg = error.exception || "Could not save changes due to errors.  Please check the form for fields marked in red.";
+                    if(rowError.errors && rowError.errors.length && rowError.row){
+                        this.handleValidationErrors(rowError, response, serverError.extraContext);
+                        msg = rowError.exception || "Could not save changes due to errors.  Please check the form for fields marked in red.";
                     }
-//                    else {
-//                        //if an exception was thrown, I believe we automatically only have one error returned
-//                        //this means this can only be called once
-//                        msg = 'Could not save changes due to the following error:\n' + (serverError && serverError.exception) ? serverError.exception : response.statusText;
-//                    }
+                    else {
+                        //if an exception was thrown, I believe we automatically only have one error returned
+                        //this means this can only be called once
+                        msg = 'Could not save changes due to the following error:\n' + (serverError && serverError.exception) ? serverError.exception : response.statusText;
+                    }
                 }, this);
 
                 if(!serverError.errors){
@@ -289,7 +290,7 @@ EHR.ext.StoreCollection = Ext.extend(Ext.util.MixedCollection, {
     //private
     handleValidationErrors: function(serverError, response, extraContext){
         var store = this.get(extraContext.storeId);
-        var record = store.getById(serverError.row._recordId);
+        var record = store.getById(serverError.row._recordid);
         if(record){
             store.handleValidationError(record, serverError, response, extraContext);
         }

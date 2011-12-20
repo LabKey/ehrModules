@@ -9,7 +9,7 @@ var {EHR, LABKEY, Ext, console, init, beforeInsert, afterInsert, beforeUpdate, a
 
 function onUpsert(context, errors, row, oldRow){
     if(!row.observation && !row.remark){
-        EHR.addError(errors, 'remark', 'Must enter observation or remark', 'WARN');
+        EHR.Server.Validation.addError(errors, 'remark', 'Must enter observation or remark', 'WARN');
     }
 }
 

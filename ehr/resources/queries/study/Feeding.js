@@ -19,10 +19,10 @@ function setDescription(row, errors){
     var description = new Array();
 
     if(row.type)
-        description.push('Type: ' + EHR.validation.nullToString(row.type));
+        description.push('Type: ' + EHR.Server.Validation.nullToString(row.type));
 
     if(row.amount)
-        description.push('Amount: ' + EHR.validation.nullToString(row.amount));
+        description.push('Amount: ' + EHR.Server.Validation.nullToString(row.amount));
 
     return description;
 }

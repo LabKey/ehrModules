@@ -49,7 +49,7 @@ function onBecomePublic(errors, scriptContext, row, oldRow){
                             rowObj.priority = r.priority;
                         }
                     },
-                    failure: EHR.onFailure
+                    failure: EHR.Server.Utils.onFailure
                 });
             }
 
@@ -63,7 +63,7 @@ function onBecomePublic(errors, scriptContext, row, oldRow){
                 success: function(data){
                     console.log('Success creating request for blood tests')
                 },
-                failure: EHR.onFailure
+                failure: EHR.Server.Utils.onFailure
             });
 
             var rows = [];
@@ -85,7 +85,7 @@ function onBecomePublic(errors, scriptContext, row, oldRow){
                     success: function(data){
                         console.log('Success requesting clinpath tests!')
                     },
-                    failure: EHR.onFailure
+                    failure: EHR.Server.Utils.onFailure
                 });
             }
         }
@@ -108,13 +108,13 @@ function onUpsert(context, errors, row, oldRow){
 
     //overdraws are handled differently for requests vs actual draws
     var errorQC;
-    if(context.qcMap.label[row.QCStateLabel]['metadata/isRequest'] && !row.taskid)
+    if(EHR.Server.Security.getQCStateByLabel(row.QCStateLabel)['metadata/isRequest'] && !row.taskid)
         errorQC = 'ERROR';
     else
         errorQC = 'INFO';
 
     if(row.quantity===0){
-        EHR.addError(errors, 'quantity', 'This field is required', 'WARN');
+        EHR.Server.Validation.addError(errors, 'quantity', 'This field is required', 'WARN');
     }
 
     if(context.extraContext.dataSource != 'etl'){
@@ -126,12 +126,12 @@ function onUpsert(context, errors, row, oldRow){
 
         if(row.quantity && row.tube_vol){
             if(row.quantity != (row.num_tubes * row.tube_vol)){
-                EHR.addError(errors, 'quantity', 'Quantity does not match tube vol / # tubes', 'INFO');
-                EHR.addError(errors, 'num_tubes', 'Quantity does not match tube vol / # tubes', 'INFO');
+                EHR.Server.Validation.addError(errors, 'quantity', 'Quantity does not match tube vol / # tubes', 'INFO');
+                EHR.Server.Validation.addError(errors, 'num_tubes', 'Quantity does not match tube vol / # tubes', 'INFO');
             }
         }
 
-        EHR.validation.checkRestraint(row, errors);
+        EHR.Server.Validation.checkRestraint(row, errors);
 
         if(row.Id && row.date && row.quantity){
             var minDate = new Date(row.date.toGMTString());
@@ -146,7 +146,7 @@ function onUpsert(context, errors, row, oldRow){
 
             var sql = "SELECT b.lsid, coalesce(b.id, d.id) as id, b.quantity, d.MostRecentWeight FROM (SELECT b.lsid, b.id, b.quantity " +
                 "FROM study.\"Blood Draws\" b " +
-                "WHERE b.id='"+row.Id+"' AND b.date >= '"+EHR.validation.dateToString(minDate)+"' AND b.date <= '"+EHR.validation.dateToString(row.date) +"' " +
+                "WHERE b.id='"+row.Id+"' AND cast(b.date as date) >= '"+EHR.Server.Validation.dateToString(minDate)+"' AND cast(b.date as date) <= '"+EHR.Server.Validation.dateToString(row.date) +"' " +
                 "AND (b.qcstate.publicdata = true OR b.qcstate.metadata.DraftData = true) ) b ";
 
             sql +=
@@ -182,7 +182,7 @@ function onUpsert(context, errors, row, oldRow){
                         console.log('no rows found.  blood draws.js line 204');
                     }
                 },
-                failure: EHR.onFailure
+                failure: EHR.Server.Utils.onFailure
             });
 
             //test within this transaction
@@ -198,10 +198,10 @@ function onUpsert(context, errors, row, oldRow){
             }
             bloodLast30 += bloodInThisTransaction;
             availBlood = Math.round(availBlood*Math.pow(10,2))/Math.pow(10,2);
-
-            if(availBlood > 0 && (availBlood - bloodLast30 - row.quantity) < 0){
-               EHR.addError(errors, 'num_tubes', 'Blood in this form exceeds allowable. Max allowable is '+availBlood+' mL', errorQC);
-               EHR.addError(errors, 'quantity', 'Blood in this form exceeds allowable. Max allowable is '+availBlood+' mL', errorQC);
+            var effectiveBlood = availBlood - bloodLast30;
+            if(availBlood > 0 && (effectiveBlood - row.quantity) < 0){
+               EHR.Server.Validation.addError(errors, 'num_tubes', 'Blood in this form exceeds allowable. Max allowable is '+effectiveBlood+' mL', errorQC);
+               EHR.Server.Validation.addError(errors, 'quantity', 'Blood in this form exceeds allowable. Max allowable is '+effectiveBlood+' mL', errorQC);
                checkFutureRecords = false;
             }
 
@@ -216,7 +216,7 @@ function onUpsert(context, errors, row, oldRow){
 
                 var sql = "SELECT b.lsid, coalesce(b.id, d.id) as id, b.quantity, d.MostRecentWeight FROM (SELECT b.lsid, b.id, b.quantity " +
                     "FROM study.\"Blood Draws\" b " +
-                    "WHERE b.id='"+row.Id+"' AND cast(b.date as date) >= '"+EHR.validation.dateToString(row.date) +"' AND cast(b.date as date) <= '"+EHR.validation.dateToString(maxDate)+"' " +
+                    "WHERE b.id='"+row.Id+"' AND cast(b.date as date) >= '"+EHR.Server.Validation.dateToString(row.date) +"' AND cast(b.date as date) <= '"+EHR.Server.Validation.dateToString(maxDate)+"' " +
                     "AND (b.qcstate.publicdata = true OR b.qcstate.metadata.DraftData = true) ) b ";
 
                 sql +=
@@ -248,7 +248,7 @@ function onUpsert(context, errors, row, oldRow){
                             console.log('no rows found.  blood draws.js line 246');
                         }
                     },
-                    failure: EHR.onFailure
+                    failure: EHR.Server.Utils.onFailure
                 });
 
                 //test within this transaction
@@ -264,9 +264,10 @@ function onUpsert(context, errors, row, oldRow){
                 }
                 bloodNext30 += bloodInThisTransaction;
                 availBlood = Math.round(availBlood*Math.pow(10,2))/Math.pow(10,2);
-                if(availBlood > 0 && (availBlood - bloodNext30 - row.quantity) < 0){
-                   EHR.addError(errors, 'num_tubes', 'Blood in this form conflicts with future draws. Max allowable: '+availBlood+' mL', errorQC);
-                   EHR.addError(errors, 'quantity', 'Blood in this form conflicts with future draws. Max allowable: '+availBlood+' mL', errorQC);
+                var effectiveBlood = availBlood - bloodNext30;
+                if(availBlood > 0 && (effectiveBlood - row.quantity) < 0){
+                   EHR.Server.Validation.addError(errors, 'num_tubes', 'Blood in this form conflicts with future draws. Max allowable: '+effectiveBlood+' mL', errorQC);
+                   EHR.Server.Validation.addError(errors, 'quantity', 'Blood in this form conflicts with future draws. Max allowable: '+effectiveBlood+' mL', errorQC);
                 }
             }
         }
