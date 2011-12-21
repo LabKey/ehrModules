@@ -228,11 +228,17 @@ EHR.ext.AdvancedStore = Ext.extend(LABKEY.ext.Store, {
         }, this);
     },
 
-    //private
+    /**
+     * @memberOf EHR.ext.AdvancedStore#
+     * @name newRecord
+     * @description This method creates a new record to add to this store.  It exists (as opposed to using "new this.recordType()") such
+     * that fields with an initial value generator function (see EHR.Metadata.FieldMetadata.setInitialValue()).  Records created
+     * for this store should use this method.  At a future point, it might be worth investigating whether this.recordType could be
+     * overridden instead.
+     * @param {object} data The initial values to use for this record
+     */
     //TODO: would be better to just override this.recordType
-    //the primary purpose of this method is to improve handling of default values and allow a setInitialValue() function
-    //holding off on improving until I see ext 4
-    newRecord: function(data, dirty){
+    newRecord: function(data){
         var rec;
         if(data instanceof Ext.data.Record)
             rec = data;
@@ -432,8 +438,10 @@ EHR.ext.AdvancedStore = Ext.extend(LABKEY.ext.Store, {
     },
 
     /**
-     * This is a convenience wrapper for EHR.ext.metaHelper.getFormEditorConfig()
-     * @param {string] fieldName The name of the field
+     * @memberOf EHR.ext.AdvancedStore#
+     * @name getFormEditorConfig
+     * @description This is a convenience wrapper for EHR.ext.metaHelper.getFormEditorConfig().
+     * @param {string} fieldName The name of the field
      * @param {object} config Optional.  This config object will be merged with the output of getFormEditorConfig()
      */
     getFormEditorConfig: function(fieldName, config){
@@ -442,8 +450,10 @@ EHR.ext.AdvancedStore = Ext.extend(LABKEY.ext.Store, {
     },
 
     /**
-     * This is a convenience wrapper for EHR.ext.metaHelper.getGridEditorConfig()
-     * @param {string] fieldName The name of the field
+     * @memberOf EHR.ext.AdvancedStore#
+     * @name getGridEditorConfig
+     * @description This is a convenience wrapper for EHR.ext.metaHelper.getGridEditorConfig().
+     * @param {string} fieldName The name of the field
      * @param {object} config Optional.  This config object will be merged with the output of getGridEditorConfig()
      */
     getGridEditorConfig: function(fieldName, config){
@@ -460,7 +470,7 @@ EHR.ext.AdvancedStore = Ext.extend(LABKEY.ext.Store, {
         return recs;
     },
 
-    //NOTE: removed unwanted checking contained in LABKEY store
+    //NOTE: returns true to remove unwanted checking contained in LABKEY store
     readyForSave: function(){
         return true;
     },

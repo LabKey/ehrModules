@@ -751,10 +751,6 @@ EHR.Server.Triggers.rowEnd = function(errors, scriptErrors, row, oldRow){
 
     if (this.scriptContext.verbosity > 0 )
         console.log("New row: "+row);
-
-    if(row.objectid)
-        console.log('ObjectId Before Event for '+this.extraContext.queryName + ': ' +row.objectid);
-
 };
 
 
@@ -786,7 +782,6 @@ EHR.Server.Triggers.rowEnd = function(errors, scriptErrors, row, oldRow){
 EHR.Server.Triggers.afterEvent = function (event, errors, row, oldRow){
     if(this.scriptContext.verbosity > 0)
         console.log('After Event: '+event);
-console.log('ObjectId: '+row.objectid);
 
     //normalize QCState
     if(row.QCState && !row.QCStateLabel){
