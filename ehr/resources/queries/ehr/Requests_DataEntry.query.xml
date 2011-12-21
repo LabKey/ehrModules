@@ -101,7 +101,7 @@
                 </columns>
                 <buttonBarOptions includeStandardButtons="false">
                     <!--<includeScript>/ehr/studyButtons.js</includeScript>-->
-                    <!--<onRender>moreActionsHandler</onRender>-->
+                    <!--<onRender>EHR.DatasetButtons.moreActionsHandler</onRender>-->
                     <!--<item text="Create New">-->
                         <!--<originalText>Insert New</originalText>-->
                     <!--</item>-->

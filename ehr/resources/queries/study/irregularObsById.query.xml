@@ -60,7 +60,7 @@
                 </columns>
                 <buttonBarOptions position="both" includeStandardButtons="false">
                     <includeScript>/ehr/studyButtons.js</includeScript>
-                    <onRender>moreActionsHandler</onRender>
+                    <onRender>EHR.DatasetButtons.moreActionsHandler</onRender>
                     <item text="Views">
                         <originalText>Views</originalText>
                     </item>
@@ -91,18 +91,18 @@
                     <item text="More Actions" insertPosition="end" >
                         <item text="Jump To History">
                             <onClick>
-                                historyHandler(dataRegion, dataRegionName);
+                                EHR.DatasetButtons.historyHandler(dataRegion, dataRegionName);
                             </onClick>
                             <!--<target>javascript:void(0)</target>-->
                         </item>
                         <item text="Jump To Other Dataset">
                             <onClick>
-                                datasetHandler(dataRegion, dataRegionName);
+                                EHR.DatasetButtons.datasetHandler(dataRegion, dataRegionName);
                             </onClick>
                         </item>
                         <item text="Return Distinct Values">
                             <onClick>
-                                getDistinct(dataRegion, dataRegionName);
+                                EHR.DatasetButtons.getDistinctHandler(dataRegion, dataRegionName);
                             </onClick>
                         </item>
                     </item>
