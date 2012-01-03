@@ -628,8 +628,7 @@ EHR.ext.SingleAnimalReport = Ext.extend(Ext.Panel, {
 
         LABKEY.Query.selectRows({
             schemaName: 'study',
-            queryName: 'assignment',
-            viewName: 'Active Assignments',
+            queryName: 'ActiveAssignments',
             containerPath: 'WNPRC/EHR/',
             sort: 'Id',
             filterArray: filters,
