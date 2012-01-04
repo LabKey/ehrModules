@@ -19,6 +19,7 @@ Ext.onReady(function (){
                     //{name: 'ETL Duration', url: '<%=contextPath%>/query<%=containerPath%>/executeQuery.view?schemaName=core&query.queryName=Sync Duration'},
                     //{name: 'ETL History', url: '<%=contextPath%>/query<%=containerPath%>/executeQuery.view?schemaName=core&query.queryName=Sync History'},
                     {name: 'Gems Backups', url: '<%=contextPath%>/project<%=containerPath%>/Backups/Gems Backups/begin.view?'},
+                    {name: 'Junit Tests', url: '<%=contextPath%>/junit/begin.view?'},
                     {name: 'Manage EHR Study', url: '<%=contextPath%>/study<%=containerPath%>/manageStudy.view?'},
                     {name: 'Populate Initial Data', url: '<%=contextPath%>/EHR<%=containerPath%>/_initEHR.view?'}
                     //{name: 'Reload Study', url: '<%=contextPath%>/pipeline<%=containerPath%>/begin.view?'},
@@ -37,6 +38,7 @@ Ext.onReady(function (){
                 items: [
                     {name: 'All Logs', url: '<%=contextPath%>/project<%=containerPath%>/Logs/begin.view?'},
                     {name: 'Labkey.log', url: '<%=contextPath%>/files<%=containerPath%>/Logs/%40filesets/Tomcat%20Logs/labkey.log'},
+                    {name: 'Labkey-errors.log', url: '<%=contextPath%>/files<%=containerPath%>/Logs/%40filesets/Tomcat%20Logs/labkey-errors.log'},
                     {name: 'ETL Log', url: '<%=contextPath%>/files<%=containerPath%>/Logs/%40filesets/Tomcat%20Logs/ehr-etl.log'},
                     {name: 'ETL Errors Log', url: '<%=contextPath%>/files<%=containerPath%>/Logs/%40filesets/Tomcat%20Logs/ehr-etl-errors.log'},
                     {name: 'ActiveMQ.log', url: '<%=contextPath%>/files<%=containerPath%>/Logs/%40filesets/ActiveMQ/activemq.log'},
