@@ -10,12 +10,49 @@ var {EHR, LABKEY, Ext, console, init, beforeInsert, afterInsert, beforeUpdate, a
 function onBecomePublic(errors, scriptContext, row, oldRow){
     if(scriptContext.extraContext.dataSource != 'etl' && row.additionalServices){
         //we auto-create a clinpath request if a test is newly added, assuming it comes from a request
-        var tests = row.additionalServices.split(',');
+        var rts = row.additionalServices.split(';');
+        var tests = [];
+        var idx = 0;
+        //Scrub the string of requested tests for PCR-SRV,1,2,3,4,5
+        for (var i = 0; i < rts.length; i++) {
+        	if ((rts[i] != "2") && (rts[i] != "3") && (rts[i] != "4") && (rts[i] != "5")) 
+        	{
+        		   if (rts[i] == "PCR - SRV 1") {
+        			   tests[idx++] = "PCR - SRV 1,2,3,4,5";
+        		   } else {
+        			   tests[idx++] = rts[i]; 
+        		   }
+        	}
+        	
+        }
 
-        //request CBC / Vet-19
-        if(tests.indexOf('CBC')!=-1 || tests.indexOf('CBC with Differential')!=-1 ||
-            tests.indexOf('Vet-19')!=-1 || tests.indexOf('Vet-19 Chem Panel')!=-1
-        ){
+        var toAutomaticallyCreate = [];
+        LABKEY.Query.selectRows({
+        	schemaName: 'ehr_lookups',
+        	queryName: 'blood_draw_services',
+        	success: function(data) {
+        		if (data.rows && data.rows.length){
+        			var rowBDS;
+        			var k  = 0;
+        			for (i = 0; i < tests.length; i++) {
+        				for (var j = 0; j < data.rows.length; j++) {
+        				   rowBDS = data.rows[j];
+        				   
+        				   if (rowBDS.service == tests[i]) {
+        				   	  if (rowBDS.automaticrequestfromblooddraw.valueOf() ) {  
+        				   	  	toAutomaticallyCreate[k++] = tests[i];
+        				   	  }
+   				   	          break;
+        				   }
+        				}
+        			}
+        		}
+        	},
+        	failure: EHR.Server.Utils.onFailure
+        });
+        
+        if (toAutomaticallyCreate.length > 0)
+		{
             //first create the request
             var requestId = LABKEY.Utils.generateUUID();
             var dateRequested = new Date();
@@ -61,20 +98,35 @@ function onBecomePublic(errors, scriptContext, row, oldRow){
                 },
                 rows: [rowObj],
                 success: function(data){
-                    console.log('Success creating request for blood tests')
+                    console.log('Success creating request from blood draw');
                 },
                 failure: EHR.Server.Utils.onFailure
             });
 
             var rows = [];
-            if(tests.indexOf('CBC')!=-1 || tests.indexOf('CBC with Differential')!=-1)
-                rows.push({Id: row.Id, date: dateRequested, project: row.project, account: row.account, requestId: requestId, sampletype: 'Blood - EDTA Whole Blood', collectedBy: row.performedby, serviceRequested: 'CBC with Differential', type: 'Hematology', QCStateLabel: 'Request: Pending'});
-
-            //request Vet19
-            if(tests.indexOf('Vet-19')!=-1 || tests.indexOf('Vet-19 Chem Panel')!=-1)
-                rows.push({Id: row.Id, date: dateRequested, project: row.project, account: row.account, requestId: requestId, sampletype: 'Blood - EDTA Whole Blood', collectedBy: row.performedby, serviceRequested: 'Vet-19 Chem Panel', type: 'Chemistry', QCStateLabel: 'Request: Pending'});
-
-            if(rows.length){
+            LABKEY.Query.selectRows({
+             	schemaName: 'ehr_lookups',
+             	queryName: 'clinpath_tests',
+             	success: function(data){
+             		if (data.rows && data.rows.length){
+             			var cpt;
+             		    //Cycle through the toAutomaticallyCreate items to create clinpath tests
+             			for (var i = 0; i < toAutomaticallyCreate.length; i++) {
+             			  for (var j = 0; j < data.rows.length; j++) {
+             			  	cpt = data.rows[j];
+             			  	if (cpt.testname == toAutomaticallyCreate[i]) {
+             			  		console.log("creating clinPath test = " + cpt.testname);
+             			  		rows.push({Id: row.Id, date: dateRequested, project: row.project, account: row.account, requestId: requestId, sampletype: 'Blood - EDTA Whole Blood', collectedBy: row.performedby, serviceRequested: cpt.testname, type: cpt.dataset, QCStateLabel: 'Request: Pending'});
+             			  		break;
+             			  	}
+             			  }
+             			}
+             		}
+             	},
+             	failure: EHR.Server.Utils.onFailure
+             });
+            
+             if(rows.length){
                 LABKEY.Query.insertRows({
                     schemaName: 'study',
                     queryName: 'Clinpath Runs',

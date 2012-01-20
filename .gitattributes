@@ -39,8 +39,8 @@ EHR_ComplianceDB/queries/ehr_compliancedb/sopdates.query.xml -text
 EHR_ComplianceDB/queries/ehr_compliancedb/unit_names.js -text
 EHR_ComplianceDB/queries/lists/SOP_PDFs.query.xml -text
 EHR_ComplianceDB/queries/lists/SOP_PDFs.sql -text
-EHR_ComplianceDB/schemas/dbscripts/postgresql/EHR_ComplianceDB-00.00-11.10.sql -text
-EHR_ComplianceDB/schemas/dbscripts/sqlserver/EHR_ComplianceDB-00.00-11.10.sql -text
+EHR_ComplianceDB/schemas/dbscripts/postgresql/EHR_ComplianceDB-00.00-11.14.sql -text
+EHR_ComplianceDB/schemas/dbscripts/sqlserver/EHR_ComplianceDB-00.00-11.14.sql -text
 EHR_ComplianceDB/schemas/ehr_compliancedb.xml -text
 EHR_ComplianceDB/scripts/ehr_compliancedb/updateTable.js -text
 EHR_ComplianceDB/views/Guest_SOP_submission.html -text
@@ -808,6 +808,8 @@ ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-11.29-11.291.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-11.291-11.292.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-11.292-11.293.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-11.30-11.31.sql -text
+ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-11.30-11.32.sql -text
+ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-11.31-11.32.sql -text
 ehr/resources/schemas/dbscripts/postgresql/obsolete/EHR-11.10-11.101.sql -text
 ehr/resources/schemas/dbscripts/postgresql/obsolete/EHR-11.101-11.102.sql -text
 ehr/resources/schemas/dbscripts/postgresql/obsolete/EHR-11.102-11.105.sql -text

@@ -501,6 +501,11 @@ exports.complete = EHR.Server.Triggers.complete;
  * @param {object} errors The errors object, as passed from LabKey.
  */
 EHR.Server.Triggers.rowInit = function(errors, row, oldRow){
+    if(this.scriptContext.verbosity > 0){
+        console.log('rowInit');
+        console.log(row);
+    }
+
     //empty strings can do funny things, so we make them null
     for (var i in row){
         if (row[i] === ''){
@@ -682,6 +687,11 @@ EHR.Server.Triggers.rowInit = function(errors, row, oldRow){
 //            EHR.Server.Validation.verifyDate(row, errors, this.scriptContext)
 //        }
     }
+
+    if(this.scriptContext.verbosity > 0){
+        console.log('rowInit end:');
+        console.log(row);
+    }
 };
 
 
@@ -704,6 +714,11 @@ EHR.Server.Triggers.rowInit = function(errors, row, oldRow){
  * @param {object} oldRow The original row object (prior to update), as passed from LabKey.
  */
 EHR.Server.Triggers.rowEnd = function(errors, scriptErrors, row, oldRow){
+    if(this.scriptContext.verbosity > 0){
+        console.log('rowEnd start:');
+        console.log(row);
+    }
+
     //use this flag to filters errors below a given severity
     var errorThreshold = this.scriptContext.errorThreshold || 'WARN';
 
@@ -982,10 +997,7 @@ EHR.Server.Validation = {
         }
 
         //normalize to a javascript date object
-        if(date instanceof java.util.Date){
-            date = new Date(date);
-        }
-        row[fieldname] = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+        row[fieldname] = new Date(date.getTime());
     },
     /**
      * A helper to return a display string based on a SNOMED code.  It will normally display the meaning of the code, followed by the code in parenthesis.
@@ -1170,23 +1182,25 @@ EHR.Server.Validation = {
         if(!row.date)
             return;
 
+        var date = row.Date;
         if(typeof(row.Date) == 'string'){
-            row.Date = new java.util.Date(java.util.Date.parse(row.Date));
+            console.log('Date being passed as a string to EHR.Server.Validation.flagSuspiciousDate()');
+            date = new java.util.Date(java.util.Date.parse(row.Date));
         }
 
         //flag any dates greater than 1 year from now
         var cal1 = new java.util.GregorianCalendar();
         cal1.add(java.util.Calendar.YEAR, 1);
         var cal2 = new java.util.GregorianCalendar();
-        cal2.setTime(row.Date);
+        cal2.setTime(date);
 
         if(cal2.after(cal1)){
-            EHR.Server.Validation.addError(errors, 'date', 'Date is more than 1 year in future: '+row.Date, 'WARN');
+            EHR.Server.Validation.addError(errors, 'date', 'Date is more than 1 year in future', 'WARN');
         }
 
         cal1.add(java.util.Calendar.YEAR, -61);
         if(cal1.after(cal2)){
-            EHR.Server.Validation.addError(errors, 'date', 'Date is more than 60 days in past: '+row.Date, 'WARN');
+            EHR.Server.Validation.addError(errors, 'date', 'Date is more than 60 days in past', 'WARN');
         }
     },
     /**

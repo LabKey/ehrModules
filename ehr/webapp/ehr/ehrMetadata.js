@@ -2335,7 +2335,8 @@ EHR.Metadata.Sources.Standard = {
                     keyColumn: 'service'
                 },
                 editorConfig: {
-                    tpl: null
+                	tpl: null,
+                	separator: ';'
                 }
             }
             ,tube_type: {
