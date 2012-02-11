@@ -1907,6 +1907,51 @@ EHR.Metadata.Sources.Standard = {
                 shownInGrid: false
             }
         },
+        'Cytology Results': {
+        	
+        	date: {
+        		xtype: 'datefield',
+        		format: 'Y-m-d'
+        	},
+        	sampleType: {
+        		lookup: {
+                    schemaName: 'ehr_lookups',
+                    queryName: 'sample_types',
+                    keyColumn: 'type',
+                    displayColumn: 'type'
+                },
+                editorConfig: {
+                	tpl: null,
+                	plugins: ['ehr-usereditablecombo']
+                
+                }
+        	},
+        	sampleAppearance: {
+        		showInGrid: false
+        	},
+        	stainType: {
+        		lookup: {
+        			schemaName: 'ehr_lookups',
+        			queryName: 'stain_types',
+        			keyColumn: 'type',
+        			displayColumn: 'type'
+                },
+                editorConfig: {
+                	tpl: null,
+                	plugins: ['ehr-usereditablecombo']
+                }
+        	},
+        	slidesMade: {
+        		showInGrid: false
+        	},
+        	slidesSubmitted: {
+        		showInGrid: false
+        	},
+        	results: {
+        		showInGrid: false
+        	}
+        	
+        },
         'Immunology Results': {
             testid: {
                 lookup: {
@@ -3965,6 +4010,7 @@ EHR.Metadata.Columns = {
     'Clinical Remarks': EHR.Metadata.topCols+',so,a,p,'+EHR.Metadata.bottomCols,
     'Clinical Observations': EHR.Metadata.topCols+',area,observation,code,' + EHR.Metadata.bottomCols,
     'Clinpath Runs': EHR.Metadata.topCols+',serviceRequested,type,sampletype,sampleId,collectionMethod,collectedBy,'+EHR.Metadata.bottomCols,
+    'Cytology Results': EHR.Metadata.topCols+',sampleType,sampleAppearance,slidesMade,slidesSubmitted,stainType,results,reviewedBy,'+EHR.Metadata.bottomCols,
     Deaths: EHR.Metadata.topCols+',tattoo,dam,cause,manner,'+EHR.Metadata.bottomCols,
     Demographics: EHR.Metadata.topCols+',species,gender,birth,death,hold,dam,sire,origin,geographic_origin,cond,medical,prepaid,v_status,'+EHR.Metadata.bottomCols,
     Departure: EHR.Metadata.topCols+',authorize,destination,'+EHR.Metadata.bottomCols,
@@ -3977,7 +4023,7 @@ EHR.Metadata.Columns = {
     Histology: EHR.Metadata.topCols+',slideNum,stain,tissue,qualifier,container_type,pathologist,trimdate,trimmed_by,trim_remarks,'+EHR.Metadata.bottomCols,
     'Housing': 'id,project,date,enddate,room,cage,id/numroommates/cagemates,cond,reason,isTemp,'+EHR.Metadata.bottomCols,
     'Immunology Results': EHR.Metadata.topCols+',testid,method,result,units,qualResult,'+EHR.Metadata.bottomCols,
-    'Irregular Observations': 'id/curlocation/location,'+EHR.Metadata.topCols + ',feces,menses,other,tlocation,behavior,otherbehavior,other,breeding,'+EHR.Metadata.bottomColsmCols,
+    'Irregular Observations': 'id/curlocation/location,'+EHR.Metadata.topCols + ',feces,menses,other,tlocation,behavior,otherbehavior,other,breeding,'+EHR.Metadata.bottomCols,
     'Necropsy Diagnosis': EHR.Metadata.topCols+',tissue,severity,duration,distribution,process,'+EHR.Metadata.bottomCols,
     Necropsies: EHR.Metadata.topCols+',tattoo,caseno,performedby,assistant,billing,tissue_distribution,timeofdeath,causeofdeath,mannerofdeath,perfusion_area,grossdescription,patho_notes,'+EHR.Metadata.bottomCols,
     'Notes': EHR.Metadata.topCols+',userid,category,value,'+EHR.Metadata.bottomCols,

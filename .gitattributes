@@ -355,6 +355,9 @@ ehr/resources/queries/study/Colony[!!-~]Population[!!-~]By[!!-~]Age/.qview.xml -
 ehr/resources/queries/study/Current[!!-~]Blood.query.xml -text
 ehr/resources/queries/study/Current[!!-~]Blood.sql -text
 ehr/resources/queries/study/Current[!!-~]Blood/.qview.xml -text
+ehr/resources/queries/study/Cytology[!!-~]Results.js -text svneol=unset#text/plain
+ehr/resources/queries/study/Cytology[!!-~]Results.query.xml -text svneol=unset#text/plain
+ehr/resources/queries/study/Cytology[!!-~]Results/.qview.xml -text svneol=unset#text/plain
 ehr/resources/queries/study/Datasets.query.xml -text
 ehr/resources/queries/study/Deaths.js -text
 ehr/resources/queries/study/Deaths.query.xml -text
@@ -810,6 +813,7 @@ ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-11.292-11.293.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-11.30-11.31.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-11.30-11.32.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-11.31-11.32.sql -text
+ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-11.32-11.33.sql -text
 ehr/resources/schemas/dbscripts/postgresql/obsolete/EHR-11.10-11.101.sql -text
 ehr/resources/schemas/dbscripts/postgresql/obsolete/EHR-11.101-11.102.sql -text
 ehr/resources/schemas/dbscripts/postgresql/obsolete/EHR-11.102-11.105.sql -text

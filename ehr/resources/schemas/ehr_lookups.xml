@@ -1098,6 +1098,34 @@
       </ns:column>
     </ns:columns>
   </ns:table>
+  <ns:table tableName="sample_types" tableDbType="TABLE">
+    <ns:importUrl></ns:importUrl>
+    <ns:insertUrl></ns:insertUrl>
+    <ns:updateUrl></ns:updateUrl>
+    <ns:deleteUrl></ns:deleteUrl>
+    <ns:pkColumnName>type</ns:pkColumnName>
+    <ns:columns>
+      <ns:column columnName="type">
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>100</ns:scale>
+        <ns:isKeyField>true</ns:isKeyField>
+      </ns:column>
+    </ns:columns>
+  </ns:table>
+  <ns:table tableName="stain_types" tableDbType="TABLE">
+    <ns:importUrl></ns:importUrl>
+    <ns:insertUrl></ns:insertUrl>
+    <ns:updateUrl></ns:updateUrl>
+    <ns:deleteUrl></ns:deleteUrl>
+    <ns:pkColumnName>type</ns:pkColumnName>
+    <ns:columns>
+      <ns:column columnName="type">
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>100</ns:scale>
+        <ns:isKeyField>true</ns:isKeyField>
+      </ns:column>
+    </ns:columns>
+  </ns:table>
   <!--<ns:table tableName="vl_technique" tableDbType="TABLE">-->
     <!--<ns:pkColumnName>technique</ns:pkColumnName>-->
     <!--<ns:columns>-->

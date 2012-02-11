@@ -181,6 +181,10 @@ function onUpsert(context, errors, row, oldRow){
                 EHR.Server.Validation.addError(errors, 'quantity', 'Quantity does not match tube vol / # tubes', 'INFO');
                 EHR.Server.Validation.addError(errors, 'num_tubes', 'Quantity does not match tube vol / # tubes', 'INFO');
             }
+            //We do not permit requests of 6mL in EDTA with CBC
+            if (row.tube_type == 'EDTA' && row.tube_vol === 6 && row.additionalServices.indexOf('CBC', 0) >= 0) {
+            	EHR.Server.Validation.addError(errors, 'tube_type', 'May not request draw of 6mL in EDTA with CBC', 'ERROR');
+            }
         }
 
         EHR.Server.Validation.checkRestraint(row, errors);

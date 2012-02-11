@@ -753,6 +753,27 @@ if(@{$results->{rows}}){
 	$email_html .= "<hr>\n";	
 }
 
+#we find protocols expiring soon
+my $days = 14;
+my $day_value = (365 * 3 - $days);
+$results = Labkey::Query::selectRows(
+    -baseUrl => $baseUrl,
+    -containerPath => $studyContainer,
+    -schemaName => 'ehr',
+    -queryName => 'protocol',
+    -filterArray => [
+        ['Approve', 'datelte', '-' . $day_value . 'd'],
+    ],
+    -requiredVersion => 8.3,
+    #-debug => 1,
+);
+
+
+if(@{$results->{rows}}){
+	$email_html .= "<b>WARNING: There are ".@{$results->{rows}}." protocols that will expire within the next $days days.</b><br>";
+	$email_html .= "<p><a href='".$baseUrl."query/".$studyContainer."executeQuery.view?schemaName=ehr&query.queryName=protocol&query.Approve~datelte=-${day_value}d'>Click here to view them</a><br>\n";
+	$email_html .= "<hr>\n";
+}
 
 #we find birth records without a corresponding demographics record
 $results = Labkey::Query::selectRows(

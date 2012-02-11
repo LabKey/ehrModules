@@ -10,7 +10,7 @@ p.approve,
 p.species,
 pc.allowed,
 p.TotalAnimals,
-pc.allowed - p.TotalAnimals as TotalRemaining,
+CONVERT(pc.allowed - p.TotalAnimals, INTEGER) as TotalRemaining,
 round(cast(p.TotalAnimals as numeric) / cast(pc.allowed as numeric) * 100, 1) as PercentUsed,
 p.Animals,
 

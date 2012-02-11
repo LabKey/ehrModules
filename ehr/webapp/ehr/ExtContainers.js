@@ -749,8 +749,7 @@ EHR.ext.HematologyExcelWin = Ext.extend(Ext.Panel, {
             tests['MCH'] = row2.substr(32,5);
             tests['MCHC'] = row2.substr(37,5);
             tests['PLT'] = row2.substr(42,5);
-
-            //tests['LYMPH%'] = row2.substr(47,5);
+      	     //tests['LYMPH%'] = row2.substr(47,5);
             tests['LY'] = row2.substr(47,5);
 
             //tests['MONO%'] = row2.substr(52,5);
@@ -799,6 +798,9 @@ EHR.ext.HematologyExcelWin = Ext.extend(Ext.Panel, {
                     else {
                         tests[test] = value.substr(1,3) / 10;
                     }
+                }
+                else if (test=='PLT') {
+                	tests[test] = value.substr(0,4);
                 }
 
                 //NOTE: the following is a possible replacement for the logic above

@@ -867,7 +867,7 @@ EHR.reports.viralLoads = function(tab, subject){
         //viewName: 'With WPI',
         filters: filterArray.nonRemovable,
         removeableFilters: filterArray.removable,
-        sort: 'Id,-date',
+        sort: 'id,-date',
         scope: this,
         frame: true
     }, EHR.reports.qwpConfig);

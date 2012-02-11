@@ -478,6 +478,25 @@ Ext.extend(EHR.ext.ImportPanel.Base, Ext.Panel, {
   * @param {string} [config.taskHeaderMetaSources] A comma separated list of Metadata Sources (see EHR.Metadata) applied to the ehr.tasks store
  */
 EHR.ext.ImportPanel.TaskPanel = Ext.extend(EHR.ext.ImportPanel.Base, {
+
+    addStore: function(c)
+    {
+        EHR.ext.ImportPanel.TaskPanel.superclass.addStore.apply(this, arguments);
+
+        if (c.storeId == 'ehr||tasks||||'){
+            this.mon(c, 'load', function(store){
+
+
+                if(store.getCount()){
+
+                    var rec= store.getAt(0);
+
+                    LABKEY.NavTrail.setTrail(rec.get('title'));
+                }
+            },this)
+        }
+    },
+
     initComponent: function()
     {
 
