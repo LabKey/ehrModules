@@ -190,7 +190,7 @@ CREATE TABLE ehr_compliancedb.EmployeeTypes (
 CREATE TABLE ehr_compliancedb.EmployeeTitles (
    title varchar(255) not null, 
 
-   CONSTAINT PK_EmployeeTitles PRIMARY KEY (title)
+   CONSTRAINT PK_EmployeeTitles PRIMARY KEY (title)
 );
 
 CREATE TABLE ehr_compliancedb.unit_names (
