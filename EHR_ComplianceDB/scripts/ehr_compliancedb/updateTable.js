@@ -6,10 +6,11 @@
 var LABKEY = require("labkey");
 var console = require("console");
 
-function updateTable(row, oldRow, schemaName, tableName, pk, sourceField, targetField, containerPath){
+function updateTable(errors, row, oldRow, schemaName, tableName, pk, sourceField, targetField, containerPath){
     var toUpdate = [];
-//    console.log('Table: '+tableName);
-//    console.log('containerpath: '+containerPath);
+    var success;
+
+    console.log('Updating records in table: '+tableName);
 
     LABKEY.Query.selectRows({
         containerPath: containerPath,
@@ -31,16 +32,18 @@ function updateTable(row, oldRow, schemaName, tableName, pk, sourceField, target
                 }
             }
         },
-        error: function(error){
+        failure: function(error){
             console.log('Select rows error');
             console.log(error);
+
+            errors[sourceField] = 'Unable to update table: ' + tableName + ' to reflect this change';
+            success = false;
         }
     });
 
-//    console.log('Records to update: '+toUpdate.length);
+    console.log('Records to update: '+toUpdate.length);
 
     if(toUpdate.length){
-//        console.log(toUpdate[0]);
         LABKEY.Query.updateRows({
             containerPath: containerPath,
             schemaName: schemaName,
@@ -49,11 +52,16 @@ function updateTable(row, oldRow, schemaName, tableName, pk, sourceField, target
             success: function(data){
                 console.log('Success updating '+tableName)
             },
-            error: function(error){
+            failure: function(error){
                 console.log('EHR compliance db updateTable.js Error');
                 console.log(error);
+
+                errors[sourceField] = 'Unable to update table: ' + tableName + ' to reflect this change';
+                success = false;
             }
         });
     }
+
+    return success !== false;
 }
 exports.updateTable = updateTable;

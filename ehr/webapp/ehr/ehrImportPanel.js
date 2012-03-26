@@ -237,6 +237,7 @@ Ext.extend(EHR.ext.ImportPanel.Base, Ext.Panel, {
             toAdd.push({
                 xtype: 'tabpanel',
                 activeTab: 0,
+                width: 1110,
                 ref: 'queryPanel',
                 items: tabs,
                 cls: 'extContainer'

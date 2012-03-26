@@ -46,6 +46,11 @@
                 <property name="columnTitle" value="Months Since TB Test"/>
             </properties>
         </column>
+        <column name="Medical">
+        	<properties>
+        		<property name="columnTitle" value="Medical"/>
+        	</properties>
+        </column>
         <column name="Id/MostRecentTB/eyeTested">
             <properties>
                 <property name="columnTitle" value="Eye Last Tested"/>

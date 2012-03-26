@@ -394,13 +394,14 @@ EHR.Server.Triggers.complete = function(event, errors) {
                             })
                         }
                     }
-                }
+                },
+                failure: EHR.Server.Utils.onFailure
             });
         }
 
         if(this.scriptContext.requestsCompleted && !EHR.Server.Utils.isEmptyObj(this.scriptContext.requestsCompleted)){
-            //console.log('requests completed:');
-            //console.log(this.scriptContext.requestsCompleted);
+            console.log('The following requests were completed in this batch:');
+            console.log(this.scriptContext.requestsCompleted);
             var totalRequests = [];
             for(var i in this.scriptContext.requestsCompleted){
                 totalRequests.push(i);
@@ -997,7 +998,8 @@ EHR.Server.Validation = {
         }
 
         //normalize to a javascript date object
-        row[fieldname] = new Date(date.getTime());
+        date = new Date(date.getTime());
+        row[fieldname] = new Date(date.getFullYear(), date.getMonth(), date.getDate());
     },
     /**
      * A helper to return a display string based on a SNOMED code.  It will normally display the meaning of the code, followed by the code in parenthesis.
@@ -1608,6 +1610,8 @@ EHR.Server.Validation = {
      * {String} [config.msgContent] The content for the body of this email
      */
     sendEmail: function(config){
+        console.log('Sending emails');
+
         if(!config.recipients)
             config.recipients = [];
 
@@ -1626,6 +1630,7 @@ EHR.Server.Validation = {
             });
         }
 
+        console.log('This email has ' + config.recipients.length + ' recipients');
         if(config.recipients.length){
             var siteEmail = config.msgFrom;
             if(!siteEmail){

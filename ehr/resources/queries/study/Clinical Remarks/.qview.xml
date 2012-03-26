@@ -1,5 +1,6 @@
 <customView xmlns="http://labkey.org/data/xml/queryCustomView">
     <columns>
+    	<column name="qcstate" />
         <column name="Id"/>
         <column name="date"/>
         <column name="project"/>
@@ -7,7 +8,6 @@
         <column name="description" />
         <column name="performedby"/>
         <column name="category"/>
-        <column name="qcstate" />
         <column name="taskid" />
     </columns>
     <sorts>

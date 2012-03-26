@@ -126,8 +126,12 @@ function onAfterUpdate(errors, scriptContext, row, oldRow){
                     existingRecords.push(r);
                 }, this);
 
-                //distinctIds = distinctIds.unique();
-                distinctIds = Ext.unique(distinctIds);
+                var unique = [];
+                for(var i=0; i<distinctIds.length; i++) {
+                    if(unique.indexOf(distinctIds[i]) == -1)
+                        unique.push(distinctIds[i]);
+                }
+                distinctIds = unique;
             },
             failure: EHR.Server.Utils.onFailure
         });

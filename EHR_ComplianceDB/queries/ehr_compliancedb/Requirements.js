@@ -19,9 +19,14 @@ function afterUpdate(row, oldRow, errors){
     var queryName = fileParse[2].replace(/\.js$/, '');
 
     if(oldRow.RequirementName != row.RequirementName){
-        shared.updateTable(row, oldRow, schemaName, 'CompletionDates', 'rowid', 'RequirementName', 'RequirementName');
-        shared.updateTable(row, oldRow, schemaName, 'RequirementsPerEmployee', 'rowid', 'RequirementName', 'RequirementName');
-        shared.updateTable(row, oldRow, schemaName, 'EmployeeRequirementExemptions', 'rowid', 'RequirementName', 'RequirementName');
-        shared.updateTable(row, oldRow, schemaName, 'RequirementsPerCategory', 'rowid', 'RequirementName', 'RequirementName');
+        //NOTE: if there is an error with any of these API calls, it will close the connection, so we need to abort
+        var status = shared.updateTable(errors, row, oldRow, schemaName, 'CompletionDates', 'rowid', 'requirementname', 'requirementname');
+
+        if(status)
+            status = shared.updateTable(errors, row, oldRow, schemaName, 'RequirementsPerEmployee', 'rowid', 'requirementname', 'requirementname');
+        if(status)
+            status = shared.updateTable(errors, row, oldRow, schemaName, 'EmployeeRequirementExemptions', 'rowid', 'requirementname', 'requirementname');
+        if(status)
+            status = shared.updateTable(errors, row, oldRow, schemaName, 'RequirementsPerCategory', 'rowid', 'requirementname', 'requirementname');
     }
 };

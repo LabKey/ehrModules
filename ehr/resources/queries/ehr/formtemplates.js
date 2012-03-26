@@ -25,7 +25,7 @@ function afterDelete(row, errors, oldRow){
                     }
                 }
             },
-            error: function(error){
+            failure: function(error){
                 console.log('Select rows error');
                 console.log(error);
             }
@@ -41,7 +41,7 @@ function afterDelete(row, errors, oldRow){
                 success: function(data){
                     console.log('Success updating formpanelsections')
                 },
-                error: function(error){
+                failure: function(error){
                     console.log('deleteRows Error');
                     console.log(error);
                 }

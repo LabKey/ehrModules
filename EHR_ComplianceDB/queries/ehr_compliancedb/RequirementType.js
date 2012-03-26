@@ -18,11 +18,8 @@ function afterUpdate(row, oldRow, errors){
     var schemaName = fileParse[1];
     var queryName = fileParse[2].replace(/\.js$/, '');
 
-    if(oldRow.categoryname != row.categoryname){
+    if(oldRow.type != row.type){
         //NOTE: if there is an error with any of these API calls, it will close the connection, so we need to abort
-        var status = shared.updateTable(errors, row, oldRow, schemaName, 'Employees', 'employeeid', 'categoryname', 'category');
-
-        if(status)
-            shared.updateTable(errors, row, oldRow, schemaName, 'RequirementsPerCategory', 'rowid', 'categoryname', 'category');
+        var status = shared.updateTable(errors, row, oldRow, schemaName, 'Requirements', 'requirementname', 'type', 'type');
     }
 };

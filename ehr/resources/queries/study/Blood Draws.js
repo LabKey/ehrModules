@@ -175,16 +175,30 @@ function onUpsert(context, errors, row, oldRow){
 
         if(!row.quantity && row.num_tubes && row.tube_vol)
             row.quantity = row.num_tubes * row.tube_vol;
-
+        if (row.additionalServices) {
+        	if (row.additionalServices.indexOf('CBC', 0) >= 0  && row.tube_type != 'EDTA' ) {
+            		EHR.Server.Validation.addError(errors, 'tube_type', 'May not request CBC without specifying a tube type = \'EDTA\' ', 'ERROR');
+           	}
+           	if (row.additionalServices.indexOf('Vet-19', 0) >= 0 && row.tube_type != 'SST') {
+            		EHR.Server.Validation.addError(errors, 'tube_type', 'May not request Vet-19 without specifying a tube type = \'SST\' ', 'ERROR');
+           	}
+           	if (row.additionalServices.indexOf('Vet-19', 0) >= 0 && row.additionalServices.indexOf('CBC', 0) >= 0) {
+           		EHR.Server.Validation.addError(errors, 'additionalServices', 'May not combine CBC and Vet-19 services with one tube', 'ERROR');
+           	}
+        }
         if(row.quantity && row.tube_vol){
             if(row.quantity != (row.num_tubes * row.tube_vol)){
                 EHR.Server.Validation.addError(errors, 'quantity', 'Quantity does not match tube vol / # tubes', 'INFO');
                 EHR.Server.Validation.addError(errors, 'num_tubes', 'Quantity does not match tube vol / # tubes', 'INFO');
             }
             //We do not permit requests of 6mL in EDTA with CBC
-            if (row.tube_type == 'EDTA' && row.tube_vol === 6 && row.additionalServices.indexOf('CBC', 0) >= 0) {
-            	EHR.Server.Validation.addError(errors, 'tube_type', 'May not request draw of 6mL in EDTA with CBC', 'ERROR');
+            if (row.additionalServices) {
+            	var aServices = row.additionalServices;
+            	if (row.tube_type == 'EDTA' && row.tube_vol === 6 && row.additionalServices.indexOf('CBC', 0) >= 0) {
+            		EHR.Server.Validation.addError(errors, 'tube_type', 'May not request draw of 6mL in EDTA with CBC', 'ERROR');
+            	}
             }
+            
         }
 
         EHR.Server.Validation.checkRestraint(row, errors);

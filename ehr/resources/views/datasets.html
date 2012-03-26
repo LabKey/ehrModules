@@ -5,7 +5,7 @@ LABKEY.requiresScript("/ehr/ehrAPI.js");
 
 
 Ext.onReady(function () {
-    var config = {displayField: 'Label', headerField: 'Category', target: 'ehrDatasets'};
+    var config = {displayField: 'Label', headerField: 'categoryId/label', target: 'ehrDatasets'};
 
     var multi = new LABKEY.MultiRequest();
 
@@ -14,6 +14,7 @@ Ext.onReady(function () {
             LABKEY.Query.selectRows({
                 schemaName: 'study',
                 queryName: 'DataSets',
+                columns: 'categoryId/label,label,ShowByDefault',
                 success: function(results){
                     onSuccess(results)
                 },
@@ -53,14 +54,15 @@ Ext.onReady(function () {
                 continue;
             }
 
-            if (!sections[row[config.headerField]]){
-                section = {header: row[config.headerField], items: []};
-                sections[row[config.headerField]] = section;
+            var sectionName = row[config.headerField] || '';
+            if (!sections[sectionName]){
+                section = {header: sectionName, items: []};
+                sections[sectionName] = section;
 
                 menuCfg.sections.push(section);
             }
             else
-                section = sections[row[config.headerField]];
+                section = sections[sectionName];
 
             section.items.push({name: row[config.displayField], data: row})
 

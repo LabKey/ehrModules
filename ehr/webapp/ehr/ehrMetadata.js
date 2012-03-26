@@ -1496,6 +1496,14 @@ EHR.Metadata.Sources.Standard = {
                     }
                 }
             },
+            /*contact_person: {
+                lookup: {
+                    schemaName: 'ehr_lookups',
+                    queryName: 'PrincipalInvestigators',
+                    displayColumn: 'UserId',
+                    keyColumn: 'UserId'
+                }
+            },*/
             performedby: {
                 lookup: {
                     schemaName: 'ehr_lookups',
@@ -1530,6 +1538,10 @@ EHR.Metadata.Sources.Standard = {
                 width: 600
             },
             grossdescription: {
+                height: 200,
+                width: 600
+            },
+            patho_notes: {
                 height: 200,
                 width: 600
             },
@@ -3999,7 +4011,7 @@ EHR.Metadata.Columns = {
     Assignment: EHR.Metadata.topCols+',projectedRelease,'+EHR.Metadata.bottomCols,
     'Bacteriology Results': EHR.Metadata.topCols+',method,organism,source,qualresult,result,units,antibiotic,sensitivity,'+EHR.Metadata.bottomCols,
     'Behavior Remarks': EHR.Metadata.topCols+',so,a,p,'+EHR.Metadata.bottomCols,
-    Biopsies: EHR.Metadata.topCols+',caseno,type,veterinarian,performedby,nhpbmd,grossdescription,'+EHR.Metadata.bottomCols,
+    Biopsies: EHR.Metadata.topCols+',caseno,type,veterinarian,performedby,nhpbmd,grossdescription,patho_notes,'+EHR.Metadata.bottomCols,
     Birth: EHR.Metadata.topCols+',estimated,gender,weight,wdate,dam,sire,room,cage,cond,origin,conception,type,'+EHR.Metadata.bottomCols,
     'Blood Draws': 'id/curlocation/location,'+EHR.Metadata.topCols+',tube_type,tube_vol,num_tubes,quantity,requestor,additionalServices,billedby,assayCode,restraint,restraintDuration,daterequested,instructions,' + EHR.Metadata.bottomCols, //p_s,a_v,
     'Body Condition': EHR.Metadata.topCols+',score,weightstatus,remark,tattoo_chest,tattoo_thigh,microchip,tag,tattoo_remark,' + EHR.Metadata.bottomCols,
