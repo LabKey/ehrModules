@@ -1,7 +1,7 @@
 package org.labkey.ehr.etl;
 
 /*
- * Copyright (c) 2010-2011 LabKey Corporation
+ * Copyright (c) 2010-2012 LabKey Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
