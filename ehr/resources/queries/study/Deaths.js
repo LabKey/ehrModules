@@ -319,6 +319,7 @@ function onComplete(event, errors, scriptContext){
            valuesMap[r.row.Id].animalNumber = r.row.Id;                 
            valuesMap[r.row.Id].manner       = r.row.manner;
            valuesMap[r.row.Id].necropsy     = r.row.necropsy;
+           valuesMap[r.row.Id].enteredGrant = r.row.account;
            if (r.row.necropsy) {
            	//populate the enddate
            	addIndication(r.row.Id);
@@ -460,24 +461,14 @@ function onComplete(event, errors, scriptContext){
            theMsg += "Date of Death:              " + obj.deathDate + "<br>";
            theMsg += "Time of Death:              " + obj.deathTime + "<br>";
            theMsg += "Death:                      " + obj.cause + "<br>";
-           if (obj.grant.constructor == Array) {
-           	 var grantString  = new String();
-           	 grantString += "Grant #:                    ";
-          
-           	 for (var i = 0; i < obj.grant.length; i++) {
-           	 	grantString += obj.grant[i] 
-           	 	if (i+1 == obj.grant.length) {
-           	 		grantString += "<br>";
-           	 	} else {
-           	 		grantString += ", ";
-           	 	}
-           	 	
-           	 }
-           	theMsg += grantString;
+           if (obj.cause == 'Clinical') {
+           	//Clinical Deaths get Grant the same grant number
+           	theMsg += "Grant #:                    " + "prj45nv <br>";
+           	theMsg += "Animal Replacement Fee:     " + "No Animal replacement fee to be paid (clinical death) <br>";
            } else {
-           	theMsg += "Grant #:                    " + obj.grant + "<br>";
+           	theMsg += "Grant #:                    " + obj.enteredGrant + "<br>";
+           	theMsg += "Animal Replacement Fee:     " + obj.fee   + "<br>";
            }
-           theMsg += "Animal Replacement Fee:     " + obj.fee   + "<br>";
            theMsg += "Manner of Death:            " + obj.manner + "<br> <br> ";
            
            principalIDs = getPrincipalInvestigators(obj.animalNumber);

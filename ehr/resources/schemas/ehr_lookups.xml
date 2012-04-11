@@ -14,15 +14,6 @@
       </ns:column>
     </ns:columns>
   </ns:table>
-  <!--<ns:table tableName="vl_sampletype" tableDbType="TABLE">-->
-    <!--<ns:pkColumnName>sample_type</ns:pkColumnName>-->
-    <!--<ns:columns>-->
-      <!--<ns:column columnName="sample_type">-->
-        <!--<ns:datatype>varchar</ns:datatype>-->
-        <!--<ns:scale>100</ns:scale>-->
-      <!--</ns:column>-->
-    <!--</ns:columns>-->
-  <!--</ns:table>-->
   <ns:table tableName="integers" tableDbType="TABLE">
     <ns:importUrl></ns:importUrl>
     <ns:insertUrl></ns:insertUrl>
@@ -2417,6 +2408,53 @@
     <ns:updateUrl></ns:updateUrl>
     <ns:deleteUrl></ns:deleteUrl>
     <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr_lookups&amp;query.queryName=hematology_tests&amp;testid=${testid}</ns:tableUrl>
+    <ns:pkColumnName>testid</ns:pkColumnName>
+    <ns:columns>
+      <ns:column columnName="testid">
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>100</ns:scale>
+        <ns:isKeyField>true</ns:isKeyField>
+      </ns:column>
+      <ns:column columnName="name">
+        <ns:nullable>true</ns:nullable>
+        <ns:columnTitle>Full Name</ns:columnTitle>
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>100</ns:scale>
+      </ns:column>
+      <ns:column columnName="units">
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>varchar</ns:datatype>
+        <ns:scale>100</ns:scale>
+      </ns:column>
+      <ns:column columnName="alertOnAbnormal">
+        <ns:columnTitle>Alert On Abnormal</ns:columnTitle>
+        <ns:datatype>bool</ns:datatype>
+        <ns:scale>50</ns:scale>
+      </ns:column>
+      <ns:column columnName="alertOnAny">
+        <ns:columnTitle>Alert On Any</ns:columnTitle>
+        <ns:datatype>bool</ns:datatype>
+        <ns:scale>50</ns:scale>
+      </ns:column>
+      <ns:column columnName="includeInPanel">
+        <ns:columnTitle>Include In Panel</ns:columnTitle>
+        <ns:datatype>bool</ns:datatype>
+        <ns:scale>50</ns:scale>
+      </ns:column>
+      <ns:column columnName="sort_order">
+        <ns:nullable>true</ns:nullable>
+        <ns:datatype>integer</ns:datatype>
+        <ns:scale>100</ns:scale>
+      </ns:column>
+
+    </ns:columns>
+  </ns:table>
+  <ns:table tableName="cytology_tests" tableDbType="TABLE">
+    <ns:importUrl></ns:importUrl>
+    <ns:insertUrl></ns:insertUrl>
+    <ns:updateUrl></ns:updateUrl>
+    <ns:deleteUrl></ns:deleteUrl>
+    <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr_lookups&amp;query.queryName=cytology_tests&amp;testid=${testid}</ns:tableUrl>
     <ns:pkColumnName>testid</ns:pkColumnName>
     <ns:columns>
       <ns:column columnName="testid">

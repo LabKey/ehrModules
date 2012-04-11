@@ -13,18 +13,18 @@ FROM study.housing h
 
 WHERE
 
+/*User must enter a start date */
+coalesce(STARTDATE, cast('1900-01-01 00:00:00.0' as timestamp)) > cast('1900-01-02 00:00:00.0' as timestamp)
+and
+/* entered startdate must be <= enddate */
+STARTDATE <= coalesce(ENDDATE, now())
+and
+/* entered startdate must be less than record's enddate */
+coalesce( STARTDATE , cast('1900-01-01 00:00:00.0' as timestamp)) <= coalesce(h.enddate, now())
+and
+/* entered enddate must be greater than record's startdate */
+coalesce(ENDDATE, now()) >= coalesce(h.date, now())
+            
 
-(cast(COALESCE(STARTDATE, '1900-01-01') AS TIMESTAMP) >= h.date AND cast(COALESCE(STARTDATE, '1900-01-01') AS TIMESTAMP) < COALESCE(h.enddate, now()))
-
-OR
-
-(COALESCE(ENDDATE, now()) > h.date AND COALESCE(ENDDATE, now()) <= COALESCE(h.enddate, now()))
-
-OR
-
-(cast(COALESCE(STARTDATE, '1900-01-01') AS TIMESTAMP) <= h.date AND COALESCE(ENDDATE, now()) <= COALESCE(h.enddate, now()))
-/*This query does not include a clear definition of the end date, a lot of the housing records do not have
-*end dates in the system, probably the query is adding today date to the query
-*/
 
 GROUP BY h.id

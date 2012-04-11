@@ -1919,7 +1919,63 @@ EHR.Metadata.Sources.Standard = {
                 shownInGrid: false
             }
         },
-        'Cytology Results': {
+        'Cytology Automated Evaluation': {
+        	sampleType: {
+        		lookup: {
+                    schemaName: 'ehr_lookups',
+                    queryName: 'clinpath_sampletype',
+                    keyColumn: 'sampletype',
+                    displayColumn: 'sampletype'
+                },
+                editorConfig: {
+                	tpl: null,
+                	plugins: ['ehr-usereditablecombo']
+                
+                }
+        	},
+        	collectionMethod: {
+        		lookup : {
+        			schemaName: 'ehr_lookups',
+        			queryName: 'clinpath_collection_method',
+        			keyColumn: 'method',
+        			displayColumn: 'method'
+        		},
+        		editorConfig: {
+        			tpl: null,
+        			plugins: ['ehr-usereditablecombo']
+        		}
+        	},
+        	testid: {
+                lookup: {
+                	schemaName: 'ehr_lookups',
+                	query_Name: 'cytology_tests',
+                	keyColumn: 'testid',
+                	displayColumn: 'testid',
+                	unitColumn: 'units'
+                    
+                },
+                editorConfig: {
+                    plugins: ['ehr-usereditablecombo'],
+                    listeners: {
+                        select: function(combo, rec)
+                        {
+                            var theForm = this.findParentByType('ehr-panel').getForm();
+                            var unitField = theForm.findField('units');
+                            unitField.setValue(rec.get('units'));
+                            unitField.fireEvent('change', unitField.getValue(), unitField.startValue);
+                        }
+                    }
+                }
+            },
+        	date: {
+        		xtype: 'datefield',
+        		format: 'Y-m-d'
+        	},
+        	remark: {
+                shownInGrid: false
+            }
+        },
+        'Cytology Manual Evaluation': {
         	
         	date: {
         		xtype: 'datefield',
@@ -1928,15 +1984,27 @@ EHR.Metadata.Sources.Standard = {
         	sampleType: {
         		lookup: {
                     schemaName: 'ehr_lookups',
-                    queryName: 'sample_types',
-                    keyColumn: 'type',
-                    displayColumn: 'type'
+                    queryName: 'clinpath_sampletype',
+                    keyColumn: 'sampletype',
+                    displayColumn: 'sampletype'
                 },
                 editorConfig: {
                 	tpl: null,
                 	plugins: ['ehr-usereditablecombo']
                 
                 }
+        	},
+        	collectionMethod: {
+        		lookup : {
+        			schemaName: 'ehr_lookups',
+        			queryName: 'clinpath_collection_method',
+        			keyColumn: 'method',
+        			displayColumn: 'method'
+        		},
+        		editorConfig: {
+        			tpl: null,
+        			plugins: ['ehr-usereditablecombo']
+        		}
         	},
         	sampleAppearance: {
         		showInGrid: false
@@ -2232,6 +2300,18 @@ EHR.Metadata.Sources.Standard = {
             },
             p: {
                 shownInGrid: false
+            },
+            category : {
+            	lookup: {
+            		schemaName: 'ehr_lookups',
+            		queryName: 'behavior_category',
+            		keyColumn: 'category',
+            		displayColumn: 'category'
+            	},
+            	editorConfig: {
+                	tpl: null,
+                	plugins: ['ehr-usereditablecombo']
+                }
             }
         },
         Arrival: {
@@ -2799,6 +2879,7 @@ EHR.Metadata.Sources.Task = {
             requestor:{xtype: 'displayfield'},
             performedby: {allowBlank: false},
             billedby: {allowBlank: false},
+            tube_type: {allowBlank: false},
             daterequested: {
                 hidden: false,
                 xtype: 'datefield',
@@ -4010,7 +4091,7 @@ EHR.Metadata.Columns = {
     Arrival: EHR.Metadata.topCols+',source,geoOrigin,gender,birth,dam,sire,initialRoom,initialCage,initialCond,id/numroommates/cagemates,'+EHR.Metadata.bottomCols,
     Assignment: EHR.Metadata.topCols+',projectedRelease,'+EHR.Metadata.bottomCols,
     'Bacteriology Results': EHR.Metadata.topCols+',method,organism,source,qualresult,result,units,antibiotic,sensitivity,'+EHR.Metadata.bottomCols,
-    'Behavior Remarks': EHR.Metadata.topCols+',so,a,p,'+EHR.Metadata.bottomCols,
+    'Behavior Remarks': EHR.Metadata.topCols+',so,a,p,category,'+EHR.Metadata.bottomCols,
     Biopsies: EHR.Metadata.topCols+',caseno,type,veterinarian,performedby,nhpbmd,grossdescription,patho_notes,'+EHR.Metadata.bottomCols,
     Birth: EHR.Metadata.topCols+',estimated,gender,weight,wdate,dam,sire,room,cage,cond,origin,conception,type,'+EHR.Metadata.bottomCols,
     'Blood Draws': 'id/curlocation/location,'+EHR.Metadata.topCols+',tube_type,tube_vol,num_tubes,quantity,requestor,additionalServices,billedby,assayCode,restraint,restraintDuration,daterequested,instructions,' + EHR.Metadata.bottomCols, //p_s,a_v,
@@ -4022,7 +4103,8 @@ EHR.Metadata.Columns = {
     'Clinical Remarks': EHR.Metadata.topCols+',so,a,p,'+EHR.Metadata.bottomCols,
     'Clinical Observations': EHR.Metadata.topCols+',area,observation,code,' + EHR.Metadata.bottomCols,
     'Clinpath Runs': EHR.Metadata.topCols+',serviceRequested,type,sampletype,sampleId,collectionMethod,collectedBy,'+EHR.Metadata.bottomCols,
-    'Cytology Results': EHR.Metadata.topCols+',sampleType,sampleAppearance,slidesMade,slidesSubmitted,stainType,results,reviewedBy,'+EHR.Metadata.bottomCols,
+    'Cytology Automated Evaluation': EHR.Metadata.topCols+',sampleType,collectionMethod,testid,result,units,'+EHR.Metadata.bottomCols,
+    'Cytology Manual Evaluation': EHR.Metadata.topCols+',sampleType,collectionMethod,sampleAppearance,slidesMade,slidesSubmitted,stainType,results,reviewedBy,'+EHR.Metadata.bottomCols,
     Deaths: EHR.Metadata.topCols+',tattoo,dam,cause,manner,'+EHR.Metadata.bottomCols,
     Demographics: EHR.Metadata.topCols+',species,gender,birth,death,hold,dam,sire,origin,geographic_origin,cond,medical,prepaid,v_status,'+EHR.Metadata.bottomCols,
     Departure: EHR.Metadata.topCols+',authorize,destination,'+EHR.Metadata.bottomCols,

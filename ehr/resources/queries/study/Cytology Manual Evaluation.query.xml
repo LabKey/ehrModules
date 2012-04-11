@@ -2,7 +2,7 @@
     <metadata>
         <tables xmlns="http://labkey.org/data/xml">
             <table tableName="cytologyResults" tableDbType="TABLE">
-                <tableUrl>/query/detailsQueryRow.view?schemaName=study&amp;query.queryName=Cytology Results&amp;lsid=${lsid}</tableUrl>
+                <tableUrl>/query/detailsQueryRow.view?schemaName=study&amp;query.queryName=Cytology Manual Evaluation&amp;lsid=${lsid}</tableUrl>
                 <!--<insertUrl>/ehr/manageRecord.view?schemaName=study&amp;queryName=Cytology Results&amp;keyField=lsid&amp;</insertUrl>-->
                 <!--<updateUrl>/ehr/manageRecord.view?schemaName=study&amp;queryName=Cytology Results&amp;keyField=lsid&amp;key=${lsid}</updateUrl>-->
                 <insertUrl />
