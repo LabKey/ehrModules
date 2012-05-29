@@ -24,7 +24,6 @@
                     </column>
                     <column columnName="project">
                         <fk>
-                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                             <fkDbSchema>ehr</fkDbSchema>
                             <fkTable>project</fkTable>
                             <fkColumnName>project</fkColumnName>

@@ -35,7 +35,6 @@
                     <nullable>true</nullable>
                     <columnTitle>Project</columnTitle>
                     <fk>
-                      <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                       <fkDbSchema>ehr</fkDbSchema>
                       <fkTable>project</fkTable>
                       <fkColumnName>project</fkColumnName>
@@ -74,7 +73,6 @@
                     <datatype>varchar</datatype>
                     <columnTitle>Perfusion</columnTitle>
                     <fk>
-                      <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                       <fkDbSchema>ehr_lookups</fkDbSchema>
                       <fkTable>necropsy_perfusion_area</fkTable>
                       <fkColumnName>perfusion</fkColumnName>
@@ -85,7 +83,6 @@
                     <isHidden>true</isHidden>
                     <columnTitle>Perfusion Solution 1</columnTitle>
                     <fk>
-                      <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                       <fkDbSchema>ehr_lookups</fkDbSchema>
                       <fkTable>necropsy_perfusion</fkTable>
                       <fkColumnName>perfusion</fkColumnName>
@@ -96,7 +93,6 @@
                       <isHidden>true</isHidden>
                     <columnTitle>Perfusion Solution 2</columnTitle>
                     <fk>
-                      <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                       <fkDbSchema>ehr_lookups</fkDbSchema>
                       <fkTable>necropsy_perfusion</fkTable>
                       <fkColumnName>perfusion</fkColumnName>
@@ -118,7 +114,6 @@
                     <datatype>varchar</datatype>
                     <columnTitle>Body Condition</columnTitle>
                     <fk>
-                      <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                       <fkDbSchema>ehr_lookups</fkDbSchema>
                       <fkTable>necropsy_condition</fkTable>
                       <fkColumnName>score</fkColumnName>
@@ -161,7 +156,6 @@
                     <columnTitle>Parent Id</columnTitle>
                     <propertyURI>urn:ehr.labkey.org/#ParentId</propertyURI>
                     <!--<fk>-->
-                      <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
                       <!--<fkDbSchema>study</fkDbSchema>-->
                       <!--<fkTable>studyDataParent</fkTable>-->
                       <!--<fkColumnName>objectid</fkColumnName>-->
@@ -201,7 +195,6 @@
                     <datatype>varchar</datatype>
                     <columnTitle>Type of Death</columnTitle>
                     <fk>
-                      <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                       <fkDbSchema>ehr_lookups</fkDbSchema>
                       <fkTable>death_cause</fkTable>
                       <fkColumnName>cause</fkColumnName>
@@ -211,7 +204,6 @@
                     <datatype>varchar</datatype>
                     <columnTitle>Manner of Death</columnTitle>
                     <fk>
-                      <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                       <fkDbSchema>ehr_lookups</fkDbSchema>
                       <fkTable>death_manner</fkTable>
                       <fkColumnName>manner</fkColumnName>

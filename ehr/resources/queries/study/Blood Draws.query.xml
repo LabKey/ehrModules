@@ -15,7 +15,6 @@
                         <isHidden>false</isHidden>
                         <isUnselectable>true</isUnselectable>
                         <fk>
-                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                             <fkDbSchema>ehr_lookups</fkDbSchema>
                             <fkTable>blood_billed_by</fkTable>
                             <fkColumnName>code</fkColumnName>
@@ -26,7 +25,6 @@
                         <isHidden>false</isHidden>
                         <isUnselectable>true</isUnselectable>
                         <fk>
-                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                             <fkDbSchema>study</fkDbSchema>
                             <fkTable>bloodSummary</fkTable>
                             <fkColumnName>lsid</fkColumnName>
@@ -34,7 +32,6 @@
                     </column>
                     <column columnName="project">
                         <fk>
-                          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                           <fkDbSchema>ehr</fkDbSchema>
                           <fkTable>project</fkTable>
                           <fkColumnName>project</fkColumnName>
@@ -57,7 +54,6 @@
                     <!--</column>-->
                     <column columnName="parentId">
                         <!--<fk>-->
-                          <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
                           <!--<fkDbSchema>study</fkDbSchema>-->
                           <!--<fkTable>studyDataParent</fkTable>-->
                           <!--<fkColumnName>objectid</fkColumnName>-->
@@ -85,7 +81,6 @@
                     <column columnName="restraint">
                         <columnTitle>Restraint</columnTitle>
                         <fk>
-                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                             <fkDbSchema>ehr_lookups</fkDbSchema>
                             <fkTable>restraint_type</fkTable>
                             <fkColumnName>type</fkColumnName>
@@ -94,7 +89,6 @@
                     <column columnName="restraintDuration">
                         <columnTitle>Time Restrained</columnTitle>
                         <fk>
-                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                             <fkDbSchema>ehr_lookups</fkDbSchema>
                             <fkTable>restraint_duration</fkTable>
                             <fkColumnName>duration</fkColumnName>

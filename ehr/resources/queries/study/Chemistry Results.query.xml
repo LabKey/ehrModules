@@ -24,7 +24,6 @@
                         <isUnselectable>true</isUnselectable>
                         <isHidden>false</isHidden>
                         <fk>
-                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                             <fkDbSchema>study</fkDbSchema>
                             <fkTable>chemistryRefRange</fkTable>
                             <fkColumnName>lsid</fkColumnName>
@@ -32,7 +31,6 @@
                     </column>
                     <column columnName="parentId">
                         <!--<fk>-->
-                          <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
                           <!--<fkDbSchema>study</fkDbSchema>-->
                           <!--<fkTable>chemistryRuns</fkTable>-->
                           <!--<fkColumnName>objectid</fkColumnName>-->
@@ -41,7 +39,6 @@
                     <column columnName="runId" wrappedColumnName="parentId">
                         <isHidden>false</isHidden>
                         <fk>
-                          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                           <fkDbSchema>study</fkDbSchema>
                           <fkTable>clinpathRunsParent</fkTable>
                           <fkColumnName>objectid</fkColumnName>
@@ -56,7 +53,6 @@
                       <columnTitle>Test Id</columnTitle>
                         <displayWidth>120</displayWidth>
                       <fk>
-                        <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                         <fkDbSchema>ehr_lookups</fkDbSchema>
                         <fkTable>chemistry_tests</fkTable>
                         <fkColumnName>testid</fkColumnName>
@@ -67,7 +63,6 @@
                       <!--<nullable>false</nullable>-->
                       <columnTitle>Method</columnTitle>
                       <fk>
-                        <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                         <fkDbSchema>ehr_lookups</fkDbSchema>
                         <fkTable>chemistry_method</fkTable>
                         <fkColumnName>method</fkColumnName>

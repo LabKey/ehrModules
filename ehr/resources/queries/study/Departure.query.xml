@@ -15,7 +15,6 @@
                     </column>
                     <column columnName="parentId">
                         <!--<fk>-->
-                          <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
                           <!--<fkDbSchema>study</fkDbSchema>-->
                           <!--<fkTable>studyDataParent</fkTable>-->
                           <!--<fkColumnName>objectid</fkColumnName>-->
@@ -25,7 +24,6 @@
                         <datatype>varchar</datatype>
                         <columnTitle>Destination</columnTitle>
                         <fk>
-                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                             <fkDbSchema>ehr_lookups</fkDbSchema>
                             <fkTable>origin_codes</fkTable>
                             <fkColumnName>Code</fkColumnName>

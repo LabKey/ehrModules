@@ -15,7 +15,6 @@
                     </column>
                     <column columnName="parentId">
                         <!--<fk>-->
-                          <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
                           <!--<fkDbSchema>study</fkDbSchema>-->
                           <!--<fkTable>Clinpath Runs</fkTable>-->
                           <!--<fkColumnName>objectid</fkColumnName>-->
@@ -24,7 +23,6 @@
                     <column columnName="runId" wrappedColumnName="parentId">
                         <isHidden>false</isHidden>
                         <fk>
-                          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                           <fkDbSchema>study</fkDbSchema>
                           <fkTable>clinpathRunsParent</fkTable>
                           <fkColumnName>objectid</fkColumnName>
@@ -35,7 +33,6 @@
                       <!--<nullable>false</nullable>-->
                       <columnTitle>Method</columnTitle>
                       <fk>
-                        <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                         <fkDbSchema>ehr_lookups</fkDbSchema>
                         <fkTable>virology_method</fkTable>
                         <fkColumnName>method</fkColumnName>
@@ -43,7 +40,6 @@
                     </column>
                     <column columnName="virus">
                         <fk>
-                          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                           <fkDbSchema>ehr_lookups</fkDbSchema>
                           <fkTable>virology_tests</fkTable>
                           <fkColumnName>testid</fkColumnName>
@@ -53,7 +49,6 @@
                         <datatype>varchar</datatype>
                         <columnTitle>Qualitative Result</columnTitle>
                         <fk>
-                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                             <fkDbSchema>ehr_lookups</fkDbSchema>
                             <fkTable>qualitative_results</fkTable>
                             <fkColumnName>result</fkColumnName>
@@ -63,7 +58,6 @@
                         <datatype>varchar</datatype>
                         <columnTitle>Test Id</columnTitle>
                         <fk>
-                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                             <fkDbSchema>ehr_lookups</fkDbSchema>
                             <fkTable>virology_tests</fkTable>
                             <fkColumnName>testid</fkColumnName>
@@ -73,7 +67,6 @@
                         <datatype>varchar</datatype>
                         <columnTitle>Sample Type</columnTitle>
                         <fk>
-                          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                           <fkDbSchema>ehr_lookups</fkDbSchema>
                           <fkTable>clinpath_sampletype</fkTable>
                           <fkColumnName>sampletype</fkColumnName>

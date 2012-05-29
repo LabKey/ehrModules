@@ -29,7 +29,6 @@
                     <column columnName="formtype">
                         <columnTitle>Task Type</columnTitle>
                         <fk>
-                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                             <fkDbSchema>ehr</fkDbSchema>
                             <fkTable>formtypes</fkTable>
                             <fkColumnName>formtype</fkColumnName>
@@ -39,7 +38,6 @@
                         <columnTitle>Assigned To</columnTitle>
                         <nullable>true</nullable>
                         <fk>
-                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                             <fkDbSchema>core</fkDbSchema>
                             <fkTable>PrincipalsWithoutAdmin</fkTable>
                             <fkColumnName>userid</fkColumnName>
@@ -53,7 +51,6 @@
                     <column columnName="createdby">
                         <columnTitle>Created By</columnTitle>
                         <fk>
-                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                             <fkDbSchema>core</fkDbSchema>
                             <fkTable>users</fkTable>
                             <fkColumnName>userid</fkColumnName>

@@ -15,7 +15,6 @@
                         <isHidden>false</isHidden>
                         <isUnselectable>true</isUnselectable>
                         <fk>
-                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                             <fkDbSchema>study</fkDbSchema>
                             <fkTable>housingTotalRoommates</fkTable>
                             <fkColumnName>objectid</fkColumnName>
@@ -48,7 +47,6 @@
                             <!--cage=${cage}&amp;-->
                         <!--</url>-->
                         <fk>
-                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                             <fkDbSchema>ehr_lookups</fkDbSchema>
                             <fkTable>rooms</fkTable>
                             <fkColumnName>room</fkColumnName>
@@ -68,7 +66,6 @@
                         <datatype>varchar</datatype>
                         <columnTitle>Condition</columnTitle>
                         <fk>
-                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                             <fkDbSchema>ehr_lookups</fkDbSchema>
                             <fkTable>condition_codes</fkTable>
                             <fkColumnName>Code</fkColumnName>
@@ -77,7 +74,6 @@
                     <column columnName="reason">
                         <columnTitle>Reason For Move</columnTitle>
                         <fk>
-                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                             <fkDbSchema>ehr_lookups</fkDbSchema>
                             <fkTable>housing_reason</fkTable>
                             <fkColumnName>reason</fkColumnName>
@@ -87,7 +83,6 @@
                         <datatype>varchar</datatype>
                         <columnTitle>Restraint Type</columnTitle>
                         <fk>
-                          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                           <fkDbSchema>ehr_lookups</fkDbSchema>
                           <fkTable>restraint_type</fkTable>
                           <fkColumnName>type</fkColumnName>
@@ -102,7 +97,6 @@
                     </column>
                     <!--<column columnName="parentId">-->
                         <!--<fk>-->
-                          <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
                           <!--<fkDbSchema>study</fkDbSchema>-->
                           <!--<fkTable>studyDataParent</fkTable>-->
                           <!--<fkColumnName>objectid</fkColumnName>-->

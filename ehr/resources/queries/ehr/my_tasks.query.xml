@@ -21,7 +21,6 @@
                         <columnTitle>Assigned To</columnTitle>
                         <nullable>true</nullable>
                         <fk>
-                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                             <fkDbSchema>core</fkDbSchema>
                             <fkTable>PrincipalsWithoutAdmin</fkTable>
                             <fkColumnName>userid</fkColumnName>
@@ -34,7 +33,6 @@
                     <column columnName="createdby">
                         <columnTitle>Created By</columnTitle>
                         <fk>
-                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                             <fkDbSchema>core</fkDbSchema>
                             <fkTable>users</fkTable>
                             <fkColumnName>userid</fkColumnName>
@@ -53,7 +51,6 @@
                     <!--<column columnName="qcstate">-->
                         <!--<columnTitle>Status</columnTitle>-->
                         <!--<fk>-->
-                            <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
                             <!--<fkDbSchema>study</fkDbSchema>-->
                             <!--<fkTable>qcstate</fkTable>-->
                             <!--<fkColumnName>rowid</fkColumnName>-->

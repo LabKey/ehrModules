@@ -15,7 +15,6 @@
                         <nullable>false</nullable>
                         <columnTitle>Species</columnTitle>
                         <fk>
-                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                             <fkDbSchema>ehr_lookups</fkDbSchema>
                             <fkTable>species</fkTable>
                             <fkColumnName>common</fkColumnName>
@@ -25,7 +24,6 @@
                         <datatype>varchar</datatype>
                         <columnTitle>Gender</columnTitle>
                         <fk>
-                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                             <fkDbSchema>ehr_lookups</fkDbSchema>
                             <fkTable>gender_codes</fkTable>
                             <fkColumnName>code</fkColumnName>
@@ -43,7 +41,6 @@
                         <datatype>varchar</datatype>
                         <columnTitle>Dam</columnTitle>
                         <fk>
-                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                             <fkDbSchema>study</fkDbSchema>
                             <fkTable>animal</fkTable>
                             <fkColumnName>Id</fkColumnName>
@@ -53,7 +50,6 @@
                         <datatype>varchar</datatype>
                         <columnTitle>Sire</columnTitle>
                         <fk>
-                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                             <fkDbSchema>study</fkDbSchema>
                             <fkTable>animal</fkTable>
                             <fkColumnName>Id</fkColumnName>
@@ -63,7 +59,6 @@
                         <datatype>varchar</datatype>
                         <columnTitle>Room</columnTitle>
                         <fk>
-                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                             <fkDbSchema>ehr_lookups</fkDbSchema>
                             <fkTable>rooms</fkTable>
                             <fkColumnName>room</fkColumnName>
@@ -82,7 +77,6 @@
                         <columnTitle>Room/Cage</columnTitle>
                         <isHidden>true</isHidden>
                         <fk>
-                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                             <fkDbSchema>ehr_lookups</fkDbSchema>
                             <fkTable>cage</fkTable>
                             <fkColumnName>roomcage</fkColumnName>
@@ -94,7 +88,6 @@
                     </column>
                     <column columnName="parentId">
                         <!--<fk>-->
-                          <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
                           <!--<fkDbSchema>study</fkDbSchema>-->
                           <!--<fkTable>studyDataParent</fkTable>-->
                           <!--<fkColumnName>objectid</fkColumnName>-->

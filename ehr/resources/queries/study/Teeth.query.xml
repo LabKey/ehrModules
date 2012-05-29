@@ -27,7 +27,6 @@
                         <datatype>varchar</datatype>
                         <columnTitle>Side</columnTitle>
                         <fk>
-                          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                           <fkDbSchema>ehr_lookups</fkDbSchema>
                           <fkTable>dental_side</fkTable>
                           <fkColumnName>side</fkColumnName>
@@ -37,7 +36,6 @@
                         <datatype>varchar</datatype>
                         <columnTitle>Upper/Lower</columnTitle>
                         <fk>
-                          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                           <fkDbSchema>ehr_lookups</fkDbSchema>
                           <fkTable>dental_jaw</fkTable>
                           <fkColumnName>jaw</fkColumnName>
@@ -47,7 +45,6 @@
                         <datatype>varchar</datatype>
                         <columnTitle>Tooth</columnTitle>
                         <fk>
-                          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                           <fkDbSchema>ehr_lookups</fkDbSchema>
                           <fkTable>dental_teeth</fkTable>
                           <fkColumnName>teeth</fkColumnName>
@@ -57,7 +54,6 @@
                         <datatype>varchar</datatype>
                         <columnTitle>Status</columnTitle>
                         <fk>
-                          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                           <fkDbSchema>ehr_lookups</fkDbSchema>
                           <fkTable>dental_status</fkTable>
                           <fkColumnName>status</fkColumnName>
@@ -95,7 +91,6 @@
                       <columnTitle>Parent Id</columnTitle>
                       <propertyURI>urn:ehr.labkey.org/#ParentId</propertyURI>
                       <!--<fk>-->
-                          <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
                           <!--<fkDbSchema>study</fkDbSchema>-->
                           <!--<fkTable>studyDataParent</fkTable>-->
                           <!--<fkColumnName>objectid</fkColumnName>-->

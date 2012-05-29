@@ -12,7 +12,6 @@
                 <columns>
                     <column columnName="parentId">
                         <!--<fk>-->
-                          <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
                           <!--<fkDbSchema>study</fkDbSchema>-->
                           <!--<fkTable>studyDataParent</fkTable>-->
                           <!--<fkColumnName>objectid</fkColumnName>-->
@@ -26,7 +25,6 @@
                     <datatype>varchar</datatype>
                     <columnTitle>Type of Death</columnTitle>
                     <fk>
-                      <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                       <fkDbSchema>ehr_lookups</fkDbSchema>
                       <fkTable>death_cause</fkTable>
                       <fkColumnName>cause</fkColumnName>
@@ -36,7 +34,6 @@
                     <datatype>varchar</datatype>
                     <columnTitle>Manner of Death</columnTitle>
                     <fk>
-                      <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                       <fkDbSchema>ehr_lookups</fkDbSchema>
                       <fkTable>death_manner</fkTable>
                       <fkColumnName>manner</fkColumnName>
@@ -85,7 +82,6 @@
                             <!--cage=${cage}&amp;-->
                         <!--</url>-->
                         <fk>
-                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                             <fkDbSchema>ehr_lookups</fkDbSchema>
                             <fkTable>rooms</fkTable>
                             <fkColumnName>room</fkColumnName>

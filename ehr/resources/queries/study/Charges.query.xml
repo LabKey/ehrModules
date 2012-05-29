@@ -14,7 +14,6 @@
                     <datatype>integer</datatype>
                     <columnTitle>Charge Type</columnTitle>
                     <fk>
-                        <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                         <fkDbSchema>ehr_lookups</fkDbSchema>
                         <fkTable>charge_items</fkTable>
                         <fkColumnName>rowid</fkColumnName>
@@ -77,7 +76,6 @@
                   </column>
                     <column columnName="parentId">
                         <!--<fk>-->
-                          <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
                           <!--<fkDbSchema>study</fkDbSchema>-->
                           <!--<fkTable>studyDataParent</fkTable>-->
                           <!--<fkColumnName>objectid</fkColumnName>-->

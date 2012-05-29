@@ -36,7 +36,6 @@
             <datatype>varchar</datatype>
             <columnTitle>Observation Record</columnTitle>
             <fk>
-              <fkFolderPath>/wnprc/ehr/</fkFolderPath>
               <fkDbSchema>study</fkDbSchema>
               <fkTable>obs</fkTable>
               <fkColumnName>objectid</fkColumnName>
@@ -46,7 +45,6 @@
             <datatype>varchar</datatype>
             <columnTitle>Housing Record</columnTitle>
             <fk>
-              <fkFolderPath>/wnprc/ehr/</fkFolderPath>
               <fkDbSchema>study</fkDbSchema>
               <fkTable>housing</fkTable>
               <fkColumnName>objectid</fkColumnName>

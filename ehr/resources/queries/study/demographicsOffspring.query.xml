@@ -15,7 +15,6 @@
                     </column>
                     <column columnName="Offspring">
                         <fk>
-                          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                           <fkDbSchema>study</fkDbSchema>
                           <fkTable>animal</fkTable>
                           <fkColumnName>Id</fkColumnName>

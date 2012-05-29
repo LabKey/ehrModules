@@ -13,7 +13,6 @@
                 <columns>
                     <column columnName="project">
                         <fk>
-                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                             <fkDbSchema>ehr</fkDbSchema>
                             <fkTable>project</fkTable>
                             <fkColumnName>project</fkColumnName>
@@ -27,7 +26,6 @@
                         <datatype>varchar</datatype>
                         <columnTitle>Code</columnTitle>
                         <fk>
-                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                             <fkDbSchema>ehr_lookups</fkDbSchema>
                             <fkTable>snomed</fkTable>
                             <fkColumnName>code</fkColumnName>
@@ -45,7 +43,6 @@
                     </column>
                     <column columnName="parentId">
                         <!--<fk>-->
-                            <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
                             <!--<fkDbSchema>study</fkDbSchema>-->
                             <!--<fkTable>studyDataParent</fkTable>-->
                             <!--<fkColumnName>objectid</fkColumnName>-->
@@ -59,7 +56,6 @@
                         <datatype>varchar</datatype>
                         <columnTitle>Amount Units</columnTitle>
                         <fk>
-                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                             <fkDbSchema>ehr_lookups</fkDbSchema>
                             <fkTable>amount_units</fkTable>
                             <fkColumnName>unit</fkColumnName>
@@ -69,7 +65,6 @@
                         <datatype>varchar</datatype>
                         <columnTitle>Route</columnTitle>
                         <fk>
-                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                             <fkDbSchema>ehr_lookups</fkDbSchema>
                             <fkTable>routes</fkTable>
                             <fkColumnName>route</fkColumnName>
@@ -81,7 +76,6 @@
                     <column columnName="conc_units">
                         <columnTitle>Conc Units</columnTitle>
                         <fk>
-                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                             <fkDbSchema>ehr_lookups</fkDbSchema>
                             <fkTable>conc_units</fkTable>
                             <fkColumnName>unit</fkColumnName>
@@ -90,7 +84,6 @@
                     <column columnName="dosage_units">
                         <columnTitle>Dosage Units</columnTitle>
                         <fk>
-                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                             <fkDbSchema>ehr_lookups</fkDbSchema>
                             <fkTable>dosage_units</fkTable>
                             <fkColumnName>unit</fkColumnName>
@@ -99,7 +92,6 @@
                     <column columnName="vol_units">
                         <columnTitle>Vol Units</columnTitle>
                         <fk>
-                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                             <fkDbSchema>ehr_lookups</fkDbSchema>
                             <fkTable>volume_units</fkTable>
                             <fkColumnName>unit</fkColumnName>
@@ -108,7 +100,6 @@
                     <column columnName="restraint">
                         <columnTitle>Restraint</columnTitle>
                         <fk>
-                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                             <fkDbSchema>ehr_lookups</fkDbSchema>
                             <fkTable>restraint_type</fkTable>
                             <fkColumnName>type</fkColumnName>
@@ -117,7 +108,6 @@
                     <column columnName="restraintDuration">
                         <columnTitle>Time Restrained</columnTitle>
                         <fk>
-                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                             <fkDbSchema>ehr_lookups</fkDbSchema>
                             <fkTable>restraint_duration</fkTable>
                             <fkColumnName>duration</fkColumnName>
@@ -125,7 +115,6 @@
                     </column>
                     <column columnName="category">
                         <fk>
-                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                             <fkDbSchema>ehr_lookups</fkDbSchema>
                             <fkTable>drug_categories</fkTable>
                             <fkColumnName>category</fkColumnName>

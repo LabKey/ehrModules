@@ -6,7 +6,6 @@
                     <column columnName="protocol">
                         <isKeyField>true</isKeyField>
                         <fk>
-                          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                           <fkDbSchema>ehr</fkDbSchema>
                           <fkTable>protocol</fkTable>
                           <fkColumnName>protocol</fkColumnName>
@@ -14,7 +13,6 @@
                     </column>
                     <column columnName="Id">
                         <fk>
-                          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                           <fkDbSchema>study</fkDbSchema>
                           <fkTable>animal</fkTable>
                           <fkColumnName>id</fkColumnName>
@@ -22,7 +20,6 @@
                     </column>
                     <column columnName="Species">
                         <fk>
-                          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                           <fkDbSchema>ehr_lookups</fkDbSchema>
                           <fkTable>species</fkTable>
                           <fkColumnName>common</fkColumnName>

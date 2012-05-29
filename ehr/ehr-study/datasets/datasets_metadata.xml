@@ -4240,7 +4240,7 @@
     <tableTitle>Virology Results</tableTitle>
   </table>
   <table tableName="arrival" tableDbType="TABLE">
-    <description>Arrival of animals at WNPRC</description>
+    <description>Arrival of animals</description>
     <columns>
       <column columnName="Id">
         <datatype>varchar</datatype>
@@ -4765,7 +4765,7 @@
     <tableTitle>Charges</tableTitle>
   </table>
   <table tableName="deaths" tableDbType="TABLE">
-    <description>Deaths of WNPRC animals</description>
+    <description>Deaths of animals</description>
     <columns>
       <column columnName="Id">
         <datatype>varchar</datatype>
@@ -4906,7 +4906,7 @@
     <tableTitle>Deaths</tableTitle>
   </table>
   <table tableName="demographics" tableDbType="TABLE">
-    <description>Demographics data of WNPRC animals</description>
+    <description>Demographics data of animals</description>
     <columns>
       <column columnName="Id">
         <datatype>varchar</datatype>
@@ -5717,7 +5717,7 @@
     <tableTitle>Menses</tableTitle>
   </table>
   <table tableName="notes" tableDbType="TABLE">
-    <description>Notes About WNPRC Animals</description>
+    <description>Notes About Animals</description>
     <columns>
       <column columnName="Id">
         <datatype>varchar</datatype>

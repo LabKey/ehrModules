@@ -16,7 +16,6 @@
                     </column>
                     <column columnName="parentId">
                         <!--<fk>-->
-                          <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
                           <!--<fkDbSchema>study</fkDbSchema>-->
                           <!--<fkTable>studyDataParent</fkTable>-->
                           <!--<fkColumnName>objectid</fkColumnName>-->
@@ -25,7 +24,6 @@
                     </column>
                     <column columnName="type">
                         <fk>
-                          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                           <fkDbSchema>ehr_lookups</fkDbSchema>
                           <fkTable>clinpath_types</fkTable>
                           <fkColumnName>type</fkColumnName>
@@ -47,7 +45,6 @@
                     <column columnName="serviceRequested">
                         <columnTitle>Service Requested</columnTitle>
                         <!--<fk>-->
-                          <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
                           <!--<fkDbSchema>ehr_lookups</fkDbSchema>-->
                           <!--<fkTable>clinpath_tests</fkTable>-->
                           <!--<fkColumnName>type</fkColumnName>-->
@@ -56,7 +53,6 @@
                     <column columnName="sampleType">
                         <columnTitle>Sample Type</columnTitle>
                             <fk>
-                              <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                               <fkDbSchema>ehr_lookups</fkDbSchema>
                               <fkTable>clinpath_sampletype</fkTable>
                               <fkColumnName>sampletype</fkColumnName>
@@ -80,7 +76,6 @@
                     <column columnName="collectionMethod">
                         <columnTitle>Collection Method</columnTitle>
                         <fk>
-                          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                           <fkDbSchema>ehr_lookups</fkDbSchema>
                           <fkTable>clinpath_collection_method</fkTable>
                           <fkColumnName>method</fkColumnName>

@@ -14,7 +14,6 @@
                     <datatype>varchar</datatype>
                     <columnTitle>Organism</columnTitle>
                     <fk>
-                        <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                         <fkDbSchema>ehr_lookups</fkDbSchema>
                         <fkTable>snomed</fkTable>
                         <fkColumnName>Code</fkColumnName>
@@ -25,7 +24,6 @@
                         <datatype>varchar</datatype>
                         <columnTitle>Qualitative Result</columnTitle>
                         <fk>
-                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                             <fkDbSchema>ehr_lookups</fkDbSchema>
                             <fkTable>qualitative_results</fkTable>
                             <fkColumnName>result</fkColumnName>
@@ -33,7 +31,6 @@
                     </column>
                     <column columnName="parentId">
                         <!--<fk>-->
-                          <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
                           <!--<fkDbSchema>study</fkDbSchema>-->
                           <!--<fkTable>parasitologyRuns</fkTable>-->
                           <!--<fkColumnName>objectid</fkColumnName>-->
@@ -42,7 +39,6 @@
                     <column columnName="runId" wrappedColumnName="parentId">
                         <isHidden>false</isHidden>
                         <fk>
-                          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                           <fkDbSchema>study</fkDbSchema>
                           <fkTable>clinpathRunsParent</fkTable>
                           <fkColumnName>objectid</fkColumnName>
@@ -59,7 +55,6 @@
                       <!--<nullable>false</nullable>-->
                       <columnTitle>Method</columnTitle>
                       <fk>
-                        <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                         <fkDbSchema>ehr_lookups</fkDbSchema>
                         <fkTable>parasitology_method</fkTable>
                         <fkColumnName>method</fkColumnName>

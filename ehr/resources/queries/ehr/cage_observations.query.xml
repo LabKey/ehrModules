@@ -28,7 +28,6 @@
                         <displayWidth>50</displayWidth>
                         <!--NOTE: this lookup appears as '_select' due to a bug-->
                         <fk>
-                          <fkFolderPath>/wnprc/ehr</fkFolderPath>
                           <fkDbSchema>ehr_lookups</fkDbSchema>
                           <fkTable>rooms</fkTable>
                           <fkColumnName>room</fkColumnName>
@@ -43,7 +42,6 @@
                         <datatype>varchar</datatype>
                         <columnTitle>Feces</columnTitle>
                         <!--<fk>-->
-                            <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
                             <!--<fkDbSchema>ehr_lookups</fkDbSchema>-->
                             <!--<fkTable>obs_feces</fkTable>-->
                             <!--<fkColumnName>code</fkColumnName>-->
@@ -69,7 +67,6 @@
                         <columnTitle>Status</columnTitle>
                         <datatype>integer</datatype>
                         <fk>
-                          <fkFolderPath>/wnprc/ehr</fkFolderPath>
                           <fkDbSchema>study</fkDbSchema>
                           <fkTable>qcstate</fkTable>
                           <fkColumnName>rowid</fkColumnName>
@@ -123,7 +120,6 @@
                         <propertyURI>urn:ehr.labkey.org/#TaskId</propertyURI>
                         <isHidden>true</isHidden>
                         <fk>
-                          <fkFolderPath>/wnprc/ehr</fkFolderPath>
                           <fkDbSchema>ehr</fkDbSchema>
                           <fkTable>tasks</fkTable>
                           <fkColumnName>taskid</fkColumnName>

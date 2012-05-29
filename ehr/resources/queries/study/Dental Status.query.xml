@@ -12,7 +12,6 @@
                 <columns>
                     <column columnName="parentId">
                         <!--<fk>-->
-                          <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
                           <!--<fkDbSchema>study</fkDbSchema>-->
                           <!--<fkTable>studyDataParent</fkTable>-->
                           <!--<fkColumnName>objectid</fkColumnName>-->
@@ -22,7 +21,6 @@
                         <datatype>varchar</datatype>
                         <columnTitle>Priority</columnTitle>
                         <fk>
-                          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                           <fkDbSchema>ehr_lookups</fkDbSchema>
                           <fkTable>dental_priority</fkTable>
                           <fkColumnName>priority</fkColumnName>
@@ -36,7 +34,6 @@
                         <datatype>varchar</datatype>
                         <columnTitle>Gingivitis</columnTitle>
                         <fk>
-                          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                           <fkDbSchema>ehr_lookups</fkDbSchema>
                           <fkTable>dental_gingivitis</fkTable>
                           <fkColumnName>result</fkColumnName>
@@ -47,7 +44,6 @@
                         <nullable>true</nullable>
                         <columnTitle>Tartar</columnTitle>
                         <fk>
-                          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                           <fkDbSchema>ehr_lookups</fkDbSchema>
                           <fkTable>dental_tartar</fkTable>
                           <fkColumnName>result</fkColumnName>

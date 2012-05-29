@@ -14,7 +14,6 @@
                       <isUnselectable>true</isUnselectable>
                       <columnTitle>Animals Actively Assigned</columnTitle>
                       <fk>
-                        <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                         <fkDbSchema>ehr</fkDbSchema>
                         <fkTable>projectTotalActivelyAssigned</fkTable>
                         <fkColumnName>project</fkColumnName>
@@ -24,7 +23,6 @@
                       <columnTitle>Last Assignment Date</columnTitle>
                       <isUnselectable>true</isUnselectable>
                       <fk>
-                        <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                         <fkDbSchema>ehr</fkDbSchema>
                         <fkTable>projectLastAssignmentDate</fkTable>
                         <fkColumnName>project</fkColumnName>
@@ -34,7 +32,6 @@
                       <datatype>varchar</datatype>
                       <columnTitle>Protocol</columnTitle>
                       <fk>
-                        <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                         <fkDbSchema>ehr</fkDbSchema>
                         <fkTable>protocol</fkTable>
                         <fkColumnName>protocol</fkColumnName>
@@ -44,7 +41,6 @@
                       <datatype>varchar</datatype>
                       <columnTitle>Availability</columnTitle>
                       <fk>
-                        <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                         <fkDbSchema>ehr_lookups</fkDbSchema>
                         <fkTable>avail_codes</fkTable>
                         <fkColumnName>code</fkColumnName>

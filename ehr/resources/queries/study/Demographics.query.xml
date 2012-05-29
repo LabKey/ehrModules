@@ -14,7 +14,6 @@
                         <datatype>varchar</datatype>
                         <columnTitle>Gender</columnTitle>
                         <fk>
-                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                             <fkDbSchema>ehr_lookups</fkDbSchema>
                             <fkTable>gender_codes</fkTable>
                             <fkColumnName>Code</fkColumnName>
@@ -33,7 +32,6 @@
                         <isHidden>true</isHidden>
                         <columnTitle>Status</columnTitle>
                         <fk>
-                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                             <fkDbSchema>ehr_lookups</fkDbSchema>
                             <fkTable>status_codes</fkTable>
                             <fkColumnName>Code</fkColumnName>
@@ -44,7 +42,6 @@
                         <shownInInsertView>false</shownInInsertView>
                         <columnTitle>Status</columnTitle>
                         <fk>
-                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                             <fkDbSchema>ehr_lookups</fkDbSchema>
                             <fkTable>calculated_status_codes</fkTable>
                             <fkColumnName>Code</fkColumnName>
@@ -74,7 +71,6 @@
                         <datatype>varchar</datatype>
                         <columnTitle>Species</columnTitle>
                         <fk>
-                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                             <fkDbSchema>ehr_lookups</fkDbSchema>
                             <fkTable>species</fkTable>
                             <fkColumnName>common</fkColumnName>
@@ -84,7 +80,6 @@
                         <datatype>varchar</datatype>
                         <columnTitle>Dam</columnTitle>
                         <!--<fk>-->
-                            <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
                             <!--<fkDbSchema>study</fkDbSchema>-->
                             <!--<fkTable>animal</fkTable>-->
                             <!--<fkColumnName>id</fkColumnName>-->
@@ -97,7 +92,6 @@
                         <datatype>varchar</datatype>
                         <columnTitle>Sire</columnTitle>
                         <!--<fk>-->
-                            <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
                             <!--<fkDbSchema>study</fkDbSchema>-->
                             <!--<fkTable>animal</fkTable>-->
                             <!--<fkColumnName>id</fkColumnName>-->
@@ -110,7 +104,6 @@
                         <datatype>varchar</datatype>
                         <columnTitle>Origin</columnTitle>
                         <fk>
-                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                             <fkDbSchema>ehr_lookups</fkDbSchema>
                             <fkTable>origin_codes</fkTable>
                             <fkColumnName>Code</fkColumnName>
@@ -164,7 +157,6 @@
                             room=${room}&amp;
                         </url>
                         <fk>
-                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                             <fkDbSchema>ehr_lookups</fkDbSchema>
                             <fkTable>rooms</fkTable>
                             <fkColumnName>room</fkColumnName>
@@ -189,7 +181,6 @@
                         <displayWidth>30</displayWidth>
                         <columnTitle>Condition</columnTitle>
                         <fk>
-                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                             <fkDbSchema>ehr_lookups</fkDbSchema>
                             <fkTable>condition_codes</fkTable>
                             <fkColumnName>Code</fkColumnName>
@@ -244,7 +235,6 @@
                         <columnTitle>Viral Status</columnTitle>
                         <isHidden>true</isHidden>
                         <fk>
-                          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                           <fkDbSchema>ehr_lookups</fkDbSchema>
                           <fkTable>viral_status</fkTable>
                           <fkColumnName>viral_status</fkColumnName>
@@ -252,7 +242,6 @@
                     </column>
                     <column columnName="parentId">
                         <!--<fk>-->
-                          <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
                           <!--<fkDbSchema>study</fkDbSchema>-->
                           <!--<fkTable>studyDataParent</fkTable>-->
                           <!--<fkColumnName>objectid</fkColumnName>-->

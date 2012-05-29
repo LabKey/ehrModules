@@ -27,7 +27,6 @@
                         <datatype>varchar</datatype>
                         <columnTitle>Gender</columnTitle>
                         <fk>
-                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                             <fkDbSchema>ehr_lookups</fkDbSchema>
                             <fkTable>gender_codes</fkTable>
                             <fkColumnName>Code</fkColumnName>
@@ -99,7 +98,6 @@
                     <columnTitle>Parent Id</columnTitle>
                     <propertyURI>urn:ehr.labkey.org/#ParentId</propertyURI>
                       <!--<fk>-->
-                          <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
                           <!--<fkDbSchema>study</fkDbSchema>-->
                           <!--<fkTable>studyDataParent</fkTable>-->
                           <!--<fkColumnName>objectid</fkColumnName>-->

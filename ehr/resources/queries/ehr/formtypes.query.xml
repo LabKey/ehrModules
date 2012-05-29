@@ -6,7 +6,6 @@
                     <column columnName="formsections" wrappedColumnName="formtype">
                         <columnTitle>Form Sections</columnTitle>
                         <fk>
-                            <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
                             <fkDbSchema>ehr</fkDbSchema>
                             <fkTable>formpanelsections</fkTable>
                             <fkColumnName>formtype</fkColumnName>

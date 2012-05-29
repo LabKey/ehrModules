@@ -7,7 +7,6 @@
                         <isKeyField>true</isKeyField>
                         <!--<isHidden>true</isHidden>-->
                         <fk>
-                          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                           <fkDbSchema>study</fkDbSchema>
                           <fkTable>animal</fkTable>
                           <fkColumnName>Id</fkColumnName>
@@ -15,7 +14,6 @@
                     </column>
                     <column columnName="Dam">
                         <fk>
-                          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                           <fkDbSchema>study</fkDbSchema>
                           <fkTable>animal</fkTable>
                           <fkColumnName>Id</fkColumnName>
@@ -23,7 +21,6 @@
                     </column>
                     <column columnName="Sire">
                         <fk>
-                          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                           <fkDbSchema>study</fkDbSchema>
                           <fkTable>animal</fkTable>
                           <fkColumnName>Id</fkColumnName>
@@ -31,7 +28,6 @@
                     </column>
                     <column columnName="MaternalGranddam">
                         <fk>
-                          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                           <fkDbSchema>study</fkDbSchema>
                           <fkTable>animal</fkTable>
                           <fkColumnName>Id</fkColumnName>
@@ -39,7 +35,6 @@
                     </column>
                     <column columnName="MaternalGrandsire">
                         <fk>
-                          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                           <fkDbSchema>study</fkDbSchema>
                           <fkTable>animal</fkTable>
                           <fkColumnName>Id</fkColumnName>
@@ -47,7 +42,6 @@
                     </column>
                     <column columnName="PaternalGranddam">
                         <fk>
-                          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                           <fkDbSchema>study</fkDbSchema>
                           <fkTable>animal</fkTable>
                           <fkColumnName>Id</fkColumnName>
@@ -55,7 +49,6 @@
                     </column>
                     <column columnName="PaternalGrandsire">
                         <fk>
-                          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                           <fkDbSchema>study</fkDbSchema>
                           <fkTable>animal</fkTable>
                           <fkColumnName>Id</fkColumnName>

@@ -17,7 +17,6 @@
                     <column columnName="room">
                         <displayWidth>40</displayWidth>
                         <!--<fk>-->
-                          <!--<fkFolderPath>/wnprc/ehr</fkFolderPath>-->
                           <!--<fkDbSchema>ehr_lookups</fkDbSchema>-->
                           <!--<fkTable>rooms</fkTable>-->
                           <!--<fkColumnName>room</fkColumnName>-->
@@ -30,7 +29,6 @@
                       <columnTitle>Total Animals</columnTitle>
                       <isUnselectable>true</isUnselectable>
                       <fk>
-                        <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                         <fkDbSchema>ehr</fkDbSchema>
                         <fkTable>CageUtilization</fkTable>
                         <fkColumnName>roomcage</fkColumnName>

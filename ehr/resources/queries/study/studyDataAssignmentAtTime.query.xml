@@ -12,7 +12,6 @@
                         <!--<isHidden>true</isHidden>-->
                         <!--<isKeyField>true</isKeyField>-->
                         <!--<fk>-->
-                            <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
                             <!--<fkDbSchema>study</fkDbSchema>-->
                             <!--<fkTable>housing</fkTable>-->
                             <!--<fkColumnName>lsid</fkColumnName>-->

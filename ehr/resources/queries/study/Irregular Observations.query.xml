@@ -15,7 +15,6 @@
                     </column>
                     <column columnName="parentId">
                         <!--<fk>-->
-                            <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
                             <!--<fkDbSchema>study</fkDbSchema>-->
                             <!--<fkTable>studyDataParent</fkTable>-->
                             <!--<fkColumnName>objectid</fkColumnName>-->
@@ -40,7 +39,6 @@
                         <isHidden>false</isHidden>
                         <isUnselectable>true</isUnselectable>
                         <fk>
-                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                             <fkDbSchema>study</fkDbSchema>
                             <fkTable>obsStatus</fkTable>
                             <fkColumnName>lsid</fkColumnName>
@@ -50,7 +48,6 @@
                         <datatype>varchar</datatype>
                         <columnTitle>Feces</columnTitle>
                         <!--<fk>-->
-                            <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
                             <!--<fkDbSchema>ehr_lookups</fkDbSchema>-->
                             <!--<fkTable>obs_feces</fkTable>-->
                             <!--<fkColumnName>code</fkColumnName>-->
@@ -60,7 +57,6 @@
                         <datatype>varchar</datatype>
                         <columnTitle>Menses</columnTitle>
                         <fk>
-                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                             <fkDbSchema>ehr_lookups</fkDbSchema>
                             <fkTable>obs_mens</fkTable>
                             <fkColumnName>code</fkColumnName>
@@ -70,7 +66,6 @@
                         <datatype>varchar</datatype>
                         <columnTitle>Behavior</columnTitle>
                         <!--<fk>-->
-                            <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
                             <!--<fkDbSchema>ehr_lookups</fkDbSchema>-->
                             <!--<fkTable>obs_behavior</fkTable>-->
                             <!--<fkColumnName>code</fkColumnName>-->
@@ -80,7 +75,6 @@
                         <datatype>varchar</datatype>
                         <columnTitle>Breeding</columnTitle>
                         <fk>
-                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                             <fkDbSchema>ehr_lookups</fkDbSchema>
                             <fkTable>obs_breeding</fkTable>
                             <fkColumnName>code</fkColumnName>
@@ -90,7 +84,6 @@
                         <datatype>varchar</datatype>
                         <columnTitle>Other</columnTitle>
                         <!--<fk>-->
-                            <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
                             <!--<fkDbSchema>ehr_lookups</fkDbSchema>-->
                             <!--<fkTable>obs_other</fkTable>-->
                             <!--<fkColumnName>code</fkColumnName>-->

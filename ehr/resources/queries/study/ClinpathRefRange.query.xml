@@ -9,7 +9,6 @@
                     </column>
                    <column columnName="Id">
                         <fk>
-                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                             <fkDbSchema>study</fkDbSchema>
                             <fkTable>animal</fkTable>
                             <fkColumnName>id</fkColumnName>
@@ -32,7 +31,6 @@
                     </column>
                    <column columnName="taskid">
                         <fk>
-                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                             <fkDbSchema>ehr</fkDbSchema>
                             <fkTable>tasks</fkTable>
                             <fkColumnName>taskid</fkColumnName>
@@ -41,7 +39,6 @@
                     <column columnName="test_key">
                         <isHidden>true</isHidden>
                         <fk>
-                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                             <fkDbSchema>ehr_lookups</fkDbSchema>
                             <fkTable>lab_tests</fkTable>
                             <fkColumnName>key</fkColumnName>
@@ -92,7 +89,6 @@
                         <columnTitle>Record Status</columnTitle>
                         <displayWidth>50</displayWidth>
                         <fk>
-                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                             <fkDbSchema>study</fkDbSchema>
                             <fkTable>qcstate</fkTable>
                             <fkColumnName>rowid</fkColumnName>

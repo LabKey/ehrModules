@@ -13,7 +13,6 @@
                 <columns>
                     <column columnName="project">
                         <fk>
-                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                             <fkDbSchema>ehr</fkDbSchema>
                             <fkTable>project</fkTable>
                             <fkColumnName>project</fkColumnName>
@@ -50,7 +49,6 @@
                         <nullable>false</nullable>
                         <columnTitle>Treatment</columnTitle>
                         <fk>
-                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                             <fkDbSchema>ehr_lookups</fkDbSchema>
                             <fkTable>snomed</fkTable>
                             <fkColumnName>code</fkColumnName>
@@ -58,7 +56,6 @@
                     </column>
                     <column columnName="parentId">
                         <!--<fk>-->
-                          <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
                           <!--<fkDbSchema>study</fkDbSchema>-->
                           <!--<fkTable>studyDataParent</fkTable>-->
                           <!--<fkColumnName>objectid</fkColumnName>-->
@@ -66,7 +63,6 @@
                     </column>
                     <column columnName="frequency">
                         <fk>
-                          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                           <fkDbSchema>ehr_lookups</fkDbSchema>
                           <fkTable>treatment_frequency</fkTable>
                           <fkColumnName>rowid</fkColumnName>
@@ -78,7 +74,6 @@
                         <!--<isHidden>true</isHidden>-->
                         <!--<isUnselectable>true</isUnselectable>-->
                         <!--<fk>-->
-                            <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
                             <!--<fkDbSchema>study</fkDbSchema>-->
                             <!--<fkTable>treatmentDate</fkTable>-->
                             <!--<fkColumnName>lsid</fkColumnName>-->
@@ -87,7 +82,6 @@
                     <column columnName="route">
                         <!--<columnTitle>Route</columnTitle>-->
                         <fk>
-                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                             <fkDbSchema>ehr_lookups</fkDbSchema>
                             <fkTable>routes</fkTable>
                             <fkColumnName>route</fkColumnName>
@@ -97,7 +91,6 @@
                     <column columnName="vol_units">
                         <columnTitle>Volume Units</columnTitle>
                         <fk>
-                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                             <fkDbSchema>ehr_lookups</fkDbSchema>
                             <fkTable>volume_units</fkTable>
                             <fkColumnName>unit</fkColumnName>
@@ -109,7 +102,6 @@
                     <column columnName="conc_units">
                         <columnTitle>Conc Units</columnTitle>
                         <fk>
-                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                             <fkDbSchema>ehr_lookups</fkDbSchema>
                             <fkTable>conc_units</fkTable>
                             <fkColumnName>unit</fkColumnName>
@@ -118,7 +110,6 @@
                     <column columnName="amount_units">
                         <columnTitle>Amount Units</columnTitle>
                         <fk>
-                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                             <fkDbSchema>ehr_lookups</fkDbSchema>
                             <fkTable>amount_units</fkTable>
                             <fkColumnName>unit</fkColumnName>
@@ -130,7 +121,6 @@
                     <column columnName="dosage_units">
                         <columnTitle>Dosage Units</columnTitle>
                         <fk>
-                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                             <fkDbSchema>ehr_lookups</fkDbSchema>
                             <fkTable>dosage_units</fkTable>
                             <fkColumnName>unit</fkColumnName>

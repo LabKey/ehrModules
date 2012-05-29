@@ -389,7 +389,6 @@
         <ns:datatype>integer</ns:datatype>
         <ns:scale>50</ns:scale>
         <ns:fk>
-            <!--<ns:fkFolderPath>/wnprc/ehr/</ns:fkFolderPath>-->
             <ns:fkDbSchema>core</ns:fkDbSchema>
             <ns:fkTable>PrincipalsWithoutAdmin</ns:fkTable>
             <ns:fkColumnName>userid</ns:fkColumnName>
@@ -399,7 +398,6 @@
         <ns:nullable>true</ns:nullable>
         <ns:datatype>integer</ns:datatype>
         <ns:fk>
-            <!--<ns:fkFolderPath>/wnprc/ehr/</ns:fkFolderPath>-->
             <ns:fkDbSchema>core</ns:fkDbSchema>
             <ns:fkTable>PrincipalsWithoutAdmin</ns:fkTable>
             <ns:fkColumnName>userid</ns:fkColumnName>
@@ -410,7 +408,6 @@
         <ns:nullable>true</ns:nullable>
         <ns:datatype>integer</ns:datatype>
         <ns:fk>
-            <!--<ns:fkFolderPath>/wnprc/ehr/</ns:fkFolderPath>-->
             <ns:fkDbSchema>core</ns:fkDbSchema>
             <ns:fkTable>PrincipalsWithoutAdmin</ns:fkTable>
             <ns:fkColumnName>userid</ns:fkColumnName>

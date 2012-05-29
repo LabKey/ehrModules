@@ -15,7 +15,6 @@
                     </column>
                     <column columnName="parentId">
                         <fk>
-                          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                           <fkDbSchema>study</fkDbSchema>
                           <fkTable>encountersParent</fkTable>
                           <fkColumnName>objectid</fkColumnName>

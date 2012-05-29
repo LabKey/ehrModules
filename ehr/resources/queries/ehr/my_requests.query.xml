@@ -18,7 +18,6 @@
                     <column columnName="formtype">
                         <columnTitle>Request Type</columnTitle>
                         <fk>
-                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                             <fkDbSchema>ehr</fkDbSchema>
                             <fkTable>formtypes</fkTable>
                             <fkColumnName>type</fkColumnName>
@@ -27,7 +26,6 @@
                     <column columnName="createdby">
                         <columnTitle>Created By</columnTitle>
                         <fk>
-                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                             <fkDbSchema>core</fkDbSchema>
                             <fkTable>users</fkTable>
                             <fkColumnName>userid</fkColumnName>
@@ -36,7 +34,6 @@
                     <column columnName="notify1">
                         <columnTitle>First Contact</columnTitle>
                         <fk>
-                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                             <fkDbSchema>core</fkDbSchema>
                             <fkTable>PrincipalsWithoutAdmin</fkTable>
                             <fkColumnName>userid</fkColumnName>
@@ -45,7 +42,6 @@
                     <column columnName="notify2">
                         <columnTitle>Second Contact</columnTitle>
                         <fk>
-                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                             <fkDbSchema>core</fkDbSchema>
                             <fkTable>Principals</fkTable>
                             <fkColumnName>userid</fkColumnName>
@@ -54,7 +50,6 @@
                     <column columnName="notify3">
                         <columnTitle>Third Contact</columnTitle>
                         <fk>
-                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                             <fkDbSchema>core</fkDbSchema>
                             <fkTable>Principals</fkTable>
                             <fkColumnName>userid</fkColumnName>
@@ -87,7 +82,6 @@
                         <isHidden>true</isHidden>
                         <columnTitle>Status</columnTitle>
                         <fk>
-                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                             <fkDbSchema>study</fkDbSchema>
                             <fkTable>qcstate</fkTable>
                             <fkColumnName>rowid</fkColumnName>

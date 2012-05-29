@@ -14,7 +14,6 @@
                     </column>
                     <column columnName="Id">
                         <fk>
-                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                             <fkDbSchema>study</fkDbSchema>
                             <fkTable>animal</fkTable>
                             <fkColumnName>id</fkColumnName>
@@ -22,7 +21,6 @@
                     </column>
                     <column columnName="Id2">
                         <fk>
-                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                             <fkDbSchema>study</fkDbSchema>
                             <fkTable>Pedigree</fkTable>
                             <fkColumnName>Id</fkColumnName>

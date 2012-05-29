@@ -10,7 +10,6 @@
                     <column columnName="Id">
                         <displayWidth>40</displayWidth>
                         <fk>
-                          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                           <fkDbSchema>study</fkDbSchema>
                           <fkTable>Animal</fkTable>
                           <fkColumnName>Id</fkColumnName>
@@ -19,7 +18,6 @@
                     <column columnName="Room">
                         <displayWidth>40</displayWidth>
                         <fk>
-                          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                           <fkDbSchema>ehr_lookups</fkDbSchema>
                           <fkTable>rooms_quick</fkTable>
                           <fkColumnName>room</fkColumnName>
@@ -46,7 +44,6 @@
                     <column columnName="QCState">
                         <displayWidth>90</displayWidth>
                         <fk>
-                          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                           <fkDbSchema>study</fkDbSchema>
                           <fkTable>qcstate</fkTable>
                           <fkColumnName>rowid</fkColumnName>

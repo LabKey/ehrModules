@@ -15,7 +15,6 @@
                     </column>
                     <column columnName="project">
                         <fk>
-                          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                           <fkDbSchema>ehr</fkDbSchema>
                           <fkTable>project</fkTable>
                           <fkColumnName>project</fkColumnName>
@@ -23,7 +22,6 @@
                     </column>
                     <column columnName="category">
                         <fk>
-                          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                           <fkDbSchema>ehr_lookups</fkDbSchema>
                           <fkTable>behavior_category</fkTable>
                           <fkColumnName>category</fkColumnName>
@@ -31,7 +29,6 @@
                     </column>
                     <column columnName="parentId">
                         <!--<fk>-->
-                          <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
                           <!--<fkDbSchema>study</fkDbSchema>-->
                           <!--<fkTable>studyDataParent</fkTable>-->
                           <!--<fkColumnName>objectid</fkColumnName>-->

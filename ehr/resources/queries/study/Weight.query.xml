@@ -15,7 +15,6 @@
                     </column>
                     <column columnName="parentId">
                         <!--<fk>-->
-                          <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
                           <!--<fkDbSchema>study</fkDbSchema>-->
                           <!--<fkTable>studyDataParent</fkTable>-->
                           <!--<fkColumnName>objectid</fkColumnName>-->
@@ -26,7 +25,6 @@
                         <isHidden>false</isHidden>
                         <isUnselectable>true</isUnselectable>
                         <fk>
-                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                             <fkDbSchema>study</fkDbSchema>
                             <fkTable>weightPctChange</fkTable>
                             <fkColumnName>lsid</fkColumnName>
@@ -37,7 +35,6 @@
                         <isHidden>false</isHidden>
                         <isUnselectable>true</isUnselectable>
                         <fk>
-                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                             <fkDbSchema>study</fkDbSchema>
                             <fkTable>weightRelChange</fkTable>
                             <fkColumnName>lsid</fkColumnName>

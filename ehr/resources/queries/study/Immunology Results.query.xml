@@ -12,7 +12,6 @@
                 <columns>
                     <column columnName="parentId">
                         <!--<fk>-->
-                          <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
                           <!--<fkDbSchema>study</fkDbSchema>-->
                           <!--<fkTable>immunologyRuns</fkTable>-->
                           <!--<fkColumnName>objectid</fkColumnName>-->
@@ -23,7 +22,6 @@
                         <isHidden>false</isHidden>
                         <isUnselectable>true</isUnselectable>
                         <fk>
-                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                             <fkDbSchema>study</fkDbSchema>
                             <fkTable>immunologyRefRange</fkTable>
                             <fkColumnName>lsid</fkColumnName>
@@ -38,7 +36,6 @@
                     <column columnName="runId" wrappedColumnName="parentId">
                         <isHidden>false</isHidden>
                         <fk>
-                          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                           <fkDbSchema>study</fkDbSchema>
                           <fkTable>clinpathRunsParent</fkTable>
                           <fkColumnName>objectid</fkColumnName>
@@ -53,7 +50,6 @@
                       <!--<nullable>false</nullable>-->
                       <columnTitle>Test Id</columnTitle>
                       <fk>
-                        <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                         <fkDbSchema>ehr_lookups</fkDbSchema>
                         <fkTable>immunology_tests</fkTable>
                         <fkColumnName>testid</fkColumnName>
@@ -64,7 +60,6 @@
                       <!--<nullable>false</nullable>-->
                       <columnTitle>Method</columnTitle>
                       <fk>
-                        <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                         <fkDbSchema>ehr_lookups</fkDbSchema>
                         <fkTable>immunology_method</fkTable>
                         <fkColumnName>method</fkColumnName>

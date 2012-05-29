@@ -12,7 +12,6 @@
                 <columns>
                     <!--<column columnName="parentId">-->
                         <!--<fk>-->
-                          <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
                           <!--<fkDbSchema>study</fkDbSchema>-->
                           <!--<fkTable>encountersParent</fkTable>-->
                           <!--<fkColumnName>objectid</fkColumnName>-->
@@ -31,7 +30,6 @@
                       <datatype>varchar</datatype>
                       <columnTitle>Organ/Tissue</columnTitle>
                       <fk>
-                        <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                         <fkDbSchema>ehr_lookups</fkDbSchema>
                         <fkTable>snomed</fkTable>
                         <fkColumnName>code</fkColumnName>
@@ -41,7 +39,6 @@
                       <datatype>varchar</datatype>
                       <columnTitle>Severity</columnTitle>
                       <fk>
-                        <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                         <fkDbSchema>ehr_lookups</fkDbSchema>
                         <fkTable>snomed</fkTable>
                         <fkColumnName>code</fkColumnName>
@@ -51,7 +48,6 @@
                       <datatype>varchar</datatype>
                       <columnTitle>Diagnosis</columnTitle>
                       <fk>
-                        <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                         <fkDbSchema>ehr_lookups</fkDbSchema>
                         <fkTable>snomed</fkTable>
                         <fkColumnName>code</fkColumnName>
@@ -71,7 +67,6 @@
                       <datatype>varchar</datatype>
                       <columnTitle>Qualifier</columnTitle>
                       <fk>
-                        <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                         <fkDbSchema>ehr_lookups</fkDbSchema>
                         <fkTable>snomed_qualifiers</fkTable>
                         <fkColumnName>qualifier</fkColumnName>
@@ -86,7 +81,6 @@
                       <!--<nullable>false</nullable>-->
                       <columnTitle>Duration</columnTitle>
                       <fk>
-                        <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                         <fkDbSchema>ehr_lookups</fkDbSchema>
                         <fkTable>snomed</fkTable>
                         <fkColumnName>code</fkColumnName>
@@ -97,7 +91,6 @@
                       <!--<nullable>false</nullable>-->
                       <columnTitle>Severity</columnTitle>
                       <fk>
-                        <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                         <fkDbSchema>ehr_lookups</fkDbSchema>
                         <fkTable>snomed</fkTable>
                         <fkColumnName>code</fkColumnName>
@@ -108,7 +101,6 @@
                       <!--<nullable>false</nullable>-->
                       <columnTitle>Process</columnTitle>
                       <fk>
-                        <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                         <fkDbSchema>ehr_lookups</fkDbSchema>
                         <fkTable>snomed</fkTable>
                         <fkColumnName>code</fkColumnName>
@@ -119,7 +111,6 @@
                       <!--<nullable>false</nullable>-->
                       <columnTitle>Process 2</columnTitle>
                       <fk>
-                        <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                         <fkDbSchema>ehr_lookups</fkDbSchema>
                         <fkTable>snomed</fkTable>
                         <fkColumnName>code</fkColumnName>
@@ -130,7 +121,6 @@
                       <!--<nullable>false</nullable>-->
                       <columnTitle>Distribution/Pattern</columnTitle>
                       <fk>
-                        <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                         <fkDbSchema>ehr_lookups</fkDbSchema>
                         <fkTable>snomed</fkTable>
                         <fkColumnName>code</fkColumnName>
@@ -141,7 +131,6 @@
                       <!--<nullable>false</nullable>-->
                       <columnTitle>Distribution/Pattern 2</columnTitle>
                       <fk>
-                        <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                         <fkDbSchema>ehr_lookups</fkDbSchema>
                         <fkTable>snomed</fkTable>
                         <fkColumnName>code</fkColumnName>
@@ -152,7 +141,6 @@
                       <!--<nullable>false</nullable>-->
                       <columnTitle>Inflammation</columnTitle>
                       <fk>
-                        <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                         <fkDbSchema>ehr_lookups</fkDbSchema>
                         <fkTable>snomed</fkTable>
                         <fkColumnName>code</fkColumnName>
@@ -163,7 +151,6 @@
                       <!--<nullable>false</nullable>-->
                       <columnTitle>Inflammation</columnTitle>
                       <fk>
-                        <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                         <fkDbSchema>ehr_lookups</fkDbSchema>
                         <fkTable>snomed</fkTable>
                         <fkColumnName>code</fkColumnName>
@@ -174,7 +161,6 @@
                       <!--<nullable>false</nullable>-->
                       <columnTitle>Etiology</columnTitle>
                       <fk>
-                        <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                         <fkDbSchema>ehr_lookups</fkDbSchema>
                         <fkTable>snomed</fkTable>
                         <fkColumnName>code</fkColumnName>
@@ -185,7 +171,6 @@
                       <isUnselectable>true</isUnselectable>
                       <columnTitle>CaseNo</columnTitle>
                       <fk>
-                        <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                         <fkDbSchema>study</fkDbSchema>
                         <fkTable>encountersParent</fkTable>
                         <fkColumnName>objectid</fkColumnName>

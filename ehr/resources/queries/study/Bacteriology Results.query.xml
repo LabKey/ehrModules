@@ -14,7 +14,6 @@
                         <datatype>varchar</datatype>
                         <columnTitle>Source</columnTitle>
                         <fk>
-                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                             <fkDbSchema>ehr_lookups</fkDbSchema>
                             <fkTable>snomed</fkTable>
                             <fkColumnName>code</fkColumnName>
@@ -24,7 +23,6 @@
                         <datatype>varchar</datatype>
                         <columnTitle>Method</columnTitle>
                         <fk>
-                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                             <fkDbSchema>ehr_lookups</fkDbSchema>
                             <fkTable>bacteriology_method</fkTable>
                             <fkColumnName>method</fkColumnName>
@@ -34,7 +32,6 @@
                         <datatype>varchar</datatype>
                         <columnTitle>Organism</columnTitle>
                         <fk>
-                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                             <fkDbSchema>ehr_lookups</fkDbSchema>
                             <fkTable>snomed</fkTable>
                             <fkColumnName>code</fkColumnName>
@@ -44,7 +41,6 @@
                         <datatype>varchar</datatype>
                         <columnTitle>Antibiotic</columnTitle>
                         <fk>
-                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                             <fkDbSchema>ehr_lookups</fkDbSchema>
                             <fkTable>snomed</fkTable>
                             <fkColumnName>code</fkColumnName>
@@ -54,7 +50,6 @@
                         <datatype>varchar</datatype>
                         <columnTitle>Sensitivity</columnTitle>
                         <fk>
-                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                             <fkDbSchema>ehr_lookups</fkDbSchema>
                             <fkTable>bacteriology_sensitivity</fkTable>
                             <fkColumnName>sensitivity</fkColumnName>
@@ -63,7 +58,6 @@
                     <column columnName="runId" wrappedColumnName="parentId">
                         <isHidden>false</isHidden>
                         <fk>
-                          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                           <fkDbSchema>study</fkDbSchema>
                           <fkTable>clinpathRunsParent</fkTable>
                           <fkColumnName>objectid</fkColumnName>
@@ -73,7 +67,6 @@
                         <datatype>varchar</datatype>
                         <columnTitle>Qualitative Result</columnTitle>
                         <fk>
-                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                             <fkDbSchema>ehr_lookups</fkDbSchema>
                             <fkTable>qualitative_results</fkTable>
                             <fkColumnName>result</fkColumnName>
@@ -81,7 +74,6 @@
                     </column>
                     <column columnName="parentId">
                         <!--<fk>-->
-                          <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
                           <!--<fkDbSchema>study</fkDbSchema>-->
                           <!--<fkTable>bacteriologyRuns</fkTable>-->
                           <!--<fkColumnName>objectid</fkColumnName>-->

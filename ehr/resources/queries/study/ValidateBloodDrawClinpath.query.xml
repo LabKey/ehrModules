@@ -19,7 +19,6 @@
                     <column columnName="taskid">
                         <!--<isHidden>true</isHidden>-->
                         <fk>
-                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                             <fkDbSchema>ehr</fkDbSchema>
                             <fkTable>tasks</fkTable>
                             <fkColumnName>taskid</fkColumnName>
@@ -28,7 +27,6 @@
                     <column columnName="path_taskid">
                         <!--<isHidden>true</isHidden>-->
                         <fk>
-                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                             <fkDbSchema>ehr</fkDbSchema>
                             <fkTable>tasks</fkTable>
                             <fkColumnName>taskid</fkColumnName>
@@ -37,7 +35,6 @@
                     <column columnName="requestid">
                         <!--<isHidden>true</isHidden>-->
                         <fk>
-                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                             <fkDbSchema>ehr</fkDbSchema>
                             <fkTable>requests</fkTable>
                             <fkColumnName>requestid</fkColumnName>
@@ -46,7 +43,6 @@
                     <column columnName="path_requestid">
                         <!--<isHidden>true</isHidden>-->
                         <fk>
-                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                             <fkDbSchema>ehr</fkDbSchema>
                             <fkTable>requests</fkTable>
                             <fkColumnName>requestid</fkColumnName>
@@ -58,7 +54,6 @@
                         <columnTitle>Status</columnTitle>
                         <displayWidth>50</displayWidth>
                         <fk>
-                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                             <fkDbSchema>study</fkDbSchema>
                             <fkTable>qcstate</fkTable>
                             <fkColumnName>rowid</fkColumnName>

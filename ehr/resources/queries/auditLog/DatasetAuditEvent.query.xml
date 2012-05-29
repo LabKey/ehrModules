@@ -5,7 +5,6 @@
                 <columns>
                     <column columnName="lsid_pointer" wrappedColumnName="Key1">
                         <fk>
-                            <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
                             <fkDbSchema>study</fkDbSchema>
                             <fkTable>studydata</fkTable>
                             <fkColumnName>lsid</fkColumnName>

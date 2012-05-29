@@ -10,7 +10,6 @@
                     <column columnName="Id">
                         <displayWidth>40</displayWidth>
                         <fk>
-                          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                           <fkDbSchema>study</fkDbSchema>
                           <fkTable>Animal</fkTable>
                           <fkColumnName>Id</fkColumnName>

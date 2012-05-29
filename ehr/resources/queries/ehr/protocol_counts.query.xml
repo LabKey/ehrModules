@@ -41,7 +41,6 @@
                   <columnTitle>Protocol</columnTitle>
                   <nullable>false</nullable>
                     <fk>
-                      <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                       <fkDbSchema>ehr</fkDbSchema>
                       <fkTable>protocol</fkTable>
                       <fkColumnName>protocol</fkColumnName>
@@ -51,7 +50,6 @@
                   <datatype>varchar</datatype>
                   <columnTitle>Species</columnTitle>
                     <fk>
-                      <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                       <fkDbSchema>ehr_lookups</fkDbSchema>
                       <fkTable>species</fkTable>
                       <fkColumnName>common</fkColumnName>

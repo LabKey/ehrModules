@@ -12,7 +12,6 @@
                 <columns>
                 <column columnName="parentId">
                     <!--<fk>-->
-                      <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
                       <!--<fkDbSchema>study</fkDbSchema>-->
                       <!--<fkTable>studyDataParent</fkTable>-->
                       <!--<fkColumnName>objectid</fkColumnName>-->
@@ -32,7 +31,6 @@
                     <columnTitle>Eye</columnTitle>
                     <displayWidth>50</displayWidth>
                     <fk>
-                      <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                       <fkDbSchema>ehr_lookups</fkDbSchema>
                       <fkTable>tb_eye</fkTable>
                       <fkColumnName>eye</fkColumnName>
@@ -42,7 +40,6 @@
                     <datatype>varchar</datatype>
                     <columnTitle>24 Hr</columnTitle>
                     <fk>
-                      <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                       <fkDbSchema>ehr_lookups</fkDbSchema>
                       <fkTable>tb_result</fkTable>
                       <fkColumnName>result</fkColumnName>
@@ -52,7 +49,6 @@
                     <datatype>varchar</datatype>
                     <columnTitle>48 Hr</columnTitle>
                     <fk>
-                      <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                       <fkDbSchema>ehr_lookups</fkDbSchema>
                       <fkTable>tb_result</fkTable>
                       <fkColumnName>result</fkColumnName>
@@ -62,7 +58,6 @@
                     <datatype>varchar</datatype>
                     <columnTitle>72 Hr</columnTitle>
                     <fk>
-                      <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                       <fkDbSchema>ehr_lookups</fkDbSchema>
                       <fkTable>tb_result</fkTable>
                       <fkColumnName>result</fkColumnName>

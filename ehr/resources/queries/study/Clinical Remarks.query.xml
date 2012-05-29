@@ -12,7 +12,6 @@
                 <columns>
                     <column columnName="project">
                         <fk>
-                          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                           <fkDbSchema>ehr</fkDbSchema>
                           <fkTable>project</fkTable>
                           <fkColumnName>project</fkColumnName>
@@ -23,7 +22,6 @@
                     </column>
                     <column columnName="parentId">
                         <!--<fk>-->
-                          <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
                           <!--<fkDbSchema>study</fkDbSchema>-->
                           <!--<fkTable>studyDataParent</fkTable>-->
                           <!--<fkColumnName>objectid</fkColumnName>-->
@@ -37,7 +35,6 @@
                          <!--<datatype>varchar</datatype>-->
                          <!--<columnTitle>Location</columnTitle>-->
                          <!--<fk>-->
-                            <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
                             <!--<fkDbSchema>ehr_lookups</fkDbSchema>-->
                             <!--<fkTable>pe_region</fkTable>-->
                             <!--<fkColumnName>region</fkColumnName>-->
@@ -48,7 +45,6 @@
                         <!--<nullable>false</nullable>-->
                         <columnTitle>Category</columnTitle>
                         <fk>
-                          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                           <fkDbSchema>ehr_lookups</fkDbSchema>
                           <fkTable>clinremarks_category</fkTable>
                           <fkColumnName>category</fkColumnName>

@@ -14,7 +14,6 @@
                     <column columnName="type">
                         <!--<isHidden>true</isHidden>-->
                         <fk>
-                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                             <fkDbSchema>ehr_lookups</fkDbSchema>
                             <fkTable>encounter_types</fkTable>
                             <fkColumnName>type</fkColumnName>
@@ -23,7 +22,6 @@
                     <column columnName="major">
                         <columnTitle>Major Surgery?</columnTitle>
                         <fk>
-                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                             <fkDbSchema>ehr_lookups</fkDbSchema>
                             <fkTable>yesno</fkTable>
                             <fkColumnName>value</fkColumnName>
@@ -43,7 +41,6 @@
                     <column columnName="restraint">
                         <columnTitle>Restraint</columnTitle>
                         <fk>
-                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                             <fkDbSchema>ehr_lookups</fkDbSchema>
                             <fkTable>restraint_type</fkTable>
                             <fkColumnName>type</fkColumnName>
@@ -52,7 +49,6 @@
                     <column columnName="restraintDuration">
                         <columnTitle>Time Restrained</columnTitle>
                         <fk>
-                            <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                             <fkDbSchema>ehr_lookups</fkDbSchema>
                             <fkTable>restraint_duration</fkTable>
                             <fkColumnName>duration</fkColumnName>

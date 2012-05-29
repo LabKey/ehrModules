@@ -26,7 +26,6 @@
                     <column columnName="runId" wrappedColumnName="parentId">
                         <isHidden>false</isHidden>
                         <fk>
-                          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                           <fkDbSchema>study</fkDbSchema>
                           <fkTable>clinpathRunsParent</fkTable>
                           <fkColumnName>objectid</fkColumnName>
@@ -41,7 +40,6 @@
                       <columnTitle>Test Id</columnTitle>
                         <displayWidth>120</displayWidth>
                       <fk>
-                        <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                         <fkDbSchema>ehr_lookups</fkDbSchema>
                         <fkTable>cytology_tests</fkTable>
                         <fkColumnName>testid</fkColumnName>
@@ -52,7 +50,6 @@
                       <datatype>varchar</datatype>
                       <columnTitle>Method</columnTitle>
                       <fk>
-                        <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                         <fkDbSchema>ehr_lookups</fkDbSchema>
                         <fkTable>hematology_method</fkTable>
                         <fkColumnName>method</fkColumnName>

@@ -9,7 +9,6 @@
                     </column>
                     <column columnName="location">
                         <fk>
-                          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                           <fkDbSchema>ehr_lookups</fkDbSchema>
                           <fkTable>cage</fkTable>
                           <fkColumnName>roomcage</fkColumnName>
@@ -18,7 +17,6 @@
                     <column columnName="room">
                         <displayWidth>40</displayWidth>
                         <!--<fk>-->
-                          <!--<fkFolderPath>/wnprc/ehr</fkFolderPath>-->
                           <!--<fkDbSchema>ehr_lookups</fkDbSchema>-->
                           <!--<fkTable>rooms</fkTable>-->
                           <!--<fkColumnName>room</fkColumnName>-->

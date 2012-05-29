@@ -6,7 +6,6 @@
                     <column columnName="protocol">
                         <isKeyField>true</isKeyField>
                         <fk>
-                          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                           <fkDbSchema>ehr</fkDbSchema>
                           <fkTable>protocol</fkTable>
                           <fkColumnName>protocol</fkColumnName>

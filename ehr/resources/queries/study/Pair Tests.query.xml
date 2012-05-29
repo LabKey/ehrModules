@@ -32,7 +32,6 @@
                         <datatype>varchar</datatype>
                         <columnTitle>BHAV</columnTitle>
                         <fk>
-                          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                           <fkDbSchema>ehr_lookups</fkDbSchema>
                           <fkTable>pairtest_bhav</fkTable>
                           <fkColumnName>value</fkColumnName>
@@ -46,7 +45,6 @@
                         <datatype>varchar</datatype>
                         <columnTitle>Test Conclusion</columnTitle>
                         <fk>
-                          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                           <fkDbSchema>ehr_lookups</fkDbSchema>
                           <fkTable>pairtest_conclusion</fkTable>
                           <fkColumnName>value</fkColumnName>
@@ -56,7 +54,6 @@
                         <datatype>varchar</datatype>
                         <columnTitle>Shared Food</columnTitle>
                         <fk>
-                          <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                           <fkDbSchema>ehr_lookups</fkDbSchema>
                           <fkTable>yesno</fkTable>
                           <fkColumnName>value</fkColumnName>
@@ -100,7 +97,6 @@
                         <columnTitle>Parent Id</columnTitle>
                         <propertyURI>urn:ehr.labkey.org/#ParentId</propertyURI>
                         <!--<fk>-->
-                          <!--<fkFolderPath>/wnprc/ehr/</fkFolderPath>-->
                           <!--<fkDbSchema>study</fkDbSchema>-->
                           <!--<fkTable>studyDataParent</fkTable>-->
                           <!--<fkColumnName>objectid</fkColumnName>-->
