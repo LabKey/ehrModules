@@ -25,7 +25,6 @@
 <%@ page import="org.labkey.api.view.ActionURL" %>
 <%@ page import="org.labkey.api.view.HttpView" %>
 <%@ page import="org.labkey.api.view.ViewContext" %>
-<%@ page import="org.labkey.ehr.EHRController" %>
 <%@ page extends="org.labkey.api.jsp.JspBase" %>
 <%
     ViewContext context = HttpView.currentContext();
@@ -35,7 +34,6 @@
     PipeRoot pipeRoot = PipelineService.get().findPipelineRoot(c);
     ActionURL pipelineSetupURL = urlProvider(PipelineUrls.class).urlSetup(c);
     ActionURL pipelineBeginURL = urlProvider(PipelineUrls.class).urlBegin(c);
-    ActionURL etlAdminURL = new ActionURL(EHRController.EtlAdminAction.class, c);
 
 %>
 Hello, and welcome to the EHR module.
@@ -45,7 +43,6 @@ Hello, and welcome to the EHR module.
     <% if (pipeRoot == null) { %>
 <%=textLink("Setup Pipeline", pipelineSetupURL)%>
     <% } %>
-<%=textLink("ETL Administation", etlAdminURL)%>
 
 <% } %>
 

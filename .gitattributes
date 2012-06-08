@@ -74,7 +74,6 @@ ehr/ehr-study/datasets/datasets_metadata.xml -text
 ehr/ehr-study/lists/lists.xml -text
 ehr/ehr-study/study.xml -text
 ehr/module.properties -text
-ehr/resources/etl/datasets/clinremarks.sql -text
 ehr/resources/queries/auditLog/DatasetAuditEvent.query.xml -text
 ehr/resources/queries/auditLog/DatasetAuditEvent/.qview.xml -text
 ehr/resources/queries/auditLog/DatasetAuditEvent/Detailed.qview.xml -text
@@ -960,9 +959,6 @@ ehr/src/org/labkey/ehr/EHRManager.java -text
 ehr/src/org/labkey/ehr/EHRModule.java -text
 ehr/src/org/labkey/ehr/EHRProperties.java -text
 ehr/src/org/labkey/ehr/EHRSchema.java -text
-ehr/src/org/labkey/ehr/etl/ETL.java -text
-ehr/src/org/labkey/ehr/etl/ETLAuditViewFactory.java -text
-ehr/src/org/labkey/ehr/etl/ETLRunnable.java -text
 ehr/src/org/labkey/ehr/security/AbstractEHRRole.java -text
 ehr/src/org/labkey/ehr/security/EHRAbnormalAdminPermission.java -text
 ehr/src/org/labkey/ehr/security/EHRAbnormalDeletePermission.java -text
@@ -1010,7 +1006,6 @@ ehr/src/org/labkey/ehr/security/EHRScheduledAdminPermission.java -text
 ehr/src/org/labkey/ehr/security/EHRScheduledDeletePermission.java -text
 ehr/src/org/labkey/ehr/security/EHRScheduledInsertPermission.java -text
 ehr/src/org/labkey/ehr/security/EHRScheduledUpdatePermission.java -text
-ehr/src/org/labkey/ehr/view/EtlAdmin.jsp -text
 ehr/src/org/labkey/ehr/view/begin.jsp -text
 ehr/tools/PrePopulateData/Initial[!!-~]EHR[!!-~]Data.xlsx -text
 ehr/tools/PrePopulateData/README -text

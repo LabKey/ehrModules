@@ -28,8 +28,6 @@ import org.labkey.api.query.QueryService;
 import org.labkey.api.security.roles.RoleManager;
 import org.labkey.api.util.PageFlowUtil;
 import org.labkey.api.view.WebPartFactory;
-import org.labkey.ehr.etl.ETL;
-import org.labkey.ehr.etl.ETLAuditViewFactory;
 import org.labkey.ehr.security.EHRBasicSubmitterRole;
 import org.labkey.ehr.security.EHRDataAdminRole;
 import org.labkey.ehr.security.EHRFullSubmitterRole;
@@ -72,11 +70,8 @@ public class EHRModule extends DefaultModule
     @Override
     public void startup(ModuleContext moduleContext)
     {
-        ETL.start();
         // add a container listener so we'll know when our container is deleted:
         ContainerManager.addContainerListener(new EHRContainerListener());
-
-        AuditLogService.get().addAuditViewFactory(ETLAuditViewFactory.getInstance());
 
         for (final String schemaName : getSchemaNames())
         {
@@ -101,13 +96,6 @@ public class EHRModule extends DefaultModule
         RoleManager.registerRole(new EHRFullSubmitterRole());
         RoleManager.registerRole(new EHRFullUpdaterRole());
         RoleManager.registerRole(new EHRRequestAdminRole());
-    }
-
-    @Override
-    public void destroy()
-    {
-        ETL.stop();
-        super.destroy();
     }
 
     @Override
