@@ -1,7 +1,7 @@
 * text=auto !eol
 EHR_ComplianceDB/EHR_ComplianceDB.iml -text
-EHR_ComplianceDB/config/module.properties -text
-EHR_ComplianceDB/module_ehr_compliancedb.xml -text
+EHR_ComplianceDB/build.xml -text
+EHR_ComplianceDB/module.properties -text
 EHR_ComplianceDB/queries/ehr_compliancedb/ComplianceRecentTests.query.xml -text
 EHR_ComplianceDB/queries/ehr_compliancedb/ComplianceRecentTests.sql -text
 EHR_ComplianceDB/queries/ehr_compliancedb/ComplianceRecentTests/.qview.xml -text
