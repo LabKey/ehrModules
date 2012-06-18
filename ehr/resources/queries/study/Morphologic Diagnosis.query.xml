@@ -157,14 +157,18 @@
                       </fk>
                     </column>
                     <column columnName="etiology">
+                    	<!--
                       <datatype>varchar</datatype>
-                      <!--<nullable>false</nullable>-->
+                      <nullable>false</nullable>
+                      -->
                       <columnTitle>Etiology</columnTitle>
+                      <!--
                       <fk>
                         <fkDbSchema>ehr_lookups</fkDbSchema>
                         <fkTable>snomed</fkTable>
                         <fkColumnName>code</fkColumnName>
                       </fk>
+                      -->
                     </column>
                     <column columnName="caseno" wrappedColumnName="parentId">
                       <datatype>varchar</datatype>

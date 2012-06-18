@@ -17,13 +17,19 @@
                 <property name="columnTitle" value="Translated PDF"/>
             </properties>
         </column>
+        <column name="sop_id/video">
+        	<properties>
+        		<property name="columnTitle" value="Supporting Video"/>
+        	</properties>
+        </column>
         <column name="LastRead"/>
+        <column name="ActiveDate"/>
         <column name="MonthsUntilRenewal"/>
         <column name="Required"/>
     </columns>
     <filters>
         <filter column="required" operator="eq" value="true"/>
-        <filter column="MonthsUntilRenewal" operator="lte" value="3"/>
+        <filter column="MonthsUntilRenewal" operator="lte" value="7"/>
         <filter column="MonthsUntilRenewal" operator="isnonblank"/>
     </filters>
     <sorts>

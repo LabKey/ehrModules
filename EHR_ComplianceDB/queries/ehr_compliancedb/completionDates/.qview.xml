@@ -27,5 +27,7 @@
     <sorts>
         <sort column="employeeId/lastName" descending="false"/>
         <sort column="employeeId/firstName" descending="false"/>
+        <sort column="requirementName" descending="false"/>
+        <sort column="date" descending="true"/>
     </sorts>
 </customView>

@@ -12,9 +12,9 @@
       <column name="remark"/>
       <column name="tissue"/>
       <column name="tissue_qualifier"/>
-      <!--<column name="severity"/>-->
-      <!--<column name="duration"/>-->
-      <!--<column name="distribution"/>-->
+      <column name="severity"/>
+      <column name="duration"/>
+      <column name="distribution"/>
       <!--<column name="distribution2"/>-->
       <column name="inflammation"/>
       <column name="inflammation2"/>

@@ -8,7 +8,7 @@ var {EHR, LABKEY, Ext, console, init, beforeInsert, afterInsert, beforeUpdate, a
 
 
 function onBecomePublic(errors, scriptContext, row, oldRow){
-    if(scriptContext.extraContext.dataSource != 'etl' && row.additionalServices){
+    if(scriptContext.extraContext.dataSource != 'etl' && row.additionalServices && row.requestId != null){
         //we auto-create a clinpath request if a test is newly added, assuming it comes from a request
         var rts = row.additionalServices.split(';');
         var tests = [];
@@ -142,6 +142,80 @@ function onBecomePublic(errors, scriptContext, row, oldRow){
             }
         }
     }
+}
+
+function onAfterInsert(scriptContext, errors, row){
+  if (row.additionalServices && row.requestid == null)
+  {
+
+      var toAutomaticallyCreate = getAdditionalServices(row.additionalServices);
+      console.log(toAutomaticallyCreate);
+      if (toAutomaticallyCreate.length > 0)
+      {
+
+          var requestId = LABKEY.Utils.generateUUID();
+          var dateRequested = new Date();
+          var rowObj = {
+                 daterequested: dateRequested,
+                 requestid: requestId,
+                 priority: 'Routine',
+                 formtype: 'Clinpath Request',
+                 title: 'Clinpath Service Request from Blood Draw: ' + row.Id,
+                 notify1: LABKEY.Security.currentUser.id
+          };
+
+          LABKEY.Query.insertRows({
+               schemaName: 'ehr',
+               queryName: 'requests',
+               extraContext: {
+                 quickValidation: true
+               },
+               rows: [rowObj],
+               success: function(data) {
+                     console.log('Clinpath request created');
+               },
+               failure: EHR.Server.Utils.onFailure
+          });
+          var rows = [];
+          LABKEY.Query.selectRows({
+               schemaName: 'ehr_lookups',
+               queryName: 'clinpath_tests',
+               success: function(data) {
+                if(data.rows && data.rows.length) {
+                    var cpt;
+                    for (var i = 0; i < toAutomaticallyCreate.length; i++) {
+                         for (var j = 0; j < data.rows.length; j++) {
+                               cpt = data.rows[j];
+                               if (cpt.testname == toAutomaticallyCreate[i]) {
+                                        console.log('clinical path service: ' + toAutomaticallyCreate[i] + ' requested');
+                                        rows.push({
+                                          Id: row.Id, date: dateRequested, project: row.project, account: row.account, requestId: requestId,
+                                          sampletype: 'Blood - EDTA Whole Blood', collectedBy: row.performedby,
+                                          serviceRequested: cpt.testname, type: cpt.dataset,
+                                          QCStateLabel: 'Request: Pending'
+                                        });
+                                        break;
+                               }
+                         }
+                    }
+                }
+               },
+               failure: EHR.Server.Utils.onFailure
+          });
+          if (rows.length) {
+               LABKEY.Query.insertRows({
+                  schemaName: 'study', queryName: 'Clinpath Runs',
+                  extraContext: { quickValidation: true },
+                  rows: rows,
+                  success: function(date) {
+                           console.log(' Requesting ' + rows.length + ' clinpath tests');
+                  },
+                  failure: EHR.Server.Utils.onFailure
+               });
+          }
+      }
+
+  }	
 }
 
 function onUpsert(context, errors, row, oldRow){
@@ -353,6 +427,47 @@ function onUpsert(context, errors, row, oldRow){
     }
 }
 
+function getAdditionalServices(enteredServices) {
+  var tempVar = enteredServices.split(';');
+  var tests = [];
+  var idx = 0;
+  //Iterate through tempVar in the event that user specified PCR-SRV,1,2,3,4,5 we can scrub it
+  for (var i = 0; i<tempVar.length; i++) {
+        if ((tempVar[i] != "2") && (tempVar[i] != "3") && (tempVar[i] != "4") && (tempVar[i] != "5"))
+        {
+                if (tempVar[i] == "PCR - SRV 1") {
+                  tests[idx++] = "PCR - SRV 1,2,3,4,5";
+                } else {
+                  tests[idx++] = tempVar[i];
+                }
+        }
+  }
+  var toAutomaticallyCreate = [] ;
+  LABKEY.Query.selectRows({
+        schemaName: 'ehr_lookups',
+        queryName: 'blood_draw_services',
+        success: function(data) {
+           if (data.rows && data.rows.length) {
+                var drawServices;
+                var k = 0;
+                for (i = 0; i < tests.length; i++) {
+                  for (var j = 0; j < data.rows.length; j++) {
+                        drawServices = data.rows[j];
+                        if (drawServices.service  == tests[i]) {
+                          if (drawServices.automaticrequestfromblooddraw.valueOf() ) {
+                                toAutomaticallyCreate[k++] = tests[i];
+                          }
+                          break;
+                        }
+                  }
+                }
+             }
+         },
+         failure: EHR.Server.Utils.onFailure
+        });
+   return toAutomaticallyCreate;
+
+}
 
 function setDescription(row, errors){
     //we need to set description for every field

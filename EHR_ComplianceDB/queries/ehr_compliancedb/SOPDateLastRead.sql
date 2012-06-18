@@ -5,11 +5,22 @@
  */
 SELECT
 
-max(t.date) AS LastRead,
-t.SOPID,
-t.EmployeeId,
---t.EmployeeId.email as email,
+e.employeeId,
+sop.id as SOP_ID,
+sop.name,
+sop.pdf,
+sop.Spanish_PDF,
+sop.video,
+T1.LastRead,
+sop.activeDate
 
-FROM ehr_compliancedb.SOPdates t
 
-GROUP BY t.EmployeeId, t.SOPID --, t.EmployeeId.email
+FROM ehr_compliancedb.employees e 
+
+
+LEFT JOIN
+( SELECT max(t.date) as LastRead, t.SOPID, t.EmployeeId from ehr_compliancedb.SOPdates t group by t.employeeid, t.sopid) T1
+ ON (T1.employeeId = e.employeeId )
+
+LEFT JOIN "/WNPRC/WNPRC_Units/Animal_Services/Compliance_Training/Public/SOPs/".lists.SOPs sop
+ ON (T1.SOPID = sop.id)

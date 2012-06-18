@@ -17,12 +17,17 @@
                 <property name="columnTitle" value="Translated PDF"/>
             </properties>
         </column>
+        <column name="sop_id/video">
+        	<properties>
+        		<property name="columnTitle" value="Supporting Video"/>
+        	</properties>
+        </column>
         <column name="LastRead"/>
         <column name="MonthsUntilRenewal"/>
         <column name="Required"/>
     </columns>
     <sorts>
-        <sort column="MonthsUntilRenewal" descending="false"/>
+    	<sort column="MonthsUntilRenewal" descending="false"/>
         <sort column="SOP_ID" descending="false"/>
     </sorts>
 </customView>

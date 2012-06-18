@@ -6,6 +6,7 @@
 
 
 var {EHR, LABKEY, Ext, console, init, beforeInsert, afterInsert, beforeUpdate, afterUpdate, beforeDelete, afterDelete, complete} = require("ehr/validation");
+EHR.Server.Utils = require("ehr/utils").EHR.Server.Utils;
 
 
 function onUpsert(context, errors, row, oldRow){
@@ -21,48 +22,6 @@ function onUpsert(context, errors, row, oldRow){
     
 }
 
-function getMonthString(monthValue) {
-	var mString;
-        switch (monthValue){
-           case 0:
-                mString = 'January';
-                break;
-           case 1:
-                mString = 'February';
-                break;
-           case 2:
-                mString = 'March';
-                break;
-           case 3:
-                mString = 'April';
-                break;
-           case 4:
-                mString = 'May';
-                break;
-           case 5:
-                mString = 'June';
-                break;
-           case 6:
-                mString = 'July';
-                break;
-           case 7:
-                mString = 'August';
-                break;
-           case 8:
-                mString = 'September';
-                break;
-           case 9:
-                mString = 'October';
-                break;
-           case 10:
-                mString = 'November';
-                break;
-           default:
-                mString = 'December';
-
-        }
-        return mString;
-}
 function getPrincipalIDByProject(projectID) {
         //Given the project id, we are going to search for the principal investigators
         //which is a string format for some reason.  Finding that string, we determine
@@ -191,16 +150,16 @@ function getPrincipals(object) {
                 success: function(data) {
                   if (data && data.rows && data.rows.length) {
                         var row ;
-                        for (var idx = 0; idx < data.rows.length; idx++) {
-                                row = data.rows[idx];
+                        for (var cnt = 0; cnt < data.rows.length; cnt++) {
+                                row = data.rows[cnt];
                                 if (row.project) {
-				  console.log('Looking for PI(s) of project: ' + row.project);
+				  				  console.log('Looking for PI(s) of project: ' + row.project);
                                   var principalIDs = getPrincipalIDByProject(row.project);
-                                    if (principalIDs.length) {
+                                  if (principalIDs.length) {
                                      for (var idx = 0;idx < principalIDs.length;idx++) {
                                       pInvestigators.push(principalIDs[idx]);
                                      }
-                                    }
+                                  }
                                 }
                         }
 
@@ -293,13 +252,14 @@ function onComplete(event, errors, scriptContext){
             r = scriptContext.rows[i];
             valuesMap[r.row.Id] = {};
             valuesMap[r.row.Id].death = r.row.date;
-	    valuesMap[r.row.Id].animalNumber = r.row.Id;
+	        valuesMap[r.row.Id].animalNumber = r.row.Id;
+	        
             valuesMap[r.row.Id].notified = hasAnimalNotificationBeenSent(r.row.Id);
             if (valuesMap[r.row.Id].notified <=  0) {
                 generateAnEmail +=  1;
             } else {
-		verifyAssignmentUpdate(valuesMap[r.row.Id]);
-	    }
+				verifyAssignmentUpdate(valuesMap[r.row.Id]);
+	    	}
         }
 
         EHR.Server.Validation.updateStatusField(scriptContext.publicParticipantsModified, null, valuesMap);
@@ -312,7 +272,7 @@ function onComplete(event, errors, scriptContext){
            }
 	   
            var aDate = new Date(valuesMap[r.row.Id].death.toGMTString());
-           var monthString =  getMonthString(aDate.getMonth());
+           var monthString =  EHR.Server.Utils.getMonthString(aDate.getMonth());
            var minStr = aDate.getMinutes() >= 10 ? aDate.getMinutes() : '0' + aDate.getMinutes();
            valuesMap[r.row.Id].deathDate    = aDate.getDate() + ' ' + monthString +  ' ' + aDate.getFullYear();
            valuesMap[r.row.Id].deathTime    = aDate.getHours() + ':' + minStr;
@@ -402,10 +362,10 @@ function onComplete(event, errors, scriptContext){
           		if (data && data.rows.length) {
           			var nDate= data.rows[0].date;
           			aDate = new Date(nDate);
-          			monthString = getMonthString(aDate.getMonth());
+          			monthString = EHR.Server.Utils.getMonthString(aDate.getMonth());
           			valuesMap[r.row.Id].necropsyDate = aDate.getDate() + ' ' + monthString + ' ' + aDate.getFullYear();
-          			if (valuesMap[r.row.Id].grant == undefined) {
-          				valuesMap[r.row.Id].grant = data.rows[0].account;
+          			if (valuesMap[r.row.Id].enteredGrant == undefined) {
+          				valuesMap[r.row.Id].enteredGrant = data.rows[0].account;
           			}
           		}
           	}
@@ -461,31 +421,31 @@ function onComplete(event, errors, scriptContext){
            theMsg += "Date of Death:              " + obj.deathDate + "<br>";
            theMsg += "Time of Death:              " + obj.deathTime + "<br>";
            theMsg += "Death:                      " + obj.cause + "<br>";
+           theMsg += "Grant #:                    " + obj.enteredGrant + "<br>";
            if (obj.cause == 'Clinical') {
-           	//Clinical Deaths get Grant the same grant number
-           	theMsg += "Grant #:                    " + "prj45nv <br>";
+           	//Clinical Deaths get the following hard-coded animal replacement fee text
            	theMsg += "Animal Replacement Fee:     " + "No Animal replacement fee to be paid (clinical death) <br>";
            } else {
-           	theMsg += "Grant #:                    " + obj.enteredGrant + "<br>";
            	theMsg += "Animal Replacement Fee:     " + obj.fee   + "<br>";
            }
            theMsg += "Manner of Death:            " + obj.manner + "<br> <br> ";
            
-           principalIDs = getPrincipalInvestigators(obj.animalNumber);
-           if (principalIDs.length) {
-              for (var x=0; x<principalIDs.length;x++){
-              	recipients.push(LABKEY.Message.createPrincipalIdRecipient(LABKEY.Message.recipientType.to, principalIDs[x]));
-              }
-           } else  {
+           //TODO: Implement after change to project table
+           //principalIDs = getPrincipalInvestigators(obj.animalNumber);
+           //if (principalIDs.length) {
+           //   for (var x=0; x<principalIDs.length;x++){
+           //   	recipients.push(LABKEY.Message.createPrincipalIdRecipient(LABKEY.Message.recipientType.to, principalIDs[x]));
+           //   }
+          // } else  {
 	     //Must be a more efficient way, but for now see if there are active assignments where release date is assigned 
 	     //the participant's expiration date
-	     principalIDs = getPrincipals(obj);
-	     if (principalIDs.length) {
-		for (var x=0; x<principalIDs.length;x++) {
-		  recipients.push(LABKEY.Message.createPrincipalIdRecipient(LABKEY.Message.recipientType.to, principalIDs[x]));
-		}
-	     }
-	   }
+	    //    principalIDs = getPrincipals(obj);
+	    //    if (principalIDs.length) {
+		//     for (var x=0; x<principalIDs.length;x++) {
+		//       recipients.push(LABKEY.Message.createPrincipalIdRecipient(LABKEY.Message.recipientType.to, principalIDs[x]));
+		//     }
+	   //     }
+	   //    }
         }
         var openingLine;
         if (generateAnEmail > 1) {

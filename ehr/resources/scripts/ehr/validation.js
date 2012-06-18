@@ -716,8 +716,10 @@ EHR.Server.Triggers.rowInit = function(errors, row, oldRow){
  */
 EHR.Server.Triggers.rowEnd = function(errors, scriptErrors, row, oldRow){
     if(this.scriptContext.verbosity > 0){
-        console.log('rowEnd start:');
+        console.log('row:');
         console.log(row);
+        console.log('oldRow:');
+        console.log(oldRow);
     }
 
     //use this flag to filters errors below a given severity

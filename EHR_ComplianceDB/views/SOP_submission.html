@@ -60,12 +60,22 @@ Ext.onReady(function()
         //then we display a list of all completed required SOPs
         var sopQWP2 = new LABKEY.QueryWebPart({
             renderTo: 'sopDiv2',
-            //dataRegionName: 'sopGrid',
+            dataRegionName: 'readSOPGrid',
             title: 'Dates SOPs Were Last Read',
             containerPath: employeeContainer,
             schemaName: 'ehr_compliancedb',
             queryName: 'SOPDateLastRead',
             buttonBarPosition: 'top',
+            buttonBar: {
+            	includeStandardButtons: false,
+            	items: [
+            		LABKEY.QueryWebPart.standardButtons.views,
+            		LABKEY.QueryWebPart.standardButtons.exportRows,
+            		LABKEY.QueryWebPart.standardButtons.print,
+            		LABKEY.QueryWebPart.standardButtons.pageSize,
+            		{text: 'Mark Reread', requiresSelection: true, handler: markAgain}
+            	]
+            },
             showRecordSelectors: true,
             allowChooseQuery: false,
             allowChooseView: false,
@@ -107,14 +117,19 @@ Ext.onReady(function()
 
 function markRead(dataRegion, dataRegionName) {
 
-    var checked = dataRegion.getChecked();
+    var checked ;
+    if (!dataRegion) {
+    	var dRegion = LABKEY.DataRegion['sopGrid'];
+    	checked = dRegion.getChecked();
+    } else {
+    	checked = dataRegion.getChecked();
+    }
 
     if (!checked.length)
         return false;
 
     var errorState = 0;
-    //var user = LABKEY.Security.currentUser.displayName;
-
+    
     Ext.Msg.wait("Loading...");
     var rows = [];
     for (var i=0;i<checked.length;i++){
@@ -152,6 +167,54 @@ function markRead(dataRegion, dataRegionName) {
         }
      }
  }
+ 
+ function markAgain(dataRegion) {
+        var checked;
+        if (!dataRegion) {
+         var dRegion = LABKEY.DataRegion['readSOPGrid'];
+         checked = dRegion.getChecked();
+        } else {
+         checked = dataRegion.getChecked();
+        }   
+            
+        if (!checked.length) 
+          return false;
+        var errorState = 0;
+        Ext.Msg.wait("Loading...");
+        var rows = [];
+        for (var i = 0; i<checked.length; i++) {
+           rows.push({
+                SOPID:checked[i]
+                , EmployeeId: username
+                , Date: new Date().format("Y-m-d")
+                });
+        }
+        LABKEY.Query.insertRows({
+          containerPath: employeeContainer,
+          schemaName: 'ehr_compliancedb',
+          queryName: 'SOPDates',
+          rows: rows,
+          failureCallback: function(errorInfo) {
+                errorState = 1;
+                Ext.Msg.hide();
+                Ext.Msg.alert("Error: Please contact the site admin: " );
+                console.log(errorInfo)
+          },
+          successCallback: onCompletedAgain
+        });
+        
+        function onCompletedAgain() {
+           dataRegion.selectNone();
+           Ext.Msg.hide();
+           if (errorState != 1) {
+                alert ('SOPs Last Read Date has been updated');
+                window.location.reload();
+           } else {
+                alert('Something went wrong while updating a Last Read Date. Please contact the site admin');
+           }            
+         }
+}
+
         
 function submitRequest() {
 

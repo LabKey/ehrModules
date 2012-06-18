@@ -15,6 +15,7 @@ SELECT
     WHEN c.room like 'a1%' THEN 'A1/AB190'
     WHEN c.room like 'ab190%' THEN 'A1/AB190'
     WHEN c.room like 'a2%' THEN 'A2'
+    WHEN c.room like 'bmq%' THEN 'BMQ'
     WHEN c.room like 'cb%' THEN 'CB'
     WHEN c.room like 'c3%' THEN 'C3'
     WHEN c.room like 'c4%' THEN 'C4'    

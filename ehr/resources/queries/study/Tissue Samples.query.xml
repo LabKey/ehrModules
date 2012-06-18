@@ -37,6 +37,15 @@
                         <fkColumnName>code</fkColumnName>
                       </fk>
                     </column>
+                    <column columnName="stain">
+                      <columnTitle>Stain</columnTitle>
+                      <fk>
+                        <fkFolderPath>/wnprc/ehr/</fkFolderPath>
+                        <fkDbSchema>ehr_lookups</fkDbSchema>
+                        <fkTable>histology_stain</fkTable>
+                        <fkColumnName>stain</fkColumnName>
+                      </fk>
+                    </column>
                     <column columnName="container_type">
                         <columnTitle>Container Type</columnTitle>
                           <fk>
@@ -50,6 +59,16 @@
                     </column>
                     <column columnName="accountToCharge">
                         <columnTitle>Account To Charge</columnTitle>
+                    </column>
+                    <column columnName="tissueRemarks">
+                    	<columnTitle>Tissue Remark</columnTitle>
+                    	<datatype>varchar</datatype>
+                    	<inputType>textarea</inputType>
+                    </column>
+                    <column columnName="trim_remarks">
+                    	<columnTitle>Trim Remarks</columnTitle>
+                    	<datatype>varchar</datatype>
+                    	<inputType>textarea</inputType>
                     </column>
                     <!--<column columnName="container_type">-->
                         <!--<columnTitle>Container Type</columnTitle>-->

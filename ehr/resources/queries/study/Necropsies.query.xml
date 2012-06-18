@@ -132,6 +132,11 @@
                     <inputType>textarea</inputType>
                     <columnTitle>Final Description</columnTitle>
                   </column>
+                  <column columnName="histologicalDescription">
+                  	<datatype>varchar</datatype>
+                  	<inputType>textarea</inputType>
+                  	<columnTitle>Histological Description</columnTitle>
+                  </column>
                   <column columnName="description">
                     <datatype>varchar</datatype>
                     <columnTitle>Description</columnTitle>

@@ -22,6 +22,7 @@ d2.cage,
     WHEN d2.room like 'a1%' THEN 'A1/AB190'
     WHEN d2.room like 'ab190%' THEN 'A1/AB190'
     WHEN d2.room like 'a2%' THEN 'A2'
+    WHEN d2.room like 'bmq%' THEN 'BMQ'
     WHEN d2.room like 'cb%' THEN 'CB'
     WHEN d2.room like 'c3%' THEN 'C3'
     WHEN d2.room like 'c4%' THEN 'C4'

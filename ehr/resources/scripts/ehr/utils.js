@@ -116,6 +116,49 @@ EHR.Server.Utils = new function(){
                     console.log(error);
                  }
             });
+        },
+        
+        getMonthString: function(monthValue){
+        	var mString;
+        switch (monthValue){
+           case 0:
+                mString = 'January';
+                break;
+           case 1:
+                mString = 'February';
+                break;
+           case 2:
+                mString = 'March';
+                break;
+           case 3:
+                mString = 'April';
+                break;
+           case 4:
+                mString = 'May';
+                break;
+           case 5:
+                mString = 'June';
+                break;
+           case 6:
+                mString = 'July';
+                break;
+           case 7:
+                mString = 'August';
+                break;
+           case 8:
+                mString = 'September';
+                break;
+           case 9:
+                mString = 'October';
+                break;
+           case 10:
+                mString = 'November';
+                break;
+           default:
+                mString = 'December';
+
+        }
+        return mString;
         }
     }
 };

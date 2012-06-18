@@ -872,12 +872,47 @@ EHR.Metadata.Sources.Standard = {
             qualifier: {
                 editorConfig: {
                     plugins: ['ehr-usereditablecombo']
-                }
+                }, 
+                shownInGrid: false
             },
+            quantity: {
+            	shownInGrid: false
+            },
+            ship_to : {
+            	shownInGrid: false
+            },
+            tissueRemarks : {
+            	shownInGrid: false
+            },
+            stain: {
+                defaultValue: 'Hematoxylin & Eosin',
+                editorConfig: {
+                    plugins: ['ehr-usereditablecombo']
+                }, 
+                shownInGrid: false
+            },
+            recipient: {
+            	shownInGrid: false
+            },
+            trimdate: {
+                shownInGrid: false
+            },
+            trim_remarks: {
+            	shownInGrid: false
+            },
+            trimmed_by: {
+                shownInGrid: false
+            },
+            remark: {
+            	hidden: true
+            	
+            },
+            
             container_type: {
                 editorConfig: {
                     plugins: ['ehr-usereditablecombo']
-                }
+                }, 
+                shownInGrid: false
             }
         },
         Histology: {
@@ -1403,7 +1438,11 @@ EHR.Metadata.Sources.Standard = {
                 width: 600,
                 defaultValue: 'A ___ kg rhesus macaque is presented for necropsy in excellent post mortem condition.\n\nA ___ kg cynomolgus macaque is presented for necropsy in excellent post mortem condition.\n\nA ___ kg common marmoset is presented for necropsy in excellent post mortem condition.\n\nA ____ kg cynomolgus macaque is presented for perfusion and necropsy in excellent post mortem condition.\n\nA ____ kg rhesus macaque is presented for perfusion and necropsy in excellent post mortem condition.'
             },
-            patho_notes: {
+            histologicalDescription: {
+            	height: 200,
+            	width: 600
+            },
+            patho_notes: { 
                 height: 200,
                 width: 600
             },
@@ -1541,6 +1580,10 @@ EHR.Metadata.Sources.Standard = {
                 height: 200,
                 width: 600
             },
+            histologicalDescription: {
+            	height: 200,
+            	width: 600
+            },
             patho_notes: {
                 height: 200,
                 width: 600
@@ -1651,25 +1694,51 @@ EHR.Metadata.Sources.Standard = {
         },
         'Morphologic Diagnosis': {
             duration: {
-                xtype: 'ehr-snomedcombo',
+                xtype: 'lovcombo',
                 shownInGrid: false,
+                hasOwnTpl: true,
+                lookup: {
+                	schemaName:'ehr_lookups',
+                	queryName:'durationSnomed',
+                	displayColumn:'durationVal',
+                	keyColumn:'durationVal'
+                },
                 editorConfig: {
-                    defaultSubset: 'Duration'
+                    tpl:null,
+                    separator: '!'
                 }
             },
             severity: {
-                xtype: 'ehr-snomedcombo',
+                xtype: 'lovcombo',
                 shownInGrid: false,
+                hasOwnTpl: true,
+                lookup: {
+                	schemaName:'ehr_lookups',
+                	queryName:'severitySnomed',
+                	displayColumn:'severityVal',
+                	keyColumn:'severityVal'
+                },
                 editorConfig: {
-                    defaultSubset: 'Severity Codes'
+                    tpl:null,
+                    separator: '!'
                 }
             },
             etiology: {
-                xtype: 'ehr-snomedcombo',
+            	xtype: 'lovcombo',
+                hasOwnTpl: true,
+                includeNullRecord: false,
                 shownInGrid: false,
+                lookup: {
+                   schemaName:'ehr_lookups',
+                   queryName: 'etiologySnomed',
+                   displayColumn:'etiologyVal',
+                   keyColumn:'etiologyVal'
+                },
                 editorConfig: {
-                    defaultSubset: 'Etiology'
+                    tpl:null,
+                    separator: '!'
                 }
+              
             },
             distribution2: {
                 xtype: 'ehr-snomedcombo',
@@ -1679,10 +1748,18 @@ EHR.Metadata.Sources.Standard = {
                 }
             },
             inflammation: {
-                xtype: 'ehr-snomedcombo',
+            	xtype: 'lovcombo',
+                hasOwnTpl: true,
                 shownInGrid: false,
+                lookup: {
+                        schemaName:'ehr_lookups',
+                        queryName: 'inflammationSnomed',
+                        displayColumn:'inflammationVal',
+                        keyColumn:'inflammationVal'
+                },
                 editorConfig: {
-                    defaultSubset: 'Inflammation'
+                	tpl:null,
+                	separator: '!'
                 }
             },
             inflammation2: {
@@ -1693,16 +1770,33 @@ EHR.Metadata.Sources.Standard = {
                 }
             },
             distribution: {
-                xtype: 'ehr-snomedcombo',
+            	xtype: 'lovcombo',
                 shownInGrid: false,
+                hasOwnTpl: true,
+                lookup : {
+                        schemaName:'ehr_lookups',
+                        queryName:'distributionSnomed',
+                        displayColumn:'distributionVal',
+                        keyColumn:'distributionVal'
+                },
                 editorConfig: {
-                    defaultSubset: 'Distribution'
+                    tpl:null,
+                    separator: '!'
                 }
             },
             process: {
-                xtype: 'ehr-snomedcombo',
+            	xtype: 'lovcombo',
+            	shownInGrid: false,
+                hasOwnTpl: true,
+                lookup : {
+                   schemaName:'ehr_lookups',
+                   queryName: 'processSnomed',
+                   displayColumn:'processVal',
+                   keyColumn:'processVal'
+                },
                 editorConfig: {
-                    defaultSubset: 'Process/Disorder'
+                	tpl:null,
+                	separator: '!'
                 }
             },
             process2: {
@@ -4092,7 +4186,7 @@ EHR.Metadata.Columns = {
     Assignment: EHR.Metadata.topCols+',projectedRelease,'+EHR.Metadata.bottomCols,
     'Bacteriology Results': EHR.Metadata.topCols+',method,organism,source,qualresult,result,units,antibiotic,sensitivity,'+EHR.Metadata.bottomCols,
     'Behavior Remarks': EHR.Metadata.topCols+',so,a,p,category,'+EHR.Metadata.bottomCols,
-    Biopsies: EHR.Metadata.topCols+',caseno,type,veterinarian,performedby,nhpbmd,grossdescription,patho_notes,'+EHR.Metadata.bottomCols,
+    Biopsies: EHR.Metadata.topCols+',caseno,type,veterinarian,performedby,nhpbmd,grossdescription,histologicalDescription,'+ EHR.Metadata.bottomCols +',patho_notes',
     Birth: EHR.Metadata.topCols+',estimated,gender,weight,wdate,dam,sire,room,cage,cond,origin,conception,type,'+EHR.Metadata.bottomCols,
     'Blood Draws': 'id/curlocation/location,'+EHR.Metadata.topCols+',tube_type,tube_vol,num_tubes,quantity,requestor,additionalServices,billedby,assayCode,restraint,restraintDuration,daterequested,instructions,' + EHR.Metadata.bottomCols, //p_s,a_v,
     'Body Condition': EHR.Metadata.topCols+',score,weightstatus,remark,tattoo_chest,tattoo_thigh,microchip,tag,tattoo_remark,' + EHR.Metadata.bottomCols,
@@ -4119,10 +4213,9 @@ EHR.Metadata.Columns = {
     'Immunology Results': EHR.Metadata.topCols+',testid,method,result,units,qualResult,'+EHR.Metadata.bottomCols,
     'Irregular Observations': 'id/curlocation/location,'+EHR.Metadata.topCols + ',feces,menses,other,tlocation,behavior,otherbehavior,other,breeding,'+EHR.Metadata.bottomCols,
     'Necropsy Diagnosis': EHR.Metadata.topCols+',tissue,severity,duration,distribution,process,'+EHR.Metadata.bottomCols,
-    Necropsies: EHR.Metadata.topCols+',tattoo,caseno,performedby,assistant,billing,tissue_distribution,timeofdeath,causeofdeath,mannerofdeath,perfusion_area,grossdescription,patho_notes,'+EHR.Metadata.bottomCols,
+    Necropsies: EHR.Metadata.topCols+',tattoo,caseno,performedby,assistant,billing,tissue_distribution,timeofdeath,causeofdeath,mannerofdeath,perfusion_area,grossdescription,histologicalDescription,'+ EHR.Metadata.bottomCols +',patho_notes',
     'Notes': EHR.Metadata.topCols+',userid,category,value,'+EHR.Metadata.bottomCols,
-    'Morphologic Diagnosis': EHR.Metadata.topCols+',remark,tissue,tissue_qualifier,inflammation,inflammation2,etiology,process,process2,performedBy,qcstate,'+EHR.Metadata.hiddenCols,
-    //,severity,duration,distribution,distribution2
+    'Morphologic Diagnosis': EHR.Metadata.topCols+',remark,tissue,tissue_qualifier,severity,duration,distribution,inflammation,etiology,process,performedBy,qcstate,'+EHR.Metadata.hiddenCols,
     'Pair Tests': EHR.Metadata.topCols+',partner,bhav,testno,sharedFood,aggressions,affiliation,conclusion,'+EHR.Metadata.bottomCols,
     'Parasitology Results': EHR.Metadata.topCols+',organism,method,result,units,qualresult,'+EHR.Metadata.bottomCols,
     'Prenatal Deaths': EHR.Metadata.topCols+',species,gender,weight,dam,sire,room,cage,conception,'+EHR.Metadata.bottomCols,
@@ -4134,7 +4227,7 @@ EHR.Metadata.Columns = {
     tasks: 'rowid,title,formtype,created,createdby,assignedto,duedate,taskid,category,qcstate',
     'TB Tests': EHR.Metadata.topCols + ',notPerformedAtCenter,lot,dilution,eye,result1,result2,result3,'+EHR.Metadata.bottomCols,
     'Teeth': EHR.Metadata.topCols+',jaw,side,tooth,status,' + EHR.Metadata.bottomCols,
-    'Tissue Samples': EHR.Metadata.topCols+',tissue,qualifier,preservation,quantity,recipient,ship_to,container_type,accountToCharge,'+EHR.Metadata.bottomCols,
+    'Tissue Samples': EHR.Metadata.topCols+',tissue,qualifier,preservation,quantity,recipient,ship_to,container_type,accountToCharge,tissueRemarks,slideNum,stain,pathologist,trimdate,trimmed_by,trim_remarks,'+EHR.Metadata.bottomCols,
     'Treatment Orders': EHR.Metadata.topCols+',meaning,code,qualifier,route,frequency,concentration,conc_units,dosage,dosage_units,volume,vol_units,amount,amount_units,' + EHR.Metadata.bottomCols,
     'Urinalysis Results': EHR.Metadata.topCols+',testid,method,resultOORIndicator,result,units,qualResult,'+EHR.Metadata.bottomCols,
     'Virology Results': EHR.Metadata.topCols+',virus,method,source,resultOORIndicator,result,units,qualResult,'+EHR.Metadata.bottomCols,

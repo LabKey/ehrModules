@@ -17,7 +17,7 @@ group_concat(n.tissue_qualifier) as tissue_qualifier,
 -- group_concat(n.distribution2.meaning) as distribution2,
 group_concat(n.inflammation.meaning) as inflammation,
 group_concat(n.inflammation.meaning) as inflammation2,
-group_concat(n.etiology.meaning) as etiology,
+--group_concat(n.etiology.meaning) as etiology,
 group_concat(n.process.meaning) as process,
 group_concat(n.process2.meaning) as process2,
 FROM "Morphologic Diagnosis" n

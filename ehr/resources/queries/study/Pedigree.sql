@@ -32,6 +32,12 @@ END
 -- , INTEGER)
 AS gender,
 d.gender as gender_code,
+CASE (d.status)
+  WHEN 'alive' THEN 0
+  ELSE 1
+END
+AS status,
+d.status as status_code,
 'Demographics' as source
 
 --d.qcstate
@@ -57,6 +63,12 @@ CASE (p.gender)
   ELSE 3
 END AS gender,
 p.gender as gender_code,
+CASE (p.departdate)
+  WHEN NULL THEN 0
+  ELSE 1
+END
+AS status,
+CAST(p.departdate AS SQL_VARCHAR) as status_code,
 'Supplemental Pedigree' as source
 --null as qcstate
 
