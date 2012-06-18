@@ -16,15 +16,19 @@
 package org.labkey.ehr;
 
 import org.jetbrains.annotations.NotNull;
-import org.labkey.api.audit.AuditLogService;
+import org.json.JSONObject;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.ContainerManager;
 import org.labkey.api.data.DbSchema;
 import org.labkey.api.module.DefaultModule;
 import org.labkey.api.module.ModuleContext;
+import org.labkey.api.module.ModuleProperty;
 import org.labkey.api.query.DefaultSchema;
 import org.labkey.api.query.QuerySchema;
 import org.labkey.api.query.QueryService;
+import org.labkey.api.security.User;
+import org.labkey.api.security.permissions.AdminPermission;
+import org.labkey.api.security.permissions.Permission;
 import org.labkey.api.security.roles.RoleManager;
 import org.labkey.api.util.PageFlowUtil;
 import org.labkey.api.view.WebPartFactory;
@@ -35,8 +39,11 @@ import org.labkey.ehr.security.EHRFullUpdaterRole;
 import org.labkey.ehr.security.EHRRequestAdminRole;
 import org.labkey.ehr.security.EHRRequestorRole;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public class EHRModule extends DefaultModule
@@ -65,6 +72,27 @@ public class EHRModule extends DefaultModule
     {
         addController("ehr", EHRController.class);
         EHRProperties.register();
+
+        List<Class<? extends Permission>> perms = new ArrayList<Class<? extends Permission>>();
+        perms.add(AdminPermission.class);
+
+        ModuleProperty studyContainer = new ModuleProperty(this, "EHRStudyContainer");
+        studyContainer.setCanSetPerContainer(false);
+        studyContainer.setDescription("The is the path to the container holding the EHR study.  Use of slashes is very important - it should be in the format '/wnprc/ehr/'");
+        studyContainer.setRequired(true);
+        studyContainer.setEditPermissions(perms);
+        addModuleProperty(studyContainer);
+
+        ModuleProperty institution = new ModuleProperty(this, "InstitutionName");
+        institution.setCanSetPerContainer(false);
+        studyContainer.setEditPermissions(perms);
+        addModuleProperty(institution);
+
+        ModuleProperty protocolPdf = new ModuleProperty(this, "ProtocolPDFContainer");
+        studyContainer.setDescription("The is the path to the container holding PDFs of IACUC protocols.  It is separated the EHR study.  Use of slashes is very important - it should be in the format '/wnprc/ehr/'");
+        institution.setCanSetPerContainer(false);
+        studyContainer.setEditPermissions(perms);
+        addModuleProperty(protocolPdf);
     }
 
     @Override
@@ -124,5 +152,19 @@ public class EHRModule extends DefaultModule
         {
             return Collections.emptySet();
         }
+    }
+
+    @Override
+    public JSONObject getPageContextJson(User u, Container c)
+    {
+        Map<String, String> map = getDefaultPageContextJson(u, c);
+        if (map.containsKey("EHRStudyContainer") && map.get("EHRStudyContainer") != null)
+        {
+            Container ehr = ContainerManager.getForPath(map.get("EHRStudyContainer"));
+            if(ehr != null)
+                map.put("EHRStudyContainerInfo", ehr.toJSON(u).toString());
+
+        }
+        return new JSONObject(map);
     }
 }

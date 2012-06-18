@@ -702,6 +702,20 @@ EHR.Utils = new function(){
             });
 
             return new EHR.ext.ImportPanel.TaskDetailsPanel(panelCfg);
+        },
+
+        /**
+         * Returns the value for the EHR containerPath on this server.  It throws an alert if the value has not been set.
+         * @returns {Object}
+         */
+        getEHRContext: function(suppressAlert){
+            var ctx = LABKEY.getModuleContext('ehr');
+            if(!ctx['EHRStudyContainer']){
+                if(!suppressAlert)
+                    alert('The EHR module has not been configured on this server.  Please contact your administrator to set the container path to the EHR study');
+                return null;
+            }
+            return ctx;
         }
     }
 }
