@@ -364,7 +364,8 @@ function onComplete(event, errors, scriptContext){
           			aDate = new Date(nDate);
           			monthString = EHR.Server.Utils.getMonthString(aDate.getMonth());
           			valuesMap[r.row.Id].necropsyDate = aDate.getDate() + ' ' + monthString + ' ' + aDate.getFullYear();
-          			if (valuesMap[r.row.Id].enteredGrant == undefined) {
+          			if (valuesMap[r.row.Id].enteredGrant == undefined || valuesMap[r.row.Id].enteredGrant == null) {
+          				console.log('No grant number supplied... defaulting to: ' + data.rows[0].account);
           				valuesMap[r.row.Id].enteredGrant = data.rows[0].account;
           			}
           		}
