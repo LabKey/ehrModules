@@ -1,0 +1,11 @@
+<module xmlns="http://labkey.org/moduleProperties/xml/">
+    <properties>
+
+    </properties>
+    <clientDependencies>
+        <!--<dependency path="/laboratory/view.js" />-->
+    </clientDependencies>
+    <requiredModuleContext>
+        <requiredModule name="EHR" />
+    </requiredModuleContext>
+</module>

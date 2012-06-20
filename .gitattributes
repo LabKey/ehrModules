@@ -74,6 +74,7 @@ ehr/ehr-study/datasets/datasets_metadata.xml -text
 ehr/ehr-study/lists/lists.xml -text
 ehr/ehr-study/study.xml -text
 ehr/module.properties -text
+ehr/module.xml -text
 ehr/resources/queries/auditLog/DatasetAuditEvent.query.xml -text
 ehr/resources/queries/auditLog/DatasetAuditEvent/.qview.xml -text
 ehr/resources/queries/auditLog/DatasetAuditEvent/Detailed.qview.xml -text
