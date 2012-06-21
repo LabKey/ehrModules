@@ -1,15 +1,90 @@
-<html>
-<head>
 <script type="text/javascript">
-
-
-LABKEY.requiresScript("ehr/ehrAPI.js");
-Ext.Ajax.timeout = 120000; //in milliseconds
-
+    LABKEY.requiresScript("ehr/ehrAPI.js");
+    Ext.Ajax.timeout = 120000; //in milliseconds
 </script>
 <script type="text/javascript">
     
 Ext.onReady(function(){
+    var webpart = <%=webpartContext%>;
+    var domSpec = [{
+        style: 'padding-bottom: 20px;',
+        html: 'The purpose of this page is to provide an overview of the colony.  If you suggestions on reports or information that would be useful, please report them through the \'User Feedback\' menu above.'
+    },{
+        tag: 'div',
+        html: '<span class="loading-indicator">Loading...</span>',
+        id: 'colonyPopulationSummary_' + webpart.wrapperDivId
+    },{
+        tag: 'p'
+    },{
+        tag: 'table',
+        cls: 'labkey-wp',
+        children: [{
+            tag: 'tbody',
+            children: [{
+                tag: 'tr',
+                cls: 'labkey-wp-header',
+                children: [{
+                    tag: 'th',
+                    cls: 'labkey-wp-title-left',
+                    html: 'Population Changes:'
+                },{
+                    tag: 'th',
+                    cls: 'labkey-wp-title-right',
+                    html: '&nbsp;'
+                }]
+            },{
+                tag: 'tr',
+                children: [{
+                    tag: 'td',
+                    cls: 'labkey-wp-body',
+                    children: [{
+                        tag: 'div',
+                        id: 'dateRange_' + webpart.wrapperDivId
+                    },{
+                        tag: 'div',
+                        id: 'colonyPopulationChange_' + webpart.wrapperDivId
+                    }]
+                }]
+            }]
+        }]
+    },{
+       tag: 'p'
+    },{
+        tag: 'table',
+        cls: 'labkey-wp',
+        children: [{
+            tag: 'tbody',
+            children: [{
+                tag: 'tr',
+                cls: 'labkey-wp-header',
+                children: [{
+                    tag: 'th',
+                    cls: 'labkey-wp-title-left',
+                    html: 'Other Population Queries:'
+                },{
+                    tag: 'th',
+                    cls: 'labkey-wp-title-right',
+                    html: '&nbsp;'
+                }]
+            },{
+                tag: 'tr',
+                children: [{
+                    tag: 'td',
+                    cls: 'labkey-wp-body',
+                    children: [{
+                        tag: 'ul',
+                        children: [{
+                            tag: 'li',
+                            html: '<a href="<%=contextPath%>/query<%=containerPath%>/executeQuery.view?schemaName=study&query.queryName=Colony Population By Age">Population By Age and Species</a>'
+                        }]
+                    }]
+                }]
+            }]
+        }]
+    }]
+
+    var el = Ext.get(webpart.wrapperDivId);
+    Ext.DomHelper.append(el, domSpec);
 
     new LABKEY.QueryWebPart({
          title: 'Current Population Counts',
@@ -25,7 +100,7 @@ Ext.onReady(function(){
          failure: EHR.Utils.onError,
          //successCallback: this.endMsg,
          scope: this
-     }).render('colonyPopulationSummary');
+     }).render('colonyPopulationSummary_' + webpart.wrapperDivId);
 
     var dateRange = Ext.extend(Ext.Panel, {
         initComponent: function(config){
@@ -48,13 +123,14 @@ Ext.onReady(function(){
                     ,scope: this
                     ,handler: this.displayReport
                     ,type: 'submit'
+                    ,style: 'padding-bottom: 10px;'
                 })
             );
         },
         displayReport: function(a,b){
             if (!b){return false}
 
-            var target = document.getElementById('colonyPopulationChange');
+            var target = document.getElementById('colonyPopulationChange_' + webpart.wrapperDivId);
             target.innerHTML = '';
             var loading = document.createElement('span');
             loading.innerHTML = 'Loading...<p>';
@@ -63,7 +139,7 @@ Ext.onReady(function(){
             
             var config = {
                 partName: 'Report',
-                renderTo: 'colonyPopulationChange',
+                renderTo: 'colonyPopulationChange_' + webpart.wrapperDivId,
                 partConfig: {
                     title: 'Population Change',
                     schemaName: 'study',
@@ -73,7 +149,6 @@ Ext.onReady(function(){
                     'query.Id/dataset/demographics/species~neq': 'Unknown'
                 },
                 failure: EHR.Utils.onError
-                //,scope: this
             };
 
             config.partConfig['query.param.StartDate'] = this.datePanel.startDateField.getValue();
@@ -83,54 +158,7 @@ Ext.onReady(function(){
         }
     });
 
-    new dateRange().render('dateRange');
-
-
+    new dateRange().render('dateRange_' + webpart.wrapperDivId);
 });
 
-
 </script>
-</head>
-
-<body>
-    The purpose of this page is to provide an overview of the WNPRC colony.  If you suggestions on reports or information that would be useful, please report them through the 'User Feedback' menu above.
-
-    <p/>
-
-	<div id='colonyPopulationSummary'><span class="loading-indicator">Loading...</span></div>
-    <p/>
-
-    <table class="labkey-wp">
-        <tbody>
-            <tr class="labkey-wp-header">
-                <th class="labkey-wp-title-left">Population Changes:</th>
-                <th class="labkey-wp-title-right">&nbsp;</th>                
-            </tr>
-        </tbody>
-    </table>
-
-    <p/>
-    <div id='dateRange'></div>
-
-    <p/>
-    
-	<div id='colonyPopulationChange'></div>
-
-    <p/>
-
-    <table class="labkey-wp">
-        <tbody>
-            <tr class="labkey-wp-header">
-                <th class="labkey-wp-title-left">Other Population Queries:</th>
-                <th class="labkey-wp-title-right">&nbsp;</th>
-            </tr>
-        </tbody>
-    </table>
-    <ul>
-    <li>
-        <a href="<%=contextPath%>/query<%=containerPath%>/executeQuery.view?schemaName=study&query.queryName=Colony Population By Age">Population By Age and Species</a>
-    </li>
-    </ul>
-
-</body>
-</html>

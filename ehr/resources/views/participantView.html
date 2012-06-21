@@ -1,25 +1,10 @@
 <script type="text/javascript">
-
-LABKEY.requiresScript("/EHR/participantView.js");
-
-//    new EHR.ext.DetailsView({
-//        schemaName: 'study',
-//        queryName: 'demographics',
-//        title: 'Animal Details:',
-//        renderTo: 'participantDetails',
-//        filterArray: [LABKEY.Filter.create('Id', participantId, LABKEY.Filter.Types.EQUAL)]
-//    });
-
+    LABKEY.requiresScript("/ehr/ehrAPI.js");
+    LABKEY.requiresScript("/ehr/participantView.js");
 </script>
-
-<p/>
-
-<div id='participantDetails'></div>
-
-<p/>
-
-<div id='participantView'></div>
-
-<p/>
-
-<div id='reportDiv'></div>
+<script type="text/javascript">
+    Ext.onReady(function (){
+        EHR.ext.generateParticipantView('ehr-participantview');
+    });
+</script>
+<div id="ehr-participantview"></div>

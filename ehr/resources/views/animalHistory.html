@@ -1,20 +1,11 @@
-<head>
 <script type="text/javascript">
-//first we load JS
-LABKEY.requiresScript("/ehr/ehrAPI.js");
+    LABKEY.requiresScript("/ehr/ehrAPI.js");
+</script>
+<script type="text/javascript">
 
 Ext.onReady(function (){
-    new EHR.ext.SingleAnimalReport({applyTo: 'animalHistory'});
+    var webpart = <%=webpartContext%>;
+    new EHR.ext.SingleAnimalReport({renderTo: webpart.wrapperDivId});
 });
 
-
 </script>
-</head>
-
-<div id="animalHistory"></div>
-
-<br><br>
-
-<div id="reportDiv"></div>
-
-

@@ -545,7 +545,7 @@ EHR.ext.ImportPanel.TaskPanel = Ext.extend(EHR.ext.ImportPanel.Base, {
 
         }
         if(sortCol.length){
-            sortCol = sortCol.unique();
+            sortCol = Ext.unique(sortCol);
             c.storeConfig.sort = sortCol.join(',');
         }
     }
@@ -1017,7 +1017,6 @@ EHR.ext.ImportPanel.Buttons = {
                                                 ,triggerAction: 'all'
                                                 ,editable: true
                                                 ,store: new LABKEY.ext.Store({
-                                                    containerPath: 'WNPRC/EHR/',
                                                     schemaName: 'ehr_lookups',
                                                     queryName: 'species',
                                                     sort: 'common',
@@ -1036,7 +1035,6 @@ EHR.ext.ImportPanel.Buttons = {
                                                 ,triggerAction: 'all'
                                                 ,editable: true
                                                 ,store: new LABKEY.ext.Store({
-                                                    containerPath: 'WNPRC/EHR/',
                                                     schemaName: 'ehr_lookups',
                                                     queryName: 'gender_codes',
                                                     sort: 'meaning',

@@ -1,3 +1,8 @@
-<view xmlns="http://labkey.org/data/xml/view"
-       title="EHR Admin">
+<view xmlns="http://labkey.org/data/xml/view" title="EHR Admin">
+    <permissions>
+        <permission name="admin"/>
+    </permissions>
+    <dependencies>
+        <dependency path="/ehr/ehr_api" />
+    </dependencies>
 </view>

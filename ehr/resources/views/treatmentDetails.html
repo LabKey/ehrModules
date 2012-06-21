@@ -1,15 +1,29 @@
-<html>
-<head>
-
+<script type="text/javascript">
+    LABKEY.requiresScript("/ehr/ehrDetailsPanel.js");
+</script>
 <script type="text/javascript">
 
-LABKEY.requiresScript("/ehr/ehrDetailsPanel.js");
-
-Ext.onReady(function ()
-{
+Ext.onReady(function (){
     if (!LABKEY.ActionURL.getParameter('key')){alert('Must Provide Treatment ID'); return false;}
 
     var lsid = LABKEY.ActionURL.getParameter('key');
+
+    var webpart = <%=webpartContext%>;
+    var domSpec = [{
+        tag: 'div',
+        id: 'treatmentDetails_' + webpart.wrapperDivId
+    },{
+        tag: 'div',
+        style: 'padding-bottom: 10px;',
+        id: 'treatmentSchedule_' + webpart.wrapperDivId
+    },{
+        tag: 'div',
+        style: 'padding-bottom: 10px;',
+        id: 'treatmentHistory_' + webpart.wrapperDivId
+    }]
+
+    var el = Ext.get(webpart.wrapperDivId);
+    Ext.DomHelper.append(el, domSpec);
 
     LABKEY.Query.selectRows({
         schemaName: 'study',
@@ -27,13 +41,11 @@ Ext.onReady(function ()
         }
 
         var row = data.rows[0];
-
-console.log(row);
         new EHR.ext.DetailsView({
             schemaName: 'study',
             queryName: 'Treatment Orders',
             title: 'Treatment Details:',
-            renderTo: 'treatmentDetails',
+            renderTo: 'treatmentDetails_' + webpart.wrapperDivId ,
             filterArray: [LABKEY.Filter.create('lsid', lsid, LABKEY.Filter.Types.EQUAL)]
         });
 
@@ -53,7 +65,7 @@ console.log(row);
             //sort: '-Date',
             scope: this,
             failure: EHR.Utils.onError
-         }).render('treatmentSchedule');
+         }).render('treatmentSchedule_' + webpart.wrapperDivId );
 
         new LABKEY.QueryWebPart({
             title: 'Treatment History',
@@ -71,23 +83,8 @@ console.log(row);
             //sort: '-Date',
             scope: this,
             failure: EHR.Utils.onError
-         }).render('treatmentHistory');
+         }).render('treatmentHistory_' + webpart.wrapperDivId );
     }
 });
 
 </script>
-</head>
-<body>
-    <p/>
-
-	<div id='treatmentDetails'></div>
-
-    <p/>
-
-    <div id='treatmentSchedule'></div>
-
-    <p/>
-
-    <div id='treatmentHistory'></div>
-</body>
-</html>

@@ -1,11 +1,11 @@
-<html>
+<script type="text/javascript">
+    LABKEY.requiresScript("/ehr/ehrAPI.js");
+</script>
 <script type="text/javascript">
 
-LABKEY.requiresScript("/ehr/ehrAPI.js");
-
-
 Ext.onReady(function () {
-    var config = {displayField: 'Label', headerField: 'categoryId/label', target: 'ehrDatasets'};
+    var webpart = <%=webpartContext%>;
+    var config = {displayField: 'Label', headerField: 'categoryId/label', target: webpart.wrapperDivId};
 
     var multi = new LABKEY.MultiRequest();
 
@@ -31,8 +31,6 @@ Ext.onReady(function () {
         var menuCfg = {
             renderTo: config.target,
             sections: new Array(),
-            //columns: 3,
-            //colWidth: 550,
             renderer: function(item){
                 var cfg = {
                     html: '<div style="float:left;width:180px;">'+item.name+':</div> [<a href="<%=contextPath%>/ehr<%=containerPath%>/searchPanel.view?schemaName=study&queryName='+item.data.Label+'">Search</a>] [<a href="<%=contextPath%>/query<%=containerPath%>/executeQuery.view?schemaName=study&query.queryName='+item.data.Label+'">View All Records</a>]',
@@ -74,9 +72,3 @@ Ext.onReady(function () {
 });
 
 </script>
-<body>
-
-<div id="ehrDatasets"></div>
-
-</body>
-</html>

@@ -46,7 +46,7 @@ OR
 
 OR
 
-a.calculated_status = 'No Record At WNPRC'
+a.calculated_status = 'No Record At Center'
 
 OR
 

@@ -1101,10 +1101,8 @@ Ext.preg('ehr-participantfield-events', EHR.ext.plugins.ParticipantFieldEvents);
  * This field is used to diplay EHR projects.  It contains a custom template for the combo list which displays both the project and protocol.
  * It also listens for participantchange events and will display only the set of allowable projects for the selected animal.
  */
-EHR.ext.ProjectField = Ext.extend(LABKEY.ext.ComboBox,
-{
-    initComponent: function()
-    {
+EHR.ext.ProjectField = Ext.extend(LABKEY.ext.ComboBox, {
+    initComponent: function(){
 
         Ext.apply(this, {
             fieldLabel: 'Project'
@@ -1122,7 +1120,6 @@ EHR.ext.ProjectField = Ext.extend(LABKEY.ext.ComboBox,
             ,validationDelay: 500
             //NOTE: unless i have this empty store an error is thrown
             ,store: new LABKEY.ext.Store({
-                containerPath: 'WNPRC/EHR/',
                 schemaName: 'study',
                 sql: this.makeSql(),
                 sort: 'project',

@@ -1,16 +1,7 @@
-<html>
-<head>
 <script type="text/javascript">
-
-/*!
- * Ext JS Library 3.2.1
- * Copyright(c) 2006-2010 Ext JS, Inc.
- * licensing@extjs.com
- * http://www.extjs.com/license
- */
-
-LABKEY.requiresScript("/ehr/ehrAPI.js");
-
+    LABKEY.requiresScript("/ehr/ehrAPI.js");
+</script>
+<script type="text/javascript">
 
 Ext.onReady(function(){
     var btns = 'VALIDATE,BASICSUBMIT,FORCESUBMIT,'+(LABKEY.ActionURL.getParameter('update') ? '' : 'SUBMITANDNEXT')+',DELETEBTN';
@@ -21,7 +12,6 @@ Ext.onReady(function(){
         metaSources.push('SimpleForm');
 
     var panel = new EHR.ext.ImportPanel.SimpleImportPanel({
-        containerPath: 'WNPRC/EHR/',
         allowableButtons: btns,
         formType: LABKEY.ActionURL.getParameter('queryName'),
         formSections: [{
@@ -34,20 +24,10 @@ Ext.onReady(function(){
             metadata: EHR.Metadata.getTableMetadata(LABKEY.ActionURL.getParameter('queryName'), metaSources)
         }]
     });
-    panel.render('manageRecordDiv');
+    var webpart = <%=webpartContext%>;
+    panel.render(webpart.wrapperDivId);
     LABKEY.NavTrail.setTrail(LABKEY.ActionURL.getParameter('title') || EHR.Utils.toTitleCase(LABKEY.ActionURL.getParameter('queryName')));
 
 });
 
-
 </script>
-</head>
-<body>
-<div id="manageRecordDiv"></div>
-
-
-
-</body>
-
-
-</html>

@@ -1,13 +1,30 @@
-<html>
-<head>
-
+<script type="text/javascript">
+    LABKEY.requiresScript("/ehr/ehrDetailsPanel.js");
+</script>
 <script type="text/javascript">
 
-LABKEY.requiresScript("/ehr/ehrDetailsPanel.js");
-
-Ext.onReady(function ()
-{
+Ext.onReady(function (){
     if (!LABKEY.ActionURL.getParameter('objectid')){alert('Must Provide LSID'); return false;}
+
+    if (LABKEY.ActionURL.getParameter('formtype')){
+        window.location = LABKEY.ActionURL.buildURL('ehr', 'taskDetails', null, {
+            formtype: LABKEY.ActionURL.getParameter('formtype'),
+            taskid: LABKEY.ActionURL.getParameter('taskid')
+        });
+    }
+
+    var webpart = <%=webpartContext%>;
+    var domSpec = [{
+        tag: 'div',
+        style: 'padding-bottom: 10px;',
+        id: 'encounterDetails_' + webpart.wrapperDivId
+    },{
+        tag: 'div',
+        id: 'childTables_' + webpart.wrapperDivId
+    }]
+
+    var el = Ext.get(webpart.wrapperDivId);
+    Ext.DomHelper.append(el, domSpec);
 
     var filterArray = [LABKEY.Filter.create('objectid', LABKEY.ActionURL.getParameter('objectid'), LABKEY.Filter.Types.EQUAL)];
 
@@ -15,7 +32,7 @@ Ext.onReady(function ()
         schemaName: 'study',
         queryName: 'encounters',
         title: 'Encounter Details:',
-        renderTo: 'encounterDetails',
+        renderTo: 'encounterDetails_' + webpart.wrapperDivId,
         filterArray: filterArray
     });
 
@@ -37,19 +54,8 @@ Ext.onReady(function ()
         sort: '-Date',
         scope: this,
         failure: EHR.Utils.onError
-     }).render('childTables');
+     }).render('childTables_' + webpart.wrapperDivId);
 
 });
 
 </script>
-</head>
-<body>
-    <p/>
-
-	<div id='encounterDetails'></div>
-
-    <p/>
-
-    <div id='childTables'></div>
-</body>
-</html>

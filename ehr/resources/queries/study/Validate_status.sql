@@ -24,7 +24,7 @@ CASE
     THEN 'No Information'
   WHEN
     (a.id.dataset.birth.date IS NULL AND a.id.MostRecentArrival.MostRecentArrival IS NULL)
-    THEN 'Never at WNPRC'
+    THEN 'Never at Center'
   WHEN
     (a.death IS NOT NULL)
     THEN 'Dead'
@@ -65,7 +65,7 @@ OR
 
 OR
 
-a.CalculatedStatus = 'No Record At WNPRC'
+a.CalculatedStatus = 'No Record At Center'
 
 OR
 

@@ -1,13 +1,34 @@
-<html>
-<head>
-
+<script type="text/javascript">
+    LABKEY.requiresScript("/ehr/ehrDetailsPanel.js");
+</script>
 <script type="text/javascript">
 
-LABKEY.requiresScript("/ehr/ehrDetailsPanel.js");
+Ext.onReady(function (){
+    if (!LABKEY.ActionURL.getParameter('room')){
+        alert('Must Provide Location'); return false;
+    }
 
-Ext.onReady(function ()
-{
-    if (!LABKEY.ActionURL.getParameter('room')){alert('Must Provide Location'); return false;}
+    var webpart = <%=webpartContext%>;
+
+    var domSpec = [{
+        tag: 'div',
+        id :'cageDetails_' + webpart.wrapperDivId,
+        style: 'padding-bottom: 20px;'
+    },{
+        tag: 'div',
+        id :'activeAnimals_' + webpart.wrapperDivId,
+        style: 'padding-bottom: 20px;'
+    },{
+        tag: 'div',
+        id :'cageNotes_' + webpart.wrapperDivId,
+        style: 'padding-bottom: 20px;'
+    },{
+        tag: 'div',
+        id :'allAnimals_' + webpart.wrapperDivId
+    }];
+
+    var el = Ext.get(webpart.wrapperDivId);
+    Ext.DomHelper.append(el, domSpec);
 
     var filterArray = [LABKEY.Filter.create('room', LABKEY.ActionURL.getParameter('room'), LABKEY.Filter.Types.EQUAL)];
 
@@ -20,7 +41,7 @@ Ext.onReady(function ()
             schemaName: 'ehr_lookups',
             queryName: 'cage',
             title: 'Cage Details:',
-            renderTo: 'cageDetails',
+            renderTo: 'cageDetails_' + webpart.wrapperDivId,
             filterArray: filterArray
         });
     }
@@ -31,16 +52,12 @@ Ext.onReady(function ()
             queryName: 'cage',
             allowChooseQuery: false,
             allowChooseView: true,
-            showInsertNewButton: false,
-            showDeleteButton: false,
-            showDetailsColumn: true,
-            showUpdateColumn: false,
             showRecordSelectors: true,
             buttonBarPosition: 'top',
             filterArray: filterArray,
             scope: this,
             failure: EHR.Utils.onError
-         }).render('cageDetails');
+         }).render('cageDetails_' + webpart.wrapperDivId);
     }
 
     new LABKEY.QueryWebPart({
@@ -49,17 +66,13 @@ Ext.onReady(function ()
         queryName: 'Housing',
         allowChooseQuery: false,
         allowChooseView: true,
-        showInsertNewButton: false,
-        showDeleteButton: false,
-        showDetailsColumn: true,
-        showUpdateColumn: false,
         showRecordSelectors: true,
         buttonBarPosition: 'top',
         filterArray: filterArray,
         sort: '-Date',
         scope: this,
         failure: EHR.Utils.onError
-     }).render('allAnimals');
+     }).render('allAnimals_' + webpart.wrapperDivId);
 
 
     new LABKEY.QueryWebPart({
@@ -68,29 +81,20 @@ Ext.onReady(function ()
         queryName: 'cage_observations',
         allowChooseQuery: false,
         allowChooseView: true,
-        showInsertNewButton: false,
-        showDeleteButton: false,
-        showDetailsColumn: true,
-        showUpdateColumn: false,
         buttonBarPosition: 'top',
         filterArray: filterArray,
         sort: '-Date',
         scope: this,
         failure: EHR.Utils.onError
-     }).render('cageNotes');
+     }).render('cageNotes_' + webpart.wrapperDivId);
 
     filterArray.push(LABKEY.Filter.create('enddate', null, LABKEY.Filter.Types.ISBLANK));
     new LABKEY.QueryWebPart({
         title: 'Animals Currently Housed',
         schemaName: 'study',
         queryName: 'Housing',
-//        viewName: 'Current Housing Plus Weight',
         allowChooseQuery: false,
         allowChooseView: true,
-        showInsertNewButton: false,
-        showDeleteButton: false,
-        showDetailsColumn: true,
-        showUpdateColumn: false,
         buttonBarPosition: 'top',
         showRecordSelectors: true,
         filterArray: filterArray,
@@ -98,26 +102,8 @@ Ext.onReady(function ()
         sort: '-Date',
         scope: this,
         failure: EHR.Utils.onError
-     }).render('activeAnimals');
+     }).render('activeAnimals_' + webpart.wrapperDivId);
 
 });
 
 </script>
-</head>
-<body>
-    <p/>
-
-	<div id='cageDetails'></div>
-
-    <p/>
-
-    <div id='activeAnimals'></div>
-
-    <p/>
-
-    <div id='cageNotes'></div>
-
-    <p/>
-
-    <div id='allAnimals'></div></body>
-</html>

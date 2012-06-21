@@ -1,22 +1,47 @@
-<html>
-<head>
-
+<script type="text/javascript">
+    LABKEY.requiresScript("/ehr/ehrDetailsPanel.js");
+</script>
 <script type="text/javascript">
 
-LABKEY.requiresScript("/ehr/ehrDetailsPanel.js");
-
-Ext.onReady(function ()
-{
+Ext.onReady(function (){
     if (!LABKEY.ActionURL.getParameter('key')){alert('Must Provide Necropsy Number'); return false;}
 
     var key = LABKEY.ActionURL.getParameter('key');
+    var webpart = <%=webpartContext%>;
+    var domSpec = [{
+        tag: 'div',
+        id: 'necropsyDetails_' + webpart.wrapperDivId
+    },{
+        tag: 'div',
+        style: 'padding-bottom: 10px;',
+        id: 'necropsyReport_' + webpart.wrapperDivId
+    },{
+        tag: 'div',
+        style: 'padding-bottom: 10px;',
+        id: 'necropsyDiagnosis_' + webpart.wrapperDivId
+    },{
+        tag: 'div',
+        style: 'padding-bottom: 10px;',
+        id: 'necropsyImages_' + webpart.wrapperDivId
+    },{
+        tag: 'div',
+        style: 'padding-bottom: 10px;',
+        id: 'necropsyHistology_' + webpart.wrapperDivId
+    },{
+        tag: 'div',
+        style: 'padding-bottom: 10px;',
+        id: 'necropsyTissues_' + webpart.wrapperDivId
+    }]
+
+    var el = Ext.get(webpart.wrapperDivId);
+    Ext.DomHelper.append(el, domSpec);
 
     new EHR.ext.DetailsView({
         schemaName: 'study',
         queryName: 'Necropsies',
         viewName: 'Summary',
         title: 'Necropsy Details:',
-        renderTo: 'necropsyDetails',
+        renderTo: 'necropsyDetails_' + webpart.wrapperDivId,
         filterArray: [LABKEY.Filter.create('objectId', key, LABKEY.Filter.Types.EQUAL)]
     });
 
@@ -36,8 +61,7 @@ Ext.onReady(function ()
         //sort: '-Date',
         scope: this,
         failure: EHR.Utils.onError
-     }).render('necropsyDiagnosis');
-
+     }).render('necropsyDiagnosis_' + webpart.wrapperDivId);
 
     new LABKEY.QueryWebPart({
         title: 'Histology',
@@ -55,7 +79,7 @@ Ext.onReady(function ()
         sort: '-Date',
         scope: this,
         failure: EHR.Utils.onError
-     }).render('necropsyHistology');
+     }).render('necropsyHistology_' + webpart.wrapperDivId);
 
 //    new LABKEY.QueryWebPart({
 //        title: 'Tissues',
@@ -72,11 +96,10 @@ Ext.onReady(function ()
 //        sort: '-Date',
 //        scope: this,
 //        failure: EHR.Utils.onError
-//     }).render('necropsyTissues');
+//     }).render('necropsyTissues_' + webpart.wrapperDivId);
 
 //    new LABKEY.QueryWebPart({
 //        title: 'Necropsy Images',
-//        containerPath: '/WNPRC/WNPRC_Units/Animal_Services/Pathology_Services/Images/Necropsy',
 //        schemaName: 'study',
 //        queryName: 'Datas',
 //        allowChooseQuery: false,
@@ -91,34 +114,7 @@ Ext.onReady(function ()
 //        //sort: '-Date',
 //        scope: this,
 //        failure: EHR.Utils.onError
-//     }).render('necropsyImages');
+//     }).render('necropsyImages_' + webpart.wrapperDivId);
 });
 
 </script>
-</head>
-<body>
-    <p/>
-
-	<div id='necropsyDetails'></div>
-
-    <p/>
-
-    <div id='necropsyReport'></div>
-
-    <p/>
-
-    <div id='necropsyDiagnosis'></div>
-
-    <p/>
-
-    <div id='necropsyImages'></div>
-
-    <p/>
-
-    <div id='necropsyHistology'></div>
-
-    <p/>
-
-    <div id='necropsyTissues'></div>
-</body>
-</html>

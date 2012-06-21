@@ -321,7 +321,6 @@ EHR.DatasetButtons = new function(){
                     ,required: true
                     ,editable: true
                     ,store: new LABKEY.ext.Store({
-                        containerPath: 'WNPRC/EHR/',
                         schemaName: 'study',
                         queryName: 'datasets',
                         sort: 'label',
@@ -685,7 +684,6 @@ EHR.DatasetButtons = new function(){
                                         editable: true,
                                         triggerAction: 'all',
                                         store: new LABKEY.ext.Store({
-                                            containerPath: 'WNPRC/EHR/',
                                             schemaName: 'ehr_lookups',
                                             queryName: 'restraint_type',
                                             sort: 'type',

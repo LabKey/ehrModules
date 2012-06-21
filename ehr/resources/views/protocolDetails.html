@@ -1,25 +1,56 @@
-<html>
-<head>
-
+<script type="text/javascript">
+    LABKEY.requiresScript("/ehr/ehrDetailsPanel.js");
+</script>
 <script type="text/javascript">
 
-LABKEY.requiresScript("/ehr/ehrDetailsPanel.js");
-
-Ext.onReady(function ()
-{
+Ext.onReady(function (){
     if (!LABKEY.ActionURL.getParameter('key')){alert('Must Provide Protocol Number'); return false;}
 
     var protocol = LABKEY.ActionURL.getParameter('key').toLowerCase();
+
+    var webpart = <%=webpartContext%>;
+    var domSpec = [{
+        tag: 'div',
+        id: 'protocolDetails_' + webpart.wrapperDivId
+    },{
+        tag: 'div',
+        id: 'protocolPdf_' + webpart.wrapperDivId
+    },{
+        tag: 'div',
+        style: 'padding-bottom: 10px;',
+        id: 'protocolLinks_' + webpart.wrapperDivId
+    },{
+        tag: 'div',
+        style: 'padding-bottom: 10px;',
+        id: 'protocolProjects_' + webpart.wrapperDivId
+    },{
+        tag: 'div',
+        style: 'padding-bottom: 10px;',
+        id: 'protocolAssignments_' + webpart.wrapperDivId
+    },{
+        tag: 'div',
+        style: 'padding-bottom: 10px;',
+        id: 'protocolTotalAnimalsBySpecies_' + webpart.wrapperDivId
+    },{
+        tag: 'div',
+        style: 'padding-bottom: 10px;',
+        id: 'protocolTotalHistoricAnimalsBySpecies_' + webpart.wrapperDivId
+    },{
+        tag: 'div',
+        id: 'protocolProcedures_' + webpart.wrapperDivId
+    }]
+
+    var el = Ext.get(webpart.wrapperDivId);
+    Ext.DomHelper.append(el, domSpec);
 
     new EHR.ext.DetailsView({
         schemaName: 'ehr',
         queryName: 'protocol',
         title: 'Protocol Details:',
-        renderTo: 'protocolDetails',
+        renderTo: 'protocolDetails_' + webpart.wrapperDivId,
         filterArray: [LABKEY.Filter.create('protocol', protocol, LABKEY.Filter.Types.EQUAL)]
     });
 
-    
     new LABKEY.QueryWebPart({
         title: 'Projects Under This Protocol',
         schemaName: 'ehr',
@@ -35,7 +66,7 @@ Ext.onReady(function ()
         //sort: '-Date',
         scope: this,
         failure: EHR.Utils.onError
-     }).render('protocolProjects');
+     }).render('protocolProjects_' + webpart.wrapperDivId);
 
     new LABKEY.QueryWebPart({
         title: 'Active Animal Assignments',
@@ -54,7 +85,7 @@ Ext.onReady(function ()
         sort: '-Date',
         scope: this,
         failure: EHR.Utils.onError
-     }).render('protocolAssignments');
+     }).render('protocolAssignments_' + webpart.wrapperDivId);
 
 
     new LABKEY.QueryWebPart({
@@ -74,8 +105,7 @@ Ext.onReady(function ()
         //sort: '-Date',
         scope: this,
         failure: EHR.Utils.onError
-     }).render('protocolTotalAnimalsBySpecies');
-
+    }).render('protocolTotalAnimalsBySpecies_' + webpart.wrapperDivId);
 
     new LABKEY.QueryWebPart({
         title: 'Total Historic Assignments By Species',
@@ -93,7 +123,7 @@ Ext.onReady(function ()
         //sort: '-Date',
         scope: this,
         failure: EHR.Utils.onError
-     }).render('protocolTotalHistoricAnimalsBySpecies');
+    }).render('protocolTotalHistoricAnimalsBySpecies_' + webpart.wrapperDivId);
 
     new Ext.Panel({
         title: 'Protocol Information',
@@ -150,12 +180,7 @@ Ext.onReady(function ()
             ,style: 'padding-bottom:10px'
             ,buttonAlign: 'center'
         }]
-    }).render('protocolLinks');
-
-
-//    EHR.Utils.isMemberOf(['vets (LDAP)', 'cpi (LDAP)', 'protocol (LDAP)', 'Site Administrators'], loadPdf);
-//
-    var pdfContainer = '/WNPRC/WNPRC_Units/Animal_Services/Compliance_Training/Private/Protocol_PDFs';
+    }).render('protocolLinks_' + webpart.wrapperDivId);
 
     new LABKEY.QueryWebPart({
         title: 'Procedures Allowed Under This Protocol',
@@ -174,78 +199,38 @@ Ext.onReady(function ()
         //sort: '-Date',
         scope: this,
         failure: EHR.Utils.onError
-     }).render('protocolProcedures');
+     }).render('protocolProcedures_' + webpart.wrapperDivId);
 
-
-    LABKEY.Security.getSecurableResources({
-        containerPath: pdfContainer,
-        includeEffectivePermissions: false,
-        scope: this,
-        success: function(map){
-            new LABKEY.QueryWebPart({
-                title: 'Protocol PDF',
-                containerPath: pdfContainer,
-                schemaName: 'lists',
-                queryName: 'ProtocolPDFs',
-                allowChooseQuery: false,
-                allowChooseView: false,
-                showInsertNewButton: false,
-                showDeleteButton: false,
-                showDetailsColumn: false,
-                showUpdateColumn: false,
-                buttonBarPosition: 'none',
-                filters: [LABKEY.Filter.create('protocol', protocol, LABKEY.Filter.Types.EQUAL)],
-                scope: this,
-                failure: EHR.Utils.onError
-             }).render('protocolPdf');
-        },
-        failure: function(e){
-            console.log('Error with getSecurableResources');
-            console.log(e);
-        }
-    })
-
-
-
-
+    var pdfContainer = LABKEY.getModuleContext('ehr')['ProtocolPDFContainer'];
+    if(pdfContainer){
+        LABKEY.Security.getSecurableResources({
+            containerPath: pdfContainer,
+            includeEffectivePermissions: false,
+            scope: this,
+            success: function(map){
+                new LABKEY.QueryWebPart({
+                    title: 'Protocol PDF',
+                    containerPath: pdfContainer,
+                    schemaName: 'lists',
+                    queryName: 'ProtocolPDFs',
+                    allowChooseQuery: false,
+                    allowChooseView: false,
+                    showInsertNewButton: false,
+                    showDeleteButton: false,
+                    showDetailsColumn: false,
+                    showUpdateColumn: false,
+                    buttonBarPosition: 'none',
+                    filters: [LABKEY.Filter.create('protocol', protocol, LABKEY.Filter.Types.EQUAL)],
+                    scope: this,
+                    failure: EHR.Utils.onError
+                 }).render('protocolPdf_' + webpart.wrapperDivId);
+            },
+            failure: function(e){
+                console.log('Error with getSecurableResources');
+                console.log(e);
+            }
+        });
+    }
 });
 
 </script>
-</head>
-<body>
-    <p/>
-
-	<div id='protocolDetails'></div>
-
-    <p/>
-
-	<div id='protocolPdf'></div>
-
-    <p/>
-
-    <div id='protocolLinks'></div>
-
-    <p/>
-
-    <div id='protocolProjects'>Loading...</div>
-
-
-    <p/>
-
-    <div id='protocolAssignments'>Loading...</div>
-
-    <p/>
-
-    <div id="protocolTotalAnimalsBySpecies">Loading...</div>
-
-    <p/>
-
-    <div id="protocolTotalHistoricAnimalsBySpecies">Loading...</div>
-
-    <p/>
-
-    <div id="protocolProcedures">Loading...</div>
-
-
-</body>
-</html>

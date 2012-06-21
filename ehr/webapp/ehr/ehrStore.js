@@ -372,29 +372,6 @@ EHR.ext.AdvancedStore = Ext.extend(LABKEY.ext.Store, {
                 }
             }
 
-            //NOTE: this utilizes the ext Editor's validation to reproduce the client-side errors
-            //disabled since the complexity to make it work isnt justifying it
-//            if(this.boundPanel){
-//                var field = this.boundPanel.getForm().findField(f.dataIndex);
-//                if(field && field.oldGetErrors){
-//                    var errors = field.oldGetErrors(r.get(f.dataIndex));
-//                    errors = errors.unique();
-//                    if(errors.length){
-//                        Ext.each(errors, function(msg){
-//                            r.errors.push({
-//                                id: LABKEY.Utils.generateUUID(),
-//                                field: f.name,
-//                                message: msg,
-//                                record: r,
-//                                errorValue: r.get(f.dataIndex),
-//                                severity: 'ERROR',
-//                                fromServer: false
-//                            });
-//                        }, this);
-//                    }
-//                }
-//            }
-
             //NOTE: if we had a reference to the field editor, i could hook into getErrors() to find other validation errors
             //should revisit in Ext 4 when validation is moved to dataModel
         },store);

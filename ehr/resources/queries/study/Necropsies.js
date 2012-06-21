@@ -41,7 +41,7 @@ function onUpsert(context, errors, row){
             callback: function(data){
                 if(data){
                     if(!row.project){
-                        EHR.Server.Validation.addError(errors, 'project', 'Must enter a project for all WNPRC animals.', 'WARN');
+                        EHR.Server.Validation.addError(errors, 'project', 'Must enter a project for all center animals.', 'WARN');
                     }
                 }
             }

@@ -5,31 +5,25 @@
  */
 Ext.namespace('EHR.ext');
 
-LABKEY.requiresScript("/ehr/ehrAPI.js");
-
 /*
  * This is a subclass of the AnimalHistory page, used as the details page for all study participants.
  * It should display the same set of reports, except it does not allow the user to toggle between participants or rooms
  */
 
-Ext.onReady(function ()
-{
+EHR.ext.generateParticipantView = function(target){
     /* get the participant id from the request URL: this parameter is required. */
     var participantId = LABKEY.ActionURL.getParameter('participantId');
 
     if (!participantId){alert('Must Provide Id'); return false;}
 
     new EHR.ext.SingleAnimalReport({
-        applyTo: 'participantView',
-        initComponent: function()
-        {
+        renderTo: target,
+        initComponent: function(){
             //we reload the fields from URL if the params exist
             if (LABKEY.ActionURL.getParameter('participantId'))
             {
                 this.subjectArray = LABKEY.ActionURL.getParameter('participantId').split(',');
             }
-
-            Ext.Panel.prototype.bodyBorder = false;
 
             Ext.apply(this, {
                 autoHeight: true
@@ -56,7 +50,7 @@ Ext.onReady(function ()
                         value: LABKEY.ActionURL.getParameter('participantId')
                     }]
                 },{
-                    ref: 'idPanel'                        
+                    ref: 'idPanel'
                 },{
                     layout: 'anchor',
                     width: '80%',
@@ -70,7 +64,7 @@ Ext.onReady(function ()
                         autoHeight: true,
                         bodyStyle: 'padding-top: 5px;',
                         frame: true
-                    }]                    
+                    }]
                 }]
             });
 
@@ -91,10 +85,8 @@ Ext.onReady(function ()
 
             this.allReports.on('load', this.createTabPanel, this);
 
-            this.on('afterLayout', this.restoreUrl);  
+            this.on('afterLayout', this.restoreUrl);
             this.doLayout();
         }
-
     });
-
-});
+}

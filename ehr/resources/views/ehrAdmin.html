@@ -1,14 +1,15 @@
-<html>
-<head>
 <script type="text/javascript">
-
-LABKEY.requiresScript("/ehr/navMenu.js");
+    LABKEY.requiresScript("/ehr/navMenu.js");
+</script>
+<script type="text/javascript">
 
 Ext.onReady(function (){
 
-    if (LABKEY.Security.currentUser.isAdmin){
+if (LABKEY.Security.currentUser.isAdmin){
+    var webpart = <%=webpartContext%>;
+
     new EHR.ext.NavMenu({
-        renderTo: 'adminLinks',
+        renderTo: webpart.wrapperDivId,
         width: 350,
         sections: [
             {header: 'Admin',
@@ -21,7 +22,8 @@ Ext.onReady(function (){
                     {name: 'Gems Backups', url: '<%=contextPath%>/project<%=containerPath%>/Backups/Gems Backups/begin.view?'},
                     {name: 'Junit Tests', url: '<%=contextPath%>/junit/begin.view?'},
                     {name: 'Manage EHR Study', url: '<%=contextPath%>/study<%=containerPath%>/manageStudy.view?'},
-                    {name: 'Populate Initial Data', url: '<%=contextPath%>/EHR<%=containerPath%>/_initEHR.view?'}
+                    {name: 'Populate Initial Data', url: '<%=contextPath%>/EHR<%=containerPath%>/_initEHR.view?'},
+                    {name: 'Set EHR Properties', url: '<%=contextPath%>/core<%=containerPath%>/modulePropertyAdmin.view?moduleName=EHR'}
                     //{name: 'Reload Study', url: '<%=contextPath%>/pipeline<%=containerPath%>/begin.view?'},
                     //{name: 'Generate Schema XML', url: '<%=contextPath%>/admin/getSchemaXmlDoc.view?full=true&dbSchema=core'},
                     //{name: 'View Site Errors', url: '<%=contextPath%>/query/Shared/executeQuery.view?schemaName=auditlog&query.queryName=Client%20API%20Actions'}
@@ -99,18 +101,8 @@ Ext.onReady(function (){
             }
         ]
     })
-    }
+}
 
 });
 
-
 </script>
-</head>
-
-<body>
-
-<div id="adminLinks"></div>
-
-
-</body>
-</html>

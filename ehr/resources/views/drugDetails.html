@@ -1,13 +1,22 @@
-<html>
-<head>
-
+<script type="text/javascript">
+    LABKEY.requiresScript("/ehr/ehrDetailsPanel.js");
+</script>
 <script type="text/javascript">
 
-LABKEY.requiresScript("/ehr/ehrDetailsPanel.js");
-
-Ext.onReady(function ()
-{
+Ext.onReady(function (){
     if (!LABKEY.ActionURL.getParameter('lsid')){alert('Must Provide LSID'); return false;}
+
+    var webpart = <%=webpartContext%>;
+    var domSpec = [{
+        tag: 'div',
+        id: 'drugDetails_' + webpart.wrapperDivId
+    },{
+        tag: 'div',
+        id: 'childTables_' + webpart.wrapperDivId
+    }]
+
+    var el = Ext.get(webpart.wrapperDivId);
+    Ext.DomHelper.append(el, domSpec);
 
     var filterArray = [LABKEY.Filter.create('lsid', LABKEY.ActionURL.getParameter('lsid'), LABKEY.Filter.Types.EQUAL)];
 
@@ -15,7 +24,7 @@ Ext.onReady(function ()
         schemaName: 'study',
         queryName: 'Drug Administration',
         title: 'Drug Details:',
-        renderTo: 'drugDetails',
+        renderTo: 'drugDetails_' + webpart.wrapperDivId,
         filterArray: filterArray
     });
 
@@ -54,19 +63,8 @@ Ext.onReady(function ()
             sort: '-Date',
             scope: this,
             failure: EHR.Utils.onError
-         }).render('childTables');
+         }).render('childTables_' + webpart.wrapperDivId);
     }
 });
 
 </script>
-</head>
-<body>
-    <p/>
-
-	<div id='drugDetails'></div>
-
-    <p/>
-
-    <div id='childTables'></div>
-</body>
-</html>

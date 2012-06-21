@@ -1,10 +1,48 @@
-<html>
-<head>
+<script type="text/javascript">
+    LABKEY.requiresScript("/ehr/SearchPanel.js");
+</script>
 <script type="text/javascript">
 
-LABKEY.requiresScript("/ehr/SearchPanel.js");
-
 Ext.onReady(function(){
+
+    var ctx = EHR.Utils.getEHRContext();
+    if(!ctx)
+        return;
+
+    var webpart = <%=webpartContext%>;
+    var domSpec = [{
+        tag: 'div',
+        style: 'padding-bottom: 10px;',
+        html: 'This page contains a series of queries to search animal housing data.  If there are additional one-button reports you would like added to the top section, please submit a request using the \'user feedback\' item on the menu bar above.'
+    },{
+        tag: 'h3',
+        html: 'Commonly Used Queries:'
+    },{
+        tag: 'ul',
+        children: [{
+            tag: 'li',
+            html: '<a href="<%=contextPath%>/query' + ctx['EHRStudyContainer'] + '/executeQuery.view?schemaName=study&query.queryName=Demographics&query.viewName=Single%20Housed">List Single-housed Animals</a>'
+        },{
+            tag: 'li',
+            html: '<a href="<%=contextPath%>/ehr' + ctx['EHRStudyContainer'] + '/animalHistory.view#_inputType:renderSingleSubject&activeReport:roommateHistory">View Roommate History for Animals</a>'
+        },{
+            tag: 'li',
+            html: '<a href="<%=contextPath%>/query' + ctx['EHRStudyContainer'] + '/executeQuery.view?schemaName=study&query.queryName=HousingOverlapsByRoom">Find Animals Housed In A Given Room/Cage At A Specific Time</a>'
+        }]
+    },{
+        tag: 'h3',
+        html: 'Search Active Housing Records:'
+    },{
+        html: 'NOTE: By default the search only includes active housing records.  To search all records, including historic ones, pick \'default\' from the \'View\' drop-down menu at the bottom of the search panel.',
+        style: 'padding-bottom: 10px;'
+    },{
+        tag: 'div',
+        id: 'housingPanel_' + webpart.wrapperDivId
+    }]
+
+    var el = Ext.get(webpart.wrapperDivId);
+    Ext.DomHelper.append(el, domSpec);
+
 
     new EHR.ext.SearchPanel({
         schemaName: 'study'
@@ -33,47 +71,9 @@ Ext.onReady(function(){
             ,EntityId: {hidden: true}
             ,Notes: {hidden: true}
         }
-    }).render('housingPanel');
+    }).render('housingPanel_' + webpart.wrapperDivId);
 
 
 });
 
 </script>
-</head>
-
-<body>
-
-This page contains a series of queries to search animal housing data.  If there are additional one-button reports you would like added to the top section, please submit a request using the 'user feedback' item on the menu bar above.
-
-
-<p/>
-
-<h3>Commonly Used Queries:</h3>
-<ul>
-    <li>
-        <b>For 'Inroom' just type the room name into the search box below and hit submit.</b>
-    </li>
-<br>
-    <li>
-        <a href="<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=Demographics&query.viewName=Single%20Housed">List Single-housed Animals</a>
-    </li>
-    <li>
-        <a href="<%=contextPath%>/ehr/WNPRC/EHR/animalHistory.view#_inputType:renderSingleSubject&activeReport:roommateHistory">View Roommate History for Animals</a>
-    </li>
-    <li>
-        <a href="<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=HousingOverlapsByRoom">Find Animals Housed In A Given Room/Cage At A Specific Time</a>
-    </li>
-
-</ul>
-
-<br>
-<p/>
-<h3>Search Active Housing Records:</h3>
-NOTE: To search all records, including historic ones, pick 'default' as the view using the drop-down menu at the bottom of the search panel.
-<p/>
-
-<div id='housingPanel'></div>
-<p/>
-
-</body>
-</html>

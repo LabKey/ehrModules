@@ -1,13 +1,24 @@
-<html>
-<head>
-
+<script type="text/javascript">
+    LABKEY.requiresScript("/ehr/ehrDetailsPanel.js");
+</script>
 <script type="text/javascript">
 
-LABKEY.requiresScript("/ehr/ehrDetailsPanel.js");
-
-Ext.onReady(function ()
-{
+Ext.onReady(function (){
     if (!LABKEY.ActionURL.getParameter('objectid')){alert('Must Provide Key'); return false;}
+
+    var webpart = <%=webpartContext%>;
+    var domSpec = [{
+        tag: 'div',
+        id: 'runDetails_'+webpart.wrapperDivId,
+        html: 'Loading...',
+        style: 'padding-bottom: 10px;'
+    },{
+        tag: 'div',
+        id: 'resultDivs_'+webpart.wrapperDivId
+    }];
+
+    var el = Ext.get(webpart.wrapperDivId);
+    Ext.DomHelper.append(el, domSpec);
 
     LABKEY.Query.selectRows({
         schemaName: 'study',
@@ -48,9 +59,9 @@ Ext.onReady(function ()
             timeout: 0,
             scope: this,
             failure: EHR.Utils.onError
-         }).render('runDetails');
+         }).render('runDetails_'+webpart.wrapperDivId);
 
-        var resultDiv = Ext.get('resultDivs');
+        var resultDiv = Ext.get('resultDivs_'+webpart.wrapperDivId);
 
         Ext.each(['Bacteriology Results', 'Chemistry Results', 'Immunology Results', 'Hematology Results', 'Hematology Morphology', 'Parasitology Results', 'Urinalysis Results', 'Virology Results'], function(dataset){
             var target = resultDiv.createChild({tag: 'span', style: 'padding-bottom:10px;'});
@@ -81,18 +92,6 @@ Ext.onReady(function ()
              }).render(target.id);
         }, this);
     }
-
 });
 
 </script>
-</head>
-<body>
-    <p/>
-
-	<div id='runDetails'>Loading...</div>
-
-    <p/>
-
-    <div id='resultDivs'></div>
-</body>
-</html>

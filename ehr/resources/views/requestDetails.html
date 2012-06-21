@@ -1,22 +1,14 @@
-<html>
-<head>
 <script type="text/javascript">
-
-/*!
- * Ext JS Library 3.2.1
- * Copyright(c) 2006-2010 Ext JS, Inc.
- * licensing@extjs.com
- * http://www.extjs.com/license
- */
-
-LABKEY.requiresScript("/ehr/ehrAPI.js");
-
+    LABKEY.requiresScript("/ehr/ehrAPI.js");
+</script>
+<script type="text/javascript">
 
 Ext.onReady(function(){
 
     var formType = LABKEY.ActionURL.getParameter('formtype');
     var formUUID = LABKEY.ActionURL.getParameter('requestid');
     var queryName = LABKEY.ActionURL.getParameter('queryName');
+    var webpart = <%=webpartContext%>;
 
     if(!formUUID){
         alert('Must provide form Id');
@@ -28,7 +20,6 @@ Ext.onReady(function(){
             LABKEY.Query.selectRows({
                 schemaName: 'ehr',
                 queryName: 'requests',
-                //containerPath: 'WNPRC/EHR/',
                 filterArray: [LABKEY.Filter.create('requestid', formUUID, LABKEY.Filter.Types.EQUAL)],
                 scope: this,
                 successCallback: function(data){
@@ -56,7 +47,7 @@ Ext.onReady(function(){
             panelType: 'RequestDetailsPanel',
             formUUID: formUUID,
             formType: formType,
-            renderTo: 'requestForm',
+            renderTo: webpart.wrapperDivId,
             noTabs: true,
             readOnly: true,
             allowableButtons: ['EDITCONTACTS']
@@ -68,13 +59,3 @@ Ext.onReady(function(){
 
 
 </script>
-</head>
-<body>
-<div id="requestForm"></div>
-
-
-
-</body>
-
-
-</html>

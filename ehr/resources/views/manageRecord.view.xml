@@ -1,3 +1,5 @@
-<view xmlns="http://labkey.org/data/xml/view"
-       title="Manage Record" frame="none">
+<view xmlns="http://labkey.org/data/xml/view" title="Manage Record" frame="none">
+    <dependencies>
+        <dependency path="/ehr/ehr_api" />
+    </dependencies>
 </view>

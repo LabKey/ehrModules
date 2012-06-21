@@ -5,7 +5,6 @@
  */
 Ext.namespace('EHR.ext', 'EHR.Utils');
 
-LABKEY.requiresScript("/ehr/arrayUtils.js");
 LABKEY.requiresScript("/ehr/Security.js");
 
 /**

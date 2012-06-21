@@ -40,7 +40,6 @@
                     <column columnName="stain">
                       <columnTitle>Stain</columnTitle>
                       <fk>
-                        <fkFolderPath>/wnprc/ehr/</fkFolderPath>
                         <fkDbSchema>ehr_lookups</fkDbSchema>
                         <fkTable>histology_stain</fkTable>
                         <fkColumnName>stain</fkColumnName>

@@ -1,8 +1,7 @@
-<head>
-
 <script type="text/javascript">
-
-LABKEY.requiresScript("/ehr/ehrAPI.js");
+    LABKEY.requiresScript("/ehr/ehrAPI.js");
+</script>
+<script type="text/javascript">
 
 Ext.onReady(function (){
 
@@ -11,9 +10,12 @@ Ext.onReady(function (){
         scope: this
     });
 
+
+    var webpart = <%=webpartContext%>;
+
     function onSuccess(data){
         var menuCfg = {
-            renderTo: 'dataAdminUpdateTable',
+            renderTo: webpart.wrapperDivId,
             sections: new Array(),
             columns: 3,
             colWidth: 400,
@@ -177,14 +179,3 @@ Ext.onReady(function (){
 });
 
 </script>
-</head>
-<body>
-    <p/>
-
-	<div id='dataAdminLinkMenu'></div>
-
-    <p/>
-
-	<div id='dataAdminUpdateTable'></div>
-
-</body>

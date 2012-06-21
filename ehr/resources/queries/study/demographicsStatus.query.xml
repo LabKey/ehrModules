@@ -7,8 +7,8 @@
                         <isKeyField>true</isKeyField>
                         <isHidden>true</isHidden>
                     </column>
-                    <column columnName="WNPRC_Animal">
-                        <columnTitle>Is WNPRC Animal?</columnTitle>                        
+                    <column columnName="Center_Animal">
+                        <columnTitle>Is Center Animal?</columnTitle>
                     </column>
                 </columns>
             <titleColumn>Status</titleColumn>

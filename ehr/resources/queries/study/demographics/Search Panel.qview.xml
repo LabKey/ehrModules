@@ -61,9 +61,9 @@
                 <!--<property name="columnTitle" value="Death"/>-->
             <!--</properties>-->
         </column>
-        <column name="Id/MostRecentArrival/WNPRC_Arrival">
+        <column name="Id/MostRecentArrival/Center_Arrival">
             <properties>
-                <property name="columnTitle" value="First Arrival at WNPRC"/>
+                <property name="columnTitle" value="First Arrival at Center"/>
             </properties>
         </column>
         <column name="Id/MostRecentArrival/MostRecentArrival">

@@ -19,7 +19,7 @@ CASE
     THEN 'No Information'
   WHEN
     (a.dataset.demographics.birth IS NULL AND a.dataset.demographics.arrivedate IS NULL)
-    THEN 'Never at WNPRC'
+    THEN 'Never at Center'
   WHEN
     (a.dataset.demographics.death IS NOT NULL)
     THEN 'Dead'
@@ -33,7 +33,7 @@ CASE
     'ERROR'
 END as status
 
---determine whether animal was ever at WNPRC
+--determine whether animal was ever at the center
 --possibly also use housing as proxy?
 -- CASE
 --   WHEN
@@ -41,7 +41,7 @@ END as status
 --     THEN true
 --   ELSE
 --     false
--- END AS WNPRC_Animal,
+-- END AS Center_Animal,
 
 FROM study.animal a
 

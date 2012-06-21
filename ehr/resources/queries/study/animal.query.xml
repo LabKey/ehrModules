@@ -56,7 +56,7 @@
                         </fk>
                     </column>
                     <column columnName="MostRecentArrival" wrappedColumnName="id">
-                        <description>Calculates the most recent arrival per animal, if applicable, and most recent arrival at WNPRC</description>
+                        <description>Calculates the most recent arrival per animal, if applicable, and most recent arrival at the center</description>
                         <columnTitle>Arrival Date</columnTitle>
                         <isHidden>false</isHidden>
                         <isUnselectable>true</isUnselectable>

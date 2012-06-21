@@ -49,7 +49,6 @@ EHR.ext.AnimalSelectorPanel = Ext.extend(Ext.Panel, {
 //                    ,editable: true
 //                    ,triggerAction: 'all'
 //                    ,store: new LABKEY.ext.Store({
-//                        containerPath: 'WNPRC/EHR/',
 //                        schemaName: 'ehr_lookups',
 //                        queryName: 'areas',
 //                        sort: 'area',
@@ -71,7 +70,6 @@ EHR.ext.AnimalSelectorPanel = Ext.extend(Ext.Panel, {
 //                    ,triggerAction: 'all'
 //                    ,editable: true
 //                    ,store: new LABKEY.ext.Store({
-//                        containerPath: 'WNPRC/EHR/',
 //                        schemaName: 'ehr_lookups',
 //                        queryName: 'rooms',
 //                        sort: 'room',
@@ -120,7 +118,6 @@ EHR.ext.AnimalSelectorPanel = Ext.extend(Ext.Panel, {
 //                    ,triggerAction: 'all'
 //                    ,editable: true
 //                    ,store: new LABKEY.ext.Store({
-//                        containerPath: 'WNPRC/EHR/',
 //                        schemaName: 'ehr',
 //                        queryName: 'project',
 //                        viewName: 'Projects With Active Assignments',
@@ -1446,7 +1443,6 @@ EHR.ext.BloodSelectorPanel = Ext.extend(Ext.Panel, {
                 ,editable: true
                 ,triggerAction: 'all'
                 ,store: new LABKEY.ext.Store({
-                    containerPath: 'WNPRC/EHR/',
                     schemaName: 'ehr_lookups',
                     queryName: 'areas',
                     sort: 'area',
@@ -1823,7 +1819,6 @@ Ext.extend(EHR.ext.AbstractPanel, Ext.FormPanel, {
                 queryName: this.queryName || 'demographics',
                 viewName: this.viewName || 'Clinical Summary',
                 //columns: '',
-                containerPath: 'WNPRC/EHR/',
                 filterArray: [LABKEY.Filter.create('Id', id, LABKEY.Filter.Types.EQUAL)],
                 scope: this,
                 successCallback: function(data){
@@ -1868,7 +1863,7 @@ Ext.extend(EHR.ext.AbstractPanel, Ext.FormPanel, {
         {
             var row = data.rows[0];
 //            if (!this.allowDeadAnimals && row['calculated_status'] != 'Alive'){
-//                alert('Animal: '+id+' is not currently alive and at WNPRC');
+//                alert('Animal: '+id+' is not currently alive and at the center');
 //            }
 
             Ext.each(data.metaData.fields, function(c)

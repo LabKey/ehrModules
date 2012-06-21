@@ -10,7 +10,7 @@ SELECT
 
   T2.EarliestArrival,
 
-  coalesce(T2.EarliestArrival, d.birth) as WNPRC_Arrival,
+  coalesce(T2.EarliestArrival, d.birth) as Center_Arrival,
 
 FROM study.demographics d
 

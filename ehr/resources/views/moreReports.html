@@ -1,50 +1,40 @@
-<html>
+<script type="text/javascript">
+    LABKEY.requiresScript("/ehr/utils.js");
+    LABKEY.requiresScript("/ehr/navMenu.js");
+</script>
 <script type="text/javascript">
 
-LABKEY.requiresScript("/ehr/navMenu.js");
+Ext.onReady(function(){
 
-
-Ext.onReady(createNavMenu);
-
-function createNavMenu()
-{
-    if (!window.EHR || !window.EHR.ext || !window.EHR.ext.NavMenu)
-    {
-        createNavMenu.defer(10);
+    var ctx = EHR.Utils.getEHRContext();
+    if(!ctx)
         return;
-    }
 
-
+    var webpart = <%=webpartContext%>;
     new EHR.ext.NavMenu({
-        renderTo: 'moreReportsMenu',
+        renderTo: webpart.wrapperDivId,
         sections: [
             {header: 'More Reports',
             items: [
-                {name: 'Blood Needlesticks', url: '<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=bloodNeedlesticks'},
-                {name: 'Housing By Room and Cage', url: '<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=housingByRoomCage'},
-                {name: 'Find Housings Records For A Location At a Specific Time', url: '<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=HousingOverlaps'},
-                {name: 'Find Animals Housed in a Location At a Specific Time', url: '<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=HousingOverlapsById'},
-                {name: 'Per Diems (in testing)', url: '<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=perDiems'},
-                {name: 'Per Diems Raw Data (in testing)', url: '<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=perDiemsByDay'},
-                {name: 'Restraints Used', url: '<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=restraintUsed'}
+                {name: 'Blood Needlesticks', url: '<%=contextPath%>/query' + ctx['EHRStudyContainer'] + '/executeQuery.view?schemaName=study&query.queryName=bloodNeedlesticks'},
+                {name: 'Housing By Room and Cage', url: '<%=contextPath%>/query' + ctx['EHRStudyContainer'] + '/executeQuery.view?schemaName=study&query.queryName=housingByRoomCage'},
+                {name: 'Find Housings Records For A Location At a Specific Time', url: '<%=contextPath%>/query' + ctx['EHRStudyContainer'] + '/executeQuery.view?schemaName=study&query.queryName=HousingOverlaps'},
+                {name: 'Find Animals Housed in a Location At a Specific Time', url: '<%=contextPath%>/query' + ctx['EHRStudyContainer'] + '/executeQuery.view?schemaName=study&query.queryName=HousingOverlapsById'},
+                {name: 'Per Diems (in testing)', url: '<%=contextPath%>/query' + ctx['EHRStudyContainer'] + '/executeQuery.view?schemaName=study&query.queryName=perDiems'},
+                {name: 'Per Diems Raw Data (in testing)', url: '<%=contextPath%>/query' + ctx['EHRStudyContainer'] + '/executeQuery.view?schemaName=study&query.queryName=perDiemsByDay'},
+                {name: 'Restraints Used', url: '<%=contextPath%>/query' + ctx['EHRStudyContainer'] + '/executeQuery.view?schemaName=study&query.queryName=restraintUsed'}
 
             ]
         },{
             header: 'Validation',
             items: [
-                {name: 'Duplicate Assignments', url: '<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=duplicateAssignments'},
-                {name: 'Find Dead Animals Without A Weight in the Preceeding 7 Days', url: '<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=validateFinalWeights&query.sort=-death'},
-                {name: 'Non-contiguous Housing Assignments', url: '<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=housingCheck'},
-                {name: 'Validate Demographics Status Field', url: '<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=Validate_status'}
+                {name: 'Duplicate Assignments', url: '<%=contextPath%>/query' + ctx['EHRStudyContainer'] + '/executeQuery.view?schemaName=study&query.queryName=duplicateAssignments'},
+                {name: 'Find Dead Animals Without A Weight in the Preceeding 7 Days', url: '<%=contextPath%>/query' + ctx['EHRStudyContainer'] + '/executeQuery.view?schemaName=study&query.queryName=validateFinalWeights&query.sort=-death'},
+                {name: 'Non-contiguous Housing Assignments', url: '<%=contextPath%>/query' + ctx['EHRStudyContainer'] + '/executeQuery.view?schemaName=study&query.queryName=housingCheck'},
+                {name: 'Validate Demographics Status Field', url: '<%=contextPath%>/query' + ctx['EHRStudyContainer'] + '/executeQuery.view?schemaName=study&query.queryName=Validate_status'}
             ]}
         ]
     });
-}
+});
 
 </script>
-<body>
-
-<div id="moreReportsMenu"></div>
-
-</body>
-</html>

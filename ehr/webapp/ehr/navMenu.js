@@ -68,6 +68,7 @@ EHR.ext.NavMenu = Ext.extend(Ext.Panel, {
         Ext.apply(this, {
             border: false,
             width: this.width || '80%',
+            bodyStyle: 'background-color: transparent;',
             defaults: {
                 border: false,
                 style: 'background-color: transparent;',
@@ -91,7 +92,9 @@ EHR.ext.NavMenu = Ext.extend(Ext.Panel, {
                     style: 'margin-bottom:5px;'
                 },
                 defaults: {
-                    border: false
+                    border: false,
+                    style: 'padding-left:5px;background-color: transparent;',
+                    bodyStyle: 'background-color: transparent;'
                 }
             });
 
@@ -104,9 +107,7 @@ EHR.ext.NavMenu = Ext.extend(Ext.Panel, {
                    //NOTE: this is the default renderer
                    item = {
                        //Creates links for the navegation panel
-                        html: '<a href="'+tmp.items[j].url+'">'+tmp.items[j].name+'</a>',
-                       //html: LABKEY.Utils.textLink({href: '+tmp.items[j].url+', text: tmp.items[j].name}),
-                        style: 'padding-left:5px;'
+                        html: '<a href="'+tmp.items[j].url+'">'+tmp.items[j].name+'</a>'
                     }
                 }
                 section.add(item)

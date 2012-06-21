@@ -1,14 +1,13 @@
-<html>
-<head>
 <script type="text/javascript">
-
-LABKEY.requiresScript("/ehr/arrayUtils.js");
+    LABKEY.requiresExt4Sandbox();
+</script>
+<script type="text/javascript">
 
 function unique(){
     var input = document.getElementById('unique').value;
     input = cleanSplit(input);
 
-    var output = Ext.unique(input);
+    var output = Ext4.unique(input);
     output.sort();
 
     document.getElementById('uniqueTarget').value = output.join('\n');
@@ -16,22 +15,6 @@ function unique(){
     document.getElementById('uniqueInputTotal').innerHTML = ' '+input.length+' total';
 }
 
-//function intersect(){
-//    var input1 = document.getElementById('intersect1').value;
-//    input1 = cleanSplit(input1);
-//
-//    var input2 = document.getElementById('intersect2').value;
-//    input2 = cleanSplit(input2);
-//
-//    var output = input1.intersect(input2);
-//    output.sort();
-//
-//    document.getElementById('intersectTarget').value = output.join('\n');
-//    document.getElementById('intersectTargetTotal').innerHTML = ' '+output.length+' total';
-//
-//    document.getElementById('intersectList1Total').innerHTML = ' '+input1.length+' total';
-//    document.getElementById('intersectList2Total').innerHTML = ' '+input2.length+' total';
-//}
 
 function compare(){
     var input1 = document.getElementById('subtract1').value;
@@ -41,9 +24,9 @@ function compare(){
     input2 = cleanSplit(input2);
     input1.sort();
 
-    var intersect = input1.intersect(input2);
-    var output = input1.subtract(input2);
-    var output2 = input2.subtract(input1);
+    var intersect = Ext4.Array.intersect(input1, input2);
+    var output = Ext4.Array.difference(input1, input2);
+    var output2 = Ext4.Array.difference(input2, input1);
 
     document.getElementById('subtractTarget').value = output.join('\n');
     document.getElementById('subtractTargetTotal').innerHTML = ' '+output.length+' total';
@@ -70,9 +53,7 @@ function cleanSplit(input){
 }
 
 </script>
-</head>
 
-<body>
 This page contains an several basic utilities to process lists of animal names (can actually be used on anything).
 <p/>
 To use, simply cut/paste or type a list of IDs into the box(es) on the left.  Hit the arrow to process.  Results will appear on the right.
@@ -103,9 +84,3 @@ To use, simply cut/paste or type a list of IDs into the box(es) on the left.  Hi
     <td>Present In List 2, but not List 1:<span id="subtractTargetTotal2"></span><br><textarea rows="10" cols="30" id="subtractTarget2"></textarea></td>
 </tr>
 </table>
-
-<p/>
-
-
-</body>
-</html>

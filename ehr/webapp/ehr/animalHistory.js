@@ -299,7 +299,6 @@ EHR.ext.SingleAnimalReport = Ext.extend(Ext.Panel, {
                 ,width: 150
                 ,editable: true
                 ,store: new LABKEY.ext.Store({
-                    containerPath: 'WNPRC/EHR/',
                     schemaName: 'ehr',
                     queryName: 'project',
                     viewName: 'Projects With Active Assignments',
@@ -319,7 +318,6 @@ EHR.ext.SingleAnimalReport = Ext.extend(Ext.Panel, {
                 ,triggerAction: 'all'
                 ,mode: 'local'
                 ,store: new LABKEY.ext.Store({
-                    containerPath: 'WNPRC/EHR/',
                     schemaName: 'ehr',
                     queryName: 'protocol',
                     viewName: 'Protocols With Active Assignments',
@@ -371,9 +369,7 @@ EHR.ext.SingleAnimalReport = Ext.extend(Ext.Panel, {
                 ,width: 150
                 ,editable: true
                 ,store: new LABKEY.ext.Store({
-                    containerPath: 'WNPRC/EHR/',
                     schemaName: 'ehr_lookups',
-//                    queryName: 'RoomUtilization',
                     queryName: 'rooms',
                     sort: 'room',
 //                    filterArray: [LABKEY.Filter.create('TotalAnimals', 0, LABKEY.Filter.Types.NOT_EQUAL)],
@@ -459,7 +455,6 @@ EHR.ext.SingleAnimalReport = Ext.extend(Ext.Panel, {
             ,editable: true
             ,triggerAction: 'all'
             ,store: new LABKEY.ext.Store({
-                containerPath: 'WNPRC/EHR/',
                 schemaName: 'ehr_lookups',
                 queryName: 'areas',
                 sort: 'area',
@@ -629,7 +624,6 @@ EHR.ext.SingleAnimalReport = Ext.extend(Ext.Panel, {
         LABKEY.Query.selectRows({
             schemaName: 'study',
             queryName: 'ActiveAssignments',
-            containerPath: 'WNPRC/EHR/',
             sort: 'Id',
             filterArray: filters,
             scope: this,
@@ -685,7 +679,6 @@ EHR.ext.SingleAnimalReport = Ext.extend(Ext.Panel, {
             queryName: 'housing',
             viewName: 'Current Housing',
             sort: 'Id',
-            containerPath: 'WNPRC/EHR/',
             filterArray: filters,
             scope: this,
             successCallback: function(rows){
@@ -919,9 +912,6 @@ EHR.ext.SingleAnimalReport = Ext.extend(Ext.Panel, {
     },
 
     displayReport: function(tab){
-//        this.wheel = document.getElementById('reportDiv').appendChild(document.createElement('span'));
-//        this.wheel.innerHTML = 'Loading...<p>';
-//        this.wheel.setAttribute('class', "loading-indicator");
         this.addHeader(tab);
 
         if(tab.subjectArray.length){

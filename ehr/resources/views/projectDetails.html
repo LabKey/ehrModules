@@ -1,21 +1,39 @@
-<html>
-<head>
-
+<script type="text/javascript">
+    LABKEY.requiresScript("/ehr/ehrDetailsPanel.js");
+</script>
 <script type="text/javascript">
 
-LABKEY.requiresScript("/ehr/ehrDetailsPanel.js");
-
-Ext.onReady(function ()
-{
+Ext.onReady(function (){
     if (!LABKEY.ActionURL.getParameter('key')){alert('Must Provide Project Number'); return false;}
 
     var project = LABKEY.ActionURL.getParameter('key');
+
+    var webpart = <%=webpartContext%>;
+    var domSpec = [{
+        tag: 'div',
+        id: 'projectDetails_' + webpart.wrapperDivId
+    },{
+        tag: 'div',
+        style: 'padding-bottom: 10px;',
+        id: 'projectLinks_' + webpart.wrapperDivId
+    },{
+        tag: 'div',
+        style: 'padding-bottom: 10px;',
+        id: 'projectAssignments_' + webpart.wrapperDivId
+    },{
+        tag: 'div',
+        style: 'padding-bottom: 10px;',
+        id: 'projectTotalAssignments_' + webpart.wrapperDivId
+    }]
+
+    var el = Ext.get(webpart.wrapperDivId);
+    Ext.DomHelper.append(el, domSpec);
 
     new EHR.ext.DetailsView({
         schemaName: 'ehr',
         queryName: 'project',
         title: 'Project Details:',
-        renderTo: 'projectDetails',
+        renderTo: 'projectDetails_' + webpart.wrapperDivId,
         filterArray: [LABKEY.Filter.create('project', project, LABKEY.Filter.Types.EQUAL)]
     });
 
@@ -36,7 +54,7 @@ Ext.onReady(function ()
         sort: '-Date',
         scope: this,
         failure: EHR.Utils.onError
-     }).render('projectAssignments');
+     }).render('projectAssignments_' + webpart.wrapperDivId);
 
 
     new LABKEY.QueryWebPart({
@@ -55,7 +73,7 @@ Ext.onReady(function ()
         sort: '-Date',
         scope: this,
         failure: EHR.Utils.onError
-     }).render('projectTotalAssignments');
+     }).render('projectTotalAssignments_' + webpart.wrapperDivId);
 
     new Ext.Panel({
         title: 'Project Information',
@@ -112,25 +130,7 @@ Ext.onReady(function ()
             ,style: 'padding-bottom:10px'
             ,buttonAlign: 'center'
         }]
-    }).render('projectLinks');
+    }).render('projectLinks_' + webpart.wrapperDivId);
 });
 
 </script>
-</head>
-<body>
-    <p/>
-
-	<div id='projectDetails'></div>
-
-    <p/>
-
-    <div id='projectLinks'></div>
-
-    <p/>
-
-    <div id='projectAssignments'></div>
-
-    <p/>
-
-    <div id='projectTotalAssignments'></div></body>
-</html>

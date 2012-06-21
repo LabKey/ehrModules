@@ -8,6 +8,8 @@ Ext.namespace('EHR.Assay.UploadPanel', 'EHR.Assay.Upload.ImportMethod', 'EHR.ext
 //NOTE: this entire file has been depreciated in favor of newer version in the Laboratory module.
 //It can likely be removed once the Viral Load and MHC SSP assays have been validated
 
+//NOTE: it seems to be in use by oconnor - should move to his module
+
 LABKEY.requiresScript("FileUploadField.js");
 LABKEY.requiresScript("/ehr/arrayUtils.js");
 LABKEY.requiresScript("/ehr/utils.js");

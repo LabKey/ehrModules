@@ -1,98 +1,101 @@
-<html>
-<head>
 <script type="text/javascript">
 
 LABKEY.requiresScript("/ehr/SearchPanel.js");
+LABKEY.requiresScript("/ehr/utils.js");
 
 Ext.onReady(function ()
 {
+    var ctx = EHR.Utils.getEHRContext();
+    if(!ctx)
+        return;
+
+    var webpart = <%=webpartContext%>;
+
+    var domSpec = {
+        tag: 'div',
+        children: [{
+            tag: 'p',
+            html: 'This page contains reports identify animals based on multiple criteria.'
+        },{
+            html: '<b>Browse Animals:</b>'
+        },{
+            tag: 'ul',
+            children: [{
+                tag: 'li',
+                html: '<a href="<%=contextPath%>/query' + ctx['EHRStudyContainer'] + '/executeQuery.view?schemaName=study&query.queryName=Demographics&query.viewName=Alive%2C at WNPRC">All Living Center Animals</a>'
+            },{
+                tag: 'li',
+                html: '<a href="<%=contextPath%>/query' + ctx['EHRStudyContainer'] + '/executeQuery.view?schemaName=study&query.queryName=Demographics">All Center Animals</a>'
+            },{
+                tag: 'li',
+                html: '<a href="<%=contextPath%>/query' + ctx['EHRStudyContainer'] + '/executeQuery.view?schemaName=study&query.queryName=Demographics&query.Id/currentAssignments/availability~contains=b">Assigned To Breeding</a>'
+            },{
+                tag: 'li',
+                html: '<a href="<%=contextPath%>/query' + ctx['EHRStudyContainer'] + '/executeQuery.view?schemaName=study&query.queryName=Demographics&query.viewName=Living Rhesus Plus MHC Typing">All Living Center Macaques Plus MHC Typing</a>'
+            },{
+                tag: 'li',
+                html: '<a href="<%=contextPath%>/query' + ctx['EHRStudyContainer'] + '/executeQuery.view?schemaName=study&query.queryName=Demographics&query.viewName=Living With SIV">Living With SIV</a>'
+            },{
+                tag: 'li',
+                html: '<a href="<%=contextPath%>/query' + ctx['EHRStudyContainer'] + '/executeQuery.view?schemaName=study&query.queryName=SSP_Pivot">MHC SSP Data</a>'
+            },{
+                tag: 'li',
+                html: '<a href="<%=contextPath%>/query' + ctx['EHRStudyContainer'] + '/executeQuery.view?schemaName=study&query.queryName=Demographics&query.viewName=Single Housed">Single Housed Animals</a>'
+            },{
+                tag: 'li',
+                html: '<a href="<%=contextPath%>/query' + ctx['EHRStudyContainer'] + '/executeQuery.view?schemaName=study&query.queryName=Demographics&query.viewName=TB Older Than 4 Months">TB: Untested In Past 4 months</a>'
+            },{
+                tag: 'li',
+                html: '<a href="<%=contextPath%>/query' + ctx['EHRStudyContainer'] + '/executeQuery.view?schemaName=study&query.queryName=Demographics&query.viewName=Unassigned%20Animals">Unassigned Animals</a>'
+            },{
+                tag: 'li',
+                html: '<a href="<%=contextPath%>/query' + ctx['EHRStudyContainer'] + '/executeQuery.view?schemaName=study&query.queryName=Demographics&query.viewName=Unassigned%20Rhesus%20With%20MHC%20Typing">Unassigned Rhesus Plus MHC Typing</a>'
+            },{
+                tag: 'li',
+                html: '<a href="<%=contextPath%>/query' + ctx['EHRStudyContainer'] + '/executeQuery.view?schemaName=study&query.queryName=Demographics&query.viewName=Unweighed%20Over%2045%20Days">Unweighed In Past 45 Days</a>'
+            },{
+                tag: 'li',
+                html: '<a href="<%=contextPath%>/query' + ctx['EHRStudyContainer'] + '/executeQuery.view?schemaName=study&query.queryName=Current Colony Condition">List Most Recent Body Condition Code For Each Animal in the Colony</a>'
+            }]
+        },{
+            html: '<b>Other Searches:</b>'
+        },{
+            tag: 'ul',
+            children: [{
+                tag: 'li',
+                html: '<a href="<%=contextPath%>/query' + ctx['EHRStudyContainer'] + '/executeQuery.view?schemaName=study&query.queryName=Colony Population By Age">Population Summary By Species, Gender and Age</a>'
+            },{
+                tag: 'li',
+                html: '<a href="<%=contextPath%>/query' + ctx['EHRStudyContainer'] + '/executeQuery.view?schemaName=study&query.queryName=HousingOverlapsById">Find Animals Housed At The Center Over A Date Range</a>'
+            },{
+                tag: 'li',
+                html: '<a href="<%=contextPath%>/query' + ctx['EHRStudyContainer'] + '/executeQuery.view?schemaName=study&query.queryName=SinglyHousedAnimals">List Singly-Housed Animals At The Center On A Given Date</a>'
+            }]
+        },{
+            tag: 'div',
+            style: 'padding-top: 20px;',
+            id: 'animalSearch_'+webpart.wrapperDivId
+        }]
+    }
+
+    var el = Ext.get(webpart.wrapperDivId);
+    Ext.DomHelper.append(el, domSpec);
+
     new EHR.ext.SearchPanel({
         schemaName: 'study'
         ,queryName: 'Demographics'
         ,viewName: 'Search Panel'
         ,title: 'Search Animals'
-        ,defaultView: 'Alive, at WNPRC'                
+        ,defaultView: 'Alive, at WNPRC'
         ,metadata: {
             Id: {lookups: false}
             ,'Id/age/AgeInYearsRounded': {duplicate: true}
             ,'Id/MostRecentWeight/MostRecentWeight': {duplicate: true}
         }
-    }).render('animalSearch');
+    }).render('animalSearch_'+webpart.wrapperDivId);
+
+
 });
 
 
 </script>
-</head>
-
-<body>
-<p>
-    This page contains reports identify animals based on multiple criteria.
-<p/>
-<b>Browse Animals:</b>
-    <ul>
-        <li>
-            <a href="<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=Demographics&query.viewName=Alive%2C at WNPRC">All Living WNPRC Animals</a>
-        </li>
-        <li>
-            <a href="<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=Demographics">All WNPRC Animals</a>
-        </li>
-        <li>
-            <a href="<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=Demographics&query.Id/currentAssignments/availability~contains=b">Assigned To Breeding</a>
-        </li>
-        <li>
-            <a href="<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=Demographics&query.viewName=Living Rhesus Plus MHC Typing">All Living WNPRC Macaques Plus MHC Typing</a>
-        </li>
-        <li>
-            <a href="<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=Demographics&query.viewName=Living With SIV">Living With SIV</a>
-        </li>
-        <li>
-            <a href="<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=SSP_Pivot">MHC SSP Data</a>
-        </li>
-        <li>
-            <a href="<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=Demographics&query.viewName=Single Housed">Single Housed Animals</a>
-        </li>
-        <li>
-            <a href="<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=Demographics&query.viewName=TB Older Than 4 Months">TB: Untested In Past 4 months</a>
-        </li>
-        <li>
-            <a href="<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=Demographics&query.viewName=Unassigned%20Animals">Unassigned Animals</a>
-        </li>
-        <li>
-            <a href="<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=Demographics&query.viewName=Unassigned%20Rhesus%20With%20MHC%20Typing">Unassigned Rhesus Plus MHC Typing</a>
-        </li>
-        <li>
-            <a href="<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=Demographics&query.viewName=Unweighed%20Over%2045%20Days">Unweighed In Past 45 Days</a>
-        </li>
-        <li>
-            <a href="<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=Current Colony Condition">List Most Recent Body Condition Code For Each Animal in the Colony</a>
-        </li>
-    </ul>
-
-<b>Other Searches:</b>
-    <ul>
-        <li>
-            <a href="<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=Colony Population By Age">Population Summary By Species, Gender and Age</a>
-        </li>
-        <li>
-            <a href="<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=HousingOverlapsById">Find Animals Housed At WNPRC Over A Date Range</a>
-        </li>
-        <li>
-        	<a href="<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=SinglyHousedAnimals">List Singly-Housed Animals at WNPRC on a Given Date</a>
-        </li>
-
-    </ul>
-<p/>
-<p>
-
-<div id="navigation"></div>
-
-
-<div id="animalSearch"></div>
-
-
-<br><br>
-
-<div id="reportDiv"></div>
-
-</body>
-</html>

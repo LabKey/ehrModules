@@ -1,3 +1,5 @@
-<view xmlns="http://labkey.org/data/xml/view"
-       title="Search Panel" frame="none">
+<view xmlns="http://labkey.org/data/xml/view" title="Search Panel" frame="portal">
+    <dependencies>
+        <dependency path="/ehr/ehr_api" />
+    </dependencies>
 </view>

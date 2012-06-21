@@ -1,4 +1,4 @@
-<view xmlns="http://labkey.org/data/xml/view" title="Query" frame="none">
+<view xmlns="http://labkey.org/data/xml/view">
     <dependencies>
         <dependency path="/ehr/ehr_api" />
     </dependencies>

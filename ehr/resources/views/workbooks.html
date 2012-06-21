@@ -1,17 +1,13 @@
-<html>
-<head>
-
 <script type="text/javascript">
-
-LABKEY.requiresScript("/ehr/AssayUtils.js");
-
-//TODO: toggle to select from available assays
-
-Ext.onReady(function ()
-{
+    LABKEY.requiresScript("/ehr/AssayUtils.js");
+</script>
+<script type="text/javascript">
+//NOTE: this is probably no longer in use with the possible exception of oconnor.  should be depreciated
+Ext.onReady(function (){
+    var webpart = <%=webpartContext%>;
     var webPartRenderer = new LABKEY.WebPart({
 		partName: 'Workbooks',
-		renderTo: 'workbookDiv',
+		renderTo: webpart.wrapperDivId,
         frame: 'none'
 		}).render();
 
@@ -23,22 +19,6 @@ Ext.onReady(function ()
             }
         });
     }
-
-
-
-
-
 });
 
 </script>
-</head>
-<body>
-    <p/>
-
-	<div id='workbookDiv'></div>
-
-
-
-
-</body>
-</html>

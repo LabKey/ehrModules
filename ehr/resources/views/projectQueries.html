@@ -1,10 +1,82 @@
-<html>
-<head>
+<script type="text/javascript">
+    LABKEY.requiresScript("/ehr/SearchPanel.js");
+    LABKEY.requiresScript("/ehr/utils.js");
+</script>
 <script type="text/javascript">
 
-    LABKEY.requiresScript("/ehr/SearchPanel.js");
+Ext.onReady(function(){
+    var ctx = EHR.Utils.getEHRContext();
+    if(!ctx)
+        return;
 
-    Ext.onReady(function(){
+    var webpart = <%=webpartContext%>;
+    var domSpec = [{
+        html: 'This page contains a series of queries to search IACUC Protocols, RARC Projects and Assignment data.  If there are additional one-button reports you would like added to the top section, please submit a request using the \'user feedback\' item on the menu bar above.'
+    },{
+        tag: 'h2',
+        html: 'Projects:'
+    },{
+       tag: 'h3',
+       html: 'Commonly Used Queries:'
+    },{
+        tag: 'ul',
+        children: [{
+            tag: 'li',
+            html: '<a href="<%=contextPath%>/query' + ctx['EHRStudyContainer'] + '/executeQuery.view?schemaName=ehr&query.queryName=Project&query.viewName=Projects With Active Assignments">View All Projects With Active Assignments</a>'
+        }]
+    },{
+        tag: 'div',
+        id: 'projectPanel_' + webpart.wrapperDivId
+    },{
+        tag: 'hr'
+    },{
+        tag: 'h2',
+        html: 'RARC Protocols:'
+    },{
+        tag: 'h3',
+        html: 'Commonly Used Queries:'
+    },{
+        tag: 'ul',
+        children: [{
+            tag: 'li',
+            html: '<a href="<%=contextPath%>/query' + ctx['EHRStudyContainer'] + '/executeQuery.view?schemaName=ehr&query.queryName=protocolTotalAnimalsBySpecies">View Total Animals Assigned to Each Protocol, By Species</a>'
+        }]
+    },{
+        tag: 'h3',
+        html: 'Search All Protocols:'
+    },{
+        tag: 'div',
+        id: 'protocolPanel_' + webpart.wrapperDivId
+    },{
+        tag: 'hr'
+    },{
+        tag: 'h2',
+        html: 'Assignments:'
+    },{
+        tag: 'h3',
+        html: 'Commonly Used Queries:'
+    },{
+        tag: 'ul',
+        children: [{
+            tag: 'li',
+            html: '<a href="<%=contextPath%>/query' + ctx['EHRStudyContainer'] + '/executeQuery.view?schemaName=study&query.queryName=demographicsAssignmentSummary">Assignment Summary By Animal</a>'
+        },{
+            tag: 'li',
+            html: '<a href="<%=contextPath%>/query' + ctx['EHRStudyContainer'] + '/executeQuery.view?schemaName=study&query.queryName=AssignmentOverlaps">Find Assignments Overlapping A Date Range</a>'
+        },{
+            tag: 'li',
+            html: '<a href="<%=contextPath%>/query' + ctx['EHRStudyContainer'] + '/executeQuery.view?schemaName=study&query.queryName=Demographics&query.viewName=Unassigned%20Animals">Unassigned Animals</a>'
+        }]
+    },{
+        tag: 'h3',
+        html: 'Search All Assignment Records:'
+    },{
+        tag: 'div',
+        id: 'assignmentPanel_' + webpart.wrapperDivId
+    }]
+
+    var el = Ext.get(webpart.wrapperDivId);
+    Ext.DomHelper.append(el, domSpec);
 
     new EHR.ext.SearchPanel({
         schemaName: 'ehr'
@@ -14,14 +86,14 @@
         ,metadata: {
             protocol: {lookups: false}
         }
-    }).render('projectPanel');
+    }).render('projectPanel_' + webpart.wrapperDivId);
 
     new EHR.ext.SearchPanel({
         schemaName: 'ehr'
         ,queryName: 'protocol'
         ,title: 'Search Protocols'
         ,metadata: {}
-    }).render('protocolPanel');                   
+    }).render('protocolPanel_' + webpart.wrapperDivId);
 
     new EHR.ext.SearchPanel({
         schemaName: 'study'
@@ -49,80 +121,9 @@
             ,Notes: {hidden: true}
         }
         ,defaultView: 'Open Ended Assignments'
-    }).render('assignmentPanel');
+    }).render('assignmentPanel_' + webpart.wrapperDivId);
 
 
 });
 
 </script>
-</head>
-
-<body>
-
-This page contains a series of queries to search IACUC Protocols, RARC Projects and Assignment data.  If there are additional one-button reports you would like added to the top section, please submit a request using the 'user feedback' item on the menu bar above.
-
-
-<p/>
-<h2>WNPRC Projects:</h2>
-<p/>
-<h3>Commonly Used Queries:</h3>
-<ul>
-    <li>
-        <a href="<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=ehr&query.queryName=Project&query.viewName=Projects With Active Assignments">View All Projects With Active Assignments</a>
-    </li>
-</ul>
-<p/>
-
-<div id='projectPanel'></div>
-<p/>
-<hr>
-
-<p/>
-<h2>RARC Protocols:</h2>
-
-<p/>
-
-<h3>Commonly Used Queries:</h3>
-<ul>
-    <li>
-        <a href="<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=ehr&query.queryName=protocolTotalAnimalsBySpecies">View Total Animals Assigned to Each Protocol, By Species</a>
-    </li>
-</ul>
-<p/>
-
-<h3>Search All Protocols:</h3>
-<p/>
-
-<div id='protocolPanel'></div>
-<p/>
-<hr>
-<p/>
-
-<h2>Assignments:</h2>
-<p/>
-<h3>Commonly Used Queries:</h3>
-
-<p/>
-
-<ul>
-    <li>
-        <a href="<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=demographicsAssignmentSummary">Assignment Summary By Animal</a>
-    </li>
-    <li>
-        <a href="<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=AssignmentOverlaps">Find Assignments Overlapping A Date Range</a>
-    </li>
-    <li>
-        <a href="<%=contextPath%>/query/WNPRC/EHR/executeQuery.view?schemaName=study&query.queryName=Demographics&query.viewName=Unassigned%20Animals">Unassigned Animals</a>
-    </li>
-</ul>
-<p/>
-<h3>Search All Assignment Records:</h3>
-
-
-<p/>
-<div id='assignmentPanel'></div>
-<p/>
-
-
-</body>
-</html>

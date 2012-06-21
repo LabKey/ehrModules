@@ -1,9 +1,8 @@
-<html>
-<head>
 <script type="text/javascript">
-
-LABKEY.requiresScript("/ehr/utils.js");
-LABKEY.requiresScript("/ehr/studyButtons.js");
+    LABKEY.requiresScript("/ehr/utils.js");
+    LABKEY.requiresScript("/ehr/studyButtons.js");
+</script>
+<script type="text/javascript">
 
 Ext.onReady(function (){
     var query = LABKEY.ActionURL.getParameter('query.queryName') || LABKEY.ActionURL.getParameter('queryName');
@@ -71,20 +70,12 @@ Ext.onReady(function (){
                 failure: EHR.Utils.onError
             };
 
-            new LABKEY.QueryWebPart(config).render('queryDiv');
+            var webpart = <%=webpartContext%>;
+            new LABKEY.QueryWebPart(config).render(webpart.wrapperDivId);
         }
         ,failure: EHR.Utils.onError
         ,scope: this
     });
 });
 
-
 </script>
-</head>
-
-<body>
-
-<div id="queryDiv"></div>
-
-</body>
-</html>

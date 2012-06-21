@@ -1,6 +1,7 @@
 <script type="text/javascript">
 
 Ext.onReady(function(){
+    var webpart = <%=webpartContext%>;
     new Ext.Panel({
         border: false,
         autoHeight: true,
@@ -76,10 +77,7 @@ Ext.onReady(function(){
             autoHeight: true,
             ref: 'grid'
         }]
-    }).render('executeSqlDiv');
+    }).render(webpart.wrapperDivId);
 });
 
 </script>
-
-<div id='executeSqlDiv'>
-</div>
