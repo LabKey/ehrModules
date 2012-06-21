@@ -76,20 +76,6 @@
       </ns:column>
     </ns:columns>
   </ns:table>
-  <ns:table tableName="obs_remarks" tableDbType="TABLE">
-    <ns:importUrl></ns:importUrl>
-    <ns:insertUrl></ns:insertUrl>
-    <ns:updateUrl></ns:updateUrl>
-    <ns:deleteUrl></ns:deleteUrl>
-    <ns:pkColumnName>remark</ns:pkColumnName>
-    <ns:columns>
-      <ns:column columnName="remark">
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>255</ns:scale>
-        <ns:isKeyField>true</ns:isKeyField>
-      </ns:column>
-    </ns:columns>
-  </ns:table>
   <ns:table tableName="tb_eye" tableDbType="TABLE">
     <ns:importUrl></ns:importUrl>
     <ns:insertUrl></ns:insertUrl>
@@ -452,15 +438,6 @@
       </ns:column>
     </ns:columns>
   </ns:table>
-  <!--<ns:table tableName="vl_category" tableDbType="TABLE">-->
-    <!--<ns:pkColumnName>category</ns:pkColumnName>-->
-    <!--<ns:columns>-->
-      <!--<ns:column columnName="category">-->
-        <!--<ns:datatype>varchar</ns:datatype>-->
-        <!--<ns:scale>80</ns:scale>-->
-      <!--</ns:column>-->
-    <!--</ns:columns>-->
-  <!--</ns:table>-->
   <ns:table tableName="restraint_type" tableDbType="TABLE">
     <ns:importUrl></ns:importUrl>
     <ns:insertUrl></ns:insertUrl>
@@ -625,6 +602,9 @@
       <ns:column columnName="sort_order">
         <ns:datatype>integer</ns:datatype>
         <ns:scale>20</ns:scale>
+      </ns:column>
+      <ns:column columnName="criteria">
+        <ns:datatype>integer</ns:datatype>
       </ns:column>
     </ns:columns>
   </ns:table>
@@ -865,6 +845,12 @@
         <ns:nullable>true</ns:nullable>
         <ns:datatype>varchar</ns:datatype>
         <ns:scale>100</ns:scale>
+      </ns:column>
+      <ns:column columnName="min">
+        <ns:nullable>true</ns:nullable>
+      </ns:column>
+      <ns:column columnName="max">
+        <ns:nullable>true</ns:nullable>
       </ns:column>
     </ns:columns>
   </ns:table>
@@ -1117,49 +1103,6 @@
       </ns:column>
     </ns:columns>
   </ns:table>
-  <!--<ns:table tableName="vl_technique" tableDbType="TABLE">-->
-    <!--<ns:pkColumnName>technique</ns:pkColumnName>-->
-    <!--<ns:columns>-->
-      <!--<ns:column columnName="technique">-->
-        <!--<ns:datatype>varchar</ns:datatype>-->
-        <!--<ns:scale>100</ns:scale>-->
-      <!--</ns:column>-->
-    <!--</ns:columns>-->
-  <!--</ns:table>-->
-  <!--<ns:table tableName="alopecia_area" tableDbType="TABLE">-->
-    <!--<ns:pkColumnName>area</ns:pkColumnName>-->
-    <!--<ns:columns>-->
-      <!--<ns:column columnName="area">-->
-        <!--<ns:datatype>varchar</ns:datatype>-->
-        <!--<ns:scale>100</ns:scale>-->
-      <!--</ns:column>-->
-    <!--</ns:columns>-->
-  <!--</ns:table>-->
-  <!--<ns:table tableName="virus_snomed" tableDbType="TABLE">-->
-    <!--<ns:pkColumnName>rowid</ns:pkColumnName>-->
-    <!--<ns:columns>-->
-      <!--<ns:column columnName="pathogen">-->
-        <!--<ns:nullable>true</ns:nullable>-->
-        <!--<ns:datatype>varchar</ns:datatype>-->
-        <!--<ns:scale>100</ns:scale>-->
-      <!--</ns:column>-->
-      <!--<ns:column columnName="challenge_type">-->
-        <!--<ns:nullable>true</ns:nullable>-->
-        <!--<ns:datatype>varchar</ns:datatype>-->
-        <!--<ns:scale>100</ns:scale>-->
-      <!--</ns:column>-->
-      <!--<ns:column columnName="code">-->
-        <!--<ns:nullable>true</ns:nullable>-->
-        <!--<ns:datatype>varchar</ns:datatype>-->
-        <!--<ns:scale>100</ns:scale>-->
-      <!--</ns:column>-->
-      <!--<ns:column columnName="rowid">-->
-        <!--<ns:datatype>serial</ns:datatype>-->
-        <!--<ns:isAutoInc>true</ns:isAutoInc>-->
-        <!--<ns:scale>10</ns:scale>-->
-      <!--</ns:column>-->
-    <!--</ns:columns>-->
-  <!--</ns:table>-->
   <ns:table tableName="pairtest_conclusion" tableDbType="TABLE">
     <ns:importUrl></ns:importUrl>
     <ns:insertUrl></ns:insertUrl>
@@ -1506,24 +1449,6 @@
       </ns:column>
     </ns:columns>
   </ns:table>
-  <!--<ns:table tableName="vl_virus" tableDbType="TABLE">-->
-    <!--<ns:pkColumnName>virus</ns:pkColumnName>-->
-    <!--<ns:columns>-->
-      <!--<ns:column columnName="virus">-->
-        <!--<ns:datatype>varchar</ns:datatype>-->
-        <!--<ns:scale>100</ns:scale>-->
-      <!--</ns:column>-->
-    <!--</ns:columns>-->
-  <!--</ns:table>-->
-  <!--<ns:table tableName="vl_instrument" tableDbType="TABLE">-->
-    <!--<ns:pkColumnName>instrument</ns:pkColumnName>-->
-    <!--<ns:columns>-->
-      <!--<ns:column columnName="instrument">-->
-        <!--<ns:datatype>varchar</ns:datatype>-->
-        <!--<ns:scale>100</ns:scale>-->
-      <!--</ns:column>-->
-    <!--</ns:columns>-->
-  <!--</ns:table>-->
   <ns:table tableName="charge_items" tableDbType="TABLE">
     <ns:importUrl></ns:importUrl>
     <ns:insertUrl></ns:insertUrl>
@@ -2552,24 +2477,24 @@
       </ns:column>
     </ns:columns>
   </ns:table>
-  <ns:table tableName="booleanCombo" tableDbType="TABLE">
-    <ns:importUrl></ns:importUrl>
-    <ns:insertUrl></ns:insertUrl>
-    <ns:updateUrl></ns:updateUrl>
-    <ns:deleteUrl></ns:deleteUrl>
-    <ns:pkColumnName>key</ns:pkColumnName>
-    <ns:columns>
-      <ns:column columnName="key">
-        <ns:datatype>bool</ns:datatype>
-        <ns:scale>20</ns:scale>
-        <ns:isKeyField>true</ns:isKeyField>
-      </ns:column>
-      <ns:column columnName="display">
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>100</ns:scale>
-      </ns:column>
-    </ns:columns>
-  </ns:table>
+  <!--<ns:table tableName="booleanCombo" tableDbType="TABLE">-->
+    <!--<ns:importUrl></ns:importUrl>-->
+    <!--<ns:insertUrl></ns:insertUrl>-->
+    <!--<ns:updateUrl></ns:updateUrl>-->
+    <!--<ns:deleteUrl></ns:deleteUrl>-->
+    <!--<ns:pkColumnName>key</ns:pkColumnName>-->
+    <!--<ns:columns>-->
+      <!--<ns:column columnName="key">-->
+        <!--<ns:datatype>bool</ns:datatype>-->
+        <!--<ns:scale>20</ns:scale>-->
+        <!--<ns:isKeyField>true</ns:isKeyField>-->
+      <!--</ns:column>-->
+      <!--<ns:column columnName="display">-->
+        <!--<ns:datatype>varchar</ns:datatype>-->
+        <!--<ns:scale>100</ns:scale>-->
+      <!--</ns:column>-->
+    <!--</ns:columns>-->
+  <!--</ns:table>-->
   <ns:table tableName="biopsy_type" tableDbType="TABLE">
     <ns:importUrl></ns:importUrl>
     <ns:insertUrl></ns:insertUrl>
@@ -2859,6 +2784,64 @@
           <ns:datatype>varchar</ns:datatype>
           <ns:scale>100</ns:scale>
           <ns:isKeyField>true</ns:isKeyField>
+        </ns:column>
+    </ns:columns>
+  </ns:table>
+  <ns:table tableName="container_types" tableDbType="TABLE">
+    <ns:columns>
+      <ns:column columnName="type"/>
+    </ns:columns>
+  </ns:table>
+  <ns:table tableName="drug_defaults" tableDbType="TABLE">
+    <ns:columns>
+      <ns:column columnName="code"/>
+      <ns:column columnName="dosage"/>
+      <ns:column columnName="dosage_units"/>
+      <ns:column columnName="concentration"/>
+      <ns:column columnName="conc_units"/>
+    </ns:columns>
+  </ns:table>
+  <ns:table tableName="error_types" tableDbType="TABLE">
+    <ns:columns>
+      <ns:column columnName="type"/>
+      <ns:column columnName="sort_order"/>
+    </ns:columns>
+  </ns:table>
+  <ns:table tableName="procedures" tableDbType="TABLE">
+    <ns:columns>
+      <ns:column columnName="rowid"/>
+      <ns:column columnName="procedure"/>
+      <ns:column columnName="code"/>
+      <ns:column columnName="description"/>
+    </ns:columns>
+  </ns:table>
+  <ns:table tableName="cage_type" tableDbType="TABLE">
+    <ns:importUrl></ns:importUrl>
+    <ns:insertUrl></ns:insertUrl>
+    <ns:updateUrl></ns:updateUrl>
+    <ns:deleteUrl></ns:deleteUrl>
+    <ns:pkColumnName>cagetype</ns:pkColumnName>
+      <ns:columns>
+        <ns:column columnName="cagetype">
+          <ns:datatype>varchar</ns:datatype>
+          <ns:isKeyField>true</ns:isKeyField>
+          <ns:columnTitle>Cage Type</ns:columnTitle>
+        </ns:column>
+        <ns:column columnName="length">
+          <ns:nullable>true</ns:nullable>
+        </ns:column>
+        <ns:column columnName="width">
+          <ns:nullable>true</ns:nullable>
+        </ns:column>
+        <ns:column columnName="height">
+          <ns:nullable>true</ns:nullable>
+        </ns:column>
+        <ns:column columnName="sqft">
+          <ns:columnTitle>Sq. Ft.</ns:columnTitle>
+          <ns:nullable>true</ns:nullable>
+          <ns:isUserEditable>false</ns:isUserEditable>
+          <ns:shownInInsertView>false</ns:shownInInsertView>
+          <ns:shownInUpdateView>false</ns:shownInUpdateView>
         </ns:column>
     </ns:columns>
   </ns:table>

@@ -114,77 +114,6 @@
       </ns:column>
     </ns:columns>
   </ns:table>
-  <ns:table tableName="client_errors" tableDbType="TABLE">
-    <ns:importUrl></ns:importUrl>
-    <ns:insertUrl></ns:insertUrl>
-    <ns:updateUrl></ns:updateUrl>
-    <ns:deleteUrl></ns:deleteUrl>
-    <ns:pkColumnName>rowid</ns:pkColumnName>
-    <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr&amp;query.queryName=client_errors&amp;rowid=${rowid}</ns:tableUrl>
-    <ns:columns>
-      <ns:column columnName="rowid">
-        <ns:datatype>serial</ns:datatype>
-        <ns:shownInInsertView>false</ns:shownInInsertView>
-        <ns:isAutoInc>true</ns:isAutoInc>
-        <ns:isKeyField>true</ns:isKeyField>
-        <ns:scale>10</ns:scale>
-      </ns:column>
-      <ns:column columnName="page">
-        <ns:nullable>true</ns:nullable>
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>100</ns:scale>
-      </ns:column>
-      <ns:column columnName="exception">
-        <ns:nullable>true</ns:nullable>
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>100</ns:scale>
-      </ns:column>
-      <ns:column columnName="json">
-        <ns:nullable>true</ns:nullable>
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>255</ns:scale>
-      </ns:column>
-      <ns:column columnName="container">
-        <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:datatype>entityid</ns:datatype>
-        <ns:isHidden>true</ns:isHidden>
-        <ns:scale>36</ns:scale>
-        <ns:fk>
-          <ns:fkDbSchema>core</ns:fkDbSchema>
-          <ns:fkTable>containers</ns:fkTable>
-          <ns:fkColumnName>entityid</ns:fkColumnName>
-        </ns:fk>
-      </ns:column>
-      <ns:column columnName="createdby">
-        <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:nullable>true</ns:nullable>
-        <ns:datatype>userid</ns:datatype>
-        <ns:scale>4</ns:scale>
-        <ns:isHidden>true</ns:isHidden>
-      </ns:column>
-      <ns:column columnName="created">
-        <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:nullable>true</ns:nullable>
-        <ns:datatype>timestamp</ns:datatype>
-        <ns:scale>29</ns:scale>
-        <ns:isHidden>true</ns:isHidden>
-      </ns:column>
-      <ns:column columnName="modifiedby">
-        <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:nullable>true</ns:nullable>
-        <ns:datatype>userid</ns:datatype>
-        <ns:scale>4</ns:scale>
-        <ns:isHidden>true</ns:isHidden>
-      </ns:column>
-      <ns:column columnName="modified">
-        <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:nullable>true</ns:nullable>
-        <ns:datatype>timestamp</ns:datatype>
-        <ns:scale>29</ns:scale>
-        <ns:isHidden>true</ns:isHidden>
-      </ns:column>
-    </ns:columns>
-  </ns:table>
   <ns:table tableName="snomed_tags" tableDbType="TABLE">
     <ns:importUrl></ns:importUrl>
     <ns:insertUrl></ns:insertUrl>
@@ -1616,7 +1545,7 @@
       <!--</ns:column>-->
     <!--</ns:columns>-->
   <!--</ns:table>-->
-    <ns:table tableName="qcStateMetadata" tableDbType="TABLE">
+  <ns:table tableName="qcStateMetadata" tableDbType="TABLE">
     <ns:importUrl></ns:importUrl>
     <ns:insertUrl></ns:insertUrl>
     <ns:updateUrl></ns:updateUrl>
@@ -1783,6 +1712,17 @@
         <ns:datatype>timestamp</ns:datatype>
         <ns:scale>29</ns:scale>
         <ns:isHidden>true</ns:isHidden>
+      </ns:column>
+      <ns:column columnName="container">
+        <ns:isUserEditable>false</ns:isUserEditable>
+        <ns:datatype>entityid</ns:datatype>
+        <ns:isHidden>true</ns:isHidden>
+        <ns:scale>36</ns:scale>
+        <ns:fk>
+          <ns:fkDbSchema>core</ns:fkDbSchema>
+          <ns:fkTable>containers</ns:fkTable>
+          <ns:fkColumnName>entityid</ns:fkColumnName>
+        </ns:fk>
       </ns:column>
     </ns:columns>
   </ns:table>
@@ -2038,4 +1978,55 @@
       </ns:column>
     </ns:columns>
   </ns:table>
+  <ns:table tableName="status" tableDbType="TABLE">
+    <ns:importUrl></ns:importUrl>
+    <ns:insertUrl></ns:insertUrl>
+    <ns:updateUrl></ns:updateUrl>
+    <ns:deleteUrl></ns:deleteUrl>
+      <ns:pkColumnName>QCStateLabel</ns:pkColumnName>
+      <ns:columns>
+          <ns:column columnName="rowid">
+            <ns:datatype>serial</ns:datatype>
+            <ns:shownInInsertView>false</ns:shownInInsertView>
+            <ns:isAutoInc>true</ns:isAutoInc>
+            <ns:isKeyField>true</ns:isKeyField>
+            <ns:scale>10</ns:scale>
+          </ns:column>
+        <ns:column columnName="label">
+          <ns:datatype>varchar</ns:datatype>
+          <ns:isKeyField>true</ns:isKeyField>
+          <ns:scale>100</ns:scale>
+        </ns:column>
+          <ns:column columnName="description">
+            <ns:nullable>true</ns:nullable>
+            <ns:datatype>text</ns:datatype>
+            <ns:scale>100</ns:scale>
+          </ns:column>
+          <ns:column columnName="publicData">
+            <ns:nullable>true</ns:nullable>
+            <ns:datatype>bool</ns:datatype>
+            <ns:scale>1</ns:scale>
+          </ns:column>
+        <ns:column columnName="draftData">
+          <ns:nullable>true</ns:nullable>
+          <ns:datatype>bool</ns:datatype>
+          <ns:scale>1</ns:scale>
+        </ns:column>
+        <ns:column columnName="isDeleted">
+          <ns:nullable>true</ns:nullable>
+          <ns:datatype>bool</ns:datatype>
+          <ns:scale>1</ns:scale>
+        </ns:column>
+        <ns:column columnName="isRequest">
+          <ns:nullable>true</ns:nullable>
+          <ns:datatype>bool</ns:datatype>
+          <ns:scale>1</ns:scale>
+        </ns:column>
+        <ns:column columnName="allowFutureDates">
+          <ns:nullable>true</ns:nullable>
+          <ns:datatype>bool</ns:datatype>
+          <ns:scale>1</ns:scale>
+        </ns:column>
+      </ns:columns>
+    </ns:table>
 </ns:tables>

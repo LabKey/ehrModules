@@ -55,7 +55,7 @@ public class EHRModule extends DefaultModule
 
     public double getVersion()
     {
-        return 11.34;
+        return 11.38;
     }
 
     public boolean hasScripts()
@@ -137,21 +137,13 @@ public class EHRModule extends DefaultModule
     public Set<String> getSchemaNames()
     {
         return PageFlowUtil.set("ehr", "ehr_lookups");
-        //return Collections.emptySet();
     }
 
     @Override
     @NotNull
     public Set<DbSchema> getSchemasToTest()
     {
-        if(EHRSchema.getInstance().getSqlDialect().isPostgreSQL())
-        {
-            return PageFlowUtil.set(EHRSchema.getInstance().getSchema());
-        }
-        else
-        {
-            return Collections.emptySet();
-        }
+        return PageFlowUtil.set(EHRSchema.getInstance().getSchema(), DbSchema.get("ehr_lookups"));
     }
 
     @Override

@@ -811,6 +811,8 @@ ehr/resources/reports/schemas/study/colonyPopulationChange/Bar[!!-~]Chart.r -tex
 ehr/resources/reports/schemas/study/colonyPopulationChange/Bar[!!-~]Chart.report.xml -text
 ehr/resources/schemas/dbscripts/postgresql/EHR-11.10-11.20.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR-11.20-11.30.sql -text
+ehr/resources/schemas/dbscripts/postgresql/EHR-11.35-11.36.sql -text
+ehr/resources/schemas/dbscripts/postgresql/EHR-11.36-11.37.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-11.10-11.20.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-11.2-11.21.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-11.20-11.30.sql -text
@@ -818,6 +820,8 @@ ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-11.30-11.33.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-11.31-11.32.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-11.32-11.33.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-11.33-11.34.sql -text
+ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-11.35-11.36.sql -text
+ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-11.37-11.38.sql -text
 ehr/resources/schemas/dbscripts/postgresql/obsolete/EHR-11.10-11.101.sql -text
 ehr/resources/schemas/dbscripts/postgresql/obsolete/EHR-11.101-11.102.sql -text
 ehr/resources/schemas/dbscripts/postgresql/obsolete/EHR-11.102-11.105.sql -text
@@ -895,6 +899,11 @@ ehr/resources/schemas/dbscripts/postgresql/obsolete/EHR_Lookups-11.292-11.293.sq
 ehr/resources/schemas/dbscripts/postgresql/obsolete/EHR_Lookups-11.30-11.31.sql -text
 ehr/resources/schemas/dbscripts/postgresql/obsolete/EHR_Lookups-11.30-11.32.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/EHR-11.10-11.20.sql -text
+ehr/resources/schemas/dbscripts/sqlserver/EHR-11.34-11.35.sql -text
+ehr/resources/schemas/dbscripts/sqlserver/EHR-11.36-11.37.sql -text
+ehr/resources/schemas/dbscripts/sqlserver/EHR_Lookups-11.34-11.35.sql -text
+ehr/resources/schemas/dbscripts/sqlserver/EHR_Lookups-11.36-11.37.sql -text
+ehr/resources/schemas/dbscripts/sqlserver/EHR_Lookups-11.37-11.38.sql -text
 ehr/resources/schemas/ehr.xml -text
 ehr/resources/schemas/ehr_lookups.xml -text
 ehr/resources/scripts/ehr/security.js -text
