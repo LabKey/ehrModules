@@ -7,7 +7,6 @@
 
 Ext.namespace('EHR.ext', 'EHR.Utils', 'EHR.DatasetButtons');
 
-LABKEY.requiresScript("/ehr/utils.js");
 LABKEY.requiresScript("/ehr/ehrAPI.js");
 
 
@@ -171,11 +170,15 @@ EHR.DatasetButtons = new function(){
                     ids.push(data.rows[i].Id);
 
                 if (ids.length){
+                    var ctx = EHR.Utils.getEHRContext();
+                    if(!ctx)
+                        return;
+
                     var hash = '_inputType:renderMultiSubject&showReport:1&subject:'+ids.join(',');
                     window.location = LABKEY.ActionURL.buildURL(
                         'ehr'
                         ,'animalHistory.view#'+hash
-                        ,'WNPRC/EHR/'
+                        ,ctx['EHRStudyContainer']
 
                     );
 
