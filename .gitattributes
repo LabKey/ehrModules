@@ -932,6 +932,7 @@ ehr/resources/views/manageRecord.view.xml -text
 ehr/resources/views/manageRequest.html -text
 ehr/resources/views/manageTask.html -text
 ehr/resources/views/moreReports.html -text
+ehr/resources/views/moreReports.view.xml -text
 ehr/resources/views/necropsyDetails.html -text
 ehr/resources/views/participantView.html -text
 ehr/resources/views/populationOverview.html -text
