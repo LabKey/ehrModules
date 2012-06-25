@@ -78,7 +78,7 @@ public class EHRModule extends DefaultModule
 
         ModuleProperty studyContainer = new ModuleProperty(this, "EHRStudyContainer");
         studyContainer.setCanSetPerContainer(false);
-        studyContainer.setDescription("The is the path to the container holding the EHR study.  Use of slashes is very important - it should be in the format '/wnprc/ehr/'");
+        studyContainer.setDescription("The is the path to the container holding the EHR study.  Use of slashes is very important - it should be in the format '/myProject/ehr'");
         studyContainer.setRequired(true);
         studyContainer.setEditPermissions(perms);
         addModuleProperty(studyContainer);
@@ -89,7 +89,7 @@ public class EHRModule extends DefaultModule
         addModuleProperty(institution);
 
         ModuleProperty protocolPdf = new ModuleProperty(this, "ProtocolPDFContainer");
-        studyContainer.setDescription("The is the path to the container holding PDFs of IACUC protocols.  It is separated the EHR study.  Use of slashes is very important - it should be in the format '/wnprc/ehr/'");
+        studyContainer.setDescription("The is the path to the container holding PDFs of IACUC protocols.  It is usually separate from the EHR study.  Use of slashes is very important - it should be in the format '/myProject/ehr'");
         institution.setCanSetPerContainer(false);
         studyContainer.setEditPermissions(perms);
         addModuleProperty(protocolPdf);
