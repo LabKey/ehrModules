@@ -2,9 +2,6 @@
     <properties>
 
     </properties>
-    <clientDependencies>
-        <!--<dependency path="/laboratory/view.js" />-->
-    </clientDependencies>
     <requiredModuleContext>
         <requiredModule name="EHR" />
     </requiredModuleContext>
