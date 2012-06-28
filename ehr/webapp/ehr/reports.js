@@ -32,14 +32,14 @@ EHR.reports.qwpConfig = {
 
         if(width1 > width2){
             this.anchorLayout.setWidth(width1+140);
-            console.log('resizing')
+            //console.log('resizing')
         }
         else {
             this.anchorLayout.setWidth('100%');
         }
     },
     failure: function(error){
-        console.log('Error callback called');
+        //console.log('Error callback called');
         EHR.Utils.onError(error)
     }
 };
@@ -69,7 +69,7 @@ EHR.reports.abstract = function(tab, subject){
 
                 if(width1 > width2){
                     this.anchorLayout.setWidth(width1+140);
-                    console.log('resizing')
+                    //console.log('resizing')
                 }
                 else {
                     this.anchorLayout.setWidth('100%');

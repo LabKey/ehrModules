@@ -1025,7 +1025,6 @@ EHR.ext.SingleAnimalReport = Ext.extend(Ext.Panel, {
 
         if(room){
             if(rowData.get("queryhaslocation")){
-                console.log('room')
                 filterArray.nonRemovable.push(LABKEY.Filter.create('room', room, LABKEY.Filter.Types.EQUALS_ONE_OF));
             }
             else {
@@ -1100,6 +1099,7 @@ EHR.ext.SingleAnimalReport = Ext.extend(Ext.Panel, {
             title: tab.rowData.get("reporttitle") + ": " + title,
             schemaName: tab.rowData.get("schemaname"),
             queryName: tab.rowData.get("queryname"),
+            suppressRenderErrors: true,
             allowChooseQuery: false,
             allowChooseView: true,
             showInsertNewButton: false,
@@ -1123,7 +1123,6 @@ EHR.ext.SingleAnimalReport = Ext.extend(Ext.Panel, {
 
                 if(width1 > width2){
                     this.anchorLayout.setWidth(width1+140);
-                    console.log('resizing')
                 }
                 else {
                     this.anchorLayout.setWidth('100%');
@@ -1162,6 +1161,7 @@ EHR.ext.SingleAnimalReport = Ext.extend(Ext.Panel, {
         var queryConfig = {
             partName: 'Report',
             renderTo: target.id,
+            suppressRenderErrors: true,
             partConfig: {
                 title: tab.rowData.get("reporttitle") + ": " + title,
                 schemaName: tab.rowData.get("schemaname"),
@@ -1253,6 +1253,7 @@ EHR.ext.SingleAnimalReport = Ext.extend(Ext.Panel, {
         var WebPartRenderer = new LABKEY.WebPart({
             partName: tab.rowData.get("queryname"),
             title: tab.rowData.get("reporttitle") + ": " + title,
+            suppressRenderErrors: true,
             renderTo: target,
 //            config: tab.rowData.get("config"),
             //success: this.endMsg,
@@ -1521,7 +1522,7 @@ EHR.ext.SingleAnimalReport = Ext.extend(Ext.Panel, {
                 
         //indicates tab already has up to date content
         if(reload == 0 && !this.forceRefresh){
-            console.log('no reload needed');
+            //console.log('no reload needed');
             return;
         }
         this.forceRefresh = null;
