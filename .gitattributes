@@ -62,7 +62,7 @@ EHR_ComplianceDB/resources/views/training.view.xml -text
 EHR_ComplianceDB/resources/views/training.webpart.xml -text
 ehr/build.xml -text
 ehr/module.properties -text
-ehr/module.xml -text
+ehr/resources/module.xml -text
 ehr/resources/queries/auditLog/DatasetAuditEvent.query.xml -text
 ehr/resources/queries/auditLog/DatasetAuditEvent/.qview.xml -text
 ehr/resources/queries/auditLog/DatasetAuditEvent/Detailed.qview.xml -text
