@@ -246,6 +246,24 @@ function onUpsert(context, errors, row, oldRow){
     if(context.extraContext.dataSource != 'etl'){
         if(row.date && !row.requestdate)
             row.requestdate = row.date;
+        
+        //Ensure that requests for blood are not being requested more than 30 days in advance    
+        var maxDate = new Date();
+        maxDate.setDate(maxDate.getDate()+30);
+        var x = String(row.daterequested);
+        var monthVal = Number(x.substring(5,7));
+        monthVal = monthVal - 1;
+
+        var reqDate = new Date();
+        reqDate.setYear(x.substring(0,4));
+        reqDate.setMonth(monthVal);
+        reqDate.setDate(x.substring(8,10));
+
+        if (reqDate > maxDate)
+        {
+           console.log('User requested a date of ' + reqDate + ' which is greater than ' + maxDate + ' which is 30 days beyond today');
+           EHR.Server.Validation.addError(errors, 'date', 'May not request a blood draw more than 30 days in advance of today ', 'ERROR - May not request a blood draw more than 30 days in advance of today');
+        }    
 
         if(!row.quantity && row.num_tubes && row.tube_vol)
             row.quantity = row.num_tubes * row.tube_vol;

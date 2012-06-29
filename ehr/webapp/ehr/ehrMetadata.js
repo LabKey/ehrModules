@@ -1072,8 +1072,9 @@ EHR.Metadata.Sources.Standard = {
                 xtype: 'datefield',
                 format: 'Y-m-d'
             },
-            collectionMethod : {shownInGrid: false},
-            //collectedBy : {shownInGrid: false},
+            collectionMethod : {
+            	shownInGrid: false
+            },
             sampleType : {
                 //shownInGrid: false
                 editorConfig: {

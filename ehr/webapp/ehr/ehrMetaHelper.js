@@ -180,7 +180,7 @@ EHR.ext.metaHelper = new function(){
                     //TODO: account for datetime vs date?
                     case "date":
                         field.xtype = meta.xtype || 'datefield';
-                        field.format = meta.format || Date.patterns.ISO8601Long;
+                        field.format = meta.extFormat || Date.patterns.ISO8601Long;
                         field.altFormats = Date.patterns.ISO8601Short +
                                 'n/j/y g:i:s a|n/j/Y g:i:s a|n/j/y G:i:s|n/j/Y G:i:s|' +
                                 'n-j-y g:i:s a|n-j-Y g:i:s a|n-j-y G:i:s|n-j-Y G:i:s|' +
@@ -437,7 +437,7 @@ EHR.ext.metaHelper = new function(){
                     {
                         case "date":
                             var date = new Date(data);
-                            var format = meta.format;
+                            var format = meta.extFormat;
                             if(!format){
                                 if (date.getHours() == 0 && date.getMinutes() == 0 && date.getSeconds() == 0)
                                     format = "Y-m-d";

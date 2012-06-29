@@ -31,7 +31,7 @@ t1.id.dataset.activehousing.cage as CurrentCage,
 
 CASE
   --these are AM,
-  WHEN (t1.frequency.meaning='Daily - AM' OR t1.frequency.meaning='Weekly' OR t1.frequency.meaning='Monthly' or t1.frequency.meaning='Alternating Days' or t1.frequency.meaning='Daily - Any Time')
+  WHEN (t1.frequency.meaning='Daily - AM' OR t1.frequency.meaning='Weekly' OR t1.frequency.meaning='Monthly' or t1.frequency.meaning like 'Alternating Days%' or t1.frequency.meaning='Daily - Any Time')
     THEN timestampadd('SQL_TSI_HOUR', 8, d.date)
   --these are the multiple per day options
   WHEN (t1.frequency.meaning='Daily - AM/PM' OR t1.frequency.meaning='Daily - AM/PM/Night' OR t1.frequency.meaning='Daily - AM/Night')
@@ -110,7 +110,7 @@ END AS description2,
 t1.qcstate,
 
 CASE
-  WHEN (t1.frequency.meaning='Daily - AM' OR t1.frequency.meaning='Weekly' OR t1.frequency.meaning='Monthly' or t1.frequency.meaning='Alternating Days')
+  WHEN (t1.frequency.meaning='Daily - AM' OR t1.frequency.meaning='Weekly' OR t1.frequency.meaning='Monthly' or t1.frequency.meaning='Alternating Days - AM')
     THEN 'AM'
   --these are the multiple per day options
   WHEN (t1.frequency.meaning='Daily - AM/PM' OR t1.frequency.meaning='Daily - AM/PM/Night' OR t1.frequency.meaning='Daily - AM/Night')
@@ -119,21 +119,21 @@ CASE
     THEN 'Noon'
   WHEN (t1.frequency.meaning='Daily - Any Time')
     THEN 'Any Time'
-  WHEN (t1.frequency.meaning='Daily - PM')
+  WHEN (t1.frequency.meaning='Daily - PM' OR t1.frequency.meaning='Alternating Days - PM')
     THEN 'PM'
   WHEN (t1.frequency.meaning='Daily - Night')
     THEN 'Night'
 END as TimeOfDay,
 
 CASE
-  WHEN (t1.frequency.meaning='Daily - AM' OR t1.frequency.meaning='Weekly' OR t1.frequency.meaning='Monthly' OR t1.frequency.meaning='Alternating Days' or t1.frequency.meaning='Daily - Any Time')
+  WHEN (t1.frequency.meaning='Daily - AM' OR t1.frequency.meaning='Weekly' OR t1.frequency.meaning='Monthly' OR t1.frequency.meaning='Alternating Days - AM' or t1.frequency.meaning='Daily - Any Time')
     THEN 1
   --these are the multiple per day options
   WHEN (t1.frequency.meaning='Daily - AM/PM' OR t1.frequency.meaning='Daily - AM/PM/Night' OR t1.frequency.meaning='Daily - AM/Night')
     THEN 1
   WHEN (t1.frequency.meaning='Daily - Noon')
     THEN 2
-  WHEN (t1.frequency.meaning='Daily - PM')
+  WHEN (t1.frequency.meaning='Daily - PM' OR t1.frequency.meaning='Alternating Days - PM')
     THEN 3
   WHEN (t1.frequency.meaning='Daily - Night')
     THEN 4
@@ -155,7 +155,7 @@ LEFT JOIN study."Treatment Orders" t1
   (t1.frequency.meaning='Weekly' AND d.dayofweek=dayofweek(t1.date))
   OR
   --alternating days.  relative to start date
-  (t1.frequency.meaning='Alternating Days' AND mod(d.dayofyear,2)=mod(cast(dayofyear(t1.date) as integer),2))
+  (t1.frequency.meaning like '%Alternating Days%' AND mod(d.dayofyear,2)=mod(cast(dayofyear(t1.date) as integer),2))
   ))
 LEFT JOIN study.assignment a1
   ON (a1.project = t1.project AND cast(a1.date as date) <= cast(d.date as date) AND (a1.enddate is null or COALESCE(a1.enddate, curdate()) >= d.date) AND a1.id = t1.id)
