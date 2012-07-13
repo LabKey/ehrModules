@@ -56,7 +56,4 @@ LEFT JOIN study.assignment a
   WHERE a.qcstate.publicdata = true
 ) T1
 
-
-
 GROUP BY T1.id, T1.year
-ORDER BY T1.id, T1.year

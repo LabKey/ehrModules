@@ -21,5 +21,3 @@ and
 ENTRYDATE >= h.date
 and
 h.cond like '%s%'
-
-order by h.room, h.cage

@@ -12,5 +12,3 @@ from (SELECT
 	WHERE w.qcstate.publicdata = true and w.weight is not null and w.id.dataset.demographics.death is not null
 	GROUP BY w.id) w
 	where timestampdiff('SQL_TSI_DAY', w.date, w.death) >= 7
-
-	order by w.death desc

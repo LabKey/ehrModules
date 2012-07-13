@@ -15,4 +15,3 @@ LEFT JOIN ehr_lookups.cage c
 WHERE c.cage is null and d.enddate is null
 
 group by d.room, d.cage
-order by d.room, d.cage
