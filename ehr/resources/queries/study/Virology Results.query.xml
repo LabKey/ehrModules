@@ -29,7 +29,6 @@
                         </fk>
                     </column>
                     <column columnName="method">
-                      <datatype>varchar</datatype>
                       <!--<nullable>false</nullable>-->
                       <columnTitle>Method</columnTitle>
                       <fk>
@@ -46,7 +45,6 @@
                         </fk>
                     </column>
                     <column columnName="qualresult">
-                        <datatype>varchar</datatype>
                         <columnTitle>Qualitative Result</columnTitle>
                         <fk>
                             <fkDbSchema>ehr_lookups</fkDbSchema>
@@ -55,7 +53,6 @@
                         </fk>
                     </column>
                     <column columnName="testid">
-                        <datatype>varchar</datatype>
                         <columnTitle>Test Id</columnTitle>
                         <fk>
                             <fkDbSchema>ehr_lookups</fkDbSchema>
@@ -64,7 +61,6 @@
                         </fk>
                     </column>
                     <column columnName="source">
-                        <datatype>varchar</datatype>
                         <columnTitle>Sample Type</columnTitle>
                         <fk>
                           <fkDbSchema>ehr_lookups</fkDbSchema>

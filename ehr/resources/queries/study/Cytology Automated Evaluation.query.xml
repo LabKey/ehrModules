@@ -9,7 +9,6 @@
                 <deleteUrl />
                 <columns>
                 	<column columnName="date">
-                        <datatype>timestamp</datatype>
                         <formatString>yyyy-MM-dd</formatString>
                         <columnTitle>Date</columnTitle>
                         <nullable>false</nullable>
@@ -19,7 +18,6 @@
                         <displayWidth>60</displayWidth>
                     </column>
                     <column columnName="parentId">
-                      <datatype>varchar</datatype>
                       <columnTitle>Parent Id</columnTitle>
                       <propertyURI>urn:ehr.labkey.org/#ParentId</propertyURI>
                     </column>
@@ -35,7 +33,6 @@
                         <columnTitle>Result</columnTitle>
                     </column>
                     <column columnName="testid">
-                      <datatype>varchar</datatype>
                       <!--<nullable>false</nullable>-->
                       <columnTitle>Test Id</columnTitle>
                         <displayWidth>120</displayWidth>
@@ -47,7 +44,6 @@
                     </column>
                     <!--
                     <column columnName="method">
-                      <datatype>varchar</datatype>
                       <columnTitle>Method</columnTitle>
                       <fk>
                         <fkDbSchema>ehr_lookups</fkDbSchema>

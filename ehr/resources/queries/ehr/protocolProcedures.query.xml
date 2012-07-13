@@ -9,7 +9,6 @@
               <tableTitle>RARC Protocol Allowable Procedures</tableTitle>
               <columns>
                 <column columnName="rowid">
-                  <datatype>integer</datatype>
                   <columnTitle>Key</columnTitle>
                   <nullable>false</nullable>
                   <isKeyField>true</isKeyField>
@@ -19,7 +18,6 @@
                   <shownInDetailsView>false</shownInDetailsView>
                 </column>
                 <column columnName="protocol">
-                  <datatype>varchar</datatype>
                   <columnTitle>Protocol</columnTitle>
                   <nullable>false</nullable>
                     <fk>
@@ -29,7 +27,6 @@
                     </fk>
                 </column>
                 <column columnName="code">
-                  <datatype>varchar</datatype>
                   <columnTitle>SNOMED Code</columnTitle>
                     <fk>
                       <fkDbSchema>ehr_lookups</fkDbSchema>
@@ -38,11 +35,9 @@
                     </fk>
                 </column>
                 <column columnName="procedureName">
-                  <datatype>varchar</datatype>
                   <columnTitle>Procedure Name</columnTitle>
                 </column>
                 <column columnName="allowed">
-                  <datatype>integer</datatype>
                   <columnTitle>Number Allowed</columnTitle>
                 </column>
                 <column columnName="frequency">

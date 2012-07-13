@@ -11,7 +11,6 @@
                 <deleteUrl />
                 <columns>
                     <column columnName="qualifier">
-                      <datatype>varchar</datatype>
                       <columnTitle>Qualifier</columnTitle>
                       <fk>
                         <fkDbSchema>ehr_lookups</fkDbSchema>
@@ -20,7 +19,6 @@
                       </fk>
                     </column>
                     <column columnName="preservation">
-                      <datatype>varchar</datatype>
                       <columnTitle>Preservation</columnTitle>
                       <fk>
                         <fkDbSchema>ehr_lookups</fkDbSchema>
@@ -29,7 +27,6 @@
                       </fk>
                     </column>
                     <column columnName="tissue">
-                      <datatype>varchar</datatype>
                       <columnTitle>Organ/Tissue</columnTitle>
                       <fk>
                         <fkDbSchema>ehr_lookups</fkDbSchema>
@@ -61,12 +58,10 @@
                     </column>
                     <column columnName="tissueRemarks">
                     	<columnTitle>Tissue Remark</columnTitle>
-                    	<datatype>varchar</datatype>
                     	<inputType>textarea</inputType>
                     </column>
                     <column columnName="trim_remarks">
                     	<columnTitle>Trim Remarks</columnTitle>
-                    	<datatype>varchar</datatype>
                     	<inputType>textarea</inputType>
                     </column>
                     <!--<column columnName="container_type">-->

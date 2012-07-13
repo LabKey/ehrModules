@@ -9,20 +9,17 @@
                 <tableTitle>Cage Observations</tableTitle>
                 <columns>
                     <column columnName="date">
-                        <datatype>timestamp</datatype>
                         <nullable>false</nullable>
                         <formatString>yyyy-MM-dd</formatString>
                         <columnTitle>Date</columnTitle>
                     </column>
                     <!--<column columnName="roomcage">-->
-                        <!--<datatype>varchar</datatype>-->
                         <!--<columnTitle>Room/Cage</columnTitle>-->
                         <!--<nullable>true</nullable>-->
                         <!--<isHidden>true</isHidden>-->
                         <!--<isUserEditable>false</isUserEditable>-->
                     <!--</column>-->
                     <column columnName="room">
-                        <datatype>varchar</datatype>
                         <nullable>false</nullable>
                         <columnTitle>Room</columnTitle>
                         <displayWidth>50</displayWidth>
@@ -34,12 +31,10 @@
                         </fk>
                     </column>
                     <column columnName="cage">
-                        <datatype>varchar</datatype>
                         <columnTitle>Cage</columnTitle>
                         <displayWidth>50</displayWidth>
                     </column>
                     <column columnName="feces">
-                        <datatype>varchar</datatype>
                         <columnTitle>Feces</columnTitle>
                         <!--<fk>-->
                             <!--<fkDbSchema>ehr_lookups</fkDbSchema>-->
@@ -48,13 +43,11 @@
                         <!--</fk>-->
                     </column>
                     <column columnName="remark">
-                        <datatype>varchar</datatype>
                         <columnTitle>Remark</columnTitle>
                         <propertyURI>urn:ehr.labkey.org/#Remark</propertyURI>
                         <inputType>textarea</inputType>
                     </column>
                     <column columnName="userid">
-                        <datatype>varchar</datatype>
                         <columnTitle>UserID</columnTitle>
                         <!--<fk>-->
                         <!--<fkDbSchema>core</fkDbSchema>-->
@@ -65,7 +58,6 @@
                     <column columnName="QCState">
                         <nullable>true</nullable>
                         <columnTitle>Status</columnTitle>
-                        <datatype>integer</datatype>
                         <fk>
                           <fkDbSchema>study</fkDbSchema>
                           <fkTable>qcstate</fkTable>
@@ -73,7 +65,6 @@
                         </fk>
                     </column>
                     <column columnName="objectid">
-                        <datatype>varchar</datatype>
                         <columnTitle>ObjectId</columnTitle>
                         <shownInInsertView>false</shownInInsertView>
                         <shownInUpdateView>false</shownInUpdateView>
@@ -81,7 +72,6 @@
                         <isHidden>true</isHidden>
                     </column>
                     <column columnName="rowid">
-                        <datatype>integer</datatype>
                         <columnTitle>Key</columnTitle>
                         <shownInInsertView>false</shownInInsertView>
                         <shownInUpdateView>false</shownInUpdateView>
@@ -91,7 +81,6 @@
                         <isUserEditable>false</isUserEditable>
                     </column>
                     <column columnName="ts">
-                        <datatype>timestamp</datatype>
                         <columnTitle>Last Changed</columnTitle>
                         <shownInInsertView>false</shownInInsertView>
                         <shownInUpdateView>false</shownInUpdateView>
@@ -99,7 +88,6 @@
                         <isHidden>true</isHidden>
                     </column>
                     <column columnName="description">
-                        <datatype>varchar</datatype>
                         <columnTitle>Description</columnTitle>
                         <propertyURI>urn:ehr.labkey.org/#Description</propertyURI>
                         <shownInInsertView>false</shownInInsertView>
@@ -109,13 +97,11 @@
                         <inputType>textarea</inputType>
                     </column>
                     <column columnName="parentId">
-                        <datatype>varchar</datatype>
                         <columnTitle>Parent Id</columnTitle>
                         <propertyURI>urn:ehr.labkey.org/#ParentId</propertyURI>
                         <isHidden>true</isHidden>
                     </column>
                     <column columnName="taskid">
-                        <datatype>varchar</datatype>
                         <columnTitle>Task Id</columnTitle>
                         <propertyURI>urn:ehr.labkey.org/#TaskId</propertyURI>
                         <isHidden>true</isHidden>
@@ -128,26 +114,20 @@
                     <column columnName="createdby">
                         <isUserEditable>false</isUserEditable>
                         <nullable>true</nullable>
-                        <datatype>userid</datatype>
-                        <scale>4</scale>
                     </column>
                     <column columnName="created">
                         <isUserEditable>false</isUserEditable>
                         <nullable>true</nullable>
-                        <datatype>timestamp</datatype>
                         <isHidden>true</isHidden>
                     </column>
                     <column columnName="modifiedby">
                         <isUserEditable>false</isUserEditable>
                         <nullable>true</nullable>
-                        <datatype>userid</datatype>
                         <isHidden>true</isHidden>
-                        <scale>4</scale>
                     </column>
                     <column columnName="modified">
                         <isUserEditable>false</isUserEditable>
                         <nullable>true</nullable>
-                        <datatype>timestamp</datatype>
                         <isHidden>true</isHidden>
                     </column>
                     <column columnName="container">

@@ -11,7 +11,6 @@
                 <deleteUrl />
                 <columns>
                     <column columnName="organism">
-                    <datatype>varchar</datatype>
                     <columnTitle>Organism</columnTitle>
                     <fk>
                         <fkDbSchema>ehr_lookups</fkDbSchema>
@@ -21,7 +20,6 @@
                     <!--<nullable>false</nullable>-->
                     </column>
                     <column columnName="qualresult">
-                        <datatype>varchar</datatype>
                         <columnTitle>Qualitative Result</columnTitle>
                         <fk>
                             <fkDbSchema>ehr_lookups</fkDbSchema>
@@ -51,7 +49,6 @@
                         <formatString>yyyy-MM-dd</formatString>
                     </column>
                     <column columnName="method">
-                      <datatype>varchar</datatype>
                       <!--<nullable>false</nullable>-->
                       <columnTitle>Method</columnTitle>
                       <fk>

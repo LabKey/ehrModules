@@ -21,7 +21,6 @@
                         <formatString>yyyy-MM-dd HH:mm</formatString>
                     </column>
                     <column columnName="enddate">
-                        <datatype>timestamp</datatype>
                         <formatString>yyyy-MM-dd HH:mm</formatString>
                         <columnTitle>End Date</columnTitle>
                     </column>

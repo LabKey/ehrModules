@@ -12,14 +12,12 @@
                         </fk>
                     </column>
                     <column columnName="TotalActiveAnimals">
-                        <datatype>integer</datatype>
                         <url>/query/executeQuery.view?schemaName=study&amp;
                             query.queryName=ActiveAssignments&amp;
                             query.project/protocol~eq=${protocol}&amp;
                         </url>
                     </column>
                     <column columnName="ActiveAnimals">
-                        <datatype>integer</datatype>
                     </column>
                 </columns>
                 <titleColumn>TotalActiveAnimals</titleColumn>

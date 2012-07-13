@@ -11,7 +11,6 @@
                 <deleteUrl />
                 <columns>
                     <column columnName="source">
-                        <datatype>varchar</datatype>
                         <columnTitle>Source</columnTitle>
                         <fk>
                             <fkDbSchema>ehr_lookups</fkDbSchema>
@@ -20,7 +19,6 @@
                         </fk>
                     </column>
                     <column columnName="method">
-                        <datatype>varchar</datatype>
                         <columnTitle>Method</columnTitle>
                         <fk>
                             <fkDbSchema>ehr_lookups</fkDbSchema>
@@ -29,7 +27,6 @@
                         </fk>
                     </column>
                     <column columnName="organism">
-                        <datatype>varchar</datatype>
                         <columnTitle>Organism</columnTitle>
                         <fk>
                             <fkDbSchema>ehr_lookups</fkDbSchema>
@@ -38,7 +35,6 @@
                         </fk>
                     </column>
                     <column columnName="antibiotic">
-                        <datatype>varchar</datatype>
                         <columnTitle>Antibiotic</columnTitle>
                         <fk>
                             <fkDbSchema>ehr_lookups</fkDbSchema>
@@ -47,7 +43,6 @@
                         </fk>
                     </column>
                     <column columnName="sensitivity">
-                        <datatype>varchar</datatype>
                         <columnTitle>Sensitivity</columnTitle>
                         <fk>
                             <fkDbSchema>ehr_lookups</fkDbSchema>
@@ -64,7 +59,6 @@
                         </fk>
                     </column>
                     <column columnName="qualresult">
-                        <datatype>varchar</datatype>
                         <columnTitle>Qualitative Result</columnTitle>
                         <fk>
                             <fkDbSchema>ehr_lookups</fkDbSchema>

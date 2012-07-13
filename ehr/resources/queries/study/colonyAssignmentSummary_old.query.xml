@@ -4,11 +4,9 @@
             <table tableName="colonyAssignmentSummary" tableDbType="NOT_IN_DB">
                 <columns>
                     <column columnName="v_status">
-                        <datatype>varchar</datatype>
                         <columnTitle>Cohort</columnTitle>
                     </column>
                     <column columnName="TotalAnimals">
-                        <datatype>varchar</datatype>
                         <columnTitle>Total Animals</columnTitle>
                         <displayWidth>110</displayWidth>
                         <url>/query/executeQuery.view?schemaName=study&amp;
@@ -18,7 +16,6 @@
                         </url>
                     </column>
                     <column columnName="ActiveAssignments">
-                        <datatype>varchar</datatype>
                         <columnTitle># Assigned To One Or More Projects</columnTitle>
                         <displayWidth>110</displayWidth>
                         <url>/query/executeQuery.view?schemaName=study&amp;
@@ -29,7 +26,6 @@
                         </url>
                     </column>
                     <column columnName="NoAssignments">
-                        <datatype>varchar</datatype>
                         <columnTitle># With No Active Assignments</columnTitle>
                         <displayWidth>110</displayWidth>
                         <url>/query/executeQuery.view?schemaName=study&amp;
@@ -40,7 +36,6 @@
                         </url>
                     </column>
                     <column columnName="PendingAssignments">
-                        <datatype>varchar</datatype>
                         <columnTitle># With Pending Assignments</columnTitle>
                         <displayWidth>110</displayWidth>
                         <url>/query/executeQuery.view?schemaName=study&amp;
@@ -51,7 +46,6 @@
                         </url>
                     </column>
                     <column columnName="ActiveResearchAssignments">
-                        <datatype>varchar</datatype>
                         <columnTitle># Assigned To One Or More Research Projects (avail=r or n)</columnTitle>
                         <displayWidth>110</displayWidth>
                         <url>/query/executeQuery.view?schemaName=study&amp;
@@ -62,7 +56,6 @@
                         </url>
                     </column>
                     <column columnName="ActiveBreedingAssignments">
-                        <datatype>varchar</datatype>
                         <columnTitle># Assigned to Breeding (avail=b)</columnTitle>
                         <displayWidth>110</displayWidth>
                         <url>/query/executeQuery.view?schemaName=study&amp;
@@ -73,7 +66,6 @@
                         </url>
                     </column>
                     <column columnName="ActiveTrainingAssignments">
-                        <datatype>varchar</datatype>
                         <columnTitle># Assigned to Training (avail=t)</columnTitle>
                         <displayWidth>110</displayWidth>
                         <url>/query/executeQuery.view?schemaName=study&amp;
@@ -84,7 +76,6 @@
                         </url>
                     </column>
                     <column columnName="ActiveVetAssignments">
-                        <datatype>varchar</datatype>
                         <columnTitle># With A Vet Exemption (avail=v)</columnTitle>
                         <displayWidth>110</displayWidth>
                         <url>/query/executeQuery.view?schemaName=study&amp;
@@ -95,7 +86,6 @@
                         </url>
                     </column>
                     <column columnName="ActiveSPF_StockAssignments">
-                        <datatype>varchar</datatype>
                         <columnTitle>Assigned to SPF Stock</columnTitle>
                         <displayWidth>110</displayWidth>
                         <url>/query/executeQuery.view?schemaName=study&amp;
@@ -106,7 +96,6 @@
                         </url>
                     </column>
                     <column columnName="ActiveConventionalStockAssignments">
-                        <datatype>varchar</datatype>
                         <columnTitle>Assigned to Conventional Stock</columnTitle>
                         <displayWidth>110</displayWidth>
                         <url>/query/executeQuery.view?schemaName=study&amp;
@@ -117,7 +106,6 @@
                         </url>
                     </column>
                     <column columnName="ActiveMarmStockAssignments">
-                        <datatype>varchar</datatype>
                         <columnTitle>Assigned to Marm Stock</columnTitle>
                         <displayWidth>110</displayWidth>
                         <url>/query/executeQuery.view?schemaName=study&amp;

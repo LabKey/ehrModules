@@ -11,7 +11,6 @@
                 <deleteUrl />
                 <columns>
                     <column columnName="gender">
-                        <datatype>varchar</datatype>
                         <columnTitle>Gender</columnTitle>
                         <fk>
                             <fkDbSchema>ehr_lookups</fkDbSchema>
@@ -20,7 +19,6 @@
                         </fk>
                     </column>
                     <column columnName="dam">
-                        <datatype>varchar</datatype>
                         <!--<nullable>false</nullable>-->
                         <columnTitle>Dam</columnTitle>
                         <!--<fk>-->
@@ -33,7 +31,6 @@
                         </url>
                     </column>
                     <column columnName="sire">
-                        <datatype>varchar</datatype>
                         <columnTitle>Sire</columnTitle>
                         <!--<fk>-->
                             <!--<fkDbSchema>study</fkDbSchema>-->
@@ -45,7 +42,6 @@
                         </url>
                     </column>
                     <column columnName="room">
-                        <datatype>varchar</datatype>
                         <columnTitle>Room</columnTitle>
                         <shownInInsertView>true</shownInInsertView>
                         <shownInUpdateView>true</shownInUpdateView>
@@ -61,7 +57,6 @@
                         </fk>
                     </column>
                     <column columnName="cage">
-                        <datatype>varchar</datatype>
                         <shownInInsertView>true</shownInInsertView>
                         <shownInUpdateView>true</shownInUpdateView>
                         <isHidden>false</isHidden>
@@ -72,7 +67,6 @@
                         </url>
                     </column>
                     <column columnName="cond">
-                        <datatype>varchar</datatype>
                         <columnTitle>Condition</columnTitle>
                         <fk>
                             <fkDbSchema>ehr_lookups</fkDbSchema>
@@ -81,7 +75,6 @@
                         </fk>
                     </column>
                     <column columnName="origin">
-                        <datatype>varchar</datatype>
                         <columnTitle>Origin</columnTitle>
                         <fk>
                             <fkDbSchema>ehr_lookups</fkDbSchema>

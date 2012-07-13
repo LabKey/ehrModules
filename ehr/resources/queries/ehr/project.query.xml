@@ -10,7 +10,6 @@
                 <titleColumn>project</titleColumn>
                 <columns>
                     <column columnName="activelyAssigned" wrappedColumnName="project">
-                      <datatype>integer</datatype>
                       <isUnselectable>true</isUnselectable>
                       <columnTitle>Animals Actively Assigned</columnTitle>
                       <fk>
@@ -29,7 +28,6 @@
                       </fk>
                     </column>
                     <column columnName="protocol">
-                      <datatype>varchar</datatype>
                       <columnTitle>Protocol</columnTitle>
                       <fk>
                         <fkDbSchema>ehr</fkDbSchema>
@@ -38,7 +36,6 @@
                       </fk>
                     </column>
                     <column columnName="avail">
-                      <datatype>varchar</datatype>
                       <columnTitle>Availability</columnTitle>
                       <fk>
                         <fkDbSchema>ehr_lookups</fkDbSchema>

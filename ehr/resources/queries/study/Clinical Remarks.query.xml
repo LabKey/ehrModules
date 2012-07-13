@@ -32,7 +32,6 @@
                         <displayWidth>350</displayWidth>
                     </column>
                       <!--<column columnName="location">-->
-                         <!--<datatype>varchar</datatype>-->
                          <!--<columnTitle>Location</columnTitle>-->
                          <!--<fk>-->
                             <!--<fkDbSchema>ehr_lookups</fkDbSchema>-->
@@ -41,7 +40,6 @@
                          <!--</fk>-->
                       <!--</column>-->
                       <column columnName="category">
-                        <datatype>varchar</datatype>
                         <!--<nullable>false</nullable>-->
                         <columnTitle>Category</columnTitle>
                         <fk>

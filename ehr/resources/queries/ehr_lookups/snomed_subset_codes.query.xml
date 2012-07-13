@@ -8,7 +8,6 @@
                 <!--<tableTitle>Cage Notes</tableTitle>-->
                 <columns>
                     <column columnName="code">
-                        <datatype>varchar</datatype>
                         <!--<columnTitle>Room</columnTitle>-->
                         <fk>
                             <fkDbSchema>ehr_lookups</fkDbSchema>

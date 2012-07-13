@@ -11,7 +11,6 @@
                 <deleteUrl />
                 <columns>
                     <column columnName="gender">
-                        <datatype>varchar</datatype>
                         <columnTitle>Gender</columnTitle>
                         <fk>
                             <fkDbSchema>ehr_lookups</fkDbSchema>
@@ -27,7 +26,6 @@
                         <isHidden>true</isHidden>
                     </column>
                     <column columnName="status">
-                        <datatype>varchar</datatype>
                         <shownInInsertView>false</shownInInsertView>
                         <isHidden>true</isHidden>
                         <columnTitle>Status</columnTitle>
@@ -38,7 +36,6 @@
                         </fk>
                     </column>
                     <column columnName="calculated_status">
-                        <datatype>varchar</datatype>
                         <shownInInsertView>false</shownInInsertView>
                         <columnTitle>Status</columnTitle>
                         <fk>
@@ -50,7 +47,6 @@
                     <!--NOTE: being depreciated-->
                     <column columnName="avail">
                         <isHidden>true</isHidden>
-                        <datatype>varchar</datatype>
                         <columnTitle>Availability</columnTitle>
                         <!--<fk>-->
                         <!--<fkDbSchema>ehr_lookups</fkDbSchema>-->
@@ -59,7 +55,6 @@
                         <!--</fk>-->
                     </column>
                     <column columnName="hold">
-                        <datatype>varchar</datatype>
                         <columnTitle>Hold</columnTitle>
                         <!--<fk>-->
                         <!--<fkDbSchema>ehr_lookups</fkDbSchema>-->
@@ -68,7 +63,6 @@
                         <!--</fk>-->
                     </column>
                     <column columnName="species">
-                        <datatype>varchar</datatype>
                         <columnTitle>Species</columnTitle>
                         <fk>
                             <fkDbSchema>ehr_lookups</fkDbSchema>
@@ -77,7 +71,6 @@
                         </fk>
                     </column>
                     <column columnName="dam">
-                        <datatype>varchar</datatype>
                         <columnTitle>Dam</columnTitle>
                         <!--<fk>-->
                             <!--<fkDbSchema>study</fkDbSchema>-->
@@ -89,7 +82,6 @@
                         </url>
                     </column>
                     <column columnName="sire">
-                        <datatype>varchar</datatype>
                         <columnTitle>Sire</columnTitle>
                         <!--<fk>-->
                             <!--<fkDbSchema>study</fkDbSchema>-->
@@ -101,7 +93,6 @@
                         </url>
                     </column>
                     <column columnName="origin">
-                        <datatype>varchar</datatype>
                         <columnTitle>Origin</columnTitle>
                         <fk>
                             <fkDbSchema>ehr_lookups</fkDbSchema>
@@ -110,7 +101,6 @@
                         </fk>
                     </column>
                     <column columnName="birth">
-                        <datatype>timestamp</datatype>
                         <formatString>yyyy-MM-dd</formatString>
                         <!--<shownInInsertView>false</shownInInsertView>-->
                         <columnTitle>Birth</columnTitle>
@@ -121,7 +111,6 @@
                         </url>
                     </column>
                     <column columnName="death">
-                        <datatype>timestamp</datatype>
                         <formatString>yyyy-MM-dd</formatString>
                         <!--<shownInInsertView>false</shownInInsertView>-->
                         <columnTitle>Death</columnTitle>
@@ -135,7 +124,6 @@
                     <column columnName="arrivedate">
                         <isHidden>true</isHidden>
                         <shownInInsertView>false</shownInInsertView>
-                        <datatype>timestamp</datatype>
                         <formatString>yyyy-MM-dd HH:mm</formatString>
                         <columnTitle>Arrival Date</columnTitle>
                     </column>
@@ -143,7 +131,6 @@
                     <column columnName="departdate">
                         <isHidden>true</isHidden>
                         <shownInInsertView>false</shownInInsertView>
-                        <datatype>timestamp</datatype>
                         <formatString>yyyy-MM-dd HH:mm</formatString>
                         <columnTitle>Departure Date</columnTitle>
                     </column>
@@ -151,7 +138,6 @@
                     <column columnName="room">
                         <isHidden>true</isHidden>
                         <shownInInsertView>false</shownInInsertView>
-                        <datatype>varchar</datatype>
                         <columnTitle>Room</columnTitle>
                         <url>/ehr/cageDetails.view?
                             room=${room}&amp;
@@ -166,7 +152,6 @@
                     <column columnName="cage">
                         <isHidden>true</isHidden>
                         <shownInInsertView>false</shownInInsertView>
-                        <datatype>varchar</datatype>
                         <columnTitle>Cage</columnTitle>
                         <url>/ehr/cageDetails.view?
                             room=${room}&amp;
@@ -177,7 +162,6 @@
                     <column columnName="cond">
                         <isHidden>true</isHidden>
                         <shownInInsertView>false</shownInInsertView>
-                        <datatype>varchar</datatype>
                         <displayWidth>30</displayWidth>
                         <columnTitle>Condition</columnTitle>
                         <fk>
@@ -190,7 +174,6 @@
                     <column columnName="weight">
                         <isHidden>true</isHidden>
                         <shownInInsertView>false</shownInInsertView>
-                        <datatype>double</datatype>
                         <columnTitle>Current Weight (kg)</columnTitle>
                         <url>/query/executeQuery.view?schemaName=study&amp;
                             query.queryName=Weight&amp;
@@ -199,7 +182,6 @@
                     </column>
                     <!--NOTE: being depreciated-->
                     <column columnName="wdate">
-                        <datatype>timestamp</datatype>
                         <shownInInsertView>false</shownInInsertView>
                         <isHidden>true</isHidden>
                         <formatString>yyyy-MM-dd HH:mm</formatString>
@@ -211,7 +193,6 @@
                         </url>
                     </column>
                     <column columnName="tbdate">
-                        <datatype>timestamp</datatype>
                         <shownInInsertView>false</shownInInsertView>
                         <isHidden>true</isHidden>
                         <formatString>yyyy-MM-dd</formatString>
@@ -223,15 +204,12 @@
                         </url>
                     </column>
                     <column columnName="medical">
-                        <datatype>varchar</datatype>
                         <columnTitle>Medical</columnTitle>
                     </column>
                     <column columnName="prepaid">
-                        <datatype>varchar</datatype>
                         <columnTitle>Replacement Prepaid By</columnTitle>
                     </column>
                     <column columnName="v_status">
-                        <datatype>varchar</datatype>
                         <columnTitle>Viral Status</columnTitle>
                         <isHidden>true</isHidden>
                         <fk>

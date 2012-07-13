@@ -8,7 +8,6 @@
                     </column>
                     <column columnName="ActiveAssignments">
                         <columnTitle>Animals Assigned</columnTitle>
-                        <datatype>integer</datatype>
                         <url>/query/executeQuery.view?schemaName=study&amp;
                             query.queryName=ActiveAssignments&amp;
                             query.project~eq=${project}&amp;

@@ -21,7 +21,6 @@
                         <!--</fk>-->
                     </column>
                     <column columnName="RoomAtTime">
-                      <datatype>varchar</datatype>
                       <columnTitle>Room At Time</columnTitle>
                       <url>/ehr/cageDetails.view?
                           room=${RoomAtTime}&amp;
@@ -35,7 +34,6 @@
                       <displayWidth>60</displayWidth>
                     </column>
                     <column columnName="CageAtTime">
-                      <datatype>varchar</datatype>
                       <columnTitle>Cage At Time</columnTitle>
                       <url>/ehr/cageDetails.view?
                           room=${RoomAtTime}&amp;
@@ -44,7 +42,6 @@
                       <displayWidth>60</displayWidth>
                     </column>
                     <column columnName="observationRecord">
-                      <datatype>varchar</datatype>
                       <columnTitle>Observation Record</columnTitle>
                       <fk>
                         <fkDbSchema>ehr</fkDbSchema>
@@ -57,7 +54,6 @@
                       <isHidden>true</isHidden>
                     </column>
                     <column columnName="housingRecord">
-                      <datatype>varchar</datatype>
                       <columnTitle>Housing Record</columnTitle>
                       <fk>
                         <fkDbSchema>study</fkDbSchema>

@@ -18,16 +18,13 @@
                     <!--</fk>-->
                 </column>
                   <column columnName="lot">
-                    <datatype>varchar</datatype>
                     <columnTitle>Lot</columnTitle>
                   </column>
                   <column columnName="dilution">
-                    <datatype>varchar</datatype>
                     <columnTitle>Dilution</columnTitle>
                     <displayWidth>50</displayWidth>
                   </column>
                   <column columnName="eye">
-                    <datatype>varchar</datatype>
                     <columnTitle>Eye</columnTitle>
                     <displayWidth>50</displayWidth>
                     <fk>
@@ -37,7 +34,6 @@
                     </fk>
                   </column>
                   <column columnName="result1">
-                    <datatype>varchar</datatype>
                     <columnTitle>24 Hr</columnTitle>
                     <fk>
                       <fkDbSchema>ehr_lookups</fkDbSchema>
@@ -46,7 +42,6 @@
                     </fk>
                   </column>
                   <column columnName="result2">
-                    <datatype>varchar</datatype>
                     <columnTitle>48 Hr</columnTitle>
                     <fk>
                       <fkDbSchema>ehr_lookups</fkDbSchema>
@@ -55,7 +50,6 @@
                     </fk>
                   </column>
                   <column columnName="result3">
-                    <datatype>varchar</datatype>
                     <columnTitle>72 Hr</columnTitle>
                     <fk>
                       <fkDbSchema>ehr_lookups</fkDbSchema>

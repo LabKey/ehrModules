@@ -11,20 +11,17 @@
                 <deleteUrl />
                 <columns>
                     <column columnName="participantid">
-                        <datatype>varchar</datatype>
                         <columnTitle>Participant ID</columnTitle>
                         <description>Participant identifier</description>
                         <nullable>false</nullable>
                     </column>
                     <column columnName="date">
-                        <!--<datatype>timestamp</datatype>-->
                         <formatString>yyyy-MM-dd HH:mm a</formatString>
                         <!--<columnTitle>Date</columnTitle>-->
                         <!--<nullable>false</nullable>-->
                         <!--<propertyURI>http://cpas.labkey.com/Study#VisitDate</propertyURI>-->
                     </column>
                     <column columnName="side">
-                        <datatype>varchar</datatype>
                         <columnTitle>Side</columnTitle>
                         <fk>
                           <fkDbSchema>ehr_lookups</fkDbSchema>
@@ -33,7 +30,6 @@
                         </fk>
                     </column>
                     <column columnName="jaw">
-                        <datatype>varchar</datatype>
                         <columnTitle>Upper/Lower</columnTitle>
                         <fk>
                           <fkDbSchema>ehr_lookups</fkDbSchema>
@@ -42,7 +38,6 @@
                         </fk>
                     </column>
                     <column columnName="tooth">
-                        <datatype>varchar</datatype>
                         <columnTitle>Tooth</columnTitle>
                         <fk>
                           <fkDbSchema>ehr_lookups</fkDbSchema>
@@ -51,7 +46,6 @@
                         </fk>
                     </column>
                     <column columnName="status">
-                        <datatype>varchar</datatype>
                         <columnTitle>Status</columnTitle>
                         <fk>
                           <fkDbSchema>ehr_lookups</fkDbSchema>
@@ -60,14 +54,12 @@
                         </fk>
                     </column>
                     <column columnName="remark">
-                        <datatype>varchar</datatype>
                         <columnTitle>Remark</columnTitle>
                         <displayWidth>110</displayWidth>
                         <propertyURI>urn:ehr.labkey.org/#Remark</propertyURI>
                         <inputType>textarea</inputType>
                     </column>
                     <column columnName="description">
-                        <datatype>varchar</datatype>
                         <columnTitle>Description</columnTitle>
                         <shownInInsertView>false</shownInInsertView>
                         <shownInUpdateView>false</shownInUpdateView>
@@ -77,7 +69,6 @@
                         <inputType>textarea</inputType>
                     </column>
                     <column columnName="objectid">
-                        <datatype>entityId</datatype>
                         <columnTitle>Key</columnTitle>
                         <shownInInsertView>false</shownInInsertView>
                         <shownInUpdateView>false</shownInUpdateView>
@@ -87,7 +78,6 @@
                         <!--<isKeyField>true</isKeyField>-->
                     </column>
                     <column columnName="parentId">
-                     <datatype>varchar</datatype>
                       <columnTitle>Parent Id</columnTitle>
                       <propertyURI>urn:ehr.labkey.org/#ParentId</propertyURI>
                       <!--<fk>-->

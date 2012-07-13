@@ -8,7 +8,6 @@
                         <isHidden>true</isHidden>
                     </column>
                     <column columnName="MostRecentWeight">
-                      <datatype>double</datatype>
                       <columnTitle>Current Weight (kg)</columnTitle>
                       <url>/query/executeQuery.view?schemaName=study&amp;
                           query.queryName=Weight&amp;
@@ -16,7 +15,6 @@
                       </url>
                     </column>
                     <column columnName="MostRecentWeightDate">
-                      <datatype>timestamp</datatype>
                       <formatString>yyyy-MM-dd HH:mm a</formatString>
                       <columnTitle>Weight Date</columnTitle>
                       <url>/query/executeQuery.view?schemaName=study&amp;

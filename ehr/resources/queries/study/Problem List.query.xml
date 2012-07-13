@@ -22,7 +22,6 @@
                         <!--</fk>-->
                     </column>
                     <column columnName="code">
-                        <datatype>varchar</datatype>
                         <columnTitle>Code</columnTitle>
                         <fk>
                             <fkDbSchema>ehr_lookups</fkDbSchema>
@@ -31,7 +30,6 @@
                         </fk>
                     </column>
                     <column columnName="category">
-                        <datatype>varchar</datatype>
                         <columnTitle>Category</columnTitle>
                         <fk>
                             <fkDbSchema>ehr_lookups</fkDbSchema>

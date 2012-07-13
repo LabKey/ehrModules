@@ -15,7 +15,6 @@
                         <formatString>yyyy-MM-dd HH:mm</formatString>
                     </column>
                     <column columnName="restraintCode">
-                        <datatype>varchar</datatype>
                         <columnTitle>Code</columnTitle>
                         <fk>
                             <fkDbSchema>ehr_lookups</fkDbSchema>
@@ -40,7 +39,6 @@
                         <columnTitle>Time Restrained</columnTitle>
                     </column>
                   <column columnName="taskid">
-                    <datatype>varchar</datatype>
                     <columnTitle>Task Id</columnTitle>
                         <fk>
                             <fkDbSchema>ehr</fkDbSchema>

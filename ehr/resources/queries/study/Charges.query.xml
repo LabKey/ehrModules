@@ -11,7 +11,6 @@
                 <deleteUrl />
                 <columns>
                   <column columnName="type">
-                    <datatype>integer</datatype>
                     <columnTitle>Charge Type</columnTitle>
                     <fk>
                         <fkDbSchema>ehr_lookups</fkDbSchema>
@@ -20,22 +19,18 @@
                     </fk>
                   </column>
                   <column columnName="quantity">
-                    <datatype>double</datatype>
                     <columnTitle>Quantity</columnTitle>
                   </column>
                   <column columnName="unitCost">
-                    <datatype>double</datatype>
                     <columnTitle>Unit Cost</columnTitle>
                   </column>
                   <column columnName="totalCost">
-                    <datatype>double</datatype>
                     <columnTitle>Total Cost</columnTitle>
                     <shownInInsertView>false</shownInInsertView>
                     <shownInUpdateView>false</shownInUpdateView>
                     <isUserEditable>false</isUserEditable>
                   </column>
                   <column columnName="description">
-                    <datatype>varchar</datatype>
                     <columnTitle>Description</columnTitle>
                     <shownInInsertView>false</shownInInsertView>
                     <shownInUpdateView>false</shownInUpdateView>
@@ -45,7 +40,6 @@
                     <inputType>textarea</inputType>
                   </column>
                   <column columnName="objectid">
-                    <datatype>entityid</datatype>
                     <columnTitle>Key</columnTitle>
                     <shownInInsertView>false</shownInInsertView>
                     <shownInUpdateView>false</shownInUpdateView>
@@ -54,12 +48,10 @@
                     <!--<isKeyField>true</isKeyField>-->
                   </column>
                   <column columnName="taskid">
-                    <datatype>varchar</datatype>
                     <columnTitle>Task Id</columnTitle>
                     <propertyURI>urn:ehr.labkey.org/#TaskId</propertyURI>
                   </column>
                   <column columnName="ts">
-                    <datatype>timestamp</datatype>
                     <columnTitle>Last Changed</columnTitle>
                     <!--<nullable>false</nullable>-->
                     <shownInInsertView>false</shownInInsertView>
@@ -68,7 +60,6 @@
                     <isHidden>true</isHidden>
                   </column>
                   <column columnName="remark">
-                    <datatype>varchar</datatype>
                     <columnTitle>Remark</columnTitle>
                     <displayWidth>110</displayWidth>
                     <propertyURI>urn:ehr.labkey.org/#Remark</propertyURI>

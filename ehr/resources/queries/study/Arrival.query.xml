@@ -22,7 +22,6 @@
                         <!--</fk>-->
                     </column>
                     <column columnName="initialRoom">
-                        <datatype>varchar</datatype>
                         <nullable>true</nullable>
                         <isHidden>true</isHidden>
                         <columnTitle>Room</columnTitle>
@@ -37,7 +36,6 @@
                         </fk>
                     </column>
                     <column columnName="initialCage">
-                        <datatype>varchar</datatype>
                         <nullable>true</nullable>
                         <isHidden>true</isHidden>
                         <columnTitle>Cage</columnTitle>
@@ -48,7 +46,6 @@
                     </column>
                     <column columnName="initialCond">
                         <nullable>true</nullable>
-                        <datatype>varchar</datatype>
                         <isHidden>true</isHidden>
                         <columnTitle>Condition</columnTitle>
                         <fk>
@@ -58,7 +55,6 @@
                         </fk>
                     </column>
                     <column columnName="species">
-                        <datatype>varchar</datatype>
                         <columnTitle>Species</columnTitle>
                         <fk>
                             <fkDbSchema>ehr_lookups</fkDbSchema>
@@ -67,7 +63,6 @@
                         </fk>
                     </column>
                     <column columnName="dam">
-                        <datatype>varchar</datatype>
                         <columnTitle>Dam</columnTitle>
                         <!--<fk>-->
                             <!--<fkDbSchema>study</fkDbSchema>-->
@@ -79,7 +74,6 @@
                         </url>
                     </column>
                     <column columnName="sire">
-                        <datatype>varchar</datatype>
                         <columnTitle>Sire</columnTitle>
                         <!--<fk>-->
                             <!--<fkDbSchema>study</fkDbSchema>-->
@@ -94,7 +88,6 @@
                         <columnTitle>Geographic Origin</columnTitle>
                     </column>
                     <column columnName="gender">
-                        <datatype>varchar</datatype>
                         <columnTitle>Gender</columnTitle>
                         <fk>
                             <fkDbSchema>ehr_lookups</fkDbSchema>
@@ -103,7 +96,6 @@
                         </fk>
                     </column>
                     <column columnName="source">
-                        <datatype>varchar</datatype>
                         <columnTitle>Source</columnTitle>
                         <fk>
                             <fkDbSchema>ehr_lookups</fkDbSchema>

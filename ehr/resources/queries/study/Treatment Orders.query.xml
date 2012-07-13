@@ -19,12 +19,10 @@
                         </fk>
                     </column>
                     <column columnName="date">
-                        <datatype>timestamp</datatype>
                         <columnTitle>Begin Date</columnTitle>
                         <formatString>yyyy-MM-dd HH:mm</formatString>
                     </column>
                     <column columnName="enddate">
-                        <datatype>timestamp</datatype>
                         <columnTitle>End Date</columnTitle>
                         <isHidden>false</isHidden>
                         <formatString>yyyy-MM-dd HH:mm</formatString>
@@ -45,7 +43,6 @@
                         </url>
                     </column>
                     <column columnName="code">
-                        <datatype>varchar</datatype>
                         <nullable>false</nullable>
                         <columnTitle>Treatment</columnTitle>
                         <fk>

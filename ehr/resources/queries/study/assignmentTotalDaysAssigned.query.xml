@@ -7,7 +7,6 @@
                         <isKeyField>true</isKeyField>
                     </column>
                     <column columnName="TotalDaysAssigned">
-                        <datatype>varchar</datatype>
                         <columnTitle>Total Days Assigned (concurrent assignments count twice)</columnTitle>
                         <url>/query/executeQuery.view?schemaName=study&amp;
                             query.queryName=Assignment&amp;

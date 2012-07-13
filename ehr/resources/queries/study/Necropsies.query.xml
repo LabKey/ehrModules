@@ -12,26 +12,22 @@
                 <titleColumn>caseno</titleColumn>
                 <columns>
                   <column columnName="participantid">
-                    <datatype>varchar</datatype>
                     <columnTitle>Participant ID</columnTitle>
                     <description>Participant identifier</description>
                     <nullable>false</nullable>
                   </column>
                   <column columnName="date">
-                    <datatype>timestamp</datatype>
                     <formatString>yyyy-MM-dd</formatString>
                     <columnTitle>Necropsy Date</columnTitle>
                     <nullable>false</nullable>
                     <propertyURI>http://cpas.labkey.com/Study#VisitDate</propertyURI>
                   </column>
                   <column columnName="caseno">
-                    <datatype>varchar</datatype>
                     <columnTitle>Case Number</columnTitle>
                     <nullable>true</nullable>
                     <!--<isKeyField>true</isKeyField>-->
                   </column>
                   <column columnName="project">
-                    <datatype>integer</datatype>
                     <nullable>true</nullable>
                     <columnTitle>Project</columnTitle>
                     <fk>
@@ -43,21 +39,17 @@
                     <propertyURI>urn:ehr.labkey.org/#Project</propertyURI>
                   </column>
                   <column columnName="account">
-                    <datatype>varchar</datatype>
                     <columnTitle>Account</columnTitle>
                     <nullable>true</nullable>
                     <propertyURI>urn:ehr.labkey.org/#Account</propertyURI>
                   </column>
                   <column columnName="performedby">
-                    <datatype>varchar</datatype>
                     <columnTitle>Pathologist</columnTitle>
                   </column>
                   <column columnName="assistant">
-                    <datatype>varchar</datatype>
                     <columnTitle>Prosector</columnTitle>
                   </column>
                   <column columnName="billing">
-                    <datatype>boolean</datatype>
                     <columnTitle>Billing Complete</columnTitle>
                   </column>
                   <column columnName="tissue_distribution">
@@ -70,7 +62,6 @@
                       <columnTitle>Final Summary Comments</columnTitle>
                   </column>
                   <column columnName="perfusion_area">
-                    <datatype>varchar</datatype>
                     <columnTitle>Perfusion</columnTitle>
                     <fk>
                       <fkDbSchema>ehr_lookups</fkDbSchema>
@@ -79,7 +70,6 @@
                     </fk>
                   </column>
                   <column columnName="perfusion_soln1">
-                    <datatype>varchar</datatype>
                     <isHidden>true</isHidden>
                     <columnTitle>Perfusion Solution 1</columnTitle>
                     <fk>
@@ -89,7 +79,6 @@
                     </fk>
                   </column>
                   <column columnName="perfusion_soln2">
-                    <datatype>varchar</datatype>
                       <isHidden>true</isHidden>
                     <columnTitle>Perfusion Solution 2</columnTitle>
                     <fk>
@@ -99,19 +88,16 @@
                     </fk>
                   </column>
                   <column columnName="perfusion_time1">
-                    <datatype>varchar</datatype>
                       <isHidden>true</isHidden>
                     <columnTitle>Perfusion Time 1</columnTitle>
                     <formatString>yyyy-MM-dd HH:mm</formatString>
                   </column>
                   <column columnName="perfusion_time2">
-                    <datatype>varchar</datatype>
                       <isHidden>true</isHidden>
                     <columnTitle>Perfusion Time 2</columnTitle>
                     <formatString>yyyy-MM-dd HH:mm</formatString>
                   </column>
                   <column columnName="bcs">
-                    <datatype>varchar</datatype>
                     <columnTitle>Body Condition</columnTitle>
                     <fk>
                       <fkDbSchema>ehr_lookups</fkDbSchema>
@@ -120,7 +106,6 @@
                     </fk>
                   </column>
                   <column columnName="patho_notes">
-                    <datatype>varchar</datatype>
                     <inputType>textarea</inputType>
                     <columnTitle>Pathology Unit Notes</columnTitle>
                   </column>
@@ -128,17 +113,14 @@
                       <columnTitle>Histopathologic Description</columnTitle>
                   </column>
                   <column columnName="final_description">
-                    <datatype>varchar</datatype>
                     <inputType>textarea</inputType>
                     <columnTitle>Final Description</columnTitle>
                   </column>
                   <column columnName="histologicalDescription">
-                  	<datatype>varchar</datatype>
                   	<inputType>textarea</inputType>
                   	<columnTitle>Histological Description</columnTitle>
                   </column>
                   <column columnName="description">
-                    <datatype>varchar</datatype>
                     <columnTitle>Description</columnTitle>
                     <shownInInsertView>false</shownInInsertView>
                     <shownInUpdateView>false</shownInUpdateView>
@@ -148,7 +130,6 @@
                     <inputType>textarea</inputType>
                   </column>
                   <column columnName="objectid">
-                    <datatype>entityid</datatype>
                     <columnTitle>Key</columnTitle>
                     <shownInInsertView>false</shownInInsertView>
                     <shownInUpdateView>false</shownInUpdateView>
@@ -157,7 +138,6 @@
                     <!--<isKeyField>true</isKeyField>-->
                   </column>
                   <column columnName="parentId">
-                    <datatype>varchar</datatype>
                     <columnTitle>Parent Id</columnTitle>
                     <propertyURI>urn:ehr.labkey.org/#ParentId</propertyURI>
                     <!--<fk>-->
@@ -167,14 +147,12 @@
                     <!--</fk>-->
                   </column>
                   <column columnName="requestid">
-                    <datatype>varchar</datatype>
                     <columnTitle>Request Id</columnTitle>
                     <isHidden>true</isHidden>
                     <shownInInsertView>false</shownInInsertView>
                     <shownInUpdateView>false</shownInUpdateView>
                   </column>
                   <column columnName="ts">
-                    <datatype>timestamp</datatype>
                     <columnTitle>Last Changed</columnTitle>
                     <!--<nullable>false</nullable>-->
                     <shownInInsertView>false</shownInInsertView>
@@ -197,7 +175,6 @@
                       <inputType>textarea</inputType>
                   </column>
                   <column columnName="causeofdeath">
-                    <datatype>varchar</datatype>
                     <columnTitle>Type of Death</columnTitle>
                     <fk>
                       <fkDbSchema>ehr_lookups</fkDbSchema>
@@ -206,7 +183,6 @@
                     </fk>
                   </column>
                   <column columnName="mannerofdeath">
-                    <datatype>varchar</datatype>
                     <columnTitle>Manner of Death</columnTitle>
                     <fk>
                       <fkDbSchema>ehr_lookups</fkDbSchema>

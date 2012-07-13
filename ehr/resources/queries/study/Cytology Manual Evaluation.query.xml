@@ -12,14 +12,12 @@
                 <columns>
                 	<!--
                     <column columnName="participantid">
-                        <datatype>varchar</datatype>
                         <columnTitle>Participant ID</columnTitle>
                         <description>Participant identifier</description>
                         <nullable>false</nullable>
                     </column>
                    -->
                     <column columnName="date">
-                        <datatype>timestamp</datatype>
                         <formatString>yyyy-MM-dd</formatString>
                         <columnTitle>Date</columnTitle>
                         <nullable>false</nullable>
@@ -29,7 +27,6 @@
                     </column>
                     
                     <column columnName="stainType">
-                      <datatype>varchar</datatype>
                       <columnTitle>Stain Type</columnTitle>
                       <fk>
                         <fkDbSchema>ehr_lookups</fkDbSchema>
@@ -47,12 +44,10 @@
                       </fk>
                     </column>
                     <column columnName="results">
-                        <datatype>varchar</datatype>
                         <columnTitle>Results</columnTitle>
                         <inputType>textarea</inputType>
                     </column>
                     <column columnName="sampleAppearance">
-                        <datatype>varchar</datatype>
                         <columnTitle>Sample Appearance</columnTitle>
                         <!--
                         <propertyURI>urn:ehr.labkey.org/#Description</propertyURI>
@@ -60,7 +55,6 @@
                         <inputType>textarea</inputType>
                     </column>
                     <column columnName="objectid">
-                        <datatype>entityId</datatype>
                         <columnTitle>Key</columnTitle>
                         <shownInInsertView>false</shownInInsertView>
                         <shownInUpdateView>false</shownInUpdateView>
@@ -70,7 +64,6 @@
                         <!--<isKeyField>true</isKeyField>-->
                     </column>
                     <column columnName="parentId">
-                      <datatype>varchar</datatype>
                       <columnTitle>Parent Id</columnTitle>
                       <propertyURI>urn:ehr.labkey.org/#ParentId</propertyURI>
                         <!--<fk>-->

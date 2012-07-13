@@ -3,33 +3,23 @@
     <ns:pkColumnName>rowid</ns:pkColumnName>
     <ns:columns>
       <ns:column columnName="rowid">
-        <ns:datatype>serial</ns:datatype>
         <ns:shownInInsertView>false</ns:shownInInsertView>
         <ns:isAutoInc>true</ns:isAutoInc>
         <ns:isKeyField>true</ns:isKeyField>
-        <ns:scale>10</ns:scale>
       </ns:column>
       <ns:column columnName="prop_name">
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>varchar</ns:datatype>
         <ns:isKeyField>true</ns:isKeyField>
-        <ns:scale>100</ns:scale>
       </ns:column>
       <ns:column columnName="stringvalue">
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>100</ns:scale>
       </ns:column>
       <ns:column columnName="floatvalue">
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>float8</ns:datatype>
-        <ns:scale>17</ns:scale>
       </ns:column>
       <ns:column columnName="container">
         <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:datatype>entityid</ns:datatype>
         <ns:isHidden>true</ns:isHidden>
-        <ns:scale>36</ns:scale>
         <ns:fk>
           <ns:fkDbSchema>core</ns:fkDbSchema>
           <ns:fkTable>containers</ns:fkTable>
@@ -39,29 +29,21 @@
       <ns:column columnName="createdby">
         <ns:isUserEditable>false</ns:isUserEditable>
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>userid</ns:datatype>
-        <ns:scale>4</ns:scale>
         <ns:isHidden>true</ns:isHidden>
       </ns:column>
       <ns:column columnName="created">
         <ns:isUserEditable>false</ns:isUserEditable>
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>timestamp</ns:datatype>
-        <ns:scale>29</ns:scale>
         <ns:isHidden>true</ns:isHidden>
       </ns:column>
       <ns:column columnName="modifiedby">
         <ns:isUserEditable>false</ns:isUserEditable>
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>userid</ns:datatype>
-        <ns:scale>4</ns:scale>
         <ns:isHidden>true</ns:isHidden>
       </ns:column>
       <ns:column columnName="modified">
         <ns:isUserEditable>false</ns:isUserEditable>
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>timestamp</ns:datatype>
-        <ns:scale>29</ns:scale>
         <ns:isHidden>true</ns:isHidden>
       </ns:column>
     </ns:columns>
@@ -71,45 +53,31 @@
     <ns:columns>
       <ns:column columnName="prop_name">
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>100</ns:scale>
       </ns:column>
       <ns:column columnName="stringvalue">
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>100</ns:scale>
       </ns:column>
       <ns:column columnName="floatvalue">
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>float8</ns:datatype>
-        <ns:scale>17</ns:scale>
       </ns:column>
       <ns:column columnName="createdby">
         <ns:isUserEditable>false</ns:isUserEditable>
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>userid</ns:datatype>
-        <ns:scale>4</ns:scale>
         <ns:isHidden>true</ns:isHidden>
       </ns:column>
       <ns:column columnName="created">
         <ns:isUserEditable>false</ns:isUserEditable>
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>timestamp</ns:datatype>
-        <ns:scale>29</ns:scale>
         <ns:isHidden>true</ns:isHidden>
       </ns:column>
       <ns:column columnName="modifiedby">
         <ns:isUserEditable>false</ns:isUserEditable>
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>userid</ns:datatype>
-        <ns:scale>4</ns:scale>
         <ns:isHidden>true</ns:isHidden>
       </ns:column>
       <ns:column columnName="modified">
         <ns:isUserEditable>false</ns:isUserEditable>
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>timestamp</ns:datatype>
-        <ns:scale>29</ns:scale>
         <ns:isHidden>true</ns:isHidden>
       </ns:column>
     </ns:columns>
@@ -123,17 +91,13 @@
     <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr&amp;query.queryName=snomed_tags&amp;rowid=${rowid}</ns:tableUrl>
     <ns:columns>
       <ns:column columnName="rowid">
-        <ns:datatype>serial</ns:datatype>
         <ns:shownInInsertView>false</ns:shownInInsertView>
         <ns:isAutoInc>true</ns:isAutoInc>
         <ns:isKeyField>true</ns:isKeyField>
-        <ns:scale>10</ns:scale>
       </ns:column>
       <ns:column columnName="container">
         <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:datatype>entityid</ns:datatype>
         <ns:isHidden>true</ns:isHidden>
-        <ns:scale>36</ns:scale>
         <ns:fk>
           <ns:fkDbSchema>core</ns:fkDbSchema>
           <ns:fkTable>containers</ns:fkTable>
@@ -143,40 +107,28 @@
       <ns:column columnName="createdby">
         <ns:isUserEditable>false</ns:isUserEditable>
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>userid</ns:datatype>
-        <ns:scale>4</ns:scale>
         <ns:isHidden>true</ns:isHidden>
       </ns:column>
       <ns:column columnName="created">
         <ns:isUserEditable>false</ns:isUserEditable>
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>timestamp</ns:datatype>
-        <ns:scale>29</ns:scale>
         <ns:isHidden>true</ns:isHidden>
       </ns:column>
       <ns:column columnName="modifiedby">
         <ns:isUserEditable>false</ns:isUserEditable>
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>userid</ns:datatype>
-        <ns:scale>4</ns:scale>
         <ns:isHidden>true</ns:isHidden>
       </ns:column>
       <ns:column columnName="modified">
         <ns:isUserEditable>false</ns:isUserEditable>
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>timestamp</ns:datatype>
-        <ns:scale>29</ns:scale>
         <ns:isHidden>true</ns:isHidden>
       </ns:column>
       <ns:column columnName="recordId">
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>32</ns:scale>
       </ns:column>
       <ns:column columnName="code">
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>32</ns:scale>
           <ns:fk>
             <ns:fkDbSchema>ehr_lookups</ns:fkDbSchema>
             <ns:fkTable>snomed</ns:fkTable>
@@ -189,25 +141,17 @@
     <ns:pkColumnName>taskid</ns:pkColumnName>
     <ns:columns>
       <ns:column columnName="taskid">
-        <ns:datatype>entityid</ns:datatype>
         <ns:isKeyField>true</ns:isKeyField>
-        <ns:scale>36</ns:scale>
       </ns:column>
       <ns:column columnName="rowid">
-        <ns:datatype>serial</ns:datatype>
         <ns:shownInInsertView>false</ns:shownInInsertView>
         <ns:isAutoInc>true</ns:isAutoInc>
-        <ns:scale>10</ns:scale>
       </ns:column>
       <ns:column columnName="title">
         <ns:nullable>false</ns:nullable>
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>100</ns:scale>
       </ns:column>
       <ns:column columnName="formtype">
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>100</ns:scale>
           <ns:fk>
             <ns:fkDbSchema>ehr</ns:fkDbSchema>
             <ns:fkTable>formtypes</ns:fkTable>
@@ -216,43 +160,30 @@
       </ns:column>
       <ns:column columnName="category">
         <ns:nullable>false</ns:nullable>
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>100</ns:scale>
       </ns:column>
       <ns:column columnName="requestId">
-        <ns:datatype>entityid</ns:datatype>
-        <ns:scale>36</ns:scale>
       </ns:column>
       <ns:column columnName="qcstate">
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>int4</ns:datatype>
         <ns:fk>
           <ns:fkDbSchema>study</ns:fkDbSchema>
           <ns:fkTable>QCState</ns:fkTable>
           <ns:fkColumnName>rowid</ns:fkColumnName>
         </ns:fk>
-        <ns:scale>10</ns:scale>
       </ns:column>
       <ns:column columnName="assignedto">
-        <ns:datatype>userid</ns:datatype>
         <ns:nullable>true</ns:nullable>
-        <ns:scale>4</ns:scale>
       </ns:column>
       <ns:column columnName="duedate">
-        <ns:datatype>timestamp</ns:datatype>
         <ns:nullable>true</ns:nullable>
-        <ns:scale>29</ns:scale>
       </ns:column>
       <ns:column columnName="datecompleted">
-          <ns:datatype>timestamp</ns:datatype>
           <ns:nullable>true</ns:nullable>
           <ns:columnTitle>Date Finalized</ns:columnTitle>
       </ns:column>
       <ns:column columnName="container">
         <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:datatype>entityid</ns:datatype>
         <ns:isHidden>true</ns:isHidden>
-        <ns:scale>36</ns:scale>
         <ns:fk>
           <ns:fkDbSchema>core</ns:fkDbSchema>
           <ns:fkTable>containers</ns:fkTable>
@@ -262,35 +193,25 @@
       <ns:column columnName="createdby">
         <ns:isUserEditable>false</ns:isUserEditable>
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>userid</ns:datatype>
-        <ns:scale>4</ns:scale>
         <ns:isHidden>true</ns:isHidden>
       </ns:column>
       <ns:column columnName="created">
         <ns:isUserEditable>false</ns:isUserEditable>
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>timestamp</ns:datatype>
-        <ns:scale>29</ns:scale>
         <ns:isHidden>true</ns:isHidden>
       </ns:column>
       <ns:column columnName="modifiedby">
         <ns:isUserEditable>false</ns:isUserEditable>
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>userid</ns:datatype>
-        <ns:scale>4</ns:scale>
         <ns:isHidden>true</ns:isHidden>
       </ns:column>
       <ns:column columnName="modified">
         <ns:isUserEditable>false</ns:isUserEditable>
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>timestamp</ns:datatype>
-        <ns:scale>29</ns:scale>
         <ns:isHidden>true</ns:isHidden>
       </ns:column>
       <ns:column columnName="description">
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>text</ns:datatype>
-        <ns:scale>100</ns:scale>
       </ns:column>
     </ns:columns>
   </ns:table>
@@ -298,25 +219,17 @@
     <ns:pkColumnName>requestid</ns:pkColumnName>
     <ns:columns>
       <ns:column columnName="requestid">
-        <ns:datatype>entityid</ns:datatype>
         <ns:isKeyField>true</ns:isKeyField>
-        <ns:scale>36</ns:scale>
       </ns:column>
       <ns:column columnName="rowid">
-        <ns:datatype>serial</ns:datatype>
         <ns:shownInInsertView>false</ns:shownInInsertView>
         <ns:isAutoInc>true</ns:isAutoInc>
-        <ns:scale>10</ns:scale>
       </ns:column>
       <ns:column columnName="title">
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>100</ns:scale>
       </ns:column>
       <ns:column columnName="notify1">
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>integer</ns:datatype>
-        <ns:scale>50</ns:scale>
         <ns:fk>
             <ns:fkDbSchema>core</ns:fkDbSchema>
             <ns:fkTable>PrincipalsWithoutAdmin</ns:fkTable>
@@ -325,38 +238,28 @@
       </ns:column>
       <ns:column columnName="notify2">
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>integer</ns:datatype>
         <ns:fk>
             <ns:fkDbSchema>core</ns:fkDbSchema>
             <ns:fkTable>PrincipalsWithoutAdmin</ns:fkTable>
             <ns:fkColumnName>userid</ns:fkColumnName>
         </ns:fk>
-        <ns:scale>50</ns:scale>
       </ns:column>
       <ns:column columnName="notify3">
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>integer</ns:datatype>
         <ns:fk>
             <ns:fkDbSchema>core</ns:fkDbSchema>
             <ns:fkTable>PrincipalsWithoutAdmin</ns:fkTable>
             <ns:fkColumnName>userid</ns:fkColumnName>
         </ns:fk>
-        <ns:scale>50</ns:scale>
       </ns:column>
       <ns:column columnName="pi">
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>100</ns:scale>
       </ns:column>
       <ns:column columnName="priority">
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>100</ns:scale>
       </ns:column>
       <ns:column columnName="formtype">
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>100</ns:scale>
           <ns:fk>
             <ns:fkDbSchema>ehr</ns:fkDbSchema>
             <ns:fkTable>formtypes</ns:fkTable>
@@ -365,18 +268,12 @@
       </ns:column>
       <ns:column columnName="daterequested">
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>timestamp</ns:datatype>
-        <ns:scale>29</ns:scale>
       </ns:column>
       <ns:column columnName="enddate">
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>timestamp</ns:datatype>
-        <ns:scale>29</ns:scale>
       </ns:column>
       <ns:column columnName="qcstate">
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>int4</ns:datatype>
-        <ns:scale>10</ns:scale>
         <ns:fk>
           <ns:fkDbSchema>study</ns:fkDbSchema>
           <ns:fkTable>QCState</ns:fkTable>
@@ -385,19 +282,13 @@
       </ns:column>
       <ns:column columnName="remark">
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>text</ns:datatype>
-        <ns:scale>255</ns:scale>
       </ns:column>
       <ns:column columnName="description">
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>text</ns:datatype>
-        <ns:scale>255</ns:scale>
       </ns:column>
       <ns:column columnName="container">
         <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:datatype>entityid</ns:datatype>
         <ns:isHidden>true</ns:isHidden>
-        <ns:scale>36</ns:scale>
         <ns:fk>
           <ns:fkDbSchema>core</ns:fkDbSchema>
           <ns:fkTable>containers</ns:fkTable>
@@ -407,29 +298,21 @@
       <ns:column columnName="createdby">
         <ns:isUserEditable>false</ns:isUserEditable>
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>userid</ns:datatype>
-        <ns:scale>4</ns:scale>
         <ns:isHidden>true</ns:isHidden>
       </ns:column>
       <ns:column columnName="created">
         <ns:isUserEditable>false</ns:isUserEditable>
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>timestamp</ns:datatype>
-        <ns:scale>29</ns:scale>
         <ns:isHidden>true</ns:isHidden>
       </ns:column>
       <ns:column columnName="modifiedby">
         <ns:isUserEditable>false</ns:isUserEditable>
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>userid</ns:datatype>
-        <ns:scale>4</ns:scale>
         <ns:isHidden>true</ns:isHidden>
       </ns:column>
       <ns:column columnName="modified">
         <ns:isUserEditable>false</ns:isUserEditable>
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>timestamp</ns:datatype>
-        <ns:scale>29</ns:scale>
         <ns:isHidden>true</ns:isHidden>
       </ns:column>
     </ns:columns>
@@ -443,115 +326,77 @@
     <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr&amp;query.queryName=reports&amp;rowid=${rowid}</ns:tableUrl>
     <ns:columns>
       <ns:column columnName="rowid">
-        <ns:datatype>serial</ns:datatype>
         <ns:shownInInsertView>false</ns:shownInInsertView>
         <ns:isAutoInc>true</ns:isAutoInc>
         <ns:isKeyField>true</ns:isKeyField>
-        <ns:scale>10</ns:scale>
       </ns:column>
       <ns:column columnName="reportname">
         <ns:columnTitle>Report Name</ns:columnTitle>
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>100</ns:scale>
       </ns:column>
       <ns:column columnName="category">
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>100</ns:scale>
       </ns:column>
       <ns:column columnName="reporttype">
         <ns:columnTitle>Report Type</ns:columnTitle>
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>100</ns:scale>
       </ns:column>
       <ns:column columnName="reporttitle">
         <ns:columnTitle>Report Title</ns:columnTitle>
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>100</ns:scale>
       </ns:column>
       <ns:column columnName="visible">
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>bool</ns:datatype>
-        <ns:scale>1</ns:scale>
       </ns:column>
         <ns:column columnName="sort_order">
           <ns:nullable>true</ns:nullable>
-          <ns:datatype>integer</ns:datatype>
-          <ns:scale>10</ns:scale>
         </ns:column>
       <ns:column columnName="containerpath">
         <ns:columnTitle>Container Path</ns:columnTitle>
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>100</ns:scale>
       </ns:column>
       <ns:column columnName="schemaname">
         <ns:columnTitle>Schema Name</ns:columnTitle>
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>100</ns:scale>
       </ns:column>
       <ns:column columnName="queryname">
         <ns:columnTitle>Query Name</ns:columnTitle>
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>100</ns:scale>
       </ns:column>
       <ns:column columnName="viewname">
         <ns:columnTitle>View Name</ns:columnTitle>
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>100</ns:scale>
       </ns:column>
       <ns:column columnName="report">
         <ns:columnTitle>Report Path</ns:columnTitle>
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>100</ns:scale>
       </ns:column>
       <ns:column columnName="datefieldname">
         <ns:columnTitle>Date Field Name</ns:columnTitle>
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>100</ns:scale>
       </ns:column>
       <ns:column columnName="todayonly">
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>bool</ns:datatype>
         <ns:columnTitle>By Default, This Query Should Be Filtered To Show Today's Data</ns:columnTitle>
-        <ns:scale>1</ns:scale>
       </ns:column>
       <ns:column columnName="queryhaslocation">
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>bool</ns:datatype>
         <ns:columnTitle>Query Contains Fields For Room/Cage?</ns:columnTitle>
-        <ns:scale>1</ns:scale>
       </ns:column>
       <ns:column columnName="QCStatePublicDataFieldName">
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>varchar</ns:datatype>
         <ns:columnTitle>QCState PublicData Field Name</ns:columnTitle>
-        <ns:scale>100</ns:scale>
       </ns:column>
       <ns:column columnName="jsonConfig">
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>varchar</ns:datatype>
         <ns:columnTitle>JSON Config</ns:columnTitle>
-        <ns:scale>255</ns:scale>
       </ns:column>
       <ns:column columnName="description">
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>text</ns:datatype>
-        <ns:scale>100</ns:scale>
       </ns:column>
       <ns:column columnName="container">
         <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:datatype>entityid</ns:datatype>
         <ns:isHidden>true</ns:isHidden>
-        <ns:scale>36</ns:scale>
         <ns:fk>
           <ns:fkDbSchema>core</ns:fkDbSchema>
           <ns:fkTable>containers</ns:fkTable>
@@ -561,29 +406,21 @@
       <ns:column columnName="createdby">
         <ns:isUserEditable>false</ns:isUserEditable>
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>userid</ns:datatype>
-        <ns:scale>4</ns:scale>
         <ns:isHidden>true</ns:isHidden>
       </ns:column>
       <ns:column columnName="created">
         <ns:isUserEditable>false</ns:isUserEditable>
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>timestamp</ns:datatype>
-        <ns:scale>29</ns:scale>
         <ns:isHidden>true</ns:isHidden>
       </ns:column>
       <ns:column columnName="modifiedby">
         <ns:isUserEditable>false</ns:isUserEditable>
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>userid</ns:datatype>
-        <ns:scale>4</ns:scale>
         <ns:isHidden>true</ns:isHidden>
       </ns:column>
       <ns:column columnName="modified">
         <ns:isUserEditable>false</ns:isUserEditable>
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>timestamp</ns:datatype>
-        <ns:scale>29</ns:scale>
         <ns:isHidden>true</ns:isHidden>
       </ns:column>
     </ns:columns>
@@ -597,42 +434,34 @@
     <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr&amp;query.queryName=cage_observations&amp;rowid=${rowid}</ns:tableUrl>
     <ns:columns>
       <ns:column columnName="date">
-        <ns:datatype>timestamp</ns:datatype>
         <ns:nullable>false</ns:nullable>
         <ns:formatString>yyyy-MM-dd</ns:formatString>
         <ns:columnTitle>Date</ns:columnTitle>
       </ns:column>
       <!--<ns:column columnName="roomcage">-->
-        <!--<ns:datatype>varchar</ns:datatype>-->
         <!--<ns:columnTitle>Room/Cage</ns:columnTitle>-->
         <!--<ns:nullable>false</ns:nullable>-->
       <!--</ns:column>-->
       <ns:column columnName="room">
-        <ns:datatype>varchar</ns:datatype>
         <ns:nullable>false</ns:nullable>
         <ns:columnTitle>Room</ns:columnTitle>
       </ns:column>
       <ns:column columnName="cage">
-        <ns:datatype>varchar</ns:datatype>
         <ns:columnTitle>Cage</ns:columnTitle>
       </ns:column>
       <ns:column columnName="feces">
-        <ns:datatype>varchar</ns:datatype>
         <ns:columnTitle>Feces</ns:columnTitle>
       </ns:column>
       <ns:column columnName="remark">
-        <ns:datatype>varchar</ns:datatype>
         <ns:columnTitle>Remark</ns:columnTitle>
         <ns:propertyURI>urn:ehr.labkey.org/#Remark</ns:propertyURI>
         <ns:inputType>textarea</ns:inputType>
       </ns:column>
       <ns:column columnName="no_observations">
-        <ns:datatype>boolean</ns:datatype>
         <ns:nullable>true</ns:nullable>
         <ns:columnTitle>Everything Is OK</ns:columnTitle>
       </ns:column>
       <ns:column columnName="userid">
-        <ns:datatype>varchar</ns:datatype>
         <ns:columnTitle>UserID</ns:columnTitle>
         <!--<ns:fk>-->
           <!--<ns:fkDbSchema>core</ns:fkDbSchema>-->
@@ -642,8 +471,6 @@
       </ns:column>
       <ns:column columnName="qcstate">
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>integer</ns:datatype>
-        <!--<ns:scale>10</ns:scale>-->
         <ns:fk>
           <ns:fkDbSchema>study</ns:fkDbSchema>
           <ns:fkTable>QCState</ns:fkTable>
@@ -651,7 +478,6 @@
         </ns:fk>
       </ns:column>
       <ns:column columnName="objectid">
-        <ns:datatype>varchar</ns:datatype>
         <ns:columnTitle>ObjectId</ns:columnTitle>
         <ns:shownInInsertView>false</ns:shownInInsertView>
         <ns:shownInUpdateView>false</ns:shownInUpdateView>
@@ -660,7 +486,6 @@
         <!--<ns:isKeyField>true</ns:isKeyField>-->
       </ns:column>
       <ns:column columnName="rowid">
-        <ns:datatype>integer</ns:datatype>
         <ns:columnTitle>Key</ns:columnTitle>
         <ns:shownInInsertView>false</ns:shownInInsertView>
         <ns:shownInUpdateView>false</ns:shownInUpdateView>
@@ -669,7 +494,6 @@
         <ns:isKeyField>true</ns:isKeyField>
       </ns:column>
       <!--<ns:column columnName="ts">-->
-        <!--<ns:datatype>timestamp</ns:datatype>-->
         <!--<ns:columnTitle>Last Changed</ns:columnTitle>-->
         <!--<ns:shownInInsertView>false</ns:shownInInsertView>-->
         <!--<ns:shownInUpdateView>false</ns:shownInUpdateView>-->
@@ -677,7 +501,6 @@
         <!--<ns:isHidden>true</ns:isHidden>-->
       <!--</ns:column>-->
       <ns:column columnName="description">
-        <ns:datatype>varchar</ns:datatype>
         <ns:columnTitle>Description</ns:columnTitle>
         <ns:propertyURI>urn:ehr.labkey.org/#Description</ns:propertyURI>
         <ns:shownInInsertView>false</ns:shownInInsertView>
@@ -687,20 +510,16 @@
         <ns:inputType>textarea</ns:inputType>
       </ns:column>
       <ns:column columnName="parentid">
-        <ns:datatype>varchar</ns:datatype>
         <ns:columnTitle>Parent Id</ns:columnTitle>
         <ns:propertyURI>urn:ehr.labkey.org/#ParentId</ns:propertyURI>
       </ns:column>
       <ns:column columnName="taskid">
-        <ns:datatype>varchar</ns:datatype>
         <ns:columnTitle>Task Id</ns:columnTitle>
         <ns:propertyURI>urn:ehr.labkey.org/#TaskId</ns:propertyURI>
       </ns:column>
       <ns:column columnName="container">
         <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:datatype>entityid</ns:datatype>
         <ns:isHidden>true</ns:isHidden>
-        <ns:scale>36</ns:scale>
         <ns:fk>
           <ns:fkDbSchema>core</ns:fkDbSchema>
           <ns:fkTable>containers</ns:fkTable>
@@ -710,29 +529,21 @@
       <ns:column columnName="createdby">
         <ns:isUserEditable>false</ns:isUserEditable>
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>userid</ns:datatype>
-        <ns:scale>4</ns:scale>
         <ns:isHidden>true</ns:isHidden>
       </ns:column>
       <ns:column columnName="created">
         <ns:isUserEditable>false</ns:isUserEditable>
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>timestamp</ns:datatype>
-        <ns:scale>29</ns:scale>
         <ns:isHidden>true</ns:isHidden>
       </ns:column>
       <ns:column columnName="modifiedby">
         <ns:isUserEditable>false</ns:isUserEditable>
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>userid</ns:datatype>
-        <ns:scale>4</ns:scale>
         <ns:isHidden>true</ns:isHidden>
       </ns:column>
       <ns:column columnName="modified">
         <ns:isUserEditable>false</ns:isUserEditable>
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>timestamp</ns:datatype>
-        <ns:scale>29</ns:scale>
         <ns:isHidden>true</ns:isHidden>
       </ns:column>
     </ns:columns>
@@ -743,52 +554,34 @@
     <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr&amp;query.queryName=extracts&amp;rowid=${rowid}</ns:tableUrl>
     <ns:columns>
       <ns:column columnName="rowid">
-        <ns:datatype>serial</ns:datatype>
         <ns:shownInInsertView>false</ns:shownInInsertView>
         <ns:isAutoInc>true</ns:isAutoInc>
         <ns:isKeyField>true</ns:isKeyField>
-        <ns:scale>10</ns:scale>
       </ns:column>
       <ns:column columnName="queryname">
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>100</ns:scale>
       </ns:column>
       <ns:column columnName="schemaname">
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>100</ns:scale>
       </ns:column>
       <ns:column columnName="containerpath">
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>100</ns:scale>
       </ns:column>
       <ns:column columnName="viewname">
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>100</ns:scale>
       </ns:column>
       <ns:column columnName="filename">
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>100</ns:scale>
       </ns:column>
       <ns:column columnName="columns">
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>500</ns:scale>
       </ns:column>
       <ns:column columnName="fieldstohash">
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>500</ns:scale>
       </ns:column>
       <ns:column columnName="container">
         <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:datatype>entityid</ns:datatype>
         <ns:isHidden>true</ns:isHidden>
-        <ns:scale>36</ns:scale>
         <ns:fk>
           <ns:fkDbSchema>core</ns:fkDbSchema>
           <ns:fkTable>containers</ns:fkTable>
@@ -798,29 +591,21 @@
       <ns:column columnName="createdby">
         <ns:isUserEditable>false</ns:isUserEditable>
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>userid</ns:datatype>
-        <ns:scale>4</ns:scale>
         <ns:isHidden>true</ns:isHidden>
       </ns:column>
       <ns:column columnName="created">
         <ns:isUserEditable>false</ns:isUserEditable>
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>timestamp</ns:datatype>
-        <ns:scale>29</ns:scale>
         <ns:isHidden>true</ns:isHidden>
       </ns:column>
       <ns:column columnName="modifiedby">
         <ns:isUserEditable>false</ns:isUserEditable>
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>userid</ns:datatype>
-        <ns:scale>4</ns:scale>
         <ns:isHidden>true</ns:isHidden>
       </ns:column>
       <ns:column columnName="modified">
         <ns:isUserEditable>false</ns:isUserEditable>
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>timestamp</ns:datatype>
-        <ns:scale>29</ns:scale>
         <ns:isHidden>true</ns:isHidden>
       </ns:column>
     </ns:columns>
@@ -836,14 +621,10 @@
     <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr&amp;query.queryName=formtemplates&amp;entityid=${entityid}</ns:tableUrl>
     <ns:columns>
       <ns:column columnName="entityid">
-        <ns:datatype>entityid</ns:datatype>
         <!--<ns:isAutoInc>true</ns:isAutoInc>-->
         <ns:isKeyField>true</ns:isKeyField>
-        <ns:scale>50</ns:scale>
       </ns:column>
       <ns:column columnName="formtype">
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>100</ns:scale>
           <!--<ns:fk>-->
             <!--<ns:fkDbSchema>ehr</ns:fkDbSchema>-->
             <!--<ns:fkTable>formtypes</ns:fkTable>-->
@@ -852,28 +633,18 @@
       </ns:column>
       <ns:column columnName="userId">
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>100</ns:scale>
       </ns:column>
       <ns:column columnName="template">
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>100</ns:scale>
       </ns:column>
       <ns:column columnName="title">
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>100</ns:scale>
       </ns:column>
       <ns:column columnName="description">
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>text</ns:datatype>
-        <ns:scale>32767</ns:scale>
       </ns:column>
       <ns:column columnName="container">
         <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:datatype>entityid</ns:datatype>
         <ns:isHidden>true</ns:isHidden>
-        <ns:scale>36</ns:scale>
         <ns:fk>
           <ns:fkDbSchema>core</ns:fkDbSchema>
           <ns:fkTable>containers</ns:fkTable>
@@ -883,29 +654,21 @@
       <ns:column columnName="createdby">
         <ns:isUserEditable>false</ns:isUserEditable>
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>userid</ns:datatype>
-        <ns:scale>4</ns:scale>
         <ns:isHidden>true</ns:isHidden>
       </ns:column>
       <ns:column columnName="created">
         <ns:isUserEditable>false</ns:isUserEditable>
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>timestamp</ns:datatype>
-        <ns:scale>29</ns:scale>
         <ns:isHidden>true</ns:isHidden>
       </ns:column>
       <ns:column columnName="modifiedby">
         <ns:isUserEditable>false</ns:isUserEditable>
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>userid</ns:datatype>
-        <ns:scale>4</ns:scale>
         <ns:isHidden>true</ns:isHidden>
       </ns:column>
       <ns:column columnName="modified">
         <ns:isUserEditable>false</ns:isUserEditable>
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>timestamp</ns:datatype>
-        <ns:scale>29</ns:scale>
         <ns:isHidden>true</ns:isHidden>
       </ns:column>
     </ns:columns>
@@ -919,17 +682,13 @@
     <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr&amp;query.queryName=notificationrecipients&amp;rowid=${rowid}</ns:tableUrl>
     <ns:columns>
       <ns:column columnName="rowid">
-        <ns:datatype>serial</ns:datatype>
         <ns:shownInInsertView>false</ns:shownInInsertView>
         <ns:isAutoInc>true</ns:isAutoInc>
-        <ns:scale>10</ns:scale>
         <ns:isKeyField>true</ns:isKeyField>
       </ns:column>
       <ns:column columnName="notificationtype">
         <ns:columnTitle>Notification Type</ns:columnTitle>
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>100</ns:scale>
           <ns:fk>
             <ns:fkDbSchema>ehr</ns:fkDbSchema>
             <ns:fkTable>notificationtypes</ns:fkTable>
@@ -937,8 +696,6 @@
           </ns:fk>
       </ns:column>
       <ns:column columnName="recipient">
-        <ns:datatype>integer</ns:datatype>
-        <ns:scale>100</ns:scale>
           <ns:fk>
             <ns:fkDbSchema>core</ns:fkDbSchema>
             <ns:fkTable>PrincipalsWithoutAdmin</ns:fkTable>
@@ -947,9 +704,7 @@
       </ns:column>
       <ns:column columnName="container">
         <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:datatype>entityid</ns:datatype>
         <ns:isHidden>true</ns:isHidden>
-        <ns:scale>36</ns:scale>
         <ns:fk>
           <ns:fkDbSchema>core</ns:fkDbSchema>
           <ns:fkTable>containers</ns:fkTable>
@@ -959,29 +714,21 @@
       <ns:column columnName="createdby">
         <ns:isUserEditable>false</ns:isUserEditable>
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>userid</ns:datatype>
-        <ns:scale>4</ns:scale>
         <ns:isHidden>true</ns:isHidden>
       </ns:column>
       <ns:column columnName="created">
         <ns:isUserEditable>false</ns:isUserEditable>
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>timestamp</ns:datatype>
-        <ns:scale>29</ns:scale>
         <ns:isHidden>true</ns:isHidden>
       </ns:column>
       <ns:column columnName="modifiedby">
         <ns:isUserEditable>false</ns:isUserEditable>
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>userid</ns:datatype>
-        <ns:scale>4</ns:scale>
         <ns:isHidden>true</ns:isHidden>
       </ns:column>
       <ns:column columnName="modified">
         <ns:isUserEditable>false</ns:isUserEditable>
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>timestamp</ns:datatype>
-        <ns:scale>29</ns:scale>
         <ns:isHidden>true</ns:isHidden>
       </ns:column>
     </ns:columns>
@@ -995,18 +742,12 @@
     <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr&amp;query.queryName=formpanelsections&amp;rowid=${rowid}</ns:tableUrl>
     <ns:columns>
       <ns:column columnName="rowid">
-        <ns:datatype>serial</ns:datatype>
         <ns:isAutoInc>true</ns:isAutoInc>
         <ns:isKeyField>true</ns:isKeyField>
-        <ns:scale>10</ns:scale>
       </ns:column>
       <ns:column columnName="destination">
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>100</ns:scale>
       </ns:column>
       <ns:column columnName="formtype">
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>100</ns:scale>
           <ns:fk>
             <ns:fkDbSchema>ehr</ns:fkDbSchema>
             <ns:fkTable>formtypes</ns:fkTable>
@@ -1014,54 +755,34 @@
           </ns:fk>
       </ns:column>
       <ns:column columnName="xtype">
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>200</ns:scale>
       </ns:column>
       <ns:column columnName="sort_order">
-        <ns:datatype>integer</ns:datatype>
-        <ns:scale>50</ns:scale>
       </ns:column>
       <ns:column columnName="schemaName">
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>200</ns:scale>
       </ns:column>
       <ns:column columnName="queryName">
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>200</ns:scale>
       </ns:column>
       <ns:column columnName="title">
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>100</ns:scale>
       </ns:column>
       <ns:column columnName="metadatasources">
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>100</ns:scale>
       </ns:column>
       <ns:column columnName="buttons">
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>100</ns:scale>
       </ns:column>
       <ns:column columnName="initialTemplates">
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>100</ns:scale>
       </ns:column>
       <ns:column columnName="configJson">
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>varchar</ns:datatype>
         <ns:columnTitle>JSON Config</ns:columnTitle>
-        <ns:scale>255</ns:scale>
       </ns:column>
       <ns:column columnName="container">
         <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:datatype>entityid</ns:datatype>
         <ns:isHidden>true</ns:isHidden>
-        <ns:scale>36</ns:scale>
         <ns:fk>
           <ns:fkDbSchema>core</ns:fkDbSchema>
           <ns:fkTable>containers</ns:fkTable>
@@ -1071,29 +792,21 @@
       <ns:column columnName="createdby">
         <ns:isUserEditable>false</ns:isUserEditable>
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>userid</ns:datatype>
-        <ns:scale>4</ns:scale>
         <ns:isHidden>true</ns:isHidden>
       </ns:column>
       <ns:column columnName="created">
         <ns:isUserEditable>false</ns:isUserEditable>
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>timestamp</ns:datatype>
-        <ns:scale>29</ns:scale>
         <ns:isHidden>true</ns:isHidden>
       </ns:column>
       <ns:column columnName="modifiedby">
         <ns:isUserEditable>false</ns:isUserEditable>
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>userid</ns:datatype>
-        <ns:scale>4</ns:scale>
         <ns:isHidden>true</ns:isHidden>
       </ns:column>
       <ns:column columnName="modified">
         <ns:isUserEditable>false</ns:isUserEditable>
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>timestamp</ns:datatype>
-        <ns:scale>29</ns:scale>
         <ns:isHidden>true</ns:isHidden>
       </ns:column>
     </ns:columns>
@@ -1107,14 +820,10 @@
     <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr&amp;query.queryName=formtemplaterecords&amp;rowid=${rowid}</ns:tableUrl>
     <ns:columns>
       <ns:column columnName="rowid">
-        <ns:datatype>serial</ns:datatype>
         <ns:isAutoInc>true</ns:isAutoInc>
         <ns:isKeyField>true</ns:isKeyField>
-        <ns:scale>10</ns:scale>
       </ns:column>
       <ns:column columnName="templateid">
-        <ns:datatype>int4</ns:datatype>
-        <ns:scale>10</ns:scale>
         <ns:fk>
           <ns:fkDbSchema>ehr</ns:fkDbSchema>
           <ns:fkTable>formtemplates</ns:fkTable>
@@ -1122,19 +831,13 @@
         </ns:fk>
       </ns:column>
       <ns:column columnName="storeid">
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>100</ns:scale>
       </ns:column>
       <ns:column columnName="json">
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>text</ns:datatype>
-        <ns:scale>255</ns:scale>
       </ns:column>
       <ns:column columnName="container">
         <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:datatype>entityid</ns:datatype>
         <ns:isHidden>true</ns:isHidden>
-        <ns:scale>36</ns:scale>
         <ns:fk>
           <ns:fkDbSchema>core</ns:fkDbSchema>
           <ns:fkTable>containers</ns:fkTable>
@@ -1144,29 +847,21 @@
       <ns:column columnName="createdby">
         <ns:isUserEditable>false</ns:isUserEditable>
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>userid</ns:datatype>
-        <ns:scale>4</ns:scale>
         <ns:isHidden>true</ns:isHidden>
       </ns:column>
       <ns:column columnName="created">
         <ns:isUserEditable>false</ns:isUserEditable>
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>timestamp</ns:datatype>
-        <ns:scale>29</ns:scale>
         <ns:isHidden>true</ns:isHidden>
       </ns:column>
       <ns:column columnName="modifiedby">
         <ns:isUserEditable>false</ns:isUserEditable>
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>userid</ns:datatype>
-        <ns:scale>4</ns:scale>
         <ns:isHidden>true</ns:isHidden>
       </ns:column>
       <ns:column columnName="modified">
         <ns:isUserEditable>false</ns:isUserEditable>
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>timestamp</ns:datatype>
-        <ns:scale>29</ns:scale>
         <ns:isHidden>true</ns:isHidden>
       </ns:column>
     </ns:columns>
@@ -1180,14 +875,10 @@
     <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr&amp;query.queryName=notificationtypes&amp;notificationtype=${notificationtype}</ns:tableUrl>
     <ns:columns>
       <ns:column columnName="notificationtype">
-        <ns:datatype>varchar</ns:datatype>
         <ns:isKeyField>true</ns:isKeyField>
-        <ns:scale>100</ns:scale>
       </ns:column>
       <ns:column columnName="description">
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>text</ns:datatype>
-        <ns:scale>32767</ns:scale>
       </ns:column>
     </ns:columns>
   </ns:table>
@@ -1200,43 +891,29 @@
     <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr&amp;query.queryName=formtypes&amp;rowid=${rowid}</ns:tableUrl>
     <ns:columns>
       <ns:column columnName="rowid">
-        <ns:datatype>serial</ns:datatype>
         <ns:isAutoInc>true</ns:isAutoInc>
         <ns:isKeyField>true</ns:isKeyField>
         <ns:shownInInsertView>false</ns:shownInInsertView>
         <ns:shownInUpdateView>false</ns:shownInUpdateView>
-        <ns:scale>10</ns:scale>
       </ns:column>
       <ns:column columnName="formtype">
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>200</ns:scale>
       </ns:column>
       <ns:column columnName="category">
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>200</ns:scale>
       </ns:column>
       <ns:column columnName="description">
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>text</ns:datatype>
-        <ns:scale>255</ns:scale>
       </ns:column>
       <ns:column columnName="permitsSingleIdOnly">
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>bool</ns:datatype>
-        <ns:scale>20</ns:scale>
       </ns:column>
       <ns:column columnName="configjson">
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>varchar</ns:datatype>
         <ns:columnTitle>JSON Config</ns:columnTitle>
         <ns:inputType>textarea</ns:inputType>
-        <ns:scale>255</ns:scale>
       </ns:column>
       <ns:column columnName="container">
         <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:datatype>entityid</ns:datatype>
         <ns:isHidden>true</ns:isHidden>
-        <ns:scale>36</ns:scale>
         <ns:fk>
           <ns:fkDbSchema>core</ns:fkDbSchema>
           <ns:fkTable>containers</ns:fkTable>
@@ -1246,29 +923,21 @@
       <ns:column columnName="createdby">
         <ns:isUserEditable>false</ns:isUserEditable>
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>userid</ns:datatype>
-        <ns:scale>4</ns:scale>
         <ns:isHidden>true</ns:isHidden>
       </ns:column>
       <ns:column columnName="created">
         <ns:isUserEditable>false</ns:isUserEditable>
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>timestamp</ns:datatype>
-        <ns:scale>29</ns:scale>
         <ns:isHidden>true</ns:isHidden>
       </ns:column>
       <ns:column columnName="modifiedby">
         <ns:isUserEditable>false</ns:isUserEditable>
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>userid</ns:datatype>
-        <ns:scale>4</ns:scale>
         <ns:isHidden>true</ns:isHidden>
       </ns:column>
       <ns:column columnName="modified">
         <ns:isUserEditable>false</ns:isUserEditable>
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>timestamp</ns:datatype>
-        <ns:scale>29</ns:scale>
         <ns:isHidden>true</ns:isHidden>
       </ns:column>
     </ns:columns>
@@ -1282,34 +951,22 @@
     <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr&amp;query.queryName=protocol&amp;protocol=${protocol}</ns:tableUrl>
     <ns:columns>
       <ns:column columnName="protocol">
-        <ns:datatype>varchar</ns:datatype>
         <ns:isKeyField>true</ns:isKeyField>
-        <ns:scale>100</ns:scale>
       </ns:column>
       <ns:column columnName="inves">
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>200</ns:scale>
       </ns:column>
       <ns:column columnName="approve">
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>timestamp</ns:datatype>
-        <ns:scale>29</ns:scale>
       </ns:column>
       <ns:column columnName="description">
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>text</ns:datatype>
-        <ns:scale>32767</ns:scale>
       </ns:column>
       <ns:column columnName="maxAnimals">
-        <ns:datatype>integer</ns:datatype>
-        <ns:scale>60</ns:scale>
       </ns:column>
       <!--<ns:column columnName="container">-->
         <!--<ns:isUserEditable>false</ns:isUserEditable>-->
-        <!--<ns:datatype>entityid</ns:datatype>-->
         <!--<ns:isHidden>true</ns:isHidden>-->
-        <!--<ns:scale>36</ns:scale>-->
         <!--<ns:fk>-->
           <!--<ns:fkDbSchema>core</ns:fkDbSchema>-->
           <!--<ns:fkTable>containers</ns:fkTable>-->
@@ -1319,29 +976,21 @@
       <ns:column columnName="createdby">
         <ns:isUserEditable>false</ns:isUserEditable>
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>userid</ns:datatype>
-        <ns:scale>4</ns:scale>
         <ns:isHidden>true</ns:isHidden>
       </ns:column>
       <ns:column columnName="created">
         <ns:isUserEditable>false</ns:isUserEditable>
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>timestamp</ns:datatype>
-        <ns:scale>29</ns:scale>
         <ns:isHidden>true</ns:isHidden>
       </ns:column>
       <ns:column columnName="modifiedby">
         <ns:isUserEditable>false</ns:isUserEditable>
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>userid</ns:datatype>
-        <ns:scale>4</ns:scale>
         <ns:isHidden>true</ns:isHidden>
       </ns:column>
       <ns:column columnName="modified">
         <ns:isUserEditable>false</ns:isUserEditable>
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>timestamp</ns:datatype>
-        <ns:scale>29</ns:scale>
         <ns:isHidden>true</ns:isHidden>
       </ns:column>
     </ns:columns>
@@ -1355,53 +1004,33 @@
     <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr&amp;query.queryName=projects&amp;project=${project}</ns:tableUrl>
     <ns:columns>
       <ns:column columnName="project">
-        <ns:datatype>integer</ns:datatype>
         <ns:isKeyField>true</ns:isKeyField>
-        <ns:scale>100</ns:scale>
       </ns:column>
       <ns:column columnName="protocol">
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>200</ns:scale>
       </ns:column>
       <ns:column columnName="account">
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>200</ns:scale>
       </ns:column>
       <ns:column columnName="inves">
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>100</ns:scale>
       </ns:column>
       <ns:column columnName="avail">
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>100</ns:scale>
       </ns:column>
       <ns:column columnName="title">
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>100</ns:scale>
       </ns:column>
       <ns:column columnName="research">
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>bool</ns:datatype>
-        <ns:scale>1</ns:scale>
       </ns:column>
       <ns:column columnName="reqname">
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>100</ns:scale>
       </ns:column>
       <ns:column columnName="requestid">
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>100</ns:scale>
       </ns:column>
       <ns:column columnName="qcstate">
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>int4</ns:datatype>
-        <ns:scale>10</ns:scale>
         <ns:fk>
           <ns:fkDbSchema>study</ns:fkDbSchema>
           <ns:fkTable>QCState</ns:fkTable>
@@ -1410,9 +1039,7 @@
       </ns:column>
       <!--<ns:column columnName="container">-->
         <!--<ns:isUserEditable>false</ns:isUserEditable>-->
-        <!--<ns:datatype>entityid</ns:datatype>-->
         <!--<ns:isHidden>true</ns:isHidden>-->
-        <!--<ns:scale>36</ns:scale>-->
         <!--<ns:fk>-->
           <!--<ns:fkDbSchema>core</ns:fkDbSchema>-->
           <!--<ns:fkTable>containers</ns:fkTable>-->
@@ -1422,29 +1049,21 @@
       <ns:column columnName="createdby">
         <ns:isUserEditable>false</ns:isUserEditable>
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>userid</ns:datatype>
-        <ns:scale>4</ns:scale>
         <ns:isHidden>true</ns:isHidden>
       </ns:column>
       <ns:column columnName="created">
         <ns:isUserEditable>false</ns:isUserEditable>
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>timestamp</ns:datatype>
-        <ns:scale>29</ns:scale>
         <ns:isHidden>true</ns:isHidden>
       </ns:column>
       <ns:column columnName="modifiedby">
         <ns:isUserEditable>false</ns:isUserEditable>
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>userid</ns:datatype>
-        <ns:scale>4</ns:scale>
         <ns:isHidden>true</ns:isHidden>
       </ns:column>
       <ns:column columnName="modified">
         <ns:isUserEditable>false</ns:isUserEditable>
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>timestamp</ns:datatype>
-        <ns:scale>29</ns:scale>
         <ns:isHidden>true</ns:isHidden>
       </ns:column>
     </ns:columns>
@@ -1458,30 +1077,20 @@
     <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr&amp;query.queryName=protocol_counts&amp;rowid=${rowid}</ns:tableUrl>
     <ns:columns>
       <ns:column columnName="rowid">
-        <ns:datatype>serial</ns:datatype>
         <ns:isAutoInc>true</ns:isAutoInc>
         <ns:isKeyField>true</ns:isKeyField>
         <ns:shownInInsertView>false</ns:shownInInsertView>
         <ns:shownInUpdateView>false</ns:shownInUpdateView>
-        <ns:scale>10</ns:scale>
       </ns:column>
       <ns:column columnName="protocol">
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>100</ns:scale>
       </ns:column>
       <ns:column columnName="species">
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>200</ns:scale>
       </ns:column>
       <ns:column columnName="allowed">
-        <ns:datatype>int4</ns:datatype>
-        <ns:scale>10</ns:scale>
       </ns:column>
       <ns:column columnName="container">
         <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:datatype>entityid</ns:datatype>
         <ns:isHidden>true</ns:isHidden>
-        <ns:scale>36</ns:scale>
         <ns:fk>
           <ns:fkDbSchema>core</ns:fkDbSchema>
           <ns:fkTable>containers</ns:fkTable>
@@ -1491,29 +1100,21 @@
       <ns:column columnName="createdby">
         <ns:isUserEditable>false</ns:isUserEditable>
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>userid</ns:datatype>
-        <ns:scale>4</ns:scale>
         <ns:isHidden>true</ns:isHidden>
       </ns:column>
       <ns:column columnName="created">
         <ns:isUserEditable>false</ns:isUserEditable>
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>timestamp</ns:datatype>
-        <ns:scale>29</ns:scale>
         <ns:isHidden>true</ns:isHidden>
       </ns:column>
       <ns:column columnName="modifiedby">
         <ns:isUserEditable>false</ns:isUserEditable>
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>userid</ns:datatype>
-        <ns:scale>4</ns:scale>
         <ns:isHidden>true</ns:isHidden>
       </ns:column>
       <ns:column columnName="modified">
         <ns:isUserEditable>false</ns:isUserEditable>
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>timestamp</ns:datatype>
-        <ns:scale>29</ns:scale>
         <ns:isHidden>true</ns:isHidden>
       </ns:column>
     </ns:columns>
@@ -1522,17 +1123,11 @@
     <!--<ns:pkColumnName>rowid</ns:pkColumnName>-->
     <!--<ns:columns>-->
       <!--<ns:column columnName="rowid">-->
-        <!--<ns:datatype>serial</ns:datatype>-->
         <!--<ns:isAutoInc>true</ns:isAutoInc>-->
-        <!--<ns:scale>10</ns:scale>-->
       <!--</ns:column>-->
       <!--<ns:column columnName="role">-->
-        <!--<ns:datatype>varchar</ns:datatype>-->
-        <!--<ns:scale>100</ns:scale>-->
       <!--</ns:column>-->
       <!--<ns:column columnName="qcStateLabel">-->
-        <!--<ns:datatype>varchar</ns:datatype>-->
-        <!--<ns:scale>100</ns:scale>-->
         <!--<ns:fk>-->
           <!--<ns:fkDbSchema>ehr</ns:fkDbSchema>-->
           <!--<ns:fkTable>qcStateMetadata</ns:fkTable>-->
@@ -1540,8 +1135,6 @@
         <!--</ns:fk>-->
       <!--</ns:column>-->
       <!--<ns:column columnName="permission">-->
-        <!--<ns:datatype>varchar</ns:datatype>-->
-        <!--<ns:scale>100</ns:scale>-->
       <!--</ns:column>-->
     <!--</ns:columns>-->
   <!--</ns:table>-->
@@ -1553,29 +1146,19 @@
       <ns:pkColumnName>QCStateLabel</ns:pkColumnName>
       <ns:columns>
         <ns:column columnName="QCStateLabel">
-          <ns:datatype>varchar</ns:datatype>
           <ns:isKeyField>true</ns:isKeyField>
-          <ns:scale>100</ns:scale>
         </ns:column>
         <ns:column columnName="draftData">
           <ns:nullable>true</ns:nullable>
-          <ns:datatype>bool</ns:datatype>
-          <ns:scale>1</ns:scale>
         </ns:column>
         <ns:column columnName="isDeleted">
           <ns:nullable>true</ns:nullable>
-          <ns:datatype>bool</ns:datatype>
-          <ns:scale>1</ns:scale>
         </ns:column>
         <ns:column columnName="isRequest">
           <ns:nullable>true</ns:nullable>
-          <ns:datatype>bool</ns:datatype>
-          <ns:scale>1</ns:scale>
         </ns:column>
         <ns:column columnName="allowFutureDates">
           <ns:nullable>true</ns:nullable>
-          <ns:datatype>bool</ns:datatype>
-          <ns:scale>1</ns:scale>
         </ns:column>
       </ns:columns>
     </ns:table>
@@ -1587,22 +1170,16 @@
     <ns:pkColumnName>rowid</ns:pkColumnName>
     <ns:columns>
       <ns:column columnName="rowid">
-        <ns:datatype>serial</ns:datatype>
         <ns:isAutoInc>true</ns:isAutoInc>
         <ns:isKeyField>true</ns:isKeyField>
         <ns:shownInInsertView>false</ns:shownInInsertView>
         <ns:shownInUpdateView>false</ns:shownInUpdateView>
-        <ns:scale>10</ns:scale>
       </ns:column>
       <ns:column columnName="name">
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>200</ns:scale>
       </ns:column>
       <ns:column columnName="container">
         <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:datatype>entityid</ns:datatype>
         <ns:isHidden>true</ns:isHidden>
-        <ns:scale>36</ns:scale>
         <ns:fk>
           <ns:fkDbSchema>core</ns:fkDbSchema>
           <ns:fkTable>containers</ns:fkTable>
@@ -1612,29 +1189,21 @@
       <ns:column columnName="createdby">
         <ns:isUserEditable>false</ns:isUserEditable>
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>userid</ns:datatype>
-        <ns:scale>4</ns:scale>
         <ns:isHidden>true</ns:isHidden>
       </ns:column>
       <ns:column columnName="created">
         <ns:isUserEditable>false</ns:isUserEditable>
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>timestamp</ns:datatype>
-        <ns:scale>29</ns:scale>
         <ns:isHidden>true</ns:isHidden>
       </ns:column>
       <ns:column columnName="modifiedby">
         <ns:isUserEditable>false</ns:isUserEditable>
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>userid</ns:datatype>
-        <ns:scale>4</ns:scale>
         <ns:isHidden>true</ns:isHidden>
       </ns:column>
       <ns:column columnName="modified">
         <ns:isUserEditable>false</ns:isUserEditable>
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>timestamp</ns:datatype>
-        <ns:scale>29</ns:scale>
         <ns:isHidden>true</ns:isHidden>
       </ns:column>
     </ns:columns>
@@ -1647,77 +1216,51 @@
     <ns:pkColumnName>rowid</ns:pkColumnName>
     <ns:columns>
       <ns:column columnName="rowid">
-        <ns:datatype>serial</ns:datatype>
         <ns:isAutoInc>true</ns:isAutoInc>
         <ns:isKeyField>true</ns:isKeyField>
         <ns:shownInDetailsView>false</ns:shownInDetailsView>
         <ns:shownInInsertView>false</ns:shownInInsertView>
         <ns:shownInUpdateView>false</ns:shownInUpdateView>
-        <ns:scale>10</ns:scale>
       </ns:column>
       <ns:column columnName="Id">
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>100</ns:scale>
       </ns:column>
       <ns:column columnName="gender">
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>100</ns:scale>
       </ns:column>
       <ns:column columnName="dam">
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>100</ns:scale>
       </ns:column>
       <ns:column columnName="sire">
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>100</ns:scale>
       </ns:column>
       <ns:column columnName="birth">
-        <ns:datatype>timestamp</ns:datatype>
-        <ns:scale>100</ns:scale>
       </ns:column>
       <ns:column columnName="acquiredate">
-        <ns:datatype>timestamp</ns:datatype>
         <ns:columnTitle>Acquire Date</ns:columnTitle>
-        <ns:scale>100</ns:scale>
       </ns:column>
       <ns:column columnName="departdate">
-        <ns:datatype>timestamp</ns:datatype>
         <ns:columnTitle>Depart Date</ns:columnTitle>
-        <ns:scale>100</ns:scale>
       </ns:column>
       <ns:column columnName="createdby">
         <ns:isUserEditable>false</ns:isUserEditable>
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>userid</ns:datatype>
-        <ns:scale>4</ns:scale>
         <ns:isHidden>true</ns:isHidden>
       </ns:column>
       <ns:column columnName="created">
         <ns:isUserEditable>false</ns:isUserEditable>
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>timestamp</ns:datatype>
-        <ns:scale>29</ns:scale>
         <ns:isHidden>true</ns:isHidden>
       </ns:column>
       <ns:column columnName="modifiedby">
         <ns:isUserEditable>false</ns:isUserEditable>
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>userid</ns:datatype>
-        <ns:scale>4</ns:scale>
         <ns:isHidden>true</ns:isHidden>
       </ns:column>
       <ns:column columnName="modified">
         <ns:isUserEditable>false</ns:isUserEditable>
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>timestamp</ns:datatype>
-        <ns:scale>29</ns:scale>
         <ns:isHidden>true</ns:isHidden>
       </ns:column>
       <ns:column columnName="container">
         <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:datatype>entityid</ns:datatype>
         <ns:isHidden>true</ns:isHidden>
-        <ns:scale>36</ns:scale>
         <ns:fk>
           <ns:fkDbSchema>core</ns:fkDbSchema>
           <ns:fkTable>containers</ns:fkTable>
@@ -1731,47 +1274,33 @@
     <ns:pkColumnName>rowid</ns:pkColumnName>
     <ns:columns>
       <ns:column columnName="rowid">
-        <ns:datatype>serial</ns:datatype>
         <ns:isAutoInc>true</ns:isAutoInc>
         <ns:isKeyField>true</ns:isKeyField>
         <ns:shownInInsertView>false</ns:shownInInsertView>
         <ns:shownInUpdateView>false</ns:shownInUpdateView>
-        <ns:scale>10</ns:scale>
       </ns:column>
       <ns:column columnName="title">
         <ns:columnTitle>Title</ns:columnTitle>
         <ns:nullable>false</ns:nullable>
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>300</ns:scale>
       </ns:column>
         <ns:column columnName="containerpath">
           <ns:columnTitle>Container Path</ns:columnTitle>
           <ns:nullable>true</ns:nullable>
-          <ns:datatype>varchar</ns:datatype>
-          <ns:scale>100</ns:scale>
         </ns:column>
         <ns:column columnName="schemaname">
           <ns:columnTitle>Schema Name</ns:columnTitle>
           <ns:nullable>true</ns:nullable>
-          <ns:datatype>varchar</ns:datatype>
-          <ns:scale>100</ns:scale>
         </ns:column>
         <ns:column columnName="queryname">
           <ns:columnTitle>Query Name</ns:columnTitle>
           <ns:nullable>true</ns:nullable>
-          <ns:datatype>varchar</ns:datatype>
-          <ns:scale>100</ns:scale>
         </ns:column>
         <ns:column columnName="viewname">
           <ns:columnTitle>View Name</ns:columnTitle>
           <ns:nullable>true</ns:nullable>
-          <ns:datatype>varchar</ns:datatype>
-          <ns:scale>100</ns:scale>
         </ns:column>
         <ns:column columnName="notificationtype">
           <ns:nullable>true</ns:nullable>
-          <ns:datatype>varchar</ns:datatype>
-          <ns:scale>100</ns:scale>
             <ns:fk>
               <ns:fkDbSchema>ehr</ns:fkDbSchema>
               <ns:fkTable>notificationtypes</ns:fkTable>
@@ -1781,13 +1310,10 @@
       <ns:column columnName="email_html">
         <ns:columnTitle>Email HTML</ns:columnTitle>
         <ns:inputType>textarea</ns:inputType>
-        <ns:scale>4000</ns:scale>
       </ns:column>
       <ns:column columnName="container">
         <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:datatype>entityid</ns:datatype>
         <ns:isHidden>true</ns:isHidden>
-        <ns:scale>36</ns:scale>
         <ns:fk>
           <ns:fkDbSchema>core</ns:fkDbSchema>
           <ns:fkTable>containers</ns:fkTable>
@@ -1797,29 +1323,21 @@
       <ns:column columnName="createdby">
         <ns:isUserEditable>false</ns:isUserEditable>
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>userid</ns:datatype>
-        <ns:scale>4</ns:scale>
         <ns:isHidden>true</ns:isHidden>
       </ns:column>
       <ns:column columnName="created">
         <ns:isUserEditable>false</ns:isUserEditable>
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>timestamp</ns:datatype>
-        <ns:scale>29</ns:scale>
         <ns:isHidden>true</ns:isHidden>
       </ns:column>
       <ns:column columnName="modifiedby">
         <ns:isUserEditable>false</ns:isUserEditable>
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>userid</ns:datatype>
-        <ns:scale>4</ns:scale>
         <ns:isHidden>true</ns:isHidden>
       </ns:column>
       <ns:column columnName="modified">
         <ns:isUserEditable>false</ns:isUserEditable>
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>timestamp</ns:datatype>
-        <ns:scale>29</ns:scale>
         <ns:isHidden>true</ns:isHidden>
       </ns:column>
     </ns:columns>
@@ -1832,33 +1350,23 @@
     <ns:pkColumnName>rowid</ns:pkColumnName>
     <ns:columns>
       <ns:column columnName="rowid">
-        <ns:datatype>serial</ns:datatype>
         <ns:isAutoInc>true</ns:isAutoInc>
         <ns:isKeyField>true</ns:isKeyField>
         <ns:shownInInsertView>false</ns:shownInInsertView>
         <ns:shownInUpdateView>false</ns:shownInUpdateView>
-        <ns:scale>10</ns:scale>
       </ns:column>
       <ns:column columnName="Id">
         <ns:nullable>false</ns:nullable>
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>100</ns:scale>
       </ns:column>
       <ns:column columnName="Id2">
         <ns:nullable>false</ns:nullable>
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>100</ns:scale>
       </ns:column>
       <ns:column columnName="coefficient">
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>double</ns:datatype>
-        <ns:scale>10</ns:scale>
       </ns:column>
       <ns:column columnName="container">
         <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:datatype>entityid</ns:datatype>
         <ns:isHidden>true</ns:isHidden>
-        <ns:scale>36</ns:scale>
         <ns:fk>
           <ns:fkDbSchema>core</ns:fkDbSchema>
           <ns:fkTable>containers</ns:fkTable>
@@ -1868,29 +1376,21 @@
       <ns:column columnName="createdby">
         <ns:isUserEditable>false</ns:isUserEditable>
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>userid</ns:datatype>
-        <ns:scale>4</ns:scale>
         <ns:isHidden>true</ns:isHidden>
       </ns:column>
       <ns:column columnName="created">
         <ns:isUserEditable>false</ns:isUserEditable>
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>timestamp</ns:datatype>
-        <ns:scale>29</ns:scale>
         <ns:isHidden>true</ns:isHidden>
       </ns:column>
       <ns:column columnName="modifiedby">
         <ns:isUserEditable>false</ns:isUserEditable>
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>userid</ns:datatype>
-        <ns:scale>4</ns:scale>
         <ns:isHidden>true</ns:isHidden>
       </ns:column>
       <ns:column columnName="modified">
         <ns:isUserEditable>false</ns:isUserEditable>
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>timestamp</ns:datatype>
-        <ns:scale>29</ns:scale>
         <ns:isHidden>true</ns:isHidden>
       </ns:column>
     </ns:columns>
@@ -1903,45 +1403,31 @@
     <ns:pkColumnName>rowid</ns:pkColumnName>
     <ns:columns>
       <ns:column columnName="rowid">
-        <ns:datatype>serial</ns:datatype>
         <ns:shownInInsertView>false</ns:shownInInsertView>
         <ns:shownInUpdateView>false</ns:shownInUpdateView>
         <ns:shownInDetailsView>false</ns:shownInDetailsView>
         <ns:isAutoInc>true</ns:isAutoInc>
         <ns:isKeyField>true</ns:isKeyField>
-        <ns:scale>10</ns:scale>
       </ns:column>
       <ns:column columnName="protocol">
         <ns:nullable>false</ns:nullable>
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>100</ns:scale>
       </ns:column>
       <ns:column columnName="procedureName">
         <ns:columnTitle>Procedure Name</ns:columnTitle>
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>100</ns:scale>
       </ns:column>
       <ns:column columnName="code">
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>100</ns:scale>
       </ns:column>
       <ns:column columnName="allowed">
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>double</ns:datatype>
-        <ns:scale>100</ns:scale>
       </ns:column>
       <ns:column columnName="frequency">
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>varchar</ns:datatype>
-        <ns:scale>100</ns:scale>
       </ns:column>
       <!--<ns:column columnName="container">-->
         <!--<ns:isUserEditable>false</ns:isUserEditable>-->
-        <!--<ns:datatype>entityid</ns:datatype>-->
         <!--<ns:isHidden>true</ns:isHidden>-->
-        <!--<ns:scale>36</ns:scale>-->
         <!--<ns:fk>-->
           <!--<ns:fkDbSchema>core</ns:fkDbSchema>-->
           <!--<ns:fkTable>containers</ns:fkTable>-->
@@ -1951,29 +1437,21 @@
       <ns:column columnName="createdby">
         <ns:isUserEditable>false</ns:isUserEditable>
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>userid</ns:datatype>
-        <ns:scale>4</ns:scale>
         <ns:isHidden>true</ns:isHidden>
       </ns:column>
       <ns:column columnName="created">
         <ns:isUserEditable>false</ns:isUserEditable>
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>timestamp</ns:datatype>
-        <ns:scale>29</ns:scale>
         <ns:isHidden>true</ns:isHidden>
       </ns:column>
       <ns:column columnName="modifiedby">
         <ns:isUserEditable>false</ns:isUserEditable>
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>userid</ns:datatype>
-        <ns:scale>4</ns:scale>
         <ns:isHidden>true</ns:isHidden>
       </ns:column>
       <ns:column columnName="modified">
         <ns:isUserEditable>false</ns:isUserEditable>
         <ns:nullable>true</ns:nullable>
-        <ns:datatype>timestamp</ns:datatype>
-        <ns:scale>29</ns:scale>
         <ns:isHidden>true</ns:isHidden>
       </ns:column>
     </ns:columns>
@@ -1986,46 +1464,30 @@
       <ns:pkColumnName>QCStateLabel</ns:pkColumnName>
       <ns:columns>
           <ns:column columnName="rowid">
-            <ns:datatype>serial</ns:datatype>
             <ns:shownInInsertView>false</ns:shownInInsertView>
             <ns:isAutoInc>true</ns:isAutoInc>
             <ns:isKeyField>true</ns:isKeyField>
-            <ns:scale>10</ns:scale>
           </ns:column>
         <ns:column columnName="label">
-          <ns:datatype>varchar</ns:datatype>
           <ns:isKeyField>true</ns:isKeyField>
-          <ns:scale>100</ns:scale>
         </ns:column>
           <ns:column columnName="description">
             <ns:nullable>true</ns:nullable>
-            <ns:datatype>text</ns:datatype>
-            <ns:scale>100</ns:scale>
           </ns:column>
           <ns:column columnName="publicData">
             <ns:nullable>true</ns:nullable>
-            <ns:datatype>bool</ns:datatype>
-            <ns:scale>1</ns:scale>
           </ns:column>
         <ns:column columnName="draftData">
           <ns:nullable>true</ns:nullable>
-          <ns:datatype>bool</ns:datatype>
-          <ns:scale>1</ns:scale>
         </ns:column>
         <ns:column columnName="isDeleted">
           <ns:nullable>true</ns:nullable>
-          <ns:datatype>bool</ns:datatype>
-          <ns:scale>1</ns:scale>
         </ns:column>
         <ns:column columnName="isRequest">
           <ns:nullable>true</ns:nullable>
-          <ns:datatype>bool</ns:datatype>
-          <ns:scale>1</ns:scale>
         </ns:column>
         <ns:column columnName="allowFutureDates">
           <ns:nullable>true</ns:nullable>
-          <ns:datatype>bool</ns:datatype>
-          <ns:scale>1</ns:scale>
         </ns:column>
       </ns:columns>
     </ns:table>

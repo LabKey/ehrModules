@@ -21,7 +21,6 @@
                         <!--</fk>-->
                     </column>
                     <column columnName="destination">
-                        <datatype>varchar</datatype>
                         <columnTitle>Destination</columnTitle>
                         <fk>
                             <fkDbSchema>ehr_lookups</fkDbSchema>

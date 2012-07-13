@@ -11,20 +11,17 @@
                 <deleteUrl />
                 <columns>
                   <column columnName="participantid">
-                    <datatype>varchar</datatype>
                     <columnTitle>Participant ID</columnTitle>
                     <description>Participant identifier</description>
                     <nullable>false</nullable>
                   </column>
                   <column columnName="date">
-                    <datatype>timestamp</datatype>
                     <formatString>yyyy-MM-dd HH:mm</formatString>
                     <columnTitle>Date</columnTitle>
                     <nullable>false</nullable>
                     <propertyURI>http://cpas.labkey.com/Study#VisitDate</propertyURI>
                   </column>
                     <column columnName="gender">
-                        <datatype>varchar</datatype>
                         <columnTitle>Gender</columnTitle>
                         <fk>
                             <fkDbSchema>ehr_lookups</fkDbSchema>
@@ -33,42 +30,33 @@
                         </fk>
                     </column>
                   <column columnName="livedead">
-                    <datatype>varchar</datatype>
                     <columnTitle>Live/Dead</columnTitle>
                   </column>
                   <column columnName="wbo">
-                    <datatype>varchar</datatype>
                     <columnTitle>WBO</columnTitle>
                   </column>
                   <column columnName="tissue">
-                    <datatype>varchar</datatype>
                     <columnTitle>Tissue</columnTitle>
                   </column>
                   <column columnName="source">
-                    <datatype>varchar</datatype>
                     <columnTitle>Source</columnTitle>
                   </column>
                   <column columnName="dest">
-                    <datatype>varchar</datatype>
                     <columnTitle>Destination</columnTitle>
                   </column>
                   <column columnName="recip">
-                    <datatype>varchar</datatype>
                     <columnTitle>Recipient</columnTitle>
                   </column>
                   <column columnName="affil">
-                    <datatype>varchar</datatype>
                     <columnTitle>Affiliation</columnTitle>
                   </column>
                   <column columnName="remark">
-                    <datatype>varchar</datatype>
                     <columnTitle>Remark</columnTitle>
                     <displayWidth>110</displayWidth>
                     <propertyURI>urn:ehr.labkey.org/#Remark</propertyURI>
                     <inputType>textarea</inputType>
                   </column>
                   <column columnName="description">
-                    <datatype>varchar</datatype>
                     <columnTitle>Description</columnTitle>
                     <shownInInsertView>false</shownInInsertView>
                     <shownInUpdateView>false</shownInUpdateView>
@@ -78,7 +66,6 @@
                     <inputType>textarea</inputType>
                   </column>
                   <column columnName="objectid">
-                    <datatype>entityid</datatype>
                     <columnTitle>Key</columnTitle>
                     <shownInInsertView>false</shownInInsertView>
                     <shownInUpdateView>false</shownInUpdateView>
@@ -87,14 +74,12 @@
                     <!--<isKeyField>true</isKeyField>-->
                   </column>
                   <column columnName="requestid">
-                    <datatype>varchar</datatype>
                     <columnTitle>Request Id</columnTitle>
                     <isHidden>true</isHidden>
                     <shownInInsertView>false</shownInInsertView>
                     <shownInUpdateView>false</shownInUpdateView>
                   </column>
                   <column columnName="parentId">
-                    <datatype>varchar</datatype>
                     <columnTitle>Parent Id</columnTitle>
                     <propertyURI>urn:ehr.labkey.org/#ParentId</propertyURI>
                       <!--<fk>-->
@@ -104,7 +89,6 @@
                       <!--</fk>-->
                   </column>
                   <column columnName="ts">
-                    <datatype>timestamp</datatype>
                     <columnTitle>Last Changed</columnTitle>
                     <!--<nullable>false</nullable>-->
                     <shownInInsertView>false</shownInInsertView>

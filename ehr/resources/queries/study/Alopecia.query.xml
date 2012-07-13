@@ -18,7 +18,6 @@
                         <!--</fk>-->
                     </column>
                     <column columnName="score">
-                        <datatype>double</datatype>
                         <columnTitle>Alopecia Score</columnTitle>
                         <fk>
                           <fkDbSchema>ehr_lookups</fkDbSchema>
@@ -27,7 +26,6 @@
                         </fk>
                     </column>
                     <column columnName="cause">
-                        <datatype>varchar</datatype>
                         <columnTitle>Cause</columnTitle>
                         <fk>
                           <fkDbSchema>ehr_lookups</fkDbSchema>
@@ -36,7 +34,6 @@
                         </fk>
                     </column>
                     <column columnName="head">
-                        <datatype>varchar</datatype>
                         <fk>
                           <fkDbSchema>ehr_lookups</fkDbSchema>
                           <fkTable>yesno</fkTable>
@@ -45,7 +42,6 @@
                         <columnTitle>Head</columnTitle>
                     </column>
                     <column columnName="dorsum">
-                        <datatype>varchar</datatype>
                         <fk>
                           <fkDbSchema>ehr_lookups</fkDbSchema>
                           <fkTable>yesno</fkTable>
@@ -54,7 +50,6 @@
                         <columnTitle>Dorsum</columnTitle>
                     </column>
                     <column columnName="rump">
-                        <datatype>varchar</datatype>
                         <fk>
                           <fkDbSchema>ehr_lookups</fkDbSchema>
                           <fkTable>yesno</fkTable>
@@ -63,7 +58,6 @@
                         <columnTitle>Rump</columnTitle>
                     </column>
                     <column columnName="shoulders">
-                        <datatype>varchar</datatype>
                         <fk>
                           <fkDbSchema>ehr_lookups</fkDbSchema>
                           <fkTable>yesno</fkTable>
@@ -72,7 +66,6 @@
                         <columnTitle>Shoulders</columnTitle>
                     </column>
                     <column columnName="upperArms">
-                        <datatype>varchar</datatype>
                         <fk>
                           <fkDbSchema>ehr_lookups</fkDbSchema>
                           <fkTable>yesno</fkTable>
@@ -81,7 +74,6 @@
                         <columnTitle>Upper Arms</columnTitle>
                     </column>
                     <column columnName="lowerArms">
-                        <datatype>varchar</datatype>
                         <fk>
                           <fkDbSchema>ehr_lookups</fkDbSchema>
                           <fkTable>yesno</fkTable>
@@ -90,7 +82,6 @@
                         <columnTitle>Lower Arms</columnTitle>
                     </column>
                     <column columnName="lowerArms">
-                        <datatype>varchar</datatype>
                         <fk>
                           <fkDbSchema>ehr_lookups</fkDbSchema>
                           <fkTable>yesno</fkTable>
@@ -99,7 +90,6 @@
                         <columnTitle>Lower Arms</columnTitle>
                     </column>
                     <column columnName="hips">
-                        <datatype>varchar</datatype>
                         <fk>
                           <fkDbSchema>ehr_lookups</fkDbSchema>
                           <fkTable>yesno</fkTable>
@@ -108,7 +98,6 @@
                         <columnTitle>Hips</columnTitle>
                     </column>
                     <column columnName="upperLegs">
-                        <datatype>varchar</datatype>
                         <fk>
                           <fkDbSchema>ehr_lookups</fkDbSchema>
                           <fkTable>yesno</fkTable>
@@ -117,7 +106,6 @@
                         <columnTitle>Upper Legs</columnTitle>
                     </column>
                     <column columnName="lowerLegs">
-                        <datatype>varchar</datatype>
                         <fk>
                           <fkDbSchema>ehr_lookups</fkDbSchema>
                           <fkTable>yesno</fkTable>
@@ -126,7 +114,6 @@
                         <columnTitle>Lower Legs</columnTitle>
                     </column>
                     <column columnName="other">
-                        <datatype>varchar</datatype>
                         <fk>
                           <fkDbSchema>ehr_lookups</fkDbSchema>
                           <fkTable>yesno</fkTable>

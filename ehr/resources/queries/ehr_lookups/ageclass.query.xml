@@ -5,14 +5,12 @@
             <tableTitle>Age Class</tableTitle>
             <columns>
               <column columnName="key">
-                <datatype>integer</datatype>
                 <columnTitle>Key</columnTitle>
                 <nullable>false</nullable>
                 <isKeyField>true</isKeyField>
                 <isAutoInc>true</isAutoInc>
               </column>
               <column columnName="species">
-                <datatype>varchar</datatype>
                 <columnTitle>Species</columnTitle>
                 <fk>
                   <fkDbSchema>ehr_lookups</fkDbSchema>
@@ -21,19 +19,15 @@
                 </fk>
               </column>
               <column columnName="ageclass">
-                <datatype>integer</datatype>
                 <columnTitle>Age Class</columnTitle>
               </column>
               <column columnName="min">
-                <datatype>double</datatype>
                 <columnTitle>Min</columnTitle>
               </column>
               <column columnName="max">
-                <datatype>double</datatype>
                 <columnTitle>Max</columnTitle>
               </column>
               <column columnName="dataset">
-                <datatype>varchar</datatype>
                 <columnTitle>Dataset</columnTitle>
               </column>
             </columns>

@@ -25,12 +25,10 @@
                       <inputType>textarea</inputType>
                   </column>
                   <column columnName="histologicalDescription">
-                  	<datatype>varchar</datatype>
                   	<inputType>textarea</inputType>
                   	<columnTitle>Histological Description</columnTitle>
                   </column>
                   <column columnName="type">
-                    <datatype>varchar</datatype>
                     <columnTitle>Type</columnTitle>
                     <fk>
                       <fkDbSchema>ehr_lookups</fkDbSchema>

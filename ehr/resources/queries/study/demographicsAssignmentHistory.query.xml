@@ -8,7 +8,6 @@
                         <isHidden>true</isHidden>
                     </column>
                     <column columnName="HistoricAssignments">
-                        <datatype>integer</datatype>
                         <columnTitle>Historic Assignments (avail=all)</columnTitle>
                         <displayWidth>110</displayWidth>
                         <!--<url>/query/executeQuery.view?schemaName=study&amp;-->
@@ -17,7 +16,6 @@
                         <!--</url>-->
                     </column>
                     <column columnName="HistoricResearchAssignments">
-                        <datatype>integer</datatype>
                         <columnTitle>Historic Research Assignments (avail=r or n)</columnTitle>
                         <displayWidth>110</displayWidth>
                         <!--<url>/query/executeQuery.view?schemaName=study&amp;-->
@@ -27,7 +25,6 @@
                         <!--</url>-->
                     </column>
                     <column columnName="HistoricBreedingAssignments">
-                        <datatype>varchar</datatype>
                         <columnTitle>Historic Breeding Assignments (avail=b)</columnTitle>
                         <displayWidth>110</displayWidth>
                         <!--<url>/query/executeQuery.view?schemaName=study&amp;-->
@@ -37,7 +34,6 @@
                         <!--</url>-->
                     </column>
                     <column columnName="HistoricVetAssignments">
-                        <datatype>varchar</datatype>
                         <columnTitle>Historic Vet Exemptions (avail=v)</columnTitle>
                         <displayWidth>110</displayWidth>
                         <!--<url>/query/executeQuery.view?schemaName=study&amp;-->
@@ -47,7 +43,6 @@
                         <!--</url>-->
                     </column>
                     <column columnName="HistoricTrainingAssignments">
-                        <datatype>varchar</datatype>
                         <columnTitle>Historic Training Assignments (avail=t)</columnTitle>
                         <displayWidth>110</displayWidth>
                         <!--<url>/query/executeQuery.view?schemaName=study&amp;-->
@@ -57,7 +52,6 @@
                         <!--</url>-->
                     </column>
                     <column columnName="HistoricSPF_StockAssignment">
-                        <datatype>varchar</datatype>
                         <columnTitle>Assigned to SPF Stock?</columnTitle>
                         <displayWidth>110</displayWidth>
                         <!--<url>/query/executeQuery.view?schemaName=study&amp;-->
@@ -67,7 +61,6 @@
                         <!--</url>-->
                     </column>
                     <column columnName="HistoricConventionalStockAssignment">
-                        <datatype>varchar</datatype>
                         <columnTitle>Assigned to Conventional Stock?</columnTitle>
                         <displayWidth>110</displayWidth>
                         <url>/query/executeQuery.view?schemaName=study&amp;
@@ -77,7 +70,6 @@
                         </url>
                     </column>
                     <column columnName="HistoricMarmStockAssignment">
-                        <datatype>varchar</datatype>
                         <columnTitle>Assigned to Marm Stock?</columnTitle>
                         <displayWidth>110</displayWidth>
                         <url>/query/executeQuery.view?schemaName=study&amp;
@@ -87,7 +79,6 @@
                         </url>
                     </column>
                     <column columnName="HistoricStockAssignments">
-                        <datatype>integer</datatype>
                         <columnTitle>Historic Stock Assignments (any)?</columnTitle>
                         <displayWidth>110</displayWidth>
                         <url>/query/executeQuery.view?schemaName=study&amp;
@@ -97,7 +88,6 @@
                         </url>
                     </column>
                     <column columnName="NumHistoricAssignments">
-                        <datatype>integer</datatype>
                         <columnTitle># Historic Assignments (avail=all)</columnTitle>
                         <displayWidth>110</displayWidth>
                         <url>/query/executeQuery.view?schemaName=study&amp;
@@ -106,7 +96,6 @@
                         </url>
                     </column>
                     <column columnName="NumHistoricResearchAssignments">
-                        <datatype>integer</datatype>
                         <columnTitle># Historic Research Assignments (avail=r or n)</columnTitle>
                         <displayWidth>110</displayWidth>
                         <url>/query/executeQuery.view?schemaName=study&amp;
@@ -116,7 +105,6 @@
                         </url>
                     </column>
                     <column columnName="NumHistoricBreedingAssignments">
-                        <datatype>varchar</datatype>
                         <columnTitle># Historic Breeding Assignments (avail=b)</columnTitle>
                         <displayWidth>110</displayWidth>
                         <url>/query/executeQuery.view?schemaName=study&amp;
@@ -126,7 +114,6 @@
                         </url>
                     </column>
                     <column columnName="NumHistoricVetAssignments">
-                        <datatype>varchar</datatype>
                         <columnTitle># Historic Vet Exemptions (avail=v)</columnTitle>
                         <displayWidth>110</displayWidth>
                         <url>/query/executeQuery.view?schemaName=study&amp;
@@ -136,7 +123,6 @@
                         </url>
                     </column>
                     <column columnName="NumHistoricTrainingAssignments">
-                        <datatype>varchar</datatype>
                         <columnTitle># Historic Training Assignments (avail=t)</columnTitle>
                         <displayWidth>110</displayWidth>
                         <url>/query/executeQuery.view?schemaName=study&amp;
@@ -146,7 +132,6 @@
                         </url>
                     </column>
                     <column columnName="HistoricSPF_StockAssignment">
-                        <datatype>varchar</datatype>
                         <columnTitle>Ever Assigned to SPF Stock?</columnTitle>
                         <displayWidth>110</displayWidth>
                         <url>/query/executeQuery.view?schemaName=study&amp;
@@ -156,7 +141,6 @@
                         </url>
                     </column>
                     <column columnName="HistoricConventionalStockAssignment">
-                        <datatype>varchar</datatype>
                         <columnTitle>Ever Assigned to Conventional Stock?</columnTitle>
                         <displayWidth>110</displayWidth>
                         <url>/query/executeQuery.view?schemaName=study&amp;
@@ -166,7 +150,6 @@
                         </url>
                     </column>
                     <column columnName="HistoricMarmStockAssignment">
-                        <datatype>varchar</datatype>
                         <columnTitle>Ever Assigned to Marm Stock?</columnTitle>
                         <displayWidth>110</displayWidth>
                         <url>/query/executeQuery.view?schemaName=study&amp;
@@ -176,7 +159,6 @@
                         </url>
                     </column>
                     <column columnName="NumHistoricStockAssignments">
-                        <datatype>integer</datatype>
                         <columnTitle># Historic Stock Assignments (any)?</columnTitle>
                         <displayWidth>110</displayWidth>
                         <url>/query/executeQuery.view?schemaName=study&amp;

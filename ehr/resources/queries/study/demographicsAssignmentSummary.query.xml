@@ -8,7 +8,6 @@
                         <isHidden>true</isHidden>
                     </column>
                     <column columnName="ActiveSPF_StockAssignment">
-                        <datatype>varchar</datatype>
                         <columnTitle>Assigned to SPF Stock?</columnTitle>
                         <displayWidth>110</displayWidth>
                         <url>/query/executeQuery.view?schemaName=study&amp;
@@ -19,7 +18,6 @@
                         </url>
                     </column>
                     <column columnName="ActiveConventionalStockAssignment">
-                        <datatype>varchar</datatype>
                         <columnTitle>Assigned to Conventional Stock?</columnTitle>
                         <displayWidth>110</displayWidth>
                         <url>/query/executeQuery.view?schemaName=study&amp;
@@ -30,7 +28,6 @@
                         </url>
                     </column>
                     <column columnName="ActiveMarmStockAssignment">
-                        <datatype>varchar</datatype>
                         <columnTitle>Assigned to Marm Stock?</columnTitle>
                         <displayWidth>110</displayWidth>
                         <url>/query/executeQuery.view?schemaName=study&amp;
@@ -41,7 +38,6 @@
                         </url>
                     </column>
                     <column columnName="NumActiveStockAssignments">
-                        <datatype>integer</datatype>
                         <columnTitle>Active Stock Assignments (any)?</columnTitle>
                         <displayWidth>110</displayWidth>
                         <url>/query/executeQuery.view?schemaName=study&amp;
@@ -53,7 +49,6 @@
                     </column>
 
                     <column columnName="ActiveAssignments">
-                         <!--<datatype>integer</datatype>-->
                          <columnTitle>Active Assignments (avail=all)</columnTitle>
                          <displayWidth>110</displayWidth>
                          <!--<url>/query/executeQuery.view?schemaName=study&amp;-->
@@ -63,7 +58,6 @@
                          <!--</url>-->
                      </column>
                      <column columnName="PendingAssignments">
-                         <!--<datatype>integer</datatype>-->
                          <columnTitle>Pending Assignments (avail=p)</columnTitle>
                          <displayWidth>110</displayWidth>
                          <!--<url>/query/executeQuery.view?schemaName=study&amp;-->
@@ -74,7 +68,6 @@
                          <!--</url>-->
                      </column>
                      <column columnName="ActiveResearchAssignments">
-                         <!--<datatype>integer</datatype>-->
                          <columnTitle>Active Research Assignments (avail=r or n)</columnTitle>
                          <displayWidth>110</displayWidth>
                          <!--<url>/query/executeQuery.view?schemaName=study&amp;-->
@@ -85,7 +78,6 @@
                          <!--</url>-->
                      </column>
                      <column columnName="ActiveBreedingAssignments">
-                         <!--<datatype>varchar</datatype>-->
                          <columnTitle>Active Breeding Assignments (avail=b)</columnTitle>
                          <displayWidth>110</displayWidth>
                          <!--<url>/query/executeQuery.view?schemaName=study&amp;-->
@@ -96,7 +88,6 @@
                          <!--</url>-->
                      </column>
                      <column columnName="ActiveVetAssignments">
-                         <!--<datatype>varchar</datatype>-->
                          <columnTitle>Active Vet Exemptions (avail=v)</columnTitle>
                          <displayWidth>110</displayWidth>
                          <!--<url>/query/executeQuery.view?schemaName=study&amp;-->
@@ -107,7 +98,6 @@
                          <!--</url>-->
                      </column>
                      <column columnName="ActiveTrainingAssignments">
-                         <!--<datatype>varchar</datatype>-->
                          <columnTitle>Active Training Assignments (avail=t)</columnTitle>
                          <displayWidth>110</displayWidth>
                          <!--<url>/query/executeQuery.view?schemaName=study&amp;-->
@@ -118,7 +108,6 @@
                          <!--</url>-->
                      </column>
                     <column columnName="NumActiveAssignments">
-                        <datatype>integer</datatype>
                         <columnTitle># Active Assignments (avail=all)</columnTitle>
                         <displayWidth>110</displayWidth>
                         <url>/query/executeQuery.view?schemaName=study&amp;
@@ -128,7 +117,6 @@
                         </url>
                     </column>
                     <column columnName="NumPendingAssignments">
-                        <datatype>integer</datatype>
                         <columnTitle># Pending Assignments (avail=p)</columnTitle>
                         <displayWidth>110</displayWidth>
                         <url>/query/executeQuery.view?schemaName=study&amp;
@@ -139,7 +127,6 @@
                         </url>
                     </column>
                     <column columnName="NumActiveResearchAssignments">
-                        <datatype>integer</datatype>
                         <columnTitle># Active Research Assignments (avail=r or n)</columnTitle>
                         <displayWidth>110</displayWidth>
                         <url>/query/executeQuery.view?schemaName=study&amp;
@@ -150,7 +137,6 @@
                         </url>
                     </column>
                     <column columnName="NumActiveBreedingAssignments">
-                        <datatype>varchar</datatype>
                         <columnTitle># Active Breeding Assignments (avail=b)</columnTitle>
                         <displayWidth>110</displayWidth>
                         <url>/query/executeQuery.view?schemaName=study&amp;
@@ -161,7 +147,6 @@
                         </url>
                     </column>
                     <column columnName="NumActiveVetAssignments">
-                        <datatype>varchar</datatype>
                         <columnTitle># Active Vet Exemptions (avail=v)</columnTitle>
                         <displayWidth>110</displayWidth>
                         <url>/query/executeQuery.view?schemaName=study&amp;
@@ -172,7 +157,6 @@
                         </url>
                     </column>
                     <column columnName="NumActiveTrainingAssignments">
-                        <datatype>varchar</datatype>
                         <columnTitle># Active Training Assignments (avail=t)</columnTitle>
                         <displayWidth>110</displayWidth>
                         <url>/query/executeQuery.view?schemaName=study&amp;

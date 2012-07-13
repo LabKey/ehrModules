@@ -29,7 +29,6 @@
                         <isHidden>false</isHidden>
                         <shownInInsertView>true</shownInInsertView>
                         <shownInDetailsView>true</shownInDetailsView>
-                        <datatype>timestamp</datatype>
                         <formatString>yyyy-MM-dd HH:mm</formatString>
                         <columnTitle>Out Date</columnTitle>
                     </column>
@@ -39,7 +38,6 @@
                         <columnTitle>Status</columnTitle>
                     </column>
                     <column columnName="room">
-                        <datatype>varchar</datatype>
                         <nullable>false</nullable>
                         <columnTitle>Room</columnTitle>
                         <!--<url>/EHR/cageDetails.view?-->
@@ -53,7 +51,6 @@
                         </fk>
                     </column>
                     <column columnName="cage">
-                        <datatype>varchar</datatype>
                         <!--<nullable>false</nullable>-->
                         <columnTitle>Cage</columnTitle>
                         <url>/EHR/cageDetails.view?
@@ -63,7 +60,6 @@
                     </column>
                     <column columnName="cond">
                         <nullable>true</nullable>
-                        <datatype>varchar</datatype>
                         <columnTitle>Condition</columnTitle>
                         <fk>
                             <fkDbSchema>ehr_lookups</fkDbSchema>
@@ -80,7 +76,6 @@
                         </fk>
                     </column>
                     <column columnName="restraintType">
-                        <datatype>varchar</datatype>
                         <columnTitle>Restraint Type</columnTitle>
                         <fk>
                           <fkDbSchema>ehr_lookups</fkDbSchema>

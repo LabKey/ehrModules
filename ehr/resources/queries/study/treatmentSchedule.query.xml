@@ -37,12 +37,10 @@
                         </fk>
                     </column>
                     <column columnName="StartDate">
-                        <datatype>timestamp</datatype>
                         <columnTitle>Treatment Start Date</columnTitle>
                         <formatString>yyyy-MM-dd</formatString>
                     </column>
                     <column columnName="code">
-                        <datatype>varchar</datatype>
                         <nullable>false</nullable>
                         <columnTitle>SNOMED Code</columnTitle>
                         <fk>

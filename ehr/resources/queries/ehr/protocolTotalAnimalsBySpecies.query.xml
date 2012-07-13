@@ -19,7 +19,6 @@
                         </fk>
                     </column>
                     <column columnName="TotalAnimals">
-                        <datatype>integer</datatype>
                         <url>/query/executeQuery.view?schemaName=ehr&amp;
                             query.queryName=protocolAnimals&amp;
                             query.protocol~eq=${protocol}&amp;

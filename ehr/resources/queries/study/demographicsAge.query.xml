@@ -8,23 +8,18 @@
                         <isHidden>true</isHidden>
                     </column>
                     <column columnName="AgeInYears">
-                        <datatype>double</datatype>
                         <columnTitle>Age (Years)</columnTitle>
                     </column>
                     <column columnName="AgeInYearsRounded">
-                        <datatype>double</datatype>
                         <columnTitle>Age (Years, Rounded)</columnTitle>
                     </column>
                     <column columnName="AgeInMonths">
-                        <datatype>integer</datatype>
                         <columnTitle>Age (Months)</columnTitle>
                     </column>
                     <column columnName="AgeInDays">
-                        <datatype>integer</datatype>
                         <columnTitle>Age (Days)</columnTitle>
                     </column>
                     <column columnName="AgeFriendly">
-                        <datatype>varchar</datatype>
                         <columnTitle>Age</columnTitle>
                     </column>
                     <column columnName="species">

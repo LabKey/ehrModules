@@ -4,7 +4,6 @@
             <table tableName="colonyPopulationByAge" tableDbType="NOT_IN_DB">
                 <columns>
                     <column columnName="species">
-                        <datatype>varchar</datatype>
                         <columnTitle>Species</columnTitle>
                         <fk>
                           <fkDbSchema>ehr_lookups</fkDbSchema>
@@ -13,7 +12,6 @@
                         </fk>
                     </column>
                     <column columnName="animalCount">
-                        <datatype>integer</datatype>
                         <columnTitle>Animal Count</columnTitle>
                          <url>/query/executeQuery.view?schemaName=study&amp;
                             query.queryName=demographics&amp;

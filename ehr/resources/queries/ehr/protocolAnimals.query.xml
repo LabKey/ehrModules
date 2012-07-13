@@ -26,10 +26,8 @@
                         </fk>
                     </column>
                     <column columnName="Allowed">
-                        <datatype>integer</datatype>    
                     </column>
                     <column columnName="TotalAssignments">
-                        <datatype>integer</datatype>
                         <url>/query/executeQuery.view?schemaName=study&amp;
                             query.queryName=Assignment&amp;
                             query.project/protocol~eq=${protocol}&amp;

@@ -13,7 +13,6 @@
                         </fk>
                     </column>
                     <column columnName="projects">
-                        <datatype>varchar</datatype>
                         <columnTitle>Active Projects</columnTitle>
                         <displayWidth>110</displayWidth>
                         <!--<url>/query/executeQuery.view?schemaName=study&amp;-->
@@ -23,7 +22,6 @@
                         <!--</url>-->
                     </column>
                     <column columnName="Availability">
-                        <datatype>varchar</datatype>
                         <columnTitle>Availability</columnTitle>
                         <!--<url>/query/executeQuery.view?schemaName=study&amp;-->
                             <!--query.queryName=Assignment&amp;-->

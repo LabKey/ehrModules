@@ -45,7 +45,6 @@
                         <columnTitle>Result</columnTitle>
                     </column>
                     <column columnName="testid">
-                      <datatype>varchar</datatype>
                         <displayWidth>120</displayWidth>
                       <!--<nullable>false</nullable>-->
                       <columnTitle>Test Id</columnTitle>
@@ -56,7 +55,6 @@
                       </fk>
                     </column>
                     <column columnName="method">
-                      <datatype>varchar</datatype>
                       <!--<nullable>false</nullable>-->
                       <columnTitle>Method</columnTitle>
                       <fk>

@@ -23,7 +23,6 @@
                         <formatString>yyyy-MM-dd HH:mm</formatString>
                     </column>
                     <column columnName="code">
-                        <datatype>varchar</datatype>
                         <columnTitle>Code</columnTitle>
                         <fk>
                             <fkDbSchema>ehr_lookups</fkDbSchema>
@@ -32,7 +31,6 @@
                         </fk>
                     </column>
                     <column columnName="HeaderDate">
-                        <datatype>timestamp</datatype>
                         <columnTitle>Header Date</columnTitle>
                         <formatString>yyyy-MM-dd H:mm</formatString>
                     </column>
@@ -49,11 +47,9 @@
                         <!--</fk>-->
                     </column>
                     <column columnName="amount">
-                        <datatype>double</datatype>
                         <columnTitle>Amount Given</columnTitle>
                     </column>
                     <column columnName="amount_units">
-                        <datatype>varchar</datatype>
                         <columnTitle>Amount Units</columnTitle>
                         <fk>
                             <fkDbSchema>ehr_lookups</fkDbSchema>
@@ -62,7 +58,6 @@
                         </fk>
                     </column>
                     <column columnName="route">
-                        <datatype>varchar</datatype>
                         <columnTitle>Route</columnTitle>
                         <fk>
                             <fkDbSchema>ehr_lookups</fkDbSchema>

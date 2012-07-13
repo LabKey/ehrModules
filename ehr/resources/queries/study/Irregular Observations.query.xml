@@ -45,7 +45,6 @@
                         </fk>
                     </column>
                     <column columnName="feces">
-                        <datatype>varchar</datatype>
                         <columnTitle>Feces</columnTitle>
                         <!--<fk>-->
                             <!--<fkDbSchema>ehr_lookups</fkDbSchema>-->
@@ -54,7 +53,6 @@
                         <!--</fk>-->
                     </column>
                     <column columnName="menses">
-                        <datatype>varchar</datatype>
                         <columnTitle>Menses</columnTitle>
                         <fk>
                             <fkDbSchema>ehr_lookups</fkDbSchema>
@@ -63,7 +61,6 @@
                         </fk>
                     </column>
                     <column columnName="behavior">
-                        <datatype>varchar</datatype>
                         <columnTitle>Behavior</columnTitle>
                         <!--<fk>-->
                             <!--<fkDbSchema>ehr_lookups</fkDbSchema>-->
@@ -72,7 +69,6 @@
                         <!--</fk>-->
                     </column>
                     <column columnName="breeding">
-                        <datatype>varchar</datatype>
                         <columnTitle>Breeding</columnTitle>
                         <fk>
                             <fkDbSchema>ehr_lookups</fkDbSchema>
@@ -81,7 +77,6 @@
                         </fk>
                     </column>
                     <column columnName="other">
-                        <datatype>varchar</datatype>
                         <columnTitle>Other</columnTitle>
                         <!--<fk>-->
                             <!--<fkDbSchema>ehr_lookups</fkDbSchema>-->
@@ -90,19 +85,15 @@
                         <!--</fk>-->
                     </column>
                     <column columnName="tlocation">
-                        <datatype>varchar</datatype>
                         <columnTitle>Trauma Location</columnTitle>
                     </column>
                     <column columnName="otherbehavior">
-                        <datatype>varchar</datatype>
                         <columnTitle>Other Behavior</columnTitle>
                     </column>
                     <column columnName="isIrregular">
-                        <datatype>boolean</datatype>
                         <columnTitle>Is Irregular?</columnTitle>
                     </column>
                     <column columnName="certified">
-                        <datatype>boolean</datatype>
                         <nullable>false</nullable>
                         <columnTitle>Certified</columnTitle>
                     </column>

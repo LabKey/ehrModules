@@ -11,20 +11,17 @@
                 <deleteUrl />
                 <columns>
                     <column columnName="participantid">
-                        <datatype>varchar</datatype>
                         <columnTitle>Participant ID</columnTitle>
                         <description>Participant identifier</description>
                         <nullable>false</nullable>
                     </column>
                     <column columnName="date">
-                        <!--<datatype>timestamp</datatype>-->
                         <formatString>yyyy-MM-dd HH:mm a</formatString>
                         <!--<columnTitle>Date</columnTitle>-->
                         <!--<nullable>false</nullable>-->
                         <!--<propertyURI>http://cpas.labkey.com/Study#VisitDate</propertyURI>-->
                     </column>
                     <column columnName="parentId">
-                     <datatype>varchar</datatype>
                       <columnTitle>Parent Id</columnTitle>
                       <propertyURI>urn:ehr.labkey.org/#ParentId</propertyURI>
                       <!--<fk>-->

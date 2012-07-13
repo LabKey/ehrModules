@@ -4,7 +4,6 @@
             <table tableName="lab_test_range" tableDbType="TABLE">
                 <columns>
                     <column columnName="test">
-                        <datatype>varchar</datatype>
                         <!--<nullable>false</nullable>-->
                         <columnTitle>Test Id</columnTitle>
                         <fk>
@@ -14,7 +13,6 @@
                         </fk>
                     </column>
                     <column columnName="species">
-                        <datatype>varchar</datatype>
                         <columnTitle>Species</columnTitle>
                         <fk>
                             <fkDbSchema>ehr_lookups</fkDbSchema>
@@ -23,7 +21,6 @@
                         </fk>
                     </column>
                     <column columnName="gender">
-                        <datatype>varchar</datatype>
                         <columnTitle>Gender</columnTitle>
                         <fk>
                             <fkDbSchema>ehr_lookups</fkDbSchema>
@@ -32,7 +29,6 @@
                         </fk>
                     </column>
                     <column columnName="type">
-                        <datatype>varchar</datatype>
                         <columnTitle>Type</columnTitle>
                         <fk>
                             <fkDbSchema>ehr_lookups</fkDbSchema>
@@ -41,7 +37,6 @@
                         </fk>
                     </column>
                     <column columnName="age_class">
-                        <datatype>integer</datatype>
                         <columnTitle>Age Class</columnTitle>
                     </column>
                 </columns>

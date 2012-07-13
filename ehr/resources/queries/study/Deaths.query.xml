@@ -22,7 +22,6 @@
                         <formatString>yyyy-MM-dd HH:mm</formatString>
                     </column>
                   <column columnName="cause">
-                    <datatype>varchar</datatype>
                     <columnTitle>Type of Death</columnTitle>
                     <fk>
                       <fkDbSchema>ehr_lookups</fkDbSchema>
@@ -31,7 +30,6 @@
                     </fk>
                   </column>
                   <column columnName="manner">
-                    <datatype>varchar</datatype>
                     <columnTitle>Manner of Death</columnTitle>
                     <fk>
                       <fkDbSchema>ehr_lookups</fkDbSchema>
@@ -40,7 +38,6 @@
                     </fk>
                   </column>
                   <column columnName="necropsy">
-                    <datatype>varchar</datatype>
                     <columnTitle>Necropsy Case No</columnTitle>
                     <url>/query/executeQuery.view?schemaName=study&amp;
                         query.queryName=Necropsies&amp;
@@ -48,7 +45,6 @@
                     </url>
                   </column>
                   <column columnName="remark">
-                    <datatype>varchar</datatype>
                     <!--<columnTitle>Remark</columnTitle>-->
                     <displayWidth>110</displayWidth>
                     <inputType>textarea</inputType>
@@ -57,7 +53,6 @@
                       <columnTitle>Cage At Time</columnTitle>
                   </column>
                   <column columnName="objectid">
-                    <datatype>entityid</datatype>
                     <columnTitle>Key</columnTitle>
                     <shownInInsertView>false</shownInInsertView>
                     <shownInUpdateView>false</shownInUpdateView>
@@ -75,7 +70,6 @@
                         <columnTitle>Entered By</columnTitle>
                     </column>
                     <column columnName="roomattime">
-                        <datatype>varchar</datatype>
                         <columnTitle>Room At Time</columnTitle>
                         <!--<url>/EHR/cageDetails.view?-->
                             <!--room=${room}&amp;-->

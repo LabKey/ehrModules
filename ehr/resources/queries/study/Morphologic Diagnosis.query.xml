@@ -18,7 +18,6 @@
                         <!--</fk>-->
                     <!--</column>-->
                     <column columnName="code">
-                        <datatype>varchar</datatype>
                         <columnTitle>SNOMED</columnTitle>
                         <fk>
                             <fkDbSchema>ehr_lookups</fkDbSchema>
@@ -27,7 +26,6 @@
                         </fk>
                     </column>
                     <column columnName="tissue">
-                      <datatype>varchar</datatype>
                       <columnTitle>Organ/Tissue</columnTitle>
                       <fk>
                         <fkDbSchema>ehr_lookups</fkDbSchema>
@@ -36,7 +34,6 @@
                       </fk>
                     </column>
                     <column columnName="severity">
-                      <datatype>varchar</datatype>
                       <columnTitle>Severity</columnTitle>
                       <fk>
                         <fkDbSchema>ehr_lookups</fkDbSchema>
@@ -45,7 +42,6 @@
                       </fk>
                     </column>
                     <column columnName="diagnosis">
-                      <datatype>varchar</datatype>
                       <columnTitle>Diagnosis</columnTitle>
                       <fk>
                         <fkDbSchema>ehr_lookups</fkDbSchema>
@@ -54,7 +50,6 @@
                       </fk>
                     </column>
                     <column columnName="seq1">
-                      <datatype>integer</datatype>
                       <columnTitle>Diagnosis Number</columnTitle>
                       <url>/query/executeQuery.view?schemaName=study&amp;
                           query.queryName=Morphologic%20Diagnosis&amp;
@@ -64,7 +59,6 @@
                       </url>
                     </column>
                     <column columnName="tissue_qualifier">
-                      <datatype>varchar</datatype>
                       <columnTitle>Qualifier</columnTitle>
                       <fk>
                         <fkDbSchema>ehr_lookups</fkDbSchema>
@@ -73,11 +67,9 @@
                       </fk>
                     </column>
                     <column columnName="seq2">
-                      <datatype>integer</datatype>
                       <columnTitle>Diagnosis Code Number</columnTitle>
                     </column>
                     <column columnName="duration">
-                      <datatype>varchar</datatype>
                       <!--<nullable>false</nullable>-->
                       <columnTitle>Duration</columnTitle>
                       <fk>
@@ -87,7 +79,6 @@
                       </fk>
                     </column>
                     <column columnName="severity">
-                      <datatype>varchar</datatype>
                       <!--<nullable>false</nullable>-->
                       <columnTitle>Severity</columnTitle>
                       <fk>
@@ -97,7 +88,6 @@
                       </fk>
                     </column>
                     <column columnName="process">
-                      <datatype>varchar</datatype>
                       <!--<nullable>false</nullable>-->
                       <columnTitle>Process</columnTitle>
                       <fk>
@@ -107,7 +97,6 @@
                       </fk>
                     </column>
                     <column columnName="process2">
-                      <datatype>varchar</datatype>
                       <!--<nullable>false</nullable>-->
                       <columnTitle>Process 2</columnTitle>
                       <fk>
@@ -117,7 +106,6 @@
                       </fk>
                     </column>
                     <column columnName="distribution">
-                      <datatype>varchar</datatype>
                       <!--<nullable>false</nullable>-->
                       <columnTitle>Distribution/Pattern</columnTitle>
                       <fk>
@@ -127,7 +115,6 @@
                       </fk>
                     </column>
                     <column columnName="distribution2">
-                      <datatype>varchar</datatype>
                       <!--<nullable>false</nullable>-->
                       <columnTitle>Distribution/Pattern 2</columnTitle>
                       <fk>
@@ -137,7 +124,6 @@
                       </fk>
                     </column>
                     <column columnName="inflammation">
-                      <datatype>varchar</datatype>
                       <!--<nullable>false</nullable>-->
                       <columnTitle>Inflammation</columnTitle>
                       <fk>
@@ -147,7 +133,6 @@
                       </fk>
                     </column>
                     <column columnName="inflammation2">
-                      <datatype>varchar</datatype>
                       <!--<nullable>false</nullable>-->
                       <columnTitle>Inflammation</columnTitle>
                       <fk>
@@ -158,7 +143,6 @@
                     </column>
                     <column columnName="etiology">
                     	<!--
-                      <datatype>varchar</datatype>
                       <nullable>false</nullable>
                       -->
                       <columnTitle>Etiology</columnTitle>
@@ -171,7 +155,6 @@
                       -->
                     </column>
                     <column columnName="caseno" wrappedColumnName="parentId">
-                      <datatype>varchar</datatype>
                       <isUnselectable>true</isUnselectable>
                       <columnTitle>CaseNo</columnTitle>
                       <fk>

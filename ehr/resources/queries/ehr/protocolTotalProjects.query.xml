@@ -12,7 +12,6 @@
                         </fk>
                     </column>
                     <column columnName="TotalProjects">
-                        <datatype>integer</datatype>
                         <url>/query/executeQuery.view?schemaName=ehr&amp;
                             query.queryName=project&amp;
                             query.protocol~eq=${protocol}&amp;
