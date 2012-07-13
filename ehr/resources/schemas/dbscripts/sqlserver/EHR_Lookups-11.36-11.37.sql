@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2012 LabKey Corporation
+ *
+ * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
+ */
 --ageclass.sql
 INSERT INTO ehr_lookups."ageclass" ("species", "ageclass", "min", "max") VALUES ('Marmoset', 3, 2, 8);
 INSERT INTO ehr_lookups."ageclass" ("species", "ageclass", "min", "max") VALUES ('Marmoset', 4, 8, NULL);
