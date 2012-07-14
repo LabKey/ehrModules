@@ -101,11 +101,11 @@ WHEN t1.enddate is null AND t1.meaning IS NOT null THEN
 WHEN t1.enddate is null AND t1.code.meaning IS NOT null THEN
   ('Drug: ' || t1.code.meaning || ' (' || t1.code || ')')
 WHEN t1.enddate is not null AND t1.meaning IS NOT null THEN
-  ('Drug: ' || t1.meaning || ' (' || t1.code || ')' || chr(10) || 'End Date: ' || t1.enddate)
+  ('Drug: ' || t1.meaning || ' (' || t1.code || ')' || chr(10) || 'End Date: ' || convert(t1.enddate, varchar))
 WHEN t1.enddate is not null AND t1.code.meaning IS NOT null THEN
-  ('Drug: ' || t1.code.meaning || ' (' || t1.code || ')' || chr(10) || 'End Date: ' || t1.enddate)
+  ('Drug: ' || t1.code.meaning || ' (' || t1.code || ')' || chr(10) || 'End Date: ' || convert(t1.enddate, varchar))
 ELSE
-  ('Drug: ' || t1.code || chr(10) || 'End Date: ' || t1.enddate)
+  ('Drug: ' || t1.code || chr(10) || 'End Date: ' || convert(t1.enddate, varchar))
 END AS description2,
 t1.qcstate,
 
@@ -241,11 +241,11 @@ WHEN t1.enddate is null AND t1.meaning IS NOT null THEN
 WHEN t1.enddate is null AND t1.code.meaning IS NOT null THEN
   ('Drug: ' || t1.code.meaning || ' (' || t1.code || ')')
 WHEN t1.enddate is not null AND t1.meaning IS NOT null THEN
-  ('Drug: ' || t1.meaning || ' (' || t1.code || ')' || chr(10) || 'End Date: ' || t1.enddate)
+  ('Drug: ' || t1.meaning || ' (' || t1.code || ')' || chr(10) || 'End Date: ' || convert(t1.enddate, varchar))
 WHEN t1.enddate is not null AND t1.code.meaning IS NOT null THEN
-  ('Drug: ' || t1.code.meaning || ' (' || t1.code || ')' || chr(10) || 'End Date: ' || t1.enddate)
+  ('Drug: ' || t1.code.meaning || ' (' || t1.code || ')' || chr(10) || 'End Date: ' || convert(t1.enddate, varchar))
 ELSE
-  ('Drug: ' || t1.code || chr(10) || 'End Date: ' || t1.enddate)
+  ('Drug: ' || t1.code || chr(10) || 'End Date: ' || convert(t1.enddate, varchar))
 END AS description2,
 t1.qcstate,
 
@@ -348,11 +348,11 @@ WHEN t1.enddate is null AND t1.meaning IS NOT null THEN
 WHEN t1.enddate is null AND t1.code.meaning IS NOT null THEN
   ('Drug: ' || t1.code.meaning || ' (' || t1.code || ')')
 WHEN t1.enddate is not null AND t1.meaning IS NOT null THEN
-  ('Drug: ' || t1.meaning || ' (' || t1.code || ')' || chr(10) || 'End Date: ' || t1.enddate)
+  ('Drug: ' || t1.meaning || ' (' || t1.code || ')' || chr(10) || 'End Date: ' || convert(t1.enddate, varchar))
 WHEN t1.enddate is not null AND t1.code.meaning IS NOT null THEN
-  ('Drug: ' || t1.code.meaning || ' (' || t1.code || ')' || chr(10) || 'End Date: ' || t1.enddate)
+  ('Drug: ' || t1.code.meaning || ' (' || t1.code || ')' || chr(10) || 'End Date: ' || convert(t1.enddate, varchar))
 ELSE
-  ('Drug: ' || t1.code || chr(10) || 'End Date: ' || t1.enddate)
+  ('Drug: ' || t1.code || chr(10) || 'End Date: ' || convert(t1.enddate, varchar))
 END AS description2,
 t1.qcstate,
 

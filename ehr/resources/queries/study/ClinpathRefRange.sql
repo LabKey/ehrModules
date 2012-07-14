@@ -3,11 +3,11 @@
  *
  * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
  */
-SELECT *,
+SELECT c2.*,
 
 case
-  when c.alertOnAny is true then true
-  when (c.alertOnAbnormal is true AND (c.status='Low' or c.status='High')) then true
+  when c2.alertOnAny = true then true
+  when (c2.alertOnAbnormal = true AND (c2.status='Low' or c2.status='High')) then true
   else false
 end as alertStatus
 
@@ -115,5 +115,5 @@ c.alertOnAny,
 'Urinalysis_'||c.testid as test_key,
 from study.urinalysisRefRange c
 
-) c
+) c2
 

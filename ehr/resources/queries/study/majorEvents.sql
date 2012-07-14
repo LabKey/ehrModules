@@ -11,7 +11,7 @@ b.date,
 case
   when b.id.dataset.birth.weight is null
     then ('Offspring: ' || b.id)
-  else ('Offspring: ' || b.id || chr(10) || 'Offspring Weight: ' || cast(b.id.dataset.birth.weight as numeric) || ' kg')
+  else ('Offspring: ' || b.id || chr(10) || 'Offspring Weight: ' || cast(cast(b.id.dataset.birth.weight as numeric) as varchar)|| ' kg')
 END as remark
 from study.birth b
 WHERE b.qcstate.publicdata = true AND b.dam is not null and b.dam != ''
@@ -31,7 +31,7 @@ SELECT
 s.id,
 s.date,
 'Surgery' as type,
-'Major: '||s.major as remark
+'Major: '|| CONVERT(s.major, varchar) as remark
 FROM study."Clinical Encounters" s
 WHERE s.qcstate.publicdata = true AND type like '%surgery%'
 
