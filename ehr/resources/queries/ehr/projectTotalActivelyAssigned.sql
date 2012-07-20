@@ -21,7 +21,7 @@ LEFT JOIN
   (SELECT count(*) AS Total, T2.project FROM study.Assignment T2
   WHERE cast(T2.date as date) <= curdate() AND (T2.enddate IS null or cast(T2.enddate as date) >= curdate())
   GROUP BY T2.project) T2
-  ON (CONVERT(T2.project, INTEGER) = convert(proj.project, integer))
+  ON (T2.project = proj.project)
   
 --  total active rhesus that are assigned to this project
 LEFT JOIN
@@ -29,7 +29,7 @@ LEFT JOIN
   WHERE cast(T3.date as date) <= curdate() AND (T3.enddate IS null or cast(T3.enddate as date) >= curdate())
       AND (T3.Id like 'r%')
    GROUP BY T3.project) T3
-   ON (CONVERT(T3.project, INTEGER) = convert(proj.project, integer))
+   ON (T3.project = proj.project)
 
 -- total active marmosets that are assigned to this project
 LEFT JOIN
@@ -37,7 +37,7 @@ LEFT JOIN
   WHERE cast(T1.date as date) <= curdate() AND (T1.enddate IS null or cast(T1.enddate as date) >= curdate())
       AND (T1.Id like 'cj%')
    GROUP BY T1.project) T1
-   ON (CONVERT(T1.project, INTEGER) = convert(proj.project, integer))
+   ON (T1.project = proj.project)
 
 -- total active vervets that are assigned to this project
 LEFT JOIN
@@ -45,7 +45,7 @@ LEFT JOIN
   WHERE cast(T4.date as date) <= curdate() AND (T4.enddate IS null or cast(T4.enddate as date) >= curdate())
       AND (T4.Id like 'ag%')
    GROUP BY T4.project) T4
-   ON (CONVERT(T4.project, INTEGER) = convert(proj.project, integer))
+   ON (T4.project = proj.project)
 
 
 -- total active cynomolgus that are assigned to this project
@@ -54,7 +54,7 @@ LEFT JOIN
   WHERE cast(T5.date as date) <= curdate() AND (T5.enddate IS null or cast(T5.enddate as date) >= curdate())
       AND (T5.Id like 'cy%')
    GROUP BY T5.project) T5
-   ON (CONVERT(T5.project, INTEGER) = convert(proj.project, integer))
+   ON (T5.project = proj.project)
 
 
 -- total active Cotton-top Tamarin that are assigned to this project
@@ -63,5 +63,4 @@ LEFT JOIN
   WHERE cast(T6.date as date) <= curdate() AND (T6.enddate IS null or cast(T6.enddate as date) >= curdate())
       AND (T6.Id like 'so%')
    GROUP BY T6.project) T6
-   ON (CONVERT(T6.project, INTEGER) = convert(proj.project, integer))
-  
+   ON (T6.project = proj.project)
