@@ -21,7 +21,7 @@
         <script path="/ehr/SearchPanel.js"/>
         <script path="/ehr/studyButtons.js"/>
         <script path="/ehr/animalHistory.js"/>
-        <script path="/ehr/stylesheet-red-limited.css"/>
+        <!--<script path="/ehr/stylesheet-red-limited.css"/>-->
         <!--<script path="/ehr/stylesheet.css"/>-->
     </library>
     <dependencies>
