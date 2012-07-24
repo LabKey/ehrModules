@@ -103,7 +103,7 @@ function makePanel(){
                     html: '<a href="'+(LABKEY.ActionURL.buildURL('query', 'executeQuery', ctx['EHRStudyContainer'], {
                         schemaName: 'study',
                         'query.queryName': 'Demographics',
-                        'query.viewName': 'Alive, at WNPRC'
+                        'query.viewName': 'Alive, at Center'
                     }))+'">View All Living Animals</a>',
                     colspan: 2
                 },{
@@ -216,7 +216,7 @@ function makePanel(){
                             'query'
                             ,'executeQuery'
                             ,ctx['EHRStudyContainer']
-                            ,{'schemaName':'study', 'query.queryName':'Demographics', 'query.Id/curLocation/Room~eq': value, 'query.viewName': 'Alive, at WNPRC'});
+                            ,{'schemaName':'study', 'query.queryName':'Demographics', 'query.Id/curLocation/Room~eq': value, 'query.viewName': 'Alive, at Center'});
 
                     },
                     scope: this

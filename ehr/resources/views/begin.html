@@ -40,6 +40,7 @@ function createNavMenu()
     );
 
     new EHR.ext.NavMenu({
+        width: 270,
         renderTo: 'ehrMenu1_'+webpart.wrapperDivId,
         sections: [
             {header: 'By Animal',
@@ -60,7 +61,7 @@ function createNavMenu()
                 {name: 'Irregular Obs By Location', url: '<%=contextPath%>/ehr' + ctx['EHRStudyContainer'] + '/animalHistory.view#_inputType:renderRoomCage&activeReport:obs'},
                 {name: 'Clinical Remarks By Location', url: '<%=contextPath%>/ehr' + ctx['EHRStudyContainer'] + '/animalHistory.view#_inputType:renderRoomCage&activeReport:clinremarks'}
             ]},
-            {header: 'Today At WNPRC',
+            {header: 'Today At Center',
             items: [
                 {name: 'Blood Draw Schedule', url: '<%=contextPath%>/ehr' + ctx['EHRStudyContainer'] + '/animalHistory.view#_inputType:renderColony&_showReport:1&combineSubj:true&activeReport:todaysBlood'},
                 {name: 'Irregular Observations', url: '<%=contextPath%>/ehr' + ctx['EHRStudyContainer'] + '/animalHistory.view#_inputType:renderRoomCage&activeReport:obs'},
@@ -75,6 +76,7 @@ function createNavMenu()
 
 
     new EHR.ext.NavMenu({
+        width: 270,
         renderTo: 'ehrMenu2_'+webpart.wrapperDivId,
         sections: [
             {header: 'Entire Colony',
@@ -111,6 +113,7 @@ function createNavMenu()
     });
 
     var menuCfg = {
+        width: 270,
         renderTo: 'ehrMenu3_'+webpart.wrapperDivId,
         sections: [
             {header: 'Misc',
@@ -118,23 +121,18 @@ function createNavMenu()
                 {name: 'About the EHR Project', url: '<%=contextPath%>/project' + ctx['EHRStudyContainer'] + '/About The EHR/begin.view?'},
                 {name: 'Compare Lists of Animals', url: '<%=contextPath%>/ehr' + ctx['EHRStudyContainer'] + '/utilities.view?'},
                 {name: 'Run SQL Directly', url: '<%=contextPath%>/ehr' + ctx['EHRStudyContainer'] + '/executeSql.view?'},
-                {name: 'Search WNPRC SNOMED Codes', url: '<%=contextPath%>/query' + ctx['EHRStudyContainer'] + '/executeQuery.view?schemaName=ehr_lookups&query.queryName=snomed'},
+                {name: 'Search Center SNOMED Codes', url: '<%=contextPath%>/query' + ctx['EHRStudyContainer'] + '/executeQuery.view?schemaName=ehr_lookups&query.queryName=snomed'},
                 {name: 'Search ALL SNOMED Codes', url: '<%=contextPath%>/query' + ctx['EHRStudyContainer'] + '/executeQuery.view?schemaName=ehr_lookups&query.queryName=full_snomed'}
             ]},
             {header: 'Data Entry',
             items: [
-                {name: 'Enter Data', url: '<%=contextPath%>/ehr' + ctx['EHRStudyContainer'] + '/dataEntry.view'},
-                {name: 'Download Paper Forms', url: '<%=contextPath%>/list/WNPRC/WNPRC_Units/Animal_Services/Compliance_Training/Public/grid.view?listId=1399'}
+                {name: 'Enter Data', url: '<%=contextPath%>/ehr' + ctx['EHRStudyContainer'] + '/dataEntry.view'}
             ]},
             {header: 'Request Services',
             items: [
                 {name: 'Views Requests', url: '<%=contextPath%>/ehr' + ctx['EHRStudyContainer'] + '/requestServices.view'},
-                {name: 'Request Biopsy Processing', url: 'http://yakui.primate.wisc.edu/pathology/BiopsyForm.html'},
                 {name: 'Request Blood Draws', url: '<%=contextPath%>/ehr' + ctx['EHRStudyContainer'] + '/manageRequest.view?formtype=Blood%20Draw%20Request'},
                 {name: 'Request Clinpath Services', url: '<%=contextPath%>/ehr' + ctx['EHRStudyContainer'] + '/manageRequest.view?formtype=Clinpath%20Request'},
-                {name: 'Request Clinpath Services (old)', url: 'http://www.primate.wisc.edu/clinpath/'},
-                {name: 'Request Necropsy Processing', url: 'http://yakui.primate.wisc.edu/pathology/NecropsyForm.html'},
-                {name: 'Request Project', url: 'http://www.primate.wisc.edu/colony-old/project-form.html'}
             ]}
         ]
     };

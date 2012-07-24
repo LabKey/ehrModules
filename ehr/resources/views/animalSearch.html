@@ -22,7 +22,7 @@ Ext.onReady(function ()
             tag: 'ul',
             children: [{
                 tag: 'li',
-                html: '<a href="<%=contextPath%>/query' + ctx['EHRStudyContainer'] + '/executeQuery.view?schemaName=study&query.queryName=Demographics&query.viewName=Alive%2C at WNPRC">All Living Center Animals</a>'
+                html: '<a href="<%=contextPath%>/query' + ctx['EHRStudyContainer'] + '/executeQuery.view?schemaName=study&query.queryName=Demographics&query.viewName=Alive%2C at Center">All Living Center Animals</a>'
             },{
                 tag: 'li',
                 html: '<a href="<%=contextPath%>/query' + ctx['EHRStudyContainer'] + '/executeQuery.view?schemaName=study&query.queryName=Demographics">All Center Animals</a>'
@@ -86,7 +86,7 @@ Ext.onReady(function ()
         ,queryName: 'Demographics'
         ,viewName: 'Search Panel'
         ,title: 'Search Animals'
-        ,defaultView: 'Alive, at WNPRC'
+        ,defaultView: 'Alive, at Center'
         ,metadata: {
             Id: {lookups: false}
             ,'Id/age/AgeInYearsRounded': {duplicate: true}

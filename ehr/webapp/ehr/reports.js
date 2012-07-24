@@ -21,6 +21,7 @@ EHR.reports.qwpConfig = {
     showDetailsColumn: true,
     showUpdateColumn: false,
     showRecordSelectors: true,
+    suppressRenderErrors: true,
     showReports: false,
     frame: 'portal',
     linkTarget: '_blank',

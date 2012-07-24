@@ -14,14 +14,14 @@ library(Rlabkey)
 #warnings();
 
 #NOTE: to run directly in R instead of through labkey, uncomment this:
-#labkey.url.base = "https://ehr.primate.wisc.edu/"
+#labkey.url.base = "http://localhost:8080/labkey/"
 
 #this section queries labkey to obtain the pedigree data
 #you could replace it with a command that loads from TSV if you like
 allPed <- labkey.selectRows(
-    #baseUrl="http://localhost:8080/labkey",
     baseUrl=labkey.url.base,
-    folderPath="/WNPRC/EHR",
+    #to run directly in R, uncomment this line.  otherwise providing a containerPath is not necessary
+    #folderPath="/EHR",
     schemaName="study",
     queryName="Pedigree",
     colSelect=c('Id', 'Dam','Sire', 'Gender', 'Status'),
@@ -33,7 +33,6 @@ colnames(allPed)<-c('Id', 'Dam', 'Sire', 'Gender', 'Status')
 
 # goodPed <- labkey.selectRows(
 #     baseUrl=labkey.url.base,
-#     folderPath="/WNPRC/EHR",
 #     schemaName="study",
 #     queryName="Demographics",
 #     colSelect=c('Id', 'Dam','Sire', 'Gender'),
