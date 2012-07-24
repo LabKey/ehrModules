@@ -127,6 +127,7 @@ EHR.ext.DetailsView = Ext.extend(Ext.Panel, {
                 showRecordSelectors: true,
                 buttonBarPosition: 'top',
                 title: this.title,
+                suppressRenderErrors: true,
                 //frame: 'none',
                 timeout: 0
             });
