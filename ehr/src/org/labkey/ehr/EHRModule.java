@@ -55,7 +55,7 @@ public class EHRModule extends DefaultModule
 
     public double getVersion()
     {
-        return 11.38;
+        return 12.20;
     }
 
     public boolean hasScripts()
