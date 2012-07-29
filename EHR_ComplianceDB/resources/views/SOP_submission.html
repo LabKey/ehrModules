@@ -60,9 +60,9 @@ Ext.onReady(function()
         //then we display a list of all completed required SOPs
         var sopQWP2 = new LABKEY.QueryWebPart({
             renderTo: 'sopDiv2',
-            dataRegionName: 'readSOPGrid',
             title: 'Dates SOPs Were Last Read',
             containerPath: employeeContainer,
+            dataRegionName: 'readSOPGrid',
             schemaName: 'ehr_compliancedb',
             queryName: 'SOPDateLastRead',
             buttonBarPosition: 'top',
@@ -78,7 +78,7 @@ Ext.onReady(function()
             },
             showRecordSelectors: true,
             allowChooseQuery: false,
-            allowChooseView: false,
+            //allowChooseView: false,
             filters: [
                 LABKEY.Filter.create('EmployeeId', username, LABKEY.Filter.Types.EQUAL)
             ],
@@ -90,7 +90,7 @@ Ext.onReady(function()
         LABKEY.Query.selectRows({
             schemaName: 'ehr_compliancedb',
             queryName: 'SOPrequirements',
-            viewName: 'To Read',
+            viewName: 'To Read Standard',
             containerPath: employeeContainer,
             filterArray: [
                 LABKEY.Filter.create('employeeid', username, LABKEY.Filter.Types.EQUAL),
@@ -115,7 +115,7 @@ Ext.onReady(function()
 
 
 
-function markRead(dataRegion, dataRegionName) {
+function markRead(dataRegion) {
 
     var checked ;
     if (!dataRegion) {

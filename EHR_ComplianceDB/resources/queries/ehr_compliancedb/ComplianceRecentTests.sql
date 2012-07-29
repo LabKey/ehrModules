@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010-2012 LabKey Corporation
+ * Copyright (c) 2010-2011 LabKey Corporation
  *
  * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
  */
@@ -58,13 +58,13 @@ WHERE
     --if this employee/test appears in the exemptions table, it's not required
     WHEN ee.RequirementName is not null
       THEN false
-    WHEN rn.Required = TRUE
+    WHEN rn.Required IS TRUE
       THEN TRUE
-    WHEN (e.Barrier = TRUE AND rn.Access = TRUE)
+    WHEN (e.Barrier IS TRUE AND rn.Access IS TRUE)
       THEN TRUE
-    WHEN (e.Animals = TRUE AND rn.Animals = TRUE)
+    WHEN (e.Animals IS TRUE AND rn.Animals IS TRUE)
       THEN TRUE
-    WHEN (e.Tissue = TRUE AND rn.Tissues = TRUE)
+    WHEN (e.Tissue IS TRUE AND rn.Tissues IS TRUE)
       THEN TRUE
     --if a requirement is mandatory for a given employee category/unit and this employee is one, it's required
     WHEN (rc.RequirementName IS NOT NULL)
@@ -75,6 +75,6 @@ WHERE
     ELSE
       FALSE
   END
-  = TRUE
+  IS TRUE
 
   AND e.EndDate IS NULL

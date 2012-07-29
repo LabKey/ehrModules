@@ -18,12 +18,14 @@ EHR_ComplianceDB/resources/queries/ehr_compliancedb/Employees.query.xml -text
 EHR_ComplianceDB/resources/queries/ehr_compliancedb/RequirementType.js.old -text
 EHR_ComplianceDB/resources/queries/ehr_compliancedb/Requirements.js.old -text
 EHR_ComplianceDB/resources/queries/ehr_compliancedb/SOP[!!-~]Comparison.sql -text
+EHR_ComplianceDB/resources/queries/ehr_compliancedb/SOPDateLastRead.query.xml -text
 EHR_ComplianceDB/resources/queries/ehr_compliancedb/SOPDateLastRead.sql -text
 EHR_ComplianceDB/resources/queries/ehr_compliancedb/SOPDateLastRead/.qview.xml -text
 EHR_ComplianceDB/resources/queries/ehr_compliancedb/SOPrequirements.query.xml -text
 EHR_ComplianceDB/resources/queries/ehr_compliancedb/SOPrequirements.sql -text
 EHR_ComplianceDB/resources/queries/ehr_compliancedb/SOPrequirements/.qview.xml -text
 EHR_ComplianceDB/resources/queries/ehr_compliancedb/SOPrequirements/All[!!-~]SOPs.qview.xml -text
+EHR_ComplianceDB/resources/queries/ehr_compliancedb/SOPrequirements/To[!!-~]Read[!!-~]Standard.qview.xml -text
 EHR_ComplianceDB/resources/queries/ehr_compliancedb/SOPrequirements/To[!!-~]Read.qview.xml -text
 EHR_ComplianceDB/resources/queries/ehr_compliancedb/completionDates/.qview.xml -text
 EHR_ComplianceDB/resources/queries/ehr_compliancedb/completionDates/Training.qview.xml -text
@@ -38,6 +40,7 @@ EHR_ComplianceDB/resources/queries/ehr_compliancedb/employees/LabKey[!!-~]User.q
 EHR_ComplianceDB/resources/queries/ehr_compliancedb/employees/No[!!-~]Personal[!!-~]Info.qview.xml -text
 EHR_ComplianceDB/resources/queries/ehr_compliancedb/employeetitles.js.old -text
 EHR_ComplianceDB/resources/queries/ehr_compliancedb/employeetypes.js.old -text
+EHR_ComplianceDB/resources/queries/ehr_compliancedb/recentlyActivatedSOPs.sql -text
 EHR_ComplianceDB/resources/queries/ehr_compliancedb/sopbycategory.query.xml -text
 EHR_ComplianceDB/resources/queries/ehr_compliancedb/sopdates.query.xml -text
 EHR_ComplianceDB/resources/queries/ehr_compliancedb/unit_names.js.old -text

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2012 LabKey Corporation
+ * Copyright (c) 2011 LabKey Corporation
  *
  * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
  */
@@ -15,7 +15,7 @@ T1.LastRead,
 sop.activeDate
 
 
-FROM ehr_compliancedb.employees e 
+FROM ehr_compliancedb.employees e
 
 
 LEFT JOIN

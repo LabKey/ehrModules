@@ -1,5 +1,6 @@
 <customView xmlns="http://labkey.org/data/xml/queryCustomView">
     <columns>
+        <column name="Id"/>
         <column name="SOP_ID"/>
         <column name="sop_id/Name">
             <properties>
@@ -18,12 +19,20 @@
         </column>
         <column name="sop_id/video">
         	<properties>
-        		<property name="columnTitle" value="Training Video"/>
+        		<property name="columnTitle" value="Supporting Video"/>
         	</properties>
         </column>
         <column name="LastRead"/>
+        <column name="MonthsUntilRenewal"/>
+        <column name="Required"/>
     </columns>
+    <filters>
+        <filter column="required" operator="eq" value="true"/>
+        <filter column="MonthsUntilRenewal" operator="lte" value="3"/>
+        <filter column="MonthsUntilRenewal" operator="isnonblank"/>
+    </filters>
     <sorts>
+        <sort column="MonthsUntilRenewal" descending="false"/>
         <sort column="SOP_ID" descending="false"/>
     </sorts>
 </customView>
