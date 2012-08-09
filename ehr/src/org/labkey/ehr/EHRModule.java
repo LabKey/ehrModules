@@ -20,18 +20,28 @@ import org.json.JSONObject;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.ContainerManager;
 import org.labkey.api.data.DbSchema;
-import org.labkey.api.module.DefaultModule;
 import org.labkey.api.module.ModuleContext;
-import org.labkey.api.module.ModuleProperty;
+import org.labkey.api.module.SpringModule;
 import org.labkey.api.query.DefaultSchema;
 import org.labkey.api.query.QuerySchema;
 import org.labkey.api.query.QueryService;
 import org.labkey.api.security.User;
-import org.labkey.api.security.permissions.AdminPermission;
-import org.labkey.api.security.permissions.Permission;
 import org.labkey.api.security.roles.RoleManager;
 import org.labkey.api.util.PageFlowUtil;
 import org.labkey.api.view.WebPartFactory;
+import org.labkey.ehr.notification.AbnormalLabResultsNotification;
+import org.labkey.ehr.notification.AdminAlertsNotification;
+import org.labkey.ehr.notification.BloodAdminAlertsNotification;
+import org.labkey.ehr.notification.BloodAlertsNotification;
+import org.labkey.ehr.notification.ColonyAlertsLiteNotification;
+import org.labkey.ehr.notification.ColonyAlertsNotification;
+import org.labkey.ehr.notification.ColonyMgmtNotification;
+import org.labkey.ehr.notification.LabTestScheduleNotifications;
+import org.labkey.ehr.notification.LabResultSummaryNotification;
+import org.labkey.ehr.notification.NotificationService;
+import org.labkey.ehr.notification.OverdueWeightsNotification;
+import org.labkey.ehr.notification.TreatmentAlerts;
+import org.labkey.ehr.notification.WeightAlerts;
 import org.labkey.ehr.security.EHRBasicSubmitterRole;
 import org.labkey.ehr.security.EHRDataAdminRole;
 import org.labkey.ehr.security.EHRFullSubmitterRole;
@@ -39,14 +49,14 @@ import org.labkey.ehr.security.EHRFullUpdaterRole;
 import org.labkey.ehr.security.EHRRequestAdminRole;
 import org.labkey.ehr.security.EHRRequestorRole;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Timer;
+import java.util.TimerTask;
 
-public class EHRModule extends DefaultModule
+public class EHRModule extends SpringModule
 {
     public String getName()
     {
@@ -55,7 +65,7 @@ public class EHRModule extends DefaultModule
 
     public double getVersion()
     {
-        return 12.20;
+        return 12.21;
     }
 
     public boolean hasScripts()
@@ -75,7 +85,7 @@ public class EHRModule extends DefaultModule
     }
 
     @Override
-    public void doStartup(ModuleContext moduleContext)
+    public void startupAfterSpringConfig(ModuleContext moduleContext)
     {
         // add a container listener so we'll know when our container is deleted:
         ContainerManager.addContainerListener(new EHRContainerListener());
@@ -96,13 +106,37 @@ public class EHRModule extends DefaultModule
                 }
             });
         }
-        
+
         RoleManager.registerRole(new EHRDataAdminRole());
         RoleManager.registerRole(new EHRRequestorRole());
         RoleManager.registerRole(new EHRBasicSubmitterRole());
         RoleManager.registerRole(new EHRFullSubmitterRole());
         RoleManager.registerRole(new EHRFullUpdaterRole());
         RoleManager.registerRole(new EHRRequestAdminRole());
+
+        NotificationService ns = NotificationService.get();
+        ns.addNotification(new AbnormalLabResultsNotification());
+        ns.addNotification(new AdminAlertsNotification());
+        ns.addNotification(new BloodAdminAlertsNotification());
+        ns.addNotification(new BloodAlertsNotification());
+        ns.addNotification(new ColonyAlertsLiteNotification());
+        ns.addNotification(new ColonyAlertsNotification());
+        ns.addNotification(new ColonyMgmtNotification());
+        ns.addNotification(new LabTestScheduleNotifications());
+        ns.addNotification(new LabResultSummaryNotification());
+        ns.addNotification(new OverdueWeightsNotification());
+        ns.addNotification(new TreatmentAlerts());
+        ns.addNotification(new WeightAlerts());
+
+        //TODO
+        //int delay = 1000 * 60 * 5;// 5 minutes
+        int delay = 1000;
+        Timer timer = new Timer();
+        timer.schedule( new TimerTask(){
+            public void run() {
+                NotificationService.get().start();
+            }
+        }, delay);
     }
 
     @Override

@@ -21,7 +21,7 @@
                         <!--<nullable>false</nullable>-->
                         <!--<propertyURI>http://cpas.labkey.com/Study#VisitDate</propertyURI>-->
                     </column>
-                    <column columnName="parentId">
+                    <column columnName="parentid">
                       <columnTitle>Parent Id</columnTitle>
                       <propertyURI>urn:ehr.labkey.org/#ParentId</propertyURI>
                       <!--<fk>-->

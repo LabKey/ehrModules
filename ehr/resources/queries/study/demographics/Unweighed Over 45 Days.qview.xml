@@ -16,31 +16,19 @@
                 <property name="columnTitle" value="Condition"/>
             </properties>
         </column>
-        <column name="gender">
-            <!--<properties>-->
-                <!--<property name="columnTitle" value="Gender"/>-->
-            <!--</properties>-->
-        </column>
+        <column name="gender"/>
         <!--<column name="Dataset/Demographics/Status">-->
             <!--<properties>-->
                 <!--<property name="columnTitle" value="Status"/>-->
             <!--</properties>-->
         <!--</column>-->
-        <column name="calculated_status">
-            <!--<properties>-->
-                <!--<property name="columnTitle" value="Status"/>-->
-            <!--</properties>-->
-        </column>
+        <column name="calculated_status"/>
         <column name="Id/currentAssignments/availability">
             <properties>
                 <property name="columnTitle" value="Avail"/>
             </properties>
         </column>
-        <column name="hold">
-            <!--<properties>-->
-                <!--<property name="columnTitle" value="Hold"/>-->
-            <!--</properties>-->
-        </column>
+        <column name="hold"/>
         <!--<column name="Dataset/Demographics/Origin">-->
             <!--<properties>-->
                 <!--<property name="columnTitle" value="Origin"/>-->
@@ -71,11 +59,7 @@
                 <property name="columnTitle" value="Days Since Weight"/>
             </properties>
         </column>
-        <column name="medical">
-            <!--<properties>-->
-                <!--<property name="columnTitle" value="Medical"/>-->
-            <!--</properties>-->
-        </column>
+        <column name="medical"/>
         <!--<column name="Dataset/Demographics/v_status">-->
             <!--<properties>-->
                 <!--<property name="columnTitle" value="Viral Status"/>-->

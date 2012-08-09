@@ -79,7 +79,7 @@ Ext.onReady(function (){
             showUpdateColumn: false,
             showRecordSelectors: true,
             buttonBarPosition: 'top',
-            filters: [LABKEY.Filter.create('parentId', row.objectid, LABKEY.Filter.Types.STARTS_WITH)],
+            filters: [LABKEY.Filter.create('parentid', row.objectid, LABKEY.Filter.Types.STARTS_WITH)],
             //sort: '-Date',
             scope: this,
             failure: EHR.Utils.onError

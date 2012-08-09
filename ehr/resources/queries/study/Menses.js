@@ -4,14 +4,12 @@
  * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
  */
 
-var {EHR, LABKEY, Ext, console, init, beforeInsert, afterInsert, beforeUpdate, afterUpdate, beforeDelete, afterDelete, complete} = require("ehr/validation");
+var {EHR, LABKEY, Ext, console, init, beforeInsert, afterInsert, beforeUpdate, afterUpdate, beforeDelete, afterDelete, complete} = require("ehr/triggers");
 
-//TODO: untested
-function onUpsert(context, errors, row, oldRow){
+function onUpsert(scriptContext, errors, row, oldRow){
     //make sure the anmimal is female
     if(row.id)
-        EHR.Server.Validation.verifyIsFemale(row, errors);
-
+        EHR.Server.Validation.verifyIsFemale(row, errors, scriptContext);
 }
 
 function setDescription(row, errors){

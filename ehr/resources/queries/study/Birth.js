@@ -4,8 +4,14 @@
  * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
  */
 
-var {EHR, LABKEY, Ext, console, init, beforeInsert, afterInsert, beforeUpdate, afterUpdate, beforeDelete, afterDelete, complete} = require("ehr/validation");
+var {EHR, LABKEY, Ext, console, init, beforeInsert, afterInsert, beforeUpdate, afterUpdate, beforeDelete, afterDelete, complete} = require("ehr/triggers");
 
+function onInit(event, context){
+    context.allowDeadIds = true;
+    context.extraContext.allowAnyId = true;
+    context.extraContext = context.extraContext || {};
+    context.extraContext.skipIdFormatCheck = true;
+}
 
 function onBecomePublic(errors, scriptContext, row, oldRow){
     if(scriptContext.extraContext.dataSource != 'etl' && !row.skipDemographicsAdd){
@@ -110,11 +116,4 @@ function setDescription(row, errors){
         description.push('Type: '+ row.type);
 
     return description;
-}
-
-function onInit(event, context){
-    context.allowDeadIds = true;
-    context.allowAnyId = true;
-    context.extraContext = context.extraContext || {};
-    context.extraContext.skipIdFormatCheck = true;
 }

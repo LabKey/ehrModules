@@ -29,7 +29,7 @@
             </properties>
        </column>
        <column name="projectStatus" />
-      <column name="Id/mostRecentWeight/mostRecentWeight">
+      <column name="Id/mostRecentWeight/MostRecentWeight">
         <properties>
             <property name="columnTitle" value="Most Recent Weight (kg)"/>
         </properties>

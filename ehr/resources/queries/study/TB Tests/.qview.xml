@@ -8,7 +8,7 @@
        <column name="result1" />
        <column name="result2" />
        <column name="result3" />
-       <column name="missingresults" />
+       <column name="missingResults" />
        <column name="remark" />
        <column name="qcstate" />
        <column name="taskid" />

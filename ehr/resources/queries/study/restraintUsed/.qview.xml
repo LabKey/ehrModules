@@ -1,6 +1,6 @@
 <customView xmlns="http://labkey.org/data/xml/queryCustomView">
     <columns>
-        <column name="Id" />
+        <column name="id" />
         <column name="date" />
         <column name="enddate" />
         <column name="project" />
@@ -13,7 +13,7 @@
                 <property name="columnTitle" value="Title"/>
             </properties>
         </column>
-        <column name="taskid/QCState">
+        <column name="taskid/qcstate">
             <properties>
                 <property name="columnTitle" value="Status"/>
             </properties>

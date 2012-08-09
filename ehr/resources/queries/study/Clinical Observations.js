@@ -4,15 +4,13 @@
  * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
  */
 
-var {EHR, LABKEY, Ext, console, init, beforeInsert, afterInsert, beforeUpdate, afterUpdate, beforeDelete, afterDelete, complete} = require("ehr/validation");
-
+var {EHR, LABKEY, Ext, console, init, beforeInsert, afterInsert, beforeUpdate, afterUpdate, beforeDelete, afterDelete, complete} = require("ehr/triggers");
 
 function onUpsert(context, errors, row, oldRow){
     if(!row.observation && !row.remark){
         EHR.Server.Validation.addError(errors, 'remark', 'Must enter observation or remark', 'WARN');
     }
 }
-
 
 function setDescription(row, errors){
     //we need to set description for every field

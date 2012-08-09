@@ -79,7 +79,7 @@
                     <shownInInsertView>false</shownInInsertView>
                     <shownInUpdateView>false</shownInUpdateView>
                   </column>
-                  <column columnName="parentId">
+                  <column columnName="parentid">
                     <columnTitle>Parent Id</columnTitle>
                     <propertyURI>urn:ehr.labkey.org/#ParentId</propertyURI>
                       <!--<fk>-->

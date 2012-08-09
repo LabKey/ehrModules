@@ -6,23 +6,23 @@
                 <property name="columnTitle" value="Gender"/>
             </properties>
         </column>
-        <column name="Project"/>
-        <column name="Project/protocol">
+        <column name="project"/>
+        <column name="project/protocol">
             <properties>
                 <property name="columnTitle" value="Protocol"/>
             </properties>
         </column>
-        <column name="Project/title">
+        <column name="project/title">
             <properties>
                 <property name="columnTitle" value="Title"/>
             </properties>
         </column>
-        <column name="Project/avail">
+        <column name="project/avail">
             <properties>
                 <property name="columnTitle" value="Project Avail"/>
             </properties>
         </column>
-        <column name="Project/inves">
+        <column name="project/inves">
             <properties>
                 <property name="columnTitle" value="Investigator"/>
             </properties>
@@ -30,13 +30,13 @@
         <column name="date"/>
         <column name="enddate"/>
         <column name="projectedRelease"/>
-        <column name="qcstate" />
+        <column name="QCState" />
         <column name="taskid" />
     </columns>
    <sorts>
        <sort column="date" descending="true"/>
    </sorts>
     <!--<filters>-->
-        <!--<filter column="qcstate/publicdata" operator="eq" value="true"/>-->
+        <!--<filter column="QCState/publicdata" operator="eq" value="true"/>-->
     <!--</filters>-->
 </customView>

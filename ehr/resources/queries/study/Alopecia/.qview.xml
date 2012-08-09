@@ -6,13 +6,13 @@
        <column name="cause" />
        <column name="head" />
        <column name="shoulders" />
-       <column name="upperarms" />
-       <column name="lowerarms" />
+       <column name="upperArms" />
+       <column name="lowerArms" />
        <column name="hips" />
        <column name="rump" />
        <column name="dorsum" />
-       <column name="upperlegs" />
-       <column name="lowerlegs" />
+       <column name="upperLegs" />
+       <column name="lowerLegs" />
        <column name="other" />
        <column name="remark" />
        <column name="performedby" />

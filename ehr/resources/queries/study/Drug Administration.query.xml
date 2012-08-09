@@ -39,7 +39,7 @@
                         <formatString>yyyy-MM-dd H:mm</formatString>
                         <isHidden>false</isHidden>
                     </column>
-                    <column columnName="parentId">
+                    <column columnName="parentid">
                         <!--<fk>-->
                             <!--<fkDbSchema>study</fkDbSchema>-->
                             <!--<fkTable>studyDataParent</fkTable>-->

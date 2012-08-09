@@ -1,8 +1,8 @@
 <customView xmlns="http://labkey.org/data/xml/queryCustomView">
     <columns>
-        <column name="Id"/>
+        <column name="id"/>
         <column name="date"/>
-        <column name="testid"/>
+        <column name="testId"/>
         <column name="result"/>
         <column name="qualresult" />
         <column name="qcstate" />

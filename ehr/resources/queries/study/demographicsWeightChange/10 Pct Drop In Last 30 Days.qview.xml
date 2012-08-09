@@ -16,7 +16,7 @@
         <!--<column name="MaxChange180" />-->
    </columns>
    <sorts>
-       <sort column="id"/>
+       <sort column="Id"/>
    </sorts>
   <filters>
       <filter column="MaxLoss30" operator="lte" value="-10"/>

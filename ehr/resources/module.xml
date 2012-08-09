@@ -1,20 +1,20 @@
 <module xmlns="http://labkey.org/moduleProperties/xml/">
     <properties>
         <propertyDescriptor name="EHRStudyContainer">
-            <canSetPerContainer>false</canSetPerContainer>
+            <canSetPerContainer>true</canSetPerContainer>
             <description>The is the path to the container holding the EHR study.  Use of slashes is very important - it should be in the format '/myProject/ehr'</description>
             <editPermissions>
                 <permission>ADMIN</permission>
             </editPermissions>
         </propertyDescriptor>
         <propertyDescriptor name="InstitutionName">
-            <canSetPerContainer>false</canSetPerContainer>
+            <canSetPerContainer>true</canSetPerContainer>
             <editPermissions>
                 <permission>ADMIN</permission>
             </editPermissions>
         </propertyDescriptor>
         <propertyDescriptor name="ProtocolPDFContainer">
-            <canSetPerContainer>false</canSetPerContainer>
+            <canSetPerContainer>true</canSetPerContainer>
             <description>The is the path to the container holding PDFs of IACUC protocols.  It is usually separate from the EHR study.  Use of slashes is very important - it should be in the format '/myProject/ehr'</description>
             <editPermissions>
                 <permission>ADMIN</permission>

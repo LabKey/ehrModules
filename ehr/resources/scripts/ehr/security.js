@@ -106,7 +106,7 @@ EHR.Server.Security = new function(){
                     schemaMap = map;
                 },
                 failure: function(error){
-                    console.log(error)
+                    console.error(error)
                 }
             });
 
@@ -228,7 +228,7 @@ EHR.Server.Security = new function(){
                 queries = [queries];
 
             if(!queries.length){
-                console.log('Must provide an array of query objects');
+                console.error('Must provide an array of query objects');
                 return false;
             }
 
@@ -270,7 +270,7 @@ EHR.Server.Security = new function(){
                 throw "EHR.Security.init() has not been called or returned prior to this call";
 
             if(!qcMap.label[label]){
-                console.log('ERROR: QCLabel '+label+' not found');
+                console.error('ERROR: QCLabel '+label+' not found');
                 return null;
             }
 
@@ -286,7 +286,7 @@ EHR.Server.Security = new function(){
                 throw "EHR.Security.init() has not been called or returned prior to this call";
 
             if(!qcMap.rowid[rowid]){
-                console.log('ERROR: QC State associated with the rowId '+label+' not found');
+                console.error('ERROR: QC State associated with the rowId '+label+' not found');
                 return null;
             }
 
@@ -319,7 +319,8 @@ EHR.Server.Security = new function(){
             //NOTE: this has been moved from init() b/c init() seems to get called during the ETL even
             //if not importing any records
             if(!EHR.Server.Security.hasLoaded()){
-                console.log('Verifying permissions for: '+event);
+                if(scriptContext.verbosity > 0)
+                    console.log('Verifying permissions for: '+event);
 
                 EHR.Server.Security.init({
                     scope: this,
@@ -337,7 +338,7 @@ EHR.Server.Security = new function(){
                         oldRow.QCStateLabel = EHR.Server.Security.getQCStateByRowId(oldRow.QCState).Label;
                     }
                     else
-                        console.log('Unknown QCState: '+oldRow.QCState);
+                        console.error('Unknown QCState: '+oldRow.QCState);
 
                     oldRow.QCState = null;
                 }
@@ -354,7 +355,7 @@ EHR.Server.Security = new function(){
                     row.QCStateLabel = EHR.Server.Security.getQCStateByRowId(row.QCState).Label;
                 }
                 else
-                    console.log('Unknown QCState: '+row.QCState);
+                    console.error('Unknown QCState: '+row.QCState);
 
                 row.QCState = null;
             }
@@ -381,8 +382,6 @@ EHR.Server.Security = new function(){
                 row.QCStateLabel = scriptContext.extraContext.targetQC;
             }
 
-            //console.log('qcstate: '+row.qcstate+'/'+row.qcstatelabel);
-
             //handle updates
             if(event=='update' && oldRow && oldRow.QCStateLabel){
                 //updating a row to a new QC is the same as inserting into that QC state
@@ -406,8 +405,6 @@ EHR.Server.Security = new function(){
                     EHR.Server.Utils.onFailure({msg: msg});
                     return false;
                 }
-        //        else
-        //            console.log('the user has update permissions');
             }
             //handle inserts and deletes
             else {
@@ -420,8 +417,6 @@ EHR.Server.Security = new function(){
                         EHR.Server.Utils.onFailure({msg: msg});
                         return false;
                     }
-        //            else
-        //                console.log('the user has '+event+' permissions');
                 }
             }
 

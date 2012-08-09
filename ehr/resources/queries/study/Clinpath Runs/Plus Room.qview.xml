@@ -1,16 +1,16 @@
 <customView xmlns="http://labkey.org/data/xml/queryCustomView">
    <columns>
-        <column name="Id/curLocation/Area">
+        <column name="Id/curLocation/area">
             <properties>
                 <property name="columnTitle" value="Area"/>
             </properties>
         </column>
-        <column name="Id/curLocation/Room">
+        <column name="Id/curLocation/room">
             <properties>
                 <property name="columnTitle" value="Room"/>
             </properties>
         </column>
-        <column name="Id/curLocation/Cage">
+        <column name="Id/curLocation/cage">
             <properties>
                 <property name="columnTitle" value="Cage"/>
             </properties>
@@ -20,8 +20,8 @@
        <column name="project" />
        <column name="account" />
        <column name="type" />
-       <column name="sampleType" />
-       <column name="serviceRequested" />
+       <column name="sampletype" />
+       <column name="servicerequested" />
        <!--<column name="collectionDate" />-->
        <column name="collectionMethod" />
        <column name="collectedBy" />
@@ -43,9 +43,9 @@
       </column>
    </columns>
    <sorts>
-       <sort column="Id/curLocation/Area" descending="false"/>
-       <sort column="Id/curLocation/Room" descending="false"/>
-       <sort column="Id/curLocation/Cage" descending="false"/>
+       <sort column="Id/curLocation/area" descending="false"/>
+       <sort column="Id/curLocation/room" descending="false"/>
+       <sort column="Id/curLocation/cage" descending="false"/>
        <sort column="Id" descending="false"/>
    </sorts>
     <!--<filters>-->

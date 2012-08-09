@@ -1,6 +1,6 @@
 <customView xmlns="http://labkey.org/data/xml/queryCustomView" hidden="true">
    <columns>
-       <column name="Remark"/>                
+       <column name="remark"/>
    </columns>
    <sorts>
        <sort column="date" descending="true"/>

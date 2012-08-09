@@ -29,6 +29,7 @@
                         <url>/study/participant.view?
                             participantId=${dam}
                         </url>
+                        <isMvEnabled>true</isMvEnabled>
                     </column>
                     <column columnName="sire">
                         <columnTitle>Sire</columnTitle>
@@ -40,6 +41,7 @@
                         <url>/study/participant.view?
                             participantId=${sire}
                         </url>
+                        <isMvEnabled>true</isMvEnabled>
                     </column>
                     <column columnName="room">
                         <columnTitle>Room</columnTitle>
@@ -90,7 +92,7 @@
                             <fkColumnName>type</fkColumnName>
                         </fk>
                     </column>
-                    <column columnName="parentId">
+                    <column columnName="parentid">
                         <!--<fk>-->
                           <!--<fkDbSchema>study</fkDbSchema>-->
                           <!--<fkTable>studyDataParent</fkTable>-->

@@ -2,11 +2,7 @@
     <columns>
         <column name="Id"/>
         <column name="species"/>
-        <column name="gender">
-            <!--<properties>-->
-                <!--<property name="columnTitle" value="Gender"/>-->
-            <!--</properties>-->
-        </column>
+        <column name="gender"/>
         <!--<column name="Status">-->
             <!--<properties>-->
                 <!--<property name="columnTitle" value="Status"/>-->
@@ -37,36 +33,12 @@
                 <property name="columnTitle" value="Project Titles"/>
             </properties>
         </column>
-        <column name="hold">
-            <!--<properties>-->
-                <!--<property name="columnTitle" value="Hold"/>-->
-            <!--</properties>-->
-        </column>
-        <column name="dam">
-            <!--<properties>-->
-                <!--<property name="columnTitle" value="Dam"/>-->
-            <!--</properties>-->
-        </column>
-        <column name="sire">
-            <!--<properties>-->
-                <!--<property name="columnTitle" value="Sire"/>-->
-            <!--</properties>-->
-        </column>
-        <column name="origin">
-            <!--<properties>-->
-                <!--<property name="columnTitle" value="Origin"/>-->
-            <!--</properties>-->
-        </column>
-        <column name="birth">
-            <!--<properties>-->
-                <!--<property name="columnTitle" value="Birth"/>-->
-            <!--</properties>-->
-        </column>
-        <column name="death">
-            <!--<properties>-->
-                <!--<property name="columnTitle" value="Death"/>-->
-            <!--</properties>-->
-        </column>
+        <column name="hold"/>
+        <column name="dam"/>
+        <column name="sire"/>
+        <column name="origin"/>
+        <column name="birth"/>
+        <column name="death"/>
         <!--<column name="Id/MostRecentArrival/MostRecentArrival">-->
             <!--<properties>-->
                 <!--<property name="columnTitle" value="Most Recent Arrival"/>-->
@@ -107,16 +79,8 @@
                 <!--<property name="columnTitle" value="Last TB Date"/>-->
             <!--</properties>-->
         <!--</column>-->
-        <column name="medical">
-            <!--<properties>-->
-                <!--<property name="columnTitle" value="Medical"/>-->
-            <!--</properties>-->
-        </column>
-        <column name="prepaid">
-            <!--<properties>-->
-                <!--<property name="columnTitle" value="Replacement Prepaid By"/>-->
-            <!--</properties>-->
-        </column>
+        <column name="medical"/>
+        <column name="prepaid"/>
         <!--<column name="v_status">-->
             <!--<properties>-->
                 <!--<property name="columnTitle" value="Viral Status"/>-->
@@ -130,6 +94,6 @@
         <!--<filter column="hold" operator="isblank" value=""/>-->
     </filters>
     <sorts>
-        <sort column="id" descending="false"/>
+        <sort column="Id" descending="false"/>
     </sorts>
 </customView>

@@ -25,14 +25,14 @@
                 <property name="columnTitle" value="Title"/>
             </properties>
         </column>
-        <column name="taskid/CreatedBy">
+        <column name="taskid/createdby">
             <properties>
-                <property name="columnTitle" value="Created By"/>
+                <property name="columnTitle" value="created By"/>
             </properties>
         </column>
-        <column name="taskid/Created">
+        <column name="taskid/created">
             <properties>
-                <property name="columnTitle" value="Created"/>
+                <property name="columnTitle" value="created"/>
             </properties>
         </column>
         <column name="taskid/datecompleted">
@@ -40,14 +40,14 @@
                 <property name="columnTitle" value="Completed"/>
             </properties>
         </column>
-        <column name="taskid/QCState">
+        <column name="taskid/qcstate">
             <properties>
                 <property name="columnTitle" value="Status"/>
             </properties>
         </column>
    </columns>
    <sorts>
-       <!--<sort column="taskid/Created" descending="true"/>-->
+       <!--<sort column="taskid/created" descending="true"/>-->
        <sort column="room/area" />
        <sort column="room" />
    </sorts>

@@ -13,6 +13,6 @@
        <!--<column name="NumActiveStockAssignments"/>-->
    <!--</columns>-->
    <sorts>
-       <sort column="id" descending="false"/>
+       <sort column="Id" descending="false"/>
    </sorts>
 </customView>

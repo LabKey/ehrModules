@@ -49,7 +49,7 @@
                             <fkColumnName>code</fkColumnName>
                         </fk>
                     </column>
-                    <column columnName="parentId">
+                    <column columnName="parentid">
                         <!--<fk>-->
                           <!--<fkDbSchema>study</fkDbSchema>-->
                           <!--<fkTable>studyDataParent</fkTable>-->

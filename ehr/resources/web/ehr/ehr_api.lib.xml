@@ -1,0 +1,34 @@
+<libraries xmlns="http://labkey.org/clientLibrary/xml/">
+    <library compileInProductionMode="false">
+        <script path="/ehr/ExtOverrides.js"/>
+        <script path="/ehr/ehrMetaHelper.js"/>
+        <script path="/ehr/utils.js"/>
+        <script path="/ehr/Security.js"/>
+        <script path="/ehr/navMenu.js"/>
+        <script path="/ehr/databind.js"/>
+        <script path="/ehr/ehrStore.js"/>
+        <script path="/ehr/ehrStoreCollection.js"/>
+        <script path="/ehr/ehrEditorGridpanel.js"/>
+        <script path="/ehr/ehrImportPanel.js"/>
+        <script path="/ehr/ehrFormPanel.js"/>
+        <script path="/ehr/ehrGridFormPanel.js"/>
+        <script path="/ehr/ehrPrintTaskPanel.js"/>
+
+        <script path="/ehr/ExtComponents.js"/>
+        <script path="/ehr/ExtContainers.js"/>
+        <script path="/ehr/ehrMetadata.js"/>
+        <script path="/ehr/ehrDetailsPanel.js"/>
+        <script path="/ehr/SearchPanel.js"/>
+        <script path="/ehr/studyButtons.js"/>
+        <script path="/ehr/animalHistory.js"/>
+        <!--<script path="/ehr/stylesheet-red-limited.css"/>-->
+        <script path="/ehr/stylesheet.css"/>
+    </library>
+    <dependencies>
+        <dependency path="clientapi"/>
+        <dependency path="StatusBar.js"/>
+    </dependencies>
+    <requiredModuleContext>
+        <module name="EHR"/>
+    </requiredModuleContext>
+</libraries>

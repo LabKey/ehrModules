@@ -18,7 +18,7 @@
        <column name="tube_type" />
        <column name="additionalServices" />
        <column name="instructions" />
-       <column name="Remark" />
+       <column name="remark" />
        <column name="qcstate" />
        <column name="taskid" />
        <column name="requestid" />

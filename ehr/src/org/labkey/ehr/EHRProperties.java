@@ -35,6 +35,7 @@ public class EHRProperties
         {
             PropertyDescriptor pd = super.constructPropertyDescriptor();
             pd.setName("remark");
+            pd.setInputType("textarea");
             return pd;
         }
     };
@@ -49,7 +50,8 @@ public class EHRProperties
             pd.setShownInUpdateView(false);
             pd.setShownInDetailsView(false);
             pd.setHidden(true);
-            pd.setName("parentId");
+            pd.setName("parentid");
+            pd.setLabel("Parent Id");
             return pd;
         }
     };
@@ -65,6 +67,7 @@ public class EHRProperties
             pd.setShownInDetailsView(false);
             pd.setHidden(true);
             pd.setName("taskid");
+            pd.setLabel("Task Id");
             return pd;
         }
     };
@@ -80,6 +83,7 @@ public class EHRProperties
             pd.setShownInDetailsView(false);
             pd.setHidden(true);
             pd.setName("requestid");
+            pd.setLabel("Request Id");
             return pd;
         }
     };
@@ -109,7 +113,9 @@ public class EHRProperties
             pd.setShownInUpdateView(false);
             pd.setShownInDetailsView(false);
             pd.setHidden(true);
-//            pd.setName("description");
+            pd.setLabel("Description");
+            pd.setInputType("textarea");
+            pd.setName("description");
             return pd;
         }
     };
@@ -173,6 +179,7 @@ public class EHRProperties
         {
             PropertyDescriptor pd = super.constructPropertyDescriptor();
             pd.setName("enddate");
+            pd.setLabel("End Date");
             pd.setShownInInsertView(true);
             pd.setShownInUpdateView(true);
             pd.setShownInDetailsView(true);
@@ -188,6 +195,7 @@ public class EHRProperties
         {
             PropertyDescriptor pd = super.constructPropertyDescriptor();
             pd.setName("daterequested");
+            pd.setLabel("Date Requested");
             pd.setShownInInsertView(false);
             pd.setShownInUpdateView(false);
             pd.setShownInDetailsView(false);
@@ -196,6 +204,21 @@ public class EHRProperties
         }
     };
 
+    public static SystemProperty ETL_TIMESTAMP = new SystemProperty(URI + "ETLTimestamp", PropertyType.DATE_TIME)
+    {
+        @Override
+        protected PropertyDescriptor constructPropertyDescriptor()
+        {
+            PropertyDescriptor pd = super.constructPropertyDescriptor();
+            pd.setShownInInsertView(false);
+            pd.setShownInUpdateView(false);
+            pd.setShownInDetailsView(false);
+            pd.setHidden(true);
+            pd.setLabel("Last Changed");
+            pd.setName("ts");
+            return pd;
+        }
+    };
 
     static public void register()
     {

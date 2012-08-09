@@ -4,8 +4,7 @@
  * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
  */
 
-var {EHR, LABKEY, Ext, console, init, beforeInsert, afterInsert, beforeUpdate, afterUpdate, beforeDelete, afterDelete, complete} = require("ehr/validation");
-
+var {EHR, LABKEY, Ext, console, init, beforeInsert, afterInsert, beforeUpdate, afterUpdate, beforeDelete, afterDelete, complete} = require("ehr/triggers");
 
 function onBecomePublic(errors, scriptContext, row, oldRow){
     if(scriptContext.extraContext.dataSource != 'etl' && row.additionalServices && row.requestId != null){
@@ -145,8 +144,7 @@ function onBecomePublic(errors, scriptContext, row, oldRow){
 }
 
 function onAfterInsert(scriptContext, errors, row){
-  if (row.additionalServices && row.requestid == null)
-  {
+  if (row.additionalServices && row.requestid == null){
 
       var toAutomaticallyCreate = getAdditionalServices(row.additionalServices);
       console.log(toAutomaticallyCreate);

@@ -6,7 +6,7 @@
         <column name="testid"/>
         <column name="result"/>
         <column name="units"/>
-        <column name="qualResult"/>
+        <column name="qualresult"/>
         <column name="remark"/>
         <column name="qcstate" />
         <column name="taskid" />

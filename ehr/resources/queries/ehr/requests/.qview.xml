@@ -8,10 +8,10 @@
         <column name="notify2"/>
         <column name="notify3"/>
         <!--<column name="pi"/>-->
-        <column name="CreatedBy"/>
-        <column name="Created"/>
+        <column name="createdby"/>
+        <column name="created"/>
        <!--<column name="description"/>-->
-        <!--<column name="QCState">-->
+        <!--<column name="qcstate">-->
             <!--<properties>-->
                 <!--<property name="columnTitle" value="Status"/>-->
             <!--</properties>-->

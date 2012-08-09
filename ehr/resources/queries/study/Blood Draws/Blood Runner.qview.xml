@@ -28,7 +28,7 @@
                 <property name="columnTitle" value="Account"/>
             </properties>
        </column>
-      <!--<column name="Id/mostRecentWeight/mostRecentWeight">-->
+      <!--<column name="Id/mostRecentWeight/MostRecentWeight">-->
         <!--<properties>-->
             <!--<property name="columnTitle" value="Most Recent Weight"/>-->
         <!--</properties>-->
@@ -59,7 +59,7 @@
       </column>
        <!--<column name="taskid" />-->
        <!--<column name="requestid" />-->
-       <column name="qcstate" />
+       <column name="QCState" />
     </columns>
    <sorts>
        <!--<sort column="date" descending="false"/>-->
@@ -69,8 +69,8 @@
        <sort column="Id" descending="false"/>
    </sorts>
     <filters>
-        <filter column="qcstate/label" operator="neq" value="Delete Requested"/>
-        <filter column="qcstate/label" operator="neq" value="Request: Denied"/>
-        <filter column="qcstate/label" operator="neq" value="Request: Pending"/>
+        <filter column="QCState/label" operator="neq" value="Delete Requested"/>
+        <filter column="QCState/label" operator="neq" value="Request: Denied"/>
+        <filter column="QCState/label" operator="neq" value="Request: Pending"/>
     </filters>
 </customView>

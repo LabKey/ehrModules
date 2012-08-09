@@ -25,34 +25,34 @@
                 <property name="columnTitle" value="Title"/>
             </properties>
         </column>
-        <column name="taskid/AssignedTo">
+        <column name="taskid/assignedto">
             <properties>
                 <property name="columnTitle" value="Assigned To"/>
             </properties>
         </column>
-        <column name="taskid/DueDate">
+        <column name="taskid/duedate">
             <properties>
                 <property name="columnTitle" value="Due Date"/>
             </properties>
         </column>
-        <column name="taskid/CreatedBy">
+        <column name="taskid/createdby">
             <properties>
-                <property name="columnTitle" value="Created By"/>
+                <property name="columnTitle" value="created By"/>
             </properties>
         </column>
-        <column name="taskid/Created">
+        <column name="taskid/created">
             <properties>
-                <property name="columnTitle" value="Created"/>
+                <property name="columnTitle" value="created"/>
             </properties>
         </column>
-        <column name="taskid/QCState">
+        <column name="taskid/qcstate">
             <properties>
                 <property name="columnTitle" value="Status"/>
             </properties>
         </column>
    </columns>
    <filters>
-       <filter column="taskid/QCState/PublicData" operator="eq" value="false"/>
+       <filter column="taskid/qcstate/PublicData" operator="eq" value="false"/>
    </filters>
    <sorts>
        <sort column="room" />

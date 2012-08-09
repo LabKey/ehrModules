@@ -1330,16 +1330,6 @@
         <ns:column columnName="subset">
           <ns:isKeyField>true</ns:isKeyField>
         </ns:column>
-      <ns:column columnName="container">
-        <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:nullable>true</ns:nullable>
-        <ns:isHidden>true</ns:isHidden>
-        <ns:fk>
-          <ns:fkDbSchema>core</ns:fkDbSchema>
-          <ns:fkTable>containers</ns:fkTable>
-          <ns:fkColumnName>entityid</ns:fkColumnName>
-        </ns:fk>
-      </ns:column>
       <ns:column columnName="createdby">
         <ns:isUserEditable>false</ns:isUserEditable>
         <ns:nullable>true</ns:nullable>

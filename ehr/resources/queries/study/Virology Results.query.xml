@@ -13,14 +13,14 @@
                     <column columnName="date">
                         <formatString>yyyy-MM-dd</formatString>
                     </column>
-                    <column columnName="parentId">
+                    <column columnName="parentid">
                         <!--<fk>-->
                           <!--<fkDbSchema>study</fkDbSchema>-->
                           <!--<fkTable>Clinpath Runs</fkTable>-->
                           <!--<fkColumnName>objectid</fkColumnName>-->
                         <!--</fk>-->
                     </column>
-                    <column columnName="runId" wrappedColumnName="parentId">
+                    <column columnName="runId" wrappedColumnName="parentid">
                         <isHidden>false</isHidden>
                         <fk>
                           <fkDbSchema>study</fkDbSchema>

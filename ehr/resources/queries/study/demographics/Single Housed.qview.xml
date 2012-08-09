@@ -21,11 +21,7 @@
                 <property name="columnTitle" value="Number of Cagemates"/>
             </properties>
         </column>
-        <column name="gender">
-            <!--<properties>-->
-                <!--<property name="columnTitle" value="Gender"/>-->
-            <!--</properties>-->
-        </column>
+        <column name="gender"/>
         <!--<column name="Status">-->
             <!--<properties>-->
                 <!--<property name="columnTitle" value="Status"/>-->
@@ -46,16 +42,8 @@
                 <property name="columnTitle" value="Avail"/>
             </properties>
         </column>
-        <column name="hold">
-            <!--<properties>-->
-                <!--<property name="columnTitle" value="Hold"/>-->
-            <!--</properties>-->
-        </column>
-        <column name="species">
-            <!--<properties>-->
-                <!--<property name="columnTitle" value="Species"/>-->
-            <!--</properties>-->
-        </column>
+        <column name="hold"/>
+        <column name="species"/>
         <!--<column name="Dataset/Demographics/Dam">-->
             <!--<properties>-->
                 <!--<property name="columnTitle" value="Dam"/>-->
@@ -71,11 +59,7 @@
                 <!--<property name="columnTitle" value="Origin"/>-->
             <!--</properties>-->
         <!--</column>-->
-        <column name="birth">
-            <!--<properties>-->
-                <!--<property name="columnTitle" value="Birth"/>-->
-            <!--</properties>-->
-        </column>
+        <column name="birth"/>
         <!--<column name="Dataset/Demographics/Death">-->
             <!--<properties>-->
                 <!--<property name="columnTitle" value="Death"/>-->
@@ -101,16 +85,8 @@
                 <!--<property name="columnTitle" value="Last TB Date"/>-->
             <!--</properties>-->
         <!--</column>-->
-        <column name="medical">
-            <!--<properties>-->
-                <!--<property name="columnTitle" value="Medical"/>-->
-            <!--</properties>-->
-        </column>
-        <column name="prepaid">
-            <!--<properties>-->
-                <!--<property name="columnTitle" value="Replacement Prepaid By"/>-->
-            <!--</properties>-->
-        </column>
+        <column name="medical"/>
+        <column name="prepaid"/>
         <!--<column name="Dataset/Demographics/v_status">-->
             <!--<properties>-->
                 <!--<property name="columnTitle" value="Viral Status"/>-->

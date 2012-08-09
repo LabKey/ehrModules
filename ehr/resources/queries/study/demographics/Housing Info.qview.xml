@@ -23,11 +23,7 @@
                 <property name="columnTitle" value="Avail"/>
             </properties>
         </column>
-        <column name="birth">
-            <!--<properties>-->
-                <!--<property name="columnTitle" value="Birth"/>-->
-            <!--</properties>-->
-        </column>
+        <column name="birth"/>
         <column name="Id/age/AgeFriendly">
             <properties>
                 <property name="columnTitle" value="Age"/>
@@ -53,11 +49,7 @@
                 <property name="columnTitle" value="Current Weight (kg)"/>
             </properties>
         </column>
-        <column name="Medical">
-            <properties>
-                <property name="columnTitle" value="Medical"/>
-            </properties>
-        </column>
+        <column name="medical"/>
         <column name="Id/numRoommates/cagemates">
             <properties>
                 <property name="columnTitle" value="Cagemates"/>
@@ -68,6 +60,6 @@
         <!--<filter column="qcstate/publicdata" operator="eq" value="true"/>-->
     <!--</filters>-->
     <sorts>
-        <sort column="id" descending="false"/>
+        <sort column="Id" descending="false"/>
     </sorts>
 </customView>

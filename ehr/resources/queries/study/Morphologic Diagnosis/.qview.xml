@@ -2,7 +2,7 @@
   <columns>
       <column name="Id"/>
       <column name="date"/>
-      <column name="caseNo/caseno">
+      <column name="caseno/caseno">
           <properties>
               <property name="columnTitle" value="Case No"/>
           </properties>
@@ -25,7 +25,7 @@
       <column name="taskid" />
    </columns>
    <sorts>
-       <sort column="id" />
+       <sort column="Id" />
        <sort column="date" />
        <sort column="seq1" />
        <sort column="seq2" />

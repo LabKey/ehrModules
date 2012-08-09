@@ -2,7 +2,7 @@
    <columns>
        <column name="project"/>
        <column name="protocol"/>
-       <column name="totalAssigned/ActiveAssignments">
+       <column name="activelyAssigned/ActiveAssignments">
            <properties>
                <property name="columnTitle" value="Animals Assigned"/>
            </properties>

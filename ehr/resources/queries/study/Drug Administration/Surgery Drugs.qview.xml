@@ -12,7 +12,7 @@
        </column>
        <column name="amount"/>
        <column name="amount_units"/>
-       <column name="vol"/>
+       <column name="volume"/>
        <column name="vol_units"/>
        <column name="route"/>
        <column name="remark"/>

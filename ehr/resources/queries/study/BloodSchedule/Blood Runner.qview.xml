@@ -70,8 +70,8 @@
        <sort column="Id" descending="false"/>
    </sorts>
     <filters>
-        <filter column="qcstate/label" operator="neq" value="Delete Requested"/>
-        <filter column="qcstate/label" operator="neq" value="Request: Denied"/>
-        <filter column="qcstate/label" operator="neq" value="Request: Pending"/>
+        <filter column="qcstate/Label" operator="neq" value="Delete Requested"/>
+        <filter column="qcstate/Label" operator="neq" value="Request: Denied"/>
+        <filter column="qcstate/Label" operator="neq" value="Request: Pending"/>
     </filters>
 </customView>

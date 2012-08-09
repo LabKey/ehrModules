@@ -65,7 +65,7 @@
                     <propertyURI>urn:ehr.labkey.org/#Remark</propertyURI>
                     <inputType>textarea</inputType>
                   </column>
-                    <column columnName="parentId">
+                    <column columnName="parentid">
                         <!--<fk>-->
                           <!--<fkDbSchema>study</fkDbSchema>-->
                           <!--<fkTable>studyDataParent</fkTable>-->

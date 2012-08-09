@@ -50,7 +50,7 @@
                             <fkColumnName>sensitivity</fkColumnName>
                         </fk>
                     </column>
-                    <column columnName="runId" wrappedColumnName="parentId">
+                    <column columnName="runId" wrappedColumnName="parentid">
                         <isHidden>false</isHidden>
                         <fk>
                           <fkDbSchema>study</fkDbSchema>
@@ -66,7 +66,7 @@
                             <fkColumnName>result</fkColumnName>
                         </fk>
                     </column>
-                    <column columnName="parentId">
+                    <column columnName="parentid">
                         <!--<fk>-->
                           <!--<fkDbSchema>study</fkDbSchema>-->
                           <!--<fkTable>bacteriologyRuns</fkTable>-->

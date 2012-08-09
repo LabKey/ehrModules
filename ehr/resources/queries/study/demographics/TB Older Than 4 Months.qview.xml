@@ -16,11 +16,7 @@
                 <!--<property name="columnTitle" value="Condition"/>-->
             <!--</properties>-->
         <!--</column>-->
-        <column name="gender">
-            <!--<properties>-->
-                <!--<property name="columnTitle" value="Gender"/>-->
-            <!--</properties>-->
-        </column>
+        <column name="gender"/>
         <!--<column name="Dataset/Demographics/Status">-->
             <!--<properties>-->
                 <!--<property name="columnTitle" value="Status"/>-->

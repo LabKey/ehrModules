@@ -10,7 +10,7 @@
                 <updateUrl />
                 <deleteUrl />
                 <columns>
-                    <!--<column columnName="parentId">-->
+                    <!--<column columnName="parentid">-->
                         <!--<fk>-->
                           <!--<fkDbSchema>study</fkDbSchema>-->
                           <!--<fkTable>encountersParent</fkTable>-->
@@ -154,7 +154,7 @@
                       </fk>
                       -->
                     </column>
-                    <column columnName="caseno" wrappedColumnName="parentId">
+                    <column columnName="caseno" wrappedColumnName="parentid">
                       <isUnselectable>true</isUnselectable>
                       <columnTitle>CaseNo</columnTitle>
                       <fk>

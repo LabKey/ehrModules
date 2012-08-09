@@ -10,7 +10,7 @@
                 <updateUrl />
                 <deleteUrl />
                 <columns>
-                    <column columnName="parentId">
+                    <column columnName="parentid">
                         <!--<fk>-->
                           <!--<fkDbSchema>study</fkDbSchema>-->
                           <!--<fkTable>immunologyRuns</fkTable>-->
@@ -33,7 +33,7 @@
                     <column columnName="units">
                         <displayWidth>60</displayWidth>
                     </column>
-                    <column columnName="runId" wrappedColumnName="parentId">
+                    <column columnName="runId" wrappedColumnName="parentid">
                         <isHidden>false</isHidden>
                         <fk>
                           <fkDbSchema>study</fkDbSchema>

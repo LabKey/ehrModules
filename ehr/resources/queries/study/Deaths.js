@@ -4,10 +4,8 @@
  * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
  */
 
-
-var {EHR, LABKEY, Ext, console, init, beforeInsert, afterInsert, beforeUpdate, afterUpdate, beforeDelete, afterDelete, complete} = require("ehr/validation");
+var {EHR, LABKEY, Ext, console, init, beforeInsert, afterInsert, beforeUpdate, afterUpdate, beforeDelete, afterDelete, complete} = require("ehr/triggers");
 EHR.Server.Utils = require("ehr/utils").EHR.Server.Utils;
-
 
 function onUpsert(context, errors, row, oldRow){
     if(row.Id && row.tattoo && context.extraContext.dataSource != 'etl'){
@@ -19,7 +17,6 @@ function onUpsert(context, errors, row, oldRow){
             EHR.Server.Validation.addError(errors, 'tattoo', 'Id not found in the tattoo', 'INFO');
         }
     }
-    
 }
 
 function getPrincipalIDByProject(projectID) {
@@ -56,6 +53,7 @@ function getPrincipalIDByProject(projectID) {
         console.log('Number of principal investigators for project '+ projectID + ': ' + principals.length);
         return principals;
 }
+
 function getUserID(lastName) {
         var userId;
         LABKEY.Query.selectRows({
@@ -487,4 +485,3 @@ function setDescription(row, errors){
 
     return description;
 }
-

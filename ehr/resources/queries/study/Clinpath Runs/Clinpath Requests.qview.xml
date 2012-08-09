@@ -5,15 +5,15 @@
        <column name="project" />
        <column name="account" />
        <column name="type" />
-       <column name="sampleType" />
-       <column name="serviceRequested" />
+       <column name="sampletype" />
+       <column name="servicerequested" />
        <!--<column name="collectionDate" />-->
        <column name="collectionMethod" />
        <column name="collectedBy" />
        <!--<column name="quantity" />-->
        <!--<column name="quantityUnits" />-->
        <column name="remark" />
-        <column name="Id/Dataset/Demographics/Birth">
+        <column name="Id/Dataset/Demographics/birth">
             <properties>
                 <property name="columnTitle" value="Birth"/>
             </properties>
@@ -32,8 +32,8 @@
        <sort column="Id" descending="false"/>
    </sorts>
     <filters>
-        <filter column="qcstate/label" operator="neq" value="Delete Requested"/>
-        <filter column="qcstate/label" operator="neq" value="Request: Denied"/>
+        <filter column="QCSstate/Label" operator="neq" value="Delete Requested"/>
+        <filter column="QCState/Label" operator="neq" value="Request: Denied"/>
         <!--<filter column="qcstate/label" operator="neq" value="Request: Pending"/>-->
     </filters>
 </customView>

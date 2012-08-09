@@ -4,7 +4,7 @@
         <column name="Id"/>
         <column name="date"/>
         <column name="project"/>
-        <column name="Remark"/>
+        <column name="remark"/>
         <column name="description" />
         <column name="performedby"/>
         <column name="category"/>

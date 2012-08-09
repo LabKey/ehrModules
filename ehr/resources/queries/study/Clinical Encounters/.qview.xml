@@ -5,7 +5,7 @@
         <column name="enddate"/>
         <!--<column name="caseno"/>-->
         <column name="project"/>
-        <column name="Project/protocol">
+        <column name="project/protocol">
             <properties>
                 <property name="columnTitle" value="Protocol"/>
             </properties>

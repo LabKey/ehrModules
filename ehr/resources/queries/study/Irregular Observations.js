@@ -4,15 +4,13 @@
  * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
  */
 
+var {EHR, LABKEY, Ext, console, init, beforeInsert, afterInsert, beforeUpdate, afterUpdate, beforeDelete, afterDelete, complete} = require("ehr/triggers");
 
-var {EHR, LABKEY, Ext, console, init, beforeInsert, afterInsert, beforeUpdate, afterUpdate, beforeDelete, afterDelete, complete} = require("ehr/validation");
-
-function onUpsert(context, errors, row, oldRow){
+function onUpsert(scriptContext, errors, row, oldRow){
 
     //for compatability with the ETL
     if(!row.performedby)
         row.performedby = row.userid;
-
 
     if (
         row.feces ||
@@ -59,7 +57,7 @@ function onUpsert(context, errors, row, oldRow){
 
     //if reporting menses, make sure the anmimal is female
     if(row.menses && row.id)
-        EHR.Server.Validation.verifyIsFemale(row, errors, 'menses');
+        EHR.Server.Validation.verifyIsFemale(row, errors, scriptContext, 'menses');
 
 }
 
@@ -149,5 +147,3 @@ function setDescription(row, errors){
 
     return description;
 }
-
-

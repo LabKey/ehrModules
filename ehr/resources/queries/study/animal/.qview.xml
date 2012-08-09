@@ -26,32 +26,32 @@
                 <property name="columnTitle" value="Avail"/>
             </properties>
         </column>
-        <column name="Dataset/Demographics/Hold">
+        <column name="Dataset/Demographics/hold">
             <properties>
                 <property name="columnTitle" value="Hold"/>
             </properties>
         </column>
-        <column name="Dataset/Demographics/Dam">
+        <column name="Dataset/Demographics/dam">
             <properties>
                 <property name="columnTitle" value="Dam"/>
             </properties>
         </column>
-        <column name="Dataset/Demographics/Sire">
+        <column name="Dataset/Demographics/sire">
             <properties>
                 <property name="columnTitle" value="Sire"/>
             </properties>
         </column>
-        <column name="Dataset/Demographics/Origin">
+        <column name="Dataset/Demographics/origin">
             <properties>
                 <property name="columnTitle" value="Origin"/>
             </properties>
         </column>
-        <column name="Dataset/Demographics/Birth">
+        <column name="Dataset/Demographics/birth">
             <properties>
                 <property name="columnTitle" value="Birth"/>
             </properties>
         </column>
-        <column name="Dataset/Demographics/Death">
+        <column name="Dataset/Demographics/death">
             <properties>
                 <property name="columnTitle" value="Death"/>
             </properties>
@@ -66,17 +66,17 @@
                 <!--<property name="columnTitle" value="Most Recent Departure"/>-->
             <!--</properties>-->
         <!--</column>-->
-        <column name="curLocation/Room">
+        <column name="curLocation/room">
             <properties>
                 <property name="columnTitle" value="Room"/>
             </properties>
         </column>
-        <column name="curLocation/Cage">
+        <column name="curLocation/cage">
             <properties>
                 <property name="columnTitle" value="Cage"/>
             </properties>
         </column>
-        <column name="curLocation/Cond">
+        <column name="curLocation/cond">
             <properties>
                 <property name="columnTitle" value="Condition"/>
             </properties>
@@ -96,16 +96,16 @@
                 <!--<property name="columnTitle" value="Last TB Date"/>-->
             <!--</properties>-->
         <!--</column>-->
-        <column name="Dataset/Demographics/Medical">
+        <column name="Dataset/Demographics/medical">
             <properties>
                 <property name="columnTitle" value="Medical"/>
             </properties>
         </column>
-        <column name="Dataset/Demographics/prepaid">
-            <properties>
-                <property name="columnTitle" value="Replacement Prepaid By"/>
-            </properties>
-        </column>
+        <!--<column name="Dataset/Demographics/prepaid">-->
+            <!--<properties>-->
+                <!--<property name="columnTitle" value="Replacement Prepaid By"/>-->
+            <!--</properties>-->
+        <!--</column>-->
         <!--<column name="Dataset/Demographics/v_status">-->
             <!--<properties>-->
                 <!--<property name="columnTitle" value="Viral Status"/>-->

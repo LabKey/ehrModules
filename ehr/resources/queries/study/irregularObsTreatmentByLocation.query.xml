@@ -29,7 +29,7 @@
                     <column columnName="remark">
                         <displayWidth>250</displayWidth>
                     </column>
-                    <column columnName="Description">
+                    <column columnName="description">
                         <displayWidth>250</displayWidth>
                     </column>
                     <column columnName="dataset">

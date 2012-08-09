@@ -2,7 +2,7 @@
    <columns>
        <column name="protocol"/>
        <column name="approve"/>
-       <column name="species"/>
+       <column name="Species"/>
        <column name="allowed"/>
        <column name="TotalAnimals"/>
        <column name="TotalRemaining"/>

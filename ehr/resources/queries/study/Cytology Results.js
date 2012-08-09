@@ -4,9 +4,11 @@
  * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
  */
 
+var {EHR, LABKEY, Ext, console, init, beforeInsert, afterInsert, beforeUpdate, afterUpdate, beforeDelete, afterDelete, complete} = require("ehr/triggers");
 
-var {EHR, LABKEY, Ext, console, init, beforeInsert, afterInsert, beforeUpdate, afterUpdate, beforeDelete, afterDelete, complete} = require("ehr/validation");
-
+function onInit(event, context){
+    context.extraContext.removeTimeFromDate = true;
+}
 
 function setDescription(row, errors){
     //we need to set description for every field
@@ -36,8 +38,4 @@ function onUpsert(context, errors, row, oldRow){
         EHR.Server.Validation.addError(errors, 'slidesSubmitted', "Number of slides submitted must be less than or equal the number of slides made", 'WARN');
     	}
     }
-
-    if(context.extraContext.dataSource != 'etl')
-        EHR.Server.Validation.removeTimeFromDate(row, errors);
-
 }

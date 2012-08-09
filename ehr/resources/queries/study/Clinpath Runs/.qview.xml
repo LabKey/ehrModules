@@ -5,8 +5,8 @@
        <column name="project" />
        <column name="account" />
        <column name="type" />
-       <column name="sampleType" />
-       <column name="serviceRequested" />
+       <column name="sampletype" />
+       <column name="servicerequested" />
        <!--<column name="collectionDate" />-->
        <column name="collectionMethod" />
        <column name="collectedBy" />

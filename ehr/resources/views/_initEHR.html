@@ -7769,6 +7769,7 @@ var panel = new Ext.Panel({
         text: 'Delete Data From Form Types',
         scope: this,
         handler: function(){
+            pendingDeletes++;
             deleteAll('ehr', 'formtypes', 'rowid')
         }
     },{
@@ -7781,6 +7782,7 @@ var panel = new Ext.Panel({
         text: 'Delete Data From Form Panel Sections',
         scope: this,
         handler: function(){
+            pendingDeletes++;
             deleteAll('ehr', 'formpanelsections', 'rowid')
         }
 //    },{
@@ -7817,6 +7819,7 @@ var panel = new Ext.Panel({
         text: 'Delete Data From Reports',
         scope: this,
         handler: function(){
+            pendingDeletes++;
             deleteAll('ehr', 'reports', 'rowid')
         }
     },{
@@ -7829,6 +7832,7 @@ var panel = new Ext.Panel({
         text: 'Delete Data From SNOMED Subset Codes',
         scope: this,
         handler: function(){
+            pendingDeletes++;
             deleteAll('ehr_lookups', 'snomed_subset_codes', 'rowid')
         }
     },{
@@ -7841,6 +7845,7 @@ var panel = new Ext.Panel({
         text: 'Delete Data From SNOMED Subsets',
         scope: this,
         handler: function(){
+            pendingDeletes++;
             deleteAll('ehr_lookups', 'snomed_subsets', 'subset')
         }
     },{
@@ -7853,6 +7858,7 @@ var panel = new Ext.Panel({
         text: 'Delete Data From Charges',
         scope: this,
         handler: function(){
+            pendingDeletes++;
             deleteAll('ehr_lookups', 'charge_items', 'rowid')
         }
     },{
@@ -7865,6 +7871,7 @@ var panel = new Ext.Panel({
         text: 'Delete Data From SNOMED',
         scope: this,
         handler: function(){
+            pendingDeletes++;
             deleteAll('ehr_lookups', 'snomed', 'code')
         }
     },{
@@ -7877,6 +7884,7 @@ var panel = new Ext.Panel({
         text: 'Delete Data From Module Properties',
         scope: this,
         handler: function(){
+            pendingDeletes++;
             deleteAll('ehr', 'module_properties', 'rowid')
         }
     },{
@@ -7889,6 +7897,7 @@ var panel = new Ext.Panel({
         text: 'Delete Data From Animal Groups',
         scope: this,
         handler: function(){
+            pendingDeletes++;
             deleteAll('ehr', 'animal_groups', 'rowid')
         }
     },{
@@ -7898,12 +7907,13 @@ var panel = new Ext.Panel({
         handler: function(){
             btn1();
             btn2();
-//            btn3();
+//            btn3();  //populate form templates
             btn4();
-//            btn5();
+            btn5();  //populate SNOMED subset codes
+            //btn13();  //populate SNOMED subsets
             btn6();
-//            btn7();
-//            btn10();
+//            btn7();   //delete form templates
+//            btn10();  //populate SNOMED
             btn11();
             btn12();
         }
@@ -7912,13 +7922,14 @@ var panel = new Ext.Panel({
         text: 'Delete All',
         scope: this,
         handler: function(){
-            pendingDeletes=8;
-            deleteAll('ehr', 'formtypes', 'rowid');
-            deleteAll('ehr', 'formpanelsections', 'rowid');
-            deleteAll('ehr', 'formtemplates', 'entityid');
-            deleteAll('ehr', 'formtemplaterecords', 'rowid');
+            pendingDeletes=6;
+            deleteAll('ehr', 'formtypes', 'rowid'); //note: formpanelsections will be deleted by trigger script
+            //deleteAll('ehr', 'formpanelsections', 'rowid');
+            //deleteAll('ehr', 'formtemplates', 'entityid');
+            //deleteAll('ehr', 'formtemplaterecords', 'rowid');
             deleteAll('ehr', 'reports', 'rowid');
-//            deleteAll('ehr_lookups', 'snomed_subset_codes', 'rowid');
+            //deleteAll('ehr_lookups', 'snomed_subsets', 'rowid');
+            deleteAll('ehr_lookups', 'snomed_subset_codes', 'rowid');
             deleteAll('ehr_lookups', 'charge_items', 'rowid');
 //            deleteAll('ehr_lookups', 'snomed', 'code');
             deleteAll('ehr', 'module_properties', 'rowid');

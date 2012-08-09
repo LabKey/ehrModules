@@ -11,7 +11,7 @@
                         <isHidden>false</isHidden>
                         <displayWidth>350</displayWidth>
                     </column>
-                    <column columnName="Description">
+                    <column columnName="description">
                         <isHidden>false</isHidden>
                         <displayWidth>300</displayWidth>
                     </column>
@@ -30,7 +30,7 @@
                         </fk>
                         <formatString>00000000</formatString>
                     </column>
-                    <column columnName="parentId">
+                    <column columnName="parentid">
                         <isHidden>true</isHidden>
                     </column>
                     <column columnName="account">

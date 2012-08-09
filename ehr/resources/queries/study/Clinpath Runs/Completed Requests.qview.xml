@@ -5,15 +5,15 @@
        <column name="project" />
        <column name="account" />
        <column name="type" />
-       <column name="sampleType" />
-       <column name="serviceRequested" />
+       <column name="sampletype" />
+       <column name="servicerequested" />
        <!--<column name="collectionDate" />-->
        <column name="collectionMethod" />
        <column name="collectedBy" />
        <!--<column name="quantity" />-->
        <!--<column name="quantityUnits" />-->
        <column name="remark" />
-        <column name="Id/Dataset/Demographics/Birth">
+        <column name="Id/Dataset/Demographics/birth">
             <properties>
                 <property name="columnTitle" value="Birth"/>
             </properties>
@@ -34,6 +34,6 @@
        <sort column="Id" descending="false"/>
    </sorts>
     <filters>
-        <filter column="qcstate/label" operator="eq" value="Completed"/>
+        <filter column="QCState/Label" operator="eq" value="Completed"/>
     </filters>
 </customView>

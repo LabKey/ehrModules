@@ -17,36 +17,12 @@
                 <property name="columnTitle" value="Avail"/>
             </properties>
         </column>
-        <column name="Hold">
-            <properties>
-                <property name="columnTitle" value="Hold"/>
-            </properties>
-        </column>
-        <column name="Dam">
-            <properties>
-                <property name="columnTitle" value="Dam"/>
-            </properties>
-        </column>
-        <column name="Sire">
-            <properties>
-                <property name="columnTitle" value="Sire"/>
-            </properties>
-        </column>
-        <column name="Origin">
-            <properties>
-                <property name="columnTitle" value="Origin"/>
-            </properties>
-        </column>
-        <column name="Birth">
-            <properties>
-                <property name="columnTitle" value="Birth"/>
-            </properties>
-        </column>
-        <column name="Death">
-            <properties>
-                <property name="columnTitle" value="Death"/>
-            </properties>
-        </column>
+        <column name="hold"/>
+        <column name="dam"/>
+        <column name="sire"/>
+        <column name="origin"/>
+        <column name="birth"/>
+        <column name="death"/>
         <!--<column name="Id/MostRecentArrival/MostRecentArrival">-->
             <!--<properties>-->
                 <!--<property name="columnTitle" value="Most Recent Arrival"/>-->
@@ -57,17 +33,17 @@
                 <!--<property name="columnTitle" value="Most Recent Departure"/>-->
             <!--</properties>-->
         <!--</column>-->
-        <column name="Id/curLocation/Room">
+        <column name="Id/curLocation/room">
             <properties>
                 <property name="columnTitle" value="Room"/>
             </properties>
         </column>
-        <column name="Id/curLocation/Cage">
+        <column name="Id/curLocation/cage">
             <properties>
                 <property name="columnTitle" value="Cage"/>
             </properties>
         </column>
-        <column name="Id/curLocation/Cond">
+        <column name="Id/curLocation/cond">
             <properties>
                 <property name="columnTitle" value="Condition"/>
             </properties>
@@ -87,16 +63,8 @@
                 <!--<property name="columnTitle" value="Last TB Date"/>-->
             <!--</properties>-->
         <!--</column>-->
-        <column name="Medical">
-            <properties>
-                <property name="columnTitle" value="Medical"/>
-            </properties>
-        </column>
-        <column name="prepaid">
-            <properties>
-                <property name="columnTitle" value="Replacement Prepaid By"/>
-            </properties>
-        </column>
+        <column name="medical"/>
+        <column name="prepaid"/>
         <!--<column name="v_status">-->
             <!--<properties>-->
                 <!--<property name="columnTitle" value="Viral Status"/>-->
@@ -104,7 +72,7 @@
         <!--</column>-->
     </columns>
     <sorts>
-        <sort column="id" descending="false"/>
+        <sort column="Id" descending="false"/>
     </sorts>
     <!--<filters>-->
         <!--<filter column="qcstate/publicdata" operator="eq" value="true"/>-->

@@ -2,11 +2,11 @@
    <columns>
        <column name="rowid"/>
        <column name="updateTitle" />
-        <column name="AssignedTo" />
-        <column name="DueDate"/>
-        <column name="CreatedBy"/>
-        <column name="Created"/>
-        <column name="QCState">
+        <column name="assignedto" />
+        <column name="duedate"/>
+        <column name="createdby"/>
+        <column name="created"/>
+        <column name="qcstate">
             <properties>
                 <property name="columnTitle" value="Status"/>
             </properties>
@@ -15,10 +15,10 @@
         <!--<column name="Modified"/>-->
    </columns>
    <filters>
-       <filter column="QCState/Label" operator="eq" value="Review Required"/>
+       <filter column="qcstate/Label" operator="eq" value="Review Required"/>
    </filters>
    <sorts>
-       <sort column="DueDate" descending="true"/>
+       <sort column="duedate" descending="true"/>
        <sort column="created" descending="true"/>
    </sorts>
 </customView>

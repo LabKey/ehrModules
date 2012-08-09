@@ -1,6 +1,6 @@
 <customView xmlns="http://labkey.org/data/xml/queryCustomView">
    <sorts>
-       <sort column="location" />
+       <sort column="Location" />
    </sorts>
     <filters>
         <filter column="cageStatus" operator="eq" value="ERROR"/>

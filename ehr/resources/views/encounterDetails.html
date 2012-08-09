@@ -50,7 +50,7 @@ Ext.onReady(function (){
         showRecordSelectors: true,
         buttonBarPosition: 'top',
         timeout: 0,
-        filterArray: [LABKEY.Filter.create('parentId', LABKEY.ActionURL.getParameter('objectid'), LABKEY.Filter.Types.EQUAL)],
+        filterArray: [LABKEY.Filter.create('parentid', LABKEY.ActionURL.getParameter('objectid'), LABKEY.Filter.Types.EQUAL)],
         sort: '-Date',
         scope: this,
         failure: EHR.Utils.onError

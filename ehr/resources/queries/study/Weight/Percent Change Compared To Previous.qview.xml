@@ -3,7 +3,7 @@
         <column name="Id"/>
         <column name="date" />
         <column name="weight" />
-        <column name="percentChange/prevWeight">
+        <column name="percentChange/PrevWeight">
             <properties>
                 <property name="columnTitle" value="Previous Weight (kg)"/>
             </properties>

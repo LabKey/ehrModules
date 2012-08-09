@@ -11,7 +11,8 @@ SELECT
   b.resultOORIndicator,
   b.result,
   b.qualresult,
-  b.qcstate
+  b.qcstate,
+  b.taskid
 FROM study."Chemistry Results" b
 
 WHERE

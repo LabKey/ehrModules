@@ -24,7 +24,7 @@
                         <formatString>yyyy-MM-dd HH:mm</formatString>
                         <columnTitle>End Date</columnTitle>
                     </column>
-                    <column columnName="parentId">
+                    <column columnName="parentid">
                         <!--<fk>-->
                           <!--<fkDbSchema>study</fkDbSchema>-->
                           <!--<fkTable>studyDataParent</fkTable>-->

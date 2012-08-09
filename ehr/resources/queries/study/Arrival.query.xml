@@ -14,7 +14,7 @@
                         <columnTitle>Arrival Date</columnTitle>
                         <formatString>yyyy-MM-dd HH:mm</formatString>
                     </column>
-                    <column columnName="parentId">
+                    <column columnName="parentid">
                         <!--<fk>-->
                           <!--<fkDbSchema>study</fkDbSchema>-->
                           <!--<fkTable>studyDataParent</fkTable>-->

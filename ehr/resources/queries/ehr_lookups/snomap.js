@@ -5,9 +5,6 @@
  */
 
 var console = require("console");
-//var LABKEY = require("labkey");
-//var Ext = require("Ext").Ext;
-var EHR = {};
 
 console.log("** evaluating: " + this['javax.script.filename']);
 
@@ -19,7 +16,6 @@ function beforeUpdate(row, oldRow, errors){
     beforeBoth(errors, row, oldRow);
 }
 
-
 function beforeBoth(errors, row, oldRow){
     if(row.ncode)
         row.ncode = row.ncode.toLowerCase();
@@ -27,5 +23,3 @@ function beforeBoth(errors, row, oldRow){
         row.ocode = row.ocode.toLowerCase();
 
 }
-
-

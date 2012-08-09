@@ -1,0 +1,1 @@
+ALTER TABLE ehr_lookups.snomed_subsets DROP container;

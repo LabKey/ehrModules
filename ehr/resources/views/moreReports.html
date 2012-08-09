@@ -14,7 +14,7 @@ Ext.onReady(function(){
     new EHR.ext.NavMenu({
         renderTo: webpart.wrapperDivId,
         sections: [
-            {header: 'More Reports',
+            {header: 'Reports',
             items: [
                 {name: 'Blood Needlesticks', url: '<%=contextPath%>/query' + ctx['EHRStudyContainer'] + '/executeQuery.view?schemaName=study&query.queryName=bloodNeedlesticks'},
                 {name: 'Housing By Room and Cage', url: '<%=contextPath%>/query' + ctx['EHRStudyContainer'] + '/executeQuery.view?schemaName=study&query.queryName=housingByRoomCage'},
