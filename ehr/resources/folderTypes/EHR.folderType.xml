@@ -1,0 +1,28 @@
+<folderType xmlns="http://labkey.org/data/xml/folderType">
+    <name>EHR</name>
+    <description>Folder type used for a generic Primate Electronic Health Record installation.  Many centers have folder types tailored specifcally to their institution.</description>
+    <requiredWebParts>
+
+    </requiredWebParts>
+    <preferredWebParts>
+        <webPart>
+            <name>Electronic Health Record</name>
+            <location>body</location>
+        </webPart>
+        <webPart>
+            <name>Electronic Health Record</name>
+            <location>menu</location>
+        </webPart>
+        <webPart>
+            <name>Quick Search</name>
+            <location>menu</location>
+        </webPart>
+    </preferredWebParts>
+    <modules>
+        <moduleName>Portal</moduleName>
+        <moduleName>Study</moduleName>
+        <moduleName>EHR</moduleName>
+    </modules>
+    <defaultModule>Portal</defaultModule>
+    <workbookType>false</workbookType>
+</folderType>

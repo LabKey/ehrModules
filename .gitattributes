@@ -70,6 +70,7 @@ ehr/build.xml -text
 ehr/module.properties -text
 ehr/pipeline/kinship/install.r -text
 ehr/pipeline/kinship/populateKinship.r -text
+ehr/resources/folderTypes/EHR.folderType.xml -text
 ehr/resources/module.xml -text
 ehr/resources/queries/auditLog/DatasetAuditEvent.query.xml -text
 ehr/resources/queries/auditLog/DatasetAuditEvent/.qview.xml -text
