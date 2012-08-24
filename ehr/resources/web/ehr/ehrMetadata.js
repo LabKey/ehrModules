@@ -281,13 +281,13 @@ EHR.Metadata.Sources.Standard = {
         ,daterequested: {
             xtype: 'xdatetime',
             noDuplicateByDefault: true,
-            format: 'Y-m-d H:i'
+            extFormat: 'Y-m-d H:i'
         }
         ,date: {
             allowBlank: false,
             nullable: false,
             //noDuplicateByDefault: true,
-            format: 'Y-m-d H:i',
+            extFormat: 'Y-m-d H:i',
             editorConfig: {
                 dateFormat: 'Y-m-d',
                 otherToNow: true,
@@ -315,7 +315,7 @@ EHR.Metadata.Sources.Standard = {
         ,begindate: {
             xtype: 'xdatetime',
             hidden: true,
-            format: 'Y-m-d H:i',
+            extFormat: 'Y-m-d H:i',
             editorConfig: {
                 dateFormat: 'Y-m-d',
                 timeFormat: 'H:i'
@@ -358,7 +358,7 @@ EHR.Metadata.Sources.Standard = {
                 fixed: true,
                 width: 130
             },
-            format: 'Y-m-d H:i',
+            extFormat: 'Y-m-d H:i',
             editorConfig: {
                 dateFormat: 'Y-m-d',
                 timeFormat: 'H:i'
@@ -726,7 +726,7 @@ EHR.Metadata.Sources.Standard = {
             },
             date: {
                 xtype: 'datefield'
-                ,format: 'Y-m-d'
+                ,extFormat: 'Y-m-d'
             },
             method: {
                 shownInGrid: false
@@ -782,7 +782,7 @@ EHR.Metadata.Sources.Standard = {
         },
         'Prenatal Deaths': {
             conception: {
-                format: 'Y-m-d'
+                extFormat: 'Y-m-d'
             }
             ,weight: {
                 useNull: true
@@ -848,7 +848,7 @@ EHR.Metadata.Sources.Standard = {
             }
             ,date: {
                 xtype: 'datefield'
-                ,format: 'Y-m-d'
+                ,extFormat: 'Y-m-d'
             }
             ,method: {
                 shownInGrid: false
@@ -973,7 +973,7 @@ EHR.Metadata.Sources.Standard = {
             ,enddate: {
                 //hidden: true
                 xtype: 'xdatetime',
-                format: 'Y-m-d H:i',
+                extFormat: 'Y-m-d H:i',
                 shownInGrid: false
             }
             ,remark: {
@@ -1070,7 +1070,7 @@ EHR.Metadata.Sources.Standard = {
         'Clinpath Runs': {
             date: {
                 xtype: 'datefield',
-                format: 'Y-m-d'
+                extFormat: 'Y-m-d'
             },
             collectionMethod : {
             	shownInGrid: false
@@ -1140,7 +1140,7 @@ EHR.Metadata.Sources.Standard = {
         'Treatment Orders': {
             date: {
                 xtype: 'datefield',
-                format: 'Y-m-d',
+                extFormat: 'Y-m-d',
                 allowBlank: false,
                 setInitialValue: function(v, rec)
                 {
@@ -1154,7 +1154,7 @@ EHR.Metadata.Sources.Standard = {
             }
             ,enddate: {
                 xtype: 'datefield',
-                format: 'Y-m-d',
+                extFormat: 'Y-m-d',
                 colModel: {
                     //fixed: true,
                     width: 100
@@ -1363,11 +1363,11 @@ EHR.Metadata.Sources.Standard = {
             },
             date: {
                 xtype: 'datefield',
-                format: 'Y-m-d'
+                extFormat: 'Y-m-d'
             },
             enddate: {
                 xtype: 'datefield',
-                format: 'Y-m-d'
+                extFormat: 'Y-m-d'
             }
         },
         Necropsies: {
@@ -1401,7 +1401,7 @@ EHR.Metadata.Sources.Standard = {
 //            },
 //            perfusion_time1: {
 //                xtype: 'xdatetime',
-//                format: 'Y-m-d H:i',
+//                extFormat: 'Y-m-d H:i',
 //                editorConfig: {
 //                    dateFormat: 'Y-m-d',
 //                    timeFormat: 'H:i'
@@ -1409,7 +1409,7 @@ EHR.Metadata.Sources.Standard = {
 //            },
 //            perfusion_time2: {
 //                xtype: 'xdatetime',
-//                format: 'Y-m-d H:i',
+//                extFormat: 'Y-m-d H:i',
 //                editorConfig: {
 //                    dateFormat: 'Y-m-d',
 //                    timeFormat: 'H:i'
@@ -1417,7 +1417,7 @@ EHR.Metadata.Sources.Standard = {
 //            },
             timeofdeath: {
                 xtype: 'xdatetime',
-                format: 'Y-m-d H:i',
+                extFormat: 'Y-m-d H:i',
                 allowBlank: false,
                 editorConfig: {
                     dateFormat: 'Y-m-d',
@@ -1961,7 +1961,7 @@ EHR.Metadata.Sources.Standard = {
             },
             date: {
                 xtype: 'datefield',
-                format: 'Y-m-d'
+                extFormat: 'Y-m-d'
             }
         },
         'Chemistry Results': {
@@ -2005,7 +2005,7 @@ EHR.Metadata.Sources.Standard = {
             }
             ,date: {
                 xtype: 'datefield'
-                ,format: 'Y-m-d'
+                ,extFormat: 'Y-m-d'
             }
             ,method: {
                 shownInGrid: false
@@ -2064,7 +2064,7 @@ EHR.Metadata.Sources.Standard = {
             },
         	date: {
         		xtype: 'datefield',
-        		format: 'Y-m-d'
+        		extFormat: 'Y-m-d'
         	},
         	remark: {
                 shownInGrid: false
@@ -2074,7 +2074,7 @@ EHR.Metadata.Sources.Standard = {
         	
         	date: {
         		xtype: 'datefield',
-        		format: 'Y-m-d'
+        		extFormat: 'Y-m-d'
         	},
         	sampleType: {
         		lookup: {
@@ -2148,7 +2148,7 @@ EHR.Metadata.Sources.Standard = {
             }
             ,date: {
                 xtype: 'datefield'
-                ,format: 'Y-m-d'
+                ,extFormat: 'Y-m-d'
             }
             ,method: {
                 shownInGrid: false
@@ -2178,7 +2178,7 @@ EHR.Metadata.Sources.Standard = {
             }
             ,date: {
                 xtype: 'datefield'
-                ,format: 'Y-m-d'
+                ,extFormat: 'Y-m-d'
             }
             ,method: {
                 shownInGrid: false
@@ -2228,7 +2228,7 @@ EHR.Metadata.Sources.Standard = {
             }
             ,date: {
                 xtype: 'datefield'
-                ,format: 'Y-m-d'
+                ,extFormat: 'Y-m-d'
             }
             ,method: {
                 shownInGrid: false
@@ -2240,7 +2240,7 @@ EHR.Metadata.Sources.Standard = {
         'Virology Results': {
             date: {
                 xtype: 'datefield'
-                ,format: 'Y-m-d'
+                ,extFormat: 'Y-m-d'
             },
             method: {
                 shownInGrid: false
@@ -2252,7 +2252,7 @@ EHR.Metadata.Sources.Standard = {
         'Hematology Morphology': {
             date: {
                 xtype: 'datefield'
-                ,format: 'Y-m-d'
+                ,extFormat: 'Y-m-d'
             }
         },
         'Irregular Observations': {
@@ -2841,11 +2841,11 @@ EHR.Metadata.Sources.Standard = {
         'Problem List': {
             date: {
                 xtype: 'datefield',
-                format: 'Y-m-d'
+                extFormat: 'Y-m-d'
             },
             enddate: {
                 xtype: 'datefield',
-                format: 'Y-m-d'
+                extFormat: 'Y-m-d'
             },
             project: {hidden: true},
             account: {hidden: true},
@@ -2911,7 +2911,7 @@ EHR.Metadata.Sources.Standard = {
             },
             date: {
                 xtype: 'datefield',
-                format: 'Y-m-d'
+                extFormat: 'Y-m-d'
             }
         },
         Weight: {
@@ -3293,7 +3293,7 @@ EHR.Metadata.Sources.Request = {
         requests: {
             daterequested: {
                 xtype: 'datefield',
-                format: 'Y-m-d'
+                extFormat: 'Y-m-d'
                 //nullable: false
             }
         },

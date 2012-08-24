@@ -74,7 +74,7 @@ EHR.Server.Utils = new function(){
          * */
         onFailure: function(error){
             var stackTrace = (error.stackTrace && Ext.isArray(error.stackTrace) ? error.stackTrace.join('\n') : null);
-            var message  = error.exception || error.statusText || error.msg || error.message;
+            var message  = error.exception || error.statusText || error.msg || error.message || '';
 
             var toLog = [
                 'User: ' + LABKEY.Security.currentUser.email,
@@ -129,6 +129,20 @@ EHR.Server.Utils = new function(){
 
             }
             return mString;
+        },
+
+        /**
+         * Used to normalize a java.util.date object into a javascript date object
+         * @param date
+         */
+        normalizeDate: function(date){
+            if(!date)
+                return date;
+
+            if(LABKEY.ExtAdapter.isString(date))
+                return new Date(date);
+
+            return new Date(date.getTime());
         }
     }
 };

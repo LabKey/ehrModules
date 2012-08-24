@@ -115,6 +115,18 @@
                             <fkColumnName>category</fkColumnName>
                         </fk>
                     </column>
+                    <column columnName="qualifier">
+                        <columnTitle>Qualifier</columnTitle>
+                    </column>
+                    <column columnName="begindate">
+                        <columnTitle>Begin Date</columnTitle>
+                    </column>
+                    <column columnName="category">
+                        <columnTitle>Category</columnTitle>
+                    </column>
+                    <column columnName="dosage">
+                        <columnTitle>Dosage</columnTitle>
+                    </column>
                 </columns>
             </table>
         </tables>

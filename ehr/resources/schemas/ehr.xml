@@ -1,1494 +1,1595 @@
 <ns:tables xmlns:ns="http://labkey.org/data/xml">
-  <ns:table tableName="module_properties" tableDbType="TABLE">
-    <ns:pkColumnName>rowid</ns:pkColumnName>
-    <ns:columns>
-      <ns:column columnName="rowid">
-        <ns:shownInInsertView>false</ns:shownInInsertView>
-        <ns:isAutoInc>true</ns:isAutoInc>
-        <ns:isKeyField>true</ns:isKeyField>
-      </ns:column>
-      <ns:column columnName="prop_name">
-        <ns:nullable>true</ns:nullable>
-        <ns:isKeyField>true</ns:isKeyField>
-      </ns:column>
-      <ns:column columnName="stringvalue">
-        <ns:nullable>true</ns:nullable>
-      </ns:column>
-      <ns:column columnName="floatvalue">
-        <ns:nullable>true</ns:nullable>
-      </ns:column>
-      <ns:column columnName="container">
-        <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:isHidden>true</ns:isHidden>
-        <ns:fk>
-          <ns:fkDbSchema>core</ns:fkDbSchema>
-          <ns:fkTable>containers</ns:fkTable>
-          <ns:fkColumnName>entityid</ns:fkColumnName>
-        </ns:fk>
-      </ns:column>
-      <ns:column columnName="createdby">
-        <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:nullable>true</ns:nullable>
-        <ns:isHidden>true</ns:isHidden>
-      </ns:column>
-      <ns:column columnName="created">
-        <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:nullable>true</ns:nullable>
-        <ns:isHidden>true</ns:isHidden>
-      </ns:column>
-      <ns:column columnName="modifiedby">
-        <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:nullable>true</ns:nullable>
-        <ns:isHidden>true</ns:isHidden>
-      </ns:column>
-      <ns:column columnName="modified">
-        <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:nullable>true</ns:nullable>
-        <ns:isHidden>true</ns:isHidden>
-      </ns:column>
-    </ns:columns>
-  </ns:table>
-  <ns:table tableName="site_module_properties" tableDbType="TABLE">
-    <ns:pkColumnName>prop_name</ns:pkColumnName>
-    <ns:columns>
-      <ns:column columnName="prop_name">
-        <ns:nullable>true</ns:nullable>
-      </ns:column>
-      <ns:column columnName="stringvalue">
-        <ns:nullable>true</ns:nullable>
-      </ns:column>
-      <ns:column columnName="floatvalue">
-        <ns:nullable>true</ns:nullable>
-      </ns:column>
-      <ns:column columnName="createdby">
-        <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:nullable>true</ns:nullable>
-        <ns:isHidden>true</ns:isHidden>
-      </ns:column>
-      <ns:column columnName="created">
-        <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:nullable>true</ns:nullable>
-        <ns:isHidden>true</ns:isHidden>
-      </ns:column>
-      <ns:column columnName="modifiedby">
-        <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:nullable>true</ns:nullable>
-        <ns:isHidden>true</ns:isHidden>
-      </ns:column>
-      <ns:column columnName="modified">
-        <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:nullable>true</ns:nullable>
-        <ns:isHidden>true</ns:isHidden>
-      </ns:column>
-    </ns:columns>
-  </ns:table>
-  <ns:table tableName="snomed_tags" tableDbType="TABLE">
-    <ns:importUrl></ns:importUrl>
-    <ns:insertUrl></ns:insertUrl>
-    <ns:updateUrl></ns:updateUrl>
-    <ns:deleteUrl></ns:deleteUrl>
-    <ns:pkColumnName>rowid</ns:pkColumnName>
-    <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr&amp;query.queryName=snomed_tags&amp;rowid=${rowid}</ns:tableUrl>
-    <ns:columns>
-      <ns:column columnName="rowid">
-        <ns:shownInInsertView>false</ns:shownInInsertView>
-        <ns:isAutoInc>true</ns:isAutoInc>
-        <ns:isKeyField>true</ns:isKeyField>
-      </ns:column>
-      <ns:column columnName="container">
-        <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:isHidden>true</ns:isHidden>
-        <ns:fk>
-          <ns:fkDbSchema>core</ns:fkDbSchema>
-          <ns:fkTable>containers</ns:fkTable>
-          <ns:fkColumnName>entityid</ns:fkColumnName>
-        </ns:fk>
-      </ns:column>
-      <ns:column columnName="createdby">
-        <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:nullable>true</ns:nullable>
-        <ns:isHidden>true</ns:isHidden>
-      </ns:column>
-      <ns:column columnName="created">
-        <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:nullable>true</ns:nullable>
-        <ns:isHidden>true</ns:isHidden>
-      </ns:column>
-      <ns:column columnName="modifiedby">
-        <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:nullable>true</ns:nullable>
-        <ns:isHidden>true</ns:isHidden>
-      </ns:column>
-      <ns:column columnName="modified">
-        <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:nullable>true</ns:nullable>
-        <ns:isHidden>true</ns:isHidden>
-      </ns:column>
-      <ns:column columnName="recordId">
-        <ns:nullable>true</ns:nullable>
-      </ns:column>
-      <ns:column columnName="code">
-        <ns:nullable>true</ns:nullable>
-          <ns:fk>
-            <ns:fkDbSchema>ehr_lookups</ns:fkDbSchema>
-            <ns:fkTable>snomed</ns:fkTable>
-            <ns:fkColumnName>code</ns:fkColumnName>
-          </ns:fk>
-      </ns:column>
-    </ns:columns>
-  </ns:table>
-  <ns:table tableName="tasks" tableDbType="TABLE">
-    <ns:pkColumnName>taskid</ns:pkColumnName>
-    <ns:columns>
-      <ns:column columnName="taskid">
-        <ns:isKeyField>true</ns:isKeyField>
-      </ns:column>
-      <ns:column columnName="rowid">
-        <ns:shownInInsertView>false</ns:shownInInsertView>
-        <ns:isAutoInc>true</ns:isAutoInc>
-      </ns:column>
-      <ns:column columnName="title">
-        <ns:nullable>false</ns:nullable>
-      </ns:column>
-      <ns:column columnName="formtype">
-        <ns:nullable>true</ns:nullable>
-          <ns:fk>
-            <ns:fkDbSchema>ehr</ns:fkDbSchema>
-            <ns:fkTable>formtypes</ns:fkTable>
-            <ns:fkColumnName>formtype</ns:fkColumnName>
-          </ns:fk>
-      </ns:column>
-      <ns:column columnName="category">
-        <ns:nullable>false</ns:nullable>
-      </ns:column>
-      <ns:column columnName="requestId">
-      </ns:column>
-      <ns:column columnName="qcstate">
-        <ns:nullable>true</ns:nullable>
-        <ns:fk>
-          <ns:fkDbSchema>study</ns:fkDbSchema>
-          <ns:fkTable>QCState</ns:fkTable>
-          <ns:fkColumnName>rowid</ns:fkColumnName>
-        </ns:fk>
-      </ns:column>
-      <ns:column columnName="assignedto">
-        <ns:nullable>true</ns:nullable>
-      </ns:column>
-      <ns:column columnName="duedate">
-        <ns:nullable>true</ns:nullable>
-      </ns:column>
-      <ns:column columnName="datecompleted">
-          <ns:nullable>true</ns:nullable>
-          <ns:columnTitle>Date Finalized</ns:columnTitle>
-      </ns:column>
-      <ns:column columnName="container">
-        <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:isHidden>true</ns:isHidden>
-        <ns:fk>
-          <ns:fkDbSchema>core</ns:fkDbSchema>
-          <ns:fkTable>containers</ns:fkTable>
-          <ns:fkColumnName>entityid</ns:fkColumnName>
-        </ns:fk>
-      </ns:column>
-      <ns:column columnName="createdby">
-        <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:nullable>true</ns:nullable>
-        <ns:isHidden>true</ns:isHidden>
-      </ns:column>
-      <ns:column columnName="created">
-        <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:nullable>true</ns:nullable>
-        <ns:isHidden>true</ns:isHidden>
-      </ns:column>
-      <ns:column columnName="modifiedby">
-        <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:nullable>true</ns:nullable>
-        <ns:isHidden>true</ns:isHidden>
-      </ns:column>
-      <ns:column columnName="modified">
-        <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:nullable>true</ns:nullable>
-        <ns:isHidden>true</ns:isHidden>
-      </ns:column>
-      <ns:column columnName="description">
-        <ns:nullable>true</ns:nullable>
-      </ns:column>
-    </ns:columns>
-  </ns:table>
-  <ns:table tableName="requests" tableDbType="TABLE">
-    <ns:pkColumnName>requestid</ns:pkColumnName>
-    <ns:columns>
-      <ns:column columnName="requestid">
-        <ns:isKeyField>true</ns:isKeyField>
-      </ns:column>
-      <ns:column columnName="rowid">
-        <ns:shownInInsertView>false</ns:shownInInsertView>
-        <ns:isAutoInc>true</ns:isAutoInc>
-      </ns:column>
-      <ns:column columnName="title">
-        <ns:nullable>true</ns:nullable>
-      </ns:column>
-      <ns:column columnName="notify1">
-        <ns:nullable>true</ns:nullable>
-        <ns:fk>
-            <ns:fkDbSchema>core</ns:fkDbSchema>
-            <ns:fkTable>PrincipalsWithoutAdmin</ns:fkTable>
-            <ns:fkColumnName>userid</ns:fkColumnName>
-        </ns:fk>
-      </ns:column>
-      <ns:column columnName="notify2">
-        <ns:nullable>true</ns:nullable>
-        <ns:fk>
-            <ns:fkDbSchema>core</ns:fkDbSchema>
-            <ns:fkTable>PrincipalsWithoutAdmin</ns:fkTable>
-            <ns:fkColumnName>userid</ns:fkColumnName>
-        </ns:fk>
-      </ns:column>
-      <ns:column columnName="notify3">
-        <ns:nullable>true</ns:nullable>
-        <ns:fk>
-            <ns:fkDbSchema>core</ns:fkDbSchema>
-            <ns:fkTable>PrincipalsWithoutAdmin</ns:fkTable>
-            <ns:fkColumnName>userid</ns:fkColumnName>
-        </ns:fk>
-      </ns:column>
-      <ns:column columnName="pi">
-        <ns:nullable>true</ns:nullable>
-      </ns:column>
-      <ns:column columnName="priority">
-        <ns:nullable>true</ns:nullable>
-      </ns:column>
-      <ns:column columnName="formtype">
-        <ns:nullable>true</ns:nullable>
-          <ns:fk>
-            <ns:fkDbSchema>ehr</ns:fkDbSchema>
-            <ns:fkTable>formtypes</ns:fkTable>
-            <ns:fkColumnName>formtype</ns:fkColumnName>
-          </ns:fk>
-      </ns:column>
-      <ns:column columnName="daterequested">
-        <ns:nullable>true</ns:nullable>
-      </ns:column>
-      <ns:column columnName="enddate">
-        <ns:nullable>true</ns:nullable>
-      </ns:column>
-      <ns:column columnName="qcstate">
-        <ns:nullable>true</ns:nullable>
-        <ns:fk>
-          <ns:fkDbSchema>study</ns:fkDbSchema>
-          <ns:fkTable>QCState</ns:fkTable>
-          <ns:fkColumnName>rowid</ns:fkColumnName>
-        </ns:fk>
-      </ns:column>
-      <ns:column columnName="remark">
-        <ns:nullable>true</ns:nullable>
-      </ns:column>
-      <ns:column columnName="description">
-        <ns:nullable>true</ns:nullable>
-      </ns:column>
-      <ns:column columnName="container">
-        <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:isHidden>true</ns:isHidden>
-        <ns:fk>
-          <ns:fkDbSchema>core</ns:fkDbSchema>
-          <ns:fkTable>containers</ns:fkTable>
-          <ns:fkColumnName>entityid</ns:fkColumnName>
-        </ns:fk>
-      </ns:column>
-      <ns:column columnName="createdby">
-        <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:nullable>true</ns:nullable>
-        <ns:isHidden>true</ns:isHidden>
-      </ns:column>
-      <ns:column columnName="created">
-        <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:nullable>true</ns:nullable>
-        <ns:isHidden>true</ns:isHidden>
-      </ns:column>
-      <ns:column columnName="modifiedby">
-        <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:nullable>true</ns:nullable>
-        <ns:isHidden>true</ns:isHidden>
-      </ns:column>
-      <ns:column columnName="modified">
-        <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:nullable>true</ns:nullable>
-        <ns:isHidden>true</ns:isHidden>
-      </ns:column>
-    </ns:columns>
-  </ns:table>
-  <ns:table tableName="reports" tableDbType="TABLE">
-    <ns:importUrl></ns:importUrl>
-    <ns:insertUrl></ns:insertUrl>
-    <ns:updateUrl></ns:updateUrl>
-    <ns:deleteUrl></ns:deleteUrl>
-    <ns:pkColumnName>rowid</ns:pkColumnName>
-    <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr&amp;query.queryName=reports&amp;rowid=${rowid}</ns:tableUrl>
-    <ns:columns>
-      <ns:column columnName="rowid">
-        <ns:shownInInsertView>false</ns:shownInInsertView>
-        <ns:isAutoInc>true</ns:isAutoInc>
-        <ns:isKeyField>true</ns:isKeyField>
-      </ns:column>
-      <ns:column columnName="reportname">
-        <ns:columnTitle>Report Name</ns:columnTitle>
-        <ns:nullable>true</ns:nullable>
-      </ns:column>
-      <ns:column columnName="category">
-        <ns:nullable>true</ns:nullable>
-      </ns:column>
-      <ns:column columnName="reporttype">
-        <ns:columnTitle>Report Type</ns:columnTitle>
-        <ns:nullable>true</ns:nullable>
-      </ns:column>
-      <ns:column columnName="reporttitle">
-        <ns:columnTitle>Report Title</ns:columnTitle>
-        <ns:nullable>true</ns:nullable>
-      </ns:column>
-      <ns:column columnName="visible">
-        <ns:nullable>true</ns:nullable>
-      </ns:column>
-        <ns:column columnName="sort_order">
-          <ns:nullable>true</ns:nullable>
-        </ns:column>
-      <ns:column columnName="containerpath">
-        <ns:columnTitle>Container Path</ns:columnTitle>
-        <ns:nullable>true</ns:nullable>
-      </ns:column>
-      <ns:column columnName="schemaname">
-        <ns:columnTitle>Schema Name</ns:columnTitle>
-        <ns:nullable>true</ns:nullable>
-      </ns:column>
-      <ns:column columnName="queryname">
-        <ns:columnTitle>Query Name</ns:columnTitle>
-        <ns:nullable>true</ns:nullable>
-      </ns:column>
-      <ns:column columnName="viewname">
-        <ns:columnTitle>View Name</ns:columnTitle>
-        <ns:nullable>true</ns:nullable>
-      </ns:column>
-      <ns:column columnName="report">
-        <ns:columnTitle>Report Path</ns:columnTitle>
-        <ns:nullable>true</ns:nullable>
-      </ns:column>
-      <ns:column columnName="datefieldname">
-        <ns:columnTitle>Date Field Name</ns:columnTitle>
-        <ns:nullable>true</ns:nullable>
-      </ns:column>
-      <ns:column columnName="todayonly">
-        <ns:nullable>true</ns:nullable>
-        <ns:columnTitle>By Default, This Query Should Be Filtered To Show Today's Data</ns:columnTitle>
-      </ns:column>
-      <ns:column columnName="queryhaslocation">
-        <ns:nullable>true</ns:nullable>
-        <ns:columnTitle>Query Contains Fields For Room/Cage?</ns:columnTitle>
-      </ns:column>
-      <ns:column columnName="QCStatePublicDataFieldName">
-        <ns:nullable>true</ns:nullable>
-        <ns:columnTitle>QCState PublicData Field Name</ns:columnTitle>
-      </ns:column>
-      <ns:column columnName="jsonConfig">
-        <ns:nullable>true</ns:nullable>
-        <ns:columnTitle>JSON Config</ns:columnTitle>
-      </ns:column>
-      <ns:column columnName="description">
-        <ns:nullable>true</ns:nullable>
-      </ns:column>
-      <ns:column columnName="container">
-        <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:isHidden>true</ns:isHidden>
-        <ns:fk>
-          <ns:fkDbSchema>core</ns:fkDbSchema>
-          <ns:fkTable>containers</ns:fkTable>
-          <ns:fkColumnName>entityid</ns:fkColumnName>
-        </ns:fk>
-      </ns:column>
-      <ns:column columnName="createdby">
-        <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:nullable>true</ns:nullable>
-        <ns:isHidden>true</ns:isHidden>
-      </ns:column>
-      <ns:column columnName="created">
-        <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:nullable>true</ns:nullable>
-        <ns:isHidden>true</ns:isHidden>
-      </ns:column>
-      <ns:column columnName="modifiedby">
-        <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:nullable>true</ns:nullable>
-        <ns:isHidden>true</ns:isHidden>
-      </ns:column>
-      <ns:column columnName="modified">
-        <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:nullable>true</ns:nullable>
-        <ns:isHidden>true</ns:isHidden>
-      </ns:column>
-    </ns:columns>
-  </ns:table>
-  <ns:table tableName="cage_observations" tableDbType="TABLE">
-    <ns:importUrl></ns:importUrl>
-    <ns:insertUrl></ns:insertUrl>
-    <ns:updateUrl></ns:updateUrl>
-    <ns:deleteUrl></ns:deleteUrl>
-    <ns:tableTitle>Cage Observations</ns:tableTitle>
-    <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr&amp;query.queryName=cage_observations&amp;rowid=${rowid}</ns:tableUrl>
-    <ns:columns>
-      <ns:column columnName="date">
-        <ns:nullable>false</ns:nullable>
-        <ns:formatString>yyyy-MM-dd</ns:formatString>
-        <ns:columnTitle>Date</ns:columnTitle>
-      </ns:column>
-      <!--<ns:column columnName="roomcage">-->
-        <!--<ns:columnTitle>Room/Cage</ns:columnTitle>-->
-        <!--<ns:nullable>false</ns:nullable>-->
-      <!--</ns:column>-->
-      <ns:column columnName="room">
-        <ns:nullable>false</ns:nullable>
-        <ns:columnTitle>Room</ns:columnTitle>
-      </ns:column>
-      <ns:column columnName="cage">
-        <ns:columnTitle>Cage</ns:columnTitle>
-      </ns:column>
-      <ns:column columnName="feces">
-        <ns:columnTitle>Feces</ns:columnTitle>
-      </ns:column>
-      <ns:column columnName="remark">
-        <ns:columnTitle>Remark</ns:columnTitle>
-        <ns:propertyURI>urn:ehr.labkey.org/#Remark</ns:propertyURI>
-        <ns:inputType>textarea</ns:inputType>
-      </ns:column>
-      <ns:column columnName="no_observations">
-        <ns:nullable>true</ns:nullable>
-        <ns:columnTitle>Everything Is OK</ns:columnTitle>
-      </ns:column>
-      <ns:column columnName="userid">
-        <ns:columnTitle>UserID</ns:columnTitle>
-        <!--<ns:fk>-->
-          <!--<ns:fkDbSchema>core</ns:fkDbSchema>-->
-          <!--<ns:fkTable>Users</ns:fkTable>-->
-          <!--<ns:fkColumnName>UserId</ns:fkColumnName>-->
-        <!--</ns:fk>-->
-      </ns:column>
-      <ns:column columnName="qcstate">
-        <ns:nullable>true</ns:nullable>
-        <ns:fk>
-          <ns:fkDbSchema>study</ns:fkDbSchema>
-          <ns:fkTable>QCState</ns:fkTable>
-          <ns:fkColumnName>rowid</ns:fkColumnName>
-        </ns:fk>
-      </ns:column>
-      <ns:column columnName="objectid">
-        <ns:columnTitle>ObjectId</ns:columnTitle>
-        <ns:shownInInsertView>false</ns:shownInInsertView>
-        <ns:shownInUpdateView>false</ns:shownInUpdateView>
-        <ns:shownInDetailsView>false</ns:shownInDetailsView>
-        <ns:isHidden>true</ns:isHidden>
-        <!--<ns:isKeyField>true</ns:isKeyField>-->
-      </ns:column>
-      <ns:column columnName="rowid">
-        <ns:columnTitle>Key</ns:columnTitle>
-        <ns:shownInInsertView>false</ns:shownInInsertView>
-        <ns:shownInUpdateView>false</ns:shownInUpdateView>
-        <ns:shownInDetailsView>false</ns:shownInDetailsView>
-        <ns:isHidden>true</ns:isHidden>
-        <ns:isKeyField>true</ns:isKeyField>
-      </ns:column>
-      <!--<ns:column columnName="ts">-->
-        <!--<ns:columnTitle>Last Changed</ns:columnTitle>-->
-        <!--<ns:shownInInsertView>false</ns:shownInInsertView>-->
-        <!--<ns:shownInUpdateView>false</ns:shownInUpdateView>-->
-        <!--<ns:shownInDetailsView>false</ns:shownInDetailsView>-->
-        <!--<ns:isHidden>true</ns:isHidden>-->
-      <!--</ns:column>-->
-      <ns:column columnName="description">
-        <ns:columnTitle>Description</ns:columnTitle>
-        <ns:propertyURI>urn:ehr.labkey.org/#Description</ns:propertyURI>
-        <ns:shownInInsertView>false</ns:shownInInsertView>
-        <ns:shownInUpdateView>false</ns:shownInUpdateView>
-        <ns:shownInDetailsView>false</ns:shownInDetailsView>
-        <ns:isHidden>true</ns:isHidden>
-        <ns:inputType>textarea</ns:inputType>
-      </ns:column>
-      <ns:column columnName="parentid">
-        <ns:columnTitle>Parent Id</ns:columnTitle>
-        <ns:propertyURI>urn:ehr.labkey.org/#ParentId</ns:propertyURI>
-      </ns:column>
-      <ns:column columnName="taskid">
-        <ns:columnTitle>Task Id</ns:columnTitle>
-        <ns:propertyURI>urn:ehr.labkey.org/#TaskId</ns:propertyURI>
-      </ns:column>
-      <ns:column columnName="container">
-        <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:isHidden>true</ns:isHidden>
-        <ns:fk>
-          <ns:fkDbSchema>core</ns:fkDbSchema>
-          <ns:fkTable>containers</ns:fkTable>
-          <ns:fkColumnName>entityid</ns:fkColumnName>
-        </ns:fk>
-      </ns:column>
-      <ns:column columnName="createdby">
-        <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:nullable>true</ns:nullable>
-        <ns:isHidden>true</ns:isHidden>
-      </ns:column>
-      <ns:column columnName="created">
-        <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:nullable>true</ns:nullable>
-        <ns:isHidden>true</ns:isHidden>
-      </ns:column>
-      <ns:column columnName="modifiedby">
-        <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:nullable>true</ns:nullable>
-        <ns:isHidden>true</ns:isHidden>
-      </ns:column>
-      <ns:column columnName="modified">
-        <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:nullable>true</ns:nullable>
-        <ns:isHidden>true</ns:isHidden>
-      </ns:column>
-    </ns:columns>
-    <ns:pkColumnName>rowid</ns:pkColumnName>
-  </ns:table>
-  <ns:table tableName="extracts" tableDbType="TABLE">
-    <ns:pkColumnName>rowid</ns:pkColumnName>
-    <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr&amp;query.queryName=extracts&amp;rowid=${rowid}</ns:tableUrl>
-    <ns:columns>
-      <ns:column columnName="rowid">
-        <ns:shownInInsertView>false</ns:shownInInsertView>
-        <ns:isAutoInc>true</ns:isAutoInc>
-        <ns:isKeyField>true</ns:isKeyField>
-      </ns:column>
-      <ns:column columnName="queryname">
-        <ns:nullable>true</ns:nullable>
-      </ns:column>
-      <ns:column columnName="schemaname">
-        <ns:nullable>true</ns:nullable>
-      </ns:column>
-      <ns:column columnName="containerpath">
-        <ns:nullable>true</ns:nullable>
-      </ns:column>
-      <ns:column columnName="viewname">
-        <ns:nullable>true</ns:nullable>
-      </ns:column>
-      <ns:column columnName="filename">
-        <ns:nullable>true</ns:nullable>
-      </ns:column>
-      <ns:column columnName="columns">
-        <ns:nullable>true</ns:nullable>
-      </ns:column>
-      <ns:column columnName="fieldstohash">
-        <ns:nullable>true</ns:nullable>
-      </ns:column>
-      <ns:column columnName="container">
-        <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:isHidden>true</ns:isHidden>
-        <ns:fk>
-          <ns:fkDbSchema>core</ns:fkDbSchema>
-          <ns:fkTable>containers</ns:fkTable>
-          <ns:fkColumnName>entityid</ns:fkColumnName>
-        </ns:fk>
-      </ns:column>
-      <ns:column columnName="createdby">
-        <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:nullable>true</ns:nullable>
-        <ns:isHidden>true</ns:isHidden>
-      </ns:column>
-      <ns:column columnName="created">
-        <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:nullable>true</ns:nullable>
-        <ns:isHidden>true</ns:isHidden>
-      </ns:column>
-      <ns:column columnName="modifiedby">
-        <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:nullable>true</ns:nullable>
-        <ns:isHidden>true</ns:isHidden>
-      </ns:column>
-      <ns:column columnName="modified">
-        <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:nullable>true</ns:nullable>
-        <ns:isHidden>true</ns:isHidden>
-      </ns:column>
-    </ns:columns>
-  </ns:table>
+    <!--TODO: should depreciate-->
+    <ns:table tableName="module_properties" tableDbType="TABLE">
+        <ns:pkColumnName>rowid</ns:pkColumnName>
+        <ns:columns>
+            <ns:column columnName="rowid">
+                <ns:shownInInsertView>false</ns:shownInInsertView>
+                <ns:isAutoInc>true</ns:isAutoInc>
+                <ns:isKeyField>true</ns:isKeyField>
+            </ns:column>
+            <ns:column columnName="prop_name">
+                <ns:nullable>true</ns:nullable>
+                <ns:isKeyField>true</ns:isKeyField>
+            </ns:column>
+            <ns:column columnName="stringvalue">
+                <ns:nullable>true</ns:nullable>
+            </ns:column>
+            <ns:column columnName="floatvalue">
+                <ns:nullable>true</ns:nullable>
+            </ns:column>
+            <ns:column columnName="container">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:isHidden>true</ns:isHidden>
+            </ns:column>
+            <ns:column columnName="createdby">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:nullable>true</ns:nullable>
+            </ns:column>
+            <ns:column columnName="created">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:nullable>true</ns:nullable>
+            </ns:column>
+            <ns:column columnName="modifiedby">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:nullable>true</ns:nullable>
+            </ns:column>
+            <ns:column columnName="modified">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:nullable>true</ns:nullable>
+            </ns:column>
+        </ns:columns>
+    </ns:table>
+    <!--TODO: should depreciate-->
+    <ns:table tableName="site_module_properties" tableDbType="TABLE">
+        <ns:pkColumnName>prop_name</ns:pkColumnName>
+        <ns:columns>
+            <ns:column columnName="prop_name">
+                <ns:nullable>true</ns:nullable>
+            </ns:column>
+            <ns:column columnName="stringvalue">
+                <ns:nullable>true</ns:nullable>
+            </ns:column>
+            <ns:column columnName="floatvalue">
+                <ns:nullable>true</ns:nullable>
+            </ns:column>
+            <ns:column columnName="createdby">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:nullable>true</ns:nullable>
+            </ns:column>
+            <ns:column columnName="created">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:nullable>true</ns:nullable>
+            </ns:column>
+            <ns:column columnName="modifiedby">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:nullable>true</ns:nullable>
+            </ns:column>
+            <ns:column columnName="modified">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:nullable>true</ns:nullable>
+            </ns:column>
+        </ns:columns>
+    </ns:table>
+    <ns:table tableName="snomed_tags" tableDbType="TABLE">
+        <ns:importUrl></ns:importUrl>
+        <ns:insertUrl></ns:insertUrl>
+        <ns:updateUrl></ns:updateUrl>
+        <ns:deleteUrl></ns:deleteUrl>
+        <ns:pkColumnName>rowid</ns:pkColumnName>
+        <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr&amp;query.queryName=snomed_tags&amp;rowid=${rowid}</ns:tableUrl>
+        <ns:columns>
+            <ns:column columnName="rowid">
+                <ns:shownInInsertView>false</ns:shownInInsertView>
+                <ns:isAutoInc>true</ns:isAutoInc>
+                <ns:isKeyField>true</ns:isKeyField>
+            </ns:column>
+            <ns:column columnName="schemaName">
+                <ns:columnTitle>Schema Name</ns:columnTitle>
+                <ns:nullable>true</ns:nullable>
+            </ns:column>
+            <ns:column columnName="queryName">
+                <ns:columnTitle>Query Name</ns:columnTitle>
+                <ns:nullable>true</ns:nullable>
+            </ns:column>
+            <ns:column columnName="recordid">
+                <ns:columnTitle>Record Id</ns:columnTitle>
+                <ns:nullable>true</ns:nullable>
+            </ns:column>
+            <ns:column columnName="code">
+                <ns:columnTitle>SNOMED Code</ns:columnTitle>
+                <ns:nullable>true</ns:nullable>
+                <ns:fk>
+                    <ns:fkDbSchema>ehr_lookups</ns:fkDbSchema>
+                    <ns:fkTable>snomed</ns:fkTable>
+                    <ns:fkColumnName>code</ns:fkColumnName>
+                </ns:fk>
+            </ns:column>
+            <ns:column columnName="qualifier">
+                <ns:columnTitle>Qualifier</ns:columnTitle>
+            </ns:column>
+            <ns:column columnName="sort">
+                <ns:columnTitle>Sort Order</ns:columnTitle>
+            </ns:column>
+            <ns:column columnName="container">
+                <ns:isHidden>true</ns:isHidden>
+            </ns:column>
+            <ns:column columnName="createdby">
+                <ns:nullable>true</ns:nullable>
+            </ns:column>
+            <ns:column columnName="created">
+                <ns:nullable>true</ns:nullable>
+            </ns:column>
+            <ns:column columnName="modifiedby">
+                <ns:nullable>true</ns:nullable>
+            </ns:column>
+            <ns:column columnName="modified">
+                <ns:nullable>true</ns:nullable>
+            </ns:column>
+        </ns:columns>
+    </ns:table>
+    <ns:table tableName="tasks" tableDbType="TABLE">
+        <ns:pkColumnName>taskid</ns:pkColumnName>
+        <ns:columns>
+            <ns:column columnName="taskid">
+                <ns:isKeyField>true</ns:isKeyField>
+            </ns:column>
+            <ns:column columnName="rowid">
+                <ns:shownInInsertView>false</ns:shownInInsertView>
+                <ns:isAutoInc>true</ns:isAutoInc>
+            </ns:column>
+            <ns:column columnName="title">
+                <ns:nullable>false</ns:nullable>
+            </ns:column>
+            <ns:column columnName="formtype">
+                <ns:nullable>true</ns:nullable>
+                <ns:fk>
+                    <ns:fkDbSchema>ehr</ns:fkDbSchema>
+                    <ns:fkTable>formtypes</ns:fkTable>
+                    <ns:fkColumnName>formtype</ns:fkColumnName>
+                </ns:fk>
+            </ns:column>
+            <ns:column columnName="category">
+                <ns:nullable>false</ns:nullable>
+            </ns:column>
+            <ns:column columnName="requestId">
+            </ns:column>
+            <ns:column columnName="qcstate">
+                <ns:nullable>true</ns:nullable>
+                <ns:fk>
+                    <ns:fkDbSchema>study</ns:fkDbSchema>
+                    <ns:fkTable>QCState</ns:fkTable>
+                    <ns:fkColumnName>rowid</ns:fkColumnName>
+                </ns:fk>
+            </ns:column>
+            <ns:column columnName="assignedto">
+                <ns:columnTitle>Assigned To</ns:columnTitle>
+                <ns:nullable>true</ns:nullable>
+            </ns:column>
+            <ns:column columnName="duedate">
+                <ns:columnTitle>Due Date</ns:columnTitle>
+                <ns:nullable>true</ns:nullable>
+            </ns:column>
+            <ns:column columnName="datecompleted">
+                <ns:nullable>true</ns:nullable>
+                <ns:columnTitle>Date Finalized</ns:columnTitle>
+            </ns:column>
+            <ns:column columnName="container">
+            </ns:column>
+            <ns:column columnName="createdby">
+                <ns:nullable>true</ns:nullable>
+            </ns:column>
+            <ns:column columnName="created">
+                <ns:nullable>true</ns:nullable>
+            </ns:column>
+            <ns:column columnName="modifiedby">
+                <ns:nullable>true</ns:nullable>
+            </ns:column>
+            <ns:column columnName="modified">
+                <ns:nullable>true</ns:nullable>
+            </ns:column>
+            <ns:column columnName="description">
+                <ns:nullable>true</ns:nullable>
+            </ns:column>
+        </ns:columns>
+    </ns:table>
+    <ns:table tableName="requests" tableDbType="TABLE">
+        <ns:pkColumnName>requestid</ns:pkColumnName>
+        <ns:columns>
+            <ns:column columnName="requestid">
+                <ns:isKeyField>true</ns:isKeyField>
+            </ns:column>
+            <ns:column columnName="rowid">
+                <ns:shownInInsertView>false</ns:shownInInsertView>
+                <ns:isAutoInc>true</ns:isAutoInc>
+            </ns:column>
+            <ns:column columnName="title">
+                <ns:nullable>true</ns:nullable>
+            </ns:column>
+            <ns:column columnName="notify1">
+                <ns:nullable>true</ns:nullable>
+                <ns:fk>
+                    <ns:fkDbSchema>core</ns:fkDbSchema>
+                    <ns:fkTable>PrincipalsWithoutAdmin</ns:fkTable>
+                    <ns:fkColumnName>userid</ns:fkColumnName>
+                </ns:fk>
+            </ns:column>
+            <ns:column columnName="notify2">
+                <ns:nullable>true</ns:nullable>
+                <ns:fk>
+                    <ns:fkDbSchema>core</ns:fkDbSchema>
+                    <ns:fkTable>PrincipalsWithoutAdmin</ns:fkTable>
+                    <ns:fkColumnName>userid</ns:fkColumnName>
+                </ns:fk>
+            </ns:column>
+            <ns:column columnName="notify3">
+                <ns:nullable>true</ns:nullable>
+                <ns:fk>
+                    <ns:fkDbSchema>core</ns:fkDbSchema>
+                    <ns:fkTable>PrincipalsWithoutAdmin</ns:fkTable>
+                    <ns:fkColumnName>userid</ns:fkColumnName>
+                </ns:fk>
+            </ns:column>
+            <ns:column columnName="pi">
+                <ns:nullable>true</ns:nullable>
+            </ns:column>
+            <ns:column columnName="priority">
+                <ns:nullable>true</ns:nullable>
+            </ns:column>
+            <ns:column columnName="formtype">
+                <ns:nullable>true</ns:nullable>
+                <ns:fk>
+                    <ns:fkDbSchema>ehr</ns:fkDbSchema>
+                    <ns:fkTable>formtypes</ns:fkTable>
+                    <ns:fkColumnName>formtype</ns:fkColumnName>
+                </ns:fk>
+            </ns:column>
+            <ns:column columnName="daterequested">
+                <ns:nullable>true</ns:nullable>
+            </ns:column>
+            <ns:column columnName="enddate">
+                <ns:nullable>true</ns:nullable>
+            </ns:column>
+            <ns:column columnName="qcstate">
+                <ns:nullable>true</ns:nullable>
+                <ns:fk>
+                    <ns:fkDbSchema>study</ns:fkDbSchema>
+                    <ns:fkTable>QCState</ns:fkTable>
+                    <ns:fkColumnName>rowid</ns:fkColumnName>
+                </ns:fk>
+            </ns:column>
+            <ns:column columnName="remark">
+                <ns:nullable>true</ns:nullable>
+            </ns:column>
+            <ns:column columnName="description">
+                <ns:nullable>true</ns:nullable>
+            </ns:column>
+            <ns:column columnName="container">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:isHidden>true</ns:isHidden>
+                <ns:fk>
+                    <ns:fkDbSchema>core</ns:fkDbSchema>
+                    <ns:fkTable>containers</ns:fkTable>
+                    <ns:fkColumnName>entityid</ns:fkColumnName>
+                </ns:fk>
+            </ns:column>
+            <ns:column columnName="createdby">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:nullable>true</ns:nullable>
+                <ns:isHidden>true</ns:isHidden>
+            </ns:column>
+            <ns:column columnName="created">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:nullable>true</ns:nullable>
+                <ns:isHidden>true</ns:isHidden>
+            </ns:column>
+            <ns:column columnName="modifiedby">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:nullable>true</ns:nullable>
+                <ns:isHidden>true</ns:isHidden>
+            </ns:column>
+            <ns:column columnName="modified">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:nullable>true</ns:nullable>
+                <ns:isHidden>true</ns:isHidden>
+            </ns:column>
+        </ns:columns>
+    </ns:table>
+    <ns:table tableName="reports" tableDbType="TABLE">
+        <ns:importUrl></ns:importUrl>
+        <ns:insertUrl></ns:insertUrl>
+        <ns:updateUrl></ns:updateUrl>
+        <ns:deleteUrl></ns:deleteUrl>
+        <ns:pkColumnName>rowid</ns:pkColumnName>
+        <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr&amp;query.queryName=reports&amp;rowid=${rowid}</ns:tableUrl>
+        <ns:columns>
+            <ns:column columnName="rowid">
+                <ns:shownInInsertView>false</ns:shownInInsertView>
+                <ns:isAutoInc>true</ns:isAutoInc>
+                <ns:isKeyField>true</ns:isKeyField>
+            </ns:column>
+            <ns:column columnName="reportname">
+                <ns:columnTitle>Report Name</ns:columnTitle>
+                <ns:nullable>true</ns:nullable>
+            </ns:column>
+            <ns:column columnName="category">
+                <ns:nullable>true</ns:nullable>
+            </ns:column>
+            <ns:column columnName="reporttype">
+                <ns:columnTitle>Report Type</ns:columnTitle>
+                <ns:nullable>true</ns:nullable>
+            </ns:column>
+            <ns:column columnName="reporttitle">
+                <ns:columnTitle>Report Title</ns:columnTitle>
+                <ns:nullable>true</ns:nullable>
+            </ns:column>
+            <ns:column columnName="visible">
+                <ns:nullable>true</ns:nullable>
+            </ns:column>
+            <ns:column columnName="sort_order">
+                <ns:nullable>true</ns:nullable>
+            </ns:column>
+            <ns:column columnName="containerpath">
+                <ns:columnTitle>Container Path</ns:columnTitle>
+                <ns:nullable>true</ns:nullable>
+            </ns:column>
+            <ns:column columnName="schemaname">
+                <ns:columnTitle>Schema Name</ns:columnTitle>
+                <ns:nullable>true</ns:nullable>
+            </ns:column>
+            <ns:column columnName="queryname">
+                <ns:columnTitle>Query Name</ns:columnTitle>
+                <ns:nullable>true</ns:nullable>
+            </ns:column>
+            <ns:column columnName="viewname">
+                <ns:columnTitle>View Name</ns:columnTitle>
+                <ns:nullable>true</ns:nullable>
+            </ns:column>
+            <ns:column columnName="report">
+                <ns:columnTitle>Report Path</ns:columnTitle>
+                <ns:nullable>true</ns:nullable>
+            </ns:column>
+            <ns:column columnName="datefieldname">
+                <ns:columnTitle>Date Field Name</ns:columnTitle>
+                <ns:nullable>true</ns:nullable>
+            </ns:column>
+            <ns:column columnName="todayonly">
+                <ns:nullable>true</ns:nullable>
+                <ns:columnTitle>By Default, This Query Should Be Filtered To Show Today's Data</ns:columnTitle>
+            </ns:column>
+            <ns:column columnName="queryhaslocation">
+                <ns:nullable>true</ns:nullable>
+                <ns:columnTitle>Query Contains Fields For Room/Cage?</ns:columnTitle>
+            </ns:column>
+            <ns:column columnName="QCStatePublicDataFieldName">
+                <ns:nullable>true</ns:nullable>
+                <ns:columnTitle>QCState PublicData Field Name</ns:columnTitle>
+            </ns:column>
+            <ns:column columnName="jsonConfig">
+                <ns:nullable>true</ns:nullable>
+                <ns:columnTitle>JSON Config</ns:columnTitle>
+            </ns:column>
+            <ns:column columnName="description">
+                <ns:nullable>true</ns:nullable>
+            </ns:column>
+            <ns:column columnName="container">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:isHidden>true</ns:isHidden>
+                <ns:fk>
+                    <ns:fkDbSchema>core</ns:fkDbSchema>
+                    <ns:fkTable>containers</ns:fkTable>
+                    <ns:fkColumnName>entityid</ns:fkColumnName>
+                </ns:fk>
+            </ns:column>
+            <ns:column columnName="createdby">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:nullable>true</ns:nullable>
+                <ns:isHidden>true</ns:isHidden>
+            </ns:column>
+            <ns:column columnName="created">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:nullable>true</ns:nullable>
+                <ns:isHidden>true</ns:isHidden>
+            </ns:column>
+            <ns:column columnName="modifiedby">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:nullable>true</ns:nullable>
+                <ns:isHidden>true</ns:isHidden>
+            </ns:column>
+            <ns:column columnName="modified">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:nullable>true</ns:nullable>
+                <ns:isHidden>true</ns:isHidden>
+            </ns:column>
+        </ns:columns>
+    </ns:table>
+    <ns:table tableName="cage_observations" tableDbType="TABLE">
+        <ns:importUrl></ns:importUrl>
+        <ns:insertUrl></ns:insertUrl>
+        <ns:updateUrl></ns:updateUrl>
+        <ns:deleteUrl></ns:deleteUrl>
+        <ns:tableTitle>Cage Observations</ns:tableTitle>
+        <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr&amp;query.queryName=cage_observations&amp;rowid=${rowid}</ns:tableUrl>
+        <ns:columns>
+            <ns:column columnName="date">
+                <ns:nullable>false</ns:nullable>
+                <ns:formatString>yyyy-MM-dd</ns:formatString>
+                <ns:columnTitle>Date</ns:columnTitle>
+            </ns:column>
+            <!--<ns:column columnName="roomcage">-->
+            <!--<ns:columnTitle>Room/Cage</ns:columnTitle>-->
+            <!--<ns:nullable>false</ns:nullable>-->
+            <!--</ns:column>-->
+            <ns:column columnName="room">
+                <ns:nullable>false</ns:nullable>
+                <ns:columnTitle>Room</ns:columnTitle>
+            </ns:column>
+            <ns:column columnName="cage">
+                <ns:columnTitle>Cage</ns:columnTitle>
+            </ns:column>
+            <ns:column columnName="feces">
+                <ns:columnTitle>Feces</ns:columnTitle>
+            </ns:column>
+            <ns:column columnName="remark">
+                <ns:columnTitle>Remark</ns:columnTitle>
+                <ns:propertyURI>urn:ehr.labkey.org/#Remark</ns:propertyURI>
+                <ns:inputType>textarea</ns:inputType>
+            </ns:column>
+            <ns:column columnName="no_observations">
+                <ns:nullable>true</ns:nullable>
+                <ns:columnTitle>Everything Is OK</ns:columnTitle>
+            </ns:column>
+            <ns:column columnName="userid">
+                <ns:columnTitle>UserID</ns:columnTitle>
+                <!--<ns:fk>-->
+                <!--<ns:fkDbSchema>core</ns:fkDbSchema>-->
+                <!--<ns:fkTable>Users</ns:fkTable>-->
+                <!--<ns:fkColumnName>UserId</ns:fkColumnName>-->
+                <!--</ns:fk>-->
+            </ns:column>
+            <ns:column columnName="qcstate">
+                <ns:nullable>true</ns:nullable>
+                <ns:fk>
+                    <ns:fkDbSchema>study</ns:fkDbSchema>
+                    <ns:fkTable>QCState</ns:fkTable>
+                    <ns:fkColumnName>rowid</ns:fkColumnName>
+                </ns:fk>
+            </ns:column>
+            <ns:column columnName="objectid">
+                <ns:columnTitle>ObjectId</ns:columnTitle>
+                <ns:shownInInsertView>false</ns:shownInInsertView>
+                <ns:shownInUpdateView>false</ns:shownInUpdateView>
+                <ns:shownInDetailsView>false</ns:shownInDetailsView>
+                <ns:isHidden>true</ns:isHidden>
+                <!--<ns:isKeyField>true</ns:isKeyField>-->
+            </ns:column>
+            <ns:column columnName="rowid">
+                <ns:columnTitle>Key</ns:columnTitle>
+                <ns:shownInInsertView>false</ns:shownInInsertView>
+                <ns:shownInUpdateView>false</ns:shownInUpdateView>
+                <ns:shownInDetailsView>false</ns:shownInDetailsView>
+                <ns:isHidden>true</ns:isHidden>
+                <ns:isKeyField>true</ns:isKeyField>
+            </ns:column>
+            <!--<ns:column columnName="ts">-->
+            <!--<ns:columnTitle>Last Changed</ns:columnTitle>-->
+            <!--<ns:shownInInsertView>false</ns:shownInInsertView>-->
+            <!--<ns:shownInUpdateView>false</ns:shownInUpdateView>-->
+            <!--<ns:shownInDetailsView>false</ns:shownInDetailsView>-->
+            <!--<ns:isHidden>true</ns:isHidden>-->
+            <!--</ns:column>-->
+            <ns:column columnName="description">
+                <ns:columnTitle>Description</ns:columnTitle>
+                <ns:propertyURI>urn:ehr.labkey.org/#Description</ns:propertyURI>
+                <ns:shownInInsertView>false</ns:shownInInsertView>
+                <ns:shownInUpdateView>false</ns:shownInUpdateView>
+                <ns:shownInDetailsView>false</ns:shownInDetailsView>
+                <ns:isHidden>true</ns:isHidden>
+                <ns:inputType>textarea</ns:inputType>
+            </ns:column>
+            <ns:column columnName="parentid">
+                <ns:columnTitle>Parent Id</ns:columnTitle>
+                <ns:propertyURI>urn:ehr.labkey.org/#ParentId</ns:propertyURI>
+            </ns:column>
+            <ns:column columnName="taskid">
+                <ns:columnTitle>Task Id</ns:columnTitle>
+                <ns:propertyURI>urn:ehr.labkey.org/#TaskId</ns:propertyURI>
+            </ns:column>
+            <ns:column columnName="container">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:isHidden>true</ns:isHidden>
+                <ns:fk>
+                    <ns:fkDbSchema>core</ns:fkDbSchema>
+                    <ns:fkTable>containers</ns:fkTable>
+                    <ns:fkColumnName>entityid</ns:fkColumnName>
+                </ns:fk>
+            </ns:column>
+            <ns:column columnName="createdby">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:nullable>true</ns:nullable>
+                <ns:isHidden>true</ns:isHidden>
+            </ns:column>
+            <ns:column columnName="created">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:nullable>true</ns:nullable>
+                <ns:isHidden>true</ns:isHidden>
+            </ns:column>
+            <ns:column columnName="modifiedby">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:nullable>true</ns:nullable>
+                <ns:isHidden>true</ns:isHidden>
+            </ns:column>
+            <ns:column columnName="modified">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:nullable>true</ns:nullable>
+                <ns:isHidden>true</ns:isHidden>
+            </ns:column>
+        </ns:columns>
+        <ns:pkColumnName>rowid</ns:pkColumnName>
+    </ns:table>
+    <ns:table tableName="extracts" tableDbType="TABLE">
+        <ns:pkColumnName>rowid</ns:pkColumnName>
+        <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr&amp;query.queryName=extracts&amp;rowid=${rowid}</ns:tableUrl>
+        <ns:columns>
+            <ns:column columnName="rowid">
+                <ns:shownInInsertView>false</ns:shownInInsertView>
+                <ns:isAutoInc>true</ns:isAutoInc>
+                <ns:isKeyField>true</ns:isKeyField>
+            </ns:column>
+            <ns:column columnName="queryname">
+                <ns:nullable>true</ns:nullable>
+            </ns:column>
+            <ns:column columnName="schemaname">
+                <ns:nullable>true</ns:nullable>
+            </ns:column>
+            <ns:column columnName="containerpath">
+                <ns:nullable>true</ns:nullable>
+            </ns:column>
+            <ns:column columnName="viewname">
+                <ns:nullable>true</ns:nullable>
+            </ns:column>
+            <ns:column columnName="filename">
+                <ns:nullable>true</ns:nullable>
+            </ns:column>
+            <ns:column columnName="columns">
+                <ns:nullable>true</ns:nullable>
+            </ns:column>
+            <ns:column columnName="fieldstohash">
+                <ns:nullable>true</ns:nullable>
+            </ns:column>
+            <ns:column columnName="container">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:isHidden>true</ns:isHidden>
+                <ns:fk>
+                    <ns:fkDbSchema>core</ns:fkDbSchema>
+                    <ns:fkTable>containers</ns:fkTable>
+                    <ns:fkColumnName>entityid</ns:fkColumnName>
+                </ns:fk>
+            </ns:column>
+            <ns:column columnName="createdby">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:nullable>true</ns:nullable>
+                <ns:isHidden>true</ns:isHidden>
+            </ns:column>
+            <ns:column columnName="created">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:nullable>true</ns:nullable>
+                <ns:isHidden>true</ns:isHidden>
+            </ns:column>
+            <ns:column columnName="modifiedby">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:nullable>true</ns:nullable>
+                <ns:isHidden>true</ns:isHidden>
+            </ns:column>
+            <ns:column columnName="modified">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:nullable>true</ns:nullable>
+                <ns:isHidden>true</ns:isHidden>
+            </ns:column>
+        </ns:columns>
+    </ns:table>
 
 
-<ns:table tableName="formtemplates" tableDbType="TABLE">
-    <ns:importUrl></ns:importUrl>
-    <ns:insertUrl></ns:insertUrl>
-    <ns:updateUrl></ns:updateUrl>
-    <ns:deleteUrl></ns:deleteUrl>
-    <ns:pkColumnName>entityid</ns:pkColumnName>
-    <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr&amp;query.queryName=formtemplates&amp;entityid=${entityid}</ns:tableUrl>
-    <ns:columns>
-      <ns:column columnName="entityid">
-        <!--<ns:isAutoInc>true</ns:isAutoInc>-->
-        <ns:isKeyField>true</ns:isKeyField>
-      </ns:column>
-      <ns:column columnName="formtype">
-          <!--<ns:fk>-->
-            <!--<ns:fkDbSchema>ehr</ns:fkDbSchema>-->
-            <!--<ns:fkTable>formtypes</ns:fkTable>-->
-            <!--<ns:fkColumnName>formtype</ns:fkColumnName>-->
-          <!--</ns:fk>-->
-      </ns:column>
-      <ns:column columnName="userId">
-        <ns:nullable>true</ns:nullable>
-      </ns:column>
-      <ns:column columnName="template">
-        <ns:nullable>true</ns:nullable>
-      </ns:column>
-      <ns:column columnName="title">
-      </ns:column>
-      <ns:column columnName="description">
-        <ns:nullable>true</ns:nullable>
-      </ns:column>
-      <ns:column columnName="container">
-        <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:isHidden>true</ns:isHidden>
-        <ns:fk>
-          <ns:fkDbSchema>core</ns:fkDbSchema>
-          <ns:fkTable>containers</ns:fkTable>
-          <ns:fkColumnName>entityid</ns:fkColumnName>
-        </ns:fk>
-      </ns:column>
-      <ns:column columnName="createdby">
-        <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:nullable>true</ns:nullable>
-        <ns:isHidden>true</ns:isHidden>
-      </ns:column>
-      <ns:column columnName="created">
-        <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:nullable>true</ns:nullable>
-        <ns:isHidden>true</ns:isHidden>
-      </ns:column>
-      <ns:column columnName="modifiedby">
-        <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:nullable>true</ns:nullable>
-        <ns:isHidden>true</ns:isHidden>
-      </ns:column>
-      <ns:column columnName="modified">
-        <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:nullable>true</ns:nullable>
-        <ns:isHidden>true</ns:isHidden>
-      </ns:column>
-    </ns:columns>
-  </ns:table>
-  <ns:table tableName="notificationrecipients" tableDbType="TABLE">
-    <ns:importUrl></ns:importUrl>
-    <ns:insertUrl></ns:insertUrl>
-    <ns:updateUrl></ns:updateUrl>
-    <ns:deleteUrl></ns:deleteUrl>
-    <ns:pkColumnName>rowid</ns:pkColumnName>
-    <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr&amp;query.queryName=notificationrecipients&amp;rowid=${rowid}</ns:tableUrl>
-    <ns:columns>
-      <ns:column columnName="rowid">
-        <ns:shownInInsertView>false</ns:shownInInsertView>
-        <ns:isAutoInc>true</ns:isAutoInc>
-        <ns:isKeyField>true</ns:isKeyField>
-      </ns:column>
-      <ns:column columnName="notificationtype">
-        <ns:columnTitle>Notification Type</ns:columnTitle>
-        <ns:nullable>true</ns:nullable>
-          <ns:fk>
-            <ns:fkDbSchema>ehr</ns:fkDbSchema>
-            <ns:fkTable>notificationtypes</ns:fkTable>
-            <ns:fkColumnName>notificationtype</ns:fkColumnName>
-          </ns:fk>
-      </ns:column>
-      <ns:column columnName="recipient">
-          <ns:fk>
-            <ns:fkDbSchema>core</ns:fkDbSchema>
-            <ns:fkTable>PrincipalsWithoutAdmin</ns:fkTable>
-            <ns:fkColumnName>userid</ns:fkColumnName>
-          </ns:fk>
-      </ns:column>
-      <ns:column columnName="container">
-        <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:isHidden>true</ns:isHidden>
-        <ns:fk>
-          <ns:fkDbSchema>core</ns:fkDbSchema>
-          <ns:fkTable>containers</ns:fkTable>
-          <ns:fkColumnName>entityid</ns:fkColumnName>
-        </ns:fk>
-      </ns:column>
-      <ns:column columnName="createdby">
-        <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:nullable>true</ns:nullable>
-        <ns:isHidden>true</ns:isHidden>
-      </ns:column>
-      <ns:column columnName="created">
-        <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:nullable>true</ns:nullable>
-        <ns:isHidden>true</ns:isHidden>
-      </ns:column>
-      <ns:column columnName="modifiedby">
-        <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:nullable>true</ns:nullable>
-        <ns:isHidden>true</ns:isHidden>
-      </ns:column>
-      <ns:column columnName="modified">
-        <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:nullable>true</ns:nullable>
-        <ns:isHidden>true</ns:isHidden>
-      </ns:column>
-    </ns:columns>
-  </ns:table>
-  <ns:table tableName="formpanelsections" tableDbType="TABLE">
-    <ns:importUrl></ns:importUrl>
-    <ns:insertUrl></ns:insertUrl>
-    <ns:updateUrl></ns:updateUrl>
-    <ns:deleteUrl></ns:deleteUrl>
-    <ns:pkColumnName>rowid</ns:pkColumnName>
-    <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr&amp;query.queryName=formpanelsections&amp;rowid=${rowid}</ns:tableUrl>
-    <ns:columns>
-      <ns:column columnName="rowid">
-        <ns:isAutoInc>true</ns:isAutoInc>
-        <ns:isKeyField>true</ns:isKeyField>
-      </ns:column>
-      <ns:column columnName="destination">
-      </ns:column>
-      <ns:column columnName="formtype">
-          <ns:fk>
-            <ns:fkDbSchema>ehr</ns:fkDbSchema>
-            <ns:fkTable>formtypes</ns:fkTable>
-            <ns:fkColumnName>formtype</ns:fkColumnName>
-          </ns:fk>
-      </ns:column>
-      <ns:column columnName="xtype">
-      </ns:column>
-      <ns:column columnName="sort_order">
-      </ns:column>
-      <ns:column columnName="schemaName">
-        <ns:nullable>true</ns:nullable>
-      </ns:column>
-      <ns:column columnName="queryName">
-        <ns:nullable>true</ns:nullable>
-      </ns:column>
-      <ns:column columnName="title">
-        <ns:nullable>true</ns:nullable>
-      </ns:column>
-      <ns:column columnName="metadatasources">
-        <ns:nullable>true</ns:nullable>
-      </ns:column>
-      <ns:column columnName="buttons">
-        <ns:nullable>true</ns:nullable>
-      </ns:column>
-      <ns:column columnName="initialTemplates">
-        <ns:nullable>true</ns:nullable>
-      </ns:column>
-      <ns:column columnName="configJson">
-        <ns:nullable>true</ns:nullable>
-        <ns:columnTitle>JSON Config</ns:columnTitle>
-      </ns:column>
-      <ns:column columnName="container">
-        <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:isHidden>true</ns:isHidden>
-        <ns:fk>
-          <ns:fkDbSchema>core</ns:fkDbSchema>
-          <ns:fkTable>containers</ns:fkTable>
-          <ns:fkColumnName>entityid</ns:fkColumnName>
-        </ns:fk>
-      </ns:column>
-      <ns:column columnName="createdby">
-        <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:nullable>true</ns:nullable>
-        <ns:isHidden>true</ns:isHidden>
-      </ns:column>
-      <ns:column columnName="created">
-        <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:nullable>true</ns:nullable>
-        <ns:isHidden>true</ns:isHidden>
-      </ns:column>
-      <ns:column columnName="modifiedby">
-        <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:nullable>true</ns:nullable>
-        <ns:isHidden>true</ns:isHidden>
-      </ns:column>
-      <ns:column columnName="modified">
-        <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:nullable>true</ns:nullable>
-        <ns:isHidden>true</ns:isHidden>
-      </ns:column>
-    </ns:columns>
-  </ns:table>
-  <ns:table tableName="formtemplaterecords" tableDbType="TABLE">
-    <ns:importUrl></ns:importUrl>
-    <ns:insertUrl></ns:insertUrl>
-    <ns:updateUrl></ns:updateUrl>
-    <ns:deleteUrl></ns:deleteUrl>
-    <ns:pkColumnName>rowid</ns:pkColumnName>
-    <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr&amp;query.queryName=formtemplaterecords&amp;rowid=${rowid}</ns:tableUrl>
-    <ns:columns>
-      <ns:column columnName="rowid">
-        <ns:isAutoInc>true</ns:isAutoInc>
-        <ns:isKeyField>true</ns:isKeyField>
-      </ns:column>
-      <ns:column columnName="templateid">
-        <ns:fk>
-          <ns:fkDbSchema>ehr</ns:fkDbSchema>
-          <ns:fkTable>formtemplates</ns:fkTable>
-          <ns:fkColumnName>entityid</ns:fkColumnName>
-        </ns:fk>
-      </ns:column>
-      <ns:column columnName="storeid">
-      </ns:column>
-      <ns:column columnName="json">
-        <ns:nullable>true</ns:nullable>
-      </ns:column>
-      <ns:column columnName="container">
-        <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:isHidden>true</ns:isHidden>
-        <ns:fk>
-          <ns:fkDbSchema>core</ns:fkDbSchema>
-          <ns:fkTable>containers</ns:fkTable>
-          <ns:fkColumnName>entityid</ns:fkColumnName>
-        </ns:fk>
-      </ns:column>
-      <ns:column columnName="createdby">
-        <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:nullable>true</ns:nullable>
-        <ns:isHidden>true</ns:isHidden>
-      </ns:column>
-      <ns:column columnName="created">
-        <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:nullable>true</ns:nullable>
-        <ns:isHidden>true</ns:isHidden>
-      </ns:column>
-      <ns:column columnName="modifiedby">
-        <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:nullable>true</ns:nullable>
-        <ns:isHidden>true</ns:isHidden>
-      </ns:column>
-      <ns:column columnName="modified">
-        <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:nullable>true</ns:nullable>
-        <ns:isHidden>true</ns:isHidden>
-      </ns:column>
-    </ns:columns>
-  </ns:table>
-  <ns:table tableName="notificationtypes" tableDbType="TABLE">
-    <ns:importUrl></ns:importUrl>
-    <ns:insertUrl></ns:insertUrl>
-    <ns:updateUrl></ns:updateUrl>
-    <ns:deleteUrl></ns:deleteUrl>
-    <ns:pkColumnName>notificationtype</ns:pkColumnName>
-    <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr&amp;query.queryName=notificationtypes&amp;notificationtype=${notificationtype}</ns:tableUrl>
-    <ns:columns>
-      <ns:column columnName="notificationtype">
-        <ns:isKeyField>true</ns:isKeyField>
-      </ns:column>
-      <ns:column columnName="description">
-        <ns:nullable>true</ns:nullable>
-      </ns:column>
-    </ns:columns>
-  </ns:table>
-  <ns:table tableName="formtypes" tableDbType="TABLE">
-    <ns:importUrl></ns:importUrl>
-    <ns:insertUrl></ns:insertUrl>
-    <ns:updateUrl></ns:updateUrl>
-    <ns:deleteUrl></ns:deleteUrl>
-    <ns:pkColumnName>rowid</ns:pkColumnName>
-    <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr&amp;query.queryName=formtypes&amp;rowid=${rowid}</ns:tableUrl>
-    <ns:columns>
-      <ns:column columnName="rowid">
-        <ns:isAutoInc>true</ns:isAutoInc>
-        <ns:isKeyField>true</ns:isKeyField>
-        <ns:shownInInsertView>false</ns:shownInInsertView>
-        <ns:shownInUpdateView>false</ns:shownInUpdateView>
-      </ns:column>
-      <ns:column columnName="formtype">
-      </ns:column>
-      <ns:column columnName="category">
-      </ns:column>
-      <ns:column columnName="description">
-        <ns:nullable>true</ns:nullable>
-      </ns:column>
-      <ns:column columnName="permitsSingleIdOnly">
-        <ns:nullable>true</ns:nullable>
-      </ns:column>
-      <ns:column columnName="configjson">
-        <ns:nullable>true</ns:nullable>
-        <ns:columnTitle>JSON Config</ns:columnTitle>
-        <ns:inputType>textarea</ns:inputType>
-      </ns:column>
-      <ns:column columnName="container">
-        <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:isHidden>true</ns:isHidden>
-        <ns:fk>
-          <ns:fkDbSchema>core</ns:fkDbSchema>
-          <ns:fkTable>containers</ns:fkTable>
-          <ns:fkColumnName>entityid</ns:fkColumnName>
-        </ns:fk>
-      </ns:column>
-      <ns:column columnName="createdby">
-        <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:nullable>true</ns:nullable>
-        <ns:isHidden>true</ns:isHidden>
-      </ns:column>
-      <ns:column columnName="created">
-        <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:nullable>true</ns:nullable>
-        <ns:isHidden>true</ns:isHidden>
-      </ns:column>
-      <ns:column columnName="modifiedby">
-        <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:nullable>true</ns:nullable>
-        <ns:isHidden>true</ns:isHidden>
-      </ns:column>
-      <ns:column columnName="modified">
-        <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:nullable>true</ns:nullable>
-        <ns:isHidden>true</ns:isHidden>
-      </ns:column>
-    </ns:columns>
-  </ns:table>
-  <ns:table tableName="protocol" tableDbType="TABLE">
-    <ns:importUrl></ns:importUrl>
-    <ns:insertUrl></ns:insertUrl>
-    <ns:updateUrl></ns:updateUrl>
-    <ns:deleteUrl></ns:deleteUrl>
-    <ns:pkColumnName>protocol</ns:pkColumnName>
-    <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr&amp;query.queryName=protocol&amp;protocol=${protocol}</ns:tableUrl>
-    <ns:columns>
-      <ns:column columnName="protocol">
-        <ns:isKeyField>true</ns:isKeyField>
-      </ns:column>
-      <ns:column columnName="inves">
-        <ns:nullable>true</ns:nullable>
-      </ns:column>
-      <ns:column columnName="approve">
-        <ns:nullable>true</ns:nullable>
-      </ns:column>
-      <ns:column columnName="description">
-        <ns:nullable>true</ns:nullable>
-      </ns:column>
-      <ns:column columnName="maxAnimals">
-      </ns:column>
-      <!--<ns:column columnName="container">-->
-        <!--<ns:isUserEditable>false</ns:isUserEditable>-->
-        <!--<ns:isHidden>true</ns:isHidden>-->
-        <!--<ns:fk>-->
-          <!--<ns:fkDbSchema>core</ns:fkDbSchema>-->
-          <!--<ns:fkTable>containers</ns:fkTable>-->
-          <!--<ns:fkColumnName>entityid</ns:fkColumnName>-->
-        <!--</ns:fk>-->
-      <!--</ns:column>-->
-      <ns:column columnName="createdby">
-        <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:nullable>true</ns:nullable>
-        <ns:isHidden>true</ns:isHidden>
-      </ns:column>
-      <ns:column columnName="created">
-        <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:nullable>true</ns:nullable>
-        <ns:isHidden>true</ns:isHidden>
-      </ns:column>
-      <ns:column columnName="modifiedby">
-        <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:nullable>true</ns:nullable>
-        <ns:isHidden>true</ns:isHidden>
-      </ns:column>
-      <ns:column columnName="modified">
-        <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:nullable>true</ns:nullable>
-        <ns:isHidden>true</ns:isHidden>
-      </ns:column>
-    </ns:columns>
-  </ns:table>
-  <ns:table tableName="project" tableDbType="TABLE">
-    <ns:importUrl></ns:importUrl>
-    <ns:insertUrl></ns:insertUrl>
-    <ns:updateUrl></ns:updateUrl>
-    <ns:deleteUrl></ns:deleteUrl>
-    <ns:pkColumnName>project</ns:pkColumnName>
-    <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr&amp;query.queryName=projects&amp;project=${project}</ns:tableUrl>
-    <ns:columns>
-      <ns:column columnName="project">
-        <ns:isKeyField>true</ns:isKeyField>
-      </ns:column>
-      <ns:column columnName="protocol">
-      </ns:column>
-      <ns:column columnName="account">
-        <ns:nullable>true</ns:nullable>
-      </ns:column>
-      <ns:column columnName="inves">
-        <ns:nullable>true</ns:nullable>
-      </ns:column>
-      <ns:column columnName="avail">
-        <ns:nullable>true</ns:nullable>
-      </ns:column>
-      <ns:column columnName="title">
-        <ns:nullable>true</ns:nullable>
-      </ns:column>
-      <ns:column columnName="research">
-        <ns:nullable>true</ns:nullable>
-      </ns:column>
-      <ns:column columnName="reqname">
-        <ns:nullable>true</ns:nullable>
-      </ns:column>
-      <ns:column columnName="requestid">
-        <ns:nullable>true</ns:nullable>
-      </ns:column>
-      <ns:column columnName="qcstate">
-        <ns:nullable>true</ns:nullable>
-        <ns:fk>
-          <ns:fkDbSchema>study</ns:fkDbSchema>
-          <ns:fkTable>QCState</ns:fkTable>
-          <ns:fkColumnName>rowid</ns:fkColumnName>
-        </ns:fk>
-      </ns:column>
-      <!--<ns:column columnName="container">-->
-        <!--<ns:isUserEditable>false</ns:isUserEditable>-->
-        <!--<ns:isHidden>true</ns:isHidden>-->
-        <!--<ns:fk>-->
-          <!--<ns:fkDbSchema>core</ns:fkDbSchema>-->
-          <!--<ns:fkTable>containers</ns:fkTable>-->
-          <!--<ns:fkColumnName>entityid</ns:fkColumnName>-->
-        <!--</ns:fk>-->
-      <!--</ns:column>-->
-      <ns:column columnName="createdby">
-        <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:nullable>true</ns:nullable>
-        <ns:isHidden>true</ns:isHidden>
-      </ns:column>
-      <ns:column columnName="created">
-        <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:nullable>true</ns:nullable>
-        <ns:isHidden>true</ns:isHidden>
-      </ns:column>
-      <ns:column columnName="modifiedby">
-        <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:nullable>true</ns:nullable>
-        <ns:isHidden>true</ns:isHidden>
-      </ns:column>
-      <ns:column columnName="modified">
-        <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:nullable>true</ns:nullable>
-        <ns:isHidden>true</ns:isHidden>
-      </ns:column>
-    </ns:columns>
-  </ns:table>
-  <ns:table tableName="protocol_counts" tableDbType="TABLE">
-    <ns:importUrl></ns:importUrl>
-    <ns:insertUrl></ns:insertUrl>
-    <ns:updateUrl></ns:updateUrl>
-    <ns:deleteUrl></ns:deleteUrl>
-    <ns:pkColumnName>rowid</ns:pkColumnName>
-    <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr&amp;query.queryName=protocol_counts&amp;rowid=${rowid}</ns:tableUrl>
-    <ns:columns>
-      <ns:column columnName="rowid">
-        <ns:isAutoInc>true</ns:isAutoInc>
-        <ns:isKeyField>true</ns:isKeyField>
-        <ns:shownInInsertView>false</ns:shownInInsertView>
-        <ns:shownInUpdateView>false</ns:shownInUpdateView>
-      </ns:column>
-      <ns:column columnName="protocol">
-      </ns:column>
-      <ns:column columnName="species">
-      </ns:column>
-      <ns:column columnName="allowed">
-      </ns:column>
-      <ns:column columnName="container">
-        <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:isHidden>true</ns:isHidden>
-        <ns:fk>
-          <ns:fkDbSchema>core</ns:fkDbSchema>
-          <ns:fkTable>containers</ns:fkTable>
-          <ns:fkColumnName>entityid</ns:fkColumnName>
-        </ns:fk>
-      </ns:column>
-      <ns:column columnName="createdby">
-        <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:nullable>true</ns:nullable>
-        <ns:isHidden>true</ns:isHidden>
-      </ns:column>
-      <ns:column columnName="created">
-        <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:nullable>true</ns:nullable>
-        <ns:isHidden>true</ns:isHidden>
-      </ns:column>
-      <ns:column columnName="modifiedby">
-        <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:nullable>true</ns:nullable>
-        <ns:isHidden>true</ns:isHidden>
-      </ns:column>
-      <ns:column columnName="modified">
-        <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:nullable>true</ns:nullable>
-        <ns:isHidden>true</ns:isHidden>
-      </ns:column>
-    </ns:columns>
-  </ns:table>
-  <!--<ns:table tableName="qcPermissionMap" tableDbType="TABLE">-->
+    <ns:table tableName="formtemplates" tableDbType="TABLE">
+        <ns:importUrl></ns:importUrl>
+        <ns:insertUrl></ns:insertUrl>
+        <ns:updateUrl></ns:updateUrl>
+        <ns:deleteUrl></ns:deleteUrl>
+        <ns:pkColumnName>entityid</ns:pkColumnName>
+        <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr&amp;query.queryName=formtemplates&amp;entityid=${entityid}</ns:tableUrl>
+        <ns:columns>
+            <ns:column columnName="entityid">
+                <!--<ns:isAutoInc>true</ns:isAutoInc>-->
+                <ns:isKeyField>true</ns:isKeyField>
+            </ns:column>
+            <ns:column columnName="formtype">
+                <!--<ns:fk>-->
+                <!--<ns:fkDbSchema>ehr</ns:fkDbSchema>-->
+                <!--<ns:fkTable>formtypes</ns:fkTable>-->
+                <!--<ns:fkColumnName>formtype</ns:fkColumnName>-->
+                <!--</ns:fk>-->
+            </ns:column>
+            <ns:column columnName="userId">
+                <ns:nullable>true</ns:nullable>
+            </ns:column>
+            <ns:column columnName="template">
+                <ns:nullable>true</ns:nullable>
+            </ns:column>
+            <ns:column columnName="title">
+            </ns:column>
+            <ns:column columnName="description">
+                <ns:nullable>true</ns:nullable>
+            </ns:column>
+            <ns:column columnName="container">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:isHidden>true</ns:isHidden>
+                <ns:fk>
+                    <ns:fkDbSchema>core</ns:fkDbSchema>
+                    <ns:fkTable>containers</ns:fkTable>
+                    <ns:fkColumnName>entityid</ns:fkColumnName>
+                </ns:fk>
+            </ns:column>
+            <ns:column columnName="createdby">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:nullable>true</ns:nullable>
+                <ns:isHidden>true</ns:isHidden>
+            </ns:column>
+            <ns:column columnName="created">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:nullable>true</ns:nullable>
+                <ns:isHidden>true</ns:isHidden>
+            </ns:column>
+            <ns:column columnName="modifiedby">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:nullable>true</ns:nullable>
+                <ns:isHidden>true</ns:isHidden>
+            </ns:column>
+            <ns:column columnName="modified">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:nullable>true</ns:nullable>
+                <ns:isHidden>true</ns:isHidden>
+            </ns:column>
+        </ns:columns>
+    </ns:table>
+    <ns:table tableName="notificationrecipients" tableDbType="TABLE">
+        <ns:importUrl></ns:importUrl>
+        <ns:insertUrl></ns:insertUrl>
+        <ns:updateUrl></ns:updateUrl>
+        <ns:deleteUrl></ns:deleteUrl>
+        <ns:pkColumnName>rowid</ns:pkColumnName>
+        <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr&amp;query.queryName=notificationrecipients&amp;rowid=${rowid}</ns:tableUrl>
+        <ns:columns>
+            <ns:column columnName="rowid">
+                <ns:shownInInsertView>false</ns:shownInInsertView>
+                <ns:isAutoInc>true</ns:isAutoInc>
+                <ns:isKeyField>true</ns:isKeyField>
+            </ns:column>
+            <ns:column columnName="notificationtype">
+                <ns:columnTitle>Notification Type</ns:columnTitle>
+                <ns:nullable>true</ns:nullable>
+                <ns:fk>
+                    <ns:fkDbSchema>ehr</ns:fkDbSchema>
+                    <ns:fkTable>notificationtypes</ns:fkTable>
+                    <ns:fkColumnName>notificationtype</ns:fkColumnName>
+                </ns:fk>
+            </ns:column>
+            <ns:column columnName="recipient">
+                <ns:fk>
+                    <ns:fkDbSchema>core</ns:fkDbSchema>
+                    <ns:fkTable>PrincipalsWithoutAdmin</ns:fkTable>
+                    <ns:fkColumnName>userid</ns:fkColumnName>
+                </ns:fk>
+            </ns:column>
+            <ns:column columnName="container">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:isHidden>true</ns:isHidden>
+                <ns:fk>
+                    <ns:fkDbSchema>core</ns:fkDbSchema>
+                    <ns:fkTable>containers</ns:fkTable>
+                    <ns:fkColumnName>entityid</ns:fkColumnName>
+                </ns:fk>
+            </ns:column>
+            <ns:column columnName="createdby">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:nullable>true</ns:nullable>
+                <ns:isHidden>true</ns:isHidden>
+            </ns:column>
+            <ns:column columnName="created">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:nullable>true</ns:nullable>
+                <ns:isHidden>true</ns:isHidden>
+            </ns:column>
+            <ns:column columnName="modifiedby">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:nullable>true</ns:nullable>
+                <ns:isHidden>true</ns:isHidden>
+            </ns:column>
+            <ns:column columnName="modified">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:nullable>true</ns:nullable>
+                <ns:isHidden>true</ns:isHidden>
+            </ns:column>
+        </ns:columns>
+    </ns:table>
+    <ns:table tableName="formpanelsections" tableDbType="TABLE">
+        <ns:importUrl></ns:importUrl>
+        <ns:insertUrl></ns:insertUrl>
+        <ns:updateUrl></ns:updateUrl>
+        <ns:deleteUrl></ns:deleteUrl>
+        <ns:pkColumnName>rowid</ns:pkColumnName>
+        <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr&amp;query.queryName=formpanelsections&amp;rowid=${rowid}</ns:tableUrl>
+        <ns:columns>
+            <ns:column columnName="rowid">
+                <ns:isAutoInc>true</ns:isAutoInc>
+                <ns:isKeyField>true</ns:isKeyField>
+            </ns:column>
+            <ns:column columnName="destination">
+            </ns:column>
+            <ns:column columnName="formtype">
+                <ns:fk>
+                    <ns:fkDbSchema>ehr</ns:fkDbSchema>
+                    <ns:fkTable>formtypes</ns:fkTable>
+                    <ns:fkColumnName>formtype</ns:fkColumnName>
+                </ns:fk>
+            </ns:column>
+            <ns:column columnName="xtype">
+            </ns:column>
+            <ns:column columnName="sort_order">
+            </ns:column>
+            <ns:column columnName="schemaName">
+                <ns:nullable>true</ns:nullable>
+            </ns:column>
+            <ns:column columnName="queryName">
+                <ns:nullable>true</ns:nullable>
+            </ns:column>
+            <ns:column columnName="title">
+                <ns:nullable>true</ns:nullable>
+            </ns:column>
+            <ns:column columnName="metadatasources">
+                <ns:nullable>true</ns:nullable>
+            </ns:column>
+            <ns:column columnName="buttons">
+                <ns:nullable>true</ns:nullable>
+            </ns:column>
+            <ns:column columnName="initialTemplates">
+                <ns:nullable>true</ns:nullable>
+            </ns:column>
+            <ns:column columnName="configJson">
+                <ns:nullable>true</ns:nullable>
+                <ns:columnTitle>JSON Config</ns:columnTitle>
+            </ns:column>
+            <ns:column columnName="container">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:isHidden>true</ns:isHidden>
+                <ns:fk>
+                    <ns:fkDbSchema>core</ns:fkDbSchema>
+                    <ns:fkTable>containers</ns:fkTable>
+                    <ns:fkColumnName>entityid</ns:fkColumnName>
+                </ns:fk>
+            </ns:column>
+            <ns:column columnName="createdby">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:nullable>true</ns:nullable>
+                <ns:isHidden>true</ns:isHidden>
+            </ns:column>
+            <ns:column columnName="created">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:nullable>true</ns:nullable>
+                <ns:isHidden>true</ns:isHidden>
+            </ns:column>
+            <ns:column columnName="modifiedby">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:nullable>true</ns:nullable>
+                <ns:isHidden>true</ns:isHidden>
+            </ns:column>
+            <ns:column columnName="modified">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:nullable>true</ns:nullable>
+                <ns:isHidden>true</ns:isHidden>
+            </ns:column>
+        </ns:columns>
+    </ns:table>
+    <ns:table tableName="formtemplaterecords" tableDbType="TABLE">
+        <ns:importUrl></ns:importUrl>
+        <ns:insertUrl></ns:insertUrl>
+        <ns:updateUrl></ns:updateUrl>
+        <ns:deleteUrl></ns:deleteUrl>
+        <ns:pkColumnName>rowid</ns:pkColumnName>
+        <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr&amp;query.queryName=formtemplaterecords&amp;rowid=${rowid}</ns:tableUrl>
+        <ns:columns>
+            <ns:column columnName="rowid">
+                <ns:isAutoInc>true</ns:isAutoInc>
+                <ns:isKeyField>true</ns:isKeyField>
+            </ns:column>
+            <ns:column columnName="templateid">
+                <ns:fk>
+                    <ns:fkDbSchema>ehr</ns:fkDbSchema>
+                    <ns:fkTable>formtemplates</ns:fkTable>
+                    <ns:fkColumnName>entityid</ns:fkColumnName>
+                </ns:fk>
+            </ns:column>
+            <ns:column columnName="storeid">
+            </ns:column>
+            <ns:column columnName="json">
+                <ns:nullable>true</ns:nullable>
+            </ns:column>
+            <ns:column columnName="container">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:isHidden>true</ns:isHidden>
+                <ns:fk>
+                    <ns:fkDbSchema>core</ns:fkDbSchema>
+                    <ns:fkTable>containers</ns:fkTable>
+                    <ns:fkColumnName>entityid</ns:fkColumnName>
+                </ns:fk>
+            </ns:column>
+            <ns:column columnName="createdby">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:nullable>true</ns:nullable>
+                <ns:isHidden>true</ns:isHidden>
+            </ns:column>
+            <ns:column columnName="created">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:nullable>true</ns:nullable>
+                <ns:isHidden>true</ns:isHidden>
+            </ns:column>
+            <ns:column columnName="modifiedby">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:nullable>true</ns:nullable>
+                <ns:isHidden>true</ns:isHidden>
+            </ns:column>
+            <ns:column columnName="modified">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:nullable>true</ns:nullable>
+                <ns:isHidden>true</ns:isHidden>
+            </ns:column>
+        </ns:columns>
+    </ns:table>
+    <ns:table tableName="notificationtypes" tableDbType="TABLE">
+        <ns:importUrl></ns:importUrl>
+        <ns:insertUrl></ns:insertUrl>
+        <ns:updateUrl></ns:updateUrl>
+        <ns:deleteUrl></ns:deleteUrl>
+        <ns:pkColumnName>notificationtype</ns:pkColumnName>
+        <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr&amp;query.queryName=notificationtypes&amp;notificationtype=${notificationtype}</ns:tableUrl>
+        <ns:columns>
+            <ns:column columnName="notificationtype">
+                <ns:isKeyField>true</ns:isKeyField>
+            </ns:column>
+            <ns:column columnName="description">
+                <ns:nullable>true</ns:nullable>
+            </ns:column>
+        </ns:columns>
+    </ns:table>
+    <ns:table tableName="formtypes" tableDbType="TABLE">
+        <ns:importUrl></ns:importUrl>
+        <ns:insertUrl></ns:insertUrl>
+        <ns:updateUrl></ns:updateUrl>
+        <ns:deleteUrl></ns:deleteUrl>
+        <ns:pkColumnName>rowid</ns:pkColumnName>
+        <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr&amp;query.queryName=formtypes&amp;rowid=${rowid}</ns:tableUrl>
+        <ns:columns>
+            <ns:column columnName="rowid">
+                <ns:isAutoInc>true</ns:isAutoInc>
+                <ns:isKeyField>true</ns:isKeyField>
+                <ns:shownInInsertView>false</ns:shownInInsertView>
+                <ns:shownInUpdateView>false</ns:shownInUpdateView>
+            </ns:column>
+            <ns:column columnName="formtype">
+            </ns:column>
+            <ns:column columnName="category">
+            </ns:column>
+            <ns:column columnName="description">
+                <ns:nullable>true</ns:nullable>
+            </ns:column>
+            <ns:column columnName="permitsSingleIdOnly">
+                <ns:nullable>true</ns:nullable>
+            </ns:column>
+            <ns:column columnName="configjson">
+                <ns:nullable>true</ns:nullable>
+                <ns:columnTitle>JSON Config</ns:columnTitle>
+                <ns:inputType>textarea</ns:inputType>
+            </ns:column>
+            <ns:column columnName="container">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:isHidden>true</ns:isHidden>
+                <ns:fk>
+                    <ns:fkDbSchema>core</ns:fkDbSchema>
+                    <ns:fkTable>containers</ns:fkTable>
+                    <ns:fkColumnName>entityid</ns:fkColumnName>
+                </ns:fk>
+            </ns:column>
+            <ns:column columnName="createdby">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:nullable>true</ns:nullable>
+                <ns:isHidden>true</ns:isHidden>
+            </ns:column>
+            <ns:column columnName="created">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:nullable>true</ns:nullable>
+                <ns:isHidden>true</ns:isHidden>
+            </ns:column>
+            <ns:column columnName="modifiedby">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:nullable>true</ns:nullable>
+                <ns:isHidden>true</ns:isHidden>
+            </ns:column>
+            <ns:column columnName="modified">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:nullable>true</ns:nullable>
+                <ns:isHidden>true</ns:isHidden>
+            </ns:column>
+        </ns:columns>
+    </ns:table>
+    <ns:table tableName="protocol" tableDbType="TABLE">
+        <ns:importUrl></ns:importUrl>
+        <ns:insertUrl></ns:insertUrl>
+        <ns:updateUrl></ns:updateUrl>
+        <ns:deleteUrl></ns:deleteUrl>
+        <ns:pkColumnName>protocol</ns:pkColumnName>
+        <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr&amp;query.queryName=protocol&amp;protocol=${protocol}</ns:tableUrl>
+        <ns:columns>
+            <ns:column columnName="protocol">
+                <ns:isKeyField>true</ns:isKeyField>
+            </ns:column>
+            <ns:column columnName="inves">
+                <ns:nullable>true</ns:nullable>
+            </ns:column>
+            <ns:column columnName="approve">
+                <ns:nullable>true</ns:nullable>
+            </ns:column>
+            <ns:column columnName="description">
+                <ns:nullable>true</ns:nullable>
+            </ns:column>
+            <ns:column columnName="maxAnimals">
+            </ns:column>
+            <!--<ns:column columnName="container">-->
+            <!--<ns:isUserEditable>false</ns:isUserEditable>-->
+            <!--<ns:isHidden>true</ns:isHidden>-->
+            <!--<ns:fk>-->
+            <!--<ns:fkDbSchema>core</ns:fkDbSchema>-->
+            <!--<ns:fkTable>containers</ns:fkTable>-->
+            <!--<ns:fkColumnName>entityid</ns:fkColumnName>-->
+            <!--</ns:fk>-->
+            <!--</ns:column>-->
+            <ns:column columnName="createdby">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:nullable>true</ns:nullable>
+                <ns:isHidden>true</ns:isHidden>
+            </ns:column>
+            <ns:column columnName="created">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:nullable>true</ns:nullable>
+                <ns:isHidden>true</ns:isHidden>
+            </ns:column>
+            <ns:column columnName="modifiedby">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:nullable>true</ns:nullable>
+                <ns:isHidden>true</ns:isHidden>
+            </ns:column>
+            <ns:column columnName="modified">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:nullable>true</ns:nullable>
+                <ns:isHidden>true</ns:isHidden>
+            </ns:column>
+        </ns:columns>
+    </ns:table>
+    <ns:table tableName="project" tableDbType="TABLE">
+        <ns:importUrl></ns:importUrl>
+        <ns:insertUrl></ns:insertUrl>
+        <ns:updateUrl></ns:updateUrl>
+        <ns:deleteUrl></ns:deleteUrl>
+        <ns:pkColumnName>project</ns:pkColumnName>
+        <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr&amp;query.queryName=projects&amp;project=${project}</ns:tableUrl>
+        <ns:columns>
+            <ns:column columnName="project">
+                <ns:isKeyField>true</ns:isKeyField>
+            </ns:column>
+            <ns:column columnName="protocol">
+            </ns:column>
+            <ns:column columnName="account">
+                <ns:nullable>true</ns:nullable>
+            </ns:column>
+            <ns:column columnName="inves">
+                <ns:nullable>true</ns:nullable>
+            </ns:column>
+            <ns:column columnName="avail">
+                <ns:nullable>true</ns:nullable>
+            </ns:column>
+            <ns:column columnName="title">
+                <ns:nullable>true</ns:nullable>
+            </ns:column>
+            <ns:column columnName="research">
+                <ns:nullable>true</ns:nullable>
+            </ns:column>
+            <ns:column columnName="reqname">
+                <ns:nullable>true</ns:nullable>
+            </ns:column>
+            <ns:column columnName="requestid">
+                <ns:nullable>true</ns:nullable>
+            </ns:column>
+            <ns:column columnName="qcstate">
+                <ns:nullable>true</ns:nullable>
+                <ns:fk>
+                    <ns:fkDbSchema>study</ns:fkDbSchema>
+                    <ns:fkTable>QCState</ns:fkTable>
+                    <ns:fkColumnName>rowid</ns:fkColumnName>
+                </ns:fk>
+            </ns:column>
+            <!--<ns:column columnName="container">-->
+            <!--<ns:isUserEditable>false</ns:isUserEditable>-->
+            <!--<ns:isHidden>true</ns:isHidden>-->
+            <!--<ns:fk>-->
+            <!--<ns:fkDbSchema>core</ns:fkDbSchema>-->
+            <!--<ns:fkTable>containers</ns:fkTable>-->
+            <!--<ns:fkColumnName>entityid</ns:fkColumnName>-->
+            <!--</ns:fk>-->
+            <!--</ns:column>-->
+            <ns:column columnName="createdby">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:nullable>true</ns:nullable>
+                <ns:isHidden>true</ns:isHidden>
+            </ns:column>
+            <ns:column columnName="created">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:nullable>true</ns:nullable>
+                <ns:isHidden>true</ns:isHidden>
+            </ns:column>
+            <ns:column columnName="modifiedby">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:nullable>true</ns:nullable>
+                <ns:isHidden>true</ns:isHidden>
+            </ns:column>
+            <ns:column columnName="modified">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:nullable>true</ns:nullable>
+                <ns:isHidden>true</ns:isHidden>
+            </ns:column>
+        </ns:columns>
+    </ns:table>
+    <ns:table tableName="protocol_counts" tableDbType="TABLE">
+        <ns:importUrl></ns:importUrl>
+        <ns:insertUrl></ns:insertUrl>
+        <ns:updateUrl></ns:updateUrl>
+        <ns:deleteUrl></ns:deleteUrl>
+        <ns:pkColumnName>rowid</ns:pkColumnName>
+        <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr&amp;query.queryName=protocol_counts&amp;rowid=${rowid}</ns:tableUrl>
+        <ns:columns>
+            <ns:column columnName="rowid">
+                <ns:isAutoInc>true</ns:isAutoInc>
+                <ns:isKeyField>true</ns:isKeyField>
+                <ns:shownInInsertView>false</ns:shownInInsertView>
+                <ns:shownInUpdateView>false</ns:shownInUpdateView>
+            </ns:column>
+            <ns:column columnName="protocol">
+            </ns:column>
+            <ns:column columnName="species">
+            </ns:column>
+            <ns:column columnName="allowed">
+            </ns:column>
+            <ns:column columnName="container">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:isHidden>true</ns:isHidden>
+                <ns:fk>
+                    <ns:fkDbSchema>core</ns:fkDbSchema>
+                    <ns:fkTable>containers</ns:fkTable>
+                    <ns:fkColumnName>entityid</ns:fkColumnName>
+                </ns:fk>
+            </ns:column>
+            <ns:column columnName="createdby">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:nullable>true</ns:nullable>
+                <ns:isHidden>true</ns:isHidden>
+            </ns:column>
+            <ns:column columnName="created">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:nullable>true</ns:nullable>
+                <ns:isHidden>true</ns:isHidden>
+            </ns:column>
+            <ns:column columnName="modifiedby">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:nullable>true</ns:nullable>
+                <ns:isHidden>true</ns:isHidden>
+            </ns:column>
+            <ns:column columnName="modified">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:nullable>true</ns:nullable>
+                <ns:isHidden>true</ns:isHidden>
+            </ns:column>
+        </ns:columns>
+    </ns:table>
+    <!--<ns:table tableName="qcPermissionMap" tableDbType="TABLE">-->
     <!--<ns:pkColumnName>rowid</ns:pkColumnName>-->
     <!--<ns:columns>-->
-      <!--<ns:column columnName="rowid">-->
-        <!--<ns:isAutoInc>true</ns:isAutoInc>-->
-      <!--</ns:column>-->
-      <!--<ns:column columnName="role">-->
-      <!--</ns:column>-->
-      <!--<ns:column columnName="qcStateLabel">-->
-        <!--<ns:fk>-->
-          <!--<ns:fkDbSchema>ehr</ns:fkDbSchema>-->
-          <!--<ns:fkTable>qcStateMetadata</ns:fkTable>-->
-          <!--<ns:fkColumnName>QCStateLabel</ns:fkColumnName>-->
-        <!--</ns:fk>-->
-      <!--</ns:column>-->
-      <!--<ns:column columnName="permission">-->
-      <!--</ns:column>-->
+    <!--<ns:column columnName="rowid">-->
+    <!--<ns:isAutoInc>true</ns:isAutoInc>-->
+    <!--</ns:column>-->
+    <!--<ns:column columnName="role">-->
+    <!--</ns:column>-->
+    <!--<ns:column columnName="qcStateLabel">-->
+    <!--<ns:fk>-->
+    <!--<ns:fkDbSchema>ehr</ns:fkDbSchema>-->
+    <!--<ns:fkTable>qcStateMetadata</ns:fkTable>-->
+    <!--<ns:fkColumnName>QCStateLabel</ns:fkColumnName>-->
+    <!--</ns:fk>-->
+    <!--</ns:column>-->
+    <!--<ns:column columnName="permission">-->
+    <!--</ns:column>-->
     <!--</ns:columns>-->
-  <!--</ns:table>-->
-  <ns:table tableName="qcStateMetadata" tableDbType="TABLE">
-    <ns:importUrl></ns:importUrl>
-    <ns:insertUrl></ns:insertUrl>
-    <ns:updateUrl></ns:updateUrl>
-    <ns:deleteUrl></ns:deleteUrl>
-      <ns:pkColumnName>QCStateLabel</ns:pkColumnName>
-      <ns:columns>
-        <ns:column columnName="QCStateLabel">
-          <ns:isKeyField>true</ns:isKeyField>
-        </ns:column>
-        <ns:column columnName="draftData">
-          <ns:nullable>true</ns:nullable>
-        </ns:column>
-        <ns:column columnName="isDeleted">
-          <ns:nullable>true</ns:nullable>
-        </ns:column>
-        <ns:column columnName="isRequest">
-          <ns:nullable>true</ns:nullable>
-        </ns:column>
-        <ns:column columnName="allowFutureDates">
-          <ns:nullable>true</ns:nullable>
-        </ns:column>
-      </ns:columns>
+    <!--</ns:table>-->
+    <ns:table tableName="qcStateMetadata" tableDbType="TABLE">
+        <ns:importUrl></ns:importUrl>
+        <ns:insertUrl></ns:insertUrl>
+        <ns:updateUrl></ns:updateUrl>
+        <ns:deleteUrl></ns:deleteUrl>
+        <ns:pkColumnName>QCStateLabel</ns:pkColumnName>
+        <ns:columns>
+            <ns:column columnName="QCStateLabel">
+                <ns:isKeyField>true</ns:isKeyField>
+            </ns:column>
+            <ns:column columnName="draftData">
+                <ns:nullable>true</ns:nullable>
+            </ns:column>
+            <ns:column columnName="isDeleted">
+                <ns:nullable>true</ns:nullable>
+            </ns:column>
+            <ns:column columnName="isRequest">
+                <ns:nullable>true</ns:nullable>
+            </ns:column>
+            <ns:column columnName="allowFutureDates">
+                <ns:nullable>true</ns:nullable>
+            </ns:column>
+        </ns:columns>
     </ns:table>
-  <ns:table tableName="animal_groups" tableDbType="TABLE">
-    <ns:importUrl></ns:importUrl>
-    <ns:insertUrl></ns:insertUrl>
-    <ns:updateUrl></ns:updateUrl>
-    <ns:deleteUrl></ns:deleteUrl>
-    <ns:pkColumnName>rowid</ns:pkColumnName>
-    <ns:columns>
-      <ns:column columnName="rowid">
-        <ns:isAutoInc>true</ns:isAutoInc>
-        <ns:isKeyField>true</ns:isKeyField>
-        <ns:shownInInsertView>false</ns:shownInInsertView>
-        <ns:shownInUpdateView>false</ns:shownInUpdateView>
-      </ns:column>
-      <ns:column columnName="name">
-      </ns:column>
-      <ns:column columnName="container">
-        <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:isHidden>true</ns:isHidden>
-        <ns:fk>
-          <ns:fkDbSchema>core</ns:fkDbSchema>
-          <ns:fkTable>containers</ns:fkTable>
-          <ns:fkColumnName>entityid</ns:fkColumnName>
-        </ns:fk>
-      </ns:column>
-      <ns:column columnName="createdby">
-        <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:nullable>true</ns:nullable>
-        <ns:isHidden>true</ns:isHidden>
-      </ns:column>
-      <ns:column columnName="created">
-        <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:nullable>true</ns:nullable>
-        <ns:isHidden>true</ns:isHidden>
-      </ns:column>
-      <ns:column columnName="modifiedby">
-        <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:nullable>true</ns:nullable>
-        <ns:isHidden>true</ns:isHidden>
-      </ns:column>
-      <ns:column columnName="modified">
-        <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:nullable>true</ns:nullable>
-        <ns:isHidden>true</ns:isHidden>
-      </ns:column>
-    </ns:columns>
-  </ns:table>
-  <ns:table tableName="supplemental_pedigree" tableDbType="TABLE">
-    <ns:importUrl></ns:importUrl>
-    <ns:insertUrl></ns:insertUrl>
-    <ns:updateUrl></ns:updateUrl>
-    <ns:deleteUrl></ns:deleteUrl>
-    <ns:pkColumnName>rowid</ns:pkColumnName>
-    <ns:columns>
-      <ns:column columnName="rowid">
-        <ns:isAutoInc>true</ns:isAutoInc>
-        <ns:isKeyField>true</ns:isKeyField>
-        <ns:shownInDetailsView>false</ns:shownInDetailsView>
-        <ns:shownInInsertView>false</ns:shownInInsertView>
-        <ns:shownInUpdateView>false</ns:shownInUpdateView>
-      </ns:column>
-      <ns:column columnName="Id">
-      </ns:column>
-      <ns:column columnName="gender">
-      </ns:column>
-      <ns:column columnName="dam">
-      </ns:column>
-      <ns:column columnName="sire">
-      </ns:column>
-      <ns:column columnName="birth">
-      </ns:column>
-      <ns:column columnName="acquiredate">
-        <ns:columnTitle>Acquire Date</ns:columnTitle>
-      </ns:column>
-      <ns:column columnName="departdate">
-        <ns:columnTitle>Depart Date</ns:columnTitle>
-      </ns:column>
-      <ns:column columnName="createdby">
-        <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:nullable>true</ns:nullable>
-        <ns:isHidden>true</ns:isHidden>
-      </ns:column>
-      <ns:column columnName="created">
-        <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:nullable>true</ns:nullable>
-        <ns:isHidden>true</ns:isHidden>
-      </ns:column>
-      <ns:column columnName="modifiedby">
-        <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:nullable>true</ns:nullable>
-        <ns:isHidden>true</ns:isHidden>
-      </ns:column>
-      <ns:column columnName="modified">
-        <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:nullable>true</ns:nullable>
-        <ns:isHidden>true</ns:isHidden>
-      </ns:column>
-      <ns:column columnName="container">
-        <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:isHidden>true</ns:isHidden>
-        <ns:fk>
-          <ns:fkDbSchema>core</ns:fkDbSchema>
-          <ns:fkTable>containers</ns:fkTable>
-          <ns:fkColumnName>entityid</ns:fkColumnName>
-        </ns:fk>
-      </ns:column>
-    </ns:columns>
-  </ns:table>
+    <ns:table tableName="animal_groups" tableDbType="TABLE">
+        <ns:importUrl></ns:importUrl>
+        <ns:insertUrl></ns:insertUrl>
+        <ns:updateUrl></ns:updateUrl>
+        <ns:deleteUrl></ns:deleteUrl>
+        <ns:pkColumnName>rowid</ns:pkColumnName>
+        <ns:columns>
+            <ns:column columnName="rowid">
+                <ns:isAutoInc>true</ns:isAutoInc>
+                <ns:isKeyField>true</ns:isKeyField>
+                <ns:shownInInsertView>false</ns:shownInInsertView>
+                <ns:shownInUpdateView>false</ns:shownInUpdateView>
+            </ns:column>
+            <ns:column columnName="name">
+            </ns:column>
+            <ns:column columnName="container">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:isHidden>true</ns:isHidden>
+                <ns:fk>
+                    <ns:fkDbSchema>core</ns:fkDbSchema>
+                    <ns:fkTable>containers</ns:fkTable>
+                    <ns:fkColumnName>entityid</ns:fkColumnName>
+                </ns:fk>
+            </ns:column>
+            <ns:column columnName="createdby">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:nullable>true</ns:nullable>
+                <ns:isHidden>true</ns:isHidden>
+            </ns:column>
+            <ns:column columnName="created">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:nullable>true</ns:nullable>
+                <ns:isHidden>true</ns:isHidden>
+            </ns:column>
+            <ns:column columnName="modifiedby">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:nullable>true</ns:nullable>
+                <ns:isHidden>true</ns:isHidden>
+            </ns:column>
+            <ns:column columnName="modified">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:nullable>true</ns:nullable>
+                <ns:isHidden>true</ns:isHidden>
+            </ns:column>
+        </ns:columns>
+    </ns:table>
+    <ns:table tableName="supplemental_pedigree" tableDbType="TABLE">
+        <ns:importUrl></ns:importUrl>
+        <ns:insertUrl></ns:insertUrl>
+        <ns:updateUrl></ns:updateUrl>
+        <ns:deleteUrl></ns:deleteUrl>
+        <ns:pkColumnName>rowid</ns:pkColumnName>
+        <ns:columns>
+            <ns:column columnName="rowid">
+                <ns:isAutoInc>true</ns:isAutoInc>
+                <ns:isKeyField>true</ns:isKeyField>
+                <ns:shownInDetailsView>false</ns:shownInDetailsView>
+                <ns:shownInInsertView>false</ns:shownInInsertView>
+                <ns:shownInUpdateView>false</ns:shownInUpdateView>
+            </ns:column>
+            <ns:column columnName="Id">
+            </ns:column>
+            <ns:column columnName="gender">
+            </ns:column>
+            <ns:column columnName="dam">
+            </ns:column>
+            <ns:column columnName="sire">
+            </ns:column>
+            <ns:column columnName="birth">
+            </ns:column>
+            <ns:column columnName="acquiredate">
+                <ns:columnTitle>Acquire Date</ns:columnTitle>
+            </ns:column>
+            <ns:column columnName="departdate">
+                <ns:columnTitle>Depart Date</ns:columnTitle>
+            </ns:column>
+            <ns:column columnName="createdby">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:nullable>true</ns:nullable>
+                <ns:isHidden>true</ns:isHidden>
+            </ns:column>
+            <ns:column columnName="created">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:nullable>true</ns:nullable>
+                <ns:isHidden>true</ns:isHidden>
+            </ns:column>
+            <ns:column columnName="modifiedby">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:nullable>true</ns:nullable>
+                <ns:isHidden>true</ns:isHidden>
+            </ns:column>
+            <ns:column columnName="modified">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:nullable>true</ns:nullable>
+                <ns:isHidden>true</ns:isHidden>
+            </ns:column>
+            <ns:column columnName="container">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:isHidden>true</ns:isHidden>
+                <ns:fk>
+                    <ns:fkDbSchema>core</ns:fkDbSchema>
+                    <ns:fkTable>containers</ns:fkTable>
+                    <ns:fkColumnName>entityid</ns:fkColumnName>
+                </ns:fk>
+            </ns:column>
+        </ns:columns>
+    </ns:table>
 
-  <ns:table tableName="automatic_alerts" tableDbType="TABLE">
-    <ns:pkColumnName>rowid</ns:pkColumnName>
-    <ns:columns>
-      <ns:column columnName="rowid">
-        <ns:isAutoInc>true</ns:isAutoInc>
-        <ns:isKeyField>true</ns:isKeyField>
-        <ns:shownInInsertView>false</ns:shownInInsertView>
-        <ns:shownInUpdateView>false</ns:shownInUpdateView>
-      </ns:column>
-      <ns:column columnName="title">
-        <ns:columnTitle>Title</ns:columnTitle>
-        <ns:nullable>false</ns:nullable>
-      </ns:column>
-        <ns:column columnName="containerpath">
-          <ns:columnTitle>Container Path</ns:columnTitle>
-          <ns:nullable>true</ns:nullable>
-        </ns:column>
-        <ns:column columnName="schemaname">
-          <ns:columnTitle>Schema Name</ns:columnTitle>
-          <ns:nullable>true</ns:nullable>
-        </ns:column>
-        <ns:column columnName="queryname">
-          <ns:columnTitle>Query Name</ns:columnTitle>
-          <ns:nullable>true</ns:nullable>
-        </ns:column>
-        <ns:column columnName="viewname">
-          <ns:columnTitle>View Name</ns:columnTitle>
-          <ns:nullable>true</ns:nullable>
-        </ns:column>
-        <ns:column columnName="notificationtype">
-          <ns:nullable>true</ns:nullable>
-            <ns:fk>
-              <ns:fkDbSchema>ehr</ns:fkDbSchema>
-              <ns:fkTable>notificationtypes</ns:fkTable>
-              <ns:fkColumnName>notificationtype</ns:fkColumnName>
-            </ns:fk>
-        </ns:column>
-      <ns:column columnName="email_html">
-        <ns:columnTitle>Email HTML</ns:columnTitle>
-        <ns:inputType>textarea</ns:inputType>
-      </ns:column>
-      <ns:column columnName="container">
-        <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:isHidden>true</ns:isHidden>
-        <ns:fk>
-          <ns:fkDbSchema>core</ns:fkDbSchema>
-          <ns:fkTable>containers</ns:fkTable>
-          <ns:fkColumnName>entityid</ns:fkColumnName>
-        </ns:fk>
-      </ns:column>
-      <ns:column columnName="createdby">
-        <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:nullable>true</ns:nullable>
-        <ns:isHidden>true</ns:isHidden>
-      </ns:column>
-      <ns:column columnName="created">
-        <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:nullable>true</ns:nullable>
-        <ns:isHidden>true</ns:isHidden>
-      </ns:column>
-      <ns:column columnName="modifiedby">
-        <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:nullable>true</ns:nullable>
-        <ns:isHidden>true</ns:isHidden>
-      </ns:column>
-      <ns:column columnName="modified">
-        <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:nullable>true</ns:nullable>
-        <ns:isHidden>true</ns:isHidden>
-      </ns:column>
-    </ns:columns>
-  </ns:table>
-  <ns:table tableName="kinship" tableDbType="TABLE">
-    <ns:importUrl></ns:importUrl>
-    <ns:insertUrl></ns:insertUrl>
-    <ns:updateUrl></ns:updateUrl>
-    <ns:deleteUrl></ns:deleteUrl>
-    <ns:pkColumnName>rowid</ns:pkColumnName>
-    <ns:columns>
-      <ns:column columnName="rowid">
-        <ns:isAutoInc>true</ns:isAutoInc>
-        <ns:isKeyField>true</ns:isKeyField>
-        <ns:shownInInsertView>false</ns:shownInInsertView>
-        <ns:shownInUpdateView>false</ns:shownInUpdateView>
-      </ns:column>
-      <ns:column columnName="Id">
-        <ns:nullable>false</ns:nullable>
-      </ns:column>
-      <ns:column columnName="Id2">
-        <ns:nullable>false</ns:nullable>
-      </ns:column>
-      <ns:column columnName="coefficient">
-        <ns:nullable>true</ns:nullable>
-      </ns:column>
-      <ns:column columnName="container">
-        <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:isHidden>true</ns:isHidden>
-        <ns:fk>
-          <ns:fkDbSchema>core</ns:fkDbSchema>
-          <ns:fkTable>containers</ns:fkTable>
-          <ns:fkColumnName>entityid</ns:fkColumnName>
-        </ns:fk>
-      </ns:column>
-      <ns:column columnName="createdby">
-        <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:nullable>true</ns:nullable>
-        <ns:isHidden>true</ns:isHidden>
-      </ns:column>
-      <ns:column columnName="created">
-        <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:nullable>true</ns:nullable>
-        <ns:isHidden>true</ns:isHidden>
-      </ns:column>
-      <ns:column columnName="modifiedby">
-        <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:nullable>true</ns:nullable>
-        <ns:isHidden>true</ns:isHidden>
-      </ns:column>
-      <ns:column columnName="modified">
-        <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:nullable>true</ns:nullable>
-        <ns:isHidden>true</ns:isHidden>
-      </ns:column>
-    </ns:columns>
-  </ns:table>
-  <ns:table tableName="protocolProcedures" tableDbType="TABLE">
-    <ns:importUrl></ns:importUrl>
-    <ns:insertUrl></ns:insertUrl>
-    <ns:updateUrl></ns:updateUrl>
-    <ns:deleteUrl></ns:deleteUrl>
-    <ns:pkColumnName>rowid</ns:pkColumnName>
-    <ns:columns>
-      <ns:column columnName="rowid">
-        <ns:shownInInsertView>false</ns:shownInInsertView>
-        <ns:shownInUpdateView>false</ns:shownInUpdateView>
-        <ns:shownInDetailsView>false</ns:shownInDetailsView>
-        <ns:isAutoInc>true</ns:isAutoInc>
-        <ns:isKeyField>true</ns:isKeyField>
-      </ns:column>
-      <ns:column columnName="protocol">
-        <ns:nullable>false</ns:nullable>
-      </ns:column>
-      <ns:column columnName="procedureName">
-        <ns:columnTitle>Procedure Name</ns:columnTitle>
-        <ns:nullable>true</ns:nullable>
-      </ns:column>
-      <ns:column columnName="code">
-        <ns:nullable>true</ns:nullable>
-      </ns:column>
-      <ns:column columnName="allowed">
-        <ns:nullable>true</ns:nullable>
-      </ns:column>
-      <ns:column columnName="frequency">
-        <ns:nullable>true</ns:nullable>
-      </ns:column>
-      <!--<ns:column columnName="container">-->
-        <!--<ns:isUserEditable>false</ns:isUserEditable>-->
-        <!--<ns:isHidden>true</ns:isHidden>-->
-        <!--<ns:fk>-->
-          <!--<ns:fkDbSchema>core</ns:fkDbSchema>-->
-          <!--<ns:fkTable>containers</ns:fkTable>-->
-          <!--<ns:fkColumnName>entityid</ns:fkColumnName>-->
-        <!--</ns:fk>-->
-      <!--</ns:column>-->
-      <ns:column columnName="createdby">
-        <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:nullable>true</ns:nullable>
-        <ns:isHidden>true</ns:isHidden>
-      </ns:column>
-      <ns:column columnName="created">
-        <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:nullable>true</ns:nullable>
-        <ns:isHidden>true</ns:isHidden>
-      </ns:column>
-      <ns:column columnName="modifiedby">
-        <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:nullable>true</ns:nullable>
-        <ns:isHidden>true</ns:isHidden>
-      </ns:column>
-      <ns:column columnName="modified">
-        <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:nullable>true</ns:nullable>
-        <ns:isHidden>true</ns:isHidden>
-      </ns:column>
-    </ns:columns>
-  </ns:table>
-  <ns:table tableName="status" tableDbType="TABLE">
-    <ns:importUrl></ns:importUrl>
-    <ns:insertUrl></ns:insertUrl>
-    <ns:updateUrl></ns:updateUrl>
-    <ns:deleteUrl></ns:deleteUrl>
-      <ns:pkColumnName>QCStateLabel</ns:pkColumnName>
-      <ns:columns>
-          <ns:column columnName="rowid">
-            <ns:shownInInsertView>false</ns:shownInInsertView>
-            <ns:isAutoInc>true</ns:isAutoInc>
-            <ns:isKeyField>true</ns:isKeyField>
-          </ns:column>
-        <ns:column columnName="label">
-          <ns:isKeyField>true</ns:isKeyField>
-        </ns:column>
-          <ns:column columnName="description">
-            <ns:nullable>true</ns:nullable>
-          </ns:column>
-          <ns:column columnName="publicData">
-            <ns:nullable>true</ns:nullable>
-          </ns:column>
-        <ns:column columnName="draftData">
-          <ns:nullable>true</ns:nullable>
-        </ns:column>
-        <ns:column columnName="isDeleted">
-          <ns:nullable>true</ns:nullable>
-        </ns:column>
-        <ns:column columnName="isRequest">
-          <ns:nullable>true</ns:nullable>
-        </ns:column>
-        <ns:column columnName="allowFutureDates">
-          <ns:nullable>true</ns:nullable>
-        </ns:column>
-      </ns:columns>
+    <ns:table tableName="automatic_alerts" tableDbType="TABLE">
+        <ns:pkColumnName>rowid</ns:pkColumnName>
+        <ns:columns>
+            <ns:column columnName="rowid">
+                <ns:isAutoInc>true</ns:isAutoInc>
+                <ns:isKeyField>true</ns:isKeyField>
+                <ns:shownInInsertView>false</ns:shownInInsertView>
+                <ns:shownInUpdateView>false</ns:shownInUpdateView>
+            </ns:column>
+            <ns:column columnName="title">
+                <ns:columnTitle>Title</ns:columnTitle>
+                <ns:nullable>false</ns:nullable>
+            </ns:column>
+            <ns:column columnName="containerpath">
+                <ns:columnTitle>Container Path</ns:columnTitle>
+                <ns:nullable>true</ns:nullable>
+            </ns:column>
+            <ns:column columnName="schemaname">
+                <ns:columnTitle>Schema Name</ns:columnTitle>
+                <ns:nullable>true</ns:nullable>
+            </ns:column>
+            <ns:column columnName="queryname">
+                <ns:columnTitle>Query Name</ns:columnTitle>
+                <ns:nullable>true</ns:nullable>
+            </ns:column>
+            <ns:column columnName="viewname">
+                <ns:columnTitle>View Name</ns:columnTitle>
+                <ns:nullable>true</ns:nullable>
+            </ns:column>
+            <ns:column columnName="notificationtype">
+                <ns:nullable>true</ns:nullable>
+                <ns:fk>
+                    <ns:fkDbSchema>ehr</ns:fkDbSchema>
+                    <ns:fkTable>notificationtypes</ns:fkTable>
+                    <ns:fkColumnName>notificationtype</ns:fkColumnName>
+                </ns:fk>
+            </ns:column>
+            <ns:column columnName="email_html">
+                <ns:columnTitle>Email HTML</ns:columnTitle>
+                <ns:inputType>textarea</ns:inputType>
+            </ns:column>
+            <ns:column columnName="container">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:isHidden>true</ns:isHidden>
+                <ns:fk>
+                    <ns:fkDbSchema>core</ns:fkDbSchema>
+                    <ns:fkTable>containers</ns:fkTable>
+                    <ns:fkColumnName>entityid</ns:fkColumnName>
+                </ns:fk>
+            </ns:column>
+            <ns:column columnName="createdby">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:nullable>true</ns:nullable>
+                <ns:isHidden>true</ns:isHidden>
+            </ns:column>
+            <ns:column columnName="created">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:nullable>true</ns:nullable>
+                <ns:isHidden>true</ns:isHidden>
+            </ns:column>
+            <ns:column columnName="modifiedby">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:nullable>true</ns:nullable>
+                <ns:isHidden>true</ns:isHidden>
+            </ns:column>
+            <ns:column columnName="modified">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:nullable>true</ns:nullable>
+                <ns:isHidden>true</ns:isHidden>
+            </ns:column>
+        </ns:columns>
+    </ns:table>
+    <ns:table tableName="kinship" tableDbType="TABLE">
+        <ns:importUrl></ns:importUrl>
+        <ns:insertUrl></ns:insertUrl>
+        <ns:updateUrl></ns:updateUrl>
+        <ns:deleteUrl></ns:deleteUrl>
+        <ns:pkColumnName>rowid</ns:pkColumnName>
+        <ns:columns>
+            <ns:column columnName="rowid">
+                <ns:isAutoInc>true</ns:isAutoInc>
+                <ns:isKeyField>true</ns:isKeyField>
+                <ns:shownInInsertView>false</ns:shownInInsertView>
+                <ns:shownInUpdateView>false</ns:shownInUpdateView>
+            </ns:column>
+            <ns:column columnName="Id">
+                <ns:nullable>false</ns:nullable>
+            </ns:column>
+            <ns:column columnName="Id2">
+                <ns:nullable>false</ns:nullable>
+            </ns:column>
+            <ns:column columnName="coefficient">
+                <ns:nullable>true</ns:nullable>
+            </ns:column>
+            <ns:column columnName="container">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:isHidden>true</ns:isHidden>
+                <ns:fk>
+                    <ns:fkDbSchema>core</ns:fkDbSchema>
+                    <ns:fkTable>containers</ns:fkTable>
+                    <ns:fkColumnName>entityid</ns:fkColumnName>
+                </ns:fk>
+            </ns:column>
+            <ns:column columnName="createdby">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:nullable>true</ns:nullable>
+                <ns:isHidden>true</ns:isHidden>
+            </ns:column>
+            <ns:column columnName="created">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:nullable>true</ns:nullable>
+                <ns:isHidden>true</ns:isHidden>
+            </ns:column>
+            <ns:column columnName="modifiedby">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:nullable>true</ns:nullable>
+                <ns:isHidden>true</ns:isHidden>
+            </ns:column>
+            <ns:column columnName="modified">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:nullable>true</ns:nullable>
+                <ns:isHidden>true</ns:isHidden>
+            </ns:column>
+        </ns:columns>
+    </ns:table>
+    <ns:table tableName="protocolProcedures" tableDbType="TABLE">
+        <ns:importUrl></ns:importUrl>
+        <ns:insertUrl></ns:insertUrl>
+        <ns:updateUrl></ns:updateUrl>
+        <ns:deleteUrl></ns:deleteUrl>
+        <ns:pkColumnName>rowid</ns:pkColumnName>
+        <ns:columns>
+            <ns:column columnName="rowid">
+                <ns:shownInInsertView>false</ns:shownInInsertView>
+                <ns:shownInUpdateView>false</ns:shownInUpdateView>
+                <ns:shownInDetailsView>false</ns:shownInDetailsView>
+                <ns:isAutoInc>true</ns:isAutoInc>
+                <ns:isKeyField>true</ns:isKeyField>
+            </ns:column>
+            <ns:column columnName="protocol">
+                <ns:nullable>false</ns:nullable>
+            </ns:column>
+            <ns:column columnName="procedureName">
+                <ns:columnTitle>Procedure Name</ns:columnTitle>
+                <ns:nullable>true</ns:nullable>
+            </ns:column>
+            <ns:column columnName="code">
+                <ns:nullable>true</ns:nullable>
+            </ns:column>
+            <ns:column columnName="allowed">
+                <ns:nullable>true</ns:nullable>
+            </ns:column>
+            <ns:column columnName="frequency">
+                <ns:nullable>true</ns:nullable>
+            </ns:column>
+            <!--<ns:column columnName="container">-->
+            <!--<ns:isUserEditable>false</ns:isUserEditable>-->
+            <!--<ns:isHidden>true</ns:isHidden>-->
+            <!--<ns:fk>-->
+            <!--<ns:fkDbSchema>core</ns:fkDbSchema>-->
+            <!--<ns:fkTable>containers</ns:fkTable>-->
+            <!--<ns:fkColumnName>entityid</ns:fkColumnName>-->
+            <!--</ns:fk>-->
+            <!--</ns:column>-->
+            <ns:column columnName="createdby">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:nullable>true</ns:nullable>
+                <ns:isHidden>true</ns:isHidden>
+            </ns:column>
+            <ns:column columnName="created">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:nullable>true</ns:nullable>
+                <ns:isHidden>true</ns:isHidden>
+            </ns:column>
+            <ns:column columnName="modifiedby">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:nullable>true</ns:nullable>
+                <ns:isHidden>true</ns:isHidden>
+            </ns:column>
+            <ns:column columnName="modified">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:nullable>true</ns:nullable>
+                <ns:isHidden>true</ns:isHidden>
+            </ns:column>
+        </ns:columns>
+    </ns:table>
+    <ns:table tableName="status" tableDbType="TABLE">
+        <ns:importUrl></ns:importUrl>
+        <ns:insertUrl></ns:insertUrl>
+        <ns:updateUrl></ns:updateUrl>
+        <ns:deleteUrl></ns:deleteUrl>
+        <ns:pkColumnName>QCStateLabel</ns:pkColumnName>
+        <ns:columns>
+            <ns:column columnName="rowid">
+                <ns:shownInInsertView>false</ns:shownInInsertView>
+                <ns:isAutoInc>true</ns:isAutoInc>
+                <ns:isKeyField>true</ns:isKeyField>
+            </ns:column>
+            <ns:column columnName="label">
+                <ns:isKeyField>true</ns:isKeyField>
+            </ns:column>
+            <ns:column columnName="description">
+                <ns:nullable>true</ns:nullable>
+            </ns:column>
+            <ns:column columnName="publicData">
+                <ns:nullable>true</ns:nullable>
+            </ns:column>
+            <ns:column columnName="draftData">
+                <ns:nullable>true</ns:nullable>
+            </ns:column>
+            <ns:column columnName="isDeleted">
+                <ns:nullable>true</ns:nullable>
+            </ns:column>
+            <ns:column columnName="isRequest">
+                <ns:nullable>true</ns:nullable>
+            </ns:column>
+            <ns:column columnName="allowFutureDates">
+                <ns:nullable>true</ns:nullable>
+            </ns:column>
+        </ns:columns>
+    </ns:table>
+    <ns:table tableName="chargedItems" tableDbType="TABLE">
+        <ns:importUrl></ns:importUrl>
+        <ns:insertUrl></ns:insertUrl>
+        <ns:updateUrl></ns:updateUrl>
+        <ns:deleteUrl></ns:deleteUrl>
+        <ns:pkColumnName>rowid</ns:pkColumnName>
+        <ns:columns>
+            <ns:column columnName="rowid">
+                <ns:shownInInsertView>false</ns:shownInInsertView>
+                <ns:shownInUpdateView>false</ns:shownInUpdateView>
+                <ns:shownInDetailsView>false</ns:shownInDetailsView>
+                <ns:isAutoInc>true</ns:isAutoInc>
+                <ns:isKeyField>true</ns:isKeyField>
+            </ns:column>
+            <ns:column columnName="id">
+                <ns:nullable>true</ns:nullable>
+            </ns:column>
+            <ns:column columnName="date">
+                <ns:columnTitle>Date of Charge</ns:columnTitle>
+                <ns:nullable>true</ns:nullable>
+            </ns:column>
+            <ns:column columnName="debitedaccount">
+                <ns:columnTitle>Debited Account</ns:columnTitle>
+                <ns:nullable>true</ns:nullable>
+            </ns:column>
+            <ns:column columnName="creditedaccount">
+                <ns:columnTitle>Credited Account</ns:columnTitle>
+                <ns:nullable>true</ns:nullable>
+            </ns:column>
+            <ns:column columnName="category">
+                <ns:nullable>true</ns:nullable>
+            </ns:column>
+            <ns:column columnName="item">
+                <ns:columnTitle>Item</ns:columnTitle>
+                <ns:nullable>false</ns:nullable>
+            </ns:column>
+            <ns:column columnName="quantity">
+                <ns:nullable>true</ns:nullable>
+            </ns:column>
+            <ns:column columnName="unitcost">
+                <ns:nullable>true</ns:nullable>
+                <ns:columnTitle>Unit Cost</ns:columnTitle>
+            </ns:column>
+            <ns:column columnName="totalcost">
+                <ns:columnTitle>Total Cost</ns:columnTitle>
+                <ns:nullable>true</ns:nullable>
+            </ns:column>
+            <ns:column columnName="comment"/>
+            <ns:column columnName="flag">
+            </ns:column>
+            <ns:column columnName="container">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:isHidden>true</ns:isHidden>
+            </ns:column>
+            <ns:column columnName="createdby">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:nullable>true</ns:nullable>
+                <ns:isHidden>true</ns:isHidden>
+            </ns:column>
+            <ns:column columnName="created">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:nullable>true</ns:nullable>
+                <ns:isHidden>true</ns:isHidden>
+            </ns:column>
+            <ns:column columnName="modifiedby">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:nullable>true</ns:nullable>
+                <ns:isHidden>true</ns:isHidden>
+            </ns:column>
+            <ns:column columnName="modified">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:nullable>true</ns:nullable>
+                <ns:isHidden>true</ns:isHidden>
+            </ns:column>
+        </ns:columns>
+    </ns:table>
+    <ns:table tableName="accounts" tableDbType="TABLE">
+        <ns:importUrl></ns:importUrl>
+        <ns:insertUrl></ns:insertUrl>
+        <ns:updateUrl></ns:updateUrl>
+        <ns:deleteUrl></ns:deleteUrl>
+        <ns:columns>
+            <ns:column columnName="account"/>
+            <ns:column columnName="grant"/>
+            <ns:column columnName="investigator"/>
+            <ns:column columnName="startdate"/>
+            <ns:column columnName="enddate"/>
+            <ns:column columnName="externalid"/>
+            <ns:column columnName="comment"/>
+            <ns:column columnName="tier"/>
+            <ns:column columnName="createdby"/>
+            <ns:column columnName="created"/>
+            <ns:column columnName="modifiedby"/>
+            <ns:column columnName="modified"/>
+        </ns:columns>
+    </ns:table>
+    <ns:table tableName="investigators" tableDbType="TABLE">
+        <ns:importUrl></ns:importUrl>
+        <ns:insertUrl></ns:insertUrl>
+        <ns:updateUrl></ns:updateUrl>
+        <ns:deleteUrl></ns:deleteUrl>
+        <ns:columns>
+            <ns:column columnName="rowid"/>
+            <ns:column columnName="firstname"/>
+            <ns:column columnName="lastname"/>
+            <ns:column columnName="position"/>
+            <ns:column columnName="address"/>
+            <ns:column columnName="city"/>
+            <ns:column columnName="state"/>
+            <ns:column columnName="country"/>
+            <ns:column columnName="zip"/>
+            <ns:column columnName="phonenumber"/>
+            <ns:column columnName="investigatortype"/>
+            <ns:column columnName="emailaddress"/>
+            <ns:column columnName="datecreated"/>
+            <ns:column columnName="datedisabled"/>
+            <ns:column columnName="division"/>
+            <ns:column columnName="createdby"/>
+            <ns:column columnName="created"/>
+            <ns:column columnName="modifiedby"/>
+            <ns:column columnName="modified"/>
+        </ns:columns>
     </ns:table>
 </ns:tables>

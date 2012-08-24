@@ -4,11 +4,11 @@
 <script type="text/javascript">
 
 Ext.onReady(function(){
-    var ctx = EHR.Utils.getEHRContext();
+    var webpart = <%=webpartContext%>;
+    var ctx = EHR.Utils.getEHRContext(webpart.wrapperDivId);
     if(!ctx)
         return;
 
-    var webpart = <%=webpartContext%>;
     var domSpec = [{
         tag: 'h3',
         html: 'Overview'

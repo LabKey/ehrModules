@@ -5,11 +5,11 @@
 <script type="text/javascript">
 
 Ext.onReady(function(){
-    var ctx = EHR.Utils.getEHRContext();
+    var webpart = <%=webpartContext%>;
+    var ctx = EHR.Utils.getEHRContext(webpart.wrapperDivId);
     if(!ctx)
         return;
 
-    var webpart = <%=webpartContext%>;
     var domSpec = [{
         html: 'This page contains a series of queries to search IACUC Protocols, RARC Projects and Assignment data.  If there are additional one-button reports you would like added to the top section, please submit a request using the \'user feedback\' item on the menu bar above.'
     },{

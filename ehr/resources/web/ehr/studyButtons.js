@@ -2113,6 +2113,28 @@ EHR.DatasetButtons = new function(){
                     }).show();
                 }
             });
+        },
+
+        perDiemCopyHandler: function(dataRegionName){
+            var dataRegion = LABKEY.DataRegions[dataRegionName];
+            var checked = dataRegion.getChecked()
+            if(!checked || !checked.length){
+                alert('No records selected');
+                return;
+            }
+
+
+            Ext.Msg.confirm('Save Per Diems', 'This will save these charges, replacing any existing per diems during the same date range.  Do you want to proceed?', function(btn){
+                if(btn == 'yes'){
+                    var params = dataRegion.getParameters();
+
+                    LABKEY.Query.selectRows({
+                        schemaName: dataRegion.schemaName,
+                        queryName: dataRegion.queryName,
+                        parameters: dataRegion.getParameters()
+                    });
+                }
+            }, this);
         }
     }
 }

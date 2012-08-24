@@ -73,6 +73,7 @@ EHR.Server.Triggers.init = function(event, errors){
 
     this.scriptContext = {
         rows: [],
+        startTime: new Date(),
         extraContext: this.extraContext,
         queryName: this.extraContext.queryName,
         schemaName: this.extraContext.schemaName,
@@ -472,6 +473,8 @@ EHR.Server.Triggers.complete = function(event, errors) {
             });
         }
     }
+
+    console.log('Script time: ' + (((new Date()) - this.scriptContext.startTime)/1000));
 }
 exports.complete = EHR.Server.Triggers.complete;
 
@@ -507,9 +510,8 @@ exports.complete = EHR.Server.Triggers.complete;
  * @param {object} errors The errors object, as passed from LabKey.
  */
 EHR.Server.Triggers.rowInit = function(errors, row, oldRow){
-    var initStart = new Date();
     if(this.scriptContext.verbosity > 0){
-        console.log('rowInit');
+        console.log('rowInit: ' + (((new Date()) - this.scriptContext.startTime)/1000));
         console.log(row);
     }
 
@@ -699,7 +701,7 @@ EHR.Server.Triggers.rowInit = function(errors, row, oldRow){
     }
 
     if(this.scriptContext.verbosity > 0){
-        console.log('rowInit end:');
+        console.log('rowInit end:' + (((new Date()) - this.scriptContext.startTime)/1000));
         console.log(row);
     }
 };
@@ -805,9 +807,10 @@ EHR.Server.Triggers.rowEnd = function(errors, scriptErrors, row, oldRow){
  * @param {object} oldRow The original row object (prior to update), as passed from LabKey.
  * */
 EHR.Server.Triggers.afterEvent = function (event, errors, row, oldRow){
-    if(this.scriptContext.verbosity > 0)
+    if(this.scriptContext.verbosity > 0){
         console.log('After Event: '+event);
-
+        console.log('Time: ' + (((new Date()) - this.scriptContext.startTime)/1000));
+    }
     //normalize QCState
     if(row.QCState && !row.QCStateLabel){
         row.QCStateLabel = EHR.Server.Security.getQCStateByRowId(row.QCState).Label
@@ -816,19 +819,21 @@ EHR.Server.Triggers.afterEvent = function (event, errors, row, oldRow){
         oldRow.QCStateLabel = EHR.Server.Security.getQCStateByRowId(oldRow.QCState).Label
     }
 
-    this.scriptContext.rows.push({
-        row: row,
-        oldRow: oldRow
-    });
+    //NOTE: necessary to populate the _becomingPublicData flag
+    EHR.Server.Security.normalizeQcState(event, this.scriptContext, row, oldRow);
 
     if(row._becomingPublicData && this.afterBecomePublic){
         this.afterBecomePublic(errors, this.scriptContext, row, oldRow);
     }
 
+    this.scriptContext.rows.push({
+        row: row,
+        oldRow: oldRow
+    });
+
     if(this.scriptContext.participantsModified.indexOf(row.Id) == -1){
         this.scriptContext.participantsModified.push(row.Id);
 
-        //if(row._publicData){
         if(row.QCStateLabel && EHR.Server.Security.getQCStateByLabel(row.QCStateLabel).PublicData){
             this.scriptContext.publicParticipantsModified.push(row.Id);
         }

@@ -5,11 +5,10 @@ LABKEY.requiresScript("/ehr/utils.js");
 
 Ext.onReady(function ()
 {
-    var ctx = EHR.Utils.getEHRContext();
+    var webpart = <%=webpartContext%>;
+    var ctx = EHR.Utils.getEHRContext(webpart.wrapperDivId);
     if(!ctx)
         return;
-
-    var webpart = <%=webpartContext%>;
 
     var domSpec = {
         tag: 'div',

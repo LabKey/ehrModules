@@ -58,7 +58,7 @@ public class EHRManager
         return _instance;
     }
 
-    public static void startKinshipCalculation(User u, Container c) throws PipelineValidationException
+    public static void startKinshipCalculation(User u, Container c)
     {
         try
         {
@@ -88,6 +88,10 @@ public class EHRManager
             throw new ConfigurationException("The EHR kinship pipeline has not been configured", e);
         }
         catch (IOException e)
+        {
+            throw new RuntimeException(e);
+        }
+        catch (PipelineValidationException e)
         {
             throw new RuntimeException(e);
         }

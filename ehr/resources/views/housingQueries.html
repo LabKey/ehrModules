@@ -5,11 +5,11 @@
 
 Ext.onReady(function(){
 
-    var ctx = EHR.Utils.getEHRContext();
+    var webpart = <%=webpartContext%>;
+    var ctx = EHR.Utils.getEHRContext(webpart.wrapperDivId);
     if(!ctx)
         return;
 
-    var webpart = <%=webpartContext%>;
     var domSpec = [{
         tag: 'div',
         style: 'padding-bottom: 10px;',

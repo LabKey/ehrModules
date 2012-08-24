@@ -21,7 +21,7 @@ library(Rlabkey)
 allPed <- labkey.selectRows(
     baseUrl=labkey.url.base,
     #to run directly in R, uncomment this line.  otherwise providing a containerPath is not necessary
-    #folderPath="/EHR",
+    folderPath=labkey.url.path,
     schemaName="study",
     queryName="Pedigree",
     colSelect=c('Id', 'Dam','Sire', 'Gender', 'Status'),

@@ -11,7 +11,8 @@ function makePanel(){
         return;
     }
 
-    var ctx = EHR.Utils.getEHRContext();
+    var webpart = <%=webpartContext%>;
+    var ctx = EHR.Utils.getEHRContext(webpart.wrapperDivId);
     if(!ctx)
         return;
 
@@ -230,9 +231,7 @@ function makePanel(){
         }
     });
 
-    var webpart = <%=webpartContext%>;
     new thePanel().render(webpart.wrapperDivId);
-
 }
 
 </script>

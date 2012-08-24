@@ -1,0 +1,17 @@
+<query xmlns="http://labkey.org/data/xml/query">
+    <metadata>
+        <tables xmlns="http://labkey.org/data/xml">
+            <table tableName="PerDiems" tableDbType="NOT_IN_DB">
+                <!--<buttonBarOptions includeStandardButtons="true">-->
+                    <!--<includeScript>/ehr/studyButtons.js</includeScript>-->
+                    <!--<onRender>EHR.DatasetButtons.moreActionsHandler</onRender>-->
+                    <!--<item text="More Actions" requiresSelection="true" insertPosition="end">-->
+                        <!--<item text="Save Values">-->
+                            <!--<onClick>EHR.DatasetButtons.perDiemCopyHandler(dataRegionName)</onClick>-->
+                        <!--</item>-->
+                    <!--</item>-->
+                <!--</buttonBarOptions>-->
+            </table>
+        </tables>
+    </metadata>
+</query>

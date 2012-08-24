@@ -704,14 +704,15 @@ EHR.Utils = new function(){
         },
 
         /**
-         * Returns the value for the EHR containerPath on this server.  It throws an alert if the value has not been set.
+         * Returns the value for the EHR containerPath on this server.  If the property has not been set, and if the Id of a element
+         * is provided,  it will write a message to that element.
          * @returns {Object}
          */
-        getEHRContext: function(suppressAlert){
+        getEHRContext: function(msgTarget){
             var ctx = LABKEY.getModuleContext('ehr');
             if(!ctx['EHRStudyContainer']){
-                if(!suppressAlert)
-                    alert('The EHR module has not been configured on this server.  Please contact your administrator to set the container path to the EHR study');
+                if (msgTarget)
+                    Ext.get(msgTarget).update('The container path for the EHR study has not been set.  Please ask you administrator to configure this under the folder settings page.');
                 return null;
             }
             return ctx;

@@ -414,7 +414,7 @@ EHR.Server.Validation = {
         if(publicParticipantsModified.length==1)
             whereClause = "= '"+publicParticipantsModified[0]+"'";
         else
-            whereClause = "IN ('"+(publicParticipantsModified.join(','))+"')";
+            whereClause = "IN ('"+(publicParticipantsModified.join('\',\''))+"')";
 
 
         //we gather the pieces of information needed to calculate the status field
@@ -629,6 +629,9 @@ EHR.Server.Validation = {
         if(scriptContext.demographicsMap[config.participant] && !config.forceRefresh){
             config.callback.apply(config.scope || this, [scriptContext.demographicsMap[config.participant]])
         }
+        else if(scriptContext.missingParticipants.indexOf(config.participant) >  -1){
+            config.callback.apply(config.scope || this);
+        }
         else {
             LABKEY.Query.selectRows({
                 schemaName: 'study',
@@ -639,6 +642,8 @@ EHR.Server.Validation = {
                 success: function(data){
                     if(data && data.rows && data.rows.length==1){
                         var row = data.rows[0];
+
+                        //cache results
                         scriptContext.demographicsMap[row.Id] = row;
                         config.callback.apply(config.scope || this, [scriptContext.demographicsMap[row.Id]]);
                     }
@@ -646,7 +651,6 @@ EHR.Server.Validation = {
                         if(scriptContext.missingParticipants.indexOf(config.participant) == -1)
                             scriptContext.missingParticipants.push(config.participant);
 
-                        //console.log('Demographics time: ' + ((new Date()) - start));
                         config.callback.apply(config.scope || this);
                     }
                 },

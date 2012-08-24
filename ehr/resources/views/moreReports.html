@@ -6,7 +6,7 @@
 
 Ext.onReady(function(){
 
-    var ctx = EHR.Utils.getEHRContext();
+    var ctx = EHR.Utils.getEHRContext(webpart.wrapperDivId);
     if(!ctx)
         return;
 
@@ -20,8 +20,8 @@ Ext.onReady(function(){
                 {name: 'Housing By Room and Cage', url: '<%=contextPath%>/query' + ctx['EHRStudyContainer'] + '/executeQuery.view?schemaName=study&query.queryName=housingByRoomCage'},
                 {name: 'Find Housings Records For A Location At a Specific Time', url: '<%=contextPath%>/query' + ctx['EHRStudyContainer'] + '/executeQuery.view?schemaName=study&query.queryName=HousingOverlaps'},
                 {name: 'Find Animals Housed in a Location At a Specific Time', url: '<%=contextPath%>/query' + ctx['EHRStudyContainer'] + '/executeQuery.view?schemaName=study&query.queryName=HousingOverlapsById'},
-                {name: 'Per Diems (in testing)', url: '<%=contextPath%>/query' + ctx['EHRStudyContainer'] + '/executeQuery.view?schemaName=study&query.queryName=perDiems'},
-                {name: 'Per Diems Raw Data (in testing)', url: '<%=contextPath%>/query' + ctx['EHRStudyContainer'] + '/executeQuery.view?schemaName=study&query.queryName=perDiemsByDay'},
+                {name: 'Per Diems (in testing)', url: '<%=contextPath%>/query' + ctx['EHRStudyContainer'] + '/executeQuery.view?schemaName=study&query.queryName=PerDiems'},
+                {name: 'Per Diems Raw Data (in testing)', url: '<%=contextPath%>/query' + ctx['EHRStudyContainer'] + '/executeQuery.view?schemaName=study&query.queryName=PerDiemsByDay'},
                 {name: 'Restraints Used', url: '<%=contextPath%>/query' + ctx['EHRStudyContainer'] + '/executeQuery.view?schemaName=study&query.queryName=restraintUsed'}
 
             ]

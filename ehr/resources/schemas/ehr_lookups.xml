@@ -2224,4 +2224,70 @@
         </ns:column>
     </ns:columns>
   </ns:table>
+    <ns:table tableName="charge_flags" tableDbType="TABLE">
+      <ns:importUrl></ns:importUrl>
+      <ns:insertUrl></ns:insertUrl>
+      <ns:updateUrl></ns:updateUrl>
+      <ns:deleteUrl></ns:deleteUrl>
+      <ns:pkColumnName>rowid</ns:pkColumnName>
+      <ns:columns>
+        <ns:column columnName="rowid">
+          <ns:isKeyField>true</ns:isKeyField>
+        </ns:column>
+        <ns:column columnName="shortName">
+          <ns:nullable>true</ns:nullable>
+          <ns:columnTitle>Short Name</ns:columnTitle>
+        </ns:column>
+        <ns:column columnName="description">
+          <ns:nullable>true</ns:nullable>
+        </ns:column>
+          <ns:column columnName="createdby">
+            <ns:isUserEditable>false</ns:isUserEditable>
+            <ns:nullable>true</ns:nullable>
+            <ns:isHidden>true</ns:isHidden>
+          </ns:column>
+          <ns:column columnName="created">
+            <ns:isUserEditable>false</ns:isUserEditable>
+            <ns:nullable>true</ns:nullable>
+            <ns:isHidden>true</ns:isHidden>
+          </ns:column>
+          <ns:column columnName="modifiedby">
+            <ns:isUserEditable>false</ns:isUserEditable>
+            <ns:nullable>true</ns:nullable>
+            <ns:isHidden>true</ns:isHidden>
+          </ns:column>
+          <ns:column columnName="modified">
+            <ns:isUserEditable>false</ns:isUserEditable>
+            <ns:nullable>true</ns:nullable>
+            <ns:isHidden>true</ns:isHidden>
+          </ns:column>
+      </ns:columns>
+    </ns:table>
+    <ns:table tableName="account_tiers" tableDbType="TABLE">
+      <ns:columns>
+        <ns:column columnName="rowid"/>
+        <ns:column columnName="meaning"/>
+        <ns:column columnName="multiplier"/>
+          <ns:column columnName="createdby">
+            <ns:isUserEditable>false</ns:isUserEditable>
+            <ns:nullable>true</ns:nullable>
+            <ns:isHidden>true</ns:isHidden>
+          </ns:column>
+          <ns:column columnName="created">
+            <ns:isUserEditable>false</ns:isUserEditable>
+            <ns:nullable>true</ns:nullable>
+            <ns:isHidden>true</ns:isHidden>
+          </ns:column>
+          <ns:column columnName="modifiedby">
+            <ns:isUserEditable>false</ns:isUserEditable>
+            <ns:nullable>true</ns:nullable>
+            <ns:isHidden>true</ns:isHidden>
+          </ns:column>
+          <ns:column columnName="modified">
+            <ns:isUserEditable>false</ns:isUserEditable>
+            <ns:nullable>true</ns:nullable>
+          <ns:isHidden>true</ns:isHidden>
+        </ns:column>
+      </ns:columns>
+    </ns:table>
 </ns:tables>

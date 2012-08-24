@@ -13,11 +13,10 @@ function createNavMenu()
         return;
     }
 
-    var ctx = EHR.Utils.getEHRContext();
+    var webpart = <%=webpartContext%>;
+    var ctx = EHR.Utils.getEHRContext(webpart.wrapperDivId);
     if(!ctx)
         return;
-
-    var webpart = <%=webpartContext%>;
 
     Ext.get(webpart.wrapperDivId).update(
         '<div style="max-width:920px">' +
@@ -32,7 +31,7 @@ function createNavMenu()
         '    <td style="width:300px;vertical-align:top">' +
         '        <div id="ehrMenu2_'+webpart.wrapperDivId+'"></div>' +
         '    </td>' +
-        '    <td style="width:300px">' +
+        '    <td style="width:300px;vertical-align:top">' +
         '        <div id="ehrMenu3_'+webpart.wrapperDivId+'"></div>' +
         '    </td>' +
         '</tr>' +
@@ -135,7 +134,7 @@ function createNavMenu()
                 {name: 'Request Clinpath Services', url: '<%=contextPath%>/ehr' + ctx['EHRStudyContainer'] + '/manageRequest.view?formtype=Clinpath%20Request'}
             ]}
         ]
-    };
+    }
 
     if (LABKEY.Security.currentUser.isAdmin){
         menuCfg.sections.push({

@@ -157,45 +157,6 @@ EHR.Server.Security = new function(){
                     qcRow.effectivePermissions['delete'] = (qcRow.permissionsByQuery['delete'].length == queryCount);
                 }
 
-//                function hasPermission(qcStateLabel, permission, queries){
-//                    if(!qcStateLabel || !permission)
-//                        throw "Must provide a QC State label and permission name";
-//
-//                    if(queries && !Ext.isArray(queries))
-//                        queries = [queries];
-//
-//                    //if schemaName not supplied, we return based on all queries
-//                    if(!queries.length){
-//                        throw 'Must provide an array of query objects'
-//                    }
-//
-//                    var result = true;
-//                    Ext.each(queries, function(query){
-//                        //if this schema isnt present, it's not securable, so we allow anything
-//                        if(!schemaMap.schemas[query.schemaName])
-//                            return true;
-//
-//                        if(!schemaMap.schemas[query.schemaName].queries[query.queryName] ||
-//                           !schemaMap.schemas[query.schemaName].queries[query.queryName].permissionsByQCState[qcStateLabel] ||
-//                           !schemaMap.schemas[query.schemaName].queries[query.queryName].permissionsByQCState[qcStateLabel][permission]
-//                        ){
-//                            result = false;
-//                        }
-//                    }, this);
-//
-//                    return result;
-//                }
-//
-//                function getQueryPermissions(schemaName, queryName){
-//                    if(!schemaMap.schemas[schemaName] ||
-//                       !schemaMap.schemas[schemaName].queries[queryName] ||
-//                       !schemaMap.schemas[schemaName].queries[queryName].permissionsByQCState
-//                    )
-//                        return {};
-//
-//                    return schemaMap.schemas[schemaName].queries[queryName].permissionsByQCState;
-//                }
-
                 hasLoaded = true;
 
                 config.success.apply(config.scope || this, [{
@@ -316,11 +277,60 @@ EHR.Server.Security = new function(){
          * @param {object}oldRow The original row object (prior to update), as passed by LabKey
          */
         verifyPermissions: function(event, scriptContext, row, oldRow){
+            EHR.Server.Security.normalizeQcState(event, scriptContext, row, oldRow);
+
+            //handle updates
+            if(event=='update' && oldRow && oldRow.QCStateLabel){
+                //updating a row to a new QC is the same as inserting into that QC state
+                if(row.QCStateLabel != oldRow.QCStateLabel){
+                    if(!EHR.Server.Security.hasPermission(row.QCStateLabel, 'insert', [{
+                        schemaName: scriptContext.extraContext.schemaName,
+                        queryName: scriptContext.extraContext.queryName
+                    }])){
+                        var msg = "The user "+LABKEY.Security.currentUser.id+" does not have insert privledges for the table: "+scriptContext.extraContext.queryName + " against QCState: " + row.QCStateLabel;
+                        EHR.Server.Utils.onFailure({msg: msg});
+                        return false;
+                    }
+                }
+
+                //the user also needs update permission on the old row's QCstate
+                if(!EHR.Server.Security.hasPermission(oldRow.QCStateLabel, 'update', [{
+                    schemaName: scriptContext.extraContext.schemaName,
+                    queryName: scriptContext.extraContext.queryName
+                }])){
+                    var msg = "The user "+LABKEY.Security.currentUser.id+" does not have update privledges for the table: "+scriptContext.extraContext.queryName + " against QCState: " + oldRow.QCStateLabel;
+                    EHR.Server.Utils.onFailure({msg: msg});
+                    return false;
+                }
+            }
+            //handle inserts and deletes
+            else {
+                if(row.QCStateLabel){
+                    if(!EHR.Server.Security.hasPermission(row.QCStateLabel, event, [{
+                        schemaName: scriptContext.extraContext.schemaName,
+                        queryName: scriptContext.extraContext.queryName
+                    }])){
+                        var msg = "The user "+LABKEY.Security.currentUser.id+" does not have "+event+" privledges for the table: "+scriptContext.extraContext.queryName + " against QCState: " + row.QCStateLabel;
+                        EHR.Server.Utils.onFailure({msg: msg});
+                        return false;
+                    }
+                }
+            }
+        },
+
+        /**
+         *
+         * @private
+         */
+        normalizeQcState: function(event, scriptContext, row, oldRow){
             //NOTE: this has been moved from init() b/c init() seems to get called during the ETL even
             //if not importing any records
+            if(scriptContext.verbosity > 0)
+                console.log('Verifying permissions for: '+event);
+
             if(!EHR.Server.Security.hasLoaded()){
                 if(scriptContext.verbosity > 0)
-                    console.log('Verifying permissions for: '+event);
+                    console.log('Caching security: '+event);
 
                 EHR.Server.Security.init({
                     scope: this,
@@ -380,44 +390,6 @@ EHR.Server.Security = new function(){
             //for now we always prefer the global QC
             if(scriptContext.extraContext.targetQC){
                 row.QCStateLabel = scriptContext.extraContext.targetQC;
-            }
-
-            //handle updates
-            if(event=='update' && oldRow && oldRow.QCStateLabel){
-                //updating a row to a new QC is the same as inserting into that QC state
-                if(row.QCStateLabel != oldRow.QCStateLabel){
-                    if(!EHR.Server.Security.hasPermission(row.QCStateLabel, 'insert', [{
-                        schemaName: scriptContext.extraContext.schemaName,
-                        queryName: scriptContext.extraContext.queryName
-                    }])){
-                        var msg = "The user "+LABKEY.Security.currentUser.id+" does not have insert privledges for the table: "+scriptContext.extraContext.queryName;
-                        EHR.Server.Utils.onFailure({msg: msg});
-                        return false;
-                    }
-                }
-
-                //the user also needs update permission on the old row's QCstate
-                if(!EHR.Server.Security.hasPermission(oldRow.QCStateLabel, 'update', [{
-                    schemaName: scriptContext.extraContext.schemaName,
-                    queryName: scriptContext.extraContext.queryName
-                }])){
-                    var msg = "The user "+LABKEY.Security.currentUser.id+" does not have update privledges for the table: "+scriptContext.extraContext.queryName;
-                    EHR.Server.Utils.onFailure({msg: msg});
-                    return false;
-                }
-            }
-            //handle inserts and deletes
-            else {
-                if(row.QCStateLabel){
-                    if(!EHR.Server.Security.hasPermission(row.QCStateLabel, event, [{
-                        schemaName: scriptContext.extraContext.schemaName,
-                        queryName: scriptContext.extraContext.queryName
-                    }])){
-                        var msg = "The user "+LABKEY.Security.currentUser.id+" does not have "+event+" privledges for the table: "+scriptContext.extraContext.queryName;
-                        EHR.Server.Utils.onFailure({msg: msg});
-                        return false;
-                    }
-                }
             }
 
             //flag public status of rows

@@ -72,6 +72,7 @@ function onUpsert(context, errors, row, oldRow){
         if(protocol && !context.extraContext.newIdsAdded[protocol])
             context.extraContext.newIdsAdded[protocol] = {};
 
+        //TODO: verify will work w/ multiple inserts in 1 transaction
         if(species && protocol){
             LABKEY.Query.selectRows({
                 schemaName: 'ehr',
