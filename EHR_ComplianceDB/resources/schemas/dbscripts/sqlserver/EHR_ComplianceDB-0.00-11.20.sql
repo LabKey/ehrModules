@@ -6,11 +6,11 @@
 
 /* EHR_ComplianceDB-00.00-11.14.sql */
 
-EXEC core.fn_dropifexists '*', 'ehr_compliancedb', 'SCHEMA', NULL ;
-go
 CREATE SCHEMA ehr_compliancedb;
-go
-CREATE TABLE ehr_compliancedb.CompletionDates (
+GO
+
+CREATE TABLE ehr_compliancedb.CompletionDates
+(
     RowId INT IDENTITY(1,1) NOT NULL,
     EmployeeId varchar(255) not null,
     RequirementName varchar(255) not null,
@@ -28,15 +28,16 @@ CREATE TABLE ehr_compliancedb.CompletionDates (
 );
 
 
-
-CREATE TABLE ehr_compliancedb.EmployeeCategory (
+CREATE TABLE ehr_compliancedb.EmployeeCategory
+(
     CategoryName varchar(255),
 
     CONSTRAINT PK_EmployeeCategory PRIMARY KEY (CategoryName)
 );
 
 
-CREATE TABLE ehr_compliancedb.RequirementsPerEmployee (
+CREATE TABLE ehr_compliancedb.RequirementsPerEmployee
+(
     RowId INT IDENTITY(1,1) NOT NULL,
     EmployeeId varchar(255) not null,
     RequirementName varchar(255) not null,
@@ -51,7 +52,8 @@ CREATE TABLE ehr_compliancedb.RequirementsPerEmployee (
 );
 
 
-CREATE TABLE ehr_compliancedb.EmployeeRequirementExemptions (
+CREATE TABLE ehr_compliancedb.EmployeeRequirementExemptions
+(
     RowId INT IDENTITY(1,1) NOT NULL,
     EmployeeId varchar(255) not null,
     RequirementName varchar(255) not null,
@@ -66,7 +68,8 @@ CREATE TABLE ehr_compliancedb.EmployeeRequirementExemptions (
 );
 
 
-CREATE TABLE ehr_compliancedb.Employees (
+CREATE TABLE ehr_compliancedb.Employees
+(
     EmployeeId varchar(255) not null,
     LastName varchar(255) not null,
     FirstName varchar(255),
@@ -104,7 +107,8 @@ CREATE TABLE ehr_compliancedb.Employees (
 );
 
 
-CREATE TABLE ehr_compliancedb.RequirementsPerCategory (
+CREATE TABLE ehr_compliancedb.RequirementsPerCategory
+(
     RowId INT IDENTITY(1,1) NOT NULL,
     RequirementName varchar(255) not null,
     Category varchar(255),
@@ -120,7 +124,8 @@ CREATE TABLE ehr_compliancedb.RequirementsPerCategory (
 );
 
 
-CREATE TABLE ehr_compliancedb.Requirements (
+CREATE TABLE ehr_compliancedb.Requirements
+(
     RequirementName varchar(255) not null,
     Type varchar(255),
     ExpirePeriod integer,
@@ -139,14 +144,16 @@ CREATE TABLE ehr_compliancedb.Requirements (
 );
 
 
-CREATE TABLE ehr_compliancedb.RequirementType (
+CREATE TABLE ehr_compliancedb.RequirementType
+(
     Type varchar(255) not null,
 
     CONSTRAINT PK_RequirementType PRIMARY KEY (Type)
 );
 
 
-CREATE TABLE ehr_compliancedb.SOPByCategory (
+CREATE TABLE ehr_compliancedb.SOPByCategory
+(
     RowId INT IDENTITY(1,1) NOT NULL,
     SOP_ID varchar(255) not null,
     Category varchar(255) not null,
@@ -161,7 +168,8 @@ CREATE TABLE ehr_compliancedb.SOPByCategory (
 );
 
 
-CREATE TABLE ehr_compliancedb.SOPs (
+CREATE TABLE ehr_compliancedb.SOPs
+(
     SopId varchar(255) not null,
     Name varchar(255) not null,
     PDF integer,
@@ -176,26 +184,30 @@ CREATE TABLE ehr_compliancedb.SOPs (
 );
 
 
-CREATE TABLE ehr_compliancedb.EmployeeLocations (
-    location varchar(255) not null,
+CREATE TABLE ehr_compliancedb.EmployeeLocations
+(
+    Location varchar(255) not null,
 
     CONSTRAINT PK_EmployeeLocations PRIMARY KEY (location)
 );
 
 
-CREATE TABLE ehr_compliancedb.EmployeeTypes (
-    type varchar(255) not null,
+CREATE TABLE ehr_compliancedb.EmployeeTypes
+(
+    Type varchar(255) not null,
 
     CONSTRAINT PK_EmployeeTypes PRIMARY KEY (type)
 );
 
-CREATE TABLE ehr_compliancedb.EmployeeTitles (
-   title varchar(255) not null, 
+CREATE TABLE ehr_compliancedb.EmployeeTitles
+(
+   Title varchar(255) not null,
 
    CONSTRAINT PK_EmployeeTitles PRIMARY KEY (title)
 );
 
-CREATE TABLE ehr_compliancedb.unit_names (
+CREATE TABLE ehr_compliancedb.unit_names
+(
     unit varchar(255) not null,
     supervisor varchar(255),
     phone varchar(255),
@@ -205,7 +217,8 @@ CREATE TABLE ehr_compliancedb.unit_names (
 );
 
 
-CREATE TABLE ehr_compliancedb.SOPDates (
+CREATE TABLE ehr_compliancedb.SOPDates
+(
     RowId INT IDENTITY(1,1) NOT NULL,
     EmployeeId varchar(255) not null,
     sopid varchar(255) not null,

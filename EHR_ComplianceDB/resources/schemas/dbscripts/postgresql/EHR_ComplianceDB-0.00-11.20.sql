@@ -5,13 +5,10 @@
  */
 /* EHR_ComplianceDB-00.00-11.14.sql */
 
-SELECT core.fn_dropifexists('*', 'ehr_compliancedb', 'SCHEMA', NULL);
-
 CREATE SCHEMA ehr_compliancedb;
 
-
-DROP TABLE IF EXISTS ehr_compliancedb.CompletionDates;
-CREATE TABLE ehr_compliancedb.CompletionDates (
+CREATE TABLE ehr_compliancedb.CompletionDates
+(
     RowId SERIAL NOT NULL,
     EmployeeId varchar(255) not null,
     RequirementName varchar(255) not null,
@@ -28,16 +25,15 @@ CREATE TABLE ehr_compliancedb.CompletionDates (
     CONSTRAINT PK_CompletionDates PRIMARY KEY (rowid)
 );
 
-
-DROP TABLE IF EXISTS ehr_compliancedb.EmployeeCategory;
-CREATE TABLE ehr_compliancedb.EmployeeCategory (
+CREATE TABLE ehr_compliancedb.EmployeeCategory
+(
     CategoryName varchar(255),
 
     CONSTRAINT PK_EmployeeCategory PRIMARY KEY (CategoryName)
 );
 
-DROP TABLE IF EXISTS ehr_compliancedb.RequirementsPerEmployee;
-CREATE TABLE ehr_compliancedb.RequirementsPerEmployee (
+CREATE TABLE ehr_compliancedb.RequirementsPerEmployee
+(
     RowId SERIAL NOT NULL,
     EmployeeId varchar(255) not null,
     RequirementName varchar(255) not null,
@@ -51,8 +47,8 @@ CREATE TABLE ehr_compliancedb.RequirementsPerEmployee (
     CONSTRAINT PK_RequirementsPerEmployee PRIMARY KEY (RowId)
 );
 
-DROP TABLE IF EXISTS ehr_compliancedb.EmployeeRequirementExemptions;
-CREATE TABLE ehr_compliancedb.EmployeeRequirementExemptions (
+CREATE TABLE ehr_compliancedb.EmployeeRequirementExemptions
+(
     RowId SERIAL NOT NULL,
     EmployeeId varchar(255) not null,
     RequirementName varchar(255) not null,
@@ -66,8 +62,8 @@ CREATE TABLE ehr_compliancedb.EmployeeRequirementExemptions (
     CONSTRAINT PK_EmployeeRequirementExemptions PRIMARY KEY (RowId)
 );
 
-DROP TABLE IF EXISTS ehr_compliancedb.Employees;
-CREATE TABLE ehr_compliancedb.Employees (
+CREATE TABLE ehr_compliancedb.Employees
+(
     EmployeeId varchar(255) not null,
     LastName varchar(255) not null,
     FirstName varchar(255),
@@ -104,8 +100,8 @@ CREATE TABLE ehr_compliancedb.Employees (
     CONSTRAINT PK_Employees PRIMARY KEY (EmployeeId)
 );
 
-DROP TABLE IF EXISTS ehr_compliancedb.RequirementsPerCategory;
-CREATE TABLE ehr_compliancedb.RequirementsPerCategory (
+CREATE TABLE ehr_compliancedb.RequirementsPerCategory
+(
     RowId SERIAL NOT NULL,
     RequirementName varchar(255) not null,
     Category varchar(255),
@@ -120,8 +116,8 @@ CREATE TABLE ehr_compliancedb.RequirementsPerCategory (
     CONSTRAINT PK_RequirementsPerCategory PRIMARY KEY (RowId)
 );
 
-DROP TABLE IF EXISTS ehr_compliancedb.Requirements;
-CREATE TABLE ehr_compliancedb.Requirements (
+CREATE TABLE ehr_compliancedb.Requirements
+(
     RequirementName varchar(255) not null,
     Type varchar(255),
     ExpirePeriod integer,
@@ -139,15 +135,15 @@ CREATE TABLE ehr_compliancedb.Requirements (
     CONSTRAINT PK_Requirements PRIMARY KEY (RequirementName)
 );
 
-DROP TABLE IF EXISTS ehr_compliancedb.RequirementType;
-CREATE TABLE ehr_compliancedb.RequirementType (
+CREATE TABLE ehr_compliancedb.RequirementType
+(
     Type varchar(255) not null,
 
     CONSTRAINT PK_RequirementType PRIMARY KEY (Type)
 );
 
-DROP TABLE IF EXISTS ehr_compliancedb.SOPByCategory;
-CREATE TABLE ehr_compliancedb.SOPByCategory (
+CREATE TABLE ehr_compliancedb.SOPByCategory
+(
     RowId SERIAL NOT NULL,
     SOP_ID varchar(255) not null,
     Category varchar(255) not null,
@@ -161,8 +157,8 @@ CREATE TABLE ehr_compliancedb.SOPByCategory (
     CONSTRAINT PK_SOPByCategory PRIMARY KEY (RowId)
 );
 
-DROP TABLE IF EXISTS ehr_compliancedb.SOPs;
-CREATE TABLE ehr_compliancedb.SOPs (
+CREATE TABLE ehr_compliancedb.SOPs
+(
     SopId varchar(255) not null,
     Name varchar(255) not null,
     PDF integer,
@@ -176,29 +172,29 @@ CREATE TABLE ehr_compliancedb.SOPs (
     CONSTRAINT PK_SOPs PRIMARY KEY (SopId)
 );
 
-DROP TABLE IF EXISTS ehr_compliancedb.EmployeeLocations;
-CREATE TABLE ehr_compliancedb.EmployeeLocations (
-    location varchar(255) not null,
+CREATE TABLE ehr_compliancedb.EmployeeLocations
+(
+    Location varchar(255) not null,
 
     CONSTRAINT PK_EmployeeLocations PRIMARY KEY (location)
 );
 
-DROP TABLE IF EXISTS ehr_compliancedb.EmployeeTypes;
-CREATE TABLE ehr_compliancedb.EmployeeTypes (
-    type varchar(255) not null,
+CREATE TABLE ehr_compliancedb.EmployeeTypes
+(
+    Type varchar(255) not null,
 
     CONSTRAINT PK_EmployeeTypes PRIMARY KEY (type)
 );
 
-DROP TABLE IF EXISTS ehr_compliancedb.EmployeeTitles;
-CREATE TABLE ehr_compliancedb.EmployeeTitles (
+CREATE TABLE ehr_compliancedb.EmployeeTitles
+(
     title varchar(255) not null,
 
     CONSTRAINT PK_EmployeeTitles PRIMARY KEY (title)
 );
 
-DROP TABLE IF EXISTS ehr_compliancedb.unit_names;
-CREATE TABLE ehr_compliancedb.unit_names (
+CREATE TABLE ehr_compliancedb.unit_names
+(
     unit varchar(255) not null,
     supervisor varchar(255),
     phone varchar(255),
@@ -207,8 +203,8 @@ CREATE TABLE ehr_compliancedb.unit_names (
     CONSTRAINT PK_unit_names PRIMARY KEY (unit)
 );
 
-DROP TABLE IF EXISTS ehr_compliancedb.SOPDates;
-CREATE TABLE ehr_compliancedb.SOPDates (
+CREATE TABLE ehr_compliancedb.SOPDates
+(
     RowId SERIAL NOT NULL,
     EmployeeId varchar(255) not null,
     sopid varchar(255) not null,
