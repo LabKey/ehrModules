@@ -276,15 +276,6 @@
         <ns:nullable>true</ns:nullable>
         <ns:columnTitle>Required If Handles Tissue?</ns:columnTitle>
       </ns:column>
-      <ns:column columnName="container">
-        <ns:isUserEditable>false</ns:isUserEditable>
-        <ns:isHidden>true</ns:isHidden>
-        <ns:fk>
-          <ns:fkDbSchema>core</ns:fkDbSchema>
-          <ns:fkTable>containers</ns:fkTable>
-          <ns:fkColumnName>entityid</ns:fkColumnName>
-        </ns:fk>
-      </ns:column>
       <ns:column columnName="createdby">
         <ns:isUserEditable>false</ns:isUserEditable>
         <ns:nullable>true</ns:nullable>

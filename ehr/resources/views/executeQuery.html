@@ -1,16 +1,13 @@
 <script type="text/javascript">
-    LABKEY.requiresScript("/ehr/utils.js");
-</script>
-<script type="text/javascript">
 
-Ext.onReady(function (){
+Ext4.onReady(function (){
     var query = LABKEY.ActionURL.getParameter('query.queryName') || LABKEY.ActionURL.getParameter('queryName');
     var schema = LABKEY.ActionURL.getParameter('schemaName');
     var webpart = <%=webpartContext%>;
 
     LABKEY.NavTrail.setTrail(EHR.Utils.toTitleCase(query));
 
-    var config = {
+    new LABKEY.QueryWebPart({
         title: query,
         schemaName: schema,
         queryName: query,
@@ -27,11 +24,7 @@ Ext.onReady(function (){
         scope: this,
         timeout: 0,
         failure: EHR.Utils.onError
-    };
-
-    new LABKEY.QueryWebPart(config).render(webpart.wrapperDivId);
-
+    }).render(webpart.wrapperDivId);
 });
-
 
 </script>

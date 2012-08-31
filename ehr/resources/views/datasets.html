@@ -1,9 +1,6 @@
 <script type="text/javascript">
-    LABKEY.requiresScript("/ehr/ehrAPI.js");
-</script>
-<script type="text/javascript">
 
-Ext.onReady(function () {
+Ext4.onReady(function () {
     var webpart = <%=webpartContext%>;
     var config = {displayField: 'Label', headerField: 'categoryId/label', target: webpart.wrapperDivId};
 
@@ -31,15 +28,35 @@ Ext.onReady(function () {
         var menuCfg = {
             renderTo: config.target,
             sections: new Array(),
-            renderer: function(item){
-                var cfg = {
-                    html: '<div style="float:left;width:180px;">'+item.name+':</div> [<a href="<%=contextPath%>/ehr<%=containerPath%>/searchPanel.view?schemaName=study&queryName='+item.data.Label+'">Search</a>] [<a href="<%=contextPath%>/query<%=containerPath%>/executeQuery.view?schemaName=study&query.queryName='+item.data.Label+'">View All Records</a>]',
-                    style: 'padding-left:5px;padding-bottom:8px'
-                };
-
-                if(EHR.Security.hasPermission('Completed', 'admin', {schemaName: 'study', queryName: item.data.Label})){
-                    cfg.html += ' [<a href="<%=contextPath%>/ehr<%=containerPath%>/updateQuery.view?schemaName=study&query.queryName='+item.data.Label+'&keyField=lsid">Update Records</a>]';
+            sectionHeaderCls: 'class',
+            renderer: function(record){
+                var item = {
+                    schemaName: 'study',
+                    queryName: record.data.Label
                 }
+
+                var cfg = {
+                    layout: 'hbox',
+                    bodyStyle: 'background-color: transparent;',
+                    defaults: this.ITEM_DEFAULTS,
+                    items: [
+                        this.getLabelItemCfg(item)
+                    ,
+                        this.getSearchItemCfg(item)
+                    ,
+                        this.getBrowseItemCfg(item)
+                    ]
+                }
+
+                if(EHR.Security.hasPermission('Completed', 'admin', {schemaName: 'study', queryName: item.queryName})){
+                    cfg.items.push({
+                        xtype: 'labkey-linkbutton',
+                        tooltip: item.searchTooltip || 'Click to update records',
+                        href: LABKEY.ActionURL.buildURL('ehr', 'updateQuery.view', null, {schemaName: 'study', 'query.queryName': item.queryName, 'keyField': 'lsid'}),
+                        text: 'Update Records'
+                    });
+                }
+
                 return cfg;
             }
         }
@@ -66,7 +83,7 @@ Ext.onReady(function () {
 
         }
 
-        new EHR.ext.NavMenu(menuCfg);
+        Ext4.create('LDK.ext.NavPanel', menuCfg);
     }
 
 });

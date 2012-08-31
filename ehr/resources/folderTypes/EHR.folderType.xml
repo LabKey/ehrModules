@@ -28,6 +28,11 @@
         <folderTab>
             <name>animalHistory</name>
             <caption>Animal History</caption>
+            <selectors>
+                <selector>
+                    <view>animalHistory</view>
+                </selector>
+            </selectors>
             <preferredWebParts>
                 <webPart>
                     <name>Animal History</name>

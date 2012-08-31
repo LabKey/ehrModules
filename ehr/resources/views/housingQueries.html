@@ -1,9 +1,6 @@
 <script type="text/javascript">
-    LABKEY.requiresScript("/ehr/SearchPanel.js");
-</script>
-<script type="text/javascript">
 
-Ext.onReady(function(){
+Ext4.onReady(function(){
 
     var webpart = <%=webpartContext%>;
     var ctx = EHR.Utils.getEHRContext(webpart.wrapperDivId);
@@ -27,7 +24,7 @@ Ext.onReady(function(){
             html: '<a href="<%=contextPath%>/ehr' + ctx['EHRStudyContainer'] + '/animalHistory.view#_inputType:renderSingleSubject&activeReport:roommateHistory">View Roommate History for Animals</a>'
         },{
             tag: 'li',
-            html: '<a href="<%=contextPath%>/query' + ctx['EHRStudyContainer'] + '/executeQuery.view?schemaName=study&query.queryName=HousingOverlapsByRoom">Find Animals Housed In A Given Room/Cage At A Specific Time</a>'
+            html: '<a href="<%=contextPath%>/ehr' + ctx['EHRStudyContainer'] + '/housingOverlaps.view">Find Animals Housed In A Given Room/Cage At A Specific Time</a>'
         }]
     },{
         tag: 'h3',
@@ -40,11 +37,11 @@ Ext.onReady(function(){
         id: 'housingPanel_' + webpart.wrapperDivId
     }]
 
-    var el = Ext.get(webpart.wrapperDivId);
-    Ext.DomHelper.append(el, domSpec);
+    var el = Ext4.get(webpart.wrapperDivId);
+    Ext4.DomHelper.append(el, domSpec);
 
 
-    new EHR.ext.SearchPanel({
+    Ext4.create('LABKEY.ext4.SearchPanel', {
         schemaName: 'study'
         ,queryName: 'Housing'
         ,title: 'Search Housing'
@@ -72,8 +69,6 @@ Ext.onReady(function(){
             ,Notes: {hidden: true}
         }
     }).render('housingPanel_' + webpart.wrapperDivId);
-
-
 });
 
 </script>

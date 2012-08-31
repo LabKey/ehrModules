@@ -4,7 +4,7 @@
 </script>
 <script type="text/javascript">
 
-Ext.onReady(function(){
+Ext4.onReady(function(){
     var webpart = <%=webpartContext%>;
     var ctx = EHR.Utils.getEHRContext(webpart.wrapperDivId);
     if(!ctx)
@@ -75,10 +75,10 @@ Ext.onReady(function(){
         id: 'assignmentPanel_' + webpart.wrapperDivId
     }]
 
-    var el = Ext.get(webpart.wrapperDivId);
-    Ext.DomHelper.append(el, domSpec);
+    var el = Ext4.get(webpart.wrapperDivId);
+    Ext4.DomHelper.append(el, domSpec);
 
-    new EHR.ext.SearchPanel({
+    Ext4.create('LABKEY.ext4.SearchPanel', {
         schemaName: 'ehr'
         ,queryName: 'Project'
         ,viewName: 'Search Panel'
@@ -88,14 +88,14 @@ Ext.onReady(function(){
         }
     }).render('projectPanel_' + webpart.wrapperDivId);
 
-    new EHR.ext.SearchPanel({
+    Ext4.create('LABKEY.ext4.SearchPanel', {
         schemaName: 'ehr'
         ,queryName: 'protocol'
         ,title: 'Search Protocols'
         ,metadata: {}
     }).render('protocolPanel_' + webpart.wrapperDivId);
 
-    new EHR.ext.SearchPanel({
+    Ext4.create('LABKEY.ext4.SearchPanel', {
         schemaName: 'study'
         ,queryName: 'assignment'
         ,viewName: 'Search Panel'
@@ -122,8 +122,6 @@ Ext.onReady(function(){
         }
         ,defaultView: 'Open Ended Assignments'
     }).render('assignmentPanel_' + webpart.wrapperDivId);
-
-
 });
 
 </script>

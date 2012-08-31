@@ -1,7 +1,4 @@
 <script type="text/javascript">
-    LABKEY.requiresExt4Sandbox();
-</script>
-<script type="text/javascript">
 
 function unique(){
     var input = document.getElementById('unique').value;
@@ -14,7 +11,6 @@ function unique(){
     document.getElementById('uniqueTargetTotal').innerHTML = ' '+output.length+' total';
     document.getElementById('uniqueInputTotal').innerHTML = ' '+input.length+' total';
 }
-
 
 function compare(){
     var input1 = document.getElementById('subtract1').value;
@@ -41,8 +37,6 @@ function compare(){
     document.getElementById('subtractList2Total').innerHTML = ' '+input2.length+' total';
 
 }
-
-
 
 function cleanSplit(input){
     input = input.replace(/[\s,;]+/g, ';');

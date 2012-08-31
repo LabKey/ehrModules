@@ -1,10 +1,6 @@
 <script type="text/javascript">
-    LABKEY.requiresScript("/ehr/utils.js");
-    LABKEY.requiresScript("/ehr/studyButtons.js");
-</script>
-<script type="text/javascript">
-
-Ext.onReady(function (){
+//this page reenables the edit UI on a table, using EHR-specific Ext widgets
+Ext4.onReady(function (){
     var query = LABKEY.ActionURL.getParameter('query.queryName') || LABKEY.ActionURL.getParameter('queryName');
     var schema = LABKEY.ActionURL.getParameter('schemaName');
 

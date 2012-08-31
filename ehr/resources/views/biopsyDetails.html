@@ -1,10 +1,10 @@
 <script type="text/javascript">
 
-LABKEY.requiresScript("/ehr/ehrDetailsPanel.js");
-LABKEY.requiresScript("/ehr/utils.js");
-
-Ext.onReady(function (){
-    if (!LABKEY.ActionURL.getParameter('key')){alert('Must Provide Biopsy Number'); return false;}
+Ext4.onReady(function (){
+    if (!LABKEY.ActionURL.getParameter('key')){
+        alert('Must Provide Biopsy Number');
+        return false;
+    }
 
     var key = LABKEY.ActionURL.getParameter('key');
 
@@ -18,55 +18,36 @@ Ext.onReady(function (){
         style: 'padding-bottom: 20px;'
     },{
         tag: 'div',
-        id :'histologyDiv_' + webpart.wrapperDivId,
+        id :'histologyDiv_' + webpart.wrapperDivId
     }];
 
-    var el = Ext.get(webpart.wrapperDivId);
-    Ext.DomHelper.append(el, domSpec);
+    var el = Ext4.get(webpart.wrapperDivId);
+    Ext4.DomHelper.append(el, domSpec);
 
-    new EHR.ext.DetailsView({
-        schemaName: 'study',
-        queryName: 'Biopsies',
-        title: 'Biopsy Details:',
+    Ext4.create('LDK.ext.DetailsPanel', {
+        store: {
+            schemaName: 'study',
+            queryName: 'Biopsies',
+            filterArray: [LABKEY.Filter.create('objectId', key, LABKEY.Filter.Types.EQUAL)]
+        },
+        title: 'Biopsy Details',
         renderTo: 'biopsyDetails_'+webpart.wrapperDivId,
-        filterArray: [LABKEY.Filter.create('objectId', key, LABKEY.Filter.Types.EQUAL)]
+        showBackBtn: false
     });
 
-    new LABKEY.QueryWebPart({
+    LDK.Utils.getReadOnlyQWP({
         title: 'Morphologic Diagnoses',
         schemaName: 'study',
         queryName: 'Morphologic Diagnosis',
-        allowChooseQuery: false,
-        allowChooseView: true,
-        showInsertNewButton: false,
-        showDeleteButton: false,
-        showDetailsColumn: true,
-        showUpdateColumn: false,
-        showRecordSelectors: true,
-        buttonBarPosition: 'top',
-        filters: [LABKEY.Filter.create('parentid', key, LABKEY.Filter.Types.EQUAL)],
-        //sort: '-Date',
-        scope: this,
-        failure: EHR.Utils.onError
+        filters: [LABKEY.Filter.create('parentid', key, LABKEY.Filter.Types.EQUAL)]
      }).render('biopsyDiagnosis_'+webpart.wrapperDivId);
 
 
-    new LABKEY.QueryWebPart({
+    LDK.Utils.getReadOnlyQWP({
         title: 'Histology',
         schemaName: 'study',
         queryName: 'Histology',
-        allowChooseQuery: false,
-        allowChooseView: true,
-        showInsertNewButton: false,
-        showDeleteButton: false,
-        showDetailsColumn: true,
-        showUpdateColumn: false,
-        showRecordSelectors: true,
-        buttonBarPosition: 'top',
-        filters: [LABKEY.Filter.create('parentid', key, LABKEY.Filter.Types.EQUAL)],
-        //sort: '-Date',
-        scope: this,
-        failure: EHR.Utils.onError
+        filters: [LABKEY.Filter.create('parentid', key, LABKEY.Filter.Types.EQUAL)]
      }).render('histologyDiv_'+webpart.wrapperDivId);
 });
 

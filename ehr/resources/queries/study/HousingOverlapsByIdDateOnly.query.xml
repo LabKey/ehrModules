@@ -1,13 +1,8 @@
 <query xmlns="http://labkey.org/data/xml/query">
     <metadata>
         <tables xmlns="http://labkey.org/data/xml">
-            <table tableName="HousingOverlaps" tableDbType="TABLE">
-                <tableUrl>/query/detailsQueryRow.view?schemaName=study&amp;query.queryName=housing&amp;lsid=${lsid}</tableUrl>
-                <columns>
-                    <column columnName="lsid">
-                        <isHidden>true</isHidden>
-                    </column>
-                </columns>
+            <table tableName="HousingOverlapsById" tableDbType="TABLE">
+                <!--<tableUrl>/query/detailsQueryRow.view?schemaName=study&amp;query.queryName=housing&amp;lsid=${lsid}</tableUrl>-->
                 <buttonBarOptions position="both" includeStandardButtons="false">
                     <includeScript>/ehr/studyButtons.js</includeScript>
                     <onRender>EHR.DatasetButtons.moreActionsHandler</onRender>
@@ -15,15 +10,9 @@
                     <item text="Views">
                         <originalText>Views</originalText>
                     </item>
-                    <item text="Insert New">
-                        <originalText>Insert New</originalText>
-                    </item>
-                    <item text="Cohorts">
-                        <originalText>Cohorts</originalText>
-                    </item>
-                    <item text="QCState">
-                        <originalText>QC State</originalText>
-                    </item>
+                    <!--<item text="Insert New">-->
+                        <!--<originalText>Insert New</originalText>-->
+                    <!--</item>-->
                     <item text="Export">
                         <originalText>Export</originalText>
                     </item>

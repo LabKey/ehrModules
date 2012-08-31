@@ -1,59 +1,55 @@
-<html>
-<head>
-    <script type="text/javascript">
+<script type="text/javascript">
 
-        Ext.onReady(function()
-        {
-            var employeeContainer = '/WNPRC/WNPRC_Units/Animal_Services/Compliance_Training/Private/EmployeeDB/';
+Ext4.onReady(function(){
+    var webpart = <%=webpartContext%>;
 
-            var userName = LABKEY.Security.currentUser.email;
-            //we find this employee's info
-            var employeeRecord = new LABKEY.ext.Store({
-                schemaName: 'ehr_compliancedb',
-                queryName: 'Employees',
-                containerPath: employeeContainer,
-                //need to update once we have real unique IDs in the tables
-                filterArray: [LABKEY.Filter.create('Email', userName, LABKEY.Filter.Types.EQUAL)
-                ]
-            });
+    var employeeContainer = LABKEY.getModuleProperty('ehr_compliancedb', 'EmployeeContainer');
+    if (!employeeContainer){
+        Ext4.get(webpart.wrapperDivId).update('Error: the containerPath to the folder holding compliance data has not been set.  Please contact your administrator.')
+        return;
+    }
 
-            employeeRecord.on('load', loadRequirements);
-            employeeRecord.load();
+    Ext4.get(webpart.wrapperDivId).update('This page contains a list of all the compliance and training requirements you need to complete, which is based on your role at the center.  ' +
+        'For each requirement, you will see the last date that it was completed and the number of months until it must be renewed.' +
+        '<p></p><div id="grid_'+webpart.wrapperDivId+'"></div>')
 
-            function loadRequirements()
-            {
-                if (employeeRecord.data.items.length < 1){alert('No Records Found for user ID: '+userName+'. Contact Sandra Boehm if this is an error.');return;}
+    var userName = LABKEY.Security.currentUser.email;
 
-                employeeRecord = employeeRecord.data.items[0];
+    //we find this employee's info
+    var employeeStore = Ext4.create('LABKEY.ext4.Store', {
+        schemaName: 'ehr_compliancedb',
+        queryName: 'Employees',
+        containerPath: employeeContainer,
+        filterArray: [LABKEY.Filter.create('Email', userName, LABKEY.Filter.Types.EQUAL)]
+    });
 
-                new LABKEY.QueryWebPart({
-                    renderTo: 'myRequirementsDiv',
-                    dataRegionName: 'myRequirementsDiv',
-                    title: 'My Requirements',
-                    schemaName: 'ehr_compliancedb',
-                    queryName: 'ComplianceRecentTests',
-                    containerPath: employeeContainer,
-                    filterArray: [LABKEY.Filter.create('employeeid', employeeRecord.get('employeeid'), LABKEY.Filter.Types.EQUAL)],
-                    buttonBarPosition: 'top',
-                    showRecordSelectors: true,
-                    allowChooseQuery: false,
-                    allowChooseView: true,
-                    showDetailsColumn: false,
-                    timeout: 0
-                });
-            }
+    employeeStore.on('load', loadRequirements);
+    employeeStore.load();
 
+    function loadRequirements()
+    {
+        if (employeeStore.getCount() < 1){
+            alert('No Records Found for user ID: '+userName+'.');
+            return;
+        }
+
+        var employeeRecord = employeeStore.getAt(0);
+
+        new LABKEY.QueryWebPart({
+            renderTo: 'grid_' + webpart.wrapperDivId,
+            frame: 'none',
+            title: 'My Requirements',
+            schemaName: 'ehr_compliancedb',
+            queryName: 'ComplianceRecentTests',
+            containerPath: employeeContainer,
+            filterArray: [LABKEY.Filter.create('employeeid', employeeRecord.get('employeeid'), LABKEY.Filter.Types.EQUAL)],
+            buttonBarPosition: 'top',
+            showRecordSelectors: true,
+            allowChooseQuery: false,
+            allowChooseView: true,
+            showDetailsColumn: false,
+            timeout: 0
         });
-
-
-    </script>
-</head>
-
-<body>
-<p>
-
-<div id='myRequirementsDiv'></div>
-
-
-</body>
-</html>
+    }
+});
+</script>

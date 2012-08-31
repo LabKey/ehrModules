@@ -2129,66 +2129,6 @@ Ext.reg('ehr-recordduplicator', EHR.ext.RecordDuplicatorPanel);
 
 /**
  * @class
- * Creates a pair of date fields that automatically set their min/max dates to create a date range.  This was originally used in the AnimalHistory
- * page, but has since been removed.  Could potentially be removed.
- */
-EHR.ext.DateRangePanel = Ext.extend(Ext.Panel,
-{
-    initComponent : function(config)
-    {
-        var defaults = {
-            //cls: 'extContainer',
-            bodyBorder: false,
-            border: false,
-            defaults: {
-                border: false,
-                bodyBorder: false
-            }
-        };
-
-        Ext.applyIf(defaults, config);
-
-        Ext.apply(this, defaults);
-
-        EHR.ext.DateRangePanel.superclass.initComponent.call(this);
-
-        this.startDateField = new LABKEY.ext.DateField({
-            format: 'Y-M-d' //YYYY-MMM-DD
-            ,width: 165
-            ,name:'startDate'
-            ,allowBlank:true
-            ,vtype: 'daterange'
-            ,scope: this
-            ,value: LABKEY.ActionURL.getParameter('startDate')
-        });
-
-        this.endDateField = new LABKEY.ext.DateField({
-            format: 'Y-M-d' //YYYY-MMM-DD
-            ,width:165
-            ,name:'endDate'
-            ,allowBlank:true
-            ,vtype: 'daterange'
-            ,scope: this
-            ,value: LABKEY.ActionURL.getParameter('endDate')
-        });
-
-        Ext.apply(this.endDateField, {startDateField: this.startDateField});
-        Ext.apply(this.startDateField, {endDateField: this.endDateField});
-
-        this.add({tag: 'div', html: 'From:'});
-        this.add(this.startDateField);
-        this.add({tag: 'div', html: 'To:'});
-        this.add(this.endDateField);
-        this.add({tag: 'div', html: '<br>'});
-
-    }
-
-});
-Ext.reg('DateRangePanel', EHR.ext.DateRangePanel);
-
-
-/**
- * @class
  * This panel provides the UI that allows the user to apply a saved template to the current form.  It also provides UI to let the user
  * override existing values on this saved template.
  */

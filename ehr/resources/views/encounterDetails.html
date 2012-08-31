@@ -1,10 +1,10 @@
 <script type="text/javascript">
-    LABKEY.requiresScript("/ehr/ehrDetailsPanel.js");
-</script>
-<script type="text/javascript">
 
-Ext.onReady(function (){
-    if (!LABKEY.ActionURL.getParameter('objectid')){alert('Must Provide LSID'); return false;}
+Ext4.onReady(function (){
+    if (!LABKEY.ActionURL.getParameter('objectid')){
+        alert('Must Provide LSID');
+        return false;
+    }
 
     if (LABKEY.ActionURL.getParameter('formtype')){
         window.location = LABKEY.ActionURL.buildURL('ehr', 'taskDetails', null, {
@@ -23,39 +23,26 @@ Ext.onReady(function (){
         id: 'childTables_' + webpart.wrapperDivId
     }]
 
-    var el = Ext.get(webpart.wrapperDivId);
-    Ext.DomHelper.append(el, domSpec);
+    var el = Ext4.get(webpart.wrapperDivId);
+    Ext4.DomHelper.append(el, domSpec);
 
-    var filterArray = [LABKEY.Filter.create('objectid', LABKEY.ActionURL.getParameter('objectid'), LABKEY.Filter.Types.EQUAL)];
-
-    new EHR.ext.DetailsView({
-        schemaName: 'study',
-        queryName: 'encounters',
-        title: 'Encounter Details:',
-        renderTo: 'encounterDetails_' + webpart.wrapperDivId,
-        filterArray: filterArray
+    Ext4.create('LDK.ext.DetailsPanel', {
+        store: {
+            schemaName: 'study',
+            queryName: 'encounters',
+            filterArray: [LABKEY.Filter.create('objectid', LABKEY.ActionURL.getParameter('objectid'), LABKEY.Filter.Types.EQUAL)]
+        },
+        title: 'Encounter Details',
+        renderTo: 'encounterDetails_' + webpart.wrapperDivId
     });
 
-
-    new LABKEY.QueryWebPart({
+    LDK.Utils.getReadOnlyQWP({
         title: 'Records',
         schemaName: 'study',
         queryName: 'StudyData',
-        allowChooseQuery: false,
-        allowChooseView: true,
-        showInsertNewButton: false,
-        showDeleteButton: false,
-        showDetailsColumn: true,
-        showUpdateColumn: false,
-        showRecordSelectors: true,
-        buttonBarPosition: 'top',
-        timeout: 0,
         filterArray: [LABKEY.Filter.create('parentid', LABKEY.ActionURL.getParameter('objectid'), LABKEY.Filter.Types.EQUAL)],
-        sort: '-Date',
-        scope: this,
-        failure: EHR.Utils.onError
-     }).render('childTables_' + webpart.wrapperDivId);
-
+        sort: '-Date'
+    }).render('childTables_' + webpart.wrapperDivId);
 });
 
 </script>

@@ -37,7 +37,7 @@ SELECT
 
 FROM ehr_compliancedb.Employees e
 
-CROSS JOIN "/WNPRC/WNPRC_Units/Animal_Services/Compliance_Training/Public/SOPs/".lists.SOPs sop
+CROSS JOIN lists.SOPs sop
   --ON (e.category = sc.category)
 
 LEFT JOIN ehr_compliancedb.SOPbyCategory sc

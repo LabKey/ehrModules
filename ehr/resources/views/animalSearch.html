@@ -1,10 +1,6 @@
 <script type="text/javascript">
 
-LABKEY.requiresScript("/ehr/SearchPanel.js");
-LABKEY.requiresScript("/ehr/utils.js");
-
-Ext.onReady(function ()
-{
+Ext4.onReady(function (){
     var webpart = <%=webpartContext%>;
     var ctx = EHR.Utils.getEHRContext(webpart.wrapperDivId);
     if(!ctx)
@@ -65,7 +61,7 @@ Ext.onReady(function ()
                 html: '<a href="<%=contextPath%>/query' + ctx['EHRStudyContainer'] + '/executeQuery.view?schemaName=study&query.queryName=Colony Population By Age">Population Summary By Species, Gender and Age</a>'
             },{
                 tag: 'li',
-                html: '<a href="<%=contextPath%>/query' + ctx['EHRStudyContainer'] + '/executeQuery.view?schemaName=study&query.queryName=HousingOverlapsById">Find Animals Housed At The Center Over A Date Range</a>'
+                html: '<a href="<%=contextPath%>/ehr' + ctx['EHRStudyContainer'] + '/housingOverlaps.view?groupById=1">Find Animals Housed At The Center Over A Date Range</a>'
             },{
                 tag: 'li',
                 html: '<a href="<%=contextPath%>/query' + ctx['EHRStudyContainer'] + '/executeQuery.view?schemaName=study&query.queryName=SinglyHousedAnimals">List Singly-Housed Animals At The Center On A Given Date</a>'
@@ -77,10 +73,10 @@ Ext.onReady(function ()
         }]
     }
 
-    var el = Ext.get(webpart.wrapperDivId);
-    Ext.DomHelper.append(el, domSpec);
+    var el = Ext4.get(webpart.wrapperDivId);
+    Ext4.DomHelper.append(el, domSpec);
 
-    new EHR.ext.SearchPanel({
+    Ext4.create('LABKEY.ext4.SearchPanel', {
         schemaName: 'study'
         ,queryName: 'Demographics'
         ,viewName: 'Search Panel'
@@ -92,9 +88,6 @@ Ext.onReady(function ()
             ,'Id/MostRecentWeight/MostRecentWeight': {duplicate: true}
         }
     }).render('animalSearch_'+webpart.wrapperDivId);
-
-
 });
-
 
 </script>

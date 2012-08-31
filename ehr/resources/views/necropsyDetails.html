@@ -1,9 +1,6 @@
 <script type="text/javascript">
-    LABKEY.requiresScript("/ehr/ehrDetailsPanel.js");
-</script>
-<script type="text/javascript">
 
-Ext.onReady(function (){
+Ext4.onReady(function (){
     if (!LABKEY.ActionURL.getParameter('key')){alert('Must Provide Necropsy Number'); return false;}
 
     var key = LABKEY.ActionURL.getParameter('key');
@@ -33,88 +30,35 @@ Ext.onReady(function (){
         id: 'necropsyTissues_' + webpart.wrapperDivId
     }]
 
-    var el = Ext.get(webpart.wrapperDivId);
-    Ext.DomHelper.append(el, domSpec);
+    var el = Ext4.get(webpart.wrapperDivId);
+    Ext4.DomHelper.append(el, domSpec);
 
-    new EHR.ext.DetailsView({
-        schemaName: 'study',
-        queryName: 'Necropsies',
-        viewName: 'Summary',
+    Ext4.create('LDK.ext.DetailsPanel', {
+        store: {
+            schemaName: 'study',
+            queryName: 'Necropsies',
+            viewName: 'Summary',
+            filterArray: [LABKEY.Filter.create('objectId', key, LABKEY.Filter.Types.EQUAL)]
+        },
+        showBackBtn: false,
         title: 'Necropsy Details:',
-        renderTo: 'necropsyDetails_' + webpart.wrapperDivId,
-        filterArray: [LABKEY.Filter.create('objectId', key, LABKEY.Filter.Types.EQUAL)]
+        renderTo: 'necropsyDetails_' + webpart.wrapperDivId
     });
 
-    new LABKEY.QueryWebPart({
+    LDK.Utils.getReadOnlyQWP({
         title: 'Morphologic Diagnoses',
         schemaName: 'study',
         queryName: 'Morphologic Diagnosis',
-        allowChooseQuery: false,
-        allowChooseView: true,
-        showInsertNewButton: false,
-        showDeleteButton: false,
-        showDetailsColumn: true,
-        showUpdateColumn: false,
-        showRecordSelectors: true,
-        buttonBarPosition: 'top',
-        filters: [LABKEY.Filter.create('parentid', key, LABKEY.Filter.Types.EQUAL)],
-        //sort: '-Date',
-        scope: this,
-        failure: EHR.Utils.onError
+        filters: [LABKEY.Filter.create('parentid', key, LABKEY.Filter.Types.EQUAL)]
      }).render('necropsyDiagnosis_' + webpart.wrapperDivId);
 
-    new LABKEY.QueryWebPart({
+    LDK.Utils.getReadOnlyQWP({
         title: 'Histology',
         schemaName: 'study',
         queryName: 'histology',
-        allowChooseQuery: false,
-        allowChooseView: true,
-        showInsertNewButton: false,
-        showDeleteButton: false,
-        showDetailsColumn: true,
-        showUpdateColumn: false,
-        showRecordSelectors: true,
-        buttonBarPosition: 'top',
         filters: [LABKEY.Filter.create('parentid', key, LABKEY.Filter.Types.EQUAL)],
-        sort: '-Date',
-        scope: this,
-        failure: EHR.Utils.onError
+        sort: '-Date'
      }).render('necropsyHistology_' + webpart.wrapperDivId);
-
-//    new LABKEY.QueryWebPart({
-//        title: 'Tissues',
-//        schemaName: 'study',
-//        queryName: 'tissue_samples',
-//        allowChooseQuery: false,
-//        allowChooseView: true,
-//        showInsertNewButton: false,
-//        showDeleteButton: false,
-//        showDetailsColumn: true,
-//        showUpdateColumn: false,
-//        buttonBarPosition: 'top',
-//        filters: [LABKEY.Filter.create('parentid', key, LABKEY.Filter.Types.EQUAL)],
-//        sort: '-Date',
-//        scope: this,
-//        failure: EHR.Utils.onError
-//     }).render('necropsyTissues_' + webpart.wrapperDivId);
-
-//    new LABKEY.QueryWebPart({
-//        title: 'Necropsy Images',
-//        schemaName: 'study',
-//        queryName: 'Datas',
-//        allowChooseQuery: false,
-//        allowChooseView: true,
-//        showInsertNewButton: false,
-//        showDeleteButton: false,
-//        showDetailsColumn: true,
-//        showUpdateColumn: false,
-//        showRecordSelectors: true,
-//        buttonBarPosition: 'top',
-//        filters: [LABKEY.Filter.create('caseno/objectid', key, LABKEY.Filter.Types.EQUAL)],
-//        //sort: '-Date',
-//        scope: this,
-//        failure: EHR.Utils.onError
-//     }).render('necropsyImages_' + webpart.wrapperDivId);
 });
 
 </script>

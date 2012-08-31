@@ -1,9 +1,6 @@
 <script type="text/javascript">
-    LABKEY.requiresScript("/ehr/ehrDetailsPanel.js");
-</script>
-<script type="text/javascript">
 
-Ext.onReady(function (){
+Ext4.onReady(function (){
     if (!LABKEY.ActionURL.getParameter('room')){
         alert('Must Provide Location'); return false;
     }
@@ -27,8 +24,8 @@ Ext.onReady(function (){
         id :'allAnimals_' + webpart.wrapperDivId
     }];
 
-    var el = Ext.get(webpart.wrapperDivId);
-    Ext.DomHelper.append(el, domSpec);
+    var el = Ext4.get(webpart.wrapperDivId);
+    Ext4.DomHelper.append(el, domSpec);
 
     var filterArray = [LABKEY.Filter.create('room', LABKEY.ActionURL.getParameter('room'), LABKEY.Filter.Types.EQUAL)];
 
@@ -37,73 +34,52 @@ Ext.onReady(function (){
     }
 
     if (LABKEY.ActionURL.getParameter('cage')){
-        new EHR.ext.DetailsView({
-            schemaName: 'ehr_lookups',
-            queryName: 'cage',
-            title: 'Cage Details:',
+        Ext4.create('LDK.ext.DetailsPanel', {
+            store: {
+                schemaName: 'ehr_lookups',
+                queryName: 'cage',
+                filterArray: filterArray
+            },
+            title: 'Cage Details',
             renderTo: 'cageDetails_' + webpart.wrapperDivId,
-            filterArray: filterArray
+            showBackBtn: false
         });
     }
     else {
-        new LABKEY.QueryWebPart({
+        LDK.Utils.getReadOnlyQWP({
             title: 'Cage Details:',
             schemaName: 'ehr_lookups',
             queryName: 'cage',
-            allowChooseQuery: false,
-            allowChooseView: true,
-            showRecordSelectors: true,
-            buttonBarPosition: 'top',
-            filterArray: filterArray,
-            scope: this,
-            failure: EHR.Utils.onError
+            filterArray: filterArray
          }).render('cageDetails_' + webpart.wrapperDivId);
     }
 
-    new LABKEY.QueryWebPart({
+    LDK.Utils.getReadOnlyQWP({
         title: 'All Animals Ever Housed',
         schemaName: 'study',
         queryName: 'Housing',
-        allowChooseQuery: false,
-        allowChooseView: true,
-        showRecordSelectors: true,
-        buttonBarPosition: 'top',
         filterArray: filterArray,
-        sort: '-Date',
-        scope: this,
-        failure: EHR.Utils.onError
+        sort: '-Date'
      }).render('allAnimals_' + webpart.wrapperDivId);
 
 
-    new LABKEY.QueryWebPart({
+    LDK.Utils.getReadOnlyQWP({
         title: 'Cage Observations For This Location',
         schemaName: 'ehr',
         queryName: 'cage_observations',
-        allowChooseQuery: false,
-        allowChooseView: true,
-        buttonBarPosition: 'top',
         filterArray: filterArray,
-        sort: '-Date',
-        scope: this,
-        failure: EHR.Utils.onError
+        sort: '-Date'
      }).render('cageNotes_' + webpart.wrapperDivId);
 
-    filterArray.push(LABKEY.Filter.create('enddate', null, LABKEY.Filter.Types.ISBLANK));
-    new LABKEY.QueryWebPart({
+    var filterArray2 = [].concat(filterArray);
+    filterArray2.push(LABKEY.Filter.create('enddate', null, LABKEY.Filter.Types.ISBLANK));
+    LDK.Utils.getReadOnlyQWP({
         title: 'Animals Currently Housed',
         schemaName: 'study',
         queryName: 'Housing',
-        allowChooseQuery: false,
-        allowChooseView: true,
-        buttonBarPosition: 'top',
-        showRecordSelectors: true,
-        filterArray: filterArray,
-        timeout: 0,
-        sort: '-Date',
-        scope: this,
-        failure: EHR.Utils.onError
+        filterArray: filterArray2,
+        sort: '-Date'
      }).render('activeAnimals_' + webpart.wrapperDivId);
-
 });
 
 </script>

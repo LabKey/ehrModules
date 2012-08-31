@@ -1,11 +1,11 @@
-<html>
-<head>
 <script type="text/javascript">
 
-Ext.onReady(function()
-{
-    var sopContainer = 'WNPRC/WNPRC_Units/Animal_Services/Compliance_Training/Public/SOPs/';
-        var employeeContainer = 'WNPRC/WNPRC_Units/Animal_Services/Compliance_Training/Private/EmployeeDB/';
+Ext4.onReady(function(){
+    var employeeContainer = LABKEY.getModuleProperty('ehr_compliancedb', 'EmployeeContainer');
+    if (!employeeContainer){
+        Ext4.get(webpart.wrapperDivId).update('Error: the containerPath to the folder holding compliance data has not been set.  Please contact your administrator.')
+        return;
+    }
 
     //we look up this employee's information
     LABKEY.Query.selectRows({
@@ -18,12 +18,13 @@ Ext.onReady(function()
     });
 
     var username;
-    function onSuccess(results)
-    {
-        if (results.rows.length < 1){alert('No Employee Record Found for User: '+LABKEY.Security.currentUser.email+'.\nPlease contact Sandra Boehm.');return;}
+    function onSuccess(results){
+        if (results.rows.length < 1){
+            alert('No Employee Record Found for User: '+LABKEY.Security.currentUser.email+'.\nPlease contact Sandra Boehm.');
+            return;
+        }
 
         username = results.rows[0].employeeid;
-console.log('username: '+username)
         var email = LABKEY.Security.currentUser.email;
 
         //then we display a list of all their required SOPs
@@ -60,7 +61,6 @@ console.log('username: '+username)
         //then we display a list of all completed required SOPs
         var sopQWP2 = new LABKEY.QueryWebPart({
             renderTo: 'sopDiv2',
-            //dataRegionName: 'sopGrid',
             title: 'Dates SOPs Were Last Read',
             containerPath: employeeContainer,
             schemaName: 'ehr_compliancedb',
@@ -86,7 +86,7 @@ console.log('username: '+username)
                 LABKEY.Filter.create('EmployeeId', username, LABKEY.Filter.Types.EQUAL),
                 LABKEY.Filter.create('MonthsUntilRenewal', 10, LABKEY.Filter.Types.LESS_THAN)
             ],
-            successCallback: makeForm,
+            success: makeForm,
             timeout: 0
         });
 
@@ -137,7 +137,7 @@ function markRead(dataRegion, dataRegionName) {
             Ext.Msg.alert("Error: please contact the site admin");
             console.log(errorInfo)
          },
-         successCallback: onComplete
+         success: onComplete
     });
 
     function onComplete(){
@@ -174,19 +174,13 @@ function submitRequest() {
             ,EmployeeId: username
             ,Date: new Date().format("Y-m-d")
          }],
-         successCallback: function(){
+         success: function(){
             alert('Thank You for Reading Your SOPs.  You have now completed your SOP requirements for the year.');
-            var url = LABKEY.ActionURL.buildURL(
-                'Project',
-                'begin.view',
-                'home'
-            );
-
-            window.location = url
+            window.location = LABKEY.ActionURL.buildURL('project', 'begin', 'home');
          },
-         errorCallback: function(errorInfo) {
+         failure: function(errorInfo) {
                 Ext.Msg.alert("Error: please contact the site admin");
-                console.log(errorInfo);
+                console.error(errorInfo);
             }
         });
  }
@@ -195,10 +189,10 @@ function submitRequest() {
 
 </script>
 </head>
-<body>
+
 <p>
 <li>
-    Below is a list of the SOPs you are required to read, based on your position at WNPRC.  If you believe there is an error, please contact Sandra Boehm <a href="<%=contextPath%>/issues/WNPRC/WNPRC_Units/Animal_Services/Compliance_Training/Issue_Tracker/list.view?" target="new">here</a>
+    Below is a list of the SOPs you are required to read, based on your position at the center.  If you believe there is an error, please contact Sandra Boehm <a href="<%=contextPath%>/issues/WNPRC/WNPRC_Units/Animal_Services/Compliance_Training/Issue_Tracker/list.view?" target="new">here</a>
 </li>
 <br>
 <li>
@@ -243,6 +237,3 @@ function submitRequest() {
 <br><br>
 
 <div id="sopDiv2"></div>
-
-</body>
-</html>

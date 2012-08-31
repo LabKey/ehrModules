@@ -1,10 +1,10 @@
 <script type="text/javascript">
-    LABKEY.requiresScript("/ehr/ehrDetailsPanel.js");
-</script>
-<script type="text/javascript">
 
-Ext.onReady(function (){
-    if (!LABKEY.ActionURL.getParameter('objectid')){alert('Must Provide Key'); return false;}
+Ext4.onReady(function (){
+    if (!LABKEY.ActionURL.getParameter('objectid')){
+        alert('Must Provide Key');
+        return false;
+    }
 
     var webpart = <%=webpartContext%>;
     var domSpec = [{
@@ -17,8 +17,8 @@ Ext.onReady(function (){
         id: 'resultDivs_'+webpart.wrapperDivId
     }];
 
-    var el = Ext.get(webpart.wrapperDivId);
-    Ext.DomHelper.append(el, domSpec);
+    var el = Ext4.get(webpart.wrapperDivId);
+    Ext4.DomHelper.append(el, domSpec);
 
     LABKEY.Query.selectRows({
         schemaName: 'study',
@@ -43,27 +43,16 @@ Ext.onReady(function (){
             filterArray = [LABKEY.Filter.create('date', row.date, LABKEY.Filter.Types.DATE_EQUAL), LABKEY.Filter.create('Id', row.Id, LABKEY.Filter.Types.EQUAL)];
         }
 
-        new LABKEY.QueryWebPart({
+        LDK.Utils.getReadOnlyQWP({
             title: 'Run Details:',
             schemaName: 'study',
             queryName: 'Clinpath Runs',
-            allowChooseQuery: false,
-            allowChooseView: true,
-            showInsertNewButton: false,
-            showDeleteButton: false,
-            showDetailsColumn: true,
-            showUpdateColumn: false,
-            showRecordSelectors: true,
-            buttonBarPosition: 'top',
-            filterArray: filterArray,
-            timeout: 0,
-            scope: this,
-            failure: EHR.Utils.onError
+            filterArray: filterArray
          }).render('runDetails_'+webpart.wrapperDivId);
 
-        var resultDiv = Ext.get('resultDivs_'+webpart.wrapperDivId);
+        var resultDiv = Ext4.get('resultDivs_'+webpart.wrapperDivId);
 
-        Ext.each(['Bacteriology Results', 'Chemistry Results', 'Immunology Results', 'Hematology Results', 'Hematology Morphology', 'Parasitology Results', 'Urinalysis Results', 'Virology Results'], function(dataset){
+        Ext4.each(['Bacteriology Results', 'Chemistry Results', 'Immunology Results', 'Hematology Results', 'Hematology Morphology', 'Parasitology Results', 'Urinalysis Results', 'Virology Results'], function(dataset){
             var target = resultDiv.createChild({tag: 'span', style: 'padding-bottom:10px;'});
             resultDiv.createChild({tag: 'p'});
 
@@ -72,23 +61,12 @@ Ext.onReady(function (){
                 viewName = 'Plus Ref Range';
             }
 
-            new LABKEY.QueryWebPart({
+            LDK.Utils.getReadOnlyQWP({
                 title: dataset+':',
                 schemaName: 'study',
                 queryName: dataset,
                 viewName: viewName,
-                allowChooseQuery: false,
-                allowChooseView: true,
-                showInsertNewButton: false,
-                showDeleteButton: false,
-                showDetailsColumn: true,
-                showUpdateColumn: false,
-                showRecordSelectors: true,
-                buttonBarPosition: 'top',
-                timeout: 0,
-                filterArray: filterArray,
-                scope: this,
-                failure: EHR.Utils.onError
+                filterArray: filterArray
              }).render(target.id);
         }, this);
     }

@@ -15,6 +15,7 @@
 
 package org.labkey.ehr;
 
+import org.apache.batik.anim.timing.Interval;
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONObject;
 import org.labkey.api.data.Container;
@@ -25,7 +26,8 @@ import org.labkey.api.module.SpringModule;
 import org.labkey.api.query.DefaultSchema;
 import org.labkey.api.query.QuerySchema;
 import org.labkey.api.query.QueryService;
-import org.labkey.api.security.User;
+import org.labkey.api.security.*;
+import org.labkey.api.security.SecurityManager;
 import org.labkey.api.security.roles.RoleManager;
 import org.labkey.api.util.PageFlowUtil;
 import org.labkey.api.view.WebPartFactory;
@@ -42,6 +44,7 @@ import org.labkey.ehr.notification.NotificationService;
 import org.labkey.ehr.notification.OverdueWeightsNotification;
 import org.labkey.ehr.notification.TreatmentAlerts;
 import org.labkey.ehr.notification.WeightAlerts;
+import org.labkey.ehr.pipeline.KinshipRunnable;
 import org.labkey.ehr.security.EHRBasicSubmitterRole;
 import org.labkey.ehr.security.EHRDataAdminRole;
 import org.labkey.ehr.security.EHRFullSubmitterRole;
@@ -49,18 +52,25 @@ import org.labkey.ehr.security.EHRFullUpdaterRole;
 import org.labkey.ehr.security.EHRRequestAdminRole;
 import org.labkey.ehr.security.EHRRequestorRole;
 
+import java.security.Security;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 public class EHRModule extends SpringModule
 {
+    public static final String EHR_ADMIN_USER = "EHRAdminUser@ehr.com";
+    public static final String NAME = "EHR";
+
     public String getName()
     {
-        return "EHR";
+        return NAME;
     }
 
     public double getVersion()
@@ -128,6 +138,32 @@ public class EHRModule extends SpringModule
         ns.addNotification(new TreatmentAlerts());
         ns.addNotification(new WeightAlerts());
 
+//        //create a system user if not already present
+//        try
+//        {
+//            ValidEmail email = new ValidEmail(EHR_ADMIN_USER);
+//            User u = UserManager.getUser(email);
+//            if (u == null)
+//            {
+//                String verification = SecurityManager.createLogin(email);
+//                SecurityManager.verify(email, verification);
+//                u = UserManager.getUser(email);
+//                SecurityManager.addMember(SecurityManager.getGroup(Group.groupAdministrators), u);
+//            }
+//        }
+//        catch (ValidEmail.InvalidEmailException e)
+//        {
+//            throw new RuntimeException(e);
+//        }
+//        catch (SecurityManager.UserManagementException e)
+//        {
+//            throw new RuntimeException(e);
+//        }
+//        catch (InvalidGroupMembershipException e)
+//        {
+//            throw new RuntimeException(e);
+//        }
+
         //TODO
         //int delay = 1000 * 60 * 5;// 5 minutes
         int delay = 1000;
@@ -171,5 +207,11 @@ public class EHRModule extends SpringModule
 
         }
         return new JSONObject(map);
+    }
+
+    public void scheduleKinshipTask()
+    {
+        ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
+        executor.scheduleAtFixedRate(new KinshipRunnable(), 10, 10000, TimeUnit.SECONDS);
     }
 }

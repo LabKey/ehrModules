@@ -11,4 +11,4 @@ s.PDF,
 s.Spanish_PDF,
 s.video,
 s.activeDate
-FROM "/WNPRC/WNPRC_Units/Animal_Services/Compliance_Training/Public/SOPs/".lists.SOPs s
+FROM lists.SOPs s

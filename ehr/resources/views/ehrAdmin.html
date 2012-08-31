@@ -1,14 +1,11 @@
 <script type="text/javascript">
-    LABKEY.requiresScript("/ehr/navMenu.js");
-</script>
-<script type="text/javascript">
 
-Ext.onReady(function (){
+Ext4.onReady(function (){
 
 if (LABKEY.Security.currentUser.isAdmin){
     var webpart = <%=webpartContext%>;
 
-    new EHR.ext.NavMenu({
+    Ext4.create('LDK.ext.NavPanel', {
         renderTo: webpart.wrapperDivId,
         width: 350,
         sections: [
@@ -85,24 +82,17 @@ if (LABKEY.Security.currentUser.isAdmin){
                     {name: 'Site Logins By Month', url: '<%=contextPath%>/query<%=containerPath%>/executeQuery.view?schemaName=core&query.queryName=SiteUsageByMonth'},
                     {name: 'Site Logins By Group', url: '<%=contextPath%>/query<%=containerPath%>/executeQuery.view?schemaName=core&query.queryName=SiteUsageByGroup'}
                 ]
-            },
-            {header: 'Validation',
-                items: [
-                    {name: 'Housing Problems', url: '<%=contextPath%>/query<%=containerPath%>/executeQuery.view?schemaName=study&query.queryName=housingProblems'},
-                    {name: 'Housing Condition Problems', url: '<%=contextPath%>/query<%=containerPath%>/executeQuery.view?schemaName=study&query.queryName=housingConditionProblems'},
-                    {name: 'Postgres/mySQL Comparison', url: '<%=contextPath%>/query<%=containerPath%>/executeQuery.view?schemaName=col_dump&query.queryName=mysql_check'},
-                    {name: 'Postgres/mySQL Comparison - To Excel', url: '<%=contextPath%>/query<%=containerPath%>/exportRowsExcel.view?schemaName=col_dump&query.queryName=mysql_check'},
-                    {name: 'Review Required', url: '<%=contextPath%>/query<%=containerPath%>/executeQuery.view?schemaName=study&query.queryName=studyData&query.viewName=Review Required'},
-                    {name: 'Rooms/Cages Missing From List', url: '<%=contextPath%>/query<%=containerPath%>/executeQuery.view?schemaName=ehr&query.queryName=missingCages'},
-                    {name: 'Update Housing Snapshot', url: '<%=contextPath%>/study<%=containerPath%>/editSnapshot.view?schemaName=study&snapshotName=ActiveHousing&query.queryName=ActiveHousing'},
-                    {name: 'Validate Housing Snapshot', url: '<%=contextPath%>/query<%=containerPath%>/executeQuery.view?schemaName=study&query.queryName=ValidateHousingSnapshot'},
-                    {name: 'Validate Status Field Calculation', url: '<%=contextPath%>/query<%=containerPath%>/executeQuery.view?schemaName=study&query.queryName=Validate_status'}
-                ]
+//            },
+//            {header: 'Validation',
+//                items: [
+//                    {name: 'Postgres/mySQL Comparison', url: '<%=contextPath%>/query<%=containerPath%>/executeQuery.view?schemaName=col_dump&query.queryName=mysql_check'},
+//                    {name: 'Postgres/mySQL Comparison - To Excel', url: '<%=contextPath%>/query<%=containerPath%>/exportRowsExcel.view?schemaName=col_dump&query.queryName=mysql_check'},
+//                    {name: 'Update Housing Snapshot', url: '<%=contextPath%>/study<%=containerPath%>/editSnapshot.view?schemaName=study&snapshotName=ActiveHousing&query.queryName=ActiveHousing'},
+//                ]
             }
         ]
-    })
+    });
 }
-
 });
 
 </script>

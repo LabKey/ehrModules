@@ -1,0 +1,6 @@
+<view xmlns="http://labkey.org/data/xml/view" frame="none">
+    <dependencies>
+        <dependency path="/ehr/ehr_api" />
+        <dependency path="Ext4ClientApi"/>
+    </dependencies>
+</view>

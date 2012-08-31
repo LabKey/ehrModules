@@ -1,18 +1,15 @@
 <script type="text/javascript">
-    LABKEY.requiresScript("/ehr/ehrAPI.js");
-</script>
-<script type="text/javascript">
 
-Ext.onReady(function (){
+Ext4.onReady(function (){
 
     EHR.Security.init({
         success: onSuccess,
         scope: this
     });
 
-
     var webpart = <%=webpartContext%>;
 
+    //TODO: make data driven
     function onSuccess(data){
         var menuCfg = {
             renderTo: webpart.wrapperDivId,
@@ -173,9 +170,8 @@ Ext.onReady(function (){
         }];
         var section;
 
-        new EHR.ext.NavMenu(menuCfg);
+        Ext4.create('LDK.ext.NavPanel', menuCfg);
     }
-
 });
 
 </script>

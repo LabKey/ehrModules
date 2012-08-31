@@ -5,43 +5,35 @@
 ##
 #options(echo=TRUE);
 library(lattice);
-#library(hwriter);
-
 
 if (length(labkey.data$category) > 0){
 
-l <-length(unique(labkey.data$category));
-colors = c("darkblue","red","yellow","green");
+    l <-length(unique(labkey.data$category));
+    colors = c("darkblue","red","yellow","green");
 
-png(filename="${imgout:barchart}",
-    width=1100,
-    height=(500),
-    #type="cairo"
-    );
-#print(str(labkey.data));
+    png(filename="${imgout:barchart}",
+        width=1100,
+        height=(500),
+        #type="cairo"
+        );
+    #print(str(labkey.data));
 
-data <- table(labkey.data$category, labkey.data$id_dataset_demographics_species);
-barplot(data,
-    main="Population Change By Species",
-    xlab="Category",
-    col=colors,
-    legend = rownames(data),
-    beside=TRUE
-    );
+    data <- table(labkey.data$category, labkey.data$id_dataset_demographics_species);
+    barplot(data,
+        main="Population Change By Species",
+        xlab="Category",
+        col=colors,
+        legend = rownames(data),
+        beside=TRUE
+        );
 
-dev.off();
+    dev.off();
 
-theTable <- table(factor(labkey.data$id_dataset_demographics_species), labkey.data$category)
-theTable
+    theTable <- table(factor(labkey.data$id_dataset_demographics_species), labkey.data$category)
+    theTable
 
-#write(theTable, file="${tsvout:table}")
-write.table(theTable, file = "${tsvout:tsvfile}", sep = "\t", qmethod = "double", col.names=NA)
-
-theTable;
+    write.table(theTable, file = "${tsvout:tsvfile}", sep = "\t", qmethod = "double", col.names=NA)
 
 } else {
-
-print("No Records For This Timeframe");
-
+    write("No Records For This Timeframe", file = "${txtout:message}");
 }
-

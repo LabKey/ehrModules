@@ -18,9 +18,8 @@
                         query.RequirementName~lte=${RequirementName}&amp;
                     </url>
                     <fk>
-                        <fkFolderPath>WNPRC/WNPRC_Units/Animal_Services/Compliance_Training/Private/EmployeeDB/</fkFolderPath>
                         <fkDbSchema>ehr_compliancedb</fkDbSchema>
-                        <fkTable>Requirements</fkTable>
+                        <fkTable>requirements</fkTable>
                         <fkColumnName>requirementName</fkColumnName>
                     </fk>
                 </column>

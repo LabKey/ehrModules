@@ -1,10 +1,10 @@
 <script type="text/javascript">
-    LABKEY.requiresScript("/ehr/ehrDetailsPanel.js");
-</script>
-<script type="text/javascript">
 
-Ext.onReady(function (){
-    if (!LABKEY.ActionURL.getParameter('key')){alert('Must Provide Project Number'); return false;}
+Ext4.onReady(function (){
+    if (!LABKEY.ActionURL.getParameter('key')){
+        alert('Must Provide Project Number');
+        return false;
+    }
 
     var project = LABKEY.ActionURL.getParameter('key');
 
@@ -26,15 +26,19 @@ Ext.onReady(function (){
         id: 'projectTotalAssignments_' + webpart.wrapperDivId
     }]
 
-    var el = Ext.get(webpart.wrapperDivId);
-    Ext.DomHelper.append(el, domSpec);
+    var el = Ext4.get(webpart.wrapperDivId);
+    Ext4.DomHelper.append(el, domSpec);
 
-    new EHR.ext.DetailsView({
-        schemaName: 'ehr',
-        queryName: 'project',
-        title: 'Project Details:',
-        renderTo: 'projectDetails_' + webpart.wrapperDivId,
-        filterArray: [LABKEY.Filter.create('project', project, LABKEY.Filter.Types.EQUAL)]
+    Ext4.create('LDK.ext.DetailsPanel', {
+        store: {
+            schemaName: 'ehr',
+            queryName: 'project',
+            filterArray: [
+                LABKEY.Filter.create('project', project, LABKEY.Filter.Types.EQUAL)
+            ]
+        },
+        title: 'Project Details',
+        renderTo: 'projectDetails_' + webpart.wrapperDivId
     });
 
     new LABKEY.QueryWebPart({
@@ -75,13 +79,17 @@ Ext.onReady(function (){
         failure: EHR.Utils.onError
      }).render('projectTotalAssignments_' + webpart.wrapperDivId);
 
-    new Ext.Panel({
+    Ext4.create('LDK.ext.WebpartPanel', {
         title: 'Project Information',
         bodyStyle: 'padding:5px;',
+        defaults: {
+            linkCls: 'labkey-text-link',
+            style: 'padding-bottom:10px'
+        },
         items: [{
-            xtype: 'button'
-            ,html: 'View Charges Under This Project'
-            ,handler: function(c){
+            xtype: 'labkey-linkbutton',
+            text: 'View Charges Under This Project',
+            handler: function(c){
                 var params = {schemaName: 'study'};
                 params['query.queryName'] = 'charges';
                 params['query.project~eq'] = project;
@@ -93,12 +101,10 @@ Ext.onReady(function (){
                     params
                 ));
             }
-            ,style: 'padding-bottom:10px'
-            ,buttonAlign: 'center'
         },{
-            xtype: 'button'
-            ,html: 'View Procedures Under This Project'
-            ,handler: function(c){
+            xtype: 'labkey-linkbutton',
+            text: 'View Procedures Under This Project',
+            handler: function(c){
                 var params = {schemaName: 'study'};
                 params['query.queryName'] = 'encounters';
                 params['query.project~eq'] = project;
@@ -110,12 +116,10 @@ Ext.onReady(function (){
                     params
                 ));
             }
-            ,style: 'padding-bottom:10px'
-            ,buttonAlign: 'center'
         },{
-            xtype: 'button'
-            ,html: 'View All Items Under This Project'
-            ,handler: function(c){
+            xtype: 'labkey-linkbutton',
+            text: 'View All Items Under This Project',
+            handler: function(c){
                 var params = {schemaName: 'study'};
                 params['query.queryName'] = 'studyData';
                 params['query.project~eq'] = project;
@@ -127,8 +131,6 @@ Ext.onReady(function (){
                     params
                 ));
             }
-            ,style: 'padding-bottom:10px'
-            ,buttonAlign: 'center'
         }]
     }).render('projectLinks_' + webpart.wrapperDivId);
 });

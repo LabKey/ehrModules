@@ -1,9 +1,6 @@
 <script type="text/javascript">
-    LABKEY.requiresScript("/ehr/SearchPanel.js");
-</script>
-<script type="text/javascript">
 
-Ext.onReady(function(){
+Ext4.onReady(function(){
     var metadata;
 
     var config = {
@@ -71,7 +68,7 @@ Ext.onReady(function(){
     }
 
     var webpart = <%=webpartContext%>;
-    new EHR.ext.SearchPanel(config).render(webpart.wrapperDivId);
+    Ext4.create('LABKEY.ext4.SearchPanel', config).render(webpart.wrapperDivId);
 
 });
 </script>

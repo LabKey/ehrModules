@@ -1,10 +1,6 @@
 <script type="text/javascript">
-    LABKEY.requiresScript("/ehr/ehrAPI.js");
-</script>
-<script type="text/javascript">
 
 Ext.onReady(function(){
-
     var formType = LABKEY.ActionURL.getParameter('formtype');
     var formUUID = LABKEY.ActionURL.getParameter('taskid');
     var queryName = LABKEY.ActionURL.getParameter('queryName');
@@ -21,7 +17,7 @@ Ext.onReady(function(){
                 queryName: 'tasks',
                 filterArray: [LABKEY.Filter.create('taskid', formUUID, LABKEY.Filter.Types.EQUAL)],
                 scope: this,
-                successCallback: function(data){
+                success: function(data){
                     if(!data.rows.length){
                         alert('Must provide form type');
                         return;

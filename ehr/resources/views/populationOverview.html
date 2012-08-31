@@ -1,14 +1,12 @@
 <script type="text/javascript">
-    LABKEY.requiresScript("ehr/ehrAPI.js");
-    Ext.Ajax.timeout = 120000; //in milliseconds
-</script>
-<script type="text/javascript">
-    
-Ext.onReady(function(){
+
+Ext4.onReady(function(){
     var webpart = <%=webpartContext%>;
+    var queriesDivId = 'queries' + Ext4.id();
+
     var domSpec = [{
         style: 'padding-bottom: 20px;',
-        html: 'The purpose of this page is to provide an overview of the colony.  If you suggestions on reports or information that would be useful, please report them through the \'User Feedback\' menu above.'
+        html: 'The purpose of this page is to provide an overview of the colony.  It includes summaries of animals by species, graphs of population changes, and other .'
     },{
         tag: 'div',
         html: '<span class="loading-indicator">Loading...</span>',
@@ -72,93 +70,81 @@ Ext.onReady(function(){
                     tag: 'td',
                     cls: 'labkey-wp-body',
                     children: [{
-                        tag: 'ul',
-                        children: [{
-                            tag: 'li',
-                            html: '<a href="<%=contextPath%>/query<%=containerPath%>/executeQuery.view?schemaName=study&query.queryName=Colony Population By Age">Population By Age and Species</a>'
-                        }]
+                        tag: 'span',
+                        id: queriesDivId
                     }]
                 }]
             }]
         }]
     }]
 
-    var el = Ext.get(webpart.wrapperDivId);
-    Ext.DomHelper.append(el, domSpec);
+    var el = Ext4.get(webpart.wrapperDivId);
+    Ext4.DomHelper.append(el, domSpec);
 
-    new LABKEY.QueryWebPart({
-         title: 'Current Population Counts',
-         schemaName: 'study',
-         queryName: 'colonyPopulationSummary',
-         allowChooseQuery: false,
-         allowChooseView: false,
-         showInsertNewButton: false,
-         showDeleteButton: false,
-         showDetailsColumn: false,
-         showUpdateColumn: false,
-         buttonBarPosition: 'top',
-         failure: EHR.Utils.onError,
-         //successCallback: this.endMsg,
-         scope: this
-     }).render('colonyPopulationSummary_' + webpart.wrapperDivId);
-
-    var dateRange = Ext.extend(Ext.Panel, {
-        initComponent: function(config){
-
-            Ext.apply(this, {
-                bodyBorder: false,
-                border: false,
-                defaults: {
-                    border: false,
-                    bodyBorder: false
-                }
-            });
-
-            dateRange.superclass.initComponent.call(this);
-
-            this.datePanel = this.add(new EHR.ext.DateRangePanel());
-
-            this.add(new Ext.Button({
-                    text: 'Display Report'
-                    ,scope: this
-                    ,handler: this.displayReport
-                    ,type: 'submit'
-                    ,style: 'padding-bottom: 10px;'
-                })
-            );
-        },
-        displayReport: function(a,b){
-            if (!b){return false}
-
-            var target = document.getElementById('colonyPopulationChange_' + webpart.wrapperDivId);
-            target.innerHTML = '';
-            var loading = document.createElement('span');
-            loading.innerHTML = 'Loading...<p>';
-            loading.setAttribute('class', "loading-indicator");
-            target.appendChild(loading);
-            
-            var config = {
-                partName: 'Report',
-                renderTo: 'colonyPopulationChange_' + webpart.wrapperDivId,
-                partConfig: {
-                    title: 'Population Change',
-                    schemaName: 'study',
-                    showSection: 'barchart&tsvfile',
-                    reportId : 'module:ehr/schemas/study/colonyPopulationChange/Bar Chart.r',
-                    'query.queryName': 'colonyPopulationChange',
-                    'query.Id/dataset/demographics/species~neq': 'Unknown'
-                },
-                failure: EHR.Utils.onError
-            };
-
-            config.partConfig['query.param.StartDate'] = this.datePanel.startDateField.getValue();
-            config.partConfig['query.param.EndDate'] = this.datePanel.endDateField.getValue();
-
-            new LABKEY.WebPart(config).render();
-        }
+    Ext4.create('LDK.ext.NavPanel', {
+        renderTo: queriesDivId,
+        width: 450,
+        sections: [{
+            header: '',
+            items: [{
+                url: LABKEY.ActionURL.buildURL('query', 'executeQuery', null, {schemaName: 'study', 'query.queryName': 'Colony Population By Age'}),
+                name: 'Population By Age and Species'
+            }]
+        }]
     });
 
-    new dateRange().render('dateRange_' + webpart.wrapperDivId);
+    LDK.Utils.getReadOnlyQWP({
+        title: 'Current Population Counts',
+        schemaName: 'study',
+        queryName: 'colonyPopulationSummary',
+        allowChooseView: false,
+        frame: 'portal'
+    }).render('colonyPopulationSummary_' + webpart.wrapperDivId);
+
+
+    Ext4.create('Ext.panel.Panel', {
+        style: 'padding-bottom: 20px;',
+        bodyBorder: false,
+        border: false,
+        items: [{
+            xtype: 'ldk-daterangepanel'
+        },{
+            xtype: 'button',
+            text: 'Display Report',
+            handler: function(btn){
+                var target = document.getElementById('colonyPopulationChange_' + webpart.wrapperDivId);
+                target.innerHTML = '';
+                var loading = document.createElement('span');
+                loading.innerHTML = 'Loading...<p>';
+                loading.setAttribute('class', "loading-indicator");
+                target.appendChild(loading);
+
+                var config = {
+                    partName: 'Report',
+                    renderTo: 'colonyPopulationChange_' + webpart.wrapperDivId,
+                    //reportId : 'module:ehr/schemas/study/colonyPopulationChange/Bar Chart.r',
+                    reportName: 'Bar Chart',
+                    schemaName: 'study',
+                    queryName: 'colonyPopulationChange',
+                    title: 'Summary',
+                    reportProperties: {
+                        showSection: 'barchart&tsvfile&message',
+                        'query.Id/dataset/demographics/species~neq': 'Unknown'
+                    },
+                    webPartConfig: {
+                        frame: 'none'
+                    },
+                    failure: LDK.Utils.getErrorCallback({logToServer: true})
+                };
+
+                var panel = btn.up('panel');
+                config.reportProperties['query.param.StartDate'] = panel.down('#startDateField').getValue();
+                config.reportProperties['query.param.EndDate'] = panel.down('#endDateField').getValue();
+
+                LABKEY.WebPart.createReportWebpart(config).render();
+            }
+        }]
+    }).render('dateRange_' + webpart.wrapperDivId);
 });
 
 </script>

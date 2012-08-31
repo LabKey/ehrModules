@@ -19,7 +19,7 @@ ON (e.employeeid = u1.DisplayName)
 LEFT JOIN core.users u2
 ON (e.email = u2.email)
 
-LEFT JOIN "/WNPRC/WNPRC_Units/Animal_Services/Compliance_Training/Private/EmployeeDB/".core.users u3
+LEFT JOIN core.users u3
   ON (e.employeeid = u3.displayname)
 
 LEFT JOIN "/WNPRC/EHR/".core.users u4

@@ -18,9 +18,9 @@ sop.activeDate
 FROM ehr_compliancedb.employees e
 
 
-LEFT JOIN
+JOIN
 ( SELECT max(t.date) as LastRead, t.SOPID, t.EmployeeId from ehr_compliancedb.SOPdates t group by t.employeeid, t.sopid) T1
  ON (T1.employeeId = e.employeeId )
 
-LEFT JOIN "/WNPRC/WNPRC_Units/Animal_Services/Compliance_Training/Public/SOPs/".lists.SOPs sop
+LEFT JOIN lists.SOPs sop
  ON (T1.SOPID = sop.id)

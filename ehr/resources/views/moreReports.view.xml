@@ -1,5 +1,6 @@
 <view xmlns="http://labkey.org/data/xml/view" title="Additional Reports">
     <dependencies>
-        <dependency path="/ehr/ehr_api" />
+        <dependency path="ehr/ehr_api" />
+        <dependency path="LDK/LDKApi" />
     </dependencies>
 </view>

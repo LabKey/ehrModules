@@ -33,7 +33,7 @@ required
 
 from ehr_compliancedb.employees e
 
-cross join "/WNPRC/WNPRC_Units/Animal_Services/Compliance_Training/Public/SOPs/".lists.SOPs sop
+cross join lists.SOPs sop
 
 LEFT JOIN ehr_compliancedb.SOPbyCategory sc   ON (e.category = sc.category and sop.id = sc.sop_id)
 

@@ -1,10 +1,10 @@
 <script type="text/javascript">
-    LABKEY.requiresScript("/ehr/ehrDetailsPanel.js");
-</script>
-<script type="text/javascript">
 
-Ext.onReady(function (){
-    if (!LABKEY.ActionURL.getParameter('key')){alert('Must Provide Treatment ID'); return false;}
+Ext4.onReady(function (){
+    if (!LABKEY.ActionURL.getParameter('key')){
+        alert('Must Provide Treatment ID');
+        return false;
+    }
 
     var lsid = LABKEY.ActionURL.getParameter('key');
 
@@ -22,17 +22,16 @@ Ext.onReady(function (){
         id: 'treatmentHistory_' + webpart.wrapperDivId
     }]
 
-    var el = Ext.get(webpart.wrapperDivId);
-    Ext.DomHelper.append(el, domSpec);
+    var el = Ext4.get(webpart.wrapperDivId);
+    Ext4.DomHelper.append(el, domSpec);
 
     LABKEY.Query.selectRows({
         schemaName: 'study',
         queryName: 'Treatment Orders',
         scope: this,
         filterArray: [LABKEY.Filter.create('lsid', lsid, LABKEY.Filter.Types.EQUAL)],
-        successCallback: onSuccess
+        success: onSuccess
     });
-
 
     function onSuccess(data){
         if(!data || !data.rows.length){
@@ -41,12 +40,14 @@ Ext.onReady(function (){
         }
 
         var row = data.rows[0];
-        new EHR.ext.DetailsView({
-            schemaName: 'study',
-            queryName: 'Treatment Orders',
+        Ext4.create('LDK.ext.DetailsPanel', {
+            store: {
+                schemaName: 'study',
+                queryName: 'Treatment Orders',
+                filterArray: [LABKEY.Filter.create('lsid', lsid, LABKEY.Filter.Types.EQUAL)]
+            },
             title: 'Treatment Details:',
-            renderTo: 'treatmentDetails_' + webpart.wrapperDivId ,
-            filterArray: [LABKEY.Filter.create('lsid', lsid, LABKEY.Filter.Types.EQUAL)]
+            renderTo: 'treatmentDetails_' + webpart.wrapperDivId
         });
 
         new LABKEY.QueryWebPart({

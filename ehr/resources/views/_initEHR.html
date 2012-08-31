@@ -1,16 +1,7 @@
-<html>
-<head>
 <script type="text/javascript">
-
-/*!
- * Ext JS Library 3.2.1
- * Copyright(c) 2006-2010 Ext JS, Inc.
- * licensing@extjs.com
- * http://www.extjs.com/license
- */
-
-LABKEY.requiresScript("/ehr/ehrAPI.js");
-
+    LABKEY.requiresScript("/ehr/ehrAPI.js");
+</script>
+<script type="text/javascript">
 
 Ext.onReady(function(){
 
@@ -340,7 +331,6 @@ function btn4(){
 
         LABKEY.Query.insertRows(makeObject(config, data, fields));
     }
-
 
 function btn5(){
     pendingInserts++;
@@ -2901,10 +2891,6 @@ function btn7(){
 
         LABKEY.Query.insertRows(makeObject(config, data, fields));
     }
-
-
-
-
 
 function btn10(){
     pendingInserts++;
@@ -7716,7 +7702,6 @@ function btn13(){
         LABKEY.Query.insertRows(makeObject(config, data, fields));
     }
 
-
 function makeObject(config, data, fields){
     Ext.each(data, function(row){
         var record = {};
@@ -7748,7 +7733,6 @@ function onError(result){
         Ext.get('_init_ehr_success').update('Populate Complete');
     }
 }
-
 
 var panel = new Ext.Panel({
     renderTo: '_init_ehr',
@@ -7947,4 +7931,3 @@ This page will insert data into various EHR schema tables
 <div id="_init_ehr"></div>
 
 <div id="_init_ehr_success"></div>
-</html>
