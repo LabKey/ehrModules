@@ -1,1 +1,1 @@
-ALTER TABLE ehr_compliancedb.requirements DROP container;
+ALTER TABLE ehr_compliancedb.requirements DROP column container;
