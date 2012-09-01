@@ -1,18 +1,18 @@
 <customView xmlns="http://labkey.org/data/xml/queryCustomView">
     <columns>
-        <column name="employeeId"/>
-        <column name="employeeId/lastName">
+        <column name="employeeid"/>
+        <column name="employeeid/lastName">
             <properties>
                 <property name="columnTitle" value="Last Name"/>
             </properties>
         </column>
-        <column name="employeeId/firstName">
+        <column name="employeeid/firstName">
             <properties>
                 <property name="columnTitle" value="First Name"/>
             </properties>
         </column>
-        <column name="requirementName"/>
-        <column name="requirementName/Type">
+        <column name="requirementname"/>
+        <column name="requirementname/type">
             <properties>
                 <property name="columnTitle" value="Requirement Type"/>
             </properties>
@@ -22,12 +22,12 @@
         <column name="comment"/>
     </columns>
     <filters>
-        <filter column="employeeId/EndDate" operator="isblank"/>
+        <filter column="employeeid/enddate" operator="isblank"/>
     </filters>
     <sorts>
-        <sort column="employeeId/lastName" descending="false"/>
-        <sort column="employeeId/firstName" descending="false"/>
-        <sort column="requirementName" descending="false"/>
+        <sort column="employeeid/lastName" descending="false"/>
+        <sort column="employeeid/firstName" descending="false"/>
+        <sort column="requirementname" descending="false"/>
         <sort column="date" descending="true"/>
     </sorts>
 </customView>

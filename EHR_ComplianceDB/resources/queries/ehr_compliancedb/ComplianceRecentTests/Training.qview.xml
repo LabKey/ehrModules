@@ -1,23 +1,23 @@
 <customView xmlns="http://labkey.org/data/xml/queryCustomView">
     <columns>
         <column name="employeeId"/>
-        <column name="employeeid/lastName">
+        <column name="employeeId/lastName">
             <properties>
                 <property name="columnTitle" value="Last Name"/>
             </properties>
         </column>
-        <column name="employeeid/firstName">
+        <column name="employeeId/firstName">
             <properties>
                 <property name="columnTitle" value="First Name"/>
             </properties>
         </column>
-        <column name="employeeid/unit">
+        <column name="employeeId/unit">
             <properties>
                 <property name="columnTitle" value="Unit"/>
             </properties>
         </column>
-        <column name="RequirementName"/>
-        <column name="requirementName/Type">
+        <column name="requirementName"/>
+        <column name="requirementName/type">
             <properties>
                 <property name="columnTitle" value="Requirement Type"/>
             </properties>
@@ -27,9 +27,9 @@
         <column name="MonthsUntilRenewal"/>
     </columns>
     <sorts>
-        <sort column="employeeid/lastName" descending="false"/>
-        <sort column="employeeid/firstName" descending="false"/>
-        <sort column="requirementName/Type" descending="false"/>
-        <sort column="requirementName" descending="false"/>        
+        <sort column="employeeId/lastName" descending="false"/>
+        <sort column="employeeId/firstName" descending="false"/>
+        <sort column="requirementName/type" descending="false"/>
+        <sort column="requirementName" descending="false"/>
     </sorts>
 </customView>

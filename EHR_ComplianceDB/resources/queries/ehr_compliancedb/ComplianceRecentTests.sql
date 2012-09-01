@@ -13,7 +13,7 @@ SELECT
   age_in_months(T1.MostRecentDate, curdate()) AS TimeSinceTest,
 
   --we calculate the time until renewal
-  CONVERT(
+  CAST(
   CASE
     WHEN (T1.MostRecentDate IS NULL) THEN
       0
@@ -21,7 +21,7 @@ SELECT
       NULL
     ELSE
      (rn.expirePeriod - (age_in_months(T1.MostRecentDate, curdate())))
-  END, double)
+  END AS double)
   AS MonthsUntilRenewal,
 
 FROM ehr_compliancedb.Employees e

@@ -85,12 +85,29 @@
         <ns:isKeyField>true</ns:isKeyField>
         <ns:columnTitle>Employee Id</ns:columnTitle>
       </ns:column>
-      <ns:column columnName="lastname">
-        <ns:columnTitle>Last Name</ns:columnTitle>
+      <ns:column columnName="employeeid2" wrappedColumnName="employeeid">
+          <ns:columnTitle>Employee Id</ns:columnTitle>
+          <ns:isHidden>true</ns:isHidden>
       </ns:column>
-      <ns:column columnName="firstname">
+      <ns:column columnName="UsernameStatus" wrappedColumnName="employeeid">
+          <ns:columnTitle>Labkey User Status</ns:columnTitle>
+          <ns:isUnselectable>true</ns:isUnselectable>
+          <ns:isHidden>true</ns:isHidden>
+          <ns:fk>
+            <!--NOTE: on individual servers, this metadata can be overridden in the schema browser to point to a specific container-->
+            <ns:fkDbSchema>ehr_compliancedb</ns:fkDbSchema>
+            <ns:fkTable>EmployeeUsers</ns:fkTable>
+            <ns:fkColumnName>employeeid</ns:fkColumnName>
+        </ns:fk>
+      </ns:column>
+      <ns:column columnName="lastName">
+      <ns:columnTitle>Last Name</ns:columnTitle>
+          <ns:displayWidth>100</ns:displayWidth>
+      </ns:column>
+      <ns:column columnName="firstName">
         <ns:nullable>true</ns:nullable>
         <ns:columnTitle>First Name</ns:columnTitle>
+        <ns:displayWidth>100</ns:displayWidth>
       </ns:column>
       <ns:column columnName="email">
         <ns:nullable>true</ns:nullable>

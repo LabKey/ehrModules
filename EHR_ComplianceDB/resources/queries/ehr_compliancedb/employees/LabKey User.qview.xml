@@ -1,6 +1,6 @@
 <customView xmlns="http://labkey.org/data/xml/queryCustomView">
     <columns>
-        <column name="employeeId"/>
+        <column name="employeeid"/>
         <column name="lastName"/>
         <column name="firstName"/>
         <column name="email"/>
@@ -32,6 +32,6 @@
         <sort column="firstName" descending="false"/>
     </sorts>
     <filters>
-        <filter column="endDate" operator="isblank"/>
+        <filter column="enddate" operator="isblank"/>
     </filters>
 </customView>

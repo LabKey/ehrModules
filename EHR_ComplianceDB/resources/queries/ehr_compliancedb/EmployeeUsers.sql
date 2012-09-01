@@ -22,5 +22,4 @@ ON (e.email = u2.email)
 LEFT JOIN core.users u3
   ON (e.employeeid = u3.displayname)
 
-LEFT JOIN "/WNPRC/EHR/".core.users u4
-  ON (e.employeeid = u4.displayname)
+LEFT JOIN core.users u4 ON (e.employeeid = u4.displayname)
