@@ -58,13 +58,13 @@ WHERE
     --if this employee/test appears in the exemptions table, it's not required
     WHEN ee.RequirementName is not null
       THEN false
-    WHEN rn.Required IS TRUE
+    WHEN rn.Required = TRUE
       THEN TRUE
-    WHEN (e.Barrier IS TRUE AND rn.Access IS TRUE)
+    WHEN (e.Barrier = TRUE AND rn.Access = TRUE)
       THEN TRUE
-    WHEN (e.Animals IS TRUE AND rn.Animals IS TRUE)
+    WHEN (e.Animals = TRUE AND rn.Animals = TRUE)
       THEN TRUE
-    WHEN (e.Tissue IS TRUE AND rn.Tissues IS TRUE)
+    WHEN (e.Tissue = TRUE AND rn.Tissues = TRUE)
       THEN TRUE
     --if a requirement is mandatory for a given employee category/unit and this employee is one, it's required
     WHEN (rc.RequirementName IS NOT NULL)
@@ -74,7 +74,6 @@ WHERE
       THEN TRUE
     ELSE
       FALSE
-  END
-  IS TRUE
+  END = TRUE
 
   AND e.EndDate IS NULL
