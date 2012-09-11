@@ -1,3 +1,6 @@
-<view xmlns="http://labkey.org/data/xml/view"
-       title="SOPs">
+<view xmlns="http://labkey.org/data/xml/view">
+    <dependencies>
+        <dependency path="Ext4ClientApi"/>
+        <dependency path="LDK/NavPanel.js"/>
+    </dependencies>
 </view>
