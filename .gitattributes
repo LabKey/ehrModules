@@ -61,7 +61,6 @@ EHR_ComplianceDB/resources/views/Guest_SOP_submission.html -text
 EHR_ComplianceDB/resources/views/Guest_SOP_submission.view.xml -text
 EHR_ComplianceDB/resources/views/My_Requirements.html -text
 EHR_ComplianceDB/resources/views/My_Requirements.view.xml -text
-EHR_ComplianceDB/resources/views/SOPAdmin.view.xml -text
 EHR_ComplianceDB/resources/views/SOP_submission.html -text
 EHR_ComplianceDB/resources/views/SOP_submission.view.xml -text
 EHR_ComplianceDB/resources/views/SOPadmin.html -text
