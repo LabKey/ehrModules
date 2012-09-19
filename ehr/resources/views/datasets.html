@@ -4,8 +4,6 @@ Ext4.onReady(function () {
     var webpart = <%=webpartContext%>;
     var config = {displayField: 'Label', headerField: 'categoryId/label', target: webpart.wrapperDivId};
 
-    var multi = new LABKEY.MultiRequest();
-
     EHR.Security.init({
         success: function(){
             LABKEY.Query.selectRows({
