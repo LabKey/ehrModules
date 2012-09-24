@@ -1195,20 +1195,20 @@ EHR.ext.ImportPanel.Buttons = {
                             xtype: 'labkey-store',
                             schemaName: 'core',
                             queryName: 'PrincipalsWithoutAdmin',
-                            columns: 'userid,name',
-                            sort: 'type,name',
+                            columns: 'UserId,DisplayName',
+                            sort: 'Type,DisplayName',
                             autoLoad: true,
                             listeners: {
                                 //scope: this,
                                 load: function(s){
-                                    var recIdx = s.find('name', (o.ownerCt.ownerCt.reviewRequiredRecipient || 'dataentry (LDAP)'));
+                                    var recIdx = s.find('DisplayName', (o.ownerCt.ownerCt.reviewRequiredRecipient || 'dataentry (LDAP)'));
                                     if(recIdx!=-1){
                                         theWindow.theForm.assignedTo.setValue(s.getAt(recIdx).get('UserId'));
                                     }
                                 }
                             }
                         }),
-                        displayField: 'name',
+                        displayField: 'DisplayName',
                         valueField: 'UserId',
                         ref: 'assignedTo'
                     }]

@@ -15,6 +15,6 @@
  */
 
 --NOTE: this is created to use for lookups.  The Administrators group causes problems for combos and lookups
-SELECT * FROM core.principals
+SELECT * FROM core.UsersAndGroups
 WHERE userid > 0
 --WHERE name != 'Administrators' AND name != 'Guests' AND name != 'Users' AND name != 'Developers'

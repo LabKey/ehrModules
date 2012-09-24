@@ -3,9 +3,9 @@
         <tables xmlns="http://labkey.org/data/xml">
             <table tableName="PrincipalsWithoutAdmin" tableDbType="NOT_IN_DB">
                 <!--<tableUrl>/EHR/cageDetails.view?room=${room}&amp;cage=${cage}</tableUrl>-->
-                <titleColumn>name</titleColumn>
+                <titleColumn>DisplayName</titleColumn>
                 <columns>
-                    <column columnName="name">
+                    <column columnName="DisplayName">
                         <isDisplayColumn>true</isDisplayColumn>
                     </column>
                 </columns>

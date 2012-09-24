@@ -576,7 +576,7 @@ EHR.Metadata.Sources.Standard = {
                     return val || LABKEY.Security.currentUser.id
                 },
                 lookup: {
-                    sort: 'type,name'
+                    sort: 'type,displayname'
                 },
                 editorConfig: {listWidth: 200}
             },

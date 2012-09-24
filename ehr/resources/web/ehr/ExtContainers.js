@@ -2415,7 +2415,7 @@ EHR.ext.SaveTemplatePanel = Ext.extend(Ext.Window, {
                     }
                 },{
                     xtype: 'combo',
-                    displayField: 'name',
+                    displayField: 'DisplayName',
                     valueField: 'UserId',
                     triggerAction: 'all',
                     mode: 'local',
@@ -2425,8 +2425,8 @@ EHR.ext.SaveTemplatePanel = Ext.extend(Ext.Window, {
                     store: new LABKEY.ext.Store({
                         schemaName: 'core',
                         queryName: 'PrincipalsWithoutAdmin',
-                        columns: 'userid,name',
-                        sort: 'type,name',
+                        columns: 'UserId,DisplayName',
+                        sort: 'Type,DisplayName',
                         autoLoad: true
                     }),
                     ref: '../templateUser'
