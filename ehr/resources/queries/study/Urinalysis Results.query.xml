@@ -21,6 +21,7 @@
                         <!--</fk>-->
                     </column>
                     <column columnName="units">
+                        <columnTitle>Units</columnTitle>
                         <displayWidth>60</displayWidth>
                     </column>
                     <column columnName="RefRange" wrappedColumnName="lsid">

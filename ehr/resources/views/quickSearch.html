@@ -217,7 +217,7 @@ function makePanel(){
                             'query'
                             ,'executeQuery'
                             ,ctx['EHRStudyContainer']
-                            ,{'schemaName':'study', 'query.queryName':'Demographics', 'query.Id/curLocation/Room~eq': value, 'query.viewName': 'Alive, at Center'});
+                            ,{'schemaName':'study', 'query.queryName':'Demographics', 'query.Id/curLocation/Room/room~eq': value, 'query.viewName': 'Alive, at Center'});
 
                     },
                     scope: this

@@ -66,6 +66,12 @@
                         <fkColumnName>method</fkColumnName>
                       </fk>
                     </column>
+                    <column columnName="qualResult">
+                        <columnTitle>Qualitative Result</columnTitle>
+                    </column>
+                    <column columnName="units">
+                        <columnTitle>Units</columnTitle>
+                    </column>
                 </columns>
             </table>
         </tables>

@@ -383,9 +383,9 @@ public class ColonyAlertsNotification extends AbstractNotification
         //we find living animals without an active housing record
         Sort sort = new Sort(_ehrStudy.getSubjectColumnName());
         SimpleFilter filter = new SimpleFilter(FieldKey.fromString("calculated_status"), "Alive");
-        filter.addCondition(FieldKey.fromString("Id/curLocation/room"), null, CompareType.ISBLANK);
+        filter.addCondition(FieldKey.fromString("Id/curLocation/room/room"), null, CompareType.ISBLANK);
         TableSelector ts = new TableSelector(_studySchema.getTable("Demographics"), Table.ALL_COLUMNS, filter, sort);
-
+        exampleData:
         if (ts.getRowCount() > 0)
         {
 	        msg.append("<b>WARNING: There are " + ts.getRowCount() + " living animals without an active housing record:</b><br>\n");
@@ -397,7 +397,7 @@ public class ColonyAlertsNotification extends AbstractNotification
                 }
             });
 
-            msg.append("<p><a href='" + _baseUrl + "/executeQuery.view?schemaName=study&query.queryName=Demographics&query.Id/curLocation/room~isblank&query.Id/Dataset/Demographics/calculated_status~eq=Alive'>Click here to view them</a><br>\n\n");
+            msg.append("<p><a href='" + _baseUrl + "/executeQuery.view?schemaName=study&query.queryName=Demographics&query.Id/curLocation/room/room~isblank&query.Id/Dataset/Demographics/calculated_status~eq=Alive'>Click here to view them</a><br>\n\n");
             msg.append("<hr>\n\n");
         }
     }

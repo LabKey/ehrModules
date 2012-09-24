@@ -21,10 +21,6 @@ function onUpsert(context, errors, row, oldRow){
 
 }
 
-function onETL(row, errors){
-    EHR.ETL.remarkToSoap(row, errors);
-}
-
 function setDescription(row, errors){
     //we need to set description for every field
     var description = new Array();

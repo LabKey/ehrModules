@@ -15,7 +15,9 @@
  */
 package org.labkey.ehr.utils;
 
-import org.apache.commons.lang3.StringUtils;
+import org.apache.log4j.Logger;
+import org.json.JSONArray;
+import org.labkey.api.cache.CacheManager;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.ContainerManager;
 import org.labkey.api.data.DbSchema;
@@ -24,19 +26,33 @@ import org.labkey.api.data.SQLFragment;
 import org.labkey.api.data.SimpleFilter;
 import org.labkey.api.data.Table;
 import org.labkey.api.data.TableInfo;
+import org.labkey.api.ehr.EHRService;
 import org.labkey.api.query.FieldKey;
 import org.labkey.api.query.QueryService;
+import org.labkey.api.resource.Resource;
+import org.labkey.api.security.SecurableResource;
+import org.labkey.api.security.SecurityManager;
+import org.labkey.api.security.SecurityPolicy;
+import org.labkey.api.security.SecurityPolicyManager;
 import org.labkey.api.security.User;
 import org.labkey.api.security.UserManager;
 import org.labkey.api.security.permissions.DeletePermission;
+import org.labkey.api.security.permissions.InsertPermission;
+import org.labkey.api.security.permissions.Permission;
+import org.labkey.api.security.permissions.UpdatePermission;
 import org.labkey.api.study.DataSet;
 import org.labkey.api.study.Study;
 import org.labkey.api.study.StudyService;
 import org.labkey.api.view.UnauthorizedException;
+import org.labkey.ehr.security.EHRCompletedAdminPermission;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -47,26 +63,65 @@ import java.util.List;
  */
 public class TriggerScriptHelper
 {
-    private TriggerScriptHelper _instance =  new TriggerScriptHelper();
+    private static String QCSTATE_CACHE_ID = "qcstates";
 
-    private TriggerScriptHelper()
+    private String _containerId;
+    private int _userId;
+    private String _studyId;
+
+    private static Logger _log = Logger.getLogger(TriggerScriptHelper.class);
+
+    private TriggerScriptHelper(int userId, String containerId)
     {
+        User user = getUser();
+        if (user == null)
+            throw new RuntimeException("User does not exist: " + userId);
 
+        Container container = ContainerManager.getForId(containerId);
+        if (container == null)
+            throw new RuntimeException("Container does not exist: " + containerId);
+
+        Study study = getStudy();
+        if (study == null)
+            throw new RuntimeException("No study found in container: " + containerId);
     }
 
-    public TriggerScriptHelper getInstance()
+    private User getUser()
     {
-        return _instance;
+        return UserManager.getUser(_userId);
     }
 
-    public static boolean closeActiveDatasetRecords(String c, int userId, List<String> queryNames, List<String> ids, Date enddate)
+    private Container getContainer()
+    {
+        return ContainerManager.getForId(_containerId);
+    }
+
+    private Study getStudy()
+    {
+        return StudyService.get().getStudy(getContainer());
+    }
+
+    private static String getCacheKey(int userId, String containerId)
+    {
+        return TriggerScriptHelper.class.getName() + "|" + containerId + "|" + userId;
+    }
+
+    public static TriggerScriptHelper getForContainer(int userId, String containerId)
+    {
+        TriggerScriptHelper helper = (TriggerScriptHelper)CacheManager.getSharedCache().get(getCacheKey(userId, containerId));
+        if (helper != null)
+        {
+            return helper;
+        }
+
+        helper = new TriggerScriptHelper(userId, containerId);
+        CacheManager.getSharedCache().put(getCacheKey(userId, containerId), helper);
+        return helper;
+    }
+
+    public static boolean closeActiveDatasetRecords(String c, int userId, List<String> queryNames, String id, Date enddate)
     {
         boolean success = false;
-
-        if(ids == null || ids.size() == 0)
-        {
-            return false;
-        }
 
         Container container = ContainerManager.getForId(c);
         if(container == null)
@@ -75,7 +130,7 @@ public class TriggerScriptHelper
             throw new RuntimeException("Non existent container: " + c);
         }
 
-        User user = (User)org.labkey.api.security.SecurityManager.getPrincipal(userId);
+        User user = (User)SecurityManager.getPrincipal(userId);
         if(user == null)
         {
             throw new RuntimeException("Non existent user: " + userId);
@@ -99,7 +154,7 @@ public class TriggerScriptHelper
             try
             {
                 TableInfo ti = dataset.getTableInfo(user);
-                SQLFragment sql = new SQLFragment("UPDATE " + ti.getSchema().getName() + "." + ti.getSelectName() + " SET enddate = ? WHERE id IN (?) AND enddate IS NULL", enddate, StringUtils.join(ids, "','"));
+                SQLFragment sql = new SQLFragment("UPDATE " + ti.getSchema().getName() + "." + ti.getSelectName() + " SET enddate = ? WHERE id = ? AND enddate IS NULL", enddate, id);
                 Table.execute(ti.getSchema(), sql);
             }
             catch (SQLException e)
@@ -108,6 +163,133 @@ public class TriggerScriptHelper
             }
         }
         return success;
+    }
+
+    public static List<String> getScriptsToLoad()
+    {
+        List<String> scripts = new ArrayList<String>();
+        for (Resource script : EHRService.get().getExtraTriggerScripts())
+        {
+            scripts.add(script.getPath().toString());
+        }
+
+        return scripts;
+    }
+
+    public boolean hasPermission(String schemaName, String queryName, String eventName, String originalQCState, String targetQCState)
+    {
+        EVENT_TYPE event = EVENT_TYPE.valueOf(eventName);
+        Map<String, EHRQCState> qcStates = getQCStateInfo();
+
+        SecurableResource sr = getSecurableResource(schemaName, queryName);
+        EHRQCState targetQC = qcStates.get(targetQCState);
+        if (targetQC == null)
+            return false;
+        EHRQCState originalQC = null;
+        if (originalQCState != null)
+        {
+            originalQC = qcStates.get(originalQCState);
+            if (originalQC == null)
+                return false;
+        }
+
+        //NOTE: currently we only test per-table permissions on study
+        if (sr == null)
+            return true;
+
+        if (event.equals(EVENT_TYPE.update))
+        {
+            //test update on oldQC, plus insert on new QC
+            if (originalQCState != null)
+            {
+                if (!testPermission(sr, UpdatePermission.class, originalQC))
+                    return false;
+            }
+
+            //we only need to test insert if the new QCState is different from the old one
+            if (!targetQCState.equals(originalQCState))
+            {
+                if (!testPermission(sr, InsertPermission.class, targetQC))
+                    return false;
+            }
+        }
+        else
+        {
+            if (!testPermission(sr, event.perm, targetQC))
+                return false;
+        }
+
+        return true;
+    }
+
+    public String getQCStateJson()
+    {
+        Map<String, EHRQCState> qcStates = getQCStateInfo();
+
+        JSONArray json = new JSONArray();
+        for (EHRQCState qc : qcStates.values())
+        {
+            json.put(qc.toJson());
+        }
+        return json.toString();
+    }
+
+    public EHRQCState getQCStateForRowId(int rowId)
+    {
+        Map<String, EHRQCState> qcStates = getQCStateInfo();
+
+        for (EHRQCState qc : qcStates.values())
+        {
+            if (qc.getRowId() == rowId)
+                return qc;
+
+        }
+        return null;
+    }
+
+    public EHRQCState getQCStateForLabel(String label)
+    {
+        Map<String, EHRQCState> qcStates = getQCStateInfo();
+
+        if (qcStates.containsKey(label))
+            return qcStates.get(label);
+        else
+            return null;
+    }
+
+    private boolean testPermission (SecurableResource resource, Class<? extends Permission> perm, EHRQCState qcState)
+    {
+        Collection<Class<? extends Permission>> permissions;
+        String className = getPermissionClassName(perm, qcState);
+
+        //NOTE: See getResourceProps() in SecurityApiActions for notes on this hack
+        if (resource instanceof DataSet)
+        {
+            DataSet ds = (DataSet)resource;
+            permissions = ds.getPermissions(getUser());
+        }
+        else
+        {
+            SecurityPolicy policy = SecurityPolicyManager.getPolicy(resource);
+            permissions = policy.getPermissions(getUser());
+        }
+
+        for (Class<? extends Permission> p : permissions)
+        {
+            if (p.getName().equals(className))
+                return true;
+        }
+
+        return false;
+    }
+
+    private String getPermissionClassName(Class<? extends Permission> perm, EHRQCState qc)
+    {
+        //TODO: this is a little ugly
+        String permString = perm.getCanonicalName().replaceAll(perm.getPackage().getName() + "\\.", "");
+        String qcString = qc.getLabel().replaceAll("[^a-zA-Z0-9-]", "");
+        String prefix = EHRCompletedAdminPermission.class.getPackage().getName() + ".EHR";
+        return prefix + qcString + permString;
     }
 
     public static void cascadeDelete(int userId, String containerId, String schemaName, String queryName, String keyField, Object keyValue) throws SQLException
@@ -149,24 +331,34 @@ public class TriggerScriptHelper
         Table.delete(table, filter);
     }
 
-//    private static enum EVENT_TYPE {
-//        insert(),
-//        update(),
-//        delete();
-//
-//        EVENT_TYPE()
-//        {
-//
-//        }
-//    }
-//
-//    public static boolean hasPermission(int userId, String containerId, String event, String targetQCLabel, @Nullable String originalQCLabel)
-//    {
-//
-//
-//        return true;
-//    }
-//
+    private static enum EVENT_TYPE {
+        insert(InsertPermission.class),
+        update(UpdatePermission.class),
+        delete(DeletePermission.class);
+
+        EVENT_TYPE(Class<? extends Permission> perm)
+        {
+            this.perm = perm;
+        }
+
+        public Class<? extends Permission> perm;
+    }
+
+    private SecurableResource getSecurableResource(String schemaName, String queryName)
+    {
+        if ("study".equalsIgnoreCase(schemaName))
+        {
+            for (SecurableResource sr : getStudy().getChildResources(getUser()))
+            {
+                if (sr.getResourceName().equals(queryName))
+                {
+                    return sr;
+                }
+            }
+        }
+        return null;
+    }
+
 //    private void sendMessage()
 //    {
 //        //to send email: see SendMessageAction implementation
@@ -182,4 +374,43 @@ public class TriggerScriptHelper
 //            //do something
 //        }
 //    }
+
+    private Map<String, EHRQCState> getQCStateInfo()
+    {
+        String cacheKey = getCacheKey(getStudy(), QCSTATE_CACHE_ID);
+        Map<String, EHRQCState> qcStates = (Map<String, EHRQCState>)CacheManager.getSharedCache().get(cacheKey);
+        if (qcStates != null)
+            return qcStates;
+
+        try
+        {
+            qcStates = new HashMap<String, EHRQCState>();
+            SQLFragment sql = new SQLFragment("SELECT * FROM study.qcstate qc LEFT JOIN ehr.qcstatemetadata md ON (qc.label = md.QCStateLabel) WHERE qc.container = ?", getContainer().getEntityId());
+            DbSchema db = DbSchema.get("study");
+            EHRQCState[] qcs = Table.executeQuery(db, sql, EHRQCState.class);
+            for (EHRQCState qc : qcs)
+            {
+                qcStates.put(qc.getLabel(), qc);
+            }
+
+            CacheManager.getSharedCache().put(getCacheKey(getStudy(), QCSTATE_CACHE_ID), qcStates);
+            return qcStates;
+        }
+        catch (SQLException e)
+        {
+            throw new RuntimeSQLException(e);
+        }
+    }
+
+    private FormContext getFormContext(String formName)
+    {
+        //TODO: caching
+
+        return new FormContext(formName);
+    }
+
+    private String getCacheKey(Study s, String suffix)
+    {
+        return getClass().getName() + "||" + s.getEntityId() + "||" + suffix;
+    }
 }

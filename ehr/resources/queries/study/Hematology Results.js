@@ -10,12 +10,6 @@ function onInit(event, context){
     context.extraContext.removeTimeFromDate = true;
 }
 
-function onETL(row, errors){
-    if(row.stringResults){
-        EHR.ETL.fixChemValue(row, errors);
-    }
-}
-
 function setDescription(row, errors){
     //we need to set description for every field
     var description = new Array();

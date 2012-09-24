@@ -28,6 +28,9 @@
                             <fkColumnName>Code</fkColumnName>
                         </fk>
                     </column>
+                    <column columnName="authorize">
+                        <columnTitle>Authorized By</columnTitle>
+                    </column>
                 </columns>
             </table>
         </tables>

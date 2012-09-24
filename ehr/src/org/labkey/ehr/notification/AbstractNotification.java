@@ -73,13 +73,11 @@ abstract public class AbstractNotification implements Notification, Runnable
     protected Study _ehrStudy;
     protected String _baseUrl;
 
-
     protected final static SimpleDateFormat _dateTimeFormat = new SimpleDateFormat("yyyy-MM-dd kk:mm");
     protected final static SimpleDateFormat _dateFormat = new SimpleDateFormat("yyyy-MM-dd");
     protected final static SimpleDateFormat _timeFormat = new SimpleDateFormat("kk:mm");
     protected NotificationService _ns = NotificationService.get();
     protected List<ScheduledFuture> _futureTasks = new ArrayList<ScheduledFuture>();
-    protected int _startDelay = 0;//(1000 * 5); //5 minutes
 
     //NOTE: do not attempt to cache these between runs in case a setting changes
     protected void init()
@@ -108,7 +106,7 @@ abstract public class AbstractNotification implements Notification, Runnable
             throw new ConfigurationException("Unable to find schema for ehr in container: " + _ehrContainer.getPath());
     }
 
-    public synchronized void start()
+    public synchronized void start(int delay)
     {
         if (!isActive())
         {
@@ -123,7 +121,7 @@ abstract public class AbstractNotification implements Notification, Runnable
         }
 
         log.info("Scheduling notification " + getName() + " to run with schedule: " + getScheduleDescription());
-        _futureTasks = schedule(_startDelay);
+        _futureTasks = schedule(delay);
     }
 
     public void stop()

@@ -517,6 +517,7 @@
       <ns:column columnName="area">
         <ns:isKeyField>true</ns:isKeyField>
       </ns:column>
+      <ns:column columnName="description"/>
     </ns:columns>
   </ns:table>
   <ns:table tableName="bacteriology_sensitivity" tableDbType="TABLE">
@@ -799,7 +800,7 @@
       </ns:column>
     </ns:columns>
   </ns:table>
-  <ns:table tableName="origin_codes" tableDbType="TABLE">
+  <ns:table tableName="source" tableDbType="TABLE">
     <ns:importUrl></ns:importUrl>
     <ns:insertUrl></ns:insertUrl>
     <ns:updateUrl></ns:updateUrl>
@@ -813,6 +814,15 @@
       </ns:column>
       <ns:column columnName="meaning">
         <ns:nullable>true</ns:nullable>
+      </ns:column>
+      <ns:column columnName="SourceCity">
+          <ns:nullable>true</ns:nullable>
+      </ns:column>
+      <ns:column columnName="SourceState">
+          <ns:nullable>true</ns:nullable>
+      </ns:column>
+      <ns:column columnName="SourceCountry">
+          <ns:nullable>true</ns:nullable>
       </ns:column>
     </ns:columns>
   </ns:table>
@@ -974,7 +984,7 @@
     <ns:insertUrl></ns:insertUrl>
     <ns:updateUrl></ns:updateUrl>
     <ns:deleteUrl></ns:deleteUrl>
-    <ns:pkColumnName>type</ns:pkColumnName>
+    <ns:pkColumnName>code</ns:pkColumnName>
     <ns:columns>
       <ns:column columnName="type">
         <ns:isKeyField>true</ns:isKeyField>
@@ -2289,5 +2299,22 @@
           <ns:isHidden>true</ns:isHidden>
         </ns:column>
       </ns:columns>
+    </ns:table>
+    <ns:table tableName="project_types" tableDbType="TABLE">
+        <ns:columns>
+            <ns:column columnName="type"/>
+            <ns:column columnName="multiplier"/>
+        </ns:columns>
+    </ns:table>
+    <ns:table tableName="usda_levels" tableDbType="TABLE">
+        <ns:columns>
+            <ns:column columnName="usda_level"/>
+        </ns:columns>
+    </ns:table>
+    <ns:table tableName="birth_condition" tableDbType="TABLE">
+        <ns:columns>
+            <ns:column columnName="rowid"/>
+            <ns:column columnName="meaning"/>
+        </ns:columns>
     </ns:table>
 </ns:tables>

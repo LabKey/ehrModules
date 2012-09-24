@@ -17,6 +17,15 @@
                           <!--<fkColumnName>objectid</fkColumnName>-->
                         <!--</fk>-->
                     </column>
+                    <column columnName="heartRate">
+                        <columnTitle>Heart Rate</columnTitle>
+                    </column>
+                    <column columnName="respRate">
+                        <columnTitle>Resp Rate</columnTitle>
+                    </column>
+                    <column columnName="temp">
+                        <columnTitle>Temperature</columnTitle>
+                    </column>
                 </columns>
             </table>
         </tables>

@@ -33,6 +33,7 @@ Ext4.onReady(function (){
             filterArray: [LABKEY.Filter.create('objectid', LABKEY.ActionURL.getParameter('objectid'), LABKEY.Filter.Types.EQUAL)]
         },
         title: 'Encounter Details',
+        showBackBtn: false,
         renderTo: 'encounterDetails_' + webpart.wrapperDivId
     });
 

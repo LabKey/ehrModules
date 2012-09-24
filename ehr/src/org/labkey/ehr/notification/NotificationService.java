@@ -132,7 +132,7 @@ public class NotificationService
         }
     }
 
-    public synchronized void start()
+    public synchronized void start(int delay)
     {
         log.info("Trying to initialize EHR Notification Service");
 
@@ -160,7 +160,7 @@ public class NotificationService
 
         for (Notification n : _notifications)
         {
-            n.start();
+            n.start(delay);
         }
     }
 
@@ -285,7 +285,7 @@ public class NotificationService
         {
             _enabled = enabled;
             if (enabled)
-                start();
+                start(0);
             else
                 stop();
         }

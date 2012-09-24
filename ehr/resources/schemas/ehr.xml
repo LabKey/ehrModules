@@ -935,6 +935,34 @@
                 <ns:nullable>true</ns:nullable>
             </ns:column>
             <ns:column columnName="approve">
+                <ns:columnTitle>Approval Date</ns:columnTitle>
+                <ns:nullable>true</ns:nullable>
+            </ns:column>
+            <ns:column columnName="enddate">
+                <ns:columnTitle>End Date</ns:columnTitle>
+                <ns:nullable>true</ns:nullable>
+            </ns:column>
+            <ns:column columnName="title">
+                <ns:nullable>true</ns:nullable>
+            </ns:column>
+            <ns:column columnName="project_type">
+                <ns:columnTitle>Type</ns:columnTitle>
+                <ns:nullable>true</ns:nullable>
+            </ns:column>
+            <ns:column columnName="external_id">
+                <ns:columnTitle>External Id</ns:columnTitle>
+                <ns:nullable>true</ns:nullable>
+            </ns:column>
+            <ns:column columnName="ibc_approval_required">
+                <ns:columnTitle>IBC Approval Required?</ns:columnTitle>
+                <ns:nullable>true</ns:nullable>
+            </ns:column>
+            <ns:column columnName="ibc_approval_num">
+                <ns:columnTitle>IBC Approval Number</ns:columnTitle>
+                <ns:nullable>true</ns:nullable>
+            </ns:column>
+            <ns:column columnName="usda_level">
+                <ns:columnTitle>USDA Level</ns:columnTitle>
                 <ns:nullable>true</ns:nullable>
             </ns:column>
             <ns:column columnName="description">
@@ -1002,9 +1030,6 @@
                 <ns:nullable>true</ns:nullable>
             </ns:column>
             <ns:column columnName="reqname">
-                <ns:nullable>true</ns:nullable>
-            </ns:column>
-            <ns:column columnName="requestid">
                 <ns:nullable>true</ns:nullable>
             </ns:column>
             <ns:column columnName="qcstate">
@@ -1586,6 +1611,27 @@
             <ns:column columnName="datecreated"/>
             <ns:column columnName="datedisabled"/>
             <ns:column columnName="division"/>
+            <ns:column columnName="createdby"/>
+            <ns:column columnName="created"/>
+            <ns:column columnName="modifiedby"/>
+            <ns:column columnName="modified"/>
+        </ns:columns>
+    </ns:table>
+    <ns:table tableName="encounter_participants" tableDbType="TABLE">
+        <ns:columns>
+            <ns:column columnName="rowid"/>
+            <ns:column columnName="userid">
+                <ns:columnTitle>User Id</ns:columnTitle>
+            </ns:column>
+            <ns:column columnName="username">
+            <ns:columnTitle>User Id</ns:columnTitle>
+                </ns:column>
+            <ns:column columnName="role"/>
+            <ns:column columnName="procedure_id">
+                <ns:columnTitle>Procedure Id</ns:columnTitle>
+            </ns:column>
+            <ns:column columnName="comment"/>
+            <ns:column columnName="container"/>
             <ns:column columnName="createdby"/>
             <ns:column columnName="created"/>
             <ns:column columnName="modifiedby"/>

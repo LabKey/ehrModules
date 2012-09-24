@@ -214,6 +214,7 @@ ehr/resources/queries/ehr_lookups/AbnormalCages.sql -text
 ehr/resources/queries/ehr_lookups/ageclass.query.xml -text
 ehr/resources/queries/ehr_lookups/alopecia_score.query.xml -text
 ehr/resources/queries/ehr_lookups/arearooms.query.xml -text
+ehr/resources/queries/ehr_lookups/areas/.qview.xml -text
 ehr/resources/queries/ehr_lookups/cage.js -text
 ehr/resources/queries/ehr_lookups/cage.query.xml -text
 ehr/resources/queries/ehr_lookups/cages.query.xml -text
@@ -259,6 +260,7 @@ ehr/resources/queries/study/AgeAtTime.sql -text
 ehr/resources/queries/study/Alopecia.js -text
 ehr/resources/queries/study/Alopecia.query.xml -text
 ehr/resources/queries/study/Alopecia/.qview.xml -text
+ehr/resources/queries/study/AntibioticSensitivity.js -text
 ehr/resources/queries/study/Arrival.js -text
 ehr/resources/queries/study/Arrival.query.xml -text
 ehr/resources/queries/study/Arrival/.qview.xml -text
@@ -303,6 +305,8 @@ ehr/resources/queries/study/CageReview.sql -text
 ehr/resources/queries/study/CageReview/.qview.xml -text
 ehr/resources/queries/study/CageReview/Problem[!!-~]Cages.qview.xml -text
 ehr/resources/queries/study/CageReview_old.sql -text
+ehr/resources/queries/study/Cases.js -text
+ehr/resources/queries/study/Cases.query.xml -text
 ehr/resources/queries/study/Charges.js -text
 ehr/resources/queries/study/Charges.query.xml -text
 ehr/resources/queries/study/Charges/.qview.xml -text
@@ -356,6 +360,7 @@ ehr/resources/queries/study/Dental[!!-~]Status/.qview.xml -text
 ehr/resources/queries/study/Departure.js -text
 ehr/resources/queries/study/Departure.query.xml -text
 ehr/resources/queries/study/Departure/.qview.xml -text
+ehr/resources/queries/study/Diet.js -text
 ehr/resources/queries/study/Drug[!!-~]Administration.js -text
 ehr/resources/queries/study/Drug[!!-~]Administration.query.xml -text
 ehr/resources/queries/study/Drug[!!-~]Administration/.qview.xml -text
@@ -403,6 +408,8 @@ ehr/resources/queries/study/Irregular[!!-~]Observations.query.xml -text
 ehr/resources/queries/study/Irregular[!!-~]Observations/.qview.xml -text
 ehr/resources/queries/study/Irregular[!!-~]Observations/Irregular[!!-~]Obs.qview.xml -text
 ehr/resources/queries/study/Irregular[!!-~]Observations/Today[!!-~]Only.qview.xml -text
+ehr/resources/queries/study/Matings.js -text
+ehr/resources/queries/study/Measurements.js -text
 ehr/resources/queries/study/Menses.js -text
 ehr/resources/queries/study/Menses.query.xml -text
 ehr/resources/queries/study/Morphologic[!!-~]Diagnosis.js -text
@@ -786,11 +793,14 @@ ehr/resources/schemas/dbscripts/postgresql/EHR-11.10-11.20.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR-11.20-11.30.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR-11.30-12.10.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR-12.21-12.22.sql -text
+ehr/resources/schemas/dbscripts/postgresql/EHR-12.22-12.23.sql -text
+ehr/resources/schemas/dbscripts/postgresql/EHR-12.23-12.24.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-11.10-11.20.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-11.20-11.30.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-11.30-12.10.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-12.20-12.21.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-12.21-12.22.sql -text
+ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-12.22-12.23.sql -text
 ehr/resources/schemas/dbscripts/postgresql/obsolete/EHR-11.10-11.101.sql -text
 ehr/resources/schemas/dbscripts/postgresql/obsolete/EHR-11.101-11.102.sql -text
 ehr/resources/schemas/dbscripts/postgresql/obsolete/EHR-11.102-11.105.sql -text
@@ -879,9 +889,12 @@ ehr/resources/schemas/dbscripts/postgresql/obsolete/EHR_Lookups-11.37-11.38.sql 
 ehr/resources/schemas/dbscripts/sqlserver/EHR-11.10-11.20.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/EHR-11.30-12.10.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/EHR-12.21-12.22.sql -text
+ehr/resources/schemas/dbscripts/sqlserver/EHR-12.22-12.23.sql -text
+ehr/resources/schemas/dbscripts/sqlserver/EHR-12.23-12.24.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/EHR_Lookups-11.30-12.10.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/EHR_Lookups-12.20-12.21.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/EHR_Lookups-12.21-12.22.sql -text
+ehr/resources/schemas/dbscripts/sqlserver/EHR_Lookups-12.22-12.23.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/obsolete/EHR-11.34-11.35.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/obsolete/EHR-11.36-11.37.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/obsolete/EHR_Lookups-11.34-11.35.sql -text
@@ -889,7 +902,6 @@ ehr/resources/schemas/dbscripts/sqlserver/obsolete/EHR_Lookups-11.36-11.37.sql -
 ehr/resources/schemas/dbscripts/sqlserver/obsolete/EHR_Lookups-11.37-11.38.sql -text
 ehr/resources/schemas/ehr.xml -text
 ehr/resources/schemas/ehr_lookups.xml -text
-ehr/resources/scripts/ehr/etl.js -text
 ehr/resources/scripts/ehr/security.js -text
 ehr/resources/scripts/ehr/triggers.js -text
 ehr/resources/scripts/ehr/utils.js -text
@@ -1012,6 +1024,7 @@ ehr/src/org/labkey/ehr/EHRManager.java -text
 ehr/src/org/labkey/ehr/EHRModule.java -text
 ehr/src/org/labkey/ehr/EHRProperties.java -text
 ehr/src/org/labkey/ehr/EHRSchema.java -text
+ehr/src/org/labkey/ehr/EHRServiceImpl.java -text
 ehr/src/org/labkey/ehr/notification/AbnormalLabResultsNotification.java -text
 ehr/src/org/labkey/ehr/notification/AbstractNotification.java -text
 ehr/src/org/labkey/ehr/notification/AdminAlertsNotification.java -text
@@ -1078,13 +1091,11 @@ ehr/src/org/labkey/ehr/security/EHRScheduledAdminPermission.java -text
 ehr/src/org/labkey/ehr/security/EHRScheduledDeletePermission.java -text
 ehr/src/org/labkey/ehr/security/EHRScheduledInsertPermission.java -text
 ehr/src/org/labkey/ehr/security/EHRScheduledUpdatePermission.java -text
+ehr/src/org/labkey/ehr/study/EHRStudyUpgradeCode.java -text
+ehr/src/org/labkey/ehr/utils/DemographicsCache.java -text
+ehr/src/org/labkey/ehr/utils/EHRQCState.java -text
+ehr/src/org/labkey/ehr/utils/FormContext.java -text
 ehr/src/org/labkey/ehr/utils/TriggerScriptHelper.java -text
-ehr/src/org/labkey/ehr/view/begin.jsp -text
 ehr/src/org/labkey/ehr/view/notificationAdmin.jsp -text
 ehr/tools/modifyPropertyDescriptors/modifyPropertyDescriptors.pl -text
-ehr/tools/pg_backup/.project -text
-ehr/tools/pg_backup/_netrc -text
-ehr/tools/pg_backup/_pgpass -text
-ehr/tools/pg_backup/lkServerBackup.pl -text
-ehr/tools/pg_backup/lkbackup.ini -text
 ehr/webapp/WEB-INF/ehr/ehrContext.xml -text

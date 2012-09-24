@@ -102,6 +102,23 @@
                     <column columnName="estimated">
                         <columnTitle>Birthdate Is Estimated?</columnTitle>
                     </column>
+                    <column columnName="wdate">
+                        <columnTitle>Weight Date</columnTitle>
+                    </column>
+                    <column columnName="weight">
+                        <columnTitle>Weight</columnTitle>
+                    </column>
+                    <column columnName="conception">
+                        <columnTitle>Conception</columnTitle>
+                    </column>
+                    <column columnName="birthCondition">
+                        <columnTitle>Birth Condition</columnTitle>
+                        <fk>
+                            <fkDbSchema>ehr_lookups</fkDbSchema>
+                            <fkTable>birth_condition</fkTable>
+                            <fkColumnName>rowid</fkColumnName>
+                        </fk>
+                    </column>
                 </columns>
             </table>
         </tables>

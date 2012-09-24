@@ -10,10 +10,6 @@ var {EHR, LABKEY, Ext, console, init, beforeInsert, afterInsert, beforeUpdate, a
     context.extraContext.removeTimeFromDate = true;
 }
 
-function onETL(row, errors){
-    EHR.ETL.fixHemaMiscMorphology(row, errors);
-}
-
 function setDescription(row, errors){
     //we need to set description for every field
     var description = new Array();

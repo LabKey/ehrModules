@@ -6,10 +6,6 @@
 
 var {EHR, LABKEY, Ext, console, init, beforeInsert, afterInsert, beforeUpdate, afterUpdate, beforeDelete, afterDelete, complete} = require("ehr/triggers");
 
-function onETL(row, errors){
-    EHR.ETL.remarkToSoap(row, errors);
-}
-
 function onUpsert(context, errors, row, oldRow){
     if(!row.so && !row.a && !row.p && !row.remark){
         EHR.Server.Validation.addError(errors, 'remark', 'Must enter at least one comment', 'WARN');

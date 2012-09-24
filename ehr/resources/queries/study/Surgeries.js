@@ -6,10 +6,6 @@
 
 var {EHR, LABKEY, Ext, console, init, beforeInsert, afterInsert, beforeUpdate, afterUpdate, beforeDelete, afterDelete, complete} = require("ehr/triggers");
 
-function onETL(row, errors){
-    EHR.ETL.fixSurgMajor(row, errors);
-}
-
 function onInsert(context, errors, row){
     if(context.extraContext.dataSource != 'etl' && row.Id && row.date){
         LABKEY.Query.executeSql({

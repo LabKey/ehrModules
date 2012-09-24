@@ -10,17 +10,6 @@ function onInit(event, context){
     context.extraContext.removeTimeFromDate = true;
 }
 
-function onETL(row, errors){
-//NOTE: hyphen means 'not going to perform'
-//    if (row.result1 == '-') row.result1 = 0;
-//    if (row.result2 == '-') row.result2 = 0;
-//    if (row.result3 == '-') row.result3 = 0;
-
-    if (row.result1 == '+') row.result1 = 5;
-    if (row.result2 == '+') row.result2 = 5;
-    if (row.result3 == '+') row.result3 = 5;
-}
-
 function setDescription(row, errors){
     //we need to set description for every field
     var description = new Array();

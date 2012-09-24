@@ -59,6 +59,7 @@
                         <!--</fk>-->
                     </column>
                     <column columnName="frequency">
+                        <columnTitle>Frequency</columnTitle>
                         <fk>
                           <fkDbSchema>ehr_lookups</fkDbSchema>
                           <fkTable>treatment_frequency</fkTable>
@@ -125,6 +126,15 @@
                     </column>
                     <column columnName="userid">
                         <columnTitle>Ordered By</columnTitle>
+                    </column>
+                    <column columnName="qualifier">
+                        <columnTitle>Qualifier</columnTitle>
+                    </column>
+                    <column columnName="route">
+                        <columnTitle>Route</columnTitle>
+                    </column>
+                    <column columnName="volume">
+                        <columnTitle>Volume</columnTitle>
                     </column>
                 </columns>
             </table>

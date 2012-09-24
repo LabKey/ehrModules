@@ -13,11 +13,6 @@ function onInit(event, context){
     context.extraContext.skipIdFormatCheck = true;
 }
 
-function onETL(row, errors){
-    if(row.caseno)
-        EHR.ETL.fixPathCaseNo(row, errors, 'b');
-}
-
 function setDescription(row, errors){
     //we need to set description for every field
     var description = new Array();

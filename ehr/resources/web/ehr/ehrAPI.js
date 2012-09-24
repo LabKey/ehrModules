@@ -44,3 +44,5 @@ LABKEY.requiresScript("/ehr/studyButtons.js");
 LABKEY.requiresScript("/ehr/animalHistory.js");
 LABKEY.requiresScript("StatusBar.js");
 
+LABKEY.requiresCss("/ehr/stylesheet.css");
+

@@ -99,8 +99,8 @@
                         <columnTitle>Source</columnTitle>
                         <fk>
                             <fkDbSchema>ehr_lookups</fkDbSchema>
-                            <fkTable>origin_codes</fkTable>
-                            <fkColumnName>Code</fkColumnName>
+                            <fkTable>source</fkTable>
+                            <fkColumnName>code</fkColumnName>
                         </fk>
                     </column>
                 </columns>

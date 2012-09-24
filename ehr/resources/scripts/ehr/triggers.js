@@ -13,9 +13,6 @@ exports.console = console;
 var LABKEY = require("labkey");
 exports.LABKEY = LABKEY;
 
-var Ext = require("Ext").Ext;
-exports.Ext = Ext;
-
 var EHR = {};
 exports.EHR = EHR;
 
@@ -30,8 +27,6 @@ EHR.Server.Utils = require("ehr/utils").EHR.Server.Utils;
 EHR.Server.Security = require("ehr/security").EHR.Server.Security;
 
 EHR.Server.Validation = require("ehr/validation").EHR.Server.Validation;
-
-EHR.ETL = require("ehr/etl").EHR.ETL;
 
 /**
  * This class handles the serer-side validation/transform that occurs in the EHR's trigger scripts.  It should be used by every EHR dataset.  The purpose is to centralize
@@ -72,8 +67,10 @@ EHR.Server.Triggers.init = function(event, errors){
     this.extraContext.queryName = fileParse[2].replace(/\.js$/, '');
 
     this.scriptContext = {
+        helper: org.labkey.ehr.utils.TriggerScriptHelper.getForContainer(LABKEY.Security.currentUser.id, LABKEY.Security.currentContainer.id),
         rows: [],
         startTime: new Date(),
+        event: event,
         extraContext: this.extraContext,
         queryName: this.extraContext.queryName,
         schemaName: this.extraContext.schemaName,
@@ -91,6 +88,8 @@ EHR.Server.Triggers.init = function(event, errors){
         errorQcLabel: 'Review Required',
         verbosity: 0
     };
+
+    EHR.Server.Security.init(this.scriptContext);
 
     if(this.onInit)
         this.onInit.call(this, event, this.scriptContext);
@@ -127,7 +126,7 @@ EHR.Server.Triggers.beforeInsert = function(row, errors){
     EHR.Server.Triggers.rowInit.call(this, scriptErrors, row, null);
 
     //force newly entered requests to have future dates
-    if(row.date && EHR.Server.Security.getQCStateByLabel(row.QCStateLabel)['metadata/isRequest']){
+    if(row.date && EHR.Server.Security.getQCStateByLabel(row.QCStateLabel).isRequest){
         var now = new Date();
         // NOTE: the removeTimeFromDate flag indicates that that tables only considers date (not datetime).  therefore we need to
         // use a different value when considering past dates
@@ -223,7 +222,7 @@ EHR.Server.Triggers.beforeUpdate = function(row, oldRow, errors){
 
     //NOTE: this is designed to merge the old row into the new one.
     for (var prop in oldRow){
-        if(!row.hasOwnProperty(prop) && Ext.isDefined(oldRow[prop])){
+        if(!row.hasOwnProperty(prop) && LABKEY.ExtAdapter.isDefined(oldRow[prop])){
             row[prop] = oldRow[prop];
         }
     }
@@ -331,7 +330,7 @@ EHR.Server.Triggers.complete = function(event, errors) {
         //NOTE: this is being handled by each dataset's script, if needed
     }
 
-    if(this.scriptContext.notificationRecipients && !Ext.isEmpty(this.scriptContext.notificationRecipients)){
+    if(this.scriptContext.notificationRecipients && !LABKEY.ExtAdapter.isEmpty(this.scriptContext.notificationRecipients)){
         //NOTE: this is being handled by each dataset's script, if needed
     }
 
@@ -474,7 +473,7 @@ EHR.Server.Triggers.complete = function(event, errors) {
         }
     }
 
-    console.log('Script time: ' + (((new Date()) - this.scriptContext.startTime)/1000));
+    console.log('Script time for ' + event + ' of ' + this.scriptContext.rows.length + ' rows: ' + (((new Date()) - this.scriptContext.startTime)/1000));
 }
 exports.complete = EHR.Server.Triggers.complete;
 
@@ -531,7 +530,10 @@ EHR.Server.Triggers.rowInit = function(errors, row, oldRow){
 
         //we ignore all errors from ETL records.  they will get flagged as review required
         this.scriptContext.errorThreshold = 'FATAL';
-        EHR.ETL.fixRow.call(this, row, errors);
+
+        //this allows for individual modules to provide custom ETL code, acting per row
+        if (EHR.ETL)
+            EHR.ETL.fixRow.call(this, row, errors, this.scriptContext);
     }
 
     //check Id format
@@ -576,7 +578,7 @@ EHR.Server.Triggers.rowInit = function(errors, row, oldRow){
                 }
                 else {
                     if(!this.scriptContext.extraContext.allowAnyId){
-                        if(EHR.Server.Security.getQCStateByLabel(row.QCStateLabel)['metadata/isRequest'])
+                        if(EHR.Server.Security.getQCStateByLabel(row.QCStateLabel).isRequest)
                             EHR.Server.Validation.addError(errors, 'Id', 'Id not found in demographics table', 'ERROR');
                         else
                             EHR.Server.Validation.addError(errors, 'Id', 'Id not found in demographics table', 'INFO');
@@ -610,7 +612,7 @@ EHR.Server.Triggers.rowInit = function(errors, row, oldRow){
             success: function(data){
                 if(!data.rows || !data.rows.length){
                     var severity = 'WARN';
-                    if(EHR.Server.Security.getQCStateByLabel(row.QCStateLabel)['metadata/isRequest'])
+                    if(EHR.Server.Security.getQCStateByLabel(row.QCStateLabel).isRequest)
                         severity = 'INFO';
 
                     EHR.Server.Validation.addError(errors, 'project', 'Not assigned to '+row.project+' on this date', severity);
@@ -771,7 +773,7 @@ EHR.Server.Triggers.rowEnd = function(errors, scriptErrors, row, oldRow){
 
     //empty strings can do funny things, so we make them null
     for (var i in row){
-        if (row[i] === '' || !Ext.isDefined(row[i])){
+        if (row[i] === '' || !LABKEY.ExtAdapter.isDefined(row[i])){
             row[i] = null;
         }
     }
@@ -820,7 +822,7 @@ EHR.Server.Triggers.afterEvent = function (event, errors, row, oldRow){
     }
 
     //NOTE: necessary to populate the _becomingPublicData flag
-    EHR.Server.Security.normalizeQcState(event, this.scriptContext, row, oldRow);
+    EHR.Server.Security.normalizeQcState(this.scriptContext, row, oldRow);
 
     if(row._becomingPublicData && this.afterBecomePublic){
         this.afterBecomePublic(errors, this.scriptContext, row, oldRow);
@@ -908,3 +910,17 @@ EHR.Server.Triggers.afterEvent = function (event, errors, row, oldRow){
         }
     }
 };
+
+var extraScripts = org.labkey.ehr.utils.TriggerScriptHelper.getScriptsToLoad();
+LABKEY.ExtAdapter.each(extraScripts, function(script){
+    script = script.replace(/^[\\\/]*scripts[\/\\]*/, '');
+    script = script.replace(/\.js$/, '');
+
+    var contents = require(script);
+    if (!contents || !contents.init){
+        console.error('An EHR trigger script has been registered that lacks an init() function: ' + script);
+        return;
+    }
+
+    contents.init(EHR);
+}, this);

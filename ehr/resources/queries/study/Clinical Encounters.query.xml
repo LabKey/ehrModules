@@ -2,7 +2,7 @@
     <metadata>
         <tables xmlns="http://labkey.org/data/xml">
             <table tableName="encounters" tableDbType="TABLE">
-                <tableUrl>/ehr/taskDetails.view?formtype=${taskid/formtype}&amp;taskid=${taskid}</tableUrl>
+                <tableUrl>/ehr/encounterDetails.view?objectid=${objectid}&amp;formtype=${taskid/formtype}&amp;taskid=${taskid}</tableUrl>
                 <!--<insertUrl>/ehr/manageRecord.view?schemaName=study&amp;queryName=Clinical Encounters&amp;keyField=lsid&amp;</insertUrl>-->
                 <!--<updateUrl>/ehr/manageRecord.view?schemaName=study&amp;queryName=Clinical Encounters&amp;keyField=lsid&amp;key=${lsid}</updateUrl>-->
                 <insertUrl />

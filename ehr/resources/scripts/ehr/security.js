@@ -6,7 +6,6 @@
 
 var console = require("console");
 var LABKEY = require("labkey");
-var Ext = require("Ext").Ext;
 
 var EHR = {};
 exports.EHR = EHR;
@@ -25,48 +24,40 @@ EHR.Server.Utils = require("ehr/utils").EHR.Server.Utils;
  */
 EHR.Server.Security = new function(){
     /* private variables and functions */
-    var permissionMap;
     var schemaMap;
-    var qcMap;
     var hasLoaded = false;
+    var _helper;
+
+    var _qcByRowId;
+    var _qcByLabel;
 
     //private
-    function getQCStateMap(config){
-        if(!config || !config.success){
-            throw "Must provide a success callback";
+//    function getQcObject(qc){
+//        return {
+//            RowId: qc.getRowId(),
+//            Label: qc.getLabel(),
+//            PublicData: qc.isPublicData(),
+//            isRequest: qc.isRequest() ,
+//            allowFutureDates: qc.isAllowFutureDates()
+//        }
+//    }
+
+    function cacheQCStates()
+    {
+        var json = _helper.getQCStateJson();
+        _qcByRowId = {};
+        _qcByLabel = {};
+
+        var qcArray = LABKEY.ExtAdapter.decode(json);
+        for (var i=0;i<qcArray.length;i++)
+        {
+            var qc = qcArray[i];
+            qc.RowId = parseInt(qc.RowId);
+
+            _qcByRowId[qc.RowId] = qc;
+            _qcByLabel[qc.Label] = qc;
         }
-
-        LABKEY.Query.selectRows({
-            schemaName: 'study',
-            queryName: 'qcState',
-            columns: 'RowId,Label,Description,Description,PublicData,metadata/draftData,metadata/isDeleted,metadata/isRequest,metadata/allowFutureDates',
-            success: function(data){
-                var qcmap = {
-                    label: {},
-                    rowid: {}
-                };
-
-                var row;
-                if(data.rows && data.rows.length){
-                    for (var i=0;i<data.rows.length;i++){
-                        row = data.rows[i];
-
-                        var prefix = 'org.labkey.ehr.security.EHR'+(row.Label).replace(/[^a-zA-Z0-9-]/g, '');
-                        row.adminPermissionName = prefix+'AdminPermission';
-                        row.insertPermissionName = prefix+'InsertPermission';
-                        row.updatePermissionName = prefix+'UpdatePermission';
-                        row.deletePermissionName = prefix+'DeletePermission';
-                        qcmap.label[row.Label] = row;
-                        qcmap.rowid[row.RowId] = row;
-                    }
-                }
-                config.success.apply(config.scope || this, [qcmap]);
-            },
-            failure: EHR.Server.Utils.onFailure
-        });
-
-    };
-
+    }
 
     return {
          // public functions
@@ -84,88 +75,13 @@ EHR.Server.Security = new function(){
          * @param [config.failure] The failure callback.  The callback will be passed an Ext.Ajax.request error object
          * @param [config.scope] The scope to be used in callbacks
          */
-        init: function(config) {
-            if(!config || !config.success){
-                throw "Must provide a success callback";
-            }
+        init: function(scriptContext) {
+            if(scriptContext.verbosity > 0)
+                console.log('Caching security: ');
 
-            var schemaName = 'study';
-
-            getQCStateMap({
-                scope: this,
-                success: function(results){
-                    qcMap = results;
-                },
-                failure: EHR.Server.Utils.onFailure
-            });
-            //TODO: eventually accept other schemas
-            LABKEY.Security.getSchemaPermissions({
-                schemaName: 'study',
-                scope: this,
-                success: function(map){
-                    schemaMap = map;
-                },
-                failure: function(error){
-                    console.error(error)
-                }
-            });
-
-            function onSuccess(){
-                for (var qcState in qcMap.label){
-                    var qcRow = qcMap.label[qcState];
-                    qcRow.permissionsByQuery = {
-                        admin: [],
-                        insert: [],
-                        update: [],
-                        'delete': []
-                    };
-                    qcRow.effectivePermissions = {};
-
-                    if(schemaMap.schemas[schemaName] && schemaMap.schemas[schemaName].queries){
-                        var queryCount = 0;
-                        for(var queryName in schemaMap.schemas[schemaName].queries){
-                            var query = schemaMap.schemas[schemaName].queries[queryName];
-                            queryCount++;
-                            query.permissionsByQCState = query.permissionsByQCState || {};
-                            query.permissionsByQCState[qcState] = {};
-
-                            //iterate over each permission this user has on this query
-                            Ext.each(query.effectivePermissions, function(p){
-                                if(p == qcRow.adminPermissionName){
-                                    qcRow.permissionsByQuery.admin.push(queryName);
-                                    query.permissionsByQCState[qcState].admin = true;
-                                }
-                                if(p == qcRow.insertPermissionName){
-                                    qcRow.permissionsByQuery.insert.push(queryName);
-                                    query.permissionsByQCState[qcState].insert = true;
-                                }
-                                if(p == qcRow.updatePermissionName){
-                                    qcRow.permissionsByQuery.update.push(queryName);
-                                    query.permissionsByQCState[qcState].update = true;
-                                }
-                                if(p == qcRow.deletePermissionName){
-                                    qcRow.permissionsByQuery['delete'].push(queryName);
-                                    query.permissionsByQCState[qcState]['delete'] = true;
-                                }
-                            }, this);
-                        }
-                    }
-
-                    qcRow.effectivePermissions.admin = (qcRow.permissionsByQuery.admin.length == queryCount);
-                    qcRow.effectivePermissions.insert = (qcRow.permissionsByQuery.insert.length == queryCount);
-                    qcRow.effectivePermissions.update = (qcRow.permissionsByQuery.update.length == queryCount);
-                    qcRow.effectivePermissions['delete'] = (qcRow.permissionsByQuery['delete'].length == queryCount);
-                }
-
-                hasLoaded = true;
-
-                config.success.apply(config.scope || this, [{
-                    qcMap: qcMap,
-                    schemaMap: schemaMap
-                }]);
-            }
-
-            onSuccess();
+            _helper = scriptContext.helper;
+            cacheQCStates();
+            hasLoaded = true;
         },
 
 
@@ -185,7 +101,7 @@ EHR.Server.Security = new function(){
             if(!hasLoaded)
                 throw "EHR.Security.init() has not been called or returned prior to this call";
 
-            if(queries && !Ext.isArray(queries))
+            if(queries && !LABKEY.ExtAdapter.isArray(queries))
                 queries = [queries];
 
             if(!queries.length){
@@ -194,8 +110,7 @@ EHR.Server.Security = new function(){
             }
 
             var result = true;
-            //var schemaName = 'study';
-            Ext.each(queries, function(query){
+            LABKEY.ExtAdapter.each(queries, function(query){
                 //if this schema isnt present, it's not securable, so we allow anything
                 if(!schemaMap.schemas[query.schemaName])
                     return true;
@@ -212,46 +127,36 @@ EHR.Server.Security = new function(){
         },
 
 
-       /**
-        * Will return a map of attributes for QCState associated with the supplied Label.  Often used to translate between RowId and Label.
-        * @return {Object} A map of properties associated with the requested QCState, including:
-        * <li>Description: the description, as provided from study.QCState</li>
-        * <li>Label: the label, as provided from study.QCState</li>
-        * <li>PublicData: whether this QCState is considered public, as provided from study.QCState</li>
-        * <li>RowId: the rowid, as provided from study.QCState</li>
-        * <li>adminPermissionName: the name of the admin permission associated with this QCState, which is returned by LABKEY.Security.getPermissions</li>
-        * <li>deletePermissionName: the name of the delete permission associated with this QCState, which is returned by LABKEY.Security.getPermissions</li>
-        * <li>insertPermissionName: the name of the insert permission associated with this QCState, which is returned by LABKEY.Security.getPermissions</li>
-        * <li>updatePermissionName: the name of the update permission associated with this QCState, which is returned by LABKEY.Security.getPermissions</li>
-        * <li>permissionsByQuery: a map with the following keys: admin, delete, insert and update.  Each pair consists of the name of the permission and the datasets for which the user has this permission.
-        * <li>effectivePermissions: similar to permissionsByQuery, except this map reports the effective permissions across all datasets.  The map has the keys: admin, delete, insert and update.  Each pair consists of the permission name and true/false depending on whether the current user has this permission across all datasets.
-        */
+        /**
+         * Returns the EHRQCState that corresponds to the passed label
+         * @return {EHRQCState} An instance of the java class EHRQCState
+         */
         getQCStateByLabel: function(label){
             if(!hasLoaded)
                 throw "EHR.Security.init() has not been called or returned prior to this call";
 
-            if(!qcMap.label[label]){
-                console.error('ERROR: QCLabel '+label+' not found');
+            var qc = _qcByLabel[label];
+            if(!qc){
+                console.error('ERROR: QCLabel "'+label+'" not found');
                 return null;
             }
-
-            return qcMap.label[label];
+            return qc;
         },
 
        /**
-        * Will return a map of attributes for QCState associated with the supplied RowId.  Often used to translate between RowId and Label.
-        * @return {Boolean} True/false depending on whether EHR.Security has loaded permission information.
+        * Returns the EHRQCState that corresponds to the passed rowId.  Often used to translate between RowId and Label.
+        * @return {EHRQCState} An instance of the java class EHRQCState
         */
         getQCStateByRowId: function(rowid){
             if(!hasLoaded)
                 throw "EHR.Security.init() has not been called or returned prior to this call";
 
-            if(!qcMap.rowid[rowid]){
-                console.error('ERROR: QC State associated with the rowId '+label+' not found');
+           var qc = _qcByRowId[rowid];
+           if(!qc){
+                console.error('ERROR: QC State associated with the rowId ' + rowid + ' not found');
                 return null;
             }
-
-            return qcMap.rowid[rowid];
+            return qc;
         },
 
        /**
@@ -277,75 +182,25 @@ EHR.Server.Security = new function(){
          * @param {object}oldRow The original row object (prior to update), as passed by LabKey
          */
         verifyPermissions: function(event, scriptContext, row, oldRow){
-            EHR.Server.Security.normalizeQcState(event, scriptContext, row, oldRow);
-
-            //handle updates
-            if(event=='update' && oldRow && oldRow.QCStateLabel){
-                //updating a row to a new QC is the same as inserting into that QC state
-                if(row.QCStateLabel != oldRow.QCStateLabel){
-                    if(!EHR.Server.Security.hasPermission(row.QCStateLabel, 'insert', [{
-                        schemaName: scriptContext.extraContext.schemaName,
-                        queryName: scriptContext.extraContext.queryName
-                    }])){
-                        var msg = "The user "+LABKEY.Security.currentUser.id+" does not have insert privledges for the table: "+scriptContext.extraContext.queryName + " against QCState: " + row.QCStateLabel;
-                        EHR.Server.Utils.onFailure({msg: msg});
-                        return false;
-                    }
-                }
-
-                //the user also needs update permission on the old row's QCstate
-                if(!EHR.Server.Security.hasPermission(oldRow.QCStateLabel, 'update', [{
-                    schemaName: scriptContext.extraContext.schemaName,
-                    queryName: scriptContext.extraContext.queryName
-                }])){
-                    var msg = "The user "+LABKEY.Security.currentUser.id+" does not have update privledges for the table: "+scriptContext.extraContext.queryName + " against QCState: " + oldRow.QCStateLabel;
-                    EHR.Server.Utils.onFailure({msg: msg});
-                    return false;
-                }
-            }
-            //handle inserts and deletes
-            else {
-                if(row.QCStateLabel){
-                    if(!EHR.Server.Security.hasPermission(row.QCStateLabel, event, [{
-                        schemaName: scriptContext.extraContext.schemaName,
-                        queryName: scriptContext.extraContext.queryName
-                    }])){
-                        var msg = "The user "+LABKEY.Security.currentUser.id+" does not have "+event+" privledges for the table: "+scriptContext.extraContext.queryName + " against QCState: " + row.QCStateLabel;
-                        EHR.Server.Utils.onFailure({msg: msg});
-                        return false;
-                    }
-                }
-            }
+            EHR.Server.Security.normalizeQcState(scriptContext, row, oldRow);
+            return _helper.hasPermission(scriptContext.schemaName, scriptContext.queryName, event, oldRow ? oldRow.QCStateLabel :  null, row.QCStateLabel);
         },
 
         /**
          *
          * @private
          */
-        normalizeQcState: function(event, scriptContext, row, oldRow){
-            //NOTE: this has been moved from init() b/c init() seems to get called during the ETL even
-            //if not importing any records
-            if(scriptContext.verbosity > 0)
-                console.log('Verifying permissions for: '+event);
-
+        normalizeQcState: function(scriptContext, row, oldRow){
             if(!EHR.Server.Security.hasLoaded()){
-                if(scriptContext.verbosity > 0)
-                    console.log('Caching security: '+event);
-
-                EHR.Server.Security.init({
-                    scope: this,
-                    schemaName: scriptContext.extraContext.schemaName,
-                    success: function(){
-                        //console.log("Loaded permission map");
-                    }
-                });
+                EHR.Server.Security.init(scriptContext);
             }
 
             //first we normalize QCstate
             if(oldRow){
                 if(oldRow.QCState){
-                    if(EHR.Server.Security.getQCStateByRowId(oldRow.QCState)){
-                        oldRow.QCStateLabel = EHR.Server.Security.getQCStateByRowId(oldRow.QCState).Label;
+                    var oldQc = EHR.Server.Security.getQCStateByRowId(oldRow.QCState);
+                    if(oldQc){
+                        oldRow.QCStateLabel = oldQc.Label;
                     }
                     else
                         console.error('Unknown QCState: '+oldRow.QCState);
@@ -361,8 +216,9 @@ EHR.Server.Security = new function(){
             }
 
             if (row.QCState){
-                if(EHR.Server.Security.getQCStateByRowId(row.QCState)){
-                    row.QCStateLabel = EHR.Server.Security.getQCStateByRowId(row.QCState).Label;
+                var qc = EHR.Server.Security.getQCStateByRowId(row.QCState);
+                if(qc){
+                    row.QCStateLabel = qc.Label;
                 }
                 else
                     console.error('Unknown QCState: '+row.QCState);
@@ -374,14 +230,18 @@ EHR.Server.Security = new function(){
             }
             else {
                 if(scriptContext.extraContext.validateOnly)
+                {
                     row.QCStateLabel = 'In Progress';
+                    row.QCState = null;
+                }
                 else {
                     if(oldRow && oldRow.QCStateLabel){
-                            row.QCStateLabel = oldRow.QCStateLabel;
+                        row.QCStateLabel = oldRow.QCStateLabel;
+                        row.QCState = oldRow.QCState;
                     }
                     else {
-                        //console.log('USING GENERIC QCSTATE: '+scriptContext.queryName);
                         row.QCStateLabel = 'Completed';
+                        row.QCState = null;
                     }
                 }
             }

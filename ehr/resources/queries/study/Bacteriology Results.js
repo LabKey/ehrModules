@@ -10,12 +10,6 @@ function onInit(event, context){
     context.extraContext.removeTimeFromDate = true;
 }
 
-function onETL(row, errors){
-    //this is a hack so mySQL records go in.
-    EHR.Server.Validation.antibioticSens(row, errors);
-
-}
-
 function setDescription(row, errors){
     //we need to set description for every field
     var description = new Array();

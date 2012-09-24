@@ -6,15 +6,12 @@
 
 var console = require("console");
 var LABKEY = require("labkey");
-var Ext = require("Ext").Ext;
 
 var EHR = {};
 exports.EHR = EHR;
 
 EHR.Server = {};
-
 EHR.Server.Utils = require("ehr/utils").EHR.Server.Utils;
-
 EHR.Server.Security = require("ehr/security").EHR.Server.Security;
 
 /**
@@ -28,7 +25,7 @@ EHR.Server.Validation = {
      * @param errors The errors object
      */
     checkRestraint: function(row, errors){
-        if(row.restraint && !Ext.isDefined(row.restraintDuration))
+        if(row.restraint && !LABKEY.ExtAdapter.isDefined(row.restraintDuration))
             EHR.Server.Validation.addError(errors, 'restraintDuration', 'Must enter time restrained', 'INFO');
 
     },
@@ -128,6 +125,7 @@ EHR.Server.Validation = {
      */
     snomedToString: function (code, meaning){
         if(!meaning){
+console.log('QUERYING SNOMED TERM');
             LABKEY.Query.selectRows({
                 schemaName: 'ehr_lookups',
                 queryName: 'snomed',
@@ -287,7 +285,7 @@ EHR.Server.Validation = {
         var cal2 = new java.util.GregorianCalendar();
         cal2.setTime(row.Date);
 
-        if(!scriptContext.extraContext.validateOnly && cal2.after(cal1) && !EHR.Server.Security.getQCStateByLabel(row.QCStateLabel)['metadata/allowFutureDates']){
+        if(!scriptContext.extraContext.validateOnly && cal2.after(cal1) && !EHR.Server.Security.getQCStateByLabel(row.QCStateLabel).allowFutureDates){
             EHR.Server.Validation.addError(errors, 'date', 'Date is in future', 'ERROR');
         }
 
@@ -405,7 +403,7 @@ EHR.Server.Validation = {
     updateStatusField: function(publicParticipantsModified, demographicsRow, valuesMap){
         var toUpdate = [];
         var demographics = {};
-        Ext.each(publicParticipantsModified, function(id){
+        LABKEY.ExtAdapter.each(publicParticipantsModified, function(id){
             demographics[id] = {};
         });
 
@@ -428,7 +426,7 @@ EHR.Server.Validation = {
                     return
                 }
 
-                Ext.each(data.rows, function(r){
+                LABKEY.ExtAdapter.each(data.rows, function(r){
                     if(r.MostRecentArrival)
                         demographics[r.Id].arrival = new Date(r.MostRecentArrival);
                 }, this);
@@ -446,7 +444,7 @@ EHR.Server.Validation = {
                     return;
                 }
 
-                Ext.each(data.rows, function(r){
+                LABKEY.ExtAdapter.each(data.rows, function(r){
                     if(r.MostRecentDeparture)
                         demographics[r.Id].departure = new Date(r.MostRecentDeparture);
                 }, this);
@@ -464,7 +462,7 @@ EHR.Server.Validation = {
                     return
                 }
 
-                Ext.each(data.rows, function(r){
+                LABKEY.ExtAdapter.each(data.rows, function(r){
                     if(r.birth)
                         demographics[r.Id].birth = new Date(r.birth);
                     if(r.death)
@@ -489,7 +487,7 @@ EHR.Server.Validation = {
                     return;
                 }
 
-                Ext.each(data.rows, function(r){
+                LABKEY.ExtAdapter.each(data.rows, function(r){
                     if(demographics[r.Id].birth && demographics[r.Id].birth.toGMTString() != (new Date(r.date)).toGMTString()){
                         console.error('birth from study.birth doesnt match demographics.birth for: '+r.Id);
                         console.error(demographics[r.Id].birth);
@@ -510,7 +508,7 @@ EHR.Server.Validation = {
                 if(!data.rows.length){
                     return;
                 }
-                Ext.each(data.rows, function(r){
+                LABKEY.ExtAdapter.each(data.rows, function(r){
                     //var demographicsDeath = demographics[r.Id].death;
                     if(demographics[r.Id].death && demographics[r.Id].death.toGMTString() != (new Date(r.date)).toGMTString()){
                         console.error('death doesnt match for: '+r.Id);
@@ -525,7 +523,7 @@ EHR.Server.Validation = {
             failure: EHR.Server.Utils.onFailure
         });
 
-        Ext.each(publicParticipantsModified, function(id){
+        LABKEY.ExtAdapter.each(publicParticipantsModified, function(id){
             var status;
             var forceUpdate = false;
 
@@ -681,6 +679,7 @@ EHR.Server.Validation = {
      */
     onDeathDeparture: function(participant, date){
         //close housing, assignments, treatments
+        //org.labkey.ehr.utils.TriggerScriptHelper.closeActiveDatasetRecords(LABKEY.Security.currentContainer.id, LABKEY.Security.currentUser.id, ['Assignment'], participant, date)
         closeRecord('Assignment');
         closeRecord('Housing');
         closeRecord('Treatment Orders');
@@ -703,7 +702,7 @@ EHR.Server.Validation = {
                     if(data && data.rows && data.rows.length){
                         var toUpdate = [];
                         //console.log(data.rows.length);
-                        Ext.each(data.rows, function(r){
+                        LABKEY.ExtAdapter.each(data.rows, function(r){
                             toUpdate.push({lsid: r.lsid, enddate: date.toGMTString()})
                         }, this);
 

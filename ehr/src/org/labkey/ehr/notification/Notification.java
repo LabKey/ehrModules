@@ -31,7 +31,7 @@ public interface Notification
      * This method is used to start the execution of this notification.  The notification may not start imeditately - timing of execution is
      * determined by schedule().  Methods extending AbstractNotification will generally not implement this.
      */
-    public void start();
+    public void start(int delay);
 
     /**
      * This method is used to stop the execution of active and future tasks.  Methods extending AbstractNotification will generally not implement this.

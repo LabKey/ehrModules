@@ -14,35 +14,6 @@ function onUpsert(context, errors, row, oldRow){
     EHR.Server.Validation.checkRestraint(row, errors);
 }
 
-function onETL(row, errors){
-    //we grab the first sentence as title
-    if(row.type == 'Surgery' && !row.title && row.remark && row.remark.length > 200){
-        var match = row.remark.match(/^(.*?)\./);
-        if(match && match[1] && match[1].length < 35){
-            var title = match[1];
-
-            if(!title.match(/^\(con/) && !title.match(/^cont/)){
-                row.title = title;
-            }
-        }
-    }
-
-    EHR.ETL.fixSurgMajor(row, errors);
-
-    //applies to biopsy / necropsy
-    if(row.caseno){
-        var code;
-        if(row.type=='Necropsy')
-            code='a|c|e';
-        else if (row.type == 'Biopsy')
-            code = 'b';
-
-        if(code)
-            EHR.ETL.fixPathCaseNo(row, errors, code);
-    }
-
-}
-
 function setDescription(row, errors){
     //we need to set description for every field
     var description = new Array();

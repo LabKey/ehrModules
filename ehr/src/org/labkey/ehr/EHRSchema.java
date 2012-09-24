@@ -21,6 +21,8 @@ import org.labkey.api.data.dialect.SqlDialect;
 public class EHRSchema
 {
     private static final EHRSchema _instance = new EHRSchema();
+    public static final String TABLE_FORMTYPES = "formtypes";
+    public static final String TABLE_FORMPANELSECTIONS = "formpanelsections";
 
     public static EHRSchema getInstance()
     {

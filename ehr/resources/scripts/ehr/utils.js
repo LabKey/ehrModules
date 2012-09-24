@@ -6,7 +6,6 @@
 
 var console = require("console");
 var LABKEY = require("labkey");
-var Ext = require("Ext").Ext;
 
 var EHR = {};
 exports.EHR = EHR;
@@ -73,7 +72,7 @@ EHR.Server.Utils = new function(){
          * @param {Object} error The error object passed to the callback function
          * */
         onFailure: function(error){
-            var stackTrace = (error.stackTrace && Ext.isArray(error.stackTrace) ? error.stackTrace.join('\n') : null);
+            var stackTrace = (error.stackTrace && LABKEY.ExtAdapter.isArray(error.stackTrace) ? error.stackTrace.join('\n') : null);
             var message  = error.exception || error.statusText || error.msg || error.message || '';
 
             var toLog = [
@@ -143,6 +142,23 @@ EHR.Server.Utils = new function(){
                 return new Date(date);
 
             return new Date(date.getTime());
+        },
+
+        /**
+         * Create a combined function call sequence of the original function + the passed function.
+         * The resulting function returns the results of the original function.
+         */
+        createSequence: function(originalFn, newFn, scope) {
+            if (!newFn) {
+                return originalFn;
+            }
+            else {
+                return function() {
+                    var result = originalFn.apply(this, arguments);
+                    newFn.apply(scope || this, arguments);
+                    return result;
+                };
+            }
         }
     }
 };

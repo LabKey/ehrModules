@@ -15,14 +15,16 @@
 
 package org.labkey.ehr;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 import org.labkey.api.action.ApiAction;
 import org.labkey.api.action.ApiResponse;
 import org.labkey.api.action.ApiSimpleResponse;
 import org.labkey.api.action.SimpleViewAction;
 import org.labkey.api.action.SpringActionController;
-import org.labkey.api.security.*;
+import org.labkey.api.data.Container;
+import org.labkey.api.security.IgnoresTermsOfUse;
+import org.labkey.api.security.RequiresPermissionClass;
+import org.labkey.api.security.User;
 import org.labkey.api.security.permissions.AdminPermission;
 import org.labkey.api.util.ConfigurationException;
 import org.labkey.api.view.HtmlView;
@@ -30,11 +32,13 @@ import org.labkey.api.view.JspView;
 import org.labkey.api.view.NavTree;
 import org.labkey.ehr.notification.Notification;
 import org.labkey.ehr.notification.NotificationService;
+import org.labkey.ehr.pipeline.KinshipRunnable;
 import org.springframework.validation.BindException;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 public class EHRController extends SpringActionController
 {
@@ -43,6 +47,39 @@ public class EHRController extends SpringActionController
     public EHRController()
     {
         setActionResolver(_actionResolver);
+    }
+
+    @RequiresPermissionClass(AdminPermission.class)
+    @IgnoresTermsOfUse
+    public class EnsureDatasetPropertiesAction extends ApiAction<EnsureDatasetPropertiesForm>
+    {
+        public ApiResponse execute(EnsureDatasetPropertiesForm form, BindException errors)
+        {
+            Container c = getContainer();
+            User user = getUser();
+
+            ApiResponse resp = new ApiSimpleResponse();
+            List<String> messages = EHRManager.get().ensureDatasetPropertyDescriptors(c,  user, form.isCommitChanges());
+            resp.getProperties().put("success", true);
+            resp.getProperties().put("messages", messages);
+
+            return resp;
+        }
+    }
+
+    public static class EnsureDatasetPropertiesForm
+    {
+        boolean commitChanges = false;
+
+        public void setCommitChanges(boolean commitChanges)
+        {
+            this.commitChanges = commitChanges;
+        }
+
+        public boolean isCommitChanges()
+        {
+            return commitChanges;
+        }
     }
 
     @RequiresPermissionClass(AdminPermission.class)
@@ -187,6 +224,16 @@ public class EHRController extends SpringActionController
         }
     }
 
+    @RequiresPermissionClass(AdminPermission.class)
+    public class KinshipAction extends ApiAction<Object>
+    {
+        public ApiResponse execute(Object form, BindException errors) throws Exception
+        {
+            new KinshipRunnable().run();
+            return null;
+        }
+    }
+
     public static class RunNotificationForm
     {
         String _name;
@@ -201,5 +248,4 @@ public class EHRController extends SpringActionController
             _name = name;
         }
     }
-
 }

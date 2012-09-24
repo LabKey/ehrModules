@@ -11,7 +11,7 @@
                         <columnTitle>Number of Cagemates</columnTitle>
                         <url>/query/executeQuery.view?schemaName=study&amp;
                             query.queryName=housing&amp;
-                            query.room~eq=${Id/curLocation/room}&amp;
+                            query.room~eq=${Id/curLocation/room/room}&amp;
                             query.cage~eq=${Id/curLocation/cage}&amp;
                             query.enddate~isblank&amp;
                             query.sort=Id&amp;
@@ -21,7 +21,7 @@
                         <columnTitle># Animals In Cage</columnTitle>
                         <url>/query/executeQuery.view?schemaName=study&amp;
                             query.queryName=housing&amp;
-                            query.room~eq=${Id/curLocation/room}&amp;
+                            query.room~eq=${Id/curLocation/room/room}&amp;
                             query.cage~eq=${Id/curLocation/cage}&amp;
                             query.enddate~isblank&amp;
                             query.sort=Id&amp;

@@ -64,9 +64,24 @@
                     	<columnTitle>Trim Remarks</columnTitle>
                     	<inputType>textarea</inputType>
                     </column>
-                    <!--<column columnName="container_type">-->
-                        <!--<columnTitle>Container Type</columnTitle>-->
-                    <!--</column>                    -->
+                    <column columnName="quantity">
+                        <columnTitle>Quantity</columnTitle>
+                    </column>
+                    <column columnName="slideNum">
+                        <columnTitle>Slide Number</columnTitle>
+                    </column>
+                    <column columnName="pathologist">
+                        <columnTitle>Pathologist</columnTitle>
+                    </column>
+                    <column columnName="trimdate">
+                        <columnTitle>Trim Date</columnTitle>
+                    </column>
+                    <column columnName="trimmed_by">
+                        <columnTitle>Trimmed By</columnTitle>
+                    </column>
+                    <column columnName="recipient">
+                        <columnTitle>Recipient</columnTitle>
+                    </column>
                 </columns>
             </table>
         </tables>
