@@ -69,6 +69,11 @@ public class EHRManager
      */
     public User getEHRUser()
     {
+        return getEHRUser(true);
+    }
+
+    public User getEHRUser(boolean logOnError)
+    {
         try
         {
             Module ehr = ModuleLoader.getInstance().getModule(EHRModule.NAME);
@@ -76,7 +81,8 @@ public class EHRManager
             String emailAddress = PropertyManager.getCoalecedProperty(0, ContainerManager.getRoot(), mp.getCategory(), EHRManager.EHRAdminUserPropName);
             if (emailAddress == null)
             {
-                _log.error("Attempted to access EHR email module property, which has not been set for the root container");
+                if (logOnError)
+                    _log.error("Attempted to access EHR email module property, which has not been set for the root container");
                 return null;
             }
 
@@ -94,12 +100,18 @@ public class EHRManager
      */
     public Container getPrimaryEHRContainer()
     {
+        return getPrimaryEHRContainer(true);
+    }
+
+    public Container getPrimaryEHRContainer(boolean logOnError)
+    {
         Module ehr = ModuleLoader.getInstance().getModule(EHRModule.NAME);
         ModuleProperty mp = ehr.getModuleProperties().get(EHRManager.EHRStudyContainerPropName);
         String path = PropertyManager.getCoalecedProperty(0, ContainerManager.getRoot(), mp.getCategory(), EHRManager.EHRAdminUserPropName);
         if (path == null)
         {
-            _log.error("Attempted to access EHR containerPath Module Property, which has not been set for the root container");
+            if (logOnError)
+                _log.error("Attempted to access EHR containerPath Module Property, which has not been set for the root container");
             return null;
         }
 
@@ -116,11 +128,11 @@ public class EHRManager
     {
         Module ehrModule = ModuleLoader.getInstance().getModule(EHRModule.NAME);
         if (u == null)
-            u = getEHRUser();
+            u = getEHRUser(false);
 
         if (u == null)
         {
-            _log.error("EHR User Module Property has not been set for root");
+            _log.info("EHR User Module Property has not been set for root, cannot find EHR studies");
             return null;
         }
 
