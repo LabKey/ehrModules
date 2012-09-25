@@ -7,7 +7,7 @@ select
 
 n.notificationtype,
 n.recipient,
-n.recipient.name as name,
+n.recipient.DisplayName as name,
 m.Userid,
 m.Userid.DisplayName as UserName,
 m.Userid.email as email,
@@ -21,7 +21,7 @@ select
 
 n.notificationtype,
 n.recipient,
-n.recipient.name as name,
+n.recipient.DisplayName as name,
 u.UserId,
 u.DisplayName,
 u.email,
