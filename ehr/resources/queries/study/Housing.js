@@ -30,10 +30,12 @@ function onUpsert(context, errors, row, oldRow){
 }
 
 function onBecomePublic(errors, scriptContext, row, oldRow){
-    //console.log('on become public')
     //if this record is active and public, deactivate any old housing records
     if(scriptContext.extraContext.dataSource != 'etl' && !row.enddate){
-        var toUpdate = [];
+        if (!scriptContext.housingRecords){
+            scriptContext.housingRecords = {};
+        }
+
         LABKEY.Query.selectRows({
             schemaName: 'study',
             queryName: 'housing',
@@ -43,30 +45,96 @@ function onBecomePublic(errors, scriptContext, row, oldRow){
                 LABKEY.Filter.create('Id', row.Id, LABKEY.Filter.Types.EQUAL),
                 LABKEY.Filter.create('enddate', null, LABKEY.Filter.Types.ISBLANK),
                 //LABKEY.Filter.create('date', row.Date, LABKEY.Filter.Types.LESS_THAN),
-                LABKEY.Filter.create('lsid', row.lsid, LABKEY.Filter.Types.NEQ)
-                //LABKEY.Filter.create('qcstate/publicdata', true, LABKEY.Filter.Types.EQUAL)
+                LABKEY.Filter.create('lsid', row.lsid, LABKEY.Filter.Types.NEQ),
+                LABKEY.Filter.create('qcstate/publicdata', true, LABKEY.Filter.Types.EQUAL)
             ],
             scope: this,
             success: function(data){
                 if(data && data.rows && data.rows.length){
                     var r;
+                    if (!scriptContext.housingRecords[row.Id]){
+                        scriptContext.housingRecords[row.Id] = [];
+                    }
+
+                    var houseRecords = [];
                     for(var i=0;i<data.rows.length;i++){
                         r = data.rows[i];
-
-                        toUpdate.push({lsid: r.lsid, enddate: new Date(row.date.toGMTString())});
+                        houseRecords.push({lsid: r.lsid, enddate: new Date(row.date.toGMTString())});
 
                         //if there's an existing public active housing record
                         if(Date.parse(row.date.toGMTString()) < Date.parse(r.date)){
                             EHR.Server.Validation.addError(errors, 'Id', 'You cannot enter an open ended housing while there is another record starting on: '+r.date);
-                            toUpdate = [];
-                            return false;
+                            houseRecords = [];
+                            continue;
                         }
-                    };
-
+                    }
+                    scriptContext.housingRecords[row.Id].push({date: row.date, records: houseRecords});
                 }
             },
             failure: EHR.Server.Utils.onFailure
         });
+    }
+}
+
+function onAfterUpsert(scriptContext, errors, row, oldRow){
+    if (scriptContext.housingRecords && scriptContext.housingRecords[row.Id]){
+        this.scriptContext.rows[scriptContext.rows.length -1].row.housingRecords = scriptContext.housingRecords[row.Id];
+    }
+}
+
+function onComplete(event, errors, scriptContext){
+    var toUpdate = [];
+    var lsids = {};
+
+    if (!errors.length && scriptContext.housingRecords){
+        var allRecords = scriptContext.rows;
+        allRecords = allRecords.sort(function(a, b){
+            return a.row.Id < b.row.Id ? -1 :
+                a.row.Id > b.row.Id ? 1 :
+                a.row.date < b.row.date ? -1 :
+                a.row.date > b.row.date ? 1 :
+                0
+        });
+
+        var previousRow
+        for(var i=0;i<allRecords.length;i++){
+            var currentRow = scriptContext.rows[i].row;
+            var records = currentRow.housingRecords;
+            if(!records || !records.length){
+                console.log('continue');
+                continue;
+            }
+
+            records = records.sort(function(a, b){
+                return a.date < b.date ? -1 :
+                    a.date > b.date ? 1 :
+                    0
+            });
+
+            //a previous row in this transaction may also need to get closed
+            if(previousRow){
+                console.log('closing previous '+currentRow.lsid +' '+previousRow.lsid);
+                console.log('time of the current row'+currentRow.date.getTime());
+                if (previousRow.Id == currentRow.Id){
+                    toUpdate.push({lsid: previousRow.lsid, enddate: new Date(currentRow.date.getTime())});
+                    lsids[previousRow.lsid] = true;
+                }
+            }
+
+            for (var j=0;j<records.length;j++){
+                var current = records[j];
+                for (var k=0;k<current.records.length;k++){
+                    var housingRecord = current.records[k];
+                    if(lsids[housingRecord.lsid])
+                        continue;
+                    console.log('going to record'+ housingRecord.enddate)
+                    toUpdate.push({lsid: housingRecord.lsid, enddate: EHR.Server.Utils.normalizeDate(housingRecord.enddate)});
+                    lsids[housingRecord.lsid] = true;
+                }
+            }
+
+            previousRow = currentRow;
+        }
 
         if(toUpdate.length){
             LABKEY.Query.updateRows({
@@ -82,7 +150,6 @@ function onBecomePublic(errors, scriptContext, row, oldRow){
                 failure: EHR.Server.Utils.onFailure
             });
         }
-
     }
 }
 
