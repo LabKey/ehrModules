@@ -67,19 +67,20 @@ public class TriggerScriptHelper
 
     private String _containerId;
     private int _userId;
-    private String _studyId;
 
     private static Logger _log = Logger.getLogger(TriggerScriptHelper.class);
 
     private TriggerScriptHelper(int userId, String containerId)
     {
-        User user = getUser();
+        User user = UserManager.getUser(userId);
         if (user == null)
             throw new RuntimeException("User does not exist: " + userId);
+        _userId = userId;
 
         Container container = ContainerManager.getForId(containerId);
         if (container == null)
             throw new RuntimeException("Container does not exist: " + containerId);
+        _containerId = containerId;
 
         Study study = getStudy();
         if (study == null)
@@ -108,14 +109,15 @@ public class TriggerScriptHelper
 
     public static TriggerScriptHelper getForContainer(int userId, String containerId)
     {
-        TriggerScriptHelper helper = (TriggerScriptHelper)CacheManager.getSharedCache().get(getCacheKey(userId, containerId));
+        String key = getCacheKey(userId, containerId);
+        TriggerScriptHelper helper = (TriggerScriptHelper)CacheManager.getSharedCache().get(key);
         if (helper != null)
         {
             return helper;
         }
 
         helper = new TriggerScriptHelper(userId, containerId);
-        CacheManager.getSharedCache().put(getCacheKey(userId, containerId), helper);
+        CacheManager.getSharedCache().put(key, helper);
         return helper;
     }
 
