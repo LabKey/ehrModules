@@ -1,6 +1,6 @@
 <view xmlns="http://labkey.org/data/xml/view" title="Compliance and Training">
     <dependencies>
         <dependency path="Ext4ClientApi"/>
-        <dependency path="LDK/NavPanel.js"/>
+        <dependency path="LDK/LDKApi"/>
     </dependencies>
 </view>
