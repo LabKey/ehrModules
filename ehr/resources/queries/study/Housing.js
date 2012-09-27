@@ -96,12 +96,11 @@ function onComplete(event, errors, scriptContext){
                 0
         });
 
-        var previousRow
+        var previousRow;
         for(var i=0;i<allRecords.length;i++){
             var currentRow = scriptContext.rows[i].row;
             var records = currentRow.housingRecords;
             if(!records || !records.length){
-                console.log('continue');
                 continue;
             }
 
@@ -113,8 +112,6 @@ function onComplete(event, errors, scriptContext){
 
             //a previous row in this transaction may also need to get closed
             if(previousRow){
-                console.log('closing previous '+currentRow.lsid +' '+previousRow.lsid);
-                console.log('time of the current row'+currentRow.date.getTime());
                 if (previousRow.Id == currentRow.Id){
                     toUpdate.push({lsid: previousRow.lsid, enddate: new Date(currentRow.date.getTime())});
                     lsids[previousRow.lsid] = true;
@@ -127,7 +124,7 @@ function onComplete(event, errors, scriptContext){
                     var housingRecord = current.records[k];
                     if(lsids[housingRecord.lsid])
                         continue;
-                    console.log('going to record'+ housingRecord.enddate)
+
                     toUpdate.push({lsid: housingRecord.lsid, enddate: EHR.Server.Utils.normalizeDate(housingRecord.enddate)});
                     lsids[housingRecord.lsid] = true;
                 }
