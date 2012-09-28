@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2012 LabKey Corporation
+ *
+ * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
+ */
 CREATE TABLE ehr_lookups.charge_flags (
     rowid INT IDENTITY (1,1) NOT NULL,
     shortName varchar(100),
