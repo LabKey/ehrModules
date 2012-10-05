@@ -3,115 +3,68 @@
  *
  * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
  */
-Ext.namespace('EHR.reports');
+Ext4.namespace('EHR.reports');
 
-LABKEY.requiresScript("/ehr/ehrDetailsPanel.js");
-LABKEY.requiresScript("/ehr/Utils.js");
 /*
  * This file contains a series of JS-baed reports used in the Animal History page
  *
  */
-
-//a standardized config object used in QWPs
-EHR.reports.qwpConfig = {
-    allowChooseQuery: false,
-    allowChooseView: true,
-    showInsertNewButton: false,
-    showDeleteButton: false,
-    showDetailsColumn: true,
-    showUpdateColumn: false,
-    showRecordSelectors: true,
-    suppressRenderErrors: true,
-    showReports: false,
-    frame: 'portal',
-    linkTarget: '_blank',
-    buttonBarPosition: 'top',
-    timeout: 0,
-    success: function(dr){
-        var width1 = Ext.get('dataregion_'+dr.id).getSize().width+50;
-        var width2 = Ext.get(this.anchorLayout.id).getSize().width;
-
-        if(width1 > width2){
-            this.anchorLayout.setWidth(width1+140);
-            //console.log('resizing')
-        }
-        else {
-            this.anchorLayout.setWidth('100%');
-        }
-    },
-    failure: function(error){
-        //console.log('Error callback called');
-        EHR.Utils.onError(error)
-    }
-};
-
-EHR.reports.abstract = function(tab, subject){
-    var filterArray = this.getFilterArray(tab, subject);
+EHR.reports.abstract = function(panel, tab, subject){
+    var filterArray = panel.getFilterArray(tab, subject);
     var title = (subject ? subject.join("; ") : '');
-    tab.getTopToolbar().removeAll();
+    var tb = tab.getDockedItems('toolbar[dock="top"]');
+    if(tb)
+        tab.remove(tb);
     
-    var target = tab.add({tag: 'div', html: '', style: 'padding-bottom: 10px'});
-    tab.doLayout();
-
-    var config = {
-        schemaName: 'study',
-        queryName: 'demographics',
-        viewName: 'Abstract',
-        title: "Abstract",
+    tab.add({
+        xtype: 'ldk-multirecorddetailspanel',
+        bodyStyle: 'padding-bottom: 20px',
+        store: {
+            schemaName: 'study',
+            queryName: 'demographics',
+            viewName: 'Abstract',
+            filterArray: filterArray.removable.concat(filterArray.nonRemovable)
+        },
         titleField: 'Id',
-        renderTo: target.id,
-        filterArray: filterArray.removable.concat(filterArray.nonRemovable),
+        titlePrefix: 'Details',
         multiToGrid: true,
-        qwpConfig: {
-            scope: this,
-            success: function(dr){
-                var width1 = Ext.get('dataregion_'+dr.id).getSize().width+50;
-                var width2 = Ext.get(this.anchorLayout.id).getSize().width;
+        qwpConfig: panel.getQWPConfig({
+            title: 'Abstract'
+        })
+    });
 
-                if(width1 > width2){
-                    this.anchorLayout.setWidth(width1+140);
-                    //console.log('resizing')
-                }
-                else {
-                    this.anchorLayout.setWidth('100%');
-                }
-            }
-        }
-    };
-    new EHR.ext.DetailsView(config);
-
-    target = tab.add({tag: 'div', style: 'padding-bottom: 20px'});
-    tab.doLayout();
-    config = Ext.applyIf({
+    var config = panel.getQWPConfig({
         title: 'Other Notes' + ": " + title,
         frame: true,
         schemaName: 'study',
         queryName: 'notes',
         sort: '-date',
         filters: filterArray.nonRemovable,
-        removeableFilters: filterArray.removable,
-        scope: this
-    }, EHR.reports.qwpConfig);
-    new LABKEY.QueryWebPart(config).render(target.id);
+        removeableFilters: filterArray.removable
+    });
 
-    target = tab.add({tag: 'div', style: 'padding-bottom: 20px'});
-    tab.doLayout();
-    var config = Ext.applyIf({
+    tab.add({
+        xtype: 'ldk-querypanel',
+        style: 'padding-bottom:20px;',
+        queryConfig: config
+    });
+
+    config = panel.getQWPConfig({
         title: 'Active Assignments' + ": " + title,
         frame: true,
         schemaName: 'study',
         queryName: 'ActiveAssignments',
-        //viewName: 'Active Assignments',
-        //sort: '-date',
         filters: filterArray.nonRemovable,
-        removeableFilters: filterArray.removable,
-        scope: this
-    }, EHR.reports.qwpConfig);
-    new LABKEY.QueryWebPart(config).render(target.id);
+        removeableFilters: filterArray.removable
+    });
 
-    target = tab.add({tag: 'div', style: 'padding-bottom: 20px'});
-    tab.doLayout();
-    var config = Ext.applyIf({
+    tab.add({
+        xtype: 'ldk-querypanel',
+        style: 'padding-bottom:20px;',
+        queryConfig: config
+    });
+
+    config = panel.getQWPConfig({
         title: 'Problem List' + ": " + title,
         frame: true,
         schemaName: 'study',
@@ -119,100 +72,107 @@ EHR.reports.abstract = function(tab, subject){
         queryName: 'Problem List',
         //sort: '-date',
         filters: filterArray.nonRemovable,
-        removeableFilters: filterArray.removable,
-        scope: this
-    }, EHR.reports.qwpConfig);
+        removeableFilters: filterArray.removable
+    });
 
-    new LABKEY.QueryWebPart(config).render(target.id);
+    tab.add({
+        xtype: 'ldk-querypanel',
+        style: 'padding-bottom:20px;',
+        queryConfig: config
+    });
 
-    EHR.reports.weightGraph.call(this, tab, subject);
-       
+    EHR.reports.weightGraph(panel, tab, subject);
 };
 
-EHR.reports.arrivalDeparture = function(tab, subject){
-    var filterArray = this.getFilterArray(tab, subject);
+EHR.reports.arrivalDeparture = function(panel, tab, subject){
+    var filterArray = panel.getFilterArray(tab, subject);
     var title = (subject ? subject.join("; ") : '');
 
-    var target = tab.add({tag: 'span', style: 'padding-bottom: 20px'});
-    tab.doLayout();
-    var config = Ext.applyIf({
+    var config = panel.getQWPConfig({
         title: 'Arrivals' + ": " + title,
         schemaName: 'study',
         queryName: 'arrival',
         filters: filterArray.nonRemovable,
         removeableFilters: filterArray.removable,
-        scope: this,
         frame: true
-    }, EHR.reports.qwpConfig);
+    });
 
-    new LABKEY.QueryWebPart(config).render(target.id);
+    tab.add({
+        xtype: 'ldk-querypanel',
+        style: 'padding-bottom:20px;',
+        queryConfig: config
+    });
 
-    target = tab.add({tag: 'span', style: 'padding-bottom: 20px'});
-    tab.doLayout();
-    var config = Ext.applyIf({
+    config = panel.getQWPConfig({
         title: 'Departures' + ": " + title,
         schemaName: 'study',
         queryName: 'departure',
         filters: filterArray.nonRemovable,
         removeableFilters: filterArray.removable,
-        scope: this,
         frame: true
-    }, EHR.reports.qwpConfig);
+    });
 
-    new LABKEY.QueryWebPart(config).render(target.id);
-
+    tab.add({
+        xtype: 'ldk-querypanel',
+        style: 'padding-bottom:20px;',
+        queryConfig: config
+    });
 }
 
-EHR.reports.diagnostics = function(tab, subject){
-    var filterArray = this.getFilterArray(tab, subject);
+EHR.reports.diagnostics = function(panel, tab, subject){
+    var filterArray = panel.getFilterArray(tab, subject);
     var title = (subject ? subject.join("; ") : '');
     tab.getTopToolbar().removeAll();
 
-    var target = tab.add({tag: 'div', style: 'padding-bottom: 20px'});
-    tab.doLayout();
-    var config = Ext.applyIf({
+    var config = panel.getQWPConfig({
         title: 'Bacteriology',
         frame: true,
         schemaName: 'study',
         queryName: 'Bacteriology Results',
         sort: '-date',
         filters: filterArray.nonRemovable,
-        removeableFilters: filterArray.removable,
-        scope: this
-    }, EHR.reports.qwpConfig);
-    new LABKEY.QueryWebPart(config).render(target.id);
+        removeableFilters: filterArray.removable
+    });
 
-    target = tab.add({tag: 'div', style: 'padding-bottom: 20px'});
-    tab.doLayout();
-    config = Ext.applyIf({
+    tab.add({
+        xtype: 'ldk-querypanel',
+        style: 'padding-bottom:20px;',
+        queryConfig: config
+    });
+
+    config = panel.getQWPConfig({
         title: 'Chemistry',
         frame: true,
         schemaName: 'study',
         queryName: 'chemPivot',
         sort: '-date',
         filters: filterArray.nonRemovable,
-        removeableFilters: filterArray.removable,
-        scope: this
-    }, EHR.reports.qwpConfig);
-    new LABKEY.QueryWebPart(config).render(target.id);
+        removeableFilters: filterArray.removable
+    });
 
-    target = tab.add({tag: 'div', style: 'padding-bottom: 20px'});
-    tab.doLayout();
-    config = Ext.applyIf({
+    tab.add({
+        xtype: 'ldk-querypanel',
+        style: 'padding-bottom:20px;',
+        queryConfig: config
+    });
+
+    config = panel.getQWPConfig({
         schemaName: 'study',
         queryName: 'chemMisc',
         title: "Misc Chemistry Tests:",
         titleField: 'Id',
         sort: '-date',
         filters: filterArray.nonRemovable,
-        removeableFilters: filterArray.removable,
-        scope: this
-    }, EHR.reports.qwpConfig);
-    new LABKEY.QueryWebPart(config).render(target.id);
+        removeableFilters: filterArray.removable
+    });
 
-    target = tab.add({tag: 'div', style: 'padding-bottom: 20px'});
-    tab.doLayout();
-    var config = Ext.applyIf({
+    tab.add({
+        xtype: 'ldk-querypanel',
+        style: 'padding-bottom:20px;',
+        queryConfig: config
+    });
+
+    config = panel.getQWPConfig({
         title: 'Hematology',
         frame: true,
         schemaName: 'study',
@@ -220,282 +180,218 @@ EHR.reports.diagnostics = function(tab, subject){
         queryName: 'hematologyPivot',
         sort: '-date',
         filters: filterArray.nonRemovable,
-        removeableFilters: filterArray.removable,
-        scope: this
-    }, EHR.reports.qwpConfig);
+        removeableFilters: filterArray.removable
+    });
 
-    new LABKEY.QueryWebPart(config).render(target.id);
+    tab.add({
+        xtype: 'ldk-querypanel',
+        style: 'padding-bottom:20px;',
+        queryConfig: config
+    });
 
-    target = tab.add({tag: 'span', style: 'padding-bottom: 20px'});
-    tab.doLayout();
-
-    config = Ext.applyIf({
+    config = panel.getQWPConfig({
         schemaName: 'study',
         queryName: 'hematologyMisc',
         title: "Misc Hematology Tests:",
         titleField: 'Id',
         sort: '-date',
         filters: filterArray.nonRemovable,
-        removeableFilters: filterArray.removable,
-        scope: this
-    }, EHR.reports.qwpConfig);
-    new LABKEY.QueryWebPart(config).render(target.id);
+        removeableFilters: filterArray.removable
+    });
 
-    target = tab.add({tag: 'span', style: 'padding-bottom: 20px'});
-    tab.doLayout();
+    tab.add({
+        xtype: 'ldk-querypanel',
+        style: 'padding-bottom:20px;',
+        queryConfig: config
+    });
 
-    config = Ext.applyIf({
+    config = panel.getQWPConfig({
         schemaName: 'study',
         queryName: 'Hematology Morphology',
         title: "Hematology Morphology:",
         titleField: 'Id',
         sort: '-date',
         filters: filterArray.nonRemovable,
-        removeableFilters: filterArray.removable,
-        scope: this
-    }, EHR.reports.qwpConfig);
-    new LABKEY.QueryWebPart(config).render(target.id);
+        removeableFilters: filterArray.removable
+    });
 
-    target = tab.add({tag: 'span', style: 'padding-bottom: 20px'});
-    tab.doLayout();
+    tab.add({
+        xtype: 'ldk-querypanel',
+        style: 'padding-bottom:20px;',
+        queryConfig: config
+    });
 
-    config = Ext.applyIf({
+    config = panel.getQWPConfig({
         schemaName: 'study',
         queryName: 'immunologyPivot',
         title: "Immunology",
         sort: '-date',
         filters: filterArray.nonRemovable,
-        removeableFilters: filterArray.removable,
-        scope: this
-    }, EHR.reports.qwpConfig);
-    new LABKEY.QueryWebPart(config).render(target.id);
+        removeableFilters: filterArray.removable
+    });
 
-    target = tab.add({tag: 'span', style: 'padding-bottom: 20px'});
-    tab.doLayout();
+    tab.add({
+        xtype: 'ldk-querypanel',
+        style: 'padding-bottom:20px;',
+        queryConfig: config
+    });
 
-    config = Ext.applyIf({
+    config = panel.getQWPConfig({
         schemaName: 'study',
         queryName: 'Parasitology Results',
         title: "Parasitology",
         sort: '-date',
         filters: filterArray.nonRemovable,
-        removeableFilters: filterArray.removable,
-        scope: this
-    }, EHR.reports.qwpConfig);
-    new LABKEY.QueryWebPart(config).render(target.id);
+        removeableFilters: filterArray.removable
+    });
 
-    target = tab.add({tag: 'span', style: 'padding-bottom: 20px'});
-    tab.doLayout();
+    tab.add({
+        xtype: 'ldk-querypanel',
+        style: 'padding-bottom:20px;',
+        queryConfig: config
+    });
 
-    config = Ext.applyIf({
+    config = panel.getQWPConfig({
         schemaName: 'study',
         queryName: 'urinalysisPivot',
         title: "Urinalysis",
         sort: '-date',
         filters: filterArray.nonRemovable,
-        removeableFilters: filterArray.removable,
-        scope: this
-    }, EHR.reports.qwpConfig);
-    new LABKEY.QueryWebPart(config).render(target.id);
+        removeableFilters: filterArray.removable
+    });
 
-    target = tab.add({tag: 'span', style: 'padding-bottom: 20px'});
-    tab.doLayout();
+    tab.add({
+        xtype: 'ldk-querypanel',
+        style: 'padding-bottom:20px;',
+        queryConfig: config
+    });
 
-    config = Ext.applyIf({
+    config = panel.getQWPConfig({
         schemaName: 'study',
         queryName: 'Virology Results',
         title: "Virology",
         sort: '-date',
         filters: filterArray.nonRemovable,
-        removeableFilters: filterArray.removable,
-        scope: this
-    }, EHR.reports.qwpConfig);
-    new LABKEY.QueryWebPart(config).render(target.id);
+        removeableFilters: filterArray.removable
+    });
 
+    tab.add({
+        xtype: 'ldk-querypanel',
+        style: 'padding-bottom:20px;',
+        queryConfig: config
+    });
 }
 
-EHR.reports.pedigree = function(tab, subject){
-    var filterArray = this.getFilterArray(tab, subject);
+EHR.reports.pedigree = function(panel, tab, subject){
+    var filterArray = panel.getFilterArray(tab, subject);
     var title = (subject ? subject.join("; ") : '');
 
-    var target = tab.add({tag: 'span', style: 'padding-bottom: 20px'});
-    tab.doLayout();    
-    var config = {
-        schemaName: 'study',
-        queryName: 'demographicsFamily',
-        title: "Parents/Grandparents",
-        titleField: 'Id',
-        renderTo: target.id,
-        filterArray: filterArray.removable.concat(filterArray.nonRemovable),
-        multiToGrid: true
-    };
-    new EHR.ext.DetailsView(config);
+//    var target = tab.add({tag: 'span', style: 'padding-bottom: 20px'});
+//    tab.doLayout();
+//
+//    tab.add({
+//        xtype: '',
+//        schemaName: 'study',
+//        queryName: 'demographicsFamily',
+//        title: "Parents/Grandparents",
+//        titleField: 'Id',
+//        renderTo: target.id,
+//        filterArray: filterArray.removable.concat(filterArray.nonRemovable),
+//        multiToGrid: true
+//    });
 
-    target = tab.add({tag: 'span', style: 'padding-bottom: 20px'});
-    tab.doLayout();
-    config = Ext.applyIf({
+    var configOffspring = panel.getQWPConfig({
         title: 'Offspring' + ": " + title,
         schemaName: 'study',
         queryName: 'demographicsOffspring',
         filters: filterArray.nonRemovable,
         removeableFilters: filterArray.removable,
-        scope: this,
         frame: true
-    }, EHR.reports.qwpConfig);
+    });
 
-    new LABKEY.QueryWebPart(config).render(target.id);
-
-    target = tab.add({tag: 'span', style: 'padding-bottom: 20px'});
-    tab.doLayout();
-    config = Ext.applyIf({
+    var configSibling = panel.getQWPConfig({
         title: 'Siblings' + ": " + title,
         schemaName: 'study',
         queryName: 'demographicsSiblings',
         filters: filterArray.nonRemovable,
         removeableFilters: filterArray.removable,
-        scope: this,
         frame: true
-    }, EHR.reports.qwpConfig);
+    });
 
-    new LABKEY.QueryWebPart(config).render(target.id);
+    tab.add({
+        xtype: 'ldk-querypanel',
+        style: 'padding-bottom:20px;',
+        queryConfig: configOffspring
+    });
 
-
+    tab.add({
+        xtype: 'ldk-querypanel',
+        style: 'padding-bottom:20px;',
+        queryConfig: configSibling
+    });
 }
 
-EHR.reports.weightGraph = function(tab, subject){
-    subject = subject || [];
+EHR.reports.weightGraph = function(panel, tab, subjects){
+    subjects = subjects || [];
 
-    for (var i=0;i<subject.length;i++){
-        var filterArray = this.getFilterArray(tab, [subject[i]]);
-        var title = (subject[i] || '');
+    for (var i=0;i<subjects.length;i++){
+        var subject = subjects[i];
+        var filterArray = panel.getFilterArray(tab, [subject]);
+        var title = subject || '';
 
-        var store = new LABKEY.ext.Store({
+        LABKEY.Query.selectRows({
             schemaName: 'study',
             queryName: 'weightRelChange',
             filterArray: filterArray.removable.concat(filterArray.nonRemovable),
             columns: 'id,date,weight,LatestWeight,LatestWeightDate,PctChange,IntervalInMonths',
             sort: 'Id,-date',
-            autoLoad: true
+            requiredVersion: 9.1,
+            scope: this,
+            failure: LDK.Utils.getErrorCallback({logToServer: true}),
+            success: onSuccess
         });
 
-        tab.chart = new Ext.chart.LineChart({
-            xtype: 'linechart',
-            height: 300,
-            width: 900,
-            //style: 'margins: 100px;',
-            //extraStyle: 'margins:100px;',
-            store: store,
-            // The two following is not documented, but it's central for the linechart.
-            xField: "date",
-            yField: "weight",
-            xAxis: new Ext.chart.TimeAxis({
-                orientation: 'vertical',
-                title: 'Date',
-                labelRenderer: function(date) {
-                    return date.format("Y-m-d");
-                }
-            }),
-            yAxis: new Ext.chart.NumericAxis({
-                title: 'Weight (kg)'
-            }),
-            tipRenderer: function(chart, rec, axis){
-                var lines = [];
+        function onSuccess(results){
+            tab.add({
+                xtype: 'ldk-graphpanel',
+                title: 'Weight: ' + subject,
+                height: 500,
+                width: 900,
+                plotConfig: {
+                    results: results,
+                    metadata: results.metaData,
+                    grouping: ['Id'],
+                    layers: [{
+                        y: 'weight',
+                        hoverText: function(row){
+                            var lines = [];
 
-                lines.push('Date: '+rec.get('date').format('Y-m-d'));
-                lines.push('Weight: '+rec.get('weight')+' kg');
-                lines.push('Current Weight: '+rec.get('LatestWeight')+' kg');
-                if(rec.get('PctChange'))
-                    lines.push('Percent Change: '+rec.get('PctChange')+'%');
-                lines.push('Interval (Months): '+rec.get('IntervalInMonths'));
+                            lines.push('Date: ' + row.date.format('Y-m-d'));
+                            lines.push('Weight: ' + row.weight + ' kg');
+                            lines.push('Latest Weight: ' + row.LatestWeight + ' kg');
+                            if(row.LatestWeightDate)
+                                lines.push('Latest Weight Date: ' + row.LatestWeightDate.format('Y-m-d'));
+                            if(row.PctChange)
+                                lines.push('% Change From Current: '+row.PctChange + '%');
+                            lines.push('Interval (Months): ' + row.IntervalInMonths);
 
-                return lines.join('\n');
-            },
-            listeners: {
-//                itemmouseover: function(o) {
-//
-//                },
-                itemclick: function(o){
-                    var data = o.item;
-
-                    var lines = [];
-                    lines.push('Date: '+data['date'].format('Y-m-d'));
-                    lines.push('Weight: '+data.weight);
-                    lines.push('Current Weight: '+data.LatestWeight+' kg');
-                    if(data['PctChange'])
-                        lines.push('Percent Change: '+data.PctChange+'%');
-                    lines.push('Interval (Months): '+data.IntervalInMonths);
-
-                    var qtip = new Ext.ToolTip({
-                        html: lines.join('\n')
-                    });
-                    qtip.show();
-                }
-            }
-        });
-
-        tab.add(new Ext.Panel({
-            title: 'Weight: ' + title,
-            autoScroll: true,
-            autoHeight: true,
-            //frame: true,
-            style: 'border:5px',
-            ref: 'weightPanel',
-            //border: true,
-            //layout: 'fit',
-            items: [{
-                layout: 'hbox',
-                items: [
-                    tab.chart
-                ,{
-                    xtype: 'form',
-                    style: 'padding:10px;',
-                    width: 220,
-                    //buttonAlign: 'left',
-                    items: [{
-                        xtype: 'datefield',
-                        fieldLabel: 'Min Date',
-                        ref: 'minDate'
-                    },{
-                        xtype: 'datefield',
-                        fieldLabel: 'Max Date',
-                        ref: 'maxDate'
+                            return lines.join('\n');
+                        },
+                        name: 'Weight'
                     }],
-                    buttons: [{
-                        xtype: 'button',
-                        text: 'Refresh',
-                        handler: function(o){
-                            var min = o.ownerCt.ownerCt.minDate.getValue();
-                            var max = o.ownerCt.ownerCt.maxDate.getValue();
-                            var store = o.ownerCt.ownerCt.ownerCt.ownerCt.ownerCt.chart.store;
-                            if(min)
-                                store.baseParams['query.date~dategte'] = min.format('Y-m-d');
-                            else
-                                delete store.baseParams['query.date~dategte'];
-
-                            if(max)
-                                store.baseParams['query.date~datelte'] = max.format('Y-m-d');
-                            else
-                                delete store.baseParams['query.date~datelte'];
-
-                            store.reload();
-                        }
-                    }]
-    //                ,
-    //                tab.grid
-                    }]
-                }]
-            }
-        ));
+                    yLabel: 'Weight (kg)',
+                    xLabel: 'Date',
+                    title: 'Weight: ' + subject,
+                    xField: 'date'
+                }
+            });
+        }
     }
 
-    var target = tab.add({tag: 'span', style: 'padding-bottom: 20px'});
-    var target2 = tab.add({tag: 'span', style: 'padding-bottom: 20px'});
-    tab.doLayout();
+    var filterArray = panel.getFilterArray(tab, subjects);
+    var title = (subjects ? subjects.join("; ") : '');
 
-    var filterArray = this.getFilterArray(tab, subject);
-    var title = (subject ? subject.join("; ") : '');
-
-    var config = Ext.applyIf({
+    var config = panel.getQWPConfig({
         title: 'Weight Summary' + ": " + title,
         schemaName: 'study',
         queryName: 'demographicsWeightChange',
@@ -504,13 +400,17 @@ EHR.reports.weightGraph = function(tab, subject){
         //columns: 'Id,wdate,MostRecentWeight,MinLast30,MaxLast30,MaxChange30,MinLast90,MaxLast90,MaxChange90,MinLast120,MaxLast120,MaxChange120',
         filters: filterArray.nonRemovable,
         removeableFilters: filterArray.removable,
-        scope: this,
         frame: true
-    }, EHR.reports.qwpConfig);
-    new LABKEY.QueryWebPart(config).render(target.id);
+    });
 
-    title = (subject ? subject.join("; ") : '');
-    config = Ext.applyIf({
+    tab.add({
+        xtype: 'ldk-querypanel',
+        style: 'padding-bottom:20px;',
+        queryConfig: config
+    });
+
+    title = (subjects ? subjects.join("; ") : '');
+    config = panel.getQWPConfig({
         title: 'Weight' + ": " + title,
         schemaName: 'study',
         queryName: 'weight',
@@ -518,86 +418,53 @@ EHR.reports.weightGraph = function(tab, subject){
         sort: 'id,-date',
         filters: filterArray.nonRemovable,
         removeableFilters: filterArray.removable,
-        scope: this,
         frame: true
-    }, EHR.reports.qwpConfig);
+    });
 
-    new LABKEY.QueryWebPart(config).render(target2.id);
+    tab.add({
+        xtype: 'ldk-querypanel',
+        style: 'padding-bottom:20px;',
+        queryConfig: config
+    });
 };
 
-EHR.reports.bloodChemistry = function(tab, subject){
-
-    var filterArray = this.getFilterArray(tab, subject);
+EHR.reports.bloodChemistry = function(panel, tab, subject){
+    var filterArray = panel.getFilterArray(tab, subject);
     var title = (subject ? subject.join("; ") : '');
 
-//    tab.queryName = tab.queryName || 'chemPivot';
-//    this.addHeader(tab, [{
-//        html: 'Choose Report:',
-//        style: 'padding-left:10px'
-//        },{
-//        xtype: 'combo',
-//        store: new Ext.data.ArrayStore({
-//            fields: ['name', 'value'],
-//            data: [['Panel','chemPivot;'], ['Ref Range','Chemistry Results;Plus Ref Range']]
-//        }),
-//        fieldName: 'Test',
-//        mode: 'local',
-//        displayField: 'name',
-//        valueField: 'value',
-//        forceSelection:false,
-//        //typeAhead: true,
-//        triggerAction: 'all',
-//        value: tab.query,
-//        ref: '../reportSelector',
-//        listeners: {
-//            scope: this,
-//            select: function(c){
-//                var val = c.getValue().split(';');
-//                c.refOwner.queryName = val[0];
-//                c.refOwner.viewName = val[1];
-//                c.refOwner.filters = [];
-//                this.loadTab(c.refOwner);
-//            }
-//        }
-//    }]);
-
-    var target = tab.add({tag: 'span', style: 'padding-bottom: 20px'});
-    tab.doLayout();
-
-    var config = Ext.applyIf({
+    var config = panel.getQWPConfig({
         schemaName: 'study',
         queryName: 'chemPivot',
-        //viewName: tab.viewName,
         title: "By Panel:",
         titleField: 'Id',
         sort: '-date',
         filters: filterArray.nonRemovable,
-        removeableFilters: filterArray.removable,
-        scope: this
-    }, EHR.reports.qwpConfig);
-    new LABKEY.QueryWebPart(config).render(target.id);
+        removeableFilters: filterArray.removable
+    });
 
-//    if(tab.queryName == 'chemPivot'){
-        target = tab.add({tag: 'span', style: 'padding-bottom: 20px'});
-        tab.doLayout();
+    tab.add({
+        xtype: 'ldk-querypanel',
+        style: 'padding-bottom:20px;',
+        queryConfig: config
+    });
 
-        config = Ext.applyIf({
-            schemaName: 'study',
-            queryName: 'chemMisc',
-            title: "Misc Tests:",
-            titleField: 'Id',
-            sort: '-date',
-            filters: filterArray.nonRemovable,
-            removeableFilters: filterArray.removable,
-            scope: this
-        }, EHR.reports.qwpConfig);
-        new LABKEY.QueryWebPart(config).render(target.id);
-//    }
+    config = panel.getQWPConfig({
+        schemaName: 'study',
+        queryName: 'chemMisc',
+        title: "Misc Tests:",
+        titleField: 'Id',
+        sort: '-date',
+        filters: filterArray.nonRemovable,
+        removeableFilters: filterArray.removable
+    });
 
-    target = tab.add({tag: 'span', style: 'padding-bottom: 20px'});
-    tab.doLayout();
+    tab.add({
+        xtype: 'ldk-querypanel',
+        style: 'padding-bottom:20px;',
+        queryConfig: config
+    });
 
-    config = Ext.applyIf({
+    config = panel.getQWPConfig({
         schemaName: 'study',
         queryName: 'Chemistry Results',
         viewName: 'Plus Ref Range',
@@ -605,99 +472,69 @@ EHR.reports.bloodChemistry = function(tab, subject){
         titleField: 'Id',
         sort: '-date',
         filters: filterArray.nonRemovable,
-        removeableFilters: filterArray.removable,
-        scope: this
-    }, EHR.reports.qwpConfig);
-    new LABKEY.QueryWebPart(config).render(target.id);
+        removeableFilters: filterArray.removable
+    });
+
+    tab.add({
+        xtype: 'ldk-querypanel',
+        style: 'padding-bottom:20px;',
+        queryConfig: config
+    });
 }
 
-EHR.reports.hematology = function(tab, subject){
-
-    var filterArray = this.getFilterArray(tab, subject);
+EHR.reports.hematology = function(panel, tab, subject){
+    var filterArray = panel.getFilterArray(tab, subject);
     var title = (subject ? subject.join("; ") : '');
 
-//    tab.queryName = tab.queryName || 'hematologyPivot';
-//    this.addHeader(tab, [{
-//        html: 'Choose Report:',
-//        style: 'padding-left:10px'
-//        },{
-//        xtype: 'combo',
-//        store: new Ext.data.ArrayStore({
-//            fields: ['name', 'value'],
-//            data: [['Panel','hematologyPivot;'], ['Ref Range','Hematology Results;Plus Ref Range']]
-//        }),
-//        mode: 'local',
-//        displayField: 'name',
-//        valueField: 'value',
-//        forceSelection:false,
-//        //typeAhead: true,
-//        triggerAction: 'all',
-//        value: tab.query,
-//        ref: '../reportSelector',
-//        listeners: {
-//            scope: this,
-//            select: function(c){
-//                var val = c.getValue().split(';');
-//                c.refOwner.queryName = val[0];
-//                c.refOwner.viewName = val[1];
-//                c.refOwner.filters = [];
-//                this.loadTab(c.refOwner);
-//            }
-//        }
-//    }]);
-
-    var target = tab.add({tag: 'span', style: 'padding-bottom: 20px'});
-    tab.doLayout();
-
-    var config = Ext.applyIf({
+    var config = panel.getQWPConfig({
         schemaName: 'study',
         queryName: 'hematologyPivot',
-        //viewName: tab.viewName,
         title: "By Panel:",
         titleField: 'Id',
         filters: filterArray.nonRemovable,
         removeableFilters: filterArray.removable,
+        sort: '-date'
+    });
+
+    tab.add({
+        xtype: 'ldk-querypanel',
+        style: 'padding-bottom:20px;',
+        queryConfig: config
+    });
+
+    config = panel.getQWPConfig({
+        schemaName: 'study',
+        queryName: 'hematologyMisc',
+        title: "Misc Tests:",
+        titleField: 'Id',
         sort: '-date',
-        scope: this
-    }, EHR.reports.qwpConfig);
-    new LABKEY.QueryWebPart(config).render(target.id);
+        filters: filterArray.nonRemovable,
+        removeableFilters: filterArray.removable
+    });
 
-//    if(tab.queryName == 'hematologyPivot'){
-        target = tab.add({tag: 'span', style: 'padding-bottom: 20px'});
-        tab.doLayout();
+    tab.add({
+        xtype: 'ldk-querypanel',
+        style: 'padding-bottom:20px;',
+        queryConfig: config
+    });
 
-        config = Ext.applyIf({
-            schemaName: 'study',
-            queryName: 'hematologyMisc',
-            title: "Misc Tests:",
-            titleField: 'Id',
-            sort: '-date',
-            filters: filterArray.nonRemovable,
-            removeableFilters: filterArray.removable,
-            scope: this
-        }, EHR.reports.qwpConfig);
-        new LABKEY.QueryWebPart(config).render(target.id);
-//    }
-
-    target = tab.add({tag: 'span', style: 'padding-bottom: 20px'});
-    tab.doLayout();
-
-    config = Ext.applyIf({
+    config = panel.getQWPConfig({
         schemaName: 'study',
         queryName: 'Hematology Morphology',
         title: "Morphology:",
         titleField: 'Id',
         sort: '-date',
         filters: filterArray.nonRemovable,
-        removeableFilters: filterArray.removable,
-        scope: this
-    }, EHR.reports.qwpConfig);
-    new LABKEY.QueryWebPart(config).render(target.id);
+        removeableFilters: filterArray.removable
+    });
 
-    target = tab.add({tag: 'span', style: 'padding-bottom: 20px'});
-    tab.doLayout();
+    tab.add({
+        xtype: 'ldk-querypanel',
+        style: 'padding-bottom:20px;',
+        queryConfig: config
+    });
 
-    config = Ext.applyIf({
+    config = panel.getQWPConfig({
         schemaName: 'study',
         queryName: 'Hematology Results',
         viewName: 'Plus Ref Range',
@@ -705,102 +542,74 @@ EHR.reports.hematology = function(tab, subject){
         titleField: 'Id',
         sort: '-date',
         filters: filterArray.nonRemovable,
-        removeableFilters: filterArray.removable,
-        scope: this
-    }, EHR.reports.qwpConfig);
-    new LABKEY.QueryWebPart(config).render(target.id);
+        removeableFilters: filterArray.removable
+    });
+
+    tab.add({
+        xtype: 'ldk-querypanel',
+        style: 'padding-bottom:20px;',
+        queryConfig: config
+    });
 }
 
-EHR.reports.immunology = function(tab, subject){
-
-    var filterArray = this.getFilterArray(tab, subject);
+EHR.reports.immunology = function(panel, tab, subject){
+    var filterArray = panel.getFilterArray(tab, subject);
     var title = (subject ? subject.join("; ") : '');
-//    tab.queryName = tab.queryName || 'immunologyPivot';
 
-//    this.addHeader(tab, [{
-//        html: 'Choose Report:',
-//        style: 'padding-left:10px'
-//        },{
-//        xtype: 'combo',
-//        store: new Ext.data.ArrayStore({
-//            fields: ['name', 'value'],
-//            data: [['Panel','immunologyPivot;'], ['Ref Range','Immunology Results;']]
-//        }),
-//        mode: 'local',
-//        displayField: 'name',
-//        valueField: 'value',
-//        forceSelection:false,
-//        //typeAhead: true,
-//        triggerAction: 'all',
-//        value: tab.query,
-//        ref: '../reportSelector',
-//        listeners: {
-//            scope: this,
-//            select: function(c){
-//                var val = c.getValue().split(';');
-//                c.refOwner.queryName = val[0];
-//                c.refOwner.viewName = val[1];
-//                c.refOwner.filters = [];
-//                this.loadTab(c.refOwner);
-//            }
-//        }
-//    }]);
-
-    var target = tab.add({tag: 'span', style: 'padding-bottom: 20px'});
-    tab.doLayout();
-
-    var config = Ext.applyIf({
+    var config = panel.getQWPConfig({
         schemaName: 'study',
         queryName: 'immunologyPivot',
-        //viewName: tab.viewName,
         title: "By Panel:",
         titleField: 'Id',
         filters: filterArray.nonRemovable,
-        removeableFilters: filterArray.removable,
-        scope: this
-    }, EHR.reports.qwpConfig);
-    new LABKEY.QueryWebPart(config).render(target.id);
+        removeableFilters: filterArray.removable
+    });
 
-    target = tab.add({tag: 'span', style: 'padding-bottom: 20px'});
+    tab.add({
+        xtype: 'ldk-querypanel',
+        style: 'padding-bottom:20px;',
+        queryConfig: config
+    });
 
-    config = Ext.applyIf({
+    config = panel.getQWPConfig({
         schemaName: 'study',
         queryName: 'immunologyMisc',
-        //viewName: tab.viewName,
         title: "Immunology Misc:",
         titleField: 'Id',
         sort: '-date',
-        parent: this,
         filters: filterArray.nonRemovable,
-        removeableFilters: filterArray.removable,
-        scope: this
-    }, EHR.reports.qwpConfig);
-    new LABKEY.QueryWebPart(config).render(target.id);
+        removeableFilters: filterArray.removable
+    });
 
-    target = tab.add({tag: 'span', style: 'padding-bottom: 20px'});
-    tab.doLayout();
+    tab.add({
+        xtype: 'ldk-querypanel',
+        style: 'padding-bottom:20px;',
+        queryConfig: config
+    });
 
-    config = Ext.applyIf({
+    config = panel.getQWPConfig({
         schemaName: 'study',
         queryName: 'Immunology Results',
         viewName: 'Plus Ref Range',
         title: "Reference Ranges:",
         titleField: 'Id',
         sort: '-date',
-        parent: this,
         filters: filterArray.nonRemovable,
-        removeableFilters: filterArray.removable,
-        scope: this
-    }, EHR.reports.qwpConfig);
-    new LABKEY.QueryWebPart(config).render(target.id);
+        removeableFilters: filterArray.removable
+    });
 
+    tab.add({
+        xtype: 'ldk-querypanel',
+        style: 'padding-bottom:20px;',
+        queryConfig: config
+    });
 };
 
-EHR.reports.viralLoads = function(tab, subject){
+EHR.reports.viralLoads = function(panel, tab, subject){
     subject = subject || [];
 
     for (var i=0;i<subject.length;i++){
-        var filterArray = this.getFilterArray(tab, [subject[i]]);
+        var filterArray = panel.getFilterArray(tab, [subject[i]]);
         var title = (subject[i] || '');
 
         var store = new LABKEY.ext.Store({
@@ -812,78 +621,75 @@ EHR.reports.viralLoads = function(tab, subject){
             autoLoad: true
         });
 
-        tab.chart = new Ext.chart.LineChart({
-            xtype: 'linechart',
-            height: 300,
-            width: 600,
-            store: store,
-            // The two following is not documented, but it's central for the linechart.
-            xField: "date",
-            yField: "LogVL",
-            xAxis: new Ext.chart.TimeAxis({
-                orientation: 'vertical',
-                title: 'Date',
-                labelRenderer: function(date) { return date.format("Y-m-d"); }
-            }),
-            yAxis: new Ext.chart.NumericAxis({
-                title: 'Log Copies/mL'
-            }),
-            listeners: {
-                scope: this,
-                itemmouseover: function(o) {
-                    //var myGrid = Ext.getCmp('myGrid');
-                    //myGrid.selModel.selectRow(o.index);
-                },
-                itemclick: function(o){
-                    var rec = o.item;
-                }
-            }
-        });
-
-        tab.add(new Ext.Panel({
-            title: 'Viral Loads: ' + title,
-            autoScroll: true,
-            autoHeight: true,
-            //frame: true,
-            style: 'border:5px',
-            //border: true,
-            //layout: 'fit',
-            items: [{
-                layout: 'hbox',
-                items: [
-                    tab.chart
-                ]}
-            ]}
-        ));
+//        tab.chart = new Ext4.chart.LineChart({
+//            xtype: 'linechart',
+//            height: 300,
+//            width: 600,
+//            store: store,
+//            // The two following is not documented, but it's central for the linechart.
+//            xField: "date",
+//            yField: "LogVL",
+//            xAxis: new Ext4.chart.TimeAxis({
+//                orientation: 'vertical',
+//                title: 'Date',
+//                labelRenderer: function(date) { return date.format("Y-m-d"); }
+//            }),
+//            yAxis: new Ext4.chart.NumericAxis({
+//                title: 'Log Copies/mL'
+//            }),
+//            listeners: {
+//                scope: this,
+//                itemmouseover: function(o) {
+//                    //var myGrid = Ext4.getCmp('myGrid');
+//                    //myGrid.selModel.selectRow(o.index);
+//                },
+//                itemclick: function(o){
+//                    var rec = o.item;
+//                }
+//            }
+//        });
+//
+//        tab.add(new Ext4.Panel({
+//            title: 'Viral Loads: ' + title,
+//            autoScroll: true,
+//            autoHeight: true,
+//            //frame: true,
+//            style: 'border:5px',
+//            //border: true,
+//            //layout: 'fit',
+//            items: [{
+//                layout: 'hbox',
+//                items: [
+//                    tab.chart
+//                ]}
+//            ]}
+//        ));
     }
 
-    var target = tab.add({tag: 'span', style: 'padding-bottom: 20px'});
-    tab.doLayout();
-    var filterArray = this.getFilterArray(tab, subject);
+    var filterArray = panel.getFilterArray(tab, subject);
     var title = (subject.join(', ') || '');
-    var config = Ext.applyIf({
+    var config = panel.getQWPConfig({
         title: 'Viral Load' + ": " + title,
         schemaName: 'study',
         queryName: 'ViralLoadsWpi',
-        //viewName: 'With WPI',
         filters: filterArray.nonRemovable,
         removeableFilters: filterArray.removable,
         sort: 'id,-date',
-        scope: this,
         frame: true
-    }, EHR.reports.qwpConfig);
+    });
 
-    new LABKEY.QueryWebPart(config).render(target.id);
+    tab.add({
+        xtype: 'ldk-querypanel',
+        style: 'padding-bottom:20px;',
+        queryConfig: config
+    });
 }
 
-EHR.reports.irregularObs = function(tab, subject){
-    var filterArray = this.getFilterArray(tab, subject);
+EHR.reports.irregularObs = function(panel, tab, subject){
+    var filterArray = panel.getFilterArray(tab, subject);
 
     var title = (subject ? subject.join("; ") : '');
-    this.addHeader(tab);
-
-    var target = tab.add({tag: 'span', style: 'padding-bottom: 20px'});
-    tab.doLayout();
+    //this.addHeader(tab);
 
     var queryName;
     if(tab.filters._inputType == 'renderRoomCage' || tab.filters._inputType == 'renderColony'){
@@ -893,32 +699,31 @@ EHR.reports.irregularObs = function(tab, subject){
         queryName = 'irregularObsById';
     }
 
-    var config = Ext.apply({
+    var config = panel.getQWPConfig({
         schemaName: 'study',
         queryName: queryName,
         title: "Irregular Observations: "+title,
         sort: 'room,cage,-date',
         titleField: 'Id',
         filters: filterArray.nonRemovable,
-        removeableFilters: filterArray.removable,
-        scope: this
-    }, EHR.reports.qwpConfig);
+        removeableFilters: filterArray.removable
+    });
 
     if(tab.rowData.get('viewname'))
         config.viewName = tab.rowData.get('viewname');
 
-    new LABKEY.QueryWebPart(config).render(target.id);
-
+    tab.add({
+        xtype: 'ldk-querypanel',
+        style: 'padding-bottom:20px;',
+        queryConfig: config
+    });
 }
 
-EHR.reports.irregularObsTreatment = function(tab, subject){
-    var filterArray = this.getFilterArray(tab, subject);
+EHR.reports.irregularObsTreatment = function(panel, tab, subject){
+    var filterArray = panel.getFilterArray(tab, subject);
 
     var title = (subject ? subject.join("; ") : '');
-    this.addHeader(tab);
-
-    var target = tab.add({tag: 'span', style: 'padding-bottom: 20px'});
-    tab.doLayout();
+    //this.addHeader(tab);
 
     var queryName;
     if(tab.filters._inputType == 'renderRoomCage' || tab.filters._inputType == 'renderColony'){
@@ -928,157 +733,128 @@ EHR.reports.irregularObsTreatment = function(tab, subject){
         queryName = 'irregularObsTreatmentById';
     }
 
-    var config = Ext.apply({
+    var config = panel.getQWPConfig({
         schemaName: 'study',
         queryName: queryName,
-        //viewName: tab.viewName,
         title: "Obs/Treatments: "+title,
         titleField: 'Id',
         sort: 'room,cage,-date',
         filters: filterArray.nonRemovable,
-        removeableFilters: filterArray.removable,
-        scope: this
-    }, EHR.reports.qwpConfig);
-    new LABKEY.QueryWebPart(config).render(target.id);
+        removeableFilters: filterArray.removable
+    });
 
+    tab.add({
+        xtype: 'ldk-querypanel',
+        style: 'padding-bottom:20px;',
+        queryConfig: config
+    });
 }
 
-EHR.reports.urinalysisResults = function(tab, subject){
+EHR.reports.urinalysisResults = function(panel, tab, subject){
 
-    var filterArray = this.getFilterArray(tab, subject);
+    var filterArray = panel.getFilterArray(tab, subject);
     var title = (subject ? subject.join("; ") : '');
     tab.queryName = tab.queryName || 'urinalysisPivot';
 
-//    this.addHeader(tab, [{
-//        html: 'Choose Report:',
-//        style: 'padding-left:10px'
-//        },{
-//        xtype: 'combo',
-//        store: new Ext.data.ArrayStore({
-//            fields: ['name', 'value'],
-//            data: [['Panel','urinalysisPivot;'], ['Individual Results','Urinalysis Results;']]
-//        }),
-//        fieldName: 'Test',
-//        mode: 'local',
-//        displayField: 'name',
-//        valueField: 'value',
-//        forceSelection:false,
-//        //typeAhead: true,
-//        triggerAction: 'all',
-//        value: tab.query,
-//        ref: '../reportSelector',
-//        listeners: {
-//            scope: this,
-//            select: function(c){
-//                var val = c.getValue().split(';');
-//                c.refOwner.queryName = val[0];
-//                c.refOwner.viewName = val[1];
-//                c.refOwner.filters = [];
-//                this.loadTab(c.refOwner);
-//            }
-//        }
-//    }]);
-
-    var target = tab.add({tag: 'span', style: 'padding-bottom: 20px'});
-    tab.doLayout();
-
-    var config = Ext.applyIf({
+    var config = panel.getQWPConfig({
         schemaName: 'study',
         queryName: 'urinalysisPivot',
-        //viewName: tab.viewName,
         title: "By Panel:",
         titleField: 'Id',
         sort: '-date',
-        parent: this,
         filters: filterArray.nonRemovable,
-        removeableFilters: filterArray.removable,
-        scope: this
-    }, EHR.reports.qwpConfig);
-    new LABKEY.QueryWebPart(config).render(target.id);
+        removeableFilters: filterArray.removable
+    });
 
-    target = tab.add({tag: 'span', style: 'padding-bottom: 20px'});
-    tab.doLayout();
+    tab.add({
+        xtype: 'ldk-querypanel',
+        style: 'padding-bottom:20px;',
+        queryConfig: config
+    });
 
-    config = Ext.applyIf({
+    config = panel.getQWPConfig({
         schemaName: 'study',
         queryName: 'urinalysisMisc',
-        //viewName: tab.viewName,
         title: "Urinalysis Misc:",
         titleField: 'Id',
         sort: '-date',
-        parent: this,
         filters: filterArray.nonRemovable,
-        removeableFilters: filterArray.removable,
-        scope: this
-    }, EHR.reports.qwpConfig);
-    new LABKEY.QueryWebPart(config).render(target.id);
+        removeableFilters: filterArray.removable
+    });
 
-    target = tab.add({tag: 'span', style: 'padding-bottom: 20px'});
-    tab.doLayout();
+    tab.add({
+        xtype: 'ldk-querypanel',
+        style: 'padding-bottom:20px;',
+        queryConfig: config
+    });
 
-    config = Ext.applyIf({
+    config = panel.getQWPConfig({
         schemaName: 'study',
         queryName: 'Urinalysis Results',
         viewName: 'Plus Ref Range',
         title: "Reference Ranges:",
         titleField: 'Id',
         sort: '-date',
-        parent: this,
         filters: filterArray.nonRemovable,
-        removeableFilters: filterArray.removable,
-        scope: this
-    }, EHR.reports.qwpConfig);
-    new LABKEY.QueryWebPart(config).render(target.id);
+        removeableFilters: filterArray.removable
+    });
 
+    tab.add({
+        xtype: 'ldk-querypanel',
+        style: 'padding-bottom:20px;',
+        queryConfig: config
+    });
 }
 
-EHR.reports.treatmentSchedule = function(tab, subject){
-    var filterArray = this.getFilterArray(tab, subject);
+EHR.reports.treatmentSchedule = function(panel, tab, subject){
+    var filterArray = panel.getFilterArray(tab, subject);
     var title = (subject ? subject.join("; ") : '');
-
 
     var target = tab.add({tag: 'span', style: 'padding-bottom: 20px'});
     tab.doLayout();
 
-    var config = Ext.applyIf({
+    var config = panel.getQWPConfig({
         title: 'AM Treatments',
         schemaName: 'study',
         queryName: 'treatmentSchedule',
         filters: filterArray.nonRemovable,
         removeableFilters: filterArray.removable.concat([LABKEY.Filter.create('timeofday', 'AM', LABKEY.Filter.Types.EQUAL)]),
-        scope: this,
         frame: true
-    }, EHR.reports.qwpConfig);
+    });
 
-    new LABKEY.QueryWebPart(config).render(target.id);
+    tab.add({
+        xtype: 'ldk-querypanel',
+        style: 'padding-bottom:20px;',
+        queryConfig: config
+    });
 
-    target = tab.add({tag: 'span', style: 'padding-bottom: 20px'});
-    tab.doLayout();
-    config = Ext.applyIf({
+    config = panel.getQWPConfig({
         title: 'PM Treatments',
         schemaName: 'study',
         queryName: 'treatmentSchedule',
         filters: filterArray.nonRemovable,
         removeableFilters: filterArray.removable.concat([LABKEY.Filter.create('timeofday', 'PM', LABKEY.Filter.Types.EQUAL)]),
-        scope: this,
         frame: true
-    }, EHR.reports.qwpConfig);
+    });
 
-    new LABKEY.QueryWebPart(config).render(target.id);
+    tab.add({
+        xtype: 'ldk-querypanel',
+        style: 'padding-bottom:20px;',
+        queryConfig: config
+    });
 
-    target = tab.add({tag: 'span', style: 'padding-bottom: 20px'});
-    tab.doLayout();
-    config = Ext.applyIf({
+    config = panel.getQWPConfig({
         title: 'Night Treatments',
         schemaName: 'study',
         queryName: 'treatmentSchedule',
         filters: filterArray.nonRemovable,
         removeableFilters: filterArray.removable.concat([LABKEY.Filter.create('timeofday', 'Night', LABKEY.Filter.Types.EQUAL)]),
-        scope: this,
         frame: true
-    }, EHR.reports.qwpConfig);
+    });
 
-    new LABKEY.QueryWebPart(config).render(target.id);
-
-
+    tab.add({
+        xtype: 'ldk-querypanel',
+        style: 'padding-bottom:20px;',
+        queryConfig: config
+    });
 }

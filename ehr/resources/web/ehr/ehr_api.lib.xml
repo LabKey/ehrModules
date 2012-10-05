@@ -17,13 +17,13 @@
         <script path="/ehr/ExtComponents.js"/>
         <script path="/ehr/ExtContainers.js"/>
         <script path="/ehr/ehrMetadata.js"/>
-        <script path="/ehr/ehrDetailsPanel.js"/>
         <script path="/ehr/studyButtons.js"/>
         <script path="/ehr/animalHistory.js"/>
         <script path="/ehr/stylesheet.css"/>
     </library>
     <dependencies>
         <dependency path="clientapi"/>
+        <dependency path="LDK/LDKApi"/>
         <dependency path="StatusBar.js"/>
     </dependencies>
     <requiredModuleContext>

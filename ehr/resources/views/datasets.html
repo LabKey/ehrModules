@@ -40,9 +40,13 @@ Ext4.onReady(function () {
                     items: [
                         this.getLabelItemCfg(item)
                     ,
-                        this.getSearchItemCfg(item)
+                        this.getSearchItemCfg(item, {
+                            url: LABKEY.ActionURL.buildURL("query", "searchPanel", null, {schemaName: item.schemaName, queryName: item.queryName})
+                        })
                     ,
-                        this.getBrowseItemCfg(item)
+                        this.getBrowseItemCfg(item, {
+                            url: LABKEY.ActionURL.buildURL("query", "executeQuery", null, {schemaName: item.schemaName, 'query.queryName': item.queryName})
+                        })
                     ]
                 }
 

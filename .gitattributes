@@ -990,7 +990,6 @@ ehr/resources/web/ehr/animalHistory.js -text
 ehr/resources/web/ehr/databind.js -text
 ehr/resources/web/ehr/datetime.js -text
 ehr/resources/web/ehr/ehrAPI.js -text
-ehr/resources/web/ehr/ehrDetailsPanel.js -text
 ehr/resources/web/ehr/ehrEditorGridpanel.js -text
 ehr/resources/web/ehr/ehrFormPanel.js -text
 ehr/resources/web/ehr/ehrGridFormPanel.js -text

@@ -224,7 +224,7 @@
                         </item>
                     </item>
                     <item text=" " requiresSelection="true" insertAfter="More Actions">
-                        <onClick>function(){return false}</onClick>
+                        <onClick>javascript:void(0);</onClick>
                     </item>
                 </buttonBarOptions>
             </table>

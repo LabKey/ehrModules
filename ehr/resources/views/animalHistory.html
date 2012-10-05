@@ -1,8 +1,10 @@
 <script type="text/javascript">
 
-Ext.onReady(function (){
+Ext4.onReady(function (){
     var webpart = <%=webpartContext%>;
-    new EHR.ext.SingleAnimalReport({renderTo: webpart.wrapperDivId});
+    Ext4.create('EHR.ext.SingleAnimalReport', {
+        renderTo: webpart.wrapperDivId
+    });
 });
 
 </script>

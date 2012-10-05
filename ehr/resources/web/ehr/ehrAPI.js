@@ -39,7 +39,6 @@ LABKEY.requiresScript("/ehr/ehrPrintTaskPanel.js");
 LABKEY.requiresScript("/ehr/ExtComponents.js");
 LABKEY.requiresScript("/ehr/ExtContainers.js");
 LABKEY.requiresScript("/ehr/ehrMetadata.js");
-LABKEY.requiresScript("/ehr/ehrDetailsPanel.js");
 LABKEY.requiresScript("/ehr/studyButtons.js");
 LABKEY.requiresScript("/ehr/animalHistory.js");
 LABKEY.requiresScript("StatusBar.js");
