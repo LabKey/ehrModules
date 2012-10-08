@@ -34,7 +34,7 @@ CASE
 END as status
 
 --determine whether animal was ever at the center
---possibly also use housing as proxy?
+--possibly also use housing as proxy
 -- CASE
 --   WHEN
 --     (a.dataset.demographics.birth IS NOT NULL OR a.dataset.demographics.arrivedate IS NOT NULL)
