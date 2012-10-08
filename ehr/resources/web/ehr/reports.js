@@ -347,45 +347,42 @@ EHR.reports.weightGraph = function(panel, tab, subjects){
             sort: 'Id,-date',
             requiredVersion: 9.1,
             scope: this,
-            failure: LDK.Utils.getErrorCallback({logToServer: true}),
-            success: onSuccess
+            failure: LDK.Utils.getErrorCallback(),
+            success: function(results){
+                tab.add({
+                    xtype: 'ldk-graphpanel',
+                    title: 'Weight Graph: ' + subject,
+                    plotConfig: {
+                        results: results,
+                        title: 'Weight: ' + subject,
+                        height: 400,
+                        width: 900,
+                        yLabel: 'Weight (kg)',
+                        xLabel: 'Date',
+                        xField: 'date',
+                        grouping: ['Id'],
+                        layers: [{
+                            y: 'weight',
+                            hoverText: function(row){
+                                var lines = [];
+
+                                lines.push('Date: ' + row.date.format('Y-m-d'));
+                                lines.push('Weight: ' + row.weight + ' kg');
+                                lines.push('Latest Weight: ' + row.LatestWeight + ' kg');
+                                if(row.LatestWeightDate)
+                                    lines.push('Latest Weight Date: ' + row.LatestWeightDate.format('Y-m-d'));
+                                if(row.PctChange)
+                                    lines.push('% Change From Current: '+row.PctChange + '%');
+                                lines.push('Interval (Months): ' + row.IntervalInMonths);
+
+                                return lines.join('\n');
+                            },
+                            name: 'Weight'
+                        }]
+                    }
+                });
+            }
         });
-
-        function onSuccess(results){
-            tab.add({
-                xtype: 'ldk-graphpanel',
-                title: 'Weight: ' + subject,
-                height: 500,
-                width: 900,
-                plotConfig: {
-                    results: results,
-                    metadata: results.metaData,
-                    grouping: ['Id'],
-                    layers: [{
-                        y: 'weight',
-                        hoverText: function(row){
-                            var lines = [];
-
-                            lines.push('Date: ' + row.date.format('Y-m-d'));
-                            lines.push('Weight: ' + row.weight + ' kg');
-                            lines.push('Latest Weight: ' + row.LatestWeight + ' kg');
-                            if(row.LatestWeightDate)
-                                lines.push('Latest Weight Date: ' + row.LatestWeightDate.format('Y-m-d'));
-                            if(row.PctChange)
-                                lines.push('% Change From Current: '+row.PctChange + '%');
-                            lines.push('Interval (Months): ' + row.IntervalInMonths);
-
-                            return lines.join('\n');
-                        },
-                        name: 'Weight'
-                    }],
-                    yLabel: 'Weight (kg)',
-                    xLabel: 'Date',
-                    title: 'Weight: ' + subject,
-                    xField: 'date'
-                }
-            });
-        }
     }
 
     var filterArray = panel.getFilterArray(tab, subjects);
@@ -397,7 +394,6 @@ EHR.reports.weightGraph = function(panel, tab, subjects){
         queryName: 'demographicsWeightChange',
         viewName: 'With Id',
         sort: 'id',
-        //columns: 'Id,wdate,MostRecentWeight,MinLast30,MaxLast30,MaxChange30,MinLast90,MaxLast90,MaxChange90,MinLast120,MaxLast120,MaxChange120',
         filters: filterArray.nonRemovable,
         removeableFilters: filterArray.removable,
         frame: true
@@ -612,58 +608,33 @@ EHR.reports.viralLoads = function(panel, tab, subject){
         var filterArray = panel.getFilterArray(tab, [subject[i]]);
         var title = (subject[i] || '');
 
-        var store = new LABKEY.ext.Store({
+        LABKEY.Query.selectRows({
             schemaName: 'study',
             queryName: 'ViralLoads',
             filterArray: filterArray.removable.concat(filterArray.nonRemovable),
             columns: 'Id,date,LogVL',
             sort: 'Id,-date',
-            autoLoad: true
+            success: function(results){
+                tab.add({
+                    xtype: 'ldk-graphpanel',
+                    title: 'Viral Loads: ' + subject,
+                    plotConfig: {
+                        results: results,
+                        title: 'Viral Loads: ' + subject,
+                        height: 400,
+                        width: 900,
+                        yLabel: 'Log Copies/mL',
+                        xLabel: 'Date',
+                        xField: 'date',
+                        grouping: ['Id'],
+                        layers: [{
+                            y: 'viralLoad',
+                            name: 'Viral Load'
+                        }]
+                    }
+                });
+            }
         });
-
-//        tab.chart = new Ext4.chart.LineChart({
-//            xtype: 'linechart',
-//            height: 300,
-//            width: 600,
-//            store: store,
-//            // The two following is not documented, but it's central for the linechart.
-//            xField: "date",
-//            yField: "LogVL",
-//            xAxis: new Ext4.chart.TimeAxis({
-//                orientation: 'vertical',
-//                title: 'Date',
-//                labelRenderer: function(date) { return date.format("Y-m-d"); }
-//            }),
-//            yAxis: new Ext4.chart.NumericAxis({
-//                title: 'Log Copies/mL'
-//            }),
-//            listeners: {
-//                scope: this,
-//                itemmouseover: function(o) {
-//                    //var myGrid = Ext4.getCmp('myGrid');
-//                    //myGrid.selModel.selectRow(o.index);
-//                },
-//                itemclick: function(o){
-//                    var rec = o.item;
-//                }
-//            }
-//        });
-//
-//        tab.add(new Ext4.Panel({
-//            title: 'Viral Loads: ' + title,
-//            autoScroll: true,
-//            autoHeight: true,
-//            //frame: true,
-//            style: 'border:5px',
-//            //border: true,
-//            //layout: 'fit',
-//            items: [{
-//                layout: 'hbox',
-//                items: [
-//                    tab.chart
-//                ]}
-//            ]}
-//        ));
     }
 
     var filterArray = panel.getFilterArray(tab, subject);

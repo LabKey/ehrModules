@@ -21,7 +21,7 @@ Ext4.define('EHR.ext.SingleAnimalReport', {
             tabsReady: false,
             border: false,
             bodyStyle: 'background-color : transparent;',
-            //reports: {},
+            reportMap: {},
             defaults: {
                 border: false
             },
@@ -41,7 +41,7 @@ Ext4.define('EHR.ext.SingleAnimalReport', {
                             border: false
                         },
                         itemId: 'togglePanel',
-                        style: 'padding-bottom:20px;',
+                        style: 'margin-bottom:20px;',
                         layout: 'hbox',
                         items: this.getFilterOptionsItems()
                     },{
@@ -81,9 +81,6 @@ Ext4.define('EHR.ext.SingleAnimalReport', {
 
         this.callParent(arguments);
 
-        //populate initial fields
-        this[this.down('#inputType').getValue().selector]();
-
         this.reportStore = Ext4.create('LABKEY.ext4.Store', {
             schemaName: 'ehr',
             queryName: 'reports',
@@ -97,8 +94,6 @@ Ext4.define('EHR.ext.SingleAnimalReport', {
             failure: LDK.Utils.getErrorCallback()
         });
 
-        this.on('beforerender', this.restoreUrl);
-
         this.on('afterrender', this.onAfterRender);
     },
 
@@ -107,8 +102,8 @@ Ext4.define('EHR.ext.SingleAnimalReport', {
     },
 
     getFilterOptionsItems: function(){
-        var inputType = LABKEY.ActionURL.getParameter('inputType') || 'renderSingleSubject';
-
+        var inputType = LABKEY.ActionURL.getParameter('_inputType') || 'renderSingleSubject';
+//console.log(inputType)
         return [{
             width: 200,
             html: '<p>Type of Search:</p>'
@@ -169,7 +164,7 @@ Ext4.define('EHR.ext.SingleAnimalReport', {
         target.add({
             width: 200,
             html: 'Enter Subject Id:',
-            style: 'padding-bottom:10px'
+            style: 'margin-bottom:10px'
         });
 
         target.add({
@@ -348,7 +343,7 @@ Ext4.define('EHR.ext.SingleAnimalReport', {
                         }).show();
 
                     },
-                    style: 'padding-bottom:10px'
+                    style: 'margin-bottom:10px'
                 }]
             },{
                 xtype: 'panel',
@@ -567,11 +562,7 @@ Ext4.define('EHR.ext.SingleAnimalReport', {
                 var t = token[i].split(':');
                 switch(t[0]){
                     case '_inputType':
-                        this.down('#inputType').items.each(function(c){
-                            c.checked = (c.inputValue == t[1]);
-                        }, this);
-
-                        this[t[1]]();
+                        this.down('#inputType').setValue({selector: t[1]});
                         break;
                     case 'subject':
                         if(this.down('#subjArea')){
@@ -579,10 +570,16 @@ Ext4.define('EHR.ext.SingleAnimalReport', {
                         }
                         break;
                     case '_showReport':
-                        this.doLoad = t[1] == 1;
+                        this.doLoad = (t[1] == 1);
                         break;
                     case 'activeReport':
                         this.report = t[1];
+                            var tab = this.reportMap[t[1]];
+                            if (tab){
+                                this.activeReport = tab;
+                                this.silentlySetActiveTab(this.activeReport);
+                                this.onSubmit();
+                            }
                         break;
                     case 'room':
                         if(this.down('#roomField')){
@@ -599,41 +596,10 @@ Ext4.define('EHR.ext.SingleAnimalReport', {
                             this.down('#areaField').setValue(t[1]);
                         }
                         break;
-//                    case 'startDate':
-//                        if(this.startDateField){
-//                            this.startDateField.setValue(t[1]);
-//                        }
-//                        break;
-//                    case 'endDate':
-//                        if(this.endDateField){
-//                            this.endDateField.setValue(t[1]);
-//                        }
-//                        break;
                 }
             }
         }
     },
-
-//    renderTimePreset: function(label, timeShift){
-//        return {
-//            xtype: 'button',
-//            text: label,
-//            minWidth: 100,
-//            listeners: {
-//                scope: this,
-//                click: function(o){
-//                    var dt = new Date();
-//                    dt.setDate(dt.getDate() + timeShift);
-//                    dt = dt.format("Y-m-d");
-//                    var now = new Date();
-//                    now.setDate(now.getDate() + 1);
-//                    now = now.format('Y-m-d');
-//                    this.endDateField.setValue(now);
-//                    this.startDateField.setValue(dt);
-//                }
-//            }
-//        };
-//    },
 
     processSubj: function(){
         var type = this.down('#inputType').getValue().selector;
@@ -729,8 +695,8 @@ Ext4.define('EHR.ext.SingleAnimalReport', {
         if(!this.activeReport){
             var parentTab = this.down('#tabPanel').down('#General');
             this.activeReport = parentTab.down('#abstract');
-            parentTab.activate(this.activeReport);
-            this.down('#tabPanel').activate(parentTab);
+            parentTab.setActiveTab(this.activeReport);
+            this.down('#tabPanel').setActiveTab(parentTab);
         }
         else {
             this.loadTab(this.activeReport);
@@ -768,7 +734,6 @@ Ext4.define('EHR.ext.SingleAnimalReport', {
             //we handle differently depending on whether we combine subjects
             if (!tab.combineSubj){
                 for (var i = 0; i < tab.subjectArray.length; i++){
-                    //first we make a new DIV for each subject to hold the report
                     var subject = [tab.subjectArray[i]];
                     this.renderReport(tab, subject);
                 }
@@ -977,32 +942,36 @@ Ext4.define('EHR.ext.SingleAnimalReport', {
         }, config);
     },
 
-    loadReport: function(tab, subject, target){
+    loadReport: function(tab, subject){
         var filterArray = this.getFilterArray(tab, subject);
         filterArray = filterArray.nonRemovable.concat(filterArray.removable);
-        target = target || tab.add({tag: 'span', html: 'Loading...', cls: 'loading-indicator'});
+        var target = tab.add({
+            xtype: 'ldk-contentresizingpanel'
+        });
+
         var title = (subject ? subject.join("; ") : '');
 
         var queryConfig = {
             partName: 'Report',
-            renderTo: target.id,
+            renderTo: target.renderTarget,
             suppressRenderErrors: true,
             partConfig: {
                 title: tab.rowData.get("reporttitle") + ": " + title,
                 schemaName: tab.rowData.get("schemaname"),
                 reportId : tab.rowData.get("report"),
-                'query.queryName': tab.rowData.get("queryname"),
-                'query.Id~in': subject.join(";")
+                'query.queryName': tab.rowData.get("queryname")
             },
             filters: filterArray,
             success: function(result){
-                var el = Ext4.get(target.id);
-                console.log(el.getSize())
-                console.log(tab);
+                target.createListeners.defer(200, target);
             },
             failure: LDK.Utils.getErrorCallback(),
             scope: this
         };
+
+        if (subject){
+            queryConfig.partConfig['query.Id~in'] = Ext4.isArray(subject) ? subject.join(";") : 'subject';
+        }
 
         if (tab.rowData.get("containerpath")){
             queryConfig.containerPath = tab.rowData.get("containerpath");
@@ -1114,7 +1083,7 @@ Ext4.define('EHR.ext.SingleAnimalReport', {
                     this.activeReport = theTab;
                 }
 
-                //this.reports[c.get('reportname')] = theTab;
+                this.reportMap[c.get('reportname')] = theTab;
             }
         }, this);
 
@@ -1128,11 +1097,14 @@ Ext4.define('EHR.ext.SingleAnimalReport', {
             this.silentlySetActiveTab(tabPanel.down('#General').down('#abstract'));
         }
 
+        //populate initial fields
+        this[this.down('#inputType').getValue().selector]();
+        this.restoreUrl();
+
         if(this.down('#submitBtn')){
             this.tabsReady = true;
             this.down('#submitBtn').setDisabled(false);
         }
-
     },
 
     silentlySetActiveTab: function(tab){
@@ -1180,7 +1152,7 @@ Ext4.define('EHR.ext.SingleAnimalReport', {
 
     setFilters: function(tab){
         this.filters = {
-            _inputType : this.down('#inputType').getValue().selectors,
+            _inputType : this.down('#inputType').getValue().selector,
             _showReport: 1,
             room: (this.down('#roomField') ? this.down('#roomField').getValue() : null),
             cage : (this.down('#cageField') ? this.down('#cageField').getValue() : null),
@@ -1214,7 +1186,7 @@ Ext4.define('EHR.ext.SingleAnimalReport', {
             fieldLabel: 'Combine Subjects',
             itemId: 'combine',
             tab: tab,
-            //style: 'padding-left:5px;padding-top:0px;padding-bottom:2px;',
+            //style: 'padding-left:5px;padding-top:0px;margin-bottom:2px;',
             listeners: {
                 scope: this,
                 change: function(o, s){
