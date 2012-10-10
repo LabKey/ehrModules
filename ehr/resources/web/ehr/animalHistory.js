@@ -74,8 +74,7 @@ Ext4.define('EHR.ext.SingleAnimalReport', {
                 style: 'padding: 10px'
             },{
                 xtype: 'tabpanel',
-                itemId: 'tabPanel',
-                activeTab: 0
+                itemId: 'tabPanel'
             }]
         });
 
@@ -365,14 +364,16 @@ Ext4.define('EHR.ext.SingleAnimalReport', {
                     text: '  Replace -->',
                     handler: function(){
                         this.subjectArray = [];
-                        this.processSubj()
+                        this.processSubj();
                     },
                     scope: this
                 },{
-                    text: ' Clear ',
+                    text: 'Clear',
                     handler: function(c){
                         this.subjectArray = [];
                         this.down('#idPanel').removeAll();
+                        this.down('#subjArea').reset();
+                        this.processSubj();
                     },
                     scope: this
                 }]
@@ -461,7 +462,7 @@ Ext4.define('EHR.ext.SingleAnimalReport', {
 
         win.close();
         
-        Ext4.Msg.wait("Loading...");
+        Ext4.Msg.wait("Loading..");
 
         if(!project && !protocol){
             Ext4.Msg.hide();
@@ -513,7 +514,7 @@ Ext4.define('EHR.ext.SingleAnimalReport', {
         
         housingWin.close();
         
-        Ext4.Msg.wait("Loading...");
+        Ext4.Msg.wait("Loading..");
 
         if(!room && !cage){
             Ext4.Msg.hide();
@@ -690,18 +691,19 @@ Ext4.define('EHR.ext.SingleAnimalReport', {
             return;
 
         if(btn)
-            this.forceRefresh = btn.forceRefresh;
-
+            this.forceRefresh = true;
+        console.log('c')
         if(!this.activeReport){
             var parentTab = this.down('#tabPanel').down('#General');
+            this.down('#tabPanel').setActiveTab(parentTab);
+
             this.activeReport = parentTab.down('#abstract');
             parentTab.setActiveTab(this.activeReport);
-            this.down('#tabPanel').setActiveTab(parentTab);
+            parentTab.fireEvent('tabchange', parentTab, this.activeReport)
         }
         else {
             this.loadTab(this.activeReport);
         }
-
     },
 
     //separated so subclasses can override as needed
@@ -709,20 +711,23 @@ Ext4.define('EHR.ext.SingleAnimalReport', {
         this.processSubj();
         var type = this.down('#inputType').getValue().selector;
 
+        if (!type)
+            alert('Error: no selector type chosen');
+
         switch (type){
-        case 'renderRoomCage':
-            if(!this.down('#roomField').getValue() && !this.down('#areaField').getValue()){
-                alert('Error: Must Enter A Room or Area');
-                return false;
-            }
-            break;
-        case 'renderColony':
-            break;
-        default:
-            if(!this.subjectArray.length){
-                alert('Error: Must Enter At Least 1 Animal ID');
-                return false;
-            }
+            case 'renderRoomCage':
+                if(!this.down('#roomField').getValue() && !this.down('#areaField').getValue()){
+                    alert('Error: Must Enter A Room or Area');
+                    return false;
+                }
+                break;
+            case 'renderColony':
+                break;
+            default:
+                if(!this.subjectArray.length){
+                    alert('Error: Must Enter At Least 1 Animal ID');
+                    return false;
+                }
         }
         return true
     },
@@ -1014,7 +1019,7 @@ Ext4.define('EHR.ext.SingleAnimalReport', {
     loadDetails: function(tab, subject, target){
         var filterArray = this.getFilterArray(tab, subject);
         filterArray = filterArray.nonRemovable.concat(filterArray.removable);
-        target = target || tab.add({tag: 'span', html: 'Loading...', cls: 'loading-indicator'});
+        target = target || tab.add({tag: 'span', html: 'Loading', cls: 'loading-indicator'});
         var title = (subject ? subject.join("; ") : '');
 
         var config = {
@@ -1047,7 +1052,15 @@ Ext4.define('EHR.ext.SingleAnimalReport', {
                     itemId: category,
                     title: category,
                     enableTabScroll: true,
-                    activeTab: 0
+                    listeners: {
+                        scope: this,
+                        tabchange: function(panel, tab, oldTab){
+                            this.activeReport = tab;
+                            tab.ownerCt.setActiveTab(tab);
+                            this.onSubmit();
+                        }
+                    }
+
                 });
             }
 
@@ -1068,15 +1081,7 @@ Ext4.define('EHR.ext.SingleAnimalReport', {
                     tbar: {
                         style: 'padding-left:10px'
                     },
-                    combineSubj: true,
-                    listeners: {
-                        scope: this,
-                        activate: function(t){
-                            this.activeReport = t;
-                            t.ownerCt.setActiveTab(t);
-                            this.onSubmit();
-                        }
-                    }
+                    combineSubj: true
                 });
 
                 if(this.report == report){
@@ -1125,17 +1130,17 @@ Ext4.define('EHR.ext.SingleAnimalReport', {
     loadTab: function(o){
         this.setFilters(o);
 
-        var reload = 0;
+        var reload = false;
         for (var i in this.filters){
             if(!o.filters || this.filters[i] !== o.filters[i]){
-                reload = 1;
+                reload = true;
                 continue;
             }
         }
                 
         //indicates tab already has up to date content
         if(reload == 0 && !this.forceRefresh){
-            //console.log('no reload needed');
+            console.log('no reload needed');
             return;
         }
         this.forceRefresh = null;
