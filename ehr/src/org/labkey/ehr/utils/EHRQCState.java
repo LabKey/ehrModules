@@ -133,6 +133,7 @@ public class EHRQCState
         json.put("Label", getLabel());
         json.put("PublicData", isPublicData());
         json.put("isRequest", isRequest());
+        json.put("isDraftData", isDraftData());
         json.put("allowFutureDates", isAllowFutureDates());
         return json;
     }

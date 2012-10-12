@@ -224,39 +224,69 @@ public class TriggerScriptHelper
         return true;
     }
 
-    public String getQCStateJson()
+    public String getQCStateJson() throws Exception
     {
-        Map<String, EHRQCState> qcStates = getQCStateInfo();
-
-        JSONArray json = new JSONArray();
-        for (EHRQCState qc : qcStates.values())
+        try
         {
-            json.put(qc.toJson());
+            Map<String, EHRQCState> qcStates = getQCStateInfo();
+
+            JSONArray json = new JSONArray();
+            for (EHRQCState qc : qcStates.values())
+            {
+                json.put(qc.toJson());
+            }
+            return json.toString();
         }
-        return json.toString();
+        catch (Exception e)
+        {
+            //NOTE: this is only called by JS triggers, which will bury the exception otherwise
+            _log.error(e.getMessage());
+            _log.error(e.getStackTrace());
+            throw(e);
+        }
     }
 
-    public EHRQCState getQCStateForRowId(int rowId)
+    public EHRQCState getQCStateForRowId(int rowId) throws Exception
     {
-        Map<String, EHRQCState> qcStates = getQCStateInfo();
-
-        for (EHRQCState qc : qcStates.values())
+        try
         {
-            if (qc.getRowId() == rowId)
-                return qc;
+            Map<String, EHRQCState> qcStates = getQCStateInfo();
 
-        }
-        return null;
-    }
+            for (EHRQCState qc : qcStates.values())
+            {
+                if (qc.getRowId() == rowId)
+                    return qc;
 
-    public EHRQCState getQCStateForLabel(String label)
-    {
-        Map<String, EHRQCState> qcStates = getQCStateInfo();
-
-        if (qcStates.containsKey(label))
-            return qcStates.get(label);
-        else
+            }
             return null;
+        }
+        catch (Exception e)
+        {
+            //NOTE: this is only called by JS triggers, which will bury the exception otherwise
+            _log.error(e.getMessage());
+            _log.error(e.getStackTrace());
+            throw(e);
+        }
+    }
+
+    public EHRQCState getQCStateForLabel(String label) throws Exception
+    {
+        try
+        {
+            Map<String, EHRQCState> qcStates = getQCStateInfo();
+
+            if (qcStates.containsKey(label))
+                return qcStates.get(label);
+            else
+                return null;
+        }
+        catch (Exception e)
+        {
+            //NOTE: this is only called by JS triggers, which will bury the exception otherwise
+            _log.error(e.getMessage());
+            _log.error(e.getStackTrace());
+            throw(e);
+        }
     }
 
     private boolean testPermission (SecurableResource resource, Class<? extends Permission> perm, EHRQCState qcState)

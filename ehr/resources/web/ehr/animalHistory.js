@@ -357,11 +357,11 @@ Ext4.define('EHR.ext.SingleAnimalReport', {
                     style: 'margin-bottom: 8px;'
                 },
                 items: [{
-                    text: '  Append -->',
+                    text: 'Append -->',
                     handler: this.processSubj,
                     scope: this
                 },{
-                    text: '  Replace -->',
+                    text: 'Replace -->',
                     handler: function(){
                         this.subjectArray = [];
                         this.processSubj();
