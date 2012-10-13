@@ -287,7 +287,7 @@ public class ColonyAlertsNotification extends AbstractNotification
 
                 QuerySnapshotDefinition qsDef = QueryService.get().getSnapshotDef(_ehrStudy.getContainer(), _ehrSchema.getSchemaName(), "ActiveHousing");
                 QuerySnapshotForm form = new QuerySnapshotForm();
-                form.setSchemaName(new IdentifierString(_ehrSchema.getName()));
+                form.setSchemaName(_ehrSchema.getPath());
                 form.setQueryName("ActiveHousing");
 
                 //TODO: update snapshot
