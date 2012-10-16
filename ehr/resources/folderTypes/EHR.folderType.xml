@@ -42,11 +42,11 @@
         </folderTab>
     </folderTabs>
     <modules>
-        <moduleName>Portal</moduleName>
+        <moduleName>Core</moduleName>
         <moduleName>Study</moduleName>
         <moduleName>EHR</moduleName>
     </modules>
-    <defaultModule>Portal</defaultModule>
+    <defaultModule>Core</defaultModule>
     <workbookType>false</workbookType>
     <menubarEnabled>true</menubarEnabled>
 </folderType>
