@@ -30,11 +30,11 @@ public class EHRQCState
     private String _label;
     private Container _container;
     private String _description;
-    private boolean _publicData;
-    private boolean _draftData;
-    private boolean _isDeleted;
-    private boolean _isRequest;
-    private boolean _allowFutureDates;
+    private Boolean _publicData;
+    private Boolean _draftData;
+    private Boolean _isDeleted;
+    private Boolean _isRequest;
+    private Boolean _allowFutureDates;
 
     public int getRowId()
     {
@@ -76,52 +76,52 @@ public class EHRQCState
         _description = description;
     }
 
-    public boolean isPublicData()
+    public Boolean isPublicData()
     {
         return _publicData;
     }
 
-    public void setPublicData(boolean publicData)
+    public void setPublicData(Boolean publicData)
     {
         _publicData = publicData;
     }
 
-    public boolean isDraftData()
+    public Boolean isDraftData()
     {
         return _draftData;
     }
 
-    public void setDraftData(boolean draftData)
+    public void setDraftData(Boolean draftData)
     {
         _draftData = draftData;
     }
 
-    public boolean isDeleted()
+    public Boolean isDeleted()
     {
         return _isDeleted;
     }
 
-    public void setDeleted(boolean deleted)
+    public void setDeleted(Boolean deleted)
     {
         _isDeleted = deleted;
     }
 
-    public boolean isRequest()
+    public Boolean isRequest()
     {
         return _isRequest;
     }
 
-    public void setRequest(boolean request)
+    public void setRequest(Boolean request)
     {
         _isRequest = request;
     }
 
-    public boolean isAllowFutureDates()
+    public Boolean isAllowFutureDates()
     {
         return _allowFutureDates;
     }
 
-    public void setAllowFutureDates(boolean allowFutureDates)
+    public void setAllowFutureDates(Boolean allowFutureDates)
     {
         _allowFutureDates = allowFutureDates;
     }

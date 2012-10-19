@@ -897,6 +897,7 @@ ehr/resources/schemas/dbscripts/sqlserver/EHR_Lookups-12.20-12.21.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/EHR_Lookups-12.21-12.22.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/EHR_Lookups-12.22-12.23.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/EHR_Lookups-12.24-12.25.sql -text
+ehr/resources/schemas/dbscripts/sqlserver/EHR_Lookups-12.25-12.26.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/obsolete/EHR-11.34-11.35.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/obsolete/EHR-11.36-11.37.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/obsolete/EHR_Lookups-11.34-11.35.sql -text
