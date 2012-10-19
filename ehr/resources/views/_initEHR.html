@@ -7668,40 +7668,6 @@ function btn12(){
     LABKEY.Query.insertRows(makeObject(config, data, fields));
 }
 
-function btn13(){
-    pendingInserts++;
-
-        //records for form templates:
-        var config = {
-             schemaName: 'ehr_lookups',
-             queryName: 'snomed_subsets',
-             rows: [],
-            success: onSuccess,
-            failure: onError
-        };
-        var fields = ('subset').split(',');
-        var data = [
-            ['Antibiotic'],
-            ['Bacteriology Results'],
-            ['Culture Source'],
-            ['Distribution'],
-            ['Drugs and Procedures'],
-            ['Duration'],
-            ['Etiology'],
-            ['Inflammation'],
-            ['Organisms'],
-            ['Organ/Tissue'],
-            ['Parasitology Results'],
-            ['Procedures'],
-            ['Process/Disorder'],
-            ['Severity Codes'],
-            ['Treatment Codes'],
-            ['Viral Challenges']
-        ];
-
-        LABKEY.Query.insertRows(makeObject(config, data, fields));
-    }
-
 function makeObject(config, data, fields){
     Ext.each(data, function(row){
         var record = {};
@@ -7821,19 +7787,6 @@ var panel = new Ext.Panel({
         }
     },{
         xtype: 'button',
-        text: 'Populate SNOMED Subsets Table',
-        scope: this,
-        handler: btn13
-    },{
-        xtype: 'button',
-        text: 'Delete Data From SNOMED Subsets',
-        scope: this,
-        handler: function(){
-            pendingDeletes++;
-            deleteAll('ehr_lookups', 'snomed_subsets', 'subset')
-        }
-    },{
-        xtype: 'button',
         text: 'Populate Charge Items Table',
         scope: this,
         handler: btn6
@@ -7894,7 +7847,6 @@ var panel = new Ext.Panel({
 //            btn3();  //populate form templates
             btn4();
             btn5();  //populate SNOMED subset codes
-            //btn13();  //populate SNOMED subsets
             btn6();
 //            btn7();   //delete form templates
 //            btn10();  //populate SNOMED
@@ -7912,7 +7864,6 @@ var panel = new Ext.Panel({
             //deleteAll('ehr', 'formtemplates', 'entityid');
             //deleteAll('ehr', 'formtemplaterecords', 'rowid');
             deleteAll('ehr', 'reports', 'rowid');
-            //deleteAll('ehr_lookups', 'snomed_subsets', 'rowid');
             deleteAll('ehr_lookups', 'snomed_subset_codes', 'rowid');
             deleteAll('ehr_lookups', 'charge_items', 'rowid');
 //            deleteAll('ehr_lookups', 'snomed', 'code');

@@ -1,8 +1,6 @@
 <view xmlns="http://labkey.org/data/xml/view" title="Animal History">
     <dependencies>
-        <dependency path="Ext4ClientApi" />
-        <dependency path="LDK/LDKApi" />
-        <dependency path="ehr/ehr_api" />
+        <dependency path="ehr.context" />
         <dependency path="ehr/reports.js" />
     </dependencies>
 </view>

@@ -32,8 +32,8 @@ import java.util.Set;
  */
 public class EHRServiceImpl extends EHRService
 {
-    Set<Module> _registeredModules = new HashSet<Module>();
-    List<Resource> _extraTriggerScripts = new ArrayList<Resource>();
+    private Set<Module> _registeredModules = new HashSet<Module>();
+    private List<Resource> _extraTriggerScripts = new ArrayList<Resource>();
 
     public EHRServiceImpl()
     {

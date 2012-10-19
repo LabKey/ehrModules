@@ -1,5 +1,5 @@
 <view xmlns="http://labkey.org/data/xml/view">
     <dependencies>
-        <dependency path="/ehr/ehr_api" />
+        <dependency path="ehr.context" />
     </dependencies>
 </view>

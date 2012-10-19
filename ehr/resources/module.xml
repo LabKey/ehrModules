@@ -29,6 +29,9 @@
         </propertyDescriptor>
     </properties>
     <requiredModuleContext>
-
+        <requiredModule name="LDK"/>
     </requiredModuleContext>
+    <clientDependencies>
+        <dependency path="ehr/ehr_api"/>
+    </clientDependencies>
 </module>

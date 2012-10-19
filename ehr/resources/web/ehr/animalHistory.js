@@ -692,7 +692,7 @@ Ext4.define('EHR.ext.SingleAnimalReport', {
 
         if(btn)
             this.forceRefresh = true;
-        console.log('c')
+
         if(!this.activeReport){
             var parentTab = this.down('#tabPanel').down('#General');
             this.down('#tabPanel').setActiveTab(parentTab);

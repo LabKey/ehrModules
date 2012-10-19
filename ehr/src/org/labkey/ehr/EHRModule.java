@@ -32,6 +32,7 @@ import org.labkey.api.security.User;
 import org.labkey.api.security.roles.RoleManager;
 import org.labkey.api.util.PageFlowUtil;
 import org.labkey.api.view.WebPartFactory;
+import org.labkey.api.view.template.ClientDependency;
 import org.labkey.ehr.notification.AbnormalLabResultsNotification;
 import org.labkey.ehr.notification.AdminAlertsNotification;
 import org.labkey.ehr.notification.BloodAdminAlertsNotification;
@@ -56,6 +57,7 @@ import org.labkey.ehr.study.EHRStudyUpgradeCode;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
@@ -75,7 +77,7 @@ public class EHRModule extends SpringModule
 
     public double getVersion()
     {
-        return 12.24;
+        return 12.25;
     }
 
     public boolean hasScripts()
@@ -171,6 +173,11 @@ public class EHRModule extends SpringModule
         Map<String, String> map = getDefaultPageContextJson(u, c);
         if (map.containsKey("EHRStudyContainer") && map.get("EHRStudyContainer") != null)
         {
+            //normalize line endings
+            String newPath = map.get("EHRStudyContainer");
+            newPath = "/" + newPath.replaceAll("^/|/$", "");
+            map.put("EHRStudyContainer", newPath);
+
             Container ehrContainer = ContainerManager.getForPath(map.get("EHRStudyContainer"));
             if(ehrContainer != null)
             {
@@ -184,6 +191,19 @@ public class EHRModule extends SpringModule
                         moduleNames.add(m.getName());
                 }
                 map.put("EHRModules", new JSONObject(moduleNames).toString());
+            }
+
+            //merge client context for registered modules, if they are enabled in current folder
+            for (Module m : EHRService.get().getRegisteredModules())
+            {
+                if (c.getActiveModules().contains(m))
+                {
+                    JSONObject json = m.getPageContextJson(u, c);
+                    for (String prop : json.keySet())
+                    {
+                        map.put(prop, json.getString(prop));
+                    }
+                }
             }
         }
 
@@ -200,5 +220,22 @@ public class EHRModule extends SpringModule
     public UpgradeCode getUpgradeCode()
     {
         return new EHRStudyUpgradeCode();
+    }
+
+    @Override
+    public LinkedHashSet<ClientDependency> getClientDependencies(Container c, User u)
+    {
+        // allow other modules to register with EHR service, and include their dependencies automatically
+        // whenever EHR context is requested
+        LinkedHashSet<ClientDependency> ret = new LinkedHashSet<ClientDependency>();
+        ret.addAll(_clientDependencies);
+
+        for (Module m : EHRService.get().getRegisteredModules())
+        {
+            if (c.getActiveModules().contains(m))
+                ret.addAll(m.getClientDependencies(c, u));
+        }
+
+        return ret;
     }
 }
