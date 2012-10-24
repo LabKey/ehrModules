@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2012 LabKey Corporation
+ *
+ * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
+ */
 DROP TABLE ehr_lookups.snomed_subsets;
 CREATE TABLE ehr_lookups.snomed_subsets(
   subset VARCHAR(255) NOT NULL,
