@@ -941,6 +941,9 @@ ehr/resources/views/encounterDetails.view.xml -text
 ehr/resources/views/executeQuery.html -text
 ehr/resources/views/executeQuery.view.xml -text
 ehr/resources/views/executeSql.html -text
+ehr/resources/views/frontPage.html -text
+ehr/resources/views/frontPage.view.xml -text
+ehr/resources/views/frontPage.webpart.xml -text
 ehr/resources/views/housingOverlaps.html -text
 ehr/resources/views/housingOverlaps.view.xml -text
 ehr/resources/views/housingQueries.html -text
@@ -1005,6 +1008,9 @@ ehr/resources/web/ehr/ehrStoreCollection.js -text
 ehr/resources/web/ehr/ehr_api.lib.xml -text
 ehr/resources/web/ehr/ext.ux.datetimefield.js -text
 ehr/resources/web/ehr/ext.ux.multiselect.js -text
+ehr/resources/web/ehr/icons/icon_browse_lg.png -text
+ehr/resources/web/ehr/icons/icon_center_lg.png -text
+ehr/resources/web/ehr/icons/icon_data_lg.png -text
 ehr/resources/web/ehr/images/accept.png -text
 ehr/resources/web/ehr/images/arrow_link_button-red.jpg -text
 ehr/resources/web/ehr/images/arrow_link_button_over-red.jpg -text
