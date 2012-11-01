@@ -35,7 +35,6 @@ import org.labkey.api.query.UserSchema;
 import org.labkey.api.query.snapshot.QuerySnapshotDefinition;
 import org.labkey.api.query.snapshot.QuerySnapshotForm;
 import org.labkey.api.settings.AppProps;
-import org.labkey.api.util.IdentifierString;
 import org.labkey.api.util.ResultSetUtil;
 import org.springframework.beans.MutablePropertyValues;
 import org.springframework.validation.BindException;
