@@ -45,7 +45,7 @@ EHR.reports.abstract = function(panel, tab, subject){
 
     tab.add({
         xtype: 'ldk-querypanel',
-        style: 'padding-bottom:20px;',
+        style: 'margin-bottom:20px;',
         queryConfig: config
     });
 
@@ -60,7 +60,7 @@ EHR.reports.abstract = function(panel, tab, subject){
 
     tab.add({
         xtype: 'ldk-querypanel',
-        style: 'padding-bottom:20px;',
+        style: 'margin-bottom:20px;',
         queryConfig: config
     });
 
@@ -77,7 +77,7 @@ EHR.reports.abstract = function(panel, tab, subject){
 
     tab.add({
         xtype: 'ldk-querypanel',
-        style: 'padding-bottom:20px;',
+        style: 'margin-bottom:20px;',
         queryConfig: config
     });
 
@@ -99,7 +99,7 @@ EHR.reports.arrivalDeparture = function(panel, tab, subject){
 
     tab.add({
         xtype: 'ldk-querypanel',
-        style: 'padding-bottom:20px;',
+        style: 'margin-bottom:20px;',
         queryConfig: config
     });
 
@@ -114,7 +114,7 @@ EHR.reports.arrivalDeparture = function(panel, tab, subject){
 
     tab.add({
         xtype: 'ldk-querypanel',
-        style: 'padding-bottom:20px;',
+        style: 'margin-bottom:20px;',
         queryConfig: config
     });
 }
@@ -136,7 +136,7 @@ EHR.reports.diagnostics = function(panel, tab, subject){
 
     tab.add({
         xtype: 'ldk-querypanel',
-        style: 'padding-bottom:20px;',
+        style: 'margin-bottom:20px;',
         queryConfig: config
     });
 
@@ -152,7 +152,7 @@ EHR.reports.diagnostics = function(panel, tab, subject){
 
     tab.add({
         xtype: 'ldk-querypanel',
-        style: 'padding-bottom:20px;',
+        style: 'margin-bottom:20px;',
         queryConfig: config
     });
 
@@ -168,7 +168,7 @@ EHR.reports.diagnostics = function(panel, tab, subject){
 
     tab.add({
         xtype: 'ldk-querypanel',
-        style: 'padding-bottom:20px;',
+        style: 'margin-bottom:20px;',
         queryConfig: config
     });
 
@@ -185,7 +185,7 @@ EHR.reports.diagnostics = function(panel, tab, subject){
 
     tab.add({
         xtype: 'ldk-querypanel',
-        style: 'padding-bottom:20px;',
+        style: 'margin-bottom:20px;',
         queryConfig: config
     });
 
@@ -201,7 +201,7 @@ EHR.reports.diagnostics = function(panel, tab, subject){
 
     tab.add({
         xtype: 'ldk-querypanel',
-        style: 'padding-bottom:20px;',
+        style: 'margin-bottom:20px;',
         queryConfig: config
     });
 
@@ -217,7 +217,7 @@ EHR.reports.diagnostics = function(panel, tab, subject){
 
     tab.add({
         xtype: 'ldk-querypanel',
-        style: 'padding-bottom:20px;',
+        style: 'margin-bottom:20px;',
         queryConfig: config
     });
 
@@ -232,7 +232,7 @@ EHR.reports.diagnostics = function(panel, tab, subject){
 
     tab.add({
         xtype: 'ldk-querypanel',
-        style: 'padding-bottom:20px;',
+        style: 'margin-bottom:20px;',
         queryConfig: config
     });
 
@@ -247,7 +247,7 @@ EHR.reports.diagnostics = function(panel, tab, subject){
 
     tab.add({
         xtype: 'ldk-querypanel',
-        style: 'padding-bottom:20px;',
+        style: 'margin-bottom:20px;',
         queryConfig: config
     });
 
@@ -262,7 +262,7 @@ EHR.reports.diagnostics = function(panel, tab, subject){
 
     tab.add({
         xtype: 'ldk-querypanel',
-        style: 'padding-bottom:20px;',
+        style: 'margin-bottom:20px;',
         queryConfig: config
     });
 
@@ -277,7 +277,7 @@ EHR.reports.diagnostics = function(panel, tab, subject){
 
     tab.add({
         xtype: 'ldk-querypanel',
-        style: 'padding-bottom:20px;',
+        style: 'margin-bottom:20px;',
         queryConfig: config
     });
 }
@@ -320,13 +320,13 @@ EHR.reports.pedigree = function(panel, tab, subject){
 
     tab.add({
         xtype: 'ldk-querypanel',
-        style: 'padding-bottom:20px;',
+        style: 'margin-bottom:20px;',
         queryConfig: configOffspring
     });
 
     tab.add({
         xtype: 'ldk-querypanel',
-        style: 'padding-bottom:20px;',
+        style: 'margin-bottom:20px;',
         queryConfig: configSibling
     });
 }
@@ -401,7 +401,7 @@ EHR.reports.weightGraph = function(panel, tab, subjects){
 
     tab.add({
         xtype: 'ldk-querypanel',
-        style: 'padding-bottom:20px;',
+        style: 'margin-bottom:20px;',
         queryConfig: config
     });
 
@@ -419,7 +419,7 @@ EHR.reports.weightGraph = function(panel, tab, subjects){
 
     tab.add({
         xtype: 'ldk-querypanel',
-        style: 'padding-bottom:20px;',
+        style: 'margin-bottom:20px;',
         queryConfig: config
     });
 };
@@ -440,7 +440,7 @@ EHR.reports.bloodChemistry = function(panel, tab, subject){
 
     tab.add({
         xtype: 'ldk-querypanel',
-        style: 'padding-bottom:20px;',
+        style: 'margin-bottom:20px;',
         queryConfig: config
     });
 
@@ -456,7 +456,7 @@ EHR.reports.bloodChemistry = function(panel, tab, subject){
 
     tab.add({
         xtype: 'ldk-querypanel',
-        style: 'padding-bottom:20px;',
+        style: 'margin-bottom:20px;',
         queryConfig: config
     });
 
@@ -473,7 +473,7 @@ EHR.reports.bloodChemistry = function(panel, tab, subject){
 
     tab.add({
         xtype: 'ldk-querypanel',
-        style: 'padding-bottom:20px;',
+        style: 'margin-bottom:20px;',
         queryConfig: config
     });
 }
@@ -494,7 +494,7 @@ EHR.reports.hematology = function(panel, tab, subject){
 
     tab.add({
         xtype: 'ldk-querypanel',
-        style: 'padding-bottom:20px;',
+        style: 'margin-bottom:20px;',
         queryConfig: config
     });
 
@@ -510,7 +510,7 @@ EHR.reports.hematology = function(panel, tab, subject){
 
     tab.add({
         xtype: 'ldk-querypanel',
-        style: 'padding-bottom:20px;',
+        style: 'margin-bottom:20px;',
         queryConfig: config
     });
 
@@ -526,7 +526,7 @@ EHR.reports.hematology = function(panel, tab, subject){
 
     tab.add({
         xtype: 'ldk-querypanel',
-        style: 'padding-bottom:20px;',
+        style: 'margin-bottom:20px;',
         queryConfig: config
     });
 
@@ -543,7 +543,7 @@ EHR.reports.hematology = function(panel, tab, subject){
 
     tab.add({
         xtype: 'ldk-querypanel',
-        style: 'padding-bottom:20px;',
+        style: 'margin-bottom:20px;',
         queryConfig: config
     });
 }
@@ -563,7 +563,7 @@ EHR.reports.immunology = function(panel, tab, subject){
 
     tab.add({
         xtype: 'ldk-querypanel',
-        style: 'padding-bottom:20px;',
+        style: 'margin-bottom:20px;',
         queryConfig: config
     });
 
@@ -579,7 +579,7 @@ EHR.reports.immunology = function(panel, tab, subject){
 
     tab.add({
         xtype: 'ldk-querypanel',
-        style: 'padding-bottom:20px;',
+        style: 'margin-bottom:20px;',
         queryConfig: config
     });
 
@@ -596,7 +596,7 @@ EHR.reports.immunology = function(panel, tab, subject){
 
     tab.add({
         xtype: 'ldk-querypanel',
-        style: 'padding-bottom:20px;',
+        style: 'margin-bottom:20px;',
         queryConfig: config
     });
 };
@@ -651,7 +651,7 @@ EHR.reports.viralLoads = function(panel, tab, subject){
 
     tab.add({
         xtype: 'ldk-querypanel',
-        style: 'padding-bottom:20px;',
+        style: 'margin-bottom:20px;',
         queryConfig: config
     });
 }
@@ -685,7 +685,7 @@ EHR.reports.irregularObs = function(panel, tab, subject){
 
     tab.add({
         xtype: 'ldk-querypanel',
-        style: 'padding-bottom:20px;',
+        style: 'margin-bottom:20px;',
         queryConfig: config
     });
 }
@@ -716,7 +716,7 @@ EHR.reports.irregularObsTreatment = function(panel, tab, subject){
 
     tab.add({
         xtype: 'ldk-querypanel',
-        style: 'padding-bottom:20px;',
+        style: 'margin-bottom:20px;',
         queryConfig: config
     });
 }
@@ -739,7 +739,7 @@ EHR.reports.urinalysisResults = function(panel, tab, subject){
 
     tab.add({
         xtype: 'ldk-querypanel',
-        style: 'padding-bottom:20px;',
+        style: 'margin-bottom:20px;',
         queryConfig: config
     });
 
@@ -755,7 +755,7 @@ EHR.reports.urinalysisResults = function(panel, tab, subject){
 
     tab.add({
         xtype: 'ldk-querypanel',
-        style: 'padding-bottom:20px;',
+        style: 'margin-bottom:20px;',
         queryConfig: config
     });
 
@@ -772,7 +772,7 @@ EHR.reports.urinalysisResults = function(panel, tab, subject){
 
     tab.add({
         xtype: 'ldk-querypanel',
-        style: 'padding-bottom:20px;',
+        style: 'margin-bottom:20px;',
         queryConfig: config
     });
 }
@@ -795,7 +795,7 @@ EHR.reports.treatmentSchedule = function(panel, tab, subject){
 
     tab.add({
         xtype: 'ldk-querypanel',
-        style: 'padding-bottom:20px;',
+        style: 'margin-bottom:20px;',
         queryConfig: config
     });
 
@@ -810,7 +810,7 @@ EHR.reports.treatmentSchedule = function(panel, tab, subject){
 
     tab.add({
         xtype: 'ldk-querypanel',
-        style: 'padding-bottom:20px;',
+        style: 'margin-bottom:20px;',
         queryConfig: config
     });
 
@@ -825,7 +825,7 @@ EHR.reports.treatmentSchedule = function(panel, tab, subject){
 
     tab.add({
         xtype: 'ldk-querypanel',
-        style: 'padding-bottom:20px;',
+        style: 'margin-bottom:20px;',
         queryConfig: config
     });
 }

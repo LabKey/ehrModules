@@ -943,7 +943,8 @@ Ext4.define('EHR.ext.SingleAnimalReport', {
             buttonBarPosition: 'top',
             timeout: 0,
             success: this.onDataRegionLoad,
-            failure: LDK.Utils.getErrorCallback()
+            failure: LDK.Utils.getErrorCallback(),
+            scope: this
         }, config);
     },
 
