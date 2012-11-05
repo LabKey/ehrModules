@@ -129,6 +129,7 @@
         </ns:columns>
     </ns:table>
     <ns:table tableName="tasks" tableDbType="TABLE">
+        <ns:auditLogging>DETAILED</ns:auditLogging>
         <ns:pkColumnName>taskid</ns:pkColumnName>
         <ns:columns>
             <ns:column columnName="taskid">
@@ -194,6 +195,7 @@
         </ns:columns>
     </ns:table>
     <ns:table tableName="requests" tableDbType="TABLE">
+        <ns:auditLogging>DETAILED</ns:auditLogging>
         <ns:pkColumnName>requestid</ns:pkColumnName>
         <ns:columns>
             <ns:column columnName="requestid">
@@ -296,6 +298,7 @@
         </ns:columns>
     </ns:table>
     <ns:table tableName="reports" tableDbType="TABLE">
+        <ns:auditLogging>DETAILED</ns:auditLogging>
         <ns:importUrl></ns:importUrl>
         <ns:insertUrl></ns:insertUrl>
         <ns:updateUrl></ns:updateUrl>
@@ -588,9 +591,8 @@
             </ns:column>
         </ns:columns>
     </ns:table>
-
-
     <ns:table tableName="formtemplates" tableDbType="TABLE">
+        <ns:auditLogging>DETAILED</ns:auditLogging>
         <ns:importUrl></ns:importUrl>
         <ns:insertUrl></ns:insertUrl>
         <ns:updateUrl></ns:updateUrl>
@@ -652,6 +654,7 @@
         </ns:columns>
     </ns:table>
     <ns:table tableName="notificationrecipients" tableDbType="TABLE">
+        <ns:auditLogging>DETAILED</ns:auditLogging>
         <ns:importUrl></ns:importUrl>
         <ns:insertUrl></ns:insertUrl>
         <ns:updateUrl></ns:updateUrl>
@@ -712,6 +715,7 @@
         </ns:columns>
     </ns:table>
     <ns:table tableName="formpanelsections" tableDbType="TABLE">
+        <ns:auditLogging>DETAILED</ns:auditLogging>
         <ns:importUrl></ns:importUrl>
         <ns:insertUrl></ns:insertUrl>
         <ns:updateUrl></ns:updateUrl>
@@ -790,6 +794,7 @@
         </ns:columns>
     </ns:table>
     <ns:table tableName="formtemplaterecords" tableDbType="TABLE">
+        <ns:auditLogging>DETAILED</ns:auditLogging>
         <ns:importUrl></ns:importUrl>
         <ns:insertUrl></ns:insertUrl>
         <ns:updateUrl></ns:updateUrl>
@@ -845,6 +850,7 @@
         </ns:columns>
     </ns:table>
     <ns:table tableName="notificationtypes" tableDbType="TABLE">
+        <ns:auditLogging>DETAILED</ns:auditLogging>
         <ns:importUrl></ns:importUrl>
         <ns:insertUrl></ns:insertUrl>
         <ns:updateUrl></ns:updateUrl>
@@ -861,6 +867,7 @@
         </ns:columns>
     </ns:table>
     <ns:table tableName="formtypes" tableDbType="TABLE">
+        <ns:auditLogging>DETAILED</ns:auditLogging>
         <ns:importUrl></ns:importUrl>
         <ns:insertUrl></ns:insertUrl>
         <ns:updateUrl></ns:updateUrl>
@@ -921,6 +928,7 @@
         </ns:columns>
     </ns:table>
     <ns:table tableName="protocol" tableDbType="TABLE">
+        <ns:auditLogging>DETAILED</ns:auditLogging>
         <ns:importUrl></ns:importUrl>
         <ns:insertUrl></ns:insertUrl>
         <ns:updateUrl></ns:updateUrl>
@@ -1002,6 +1010,7 @@
         </ns:columns>
     </ns:table>
     <ns:table tableName="project" tableDbType="TABLE">
+        <ns:auditLogging>DETAILED</ns:auditLogging>
         <ns:importUrl></ns:importUrl>
         <ns:insertUrl></ns:insertUrl>
         <ns:updateUrl></ns:updateUrl>
@@ -1072,6 +1081,7 @@
         </ns:columns>
     </ns:table>
     <ns:table tableName="protocol_counts" tableDbType="TABLE">
+        <ns:auditLogging>DETAILED</ns:auditLogging>
         <ns:importUrl></ns:importUrl>
         <ns:insertUrl></ns:insertUrl>
         <ns:updateUrl></ns:updateUrl>
@@ -1122,26 +1132,8 @@
             </ns:column>
         </ns:columns>
     </ns:table>
-    <!--<ns:table tableName="qcPermissionMap" tableDbType="TABLE">-->
-    <!--<ns:pkColumnName>rowid</ns:pkColumnName>-->
-    <!--<ns:columns>-->
-    <!--<ns:column columnName="rowid">-->
-    <!--<ns:isAutoInc>true</ns:isAutoInc>-->
-    <!--</ns:column>-->
-    <!--<ns:column columnName="role">-->
-    <!--</ns:column>-->
-    <!--<ns:column columnName="qcStateLabel">-->
-    <!--<ns:fk>-->
-    <!--<ns:fkDbSchema>ehr</ns:fkDbSchema>-->
-    <!--<ns:fkTable>qcStateMetadata</ns:fkTable>-->
-    <!--<ns:fkColumnName>QCStateLabel</ns:fkColumnName>-->
-    <!--</ns:fk>-->
-    <!--</ns:column>-->
-    <!--<ns:column columnName="permission">-->
-    <!--</ns:column>-->
-    <!--</ns:columns>-->
-    <!--</ns:table>-->
     <ns:table tableName="qcStateMetadata" tableDbType="TABLE">
+        <ns:auditLogging>DETAILED</ns:auditLogging>
         <ns:importUrl></ns:importUrl>
         <ns:insertUrl></ns:insertUrl>
         <ns:updateUrl></ns:updateUrl>
@@ -1166,6 +1158,7 @@
         </ns:columns>
     </ns:table>
     <ns:table tableName="animal_groups" tableDbType="TABLE">
+        <ns:auditLogging>DETAILED</ns:auditLogging>
         <ns:importUrl></ns:importUrl>
         <ns:insertUrl></ns:insertUrl>
         <ns:updateUrl></ns:updateUrl>
@@ -1212,6 +1205,7 @@
         </ns:columns>
     </ns:table>
     <ns:table tableName="supplemental_pedigree" tableDbType="TABLE">
+        <ns:auditLogging>DETAILED</ns:auditLogging>
         <ns:importUrl></ns:importUrl>
         <ns:insertUrl></ns:insertUrl>
         <ns:updateUrl></ns:updateUrl>
@@ -1272,8 +1266,8 @@
             </ns:column>
         </ns:columns>
     </ns:table>
-
     <ns:table tableName="automatic_alerts" tableDbType="TABLE">
+        <ns:auditLogging>DETAILED</ns:auditLogging>
         <ns:pkColumnName>rowid</ns:pkColumnName>
         <ns:columns>
             <ns:column columnName="rowid">
@@ -1346,6 +1340,7 @@
         </ns:columns>
     </ns:table>
     <ns:table tableName="kinship" tableDbType="TABLE">
+        <ns:auditLogging>SUMMARY</ns:auditLogging>
         <ns:importUrl></ns:importUrl>
         <ns:insertUrl></ns:insertUrl>
         <ns:updateUrl></ns:updateUrl>
@@ -1399,6 +1394,7 @@
         </ns:columns>
     </ns:table>
     <ns:table tableName="protocolProcedures" tableDbType="TABLE">
+        <ns:auditLogging>DETAILED</ns:auditLogging>
         <ns:importUrl></ns:importUrl>
         <ns:insertUrl></ns:insertUrl>
         <ns:updateUrl></ns:updateUrl>
@@ -1460,6 +1456,7 @@
         </ns:columns>
     </ns:table>
     <ns:table tableName="status" tableDbType="TABLE">
+        <ns:auditLogging>DETAILED</ns:auditLogging>
         <ns:importUrl></ns:importUrl>
         <ns:insertUrl></ns:insertUrl>
         <ns:updateUrl></ns:updateUrl>
@@ -1495,6 +1492,7 @@
         </ns:columns>
     </ns:table>
     <ns:table tableName="chargedItems" tableDbType="TABLE">
+        <ns:auditLogging>DETAILED</ns:auditLogging>
         <ns:importUrl></ns:importUrl>
         <ns:insertUrl></ns:insertUrl>
         <ns:updateUrl></ns:updateUrl>
@@ -1571,6 +1569,7 @@
         </ns:columns>
     </ns:table>
     <ns:table tableName="accounts" tableDbType="TABLE">
+        <ns:auditLogging>DETAILED</ns:auditLogging>
         <ns:importUrl></ns:importUrl>
         <ns:insertUrl></ns:insertUrl>
         <ns:updateUrl></ns:updateUrl>
@@ -1591,6 +1590,7 @@
         </ns:columns>
     </ns:table>
     <ns:table tableName="investigators" tableDbType="TABLE">
+        <ns:auditLogging>DETAILED</ns:auditLogging>
         <ns:importUrl></ns:importUrl>
         <ns:insertUrl></ns:insertUrl>
         <ns:updateUrl></ns:updateUrl>
@@ -1618,6 +1618,7 @@
         </ns:columns>
     </ns:table>
     <ns:table tableName="encounter_participants" tableDbType="TABLE">
+        <ns:auditLogging>DETAILED</ns:auditLogging>
         <ns:columns>
             <ns:column columnName="rowid"/>
             <ns:column columnName="userid">
