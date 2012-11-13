@@ -71,7 +71,7 @@
                     <propertyURI>urn:ehr.labkey.org/#ParentId</propertyURI>
                         <fk>
                           <fkDbSchema>study</fkDbSchema>
-                          <fkTable>hematologyRuns</fkTable>
+                          <fkTable>clinpathRuns</fkTable>
                           <fkColumnName>objectid</fkColumnName>
                         </fk>
                   </column>

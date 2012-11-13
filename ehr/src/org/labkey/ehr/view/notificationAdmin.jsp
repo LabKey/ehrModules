@@ -16,21 +16,19 @@
  */
 %>
 <%@ taglib prefix="labkey" uri="http://www.labkey.org/taglib" %>
-<%@ page import="org.labkey.api.data.Container"%>
+<%@ page import="org.apache.commons.lang3.time.DurationFormatUtils"%>
+<%@ page import="org.json.JSONArray" %>
+<%@ page import="org.json.JSONObject" %>
+<%@ page import="org.labkey.api.data.Container" %>
 <%@ page import="org.labkey.api.security.User" %>
+<%@ page import="org.labkey.api.util.PageFlowUtil" %>
 <%@ page import="org.labkey.api.view.HttpView" %>
 <%@ page import="org.labkey.api.view.ViewContext" %>
-<%@ page import="org.labkey.ehr.notification.NotificationService" %>
-<%@ page import="org.labkey.ehr.notification.Notification" %>
-<%@ page import="org.labkey.api.util.PageFlowUtil" %>
-<%@ page import="java.util.LinkedHashSet" %>
 <%@ page import="org.labkey.api.view.template.ClientDependency" %>
-<%@ page import="org.json.JSONObject" %>
-<%@ page import="java.util.List" %>
-<%@ page import="java.util.ArrayList" %>
-<%@ page import="org.json.JSONArray" %>
-<%@ page import="org.apache.commons.lang3.time.DurationFormatUtils" %>
+<%@ page import="org.labkey.ehr.notification.Notification" %>
+<%@ page import="org.labkey.ehr.notification.NotificationService" %>
 <%@ page import="java.util.Date" %>
+<%@ page import="java.util.LinkedHashSet" %>
 <%@ page extends="org.labkey.api.jsp.JspBase" %>
 <%!
 
@@ -200,19 +198,17 @@
                         var form = btn.up('form');
                         var obj = {};
                         form.getForm().getFields().each(function(f){
-                            if(f.isDirty()){
-                                if(f.dataIndex == 'active'){
-                                    obj.active = obj.active || {};
-                                    var value = f.getValue() == 'Enabled' ? true : false;
-                                    obj.active[f.notification] = value;
-                                }
-                                else if (f.dataIndex = 'serviceEnabled'){
-                                    var value = f.getValue() == 'Enabled' ? true : false;
-                                    obj[f.dataIndex] = value;
-                                }
-                                else {
-                                    obj[f.dataIndex] = f.getValue();
-                                }
+                            if(f.dataIndex == 'active'){
+                                obj.active = obj.active || {};
+                                var value = f.getValue() == 'Enabled' ? true : false;
+                                obj.active[f.notification] = value;
+                            }
+                            else if (f.dataIndex == 'serviceEnabled'){
+                                var value = f.getValue() == 'Enabled' ? true : false;
+                                obj[f.dataIndex] = value;
+                            }
+                            else {
+                                obj[f.dataIndex] = f.getValue();
                             }
                         }, this);
 
