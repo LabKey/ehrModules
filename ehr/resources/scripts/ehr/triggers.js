@@ -66,6 +66,14 @@ EHR.Server.Triggers.init = function(event, errors){
     this.extraContext.schemaName = fileParse[1];
     this.extraContext.queryName = fileParse[2].replace(/\.js$/, '');
 
+    //test to see if GUID persisted across tables
+//    if (this.extraContext.sessionGuid)
+//        console.log('existing GUID: ' + this.extraContext.sessionGuid)
+//    else {
+//        this.extraContext.sessionGuid = LABKEY.Utils.generateUUID();
+//        console.log('creating new session GUID: ' +  this.extraContext.sessionGuid);
+//    }
+
     this.scriptContext = {
         helper: org.labkey.ehr.utils.TriggerScriptHelper.getForContainer(LABKEY.Security.currentUser.id, LABKEY.Security.currentContainer.id),
         rows: [],

@@ -17,6 +17,7 @@ package org.labkey.ehr.utils;
 
 import org.json.JSONObject;
 import org.labkey.api.data.Container;
+import org.labkey.api.data.ContainerManager;
 
 /**
  * Created with IntelliJ IDEA.
@@ -28,7 +29,7 @@ public class EHRQCState
 {
     private int _rowId;
     private String _label;
-    private Container _container;
+    private String _containerId;
     private String _description;
     private Boolean _publicData;
     private Boolean _draftData;
@@ -58,12 +59,12 @@ public class EHRQCState
 
     public Container getContainer()
     {
-        return _container;
+        return ContainerManager.getForId(_containerId);
     }
 
-    public void setContainer(Container container)
+    public void setContainer(String containerId)
     {
-        _container = container;
+        _containerId = containerId;
     }
 
     public String getDescription()

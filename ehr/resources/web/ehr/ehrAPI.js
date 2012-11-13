@@ -15,12 +15,15 @@
   * more verbose information.  Often useful if trying to debug a user's machine.
  **/
 
-Ext.namespace('EHR.ext');
+Ext4.namespace('EHR.ext');
 
 var debug;
 
 if(LABKEY.Security.currentUser.isAdmin && LABKEY.ActionURL.getParameter('debug'))
     debug = 1;
+
+LABKEY.requiresExt4ClientAPI();
+LABKEY.requiresScript("/ldk/Utils.js");
 
 LABKEY.requiresScript("/ehr/ExtOverrides.js");
 LABKEY.requiresScript("/ehr/ehrMetaHelper.js");

@@ -19,14 +19,14 @@ import org.json.JSONObject;
 import org.labkey.api.action.ApiAction;
 import org.labkey.api.action.ApiResponse;
 import org.labkey.api.action.ApiSimpleResponse;
+import org.labkey.api.action.ConfirmAction;
 import org.labkey.api.action.SimpleViewAction;
 import org.labkey.api.action.SpringActionController;
-import org.labkey.api.data.Container;
 import org.labkey.api.security.IgnoresTermsOfUse;
 import org.labkey.api.security.RequiresPermissionClass;
-import org.labkey.api.security.User;
 import org.labkey.api.security.permissions.AdminPermission;
 import org.labkey.api.util.ConfigurationException;
+import org.labkey.api.util.URLHelper;
 import org.labkey.api.view.HtmlView;
 import org.labkey.api.view.JspView;
 import org.labkey.api.view.NavTree;
@@ -34,6 +34,7 @@ import org.labkey.ehr.notification.Notification;
 import org.labkey.ehr.notification.NotificationService;
 import org.labkey.ehr.pipeline.KinshipRunnable;
 import org.springframework.validation.BindException;
+import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.text.SimpleDateFormat;
@@ -51,19 +52,41 @@ public class EHRController extends SpringActionController
 
     @RequiresPermissionClass(AdminPermission.class)
     @IgnoresTermsOfUse
-    public class EnsureDatasetPropertiesAction extends ApiAction<EnsureDatasetPropertiesForm>
+    public class EnsureDatasetPropertiesAction extends ConfirmAction<EnsureDatasetPropertiesForm>
     {
-        public ApiResponse execute(EnsureDatasetPropertiesForm form, BindException errors)
+        public void validateCommand(EnsureDatasetPropertiesForm form, Errors errors)
         {
-            Container c = getContainer();
-            User user = getUser();
 
-            ApiResponse resp = new ApiSimpleResponse();
-            List<String> messages = EHRManager.get().ensureDatasetPropertyDescriptors(c,  user, form.isCommitChanges());
-            resp.getProperties().put("success", true);
-            resp.getProperties().put("messages", messages);
+        }
 
-            return resp;
+        public URLHelper getSuccessURL(EnsureDatasetPropertiesForm form)
+        {
+            return getContainer().getStartURL(getUser());
+        }
+
+        public ModelAndView getConfirmView(EnsureDatasetPropertiesForm form, BindException errors) throws Exception
+        {
+            StringBuilder msg = new StringBuilder();
+            msg.append("The EHR expects certain columns to be present on all datasets.  The following changes will be made:<br><br>");
+
+            List<String> messages = EHRManager.get().ensureDatasetPropertyDescriptors(getContainer(),  getUser(), false);
+            for (String message : messages)
+            {
+                msg.append("\t").append(message).append("<br>");
+            }
+
+            if (messages.size() > 0)
+                msg.append("<br>Do you want to make these changes?");
+            else
+                msg.append("There are no changes to be made");
+
+            return new HtmlView(msg.toString());
+        }
+
+        public boolean handlePost(EnsureDatasetPropertiesForm form, BindException errors) throws Exception
+        {
+            List<String> messages = EHRManager.get().ensureDatasetPropertyDescriptors(getContainer(),  getUser(), true);
+            return true;
         }
     }
 

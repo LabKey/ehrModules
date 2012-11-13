@@ -43,6 +43,7 @@ import org.labkey.api.security.permissions.UpdatePermission;
 import org.labkey.api.study.DataSet;
 import org.labkey.api.study.Study;
 import org.labkey.api.study.StudyService;
+import org.labkey.api.util.JobRunner;
 import org.labkey.api.view.UnauthorizedException;
 import org.labkey.ehr.security.EHRCompletedAdminPermission;
 
@@ -116,6 +117,7 @@ public class TriggerScriptHelper
             return helper;
         }
 
+        _log.info("Creating triger script helper for: " +  userId + ", " + containerId);
         helper = new TriggerScriptHelper(userId, containerId);
         CacheManager.getSharedCache().put(key, helper);
         return helper;
@@ -444,5 +446,20 @@ public class TriggerScriptHelper
     private String getCacheKey(Study s, String suffix)
     {
         return getClass().getName() + "||" + s.getEntityId() + "||" + suffix;
+    }
+
+    private void sendDeathNotification(String idString)
+    {
+        final User user = getUser();
+        final Container container = getContainer();
+        String[] ids = idString.split(";");
+
+        JobRunner.getDefault().execute(new Runnable(){
+            public void run()
+            {
+
+
+            }
+        });
     }
 }

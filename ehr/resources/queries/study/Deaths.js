@@ -241,8 +241,7 @@ function verifyAssignmentUpdate(subject ) {
 }
 
 function onComplete(event, errors, scriptContext){
-	
-    if(scriptContext.publicParticipantsModified.length){
+    if(scriptContext.publicParticipantsModified.length && scriptContext.extraContext.dataSource != 'etl'){
     	var generateAnEmail = 0;
         var valuesMap = {};
         var r;

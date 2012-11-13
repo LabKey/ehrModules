@@ -7,7 +7,7 @@
 var {EHR, LABKEY, Ext, console, init, beforeInsert, afterInsert, beforeUpdate, afterUpdate, beforeDelete, afterDelete, complete} = require("ehr/triggers");
 
 function onComplete(event, errors, scriptContext){
-    if(scriptContext.publicParticipantsModified.length){
+    if(scriptContext.publicParticipantsModified.length && scriptContext.extraContext.dataSource != 'etl'){
         EHR.Server.Validation.updateStatusField(scriptContext.publicParticipantsModified);
     }
 }

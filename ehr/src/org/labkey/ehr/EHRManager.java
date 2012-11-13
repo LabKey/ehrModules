@@ -16,33 +16,45 @@
 package org.labkey.ehr;
 
 import org.apache.log4j.Logger;
+import org.labkey.api.cache.CacheManager;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.ContainerManager;
 import org.labkey.api.data.DbSchema;
 import org.labkey.api.data.PropertyManager;
 import org.labkey.api.data.RuntimeSQLException;
 import org.labkey.api.data.SQLFragment;
+import org.labkey.api.data.SimpleFilter;
+import org.labkey.api.data.SqlSelector;
 import org.labkey.api.data.Table;
+import org.labkey.api.data.TableInfo;
+import org.labkey.api.data.TableSelector;
 import org.labkey.api.exp.ChangePropertyDescriptorException;
 import org.labkey.api.exp.OntologyManager;
 import org.labkey.api.exp.PropertyDescriptor;
 import org.labkey.api.exp.api.ExperimentService;
 import org.labkey.api.exp.property.Domain;
 import org.labkey.api.exp.property.DomainProperty;
+import org.labkey.api.exp.query.ExpSchema;
 import org.labkey.api.module.Module;
 import org.labkey.api.module.ModuleLoader;
 import org.labkey.api.module.ModuleProperty;
+import org.labkey.api.query.FieldKey;
 import org.labkey.api.security.User;
 import org.labkey.api.security.UserManager;
 import org.labkey.api.security.ValidEmail;
 import org.labkey.api.study.DataSet;
 import org.labkey.api.study.Study;
 import org.labkey.api.study.StudyService;
+import org.labkey.api.util.ResultSetUtil;
 
+import java.beans.Introspector;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public class EHRManager
@@ -159,7 +171,6 @@ public class EHRManager
     public List<String> ensureDatasetPropertyDescriptors(Container c, User u, boolean commitChanges)
     {
         List<String> messages = new ArrayList<String>();
-        messages.add("Changes will be made: " + commitChanges);
 
         try
         {
@@ -188,39 +199,46 @@ public class EHRManager
             otherProperties.add(OntologyManager.getPropertyDescriptor(EHRProperties.DATEREQUESTED.getPropertyDescriptor().getPropertyURI(), c));
 
             List<? extends DataSet> datasets = study.getDataSets();
+            boolean shouldClearCaches = false;
+
             for (DataSet dataset : datasets)
             {
+                //TODO: skip query snapshots
+
                 Domain domain = dataset.getDomain();
                 DomainProperty[] dprops = domain.getProperties();
                 boolean changed = false;
+                List<PropertyDescriptor> toUpdate = new ArrayList<PropertyDescriptor>();
 
                 for (PropertyDescriptor pd : properties)
                 {
                     boolean found = false;
                     for (DomainProperty dp : dprops)
                     {
+                        //if the expected property is present, verify datatype and propertyURI
                         if (dp.getName().equalsIgnoreCase(pd.getName()))
                         {
                             found = true;
 
                             if (!dp.getPropertyURI().equals(pd.getPropertyURI()))
                             {
-                                messages.add("Setting propertyURI on property: " + pd.getName() + " for dataset: " + dataset.getName());
-                                changed = true;
-
+                                messages.add("Need to replace propertyURI on property \"" + pd.getName() + "\" for dataset " + dataset.getName());
                                 if (commitChanges)
-                                    dp.setPropertyURI(pd.getPropertyURI());
+                                {
+                                    toUpdate.add(pd);
+                                }
                             }
+
                             if (!dp.getName().equals(pd.getName()))
                             {
-                                messages.add("Case mismatch for property name for dataset: " + dataset.getName() + " Expected: " + pd.getName() + ", but was: " + dp.getName());
+                                messages.add("Case mismatch for property in dataset: " + dataset.getName() + ".  Expected: " + pd.getName() + ", but was: " + dp.getName() + ". This has not been automatically changed");
                             }
                         }
                     }
 
                     if (!found)
                     {
-                        messages.add("Missing property: " + pd.getName() + " on dataset: " + dataset.getName());
+                        messages.add("Missing property \"" + pd.getName() + "\" on dataset: " + dataset.getName() + ".  Needs to be created.");
                         if (commitChanges)
                         {
                             DomainProperty d = domain.addProperty();
@@ -240,12 +258,12 @@ public class EHRManager
                         {
                             if (!dp.getPropertyURI().equals(pd.getPropertyURI()))
                             {
-                                messages.add("Missing propertyURI on optional property: " + pd.getName() + " for dataset: " + dataset.getName());
-                                //TODO: why cant I set this?
-                                changed = true;
+                                messages.add("Incorrect propertyURI on optional property \"" + pd.getName() + "\" for dataset: " + dataset.getName() +".  Needs to be updated.");
 
                                 if (commitChanges)
-                                    dp.setPropertyURI(pd.getPropertyURI());
+                                {
+                                    toUpdate.add(pd);
+                                }
                             }
                         }
                     }
@@ -254,34 +272,42 @@ public class EHRManager
                 if (changed)
                 {
                     domain.save(u);
+                    shouldClearCaches = true;
                 }
-//
-//                dataset = study.getDataSet(dataset.getDataSetId());
-//                if (!dataset.getKeyManagementType().equals(DataSet.KeyManagementType.GUID) && !dataset.isDemographicData())
-//                {
-//                    messages.add("Setting key management type to GUID for dataset: " + dataset.getName());
-//                    if (commitChanges)
-//                    {
-//                        dataset = StudyService.get().getDataSet(c, dataset.getDataSetId());
-//                        DataSet mutable = (DataSet)dataset.createMutable();
-//                        mutable.setKeyManagementType(DataSet.KeyManagementType.GUID);
-//                        mutable.setKeyPropertyName(EHRProperties.OBJECTID.getPropertyDescriptor().getName());
-//                        mutable.save(u);
-//                    }
-//                }
 
+                if (toUpdate.size() > 0)
+                    shouldClearCaches = true;
+
+                for (PropertyDescriptor pd : toUpdate)
+                {
+                    updatePropertyURI(domain, pd);
+                }
             }
 
             //ensure keymanagement type
             if (commitChanges)
             {
-                messages.add("Ensuring all non-demographics datasets use objectId as a managed key");
                 DbSchema studySchema = DbSchema.get("study");
                 SQLFragment sql = new SQLFragment("UPDATE study.dataset SET keymanagementtype=?, keypropertyname=? WHERE demographicdata=? AND container=?", "GUID", "objectid", false, c.getEntityId());
-                Table.execute(studySchema, sql);
+                long total = Table.execute(studySchema, sql);
+                messages.add("Non-demographics datasets updated to use objectId as a managed key: "+ total);
+            }
+            else
+            {
+                DbSchema studySchema = DbSchema.get("study");
+                SQLFragment sql = new SQLFragment("SELECT * FROM study.dataset WHERE keymanagementtype!=? AND demographicdata=? AND container=?", "GUID", false, c.getEntityId());
+                long total = Table.execute(studySchema, sql);
+                if (total > 0)
+                    messages.add("Non-demographics datasets that are not using objectId as a managed key: " + total);
             }
 
             ExperimentService.get().commitTransaction();
+
+            if (shouldClearCaches)
+            {
+                Introspector.flushCaches();
+                CacheManager.clearAllKnownCaches();
+            }
         }
         catch (SQLException e)
         {
@@ -298,5 +324,82 @@ public class EHRManager
         }
 
         return messages;
+    }
+
+    //NOTE: this assumes the property already exists
+    private void updatePropertyURI(Domain d, PropertyDescriptor pd) throws SQLException
+    {
+        Table.TableResultSet results = null;
+
+        try
+        {
+            DbSchema expSchema = DbSchema.get(ExpSchema.SCHEMA_NAME);
+            TableInfo propertyDomain = expSchema.getTable("propertydomain");
+            TableInfo propertyDescriptor = expSchema.getTable("propertydescriptor");
+
+            //find propertyId
+            TableSelector ts = new TableSelector(propertyDescriptor, Collections.singleton("propertyid"), new SimpleFilter(FieldKey.fromString("PropertyURI"), pd.getPropertyURI()), null);
+            Integer[] ids = ts.getArray(Integer.class);
+            if (ids.length == 0)
+            {
+                throw new SQLException("Unknown propertyURI: " + pd.getPropertyURI());
+            }
+            int propertyId = ids[0];
+
+            //first ensure the propertyURI exists
+            SQLFragment sql = new SQLFragment("select propertyid from exp.propertydomain p where domainId = ? AND propertyid in (select propertyid from exp.propertydescriptor pd where pd.name " + (expSchema.getSqlDialect().isPostgreSQL() ? "ilike" : "like") + " ?)", d.getTypeId(), pd.getName());
+            SqlSelector selector = new SqlSelector(expSchema.getScope(), sql);
+            results = selector.getResultSet();
+
+            List<Integer> oldIds = new ArrayList<Integer>();
+            while (results.next())
+            {
+                Map<String, Object> row = results.getRowMap();
+                oldIds.add((Integer)row.get("propertyid"));
+            }
+
+            if (oldIds.size() == 0)
+            {
+                //this should not happen
+                throw new SQLException("Unexpected: propertyId " + pd.getPropertyURI() + " does not exists for domain: " + d.getTypeURI());
+            }
+
+            if (oldIds.size() == 1 && oldIds.contains(propertyId))
+            {
+                //property ID already correct
+                return;
+            }
+
+            if (oldIds.size() == 1)
+            {
+                //only 1 ID, but not using correct propertyURI
+                String updateSql = "UPDATE exp.propertydomain SET propertyid = ? where domainId = ? AND propertyid = ?";
+                long updated = Table.execute(expSchema.getScope().getConnection(), updateSql, propertyId, d.getTypeId(), oldIds.get(0));
+
+                String deleteSql = "DELETE FROM exp.propertydescriptor WHERE propertyid = ?";
+                long deleted = Table.execute(expSchema.getScope().getConnection(), deleteSql, oldIds.get(0));
+            }
+            else
+            {
+                //if more than 1 row exists, this means we have duplicate property descriptors
+                SQLFragment selectSql = new SQLFragment("select min(sortorder) from exp.propertydomain p where domainId = ? AND propertyid in (select propertyid from exp.propertydescriptor pd where pd.name = ?");
+                SqlSelector ss = new SqlSelector(expSchema.getScope(), selectSql);
+                ResultSet resultSet = ss.getResultSet();
+                Integer minSort = resultSet.getInt(0);
+
+                String updateSql = "UPDATE exp.propertydomain SET propertyid = ? where domainId = ? AND propertyid IN ? AND sortorder = ?";
+                Table.execute(expSchema.getScope().getConnection(), updateSql, propertyId, d.getTypeId(), oldIds, minSort);
+
+                String deleteSql1 = "DELETE FROM exp.propertydescriptor WHERE propertyid != ? AND propertyid IN ?";
+                Table.execute(expSchema.getScope().getConnection(), deleteSql1, propertyId, oldIds);
+
+                String deleteSql2 = "DELETE FROM exp.propertydomain WHERE propertyid != ? AND domainId = ? AND propertyid IN ? AND sortorder != ?";
+                Table.execute(expSchema.getScope().getConnection(), deleteSql2, propertyId, d.getTypeId(), oldIds, minSort);
+            }
+        }
+        finally
+        {
+            ResultSetUtil.close(results);
+        }
     }
 }

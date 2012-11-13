@@ -40,37 +40,6 @@
             </ns:column>
         </ns:columns>
     </ns:table>
-    <!--TODO: should depreciate-->
-    <ns:table tableName="site_module_properties" tableDbType="TABLE">
-        <ns:pkColumnName>prop_name</ns:pkColumnName>
-        <ns:columns>
-            <ns:column columnName="prop_name">
-                <ns:nullable>true</ns:nullable>
-            </ns:column>
-            <ns:column columnName="stringvalue">
-                <ns:nullable>true</ns:nullable>
-            </ns:column>
-            <ns:column columnName="floatvalue">
-                <ns:nullable>true</ns:nullable>
-            </ns:column>
-            <ns:column columnName="createdby">
-                <ns:isUserEditable>false</ns:isUserEditable>
-                <ns:nullable>true</ns:nullable>
-            </ns:column>
-            <ns:column columnName="created">
-                <ns:isUserEditable>false</ns:isUserEditable>
-                <ns:nullable>true</ns:nullable>
-            </ns:column>
-            <ns:column columnName="modifiedby">
-                <ns:isUserEditable>false</ns:isUserEditable>
-                <ns:nullable>true</ns:nullable>
-            </ns:column>
-            <ns:column columnName="modified">
-                <ns:isUserEditable>false</ns:isUserEditable>
-                <ns:nullable>true</ns:nullable>
-            </ns:column>
-        </ns:columns>
-    </ns:table>
     <ns:table tableName="snomed_tags" tableDbType="TABLE">
         <ns:importUrl></ns:importUrl>
         <ns:insertUrl></ns:insertUrl>
@@ -1263,79 +1232,6 @@
                     <ns:fkTable>containers</ns:fkTable>
                     <ns:fkColumnName>entityid</ns:fkColumnName>
                 </ns:fk>
-            </ns:column>
-        </ns:columns>
-    </ns:table>
-    <ns:table tableName="automatic_alerts" tableDbType="TABLE">
-        <ns:auditLogging>DETAILED</ns:auditLogging>
-        <ns:pkColumnName>rowid</ns:pkColumnName>
-        <ns:columns>
-            <ns:column columnName="rowid">
-                <ns:isAutoInc>true</ns:isAutoInc>
-                <ns:isKeyField>true</ns:isKeyField>
-                <ns:shownInInsertView>false</ns:shownInInsertView>
-                <ns:shownInUpdateView>false</ns:shownInUpdateView>
-            </ns:column>
-            <ns:column columnName="title">
-                <ns:columnTitle>Title</ns:columnTitle>
-                <ns:nullable>false</ns:nullable>
-            </ns:column>
-            <ns:column columnName="containerpath">
-                <ns:columnTitle>Container Path</ns:columnTitle>
-                <ns:nullable>true</ns:nullable>
-            </ns:column>
-            <ns:column columnName="schemaname">
-                <ns:columnTitle>Schema Name</ns:columnTitle>
-                <ns:nullable>true</ns:nullable>
-            </ns:column>
-            <ns:column columnName="queryname">
-                <ns:columnTitle>Query Name</ns:columnTitle>
-                <ns:nullable>true</ns:nullable>
-            </ns:column>
-            <ns:column columnName="viewname">
-                <ns:columnTitle>View Name</ns:columnTitle>
-                <ns:nullable>true</ns:nullable>
-            </ns:column>
-            <ns:column columnName="notificationtype">
-                <ns:nullable>true</ns:nullable>
-                <ns:fk>
-                    <ns:fkDbSchema>ehr</ns:fkDbSchema>
-                    <ns:fkTable>notificationtypes</ns:fkTable>
-                    <ns:fkColumnName>notificationtype</ns:fkColumnName>
-                </ns:fk>
-            </ns:column>
-            <ns:column columnName="email_html">
-                <ns:columnTitle>Email HTML</ns:columnTitle>
-                <ns:inputType>textarea</ns:inputType>
-            </ns:column>
-            <ns:column columnName="container">
-                <ns:isUserEditable>false</ns:isUserEditable>
-                <ns:isHidden>true</ns:isHidden>
-                <ns:fk>
-                    <ns:fkDbSchema>core</ns:fkDbSchema>
-                    <ns:fkTable>containers</ns:fkTable>
-                    <ns:fkColumnName>entityid</ns:fkColumnName>
-                </ns:fk>
-            </ns:column>
-            <ns:column columnName="createdby">
-                <ns:isUserEditable>false</ns:isUserEditable>
-                <ns:nullable>true</ns:nullable>
-                <ns:isHidden>true</ns:isHidden>
-            </ns:column>
-            <ns:column columnName="created">
-                <ns:isUserEditable>false</ns:isUserEditable>
-                <ns:nullable>true</ns:nullable>
-                <ns:isHidden>true</ns:isHidden>
-            </ns:column>
-            <ns:column columnName="modifiedby">
-                <ns:isUserEditable>false</ns:isUserEditable>
-                <ns:nullable>true</ns:nullable>
-                <ns:isHidden>true</ns:isHidden>
-            </ns:column>
-            <ns:column columnName="modified">
-                <ns:isUserEditable>false</ns:isUserEditable>
-                <ns:nullable>true</ns:nullable>
-                <ns:isHidden>true</ns:isHidden>
             </ns:column>
         </ns:columns>
     </ns:table>

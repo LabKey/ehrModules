@@ -443,12 +443,14 @@ Ext.ux.form.DateTime = Ext.extend(Ext.form.Field, {
             this.wrapClick = false;
         }
 
-        // update underlying value
-//        if(f === this.df) {
+        // update underlying value.  ordering is important, since the cognate field could be null
+        if(f === this.df) {
             this.updateDate();
-//        } else {
             this.updateTime();
-//        }
+        } else {
+            this.updateTime();
+            this.updateDate();
+        }
         this.updateHidden();
 
         this.validate();

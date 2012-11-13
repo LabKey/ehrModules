@@ -102,7 +102,7 @@ Ext4.define('EHR.ext.SingleAnimalReport', {
 
     getFilterOptionsItems: function(){
         var inputType = LABKEY.ActionURL.getParameter('_inputType') || 'renderSingleSubject';
-//console.log(inputType)
+
         return [{
             width: 200,
             html: '<p>Type of Search:</p>'

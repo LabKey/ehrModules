@@ -13,7 +13,7 @@ var {EHR, LABKEY, Ext, console, init, beforeInsert, afterInsert, beforeUpdate, a
 function onUpsert(context, errors, row, oldRow){
     //TODO: do we need this for every ETL record?
     //NOTE: this should be getting set by the birth, death, arrival & departure tables
-    if(!row.calculated_status || context.extraContext.dataSource == 'etl'){
+    if(!row.calculated_status && context.extraContext.dataSource != 'etl'){
         row = EHR.Server.Validation.updateStatusField([row.Id], row);
     }
 }

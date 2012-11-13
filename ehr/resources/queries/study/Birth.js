@@ -75,7 +75,7 @@ function onBecomePublic(errors, scriptContext, row, oldRow){
 }
 
 function onComplete(event, errors, scriptContext){
-    if(scriptContext.publicParticipantsModified.length){
+    if(scriptContext.publicParticipantsModified.length && scriptContext.extraContext.dataSource != 'etl'){
         var valuesMap = {};
         var r;
         for(var i=0;i<scriptContext.rows.length;i++){

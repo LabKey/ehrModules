@@ -79,7 +79,7 @@ function onBecomePublic(errors, scriptContext, row, oldRow){
 }
 
 function onComplete(event, errors, scriptContext){
-    if(scriptContext.publicParticipantsModified.length){
+    if(scriptContext.publicParticipantsModified.length && scriptContext.extraContext.dataSource != 'etl'){
         EHR.Server.Validation.updateStatusField(scriptContext.publicParticipantsModified);
     }
 }
