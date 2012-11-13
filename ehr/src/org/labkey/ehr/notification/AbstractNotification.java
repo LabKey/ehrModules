@@ -31,6 +31,7 @@ import org.labkey.api.query.FieldKey;
 import org.labkey.api.query.QueryService;
 import org.labkey.api.query.UserSchema;
 import org.labkey.api.security.Group;
+import org.labkey.api.security.MemberType;
 import org.labkey.api.security.SecurityManager;
 import org.labkey.api.security.User;
 import org.labkey.api.security.UserPrincipal;
@@ -224,7 +225,7 @@ abstract public class AbstractNotification implements Notification, Runnable
                 if (group.isSystemGroup())
                     throw new IllegalArgumentException("Invalid group ID: site groups are not allowed");
 
-                List<User> members = SecurityManager.getGroupMembers(group);
+                Set<User> members = SecurityManager.getAllGroupMembers(group, MemberType.USERS);
                 List<Address> addresses = new ArrayList<Address>();
                 for (User u : members)
                 {
