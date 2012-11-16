@@ -114,7 +114,7 @@ public class BloodAdminAlertsNotification extends AbstractNotification
         drawsNotAssigned(msg);
         incompleteDraws(msg);
 
-        drawsWithServicesAndNoRequest(msg);
+        //drawsWithServicesAndNoRequest(msg);
 
         return msg.toString();
     }
@@ -273,21 +273,22 @@ public class BloodAdminAlertsNotification extends AbstractNotification
         }
     }
 
-    /**
-     * we find any current blood draws with clinpath, but lacking a request
-     */
-    protected void drawsWithServicesAndNoRequest(final StringBuilder msg)
-    {
-        SimpleFilter filter = new SimpleFilter(FieldKey.fromString("path_lsid"), null, CompareType.ISBLANK);
-        filter.addCondition(FieldKey.fromString("date"), new Date(), CompareType.DATE_EQUAL);
-        TableSelector ts = new TableSelector(_studySchema.getTable("ValidateBloodDrawClinpath"), Table.ALL_COLUMNS, filter, null);
-        if (ts.getRowCount() > 0)
-        {
-            msg.append("<b>WARNING: There are " + ts.getRowCount() + " blood draws scheduled today that request clinpath, but lack a corresponding clinpath request.</b><br>");
-            msg.append("<p><a href='" + _baseUrl + "/executeQuery.view?schemaName=study&query.queryName=ValidateBloodDrawClinpath&query.viewName=Lacking Clinpath Request&query.date~dateeq=" + _dateFormat.format(new Date()) + "'>Click here to view them</a><br>\n");
-            msg.append("<hr>\n");
-        }
-    }
+//    /**
+//     * NOTE: requests are auto-generated, so this is not necessary
+//     * we find any current blood draws with clinpath, but lacking a request
+//     */
+//    protected void drawsWithServicesAndNoRequest(final StringBuilder msg)
+//    {
+//        SimpleFilter filter = new SimpleFilter(FieldKey.fromString("path_lsid"), null, CompareType.ISBLANK);
+//        filter.addCondition(FieldKey.fromString("date"), new Date(), CompareType.DATE_EQUAL);
+//        TableSelector ts = new TableSelector(_studySchema.getTable("ValidateBloodDrawClinpath"), Table.ALL_COLUMNS, filter, null);
+//        if (ts.getRowCount() > 0)
+//        {
+//            msg.append("<b>WARNING: There are " + ts.getRowCount() + " blood draws scheduled today that request clinpath services, but lack a corresponding clinpath request.</b><br>");
+//            msg.append("<p><a href='" + _baseUrl + "/executeQuery.view?schemaName=study&query.queryName=ValidateBloodDrawClinpath&query.viewName=Lacking Clinpath Request&query.date~dateeq=" + _dateFormat.format(new Date()) + "'>Click here to view them</a><br>\n");
+//            msg.append("<hr>\n");
+//        }
+//    }
 
     /*
      * we find any incomplete blood draws scheduled today, by area

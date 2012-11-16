@@ -1142,14 +1142,7 @@
             </ns:column>
             <ns:column columnName="name">
             </ns:column>
-            <ns:column columnName="container">
-                <ns:isUserEditable>false</ns:isUserEditable>
-                <ns:isHidden>true</ns:isHidden>
-                <ns:fk>
-                    <ns:fkDbSchema>core</ns:fkDbSchema>
-                    <ns:fkTable>containers</ns:fkTable>
-                    <ns:fkColumnName>entityid</ns:fkColumnName>
-                </ns:fk>
+            <ns:column columnName="category">
             </ns:column>
             <ns:column columnName="createdby">
                 <ns:isUserEditable>false</ns:isUserEditable>
@@ -1528,6 +1521,47 @@
                 <ns:columnTitle>Procedure Id</ns:columnTitle>
             </ns:column>
             <ns:column columnName="comment"/>
+            <ns:column columnName="objectid"/>
+            <ns:column columnName="container"/>
+            <ns:column columnName="createdby"/>
+            <ns:column columnName="created"/>
+            <ns:column columnName="modifiedby"/>
+            <ns:column columnName="modified"/>
+        </ns:columns>
+    </ns:table>
+    <ns:table tableName="scheduled_task_types" tableDbType="TABLE">
+        <ns:columns>
+            <ns:column columnName="tasktype"/>
+        </ns:columns>
+    </ns:table>
+    <ns:table tableName="scheduled_tasks" tableDbType="TABLE">
+        <ns:columns>
+            <ns:column columnName="rowid"/>
+            <ns:column columnName="taskid"/>
+            <ns:column columnName="tasktype"/>
+            <ns:column columnName="date"/>
+            <ns:column columnName="enddate"/>
+            <ns:column columnName="frequency"/>
+            <ns:column columnName="id"/>
+            <ns:column columnName="location"/>
+            <ns:column columnName="description"/>
+            <ns:column columnName="json"/>
+            <ns:column columnName="objectid"/>
+            <ns:column columnName="container"/>
+            <ns:column columnName="createdby"/>
+            <ns:column columnName="created"/>
+            <ns:column columnName="modifiedby"/>
+            <ns:column columnName="modified"/>
+        </ns:columns>
+    </ns:table>
+    <ns:table tableName="animal_group_members" tableDbType="TABLE">
+        <ns:columns>
+            <ns:column columnName="rowid"/>
+            <ns:column columnName="date"/>
+            <ns:column columnName="enddate"/>
+            <ns:column columnName="groupname"/>
+            <ns:column columnName="comment"/>
+            <ns:column columnName="objectid"/>
             <ns:column columnName="container"/>
             <ns:column columnName="createdby"/>
             <ns:column columnName="created"/>

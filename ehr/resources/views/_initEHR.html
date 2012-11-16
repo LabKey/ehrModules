@@ -7824,19 +7824,19 @@ var panel = new Ext.Panel({
             pendingDeletes++;
             deleteAll('ehr', 'module_properties', 'rowid')
         }
-    },{
-        xtype: 'button',
-        text: 'Populate Animal Groups',
-        scope: this,
-        handler: btn12
-    },{
-        xtype: 'button',
-        text: 'Delete Data From Animal Groups',
-        scope: this,
-        handler: function(){
-            pendingDeletes++;
-            deleteAll('ehr', 'animal_groups', 'rowid')
-        }
+//    },{
+//        xtype: 'button',
+//        text: 'Populate Animal Groups',
+//        scope: this,
+//        handler: btn12
+//    },{
+//        xtype: 'button',
+//        text: 'Delete Data From Animal Groups',
+//        scope: this,
+//        handler: function(){
+//            pendingDeletes++;
+//            deleteAll('ehr', 'animal_groups', 'rowid')
+//        }
     },{
         xtype: 'button',
         text: 'Populate All',
@@ -7868,7 +7868,7 @@ var panel = new Ext.Panel({
             deleteAll('ehr_lookups', 'charge_items', 'rowid');
 //            deleteAll('ehr_lookups', 'snomed', 'code');
             deleteAll('ehr', 'module_properties', 'rowid');
-            deleteAll('ehr', 'animal_groups', 'rowid');
+//            deleteAll('ehr', 'animal_groups', 'rowid');
         }
     }]
 })

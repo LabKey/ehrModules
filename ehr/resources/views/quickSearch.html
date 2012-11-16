@@ -60,53 +60,53 @@ function makePanel(){
                 },{
                     html: '<a href="'+(LABKEY.ActionURL.buildURL('ehr','animalSearch',ctx['EHRStudyContainer']))+'">Advanced Animal Search</a>',
                     colspan: 2
-                },{
-                    html: 'Animal Groups:',
-                    style: 'padding-top: 10px;',
-                    colspan: 2
-                },{
-                    emptyText:'',
-                    name: 'animalGroup',
-                    itemId: 'animalGroup',
-                    xtype: 'combo',
-                    displayField:'name',
-                    valueField: 'name',
-                    width: 160,
-                    editable: true,
-                    triggerAction: 'all',
-                    store: new LABKEY.ext.Store({
-                        containerPath: ctx['EHRStudyContainer'],
-                        schemaName: 'ehr',
-                        queryName: 'animal_groups',
-                        sort: 'name',
-                        autoLoad: true
-                    })
-                },{
-                    xtype: 'button',
-                    text: 'Show Group',
-                    width: 120,
-                    style: 'padding-left:5px',
-                    handler: function(btn){
-                        var field = btn.ownerCt.find('itemId', 'animalGroup')[0];
-                        var value = field.getValue();
-                        if (!value)
-                            return;
-
-                        window.location = LABKEY.ActionURL.buildURL(
-                            'query'
-                            ,'executeQuery'
-                            ,ctx['EHRStudyContainer']
-                            ,{schemaName: 'study', 'query.queryName': 'Demographics', 'query.viewName': value}
-                        );
-                    },
-                    scope: this
-                },{
-                    html: '<a href="'+(LABKEY.ActionURL.buildURL('query', 'executeQuery', ctx['EHRStudyContainer'], {
-                        schemaName: 'study',
-                        'query.queryName': 'Demographics',
-                        'query.viewName': 'Alive, at Center'
-                    }))+'">View All Living Animals</a>',
-                    colspan: 2
+//                },{
+//                    html: 'Animal Groups:',
+//                    style: 'padding-top: 10px;',
+//                    colspan: 2
+//                },{
+//                    emptyText:'',
+//                    name: 'animalGroup',
+//                    itemId: 'animalGroup',
+//                    xtype: 'combo',
+//                    displayField:'name',
+//                    valueField: 'name',
+//                    width: 160,
+//                    editable: true,
+//                    triggerAction: 'all',
+//                    store: new LABKEY.ext.Store({
+//                        containerPath: ctx['EHRStudyContainer'],
+//                        schemaName: 'ehr',
+//                        queryName: 'animal_groups',
+//                        sort: 'name',
+//                        autoLoad: true
+//                    })
+//                },{
+//                    xtype: 'button',
+//                    text: 'Show Group',
+//                    width: 120,
+//                    style: 'padding-left:5px',
+//                    handler: function(btn){
+//                        var field = btn.ownerCt.find('itemId', 'animalGroup')[0];
+//                        var value = field.getValue();
+//                        if (!value)
+//                            return;
+//
+//                        window.location = LABKEY.ActionURL.buildURL(
+//                            'query'
+//                            ,'executeQuery'
+//                            ,ctx['EHRStudyContainer']
+//                            ,{schemaName: 'study', 'query.queryName': 'Demographics', 'query.viewName': value}
+//                        );
+//                    },
+//                    scope: this
+//                },{
+//                    html: '<a href="'+(LABKEY.ActionURL.buildURL('query', 'executeQuery', ctx['EHRStudyContainer'], {
+//                        schemaName: 'study',
+//                        'query.queryName': 'Demographics',
+//                        'query.viewName': 'Alive, at Center'
+//                    }))+'">View All Living Animals</a>',
+//                    colspan: 2
                 },{
                     html: 'Project:',
                     style: 'padding-top: 10px;',

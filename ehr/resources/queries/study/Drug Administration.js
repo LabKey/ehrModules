@@ -33,7 +33,7 @@ function onUpsert(context, errors, row, oldRow){
         //other forms will not show begindate, so this shouldnt matter here
         if(row.begindate)
             row.date = row.begindate;
-        }
+    }
 }
 
 function setDescription(row, errors){
