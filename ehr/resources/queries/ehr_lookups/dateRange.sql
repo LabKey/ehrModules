@@ -10,6 +10,8 @@ i.date,
 cast(dayofyear(i.date) as integer) as DayOfYear,
 cast(dayofmonth(i.date) as integer) as DayOfMonth,
 cast(dayofweek(i.date) as integer) as DayOfWeek,
+ceiling(cast(dayofmonth(i.date) as float) / 7.0) as WeekOfMonth,
+cast(week(i.date) as integer) as WeekOfYear,
 
 FROM (SELECT
 
