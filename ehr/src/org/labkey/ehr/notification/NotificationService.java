@@ -35,6 +35,9 @@ import org.labkey.ehr.EHRManager;
 import org.labkey.ehr.EHRModule;
 
 import javax.mail.Address;
+import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Executors;
@@ -134,6 +137,15 @@ public class NotificationService
 
     public synchronized void start(int delay)
     {
+        new Timer(delay, new ActionListener(){
+            public void actionPerformed(ActionEvent evt) {
+                doStart();
+            }
+        });
+    }
+
+    public void doStart()
+    {
         log.info("Trying to initialize EHR Notification Service");
 
         _enabled = Boolean.parseBoolean(getConfigProperty("serviceEnabled"));
@@ -160,7 +172,7 @@ public class NotificationService
 
         for (Notification n : _notifications)
         {
-            n.start(delay);
+            n.start(0);
         }
     }
 
@@ -285,7 +297,7 @@ public class NotificationService
         {
             _enabled = enabled;
             if (enabled)
-                start(0);
+                doStart();
             else
                 stop();
         }
