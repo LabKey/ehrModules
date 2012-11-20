@@ -7858,7 +7858,7 @@ var panel = new Ext.Panel({
         text: 'Delete All',
         scope: this,
         handler: function(){
-            pendingDeletes=6;
+            pendingDeletes = 5;
             deleteAll('ehr', 'formtypes', 'rowid'); //note: formpanelsections will be deleted by trigger script
             //deleteAll('ehr', 'formpanelsections', 'rowid');
             //deleteAll('ehr', 'formtemplates', 'entityid');
