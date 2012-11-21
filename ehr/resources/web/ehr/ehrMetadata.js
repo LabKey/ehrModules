@@ -315,6 +315,7 @@ EHR.Metadata.Sources.Standard = {
         ,begindate: {
             xtype: 'xdatetime',
             hidden: true,
+            noSaveInTemplateByDefault: true,
             extFormat: 'Y-m-d H:i',
             editorConfig: {
                 dateFormat: 'Y-m-d',
@@ -4134,6 +4135,12 @@ EHR.Metadata.Sources.MPR = {
                 }
             },
             category: {
+                hidden: false
+            },
+            date: {
+                hidden: true
+            },
+            begindate: {
                 hidden: false
             }
         }
