@@ -1,5 +1,5 @@
 <ns:tables xmlns:ns="http://labkey.org/data/xml">
-  <ns:table tableName="pairtest_bhav" tableDbType="TABLE">
+  <ns:table tableName="pairtest_bhav" tableDbType="TABLE" useColumnOrder="true">
     <ns:pkColumnName>value</ns:pkColumnName>
     <ns:importUrl></ns:importUrl>
     <ns:insertUrl></ns:insertUrl>
@@ -12,7 +12,7 @@
       </ns:column>
     </ns:columns>
   </ns:table>
-  <ns:table tableName="integers" tableDbType="TABLE">
+  <ns:table tableName="integers" tableDbType="TABLE" useColumnOrder="true">
     <ns:importUrl></ns:importUrl>
     <ns:insertUrl></ns:insertUrl>
     <ns:updateUrl></ns:updateUrl>
@@ -24,7 +24,7 @@
       </ns:column>
     </ns:columns>
   </ns:table>
-  <ns:table tableName="dental_tartar" tableDbType="TABLE">
+  <ns:table tableName="dental_tartar" tableDbType="TABLE" useColumnOrder="true">
     <ns:importUrl></ns:importUrl>
     <ns:insertUrl></ns:insertUrl>
     <ns:updateUrl></ns:updateUrl>
@@ -36,7 +36,7 @@
       </ns:column>
     </ns:columns>
   </ns:table>
-  <ns:table tableName="dental_status" tableDbType="TABLE">
+  <ns:table tableName="dental_status" tableDbType="TABLE" useColumnOrder="true">
     <ns:importUrl></ns:importUrl>
     <ns:insertUrl></ns:insertUrl>
     <ns:updateUrl></ns:updateUrl>
@@ -48,7 +48,7 @@
       </ns:column>
     </ns:columns>
   </ns:table>
-  <ns:table tableName="obs_mens" tableDbType="TABLE">
+  <ns:table tableName="obs_mens" tableDbType="TABLE" useColumnOrder="true">
     <ns:importUrl></ns:importUrl>
     <ns:insertUrl></ns:insertUrl>
     <ns:updateUrl></ns:updateUrl>
@@ -64,7 +64,7 @@
       </ns:column>
     </ns:columns>
   </ns:table>
-  <ns:table tableName="tb_eye" tableDbType="TABLE">
+  <ns:table tableName="tb_eye" tableDbType="TABLE" useColumnOrder="true">
     <ns:importUrl></ns:importUrl>
     <ns:insertUrl></ns:insertUrl>
     <ns:updateUrl></ns:updateUrl>
@@ -79,7 +79,7 @@
       </ns:column>
     </ns:columns>
   </ns:table>
-  <ns:table tableName="dental_gingivitis" tableDbType="TABLE">
+  <ns:table tableName="dental_gingivitis" tableDbType="TABLE" useColumnOrder="true">
     <ns:importUrl></ns:importUrl>
     <ns:insertUrl></ns:insertUrl>
     <ns:updateUrl></ns:updateUrl>
@@ -93,7 +93,7 @@
       </ns:column>
     </ns:columns>
   </ns:table>
-  <ns:table tableName="arearooms" tableDbType="TABLE">
+  <ns:table tableName="arearooms" tableDbType="TABLE" useColumnOrder="true">
     <ns:importUrl></ns:importUrl>
     <ns:insertUrl></ns:insertUrl>
     <ns:updateUrl></ns:updateUrl>
@@ -112,7 +112,7 @@
       </ns:column>
     </ns:columns>
   </ns:table>
-  <ns:table tableName="bcs_score" tableDbType="TABLE">
+  <ns:table tableName="bcs_score" tableDbType="TABLE" useColumnOrder="true">
     <ns:importUrl></ns:importUrl>
     <ns:insertUrl></ns:insertUrl>
     <ns:updateUrl></ns:updateUrl>
@@ -131,7 +131,7 @@
       </ns:column>
     </ns:columns>
   </ns:table>
-  <ns:table tableName="cageclass" tableDbType="TABLE">
+  <ns:table tableName="cageclass" tableDbType="TABLE" useColumnOrder="true">
     <ns:importUrl></ns:importUrl>
     <ns:insertUrl></ns:insertUrl>
     <ns:updateUrl></ns:updateUrl>
@@ -163,7 +163,7 @@
       </ns:column>
     </ns:columns>
   </ns:table>
-  <ns:table tableName="obs_tlocation" tableDbType="TABLE">
+  <ns:table tableName="obs_tlocation" tableDbType="TABLE" useColumnOrder="true">
     <ns:importUrl></ns:importUrl>
     <ns:insertUrl></ns:insertUrl>
     <ns:updateUrl></ns:updateUrl>
@@ -179,7 +179,7 @@
       </ns:column>
     </ns:columns>
   </ns:table>
-  <ns:table tableName="obs_remarks" tableDbType="TABLE">
+  <ns:table tableName="obs_remarks" tableDbType="TABLE" useColumnOrder="true">
     <ns:importUrl></ns:importUrl>
     <ns:insertUrl></ns:insertUrl>
     <ns:updateUrl></ns:updateUrl>
@@ -193,7 +193,7 @@
       </ns:column>
     </ns:columns>
   </ns:table>
-  <ns:table tableName="conc_units" tableDbType="TABLE">
+  <ns:table tableName="conc_units" tableDbType="TABLE" useColumnOrder="true">
     <ns:importUrl></ns:importUrl>
     <ns:insertUrl></ns:insertUrl>
     <ns:updateUrl></ns:updateUrl>
@@ -209,7 +209,7 @@
       </ns:column>
     </ns:columns>
   </ns:table>
-  <ns:table tableName="volume_units" tableDbType="TABLE">
+  <ns:table tableName="volume_units" tableDbType="TABLE" useColumnOrder="true">
     <ns:importUrl></ns:importUrl>
     <ns:insertUrl></ns:insertUrl>
     <ns:updateUrl></ns:updateUrl>
@@ -221,7 +221,7 @@
       </ns:column>
     </ns:columns>
   </ns:table>
-  <ns:table tableName="cage" tableDbType="TABLE">
+  <ns:table tableName="cage" tableDbType="TABLE" useColumnOrder="true">
     <ns:importUrl></ns:importUrl>
     <ns:insertUrl></ns:insertUrl>
     <ns:updateUrl></ns:updateUrl>
@@ -275,7 +275,7 @@
       </ns:column>
     </ns:columns>
   </ns:table>
-  <ns:table tableName="viral_status" tableDbType="TABLE">
+  <ns:table tableName="viral_status" tableDbType="TABLE" useColumnOrder="true">
     <ns:importUrl></ns:importUrl>
     <ns:insertUrl></ns:insertUrl>
     <ns:updateUrl></ns:updateUrl>
@@ -287,7 +287,7 @@
       </ns:column>
     </ns:columns>
   </ns:table>
-  <ns:table tableName="obs_behavior" tableDbType="TABLE">
+  <ns:table tableName="obs_behavior" tableDbType="TABLE" useColumnOrder="true">
     <ns:importUrl></ns:importUrl>
     <ns:insertUrl></ns:insertUrl>
     <ns:updateUrl></ns:updateUrl>
@@ -304,7 +304,7 @@
       </ns:column>
     </ns:columns>
   </ns:table>
-  <ns:table tableName="hold_codes" tableDbType="TABLE">
+  <ns:table tableName="hold_codes" tableDbType="TABLE" useColumnOrder="true">
     <ns:importUrl></ns:importUrl>
     <ns:insertUrl></ns:insertUrl>
     <ns:updateUrl></ns:updateUrl>
@@ -320,7 +320,7 @@
       </ns:column>
     </ns:columns>
   </ns:table>
-  <ns:table tableName="yesno" tableDbType="TABLE">
+  <ns:table tableName="yesno" tableDbType="TABLE" useColumnOrder="true">
     <ns:importUrl></ns:importUrl>
     <ns:insertUrl></ns:insertUrl>
     <ns:updateUrl></ns:updateUrl>
@@ -332,7 +332,7 @@
       </ns:column>
     </ns:columns>
   </ns:table>
-  <ns:table tableName="clinremarks_category" tableDbType="TABLE">
+  <ns:table tableName="clinremarks_category" tableDbType="TABLE" useColumnOrder="true">
     <ns:importUrl></ns:importUrl>
     <ns:insertUrl></ns:insertUrl>
     <ns:updateUrl></ns:updateUrl>
@@ -344,7 +344,7 @@
       </ns:column>
     </ns:columns>
   </ns:table>
-  <ns:table tableName="restraint_type" tableDbType="TABLE">
+  <ns:table tableName="restraint_type" tableDbType="TABLE" useColumnOrder="true">
     <ns:importUrl></ns:importUrl>
     <ns:insertUrl></ns:insertUrl>
     <ns:updateUrl></ns:updateUrl>
@@ -362,7 +362,7 @@
         </ns:column>
     </ns:columns>
   </ns:table>
-  <ns:table tableName="observations_anesthesia_recovery" tableDbType="TABLE">
+  <ns:table tableName="observations_anesthesia_recovery" tableDbType="TABLE" useColumnOrder="true">
     <ns:importUrl></ns:importUrl>
     <ns:insertUrl></ns:insertUrl>
     <ns:updateUrl></ns:updateUrl>
@@ -377,7 +377,7 @@
       </ns:column>
     </ns:columns>
   </ns:table>
-  <ns:table tableName="obs_breeding" tableDbType="TABLE">
+  <ns:table tableName="obs_breeding" tableDbType="TABLE" useColumnOrder="true">
     <ns:importUrl></ns:importUrl>
     <ns:insertUrl></ns:insertUrl>
     <ns:updateUrl></ns:updateUrl>
@@ -394,7 +394,7 @@
       </ns:column>
     </ns:columns>
   </ns:table>
-  <ns:table tableName="death_codes" tableDbType="TABLE">
+  <ns:table tableName="death_codes" tableDbType="TABLE" useColumnOrder="true">
     <ns:importUrl></ns:importUrl>
     <ns:insertUrl></ns:insertUrl>
     <ns:updateUrl></ns:updateUrl>
@@ -410,7 +410,7 @@
       </ns:column>
     </ns:columns>
   </ns:table>
-  <ns:table tableName="death_cause" tableDbType="TABLE">
+  <ns:table tableName="death_cause" tableDbType="TABLE" useColumnOrder="true">
     <ns:importUrl></ns:importUrl>
     <ns:insertUrl></ns:insertUrl>
     <ns:updateUrl></ns:updateUrl>
@@ -423,7 +423,7 @@
       </ns:column>
     </ns:columns>
   </ns:table>
-  <ns:table tableName="death_manner" tableDbType="TABLE">
+  <ns:table tableName="death_manner" tableDbType="TABLE" useColumnOrder="true">
     <ns:importUrl></ns:importUrl>
     <ns:insertUrl></ns:insertUrl>
     <ns:updateUrl></ns:updateUrl>
@@ -436,7 +436,7 @@
       </ns:column>
     </ns:columns>
   </ns:table>
-  <ns:table tableName="obs_other" tableDbType="TABLE">
+  <ns:table tableName="obs_other" tableDbType="TABLE" useColumnOrder="true">
     <ns:importUrl></ns:importUrl>
     <ns:insertUrl></ns:insertUrl>
     <ns:updateUrl></ns:updateUrl>
@@ -453,7 +453,7 @@
       </ns:column>
     </ns:columns>
   </ns:table>
-  <ns:table tableName="pe_region" tableDbType="TABLE">
+  <ns:table tableName="pe_region" tableDbType="TABLE" useColumnOrder="true">
     <ns:importUrl></ns:importUrl>
     <ns:insertUrl></ns:insertUrl>
     <ns:updateUrl></ns:updateUrl>
@@ -465,7 +465,7 @@
       </ns:column>
     </ns:columns>
   </ns:table>
-  <ns:table tableName="dental_priority" tableDbType="TABLE">
+  <ns:table tableName="dental_priority" tableDbType="TABLE" useColumnOrder="true">
     <ns:importUrl></ns:importUrl>
     <ns:insertUrl></ns:insertUrl>
     <ns:updateUrl></ns:updateUrl>
@@ -481,7 +481,7 @@
       </ns:column>
     </ns:columns>
   </ns:table>
-  <ns:table tableName="mhc_institutions" tableDbType="TABLE">
+  <ns:table tableName="mhc_institutions" tableDbType="TABLE" useColumnOrder="true">
     <ns:importUrl></ns:importUrl>
     <ns:insertUrl></ns:insertUrl>
     <ns:updateUrl></ns:updateUrl>
@@ -493,7 +493,7 @@
       </ns:column>
     </ns:columns>
   </ns:table>
-  <ns:table tableName="routes" tableDbType="TABLE">
+  <ns:table tableName="routes" tableDbType="TABLE" useColumnOrder="true">
     <ns:importUrl></ns:importUrl>
     <ns:insertUrl></ns:insertUrl>
     <ns:updateUrl></ns:updateUrl>
@@ -507,7 +507,7 @@
         </ns:column>
     </ns:columns>
   </ns:table>
-  <ns:table tableName="areas" tableDbType="TABLE">
+  <ns:table tableName="areas" tableDbType="TABLE" useColumnOrder="true">
     <ns:importUrl></ns:importUrl>
     <ns:insertUrl></ns:insertUrl>
     <ns:updateUrl></ns:updateUrl>
@@ -520,7 +520,7 @@
       <ns:column columnName="description"/>
     </ns:columns>
   </ns:table>
-  <ns:table tableName="bacteriology_sensitivity" tableDbType="TABLE">
+  <ns:table tableName="bacteriology_sensitivity" tableDbType="TABLE" useColumnOrder="true">
     <ns:importUrl></ns:importUrl>
     <ns:insertUrl></ns:insertUrl>
     <ns:updateUrl></ns:updateUrl>
@@ -536,7 +536,7 @@
       </ns:column>
     </ns:columns>
   </ns:table>
-  <ns:table tableName="clinpath_status" tableDbType="TABLE">
+  <ns:table tableName="clinpath_status" tableDbType="TABLE" useColumnOrder="true">
     <ns:importUrl></ns:importUrl>
     <ns:insertUrl></ns:insertUrl>
     <ns:updateUrl></ns:updateUrl>
@@ -548,7 +548,7 @@
       </ns:column>
     </ns:columns>
   </ns:table>
-    <ns:table tableName="blood_draw_services" tableDbType="TABLE">
+    <ns:table tableName="blood_draw_services" tableDbType="TABLE" useColumnOrder="true">
     <ns:importUrl></ns:importUrl>
     <ns:insertUrl></ns:insertUrl>
     <ns:updateUrl></ns:updateUrl>
@@ -562,7 +562,7 @@
         </ns:column>
       </ns:columns>
     </ns:table>
-  <ns:table tableName="request_priority" tableDbType="TABLE">
+  <ns:table tableName="request_priority" tableDbType="TABLE" useColumnOrder="true">
     <ns:importUrl></ns:importUrl>
     <ns:insertUrl></ns:insertUrl>
     <ns:updateUrl></ns:updateUrl>
@@ -574,7 +574,7 @@
       </ns:column>
     </ns:columns>
   </ns:table>
-  <ns:table tableName="clinpath_tests" tableDbType="TABLE">
+  <ns:table tableName="clinpath_tests" tableDbType="TABLE" useColumnOrder="true">
     <ns:importUrl></ns:importUrl>
     <ns:insertUrl></ns:insertUrl>
     <ns:updateUrl></ns:updateUrl>
@@ -593,7 +593,7 @@
       </ns:column>
     </ns:columns>
   </ns:table>
-  <!--<ns:table tableName="clinpath_services" tableDbType="TABLE">-->
+  <!--<ns:table tableName="clinpath_services" tableDbType="TABLE" useColumnOrder="true">-->
     <!--<ns:pkColumnName>type</ns:pkColumnName>-->
     <!--<ns:columns>-->
       <!--<ns:column columnName="type">-->
@@ -613,7 +613,7 @@
       <!--</ns:column>-->
     <!--</ns:columns>-->
   <!--</ns:table>-->
-  <!--<ns:table tableName="lab_tests" tableDbType="TABLE">-->
+  <!--<ns:table tableName="lab_tests" tableDbType="TABLE" useColumnOrder="true">-->
     <!--<ns:importUrl></ns:importUrl>-->
     <!--<ns:insertUrl></ns:insertUrl>-->
     <!--<ns:updateUrl></ns:updateUrl>-->
@@ -640,7 +640,7 @@
       <!--</ns:column>-->
     <!--</ns:columns>-->
   <!--</ns:table>-->
-  <ns:table tableName="alopecia_cause" tableDbType="TABLE">
+  <ns:table tableName="alopecia_cause" tableDbType="TABLE" useColumnOrder="true">
     <ns:importUrl></ns:importUrl>
     <ns:insertUrl></ns:insertUrl>
     <ns:updateUrl></ns:updateUrl>
@@ -652,7 +652,7 @@
       </ns:column>
     </ns:columns>
   </ns:table>
-  <ns:table tableName="condition_codes" tableDbType="TABLE">
+  <ns:table tableName="condition_codes" tableDbType="TABLE" useColumnOrder="true">
     <ns:importUrl></ns:importUrl>
     <ns:insertUrl></ns:insertUrl>
     <ns:updateUrl></ns:updateUrl>
@@ -674,7 +674,7 @@
       </ns:column>
     </ns:columns>
   </ns:table>
-  <ns:table tableName="tb_result" tableDbType="TABLE">
+  <ns:table tableName="tb_result" tableDbType="TABLE" useColumnOrder="true">
     <ns:importUrl></ns:importUrl>
     <ns:insertUrl></ns:insertUrl>
     <ns:updateUrl></ns:updateUrl>
@@ -686,7 +686,7 @@
       </ns:column>
     </ns:columns>
   </ns:table>
-  <ns:table tableName="species_codes" tableDbType="TABLE">
+  <ns:table tableName="species_codes" tableDbType="TABLE" useColumnOrder="true">
     <ns:importUrl></ns:importUrl>
     <ns:insertUrl></ns:insertUrl>
     <ns:updateUrl></ns:updateUrl>
@@ -705,7 +705,7 @@
       </ns:column>
     </ns:columns>
   </ns:table>
-  <ns:table tableName="obs_feces" tableDbType="TABLE">
+  <ns:table tableName="obs_feces" tableDbType="TABLE" useColumnOrder="true">
     <ns:importUrl></ns:importUrl>
     <ns:insertUrl></ns:insertUrl>
     <ns:updateUrl></ns:updateUrl>
@@ -722,7 +722,7 @@
       </ns:column>
     </ns:columns>
   </ns:table>
-  <ns:table tableName="gender_codes" tableDbType="TABLE">
+  <ns:table tableName="gender_codes" tableDbType="TABLE" useColumnOrder="true">
     <ns:importUrl></ns:importUrl>
     <ns:insertUrl></ns:insertUrl>
     <ns:updateUrl></ns:updateUrl>
@@ -744,7 +744,7 @@
       </ns:column>
     </ns:columns>
   </ns:table>
-  <ns:table tableName="behavior_category" tableDbType="TABLE">
+  <ns:table tableName="behavior_category" tableDbType="TABLE" useColumnOrder="true">
     <ns:importUrl></ns:importUrl>
     <ns:insertUrl></ns:insertUrl>
     <ns:updateUrl></ns:updateUrl>
@@ -756,7 +756,7 @@
       </ns:column>
     </ns:columns>
   </ns:table>
-  <ns:table tableName="dosage_units" tableDbType="TABLE">
+  <ns:table tableName="dosage_units" tableDbType="TABLE" useColumnOrder="true">
     <ns:importUrl></ns:importUrl>
     <ns:insertUrl></ns:insertUrl>
     <ns:updateUrl></ns:updateUrl>
@@ -772,7 +772,7 @@
         </ns:column>
     </ns:columns>
   </ns:table>
-  <ns:table tableName="amount_units" tableDbType="TABLE">
+  <ns:table tableName="amount_units" tableDbType="TABLE" useColumnOrder="true">
     <ns:importUrl></ns:importUrl>
     <ns:insertUrl></ns:insertUrl>
     <ns:updateUrl></ns:updateUrl>
@@ -784,7 +784,7 @@
       </ns:column>
     </ns:columns>
   </ns:table>
-  <ns:table tableName="alopecia_score" tableDbType="TABLE">
+  <ns:table tableName="alopecia_score" tableDbType="TABLE" useColumnOrder="true">
     <ns:importUrl></ns:importUrl>
     <ns:insertUrl></ns:insertUrl>
     <ns:updateUrl></ns:updateUrl>
@@ -800,7 +800,7 @@
       </ns:column>
     </ns:columns>
   </ns:table>
-  <ns:table tableName="source" tableDbType="TABLE">
+  <ns:table tableName="source" tableDbType="TABLE" useColumnOrder="true">
     <ns:importUrl></ns:importUrl>
     <ns:insertUrl></ns:insertUrl>
     <ns:updateUrl></ns:updateUrl>
@@ -826,7 +826,7 @@
       </ns:column>
     </ns:columns>
   </ns:table>
-  <ns:table tableName="hematology_score" tableDbType="TABLE">
+  <ns:table tableName="hematology_score" tableDbType="TABLE" useColumnOrder="true">
     <ns:importUrl></ns:importUrl>
     <ns:insertUrl></ns:insertUrl>
     <ns:updateUrl></ns:updateUrl>
@@ -838,7 +838,7 @@
       </ns:column>
     </ns:columns>
   </ns:table>
-  <ns:table tableName="necropsy_perfusion_area" tableDbType="TABLE">
+  <ns:table tableName="necropsy_perfusion_area" tableDbType="TABLE" useColumnOrder="true">
     <ns:importUrl></ns:importUrl>
     <ns:insertUrl></ns:insertUrl>
     <ns:updateUrl></ns:updateUrl>
@@ -850,7 +850,7 @@
       </ns:column>
     </ns:columns>
   </ns:table>
-  <ns:table tableName="hematology_morphology" tableDbType="TABLE">
+  <ns:table tableName="hematology_morphology" tableDbType="TABLE" useColumnOrder="true">
     <ns:importUrl></ns:importUrl>
     <ns:insertUrl></ns:insertUrl>
     <ns:updateUrl></ns:updateUrl>
@@ -862,7 +862,7 @@
       </ns:column>
     </ns:columns>
   </ns:table>
-  <ns:table tableName="sample_types" tableDbType="TABLE">
+  <ns:table tableName="sample_types" tableDbType="TABLE" useColumnOrder="true">
     <ns:importUrl></ns:importUrl>
     <ns:insertUrl></ns:insertUrl>
     <ns:updateUrl></ns:updateUrl>
@@ -874,7 +874,7 @@
       </ns:column>
     </ns:columns>
   </ns:table>
-  <ns:table tableName="stain_types" tableDbType="TABLE">
+  <ns:table tableName="stain_types" tableDbType="TABLE" useColumnOrder="true">
     <ns:importUrl></ns:importUrl>
     <ns:insertUrl></ns:insertUrl>
     <ns:updateUrl></ns:updateUrl>
@@ -886,7 +886,7 @@
       </ns:column>
     </ns:columns>
   </ns:table>
-  <ns:table tableName="pairtest_conclusion" tableDbType="TABLE">
+  <ns:table tableName="pairtest_conclusion" tableDbType="TABLE" useColumnOrder="true">
     <ns:importUrl></ns:importUrl>
     <ns:insertUrl></ns:insertUrl>
     <ns:updateUrl></ns:updateUrl>
@@ -898,7 +898,7 @@
       </ns:column>
     </ns:columns>
   </ns:table>
-  <ns:table tableName="lab_test_range" tableDbType="TABLE">
+  <ns:table tableName="lab_test_range" tableDbType="TABLE" useColumnOrder="true">
     <ns:importUrl></ns:importUrl>
     <ns:insertUrl></ns:insertUrl>
     <ns:updateUrl></ns:updateUrl>
@@ -934,7 +934,7 @@
       </ns:column>
     </ns:columns>
   </ns:table>
-  <ns:table tableName="necropsy_perfusion" tableDbType="TABLE">
+  <ns:table tableName="necropsy_perfusion" tableDbType="TABLE" useColumnOrder="true">
     <ns:importUrl></ns:importUrl>
     <ns:insertUrl></ns:insertUrl>
     <ns:updateUrl></ns:updateUrl>
@@ -946,7 +946,7 @@
       </ns:column>
     </ns:columns>
   </ns:table>
-  <ns:table tableName="species" tableDbType="TABLE">
+  <ns:table tableName="species" tableDbType="TABLE" useColumnOrder="true">
     <ns:importUrl></ns:importUrl>
     <ns:insertUrl></ns:insertUrl>
     <ns:updateUrl></ns:updateUrl>
@@ -967,7 +967,7 @@
       </ns:column>
     </ns:columns>
   </ns:table>
-  <ns:table tableName="dental_side" tableDbType="TABLE">
+  <ns:table tableName="dental_side" tableDbType="TABLE" useColumnOrder="true">
     <ns:importUrl></ns:importUrl>
     <ns:insertUrl></ns:insertUrl>
     <ns:updateUrl></ns:updateUrl>
@@ -979,7 +979,7 @@
       </ns:column>
     </ns:columns>
   </ns:table>
-  <ns:table tableName="birth_type" tableDbType="TABLE">
+  <ns:table tableName="birth_type" tableDbType="TABLE" useColumnOrder="true">
     <ns:importUrl></ns:importUrl>
     <ns:insertUrl></ns:insertUrl>
     <ns:updateUrl></ns:updateUrl>
@@ -994,7 +994,7 @@
       </ns:column>
     </ns:columns>
   </ns:table>
-  <ns:table tableName="dental_jaw" tableDbType="TABLE">
+  <ns:table tableName="dental_jaw" tableDbType="TABLE" useColumnOrder="true">
     <ns:importUrl></ns:importUrl>
     <ns:insertUrl></ns:insertUrl>
     <ns:updateUrl></ns:updateUrl>
@@ -1006,7 +1006,7 @@
       </ns:column>
     </ns:columns>
   </ns:table>
-  <ns:table tableName="months" tableDbType="TABLE">
+  <ns:table tableName="months" tableDbType="TABLE" useColumnOrder="true">
     <ns:importUrl></ns:importUrl>
     <ns:insertUrl></ns:insertUrl>
     <ns:updateUrl></ns:updateUrl>
@@ -1021,7 +1021,7 @@
       </ns:column>
     </ns:columns>
   </ns:table>
-  <ns:table tableName="treatment_frequency" tableDbType="TABLE">
+  <ns:table tableName="treatment_frequency" tableDbType="TABLE" useColumnOrder="true">
     <ns:importUrl></ns:importUrl>
     <ns:insertUrl></ns:insertUrl>
     <ns:updateUrl></ns:updateUrl>
@@ -1040,9 +1040,46 @@
       </ns:column>
       <ns:column columnName="sort_order">
       </ns:column>
+      <ns:column columnName="weekofmonth">
+          <ns:columnTitle>Week of Month</ns:columnTitle>
+      </ns:column>
+      <ns:column columnName="dayofmonth">
+          <ns:columnTitle>Day of Month</ns:columnTitle>
+      </ns:column>
+      <ns:column columnName="dayofweek">
+          <ns:columnTitle>Day of Week</ns:columnTitle>
+      </ns:column>
+      <ns:column columnName="intervalindays">
+          <ns:columnTitle>Interval in Days</ns:columnTitle>
+      </ns:column>
     </ns:columns>
   </ns:table>
-  <ns:table tableName="necropsy_condition" tableDbType="TABLE">
+  <ns:table tableName="treatment_frequency_times" tableDbType="TABLE" useColumnOrder="true">
+    <ns:importUrl></ns:importUrl>
+    <ns:insertUrl></ns:insertUrl>
+    <ns:updateUrl></ns:updateUrl>
+    <ns:deleteUrl></ns:deleteUrl>
+    <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr_lookups&amp;query.queryName=treatment_frequency_times&amp;rowid=${rowid}</ns:tableUrl>
+    <ns:pkColumnName>rowid</ns:pkColumnName>
+    <ns:columns>
+        <ns:column columnName="rowid">
+            <ns:isAutoInc>true</ns:isAutoInc>
+            <ns:isKeyField>true</ns:isKeyField>
+            <ns:shownInInsertView>false</ns:shownInInsertView>
+            <ns:shownInUpdateView>false</ns:shownInUpdateView>
+        </ns:column>
+        <ns:column columnName="frequency">
+
+        </ns:column>
+        <ns:column columnName="hourofday">
+            <ns:columnTitle>Hour of Day</ns:columnTitle>
+        </ns:column>
+        <ns:column columnName="timedescription">
+            <ns:columnTitle>Time Description</ns:columnTitle>
+        </ns:column>
+    </ns:columns>
+    </ns:table>
+    <ns:table tableName="necropsy_condition" tableDbType="TABLE" useColumnOrder="true">
     <ns:importUrl></ns:importUrl>
     <ns:insertUrl></ns:insertUrl>
     <ns:updateUrl></ns:updateUrl>
@@ -1054,7 +1091,7 @@
       </ns:column>
     </ns:columns>
   </ns:table>
-  <ns:table tableName="dental_teeth" tableDbType="TABLE">
+  <ns:table tableName="dental_teeth" tableDbType="TABLE" useColumnOrder="true">
     <ns:importUrl></ns:importUrl>
     <ns:insertUrl></ns:insertUrl>
     <ns:updateUrl></ns:updateUrl>
@@ -1069,7 +1106,7 @@
       </ns:column>
     </ns:columns>
   </ns:table>
-  <ns:table tableName="avail_codes" tableDbType="TABLE">
+  <ns:table tableName="avail_codes" tableDbType="TABLE" useColumnOrder="true">
     <ns:importUrl></ns:importUrl>
     <ns:insertUrl></ns:insertUrl>
     <ns:updateUrl></ns:updateUrl>
@@ -1085,7 +1122,7 @@
       </ns:column>
     </ns:columns>
   </ns:table>
-  <ns:table tableName="status_codes" tableDbType="TABLE">
+  <ns:table tableName="status_codes" tableDbType="TABLE" useColumnOrder="true">
     <ns:importUrl></ns:importUrl>
     <ns:insertUrl></ns:insertUrl>
     <ns:updateUrl></ns:updateUrl>
@@ -1101,7 +1138,7 @@
       </ns:column>
     </ns:columns>
   </ns:table>
-    <ns:table tableName="calculated_status_codes" tableDbType="TABLE">
+    <ns:table tableName="calculated_status_codes" tableDbType="TABLE" useColumnOrder="true">
     <ns:importUrl></ns:importUrl>
     <ns:insertUrl></ns:insertUrl>
     <ns:updateUrl></ns:updateUrl>
@@ -1117,7 +1154,7 @@
         </ns:column>
       </ns:columns>
     </ns:table>
-  <ns:table tableName="ageclass" tableDbType="TABLE">
+  <ns:table tableName="ageclass" tableDbType="TABLE" useColumnOrder="true">
     <ns:importUrl></ns:importUrl>
     <ns:insertUrl></ns:insertUrl>
     <ns:updateUrl></ns:updateUrl>
@@ -1144,7 +1181,7 @@
       </ns:column>
     </ns:columns>
   </ns:table>
-  <ns:table tableName="encounter_types" tableDbType="TABLE">
+  <ns:table tableName="encounter_types" tableDbType="TABLE" useColumnOrder="true">
     <ns:importUrl></ns:importUrl>
     <ns:insertUrl></ns:insertUrl>
     <ns:updateUrl></ns:updateUrl>
@@ -1156,7 +1193,7 @@
       </ns:column>
     </ns:columns>
   </ns:table>
-  <ns:table tableName="charge_items" tableDbType="TABLE">
+  <ns:table tableName="charge_items" tableDbType="TABLE" useColumnOrder="true">
     <ns:importUrl></ns:importUrl>
     <ns:insertUrl></ns:insertUrl>
     <ns:updateUrl></ns:updateUrl>
@@ -1212,7 +1249,7 @@
       </ns:column>
     </ns:columns>
   </ns:table>
-  <ns:table tableName="blood_draw_tube_type" tableDbType="TABLE">
+  <ns:table tableName="blood_draw_tube_type" tableDbType="TABLE" useColumnOrder="true">
     <ns:importUrl></ns:importUrl>
     <ns:insertUrl></ns:insertUrl>
     <ns:updateUrl></ns:updateUrl>
@@ -1227,7 +1264,7 @@
       <!--</ns:column>-->
     </ns:columns>
   </ns:table>
-  <ns:table tableName="snomed" tableDbType="TABLE">
+  <ns:table tableName="snomed" tableDbType="TABLE" useColumnOrder="true">
     <ns:importUrl></ns:importUrl>
     <ns:insertUrl></ns:insertUrl>
     <ns:updateUrl></ns:updateUrl>
@@ -1269,7 +1306,7 @@
       </ns:column>
     </ns:columns>
   </ns:table>
-  <ns:table tableName="snomed_subset_codes" tableDbType="TABLE">
+  <ns:table tableName="snomed_subset_codes" tableDbType="TABLE" useColumnOrder="true">
     <ns:importUrl></ns:importUrl>
     <ns:insertUrl></ns:insertUrl>
     <ns:updateUrl></ns:updateUrl>
@@ -1330,7 +1367,7 @@
       </ns:column>
     </ns:columns>
   </ns:table>
-  <ns:table tableName="snomed_subsets" tableDbType="TABLE">
+  <ns:table tableName="snomed_subsets" tableDbType="TABLE" useColumnOrder="true">
     <ns:importUrl></ns:importUrl>
     <ns:insertUrl></ns:insertUrl>
     <ns:updateUrl></ns:updateUrl>
@@ -1362,7 +1399,7 @@
       </ns:column>
     </ns:columns>
   </ns:table>
-  <ns:table tableName="normal_abnormal" tableDbType="TABLE">
+  <ns:table tableName="normal_abnormal" tableDbType="TABLE" useColumnOrder="true">
     <ns:importUrl></ns:importUrl>
     <ns:insertUrl></ns:insertUrl>
     <ns:updateUrl></ns:updateUrl>
@@ -1374,7 +1411,7 @@
       </ns:column>
     </ns:columns>
   </ns:table>
-    <ns:table tableName="urinalysis_method" tableDbType="TABLE">
+    <ns:table tableName="urinalysis_method" tableDbType="TABLE" useColumnOrder="true">
     <ns:importUrl></ns:importUrl>
     <ns:insertUrl></ns:insertUrl>
     <ns:updateUrl></ns:updateUrl>
@@ -1386,7 +1423,7 @@
         </ns:column>
       </ns:columns>
     </ns:table>
-    <ns:table tableName="virology_source" tableDbType="TABLE">
+    <ns:table tableName="virology_source" tableDbType="TABLE" useColumnOrder="true">
     <ns:importUrl></ns:importUrl>
     <ns:insertUrl></ns:insertUrl>
     <ns:updateUrl></ns:updateUrl>
@@ -1400,7 +1437,7 @@
           </ns:column>
       </ns:columns>
     </ns:table>
-    <ns:table tableName="oor_indicators" tableDbType="TABLE">
+    <ns:table tableName="oor_indicators" tableDbType="TABLE" useColumnOrder="true">
     <ns:importUrl></ns:importUrl>
     <ns:insertUrl></ns:insertUrl>
     <ns:updateUrl></ns:updateUrl>
@@ -1412,7 +1449,7 @@
         </ns:column>
       </ns:columns>
     </ns:table>
-    <ns:table tableName="weight_ranges" tableDbType="TABLE">
+    <ns:table tableName="weight_ranges" tableDbType="TABLE" useColumnOrder="true">
     <ns:importUrl></ns:importUrl>
     <ns:insertUrl></ns:insertUrl>
     <ns:updateUrl></ns:updateUrl>
@@ -1434,7 +1471,7 @@
         </ns:column>
       </ns:columns>
     </ns:table>
-    <ns:table tableName="problem_list_category" tableDbType="TABLE">
+    <ns:table tableName="problem_list_category" tableDbType="TABLE" useColumnOrder="true">
     <ns:importUrl></ns:importUrl>
     <ns:insertUrl></ns:insertUrl>
     <ns:updateUrl></ns:updateUrl>
@@ -1446,7 +1483,7 @@
         </ns:column>
       </ns:columns>
     </ns:table>
-    <ns:table tableName="blood_billed_by" tableDbType="TABLE">
+    <ns:table tableName="blood_billed_by" tableDbType="TABLE" useColumnOrder="true">
     <ns:importUrl></ns:importUrl>
     <ns:insertUrl></ns:insertUrl>
     <ns:updateUrl></ns:updateUrl>
@@ -1461,7 +1498,7 @@
         </ns:column>
       </ns:columns>
     </ns:table>
-    <ns:table tableName="housing_reason" tableDbType="TABLE">
+    <ns:table tableName="housing_reason" tableDbType="TABLE" useColumnOrder="true">
     <ns:importUrl></ns:importUrl>
     <ns:insertUrl></ns:insertUrl>
     <ns:updateUrl></ns:updateUrl>
@@ -1473,7 +1510,7 @@
         </ns:column>
       </ns:columns>
     </ns:table>
-    <ns:table tableName="histology_stain" tableDbType="TABLE">
+    <ns:table tableName="histology_stain" tableDbType="TABLE" useColumnOrder="true">
     <ns:importUrl></ns:importUrl>
     <ns:insertUrl></ns:insertUrl>
     <ns:updateUrl></ns:updateUrl>
@@ -1485,7 +1522,7 @@
         </ns:column>
       </ns:columns>
     </ns:table>
-    <ns:table tableName="virology_tests" tableDbType="TABLE">
+    <ns:table tableName="virology_tests" tableDbType="TABLE" useColumnOrder="true">
     <ns:importUrl></ns:importUrl>
     <ns:insertUrl></ns:insertUrl>
     <ns:updateUrl></ns:updateUrl>
@@ -1509,7 +1546,7 @@
           </ns:column>
       </ns:columns>
     </ns:table>
-    <ns:table tableName="qualitative_results" tableDbType="TABLE">
+    <ns:table tableName="qualitative_results" tableDbType="TABLE" useColumnOrder="true">
     <ns:importUrl></ns:importUrl>
     <ns:insertUrl></ns:insertUrl>
     <ns:updateUrl></ns:updateUrl>
@@ -1521,7 +1558,7 @@
         </ns:column>
       </ns:columns>
     </ns:table>
-  <ns:table tableName="treatment_codes" tableDbType="TABLE">
+  <ns:table tableName="treatment_codes" tableDbType="TABLE" useColumnOrder="true">
     <ns:importUrl></ns:importUrl>
     <ns:insertUrl></ns:insertUrl>
     <ns:updateUrl></ns:updateUrl>
@@ -1561,7 +1598,7 @@
       </ns:column>
     </ns:columns>
   </ns:table>
-    <ns:table tableName="tissue_recipients" tableDbType="TABLE">
+    <ns:table tableName="tissue_recipients" tableDbType="TABLE" useColumnOrder="true">
     <ns:importUrl></ns:importUrl>
     <ns:insertUrl></ns:insertUrl>
     <ns:updateUrl></ns:updateUrl>
@@ -1573,7 +1610,7 @@
         </ns:column>
       </ns:columns>
     </ns:table>
-  <ns:table tableName="parasitology_method" tableDbType="TABLE">
+  <ns:table tableName="parasitology_method" tableDbType="TABLE" useColumnOrder="true">
     <ns:importUrl></ns:importUrl>
     <ns:insertUrl></ns:insertUrl>
     <ns:updateUrl></ns:updateUrl>
@@ -1585,7 +1622,7 @@
       </ns:column>
     </ns:columns>
   </ns:table>
-    <ns:table tableName="bacteriology_method" tableDbType="TABLE">
+    <ns:table tableName="bacteriology_method" tableDbType="TABLE" useColumnOrder="true">
     <ns:importUrl></ns:importUrl>
     <ns:insertUrl></ns:insertUrl>
     <ns:updateUrl></ns:updateUrl>
@@ -1597,7 +1634,7 @@
         </ns:column>
       </ns:columns>
     </ns:table>
-    <ns:table tableName="clinpath_collection_method" tableDbType="TABLE">
+    <ns:table tableName="clinpath_collection_method" tableDbType="TABLE" useColumnOrder="true">
     <ns:importUrl></ns:importUrl>
     <ns:insertUrl></ns:insertUrl>
     <ns:updateUrl></ns:updateUrl>
@@ -1609,7 +1646,7 @@
         </ns:column>
       </ns:columns>
     </ns:table>
-    <ns:table tableName="clinpath_sampletype" tableDbType="TABLE">
+    <ns:table tableName="clinpath_sampletype" tableDbType="TABLE" useColumnOrder="true">
     <ns:importUrl></ns:importUrl>
     <ns:insertUrl></ns:insertUrl>
     <ns:updateUrl></ns:updateUrl>
@@ -1621,7 +1658,7 @@
         </ns:column>
       </ns:columns>
     </ns:table>
-    <ns:table tableName="clinpath_types" tableDbType="TABLE">
+    <ns:table tableName="clinpath_types" tableDbType="TABLE" useColumnOrder="true">
     <ns:importUrl></ns:importUrl>
     <ns:insertUrl></ns:insertUrl>
     <ns:updateUrl></ns:updateUrl>
@@ -1633,7 +1670,7 @@
         </ns:column>
       </ns:columns>
     </ns:table>
-    <ns:table tableName="urinalysis_qualitative_results" tableDbType="TABLE">
+    <ns:table tableName="urinalysis_qualitative_results" tableDbType="TABLE" useColumnOrder="true">
     <ns:importUrl></ns:importUrl>
     <ns:insertUrl></ns:insertUrl>
     <ns:updateUrl></ns:updateUrl>
@@ -1645,7 +1682,7 @@
         </ns:column>
       </ns:columns>
     </ns:table>
-    <ns:table tableName="blood_tube_volumes" tableDbType="TABLE">
+    <ns:table tableName="blood_tube_volumes" tableDbType="TABLE" useColumnOrder="true">
     <ns:importUrl></ns:importUrl>
     <ns:insertUrl></ns:insertUrl>
     <ns:updateUrl></ns:updateUrl>
@@ -1659,7 +1696,7 @@
         </ns:column>
       </ns:columns>
     </ns:table>
-    <ns:table tableName="tattoo_status" tableDbType="TABLE">
+    <ns:table tableName="tattoo_status" tableDbType="TABLE" useColumnOrder="true">
     <ns:importUrl></ns:importUrl>
     <ns:insertUrl></ns:insertUrl>
     <ns:updateUrl></ns:updateUrl>
@@ -1671,7 +1708,7 @@
         </ns:column>
       </ns:columns>
     </ns:table>
-    <ns:table tableName="pe_remarks" tableDbType="TABLE">
+    <ns:table tableName="pe_remarks" tableDbType="TABLE" useColumnOrder="true">
     <ns:importUrl></ns:importUrl>
     <ns:insertUrl></ns:insertUrl>
     <ns:updateUrl></ns:updateUrl>
@@ -1684,7 +1721,7 @@
       </ns:columns>
     </ns:table>
 
-    <ns:table tableName="blood_code_prefixes" tableDbType="TABLE">
+    <ns:table tableName="blood_code_prefixes" tableDbType="TABLE" useColumnOrder="true">
     <ns:importUrl></ns:importUrl>
     <ns:insertUrl></ns:insertUrl>
     <ns:updateUrl></ns:updateUrl>
@@ -1696,7 +1733,7 @@
         </ns:column>
       </ns:columns>
     </ns:table>
-    <ns:table tableName="snomed_qualifiers" tableDbType="TABLE">
+    <ns:table tableName="snomed_qualifiers" tableDbType="TABLE" useColumnOrder="true">
     <ns:importUrl></ns:importUrl>
     <ns:insertUrl></ns:insertUrl>
     <ns:updateUrl></ns:updateUrl>
@@ -1708,7 +1745,7 @@
         </ns:column>
       </ns:columns>
     </ns:table>
-    <ns:table tableName="preservation_solutions" tableDbType="TABLE">
+    <ns:table tableName="preservation_solutions" tableDbType="TABLE" useColumnOrder="true">
     <ns:importUrl></ns:importUrl>
     <ns:insertUrl></ns:insertUrl>
     <ns:updateUrl></ns:updateUrl>
@@ -1721,7 +1758,7 @@
       </ns:columns>
     </ns:table>
 
-  <ns:table tableName="urinalysis_tests" tableDbType="TABLE">
+  <ns:table tableName="urinalysis_tests" tableDbType="TABLE" useColumnOrder="true">
     <ns:importUrl></ns:importUrl>
     <ns:insertUrl></ns:insertUrl>
     <ns:updateUrl></ns:updateUrl>
@@ -1753,7 +1790,7 @@
       </ns:column>
     </ns:columns>
   </ns:table>
-  <ns:table tableName="immunology_tests" tableDbType="TABLE">
+  <ns:table tableName="immunology_tests" tableDbType="TABLE" useColumnOrder="true">
     <ns:importUrl></ns:importUrl>
     <ns:insertUrl></ns:insertUrl>
     <ns:updateUrl></ns:updateUrl>
@@ -1785,7 +1822,7 @@
       </ns:column>
     </ns:columns>
   </ns:table>
-  <ns:table tableName="chemistry_tests" tableDbType="TABLE">
+  <ns:table tableName="chemistry_tests" tableDbType="TABLE" useColumnOrder="true">
     <ns:importUrl></ns:importUrl>
     <ns:insertUrl></ns:insertUrl>
     <ns:updateUrl></ns:updateUrl>
@@ -1820,7 +1857,7 @@
       </ns:column>
     </ns:columns>
   </ns:table>
-  <ns:table tableName="hematology_tests" tableDbType="TABLE">
+  <ns:table tableName="hematology_tests" tableDbType="TABLE" useColumnOrder="true">
     <ns:importUrl></ns:importUrl>
     <ns:insertUrl></ns:insertUrl>
     <ns:updateUrl></ns:updateUrl>
@@ -1853,7 +1890,7 @@
 
     </ns:columns>
   </ns:table>
-  <ns:table tableName="cytology_tests" tableDbType="TABLE">
+  <ns:table tableName="cytology_tests" tableDbType="TABLE" useColumnOrder="true">
     <ns:importUrl></ns:importUrl>
     <ns:insertUrl></ns:insertUrl>
     <ns:updateUrl></ns:updateUrl>
@@ -1886,7 +1923,7 @@
 
     </ns:columns>
   </ns:table>
-  <ns:table tableName="chemistry_method" tableDbType="TABLE">
+  <ns:table tableName="chemistry_method" tableDbType="TABLE" useColumnOrder="true">
     <ns:importUrl></ns:importUrl>
     <ns:insertUrl></ns:insertUrl>
     <ns:updateUrl></ns:updateUrl>
@@ -1898,7 +1935,7 @@
       </ns:column>
     </ns:columns>
   </ns:table>
-  <ns:table tableName="immunology_method" tableDbType="TABLE">
+  <ns:table tableName="immunology_method" tableDbType="TABLE" useColumnOrder="true">
     <ns:importUrl></ns:importUrl>
     <ns:insertUrl></ns:insertUrl>
     <ns:updateUrl></ns:updateUrl>
@@ -1910,7 +1947,7 @@
       </ns:column>
     </ns:columns>
   </ns:table>
-  <ns:table tableName="virology_method" tableDbType="TABLE">
+  <ns:table tableName="virology_method" tableDbType="TABLE" useColumnOrder="true">
     <ns:importUrl></ns:importUrl>
     <ns:insertUrl></ns:insertUrl>
     <ns:updateUrl></ns:updateUrl>
@@ -1922,7 +1959,7 @@
       </ns:column>
     </ns:columns>
   </ns:table>
-  <ns:table tableName="hematology_method" tableDbType="TABLE">
+  <ns:table tableName="hematology_method" tableDbType="TABLE" useColumnOrder="true">
     <ns:importUrl></ns:importUrl>
     <ns:insertUrl></ns:insertUrl>
     <ns:updateUrl></ns:updateUrl>
@@ -1934,7 +1971,7 @@
       </ns:column>
     </ns:columns>
   </ns:table>
-  <!--<ns:table tableName="booleanCombo" tableDbType="TABLE">-->
+  <!--<ns:table tableName="booleanCombo" tableDbType="TABLE" useColumnOrder="true">-->
     <!--<ns:importUrl></ns:importUrl>-->
     <!--<ns:insertUrl></ns:insertUrl>-->
     <!--<ns:updateUrl></ns:updateUrl>-->
@@ -1948,7 +1985,7 @@
       <!--</ns:column>-->
     <!--</ns:columns>-->
   <!--</ns:table>-->
-  <ns:table tableName="biopsy_type" tableDbType="TABLE">
+  <ns:table tableName="biopsy_type" tableDbType="TABLE" useColumnOrder="true">
     <ns:importUrl></ns:importUrl>
     <ns:insertUrl></ns:insertUrl>
     <ns:updateUrl></ns:updateUrl>
@@ -1960,7 +1997,7 @@
       </ns:column>
     </ns:columns>
   </ns:table>
-  <ns:table tableName="microchip_comments" tableDbType="TABLE">
+  <ns:table tableName="microchip_comments" tableDbType="TABLE" useColumnOrder="true">
     <ns:importUrl></ns:importUrl>
     <ns:insertUrl></ns:insertUrl>
     <ns:updateUrl></ns:updateUrl>
@@ -1972,7 +2009,7 @@
       </ns:column>
     </ns:columns>
   </ns:table>
-  <ns:table tableName="death_remarks" tableDbType="TABLE">
+  <ns:table tableName="death_remarks" tableDbType="TABLE" useColumnOrder="true">
     <ns:importUrl></ns:importUrl>
     <ns:insertUrl></ns:insertUrl>
     <ns:updateUrl></ns:updateUrl>
@@ -1986,7 +2023,7 @@
       </ns:column>
     </ns:columns>
   </ns:table>
-  <ns:table tableName="restraint_duration" tableDbType="TABLE">
+  <ns:table tableName="restraint_duration" tableDbType="TABLE" useColumnOrder="true">
     <ns:importUrl></ns:importUrl>
     <ns:insertUrl></ns:insertUrl>
     <ns:updateUrl></ns:updateUrl>
@@ -2000,7 +2037,7 @@
         </ns:column>
     </ns:columns>
   </ns:table>
-  <ns:table tableName="drug_categories" tableDbType="TABLE">
+  <ns:table tableName="drug_categories" tableDbType="TABLE" useColumnOrder="true">
     <ns:importUrl></ns:importUrl>
     <ns:insertUrl></ns:insertUrl>
     <ns:updateUrl></ns:updateUrl>
@@ -2012,7 +2049,7 @@
         </ns:column>
     </ns:columns>
   </ns:table>
-  <ns:table tableName="usda_codes" tableDbType="TABLE">
+  <ns:table tableName="usda_codes" tableDbType="TABLE" useColumnOrder="true">
     <ns:importUrl></ns:importUrl>
     <ns:insertUrl></ns:insertUrl>
     <ns:updateUrl></ns:updateUrl>
@@ -2048,7 +2085,7 @@
         </ns:column>
     </ns:columns>
   </ns:table>
-  <ns:table tableName="full_snomed" tableDbType="TABLE">
+  <ns:table tableName="full_snomed" tableDbType="TABLE" useColumnOrder="true">
     <ns:importUrl></ns:importUrl>
     <ns:insertUrl></ns:insertUrl>
     <ns:updateUrl></ns:updateUrl>
@@ -2090,7 +2127,7 @@
       </ns:column>
     </ns:columns>
   </ns:table>
-  <ns:table tableName="snomap" tableDbType="TABLE">
+  <ns:table tableName="snomap" tableDbType="TABLE" useColumnOrder="true">
     <ns:importUrl></ns:importUrl>
     <ns:insertUrl></ns:insertUrl>
     <ns:updateUrl></ns:updateUrl>
@@ -2153,7 +2190,7 @@
       </ns:column>
     </ns:columns>
   </ns:table>
-  <ns:table tableName="chow_types" tableDbType="TABLE">
+  <ns:table tableName="chow_types" tableDbType="TABLE" useColumnOrder="true">
     <ns:importUrl></ns:importUrl>
     <ns:insertUrl></ns:insertUrl>
     <ns:updateUrl></ns:updateUrl>
@@ -2165,7 +2202,7 @@
         </ns:column>
     </ns:columns>
   </ns:table>
-  <ns:table tableName="tissue_distribution" tableDbType="TABLE">
+  <ns:table tableName="tissue_distribution" tableDbType="TABLE" useColumnOrder="true">
     <ns:importUrl></ns:importUrl>
     <ns:insertUrl></ns:insertUrl>
     <ns:updateUrl></ns:updateUrl>
@@ -2177,12 +2214,12 @@
         </ns:column>
     </ns:columns>
   </ns:table>
-  <ns:table tableName="container_types" tableDbType="TABLE">
+  <ns:table tableName="container_types" tableDbType="TABLE" useColumnOrder="true">
     <ns:columns>
       <ns:column columnName="type"/>
     </ns:columns>
   </ns:table>
-  <ns:table tableName="drug_defaults" tableDbType="TABLE">
+  <ns:table tableName="drug_defaults" tableDbType="TABLE" useColumnOrder="true">
     <ns:columns>
       <ns:column columnName="code"/>
       <ns:column columnName="dosage"/>
@@ -2191,21 +2228,22 @@
       <ns:column columnName="conc_units"/>
     </ns:columns>
   </ns:table>
-  <ns:table tableName="error_types" tableDbType="TABLE">
+  <ns:table tableName="error_types" tableDbType="TABLE" useColumnOrder="true">
     <ns:columns>
       <ns:column columnName="type"/>
       <ns:column columnName="sort_order"/>
     </ns:columns>
   </ns:table>
-  <ns:table tableName="procedures" tableDbType="TABLE">
+  <ns:table tableName="procedures" tableDbType="TABLE" useColumnOrder="true">
     <ns:columns>
       <ns:column columnName="rowid"/>
-      <ns:column columnName="procedure"/>
-      <ns:column columnName="code"/>
+      <ns:column columnName="procedure"/>      
       <ns:column columnName="description"/>
+      <ns:column columnName="category"/>
+      <ns:column columnName="major"/>
     </ns:columns>
   </ns:table>
-  <ns:table tableName="cage_type" tableDbType="TABLE">
+  <ns:table tableName="cage_type" tableDbType="TABLE" useColumnOrder="true">
     <ns:importUrl></ns:importUrl>
     <ns:insertUrl></ns:insertUrl>
     <ns:updateUrl></ns:updateUrl>
@@ -2234,7 +2272,7 @@
         </ns:column>
     </ns:columns>
   </ns:table>
-    <ns:table tableName="charge_flags" tableDbType="TABLE">
+    <ns:table tableName="charge_flags" tableDbType="TABLE" useColumnOrder="true">
       <ns:importUrl></ns:importUrl>
       <ns:insertUrl></ns:insertUrl>
       <ns:updateUrl></ns:updateUrl>
@@ -2273,7 +2311,7 @@
           </ns:column>
       </ns:columns>
     </ns:table>
-    <ns:table tableName="account_tiers" tableDbType="TABLE">
+    <ns:table tableName="account_tiers" tableDbType="TABLE" useColumnOrder="true">
       <ns:columns>
         <ns:column columnName="rowid"/>
         <ns:column columnName="meaning"/>
@@ -2300,38 +2338,38 @@
         </ns:column>
       </ns:columns>
     </ns:table>
-    <ns:table tableName="project_types" tableDbType="TABLE">
+    <ns:table tableName="project_types" tableDbType="TABLE" useColumnOrder="true">
         <ns:columns>
             <ns:column columnName="type"/>
             <ns:column columnName="multiplier"/>
         </ns:columns>
     </ns:table>
-    <ns:table tableName="usda_levels" tableDbType="TABLE">
+    <ns:table tableName="usda_levels" tableDbType="TABLE" useColumnOrder="true">
         <ns:columns>
             <ns:column columnName="usda_level"/>
         </ns:columns>
     </ns:table>
-    <ns:table tableName="birth_condition" tableDbType="TABLE">
+    <ns:table tableName="birth_condition" tableDbType="TABLE" useColumnOrder="true">
         <ns:columns>
             <ns:column columnName="rowid"/>
             <ns:column columnName="meaning"/>
         </ns:columns>
     </ns:table>
-    <ns:table tableName="geographic_origins" tableDbType="TABLE">
-        <ns:columns>
-            <ns:column columnName="rowid"/>
-            <ns:column columnName="meaning"/>
-            <ns:column columnName="description"/>
-        </ns:columns>
-    </ns:table>
-    <ns:table tableName="note_types" tableDbType="TABLE">
+    <ns:table tableName="geographic_origins" tableDbType="TABLE" useColumnOrder="true">
         <ns:columns>
             <ns:column columnName="rowid"/>
             <ns:column columnName="meaning"/>
             <ns:column columnName="description"/>
         </ns:columns>
     </ns:table>
-    <ns:table tableName="lookups" tableDbType="TABLE">
+    <ns:table tableName="note_types" tableDbType="TABLE" useColumnOrder="true">
+        <ns:columns>
+            <ns:column columnName="rowid"/>
+            <ns:column columnName="meaning"/>
+            <ns:column columnName="description"/>
+        </ns:columns>
+    </ns:table>
+    <ns:table tableName="lookups" tableDbType="TABLE" useColumnOrder="true">
         <ns:columns>
             <ns:column columnName="rowid">
                 <ns:isAutoInc>true</ns:isAutoInc>
@@ -2378,6 +2416,46 @@
                 <ns:nullable>true</ns:nullable>
                 <ns:isHidden>true</ns:isHidden>
             </ns:column>
+        </ns:columns>
+    </ns:table>
+    <ns:table tableName="procedure_default_treatments" tableDbType="TABLE" useColumnOrder="true">
+        <ns:columns>
+            <ns:column columnName="rowid"/>
+            <ns:column columnName="code"/>
+            <ns:column columnName="qualifier"/>
+            <ns:column columnName="volume"/>
+            <ns:column columnName="volume_units"/>
+            <ns:column columnName="dosage"/>
+            <ns:column columnName="dosage_units"/>
+            <ns:column columnName="concentration"/>
+            <ns:column columnName="concentration_units"/>
+            <ns:column columnName="amount"/>
+            <ns:column columnName="amount_units"/>
+            <ns:column columnName="route"/>
+            <ns:column columnName="frequency"/>
+        </ns:columns>
+    </ns:table>
+    <ns:table tableName="procedure_default_charges" tableDbType="TABLE" useColumnOrder="true">
+        <ns:columns>
+            <ns:column columnName="rowid"/>
+            <ns:column columnName="chargeid"/>
+            <ns:column columnName="quantity"/>
+        </ns:columns>
+    </ns:table>
+    <ns:table tableName="procedure_default_codes" tableDbType="TABLE" useColumnOrder="true">
+        <ns:columns>
+            <ns:column columnName="rowid"/>
+            <ns:column columnName="procedureid"/>
+            <ns:column columnName="groupnum"/>
+            <ns:column columnName="code"/>
+            <ns:column columnName="qualifier"/>
+            <ns:column columnName="sort_order"/>
+        </ns:columns>
+    </ns:table>
+    <ns:table tableName="buildings" tableDbType="TABLE" useColumnOrder="true">
+        <ns:columns>
+            <ns:column columnName="name"/>
+            <ns:column columnName="description"/>
         </ns:columns>
     </ns:table>
 </ns:tables>

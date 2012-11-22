@@ -1010,23 +1010,10 @@
             <ns:column columnName="reqname">
                 <ns:nullable>true</ns:nullable>
             </ns:column>
-            <ns:column columnName="qcstate">
-                <ns:nullable>true</ns:nullable>
-                <ns:fk>
-                    <ns:fkDbSchema>study</ns:fkDbSchema>
-                    <ns:fkTable>QCState</ns:fkTable>
-                    <ns:fkColumnName>rowid</ns:fkColumnName>
-                </ns:fk>
+            <ns:column columnName="contact_emails">
+                <ns:columnTitle>Contact Emails</ns:columnTitle>
+                <ns:inputType>textarea</ns:inputType>
             </ns:column>
-            <!--<ns:column columnName="container">-->
-            <!--<ns:isUserEditable>false</ns:isUserEditable>-->
-            <!--<ns:isHidden>true</ns:isHidden>-->
-            <!--<ns:fk>-->
-            <!--<ns:fkDbSchema>core</ns:fkDbSchema>-->
-            <!--<ns:fkTable>containers</ns:fkTable>-->
-            <!--<ns:fkColumnName>entityid</ns:fkColumnName>-->
-            <!--</ns:fk>-->
-            <!--</ns:column>-->
             <ns:column columnName="createdby">
                 <ns:isUserEditable>false</ns:isUserEditable>
                 <ns:nullable>true</ns:nullable>
