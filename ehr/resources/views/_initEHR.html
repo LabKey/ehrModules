@@ -30,6 +30,7 @@ function deleteAll(schemaName, queryName, pk){
                     queryName: queryName,
                     scope: this,
                     rows: rows,
+                    timeout: 9999999,
                     success: function(data){
                         console.log('success deleting rows: '+queryName);
                         pendingDeletes--;
@@ -37,7 +38,10 @@ function deleteAll(schemaName, queryName, pk){
                             document.getElementById('_init_ehr_success').innerHTML = 'Delete Complete';
                         }
                     },
-                    failure: EHR.Utils.onError
+                    failure: function(error){
+                        alert('Error deleting rows: ' + error.exception);
+                        console.error(error);
+                    }
                 });
             }
             else {
@@ -48,7 +52,10 @@ function deleteAll(schemaName, queryName, pk){
                 }
             }
         },
-        failure: EHR.Utils.onError
+        failure: function(error){
+            alert('Error selecting rows: ' + error.exception);
+            console.error(error) ;
+        }
     });
 }
 
@@ -7675,6 +7682,7 @@ function makeObject(config, data, fields){
             record[f] = row[idx];
         }, this);
         config.rows.push(record);
+        config.timeout = 9999999;
     }, this);
     return config;
 }
@@ -7692,7 +7700,7 @@ function onSuccess(result){
 function onError(result){
     pendingInserts--;
 
-    console.log('Error Loading Data: '+result.queryName);
+    alert('Error Loading Data: '+result.queryName);
     console.log(result);
 
     if(pendingInserts==0){
@@ -7849,9 +7857,11 @@ var panel = new Ext.Panel({
             btn5();  //populate SNOMED subset codes
             btn6();
 //            btn7();   //delete form templates
-//            btn10();  //populate SNOMED
+//            btn10();  //populate SNOMED.  NOTE: tests handle this separately
             btn11();
             btn12();
+
+            Ext.get('_init_ehr_success').update('');
         }
     },{
         xtype: 'button',
@@ -7866,9 +7876,11 @@ var panel = new Ext.Panel({
             deleteAll('ehr', 'reports', 'rowid');
             deleteAll('ehr_lookups', 'snomed_subset_codes', 'rowid');
             deleteAll('ehr_lookups', 'charge_items', 'rowid');
-//            deleteAll('ehr_lookups', 'snomed', 'code');
+//            deleteAll('ehr_lookups', 'snomed', 'code'); //NOTE: tests handle this separately
             deleteAll('ehr', 'module_properties', 'rowid');
 //            deleteAll('ehr', 'animal_groups', 'rowid');
+
+            Ext.get('_init_ehr_success').update('');
         }
     }]
 })
