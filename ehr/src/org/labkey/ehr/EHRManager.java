@@ -90,7 +90,7 @@ public class EHRManager
         {
             Module ehr = ModuleLoader.getInstance().getModule(EHRModule.NAME);
             ModuleProperty mp = ehr.getModuleProperties().get(EHRManager.EHRAdminUserPropName);
-            String emailAddress = PropertyManager.getCoalecedProperty(0, ContainerManager.getRoot(), mp.getCategory(), EHRManager.EHRAdminUserPropName);
+            String emailAddress = PropertyManager.getCoalecedProperty(PropertyManager.SHARED_USER, ContainerManager.getRoot(), mp.getCategory(), EHRManager.EHRAdminUserPropName);
             if (emailAddress == null)
             {
                 if (logOnError)
@@ -119,7 +119,7 @@ public class EHRManager
     {
         Module ehr = ModuleLoader.getInstance().getModule(EHRModule.NAME);
         ModuleProperty mp = ehr.getModuleProperties().get(EHRManager.EHRStudyContainerPropName);
-        String path = PropertyManager.getCoalecedProperty(0, ContainerManager.getRoot(), mp.getCategory(), EHRManager.EHRAdminUserPropName);
+        String path = PropertyManager.getCoalecedProperty(PropertyManager.SHARED_USER, ContainerManager.getRoot(), mp.getCategory(), EHRManager.EHRAdminUserPropName);
         if (path == null)
         {
             if (logOnError)
