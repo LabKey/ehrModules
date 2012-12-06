@@ -708,13 +708,21 @@ EHR.Utils = new function(){
          * is provided,  it will write a message to that element.
          * @returns {Object}
          */
-        getEHRContext: function(msgTarget){
+        getEHRContext: function(msgTarget, requiredProps){
             var ctx = LABKEY.getModuleContext('ehr');
-            if(!ctx['EHRStudyContainer']){
+            var requiredProps = requiredProps || ['EHRStudyContainer'];
+            var missingProps = false;
+            for (var i=0;i<requiredProps.length;i++){
+                if(!ctx[requiredProps[i]])
+                    missingProps = true;
+            }
+
+            if (missingProps){
                 if (msgTarget)
-                    Ext.get(msgTarget).update('The container path for the EHR study has not been set.  Please ask you administrator to configure this under the folder settings page.');
+                    Ext.get(msgTarget).update('The module properties for EHR have not been set.  Please ask you administrator to configure this under the folder settings page.');
                 return null;
             }
+
             return ctx;
         }
     }

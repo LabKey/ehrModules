@@ -775,6 +775,7 @@ ehr/resources/schemas/dbscripts/postgresql/EHR-12.23-12.24.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR-12.26-12.27.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR-12.27-12.28.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR-12.28-12.29.sql -text
+ehr/resources/schemas/dbscripts/postgresql/EHR-12.30-12.301.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-11.10-11.20.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-11.20-11.30.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-11.30-12.10.sql -text
@@ -785,6 +786,7 @@ ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-12.22-12.23.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-12.24-12.25.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-12.26-12.27.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-12.28-12.29.sql -text
+ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-12.30-12.301.sql -text
 ehr/resources/schemas/dbscripts/postgresql/obsolete/EHR-11.10-11.101.sql -text
 ehr/resources/schemas/dbscripts/postgresql/obsolete/EHR-11.101-11.102.sql -text
 ehr/resources/schemas/dbscripts/postgresql/obsolete/EHR-11.102-11.105.sql -text
@@ -879,6 +881,7 @@ ehr/resources/schemas/dbscripts/sqlserver/EHR-12.23-12.24.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/EHR-12.26-12.27.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/EHR-12.27-12.28.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/EHR-12.28-12.29.sql -text
+ehr/resources/schemas/dbscripts/sqlserver/EHR-12.30-12.301.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/EHR_Lookups-11.30-12.10.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/EHR_Lookups-12.20-12.21.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/EHR_Lookups-12.20-12.30.sql -text
@@ -888,6 +891,7 @@ ehr/resources/schemas/dbscripts/sqlserver/EHR_Lookups-12.24-12.25.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/EHR_Lookups-12.25-12.26.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/EHR_Lookups-12.26-12.27.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/EHR_Lookups-12.28-12.29.sql -text
+ehr/resources/schemas/dbscripts/sqlserver/EHR_Lookups-12.30-12.301.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/obsolete/EHR-11.34-11.35.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/obsolete/EHR-11.36-11.37.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/obsolete/EHR_Lookups-11.34-11.35.sql -text
@@ -896,6 +900,7 @@ ehr/resources/schemas/dbscripts/sqlserver/obsolete/EHR_Lookups-11.37-11.38.sql -
 ehr/resources/schemas/ehr.xml -text
 ehr/resources/schemas/ehr_lookups.xml -text
 ehr/resources/scripts/ehr/security.js -text
+ehr/resources/scripts/ehr/triggerManager.js -text
 ehr/resources/scripts/ehr/triggers.js -text
 ehr/resources/scripts/ehr/utils.js -text
 ehr/resources/scripts/ehr/validation.js -text
@@ -949,6 +954,8 @@ ehr/resources/views/moreReports.view.xml -text
 ehr/resources/views/necropsyDetails.html -text
 ehr/resources/views/necropsyDetails.view.xml -text
 ehr/resources/views/participantView.html -text
+ehr/resources/views/populateInitialData.html -text
+ehr/resources/views/populateInitialData.view.xml -text
 ehr/resources/views/populationOverview.html -text
 ehr/resources/views/populationOverview.view.xml -text
 ehr/resources/views/printTask.html -text
@@ -998,9 +1005,12 @@ ehr/resources/web/ehr/ehrStoreCollection.js -text
 ehr/resources/web/ehr/ehr_api.lib.xml -text
 ehr/resources/web/ehr/ext.ux.datetimefield.js -text
 ehr/resources/web/ehr/ext.ux.multiselect.js -text
+ehr/resources/web/ehr/icons/clipboard.png -text
+ehr/resources/web/ehr/icons/folder.png -text
 ehr/resources/web/ehr/icons/icon_browse_lg.png -text
 ehr/resources/web/ehr/icons/icon_center_lg.png -text
 ehr/resources/web/ehr/icons/icon_data_lg.png -text
+ehr/resources/web/ehr/icons/labs.png -text
 ehr/resources/web/ehr/images/accept.png -text
 ehr/resources/web/ehr/images/arrow_link_button-red.jpg -text
 ehr/resources/web/ehr/images/arrow_link_button_over-red.jpg -text

@@ -351,6 +351,7 @@ EHR.reports.weightGraph = function(panel, tab, subjects){
             success: function(results){
                 tab.add({
                     xtype: 'ldk-graphpanel',
+                    style: 'margin-bottom: 30px',
                     title: 'Weight Graph: ' + subject,
                     plotConfig: {
                         results: results,
@@ -617,6 +618,7 @@ EHR.reports.viralLoads = function(panel, tab, subject){
             success: function(results){
                 tab.add({
                     xtype: 'ldk-graphpanel',
+                    style: 'margin-bottom: 30px',
                     title: 'Viral Loads: ' + subject,
                     plotConfig: {
                         results: results,

@@ -20,7 +20,7 @@ Ext4.define('EHR.ext.SingleAnimalReport', {
         Ext4.apply(this, {
             tabsReady: false,
             border: false,
-            bodyStyle: 'background-color : transparent;',
+            bodyStyle: 'background-color : transparent;margin-bottom: 10px;',
             reportMap: {},
             defaults: {
                 border: false
@@ -203,12 +203,12 @@ Ext4.define('EHR.ext.SingleAnimalReport', {
             layout: 'hbox',
             items: [{
                 xtype: 'panel',
-                width: 200,
+                width: 180,
                 border: false,
                 items: [{
                     name: 'subjectBox',
                     xtype: 'textarea',
-                    width: 200,
+                    width: 180,
                     height: 100,
                     itemId: 'subjArea'
                 },{
@@ -347,14 +347,13 @@ Ext4.define('EHR.ext.SingleAnimalReport', {
             },{
                 xtype: 'panel',
                 layout: 'vbox',
-                bodyStyle: 'padding-left: 10px;padding-right: 10px',
                 border: false,
                 defaults: {
                     xtype: 'button',
                     width: 90,
                     buttonAlign: 'center',
                     bodyStyle:'align: center',
-                    style: 'margin-bottom: 8px;'
+                    style: 'margin: 5px;'//margin-left: 5px; margin-right: 5px;'
                 },
                 items: [{
                     text: 'Append -->',
@@ -394,7 +393,6 @@ Ext4.define('EHR.ext.SingleAnimalReport', {
 
         target.add({
             xtype: 'panel',
-            //bodyStyle:'padding: 10px;',
             defaults: {
                 border: false,
                 width: 200,
@@ -1050,6 +1048,7 @@ Ext4.define('EHR.ext.SingleAnimalReport', {
             if(!tabPanel.down('panel[itemId="' + category + '"]')){
                 tabPanel.add({
                     xtype: 'tabpanel',
+                    style: 'margin-bottom: 10px;',
                     itemId: category,
                     title: category,
                     enableTabScroll: true,
@@ -1061,7 +1060,6 @@ Ext4.define('EHR.ext.SingleAnimalReport', {
                             this.onSubmit();
                         }
                     }
-
                 });
             }
 
@@ -1072,6 +1070,7 @@ Ext4.define('EHR.ext.SingleAnimalReport', {
             if(!subTab.down('panel[itemId="' + report + '"]')){
                 var theTab = subTab.add({
                     xtype: 'panel',
+                    style: 'margin-bottom: 10px;',
                     title: c.get('reporttitle'),
                     itemId: report,
                     rowData: c,

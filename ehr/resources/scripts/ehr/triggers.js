@@ -26,7 +26,10 @@ EHR.Server.Utils = require("ehr/utils").EHR.Server.Utils;
 
 EHR.Server.Security = require("ehr/security").EHR.Server.Security;
 
+EHR.Server.TriggerManager = require("ehr/triggerManager").EHR.Server.TriggerManager;
+
 EHR.Server.Validation = require("ehr/validation").EHR.Server.Validation;
+
 
 /**
  * This class handles the serer-side validation/transform that occurs in the EHR's trigger scripts.  It should be used by every EHR dataset.  The purpose is to centralize
@@ -127,7 +130,7 @@ EHR.Server.Triggers.beforeInsert = function(row, errors){
 
     if(EHR.Server.Security.verifyPermissions('insert', this.scriptContext, row) === false){
         errors._form = 'Insufficent Permissions';
-        console.error('ERROR: insufficient permissions');
+        console.warn('ERROR: insufficient permissions');
         return;
     }
 
@@ -919,7 +922,7 @@ EHR.Server.Triggers.afterEvent = function (event, errors, row, oldRow){
     }
 };
 
-var extraScripts = org.labkey.ehr.utils.TriggerScriptHelper.getScriptsToLoad();
+var extraScripts = org.labkey.ehr.utils.TriggerScriptHelper.getScriptsToLoad(LABKEY.Security.currentContainer.id);
 LABKEY.ExtAdapter.each(extraScripts, function(script){
     script = script.replace(/^[\\\/]*scripts[\/\\]*/, '');
     script = script.replace(/\.js$/, '');

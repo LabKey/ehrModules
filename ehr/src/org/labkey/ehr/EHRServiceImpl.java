@@ -15,13 +15,17 @@
  */
 package org.labkey.ehr;
 
+import org.labkey.api.data.Container;
 import org.labkey.api.ehr.EHRService;
 import org.labkey.api.module.Module;
 import org.labkey.api.resource.Resource;
+import org.labkey.api.util.Pair;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -33,7 +37,7 @@ import java.util.Set;
 public class EHRServiceImpl extends EHRService
 {
     private Set<Module> _registeredModules = new HashSet<Module>();
-    private List<Resource> _extraTriggerScripts = new ArrayList<Resource>();
+    private List<Pair<Module, Resource>> _extraTriggerScripts = new ArrayList<Pair<Module, Resource>>();
 
     public EHRServiceImpl()
     {
@@ -50,14 +54,24 @@ public class EHRServiceImpl extends EHRService
         return _registeredModules;
     }
 
-    public void registerTriggerScript(Resource script)
+    public void registerTriggerScript(Module owner, Resource script)
     {
-        _extraTriggerScripts.add(script);
+        _extraTriggerScripts.add(Pair.of(owner, script));
     }
 
 
-    public List<Resource> getExtraTriggerScripts()
+    public List<Resource> getExtraTriggerScripts(Container c)
     {
-        return _extraTriggerScripts;
+        List<Resource> resouces = new ArrayList<Resource>();
+        Set<Module> activeModules = c.getActiveModules();
+
+        for (Pair<Module, Resource> pair : _extraTriggerScripts)
+        {
+            if (activeModules.contains(pair.first))
+            {
+                resouces.add(pair.second);
+            }
+        }
+        return resouces;
     }
 }

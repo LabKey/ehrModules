@@ -80,6 +80,9 @@
             <ns:column columnName="sort">
                 <ns:columnTitle>Sort Order</ns:columnTitle>
             </ns:column>
+            <ns:column columnName="objectid">
+                <ns:columnTitle>Key</ns:columnTitle>
+            </ns:column>
             <ns:column columnName="container">
                 <ns:isHidden>true</ns:isHidden>
             </ns:column>

@@ -50,6 +50,7 @@ import org.labkey.ehr.security.EHRCompletedAdminPermission;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -169,15 +170,17 @@ public class TriggerScriptHelper
         return success;
     }
 
-    public static List<String> getScriptsToLoad()
+    public static List<String> getScriptsToLoad(String containerId)
     {
+        Container c = ContainerManager.getForId(containerId);
+
         List<String> scripts = new ArrayList<String>();
-        for (Resource script : EHRService.get().getExtraTriggerScripts())
+        for (Resource script : EHRService.get().getExtraTriggerScripts(c))
         {
             scripts.add(script.getPath().toString());
         }
 
-        return scripts;
+        return Collections.unmodifiableList(scripts);
     }
 
     public boolean hasPermission(String schemaName, String queryName, String eventName, String originalQCState, String targetQCState)

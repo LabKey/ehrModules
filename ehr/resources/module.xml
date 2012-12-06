@@ -27,6 +27,20 @@
                 <permission>ADMIN</permission>
             </editPermissions>
         </propertyDescriptor>
+        <propertyDescriptor name="EHRDocumentationContainer">
+            <canSetPerContainer>true</canSetPerContainer>
+            <description>The is the path to the container holding documentation and other materials.  These material need to be created by the admins of the site.  Use of slashes is very important - it should be in the format '/myProject/ehr'</description>
+            <editPermissions>
+                <permission>ADMIN</permission>
+            </editPermissions>
+        </propertyDescriptor>
+        <propertyDescriptor name="EHRIssuesContainer">
+            <canSetPerContainer>true</canSetPerContainer>
+            <description>The is the path to a container with an issue tracker for the EHR.  It is usually separate from the EHR study, and the issue tracker need to be configured manually be the admin.  Use of slashes is very important - it should be in the format '/myProject/ehr'</description>
+            <editPermissions>
+                <permission>ADMIN</permission>
+            </editPermissions>
+        </propertyDescriptor>
     </properties>
     <requiredModuleContext>
         <requiredModule name="LDK"/>
