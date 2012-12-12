@@ -1000,6 +1000,11 @@
             </ns:column>
             <ns:column columnName="inves">
                 <ns:nullable>true</ns:nullable>
+                <ns:columnTitle>Investigator</ns:columnTitle>
+            </ns:column>
+            <ns:column columnName="inves2">
+                <ns:nullable>true</ns:nullable>
+                <ns:columnTitle>Second Investigator</ns:columnTitle>
             </ns:column>
             <ns:column columnName="avail">
                 <ns:nullable>true</ns:nullable>
@@ -1016,6 +1021,12 @@
             <ns:column columnName="contact_emails">
                 <ns:columnTitle>Contact Emails</ns:columnTitle>
                 <ns:inputType>textarea</ns:inputType>
+            </ns:column>
+            <ns:column columnName="startdate">
+                <ns:columnTitle>Start Date</ns:columnTitle>
+            </ns:column>
+            <ns:column columnName="enddate">
+                <ns:columnTitle>End Date</ns:columnTitle>
             </ns:column>
             <ns:column columnName="createdby">
                 <ns:isUserEditable>false</ns:isUserEditable>
@@ -1297,6 +1308,12 @@
             <ns:column columnName="code">
                 <ns:nullable>true</ns:nullable>
             </ns:column>
+            <ns:column columnName="startdate">
+                <ns:nullable>true</ns:nullable>
+            </ns:column>
+            <ns:column columnName="enddate">
+                <ns:nullable>true</ns:nullable>
+            </ns:column>
             <ns:column columnName="allowed">
                 <ns:nullable>true</ns:nullable>
             </ns:column>
@@ -1330,6 +1347,10 @@
             <ns:column columnName="modified">
                 <ns:isUserEditable>false</ns:isUserEditable>
                 <ns:nullable>true</ns:nullable>
+                <ns:isHidden>true</ns:isHidden>
+            </ns:column>
+            <ns:column columnName="objectid">
+                <ns:isUserEditable>false</ns:isUserEditable>
                 <ns:isHidden>true</ns:isHidden>
             </ns:column>
         </ns:columns>
@@ -1370,83 +1391,6 @@
             </ns:column>
         </ns:columns>
     </ns:table>
-    <ns:table tableName="chargedItems" tableDbType="TABLE">
-        <ns:auditLogging>DETAILED</ns:auditLogging>
-        <ns:importUrl></ns:importUrl>
-        <ns:insertUrl></ns:insertUrl>
-        <ns:updateUrl></ns:updateUrl>
-        <ns:deleteUrl></ns:deleteUrl>
-        <ns:pkColumnName>rowid</ns:pkColumnName>
-        <ns:columns>
-            <ns:column columnName="rowid">
-                <ns:shownInInsertView>false</ns:shownInInsertView>
-                <ns:shownInUpdateView>false</ns:shownInUpdateView>
-                <ns:shownInDetailsView>false</ns:shownInDetailsView>
-                <ns:isAutoInc>true</ns:isAutoInc>
-                <ns:isKeyField>true</ns:isKeyField>
-            </ns:column>
-            <ns:column columnName="id">
-                <ns:nullable>true</ns:nullable>
-            </ns:column>
-            <ns:column columnName="date">
-                <ns:columnTitle>Date of Charge</ns:columnTitle>
-                <ns:nullable>true</ns:nullable>
-            </ns:column>
-            <ns:column columnName="debitedaccount">
-                <ns:columnTitle>Debited Account</ns:columnTitle>
-                <ns:nullable>true</ns:nullable>
-            </ns:column>
-            <ns:column columnName="creditedaccount">
-                <ns:columnTitle>Credited Account</ns:columnTitle>
-                <ns:nullable>true</ns:nullable>
-            </ns:column>
-            <ns:column columnName="category">
-                <ns:nullable>true</ns:nullable>
-            </ns:column>
-            <ns:column columnName="item">
-                <ns:columnTitle>Item</ns:columnTitle>
-                <ns:nullable>false</ns:nullable>
-            </ns:column>
-            <ns:column columnName="quantity">
-                <ns:nullable>true</ns:nullable>
-            </ns:column>
-            <ns:column columnName="unitcost">
-                <ns:nullable>true</ns:nullable>
-                <ns:columnTitle>Unit Cost</ns:columnTitle>
-            </ns:column>
-            <ns:column columnName="totalcost">
-                <ns:columnTitle>Total Cost</ns:columnTitle>
-                <ns:nullable>true</ns:nullable>
-            </ns:column>
-            <ns:column columnName="comment"/>
-            <ns:column columnName="flag">
-            </ns:column>
-            <ns:column columnName="container">
-                <ns:isUserEditable>false</ns:isUserEditable>
-                <ns:isHidden>true</ns:isHidden>
-            </ns:column>
-            <ns:column columnName="createdby">
-                <ns:isUserEditable>false</ns:isUserEditable>
-                <ns:nullable>true</ns:nullable>
-                <ns:isHidden>true</ns:isHidden>
-            </ns:column>
-            <ns:column columnName="created">
-                <ns:isUserEditable>false</ns:isUserEditable>
-                <ns:nullable>true</ns:nullable>
-                <ns:isHidden>true</ns:isHidden>
-            </ns:column>
-            <ns:column columnName="modifiedby">
-                <ns:isUserEditable>false</ns:isUserEditable>
-                <ns:nullable>true</ns:nullable>
-                <ns:isHidden>true</ns:isHidden>
-            </ns:column>
-            <ns:column columnName="modified">
-                <ns:isUserEditable>false</ns:isUserEditable>
-                <ns:nullable>true</ns:nullable>
-                <ns:isHidden>true</ns:isHidden>
-            </ns:column>
-        </ns:columns>
-    </ns:table>
     <ns:table tableName="accounts" tableDbType="TABLE">
         <ns:auditLogging>DETAILED</ns:auditLogging>
         <ns:importUrl></ns:importUrl>
@@ -1459,9 +1403,12 @@
             <ns:column columnName="investigator"/>
             <ns:column columnName="startdate"/>
             <ns:column columnName="enddate"/>
+            <ns:column columnName="active"/>
+            <ns:column columnName="fiscalAuthority"/>
             <ns:column columnName="externalid"/>
             <ns:column columnName="comment"/>
             <ns:column columnName="tier"/>
+            <ns:column columnName="objectid"/>
             <ns:column columnName="createdby"/>
             <ns:column columnName="created"/>
             <ns:column columnName="modifiedby"/>
@@ -1553,6 +1500,56 @@
             <ns:column columnName="comment"/>
             <ns:column columnName="objectid"/>
             <ns:column columnName="container"/>
+            <ns:column columnName="createdby"/>
+            <ns:column columnName="created"/>
+            <ns:column columnName="modifiedby"/>
+            <ns:column columnName="modified"/>
+        </ns:columns>
+    </ns:table>
+    <ns:table tableName="encounter_flags" tableDbType="TABLE">
+        <ns:columns>
+            <ns:column columnName="rowid"/>
+            <ns:column columnName="id"/>
+            <ns:column columnName="date"/>
+            <ns:column columnName="parentid"/>
+            <ns:column columnName="schemaName"/>
+            <ns:column columnName="queryName"/>
+            <ns:column columnName="flag"/>
+            <ns:column columnName="value"/>
+            <ns:column columnName="remark"/>
+            <ns:column columnName="objectid"/>
+            <ns:column columnName="container"/>
+            <ns:column columnName="createdby"/>
+            <ns:column columnName="created"/>
+            <ns:column columnName="modifiedby"/>
+            <ns:column columnName="modified"/>
+        </ns:columns>
+    </ns:table>
+    <ns:table tableName="encounter_summaries" tableDbType="TABLE">
+        <ns:columns>
+            <ns:column columnName="rowid"/>
+            <ns:column columnName="id"/>
+            <ns:column columnName="date"/>
+            <ns:column columnName="parentid"/>
+            <ns:column columnName="schemaName"/>
+            <ns:column columnName="queryName"/>
+            <ns:column columnName="remark"/>
+            <ns:column columnName="objectid"/>
+            <ns:column columnName="container"/>
+            <ns:column columnName="createdby"/>
+            <ns:column columnName="created"/>
+            <ns:column columnName="modifiedby"/>
+            <ns:column columnName="modified"/>
+        </ns:columns>
+    </ns:table>
+    <ns:table tableName="projectAccountHistory" tableDbType="TABLE">
+        <ns:columns>
+            <ns:column columnName="rowid"/>
+            <ns:column columnName="project"/>
+            <ns:column columnName="account"/>
+            <ns:column columnName="startdate"/>
+            <ns:column columnName="enddate"/>
+            <ns:column columnName="objectid"/>
             <ns:column columnName="createdby"/>
             <ns:column columnName="created"/>
             <ns:column columnName="modifiedby"/>

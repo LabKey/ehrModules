@@ -2302,7 +2302,16 @@
           <ns:shownInInsertView>false</ns:shownInInsertView>
           <ns:shownInUpdateView>false</ns:shownInUpdateView>
         </ns:column>
-    </ns:columns>
+          <ns:column columnName="cageslots">
+              <ns:columnTitle>Cage Slots</ns:columnTitle>
+          </ns:column>
+          <ns:column columnName="CageCapacity">
+              <ns:columnTitle>Cage Capacity</ns:columnTitle>
+          </ns:column>
+          <ns:column columnName="MaxAnimalWeight">
+              <ns:columnTitle>Max Animal Weight (kg)</ns:columnTitle>
+          </ns:column>
+      </ns:columns>
   </ns:table>
     <ns:table tableName="charge_flags" tableDbType="TABLE" useColumnOrder="true">
       <ns:importUrl></ns:importUrl>
@@ -2497,6 +2506,21 @@
             <ns:column columnName="rowid"/>
             <ns:column columnName="procedureid"/>
             <ns:column columnName="comment"/>
+        </ns:columns>
+    </ns:table>
+    <ns:table tableName="locations" tableDbType="TABLE">
+        <ns:columns>
+            <ns:column columnName="location"/>
+            <ns:column columnName="area"/>
+            <ns:column columnName="buildingId"/>
+            <ns:column columnName="locationtype"/>
+            <ns:column columnName="housingcategory"/>
+            <ns:column columnName="size"/>
+            <ns:column columnName="active"/>
+            <ns:column columnName="createdby"/>
+            <ns:column columnName="created"/>
+            <ns:column columnName="modifiedby"/>
+            <ns:column columnName="modified"/>
         </ns:columns>
     </ns:table>
 </ns:tables>

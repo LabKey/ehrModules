@@ -137,7 +137,6 @@ public class EHRProperties
         protected PropertyDescriptor constructPropertyDescriptor()
         {
             PropertyDescriptor pd = super.constructPropertyDescriptor();
-            pd.setImportAliases("pno");
             pd.setName("project");
             pd.setFormat("00000000");
             return pd;
@@ -200,22 +199,6 @@ public class EHRProperties
             pd.setShownInUpdateView(false);
             pd.setShownInDetailsView(false);
             pd.setHidden(true);
-            return pd;
-        }
-    };
-
-    public static SystemProperty ETL_TIMESTAMP = new SystemProperty(URI + "ETLTimestamp", PropertyType.DATE_TIME)
-    {
-        @Override
-        protected PropertyDescriptor constructPropertyDescriptor()
-        {
-            PropertyDescriptor pd = super.constructPropertyDescriptor();
-            pd.setShownInInsertView(false);
-            pd.setShownInUpdateView(false);
-            pd.setShownInDetailsView(false);
-            pd.setHidden(true);
-            pd.setLabel("Last Changed");
-            pd.setName("ts");
             return pd;
         }
     };

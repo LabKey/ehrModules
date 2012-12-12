@@ -50,7 +50,7 @@ EHR.Server.Validation = {
             for(var j=0;j<scriptErrors[i].length;j++){
                 error = scriptErrors[i][j];
 
-                if (errorThreshold && EHR.Server.Validation.errorSeverity[error.severity] <= EHR.Server.Validation.errorSeverity[errorThreshold]){
+                if (!EHR.Server.Validation.shouldIncludeError(error.severity, errorThreshold)){
                     //console.log('error below threshold');
                     if(row._recordid){
                         if(!extraContext.skippedErrors[row._recordid])
@@ -89,6 +89,14 @@ EHR.Server.Validation = {
         ERROR: 3,
         FATAL: 4
     },
+
+    shouldIncludeError: function(error, threshold){
+        if (!threshold)
+            return true;
+
+        return EHR.Server.Validation.errorSeverity[error] > EHR.Server.Validation.errorSeverity[threshold];
+    },
+
     /**
      * A helper that adds an error if an antibiotic sensitivity is provided without the antibiotic name
      * @param row The row object
@@ -125,7 +133,7 @@ EHR.Server.Validation = {
      */
     snomedToString: function (code, meaning){
         if(!meaning){
-console.log('QUERYING SNOMED TERM');
+            console.log('QUERYING SNOMED TERM');
             LABKEY.Query.selectRows({
                 schemaName: 'ehr_lookups',
                 queryName: 'snomed',
@@ -196,7 +204,7 @@ console.log('QUERYING SNOMED TERM');
      * @returns {string} The string value or an empty string
      */
     nullToString: function(value){
-            return (value ? value : '');
+        return (value ? value : '');
     },
     /**
      * A utility that will take an input value and pad with left-hand zeros until the string is of the desired length
@@ -495,7 +503,7 @@ console.log('QUERYING SNOMED TERM');
                     }
 
                     if(r.date)
-                           demographics[r.Id].birth = new Date(r.date);
+                        demographics[r.Id].birth = new Date(r.date);
                 }, this);
             },
             failure: EHR.Server.Utils.onFailure
@@ -619,6 +627,8 @@ console.log('QUERYING SNOMED TERM');
             });
             throw 'Error in EHR.Server.Validation.findDemographics(): missing Id, scope or callback';
         }
+
+        var start = new Date();
         var scriptContext = config.scriptContext || config.scope.scriptContext;
 
         if(!scriptContext){
@@ -626,9 +636,11 @@ console.log('QUERYING SNOMED TERM');
         }
 
         if(scriptContext.demographicsMap[config.participant] && !config.forceRefresh){
+            console.log('Find demographics time: ' + (((new Date()) - start) / 1000));
             config.callback.apply(config.scope || this, [scriptContext.demographicsMap[config.participant]])
         }
         else if(scriptContext.missingParticipants.indexOf(config.participant) >  -1){
+            console.log('Find demographics time: ' + (((new Date()) - start) / 1000));
             config.callback.apply(config.scope || this);
         }
         else {
@@ -639,6 +651,7 @@ console.log('QUERYING SNOMED TERM');
                 scope: this,
                 filterArray: [LABKEY.Filter.create('Id', config.participant, LABKEY.Filter.Types.EQUAL)],
                 success: function(data){
+                    console.log('Find demographics time: ' + (((new Date()) - start) / 1000));
                     if(data && data.rows && data.rows.length==1){
                         var row = data.rows[0];
 

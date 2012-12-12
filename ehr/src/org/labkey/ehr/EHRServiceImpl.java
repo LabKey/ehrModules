@@ -16,12 +16,16 @@
 package org.labkey.ehr;
 
 import org.labkey.api.data.Container;
+import org.labkey.api.data.TableCustomizer;
 import org.labkey.api.ehr.EHRService;
+import org.labkey.api.exp.PropertyDescriptor;
 import org.labkey.api.module.Module;
 import org.labkey.api.resource.Resource;
 import org.labkey.api.util.Pair;
+import org.labkey.ehr.table.DefaultEHRCustomizer;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -38,6 +42,10 @@ public class EHRServiceImpl extends EHRService
 {
     private Set<Module> _registeredModules = new HashSet<Module>();
     private List<Pair<Module, Resource>> _extraTriggerScripts = new ArrayList<Pair<Module, Resource>>();
+    private Map<String, Pair<PropertyDescriptor, Boolean>> _propertyDescriptors = new HashMap<String, Pair<PropertyDescriptor, Boolean>>();
+    private Map<String, Map<String, List<TableCustomizer>>> _tableCustomizers = new HashMap<String, Map<String, List<TableCustomizer>>>();
+    private final String ALL_TABLES = "~~ALL_TABLES~~";
+    private final String ALL_SCHEMAS = "~~ALL_SCHEMAS~~";
 
     public EHRServiceImpl()
     {
@@ -74,4 +82,46 @@ public class EHRServiceImpl extends EHRService
         }
         return resouces;
     }
+
+    public void registerTableCustomizer(TableCustomizer customizer)
+    {
+        registerTableCustomizer(customizer, ALL_SCHEMAS, ALL_TABLES);
+    }
+
+    public void registerTableCustomizer(TableCustomizer customizer, String schema)
+    {
+        registerTableCustomizer(customizer, schema, ALL_TABLES);
+    }
+
+    public void registerTableCustomizer(TableCustomizer customizer, String schema, String query)
+    {
+        Map<String, List<TableCustomizer>> map = _tableCustomizers.get(schema);
+        if (map == null)
+            map = new HashMap<String, List<TableCustomizer>>();
+
+        List<TableCustomizer> list = map.get(query);
+        if (list == null)
+            list = new ArrayList<TableCustomizer>();
+
+        list.add(customizer);
+
+        map.put(query, list);
+        _tableCustomizers.put(schema, map);
+    }
+
+    public List<TableCustomizer> getCustomizers(String schema, String query)
+    {
+        List<TableCustomizer> list = new ArrayList<TableCustomizer>();
+        if (_tableCustomizers.get(ALL_SCHEMAS) != null)
+            list.addAll(_tableCustomizers.get(ALL_SCHEMAS).get(ALL_TABLES));
+
+        if (_tableCustomizers.containsKey(schema))
+        {
+            list.addAll(_tableCustomizers.get(schema).get(ALL_TABLES));
+            list.addAll(_tableCustomizers.get(schema).get(query));
+        }
+
+        return Collections.unmodifiableList(list);
+    }
+
 }
