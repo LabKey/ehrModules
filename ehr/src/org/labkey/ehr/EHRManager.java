@@ -24,6 +24,7 @@ import org.labkey.api.data.PropertyManager;
 import org.labkey.api.data.RuntimeSQLException;
 import org.labkey.api.data.SQLFragment;
 import org.labkey.api.data.SimpleFilter;
+import org.labkey.api.data.SqlExecutor;
 import org.labkey.api.data.SqlSelector;
 import org.labkey.api.data.Table;
 import org.labkey.api.data.TableInfo;
@@ -370,14 +371,16 @@ public class EHRManager
                 return;
             }
 
+            SqlExecutor executor = new SqlExecutor(expSchema);
+
             if (oldIds.size() == 1)
             {
                 //only 1 ID, but not using correct propertyURI
                 String updateSql = "UPDATE exp.propertydomain SET propertyid = ? where domainId = ? AND propertyid = ?";
-                long updated = Table.execute(expSchema.getScope().getConnection(), updateSql, propertyId, d.getTypeId(), oldIds.get(0));
+                long updated = executor.execute(updateSql, propertyId, d.getTypeId(), oldIds.get(0));
 
                 String deleteSql = "DELETE FROM exp.propertydescriptor WHERE propertyid = ?";
-                long deleted = Table.execute(expSchema.getScope().getConnection(), deleteSql, oldIds.get(0));
+                long deleted = executor.execute(deleteSql, oldIds.get(0));
             }
             else
             {
@@ -388,13 +391,13 @@ public class EHRManager
                 Integer minSort = resultSet.getInt(0);
 
                 String updateSql = "UPDATE exp.propertydomain SET propertyid = ? where domainId = ? AND propertyid IN ? AND sortorder = ?";
-                Table.execute(expSchema.getScope().getConnection(), updateSql, propertyId, d.getTypeId(), oldIds, minSort);
+                executor.execute(updateSql, propertyId, d.getTypeId(), oldIds, minSort);
 
                 String deleteSql1 = "DELETE FROM exp.propertydescriptor WHERE propertyid != ? AND propertyid IN ?";
-                Table.execute(expSchema.getScope().getConnection(), deleteSql1, propertyId, oldIds);
+                executor.execute(deleteSql1, propertyId, oldIds);
 
                 String deleteSql2 = "DELETE FROM exp.propertydomain WHERE propertyid != ? AND domainId = ? AND propertyid IN ? AND sortorder != ?";
-                Table.execute(expSchema.getScope().getConnection(), deleteSql2, propertyId, d.getTypeId(), oldIds, minSort);
+                executor.execute(deleteSql2, propertyId, d.getTypeId(), oldIds, minSort);
             }
         }
         finally
