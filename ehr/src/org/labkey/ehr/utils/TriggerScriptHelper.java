@@ -45,7 +45,7 @@ import org.labkey.api.study.Study;
 import org.labkey.api.study.StudyService;
 import org.labkey.api.util.JobRunner;
 import org.labkey.api.view.UnauthorizedException;
-import org.labkey.ehr.security.EHRCompletedAdminPermission;
+import org.labkey.ehr.EHRManager;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -325,8 +325,7 @@ public class TriggerScriptHelper
         //TODO: this is a little ugly
         String permString = perm.getCanonicalName().replaceAll(perm.getPackage().getName() + "\\.", "");
         String qcString = qc.getLabel().replaceAll("[^a-zA-Z0-9-]", "");
-        String prefix = EHRCompletedAdminPermission.class.getPackage().getName() + ".EHR";
-        return prefix + qcString + permString;
+        return EHRManager.SECURITY_PACKAGE + qcString + permString;
     }
 
     public static void cascadeDelete(int userId, String containerId, String schemaName, String queryName, String keyField, Object keyValue) throws SQLException

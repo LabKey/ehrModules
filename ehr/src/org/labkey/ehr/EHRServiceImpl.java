@@ -15,14 +15,15 @@
  */
 package org.labkey.ehr;
 
+import org.labkey.api.collections.CaseInsensitiveHashMap;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.TableCustomizer;
 import org.labkey.api.ehr.EHRService;
-import org.labkey.api.exp.PropertyDescriptor;
 import org.labkey.api.module.Module;
 import org.labkey.api.resource.Resource;
+import org.labkey.api.security.User;
 import org.labkey.api.util.Pair;
-import org.labkey.ehr.table.DefaultEHRCustomizer;
+import org.labkey.api.view.template.ClientDependency;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -42,8 +43,8 @@ public class EHRServiceImpl extends EHRService
 {
     private Set<Module> _registeredModules = new HashSet<Module>();
     private List<Pair<Module, Resource>> _extraTriggerScripts = new ArrayList<Pair<Module, Resource>>();
-    private Map<String, Pair<PropertyDescriptor, Boolean>> _propertyDescriptors = new HashMap<String, Pair<PropertyDescriptor, Boolean>>();
-    private Map<String, Map<String, List<TableCustomizer>>> _tableCustomizers = new HashMap<String, Map<String, List<TableCustomizer>>>();
+    private Map<Module, List<ClientDependency>> _clientDependencies = new HashMap<Module, List<ClientDependency>>();
+    private Map<String, Map<String, List<TableCustomizer>>> _tableCustomizers = new CaseInsensitiveHashMap<Map<String, List<TableCustomizer>>>();
     private final String ALL_TABLES = "~~ALL_TABLES~~";
     private final String ALL_SCHEMAS = "~~ALL_SCHEMAS~~";
 
@@ -80,7 +81,7 @@ public class EHRServiceImpl extends EHRService
                 resouces.add(pair.second);
             }
         }
-        return resouces;
+        return Collections.unmodifiableList(resouces);
     }
 
     public void registerTableCustomizer(TableCustomizer customizer)
@@ -97,7 +98,7 @@ public class EHRServiceImpl extends EHRService
     {
         Map<String, List<TableCustomizer>> map = _tableCustomizers.get(schema);
         if (map == null)
-            map = new HashMap<String, List<TableCustomizer>>();
+            map = new CaseInsensitiveHashMap<List<TableCustomizer>>();
 
         List<TableCustomizer> list = map.get(query);
         if (list == null)
@@ -124,4 +125,28 @@ public class EHRServiceImpl extends EHRService
         return Collections.unmodifiableList(list);
     }
 
+    public void registerClientDependency(ClientDependency cd, Module owner)
+    {
+        List<ClientDependency> list = _clientDependencies.get(owner);
+        if (list == null)
+            list = new ArrayList<ClientDependency>();
+
+        list.add(cd);
+
+        _clientDependencies.put(owner, list);
+    }
+
+    public Set<ClientDependency> getRegisteredClientDependencies(Container c, User u)
+    {
+        Set<ClientDependency> set = new HashSet<ClientDependency>();
+        for (Module m : _clientDependencies.keySet())
+        {
+            if (c.getActiveModules().contains(m))
+            {
+                set.addAll(_clientDependencies.get(m));
+            }
+        }
+
+        return Collections.unmodifiableSet(set);
+    }
 }

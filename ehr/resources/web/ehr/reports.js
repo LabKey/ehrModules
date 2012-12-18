@@ -6,7 +6,10 @@
 Ext4.namespace('EHR.reports');
 
 /*
- * This file contains a series of JS-baed reports used in the Animal History page
+ * This file contains a series of JS-baed reports used in the Animal History page.
+ * These should really get refactored into true JS reports; however, the difficultly
+ * is that a JS report expects to render into a DIV, and here we are adding ExtComponents
+ * to the TabPanel, plus passing in some non-standard context
  *
  */
 EHR.reports.abstract = function(panel, tab, subject){
@@ -601,62 +604,6 @@ EHR.reports.immunology = function(panel, tab, subject){
         queryConfig: config
     });
 };
-
-EHR.reports.viralLoads = function(panel, tab, subject){
-    subject = subject || [];
-
-    for (var i=0;i<subject.length;i++){
-        var filterArray = panel.getFilterArray(tab, [subject[i]]);
-        var title = (subject[i] || '');
-
-        LABKEY.Query.selectRows({
-            schemaName: 'study',
-            queryName: 'ViralLoads',
-            filterArray: filterArray.removable.concat(filterArray.nonRemovable),
-            columns: 'Id,date,LogVL',
-            sort: 'Id,-date',
-            success: function(results){
-                tab.add({
-                    xtype: 'ldk-graphpanel',
-                    style: 'margin-bottom: 30px',
-                    title: 'Viral Loads: ' + subject,
-                    plotConfig: {
-                        results: results,
-                        title: 'Viral Loads: ' + subject,
-                        height: 400,
-                        width: 900,
-                        yLabel: 'Log Copies/mL',
-                        xLabel: 'Date',
-                        xField: 'date',
-                        grouping: ['Id'],
-                        layers: [{
-                            y: 'viralLoad',
-                            name: 'Viral Load'
-                        }]
-                    }
-                });
-            }
-        });
-    }
-
-    var filterArray = panel.getFilterArray(tab, subject);
-    var title = (subject.join(', ') || '');
-    var config = panel.getQWPConfig({
-        title: 'Viral Load' + ": " + title,
-        schemaName: 'study',
-        queryName: 'ViralLoadsWpi',
-        filters: filterArray.nonRemovable,
-        removeableFilters: filterArray.removable,
-        sort: 'id,-date',
-        frame: true
-    });
-
-    tab.add({
-        xtype: 'ldk-querypanel',
-        style: 'margin-bottom:20px;',
-        queryConfig: config
-    });
-}
 
 EHR.reports.irregularObs = function(panel, tab, subject){
     var filterArray = panel.getFilterArray(tab, subject);

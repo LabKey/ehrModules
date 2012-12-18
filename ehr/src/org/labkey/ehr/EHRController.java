@@ -25,6 +25,7 @@ import org.labkey.api.action.SpringActionController;
 import org.labkey.api.security.IgnoresTermsOfUse;
 import org.labkey.api.security.RequiresPermissionClass;
 import org.labkey.api.security.permissions.AdminPermission;
+import org.labkey.api.security.permissions.ReadPermission;
 import org.labkey.api.util.ConfigurationException;
 import org.labkey.api.util.URLHelper;
 import org.labkey.api.view.HtmlView;
@@ -49,6 +50,22 @@ public class EHRController extends SpringActionController
     {
         setActionResolver(_actionResolver);
     }
+
+    @RequiresPermissionClass(ReadPermission.class)
+    public class GetDataEntryItemsAction extends ApiAction<Object>
+    {
+        public ApiResponse execute(Object form, BindException errors)
+        {
+            ApiResponse resp = new ApiSimpleResponse();
+
+            EHRManager.get().getDataEntryItems(getContainer(), getUser());
+
+
+            return resp;
+        }
+    }
+
+
 
     @RequiresPermissionClass(AdminPermission.class)
     @IgnoresTermsOfUse

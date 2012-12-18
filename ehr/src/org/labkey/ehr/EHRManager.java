@@ -17,6 +17,7 @@ package org.labkey.ehr;
 
 import org.apache.log4j.Logger;
 import org.labkey.api.cache.CacheManager;
+import org.labkey.api.collections.CaseInsensitiveHashSet;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.ContainerManager;
 import org.labkey.api.data.DbSchema;
@@ -49,6 +50,7 @@ import org.labkey.api.study.StudyService;
 import org.labkey.api.util.ResultSetUtil;
 
 import java.beans.Introspector;
+import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -64,6 +66,7 @@ public class EHRManager
     public static final String EHRStudyContainerPropName = "EHRStudyContainer";
     public static final String EHRAdminUserPropName = "EHRAdminUser";
     public static final String EHRStudyLabel = "Primate Electronic Health Record";
+    public static final String SECURITY_PACKAGE = "org.labkey.ehr.security.EHR";
 
     private static final Logger _log = Logger.getLogger(EHRManager.class);
 
@@ -186,7 +189,6 @@ public class EHRManager
             List<PropertyDescriptor> properties = new ArrayList<PropertyDescriptor>();
 
             properties.add(OntologyManager.getPropertyDescriptor(EHRProperties.PROJECT.getPropertyDescriptor().getPropertyURI(), c));
-            //properties.add(OntologyManager.getPropertyDescriptor(EHRProperties.ACCOUNT.getPropertyDescriptor().getPropertyURI(), c));
             properties.add(OntologyManager.getPropertyDescriptor(EHRProperties.REMARK.getPropertyDescriptor().getPropertyURI(), c));
             properties.add(OntologyManager.getPropertyDescriptor(EHRProperties.OBJECTID.getPropertyDescriptor().getPropertyURI(), c));
             properties.add(OntologyManager.getPropertyDescriptor(EHRProperties.PARENTID.getPropertyDescriptor().getPropertyURI(), c));
@@ -195,9 +197,11 @@ public class EHRManager
             properties.add(OntologyManager.getPropertyDescriptor(EHRProperties.DESCRIPTION.getPropertyDescriptor().getPropertyURI(), c));
             properties.add(OntologyManager.getPropertyDescriptor(EHRProperties.PERFORMEDBY.getPropertyDescriptor().getPropertyURI(), c));
 
-            List<PropertyDescriptor> otherProperties = new ArrayList<PropertyDescriptor>();
-            otherProperties.add(OntologyManager.getPropertyDescriptor(EHRProperties.ENDDATE.getPropertyDescriptor().getPropertyURI(), c));
-            otherProperties.add(OntologyManager.getPropertyDescriptor(EHRProperties.DATEREQUESTED.getPropertyDescriptor().getPropertyURI(), c));
+            List<PropertyDescriptor> optionalProperties = new ArrayList<PropertyDescriptor>();
+            optionalProperties.add(OntologyManager.getPropertyDescriptor(EHRProperties.ENDDATE.getPropertyDescriptor().getPropertyURI(), c));
+            optionalProperties.add(OntologyManager.getPropertyDescriptor(EHRProperties.DATEREQUESTED.getPropertyDescriptor().getPropertyURI(), c));
+            optionalProperties.add(OntologyManager.getPropertyDescriptor(EHRProperties.ACCOUNT.getPropertyDescriptor().getPropertyURI(), c));
+            optionalProperties.add(OntologyManager.getPropertyDescriptor(EHRProperties.CASEID.getPropertyDescriptor().getPropertyURI(), c));
 
             List<? extends DataSet> datasets = study.getDataSets();
             boolean shouldClearCaches = false;
@@ -251,7 +255,7 @@ public class EHRManager
                 }
 
                 //dont add these, but if they already exist make sure we use the right propertyURI
-                for (PropertyDescriptor pd : otherProperties)
+                for (PropertyDescriptor pd : optionalProperties)
                 {
                     for (DomainProperty dp : dprops)
                     {
@@ -302,6 +306,61 @@ public class EHRManager
                     messages.add("Non-demographics datasets that are not using objectId as a managed key: " + total);
             }
 
+            String[] toIndex = new String[]{"objectid"};
+            DbSchema schema = DbSchema.get("studydataset");
+            Set<String> distinctIndexes = new HashSet<String>();
+            for (DataSet d : study.getDataSets())
+            {
+                String tableName = d.getDomain().getStorageTableName();
+                TableInfo realTable = schema.getTable(tableName);
+                if (realTable == null)
+                {
+                    _log.error("Table not found for dataset: " + d.getLabel() + " / " + d.getTypeURI());
+                    continue;
+                }
+
+                for (String col : toIndex)
+                {
+                    String indexName = tableName + "_" + col;
+
+                    if (distinctIndexes.contains(indexName))
+                        throw new RuntimeException("An index has already been created with the name: " + indexName);
+                    distinctIndexes.add(indexName);
+
+                    Set<String> indexNames = new CaseInsensitiveHashSet();
+                    DatabaseMetaData meta = schema.getScope().getConnection().getMetaData();
+                    ResultSet rs = null;
+                    try
+                    {
+                        rs = meta.getIndexInfo(schema.getScope().getDatabaseName(), schema.getName(), tableName, false, false);
+                        while (rs.next())
+                        {
+                            indexNames.add(rs.getString("INDEX_NAME"));
+                        }
+                    }
+                    finally
+                    {
+                        ResultSetUtil.close(rs);
+                    }
+
+                    boolean exists = indexNames.contains(indexName);
+
+                    if (!exists)
+                    {
+                        if (commitChanges)
+                        {
+                            messages.add("Creating index on column: " + col + " for dataset: " + d.getLabel());
+                            SQLFragment sql = new SQLFragment("CREATE INDEX " + indexName + " ON " + realTable.getSelectName() + "(" + col + ")");
+                            SqlExecutor se = new SqlExecutor(schema);
+                            se.execute(sql);
+                        }
+                        else
+                        {
+                            messages.add("Missing index on column: " + col + " for dataset: " + d.getLabel());
+                        }
+                    }
+                }
+            }
             ExperimentService.get().commitTransaction();
 
             if (shouldClearCaches)
@@ -404,5 +463,10 @@ public class EHRManager
         {
             ResultSetUtil.close(results);
         }
+    }
+
+    public void getDataEntryItems(Container c, User u)
+    {
+
     }
 }

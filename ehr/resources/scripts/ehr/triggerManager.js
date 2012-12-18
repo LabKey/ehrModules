@@ -7,7 +7,10 @@ exports.EHR = EHR;
 EHR.Server = {};
 EHR.Server.TriggerManager = {};
 
-
+/**
+ * This class is used to manage the set of trigger event handlers registered with EHR.
+ * Other modules can register handlers that will be called at specific points in the validation scripts
+ */
 EHR.Server.TriggerManager = new function(){
     var events = {};
     var queryEvents = {};
@@ -33,9 +36,9 @@ EHR.Server.TriggerManager = new function(){
         },
 
         /**
-         *
-         * @param event
-         * @param handler
+         * Can be used to register a handler that will be included on all tables
+         * @param event One of the events in EHR.Server.TriggerManager.Events
+         * @param handler A function that will be called.  The arguments vary by event
          */
         registerHandler: function(event, handler){
             if (!events[event]){
@@ -45,6 +48,11 @@ EHR.Server.TriggerManager = new function(){
             events[event].push(handler);
         },
 
+        /**
+         * Can be used to register a handler that will be included on a specific query
+         * @param event One of the events in EHR.Server.TriggerManager.Events
+         * @param handler A function that will be called.  The arguments vary by event
+         */
         registerHandlerForQuery: function(event, schemaName, queryName, handler){
             if (!queryEvents[schemaName]){
                 queryEvents[schemaName] = {};
@@ -62,17 +70,34 @@ EHR.Server.TriggerManager = new function(){
         },
 
         getHandlers: function(event){
-            return events[event];
+            return events[event] || [];
         },
 
-        getHandlersForQuery: function(event, schemaName, queryName){
-            if (!queryEvents[schemaName][queryName])
-                return null;
+        /**
+         * This will return an array of all handlers registers for the requested event for the
+         * requested table.
+         * @param event One of the events in EHR.Server.TriggerManager.Events
+         * @param schemaName
+         * @param queryName
+         * @param includeAll If true, any handlers registered for all tables will be appended first.  This is usually the desired behavior
+         * @return {Array}
+         */
+        getHandlersForQuery: function(event, schemaName, queryName, includeAll){
+            var handlers = [];
+
+            //optionally append handlers for all tables
+            if (includeAll && events[event])
+                handlers = handlers.concat(events[event]);
+
+            if (!queryEvents[schemaName])
+                return handlers;
 
             if (!queryEvents[schemaName][queryName])
-                return null;
+                return handlers;
 
-            return queryEvents[schemaName][queryName][event];
+            handlers = handlers.concat(queryEvents[schemaName][queryName][event]);
+
+            return handlers;
         }
     }
 };

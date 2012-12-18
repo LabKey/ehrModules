@@ -72,6 +72,22 @@ public class EHRProperties
         }
     };
 
+    public static SystemProperty CASEID = new SystemProperty(URI + "CaseId", PropertyType.STRING)
+    {
+        @Override
+        protected PropertyDescriptor constructPropertyDescriptor()
+        {
+            PropertyDescriptor pd = super.constructPropertyDescriptor();
+            pd.setShownInInsertView(false);
+            pd.setShownInUpdateView(false);
+            pd.setShownInDetailsView(false);
+            pd.setHidden(true);
+            pd.setName("caseid");
+            pd.setLabel("Case Id");
+            return pd;
+        }
+    };
+
     public static SystemProperty REQUESTID = new SystemProperty(URI + "RequestId", PropertyType.STRING)
     {
         @Override

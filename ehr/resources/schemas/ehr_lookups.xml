@@ -965,6 +965,10 @@
       <ns:column columnName="mhc_prefix">
         <ns:nullable>true</ns:nullable>
       </ns:column>
+      <ns:column columnName="blood_vol_multiplier">
+          <ns:columnTitle>Blood Vol Multiplier</ns:columnTitle>
+          <ns:description>This is the </ns:description>
+      </ns:column>
     </ns:columns>
   </ns:table>
   <ns:table tableName="dental_side" tableDbType="TABLE" useColumnOrder="true">
@@ -2521,6 +2525,12 @@
             <ns:column columnName="created"/>
             <ns:column columnName="modifiedby"/>
             <ns:column columnName="modified"/>
+        </ns:columns>
+    </ns:table>
+    <ns:table tableName="billingtypes" tableDbType="TABLE">
+        <ns:columns>
+            <ns:column columnName="rowid"/>
+            <ns:column columnName="name"/>
         </ns:columns>
     </ns:table>
 </ns:tables>

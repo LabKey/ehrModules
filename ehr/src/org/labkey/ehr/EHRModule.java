@@ -22,6 +22,7 @@ import org.labkey.api.data.ContainerManager;
 import org.labkey.api.data.DbSchema;
 import org.labkey.api.data.UpgradeCode;
 import org.labkey.api.ehr.EHRService;
+import org.labkey.api.laboratory.LaboratoryService;
 import org.labkey.api.module.Module;
 import org.labkey.api.module.ModuleContext;
 import org.labkey.api.module.SpringModule;
@@ -77,7 +78,7 @@ public class EHRModule extends SpringModule
 
     public double getVersion()
     {
-        return 12.302;
+        return 12.304;
     }
 
     public boolean hasScripts()
@@ -225,16 +226,10 @@ public class EHRModule extends SpringModule
     @Override
     public LinkedHashSet<ClientDependency> getClientDependencies(Container c, User u)
     {
-        // allow other modules to register with EHR service, and include their dependencies automatically
-        // whenever EHR context is requested
+        // allow other modules to register with EHR service, and include them when the module is turned on
         LinkedHashSet<ClientDependency> ret = new LinkedHashSet<ClientDependency>();
         ret.addAll(_clientDependencies);
-
-        for (Module m : EHRService.get().getRegisteredModules())
-        {
-            if (c.getActiveModules().contains(m))
-                ret.addAll(m.getClientDependencies(c, u));
-        }
+        ret.addAll(EHRService.get().getRegisteredClientDependencies(c, u));
 
         return ret;
     }

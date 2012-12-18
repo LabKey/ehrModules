@@ -102,8 +102,19 @@ EHR.Server.Triggers.init = function(event, errors){
 
     EHR.Server.Security.init(this.scriptContext);
 
+    var handlers = [];
     if(this.onInit)
-        this.onInit.call(this, event, this.scriptContext);
+        handlers.push(this.onInit);
+
+    var initHandlers = EHR.Server.TriggerManager.getHandlersForQuery(EHR.Server.TriggerManager.Events.INIT, this.scriptContext.schemaName, this.scriptContext.queryName, true) || [];
+    if(initHandlers.length)
+        handlers = handlers.concat(initHandlers);
+
+    if (handlers.length){
+        for (var i=0;i<initHandlers.length;i++){
+            handlers[i].call(this, event, this.scriptContext);
+        }
+    }
 }
 exports.init = EHR.Server.Triggers.init;
 
@@ -158,10 +169,26 @@ EHR.Server.Triggers.beforeInsert = function(row, errors){
     }
 
     //dataset-specific beforeInsert
+    var handlers = [];
     if(this.onUpsert)
-        this.onUpsert(this.scriptContext, scriptErrors, row);
+        handlers.push(this.onUpsert);
+
+    var upsertHandlers = EHR.Server.TriggerManager.getHandlersForQuery(EHR.Server.TriggerManager.Events.BEFORE_UPSERT, this.scriptContext.schemaName, this.scriptContext.queryName, true) || [];
+    if (upsertHandlers.length)
+        handlers = handlers.concat(upsertHandlers);
+
     if(this.onInsert)
-        this.onInsert(this.scriptContext, scriptErrors, row);
+        handlers.push(this.onInsert);
+
+    var insertHandlers = EHR.Server.TriggerManager.getHandlersForQuery(EHR.Server.TriggerManager.Events.BEFORE_INSERT, this.scriptContext.schemaName, this.scriptContext.queryName, true) || [];
+    if (insertHandlers.length)
+        handlers = handlers.concat(insertHandlers);
+
+    if (handlers.length){
+        for (var i=0;i<handlers.length;i++){
+            handlers[i].call(this, this.scriptContext, scriptErrors, row);
+        }
+    }
 
     EHR.Server.Triggers.rowEnd.call(this, errors, scriptErrors, row, null);
 }
@@ -186,10 +213,26 @@ EHR.Server.Triggers.afterInsert = function(row, errors){
 
     EHR.Server.Triggers.afterEvent.call(this, 'insert', errors, row, null);
 
+    var handlers = [];
     if(this.onAfterUpsert)
-        this.onAfterUpsert(this.scriptContext, errors, row);
+        handlers.push(this.onAfterUpsert);
+
+    var upsertHandlers = EHR.Server.TriggerManager.getHandlersForQuery(EHR.Server.TriggerManager.Events.AFTER_UPSERT, this.scriptContext.schemaName, this.scriptContext.queryName, true) || [];
+    if (upsertHandlers.length)
+        handlers = handlers.concat(upsertHandlers);
+
     if(this.onAfterInsert)
-        this.onAfterInsert(this.scriptContext, errors, row);
+        handlers.push(this.onAfterInsert);
+
+    var insertHandlers = EHR.Server.TriggerManager.getHandlersForQuery(EHR.Server.TriggerManager.Events.AFTER_INSERT, this.scriptContext.schemaName, this.scriptContext.queryName, true) || [];
+    if (insertHandlers.length)
+        handlers = handlers.concat(insertHandlers);
+
+    if (handlers.length){
+        for (var i=0;i<handlers.length;i++){
+            handlers[i].call(this, this.scriptContext, errors, row);
+        }
+    }
 }
 exports.afterInsert = EHR.Server.Triggers.afterInsert;
 
@@ -224,10 +267,26 @@ EHR.Server.Triggers.beforeUpdate = function(row, oldRow, errors){
     EHR.Server.Triggers.rowInit.call(this, scriptErrors, row, oldRow);
 
     //dataset-specific beforeUpdate
+    var handlers = [];
     if(this.onUpsert)
-        this.onUpsert(this.scriptContext, scriptErrors, row, oldRow);
+        handlers.push(this.onUpsert);
+
+    var upsertHandlers = EHR.Server.TriggerManager.getHandlersForQuery(EHR.Server.TriggerManager.Events.BEFORE_UPSERT, this.scriptContext.schemaName, this.scriptContext.queryName, true) || [];
+    if (upsertHandlers.length)
+        handlers = handlers.concat(upsertHandlers);
+
     if(this.onUpdate)
-        this.onUpdate(this.scriptContext, scriptErrors, row, oldRow);
+        handlers.push(this.onUpdate);
+
+    var insertHandlers = EHR.Server.TriggerManager.getHandlersForQuery(EHR.Server.TriggerManager.Events.BEFORE_UPDATE, this.scriptContext.schemaName, this.scriptContext.queryName, true) || [];
+    if (insertHandlers.length)
+        handlers = handlers.concat(insertHandlers);
+
+    if (handlers.length){
+        for (var i=0;i<handlers.length;i++){
+            handlers[i].call(this, this.scriptContext, scriptErrors, row, oldRow);
+        }
+    }
 
     EHR.Server.Triggers.rowEnd.call(this, errors, scriptErrors, row, oldRow);
 
@@ -261,10 +320,27 @@ EHR.Server.Triggers.afterUpdate = function(row, oldRow, errors){
 
     EHR.Server.Triggers.afterEvent.call(this, 'update', errors, row, oldRow);
 
+    //table-specific handlers
+    var handlers = [];
     if(this.onAfterUpsert)
-        this.onAfterUpsert(this.scriptContext, errors, row, oldRow);
+        handlers.push(this.onAfterUpsert);
+
+    var afterUpsertHandlers = EHR.Server.TriggerManager.getHandlersForQuery(EHR.Server.TriggerManager.Events.AFTER_UPSERT, this.scriptContext.schemaName, this.scriptContext.queryName, true) || [];
+    if (afterUpsertHandlers.length)
+        handlers = handlers.concat(afterUpsertHandlers);
+
     if(this.onAfterUpdate)
-        this.onAfterUpdate(this.scriptContext, errors, row, oldRow);
+        handlers.push(this.onAfterUpdate);
+
+    var afterUpdateHandlers = EHR.Server.TriggerManager.getHandlersForQuery(EHR.Server.TriggerManager.Events.AFTER_UPDATE, this.scriptContext.schemaName, this.scriptContext.queryName, true) || [];
+    if (afterUpdateHandlers.length)
+        handlers = handlers.concat(afterUpdateHandlers);
+
+    if (handlers && handlers.length){
+        for (var i=0;i<handlers.length;i++){
+            handlers[i].call(this, this.scriptContext, errors, row, oldRow);
+        }
+    }
 }
 exports.afterUpdate = EHR.Server.Triggers.afterUpdate;
 
@@ -289,8 +365,16 @@ EHR.Server.Triggers.beforeDelete = function(row, errors){
         return;
     }
 
+    //table-specific handlers
+    var handlers = EHR.Server.TriggerManager.getHandlersForQuery(EHR.Server.TriggerManager.Events.BEFORE_DELETE, this.scriptContext.schemaName, this.scriptContext.queryName, true) || [];
     if(this.onDelete)
-        this.onDelete(errors, this.scriptContext, row);
+        handlers.unshift(this.onDelete);
+
+    if (handlers && handlers.length){
+        for (var i=0;i<handlers.length;i++){
+            handlers[i].call(this, errors, this.scriptContext, row);
+        }
+    }
 }
 exports.beforeDelete = EHR.Server.Triggers.beforeDelete;
 
@@ -309,8 +393,19 @@ exports.beforeDelete = EHR.Server.Triggers.beforeDelete;
 EHR.Server.Triggers.afterDelete = function(row, errors){
     EHR.Server.Triggers.afterEvent.call(this, 'delete', errors, row, null);
 
-    if(this.scriptContext.extraContext.dataSource != 'etl' && this.onAfterDelete)
-        this.onAfterDelete(this.scriptContext, errors, row);
+    //table-specific handlers
+    if(this.scriptContext.extraContext.dataSource != 'etl'){
+        var handlers = EHR.Server.TriggerManager.getHandlersForQuery(EHR.Server.TriggerManager.Events.AFTER_DELETE, this.scriptContext.schemaName, this.scriptContext.queryName, true) || [];
+
+        if(this.onAfterDelete)
+            handlers.unshift(this.onAfterDelete);
+
+        if (handlers && handlers.length){
+            for (var i=0;i<handlers.length;i++){
+                handlers[i].call(this, this.scriptContext, errors, row);
+            }
+        }
+    }
 }
 exports.afterDelete = EHR.Server.Triggers.afterDelete;
 
@@ -333,8 +428,16 @@ EHR.Server.Triggers.complete = function(event, errors) {
         console.log('PKs modified: '+this.scriptContext.PKsModified);
     }
 
+    var handlers = EHR.Server.TriggerManager.getHandlersForQuery(EHR.Server.TriggerManager.Events.COMPLETE, this.scriptContext.schemaName, this.scriptContext.queryName, true) || [];
+
     if(this.onComplete)
-        this.onComplete(event, errors, this.scriptContext);
+        handlers.unshift(this.onComplete);
+
+    if (handlers && handlers.length){
+        for (var i=0;i<handlers.length;i++){
+            handlers[i].call(this, event, errors, this.scriptContext);
+        }
+    }
 
     //send emails. query notificationRecipients table based on notification type(s)
     if(this.scriptContext.notificationTypes){

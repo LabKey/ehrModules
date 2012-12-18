@@ -1,5 +1,5 @@
 <ns:tables xmlns:ns="http://labkey.org/data/xml">
-    <!--TODO: should depreciate-->
+    <!--TODO: should deprecate-->
     <ns:table tableName="module_properties" tableDbType="TABLE">
         <ns:pkColumnName>rowid</ns:pkColumnName>
         <ns:columns>
@@ -113,6 +113,15 @@
             </ns:column>
             <ns:column columnName="title">
                 <ns:nullable>false</ns:nullable>
+            </ns:column>
+            <ns:column columnName="billingtype">
+                <ns:columnTitle>Billing Type</ns:columnTitle>
+                <ns:isHidden>true</ns:isHidden>
+                <ns:fk>
+                    <ns:fkDbSchema>ehr_lookups</ns:fkDbSchema>
+                    <ns:fkTable>billingtypes</ns:fkTable>
+                    <ns:fkColumnName>name</ns:fkColumnName>
+                </ns:fk>
             </ns:column>
             <ns:column columnName="formtype">
                 <ns:nullable>true</ns:nullable>
@@ -914,6 +923,10 @@
             <ns:column columnName="inves">
                 <ns:nullable>true</ns:nullable>
             </ns:column>
+            <ns:column columnName="investigatorId">
+                <ns:columnTitle>Investigator</ns:columnTitle>
+                <ns:isHidden>true</ns:isHidden>
+            </ns:column>
             <ns:column columnName="approve">
                 <ns:columnTitle>Approval Date</ns:columnTitle>
                 <ns:nullable>true</ns:nullable>
@@ -993,6 +1006,10 @@
             <ns:column columnName="project">
                 <ns:isKeyField>true</ns:isKeyField>
             </ns:column>
+            <ns:column columnName="name">
+                <ns:columnTitle>Project</ns:columnTitle>
+                <ns:isHidden>true</ns:isHidden>
+            </ns:column>
             <ns:column columnName="protocol">
             </ns:column>
             <ns:column columnName="account">
@@ -1001,6 +1018,10 @@
             <ns:column columnName="inves">
                 <ns:nullable>true</ns:nullable>
                 <ns:columnTitle>Investigator</ns:columnTitle>
+            </ns:column>
+            <ns:column columnName="investigatorId">
+                <ns:columnTitle>Investigator</ns:columnTitle>
+                <ns:isHidden>true</ns:isHidden>
             </ns:column>
             <ns:column columnName="inves2">
                 <ns:nullable>true</ns:nullable>
@@ -1389,58 +1410,6 @@
             <ns:column columnName="allowFutureDates">
                 <ns:nullable>true</ns:nullable>
             </ns:column>
-        </ns:columns>
-    </ns:table>
-    <ns:table tableName="accounts" tableDbType="TABLE">
-        <ns:auditLogging>DETAILED</ns:auditLogging>
-        <ns:importUrl></ns:importUrl>
-        <ns:insertUrl></ns:insertUrl>
-        <ns:updateUrl></ns:updateUrl>
-        <ns:deleteUrl></ns:deleteUrl>
-        <ns:columns>
-            <ns:column columnName="account"/>
-            <ns:column columnName="grant"/>
-            <ns:column columnName="investigator"/>
-            <ns:column columnName="startdate"/>
-            <ns:column columnName="enddate"/>
-            <ns:column columnName="active"/>
-            <ns:column columnName="fiscalAuthority"/>
-            <ns:column columnName="externalid"/>
-            <ns:column columnName="comment"/>
-            <ns:column columnName="tier"/>
-            <ns:column columnName="objectid"/>
-            <ns:column columnName="createdby"/>
-            <ns:column columnName="created"/>
-            <ns:column columnName="modifiedby"/>
-            <ns:column columnName="modified"/>
-        </ns:columns>
-    </ns:table>
-    <ns:table tableName="investigators" tableDbType="TABLE">
-        <ns:auditLogging>DETAILED</ns:auditLogging>
-        <ns:importUrl></ns:importUrl>
-        <ns:insertUrl></ns:insertUrl>
-        <ns:updateUrl></ns:updateUrl>
-        <ns:deleteUrl></ns:deleteUrl>
-        <ns:columns>
-            <ns:column columnName="rowid"/>
-            <ns:column columnName="firstname"/>
-            <ns:column columnName="lastname"/>
-            <ns:column columnName="position"/>
-            <ns:column columnName="address"/>
-            <ns:column columnName="city"/>
-            <ns:column columnName="state"/>
-            <ns:column columnName="country"/>
-            <ns:column columnName="zip"/>
-            <ns:column columnName="phonenumber"/>
-            <ns:column columnName="investigatortype"/>
-            <ns:column columnName="emailaddress"/>
-            <ns:column columnName="datecreated"/>
-            <ns:column columnName="datedisabled"/>
-            <ns:column columnName="division"/>
-            <ns:column columnName="createdby"/>
-            <ns:column columnName="created"/>
-            <ns:column columnName="modifiedby"/>
-            <ns:column columnName="modified"/>
         </ns:columns>
     </ns:table>
     <ns:table tableName="encounter_participants" tableDbType="TABLE">
