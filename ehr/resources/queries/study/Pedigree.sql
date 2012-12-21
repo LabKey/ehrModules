@@ -32,12 +32,12 @@ END
 -- , INTEGER)
 AS gender,
 d.gender as gender_code,
-CASE (d.status)
-  WHEN 'alive' THEN 0
+CASE (d.calculated_status)
+  WHEN 'Alive' THEN 0
   ELSE 1
 END
 AS status,
-d.status as status_code,
+d.calculated_status as status_code,
 'Demographics' as source
 
 --d.qcstate

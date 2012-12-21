@@ -856,6 +856,7 @@ ehr/resources/views/moreReports.view.xml -text
 ehr/resources/views/necropsyDetails.html -text
 ehr/resources/views/necropsyDetails.view.xml -text
 ehr/resources/views/participantView.html -text
+ehr/resources/views/participantView.view.xml -text
 ehr/resources/views/populateInitialData.html -text
 ehr/resources/views/populateInitialData.view.xml -text
 ehr/resources/views/populationOverview.html -text
@@ -1008,5 +1009,4 @@ ehr/src/org/labkey/ehr/utils/EHRQCState.java -text
 ehr/src/org/labkey/ehr/utils/FormContext.java -text
 ehr/src/org/labkey/ehr/utils/TriggerScriptHelper.java -text
 ehr/src/org/labkey/ehr/view/notificationAdmin.jsp -text
-ehr/tools/modifyPropertyDescriptors/modifyPropertyDescriptors.pl -text
 ehr/webapp/WEB-INF/ehr/ehrContext.xml -text

@@ -269,8 +269,8 @@ public class EHRController extends SpringActionController
     {
         public ApiResponse execute(Object form, BindException errors) throws Exception
         {
-            new KinshipRunnable().run();
-            return null;
+            boolean result = new KinshipRunnable().run(getContainer());
+            return new ApiSimpleResponse("success", result);
         }
     }
 

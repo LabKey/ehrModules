@@ -306,7 +306,7 @@ public class EHRManager
                     messages.add("Non-demographics datasets that are not using objectId as a managed key: " + total);
             }
 
-            String[] toIndex = new String[]{"objectid"};
+            String[] toIndex = new String[]{"objectid", "taskid", "parentid", "requestid"};
             DbSchema schema = DbSchema.get("studydataset");
             Set<String> distinctIndexes = new HashSet<String>();
             for (DataSet d : study.getDataSets())

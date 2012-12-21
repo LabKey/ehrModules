@@ -2,6 +2,7 @@
   <metadata>
         <tables xmlns="http://labkey.org/data/xml">
             <table tableName="StudyData" tableDbType="TABLE">
+                <javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</javaCustomizer>
                 <pkColumnName>lsid</pkColumnName>
                 <columns>
                     <column columnName="lsid">
@@ -10,6 +11,7 @@
                     </column>
                     <column columnName="Id">
                         <facetingBehavior>ALWAYS_OFF</facetingBehavior>
+                        <url>/ehr/participantView.view?participantId=${id}</url>
                     </column>
                     <column columnName="remark">
                         <isHidden>false</isHidden>

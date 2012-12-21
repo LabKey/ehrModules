@@ -695,9 +695,9 @@ Ext4.define('EHR.ext.SingleAnimalReport', {
             var parentTab = this.down('#tabPanel').down('#General');
             this.down('#tabPanel').setActiveTab(parentTab);
 
-            this.activeReport = parentTab.down('#abstract');
-            parentTab.setActiveTab(this.activeReport);
-            parentTab.fireEvent('tabchange', parentTab, this.activeReport)
+            //this.activeReport = parentTab.down('#abstract');
+            //parentTab.setActiveTab(this.activeReport);
+            //parentTab.fireEvent('tabchange', parentTab, this.activeReport)
         }
         else {
             this.loadTab(this.activeReport);
@@ -1099,7 +1099,7 @@ Ext4.define('EHR.ext.SingleAnimalReport', {
                 this.onSubmit();
         }
         else {
-            this.silentlySetActiveTab(tabPanel.down('#General').down('#abstract'));
+            //this.silentlySetActiveTab(tabPanel.down('#General').down('#abstract'));
         }
 
         //populate initial fields

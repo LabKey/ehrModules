@@ -28,7 +28,7 @@
                     <property name="protocolName" value="Kinship" />
                     <property name="protocolFactoryName" value="kinship"/>
                     <property name="defaultDisplayState" value="disabled"/>
-                    <!--<property name="initialInputExt" ref="rFileType" />-->
+                    <!--<property name="initialInputExt" ref="kinshipFileType" />-->
                     <property name="taskProgressionSpec">
                         <list>
                             <value type="java.lang.Class">org.labkey.ehr.pipeline.KinshipInitTask</value>
@@ -89,13 +89,8 @@
         <!--</property>-->
     <!--</bean>-->
 
-    <bean id="rFileType" class="org.labkey.api.util.FileType">
-        <constructor-arg>
-            <list>
-                <value>.r</value>
-            </list>
-        </constructor-arg>
-        <constructor-arg value=".r"/>
+    <bean id="kinshipFileType" class="org.labkey.api.util.FileType">
+        <constructor-arg value="kinship.txt"/>
     </bean>
 
     <!--<bean id="kinshipFileType" class="org.labkey.api.util.FileType">-->

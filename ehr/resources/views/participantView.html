@@ -1,12 +1,61 @@
-<script type="text/javascript">
-    LABKEY.requiresExt4ClientAPI();
-    LABKEY.requiresScript("/ldk/LDKApi.js");
-    LABKEY.requiresScript("/ehr/ehrAPI.js");
-    LABKEY.requiresScript("/ehr/participantView.js");
-</script>
+<!--<script type="text/javascript">-->
+    <!--LABKEY.requiresExt4ClientAPI();-->
+    <!--LABKEY.requiresScript("/ldk/LDKApi.js");-->
+    <!--LABKEY.requiresScript("/ehr/ehrAPI.js");-->
+    <!--LABKEY.requiresScript("/ehr/participantView.js");-->
+<!--</script>-->
 <script type="text/javascript">
     Ext4.onReady(function (){
-        EHR.ext.generateParticipantView('ehr-participantview');
+        var webpart = <%=webpartContext%>;
+
+        /* get the participant id from the request URL: this parameter is required. */
+        var participantId = LABKEY.ActionURL.getParameter('participantId');
+
+        if (!participantId){alert('Must Provide Id'); return false;}
+
+        Ext4.define('EHR.ext.ParticipantDetailsPanel', {
+            extend: 'EHR.ext.SingleAnimalReport',
+            renderTo: webpart.wrapperDivId,
+
+            initComponent: function(){
+                this.callParent();
+
+                this.down('#submitBtn').hidden = true;
+            },
+
+            getFilterOptionsItems: function(){
+                return [{
+                    xtype: 'radiogroup',
+                    itemId: 'inputType',
+                    hidden: true,
+                    items: [{
+                        xtype: 'radio',
+                        name: 'selector',
+                        inputValue: 'renderSingleSubject',
+                        checked: true
+                    }]
+                }];
+            },
+
+            renderSingleSubject: function(){
+                var target = this.down('#filterPanel');
+                target.removeAll();
+
+                target.add({
+                    xtype: 'panel',
+                    hidden: true,
+                    items: [{
+                        xtype: 'textfield',
+                        name: 'subjectBox',
+                        width: 165,
+                        itemId: 'subjArea',
+                        value: participantId
+                    }]
+                });
+            }
+        });
+
+        Ext4.create('EHR.ext.ParticipantDetailsPanel');
     });
 </script>
 <div id="ehr-participantview"></div>
