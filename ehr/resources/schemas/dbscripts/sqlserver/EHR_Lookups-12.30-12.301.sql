@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2012 LabKey Corporation
+ *
+ * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
+ */
 CREATE TABLE ehr_lookups.procedure_default_comments (
   rowid int identity(1,1),
   procedureid int,
