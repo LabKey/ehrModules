@@ -17,6 +17,7 @@ package org.labkey.ehr.notification;
 
 import org.labkey.api.action.NullSafeBindException;
 import org.labkey.api.data.CompareType;
+import org.labkey.api.data.Container;
 import org.labkey.api.data.Results;
 import org.labkey.api.data.RuntimeSQLException;
 import org.labkey.api.data.SimpleFilter;
@@ -34,6 +35,7 @@ import org.labkey.api.query.QueryView;
 import org.labkey.api.query.UserSchema;
 import org.labkey.api.query.snapshot.QuerySnapshotDefinition;
 import org.labkey.api.query.snapshot.QuerySnapshotForm;
+import org.labkey.api.security.User;
 import org.labkey.api.settings.AppProps;
 import org.labkey.api.util.ResultSetUtil;
 import org.springframework.beans.MutablePropertyValues;
@@ -51,8 +53,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Created by IntelliJ IDEA.
@@ -60,7 +60,7 @@ import java.util.concurrent.TimeUnit;
  * Date: 7/14/12
  * Time: 3:16 PM
  */
-public class ColonyAlertsNotification extends AbstractNotification
+public class ColonyAlertsNotification extends AbstractEHRNotification
 {
     public String getName()
     {
@@ -72,16 +72,16 @@ public class ColonyAlertsNotification extends AbstractNotification
         return "Daily Colony Alerts: " + _dateTimeFormat.format(new Date());
     }
 
-    public List<ScheduledFuture> schedule(int delay)
+    @Override
+    public String getCronString()
     {
-        List<ScheduledFuture> tasks = new ArrayList<ScheduledFuture>();
-        tasks.add(NotificationService.get().getExecutor().scheduleWithFixedDelay(this, delay, 60, TimeUnit.MINUTES));
-        return tasks;
+        return "0 0 6 * * ?";
     }
 
+    @Override
     public String getScheduleDescription()
     {
-        return "every 60 minutes";
+        return "every day at 6AM";
     }
 
     public Set<String> getNotificationTypes()
@@ -94,7 +94,7 @@ public class ColonyAlertsNotification extends AbstractNotification
         return "The report is designed to identify potential problems with the colony, primarily related to weights, housing and assignments.";
     }
 
-    public String getMessage()
+    public String getMessage(final Container c, User u)
     {
         final StringBuilder msg = new StringBuilder();
 
@@ -102,58 +102,58 @@ public class ColonyAlertsNotification extends AbstractNotification
         Date now = new Date();
         msg.append("This email contains a series of automatic alerts about the colony.  It was run on: " + _dateFormat.format(now) + " at " + _timeFormat.format(now) + ".<p>");
 
-        livingAnimalsWithoutWeight(msg);
-        cagesWithoutDimensions(msg);
-        findAnimalsInPC(msg);
-        multipleHousingRecords(msg);
-        validateActiveHousing(msg);
-        housingConditionProblems(msg);
-        deadAnimalsWithActiveHousing(msg);
-        livingAnimalsWithoutHousing(msg);
-        calculatedStatusFieldProblems(msg);
-        animalsLackingAssignments(msg);
-        deadAnimalsWithActiveAssignments(msg);
-        assignmentsWithoutValidProtocol(msg);
-        duplicateAssignments(msg);
-        sivPosNotExempt(msg);
-        activeTreatmentsForDeadAnimals(msg);
-        activeProblemsForDeadAnimals(msg);
-        activeAssignmentsForDeadAnimals(msg);
-        nonContiguousHousing(msg);
-        birthWithoutGender(msg);
-        demographicsWithoutGender(msg);
-        prenatalRecordsWithoutGender(msg);
-        prenatalRecordsWithoutSpecies(msg);
-        deathWeightCheck(msg);
-        tbRecords30_90(msg);
-        protocolsNearingLimit(msg);
-        protocolsExpiringSoon(msg);
-        birthRecordsWithoutDemographics(msg);
-        deathRecordsWithoutDemographics(msg);
-        animalsWithHoldCodesNotOnPending(msg);
-        assignmentsProjectedToday(msg);
-        assignmentsProjectedTomorrow(msg);
+        livingAnimalsWithoutWeight(c, u, msg);
+        cagesWithoutDimensions(c, u, msg);
+        findAnimalsInPC(c, u, msg);
+        multipleHousingRecords(c, u, msg);
+        validateActiveHousing(c, u, msg);
+        housingConditionProblems(c, u, msg);
+        deadAnimalsWithActiveHousing(c, u, msg);
+        livingAnimalsWithoutHousing(c, u, msg);
+        calculatedStatusFieldProblems(c, u, msg);
+        animalsLackingAssignments(c, u, msg);
+        deadAnimalsWithActiveAssignments(c, u, msg);
+        assignmentsWithoutValidProtocol(c, u, msg);
+        duplicateAssignments(c, u, msg);
+        sivPosNotExempt(c, u, msg);
+        activeTreatmentsForDeadAnimals(c, u, msg);
+        activeProblemsForDeadAnimals(c, u, msg);
+        activeAssignmentsForDeadAnimals(c, u, msg);
+        nonContiguousHousing(c, u, msg);
+        birthWithoutGender(c, u, msg);
+        demographicsWithoutGender(c, u, msg);
+        prenatalRecordsWithoutGender(c, u, msg);
+        prenatalRecordsWithoutSpecies(c, u, msg);
+        deathWeightCheck(c, u, msg);
+        tbRecords30_90(c, u, msg);
+        protocolsNearingLimit(c, u, msg);
+        protocolsExpiringSoon(c, u, msg);
+        birthRecordsWithoutDemographics(c, u, msg);
+        deathRecordsWithoutDemographics(c, u, msg);
+        animalsWithHoldCodesNotOnPending(c, u, msg);
+        assignmentsProjectedToday(c, u, msg);
+        assignmentsProjectedTomorrow(c, u, msg);
 
         //summarize events in last 5 days:
         msg.append("<b>Colony events in the past 5 days:</b><p>");
-        birthsInLast5Days(msg);
-        deathsInLast5Days(msg);
-        prenatalDeathsPast5Days(msg);
-        finalizedRecordsWithFutureDates(msg);
+        birthsInLast5Days(c, u, msg);
+        deathsInLast5Days(c, u, msg);
+        prenatalDeathsPast5Days(c, u, msg);
+        finalizedRecordsWithFutureDates(c, u, msg);
 
         return msg.toString();
     }
     
-    protected void findAnimalsInPC(final StringBuilder msg)
+    protected void findAnimalsInPC(final Container c, User u, final StringBuilder msg)
     {
         //then we list all animals in pc
-        TableInfo housingTable = _studySchema.getTable("Housing");
+        TableInfo housingTable = getStudySchema(c, u).getTable("Housing");
         SimpleFilter filter = new SimpleFilter(FieldKey.fromString("Id/Dataset/Demographics/calculated_status"), "Alive");
         filter.addCondition(FieldKey.fromString("cond"), "pc");
         filter.addCondition(FieldKey.fromString("enddate"), null, CompareType.ISBLANK);
-        Sort sort = new Sort(_ehrStudy.getSubjectColumnName());
+        Sort sort = new Sort(getStudy(c).getSubjectColumnName());
 
-        TableSelector ts = new TableSelector(housingTable, Collections.singleton(_ehrStudy.getSubjectColumnName()), filter, sort);
+        TableSelector ts = new TableSelector(housingTable, Collections.singleton(getStudy(c).getSubjectColumnName()), filter, sort);
         if (ts.getRowCount() > 0)
         {
             StringBuilder tempHtml = new StringBuilder();
@@ -204,9 +204,9 @@ public class ColonyAlertsNotification extends AbstractNotification
     /**
      * Finds all occupied cages without dimensions
      */
-    protected void cagesWithoutDimensions(final StringBuilder msg)
+    protected void cagesWithoutDimensions(final Container c, User u, final StringBuilder msg)
     {
-        TableSelector ts = new TableSelector(_ehrSchema.getTable("missingCages"), Table.ALL_COLUMNS, null, null);
+        TableSelector ts = new TableSelector(getEHRSchema(c, u).getTable("missingCages"), Table.ALL_COLUMNS, null, null);
         if (ts.getRowCount() > 0)
         {
             msg.append("<b>WARNING: The following cages have animals, but do not have known dimensions:</b><br>\n");
@@ -224,19 +224,19 @@ public class ColonyAlertsNotification extends AbstractNotification
 
     }
 
-    protected void livingAnimalsWithoutWeight(final StringBuilder msg)
+    protected void livingAnimalsWithoutWeight(final Container c, User u, final StringBuilder msg)
     {
         SimpleFilter filter = new SimpleFilter(FieldKey.fromString("calculated_status"), "Alive");
         filter.addCondition(FieldKey.fromString("Id/MostRecentWeight/MostRecentWeightDate"), null, CompareType.ISBLANK);
-        Sort sort = new Sort(_ehrStudy.getSubjectColumnName());
-        TableSelector ts = new TableSelector(_studySchema.getTable("Demographics"), Collections.singleton(_ehrStudy.getSubjectColumnName()), filter, sort);
+        Sort sort = new Sort(getStudy(c).getSubjectColumnName());
+        TableSelector ts = new TableSelector(getStudySchema(c, u).getTable("Demographics"), Collections.singleton(getStudy(c).getSubjectColumnName()), filter, sort);
         if (ts.getRowCount() > 0)
         {
             msg.append("<b>WARNING: The following animals do not have a weight:</b><br>\n");
             ts.forEach(new TableSelector.ForEachBlock<ResultSet>(){
                 public void exec(ResultSet rs) throws SQLException
                 {
-                    msg.append(rs.getString(_ehrStudy.getSubjectColumnName()) + "<br>\n");
+                    msg.append(rs.getString(getStudy(c).getSubjectColumnName()) + "<br>\n");
                 }
             });
 
@@ -245,21 +245,21 @@ public class ColonyAlertsNotification extends AbstractNotification
         }
     }
 
-    protected void multipleHousingRecords(final StringBuilder msg)
+    protected void multipleHousingRecords(final Container c, User u, final StringBuilder msg)
     {
         //then we find all living animals with multiple active housing records:
-        Sort sort = new Sort(_ehrStudy.getSubjectColumnName());
-        TableSelector ts = new TableSelector(_studySchema.getTable("housingProblems"), Table.ALL_COLUMNS, null, sort);
+        Sort sort = new Sort(getStudy(c).getSubjectColumnName());
+        TableSelector ts = new TableSelector(getStudySchema(c, u).getTable("housingProblems"), Table.ALL_COLUMNS, null, sort);
         if (ts.getRowCount() > 0)
         {
             msg.append("<b>WARNING: There are " + ts.getRowCount() + " animals with multiple active housing records:</b><br>\n");
             msg.append("<p><a href='" + _baseUrl + "/executeQuery.view?schemaName=study&query.queryName=housingProblems'>Click here to view these animals</a></p>\n");
-            msg.append("<a href='" + AppProps.getInstance().getBaseServerUrl() + AppProps.getInstance().getContextPath() + "/ehr" + _ehrContainer.getPath() + "/updateQuery.view?schemaName=study&query.queryName=Housing&query.Id~in=");
+            msg.append("<a href='" + AppProps.getInstance().getBaseServerUrl() + AppProps.getInstance().getContextPath() + "/ehr" + c.getPath() + "/updateQuery.view?schemaName=study&query.queryName=Housing&query.Id~in=");
 
             ts.forEach(new TableSelector.ForEachBlock<ResultSet>(){
                 public void exec(ResultSet rs) throws SQLException
                 {
-                    msg.append(rs.getString(_ehrStudy.getSubjectColumnName()) + ";");
+                    msg.append(rs.getString(getStudy(c).getSubjectColumnName()) + ";");
                 }
             });
 
@@ -268,10 +268,10 @@ public class ColonyAlertsNotification extends AbstractNotification
         }
     }
 
-    protected void validateActiveHousing(final StringBuilder msg)
+    protected void validateActiveHousing(final Container c, User u, final StringBuilder msg)
     {
-        Sort sort = new Sort(_ehrStudy.getSubjectColumnName());
-        TableSelector ts = new TableSelector(_studySchema.getTable("ValidateHousingSnapshot"), Table.ALL_COLUMNS, null, sort);
+        Sort sort = new Sort(getStudy(c).getSubjectColumnName());
+        TableSelector ts = new TableSelector(getStudySchema(c, u).getTable("ValidateHousingSnapshot"), Table.ALL_COLUMNS, null, sort);
         if (ts.getRowCount() > 0)
         {
             msg.append("<b>WARNING: There are " + ts.getRowCount() + " animals where the housing snapshot doesnt match the housing table.  The snapshot has been automatically refreshed:</b><br>\n");
@@ -280,13 +280,13 @@ public class ColonyAlertsNotification extends AbstractNotification
 
             try
             {
-                QueryDefinition queryDef = QueryService.get().createQueryDefForTable(_ehrSchema, "ActiveHousing");
+                QueryDefinition queryDef = QueryService.get().createQueryDefForTable(getEHRSchema(c, u), "ActiveHousing");
                 if (queryDef == null)
                     return;
 
-                QuerySnapshotDefinition qsDef = QueryService.get().getSnapshotDef(_ehrStudy.getContainer(), _ehrSchema.getSchemaName(), "ActiveHousing");
+                QuerySnapshotDefinition qsDef = QueryService.get().getSnapshotDef(getStudy(c).getContainer(), getEHRSchema(c, u).getSchemaName(), "ActiveHousing");
                 QuerySnapshotForm form = new QuerySnapshotForm();
-                form.setSchemaName(_ehrSchema.getPath());
+                form.setSchemaName(getEHRSchema(c, u).getPath());
                 form.setQueryName("ActiveHousing");
 
                 //TODO: update snapshot
@@ -300,16 +300,16 @@ public class ColonyAlertsNotification extends AbstractNotification
         }
     }
 
-    protected void housingConditionProblems(final StringBuilder msg)
+    protected void housingConditionProblems(final Container c, User u, final StringBuilder msg)
     {
         //then we find all records with potential housing condition problems
         MutablePropertyValues mpv = new MutablePropertyValues();
         mpv.addPropertyValue("schemaName", "study");
         mpv.addPropertyValue("query.queryName", "housingConditionProblems");
-        mpv.addPropertyValue("query.sort", _ehrStudy.getSubjectColumnName());
+        mpv.addPropertyValue("query.sort", getStudy(c).getSubjectColumnName());
 
         BindException errors = new NullSafeBindException(new Object(), "command");
-        UserSchema us = QueryService.get().getUserSchema(_ns.getUser(), _ehrContainer, "study");
+        UserSchema us = QueryService.get().getUserSchema(u, c, "study");
         QuerySettings qs = us.getSettings(mpv, "query");
         SimpleFilter filter = new SimpleFilter(FieldKey.fromString("conditionStatus"), "ERROR", CompareType.EQUAL);
         qs.setBaseFilter(filter);
@@ -324,14 +324,14 @@ public class ColonyAlertsNotification extends AbstractNotification
                 StringBuilder tmp = new StringBuilder();
                 do
                 {
-                    tmp.append(rs.getString(_ehrStudy.getSubjectColumnName()) + ";");
+                    tmp.append(rs.getString(getStudy(c).getSubjectColumnName()) + ";");
                     total++;
                 }
                 while (rs.next());
 
                 msg.append("<b>WARNING: There are " + total + " housing records with potential condition problems:</b><br>\n");
                 msg.append("<p><a href='" + _baseUrl + "/executeQuery.view?schemaName=study&query.queryName=housingConditionProblems&query.viewName=Problems'>Click here to view these records</a></p>\n");
-                msg.append("<a href='" + AppProps.getInstance().getBaseServerUrl() + AppProps.getInstance().getContextPath() + "/ehr" + _ehrContainer.getPath() + "/updateQuery.view?schemaName=study&query.queryName=Housing&query.Id~in=");
+                msg.append("<a href='" + AppProps.getInstance().getBaseServerUrl() + AppProps.getInstance().getContextPath() + "/ehr" + c.getPath() + "/updateQuery.view?schemaName=study&query.queryName=Housing&query.Id~in=");
                 msg.append(tmp);
                 msg.append("&query.enddate~isblank'>Click here to edit housing to fix the problems</a><p>");
                 msg.append("<hr>\n");
@@ -351,13 +351,13 @@ public class ColonyAlertsNotification extends AbstractNotification
         }
     }
 
-    protected void deadAnimalsWithActiveHousing(final StringBuilder msg)
+    protected void deadAnimalsWithActiveHousing(final Container c, User u, final StringBuilder msg)
     {
         //we find open housing records where the animal is not alive
-        Sort sort = new Sort(_ehrStudy.getSubjectColumnName());
+        Sort sort = new Sort(getStudy(c).getSubjectColumnName());
         SimpleFilter filter = new SimpleFilter(FieldKey.fromString("Id/Dataset/Demographics/calculated_status"), "Alive", CompareType.NEQ_OR_NULL);
         filter.addCondition(FieldKey.fromString("enddate"), null, CompareType.ISBLANK);
-        TableSelector ts = new TableSelector(_studySchema.getTable("Housing"), Table.ALL_COLUMNS, filter, sort);
+        TableSelector ts = new TableSelector(getStudySchema(c, u).getTable("Housing"), Table.ALL_COLUMNS, filter, sort);
 
         if (ts.getRowCount() > 0)
         {
@@ -366,7 +366,7 @@ public class ColonyAlertsNotification extends AbstractNotification
             ts.forEach(new TableSelector.ForEachBlock<ResultSet>(){
                 public void exec(ResultSet rs) throws SQLException
                 {
-                    msg.append(rs.getString(_ehrStudy.getSubjectColumnName()) + "<br>\n");
+                    msg.append(rs.getString(getStudy(c).getSubjectColumnName()) + "<br>\n");
                 }
             });
 
@@ -377,13 +377,13 @@ public class ColonyAlertsNotification extends AbstractNotification
         }
     }
 
-    protected void livingAnimalsWithoutHousing(final StringBuilder msg)
+    protected void livingAnimalsWithoutHousing(final Container c, User u, final StringBuilder msg)
     {
         //we find living animals without an active housing record
-        Sort sort = new Sort(_ehrStudy.getSubjectColumnName());
+        Sort sort = new Sort(getStudy(c).getSubjectColumnName());
         SimpleFilter filter = new SimpleFilter(FieldKey.fromString("calculated_status"), "Alive");
         filter.addCondition(FieldKey.fromString("Id/curLocation/room/room"), null, CompareType.ISBLANK);
-        TableSelector ts = new TableSelector(_studySchema.getTable("Demographics"), Table.ALL_COLUMNS, filter, sort);
+        TableSelector ts = new TableSelector(getStudySchema(c, u).getTable("Demographics"), Table.ALL_COLUMNS, filter, sort);
         exampleData:
         if (ts.getRowCount() > 0)
         {
@@ -392,7 +392,7 @@ public class ColonyAlertsNotification extends AbstractNotification
             ts.forEach(new TableSelector.ForEachBlock<ResultSet>(){
                 public void exec(ResultSet rs) throws SQLException
                 {
-                    msg.append(rs.getString(_ehrStudy.getSubjectColumnName()) + "<br>\n");
+                    msg.append(rs.getString(getStudy(c).getSubjectColumnName()) + "<br>\n");
                 }
             });
 
@@ -401,10 +401,10 @@ public class ColonyAlertsNotification extends AbstractNotification
         }
     }
 
-    protected void calculatedStatusFieldProblems(final StringBuilder msg)
+    protected void calculatedStatusFieldProblems(final Container c, User u, final StringBuilder msg)
     {
         //then we find all records with problems in the calculated_status field
-        TableSelector ts = new TableSelector(_studySchema.getTable("Validate_status"), Table.ALL_COLUMNS, null, null);
+        TableSelector ts = new TableSelector(getStudySchema(c, u).getTable("Validate_status"), Table.ALL_COLUMNS, null, null);
         if (ts.getRowCount() > 0)
         {
 	        msg.append("<b>WARNING: There are " + ts.getRowCount() + " animals with problems in the status field:</b><br>\n");
@@ -412,7 +412,7 @@ public class ColonyAlertsNotification extends AbstractNotification
             ts.forEach(new TableSelector.ForEachBlock<ResultSet>(){
                 public void exec(ResultSet rs) throws SQLException
                 {
-                    msg.append(rs.getString(_ehrStudy.getSubjectColumnName()) + "<br>\n");
+                    msg.append(rs.getString(getStudy(c).getSubjectColumnName()) + "<br>\n");
                 }
             });
 
@@ -425,9 +425,9 @@ public class ColonyAlertsNotification extends AbstractNotification
     /**
      * find all living animals without active assignments
      */
-    protected void animalsLackingAssignments(final StringBuilder msg)
+    protected void animalsLackingAssignments(final Container c, User u, final StringBuilder msg)
     {
-        QueryHelper qh = new QueryHelper(_ehrContainer, NotificationService.get().getUser(), "study", "Demographics", "No Active Assignments");
+        QueryHelper qh = new QueryHelper(c, u, "study", "Demographics", "No Active Assignments");
         Results rs = null;
         try
         {
@@ -439,7 +439,7 @@ public class ColonyAlertsNotification extends AbstractNotification
             {
                 while (rs.next())
                 {
-                    ids.add(rs.getString(_ehrStudy.getSubjectColumnName()));
+                    ids.add(rs.getString(getStudy(c).getSubjectColumnName()));
                 }
                 tmpHtml.append("<p><a href='" + _baseUrl + "/executeQuery.view?schemaName=study&query.queryName=Demographics&query.viewName=No Active Assignments'>Click here to view these animals</a></p>\n");
                 tmpHtml.append("<hr>\n");
@@ -463,12 +463,12 @@ public class ColonyAlertsNotification extends AbstractNotification
         }
     }
 
-    protected void deadAnimalsWithActiveAssignments(final StringBuilder msg)
+    protected void deadAnimalsWithActiveAssignments(final Container c, User u, final StringBuilder msg)
     {
         //then we find all records with problems in the calculated_status field
         SimpleFilter filter = new SimpleFilter(FieldKey.fromString("Id/Dataset/Demographics/calculated_status"), "Alive", CompareType.NEQ_OR_NULL);
         filter.addCondition(FieldKey.fromString("enddate"), null, CompareType.ISBLANK);
-        TableSelector ts = new TableSelector(_studySchema.getTable("Assignment"), Table.ALL_COLUMNS, filter, null);
+        TableSelector ts = new TableSelector(getStudySchema(c, u).getTable("Assignment"), Table.ALL_COLUMNS, filter, null);
         if (ts.getRowCount() > 0)
         {
             msg.append("<b>WARNING: There are " + ts.getRowCount() + " active assignments for animals not currently at the center.</b><br>\n");
@@ -480,11 +480,11 @@ public class ColonyAlertsNotification extends AbstractNotification
     /**
      * find any active assignment where the project lacks a valid protocol
      */
-    protected void assignmentsWithoutValidProtocol(final StringBuilder msg)
+    protected void assignmentsWithoutValidProtocol(final Container c, User u, final StringBuilder msg)
     {
         SimpleFilter filter = new SimpleFilter(FieldKey.fromString("enddate"), null, CompareType.ISBLANK);
         filter.addCondition(FieldKey.fromString("project/protocol"), null, CompareType.ISBLANK);
-        TableSelector ts = new TableSelector(_studySchema.getTable("Assignment"), Table.ALL_COLUMNS, filter, null);
+        TableSelector ts = new TableSelector(getStudySchema(c, u).getTable("Assignment"), Table.ALL_COLUMNS, filter, null);
         if (ts.getRowCount() > 0)
         {
             msg.append("<b>WARNING: There are " + ts.getRowCount() + " active assignments to a project without a valid protocol.</b><br>\n");
@@ -493,9 +493,9 @@ public class ColonyAlertsNotification extends AbstractNotification
         }
     }
 
-    protected void duplicateAssignments(final StringBuilder msg)
+    protected void duplicateAssignments(final Container c, User u, final StringBuilder msg)
     {
-        TableSelector ts = new TableSelector(_studySchema.getTable("duplicateAssignments"), Table.ALL_COLUMNS, null, null);
+        TableSelector ts = new TableSelector(getStudySchema(c, u).getTable("duplicateAssignments"), Table.ALL_COLUMNS, null, null);
         if (ts.getRowCount() > 0)
         {
             msg.append("<b>WARNING: There are " + ts.getRowCount() + " animals double assigned to the same project.</b><br>\n");
@@ -507,14 +507,14 @@ public class ColonyAlertsNotification extends AbstractNotification
     /**
      * find the total finalized records with future dates
      */
-    protected void finalizedRecordsWithFutureDates(final StringBuilder msg)
+    protected void finalizedRecordsWithFutureDates(final Container c, User u, final StringBuilder msg)
     {
         String datasets = "Treatment Orders;Assignment";
         SimpleFilter filter = new SimpleFilter(FieldKey.fromString("qcstate/PublicData"), true);
         Date date = new Date();
         filter.addCondition(FieldKey.fromString("date"), date, CompareType.GTE);
         filter.addCondition(FieldKey.fromString("dataset/label"), datasets, CompareType.NOT_IN);
-        TableSelector ts = new TableSelector(_studySchema.getTable("StudyData"), Table.ALL_COLUMNS, filter, null);
+        TableSelector ts = new TableSelector(getStudySchema(c, u).getTable("StudyData"), Table.ALL_COLUMNS, filter, null);
         if (ts.getRowCount() > 0)
         {
             msg.append("<b>WARNING: There are " + ts.getRowCount() + " finalized records with future dates.</b><br>\n");
@@ -526,20 +526,20 @@ public class ColonyAlertsNotification extends AbstractNotification
     /**
      * prenatal deaths in the last 5 days
      */
-    protected void prenatalDeathsPast5Days(final StringBuilder msg)
+    protected void prenatalDeathsPast5Days(final Container c, User u, final StringBuilder msg)
     {
         Calendar cal = Calendar.getInstance();
         cal.setTime(new Date());
         cal.add(Calendar.DATE, -5);
         SimpleFilter filter = new SimpleFilter(FieldKey.fromString("date"), cal.getTime(), CompareType.DATE_GTE);
-        TableSelector ts = new TableSelector(_studySchema.getTable("Prenatal Deaths"), Table.ALL_COLUMNS, filter, new Sort(_ehrStudy.getSubjectColumnName()));
+        TableSelector ts = new TableSelector(getStudySchema(c, u).getTable("Prenatal Deaths"), Table.ALL_COLUMNS, filter, new Sort(getStudy(c).getSubjectColumnName()));
         if (ts.getRowCount() > 0)
         {
             msg.append("Prenatal Deaths since " + _dateFormat.format(cal.getTime()) + ":<br>\n");
             ts.forEach(new TableSelector.ForEachBlock<ResultSet>(){
                 public void exec(ResultSet rs) throws SQLException
                 {
-                    msg.append(rs.getString(_ehrStudy.getSubjectColumnName()) + "<br>\n");
+                    msg.append(rs.getString(getStudy(c).getSubjectColumnName()) + "<br>\n");
                 }
             });
 
@@ -551,20 +551,20 @@ public class ColonyAlertsNotification extends AbstractNotification
     /**
      * deaths in the last 5 days
      */
-    protected void deathsInLast5Days(final StringBuilder msg)
+    protected void deathsInLast5Days(final Container c, User u, final StringBuilder msg)
     {
         Calendar cal = Calendar.getInstance();
         cal.setTime(new Date());
         cal.add(Calendar.DATE, -5);
         SimpleFilter filter = new SimpleFilter(FieldKey.fromString("date"), cal.getTime(), CompareType.DATE_GTE);
-        TableSelector ts = new TableSelector(_studySchema.getTable("Deaths"), Table.ALL_COLUMNS, filter, new Sort(_ehrStudy.getSubjectColumnName()));
+        TableSelector ts = new TableSelector(getStudySchema(c, u).getTable("Deaths"), Table.ALL_COLUMNS, filter, new Sort(getStudy(c).getSubjectColumnName()));
         if (ts.getRowCount() > 0)
         {
             msg.append("Deaths since " + _dateFormat.format(cal.getTime()) + ":<br>\n");
             ts.forEach(new TableSelector.ForEachBlock<ResultSet>(){
                 public void exec(ResultSet rs) throws SQLException
                 {
-                    msg.append(rs.getString(_ehrStudy.getSubjectColumnName()) + "<br>\n");
+                    msg.append(rs.getString(getStudy(c).getSubjectColumnName()) + "<br>\n");
                 }
             });
 
@@ -576,20 +576,20 @@ public class ColonyAlertsNotification extends AbstractNotification
     /**
      * births in the last 5 days
      */
-    protected void birthsInLast5Days(final StringBuilder msg)
+    protected void birthsInLast5Days(final Container c, User u, final StringBuilder msg)
     {
         Calendar cal = Calendar.getInstance();
         cal.setTime(new Date());
         cal.add(Calendar.DATE, -5);
         SimpleFilter filter = new SimpleFilter(FieldKey.fromString("date"), cal.getTime(), CompareType.DATE_GTE);
-        TableSelector ts = new TableSelector(_studySchema.getTable("Birth"), Table.ALL_COLUMNS, filter, new Sort(_ehrStudy.getSubjectColumnName()));
+        TableSelector ts = new TableSelector(getStudySchema(c, u).getTable("Birth"), Table.ALL_COLUMNS, filter, new Sort(getStudy(c).getSubjectColumnName()));
         if (ts.getRowCount() > 0)
         {
             msg.append("Births since " + _dateFormat.format(cal.getTime()) + ":<br>\n");
             ts.forEach(new TableSelector.ForEachBlock<ResultSet>(){
                 public void exec(ResultSet rs) throws SQLException
                 {
-                    msg.append(rs.getString(_ehrStudy.getSubjectColumnName()) + "<br>\n");
+                    msg.append(rs.getString(getStudy(c).getSubjectColumnName()) + "<br>\n");
                 }
             });
 
@@ -598,7 +598,7 @@ public class ColonyAlertsNotification extends AbstractNotification
         }
     }
 
-    protected void assignmentsProjectedTomorrow(final StringBuilder msg)
+    protected void assignmentsProjectedTomorrow(final Container c, User u, final StringBuilder msg)
     {
         Calendar cal = Calendar.getInstance();
         cal.setTime(new Date());
@@ -606,7 +606,7 @@ public class ColonyAlertsNotification extends AbstractNotification
 
         SimpleFilter filter = new SimpleFilter(FieldKey.fromString("enddate"), null, CompareType.ISBLANK);
         filter.addCondition(FieldKey.fromString("projectedRelease"), cal.getTime(), CompareType.DATE_EQUAL);
-        TableSelector ts = new TableSelector(_studySchema.getTable("Assignment"), Table.ALL_COLUMNS, filter, null);
+        TableSelector ts = new TableSelector(getStudySchema(c, u).getTable("Assignment"), Table.ALL_COLUMNS, filter, null);
         if (ts.getRowCount() > 0)
         {
             msg.append("<b>ALERT: There are " + ts.getRowCount() + " assignments with a projected release date for tomorrow.</b><br>\n");
@@ -618,11 +618,11 @@ public class ColonyAlertsNotification extends AbstractNotification
     /**
      * we find assignments with projected releases today
      */
-    protected void assignmentsProjectedToday(final StringBuilder msg)
+    protected void assignmentsProjectedToday(final Container c, User u, final StringBuilder msg)
     {
         Date date = new Date();
         SimpleFilter filter = new SimpleFilter(FieldKey.fromString("projectedRelease"), date, CompareType.DATE_EQUAL);
-        TableSelector ts = new TableSelector(_studySchema.getTable("Assignment"), Table.ALL_COLUMNS, filter, null);
+        TableSelector ts = new TableSelector(getStudySchema(c, u).getTable("Assignment"), Table.ALL_COLUMNS, filter, null);
         if (ts.getRowCount() > 0)
         {
             msg.append("<b>ALERT: There are " + ts.getRowCount() + " assignments with a projected release date for today that have not already been ended.</b><br>\n");
@@ -634,11 +634,11 @@ public class ColonyAlertsNotification extends AbstractNotification
     /**
      * we find animals with hold codes, but not on pending
      */
-    protected void animalsWithHoldCodesNotOnPending(final StringBuilder msg)
+    protected void animalsWithHoldCodesNotOnPending(final Container c, User u, final StringBuilder msg)
     {
         SimpleFilter filter = new SimpleFilter(FieldKey.fromString("hold"), null, CompareType.NONBLANK);
         filter.addCondition(FieldKey.fromString("Id/activeAssignments/NumPendingAssignments"), 0, CompareType.EQUAL);
-        TableSelector ts = new TableSelector(_studySchema.getTable("Demographics"), Table.ALL_COLUMNS, filter, new Sort(_ehrStudy.getSubjectColumnName()));
+        TableSelector ts = new TableSelector(getStudySchema(c, u).getTable("Demographics"), Table.ALL_COLUMNS, filter, new Sort(getStudy(c).getSubjectColumnName()));
         if (ts.getRowCount() > 0)
         {
             msg.append("<b>WARNING: There are " + ts.getRowCount() + " animals with a hold code, but not on the pending project.</b><br>\n");
@@ -650,11 +650,11 @@ public class ColonyAlertsNotification extends AbstractNotification
     /**
      * we find death records without a corresponding demographics record
      */
-    protected void deathRecordsWithoutDemographics(final StringBuilder msg)
+    protected void deathRecordsWithoutDemographics(final Container c, User u, final StringBuilder msg)
     {
         SimpleFilter filter = new SimpleFilter(FieldKey.fromString("Id/Dataset/Demographics/Id"), null, CompareType.ISBLANK);
         filter.addCondition(FieldKey.fromString("notAtCenter"), true, CompareType.NEQ_OR_NULL);
-        TableSelector ts = new TableSelector(_studySchema.getTable("Deaths"), Table.ALL_COLUMNS, filter, new Sort(_ehrStudy.getSubjectColumnName()));
+        TableSelector ts = new TableSelector(getStudySchema(c, u).getTable("Deaths"), Table.ALL_COLUMNS, filter, new Sort(getStudy(c).getSubjectColumnName()));
         if (ts.getRowCount() > 0)
         {
             msg.append("<b>WARNING: There are " + ts.getRowCount() + " death records without a corresponding demographics record.</b><br>\n");
@@ -666,10 +666,10 @@ public class ColonyAlertsNotification extends AbstractNotification
     /**
      * we find birth records without a corresponding demographics record
      */
-    protected void birthRecordsWithoutDemographics(final StringBuilder msg)
+    protected void birthRecordsWithoutDemographics(final Container c, User u, final StringBuilder msg)
     {
         SimpleFilter filter = new SimpleFilter(FieldKey.fromString("Id/Dataset/Demographics/Id"), null, CompareType.ISBLANK);
-        TableSelector ts = new TableSelector(_studySchema.getTable("Birth"), Collections.singleton(_ehrStudy.getSubjectColumnName()), filter, new Sort(_ehrStudy.getSubjectColumnName()));
+        TableSelector ts = new TableSelector(getStudySchema(c, u).getTable("Birth"), Collections.singleton(getStudy(c).getSubjectColumnName()), filter, new Sort(getStudy(c).getSubjectColumnName()));
         if (ts.getRowCount() > 0)
         {
             msg.append("<b>WARNING: There are " + ts.getRowCount() + " birth records without a corresponding demographics record.</b><br>\n");
@@ -681,14 +681,14 @@ public class ColonyAlertsNotification extends AbstractNotification
     /**
      * we find protocols expiring soon.  this is based on protocols having a 3-year window
      */
-    protected void protocolsExpiringSoon(final StringBuilder msg)
+    protected void protocolsExpiringSoon(final Container c, User u, final StringBuilder msg)
     {
 
         int days = 14;
         int dayValue = (365 * 3) - days;
 
         SimpleFilter filter = new SimpleFilter(FieldKey.fromString("Approve"), "-" + dayValue + "d", CompareType.DATE_LTE);
-        TableSelector ts = new TableSelector(_ehrSchema.getTable("protocol"), Table.ALL_COLUMNS, filter, new Sort(_ehrStudy.getSubjectColumnName()));
+        TableSelector ts = new TableSelector(getEHRSchema(c, u).getTable("protocol"), Table.ALL_COLUMNS, filter, new Sort(getStudy(c).getSubjectColumnName()));
         if (ts.getRowCount() > 0)
         {
             msg.append("<b>WARNING: There are " + ts.getRowCount() + " protocols that will expire within the next " + days + " days.</b><br>\n");
@@ -700,10 +700,10 @@ public class ColonyAlertsNotification extends AbstractNotification
     /**
      * we find protocols nearing the animal limit, based on number and percent
      */
-    protected void protocolsNearingLimit(final StringBuilder msg)
+    protected void protocolsNearingLimit(final Container c, User u, final StringBuilder msg)
     {
         SimpleFilter filter = new SimpleFilter(FieldKey.fromString("TotalRemaining"), 5, CompareType.LT);
-        TableSelector ts = new TableSelector(_ehrSchema.getTable("protocolTotalAnimalsBySpecies"), Table.ALL_COLUMNS, filter, new Sort(_ehrStudy.getSubjectColumnName()));
+        TableSelector ts = new TableSelector(getEHRSchema(c, u).getTable("protocolTotalAnimalsBySpecies"), Table.ALL_COLUMNS, filter, new Sort(getStudy(c).getSubjectColumnName()));
         if (ts.getRowCount() > 0)
         {
             msg.append("<b>WARNING: There are " + ts.getRowCount() + " protocols with fewer than 5 remaining animals.</b><br>\n");
@@ -712,7 +712,7 @@ public class ColonyAlertsNotification extends AbstractNotification
         }
 
         filter = new SimpleFilter(FieldKey.fromString("PercentUsed"), 95, CompareType.GTE);
-        ts = new TableSelector(_ehrSchema.getTable("protocolTotalAnimalsBySpecies"), Table.ALL_COLUMNS, filter, new Sort(_ehrStudy.getSubjectColumnName()));
+        ts = new TableSelector(getEHRSchema(c, u).getTable("protocolTotalAnimalsBySpecies"), Table.ALL_COLUMNS, filter, new Sort(getStudy(c).getSubjectColumnName()));
         if (ts.getRowCount() > 0)
         {
             msg.append("<b>WARNING: There are " + ts.getRowCount() + " protocols with fewer than 5% of their animals remaining.</b><br>\n");
@@ -724,12 +724,12 @@ public class ColonyAlertsNotification extends AbstractNotification
     /**
      * we find TB records lacking a results more than 30 days old, but less than 90
      */
-    protected void tbRecords30_90(final StringBuilder msg)
+    protected void tbRecords30_90(final Container c, User u, final StringBuilder msg)
     {
         SimpleFilter filter = new SimpleFilter(FieldKey.fromString("missingresults"), true, CompareType.EQUAL);
         filter.addCondition(FieldKey.fromString("date"), "-90d", CompareType.DATE_GTE);
         filter.addCondition(FieldKey.fromString("date"), "-10d", CompareType.DATE_LTE);
-        TableSelector ts = new TableSelector(_studySchema.getTable("TB Tests"), Table.ALL_COLUMNS, filter, new Sort(_ehrStudy.getSubjectColumnName()));
+        TableSelector ts = new TableSelector(getStudySchema(c, u).getTable("TB Tests"), Table.ALL_COLUMNS, filter, new Sort(getStudy(c).getSubjectColumnName()));
         if (ts.getRowCount() > 0)
         {
             msg.append("<b>WARNING: There are " + ts.getRowCount() + " TB Tests in the past 10-90 days that are missing results.</b><br>\n");
@@ -741,7 +741,7 @@ public class ColonyAlertsNotification extends AbstractNotification
     /**
      * we find all animals that died in the past 90 days where there isnt a weight within 7 days of death:
      */
-    protected void deathWeightCheck(final StringBuilder msg)
+    protected void deathWeightCheck(final Container c, User u, final StringBuilder msg)
     {
         Calendar cal = Calendar.getInstance();
         cal.setTime(new Date());
@@ -753,7 +753,7 @@ public class ColonyAlertsNotification extends AbstractNotification
         mpv.addPropertyValue("query.param.MINDATE", _dateFormat.format(cal.getTime()));
 
         BindException errors = new NullSafeBindException(new Object(), "command");
-        UserSchema us = QueryService.get().getUserSchema(_ns.getUser(), _ehrContainer, "study");
+        UserSchema us = QueryService.get().getUserSchema(u, c, "study");
         QuerySettings qs = us.getSettings(mpv, "query");
         SimpleFilter filter = new SimpleFilter(FieldKey.fromString("death"), cal.getTime(), CompareType.DATE_GTE);
         qs.setBaseFilter(filter);
@@ -793,18 +793,18 @@ public class ColonyAlertsNotification extends AbstractNotification
     /**
      * we find prenatal records in the past 90 days missing species
      */
-    protected void prenatalRecordsWithoutSpecies(final StringBuilder msg)
+    protected void prenatalRecordsWithoutSpecies(final Container c, User u, final StringBuilder msg)
     {
         SimpleFilter filter = new SimpleFilter(FieldKey.fromString("date"), "-90d", CompareType.DATE_GTE);
         filter.addCondition(FieldKey.fromString("species"), null, CompareType.ISBLANK);
-        TableSelector ts = new TableSelector(_studySchema.getTable("Prenatal Deaths"), Table.ALL_COLUMNS, filter, new Sort(_ehrStudy.getSubjectColumnName()));
+        TableSelector ts = new TableSelector(getStudySchema(c, u).getTable("Prenatal Deaths"), Table.ALL_COLUMNS, filter, new Sort(getStudy(c).getSubjectColumnName()));
         if (ts.getRowCount() > 0)
         {
             msg.append("<b>WARNING: The following prenatal death records were entered in the last 90 days, but are missing the species:</b><br>\n");
             ts.forEach(new TableSelector.ForEachBlock<ResultSet>(){
                 public void exec(ResultSet rs) throws SQLException
                 {
-                    msg.append(rs.getString(_ehrStudy.getSubjectColumnName()) + "(" + _dateFormat.format(rs.getDate("date"))+ ")" + "<br>\n");
+                    msg.append(rs.getString(getStudy(c).getSubjectColumnName()) + "(" + _dateFormat.format(rs.getDate("date"))+ ")" + "<br>\n");
                 }
             });
 
@@ -816,18 +816,18 @@ public class ColonyAlertsNotification extends AbstractNotification
     /**
      * we find prenatal records in the past 90 days missing a gender
      */
-    protected void prenatalRecordsWithoutGender(final StringBuilder msg)
+    protected void prenatalRecordsWithoutGender(final Container c, User u, final StringBuilder msg)
     {
         SimpleFilter filter = new SimpleFilter(FieldKey.fromString("date"), "-90d", CompareType.DATE_GTE);
         filter.addCondition(FieldKey.fromString("gender"), null, CompareType.ISBLANK);
-        TableSelector ts = new TableSelector(_studySchema.getTable("Prenatal Deaths"), Table.ALL_COLUMNS, filter, new Sort(_ehrStudy.getSubjectColumnName()));
+        TableSelector ts = new TableSelector(getStudySchema(c, u).getTable("Prenatal Deaths"), Table.ALL_COLUMNS, filter, new Sort(getStudy(c).getSubjectColumnName()));
         if (ts.getRowCount() > 0)
         {
             msg.append("<b>WARNING: The following prenatal death records were entered in the last 90 days, but are missing a gender:</b><br>\n");
             ts.forEach(new TableSelector.ForEachBlock<ResultSet>(){
                 public void exec(ResultSet rs) throws SQLException
                 {
-                    msg.append(rs.getString(_ehrStudy.getSubjectColumnName()) + "(" + _dateFormat.format(rs.getDate("date"))+ ")" + "<br>\n");
+                    msg.append(rs.getString(getStudy(c).getSubjectColumnName()) + "(" + _dateFormat.format(rs.getDate("date"))+ ")" + "<br>\n");
                 }
             });
 
@@ -839,11 +839,11 @@ public class ColonyAlertsNotification extends AbstractNotification
     /**
      * we find demographics records in the past 90 days missing a gender
      */
-    protected void demographicsWithoutGender(final StringBuilder msg)
+    protected void demographicsWithoutGender(final Container c, User u, final StringBuilder msg)
     {
         SimpleFilter filter = new SimpleFilter(FieldKey.fromString("death"), "-90d", CompareType.DATE_GTE);
         filter.addCondition(FieldKey.fromString("gender"), null, CompareType.ISBLANK);
-        TableSelector ts = new TableSelector(_studySchema.getTable("Demographics"), Table.ALL_COLUMNS, filter, new Sort(_ehrStudy.getSubjectColumnName()));
+        TableSelector ts = new TableSelector(getStudySchema(c, u).getTable("Demographics"), Table.ALL_COLUMNS, filter, new Sort(getStudy(c).getSubjectColumnName()));
         if (ts.getRowCount() > 0)
         {
             msg.append("<b>WARNING: The following demographics records were entered in the last 90 days, but are missing a gender:</b><br>\n");
@@ -851,7 +851,7 @@ public class ColonyAlertsNotification extends AbstractNotification
             {
                 public void exec(ResultSet rs) throws SQLException
                 {
-                    msg.append(rs.getString(_ehrStudy.getSubjectColumnName()));
+                    msg.append(rs.getString(getStudy(c).getSubjectColumnName()));
                     if (rs.getDate("birth") == null)
                         msg.append("(" + _dateFormat.format(rs.getDate("birth")) + ")");
 
@@ -866,18 +866,18 @@ public class ColonyAlertsNotification extends AbstractNotification
     /**
      * we find birth records in the past 90 days missing a gender
      */
-    protected void birthWithoutGender(final StringBuilder msg)
+    protected void birthWithoutGender(final Container c, User u, final StringBuilder msg)
     {
         SimpleFilter filter = new SimpleFilter(FieldKey.fromString("date"), "-90d", CompareType.DATE_GTE);
         filter.addCondition(FieldKey.fromString("gender"), null, CompareType.ISBLANK);
-        TableSelector ts = new TableSelector(_studySchema.getTable("Birth"), Table.ALL_COLUMNS, filter, new Sort(_ehrStudy.getSubjectColumnName()));
+        TableSelector ts = new TableSelector(getStudySchema(c, u).getTable("Birth"), Table.ALL_COLUMNS, filter, new Sort(getStudy(c).getSubjectColumnName()));
         if (ts.getRowCount() > 0)
         {
             msg.append("<b>WARNING: The following birth records were entered in the last 90 days, but are missing a gender:</b><br>\n");
             ts.forEach(new TableSelector.ForEachBlock<ResultSet>(){
                 public void exec(ResultSet rs) throws SQLException
                 {
-                    msg.append(rs.getString(_ehrStudy.getSubjectColumnName()) + "(" + _dateFormat.format(rs.getDate("date"))+ ")" + "<br>\n");
+                    msg.append(rs.getString(getStudy(c).getSubjectColumnName()) + "(" + _dateFormat.format(rs.getDate("date"))+ ")" + "<br>\n");
                 }
             });
 
@@ -889,7 +889,7 @@ public class ColonyAlertsNotification extends AbstractNotification
     /**
      * we find non-continguous housing records
      */
-    protected void nonContiguousHousing(final StringBuilder msg)
+    protected void nonContiguousHousing(final Container c, User u, final StringBuilder msg)
     {
         Calendar cal = Calendar.getInstance();
         cal.setTime(new Date());
@@ -901,7 +901,7 @@ public class ColonyAlertsNotification extends AbstractNotification
         mpv.addPropertyValue("query.param.MINDATE", _dateFormat.format(cal.getTime()));
 
         BindException errors = new NullSafeBindException(new Object(), "command");
-        UserSchema us = QueryService.get().getUserSchema(_ns.getUser(), _ehrContainer, "study");
+        UserSchema us = QueryService.get().getUserSchema(u, c, "study");
         QuerySettings qs = us.getSettings(mpv, "query");
 
         QueryView view = new QueryView(us, qs, errors);
@@ -939,11 +939,11 @@ public class ColonyAlertsNotification extends AbstractNotification
     /**
      * we find open assignments where the animal is not alive
      */
-    protected void activeAssignmentsForDeadAnimals(final StringBuilder msg)
+    protected void activeAssignmentsForDeadAnimals(final Container c, User u, final StringBuilder msg)
     {
         SimpleFilter filter = new SimpleFilter(FieldKey.fromString("Id/Dataset/Demographics/calculated_status"), "Alive", CompareType.NEQ_OR_NULL);
         filter.addCondition(FieldKey.fromString("enddate"), null, CompareType.ISBLANK);
-        TableSelector ts = new TableSelector(_studySchema.getTable("Assignment"), Table.ALL_COLUMNS, filter, new Sort(_ehrStudy.getSubjectColumnName()));
+        TableSelector ts = new TableSelector(getStudySchema(c, u).getTable("Assignment"), Table.ALL_COLUMNS, filter, new Sort(getStudy(c).getSubjectColumnName()));
         if (ts.getRowCount() > 0)
         {
             msg.append("<b>WARNING: There are " + ts.getRowCount() + " active assignments for animals not currently at the center.</b><br>\n");
@@ -955,11 +955,11 @@ public class ColonyAlertsNotification extends AbstractNotification
     /**
      * we find open ended problems where the animal is not alive
      */
-    protected void activeProblemsForDeadAnimals(final StringBuilder msg)
+    protected void activeProblemsForDeadAnimals(final Container c, User u, final StringBuilder msg)
     {
         SimpleFilter filter = new SimpleFilter(FieldKey.fromString("Id/Dataset/Demographics/calculated_status"), "Alive", CompareType.NEQ_OR_NULL);
         filter.addCondition(FieldKey.fromString("enddate"), null, CompareType.ISBLANK);
-        TableSelector ts = new TableSelector(_studySchema.getTable("Problem List"), Table.ALL_COLUMNS, filter, new Sort(_ehrStudy.getSubjectColumnName()));
+        TableSelector ts = new TableSelector(getStudySchema(c, u).getTable("Problem List"), Table.ALL_COLUMNS, filter, new Sort(getStudy(c).getSubjectColumnName()));
         if (ts.getRowCount() > 0)
         {
             msg.append("<b>WARNING: There are " + ts.getRowCount() + " unresolved problems for animals not currently at the center.</b><br>\n");
@@ -971,11 +971,11 @@ public class ColonyAlertsNotification extends AbstractNotification
     /**
      * we find open ended treatments where the animal is not alive
      */
-    protected void activeTreatmentsForDeadAnimals(final StringBuilder msg)
+    protected void activeTreatmentsForDeadAnimals(final Container c, User u, final StringBuilder msg)
     {
         SimpleFilter filter = new SimpleFilter(FieldKey.fromString("Id/Dataset/Demographics/calculated_status"), "Alive", CompareType.NEQ_OR_NULL);
         filter.addCondition(FieldKey.fromString("enddate"), null, CompareType.ISBLANK);
-        TableSelector ts = new TableSelector(_studySchema.getTable("Treatment Orders"), Table.ALL_COLUMNS, filter, new Sort(_ehrStudy.getSubjectColumnName()));
+        TableSelector ts = new TableSelector(getStudySchema(c, u).getTable("Treatment Orders"), Table.ALL_COLUMNS, filter, new Sort(getStudy(c).getSubjectColumnName()));
         if (ts.getRowCount() > 0)
         {
             msg.append("<b>WARNING: There are " + ts.getRowCount() + " active treatments for animals not currently at the center.</b><br>\n");
@@ -987,13 +987,13 @@ public class ColonyAlertsNotification extends AbstractNotification
     /**
      * then we find all living siv+ animals not exempt from pair housing (20060202)
      */
-    protected void sivPosNotExempt(final StringBuilder msg)
+    protected void sivPosNotExempt(final Container c, User u, final StringBuilder msg)
     {
         String project = "20060202";
         SimpleFilter filter = new SimpleFilter(FieldKey.fromString("calculated_status"), "Alive", CompareType.EQUAL);
         filter.addCondition(FieldKey.fromString("medical"), "siv;shiv", CompareType.CONTAINS_ONE_OF);
         filter.addCondition(FieldKey.fromString("Id/activeAssignments/ActiveVetAssignments"), project, CompareType.DOES_NOT_CONTAIN);
-        TableSelector ts = new TableSelector(_studySchema.getTable("Demographics"), Table.ALL_COLUMNS, filter, new Sort(_ehrStudy.getSubjectColumnName()));
+        TableSelector ts = new TableSelector(getStudySchema(c, u).getTable("Demographics"), Table.ALL_COLUMNS, filter, new Sort(getStudy(c).getSubjectColumnName()));
         if (ts.getRowCount() > 0)
         {
             msg.append("<b>WARNING: There are " + ts.getRowCount() + " animals with SIV in the medical field, but not actively assigned to exempt from paired housing (" + project + "):</b><br>\n");
@@ -1006,7 +1006,7 @@ public class ColonyAlertsNotification extends AbstractNotification
      * then we find all animals with cage size problems
      * @param msg
      */
-    protected void cageReview(final StringBuilder msg)
+    protected void cageReview(final Container c, User u, final StringBuilder msg)
     {
         MutablePropertyValues mpv = new MutablePropertyValues();
         mpv.addPropertyValue("schemaName", "study");
@@ -1014,7 +1014,7 @@ public class ColonyAlertsNotification extends AbstractNotification
         mpv.addPropertyValue("query.viewName", "Problem Cages");
 
         BindException errors = new NullSafeBindException(new Object(), "command");
-        UserSchema us = QueryService.get().getUserSchema(_ns.getUser(), _ehrContainer, "study");
+        UserSchema us = QueryService.get().getUserSchema(u, c, "study");
         QuerySettings qs = us.getSettings(mpv, "query");
         QueryView view = new QueryView(us, qs, errors);
         Results rs = null;

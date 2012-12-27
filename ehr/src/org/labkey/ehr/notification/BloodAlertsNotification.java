@@ -15,13 +15,12 @@
  */
 package org.labkey.ehr.notification;
 
-import java.util.ArrayList;
+import org.labkey.api.data.Container;
+import org.labkey.api.security.User;
+
 import java.util.Collections;
 import java.util.Date;
-import java.util.List;
 import java.util.Set;
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Created by IntelliJ IDEA.
@@ -56,23 +55,19 @@ public class BloodAlertsNotification extends BloodAdminAlertsNotification
     }
 
     @Override
-    public List<ScheduledFuture> schedule(int delay)
+    public String getCronString()
     {
-        List<ScheduledFuture> tasks = new ArrayList<ScheduledFuture>();
-        //TODO: 10AM
-        tasks.add(NotificationService.get().getExecutor().scheduleWithFixedDelay(this, delay, 1, TimeUnit.DAYS));
-        return tasks;
+        return "0 0 10 * * ?";
     }
 
     @Override
     public String getScheduleDescription()
     {
-        //TODO
         return "daily at 10AM";
     }
 
     @Override
-    public String getMessage()
+    public String getMessage(Container c, User u)
     {
         StringBuilder msg = new StringBuilder();
 
@@ -80,12 +75,12 @@ public class BloodAlertsNotification extends BloodAdminAlertsNotification
         Date now = new Date();
         msg.append("This email contains any scheduled blood draws not marked as completed.  It was run on: " + _dateFormat.format(now) + " at " + _timeFormat.format(now) + ".<p>");
 
-        bloodDrawsOnDeadAnimals(msg);
-        bloodDrawsOverLimit(msg);
-        bloodDrawsNotAssignedToProject(msg);
-        findNonApprovedDraws(msg);
-        drawsNotAssigned(msg);
-        incompleteDraws(msg);
+        bloodDrawsOnDeadAnimals(c, u, msg);
+        bloodDrawsOverLimit(c, u, msg);
+        bloodDrawsNotAssignedToProject(c, u, msg);
+        findNonApprovedDraws(c, u, msg);
+        drawsNotAssigned(c, u, msg);
+        incompleteDraws(c, u, msg);
 
         return msg.toString();
     }

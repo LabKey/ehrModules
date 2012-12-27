@@ -17,6 +17,7 @@ package org.labkey.ehr.notification;
 
 import org.labkey.api.action.NullSafeBindException;
 import org.labkey.api.data.CompareType;
+import org.labkey.api.data.Container;
 import org.labkey.api.data.Results;
 import org.labkey.api.data.RuntimeSQLException;
 import org.labkey.api.data.SimpleFilter;
@@ -27,6 +28,7 @@ import org.labkey.api.query.QueryService;
 import org.labkey.api.query.QuerySettings;
 import org.labkey.api.query.QueryView;
 import org.labkey.api.query.UserSchema;
+import org.labkey.api.security.User;
 import org.labkey.api.settings.AppProps;
 import org.labkey.api.util.ResultSetUtil;
 import org.springframework.beans.MutablePropertyValues;
@@ -35,15 +37,11 @@ import org.springframework.validation.BindException;
 import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Created by IntelliJ IDEA.
@@ -51,7 +49,7 @@ import java.util.concurrent.TimeUnit;
  * Date: 8/4/12
  * Time: 4:30 PM
  */
-public class BloodAdminAlertsNotification extends AbstractNotification
+public class BloodAdminAlertsNotification extends AbstractEHRNotification
 {
     public static enum TimeOfDay {
         AM(9),
@@ -86,20 +84,18 @@ public class BloodAdminAlertsNotification extends AbstractNotification
         return Collections.singleton(getName());
     }
 
-    public List<ScheduledFuture> schedule(int delay)
+    @Override
+    public String getCronString()
     {
-        List<ScheduledFuture> tasks = new ArrayList<ScheduledFuture>();
-        //TODO: 10AM, 1PM, etc
-        tasks.add(NotificationService.get().getExecutor().scheduleWithFixedDelay(this, delay, 1, TimeUnit.DAYS));
-        return tasks;
+        return "0 0 10,13 * * ?";
     }
 
     public String getScheduleDescription()
     {
-        return "daily at 10AM";
+        return "daily at 10AM and 1PM";
     }
 
-    public String getMessage()
+    public String getMessage(Container c, User u)
     {
         StringBuilder msg = new StringBuilder();
 
@@ -107,12 +103,12 @@ public class BloodAdminAlertsNotification extends AbstractNotification
         Date now = new Date();
         msg.append("This email contains any scheduled blood draws not marked as completed, along with other potential problems in the blood schedule.  It was run on: " + _dateFormat.format(now) + " at " + _timeFormat.format(now) + ".<p>");
 
-        bloodDrawsOnDeadAnimals(msg);
-        bloodDrawsOverLimit(msg);
-        bloodDrawsNotAssignedToProject(msg);
-        findNonApprovedDraws(msg);
-        drawsNotAssigned(msg);
-        incompleteDraws(msg);
+        bloodDrawsOnDeadAnimals(c, u, msg);
+        bloodDrawsOverLimit(c, u, msg);
+        bloodDrawsNotAssignedToProject(c, u, msg);
+        findNonApprovedDraws(c, u, msg);
+        drawsNotAssigned(c, u, msg);
+        incompleteDraws(c, u, msg);
 
         //drawsWithServicesAndNoRequest(msg);
 
@@ -122,12 +118,12 @@ public class BloodAdminAlertsNotification extends AbstractNotification
     /**
      * we find any current or future blood draws where the animal is not alive
      */
-    protected void bloodDrawsOnDeadAnimals(final StringBuilder msg)
+    protected void bloodDrawsOnDeadAnimals(Container c, User u, final StringBuilder msg)
     {
         SimpleFilter filter = new SimpleFilter(FieldKey.fromString("Id/DataSet/Demographics/calculated_status"), "Alive", CompareType.NEQ_OR_NULL);
         filter.addCondition(FieldKey.fromString("qcstate/label"), "Request: Denied", CompareType.NEQ);
         filter.addCondition(FieldKey.fromString("date"), new Date(), CompareType.DATE_GTE);
-        TableSelector ts = new TableSelector(_studySchema.getTable("Blood Draws"), Table.ALL_COLUMNS, filter, null);
+        TableSelector ts = new TableSelector(getStudySchema(c, u).getTable("Blood Draws"), Table.ALL_COLUMNS, filter, null);
         if (ts.getRowCount() > 0)
         {
             msg.append("<b>WARNING: There are " + ts.getRowCount() + " current or scheduled blood draws for animals not currently at WNPRC.</b><br>");
@@ -139,13 +135,13 @@ public class BloodAdminAlertsNotification extends AbstractNotification
     /**
      * we find any blood draws over the allowable limit
      */
-    protected void bloodDrawsOverLimit(final StringBuilder msg)
+    protected void bloodDrawsOverLimit(final Container c, User u, final StringBuilder msg)
     {
         SimpleFilter filter = new SimpleFilter(FieldKey.fromString("Id/DataSet/Demographics/calculated_status"), "Alive");
         filter.addCondition(FieldKey.fromString("qcstate/label"), "Request: Denied", CompareType.NEQ);
         filter.addCondition(FieldKey.fromString("date"), new Date(), CompareType.DATE_GTE);
         filter.addCondition(FieldKey.fromString("BloodRemaining/AvailBlood"), 0, CompareType.LT);
-        TableSelector ts = new TableSelector(_studySchema.getTable("Blood Draws"), Table.ALL_COLUMNS, filter, null);
+        TableSelector ts = new TableSelector(getStudySchema(c, u).getTable("Blood Draws"), Table.ALL_COLUMNS, filter, null);
         if (ts.getRowCount() > 0)
         {
 	        msg.append("<b>WARNING: There are " + ts.getRowCount() + " scheduled blood draws exceeding the allowable volume.</b><br>");
@@ -153,7 +149,7 @@ public class BloodAdminAlertsNotification extends AbstractNotification
             {
                 public void exec(ResultSet rs) throws SQLException
                 {
-                    msg.append(rs.getString(_ehrStudy.getSubjectColumnName()) + "<br>\n");
+                    msg.append(rs.getString(getStudy(c).getSubjectColumnName()) + "<br>\n");
                 }
             });
 
@@ -169,7 +165,7 @@ public class BloodAdminAlertsNotification extends AbstractNotification
     /**
      * we find any blood draws where the animal is not assigned to that project
      */
-    protected void bloodDrawsNotAssignedToProject(final StringBuilder msg)
+    protected void bloodDrawsNotAssignedToProject(Container c, User u, final StringBuilder msg)
     {
         SimpleFilter filter = new SimpleFilter(FieldKey.fromString("Id/DataSet/Demographics/calculated_status"), "Alive");
         filter.addCondition(FieldKey.fromString("qcstate/label"), "Request: Denied", CompareType.NEQ);
@@ -181,7 +177,7 @@ public class BloodAdminAlertsNotification extends AbstractNotification
         mpv.addPropertyValue("query.queryName", "BloodSchedule");
 
         BindException errors = new NullSafeBindException(new Object(), "command");
-        UserSchema us = QueryService.get().getUserSchema(_ns.getUser(), _ehrContainer, "study");
+        UserSchema us = QueryService.get().getUserSchema(u, c, "study");
         QuerySettings qs = us.getSettings(mpv, "query");
         qs.setBaseFilter(filter);
         QueryView view = new QueryView(us, qs, errors);
@@ -203,7 +199,7 @@ public class BloodAdminAlertsNotification extends AbstractNotification
 
                 do
                 {
-                    msg.append(rs.getString(_ehrStudy.getSubjectColumnName()) + "<br>\n");
+                    msg.append(rs.getString(getStudy(c).getSubjectColumnName()) + "<br>\n");
                 }
                 while (rs.next());
 
@@ -233,16 +229,16 @@ public class BloodAdminAlertsNotification extends AbstractNotification
     /**
      * find any blood draws not yet approved
      */
-    protected void findNonApprovedDraws(final StringBuilder msg)
+    protected void findNonApprovedDraws(Container c, User u, final StringBuilder msg)
     {
         SimpleFilter filter = new SimpleFilter(FieldKey.fromString("Id/DataSet/Demographics/calculated_status"), "Alive");
         filter.addCondition(FieldKey.fromString("qcstate/label"), "Request: Pending");
         filter.addCondition(FieldKey.fromString("date"), new Date(), CompareType.DATE_GTE);
-        TableSelector ts = new TableSelector(_studySchema.getTable("Blood Draws"), Table.ALL_COLUMNS, filter, null);
+        TableSelector ts = new TableSelector(getStudySchema(c, u).getTable("Blood Draws"), Table.ALL_COLUMNS, filter, null);
         if (ts.getRowCount() > 0)
         {
             msg.append("<b>WARNING: There are " + ts.getRowCount() + " blood draws requested that have not been approved or denied yet.</b><br>");
-            msg.append("<p><a href='" + AppProps.getInstance().getBaseServerUrl() + AppProps.getInstance().getContextPath() + "/ehr" + _ehrContainer.getPath() + "/dataEntry.view#topTab:Requests&activeReport:BloodDrawRequests'>Click here to view them</a><br>\n");
+            msg.append("<p><a href='" + AppProps.getInstance().getBaseServerUrl() + AppProps.getInstance().getContextPath() + "/ehr" + c.getPath() + "/dataEntry.view#topTab:Requests&activeReport:BloodDrawRequests'>Click here to view them</a><br>\n");
             msg.append("<hr>\n");
         }
         else {
@@ -254,17 +250,17 @@ public class BloodAdminAlertsNotification extends AbstractNotification
     /**
      * we find any blood draws not yet assigned to either SPI or animal care
      */
-    protected void drawsNotAssigned(final StringBuilder msg)
+    protected void drawsNotAssigned(Container c, User u, final StringBuilder msg)
     {
         SimpleFilter filter = new SimpleFilter(FieldKey.fromString("Id/DataSet/Demographics/calculated_status"), "Alive");
         filter.addCondition(FieldKey.fromString("qcstate/label"), "Request: Denied", CompareType.NEQ_OR_NULL);
         filter.addCondition(FieldKey.fromString("date"), new Date(), CompareType.DATE_GTE);
         filter.addCondition(FieldKey.fromString("billedby"), null, CompareType.ISBLANK);
-        TableSelector ts = new TableSelector(_studySchema.getTable("Blood Draws"), Table.ALL_COLUMNS, filter, null);
+        TableSelector ts = new TableSelector(getStudySchema(c, u).getTable("Blood Draws"), Table.ALL_COLUMNS, filter, null);
         if (ts.getRowCount() > 0)
         {
             msg.append("<b>WARNING: There are " + ts.getRowCount() + " blood draws requested that have not been assigned to SPI or Animal Care.</b><br>");
-            msg.append("<p><a href='" + AppProps.getInstance().getBaseServerUrl() + AppProps.getInstance().getContextPath() + "/ehr" + _ehrContainer.getPath() + "/dataEntry.view#topTab:Requests&activeReport:BloodDrawRequests'>Click here to view them</a><br>\n");
+            msg.append("<p><a href='" + AppProps.getInstance().getBaseServerUrl() + AppProps.getInstance().getContextPath() + "/ehr" + c.getPath() + "/dataEntry.view#topTab:Requests&activeReport:BloodDrawRequests'>Click here to view them</a><br>\n");
             msg.append("<hr>\n");
         }
         else {
@@ -281,7 +277,7 @@ public class BloodAdminAlertsNotification extends AbstractNotification
 //    {
 //        SimpleFilter filter = new SimpleFilter(FieldKey.fromString("path_lsid"), null, CompareType.ISBLANK);
 //        filter.addCondition(FieldKey.fromString("date"), new Date(), CompareType.DATE_EQUAL);
-//        TableSelector ts = new TableSelector(_studySchema.getTable("ValidateBloodDrawClinpath"), Table.ALL_COLUMNS, filter, null);
+//        TableSelector ts = new TableSelector(getStudySchema(c, u).getTable("ValidateBloodDrawClinpath"), Table.ALL_COLUMNS, filter, null);
 //        if (ts.getRowCount() > 0)
 //        {
 //            msg.append("<b>WARNING: There are " + ts.getRowCount() + " blood draws scheduled today that request clinpath services, but lack a corresponding clinpath request.</b><br>");
@@ -293,7 +289,7 @@ public class BloodAdminAlertsNotification extends AbstractNotification
     /*
      * we find any incomplete blood draws scheduled today, by area
      */
-    protected void incompleteDraws(final StringBuilder msg)
+    protected void incompleteDraws(Container c, User u, final StringBuilder msg)
     {
         SimpleFilter filter = new SimpleFilter(FieldKey.fromString("Id/DataSet/Demographics/calculated_status"), "Alive");
         filter.addCondition(FieldKey.fromString("qcstate/label"), "Request: Denied", CompareType.NEQ_OR_NULL);
@@ -306,7 +302,7 @@ public class BloodAdminAlertsNotification extends AbstractNotification
         mpv.addPropertyValue("query.columns", "drawStatus,daterequested,project,date,project/protocol,taskid,projectStatus,tube_vol,tube_type,billedby,billedby/title,num_tubes,Id/curLocation/area,Id/curLocation/room,Id/curLocation/cage,additionalServices,remark,Id,quantity,qcstate,qcstate/Label,requestid");
 
         BindException errors = new NullSafeBindException(new Object(), "command");
-        UserSchema us = QueryService.get().getUserSchema(_ns.getUser(), _ehrContainer, "study");
+        UserSchema us = QueryService.get().getUserSchema(u, c, "study");
         QuerySettings qs = us.getSettings(mpv, "query");
         qs.setBaseFilter(filter);
         QueryView view = new QueryView(us, qs, errors);

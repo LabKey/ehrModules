@@ -17,6 +17,7 @@ package org.labkey.ehr.notification;
 
 import org.labkey.api.action.NullSafeBindException;
 import org.labkey.api.data.CompareType;
+import org.labkey.api.data.Container;
 import org.labkey.api.data.Results;
 import org.labkey.api.data.RuntimeSQLException;
 import org.labkey.api.data.SimpleFilter;
@@ -25,6 +26,7 @@ import org.labkey.api.query.QueryService;
 import org.labkey.api.query.QuerySettings;
 import org.labkey.api.query.QueryView;
 import org.labkey.api.query.UserSchema;
+import org.labkey.api.security.User;
 import org.labkey.api.settings.AppProps;
 import org.labkey.api.util.ResultSetUtil;
 import org.springframework.beans.MutablePropertyValues;
@@ -32,16 +34,12 @@ import org.springframework.validation.BindException;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Created by IntelliJ IDEA.
@@ -49,7 +47,7 @@ import java.util.concurrent.TimeUnit;
  * Date: 8/4/12
  * Time: 8:26 PM
  */
-public class LabResultSummaryNotification extends AbstractNotification
+public class LabResultSummaryNotification extends AbstractEHRNotification
 {
     public String getName()
     {
@@ -61,16 +59,16 @@ public class LabResultSummaryNotification extends AbstractNotification
         return "Daily Lab Result Summary: " + _dateTimeFormat.format(new Date());
     }
 
-    public List<ScheduledFuture> schedule(int delay)
+    @Override
+    public String getCronString()
     {
-        List<ScheduledFuture> tasks = new ArrayList<ScheduledFuture>();
-        tasks.add(NotificationService.get().getExecutor().scheduleWithFixedDelay(this, delay, 1, TimeUnit.DAYS));
-        return tasks;
+        return "0 30 14 * * ?";
     }
 
+    @Override
     public String getScheduleDescription()
     {
-        return "every day";
+        return "every day at 2:30PM";
     }
 
     public Set<String> getNotificationTypes()
@@ -83,7 +81,7 @@ public class LabResultSummaryNotification extends AbstractNotification
         return "The report provides a daily summary of all lab tests finalized in the EHR.";
     }
 
-    public String getMessage()
+    public String getMessage(Container c, User u)
     {
         final StringBuilder msg = new StringBuilder();
 
@@ -93,7 +91,7 @@ public class LabResultSummaryNotification extends AbstractNotification
 
         msg.append("This email contains clinpath results entered since: " + _dateTimeFormat.format(cal.getTime()) + ".<p>");
 
-        findPreviousResults(msg);
+        findPreviousResults(c, u, msg);
 
         return msg.toString();
     }
@@ -101,7 +99,7 @@ public class LabResultSummaryNotification extends AbstractNotification
     /**
      * we find any record requested since the last email
      */
-    public void findPreviousResults(StringBuilder msg)
+    public void findPreviousResults(Container c, User u, StringBuilder msg)
     {
         //yesterday
         Calendar cal = Calendar.getInstance();
@@ -120,7 +118,7 @@ public class LabResultSummaryNotification extends AbstractNotification
         mpv.addPropertyValue("query.sort", "Id,date");
 
         BindException errors = new NullSafeBindException(new Object(), "command");
-        UserSchema us = QueryService.get().getUserSchema(_ns.getUser(), _ehrContainer, "study");
+        UserSchema us = QueryService.get().getUserSchema(u, c, "study");
         QuerySettings qs = us.getSettings(mpv, "query");
         qs.setBaseFilter(filter);
         QueryView view = new QueryView(us, qs, errors);
@@ -163,7 +161,7 @@ public class LabResultSummaryNotification extends AbstractNotification
                     if (sb == null)
                         sb = new StringBuilder();
 
-                    sb.append("<tr><td><a href='" + AppProps.getInstance().getBaseServerUrl() + AppProps.getInstance().getContextPath() + "/ehr" + _ehrContainer.getPath() + "/animalHistory.view?#_inputType:renderSingleSubject&_showReport:1&subject:");
+                    sb.append("<tr><td><a href='" + AppProps.getInstance().getBaseServerUrl() + AppProps.getInstance().getContextPath() + "/ehr" + c.getPath() + "/animalHistory.view?#_inputType:renderSingleSubject&_showReport:1&subject:");
                     sb.append(rs.getString(FieldKey.fromString("Id")) + "&combineSubj:true&activeReport:clinPathRuns'>" + rs.getString(FieldKey.fromString("Id")) +  "</a></td><td>" + _dateFormat.format(rs.getDate(FieldKey.fromString("date"))) + "</td><td>" + rs.getString(FieldKey.fromString("serviceRequested")) + "</td><td>" + description + "</td><td>");
                     sb.append((rs.getString(FieldKey.fromString("dateReviewed")) == null ? "" : rs.getString(FieldKey.fromString("dateReviewed"))) + "</td><td" + (rs.getString(FieldKey.fromString("reviewedBy"))==null ? "" : " style=background:red;") + ">" + (rs.getString(FieldKey.fromString("reviewedBy"))==null ? "" : rs.getString(FieldKey.fromString("reviewedBy")) + "</td></tr>"));
 

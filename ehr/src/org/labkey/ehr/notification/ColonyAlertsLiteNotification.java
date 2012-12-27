@@ -15,11 +15,10 @@
  */
 package org.labkey.ehr.notification;
 
-import java.util.ArrayList;
+import org.labkey.api.data.Container;
+import org.labkey.api.security.User;
+
 import java.util.Date;
-import java.util.List;
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Created by IntelliJ IDEA.
@@ -42,17 +41,15 @@ public class ColonyAlertsLiteNotification extends ColonyAlertsNotification
     }
 
     @Override
-    public List<ScheduledFuture> schedule(int delay)
+    public String getCronString()
     {
-        List<ScheduledFuture> tasks = new ArrayList<ScheduledFuture>();
-        tasks.add(NotificationService.get().getExecutor().scheduleWithFixedDelay(this, delay, 60, TimeUnit.MINUTES));
-        return tasks;
+        return "0 5 0/1 * * ?";
     }
 
     @Override
     public String getScheduleDescription()
     {
-        return "every 60 minutes";
+        return "every 60 minutes, 5 min past the hour";
     }
 
     @Override
@@ -61,7 +58,7 @@ public class ColonyAlertsLiteNotification extends ColonyAlertsNotification
         return "The report is designed to identify potential problems with the colony, primarily related to weights, housing and assignments.  It runs a subset of the alerts from Colony Alerts and will send an email only if problems are found.";
     }
 
-    public String getMessage()
+    public String getMessage(Container c, User u)
     {
         final StringBuilder msg = new StringBuilder();
 
@@ -69,17 +66,17 @@ public class ColonyAlertsLiteNotification extends ColonyAlertsNotification
         Date now = new Date();
         msg.append("This email contains a series of automatic alerts about the colony.  It was run on: " + _dateFormat.format(now) + " at " + _timeFormat.format(now) + ".<p>");
 
-        multipleHousingRecords(msg);
-        validateActiveHousing(msg);
-        housingConditionProblems(msg);
-        deadAnimalsWithActiveHousing(msg);
-        livingAnimalsWithoutHousing(msg);
-        calculatedStatusFieldProblems(msg);
-        animalsLackingAssignments(msg);
-        deadAnimalsWithActiveAssignments(msg);
-        assignmentsWithoutValidProtocol(msg);
-        duplicateAssignments(msg);
-        nonContiguousHousing(msg);
+        multipleHousingRecords(c, u, msg);
+        validateActiveHousing(c, u, msg);
+        housingConditionProblems(c, u, msg);
+        deadAnimalsWithActiveHousing(c, u, msg);
+        livingAnimalsWithoutHousing(c, u, msg);
+        calculatedStatusFieldProblems(c, u, msg);
+        animalsLackingAssignments(c, u, msg);
+        deadAnimalsWithActiveAssignments(c, u, msg);
+        assignmentsWithoutValidProtocol(c, u, msg);
+        duplicateAssignments(c, u, msg);
+        nonContiguousHousing(c, u, msg);
 
         return msg.toString();
     }

@@ -1511,18 +1511,4 @@
             <ns:column columnName="modified"/>
         </ns:columns>
     </ns:table>
-    <ns:table tableName="projectAccountHistory" tableDbType="TABLE">
-        <ns:columns>
-            <ns:column columnName="rowid"/>
-            <ns:column columnName="project"/>
-            <ns:column columnName="account"/>
-            <ns:column columnName="startdate"/>
-            <ns:column columnName="enddate"/>
-            <ns:column columnName="objectid"/>
-            <ns:column columnName="createdby"/>
-            <ns:column columnName="created"/>
-            <ns:column columnName="modifiedby"/>
-            <ns:column columnName="modified"/>
-        </ns:columns>
-    </ns:table>
 </ns:tables>

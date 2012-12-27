@@ -17,6 +17,7 @@ package org.labkey.ehr.notification;
 
 import org.labkey.api.action.NullSafeBindException;
 import org.labkey.api.data.CompareType;
+import org.labkey.api.data.Container;
 import org.labkey.api.data.Results;
 import org.labkey.api.data.RuntimeSQLException;
 import org.labkey.api.data.SimpleFilter;
@@ -25,19 +26,16 @@ import org.labkey.api.query.QueryService;
 import org.labkey.api.query.QuerySettings;
 import org.labkey.api.query.QueryView;
 import org.labkey.api.query.UserSchema;
+import org.labkey.api.security.User;
 import org.labkey.api.util.ResultSetUtil;
 import org.springframework.beans.MutablePropertyValues;
 import org.springframework.validation.BindException;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Created by IntelliJ IDEA.
@@ -60,18 +58,15 @@ public class OverdueWeightsNotification extends ColonyAlertsNotification
     }
 
     @Override
-    public List<ScheduledFuture> schedule(int delay)
+    public String getCronString()
     {
-        List<ScheduledFuture> tasks = new ArrayList<ScheduledFuture>();
-        tasks.add(NotificationService.get().getExecutor().scheduleWithFixedDelay(this, delay, 1, TimeUnit.DAYS));
-        return tasks;
+        return "0 10 10 * * ?";
     }
 
     @Override
     public String getScheduleDescription()
     {
-        //TODO
-        return "every day";
+        return "every day at 10:10AM";
     }
 
     @Override
@@ -81,13 +76,13 @@ public class OverdueWeightsNotification extends ColonyAlertsNotification
     }
 
     @Override
-    public String getMessage()
+    public String getMessage(Container c, User u)
     {
         final StringBuilder msg = new StringBuilder();
         msg.append("This email contains alerts of animals not weighed in the past 60 days.  It was run on: " + _dateTimeFormat.format(new Date())+ ".<p>");
 
-        livingAnimalsWithoutWeight(msg);
-        animalsNotWeightedInPast60Days(msg);
+        livingAnimalsWithoutWeight(c, u, msg);
+        animalsNotWeightedInPast60Days(c, u, msg);
 
         return msg.toString();
     }
@@ -96,7 +91,7 @@ public class OverdueWeightsNotification extends ColonyAlertsNotification
      * find animals not weighed in the past 60 days
      * @param msg
      */
-    private void animalsNotWeightedInPast60Days(StringBuilder msg)
+    private void animalsNotWeightedInPast60Days(Container c, User u, StringBuilder msg)
     {
         SimpleFilter filter = new SimpleFilter(FieldKey.fromString("calculated_status"), "Alive");
         filter.addCondition(FieldKey.fromString("Id/MostRecentWeight/DaysSinceWeight"), 60, CompareType.GT);
@@ -107,7 +102,7 @@ public class OverdueWeightsNotification extends ColonyAlertsNotification
         mpv.addPropertyValue("query.viewName", "Weight Detail");
 
         BindException errors = new NullSafeBindException(new Object(), "command");
-        UserSchema us = QueryService.get().getUserSchema(_ns.getUser(), _ehrContainer, "study");
+        UserSchema us = QueryService.get().getUserSchema(u, c, "study");
         QuerySettings qs = us.getSettings(mpv, "query");
         qs.setBaseFilter(filter);
         QueryView view = new QueryView(us, qs, errors);

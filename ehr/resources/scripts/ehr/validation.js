@@ -98,17 +98,6 @@ EHR.Server.Validation = {
     },
 
     /**
-     * A helper that adds an error if an antibiotic sensitivity is provided without the antibiotic name
-     * @param row The row object
-     * @param errors The errors object
-     */
-    antibioticSens: function(row, errors){
-        if (row.sensitivity && row.antibiotic == null){
-            row.antibiotic = 'Unknown';
-            EHR.Server.Validation.addError(errors, '_form', 'Row has sensitivity, but no antibiotic', 'WARN');
-        }
-    },
-    /**
      * A helper to remove the time-portion of a datetime field.
      * @param row The row object
      * @param errors The errors object

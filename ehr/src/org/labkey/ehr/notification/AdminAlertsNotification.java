@@ -17,6 +17,7 @@ package org.labkey.ehr.notification;
 
 import org.labkey.api.action.NullSafeBindException;
 import org.labkey.api.data.CompareType;
+import org.labkey.api.data.Container;
 import org.labkey.api.data.Results;
 import org.labkey.api.data.RuntimeSQLException;
 import org.labkey.api.data.SimpleFilter;
@@ -25,20 +26,17 @@ import org.labkey.api.query.QueryService;
 import org.labkey.api.query.QuerySettings;
 import org.labkey.api.query.QueryView;
 import org.labkey.api.query.UserSchema;
+import org.labkey.api.security.User;
 import org.labkey.api.util.ResultSetUtil;
 import org.springframework.beans.MutablePropertyValues;
 import org.springframework.validation.BindException;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
-import java.util.List;
 import java.util.Set;
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Created by IntelliJ IDEA.
@@ -46,7 +44,7 @@ import java.util.concurrent.TimeUnit;
  * Date: 8/4/12
  * Time: 4:02 PM
  */
-public class AdminAlertsNotification extends AbstractNotification
+public class AdminAlertsNotification extends AbstractEHRNotification
 {
     public String getName()
     {
@@ -68,12 +66,10 @@ public class AdminAlertsNotification extends AbstractNotification
         return Collections.singleton(getName());
     }
 
-    public List<ScheduledFuture> schedule(int delay)
+    @Override
+    public String getCronString()
     {
-        List<ScheduledFuture> tasks = new ArrayList<ScheduledFuture>();
-        //TODO: 10AM
-        tasks.add(NotificationService.get().getExecutor().scheduleWithFixedDelay(this, delay, 1, TimeUnit.DAYS));
-        return tasks;
+        return "0 0 10 * * ?";
     }
 
     public String getScheduleDescription()
@@ -81,13 +77,13 @@ public class AdminAlertsNotification extends AbstractNotification
         return "daily at 10AM";
     }
 
-    public String getMessage()
+    public String getMessage(Container c, User u)
     {
         StringBuilder msg = new StringBuilder();
         msg.append("This email contains a series of alerts designed for site admins.  It was run on: " + _dateTimeFormat.format(new Date()) + ".<p>");
 
-        siteUsage(msg);
-        clientErrors(msg);
+        siteUsage(c, u, msg);
+
         //TODO
 //        dataEntryStatus(msg);
 
@@ -99,14 +95,14 @@ public class AdminAlertsNotification extends AbstractNotification
     /**
      * summarize site usage in the past 7 days
      */
-    private void siteUsage(final StringBuilder msg)
+    private void siteUsage(Container c, User u, final StringBuilder msg)
     {
         MutablePropertyValues mpv = new MutablePropertyValues();
         mpv.addPropertyValue("schemaName", "core");
         mpv.addPropertyValue("query.queryName", "SiteUsageByDay");
 
         BindException errors = new NullSafeBindException(new Object(), "command");
-        UserSchema us = QueryService.get().getUserSchema(_ns.getUser(), _ehrContainer, "core");
+        UserSchema us = QueryService.get().getUserSchema(u, c, "core");
         QuerySettings qs = us.getSettings(mpv, "query");
         Calendar cal = Calendar.getInstance();
         cal.setTime(new Date());
@@ -145,29 +141,9 @@ public class AdminAlertsNotification extends AbstractNotification
     }
 
     /**
-     * summarize client errors
-     */
-    private void clientErrors(final StringBuilder msg)
-    {
-//        SimpleFilter filter = new SimpleFilter(FieldKey.fromString("date"), "-7d", CompareType.DATE_GTE);
-//        ['date', 'dategte', $yesterday],
-//		['key1', 'neq', 'LabKey Server Backup'],
-//
-//        UserSchema schema = QueryService.get().getUserSchema(_ns.getUser(), _ehrContainer, "auditLog");
-//        TableSelector ts = new TableSelector(schema.getTable("audit"), Table.ALL_COLUMNS, filter, null);
-//        if (ts.getRowCount() > 0)
-//        {
-//        	msg.append("<b>WARNING: There were " + ts.getRowCount() + " client errors since $yesterday:</b>");
-//
-//            msg.append("<p><a href='" + _baseUrl + "query/Shared/executeQuery.view?schemaName=auditlog&query.queryName=audit&query.viewName=EHR Client Errors&query.date~dategte=".$yesterday."&key1~neq=LabKey Server Backup'>Click here to them</a></p>\n");
-//            msg.append("<hr>");
-//        }
-    }
-
-    /**
      * we print some stats on data entry
      */
-    private void dataEntryStatus(final StringBuilder msg)
+    private void dataEntryStatus(Container c, User u, final StringBuilder msg)
     {
         msg.append("<b>Data Entry Stats:</b><p>");
 
@@ -183,7 +159,7 @@ public class AdminAlertsNotification extends AbstractNotification
             mpv.addPropertyValue("sql", sql);
 
             BindException errors = new NullSafeBindException(new Object(), "command");
-            UserSchema us = QueryService.get().getUserSchema(_ns.getUser(), _ehrContainer, "core");
+            UserSchema us = QueryService.get().getUserSchema(u, c, "core");
             QuerySettings qs = us.getSettings(mpv, "query");
             SimpleFilter filter = new SimpleFilter(FieldKey.fromString("date"), "-7d", CompareType.DATE_GTE);
             qs.setBaseFilter(filter);

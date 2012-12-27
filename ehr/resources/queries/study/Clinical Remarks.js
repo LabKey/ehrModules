@@ -25,12 +25,20 @@ function setDescription(row, errors){
     //we need to set description for every field
     var description = new Array();
 
+    if (row.hx)
+        description.push('hx: '+row.hx);
     if (row.so)
         description.push('s/o: '+row.so);
+    if (row.s)
+        description.push('s: '+row.so);
+    if (row.o)
+        description.push('o: '+row.so);
     if (row.a)
         description.push('a: '+row.a);
     if (row.p)
         description.push('p: '+row.p);
+    if (row.p2)
+        description.push('p2: '+row.p2);
 
     return description;
 }

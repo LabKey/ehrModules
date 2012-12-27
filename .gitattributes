@@ -500,6 +500,7 @@ ehr/resources/queries/study/demographics/Alive,[!!-~]at[!!-~]Center.qview.xml -t
 ehr/resources/queries/study/demographics/Animal[!!-~]Locator.qview.xml -text
 ehr/resources/queries/study/demographics/Assignment[!!-~]Info.qview.xml -text
 ehr/resources/queries/study/demographics/Blood[!!-~]Draw[!!-~]Info.qview.xml -text
+ehr/resources/queries/study/demographics/Clinical[!!-~]Summary.qview.xml -text
 ehr/resources/queries/study/demographics/Housing[!!-~]Info.qview.xml -text
 ehr/resources/queries/study/demographics/No[!!-~]Active[!!-~]Assignments.qview.xml -text
 ehr/resources/queries/study/demographics/Search[!!-~]Panel.qview.xml -text
@@ -671,6 +672,7 @@ ehr/resources/schemas/dbscripts/postgresql/EHR-12.30-12.301.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR-12.301-12.302.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR-12.302-12.303.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR-12.303-12.304.sql -text
+ehr/resources/schemas/dbscripts/postgresql/EHR-12.304-12.305.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-11.10-11.20.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-11.20-11.30.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-11.30-12.10.sql -text
@@ -782,6 +784,7 @@ ehr/resources/schemas/dbscripts/sqlserver/EHR-12.30-12.301.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/EHR-12.301-12.302.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/EHR-12.302-12.303.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/EHR-12.303-12.304.sql -text
+ehr/resources/schemas/dbscripts/sqlserver/EHR-12.304-12.305.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/EHR_Lookups-11.30-12.10.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/EHR_Lookups-12.20-12.21.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/EHR_Lookups-12.20-12.30.sql -text
@@ -937,7 +940,7 @@ ehr/src/org/labkey/ehr/EHRProperties.java -text
 ehr/src/org/labkey/ehr/EHRSchema.java -text
 ehr/src/org/labkey/ehr/EHRServiceImpl.java -text
 ehr/src/org/labkey/ehr/notification/AbnormalLabResultsNotification.java -text
-ehr/src/org/labkey/ehr/notification/AbstractNotification.java -text
+ehr/src/org/labkey/ehr/notification/AbstractEHRNotification.java -text
 ehr/src/org/labkey/ehr/notification/AdminAlertsNotification.java -text
 ehr/src/org/labkey/ehr/notification/BloodAdminAlertsNotification.java -text
 ehr/src/org/labkey/ehr/notification/BloodAlertsNotification.java -text
@@ -946,8 +949,6 @@ ehr/src/org/labkey/ehr/notification/ColonyAlertsNotification.java -text
 ehr/src/org/labkey/ehr/notification/ColonyMgmtNotification.java -text
 ehr/src/org/labkey/ehr/notification/LabResultSummaryNotification.java -text
 ehr/src/org/labkey/ehr/notification/LabTestScheduleNotifications.java -text
-ehr/src/org/labkey/ehr/notification/Notification.java -text
-ehr/src/org/labkey/ehr/notification/NotificationService.java -text
 ehr/src/org/labkey/ehr/notification/OverdueWeightsNotification.java -text
 ehr/src/org/labkey/ehr/notification/TreatmentAlerts.java -text
 ehr/src/org/labkey/ehr/notification/WeightAlerts.java -text
@@ -1008,5 +1009,4 @@ ehr/src/org/labkey/ehr/utils/DemographicsCache.java -text
 ehr/src/org/labkey/ehr/utils/EHRQCState.java -text
 ehr/src/org/labkey/ehr/utils/FormContext.java -text
 ehr/src/org/labkey/ehr/utils/TriggerScriptHelper.java -text
-ehr/src/org/labkey/ehr/view/notificationAdmin.jsp -text
 ehr/webapp/WEB-INF/ehr/ehrContext.xml -text

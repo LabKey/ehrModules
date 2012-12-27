@@ -15,7 +15,6 @@
 
 package org.labkey.ehr;
 
-import org.json.JSONObject;
 import org.labkey.api.action.ApiAction;
 import org.labkey.api.action.ApiResponse;
 import org.labkey.api.action.ApiSimpleResponse;
@@ -26,20 +25,15 @@ import org.labkey.api.security.IgnoresTermsOfUse;
 import org.labkey.api.security.RequiresPermissionClass;
 import org.labkey.api.security.permissions.AdminPermission;
 import org.labkey.api.security.permissions.ReadPermission;
-import org.labkey.api.util.ConfigurationException;
 import org.labkey.api.util.URLHelper;
 import org.labkey.api.view.HtmlView;
 import org.labkey.api.view.JspView;
 import org.labkey.api.view.NavTree;
-import org.labkey.ehr.notification.Notification;
-import org.labkey.ehr.notification.NotificationService;
 import org.labkey.ehr.pipeline.KinshipRunnable;
 import org.springframework.validation.BindException;
 import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 
 public class EHRController extends SpringActionController
@@ -123,169 +117,12 @@ public class EHRController extends SpringActionController
     }
 
     @RequiresPermissionClass(AdminPermission.class)
-    public class NotificationAdminAction extends SimpleViewAction
-    {
-        public ModelAndView getView(Object o, BindException errors) throws Exception
-        {
-            return new JspView("/org/labkey/ehr/view/notificationAdmin.jsp");
-        }
-
-        public NavTree appendNavTrail(NavTree root)
-        {
-            return root.addChild("EHR Notification Admin");
-        }
-    }
-
-    @RequiresPermissionClass(AdminPermission.class)
-    public class NotificationSettingsAction extends ApiAction<NotificationSettingsForm>
-    {
-        public ApiResponse execute(NotificationSettingsForm form, BindException errors)
-        {
-            try
-            {
-                if (form.getReplyEmail() != null)
-                    NotificationService.get().setReturnEmail(form.getReplyEmail());
-
-                if (form.getUser() != null)
-                    NotificationService.get().setUser(form.getUser());
-
-                if (form.getActive() != null)
-                {
-                    JSONObject notifications = new JSONObject(form.getActive());
-                    for (String name : notifications.keySet())
-                    {
-                        Notification n = NotificationService.get().getNotification(name);
-                        if (n == null)
-                        {
-                            errors.reject(ERROR_MSG, "Unknown notification: " + name);
-                            return null;
-                        }
-
-                        n.setActive(notifications.getBoolean(name));
-                    }
-                }
-
-                if (form.getServiceEnabled() != null)
-                    NotificationService.get().setEnabled(form.getServiceEnabled());
-
-            }
-            catch (ConfigurationException e)
-            {
-                errors.reject(ERROR_MSG, e.getMessage());
-                return null;
-            }
-
-            ApiResponse resp = new ApiSimpleResponse();
-            resp.getProperties().put("success", true);
-            return resp;
-        }
-    }
-
-    public static class NotificationSettingsForm
-    {
-        String replyEmail;
-        Boolean serviceEnabled;
-        String user;
-        String active;
-
-        public String getReplyEmail()
-        {
-            return replyEmail;
-        }
-
-        public void setReplyEmail(String replyEmail)
-        {
-            this.replyEmail = replyEmail;
-        }
-
-        public String getUser()
-        {
-            return user;
-        }
-
-        public void setUser(String user)
-        {
-            this.user = user;
-        }
-
-        public String getActive()
-        {
-            return active;
-        }
-
-        public void setActive(String active)
-        {
-            this.active = active;
-        }
-
-        public Boolean getServiceEnabled()
-        {
-            return serviceEnabled;
-        }
-
-        public void setServiceEnabled(Boolean serviceEnabled)
-        {
-            this.serviceEnabled = serviceEnabled;
-        }
-    }
-
-    @RequiresPermissionClass(AdminPermission.class)
-    public class RunNotificationAction extends SimpleViewAction<RunNotificationForm>
-    {
-        public ModelAndView getView(RunNotificationForm form, BindException errors) throws Exception
-        {
-            if (form.getName() == null){
-                errors.reject(ERROR_MSG, "No form provided");
-                return null;
-            }
-
-            if (!NotificationService.get().isEnabled())
-            {
-                return new HtmlView("The Notification Service is not enabled.  Canot run this report.");
-            }
-
-            Notification n = NotificationService.get().getNotification(form.getName());
-            if (n == null){
-                errors.reject(ERROR_MSG, "Unable to find notification: " + form.getName());
-                return null;
-            }
-
-            StringBuilder sb = new StringBuilder();
-            Date lastRun = new Date(n.getLastRun());
-            SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd kk:mm");
-            sb.append("The notification email was last run on: " + df.format(lastRun) + "<p>");
-            sb.append(n.getMessage());
-            return new HtmlView(sb.toString());
-        }
-
-        public NavTree appendNavTrail(NavTree root)
-        {
-            return root.addChild("EHR Notification");
-        }
-    }
-
-    @RequiresPermissionClass(AdminPermission.class)
     public class KinshipAction extends ApiAction<Object>
     {
         public ApiResponse execute(Object form, BindException errors) throws Exception
         {
             boolean result = new KinshipRunnable().run(getContainer());
             return new ApiSimpleResponse("success", result);
-        }
-    }
-
-    public static class RunNotificationForm
-    {
-        String _name;
-
-        public String getName()
-        {
-            return _name;
-        }
-
-        public void setName(String name)
-        {
-            _name = name;
         }
     }
 }

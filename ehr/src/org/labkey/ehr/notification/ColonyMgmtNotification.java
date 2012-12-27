@@ -15,11 +15,10 @@
  */
 package org.labkey.ehr.notification;
 
-import java.util.ArrayList;
+import org.labkey.api.data.Container;
+import org.labkey.api.security.User;
+
 import java.util.Date;
-import java.util.List;
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Created by IntelliJ IDEA.
@@ -42,17 +41,15 @@ public class ColonyMgmtNotification extends ColonyAlertsNotification
     }
 
     @Override
-    public List<ScheduledFuture> schedule(int delay)
+    public String getCronString()
     {
-        List<ScheduledFuture> tasks = new ArrayList<ScheduledFuture>();
-        tasks.add(NotificationService.get().getExecutor().scheduleWithFixedDelay(this, delay, 60, TimeUnit.MINUTES));
-        return tasks;
+        return "0 10 6 * * ?";
     }
 
     @Override
     public String getScheduleDescription()
     {
-        return "every 60 minutes";
+        return "every day at 6:10AM";
     }
 
     @Override
@@ -61,7 +58,7 @@ public class ColonyMgmtNotification extends ColonyAlertsNotification
         return "The report is designed to identify potential problems with the colony, tailored toward colony managers.";
     }
 
-    public String getMessage()
+    public String getMessage(Container c, User u)
     {
         final StringBuilder msg = new StringBuilder();
 
@@ -69,17 +66,17 @@ public class ColonyMgmtNotification extends ColonyAlertsNotification
         Date now = new Date();
         msg.append("This email contains a series of automatic alerts for colony management.  It was run on: " + _dateFormat.format(now) + " at " + _timeFormat.format(now) + ".<p>");
 
-        livingAnimalsWithoutWeight(msg);
-        cagesWithoutDimensions(msg);
-        findAnimalsInPC(msg);
-        housingConditionProblems(msg);
-        cageReview(msg);
-        animalsLackingAssignments(msg);
-        activeAssignmentsForDeadAnimals(msg);
-        assignmentsWithoutValidProtocol(msg);
-        duplicateAssignments(msg);
-        animalsWithHoldCodesNotOnPending(msg);
-        protocolsNearingLimit(msg);
+        livingAnimalsWithoutWeight(c, u, msg);
+        cagesWithoutDimensions(c, u, msg);
+        findAnimalsInPC(c, u, msg);
+        housingConditionProblems(c, u, msg);
+        cageReview(c, u, msg);
+        animalsLackingAssignments(c, u, msg);
+        activeAssignmentsForDeadAnimals(c, u, msg);
+        assignmentsWithoutValidProtocol(c, u, msg);
+        duplicateAssignments(c, u, msg);
+        animalsWithHoldCodesNotOnPending(c, u, msg);
+        protocolsNearingLimit(c, u, msg);
 
         return msg.toString();
     }

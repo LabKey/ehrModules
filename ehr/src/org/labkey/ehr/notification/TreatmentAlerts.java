@@ -17,10 +17,10 @@ package org.labkey.ehr.notification;
 
 import org.labkey.api.action.NullSafeBindException;
 import org.labkey.api.data.CompareType;
+import org.labkey.api.data.Container;
 import org.labkey.api.data.Results;
 import org.labkey.api.data.RuntimeSQLException;
 import org.labkey.api.data.SimpleFilter;
-import org.labkey.api.data.Sort;
 import org.labkey.api.data.Table;
 import org.labkey.api.data.TableSelector;
 import org.labkey.api.query.FieldKey;
@@ -28,22 +28,18 @@ import org.labkey.api.query.QueryService;
 import org.labkey.api.query.QuerySettings;
 import org.labkey.api.query.QueryView;
 import org.labkey.api.query.UserSchema;
+import org.labkey.api.security.User;
 import org.labkey.api.util.ResultSetUtil;
 import org.springframework.beans.MutablePropertyValues;
 import org.springframework.validation.BindException;
 
 import java.io.IOException;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Created by IntelliJ IDEA.
@@ -51,7 +47,7 @@ import java.util.concurrent.TimeUnit;
  * Date: 8/4/12
  * Time: 8:29 PM
  */
-public class TreatmentAlerts extends AbstractNotification
+public class TreatmentAlerts extends AbstractEHRNotification
 {
     public String getName()
     {
@@ -73,12 +69,10 @@ public class TreatmentAlerts extends AbstractNotification
         return Collections.singleton(getName());
     }
 
-    public List<ScheduledFuture> schedule(int delay)
+    @Override
+    public String getCronString()
     {
-        List<ScheduledFuture> tasks = new ArrayList<ScheduledFuture>();
-        //TODO: schedule at specific times
-        tasks.add(NotificationService.get().getExecutor().scheduleWithFixedDelay(this, delay, 1, TimeUnit.DAYS));
-        return tasks;
+        return "0 0 10,13,16 * * ?";
     }
 
     public String getScheduleDescription()
@@ -86,7 +80,7 @@ public class TreatmentAlerts extends AbstractNotification
         return "daily at 10AM, 1PM and 4PM";
     }
 
-    public String getMessage()
+    public String getMessage(Container c, User u)
     {
         StringBuilder msg = new StringBuilder();
 
@@ -94,14 +88,14 @@ public class TreatmentAlerts extends AbstractNotification
         Date now = new Date();
         msg.append("This email contains any treatments not marked as completed.  It was run on: " + _dateFormat.format(now) + " at " + _timeFormat.format(now) + ".<p>");
 
-        findRoomsLackingObs(msg);
-        findTreatmentsWithoutProject(msg);
+        findRoomsLackingObs(c, u, msg);
+        findTreatmentsWithoutProject(c, u, msg);
 
-        processTreatments(msg, "AM", new Date(), true);
+        processTreatments(c, u, msg, "AM", new Date(), true);
 
-        treatmentsThatDiffer(msg);
-        treatmentsForDeadAnimals(msg);
-        casesForDeadAnimals(msg);
+        treatmentsThatDiffer(c, u, msg);
+        treatmentsForDeadAnimals(c, u, msg);
+        casesForDeadAnimals(c, u, msg);
 
         return msg.toString();
     }
@@ -109,7 +103,7 @@ public class TreatmentAlerts extends AbstractNotification
     /**
      * find any rooms lacking obs for today
      */
-    private void findRoomsLackingObs(final StringBuilder msg)
+    private void findRoomsLackingObs(Container c, User u, final StringBuilder msg)
     {
         SimpleFilter filter = new SimpleFilter(FieldKey.fromString("hasObs"), "N");
 
@@ -118,7 +112,7 @@ public class TreatmentAlerts extends AbstractNotification
         mpv.addPropertyValue("query.queryName", "RoomsWithoutObsToday");
 
         BindException errors = new NullSafeBindException(new Object(), "command");
-        UserSchema us = QueryService.get().getUserSchema(_ns.getUser(), _ehrContainer, "ehr");
+        UserSchema us = QueryService.get().getUserSchema(u, c, "ehr");
         QuerySettings qs = us.getSettings(mpv, "query");
         qs.setBaseFilter(filter);
         QueryView view = new QueryView(us, qs, errors);
@@ -154,7 +148,7 @@ public class TreatmentAlerts extends AbstractNotification
         }
     }
 
-    private void findTreatmentsWithoutProject(StringBuilder msg)
+    private void findTreatmentsWithoutProject(Container c, User u, StringBuilder msg)
     {
         SimpleFilter filter = new SimpleFilter(FieldKey.fromString("Id/DataSet/Demographics/calculated_status"), "Alive");
         filter.addCondition(FieldKey.fromString("projectStatus"), null, CompareType.NONBLANK);
@@ -166,7 +160,7 @@ public class TreatmentAlerts extends AbstractNotification
         mpv.addPropertyValue("query.sort", "room");
 
         BindException errors = new NullSafeBindException(new Object(), "command");
-        UserSchema us = QueryService.get().getUserSchema(_ns.getUser(), _ehrContainer, "study");
+        UserSchema us = QueryService.get().getUserSchema(u, c, "study");
         QuerySettings qs = us.getSettings(mpv, "query");
         qs.setBaseFilter(filter);
         QueryView view = new QueryView(us, qs, errors);
@@ -201,7 +195,7 @@ public class TreatmentAlerts extends AbstractNotification
         }
     }
 
-    private void processTreatments(StringBuilder msg, String timeOfDay, Date minTime, boolean noSendUnlessHasTreatments)
+    private void processTreatments(Container c, User u, StringBuilder msg, String timeOfDay, Date minTime, boolean noSendUnlessHasTreatments)
     {
         boolean shouldSend = false;
         StringBuilder sb = new StringBuilder();
@@ -214,7 +208,7 @@ public class TreatmentAlerts extends AbstractNotification
         mpv.addPropertyValue("query.sort", "CurrentArea,CurrentRoom");
 
         BindException errors = new NullSafeBindException(new Object(), "command");
-        UserSchema us = QueryService.get().getUserSchema(_ns.getUser(), _ehrContainer, "study");
+        UserSchema us = QueryService.get().getUserSchema(u, c, "study");
         QuerySettings qs = us.getSettings(mpv, "query");
 
         SimpleFilter filter = new SimpleFilter(FieldKey.fromString("date"), new Date(), CompareType.DATE_EQUAL);
@@ -346,15 +340,15 @@ public class TreatmentAlerts extends AbstractNotification
      * then any treatments from today that different from the order
      * @param msg
      */
-    private void treatmentsThatDiffer(StringBuilder msg)
+    private void treatmentsThatDiffer(Container c, User u, StringBuilder msg)
     {
         MutablePropertyValues mpv = new MutablePropertyValues();
         mpv.addPropertyValue("schemaName", "study");
         mpv.addPropertyValue("query.queryName", "TreatmentsThatDiffer");
-        mpv.addPropertyValue("query.sort", _ehrStudy.getSubjectColumnName());
+        mpv.addPropertyValue("query.sort", getStudy(c).getSubjectColumnName());
 
         BindException errors = new NullSafeBindException(new Object(), "command");
-        UserSchema us = QueryService.get().getUserSchema(_ns.getUser(), _ehrContainer, "study");
+        UserSchema us = QueryService.get().getUserSchema(u, c, "study");
         QuerySettings qs = us.getSettings(mpv, "query");
         SimpleFilter filter = new SimpleFilter(FieldKey.fromString("date"), new Date(), CompareType.DATE_EQUAL);
         qs.setBaseFilter(filter);
@@ -478,11 +472,11 @@ public class TreatmentAlerts extends AbstractNotification
         msg.append("<hr>\n");
     }
 
-    private void treatmentsForDeadAnimals(StringBuilder msg)
+    private void treatmentsForDeadAnimals(Container c, User u, StringBuilder msg)
     {
         SimpleFilter filter = new SimpleFilter(FieldKey.fromString("Id/DataSet/Demographics/calculated_status"), "Alive", CompareType.NEQ_OR_NULL);
         filter.addCondition(FieldKey.fromString("enddate"), null, CompareType.ISBLANK);
-        TableSelector ts = new TableSelector(_studySchema.getTable("Treatment Orders"), Table.ALL_COLUMNS, filter, null);
+        TableSelector ts = new TableSelector(getStudySchema(c, u).getTable("Treatment Orders"), Table.ALL_COLUMNS, filter, null);
         if (ts.getRowCount() > 0)
         {
             msg.append("<b>WARNING: There are " + ts.getRowCount() + " active treatments for animals not currently at WNPRC.</b>");
@@ -494,11 +488,11 @@ public class TreatmentAlerts extends AbstractNotification
     /**
      * we find any open case where the animal is not alive
      */
-    private void casesForDeadAnimals(StringBuilder msg)
+    private void casesForDeadAnimals(Container c, User u, StringBuilder msg)
     {
         SimpleFilter filter = new SimpleFilter(FieldKey.fromString("Id/DataSet/Demographics/calculated_status"), "Alive", CompareType.NEQ_OR_NULL);
         filter.addCondition(FieldKey.fromString("enddate"), null, CompareType.ISBLANK);
-        TableSelector ts = new TableSelector(_studySchema.getTable("Problem List"), Table.ALL_COLUMNS, filter, null);
+        TableSelector ts = new TableSelector(getStudySchema(c, u).getTable("Problem List"), Table.ALL_COLUMNS, filter, null);
         if (ts.getRowCount() > 0)
         {
             msg.append("<b>WARNING: There are " + ts.getRowCount() + " unresolved problems for animals not currently at the center.</b>");

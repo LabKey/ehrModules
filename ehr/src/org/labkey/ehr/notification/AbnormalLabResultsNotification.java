@@ -17,6 +17,7 @@ package org.labkey.ehr.notification;
 
 import org.labkey.api.action.NullSafeBindException;
 import org.labkey.api.data.CompareType;
+import org.labkey.api.data.Container;
 import org.labkey.api.data.Results;
 import org.labkey.api.data.RuntimeSQLException;
 import org.labkey.api.data.SimpleFilter;
@@ -25,6 +26,7 @@ import org.labkey.api.query.QueryService;
 import org.labkey.api.query.QuerySettings;
 import org.labkey.api.query.QueryView;
 import org.labkey.api.query.UserSchema;
+import org.labkey.api.security.User;
 import org.labkey.api.settings.AppProps;
 import org.labkey.api.util.ResultSetUtil;
 import org.springframework.beans.MutablePropertyValues;
@@ -32,15 +34,11 @@ import org.springframework.validation.BindException;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Created by IntelliJ IDEA.
@@ -48,7 +46,7 @@ import java.util.concurrent.TimeUnit;
  * Date: 8/4/12
  * Time: 8:26 PM
  */
-public class AbnormalLabResultsNotification extends AbstractNotification
+public class AbnormalLabResultsNotification extends AbstractEHRNotification
 {
     public String getName()
     {
@@ -60,16 +58,15 @@ public class AbnormalLabResultsNotification extends AbstractNotification
         return "Abnormal Lab Results: " + _dateTimeFormat.format(new Date());
     }
 
-    public List<ScheduledFuture> schedule(int delay)
+    @Override
+    public String getCronString()
     {
-        List<ScheduledFuture> tasks = new ArrayList<ScheduledFuture>();
-        tasks.add(NotificationService.get().getExecutor().scheduleWithFixedDelay(this, delay, 1, TimeUnit.DAYS));
-        return tasks;
+        return "0 0 14 * * ?";
     }
 
     public String getScheduleDescription()
     {
-        return "every day";
+        return "every day at 2PM";
     }
 
     public Set<String> getNotificationTypes()
@@ -82,20 +79,20 @@ public class AbnormalLabResultsNotification extends AbstractNotification
         return "The report provides a daily summary of all lab tests finalized in the EHR.";
     }
 
-    public String getMessage()
+    public String getMessage(Container c, User u)
     {
         final StringBuilder msg = new StringBuilder();
 
         Date lastRun;
-        long lastRunTime = getLastRun();
+        long lastRunTime = _ns.getLastRun(this);
         if (lastRunTime == 0)
             lastRun = new Date(0);
         else
-            lastRun = new Date(getLastRun());
+            lastRun = new Date(lastRunTime);
 
         msg.append("This email contains abnormal clinpath results that have been finalized since: " + _dateTimeFormat.format(lastRun) + ".<p>");
 
-        findAbnormalResults(msg, lastRun);
+        findAbnormalResults(c, u, msg, lastRun);
 
         return msg.toString();
     }
@@ -103,7 +100,7 @@ public class AbnormalLabResultsNotification extends AbstractNotification
     /**
      * we find any record requested since the last email with out of range results
      */
-    public void findAbnormalResults(StringBuilder msg, Date lastRun)
+    public void findAbnormalResults(Container c, User u, StringBuilder msg, Date lastRun)
     {
         SimpleFilter filter = new SimpleFilter(FieldKey.fromString("qcstate/PublicData"), true);
         filter.addCondition(FieldKey.fromString("taskid/datecompleted"), lastRun, CompareType.GTE);
@@ -116,7 +113,7 @@ public class AbnormalLabResultsNotification extends AbstractNotification
         mpv.addPropertyValue("query.columns", "Id,date,Id/curLocation/area,Id/curLocation/room,Id/curLocation/cage,alertStatus,taskid/datecompleted,testid,result,units,status,ref_range_min,ref_range_max,ageAtTime");
 
         BindException errors = new NullSafeBindException(new Object(), "command");
-        UserSchema us = QueryService.get().getUserSchema(_ns.getUser(), _ehrContainer, "study");
+        UserSchema us = QueryService.get().getUserSchema(u, c, "study");
         QuerySettings qs = us.getSettings(mpv, "query");
         qs.setBaseFilter(filter);
         QueryView view = new QueryView(us, qs, errors);
@@ -163,7 +160,7 @@ public class AbnormalLabResultsNotification extends AbstractNotification
                     else if (rs.getDouble(FieldKey.fromString("result")) > rs.getDouble(FieldKey.fromString("ref_range_max")))
                         color = "#E3170D";
 
-                    sb.append("<tr><td><a href='" + AppProps.getInstance().getBaseServerUrl() + AppProps.getInstance().getContextPath() + "/ehr" + _ehrContainer.getPath() + "/animalHistory.view?#_inputType:renderSingleSubject&_showReport:1&subject:" + appendField("Id", rs) + "&combineSubj:true&activeReport:clinPathRuns'>" + appendField("Id", rs) + "</a></td>");
+                    sb.append("<tr><td><a href='" + AppProps.getInstance().getBaseServerUrl() + AppProps.getInstance().getContextPath() + "/ehr" + c.getPath() + "/animalHistory.view?#_inputType:renderSingleSubject&_showReport:1&subject:" + appendField("Id", rs) + "&combineSubj:true&activeReport:clinPathRuns'>" + appendField("Id", rs) + "</a></td>");
                     sb.append("<td>" + appendField("date", rs) + "</td>");
                     sb.append("<td>" + appendField("taskid/datecompleted", rs) + "</td>");
                     sb.append("<td>" + appendField("testId", rs) + "</td>");
