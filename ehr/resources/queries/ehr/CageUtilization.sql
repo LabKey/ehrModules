@@ -4,7 +4,7 @@
  * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
  */
 SELECT
-  c.roomcage,
+  c.location,
   c.room,
   c.cage,
   count(DISTINCT h.id) as TotalAnimals
@@ -17,5 +17,5 @@ ON (c.room=h.room AND c.cage=h.cage)
 
 WHERE h.enddate IS NULL
 
-GROUP BY c.roomcage, c.room, c.cage
+GROUP BY c.location, c.room, c.cage
 

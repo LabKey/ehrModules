@@ -2,6 +2,7 @@
     <metadata>
         <tables xmlns="http://labkey.org/data/xml">
             <table tableName="housingRoommates" tableDbType="NOT_IN_DB">
+                <tableTitle>Housing Summary By Location</tableTitle>
                 <columns>
                     <column columnName="TotalAnimals">
                         <url>/query/executeQuery.view?schemaName=study&amp;

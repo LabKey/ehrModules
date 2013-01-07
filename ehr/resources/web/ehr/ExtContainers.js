@@ -71,7 +71,7 @@ EHR.ext.AnimalSelectorPanel = Ext.extend(Ext.Panel, {
 //                    ,editable: true
 //                    ,store: new LABKEY.ext.Store({
 //                        schemaName: 'ehr_lookups',
-//                        queryName: 'rooms',
+//                        queryName: 'room_list',
 //                        sort: 'room',
 //                        autoLoad: true
 //                    })

@@ -2,6 +2,7 @@
     <metadata>
         <tables xmlns="http://labkey.org/data/xml">
             <table tableName="hematologyRefRange" tableDbType="NOT_IN_DB">
+                <tableTitle>Hematology Results With Reference Range</tableTitle>
                 <columns>
                     <column columnName="Lsid">
                         <isKeyField>true</isKeyField>

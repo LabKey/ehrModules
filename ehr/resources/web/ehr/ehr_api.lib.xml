@@ -13,10 +13,24 @@
         <script path="ehr/ehrFormPanel.js"/>
         <script path="ehr/ehrGridFormPanel.js"/>
         <script path="ehr/ehrPrintTaskPanel.js"/>
-
         <script path="ehr/ExtComponents.js"/>
         <script path="ehr/ExtContainers.js"/>
-        <script path="ehr/ehrMetadata.js"/>
+        <script path="ehr/metadata/Metadata.js"/>
+        <script path="ehr/metadata/Anesthesia.js"/>
+        <script path="ehr/metadata/Assay.js"/>
+        <script path="ehr/metadata/Biopsy.js"/>
+        <script path="ehr/metadata/Default.js"/>
+        <script path="ehr/metadata/Encounter.js"/>
+        <script path="ehr/metadata/MPR.js"/>
+        <script path="ehr/metadata/Necropsy.js"/>
+        <script path="ehr/metadata/NewAnimal.js"/>
+        <script path="ehr/metadata/NWM_PE.js"/>
+        <script path="ehr/metadata/PE.js"/>
+        <script path="ehr/metadata/Request.js"/>
+        <script path="ehr/metadata/SimpleForm.js"/>
+        <script path="ehr/metadata/Surgery.js"/>
+        <script path="ehr/metadata/Task.js"/>
+        <script path="ehr/metadata/Treatments.js"/>
         <script path="ehr/studyButtons.js"/>
         <script path="ehr/animalHistory.js"/>
         <script path="ehr/reports.js" />

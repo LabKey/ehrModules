@@ -34,6 +34,8 @@ import org.labkey.api.pipeline.WorkDirectoryTask;
 import org.labkey.api.pipeline.file.FileAnalysisJobSupport;
 import org.labkey.api.query.FieldKey;
 import org.labkey.api.query.QueryService;
+import org.labkey.api.reports.ExternalScriptEngine;
+import org.labkey.api.script.ScriptService;
 import org.labkey.api.settings.AppProps;
 import org.labkey.api.util.FileType;
 
@@ -108,7 +110,8 @@ public class KinshipRTask extends WorkDirectoryTask<KinshipRTask.Factory>
         RecordedAction action = new RecordedAction();
 
         job.getLogger().info("Preparing to run R script");
-        String exePath = getExePath("RScript", "R");
+
+        String exePath = getExePath("Rscript", "R");
         String scriptPath = getExePath("populateKinship.r", "KINSHIP_SCRIPT");
         File tsvFile = new File(support.getAnalysisDirectory(), KinshipImportTask.PEDIGREE_FILE);
         if (!tsvFile.exists())

@@ -1,4 +1,4 @@
-<query xmlns="http://labkey.org/data/xml/query" name="demographicsSiblings">
+<query xmlns="http://labkey.org/data/xml/query">
     <description>Siblings of Any Animal</description>
     <metadata>
         <tables xmlns="http://labkey.org/data/xml">

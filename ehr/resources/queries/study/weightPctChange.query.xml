@@ -2,6 +2,8 @@
     <metadata>
         <tables xmlns="http://labkey.org/data/xml">
             <table tableName="weightPctChange" tableDbType="NOT_IN_DB">
+                <tableTitle>Weight Change, Relative to Previous Weight</tableTitle>
+                <description>This query shows the percent change of each weight, relative to the weight immediately prior to it</description>
                 <columns>
                     <column columnName="lsid">
                         <isKeyField>true</isKeyField>

@@ -9,14 +9,14 @@ SELECT
   --b.date,
   b.wdate as MostRecentWeightDate,
   b.weight as MostRecentWeight,
-  convert(BloodLast30, NUMERIC) as BloodLast30,
-  convert(BloodNext30, NUMERIC) as BloodNext30,
+  convert(BloodLast30, float) as BloodLast30,
+  convert(BloodNext30, float) as BloodNext30,
   convert(CASE
     WHEN (b.species = 'Marmoset')
       THEN (b.weight*0.15*60)
     ELSE
       (b.weight*0.2*60)
-    END, NUMERIC) AS MaxBlood,
+    END, float) AS MaxBlood,
 
   convert(case
     when (b.BloodLast30 > b.BloodNext30 and b.species = 'Marmoset')
@@ -27,7 +27,7 @@ SELECT
       THEN ((b.weight*0.15*60) - b.BloodNext30)
     else
       ((b.weight*0.2*60) - b.BloodNext30)
-  end, NUMERIC) as AvailBlood
+  end, float) as AvailBlood
 from (
 SELECT
   d.lsid,

@@ -9,7 +9,7 @@
  * checks on the incoming data.  If this dataset needs specialized validation, you can create functions with defined names
  * below (ie. onUpdate, onInsert, etc).  See JS doc on EHR.Server.Triggers for more detail.
  */
-var {EHR, LABKEY, Ext, console, init, beforeInsert, afterInsert, beforeUpdate, afterUpdate, beforeDelete, afterDelete, complete} = require("ehr/triggers");
+require("ehr/triggers").initScript(this);
 
 
 /*

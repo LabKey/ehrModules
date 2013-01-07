@@ -107,7 +107,6 @@ public class ColonyAlertsNotification extends AbstractEHRNotification
         findAnimalsInPC(c, u, msg);
         multipleHousingRecords(c, u, msg);
         validateActiveHousing(c, u, msg);
-        housingConditionProblems(c, u, msg);
         deadAnimalsWithActiveHousing(c, u, msg);
         livingAnimalsWithoutHousing(c, u, msg);
         calculatedStatusFieldProblems(c, u, msg);
@@ -300,56 +299,56 @@ public class ColonyAlertsNotification extends AbstractEHRNotification
         }
     }
 
-    protected void housingConditionProblems(final Container c, User u, final StringBuilder msg)
-    {
-        //then we find all records with potential housing condition problems
-        MutablePropertyValues mpv = new MutablePropertyValues();
-        mpv.addPropertyValue("schemaName", "study");
-        mpv.addPropertyValue("query.queryName", "housingConditionProblems");
-        mpv.addPropertyValue("query.sort", getStudy(c).getSubjectColumnName());
-
-        BindException errors = new NullSafeBindException(new Object(), "command");
-        UserSchema us = QueryService.get().getUserSchema(u, c, "study");
-        QuerySettings qs = us.getSettings(mpv, "query");
-        SimpleFilter filter = new SimpleFilter(FieldKey.fromString("conditionStatus"), "ERROR", CompareType.EQUAL);
-        qs.setBaseFilter(filter);
-        QueryView view = new QueryView(us, qs, errors);
-        Results rs = null;
-        try
-        {
-            rs = view.getResults();
-            int total = 0;
-            if (rs.next())
-            {
-                StringBuilder tmp = new StringBuilder();
-                do
-                {
-                    tmp.append(rs.getString(getStudy(c).getSubjectColumnName()) + ";");
-                    total++;
-                }
-                while (rs.next());
-
-                msg.append("<b>WARNING: There are " + total + " housing records with potential condition problems:</b><br>\n");
-                msg.append("<p><a href='" + _baseUrl + "/executeQuery.view?schemaName=study&query.queryName=housingConditionProblems&query.viewName=Problems'>Click here to view these records</a></p>\n");
-                msg.append("<a href='" + AppProps.getInstance().getBaseServerUrl() + AppProps.getInstance().getContextPath() + "/ehr" + c.getPath() + "/updateQuery.view?schemaName=study&query.queryName=Housing&query.Id~in=");
-                msg.append(tmp);
-                msg.append("&query.enddate~isblank'>Click here to edit housing to fix the problems</a><p>");
-                msg.append("<hr>\n");
-            }
-        }
-        catch (SQLException e)
-        {
-            throw new RuntimeSQLException(e);
-        }
-        catch (IOException e)
-        {
-            throw new RuntimeException(e);
-        }
-        finally
-        {
-            ResultSetUtil.close(rs);
-        }
-    }
+//    protected void housingConditionProblems(final Container c, User u, final StringBuilder msg)
+//    {
+//        //then we find all records with potential housing condition problems
+//        MutablePropertyValues mpv = new MutablePropertyValues();
+//        mpv.addPropertyValue("schemaName", "study");
+//        mpv.addPropertyValue("query.queryName", "housingConditionProblems");
+//        mpv.addPropertyValue("query.sort", getStudy(c).getSubjectColumnName());
+//
+//        BindException errors = new NullSafeBindException(new Object(), "command");
+//        UserSchema us = QueryService.get().getUserSchema(u, c, "study");
+//        QuerySettings qs = us.getSettings(mpv, "query");
+//        SimpleFilter filter = new SimpleFilter(FieldKey.fromString("conditionStatus"), "ERROR", CompareType.EQUAL);
+//        qs.setBaseFilter(filter);
+//        QueryView view = new QueryView(us, qs, errors);
+//        Results rs = null;
+//        try
+//        {
+//            rs = view.getResults();
+//            int total = 0;
+//            if (rs.next())
+//            {
+//                StringBuilder tmp = new StringBuilder();
+//                do
+//                {
+//                    tmp.append(rs.getString(getStudy(c).getSubjectColumnName()) + ";");
+//                    total++;
+//                }
+//                while (rs.next());
+//
+//                msg.append("<b>WARNING: There are " + total + " housing records with potential condition problems:</b><br>\n");
+//                msg.append("<p><a href='" + _baseUrl + "/executeQuery.view?schemaName=study&query.queryName=housingConditionProblems&query.viewName=Problems'>Click here to view these records</a></p>\n");
+//                msg.append("<a href='" + AppProps.getInstance().getBaseServerUrl() + AppProps.getInstance().getContextPath() + "/ehr" + c.getPath() + "/updateQuery.view?schemaName=study&query.queryName=Housing&query.Id~in=");
+//                msg.append(tmp);
+//                msg.append("&query.enddate~isblank'>Click here to edit housing to fix the problems</a><p>");
+//                msg.append("<hr>\n");
+//            }
+//        }
+//        catch (SQLException e)
+//        {
+//            throw new RuntimeSQLException(e);
+//        }
+//        catch (IOException e)
+//        {
+//            throw new RuntimeException(e);
+//        }
+//        finally
+//        {
+//            ResultSetUtil.close(rs);
+//        }
+//    }
 
     protected void deadAnimalsWithActiveHousing(final Container c, User u, final StringBuilder msg)
     {

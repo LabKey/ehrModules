@@ -41,13 +41,17 @@ import org.labkey.api.module.Module;
 import org.labkey.api.module.ModuleLoader;
 import org.labkey.api.module.ModuleProperty;
 import org.labkey.api.query.FieldKey;
+import org.labkey.api.query.QueryService;
+import org.labkey.api.query.UserSchema;
 import org.labkey.api.security.User;
 import org.labkey.api.security.UserManager;
 import org.labkey.api.security.ValidEmail;
 import org.labkey.api.study.DataSet;
 import org.labkey.api.study.Study;
 import org.labkey.api.study.StudyService;
+import org.labkey.api.util.ExceptionUtil;
 import org.labkey.api.util.ResultSetUtil;
+import org.labkey.study.xml.StudyDocument;
 
 import java.beans.Introspector;
 import java.sql.DatabaseMetaData;
@@ -55,6 +59,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -164,6 +169,111 @@ public class EHRManager
         return ehrStudies;
     }
 
+    public List<String> verifyDatasetResources(Container c, User u)
+    {
+        List<String> messages = new ArrayList<String>();
+        Study s = StudyService.get().getStudy(c);
+        if (s == null){
+            messages.add("There is no study in container: " + c.getPath());
+            return messages;
+        }
+
+        for (DataSet ds : s.getDataSets())
+        {
+            UserSchema us = QueryService.get().getUserSchema(u, c, "study");
+            TableInfo ti = us.getTable(ds.getName(), true);
+
+            if (!ti.hasTriggers(c))
+            {
+                messages.add("Missing trigger script for: " + ds.getLabel());
+            }
+
+            //TODO: query.xml file
+        }
+
+        return messages;
+    }
+    
+    /**
+     * The EHR expects certain properties to be present on all dataset.  This will iterate each dataset, add any
+     * missing columns and make sure the columns point to the correct propertyURI
+     * @param c
+     * @param u
+     * @param commitChanges
+     * @return
+     */
+    public List<String> ensureStudyQCStates(Container c, User u, boolean commitChanges)
+    {
+        List<String> messages = new ArrayList<String>();
+        Study s = StudyService.get().getStudy(c);
+        if (s == null){
+            messages.add("There is no study in container: " + c.getPath());
+            return messages;
+        }
+
+        //there does not seem to be a public API, so we hit the DB directly
+        TableInfo ti = DbSchema.get("study").getTable("qcstate");
+
+        Object[][] states = new Object[][]{
+            {"Abnormal", "Value is abnormal", true},
+            {"Completed", "Record has been completed and is public", false},
+            {"Delete Requested", "Records are requested to be deleted", false},
+            {"In Progress", "Draft Record, not public", false},
+            {"Request: Approved", "Request has been approved", false},
+            {"Request: Denied", "Request has been denied", false},
+            {"Request: Pending", "Part of a request that has not been approved", false},
+            {"Review Required", "Review is required prior to public release", false},
+            {"Scheduled", "Record is scheduled, but not performed", false}
+        };
+
+        boolean shouldClearCache = false;
+        ExperimentService.get().ensureTransaction();
+        try
+        {
+            for (Object[] qc : states)
+            {
+                SimpleFilter filter = new SimpleFilter(FieldKey.fromString("Container"), c);
+                filter.addCondition(FieldKey.fromString("label"), qc[0]);
+                TableSelector ts = new TableSelector(ti, filter, null);
+                if (ts.getRowCount() > 0)
+                    continue;
+
+                messages.add("Missing QCState: " + qc[0]);
+                if (commitChanges)
+                {
+                    Map<String, Object> row = new HashMap<String, Object>();
+                    row.put("container", c.getId());
+                    row.put("label", qc[0]);
+                    row.put("description", qc[1]);
+                    row.put("publicdata", qc[2]);
+                    Table.insert(u, ti, row);
+
+                    shouldClearCache = true;
+                }
+            }
+
+            ExperimentService.get().commitTransaction();
+        }
+        catch (SQLException e)
+        {
+            ExceptionUtil.logExceptionToMothership(null, e);
+            messages.add(e.getMessage());
+            return messages;
+        }
+        finally
+        {
+            ExperimentService.get().closeTransaction();
+        }
+
+        if (shouldClearCache)
+        {
+            Introspector.flushCaches();
+            CacheManager.clearAllKnownCaches();
+        }
+
+        return messages;
+    }
+    
     /**
      * The EHR expects certain properties to be present on all dataset.  This will iterate each dataset, add any
      * missing columns and make sure the columns point to the correct propertyURI

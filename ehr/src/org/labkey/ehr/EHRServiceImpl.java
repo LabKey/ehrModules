@@ -17,11 +17,13 @@ package org.labkey.ehr;
 
 import org.labkey.api.collections.CaseInsensitiveHashMap;
 import org.labkey.api.data.Container;
+import org.labkey.api.data.PropertyManager;
 import org.labkey.api.data.TableCustomizer;
 import org.labkey.api.ehr.EHRService;
 import org.labkey.api.module.Module;
 import org.labkey.api.resource.Resource;
 import org.labkey.api.security.User;
+import org.labkey.api.settings.WriteableAppProps;
 import org.labkey.api.util.Pair;
 import org.labkey.api.view.template.ClientDependency;
 
@@ -44,9 +46,12 @@ public class EHRServiceImpl extends EHRService
     private Set<Module> _registeredModules = new HashSet<Module>();
     private List<Pair<Module, Resource>> _extraTriggerScripts = new ArrayList<Pair<Module, Resource>>();
     private Map<Module, List<ClientDependency>> _clientDependencies = new HashMap<Module, List<ClientDependency>>();
-    private Map<String, Map<String, List<TableCustomizer>>> _tableCustomizers = new CaseInsensitiveHashMap<Map<String, List<TableCustomizer>>>();
-    private final String ALL_TABLES = "~~ALL_TABLES~~";
-    private final String ALL_SCHEMAS = "~~ALL_SCHEMAS~~";
+    private Map<String, Map<String, List<Pair<Module, TableCustomizer>>>> _tableCustomizers = new CaseInsensitiveHashMap<Map<String, List<Pair<Module, TableCustomizer>>>>();
+    private Map<String, String> _dateFormats = new HashMap<String, String>();
+
+    private static final String ALL_TABLES = "~~ALL_TABLES~~";
+    private static final String ALL_SCHEMAS = "~~ALL_SCHEMAS~~";
+    private static final String DATE_CATEGORY = "org.labkey.ehr.dateformat";
 
     public EHRServiceImpl()
     {
@@ -84,42 +89,60 @@ public class EHRServiceImpl extends EHRService
         return Collections.unmodifiableList(resouces);
     }
 
-    public void registerTableCustomizer(TableCustomizer customizer)
+    public void registerTableCustomizer(Module owner, TableCustomizer customizer)
     {
-        registerTableCustomizer(customizer, ALL_SCHEMAS, ALL_TABLES);
+        registerTableCustomizer(owner, customizer, ALL_SCHEMAS, ALL_TABLES);
     }
 
-    public void registerTableCustomizer(TableCustomizer customizer, String schema)
+    public void registerTableCustomizer(Module owner, TableCustomizer customizer, String schema, String query)
     {
-        registerTableCustomizer(customizer, schema, ALL_TABLES);
-    }
-
-    public void registerTableCustomizer(TableCustomizer customizer, String schema, String query)
-    {
-        Map<String, List<TableCustomizer>> map = _tableCustomizers.get(schema);
+        Map<String, List<Pair<Module, TableCustomizer>>> map = _tableCustomizers.get(schema);
         if (map == null)
-            map = new CaseInsensitiveHashMap<List<TableCustomizer>>();
+            map = new CaseInsensitiveHashMap<List<Pair<Module, TableCustomizer>>>();
 
-        List<TableCustomizer> list = map.get(query);
+        List<Pair<Module, TableCustomizer>> list = map.get(query);
         if (list == null)
-            list = new ArrayList<TableCustomizer>();
+            list = new ArrayList<Pair<Module, TableCustomizer>>();
 
-        list.add(customizer);
+        list.add(Pair.of(owner, customizer));
 
         map.put(query, list);
         _tableCustomizers.put(schema, map);
     }
 
-    public List<TableCustomizer> getCustomizers(String schema, String query)
+    public List<TableCustomizer> getCustomizers(Container c, String schema, String query)
     {
         List<TableCustomizer> list = new ArrayList<TableCustomizer>();
+        Set<Module> modules = c.getActiveModules();
+
         if (_tableCustomizers.get(ALL_SCHEMAS) != null)
-            list.addAll(_tableCustomizers.get(ALL_SCHEMAS).get(ALL_TABLES));
+        {
+            for (Pair<Module, TableCustomizer> pair : _tableCustomizers.get(ALL_SCHEMAS).get(ALL_TABLES))
+            {
+                if (modules.contains(pair.first))
+                    list.add(pair.second);
+            }
+        }
 
         if (_tableCustomizers.containsKey(schema))
         {
-            list.addAll(_tableCustomizers.get(schema).get(ALL_TABLES));
-            list.addAll(_tableCustomizers.get(schema).get(query));
+            if (_tableCustomizers.get(schema).get(ALL_TABLES).contains(ALL_TABLES))
+            {
+                for (Pair<Module, TableCustomizer> pair : _tableCustomizers.get(schema).get(ALL_TABLES))
+                {
+                    if (modules.contains(pair.first))
+                        list.add(pair.second);
+                }
+            }
+
+            if (_tableCustomizers.get(schema).get(ALL_TABLES).contains(query))
+            {
+                for (Pair<Module, TableCustomizer> pair : _tableCustomizers.get(schema).get(query))
+                {
+                    if (modules.contains(pair.first))
+                        list.add(pair.second);
+                }
+            }
         }
 
         return Collections.unmodifiableList(list);
@@ -148,5 +171,25 @@ public class EHRServiceImpl extends EHRService
         }
 
         return Collections.unmodifiableSet(set);
+    }
+
+    public void setDateFormat(Container c, String format)
+    {
+        PropertyManager.PropertyMap props = PropertyManager.getWritableProperties(c, DATE_CATEGORY, true);
+        props.put("dateFormat", format);
+        PropertyManager.saveProperties(props);
+        _dateFormats.put(c.getId(), format);
+    }
+
+    public String getDateFormat(Container c)
+    {
+        if (_dateFormats.containsKey(c.getId()))
+            return _dateFormats.get(c.getId());
+
+        Map<String, String> props = PropertyManager.getProperties(c, DATE_CATEGORY);
+        if (props.containsKey("dateFormat"))
+            return props.get("dateFormat");
+
+        return "yyyy-MM-dd HH:mm";
     }
 }

@@ -2,6 +2,7 @@
     <metadata>
         <tables xmlns="http://labkey.org/data/xml">
             <table tableName="majorEvents" tableDbType="NOT_IN_DB">
+                <tableTitle>Major Events</tableTitle>
                 <columns>
                     <column columnName="Id">
                         <columnTitle>Id</columnTitle>

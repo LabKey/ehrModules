@@ -19,11 +19,11 @@ TIMESTAMPDIFF('SQL_TSI_DAY', d.birth, COALESCE(d.death, now())) as AgeInDays,
 
 case
   when (age_in_months(d.birth, COALESCE(d.death, now()))) < 1
-    then (CONVERT(CONVERT(TIMESTAMPDIFF('SQL_TSI_DAY', d.birth, COALESCE(d.death, now())), NUMERIC), VARCHAR) || ' days')
+    then (CONVERT(CONVERT(TIMESTAMPDIFF('SQL_TSI_DAY', d.birth, COALESCE(d.death, now())), float), VARCHAR) || ' days')
   when (age_in_months(d.birth, COALESCE(d.death, now()))) < 12
-    then (CONVERT(CONVERT(ROUND(age_in_months(d.birth, COALESCE(d.death, now())), 1), NUMERIC), VARCHAR) || ' months')
+    then (CONVERT(CONVERT(ROUND(age_in_months(d.birth, COALESCE(d.death, now())), 1), float), VARCHAR) || ' months')
   else
-    (CONVERT(CONVERT(ROUND(age_in_months(d.birth, COALESCE(d.death, now())) / 12, 1), NUMERIC), VARCHAR) || ' years')
+    (CONVERT(CONVERT(ROUND(age_in_months(d.birth, COALESCE(d.death, now())) / 12, 1), float), VARCHAR) || ' years')
 end as AgeFriendly
 
 FROM study.Demographics d

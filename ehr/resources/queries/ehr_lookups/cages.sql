@@ -5,7 +5,7 @@
  */
 
 SELECT
-(c.room || '-' || c.cage) AS roomcage,
+(c.room || '-' || c.cage) AS location,
 c.room,
 c.cage,
 max(c.joinToCage) as joinToCage

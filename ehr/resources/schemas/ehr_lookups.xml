@@ -227,9 +227,9 @@
     <ns:updateUrl></ns:updateUrl>
     <ns:deleteUrl></ns:deleteUrl>
     <!--<ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr_lookups&amp;query.queryName=cage&amp;roomcage=${roomcage}</ns:tableUrl>-->
-    <ns:pkColumnName>roomcage</ns:pkColumnName>
+    <ns:pkColumnName>location</ns:pkColumnName>
     <ns:columns>
-      <ns:column columnName="roomcage">
+      <ns:column columnName="location">
         <ns:isKeyField>true</ns:isKeyField>
         <ns:shownInUpdateView>false</ns:shownInUpdateView>
         <ns:shownInInsertView>false</ns:shownInInsertView>
@@ -965,9 +965,17 @@
       <ns:column columnName="mhc_prefix">
         <ns:nullable>true</ns:nullable>
       </ns:column>
-      <ns:column columnName="blood_vol_multiplier">
-          <ns:columnTitle>Blood Vol Multiplier</ns:columnTitle>
-          <ns:description>This is the </ns:description>
+      <ns:column columnName="blood_per_kg">
+          <ns:columnTitle>Max Blood Draw (mL/kg)</ns:columnTitle>
+          <ns:description>This is the maximum blood that can be drawn per kg</ns:description>
+      </ns:column>
+      <ns:column columnName="max_draw_pct">
+          <ns:columnTitle>Max Percent Blood Drawn</ns:columnTitle>
+          <ns:description>This is the maximum percent of the animal's blood that can be drawn (expressed as a decimal, where 1 indicates 100%)</ns:description>
+      </ns:column>
+      <ns:column columnName="blood_draw_interval">
+          <ns:columnTitle>Blood Reconstitution Interval (Days)</ns:columnTitle>
+          <ns:description>This is the number of days that must elapse to full reconstitute from a max blood draw</ns:description>
       </ns:column>
     </ns:columns>
   </ns:table>
@@ -2356,33 +2364,6 @@
           </ns:column>
       </ns:columns>
     </ns:table>
-    <ns:table tableName="account_tiers" tableDbType="TABLE" useColumnOrder="true">
-      <ns:columns>
-        <ns:column columnName="rowid"/>
-        <ns:column columnName="meaning"/>
-        <ns:column columnName="multiplier"/>
-          <ns:column columnName="createdby">
-            <ns:isUserEditable>false</ns:isUserEditable>
-            <ns:nullable>true</ns:nullable>
-            <ns:isHidden>true</ns:isHidden>
-          </ns:column>
-          <ns:column columnName="created">
-            <ns:isUserEditable>false</ns:isUserEditable>
-            <ns:nullable>true</ns:nullable>
-            <ns:isHidden>true</ns:isHidden>
-          </ns:column>
-          <ns:column columnName="modifiedby">
-            <ns:isUserEditable>false</ns:isUserEditable>
-            <ns:nullable>true</ns:nullable>
-            <ns:isHidden>true</ns:isHidden>
-          </ns:column>
-          <ns:column columnName="modified">
-            <ns:isUserEditable>false</ns:isUserEditable>
-            <ns:nullable>true</ns:nullable>
-          <ns:isHidden>true</ns:isHidden>
-        </ns:column>
-      </ns:columns>
-    </ns:table>
     <ns:table tableName="project_types" tableDbType="TABLE" useColumnOrder="true">
         <ns:columns>
             <ns:column columnName="type"/>
@@ -2531,6 +2512,29 @@
         <ns:columns>
             <ns:column columnName="rowid"/>
             <ns:column columnName="name"/>
+        </ns:columns>
+    </ns:table>
+    <ns:table tableName="animal_condition" tableDbType="TABLE">
+        <ns:columns>
+            <ns:column columnName="code"/>
+            <ns:column columnName="meaning"/>
+            <ns:column columnName="created"/>
+            <ns:column columnName="createdby"/>
+            <ns:column columnName="modified"/>
+            <ns:column columnName="modifiedby"/>
+        </ns:columns>
+    </ns:table>
+    <ns:table tableName="rooms" tableDbType="TABLE">
+        <ns:columns>
+            <ns:column columnName="room"/>
+            <ns:column columnName="building"/>
+            <ns:column columnName="area"/>
+            <ns:column columnName="category"/>
+            <ns:column columnName="maxCages"/>
+            <ns:column columnName="created"/>
+            <ns:column columnName="createdby"/>
+            <ns:column columnName="modified"/>
+            <ns:column columnName="modifiedby"/>
         </ns:columns>
     </ns:table>
 </ns:tables>

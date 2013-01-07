@@ -241,7 +241,7 @@ Ext4.define('EHR.ext.SingleAnimalReport', {
                                     width: 300,
                                     store: Ext4.create('LABKEY.ext4.Store', {
                                         schemaName: 'ehr_lookups',
-                                        queryName: 'rooms',
+                                        queryName: 'room_list',
                                         sort: 'room',
                                         //filterArray: [LABKEY.Filter.create('TotalAnimals', 0, LABKEY.Filter.Types.NOT_EQUAL)],
                                         autoLoad: true

@@ -59,10 +59,35 @@ public class EHRController extends SpringActionController
         }
     }
 
+    @RequiresPermissionClass(ReadPermission.class)
+    public class GetEncounterDetailsAction extends ApiAction<HistoryForm>
+    {
+        public ApiResponse execute(HistoryForm form, BindException errors)
+        {
+            ApiResponse resp = new ApiSimpleResponse();
 
+
+
+
+            return resp;
+        }
+    }
+
+    @RequiresPermissionClass(ReadPermission.class)
+    public class GetCaseDetailsAction extends ApiAction<HistoryForm>
+    {
+        public ApiResponse execute(HistoryForm form, BindException errors)
+        {
+            ApiResponse resp = new ApiSimpleResponse();
+
+
+
+
+            return resp;
+        }
+    }
 
     @RequiresPermissionClass(AdminPermission.class)
-    @IgnoresTermsOfUse
     public class EnsureDatasetPropertiesAction extends ConfirmAction<EnsureDatasetPropertiesForm>
     {
         public void validateCommand(EnsureDatasetPropertiesForm form, Errors errors)
@@ -101,6 +126,82 @@ public class EHRController extends SpringActionController
         }
     }
 
+    @RequiresPermissionClass(AdminPermission.class)
+    public class EnsureQcStatesAction extends ConfirmAction<Object>
+    {
+        public void validateCommand(Object form, Errors errors)
+        {
+
+        }
+
+        public URLHelper getSuccessURL(Object form)
+        {
+            return getContainer().getStartURL(getUser());
+        }
+
+        public ModelAndView getConfirmView(Object form, BindException errors) throws Exception
+        {
+            StringBuilder msg = new StringBuilder();
+            msg.append("The EHR expects certain QCStates to exist in the study.  The following QCStates will be added:<br><br>");
+
+            List<String> messages = EHRManager.get().ensureStudyQCStates(getContainer(),  getUser(), false);
+            for (String message : messages)
+            {
+                msg.append("\t").append(message).append("<br>");
+            }
+
+            if (messages.size() > 0)
+                msg.append("<br>Do you want to make these changes?");
+            else
+                msg.append("There are no changes to be made");
+
+            return new HtmlView(msg.toString());
+        }
+
+        public boolean handlePost(Object form, BindException errors) throws Exception
+        {
+            List<String> messages = EHRManager.get().ensureStudyQCStates(getContainer(),  getUser(), true);
+            return true;
+        }
+    }
+
+    @RequiresPermissionClass(AdminPermission.class)
+    public class VerifyDatasetResourcesAction extends SimpleViewAction<Object>
+    {
+        public void validateCommand(Object form, Errors errors)
+        {
+
+        }
+
+        public URLHelper getSuccessURL(Object form)
+        {
+            return getContainer().getStartURL(getUser());
+        }
+
+        public ModelAndView getView(Object form, BindException errors) throws Exception
+        {
+            StringBuilder msg = new StringBuilder();
+            msg.append("For each dataset, we expect to find a triger script and .query.xml file.  The following datasets lack one or more of these:<br><br>");
+
+            List<String> messages = EHRManager.get().verifyDatasetResources(getContainer(),  getUser());
+            for (String message : messages)
+            {
+                msg.append("\t").append(message).append("<br>");
+            }
+
+            if (messages.size() == 0)
+                msg.append("There are no missing files");
+
+            return new HtmlView(msg.toString());
+        }
+
+        public NavTree appendNavTrail(NavTree tree)
+        {
+            return tree.addChild("Dataset Validation");
+
+        }
+    }
+
     public static class EnsureDatasetPropertiesForm
     {
         boolean commitChanges = false;
@@ -123,6 +224,22 @@ public class EHRController extends SpringActionController
         {
             boolean result = new KinshipRunnable().run(getContainer());
             return new ApiSimpleResponse("success", result);
+        }
+    }
+
+
+    public static class HistoryForm
+    {
+        private String _parentId;
+
+        public String getParentId()
+        {
+            return _parentId;
+        }
+
+        public void setParentId(String parentId)
+        {
+            _parentId = parentId;
         }
     }
 }

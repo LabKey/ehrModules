@@ -1,10 +1,6 @@
 <customView xmlns="http://labkey.org/data/xml/queryCustomView">
    <columns>
-       <column name="roomcage">
-           <properties>
-               <property name="columnTitle" value="Location"/>
-           </properties>
-       </column>
+       <column name="location"/>
        <column name="room"/>
        <column name="cage"/>
        <column name="totalAnimals/TotalAnimals">

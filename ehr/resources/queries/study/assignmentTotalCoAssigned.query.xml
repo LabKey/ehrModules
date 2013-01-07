@@ -2,6 +2,7 @@
     <metadata>
         <tables xmlns="http://labkey.org/data/xml">
             <table tableName="assignmentTotalCoAssigned" tableDbType="NOT_IN_DB">
+                <tableTitle>Total Concurrent Assignments</tableTitle>
                 <columns>
                     <column columnName="lsid">
                         <isKeyField>true</isKeyField>

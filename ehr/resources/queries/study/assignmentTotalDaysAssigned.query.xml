@@ -2,6 +2,7 @@
     <metadata>
         <tables xmlns="http://labkey.org/data/xml">
             <table tableName="assignmentTotalDaysAssigned" tableDbType="NOT_IN_DB">
+                <tableTitle>Total Days Coassigned</tableTitle>
                 <columns>
                     <column columnName="Id">
                         <isKeyField>true</isKeyField>

@@ -17,7 +17,7 @@ coalesce(b.taskid, b.parentid, b.runId) as runId,
 b.resultoorindicator,
 CASE
 WHEN b.result IS NULL THEN  b.qualresult
-  ELSE CAST(CAST(b.result AS NUMERIC) AS VARCHAR)
+  ELSE CAST(CAST(b.result AS float) AS VARCHAR)
 END as result
 
 FROM study."Urinalysis Results" b

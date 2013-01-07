@@ -2,6 +2,7 @@
     <metadata>
         <tables xmlns="http://labkey.org/data/xml">
             <table tableName="colonyPopulationSummary" tableDbType="NOT_IN_DB">
+                <tableTitle>Population Summary, By Species</tableTitle>
                 <columns>
                     <column columnName="species">
                         <columnTitle>Species</columnTitle>

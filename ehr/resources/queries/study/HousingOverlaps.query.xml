@@ -2,6 +2,8 @@
     <metadata>
         <tables xmlns="http://labkey.org/data/xml">
             <table tableName="HousingOverlaps" tableDbType="TABLE">
+                <tableTitle>Housing Overlaps</tableTitle>
+                <description>This query identifies distinct housing records that overlapped with the given housing records, accounting for date and time</description>
                 <tableUrl>/query/detailsQueryRow.view?schemaName=study&amp;query.queryName=housing&amp;lsid=${lsid}</tableUrl>
                 <columns>
                     <column columnName="lsid">

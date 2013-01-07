@@ -6,9 +6,6 @@
                 <columns>
                     <column columnName="location">
                         <displayWidth>60</displayWidth>
-                    </column>
-                    <column columnName="roomcage">
-                        <displayWidth>60</displayWidth>
                         <columnTitle>Location</columnTitle>
                         <shownInInsertView>false</shownInInsertView>
                         <shownInUpdateView>false</shownInUpdateView>
@@ -25,13 +22,13 @@
                     <column columnName="cage">
                         <displayWidth>40</displayWidth>
                     </column>
-                    <column columnName="totalAnimals" wrappedColumnName="roomcage">
+                    <column columnName="totalAnimals" wrappedColumnName="location">
                       <columnTitle>Total Animals</columnTitle>
                       <isUnselectable>true</isUnselectable>
                       <fk>
                         <fkDbSchema>ehr</fkDbSchema>
                         <fkTable>CageUtilization</fkTable>
-                        <fkColumnName>roomcage</fkColumnName>
+                        <fkColumnName>location</fkColumnName>
                       </fk>
                       <isHidden>false</isHidden>
                     </column>

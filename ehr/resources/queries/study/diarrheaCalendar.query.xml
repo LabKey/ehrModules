@@ -2,6 +2,7 @@
     <metadata>
         <tables xmlns="http://labkey.org/data/xml">
             <table tableName="diarrheaCalendar" tableDbType="NOT_IN_DB">
+                <tableTitle>Diarrhea Calendar</tableTitle>
                 <columns>
                     <column columnName="Id">
                         <fk>

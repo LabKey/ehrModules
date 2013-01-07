@@ -11,7 +11,7 @@ SELECT
   b.result as percent,
   b2.result as wbc,
   b2.resultOORIndicator as wbcOORIndicator,
-  cast(round(b2.result * (b.result/100), 2) as numeric) as result,
+  cast(round(b2.result * (b.result/100), 2) as float) as result,
   --b.qualresult,
   b.qcstate,
   b.taskid,

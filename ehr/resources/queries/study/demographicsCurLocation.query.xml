@@ -11,14 +11,14 @@
                         <fk>
                           <fkDbSchema>ehr_lookups</fkDbSchema>
                           <fkTable>cage</fkTable>
-                          <fkColumnName>roomcage</fkColumnName>
+                          <fkColumnName>location</fkColumnName>
                         </fk>
                     </column>
                     <column columnName="room">
                         <displayWidth>40</displayWidth>
                         <!--<fk>-->
                           <!--<fkDbSchema>ehr_lookups</fkDbSchema>-->
-                          <!--<fkTable>rooms</fkTable>-->
+                          <!--<fkTable>room_list</fkTable>-->
                           <!--<fkColumnName>room</fkColumnName>-->
                         <!--</fk>-->
                     </column>

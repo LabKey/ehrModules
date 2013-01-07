@@ -82,7 +82,7 @@ function createNavMenu()
             items: [
                 {name: 'Animal Utilization By Category', url: '<%=contextPath%>/query' + ctx['EHRStudyContainer'] + '/executeQuery.view?schemaName=study&query.queryName=colonyAssignmentSummary'},
                 {name: 'Blood Draw Summary', url: '<%=contextPath%>/query' + ctx['EHRStudyContainer'] + '/executeQuery.view?schemaName=study&query.queryName=ScheduledBlood'},
-                {name: 'Colony Population By Age', url: '<%=contextPath%>/query' + ctx['EHRStudyContainer'] + '/executeQuery.view?schemaName=study&query.queryName=Colony Population By Age'},
+                {name: 'Colony Population By Age', url: '<%=contextPath%>/query' + ctx['EHRStudyContainer'] + '/executeQuery.view?schemaName=study&query.queryName=colonyPopulationByAge'},
                 {name: 'MHC Genotype Summary', url: '<%=contextPath%>/query' + ctx['EHRStudyContainer'] + '/executeQuery.view?schemaName=study&query.queryName=alleleFrequencies'},
                 {name: 'Population Summary', url: '<%=contextPath%>/ehr' + ctx['EHRStudyContainer'] + '/populationOverview.view?'},
                 {name: 'Room Utilization', url: '<%=contextPath%>/query' + ctx['EHRStudyContainer'] + '/executeQuery.view?schemaName=ehr&query.queryName=RoomUtilization'},
@@ -90,8 +90,7 @@ function createNavMenu()
                 {name: 'Viral Challenges', url: '<%=contextPath%>/query' + ctx['EHRStudyContainer'] + '/executeQuery.view?schemaName=study&query.queryName=ViralChallenges'},
                 {name: 'Weight: 10% Drop In Last 30 Days', url: '<%=contextPath%>/query' + ctx['EHRStudyContainer'] + '/executeQuery.view?schemaName=study&query.queryName=weightRelChange&query.viewName=10 Pct Drop In Last 30 Days'},
                 {name: 'Weight: 10% Drop In Last 90 Days', url: '<%=contextPath%>/query' + ctx['EHRStudyContainer'] + '/executeQuery.view?schemaName=study&query.queryName=weightRelChange&query.viewName=10 Pct Drop In Last 90 Days'},
-                {name: 'Weight: 10% Drop In Last 6 Months', url: '<%=contextPath%>/query' + ctx['EHRStudyContainer'] + '/executeQuery.view?schemaName=study&query.queryName=weightRelChange&query.viewName=10 Pct Drop In Last 6 Months'},
-                {name: 'More Reports', url: '<%=contextPath%>/ehr' + ctx['EHRStudyContainer'] + '/moreReports.view?'}
+                {name: 'Weight: 10% Drop In Last 6 Months', url: '<%=contextPath%>/query' + ctx['EHRStudyContainer'] + '/executeQuery.view?schemaName=study&query.queryName=weightRelChange&query.viewName=10 Pct Drop In Last 6 Months'}
             ]},
             {header: 'Validation and Alerts',
              items: [
@@ -99,7 +98,6 @@ function createNavMenu()
                  {name: 'Cage Review', url: '<%=contextPath%>/query' + ctx['EHRStudyContainer'] + '/executeQuery.view?schemaName=study&query.queryName=CageReview&query.viewName=Problem%20Cages'},
                  {name: 'Cages Lacking Dimensions', url: '<%=contextPath%>/query' + ctx['EHRStudyContainer'] + '/executeQuery.view?schemaName=ehr&query.queryName=missingCages'},
 
-                 {name: 'Housing: Condition Problems', url: '<%=contextPath%>/query' + ctx['EHRStudyContainer'] + '/executeQuery.view?schemaName=study&query.queryName=housingConditionProblems&query.viewName=Problems'},
                  {name: 'Housing: Double Entries', url: '<%=contextPath%>/query' + ctx['EHRStudyContainer'] + '/executeQuery.view?schemaName=study&query.queryName=housingProblems'},
                  {name: 'Loners', url: '<%=contextPath%>/query' + ctx['EHRStudyContainer'] + '/executeQuery.view?schemaName=study&query.queryName=demographicsDaysAlone&query.viewName=Alone 30 Days Without Exemptions'},
 

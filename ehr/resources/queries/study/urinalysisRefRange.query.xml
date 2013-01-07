@@ -1,7 +1,8 @@
 <query xmlns="http://labkey.org/data/xml/query">
     <metadata>
         <tables xmlns="http://labkey.org/data/xml">
-            <table tableName="chemistryRefRange" tableDbType="NOT_IN_DB">
+            <table tableName="urinalysisRefRange" tableDbType="NOT_IN_DB">
+                <tableTitle>Urinalysis Plus Reference Range</tableTitle>
                 <columns>
                     <column columnName="Lsid">
                         <isKeyField>true</isKeyField>

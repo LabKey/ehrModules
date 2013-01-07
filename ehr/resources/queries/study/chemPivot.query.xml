@@ -2,6 +2,7 @@
     <metadata>
         <tables xmlns="http://labkey.org/data/xml">
             <table tableName="chemMisc" tableDbType="TABLE">
+                <tableTitle>Chemistry Results</tableTitle>
                 <columns>
                     <column columnName="resultOORIndicator">
                         <isHidden>true</isHidden>

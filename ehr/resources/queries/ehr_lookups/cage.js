@@ -5,7 +5,7 @@
  */
 
 var console = require("console");
-var {EHR} = require("ehr/triggers");
+var EHR = require("ehr/triggers").EHR;
 
 console.log("** evaluating: " + this['javax.script.filename']);
 
@@ -18,9 +18,9 @@ function beforeBoth(row, errors) {
     if(row.room)
         row.room = row.room.toLowerCase();
 
-    row.roomcage = row.room;
+    row.location = row.room;
     if(row.cage)
-        row.roomcage += '-' + row.cage;
+        row.location += '-' + row.cage;
 
     //remove whitespace, normalize punctuation and pad digits
     if(row.joinToCage){

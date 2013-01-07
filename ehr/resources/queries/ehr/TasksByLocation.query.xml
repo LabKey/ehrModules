@@ -23,7 +23,7 @@
                     <column columnName="room">
                         <fk>
                             <fkDbSchema>ehr_lookups</fkDbSchema>
-                            <fkTable>rooms</fkTable>
+                            <fkTable>room_list</fkTable>
                             <fkColumnName>room</fkColumnName>
                         </fk>
                         <!--<url>/EHR/cageDetails.view?room=${room}</url>-->

@@ -1,6 +1,7 @@
 <ns:tables xmlns:ns="http://labkey.org/data/xml">
     <!--TODO: should deprecate-->
     <ns:table tableName="module_properties" tableDbType="TABLE">
+        <ns:javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</ns:javaCustomizer>
         <ns:pkColumnName>rowid</ns:pkColumnName>
         <ns:columns>
             <ns:column columnName="rowid">
@@ -41,6 +42,7 @@
         </ns:columns>
     </ns:table>
     <ns:table tableName="snomed_tags" tableDbType="TABLE">
+        <ns:javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</ns:javaCustomizer>
         <ns:importUrl></ns:importUrl>
         <ns:insertUrl></ns:insertUrl>
         <ns:updateUrl></ns:updateUrl>
@@ -101,6 +103,7 @@
         </ns:columns>
     </ns:table>
     <ns:table tableName="tasks" tableDbType="TABLE">
+        <ns:javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</ns:javaCustomizer>
         <ns:auditLogging>DETAILED</ns:auditLogging>
         <ns:pkColumnName>taskid</ns:pkColumnName>
         <ns:columns>
@@ -176,6 +179,7 @@
         </ns:columns>
     </ns:table>
     <ns:table tableName="requests" tableDbType="TABLE">
+        <ns:javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</ns:javaCustomizer>
         <ns:auditLogging>DETAILED</ns:auditLogging>
         <ns:pkColumnName>requestid</ns:pkColumnName>
         <ns:columns>
@@ -279,6 +283,7 @@
         </ns:columns>
     </ns:table>
     <ns:table tableName="reports" tableDbType="TABLE">
+        <ns:javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</ns:javaCustomizer>
         <ns:auditLogging>DETAILED</ns:auditLogging>
         <ns:importUrl></ns:importUrl>
         <ns:insertUrl></ns:insertUrl>
@@ -388,6 +393,7 @@
         </ns:columns>
     </ns:table>
     <ns:table tableName="cage_observations" tableDbType="TABLE">
+        <ns:javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</ns:javaCustomizer>
         <ns:importUrl></ns:importUrl>
         <ns:insertUrl></ns:insertUrl>
         <ns:updateUrl></ns:updateUrl>
@@ -400,10 +406,6 @@
                 <ns:formatString>yyyy-MM-dd</ns:formatString>
                 <ns:columnTitle>Date</ns:columnTitle>
             </ns:column>
-            <!--<ns:column columnName="roomcage">-->
-            <!--<ns:columnTitle>Room/Cage</ns:columnTitle>-->
-            <!--<ns:nullable>false</ns:nullable>-->
-            <!--</ns:column>-->
             <ns:column columnName="room">
                 <ns:nullable>false</ns:nullable>
                 <ns:columnTitle>Room</ns:columnTitle>
@@ -512,6 +514,7 @@
         <ns:pkColumnName>rowid</ns:pkColumnName>
     </ns:table>
     <ns:table tableName="extracts" tableDbType="TABLE">
+        <ns:javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</ns:javaCustomizer>
         <ns:pkColumnName>rowid</ns:pkColumnName>
         <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr&amp;query.queryName=extracts&amp;rowid=${rowid}</ns:tableUrl>
         <ns:columns>
@@ -573,6 +576,7 @@
         </ns:columns>
     </ns:table>
     <ns:table tableName="formtemplates" tableDbType="TABLE">
+        <ns:javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</ns:javaCustomizer>
         <ns:auditLogging>DETAILED</ns:auditLogging>
         <ns:importUrl></ns:importUrl>
         <ns:insertUrl></ns:insertUrl>
@@ -635,6 +639,7 @@
         </ns:columns>
     </ns:table>
     <ns:table tableName="notificationrecipients" tableDbType="TABLE">
+        <ns:javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</ns:javaCustomizer>
         <ns:auditLogging>DETAILED</ns:auditLogging>
         <ns:importUrl></ns:importUrl>
         <ns:insertUrl></ns:insertUrl>
@@ -696,6 +701,7 @@
         </ns:columns>
     </ns:table>
     <ns:table tableName="formpanelsections" tableDbType="TABLE">
+        <ns:javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</ns:javaCustomizer>
         <ns:auditLogging>DETAILED</ns:auditLogging>
         <ns:importUrl></ns:importUrl>
         <ns:insertUrl></ns:insertUrl>
@@ -775,6 +781,7 @@
         </ns:columns>
     </ns:table>
     <ns:table tableName="formtemplaterecords" tableDbType="TABLE">
+        <ns:javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</ns:javaCustomizer>
         <ns:auditLogging>DETAILED</ns:auditLogging>
         <ns:importUrl></ns:importUrl>
         <ns:insertUrl></ns:insertUrl>
@@ -831,6 +838,7 @@
         </ns:columns>
     </ns:table>
     <ns:table tableName="notificationtypes" tableDbType="TABLE">
+        <ns:javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</ns:javaCustomizer>
         <ns:auditLogging>DETAILED</ns:auditLogging>
         <ns:importUrl></ns:importUrl>
         <ns:insertUrl></ns:insertUrl>
@@ -848,6 +856,7 @@
         </ns:columns>
     </ns:table>
     <ns:table tableName="formtypes" tableDbType="TABLE">
+        <ns:javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</ns:javaCustomizer>
         <ns:auditLogging>DETAILED</ns:auditLogging>
         <ns:importUrl></ns:importUrl>
         <ns:insertUrl></ns:insertUrl>
@@ -909,6 +918,7 @@
         </ns:columns>
     </ns:table>
     <ns:table tableName="protocol" tableDbType="TABLE">
+        <ns:javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</ns:javaCustomizer>
         <ns:auditLogging>DETAILED</ns:auditLogging>
         <ns:importUrl></ns:importUrl>
         <ns:insertUrl></ns:insertUrl>
@@ -995,6 +1005,7 @@
         </ns:columns>
     </ns:table>
     <ns:table tableName="project" tableDbType="TABLE">
+        <ns:javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</ns:javaCustomizer>
         <ns:auditLogging>DETAILED</ns:auditLogging>
         <ns:importUrl></ns:importUrl>
         <ns:insertUrl></ns:insertUrl>
@@ -1072,6 +1083,7 @@
         </ns:columns>
     </ns:table>
     <ns:table tableName="protocol_counts" tableDbType="TABLE">
+        <ns:javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</ns:javaCustomizer>
         <ns:auditLogging>DETAILED</ns:auditLogging>
         <ns:importUrl></ns:importUrl>
         <ns:insertUrl></ns:insertUrl>
@@ -1124,6 +1136,7 @@
         </ns:columns>
     </ns:table>
     <ns:table tableName="qcStateMetadata" tableDbType="TABLE">
+        <ns:javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</ns:javaCustomizer>
         <ns:auditLogging>DETAILED</ns:auditLogging>
         <ns:importUrl></ns:importUrl>
         <ns:insertUrl></ns:insertUrl>
@@ -1149,6 +1162,7 @@
         </ns:columns>
     </ns:table>
     <ns:table tableName="animal_groups" tableDbType="TABLE">
+        <ns:javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</ns:javaCustomizer>
         <ns:auditLogging>DETAILED</ns:auditLogging>
         <ns:importUrl></ns:importUrl>
         <ns:insertUrl></ns:insertUrl>
@@ -1189,6 +1203,7 @@
         </ns:columns>
     </ns:table>
     <ns:table tableName="supplemental_pedigree" tableDbType="TABLE">
+        <ns:javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</ns:javaCustomizer>
         <ns:auditLogging>DETAILED</ns:auditLogging>
         <ns:importUrl></ns:importUrl>
         <ns:insertUrl></ns:insertUrl>
@@ -1251,6 +1266,7 @@
         </ns:columns>
     </ns:table>
     <ns:table tableName="kinship" tableDbType="TABLE">
+        <ns:javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</ns:javaCustomizer>
         <ns:auditLogging>SUMMARY</ns:auditLogging>
         <ns:importUrl></ns:importUrl>
         <ns:insertUrl></ns:insertUrl>
@@ -1305,6 +1321,7 @@
         </ns:columns>
     </ns:table>
     <ns:table tableName="protocolProcedures" tableDbType="TABLE">
+        <ns:javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</ns:javaCustomizer>
         <ns:auditLogging>DETAILED</ns:auditLogging>
         <ns:importUrl></ns:importUrl>
         <ns:insertUrl></ns:insertUrl>
@@ -1377,6 +1394,7 @@
         </ns:columns>
     </ns:table>
     <ns:table tableName="status" tableDbType="TABLE">
+        <ns:javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</ns:javaCustomizer>
         <ns:auditLogging>DETAILED</ns:auditLogging>
         <ns:importUrl></ns:importUrl>
         <ns:insertUrl></ns:insertUrl>
@@ -1413,6 +1431,7 @@
         </ns:columns>
     </ns:table>
     <ns:table tableName="encounter_participants" tableDbType="TABLE">
+        <ns:javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</ns:javaCustomizer>
         <ns:auditLogging>DETAILED</ns:auditLogging>
         <ns:columns>
             <ns:column columnName="rowid"/>
@@ -1436,11 +1455,13 @@
         </ns:columns>
     </ns:table>
     <ns:table tableName="scheduled_task_types" tableDbType="TABLE">
+        <ns:javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</ns:javaCustomizer>
         <ns:columns>
             <ns:column columnName="tasktype"/>
         </ns:columns>
     </ns:table>
     <ns:table tableName="scheduled_tasks" tableDbType="TABLE">
+        <ns:javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</ns:javaCustomizer>
         <ns:columns>
             <ns:column columnName="rowid"/>
             <ns:column columnName="taskid"/>
@@ -1461,6 +1482,7 @@
         </ns:columns>
     </ns:table>
     <ns:table tableName="animal_group_members" tableDbType="TABLE">
+        <ns:javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</ns:javaCustomizer>
         <ns:columns>
             <ns:column columnName="rowid"/>
             <ns:column columnName="date"/>
@@ -1476,6 +1498,7 @@
         </ns:columns>
     </ns:table>
     <ns:table tableName="encounter_flags" tableDbType="TABLE">
+        <ns:javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</ns:javaCustomizer>
         <ns:columns>
             <ns:column columnName="rowid"/>
             <ns:column columnName="id"/>
@@ -1495,6 +1518,7 @@
         </ns:columns>
     </ns:table>
     <ns:table tableName="encounter_summaries" tableDbType="TABLE">
+        <ns:javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</ns:javaCustomizer>
         <ns:columns>
             <ns:column columnName="rowid"/>
             <ns:column columnName="id"/>

@@ -2,6 +2,7 @@
     <metadata>
         <tables xmlns="http://labkey.org/data/xml">
             <table tableName="colonyPopulationChange" tableDbType="NOT_IN_DB">
+                <tableTitle>Colony Population Changes</tableTitle>
                 <columns>
                     <column columnName="Id">
                         <fk>

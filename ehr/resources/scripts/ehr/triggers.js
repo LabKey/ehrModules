@@ -30,7 +30,6 @@ EHR.Server.TriggerManager = require("ehr/triggerManager").EHR.Server.TriggerMana
 
 EHR.Server.Validation = require("ehr/validation").EHR.Server.Validation;
 
-
 /**
  * This class handles the serer-side validation/transform that occurs in the EHR's trigger scripts.  It should be used by every EHR dataset.  The purpose is to centralize
  * complex code into one single pathway for all incoming records.  The trigger scripts of individual records can include this code (see example script below).  This
@@ -39,7 +38,7 @@ EHR.Server.Validation = require("ehr/validation").EHR.Server.Validation;
  * As a result, this script includes an additional onUpsert() function that will get called.  The minimal code needed in each dataset's validation script is:
  * <p>
  *
- * var {EHR, LABKEY, Ext, console, init, beforeInsert, afterInsert, beforeUpdate, afterUpdate, beforeDelete, afterDelete, complete} = require("ehr/triggers");
+ * require("ehr/triggers").initScript(this);
  *
  * <p>
  * This line of code will uses javascript <a href="https://developer.mozilla.org/en/New_in_JavaScript_1.7#Destructuring_assignment_(Merge_into_own_page.2Fsection)">destructuring assignment</a>
@@ -103,15 +102,16 @@ EHR.Server.Triggers.init = function(event, errors){
     EHR.Server.Security.init(this.scriptContext);
 
     var handlers = [];
-    if(this.onInit)
+    if(this.onInit){
         handlers.push(this.onInit);
+    }
 
     var initHandlers = EHR.Server.TriggerManager.getHandlersForQuery(EHR.Server.TriggerManager.Events.INIT, this.scriptContext.schemaName, this.scriptContext.queryName, true) || [];
     if(initHandlers.length)
         handlers = handlers.concat(initHandlers);
 
     if (handlers.length){
-        for (var i=0;i<initHandlers.length;i++){
+        for (var i=0;i<handlers.length;i++){
             handlers[i].call(this, event, this.scriptContext);
         }
     }
@@ -170,8 +170,9 @@ EHR.Server.Triggers.beforeInsert = function(row, errors){
 
     //dataset-specific beforeInsert
     var handlers = [];
-    if(this.onUpsert)
+    if(this.onUpsert){
         handlers.push(this.onUpsert);
+    }
 
     var upsertHandlers = EHR.Server.TriggerManager.getHandlersForQuery(EHR.Server.TriggerManager.Events.BEFORE_UPSERT, this.scriptContext.schemaName, this.scriptContext.queryName, true) || [];
     if (upsertHandlers.length)
@@ -268,8 +269,9 @@ EHR.Server.Triggers.beforeUpdate = function(row, oldRow, errors){
 
     //dataset-specific beforeUpdate
     var handlers = [];
-    if(this.onUpsert)
+    if(this.onUpsert){
         handlers.push(this.onUpsert);
+    }
 
     var upsertHandlers = EHR.Server.TriggerManager.getHandlersForQuery(EHR.Server.TriggerManager.Events.BEFORE_UPSERT, this.scriptContext.schemaName, this.scriptContext.queryName, true) || [];
     if (upsertHandlers.length)
@@ -1038,3 +1040,17 @@ LABKEY.ExtAdapter.each(extraScripts, function(script){
 
     contents.init(EHR);
 }, this);
+
+/**
+ *
+ * @param scope
+ */
+EHR.Server.initScript = function(scope){
+    var props = ['EHR', 'LABKEY', 'Ext', 'console', 'init', 'beforeInsert', 'afterInsert', 'beforeUpdate', 'afterUpdate', 'beforeDelete', 'afterDelete', 'complete'];
+    for (var i=0;i<props.length;i++)
+    {
+        var prop = props[i];
+        scope[prop] = exports[prop];
+    }
+}
+exports.initScript = EHR.Server.initScript;

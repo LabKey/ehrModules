@@ -1,7 +1,8 @@
     <query xmlns="http://labkey.org/data/xml/query">
     <metadata>
         <tables xmlns="http://labkey.org/data/xml">
-            <table tableName="chemMisc" tableDbType="TABLE">
+            <table tableName="hematologyPivot" tableDbType="TABLE">
+                <tableTitle>Hematology Results</tableTitle>
                 <columns>
                     <column columnName="resultOORIndicator">
                         <isHidden>true</isHidden>

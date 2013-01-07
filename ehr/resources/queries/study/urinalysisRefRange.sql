@@ -22,7 +22,7 @@ r.ref_range_max,
 -- r.key,
 -- ac."min",
 -- ac."max",
-round(convert(r.ref_range_min, numeric), 2) || '-' || round(convert(r.ref_range_max, numeric), 2) as range,
+round(convert(r.ref_range_min, float), 2) || '-' || round(convert(r.ref_range_max, float), 2) as range,
 CASE
 WHEN convert(c.result, double) >= r.ref_range_min AND convert(c.result, double) <= r.ref_range_max
   THEN 'Normal'

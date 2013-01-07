@@ -2,6 +2,7 @@
     <metadata>
         <tables xmlns="http://labkey.org/data/xml">
             <table tableName="demographicsAge" tableDbType="NOT_IN_DB">
+                <tableTitle>Age</tableTitle>
                 <columns>
                     <column columnName="Id">
                         <isKeyField>true</isKeyField>

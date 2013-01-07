@@ -2,6 +2,7 @@
     <metadata>
         <tables xmlns="http://labkey.org/data/xml">
             <table tableName="ActiveAssignments" tableDbType="TABLE">
+                <tableTitle>Active Assignments</tableTitle>
                 <tableUrl>/query/detailsQueryRow.view?schemaName=study&amp;query.queryName=assignment&amp;lsid=${lsid}</tableUrl>
                 <description>This query shows only active assignments, defined as assignments with a blank enddate or enddate greater than the current date</description>
                 <columns>

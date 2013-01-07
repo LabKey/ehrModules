@@ -2,6 +2,8 @@
     <metadata>
         <tables xmlns="http://labkey.org/data/xml">
             <table tableName="HousingOverlapsById" tableDbType="TABLE">
+                <tableTitle>Housing Overlaps</tableTitle>
+                <description>This query identifies all distinct animal IDs that overlapped with housing records, accounting for date only, not date/time</description>
                 <!--<tableUrl>/query/detailsQueryRow.view?schemaName=study&amp;query.queryName=housing&amp;lsid=${lsid}</tableUrl>-->
                 <buttonBarOptions position="both" includeStandardButtons="false">
                     <includeScript>/ehr/studyButtons.js</includeScript>

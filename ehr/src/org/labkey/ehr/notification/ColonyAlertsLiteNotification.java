@@ -68,7 +68,6 @@ public class ColonyAlertsLiteNotification extends ColonyAlertsNotification
 
         multipleHousingRecords(c, u, msg);
         validateActiveHousing(c, u, msg);
-        housingConditionProblems(c, u, msg);
         deadAnimalsWithActiveHousing(c, u, msg);
         livingAnimalsWithoutHousing(c, u, msg);
         calculatedStatusFieldProblems(c, u, msg);

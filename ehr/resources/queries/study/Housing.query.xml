@@ -56,7 +56,7 @@
                         <!--</url>-->
                         <fk>
                             <fkDbSchema>ehr_lookups</fkDbSchema>
-                            <fkTable>rooms</fkTable>
+                            <fkTable>room_list</fkTable>
                             <fkColumnName>room</fkColumnName>
                         </fk>
                     </column>

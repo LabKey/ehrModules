@@ -2,6 +2,7 @@
     <metadata>
         <tables xmlns="http://labkey.org/data/xml">
             <table tableName="AssignmentOverlaps" tableDbType="TABLE">
+                <tableTitle>Assignment Overlaps</tableTitle>
                 <tableUrl>/query/detailsQueryRow.view?schemaName=study&amp;query.queryName=assignment&amp;lsid=${lsid}</tableUrl>
                 <columns>
                     <column columnName="lsid">

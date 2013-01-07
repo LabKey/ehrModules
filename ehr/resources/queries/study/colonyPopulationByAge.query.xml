@@ -1,7 +1,8 @@
-<query xmlns="http://labkey.org/data/xml/query" name="Colony Population By Age">
+<query xmlns="http://labkey.org/data/xml/query">
     <metadata>
         <tables xmlns="http://labkey.org/data/xml">
             <table tableName="colonyPopulationByAge" tableDbType="NOT_IN_DB">
+                <tableTitle>Population Summary, By Age and Species</tableTitle>
                 <columns>
                     <column columnName="species">
                         <columnTitle>Species</columnTitle>

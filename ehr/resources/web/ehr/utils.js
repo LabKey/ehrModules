@@ -724,6 +724,39 @@ EHR.Utils = new function(){
             }
 
             return ctx;
+        },
+
+        showEncounterHistory: function(parentId, el){
+            console.log(arguments);
+            LABKEY.Query.selectRows({
+                schemaName: 'study',
+                queryName: 'Clinical Remarks',
+                filterArray: [LABKEY.Filter.create('parentId', parentId, LABKEY.Filter.Types.EQUAL)]
+            });
+
+            Ext4.create('Ext.window.Window', {
+                initComponent: function(){
+                    this.callParent();
+                    console.log('called');
+                },
+                title: 'History',
+                width: 500,
+                modal: true,
+                items: [{
+                    html: 'Loading...'
+                }],
+                buttons: [{
+                    text: 'Close',
+                    handler: function(btn){
+                        btn.up('window').close();
+                    }
+                },{
+                    text: 'Add Remark',
+                    handler: function(btn){
+
+                    }
+                }]
+            }).show(el);
         }
     }
 }

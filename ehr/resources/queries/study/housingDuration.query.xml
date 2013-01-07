@@ -2,6 +2,7 @@
     <metadata>
         <tables xmlns="http://labkey.org/data/xml">
             <table tableName="housingDuration" tableDbType="NOT_IN_DB">
+                <tableTitle>Duration of Housing Records</tableTitle>
                 <columns>
                     <column columnName="lsid">
                         <isKeyField>true</isKeyField>

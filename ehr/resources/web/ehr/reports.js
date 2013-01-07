@@ -125,7 +125,6 @@ EHR.reports.arrivalDeparture = function(panel, tab, subject){
 EHR.reports.diagnostics = function(panel, tab, subject){
     var filterArray = panel.getFilterArray(tab, subject);
     var title = (subject ? subject.join("; ") : '');
-    tab.getTopToolbar().removeAll();
 
     var config = panel.getQWPConfig({
         title: 'Bacteriology',
@@ -467,76 +466,6 @@ EHR.reports.bloodChemistry = function(panel, tab, subject){
     config = panel.getQWPConfig({
         schemaName: 'study',
         queryName: 'Chemistry Results',
-        viewName: 'Plus Ref Range',
-        title: "Reference Ranges:",
-        titleField: 'Id',
-        sort: '-date',
-        filters: filterArray.nonRemovable,
-        removeableFilters: filterArray.removable
-    });
-
-    tab.add({
-        xtype: 'ldk-querypanel',
-        style: 'margin-bottom:20px;',
-        queryConfig: config
-    });
-}
-
-EHR.reports.hematology = function(panel, tab, subject){
-    var filterArray = panel.getFilterArray(tab, subject);
-    var title = (subject ? subject.join("; ") : '');
-
-    var config = panel.getQWPConfig({
-        schemaName: 'study',
-        queryName: 'hematologyPivot',
-        title: "By Panel:",
-        titleField: 'Id',
-        filters: filterArray.nonRemovable,
-        removeableFilters: filterArray.removable,
-        sort: '-date'
-    });
-
-    tab.add({
-        xtype: 'ldk-querypanel',
-        style: 'margin-bottom:20px;',
-        queryConfig: config
-    });
-
-    config = panel.getQWPConfig({
-        schemaName: 'study',
-        queryName: 'hematologyMisc',
-        title: "Misc Tests:",
-        titleField: 'Id',
-        sort: '-date',
-        filters: filterArray.nonRemovable,
-        removeableFilters: filterArray.removable
-    });
-
-    tab.add({
-        xtype: 'ldk-querypanel',
-        style: 'margin-bottom:20px;',
-        queryConfig: config
-    });
-
-    config = panel.getQWPConfig({
-        schemaName: 'study',
-        queryName: 'Hematology Morphology',
-        title: "Morphology:",
-        titleField: 'Id',
-        sort: '-date',
-        filters: filterArray.nonRemovable,
-        removeableFilters: filterArray.removable
-    });
-
-    tab.add({
-        xtype: 'ldk-querypanel',
-        style: 'margin-bottom:20px;',
-        queryConfig: config
-    });
-
-    config = panel.getQWPConfig({
-        schemaName: 'study',
-        queryName: 'Hematology Results',
         viewName: 'Plus Ref Range',
         title: "Reference Ranges:",
         titleField: 'Id',

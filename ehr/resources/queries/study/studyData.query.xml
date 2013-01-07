@@ -34,7 +34,7 @@
                             <fkTable>project</fkTable>
                             <fkColumnName>project</fkColumnName>
                         </fk>
-                        <formatString>00000000</formatString>
+                        <!--<formatString>00000000</formatString>-->
                     </column>
                     <column columnName="parentid">
                         <isHidden>true</isHidden>
@@ -45,81 +45,6 @@
                     </column>
                     <column columnName="userid">
                         <displayWidth>100</displayWidth>
-                    </column>
-                    <column columnName="AgeAtTime" wrappedColumnName="lsid">
-                        <columnTitle>Age At The Time</columnTitle>
-                        <isHidden>false</isHidden>
-                        <isUnselectable>true</isUnselectable>
-                        <shownInDetailsView>false</shownInDetailsView>
-                        <shownInInsertView>false</shownInInsertView>
-                        <shownInUpdateView>false</shownInUpdateView>
-                        <fk>
-                            <fkDbSchema>study</fkDbSchema>
-                            <fkTable>AgeAtTime</fkTable>
-                            <fkColumnName>lsid</fkColumnName>
-                        </fk>
-                    </column>
-                    <!--<column columnName="DateOnly" wrappedColumnName="lsid">-->
-                        <!--<columnTitle>Date Only</columnTitle>-->
-                        <!--<shownInDetailsView>false</shownInDetailsView>-->
-                        <!--<shownInInsertView>false</shownInInsertView>-->
-                        <!--<shownInUpdateView>false</shownInUpdateView>-->
-                        <!--<isHidden>false</isHidden>-->
-                        <!--<isUnselectable>true</isUnselectable>-->
-                        <!--<fk>-->
-                            <!--<fkDbSchema>study</fkDbSchema>-->
-                            <!--<fkTable>studyDataDateOnly</fkTable>-->
-                            <!--<fkColumnName>lsid</fkColumnName>-->
-                        <!--</fk>-->
-                    <!--</column>-->
-                    <!--<column columnName="Notes" wrappedColumnName="date">-->
-                        <!--<columnTitle>Notes</columnTitle>-->
-                        <!--<nullable>true</nullable>-->
-                        <!--<formatString>'&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;'</formatString>-->
-                        <!--<shownInDetailsView>false</shownInDetailsView>-->
-                        <!--<shownInInsertView>false</shownInInsertView>-->
-                        <!--<shownInUpdateView>false</shownInUpdateView>-->
-                        <!--<isHidden>false</isHidden>-->
-                        <!--<displayWidth>200</displayWidth>-->
-                    <!--</column>-->
-                    <column columnName="Survivorship" wrappedColumnName="lsid">
-                        <columnTitle>Survivorship</columnTitle>
-                        <isHidden>false</isHidden>
-                        <isUnselectable>true</isUnselectable>
-                        <shownInDetailsView>false</shownInDetailsView>
-                        <shownInInsertView>false</shownInInsertView>
-                        <shownInUpdateView>false</shownInUpdateView>
-                        <fk>
-                            <fkDbSchema>study</fkDbSchema>
-                            <fkTable>studyDataSurvivorship</fkTable>
-                            <fkColumnName>lsid</fkColumnName>
-                        </fk>
-                    </column>
-                    <column columnName="HousingAtTime" wrappedColumnName="lsid">
-                        <columnTitle>Housing At Time</columnTitle>
-                        <isHidden>false</isHidden>
-                        <isUnselectable>true</isUnselectable>
-                        <shownInDetailsView>false</shownInDetailsView>
-                        <shownInInsertView>false</shownInInsertView>
-                        <shownInUpdateView>false</shownInUpdateView>
-                        <fk>
-                            <fkDbSchema>study</fkDbSchema>
-                            <fkTable>studyDataRoomAtTime</fkTable>
-                            <fkColumnName>lsid</fkColumnName>
-                        </fk>
-                    </column>
-                    <column columnName="AssignmentAtTime" wrappedColumnName="lsid">
-                        <columnTitle>Assignment At Time</columnTitle>
-                        <isHidden>false</isHidden>
-                        <isUnselectable>true</isUnselectable>
-                        <shownInDetailsView>false</shownInDetailsView>
-                        <shownInInsertView>false</shownInInsertView>
-                        <shownInUpdateView>false</shownInUpdateView>
-                        <fk>
-                            <fkDbSchema>study</fkDbSchema>
-                            <fkTable>studyDataAssignmentAtTime</fkTable>
-                            <fkColumnName>lsid</fkColumnName>
-                        </fk>
                     </column>
                     <column columnName="taskid">
                         <isHidden>false</isHidden>

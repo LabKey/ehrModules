@@ -2,6 +2,7 @@
     <metadata>
         <tables xmlns="http://labkey.org/data/xml">
             <table tableName="chemistryRefRange" tableDbType="NOT_IN_DB">
+                <tableTitle>Chemistry Results Plus Reference Ranges</tableTitle>
                 <columns>
                     <column columnName="Lsid">
                         <isKeyField>true</isKeyField>
