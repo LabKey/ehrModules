@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2013 LabKey Corporation
+ *
+ * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
+ */
 ALTER TABLE ehr_lookups.species DROP COLUMN blood_vol_multiplier;
 ALTER TABLE ehr_lookups.species ADD blood_per_kg double precision;
 ALTER TABLE ehr_lookups.species ADD max_draw_pct double precision;

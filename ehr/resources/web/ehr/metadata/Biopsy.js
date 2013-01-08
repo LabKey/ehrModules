@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2013 LabKey Corporation
+ *
+ * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
+ */
 /**
  * This is the default metadata applied to records in the context of a biopsy task.  Among other things, it configured a parent/child relationship
  * between the study.biopsies record and other dataset records.  It is similar to Encounter, except the parent record is from study.biopsies.

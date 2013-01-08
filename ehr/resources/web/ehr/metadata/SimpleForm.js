@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2013 LabKey Corporation
+ *
+ * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
+ */
 /**
  * This is the default metadata applied any record when displayed in the context of a single record (ie. not part of a task or request)
  */

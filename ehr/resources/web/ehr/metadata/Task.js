@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2013 LabKey Corporation
+ *
+ * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
+ */
 /**
  * This is the default metadata applied to all Tasks when using getTableMetadata().
  * Among other things, it sets of the parent/child relationship for cild records to inherit taskId from the ehr.tasks record.
