@@ -57,8 +57,7 @@ LABKEY.requiresScript("ehr/metadata/SimpleForm.js");
 LABKEY.requiresScript("ehr/metadata/Surgery.js");
 LABKEY.requiresScript("ehr/metadata/Task.js");
 LABKEY.requiresScript("ehr/metadata/Treatments.js");
-LABKEY.requiresScript("/ehr/studyButtons.js");
-LABKEY.requiresScript("/ehr/animalHistory.js");
+LABKEY.requiresScript("ehr/studyButtons.js");
 LABKEY.requiresScript("StatusBar.js");
 
 LABKEY.requiresCss("/ehr/stylesheet.css");

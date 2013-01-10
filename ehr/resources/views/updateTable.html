@@ -4,19 +4,19 @@ Ext4.onReady(function (){
     var query = LABKEY.ActionURL.getParameter('query.queryName') || LABKEY.ActionURL.getParameter('queryName');
     var schema = LABKEY.ActionURL.getParameter('schemaName');
 
-    LABKEY.NavTrail.setTrail(query);
-
     LABKEY.Query.getQueryDetails({
-        schemaName: schema
-        ,queryName: query
-        ,success: function(data){
+        schemaName: schema,
+        queryName: query,
+        success: function(data){
             if(!data || !data.columns){
                 alert('Problem retrieving query\'s information');
                 return;
             }
 
+            LABKEY.NavTrail.setTrail(data.title || query);
+
             var keyField;
-            Ext.each(data.columns, function(f){
+            Ext4.each(data.columns, function(f){
                 if(f.isKeyField){
                     keyField = f.name;
                     return false;
@@ -47,13 +47,13 @@ Ext4.onReady(function (){
                 scope: this,
                 timeout: 0,
                 linkTarget: '_blank',
-                failure: EHR.Utils.onError
+                failure: LDK.Utils.getErrorCallback()
             };
 
             var webpart = <%=webpartContext%>;
             new LABKEY.QueryWebPart(config).render(webpart.wrapperDivId);
         },
-        failure: EHR.Utils.onError,
+        failure: LDK.Utils.getErrorCallback(),
         scope: this
     });
 });

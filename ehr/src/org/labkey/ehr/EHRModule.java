@@ -75,7 +75,7 @@ public class EHRModule extends SpringModule
 
     public double getVersion()
     {
-        return 12.307;
+        return 12.309;
     }
 
     public boolean hasScripts()

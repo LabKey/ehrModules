@@ -120,7 +120,7 @@ public class AdminAlertsNotification extends AbstractEHRNotification
                 msg.append("<table border=1><tr><td>Day of Week</td><td>Date</td><td>Logins</td></tr>");
                 do
                 {
-                    msg.append("<tr><td>" + rs.getString("dayOfWeek") + "</td><td>" + _dateTimeFormat.format(rs.getDate("date")) + "</td><td>" + rs.getString("Logins") + "</td></tr>");
+                    msg.append("<tr><td>" + rs.getString("dayOfWeek") + "</td><td>" + _dateFormat.format(rs.getDate("date")) + "</td><td>" + rs.getString("Logins") + "</td></tr>");
                 }
                 while (rs.next());
             }

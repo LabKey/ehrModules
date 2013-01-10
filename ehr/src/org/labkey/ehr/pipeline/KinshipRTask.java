@@ -23,6 +23,8 @@ import org.labkey.api.data.SimpleFilter;
 import org.labkey.api.data.Table;
 import org.labkey.api.data.TableInfo;
 import org.labkey.api.exp.api.ExperimentService;
+import org.labkey.api.module.Module;
+import org.labkey.api.module.ModuleLoader;
 import org.labkey.api.pipeline.AbstractTaskFactory;
 import org.labkey.api.pipeline.AbstractTaskFactorySettings;
 import org.labkey.api.pipeline.PipelineJob;
@@ -35,9 +37,12 @@ import org.labkey.api.pipeline.file.FileAnalysisJobSupport;
 import org.labkey.api.query.FieldKey;
 import org.labkey.api.query.QueryService;
 import org.labkey.api.reports.ExternalScriptEngine;
+import org.labkey.api.resource.FileResource;
+import org.labkey.api.resource.MergedDirectoryResource;
 import org.labkey.api.script.ScriptService;
 import org.labkey.api.settings.AppProps;
 import org.labkey.api.util.FileType;
+import org.labkey.api.util.Path;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -112,7 +117,8 @@ public class KinshipRTask extends WorkDirectoryTask<KinshipRTask.Factory>
         job.getLogger().info("Preparing to run R script");
 
         String exePath = getExePath("Rscript", "R");
-        String scriptPath = getExePath("populateKinship.r", "KINSHIP_SCRIPT");
+
+        String scriptPath = getKinshipScriptPath();
         File tsvFile = new File(support.getAnalysisDirectory(), KinshipImportTask.PEDIGREE_FILE);
         if (!tsvFile.exists())
             throw new PipelineJobException("Unable to find TSV file at location: " + tsvFile.getPath());
@@ -143,6 +149,19 @@ public class KinshipRTask extends WorkDirectoryTask<KinshipRTask.Factory>
             exePath = (new File(packagePath, exePath)).getPath();
         }
         return exePath;
+    }
+
+    private String getKinshipScriptPath() throws PipelineJobException
+    {
+        Module ehr = ModuleLoader.getInstance().getModule("ehr");
+        String path = "pipeline/kinship/populateKinship.r";
+        FileResource resource = (FileResource)ehr.getModuleResolver().lookup(Path.parse(path));
+        if (resource == null || !resource.getFile().exists())
+        {
+            throw new PipelineJobException("Unable to find kinship R script under EHR module at: " + path);
+        }
+
+        return resource.getFile().getPath();
     }
 
 }

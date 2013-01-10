@@ -1,10 +1,10 @@
 <script type="text/javascript">
 
-Ext4.onReady(function (){
-    var webpart = <%=webpartContext%>;
-    Ext4.create('EHR.ext.SingleAnimalReport', {
-        renderTo: webpart.wrapperDivId
+    Ext4.onReady(function (){
+        var webpart = <%=webpartContext%>;
+        Ext4.create('EHR.panel.AnimalHistoryPanel', {
+            renderTo: webpart.wrapperDivId
+        });
     });
-});
 
 </script>

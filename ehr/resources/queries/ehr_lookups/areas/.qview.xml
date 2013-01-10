@@ -6,7 +6,7 @@
    <sorts>
        <sort column="area" descending="false"/>
    </sorts>
-   <filters>
-       <filter column="disabled" operator="isblank"/>
-   </filters>
+   <!--<filters>-->
+       <!--<filter column="disabled" operator="isblank"/>-->
+   <!--</filters>-->
 </customView>

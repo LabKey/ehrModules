@@ -192,4 +192,9 @@ public class EHRServiceImpl extends EHRService
 
         return "yyyy-MM-dd HH:mm";
     }
+
+    public User getEHRUser()
+    {
+        return EHRManager.get().getEHRUser();
+    }
 }

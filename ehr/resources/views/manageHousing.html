@@ -1,0 +1,46 @@
+<script type="text/javascript">
+
+Ext4.onReady(function(){
+    var webpart = <%=webpartContext%>;
+
+    Ext4.create('Ext.panel.Panel', {
+        border: false,
+        defaults: {
+            border: false
+        },
+        items: [{
+            html: 'This page is designed to give a summary of the current housing, plus links to administer the room and cage layout of the center.',
+            style: 'padding-bottom: 10px;'
+        },{
+            xtype: 'ldk-navpanel',
+            sections: [{
+                header: 'Reports',
+                items: [{
+                    name: 'Room Utilization',
+                    url: LABKEY.ActionURL.buildURL('query', 'executeQuery', null, {schemaName: 'ehr', 'query.queryName': 'RoomUtilization'})
+                }]
+            },{
+                header: 'Reference Tables',
+                items: [{
+                    name: 'Areas',
+                    url: LABKEY.ActionURL.buildURL('ehr', 'updateTable', null, {schemaName: 'ehr_lookups', 'query.queryName': 'Areas'})
+                },{
+                    name: 'Buildings',
+                    url: LABKEY.ActionURL.buildURL('ehr', 'updateTable', null, {schemaName: 'ehr_lookups', 'query.queryName': 'Buildings'})
+                },{
+                    name: 'Rooms',
+                    url: LABKEY.ActionURL.buildURL('ehr', 'updateTable', null, {schemaName: 'ehr_lookups', 'query.queryName': 'Rooms'})
+                },{
+                    name: 'Cages',
+                    url: LABKEY.ActionURL.buildURL('ehr', 'updateTable', null, {schemaName: 'ehr_lookups', 'query.queryName': 'Cage'})
+                },{
+                    name: 'Cage Types',
+                    url: LABKEY.ActionURL.buildURL('ehr', 'updateTable', null, {schemaName: 'ehr_lookups', 'query.queryName': 'cage_type'})
+                }]
+            }]
+        }]
+
+    }).render(webpart.wrapperDivId);
+});
+
+</script>

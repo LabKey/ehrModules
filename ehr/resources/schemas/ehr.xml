@@ -1,6 +1,6 @@
 <ns:tables xmlns:ns="http://labkey.org/data/xml">
     <!--TODO: should deprecate-->
-    <ns:table tableName="module_properties" tableDbType="TABLE">
+    <ns:table tableName="module_properties" tableDbType="TABLE" useColumnOrder="true">
         <ns:javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</ns:javaCustomizer>
         <ns:pkColumnName>rowid</ns:pkColumnName>
         <ns:columns>
@@ -41,8 +41,9 @@
             </ns:column>
         </ns:columns>
     </ns:table>
-    <ns:table tableName="snomed_tags" tableDbType="TABLE">
+    <ns:table tableName="snomed_tags" tableDbType="TABLE" useColumnOrder="true">
         <ns:javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</ns:javaCustomizer>
+        <ns:tableTitle>SNOMED Tags</ns:tableTitle>
         <ns:importUrl></ns:importUrl>
         <ns:insertUrl></ns:insertUrl>
         <ns:updateUrl></ns:updateUrl>
@@ -102,8 +103,9 @@
             </ns:column>
         </ns:columns>
     </ns:table>
-    <ns:table tableName="tasks" tableDbType="TABLE">
+    <ns:table tableName="tasks" tableDbType="TABLE" useColumnOrder="true">
         <ns:javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</ns:javaCustomizer>
+        <ns:tableTitle>Tasks</ns:tableTitle>
         <ns:auditLogging>DETAILED</ns:auditLogging>
         <ns:pkColumnName>taskid</ns:pkColumnName>
         <ns:columns>
@@ -178,7 +180,8 @@
             </ns:column>
         </ns:columns>
     </ns:table>
-    <ns:table tableName="requests" tableDbType="TABLE">
+    <ns:table tableName="requests" tableDbType="TABLE" useColumnOrder="true">
+        <ns:tableTitle>Requests</ns:tableTitle>
         <ns:javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</ns:javaCustomizer>
         <ns:auditLogging>DETAILED</ns:auditLogging>
         <ns:pkColumnName>requestid</ns:pkColumnName>
@@ -282,7 +285,8 @@
             </ns:column>
         </ns:columns>
     </ns:table>
-    <ns:table tableName="reports" tableDbType="TABLE">
+    <ns:table tableName="reports" tableDbType="TABLE" useColumnOrder="true">
+        <ns:tableTitle>Reports</ns:tableTitle>
         <ns:javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</ns:javaCustomizer>
         <ns:auditLogging>DETAILED</ns:auditLogging>
         <ns:importUrl></ns:importUrl>
@@ -392,13 +396,13 @@
             </ns:column>
         </ns:columns>
     </ns:table>
-    <ns:table tableName="cage_observations" tableDbType="TABLE">
+    <ns:table tableName="cage_observations" tableDbType="TABLE" useColumnOrder="true">
+        <ns:tableTitle>Cage Observations</ns:tableTitle>
         <ns:javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</ns:javaCustomizer>
         <ns:importUrl></ns:importUrl>
         <ns:insertUrl></ns:insertUrl>
         <ns:updateUrl></ns:updateUrl>
         <ns:deleteUrl></ns:deleteUrl>
-        <ns:tableTitle>Cage Observations</ns:tableTitle>
         <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr&amp;query.queryName=cage_observations&amp;rowid=${rowid}</ns:tableUrl>
         <ns:columns>
             <ns:column columnName="date">
@@ -513,7 +517,8 @@
         </ns:columns>
         <ns:pkColumnName>rowid</ns:pkColumnName>
     </ns:table>
-    <ns:table tableName="extracts" tableDbType="TABLE">
+    <!--TODO: should deprecate-->
+    <ns:table tableName="extracts" tableDbType="TABLE" useColumnOrder="true">
         <ns:javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</ns:javaCustomizer>
         <ns:pkColumnName>rowid</ns:pkColumnName>
         <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr&amp;query.queryName=extracts&amp;rowid=${rowid}</ns:tableUrl>
@@ -575,7 +580,8 @@
             </ns:column>
         </ns:columns>
     </ns:table>
-    <ns:table tableName="formtemplates" tableDbType="TABLE">
+    <ns:table tableName="formtemplates" tableDbType="TABLE" useColumnOrder="true">
+        <ns:tableTitle>Form Templates</ns:tableTitle>
         <ns:javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</ns:javaCustomizer>
         <ns:auditLogging>DETAILED</ns:auditLogging>
         <ns:importUrl></ns:importUrl>
@@ -638,7 +644,8 @@
             </ns:column>
         </ns:columns>
     </ns:table>
-    <ns:table tableName="notificationrecipients" tableDbType="TABLE">
+    <ns:table tableName="notificationrecipients" tableDbType="TABLE" useColumnOrder="true">
+        <ns:tableTitle>Notification Recipients</ns:tableTitle>
         <ns:javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</ns:javaCustomizer>
         <ns:auditLogging>DETAILED</ns:auditLogging>
         <ns:importUrl></ns:importUrl>
@@ -700,7 +707,8 @@
             </ns:column>
         </ns:columns>
     </ns:table>
-    <ns:table tableName="formpanelsections" tableDbType="TABLE">
+    <ns:table tableName="formpanelsections" tableDbType="TABLE" useColumnOrder="true">
+        <ns:tableTitle>Form Panel Sections</ns:tableTitle>
         <ns:javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</ns:javaCustomizer>
         <ns:auditLogging>DETAILED</ns:auditLogging>
         <ns:importUrl></ns:importUrl>
@@ -780,7 +788,8 @@
             </ns:column>
         </ns:columns>
     </ns:table>
-    <ns:table tableName="formtemplaterecords" tableDbType="TABLE">
+    <ns:table tableName="formtemplaterecords" tableDbType="TABLE" useColumnOrder="true">
+        <ns:tableTitle>Form Template Records</ns:tableTitle>
         <ns:javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</ns:javaCustomizer>
         <ns:auditLogging>DETAILED</ns:auditLogging>
         <ns:importUrl></ns:importUrl>
@@ -837,7 +846,8 @@
             </ns:column>
         </ns:columns>
     </ns:table>
-    <ns:table tableName="notificationtypes" tableDbType="TABLE">
+    <ns:table tableName="notificationtypes" tableDbType="TABLE" useColumnOrder="true">
+        <ns:tableTitle>Notification Types</ns:tableTitle>
         <ns:javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</ns:javaCustomizer>
         <ns:auditLogging>DETAILED</ns:auditLogging>
         <ns:importUrl></ns:importUrl>
@@ -855,7 +865,8 @@
             </ns:column>
         </ns:columns>
     </ns:table>
-    <ns:table tableName="formtypes" tableDbType="TABLE">
+    <ns:table tableName="formtypes" tableDbType="TABLE" useColumnOrder="true">
+        <ns:tableTitle>Form Types</ns:tableTitle>
         <ns:javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</ns:javaCustomizer>
         <ns:auditLogging>DETAILED</ns:auditLogging>
         <ns:importUrl></ns:importUrl>
@@ -917,7 +928,8 @@
             </ns:column>
         </ns:columns>
     </ns:table>
-    <ns:table tableName="protocol" tableDbType="TABLE">
+    <ns:table tableName="protocol" tableDbType="TABLE" useColumnOrder="true">
+        <ns:tableTitle>IACUC Protocols</ns:tableTitle>
         <ns:javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</ns:javaCustomizer>
         <ns:auditLogging>DETAILED</ns:auditLogging>
         <ns:importUrl></ns:importUrl>
@@ -930,6 +942,10 @@
             <ns:column columnName="protocol">
                 <ns:isKeyField>true</ns:isKeyField>
             </ns:column>
+            <ns:column columnName="title">
+                <ns:nullable>true</ns:nullable>
+            </ns:column>
+
             <ns:column columnName="inves">
                 <ns:nullable>true</ns:nullable>
             </ns:column>
@@ -945,9 +961,6 @@
                 <ns:columnTitle>End Date</ns:columnTitle>
                 <ns:nullable>true</ns:nullable>
             </ns:column>
-            <ns:column columnName="title">
-                <ns:nullable>true</ns:nullable>
-            </ns:column>
             <ns:column columnName="project_type">
                 <ns:columnTitle>Type</ns:columnTitle>
                 <ns:nullable>true</ns:nullable>
@@ -959,10 +972,12 @@
             <ns:column columnName="ibc_approval_required">
                 <ns:columnTitle>IBC Approval Required?</ns:columnTitle>
                 <ns:nullable>true</ns:nullable>
+                <ns:isHidden>true</ns:isHidden>
             </ns:column>
             <ns:column columnName="ibc_approval_num">
                 <ns:columnTitle>IBC Approval Number</ns:columnTitle>
                 <ns:nullable>true</ns:nullable>
+                <ns:isHidden>true</ns:isHidden>
             </ns:column>
             <ns:column columnName="usda_level">
                 <ns:columnTitle>USDA Level</ns:columnTitle>
@@ -1004,7 +1019,8 @@
             </ns:column>
         </ns:columns>
     </ns:table>
-    <ns:table tableName="project" tableDbType="TABLE">
+    <ns:table tableName="project" tableDbType="TABLE" useColumnOrder="true">
+        <ns:tableTitle>Projects</ns:tableTitle>
         <ns:javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</ns:javaCustomizer>
         <ns:auditLogging>DETAILED</ns:auditLogging>
         <ns:importUrl></ns:importUrl>
@@ -1082,7 +1098,8 @@
             </ns:column>
         </ns:columns>
     </ns:table>
-    <ns:table tableName="protocol_counts" tableDbType="TABLE">
+    <ns:table tableName="protocol_counts" tableDbType="TABLE" useColumnOrder="true">
+        <ns:tableTitle>Animals Allowed Per Protocol</ns:tableTitle>
         <ns:javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</ns:javaCustomizer>
         <ns:auditLogging>DETAILED</ns:auditLogging>
         <ns:importUrl></ns:importUrl>
@@ -1135,7 +1152,8 @@
             </ns:column>
         </ns:columns>
     </ns:table>
-    <ns:table tableName="qcStateMetadata" tableDbType="TABLE">
+    <ns:table tableName="qcStateMetadata" tableDbType="TABLE" useColumnOrder="true">
+        <ns:tableTitle>QCState Metadata</ns:tableTitle>
         <ns:javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</ns:javaCustomizer>
         <ns:auditLogging>DETAILED</ns:auditLogging>
         <ns:importUrl></ns:importUrl>
@@ -1161,7 +1179,8 @@
             </ns:column>
         </ns:columns>
     </ns:table>
-    <ns:table tableName="animal_groups" tableDbType="TABLE">
+    <ns:table tableName="animal_groups" tableDbType="TABLE" useColumnOrder="true">
+        <ns:tableTitle>Animal Groups</ns:tableTitle>
         <ns:javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</ns:javaCustomizer>
         <ns:auditLogging>DETAILED</ns:auditLogging>
         <ns:importUrl></ns:importUrl>
@@ -1202,7 +1221,8 @@
             </ns:column>
         </ns:columns>
     </ns:table>
-    <ns:table tableName="supplemental_pedigree" tableDbType="TABLE">
+    <ns:table tableName="supplemental_pedigree" tableDbType="TABLE" useColumnOrder="true">
+        <ns:tableTitle>Supplemental Pedigree</ns:tableTitle>
         <ns:javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</ns:javaCustomizer>
         <ns:auditLogging>DETAILED</ns:auditLogging>
         <ns:importUrl></ns:importUrl>
@@ -1265,7 +1285,8 @@
             </ns:column>
         </ns:columns>
     </ns:table>
-    <ns:table tableName="kinship" tableDbType="TABLE">
+    <ns:table tableName="kinship" tableDbType="TABLE" useColumnOrder="true">
+        <ns:tableTitle>Kinship</ns:tableTitle>
         <ns:javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</ns:javaCustomizer>
         <ns:auditLogging>SUMMARY</ns:auditLogging>
         <ns:importUrl></ns:importUrl>
@@ -1320,7 +1341,8 @@
             </ns:column>
         </ns:columns>
     </ns:table>
-    <ns:table tableName="protocolProcedures" tableDbType="TABLE">
+    <ns:table tableName="protocolProcedures" tableDbType="TABLE" useColumnOrder="true">
+        <ns:tableTitle>Allowable Procedures Per Protocol</ns:tableTitle>
         <ns:javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</ns:javaCustomizer>
         <ns:auditLogging>DETAILED</ns:auditLogging>
         <ns:importUrl></ns:importUrl>
@@ -1393,7 +1415,8 @@
             </ns:column>
         </ns:columns>
     </ns:table>
-    <ns:table tableName="status" tableDbType="TABLE">
+    <ns:table tableName="status" tableDbType="TABLE" useColumnOrder="true">
+        <ns:tableTitle>Status</ns:tableTitle>
         <ns:javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</ns:javaCustomizer>
         <ns:auditLogging>DETAILED</ns:auditLogging>
         <ns:importUrl></ns:importUrl>
@@ -1430,7 +1453,8 @@
             </ns:column>
         </ns:columns>
     </ns:table>
-    <ns:table tableName="encounter_participants" tableDbType="TABLE">
+    <ns:table tableName="encounter_participants" tableDbType="TABLE" useColumnOrder="true">
+        <ns:tableTitle>Encounter Participants</ns:tableTitle>
         <ns:javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</ns:javaCustomizer>
         <ns:auditLogging>DETAILED</ns:auditLogging>
         <ns:columns>
@@ -1454,13 +1478,15 @@
             <ns:column columnName="modified"/>
         </ns:columns>
     </ns:table>
-    <ns:table tableName="scheduled_task_types" tableDbType="TABLE">
+    <ns:table tableName="scheduled_task_types" tableDbType="TABLE" useColumnOrder="true">
+        <ns:tableTitle>Scheduled Task Types</ns:tableTitle>
         <ns:javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</ns:javaCustomizer>
         <ns:columns>
             <ns:column columnName="tasktype"/>
         </ns:columns>
     </ns:table>
-    <ns:table tableName="scheduled_tasks" tableDbType="TABLE">
+    <ns:table tableName="scheduled_tasks" tableDbType="TABLE" useColumnOrder="true">
+        <ns:tableTitle>Scheduled Tasks</ns:tableTitle>
         <ns:javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</ns:javaCustomizer>
         <ns:columns>
             <ns:column columnName="rowid"/>
@@ -1481,7 +1507,8 @@
             <ns:column columnName="modified"/>
         </ns:columns>
     </ns:table>
-    <ns:table tableName="animal_group_members" tableDbType="TABLE">
+    <ns:table tableName="animal_group_members" tableDbType="TABLE" useColumnOrder="true">
+        <ns:tableTitle>Animal Group Members</ns:tableTitle>
         <ns:javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</ns:javaCustomizer>
         <ns:columns>
             <ns:column columnName="rowid"/>
@@ -1497,7 +1524,8 @@
             <ns:column columnName="modified"/>
         </ns:columns>
     </ns:table>
-    <ns:table tableName="encounter_flags" tableDbType="TABLE">
+    <ns:table tableName="encounter_flags" tableDbType="TABLE" useColumnOrder="true">
+        <ns:tableTitle>Encounter Flags</ns:tableTitle>
         <ns:javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</ns:javaCustomizer>
         <ns:columns>
             <ns:column columnName="rowid"/>
@@ -1517,7 +1545,8 @@
             <ns:column columnName="modified"/>
         </ns:columns>
     </ns:table>
-    <ns:table tableName="encounter_summaries" tableDbType="TABLE">
+    <ns:table tableName="encounter_summaries" tableDbType="TABLE" useColumnOrder="true">
+        <ns:tableTitle>Encounter Summaries</ns:tableTitle>
         <ns:javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</ns:javaCustomizer>
         <ns:columns>
             <ns:column columnName="rowid"/>

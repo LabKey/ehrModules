@@ -77,15 +77,17 @@ Ext4.onReady(function (){
     Ext4.DomHelper.append(el, domSpec);
 
     Ext4.create('LABKEY.ext4.SearchPanel', {
-        schemaName: 'study'
-        ,queryName: 'Demographics'
-        ,viewName: 'Search Panel'
-        ,title: 'Search Animals'
-        ,defaultView: 'Alive, at Center'
-        ,metadata: {
-            Id: {lookups: false}
-            ,'Id/age/AgeInYearsRounded': {duplicate: true}
-            ,'Id/MostRecentWeight/MostRecentWeight': {duplicate: true}
+        schemaName: 'study',
+        queryName: 'Demographics',
+        viewName: 'Search Panel',
+        title: 'Search Animals',
+        defaultViewName: 'Alive, at Center',
+        LABEL_WIDTH: 200,
+        width: 660,
+        metadata: {
+            Id: {lookups: false},
+            'Id/age/AgeInYearsRounded': {duplicate: true},
+            'Id/MostRecentWeight/MostRecentWeight': {duplicate: true}
         }
     }).render('animalSearch_'+webpart.wrapperDivId);
 });

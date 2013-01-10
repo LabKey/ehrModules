@@ -75,10 +75,10 @@ EHR_ComplianceDB/resources/views/training.webpart.xml -text
 EHR_ComplianceDB/tools/SOP_Lists.zip -text
 ehr/build.xml -text
 ehr/module.properties -text
-ehr/pipeline/kinship/install.r -text
-ehr/pipeline/kinship/populateKinship.r -text
 ehr/resources/folderTypes/EHR.folderType.xml -text
 ehr/resources/module.xml -text
+ehr/resources/pipeline/install.r -text
+ehr/resources/pipeline/kinship/populateKinship.r -text
 ehr/resources/queries/auditLog/DatasetAuditEvent.query.xml -text
 ehr/resources/queries/auditLog/DatasetAuditEvent/.qview.xml -text
 ehr/resources/queries/auditLog/DatasetAuditEvent/Detailed.qview.xml -text
@@ -93,9 +93,6 @@ ehr/resources/queries/ehr/Requests_DataEntry.sql -text
 ehr/resources/queries/ehr/RoomUtilization.query.xml -text
 ehr/resources/queries/ehr/RoomUtilization.sql -text
 ehr/resources/queries/ehr/RoomUtilization/.qview.xml -text
-ehr/resources/queries/ehr/RoomsWithoutObsToday.query.xml -text
-ehr/resources/queries/ehr/RoomsWithoutObsToday.sql -text
-ehr/resources/queries/ehr/RoomsWithoutObsToday/.qview.xml -text
 ehr/resources/queries/ehr/Tasks.js -text
 ehr/resources/queries/ehr/TasksById.query.xml -text
 ehr/resources/queries/ehr/TasksById.sql -text
@@ -368,12 +365,7 @@ ehr/resources/queries/study/Problem[!!-~]List/.qview.xml -text
 ehr/resources/queries/study/Problem[!!-~]List/Unresolved[!!-~]Problems.qview.xml -text
 ehr/resources/queries/study/QCState.query.xml -text
 ehr/resources/queries/study/StudyData/.qview.xml -text
-ehr/resources/queries/study/StudyData/Behavior[!!-~]History.qview.xml -text
-ehr/resources/queries/study/StudyData/Diagnostics.qview.xml -text
-ehr/resources/queries/study/StudyData/Full[!!-~]History[!!-~]Plus[!!-~]Obs.qview.xml -text
 ehr/resources/queries/study/StudyData/Full[!!-~]History.qview.xml -text
-ehr/resources/queries/study/StudyData/Medical[!!-~]History.qview.xml -text
-ehr/resources/queries/study/StudyData/Records[!!-~]Transmittal.qview.xml -text
 ehr/resources/queries/study/StudyData/Review[!!-~]Required.qview.xml -text
 ehr/resources/queries/study/TB[!!-~]Tests.js -text
 ehr/resources/queries/study/TB[!!-~]Tests.query.xml -text
@@ -382,6 +374,7 @@ ehr/resources/queries/study/Teeth.js -text
 ehr/resources/queries/study/Teeth.query.xml -text
 ehr/resources/queries/study/Teeth/.qview.xml -text
 ehr/resources/queries/study/Teeth/Status[!!-~]Not[!!-~]Blank.qview.xml -text
+ehr/resources/queries/study/Tissue[!!-~]Samples.js -text
 ehr/resources/queries/study/Tissue[!!-~]Samples.query.xml -text
 ehr/resources/queries/study/Tissue[!!-~]Samples/.qview.xml -text
 ehr/resources/queries/study/Treatment[!!-~]Orders.js -text
@@ -420,7 +413,6 @@ ehr/resources/queries/study/assignmentTotalCoAssigned.query.xml -text
 ehr/resources/queries/study/assignmentTotalCoAssigned.sql -text
 ehr/resources/queries/study/assignmentTotalDaysAssigned.query.xml -text
 ehr/resources/queries/study/assignmentTotalDaysAssigned.sql -text
-ehr/resources/queries/study/bloodNeedlesticks.sql -text
 ehr/resources/queries/study/chemMisc.query.xml -text
 ehr/resources/queries/study/chemMisc.sql -text
 ehr/resources/queries/study/chemMisc/.qview.xml -text
@@ -511,9 +503,6 @@ ehr/resources/queries/study/demographicsWeightChange/10[!!-~]Pct[!!-~]Drop[!!-~]
 ehr/resources/queries/study/demographicsWeightChange/10[!!-~]Pct[!!-~]Drop[!!-~]In[!!-~]Last[!!-~]30[!!-~]Days.qview.xml -text
 ehr/resources/queries/study/demographicsWeightChange/10[!!-~]Pct[!!-~]Drop[!!-~]In[!!-~]Last[!!-~]90[!!-~]Days.qview.xml -text
 ehr/resources/queries/study/demographicsWeightChange/With[!!-~]Id.qview.xml -text
-ehr/resources/queries/study/diarrheaCalendar.query.xml -text
-ehr/resources/queries/study/diarrheaCalendar.sql -text
-ehr/resources/queries/study/diarrheaCalendar/.qview.xml -text
 ehr/resources/queries/study/duplicateAssignments.sql -text
 ehr/resources/queries/study/hematologyAbsCount.query.xml -text
 ehr/resources/queries/study/hematologyAbsCount.sql -text
@@ -597,6 +586,8 @@ ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-12.301-12.302.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-12.302-12.303.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-12.305-12.306.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-12.306-12.307.sql -text
+ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-12.307-12.308.sql -text
+ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-12.308-12.309.sql -text
 ehr/resources/schemas/dbscripts/postgresql/obsolete/EHR-11.10-11.101.sql -text
 ehr/resources/schemas/dbscripts/postgresql/obsolete/EHR-11.101-11.102.sql -text
 ehr/resources/schemas/dbscripts/postgresql/obsolete/EHR-11.102-11.105.sql -text
@@ -710,6 +701,8 @@ ehr/resources/schemas/dbscripts/sqlserver/EHR_Lookups-12.301-12.302.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/EHR_Lookups-12.302-12.303.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/EHR_Lookups-12.305-12.306.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/EHR_Lookups-12.306-12.307.sql -text
+ehr/resources/schemas/dbscripts/sqlserver/EHR_Lookups-12.307-12.308.sql -text
+ehr/resources/schemas/dbscripts/sqlserver/EHR_Lookups-12.308-12.309.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/obsolete/EHR-11.34-11.35.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/obsolete/EHR-11.36-11.37.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/obsolete/EHR_Lookups-11.34-11.35.sql -text
@@ -762,6 +755,8 @@ ehr/resources/views/housingOverlaps.html -text
 ehr/resources/views/housingOverlaps.view.xml -text
 ehr/resources/views/housingQueries.html -text
 ehr/resources/views/housingQueries.view.xml -text
+ehr/resources/views/manageHousing.html -text
+ehr/resources/views/manageHousing.view.xml -text
 ehr/resources/views/manageRecord.html -text
 ehr/resources/views/manageRecord.view.xml -text
 ehr/resources/views/manageRequest.html -text
@@ -807,7 +802,6 @@ ehr/resources/web/ehr/ExtComponents.js -text
 ehr/resources/web/ehr/ExtContainers.js -text
 ehr/resources/web/ehr/ExtOverrides.js -text
 ehr/resources/web/ehr/Security.js -text
-ehr/resources/web/ehr/animalHistory.js -text
 ehr/resources/web/ehr/databind.js -text
 ehr/resources/web/ehr/datetime.js -text
 ehr/resources/web/ehr/ehrAPI.js -text
@@ -851,7 +845,10 @@ ehr/resources/web/ehr/metadata/Surgery.js -text
 ehr/resources/web/ehr/metadata/Task.js -text
 ehr/resources/web/ehr/metadata/Treatments.js -text
 ehr/resources/web/ehr/navMenu.js -text
-ehr/resources/web/ehr/participantView.js -text
+ehr/resources/web/ehr/panel/AnimalHistoryPanel.js -text
+ehr/resources/web/ehr/panel/LocationFilterType.js -text
+ehr/resources/web/ehr/panel/MultiAnimalFilterType.js -text
+ehr/resources/web/ehr/panel/ParticipantDetailsPanel.js -text
 ehr/resources/web/ehr/reports.js -text
 ehr/resources/web/ehr/studyButtons.js -text
 ehr/resources/web/ehr/stylesheet-red-limited.css -text

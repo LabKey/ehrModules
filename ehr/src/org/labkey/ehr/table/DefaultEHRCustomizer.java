@@ -180,16 +180,6 @@ public class DefaultEHRCustomizer implements TableCustomizer
         col4.setDescription("Contains summaries of the assignments for each animal, including the project numbers, availability codes and a count");
         ds.addColumn(col4);
 
-        ColumnInfo col5 = getWrappedIdCol(us, ds, "activeAssignments", "demographicsAssignmentSummary");
-        col5.setLabel("Assignments - Detailed");
-        col5.setDescription("Contains more detailed summaries of the active assignments for each animal, including a breakdown between research, breeding, training, etc.");
-        ds.addColumn(col5);
-
-        ColumnInfo col6 = getWrappedIdCol(us, ds, "totalAssignments", "demographicsAssignmentHistory");
-        col6.setLabel("Assignments - Total");
-        col6.setDescription("Contains summaries of the total assignments this animal has ever had, including the project numbers and a count");
-        ds.addColumn(col6);
-
         ColumnInfo col7 = getWrappedIdCol(us, ds, "AvailBlood", "demographicsBloodSummary");
         col7.setLabel("Blood Remaining");
         col7.setDescription("Calculates the total blood draw and remaining, which is determine by weight and blood drawn in the past 30 days.");
@@ -236,7 +226,7 @@ public class DefaultEHRCustomizer implements TableCustomizer
         ds.addColumn(col15);
 
         ColumnInfo col16 = getWrappedIdCol(us, ds, "Surgery", "demographicsSurgery");
-        col16.setLabel("Surgery");
+        col16.setLabel("Surgical History");
         col16.setDescription("Calculates whether this animal has ever had any surgery or a surgery flagged as major");
         ds.addColumn(col16);
 
@@ -461,12 +451,20 @@ public class DefaultEHRCustomizer implements TableCustomizer
 
     private UserSchema getStudyUserSchema(AbstractTableInfo ds)
     {
+        User u;
         if (!HttpView.hasCurrentView()){
-            _log.warn("There is no current view for the TableCustomizer: " + ds.getName());
-            return null;
+            _log.warn("There is no current view for the TableCustomizer: " + ds.getName() + ", trying to use default user");
+
+            u = EHRManager.get().getEHRUser();
         }
-        
-        User u = HttpView.currentContext().getUser();
+        else
+        {
+            u = HttpView.currentContext().getUser();
+        }
+
+        if (u == null)
+            return null;
+
         Container c = ((FilteredTable)ds).getContainer();
         return QueryService.get().getUserSchema(u, c, "study");
     }
@@ -490,8 +488,8 @@ public class DefaultEHRCustomizer implements TableCustomizer
     {
         if (ti.getColumn("enddate") != null)
         {
-            //TODO: right function?
-            SQLFragment sql = new SQLFragment("COALESCE(" + ExprColumn.STR_TABLE_ALIAS + ".enddate, getDate())");
+            //TODO: get type conversion right
+            SQLFragment sql = new SQLFragment("COALESCE(" + ExprColumn.STR_TABLE_ALIAS + ".enddate, {fn curdate()})");
             ExprColumn col = new ExprColumn(ti, "enddateCoalesced", sql, JdbcType.TIMESTAMP);
             col.setCalculated(true);
             col.setUserEditable(false);
@@ -505,7 +503,7 @@ public class DefaultEHRCustomizer implements TableCustomizer
     {
         if (ti.getColumn("date") != null)
         {
-            SQLFragment sql = new SQLFragment("convert(DATE, " + ExprColumn.STR_TABLE_ALIAS + ".date)");
+            SQLFragment sql = new SQLFragment(ti.getSqlDialect().getDateTimeToDateCast(ExprColumn.STR_TABLE_ALIAS + ".date"));
             ExprColumn col = new ExprColumn(ti, "dateOnly", sql, JdbcType.DATE);
             col.setCalculated(true);
             col.setUserEditable(false);

@@ -32,7 +32,6 @@
         <script path="ehr/metadata/Task.js"/>
         <script path="ehr/metadata/Treatments.js"/>
         <script path="ehr/studyButtons.js"/>
-        <script path="ehr/animalHistory.js"/>
         <script path="ehr/reports.js" />
         <script path="ehr/stylesheet.css"/>
     </library>
