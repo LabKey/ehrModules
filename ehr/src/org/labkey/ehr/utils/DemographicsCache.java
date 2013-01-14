@@ -15,6 +15,7 @@
  */
 package org.labkey.ehr.utils;
 
+import org.labkey.api.data.Container;
 import org.labkey.api.data.TableInfo;
 import org.labkey.api.security.User;
 import org.labkey.ehr.EHRManager;
@@ -36,17 +37,17 @@ public class DemographicsCache
     private TableInfo _demographicsQuery;
     private Map<String, AnimalRecord> _records = new HashMap<String, AnimalRecord>();
 
-    private DemographicsCache()
+    public DemographicsCache(Container c)
     {
-        User u = EHRManager.get().getEHRUser();
+        User u = EHRManager.get().getEHRUser(c);
 
 
     }
 
-    private DemographicsCache get()
-    {
-        return _instance;
-    }
+//    private DemographicsCache get()
+//    {
+//        return _instance;
+//    }
 
     public List<AnimalRecord> getAnimals(String... ids)
     {

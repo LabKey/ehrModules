@@ -21,10 +21,13 @@ import org.labkey.api.action.ApiSimpleResponse;
 import org.labkey.api.action.ConfirmAction;
 import org.labkey.api.action.SimpleViewAction;
 import org.labkey.api.action.SpringActionController;
+import org.labkey.api.pipeline.PipelineStatusUrls;
+import org.labkey.api.pipeline.PipelineUrls;
 import org.labkey.api.security.IgnoresTermsOfUse;
 import org.labkey.api.security.RequiresPermissionClass;
 import org.labkey.api.security.permissions.AdminPermission;
 import org.labkey.api.security.permissions.ReadPermission;
+import org.labkey.api.util.PageFlowUtil;
 import org.labkey.api.util.URLHelper;
 import org.labkey.api.view.HtmlView;
 import org.labkey.api.view.JspView;
@@ -218,15 +221,28 @@ public class EHRController extends SpringActionController
     }
 
     @RequiresPermissionClass(AdminPermission.class)
-    public class KinshipAction extends ApiAction<Object>
+    public class KinshipAction extends ConfirmAction<Object>
     {
-        public ApiResponse execute(Object form, BindException errors) throws Exception
+        public void validateCommand(Object form, Errors errors)
         {
-            boolean result = new KinshipRunnable().run(getContainer());
-            return new ApiSimpleResponse("success", result);
+
+        }
+
+        public URLHelper getSuccessURL(Object form)
+        {
+            return PageFlowUtil.urlProvider(PipelineStatusUrls.class).urlBegin(getContainer());
+        }
+
+        public ModelAndView getConfirmView(Object form, BindException errors) throws Exception
+        {
+            return new HtmlView("This will cause the system to recalculate kinship coefficients on the colony.  Do you want to continue?");
+        }
+
+        public boolean handlePost(Object form, BindException errors) throws Exception
+        {
+            return new KinshipRunnable().run(getContainer());
         }
     }
-
 
     public static class HistoryForm
     {

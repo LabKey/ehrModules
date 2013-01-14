@@ -52,7 +52,7 @@ public class KinshipRunnable
 
     public boolean run(Container c)
     {
-        User u = EHRManager.get().getEHRUser();
+        User u = EHRManager.get().getEHRUser(c);
         if (u == null)
         {
             _log.error("Unable to start EHR kinship calculation, because EHR use is null");

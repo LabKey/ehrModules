@@ -160,7 +160,7 @@ public class AbnormalLabResultsNotification extends AbstractEHRNotification
                     else if (rs.getDouble(FieldKey.fromString("result")) > rs.getDouble(FieldKey.fromString("ref_range_max")))
                         color = "#E3170D";
 
-                    sb.append("<tr><td><a href='" + AppProps.getInstance().getBaseServerUrl() + AppProps.getInstance().getContextPath() + "/ehr" + c.getPath() + "/animalHistory.view?#_inputType:renderSingleSubject&_showReport:1&subject:" + appendField("Id", rs) + "&combineSubj:true&activeReport:clinPathRuns'>" + appendField("Id", rs) + "</a></td>");
+                    sb.append("<tr><td><a href='" + AppProps.getInstance().getBaseServerUrl() + AppProps.getInstance().getContextPath() + "/ehr" + c.getPath() + "/animalHistory.view?#inputType:singleSubject&showReport:1&subjects:" + appendField("Id", rs) + "&combineSubj:true&activeReport:clinPathRuns'>" + appendField("Id", rs) + "</a></td>");
                     sb.append("<td>" + appendField("date", rs) + "</td>");
                     sb.append("<td>" + appendField("taskid/datecompleted", rs) + "</td>");
                     sb.append("<td>" + appendField("testId", rs) + "</td>");

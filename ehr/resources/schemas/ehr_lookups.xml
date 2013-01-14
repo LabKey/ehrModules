@@ -468,8 +468,7 @@
         <ns:insertUrl></ns:insertUrl>
         <ns:updateUrl></ns:updateUrl>
         <ns:deleteUrl></ns:deleteUrl>
-        <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr_lookups&amp;query.queryName=obs_other&amp;code=${code}
-        </ns:tableUrl>
+        <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr_lookups&amp;query.queryName=obs_other&amp;code=${code}</ns:tableUrl>
         <ns:pkColumnName>code</ns:pkColumnName>
         <ns:titleColumn>meaning</ns:titleColumn>
         <ns:columns>
@@ -706,8 +705,7 @@
         <ns:insertUrl></ns:insertUrl>
         <ns:updateUrl></ns:updateUrl>
         <ns:deleteUrl></ns:deleteUrl>
-        <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr_lookups&amp;query.queryName=obs_feces&amp;code=${code}
-        </ns:tableUrl>
+        <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr_lookups&amp;query.queryName=obs_feces&amp;code=${code}</ns:tableUrl>
         <ns:pkColumnName>code</ns:pkColumnName>
         <ns:titleColumn>meaning</ns:titleColumn>
         <ns:columns>
@@ -1313,8 +1311,7 @@
         <ns:updateUrl></ns:updateUrl>
         <ns:deleteUrl></ns:deleteUrl>
         <ns:pkColumnName>code</ns:pkColumnName>
-        <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr_lookups&amp;query.queryName=snomed&amp;code=${code}
-        </ns:tableUrl>
+        <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr_lookups&amp;query.queryName=snomed&amp;code=${code}</ns:tableUrl>
         <ns:titleColumn>meaning</ns:titleColumn>
         <ns:columns>
             <ns:column columnName="code">
@@ -2205,8 +2202,7 @@
         <ns:updateUrl></ns:updateUrl>
         <ns:deleteUrl></ns:deleteUrl>
         <ns:pkColumnName>rowid</ns:pkColumnName>
-        <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr_lookups&amp;query.queryName=snomap&amp;rowid=${rowid}
-        </ns:tableUrl>
+        <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr_lookups&amp;query.queryName=snomap&amp;rowid=${rowid}</ns:tableUrl>
         <ns:titleColumn>meaning</ns:titleColumn>
         <ns:columns>
             <ns:column columnName="rowid">

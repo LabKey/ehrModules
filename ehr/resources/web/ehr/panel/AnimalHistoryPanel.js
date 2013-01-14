@@ -19,7 +19,7 @@ Ext4.define('EHR.panel.AnimalHistoryPanel', {
 
     initComponent: function(){
         Ext4.apply(this, {
-            defaultReport: 'notes'
+            defaultReport: 'abstract'
         });
 
         this.reportStore = Ext4.create('LABKEY.ext4.Store', {

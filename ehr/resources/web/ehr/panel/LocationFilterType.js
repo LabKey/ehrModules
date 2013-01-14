@@ -154,5 +154,24 @@ Ext4.define('EHR.panel.LocationFilterType', {
         }
 
         return true;
+    },
+
+    getTitle: function(){
+        var title = [];
+
+        var room = this.down('#roomField').getValue();
+        var cage = this.down('#cageField').getValue();
+        var area = this.down('#areaField').getValue();
+
+        if (area)
+            title.push('Area: '+area);
+
+        if (room)
+            title.push('Room: '+room);
+
+        if (cage)
+            title.push('Cage: '+cage);
+
+        return title.join(', ');
     }
 });

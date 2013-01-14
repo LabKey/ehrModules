@@ -456,7 +456,7 @@ function onComplete(event, errors, scriptContext){
             
             msgContent: openingLine +
                  theMsg +
-                '<p></p><a href="'+LABKEY.ActionURL.getBaseURL()+'ehr' + LABKEY.ActionURL.getContainer() + '/animalHistory.view#_inputType:renderMultiSubject&subject:'+scriptContext.publicParticipantsModified.join(';')+'&combineSubj:true&activeReport:abstract' +
+                '<p></p><a href="'+LABKEY.ActionURL.getBaseURL()+'ehr' + LABKEY.ActionURL.getContainer() + '/animalHistory.view#inputType:multiSubject&subjects:'+scriptContext.publicParticipantsModified.join(';')+'&combineSubj:true&activeReport:abstract' +
                 '">Click here to view them</a>.',
             msgSubject: 'Death Notification',
 	    recipients: recipients

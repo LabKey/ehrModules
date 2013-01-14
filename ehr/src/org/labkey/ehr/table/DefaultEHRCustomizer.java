@@ -35,16 +35,13 @@ import org.labkey.api.query.QueryDefinition;
 import org.labkey.api.query.QueryException;
 import org.labkey.api.query.QueryForeignKey;
 import org.labkey.api.query.QueryService;
-import org.labkey.api.query.SimpleUserSchema;
 import org.labkey.api.query.UserSchema;
 import org.labkey.api.security.User;
 import org.labkey.api.settings.AppProps;
-import org.labkey.api.study.DataSet;
 import org.labkey.api.study.DataSetTable;
 import org.labkey.api.util.GUID;
 import org.labkey.api.view.HttpView;
 import org.labkey.api.view.template.ClientDependency;
-import org.labkey.ehr.EHRManager;
 import org.labkey.ehr.EHRModule;
 
 import java.util.ArrayList;
@@ -451,22 +448,31 @@ public class DefaultEHRCustomizer implements TableCustomizer
 
     private UserSchema getStudyUserSchema(AbstractTableInfo ds)
     {
-        User u;
-        if (!HttpView.hasCurrentView()){
-            _log.warn("There is no current view for the TableCustomizer: " + ds.getName() + ", trying to use default user");
+        return getUserSchema(ds, "study");
+    }
 
-            u = EHRManager.get().getEHRUser();
+    public static UserSchema getUserSchema(AbstractTableInfo ds, String name)
+    {
+        if (!(ds instanceof FilteredTable))
+        {
+            return null;
+        }
+
+        User u;
+        Container c = ((FilteredTable)ds).getContainer();
+
+        if (HttpView.hasCurrentView()){
+            u = HttpView.currentContext().getUser();
         }
         else
         {
-            u = HttpView.currentContext().getUser();
+            u = EHRService.get().getEHRUser(c);
         }
 
         if (u == null)
             return null;
 
-        Container c = ((FilteredTable)ds).getContainer();
-        return QueryService.get().getUserSchema(u, c, "study");
+        return QueryService.get().getUserSchema(u, c, name);
     }
 
     private void hideStudyColumns(AbstractTableInfo ds)

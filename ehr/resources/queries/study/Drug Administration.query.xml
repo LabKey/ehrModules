@@ -127,6 +127,9 @@
                     <column columnName="dosage">
                         <columnTitle>Dosage</columnTitle>
                     </column>
+                    <column columnName="volume">
+                        <columnTitle>Volume</columnTitle>
+                    </column>
                 </columns>
             </table>
         </tables>

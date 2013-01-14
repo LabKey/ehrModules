@@ -21,7 +21,7 @@ Ext4.onReady(function(){
             html: '<a href="<%=contextPath%>/query' + ctx['EHRStudyContainer'] + '/executeQuery.view?schemaName=study&query.queryName=Demographics&query.viewName=Single%20Housed">List Single-housed Animals</a>'
         },{
             tag: 'li',
-            html: '<a href="<%=contextPath%>/ehr' + ctx['EHRStudyContainer'] + '/animalHistory.view#_inputType:renderSingleSubject&activeReport:roommateHistory">View Roommate History for Animals</a>'
+            html: '<a href="<%=contextPath%>/ehr' + ctx['EHRStudyContainer'] + '/animalHistory.view#inputType:singleSubject&activeReport:roommateHistory">View Roommate History for Animals</a>'
         },{
             tag: 'li',
             html: '<a href="<%=contextPath%>/ehr' + ctx['EHRStudyContainer'] + '/housingOverlaps.view">Find Animals Housed In A Given Room/Cage At A Specific Time</a>'

@@ -130,6 +130,7 @@ public class KinshipInitTask extends PipelineJob.Task<KinshipInitTask.Factory>
             File outputFile = new File(support.getAnalysisDirectory(), KinshipImportTask.PEDIGREE_FILE);
             CSVWriter writer = new CSVWriter(new OutputStreamWriter(new FileOutputStream(outputFile)), '\t', CSVWriter.NO_QUOTE_CHARACTER);
 
+            int count = 0;
             while (rs.next())
             {
                 String[] row = new String[]{rs.getString("Id"), rs.getString("Dam"), rs.getString("Sire"), rs.getString("Gender")};
@@ -140,8 +141,15 @@ public class KinshipInitTask extends PipelineJob.Task<KinshipInitTask.Factory>
                         row[i] = "NA";
                 }
                 writer.writeNext(row);
+                count++;
             }
             writer.close();
+
+            if (count == 0)
+            {
+                outputFile.delete();
+                throw new PipelineJobException("No rows present in pedigree table");
+            }
 
             action.addOutput(outputFile, "Pedigree TSV", false);
         }
@@ -153,7 +161,8 @@ public class KinshipInitTask extends PipelineJob.Task<KinshipInitTask.Factory>
         {
             throw new RuntimeException(e);
         }
-        finally {
+        finally
+        {
             ResultSetUtil.close(rs);
         }
 

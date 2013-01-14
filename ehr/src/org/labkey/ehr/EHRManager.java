@@ -51,7 +51,6 @@ import org.labkey.api.study.Study;
 import org.labkey.api.study.StudyService;
 import org.labkey.api.util.ExceptionUtil;
 import org.labkey.api.util.ResultSetUtil;
-import org.labkey.study.xml.StudyDocument;
 
 import java.beans.Introspector;
 import java.sql.DatabaseMetaData;
@@ -64,6 +63,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 
 public class EHRManager
 {
@@ -86,24 +87,24 @@ public class EHRManager
     }
 
     /**
-     * @return The value of the EHRSAdminUser, as set in the root container
+     * @return The value of the EHRSAdminUser
      */
-    public User getEHRUser()
+    public User getEHRUser(Container c)
     {
-        return getEHRUser(true);
+        return getEHRUser(c, true);
     }
 
-    public User getEHRUser(boolean logOnError)
+    public User getEHRUser(Container c, boolean logOnError)
     {
         try
         {
             Module ehr = ModuleLoader.getInstance().getModule(EHRModule.NAME);
             ModuleProperty mp = ehr.getModuleProperties().get(EHRManager.EHRAdminUserPropName);
-            String emailAddress = PropertyManager.getCoalecedProperty(PropertyManager.SHARED_USER, ContainerManager.getRoot(), mp.getCategory(), EHRManager.EHRAdminUserPropName);
+            String emailAddress = PropertyManager.getCoalecedProperty(PropertyManager.SHARED_USER, c, mp.getCategory(), EHRManager.EHRAdminUserPropName);
             if (emailAddress == null)
             {
                 if (logOnError)
-                    _log.error("Attempted to access EHR email module property, which has not been set for the root container");
+                    _log.error("Attempted to access EHR email module property from container: " + c.getPath() + ", but it was null.  Some code may not work as expected.");
                 return null;
             }
 
@@ -149,7 +150,7 @@ public class EHRManager
     {
         Module ehrModule = ModuleLoader.getInstance().getModule(EHRModule.NAME);
         if (u == null)
-            u = getEHRUser(false);
+            u = getEHRUser(ContainerManager.getRoot(), false);
 
         if (u == null)
         {
@@ -578,5 +579,11 @@ public class EHRManager
     public void getDataEntryItems(Container c, User u)
     {
 
+    }
+
+    public void scheduleKinshipTask()
+    {
+        ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
+        //executor.scheduleAtFixedRate(new KinshipRunnable(), 10, 10000, TimeUnit.SECONDS);
     }
 }

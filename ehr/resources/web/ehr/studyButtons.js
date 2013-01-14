@@ -174,7 +174,7 @@ EHR.DatasetButtons = new function(){
                     if(!ctx)
                         return;
 
-                    var hash = '_inputType:renderMultiSubject&showReport:1&subject:'+ids.join(',');
+                    var hash = 'inputType:multiSubject&showReport:1&subjects:'+ids.join(',');
                     window.location = LABKEY.ActionURL.buildURL(
                         'ehr'
                         ,'animalHistory.view#'+hash
@@ -301,13 +301,11 @@ EHR.DatasetButtons = new function(){
                 bodyStyle:'padding:5px',
                 closeAction:'hide',
                 plain: true,
-                keys: [
-                    {
-                        key: Ext.EventObject.ENTER,
-                        handler: runSQL,
-                        scope: this
-                    }
-                ],
+                keys: [{
+                    key: Ext.EventObject.ENTER,
+                    handler: runSQL,
+                    scope: this
+                }],
                 title: 'Jump To Other Dataset',
                 layout: 'form',
                 items: [{
@@ -389,7 +387,7 @@ EHR.DatasetButtons = new function(){
                      schemaName: 'study',
                      sql: sql,
                      successCallback: changeLocation
-                     });
+                 });
 
                 function changeLocation(data){
                     var ids = new Array();

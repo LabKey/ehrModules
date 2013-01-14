@@ -179,7 +179,7 @@ public class WeightAlerts extends AbstractEHRNotification
                         for (ResultSet rs : roomValue)
                         {
                             msg.append("<tr><td><a href='" + AppProps.getInstance().getBaseServerUrl() + AppProps.getInstance().getContextPath() + "/ehr" + c.getPath() +
-                                "animalHistory.view?#_inputType:renderSingleSubject&_showReport:1&subject:" +
+                                "animalHistory.view?#inputType:singleSubject&showReport:1&subjects:" +
                                 rs.getString("Id") + "&combineSubj:true&activeReport:abstract'>" + rs.getString("Id") +
                                 "</a></td><td>" + area + "</td><td>" + room + "</td><td>" + rs.getString("Id/curLocation/cage") + "</td><td>" +
                                 rs.getString("LatestWeight") + "</td><td>" + rs.getString("LatestWeightDate") + "</td><td>" +

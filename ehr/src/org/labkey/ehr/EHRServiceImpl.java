@@ -17,13 +17,13 @@ package org.labkey.ehr;
 
 import org.labkey.api.collections.CaseInsensitiveHashMap;
 import org.labkey.api.data.Container;
+import org.labkey.api.data.ContainerManager;
 import org.labkey.api.data.PropertyManager;
 import org.labkey.api.data.TableCustomizer;
 import org.labkey.api.ehr.EHRService;
 import org.labkey.api.module.Module;
 import org.labkey.api.resource.Resource;
 import org.labkey.api.security.User;
-import org.labkey.api.settings.WriteableAppProps;
 import org.labkey.api.util.Pair;
 import org.labkey.api.view.template.ClientDependency;
 
@@ -195,6 +195,11 @@ public class EHRServiceImpl extends EHRService
 
     public User getEHRUser()
     {
-        return EHRManager.get().getEHRUser();
+        return getEHRUser(ContainerManager.getRoot());
+    }
+
+    public User getEHRUser(Container c)
+    {
+        return EHRManager.get().getEHRUser(c);
     }
 }

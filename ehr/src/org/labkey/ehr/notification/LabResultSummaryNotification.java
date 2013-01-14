@@ -161,8 +161,8 @@ public class LabResultSummaryNotification extends AbstractEHRNotification
                     if (sb == null)
                         sb = new StringBuilder();
 
-                    sb.append("<tr><td><a href='" + AppProps.getInstance().getBaseServerUrl() + AppProps.getInstance().getContextPath() + "/ehr" + c.getPath() + "/animalHistory.view?#_inputType:renderSingleSubject&_showReport:1&subject:");
-                    sb.append(rs.getString(FieldKey.fromString("Id")) + "&combineSubj:true&activeReport:clinPathRuns'>" + rs.getString(FieldKey.fromString("Id")) +  "</a></td><td>" + _dateFormat.format(rs.getDate(FieldKey.fromString("date"))) + "</td><td>" + rs.getString(FieldKey.fromString("serviceRequested")) + "</td><td>" + description + "</td><td>");
+                    sb.append("<tr><td><a href='" + AppProps.getInstance().getBaseServerUrl() + AppProps.getInstance().getContextPath() + "/ehr" + c.getPath() + "/animalHistory.view?#inputType:singleSubject&showReport:1&subjects:");
+                    sb.append(rs.getString(FieldKey.fromString("Id")) + "&activeReport:clinPathRuns'>" + rs.getString(FieldKey.fromString("Id")) +  "</a></td><td>" + _dateFormat.format(rs.getDate(FieldKey.fromString("date"))) + "</td><td>" + rs.getString(FieldKey.fromString("serviceRequested")) + "</td><td>" + description + "</td><td>");
                     sb.append((rs.getString(FieldKey.fromString("dateReviewed")) == null ? "" : rs.getString(FieldKey.fromString("dateReviewed"))) + "</td><td" + (rs.getString(FieldKey.fromString("reviewedBy"))==null ? "" : " style=background:red;") + ">" + (rs.getString(FieldKey.fromString("reviewedBy"))==null ? "" : rs.getString(FieldKey.fromString("reviewedBy")) + "</td></tr>"));
 
                     areaNode.put(room, sb);

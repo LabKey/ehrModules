@@ -21,6 +21,8 @@ import org.labkey.api.data.Container;
 import org.labkey.api.data.Results;
 import org.labkey.api.data.RuntimeSQLException;
 import org.labkey.api.data.SimpleFilter;
+import org.labkey.api.data.TableInfo;
+import org.labkey.api.data.TableSelector;
 import org.labkey.api.query.FieldKey;
 import org.labkey.api.query.QueryService;
 import org.labkey.api.query.QuerySettings;
@@ -36,6 +38,7 @@ import java.sql.SQLException;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -97,46 +100,36 @@ public class AdminAlertsNotification extends AbstractEHRNotification
      */
     private void siteUsage(Container c, User u, final StringBuilder msg)
     {
-        MutablePropertyValues mpv = new MutablePropertyValues();
-        mpv.addPropertyValue("schemaName", "core");
-        mpv.addPropertyValue("query.queryName", "SiteUsageByDay");
-
-        BindException errors = new NullSafeBindException(new Object(), "command");
         UserSchema us = QueryService.get().getUserSchema(u, c, "core");
-        QuerySettings qs = us.getSettings(mpv, "query");
+        TableInfo ti = us.getTable("SiteUsageByDay");
+
+
+
+
+//        MutablePropertyValues mpv = new MutablePropertyValues();
+//        mpv.addPropertyValue("schemaName", "core");
+//        mpv.addPropertyValue("query.queryName", "SiteUsageByDay");
+//
+//        BindException errors = new NullSafeBindException(new Object(), "command");
+//        UserSchema us = QueryService.get().getUserSchema(u, c, "core");
+//        QuerySettings qs = us.getSettings(mpv, "query");
         Calendar cal = Calendar.getInstance();
         cal.setTime(new Date());
         cal.add(Calendar.DATE, -7);
         SimpleFilter filter = new SimpleFilter(FieldKey.fromString("date"), cal.getTime(), CompareType.DATE_GTE);
-        qs.setBaseFilter(filter);
-        QueryView view = new QueryView(us, qs, errors);
-        Results rs = null;
-        try
+        TableSelector ts = new TableSelector(ti, filter, null);
+        ts.setForDisplay(true);
+        Map<String, Object>[] rows = ts.getArray(Map.class);
+        if (rows.length > 0)
         {
-            rs = view.getResults();
-            if (rs.next())
+            msg.append("Site Logins In The Past 7 Days:<br>\n");
+            msg.append("<table border=1><tr><td>Day of Week</td><td>Date</td><td>Logins</td></tr>");
+            for (Map<String, Object> row : rows)
             {
-                msg.append("Site Logins In The Past 7 Days:<br>\n");
-                msg.append("<table border=1><tr><td>Day of Week</td><td>Date</td><td>Logins</td></tr>");
-                do
-                {
-                    msg.append("<tr><td>" + rs.getString("dayOfWeek") + "</td><td>" + _dateFormat.format(rs.getDate("date")) + "</td><td>" + rs.getString("Logins") + "</td></tr>");
-                }
-                while (rs.next());
+                msg.append("<tr><td>" + row.get("dayOfWeek") + "</td><td>" + _dateFormat.format(row.get("date")) + "</td><td>" + row.get("Logins") + "</td></tr>");
             }
+
             msg.append("</table><p>\n");
-        }
-        catch (SQLException e)
-        {
-            throw new RuntimeSQLException(e);
-        }
-        catch (IOException e)
-        {
-            throw new RuntimeException(e);
-        }
-        finally
-        {
-            ResultSetUtil.close(rs);
         }
     }
 
