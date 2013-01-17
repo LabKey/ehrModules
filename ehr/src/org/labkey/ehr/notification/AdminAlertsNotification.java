@@ -126,7 +126,8 @@ public class AdminAlertsNotification extends AbstractEHRNotification
             msg.append("<table border=1><tr><td>Day of Week</td><td>Date</td><td>Logins</td></tr>");
             for (Map<String, Object> row : rows)
             {
-                msg.append("<tr><td>" + row.get("dayOfWeek") + "</td><td>" + _dateFormat.format(row.get("date")) + "</td><td>" + row.get("Logins") + "</td></tr>");
+                String date = row.get("date") == null ? "" : _dateFormat.format(row.get("date"));
+                msg.append("<tr><td>" + row.get("dayOfWeek") + "</td><td>" + date + "</td><td>" + row.get("Logins") + "</td></tr>");
             }
 
             msg.append("</table><p>\n");

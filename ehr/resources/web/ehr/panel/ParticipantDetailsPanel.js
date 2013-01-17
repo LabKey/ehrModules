@@ -19,34 +19,17 @@ Ext4.define('EHR.panel.ParticipantDetailsPanel', {
         this.down('#submitBtn').hidden = true;
     },
 
+    filterTypes: [{
+        xtype: 'ehr-hiddensinglesubjectfiltertype',
+        inputValue: LDK.panel.SingleSubjectFilterType.filterName,
+        label: LDK.panel.SingleSubjectFilterType.label
+    }],
+
     getFilterOptionsItems: function(){
-        return [{
-            xtype: 'radiogroup',
-            itemId: 'inputType',
-            hidden: true,
-            items: [{
-                xtype: 'radio',
-                name: 'selector',
-                inputValue: 'renderSingleSubject',
-                checked: true
-            }]
-        }];
-    },
+        var items = this.callParent();
+        items[0].hidden = true;
+        items[1].hidden = true;
 
-    renderSingleSubject: function(){
-        var target = this.down('#filterPanel');
-        target.removeAll();
-
-        target.add({
-            xtype: 'panel',
-            hidden: true,
-            items: [{
-                xtype: 'textfield',
-                name: 'subjectBox',
-                width: 165,
-                itemId: 'subjArea',
-                value: this.participantId
-            }]
-        });
+        return items;
     }
 });

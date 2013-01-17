@@ -39,14 +39,15 @@ import org.labkey.api.query.UserSchema;
 import org.labkey.api.security.User;
 import org.labkey.api.settings.AppProps;
 import org.labkey.api.study.DataSetTable;
-import org.labkey.api.util.GUID;
 import org.labkey.api.view.HttpView;
 import org.labkey.api.view.template.ClientDependency;
 import org.labkey.ehr.EHRModule;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created with IntelliJ IDEA.
@@ -58,6 +59,7 @@ public class DefaultEHRCustomizer implements TableCustomizer
 {
     public static final String ID_COL = "Id";
     private static final Logger _log = Logger.getLogger(DefaultEHRCustomizer.class);
+    private Map<String, UserSchema> _userSchemas;
 
     public DefaultEHRCustomizer()
     {
@@ -66,6 +68,8 @@ public class DefaultEHRCustomizer implements TableCustomizer
 
     public void customize(TableInfo table)
     {
+        _userSchemas = new HashMap<String, UserSchema>();
+
         LDKService.get().getBuiltInColumnsCustomizer().customize(table);
 
         if (table instanceof FilteredTable)
@@ -154,6 +158,12 @@ public class DefaultEHRCustomizer implements TableCustomizer
         
         UserSchema us = getStudyUserSchema(ds);
         if (us == null){            
+            return;
+        }
+
+        if (ds.getColumn("age") != null)
+        {
+            _log.warn("Table already has an age column.  Customize might have been called twice?  " + ds.getName());
             return;
         }
 
@@ -261,7 +271,11 @@ public class DefaultEHRCustomizer implements TableCustomizer
 
     private void appendHousingAtTimeCol(final UserSchema us, final AbstractTableInfo ds)
     {
-        WrappedColumn col = new WrappedColumn(ds.getColumn("lsid"), "housingAtTime");
+        String name = "housingAtTime";
+        if (ds.getColumn(name) != null)
+            return;
+
+        WrappedColumn col = new WrappedColumn(ds.getColumn("lsid"), name);
         col.setLabel("Housing At Time");
         col.setReadOnly(true);
         col.setIsUnselectable(true);
@@ -269,7 +283,8 @@ public class DefaultEHRCustomizer implements TableCustomizer
         col.setFk(new LookupForeignKey(){
             public TableInfo getLookupTableInfo()
             {
-                QueryDefinition qd = QueryService.get().createQueryDef(us.getUser(), us.getContainer(), us, new GUID().toString());
+                String name = ds.getName() + "_housingAtTime";
+                QueryDefinition qd = QueryService.get().createQueryDef(us.getUser(), us.getContainer(), us, name);
                 qd.setSql("SELECT\n" +
                     "sd.lsid,\n" +
                     "sd.id,\n" +
@@ -302,7 +317,11 @@ public class DefaultEHRCustomizer implements TableCustomizer
 
     private void appendAssignmentAtTimeCol(final UserSchema us, final AbstractTableInfo ds)
     {
-        WrappedColumn col = new WrappedColumn(ds.getColumn("lsid"), "assignmentAtTime");
+        String name = "assignmentAtTime";
+        if (ds.getColumn(name) != null)
+            return;
+
+        WrappedColumn col = new WrappedColumn(ds.getColumn("lsid"), name);
         col.setLabel("Assignments At Time");
         col.setReadOnly(true);
         col.setIsUnselectable(true);
@@ -310,7 +329,8 @@ public class DefaultEHRCustomizer implements TableCustomizer
         col.setFk(new LookupForeignKey(){
             public TableInfo getLookupTableInfo()
             {
-                QueryDefinition qd = QueryService.get().createQueryDef(us.getUser(), us.getContainer(), us, new GUID().toString());
+                String name = ds.getName() + "_assignmentsAtTime";
+                QueryDefinition qd = QueryService.get().createQueryDef(us.getUser(), us.getContainer(), us, name);
                 qd.setSql("SELECT\n" +
                     "sd.lsid,\n" +
                     "group_concat(DISTINCT h.project) as AssignmentsAtTime\n" +
@@ -335,7 +355,11 @@ public class DefaultEHRCustomizer implements TableCustomizer
 
     private void appendSurvivorshipCol(final UserSchema us, final AbstractTableInfo ds)
     {
-        WrappedColumn col = new WrappedColumn(ds.getColumn("lsid"), "survivorship");
+        String name = "survivorship";
+        if (ds.getColumn(name) != null)
+            return;
+
+        WrappedColumn col = new WrappedColumn(ds.getColumn("lsid"), name);
         col.setLabel("Survivorship");
         col.setReadOnly(true);
         col.setIsUnselectable(true);
@@ -343,7 +367,8 @@ public class DefaultEHRCustomizer implements TableCustomizer
         col.setFk(new LookupForeignKey(){
             public TableInfo getLookupTableInfo()
             {
-                QueryDefinition qd = QueryService.get().createQueryDef(us.getUser(), us.getContainer(), us, new GUID().toString());
+                String name = ds.getName() + "_survivorship";
+                QueryDefinition qd = QueryService.get().createQueryDef(us.getUser(), us.getContainer(), us, name);
                 qd.setSql("SELECT\n" +
                     "c.lsid,\n" +
                     "c.id.dataset.demographics.calculated_status AS status,\n" +
@@ -374,7 +399,11 @@ public class DefaultEHRCustomizer implements TableCustomizer
 
     private void appendAgeAtTimeCol(final UserSchema us, final AbstractTableInfo ds)
     {
-        WrappedColumn col = new WrappedColumn(ds.getColumn("lsid"), "ageAtTime");
+        String name = "ageAtTime";
+        if (ds.getColumn(name) != null)
+            return;
+
+        WrappedColumn col = new WrappedColumn(ds.getColumn("lsid"), name);
         col.setLabel("Age At The Time");
         col.setReadOnly(true);
         col.setIsUnselectable(true);
@@ -382,7 +411,8 @@ public class DefaultEHRCustomizer implements TableCustomizer
         col.setFk(new LookupForeignKey(){
             public TableInfo getLookupTableInfo()
             {
-                QueryDefinition qd = QueryService.get().createQueryDef(us.getUser(), us.getContainer(), us, new GUID().toString());
+                String name = ds.getName() + "_ageAtTime";
+                QueryDefinition qd = QueryService.get().createQueryDef(us.getUser(), us.getContainer(), us, name);
                 //NOTE: do not need to account for QCstate b/c study.demographics only allows 1 row per subject
                 qd.setSql("SELECT\n" +
                     "c.lsid,\n" +
@@ -451,12 +481,15 @@ public class DefaultEHRCustomizer implements TableCustomizer
         return getUserSchema(ds, "study");
     }
 
-    public static UserSchema getUserSchema(AbstractTableInfo ds, String name)
+    public UserSchema getUserSchema(AbstractTableInfo ds, String name)
     {
         if (!(ds instanceof FilteredTable))
         {
             return null;
         }
+
+        if (_userSchemas.containsKey(name))
+            return _userSchemas.get(name);
 
         User u;
         Container c = ((FilteredTable)ds).getContainer();
@@ -472,7 +505,11 @@ public class DefaultEHRCustomizer implements TableCustomizer
         if (u == null)
             return null;
 
-        return QueryService.get().getUserSchema(u, c, name);
+        UserSchema us = QueryService.get().getUserSchema(u, c, name);
+        if (us != null)
+            _userSchemas.put(name, us);
+
+        return us;
     }
 
     private void hideStudyColumns(AbstractTableInfo ds)
@@ -492,9 +529,8 @@ public class DefaultEHRCustomizer implements TableCustomizer
 
     private void appendEnddate(AbstractTableInfo ti)
     {
-        if (ti.getColumn("enddate") != null)
+        if (ti.getColumn("enddate") != null && ti.getColumn("enddateCoalesced") == null)
         {
-            //TODO: get type conversion right
             SQLFragment sql = new SQLFragment("COALESCE(" + ExprColumn.STR_TABLE_ALIAS + ".enddate, {fn curdate()})");
             ExprColumn col = new ExprColumn(ti, "enddateCoalesced", sql, JdbcType.TIMESTAMP);
             col.setCalculated(true);
@@ -507,7 +543,7 @@ public class DefaultEHRCustomizer implements TableCustomizer
 
     private void appendDateOnly(AbstractTableInfo ti)
     {
-        if (ti.getColumn("date") != null)
+        if (ti.getColumn("date") != null && ti.getColumn("dateOnly") == null)
         {
             SQLFragment sql = new SQLFragment(ti.getSqlDialect().getDateTimeToDateCast(ExprColumn.STR_TABLE_ALIAS + ".date"));
             ExprColumn col = new ExprColumn(ti, "dateOnly", sql, JdbcType.DATE);

@@ -2,7 +2,14 @@
 
     Ext4.onReady(function (){
         var webpart = <%=webpartContext%>;
+        var ctx = EHR.Utils.getEHRContext(webpart.wrapperDivId, ['DefaultAnimalHistoryReport']);
+        if(!ctx)
+            return;
+
         Ext4.create('EHR.panel.AnimalHistoryPanel', {
+            defaultReport: ctx.DefaultAnimalHistoryReport,
+            //TODO: perhaps parameterize this, or infer from defaultReport??
+            defaultTab: 'General',
             renderTo: webpart.wrapperDivId
         });
     });

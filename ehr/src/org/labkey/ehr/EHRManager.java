@@ -217,7 +217,7 @@ public class EHRManager
 
         Object[][] states = new Object[][]{
             {"Abnormal", "Value is abnormal", true},
-            {"Completed", "Record has been completed and is public", false},
+            {"Completed", "Record has been completed and is public", true},
             {"Delete Requested", "Records are requested to be deleted", false},
             {"In Progress", "Draft Record, not public", false},
             {"Request: Approved", "Request has been approved", false},

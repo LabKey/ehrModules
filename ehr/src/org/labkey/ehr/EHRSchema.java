@@ -21,6 +21,9 @@ import org.labkey.api.data.dialect.SqlDialect;
 public class EHRSchema
 {
     private static final EHRSchema _instance = new EHRSchema();
+    public static final String EHR_SCHEMANAME = "ehr";
+    public static final String EHR_LOOKUPS = "ehr_lookups";
+
     public static final String TABLE_FORMTYPES = "formtypes";
     public static final String TABLE_FORMPANELSECTIONS = "formpanelsections";
 

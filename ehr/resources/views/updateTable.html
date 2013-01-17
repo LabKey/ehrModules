@@ -9,7 +9,8 @@ Ext4.onReady(function (){
         queryName: query,
         success: function(data){
             if(!data || !data.columns){
-                alert('Problem retrieving query\'s information');
+                alert('Problem retrieving query\'s information' + (data.exception ? ': ' + data.exception : ''));
+                console.error(data);
                 return;
             }
 

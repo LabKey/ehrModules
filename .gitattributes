@@ -846,6 +846,7 @@ ehr/resources/web/ehr/metadata/Task.js -text
 ehr/resources/web/ehr/metadata/Treatments.js -text
 ehr/resources/web/ehr/navMenu.js -text
 ehr/resources/web/ehr/panel/AnimalHistoryPanel.js -text
+ehr/resources/web/ehr/panel/HiddenSingleSubjectFilterType.js -text
 ehr/resources/web/ehr/panel/LocationFilterType.js -text
 ehr/resources/web/ehr/panel/MultiAnimalFilterType.js -text
 ehr/resources/web/ehr/panel/ParticipantDetailsPanel.js -text

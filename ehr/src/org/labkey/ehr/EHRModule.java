@@ -60,8 +60,6 @@ import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
 
 public class EHRModule extends SpringModule
 {
@@ -152,7 +150,7 @@ public class EHRModule extends SpringModule
     @NotNull
     public Set<String> getSchemaNames()
     {
-        return PageFlowUtil.set("ehr", "ehr_lookups");
+        return PageFlowUtil.set(EHRSchema.EHR_SCHEMANAME, EHRSchema.EHR_LOOKUPS);
     }
 
     @Override
@@ -166,14 +164,14 @@ public class EHRModule extends SpringModule
     public JSONObject getPageContextJson(User u, Container c)
     {
         Map<String, String> map = getDefaultPageContextJson(u, c);
-        if (map.containsKey("EHRStudyContainer") && map.get("EHRStudyContainer") != null)
+        if (map.containsKey(EHRManager.EHRStudyContainerPropName) && map.get(EHRManager.EHRStudyContainerPropName) != null)
         {
             //normalize line endings
-            String newPath = map.get("EHRStudyContainer");
+            String newPath = map.get(EHRManager.EHRStudyContainerPropName);
             newPath = "/" + newPath.replaceAll("^/|/$", "");
-            map.put("EHRStudyContainer", newPath);
+            map.put(EHRManager.EHRStudyContainerPropName, newPath);
 
-            Container ehrContainer = ContainerManager.getForPath(map.get("EHRStudyContainer"));
+            Container ehrContainer = ContainerManager.getForPath(map.get(EHRManager.EHRStudyContainerPropName));
             if(ehrContainer != null)
             {
                 map.put("EHRStudyContainerInfo", ehrContainer.toJSON(u).toString());
@@ -203,12 +201,6 @@ public class EHRModule extends SpringModule
         }
 
         return new JSONObject(map);
-    }
-
-    public void scheduleKinshipTask()
-    {
-        ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
-        //executor.scheduleAtFixedRate(new KinshipRunnable(), 10, 10000, TimeUnit.SECONDS);
     }
 
     @Override

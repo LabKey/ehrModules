@@ -54,11 +54,6 @@
                             <!--room=${room}&amp;-->
                             <!--cage=${cage}&amp;-->
                         <!--</url>-->
-                        <fk>
-                            <fkDbSchema>ehr_lookups</fkDbSchema>
-                            <fkTable>room_list</fkTable>
-                            <fkColumnName>room</fkColumnName>
-                        </fk>
                     </column>
                     <column columnName="cage">
                         <!--<nullable>false</nullable>-->

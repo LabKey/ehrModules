@@ -14,7 +14,7 @@ Ext4.namespace('EHR.reports');
  */
 EHR.reports.abstract = function(panel, tab){
     var filterArray = panel.getFilterArray(tab);
-    var title = panel.getTitle();
+    var title = panel.getTitleSuffix();
 
     var tb = tab.getDockedItems('toolbar[dock="top"]');
     if(tb)
@@ -38,7 +38,7 @@ EHR.reports.abstract = function(panel, tab){
     });
 
     var config = panel.getQWPConfig({
-        title: 'Other Notes' + ": " + title,
+        title: 'Other Notes' + title,
         frame: true,
         schemaName: 'study',
         queryName: 'notes',
@@ -54,7 +54,7 @@ EHR.reports.abstract = function(panel, tab){
     });
 
     config = panel.getQWPConfig({
-        title: 'Active Assignments' + ": " + title,
+        title: 'Active Assignments' + title,
         frame: true,
         schemaName: 'study',
         queryName: 'ActiveAssignments',
@@ -69,7 +69,7 @@ EHR.reports.abstract = function(panel, tab){
     });
 
     config = panel.getQWPConfig({
-        title: 'Problem List' + ": " + title,
+        title: 'Problem List' + title,
         frame: true,
         schemaName: 'study',
         allowChooseView: true,
@@ -90,10 +90,10 @@ EHR.reports.abstract = function(panel, tab){
 
 EHR.reports.arrivalDeparture = function(panel, tab){
     var filterArray = panel.getFilterArray(tab);
-    var title = panel.getTitle();
+    var title = panel.getTitleSuffix();
 
     var config = panel.getQWPConfig({
-        title: 'Arrivals' + ": " + title,
+        title: 'Arrivals' + title,
         schemaName: 'study',
         queryName: 'arrival',
         filters: filterArray.nonRemovable,
@@ -108,7 +108,7 @@ EHR.reports.arrivalDeparture = function(panel, tab){
     });
 
     config = panel.getQWPConfig({
-        title: 'Departures' + ": " + title,
+        title: 'Departures' + title,
         schemaName: 'study',
         queryName: 'departure',
         filters: filterArray.nonRemovable,
@@ -125,10 +125,10 @@ EHR.reports.arrivalDeparture = function(panel, tab){
 
 EHR.reports.pedigree = function(panel, tab){
     var filterArray = panel.getFilterArray(tab);
-    var title = panel.getTitle();
+    var title = panel.getTitleSuffix();
 
     var configOffspring = panel.getQWPConfig({
-        title: 'Offspring' + ": " + title,
+        title: 'Offspring' + title,
         schemaName: 'study',
         queryName: 'demographicsOffspring',
         filters: filterArray.nonRemovable,
@@ -137,7 +137,7 @@ EHR.reports.pedigree = function(panel, tab){
     });
 
     var configSibling = panel.getQWPConfig({
-        title: 'Siblings' + ": " + title,
+        title: 'Siblings' + title,
         schemaName: 'study',
         queryName: 'demographicsSiblings',
         filters: filterArray.nonRemovable,
@@ -216,10 +216,10 @@ EHR.reports.weightGraph = function(panel, tab){
     }
 
     var gridFilterArray = panel.getFilterArray(tab);
-    var title = panel.getTitle();
+    var title = panel.getTitleSuffix();
 
     var config = panel.getQWPConfig({
-        title: 'Weight Summary' + ": " + title,
+        title: 'Weight Summary' + title,
         schemaName: 'study',
         queryName: 'demographicsWeightChange',
         viewName: 'With Id',
@@ -236,7 +236,7 @@ EHR.reports.weightGraph = function(panel, tab){
     });
 
     config = panel.getQWPConfig({
-        title: 'Weight' + ": " + title,
+        title: 'Weight' + title,
         schemaName: 'study',
         queryName: 'weight',
         viewName: 'Percent Change',
@@ -255,7 +255,7 @@ EHR.reports.weightGraph = function(panel, tab){
 
 EHR.reports.bloodChemistry = function(panel, tab){
     var filterArray = panel.getFilterArray(tab);
-    var title = panel.getTitle();
+    var title = panel.getTitleSuffix();
 
     var config = panel.getQWPConfig({
         schemaName: 'study',
@@ -309,7 +309,7 @@ EHR.reports.bloodChemistry = function(panel, tab){
 
 EHR.reports.urinalysisResults = function(panel, tab){
     var filterArray = panel.getFilterArray(tab);
-    var title = panel.getTitle();
+    var title = panel.getTitleSuffix();
 
     tab.queryName = tab.queryName || 'urinalysisPivot';
 
@@ -365,7 +365,7 @@ EHR.reports.urinalysisResults = function(panel, tab){
 
 EHR.reports.treatmentSchedule = function(panel, tab){
     var filterArray = panel.getFilterArray(tab);
-    var title = panel.getTitle();
+    var title = panel.getTitleSuffix();
 
     var target = tab.add({tag: 'span', style: 'padding-bottom: 20px'});
     tab.doLayout();

@@ -105,6 +105,15 @@ Ext4.define('EHR.panel.LocationFilterType', {
             nonRemovable: []
         };
 
+        var areaFieldName = tab.report.areaFieldName;
+        var roomFieldName = tab.report.roomFieldName;
+        var cageFieldName = tab.report.cageFieldName;
+
+        if (!areaFieldName || !roomFieldName || !cageFieldName){
+            Ext4.Msg.alert('Error', 'This report does provide an area, room and cage field');
+            return;
+        }
+
         var roomField = this.down('#roomField');
         var room = this.down('#roomField').getValue();
         if(room){
@@ -118,33 +127,30 @@ Ext4.define('EHR.panel.LocationFilterType', {
         var area = this.down('#areaField').getValue();
 
         if(area){
-            if(tab.rowData.get("queryhaslocation")){
-                filterArray.nonRemovable.push(LABKEY.Filter.create('room/area', area, LABKEY.Filter.Types.STARTS_WITH));
-            }
-            else {
-                filterArray.nonRemovable.push(LABKEY.Filter.create('Id/curLocation/area', area, LABKEY.Filter.Types.EQUAL));
-            }
+            filterArray.nonRemovable.push(LABKEY.Filter.create(areaFieldName, area, LABKEY.Filter.Types.STARTS_WITH));
         }
 
         if(room){
-            if(tab.rowData.get("queryhaslocation")){
-                filterArray.nonRemovable.push(LABKEY.Filter.create('room', room, LABKEY.Filter.Types.EQUALS_ONE_OF));
-            }
-            else {
-                filterArray.nonRemovable.push(LABKEY.Filter.create('Id/curLocation/room', room, LABKEY.Filter.Types.EQUALS_ONE_OF));
-            }
+            filterArray.nonRemovable.push(LABKEY.Filter.create(roomFieldName, room, LABKEY.Filter.Types.EQUALS_ONE_OF));
         }
 
         if(cage){
-            if(tab.rowData.get("queryhaslocation")){
-                filterArray.nonRemovable.push(LABKEY.Filter.create('cage', cage, LABKEY.Filter.Types.STARTS_WITH));
-            }
-            else {
-                filterArray.nonRemovable.push(LABKEY.Filter.create('Id/curLocation/cage', cage, LABKEY.Filter.Types.EQUAL));
-            }
+            filterArray.nonRemovable.push(LABKEY.Filter.create(cageFieldName, cage, LABKEY.Filter.Types.EQUAL));
         }
 
         return filterArray;
+    },
+
+    validateReport: function(report){
+        var areaFieldName = report.areaFieldName;
+        var roomFieldName = report.roomFieldName;
+        var cageFieldName = report.cageFieldName;
+
+        if (!areaFieldName || !roomFieldName || !cageFieldName){
+            return 'This report cannot be used with the selected filter type, because the report does not contain area, room and/or cage fields';
+        }
+
+        return null;
     },
 
     checkValid: function(){

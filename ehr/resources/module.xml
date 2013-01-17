@@ -20,6 +20,13 @@
                 <permission>ADMIN</permission>
             </editPermissions>
         </propertyDescriptor>
+        <propertyDescriptor name="DefaultAnimalHistoryReport">
+            <canSetPerContainer>true</canSetPerContainer>
+            <description>The ID of the default report to show on the Animal History page.  It defaults to 'abstract'.</description>
+            <editPermissions>
+                <permission>ADMIN</permission>
+            </editPermissions>
+        </propertyDescriptor>
         <propertyDescriptor name="ProtocolPDFContainer">
             <canSetPerContainer>true</canSetPerContainer>
             <description>The is the path to the container holding PDFs of IACUC protocols.  It is usually separate from the EHR study.  Use of slashes is very important - it should be in the format '/myProject/ehr'</description>

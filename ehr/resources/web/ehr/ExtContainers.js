@@ -62,19 +62,6 @@ EHR.ext.AnimalSelectorPanel = Ext.extend(Ext.Panel, {
                     ,fieldLabel: 'Room(s)'
                     ,ref: 'roomField'
                     ,xtype: 'textfield'
-//                    ,displayField:'room'
-//                    ,valueField: 'room'
-//                    ,typeAhead: true
-//                    ,lazyInit: false
-//                    ,mode: 'local'
-//                    ,triggerAction: 'all'
-//                    ,editable: true
-//                    ,store: new LABKEY.ext.Store({
-//                        schemaName: 'ehr_lookups',
-//                        queryName: 'room_list',
-//                        sort: 'room',
-//                        autoLoad: true
-//                    })
                     ,listeners: {
                         render: function(field){
                             field.el.set({autocomplete: 'off'});

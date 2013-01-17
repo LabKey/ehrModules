@@ -19,7 +19,7 @@ Ext4.define('EHR.panel.AnimalHistoryPanel', {
 
     initComponent: function(){
         Ext4.apply(this, {
-            defaultReport: 'abstract'
+            reportNamespace: EHR.reports
         });
 
         this.reportStore = Ext4.create('LABKEY.ext4.Store', {
@@ -30,12 +30,64 @@ Ext4.define('EHR.panel.AnimalHistoryPanel', {
             autoLoad: true,
             listeners: {
                 scope: this,
-                load: this.createTabPanel
+                load: this.onStoreLoad
             },
             failure: LDK.Utils.getErrorCallback()
         });
 
         this.callParent();
+    },
+
+    onStoreLoad: function(store){
+        this.reports = [];
+
+        store.each(function(rec){
+            var report = {
+                id: rec.get('reportname'),
+                name: rec.get('reportname'),
+                label: rec.get('reporttitle'),
+                category: rec.get('category'),
+                reportType: rec.get('reporttype'),
+                subjectFieldName: 'Id',
+                containerPath: rec.get('containerpath'),
+                schemaName: rec.get('schemaname'),
+                queryName: rec.get('queryname'),
+                viewName: rec.get('viewname'),
+                reportId: rec.get("report"),
+                dateFieldName: rec.get("datefieldname"),
+                areaFieldName: rec.get("queryhaslocation") ? 'room/area' : 'Id/curLocation/area',
+                roomFieldName: rec.get("queryhaslocation") ? 'room' : 'Id/curLocation/room',
+                cageFieldName: rec.get("queryhaslocation") ? 'cage' : 'Id/curLocation/cage',
+                todayOnly: false
+            }
+
+            if (rec.get('jsonconfig')){
+                console.log(rec.get('jsonconfig'));
+                var json = Ext4.decode(rec.get('jsonconfig'));
+                console.log(json);
+                Ext4.apply(report, json);
+            }
+
+            this.reports.push(report);
+            this.reportMap[report.id] = report;
+        }, this);
+
+
+        this.createTabPanel();
+    },
+
+    //override
+    getFilterArray: function(tab){
+        var report = tab.report;
+        var filterArray = this.callParent(arguments);
+
+        //we handle date
+        if (report.dateFieldName && report.todayOnly){
+            filterArray.removable.push(LABKEY.Filter.create(report.dateFieldName, (new Date()).format('Y-m-d'), LABKEY.Filter.Types.DATE_EQUAL));
+        }
+
+        tab.filterArray = filterArray;
+        return filterArray;
     },
 
     filterTypes: [{
