@@ -405,14 +405,14 @@ public class EHRManager
             {
                 DbSchema studySchema = DbSchema.get("study");
                 SQLFragment sql = new SQLFragment("UPDATE study.dataset SET keymanagementtype=?, keypropertyname=? WHERE demographicdata=? AND container=?", "GUID", "objectid", false, c.getEntityId());
-                long total = Table.execute(studySchema, sql);
+                long total = new SqlExecutor(studySchema).execute(sql);
                 messages.add("Non-demographics datasets updated to use objectId as a managed key: "+ total);
             }
             else
             {
                 DbSchema studySchema = DbSchema.get("study");
                 SQLFragment sql = new SQLFragment("SELECT * FROM study.dataset WHERE keymanagementtype!=? AND demographicdata=? AND container=?", "GUID", false, c.getEntityId());
-                long total = Table.execute(studySchema, sql);
+                long total = new SqlExecutor(studySchema).execute(sql);
                 if (total > 0)
                     messages.add("Non-demographics datasets that are not using objectId as a managed key: " + total);
             }

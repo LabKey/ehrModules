@@ -24,6 +24,7 @@ import org.labkey.api.data.DbSchema;
 import org.labkey.api.data.RuntimeSQLException;
 import org.labkey.api.data.SQLFragment;
 import org.labkey.api.data.SimpleFilter;
+import org.labkey.api.data.SqlExecutor;
 import org.labkey.api.data.Table;
 import org.labkey.api.data.TableInfo;
 import org.labkey.api.ehr.EHRService;
@@ -156,16 +157,9 @@ public class TriggerScriptHelper
                 throw new RuntimeException("Non existent table: study." + queryName);
             }
 
-            try
-            {
-                TableInfo ti = dataset.getTableInfo(user);
-                SQLFragment sql = new SQLFragment("UPDATE " + ti.getSchema().getName() + "." + ti.getSelectName() + " SET enddate = ? WHERE id = ? AND enddate IS NULL", enddate, id);
-                Table.execute(ti.getSchema(), sql);
-            }
-            catch (SQLException e)
-            {
-                throw new RuntimeSQLException(e);
-            }
+            TableInfo ti = dataset.getTableInfo(user);
+            SQLFragment sql = new SQLFragment("UPDATE " + ti.getSchema().getName() + "." + ti.getSelectName() + " SET enddate = ? WHERE id = ? AND enddate IS NULL", enddate, id);
+            new SqlExecutor(ti.getSchema()).execute(sql);
         }
         return success;
     }
