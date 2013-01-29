@@ -175,7 +175,8 @@ Ext4.define('EHR.panel.MultiAnimalFilterType', {
 
         LABKEY.Query.selectRows({
             schemaName: 'study',
-            queryName: 'ActiveAssignments',
+            queryName: 'Assignment',
+            viewName: 'Active Assignments',
             sort: 'Id',
             filterArray: filters,
             scope: this,
@@ -224,7 +225,7 @@ Ext4.define('EHR.panel.MultiAnimalFilterType', {
         LABKEY.Query.selectRows({
             schemaName: 'study',
             queryName: 'housing',
-            viewName: 'Current Housing',
+            viewName: 'Active Housing',
             sort: 'Id',
             filterArray: filters,
             scope: this,

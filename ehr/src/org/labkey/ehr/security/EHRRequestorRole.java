@@ -15,20 +15,23 @@
  */
 package org.labkey.ehr.security;
 
-import org.labkey.api.security.*;
-import org.labkey.api.security.permissions.AdminPermission;
+import org.labkey.api.data.Container;
+import org.labkey.api.module.ModuleLoader;
+import org.labkey.api.security.Group;
+import org.labkey.api.security.SecurableResource;
+import org.labkey.api.security.SecurityPolicy;
 import org.labkey.api.security.permissions.DeletePermission;
 import org.labkey.api.security.permissions.InsertPermission;
 import org.labkey.api.security.permissions.ReadPermission;
 import org.labkey.api.security.permissions.UpdatePermission;
-import org.labkey.api.security.roles.AbstractRole;
+import org.labkey.api.study.DataSet;
 import org.labkey.ehr.EHRModule;
 
 /**
  * User: jeckels
  * Date: Feb 25, 2011
  */
-public class EHRRequestorRole extends AbstractEHRRole
+public class EHRRequestorRole extends AbstractEHRDatasetRole
 {
     public EHRRequestorRole()
     {
@@ -36,7 +39,7 @@ public class EHRRequestorRole extends AbstractEHRRole
                 ReadPermission.class,
                 InsertPermission.class,
                 UpdatePermission.class,
-//                DeletePermission.class,
+                DeletePermission.class,
 
 //                EHRAbnormalDeletePermission.class,
 //                EHRAbnormalInsertPermission.class,
@@ -71,5 +74,16 @@ public class EHRRequestorRole extends AbstractEHRRole
 );
 
         addExcludedPrincipal(org.labkey.api.security.SecurityManager.getGroup(Group.groupGuests));
+    }
+
+    @Override
+    public boolean isApplicable(SecurityPolicy policy, SecurableResource resource)
+    {
+        if (resource instanceof Container)
+            return ((Container)resource).getActiveModules().contains(ModuleLoader.getInstance().getModule(EHRModule.class));
+        else if (resource instanceof DataSet)
+            return ((DataSet)resource).getContainer().getActiveModules().contains(ModuleLoader.getInstance().getModule(EHRModule.class));
+
+        return false;
     }
 }

@@ -40,6 +40,9 @@
                     <column columnName="additionalServices">
                         <columnTitle>Additional Services</columnTitle>
                     </column>
+                    <column columnName="instructions">
+                        <columnTitle>Instructions</columnTitle>
+                    </column>
                     <column columnName="date">
                         <formatString>yyyy-MM-dd HH:mm</formatString>
                     </column>

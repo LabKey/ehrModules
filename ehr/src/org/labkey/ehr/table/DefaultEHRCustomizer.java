@@ -17,8 +17,10 @@ package org.labkey.ehr.table;
 
 import org.apache.log4j.Logger;
 import org.labkey.api.data.AbstractTableInfo;
+import org.labkey.api.data.ButtonBarConfig;
 import org.labkey.api.data.ColumnInfo;
 import org.labkey.api.data.Container;
+import org.labkey.api.data.ContainerManager;
 import org.labkey.api.data.JdbcType;
 import org.labkey.api.data.SQLFragment;
 import org.labkey.api.data.TableCustomizer;
@@ -26,8 +28,7 @@ import org.labkey.api.data.TableInfo;
 import org.labkey.api.data.WrappedColumn;
 import org.labkey.api.ehr.EHRService;
 import org.labkey.api.ldk.LDKService;
-import org.labkey.api.module.Module;
-import org.labkey.api.module.ModuleLoader;
+import org.labkey.api.query.DetailsURL;
 import org.labkey.api.query.ExprColumn;
 import org.labkey.api.query.FilteredTable;
 import org.labkey.api.query.LookupForeignKey;
@@ -37,17 +38,17 @@ import org.labkey.api.query.QueryForeignKey;
 import org.labkey.api.query.QueryService;
 import org.labkey.api.query.UserSchema;
 import org.labkey.api.security.User;
-import org.labkey.api.settings.AppProps;
 import org.labkey.api.study.DataSetTable;
 import org.labkey.api.view.HttpView;
-import org.labkey.api.view.template.ClientDependency;
-import org.labkey.ehr.EHRModule;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Created with IntelliJ IDEA.
@@ -90,9 +91,17 @@ public class DefaultEHRCustomizer implements TableCustomizer
         {
             customizeDataset((DataSetTable)table);
         }
+        else if ("StudyData".equalsIgnoreCase(table.getName()))
+        {
+            customizeStudyData((AbstractTableInfo)table);
+        }
         else if (table instanceof AbstractTableInfo && table.getName().equalsIgnoreCase("Animal"))
         {
             customizeAnimalTable((AbstractTableInfo)table);
+        }
+        else if (table instanceof AbstractTableInfo)
+        {
+            doSharedCustomization((AbstractTableInfo)table);
         }
 
 
@@ -109,12 +118,28 @@ public class DefaultEHRCustomizer implements TableCustomizer
         }
     }
 
+    private void doSharedCustomization(AbstractTableInfo ti)
+    {
+        appendEnddate(ti);
+        appendDuration(ti);
+        appendDateOnly(ti);
+        setLinkDisablers(ti);
+
+        ColumnInfo objectId = ti.getColumn("objectid");
+        if (objectId != null)
+        {
+            objectId.setHidden(true);
+            objectId.setLabel("Key");
+            objectId.setUserEditable(false);
+        }
+    }
+
     private void customizeDataset(DataSetTable ds)
     {
         AbstractTableInfo ti = (AbstractTableInfo)ds;
         hideStudyColumns(ti);
-        appendEnddate(ti);
-        appendDateOnly(ti);
+
+        doSharedCustomization(ti);
 
         UserSchema us = getStudyUserSchema(ti);
         if (us != null){
@@ -123,8 +148,22 @@ public class DefaultEHRCustomizer implements TableCustomizer
             appendAgeAtTimeCol(us, ti);
         }
 
-        setLinkDisablers((AbstractTableInfo)ds);
-        //setScriptIncludes((AbstractTableInfo) ds);
+        ColumnInfo runId = ti.getColumn("runId");
+        if (runId != null)
+        {
+            runId.setLabel("Run Id");
+            UserSchema study = getStudyUserSchema(ti);
+            if (us != null)
+                runId.setFk(new QueryForeignKey(study, "Clinpath Runs", "objectId", "Id"));
+        }
+
+        setScriptIncludes((AbstractTableInfo) ds);
+    }
+
+    private void customizeStudyData(AbstractTableInfo ti)
+    {
+        hideStudyColumns(ti);
+        setScriptIncludes(ti);
     }
 
     private void setLinkDisablers(AbstractTableInfo ti)
@@ -139,16 +178,24 @@ public class DefaultEHRCustomizer implements TableCustomizer
     {
         if (ti instanceof FilteredTable)
         {
-            Container c = ((FilteredTable)ti).getContainer();
-            Module m = ModuleLoader.getInstance().getModule(EHRModule.class);
-            List<String> paths = new ArrayList<String>();
-            //TODO: lacking user is dangerous.  we should get the UserSchema from the TI
-            for (ClientDependency cd : m.getClientDependencies(c, null))
+            ButtonBarConfig cfg = ti.getButtonBarConfig();
+            if (cfg != null)
             {
-                paths.addAll(cd.getJsPaths(c, null, AppProps.getInstance().isDevMode()));
-                //paths.addAll(cd.getCssPaths(c, null, AppProps.getInstance().isDevMode()));
+                Set<String> scripts = new HashSet<String>();
+                String[] existing = cfg.getScriptIncludes();
+                if (existing != null)
+                {
+                    for (String s : existing)
+                    {
+                        scripts.add(s);
+                    }
+                }
+
+                scripts.add("ehr/utils.js");
+                scripts.add("ehr.context");
+
+                cfg.setScriptIncludes(scripts.toArray(new String[scripts.size()]));
             }
-            //ti.getButtonBarConfig().setScriptIncludes(paths.toArray(new String[paths.size()]));
         }
     }
 
@@ -182,11 +229,6 @@ public class DefaultEHRCustomizer implements TableCustomizer
         col2.setDescription("Calculates the most recent arrival per animal, if applicable, and most recent arrival at the center.");
         ds.addColumn(col2);
 
-        ColumnInfo col4 = getWrappedIdCol(us, ds, "currentAssignments", "demographicsAssignments");
-        col4.setLabel("Assignments - Active");
-        col4.setDescription("Contains summaries of the assignments for each animal, including the project numbers, availability codes and a count");
-        ds.addColumn(col4);
-
         ColumnInfo col7 = getWrappedIdCol(us, ds, "AvailBlood", "demographicsBloodSummary");
         col7.setLabel("Blood Remaining");
         col7.setDescription("Calculates the total blood draw and remaining, which is determine by weight and blood drawn in the past 30 days.");
@@ -201,11 +243,6 @@ public class DefaultEHRCustomizer implements TableCustomizer
         col9.setLabel("Cagemates");
         col9.setDescription("Calculates the total number of roommates per animal and total animals per cage");
         ds.addColumn(col9);
-
-        ColumnInfo col10 = getWrappedIdCol(us, ds, "DaysAlone", "demographicsDaysAlone");
-        col10.setLabel("Days Alone");
-        col10.setDescription("Calculates the total number of days each animal has been single housed, if applicable.");
-        ds.addColumn(col10);
 
         ColumnInfo col12 = getWrappedIdCol(us, ds, "MostRecentDeparture", "demographicsMostRecentDeparture");
         col12.setLabel("Departure Date");
@@ -223,8 +260,8 @@ public class DefaultEHRCustomizer implements TableCustomizer
         ds.addColumn(col13);
 
         ColumnInfo col14 = getWrappedIdCol(us, ds, "lastHousing", "demographicsLastHousing");
-        col14.setLabel("Housing - Last Location");
-        col14.setDescription("This calculates the last housing location for the animal.  This is distinct from active housing, because it will return a location for dead animals");
+        col14.setLabel("Housing - Final Location");
+        col14.setDescription("This calculates the final housing location for the animal.  This is distinct from active housing, because it will return a location for dead animals");
         ds.addColumn(col14);
 
         ColumnInfo col15 = getWrappedIdCol(us, ds, "totalOffspring", "demographicsTotalOffspring");
@@ -242,11 +279,6 @@ public class DefaultEHRCustomizer implements TableCustomizer
         col17.setDescription("Calculates the most recent TB date for this animal, time since TB and the last eye TB tested");
         ds.addColumn(col17);
 
-        ColumnInfo col18 = getWrappedIdCol(us, ds, "Virology", "demographicsVirology");
-        col18.setLabel("Virology");
-        col18.setDescription("This calculates the distinct pathogens listed as positive for this animal from the virology table");
-        ds.addColumn(col18);
-
         ColumnInfo col19 = getWrappedIdCol(us, ds, "weightChange", "demographicsWeightChange");
         col19.setLabel("Weight Change");
         col19.setDescription("This calculates the percent change over the past 30, 90 or 180 days relative to the most recent weight");
@@ -256,6 +288,8 @@ public class DefaultEHRCustomizer implements TableCustomizer
         col20.setLabel("Weight - Current");
         col20.setDescription("This calculates the most recent weight for the animal, based on the weight table");
         ds.addColumn(col20);
+
+        ds.setDetailsURL(DetailsURL.fromString("/ehr/participantView.view?participantId=${Id}"));
     }
 
     private ColumnInfo getWrappedIdCol(UserSchema us, AbstractTableInfo ds, String name, String queryName)
@@ -491,17 +525,9 @@ public class DefaultEHRCustomizer implements TableCustomizer
         if (_userSchemas.containsKey(name))
             return _userSchemas.get(name);
 
-        User u;
+
         Container c = ((FilteredTable)ds).getContainer();
-
-        if (HttpView.hasCurrentView()){
-            u = HttpView.currentContext().getUser();
-        }
-        else
-        {
-            u = EHRService.get().getEHRUser(c);
-        }
-
+        User u = getUser(c);
         if (u == null)
             return null;
 
@@ -510,6 +536,20 @@ public class DefaultEHRCustomizer implements TableCustomizer
             _userSchemas.put(name, us);
 
         return us;
+    }
+
+    private User getUser(Container c)
+    {
+        if (HttpView.hasCurrentView()){
+            return HttpView.currentContext().getUser();
+        }
+        else
+        {
+            if (c == null)
+                c = ContainerManager.getRoot();
+
+            return EHRService.get().getEHRUser(c);
+        }
     }
 
     private void hideStudyColumns(AbstractTableInfo ds)
@@ -527,25 +567,61 @@ public class DefaultEHRCustomizer implements TableCustomizer
         }
     }
 
+    private void appendDuration(AbstractTableInfo ti)
+    {
+        ColumnInfo date = ti.getColumn("date");
+        ColumnInfo enddate = ti.getColumn("enddate");
+        if (date != null && enddate != null && ti.getColumn("duration") == null)
+        {
+            SQLFragment sql = new SQLFragment(ti.getSqlDialect().getDateDiff(Calendar.DATE, "COALESCE(" + ExprColumn.STR_TABLE_ALIAS + "." + enddate.getSelectName() +", {fn curdate()})", "CAST(" + ExprColumn.STR_TABLE_ALIAS + "." + date.getSelectName() + " AS date)"));
+            ExprColumn col = new ExprColumn(ti, "duration", sql, JdbcType.INTEGER);
+            col.setCalculated(true);
+            col.setUserEditable(false);
+            col.setHidden(true);
+            col.setLabel("Duration (Days)");
+            ti.addColumn(col);
+        }
+
+    }
+
     private void appendEnddate(AbstractTableInfo ti)
     {
-        if (ti.getColumn("enddate") != null && ti.getColumn("enddateCoalesced") == null)
+        ColumnInfo enddate = ti.getColumn("enddate");
+        if (enddate != null && ti.getColumn("enddateCoalesced") == null)
         {
-            SQLFragment sql = new SQLFragment("COALESCE(" + ExprColumn.STR_TABLE_ALIAS + ".enddate, {fn curdate()})");
-            ExprColumn col = new ExprColumn(ti, "enddateCoalesced", sql, JdbcType.TIMESTAMP);
+            SQLFragment sql = new SQLFragment("COALESCE(" + ExprColumn.STR_TABLE_ALIAS + "." + enddate.getSelectName() + ", {fn curdate()})");
+            ExprColumn col = new ExprColumn(ti, "enddateCoalesced", sql, JdbcType.DATE);
             col.setCalculated(true);
             col.setUserEditable(false);
             col.setHidden(true);
             col.setLabel("Enddate, Coalesced");
+
+            if (enddate.getFormat() != null)
+                col.setFormat(enddate.getFormat());
+
+            ti.addColumn(col);
+        }
+
+        if (enddate != null && ti.getColumn("enddatetimeCoalesced") == null)
+        {
+            SQLFragment sql = new SQLFragment("COALESCE(" + ExprColumn.STR_TABLE_ALIAS + "." + enddate.getSelectName() + ", {fn now()})");
+            ExprColumn col = new ExprColumn(ti, "enddatetimeCoalesced", sql, JdbcType.DATE);
+            col.setCalculated(true);
+            col.setUserEditable(false);
+            col.setHidden(true);
+            col.setLabel("End Time, Coalesced");
+            col.setFormat("yyyy-MM-dd HH:mm");
+
             ti.addColumn(col);
         }
     }
 
     private void appendDateOnly(AbstractTableInfo ti)
     {
-        if (ti.getColumn("date") != null && ti.getColumn("dateOnly") == null)
+        ColumnInfo date = ti.getColumn("date");
+        if (date != null && ti.getColumn("dateOnly") == null)
         {
-            SQLFragment sql = new SQLFragment(ti.getSqlDialect().getDateTimeToDateCast(ExprColumn.STR_TABLE_ALIAS + ".date"));
+            SQLFragment sql = new SQLFragment(ti.getSqlDialect().getDateTimeToDateCast(ExprColumn.STR_TABLE_ALIAS + "." + date.getSelectName()));
             ExprColumn col = new ExprColumn(ti, "dateOnly", sql, JdbcType.DATE);
             col.setCalculated(true);
             col.setUserEditable(false);

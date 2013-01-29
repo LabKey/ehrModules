@@ -1,20 +1,20 @@
- <query xmlns="http://labkey.org/data/xml/query">
-    <metadata> 
+<query xmlns="http://labkey.org/data/xml/query">
+    <metadata>
         <tables xmlns="http://labkey.org/data/xml">
             <table tableName="clinremarks" tableDbType="TABLE">
                 <tableUrl>/query/detailsQueryRow.view?schemaName=study&amp;query.queryName=Clinical%20Remarks&amp;lsid=${lsid}</tableUrl>
                 <!--<insertUrl>/ehr/manageRecord.view?schemaName=study&amp;queryName=Clinical%20Remarks&amp;keyField=lsid&amp;</insertUrl>-->
                 <!--<updateUrl>/ehr/manageRecord.view?schemaName=study&amp;queryName=Clinical%20Remarks&amp;keyField=lsid&amp;key=${lsid}</updateUrl>-->
-                <insertUrl />
-                <importUrl />
-                <updateUrl />
-                <deleteUrl />
+                <insertUrl/>
+                <importUrl/>
+                <updateUrl/>
+                <deleteUrl/>
                 <columns>
                     <column columnName="project">
                         <fk>
-                          <fkDbSchema>ehr</fkDbSchema>
-                          <fkTable>project</fkTable>
-                          <fkColumnName>project</fkColumnName>
+                            <fkDbSchema>ehr</fkDbSchema>
+                            <fkTable>project</fkTable>
+                            <fkColumnName>project</fkColumnName>
                         </fk>
                     </column>
                     <column columnName="date">
@@ -22,41 +22,53 @@
                     </column>
                     <column columnName="parentid">
                         <!--<fk>-->
-                          <!--<fkDbSchema>study</fkDbSchema>-->
-                          <!--<fkTable>studyDataParent</fkTable>-->
-                          <!--<fkColumnName>objectid</fkColumnName>-->
+                        <!--<fkDbSchema>study</fkDbSchema>-->
+                        <!--<fkTable>studyDataParent</fkTable>-->
+                        <!--<fkColumnName>objectid</fkColumnName>-->
                         <!--</fk>-->
                     </column>
                     <column columnName="remark">
                         <isHidden>false</isHidden>
                         <displayWidth>350</displayWidth>
                     </column>
-                      <!--<column columnName="location">-->
-                         <!--<columnTitle>Location</columnTitle>-->
-                         <!--<fk>-->
-                            <!--<fkDbSchema>ehr_lookups</fkDbSchema>-->
-                            <!--<fkTable>pe_region</fkTable>-->
-                            <!--<fkColumnName>region</fkColumnName>-->
-                         <!--</fk>-->
-                      <!--</column>-->
-                      <column columnName="category">
+                    <!--<column columnName="location">-->
+                    <!--<columnTitle>Location</columnTitle>-->
+                    <!--<fk>-->
+                    <!--<fkDbSchema>ehr_lookups</fkDbSchema>-->
+                    <!--<fkTable>pe_region</fkTable>-->
+                    <!--<fkColumnName>region</fkColumnName>-->
+                    <!--</fk>-->
+                    <!--</column>-->
+                    <column columnName="category">
                         <!--<nullable>false</nullable>-->
                         <columnTitle>Category</columnTitle>
                         <fk>
-                          <fkDbSchema>ehr_lookups</fkDbSchema>
-                          <fkTable>clinremarks_category</fkTable>
-                          <fkColumnName>category</fkColumnName>
+                            <fkDbSchema>ehr_lookups</fkDbSchema>
+                            <fkTable>clinremarks_category</fkTable>
+                            <fkColumnName>category</fkColumnName>
                         </fk>
-                      </column>
-                      <column columnName="so">
-                          <columnTitle>Subjective/Objective</columnTitle>
-                      </column>
-                      <column columnName="a">
-                          <columnTitle>Assessment</columnTitle>
-                      </column>
-                      <column columnName="p">
-                          <columnTitle>Plan</columnTitle>
-                      </column>
+                    </column>
+                    <column columnName="hx">
+                        <columnTitle>History</columnTitle>
+                    </column>
+                    <column columnName="so">
+                        <columnTitle>Subjective/Objective</columnTitle>
+                    </column>
+                    <column columnName="s">
+                        <columnTitle>Subjective</columnTitle>
+                    </column>
+                    <column columnName="o">
+                        <columnTitle>Objective</columnTitle>
+                    </column>
+                    <column columnName="a">
+                        <columnTitle>Assessment</columnTitle>
+                    </column>
+                    <column columnName="p">
+                        <columnTitle>Plan</columnTitle>
+                    </column>
+                    <column columnName="p2">
+                        <columnTitle>P2</columnTitle>
+                    </column>
                 </columns>
             </table>
         </tables>

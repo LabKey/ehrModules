@@ -31,6 +31,8 @@ import org.labkey.ehr.EHRModule;
 
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
+import java.util.Collections;
+import java.util.Set;
 
 /**
  * Created with IntelliJ IDEA.
@@ -86,5 +88,10 @@ abstract public class AbstractEHRNotification implements Notification
     public String getCronString()
     {
         return null;//"0 0/5 * * * ?";
+    }
+
+    public Set<String> getNotificationTypes()
+    {
+        return Collections.singleton(getName());
     }
 }

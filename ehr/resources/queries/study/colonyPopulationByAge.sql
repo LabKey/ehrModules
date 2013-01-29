@@ -6,8 +6,8 @@
 SELECT
   d.species,
   d.gender,
-  d.id.age.AgeInYearsRounded AS AgeInYears,
-  count(d.Id) AS AnimalCount
+  d.id.age.AgeInYearsRounded AS ageInYears,
+  count(d.Id) AS animalCount
 
 FROM study.Demographics d
 

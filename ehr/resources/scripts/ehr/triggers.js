@@ -645,7 +645,7 @@ EHR.Server.Triggers.rowInit = function(errors, row, oldRow){
             console.log('Row is from ETL');
 
         //we ignore all errors from ETL records.  they will get flagged as review required
-        this.scriptContext.errorThreshold = 'FATAL';
+        this.scriptContext.errorThreshold = 'WARN';
 
         //this allows for individual modules to provide custom ETL code, acting per row
         if (EHR.ETL)
@@ -879,9 +879,16 @@ EHR.Server.Triggers.rowEnd = function(errors, scriptErrors, row, oldRow){
             for (var j=0;j<errors[i].length;j++){
                 row.description.push(errors[i][j]);
             }
+
+            //we want all ETL records to get imported, but flag them for review
+            if (this.extraContext.dataSource == 'etl'){
+                errors[i] = [];
+            }
         }
         row.description = row.description.join(',\n');
+
         row.QCState = EHR.Server.Security.getQCStateByLabel(this.scriptContext.errorQcLabel).RowId || null;
+        row.QCStateLabel = EHR.Server.Security.getQCStateByLabel(this.scriptContext.errorQcLabel).Label || null;;
     }
 
     if(this.scriptContext.verbosity > 0)

@@ -1,3 +1,4 @@
+<!--NOTE: even though this view is not used by ONPRC, the test expects it to be present and it should remain here-->
 <customView xmlns="http://labkey.org/data/xml/queryCustomView" hidden="true">
     <columns>
         <column name="Id"/>

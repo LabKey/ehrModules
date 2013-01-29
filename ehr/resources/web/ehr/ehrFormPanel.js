@@ -85,17 +85,13 @@ Ext.extend(EHR.ext.FormPanel, Ext.FormPanel,
             containerPath: this.containerPath,
             schemaName: this.schemaName,
             queryName: this.queryName,
-            viewName: this.viewName,
+            viewName: this.viewName || '~~UPDATE~~',
             columns: this.columns || EHR.Metadata.Columns[this.queryName] || '',
             storeId: [this.schemaName,this.queryName,this.viewName].join('||'),
             filterArray: this.filterArray || [],
             metadata: this.metadata,
             autoLoad: true
         }));
-
-        if(!this.columns && !EHR.Metadata.Columns[this.queryName]){
-            console.log('Columns not defined: '+this.queryName)
-        }
 
         this.store.importPanel = this.importPanel || this;
 

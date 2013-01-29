@@ -21,6 +21,8 @@ import org.labkey.api.data.Container;
 import org.labkey.api.data.Results;
 import org.labkey.api.data.RuntimeSQLException;
 import org.labkey.api.data.SimpleFilter;
+import org.labkey.api.data.Sort;
+import org.labkey.api.data.TableSelector;
 import org.labkey.api.query.FieldKey;
 import org.labkey.api.query.QueryService;
 import org.labkey.api.query.QuerySettings;
@@ -32,7 +34,9 @@ import org.springframework.beans.MutablePropertyValues;
 import org.springframework.validation.BindException;
 
 import java.io.IOException;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -43,7 +47,7 @@ import java.util.Map;
  * Date: 8/4/12
  * Time: 8:28 PM
  */
-public class OverdueWeightsNotification extends ColonyAlertsNotification
+public class OverdueWeightsNotification extends AbstractEHRNotification
 {
     @Override
     public String getName()
@@ -176,6 +180,27 @@ public class OverdueWeightsNotification extends ColonyAlertsNotification
         finally
         {
             ResultSetUtil.close(rs);
+        }
+    }
+
+    protected void livingAnimalsWithoutWeight(final Container c, User u, final StringBuilder msg)
+    {
+        SimpleFilter filter = new SimpleFilter(FieldKey.fromString("calculated_status"), "Alive");
+        filter.addCondition(FieldKey.fromString("Id/MostRecentWeight/MostRecentWeightDate"), null, CompareType.ISBLANK);
+        Sort sort = new Sort(getStudy(c).getSubjectColumnName());
+        TableSelector ts = new TableSelector(getStudySchema(c, u).getTable("Demographics"), Collections.singleton(getStudy(c).getSubjectColumnName()), filter, sort);
+        if (ts.getRowCount() > 0)
+        {
+            msg.append("<b>WARNING: The following animals do not have a weight:</b><br>\n");
+            ts.forEach(new TableSelector.ForEachBlock<ResultSet>(){
+                public void exec(ResultSet rs) throws SQLException
+                {
+                    msg.append(rs.getString(getStudy(c).getSubjectColumnName()) + "<br>\n");
+                }
+            });
+
+            msg.append("<p><a href='" + _baseUrl + "/executeQuery.view?schemaName=study&query.queryName=Demographics&query.calculated_status~eq=Alive&query.Id/MostRecentWeight/MostRecentWeightDate~isblank'>Click here to view these animals</a></p>\n");
+            msg.append("<hr>\n");
         }
     }
 }

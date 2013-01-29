@@ -34,7 +34,7 @@ Ext4.onReady(function (){
     }
 
     if (LABKEY.ActionURL.getParameter('cage')){
-        Ext4.create('LDK.ext.DetailsPanel', {
+        Ext4.create('LDK.panel.DetailsPanel', {
             store: {
                 schemaName: 'ehr_lookups',
                 queryName: 'cage',

@@ -10,6 +10,9 @@
                 <updateUrl />
                 <deleteUrl />
                 <columns>
+                    <column columnName="Id">
+                        <isKeyField>true</isKeyField>
+                    </column>
                     <column columnName="gender">
                         <columnTitle>Gender</columnTitle>
                         <fk>
@@ -77,9 +80,7 @@
                             <!--<fkTable>animal</fkTable>-->
                             <!--<fkColumnName>id</fkColumnName>-->
                         <!--</fk>-->
-                        <url>/study/participant.view?
-                            participantId=${dam}
-                        </url>
+                        <url>/ehr/participantView.view?participantId=${dam}</url>
                     </column>
                     <column columnName="sire">
                         <columnTitle>Sire</columnTitle>
@@ -88,9 +89,7 @@
                             <!--<fkTable>animal</fkTable>-->
                             <!--<fkColumnName>id</fkColumnName>-->
                         <!--</fk>-->
-                        <url>/study/participant.view?
-                            participantId=${sire}
-                        </url>
+                        <url>/ehr/participantView.view?participantId=${sire}</url>
                     </column>
                     <column columnName="origin">
                         <columnTitle>Origin</columnTitle>

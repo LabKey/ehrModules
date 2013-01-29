@@ -159,6 +159,10 @@ EHR.Server.Utils = new function(){
                     return result;
                 };
             }
+        },
+
+        trim: function(input){
+            return input.replace(/^\s+|\s+$/g, '');
         }
     }
 };

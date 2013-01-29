@@ -71,12 +71,14 @@ addMissing <- function(ped){
 }
 
 allPed <- addMissing(allPed)
+gc()
 
 # In order to reduce the max matrix size, calculate famids using makefamid, then analyze each group separately
 # It resizes the biggest matrix from 12000^2 to 8200^2 thus reduces the memory used by half
 fami=makefamid(id=allPed$Id,father.id=allPed$Sire,mother.id=allPed$Dam)
 famid=unique(fami)
 famid=famid[famid!=0]
+gc()
 
 newRecords=NULL
 for (fam.no in famid){

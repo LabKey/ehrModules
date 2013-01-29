@@ -57,7 +57,8 @@ EHR.reports.abstract = function(panel, tab){
         title: 'Active Assignments' + title,
         frame: true,
         schemaName: 'study',
-        queryName: 'ActiveAssignments',
+        queryName: 'Assignment',
+        viewName: 'Active Assignments',
         filters: filterArray.nonRemovable,
         removeableFilters: filterArray.removable
     });

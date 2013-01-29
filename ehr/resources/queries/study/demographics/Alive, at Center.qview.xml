@@ -73,22 +73,11 @@
                 <property name="columnTitle" value="Weight Date"/>
             </properties>
         </column>
-        <!--<column name="Id/MostRecentTB/MostRecentTBDate">-->
-            <!--<properties>-->
-                <!--<property name="columnTitle" value="Last TB Date"/>-->
-            <!--</properties>-->
-        <!--</column>-->
         <column name="medical"/>
         <column name="prepaid"/>
-        <!--<column name="v_status">-->
-            <!--<properties>-->
-                <!--<property name="columnTitle" value="Viral Status"/>-->
-            <!--</properties>-->
-        <!--</column>-->
     </columns>
     <filters>
         <filter column="calculated_status" operator="eq" value="Alive"/>
-        <!--<filter column="qcstate/publicdata" operator="eq" value="true"/>-->
     </filters>
     <sorts>
         <sort column="Id/curLocation/room" descending="false"/>

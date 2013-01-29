@@ -29,7 +29,7 @@ Ext4.onReady(function (){
     var el = Ext4.get(webpart.wrapperDivId);
     Ext4.DomHelper.append(el, domSpec);
 
-    Ext4.create('LDK.ext.DetailsPanel', {
+    Ext4.create('LDK.panel.DetailsPanel', {
         store: {
             schemaName: 'ehr',
             queryName: 'project',
@@ -44,7 +44,8 @@ Ext4.onReady(function (){
     new LABKEY.QueryWebPart({
         title: 'Active Assignments',
         schemaName: 'study',
-        queryName: 'ActiveAssignments',
+        queryName: 'Assignment',
+        viewName: 'Active Assignments',
         allowChooseQuery: false,
         allowChooseView: true,
         showInsertNewButton: false,
@@ -79,7 +80,7 @@ Ext4.onReady(function (){
         failure: EHR.Utils.onError
      }).render('projectTotalAssignments_' + webpart.wrapperDivId);
 
-    Ext4.create('LDK.ext.WebpartPanel', {
+    Ext4.create('LDK.panel.WebpartPanel', {
         title: 'Project Information',
         bodyStyle: 'padding:5px;',
         defaults: {

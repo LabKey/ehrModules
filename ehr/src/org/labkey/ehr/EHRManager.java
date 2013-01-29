@@ -104,7 +104,7 @@ public class EHRManager
             if (emailAddress == null)
             {
                 if (logOnError)
-                    _log.error("Attempted to access EHR email module property from container: " + c.getPath() + ", but it was null.  Some code may not work as expected.");
+                    _log.error("Attempted to access EHR email module property from container: " + c.getPath() + ", but it was null.  Some code may not work as expected.", new Exception());
                 return null;
             }
 
@@ -133,7 +133,7 @@ public class EHRManager
         if (path == null)
         {
             if (logOnError)
-                _log.error("Attempted to access EHR containerPath Module Property, which has not been set for the root container");
+                _log.error("Attempted to access EHR containerPath Module Property, which has not been set for the root container", new Exception());
             return null;
         }
 
@@ -417,7 +417,7 @@ public class EHRManager
                     messages.add("Non-demographics datasets that are not using objectId as a managed key: " + total);
             }
 
-            String[] toIndex = new String[]{"objectid", "taskid", "parentid", "requestid"};
+            String[] toIndex = new String[]{"objectid", "taskid", "parentid", "runId", "requestid", "date"};
             DbSchema schema = DbSchema.get("studydataset");
             Set<String> distinctIndexes = new HashSet<String>();
             for (DataSet d : study.getDataSets())
@@ -432,6 +432,12 @@ public class EHRManager
 
                 for (String col : toIndex)
                 {
+                    if (realTable.getColumn(col) == null)
+                    {
+                        //messages.add("Dataset: " + d.getName() + " does not have column " + col + ", so indexing will be skipped");
+                        continue;
+                    }
+
                     String indexName = tableName + "_" + col;
 
                     if (distinctIndexes.contains(indexName))

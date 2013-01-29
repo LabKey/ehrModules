@@ -230,7 +230,7 @@ EHR.Metadata.sharedCols = ',id,date,project,account,'+EHR.Metadata.bottomCols;
  *
  *
  */
-//TODO: this should get replaced with the ~~INSERT~~ view
+//TODO: this should get replaced with the ~~UPDATE~~ view
 EHR.Metadata.Columns = {
     Alopecia: EHR.Metadata.topCols+',score,cause,head,shoulders,upperArms,lowerArms,hips,rump,dorsum,upperLegs,lowerLegs,other,' + EHR.Metadata.bottomCols,
     Arrival: EHR.Metadata.topCols+',source,geoOrigin,gender,birth,dam,sire,initialRoom,initialCage,initialCond,id/numroommates/cagemates,'+EHR.Metadata.bottomCols,

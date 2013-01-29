@@ -78,17 +78,13 @@ EHR.ext.GridFormPanel = Ext.extend(Ext.Panel,
             containerPath: this.containerPath,
             schemaName: this.schemaName,
             queryName: this.queryName,
-            viewName: this.viewName,
+            viewName: this.viewName || '~~UPDATE~~',
             columns: this.columns || EHR.Metadata.Columns[this.queryName] || '',
             storeId: [this.schemaName,this.queryName,this.viewName].join('||'),
             filterArray: this.filterArray || [],
             metadata: this.metadata
             //autoLoad: true
         }));
-
-        if(!EHR.Metadata.Columns[this.queryName]){
-            console.log('Columns not defined: '+this.queryName)
-        }
 
         //set buttons
         var tbar = {xtype: 'toolbar', items: []};

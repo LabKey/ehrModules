@@ -24,7 +24,7 @@ Ext4.define('EHR.panel.LocationFilterType', {
 
         toAdd.push({
             width: 200,
-            html: 'Search By Location:<br><i>(enter multiple rooms by separating with commas or whitespace. Note: you must enter the entire cage #, such as 0001)</i>'
+            html: 'Search By Location:<br><i>(enter multiple rooms by separating with commas or semicolons. Note: you must enter the entire cage #, such as 0001)</i>'
         });
 
         toAdd.push({
@@ -117,9 +117,14 @@ Ext4.define('EHR.panel.LocationFilterType', {
         var roomField = this.down('#roomField');
         var room = this.down('#roomField').getValue();
         if(room){
-            room = room.replace(/[\s,;]+/g, ';');
+            room = room.replace(/[,;]+/g, ';');
             room = room.replace(/(^;|;$)/g, '');
-            room = room.toLowerCase();
+            room = room.split(';');
+            var tokens = [];
+            Ext4.each(room, function(piece){
+                tokens.push(Ext4.String.trim(piece));
+            }, this);
+            room = tokens.join(';');
             roomField.setValue(room);
         }
 

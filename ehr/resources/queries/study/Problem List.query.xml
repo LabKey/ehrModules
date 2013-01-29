@@ -21,6 +21,9 @@
                           <!--<fkColumnName>objectid</fkColumnName>-->
                         <!--</fk>-->
                     </column>
+                    <column columnName="problem_no">
+                        <columnTitle>Problem Number</columnTitle>
+                    </column>
                     <column columnName="code">
                         <columnTitle>Code</columnTitle>
                         <fk>

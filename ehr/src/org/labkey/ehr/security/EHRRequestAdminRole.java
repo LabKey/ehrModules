@@ -25,7 +25,7 @@ import org.labkey.api.security.permissions.UpdatePermission;
  * User: bbimber
  * Date: March 22, 2011
  */
-public class EHRRequestAdminRole extends AbstractEHRRole
+public class EHRRequestAdminRole extends AbstractEHRDatasetRole
 {
     public EHRRequestAdminRole()
     {

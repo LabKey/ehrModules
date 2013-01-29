@@ -20,7 +20,7 @@ Ext4.onReady(function (){
 
     var filterArray = [LABKEY.Filter.create('lsid', LABKEY.ActionURL.getParameter('lsid'), LABKEY.Filter.Types.EQUAL)];
 
-    Ext4.create('LDK.ext.DetailsPanel', {
+    Ext4.create('LDK.panel.DetailsPanel', {
         store: {
             schemaName: 'study',
             queryName: 'Drug Administration',

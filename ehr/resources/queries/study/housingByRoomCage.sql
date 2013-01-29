@@ -7,7 +7,6 @@
 --to be considered co-housed, they only need to overlap by any period of time
 
 SELECT
-  h1.room.area as Area,
   h1.room as Room,
   h1.cage AS Cage,
   max(h1.cond) AS Condition,
@@ -18,7 +17,7 @@ FROM study.Housing h1
 WHERE h1.enddate IS NULL
 AND h1.qcstate.publicdata = true
 
-GROUP BY h1.room.area, h1.room, h1.cage
+GROUP BY h1.room, h1.cage
 
 
 

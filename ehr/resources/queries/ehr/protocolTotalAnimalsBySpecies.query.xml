@@ -2,6 +2,7 @@
     <metadata>
         <tables xmlns="http://labkey.org/data/xml">
             <table tableName="protocolTotalAnimalsBySpecies" tableDbType="NOT_IN_DB">
+                <tableTitle>Total Animals Assigned To Each Protocol, By Species</tableTitle>
                 <columns>
                     <column columnName="protocol">
                         <isKeyField>true</isKeyField>

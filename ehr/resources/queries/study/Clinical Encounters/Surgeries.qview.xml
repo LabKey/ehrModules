@@ -26,6 +26,6 @@
         <sort column="date" descending="true"/>
     </sorts>
     <filters>
-        <filter column="type" operator="contains" value="Surgery"/>
+        <filter column="type" operator="eq" value="Surgery"/>
     </filters>
 </customView>

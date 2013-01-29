@@ -2,6 +2,8 @@
 
 Ext4.onReady(function () {
     var webpart = <%=webpartContext%>;
+    Ext4.get(webpart.wrapperDivId).update('Loading...');
+
     var config = {displayField: 'Label', headerField: 'categoryId/label', target: webpart.wrapperDivId};
 
     EHR.Security.init({
@@ -36,7 +38,7 @@ Ext4.onReady(function () {
                 var cfg = {
                     layout: 'hbox',
                     bodyStyle: 'background-color: transparent;',
-                    defaults: this.ITEM_DEFAULTS,
+                    defaults: LDK.panel.NavPanel.ITEM_DEFAULTS,
                     items: [
                         this.getLabelItemCfg(item)
                     ,
@@ -85,7 +87,8 @@ Ext4.onReady(function () {
 
         }
 
-        Ext4.create('LDK.ext.NavPanel', menuCfg);
+        Ext4.get(webpart.wrapperDivId).update(null);
+        Ext4.create('LDK.panel.NavPanel', menuCfg);
     }
 
 });

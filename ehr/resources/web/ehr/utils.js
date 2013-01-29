@@ -661,6 +661,7 @@ EHR.Utils = new function(){
                     schemaName: config.schemaName,
                     queryName: config.queryName,
                     title: config.title || config.queryName,
+                    viewName:  '~~UPDATE~~',
                     columns: EHR.Metadata.Columns[config.queryName],
                     metadata: EHR.Metadata.getTableMetadata(config.queryName, ['Task'])
                 }],
@@ -694,6 +695,7 @@ EHR.Utils = new function(){
                     queryName: config.queryName,
                     readOnly: true,
                     title: config.title || config.queryName,
+                    viewName: '~~UPDATE~~',
                     columns: EHR.Metadata.Columns[config.queryName],
                     metadata: EHR.Metadata.getTableMetadata(config.queryName, ['Task'])
                 }],
@@ -735,11 +737,7 @@ EHR.Utils = new function(){
             });
 
             Ext4.create('Ext.window.Window', {
-                initComponent: function(){
-                    this.callParent();
-                    console.log('called');
-                },
-                title: 'History',
+                title: 'Encounter Summary',
                 width: 500,
                 modal: true,
                 items: [{

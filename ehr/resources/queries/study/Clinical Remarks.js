@@ -27,19 +27,19 @@ function setDescription(row, errors){
     var description = new Array();
 
     if (row.hx)
-        description.push('hx: '+row.hx);
+        description.push('Hx: '+row.hx);
     if (row.so)
-        description.push('s/o: '+row.so);
+        description.push('S/O: '+row.so);
     if (row.s)
-        description.push('s: '+row.so);
+        description.push('S: '+row.s);
     if (row.o)
-        description.push('o: '+row.so);
+        description.push('O: '+row.o);
     if (row.a)
-        description.push('a: '+row.a);
+        description.push('A: '+row.a);
     if (row.p)
-        description.push('p: '+row.p);
+        description.push('P: '+row.p);
     if (row.p2)
-        description.push('p2: '+row.p2);
+        description.push('P2: '+row.p2);
 
     return description;
 }

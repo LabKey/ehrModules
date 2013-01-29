@@ -1,13 +1,14 @@
 <query xmlns="http://labkey.org/data/xml/query">
     <metadata>
         <tables xmlns="http://labkey.org/data/xml">
-            <table tableName="housingRoommates" tableDbType="NOT_IN_DB">
+            <table tableName="housingByRoomCage" tableDbType="NOT_IN_DB">
                 <tableTitle>Housing Summary By Location</tableTitle>
+                <javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</javaCustomizer>
                 <columns>
                     <column columnName="TotalAnimals">
                         <url>/query/executeQuery.view?schemaName=study&amp;
                             query.queryName=housingRoommates&amp;
-                            query.viewName=Current Housing&amp;
+                            query.viewName=Actie Housing&amp;
                             query.sort=Id&amp;
                         </url>
                         <columnTitle>Total Animals</columnTitle>

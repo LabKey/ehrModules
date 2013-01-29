@@ -52,7 +52,16 @@
                         <isHidden>true</isHidden>
                     </column>
                     <column columnName="projectedRelease">
-                        <columnTitle>Projected Release</columnTitle>
+                        <columnTitle>Projected Release Date</columnTitle>
+                    </column>
+                    <column columnName="assignCondition">
+                        <columnTitle>Condition At Assignment</columnTitle>
+                    </column>
+                    <column columnName="projectedReleaseCondition">
+                        <columnTitle>Projected Release Condition</columnTitle>
+                    </column>
+                    <column columnName="releaseCondition">
+                        <columnTitle>Condition At Release</columnTitle>
                     </column>
                 </columns>
             </table>

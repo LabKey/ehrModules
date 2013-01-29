@@ -34,20 +34,11 @@ import org.labkey.api.security.roles.RoleManager;
 import org.labkey.api.util.PageFlowUtil;
 import org.labkey.api.view.WebPartFactory;
 import org.labkey.api.view.template.ClientDependency;
-import org.labkey.ehr.notification.AbnormalLabResultsNotification;
-import org.labkey.ehr.notification.AdminAlertsNotification;
-import org.labkey.ehr.notification.BloodAdminAlertsNotification;
-import org.labkey.ehr.notification.BloodAlertsNotification;
-import org.labkey.ehr.notification.ColonyAlertsLiteNotification;
-import org.labkey.ehr.notification.ColonyAlertsNotification;
-import org.labkey.ehr.notification.ColonyMgmtNotification;
-import org.labkey.ehr.notification.LabResultSummaryNotification;
-import org.labkey.ehr.notification.LabTestScheduleNotifications;
 import org.labkey.ehr.notification.OverdueWeightsNotification;
-import org.labkey.ehr.notification.TreatmentAlerts;
 import org.labkey.ehr.notification.WeightAlerts;
 import org.labkey.ehr.security.EHRBasicSubmitterRole;
 import org.labkey.ehr.security.EHRDataAdminRole;
+import org.labkey.ehr.security.EHRDataEntryRole;
 import org.labkey.ehr.security.EHRFullSubmitterRole;
 import org.labkey.ehr.security.EHRFullUpdaterRole;
 import org.labkey.ehr.security.EHRRequestAdminRole;
@@ -73,7 +64,7 @@ public class EHRModule extends SpringModule
 
     public double getVersion()
     {
-        return 12.309;
+        return 12.310;
     }
 
     public boolean hasScripts()
@@ -125,18 +116,11 @@ public class EHRModule extends SpringModule
         RoleManager.registerRole(new EHRFullUpdaterRole());
         RoleManager.registerRole(new EHRRequestAdminRole());
 
+        RoleManager.registerRole(new EHRDataEntryRole());
+        RoleManager.registerRole(new EHRRequestorRole());
+
         NotificationService ns = NotificationService.get();
-        ns.registerNotification(new AbnormalLabResultsNotification());
-        ns.registerNotification(new AdminAlertsNotification());
-        ns.registerNotification(new BloodAdminAlertsNotification());
-        ns.registerNotification(new BloodAlertsNotification());
-        ns.registerNotification(new ColonyAlertsLiteNotification());
-        ns.registerNotification(new ColonyAlertsNotification());
-        ns.registerNotification(new ColonyMgmtNotification());
-        ns.registerNotification(new LabTestScheduleNotifications());
-        ns.registerNotification(new LabResultSummaryNotification());
         ns.registerNotification(new OverdueWeightsNotification());
-        ns.registerNotification(new TreatmentAlerts());
         ns.registerNotification(new WeightAlerts());
     }
 

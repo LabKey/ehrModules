@@ -14,12 +14,12 @@
                     </column>
                     <column columnName="animalCount">
                         <columnTitle>Animal Count</columnTitle>
-                         <url>/query/executeQuery.view?schemaName=study&amp;
+                        <url>/query/executeQuery.view?schemaName=study&amp;
                             query.queryName=demographics&amp;
                             query.species~eq=${species}&amp;
-                            query.Id/Age/AgeInYears~eq=${AgeInYearsRounded}&amp;
                             query.gender~eq=${gender}&amp;
-                            query.viewName=Alive%2C at WNPRC
+                            query.Id/Age/AgeInYearsRounded~eq=${ageInYears}&amp;
+                            query.viewName=Alive%2C at Center&amp;
                         </url>
                     </column>
                 </columns>

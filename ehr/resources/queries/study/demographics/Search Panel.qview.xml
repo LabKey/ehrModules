@@ -74,27 +74,10 @@
                 <property name="columnTitle" value="Last TB Date"/>
             </properties>
         </column>
-        <column name="medical"/>
-        <column name="prepaid"/>
-        <!--<column name="v_status">-->
-            <!--<properties>-->
-                <!--<property name="columnTitle" value="Viral Status"/>-->
-            <!--</properties>-->
-        <!--</column>-->
         <column name="Id/numRoommates/AnimalsInCage">
             <properties>
                 <property name="columnTitle" value="# Animals In Cage"/>
             </properties>
         </column>
-        <!--<column name="DaysAlone/DaysAlone">-->
-            <!--<properties>-->
-                <!--<property name="columnTitle" value="Days Alone"/>-->
-            <!--</properties>-->
-        <!--</column>-->
-        <!--<column name="DaysAlone/AloneSince">-->
-            <!--<properties>-->
-                <!--<property name="columnTitle" value="Alone Since"/>-->
-            <!--</properties>-->
-        <!--</column>-->
     </columns>
 </customView>

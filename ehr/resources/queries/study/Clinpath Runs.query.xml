@@ -105,6 +105,9 @@
                     <column columnName="sampleId">
                         <columnTitle>Sample Id</columnTitle>
                     </column>
+                    <column columnName="condition">
+                        <columnTitle>Condition</columnTitle>
+                    </column>
                 </columns>
             </table>
         </tables>

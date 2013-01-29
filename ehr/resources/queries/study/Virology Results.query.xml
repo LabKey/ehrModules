@@ -38,11 +38,18 @@
                       </fk>
                     </column>
                     <column columnName="virus">
+                        <columnTitle>Virus</columnTitle>
                         <fk>
                           <fkDbSchema>ehr_lookups</fkDbSchema>
                           <fkTable>virology_tests</fkTable>
                           <fkColumnName>testid</fkColumnName>
                         </fk>
+                    </column>
+                    <column columnName="result">
+                        <columnTitle>Result</columnTitle>
+                    </column>
+                    <column columnName="units">
+                        <columnTitle>Units</columnTitle>
                     </column>
                     <column columnName="qualresult">
                         <columnTitle>Qualitative Result</columnTitle>
@@ -66,6 +73,22 @@
                           <fkDbSchema>ehr_lookups</fkDbSchema>
                           <fkTable>clinpath_sampletype</fkTable>
                           <fkColumnName>sampletype</fkColumnName>
+                        </fk>
+                    </column>
+                    <column columnName="sampleCode">
+                        <columnTitle>Sample Type</columnTitle>
+                        <fk>
+                            <fkDbSchema>ehr_lookups</fkDbSchema>
+                            <fkTable>snomed</fkTable>
+                            <fkColumnName>code</fkColumnName>
+                        </fk>
+                    </column>
+                    <column columnName="virusCode">
+                        <columnTitle>Virus</columnTitle>
+                        <fk>
+                            <fkDbSchema>ehr_lookups</fkDbSchema>
+                            <fkTable>snomed</fkTable>
+                            <fkColumnName>code</fkColumnName>
                         </fk>
                     </column>
                 </columns>

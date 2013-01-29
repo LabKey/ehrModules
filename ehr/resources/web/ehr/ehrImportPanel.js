@@ -284,7 +284,7 @@ Ext.extend(EHR.ext.ImportPanel.Base, Ext.Panel, {
                 containerPath: c.containerPath,
                 schemaName: c.schemaName,
                 queryName: c.queryName,
-                viewName: c.viewName,
+                viewName: c.viewName || '~~UPDATE~~',
                 columns: c.columns || EHR.Metadata.Columns[c.queryName] || '',
                 //autoLoad: true,
                 storeId: [c.schemaName,c.queryName,c.viewName,c.storeSuffix].join('||'),

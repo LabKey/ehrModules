@@ -59,11 +59,6 @@ public class WeightAlerts extends AbstractEHRNotification
         return "Weight Alerts: " + _dateTimeFormat.format(new Date());
     }
 
-    public Set<String> getNotificationTypes()
-    {
-        return Collections.singleton("Weight Alerts");
-    }
-
     @Override
     public String getCronString()
     {

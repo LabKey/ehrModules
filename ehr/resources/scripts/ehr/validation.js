@@ -58,7 +58,6 @@ EHR.Server.Validation = {
 
                         error.field = i;
                         extraContext.skippedErrors[row._recordid].push(error);
-                        //console.log('skipping error')
                     }
                     continue;
                 }
@@ -68,11 +67,6 @@ EHR.Server.Validation = {
 
                 errors[i].push(error.severity+': '+error.message);
                 totalErrors++;
-
-                if(extraContext.dataSource == 'etl'){
-                    console.error('ETL ERROR: ' + error.message);
-                    console.error(row);
-                }
             }
         }
 

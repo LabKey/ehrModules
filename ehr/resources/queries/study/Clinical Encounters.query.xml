@@ -29,6 +29,9 @@
                     <column columnName="serviceRequested">
                         <columnTitle>Service Requested</columnTitle>
                     </column>
+                    <column columnName="title">
+                        <columnTitle>Title</columnTitle>
+                    </column>
                     <column columnName="date">
                         <columnTitle>Date</columnTitle>
                         <formatString>yyyy-MM-dd HH:mm</formatString>

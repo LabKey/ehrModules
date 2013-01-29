@@ -9,7 +9,8 @@
                     <column columnName="ActiveAssignments">
                         <columnTitle>Animals Assigned</columnTitle>
                         <url>/query/executeQuery.view?schemaName=study&amp;
-                            query.queryName=ActiveAssignments&amp;
+                            query.queryName=Assignment&amp;
+                            query.viewName=Active Assignments&amp;
                             query.project~eq=${project}&amp;
                             query.sort=-Date&amp;
                             query.enddate~isblank

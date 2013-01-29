@@ -60,11 +60,6 @@
             </properties>
         </column>
         <column name="medical"/>
-        <!--<column name="Dataset/Demographics/v_status">-->
-            <!--<properties>-->
-                <!--<property name="columnTitle" value="Viral Status"/>-->
-            <!--</properties>-->
-        <!--</column>-->
     </columns>
     <filters>
         <filter column="calculated_status" operator="eq" value="Alive"/>

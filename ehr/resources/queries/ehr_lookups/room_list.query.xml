@@ -2,6 +2,7 @@
     <metadata>
         <tables xmlns="http://labkey.org/data/xml">
             <table tableName="rooms" tableDbType="NOT_IN_DB">
+                <tableUrl>/EHR/cageDetails.view?room=${room}</tableUrl>
                 <columns>
                     <column columnName="room">
                         <isKeyField>true</isKeyField>

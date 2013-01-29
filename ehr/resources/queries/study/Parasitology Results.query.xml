@@ -27,6 +27,12 @@
                             <fkColumnName>result</fkColumnName>
                         </fk>
                     </column>
+                    <column columnName="result">
+                        <columnTitle>Result</columnTitle>
+                    </column>
+                    <column columnName="units">
+                        <columnTitle>Units</columnTitle>
+                    </column>
                     <column columnName="parentid">
                         <!--<fk>-->
                           <!--<fkDbSchema>study</fkDbSchema>-->

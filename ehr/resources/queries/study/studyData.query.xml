@@ -36,6 +36,9 @@
                         </fk>
                         <!--<formatString>00000000</formatString>-->
                     </column>
+                    <column columnName="caseno">
+                        <columnTitle>Case Number</columnTitle>
+                    </column>
                     <column columnName="parentid">
                         <isHidden>true</isHidden>
                         <facetingBehavior>ALWAYS_OFF</facetingBehavior>

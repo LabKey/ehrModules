@@ -502,6 +502,7 @@ EHR.DatasetButtons = new function(){
                                 ,showStatus: false
                                 ,schemaName: config.schemaName
                                 ,queryName: config.queryName
+                                ,viewName: '~~UPDATE~~'
                                 ,columns: EHR.Metadata.Columns[config.queryName]
                                 ,collapsible: false
                                 ,metadata: EHR.Metadata.getTableMetadata(config.queryName, ['SimpleForm'])
@@ -1808,6 +1809,7 @@ EHR.DatasetButtons = new function(){
                                 LABKEY.Query.selectRows({
                                     schemaName: 'study',
                                     queryName: r.queryName,
+                                    viewName:  '~~UPDATE~~',
                                     columns: EHR.Metadata.Columns[r.queryName] || null,
                                     filterArray: [
                                         LABKEY.Filter.create('taskid', taskid, LABKEY.Filter.Types.EQUAL)

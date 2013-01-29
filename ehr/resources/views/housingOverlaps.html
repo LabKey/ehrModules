@@ -5,23 +5,23 @@ Ext4.onReady(function(){
 
     var qwpDiv = Ext4.DomHelper.insertAfter(webpart.wrapperDivId, {
         tag: 'div',
-        style: 'padding-top: 20px',
         id: 'qwp_' + Ext4.id()
     });
 
     Ext4.QuickTips.init();
     Ext4.create('Ext.form.Panel', {
         border: false,
-        width: 400,
+        width: 550,
         qwpDiv: qwpDiv,
+        style: 'margin-bottom: 20px;',
         defaults: {
             border: false,
-            labelWidth: 140,
-            width: 400
+            labelWidth: 180,
+            width: 550
         },
         items: [{
-            html: 'This page allows you to find housing records that overlap, based on the criteria below.  For more detail, hover the mouse over the exclamation point next to the field label.',
-            style: 'padding-bottom: 20px'
+            html: 'This page allows you to find housing records that overlap, based on the criteria below.  For more detail, hover the mouse over the question mark next to the field label.',
+            style: 'padding-bottom: 10px'
         },{
             xtype: 'radiogroup',
             itemId: 'searchType',
@@ -94,7 +94,6 @@ Ext4.onReady(function(){
             xtype: 'toolbar',
             dock: 'bottom',
             ui: 'footer',
-            style: 'background-color: transparent;',
             items: [{
                 xtype: 'tbfill'
             },{
@@ -157,6 +156,8 @@ Ext4.onReady(function(){
                 fieldLabel: 'End (optional)',
                 itemId: 'endField'
             });
+
+            this.doLayout();
         },
         onSubmit: function(){
             var type = this.down('#searchType').getValue().searchType;
@@ -166,18 +167,22 @@ Ext4.onReady(function(){
             var room = this.down('#roomField').getValue();
             var cage = this.down('#cageField').getValue();
 
+            var title = 'Overlapping Housing Records';
             var queryName = 'HousingOverlaps';
-            if (grouping == 'grouped')
+            if (grouping == 'grouped'){
                 queryName += 'ById';
+                title = 'Overlapping Ids';
+            }
 
             if (type == 'date')
                 queryName += 'DateOnly';
 
             var config = {
-                frame: 'none',
+                frame: 'portal',
                 renderTo: this.qwpDiv.id,
                 schemaName: 'study',
-                queryName: queryName
+                queryName: queryName,
+                title: title
             }
 
             var params = {
@@ -192,8 +197,7 @@ Ext4.onReady(function(){
 
             if (!LABKEY.Utils.isEmptyObj(params))
                 config.parameters = params;
-            console.log(queryName);
-            console.log(config);
+
             LDK.Utils.getReadOnlyQWP(config).render(this.qwpDiv.id);
         }
 

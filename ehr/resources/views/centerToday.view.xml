@@ -1,0 +1,5 @@
+<view xmlns="http://labkey.org/data/xml/view" title="Center Summary">
+    <dependencies>
+        <dependency path="ehr.context" />
+    </dependencies>
+</view>

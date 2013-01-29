@@ -116,6 +116,12 @@
                     <column columnName="amount">
                         <columnTitle>Amount To Give</columnTitle>
                     </column>
+                    <column columnName="dosage">
+                        <columnTitle>Dosage</columnTitle>
+                    </column>
+                    <column columnName="reason">
+                        <columnTitle>Reason</columnTitle>
+                    </column>
                     <column columnName="dosage_units">
                         <columnTitle>Dosage Units</columnTitle>
                         <fk>

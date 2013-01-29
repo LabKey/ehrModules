@@ -13,7 +13,8 @@
                     </column>
                     <column columnName="TotalActiveAnimals">
                         <url>/query/executeQuery.view?schemaName=study&amp;
-                            query.queryName=ActiveAssignments&amp;
+                            query.queryName=Assignment&amp;
+                            query.viewName=Active Assignments&amp;
                             query.project/protocol~eq=${protocol}&amp;
                         </url>
                     </column>

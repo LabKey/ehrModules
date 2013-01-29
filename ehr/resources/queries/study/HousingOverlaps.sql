@@ -17,9 +17,7 @@ h.room,
 h.cage,
 h.date,
 h.enddate,
-h.cond,
 h.reason,
-h.restraintType,
 h.remark,
 h.qcstate
 

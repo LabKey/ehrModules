@@ -139,7 +139,8 @@ function getPrincipals(object) {
 	console.log('looking for PIs of animal ' + object.animalNumber);
         LABKEY.Query.selectRows({
                 schemaName:'study',
-                queryName:'ActiveAssignments',
+                queryName: 'Assignment',
+                viewName: 'Active Assignments',
                 filterArray:[
                    LABKEY.Filter.create('Id', object.animalNumber, LABKEY.Filter.Types.EQUAL),
                    LABKEY.Filter.create('enddate', object.death, LABKEY.Filter.Types.DATE_EQUAL),  
@@ -174,7 +175,8 @@ function getPrincipalInvestigators(animalID) {
 	console.log('looking for PIs of animal ' + animalID);
         LABKEY.Query.selectRows({
                 schemaName:'study',
-                queryName:'ActiveAssignments',
+                queryName: 'Assignment',
+                viewName: 'Active Assignments',
                 filterArray:[
                    LABKEY.Filter.create('Id', animalID, LABKEY.Filter.Types.EQUAL),
                    LABKEY.Filter.create('enddate', null, LABKEY.Filter.Types.ISBLANK)

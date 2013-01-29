@@ -21,9 +21,13 @@ function setDescription(row, errors){
         description.push('Test: '+row.testid);
     if (row.virus)
         description.push('Test: '+row.virus);
+    if (row.virusCode)
+        description.push('Virus: '+EHR.Server.Validation.snomedToString(row.virusCode,  row.virusMeaning));
 
     if (row.method)
         description.push('Method: '+row.method);
+    if (row.sampleCode)
+        description.push('Sample Type: '+EHR.Server.Validation.snomedToString(row.sampleType,  row.sampleMeaning));
 
     if(row.result)
         description.push('Result: '+EHR.Server.Validation.nullToString(row.result)+' '+EHR.Server.Validation.nullToString(row.units));

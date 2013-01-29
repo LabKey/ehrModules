@@ -32,7 +32,7 @@
         <column name="qcstate" />
     </columns>
     <filters>
-        <filter column="enddate" operator="isblank"/>
+        <filter column="enddateCoalesced" operator="dategte" value="+0d"/>
     </filters>
     <sorts>
         <sort column="date" descending="true"/>

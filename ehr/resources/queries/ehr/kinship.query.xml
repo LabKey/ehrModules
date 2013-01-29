@@ -25,9 +25,7 @@
                             <fkTable>Pedigree</fkTable>
                             <fkColumnName>Id</fkColumnName>
                         </fk>
-                        <url>/study/participant.view?
-                            participantId=${Id2}
-                        </url>
+                        <url>/ehr/participantView.view?participantId=${Id2}</url>
                     </column>
                 </columns>
             </table>
