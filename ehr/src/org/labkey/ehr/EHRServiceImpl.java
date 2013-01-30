@@ -15,6 +15,7 @@
  */
 package org.labkey.ehr;
 
+import org.apache.log4j.Logger;
 import org.labkey.api.collections.CaseInsensitiveHashMap;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.ContainerManager;
@@ -46,8 +47,9 @@ public class EHRServiceImpl extends EHRService
     private Set<Module> _registeredModules = new HashSet<Module>();
     private List<Pair<Module, Resource>> _extraTriggerScripts = new ArrayList<Pair<Module, Resource>>();
     private Map<Module, List<ClientDependency>> _clientDependencies = new HashMap<Module, List<ClientDependency>>();
-    private Map<String, Map<String, List<Pair<Module, TableCustomizer>>>> _tableCustomizers = new CaseInsensitiveHashMap<Map<String, List<Pair<Module, TableCustomizer>>>>();
+    private Map<String, Map<String, List<Pair<Module, Class<? extends TableCustomizer>>>>> _tableCustomizers = new CaseInsensitiveHashMap<Map<String, List<Pair<Module, Class<? extends TableCustomizer>>>>>();
     private Map<String, String> _dateFormats = new HashMap<String, String>();
+    private static final Logger _log = Logger.getLogger(EHRServiceImpl.class);
 
     private static final String ALL_TABLES = "~~ALL_TABLES~~";
     private static final String ALL_SCHEMAS = "~~ALL_SCHEMAS~~";
@@ -89,22 +91,22 @@ public class EHRServiceImpl extends EHRService
         return Collections.unmodifiableList(resouces);
     }
 
-    public void registerTableCustomizer(Module owner, TableCustomizer customizer)
+    public void registerTableCustomizer(Module owner, Class<? extends TableCustomizer> customizerClass)
     {
-        registerTableCustomizer(owner, customizer, ALL_SCHEMAS, ALL_TABLES);
+        registerTableCustomizer(owner, customizerClass, ALL_SCHEMAS, ALL_TABLES);
     }
 
-    public void registerTableCustomizer(Module owner, TableCustomizer customizer, String schema, String query)
+    public void registerTableCustomizer(Module owner, Class<? extends TableCustomizer> customizerClass, String schema, String query)
     {
-        Map<String, List<Pair<Module, TableCustomizer>>> map = _tableCustomizers.get(schema);
+        Map<String, List<Pair<Module, Class<? extends TableCustomizer>>>> map = _tableCustomizers.get(schema);
         if (map == null)
-            map = new CaseInsensitiveHashMap<List<Pair<Module, TableCustomizer>>>();
+            map = new CaseInsensitiveHashMap<List<Pair<Module, Class<? extends TableCustomizer>>>>();
 
-        List<Pair<Module, TableCustomizer>> list = map.get(query);
+        List<Pair<Module, Class<? extends TableCustomizer>>> list = map.get(query);
         if (list == null)
-            list = new ArrayList<Pair<Module, TableCustomizer>>();
+            list = new ArrayList<Pair<Module, Class<? extends TableCustomizer>>>();
 
-        list.add(Pair.of(owner, customizer));
+        list.add(Pair.<Module, Class<? extends TableCustomizer>>of(owner, customizerClass));
 
         map.put(query, list);
         _tableCustomizers.put(schema, map);
@@ -117,10 +119,14 @@ public class EHRServiceImpl extends EHRService
 
         if (_tableCustomizers.get(ALL_SCHEMAS) != null)
         {
-            for (Pair<Module, TableCustomizer> pair : _tableCustomizers.get(ALL_SCHEMAS).get(ALL_TABLES))
+            for (Pair<Module, Class<? extends TableCustomizer>> pair : _tableCustomizers.get(ALL_SCHEMAS).get(ALL_TABLES))
             {
                 if (modules.contains(pair.first))
-                    list.add(pair.second);
+                {
+                    TableCustomizer tc = instantiateCustomizer(pair.second);
+                    if (tc != null)
+                        list.add(tc);
+                }
             }
         }
 
@@ -128,24 +134,50 @@ public class EHRServiceImpl extends EHRService
         {
             if (_tableCustomizers.get(schema).get(ALL_TABLES).contains(ALL_TABLES))
             {
-                for (Pair<Module, TableCustomizer> pair : _tableCustomizers.get(schema).get(ALL_TABLES))
+                for (Pair<Module, Class<? extends TableCustomizer>> pair : _tableCustomizers.get(schema).get(ALL_TABLES))
                 {
                     if (modules.contains(pair.first))
-                        list.add(pair.second);
+                    {
+                        TableCustomizer tc = instantiateCustomizer(pair.second);
+                        if (tc != null)
+                            list.add(tc);
+                    }
                 }
             }
 
             if (_tableCustomizers.get(schema).get(ALL_TABLES).contains(query))
             {
-                for (Pair<Module, TableCustomizer> pair : _tableCustomizers.get(schema).get(query))
+                for (Pair<Module, Class<? extends TableCustomizer>> pair : _tableCustomizers.get(schema).get(query))
                 {
                     if (modules.contains(pair.first))
-                        list.add(pair.second);
+                    {
+                        TableCustomizer tc = instantiateCustomizer(pair.second);
+                        if (tc != null)
+                            list.add(tc);
+                    }
                 }
             }
         }
 
         return Collections.unmodifiableList(list);
+    }
+
+    private TableCustomizer instantiateCustomizer(Class<? extends TableCustomizer> customizerClass)
+    {
+        try
+        {
+            return customizerClass.newInstance();
+        }
+        catch (InstantiationException e)
+        {
+            _log.error("Unable to create instance of class '" + customizerClass.getName() + "'", e);
+        }
+        catch (IllegalAccessException e)
+        {
+            _log.error("Unable to create instance of class '" + customizerClass.getName() + "'", e);
+        }
+
+        return null;
     }
 
     public void registerClientDependency(ClientDependency cd, Module owner)
