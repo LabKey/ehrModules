@@ -25,7 +25,7 @@ import org.labkey.api.ehr.EHRService;
 import org.labkey.api.ldk.notification.NotificationService;
 import org.labkey.api.module.Module;
 import org.labkey.api.module.ModuleContext;
-import org.labkey.api.module.SpringModule;
+import org.labkey.api.module.SimpleModule;
 import org.labkey.api.query.DefaultSchema;
 import org.labkey.api.query.QuerySchema;
 import org.labkey.api.query.QueryService;
@@ -52,7 +52,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
-public class EHRModule extends SpringModule
+public class EHRModule extends SimpleModule
 {
     public static final String EHR_ADMIN_USER = "EHRAdminUser@ehr.com";
     public static final String NAME = "EHR";
@@ -89,8 +89,8 @@ public class EHRModule extends SpringModule
     @Override
     public void startupAfterSpringConfig(ModuleContext moduleContext)
     {
-        // add a container listener so we'll know when our container is deleted:
-        ContainerManager.addContainerListener(new EHRContainerListener());
+        //inerhit from SimpleModule, so we clean up schema on delete
+        ContainerManager.addContainerListener(this);
 
         for (final String schemaName : getSchemaNames())
         {
