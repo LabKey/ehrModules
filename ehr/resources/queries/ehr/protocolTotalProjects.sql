@@ -3,14 +3,13 @@
  *
  * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
  */
+
+ --we find total projects assigned to this protocol
 SELECT
   p.protocol,
-
-  CONVERT(COALESCE(p2.Total, 0), INTEGER) AS TotalProjects,
+  count(*) as totalProjects,
+  group_concat(p.investigatorId.lastName, chr(10)) as investigators
 
 FROM ehr.protocol p
-
---we find total projects assigned to this protocol  
-LEFT JOIN
-  (SELECT count(*) AS Total, p2.protocol FROM ehr.project p2 GROUP BY p2.protocol) p2
-  ON (p.protocol = p2.protocol)
+LEFT JOIN ehr.project p2 ON (p.protocol = p2.protocol)
+GROUP BY p.protocol

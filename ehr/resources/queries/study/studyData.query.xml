@@ -33,6 +33,7 @@
                             <fkDbSchema>ehr</fkDbSchema>
                             <fkTable>project</fkTable>
                             <fkColumnName>project</fkColumnName>
+                            <!--<fkDisplayColumnName>name</fkDisplayColumnName>-->
                         </fk>
                         <!--<formatString>00000000</formatString>-->
                     </column>
@@ -145,7 +146,8 @@
                     </column>
                 </columns>
                 <buttonBarOptions position="both" includeStandardButtons="false">
-                    <includeScript>/ehr/studyButtons.js</includeScript>
+                    <includeScript>ehr.context</includeScript>
+                    <includeScript>ehr/studyButtons.js</includeScript>
                     <onRender>EHR.DatasetButtons.moreActionsHandler</onRender>
                     <item text="Views">
                         <originalText>Views</originalText>

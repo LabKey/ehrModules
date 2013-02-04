@@ -13,12 +13,12 @@
                 <property name="columnTitle" value="Status"/>
             </properties>
         </column>
-        <!--<column name="Id/currentAssignments/projects">-->
+        <!--<column name="Id/activeAssignments/projects">-->
             <!--<properties>-->
                 <!--<property name="columnTitle" value="Active Assignments"/>-->
             <!--</properties>-->
         <!--</column>-->
-        <column name="Id/currentAssignments/Availability">
+        <column name="Id/activeAssignments/Availability">
             <properties>
                 <property name="columnTitle" value="Avail"/>
             </properties>

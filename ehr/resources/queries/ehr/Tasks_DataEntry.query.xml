@@ -126,6 +126,7 @@
                     </column>
                 </columns>
                 <buttonBarOptions includeStandardButtons="false">
+                    <includeScript>ehr.context</includeScript>
                     <includeScript>/ehr/studyButtons.js</includeScript>
                     <!--<onRender>EHR.DatasetButtons.moreActionsHandler</onRender>-->
                     <item text="Views">

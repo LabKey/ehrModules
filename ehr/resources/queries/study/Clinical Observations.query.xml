@@ -13,6 +13,15 @@
                     <column columnName="date">
                         <formatString>yyyy-MM-dd HH:mm</formatString>
                     </column>
+                    <column columnName="category">
+                        <columnTitle>Category</columnTitle>
+                    </column>
+                    <column columnName="area">
+                        <columnTitle>Area</columnTitle>
+                    </column>
+                    <column columnName="observation">
+                        <columnTitle>Observation</columnTitle>
+                    </column>
                     <column columnName="parentid">
                         <fk>
                           <fkDbSchema>study</fkDbSchema>

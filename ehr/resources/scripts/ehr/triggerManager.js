@@ -100,6 +100,9 @@ EHR.Server.TriggerManager = new function(){
             if (!queryEvents[schemaName][queryName])
                 return handlers;
 
+            if (!queryEvents[schemaName][queryName][event])
+                return handlers;
+
             handlers = handlers.concat(queryEvents[schemaName][queryName][event]);
 
             return handlers;

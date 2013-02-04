@@ -26,7 +26,7 @@ function setDescription(row, errors){
 
     if (row.method)
         description.push('Method: '+row.method);
-    if (row.sampleCode)
+    if (row.sampleType)
         description.push('Sample Type: '+EHR.Server.Validation.snomedToString(row.sampleType,  row.sampleMeaning));
 
     if(row.result)

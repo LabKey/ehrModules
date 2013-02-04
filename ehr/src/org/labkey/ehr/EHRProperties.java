@@ -15,7 +15,6 @@
  */
 package org.labkey.ehr;
 
-import org.labkey.api.data.ContainerManager;
 import org.labkey.api.exp.PropertyDescriptor;
 import org.labkey.api.exp.PropertyType;
 import org.labkey.api.exp.property.SystemProperty;
@@ -84,6 +83,22 @@ public class EHRProperties
             pd.setHidden(true);
             pd.setName("caseid");
             pd.setLabel("Case Id");
+            return pd;
+        }
+    };
+
+    public static SystemProperty RUNID = new SystemProperty(URI + "RunId", PropertyType.STRING)
+    {
+        @Override
+        protected PropertyDescriptor constructPropertyDescriptor()
+        {
+            PropertyDescriptor pd = super.constructPropertyDescriptor();
+            pd.setShownInInsertView(false);
+            pd.setShownInUpdateView(false);
+            pd.setShownInDetailsView(false);
+            pd.setHidden(true);
+            pd.setName("runid");
+            pd.setLabel("Run Id");
             return pd;
         }
     };

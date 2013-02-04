@@ -21,16 +21,6 @@
         <!--<column name="restraintType"/>-->
         <column name="remark"/>
         <column name="qcstate"/>
-        <!--<column name="Id/Dataset/Demographics/Status">-->
-            <!--<properties>-->
-                <!--<property name="columnTitle" value="Status"/>-->
-            <!--</properties>-->
-        <!--</column>-->
-        <!--<column name="Id/currentAssignments/Availability">-->
-            <!--<properties>-->
-                <!--<property name="columnTitle" value="Avail"/>-->
-            <!--</properties>-->
-        <!--</column>-->
    </columns>
    <sorts>
        <sort column="date" descending="true"/>

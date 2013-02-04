@@ -99,11 +99,18 @@ public class DefaultEHRCustomizer implements TableCustomizer
         {
             customizeAnimalTable((AbstractTableInfo)table);
         }
+        else if (table.getName().equalsIgnoreCase("project") && table.getSchema().getName().equalsIgnoreCase("ehr"))
+        {
+            customizeProjectTable((AbstractTableInfo)table);
+        }
+        else if (table.getName().equalsIgnoreCase("protocol") && table.getSchema().getName().equalsIgnoreCase("ehr"))
+        {
+            customizeProtocolTable((AbstractTableInfo)table);
+        }
         else if (table instanceof AbstractTableInfo)
         {
             doSharedCustomization((AbstractTableInfo)table);
         }
-
 
         //this should execute after any default EHR code
         if (table instanceof FilteredTable)
@@ -116,6 +123,8 @@ public class DefaultEHRCustomizer implements TableCustomizer
                 tc.customize(table);
             }
         }
+
+        LDKService.get().getColumnsOrderCustomizer().customize(table);
     }
 
     private void doSharedCustomization(AbstractTableInfo ti)
@@ -153,7 +162,7 @@ public class DefaultEHRCustomizer implements TableCustomizer
         {
             runId.setLabel("Run Id");
             UserSchema study = getStudyUserSchema(ti);
-            if (us != null)
+            if (study != null)
                 runId.setFk(new QueryForeignKey(study, "Clinpath Runs", "objectId", "Id"));
         }
 
@@ -301,6 +310,76 @@ public class DefaultEHRCustomizer implements TableCustomizer
         col.setFk(new QueryForeignKey(us, queryName, ID_COL, ID_COL));
 
         return col;
+    }
+
+    private void customizeProtocolTable(AbstractTableInfo table)
+    {
+        doSharedCustomization(table);
+
+        if (table.getColumn("activeAnimals") == null)
+        {
+            UserSchema us = getUserSchema(table, "ehr");
+            if (us != null)
+            {
+                ColumnInfo protocolCol = table.getColumn("protocol");
+                ColumnInfo col = table.addColumn(new WrappedColumn(protocolCol, "activeAnimals"));
+                col.setLabel("Animals Actively Assigned");
+                col.setUserEditable(false);
+                col.setIsUnselectable(true);
+                col.setFk(new QueryForeignKey(us, "protocolActiveAnimals", "protocol", "protocol"));
+
+                if (table.getColumn("activeAnimals") == null)
+                    table.addColumn(col);
+
+                ColumnInfo col2 = table.addColumn(new WrappedColumn(protocolCol, "totalProjects"));
+                col2.setLabel("Total Projects");
+                col2.setUserEditable(false);
+                col2.setIsUnselectable(true);
+                col2.setFk(new QueryForeignKey(us, "protocolTotalProjects", "protocol", "protocol"));
+
+                if (table.getColumn("totalProjects") == null)
+                    table.addColumn(col2);
+
+            }
+        }
+    }
+
+    private void customizeProjectTable(AbstractTableInfo table)
+    {
+        doSharedCustomization(table);
+_log.info(table.getName());
+        UserSchema us = getUserSchema(table, "ehr");
+        if (us != null)
+        {
+            ColumnInfo projectCol = table.getColumn("project");
+            if (table.getColumn("activeAssignments") == null)
+            {
+                ColumnInfo col = table.addColumn(new WrappedColumn(projectCol, "activeAssignments"));
+                col.setLabel("Animals Actively Assigned");
+                col.setUserEditable(false);
+                col.setIsUnselectable(true);
+                col.setFk(new QueryForeignKey(us, "projectTotalActivelyAssigned", "project", "project"));
+
+                if (table.getColumn("activeAssignments") == null)
+                    table.addColumn(col);
+                else
+                    _log.info("col present");
+            }
+
+            if (table.getColumn("activelyAssignedBySpecies") == null)
+            {
+                ColumnInfo col2 = table.addColumn(new WrappedColumn(projectCol, "activelyAssignedBySpecies"));
+                col2.setLabel("Animals Actively Assigned, By Species");
+                col2.setUserEditable(false);
+                col2.setIsUnselectable(true);
+                col2.setFk(new QueryForeignKey(us, "projectTotalActivelyAssignedBySpecies", "project", "project"));
+
+                if (table.getColumn("activelyAssignedBySpecies") == null)
+                    table.addColumn(col2);
+                else
+                    _log.info("col present2");
+            }
+        }
     }
 
     private void appendHousingAtTimeCol(final UserSchema us, final AbstractTableInfo ds)

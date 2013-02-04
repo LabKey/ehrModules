@@ -7,7 +7,6 @@ SELECT
   p.protocol,
   count(a.TotalAssignments) AS TotalActiveAnimals,
   group_concat(distinct a.Id) AS ActiveAnimals,
-  --pc.allowed - p.TotalAnimals as TotalRemaining,
 
 FROM ehr.protocol p
 

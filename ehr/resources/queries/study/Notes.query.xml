@@ -10,6 +10,12 @@
                 <updateUrl />
                 <deleteUrl />
                 <columns>
+                    <column columnName="category">
+                        <columnTitle>Value</columnTitle>
+                    </column>
+                    <column columnName="value">
+                        <columnTitle>Value</columnTitle>
+                    </column>
                     <column columnName="parentid">
                         <!--<fk>-->
                           <!--<fkDbSchema>study</fkDbSchema>-->

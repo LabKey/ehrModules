@@ -6,6 +6,7 @@
                 <description>This query identifies distinct animal IDs that overlapped with given housing records, accounting for date and time</description>
                 <!--<tableUrl>/query/detailsQueryRow.view?schemaName=study&amp;query.queryName=housing&amp;lsid=${lsid}</tableUrl>-->
                 <buttonBarOptions position="both" includeStandardButtons="false">
+                    <includeScript>ehr.context</includeScript>
                     <includeScript>/ehr/studyButtons.js</includeScript>
                     <onRender>EHR.DatasetButtons.moreActionsHandler</onRender>
 

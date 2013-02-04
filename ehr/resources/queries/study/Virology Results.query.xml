@@ -75,7 +75,7 @@
                           <fkColumnName>sampletype</fkColumnName>
                         </fk>
                     </column>
-                    <column columnName="sampleCode">
+                    <column columnName="sampleType">
                         <columnTitle>Sample Type</columnTitle>
                         <fk>
                             <fkDbSchema>ehr_lookups</fkDbSchema>

@@ -14,12 +14,12 @@
         <!--</column>-->
         <column name="gender" />
         <column name="dam" />
-        <column name="Id/currentAssignments/projects">
+        <column name="Id/activeAssignments/projects">
             <properties>
                 <property name="columnTitle" value="Active Assignments"/>
             </properties>
         </column>
-        <column name="Id/currentAssignments/availability">
+        <column name="Id/activeAssignments/availability">
             <properties>
                 <property name="columnTitle" value="Avail"/>
             </properties>

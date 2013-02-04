@@ -10,14 +10,6 @@ var EHR = require("ehr/triggers").EHR;
 console.log("** evaluating: " + this['javax.script.filename']);
 
 function beforeBoth(row, errors) {
-    //pad cage to 4 digits if numeric
-    if(row.cage && !isNaN(row.cage)){
-        row.cage = EHR.Server.Validation.padDigits(row.cage, 4);
-    }
-
-    if(row.room)
-        row.room = row.room.toLowerCase();
-
     row.location = row.room;
     if(row.cage)
         row.location += '-' + row.cage;
@@ -38,6 +30,14 @@ function beforeBoth(row, errors) {
             }
         };
         row.joinToCage = newArray.join(',');
+    }
+
+    //run registered scripts
+    var handlers = EHR.Server.TriggerManager.getHandlersForQuery(EHR.Server.TriggerManager.Events.BEFORE_UPSERT, 'ehr', 'cage', true) || [];
+    if (handlers.length){
+        for (var i=0;i<handlers.length;i++){
+            handlers[i].call(this, {}, errors, row);
+        }
     }
 }
 

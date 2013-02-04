@@ -12,9 +12,9 @@ SELECT
 
   --the total number of assignments on this animal overlapping with this record
   COUNT(a1.CoAssigned) as ConcurrentAssignments,
-  group_concat(DISTINCT a1.coassigned) as CoAssignedAnimals
+  group_concat(DISTINCT a1.coassigned, ', ') as CoAssignedAnimals
 
-FROM study.CoAssignedAnimals a1
+FROM study.assignmentCoAssignedAnimals a1
 
 WHERE a1.enddate IS NULL
 

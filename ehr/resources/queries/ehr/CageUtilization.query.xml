@@ -2,6 +2,7 @@
     <metadata>
         <tables xmlns="http://labkey.org/data/xml">
             <table tableName="CageUtilization" tableDbType="TABLE">
+                <javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</javaCustomizer>
                 <tableUrl>/EHR/cageDetails.view?room=${room}&amp;cage=${cage}</tableUrl>
                 <columns>
                     <column columnName="location">

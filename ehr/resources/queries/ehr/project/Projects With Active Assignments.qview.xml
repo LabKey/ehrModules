@@ -2,45 +2,17 @@
    <columns>
        <column name="project"/>
        <column name="protocol"/>
-       <column name="activelyAssigned/ActiveAssignments">
+       <column name="activeAssignments/activeAssignments">
            <properties>
                <property name="columnTitle" value="Active Assignments"/>
            </properties>
        </column>
-              <column name="activelyAssigned/ActiveAssignmentsRhesus">
-            <properties>
-                <property name="columnTitle" value="Active Rhesus Assignments"/>
-            </properties>
-       </column>
-       <column name="activelyAssigned/ActiveAssignmentsMarmoset">
-            <properties>
-                <property name="columnTitle" value="Active Marmoset Assignments"/>
-            </properties>
-       </column>
-       <column name="activelyAssigned/ActiveAssignmentsVervet">
-            <properties>
-                <property name="columnTitle" value="Active Vervet Assignments"/>
-            </properties>
-       </column>
-       <column name="activelyAssigned/ActiveAssignmentsCynomolgus">
-            <properties>
-                <property name="columnTitle" value="Active Cynomolgus Assignments"/>
-            </properties>
-       </column>
-       <column name="activelyAssigned/ActiveAssignmentsCottonTopTamarin">
-            <properties>
-                <property name="columnTitle" value="Active Cotton-Top Tamarin Assignments"/>
-            </properties>
-       </column>
-
        <column name="account"/>
-       <column name="inves"/>
        <column name="title"/>
        <column name="avail"/>
-       <column name="research"/>
    </columns>
    <filters>
-       <filter column="activelyAssigned/ActiveAssignments" operator="gt" value="0"/>
+       <filter column="activeAssignments/activeAssignments" operator="gt" value="0"/>
    </filters>
    <sorts>
        <sort column="project" descending="true"/>

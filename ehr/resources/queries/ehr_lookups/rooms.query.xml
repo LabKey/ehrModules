@@ -1,12 +1,21 @@
 <query xmlns="http://labkey.org/data/xml/query">
     <metadata>
         <tables xmlns="http://labkey.org/data/xml">
-            <table tableName="rooms" tableDbType="NOT_IN_DB">
+            <table tableName="rooms" tableDbType="TABLE">
                 <tableUrl>/EHR/cageDetails.view?room=${room}</tableUrl>
                 <columns>
                     <column columnName="room">
                         <isKeyField>true</isKeyField>
                         <displayWidth>40</displayWidth>
+                    </column>
+                    <column columnName="assignments" wrappedColumnName="room">
+                        <isUserEditable>false</isUserEditable>
+                        <isUnselectable>true</isUnselectable>
+                        <fk>
+                            <fkDbSchema>ehr_lookups</fkDbSchema>
+                            <fkTable>roomsAssignment</fkTable>
+                            <fkColumnName>room</fkColumnName>
+                        </fk>
                     </column>
                 </columns>
                 <titleColumn>room</titleColumn>

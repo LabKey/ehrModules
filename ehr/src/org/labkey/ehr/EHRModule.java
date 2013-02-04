@@ -36,6 +36,7 @@ import org.labkey.api.view.WebPartFactory;
 import org.labkey.api.view.template.ClientDependency;
 import org.labkey.ehr.notification.OverdueWeightsNotification;
 import org.labkey.ehr.notification.WeightAlerts;
+import org.labkey.ehr.query.EHRLookupsUserSchema;
 import org.labkey.ehr.security.EHRBasicSubmitterRole;
 import org.labkey.ehr.security.EHRDataAdminRole;
 import org.labkey.ehr.security.EHRDataEntryRole;
@@ -64,7 +65,7 @@ public class EHRModule extends SimpleModule
 
     public double getVersion()
     {
-        return 12.310;
+        return 12.312;
     }
 
     public boolean hasScripts()
@@ -95,14 +96,16 @@ public class EHRModule extends SimpleModule
         for (final String schemaName : getSchemaNames())
         {
             final DbSchema dbschema = DbSchema.get(schemaName);
-
             DefaultSchema.registerProvider(schemaName, new DefaultSchema.SchemaProvider()
             {
                 public QuerySchema getSchema(final DefaultSchema schema)
                 {
                     if (schema.getContainer().getActiveModules().contains(EHRModule.this))
                     {
-                        return QueryService.get().createSimpleUserSchema(schemaName, null, schema.getUser(), schema.getContainer(), dbschema);
+                        if (schemaName.equalsIgnoreCase(EHRSchema.EHR_LOOKUPS))
+                            return new EHRLookupsUserSchema(schema.getUser(), schema.getContainer(), dbschema);
+                        else
+                            return QueryService.get().createSimpleUserSchema(schemaName, null, schema.getUser(), schema.getContainer(), dbschema);
                     }
                     return null;
                 }

@@ -40,7 +40,7 @@
                     <column columnName="room">
                         <nullable>false</nullable>
                         <columnTitle>Room</columnTitle>
-                        <url>/EHR/cageDetails.view?room=${room}&amp;cage=${cage}&amp;</url>
+                        <url>/EHR/cageDetails.view?room=${room}&amp;</url>
                     </column>
                     <column columnName="cage">
                         <!--<nullable>false</nullable>-->

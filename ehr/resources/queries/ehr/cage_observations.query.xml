@@ -20,7 +20,7 @@
                         <!--NOTE: this lookup appears as '_select' due to a bug-->
                         <fk>
                           <fkDbSchema>ehr_lookups</fkDbSchema>
-                          <fkTable>room_list</fkTable>
+                          <fkTable>rooms</fkTable>
                           <fkColumnName>room</fkColumnName>
                         </fk>
                     </column>

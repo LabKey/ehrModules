@@ -11,6 +11,7 @@
                     </column>
                 </columns>
                 <buttonBarOptions position="both" includeStandardButtons="false">
+                    <includeScript>ehr.context</includeScript>
                     <includeScript>/ehr/studyButtons.js</includeScript>
                     <onRender>EHR.DatasetButtons.moreActionsHandler</onRender>
 

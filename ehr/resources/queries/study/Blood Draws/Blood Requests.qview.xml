@@ -41,7 +41,7 @@
        <column name="additionalServices" />
        <column name="instructions" />
        <column name="remark" />
-       <column name="QCState" />
+       <column name="qcstate" />
        <column name="taskid" />
        <column name="requestid" />
       <column name="requestid/description">
@@ -58,7 +58,7 @@
        <sort column="Id" descending="false"/>
    </sorts>
     <filters>
-        <filter column="QCState/label" operator="neq" value="Delete Requested"/>
+        <filter column="qcstate/label" operator="neq" value="Delete Requested"/>
         <!--<filter column="QCState/label" operator="neq" value="Request: Denied"/>-->
         <!--<filter column="QCState/label" operator="neq" value="Request: Pending"/>-->
     </filters>

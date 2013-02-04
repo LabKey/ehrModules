@@ -937,17 +937,19 @@
         <ns:updateUrl></ns:updateUrl>
         <ns:deleteUrl></ns:deleteUrl>
         <ns:pkColumnName>protocol</ns:pkColumnName>
-        <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr&amp;query.queryName=protocol&amp;protocol=${protocol}</ns:tableUrl>
+        <ns:tableUrl>/ehr/protocolDetails.view?key=${protocol}</ns:tableUrl>
         <ns:columns>
             <ns:column columnName="protocol">
                 <ns:isKeyField>true</ns:isKeyField>
+                <ns:columnTitle>Protocol</ns:columnTitle>
             </ns:column>
             <ns:column columnName="title">
                 <ns:nullable>true</ns:nullable>
+                <ns:columnTitle>Title</ns:columnTitle>
             </ns:column>
-
             <ns:column columnName="inves">
                 <ns:nullable>true</ns:nullable>
+                <ns:columnTitle>Investigator</ns:columnTitle>
             </ns:column>
             <ns:column columnName="investigatorId">
                 <ns:columnTitle>Investigator</ns:columnTitle>
@@ -1028,16 +1030,18 @@
         <ns:updateUrl></ns:updateUrl>
         <ns:deleteUrl></ns:deleteUrl>
         <ns:pkColumnName>project</ns:pkColumnName>
-        <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr&amp;query.queryName=projects&amp;project=${project}</ns:tableUrl>
+        <ns:tableUrl>/ehr/projectDetails.view?key=${project}</ns:tableUrl>
         <ns:columns>
             <ns:column columnName="project">
                 <ns:isKeyField>true</ns:isKeyField>
+                <ns:columnTitle>Project</ns:columnTitle>
             </ns:column>
             <ns:column columnName="name">
-                <ns:columnTitle>Project</ns:columnTitle>
+                <ns:columnTitle>Project Name</ns:columnTitle>
                 <ns:isHidden>true</ns:isHidden>
             </ns:column>
             <ns:column columnName="protocol">
+                <ns:columnTitle>Protocol</ns:columnTitle>
             </ns:column>
             <ns:column columnName="account">
                 <ns:nullable>true</ns:nullable>
@@ -1056,9 +1060,11 @@
             </ns:column>
             <ns:column columnName="avail">
                 <ns:nullable>true</ns:nullable>
+                <ns:columnTitle>Availability</ns:columnTitle>
             </ns:column>
             <ns:column columnName="title">
                 <ns:nullable>true</ns:nullable>
+                <ns:columnTitle>Title</ns:columnTitle>
             </ns:column>
             <ns:column columnName="research">
                 <ns:nullable>true</ns:nullable>

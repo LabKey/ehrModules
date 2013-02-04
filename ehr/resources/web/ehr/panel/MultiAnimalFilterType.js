@@ -16,12 +16,21 @@ Ext4.define('EHR.panel.MultiAnimalFilterType', {
         var ctx = this.filterContext || {};
 
         var toAdd = this.callParent();
+        var items = [{
+            layout: 'hbox',
+            border: false,
+            defaults: {
+                border: false
+            },
+            items: toAdd
+        }]
 
-        toAdd[1].items[0].items.push({
+        items.push({
             xtype: 'labkey-linkbutton',
-                    text: '[Search By Room/Cage]',
-                    minWidth: 80,
-                    handler: function(btn){
+            text: '[Search By Room/Cage]',
+            minWidth: 80,
+            style: 'padding-left:200px;',
+            handler: function(btn){
                 var panel = btn.up('ehr-multianimalfiltertype');
 
                 Ext4.create('Ext.window.Window', {
@@ -44,7 +53,7 @@ Ext4.define('EHR.panel.MultiAnimalFilterType', {
                             width: 300,
                             store: Ext4.create('LABKEY.ext4.Store', {
                                 schemaName: 'ehr_lookups',
-                                queryName: 'room_list',
+                                queryName: 'rooms',
                                 sort: 'room',
                                 //filterArray: [LABKEY.Filter.create('TotalAnimals', 0, LABKEY.Filter.Types.NOT_EQUAL)],
                                 autoLoad: true
@@ -73,11 +82,11 @@ Ext4.define('EHR.panel.MultiAnimalFilterType', {
             }
         });
 
-        toAdd[1].items[0].items.push({
+        items.push({
             xtype: 'labkey-linkbutton',
-                    text: '[Search By Project/Protocol]',
-                    minWidth: 80,
-                    handler: function(btn){
+            text: '[Search By Project/Protocol]',
+            minWidth: 80,
+            handler: function(btn){
                 var panel = btn.up('ehr-multianimalfiltertype');
 
                 Ext4.create('Ext.window.Window', {
@@ -138,12 +147,20 @@ Ext4.define('EHR.panel.MultiAnimalFilterType', {
                     }]
                 }).show(btn);
             },
-            style: 'margin-bottom:10px'
+            style: 'margin-bottom:10px;padding-left:200px;'
         });
 
 
 
-        return toAdd;
+        return [{
+            xtype: 'panel',
+            width: 500,
+            border: false,
+            defaults: {
+                border: false
+            },
+            items: items
+        }];
     },
 
     loadProject: function(btn){

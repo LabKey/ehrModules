@@ -7,17 +7,7 @@
                 <importUrl />
                 <updateUrl />
                 <deleteUrl />
-                <titleColumn>project</titleColumn>
                 <columns>
-                    <column columnName="activelyAssigned" wrappedColumnName="project">
-                      <isUnselectable>true</isUnselectable>
-                      <columnTitle>Animals Actively Assigned</columnTitle>
-                      <fk>
-                        <fkDbSchema>ehr</fkDbSchema>
-                        <fkTable>projectTotalActivelyAssigned</fkTable>
-                        <fkColumnName>project</fkColumnName>
-                      </fk>
-                    </column>
                     <column columnName="lastAssignment" wrappedColumnName="project">
                       <columnTitle>Last Assignment Date</columnTitle>
                       <isUnselectable>true</isUnselectable>

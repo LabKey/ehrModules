@@ -40,7 +40,7 @@
                         <isMvEnabled>true</isMvEnabled>
                     </column>
                     <column columnName="room">
-                        <columnTitle>Room</columnTitle>
+                        <columnTitle>Birth Room</columnTitle>
                         <shownInInsertView>true</shownInInsertView>
                         <shownInUpdateView>true</shownInUpdateView>
                         <isHidden>false</isHidden>
@@ -50,11 +50,12 @@
                         <!--</url>-->
                         <fk>
                             <fkDbSchema>ehr_lookups</fkDbSchema>
-                            <fkTable>room_list</fkTable>
+                            <fkTable>rooms</fkTable>
                             <fkColumnName>room</fkColumnName>
                         </fk>
                     </column>
                     <column columnName="cage">
+                        <columnTitle>Birth Cage</columnTitle>
                         <shownInInsertView>true</shownInInsertView>
                         <shownInUpdateView>true</shownInUpdateView>
                         <isHidden>false</isHidden>

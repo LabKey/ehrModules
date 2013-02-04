@@ -319,14 +319,19 @@ public class EHRManager
 
             for (DataSet dataset : datasets)
             {
-                //TODO: skip query snapshots
-
                 Domain domain = dataset.getDomain();
                 DomainProperty[] dprops = domain.getProperties();
                 boolean changed = false;
                 List<PropertyDescriptor> toUpdate = new ArrayList<PropertyDescriptor>();
 
-                for (PropertyDescriptor pd : properties)
+                Set<PropertyDescriptor> props = new HashSet<PropertyDescriptor>();
+                props.addAll(properties);
+                if (dataset.getCategory().equals("ClinPath") && !dataset.getName().equalsIgnoreCase("Clinpath Runs"))
+                {
+                    props.add(OntologyManager.getPropertyDescriptor(EHRProperties.RUNID.getPropertyDescriptor().getPropertyURI(), c));
+                }
+
+                for (PropertyDescriptor pd : props)
                 {
                     boolean found = false;
                     for (DomainProperty dp : dprops)

@@ -15,11 +15,12 @@ SELECT
 
 FROM ehr.protocol p
 
---we find total distinct animals ever assigned to this protocol
+--we find total distinct animals ever assigned to this protocol, since the last approval date
 LEFT JOIN
   (SELECT a.Project.protocol as protocol, a.id, a.id.dataset.demographics.Species AS Species, count(*) AS Total, max(a.date) as LatestStart,
   CASE WHEN min(a.enddate) is null then null ELSE max(a.enddate) END
-  as LatestEnd, FROM study.assignment a
+  as LatestEnd,
+  FROM study.assignment a
   GROUP BY a.project.protocol, a.id, a.id.dataset.demographics.species) a
   ON (p.protocol = a.protocol)
 

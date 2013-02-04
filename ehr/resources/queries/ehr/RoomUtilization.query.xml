@@ -3,12 +3,13 @@
         <tables xmlns="http://labkey.org/data/xml">
             <table tableName="RoomUtilization" tableDbType="NOT_IN_DB">
                 <tableTitle>Room Utilization</tableTitle>
+                <javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</javaCustomizer>
                 <columns>
                     <column columnName="room">
                         <isKeyField>true</isKeyField>
                         <fk>
                           <fkDbSchema>ehr_lookups</fkDbSchema>
-                          <fkTable>room_list</fkTable>
+                          <fkTable>rooms</fkTable>
                           <fkColumnName>room</fkColumnName>
                         </fk>
                     </column>

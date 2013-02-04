@@ -23,7 +23,7 @@
             <!--</properties>-->
         <!--</column>-->
         <column name="calculated_status"/>
-        <column name="Id/currentAssignments/availability">
+        <column name="Id/activeAssignments/availability">
             <properties>
                 <property name="columnTitle" value="Avail"/>
             </properties>

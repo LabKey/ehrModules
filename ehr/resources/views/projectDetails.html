@@ -11,6 +11,7 @@ Ext4.onReady(function (){
     var webpart = <%=webpartContext%>;
     var domSpec = [{
         tag: 'div',
+        style: 'padding-bottom: 10px;',
         id: 'projectDetails_' + webpart.wrapperDivId
     },{
         tag: 'div',
@@ -81,6 +82,7 @@ Ext4.onReady(function (){
      }).render('projectTotalAssignments_' + webpart.wrapperDivId);
 
     Ext4.create('LDK.panel.WebpartPanel', {
+        margin: '0 0 0 0',
         title: 'Project Information',
         bodyStyle: 'padding:5px;',
         defaults: {

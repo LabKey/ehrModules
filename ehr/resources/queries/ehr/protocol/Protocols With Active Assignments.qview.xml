@@ -4,7 +4,6 @@
        <column name="inves"/>
        <column name="approve"/>
        <column name="maxAnimals"/>
-       <column name="pdf"/>
        <column name="totalProjects/TotalProjects">
            <properties>
                <property name="columnTitle" value="Total Projects"/>

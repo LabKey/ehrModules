@@ -27,12 +27,12 @@
                 <property name="columnTitle" value="Status"/>
             </properties>
         </column>
-        <column name="Id/currentAssignments/Availability">
+        <column name="Id/activeAssignments/Availability">
             <properties>
                 <property name="columnTitle" value="Avail"/>
             </properties>
         </column>
-        <column name="Id/currentAssignments/AssignmentStatus">
+        <column name="Id/activeAssignments/AssignmentStatus">
             <properties>
                 <property name="columnTitle" value="Assignment Status"/>
             </properties>

@@ -16,7 +16,8 @@
         Ext4.create('EHR.panel.ParticipantDetailsPanel', {
             participantId: participantId,
             defaultReport: ctx.DefaultAnimalHistoryReport,
-            defaultTab: 'General'
+            defaultTab: 'General',
+            autoLoadDefaultTab: true
         }).render(webpart.wrapperDivId);
     });
 </script>

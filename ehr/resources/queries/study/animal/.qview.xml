@@ -16,12 +16,12 @@
                 <property name="columnTitle" value="Status"/>
             </properties>
         </column>
-        <column name="currentAssignments/projects">
+        <column name="activeAssignments/projects">
             <properties>
                 <property name="columnTitle" value="Active Assignments"/>
             </properties>
         </column>
-        <column name="currentAssignments/Availability">
+        <column name="activeAssignments/Availability">
             <properties>
                 <property name="columnTitle" value="Avail"/>
             </properties>

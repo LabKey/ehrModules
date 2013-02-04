@@ -26,6 +26,8 @@ public class EHRSchema
 
     public static final String TABLE_FORMTYPES = "formtypes";
     public static final String TABLE_FORMPANELSECTIONS = "formpanelsections";
+    public static final String TABLE_LOOKUPS = "lookups";
+    public static final String TABLE_LOOKUP_SETS = "lookup_sets";
 
     public static EHRSchema getInstance()
     {
@@ -41,7 +43,12 @@ public class EHRSchema
 
     public DbSchema getSchema()
     {
-        return DbSchema.get("ehr");
+        return DbSchema.get(EHR_SCHEMANAME);
+    }
+
+    public DbSchema getEHRLookupsSchema()
+    {
+        return DbSchema.get(EHR_LOOKUPS);
     }
 
     public SqlDialect getSqlDialect()

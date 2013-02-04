@@ -68,7 +68,7 @@ EHR.ext.AnimalSelectorPanel = Ext.extend(Ext.Panel, {
                         },
                         change: function(field, room){
                             if(room){
-                                room = room.replace(/[\s,;]+/g, ';');
+                                room = room.replace(/[,;]+/g, ';');
                                 room = room.replace(/(^;|;$)/g, '');
                                 room = room.toLowerCase();
                                 field.setValue(room);

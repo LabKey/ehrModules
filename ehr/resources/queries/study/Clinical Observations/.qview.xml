@@ -14,7 +14,6 @@
         <column name="remark"/>
         <column name="description" />
         <column name="performedby"/>
-        <column name="category"/>
         <column name="qcstate" />
         <column name="taskid" />
     </columns>

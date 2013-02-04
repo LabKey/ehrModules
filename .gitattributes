@@ -93,6 +93,7 @@ ehr/resources/queries/ehr/Requests_DataEntry.sql -text
 ehr/resources/queries/ehr/RoomUtilization.query.xml -text
 ehr/resources/queries/ehr/RoomUtilization.sql -text
 ehr/resources/queries/ehr/RoomUtilization/.qview.xml -text
+ehr/resources/queries/ehr/RoomUtilization/Rooms[!!-~]with[!!-~]Animals.qview.xml -text
 ehr/resources/queries/ehr/Tasks.js -text
 ehr/resources/queries/ehr/TasksById.query.xml -text
 ehr/resources/queries/ehr/TasksById.sql -text
@@ -132,7 +133,6 @@ ehr/resources/queries/ehr/Tasks_DataEntry/Today.qview.xml -text
 ehr/resources/queries/ehr/cage_observations.js -text
 ehr/resources/queries/ehr/cage_observations.query.xml -text
 ehr/resources/queries/ehr/cage_observations/.qview.xml -text
-ehr/resources/queries/ehr/chargedItems.query.xml -text
 ehr/resources/queries/ehr/formtemplates.js -text
 ehr/resources/queries/ehr/formtemplates.query.xml -text
 ehr/resources/queries/ehr/formtypes.js -text
@@ -140,8 +140,10 @@ ehr/resources/queries/ehr/formtypes.query.xml -text
 ehr/resources/queries/ehr/kinship.query.xml -text
 ehr/resources/queries/ehr/kinship/.qview.xml -text
 ehr/resources/queries/ehr/kinship/With[!!-~]Gender.qview.xml -text
+ehr/resources/queries/ehr/missingCages.query.xml -text
 ehr/resources/queries/ehr/missingCages.sql -text
 ehr/resources/queries/ehr/missingCages/.qview.xml -text
+ehr/resources/queries/ehr/missingRooms.query.xml -text
 ehr/resources/queries/ehr/missingRooms.sql -text
 ehr/resources/queries/ehr/my_formtemplates.sql -text
 ehr/resources/queries/ehr/my_requests.query.xml -text
@@ -156,17 +158,16 @@ ehr/resources/queries/ehr/my_tasks/Overdue[!!-~]Tasks.qview.xml -text
 ehr/resources/queries/ehr/my_tasks/Review[!!-~]Required.qview.xml -text
 ehr/resources/queries/ehr/my_tasks/Today.qview.xml -text
 ehr/resources/queries/ehr/notificationRecipients/.qview.xml -text
-ehr/resources/queries/ehr/notificationRecipientsExpanded.sql -text
 ehr/resources/queries/ehr/notificationTypes/.qview.xml -text
 ehr/resources/queries/ehr/project.query.xml -text
 ehr/resources/queries/ehr/project/Projects[!!-~]With[!!-~]Active[!!-~]Assignments.qview.xml -text
-ehr/resources/queries/ehr/project/Search[!!-~]Panel.qview.xml -text
 ehr/resources/queries/ehr/projectLastAssignmentDate.query.xml -text
 ehr/resources/queries/ehr/projectLastAssignmentDate.sql -text
 ehr/resources/queries/ehr/projectTotalActivelyAssigned.query.xml -text
 ehr/resources/queries/ehr/projectTotalActivelyAssigned.sql -text
+ehr/resources/queries/ehr/projectTotalActivelyAssignedBySpecies.query.xml -text
+ehr/resources/queries/ehr/projectTotalActivelyAssignedBySpecies.sql -text
 ehr/resources/queries/ehr/protocol.js -text
-ehr/resources/queries/ehr/protocol.query.xml -text
 ehr/resources/queries/ehr/protocol/.qview.xml -text
 ehr/resources/queries/ehr/protocol/Protocols[!!-~]With[!!-~]Active[!!-~]Assignments.qview.xml -text
 ehr/resources/queries/ehr/protocolActiveAnimals.query.xml -text
@@ -219,15 +220,14 @@ ehr/resources/queries/ehr_lookups/lab_test_range.query.xml -text
 ehr/resources/queries/ehr_lookups/lab_tests.query.xml -text
 ehr/resources/queries/ehr_lookups/lab_tests.sql -text
 ehr/resources/queries/ehr_lookups/next30Days.sql -text
-ehr/resources/queries/ehr_lookups/pathologists.sql -text
-ehr/resources/queries/ehr_lookups/room_list.query.xml -text
 ehr/resources/queries/ehr_lookups/room_list.sql -text
+ehr/resources/queries/ehr_lookups/rooms.query.xml -text
+ehr/resources/queries/ehr_lookups/roomsAssignment.query.xml -text
+ehr/resources/queries/ehr_lookups/roomsAssignment.sql -text
 ehr/resources/queries/ehr_lookups/snomed.js -text
 ehr/resources/queries/ehr_lookups/snomed.query.xml -text
 ehr/resources/queries/ehr_lookups/snomed_subset_codes.query.xml -text
 ehr/resources/queries/ehr_lookups/snomed_subsets/.qview.xml -text
-ehr/resources/queries/ehr_lookups/snomed_subsets_old.sql -text
-ehr/resources/queries/ehr_lookups/treatment_codes.query.xml -text
 ehr/resources/queries/ehr_lookups/yearMonth.sql -text
 ehr/resources/queries/study/ActiveHousing.query.xml -text
 ehr/resources/queries/study/Alopecia.js -text
@@ -287,7 +287,6 @@ ehr/resources/queries/study/Clinpath[!!-~]Runs/.qview.xml -text
 ehr/resources/queries/study/Clinpath[!!-~]Runs/Clinpath[!!-~]Requests.qview.xml -text
 ehr/resources/queries/study/ClinpathRefRange/.qview.xml -text
 ehr/resources/queries/study/ClinpathRefRange/Abnormal.qview.xml -text
-ehr/resources/queries/study/CoAssignedAnimals.sql -text
 ehr/resources/queries/study/Datasets.query.xml -text
 ehr/resources/queries/study/Deaths.js -text
 ehr/resources/queries/study/Deaths.query.xml -text
@@ -339,6 +338,7 @@ ehr/resources/queries/study/Necropsies.js -text
 ehr/resources/queries/study/Notes.js -text
 ehr/resources/queries/study/Notes.query.xml -text
 ehr/resources/queries/study/Notes/.qview.xml -text
+ehr/resources/queries/study/Notes/Active[!!-~]Notes.qview.xml -text
 ehr/resources/queries/study/Organ[!!-~]Weights.js -text
 ehr/resources/queries/study/Organ[!!-~]Weights.query.xml -text
 ehr/resources/queries/study/Organ[!!-~]Weights/.qview.xml -text
@@ -397,6 +397,8 @@ ehr/resources/queries/study/assignment/.qview.xml -text
 ehr/resources/queries/study/assignment/Active[!!-~]Assignments.qview.xml -text
 ehr/resources/queries/study/assignment/Search[!!-~]Panel.qview.xml -text
 ehr/resources/queries/study/assignment/With[!!-~]Projected[!!-~]Release.qview.xml -text
+ehr/resources/queries/study/assignmentCoAssignedAnimals.query.xml -text
+ehr/resources/queries/study/assignmentCoAssignedAnimals.sql -text
 ehr/resources/queries/study/assignmentTotalCoAssigned.query.xml -text
 ehr/resources/queries/study/assignmentTotalCoAssigned.sql -text
 ehr/resources/queries/study/assignmentTotalDaysAssigned.query.xml -text
@@ -553,6 +555,8 @@ ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-12.306-12.307.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-12.307-12.308.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-12.308-12.309.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-12.309-12.310.sql -text
+ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-12.310-12.311.sql -text
+ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-12.311-12.312.sql -text
 ehr/resources/schemas/dbscripts/postgresql/obsolete/EHR-11.10-11.101.sql -text
 ehr/resources/schemas/dbscripts/postgresql/obsolete/EHR-11.101-11.102.sql -text
 ehr/resources/schemas/dbscripts/postgresql/obsolete/EHR-11.102-11.105.sql -text
@@ -669,6 +673,8 @@ ehr/resources/schemas/dbscripts/sqlserver/EHR_Lookups-12.306-12.307.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/EHR_Lookups-12.307-12.308.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/EHR_Lookups-12.308-12.309.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/EHR_Lookups-12.309-12.310.sql -text
+ehr/resources/schemas/dbscripts/sqlserver/EHR_Lookups-12.310-12.311.sql -text
+ehr/resources/schemas/dbscripts/sqlserver/EHR_Lookups-12.311-12.312.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/obsolete/EHR-11.34-11.35.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/obsolete/EHR-11.36-11.37.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/obsolete/EHR_Lookups-11.34-11.35.sql -text
@@ -784,6 +790,8 @@ ehr/resources/web/ehr/ehrStoreCollection.js -text
 ehr/resources/web/ehr/ehr_api.lib.xml -text
 ehr/resources/web/ehr/ext.ux.datetimefield.js -text
 ehr/resources/web/ehr/ext.ux.multiselect.js -text
+ehr/resources/web/ehr/form/field/CageField.js -text
+ehr/resources/web/ehr/form/field/RoomField.js -text
 ehr/resources/web/ehr/icons/clipboard.png -text
 ehr/resources/web/ehr/icons/folder.png -text
 ehr/resources/web/ehr/icons/icon_browse_lg.png -text
@@ -843,6 +851,8 @@ ehr/src/org/labkey/ehr/pipeline/KinshipImportTask.java -text
 ehr/src/org/labkey/ehr/pipeline/KinshipInitTask.java -text
 ehr/src/org/labkey/ehr/pipeline/KinshipRTask.java -text
 ehr/src/org/labkey/ehr/pipeline/KinshipRunnable.java -text
+ehr/src/org/labkey/ehr/query/EHRLookupsUserSchema.java -text
+ehr/src/org/labkey/ehr/query/LookupSetTable.java -text
 ehr/src/org/labkey/ehr/security/AbstractEHRDatasetRole.java -text
 ehr/src/org/labkey/ehr/security/AbstractEHRRole.java -text
 ehr/src/org/labkey/ehr/security/EHRAbnormalAdminPermission.java -text

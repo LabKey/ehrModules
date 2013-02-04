@@ -13,6 +13,25 @@
             </ns:column>
         </ns:columns>
     </ns:table>
+    <ns:table tableName="lookup_sets" tableDbType="TABLE" useColumnOrder="true">
+        <ns:tableTitle>Lookup Sets</ns:tableTitle>
+        <ns:pkColumnName>setname</ns:pkColumnName>
+        <ns:importUrl></ns:importUrl>
+        <ns:insertUrl></ns:insertUrl>
+        <ns:updateUrl></ns:updateUrl>
+        <ns:deleteUrl></ns:deleteUrl>
+        <ns:columns>
+            <ns:column columnName="setname">
+                <ns:isKeyField>true</ns:isKeyField>
+            </ns:column>
+            <ns:column columnName="label">
+                <ns:columnTitle>Label</ns:columnTitle>
+            </ns:column>
+            <ns:column columnName="description">
+                <ns:columnTitle>Description</ns:columnTitle>
+            </ns:column>
+        </ns:columns>
+    </ns:table>
     <!--TODO: deprecate-->
     <ns:table tableName="integers" tableDbType="TABLE" useColumnOrder="true">
         <ns:importUrl></ns:importUrl>
@@ -237,6 +256,7 @@
     </ns:table>
     <ns:table tableName="cage" tableDbType="TABLE" useColumnOrder="true">
         <ns:tableTitle>Cages</ns:tableTitle>
+        <ns:javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</ns:javaCustomizer>
         <ns:importUrl></ns:importUrl>
         <ns:insertUrl></ns:insertUrl>
         <ns:updateUrl></ns:updateUrl>
@@ -254,6 +274,23 @@
             </ns:column>
             <ns:column columnName="cage">
                 <ns:nullable>true</ns:nullable>
+            </ns:column>
+            <ns:column columnName="cage_type">
+                <ns:columnTitle>Cage Type</ns:columnTitle>
+                <ns:fk>
+                    <ns:fkDbSchema>ehr_lookups</ns:fkDbSchema>
+                    <ns:fkTable>cage_type</ns:fkTable>
+                    <ns:fkColumnName>cagetype</ns:fkColumnName>
+                </ns:fk>
+            </ns:column>
+            <ns:column columnName="divider">
+                <ns:columnTitle>Divider</ns:columnTitle>
+                <ns:fk>
+                    <ns:fkDbSchema>ehr_lookups</ns:fkDbSchema>
+                    <ns:fkTable>divider_types</ns:fkTable>
+                    <ns:fkColumnName>rowid</ns:fkColumnName>
+                    <ns:fkDisplayColumnName>divider</ns:fkDisplayColumnName>
+                </ns:fk>
             </ns:column>
             <ns:column columnName="length">
                 <ns:nullable>true</ns:nullable>
@@ -550,6 +587,7 @@
                 <ns:isKeyField>true</ns:isKeyField>
             </ns:column>
             <ns:column columnName="description"/>
+            <ns:column columnName="dateDisabled"/>
         </ns:columns>
     </ns:table>
     <ns:table tableName="bacteriology_sensitivity" tableDbType="TABLE" useColumnOrder="true">
@@ -1584,6 +1622,7 @@
         <ns:columns>
             <ns:column columnName="testid">
                 <ns:isKeyField>true</ns:isKeyField>
+                <ns:columnTitle>Test Id</ns:columnTitle>
             </ns:column>
             <ns:column columnName="alertOnAbnormal">
                 <ns:columnTitle>Alert On Abnormal</ns:columnTitle>
@@ -1835,6 +1874,7 @@
         <ns:columns>
             <ns:column columnName="testid">
                 <ns:isKeyField>true</ns:isKeyField>
+                <ns:columnTitle>Test Id</ns:columnTitle>
             </ns:column>
             <ns:column columnName="name">
                 <ns:nullable>true</ns:nullable>
@@ -1868,6 +1908,7 @@
         <ns:columns>
             <ns:column columnName="testid">
                 <ns:isKeyField>true</ns:isKeyField>
+                <ns:columnTitle>Test Id</ns:columnTitle>
             </ns:column>
             <ns:column columnName="name">
                 <ns:nullable>true</ns:nullable>
@@ -1901,6 +1942,7 @@
         <ns:columns>
             <ns:column columnName="testid">
                 <ns:isKeyField>true</ns:isKeyField>
+                <ns:columnTitle>Test Id</ns:columnTitle>
             </ns:column>
             <ns:column columnName="name">
                 <ns:nullable>true</ns:nullable>
@@ -1927,7 +1969,7 @@
         </ns:columns>
     </ns:table>
     <ns:table tableName="hematology_tests" tableDbType="TABLE" useColumnOrder="true">
-        <ns:tableTitle>Histology Tests</ns:tableTitle>
+        <ns:tableTitle>Hematology Tests</ns:tableTitle>
         <ns:importUrl></ns:importUrl>
         <ns:insertUrl></ns:insertUrl>
         <ns:updateUrl></ns:updateUrl>
@@ -1936,6 +1978,7 @@
         <ns:pkColumnName>testid</ns:pkColumnName>
         <ns:columns>
             <ns:column columnName="testid">
+                <ns:columnTitle>Test Id</ns:columnTitle>
                 <ns:isKeyField>true</ns:isKeyField>
             </ns:column>
             <ns:column columnName="name">
@@ -1971,6 +2014,7 @@
         <ns:columns>
             <ns:column columnName="testid">
                 <ns:isKeyField>true</ns:isKeyField>
+                <ns:columnTitle>Test Id</ns:columnTitle>
             </ns:column>
             <ns:column columnName="name">
                 <ns:nullable>true</ns:nullable>
@@ -2390,6 +2434,26 @@
             </ns:column>
         </ns:columns>
     </ns:table>
+    <ns:table tableName="divider_types" tableDbType="TABLE" useColumnOrder="true">
+        <ns:tableTitle>Cage Divider Types</ns:tableTitle>
+        <ns:importUrl></ns:importUrl>
+        <ns:insertUrl></ns:insertUrl>
+        <ns:updateUrl></ns:updateUrl>
+        <ns:deleteUrl></ns:deleteUrl>
+        <ns:pkColumnName>rowid</ns:pkColumnName>
+        <ns:columns>
+            <ns:column columnName="rowid">
+                <ns:isKeyField>true</ns:isKeyField>
+                <ns:columnTitle>Divider Id</ns:columnTitle>
+            </ns:column>
+            <ns:column columnName="divider">
+                <ns:nullable>false</ns:nullable>
+            </ns:column>
+            <ns:column columnName="countAsSeparate">
+                <ns:columnTitle>Divider Separates Animals?</ns:columnTitle>
+            </ns:column>
+        </ns:columns>
+    </ns:table>
     <ns:table tableName="charge_flags" tableDbType="TABLE" useColumnOrder="true">
         <ns:tableTitle>Charge Flags</ns:tableTitle>
         <ns:importUrl></ns:importUrl>
@@ -2590,14 +2654,48 @@
     </ns:table>
     <ns:table tableName="rooms" tableDbType="TABLE" useColumnOrder="true">
         <ns:tableTitle>Rooms</ns:tableTitle>
+        <ns:javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</ns:javaCustomizer>
         <ns:columns>
             <ns:column columnName="room"/>
-            <ns:column columnName="building"/>
-            <ns:column columnName="area"/>
-            <ns:column columnName="category"/>
-            <ns:column columnName="housingType"/>
-            <ns:column columnName="housingCondition"/>
+            <ns:column columnName="building">
+                <ns:columnTitle>Building</ns:columnTitle>
+                <ns:isHidden>true</ns:isHidden>
+                <ns:fk>
+                    <ns:fkDbSchema>ehr_lookups</ns:fkDbSchema>
+                    <ns:fkTable>buildings</ns:fkTable>
+                    <ns:fkColumnName>name</ns:fkColumnName>
+                    <ns:fkDisplayColumnName>name</ns:fkDisplayColumnName>
+                </ns:fk>
+            </ns:column>
+            <ns:column columnName="area">
+                <ns:columnTitle>Area</ns:columnTitle>
+                <ns:fk>
+                    <ns:fkDbSchema>ehr_lookups</ns:fkDbSchema>
+                    <ns:fkTable>areas</ns:fkTable>
+                    <ns:fkColumnName>area</ns:fkColumnName>
+                    <ns:fkDisplayColumnName>area</ns:fkDisplayColumnName>
+                </ns:fk>
+            </ns:column>
+            <ns:column columnName="housingType">
+                <ns:columnTitle>Housing Type</ns:columnTitle>
+                <ns:fk>
+                    <ns:fkDbSchema>ehr_lookups</ns:fkDbSchema>
+                    <ns:fkTable>housingTypes</ns:fkTable>
+                    <ns:fkColumnName>rowid</ns:fkColumnName>
+                    <ns:fkDisplayColumnName>value</ns:fkDisplayColumnName>
+                </ns:fk>
+            </ns:column>
+            <ns:column columnName="housingCondition">
+                <ns:columnTitle>Housing Condition</ns:columnTitle>
+                <ns:fk>
+                    <ns:fkDbSchema>ehr_lookups</ns:fkDbSchema>
+                    <ns:fkTable>housingDefinition</ns:fkTable>
+                    <ns:fkColumnName>rowid</ns:fkColumnName>
+                    <ns:fkDisplayColumnName>value</ns:fkDisplayColumnName>
+                </ns:fk>
+            </ns:column>
             <ns:column columnName="maxCages"/>
+            <ns:column columnName="dateDisabled"/>
             <ns:column columnName="created"/>
             <ns:column columnName="createdby"/>
             <ns:column columnName="modified"/>
