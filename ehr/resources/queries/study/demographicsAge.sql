@@ -23,7 +23,7 @@ case
   when (age_in_months(d.birth, COALESCE(d.death, now()))) < 12
     then (CONVERT(CONVERT(ROUND(age_in_months(d.birth, COALESCE(d.death, now())), 1), DOUBLE), VARCHAR) || ' months')
   else
-    (CONVERT(CONVERT(ROUND(age_in_months(d.birth, COALESCE(d.death, now())) / 12, 1), DOUBLE), VARCHAR) || ' years')
+    (CONVERT(CONVERT(FLOOR(age_in_months(d.birth, COALESCE(d.death, now())) / 12), SQL_INTEGER), VARCHAR) || '.' || CONVERT(MOD(CONVERT(ROUND(age_in_months(d.birth, COALESCE(d.death, now())) / 12 * 10, 0), SQL_INTEGER), 10), VARCHAR) || ' years')
 end as AgeFriendly
 
 FROM study.Demographics d
