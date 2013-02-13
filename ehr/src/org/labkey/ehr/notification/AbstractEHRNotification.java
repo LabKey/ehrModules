@@ -80,11 +80,6 @@ abstract public class AbstractEHRNotification implements Notification
         return "EHR";
     }
 
-    protected String appendField(String name, Results rs) throws SQLException
-    {
-        return rs.getString(FieldKey.fromString(name)) == null ? "" : rs.getString(FieldKey.fromString(name));
-    }
-
     public String getCronString()
     {
         return null;//"0 0/5 * * * ?";

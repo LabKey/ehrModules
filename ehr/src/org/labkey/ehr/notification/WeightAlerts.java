@@ -137,10 +137,13 @@ public class WeightAlerts extends AbstractEHRNotification
 
             msg.append("<b>Weights since " + _dateFormat.format(date.getTime()) + " representing changes of " + (pct > 0 ? "+" : "") + pct + "% in the past " + max + " days:</b><p>");
 
+            FieldKey roomKey = FieldKey.fromString("Id/curLocation/Room");
+            FieldKey areaKey = FieldKey.fromString("Id/curLocation/Area");
+
             final Map<String, Map<String, List<Map<String, Object>>>> summary = new TreeMap<String, Map<String, List<Map<String, Object>>>>();
             while (rs.next())
             {
-                String area = rs.getString("id_fs_curLocation_fs_area");
+                String area = rs.getString(areaKey);
                 Map<String, List<Map<String, Object>>> areaMap = summary.get(area);
                 if (areaMap == null)
                 {
@@ -148,7 +151,7 @@ public class WeightAlerts extends AbstractEHRNotification
                     summary.put(area, areaMap);
                 }
 
-                String room = rs.getString("id_fs_curLocation_fs_room");
+                String room = rs.getString(roomKey);
                 List<Map<String, Object>> roomList = areaMap.get(room);
                 if (roomList == null)
                 {
@@ -174,7 +177,7 @@ public class WeightAlerts extends AbstractEHRNotification
                             msg.append("<tr><td><a href='" + AppProps.getInstance().getBaseServerUrl() + AppProps.getInstance().getContextPath() + "/ehr" + c.getPath() +
                                 "/animalHistory.view?#inputType:singleSubject&showReport:1&subjects:" +
                                 map.get("Id") + "&combineSubj:true&activeReport:abstract'>" + map.get("Id") +
-                                "</a></td><td>" + area + "</td><td>" + room + "</td><td>" + map.get("id_fs_curLocation_fs_room") + "</td><td>" +
+                                "</a></td><td>" + area + "</td><td>" + room + "</td><td>" + map.get(roomKey) + "</td><td>" +
                                     map.get("LatestWeight") + "</td><td>" + _dateTimeFormat.format(map.get("LatestWeightDate")) + "</td><td>" +
                                     map.get("weight") + "</td><td>" + _dateTimeFormat.format(map.get("date")) + "</td><td>" + map.get("PctChange") +
                                 "</td><td>" + map.get("IntervalInDays") + "</td></tr>");

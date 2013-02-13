@@ -15,25 +15,20 @@
  */
 package org.labkey.ehr.notification;
 
-import org.labkey.api.action.NullSafeBindException;
 import org.labkey.api.data.CompareType;
 import org.labkey.api.data.Container;
+import org.labkey.api.data.DbScope;
 import org.labkey.api.data.Results;
 import org.labkey.api.data.RuntimeSQLException;
 import org.labkey.api.data.SimpleFilter;
 import org.labkey.api.data.Sort;
 import org.labkey.api.data.TableSelector;
 import org.labkey.api.query.FieldKey;
-import org.labkey.api.query.QueryService;
-import org.labkey.api.query.QuerySettings;
-import org.labkey.api.query.QueryView;
+import org.labkey.api.query.QueryHelper;
 import org.labkey.api.query.UserSchema;
 import org.labkey.api.security.User;
 import org.labkey.api.util.ResultSetUtil;
-import org.springframework.beans.MutablePropertyValues;
-import org.springframework.validation.BindException;
 
-import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Collections;
@@ -97,23 +92,16 @@ public class OverdueWeightsNotification extends AbstractEHRNotification
      */
     private void animalsNotWeightedInPast60Days(Container c, User u, StringBuilder msg)
     {
-        SimpleFilter filter = new SimpleFilter(FieldKey.fromString("calculated_status"), "Alive");
-        filter.addCondition(FieldKey.fromString("Id/MostRecentWeight/DaysSinceWeight"), 60, CompareType.GT);
-
-        MutablePropertyValues mpv = new MutablePropertyValues();
-        mpv.addPropertyValue("schemaName", "study");
-        mpv.addPropertyValue("query.queryName", "Demographics");
-        mpv.addPropertyValue("query.viewName", "Weight Detail");
-
-        BindException errors = new NullSafeBindException(new Object(), "command");
-        UserSchema us = QueryService.get().getUserSchema(u, c, "study");
-        QuerySettings qs = us.getSettings(mpv, "query");
-        qs.setBaseFilter(filter);
-        QueryView view = new QueryView(us, qs, errors);
         Results rs = null;
+
         try
         {
-            rs = view.getResults();
+            SimpleFilter filter = new SimpleFilter(FieldKey.fromString("calculated_status"), "Alive");
+            filter.addCondition(FieldKey.fromString("Id/MostRecentWeight/DaysSinceWeight"), 60, CompareType.GT);
+
+            QueryHelper qh = new QueryHelper(c, u, "study", "Demographics", "Weight Detail");
+            rs = qh.select(filter);
+
             if (rs.next())
             {
                 msg.append("<b>WARNING: The following animals have not been weighed in the past 60 days:</b><br>");
@@ -125,6 +113,7 @@ public class OverdueWeightsNotification extends AbstractEHRNotification
                     String area = rs.getString(FieldKey.fromString("Id/curLocation/Area"));
                     if (area == null)
                         area = "No Area";
+
                     String room = rs.getString(FieldKey.fromString("Id/curLocation/Room"));
                     if (room == null)
                         room = "No Room";
@@ -146,7 +135,6 @@ public class OverdueWeightsNotification extends AbstractEHRNotification
                     StringBuilder html = (StringBuilder)roomNode.get("html");
                     html.append("<tr><td>" + appendField("Id/curLocation/cage", rs) + "</td><td>" + appendField("Id", rs) + "</td><td>" + appendField("Id/MostRecentWeight/DaysSinceWeight", rs) + "</td></tr>");
 
-                    //roomNode.put("html", html);
                     areaNode.put(room, roomNode);
                     summary.put(area, areaNode);
                 }
@@ -173,14 +161,16 @@ public class OverdueWeightsNotification extends AbstractEHRNotification
         {
             throw new RuntimeSQLException(e);
         }
-        catch (IOException e)
-        {
-            throw new RuntimeException(e);
-        }
         finally
         {
             ResultSetUtil.close(rs);
         }
+    }
+
+    protected String appendField(String name, Results rs) throws SQLException
+    {
+        FieldKey key = FieldKey.fromString(name);
+        return rs.getString(key) == null ? "" : rs.getString(key);
     }
 
     protected void livingAnimalsWithoutWeight(final Container c, User u, final StringBuilder msg)
