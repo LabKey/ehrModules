@@ -13,8 +13,8 @@ cast(week(i.date) as integer) as WeekOfYear,
 
 FROM (SELECT
 
-timestampadd('SQL_TSI_DAY', i.key-7, curdate()) as date,
+timestampadd('SQL_TSI_DAY', i.value-7, curdate()) as date,
 
-FROM ehr_lookups.integers i
+FROM ldk.integers i
 
-WHERE i.key <= 35) i
+WHERE i.value <= 35) i

@@ -89,9 +89,4 @@ abstract public class AbstractEHRNotification implements Notification
     {
         return null;//"0 0/5 * * * ?";
     }
-
-    public Set<String> getNotificationTypes()
-    {
-        return Collections.singleton(getName());
-    }
 }

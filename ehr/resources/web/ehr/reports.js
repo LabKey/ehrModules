@@ -219,38 +219,34 @@ EHR.reports.weightGraph = function(panel, tab){
     var gridFilterArray = panel.getFilterArray(tab);
     var title = panel.getTitleSuffix();
 
-    var config = panel.getQWPConfig({
-        title: 'Weight Summary' + title,
-        schemaName: 'study',
-        queryName: 'demographicsWeightChange',
-        viewName: 'With Id',
-        sort: 'id',
-        filters: gridFilterArray.nonRemovable,
-        removeableFilters: gridFilterArray.removable,
-        frame: true
+    tab.add({
+        xtype: 'ldk-querypanel',
+        style: 'margin-bottom:20px;',
+        queryConfig: panel.getQWPConfig({
+            title: 'Weight Summary' + title,
+            schemaName: 'study',
+            queryName: 'demographicsWeightChange',
+            viewName: 'With Id',
+            sort: 'id',
+            filters: gridFilterArray.nonRemovable,
+            removeableFilters: gridFilterArray.removable,
+            frame: true
+        })
     });
 
     tab.add({
         xtype: 'ldk-querypanel',
         style: 'margin-bottom:20px;',
-        queryConfig: config
-    });
-
-    config = panel.getQWPConfig({
-        title: 'Weight' + title,
-        schemaName: 'study',
-        queryName: 'weight',
-        viewName: 'Percent Change',
-        sort: 'id,-date',
-        filters: gridFilterArray.nonRemovable,
-        removeableFilters: gridFilterArray.removable,
-        frame: true
-    });
-
-    tab.add({
-        xtype: 'ldk-querypanel',
-        style: 'margin-bottom:20px;',
-        queryConfig: config
+        queryConfig: panel.getQWPConfig({
+            title: 'Weight Raw Data' + title,
+            schemaName: 'study',
+            queryName: 'weight',
+            viewName: 'Percent Change',
+            sort: 'id,-date',
+            filters: gridFilterArray.nonRemovable,
+            removeableFilters: gridFilterArray.removable,
+            frame: true
+        })
     });
 };
 
@@ -292,8 +288,8 @@ EHR.reports.bloodChemistry = function(panel, tab){
 
     config = panel.getQWPConfig({
         schemaName: 'study',
-        queryName: 'Chemistry Results',
-        viewName: 'Plus Ref Range',
+        queryName: 'chemistryRefRange',
+        //viewName: 'Plus Ref Range',
         title: "Reference Ranges:",
         titleField: 'Id',
         sort: '-date',
@@ -348,8 +344,8 @@ EHR.reports.urinalysisResults = function(panel, tab){
 
     config = panel.getQWPConfig({
         schemaName: 'study',
-        queryName: 'Urinalysis Results',
-        viewName: 'Plus Ref Range',
+        queryName: 'urinalysisRefRange',
+        //viewName: 'Plus Ref Range',
         title: "Reference Ranges:",
         titleField: 'Id',
         sort: '-date',

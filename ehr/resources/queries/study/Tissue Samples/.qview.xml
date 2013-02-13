@@ -7,9 +7,7 @@
         <column name="preservation"/>
         <column name="quantity"/>
         <column name="recipient"/>
-        <column name="ship_to"/>
         <column name="container_type"/>
-        <column name="accountToCharge"/>
 
         <!--<column name="diagnosis"/>-->
     </columns>

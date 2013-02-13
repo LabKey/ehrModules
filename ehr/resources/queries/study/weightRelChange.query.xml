@@ -11,9 +11,15 @@
                     </column>
                     <column columnName="Id">
                         <isHidden>true</isHidden>
+                        <fk>
+                            <fkDbSchema>study</fkDbSchema>
+                            <fkTable>animal</fkTable>
+                            <fkColumnName>id</fkColumnName>
+                        </fk>
                     </column>
                     <column columnName="date">
                         <isHidden>true</isHidden>
+                        <columnTitle>Date of Last Weight</columnTitle>
                     </column>
                     <column columnName="weight">
                         <columnTitle>Old Weight (kg)</columnTitle>

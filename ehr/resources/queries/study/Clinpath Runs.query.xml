@@ -26,7 +26,7 @@
                         <fk>
                           <fkDbSchema>ehr_lookups</fkDbSchema>
                           <fkTable>clinpath_types</fkTable>
-                          <fkColumnName>type</fkColumnName>
+                          <fkColumnName>value</fkColumnName>
                         </fk>
                     </column>
                     <column columnName="objectid">
@@ -42,7 +42,7 @@
                         <isHidden>true</isHidden>
                         <!--<columnTitle>Type</columnTitle>                        -->
                     </column>
-                    <column columnName="serviceRequested">
+                    <column columnName="servicerequested">
                         <columnTitle>Service Requested</columnTitle>
                         <!--<fk>-->
                           <!--<fkDbSchema>ehr_lookups</fkDbSchema>-->
@@ -50,12 +50,12 @@
                           <!--<fkColumnName>type</fkColumnName>-->
                         <!--</fk>-->
                     </column>
-                    <column columnName="sampleType">
+                    <column columnName="sampletype">
                         <columnTitle>Sample Type</columnTitle>
                             <fk>
                               <fkDbSchema>ehr_lookups</fkDbSchema>
                               <fkTable>clinpath_sampletype</fkTable>
-                              <fkColumnName>sampletype</fkColumnName>
+                              <fkColumnName>value</fkColumnName>
                             </fk>
                     </column>
                     <column columnName="sampleQuantity">
@@ -78,7 +78,7 @@
                         <fk>
                           <fkDbSchema>ehr_lookups</fkDbSchema>
                           <fkTable>clinpath_collection_method</fkTable>
-                          <fkColumnName>method</fkColumnName>
+                          <fkColumnName>value</fkColumnName>
                         </fk>
                     </column>
                     <column columnName="reviewedBy">

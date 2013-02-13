@@ -117,7 +117,7 @@ public class OverdueWeightsNotification extends AbstractEHRNotification
             if (rs.next())
             {
                 msg.append("<b>WARNING: The following animals have not been weighed in the past 60 days:</b><br>");
-                msg.append("<p><a href='" + _baseUrl + "/executeQuery.view?schemaName=study&query.viewName=Weight Detail&query.queryName=Demographics&query.Id/MostRecentWeight/DaysSinceWeight~gt=60&query.calculated_status~eq=Alive'>Click here to view them</a><p>\n");
+                msg.append("<p><a href='" + _baseUrl + "/executeQuery.view?schemaName=study&query.viewName=By Location&query.queryName=Demographics&query.Id/MostRecentWeight/DaysSinceWeight~gt=60&query.calculated_status~eq=Alive'>Click here to view them</a><p>\n");
 
                 Map<String, Map<String, Map<String, Object>>> summary = new HashMap<String, Map<String, Map<String, Object>>>();
                 do

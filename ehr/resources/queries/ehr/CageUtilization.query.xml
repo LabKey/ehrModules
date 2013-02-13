@@ -6,6 +6,7 @@
                 <tableUrl>/EHR/cageDetails.view?room=${room}&amp;cage=${cage}</tableUrl>
                 <columns>
                     <column columnName="location">
+                        <isKeyField>true</isKeyField>
                         <displayWidth>60</displayWidth>
                         <columnTitle>Location</columnTitle>
                     </column>

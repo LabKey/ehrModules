@@ -21,16 +21,6 @@
                 <property name="columnTitle" value="Active Assignments"/>
             </properties>
         </column>
-        <column name="activeAssignments/Availability">
-            <properties>
-                <property name="columnTitle" value="Avail"/>
-            </properties>
-        </column>
-        <column name="Dataset/Demographics/hold">
-            <properties>
-                <property name="columnTitle" value="Hold"/>
-            </properties>
-        </column>
         <column name="Dataset/Demographics/dam">
             <properties>
                 <property name="columnTitle" value="Dam"/>

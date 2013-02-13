@@ -117,6 +117,18 @@ public class KinshipInitTask extends PipelineJob.Task<KinshipInitTask.Factory>
         PipelineJob job = getJob();
         FileAnalysisJobSupport support = (FileAnalysisJobSupport) job;
 
+        //we expect to keep reusing the same job, so we truncate the logfile
+        try
+        {
+            File log = job.getLogFile();
+            log.delete();
+            log.createNewFile();
+        }
+        catch (IOException e)
+        {
+            throw new PipelineJobException(e);
+        }
+
         RecordedAction action = new RecordedAction();
 
         job.getLogger().info("Creating TSV with pedigree data");

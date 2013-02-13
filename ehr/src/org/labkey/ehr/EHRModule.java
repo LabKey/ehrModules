@@ -22,10 +22,10 @@ import org.labkey.api.data.ContainerManager;
 import org.labkey.api.data.DbSchema;
 import org.labkey.api.data.UpgradeCode;
 import org.labkey.api.ehr.EHRService;
+import org.labkey.api.ldk.ExtendedSimpleModule;
 import org.labkey.api.ldk.notification.NotificationService;
 import org.labkey.api.module.Module;
 import org.labkey.api.module.ModuleContext;
-import org.labkey.api.module.SimpleModule;
 import org.labkey.api.query.DefaultSchema;
 import org.labkey.api.query.QuerySchema;
 import org.labkey.api.query.QueryService;
@@ -53,7 +53,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
-public class EHRModule extends SimpleModule
+public class EHRModule extends ExtendedSimpleModule
 {
     public static final String EHR_ADMIN_USER = "EHRAdminUser@ehr.com";
     public static final String NAME = "EHR";
@@ -65,7 +65,7 @@ public class EHRModule extends SimpleModule
 
     public double getVersion()
     {
-        return 12.312;
+        return 12.315;
     }
 
     public boolean hasScripts()

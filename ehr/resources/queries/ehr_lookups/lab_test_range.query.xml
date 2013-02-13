@@ -33,7 +33,7 @@
                         <fk>
                             <fkDbSchema>ehr_lookups</fkDbSchema>
                             <fkTable>clinpath_types</fkTable>
-                            <fkColumnName>type</fkColumnName>
+                            <fkColumnName>value</fkColumnName>
                         </fk>
                     </column>
                     <column columnName="age_class">

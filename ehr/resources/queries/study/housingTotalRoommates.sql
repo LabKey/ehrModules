@@ -8,8 +8,6 @@
 
 SELECT
   h1.lsid,
-  --h1.id,
-  --h1.StartDate,
   count(h1.RoommateId) AS TotalRoommates
 
 FROM study.housingRoommates h1

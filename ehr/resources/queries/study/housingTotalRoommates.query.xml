@@ -2,6 +2,7 @@
     <metadata>
         <tables xmlns="http://labkey.org/data/xml">
             <table tableName="housingTotalRoommates" tableDbType="NOT_IN_DB">
+                <tableTitle>Total Roommates Per Housing Record</tableTitle>
                 <columns>
                     <column columnName="lsid">
                         <isKeyField>true</isKeyField>

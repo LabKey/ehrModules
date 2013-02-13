@@ -10,7 +10,7 @@
                 <updateUrl />
                 <deleteUrl />
                 <columns>
-                    <column columnName="RefRange" wrappedColumnName="lsid">
+                    <column columnName="refRange" wrappedColumnName="lsid">
                         <columnTitle>Ref Range</columnTitle>
                         <isHidden>false</isHidden>
                         <isUnselectable>true</isUnselectable>
@@ -20,8 +20,9 @@
                             <fkColumnName>lsid</fkColumnName>
                         </fk>
                     </column>
-                    <column columnName="qualResult">
+                    <column columnName="qualresult">
                         <displayWidth>120</displayWidth>
+                        <columnTitle>Qualitative Result</columnTitle>
                     </column>
                     <column columnName="units">
                         <displayWidth>60</displayWidth>
@@ -33,13 +34,8 @@
                           <!--<fkColumnName>objectid</fkColumnName>-->
                         <!--</fk>-->
                     </column>
-                    <column columnName="runId" wrappedColumnName="parentid">
+                    <column columnName="runid">
                         <isHidden>false</isHidden>
-                        <fk>
-                          <fkDbSchema>study</fkDbSchema>
-                          <fkTable>clinpathRunsParent</fkTable>
-                          <fkColumnName>objectid</fkColumnName>
-                        </fk>
                     </column>
                     <column columnName="result">
                         <columnTitle>Result</columnTitle>
@@ -63,11 +59,8 @@
                       <fk>
                         <fkDbSchema>ehr_lookups</fkDbSchema>
                         <fkTable>hematology_method</fkTable>
-                        <fkColumnName>method</fkColumnName>
+                        <fkColumnName>value</fkColumnName>
                       </fk>
-                    </column>
-                    <column columnName="qualResult">
-                        <columnTitle>Qualitative Result</columnTitle>
                     </column>
                     <column columnName="units">
                         <columnTitle>Units</columnTitle>

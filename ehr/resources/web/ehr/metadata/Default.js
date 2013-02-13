@@ -1212,8 +1212,8 @@ EHR.Metadata.registerMetadata('Default', {
                 lookup: {
                     schemaName: 'ehr_lookups',
                     queryName: 'tissue_distribution',
-                    displayColumn: 'location',
-                    keyColumn: 'location'
+                    displayColumn: 'value',
+                    keyColumn: 'value'
                 }
             },
             grossdescription: {
@@ -1665,8 +1665,8 @@ EHR.Metadata.registerMetadata('Default', {
                     storeCfg: {
                         schemaName: 'ehr_lookups',
                         queryName: 'obs_remarks',
-                        valueField: 'remark',
-                        displayField: 'title'
+                        valueField: 'description',
+                        displayField: 'value'
                     }
                 }
             },
@@ -1674,7 +1674,7 @@ EHR.Metadata.registerMetadata('Default', {
                 shownInGrid: true,
                 xtype: 'ehr-remotecheckboxgroup', includeNullRecord: false,
                 formEditorConfig: {columns: 1},
-                lookup: {schemaName: 'ehr_lookups', queryName: 'obs_feces', displayColumn: 'meaning', keyColumn: 'code'}
+                lookup: {schemaName: 'ehr_lookups', queryName: 'obs_feces', displayColumn: 'title', keyColumn: 'value'}
             },
             no_observations: {
                 shownInGrid: false,
@@ -1801,8 +1801,8 @@ EHR.Metadata.registerMetadata('Default', {
                 lookup: {
                     schemaName: 'ehr_lookups',
                     queryName: 'clinpath_sampletype',
-                    keyColumn: 'sampletype',
-                    displayColumn: 'sampletype'
+                    keyColumn: 'value',
+                    displayColumn: 'value'
                 },
                 editorConfig: {
                     tpl: null,
@@ -1814,8 +1814,8 @@ EHR.Metadata.registerMetadata('Default', {
                 lookup : {
                     schemaName: 'ehr_lookups',
                     queryName: 'clinpath_collection_method',
-                    keyColumn: 'method',
-                    displayColumn: 'method'
+                    keyColumn: 'value',
+                    displayColumn: 'value'
                 },
                 editorConfig: {
                     tpl: null,
@@ -1862,8 +1862,8 @@ EHR.Metadata.registerMetadata('Default', {
                 lookup: {
                     schemaName: 'ehr_lookups',
                     queryName: 'clinpath_sampletype',
-                    keyColumn: 'sampletype',
-                    displayColumn: 'sampletype'
+                    keyColumn: 'value',
+                    displayColumn: 'value'
                 },
                 editorConfig: {
                     tpl: null,
@@ -1875,8 +1875,8 @@ EHR.Metadata.registerMetadata('Default', {
                 lookup : {
                     schemaName: 'ehr_lookups',
                     queryName: 'clinpath_collection_method',
-                    keyColumn: 'method',
-                    displayColumn: 'method'
+                    keyColumn: 'value',
+                    displayColumn: 'value'
                 },
                 editorConfig: {
                     tpl: null,
@@ -1890,8 +1890,8 @@ EHR.Metadata.registerMetadata('Default', {
                 lookup: {
                     schemaName: 'ehr_lookups',
                     queryName: 'stain_types',
-                    keyColumn: 'type',
-                    displayColumn: 'type'
+                    keyColumn: 'value',
+                    displayColumn: 'value'
                 },
                 editorConfig: {
                     tpl: null,
@@ -2065,7 +2065,7 @@ EHR.Metadata.registerMetadata('Default', {
                 shownInGrid: true,
                 xtype: 'ehr-remotecheckboxgroup', includeNullRecord: false,
                 formEditorConfig: {columns: 1},
-                lookup: {schemaName: 'ehr_lookups', queryName: 'obs_feces', displayColumn: 'meaning', keyColumn: 'code'}
+                lookup: {schemaName: 'ehr_lookups', queryName: 'obs_feces', displayColumn: 'title', keyColumn: 'value'}
             }
             ,menses: {
                 shownInGrid: true,
@@ -2074,21 +2074,21 @@ EHR.Metadata.registerMetadata('Default', {
                 value: null,
                 includeNullRecord: true,
                 formEditorConfig: {columns: 1},
-                lookup: {schemaName: 'ehr_lookups', queryName: 'obs_mens', displayColumn: 'meaning', keyColumn: 'code'}
+                lookup: {schemaName: 'ehr_lookups', queryName: 'obs_mens', displayColumn: 'title', keyColumn: 'value'}
             }
             ,other: {
                 shownInGrid: true,
                 xtype: 'ehr-remotecheckboxgroup',
                 includeNullRecord: false,
                 formEditorConfig: {columns: 1},
-                lookup: {schemaName: 'ehr_lookups', queryName: 'obs_other', displayColumn: 'meaning', keyColumn: 'code'}
+                lookup: {schemaName: 'ehr_lookups', queryName: 'obs_other', displayColumn: 'title', keyColumn: 'value'}
             }
             ,tlocation: {
                 shownInGrid: false,
                 xtype: 'lovcombo',
                 hasOwnTpl: true,
                 includeNullRecord: false,
-                lookup: {schemaName: 'ehr_lookups', queryName: 'obs_tlocation', displayColumn: 'location', keyColumn: 'location', sort: 'sort_order'},
+                lookup: {schemaName: 'ehr_lookups', queryName: 'obs_tlocation', displayColumn: 'value', keyColumn: 'value', sort: 'sort_order'},
                 editorConfig: {
                     tpl: null
 //                    height: 200
@@ -2099,7 +2099,7 @@ EHR.Metadata.registerMetadata('Default', {
                 xtype: 'ehr-remotecheckboxgroup',
                 includeNullRecord: false,
                 formEditorConfig: {columns: 1},
-                lookup: {schemaName: 'ehr_lookups', queryName: 'obs_breeding', displayColumn: 'meaning', keyColumn: 'code'}
+                lookup: {schemaName: 'ehr_lookups', queryName: 'obs_breeding', displayColumn: 'title', keyColumn: 'value'}
             }
             ,project: {hidden: true}
             ,account: {hidden: true}
@@ -2114,8 +2114,8 @@ EHR.Metadata.registerMetadata('Default', {
                     storeCfg: {
                         schemaName: 'ehr_lookups',
                         queryName: 'obs_remarks',
-                        valueField: 'remark',
-                        displayField: 'title'
+                        valueField: 'description',
+                        displayField: 'value'
                     }
                 }
             }
@@ -2124,7 +2124,7 @@ EHR.Metadata.registerMetadata('Default', {
                 xtype: 'ehr-remotecheckboxgroup',
                 includeNullRecord: false,
                 formEditorConfig: {columns: 1},
-                lookup: {schemaName: 'ehr_lookups', queryName: 'obs_behavior', displayColumn: 'meaning', keyColumn: 'code'}
+                lookup: {schemaName: 'ehr_lookups', queryName: 'obs_behavior', displayColumn: 'title', keyColumn: 'value'}
             }
             ,otherbehavior: {shownInGrid: false}
 //            ,certified: {
@@ -2182,8 +2182,8 @@ EHR.Metadata.registerMetadata('Default', {
                 lookup: {
                     schemaName: 'ehr_lookups',
                     queryName: 'behavior_category',
-                    keyColumn: 'category',
-                    displayColumn: 'category'
+                    keyColumn: 'value',
+                    displayColumn: 'value'
                 },
                 editorConfig: {
                     tpl: null,
@@ -2248,7 +2248,7 @@ EHR.Metadata.registerMetadata('Default', {
             tooth: {
                 lookup: {
                     columns: '*',
-                    sort: 'seq_order'
+                    sort: 'sort_order'
                 }
             }
         },

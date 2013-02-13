@@ -15,7 +15,7 @@
                       <fk>
                         <fkDbSchema>ehr_lookups</fkDbSchema>
                         <fkTable>snomed_qualifiers</fkTable>
-                        <fkColumnName>qualifier</fkColumnName>
+                        <fkColumnName>value</fkColumnName>
                       </fk>
                     </column>
                     <column columnName="preservation">
@@ -23,7 +23,7 @@
                       <fk>
                         <fkDbSchema>ehr_lookups</fkDbSchema>
                         <fkTable>preservation_solutions</fkTable>
-                        <fkColumnName>solution</fkColumnName>
+                        <fkColumnName>value</fkColumnName>
                       </fk>
                     </column>
                     <column columnName="tissue">
@@ -39,7 +39,7 @@
                       <fk>
                         <fkDbSchema>ehr_lookups</fkDbSchema>
                         <fkTable>histology_stain</fkTable>
-                        <fkColumnName>stain</fkColumnName>
+                        <fkColumnName>value</fkColumnName>
                       </fk>
                     </column>
                     <column columnName="container_type">
@@ -47,7 +47,7 @@
                           <fk>
                             <fkDbSchema>ehr_lookups</fkDbSchema>
                             <fkTable>container_types</fkTable>
-                            <fkColumnName>type</fkColumnName>
+                            <fkColumnName>value</fkColumnName>
                           </fk>
                     </column>
                     <column columnName="ship_to">

@@ -12,7 +12,7 @@
                         <isUserEditable>false</isUserEditable>
                     </column>
                     <column columnName="room">
-                        <displayWidth>40</displayWidth>
+                        <displayWidth>80</displayWidth>
                         <!--<fk>-->
                           <!--<fkDbSchema>ehr_lookups</fkDbSchema>-->
                           <!--<fkTable>rooms</fkTable>-->

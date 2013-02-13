@@ -13,6 +13,10 @@
             return false;
         }
 
+        var title = 'Animal Details: ' + participantId;
+        document.title = title;
+        LABKEY.Utils.setWebpartTitle(title, webpart.id);
+
         Ext4.create('EHR.panel.ParticipantDetailsPanel', {
             participantId: participantId,
             defaultReport: ctx.DefaultAnimalHistoryReport,

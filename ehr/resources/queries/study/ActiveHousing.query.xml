@@ -63,8 +63,8 @@
                         <columnTitle>Condition</columnTitle>
                         <fk>
                             <fkDbSchema>ehr_lookups</fkDbSchema>
-                            <fkTable>condition_codes</fkTable>
-                            <fkColumnName>Code</fkColumnName>
+                            <fkTable>housing_condition_codes</fkTable>
+                            <fkColumnName>value</fkColumnName>
                         </fk>
                     </column>
                     <column columnName="reason">
@@ -72,7 +72,7 @@
                         <fk>
                             <fkDbSchema>ehr_lookups</fkDbSchema>
                             <fkTable>housing_reason</fkTable>
-                            <fkColumnName>reason</fkColumnName>
+                            <fkColumnName>value</fkColumnName>
                         </fk>
                     </column>
                     <column columnName="restraintType">

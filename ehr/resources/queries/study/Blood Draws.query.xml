@@ -17,7 +17,7 @@
                         <fk>
                             <fkDbSchema>ehr_lookups</fkDbSchema>
                             <fkTable>blood_billed_by</fkTable>
-                            <fkColumnName>code</fkColumnName>
+                            <fkColumnName>value</fkColumnName>
                         </fk>
                     </column>
                     <column columnName="BloodRemaining" wrappedColumnName="lsid">
@@ -94,7 +94,7 @@
                         <fk>
                             <fkDbSchema>ehr_lookups</fkDbSchema>
                             <fkTable>restraint_duration</fkTable>
-                            <fkColumnName>duration</fkColumnName>
+                            <fkColumnName>value</fkColumnName>
                         </fk>
                     </column>
                 </columns>

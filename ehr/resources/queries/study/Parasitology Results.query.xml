@@ -40,13 +40,8 @@
                           <!--<fkColumnName>objectid</fkColumnName>-->
                         <!--</fk>-->
                     </column>
-                    <column columnName="runId" wrappedColumnName="parentid">
+                    <column columnName="runid">
                         <isHidden>false</isHidden>
-                        <fk>
-                          <fkDbSchema>study</fkDbSchema>
-                          <fkTable>clinpathRunsParent</fkTable>
-                          <fkColumnName>objectid</fkColumnName>
-                        </fk>
                     </column>
                     <column columnName="seq">
                         <isHidden>true</isHidden>
@@ -60,7 +55,7 @@
                       <fk>
                         <fkDbSchema>ehr_lookups</fkDbSchema>
                         <fkTable>parasitology_method</fkTable>
-                        <fkColumnName>method</fkColumnName>
+                        <fkColumnName>value</fkColumnName>
                       </fk>
                     </column>
                 </columns>

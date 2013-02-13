@@ -6,22 +6,22 @@
         <column name="result"/>
         <column name="units"/>
         <column name="qualresult"/>
-        <column name="RefRange/status">
+        <column name="refRange/status">
             <properties>
                 <property name="columnTitle" value="Status"/>
             </properties>
         </column>
-        <column name="RefRange/ref_range_min">
+        <column name="refRange/ref_range_min">
             <properties>
                 <property name="columnTitle" value="Normal Range Min"/>
             </properties>
         </column>
-        <column name="RefRange/ref_range_max">
+        <column name="refRange/ref_range_max">
             <properties>
                 <property name="columnTitle" value="Normal Range Max"/>
             </properties>
         </column>
-        <column name="RefRange/AgeAtTime">
+        <column name="refRange/AgeAtTime">
             <properties>
                 <property name="columnTitle" value="Age At Time"/>
             </properties>

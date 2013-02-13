@@ -17,6 +17,7 @@
 # should import this file into the DB.
 
 #options(echo=TRUE);
+options(error = dump.frames);
 library(kinship2);
 library(Rlabkey);
 library(getopt);

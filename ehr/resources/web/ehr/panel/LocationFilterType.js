@@ -41,7 +41,10 @@ Ext4.define('EHR.panel.LocationFilterType', {
                 scope: this.tabbedReportPanel
             }],
             items: [{
-                xtype: 'labkey-combo',
+                xtype: 'checkcombo',
+                expandToFitContent: true,
+                addAllSelector: true,
+                nullCaption: '[Blank]',
                 emptyText:'',
                 fieldLabel: 'Area',
                 multiSelect: true,
@@ -60,7 +63,14 @@ Ext4.define('EHR.panel.LocationFilterType', {
                 listeners: {
                     change: function(field, val){
                         var roomField = field.up('panel').down('#roomField');
-                        roomField.filterbyAreas(val);
+                        roomField.filterByAreas(val);
+                    },
+                    render: function(field){
+                        var val = field.getValue();
+                        if (val && val.length){
+                            var roomField = field.up('panel').down('#roomField');
+                            roomField.filterByAreas(val);
+                        }
                     }
                 },
                 value: ctx.area ? ctx.area.split(',') :  null

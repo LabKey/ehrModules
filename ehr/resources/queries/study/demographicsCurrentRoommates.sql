@@ -5,7 +5,6 @@
  */
 SELECT
   d.id,
-  group_concat(DISTINCT h.condition) as condition,
   count(DISTINCT h.RoommateId) as NumRoommates,
   (count(DISTINCT h.RoommateId)+1) as AnimalsInCage,
   group_concat(DISTINCT h.RoommateId) as cagemates

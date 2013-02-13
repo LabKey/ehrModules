@@ -101,7 +101,7 @@ Ext4.define('EHR.panel.MultiAnimalFilterType', {
                             fieldLabel: 'Project',
                             emptyText:'',
                             itemId: 'project',
-                            displayField: 'project',
+                            displayField: 'name',
                             valueField: 'project',
                             queryMode: 'local',
                             width: 300,
@@ -109,7 +109,7 @@ Ext4.define('EHR.panel.MultiAnimalFilterType', {
                             store: Ext4.create('LABKEY.ext4.Store', {
                                 schemaName: 'ehr',
                                 queryName: 'project',
-                                viewName: 'Projects With Active Assignments',
+                                filterArray: [LABKEY.Filter.create('activeAssignments/activeAssignments', 0, LABKEY.Filter.Types.GT)],
                                 sort: 'project',
                                 autoLoad: true
                             })
@@ -127,7 +127,7 @@ Ext4.define('EHR.panel.MultiAnimalFilterType', {
                             store: Ext4.create('LABKEY.ext4.Store', {
                                 schemaName: 'ehr',
                                 queryName: 'protocol',
-                                viewName: 'Protocols With Active Assignments',
+                                filterArray: [LABKEY.Filter.create('activeAnimals/TotalActiveAnimals', 0, LABKEY.Filter.Types.GT)],
                                 sort: 'protocol',
                                 autoLoad: true
                             })

@@ -25,9 +25,9 @@ EHR.Metadata.registerMetadata('NWM_PE', {
                 lookup: {
                     schemaName: 'ehr_lookups',
                     queryName: 'pe_region',
-                    displayColumn: 'region',
-                    keyColumn: 'region',
-                    sort: 'region'
+                    displayColumn: 'value',
+                    keyColumn: 'value',
+                    sort: 'value'
                 }
                 ,colModel: {
                     width: 60

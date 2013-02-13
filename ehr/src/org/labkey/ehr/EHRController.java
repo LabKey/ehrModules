@@ -108,7 +108,7 @@ public class EHRController extends SpringActionController
             StringBuilder msg = new StringBuilder();
             msg.append("The EHR expects certain columns to be present on all datasets.  The following changes will be made:<br><br>");
 
-            List<String> messages = EHRManager.get().ensureDatasetPropertyDescriptors(getContainer(),  getUser(), false);
+            List<String> messages = EHRManager.get().ensureDatasetPropertyDescriptors(getContainer(),  getUser(), false, form.isRebuildIndexes());
             for (String message : messages)
             {
                 msg.append("\t").append(message).append("<br>");
@@ -124,7 +124,7 @@ public class EHRController extends SpringActionController
 
         public boolean handlePost(EnsureDatasetPropertiesForm form, BindException errors) throws Exception
         {
-            List<String> messages = EHRManager.get().ensureDatasetPropertyDescriptors(getContainer(),  getUser(), true);
+            List<String> messages = EHRManager.get().ensureDatasetPropertyDescriptors(getContainer(),  getUser(), true, form.isRebuildIndexes());
             return true;
         }
     }
@@ -208,6 +208,7 @@ public class EHRController extends SpringActionController
     public static class EnsureDatasetPropertiesForm
     {
         boolean commitChanges = false;
+        boolean rebuildIndexes = false;
 
         public void setCommitChanges(boolean commitChanges)
         {
@@ -217,6 +218,16 @@ public class EHRController extends SpringActionController
         public boolean isCommitChanges()
         {
             return commitChanges;
+        }
+
+        public boolean isRebuildIndexes()
+        {
+            return rebuildIndexes;
+        }
+
+        public void setRebuildIndexes(boolean rebuildIndexes)
+        {
+            this.rebuildIndexes = rebuildIndexes;
         }
     }
 

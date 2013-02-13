@@ -105,14 +105,14 @@
                         <fk>
                             <fkDbSchema>ehr_lookups</fkDbSchema>
                             <fkTable>restraint_duration</fkTable>
-                            <fkColumnName>duration</fkColumnName>
+                            <fkColumnName>value</fkColumnName>
                         </fk>
                     </column>
                     <column columnName="category">
                         <fk>
                             <fkDbSchema>ehr_lookups</fkDbSchema>
                             <fkTable>drug_categories</fkTable>
-                            <fkColumnName>category</fkColumnName>
+                            <fkColumnName>value</fkColumnName>
                         </fk>
                     </column>
                     <column columnName="qualifier">

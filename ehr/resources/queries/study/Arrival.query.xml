@@ -50,8 +50,8 @@
                         <columnTitle>Condition</columnTitle>
                         <fk>
                             <fkDbSchema>ehr_lookups</fkDbSchema>
-                            <fkTable>condition_codes</fkTable>
-                            <fkColumnName>Code</fkColumnName>
+                            <fkTable>housing_condition_codes</fkTable>
+                            <fkColumnName>value</fkColumnName>
                         </fk>
                     </column>
                     <column columnName="species">
@@ -101,9 +101,19 @@
                     </column>
                     <column columnName="acquisitionType">
                         <columnTitle>Acquisition Type</columnTitle>
+                        <fk>
+                            <fkDbSchema>ehr_lookups</fkDbSchema>
+                            <fkTable>AcquistionType</fkTable>
+                            <fkColumnName>rowid</fkColumnName>
+                        </fk>
                     </column>
                     <column columnName="rearingType">
                         <columnTitle>Rearing Type</columnTitle>
+                        <fk>
+                            <fkDbSchema>ehr_lookups</fkDbSchema>
+                            <fkTable>RearingType</fkTable>
+                            <fkColumnName>rowid</fkColumnName>
+                        </fk>
                     </column>
                 </columns>
             </table>

@@ -24,7 +24,7 @@
                         <columnTitle>Units</columnTitle>
                         <displayWidth>60</displayWidth>
                     </column>
-                    <column columnName="RefRange" wrappedColumnName="lsid">
+                    <column columnName="refRange" wrappedColumnName="lsid">
                         <columnTitle>Ref Range</columnTitle>
                         <isUnselectable>true</isUnselectable>
                         <isHidden>false</isHidden>
@@ -37,13 +37,8 @@
                     <column columnName="quantity">
                         <columnTitle>Quantity</columnTitle>
                     </column>
-                    <column columnName="runId" wrappedColumnName="parentid">
+                    <column columnName="runid">
                         <isHidden>false</isHidden>
-                        <fk>
-                          <fkDbSchema>study</fkDbSchema>
-                          <fkTable>clinpathRunsParent</fkTable>
-                          <fkColumnName>objectid</fkColumnName>
-                        </fk>
                     </column>
                     <column columnName="result">
                         <columnTitle>Result</columnTitle>
@@ -64,7 +59,7 @@
                       <fk>
                         <fkDbSchema>ehr_lookups</fkDbSchema>
                         <fkTable>urinalysis_method</fkTable>
-                        <fkColumnName>method</fkColumnName>
+                        <fkColumnName>value</fkColumnName>
                       </fk>
                     </column>
                     <column columnName="qualresult">
@@ -73,7 +68,7 @@
                         <fk>
                             <fkDbSchema>ehr_lookups</fkDbSchema>
                             <fkTable>urinalysis_qualitative_results</fkTable>
-                            <fkColumnName>result</fkColumnName>
+                            <fkColumnName>value</fkColumnName>
                         </fk>
                     </column>
                 </columns>

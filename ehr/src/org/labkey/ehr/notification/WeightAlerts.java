@@ -17,13 +17,20 @@ package org.labkey.ehr.notification;
 
 import org.labkey.api.data.CompareType;
 import org.labkey.api.data.Container;
+import org.labkey.api.data.Results;
 import org.labkey.api.data.SimpleFilter;
 import org.labkey.api.data.Sort;
+import org.labkey.api.data.TableInfo;
 import org.labkey.api.data.TableSelector;
 import org.labkey.api.query.FieldKey;
+import org.labkey.api.query.QueryDefinition;
+import org.labkey.api.query.QueryException;
+import org.labkey.api.query.QueryHelper;
+import org.labkey.api.query.UserSchema;
 import org.labkey.api.security.User;
 import org.labkey.api.settings.AppProps;
 import org.labkey.api.util.PageFlowUtil;
+import org.labkey.api.util.ResultSetUtil;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -62,13 +69,15 @@ public class WeightAlerts extends AbstractEHRNotification
     @Override
     public String getCronString()
     {
-        return "0 30 0/1 8-17 * ?";
+        //return "0 30 0/1 8-17 * ?";
+        return "0 15 9 * * ?";
     }
 
     @Override
     public String getScheduleDescription()
     {
-        return "every 60 mins, at 30 min past the hour, between 8AM and 5PM";
+        //return "every 60 mins, at 30 min past the hour, between 8AM and 5PM";
+        return "once per day, at 9:15 AM";
     }
 
     public String getMessage(Container c, User u)
@@ -111,8 +120,10 @@ public class WeightAlerts extends AbstractEHRNotification
 
     private void processWeights(Container c, User u, final StringBuilder msg, int min, int max, CompareType ct, double pct)
     {
+        Results rs = null;
         try
         {
+            QueryHelper qh = new QueryHelper(c, u, "study", "weightRelChange", "With Housing");
             SimpleFilter filter = new SimpleFilter(FieldKey.fromString("Id/DataSet/Demographics/calculated_status"), "Alive");
             filter.addCondition(FieldKey.fromString("PctChange"), pct, ct);
             filter.addCondition(FieldKey.fromString("IntervalInDays"), min, CompareType.GTE);
@@ -121,71 +132,59 @@ public class WeightAlerts extends AbstractEHRNotification
             Calendar date = Calendar.getInstance();
             date.add(Calendar.DATE, -3);
             filter.addCondition(FieldKey.fromString("LatestWeightDate"), _dateFormat.format(date.getTime()), CompareType.DATE_GTE);
-            Sort sort = new Sort();
-            sort.insertSortColumn(FieldKey.fromString("Id/curLocation/area,Id/curLocation/room,Id/curLocation/cage,Id"), Sort.SortDirection.ASC);
-            Set<String> columns = PageFlowUtil.set(getStudy(c).getSubjectColumnName());
-            columns.add("Id/curLocation/area");
-            columns.add("Id/curLocation/room");
-            columns.add("Id/curLocation/cage");
-            columns.add("LatestWeightDate");
-            columns.add("LatestWeight");
-            columns.add("date");
-            columns.add("weight");
-            columns.add("PctChange");
-            columns.add("IntervalInDays");
-            TableSelector ts = new TableSelector(getStudySchema(c, u).getTable("weightRelChange"), columns, filter, sort);
 
-            msg.append("<b>Weights since " + _dateFormat.format(date.getTime()) + " representing changes of " + pct + "% in the past " + max + " days:</b><p>");
+            rs = qh.select(filter);
 
-            if (ts.getRowCount() > 0)
+            msg.append("<b>Weights since " + _dateFormat.format(date.getTime()) + " representing changes of " + (pct > 0 ? "+" : "") + pct + "% in the past " + max + " days:</b><p>");
+
+            final Map<String, Map<String, List<Map<String, Object>>>> summary = new TreeMap<String, Map<String, List<Map<String, Object>>>>();
+            while (rs.next())
             {
-                final Map<String, Map<String, List<ResultSet>>> summary = new TreeMap<String, Map<String, List<ResultSet>>>();
+                String area = rs.getString("id_fs_curLocation_fs_area");
+                Map<String, List<Map<String, Object>>> areaMap = summary.get(area);
+                if (areaMap == null)
+                {
+                    areaMap = new TreeMap<String, List<Map<String, Object>>>();
+                    summary.put(area, areaMap);
+                }
 
-                ts.forEach(new TableSelector.ForEachBlock<ResultSet>(){
-                    public void exec(ResultSet rs) throws SQLException
-                    {
-                        String area = rs.getString("Id/curLocation/area");
-                        Map<String, List<ResultSet>> areaMap = summary.get(area);
-                        if (areaMap == null)
-                        {
-                            areaMap = new TreeMap<String, List<ResultSet>>();
-                            summary.put(area, areaMap);
-                        }
+                String room = rs.getString("id_fs_curLocation_fs_room");
+                List<Map<String, Object>> roomList = areaMap.get(room);
+                if (roomList == null)
+                {
+                    roomList = new ArrayList<Map<String, Object>>();
+                    summary.get(area).put(room, roomList);
+                }
 
-                        String room = rs.getString("Id/curLocation/room");
-                        List<ResultSet> roomList = areaMap.get(room);
-                        if (roomList == null)
-                        {
-                            roomList = new ArrayList<ResultSet>();
-                            summary.get(area).put(room, roomList);
-                        }
+                roomList.add(ResultSetUtil.mapRow(rs));
 
-                        roomList.add(rs);
-                    }
-                });
+            }
 
+            if (summary.size() > 0)
+            {
                 msg.append("<table border=1><tr><td>Id</td><td>Area</td><td>Room</td><td>Cage</td><td>Current Weight (kg)</td><td>Weight Date</td><td>Previous Weight (kg)</td><td>Date</td><td>Percent Change</td><td>Days Between</td></tr>");
                 for (String area : summary.keySet())
                 {
-                    Map<String, List<ResultSet>> areaValue = summary.get(area);
+                    Map<String, List<Map<String, Object>>> areaValue = summary.get(area);
                     for (String room : areaValue.keySet())
                     {
-                        List<ResultSet> roomValue = areaValue.get(room);
-                        for (ResultSet rs : roomValue)
+                        List<Map<String, Object>> roomValue = areaValue.get(room);
+                        for (Map<String, Object> map : roomValue)
                         {
                             msg.append("<tr><td><a href='" + AppProps.getInstance().getBaseServerUrl() + AppProps.getInstance().getContextPath() + "/ehr" + c.getPath() +
-                                "animalHistory.view?#inputType:singleSubject&showReport:1&subjects:" +
-                                rs.getString("Id") + "&combineSubj:true&activeReport:abstract'>" + rs.getString("Id") +
-                                "</a></td><td>" + area + "</td><td>" + room + "</td><td>" + rs.getString("Id/curLocation/cage") + "</td><td>" +
-                                rs.getString("LatestWeight") + "</td><td>" + rs.getString("LatestWeightDate") + "</td><td>" +
-                                rs.getString("weight") + "</td><td>" + rs.getString("date") + "</td><td>" + rs.getString("PctChange") +
-                                "</td><td>" + rs.getString("IntervalInDays") + "</td></tr>");
+                                "/animalHistory.view?#inputType:singleSubject&showReport:1&subjects:" +
+                                map.get("Id") + "&combineSubj:true&activeReport:abstract'>" + map.get("Id") +
+                                "</a></td><td>" + area + "</td><td>" + room + "</td><td>" + map.get("id_fs_curLocation_fs_room") + "</td><td>" +
+                                    map.get("LatestWeight") + "</td><td>" + _dateTimeFormat.format(map.get("LatestWeightDate")) + "</td><td>" +
+                                    map.get("weight") + "</td><td>" + _dateTimeFormat.format(map.get("date")) + "</td><td>" + map.get("PctChange") +
+                                "</td><td>" + map.get("IntervalInDays") + "</td></tr>");
                         }
                     }
                 }
                 msg.append("</table><p>\n");
                 //msg.append("<p><a href='" + AppProps.getInstance().getBaseServerUrl() + AppProps.getInstance().getContextPath() + "/query" + c.getPath() + "executeQuery.view?schemaName=study&query.queryName=weightRelChange&query.Id/DataSet/Demographics/calculated_status~eq=Alive&query.PctChange~" + ct.getPreferredUrlKey() + "=" + pct + "&query.IntervalInDays~gte=" + min + "&query.IntervalInDays~lte=" + max + "&query.LatestWeightDate~dategte=" + _dateFormat.format(date) + "'>Click here to view these animals</a></p>");
                 msg.append("<hr>");
+
             }
             else
             {
@@ -195,6 +194,10 @@ public class WeightAlerts extends AbstractEHRNotification
         catch (SQLException e)
         {
             throw new RuntimeException(e);
+        }
+        finally
+        {
+            ResultSetUtil.close(rs);
         }
     }
 }

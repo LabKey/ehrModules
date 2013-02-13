@@ -1,0 +1,1 @@
+ALTER TABLE ehr_lookups.divider_types ADD countAsPaired bit default 0;

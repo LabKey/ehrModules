@@ -1,16 +1,4 @@
 <customView xmlns="http://labkey.org/data/xml/queryCustomView">
-   <columns>
-       <column name="project"/>
-       <column name="protocol"/>
-       <column name="activeAssignments/activeAssignments">
-           <properties>
-               <property name="columnTitle" value="Active Assignments"/>
-           </properties>
-       </column>
-       <column name="account"/>
-       <column name="title"/>
-       <column name="avail"/>
-   </columns>
    <filters>
        <filter column="activeAssignments/activeAssignments" operator="gt" value="0"/>
    </filters>

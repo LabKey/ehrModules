@@ -39,7 +39,7 @@
                         <fk>
                           <fkDbSchema>ehr_lookups</fkDbSchema>
                           <fkTable>tattoo_status</fkTable>
-                          <fkColumnName>status</fkColumnName>
+                          <fkColumnName>value</fkColumnName>
                         </fk>
                     </column>
                     <column columnName="tattoo_thigh">
@@ -47,7 +47,7 @@
                         <fk>
                           <fkDbSchema>ehr_lookups</fkDbSchema>
                           <fkTable>tattoo_status</fkTable>
-                          <fkColumnName>status</fkColumnName>
+                          <fkColumnName>value</fkColumnName>
                         </fk>
                     </column>
                     <column columnName="microchip">
@@ -55,7 +55,7 @@
                         <fk>
                           <fkDbSchema>ehr_lookups</fkDbSchema>
                           <fkTable>microchip_comments</fkTable>
-                          <fkColumnName>comment</fkColumnName>
+                          <fkColumnName>value</fkColumnName>
                         </fk>
                     </column>
                     <column columnName="tag">
@@ -63,7 +63,7 @@
                         <fk>
                           <fkDbSchema>ehr_lookups</fkDbSchema>
                           <fkTable>microchip_comments</fkTable>
-                          <fkColumnName>comment</fkColumnName>
+                          <fkColumnName>value</fkColumnName>
                         </fk>
                     </column>
                 </columns>

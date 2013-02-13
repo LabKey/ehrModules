@@ -7,7 +7,7 @@
 --we find the most recent assignment date
 SELECT
   a.project,
-  max(a.date) AS LastAssignmentDate
+  max(a.date) AS lastAssignmentDate
 FROM study.Assignment a
 GROUP BY a.project
 

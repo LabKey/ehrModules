@@ -55,8 +55,8 @@ Ext4.define('EHR.panel.AnimalHistoryPanel', {
                 viewName: rec.get('viewname'),
                 reportId: rec.get("report"),
                 dateFieldName: rec.get("datefieldname"),
-                areaFieldName: rec.get("queryhaslocation") ? 'room/area' : 'Id/curLocation/area',
-                roomFieldName: rec.get("queryhaslocation") ? 'room' : 'Id/curLocation/room',
+                areaFieldName: rec.get("queryhaslocation") ? 'room/area' : 'Id/curLocation/area/area',
+                roomFieldName: rec.get("queryhaslocation") ? 'room' : 'Id/curLocation/room/room',
                 cageFieldName: rec.get("queryhaslocation") ? 'cage' : 'Id/curLocation/cage',
                 todayOnly: false
             }
@@ -64,7 +64,6 @@ Ext4.define('EHR.panel.AnimalHistoryPanel', {
             if (rec.get('jsonconfig')){
                 console.log(rec.get('jsonconfig'));
                 var json = Ext4.decode(rec.get('jsonconfig'));
-                console.log(json);
                 Ext4.apply(report, json);
             }
 

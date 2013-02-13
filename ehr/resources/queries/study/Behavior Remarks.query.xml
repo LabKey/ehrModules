@@ -24,7 +24,7 @@
                         <fk>
                           <fkDbSchema>ehr_lookups</fkDbSchema>
                           <fkTable>behavior_category</fkTable>
-                          <fkColumnName>category</fkColumnName>
+                          <fkColumnName>value</fkColumnName>
                         </fk>
                     </column>
                     <column columnName="parentid">

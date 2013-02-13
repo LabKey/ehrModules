@@ -40,6 +40,8 @@
     <dependencies>
         <dependency path="clientapi"/>
         <dependency path="LDK.context"/>
+        <dependency path="ux/CheckCombo/CheckCombo.css"/>
+        <dependency path="ux/CheckCombo/CheckCombo.js"/>
         <dependency path="StatusBar.js"/>
     </dependencies>
 </libraries>

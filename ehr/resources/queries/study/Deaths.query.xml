@@ -26,7 +26,7 @@
                     <fk>
                       <fkDbSchema>ehr_lookups</fkDbSchema>
                       <fkTable>death_cause</fkTable>
-                      <fkColumnName>cause</fkColumnName>
+                      <fkColumnName>value</fkColumnName>
                     </fk>
                   </column>
                   <column columnName="manner">
@@ -34,7 +34,7 @@
                     <fk>
                       <fkDbSchema>ehr_lookups</fkDbSchema>
                       <fkTable>death_manner</fkTable>
-                      <fkColumnName>manner</fkColumnName>
+                      <fkColumnName>value</fkColumnName>
                     </fk>
                   </column>
                   <column columnName="necropsy">

@@ -1,4 +1,4 @@
-<view xmlns="http://labkey.org/data/xml/view" title="Animal Details">
+<view xmlns="http://labkey.org/data/xml/view" title="Animal Details" frame="portal">
     <dependencies>
         <dependency path="ehr.context" />
         <dependency path="ehr/panel/MultiAnimalFilterType.js"/>

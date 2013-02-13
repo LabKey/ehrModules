@@ -141,6 +141,18 @@ public class DefaultEHRCustomizer implements TableCustomizer
             objectId.setLabel("Key");
             objectId.setUserEditable(false);
         }
+
+        ColumnInfo cage = ti.getColumn("cage");
+        if (cage != null)
+        {
+            cage.setDisplayWidth("40");
+        }
+
+        ColumnInfo description = ti.getColumn("description");
+        if (description != null)
+        {
+            description.setDisplayWidth("400");
+        }
     }
 
     private void customizeDataset(DataSetTable ds)
@@ -163,7 +175,16 @@ public class DefaultEHRCustomizer implements TableCustomizer
             runId.setLabel("Run Id");
             UserSchema study = getStudyUserSchema(ti);
             if (study != null)
-                runId.setFk(new QueryForeignKey(study, "Clinpath Runs", "objectId", "Id"));
+                runId.setFk(new QueryForeignKey(study, "Clinpath Runs", "objectid", "Id"));
+        }
+
+        ColumnInfo parentId = ti.getColumn("parentId");
+        if (parentId != null)
+        {
+            parentId.setLabel("Encounter Id");
+            UserSchema study = getStudyUserSchema(ti);
+            if (study != null)
+                parentId.setFk(new QueryForeignKey(study, "Clinical Encounters", "objectid", "Id"));
         }
 
         setScriptIncludes((AbstractTableInfo) ds);
@@ -328,18 +349,11 @@ public class DefaultEHRCustomizer implements TableCustomizer
                 col.setIsUnselectable(true);
                 col.setFk(new QueryForeignKey(us, "protocolActiveAnimals", "protocol", "protocol"));
 
-                if (table.getColumn("activeAnimals") == null)
-                    table.addColumn(col);
-
                 ColumnInfo col2 = table.addColumn(new WrappedColumn(protocolCol, "totalProjects"));
                 col2.setLabel("Total Projects");
                 col2.setUserEditable(false);
                 col2.setIsUnselectable(true);
                 col2.setFk(new QueryForeignKey(us, "protocolTotalProjects", "protocol", "protocol"));
-
-                if (table.getColumn("totalProjects") == null)
-                    table.addColumn(col2);
-
             }
         }
     }
@@ -347,7 +361,7 @@ public class DefaultEHRCustomizer implements TableCustomizer
     private void customizeProjectTable(AbstractTableInfo table)
     {
         doSharedCustomization(table);
-_log.info(table.getName());
+
         UserSchema us = getUserSchema(table, "ehr");
         if (us != null)
         {
@@ -359,11 +373,6 @@ _log.info(table.getName());
                 col.setUserEditable(false);
                 col.setIsUnselectable(true);
                 col.setFk(new QueryForeignKey(us, "projectTotalActivelyAssigned", "project", "project"));
-
-                if (table.getColumn("activeAssignments") == null)
-                    table.addColumn(col);
-                else
-                    _log.info("col present");
             }
 
             if (table.getColumn("activelyAssignedBySpecies") == null)
@@ -373,11 +382,6 @@ _log.info(table.getName());
                 col2.setUserEditable(false);
                 col2.setIsUnselectable(true);
                 col2.setFk(new QueryForeignKey(us, "projectTotalActivelyAssignedBySpecies", "project", "project"));
-
-                if (table.getColumn("activelyAssignedBySpecies") == null)
-                    table.addColumn(col2);
-                else
-                    _log.info("col present2");
             }
         }
     }

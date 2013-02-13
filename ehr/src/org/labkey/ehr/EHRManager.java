@@ -283,7 +283,7 @@ public class EHRManager
      * @param commitChanges
      * @return
      */
-    public List<String> ensureDatasetPropertyDescriptors(Container c, User u, boolean commitChanges)
+    public List<String> ensureDatasetPropertyDescriptors(Container c, User u, boolean commitChanges, boolean rebuildIndexes)
     {
         List<String> messages = new ArrayList<String>();
 
@@ -466,13 +466,34 @@ public class EHRManager
                     }
 
                     boolean exists = indexNames.contains(indexName);
+                    if (exists && rebuildIndexes)
+                    {
+                        if (commitChanges)
+                        {
+                            messages.add("Dropping index on column: " + col + " for dataset: " + d.getLabel());
+                            String sqlString = "DROP INDEX " + indexName + " ON " + realTable.getSelectName();
+                            SQLFragment sql = new SQLFragment(sqlString);
+                            SqlExecutor se = new SqlExecutor(schema);
+                            se.execute(sql);
+                        }
+                        else
+                        {
+                            messages.add("Will drop/recreate index on column: " + col + " for dataset: " + d.getLabel());
+                        }
+                        exists = false;
+                    }
 
                     if (!exists)
                     {
                         if (commitChanges)
                         {
                             messages.add("Creating index on column: " + col + " for dataset: " + d.getLabel());
-                            SQLFragment sql = new SQLFragment("CREATE INDEX " + indexName + " ON " + realTable.getSelectName() + "(" + col + ")");
+                            String sqlString = "CREATE INDEX " + indexName + " ON " + realTable.getSelectName() + "(" + col + ")";
+                            if (schema.getSqlDialect().isSqlServer())
+                            {
+                                sqlString += " WITH (DATA_COMPRESSION = ROW)";
+                            }
+                            SQLFragment sql = new SQLFragment(sqlString);
                             SqlExecutor se = new SqlExecutor(schema);
                             se.execute(sql);
                         }

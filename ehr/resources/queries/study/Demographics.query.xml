@@ -35,7 +35,7 @@
                         <fk>
                             <fkDbSchema>ehr_lookups</fkDbSchema>
                             <fkTable>status_codes</fkTable>
-                            <fkColumnName>Code</fkColumnName>
+                            <fkColumnName>value</fkColumnName>
                         </fk>
                     </column>
                     <column columnName="calculated_status">
@@ -165,8 +165,8 @@
                         <columnTitle>Condition</columnTitle>
                         <fk>
                             <fkDbSchema>ehr_lookups</fkDbSchema>
-                            <fkTable>condition_codes</fkTable>
-                            <fkColumnName>Code</fkColumnName>
+                            <fkTable>housing_condition_codes</fkTable>
+                            <fkColumnName>value</fkColumnName>
                         </fk>
                     </column>
                     <!--NOTE: being depreciated-->
@@ -214,7 +214,7 @@
                         <fk>
                           <fkDbSchema>ehr_lookups</fkDbSchema>
                           <fkTable>viral_status</fkTable>
-                          <fkColumnName>viral_status</fkColumnName>
+                          <fkColumnName>value</fkColumnName>
                         </fk>
                     </column>
                     <column columnName="parentid">

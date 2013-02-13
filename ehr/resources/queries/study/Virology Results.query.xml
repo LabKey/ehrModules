@@ -20,13 +20,8 @@
                           <!--<fkColumnName>objectid</fkColumnName>-->
                         <!--</fk>-->
                     </column>
-                    <column columnName="runId" wrappedColumnName="parentid">
+                    <column columnName="runid">
                         <isHidden>false</isHidden>
-                        <fk>
-                          <fkDbSchema>study</fkDbSchema>
-                          <fkTable>clinpathRunsParent</fkTable>
-                          <fkColumnName>objectid</fkColumnName>
-                        </fk>
                     </column>
                     <column columnName="method">
                       <!--<nullable>false</nullable>-->
@@ -34,7 +29,7 @@
                       <fk>
                         <fkDbSchema>ehr_lookups</fkDbSchema>
                         <fkTable>virology_method</fkTable>
-                        <fkColumnName>method</fkColumnName>
+                        <fkColumnName>value</fkColumnName>
                       </fk>
                     </column>
                     <column columnName="virus">
@@ -72,7 +67,7 @@
                         <fk>
                           <fkDbSchema>ehr_lookups</fkDbSchema>
                           <fkTable>clinpath_sampletype</fkTable>
-                          <fkColumnName>sampletype</fkColumnName>
+                          <fkColumnName>value</fkColumnName>
                         </fk>
                     </column>
                     <column columnName="sampleType">

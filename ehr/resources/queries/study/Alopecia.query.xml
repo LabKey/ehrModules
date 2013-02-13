@@ -20,9 +20,10 @@
                     <column columnName="score">
                         <columnTitle>Alopecia Score</columnTitle>
                         <fk>
-                          <fkDbSchema>ehr_lookups</fkDbSchema>
-                          <fkTable>alopecia_score</fkTable>
-                          <fkColumnName>score</fkColumnName>
+                            <fkDbSchema>ehr_lookups</fkDbSchema>
+                            <fkTable>alopecia_score</fkTable>
+                            <fkColumnName>value</fkColumnName>
+                            <fkDisplayColumnName>value</fkDisplayColumnName>
                         </fk>
                     </column>
                     <column columnName="cause">
@@ -30,7 +31,7 @@
                         <fk>
                           <fkDbSchema>ehr_lookups</fkDbSchema>
                           <fkTable>alopecia_cause</fkTable>
-                          <fkColumnName>cause</fkColumnName>
+                          <fkColumnName>value</fkColumnName>
                         </fk>
                     </column>
                     <column columnName="head">

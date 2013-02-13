@@ -1463,8 +1463,8 @@ EHR.ext.BloodSelectorPanel = Ext.extend(Ext.Panel, {
                 ,fieldLabel: 'Assigned To'
                 ,ref: 'billedbyField'
                 ,xtype: 'combo'
-                ,displayField:'title'
-                ,valueField: 'code'
+                ,displayField:'description'
+                ,valueField: 'value'
                 ,typeAhead: true
                 ,mode: 'local'
                 ,triggerAction: 'all'
@@ -1473,7 +1473,7 @@ EHR.ext.BloodSelectorPanel = Ext.extend(Ext.Panel, {
                 ,store: new LABKEY.ext.Store({
                     schemaName: 'ehr_lookups',
                     queryName: 'blood_billed_by',
-                    sort: 'title',
+                    sort: 'description',
                     autoLoad: true
                 })
             }],

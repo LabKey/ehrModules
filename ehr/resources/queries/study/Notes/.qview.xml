@@ -4,7 +4,6 @@
        <column name="date" />
 	   <column name="enddate" />
        <column name="category" />
-       <column name="userid" />
        <column name="value" />
        <column name="remark" />
        <column name="qcstate" />

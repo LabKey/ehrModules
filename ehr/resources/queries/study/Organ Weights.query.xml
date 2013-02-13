@@ -70,7 +70,7 @@
                       <fk>
                         <fkDbSchema>ehr_lookups</fkDbSchema>
                         <fkTable>snomed_qualifiers</fkTable>
-                        <fkColumnName>qualifier</fkColumnName>
+                        <fkColumnName>value</fkColumnName>
                       </fk>
                     </column>
                 </columns>

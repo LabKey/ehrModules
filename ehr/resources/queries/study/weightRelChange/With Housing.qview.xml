@@ -1,0 +1,42 @@
+<customView xmlns="http://labkey.org/data/xml/queryCustomView" hidden="true">
+    <columns>
+        <column name="Id/curLocation/area">
+            <properties>
+                <property name="columnTitle" value="Area"/>
+            </properties>
+        </column>
+        <column name="Id/curLocation/room">
+            <properties>
+                <property name="columnTitle" value="Room"/>
+            </properties>
+        </column>
+        <column name="Id/curLocation/cage">
+            <properties>
+                <property name="columnTitle" value="Cage"/>
+            </properties>
+        </column>
+        <column name="Id"/>
+        <column name="LatestWeightDate" />
+        <column name="LatestWeight" />
+        <column name="date" />
+        <column name="weight">
+          <properties>
+            <property name="columnTitle" value="Old Weight (kg)"/>
+          </properties>
+        </column>
+
+        <column name="PctChange" />
+        <column name="IntervalInDays" />
+   </columns>
+   <sorts>
+       <sort column="Id/curLocation/area" />
+       <sort column="Id/curLocation/room" />
+       <sort column="Id/curLocation/cage" />
+       <sort column="Id" />
+   </sorts>
+    <filters>
+        <filter column="PctChange" operator="lte" value="-10"/>
+        <filter column="date" operator="dategte" value="-180d" />
+        <!--<filter column="qcstate/publicdata" operator="eq" value="true"/>-->
+    </filters>
+</customView>

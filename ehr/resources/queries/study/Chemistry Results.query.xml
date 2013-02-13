@@ -13,13 +13,10 @@
                     <column columnName="date">
                         <formatString>yyyy-MM-dd</formatString>
                     </column>
-                    <column columnName="qualResult">
-                        <displayWidth>120</displayWidth>
-                    </column>
                     <column columnName="units">
                         <displayWidth>60</displayWidth>
                     </column>
-                    <column columnName="RefRange" wrappedColumnName="lsid">
+                    <column columnName="refRange" wrappedColumnName="lsid">
                         <columnTitle>Ref Range</columnTitle>
                         <isUnselectable>true</isUnselectable>
                         <isHidden>false</isHidden>
@@ -36,13 +33,8 @@
                           <!--<fkColumnName>objectid</fkColumnName>-->
                         <!--</fk>-->
                     </column>
-                    <column columnName="runId" wrappedColumnName="parentid">
+                    <column columnName="runid">
                         <isHidden>false</isHidden>
-                        <fk>
-                          <fkDbSchema>study</fkDbSchema>
-                          <fkTable>clinpathRunsParent</fkTable>
-                          <fkColumnName>objectid</fkColumnName>
-                        </fk>
                     </column>
                     <column columnName="result">
                         <columnTitle>Result</columnTitle>
@@ -63,11 +55,12 @@
                       <fk>
                         <fkDbSchema>ehr_lookups</fkDbSchema>
                         <fkTable>chemistry_method</fkTable>
-                        <fkColumnName>method</fkColumnName>
+                        <fkColumnName>value</fkColumnName>
                       </fk>
                     </column>
-                    <column columnName="qualResult">
+                    <column columnName="qualresult">
                         <columnTitle>Qualitative Result</columnTitle>
+                        <displayWidth>120</displayWidth>
                     </column>
                     <column columnName="units">
                         <columnTitle>Units</columnTitle>

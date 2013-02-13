@@ -6,7 +6,6 @@
                 <columns>
                     <column columnName="room">
                         <isKeyField>true</isKeyField>
-                        <displayWidth>40</displayWidth>
                     </column>
                     <column columnName="assignments" wrappedColumnName="room">
                         <isUserEditable>false</isUserEditable>

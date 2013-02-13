@@ -59,7 +59,6 @@
                         <shownInInsertView>true</shownInInsertView>
                         <shownInUpdateView>true</shownInUpdateView>
                         <isHidden>false</isHidden>
-                        <columnTitle>Cage</columnTitle>
                         <url>/EHR/cageDetails.view?
                             room=${room}&amp;
                             cage=${cage}
@@ -67,11 +66,6 @@
                     </column>
                     <column columnName="cond">
                         <columnTitle>Condition</columnTitle>
-                        <fk>
-                            <fkDbSchema>ehr_lookups</fkDbSchema>
-                            <fkTable>condition_codes</fkTable>
-                            <fkColumnName>Code</fkColumnName>
-                        </fk>
                     </column>
                     <column columnName="origin">
                         <columnTitle>Origin</columnTitle>
@@ -86,7 +80,8 @@
                         <fk>
                             <fkDbSchema>ehr_lookups</fkDbSchema>
                             <fkTable>birth_type</fkTable>
-                            <fkColumnName>type</fkColumnName>
+                            <fkColumnName>value</fkColumnName>
+                            <fkDisplayColumnName>value</fkDisplayColumnName>
                         </fk>
                     </column>
                     <column columnName="parentid">
@@ -107,14 +102,6 @@
                     </column>
                     <column columnName="conception">
                         <columnTitle>Conception</columnTitle>
-                    </column>
-                    <column columnName="birthCondition">
-                        <columnTitle>Birth Condition</columnTitle>
-                        <fk>
-                            <fkDbSchema>ehr_lookups</fkDbSchema>
-                            <fkTable>birth_condition</fkTable>
-                            <fkColumnName>rowid</fkColumnName>
-                        </fk>
                     </column>
                 </columns>
             </table>

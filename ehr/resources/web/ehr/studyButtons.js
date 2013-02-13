@@ -1502,12 +1502,12 @@ EHR.DatasetButtons = new function(){
                                     xtype: 'labkey-store',
                                     schemaName: 'ehr_lookups',
                                     queryName: 'blood_billed_by',
-                                    columns: 'code,title',
+                                    columns: 'value,description',
                                     sort: 'title',
                                     autoLoad: true
                                 }),
-                                displayField: 'title',
-                                valueField: 'code',
+                                displayField: 'description',
+                                valueField: 'value',
                                 ref: 'billedby'
                             },{
                                 xtype: 'textarea',

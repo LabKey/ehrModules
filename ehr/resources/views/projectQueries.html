@@ -18,7 +18,7 @@ Ext4.onReady(function(){
         tag: 'ul',
         children: [{
             tag: 'li',
-            html: '<a href="<%=contextPath%>/query' + ctx['EHRStudyContainer'] + '/executeQuery.view?schemaName=ehr&query.queryName=Project&query.viewName=Projects With Active Assignments">View All Projects With Active Assignments</a>'
+            html: '<a href="<%=contextPath%>/query' + ctx['EHRStudyContainer'] + '/executeQuery.view?schemaName=ehr&query.queryName=Project&query.activeAssignments/activeAssignments~gt=0">View All Projects With Active Assignments</a>'
         }]
     },{
         tag: 'div',
