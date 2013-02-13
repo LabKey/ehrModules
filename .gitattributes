@@ -811,13 +811,7 @@ ehr/src/org/labkey/ehr/EHRModule.java -text
 ehr/src/org/labkey/ehr/EHRProperties.java -text
 ehr/src/org/labkey/ehr/EHRSchema.java -text
 ehr/src/org/labkey/ehr/EHRServiceImpl.java -text
-ehr/src/org/labkey/ehr/notification/AbnormalLabResultsNotification.java -text
 ehr/src/org/labkey/ehr/notification/AbstractEHRNotification.java -text
-ehr/src/org/labkey/ehr/notification/AdminAlertsNotification.java -text
-ehr/src/org/labkey/ehr/notification/ColonyAlertsLiteNotification.java -text
-ehr/src/org/labkey/ehr/notification/ColonyAlertsNotification.java -text
-ehr/src/org/labkey/ehr/notification/ColonyMgmtNotification.java -text
-ehr/src/org/labkey/ehr/notification/LabResultSummaryNotification.java -text
 ehr/src/org/labkey/ehr/notification/OverdueWeightsNotification.java -text
 ehr/src/org/labkey/ehr/notification/WeightAlerts.java -text
 ehr/src/org/labkey/ehr/pipeline/KinshipImportTask.java -text
