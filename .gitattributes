@@ -216,7 +216,6 @@ ehr/resources/queries/ehr_lookups/lab_test_range.query.xml -text
 ehr/resources/queries/ehr_lookups/lab_tests.query.xml -text
 ehr/resources/queries/ehr_lookups/lab_tests.sql -text
 ehr/resources/queries/ehr_lookups/next30Days.sql -text
-ehr/resources/queries/ehr_lookups/room_list.sql -text
 ehr/resources/queries/ehr_lookups/rooms.query.xml -text
 ehr/resources/queries/ehr_lookups/roomsAssignment.query.xml -text
 ehr/resources/queries/ehr_lookups/roomsAssignment.sql -text
@@ -229,7 +228,6 @@ ehr/resources/queries/study/ActiveHousing.query.xml -text
 ehr/resources/queries/study/Alopecia.js -text
 ehr/resources/queries/study/Alopecia.query.xml -text
 ehr/resources/queries/study/Alopecia/.qview.xml -text
-ehr/resources/queries/study/AntibioticSensitivity.js -text
 ehr/resources/queries/study/Arrival.js -text
 ehr/resources/queries/study/Arrival.query.xml -text
 ehr/resources/queries/study/Assignment.js -text
@@ -320,7 +318,6 @@ ehr/resources/queries/study/HousingOverlapsDateOnly.sql -text
 ehr/resources/queries/study/Inbreeding[!!-~]Coefficients.js -text
 ehr/resources/queries/study/Inbreeding[!!-~]Coefficients.query.xml -text
 ehr/resources/queries/study/Inbreeding[!!-~]Coefficients/.qview.xml -text
-ehr/resources/queries/study/Matings.js -text
 ehr/resources/queries/study/Measurements.js -text
 ehr/resources/queries/study/Necropsies.js -text
 ehr/resources/queries/study/Notes.js -text
@@ -390,7 +387,6 @@ ehr/resources/queries/study/assignmentTotalCoAssigned.query.xml -text
 ehr/resources/queries/study/assignmentTotalCoAssigned.sql -text
 ehr/resources/queries/study/assignmentTotalDaysAssigned.query.xml -text
 ehr/resources/queries/study/assignmentTotalDaysAssigned.sql -text
-ehr/resources/queries/study/chemPivot.sql -text
 ehr/resources/queries/study/chemistryRefRange.query.xml -text
 ehr/resources/queries/study/chemistryRefRange.sql -text
 ehr/resources/queries/study/colonyPopulationByAge.query.xml -text
@@ -452,14 +448,11 @@ ehr/resources/queries/study/demographicsWeightChange/10[!!-~]Pct[!!-~]Drop[!!-~]
 ehr/resources/queries/study/demographicsWeightChange/10[!!-~]Pct[!!-~]Drop[!!-~]In[!!-~]Last[!!-~]90[!!-~]Days.qview.xml -text
 ehr/resources/queries/study/demographicsWeightChange/With[!!-~]Id.qview.xml -text
 ehr/resources/queries/study/duplicateAssignments.sql -text
-ehr/resources/queries/study/hematologyAbsCount.sql -text
-ehr/resources/queries/study/hematologyPivot.sql -text
 ehr/resources/queries/study/hematologyRefRange.query.xml -text
 ehr/resources/queries/study/hematologyRefRange.sql -text
 ehr/resources/queries/study/housing/.qview.xml -text
 ehr/resources/queries/study/housing/Active[!!-~]Housing.qview.xml -text
 ehr/resources/queries/study/housing/Search[!!-~]Panel.qview.xml -text
-ehr/resources/queries/study/housingByRoomCage.sql -text
 ehr/resources/queries/study/housingConditionProblems/.qview.xml -text
 ehr/resources/queries/study/housingConditionProblems/Problems.qview.xml -text
 ehr/resources/queries/study/housingProblems.query.xml -text
@@ -469,9 +462,7 @@ ehr/resources/queries/study/housingRoommates.sql -text
 ehr/resources/queries/study/housingRoommates/.qview.xml -text
 ehr/resources/queries/study/housingTotalRoommates.query.xml -text
 ehr/resources/queries/study/housingTotalRoommates.sql -text
-ehr/resources/queries/study/majorEvents.sql -text
 ehr/resources/queries/study/studyData.query.xml -text
-ehr/resources/queries/study/urinalysisPivot.sql -text
 ehr/resources/queries/study/urinalysisRefRange.query.xml -text
 ehr/resources/queries/study/urinalysisRefRange.sql -text
 ehr/resources/queries/study/validateFinalWeights.sql -text
