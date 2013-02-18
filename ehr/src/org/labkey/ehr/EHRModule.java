@@ -141,13 +141,6 @@ public class EHRModule extends ExtendedSimpleModule
     }
 
     @Override
-    @NotNull
-    public Set<DbSchema> getSchemasToTest()
-    {
-        return PageFlowUtil.set(EHRSchema.getInstance().getSchema(), DbSchema.get("ehr_lookups"));
-    }
-
-    @Override
     public JSONObject getPageContextJson(User u, Container c)
     {
         Map<String, String> map = getDefaultPageContextJson(u, c);
