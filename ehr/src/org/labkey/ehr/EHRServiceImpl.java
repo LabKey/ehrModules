@@ -16,6 +16,7 @@
 package org.labkey.ehr;
 
 import org.apache.log4j.Logger;
+import org.jetbrains.annotations.Nullable;
 import org.labkey.api.collections.CaseInsensitiveHashMap;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.ContainerManager;
@@ -23,6 +24,8 @@ import org.labkey.api.data.PropertyManager;
 import org.labkey.api.data.TableCustomizer;
 import org.labkey.api.ehr.EHRService;
 import org.labkey.api.module.Module;
+import org.labkey.api.module.ModuleLoader;
+import org.labkey.api.query.DetailsURL;
 import org.labkey.api.resource.Resource;
 import org.labkey.api.security.User;
 import org.labkey.api.util.Pair;
@@ -45,6 +48,7 @@ import java.util.Set;
 public class EHRServiceImpl extends EHRService
 {
     private Set<Module> _registeredModules = new HashSet<Module>();
+    private Map<REPORT_LINK_TYPE, List<ReportLink>> _reportLinks = new HashMap<REPORT_LINK_TYPE, List<ReportLink>>();
     private List<Pair<Module, Resource>> _extraTriggerScripts = new ArrayList<Pair<Module, Resource>>();
     private Map<Module, List<ClientDependency>> _clientDependencies = new HashMap<Module, List<ClientDependency>>();
     private Map<String, Map<String, List<Pair<Module, Class<? extends TableCustomizer>>>>> _tableCustomizers = new CaseInsensitiveHashMap<Map<String, List<Pair<Module, Class<? extends TableCustomizer>>>>>();
@@ -225,13 +229,72 @@ public class EHRServiceImpl extends EHRService
         return "yyyy-MM-dd HH:mm";
     }
 
-    public User getEHRUser()
-    {
-        return getEHRUser(ContainerManager.getRoot());
-    }
-
     public User getEHRUser(Container c)
     {
         return EHRManager.get().getEHRUser(c);
+    }
+
+    public void registerReportLink(REPORT_LINK_TYPE type, String label, Module owner, DetailsURL url, @Nullable String category)
+    {
+        List<ReportLink> links = _reportLinks.get(type);
+
+        if (links == null)
+            links = new ArrayList<ReportLink>();
+
+        links.add(new ReportLink(label, owner, url, category));
+
+        _reportLinks.put(type, links);
+    }
+
+    public List<ReportLink> getReportLinks(Container c, User u, REPORT_LINK_TYPE type)
+    {
+        List<ReportLink> links = _reportLinks.get(type);
+        if (links == null)
+            return Collections.emptyList();
+
+        List<ReportLink> ret = new ArrayList<ReportLink>();
+        for (ReportLink l : links)
+        {
+            if (l.isAvailable(c, u))
+                ret.add(l);
+        }
+
+        return Collections.unmodifiableList(ret);
+    }
+
+    public class ReportLink
+    {
+        private DetailsURL _url;
+        private String _label;
+        private Module _owner;
+        private String _category;
+
+        public ReportLink(String label, Module owner, DetailsURL url, @Nullable String category)
+        {
+            _url = url;
+            _label = label;
+            _owner = owner;
+            _category = category;
+        }
+
+        public boolean isAvailable(Container c, User u)
+        {
+            return c.getActiveModules().contains(_owner);
+        }
+
+        public DetailsURL getUrl()
+        {
+            return _url;
+        }
+
+        public String getLabel()
+        {
+            return _label;
+        }
+
+        public String getCategory()
+        {
+            return _category;
+        }
     }
 }

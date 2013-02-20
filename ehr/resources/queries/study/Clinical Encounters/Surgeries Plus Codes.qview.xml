@@ -10,7 +10,7 @@
         <column name="major"/>
         <column name="participants" />
         <column name="summaries" />
-
+        <column name="codes" />
         <column name="qcstate" />
         <column name="taskid" />
         <column name="requestid" />

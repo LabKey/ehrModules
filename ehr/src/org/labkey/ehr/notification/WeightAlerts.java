@@ -174,13 +174,13 @@ public class WeightAlerts extends AbstractEHRNotification
                         List<Map<String, Object>> roomValue = areaValue.get(room);
                         for (Map<String, Object> map : roomValue)
                         {
-                            msg.append("<tr><td><a href='" + AppProps.getInstance().getBaseServerUrl() + AppProps.getInstance().getContextPath() + "/ehr" + c.getPath() +
-                                "/animalHistory.view?#inputType:singleSubject&showReport:1&subjects:" +
-                                map.get("Id") + "&combineSubj:true&activeReport:abstract'>" + map.get("Id") +
-                                "</a></td><td>" + area + "</td><td>" + room + "</td><td>" + map.get(roomKey) + "</td><td>" +
-                                    map.get("LatestWeight") + "</td><td>" + _dateTimeFormat.format(map.get("LatestWeightDate")) + "</td><td>" +
-                                    map.get("weight") + "</td><td>" + _dateTimeFormat.format(map.get("date")) + "</td><td>" + map.get("PctChange") +
-                                "</td><td>" + map.get("IntervalInDays") + "</td></tr>");
+                            msg.append("<tr><td><a href='" + AppProps.getInstance().getBaseServerUrl() + AppProps.getInstance().getContextPath() + "/ehr" + c.getPath());
+                            msg.append("/animalHistory.view?#inputType:singleSubject&showReport:1&subjects:");
+                            msg.append(map.get("Id")).append("&combineSubj:true&activeReport:abstract'>").append(map.get("Id"));
+                            msg.append("</a></td><td>").append(area).append("</td><td>").append(room).append("</td><td>").append(map.get(roomKey)).append("</td><td>");
+                            msg.append(map.get("LatestWeight")).append("</td><td>").append(_dateTimeFormat.format(map.get("LatestWeightDate"))).append("</td><td>");
+                            msg.append(map.get("weight")).append("</td><td>").append(_dateTimeFormat.format(map.get("date"))).append("</td><td>").append(map.get("PctChange"));
+                            msg.append("</td><td>").append(map.get("IntervalInDays")).append("</td></tr>");
                         }
                     }
                 }

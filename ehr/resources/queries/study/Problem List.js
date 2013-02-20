@@ -20,6 +20,9 @@ function setDescription(row, errors){
     //we need to set description for every field
     var description = new Array();
 
+    if(row.category)
+        description.push('Category: '+row.problem_no);
+
     if(row.problem_no)
         description.push('Problem No: '+row.problem_no);
 

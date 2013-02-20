@@ -15,29 +15,36 @@
 
 package org.labkey.ehr;
 
+import org.json.JSONArray;
 import org.labkey.api.action.ApiAction;
 import org.labkey.api.action.ApiResponse;
 import org.labkey.api.action.ApiSimpleResponse;
 import org.labkey.api.action.ConfirmAction;
 import org.labkey.api.action.SimpleViewAction;
 import org.labkey.api.action.SpringActionController;
+import org.labkey.api.ehr.EHRService;
 import org.labkey.api.pipeline.PipelineStatusUrls;
-import org.labkey.api.pipeline.PipelineUrls;
-import org.labkey.api.security.IgnoresTermsOfUse;
 import org.labkey.api.security.RequiresPermissionClass;
 import org.labkey.api.security.permissions.AdminPermission;
 import org.labkey.api.security.permissions.ReadPermission;
 import org.labkey.api.util.PageFlowUtil;
 import org.labkey.api.util.URLHelper;
+import org.labkey.api.view.ActionURL;
 import org.labkey.api.view.HtmlView;
-import org.labkey.api.view.JspView;
 import org.labkey.api.view.NavTree;
+import org.labkey.api.view.UnauthorizedException;
+import org.labkey.ehr.history.ClinicalHistoryManager;
+import org.labkey.ehr.history.HistoryRow;
 import org.labkey.ehr.pipeline.KinshipRunnable;
 import org.springframework.validation.BindException;
 import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class EHRController extends SpringActionController
 {
@@ -56,35 +63,41 @@ public class EHRController extends SpringActionController
             ApiResponse resp = new ApiSimpleResponse();
 
             EHRManager.get().getDataEntryItems(getContainer(), getUser());
-
-
-            return resp;
-        }
-    }
-
-    @RequiresPermissionClass(ReadPermission.class)
-    public class GetEncounterDetailsAction extends ApiAction<HistoryForm>
-    {
-        public ApiResponse execute(HistoryForm form, BindException errors)
-        {
-            ApiResponse resp = new ApiSimpleResponse();
-
-
-
+            //TODO
 
             return resp;
         }
     }
 
     @RequiresPermissionClass(ReadPermission.class)
-    public class GetCaseDetailsAction extends ApiAction<HistoryForm>
+    public class GetClinicalHistoryAction extends ApiAction<HistoryForm>
     {
         public ApiResponse execute(HistoryForm form, BindException errors)
         {
             ApiResponse resp = new ApiSimpleResponse();
 
+            if (form.getSubjectIds() == null || form.getSubjectIds().length == 0)
+            {
+                errors.reject(ERROR_MSG, "Must provide at least one subject Id");
+                return null;
+            }
 
+            Map<String, JSONArray> results = new HashMap<String, JSONArray>();
+            for (String subjectId : form.getSubjectIds())
+            {
+                JSONArray arr = new JSONArray();
 
+                List<HistoryRow> rows = ClinicalHistoryManager.get().getHistory(getContainer(), getUser(), subjectId, form.getMinDate(), form.getMaxDate());
+                for (HistoryRow row : rows)
+                {
+                    arr.put(row.toJSON());
+                }
+
+                results.put(subjectId, arr);
+            }
+
+            resp.getProperties().put("success", true);
+            resp.getProperties().put("results", results);
 
             return resp;
         }
@@ -125,6 +138,36 @@ public class EHRController extends SpringActionController
         public boolean handlePost(EnsureDatasetPropertiesForm form, BindException errors) throws Exception
         {
             List<String> messages = EHRManager.get().ensureDatasetPropertyDescriptors(getContainer(),  getUser(), true, form.isRebuildIndexes());
+            return true;
+        }
+    }
+
+    @RequiresPermissionClass(AdminPermission.class)
+    public class EnsureEHRSchemaIndexesAction extends ConfirmAction<Object>
+    {
+        public void validateCommand(Object form, Errors errors)
+        {
+
+        }
+
+        public URLHelper getSuccessURL(Object form)
+        {
+            return getContainer().getStartURL(getUser());
+        }
+
+        public ModelAndView getConfirmView(Object form, BindException errors) throws Exception
+        {
+            if (!getUser().isAdministrator())
+            {
+                throw new UnauthorizedException("Only site admins can view this page");
+            }
+
+            return new HtmlView("Several of the EHR schema tables can contain a large number of records.  Indexes are created by the SQL scripts; however, they are not automatically compressed.  This action will switch row compression on for these indexes.  It will only work for SQLServer.  Do you want to continue?");
+        }
+
+        public boolean handlePost(Object form, BindException errors) throws Exception
+        {
+            EHRManager.get().compressEHRSchemaIndexes();
             return true;
         }
     }
@@ -258,6 +301,12 @@ public class EHRController extends SpringActionController
     public static class HistoryForm
     {
         private String _parentId;
+        private String _runId;
+        private String _caseId;
+
+        private String[] _subjectIds;
+        private Date _minDate;
+        private Date _maxDate;
 
         public String getParentId()
         {
@@ -268,5 +317,118 @@ public class EHRController extends SpringActionController
         {
             _parentId = parentId;
         }
+
+        public String getRunId()
+        {
+            return _runId;
+        }
+
+        public void setRunId(String runId)
+        {
+            _runId = runId;
+        }
+
+        public String getCaseId()
+        {
+            return _caseId;
+        }
+
+        public void setCaseId(String caseId)
+        {
+            _caseId = caseId;
+        }
+
+        public String[] getSubjectIds()
+        {
+            return _subjectIds;
+        }
+
+        public void setSubjectIds(String[] subjectIds)
+        {
+            _subjectIds = subjectIds;
+        }
+
+        public Date getMinDate()
+        {
+            return _minDate;
+        }
+
+        public void setMinDate(Date minDate)
+        {
+            _minDate = minDate;
+        }
+
+        public Date getMaxDate()
+        {
+            return _maxDate;
+        }
+
+        public void setMaxDate(Date maxDate)
+        {
+            _maxDate = maxDate;
+        }
     }
+
+    @RequiresPermissionClass(ReadPermission.class)
+    public class GetReportLinksAction extends ApiAction<ReportLinkForm>
+    {
+        public ApiResponse execute(ReportLinkForm form, BindException errors)
+        {
+            ApiResponse resp = new ApiSimpleResponse();
+
+            List<Map<String, Object>> ret = new ArrayList<Map<String, Object>>();
+
+            if (form.getLinkTypes() == null)
+            {
+                errors.reject(ERROR_MSG, "No link types specified");
+                return null;
+            }
+
+            for (String linkType : form.getLinkTypes())
+            {
+                try
+                {
+                    EHRService.REPORT_LINK_TYPE type = EHRService.REPORT_LINK_TYPE.valueOf(linkType);
+
+                    List<EHRServiceImpl.ReportLink> items = ((EHRServiceImpl)EHRServiceImpl.get()).getReportLinks(getContainer(), getUser(), type);
+                    for (EHRServiceImpl.ReportLink link : items)
+                    {
+                        Map<String, Object> item = new HashMap<String, Object>();
+                        ActionURL url = link.getUrl().copy(getContainer()).getActionURL();
+                        item.put("label", link.getLabel());
+                        item.put("category", link.getCategory());
+
+                        item.put("controller", url.getController());
+                        item.put("action", url.getAction());
+                        item.put("params", url.getParameterMap());
+                        ret.add(item);
+                    }
+                }
+                catch (IllegalArgumentException e)
+                {
+                    errors.reject(ERROR_MSG, "Invalid link type: " + linkType);
+                    return null;
+                }
+            }
+
+            resp.getProperties().put("items", ret);
+            return resp;
+        }
+    }
+
+    public static class ReportLinkForm
+    {
+        private String[] _linkTypes;
+
+        public String[] getLinkTypes()
+        {
+            return _linkTypes;
+        }
+
+        public void setLinkTypes(String[] linkTypes)
+        {
+            _linkTypes = linkTypes;
+        }
+    }
+
 }

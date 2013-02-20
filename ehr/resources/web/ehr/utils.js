@@ -755,6 +755,28 @@ EHR.Utils = new function(){
                     }
                 }]
             }).show(el);
+        },
+
+        /**
+         * Returns the list of links that have been registered to appear on a given page
+         * @param config A config object
+         * @param {array} config.linkTypes
+         * @param {function} config.success The success callback.
+         * @param {function} config.failure The failure callback.  Note: this will be called for a failure on each individual query, as opposed to one failure callback for the entire set, so it could potentially be called more than once.
+         * @param {object} config.scope The scope of the callbacks.
+         */
+        getReportLinks: function(config){
+            if (!config || !config.linkTypes){
+                alert('Must provide an array of linkTypes');
+                return;
+            }
+
+            return LABKEY.Ajax.request({
+                url : LABKEY.ActionURL.buildURL('ehr', 'getReportLinks', config.containerPath, {linkTypes: config.linkTypes}),
+                method : 'POST',
+                success: LABKEY.Utils.getCallbackWrapper(LABKEY.Utils.getOnSuccess(config), config.scope),
+                failure: LDK.Utils.getErrorCallback()
+            });
         }
     }
 }

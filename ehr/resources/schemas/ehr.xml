@@ -68,6 +68,10 @@
                 <ns:columnTitle>Record Id</ns:columnTitle>
                 <ns:nullable>true</ns:nullable>
             </ns:column>
+            <ns:column columnName="set_number">
+                <ns:columnTitle>Set Number</ns:columnTitle>
+                <ns:nullable>true</ns:nullable>
+            </ns:column>
             <ns:column columnName="code">
                 <ns:columnTitle>SNOMED Code</ns:columnTitle>
                 <ns:nullable>true</ns:nullable>
@@ -320,6 +324,7 @@
                 <ns:nullable>true</ns:nullable>
             </ns:column>
             <ns:column columnName="sort_order">
+                <ns:columnTitle>Sort Order</ns:columnTitle>
                 <ns:nullable>true</ns:nullable>
             </ns:column>
             <ns:column columnName="containerpath">
@@ -1472,8 +1477,8 @@
             <ns:columnTitle>User Id</ns:columnTitle>
                 </ns:column>
             <ns:column columnName="role"/>
-            <ns:column columnName="procedure_id">
-                <ns:columnTitle>Procedure Id</ns:columnTitle>
+            <ns:column columnName="parentid">
+                <ns:columnTitle>Encounter Id</ns:columnTitle>
             </ns:column>
             <ns:column columnName="comment"/>
             <ns:column columnName="objectid"/>

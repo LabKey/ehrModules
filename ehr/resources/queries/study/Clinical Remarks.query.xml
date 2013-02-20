@@ -50,24 +50,31 @@
                     </column>
                     <column columnName="hx">
                         <columnTitle>History</columnTitle>
+                        <facetingBehavior>ALWAYS_OFF</facetingBehavior>
                     </column>
                     <column columnName="so">
                         <columnTitle>Subjective/Objective</columnTitle>
+                        <facetingBehavior>ALWAYS_OFF</facetingBehavior>
                     </column>
                     <column columnName="s">
                         <columnTitle>Subjective</columnTitle>
+                        <facetingBehavior>ALWAYS_OFF</facetingBehavior>
                     </column>
                     <column columnName="o">
                         <columnTitle>Objective</columnTitle>
+                        <facetingBehavior>ALWAYS_OFF</facetingBehavior>
                     </column>
                     <column columnName="a">
                         <columnTitle>Assessment</columnTitle>
+                        <facetingBehavior>ALWAYS_OFF</facetingBehavior>
                     </column>
                     <column columnName="p">
                         <columnTitle>Plan</columnTitle>
+                        <facetingBehavior>ALWAYS_OFF</facetingBehavior>
                     </column>
                     <column columnName="p2">
                         <columnTitle>P2</columnTitle>
+                        <facetingBehavior>ALWAYS_OFF</facetingBehavior>
                     </column>
                 </columns>
             </table>

@@ -55,8 +55,8 @@ Ext4.define('EHR.panel.AnimalHistoryPanel', {
                 viewName: rec.get('viewname'),
                 reportId: rec.get("report"),
                 dateFieldName: rec.get("datefieldname"),
-                areaFieldName: rec.get("queryhaslocation") ? 'room/area' : 'Id/curLocation/area/area',
-                roomFieldName: rec.get("queryhaslocation") ? 'room' : 'Id/curLocation/room/room',
+                areaFieldName: rec.get("queryhaslocation") ? 'room/area' : 'Id/curLocation/area',
+                roomFieldName: rec.get("queryhaslocation") ? 'room' : 'Id/curLocation/room',
                 cageFieldName: rec.get("queryhaslocation") ? 'cage' : 'Id/curLocation/cage',
                 todayOnly: false
             }
@@ -105,5 +105,36 @@ Ext4.define('EHR.panel.AnimalHistoryPanel', {
         xtype: 'ldk-nofiltersfiltertype',
         inputValue: LDK.panel.NoFiltersFilterType.filterName,
         label: LDK.panel.NoFiltersFilterType.label
-    }]
+    }],
+
+    resolveSubjectsFromHousing: function(tab, callback, scope){
+        Ext4.Msg.wait('Loading Ids For Location...');
+
+        var filters = [];
+        var filterArray = this.getFilterArray(tab);
+        if (filterArray.nonRemovable)
+            filters = filters.concat(tab.filterArray.nonRemovable);
+
+        if (filterArray.removable)
+            filters = filters.concat(tab.filterArray.removable);
+
+        LABKEY.Query.selectRows({
+            schemaName: 'study',
+            queryName: 'demographicsCurLocation',
+            filterArray: filters,
+            failure: LDK.Utils.getErrorCallback(),
+            success: function(results){
+                Ext4.Msg.hide();
+
+                var subjects = [];
+                Ext4.each(results.rows, function(row){
+                    subjects.push(row.Id);
+                }, this);
+
+                callback.apply(scope || this, [subjects, tab]);
+            },
+            scope: this
+        })
+
+    }
 });

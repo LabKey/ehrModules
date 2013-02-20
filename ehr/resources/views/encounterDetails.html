@@ -20,6 +20,7 @@ Ext4.onReady(function (){
         id: 'encounterDetails_' + webpart.wrapperDivId
     },{
         tag: 'div',
+        style: 'width: 100%',
         id: 'childTables_' + webpart.wrapperDivId
     }]
 
@@ -30,20 +31,35 @@ Ext4.onReady(function (){
         store: {
             schemaName: 'study',
             queryName: 'encounters',
-            filterArray: [LABKEY.Filter.create('objectid', LABKEY.ActionURL.getParameter('objectid'), LABKEY.Filter.Types.EQUAL)]
+            filterArray: [LABKEY.Filter.create('objectid', LABKEY.ActionURL.getParameter('objectid'), LABKEY.Filter.Types.EQUAL)],
+            listeners: {
+                load: function(store){
+                    if (store.getCount()){
+                        var id = store.getAt(0).get('Id');
+                        var date = store.getAt(0).get('date');
+
+                        if (id && date){
+                            Ext4.create('LDK.panel.WebpartPanel', {
+                                title: 'History',
+                                width: '100%',
+                                items: [{
+                                    xtype: 'ehr-clinicalhistorypanel',
+                                    width: 1200,
+                                    subjectId: id,
+                                    minDate: date,
+                                    maxDate: date
+                                }]
+                            }).render('childTables_' + webpart.wrapperDivId);
+                        }
+                    }
+                },
+                scope: this
+            }
         },
         title: 'Encounter Details',
         showBackBtn: false,
         renderTo: 'encounterDetails_' + webpart.wrapperDivId
     });
-
-    LDK.Utils.getReadOnlyQWP({
-        title: 'Records',
-        schemaName: 'study',
-        queryName: 'StudyData',
-        filterArray: [LABKEY.Filter.create('parentid', LABKEY.ActionURL.getParameter('objectid'), LABKEY.Filter.Types.EQUAL)],
-        sort: '-Date'
-    }).render('childTables_' + webpart.wrapperDivId);
 });
 
 </script>

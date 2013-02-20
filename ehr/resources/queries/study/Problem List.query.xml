@@ -26,6 +26,7 @@
                     </column>
                     <column columnName="code">
                         <columnTitle>Code</columnTitle>
+                        <isHidden>true</isHidden>
                         <fk>
                             <fkDbSchema>ehr_lookups</fkDbSchema>
                             <fkTable>snomed</fkTable>

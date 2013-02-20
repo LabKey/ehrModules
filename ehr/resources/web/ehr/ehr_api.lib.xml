@@ -7,6 +7,8 @@
         <script path="ehr/navMenu.js"/>
         <script path="ehr/databind.js"/>
         <script path="ehr/ehrStore.js"/>
+        <script path="ehr/data/ClinicalHistoryStore.js"/>
+        <script path="ehr/panel/ClinicalHistoryPanel.js"/>
         <script path="ehr/form/field/RoomField.js"/>
         <script path="ehr/form/field/CageField.js"/>
         <script path="ehr/ehrStoreCollection.js"/>

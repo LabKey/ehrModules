@@ -6,8 +6,3 @@
 
 require("ehr/triggers").initScript(this);
 
-function setDescription(row, errors){
-    var description = new Array();
-
-    return description;
-}

@@ -11,7 +11,7 @@
                 <deleteUrl />
                 <columns>
                     <column columnName="type">
-                        <!--<isHidden>true</isHidden>-->
+                        <columnTitle>Type</columnTitle>
                         <fk>
                             <fkDbSchema>ehr_lookups</fkDbSchema>
                             <fkTable>encounter_types</fkTable>
@@ -60,8 +60,36 @@
                         <columnTitle>Date Requested</columnTitle>
                         <isHidden>true</isHidden>
                     </column>
-                    <column columnName="type">
-                        <columnTitle>Type</columnTitle>
+                    <column columnName="participants" wrappedColumnName="objectid">
+                        <displayWidth>300</displayWidth>
+                        <fk>
+                            <fkDbSchema>ehr</fkDbSchema>
+                            <fkTable>encounter_participants_summary</fkTable>
+                            <fkColumnName>parentid</fkColumnName>
+                        </fk>
+                    </column>
+                    <column columnName="summaries" wrappedColumnName="objectid">
+                        <displayWidth>500</displayWidth>
+                        <fk>
+                            <fkDbSchema>ehr</fkDbSchema>
+                            <fkTable>encounter_summaries_summary</fkTable>
+                            <fkColumnName>parentid</fkColumnName>
+                        </fk>
+                    </column>
+                    <column columnName="flags" wrappedColumnName="objectid">
+                        <fk>
+                            <fkDbSchema>ehr</fkDbSchema>
+                            <fkTable>encounter_flags_summary</fkTable>
+                            <fkColumnName>parentid</fkColumnName>
+                        </fk>
+                    </column>
+                    <column columnName="codes" wrappedColumnName="objectid">
+                        <displayWidth>300</displayWidth>
+                        <fk>
+                            <fkDbSchema>ehr</fkDbSchema>
+                            <fkTable>snomed_tags_summary</fkTable>
+                            <fkColumnName>recordid</fkColumnName>
+                        </fk>
                     </column>
                 </columns>
             </table>

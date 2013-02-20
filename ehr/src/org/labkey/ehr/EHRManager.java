@@ -21,6 +21,7 @@ import org.labkey.api.collections.CaseInsensitiveHashSet;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.ContainerManager;
 import org.labkey.api.data.DbSchema;
+import org.labkey.api.data.DbScope;
 import org.labkey.api.data.PropertyManager;
 import org.labkey.api.data.RuntimeSQLException;
 import org.labkey.api.data.SQLFragment;
@@ -422,6 +423,7 @@ public class EHRManager
                     messages.add("Non-demographics datasets that are not using objectId as a managed key: " + total);
             }
 
+            //add indexes
             String[] toIndex = new String[]{"objectid", "taskid", "parentid", "runId", "requestid", "date"};
             DbSchema schema = DbSchema.get("studydataset");
             Set<String> distinctIndexes = new HashSet<String>();
@@ -529,6 +531,40 @@ public class EHRManager
         return messages;
     }
 
+    //the module's SQL scripts create indexes, but apparently only SQL server enterprise supports compression,
+    //so this code will let admins compress them after the fact
+    public void compressEHRSchemaIndexes()
+    {
+        if (!DbScope.getLabkeyScope().getSqlDialect().isSqlServer())
+        {
+            _log.error("Index compression on EHR can only be performed on SQL server currently.");
+            return;
+        }
+
+        _log.info("Compressing indexes on select EHR schema tables");
+
+        Map<String, String> names = new HashMap<String, String>();
+        names.put("encounter_flags", "objectid");
+        names.put("encounter_flags", "parentid");
+
+        names.put("encounter_participants", "objectid");
+        names.put("encounter_participants", "parentid");
+
+        names.put("encounter_summaries", "objectid");
+        names.put("encounter_summaries", "parentid");
+
+        names.put("snomed_tags", "objectid");
+        names.put("snomed_tags", "recordid");
+
+        for (String table : names.keySet())
+        {
+            DbSchema ehr = EHRSchema.getInstance().getSchema();
+            SQLFragment sql = new SQLFragment("ALTER INDEX " + table + "_" + names.get(table) + " ON ehr. " + table + " REBUILD WITH (DATA_COMPRESSION = ROW);");
+            SqlExecutor se = new SqlExecutor(ehr);
+            se.execute(sql);
+        }
+    }
+    
     //NOTE: this assumes the property already exists
     private void updatePropertyURI(Domain d, PropertyDescriptor pd) throws SQLException
     {

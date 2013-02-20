@@ -8,6 +8,7 @@
                     <column columnName="lsid">
                         <isKeyField>true</isKeyField>
                         <shownInDetailsView>false</shownInDetailsView>
+                        <facetingBehavior>ALWAYS_OFF</facetingBehavior>
                     </column>
                     <column columnName="Id">
                         <facetingBehavior>ALWAYS_OFF</facetingBehavior>
@@ -16,10 +17,12 @@
                     <column columnName="remark">
                         <isHidden>false</isHidden>
                         <displayWidth>350</displayWidth>
+                        <facetingBehavior>ALWAYS_OFF</facetingBehavior>
                     </column>
                     <column columnName="description">
                         <isHidden>false</isHidden>
                         <displayWidth>300</displayWidth>
+                        <facetingBehavior>ALWAYS_OFF</facetingBehavior>
                     </column>
                     <column columnName="enddate">
                         <columnTitle>End Date</columnTitle>
@@ -51,6 +54,7 @@
                         <displayWidth>100</displayWidth>
                     </column>
                     <column columnName="taskid">
+                        <facetingBehavior>ALWAYS_OFF</facetingBehavior>
                         <isHidden>false</isHidden>
                         <columnTitle>Task Id</columnTitle>
                         <fk>
@@ -61,6 +65,7 @@
                         <url>/ehr/taskDetails.view?formtype=${taskid/formtype}&amp;taskid=${taskid}</url>
                     </column>
                     <column columnName="requestid">
+                        <facetingBehavior>ALWAYS_OFF</facetingBehavior>
                         <isHidden>false</isHidden>
                         <columnTitle>Request Id</columnTitle>
                         <fk>
