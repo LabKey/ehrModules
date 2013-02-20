@@ -22,14 +22,14 @@ Ext4.define('EHR.panel.ClinicalHistoryPanel', {
 
         this.callParent();
 
+        var grid = this.down('grid');
         if (this.rendered){
-            this.setLoading(true);
+            grid.setLoading(true);
         }
         else {
-            this.on('afterrender', function(panel){
-//                if (!panel.store.getCount())
-//                    panel.setLoading(true)
-            })
+            grid.on('afterrender', function(grid){
+                grid.setLoading(true);
+            }, this, {delay: 120, single: true});
         }
 
         if(this.subjectId){
@@ -58,6 +58,7 @@ Ext4.define('EHR.panel.ClinicalHistoryPanel', {
             cls: 'ldk-grid',
             maxHeight: this.maxGridHeight,
             hideHeaders: true,
+            emptyText: 'There are no records to display',
             viewConfig : {
                 border: false,
                 stripeRows : true
@@ -117,9 +118,6 @@ Ext4.define('EHR.panel.ClinicalHistoryPanel', {
 
                         btn.collapsed = !btn.collapsed;
                     }
-                },{
-                    text: 'Show More',
-                    disabled: true
                 },{
                     text: 'Show/Hide Types',
                     disabled: true
