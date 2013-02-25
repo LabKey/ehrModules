@@ -2,8 +2,10 @@ package org.labkey.ehr.history;
 
 import org.labkey.api.data.Results;
 import org.labkey.api.query.FieldKey;
+import org.labkey.api.util.PageFlowUtil;
 
 import java.sql.SQLException;
+import java.util.Set;
 
 /**
  * Created with IntelliJ IDEA.
@@ -24,14 +26,31 @@ public class DefaultAssignmentDataSource extends AbstractDataSource
         StringBuilder sb = new StringBuilder();
 
         if (rs.hasColumn(FieldKey.fromString("date")) && rs.getObject("date") != null)
-            sb.append("Assignment Start: ").append(_dateFormat.format(rs.getDate("date")));
+            sb.append("Assignment Start: ").append(_dateFormat.format(rs.getDate("date"))).append("\n");
 
-        if (rs.hasColumn(FieldKey.fromString("project")) && rs.getObject("project") != null)
-            sb.append("Project: ").append(rs.getString("project"));
+        FieldKey projname = FieldKey.fromString("project/name");
+        if (rs.hasColumn(projname) && rs.getObject(projname) != null)
+        {
+            sb.append("Project: ").append(rs.getString(projname)).append("\n");
+
+            FieldKey inves = FieldKey.fromString("project/investigatorId/lastname");
+            if (rs.hasColumn(inves) && rs.getObject(inves) != null)
+                sb.append("Investigator: ").append(rs.getString(inves)).append("\n");
+
+            FieldKey title = FieldKey.fromString("project/title");
+            if (rs.hasColumn(title) && rs.getObject(title) != null)
+                sb.append("Title: ").append(rs.getString(title)).append("\n");
+        }
 
         if (rs.hasColumn(FieldKey.fromString("enddate")) && rs.getObject("enddate") != null)
-            sb.append("Removal Date: ").append(_dateFormat.format(rs.getString("enddate")));
+            sb.append("Removal Date: ").append(_dateFormat.format(rs.getDate("enddate"))).append("\n");
 
         return sb.toString();
+    }
+
+    @Override
+    protected Set<String> getColumnNames()
+    {
+        return PageFlowUtil.set("Id", "date", "enddate", "project", "project/name", "project/investigatorId", "project/investigatorId/lastname", "project/title");
     }
 }

@@ -7,15 +7,6 @@
                     <column columnName="room">
                         <isKeyField>true</isKeyField>
                     </column>
-                    <column columnName="assignments" wrappedColumnName="room">
-                        <isUserEditable>false</isUserEditable>
-                        <isUnselectable>true</isUnselectable>
-                        <fk>
-                            <fkDbSchema>ehr_lookups</fkDbSchema>
-                            <fkTable>roomsAssignment</fkTable>
-                            <fkColumnName>room</fkColumnName>
-                        </fk>
-                    </column>
                 </columns>
                 <titleColumn>room</titleColumn>
                 <pkColumnName>room</pkColumnName>

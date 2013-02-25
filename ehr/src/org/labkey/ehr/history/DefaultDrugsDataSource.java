@@ -26,8 +26,12 @@ public class DefaultDrugsDataSource extends AbstractDataSource
     protected String getHtml(Results rs) throws SQLException
     {
         StringBuilder sb = new StringBuilder();
+        safeAppend(rs, "Category", "category");
+        safeAppend(rs, "Case", "caseid");
+        safeAppend(rs, "Category", "parentId/caseid/category");
+
         if (rs.hasColumn(FieldKey.fromString("code")) && rs.getObject("code") != null)
-            sb.append("Code: " + snomedToString(rs, FieldKey.fromString("code"), FieldKey.fromString("code/meaning")));
+            sb.append(snomedToString(rs, FieldKey.fromString("code"), FieldKey.fromString("code/meaning")));
 
         if (rs.hasColumn(FieldKey.fromString("route")) && rs.getObject("route") != null)
             sb.append("Route: " + rs.getString("route")).append("\n");
@@ -58,6 +62,6 @@ public class DefaultDrugsDataSource extends AbstractDataSource
     @Override
     protected Set<String> getColumnNames()
     {
-        return PageFlowUtil.set("Id", "date", "enddate", "route", "volume", "vol_units", "amount", "amount_units", "code", "code/meaning");
+        return PageFlowUtil.set("Id", "date", "enddate", "route", "volume", "vol_units", "amount", "amount_units", "code", "code/meaning", "category", "caseid", "parentId/caseid/category");
     }
 }

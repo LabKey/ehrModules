@@ -5,12 +5,11 @@
         <!--<column name="enddate"/>-->
         <!--<column name="caseno"/>-->
         <column name="procedureid"/>
-        <!--<column name="type"/>-->
-        <!--<column name="title"/>-->
-        <column name="major"/>
-        <column name="participants" />
-        <column name="summaries" />
-        <column name="codes" />
+        <column name="procedureid/major"/>
+
+        <column name="participants/participants" />
+        <column name="summaries/summary" />
+        <column name="codes/codes" />
         <column name="qcstate" />
         <column name="taskid" />
         <column name="requestid" />

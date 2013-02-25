@@ -2,8 +2,10 @@ package org.labkey.ehr.history;
 
 import org.labkey.api.data.Results;
 import org.labkey.api.query.FieldKey;
+import org.labkey.api.util.PageFlowUtil;
 
 import java.sql.SQLException;
+import java.util.Set;
 
 /**
  * Created with IntelliJ IDEA.
@@ -24,15 +26,35 @@ public class DefaultEncountersDataSource extends AbstractDataSource
         StringBuilder sb = new StringBuilder();
         //TODO: switch based on type
 
-        sb.append(safeAppend(rs, "Type", "type"));
         sb.append(safeAppend(rs, "Title", "title"));
+        sb.append(safeAppend(rs, "Procedure", "procedureid/name"));
 
         if (rs.hasColumn(FieldKey.fromString("major")) && rs.getObject("major") != null)
         {
             Boolean value = rs.getBoolean("major");
-            sb.append("Major Surgery?: ").append(value).append("\n");
+            sb.append("Major Surgery? ").append(value).append("\n");
         }
 
-        return sb.toString();
+        sb.append(safeAppend(rs, "Summary", "summaries/summary"));
+
+        if (sb.length() > 0)
+        {
+            return sb.toString();
+        }
+
+        return null;
+    }
+
+    @Override
+    protected String getCategory(Results rs) throws SQLException
+    {
+        String category = rs.getString("type");
+        return category == null ? "Encounter" : category;
+    }
+
+    @Override
+    protected Set<String> getColumnNames()
+    {
+        return PageFlowUtil.set("Id", "date", "enddate", "major", "type", "title", "procedureid", "procedureid/name", "summaries/summary");
     }
 }

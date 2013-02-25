@@ -128,6 +128,7 @@ public class WeightAlerts extends AbstractEHRNotification
             filter.addCondition(FieldKey.fromString("PctChange"), pct, ct);
             filter.addCondition(FieldKey.fromString("IntervalInDays"), min, CompareType.GTE);
             filter.addCondition(FieldKey.fromString("IntervalInDays"), max, CompareType.LTE);
+            //filter.addCondition(FieldKey.fromString("Id/curLocation/Cage"), null, CompareType.NONBLANK);
 
             Calendar date = Calendar.getInstance();
             date.add(Calendar.DATE, -3);
@@ -139,6 +140,7 @@ public class WeightAlerts extends AbstractEHRNotification
 
             FieldKey roomKey = FieldKey.fromString("Id/curLocation/Room");
             FieldKey areaKey = FieldKey.fromString("Id/curLocation/Area");
+            FieldKey cageKey = FieldKey.fromString("Id/curLocation/Cage");
 
             final Map<String, Map<String, List<Map<String, Object>>>> summary = new TreeMap<String, Map<String, List<Map<String, Object>>>>();
             while (rs.next())
@@ -177,7 +179,7 @@ public class WeightAlerts extends AbstractEHRNotification
                             msg.append("<tr><td><a href='" + AppProps.getInstance().getBaseServerUrl() + AppProps.getInstance().getContextPath() + "/ehr" + c.getPath());
                             msg.append("/animalHistory.view?#inputType:singleSubject&showReport:1&subjects:");
                             msg.append(map.get("Id")).append("&combineSubj:true&activeReport:abstract'>").append(map.get("Id"));
-                            msg.append("</a></td><td>").append(area).append("</td><td>").append(room).append("</td><td>").append(map.get(roomKey)).append("</td><td>");
+                            msg.append("</a></td><td>").append(area).append("</td><td>").append(room).append("</td><td>").append(map.get(cageKey) == null ? "" : map.get(cageKey)).append("</td><td>");
                             msg.append(map.get("LatestWeight")).append("</td><td>").append(_dateTimeFormat.format(map.get("LatestWeightDate"))).append("</td><td>");
                             msg.append(map.get("weight")).append("</td><td>").append(_dateTimeFormat.format(map.get("date"))).append("</td><td>").append(map.get("PctChange"));
                             msg.append("</td><td>").append(map.get("IntervalInDays")).append("</td></tr>");
@@ -185,9 +187,7 @@ public class WeightAlerts extends AbstractEHRNotification
                     }
                 }
                 msg.append("</table><p>\n");
-                //msg.append("<p><a href='" + AppProps.getInstance().getBaseServerUrl() + AppProps.getInstance().getContextPath() + "/query" + c.getPath() + "executeQuery.view?schemaName=study&query.queryName=weightRelChange&query.Id/DataSet/Demographics/calculated_status~eq=Alive&query.PctChange~" + ct.getPreferredUrlKey() + "=" + pct + "&query.IntervalInDays~gte=" + min + "&query.IntervalInDays~lte=" + max + "&query.LatestWeightDate~dategte=" + _dateFormat.format(date) + "'>Click here to view these animals</a></p>");
                 msg.append("<hr>");
-
             }
             else
             {

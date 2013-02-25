@@ -7,7 +7,7 @@ Ext4.define('EHR.data.ClinicalHistoryStore', {
             proxy: {
                 type: 'memory'
             },
-            fields: ['group', 'id', 'date', 'category', 'html', 'lsid'],
+            fields: ['group', 'id', 'date', 'timeString', 'category', 'html', 'lsid'],
             groupField: 'group',
             sorters: [{property: 'group', direction: 'DESC'}]
         });
@@ -21,7 +21,9 @@ Ext4.define('EHR.data.ClinicalHistoryStore', {
      * @param config.minDate
      * @param config.maxDate
      */
-    loadData: function(config){
+    reloadData: function(config){
+        this.removeAll();
+
         LABKEY.Ajax.request({
             url: LABKEY.ActionURL.buildURL('ehr', 'getClinicalHistory'),
             params: {
@@ -36,8 +38,6 @@ Ext4.define('EHR.data.ClinicalHistoryStore', {
     },
 
     onLoad: function(results){
-        //TODO: merge w/ existing rows
-
         var toAdd = [];
         for (var id in results.results){
             Ext4.each(results.results[id], function(row){
@@ -50,5 +50,7 @@ Ext4.define('EHR.data.ClinicalHistoryStore', {
 
         if(toAdd.length)
             this.add(toAdd);
+        else
+            this.fireEvent('datachanged', this);
     }
 });

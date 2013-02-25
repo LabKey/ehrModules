@@ -990,6 +990,9 @@
                 <ns:columnTitle>USDA Level</ns:columnTitle>
                 <ns:nullable>true</ns:nullable>
             </ns:column>
+            <ns:column columnName="last_modification">
+                <ns:columnTitle>Date of Last Modification</ns:columnTitle>
+            </ns:column>
             <ns:column columnName="description">
                 <ns:nullable>true</ns:nullable>
             </ns:column>

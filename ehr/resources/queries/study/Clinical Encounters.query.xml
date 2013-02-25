@@ -61,6 +61,7 @@
                         <isHidden>true</isHidden>
                     </column>
                     <column columnName="participants" wrappedColumnName="objectid">
+                        <isUnselectable>true</isUnselectable>
                         <displayWidth>300</displayWidth>
                         <fk>
                             <fkDbSchema>ehr</fkDbSchema>
@@ -69,6 +70,7 @@
                         </fk>
                     </column>
                     <column columnName="summaries" wrappedColumnName="objectid">
+                        <isUnselectable>true</isUnselectable>
                         <displayWidth>500</displayWidth>
                         <fk>
                             <fkDbSchema>ehr</fkDbSchema>
@@ -77,6 +79,7 @@
                         </fk>
                     </column>
                     <column columnName="flags" wrappedColumnName="objectid">
+                        <isUnselectable>true</isUnselectable>
                         <fk>
                             <fkDbSchema>ehr</fkDbSchema>
                             <fkTable>encounter_flags_summary</fkTable>
@@ -84,6 +87,7 @@
                         </fk>
                     </column>
                     <column columnName="codes" wrappedColumnName="objectid">
+                        <isUnselectable>true</isUnselectable>
                         <displayWidth>300</displayWidth>
                         <fk>
                             <fkDbSchema>ehr</fkDbSchema>

@@ -27,6 +27,7 @@ import org.labkey.api.pipeline.PipelineStatusUrls;
 import org.labkey.api.security.RequiresPermissionClass;
 import org.labkey.api.security.permissions.AdminPermission;
 import org.labkey.api.security.permissions.ReadPermission;
+import org.labkey.api.util.ExceptionUtil;
 import org.labkey.api.util.PageFlowUtil;
 import org.labkey.api.util.URLHelper;
 import org.labkey.api.view.ActionURL;
@@ -82,24 +83,33 @@ public class EHRController extends SpringActionController
                 return null;
             }
 
-            Map<String, JSONArray> results = new HashMap<String, JSONArray>();
-            for (String subjectId : form.getSubjectIds())
+            try
             {
-                JSONArray arr = new JSONArray();
-
-                List<HistoryRow> rows = ClinicalHistoryManager.get().getHistory(getContainer(), getUser(), subjectId, form.getMinDate(), form.getMaxDate());
-                for (HistoryRow row : rows)
+                Map<String, JSONArray> results = new HashMap<String, JSONArray>();
+                for (String subjectId : form.getSubjectIds())
                 {
-                    arr.put(row.toJSON());
+                    JSONArray arr = new JSONArray();
+
+                    List<HistoryRow> rows = ClinicalHistoryManager.get().getHistory(getContainer(), getUser(), subjectId, form.getMinDate(), form.getMaxDate());
+                    for (HistoryRow row : rows)
+                    {
+                        arr.put(row.toJSON());
+                    }
+
+                    results.put(subjectId, arr);
                 }
 
-                results.put(subjectId, arr);
+                resp.getProperties().put("success", true);
+                resp.getProperties().put("results", results);
+                return resp;
             }
+            catch (IllegalArgumentException e)
+            {
+                ExceptionUtil.logExceptionToMothership(getViewContext().getRequest(), e);
 
-            resp.getProperties().put("success", true);
-            resp.getProperties().put("results", results);
-
-            return resp;
+                errors.reject(ERROR_MSG, e.getMessage());
+                return null;
+            }
         }
     }
 

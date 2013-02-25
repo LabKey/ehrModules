@@ -4,9 +4,9 @@
  * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
  */
 SELECT
-  a.project,
-  count(*) as activeAssignments
+  p.project,
+  cast(coalesce(count(a.lsid), 0) as integer) as activeAssignments
 
-FROM study.assignment a
-WHERE a.enddateCoalesced >= curdate()
-GROUP BY a.project
+FROM ehr.project p
+LEFT JOIN study.assignment a ON (p.project = a.project AND a.enddateCoalesced >= curdate())
+GROUP BY p.project

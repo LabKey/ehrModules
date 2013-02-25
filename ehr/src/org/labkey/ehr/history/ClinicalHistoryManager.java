@@ -29,6 +29,14 @@ public class ClinicalHistoryManager
 
     private HistoryDataSource[] _defaultSources = new HistoryDataSource[]{
         //demographics row
+        new DefaultProblemListDataSource(),
+        new DefaultProblemListCloseDataSource(),
+
+        new DefaultCasesDataSource(),
+        new DefaultCasesCloseDataSource(),
+
+        new DefaultEncountersDataSource(),
+
         new DefaultClinicalRemarksDataSource(),
         new DefaultDrugsDataSource(),
         new DefaultWeightDataSource(),
@@ -41,27 +49,18 @@ public class ClinicalHistoryManager
 
         new DefaultBloodDrawDataSource(),
         new DefaultBodyConditionDataSource(),
-        new DefaultProblemListDataSource(),
-        new DefaultProblemListCloseDataSource(),
-
-        new DefaultCasesDataSource(),
-        //open/close
-
-        new DefaultEncountersDataSource(),
 //        new DefaultWeightDataSource("study", "Clinpath Runs"),
         new DefaultDeathsDataSource(),
         new DefaultDepartureDataSource(),
         new DefaultHousingDataSource(),
 
-
-//        new DefaultWeightDataSource("ehr", "encounter_summaries"),
-//        new DefaultWeightDataSource("ehr", "encounter_participants"),
 //        new DefaultWeightDataSource("study", "Flags"),
 //        new DefaultWeightDataSource("study", "Notes"),
+
             //delivery, etc
 //
         new DefaultTreatmentOrdersDataSource(),
-//        //treatment end
+        new DefaultTreatmentEndDataSource(),
 //
 //        new DefaultWeightDataSource("study", "Clinical Observations"),
     };
@@ -109,7 +108,7 @@ public class ClinicalHistoryManager
             @Override
             public int compare(HistoryRow o1, HistoryRow o2)
             {
-                return (-1 * (o1.getSortDate().compareTo(o2.getSortDate())));
+                return (-1 * (o1.getSortDateString().compareTo(o2.getSortDateString())));
             }
         });
     }

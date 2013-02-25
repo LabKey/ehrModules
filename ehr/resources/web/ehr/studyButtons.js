@@ -161,35 +161,34 @@ EHR.DatasetButtons = new function(){
             LABKEY.Query.executeSql({
                  schemaName: 'study',
                  sql: sql,
-                 successCallback: changeLocation
-                 });
+                 failure: LDK.Utils.getErrorCallback(),
+                 success: function(data){
+                    var ids = new Array();
+                    for (var i = 0; i < data.rows.length; i++)
+                        ids.push(data.rows[i].Id);
 
-            function changeLocation(data){
-                var ids = new Array();
-                for (var i = 0; i < data.rows.length; i++)
-                    ids.push(data.rows[i].Id);
+                    if (ids.length){
+                        var ctx = EHR.Utils.getEHRContext();
+                        if(!ctx)
+                            return;
 
-                if (ids.length){
-                    var ctx = EHR.Utils.getEHRContext();
-                    if(!ctx)
-                        return;
+                        var hash = 'inputType:multiSubject&showReport:1&subjects:'+ids.join(',');
+                        window.location = LABKEY.ActionURL.buildURL(
+                            'ehr'
+                            ,'animalHistory.view#'+hash
+                            ,ctx['EHRStudyContainer']
 
-                    var hash = 'inputType:multiSubject&showReport:1&subjects:'+ids.join(',');
-                    window.location = LABKEY.ActionURL.buildURL(
-                        'ehr'
-                        ,'animalHistory.view#'+hash
-                        ,ctx['EHRStudyContainer']
+                        );
 
-                    );
+                        //force reload if on same page
+                        if(LABKEY.ActionURL.getAction() == 'animalHistory'){
+                            Ext.History.add(hash);
+                            window.location.reload();
+                        }
 
-                    //force reload if on same page
-                    if(LABKEY.ActionURL.getAction() == 'animalHistory'){
-                        Ext.History.add(hash);
-                        window.location.reload();
                     }
-
                 }
-            }
+            });
         },
 
         /**
@@ -254,14 +253,15 @@ EHR.DatasetButtons = new function(){
 
 
                         this.selectorWin = new Ext.Window({
-                            closeAction:'hide',
+                            closeAction:'destroy',
                             title: 'Record History',
+                            modal: true,
                             width: 350,
                             items: items,
                             buttons: [{
                                 text: 'Close',
                                 handler: function(b){
-                                    b.ownerCt.ownerCt.hide();
+                                    b.ownerCt.ownerCt.close();
                                 }
                             }]
                         }).show();
@@ -271,7 +271,7 @@ EHR.DatasetButtons = new function(){
                         alert('Record not found');
                     }
                 },
-                failure: EHR.Utils.onError
+                failure: LDK.Utils.getErrorCallback()
             });
 
         },
@@ -286,6 +286,8 @@ EHR.DatasetButtons = new function(){
          * @param schemaName
          */
         datasetHandler: function(dataRegion, dataRegionName, queryName, schemaName){
+            dataRegion = LABKEY.DataRegions[dataRegionName];
+
             var checked = dataRegion.getChecked();
             if(!checked || !checked.length){
                 alert('No records selected');
@@ -298,8 +300,9 @@ EHR.DatasetButtons = new function(){
             var theWindow = new Ext.Window({
                 width: 280,
                 autoHeight: true,
+                modal: true,
                 bodyStyle:'padding:5px',
-                closeAction:'hide',
+                closeAction:'destroy',
                 plain: true,
                 keys: [{
                     key: Ext.EventObject.ENTER,
@@ -348,7 +351,7 @@ EHR.DatasetButtons = new function(){
                     })
                 },{
                     xtype: 'panel',
-                    html: 'This will allow you to jump to a different dataset, filtered on the rows you checked.  For example, if you pick the dataset Blood Draws and \'Filter on Animal Id\', then you will be transported to the Blood Draw table, showing blood draws from all the distinct animals in the rows you selected.',
+                    html: 'This will allow you to jump to a different dataset, filtered on the rows you checked.  For example, if you pick the dataset Blood Draws and \'Filter on Animal Id\', then you will be transported to the Blood Draw table, showing blood draws from all the distinct animals in the rows you selected.  You have selected ' + checked.length + '  rows.',
                     frame : false,
                     border: false,
                     cls: 'x-window-mc',
@@ -365,7 +368,7 @@ EHR.DatasetButtons = new function(){
                     text: 'Close',
                     scope: this,
                     handler: function(){
-                        theWindow.destroy();
+                        theWindow.close();
                     }
                 }]
             });
@@ -381,48 +384,84 @@ EHR.DatasetButtons = new function(){
                     return;
                 }
 
-                var sql = "SELECT DISTINCT s."+theField+" as field FROM "+schemaName+".\""+queryName+"\" s WHERE s.LSID IN ('" + checked.join("', '") + "')";
+                theWindow.close();
+                Ext.Msg.wait('Loading...');
+
+                var keyFields = dataRegion.selectorCols || dataRegion.pkCols;
+                var whereClause;
+                if (keyFields.length == 1){
+                    whereClause = "s." + keyFields[0] + " IN ('" + checked.join("', '") + "')";
+                }
+                else {
+                    var whereMap = {};
+                    Ext4.each(checked, function(row){
+                        var tokens = row.split(',');
+                        Ext4.each(keyFields, function(key, idx){
+                            if (!whereMap[key])
+                                whereMap[key] = [];
+
+                            whereMap[key].push(tokens[idx]);
+                        }, this);
+                    }, this);
+
+                    whereClause = '';
+                    var idx = 0;
+                    for (var field in whereMap){
+                        if (idx > 0)
+                            whereClause += ' AND ';
+
+                        whereClause += "s." + field + " IN ('" + whereMap[field].join("', '") + "')";
+                        idx++;
+                    }
+                }
+
+                var sql = "SELECT DISTINCT s."+theField+" as field FROM "+schemaName+".\""+queryName+"\" s WHERE " + whereClause;
 
                 LABKEY.Query.executeSql({
                      schemaName: 'study',
                      sql: sql,
-                     successCallback: changeLocation
-                 });
-
-                function changeLocation(data){
-                    var ids = new Array();
-                    for (var i = 0; i < data.rows.length; i++){
-                        if(data.rows[i].field)
-                            ids.push(data.rows[i].field);
-                    }
-
-                    if (ids.length){
-                        var fieldFilter = LABKEY.Filter.create(theField, ids.join(';'), LABKEY.Filter.Types.IN);
-                        var baseParams = {
-                            'query.queryName': dataset,
-                            schemaName: 'study'
-
-                        };
-
-                        baseParams[fieldFilter.getURLParameterName()] = fieldFilter.getURLParameterValue();
-
-                        var el = document.body.appendChild(document.createElement('form'));
-                        el.setAttribute('method', 'POST');
-                        //NOTE: this uses a custom page with a QWP in order to support POST params
-                        //might revisit at some future time if executeQuery is improved
-                        el.setAttribute('action', LABKEY.ActionURL.buildURL('ehr', 'executeQuery'));
-                        var theElement = Ext.get(el);
-
-                        for (var j in baseParams) {
-                            var field = document.createElement('input');
-                            field.setAttribute('type', 'hidden');
-                            field.setAttribute('name', j);
-                            field.setAttribute('value', baseParams[j]);
-                            theElement.appendChild(field);
+                     scope: this,
+                     failure: LDK.Utils.getErrorCallback(),
+                     success: function(data){
+                        var ids = new Array();
+                        for (var i = 0; i < data.rows.length; i++){
+                            if(data.rows[i].field)
+                                ids.push(data.rows[i].field);
                         }
-                        el.submit();
-                    }
-                }
+
+                         Ext.Msg.hide();
+
+                         if (ids.length){
+                            var fieldFilter = LABKEY.Filter.create(theField, ids.join(';'), LABKEY.Filter.Types.IN);
+                            var baseParams = {
+                                'query.queryName': dataset,
+                                schemaName: 'study'
+
+                            };
+
+                            baseParams[fieldFilter.getURLParameterName()] = fieldFilter.getURLParameterValue();
+
+                            var el = document.body.appendChild(document.createElement('form'));
+                            el.setAttribute('method', 'POST');
+                            //NOTE: this uses a custom page with a QWP in order to support POST params
+                            //might revisit at some future time if executeQuery is improved
+                            el.setAttribute('action', LABKEY.ActionURL.buildURL('ehr', 'executeQuery'));
+                            var theElement = Ext.get(el);
+
+                            for (var j in baseParams) {
+                                var field = document.createElement('input');
+                                field.setAttribute('type', 'hidden');
+                                field.setAttribute('name', j);
+                                field.setAttribute('value', baseParams[j]);
+                                theElement.appendChild(field);
+                            }
+                            el.submit();
+                        }
+                        else{
+                            alert('No IDs found for the selected records');
+                        }
+                     }
+                });
             }
         },
 
@@ -441,7 +480,7 @@ EHR.DatasetButtons = new function(){
                 text: 'Enter '+(config.title || config.queryName),
                 handler: function(){
                     new Ext.Window({
-                        closeAction:'hide'
+                        closeAction:'destroy'
                         ,title: 'Enter '+(config.title || config.queryName)
                         ,xtype: 'panel'
                         ,autoScroll: true
@@ -465,7 +504,7 @@ EHR.DatasetButtons = new function(){
                                 handler: function(o){
                                     function onComplete(){
                                         var dataRegion = LABKEY.DataRegions[dataRegionName];
-                                        this.ownerCt.hide();
+                                        this.ownerCt.close();
 
                                         dataRegion.selectNone();
                                         dataRegion.refresh();
@@ -490,7 +529,7 @@ EHR.DatasetButtons = new function(){
                                 handler: function(o){
                                     Ext.Msg.confirm('Close Form', 'Closing this form will discard changes.  Do you want to do this?', function(v){
                                         if(v=='yes'){
-                                            o.ownerCt.ownerCt.ownerCt.hide();
+                                            o.ownerCt.ownerCt.ownerCt.close();
                                             window.onbeforeunload = Ext.emptyFn;
                                         }
                                     }, this);
@@ -581,7 +620,9 @@ EHR.DatasetButtons = new function(){
                             Ext.Msg.hide();
                             new Ext.Window({
                                 title: 'Weights',
+                                closeAction: 'destroy',
                                 width: 200,
+                                modal: true,
                                 //autoWidth: true,
                                 items: [{
                                     xtype: 'panel',
@@ -591,7 +632,7 @@ EHR.DatasetButtons = new function(){
                                 buttons: [{
                                     text: 'OK',
                                     handler: function(win, button){
-                                        win.ownerCt.ownerCt.destroy();
+                                        win.ownerCt.ownerCt.close();
                                     }
                                 }]
                             }).show();
@@ -706,12 +747,12 @@ EHR.DatasetButtons = new function(){
                                     ref: '../submit',
                                     scope: this,
                                     handler: function(o){
-                                        o.ownerCt.ownerCt.hide();
+                                        o.ownerCt.ownerCt.close();
                                     }
                                 },{
                                     text: 'Close',
                                     handler: function(o){
-                                        o.ownerCt.ownerCt.hide();
+                                        o.ownerCt.ownerCt.close();
                                     }
                                 }]
 
@@ -743,16 +784,15 @@ EHR.DatasetButtons = new function(){
             var theWindow = new Ext.Window({
                 width: 280,
                 height: 130,
+                modal: true,
                 bodyStyle:'padding:5px',
-                closeAction:'hide',
+                closeAction:'destroy',
                 plain: true,
-                keys: [
-                    {
-                        key: Ext.EventObject.ENTER,
-                        handler: runSQL,
-                        scope: this
-                    }
-                ],
+                keys: [{
+                    key: Ext.EventObject.ENTER,
+                    handler: runSQL,
+                    scope: this
+                }],
                 title: 'Return Distinct Values',
                 layout: 'form',
                 items: [{
@@ -795,61 +835,61 @@ EHR.DatasetButtons = new function(){
                 var checked = dataRegion.getChecked();
                 var field = theWindow.field.getValue();
                 var sql = "SELECT DISTINCT s."+field+" as field FROM "+schemaName+".\""+queryName+"\" s WHERE s.LSID IN ('" + checked.join("', '") + "')";
-                theWindow.hide();
+                theWindow.close();
 
                 LABKEY.Query.executeSql({
                      schemaName: 'study',
                      sql: sql,
-                     successCallback: changeLocation
-                     });
+                     failure: LDK.Utils.getErrorCallback(),
+                     success: function(data){
+                        var ids = {};
+                        for (var i = 0; i < data.rows.length; i++){
+                            if (!data.rows[i].field)
+                                continue;
 
-                function changeLocation(data){
-                    var ids = {};
-                    for (var i = 0; i < data.rows.length; i++){
-                        if (!data.rows[i].field)
-                            continue;
+                            if (data.rows[i].field && !ids[data.rows[i].field])
+                                ids[data.rows[i].field] = 0;
 
-                        if (data.rows[i].field && !ids[data.rows[i].field])
-                            ids[data.rows[i].field] = 0;
+                            ids[data.rows[i].field] += 1;
 
-                        ids[data.rows[i].field] += 1;
+                        }
 
+                        var result = '';
+                        var total = 0;
+                        for(var j in ids){
+                            result += j + "\n";
+                            total++;
+                        }
+
+                        var win = new Ext.Window({
+                            width: 280,
+                            modal: true,
+                            autoHeight: true,
+                            bodyStyle:'padding:5px',
+                            closeAction:'destroy',
+                            plain: true,
+                            title: 'Distinct Values',
+                            //layout: 'form',
+                            items: [{
+                                html: 'Total: '+total
+                            },{
+                                xtype: 'textarea',
+                                name: 'distinctValues',
+                                width: 260,
+                                height: 350,
+                                value: result
+                            }],
+                            buttons: [{
+                                text: 'Close',
+                                scope: this,
+                                handler: function(){
+                                    win.close();
+                                }
+                            }]
+                        });
+                        win.show();
                     }
-
-                    var result = '';
-                    var total = 0;
-                    for(var j in ids){
-                        result += j + "\n";
-                        total++;
-                    }
-
-                    var win = new Ext.Window({
-                        width: 280,
-                        autoHeight: true,
-                        bodyStyle:'padding:5px',
-                        closeAction:'hide',
-                        plain: true,
-                        title: 'Distinct Values',
-                        //layout: 'form',
-                        items: [{
-                            html: 'Total: '+total
-                        },{
-                            xtype: 'textarea',
-                            name: 'distinctValues',
-                            width: 260,
-                            height: 350,
-                            value: result
-                        }],
-                        buttons: [{
-                            text: 'Close',
-                            scope: this,
-                            handler: function(){
-                                win.destroy();
-                            }
-                        }]
-                    });
-                    win.show();
-                }
+                });
             }
         },
 
@@ -877,6 +917,7 @@ EHR.DatasetButtons = new function(){
 
                     new Ext.Window({
                         title: 'Set End Date',
+                        closeAction: 'destory',
                         width: 330,
                         autoHeight: true,
                         items: [{
@@ -905,7 +946,7 @@ EHR.DatasetButtons = new function(){
                                     return;
                                 }
 
-                                o.ownerCt.ownerCt.hide();
+                                o.ownerCt.ownerCt.close();
 
                                 LABKEY.Query.selectRows({
                                     schemaName: schemaName,
@@ -962,12 +1003,10 @@ EHR.DatasetButtons = new function(){
                         },{
                             text: 'Close',
                             handler: function(o){
-                                o.ownerCt.ownerCt.hide();
+                                o.ownerCt.ownerCt.close();
                             }
                         }]
                     }).show();
-
-
 
                     function onSuccess(data){
                         if(!data || !data.rows){
@@ -1006,6 +1045,7 @@ EHR.DatasetButtons = new function(){
 
                     new Ext.Window({
                         title: 'Mark Reviewed',
+                        closeAction: 'destory',
                         width: 330,
                         autoHeight: true,
                         items: [{
@@ -1034,7 +1074,7 @@ EHR.DatasetButtons = new function(){
                                     return;
                                 }
 
-                                o.ownerCt.ownerCt.hide();
+                                o.ownerCt.ownerCt.close();
 
                                 LABKEY.Query.selectRows({
                                     schemaName: 'study',
@@ -1091,7 +1131,7 @@ EHR.DatasetButtons = new function(){
                         },{
                             text: 'Close',
                             handler: function(o){
-                                o.ownerCt.ownerCt.hide();
+                                o.ownerCt.ownerCt.close();
                             }
                         }]
                     }).show();
@@ -1194,18 +1234,18 @@ EHR.DatasetButtons = new function(){
                                 date = date.toGMTString();
                                 if(!date){
                                     alert('Must enter a date');
-                                    o.ownerCt.ownerCt.hide();
+                                    o.ownerCt.ownerCt.close();
                                 }
 
                                 var assignedTo = o.ownerCt.ownerCt.theForm.assignedTo.getValue();
                                 if(!assignedTo){
                                     alert('Must assign to someone');
-                                    o.ownerCt.ownerCt.hide();
+                                    o.ownerCt.ownerCt.close();
                                 }
                                 var title = o.ownerCt.ownerCt.theForm.titleField.getValue();
                                 if(!title){
                                     alert('Must enter a title');
-                                    o.ownerCt.ownerCt.hide();
+                                    o.ownerCt.ownerCt.close();
                                 }
 
                                 var toUpdate = [];
@@ -1223,7 +1263,7 @@ EHR.DatasetButtons = new function(){
                                     toUpdate.push(obj);
                                 }, this);
 
-                                o.ownerCt.ownerCt.hide();
+                                o.ownerCt.ownerCt.close();
 
                                 EHR.Utils.createTask({
                                     initialQCState: 'Scheduled',
@@ -1249,7 +1289,7 @@ EHR.DatasetButtons = new function(){
                         },{
                             text: 'Close',
                             handler: function(o){
-                                o.ownerCt.ownerCt.hide();
+                                o.ownerCt.ownerCt.close();
                             }
                         }]
                     }).show();
@@ -1359,21 +1399,21 @@ EHR.DatasetButtons = new function(){
                                 date = date.toGMTString();
                                 if(!date){
                                     alert('Must enter a date');
-                                    o.ownerCt.ownerCt.hide();
+                                    o.ownerCt.ownerCt.close();
                                 }
 
                                 var assignedTo = o.ownerCt.ownerCt.theForm.assignedTo.getValue();
                                 if(!assignedTo){
                                     alert('Must assign to someone');
-                                    o.ownerCt.ownerCt.hide();
+                                    o.ownerCt.ownerCt.close();
                                 }
                                 var title = o.ownerCt.ownerCt.theForm.titleField.getValue();
                                 if(!title){
                                     alert('Must enter a title');
-                                    o.ownerCt.ownerCt.hide();
+                                    o.ownerCt.ownerCt.close();
                                 }
 
-                                o.ownerCt.ownerCt.hide();
+                                o.ownerCt.ownerCt.close();
 
                                 var existingRecords = {};
                                 existingRecords[dataRegion.queryName] = checked;
@@ -1403,7 +1443,7 @@ EHR.DatasetButtons = new function(){
                         },{
                             text: 'Close',
                             handler: function(o){
-                                o.ownerCt.ownerCt.hide();
+                                o.ownerCt.ownerCt.close();
                             }
                         }]
                     }).show();
@@ -1567,14 +1607,14 @@ EHR.DatasetButtons = new function(){
                                     Ext.Msg.hide();
                                     dataRegion.selectNone();
 
-                                    o.ownerCt.ownerCt.hide();
+                                    o.ownerCt.ownerCt.close();
                                     dataRegion.refresh();
                                 }, this);
                             }
                         },{
                             text: 'Close',
                             handler: function(o){
-                                o.ownerCt.ownerCt.hide();
+                                o.ownerCt.ownerCt.close();
                             }
                         }]
                     }).show();
@@ -1700,14 +1740,14 @@ EHR.DatasetButtons = new function(){
                                     Ext.Msg.hide();
                                     dataRegion.selectNone();
 
-                                    o.ownerCt.ownerCt.hide();
+                                    o.ownerCt.ownerCt.close();
                                     dataRegion.refresh();
                                 }, this);
                             }
                         },{
                             text: 'Close',
                             handler: function(o){
-                                o.ownerCt.ownerCt.hide();
+                                o.ownerCt.ownerCt.close();
                             }
                         }]
                     }).show();
@@ -1922,7 +1962,7 @@ EHR.DatasetButtons = new function(){
                                 subjectArray = subjectArray.split(';');
                             }
 
-                            o.ownerCt.ownerCt.hide();
+                            o.ownerCt.ownerCt.close();
 
                             LABKEY.Utils.onTrue({
                                 testCallback: function(){
@@ -2001,7 +2041,7 @@ EHR.DatasetButtons = new function(){
                     },{
                         text: 'Close',
                         handler: function(o){
-                            o.ownerCt.ownerCt.hide();
+                            o.ownerCt.ownerCt.close();
                         }
                     }]
                 }).show();
@@ -2084,7 +2124,7 @@ EHR.DatasetButtons = new function(){
                                 var rec = o.ownerCt.ownerCt.theForm.taskField.getStore().find('rowid', taskId);
                                 rec = o.ownerCt.ownerCt.theForm.taskField.getStore().getAt(rec);
 
-                                o.ownerCt.ownerCt.hide();
+                                o.ownerCt.ownerCt.close();
 
                                 var records = [];
                                 Ext.each(checked, function(r){
@@ -2107,7 +2147,7 @@ EHR.DatasetButtons = new function(){
                         },{
                             text: 'Close',
                             handler: function(o){
-                                o.ownerCt.ownerCt.hide();
+                                o.ownerCt.ownerCt.close();
                             }
                         }]
                     }).show();

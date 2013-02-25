@@ -6,90 +6,78 @@ Ext4.onReady(function (){
     if(!ctx)
         return;
 
-    var domSpec = {
-        tag: 'div',
-        children: [{
-            tag: 'p',
-            html: 'This page contains reports identify animals based on multiple criteria.'
-        },{
-            html: '<b>Browse Animals:</b>'
-        },{
-            tag: 'ul',
-            children: [{
-                tag: 'li',
-                html: '<a href="<%=contextPath%>/query' + ctx['EHRStudyContainer'] + '/executeQuery.view?schemaName=study&query.queryName=Demographics&query.viewName=Alive%2C at Center">All Living Center Animals</a>'
-            },{
-                tag: 'li',
-                html: '<a href="<%=contextPath%>/query' + ctx['EHRStudyContainer'] + '/executeQuery.view?schemaName=study&query.queryName=Demographics">All Center Animals</a>'
-            },{
-                tag: 'li',
-                html: '<a href="<%=contextPath%>/query' + ctx['EHRStudyContainer'] + '/executeQuery.view?schemaName=study&query.queryName=Demographics&query.Id/activeAssignments/availability~contains=b">Assigned To Breeding</a>'
-            },{
-                tag: 'li',
-                html: '<a href="<%=contextPath%>/query' + ctx['EHRStudyContainer'] + '/executeQuery.view?schemaName=study&query.queryName=Demographics&query.viewName=Living Rhesus Plus MHC Typing">All Living Center Macaques Plus MHC Typing</a>'
-            },{
-                tag: 'li',
-                html: '<a href="<%=contextPath%>/query' + ctx['EHRStudyContainer'] + '/executeQuery.view?schemaName=study&query.queryName=Demographics&query.viewName=Living With SIV">Living With SIV</a>'
-            },{
-                tag: 'li',
-                html: '<a href="<%=contextPath%>/query' + ctx['EHRStudyContainer'] + '/executeQuery.view?schemaName=study&query.queryName=SSP_Pivot">MHC SSP Data</a>'
-            },{
-                tag: 'li',
-                html: '<a href="<%=contextPath%>/query' + ctx['EHRStudyContainer'] + '/executeQuery.view?schemaName=study&query.queryName=Demographics&query.viewName=Single Housed">Single Housed Animals</a>'
-            },{
-                tag: 'li',
-                html: '<a href="<%=contextPath%>/query' + ctx['EHRStudyContainer'] + '/executeQuery.view?schemaName=study&query.queryName=Demographics&query.viewName=TB Older Than 4 Months">TB: Untested In Past 4 months</a>'
-            },{
-                tag: 'li',
-                html: '<a href="<%=contextPath%>/query' + ctx['EHRStudyContainer'] + '/executeQuery.view?schemaName=study&query.queryName=Demographics&query.viewName=Unassigned%20Animals">Unassigned Animals</a>'
-            },{
-                tag: 'li',
-                html: '<a href="<%=contextPath%>/query' + ctx['EHRStudyContainer'] + '/executeQuery.view?schemaName=study&query.queryName=Demographics&query.viewName=Unassigned%20Rhesus%20With%20MHC%20Typing">Unassigned Rhesus Plus MHC Typing</a>'
-            },{
-                tag: 'li',
-                html: '<a href="<%=contextPath%>/query' + ctx['EHRStudyContainer'] + '/executeQuery.view?schemaName=study&query.queryName=Demographics&query.viewName=Unweighed%20Over%2045%20Days">Unweighed In Past 45 Days</a>'
-            },{
-                tag: 'li',
-                html: '<a href="<%=contextPath%>/query' + ctx['EHRStudyContainer'] + '/executeQuery.view?schemaName=study&query.queryName=Current Colony Condition">List Most Recent Body Condition Code For Each Animal in the Colony</a>'
-            }]
-        },{
-            html: '<b>Other Searches:</b>'
-        },{
-            tag: 'ul',
-            children: [{
-                tag: 'li',
-                html: '<a href="<%=contextPath%>/query' + ctx['EHRStudyContainer'] + '/executeQuery.view?schemaName=study&query.queryName=colonyPopulationByAge">Population Summary By Species, Gender and Age</a>'
-            },{
-                tag: 'li',
-                html: '<a href="<%=contextPath%>/ehr' + ctx['EHRStudyContainer'] + '/housingOverlaps.view?groupById=1">Find Animals Housed At The Center Over A Date Range</a>'
-            },{
-                tag: 'li',
-                html: '<a href="<%=contextPath%>/query' + ctx['EHRStudyContainer'] + '/executeQuery.view?schemaName=study&query.queryName=SinglyHousedAnimals">List Singly-Housed Animals At The Center On A Given Date</a>'
-            }]
-        },{
-            tag: 'div',
-            style: 'padding-top: 20px;',
-            id: 'animalSearch_'+webpart.wrapperDivId
-        }]
-    }
+    EHR.Utils.getReportLinks({
+        linkTypes: ['animalSearch'],
+        success: function(response){
+            var categories = [];
+            var map = {};
+            Ext4.each(response.items, function(item){
+                if (!item.category)
+                    return;
 
-    var el = Ext4.get(webpart.wrapperDivId);
-    Ext4.DomHelper.append(el, domSpec);
+                if (categories.indexOf(item.category) == -1){
+                    categories.push(item.category);
+                }
 
-    Ext4.create('LABKEY.ext4.SearchPanel', {
-        schemaName: 'study',
-        queryName: 'Demographics',
-        viewName: 'Search Panel',
-        title: 'Search Animals',
-        defaultViewName: 'Alive, at Center',
-        LABEL_WIDTH: 200,
-        width: 660,
-        metadata: {
-            Id: {lookups: false},
-            'Id/age/AgeInYearsRounded': {duplicate: true},
-            'Id/MostRecentWeight/MostRecentWeight': {duplicate: true}
-        }
-    }).render('animalSearch_'+webpart.wrapperDivId);
+                if (!map[item.category]){
+                    map[item.category] = [];
+                    map[item.category].push({
+                        tag: 'h3',
+                        html: '<b>' + item.category + '</b>'
+                    });
+                    map[item.category].push({
+                        tag: 'ul',
+                        children: []
+                    });
+                }
+
+                map[item.category][1].children.push({
+                    tag: 'li',
+                    html: '<a href="' + LABKEY.ActionURL.buildURL(item.controller, item.action, ctx['EHRStudyContainer'], item.params) + '">' + item.label + '</a>'
+                });
+            }, this);
+
+            var domSpec = [{
+                tag: 'div',
+                children: [{
+                    tag: 'p',
+                    html: 'This page allows you to identify animals across the colony, based on different criteria.  Examples of this could include identifying animals to enroll in a study, or determining which animals are due for TB Testing.  Below are links to pre-defined reports, or you can use the search panel below to begin querying the animals.'
+                }]
+            }];
+
+            if (categories.length){
+                Ext4.each(categories, function(c){
+                    domSpec = domSpec.concat(map[c]);
+                }, this);
+            }
+
+            domSpec = domSpec.concat([{
+                tag: 'div',
+                style: 'padding-top: 20px;',
+                id: 'animalSearch_'+webpart.wrapperDivId
+            }]);
+
+            var el = Ext4.get(webpart.wrapperDivId);
+            Ext4.DomHelper.append(el, domSpec);
+
+            Ext4.create('LABKEY.ext4.SearchPanel', {
+                schemaName: 'study',
+                queryName: 'Demographics',
+                viewName: 'Search Panel',
+                title: 'Search Animals',
+                defaultViewName: 'Alive, at Center',
+                LABEL_WIDTH: 200,
+                width: 660,
+                metadata: {
+                    Id: {lookups: false},
+                    'Id/age/AgeInYearsRounded': {duplicate: true},
+                    'Id/MostRecentWeight/MostRecentWeight': {duplicate: true}
+                }
+            }).render('animalSearch_'+webpart.wrapperDivId);
+        },
+        failure: LDK.Utils.getErrorCallback,
+        scope: this
+    });
 });
 
 </script>

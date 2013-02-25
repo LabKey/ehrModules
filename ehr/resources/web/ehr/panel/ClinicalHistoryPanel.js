@@ -23,7 +23,7 @@ Ext4.define('EHR.panel.ClinicalHistoryPanel', {
         this.callParent();
 
         var grid = this.down('grid');
-        if (this.rendered){
+        if (grid.rendered){
             grid.setLoading(true);
         }
         else {
@@ -34,14 +34,17 @@ Ext4.define('EHR.panel.ClinicalHistoryPanel', {
 
         if(this.subjectId){
             var store = this.down('#gridPanel').store;
-            store.loadData({
+            store.reloadData({
                 subjectIds: [this.subjectId],
                 minDate: this.minDate,
                 maxDate: this.maxDate
             });
 
             store.on('datachanged', function(){
-                this.setLoading(false);
+                this.down('grid').setLoading(false);
+            }, this);
+
+            store.on('exception', function(store){
                 this.down('grid').setLoading(false);
             }, this);
         }
@@ -60,6 +63,7 @@ Ext4.define('EHR.panel.ClinicalHistoryPanel', {
             hideHeaders: true,
             emptyText: 'There are no records to display',
             viewConfig : {
+                emptyText: 'There are no records to display',
                 border: false,
                 stripeRows : true
             },
@@ -92,8 +96,20 @@ Ext4.define('EHR.panel.ClinicalHistoryPanel', {
                     text: 'Reload',
                     handler: function(btn){
                         var panel = btn.up('ehr-clinicalhistorypanel');
-                        var minDate = panel.down('#minDate').getValue();
-                        var maxDate = panel.down('#maxDate').getValue();
+                        var minDateField = panel.down('#minDate');
+                        var maxDateField = panel.down('#maxDate');
+                        if (!minDateField.isValid()){
+                            Ext4.Msg.alert('Error', 'Invalid value for min date');
+                            return;
+                        }
+                        if (!maxDateField.isValid()){
+                            Ext4.Msg.alert('Error', 'Invalid value for max date');
+                            return;
+                        }
+
+                        var minDate = minDateField.getValue();
+                        var maxDate = maxDateField.getValue();
+
 
                         panel.reloadData({
                             minDate: minDate,
@@ -130,8 +146,7 @@ Ext4.define('EHR.panel.ClinicalHistoryPanel', {
         var grid = this.down('grid');
         grid.setLoading(true);
 
-        grid.store.removeAll();
-        grid.store.loadData({
+        grid.store.reloadData({
             minDate: config.minDate,
             maxDate: config.maxDate,
             subjectIds: [this.subjectId]
@@ -147,6 +162,7 @@ Ext4.define('EHR.panel.ClinicalHistoryPanel', {
             text: 'Description',
             dataIndex: 'html',
             minWidth: 300,
+            tdCls: 'ldk-wrap-text',
             flex: 10
         }];
     },

@@ -29,7 +29,7 @@ public class DefaultClinicalRemarksDataSource extends AbstractDataSource
         sb.append(safeAppend(rs, "A", "a"));
         sb.append(safeAppend(rs, "P", "p"));
         sb.append(safeAppend(rs, "P2", "p2"));
-        sb.append(safeAppend(rs, "Other", "remark"));
+        sb.append(safeAppend(rs, "Other Remark", "remark"));
 
         return sb.toString();
     }

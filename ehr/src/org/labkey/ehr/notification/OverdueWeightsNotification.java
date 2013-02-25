@@ -71,14 +71,14 @@ public class OverdueWeightsNotification extends AbstractEHRNotification
     @Override
     public String getDescription()
     {
-        return "The report sends alerts for any animal without a weight or not weighted within the past 60 days.";
+        return "The report sends alerts for any animal in caged locations without a weight or not weighted within the past 60 days.";
     }
 
     @Override
     public String getMessage(Container c, User u)
     {
         final StringBuilder msg = new StringBuilder();
-        msg.append("This email contains alerts of animals not weighed in the past 60 days.  It was run on: " + _dateTimeFormat.format(new Date())+ ".<p>");
+        msg.append("This email contains alerts of animals in cage locations not weighed in the past 60 days.  It was run on: " + _dateTimeFormat.format(new Date())+ ".<p>");
 
         livingAnimalsWithoutWeight(c, u, msg);
         animalsNotWeightedInPast60Days(c, u, msg);
@@ -98,6 +98,7 @@ public class OverdueWeightsNotification extends AbstractEHRNotification
         {
             SimpleFilter filter = new SimpleFilter(FieldKey.fromString("calculated_status"), "Alive");
             filter.addCondition(FieldKey.fromString("Id/MostRecentWeight/DaysSinceWeight"), 60, CompareType.GT);
+            filter.addCondition(FieldKey.fromString("Id/curLocation/Cage"), null, CompareType.NONBLANK);
 
             QueryHelper qh = new QueryHelper(c, u, "study", "Demographics", "Weight Detail");
             rs = qh.select(filter);

@@ -124,6 +124,18 @@ public class DefaultEHRCustomizer implements TableCustomizer
             }
         }
 
+        if (table instanceof AbstractTableInfo)
+        {
+            //this will force qcstate toward the end of the non-calculated columns
+            ColumnInfo qc = table.getColumn("qcstate");
+            if (qc != null)
+            {
+                AbstractTableInfo ati = (AbstractTableInfo)table;
+                ati.removeColumn(qc);
+                ati.addColumn(qc);
+            }
+        }
+
         LDKService.get().getColumnsOrderCustomizer().customize(table);
     }
 
@@ -142,6 +154,16 @@ public class DefaultEHRCustomizer implements TableCustomizer
             objectId.setUserEditable(false);
         }
 
+        ColumnInfo room = ti.getColumn("room");
+        if (room != null)
+        {
+            UserSchema us = getUserSchema(ti, "ehr_lookups");
+            if (us != null){
+                room.setFk(new QueryForeignKey(us, "rooms", "room", "room"));
+            }
+            room.setLabel("Room");
+        }
+
         ColumnInfo cage = ti.getColumn("cage");
         if (cage != null)
         {
@@ -152,6 +174,14 @@ public class DefaultEHRCustomizer implements TableCustomizer
         if (description != null)
         {
             description.setDisplayWidth("400");
+        }
+
+        ColumnInfo project = ti.getColumn("project");
+        if (project != null && !ti.getName().equalsIgnoreCase("project"))
+        {
+            UserSchema us = getUserSchema(ti, "ehr");
+            if (us != null)
+                project.setFk(new QueryForeignKey(us, "project", "project", "project"));
         }
     }
 
@@ -259,16 +289,6 @@ public class DefaultEHRCustomizer implements TableCustomizer
         col2.setDescription("Calculates the most recent arrival per animal, if applicable, and most recent arrival at the center.");
         ds.addColumn(col2);
 
-        ColumnInfo col7 = getWrappedIdCol(us, ds, "AvailBlood", "demographicsBloodSummary");
-        col7.setLabel("Blood Remaining");
-        col7.setDescription("Calculates the total blood draw and remaining, which is determine by weight and blood drawn in the past 30 days.");
-        ds.addColumn(col7);
-
-        ColumnInfo col8 = getWrappedIdCol(us, ds, "CageClass", "demographicsCageClass");
-        col8.setLabel("Cage Class");
-        col8.setDescription("Calculates the cage class necessary for this animal, which is used to determine space requirements");
-        ds.addColumn(col8);
-
         ColumnInfo col9 = getWrappedIdCol(us, ds, "numRoommates", "demographicsCurrentRoommates");
         col9.setLabel("Cagemates");
         col9.setDescription("Calculates the total number of roommates per animal and total animals per cage");
@@ -319,6 +339,11 @@ public class DefaultEHRCustomizer implements TableCustomizer
         col20.setDescription("This calculates the most recent weight for the animal, based on the weight table");
         ds.addColumn(col20);
 
+        ColumnInfo id = ds.getColumn("Id");
+        if (id != null)
+        {
+            id.setURL(DetailsURL.fromString("/ehr/participantView.view?participantId=${Id}"));
+        }
         ds.setDetailsURL(DetailsURL.fromString("/ehr/participantView.view?participantId=${Id}"));
     }
 
@@ -348,12 +373,6 @@ public class DefaultEHRCustomizer implements TableCustomizer
                 col.setUserEditable(false);
                 col.setIsUnselectable(true);
                 col.setFk(new QueryForeignKey(us, "protocolActiveAnimals", "protocol", "protocol"));
-
-                ColumnInfo col2 = table.addColumn(new WrappedColumn(protocolCol, "totalProjects"));
-                col2.setLabel("Total Projects");
-                col2.setUserEditable(false);
-                col2.setIsUnselectable(true);
-                col2.setFk(new QueryForeignKey(us, "protocolTotalProjects", "protocol", "protocol"));
             }
         }
     }
@@ -361,6 +380,7 @@ public class DefaultEHRCustomizer implements TableCustomizer
     private void customizeProjectTable(AbstractTableInfo table)
     {
         doSharedCustomization(table);
+        table.setTitleColumn("project");
 
         UserSchema us = getUserSchema(table, "ehr");
         if (us != null)
@@ -656,7 +676,7 @@ public class DefaultEHRCustomizer implements TableCustomizer
         ColumnInfo enddate = ti.getColumn("enddate");
         if (date != null && enddate != null && ti.getColumn("duration") == null)
         {
-            SQLFragment sql = new SQLFragment(ti.getSqlDialect().getDateDiff(Calendar.DATE, "COALESCE(" + ExprColumn.STR_TABLE_ALIAS + "." + enddate.getSelectName() +", {fn curdate()})", "CAST(" + ExprColumn.STR_TABLE_ALIAS + "." + date.getSelectName() + " AS date)"));
+            SQLFragment sql = new SQLFragment(" 1 + (" + ti.getSqlDialect().getDateDiff(Calendar.DATE, "COALESCE(" + ExprColumn.STR_TABLE_ALIAS + "." + enddate.getSelectName() +", {fn curdate()})", "CAST(" + ExprColumn.STR_TABLE_ALIAS + "." + date.getSelectName() + " AS date)") + ")");
             ExprColumn col = new ExprColumn(ti, "duration", sql, JdbcType.INTEGER);
             col.setCalculated(true);
             col.setUserEditable(false);

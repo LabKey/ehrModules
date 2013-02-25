@@ -3,6 +3,11 @@
         <column name="Id"/>
         <column name="Relationship"/>
         <column name="Sibling"/>
+        <column name="Sibling/Dataset/Demographics/gender">
+            <properties>
+                <property name="columnTitle" value="Sibling Gender"/>
+            </properties>
+        </column>
         <column name="Sibling/Dataset/Demographics/calculated_status">
             <properties>
                 <property name="columnTitle" value="Sibling Status"/>

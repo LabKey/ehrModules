@@ -98,7 +98,7 @@ Ext4.define('EHR.panel.MultiAnimalFilterType', {
                         bodyStyle:'padding:5px',
                         items: [{
                             xtype: 'labkey-combo',
-                            fieldLabel: 'Project',
+                            fieldLabel: 'Center Project',
                             emptyText:'',
                             itemId: 'project',
                             displayField: 'name',
@@ -114,7 +114,7 @@ Ext4.define('EHR.panel.MultiAnimalFilterType', {
                                 autoLoad: true
                             })
                         },{
-                            fieldLabel: 'Protocol',
+                            fieldLabel: 'IACUC Protocol',
                             emptyText:'',
                             itemId: 'protocol',
                             xtype: 'labkey-combo',

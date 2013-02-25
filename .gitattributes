@@ -186,8 +186,6 @@ ehr/resources/queries/ehr/protocolTotalAnimalsBySpecies/.qview.xml -text
 ehr/resources/queries/ehr/protocolTotalAnimalsBySpecies/With[!!-~]Animals.qview.xml -text
 ehr/resources/queries/ehr/protocolTotalHistoricAnimalsBySpecies.query.xml -text
 ehr/resources/queries/ehr/protocolTotalHistoricAnimalsBySpecies.sql -text
-ehr/resources/queries/ehr/protocolTotalProjects.query.xml -text
-ehr/resources/queries/ehr/protocolTotalProjects.sql -text
 ehr/resources/queries/ehr/protocol_counts.js -text
 ehr/resources/queries/ehr/protocol_counts.query.xml -text
 ehr/resources/queries/ehr/protocol_counts/.qview.xml -text
@@ -222,8 +220,6 @@ ehr/resources/queries/ehr_lookups/lab_tests.query.xml -text
 ehr/resources/queries/ehr_lookups/lab_tests.sql -text
 ehr/resources/queries/ehr_lookups/next30Days.sql -text
 ehr/resources/queries/ehr_lookups/rooms.query.xml -text
-ehr/resources/queries/ehr_lookups/roomsAssignment.query.xml -text
-ehr/resources/queries/ehr_lookups/roomsAssignment.sql -text
 ehr/resources/queries/ehr_lookups/snomed.js -text
 ehr/resources/queries/ehr_lookups/snomed.query.xml -text
 ehr/resources/queries/ehr_lookups/snomed_subset_codes.query.xml -text
@@ -406,8 +402,6 @@ ehr/resources/queries/study/demographicsAgeClass.query.xml -text
 ehr/resources/queries/study/demographicsAgeClass.sql -text
 ehr/resources/queries/study/demographicsArrival.query.xml -text
 ehr/resources/queries/study/demographicsArrival.sql -text
-ehr/resources/queries/study/demographicsBloodSummary.query.xml -text
-ehr/resources/queries/study/demographicsBloodSummary.sql -text
 ehr/resources/queries/study/demographicsCageClass.query.xml -text
 ehr/resources/queries/study/demographicsCageClass.sql -text
 ehr/resources/queries/study/demographicsCurLocation.query.xml -text
@@ -457,6 +451,7 @@ ehr/resources/queries/study/housingProblems.sql -text
 ehr/resources/queries/study/housingRoommates.query.xml -text
 ehr/resources/queries/study/housingRoommates.sql -text
 ehr/resources/queries/study/housingRoommates/.qview.xml -text
+ehr/resources/queries/study/housingRoommates/Caged[!!-~]Housing[!!-~]Only.qview.xml -text
 ehr/resources/queries/study/housingTotalRoommates.query.xml -text
 ehr/resources/queries/study/housingTotalRoommates.sql -text
 ehr/resources/queries/study/studyData.query.xml -text
@@ -497,6 +492,7 @@ ehr/resources/schemas/dbscripts/postgresql/EHR-12.303-12.304.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR-12.304-12.305.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR-12.315-12.316.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR-12.316-12.317.sql -text
+ehr/resources/schemas/dbscripts/postgresql/EHR-12.317-12.318.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-11.10-11.20.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-11.20-11.30.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-11.30-12.10.sql -text
@@ -621,6 +617,7 @@ ehr/resources/schemas/dbscripts/sqlserver/EHR-12.303-12.304.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/EHR-12.304-12.305.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/EHR-12.315-12.316.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/EHR-12.316-12.317.sql -text
+ehr/resources/schemas/dbscripts/sqlserver/EHR-12.317-12.318.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/EHR_Lookups-11.30-12.10.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/EHR_Lookups-12.20-12.30.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/EHR_Lookups-12.21-12.22.sql -text
@@ -813,6 +810,7 @@ ehr/src/org/labkey/ehr/history/DefaultAssignmentDataSource.java -text
 ehr/src/org/labkey/ehr/history/DefaultBirthDataSource.java -text
 ehr/src/org/labkey/ehr/history/DefaultBloodDrawDataSource.java -text
 ehr/src/org/labkey/ehr/history/DefaultBodyConditionDataSource.java -text
+ehr/src/org/labkey/ehr/history/DefaultCasesCloseDataSource.java -text
 ehr/src/org/labkey/ehr/history/DefaultCasesDataSource.java -text
 ehr/src/org/labkey/ehr/history/DefaultClinicalRemarksDataSource.java -text
 ehr/src/org/labkey/ehr/history/DefaultDeathsDataSource.java -text
@@ -822,6 +820,7 @@ ehr/src/org/labkey/ehr/history/DefaultEncountersDataSource.java -text
 ehr/src/org/labkey/ehr/history/DefaultHousingDataSource.java -text
 ehr/src/org/labkey/ehr/history/DefaultProblemListCloseDataSource.java -text
 ehr/src/org/labkey/ehr/history/DefaultProblemListDataSource.java -text
+ehr/src/org/labkey/ehr/history/DefaultTreatmentEndDataSource.java -text
 ehr/src/org/labkey/ehr/history/DefaultTreatmentOrdersDataSource.java -text
 ehr/src/org/labkey/ehr/history/DefaultWeightDataSource.java -text
 ehr/src/org/labkey/ehr/history/HistoryDataSource.java -text

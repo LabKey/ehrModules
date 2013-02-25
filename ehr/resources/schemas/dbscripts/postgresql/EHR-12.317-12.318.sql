@@ -1,0 +1,1 @@
+ALTER TABLE ehr.protocol ADD last_modification timestamp;

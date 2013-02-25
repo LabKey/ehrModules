@@ -22,6 +22,7 @@ public class DefaultCasesDataSource extends AbstractDataSource
     {
         StringBuilder sb = new StringBuilder();
         sb.append("Case Opened").append("\n");
+        sb.append(safeAppend(rs, "Category", "category"));
         sb.append(safeAppend(rs, "Case #", "caseno"));
         return sb.toString();
     }

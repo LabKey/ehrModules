@@ -1,6 +1,7 @@
 package org.labkey.ehr.history;
 
 import org.apache.commons.lang3.time.DateUtils;
+import org.apache.log4j.Logger;
 import org.labkey.api.data.ColumnInfo;
 import org.labkey.api.data.CompareType;
 import org.labkey.api.data.Container;
@@ -43,6 +44,7 @@ abstract public class AbstractDataSource implements HistoryDataSource
     private String _schema;
     private String _query;
     private String _category;
+    protected static final Logger _log = Logger.getLogger(HistoryDataSource.class);
 
     protected final static SimpleDateFormat _dateTimeFormat = new SimpleDateFormat("yyyy-MM-dd kk:mm");
     protected final static SimpleDateFormat _dateFormat = new SimpleDateFormat("yyyy-MM-dd");
@@ -62,6 +64,8 @@ abstract public class AbstractDataSource implements HistoryDataSource
 
     public List<HistoryRow> getRows(Container c, User u, final String subjectId, Date minDate, Date maxDate)
     {
+        Date start = new Date();
+
         UserSchema us = QueryService.get().getUserSchema(u, c, _schema);
         if (us == null)
             return null;
@@ -86,9 +90,14 @@ abstract public class AbstractDataSource implements HistoryDataSource
                 Date date = results.getDate(getDateField());
                 date = DateUtils.round(date, Calendar.DATE);
 
-                rows.add(new HistoryRow(getCategory(results), subjectId, date, getHtml(results)));
+                String html = getHtml(results);
+                if (!StringUtils.isEmpty(html))
+                    rows.add(new HistoryRow(getCategory(results), subjectId, date, html));
             }
         });
+
+        long duration = ((new Date()).getTime() - start.getTime()) / 1000;
+        _log.info("Loaded history for: " + subjectId + " on table " + _query + " in " + duration + " seconds");
 
         return rows;
     }
@@ -183,9 +192,10 @@ abstract public class AbstractDataSource implements HistoryDataSource
 
     protected String safeAppend(Results rs, String label, String field, String suffix) throws SQLException
     {
-        if (rs.hasColumn(FieldKey.fromString(field)) && rs.getObject(field) != null)
+        FieldKey fk = FieldKey.fromString(field);
+        if (rs.hasColumn(fk) && rs.getObject(fk) != null)
         {
-            return label + ": " + rs.getString(field) + (suffix == null ? "" : suffix) + "\n";
+            return label + ": " + rs.getString(fk) + (suffix == null ? "" : suffix) + "\n";
         }
         return "";
     }

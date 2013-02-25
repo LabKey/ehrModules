@@ -1,9 +1,6 @@
 <script type="text/javascript">
-    LABKEY.requiresScript("/ehr/utils.js");
-</script>
-<script type="text/javascript">
 
-Ext.onReady(makePanel)
+Ext4.onReady(makePanel)
 
 function makePanel(){
     if (!window.EHR || !window.EHR.ext || !window.EHR.Utils){
@@ -13,22 +10,27 @@ function makePanel(){
 
     var webpart = <%=webpartContext%>;
     var ctx = EHR.Utils.getEHRContext(webpart.wrapperDivId);
-    if(!ctx)
+    if (!ctx)
         return;
 
-    var thePanel = Ext.extend(Ext.Panel, {
-        initComponent: function(){
-            Ext.apply(this, {
-                layout: 'table'
-                ,width: 280
-                ,bodyBorder: false
-                ,border: false
-                ,defaults: {
-                    border: false
-                    ,bodyStyle:'align:left'
-                },
-                layoutConfig: {
+    Ext4.define('EHR.panel.QuickSearchPanel', {
+        extend: 'Ext.panel.Panel',
+        FIELD_WIDTH: 180,
+        BUTTON_WIDTH: 125,
+        BUTTON_STYLE: 'margin-left: 4px;',
+        FIELD_STYLE: 'margin-top: 4px;',
+
+        initComponent: function (){
+            Ext4.apply(this, {
+                style: 'padding: 5px;',
+                layout: {
+                    type: 'table',
                     columns: 2
+                },
+                width: 325,
+                border: false,
+                defaults: {
+                    border: false
                 },
                 items: [{
                     html: 'Animal:',
@@ -37,28 +39,24 @@ function makePanel(){
                     xtype: 'textfield',
                     name: 'animal',
                     itemId: 'animalField',
-                    width: 160
+                    style: this.FIELD_STYLE,
+                    width: this.FIELD_WIDTH
                 },{
                     xtype: 'button',
+                    border: true,
                     text: 'Show Animal',
-                    width: 120,
-                    style: 'padding-left:5px',
-                    handler: function(btn){
-                        var field = btn.ownerCt.find('itemId', 'animalField')[0];
+                    style: this.BUTTON_STYLE,
+                    width: this.BUTTON_WIDTH,
+                    handler: function (btn){
+                        var field = btn.up('panel').down('#animalField');
                         var value = field.getValue();
                         if (!value)
                             return;
 
-                        window.location = LABKEY.ActionURL.buildURL(
-                            'study'
-                            ,'participant'
-                            ,ctx['EHRStudyContainer']
-                            ,{participantId: value}
-                            );
-                    },
-                    scope: this
+                        window.location = LABKEY.ActionURL.buildURL('ehr', 'participantView', ctx['EHRStudyContainer'], {participantId: value});
+                    }
                 },{
-                    html: '<a href="'+(LABKEY.ActionURL.buildURL('ehr','animalSearch',ctx['EHRStudyContainer']))+'">Advanced Animal Search</a>',
+                    html: '<a href="' + (LABKEY.ActionURL.buildURL('ehr', 'animalSearch', ctx['EHRStudyContainer'])) + '">Advanced Animal Search</a>',
                     colspan: 2
 //                },{
 //                    html: 'Animal Groups:',
@@ -71,7 +69,7 @@ function makePanel(){
 //                    xtype: 'combo',
 //                    displayField:'name',
 //                    valueField: 'name',
-//                    width: 160,
+//                    width: this.FIELD_WIDTH,
 //                    editable: true,
 //                    triggerAction: 'all',
 //                    store: new LABKEY.ext.Store({
@@ -83,9 +81,9 @@ function makePanel(){
 //                    })
 //                },{
 //                    xtype: 'button',
+//                    border: true,
 //                    text: 'Show Group',
-//                    width: 120,
-//                    style: 'padding-left:5px',
+//                    width: this.BUTTON_WIDTH,
 //                    handler: function(btn){
 //                        var field = btn.ownerCt.find('itemId', 'animalGroup')[0];
 //                        var value = field.getValue();
@@ -113,41 +111,39 @@ function makePanel(){
                     colspan: 2
                 },{
                     itemId: 'projectField',
-                    emptyText:'',
+                    emptyText: '',
                     name: 'projectField',
                     xtype: 'combo',
-                    displayField:'project',
+                    displayField: 'name',
                     valueField: 'project',
-                    width: 160,
-                    triggerAction: 'all',
-                    mode: 'local',
+                    width: this.FIELD_WIDTH,
+                    style: this.FIELD_STYLE,
+                    queryMode: 'local',
                     editable: true,
-                    store: new LABKEY.ext.Store({
+                    store: {
+                        type: 'labkey-store',
                         containerPath: ctx['EHRStudyContainer'],
                         schemaName: 'ehr',
                         queryName: 'project',
                         sort: 'project',
                         autoLoad: true
-                    })
+                    }
                 },{
                     xtype: 'button',
+                    border: true,
                     text: 'Show Project',
-                    width: 120,
-                    style: 'padding-left:5px',
-                    handler: function(btn){
-                        var field = btn.ownerCt.find('itemId', 'projectField')[0];
+                    width: this.BUTTON_WIDTH,
+                    style: this.BUTTON_STYLE,
+                    handler: function (btn){
+                        var field = btn.up('panel').down('#projectField');
                         var value = field.getValue();
-                        if (!value) return false;
+                        if (!value)
+                            return false;
 
-                        window.location = LABKEY.ActionURL.buildURL(
-                            'ehr'
-                            ,'projectDetails'
-                            ,ctx['EHRStudyContainer']
-                            ,{key: value});
-                    },
-                    scope: this
+                        window.location = LABKEY.ActionURL.buildURL('ehr', 'projectDetails', ctx['EHRStudyContainer'], {key:value});
+                    }
                 },{
-                    html: '<a href="'+(LABKEY.ActionURL.buildURL('ehr','projectQueries',ctx['EHRStudyContainer']))+'">Advanced Project Search</a>',
+                    html: '<a href="' + (LABKEY.ActionURL.buildURL('ehr', 'projectQueries', ctx['EHRStudyContainer'])) + '">Advanced Project Search</a>',
                     colspan: 2
                 },{
                     html: 'Protocol:',
@@ -155,43 +151,40 @@ function makePanel(){
                     colspan: 2
                 },{
                     itemId: 'protocolField',
-                    emptyText:'',
+                    emptyText: '',
                     name: 'protocolField',
                     xtype: 'combo',
-                    displayField:'protocol',
+                    displayField: 'protocol',
                     valueField: 'protocol',
-                    width: 160,
-                    triggerAction: 'all',
-                    mode: 'local',
+                    width: this.FIELD_WIDTH,
+                    style: this.FIELD_STYLE,
+                    queryMode: 'local',
                     editable: true,
-                    store: new LABKEY.ext.Store({
+                    store: {
+                        type: 'labkey-store',
                         containerPath: ctx['EHRStudyContainer'],
                         schemaName: 'ehr',
                         queryName: 'protocol',
                         sort: 'protocol',
                         autoLoad: true
-                    })
+                    }
                 },{
                     xtype: 'button',
+                    border: true,
                     text: 'Show Protocol',
-                    width: 120,
-                    style: 'padding-left:5px',
+                    width: this.BUTTON_WIDTH,
+                    style: this.BUTTON_STYLE,
                     handler: function(btn){
-                        var field = btn.ownerCt.find('itemId', 'protocolField')[0];
+                        var field = btn.up('panel').down('#protocolField');
                         var value = field.getValue();
 
                         if (!value)
                             return;
 
-                        window.location = LABKEY.ActionURL.buildURL(
-                            'ehr'
-                            ,'protocolDetails'
-                            ,ctx['EHRStudyContainer']
-                            ,{key: value});
-                    },
-                    scope: this
+                        window.location = LABKEY.ActionURL.buildURL('ehr', 'protocolDetails', ctx['EHRStudyContainer'], {key:value});
+                    }
                 },{
-                    html: '<a href="'+(LABKEY.ActionURL.buildURL('ehr','projectQueries',ctx['EHRStudyContainer']))+'">Advanced Protocol Search</a>',
+                    html: '<a href="' + (LABKEY.ActionURL.buildURL('ehr', 'projectQueries', ctx['EHRStudyContainer'])) + '">Advanced Protocol Search</a>',
                     colspan: 2
                 },{
                     html: 'Room:',
@@ -201,37 +194,34 @@ function makePanel(){
                     xtype: 'textfield',
                     itemId: 'roomField',
                     name: 'room',
-                    width: 160
+                    width: this.FIELD_WIDTH,
+                    style: this.FIELD_STYLE
                 },{
                     xtype: 'button',
+                    border: true,
                     text: 'Show Room',
-                    width: 120,
-                    style: 'padding-left:5px',
+                    width: this.BUTTON_WIDTH,
+                    style: this.BUTTON_STYLE,
                     handler: function(btn){
-                        var field = btn.ownerCt.find('itemId', 'roomField')[0];
+                        var field = btn.up('panel').down('#roomField');
                         var value = field.getValue();
                         if (!value)
                             return;
 
-                        window.location = LABKEY.ActionURL.buildURL(
-                            'query'
-                            ,'executeQuery'
-                            ,ctx['EHRStudyContainer']
-                            ,{'schemaName':'study', 'query.queryName':'Demographics', 'query.Id/curLocation/Room/room~eq': value, 'query.viewName': 'Alive, at Center'});
-
-                    },
-                    scope: this
+                        window.location = LABKEY.ActionURL.buildURL('query', 'executeQuery', ctx['EHRStudyContainer'], {'schemaName':'study', 'query.queryName':'Demographics', 'query.Id/curLocation/Room/room~eq':value, 'query.viewName':'Alive, at Center'});
+                    }
                 },{
-                    html: '<a href="'+(LABKEY.ActionURL.buildURL('ehr','housingQueries',ctx['EHRStudyContainer']))+'">Advanced Housing Search</a>',
+                    html: '<a href="' + (LABKEY.ActionURL.buildURL('ehr', 'housingQueries', ctx['EHRStudyContainer'])) + '">Advanced Housing Search</a>',
+                    height: 20,
                     colspan: 2
                 }]
             });
 
-            thePanel.superclass.initComponent.apply(this, arguments);
+            this.callParent(arguments);
         }
     });
 
-    new thePanel().render(webpart.wrapperDivId);
+    Ext4.create('EHR.panel.QuickSearchPanel').render(webpart.wrapperDivId);
 }
 
 </script>

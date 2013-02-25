@@ -25,17 +25,25 @@ public class DefaultTreatmentOrdersDataSource extends AbstractDataSource
     {
         StringBuilder sb = new StringBuilder();
         sb.append(snomedToString(rs, FieldKey.fromString("code"), FieldKey.fromString("code/meaning")));
+        sb.append(safeAppend(rs, "Reason", "reason"));
         sb.append(safeAppend(rs, "Route", "route"));
 
-        //TODO: conditional based on whether it has ended or not?
-        sb.append(safeAppend(rs, "Duration", "duration", " days"));
+        //TODO: conditional based on whether it has ended or not?  maybe a note for 'ending in X days?'
+
+        if (rs.hasColumn(FieldKey.fromString("duration")) && rs.getObject("duration") != null)
+        {
+            int duration = rs.getInt("duration");
+            sb.append("Duration: ").append(duration == 0 ? 1 : duration).append(" days").append("\n");
+        }
 
         if (rs.hasColumn(FieldKey.fromString("concentration")) && rs.getObject("concentration") != null)
         {
             sb.append("Concentration: " + rs.getString("concentration"));
 
             if (rs.hasColumn(FieldKey.fromString("conc_units")) && rs.getObject("conc_units") != null)
+            {
                 sb.append(" " + rs.getString("conc_units"));
+            }
 
             sb.append("\n");
         }

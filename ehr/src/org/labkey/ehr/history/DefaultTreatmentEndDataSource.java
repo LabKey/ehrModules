@@ -1,0 +1,68 @@
+package org.labkey.ehr.history;
+
+import org.apache.commons.lang3.time.DateUtils;
+import org.labkey.api.data.CompareType;
+import org.labkey.api.data.Results;
+import org.labkey.api.data.SimpleFilter;
+import org.labkey.api.query.FieldKey;
+import org.labkey.api.util.PageFlowUtil;
+
+import java.sql.SQLException;
+import java.util.Date;
+import java.util.Set;
+
+/**
+ * Created with IntelliJ IDEA.
+ * User: bimber
+ * Date: 2/17/13
+ * Time: 4:52 PM
+ */
+public class DefaultTreatmentEndDataSource extends AbstractDataSource
+{
+    public DefaultTreatmentEndDataSource()
+    {
+        super("study", "Treatment Orders", "Treatment Ending");
+    }
+
+    @Override
+    protected String getHtml(Results rs) throws SQLException
+    {
+        StringBuilder sb = new StringBuilder();
+
+        Date start = rs.getDate(FieldKey.fromString("date"));
+        Date end = rs.getDate(FieldKey.fromString("enddate"));
+        if (!DateUtils.isSameDay(start, end))
+            sb.append(snomedToString(rs, FieldKey.fromString("code"), FieldKey.fromString("code/meaning")));
+
+        return sb.toString();
+    }
+
+    @Override
+    protected String getDateField()
+    {
+        return "enddate";
+    }
+
+    @Override
+    protected SimpleFilter getFilter(String subjectId, Date minDate, Date maxDate)
+    {
+        SimpleFilter filter = new SimpleFilter(FieldKey.fromString("id"), subjectId);
+
+        if (minDate != null)
+            filter.addCondition(FieldKey.fromString(getDateField()), minDate, CompareType.DATE_GTE);
+
+        if (maxDate != null)
+            filter.addCondition(FieldKey.fromString(getDateField()), maxDate, CompareType.DATE_LTE);
+
+        filter.addCondition(FieldKey.fromString(getDateField()), null, CompareType.NONBLANK);
+
+        return filter;
+    }
+
+    @Override
+    protected Set<String> getColumnNames()
+    {
+        return PageFlowUtil.set("Id", "date", "enddate", "route", "volume", "vol_units", "amount", "amount_units", "code", "code/meaning", "duration");
+    }
+}
+

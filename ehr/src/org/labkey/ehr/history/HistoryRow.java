@@ -1,5 +1,6 @@
 package org.labkey.ehr.history;
 
+import org.apache.log4j.Logger;
 import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
@@ -22,7 +23,10 @@ public class HistoryRow
     private String _caseId;
     private String _runId;
     private String _encounterId;
+    private Boolean _showTime = false;
     private String _html;
+
+    protected static final Logger _log = Logger.getLogger(HistoryRow.class);
 
     protected final static SimpleDateFormat _dateFormat = new SimpleDateFormat("yyyy-MM-dd");
     protected final static SimpleDateFormat _timeFormat = new SimpleDateFormat("kk:mm");
@@ -40,7 +44,7 @@ public class HistoryRow
         JSONObject json = new JSONObject();
 
         json.put("group", _subjectId + "-" + _dateFormat.format(_date));
-        json.put("sortDate", getSortDate());
+        json.put("sortDate", getSortDateString());
 
         json.put("id", _subjectId);
         json.put("category", _category);
@@ -54,11 +58,27 @@ public class HistoryRow
 
         json.put("html", _html);
 
+        if (_showTime)
+            json.put("timeString", _timeFormat.format(_date));
+
         return json;
     }
 
-    public String getSortDate()
+    public String getSortDateString()
     {
-        return _date == null ? null : _dateFormat.format(_date);
+        try
+        {
+            return _date == null ? null : _dateFormat.format(_date);
+        }
+        catch (ArrayIndexOutOfBoundsException e)
+        {
+            _log.error("Invalid date: " + _date, e);
+            return "";
+        }
+    }
+
+    public void setShowTime(Boolean showTime)
+    {
+        _showTime = showTime;
     }
 }
