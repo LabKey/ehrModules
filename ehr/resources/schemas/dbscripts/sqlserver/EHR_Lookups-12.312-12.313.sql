@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2013 LabKey Corporation
+ *
+ * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
+ */
 ALTER TABLE ehr_lookups.lookup_sets ADD keyField varchar(100);
 ALTER TABLE ehr_lookups.lookup_sets ADD titleColumn varchar(100);
 

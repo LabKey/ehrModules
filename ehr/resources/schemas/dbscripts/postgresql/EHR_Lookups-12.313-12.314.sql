@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2013 LabKey Corporation
+ *
+ * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
+ */
 --alopecia cause
 INSERT INTO ehr_lookups.lookup_sets (setname, label, keyField)
 VALUES ('alopecia_cause', 'Alopecia Cause', 'value');
