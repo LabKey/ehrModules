@@ -16,8 +16,10 @@
 package org.labkey.ehr.history;
 
 import org.labkey.api.data.Results;
+import org.labkey.api.util.PageFlowUtil;
 
 import java.sql.SQLException;
+import java.util.Set;
 
 /**
  * Created with IntelliJ IDEA.
@@ -36,7 +38,16 @@ public class DefaultArrivalDataSource extends AbstractDataSource
     protected String getHtml(Results rs) throws SQLException
     {
         StringBuilder sb = new StringBuilder();
-        sb.append(safeAppend(rs, "Source", "source"));
+        sb.append(safeAppend(rs, "Source", "source/value"));
+        sb.append(safeAppend(rs, "Rearing Type", "rearingType/value"));
+        sb.append(safeAppend(rs, "Acquisition Type", "acquisitionType/value"));
+        sb.append(safeAppend(rs, "Remark", "remark"));
         return sb.toString();
+    }
+
+    @Override
+    protected Set<String> getColumnNames()
+    {
+        return PageFlowUtil.set("Id", "date", "enddate", "source/value", "rearingType/value", "acquisitionType/value", "remark");
     }
 }

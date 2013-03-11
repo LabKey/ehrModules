@@ -44,27 +44,6 @@ public class DefaultBirthDataSource extends AbstractDataSource
         if(rs.hasColumn(FieldKey.fromString("gender")) && rs.getObject("gender") != null)
             sb.append("Gender: " + rs.getString("gender"));
 
-//        if(row.dam)
-//            description.push('Dam: '+ EHR.Server.Validation.nullToString(row.dam));
-//
-//        if(row.sire)
-//            description.push('Sire: '+ EHR.Server.Validation.nullToString(row.sire));
-//
-//        if(row.room)
-//            description.push('Room: '+ EHR.Server.Validation.nullToString(row.room));
-//
-//        if(row.cage)
-//            description.push('Cage: '+ EHR.Server.Validation.nullToString(row.cage));
-//
-//        if(row.cond)
-//            description.push('Cond: '+ EHR.Server.Validation.nullToString(row.cond));
-//
-//        if(row.origin)
-//            description.push('Origin: '+ row.origin);
-//
-//        if(row.type)
-//            description.push('Type: '+ row.type);
-
         return sb.toString();
     }
 }

@@ -47,7 +47,17 @@ public class DefaultTreatmentEndDataSource extends AbstractDataSource
         Date start = rs.getDate(FieldKey.fromString("date"));
         Date end = rs.getDate(FieldKey.fromString("enddate"));
         if (!DateUtils.isSameDay(start, end))
+        {
             sb.append(snomedToString(rs, FieldKey.fromString("code"), FieldKey.fromString("code/meaning")));
+
+            if (start != null)
+            {
+                long diff = (end.getTime() - start.getTime());
+                diff = diff / (1000 * 60 * 60 * 24);
+
+                sb.append("Date Started: ").append(_dateFormat.format(start)).append(diff > 0 ? " (" + diff + " days ago)" : "").append("\n");
+            }
+        }
 
         return sb.toString();
     }

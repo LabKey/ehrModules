@@ -48,6 +48,11 @@ public class DefaultTreatmentOrdersDataSource extends AbstractDataSource
         if (rs.hasColumn(FieldKey.fromString("duration")) && rs.getObject("duration") != null)
         {
             int duration = rs.getInt("duration");
+
+            //for single day treatments, we will have the record of the order, plus a medication given, so we skip the treatment in the list
+            if (duration >= 1)
+                return null;
+
             sb.append("Duration: ").append(duration == 0 ? 1 : duration).append(" days").append("\n");
         }
 

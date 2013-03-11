@@ -9,8 +9,8 @@ Ext4.define('EHR.form.field.RoomField', {
     fieldLabel: 'Room',
     initComponent: function(){
         Ext4.apply(this, {
-            multiSelect: true,
             expandToFitContent: true,
+            queryMode: 'local',
             addAllSelector: true,
             nullCaption: '[Blank]',
             store: {
@@ -24,6 +24,11 @@ Ext4.define('EHR.form.field.RoomField', {
             valueField: 'room',
             displayField: 'room'
         });
+
+        if (!Ext4.isDefined(this.initialConfig.multiSelect)){
+            this.multiSelect = true;
+        }
+
         this.callParent();
 
         this.on('render', function(field){
@@ -35,12 +40,12 @@ Ext4.define('EHR.form.field.RoomField', {
         if (!this.rendered){
             this.on('afterrender', function(field){
                 field.filterByAreas(areas);
-            }, this);
+            }, this, {single: true});
         }
         else if (!this.store.getCount()){
             this.store.on('load', function(store){
                 this.filterByAreas(areas);
-            }, this);
+            }, this, {single: true});
         }
         else {
             this.store.clearFilter();

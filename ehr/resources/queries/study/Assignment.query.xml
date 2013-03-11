@@ -63,6 +63,14 @@
                     <column columnName="releaseCondition">
                         <columnTitle>Condition At Release</columnTitle>
                     </column>
+                    <column columnName="feeType">
+                        <columnTitle>Fee Type</columnTitle>
+                        <fk>
+                            <fkDbSchema>ehr_lookups</fkDbSchema>
+                            <fkTable>perDiemFeeType</fkTable>
+                            <fkColumnName>rowid</fkColumnName>
+                        </fk>
+                    </column>
                 </columns>
             </table>
         </tables>

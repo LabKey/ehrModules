@@ -1,0 +1,1 @@
+ALTER TABLE ehr_lookups.ageclass add label varchar(100);

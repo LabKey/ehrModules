@@ -23,6 +23,7 @@ import org.labkey.api.data.ContainerManager;
 import org.labkey.api.data.PropertyManager;
 import org.labkey.api.data.TableCustomizer;
 import org.labkey.api.ehr.EHRService;
+import org.labkey.api.ehr.HistoryDataSource;
 import org.labkey.api.module.Module;
 import org.labkey.api.module.ModuleLoader;
 import org.labkey.api.query.DetailsURL;
@@ -30,6 +31,7 @@ import org.labkey.api.resource.Resource;
 import org.labkey.api.security.User;
 import org.labkey.api.util.Pair;
 import org.labkey.api.view.template.ClientDependency;
+import org.labkey.ehr.history.ClinicalHistoryManager;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -296,5 +298,10 @@ public class EHRServiceImpl extends EHRService
         {
             return _category;
         }
+    }
+
+    public void registerHistoryDataSource(HistoryDataSource source)
+    {
+        ClinicalHistoryManager.get().registerDataSource(source);
     }
 }

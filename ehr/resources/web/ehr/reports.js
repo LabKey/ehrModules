@@ -93,34 +93,30 @@ EHR.reports.arrivalDeparture = function(panel, tab){
     var filterArray = panel.getFilterArray(tab);
     var title = panel.getTitleSuffix();
 
-    var config = panel.getQWPConfig({
-        title: 'Arrivals' + title,
-        schemaName: 'study',
-        queryName: 'arrival',
-        filters: filterArray.nonRemovable,
-        removeableFilters: filterArray.removable,
-        frame: true
+    tab.add({
+        xtype: 'ldk-querypanel',
+        style: 'margin-bottom:20px;',
+        queryConfig: panel.getQWPConfig({
+            title: 'Arrivals' + title,
+            schemaName: 'study',
+            queryName: 'arrival',
+            filters: filterArray.nonRemovable,
+            removeableFilters: filterArray.removable,
+            frame: true
+        })
     });
 
     tab.add({
         xtype: 'ldk-querypanel',
         style: 'margin-bottom:20px;',
-        queryConfig: config
-    });
-
-    config = panel.getQWPConfig({
-        title: 'Departures' + title,
-        schemaName: 'study',
-        queryName: 'departure',
-        filters: filterArray.nonRemovable,
-        removeableFilters: filterArray.removable,
-        frame: true
-    });
-
-    tab.add({
-        xtype: 'ldk-querypanel',
-        style: 'margin-bottom:20px;',
-        queryConfig: config
+        queryConfig: panel.getQWPConfig({
+            title: 'Departures' + title,
+            schemaName: 'study',
+            queryName: 'departure',
+            filters: filterArray.nonRemovable,
+            removeableFilters: filterArray.removable,
+            frame: true
+        })
     });
 }
 
@@ -160,95 +156,256 @@ EHR.reports.pedigree = function(panel, tab){
 };
 
 EHR.reports.weightGraph = function(panel, tab){
-    var subjects = tab.filters.subjects || [];
-
-    if (subjects.length){
-        for (var i=0;i<subjects.length;i++){
-            var subject = subjects[i];
-            var filterArray = panel.getFilterArray(tab);
-            filterArray.nonRemovable.push(LABKEY.Filter.create('Id', subject, LABKEY.Filter.Types.EQUAL));
-
-            LABKEY.Query.selectRows({
-                schemaName: 'study',
-                queryName: 'weightRelChange',
-                filterArray: filterArray.removable.concat(filterArray.nonRemovable),
-                columns: 'id,date,weight,LatestWeight,LatestWeightDate,PctChange,IntervalInMonths',
-                sort: 'Id,-date',
-                requiredVersion: 9.1,
-                scope: this,
-                failure: LDK.Utils.getErrorCallback(),
-                success: Ext4.Function.pass(function(subj, results){
-                    tab.add({
-                        xtype: 'ldk-graphpanel',
-                        style: 'margin-bottom: 30px',
-                        title: 'Weight Graph: ' + subj,
-                        plotConfig: {
-                            results: results,
-                            title: 'Weight: ' + subj,
-                            height: 400,
-                            width: 900,
-                            yLabel: 'Weight (kg)',
-                            xLabel: 'Date',
-                            xField: 'date',
-                            grouping: ['Id'],
-                            layers: [{
-                                y: 'weight',
-                                hoverText: function(row){
-                                    var lines = [];
-
-                                    lines.push('Date: ' + row.date.format('Y-m-d'));
-                                    lines.push('Weight: ' + row.weight + ' kg');
-                                    lines.push('Latest Weight: ' + row.LatestWeight + ' kg');
-                                    if(row.LatestWeightDate)
-                                        lines.push('Latest Weight Date: ' + row.LatestWeightDate.format('Y-m-d'));
-                                    if(row.PctChange)
-                                        lines.push('% Change From Current: '+row.PctChange + '%');
-                                    lines.push('Interval (Months): ' + row.IntervalInMonths);
-
-                                    return lines.join('\n');
-                                },
-                                name: 'Weight'
-                            }]
-                        }
-                    });
-                }, [subject])
-            });
-        }
+    if (tab.filters.subjects){
+        renderSubjects(tab.filters.subjects, tab);
+    }
+    else
+    {
+        panel.resolveSubjectsFromHousing(tab, renderSubjects, this);
     }
 
-    var gridFilterArray = panel.getFilterArray(tab);
-    var title = panel.getTitleSuffix();
+    function renderSubjects(subjects, tab){
+        if (!subjects.length){
+            tab.add({
+                html: 'No animals were found.',
+                border: false
+            });
 
-    tab.add({
-        xtype: 'ldk-querypanel',
-        style: 'margin-bottom:20px;',
-        queryConfig: panel.getQWPConfig({
-            title: 'Weight Summary' + title,
-            schemaName: 'study',
-            queryName: 'demographicsWeightChange',
-            viewName: 'With Id',
-            sort: 'id',
-            filters: gridFilterArray.nonRemovable,
-            removeableFilters: gridFilterArray.removable,
-            frame: true
-        })
-    });
+            return;
+        }
 
-    tab.add({
-        xtype: 'ldk-querypanel',
-        style: 'margin-bottom:20px;',
-        queryConfig: panel.getQWPConfig({
-            title: 'Weight Raw Data' + title,
-            schemaName: 'study',
-            queryName: 'weight',
-            viewName: 'Percent Change',
-            sort: 'id,-date',
-            filters: gridFilterArray.nonRemovable,
-            removeableFilters: gridFilterArray.removable,
-            frame: true
-        })
-    });
+        var toAdd = [];
+        for (var i=0;i<subjects.length;i++){
+            var subject = subjects[i];
+            toAdd.push(EHR.reports.renderWeightData(panel, tab, subject));
+        }
+
+        if (toAdd.length)
+            tab.add(toAdd)
+    }
 };
+
+EHR.reports.renderWeightData = function(panel, tab, subject){
+    return {
+        xtype: 'ldk-webpartpanel',
+        title: 'Weights - ' + subject,
+        style: 'margin-bottom: 20px;',
+        border: false,
+        items: [{
+            style: 'padding-bottom: 20px;',
+            border: false,
+            defaults: {
+                border: false
+            },
+            items: [{
+                html: '<b>Weight Summary:</b>'
+            },{
+                html: '<hr>'
+            },{
+                itemId: 'summaryArea',
+                border: false,
+                defaults: {
+                    border: false
+                }
+            }]
+        },{
+            html: 'Loading...',
+            itemId: 'tabArea',
+            border: false
+        }],
+        listeners: {
+            single: true,
+            scope: this,
+            render: function(targetPanel){
+                var filterArray = [LABKEY.Filter.create('Id', subject, LABKEY.Filter.Types.EQUAL)];
+
+                //first summary
+                LABKEY.Query.selectRows({
+                    schemaName: 'study',
+                    queryName: 'demographicsWeightChange',
+                    columns: 'id,date,MostRecentWeightDate,MostRecentWeight,DaysSinceWeight,MinLast30,MaxLast30,MaxChange30,AvgLast30,Weights30,MinLast90,MaxLast90,AvgLast90,MaxChange90,Weights90,MinLast180,MaxLast180,AvgLast180,MaxChange180,Weights180',
+                    requiredVersion: 9.1,
+                    filterArray: filterArray,
+                    failure: LDK.Utils.getErrorCallback(),
+                    scope: this,
+                    success: function(results){
+                        var target = targetPanel.down('#summaryArea');
+                        target.removeAll();
+
+                        if (results.rows && results.rows.length){
+                            var row = results.rows[0];
+
+                            var dateVal = '';
+                            if (!Ext4.isEmpty(row.MostRecentWeightDate)){
+                                dateVal = row.MostRecentWeightDate.displayValue || row.MostRecentWeightDate.value;
+                                if (!Ext4.isEmpty(row.DaysSinceWeight)){
+                                    dateVal += ' (' + (row.DaysSinceWeight.displayValue || row.DaysSinceWeight.value) + ' days ago)'
+                                }
+                            }
+
+                            function safeAppendNumber(row, prop, suffix){
+                                if (row[prop] && Ext4.isEmpty(row[prop].value))
+                                    return '';
+
+                                return Ext4.util.Format.round(row[prop].value, 2) + (suffix ? ' ' + suffix : '');
+                            }
+
+                            target.add([{
+                                defaults: {
+                                    border: false,
+                                    style: 'padding: 3px;'
+                                },
+                                layout: {
+                                    type: 'table',
+                                    columns: 2
+                                },
+                                items: [{
+                                    html: 'Last Weight:'
+                                },{
+                                    html: (row.MostRecentWeight.value ? row.MostRecentWeight.value + ' kg' : 'no record')
+                                },{
+                                    html: 'Date:'
+                                },{
+                                    html: dateVal
+                                }]
+                            },{
+                                border: false,
+                                style: 'padding-top: 20px',
+                                defaults: {
+                                    border: false,
+                                    style: 'padding: 3px;'
+                                },
+                                layout: {
+                                    type: 'table',
+                                    columns: 6
+                                },
+                                items: [{
+                                    html: ''
+                                },{
+                                    html: '# Weights'
+                                },{
+                                    html: 'Avg Weight'
+                                },{
+                                    html: 'Min Weight'
+                                },{
+                                    html: 'Max Weight'
+                                },{
+                                    html: 'Max Pct Change'
+                                },{
+                                    html: 'Previous 30 Days:'
+                                },{
+                                    html: safeAppendNumber(row, 'Weights30')
+                                },{
+                                    html: safeAppendNumber(row, 'AvgLast30', ' kg')
+                                },{
+                                    html: safeAppendNumber(row, 'MinLast30', ' kg')
+                                },{
+                                    html: safeAppendNumber(row, 'MaxLast30', ' kg')
+                                },{
+                                    html: safeAppendNumber(row, 'MaxChange30', '%')
+                                },{
+                                    html: 'Previous 90 Days:'
+                                },{
+                                    html: safeAppendNumber(row, 'Weights90')
+                                },{
+                                    html: safeAppendNumber(row, 'AvgLast90', ' kg')
+                                },{
+                                    html: safeAppendNumber(row, 'MinLast90', ' kg')
+                                },{
+                                    html: safeAppendNumber(row, 'MaxLast90', ' kg')
+                                },{
+                                    html: safeAppendNumber(row, 'MaxChange90', '%')
+                                },{
+                                    html: 'Previous 180 Days:'
+                                },{
+                                    html: safeAppendNumber(row, 'Weights180')
+                                },{
+                                    html: safeAppendNumber(row, 'AvgLast180', ' kg')
+                                },{
+                                    html: safeAppendNumber(row, 'MinLast180', ' kg')
+                                },{
+                                    html: safeAppendNumber(row, 'MaxLast180', ' kg')
+                                },{
+                                    html: safeAppendNumber(row, 'MaxChange180', '%')
+                                }]
+                            }]);
+                        }
+                        else {
+                            target.add({
+                                html: 'There are no weight records within the past 90 days'
+                            });
+                        }
+                    }
+                });
+
+                //then raw data
+                LABKEY.Query.selectRows({
+                    schemaName: 'study',
+                    queryName: 'weightRelChange',
+                    filterArray: filterArray,
+                    columns: 'id,date,weight,LatestWeight,LatestWeightDate,PctChange,IntervalInMonths',
+                    sort: 'Id,-date',
+                    requiredVersion: 9.1,
+                    scope: this,
+                    failure: LDK.Utils.getErrorCallback(),
+                    success: Ext4.Function.pass(function(subj, results){
+                        var target = targetPanel.down('#tabArea');
+                        target.removeAll();
+                        target.add({
+                            xtype: 'tabpanel',
+                            style: 'margin-bottom: 20px',
+                            items: [{
+                                xtype: 'ldk-graphpanel',
+                                title: 'Graph',
+                                style: 'margin-bottom: 30px',
+                                plotConfig: {
+                                    results: results,
+                                    title: 'Weight: ' + subj,
+                                    height: 400,
+                                    width: 900,
+                                    yLabel: 'Weight (kg)',
+                                    xLabel: 'Date',
+                                    xField: 'date',
+                                    grouping: ['Id'],
+                                    layers: [{
+                                        y: 'weight',
+                                        hoverText: function(row){
+                                            var lines = [];
+
+                                            lines.push('Date: ' + row.date.format('Y-m-d'));
+                                            lines.push('Weight: ' + row.weight + ' kg');
+                                            lines.push('Latest Weight: ' + row.LatestWeight + ' kg');
+                                            if(row.LatestWeightDate)
+                                                lines.push('Latest Weight Date: ' + row.LatestWeightDate.format('Y-m-d'));
+                                            if(row.PctChange)
+                                                lines.push('% Change From Current: '+row.PctChange + '%');
+                                            lines.push('Interval (Months): ' + row.IntervalInMonths);
+
+                                            return lines.join('\n');
+                                        },
+                                        name: 'Weight'
+                                    }]
+                                }
+                            },{
+                                xtype: 'ldk-querypanel',
+                                title: 'Raw Data',
+                                style: 'margin: 5px;',
+                                queryConfig: panel.getQWPConfig({
+                                    frame: 'none',
+                                    schemaName: 'study',
+                                    queryName: 'weight',
+                                    viewName: 'Percent Change',
+                                    sort: 'id,-date',
+                                    filterArray: filterArray
+                                })
+                            }]
+                        });
+                    }, [subject])
+                });
+            }
+        }
+    }
+}
 
 EHR.reports.bloodChemistry = function(panel, tab){
     var filterArray = panel.getFilterArray(tab);

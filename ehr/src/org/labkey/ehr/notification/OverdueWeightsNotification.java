@@ -27,6 +27,7 @@ import org.labkey.api.query.FieldKey;
 import org.labkey.api.query.QueryHelper;
 import org.labkey.api.query.UserSchema;
 import org.labkey.api.security.User;
+import org.labkey.api.settings.AppProps;
 import org.labkey.api.util.ResultSetUtil;
 
 import java.sql.ResultSet;
@@ -105,8 +106,8 @@ public class OverdueWeightsNotification extends AbstractEHRNotification
 
             if (rs.next())
             {
-                msg.append("<b>WARNING: The following animals have not been weighed in the past 60 days:</b><br>");
-                msg.append("<p><a href='" + _baseUrl + "/executeQuery.view?schemaName=study&query.viewName=By Location&query.queryName=Demographics&query.Id/MostRecentWeight/DaysSinceWeight~gt=60&query.calculated_status~eq=Alive'>Click here to view them</a><p>\n");
+                msg.append("<b>WARNING: The following animals are in cage locations and have not been weighed in the past 60 days:</b><br>");
+                msg.append("<p><a href='" + AppProps.getInstance().getBaseServerUrl() + AppProps.getInstance().getContextPath() + "/query" + c.getPath() + "/executeQuery.view?schemaName=study&query.viewName=By Location&query.queryName=Demographics&query.Id/MostRecentWeight/DaysSinceWeight~gt=60&query.calculated_status~eq=Alive&query.Id/curLocation/Cage~isnonblank'>Click here to view them</a><p>\n");
 
                 Map<String, Map<String, Map<String, Object>>> summary = new HashMap<String, Map<String, Map<String, Object>>>();
                 do
@@ -190,7 +191,7 @@ public class OverdueWeightsNotification extends AbstractEHRNotification
                 }
             });
 
-            msg.append("<p><a href='" + _baseUrl + "/executeQuery.view?schemaName=study&query.queryName=Demographics&query.calculated_status~eq=Alive&query.Id/MostRecentWeight/MostRecentWeightDate~isblank'>Click here to view these animals</a></p>\n");
+            msg.append("<p><a href='" + AppProps.getInstance().getBaseServerUrl() + AppProps.getInstance().getContextPath() + "/query" + c.getPath() + "/executeQuery.view?schemaName=study&query.queryName=Demographics&query.calculated_status~eq=Alive&query.Id/MostRecentWeight/MostRecentWeightDate~isblank'>Click here to view these animals</a></p>\n");
             msg.append("<hr>\n");
         }
     }

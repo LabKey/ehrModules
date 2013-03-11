@@ -21,15 +21,21 @@ import org.labkey.api.data.ButtonBarConfig;
 import org.labkey.api.data.ColumnInfo;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.ContainerManager;
+import org.labkey.api.data.DataColumn;
+import org.labkey.api.data.DisplayColumn;
+import org.labkey.api.data.DisplayColumnFactory;
 import org.labkey.api.data.JdbcType;
+import org.labkey.api.data.RenderContext;
 import org.labkey.api.data.SQLFragment;
 import org.labkey.api.data.TableCustomizer;
 import org.labkey.api.data.TableInfo;
 import org.labkey.api.data.WrappedColumn;
 import org.labkey.api.ehr.EHRService;
+import org.labkey.api.gwt.client.FacetingBehaviorType;
 import org.labkey.api.ldk.LDKService;
 import org.labkey.api.query.DetailsURL;
 import org.labkey.api.query.ExprColumn;
+import org.labkey.api.query.FieldKey;
 import org.labkey.api.query.FilteredTable;
 import org.labkey.api.query.LookupForeignKey;
 import org.labkey.api.query.QueryDefinition;
@@ -41,6 +47,8 @@ import org.labkey.api.security.User;
 import org.labkey.api.study.DataSetTable;
 import org.labkey.api.view.HttpView;
 
+import java.io.IOException;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -183,6 +191,12 @@ public class DefaultEHRCustomizer implements TableCustomizer
             if (us != null)
                 project.setFk(new QueryForeignKey(us, "project", "project", "project"));
         }
+
+        ColumnInfo code = ti.getColumn("code");
+        if (code != null)
+        {
+            code.setFacetingBehaviorType(FacetingBehaviorType.ALWAYS_OFF);
+        }
     }
 
     private void customizeDataset(DataSetTable ds)
@@ -191,6 +205,12 @@ public class DefaultEHRCustomizer implements TableCustomizer
         hideStudyColumns(ti);
 
         doSharedCustomization(ti);
+        if (ds.getName().equalsIgnoreCase("Drug Administration") || ds.getName().equalsIgnoreCase("Treatment Orders"))
+        {
+            addUnitColumns(ti);
+        }
+
+        appendHistoryCol(ti);
 
         UserSchema us = getStudyUserSchema(ti);
         if (us != null){
@@ -226,12 +246,92 @@ public class DefaultEHRCustomizer implements TableCustomizer
         setScriptIncludes(ti);
     }
 
+    private void appendHistoryCol(AbstractTableInfo ti)
+    {
+        if (ti.getColumn("history") != null)
+            return;
+
+        ColumnInfo ci = new WrappedColumn(ti.getColumn("Id"), "history");
+        ci.setDisplayColumnFactory(new DisplayColumnFactory()
+        {
+            @Override
+            public DisplayColumn createRenderer(final ColumnInfo colInfo)
+            {
+                return new DataColumn(colInfo){
+
+                    public void renderGridCellContents(RenderContext ctx, Writer out) throws IOException
+                    {
+                        String objectid = (String)ctx.get("objectid");
+                        Date date = (Date)ctx.get("date");
+                        String id = (String)ctx.get("Id");
+
+                        out.write("<a href=\"javascript:void(0);\" onclick=\"EHR.Utils.showClinicalHistory('" + objectid + "', '" + id + "', '" + date + "', this);\">Display History</a>");
+                    }
+
+                    @Override
+                    public void addQueryFieldKeys(Set<FieldKey> keys)
+                    {
+                        super.addQueryFieldKeys(keys);
+                        keys.add(FieldKey.fromString("date"));
+                        keys.add(FieldKey.fromString("objectid"));
+                    }
+
+                    public boolean isSortable()
+                    {
+                        return false;
+                    }
+
+                    public boolean isFilterable()
+                    {
+                        return false;
+                    }
+
+                    public boolean isEditable()
+                    {
+                        return false;
+                    }
+                };
+            }
+        });
+        ci.setIsUnselectable(false);
+        ci.setLabel("History");
+
+        ti.addColumn(ci);
+    }
+
     private void setLinkDisablers(AbstractTableInfo ti)
     {
         ti.setInsertURL(AbstractTableInfo.LINK_DISABLER);
         ti.setUpdateURL(AbstractTableInfo.LINK_DISABLER);
         ti.setDeleteURL(AbstractTableInfo.LINK_DISABLER);
         ti.setImportURL(AbstractTableInfo.LINK_DISABLER);
+    }
+
+    private void addUnitColumns(AbstractTableInfo ds)
+    {
+        addUnitsConcatCol(ds, "amount", "amount_units", "Amount To Give");
+        addUnitsConcatCol(ds, "volume", "vol_units", "Volume");
+        addUnitsConcatCol(ds, "concentration", "conc_units", "Concentration");
+    }
+
+    private void addUnitsConcatCol(AbstractTableInfo ds, String colName, String unitColName, String label)
+    {
+        ColumnInfo col = ds.getColumn(colName);
+        ColumnInfo unitCol = ds.getColumn(unitColName);
+
+        if (col != null && unitCol != null)
+        {
+            String name = col.getName() + "WithUnits";
+            SQLFragment sql = new SQLFragment("CASE " +
+                " WHEN " + ExprColumn.STR_TABLE_ALIAS + "." + unitCol.getSelectName() + " IS NULL THEN CAST(" + ExprColumn.STR_TABLE_ALIAS + "." + col.getSelectName() + " AS VARCHAR)" +
+                " ELSE " + ds.getSqlDialect().concatenate("CAST(" + ExprColumn.STR_TABLE_ALIAS + "." + col.getSelectName() + " AS VARCHAR)", "' '", ExprColumn.STR_TABLE_ALIAS + "." + unitCol.getSelectName()) +
+                " END"
+            );
+            ExprColumn newCol = new ExprColumn(ds, name, sql, JdbcType.VARCHAR, col, unitCol);
+            newCol.setLabel(label);
+            newCol.setHidden(true);
+            ds.addColumn(newCol);
+        }
     }
 
     private void setScriptIncludes(AbstractTableInfo ti)

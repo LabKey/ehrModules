@@ -19,7 +19,6 @@
 #options(echo=TRUE);
 options(error = dump.frames);
 library(kinship2);
-library(Rlabkey);
 library(getopt);
 library(Matrix);
 

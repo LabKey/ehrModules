@@ -9,22 +9,26 @@
                 <deleteUrl />
                 <columns>
                     <column columnName="date">
+                        <columnTitle>Open Date</columnTitle>
                         <formatString>yyyy-MM-dd</formatString>
                     </column>
                     <column columnName="caseno">
                         <columnTitle>Case No</columnTitle>
                     </column>
                     <column columnName="enddate">
-                        <columnTitle>End Date</columnTitle>
+                        <columnTitle>Close Date</columnTitle>
                     </column>
                     <column columnName="reviewdate">
                         <columnTitle>Next Review Date</columnTitle>
                     </column>
                     <column columnName="category">
-                        <columnTitle>Category</columnTitle>
+                        <columnTitle>Case Category</columnTitle>
                     </column>
                     <column columnName="reviewfrequency">
                         <columnTitle>Review Frequency</columnTitle>
+                    </column>
+                    <column columnName="performedby">
+                        <columnTitle>Opened By</columnTitle>
                     </column>
                 </columns>
             </table>

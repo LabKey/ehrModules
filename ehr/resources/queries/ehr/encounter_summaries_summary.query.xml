@@ -18,6 +18,7 @@
                     <column columnName="summary">
                         <columnTitle>Summary</columnTitle>
                         <displayWidth>500</displayWidth>
+                        <facetingBehavior>ALWAYS_OFF</facetingBehavior>
                     </column>
                 </columns>
             </table>

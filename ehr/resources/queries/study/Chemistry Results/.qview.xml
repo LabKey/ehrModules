@@ -3,6 +3,7 @@
         <column name="Id"/>
         <column name="date"/>
         <column name="testid"/>
+        <column name="method"/>
         <column name="result"/>
         <column name="units"/>
         <column name="qualresult"/>

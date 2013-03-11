@@ -38,6 +38,12 @@
                           <!--<fkColumnName>Id</fkColumnName>-->
                         <!--</fk>-->
                     <!--</column>-->
+                    <column columnName="roommateStart">
+                        <formatString>yyyy-MM-dd HH:mm</formatString>
+                    </column>
+                    <column columnName="roommateEnd">
+                        <formatString>yyyy-MM-dd HH:mm</formatString>
+                    </column>
                 </columns>
             </table>
         </tables>

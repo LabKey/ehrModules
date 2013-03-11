@@ -17,6 +17,7 @@
                     </column>
                     <column columnName="flags">
                         <columnTitle>Flags</columnTitle>
+                        <facetingBehavior>ALWAYS_OFF</facetingBehavior>
                     </column>
                 </columns>
             </table>

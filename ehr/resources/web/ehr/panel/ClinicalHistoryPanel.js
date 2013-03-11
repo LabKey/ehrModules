@@ -8,6 +8,7 @@
  * @cfg minDate
  * @cfg maxDate
  * @cfg maxGridHeight
+ * @cfg autoLoadRecords
  */
 Ext4.define('EHR.panel.ClinicalHistoryPanel', {
     extend: 'Ext.panel.Panel',
@@ -16,11 +17,7 @@ Ext4.define('EHR.panel.ClinicalHistoryPanel', {
     initComponent: function(){
         Ext4.apply(this, {
             border: false,
-            items: [{
-                html: '<span style="font-size: large;"><b>Animal: ' + this.subjectId + '</b></span>',
-                style: 'padding-bottom: 20px;',
-                border: false
-            },
+            items: [
                 this.getGridConfig()
             ]
         });
@@ -33,18 +30,13 @@ Ext4.define('EHR.panel.ClinicalHistoryPanel', {
         }
         else {
             grid.on('afterrender', function(grid){
-                grid.setLoading(true);
+                if (grid.store.isLoadingData)
+                    grid.setLoading(true);
             }, this, {delay: 120, single: true});
         }
 
         if(this.subjectId){
             var store = this.down('#gridPanel').store;
-            store.reloadData({
-                subjectIds: [this.subjectId],
-                minDate: this.minDate,
-                maxDate: this.maxDate
-            });
-
             store.on('datachanged', function(){
                 this.down('grid').setLoading(false);
             }, this);
@@ -52,6 +44,14 @@ Ext4.define('EHR.panel.ClinicalHistoryPanel', {
             store.on('exception', function(store){
                 this.down('grid').setLoading(false);
             }, this);
+
+            if (this.autoLoadRecords){
+                store.reloadData({
+                    subjectIds: [this.subjectId],
+                    minDate: this.minDate,
+                    maxDate: this.maxDate
+                });
+            }
         }
         else {
             Ext4.Msg.alert('Error', 'Must supply at least 1 subject Id')
@@ -66,9 +66,9 @@ Ext4.define('EHR.panel.ClinicalHistoryPanel', {
             cls: 'ldk-grid',
             maxHeight: this.maxGridHeight,
             hideHeaders: true,
-            emptyText: 'There are no records to display',
             viewConfig : {
                 emptyText: 'There are no records to display',
+                derferEmptyText: false,
                 border: false,
                 stripeRows : true
             },
@@ -163,6 +163,10 @@ Ext4.define('EHR.panel.ClinicalHistoryPanel', {
             text: 'Category',
             dataIndex: 'category',
             width: 200
+        },{
+            text: '',
+            dataIndex: 'timeString',
+            width: 100
         },{
             text: 'Description',
             dataIndex: 'html',

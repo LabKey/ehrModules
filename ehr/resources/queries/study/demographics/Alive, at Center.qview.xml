@@ -58,11 +58,11 @@
                 <property name="columnTitle" value="Condition"/>
             </properties>
         </column>
-        <column name="Id/numRoommates/AnimalsInCage">
-            <properties>
-                <property name="columnTitle" value="# Animals In Cage"/>
-            </properties>
-        </column>
+        <!--<column name="Id/numRoommates/AnimalsInCage">-->
+            <!--<properties>-->
+                <!--<property name="columnTitle" value="# Animals In Cage"/>-->
+            <!--</properties>-->
+        <!--</column>-->
         <column name="Id/MostRecentWeight/MostRecentWeight">
             <properties>
                 <property name="columnTitle" value="Current Weight (kg)"/>

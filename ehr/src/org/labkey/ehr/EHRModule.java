@@ -65,7 +65,7 @@ public class EHRModule extends ExtendedSimpleModule
 
     public double getVersion()
     {
-        return 12.318;
+        return 12.321;
     }
 
     public boolean hasScripts()
@@ -88,11 +88,26 @@ public class EHRModule extends ExtendedSimpleModule
     }
 
     @Override
-    public void startupAfterSpringConfig(ModuleContext moduleContext)
+    protected void doStartupAfterSpringConfig(ModuleContext moduleContext)
     {
-        //inerhit from SimpleModule, so we clean up schema on delete
-        ContainerManager.addContainerListener(this);
+        RoleManager.registerRole(new EHRDataAdminRole());
+        RoleManager.registerRole(new EHRRequestorRole());
+        RoleManager.registerRole(new EHRBasicSubmitterRole());
+        RoleManager.registerRole(new EHRFullSubmitterRole());
+        RoleManager.registerRole(new EHRFullUpdaterRole());
+        RoleManager.registerRole(new EHRRequestAdminRole());
 
+        RoleManager.registerRole(new EHRDataEntryRole());
+        RoleManager.registerRole(new EHRRequestorRole());
+
+        NotificationService ns = NotificationService.get();
+        ns.registerNotification(new OverdueWeightsNotification());
+        ns.registerNotification(new WeightAlerts());
+    }
+
+    @Override
+    public void registerSchemas()
+    {
         for (final String schemaName : getSchemaNames())
         {
             final DbSchema dbschema = DbSchema.get(schemaName);
@@ -111,20 +126,6 @@ public class EHRModule extends ExtendedSimpleModule
                 }
             });
         }
-
-        RoleManager.registerRole(new EHRDataAdminRole());
-        RoleManager.registerRole(new EHRRequestorRole());
-        RoleManager.registerRole(new EHRBasicSubmitterRole());
-        RoleManager.registerRole(new EHRFullSubmitterRole());
-        RoleManager.registerRole(new EHRFullUpdaterRole());
-        RoleManager.registerRole(new EHRRequestAdminRole());
-
-        RoleManager.registerRole(new EHRDataEntryRole());
-        RoleManager.registerRole(new EHRRequestorRole());
-
-        NotificationService ns = NotificationService.get();
-        ns.registerNotification(new OverdueWeightsNotification());
-        ns.registerNotification(new WeightAlerts());
     }
 
     @Override

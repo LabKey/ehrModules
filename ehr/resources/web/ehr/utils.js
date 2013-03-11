@@ -728,20 +728,20 @@ EHR.Utils = new function(){
             return ctx;
         },
 
-        showEncounterHistory: function(parentId, el){
-            console.log(arguments);
-            LABKEY.Query.selectRows({
-                schemaName: 'study',
-                queryName: 'Clinical Remarks',
-                filterArray: [LABKEY.Filter.create('parentId', parentId, LABKEY.Filter.Types.EQUAL)]
-            });
-
+        showClinicalHistory: function(objectId, Id, date, el){
+            var minDate = Ext4.Date.add(new Date(), Ext4.Date.YEAR, -2);
             Ext4.create('Ext.window.Window', {
-                title: 'Encounter Summary',
-                width: 500,
+                title: 'Clinical History: ' + Id,
+                width: 1010,
                 modal: true,
                 items: [{
-                    html: 'Loading...'
+                    xtype: 'ehr-clinicalhistorypanel',
+                    border: true,
+                    width: 1000,
+                    maxGridHeight: 600,
+                    autoScroll: true,
+                    subjectId: Id,
+                    minDate: minDate
                 }],
                 buttons: [{
                     text: 'Close',
@@ -751,7 +751,7 @@ EHR.Utils = new function(){
                 },{
                     text: 'Add Remark',
                     handler: function(btn){
-
+                        Ext4.Msg.alert('Add remark', 'Because we still use IRIS, we are not doing any data entry through PRIMe.  Once we start this migration, it will be possible to enter remarks, order treatments, etc. from these screens.')
                     }
                 }]
             }).show(el);

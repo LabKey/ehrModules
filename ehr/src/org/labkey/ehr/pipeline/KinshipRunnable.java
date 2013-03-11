@@ -18,6 +18,7 @@ package org.labkey.ehr.pipeline;
 import org.apache.log4j.Logger;
 import org.labkey.api.data.Container;
 import org.labkey.api.pipeline.PipeRoot;
+import org.labkey.api.pipeline.PipelineJobException;
 import org.labkey.api.pipeline.PipelineJobService;
 import org.labkey.api.pipeline.PipelineService;
 import org.labkey.api.pipeline.PipelineValidationException;
@@ -50,7 +51,7 @@ public class KinshipRunnable
     private final String KINSHIP_PIPELINE_NAME = "kinshipPipeline";
     private final Logger _log = Logger.getLogger(KinshipRunnable.class);
 
-    public boolean run(Container c)
+    public boolean run(Container c) throws PipelineJobException
     {
         User u = EHRManager.get().getEHRUser(c);
         if (u == null)
@@ -63,13 +64,15 @@ public class KinshipRunnable
         return true;
     }
 
-    private void startKinshipCalculation(User u, Container c)
+    private void startKinshipCalculation(User u, Container c) throws PipelineJobException
     {
         try
         {
             String taskIdString =  FileAnalysisTaskPipeline.class.getName() + ":" + KINSHIP_PIPELINE_NAME;
             TaskId taskId = new TaskId(taskIdString);
             TaskPipeline taskPipeline = PipelineJobService.get().getTaskPipeline(taskId);
+            if (taskPipeline == null)
+                throw new PipelineJobException("Unable to find kinship pipeline: " + taskId);
 
             AbstractFileAnalysisProvider provider = (AbstractFileAnalysisProvider) PipelineService.get().getPipelineProvider("File Analysis");
             AbstractFileAnalysisProtocolFactory factory = provider.getProtocolFactory(taskPipeline);
@@ -121,15 +124,15 @@ public class KinshipRunnable
         }
         catch (ClassNotFoundException e)
         {
-            throw new ConfigurationException("The EHR kinship pipeline has not been configured", e);
+            throw new ConfigurationException("The EHR kinship pipeline has not been configured on this server", e);
         }
         catch (IOException e)
         {
-            throw new RuntimeException(e);
+            throw new PipelineJobException(e);
         }
         catch (PipelineValidationException e)
         {
-            throw new RuntimeException(e);
+            throw new PipelineJobException(e);
         }
     }
 }

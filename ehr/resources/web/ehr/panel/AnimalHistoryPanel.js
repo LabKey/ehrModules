@@ -58,7 +58,7 @@ Ext4.define('EHR.panel.AnimalHistoryPanel', {
                 areaFieldName: rec.get("queryhaslocation") ? 'room/area' : 'Id/curLocation/area',
                 roomFieldName: rec.get("queryhaslocation") ? 'room' : 'Id/curLocation/room',
                 cageFieldName: rec.get("queryhaslocation") ? 'cage' : 'Id/curLocation/cage',
-                todayOnly: false
+                todayOnly: rec.get('todayonly')
             }
 
             if (rec.get('jsonconfig')){
@@ -121,6 +121,7 @@ Ext4.define('EHR.panel.AnimalHistoryPanel', {
         LABKEY.Query.selectRows({
             schemaName: 'study',
             queryName: 'demographicsCurLocation',
+            sort: 'room,cage,id',
             filterArray: filters,
             failure: LDK.Utils.getErrorCallback(),
             success: function(results){

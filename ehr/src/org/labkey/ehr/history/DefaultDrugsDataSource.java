@@ -15,13 +15,19 @@
  */
 package org.labkey.ehr.history;
 
+import org.labkey.api.data.Container;
 import org.labkey.api.data.Results;
+import org.labkey.api.ehr.HistoryRow;
 import org.labkey.api.query.FieldKey;
+import org.labkey.api.security.User;
 import org.labkey.api.util.PageFlowUtil;
 
 import java.sql.SQLException;
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -75,8 +81,67 @@ public class DefaultDrugsDataSource extends AbstractDataSource
     }
 
     @Override
+    protected String getCategory(Results rs) throws SQLException
+    {
+        String category = rs.getString("category");
+        return category == null ?  "Medication Given" : category + " Medication";
+    }
+
+    @Override
     protected Set<String> getColumnNames()
     {
         return PageFlowUtil.set("Id", "date", "enddate", "route", "volume", "vol_units", "amount", "amount_units", "code", "code/meaning", "category", "caseid", "parentId/caseid/category");
+    }
+
+    @Override
+    protected HistoryRowImpl createHistoryRow(Results results, String category, String subjectId, Date date, String html) throws SQLException
+    {
+        HistoryRowImpl row = new HistoryRowImpl(category, subjectId, date, html);
+        if (row != null)
+            row.setShowTime(true);
+
+        return row;
+    }
+
+    @Override
+    public List<HistoryRow> getRows(Container c, User u, final String subjectId, Date minDate, Date maxDate)
+    {
+        List<HistoryRow> rows = super.getRows(c, u, subjectId, minDate,  maxDate);
+        Map<String, List<HistoryRowImpl>> groupedRowMap = new HashMap<String, List<HistoryRowImpl>>();
+        for (HistoryRow r : rows)
+        {
+            if (r instanceof HistoryRowImpl)
+            {
+                HistoryRowImpl row = (HistoryRowImpl)r;
+                String key = row.getSubjectId() + "<>" + row.getSortDateString() + "<>" + row.getTimeString();
+
+                List<HistoryRowImpl> existing = groupedRowMap.get(key);
+                if (existing == null)
+                    existing = new ArrayList<HistoryRowImpl>();
+
+                existing.add(row);
+
+                groupedRowMap.put(key, existing);
+            }
+        }
+
+        List<HistoryRow> newRows = new ArrayList<HistoryRow>();
+        for (List<HistoryRowImpl> records : groupedRowMap.values())
+        {
+            StringBuilder sb = new StringBuilder();
+            String delim = "";
+            for (HistoryRowImpl r : records)
+            {
+                sb.append(delim).append(r.getHtml());
+                delim = "\n\n";
+            }
+
+            HistoryRowImpl rec = records.get(0);
+            HistoryRowImpl newRow = new HistoryRowImpl(rec.getCategory(), rec.getSubjectId(), rec.getDate(), sb.toString());
+            newRow.setShowTime(true);
+            newRows.add(newRow);
+        }
+
+        return newRows;
     }
 }

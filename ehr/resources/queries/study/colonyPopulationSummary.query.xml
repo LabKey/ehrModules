@@ -17,7 +17,7 @@
                          <url>/query/executeQuery.view?schemaName=study&amp;
                             query.queryName=demographics&amp;
                             query.species~eq=${species}&amp;
-                            query.viewName=Alive%2C at WNPRC
+                            query.viewName=Alive%2C at Center
                         </url>
                     </column>
                 </columns>

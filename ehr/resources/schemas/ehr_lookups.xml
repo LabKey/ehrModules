@@ -575,6 +575,9 @@
         <ns:deleteUrl></ns:deleteUrl>
         <ns:pkColumnName>rowid</ns:pkColumnName>
         <ns:columns>
+            <ns:column columnName="label">
+                <ns:columnTitle>Label</ns:columnTitle>
+            </ns:column>
             <ns:column columnName="species">
                 <ns:nullable>true</ns:nullable>
             </ns:column>
@@ -1603,6 +1606,38 @@
             <ns:column columnName="createdby"/>
             <ns:column columnName="modified"/>
             <ns:column columnName="modifiedby"/>
+        </ns:columns>
+    </ns:table>
+    <ns:table tableName="parentageTypes" tableDbType="TABLE" useColumnOrder="true">
+        <ns:tableTitle>Parentage Types</ns:tableTitle>
+        <ns:javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</ns:javaCustomizer>
+        <ns:columns>
+            <ns:column columnName="label">
+                <ns:columnTitle>Label</ns:columnTitle>
+            </ns:column>
+            <ns:column columnName="priority">
+                <ns:columnTitle>Priority</ns:columnTitle>
+            </ns:column>
+            <ns:column columnName="abbreviation">
+                <ns:columnTitle>Abbreviation</ns:columnTitle>
+            </ns:column>
+        </ns:columns>
+    </ns:table>
+    <ns:table tableName="relationshipTypes" tableDbType="TABLE" useColumnOrder="true">
+        <ns:tableTitle>Relationship Types</ns:tableTitle>
+        <ns:javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</ns:javaCustomizer>
+        <ns:columns>
+            <ns:column columnName="label">
+                <ns:columnTitle>Label</ns:columnTitle>
+            </ns:column>
+            <ns:column columnName="gender">
+                <ns:columnTitle>Gender</ns:columnTitle>
+                <ns:fk>
+                    <ns:fkDbSchema>ehr_lookups</ns:fkDbSchema>
+                    <ns:fkTable>gender</ns:fkTable>
+                    <ns:fkColumnName>gender</ns:fkColumnName>
+                </ns:fk>
+            </ns:column>
         </ns:columns>
     </ns:table>
 </ns:tables>

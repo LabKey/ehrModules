@@ -42,7 +42,7 @@
                         </conditionalFormats>
                     </column>
                     <column columnName="Weights30">
-                        <columnTitle>Weights In the Last 30 Days</columnTitle>
+                        <columnTitle># of Weights In the Last 30 Days</columnTitle>
                         <displayWidth>140</displayWidth>
                     </column>
                     <column columnName="MinLast90">
@@ -77,7 +77,7 @@
                         </conditionalFormats>
                     </column>
                     <column columnName="Weights90">
-                        <columnTitle>Weights In the Last 90 Days</columnTitle>
+                        <columnTitle># of Weights In the Last 90 Days</columnTitle>
                         <displayWidth>140</displayWidth>
                     </column>
                     <column columnName="MinLast180">
@@ -112,7 +112,7 @@
                         </conditionalFormats>
                     </column>
                     <column columnName="Weights180">
-                        <columnTitle>Weights In the Last 6 Months</columnTitle>
+                        <columnTitle># of Weights In the Last 6 Months</columnTitle>
                         <displayWidth>140</displayWidth>
                     </column>
                 </columns>

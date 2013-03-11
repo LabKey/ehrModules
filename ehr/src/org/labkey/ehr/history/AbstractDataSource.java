@@ -24,15 +24,17 @@ import org.labkey.api.data.Results;
 import org.labkey.api.data.ResultsImpl;
 import org.labkey.api.data.Selector;
 import org.labkey.api.data.SimpleFilter;
-import org.labkey.api.data.Table;
 import org.labkey.api.data.TableInfo;
 import org.labkey.api.data.TableSelector;
+import org.labkey.api.ehr.HistoryDataSource;
+import org.labkey.api.ehr.HistoryRow;
 import org.labkey.api.gwt.client.util.StringUtils;
+import org.labkey.api.module.ModuleLoader;
 import org.labkey.api.query.FieldKey;
 import org.labkey.api.query.QueryService;
 import org.labkey.api.query.UserSchema;
 import org.labkey.api.security.User;
-import org.labkey.api.util.Pair;
+import org.labkey.ehr.EHRModule;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -40,7 +42,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
@@ -77,6 +78,11 @@ abstract public class AbstractDataSource implements HistoryDataSource
         _category = category;
     }
 
+    public String getName()
+    {
+        return _category;
+    }
+
     public List<HistoryRow> getRows(Container c, User u, final String subjectId, Date minDate, Date maxDate)
     {
         Date start = new Date();
@@ -102,19 +108,29 @@ abstract public class AbstractDataSource implements HistoryDataSource
             public void exec(ResultSet rs) throws SQLException
             {
                 Results results = new ResultsImpl(rs, cols);
-                Date date = results.getDate(getDateField());
-                date = DateUtils.round(date, Calendar.DATE);
+                Date date = results.getTimestamp(getDateField());
+                String category = getCategory(results);
 
                 String html = getHtml(results);
                 if (!StringUtils.isEmpty(html))
-                    rows.add(new HistoryRow(getCategory(results), subjectId, date, html));
+                {
+                    HistoryRow row = createHistoryRow(results, category, subjectId, date, html);
+                    if (row != null)
+                        rows.add(row);
+                }
             }
         });
 
         long duration = ((new Date()).getTime() - start.getTime()) / 1000;
-        _log.info("Loaded history for: " + subjectId + " on table " + _query + " in " + duration + " seconds");
+        if (duration > 3)
+            _log.error("Loaded history for: " + subjectId + " on table " + _query + " in " + duration + " seconds");
 
         return rows;
+    }
+
+    protected HistoryRow createHistoryRow(Results results, String category, String subjectId, Date date, String html) throws SQLException
+    {
+        return new HistoryRowImpl(category, subjectId, date, html);
     }
 
     protected String getCategory(Results rs) throws SQLException
@@ -213,6 +229,11 @@ abstract public class AbstractDataSource implements HistoryDataSource
             return label + ": " + rs.getString(fk) + (suffix == null ? "" : suffix) + "\n";
         }
         return "";
+    }
+
+    public boolean isAvailable(Container c, User u)
+    {
+        return c.getActiveModules().contains(ModuleLoader.getInstance().getModule(EHRModule.class));
     }
 
     abstract protected String getHtml(Results rs) throws SQLException;

@@ -41,25 +41,13 @@ Ext4.define('EHR.panel.MultiAnimalFilterType', {
                         xtype: 'form',
                         bodyStyle:'padding:5px',
                         items: [{
-                            fieldLabel: 'Room',
-                            emptyText: '',
+                            xtype: 'ehr-roomfield',
                             itemId: 'room',
                             name: 'roomField',
-                            xtype: 'combo',
-                            displayField:'room',
-                            valueField: 'room',
-                            typeAhead: true,
-                            queryMode: 'local',
-                            width: 300,
-                            store: Ext4.create('LABKEY.ext4.Store', {
-                                schemaName: 'ehr_lookups',
-                                queryName: 'rooms',
-                                sort: 'room',
-                                //filterArray: [LABKEY.Filter.create('TotalAnimals', 0, LABKEY.Filter.Types.NOT_EQUAL)],
-                                autoLoad: true
-                            })
+                            multiSelect: false,
+                            width: 300
                         },{
-                            xtype: 'numberfield',
+                            xtype: 'ehr-cagefield',
                             fieldLabel: 'Cage',
                             name: 'cageField',
                             itemId: 'cage',

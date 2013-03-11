@@ -327,7 +327,7 @@ public class EHRManager
 
                 Set<PropertyDescriptor> props = new HashSet<PropertyDescriptor>();
                 props.addAll(properties);
-                if (dataset.getCategory().equals("ClinPath") && !dataset.getName().equalsIgnoreCase("Clinpath Runs"))
+                if (dataset.getCategory() != null && dataset.getCategory().equals("ClinPath") && !dataset.getName().equalsIgnoreCase("Clinpath Runs"))
                 {
                     props.add(OntologyManager.getPropertyDescriptor(EHRProperties.RUNID.getPropertyDescriptor().getPropertyURI(), c));
                 }

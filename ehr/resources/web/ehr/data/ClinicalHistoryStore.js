@@ -14,7 +14,7 @@ Ext4.define('EHR.data.ClinicalHistoryStore', {
             },
             fields: ['group', 'id', 'date', 'timeString', 'category', 'html', 'lsid'],
             groupField: 'group',
-            sorters: [{property: 'group', direction: 'DESC'}]
+            sorters: [{property: 'group', direction: 'DESC'}, {property: 'timeString'}]
         });
 
         this.callParent(config);
@@ -28,6 +28,7 @@ Ext4.define('EHR.data.ClinicalHistoryStore', {
      */
     reloadData: function(config){
         this.removeAll();
+        this.isLoadingData = true;
 
         LABKEY.Ajax.request({
             url: LABKEY.ActionURL.buildURL('ehr', 'getClinicalHistory'),
@@ -53,6 +54,7 @@ Ext4.define('EHR.data.ClinicalHistoryStore', {
             }, this);
         }
 
+        this.isLoadingData = false;
         if(toAdd.length)
             this.add(toAdd);
         else

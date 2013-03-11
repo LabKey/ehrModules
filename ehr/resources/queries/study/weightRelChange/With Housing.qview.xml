@@ -24,9 +24,18 @@
             <property name="columnTitle" value="Old Weight (kg)"/>
           </properties>
         </column>
-
+        <column name="Id/age/AgeFriendly">
+            <properties>
+                <property name="columnTitle" value="Age"/>
+            </properties>
+        </column>
         <column name="PctChange" />
         <column name="IntervalInDays" />
+        <column name="Id/openProblems/problems">
+            <properties>
+                <property name="columnTitle" value="Open Problems"/>
+            </properties>
+        </column>
    </columns>
    <sorts>
        <sort column="Id/curLocation/area" />

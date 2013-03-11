@@ -16,6 +16,7 @@
 package org.labkey.ehr.history;
 
 import org.labkey.api.data.Results;
+import org.labkey.api.query.FieldKey;
 
 import java.sql.SQLException;
 
@@ -37,8 +38,16 @@ public class DefaultHousingDataSource extends AbstractDataSource
     {
         StringBuilder sb = new StringBuilder();
 
-        sb.append(safeAppend(rs, "Room", "room"));
-        sb.append(safeAppend(rs, "Cage", "cage"));
+        FieldKey room = FieldKey.fromString("room");
+        FieldKey cage = FieldKey.fromString("cage");
+        String value = "";
+        if (rs.hasColumn(room) && rs.getObject(room) != null)
+            value = rs.getString(room);
+
+        if (rs.hasColumn(cage) && rs.getObject(cage) != null)
+            value += " / " + rs.getString(cage);
+
+        sb.append("Moved to: " + value).append("\n");
 
         return sb.toString();
     }

@@ -17,7 +17,8 @@ package org.labkey.ehr.history;
 
 import org.apache.log4j.Logger;
 import org.labkey.api.data.Container;
-import org.labkey.api.ldk.NavItem;
+import org.labkey.api.ehr.HistoryDataSource;
+import org.labkey.api.ehr.HistoryRow;
 import org.labkey.api.security.User;
 
 import java.util.ArrayList;
@@ -39,50 +40,44 @@ public class ClinicalHistoryManager
 {
     private static final ClinicalHistoryManager _instance = new ClinicalHistoryManager();
 
-    private Map<String, List<HistoryHandler>> _handlers = new HashMap<String, List<HistoryHandler>>();
+    private Map<String, List<HistoryDataSource>> _dataSources = new HashMap<String, List<HistoryDataSource>>();
     private Logger _log = Logger.getLogger(ClinicalHistoryManager.class);
-
-    private HistoryDataSource[] _defaultSources = new HistoryDataSource[]{
-        //demographics row
-        new DefaultProblemListDataSource(),
-        new DefaultProblemListCloseDataSource(),
-
-        new DefaultCasesDataSource(),
-        new DefaultCasesCloseDataSource(),
-
-        new DefaultEncountersDataSource(),
-
-        new DefaultClinicalRemarksDataSource(),
-        new DefaultDrugsDataSource(),
-        new DefaultWeightDataSource(),
-        new DefaultArrivalDataSource(),
-        new DefaultAlopeciaDataSource(),
-        new DefaultAssignmentDataSource(),
-        //assignment enddate
-        new DefaultBirthDataSource(),
-        //birth where animal was parent
-
-        new DefaultBloodDrawDataSource(),
-        new DefaultBodyConditionDataSource(),
-//        new DefaultWeightDataSource("study", "Clinpath Runs"),
-        new DefaultDeathsDataSource(),
-        new DefaultDepartureDataSource(),
-        new DefaultHousingDataSource(),
-
-//        new DefaultWeightDataSource("study", "Flags"),
-//        new DefaultWeightDataSource("study", "Notes"),
-
-            //delivery, etc
-//
-        new DefaultTreatmentOrdersDataSource(),
-        new DefaultTreatmentEndDataSource(),
-//
-//        new DefaultWeightDataSource("study", "Clinical Observations"),
-    };
 
     private ClinicalHistoryManager()
     {
+        registerDataSource(new DefaultProblemListDataSource());
+        registerDataSource(new DefaultProblemListCloseDataSource());
 
+        registerDataSource(new DefaultCasesDataSource());
+        registerDataSource(new DefaultCasesCloseDataSource());
+
+        registerDataSource(new DefaultEncountersDataSource());
+
+        registerDataSource(new DefaultClinicalRemarksDataSource());
+        registerDataSource(new DefaultDrugsDataSource());
+        registerDataSource(new DefaultWeightDataSource());
+        registerDataSource(new DefaultAlopeciaDataSource());
+        registerDataSource(new DefaultAssignmentDataSource());
+        registerDataSource(new DefaultAssignmentEndDataSource());
+
+        registerDataSource(new DefaultBirthDataSource());
+        registerDataSource(new DefaultDeliveryDataSource());
+        registerDataSource(new DefaultPregnanciesDataSource());
+
+        registerDataSource(new DefaultBloodDrawDataSource());
+        registerDataSource(new DefaultBodyConditionDataSource());
+
+        registerDataSource(new DefaultLabworkDataSource());
+
+        registerDataSource(new DefaultDeathsDataSource());
+        registerDataSource(new DefaultArrivalDataSource());
+        registerDataSource(new DefaultDepartureDataSource());
+        registerDataSource(new DefaultHousingDataSource());
+
+        //TODO: flags, notes
+
+        registerDataSource(new DefaultTreatmentOrdersDataSource());
+        registerDataSource(new DefaultTreatmentEndDataSource());
     }
 
     public static ClinicalHistoryManager get()
@@ -90,23 +85,24 @@ public class ClinicalHistoryManager
         return _instance;
     }
 
-    public void registerHandler(String schema, String query, HistoryHandler handler)
+    public void registerDataSource(HistoryDataSource dataSource)
     {
-        String key = schema + "." + query;
-        List<HistoryHandler> handlers = _handlers.get(key);
-        if (handlers == null)
-            handlers = new ArrayList<HistoryHandler>();
+        String key = dataSource.getName();
+        List<HistoryDataSource> sources = _dataSources.get(key);
 
-        handlers.add(handler);
+        if (sources == null)
+            sources = new ArrayList<HistoryDataSource>();
 
-        _handlers.put(key, handlers);
+        sources.add(0, dataSource);
+
+        _dataSources.put(key, sources);
     }
 
     public List<HistoryRow> getHistory(Container c, User u, String subjectId, Date minDate, Date maxDate)
     {
         List<HistoryRow> rows = new ArrayList<HistoryRow>();
 
-        for (HistoryDataSource ds : getDataSources())
+        for (HistoryDataSource ds : getDataSources(c, u))
         {
             rows.addAll(ds.getRows(c, u, subjectId, minDate, maxDate));
         }
@@ -128,8 +124,21 @@ public class ClinicalHistoryManager
         });
     }
 
-    protected List<HistoryDataSource> getDataSources()
+    protected List<HistoryDataSource> getDataSources(Container c, User u)
     {
-        return new ArrayList<HistoryDataSource>(Arrays.asList(_defaultSources));
+        List<HistoryDataSource> sources = new ArrayList<HistoryDataSource>();
+        for (List<HistoryDataSource> list : _dataSources.values())
+        {
+            for (HistoryDataSource source : list)
+            {
+                if (source.isAvailable(c, u))
+                {
+                    sources.add(source);
+                    break;
+                }
+            }
+        }
+
+        return sources;
     }
 }

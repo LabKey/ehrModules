@@ -18,6 +18,7 @@
                     <column columnName="participants">
                         <columnTitle>Participants</columnTitle>
                         <displayWidth>300</displayWidth>
+                        <facetingBehavior>ALWAYS_OFF</facetingBehavior>
                     </column>
                 </columns>
             </table>
