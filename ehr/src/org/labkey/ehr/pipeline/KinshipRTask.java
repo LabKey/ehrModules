@@ -23,6 +23,7 @@ import org.labkey.api.data.SimpleFilter;
 import org.labkey.api.data.Table;
 import org.labkey.api.data.TableInfo;
 import org.labkey.api.exp.api.ExperimentService;
+import org.labkey.api.gwt.client.util.StringUtils;
 import org.labkey.api.module.Module;
 import org.labkey.api.module.ModuleLoader;
 import org.labkey.api.pipeline.AbstractTaskFactory;
@@ -153,15 +154,15 @@ public class KinshipRTask extends WorkDirectoryTask<KinshipRTask.Factory>
 
     private String getKinshipScriptPath() throws PipelineJobException
     {
-        Module ehr = ModuleLoader.getInstance().getModule("ehr");
-        String path = "pipeline/kinship/populateKinship.r";
-        FileResource resource = (FileResource)ehr.getModuleResolver().lookup(Path.parse(path));
-        if (resource == null || !resource.getFile().exists())
-        {
-            throw new PipelineJobException("Unable to find kinship R script under EHR module at: " + path);
-        }
+        String packagePath = PipelineJobService.get().getConfigProperties().getSoftwarePackagePath("EHRKinship");
+        if (StringUtils.isEmpty(packagePath))
+            throw new PipelineJobException("EHRKinship path not specified in the pipeline config file");
 
-        return resource.getFile().getPath();
+        File script = new File(packagePath, "populateKinship.r");
+        if (!script.exists())
+            throw new PipelineJobException("Unable to find file: " + script.getPath());
+
+        return script.getPath();
     }
 
 }

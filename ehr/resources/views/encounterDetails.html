@@ -27,7 +27,9 @@ Ext4.onReady(function (){
     var el = Ext4.get(webpart.wrapperDivId);
     Ext4.DomHelper.append(el, domSpec);
 
-    Ext4.create('LDK.panel.DetailsPanel', {
+    Ext4.create('LABKEY.ext.DetailsPanel', {
+        border: false,
+        showTitle: false,
         store: {
             schemaName: 'study',
             queryName: 'encounters',
@@ -39,15 +41,15 @@ Ext4.onReady(function (){
                         var date = store.getAt(0).get('date');
 
                         if (id && date){
-                            Ext4.create('LDK.panel.WebpartPanel', {
-                                title: 'History',
-                                width: '100%',
+                            Ext4.create('Ext.panel.Panel', {
+                                border: false,
                                 items: [{
                                     xtype: 'ehr-clinicalhistorypanel',
-                                    width: 1200,
+                                    //width: 1200,
                                     subjectId: id,
                                     minDate: date,
-                                    maxDate: date
+                                    maxDate: date,
+                                    autoLoadRecords: true
                                 }]
                             }).render('childTables_' + webpart.wrapperDivId);
                         }
@@ -56,7 +58,6 @@ Ext4.onReady(function (){
                 scope: this
             }
         },
-        title: 'Encounter Details',
         showBackBtn: false,
         renderTo: 'encounterDetails_' + webpart.wrapperDivId
     });

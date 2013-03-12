@@ -13,10 +13,10 @@ Ext4.onReady(function (){
         tag: 'div',
         style: 'padding-bottom: 10px;',
         id: 'projectDetails_' + webpart.wrapperDivId
-    },{
-        tag: 'div',
-        style: 'padding-bottom: 10px;',
-        id: 'projectLinks_' + webpart.wrapperDivId
+//    },{
+//        tag: 'div',
+//        style: 'padding-bottom: 10px;',
+//        id: 'projectLinks_' + webpart.wrapperDivId
     },{
         tag: 'div',
         style: 'padding-bottom: 10px;',
@@ -81,61 +81,61 @@ Ext4.onReady(function (){
         failure: EHR.Utils.onError
      }).render('projectTotalAssignments_' + webpart.wrapperDivId);
 
-    Ext4.create('LDK.panel.WebpartPanel', {
-        margin: '0 0 0 0',
-        title: 'Project Information',
-        bodyStyle: 'padding:5px;',
-        defaults: {
-            linkCls: 'labkey-text-link',
-            style: 'padding-bottom:10px'
-        },
-        items: [{
-            xtype: 'labkey-linkbutton',
-            text: 'View Charges Under This Project',
-            handler: function(c){
-                var params = {schemaName: 'study'};
-                params['query.queryName'] = 'charges';
-                params['query.project~eq'] = project;
-
-                window.open(LABKEY.ActionURL.buildURL(
-                    'query',
-                    'executeQuery.view',
-                    LABKEY.ActionURL.getContainer(),
-                    params
-                ));
-            }
-        },{
-            xtype: 'labkey-linkbutton',
-            text: 'View Procedures Under This Project',
-            handler: function(c){
-                var params = {schemaName: 'study'};
-                params['query.queryName'] = 'encounters';
-                params['query.project~eq'] = project;
-
-                window.open(LABKEY.ActionURL.buildURL(
-                    'query',
-                    'executeQuery.view',
-                    LABKEY.ActionURL.getContainer(),
-                    params
-                ));
-            }
-        },{
-            xtype: 'labkey-linkbutton',
-            text: 'View All Items Under This Project',
-            handler: function(c){
-                var params = {schemaName: 'study'};
-                params['query.queryName'] = 'studyData';
-                params['query.project~eq'] = project;
-
-                window.open(LABKEY.ActionURL.buildURL(
-                    'query',
-                    'executeQuery.view',
-                    LABKEY.ActionURL.getContainer(),
-                    params
-                ));
-            }
-        }]
-    }).render('projectLinks_' + webpart.wrapperDivId);
+//    Ext4.create('LDK.panel.WebpartPanel', {
+//        margin: '0 0 0 0',
+//        title: 'Project Information',
+//        bodyStyle: 'padding:5px;',
+//        defaults: {
+//            linkCls: 'labkey-text-link',
+//            style: 'padding-bottom:10px'
+//        },
+//        items: [{
+//            xtype: 'labkey-linkbutton',
+//            text: 'View Charges Under This Project',
+//            handler: function(c){
+//                var params = {schemaName: 'study'};
+//                params['query.queryName'] = 'charges';
+//                params['query.project~eq'] = project;
+//
+//                window.open(LABKEY.ActionURL.buildURL(
+//                    'query',
+//                    'executeQuery.view',
+//                    LABKEY.ActionURL.getContainer(),
+//                    params
+//                ));
+//            }
+//        },{
+//            xtype: 'labkey-linkbutton',
+//            text: 'View Procedures Under This Project',
+//            handler: function(c){
+//                var params = {schemaName: 'study'};
+//                params['query.queryName'] = 'encounters';
+//                params['query.project~eq'] = project;
+//
+//                window.open(LABKEY.ActionURL.buildURL(
+//                    'query',
+//                    'executeQuery.view',
+//                    LABKEY.ActionURL.getContainer(),
+//                    params
+//                ));
+//            }
+//        },{
+//            xtype: 'labkey-linkbutton',
+//            text: 'View All Items Under This Project',
+//            handler: function(c){
+//                var params = {schemaName: 'study'};
+//                params['query.queryName'] = 'studyData';
+//                params['query.project~eq'] = project;
+//
+//                window.open(LABKEY.ActionURL.buildURL(
+//                    'query',
+//                    'executeQuery.view',
+//                    LABKEY.ActionURL.getContainer(),
+//                    params
+//                ));
+//            }
+//        }]
+//    }).render('projectLinks_' + webpart.wrapperDivId);
 });
 
 </script>

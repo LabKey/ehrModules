@@ -12,7 +12,7 @@
         <column name="performedby"/>
 
         <column name="remark"/>
-        <column name="description"/>
+        <column name="history" />
         <column name="qcstate" />
         <column name="taskid" />
         <column name="requestid" />

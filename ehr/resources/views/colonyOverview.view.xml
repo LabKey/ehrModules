@@ -1,6 +1,7 @@
 <view xmlns="http://labkey.org/data/xml/view" title="Colony Overview">
     <dependencies>
         <dependency path="ehr.context" />
+        <dependency path="ehr/panel/PopulationPanel.js"/>
         <dependency path="ehr/panel/ColonyOverviewPanel.js"/>
     </dependencies>
 </view>

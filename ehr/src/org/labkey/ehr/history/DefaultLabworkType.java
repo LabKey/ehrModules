@@ -116,6 +116,7 @@ public class DefaultLabworkType implements LabworkType
             return new HashMap<String, List<String>>();
         }
 
+        assert ti.getColumn(_runIdField) != null;
         final Collection<ColumnInfo> cols = getColumns(ti);
         TableSelector ts = new TableSelector(ti, cols, filter, null);
 

@@ -37,12 +37,14 @@ import org.labkey.api.view.NavTree;
 import org.labkey.api.view.UnauthorizedException;
 import org.labkey.ehr.history.ClinicalHistoryManager;
 import org.labkey.ehr.history.HistoryRowImpl;
+import org.labkey.ehr.history.LabworkManager;
 import org.labkey.ehr.pipeline.KinshipRunnable;
 import org.springframework.validation.BindException;
 import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -68,6 +70,42 @@ public class EHRController extends SpringActionController
             //TODO
 
             return resp;
+        }
+    }
+
+    @RequiresPermissionClass(ReadPermission.class)
+    public class GetLabResultSummary extends ApiAction<LabResultSummaryForm>
+    {
+        public ApiResponse execute(LabResultSummaryForm form, BindException errors)
+        {
+            ApiResponse resp = new ApiSimpleResponse();
+
+            if (form.getRunId() == null || form.getRunId().length == 0)
+            {
+                errors.reject(ERROR_MSG, "No Run Ids Provided");
+                return null;
+            }
+
+            Map<String, List<String>> results = LabworkManager.get().getResults(getContainer(), getUser(), Arrays.asList(form.getRunId()));
+            resp.getProperties().put("results", results);
+            resp.getProperties().put("success", true);
+
+            return resp;
+        }
+    }
+
+    public static class LabResultSummaryForm
+    {
+        String[] _runId;
+
+        public String[] getRunId()
+        {
+            return _runId;
+        }
+
+        public void setRunId(String[] runId)
+        {
+            _runId = runId;
         }
     }
 

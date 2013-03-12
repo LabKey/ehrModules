@@ -104,7 +104,9 @@ public class ClinicalHistoryManager
 
         for (HistoryDataSource ds : getDataSources(c, u))
         {
-            rows.addAll(ds.getRows(c, u, subjectId, minDate, maxDate));
+            List<HistoryRow> newRows = ds.getRows(c, u, subjectId, minDate, maxDate);
+            if (newRows != null)
+                rows.addAll(newRows);
         }
 
         sortRowsByDate(rows);
