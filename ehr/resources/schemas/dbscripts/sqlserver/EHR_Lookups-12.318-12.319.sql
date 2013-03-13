@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2013 LabKey Corporation
+ *
+ * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
+ */
 INSERT INTO ehr_lookups.lookups (set_name, value) VALUES ('clinpath_types', 'Antibiotic Sensitivity');
 INSERT INTO ehr_lookups.lookups (set_name, value) VALUES ('clinpath_types', 'Biochemistry');
 INSERT INTO ehr_lookups.lookups (set_name, value) VALUES ('clinpath_types', 'Cerebral Spinal Fluid');
