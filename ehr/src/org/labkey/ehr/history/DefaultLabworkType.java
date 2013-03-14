@@ -131,7 +131,7 @@ public class DefaultLabworkType implements LabworkType
             return new HashMap<String, List<String>>();
         }
 
-        assert ti.getColumn(_runIdField) != null;
+        assert ti.getColumn(_runIdField) != null : "Unable to find runId column for table: " + _queryName;
         final Collection<ColumnInfo> cols = getColumns(ti);
         TableSelector ts = new TableSelector(ti, cols, filter, null);
 
