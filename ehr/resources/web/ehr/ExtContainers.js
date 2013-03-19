@@ -226,6 +226,9 @@ EHR.ext.AnimalSelectorPanel = Ext.extend(Ext.Panel, {
                 obj = {Id: row.Id};
                 if(row.room)
                     obj['id/curlocation/location'] = row.room+'-'+row.cage;
+                if(row.cond)
+                    obj['id/curlocation/cond'] = row.cond;
+
 
                 records.push(obj);
                 ids[row.Id] = 0;
@@ -397,7 +400,7 @@ EHR.ext.ChemExcelWin = Ext.extend(Ext.Panel, {
         Ext.Ajax.request({
             url: LABKEY.ActionURL.buildURL("assay", "assayFileUpload"),
             params: {
-                fileName: 'ChemistryUpload_'+(new Date()).format('Y-m-d_H:m:s')+'.txt',
+                fileName: 'ChemistryUpload_'+(new Date()).format('Y-m-d_H:m:s')+'.csv',
                 fileContent: fileContent
             },
             success: this.onFileUpload,
@@ -470,7 +473,8 @@ EHR.ext.ChemExcelWin = Ext.extend(Ext.Panel, {
         Ext.each(data, function(row, idx){
             id = row[7];
             if(!id){
-                alert('Something went wrong reading the file');
+                console.log ('animal ID ' + id);
+                alert('Something went wrong reading the file ' + id);
                 return;
             }
 
@@ -1857,7 +1861,12 @@ Ext.extend(EHR.ext.AbstractPanel, Ext.FormPanel, {
             {
                 if (c.hidden)
                     return false;
-                var value = row['_labkeyurl_' + c.name] ? '<a href="' + row['_labkeyurl_' + c.name] + '" target=_blank>' + row[c.name] + '</a>' : row[c.name];
+                var rawValue = row[c.name];
+                if (Ext.isNumber(rawValue))
+                {
+                    rawValue = Ext.util.Format.number(rawValue, "0.00");
+                }
+                var value = row['_labkeyurl_' + c.name] ? '<a href="' + row['_labkeyurl_' + c.name] + '" target=_blank>' + rawValue + '</a>' : rawValue;
                 this.placeForAbstract.add({id: c.name, xtype: 'displayfield', fieldLabel: c.caption, value: value, submitValue: false});
             }, this);
 

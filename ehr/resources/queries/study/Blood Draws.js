@@ -304,7 +304,7 @@ function onUpsert(context, errors, row, oldRow){
                 multiplier = 0.15;
             }
 
-            var sql = "SELECT b.lsid, coalesce(b.id, d.id) as id, b.quantity, d.MostRecentWeight FROM (SELECT b.lsid, b.id, b.quantity " +
+            var sql = "SELECT b.lsid, coalesce(b.id, d.id) as id, b.quantity, d.MostRecentWeight, d.MostRecentWeightDate FROM (SELECT b.lsid, b.id, b.quantity " +
                 "FROM study.\"Blood Draws\" b " +
                 "WHERE b.id='"+row.Id+"' AND cast(b.date as date) >= '"+EHR.Server.Validation.dateToString(minDate)+"' AND cast(b.date as date) <= '"+EHR.Server.Validation.dateToString(row.date) +"' " +
                 "AND (b.qcstate.publicdata = true OR b.qcstate.metadata.DraftData = true) ) b ";
@@ -374,7 +374,7 @@ function onUpsert(context, errors, row, oldRow){
                 var availBlood = -1;
                 var bloodNext30 = 0;
 
-                var sql = "SELECT b.lsid, coalesce(b.id, d.id) as id, b.quantity, d.MostRecentWeight FROM (SELECT b.lsid, b.id, b.quantity " +
+                var sql = "SELECT b.lsid, coalesce(b.id, d.id) as id, b.quantity, d.MostRecentWeight, d.MostRecentWeightDate FROM (SELECT b.lsid, b.id, b.quantity " +
                     "FROM study.\"Blood Draws\" b " +
                     "WHERE b.id='"+row.Id+"' AND cast(b.date as date) >= '"+EHR.Server.Validation.dateToString(row.date) +"' AND cast(b.date as date) <= '"+EHR.Server.Validation.dateToString(maxDate)+"' " +
                     "AND (b.qcstate.publicdata = true OR b.qcstate.metadata.DraftData = true) ) b ";
