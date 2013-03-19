@@ -389,6 +389,7 @@ ehr/resources/queries/study/colonyPopulationChange.sql -text
 ehr/resources/queries/study/colonyPopulationChange/.qview.xml -text
 ehr/resources/queries/study/colonyPopulationSummary.query.xml -text
 ehr/resources/queries/study/colonyPopulationSummary.sql -text
+ehr/resources/queries/study/colonyPopulationSummary/.qview.xml -text
 ehr/resources/queries/study/demographics/.qview.xml -text
 ehr/resources/queries/study/demographics/Abstract.qview.xml -text
 ehr/resources/queries/study/demographics/Alive,[!!-~]at[!!-~]Center.qview.xml -text
@@ -488,6 +489,8 @@ ehr/resources/schemas/dbscripts/postgresql/EHR-12.304-12.305.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR-12.315-12.316.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR-12.316-12.317.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR-12.317-12.318.sql -text
+ehr/resources/schemas/dbscripts/postgresql/EHR-12.321-12.322.sql -text
+ehr/resources/schemas/dbscripts/postgresql/EHR-12.322-12.323.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-11.10-11.20.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-11.20-11.30.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-11.30-12.10.sql -text
@@ -616,6 +619,8 @@ ehr/resources/schemas/dbscripts/sqlserver/EHR-12.304-12.305.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/EHR-12.315-12.316.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/EHR-12.316-12.317.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/EHR-12.317-12.318.sql -text
+ehr/resources/schemas/dbscripts/sqlserver/EHR-12.321-12.322.sql -text
+ehr/resources/schemas/dbscripts/sqlserver/EHR-12.322-12.323.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/EHR_Lookups-11.30-12.10.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/EHR_Lookups-12.20-12.30.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/EHR_Lookups-12.21-12.22.sql -text
@@ -666,6 +671,8 @@ ehr/resources/views/biopsyDetails.html -text
 ehr/resources/views/biopsyDetails.view.xml -text
 ehr/resources/views/cageDetails.html -text
 ehr/resources/views/cageDetails.view.xml -text
+ehr/resources/views/centerToday.html -text
+ehr/resources/views/centerToday.view.xml -text
 ehr/resources/views/clinpathDetails.html -text
 ehr/resources/views/clinpathDetails.view.xml -text
 ehr/resources/views/colonyOverview.html -text
@@ -786,6 +793,7 @@ ehr/resources/web/ehr/metadata/Task.js -text
 ehr/resources/web/ehr/metadata/Treatments.js -text
 ehr/resources/web/ehr/navMenu.js -text
 ehr/resources/web/ehr/panel/AnimalHistoryPanel.js -text
+ehr/resources/web/ehr/panel/CaseHistoryPanel.js -text
 ehr/resources/web/ehr/panel/ClinicalHistoryPanel.js -text
 ehr/resources/web/ehr/panel/ColonyOverviewPanel.js -text
 ehr/resources/web/ehr/panel/HiddenSingleSubjectFilterType.js -text
@@ -842,6 +850,7 @@ ehr/src/org/labkey/ehr/history/LabworkType.java -text
 ehr/src/org/labkey/ehr/history/MicrobiologyLabworkType.java -text
 ehr/src/org/labkey/ehr/history/MiscTestsLabworkType.java -text
 ehr/src/org/labkey/ehr/history/ParasitologyLabworkType.java -text
+ehr/src/org/labkey/ehr/history/SortingLabworkType.java -text
 ehr/src/org/labkey/ehr/history/UrinalysisLabworkType.java -text
 ehr/src/org/labkey/ehr/history/VirologyLabworkType.java -text
 ehr/src/org/labkey/ehr/notification/AbstractEHRNotification.java -text

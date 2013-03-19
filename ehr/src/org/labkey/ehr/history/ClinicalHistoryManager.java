@@ -114,6 +114,22 @@ public class ClinicalHistoryManager
         return rows;
     }
 
+    public List<HistoryRow> getHistory(Container c, User u, String subjectId, String caseId)
+    {
+        List<HistoryRow> rows = new ArrayList<HistoryRow>();
+
+        for (HistoryDataSource ds : getDataSources(c, u))
+        {
+            List<HistoryRow> newRows = ds.getRows(c, u, subjectId, caseId);
+            if (newRows != null)
+                rows.addAll(newRows);
+        }
+
+        sortRowsByDate(rows);
+
+        return rows;
+    }
+
     public void sortRowsByDate(List<HistoryRow> rows)
     {
         Collections.sort(rows, new Comparator<HistoryRow>()

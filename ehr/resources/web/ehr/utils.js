@@ -757,6 +757,35 @@ EHR.Utils = new function(){
             }).show(el);
         },
 
+        showCaseHistory: function(objectId, subjectId, el){
+            Ext4.create('Ext.window.Window', {
+                title: 'Case History:',
+                width: 1010,
+                modal: true,
+                items: [{
+                    xtype: 'ehr-casehistorypanel',
+                    border: true,
+                    width: 1000,
+                    maxGridHeight: 600,
+                    autoScroll: true,
+                    autoLoadRecords: true,
+                    subjectId: subjectId,
+                    caseId: objectId
+                }],
+                buttons: [{
+                    text: 'Close',
+                    handler: function(btn){
+                        btn.up('window').close();
+                    }
+                },{
+                    text: 'Add Remark',
+                    handler: function(btn){
+                        Ext4.Msg.alert('Add remark', 'Because we still use IRIS, we are not doing any data entry through PRIMe.  Once we start this migration, it will be possible to enter remarks, order treatments, etc. from these screens.')
+                    }
+                }]
+            }).show(el);
+        },
+
         /**
          * Returns the list of links that have been registered to appear on a given page
          * @param config A config object

@@ -224,7 +224,7 @@
                           <!--<fkColumnName>objectid</fkColumnName>-->
                         <!--</fk>-->
                     </column>
-                    <column columnName="geoOrigin">
+                    <column columnName="geographic_origin">
                         <columnTitle>Geographic Origin</columnTitle>
                     </column>
                 </columns>

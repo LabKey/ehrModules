@@ -35,7 +35,7 @@ function onBecomePublic(errors, scriptContext, row, oldRow){
                         extraContext: {
                             quickValidation: true
                         },
-                        rows: [{Id: row.Id, gender: row.gender, species: row.species, dam: row.dam, sire: row.sire, origin: row.source, geoOrigin: row.geoOrigin, birth: new Date(row.birth.toGMTString()), date: new Date(row.birth.toGMTString())}],
+                        rows: [{Id: row.Id, gender: row.gender, species: row.species, dam: row.dam, sire: row.sire, origin: row.source, geographic_origin: row.geographic_origin, birth: new Date(row.birth.toGMTString()), date: new Date(row.birth.toGMTString())}],
                         success: function(data){
                             console.log('Success inserting into demographics table from arrival')
                         },

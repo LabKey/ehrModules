@@ -29,6 +29,10 @@ public class EHRSchema
     public static final String TABLE_LOOKUPS = "lookups";
     public static final String TABLE_LOOKUP_SETS = "lookup_sets";
 
+    public static final String TABLE_ENCOUNTER_FLAGS = "encounter_flags";
+    public static final String TABLE_ENCOUNTER_SUMMARIES = "encounter_summaries";
+    public static final String TABLE_ENCOUNTER_PARTICIPANTS = "encounter_participants";
+
     public static EHRSchema getInstance()
     {
         return _instance;

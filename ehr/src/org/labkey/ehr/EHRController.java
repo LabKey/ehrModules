@@ -152,6 +152,49 @@ public class EHRController extends SpringActionController
         }
     }
 
+    @RequiresPermissionClass(ReadPermission.class)
+    public class GetCaseHistoryAction extends ApiAction<HistoryForm>
+    {
+        public ApiResponse execute(HistoryForm form, BindException errors)
+        {
+            ApiResponse resp = new ApiSimpleResponse();
+
+            if (form.getCaseId() == null || form.getSubjectIds() == null || form.getSubjectIds().length != 1)
+            {
+                errors.reject(ERROR_MSG, "Must provide a caseId and one subjectId");
+                return null;
+            }
+
+            try
+            {
+                String subjectId = form.getSubjectIds()[0];
+                Map<String, JSONArray> results = new HashMap<String, JSONArray>();
+                List<HistoryRow> rows = ClinicalHistoryManager.get().getHistory(getContainer(), getUser(), subjectId, form.getCaseId());
+                for (HistoryRow row : rows)
+                {
+                    JSONArray arr = results.get(subjectId);
+                    if (arr == null)
+                        arr = new JSONArray();
+
+                    arr.put(row.toJSON());
+
+                    results.put(subjectId, arr);
+                }
+
+                resp.getProperties().put("success", true);
+                resp.getProperties().put("results", results);
+                return resp;
+            }
+            catch (IllegalArgumentException e)
+            {
+                ExceptionUtil.logExceptionToMothership(getViewContext().getRequest(), e);
+
+                errors.reject(ERROR_MSG, e.getMessage());
+                return null;
+            }
+        }
+    }
+
     @RequiresPermissionClass(AdminPermission.class)
     public class EnsureDatasetPropertiesAction extends ConfirmAction<EnsureDatasetPropertiesForm>
     {

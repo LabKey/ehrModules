@@ -135,6 +135,28 @@ public class DefaultLabworkType implements LabworkType
         final Collection<ColumnInfo> cols = getColumns(ti);
         TableSelector ts = new TableSelector(ti, cols, filter, null);
 
+        Map<String, List<String>> rows = getRows(ts, cols);
+
+        Map<String, List<String>> formattedRows = new HashMap<String, List<String>>();
+        for (String runId : rows.keySet())
+        {
+            List<String> results = rows.get(runId);
+            String table = getResultTable(results);
+
+            List<String> newRows = formattedRows.get(runId);
+            if (newRows == null)
+                newRows = new ArrayList<String>();
+
+            newRows.add(table);
+
+            formattedRows.put(runId, newRows);
+        }
+
+        return formattedRows;
+    }
+
+    protected Map<String, List<String>> getRows(TableSelector ts, final Collection<ColumnInfo> cols)
+    {
         final Map<String, List<String>> rows = new HashMap<String, List<String>>();
         ts.forEach(new Selector.ForEachBlock<ResultSet>()
         {
@@ -156,22 +178,7 @@ public class DefaultLabworkType implements LabworkType
             }
         });
 
-        Map<String, List<String>> formattedRows = new HashMap<String, List<String>>();
-        for (String runId : rows.keySet())
-        {
-            List<String> results = rows.get(runId);
-            String table = getResultTable(results);
-
-            List<String> newRows = formattedRows.get(runId);
-            if (newRows == null)
-                newRows = new ArrayList<String>();
-
-            newRows.add(table);
-
-            formattedRows.put(runId, newRows);
-        }
-
-        return formattedRows;
+        return rows;
     }
 
     protected Set<String> getColumnNames()
@@ -185,6 +192,11 @@ public class DefaultLabworkType implements LabworkType
             fields.add(_normalRangeStatusField);
 
         return fields;
+    }
+
+    protected List<String> sortResults(List<String> results)
+    {
+        return results;
     }
 
     protected String getLine(Results rs) throws SQLException

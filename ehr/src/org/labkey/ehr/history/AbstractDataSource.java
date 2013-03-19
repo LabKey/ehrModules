@@ -42,6 +42,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
@@ -60,6 +61,7 @@ abstract public class AbstractDataSource implements HistoryDataSource
     private String _schema;
     private String _query;
     private String _category;
+    private String _subjectIdField = "Id";
     protected static final Logger _log = Logger.getLogger(HistoryDataSource.class);
 
     protected final static SimpleDateFormat _dateTimeFormat = new SimpleDateFormat("yyyy-MM-dd kk:mm");
@@ -83,19 +85,39 @@ abstract public class AbstractDataSource implements HistoryDataSource
         return _category;
     }
 
-    public List<HistoryRow> getRows(Container c, User u, final String subjectId, Date minDate, Date maxDate)
+    protected TableInfo getTableInfo(Container c, User u)
     {
-        Date start = new Date();
-
         UserSchema us = QueryService.get().getUserSchema(u, c, _schema);
         if (us == null)
             return null;
 
-        final TableInfo ti = us.getTable(_query);
+        return us.getTable(_query);
+    }
+
+    public List<HistoryRow> getRows(Container c, User u, String subjectId, String caseId)
+    {
+        String caseIdField = "caseId";
+        if (getTableInfo(c, u).getColumn(caseIdField) == null)
+            return Collections.emptyList();
+
+        SimpleFilter filter = new SimpleFilter(FieldKey.fromString(caseIdField), caseId, CompareType.EQUAL);
+        filter.addCondition(FieldKey.fromString("Id"), subjectId, CompareType.EQUAL);
+        return getRows(c, u, filter);
+    }
+
+    public List<HistoryRow> getRows(Container c, User u, final String subjectId, Date minDate, Date maxDate)
+    {
+        SimpleFilter filter = getFilter(subjectId, minDate, maxDate);
+        return getRows(c, u, filter);
+    }
+
+    protected List<HistoryRow> getRows(Container c, User u, SimpleFilter filter)
+    {
+        Date start = new Date();
+        final TableInfo ti = getTableInfo(c, u);
         if (ti == null)
             return  null;
 
-        SimpleFilter filter = getFilter(subjectId, minDate, maxDate);
         final Collection<ColumnInfo> cols = getColumns(ti);
 
         TableSelector ts = new TableSelector(ti, cols, filter, null);
@@ -112,6 +134,7 @@ abstract public class AbstractDataSource implements HistoryDataSource
                 String category = getCategory(results);
 
                 String html = getHtml(results);
+                String subjectId = results.getString(FieldKey.fromString(_subjectIdField));
                 if (!StringUtils.isEmpty(html))
                 {
                     HistoryRow row = createHistoryRow(results, category, subjectId, date, html);
@@ -123,7 +146,7 @@ abstract public class AbstractDataSource implements HistoryDataSource
 
         long duration = ((new Date()).getTime() - start.getTime()) / 1000;
         if (duration > 3)
-            _log.error("Loaded history for: " + subjectId + " on table " + _query + " in " + duration + " seconds");
+            _log.error("Loaded history on table " + _query + " in " + duration + " seconds");
 
         return rows;
     }
@@ -172,7 +195,7 @@ abstract public class AbstractDataSource implements HistoryDataSource
 
     protected SimpleFilter getFilter(String subjectId, Date minDate, Date maxDate)
     {
-        SimpleFilter filter = new SimpleFilter(FieldKey.fromString("id"), subjectId);
+        SimpleFilter filter = new SimpleFilter(FieldKey.fromString(_subjectIdField), subjectId);
 
         if (minDate != null)
             filter.addCondition(FieldKey.fromString(getDateField()), minDate, CompareType.DATE_GTE);
@@ -226,7 +249,7 @@ abstract public class AbstractDataSource implements HistoryDataSource
         FieldKey fk = FieldKey.fromString(field);
         if (rs.hasColumn(fk) && rs.getObject(fk) != null)
         {
-            return label + ": " + rs.getString(fk) + (suffix == null ? "" : suffix) + "\n";
+            return (label == null ? "" : label + ": ") + rs.getString(fk) + (suffix == null ? "" : suffix) + "\n";
         }
         return "";
     }

@@ -21,11 +21,11 @@ package org.labkey.ehr.history;
  * Date: 3/6/13
  * Time: 12:27 PM
  */
-public class HematologyLabworkType extends DefaultLabworkType
+public class HematologyLabworkType extends SortingLabworkType
 {
     public HematologyLabworkType()
     {
-        super("Hematology", "study", "hematologyRefRange");
+        super("Hematology", "study", "hematologyRefRange", "hematology_tests", "testid", "sort_order");
         _normalRangeField = "range";
         _normalRangeStatusField = "status";
     }

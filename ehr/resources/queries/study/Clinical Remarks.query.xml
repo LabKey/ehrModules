@@ -76,6 +76,9 @@
                         <columnTitle>P2</columnTitle>
                         <facetingBehavior>ALWAYS_OFF</facetingBehavior>
                     </column>
+                    <column columnName="performedby">
+                        <columnTitle>Entered By</columnTitle>
+                    </column>
                 </columns>
             </table>
         </tables>

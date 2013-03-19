@@ -99,8 +99,7 @@ Ext4.define('EHR.panel.MiniSnapshotPanel', {
             },{
                 itemId: 'flags',
                 xtype: 'ehr-snapshotchildpanel',
-                headerLabel: 'Flags',
-                renderCollapsed: true
+                headerLabel: 'Active Flags'
             },{
                 itemId: 'cases',
                 xtype: 'ehr-snapshotchildpanel',
@@ -132,8 +131,8 @@ Ext4.define('EHR.panel.MiniSnapshotPanel', {
             },{
                 itemId: 'diet',
                 xtype: 'ehr-snapshotchildpanel',
-                headerLabel: 'Current Diets',
-                emptyText: 'There are no active diets',
+                headerLabel: 'Special Diets',
+                emptyText: 'There are no active special diets',
                 style: 'padding-top: 5px;',
                 renderCollapsed: true
             }]

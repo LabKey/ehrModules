@@ -46,6 +46,7 @@ import org.labkey.api.query.UserSchema;
 import org.labkey.api.security.User;
 import org.labkey.api.study.DataSetTable;
 import org.labkey.api.view.HttpView;
+import org.labkey.ehr.EHRSchema;
 
 import java.io.IOException;
 import java.io.Writer;
@@ -170,18 +171,21 @@ public class DefaultEHRCustomizer implements TableCustomizer
                 room.setFk(new QueryForeignKey(us, "rooms", "room", "room"));
             }
             room.setLabel("Room");
+            room.setFacetingBehaviorType(FacetingBehaviorType.ALWAYS_OFF);
         }
 
         ColumnInfo cage = ti.getColumn("cage");
         if (cage != null)
         {
             cage.setDisplayWidth("40");
+            cage.setFacetingBehaviorType(FacetingBehaviorType.ALWAYS_OFF);
         }
 
         ColumnInfo description = ti.getColumn("description");
         if (description != null)
         {
             description.setDisplayWidth("400");
+            description.setFacetingBehaviorType(FacetingBehaviorType.ALWAYS_OFF);
         }
 
         ColumnInfo project = ti.getColumn("project");
@@ -209,6 +213,10 @@ public class DefaultEHRCustomizer implements TableCustomizer
         {
             addUnitColumns(ti);
         }
+        if (ds.getName().equalsIgnoreCase("Clinical Encounters") || ds.getName().equalsIgnoreCase("Encounters"))
+        {
+            customizeEncountersTable(ti);
+        }
 
         appendHistoryCol(ti);
 
@@ -226,6 +234,8 @@ public class DefaultEHRCustomizer implements TableCustomizer
             UserSchema study = getStudyUserSchema(ti);
             if (study != null)
                 runId.setFk(new QueryForeignKey(study, "Clinpath Runs", "objectid", "Id"));
+
+            runId.setFacetingBehaviorType(FacetingBehaviorType.ALWAYS_OFF);
         }
 
         ColumnInfo parentId = ti.getColumn("parentId");
@@ -235,6 +245,8 @@ public class DefaultEHRCustomizer implements TableCustomizer
             UserSchema study = getStudyUserSchema(ti);
             if (study != null)
                 parentId.setFk(new QueryForeignKey(study, "Clinical Encounters", "objectid", "Id"));
+
+            parentId.setFacetingBehaviorType(FacetingBehaviorType.ALWAYS_OFF);
         }
 
         setScriptIncludes((AbstractTableInfo) ds);
@@ -244,6 +256,47 @@ public class DefaultEHRCustomizer implements TableCustomizer
     {
         hideStudyColumns(ti);
         setScriptIncludes(ti);
+    }
+
+    private void customizeEncountersTable(final AbstractTableInfo ti)
+    {
+        appendEncountersCol(ti, "participants", "Participants", "encounter_participants_summary");
+        appendEncountersCol(ti, "summaries", "Summaries", "encounter_summaries_summary");
+        appendEncountersCol(ti, "flags", "Flags", "encounter_flags_summary");
+
+        appendEncountersCol(ti, "codes", "Codes", "snomed_tags_summary", "recordid");
+    }
+
+    private void appendEncountersCol(AbstractTableInfo ti, String name, String label, final String targetTableName)
+    {
+        appendEncountersCol(ti, name, label, targetTableName, "parentid");
+    }
+
+    private void appendEncountersCol(AbstractTableInfo ti, String name, String label, final String targetTableName, String targetColName)
+    {
+        ColumnInfo existing = ti.getColumn(name);
+        if (existing == null)
+        {
+            final UserSchema us = getUserSchema(ti, EHRSchema.EHR_SCHEMANAME);
+
+            ColumnInfo ci = new WrappedColumn(ti.getColumn("objectid"), name);
+            LookupForeignKey fk = new LookupForeignKey(targetColName)
+            {
+                @Override
+                public TableInfo getLookupTableInfo()
+                {
+                    return us.getTable(targetTableName);
+                }
+            };
+            fk.addJoin(FieldKey.fromString("Id"), "Id", false);
+
+            ci.setFk(fk);
+            ci.setUserEditable(false);
+            ci.setIsUnselectable(true);
+            ci.setDisplayWidth("400");
+            ci.setLabel(label);
+            ti.addColumn(ci);
+        }
     }
 
     private void appendHistoryCol(AbstractTableInfo ti)
@@ -265,7 +318,7 @@ public class DefaultEHRCustomizer implements TableCustomizer
                         Date date = (Date)ctx.get("date");
                         String id = (String)ctx.get("Id");
 
-                        out.write("<a href=\"javascript:void(0);\" onclick=\"EHR.Utils.showClinicalHistory('" + objectid + "', '" + id + "', '" + date + "', this);\">Display History</a>");
+                        out.write("<span style=\"white-space:nowrap\"><a href=\"javascript:void(0);\" onclick=\"EHR.Utils.showClinicalHistory('" + objectid + "', '" + id + "', '" + date + "', this);\">Display History</a></span>");
                     }
 
                     @Override
@@ -330,6 +383,7 @@ public class DefaultEHRCustomizer implements TableCustomizer
             ExprColumn newCol = new ExprColumn(ds, name, sql, JdbcType.VARCHAR, col, unitCol);
             newCol.setLabel(label);
             newCol.setHidden(true);
+            newCol.setFacetingBehaviorType(FacetingBehaviorType.ALWAYS_OFF);
             ds.addColumn(newCol);
         }
     }
@@ -438,6 +492,11 @@ public class DefaultEHRCustomizer implements TableCustomizer
         col20.setLabel("Weight - Current");
         col20.setDescription("This calculates the most recent weight for the animal, based on the weight table");
         ds.addColumn(col20);
+
+        ColumnInfo col8 = getWrappedIdCol(us, ds, "CageClass", "demographicsCageClass");
+        col8.setLabel("Required Case Size");
+        col8.setDescription("Calculates the cage size necessary for this animal, based on weight");
+        ds.addColumn(col8);
 
         ColumnInfo id = ds.getColumn("Id");
         if (id != null)

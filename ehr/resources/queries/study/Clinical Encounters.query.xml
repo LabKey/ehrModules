@@ -60,41 +60,6 @@
                         <columnTitle>Date Requested</columnTitle>
                         <isHidden>true</isHidden>
                     </column>
-                    <column columnName="participants" wrappedColumnName="objectid">
-                        <isUnselectable>true</isUnselectable>
-                        <displayWidth>300</displayWidth>
-                        <fk>
-                            <fkDbSchema>ehr</fkDbSchema>
-                            <fkTable>encounter_participants_summary</fkTable>
-                            <fkColumnName>parentid</fkColumnName>
-                        </fk>
-                    </column>
-                    <column columnName="summaries" wrappedColumnName="objectid">
-                        <isUnselectable>true</isUnselectable>
-                        <displayWidth>500</displayWidth>
-                        <fk>
-                            <fkDbSchema>ehr</fkDbSchema>
-                            <fkTable>encounter_summaries_summary</fkTable>
-                            <fkColumnName>parentid</fkColumnName>
-                        </fk>
-                    </column>
-                    <column columnName="flags" wrappedColumnName="objectid">
-                        <isUnselectable>true</isUnselectable>
-                        <fk>
-                            <fkDbSchema>ehr</fkDbSchema>
-                            <fkTable>encounter_flags_summary</fkTable>
-                            <fkColumnName>parentid</fkColumnName>
-                        </fk>
-                    </column>
-                    <column columnName="codes" wrappedColumnName="objectid">
-                        <isUnselectable>true</isUnselectable>
-                        <displayWidth>300</displayWidth>
-                        <fk>
-                            <fkDbSchema>ehr</fkDbSchema>
-                            <fkTable>snomed_tags_summary</fkTable>
-                            <fkColumnName>recordid</fkColumnName>
-                        </fk>
-                    </column>
                 </columns>
             </table>
         </tables>

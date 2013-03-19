@@ -41,7 +41,7 @@
         </ns:columns>
     </ns:table>
     <ns:table tableName="cageclass" tableDbType="TABLE" useColumnOrder="true">
-        <ns:tableTitle>Cage Class Definitions</ns:tableTitle>
+        <ns:tableTitle>Cage Size Requirements, By Weight</ns:tableTitle>
         <ns:importUrl></ns:importUrl>
         <ns:insertUrl></ns:insertUrl>
         <ns:updateUrl></ns:updateUrl>

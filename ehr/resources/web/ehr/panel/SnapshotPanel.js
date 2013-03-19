@@ -114,7 +114,7 @@ Ext4.define('EHR.panel.SnapshotPanel', {
             },{
                 itemId: 'flags',
                 xtype: 'ehr-snapshotchildpanel',
-                headerLabel: 'Flags'
+                headerLabel: 'Active Flags'
             },{
                 itemId: 'cases',
                 xtype: 'ehr-snapshotchildpanel',
@@ -129,7 +129,7 @@ Ext4.define('EHR.panel.SnapshotPanel', {
                 itemId: 'assignments',
                 xtype: 'ehr-snapshotchildpanel',
                 headerLabel: 'Active Assignments',
-                emptyText: 'There are no active assignments'
+                emptyText: 'There are no active research assignments'
             },{
                 itemId: 'treatments',
                 xtype: 'ehr-snapshotchildpanel',
@@ -138,14 +138,16 @@ Ext4.define('EHR.panel.SnapshotPanel', {
             },{
                 itemId: 'diet',
                 xtype: 'ehr-snapshotchildpanel',
-                headerLabel: 'Current Diets',
-                emptyText: 'There are no active diets'
+                headerLabel: 'Special Diets',
+                emptyText: 'There are no active special diets'
             }]
         }];
     },
 
     loadData: function(){
-        LABKEY.Query.selectRows({
+        var multi = new LABKEY.MultiRequest();
+
+        multi.add(LABKEY.Query.selectRows, {
             schemaName: 'study',
             queryName: 'demographics',
             columns: 'Id,Id/curLocation/area,Id/curLocation/room,Id/curLocation/cage,Id/age/AgeFriendly,gender,species,geographic_origin,calculated_status,dam,sire,birth,death',
@@ -154,46 +156,11 @@ Ext4.define('EHR.panel.SnapshotPanel', {
             requiredVersion: 9.1,
             scope: this,
             success: function(results){
-                this.onLoad();
-                Ext4.suspendLayouts();
-
-                if (results.rows.length){
-                    var row = results.rows[0];
-
-                    Ext4.each(['calculated_status', 'gender', 'dam', 'sire', 'birth', 'death', 'species', 'geographic_origin'], function(name){
-                        if (row[name])
-                            this.down('#' + name).setValue(this.getValue(row, name));
-                    }, this);
-
-                    if (this.hasValue(row, 'Id/age/AgeFriendly')){
-                        this.down('#age').setValue(this.getValue(row, 'Id/age/AgeFriendly'));
-                    }
-
-                    if (this.hasValue(row, 'Id/curLocation/room') || this.hasValue(row, 'Id/curLocation/cage')){
-                        var location = '';
-                        if (this.hasValue(row, 'Id/curLocation/room'))
-                            location = this.getValue(row, 'Id/curLocation/room');
-                        if (this.hasValue(row, 'Id/curLocation/cage'))
-                            location += ' / ' + this.getValue(row, 'Id/curLocation/cage');
-
-                        if (location)
-                            this.down('#location').setValue(location);
-                        else
-                            this.down('#location').setValue('No active housing');
-                    }
-                }
-                else {
-                    this.removeAll();
-                    this.add({
-                        html: 'Id not found'
-                    });
-                }
-
-                Ext4.resumeLayouts(true);
+                this.demographicsResults = results;
             }
         });
 
-        LABKEY.Query.selectRows({
+        multi.add(LABKEY.Query.selectRows, {
             schemaName: 'study',
             queryName: 'assignment',
             requiredVersion: 9.1,
@@ -204,10 +171,12 @@ Ext4.define('EHR.panel.SnapshotPanel', {
             ],
             failure: LDK.Utils.getErrorCallback(),
             scope: this,
-            success: this.appendAssignments
+            success: function(results){
+                this.assignmentResults = results;
+            }
         });
 
-        LABKEY.Query.selectRows({
+        multi.add(LABKEY.Query.selectRows, {
             schemaName: 'study',
             queryName: 'Problem List',
             requiredVersion: 9.1,
@@ -217,12 +186,15 @@ Ext4.define('EHR.panel.SnapshotPanel', {
             ],
             failure: LDK.Utils.getErrorCallback(),
             scope: this,
-            success: this.appendProblemList
+            success: function(results){
+                this.problemListResults = results;
+            }
         });
 
-        LABKEY.Query.selectRows({
+        multi.add(LABKEY.Query.selectRows, {
             schemaName: 'study',
             queryName: 'Treatment Orders',
+            columns: 'Id,date,amount,amount_units,enddate,performedby,code,route,frequency',
             requiredVersion: 9.1,
             filterArray: [
                 LABKEY.Filter.create('Id', this.subjectId, LABKEY.Filter.Types.EQUAL),
@@ -230,12 +202,15 @@ Ext4.define('EHR.panel.SnapshotPanel', {
             ],
             failure: LDK.Utils.getErrorCallback(),
             scope: this,
-            success: this.appendTreatments
+            success: function(results){
+                this.treatmentResults = results;
+            }
         });
 
-        LABKEY.Query.selectRows({
+        multi.add(LABKEY.Query.selectRows, {
             schemaName: 'study',
             queryName: 'Cases',
+            columns: 'Id,date,enddate,category,performedby,remark,description',
             requiredVersion: 9.1,
             filterArray: [
                 LABKEY.Filter.create('Id', this.subjectId, LABKEY.Filter.Types.EQUAL),
@@ -243,10 +218,12 @@ Ext4.define('EHR.panel.SnapshotPanel', {
             ],
             failure: LDK.Utils.getErrorCallback(),
             scope: this,
-            success: this.appendCases
+            success: function(results){
+                this.caseResults = results;
+            }
         });
 
-        LABKEY.Query.selectRows({
+        multi.add(LABKEY.Query.selectRows, {
             schemaName: 'study',
             queryName: 'diet',
             requiredVersion: 9.1,
@@ -256,10 +233,12 @@ Ext4.define('EHR.panel.SnapshotPanel', {
             ],
             failure: LDK.Utils.getErrorCallback(),
             scope: this,
-            success: this.appendDiet
+            success: function(results){
+                this.dietResults = results;
+            }
         });
 
-        LABKEY.Query.selectRows({
+        multi.add(LABKEY.Query.selectRows, {
             schemaName: 'study',
             queryName: 'Flags',
             columns: 'date,enddate,performedby,flag,category,value',
@@ -270,10 +249,12 @@ Ext4.define('EHR.panel.SnapshotPanel', {
             ],
             failure: LDK.Utils.getErrorCallback(),
             scope: this,
-            success: this.appendFlags
+            success: function(results){
+                this.flagsResults = results;
+            }
         });
 
-        LABKEY.Query.selectRows({
+        multi.add(LABKEY.Query.selectRows, {
             schemaName: 'study',
             queryName: 'demographicsPaired',
             columns: 'Id,total,Animals',
@@ -284,17 +265,11 @@ Ext4.define('EHR.panel.SnapshotPanel', {
             failure: LDK.Utils.getErrorCallback(),
             scope: this,
             success: function(results){
-                if (results.rows.length){
-                    var row = results.rows[0];
-                    this.down('#roommates').setValue(this.getValue(row, 'total'));
-                }
-                else {
-                    this.down('#roommates').setValue(0)
-                }
+                this.roommateResults = results;
             }
         });
 
-        LABKEY.Query.selectRows({
+        multi.add(LABKEY.Query.selectRows, {
             schemaName: 'study',
             queryName: 'demographicsMostRecentWeight',
             requiredVersion: 9.1,
@@ -304,24 +279,63 @@ Ext4.define('EHR.panel.SnapshotPanel', {
             failure: LDK.Utils.getErrorCallback(),
             scope: this,
             success: function(results){
-                if (results.rows.length){
-                    var row = results.rows[0];
-                    this.down('#currentWeight').setValue(this.getValue(row, 'MostRecentWeight'));
-
-                    if (this.hasValue(row, 'MostRecentWeightDate')){
-                        var val = this.getValue(row, 'MostRecentWeightDate');
-                        if (this.hasValue(row, 'DaysSinceWeight')){
-                            val += ' (' + this.getValue(row, 'DaysSinceWeight') + ' days ago)'
-                        }
-
-                        this.down('#weightDate').setValue(val);
-                    }
-                }
-                else {
-
-                }
+                this.weightResults = results;
             }
         });
+
+        multi.send(this.onAllComplete, this);
+    },
+
+    onAllComplete: function(){
+        Ext4.suspendLayouts();
+
+        this.appendDemographicsResults(this.demographicsResults);
+        this.appendWeightResults(this.weightResults);
+        this.appendRoommateResults(this.roommateResults);
+        this.appendProblemList(this.problemListResults);
+        this.appendAssignments(this.assignmentResults);
+        this.appendTreatments(this.treatmentResults);
+        this.appendCases(this.caseResults);
+        this.appendDiet(this.dietResults);
+        this.appendFlags(this.flagsResults);
+
+        this.onLoad();
+
+        Ext4.resumeLayouts(true);
+    },
+
+    appendDemographicsResults: function(results){
+        if (results.rows.length){
+            var row = results.rows[0];
+
+            Ext4.each(['calculated_status', 'gender', 'dam', 'sire', 'birth', 'death', 'species', 'geographic_origin'], function(name){
+                if (row[name])
+                    this.down('#' + name).setValue(this.getValue(row, name));
+            }, this);
+
+            if (this.hasValue(row, 'Id/age/AgeFriendly')){
+                this.down('#age').setValue(this.getValue(row, 'Id/age/AgeFriendly'));
+            }
+
+            if (this.hasValue(row, 'Id/curLocation/room') || this.hasValue(row, 'Id/curLocation/cage')){
+                var location = '';
+                if (this.hasValue(row, 'Id/curLocation/room'))
+                    location = this.getValue(row, 'Id/curLocation/room');
+                if (this.hasValue(row, 'Id/curLocation/cage'))
+                    location += ' / ' + this.getValue(row, 'Id/curLocation/cage');
+
+                if (location)
+                    this.down('#location').setValue(location);
+                else
+                    this.down('#location').setValue('No active housing');
+            }
+        }
+        else {
+            this.removeAll();
+            this.add({
+                html: 'Id not found'
+            });
+        }
     },
 
     hasValue: function(row, propName){
@@ -356,6 +370,32 @@ Ext4.define('EHR.panel.SnapshotPanel', {
         }];
 
         this.down('#problems').appendTable(results, columns)
+    },
+
+    appendWeightResults: function(results){
+        if (results.rows.length){
+            var row = results.rows[0];
+            this.down('#currentWeight').setValue(this.getValue(row, 'MostRecentWeight'));
+
+            if (this.hasValue(row, 'MostRecentWeightDate')){
+                var val = this.getValue(row, 'MostRecentWeightDate');
+                if (this.hasValue(row, 'DaysSinceWeight')){
+                    val += ' (' + this.getValue(row, 'DaysSinceWeight') + ' days ago)'
+                }
+
+                this.down('#weightDate').setValue(val);
+            }
+        }
+    },
+
+    appendRoommateResults: function(results){
+        if (results.rows.length){
+            var row = results.rows[0];
+            this.down('#roommates').setValue(this.getValue(row, 'total'));
+        }
+        else {
+            this.down('#roommates').setValue(0)
+        }
     },
 
     appendAssignments: function(results){
@@ -512,9 +552,6 @@ Ext4.define('EHR.panel.SnapshotChildPanel', {
 
     appendTable: function(results, columns){
         var target = this.down('#childPanel');
-
-        Ext4.suspendLayouts();
-
         var total = results.rows.length;
         var headerEl = this.down('#headerItem').body;
         var html = headerEl.getHTML();
@@ -564,7 +601,7 @@ Ext4.define('EHR.panel.SnapshotChildPanel', {
                 Ext4.each(colKeys, function(name){
                     if (!Ext4.isEmpty(row[name]) && !Ext4.isEmpty(row[name].value)){
                         toAdd.items.push({
-                            html: (row[name].displayValue || row[name].value)
+                            html: (row[name].displayValue || row[name].value) + ''
                         });
                     }
                     else {
@@ -584,8 +621,6 @@ Ext4.define('EHR.panel.SnapshotChildPanel', {
                 });
             }
         }
-
-        Ext4.resumeLayouts(true);
     },
 
     getField: function(results, name){

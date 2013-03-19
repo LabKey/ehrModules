@@ -35,7 +35,7 @@ Ext4.define('EHR.panel.ClinicalHistoryPanel', {
             }, this, {delay: 120, single: true});
         }
 
-        if(this.subjectId){
+        if(this.subjectId || this.caseId){
             var store = this.down('#gridPanel').store;
             store.on('datachanged', function(){
                 this.down('grid').setLoading(false);
@@ -48,13 +48,14 @@ Ext4.define('EHR.panel.ClinicalHistoryPanel', {
             if (this.autoLoadRecords){
                 store.reloadData({
                     subjectIds: [this.subjectId],
+                    caseId: this.caseId,
                     minDate: this.minDate,
                     maxDate: this.maxDate
                 });
             }
         }
         else {
-            Ext4.Msg.alert('Error', 'Must supply at least 1 subject Id')
+            Ext4.Msg.alert('Error', 'Must supply at least 1 subject Id or a caseId')
         }
     },
 
@@ -74,12 +75,11 @@ Ext4.define('EHR.panel.ClinicalHistoryPanel', {
             },
             columns: this.getColumnConfig(),
             features: [this.getGroupingFeature()],
-            store: {
-                type: 'ehr-clinicalhistorystore'
-            },
+            store: this.getStoreConfig(),
             itemId: 'gridPanel',
             width: this.width,
             subjectId: this.subjectId,
+            caseId: this.caseId,
             minDate: this.minDate,
             maxDate: this.maxDate,
             tbar: {
@@ -114,7 +114,6 @@ Ext4.define('EHR.panel.ClinicalHistoryPanel', {
 
                         var minDate = minDateField.getValue();
                         var maxDate = maxDateField.getValue();
-
 
                         panel.reloadData({
                             minDate: minDate,
@@ -154,8 +153,15 @@ Ext4.define('EHR.panel.ClinicalHistoryPanel', {
         grid.store.reloadData({
             minDate: config.minDate,
             maxDate: config.maxDate,
-            subjectIds: [this.subjectId]
+            subjectIds: [this.subjectId],
+            caseId: this.caseId
         });
+    },
+
+    getStoreConfig: function(){
+        return {
+            type: 'ehr-clinicalhistorystore'
+        };
     },
 
     getColumnConfig: function(){

@@ -28,11 +28,11 @@ import org.labkey.ehr.EHRModule;
  * Date: 1/17/13
  * Time: 7:42 PM
  */
-public class EHRDataEntryRole extends AbstractRole
+public class EHRDataEntryRole extends AbstractEHRRole
 {
     public EHRDataEntryRole()
     {
-        super("EHR Data Entry", "This role is required in order to submit data into any EHR table; however, having this role alone is not sufficient for data entry.  Per-table permissions are set through study admin.", EHRModule.class,
+        super("EHR Data Entry", "This role is required in order to submit data into any EHR table; however, having this role alone is not sufficient for data entry.  Per-table permissions are set through study admin.",
             ReadPermission.class,
             InsertPermission.class,
             UpdatePermission.class,

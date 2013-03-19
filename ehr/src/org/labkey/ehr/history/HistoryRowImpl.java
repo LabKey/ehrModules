@@ -95,7 +95,7 @@ public class HistoryRowImpl implements HistoryRow
         }
         catch (ArrayIndexOutOfBoundsException e)
         {
-            _log.error("Invalid date: " + _date, e);
+            _log.error("Invalid date: " + _date + " for table: " + _category + " and animal " + _subjectId, e);
             return "";
         }
     }

@@ -16,8 +16,10 @@
 package org.labkey.ehr.history;
 
 import org.labkey.api.data.Results;
+import org.labkey.api.util.PageFlowUtil;
 
 import java.sql.SQLException;
+import java.util.Set;
 
 /**
  * Created with IntelliJ IDEA.
@@ -39,6 +41,13 @@ public class DefaultCasesDataSource extends AbstractDataSource
         sb.append("Case Opened").append("\n");
         sb.append(safeAppend(rs, "Category", "category"));
         sb.append(safeAppend(rs, "Case #", "caseno"));
+        sb.append(safeAppend(rs, "Opened By", "performedby"));
         return sb.toString();
+    }
+
+    @Override
+    protected Set<String> getColumnNames()
+    {
+        return PageFlowUtil.set("Id", "date", "enddate", "caseno", "objectid", "performedby");
     }
 }

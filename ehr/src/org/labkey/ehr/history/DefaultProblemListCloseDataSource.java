@@ -16,12 +16,18 @@
 package org.labkey.ehr.history;
 
 import org.labkey.api.data.CompareType;
+import org.labkey.api.data.Container;
 import org.labkey.api.data.Results;
 import org.labkey.api.data.SimpleFilter;
+import org.labkey.api.ehr.HistoryRow;
 import org.labkey.api.query.FieldKey;
+import org.labkey.api.security.User;
+import org.labkey.api.util.PageFlowUtil;
 
 import java.sql.SQLException;
 import java.util.Date;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Created with IntelliJ IDEA.
@@ -53,19 +59,16 @@ public class DefaultProblemListCloseDataSource extends AbstractDataSource
     }
 
     @Override
-    protected SimpleFilter getFilter(String subjectId, Date minDate, Date maxDate)
+    protected List<HistoryRow> getRows(Container c, User u, SimpleFilter filter)
     {
-        SimpleFilter filter = new SimpleFilter(FieldKey.fromString("id"), subjectId);
-
-        if (minDate != null)
-            filter.addCondition(FieldKey.fromString(getDateField()), minDate, CompareType.DATE_GTE);
-
-        if (maxDate != null)
-            filter.addCondition(FieldKey.fromString(getDateField()), maxDate, CompareType.DATE_LTE);
-
         filter.addCondition(FieldKey.fromString(getDateField()), null, CompareType.NONBLANK);
+        return super.getRows(c, u, filter);
+    }
 
-        return filter;
+    @Override
+    protected Set<String> getColumnNames()
+    {
+        return PageFlowUtil.set("Id", "date", "enddate", "category", "objectid", "performedby");
     }
 }
 

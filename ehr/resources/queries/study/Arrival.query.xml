@@ -80,7 +80,7 @@
                         <!--</fk>-->
                         <url>/ehr/participantView.view?participantId=${sire}</url>
                     </column>
-                    <column columnName="geoOrigin">
+                    <column columnName="geographic_origin">
                         <columnTitle>Geographic Origin</columnTitle>
                     </column>
                     <column columnName="gender">

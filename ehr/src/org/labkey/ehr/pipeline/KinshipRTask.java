@@ -131,6 +131,7 @@ public class KinshipRTask extends WorkDirectoryTask<KinshipRTask.Factory>
         args.add("-f");
         args.add(tsvFile.getPath());
 
+        getJob().getLogger().info("Using working directory of: " + support.getAnalysisDirectory().getPath());
         ProcessBuilder pb = new ProcessBuilder(args);
         job.runSubProcess(pb, support.getAnalysisDirectory());
 

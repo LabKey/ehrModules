@@ -21,11 +21,11 @@ package org.labkey.ehr.history;
  * Date: 3/6/13
  * Time: 11:38 AM
  */
-public class ChemistryLabworkType extends DefaultLabworkType
+public class ChemistryLabworkType extends SortingLabworkType
 {
     public ChemistryLabworkType()
     {
-        super("Biochemistry", "study", "chemistryRefRange");
+        super("Biochemistry", "study", "chemistryRefRange", "chemistry_tests", "testid", "sort_order");
         _normalRangeField = "range";
         _normalRangeStatusField = "status";
     }

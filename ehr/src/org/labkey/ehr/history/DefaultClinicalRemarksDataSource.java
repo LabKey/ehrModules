@@ -16,6 +16,7 @@
 package org.labkey.ehr.history;
 
 import org.labkey.api.data.Results;
+import org.labkey.api.query.FieldKey;
 
 import java.sql.SQLException;
 
@@ -36,16 +37,30 @@ public class DefaultClinicalRemarksDataSource extends AbstractDataSource
     protected String getHtml(Results rs) throws SQLException
     {
         StringBuilder sb = new StringBuilder();
+        sb.append("<table>");
 
-        sb.append(safeAppend(rs, "Hx", "hx"));
-        sb.append(safeAppend(rs, "S/O", "so"));
-        sb.append(safeAppend(rs, "S", "s"));
-        sb.append(safeAppend(rs, "O", "o"));
-        sb.append(safeAppend(rs, "A", "a"));
-        sb.append(safeAppend(rs, "P", "p"));
-        sb.append(safeAppend(rs, "P2", "p2"));
-        sb.append(safeAppend(rs, "Other Remark", "remark"));
+        appendNote(rs, "performedby", "<span style='white-space:nowrap'>Entered By</span>", sb);
+        appendNote(rs, "hx", "Hx", sb);
+        appendNote(rs, "so", "S/O", sb);
+        appendNote(rs, "s", "S", sb);
+        appendNote(rs, "o", "O", sb);
+        appendNote(rs, "a", "A", sb);
+        appendNote(rs, "p", "P", sb);
+        appendNote(rs, "p2", "P2", sb);
+        appendNote(rs, "remark", "Other Remark", sb);
+
+        sb.append("</table>");
 
         return sb.toString();
+    }
+
+    private void appendNote(Results rs, String field, String label, StringBuilder sb) throws SQLException
+    {
+        if (rs.hasColumn(FieldKey.fromString(field)) && rs.getObject(FieldKey.fromString(field)) != null)
+        {
+            sb.append("<tr style='vertical-align:top;margin-bottom: 5px;'><td style='padding-right: 5px;'>" + label + ":</td><td>");
+            sb.append(rs.getString(FieldKey.fromString(field)));
+            sb.append("</td></tr>");
+        }
     }
 }

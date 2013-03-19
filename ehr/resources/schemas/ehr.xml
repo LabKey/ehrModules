@@ -56,6 +56,14 @@
                 <ns:isAutoInc>true</ns:isAutoInc>
                 <ns:isKeyField>true</ns:isKeyField>
             </ns:column>
+            <ns:column columnName="Id">
+                <ns:columnTitle>Id</ns:columnTitle>
+                <ns:fk>
+                    <ns:fkDbSchema>study</ns:fkDbSchema>
+                    <ns:fkTable>Animal</ns:fkTable>
+                    <ns:fkColumnName>Id</ns:fkColumnName>
+                </ns:fk>
+            </ns:column>
             <ns:column columnName="schemaName">
                 <ns:columnTitle>Schema Name</ns:columnTitle>
                 <ns:nullable>true</ns:nullable>
@@ -89,6 +97,12 @@
             </ns:column>
             <ns:column columnName="objectid">
                 <ns:columnTitle>Key</ns:columnTitle>
+            </ns:column>
+            <ns:column columnName="caseid">
+                <ns:columnTitle>Case Id</ns:columnTitle>
+            </ns:column>
+            <ns:column columnName="parentid">
+                <ns:columnTitle>Encounter Id</ns:columnTitle>
             </ns:column>
             <ns:column columnName="container">
                 <ns:isHidden>true</ns:isHidden>
@@ -968,6 +982,10 @@
                 <ns:columnTitle>End Date</ns:columnTitle>
                 <ns:nullable>true</ns:nullable>
             </ns:column>
+            <ns:column columnName="first_approval">
+                <ns:columnTitle>First Approval Date</ns:columnTitle>
+                <ns:nullable>true</ns:nullable>
+            </ns:column>
             <ns:column columnName="project_type">
                 <ns:columnTitle>Type</ns:columnTitle>
                 <ns:nullable>true</ns:nullable>
@@ -1130,10 +1148,23 @@
                 <ns:shownInUpdateView>false</ns:shownInUpdateView>
             </ns:column>
             <ns:column columnName="protocol">
+                <ns:columnTitle>IACUC Protocol</ns:columnTitle>
+            </ns:column>
+            <ns:column columnName="project">
+                <ns:columnTitle>Project</ns:columnTitle>
             </ns:column>
             <ns:column columnName="species">
             </ns:column>
+            <ns:column columnName="gender">
+            </ns:column>
             <ns:column columnName="allowed">
+                <ns:columnTitle># Allowed</ns:columnTitle>
+            </ns:column>
+            <ns:column columnName="start">
+                <ns:columnTitle>Start Date</ns:columnTitle>
+            </ns:column>
+            <ns:column columnName="enddate">
+                <ns:columnTitle>End Date</ns:columnTitle>
             </ns:column>
             <ns:column columnName="container">
                 <ns:isUserEditable>false</ns:isUserEditable>
@@ -1375,6 +1406,9 @@
             <ns:column columnName="protocol">
                 <ns:nullable>false</ns:nullable>
             </ns:column>
+            <ns:column columnName="project">
+
+            </ns:column>
             <ns:column columnName="procedureName">
                 <ns:columnTitle>Procedure Name</ns:columnTitle>
                 <ns:nullable>true</ns:nullable>
@@ -1394,15 +1428,9 @@
             <ns:column columnName="frequency">
                 <ns:nullable>true</ns:nullable>
             </ns:column>
-            <!--<ns:column columnName="container">-->
-            <!--<ns:isUserEditable>false</ns:isUserEditable>-->
-            <!--<ns:isHidden>true</ns:isHidden>-->
-            <!--<ns:fk>-->
-            <!--<ns:fkDbSchema>core</ns:fkDbSchema>-->
-            <!--<ns:fkTable>containers</ns:fkTable>-->
-            <!--<ns:fkColumnName>entityid</ns:fkColumnName>-->
-            <!--</ns:fk>-->
-            <!--</ns:column>-->
+            <ns:column columnName="daysBetween">
+                <ns:nullable>true</ns:nullable>
+            </ns:column>
             <ns:column columnName="createdby">
                 <ns:isUserEditable>false</ns:isUserEditable>
                 <ns:nullable>true</ns:nullable>
@@ -1473,6 +1501,14 @@
         <ns:auditLogging>DETAILED</ns:auditLogging>
         <ns:columns>
             <ns:column columnName="rowid"/>
+            <ns:column columnName="Id">
+                <ns:columnTitle>Id</ns:columnTitle>
+                <ns:fk>
+                    <ns:fkDbSchema>study</ns:fkDbSchema>
+                    <ns:fkTable>Animal</ns:fkTable>
+                    <ns:fkColumnName>Id</ns:fkColumnName>
+                </ns:fk>
+            </ns:column>
             <ns:column columnName="userid">
                 <ns:columnTitle>User Id</ns:columnTitle>
             </ns:column>
@@ -1543,7 +1579,14 @@
         <ns:javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</ns:javaCustomizer>
         <ns:columns>
             <ns:column columnName="rowid"/>
-            <ns:column columnName="id"/>
+            <ns:column columnName="Id">
+                <ns:columnTitle>Id</ns:columnTitle>
+                <ns:fk>
+                    <ns:fkDbSchema>study</ns:fkDbSchema>
+                    <ns:fkTable>Animal</ns:fkTable>
+                    <ns:fkColumnName>Id</ns:fkColumnName>
+                </ns:fk>
+            </ns:column>
             <ns:column columnName="date"/>
             <ns:column columnName="parentid"/>
             <ns:column columnName="schemaName"/>
@@ -1564,7 +1607,14 @@
         <ns:javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</ns:javaCustomizer>
         <ns:columns>
             <ns:column columnName="rowid"/>
-            <ns:column columnName="id"/>
+            <ns:column columnName="Id">
+                <ns:columnTitle>Id</ns:columnTitle>
+                <ns:fk>
+                    <ns:fkDbSchema>study</ns:fkDbSchema>
+                    <ns:fkTable>Animal</ns:fkTable>
+                    <ns:fkColumnName>Id</ns:fkColumnName>
+                </ns:fk>
+            </ns:column>
             <ns:column columnName="date"/>
             <ns:column columnName="parentid"/>
             <ns:column columnName="schemaName"/>

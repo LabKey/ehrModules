@@ -15,16 +15,20 @@
  */
 package org.labkey.ehr.notification;
 
+import org.labkey.api.data.ColumnInfo;
 import org.labkey.api.data.CompareType;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.DbScope;
 import org.labkey.api.data.Results;
+import org.labkey.api.data.ResultsImpl;
 import org.labkey.api.data.RuntimeSQLException;
 import org.labkey.api.data.SimpleFilter;
 import org.labkey.api.data.Sort;
+import org.labkey.api.data.TableInfo;
 import org.labkey.api.data.TableSelector;
 import org.labkey.api.query.FieldKey;
 import org.labkey.api.query.QueryHelper;
+import org.labkey.api.query.QueryService;
 import org.labkey.api.query.UserSchema;
 import org.labkey.api.security.User;
 import org.labkey.api.settings.AppProps;
@@ -32,9 +36,11 @@ import org.labkey.api.util.ResultSetUtil;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -81,7 +87,7 @@ public class OverdueWeightsNotification extends AbstractEHRNotification
         final StringBuilder msg = new StringBuilder();
         msg.append("This email contains alerts of animals in cage locations not weighed in the past 60 days.  It was run on: " + _dateTimeFormat.format(new Date())+ ".<p>");
 
-        livingAnimalsWithoutWeight(c, u, msg);
+        getLivingWithoutWeight(c, u, msg);
         animalsNotWeightedInPast60Days(c, u, msg);
 
         return msg.toString();
@@ -175,19 +181,32 @@ public class OverdueWeightsNotification extends AbstractEHRNotification
         return rs.getString(key) == null ? "" : rs.getString(key);
     }
 
-    protected void livingAnimalsWithoutWeight(final Container c, User u, final StringBuilder msg)
+    private void getLivingWithoutWeight(final Container c, User u, final StringBuilder msg)
     {
         SimpleFilter filter = new SimpleFilter(FieldKey.fromString("calculated_status"), "Alive");
         filter.addCondition(FieldKey.fromString("Id/MostRecentWeight/MostRecentWeightDate"), null, CompareType.ISBLANK);
         Sort sort = new Sort(getStudy(c).getSubjectColumnName());
-        TableSelector ts = new TableSelector(getStudySchema(c, u).getTable("Demographics"), Collections.singleton(getStudy(c).getSubjectColumnName()), filter, sort);
+
+        TableInfo ti = getStudySchema(c, u).getTable("Demographics");
+        List<FieldKey> colKeys = new ArrayList<FieldKey>();
+        colKeys.add(FieldKey.fromString(getStudy(c).getSubjectColumnName()));
+        colKeys.add(FieldKey.fromString("Id/age/AgeFriendly"));
+        final Map<FieldKey, ColumnInfo> columns = QueryService.get().getColumns(ti, colKeys);
+
+        TableSelector ts = new TableSelector(ti, columns.values(), filter, sort);
         if (ts.getRowCount() > 0)
         {
             msg.append("<b>WARNING: The following animals do not have a weight:</b><br>\n");
             ts.forEach(new TableSelector.ForEachBlock<ResultSet>(){
                 public void exec(ResultSet rs) throws SQLException
                 {
-                    msg.append(rs.getString(getStudy(c).getSubjectColumnName()) + "<br>\n");
+                    Results results = new ResultsImpl(rs, columns);
+                    msg.append(rs.getString(getStudy(c).getSubjectColumnName()));
+                    String age = results.getString(FieldKey.fromString("Id/age/AgeFriendly"));
+                    if (age != null)
+                        msg.append(" (Age: " + age + ")");
+
+                    msg.append("<br>\n");
                 }
             });
 

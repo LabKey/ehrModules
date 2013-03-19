@@ -17,6 +17,7 @@ package org.labkey.ehr.history;
 
 import org.labkey.api.data.Container;
 import org.labkey.api.data.Results;
+import org.labkey.api.data.SimpleFilter;
 import org.labkey.api.ehr.HistoryRow;
 import org.labkey.api.query.FieldKey;
 import org.labkey.api.security.User;
@@ -47,6 +48,12 @@ public class DefaultDrugsDataSource extends AbstractDataSource
     protected String getHtml(Results rs) throws SQLException
     {
         StringBuilder sb = new StringBuilder();
+        String category = rs.getString("category");
+
+        //skip treatments given, for now
+        if ("Clinical".equals(category))
+            return null;
+
         safeAppend(rs, "Category", "category");
         safeAppend(rs, "Case", "caseid");
         safeAppend(rs, "Category", "parentId/caseid/category");
@@ -104,9 +111,9 @@ public class DefaultDrugsDataSource extends AbstractDataSource
     }
 
     @Override
-    public List<HistoryRow> getRows(Container c, User u, final String subjectId, Date minDate, Date maxDate)
+    public List<HistoryRow> getRows(Container c, User u, SimpleFilter filter)
     {
-        List<HistoryRow> rows = super.getRows(c, u, subjectId, minDate,  maxDate);
+        List<HistoryRow> rows = super.getRows(c, u, filter);
         Map<String, List<HistoryRowImpl>> groupedRowMap = new HashMap<String, List<HistoryRowImpl>>();
         for (HistoryRow r : rows)
         {
@@ -132,8 +139,12 @@ public class DefaultDrugsDataSource extends AbstractDataSource
             String delim = "";
             for (HistoryRowImpl r : records)
             {
-                sb.append(delim).append(r.getHtml());
-                delim = "\n\n";
+                String html = r.getHtml();
+                if (html != null)
+                {
+                    sb.append(delim).append(html);
+                    delim = "\n\n";
+                }
             }
 
             HistoryRowImpl rec = records.get(0);
