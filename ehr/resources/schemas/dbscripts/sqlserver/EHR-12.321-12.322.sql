@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2013 LabKey Corporation
+ *
+ * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
+ */
 ALTER TABLE ehr.protocol_counts add project integer;
 ALTER TABLE ehr.protocol_counts add start datetime;
 ALTER TABLE ehr.protocol_counts add enddate datetime;
