@@ -1213,11 +1213,11 @@ EHR.DatasetButtons = new function(){
                                     xtype: 'labkey-store',
                                     schemaName: 'core',
                                     queryName: 'PrincipalsWithoutAdmin',
-                                    columns: 'userid,name',
-                                    sort: 'type,name',
+                                    columns: 'UserId,DisplayName',
+                                    sort: 'DisplayName',
                                     autoLoad: true
                                 }),
-                                displayField: 'name',
+                                displayField: 'DisplayName',
                                 valueField: 'UserId',
                                 ref: 'assignedTo'
                             }]
@@ -1378,11 +1378,11 @@ EHR.DatasetButtons = new function(){
                                     xtype: 'labkey-store',
                                     schemaName: 'core',
                                     queryName: 'PrincipalsWithoutAdmin',
-                                    columns: 'userid,name',
+                                    columns: 'UserId,DisplayName',
                                     sort: 'type,name',
                                     autoLoad: true
                                 }),
-                                displayField: 'name',
+                                displayField: 'DisplayName',
                                 valueField: 'UserId',
                                 ref: 'assignedTo'
                             }]
@@ -1906,11 +1906,11 @@ EHR.DatasetButtons = new function(){
                                 xtype: 'labkey-store',
                                 schemaName: 'core',
                                 queryName: 'PrincipalsWithoutAdmin',
-                                columns: 'userid,name',
+                                columns: 'UserId,DisplayName',
                                 sort: 'type,name',
                                 autoLoad: true
                             }),
-                            displayField: 'name',
+                            displayField: 'DisplayName',
                             valueField: 'UserId',
                             ref: 'assignedTo'
                         },{

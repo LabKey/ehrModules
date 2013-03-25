@@ -53,8 +53,14 @@ function makePanel(){
                         if (!value)
                             return;
 
-                        window.location = LABKEY.ActionURL.buildURL('ehr', 'participantView', ctx['EHRStudyContainer'], {participantId: value});
-                    }
+                        window.location = LABKEY.ActionURL.buildURL(
+                            'ehr'
+                            ,'participantView'
+                            ,ctx['EHRStudyContainer']
+                            ,{participantId: value}
+                            );
+                    },
+                    scope: this
                 },{
                     html: '<a href="' + (LABKEY.ActionURL.buildURL('ehr', 'animalSearch', ctx['EHRStudyContainer'])) + '">Advanced Animal Search</a>',
                     colspan: 2

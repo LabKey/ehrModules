@@ -82,7 +82,7 @@ EHR.Server.Utils = new function(){
             if(error.exceptionClass)
                 toLog.push('Excepton class: ' + error.exceptionClass);
             if(stackTrace)
-                message.push(stackTrace);
+                toLog.push(stackTrace);
 
             console.error(toLog.join('\n'));
         },

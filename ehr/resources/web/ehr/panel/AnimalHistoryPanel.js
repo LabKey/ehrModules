@@ -79,6 +79,7 @@ Ext4.define('EHR.panel.AnimalHistoryPanel', {
     getFilterArray: function(tab){
         var report = tab.report;
         var filterArray = this.callParent(arguments);
+       // if (!filterArray.removable )
 
         //we handle date
         if (report.dateFieldName && report.todayOnly){

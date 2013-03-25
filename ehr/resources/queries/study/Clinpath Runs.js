@@ -18,7 +18,7 @@ function onUpsert(context, errors, row, oldRow){
     //lookup test type if not supplied:
     if(!row.type && row.servicerequested){
         context.clinPathTests = context.clinPathTests || {};
-        if(Ext.isDefined(context.clinPathTests[row.servicerequested])){
+        if(LABKEY.ExtAdapter.isDefined(context.clinPathTests[row.servicerequested])){
             row.type = context.clinPathTests[row.servicerequested];
         }
         else {

@@ -69,7 +69,7 @@ function onAfterInsert(scriptContext, errors, row, oldRow){
                 success: function(data){
                     if(data && data.rows && data.rows.length){
                         var obj;
-                        Ext.each(data.rows, function(r){
+                        LABKEY.ExtAdapter.each(data.rows, function(r){
                             obj = {Id: r.Id, QCStateLabel: row.QCStateLabel, RoomAtTime: r.room, date: new Date(row.date), observationRecord: row.objectid, housingRecord: r.lsid, remark: row.remark, taskid: row.taskid, performedby: row.performedby, feces: row.feces};
 
                             if(row.cage)
@@ -118,7 +118,7 @@ function onAfterUpdate(errors, scriptContext, row, oldRow){
             columns: 'lsid,id,date,remark,feces',
             scope: this,
             success: function(data){
-                Ext.each(data.rows, function(r){
+                LABKEY.ExtAdapter.each(data.rows, function(r){
                     distinctIds.push(r.Id);
                     //NOTE: we assume there should only be one child per ID
                     existingRecordMap[r.Id] = r;
@@ -155,7 +155,7 @@ function onAfterUpdate(errors, scriptContext, row, oldRow){
             success: function(data){
                 if(data && data.rows && data.rows.length){
                     var obj;
-                    Ext.each(data.rows, function(r){
+                    LABKEY.ExtAdapter.each(data.rows, function(r){
                         foundIds[r.Id] = 1;
 
                         //only insert the row if it doesnt exist
@@ -181,7 +181,7 @@ function onAfterUpdate(errors, scriptContext, row, oldRow){
         });
 
 
-        Ext.each(existingRecords, function(r){
+        LABKEY.ExtAdapter.each(existingRecords, function(r){
             if(!foundIds[r.Id]){
                 //NOTE: until delete performance is improved, we will change the QCstate instead of directly deleting
                 //toDelete.push(r);
@@ -246,7 +246,7 @@ function onAfterDelete(scriptContext, errors, row, oldRow){
                 ],
                 scope: this,
                 success: function(data){
-                    Ext.each(data.rows, function(r){
+                    LABKEY.ExtAdapter.each(data.rows, function(r){
                         toDelete.push({lsid: r.lsid});
                     }, this);
                 },
