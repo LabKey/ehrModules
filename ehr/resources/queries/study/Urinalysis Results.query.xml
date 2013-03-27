@@ -43,6 +43,12 @@
                     <column columnName="result">
                         <columnTitle>Result</columnTitle>
                     </column>
+                    <column columnName="rangeMax">
+                        <columnTitle>Range Max</columnTitle>
+                    </column>
+                    <column columnName="results">
+                        <columnTitle>Results</columnTitle>
+                    </column>
                     <column columnName="testid">
                         <displayWidth>120</displayWidth>
                       <!--<nullable>false</nullable>-->

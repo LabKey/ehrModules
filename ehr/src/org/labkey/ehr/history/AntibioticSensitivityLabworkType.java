@@ -15,12 +15,23 @@
  */
 package org.labkey.ehr.history;
 
+import org.labkey.api.data.ColumnInfo;
 import org.labkey.api.data.Results;
+import org.labkey.api.data.ResultsImpl;
+import org.labkey.api.data.Selector;
+import org.labkey.api.data.TableSelector;
 import org.labkey.api.query.FieldKey;
 import org.labkey.api.util.PageFlowUtil;
 
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 
 /**
  * Created with IntelliJ IDEA.
@@ -57,30 +68,80 @@ public class AntibioticSensitivityLabworkType extends DefaultLabworkType
             resultText = (!result ? "Not " : "") + "Resistant";
 
         String antibiotic = rs.getString(FieldKey.fromString(_antibioticField));
-        String tissue = rs.getString(FieldKey.fromString(_tissueField));
 
         String delim = "";
 
-        if (microbe != null)
-        {
-            sb.append(delim).append("Microbe: ").append(microbe);
-            delim = "\n";
-        }
-
         if (antibiotic != null)
         {
-            sb.append(delim).append("Antibiotic: ").append(antibiotic);
-            delim = "\n";
-        }
+            sb.append("<td>");
+            sb.append(delim).append(antibiotic);
+            sb.append("</td><td>");
 
-        if (result != null)
-        {
-            sb.append(delim).append("Result: ").append(resultText);
-            delim = "\n";
-        }
+            if (result != null)
+                sb.append(delim).append(resultText);
 
-        sb.append(delim);
+            sb.append("</td>");
+        }
 
         return sb.toString();
+    }
+
+    @Override
+    protected Map<String, List<String>> getRows(TableSelector ts, final Collection<ColumnInfo> cols)
+    {
+        final Map<String, Map<String, List<String>>> rows = new HashMap<String, Map<String, List<String>>>();
+        ts.forEach(new Selector.ForEachBlock<ResultSet>()
+        {
+            @Override
+            public void exec(ResultSet object) throws SQLException
+            {
+                Results rs = new ResultsImpl(object, cols);
+                String runId = rs.getString(FieldKey.fromString("runId"));
+
+                Map<String, List<String>> runMap = rows.get(runId);
+                if (runMap == null)
+                    runMap = new TreeMap<String, List<String>>();
+
+                String microbe = rs.getString(FieldKey.fromString(_microbeField));
+                if (microbe != null)
+                {
+                    List<String> list = runMap.get(microbe);
+                    if (list == null)
+                        list = new ArrayList<String>();
+
+                    String line = getLine(rs);
+                    if (line != null)
+                        list.add(line);
+
+                    runMap.put(microbe, list);
+                }
+
+                rows.put(runId, runMap);
+            }
+        });
+
+        Map<String, List<String>> sortedRows = new HashMap<String, List<String>>();
+        for (String runId : rows.keySet())
+        {
+            Map<String, List<String>> runMap = rows.get(runId);
+            List<String> lines = new ArrayList<String>();
+
+            for (String microbe : runMap.keySet())
+            {
+                StringBuilder sb = new StringBuilder();
+                sb.append("\n").append("Microbe: ").append(microbe).append("\n");
+                sb.append("<table>");
+                for (String line : runMap.get(microbe))
+                {
+                    sb.append("<tr>").append(line).append("</tr>");
+                }
+                sb.append("</table>");
+                lines.add(sb.toString());
+            }
+
+            sortedRows.put(runId, lines);
+        }
+
+        return sortedRows;
     }
 }

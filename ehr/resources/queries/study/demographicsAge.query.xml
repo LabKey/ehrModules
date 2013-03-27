@@ -23,6 +23,9 @@
                     <column columnName="AgeFriendly">
                         <columnTitle>Age</columnTitle>
                     </column>
+                    <column columnName="yearAndDays">
+                        <columnTitle>Age (Year and Days)</columnTitle>
+                    </column>
                     <column columnName="species">
                         <isHidden>true</isHidden>
                     </column>

@@ -478,11 +478,6 @@ public class DefaultEHRCustomizer implements TableCustomizer
         col16.setDescription("Calculates whether this animal has ever had any surgery or a surgery flagged as major");
         ds.addColumn(col16);
 
-        ColumnInfo col17 = getWrappedIdCol(us, ds, "MostRecentTB", "demographicsMostRecentTBDate");
-        col17.setLabel("TB Tests");
-        col17.setDescription("Calculates the most recent TB date for this animal, time since TB and the last eye TB tested");
-        ds.addColumn(col17);
-
         ColumnInfo col19 = getWrappedIdCol(us, ds, "weightChange", "demographicsWeightChange");
         col19.setLabel("Weight Change");
         col19.setDescription("This calculates the percent change over the past 30, 90 or 180 days relative to the most recent weight");

@@ -37,11 +37,11 @@ public class LabworkManager
 
     private LabworkManager()
     {
-        //TODO
         registerType(new AntibioticSensitivityLabworkType());
         registerType(new ChemistryLabworkType());
         registerType(new HematologyLabworkType());
 
+        registerType(new iStatLabworkType());
         registerType(new MicrobiologyLabworkType());
         registerType(new MiscTestsLabworkType());
         registerType(new ParasitologyLabworkType());

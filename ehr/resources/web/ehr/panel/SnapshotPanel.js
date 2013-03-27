@@ -103,6 +103,10 @@ Ext4.define('EHR.panel.SnapshotPanel', {
                         itemId: 'sire'
                     },{
                         xtype: 'displayfield',
+                        fieldLabel: 'Last TB Date',
+                        itemId: 'lastTB'
+                    },{
+                        xtype: 'displayfield',
                         fieldLabel: 'Current Weight (kg)',
                         itemId: 'currentWeight'
                     },{
@@ -150,7 +154,7 @@ Ext4.define('EHR.panel.SnapshotPanel', {
         multi.add(LABKEY.Query.selectRows, {
             schemaName: 'study',
             queryName: 'demographics',
-            columns: 'Id,Id/curLocation/area,Id/curLocation/room,Id/curLocation/cage,Id/age/AgeFriendly,gender,species,geographic_origin,calculated_status,dam,sire,birth,death',
+            columns: 'Id,Id/curLocation/area,Id/curLocation/room,Id/curLocation/cage,Id/age/yearAndDays,gender,species,geographic_origin,calculated_status,dam,sire,birth,death',
             filterArray: [LABKEY.Filter.create('Id', this.subjectId, LABKEY.Filter.Types.EQUAL)],
             failure: LDK.Utils.getErrorCallback(),
             requiredVersion: 9.1,
@@ -173,6 +177,20 @@ Ext4.define('EHR.panel.SnapshotPanel', {
             scope: this,
             success: function(results){
                 this.assignmentResults = results;
+            }
+        });
+
+        multi.add(LABKEY.Query.selectRows, {
+            schemaName: 'study',
+            queryName: 'demographicsMostRecentTBDate',
+            requiredVersion: 9.1,
+            filterArray: [
+                LABKEY.Filter.create('Id', this.subjectId, LABKEY.Filter.Types.EQUAL)
+            ],
+            failure: LDK.Utils.getErrorCallback(),
+            scope: this,
+            success: function(results){
+                this.tbResults = results;
             }
         });
 
@@ -298,23 +316,41 @@ Ext4.define('EHR.panel.SnapshotPanel', {
         this.appendCases(this.caseResults);
         this.appendDiet(this.dietResults);
         this.appendFlags(this.flagsResults);
+        this.appendTBResults(this.tbResults);
 
         this.onLoad();
 
         Ext4.resumeLayouts(true);
     },
 
+    appendTBResults: function(results){
+        if (results.rows.length){
+            var row = results.rows[0];
+            var value = this.getValue(row, 'MostRecentTBDate', Ext4.data.Types.DATE, 'Y-m-d');
+            var months = this.getValue(row, 'MonthsSinceLastTB');
+            if (months)
+                value += ' (' + months + ' months ago)';
+
+            this.down('#lastTB').setValue(value);
+        }
+    },
+
     appendDemographicsResults: function(results){
         if (results.rows.length){
             var row = results.rows[0];
 
-            Ext4.each(['calculated_status', 'gender', 'dam', 'sire', 'birth', 'death', 'species', 'geographic_origin'], function(name){
+            Ext4.each(['calculated_status', 'gender', 'dam', 'sire', 'species', 'geographic_origin'], function(name){
                 if (row[name])
                     this.down('#' + name).setValue(this.getValue(row, name));
             }, this);
 
-            if (this.hasValue(row, 'Id/age/AgeFriendly')){
-                this.down('#age').setValue(this.getValue(row, 'Id/age/AgeFriendly'));
+            Ext4.each(['birth', 'death'], function(name){
+                if (row[name])
+                    this.down('#' + name).setValue(this.getValue(row, name, Ext4.data.Types.DATE, 'Y-m-d'));
+            }, this);
+
+            if (this.hasValue(row, 'Id/age/yearAndDays')){
+                this.down('#age').setValue(this.getValue(row, 'Id/age/yearAndDays'));
             }
 
             if (this.hasValue(row, 'Id/curLocation/room') || this.hasValue(row, 'Id/curLocation/cage')){
@@ -342,11 +378,26 @@ Ext4.define('EHR.panel.SnapshotPanel', {
         return !Ext4.isEmpty(row[propName]) && !Ext4.isEmpty(row[propName].value);
     },
 
-    getValue: function(row, propName){
+    getValue: function(row, propName, extType, formatString){
         if (!this.hasValue(row, propName))
             return null;
 
-        var val = Ext4.isEmpty(row[propName].displayValue) ? row[propName].value : row[propName].displayValue;
+        var val;
+        if (extType){
+            val = row[propName].value;
+            if (extType == Ext4.data.Types.DATE){
+                val = LDK.ConvertUtils.parseDate(val);
+                if (formatString)
+                    val = Ext4.Date.format(val, formatString);
+            }
+            else {
+                console.error('ExtType not supported: ' + extType);
+            }
+        }
+        else {
+            val = Ext4.isEmpty(row[propName].displayValue) ? row[propName].value : row[propName].displayValue;
+        }
+
         if (row[propName].url){
             val = '<a href="' + row[propName].url + '" ' + this.getTargetString() + '>' + val + '</a>';
         }
@@ -378,7 +429,7 @@ Ext4.define('EHR.panel.SnapshotPanel', {
             this.down('#currentWeight').setValue(this.getValue(row, 'MostRecentWeight'));
 
             if (this.hasValue(row, 'MostRecentWeightDate')){
-                var val = this.getValue(row, 'MostRecentWeightDate');
+                var val = this.getValue(row, 'MostRecentWeightDate', Ext4.data.Types.DATE, 'Y-m-d');
                 if (this.hasValue(row, 'DaysSinceWeight')){
                     val += ' (' + this.getValue(row, 'DaysSinceWeight') + ' days ago)'
                 }

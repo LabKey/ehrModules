@@ -350,8 +350,6 @@ ehr/resources/queries/study/Treatment[!!-~]Orders/.qview.xml -text
 ehr/resources/queries/study/Treatment[!!-~]Orders/Active[!!-~]Treatments.qview.xml -text
 ehr/resources/queries/study/Urinalysis[!!-~]Results.js -text
 ehr/resources/queries/study/Urinalysis[!!-~]Results.query.xml -text
-ehr/resources/queries/study/Urinalysis[!!-~]Results/.qview.xml -text
-ehr/resources/queries/study/Urinalysis[!!-~]Results/Plus[!!-~]Ref[!!-~]Range.qview.xml -text
 ehr/resources/queries/study/Virology[!!-~]Results.js -text
 ehr/resources/queries/study/Virology[!!-~]Results.query.xml -text
 ehr/resources/queries/study/Vitals.js -text
@@ -415,8 +413,6 @@ ehr/resources/queries/study/demographicsLastHousing.query.xml -text
 ehr/resources/queries/study/demographicsLastHousing.sql -text
 ehr/resources/queries/study/demographicsMostRecentDeparture.query.xml -text
 ehr/resources/queries/study/demographicsMostRecentDeparture.sql -text
-ehr/resources/queries/study/demographicsMostRecentTBDate.query.xml -text
-ehr/resources/queries/study/demographicsMostRecentTBDate.sql -text
 ehr/resources/queries/study/demographicsMostRecentWeight.query.xml -text
 ehr/resources/queries/study/demographicsMostRecentWeight.sql -text
 ehr/resources/queries/study/demographicsOffspring.query.xml -text
@@ -454,6 +450,8 @@ ehr/resources/queries/study/housingTotalRoommates.query.xml -text
 ehr/resources/queries/study/housingTotalRoommates.sql -text
 ehr/resources/queries/study/studyData.query.xml -text
 ehr/resources/queries/study/validateFinalWeights.sql -text
+ehr/resources/queries/study/weightConsecutiveDrops.query.xml -text
+ehr/resources/queries/study/weightConsecutiveDrops.sql -text
 ehr/resources/queries/study/weightPctChange.query.xml -text
 ehr/resources/queries/study/weightPctChange.sql -text
 ehr/resources/queries/study/weightRelChange.query.xml -text
@@ -491,6 +489,7 @@ ehr/resources/schemas/dbscripts/postgresql/EHR-12.316-12.317.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR-12.317-12.318.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR-12.321-12.322.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR-12.322-12.323.sql -text
+ehr/resources/schemas/dbscripts/postgresql/EHR-12.324-12.325.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-11.10-11.20.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-11.20-11.30.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-11.30-12.10.sql -text
@@ -516,6 +515,7 @@ ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-12.314-12.315.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-12.318-12.319.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-12.319-12.320.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-12.320-12.321.sql -text
+ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-12.323-12.324.sql -text
 ehr/resources/schemas/dbscripts/postgresql/obsolete/EHR-11.10-11.101.sql -text
 ehr/resources/schemas/dbscripts/postgresql/obsolete/EHR-11.101-11.102.sql -text
 ehr/resources/schemas/dbscripts/postgresql/obsolete/EHR-11.102-11.105.sql -text
@@ -621,6 +621,7 @@ ehr/resources/schemas/dbscripts/sqlserver/EHR-12.316-12.317.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/EHR-12.317-12.318.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/EHR-12.321-12.322.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/EHR-12.322-12.323.sql -text
+ehr/resources/schemas/dbscripts/sqlserver/EHR-12.324-12.325.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/EHR_Lookups-11.30-12.10.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/EHR_Lookups-12.20-12.30.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/EHR_Lookups-12.21-12.22.sql -text
@@ -645,6 +646,7 @@ ehr/resources/schemas/dbscripts/sqlserver/EHR_Lookups-12.314-12.315.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/EHR_Lookups-12.318-12.319.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/EHR_Lookups-12.319-12.320.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/EHR_Lookups-12.320-12.321.sql -text
+ehr/resources/schemas/dbscripts/sqlserver/EHR_Lookups-12.323-12.324.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/obsolete/EHR-11.34-11.35.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/obsolete/EHR-11.36-11.37.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/obsolete/EHR_Lookups-11.34-11.35.sql -text
@@ -853,6 +855,7 @@ ehr/src/org/labkey/ehr/history/ParasitologyLabworkType.java -text
 ehr/src/org/labkey/ehr/history/SortingLabworkType.java -text
 ehr/src/org/labkey/ehr/history/UrinalysisLabworkType.java -text
 ehr/src/org/labkey/ehr/history/VirologyLabworkType.java -text
+ehr/src/org/labkey/ehr/history/iStatLabworkType.java -text
 ehr/src/org/labkey/ehr/notification/AbstractEHRNotification.java -text
 ehr/src/org/labkey/ehr/notification/OverdueWeightsNotification.java -text
 ehr/src/org/labkey/ehr/notification/WeightAlerts.java -text

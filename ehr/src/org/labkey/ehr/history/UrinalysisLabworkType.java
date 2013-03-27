@@ -21,10 +21,12 @@ package org.labkey.ehr.history;
  * Date: 3/6/13
  * Time: 12:27 PM
  */
-public class UrinalysisLabworkType extends DefaultLabworkType
+public class UrinalysisLabworkType extends SortingLabworkType
 {
     public UrinalysisLabworkType()
     {
-        super("Urinalysis", "study", "Urinalysis Results");
+        super("Urinalysis", "study", "Urinalysis Results", "urinalysis_tests", "testid", "sort_order");
+        _resultField = null;
+        _qualResultField = "results";
     }
 }

@@ -88,6 +88,10 @@ Ext4.define('EHR.panel.MiniSnapshotPanel', {
                         itemId: 'sire'
                     },{
                         xtype: 'displayfield',
+                        fieldLabel: 'Last TB Date',
+                        itemId: 'lastTB'
+                    },{
+                        xtype: 'displayfield',
                         fieldLabel: 'Current Weight (kg)',
                         itemId: 'currentWeight'
                     },{

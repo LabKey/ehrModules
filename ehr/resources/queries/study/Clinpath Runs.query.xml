@@ -81,6 +81,9 @@
                           <fkColumnName>value</fkColumnName>
                         </fk>
                     </column>
+                    <column columnName="method">
+                        <columnTitle>Method</columnTitle>
+                    </column>
                     <column columnName="reviewedBy">
                         <columnTitle>Reviewed By</columnTitle>
                     </column>

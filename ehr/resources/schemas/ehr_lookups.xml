@@ -1371,9 +1371,6 @@
             <ns:column columnName="CageCapacity">
                 <ns:columnTitle>Cage Capacity</ns:columnTitle>
             </ns:column>
-            <ns:column columnName="MaxAnimalWeight">
-                <ns:columnTitle>Max Animal Weight (kg)</ns:columnTitle>
-            </ns:column>
         </ns:columns>
     </ns:table>
     <ns:table tableName="divider_types" tableDbType="TABLE" useColumnOrder="true">

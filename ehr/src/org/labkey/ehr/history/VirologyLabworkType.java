@@ -82,6 +82,7 @@ public class VirologyLabworkType extends DefaultLabworkType
         }
 
         sb.append(delim);
+        sb.append(delim);
 
         return sb.toString();
     }

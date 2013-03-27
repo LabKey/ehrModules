@@ -17,6 +17,8 @@ ROUND(CONVERT(age_in_months(d.birth, COALESCE(d.death, now())), DOUBLE) / 12, 1)
 
 TIMESTAMPDIFF('SQL_TSI_DAY', d.birth, COALESCE(d.death, now())) as AgeInDays,
 
+cast(floor(age(d.birth, COALESCE(d.death, now()))) as varchar) || ' years, ' || cast(mod(cast(TIMESTAMPDIFF('SQL_TSI_DAY', d.birth, COALESCE(d.death, now())) as integer), 365) as varchar) || ' days' as yearAndDays,
+
 case
   when (age_in_months(d.birth, COALESCE(d.death, now()))) < 1
     then (CONVERT(CONVERT(TIMESTAMPDIFF('SQL_TSI_DAY', d.birth, COALESCE(d.death, now())), float), VARCHAR) || ' days')

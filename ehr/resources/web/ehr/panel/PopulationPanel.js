@@ -74,7 +74,7 @@ Ext4.define('EHR.panel.PopulationPanel', {
     },
 
     aggregateData: function(results){
-        this.rawData = results.rows;
+        this.rawData = results;
         this.aggregateData = {
             totalRecords: results.rows.length,
             rowMap: {}
@@ -112,8 +112,6 @@ Ext4.define('EHR.panel.PopulationPanel', {
                             total: 0,
                             children: {}
                         }
-
-                        parentNode.total++;
 
                         parentNode = parentNode.children[value];
                     }
@@ -160,8 +158,8 @@ Ext4.define('EHR.panel.PopulationPanel', {
             var valueArray = this.valueMap[colName];
             for (var i=0;i<repeats;i++){
                 Ext4.each(valueArray, function(header, j){
-                    var style = (idx == 0 ? 'margin-right: 3px;margin-left: 3px;border-bottom: solid 1px;' : '') + 'text-align: center;';
-console.log(style);
+                    var style = (idx == 0 ? 'border-bottom: solid 1px;' : '') + 'text-align: center;';     //margin-right: 3px;margin-left: 3px;
+
                     rows.push({
                         html: header,
                         style: style,
@@ -205,7 +203,9 @@ console.log(style);
 
                 params['query.' + this.rowField + '~eq'] = rowName;
                 Ext4.each(this.colFields, function(colField, idx){
-                    params['query.' + colField + '~eq'] = tokens[idx];
+                    var meta = this.getMetadata(colField);
+                    var fk = meta.displayField || meta.fieldKeyPath;
+                    params['query.' + fk + '~eq'] = tokens[idx];
                 }, this);
 
                 var url = LABKEY.ActionURL.buildURL('query', 'executeQuery', null, params);
@@ -295,6 +295,17 @@ console.log(style);
 
     },
 
+    getMetadata: function(name){
+        var meta;
+        Ext4.each(this.rawData.metaData.fields, function(field){
+            if (field.name == name){
+                meta = field;
+                return false;
+            }
+        }, this);
+        return meta;
+    },
+
     getTotalColumns: function(){
         var total = 2;
         for (var prop in this.valueMap){
@@ -332,7 +343,6 @@ console.log(style);
                 }, this);
             }
 
-            console.log(newKeys);
             keys = newKeys;
         }, this);
 

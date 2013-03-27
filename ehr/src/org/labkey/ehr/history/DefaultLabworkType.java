@@ -212,19 +212,26 @@ public class DefaultLabworkType implements LabworkType
             sb.append("<td style='padding: 2px;'>").append(testId).append(": ").append("</td>");
             sb.append("<td style='padding: 2px;'>");
 
+            boolean unitsAppended = false;
             if (result != null)
             {
                 sb.append(result);
                 if (units != null)
+                {
                     sb.append(" ").append(units);
+                    unitsAppended = true;
+                }
             }
 
             if (qualResult != null)
             {
-                if (sb.length() > 0)
+                if (result != null)
                     sb.append(", ");
 
                 sb.append(qualResult);
+
+                if (units != null && !unitsAppended)
+                    sb.append(" ").append(units);
             }
 
             sb.append("</td>");

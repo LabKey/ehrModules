@@ -4,14 +4,6 @@
             <table tableName="colonyPopulationByAge" tableDbType="NOT_IN_DB">
                 <tableTitle>Population Summary, By Age and Species</tableTitle>
                 <columns>
-                    <column columnName="species">
-                        <columnTitle>Species</columnTitle>
-                        <fk>
-                          <fkDbSchema>ehr_lookups</fkDbSchema>
-                          <fkTable>species</fkTable>
-                          <fkColumnName>common</fkColumnName>
-                        </fk>
-                    </column>
                     <column columnName="animalCount">
                         <columnTitle>Animal Count</columnTitle>
                         <url>/query/executeQuery.view?schemaName=study&amp;

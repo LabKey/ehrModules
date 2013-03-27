@@ -24,6 +24,7 @@ import org.labkey.api.data.SimpleFilter;
 import org.labkey.api.data.Sort;
 import org.labkey.api.data.TableInfo;
 import org.labkey.api.data.TableSelector;
+import org.labkey.api.gwt.client.util.StringUtils;
 import org.labkey.api.query.FieldKey;
 import org.labkey.api.query.QueryDefinition;
 import org.labkey.api.query.QueryException;
@@ -42,6 +43,7 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -90,11 +92,13 @@ public class WeightAlerts extends AbstractEHRNotification
 
         //Find today's date
         Date now = new Date();
-        msg.append("This email contains alerts of weight changes of +/- 10% or greater.  It was run on: " + _dateFormat.format(now) + " at " + _timeFormat.format(now) + ".<p>");
+        msg.append("This email contains alerts of significant weight changes.  It was run on: " + _dateFormat.format(now) + " at " + _timeFormat.format(now) + ".<p>");
 
         getLivingWithoutWeight(c, u, msg);
         processWeights(c, u, msg, 0, 30, CompareType.LTE, -10);
         processWeights(c, u, msg, 0, 30, CompareType.GTE, 10);
+
+        consecutiveWeightDrops(c, u, msg);
 
         return msg.toString();
     }
@@ -234,5 +238,109 @@ public class WeightAlerts extends AbstractEHRNotification
         {
             ResultSetUtil.close(rs);
         }
+    }
+
+    protected void consecutiveWeightDrops(final Container c, User u, final StringBuilder msg)
+    {
+        SimpleFilter filter = new SimpleFilter(FieldKey.fromString("Id/dataset/demographics/calculated_status"), "Alive");
+        Calendar date = Calendar.getInstance();
+        date.add(Calendar.DATE, -10);
+
+        filter.addCondition(FieldKey.fromString("date"), date.getTime(), CompareType.DATE_GTE);
+        Sort sort = new Sort();
+        sort.appendSortColumn(sort.new SortField(FieldKey.fromString("Id/curLocation/area"), Sort.SortDirection.ASC));
+        sort.appendSortColumn(sort.new SortField(FieldKey.fromString("Id/curLocation/room"), Sort.SortDirection.ASC));
+        sort.appendSortColumn(sort.new SortField(FieldKey.fromString("Id/curLocation/cage"), Sort.SortDirection.ASC));
+
+        TableInfo ti = getStudySchema(c, u).getTable("weightConsecutiveDrops");
+        assert ti != null;
+
+        List<FieldKey> colKeys = new ArrayList<FieldKey>();
+        colKeys.add(FieldKey.fromString("Id/curLocation/area"));
+        colKeys.add(FieldKey.fromString("Id/curLocation/room"));
+        colKeys.add(FieldKey.fromString("Id/curLocation/cage"));
+
+        final Map<FieldKey, ColumnInfo> columns = QueryService.get().getColumns(ti, colKeys);
+        for (ColumnInfo col : ti.getColumns())
+        {
+            columns.put(col.getFieldKey(), col);
+        }
+
+        TableSelector ts = new TableSelector(ti, columns.values(), filter, sort);
+        if (ts.getRowCount() > 0)
+        {
+            final Set<String> animalIds = new HashSet<String>();
+
+            msg.append("<b>WARNING: The following animals have a weight entered since " + _dateFormat.format(date.getTime()) + " representing 3 consecutive weight drops:</b><br>\n");
+            msg.append("<table border=1><tr><td>Room</td><td>Cage</td><td>Id</td><td>Weight Date</td><td>Weight</td><td>Prev Weight 1</td><td>Prev Date 1</td><td>% Change 1</td><td>Prev Weight 2</td><td>Prev Date 2</td><td>% Change 2</td></tr>");
+            ts.forEach(new TableSelector.ForEachBlock<ResultSet>(){
+                public void exec(ResultSet rs) throws SQLException
+                {
+                    Results results = new ResultsImpl(rs, columns);
+
+                    msg.append("<tr>");
+                    msg.append("<td>").append(getValue(results, "Id/curLocation/room")).append("</td>");
+                    msg.append("<td>").append(getValue(results, "Id/curLocation/cage")).append("</td>");
+                    msg.append("<td>").append(getValue(results, getStudy(c).getSubjectColumnName())).append("</td>");
+
+                    msg.append("<td>").append(getDateValue(results, "date")).append("</td>");
+                    msg.append("<td>").append(getValue(results, "curWeight")).append("</td>");
+
+                    msg.append("<td>").append(getValue(results, "prevWeight1")).append("</td>");
+                    msg.append("<td>").append(getDateValue(results, "prevDate1", "interval1")).append("</td>");
+                    msg.append("<td>").append(getNumericValue(results, "pctChange1")).append("</td>");
+
+                    msg.append("<td>").append(getValue(results, "prevWeight2")).append("</td>");
+                    msg.append("<td>").append(getDateValue(results, "prevDate2", "interval2")).append("</td>");
+                    msg.append("<td>").append(getNumericValue(results, "pctChange2")).append("</td>");
+
+                    String id = getValue(results, getStudy(c).getSubjectColumnName());
+                    if (id != null)
+                        animalIds.add(id);
+
+                    msg.append("</tr>");
+                }
+            });
+
+            msg.append("</table>\n");
+
+            msg.append("<p><a href='" + AppProps.getInstance().getBaseServerUrl() + AppProps.getInstance().getContextPath() + "/query" + c.getPath() + "/executeQuery.view?schemaName=study&query.queryName=Demographics&query.calculated_status~eq=Alive&query.Id~in=" + (StringUtils.join(new ArrayList(animalIds), ";"))+ "'>Click here to view these animals</a></p>\n");
+            msg.append("<hr>\n");
+        }
+    }
+
+    private String getValue(Results rs, String prop) throws SQLException
+    {
+        String val = rs.getString(FieldKey.fromString(prop));
+        return val == null ? "" : val;
+    }
+
+    private String getNumericValue(Results rs, String prop) throws SQLException
+    {
+        String val = rs.getString(FieldKey.fromString(prop));
+        return val == null ? "" : val;
+    }
+
+    private String getDateValue(Results rs, String dateProp) throws SQLException
+    {
+        Date dateVal = rs.getDate(FieldKey.fromString(dateProp));
+        return dateVal == null ? "" : _dateFormat.format(dateVal);
+    }
+
+    private String getDateValue(Results rs, String dateProp, String intervalProp) throws SQLException
+    {
+        Date dateVal = rs.getDate(FieldKey.fromString(dateProp));
+        Integer intervalVal = rs.getInt(FieldKey.fromString(intervalProp));
+
+        if (dateVal == null)
+            return "";
+
+        StringBuilder val = new StringBuilder();
+        val.append(_dateFormat.format(dateVal));
+
+        if (intervalVal != null)
+            val.append(" (").append(intervalVal).append(" days between)");
+
+        return val.toString();
     }
 }
