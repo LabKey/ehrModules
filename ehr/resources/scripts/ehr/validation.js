@@ -271,10 +271,12 @@ EHR.Server.Validation = {
             row.Date = new java.util.Date(java.util.Date.parse(row.Date));
         }
 
+        var dateJava = new Date(row.Date);
+
         //find if the date is greater than now
         var cal1 = new java.util.GregorianCalendar();
         var cal2 = new java.util.GregorianCalendar();
-        cal2.setTime(row.Date);
+        cal2.setTime(dateJava);
 
         if(!scriptContext.extraContext.validateOnly && cal2.after(cal1) && !EHR.Server.Security.getQCStateByLabel(row.QCStateLabel).allowFutureDates){
             EHR.Server.Validation.addError(errors, 'date', 'Date is in future', 'ERROR');
@@ -302,12 +304,13 @@ EHR.Server.Validation = {
             console.log(parsed);
             console.log(typeof parsed);
         }
+        var dateJava = new Date(row.Date);
 
         //flag any dates greater than 1 year from now
         var cal1 = new java.util.GregorianCalendar();
         cal1.add(java.util.Calendar.YEAR, 1);
         var cal2 = new java.util.GregorianCalendar();
-        cal2.setTime(date);
+        cal2.setTime(dateJava);
 
         if(cal2.after(cal1)){
             EHR.Server.Validation.addError(errors, 'date', 'Date is more than 1 year in future', 'WARN');
@@ -745,7 +748,7 @@ EHR.Server.Validation = {
                 success: function(data){
                     for(var i=0;i<data.rows.length;i++){
                         config.recipients.push(LABKEY.Message.createPrincipalIdRecipient(LABKEY.Message.recipientType.to, data.rows[i].recipient));
-//                    console.log('Recipient: '+data.rows[i].recipient);
+                    console.log('Recipient: '+data.rows[i].recipient);
                     }
                 },
                 failure: EHR.Server.Utils.onFailure

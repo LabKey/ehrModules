@@ -102,7 +102,7 @@ public class EHRQCState
         return _isDeleted;
     }
 
-    public void setDeleted(Boolean deleted)
+    public void setIsDeleted(Boolean deleted)
     {
         _isDeleted = deleted;
     }
@@ -112,7 +112,7 @@ public class EHRQCState
         return _isRequest;
     }
 
-    public void setRequest(Boolean request)
+    public void setIsRequest(Boolean request)
     {
         _isRequest = request;
     }
