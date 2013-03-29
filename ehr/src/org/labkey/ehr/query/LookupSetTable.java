@@ -58,6 +58,8 @@ public class LookupSetTable extends SimpleUserSchema.SimpleTable
     private Map<String, Object> _map;
     private String _setName;
 
+    public static final String CACHE_KEY = LabworkTypeTable.class.getName() + "||values";
+
     public LookupSetTable(UserSchema schema, SchemaTableInfo table, String setName, Map<String, Object> map)
     {
         super(schema, table);
@@ -110,12 +112,6 @@ public class LookupSetTable extends SimpleUserSchema.SimpleTable
         setDeleteURL(AbstractTableInfo.LINK_DISABLER);
         setImportURL(AbstractTableInfo.LINK_DISABLER);
     }
-
-//    @Override
-//    public DatabaseTableType getTableType()
-//    {
-//        return DatabaseTableType.TABLE;
-//    }
 
     @Override
     public QueryUpdateService getUpdateService()

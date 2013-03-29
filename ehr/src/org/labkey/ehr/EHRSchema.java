@@ -28,6 +28,8 @@ public class EHRSchema
     public static final String TABLE_FORMPANELSECTIONS = "formpanelsections";
     public static final String TABLE_LOOKUPS = "lookups";
     public static final String TABLE_LOOKUP_SETS = "lookup_sets";
+    public static final String TABLE_LABWORK_TYPES = "labwork_types";
+    public static final String TABLE_LAB_TESTS = "lab_tests";
 
     public static final String TABLE_ENCOUNTER_FLAGS = "encounter_flags";
     public static final String TABLE_ENCOUNTER_SUMMARIES = "encounter_summaries";

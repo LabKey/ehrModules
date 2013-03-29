@@ -6,10 +6,12 @@ package org.labkey.ehr.history;
  * Date: 3/19/13
  * Time: 11:02 PM
  */
-public class iStatLabworkType extends DefaultLabworkType
+public class iStatLabworkType extends SortingLabworkType
 {
     public iStatLabworkType()
     {
-        super("iStat", "study", "iStat");
+        super("iStat", "study", "iStatRefRange", "iStat");
+        _normalRangeField = "range";
+        _normalRangeStatusField = "status";
     }
 }

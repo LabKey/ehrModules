@@ -39,9 +39,9 @@ public class DefaultEncountersDataSource extends AbstractDataSource
     protected String getHtml(Results rs) throws SQLException
     {
         StringBuilder sb = new StringBuilder();
-        //TODO: switch based on type
 
         sb.append(safeAppend(rs, "Title", "title"));
+        sb.append(safeAppend(rs, "Case #", "caseno"));
         sb.append(safeAppend(rs, "Procedure", "procedureid/name"));
 
         if (rs.hasColumn(FieldKey.fromString("major")) && rs.getObject("major") != null)
@@ -50,6 +50,7 @@ public class DefaultEncountersDataSource extends AbstractDataSource
             sb.append("Major Surgery? ").append(value).append("\n");
         }
 
+        sb.append(safeAppend(rs, null, "participants/participants"));
         sb.append(safeAppend(rs, "Summary", "summaries/summary"));
 
         if (sb.length() > 0)
@@ -70,6 +71,6 @@ public class DefaultEncountersDataSource extends AbstractDataSource
     @Override
     protected Set<String> getColumnNames()
     {
-        return PageFlowUtil.set("Id", "date", "enddate", "major", "type", "title", "procedureid", "procedureid/name", "summaries/summary");
+        return PageFlowUtil.set("Id", "date", "enddate", "major", "caseno", "type", "title", "procedureid", "procedureid/name", "summaries/summary", "participants/participants");
     }
 }

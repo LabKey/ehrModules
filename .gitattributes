@@ -213,11 +213,8 @@ ehr/resources/queries/ehr_lookups/cage.query.xml -text
 ehr/resources/queries/ehr_lookups/cages.query.xml -text
 ehr/resources/queries/ehr_lookups/cages.sql -text
 ehr/resources/queries/ehr_lookups/cages/Animals[!!-~]Housed.qview.xml -text
-ehr/resources/queries/ehr_lookups/chemistry_tests.js -text
 ehr/resources/queries/ehr_lookups/dateRange.sql -text
 ehr/resources/queries/ehr_lookups/lab_test_range.query.xml -text
-ehr/resources/queries/ehr_lookups/lab_tests.query.xml -text
-ehr/resources/queries/ehr_lookups/lab_tests.sql -text
 ehr/resources/queries/ehr_lookups/next30Days.sql -text
 ehr/resources/queries/ehr_lookups/rooms.query.xml -text
 ehr/resources/queries/ehr_lookups/snomed.js -text
@@ -261,10 +258,8 @@ ehr/resources/queries/study/Chemistry[!!-~]Results/.qview.xml -text
 ehr/resources/queries/study/Chemistry[!!-~]Results/Plus[!!-~]Ref[!!-~]Range.qview.xml -text
 ehr/resources/queries/study/Clinical[!!-~]Encounters.js -text
 ehr/resources/queries/study/Clinical[!!-~]Encounters.query.xml -text
-ehr/resources/queries/study/Clinical[!!-~]Encounters/.qview.xml -text
 ehr/resources/queries/study/Clinical[!!-~]Encounters/Biopsies.qview.xml -text
 ehr/resources/queries/study/Clinical[!!-~]Encounters/Necropsies.qview.xml -text
-ehr/resources/queries/study/Clinical[!!-~]Encounters/PE.qview.xml -text
 ehr/resources/queries/study/Clinical[!!-~]Encounters/Surgeries[!!-~]Plus[!!-~]Codes.qview.xml -text
 ehr/resources/queries/study/Clinical[!!-~]Encounters/Surgeries.qview.xml -text
 ehr/resources/queries/study/Clinical[!!-~]Observations.js -text
@@ -462,7 +457,6 @@ ehr/resources/queries/study/weightRelChange/10[!!-~]Pct[!!-~]Drop[!!-~]In[!!-~]L
 ehr/resources/queries/study/weightRelChange/10[!!-~]Pct[!!-~]Gain[!!-~]In[!!-~]Last[!!-~]30[!!-~]Days.qview.xml -text
 ehr/resources/queries/study/weightRelChange/10[!!-~]Pct[!!-~]Gain[!!-~]In[!!-~]Last[!!-~]6[!!-~]Months.qview.xml -text
 ehr/resources/queries/study/weightRelChange/10[!!-~]Pct[!!-~]Gain[!!-~]In[!!-~]Last[!!-~]90[!!-~]Days.qview.xml -text
-ehr/resources/queries/study/weightRelChange/With[!!-~]Housing.qview.xml -text
 ehr/resources/reports/schemas/study/Pedigree/Pedigree.r -text
 ehr/resources/reports/schemas/study/Pedigree/Pedigree.report.xml -text
 ehr/resources/reports/schemas/study/Weight/Weight[!!-~]Graph.r -text
@@ -490,6 +484,7 @@ ehr/resources/schemas/dbscripts/postgresql/EHR-12.317-12.318.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR-12.321-12.322.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR-12.322-12.323.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR-12.324-12.325.sql -text
+ehr/resources/schemas/dbscripts/postgresql/EHR-12.325-12.326.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-11.10-11.20.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-11.20-11.30.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-11.30-12.10.sql -text
@@ -516,6 +511,7 @@ ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-12.318-12.319.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-12.319-12.320.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-12.320-12.321.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-12.323-12.324.sql -text
+ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-12.326-12.327.sql -text
 ehr/resources/schemas/dbscripts/postgresql/obsolete/EHR-11.10-11.101.sql -text
 ehr/resources/schemas/dbscripts/postgresql/obsolete/EHR-11.101-11.102.sql -text
 ehr/resources/schemas/dbscripts/postgresql/obsolete/EHR-11.102-11.105.sql -text
@@ -622,6 +618,7 @@ ehr/resources/schemas/dbscripts/sqlserver/EHR-12.317-12.318.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/EHR-12.321-12.322.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/EHR-12.322-12.323.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/EHR-12.324-12.325.sql -text
+ehr/resources/schemas/dbscripts/sqlserver/EHR-12.325-12.326.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/EHR_Lookups-11.30-12.10.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/EHR_Lookups-12.20-12.30.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/EHR_Lookups-12.21-12.22.sql -text
@@ -647,6 +644,7 @@ ehr/resources/schemas/dbscripts/sqlserver/EHR_Lookups-12.318-12.319.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/EHR_Lookups-12.319-12.320.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/EHR_Lookups-12.320-12.321.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/EHR_Lookups-12.323-12.324.sql -text
+ehr/resources/schemas/dbscripts/sqlserver/EHR_Lookups-12.326-12.327.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/obsolete/EHR-11.34-11.35.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/obsolete/EHR-11.36-11.37.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/obsolete/EHR_Lookups-11.34-11.35.sql -text
@@ -842,6 +840,7 @@ ehr/src/org/labkey/ehr/history/DefaultLabworkType.java -text
 ehr/src/org/labkey/ehr/history/DefaultPregnanciesDataSource.java -text
 ehr/src/org/labkey/ehr/history/DefaultProblemListCloseDataSource.java -text
 ehr/src/org/labkey/ehr/history/DefaultProblemListDataSource.java -text
+ehr/src/org/labkey/ehr/history/DefaultTBDataSource.java -text
 ehr/src/org/labkey/ehr/history/DefaultTreatmentEndDataSource.java -text
 ehr/src/org/labkey/ehr/history/DefaultTreatmentOrdersDataSource.java -text
 ehr/src/org/labkey/ehr/history/DefaultWeightDataSource.java -text
@@ -858,12 +857,12 @@ ehr/src/org/labkey/ehr/history/VirologyLabworkType.java -text
 ehr/src/org/labkey/ehr/history/iStatLabworkType.java -text
 ehr/src/org/labkey/ehr/notification/AbstractEHRNotification.java -text
 ehr/src/org/labkey/ehr/notification/OverdueWeightsNotification.java -text
-ehr/src/org/labkey/ehr/notification/WeightAlerts.java -text
 ehr/src/org/labkey/ehr/pipeline/KinshipImportTask.java -text
 ehr/src/org/labkey/ehr/pipeline/KinshipInitTask.java -text
 ehr/src/org/labkey/ehr/pipeline/KinshipRTask.java -text
 ehr/src/org/labkey/ehr/pipeline/KinshipRunnable.java -text
 ehr/src/org/labkey/ehr/query/EHRLookupsUserSchema.java -text
+ehr/src/org/labkey/ehr/query/LabworkTypeTable.java -text
 ehr/src/org/labkey/ehr/query/LookupSetTable.java -text
 ehr/src/org/labkey/ehr/security/AbstractEHRDatasetRole.java -text
 ehr/src/org/labkey/ehr/security/AbstractEHRRole.java -text

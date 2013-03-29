@@ -61,3 +61,4 @@ AND pd2.date is not null
 --only include drops
 AND w.weight < pw1.weight
 AND pw1.weight < pw2.weight
+AND ((w.weight - pw2.weight) * 100 / w.weight) < -3.0

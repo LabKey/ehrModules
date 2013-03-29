@@ -74,7 +74,7 @@ public class ClinicalHistoryManager
         registerDataSource(new DefaultDepartureDataSource());
         registerDataSource(new DefaultHousingDataSource());
 
-        //TODO: flags, notes
+        registerDataSource(new DefaultTBDataSource());
 
         registerDataSource(new DefaultTreatmentOrdersDataSource());
         registerDataSource(new DefaultTreatmentEndDataSource());

@@ -25,7 +25,7 @@ public class UrinalysisLabworkType extends SortingLabworkType
 {
     public UrinalysisLabworkType()
     {
-        super("Urinalysis", "study", "Urinalysis Results", "urinalysis_tests", "testid", "sort_order");
+        super("Urinalysis", "study", "Urinalysis Results", "Urinalysis");
         _resultField = null;
         _qualResultField = "results";
     }

@@ -6,11 +6,6 @@
                     <column columnName="test">
                         <!--<nullable>false</nullable>-->
                         <columnTitle>Test Id</columnTitle>
-                        <fk>
-                            <fkDbSchema>ehr_lookups</fkDbSchema>
-                            <fkTable>lab_tests</fkTable>
-                            <fkColumnName>testid</fkColumnName>
-                        </fk>
                     </column>
                     <column columnName="species">
                         <columnTitle>Species</columnTitle>

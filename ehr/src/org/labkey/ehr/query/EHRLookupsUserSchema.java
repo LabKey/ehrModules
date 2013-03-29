@@ -15,6 +15,7 @@
  */
 package org.labkey.ehr.query;
 
+import org.labkey.api.cache.CacheManager;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.DbSchema;
 import org.labkey.api.data.SchemaTableInfo;
@@ -51,6 +52,7 @@ public class EHRLookupsUserSchema extends SimpleUserSchema
         available.addAll(super.getTableNames());
 
         available.addAll(getPropertySetNames().keySet());
+        available.addAll(getLabworkTypeNames().keySet());
 
         return Collections.unmodifiableSet(available);
     }
@@ -62,15 +64,19 @@ public class EHRLookupsUserSchema extends SimpleUserSchema
         available.addAll(super.getTableNames());
 
         available.addAll(getPropertySetNames().keySet());
+        available.addAll(getLabworkTypeNames().keySet());
 
         return Collections.unmodifiableSet(available);
     }
 
     private Map<String, Map<String, Object>> getPropertySetNames()
     {
-        Map<String, Map<String, Object>> nameMap = new HashMap<String, Map<String, Object>>();
+        Map<String, Map<String, Object>> nameMap = (Map<String, Map<String, Object>>) CacheManager.getSharedCache().get(LookupSetTable.CACHE_KEY);
+        if (nameMap != null)
+            return nameMap;
 
-        //TODO: cache in production?
+        nameMap = new HashMap<String, Map<String, Object>>();
+
         TableSelector ts = new TableSelector(_dbSchema.getTable(EHRSchema.TABLE_LOOKUP_SETS));
         Map<String, Object>[] rows = ts.getArray(Map.class);
         if (rows.length > 0)
@@ -84,7 +90,38 @@ public class EHRLookupsUserSchema extends SimpleUserSchema
             }
         }
 
-        return Collections.unmodifiableMap(nameMap);
+        nameMap = Collections.unmodifiableMap(nameMap);
+        CacheManager.getSharedCache().put(LookupSetTable.CACHE_KEY, nameMap);
+
+        return nameMap;
+    }
+
+    private Map<String, String> getLabworkTypeNames()
+    {
+        Map<String, String> nameMap = (Map<String, String>) CacheManager.getSharedCache().get(LabworkTypeTable.CACHE_KEY);
+        if (nameMap != null)
+            return nameMap;
+
+        nameMap = new HashMap<String, String>();
+
+        TableSelector ts = new TableSelector(_dbSchema.getTable(EHRSchema.TABLE_LABWORK_TYPES));
+        Map<String, Object>[] rows = ts.getArray(Map.class);
+        if (rows.length > 0)
+        {
+            Set<String> existing = super.getTableNames();
+            for (Map<String, Object> row : rows)
+            {
+                String tableName = (String)row.get("tableName");
+                String type = (String)row.get("type");
+                if (tableName != null && !existing.contains(tableName))
+                    nameMap.put(tableName, type);
+            }
+        }
+
+        nameMap = Collections.unmodifiableMap(nameMap);
+        CacheManager.getSharedCache().put(LabworkTypeTable.CACHE_KEY, nameMap);
+
+        return nameMap;
     }
 
     protected TableInfo createTable(String name)
@@ -97,15 +134,27 @@ public class EHRLookupsUserSchema extends SimpleUserSchema
         Map<String, Map<String, Object>> nameMap = getPropertySetNames();
         if (nameMap.containsKey(name))
         {
-            return createFromRecord(this, name, nameMap.get(name));
+            return createForPropertySet(this, name, nameMap.get(name));
+        }
+
+        Map<String, String> labworkMap = getLabworkTypeNames();
+        if (labworkMap.containsKey(name))
+        {
+            return createForLabwork(this, name, labworkMap.get(name));
         }
 
         return null;
     }
 
-    private LookupSetTable createFromRecord(UserSchema us, String setName, Map<String, Object> map)
+    private LookupSetTable createForPropertySet(UserSchema us, String setName, Map<String, Object> map)
     {
         SchemaTableInfo table = _dbSchema.getTable(EHRSchema.TABLE_LOOKUPS);
         return new LookupSetTable(us, table, setName, map);
+    }
+
+    private LabworkTypeTable createForLabwork(UserSchema us, String typeName, String tableName)
+    {
+        SchemaTableInfo table = _dbSchema.getTable(EHRSchema.TABLE_LAB_TESTS);
+        return new LabworkTypeTable(us, table, typeName, tableName);
     }
 }

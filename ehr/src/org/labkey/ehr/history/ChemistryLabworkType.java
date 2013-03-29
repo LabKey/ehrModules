@@ -25,7 +25,7 @@ public class ChemistryLabworkType extends SortingLabworkType
 {
     public ChemistryLabworkType()
     {
-        super("Biochemistry", "study", "chemistryRefRange", "chemistry_tests", "testid", "sort_order");
+        super("Biochemistry", "study", "chemistryRefRange", "Biochemistry");
         _normalRangeField = "range";
         _normalRangeStatusField = "status";
     }

@@ -326,12 +326,17 @@ Ext4.define('EHR.panel.SnapshotPanel', {
     appendTBResults: function(results){
         if (results.rows.length){
             var row = results.rows[0];
-            var value = this.getValue(row, 'MostRecentTBDate', Ext4.data.Types.DATE, 'Y-m-d');
-            var months = this.getValue(row, 'MonthsSinceLastTB');
-            if (months)
-                value += ' (' + months + ' months ago)';
+            if (this.hasValue(row, 'MostRecentTBDate')){
+                var value = this.getValue(row, 'MostRecentTBDate', Ext4.data.Types.DATE, 'Y-m-d');
+                var months = this.getValue(row, 'MonthsSinceLastTB');
+                if (months)
+                    value += ' (' + months + ' month' + (months == 1 ? '' : 's') + ' ago)';
 
-            this.down('#lastTB').setValue(value);
+                this.down('#lastTB').setValue(value);
+            }
+            else {
+                this.down('#lastTB').setValue('Never');
+            }
         }
     },
 
@@ -431,7 +436,8 @@ Ext4.define('EHR.panel.SnapshotPanel', {
             if (this.hasValue(row, 'MostRecentWeightDate')){
                 var val = this.getValue(row, 'MostRecentWeightDate', Ext4.data.Types.DATE, 'Y-m-d');
                 if (this.hasValue(row, 'DaysSinceWeight')){
-                    val += ' (' + this.getValue(row, 'DaysSinceWeight') + ' days ago)'
+                    var interval = this.getValue(row, 'DaysSinceWeight');
+                    val += ' (' + interval + ' day' + (interval == 1 ? '' : 's') + ' ago)'
                 }
 
                 this.down('#weightDate').setValue(val);

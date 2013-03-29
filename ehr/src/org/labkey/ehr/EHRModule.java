@@ -35,7 +35,6 @@ import org.labkey.api.util.PageFlowUtil;
 import org.labkey.api.view.WebPartFactory;
 import org.labkey.api.view.template.ClientDependency;
 import org.labkey.ehr.notification.OverdueWeightsNotification;
-import org.labkey.ehr.notification.WeightAlerts;
 import org.labkey.ehr.query.EHRLookupsUserSchema;
 import org.labkey.ehr.security.EHRBasicSubmitterRole;
 import org.labkey.ehr.security.EHRDataAdminRole;
@@ -65,7 +64,7 @@ public class EHRModule extends ExtendedSimpleModule
 
     public double getVersion()
     {
-        return 12.325;
+        return 12.327;
     }
 
     public boolean hasScripts()
@@ -102,7 +101,6 @@ public class EHRModule extends ExtendedSimpleModule
 
         NotificationService ns = NotificationService.get();
         ns.registerNotification(new OverdueWeightsNotification());
-        ns.registerNotification(new WeightAlerts());
     }
 
     @Override

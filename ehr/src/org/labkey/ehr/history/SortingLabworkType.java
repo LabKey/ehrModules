@@ -26,6 +26,7 @@ import org.labkey.api.data.TableInfo;
 import org.labkey.api.data.TableSelector;
 import org.labkey.api.ldk.NavItem;
 import org.labkey.api.query.FieldKey;
+import org.labkey.api.query.QueryService;
 import org.labkey.api.util.PageFlowUtil;
 import org.labkey.ehr.EHRSchema;
 import org.labkey.ehr.query.EHRLookupsUserSchema;
@@ -49,30 +50,28 @@ import java.util.TreeMap;
  */
 public class SortingLabworkType extends DefaultLabworkType
 {
-    private String _testTableName;
-    private String _testCol;
-    private String _sortCol;
+    private String _testType;
+    private String _testCol = "testid";
+    private String _sortCol = "sort_order";
 
     private Map<String, Integer> _tests = null;
 
-    public SortingLabworkType(String name, String schemaName, String queryName, String testTableName, String testCol, String sortCol)
+    public SortingLabworkType(String name, String schemaName, String queryName, String testType)
     {
         super(name, schemaName, queryName);
 
-        _testTableName = testTableName;
-        _testCol = testCol;
-        _sortCol = sortCol;
+        _testType = testType;
     }
 
     private Map<String, Integer> loadTests(boolean forceRefresh)
     {
         if (forceRefresh || _tests == null)
         {
-            TableInfo ti = EHRSchema.getInstance().getEHRLookupsSchema().getTable(_testTableName);
+            TableInfo ti = EHRSchema.getInstance().getEHRLookupsSchema().getTable(EHRSchema.TABLE_LAB_TESTS);
             assert ti != null;
 
             _tests = new CaseInsensitiveHashMap<Integer>();
-            TableSelector ts = new TableSelector(ti, PageFlowUtil.set(_sortCol, _testCol), null, null);
+            TableSelector ts = new TableSelector(ti, PageFlowUtil.set(_sortCol, _testCol), new SimpleFilter(FieldKey.fromString("type"), _testType), null);
             ts.forEach(new Selector.ForEachBlock<ResultSet>()
             {
                 @Override

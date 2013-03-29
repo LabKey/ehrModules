@@ -25,7 +25,7 @@ public class HematologyLabworkType extends SortingLabworkType
 {
     public HematologyLabworkType()
     {
-        super("Hematology", "study", "hematologyRefRange", "hematology_tests", "testid", "sort_order");
+        super("Hematology", "study", "hematologyRefRange", "Hematology");
         _normalRangeField = "range";
         _normalRangeStatusField = "status";
     }

@@ -88,14 +88,28 @@ Ext4.define('EHR.panel.RoomUtilizationPanel', {
                     width: 200
                 },{
                     dataIndex: 'AvailableCages',
-                    text: 'Cages',
+                    id: 'availCagesCol',
+                    text: 'Total Cages',
                     width: 200,
                     summaryType: 'sum'
                 },{
                     dataIndex: 'CagesEmpty',
+                    id: 'cagesEmptyCol',
                     text: 'Empty Cages',
                     width: 200,
                     summaryType: 'sum'
+                },{
+                    dataIndex: 'pctUsed',
+                    id: 'pctCol',
+                    text: '% Used',
+                    width: 200,
+                    summaryType: 'sum',
+                    summaryRenderer: function(val){
+                        if (val){
+                            val = Ext4.util.Format.round(val, 1);
+                        }
+                        return val;
+                    }
                 },{
                     dataIndex: 'TotalAnimals',
                     text: 'Total Animals',
@@ -110,7 +124,8 @@ Ext4.define('EHR.panel.RoomUtilizationPanel', {
                     type: 'labkey-store',
                     schemaName: 'ehr_lookups',
                     queryName: 'roomUtilization',
-                    columns: 'room/area,room,TotalAnimals,CagesEmpty,TotalCages,AvailableCages,CagesUsed',
+                    columns: 'room/area,room,TotalAnimals,CagesEmpty,TotalCages,AvailableCages,CagesUsed,pctUsed',
+                    filterArray: [LABKEY.Filter.create('TotalCages', 0, LABKEY.Filter.Types.GT)],
                     autoLoad: true,
                     groupers: [{
                         property: 'room/area'
@@ -119,7 +134,17 @@ Ext4.define('EHR.panel.RoomUtilizationPanel', {
                 features: [{
                     ftype:'groupingsummary',
                     startCollapsed: true,
-                    groupHeaderTpl: '{name}'
+                    groupHeaderTpl: '{name}',
+                    generateSummaryData: function(){
+                        var data = Ext4.grid.feature.GroupingSummary.prototype.generateSummaryData.call(this, arguments);
+                        for (var group in data){
+                            var pct = 1 - (data[group].cagesEmptyCol / data[group].availCagesCol);
+                            pct = pct * 100;
+                            data[group].pctCol = pct;
+                        }
+
+                        return data;
+                    }
                 }]
             }]
         });
@@ -159,7 +184,7 @@ Ext4.define('EHR.panel.AssignmentSummaryPanel', {
                 border: false
             },
             items: [{
-                html: 'This will display a summary of animal utilization and trends.'
+                html: 'This will display a summary of how the colony is being utilized, and trends.'
             }]
         });
 

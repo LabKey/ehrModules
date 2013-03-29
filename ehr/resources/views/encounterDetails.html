@@ -20,7 +20,12 @@ Ext4.onReady(function (){
         id: 'encounterDetails_' + webpart.wrapperDivId
     },{
         tag: 'div',
+        style: 'padding-bottom: 10px;',
+        html: 'Clinical History For This Date:<br>'
+    },{
+        tag: 'div',
         style: 'width: 100%',
+        html: 'Loading...',
         id: 'childTables_' + webpart.wrapperDivId
     }]
 
@@ -41,6 +46,8 @@ Ext4.onReady(function (){
                         var date = store.getAt(0).get('date');
 
                         if (id && date){
+                            Ext4.get('childTables_' + webpart.wrapperDivId).update(null);
+
                             Ext4.create('Ext.panel.Panel', {
                                 border: false,
                                 items: [{
@@ -52,6 +59,9 @@ Ext4.onReady(function (){
                                     autoLoadRecords: true
                                 }]
                             }).render('childTables_' + webpart.wrapperDivId);
+                        }
+                        else {
+                            Ext4.get('childTables_' + webpart.wrapperDivId).update('Unable to display the clinical history for this date');
                         }
                     }
                 },

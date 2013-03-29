@@ -855,32 +855,6 @@
             </ns:column>
         </ns:columns>
     </ns:table>
-    <ns:table tableName="virology_tests" tableDbType="TABLE" useColumnOrder="true">
-        <ns:tableTitle>Virology Tests</ns:tableTitle>
-        <ns:importUrl></ns:importUrl>
-        <ns:insertUrl></ns:insertUrl>
-        <ns:updateUrl></ns:updateUrl>
-        <ns:deleteUrl></ns:deleteUrl>
-        <ns:pkColumnName>testid</ns:pkColumnName>
-        <ns:columns>
-            <ns:column columnName="testid">
-                <ns:isKeyField>true</ns:isKeyField>
-                <ns:columnTitle>Test Id</ns:columnTitle>
-            </ns:column>
-            <ns:column columnName="alertOnAbnormal">
-                <ns:columnTitle>Alert On Abnormal</ns:columnTitle>
-            </ns:column>
-            <ns:column columnName="alertOnAny">
-                <ns:columnTitle>Alert On Any</ns:columnTitle>
-            </ns:column>
-            <ns:column columnName="includeInPanel">
-                <ns:columnTitle>Include In Panel</ns:columnTitle>
-            </ns:column>
-            <ns:column columnName="sort_order">
-                <ns:nullable>true</ns:nullable>
-            </ns:column>
-        </ns:columns>
-    </ns:table>
     <ns:table tableName="qualitative_results" tableDbType="TABLE" useColumnOrder="true">
         <ns:tableTitle>Qualitative Results</ns:tableTitle>
         <ns:importUrl></ns:importUrl>
@@ -950,83 +924,39 @@
             </ns:column>
         </ns:columns>
     </ns:table>
-    <ns:table tableName="urinalysis_tests" tableDbType="TABLE" useColumnOrder="true">
-        <ns:tableTitle>Urinalysis Tests</ns:tableTitle>
+    <ns:table tableName="labwork_types" tableDbType="TABLE" useColumnOrder="true">
+        <ns:tableTitle>Labwork Types</ns:tableTitle>
         <ns:importUrl></ns:importUrl>
         <ns:insertUrl></ns:insertUrl>
         <ns:updateUrl></ns:updateUrl>
         <ns:deleteUrl></ns:deleteUrl>
-        <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr_lookups&amp;query.queryName=urinalysis_tests&amp;testid=${testid}</ns:tableUrl>
-        <ns:pkColumnName>testid</ns:pkColumnName>
         <ns:columns>
-            <ns:column columnName="testid">
-                <ns:isKeyField>true</ns:isKeyField>
-                <ns:columnTitle>Test Id</ns:columnTitle>
+            <ns:column columnName="type">
+                <ns:columnTitle>Type</ns:columnTitle>
+                <ns:nullable>false</ns:nullable>
             </ns:column>
-            <ns:column columnName="name">
-                <ns:nullable>true</ns:nullable>
-                <ns:columnTitle>Full Name</ns:columnTitle>
-            </ns:column>
-            <ns:column columnName="units">
-                <ns:nullable>true</ns:nullable>
-            </ns:column>
-            <ns:column columnName="alertOnAbnormal">
-                <ns:columnTitle>Alert On Abnormal</ns:columnTitle>
-            </ns:column>
-            <ns:column columnName="alertOnAny">
-                <ns:columnTitle>Alert On Any</ns:columnTitle>
-            </ns:column>
-            <ns:column columnName="includeInPanel">
-                <ns:columnTitle>Include In Panel</ns:columnTitle>
-            </ns:column>
-            <ns:column columnName="sort_order">
-                <ns:nullable>true</ns:nullable>
+            <ns:column columnName="tableName">
+                <ns:columnTitle>Table Name</ns:columnTitle>
+                <ns:nullable>false</ns:nullable>
             </ns:column>
         </ns:columns>
     </ns:table>
-    <ns:table tableName="immunology_tests" tableDbType="TABLE" useColumnOrder="true">
-        <ns:tableTitle>Immunology Tests</ns:tableTitle>
+    <ns:table tableName="lab_tests" tableDbType="TABLE" useColumnOrder="true" hidden="true">
+        <ns:tableTitle>Lab Tests</ns:tableTitle>
         <ns:importUrl></ns:importUrl>
         <ns:insertUrl></ns:insertUrl>
         <ns:updateUrl></ns:updateUrl>
         <ns:deleteUrl></ns:deleteUrl>
-        <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr_lookups&amp;query.queryName=immunology_tests&amp;testid=${testid}</ns:tableUrl>
+        <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr_lookups&amp;query.queryName=lab_tests&amp;testid=${testid}</ns:tableUrl>
         <ns:pkColumnName>testid</ns:pkColumnName>
         <ns:columns>
-            <ns:column columnName="testid">
-                <ns:isKeyField>true</ns:isKeyField>
-                <ns:columnTitle>Test Id</ns:columnTitle>
+            <ns:column columnName="rowid">
+                <ns:isAutoInc>true</ns:isAutoInc>
+                <ns:columnTitle>Row Id</ns:columnTitle>
             </ns:column>
-            <ns:column columnName="name">
-                <ns:nullable>true</ns:nullable>
-                <ns:columnTitle>Full Name</ns:columnTitle>
+            <ns:column columnName="type">
+                <ns:columnTitle>Type</ns:columnTitle>
             </ns:column>
-            <ns:column columnName="units">
-                <ns:nullable>true</ns:nullable>
-            </ns:column>
-            <ns:column columnName="alertOnAbnormal">
-                <ns:columnTitle>Alert On Abnormal</ns:columnTitle>
-            </ns:column>
-            <ns:column columnName="alertOnAny">
-                <ns:columnTitle>Alert On Any</ns:columnTitle>
-            </ns:column>
-            <ns:column columnName="includeInPanel">
-                <ns:columnTitle>Include In Panel</ns:columnTitle>
-            </ns:column>
-            <ns:column columnName="sort_order">
-                <ns:nullable>true</ns:nullable>
-            </ns:column>
-        </ns:columns>
-    </ns:table>
-    <ns:table tableName="chemistry_tests" tableDbType="TABLE" useColumnOrder="true">
-        <ns:tableTitle>Chemistry Tests</ns:tableTitle>
-        <ns:importUrl></ns:importUrl>
-        <ns:insertUrl></ns:insertUrl>
-        <ns:updateUrl></ns:updateUrl>
-        <ns:deleteUrl></ns:deleteUrl>
-        <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr_lookups&amp;query.queryName=chemistry_tests&amp;testid=${testid}</ns:tableUrl>
-        <ns:pkColumnName>testid</ns:pkColumnName>
-        <ns:columns>
             <ns:column columnName="testid">
                 <ns:isKeyField>true</ns:isKeyField>
                 <ns:columnTitle>Test Id</ns:columnTitle>
@@ -1039,75 +969,6 @@
                 <ns:nullable>true</ns:nullable>
             </ns:column>
             <ns:column columnName="aliases">
-                <ns:nullable>true</ns:nullable>
-            </ns:column>
-            <ns:column columnName="alertOnAbnormal">
-                <ns:columnTitle>Alert On Abnormal</ns:columnTitle>
-            </ns:column>
-            <ns:column columnName="alertOnAny">
-                <ns:columnTitle>Alert On Any</ns:columnTitle>
-            </ns:column>
-            <ns:column columnName="includeInPanel">
-                <ns:columnTitle>Include In Panel</ns:columnTitle>
-            </ns:column>
-            <ns:column columnName="sort_order">
-                <ns:nullable>true</ns:nullable>
-            </ns:column>
-        </ns:columns>
-    </ns:table>
-    <ns:table tableName="hematology_tests" tableDbType="TABLE" useColumnOrder="true">
-        <ns:tableTitle>Hematology Tests</ns:tableTitle>
-        <ns:importUrl></ns:importUrl>
-        <ns:insertUrl></ns:insertUrl>
-        <ns:updateUrl></ns:updateUrl>
-        <ns:deleteUrl></ns:deleteUrl>
-        <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr_lookups&amp;query.queryName=hematology_tests&amp;testid=${testid}</ns:tableUrl>
-        <ns:pkColumnName>testid</ns:pkColumnName>
-        <ns:columns>
-            <ns:column columnName="testid">
-                <ns:columnTitle>Test Id</ns:columnTitle>
-                <ns:isKeyField>true</ns:isKeyField>
-            </ns:column>
-            <ns:column columnName="name">
-                <ns:nullable>true</ns:nullable>
-                <ns:columnTitle>Full Name</ns:columnTitle>
-            </ns:column>
-            <ns:column columnName="units">
-                <ns:nullable>true</ns:nullable>
-            </ns:column>
-            <ns:column columnName="alertOnAbnormal">
-                <ns:columnTitle>Alert On Abnormal</ns:columnTitle>
-            </ns:column>
-            <ns:column columnName="alertOnAny">
-                <ns:columnTitle>Alert On Any</ns:columnTitle>
-            </ns:column>
-            <ns:column columnName="includeInPanel">
-                <ns:columnTitle>Include In Panel</ns:columnTitle>
-            </ns:column>
-            <ns:column columnName="sort_order">
-                <ns:nullable>true</ns:nullable>
-            </ns:column>
-
-        </ns:columns>
-    </ns:table>
-    <ns:table tableName="cytology_tests" tableDbType="TABLE" useColumnOrder="true">
-        <ns:tableTitle>Cytology Tests</ns:tableTitle>
-        <ns:importUrl></ns:importUrl>
-        <ns:insertUrl></ns:insertUrl>
-        <ns:updateUrl></ns:updateUrl>
-        <ns:deleteUrl></ns:deleteUrl>
-        <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr_lookups&amp;query.queryName=cytology_tests&amp;testid=${testid}</ns:tableUrl>
-        <ns:pkColumnName>testid</ns:pkColumnName>
-        <ns:columns>
-            <ns:column columnName="testid">
-                <ns:isKeyField>true</ns:isKeyField>
-                <ns:columnTitle>Test Id</ns:columnTitle>
-            </ns:column>
-            <ns:column columnName="name">
-                <ns:nullable>true</ns:nullable>
-                <ns:columnTitle>Full Name</ns:columnTitle>
-            </ns:column>
-            <ns:column columnName="units">
                 <ns:nullable>true</ns:nullable>
             </ns:column>
             <ns:column columnName="alertOnAbnormal">
