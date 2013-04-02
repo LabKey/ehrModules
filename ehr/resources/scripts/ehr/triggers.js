@@ -96,7 +96,7 @@ EHR.Server.Triggers.init = function(event, errors){
         publicPKsModified: [],
         demographicsMap: {},
         errorQcLabel: 'Review Required',
-        verbosity: 0
+        verbosity: 1
     };
 
     EHR.Server.Security.init(this.scriptContext);
@@ -730,7 +730,7 @@ EHR.Server.Triggers.rowInit = function(errors, row, oldRow){
                     var severity = 'WARN';
                     if(EHR.Server.Security.getQCStateByLabel(row.QCStateLabel).isRequest)
                         severity = 'INFO';
-
+                    console.log (severity +' value of QCstate '+ EHR.Server.Security.getQCStateByLabel(row.QCStateLabel).isRequest);
                     EHR.Server.Validation.addError(errors, 'project', 'Not assigned to '+row.project+' on this date', severity);
                     EHR.Server.Validation.addError(errors, 'project', 'The '+row.project+' is not associated with a valid protocol', severity);
                 }
@@ -898,6 +898,12 @@ EHR.Server.Triggers.rowEnd = function(errors, scriptErrors, row, oldRow){
     for (var i in row){
         if (row[i] === '' || !LABKEY.ExtAdapter.isDefined(row[i])){
             row[i] = null;
+        }
+        if (row.date){
+            var rawDate = new Date(row.date.getTime());
+            var normDate =new Date(rawDate.getFullYear(),rawDate.getMonth(),rawDate.getDate(), rawDate.getHours(), rawDate.getMinutes());
+            normDate.setMilliseconds(0);
+            row.date = normDate;
         }
     }
 
