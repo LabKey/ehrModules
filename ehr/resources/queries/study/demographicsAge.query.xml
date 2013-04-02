@@ -25,6 +25,7 @@
                     </column>
                     <column columnName="yearAndDays">
                         <columnTitle>Age (Year and Days)</columnTitle>
+                        <displayWidth>120</displayWidth>
                     </column>
                     <column columnName="species">
                         <isHidden>true</isHidden>

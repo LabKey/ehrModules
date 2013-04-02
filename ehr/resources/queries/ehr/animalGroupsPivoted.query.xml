@@ -1,0 +1,10 @@
+<query xmlns="http://labkey.org/data/xml/query">
+    <metadata>
+        <tables xmlns="http://labkey.org/data/xml">
+            <table tableName="animalGroupsPivoted" tableDbType="TABLE">
+                <tableTitle>Active Groups</tableTitle>
+            </table>
+        </tables>
+    </metadata>
+</query>
+

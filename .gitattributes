@@ -124,6 +124,13 @@ ehr/resources/queries/ehr/Tasks_DataEntry/Overdue[!!-~]Tasks.qview.xml -text
 ehr/resources/queries/ehr/Tasks_DataEntry/Previous[!!-~]30[!!-~]Days.qview.xml -text
 ehr/resources/queries/ehr/Tasks_DataEntry/Review[!!-~]Required.qview.xml -text
 ehr/resources/queries/ehr/Tasks_DataEntry/Today.qview.xml -text
+ehr/resources/queries/ehr/animalGroupsPivoted.query.xml -text
+ehr/resources/queries/ehr/animalGroupsPivoted.sql -text
+ehr/resources/queries/ehr/animal_group_members.query.xml -text
+ehr/resources/queries/ehr/animal_group_members/.qview.xml -text
+ehr/resources/queries/ehr/animal_group_members/Active[!!-~]Members.qview.xml -text
+ehr/resources/queries/ehr/animal_groups/.qview.xml -text
+ehr/resources/queries/ehr/animal_groups/Active[!!-~]Groups.qview.xml -text
 ehr/resources/queries/ehr/cage_observations.js -text
 ehr/resources/queries/ehr/cage_observations.query.xml -text
 ehr/resources/queries/ehr/cage_observations/.qview.xml -text
@@ -213,6 +220,7 @@ ehr/resources/queries/ehr_lookups/cage.query.xml -text
 ehr/resources/queries/ehr_lookups/cages.query.xml -text
 ehr/resources/queries/ehr_lookups/cages.sql -text
 ehr/resources/queries/ehr_lookups/cages/Animals[!!-~]Housed.qview.xml -text
+ehr/resources/queries/ehr_lookups/cagesMissingColumn.sql -text
 ehr/resources/queries/ehr_lookups/dateRange.sql -text
 ehr/resources/queries/ehr_lookups/lab_test_range.query.xml -text
 ehr/resources/queries/ehr_lookups/next30Days.sql -text
@@ -485,6 +493,7 @@ ehr/resources/schemas/dbscripts/postgresql/EHR-12.321-12.322.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR-12.322-12.323.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR-12.324-12.325.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR-12.325-12.326.sql -text
+ehr/resources/schemas/dbscripts/postgresql/EHR-12.327-12.328.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-11.10-11.20.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-11.20-11.30.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-11.30-12.10.sql -text
@@ -512,6 +521,7 @@ ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-12.319-12.320.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-12.320-12.321.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-12.323-12.324.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-12.326-12.327.sql -text
+ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-12.328-12.329.sql -text
 ehr/resources/schemas/dbscripts/postgresql/obsolete/EHR-11.10-11.101.sql -text
 ehr/resources/schemas/dbscripts/postgresql/obsolete/EHR-11.101-11.102.sql -text
 ehr/resources/schemas/dbscripts/postgresql/obsolete/EHR-11.102-11.105.sql -text
@@ -619,6 +629,7 @@ ehr/resources/schemas/dbscripts/sqlserver/EHR-12.321-12.322.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/EHR-12.322-12.323.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/EHR-12.324-12.325.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/EHR-12.325-12.326.sql -text
+ehr/resources/schemas/dbscripts/sqlserver/EHR-12.327-12.328.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/EHR_Lookups-11.30-12.10.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/EHR_Lookups-12.20-12.30.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/EHR_Lookups-12.21-12.22.sql -text
@@ -645,6 +656,7 @@ ehr/resources/schemas/dbscripts/sqlserver/EHR_Lookups-12.319-12.320.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/EHR_Lookups-12.320-12.321.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/EHR_Lookups-12.323-12.324.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/EHR_Lookups-12.326-12.327.sql -text
+ehr/resources/schemas/dbscripts/sqlserver/EHR_Lookups-12.328-12.329.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/obsolete/EHR-11.34-11.35.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/obsolete/EHR-11.36-11.37.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/obsolete/EHR_Lookups-11.34-11.35.sql -text
@@ -658,6 +670,8 @@ ehr/resources/scripts/ehr/triggerManager.js -text
 ehr/resources/scripts/ehr/triggers.js -text
 ehr/resources/scripts/ehr/utils.js -text
 ehr/resources/scripts/ehr/validation.js -text
+ehr/resources/views/animalGroupDetails.html -text
+ehr/resources/views/animalGroupDetails.view.xml -text
 ehr/resources/views/animalHistory.html -text
 ehr/resources/views/animalHistory.view.xml -text
 ehr/resources/views/animalHistory.webpart.xml -text
@@ -792,6 +806,7 @@ ehr/resources/web/ehr/metadata/Surgery.js -text
 ehr/resources/web/ehr/metadata/Task.js -text
 ehr/resources/web/ehr/metadata/Treatments.js -text
 ehr/resources/web/ehr/navMenu.js -text
+ehr/resources/web/ehr/panel/AnimalGroupDetailsPanel.js -text
 ehr/resources/web/ehr/panel/AnimalHistoryPanel.js -text
 ehr/resources/web/ehr/panel/CaseHistoryPanel.js -text
 ehr/resources/web/ehr/panel/ClinicalHistoryPanel.js -text

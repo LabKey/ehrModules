@@ -1,0 +1,14 @@
+<customView xmlns="http://labkey.org/data/xml/queryCustomView">
+   <columns>
+       <column name="name"/>
+       <column name="category"/>
+       <column name="date"/>
+       <column name="enddate"/>
+       <column name="purpose"/>
+       <column name="comment"/>
+       <column name="totalAnimals"/>
+   </columns>
+   <sorts>
+       <sort column="name"/>
+   </sorts>
+</customView>

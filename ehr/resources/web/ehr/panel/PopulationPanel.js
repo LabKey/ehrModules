@@ -137,6 +137,14 @@ Ext4.define('EHR.panel.PopulationPanel', {
             }]
         };
 
+        if (!this.rawData || !this.rawData.rowCount){
+            this.removeAll();
+            this.add({
+                html: 'No animals were found'
+            });
+            return;
+        }
+
         //header rows.  first add 2 for rowname/total
         var rows = [];
         var repeats = 1;
@@ -147,7 +155,7 @@ Ext4.define('EHR.panel.PopulationPanel', {
                 rows.push({html: ''});
                 rows.push({
                     html: 'Total',
-                    style: 'border-bottom: solid 1px;text-align: center;margin-right: 3px;margin-left: 3px;'
+                    style: 'border-bottom: solid 1px;text-align: center;margin-right: 3px;margin-left: 3px;margin-bottom:3px;'
                 });
             }
             else {
@@ -158,7 +166,7 @@ Ext4.define('EHR.panel.PopulationPanel', {
             var valueArray = this.valueMap[colName];
             for (var i=0;i<repeats;i++){
                 Ext4.each(valueArray, function(header, j){
-                    var style = (idx == 0 ? 'border-bottom: solid 1px;' : '') + 'text-align: center;';     //margin-right: 3px;margin-left: 3px;
+                    var style = (idx == 0 ? 'border-bottom: solid 1px;' : '') + 'text-align: center;margin-right: 3px;margin-left: 3px;margin-bottom:3px;';
 
                     rows.push({
                         html: header,
@@ -184,9 +192,11 @@ Ext4.define('EHR.panel.PopulationPanel', {
             var params = {
                 schemaName: 'study',
                 'query.queryName': 'Demographics',
-                'query.viewName': 'Alive, at Center'
+                'query.viewName': 'With Location'
             };
             params['query.' + this.rowField + '~eq'] = rowName;
+            this.appendFilterParams(params);
+
             var url = LABKEY.ActionURL.buildURL('query', 'executeQuery', null, params);
             rows.push({
                 html: '<a href="' + url + '">' + this.aggregateData.rowMap[rowName].total + '</a>'
@@ -198,7 +208,11 @@ Ext4.define('EHR.panel.PopulationPanel', {
                 if (parentData.colKeys && parentData.colKeys[key])
                     value = parentData.colKeys[key];
 
-                var params = {schemaName: 'study', 'query.queryName': 'Demographics', 'query.viewName': 'Alive, at Center'};
+                var params = {
+                    schemaName: 'study',
+                    'query.queryName': 'Demographics',
+                    'query.viewName': 'With Location'
+                };
                 var tokens = key.split('<>');
 
                 params['query.' + this.rowField + '~eq'] = rowName;
@@ -208,6 +222,7 @@ Ext4.define('EHR.panel.PopulationPanel', {
                     params['query.' + fk + '~eq'] = tokens[idx];
                 }, this);
 
+                this.appendFilterParams(params);
                 var url = LABKEY.ActionURL.buildURL('query', 'executeQuery', null, params);
                 rows.push({
                     html: '<a href="' + url + '">' + value + '</a>',
@@ -295,6 +310,13 @@ Ext4.define('EHR.panel.PopulationPanel', {
 
     },
 
+    appendFilterParams: function(params){
+        Ext4.each(this.filterArray, function(filter){
+            params[filter.getURLParameterName()] = filter.getURLParameterValue();
+        }, this);
+        return params;
+    },
+
     getMetadata: function(name){
         var meta;
         Ext4.each(this.rawData.metaData.fields, function(field){
@@ -307,10 +329,13 @@ Ext4.define('EHR.panel.PopulationPanel', {
     },
 
     getTotalColumns: function(){
-        var total = 2;
-        for (var prop in this.valueMap){
-            total += this.valueMap[prop].length;
-        }
+        var total = 1;
+        Ext4.each(this.colFields, function(colField){
+            var valueArray = this.valueMap[colField];
+            total = total * valueArray.length;
+        }, this);
+
+        total += 2;
 
         return total;
     },
@@ -323,7 +348,6 @@ Ext4.define('EHR.panel.PopulationPanel', {
             var name = colFields[i];
             length = length * this.valueMap[name].length;
         }
-
         return length;
     },
 

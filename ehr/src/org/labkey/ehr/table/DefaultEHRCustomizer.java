@@ -116,6 +116,10 @@ public class DefaultEHRCustomizer implements TableCustomizer
         {
             customizeProtocolTable((AbstractTableInfo)table);
         }
+        else if (table.getName().equalsIgnoreCase("animal_groups") && table.getSchema().getName().equalsIgnoreCase("ehr"))
+        {
+            customizeAnimalGroups((AbstractTableInfo) table);
+        }
         else if (table instanceof AbstractTableInfo)
         {
             doSharedCustomization((AbstractTableInfo)table);
@@ -493,6 +497,20 @@ public class DefaultEHRCustomizer implements TableCustomizer
         col8.setDescription("Calculates the cage size necessary for this animal, based on weight");
         ds.addColumn(col8);
 
+        //TODO: active groups, historic groups
+        if (ds.getColumn("animalGroupsPivoted") == null)
+        {
+            UserSchema ehrSchema = getUserSchema(ds, EHRSchema.EHR_SCHEMANAME);
+            if (ehrSchema != null)
+            {
+                ColumnInfo agPivotCol = getWrappedIdCol(ehrSchema, ds, "animalGroupsPivoted", "animalGroupsPivoted");
+                agPivotCol.setLabel("Active Group Summary");
+                agPivotCol.setHidden(true);
+                agPivotCol.setDescription("Displays the active groups for each animal");
+                ds.addColumn(agPivotCol);
+            }
+        }
+
         ColumnInfo id = ds.getColumn("Id");
         if (id != null)
         {
@@ -510,6 +528,21 @@ public class DefaultEHRCustomizer implements TableCustomizer
         col.setFk(new QueryForeignKey(us, queryName, ID_COL, ID_COL));
 
         return col;
+    }
+
+    private void customizeAnimalGroups(AbstractTableInfo table)
+    {
+        doSharedCustomization(table);
+
+        String name = "totalAnimals";
+        if (table.getColumn(name) == null)
+        {
+            SQLFragment sql = new SQLFragment("(select count(distinct g.id) from ehr.animal_group_members g where g.groupId = " + ExprColumn.STR_TABLE_ALIAS + ".rowid AND (g.enddate IS NULL or g.enddate >= {fn now()}))");
+            ExprColumn totalCol = new ExprColumn(table, name, sql, JdbcType.INTEGER, table.getColumn("rowid"));
+            totalCol.setLabel("Total Animals");
+            totalCol.setURL(DetailsURL.fromString("/query/executeQuery.view?schemaName=ehr&query.queryName=animal_group_members&query.groupId~eq=${rowid}"));
+            table.addColumn(totalCol);
+        }
     }
 
     private void customizeProtocolTable(AbstractTableInfo table)
@@ -596,44 +629,6 @@ public class DefaultEHRCustomizer implements TableCustomizer
 
                 List<QueryException> errors = new ArrayList<QueryException>();
                 TableInfo ti = qd.getTable(errors, true);
-                ti.getColumn("lsid").setHidden(true);
-                ti.getColumn("lsid").setKeyField(true);
-
-                return ti;
-            }
-        });
-
-        ds.addColumn(col);
-    }
-
-    private void appendAssignmentAtTimeCol(final UserSchema us, final AbstractTableInfo ds)
-    {
-        String name = "assignmentAtTime";
-        if (ds.getColumn(name) != null)
-            return;
-
-        WrappedColumn col = new WrappedColumn(ds.getColumn("lsid"), name);
-        col.setLabel("Assignments At Time");
-        col.setReadOnly(true);
-        col.setIsUnselectable(true);
-        col.setUserEditable(false);
-        col.setFk(new LookupForeignKey(){
-            public TableInfo getLookupTableInfo()
-            {
-                String name = ds.getName() + "_assignmentsAtTime";
-                QueryDefinition qd = QueryService.get().createQueryDef(us.getUser(), us.getContainer(), us, name);
-                qd.setSql("SELECT\n" +
-                    "sd.lsid,\n" +
-                    "group_concat(DISTINCT h.project) as AssignmentsAtTime\n" +
-                    "FROM study.\"" + ds.getName() + "\" sd\n" +
-                    "JOIN study.assignment h\n" +
-                    "  ON (sd.id = h.id AND h.date <= sd.date AND sd.date < COALESCE(h.enddate, now()) AND h.qcstate.publicdata = true)\n" +
-                    "group by sd.lsid");
-                qd.setIsTemporary(true);
-
-                List<QueryException> errors = new ArrayList<QueryException>();
-                TableInfo ti = qd.getTable(errors, true);
-
                 ti.getColumn("lsid").setHidden(true);
                 ti.getColumn("lsid").setKeyField(true);
 

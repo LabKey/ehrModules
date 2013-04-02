@@ -106,19 +106,19 @@ Ext4.onReady(function(){
         },
         onGroupingChange: function(){
             var type = this.down('#groupingType').getValue().groupingType;
-            var room = this.down('#roomField');
-            var cage = this.down('#cageField');
-
-            if (type == 'grouped'){
-                room.setVisible(false);
-                room.setValue(null);
-                cage.setVisible(false);
-                cage.setValue(null);
-            }
-            else {
-                room.setVisible(true);
-                cage.setVisible(true);
-            }
+//            var room = this.down('#roomField');
+//            var cage = this.down('#cageField');
+//
+//            if (type == 'grouped'){
+//                room.setVisible(false);
+//                room.setValue(null);
+//                cage.setVisible(false);
+//                cage.setValue(null);
+//            }
+//            else {
+//                room.setVisible(true);
+//                cage.setVisible(true);
+//            }
 
         },
         onSearchTypeChange: function(){
@@ -146,14 +146,14 @@ Ext4.onReady(function(){
             this.insert(3, {
                 xtype: xtype,
                 helpPopup: 'This will be used at the start of the interval.  It can be left blank to include all records.',
-                fieldLabel: 'Start (optional)',
+                fieldLabel: 'Start (optional - leave blank for all)',
                 itemId: 'startField'
             });
 
             this.insert(4, {
                 xtype: xtype,
                 helpPopup: 'This will be used at the end of the interval.  It can be left blank the current time will be used.',
-                fieldLabel: 'End (optional)',
+                fieldLabel: 'End (optional - leave blank for all)',
                 itemId: 'endField'
             });
 
@@ -183,12 +183,12 @@ Ext4.onReady(function(){
                 schemaName: 'study',
                 queryName: queryName,
                 title: title
-            }
+            };
 
             var params = {
                 StartDate: start,
                 EndDate: end
-            }
+            };
 
             if (room)
                 params.Room = room;

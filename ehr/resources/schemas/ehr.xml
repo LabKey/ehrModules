@@ -1228,6 +1228,7 @@
         <ns:tableTitle>Animal Groups</ns:tableTitle>
         <ns:javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</ns:javaCustomizer>
         <ns:auditLogging>DETAILED</ns:auditLogging>
+        <ns:tableUrl>/ehr/animalGroupDetails.view?groupId=${rowid}</ns:tableUrl>
         <ns:importUrl></ns:importUrl>
         <ns:insertUrl></ns:insertUrl>
         <ns:updateUrl></ns:updateUrl>
@@ -1242,7 +1243,19 @@
             </ns:column>
             <ns:column columnName="name">
             </ns:column>
+            <ns:column columnName="date">
+                <ns:columnTitle>Date Created</ns:columnTitle>
+            </ns:column>
+            <ns:column columnName="enddate">
+                <ns:columnTitle>Date Disbanded</ns:columnTitle>
+            </ns:column>
+            <ns:column columnName="purpose"/>
+            <ns:column columnName="comment"/>
             <ns:column columnName="category">
+            </ns:column>
+            <ns:column columnName="container"/>
+            <ns:column columnName="objectid">
+                <ns:isHidden>true</ns:isHidden>
             </ns:column>
             <ns:column columnName="createdby">
                 <ns:isUserEditable>false</ns:isUserEditable>
@@ -1562,9 +1575,20 @@
         <ns:javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</ns:javaCustomizer>
         <ns:columns>
             <ns:column columnName="rowid"/>
-            <ns:column columnName="date"/>
-            <ns:column columnName="enddate"/>
-            <ns:column columnName="groupname"/>
+            <ns:column columnName="id"/>
+            <ns:column columnName="date">
+                <ns:columnTitle>Date Added</ns:columnTitle>
+            </ns:column>
+            <ns:column columnName="enddate">
+                <ns:columnTitle>Date Removed</ns:columnTitle>
+            </ns:column>
+            <ns:column columnName="groupId">
+                <ns:fk>
+                    <ns:fkDbSchema>ehr</ns:fkDbSchema>
+                    <ns:fkTable>animal_groups</ns:fkTable>
+                    <ns:fkColumnName>rowid</ns:fkColumnName>
+                </ns:fk>
+            </ns:column>
             <ns:column columnName="comment"/>
             <ns:column columnName="objectid"/>
             <ns:column columnName="container"/>
