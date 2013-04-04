@@ -3,7 +3,10 @@
         <filter column="enddateCoalesced" operator="dategte" value="+0d"/>
     </filters>
     <sorts>
-        <sort column="groupId" />
-        <sort column="id" />
+        <sort column="groupId/name"/>
+        <sort column="Id/curLocation/area"/>
+        <sort column="Id/curLocation/room"/>
+        <sort column="Id/curLocation/cage"/>
+        <sort column="Id"/>
     </sorts>
 </customView>

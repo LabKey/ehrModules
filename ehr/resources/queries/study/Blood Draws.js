@@ -294,7 +294,7 @@ function onUpsert(context, errors, row, oldRow){
         EHR.Server.Validation.checkRestraint(row, errors);
 
         if(row.Id && row.date && row.quantity){
-            var minDate = new Date(row.date.toGMTString());
+            var minDate = new Date(row.date.getTime());
             minDate.setDate(minDate.getDate()-30);
 
             var checkFutureRecords = true;
@@ -368,7 +368,7 @@ function onUpsert(context, errors, row, oldRow){
 
             // find all blood draws from this animal in 30 days after this date
             if(checkFutureRecords){
-                var maxDate = new Date(row.date.toGMTString());
+                var maxDate = new Date(row.date.getTime());
                 maxDate.setDate(maxDate.getDate()+30);
 
                 var availBlood = -1;

@@ -1214,7 +1214,7 @@ EHR.DatasetButtons = new function(){
                                     schemaName: 'core',
                                     queryName: 'PrincipalsWithoutAdmin',
                                     columns: 'UserId,DisplayName',
-                                    sort: 'DisplayName',
+                                    sort: 'Type,DisplayName',
                                     autoLoad: true
                                 }),
                                 displayField: 'DisplayName',
@@ -1379,7 +1379,7 @@ EHR.DatasetButtons = new function(){
                                     schemaName: 'core',
                                     queryName: 'PrincipalsWithoutAdmin',
                                     columns: 'UserId,DisplayName',
-                                    sort: 'type,name',
+                                    sort: 'Type,DisplayName',
                                     autoLoad: true
                                 }),
                                 displayField: 'DisplayName',
@@ -1907,7 +1907,7 @@ EHR.DatasetButtons = new function(){
                                 schemaName: 'core',
                                 queryName: 'PrincipalsWithoutAdmin',
                                 columns: 'UserId,DisplayName',
-                                sort: 'type,name',
+                                sort: 'Type,DisplayName',
                                 autoLoad: true
                             }),
                             displayField: 'DisplayName',

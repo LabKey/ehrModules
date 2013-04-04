@@ -497,7 +497,16 @@ public class DefaultEHRCustomizer implements TableCustomizer
         col8.setDescription("Calculates the cage size necessary for this animal, based on weight");
         ds.addColumn(col8);
 
-        //TODO: active groups, historic groups
+        ColumnInfo col21 = getWrappedIdCol(us, ds, "activeAnimalGroups", "demographicsActiveAnimalGroups");
+        col21.setLabel("Animal Groups - Active");
+        col21.setDescription("Displays the animal groups to which this animal currently belongs");
+        ds.addColumn(col21);
+
+        ColumnInfo col22 = getWrappedIdCol(us, ds, "historicAnimalGroups", "demographicsAnimalGroups");
+        col22.setLabel("Animal Groups - Historic");
+        col22.setDescription("Displays all animal groups to which this animal has ever belonged");
+        ds.addColumn(col22);
+
         if (ds.getColumn("animalGroupsPivoted") == null)
         {
             UserSchema ehrSchema = getUserSchema(ds, EHRSchema.EHR_SCHEMANAME);
@@ -825,7 +834,7 @@ public class DefaultEHRCustomizer implements TableCustomizer
         ColumnInfo enddate = ti.getColumn("enddate");
         if (date != null && enddate != null && ti.getColumn("duration") == null)
         {
-            SQLFragment sql = new SQLFragment(" 1 + (" + ti.getSqlDialect().getDateDiff(Calendar.DATE, "COALESCE(" + ExprColumn.STR_TABLE_ALIAS + "." + enddate.getSelectName() +", {fn curdate()})", "CAST(" + ExprColumn.STR_TABLE_ALIAS + "." + date.getSelectName() + " AS date)") + ")");
+            SQLFragment sql = new SQLFragment("(" + ti.getSqlDialect().getDateDiff(Calendar.DATE, "COALESCE(" + ExprColumn.STR_TABLE_ALIAS + "." + enddate.getSelectName() + ", {fn curdate()})", "CAST(" + ExprColumn.STR_TABLE_ALIAS + "." + date.getSelectName() + " AS date)") + ")");
             ExprColumn col = new ExprColumn(ti, "duration", sql, JdbcType.INTEGER);
             col.setCalculated(true);
             col.setUserEditable(false);

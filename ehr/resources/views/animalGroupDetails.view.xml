@@ -2,6 +2,7 @@
     <dependencies>
         <dependency path="ehr.context" />
         <dependency path="ehr/panel/PopulationPanel.js"/>
+        <dependency path="ehr/panel/ClinicalSummaryPanel.js"/>
         <dependency path="ehr/panel/AnimalGroupDetailsPanel.js"/>
     </dependencies>
 </view>

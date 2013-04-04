@@ -124,6 +124,8 @@ ehr/resources/queries/ehr/Tasks_DataEntry/Overdue[!!-~]Tasks.qview.xml -text
 ehr/resources/queries/ehr/Tasks_DataEntry/Previous[!!-~]30[!!-~]Days.qview.xml -text
 ehr/resources/queries/ehr/Tasks_DataEntry/Review[!!-~]Required.qview.xml -text
 ehr/resources/queries/ehr/Tasks_DataEntry/Today.qview.xml -text
+ehr/resources/queries/ehr/animalGroupHousingSummary.query.xml -text
+ehr/resources/queries/ehr/animalGroupHousingSummary.sql -text
 ehr/resources/queries/ehr/animalGroupsPivoted.query.xml -text
 ehr/resources/queries/ehr/animalGroupsPivoted.sql -text
 ehr/resources/queries/ehr/animal_group_members.query.xml -text
@@ -369,6 +371,12 @@ ehr/resources/queries/study/_scriptTemplate.js -text
 ehr/resources/queries/study/activeHousingQuery.sql -text
 ehr/resources/queries/study/animal.query.xml -text
 ehr/resources/queries/study/animal/.qview.xml -text
+ehr/resources/queries/study/animalGroupOverlaps.query.xml -text
+ehr/resources/queries/study/animalGroupOverlaps.sql -text
+ehr/resources/queries/study/animalGroupOverlaps/.qview.xml -text
+ehr/resources/queries/study/animalGroupOverlapsForRange.query.xml -text
+ehr/resources/queries/study/animalGroupOverlapsForRange.sql -text
+ehr/resources/queries/study/animalGroupOverlapsForRange/.qview.xml -text
 ehr/resources/queries/study/assignment/.qview.xml -text
 ehr/resources/queries/study/assignment/Active[!!-~]Assignments.qview.xml -text
 ehr/resources/queries/study/assignment/Search[!!-~]Panel.qview.xml -text
@@ -397,10 +405,14 @@ ehr/resources/queries/study/demographics/Alive,[!!-~]at[!!-~]Center.qview.xml -t
 ehr/resources/queries/study/demographics/Clinical[!!-~]Summary.qview.xml -text
 ehr/resources/queries/study/demographics/Search[!!-~]Panel.qview.xml -text
 ehr/resources/queries/study/demographics/Unweighed[!!-~]Over[!!-~]45[!!-~]Days.qview.xml -text
+ehr/resources/queries/study/demographicsActiveAnimalGroups.query.xml -text
+ehr/resources/queries/study/demographicsActiveAnimalGroups.sql -text
 ehr/resources/queries/study/demographicsAge.query.xml -text
 ehr/resources/queries/study/demographicsAge.sql -text
 ehr/resources/queries/study/demographicsAgeClass.query.xml -text
 ehr/resources/queries/study/demographicsAgeClass.sql -text
+ehr/resources/queries/study/demographicsAnimalGroups.query.xml -text
+ehr/resources/queries/study/demographicsAnimalGroups.sql -text
 ehr/resources/queries/study/demographicsArrival.query.xml -text
 ehr/resources/queries/study/demographicsArrival.sql -text
 ehr/resources/queries/study/demographicsCageClass.query.xml -text
@@ -494,6 +506,7 @@ ehr/resources/schemas/dbscripts/postgresql/EHR-12.322-12.323.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR-12.324-12.325.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR-12.325-12.326.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR-12.327-12.328.sql -text
+ehr/resources/schemas/dbscripts/postgresql/EHR-12.329-12.330.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-11.10-11.20.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-11.20-11.30.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-11.30-12.10.sql -text
@@ -630,6 +643,7 @@ ehr/resources/schemas/dbscripts/sqlserver/EHR-12.322-12.323.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/EHR-12.324-12.325.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/EHR-12.325-12.326.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/EHR-12.327-12.328.sql -text
+ehr/resources/schemas/dbscripts/sqlserver/EHR-12.329-12.330.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/EHR_Lookups-11.30-12.10.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/EHR_Lookups-12.20-12.30.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/EHR_Lookups-12.21-12.22.sql -text
@@ -711,6 +725,8 @@ ehr/resources/views/executeSql.html -text
 ehr/resources/views/frontPage.html -text
 ehr/resources/views/frontPage.view.xml -text
 ehr/resources/views/frontPage.webpart.xml -text
+ehr/resources/views/groupOverlaps.html -text
+ehr/resources/views/groupOverlaps.view.xml -text
 ehr/resources/views/housingOverlaps.html -text
 ehr/resources/views/housingOverlaps.view.xml -text
 ehr/resources/views/housingQueries.html -text
@@ -810,6 +826,7 @@ ehr/resources/web/ehr/panel/AnimalGroupDetailsPanel.js -text
 ehr/resources/web/ehr/panel/AnimalHistoryPanel.js -text
 ehr/resources/web/ehr/panel/CaseHistoryPanel.js -text
 ehr/resources/web/ehr/panel/ClinicalHistoryPanel.js -text
+ehr/resources/web/ehr/panel/ClinicalSummaryPanel.js -text
 ehr/resources/web/ehr/panel/ColonyOverviewPanel.js -text
 ehr/resources/web/ehr/panel/HiddenSingleSubjectFilterType.js -text
 ehr/resources/web/ehr/panel/LocationFilterType.js -text
@@ -817,6 +834,7 @@ ehr/resources/web/ehr/panel/MiniSnapshotPanel.js -text
 ehr/resources/web/ehr/panel/MultiAnimalFilterType.js -text
 ehr/resources/web/ehr/panel/ParticipantDetailsPanel.js -text
 ehr/resources/web/ehr/panel/PopulationPanel.js -text
+ehr/resources/web/ehr/panel/PopulationTrendsPanel.js -text
 ehr/resources/web/ehr/panel/SnapshotPanel.js -text
 ehr/resources/web/ehr/reports.js -text
 ehr/resources/web/ehr/studyButtons.js -text
@@ -876,6 +894,7 @@ ehr/src/org/labkey/ehr/pipeline/KinshipImportTask.java -text
 ehr/src/org/labkey/ehr/pipeline/KinshipInitTask.java -text
 ehr/src/org/labkey/ehr/pipeline/KinshipRTask.java -text
 ehr/src/org/labkey/ehr/pipeline/KinshipRunnable.java -text
+ehr/src/org/labkey/ehr/query/AbstractDataDefinedTable.java -text
 ehr/src/org/labkey/ehr/query/EHRLookupsUserSchema.java -text
 ehr/src/org/labkey/ehr/query/LabworkTypeTable.java -text
 ehr/src/org/labkey/ehr/query/LookupSetTable.java -text

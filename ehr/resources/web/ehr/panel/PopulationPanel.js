@@ -45,7 +45,7 @@ Ext4.define('EHR.panel.PopulationPanel', {
             columns: ['Id', EHR.panel.PopulationPanel.FIELDS.ageclass, EHR.panel.PopulationPanel.FIELDS.gender, EHR.panel.PopulationPanel.FIELDS.species].join(','),
             failure: LDK.Utils.getErrorCallback(),
             scope: this,
-            success: this.aggregateData
+            success: this.doAggregation
         });
 
         multi.send(this.onLoad, this);
@@ -73,7 +73,7 @@ Ext4.define('EHR.panel.PopulationPanel', {
         return tokens.join('<>');
     },
 
-    aggregateData: function(results){
+    doAggregation: function(results){
         this.rawData = results;
         this.aggregateData = {
             totalRecords: results.rows.length,
@@ -119,8 +119,6 @@ Ext4.define('EHR.panel.PopulationPanel', {
             }
         }, this);
     },
-
-//    ageClass: ['Infant', 'Juvenile', 'Adult', 'Senior'],
 
     onLoad: function(){
         var toAdd = [];
@@ -231,16 +229,6 @@ Ext4.define('EHR.panel.PopulationPanel', {
             }, this);
         }, this);
 
-//        speciesRows.push({
-//            html: 'Population Total:',
-//            style: 'padding-left: 10px;'
-//        });
-//
-//        var url = LABKEY.ActionURL.buildURL('query', 'executeQuery', null, {schemaName: 'study', 'query.queryName': 'Demographics', 'query.viewName': 'Alive, at Center'});
-//        speciesRows.push({
-//            html: '<a href="' + url + '">' + this.colonyPopulationSummary.total + '</a>'
-//        });
-
         populationSummary.items.push({
             layout: {
                 type: 'table',
@@ -253,57 +241,6 @@ Ext4.define('EHR.panel.PopulationPanel', {
             items: rows
         });
         toAdd.push(populationSummary);
-
-
-        var populationTrends = {
-            style: 'padding-top: 20px;',
-            border: false,
-            defaults: {
-                border: false
-            },
-            items: [{
-                html: '<b>Population Trends By Year:</b>'
-            },{
-                html: '<hr>'
-            },{
-                xtype: 'container',
-                defaults: {
-                    border: false
-                },
-                items: [{
-                    xtype: 'numberfield',
-                    itemId: 'minYear',
-                    fieldLabel: 'Min Year'
-                },{
-                    xtype: 'numberfield',
-                    itemId: 'maxYear',
-                    fieldLabel: 'Max Year'
-                },{
-                    xtype: 'radiogroup',
-                    itemId: 'grouping',
-                    fieldLabel: 'Grouping',
-                    columns: 1,
-                    items: [{
-                        boxLabel: 'Group By Species and Age',
-                        inputValue: 'speciesAndAge'
-                    },{
-                        boxLabel: 'Group By Species Only',
-                        inputValue: 'species',
-                        checked: true
-                    }]
-                },{
-                    xtype: 'button',
-                    text: 'Reload',
-                    border: true,
-                    scope: this,
-                    handler: function(btn){
-                        Ext4.Msg.alert('', 'This section has not yet been enabled');
-                    }
-                }]
-            }]
-        };
-
-        toAdd.push(populationTrends);
 
         this.removeAll();
         this.add(toAdd);

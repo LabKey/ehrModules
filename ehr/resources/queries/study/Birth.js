@@ -20,7 +20,7 @@ function onBecomePublic(errors, scriptContext, row, oldRow){
             LABKEY.Query.insertRows({
                 schemaName: 'study',
                 queryName: 'Weight',
-                rows: [{Id: row.Id, date: new Date(row.wdate.toGMTString()), weight: row.weight}],
+                rows: [{Id: row.Id, date: new Date(row.wdate.getTime()), weight: row.weight}],
                 extraContext: {
                     quickValidation: true
                 },
@@ -39,7 +39,7 @@ function onBecomePublic(errors, scriptContext, row, oldRow){
                 extraContext: {
                     quickValidation: true
                 },
-                rows: [{Id: row.Id, room: row.room, cage: row.cage, cond: row.cond, date: new Date(row.date.toGMTString())}],
+                rows: [{Id: row.Id, room: row.room, cage: row.cage, cond: row.cond, date: new Date(row.date.getTime())}],
                 success: function(data){
                     console.log('Success updating housing table from birth')
                 },
@@ -61,7 +61,7 @@ function onBecomePublic(errors, scriptContext, row, oldRow){
                             extraContext: {
                                 quickValidation: true
                             },
-                            rows: [{Id: row.Id, gender: row.gender, dam: row.dam, sire: row.sire, origin: row.origin, birth: new Date(row.date.toGMTString()), date: new Date(row.date.toGMTString())}],
+                            rows: [{Id: row.Id, gender: row.gender, dam: row.dam, sire: row.sire, origin: row.origin, birth: new Date(row.date.getTime()), date: new Date(row.date.getTime())}],
                             success: function(data){
                                 console.log('Success updating demographics table from birth')
                             },

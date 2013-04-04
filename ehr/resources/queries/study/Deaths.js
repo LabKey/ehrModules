@@ -270,7 +270,7 @@ function onComplete(event, errors, scriptContext){
            	 continue;
            }
 	   
-           var aDate = new Date(valuesMap[r.row.Id].death.toGMTString());
+           var aDate = new Date(valuesMap[r.row.Id].death.getTime());
            var monthString =  EHR.Server.Utils.getMonthString(aDate.getMonth());
            var minStr = aDate.getMinutes() >= 10 ? aDate.getMinutes() : '0' + aDate.getMinutes();
            valuesMap[r.row.Id].deathDate    = aDate.getDate() + ' ' + monthString +  ' ' + aDate.getFullYear();

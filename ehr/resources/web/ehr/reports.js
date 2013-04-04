@@ -118,11 +118,24 @@ EHR.reports.arrivalDeparture = function(panel, tab){
             frame: true
         })
     });
-}
+};
 
 EHR.reports.pedigree = function(panel, tab){
     var filterArray = panel.getFilterArray(tab);
     var title = panel.getTitleSuffix();
+
+    tab.add({
+        xtype: 'ldk-multirecorddetailspanel',
+        bodyStyle: 'padding-bottom: 20px',
+        store: {
+            schemaName: 'study',
+            queryName: 'demographicsFamily',
+            filterArray: filterArray.removable.concat(filterArray.nonRemovable)
+        },
+        titlePrefix: 'Parents/Grandparents',
+        titleField: 'Id',
+        multiToGrid: true
+    });
 
     var configOffspring = panel.getQWPConfig({
         title: 'Offspring' + title,

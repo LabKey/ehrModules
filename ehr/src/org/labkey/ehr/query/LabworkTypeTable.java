@@ -15,6 +15,8 @@
  */
 package org.labkey.ehr.query;
 
+import org.apache.commons.lang3.StringUtils;
+import org.jetbrains.annotations.NotNull;
 import org.labkey.api.data.AbstractTableInfo;
 import org.labkey.api.data.ColumnInfo;
 import org.labkey.api.data.CompareType;
@@ -22,6 +24,10 @@ import org.labkey.api.data.Container;
 import org.labkey.api.data.SchemaTableInfo;
 import org.labkey.api.data.SimpleFilter;
 import org.labkey.api.data.TableSelector;
+import org.labkey.api.etl.DataIterator;
+import org.labkey.api.etl.DataIteratorBuilder;
+import org.labkey.api.etl.DataIteratorContext;
+import org.labkey.api.etl.SimpleTranslator;
 import org.labkey.api.ldk.LDKService;
 import org.labkey.api.query.DuplicateKeyException;
 import org.labkey.api.query.FieldKey;
@@ -40,6 +46,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.Callable;
 
 /**
  * Created with IntelliJ IDEA.
@@ -47,92 +54,59 @@ import java.util.Set;
  * Date: 3/27/13
  * Time: 6:20 PM
  */
-public class LabworkTypeTable extends SimpleUserSchema.SimpleTable
+public class LabworkTypeTable extends AbstractDataDefinedTable
 {
-    private String _label;
-    private String _type;
-
     public static final String CACHE_KEY = LabworkTypeTable.class.getName() + "||types";
-    private static final String TESTS_CACHE_KEY = LabworkTypeTable.class.getName() + "||testId";
 
-    private static final String TEST_ID_FIELD = "testid";
-    public LabworkTypeTable(UserSchema schema, SchemaTableInfo table, String tableName, String type)
+    private static final String FILTER_FIELD = "testid";
+    private static final String TYPE_FIELD = "type";
+
+    public LabworkTypeTable(UserSchema schema, SchemaTableInfo table, String tableName, String filterValue)
     {
-        super(schema, table);
+        super(schema, table, TYPE_FIELD, FILTER_FIELD, tableName, filterValue);
+    }
 
-        ColumnInfo col = table.getColumn("type");
-        addCondition(col, type);
-
-        _type = type;
-
-        setName(tableName);
-        setTitle(tableName);
-
-        ColumnInfo valueCol = getColumn(TEST_ID_FIELD);
-        valueCol.setNullable(false);
-
-        ColumnInfo setCol = getColumn("type");
-        if (setCol != null)
-            removeColumn(setCol);
-
-        ColumnInfo testId = getColumn(TEST_ID_FIELD);
-        if (testId != null)
+    private void normalizeAliases(Map<String, Object> map)
+    {
+        if (map.get("aliases") != null)
         {
-            testId.setKeyField(true);
-            getColumn("rowid").setKeyField(false);
+            String aliases = (String)map.get("aliases");
+            aliases = normalizeAliasString(aliases);
+
+            map.put("aliases", aliases);
+        }
+    }
+
+    private String normalizeAliasString(String aliases)
+    {
+        if (aliases != null)
+        {
+            //remove whitespace and punctutation
+            aliases = aliases.replaceAll("\\s", "");
+            aliases = aliases.replaceAll(";", ",");
+            aliases = aliases.replaceAll(",+", ",");
         }
 
-        LDKService.get().getDefaultTableCustomizer().customize(this);
-
-        setInsertURL(AbstractTableInfo.LINK_DISABLER);
-        setUpdateURL(AbstractTableInfo.LINK_DISABLER);
-        setDeleteURL(AbstractTableInfo.LINK_DISABLER);
-        setImportURL(AbstractTableInfo.LINK_DISABLER);
+        return aliases;
     }
 
     @Override
     public QueryUpdateService getUpdateService()
     {
-        return new UpdateService(this);
+        return new LabWorkTableUpdateService(this);
     }
 
-    private class UpdateService extends SimpleQueryUpdateService
+    private class LabWorkTableUpdateService extends UpdateService
     {
-        private Set<String> _distinctValues = null;
-
-        public UpdateService(SimpleUserSchema.SimpleTable ti)
+        public LabWorkTableUpdateService(SimpleUserSchema.SimpleTable ti)
         {
-            super(ti, ti.getRealTable());
+            super(ti);
         }
 
-        @Override
-        protected Map<String, Object> getRow(User user, Container container, Map<String, Object> keys) throws InvalidKeyException, QueryUpdateServiceException, SQLException
-        {
-            if (!keys.containsKey("rowid") || keys.get("rowid") == null)
-            {
-                SimpleFilter filter = new SimpleFilter(FieldKey.fromString(TEST_ID_FIELD), keys.get(TEST_ID_FIELD), CompareType.EQUAL);
-                TableSelector ts = new TableSelector(getQueryTable(), Collections.singleton("rowid"), filter, null);
-                Object[] results = ts.getArray(Object.class);
-                if (results.length == 0)
-                    throw new InvalidKeyException("Existing row not found for value: " + keys.get(TEST_ID_FIELD));
-                else if (results.length > 1)
-                    throw new InvalidKeyException("More than one existing row found value: " + keys.get(TEST_ID_FIELD));
-
-                keys.put("rowid", results[0]);
-            }
-
-            return super.getRow(user, container, keys);
-        }
-
+        //NOTE: this code should never be called, now that we have migrated to ETL
         @Override
         protected Map<String, Object> insertRow(User user, Container container, Map<String, Object> row) throws DuplicateKeyException, ValidationException, QueryUpdateServiceException, SQLException
         {
-            row.put("type", _type);
-
-            String value = (String)row.get(TEST_ID_FIELD);
-            if (value != null && rowExists(value))
-                throw new ValidationException("There is already a record in the set '" + _type + "' with testid: " + value);
-
             normalizeAliases(row);
             return super.insertRow(user, container, row);
         }
@@ -140,68 +114,76 @@ public class LabworkTypeTable extends SimpleUserSchema.SimpleTable
         @Override
         protected Map<String, Object> updateRow(User user, Container container, Map<String, Object> row, Map<String, Object> oldRow) throws InvalidKeyException, ValidationException, QueryUpdateServiceException, SQLException
         {
-            String oldValue = (String)oldRow.get(TEST_ID_FIELD);
-            String newValue = (String)row.get(TEST_ID_FIELD);
-
-            if (oldRow != null && newValue != null && !oldValue.equals(newValue) && rowExists(newValue))
-                throw new ValidationException("There is already a record in the set '" + _type + "' with testid: " + newValue);
-
-            if (!oldValue.equals(newValue))
-                uncacheValue(oldValue);
-
-            row.put("type", _type);
             normalizeAliases(row);
             return super.updateRow(user, container, row, oldRow);
         }
+    }
 
-        private boolean rowExists(String value)
+    @Override
+    public DataIteratorBuilder persistRows(DataIteratorBuilder data, DataIteratorContext context)
+    {
+        data = new LabworkDataIteratorBuilder(data, context);
+        return super.persistRows(data, context);
+    }
+
+    protected class LabworkDataIteratorBuilder extends _DataIteratorBuilder
+    {
+        LabworkDataIteratorBuilder(@NotNull DataIteratorBuilder in, DataIteratorContext context)
         {
-            Set<String> distinctValues = getValues();
-
-            boolean ret = getValues().contains(value);
-
-            if (!distinctValues.contains(value))
-                distinctValues.add(value);
-
-            return ret;
+            super(in, context);
         }
 
-        private Set<String> getValues()
+        @Override
+        protected void configureTranslator(DataIterator input, final SimpleTranslator it)
         {
-            if (_distinctValues != null)
-                return _distinctValues;
+            super.configureTranslator(input, it);
 
-            _distinctValues = new HashSet<String>();
-
-            SimpleFilter filter = new SimpleFilter(FieldKey.fromString("type"), _type, CompareType.EQUAL);
-            TableSelector ts = new TableSelector(_rootTable, Collections.singleton(TEST_ID_FIELD), filter, null);
-            String[] existing = ts.getArray(String.class);
-            _distinctValues.addAll(Arrays.asList(existing));
-
-            return _distinctValues;
-        }
-
-        private void uncacheValue(String value)
-        {
-            Set<String> distinctValues = getValues();
-            distinctValues.remove(value);
-        }
-
-        private void normalizeAliases(Map<String, Object> map)
-        {
-            if (map.get("aliases") != null)
+            final String aliasColName = "aliases";
+            int aliasInputIdx = 0;
+            for (int idx = 1; idx <= input.getColumnCount(); idx++)
             {
-                String aliases = (String)map.get("aliases");
+                ColumnInfo col = input.getColumnInfo(idx);
+                if (StringUtils.equalsIgnoreCase(aliasColName, col.getName()))
+                {
+                    aliasInputIdx = idx;
+                }
+            }
 
-                //remove whitespace and punctutation
-                aliases = aliases.replaceAll("\\s", "");
-                aliases = aliases.replaceAll(";", ",");
-                aliases = aliases.replaceAll(",+", ",");
+            //only add this column if the input has aliases
+            if (aliasInputIdx > 0)
+            {
+                //remove column from output if it exist, so we can replace it
+                int outputIdx = 0;
+                for (int idx = 1; idx <= it.getColumnCount(); idx++)
+                {
+                    ColumnInfo col = it.getColumnInfo(idx);
+                    if (StringUtils.equalsIgnoreCase(aliasColName, col.getName()))
+                    {
+                        outputIdx = idx;
+                    }
+                }
 
-                map.put("aliases", aliases);
+                if (outputIdx > 0)
+                    it.removeColumn(outputIdx);
+
+                //append a column that will normalize whitespace in aliases
+                ColumnInfo aliasColInfo = getRealTable().getColumn(aliasColName);
+                final int inputIdx = aliasInputIdx;
+                it.addColumn(aliasColInfo, new Callable()
+                {
+                    @Override
+                    public Object call() throws Exception
+                    {
+                        Object val = it.getInputColumnValue(inputIdx);
+                        if (val != null && val instanceof String)
+                        {
+                            val = normalizeAliasString((String)val);
+                        }
+
+                        return val;
+                    }
+                });
             }
         }
     }
 }
-
-

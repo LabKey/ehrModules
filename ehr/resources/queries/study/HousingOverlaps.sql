@@ -28,7 +28,7 @@ WHERE
 (h.room = ROOM OR ROOM IS NULL or ROOM = '') AND
 (h.cage = CAGE OR CAGE IS NULL OR CAGE = '') AND
 
-/* entered startdate must be <= enddate */
+/* entered startdate must be <= entered enddate */
 coalesce( STARTDATE , cast('1900-01-01 00:00:00.0' as timestamp)) <= coalesce(ENDDATE, now())
 and
 

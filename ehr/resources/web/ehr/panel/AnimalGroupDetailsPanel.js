@@ -40,7 +40,6 @@ Ext4.define('EHR.panel.AnimalGroupDetailsPanel', {
         var toAdd = [];
 
         LDK.Assert.assertNotEmpty('Group name was empty', results.rows[0]);
-        LDK.Assert.assertNotEmpty('Group name was empty', results.rows[0]);
         this.groupRow = new LDK.SelectRowsRow(results.rows[0]);
 
         toAdd.push({
@@ -76,10 +75,31 @@ Ext4.define('EHR.panel.AnimalGroupDetailsPanel', {
             style: 'padding-bottom: 20px;'
         });
 
+        toAdd.push({
+            xtype: 'ldk-webpartpanel',
+            title: 'Misc Reports',
+            items: [{
+                xtype: 'ldk-navpanel',
+                border: false,
+                sections: [{
+                    header: 'Reports',
+                    items: [{
+                        name: 'Find animals assigned to this group on a specific date',
+                        url: LABKEY.ActionURL.buildURL('ehr', 'groupOverlaps', null, {groupId: this.groupId, name: this.groupRow.getDisplayValue('name')})
+                    }]
+                }]
+            }]
+        });
+
+        toAdd.push({
+            html: '',
+            style: 'padding-bottom: 20px;'
+        });
+
         var fieldKey = 'Id/animalGroupsPivoted/' + this.groupRow.getDisplayValue('name') + '::valueField';
         toAdd.push({
             xtype: 'ldk-webpartpanel',
-            title: 'Population Composition',
+            title: 'Group Overview',
             items: [{
                 xtype: 'ehr-populationpanel',
                 filterArray: [
@@ -89,7 +109,30 @@ Ext4.define('EHR.panel.AnimalGroupDetailsPanel', {
                 rowField: EHR.panel.PopulationPanel.FIELDS.species,
                 colFields: [EHR.panel.PopulationPanel.FIELDS.ageclass, EHR.panel.PopulationPanel.FIELDS.gender],
                 itemId: 'population'
+//            },{
+//                xtype: 'ehr-clinicalsummarypanel',
+//                style: 'padding-top: 20px',
+//                filterArray: [
+//                    LABKEY.Filter.create('Id/dataset/demographics/calculated_status', 'Alive', LABKEY.Filter.Types.EQUAL),
+//                    LABKEY.Filter.create(fieldKey, 'yes', LABKEY.Filter.Types.EQUAL)
+//                ]
             }]
+        });
+
+        toAdd.push({
+            html: '',
+            style: 'padding-bottom: 20px;'
+        });
+
+        toAdd.push({
+            xtype: 'ldk-querypanel',
+            queryConfig: {
+                schemaName: 'ehr',
+                queryName: 'animalGroupHousingSummary',
+                frame: 'portal',
+                title: 'Current Housing',
+                filterArray: [LABKEY.Filter.create('groupId', this.groupId)]
+            }
         });
 
         toAdd.push({

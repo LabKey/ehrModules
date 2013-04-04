@@ -15,6 +15,7 @@
 
 package org.labkey.ehr;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.labkey.api.cache.CacheManager;
 import org.labkey.api.collections.CaseInsensitiveHashSet;
@@ -424,7 +425,7 @@ public class EHRManager
             }
 
             //add indexes
-            String[] toIndex = new String[]{"objectid", "taskid", "parentid", "runId", "requestid", "date"};
+            String[][] toIndex = new String[][]{{"objectid"}, {"taskid"}, {"parentid"}, {"runId"}, {"requestid"}, {"date"}, {"participantid", "date"}};
             DbSchema schema = DbSchema.get("studydataset");
             Set<String> distinctIndexes = new HashSet<String>();
             for (DataSet d : study.getDataSets())
@@ -437,15 +438,22 @@ public class EHRManager
                     continue;
                 }
 
-                for (String col : toIndex)
+                for (String[] cols : toIndex)
                 {
-                    if (realTable.getColumn(col) == null)
+                    boolean missingCols = false;
+                    for (String col : cols)
                     {
-                        //messages.add("Dataset: " + d.getName() + " does not have column " + col + ", so indexing will be skipped");
-                        continue;
+                        if (realTable.getColumn(col) == null)
+                        {
+                            //messages.add("Dataset: " + d.getName() + " does not have column " + col + ", so indexing will be skipped");
+                            missingCols = true;
+                        }
                     }
 
-                    String indexName = tableName + "_" + col;
+                    if (missingCols)
+                        continue;
+
+                    String indexName = tableName + "_" + StringUtils.join(cols, "_");
 
                     if (distinctIndexes.contains(indexName))
                         throw new RuntimeException("An index has already been created with the name: " + indexName);
@@ -472,7 +480,7 @@ public class EHRManager
                     {
                         if (commitChanges)
                         {
-                            messages.add("Dropping index on column: " + col + " for dataset: " + d.getLabel());
+                            messages.add("Dropping index on column(s): " + StringUtils.join(cols, ", ") + " for dataset: " + d.getLabel());
                             String sqlString = "DROP INDEX " + indexName + " ON " + realTable.getSelectName();
                             SQLFragment sql = new SQLFragment(sqlString);
                             SqlExecutor se = new SqlExecutor(schema);
@@ -480,7 +488,7 @@ public class EHRManager
                         }
                         else
                         {
-                            messages.add("Will drop/recreate index on column: " + col + " for dataset: " + d.getLabel());
+                            messages.add("Will drop/recreate index on column(s): " + StringUtils.join(cols, ", ") + " for dataset: " + d.getLabel());
                         }
                         exists = false;
                     }
@@ -489,8 +497,8 @@ public class EHRManager
                     {
                         if (commitChanges)
                         {
-                            messages.add("Creating index on column: " + col + " for dataset: " + d.getLabel());
-                            String sqlString = "CREATE INDEX " + indexName + " ON " + realTable.getSelectName() + "(" + col + ")";
+                            messages.add("Creating index on column(s): " + StringUtils.join(cols, ", ") + " for dataset: " + d.getLabel());
+                            String sqlString = "CREATE INDEX " + indexName + " ON " + realTable.getSelectName() + "(" + StringUtils.join(cols, ", ") + ")";
                             if (schema.getSqlDialect().isSqlServer())
                             {
                                 sqlString += " WITH (DATA_COMPRESSION = ROW)";
@@ -501,7 +509,7 @@ public class EHRManager
                         }
                         else
                         {
-                            messages.add("Missing index on column: " + col + " for dataset: " + d.getLabel());
+                            messages.add("Missing index on column(s): " + StringUtils.join(cols, ", ") + " for dataset: " + d.getLabel());
                         }
                     }
                 }
@@ -546,15 +554,21 @@ public class EHRManager
         Map<String, String> names = new HashMap<String, String>();
         names.put("encounter_flags", "objectid");
         names.put("encounter_flags", "parentid");
+        names.put("encounter_flags", "id");
 
         names.put("encounter_participants", "objectid");
         names.put("encounter_participants", "parentid");
+        names.put("encounter_participants", "id");
 
         names.put("encounter_summaries", "objectid");
         names.put("encounter_summaries", "parentid");
+        names.put("encounter_summaries", "id");
 
         names.put("snomed_tags", "objectid");
         names.put("snomed_tags", "recordid");
+        names.put("snomed_tags", "id");
+        names.put("snomed_tags", "parentid");
+        names.put("snomed_tags", "caseid");
 
         for (String table : names.keySet())
         {

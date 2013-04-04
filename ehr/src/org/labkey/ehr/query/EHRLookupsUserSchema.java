@@ -152,9 +152,9 @@ public class EHRLookupsUserSchema extends SimpleUserSchema
         return new LookupSetTable(us, table, setName, map);
     }
 
-    private LabworkTypeTable createForLabwork(UserSchema us, String typeName, String tableName)
+    private LabworkTypeTable createForLabwork(UserSchema us, String tableName, String typeName)
     {
         SchemaTableInfo table = _dbSchema.getTable(EHRSchema.TABLE_LAB_TESTS);
-        return new LabworkTypeTable(us, table, typeName, tableName);
+        return new LabworkTypeTable(us, table, tableName, typeName);
     }
 }

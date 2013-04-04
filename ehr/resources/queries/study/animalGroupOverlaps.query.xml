@@ -1,0 +1,13 @@
+<query xmlns="http://labkey.org/data/xml/query">
+    <metadata>
+        <tables xmlns="http://labkey.org/data/xml">
+            <table tableName="animalGroupOverlaps" tableDbType="TABLE">
+                <tableTitle>Animal Group Overlaps</tableTitle>
+                <description>This query identifies distinct animals that were part of a group on the provided date</description>
+                <columns>
+
+                </columns>
+            </table>
+        </tables>
+    </metadata>
+</query>

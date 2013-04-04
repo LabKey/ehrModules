@@ -29,11 +29,16 @@ Ext4.define('EHR.panel.ColonyOverviewPanel', {
                 },
                 items: [{
                     title: 'Population Composition',
-                    bodyStyle: 'padding 5px;',
-                    xtype: 'ehr-populationpanel',
-                    filterArray: [LABKEY.Filter.create('calculated_status', 'Alive', LABKEY.Filter.Types.EQUAL)],
-                    rowField: EHR.panel.PopulationPanel.FIELDS.species,
-                    colFields: [EHR.panel.PopulationPanel.FIELDS.ageclass, EHR.panel.PopulationPanel.FIELDS.gender],
+                    style: 'padding 5px;',
+                    items: [{
+                        xtype: 'ehr-populationpanel',
+                        filterArray: [LABKEY.Filter.create('calculated_status', 'Alive', LABKEY.Filter.Types.EQUAL)],
+                        rowField: EHR.panel.PopulationPanel.FIELDS.species,
+                        colFields: [EHR.panel.PopulationPanel.FIELDS.ageclass, EHR.panel.PopulationPanel.FIELDS.gender]
+                    },{
+                        xtype: 'ehr-populationtrendspanel',
+                        style: 'padding-top: 20px;'
+                    }],
                     itemId: 'population'
                 },{
                     title: 'Room Utilization',

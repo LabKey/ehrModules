@@ -12,7 +12,10 @@
        <column name="enddate"/>
    </columns>
    <sorts>
-       <sort column="groupId"/>
+       <sort column="groupId/name"/>
+       <sort column="Id/curLocation/area"/>
+       <sort column="Id/curLocation/room"/>
+       <sort column="Id/curLocation/cage"/>
        <sort column="Id"/>
    </sorts>
 </customView>
