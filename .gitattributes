@@ -64,6 +64,7 @@ EHR_ComplianceDB/resources/views/My_Requirements.view.xml -text
 EHR_ComplianceDB/resources/views/SOP_submission.html -text
 EHR_ComplianceDB/resources/views/SOP_submission.view.xml -text
 EHR_ComplianceDB/resources/views/SOPadmin.html -text
+EHR_ComplianceDB/resources/views/SOPadmin.view.xml -text
 EHR_ComplianceDB/resources/views/SOPadmin.webpart.xml -text
 EHR_ComplianceDB/resources/views/begin.html -text
 EHR_ComplianceDB/resources/views/begin.view.xml -text
