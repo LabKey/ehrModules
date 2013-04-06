@@ -96,7 +96,7 @@ EHR.Server.Triggers.init = function(event, errors){
         publicPKsModified: [],
         demographicsMap: {},
         errorQcLabel: 'Review Required',
-        verbosity: 1
+        verbosity: 0
     };
 
     EHR.Server.Security.init(this.scriptContext);

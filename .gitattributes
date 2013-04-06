@@ -387,7 +387,6 @@ ehr/resources/queries/study/assignmentTotalCoAssigned.query.xml -text
 ehr/resources/queries/study/assignmentTotalCoAssigned.sql -text
 ehr/resources/queries/study/assignmentTotalDaysAssigned.query.xml -text
 ehr/resources/queries/study/assignmentTotalDaysAssigned.sql -text
-ehr/resources/queries/study/chemistryRefRange.sql -text
 ehr/resources/queries/study/colonyPopulationByAge.query.xml -text
 ehr/resources/queries/study/colonyPopulationByAge.sql -text
 ehr/resources/queries/study/colonyPopulationByAge/.qview.xml -text
