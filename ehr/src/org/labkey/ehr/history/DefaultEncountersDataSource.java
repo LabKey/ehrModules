@@ -52,6 +52,7 @@ public class DefaultEncountersDataSource extends AbstractDataSource
 
         sb.append(safeAppend(rs, null, "participants/participants"));
         sb.append(safeAppend(rs, "Summary", "summaries/summary"));
+        //sb.append(safeAppend(rs, "Codes", "codes"));
 
         if (sb.length() > 0)
         {
@@ -71,6 +72,6 @@ public class DefaultEncountersDataSource extends AbstractDataSource
     @Override
     protected Set<String> getColumnNames()
     {
-        return PageFlowUtil.set("Id", "date", "enddate", "major", "caseno", "type", "title", "procedureid", "procedureid/name", "summaries/summary", "participants/participants");
+        return PageFlowUtil.set("Id", "date", "enddate", "major", "caseno", "type", "title", "procedureid", "procedureid/name", "summaries/summary", "participants/participants"); //, "codes"
     }
 }

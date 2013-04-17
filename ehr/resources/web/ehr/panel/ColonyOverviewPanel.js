@@ -7,6 +7,7 @@ Ext4.define('EHR.panel.ColonyOverviewPanel', {
     extend: 'Ext.panel.Panel',
 
     initComponent: function(){
+        this.filterArray = [LABKEY.Filter.create('calculated_status', 'Alive', LABKEY.Filter.Types.EQUAL)];
         Ext4.apply(this, {
             border: false,
             defaults: {
@@ -32,7 +33,7 @@ Ext4.define('EHR.panel.ColonyOverviewPanel', {
                     style: 'padding 5px;',
                     items: [{
                         xtype: 'ehr-populationpanel',
-                        filterArray: [LABKEY.Filter.create('calculated_status', 'Alive', LABKEY.Filter.Types.EQUAL)],
+                        filterArray: this.filterArray,
                         rowField: EHR.panel.PopulationPanel.FIELDS.species,
                         colFields: [EHR.panel.PopulationPanel.FIELDS.ageclass, EHR.panel.PopulationPanel.FIELDS.gender]
                     },{
@@ -41,16 +42,47 @@ Ext4.define('EHR.panel.ColonyOverviewPanel', {
                     }],
                     itemId: 'population'
                 },{
+                    title: 'SPF Colony',
+                    style: 'padding 5px;',
+                    items: [{
+                        xtype: 'ehr-populationpanel',
+                        titleText: 'SPF',
+                        filterArray: [LABKEY.Filter.create('Id/viral_status/viralStatus', 'SPF', LABKEY.Filter.Types.EQUALS)].concat(this.filterArray),
+                        rowField: EHR.panel.PopulationPanel.FIELDS.species,
+                        colFields: [EHR.panel.PopulationPanel.FIELDS.ageclass, EHR.panel.PopulationPanel.FIELDS.gender]
+                    },{
+                        xtype: 'ehr-populationpanel',
+                        titleText: 'SPF 3',
+                        filterArray: [LABKEY.Filter.create('Id/viral_status/viralStatus', 'SPF 3', LABKEY.Filter.Types.EQUALS)].concat(this.filterArray),
+                        rowField: EHR.panel.PopulationPanel.FIELDS.species,
+                        colFields: [EHR.panel.PopulationPanel.FIELDS.ageclass, EHR.panel.PopulationPanel.FIELDS.gender]
+                    },{
+                        xtype: 'ehr-populationpanel',
+                        titleText: 'SPF 4',
+                        filterArray: [LABKEY.Filter.create('Id/viral_status/viralStatus', 'SPF 4', LABKEY.Filter.Types.EQUALS)].concat(this.filterArray),
+                        rowField: EHR.panel.PopulationPanel.FIELDS.species,
+                        colFields: [EHR.panel.PopulationPanel.FIELDS.ageclass, EHR.panel.PopulationPanel.FIELDS.gender]
+                    },{
+                        xtype: 'ehr-populationpanel',
+                        titleText: 'SPF 9',
+                        filterArray: [LABKEY.Filter.create('Id/viral_status/viralStatus', 'SPF 9', LABKEY.Filter.Types.EQUALS)].concat(this.filterArray),
+                        rowField: EHR.panel.PopulationPanel.FIELDS.species,
+                        colFields: [EHR.panel.PopulationPanel.FIELDS.ageclass, EHR.panel.PopulationPanel.FIELDS.gender]
+                    }],
+                    itemId: 'spf'
+                },{
                     title: 'Room Utilization',
                     xtype: 'ehr-roomutilizationpanel',
                     itemId: 'roomUtilization'
                 },{
-                    title: 'Assignment',
-                    xtype: 'ehr-assignmentsummarypanel',
-                    itemId: 'assignmentSummary'
+                    title: 'Utilization',
+                    xtype: 'ehr-utilizationsummarypanel',
+                    filterArray: this.filterArray,
+                    itemId: 'utilizationSummary'
                 },{
                     title: 'Clinical',
                     xtype: 'ehr-clinicalsummarypanel',
+                    filterArray: this.filterArray,
                     itemId: 'clinicalSummary'
                 }]
             }]
@@ -151,45 +183,6 @@ Ext4.define('EHR.panel.RoomUtilizationPanel', {
                         return data;
                     }
                 }]
-            }]
-        });
-
-        this.callParent();
-    }
-});
-
-
-Ext4.define('EHR.panel.ClinicalSummaryPanel', {
-    extend: 'Ext.panel.Panel',
-    alias: 'widget.ehr-clinicalsummarypanel',
-    initComponent: function(){
-        Ext4.apply(this, {
-            style: 'padding: 5px',
-            border: false,
-            defaults: {
-                border: false
-            },
-            items: [{
-                html: 'This will display a summary of clinical information including total active cases, procedure counts, etc.'
-            }]
-        });
-
-        this.callParent();
-    }
-});
-
-Ext4.define('EHR.panel.AssignmentSummaryPanel', {
-    extend: 'Ext.panel.Panel',
-    alias: 'widget.ehr-assignmentsummarypanel',
-    initComponent: function(){
-        Ext4.apply(this, {
-            style: 'padding: 5px',
-            border: false,
-            defaults: {
-                border: false
-            },
-            items: [{
-                html: 'This will display a summary of how the colony is being utilized, and trends.'
             }]
         });
 

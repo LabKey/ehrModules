@@ -89,7 +89,7 @@ Ext4.define('EHR.panel.MultiAnimalFilterType', {
                             fieldLabel: 'Center Project',
                             emptyText:'',
                             itemId: 'project',
-                            displayField: 'name',
+                            displayField: 'displayName',
                             valueField: 'project',
                             queryMode: 'local',
                             width: 300,
@@ -97,6 +97,7 @@ Ext4.define('EHR.panel.MultiAnimalFilterType', {
                             store: Ext4.create('LABKEY.ext4.Store', {
                                 schemaName: 'ehr',
                                 queryName: 'project',
+                                columns: 'displayName,project',
                                 filterArray: [LABKEY.Filter.create('activeAssignments/activeAssignments', 0, LABKEY.Filter.Types.GT)],
                                 sort: 'project',
                                 autoLoad: true

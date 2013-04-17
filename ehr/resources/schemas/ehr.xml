@@ -1175,6 +1175,8 @@
                     <ns:fkColumnName>entityid</ns:fkColumnName>
                 </ns:fk>
             </ns:column>
+            <ns:column columnName="objectid">
+            </ns:column>
             <ns:column columnName="createdby">
                 <ns:isUserEditable>false</ns:isUserEditable>
                 <ns:nullable>true</ns:nullable>
@@ -1252,6 +1254,18 @@
             <ns:column columnName="purpose"/>
             <ns:column columnName="comment"/>
             <ns:column columnName="category">
+                <ns:displayWidth>80</ns:displayWidth>
+            </ns:column>
+            <ns:column columnName="housing" wrappedColumnName="rowid">
+                <ns:columnTitle>Housing</ns:columnTitle>
+                <ns:isUnselectable>true</ns:isUnselectable>
+                <ns:isUserEditable>true</ns:isUserEditable>
+                <ns:displayWidth>200</ns:displayWidth>
+                <ns:fk>
+                    <ns:fkDbSchema>ehr</ns:fkDbSchema>
+                    <ns:fkTable>animal_group_housing</ns:fkTable>
+                    <ns:fkColumnName>groupId</ns:fkColumnName>
+                </ns:fk>
             </ns:column>
             <ns:column columnName="container"/>
             <ns:column columnName="objectid">

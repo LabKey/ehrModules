@@ -1,10 +1,15 @@
 <customView xmlns="http://labkey.org/data/xml/queryCustomView">
    <columns>
        <column name="protocol"/>
+       <column name="project"/>
        <column name="species"/>
+       <column name="gender"/>
        <column name="allowed"/>
+       <column name="start"/>
+       <column name="enddate"/>
    </columns>
    <sorts>
        <sort column="protocol" descending="false"/>
+       <sort column="project" descending="false"/>
    </sorts>
 </customView>

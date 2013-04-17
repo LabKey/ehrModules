@@ -7,6 +7,7 @@
        <column name="purpose"/>
        <column name="comment"/>
        <column name="totalAnimals"/>
+       <column name="housing/rooms"/>
    </columns>
    <sorts>
        <sort column="name"/>
