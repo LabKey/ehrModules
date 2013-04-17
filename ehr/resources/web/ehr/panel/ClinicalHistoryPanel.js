@@ -66,7 +66,6 @@ Ext4.define('EHR.panel.ClinicalHistoryPanel', {
             minHeight: 100,
             cls: 'ldk-grid',
             maxHeight: this.maxGridHeight,
-            height: this.gridHeight,
             hideHeaders: true,
             viewConfig : {
                 emptyText: 'There are no records to display',

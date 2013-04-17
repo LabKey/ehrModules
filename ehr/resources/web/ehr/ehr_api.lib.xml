@@ -8,7 +8,7 @@
         <script path="ehr/databind.js"/>
         <script path="ehr/ehrStore.js"/>
         <script path="ehr/panel/SnapshotPanel.js"/>
-        <script path="ehr/panel/SmallFormSnapshotPanel.js"/>
+        <script path="ehr/panel/MiniSnapshotPanel.js"/>
         <script path="ehr/data/ClinicalHistoryStore.js"/>
         <script path="ehr/panel/ClinicalHistoryPanel.js"/>
         <script path="ehr/panel/CaseHistoryPanel.js"/>

@@ -7,17 +7,13 @@
         <column name="cage"/>
         <column name="cond"/>
         <column name="reason"/>
-       <column name="duration">
-           <properties>
-               <property name="columnTitle" value="Days In This Cage"/>
-           </properties>
-       </column>
-       <column name="daysInRoom"/>
+        <!--<column name="isTemp"/>-->
+        <!--<column name="restraintType"/>-->
        <column name="remark"/>
        <column name="qcstate"/>
    </columns>
    <filters>
-       <filter column="enddate" operator="isblank" value=""/>
+       <filter column="enddatetimeCoalesced" operator="dategte" value="+0d"/>
    </filters>
    <sorts>
        <sort column="room" descending="false"/>

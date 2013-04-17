@@ -61,6 +61,11 @@
         <!--</column>-->
         <column name="medical"/>
         <column name="prepaid"/>
+        <!--<column name="v_status">-->
+            <!--<properties>-->
+                <!--<property name="columnTitle" value="Viral Status"/>-->
+            <!--</properties>-->
+        <!--</column>-->
     </columns>
     <sorts>
         <sort column="Id" descending="false"/>

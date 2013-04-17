@@ -732,21 +732,13 @@ EHR.Utils = new function(){
             var minDate = Ext4.Date.add(new Date(), Ext4.Date.YEAR, -2);
             Ext4.create('Ext.window.Window', {
                 title: 'Clinical History: ' + Id,
-                bodyStyle: 'padding: 3px;',
-                width: 1200,
+                width: 1010,
                 modal: true,
                 items: [{
-                    xtype: 'ehr-smallformsnapshotpanel',
-                    subjectId: Id,
-                    hideHeader: true,
-                    style: 'padding: 5px;'
-                },{
                     xtype: 'ehr-clinicalhistorypanel',
                     border: true,
-                    width: 1180,
-                    gridHeight: 400,
-                    height: 400,
-                    autoLoadRecords: true,
+                    width: 1000,
+                    maxGridHeight: 600,
                     autoScroll: true,
                     subjectId: Id,
                     minDate: minDate
@@ -768,20 +760,13 @@ EHR.Utils = new function(){
         showCaseHistory: function(objectId, subjectId, el){
             Ext4.create('Ext.window.Window', {
                 title: 'Case History:',
-                bodyStyle: 'padding: 3px;',
-                width: 1200,
+                width: 1010,
                 modal: true,
                 items: [{
-                    xtype: 'ehr-smallformsnapshotpanel',
-                    subjectId: subjectId,
-                    hideHeader: true,
-                    style: 'padding: 5px;'
-                },{
                     xtype: 'ehr-casehistorypanel',
                     border: true,
-                    width: 1180,
-                    gridHeight: 400,
-                    height: 400,
+                    width: 1000,
+                    maxGridHeight: 600,
                     autoScroll: true,
                     autoLoadRecords: true,
                     subjectId: subjectId,

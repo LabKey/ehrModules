@@ -19,8 +19,6 @@ Ext4.define('EHR.panel.PopulationPanel', {
         }
     },
 
-    titleText: 'Current Population',
-
     initComponent: function(){
         Ext4.apply(this, {
             style: 'padding: 5px',
@@ -29,21 +27,6 @@ Ext4.define('EHR.panel.PopulationPanel', {
                 border: false
             },
             items: [{
-                border: false,
-                defaults: {
-                    border: false
-                },
-                items: [{
-                    html: '<b>' + this.titleText + ':</b>'
-                },{
-                    html: '<hr>'
-                }]
-            },{
-                itemId: 'populationPanel',
-                border: false,
-                defaults: {
-                    border: false
-                },
                 html: 'Loading...'
             }]
         });
@@ -138,12 +121,23 @@ Ext4.define('EHR.panel.PopulationPanel', {
     },
 
     onLoad: function(){
-        var target = this.down('#populationPanel');
         var toAdd = [];
 
+        var populationSummary = {
+            border: false,
+            defaults: {
+                border: false
+            },
+            items: [{
+                html: '<b>Current Population:</b>'
+            },{
+                html: '<hr>'
+            }]
+        };
+
         if (!this.rawData || !this.rawData.rowCount){
-            target.removeAll();
-            target.add({
+            this.removeAll();
+            this.add({
                 html: 'No animals were found'
             });
             return;
@@ -196,7 +190,7 @@ Ext4.define('EHR.panel.PopulationPanel', {
             var params = {
                 schemaName: 'study',
                 'query.queryName': 'Demographics',
-                'query.viewName': 'By Location'
+                'query.viewName': 'With Location'
             };
             params['query.' + this.rowField + '~eq'] = rowName;
             this.appendFilterParams(params);
@@ -215,7 +209,7 @@ Ext4.define('EHR.panel.PopulationPanel', {
                 var params = {
                     schemaName: 'study',
                     'query.queryName': 'Demographics',
-                    'query.viewName': 'By Location'
+                    'query.viewName': 'With Location'
                 };
                 var tokens = key.split('<>');
 
@@ -235,7 +229,7 @@ Ext4.define('EHR.panel.PopulationPanel', {
             }, this);
         }, this);
 
-        toAdd.push({
+        populationSummary.items.push({
             layout: {
                 type: 'table',
                 columns: this.getTotalColumns()
@@ -246,9 +240,11 @@ Ext4.define('EHR.panel.PopulationPanel', {
             },
             items: rows
         });
+        toAdd.push(populationSummary);
 
-        target.removeAll();
-        target.add(toAdd);
+        this.removeAll();
+        this.add(toAdd);
+
     },
 
     appendFilterParams: function(params){

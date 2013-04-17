@@ -637,15 +637,9 @@ EHR.Server.Triggers.rowInit = function(errors, row, oldRow){
         }
     }
 
-    //normalize these values to JS date objects
-    //NOTE: it is important to only assign a value to these if they started with a value
-    if (row.date)
-        row.date = EHR.Server.Utils.normalizeDate(row.date);
-    if (row.enddate)
-        row.enddate = EHR.Server.Utils.normalizeDate(row.enddate);
-
     //these are extra checks to fix mySQL data
-    //TODO: remove once we stop using the ETL
+    //@depreciated
+    //should be removed from this code at some point
     if (this.scriptContext.extraContext.dataSource == 'etl'){
         if(this.scriptContext.verbosity > 0)
             console.log('Row is from ETL');
@@ -736,7 +730,7 @@ EHR.Server.Triggers.rowInit = function(errors, row, oldRow){
                     var severity = 'WARN';
                     if(EHR.Server.Security.getQCStateByLabel(row.QCStateLabel).isRequest)
                         severity = 'INFO';
-
+                    console.log (severity +' value of QCstate '+ EHR.Server.Security.getQCStateByLabel(row.QCStateLabel).isRequest);
                     EHR.Server.Validation.addError(errors, 'project', 'Not assigned to '+row.project+' on this date', severity);
                     EHR.Server.Validation.addError(errors, 'project', 'The '+row.project+' is not associated with a valid protocol', severity);
                 }
@@ -778,8 +772,8 @@ EHR.Server.Triggers.rowInit = function(errors, row, oldRow){
 
     //enddate: verify either blank or not prior to date
     if(this.scriptContext.extraContext.dataSource != 'etl' && row.enddate && row.date){
-        var start = row.date.getTime();
-        var end = row.enddate.getTime();
+        var start = Date.parse(row.date.toGMTString());
+        var end = Date.parse(row.enddate.toGMTString());
 
         if(start > end){
             EHR.Server.Validation.addError(errors, 'enddate', 'End date must be after start date', 'WARN');
@@ -904,6 +898,12 @@ EHR.Server.Triggers.rowEnd = function(errors, scriptErrors, row, oldRow){
     for (var i in row){
         if (row[i] === '' || !LABKEY.ExtAdapter.isDefined(row[i])){
             row[i] = null;
+        }
+        if (row.date){
+            var rawDate = new Date(row.date.getTime());
+            var normDate =new Date(rawDate.getFullYear(),rawDate.getMonth(),rawDate.getDate(), rawDate.getHours(), rawDate.getMinutes());
+            normDate.setMilliseconds(0);
+            row.date = normDate;
         }
     }
 

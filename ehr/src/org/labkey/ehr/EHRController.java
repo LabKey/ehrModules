@@ -489,7 +489,7 @@ public class EHRController extends SpringActionController
                         ActionURL url = link.getUrl().copy(getContainer()).getActionURL();
                         item.put("label", link.getLabel());
                         item.put("category", link.getCategory());
-                        item.put("type", type.name());
+
                         item.put("controller", url.getController());
                         item.put("action", url.getAction());
                         item.put("params", url.getParameterMap());

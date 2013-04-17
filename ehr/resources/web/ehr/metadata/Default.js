@@ -308,7 +308,7 @@ EHR.Metadata.registerMetadata('Default', {
         ,project: {
             xtype: 'ehr-project'
             ,editorConfig: {
-                defaultProjects: ['00300901']
+                defaultProjects: [00300901]
             }
             ,shownInGrid: false
             ,useNull: true

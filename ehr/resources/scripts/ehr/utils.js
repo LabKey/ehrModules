@@ -131,6 +131,20 @@ EHR.Server.Utils = new function(){
         },
 
         /**
+         * Used to normalize a java.util.date object into a javascript date object
+         * @param date
+         */
+        normalizeDate: function(date){
+            if(!date)
+                return date;
+
+            if(LABKEY.ExtAdapter.isString(date))
+                return new Date(date);
+
+            return new Date(date.getTime());
+        },
+
+        /**
          * Create a combined function call sequence of the original function + the passed function.
          * The resulting function returns the results of the original function.
          */
@@ -149,57 +163,6 @@ EHR.Server.Utils = new function(){
 
         trim: function(input){
             return input.replace(/^\s+|\s+$/g, '');
-        },
-
-        /**
-         * The purpose of this method is to normalize the passed object is a JS date object.
-         * @param row
-         * @param fieldName
-         * @return the normalized date value.  the row is not altered
-         */
-        normalizeDate: function(val, supppressErrors){
-            if (!val){
-                return null;
-            }
-
-            var normalizedVal;
-
-            if (typeof val === '[object Date]'){
-                normalizedVal = val;
-            }
-            else if (LABKEY.ExtAdapter.isString(val)){
-                if (!supppressErrors)
-                    console.error('EHR trigger script is being passed a date object as a string: ' + val);
-
-                var javaDate = org.labkey.api.data.ConvertHelper.convert(val, java.util.Date);
-                if (javaDate){
-                    normalizedVal = new Date(javaDate.getTime());
-                }
-                else {
-                    console.error('Unable to parse date string: ' + val);
-                }
-            }
-            else if (!isNaN(val)){
-                // NOTE: i'm not sure if we should really attempt this.  this should really never happen,
-                // and it's probably an error if it does
-                normalizedVal = new Date(val);
-            }
-            else {
-                if (val['getTime']){
-                    normalizedVal = new Date(val.getTime());
-                }
-                else {
-                    if (!supppressErrors)
-                        console.error('Unknown datatype for date value.  Type was: ' + (typeof val) + ' and value was: ' + val);
-                }
-            }
-
-            // NOTE: in cases where dates are expected to match, like contiguous housing, it is important
-            // for dates to line up exactly
-            if (normalizedVal && normalizedVal.setMilliseconds)
-                normalizedVal.setMilliseconds(0);
-
-            return normalizedVal;
         }
     }
 };

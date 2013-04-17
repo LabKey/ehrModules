@@ -9,7 +9,7 @@
 
         <column name="participants/participants" />
         <column name="summaries/summary" />
-        <column name="codes" />
+        <column name="codes/codes" />
         <column name="history" />
         <column name="qcstate" />
         <column name="taskid" />

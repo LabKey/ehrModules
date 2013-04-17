@@ -18,9 +18,7 @@ d2.room,
 
 d2.cage,
 
-d2.cond,
-
-d2.date
+d2.cond
 
 FROM study.housing d2
 

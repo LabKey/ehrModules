@@ -6,149 +6,117 @@ Ext4.onReady(function(){
     if(!ctx)
         return;
 
-    EHR.Utils.getReportLinks({
-        linkTypes: ['project', 'protocol', 'assignment'],
-        success: function(response){
-            var projectItems = [];
-            var protocolItems = [];
-            var assignmentItems = [];
-            Ext4.each(response.items, function(item){
-                var arr;
-                if (item.type == 'protocol')
-                    arr = protocolItems;
-                else if (item.type == 'project')
-                    arr = projectItems;
-                else if (item.type == 'assignment')
-                    arr = assignmentItems;
+    var domSpec = [{
+        html: 'This page contains a series of queries to search IACUC Protocols, Projects and Assignment data.  If there are additional one-button reports you would like added to the top section, please submit a request using the \'user feedback\' item on the menu bar above.'
+    },{
+        tag: 'h2',
+        html: 'Projects:'
+    },{
+       tag: 'h3',
+       html: 'Commonly Used Queries:'
+    },{
+        tag: 'ul',
+        children: [{
+            tag: 'li',
+            html: '<a href="<%=contextPath%>/query' + ctx['EHRStudyContainer'] + '/executeQuery.view?schemaName=ehr&query.queryName=Project&query.activeAssignments/activeAssignments~gt=0">View All Projects With Active Assignments</a>'
+        }]
+    },{
+        tag: 'div',
+        id: 'projectPanel_' + webpart.wrapperDivId
+    },{
+        tag: 'hr'
+    },{
+        tag: 'h2',
+        html: 'IACUC Protocols:'
+    },{
+        tag: 'h3',
+        html: 'Commonly Used Queries:'
+    },{
+        tag: 'ul',
+        children: [{
+            tag: 'li',
+            html: '<a href="<%=contextPath%>/query' + ctx['EHRStudyContainer'] + '/executeQuery.view?schemaName=ehr&query.queryName=protocolTotalAnimalsBySpecies">View Total Animals Assigned to Each Protocol, By Species</a>'
+        }]
+    },{
+        tag: 'h3',
+        html: 'Search All Protocols:'
+    },{
+        tag: 'div',
+        id: 'protocolPanel_' + webpart.wrapperDivId
+    },{
+        tag: 'hr'
+    },{
+        tag: 'h2',
+        html: 'Assignments:'
+    },{
+        tag: 'h3',
+        html: 'Commonly Used Queries:'
+    },{
+        tag: 'ul',
+        children: [{
+//            tag: 'li',
+//            html: '<a href="<%=contextPath%>/query' + ctx['EHRStudyContainer'] + '/executeQuery.view?schemaName=study&query.queryName=demographicsAssignmentSummary">Assignment Summary By Animal</a>'
+//        },{
+            tag: 'li',
+            html: '<a href="<%=contextPath%>/query' + ctx['EHRStudyContainer'] + '/executeQuery.view?schemaName=study&query.queryName=AssignmentOverlaps">Find Assignments Overlapping A Date Range</a>'
+//        },{
+//            tag: 'li',
+//            html: '<a href="<%=contextPath%>/query' + ctx['EHRStudyContainer'] + '/executeQuery.view?schemaName=study&query.queryName=Demographics&query.viewName=Unassigned%20Animals">Unassigned Animals</a>'
+        }]
+    },{
+        tag: 'h3',
+        html: 'Search All Assignment Records:'
+    },{
+        tag: 'div',
+        id: 'assignmentPanel_' + webpart.wrapperDivId
+    }]
 
-                arr.push({
-                    tag: 'li',
-                    html: '<a href="' + LABKEY.ActionURL.buildURL(item.controller, item.action, ctx['EHRStudyContainer'], item.params) + '">' + item.label + '</a>'
-                });
-            }, this);
+    var el = Ext4.get(webpart.wrapperDivId);
+    Ext4.DomHelper.append(el, domSpec);
 
-            var domSpec = [{
-                tag: 'div',
-                style: 'padding-bottom: 10px;',
-                html: 'This page contains a series of queries to search IACUC Protocols, Projects and Assignment data.  If there are additional one-button reports you would like added to the top section, please submit a request using the \'user feedback\' item on the menu bar above.'
-            }];
-
-            domSpec.push({
-                tag: 'h2',
-                html: 'Center Projects:'
-            });
-
-            if (projectItems.length){
-                domSpec.push({
-                    tag: 'h3',
-                    html: 'Quick Links:'
-                });
-                domSpec.push({
-                    tag: 'ul',
-                    children: [projectItems]
-                });
-            }
-
-            domSpec = domSpec.concat([{
-                tag: 'div',
-                id: 'projectPanel_' + webpart.wrapperDivId
-            },{
-                tag: 'hr'
-            },{
-                tag: 'h2',
-                html: 'IACUC Protocols:'
-            }]);
-
-            if (protocolItems.length){
-                domSpec.push({
-                    tag: 'h3',
-                    html: 'Quick Links:'
-                });
-                domSpec.push({
-                    tag: 'ul',
-                    children: [protocolItems]
-                });
-            }
-
-            domSpec = domSpec.concat([{
-                tag: 'h3',
-                html: 'Search All Protocols:'
-            },{
-                tag: 'div',
-                id: 'protocolPanel_' + webpart.wrapperDivId
-            },{
-                tag: 'hr'
-            },{
-                tag: 'h2',
-                html: 'Assignments:'
-            }]);
-
-            if (assignmentItems.length){
-                domSpec.push({
-                    tag: 'h3',
-                    html: 'Quick Links:'
-                });
-                domSpec.push({
-                    tag: 'ul',
-                    children: [assignmentItems]
-                });
-            }
-
-            domSpec = domSpec.concat([{
-                tag: 'h3',
-                        html: 'Search All Assignment Records:'
-            },{
-                tag: 'div',
-                        id: 'assignmentPanel_' + webpart.wrapperDivId
-            }]);
-
-            var el = Ext4.get(webpart.wrapperDivId);
-            Ext4.DomHelper.append(el, domSpec);
-
-            Ext4.create('LABKEY.ext4.SearchPanel', {
-                schemaName: 'ehr',
-                queryName: 'Project',
-                title: 'Search Projects',
-                metadata: {
-                    protocol: {lookups: false}
-                }
-            }).render('projectPanel_' + webpart.wrapperDivId);
-
-            Ext4.create('LABKEY.ext4.SearchPanel', {
-                schemaName: 'ehr',
-                queryName: 'protocol',
-                title: 'Search Protocols',
-                metadata: {}
-            }).render('protocolPanel_' + webpart.wrapperDivId);
-
-            Ext4.create('LABKEY.ext4.SearchPanel', {
-                schemaName: 'study',
-                queryName: 'assignment',
-                title: 'Search Assignments',
-                metadata: {
-                    project: {lookups: false},
-                    'project/Protocol': {lookups: false},
-                    Id: {lookups: false},
-                    Created: {hidden: true},
-                    CreatedBy: {hidden: true},
-                    Modified: {hidden: true},
-                    ModifiedBy: {hidden: true},
-                    objectid: {hidden: true},
-                    ts: {hidden: true},
-                    Dataset: {hidden: true},
-                    AgeAtTime: {hidden: true},
-                    QCState: {hidden: true},
-                    created: {hidden: true},
-                    modified: {hidden: true},
-                    SequenceNum: {hidden: true},
-                    AnimalVisit: {hidden: true},
-                    EntityId: {hidden: true},
-                    Notes: {hidden: true}
-                },
-                defaultView: 'Active Assignments'
-            }).render('assignmentPanel_' + webpart.wrapperDivId);
+    Ext4.create('LABKEY.ext4.SearchPanel', {
+        schemaName: 'ehr'
+        ,queryName: 'Project'
+        ,title: 'Search Projects'
+        ,metadata: {
+            protocol: {lookups: false}
         }
-    });
+    }).render('projectPanel_' + webpart.wrapperDivId);
+
+    Ext4.create('LABKEY.ext4.SearchPanel', {
+        schemaName: 'ehr'
+        ,queryName: 'protocol'
+        ,title: 'Search Protocols'
+        ,metadata: {}
+    }).render('protocolPanel_' + webpart.wrapperDivId);
+
+    Ext4.create('LABKEY.ext4.SearchPanel', {
+        schemaName: 'study'
+        ,queryName: 'assignment'
+        ,viewName: 'Search Panel'
+        ,title: 'Search Assignments'
+        ,metadata: {
+            project: {lookups: false}
+            ,'project/Protocol': {lookups: false}
+            ,Id: {lookups: false}
+            ,Created: {hidden: true}
+            ,CreatedBy: {hidden: true}
+            ,Modified: {hidden: true}
+            ,ModifiedBy: {hidden: true}
+            ,objectid: {hidden: true}
+            ,ts: {hidden: true}
+            ,Dataset: {hidden: true}
+            ,AgeAtTime: {hidden: true}
+            ,QCState: {hidden: true}
+            ,created: {hidden: true}
+            ,modified: {hidden: true}
+            ,SequenceNum: {hidden: true}
+            ,AnimalVisit: {hidden: true}
+            ,EntityId: {hidden: true}
+            ,Notes: {hidden: true}
+        }
+        ,defaultView: 'Active Assignments'
+    }).render('assignmentPanel_' + webpart.wrapperDivId);
 });
 
 </script>

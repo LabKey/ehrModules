@@ -5,7 +5,7 @@
  */
 SELECT
   p.protocol,
-  count(distinct a.Id) AS TotalActiveAnimals,
+  count(a.TotalAssignments) AS TotalActiveAnimals,
   group_concat(distinct a.Id) AS ActiveAnimals,
 
 FROM ehr.protocol p
@@ -13,9 +13,10 @@ FROM ehr.protocol p
 --we find total distinct animals ever assigned to this protocol
 LEFT JOIN
   (SELECT a.Project.protocol as protocol, a.id, count(*) AS TotalAssignments, max(a.date) as LatestStart,
-  max(a.enddateCoalesced) as latestEnd
-  FROM study.assignment a
-  WHERE a.dateOnly <= curdate() AND a.enddateCoalesced >= curdate()
-  GROUP BY a.project.protocol, a.id) a ON (p.protocol = a.protocol)
+  CASE WHEN min(a.enddate) is null then null ELSE max(a.enddate) END
+  as LatestEnd FROM study.assignment a
+  WHERE cast(a.date as date) <= curdate() AND (a.enddate is null or cast(a.enddate as date) >= curdate())
+  GROUP BY a.project.protocol, a.id) a
+  ON (p.protocol = a.protocol)
 
 group by p.protocol
