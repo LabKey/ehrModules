@@ -160,9 +160,8 @@ EHR.Server.Validation = {
      * @returns {string} The display string for this date or an empty string if unable to convert
      */
     dateToString: function (date){
-        //TODO: do better once more date functions added
         if(date){
-            date = new Date(date.toGMTString());
+            date = EHR.Server.Utils.normalizeDate(date);
             return (date.getFullYear() ? date.getFullYear()+'-'+EHR.Server.Validation.padDigits(date.getMonth()+1, 2)+'-'+EHR.Server.Validation.padDigits(date.getDate(), 2) : '');
         }
         else
@@ -175,7 +174,7 @@ EHR.Server.Validation = {
      */
     dateTimeToString: function (date){
         if(date){
-            date = new Date(date.toGMTString());
+            date = EHR.Server.Utils.normalizeDate(date);
             return date.getFullYear()+'-'+EHR.Server.Validation.padDigits(date.getMonth()+1, 2)+'-'+EHR.Server.Validation.padDigits(date.getDate(), 2) + ' '+EHR.Server.Validation.padDigits(date.getHours(),2)+':'+EHR.Server.Validation.padDigits(date.getMinutes(),2);
         }
         else
@@ -264,19 +263,14 @@ EHR.Server.Validation = {
      * @param scriptContext The scriptContext object created in rowInit()
      */
     verifyDate: function(row, errors, scriptContext){
-        if(!row.date)
+        var date = EHR.Server.Utils.normalizeDate(row.date);
+        if(!date)
             return;
-
-        if(typeof(row.Date) == 'string'){
-            row.Date = new java.util.Date(java.util.Date.parse(row.Date));
-        }
-
-        var dateJava = new Date(row.Date);
 
         //find if the date is greater than now
         var cal1 = new java.util.GregorianCalendar();
         var cal2 = new java.util.GregorianCalendar();
-        cal2.setTime(dateJava);
+        cal2.setTimeInMillis(date.getTime());
 
         if(!scriptContext.extraContext.validateOnly && cal2.after(cal1) && !EHR.Server.Security.getQCStateByLabel(row.QCStateLabel).allowFutureDates){
             EHR.Server.Validation.addError(errors, 'date', 'Date is in future', 'ERROR');
@@ -292,31 +286,22 @@ EHR.Server.Validation = {
      * @param errors The errors object, provided by LabKey
      */
     flagSuspiciousDate: function(row, errors){
-        if(!row.date)
+        var date = EHR.Server.Utils.normalizeDate(row.date);
+        if(!date)
             return;
-
-        var date = row.Date;
-        if(typeof(row.Date) == 'string'){
-            console.log('Date being passed as a string to EHR.Server.Validation.flagSuspiciousDate()');
-            console.log(row.Date);
-
-            var parsed = java.util.Date.parse(row.Date);
-            console.log(parsed);
-            console.log(typeof parsed);
-        }
-        var dateJava = new Date(row.Date);
 
         //flag any dates greater than 1 year from now
         var cal1 = new java.util.GregorianCalendar();
         cal1.add(java.util.Calendar.YEAR, 1);
         var cal2 = new java.util.GregorianCalendar();
-        cal2.setTime(dateJava);
+        cal2.setTimeInMillis(date.getTime());
 
         if(cal2.after(cal1)){
             EHR.Server.Validation.addError(errors, 'date', 'Date is more than 1 year in future', 'WARN');
         }
 
-        cal1.add(java.util.Calendar.YEAR, -61);
+        cal1.add(java.util.Calendar.YEAR, -1); //adjust for the year we added above
+        cal1.add(java.util.Calendar.DATE, -60);
         if(cal1.after(cal2)){
             EHR.Server.Validation.addError(errors, 'date', 'Date is more than 60 days in past', 'WARN');
         }
@@ -482,7 +467,7 @@ EHR.Server.Validation = {
                 }
 
                 LABKEY.ExtAdapter.each(data.rows, function(r){
-                    if(demographics[r.Id].birth && demographics[r.Id].birth.toGMTString() != (new Date(r.date)).toGMTString()){
+                    if(demographics[r.Id].birth && demographics[r.Id].birth.getTime() != (new Date(r.date)).getTime()){
                         console.error('birth from study.birth doesnt match demographics.birth for: '+r.Id);
                         console.error(demographics[r.Id].birth);
                         console.error(new Date(r.date));
@@ -504,7 +489,7 @@ EHR.Server.Validation = {
                 }
                 LABKEY.ExtAdapter.each(data.rows, function(r){
                     //var demographicsDeath = demographics[r.Id].death;
-                    if(demographics[r.Id].death && demographics[r.Id].death.toGMTString() != (new Date(r.date)).toGMTString()){
+                    if(demographics[r.Id].death && demographics[r.Id].death.getTime() != (new Date(r.date)).getTime()){
                         console.error('death doesnt match for: '+r.Id);
                         console.error(demographics[r.Id].birth);
                         console.error(new Date(r.date));
@@ -573,9 +558,9 @@ EHR.Server.Validation = {
                 var newRow = {Id: id, lsid: r.lsid, calculated_status: status};
 
                 if(r.updateBirth)
-                    newRow.birth = new Date(r.birth.toGMTString());
+                    newRow.birth = EHR.Server.Utils.normalizeDate(r.birth);
                 if(r.updateDeath)
-                    newRow.death = new Date(r.death.toGMTString());
+                    newRow.death = EHR.Server.Utils.normalizeDate(r.death);
 
                 toUpdate.push(newRow);
             }
@@ -748,7 +733,7 @@ EHR.Server.Validation = {
                 success: function(data){
                     for(var i=0;i<data.rows.length;i++){
                         config.recipients.push(LABKEY.Message.createPrincipalIdRecipient(LABKEY.Message.recipientType.to, data.rows[i].recipient));
-                    console.log('Recipient: '+data.rows[i].recipient);
+                        //console.log('Recipient: '+data.rows[i].recipient);
                     }
                 },
                 failure: EHR.Server.Utils.onFailure

@@ -327,6 +327,7 @@
             </ns:column>
             <ns:column columnName="common_name">
                 <ns:nullable>true</ns:nullable>
+                <ns:displayWidth>100</ns:displayWidth>
             </ns:column>
         </ns:columns>
     </ns:table>
@@ -457,6 +458,7 @@
         <ns:titleColumn>common</ns:titleColumn>
         <ns:columns>
             <ns:column columnName="common">
+                <ns:displayWidth>100</ns:displayWidth>
             </ns:column>
             <ns:column columnName="scientific_name">
                 <ns:nullable>true</ns:nullable>
@@ -551,7 +553,11 @@
                 <ns:shownInUpdateView>false</ns:shownInUpdateView>
             </ns:column>
             <ns:column columnName="frequency">
-
+                <ns:fk>
+                    <ns:fkDbSchema>ehr_lookups</ns:fkDbSchema>
+                    <ns:fkTable>treatment_frequency</ns:fkTable>
+                    <ns:fkColumnName>rowid</ns:fkColumnName>
+                </ns:fk>
             </ns:column>
             <ns:column columnName="hourofday">
                 <ns:columnTitle>Hour of Day</ns:columnTitle>
@@ -917,6 +923,11 @@
             <ns:column columnName="qualifier">
             </ns:column>
             <ns:column columnName="frequency">
+                <ns:fk>
+                    <ns:fkDbSchema>ehr_lookups</ns:fkDbSchema>
+                    <ns:fkTable>treatment_frequency</ns:fkTable>
+                    <ns:fkColumnName>rowid</ns:fkColumnName>
+                </ns:fk>
             </ns:column>
         </ns:columns>
     </ns:table>
@@ -1170,13 +1181,18 @@
         </ns:columns>
     </ns:table>
     <ns:table tableName="procedures" tableDbType="TABLE" useColumnOrder="true">
+        <ns:javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</ns:javaCustomizer>
         <ns:tableTitle>Reference Procedures List</ns:tableTitle>
+        <ns:tableUrl>/ehr/procedureDetails.view?procedureId=${rowid}</ns:tableUrl>
         <ns:importUrl></ns:importUrl>
         <ns:insertUrl></ns:insertUrl>
         <ns:updateUrl></ns:updateUrl>
         <ns:deleteUrl></ns:deleteUrl>
         <ns:columns>
-            <ns:column columnName="rowid"/>
+            <ns:column columnName="rowid">
+                <ns:columnTitle>Procedure Id</ns:columnTitle>
+                <ns:isHidden>true</ns:isHidden>
+            </ns:column>
             <ns:column columnName="name"/>
             <ns:column columnName="description"/>
             <ns:column columnName="category"/>
@@ -1185,13 +1201,16 @@
         </ns:columns>
     </ns:table>
     <ns:table tableName="procedure_default_flags" tableDbType="TABLE" useColumnOrder="true">
+        <ns:javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</ns:javaCustomizer>
         <ns:tableTitle>Default Flags Per Procedure</ns:tableTitle>
         <ns:importUrl></ns:importUrl>
         <ns:insertUrl></ns:insertUrl>
         <ns:updateUrl></ns:updateUrl>
         <ns:deleteUrl></ns:deleteUrl>
         <ns:columns>
-            <ns:column columnName="rowid"/>
+            <ns:column columnName="rowid">
+                <ns:isHidden>true</ns:isHidden>
+            </ns:column>
             <ns:column columnName="procedureid"/>
             <ns:column columnName="flag"/>
             <ns:column columnName="value"/>
@@ -1354,12 +1373,30 @@
         </ns:columns>
     </ns:table>
     <ns:table tableName="procedure_default_treatments" tableDbType="TABLE" useColumnOrder="true">
+        <ns:javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</ns:javaCustomizer>
         <ns:tableTitle>Default Treatments Per Procedure</ns:tableTitle>
+        <ns:titleColumn>rowid</ns:titleColumn>
         <ns:columns>
-            <ns:column columnName="rowid"/>
+            <ns:column columnName="rowid">
+                <ns:isHidden>true</ns:isHidden>
+            </ns:column>
             <ns:column columnName="procedureid"/>
-            <ns:column columnName="code"/>
+            <ns:column columnName="code">
+                <ns:fk>
+                    <ns:fkDbSchema>ehr_lookups</ns:fkDbSchema>
+                    <ns:fkTable>snomed</ns:fkTable>
+                    <ns:fkColumnName>code</ns:fkColumnName>
+                </ns:fk>
+            </ns:column>
             <ns:column columnName="qualifier"/>
+            <ns:column columnName="route"/>
+            <ns:column columnName="frequency">
+                <ns:fk>
+                    <ns:fkDbSchema>ehr_lookups</ns:fkDbSchema>
+                    <ns:fkTable>treatment_frequency</ns:fkTable>
+                    <ns:fkColumnName>rowid</ns:fkColumnName>
+                </ns:fk>
+            </ns:column>
             <ns:column columnName="volume"/>
             <ns:column columnName="volume_units"/>
             <ns:column columnName="dosage"/>
@@ -1368,26 +1405,39 @@
             <ns:column columnName="concentration_units"/>
             <ns:column columnName="amount"/>
             <ns:column columnName="amount_units"/>
-            <ns:column columnName="route"/>
-            <ns:column columnName="frequency"/>
         </ns:columns>
     </ns:table>
     <ns:table tableName="procedure_default_charges" tableDbType="TABLE" useColumnOrder="true">
+        <ns:javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</ns:javaCustomizer>
         <ns:tableTitle>Default Charges Per Procedure</ns:tableTitle>
         <ns:columns>
-            <ns:column columnName="rowid"/>
+            <ns:column columnName="rowid">
+                <ns:isHidden>true</ns:isHidden>
+            </ns:column>
             <ns:column columnName="procedureid"/>
             <ns:column columnName="chargeid"/>
             <ns:column columnName="quantity"/>
         </ns:columns>
     </ns:table>
     <ns:table tableName="procedure_default_codes" tableDbType="TABLE" useColumnOrder="true">
+        <ns:javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</ns:javaCustomizer>
         <ns:tableTitle>Default SNOMED Codes Per Procedure</ns:tableTitle>
+        <ns:titleColumn>rowid</ns:titleColumn>
         <ns:columns>
-            <ns:column columnName="rowid"/>
+            <ns:column columnName="rowid">
+                <ns:isHidden>true</ns:isHidden>
+            </ns:column>
             <ns:column columnName="procedureid"/>
-            <ns:column columnName="groupnum"/>
-            <ns:column columnName="code"/>
+            <ns:column columnName="groupnum">
+                <ns:columnTitle>Group #</ns:columnTitle>
+            </ns:column>
+            <ns:column columnName="code">
+                <ns:fk>
+                    <ns:fkDbSchema>ehr_lookups</ns:fkDbSchema>
+                    <ns:fkTable>snomed</ns:fkTable>
+                    <ns:fkColumnName>code</ns:fkColumnName>
+                </ns:fk>
+            </ns:column>
             <ns:column columnName="qualifier"/>
             <ns:column columnName="sort_order"/>
         </ns:columns>
@@ -1400,9 +1450,13 @@
         </ns:columns>
     </ns:table>
     <ns:table tableName="procedure_default_comments" tableDbType="TABLE" useColumnOrder="true">
-        <ns:tableTitle>Default Comments Per Procedure</ns:tableTitle>
+        <ns:javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</ns:javaCustomizer>
+        <ns:tableTitle>Default Narratives</ns:tableTitle>
+        <ns:titleColumn>rowid</ns:titleColumn>
         <ns:columns>
-            <ns:column columnName="rowid"/>
+            <ns:column columnName="rowid">
+                <ns:isHidden>true</ns:isHidden>
+            </ns:column>
             <ns:column columnName="procedureid"/>
             <ns:column columnName="comment"/>
         </ns:columns>

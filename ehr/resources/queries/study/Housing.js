@@ -59,11 +59,12 @@ function onBecomePublic(errors, scriptContext, row, oldRow){
                     var houseRecords = [];
                     for(var i=0;i<data.rows.length;i++){
                         r = data.rows[i];
-                        houseRecords.push({lsid: r.lsid, enddate: new Date(row.date.toGMTString())});
+                        houseRecords.push({lsid: r.lsid, enddate: new Date(row.date.getTime())});
 
-                        //if there's an existing public active housing record
-                        if(Date.parse(row.date.toGMTString()) < Date.parse(r.date)){
-                            EHR.Server.Validation.addError(errors, 'Id', 'You cannot enter an open ended housing while there is another record starting on: '+r.date);
+                        //if there's an existing public active housing record.  this is probably passed as a string
+                        var rowDate = EHR.Server.Utils.normalizeDate(r.date, true);
+                        if(row.date.getTime() < rowDate.getTime()){
+                            EHR.Server.Validation.addError(errors, 'Id', 'You cannot enter an open ended housing while there is another record starting on: ' + r.date);
                             houseRecords = [];
                             continue;
                         }

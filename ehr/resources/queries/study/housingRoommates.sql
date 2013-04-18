@@ -37,7 +37,7 @@ CASE
   else h1.date
 END AS RoommateStart,
 CASE
-  WHEN h2.enddateCoalesced < h1.enddateCoalesced THEN h2.enddate
+  WHEN h2.enddateTimeCoalesced < h1.enddateTimeCoalesced THEN h2.enddate
   else h1.enddate
 END AS RoommateEnd,
 
@@ -47,15 +47,15 @@ FROM study.Housing h1
 LEFT OUTER JOIN study.Housing h2
     ON (
       (
-      (h2.Date >= h1.date AND h2.Date < COALESCE(h1.enddate, now()))
+      (h2.Date >= h1.date AND h2.Date < h1.enddateTimeCoalesced)
       OR
-      (h1.Date >= h2.date AND h1.Date < COALESCE(h2.enddate, now()))
+      (h1.Date >= h2.date AND h1.Date < h2.enddateTimeCoalesced)
       OR
-      (COALESCE(h2.enddate, now()) > h1.date AND COALESCE(h2.enddate, now()) <= COALESCE(h1.enddate, now()))
+      (h2.enddateTimeCoalesced > h1.date AND h2.enddateTimeCoalesced <= h1.enddateTimeCoalesced)
       OR
-      (h2.Date <= h1.date AND COALESCE(h2.EndDate, now()) >= COALESCE(h1.enddate, now()))
+      (h2.Date <= h1.date AND h2.enddateTimeCoalesced >= h1.enddateTimeCoalesced)
       OR
-      (h2.Date <= h1.date AND COALESCE(h2.EndDate, now()) >= COALESCE(h1.enddate, now()))
+      (h2.Date <= h1.date AND h2.enddateTimeCoalesced >= h1.enddateTimeCoalesced)
 
       ) AND
       h1.id != h2.id AND h1.room = h2.room AND (h1.cage = h2.cage OR (h1.cage is null and h2.cage is null))

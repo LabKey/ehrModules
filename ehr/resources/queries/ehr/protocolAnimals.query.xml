@@ -2,7 +2,7 @@
     <metadata>
         <tables xmlns="http://labkey.org/data/xml">
             <table tableName="protocolAnimals" tableDbType="NOT_IN_DB">
-                <tableTitle>Distinct animals ever assigned to this protocol, since the last approval date</tableTitle>
+                <tableTitle>Distinct animals ever assigned to this protocol, over the full history</tableTitle>
                 <columns>
                     <column columnName="protocol">
                         <isKeyField>true</isKeyField>

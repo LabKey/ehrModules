@@ -90,7 +90,7 @@ public class DefaultEHRCustomizer implements TableCustomizer
             {
                 for (ColumnInfo col : table.getColumns())
                 {
-                    if (col.getJavaClass().equals(Date.class))
+                    if (col.getJavaClass().equals(Date.class) && col.getFormat() == null)
                         col.setFormat(df);
                 }
             }
@@ -268,7 +268,27 @@ public class DefaultEHRCustomizer implements TableCustomizer
         appendEncountersCol(ti, "summaries", "Summaries", "encounter_summaries_summary");
         appendEncountersCol(ti, "flags", "Flags", "encounter_flags_summary");
 
-        appendEncountersCol(ti, "codes", "Codes", "snomed_tags_summary", "recordid");
+        //appendEncountersCol(ti, "codes", "Codes", "snomed_tags_summary", "recordid");
+        appendSNOMEDCol(ti);
+    }
+
+    private void appendSNOMEDCol(AbstractTableInfo ti)
+    {
+        String name = "codes";
+        ColumnInfo existing = ti.getColumn(name);
+        if (existing == null)
+        {
+            String chr = ti.getSqlDialect().isPostgreSQL() ? "chr" : "char";
+            SQLFragment sql = new SQLFragment("(SELECT " + ti.getSqlDialect().getGroupConcat(new SQLFragment(ti.getSqlDialect().concatenate("s.meaning", "' ('", "t.code", "')'")), true, true, chr + "(10)") +
+                "FROM ehr.snomed_tags t JOIN ehr_lookups.snomed s ON (s.code = t.code) " +
+                " WHERE t.recordid = " + ExprColumn.STR_TABLE_ALIAS + ".objectid AND " + ExprColumn.STR_TABLE_ALIAS + ".participantid = t.id " +
+                " GROUP BY t.recordid " +
+                " )");
+
+            ExprColumn newCol = new ExprColumn(ti, name, sql, JdbcType.VARCHAR, ti.getColumn("objectid"));
+            newCol.setLabel("SNOMED Codes");
+            ti.addColumn(newCol);
+        }
     }
 
     private void appendEncountersCol(AbstractTableInfo ti, String name, String label, final String targetTableName)
@@ -322,7 +342,7 @@ public class DefaultEHRCustomizer implements TableCustomizer
                         Date date = (Date)ctx.get("date");
                         String id = (String)ctx.get("Id");
 
-                        out.write("<span style=\"white-space:nowrap\"><a href=\"javascript:void(0);\" onclick=\"EHR.Utils.showClinicalHistory('" + objectid + "', '" + id + "', '" + date + "', this);\">Display History</a></span>");
+                        out.write("<span style=\"white-space:nowrap\">[<a href=\"javascript:void(0);\" onclick=\"EHR.Utils.showClinicalHistory('" + objectid + "', '" + id + "', '" + date + "', this);\">Clinical Hx</a>]</span>");
                     }
 
                     @Override
@@ -598,6 +618,17 @@ public class DefaultEHRCustomizer implements TableCustomizer
                 col2.setUserEditable(false);
                 col2.setIsUnselectable(true);
                 col2.setFk(new QueryForeignKey(us, "projectTotalActivelyAssignedBySpecies", "project", "project"));
+            }
+
+            String name = "displayName";
+            if (table.getColumn(name) == null)
+            {
+                SQLFragment sql = new SQLFragment("COALESCE(" + ExprColumn.STR_TABLE_ALIAS + ".name, CAST(" + ExprColumn.STR_TABLE_ALIAS + ".project AS varchar))");
+                ExprColumn displayCol = new ExprColumn(table, name, sql, JdbcType.VARCHAR, table.getColumn("name"), table.getColumn("project"));
+                displayCol.setLabel("Display Name");
+                table.addColumn(displayCol);
+
+                table.setTitleColumn(name);
             }
         }
     }

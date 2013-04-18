@@ -1,0 +1,1 @@
+ALTER TABLE ehr.protocol_counts ADD objectid entityid;

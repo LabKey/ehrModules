@@ -1,7 +1,7 @@
 SELECT
 g.id,
 g.groupId.name as name,
-CAST('yes' AS VARCHAR) as valueField
+cast('yes' as varchar) as valueField
 
 FROM ehr.animal_group_members g
 

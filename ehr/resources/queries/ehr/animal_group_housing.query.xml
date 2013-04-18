@@ -1,0 +1,13 @@
+<query xmlns="http://labkey.org/data/xml/query">
+    <metadata>
+        <tables xmlns="http://labkey.org/data/xml">
+            <table tableName="animal_group_housing" tableDbType="TABLE">
+                <columns>
+                    <column columnName="rooms">
+                        <displayWidth>300</displayWidth>
+                    </column>
+                </columns>
+            </table>
+        </tables>
+    </metadata>
+</query>

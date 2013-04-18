@@ -109,13 +109,13 @@ Ext4.define('EHR.panel.AnimalGroupDetailsPanel', {
                 rowField: EHR.panel.PopulationPanel.FIELDS.species,
                 colFields: [EHR.panel.PopulationPanel.FIELDS.ageclass, EHR.panel.PopulationPanel.FIELDS.gender],
                 itemId: 'population'
-//            },{
-//                xtype: 'ehr-clinicalsummarypanel',
-//                style: 'padding-top: 20px',
-//                filterArray: [
-//                    LABKEY.Filter.create('Id/dataset/demographics/calculated_status', 'Alive', LABKEY.Filter.Types.EQUAL),
-//                    LABKEY.Filter.create(fieldKey, 'yes', LABKEY.Filter.Types.EQUAL)
-//                ]
+            },{
+                xtype: 'ehr-clinicalsummarypanel',
+                style: 'padding-top: 20px',
+                filterArray: [
+                    LABKEY.Filter.create('Id/dataset/demographics/calculated_status', 'Alive', LABKEY.Filter.Types.EQUAL),
+                    LABKEY.Filter.create(fieldKey, 'yes', LABKEY.Filter.Types.EQUAL)
+                ]
             }]
         });
 

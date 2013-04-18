@@ -2157,7 +2157,7 @@ EHR.DatasetButtons = new function(){
 
         perDiemCopyHandler: function(dataRegionName){
             var dataRegion = LABKEY.DataRegions[dataRegionName];
-            var checked = dataRegion.getChecked()
+            var checked = dataRegion.getChecked();
             if(!checked || !checked.length){
                 alert('No records selected');
                 return;
