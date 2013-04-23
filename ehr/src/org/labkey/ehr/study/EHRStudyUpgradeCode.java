@@ -77,7 +77,7 @@ public class EHRStudyUpgradeCode implements UpgradeCode
             {
                 for (Study s : studies)
                 {
-                    int id = StudyService.get().getDatasetId(s.getContainer(), label);
+                    int id = StudyService.get().getDatasetIdByLabel(s.getContainer(), label);
                     boolean changed = false;
                     if (id > 0)
                     {

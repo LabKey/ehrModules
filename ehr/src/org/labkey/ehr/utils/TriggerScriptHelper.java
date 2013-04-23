@@ -151,7 +151,7 @@ public class TriggerScriptHelper
 
         for (String queryName : queryNames)
         {
-            int datasetId = ss.getDatasetId(container, queryName);
+            int datasetId = ss.getDatasetIdByQueryName(container, queryName);
             DataSet dataset = ss.getDataSet(container, datasetId);
             if(dataset == null){
                 throw new RuntimeException("Non existent table: study." + queryName);
