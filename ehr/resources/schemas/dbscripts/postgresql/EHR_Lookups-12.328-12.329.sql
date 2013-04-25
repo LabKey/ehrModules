@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2013 LabKey Corporation
+ *
+ * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
+ */
 CREATE TABLE ehr_lookups.cage_positions (
   cage varchar(100) NOT NULL,
   row varchar(100),
