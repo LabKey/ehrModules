@@ -794,6 +794,7 @@ ehr/resources/web/ehr/ehrGridFormPanel.js -text
 ehr/resources/web/ehr/ehrImportPanel.js -text
 ehr/resources/web/ehr/ehrMetaHelper.js -text
 ehr/resources/web/ehr/ehrPrintTaskPanel.js -text
+ehr/resources/web/ehr/ehrRowEditor.js -text
 ehr/resources/web/ehr/ehrStore.js -text
 ehr/resources/web/ehr/ehrStoreCollection.js -text
 ehr/resources/web/ehr/ehr_api.lib.xml -text
