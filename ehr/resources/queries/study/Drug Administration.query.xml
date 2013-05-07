@@ -52,6 +52,7 @@
                             <fkDbSchema>ehr_lookups</fkDbSchema>
                             <fkTable>amount_units</fkTable>
                             <fkColumnName>unit</fkColumnName>
+                            <fkDisplayColumnName useRawValue="true" />
                         </fk>
                     </column>
                     <column columnName="route">

@@ -39,7 +39,6 @@ import org.labkey.api.ldk.LDKService;
 import org.labkey.api.query.DetailsURL;
 import org.labkey.api.query.ExprColumn;
 import org.labkey.api.query.FieldKey;
-import org.labkey.api.query.FilteredTable;
 import org.labkey.api.query.LookupForeignKey;
 import org.labkey.api.query.QueryDefinition;
 import org.labkey.api.query.QueryException;
@@ -84,10 +83,10 @@ public class DefaultEHRCustomizer implements TableCustomizer
         _userSchemas = new HashMap<String, UserSchema>();
 
         LDKService.get().getBuiltInColumnsCustomizer().customize(table);
-
-        if (table instanceof FilteredTable)
+        UserSchema us = table.getUserSchema();
+        if (us != null)
         {
-            Container c = ((FilteredTable)table).getContainer();
+            Container c = us.getContainer();
             String df = EHRService.get().getDateFormat(c);
             if (df != null)
             {
@@ -135,9 +134,9 @@ public class DefaultEHRCustomizer implements TableCustomizer
         }
 
         //this should execute after any default EHR code
-        if (table instanceof FilteredTable)
+        if (us != null)
         {
-            Container c = ((FilteredTable)table).getContainer();
+            Container c = us.getContainer();
 
             List<TableCustomizer> customizers = EHRService.get().getCustomizers(c, table.getSchema().getName(), table.getName());
             for (TableCustomizer tc : customizers)
@@ -888,39 +887,22 @@ public class DefaultEHRCustomizer implements TableCustomizer
         if (_userSchemas.containsKey(name))
             return _userSchemas.get(name);
 
-        //TODO: get UserSchema from TableInfo in 13.1
-        Container c = null;
-        if (ds instanceof FilteredTable)
-        {
-            c = ((FilteredTable)ds).getContainer();
-        }
-
-        if (c == null)
-            return null;
-
-        User u = getUser(c);
-        if (u == null)
-            return null;
-
-        UserSchema us = QueryService.get().getUserSchema(u, c, name);
+        UserSchema us = ds.getUserSchema();
         if (us != null)
-            _userSchemas.put(name, us);
-
-        return us;
-    }
-
-    private User getUser(Container c)
-    {
-        if (HttpView.hasCurrentView()){
-            return HttpView.currentContext().getUser();
-        }
-        else
         {
-            if (c == null)
-                c = ContainerManager.getRoot();
+            _userSchemas.put(us.getName(), us);
 
-            return EHRService.get().getEHRUser(c);
+            if (name.equalsIgnoreCase(us.getName()))
+                return us;
+
+            UserSchema us2 = QueryService.get().getUserSchema(us.getUser(), us.getContainer(), name);
+            if (us2 != null)
+                _userSchemas.put(name, us2);
+
+            return us2;
         }
+
+        return null;
     }
 
     private void hideStudyColumns(AbstractTableInfo ds)
