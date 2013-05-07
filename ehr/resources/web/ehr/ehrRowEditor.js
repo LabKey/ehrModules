@@ -4,8 +4,6 @@
 
         editorWindow: null,
 
-        fieldIds : {},
-
 		constructor: function(config){
             Ext4.apply(this, config);
 		},
@@ -18,7 +16,6 @@
 		destroy: function(){
             this.editorWindow.destroy();
             delete this.editorWindow();
-            delete this.fieldIds;
 		},
 
         getFieldConfig: function(field){
@@ -30,15 +27,17 @@
                 {
                     // If the user has specified a custom config for this column then push that instead of the default.
                     Ext4.apply(cfg, this.fieldConfigs[field.dataIndex]);
+
+                    cfg.name = field.dataIndex; // Set the name to the dataIndex so we properly set the value when we
+                                                // Load a record.
+
                     return cfg;
                 } else {
                     cfg = {
-                        id: Ext.id(),
                         name: field.dataIndex,
                         fieldLabel: field.fieldLabel
                     };
 
-                    this.fieldIds[field.dataIndex] = cfg.id;
 
                     switch (field.extType){
                         case "INT":
