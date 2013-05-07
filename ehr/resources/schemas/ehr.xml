@@ -975,7 +975,7 @@
                 <ns:isHidden>true</ns:isHidden>
             </ns:column>
             <ns:column columnName="approve">
-                <ns:columnTitle>Approval Date</ns:columnTitle>
+                <ns:columnTitle>3-yr Approval Date</ns:columnTitle>
                 <ns:nullable>true</ns:nullable>
             </ns:column>
             <ns:column columnName="enddate">
@@ -1093,6 +1093,10 @@
                 <ns:columnTitle>Title</ns:columnTitle>
             </ns:column>
             <ns:column columnName="research">
+                <ns:nullable>true</ns:nullable>
+            </ns:column>
+            <ns:column columnName="use_category">
+                <ns:columnTitle>Use Category</ns:columnTitle>
                 <ns:nullable>true</ns:nullable>
             </ns:column>
             <ns:column columnName="reqname">

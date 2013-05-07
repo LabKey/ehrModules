@@ -110,7 +110,7 @@
         <ns:insertUrl></ns:insertUrl>
         <ns:updateUrl></ns:updateUrl>
         <ns:deleteUrl></ns:deleteUrl>
-        <!--<ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr_lookups&amp;query.queryName=cage&amp;roomcage=${roomcage}</ns:tableUrl>-->
+        <ns:tableUrl>/ehr/cageDetails.view?room=${room}</ns:tableUrl>
         <ns:pkColumnName>location</ns:pkColumnName>
         <ns:columns>
             <ns:column columnName="location">
@@ -235,6 +235,7 @@
         </ns:columns>
     </ns:table>
     <ns:table tableName="areas" tableDbType="TABLE" useColumnOrder="true">
+        <ns:javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</ns:javaCustomizer>
         <ns:tableTitle>Areas</ns:tableTitle>
         <ns:importUrl></ns:importUrl>
         <ns:insertUrl></ns:insertUrl>
@@ -522,6 +523,7 @@
             <ns:column columnName="meaning">
             </ns:column>
             <ns:column columnName="sort_order">
+                <ns:columnTitle>Sort Order</ns:columnTitle>
             </ns:column>
             <ns:column columnName="weekofmonth">
                 <ns:columnTitle>Week of Month</ns:columnTitle>
@@ -556,7 +558,7 @@
                 <ns:fk>
                     <ns:fkDbSchema>ehr_lookups</ns:fkDbSchema>
                     <ns:fkTable>treatment_frequency</ns:fkTable>
-                    <ns:fkColumnName>rowid</ns:fkColumnName>
+                    <ns:fkColumnName>meaning</ns:fkColumnName>
                 </ns:fk>
             </ns:column>
             <ns:column columnName="hourofday">
@@ -597,6 +599,15 @@
             </ns:column>
             <ns:column columnName="species">
                 <ns:nullable>true</ns:nullable>
+            </ns:column>
+            <ns:column columnName="gender">
+                <ns:nullable>true</ns:nullable>
+                <ns:columnTitle>Gender</ns:columnTitle>
+                <ns:fk>
+                    <ns:fkDbSchema>ehr_lookups</ns:fkDbSchema>
+                    <ns:fkTable>gender</ns:fkTable>
+                    <ns:fkColumnName>gender</ns:fkColumnName>
+                </ns:fk>
             </ns:column>
             <ns:column columnName="ageclass">
                 <ns:nullable>true</ns:nullable>
@@ -1285,6 +1296,18 @@
             <ns:column columnName="countAsPaired">
                 <ns:columnTitle>Animals Considered Paired When Separated By This Divider?</ns:columnTitle>
             </ns:column>
+            <ns:column columnName="displaychar">
+                <ns:columnTitle>Display Character</ns:columnTitle>
+            </ns:column>
+            <ns:column columnName="short_description">
+                <ns:columnTitle>Short Description</ns:columnTitle>
+            </ns:column>
+            <ns:column columnName="bgcolor">
+                <ns:columnTitle>Background Color</ns:columnTitle>
+            </ns:column>
+            <ns:column columnName="border_style">
+                <ns:columnTitle>Border CSS Style</ns:columnTitle>
+            </ns:column>
         </ns:columns>
     </ns:table>
     <ns:table tableName="project_types" tableDbType="TABLE" useColumnOrder="true">
@@ -1524,6 +1547,9 @@
                 </ns:fk>
             </ns:column>
             <ns:column columnName="maxCages"/>
+            <ns:column columnName="sort_order">
+                <ns:columnTitle>Sort Order</ns:columnTitle>
+            </ns:column>
             <ns:column columnName="dateDisabled"/>
             <ns:column columnName="created"/>
             <ns:column columnName="createdby"/>
@@ -1574,6 +1600,26 @@
             </ns:column>
             <ns:column columnName="columnIdx">
                 <ns:columnTitle>Column</ns:columnTitle>
+            </ns:column>
+            <ns:column columnName="sort_order">
+                <ns:columnTitle>Sort Order</ns:columnTitle>
+            </ns:column>
+        </ns:columns>
+    </ns:table>
+    <ns:table tableName="flag_categories" tableDbType="TABLE" useColumnOrder="true">
+        <ns:tableTitle>Flag Categories</ns:tableTitle>
+        <ns:javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</ns:javaCustomizer>
+        <ns:columns>
+            <ns:column columnName="category">
+                <ns:columnTitle>Category</ns:columnTitle>
+            </ns:column>
+            <ns:column columnName="description">
+                <ns:columnTitle>Description</ns:columnTitle>
+                <ns:inputType>textarea</ns:inputType>
+            </ns:column>
+            <ns:column columnName="enforceUnique">
+                <ns:columnTitle>Enforce Single Flag Per Animal?</ns:columnTitle>
+                <ns:defaultValue>false</ns:defaultValue>
             </ns:column>
         </ns:columns>
     </ns:table>

@@ -20,7 +20,11 @@ d2.cage,
 
 d2.cond,
 
-d2.date
+d2.date,
+
+coalesce(d2.room, '') as room_order,
+
+coalesce(d2.cage, '') as cage_order,
 
 FROM study.housing d2
 

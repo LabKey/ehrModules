@@ -32,32 +32,9 @@ Ext4.onReady(function (){
         renderTo: 'runDetails_' + webpart.wrapperDivId
     });
 
-    LABKEY.Ajax.request({
-        url: LABKEY.ActionURL.buildURL('ehr', 'getLabResultSummary'),
-        params: {
-            runId: LABKEY.ActionURL.getParameter('objectid')
-        },
-        scope: this,
-        failure: LABKEY.Utils.getCallbackWrapper(LDK.Utils.getErrorCallback(), this),
-        success: LABKEY.Utils.getCallbackWrapper(function(results){
-            console.log(results);
-            Ext4.create('Ext.panel.Panel', {
-                border: false,
-                style: 'padding-left: 5px;',
-                defaults: {
-                    border: false
-                },
-                items: [{
-                    html : 'Results:<hr>',
-                    style: 'bottom-left: 5px;'
-                },{
-                    html: results.results[LABKEY.ActionURL.getParameter('objectid')] ? results.results[LABKEY.ActionURL.getParameter('objectid')] : 'No results found',
-                    style: 'padding-left: 5px;'
-                }]
-            }).render('results_'+webpart.wrapperDivId);
-        }, this)
-
-    });
+    Ext4.create('EHR.panel.LabworkSummaryPanel', {
+        runId: LABKEY.ActionURL.getParameter('objectid')
+    }).render('results_'+webpart.wrapperDivId);
 });
 
 </script>

@@ -60,6 +60,22 @@ Ext4.onReady(function(){
                         labelWidth: 180
                     },
                     items: this.getDateItems()
+                },{
+                    xtype: 'radiogroup',
+                    itemId: 'outputType',
+                    fieldLabel: 'Output',
+                    width: 500,
+                    columns: 1,
+                    items: [{
+                        boxLabel: 'List of Animals',
+                        checked: true,
+                        name: 'outputType',
+                        inputValue: 'animalGroupOverlapsForRange'
+                    },{
+                        boxLabel: '# of Animals',
+                        name: 'outputType',
+                        inputValue: 'animalGroupOverlapSummary'
+                    }]
                 }],
                 dockedItems: {
                     xtype: 'toolbar',
@@ -120,7 +136,7 @@ Ext4.onReady(function(){
         },
 
         onSubmit: function(){
-            var queryName = this.down('#searchType').getValue().searchType;
+            var queryName = this.down('#outputType').getValue().outputType;
 
             var startField = this.down('#startField');
             var start = startField.getValue();
@@ -130,7 +146,7 @@ Ext4.onReady(function(){
             }
 
             var endField = this.down('#endField');
-            var end = endField ? endField.getValue() : null;
+            var end = endField ? endField.getValue() : start;
             var groupName = this.down('#groupField').getValue();
 
             var config = {
@@ -141,26 +157,22 @@ Ext4.onReady(function(){
                 title: 'Group Members'
             };
 
-            var params = {};
-            if (queryName == 'animalGroupOverlaps'){
-                params.Date = start;
-            }
-            else {
-                params.StartDate = start;
-                params.EndDate = end;
-            }
-
             if (!groupName){
                 Ext4.Msg.alert('Error', 'Must provide a group name');
                 return;
             }
 
-            params.Name = groupName;
-
-            if (LABKEY.Utils.isEmptyObj(params)){
-                Ext4.Msg.alert('Error', 'Must provide input values');
+            if (!start){
+                Ext4.Msg.alert('Error', 'Must provide a start date');
                 return;
             }
+
+            config.removeableFilters = [LABKEY.Filter.create('groupId/name', groupName, LABKEY.Filter.Types.EQUAL)];
+
+            var params = {
+                StartDate: start,
+                EndDate: end
+            };
 
             config.parameters = params;
 

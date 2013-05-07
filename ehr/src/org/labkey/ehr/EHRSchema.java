@@ -34,6 +34,7 @@ public class EHRSchema
     public static final String TABLE_ENCOUNTER_FLAGS = "encounter_flags";
     public static final String TABLE_ENCOUNTER_SUMMARIES = "encounter_summaries";
     public static final String TABLE_ENCOUNTER_PARTICIPANTS = "encounter_participants";
+    public static final String TABLE_SNOMED_TAGS = "snomed_tags";
 
     public static EHRSchema getInstance()
     {

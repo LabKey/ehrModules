@@ -27,6 +27,9 @@
                             query.enddate~isblank
                         </url>
                     </column>
+                    <column columnName="animals">
+                        <columnTitle>Animals</columnTitle>
+                    </column>
                 </columns>
             </table>
         </tables>

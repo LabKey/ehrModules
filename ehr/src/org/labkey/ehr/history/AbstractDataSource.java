@@ -61,6 +61,7 @@ abstract public class AbstractDataSource implements HistoryDataSource
     private String _schema;
     private String _query;
     private String _category;
+    private String _name;
     private String _subjectIdField = "Id";
     protected static final Logger _log = Logger.getLogger(HistoryDataSource.class);
 
@@ -77,12 +78,21 @@ abstract public class AbstractDataSource implements HistoryDataSource
     {
         _schema = schema;
         _query = query;
+        _name = category;
+        _category = category;
+    }
+
+    public AbstractDataSource(String schema, String query, String name, String category)
+    {
+        _schema = schema;
+        _query = query;
+        _name = name;
         _category = category;
     }
 
     public String getName()
     {
-        return _category;
+        return _name;
     }
 
     protected TableInfo getTableInfo(Container c, User u)

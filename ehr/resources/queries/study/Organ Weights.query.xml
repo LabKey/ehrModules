@@ -2,9 +2,7 @@
     <metadata>
         <tables xmlns="http://labkey.org/data/xml">
             <table tableName="organ_weights" tableDbType="TABLE">
-                <tableUrl>/query/detailsQueryRow.view?schemaName=study&amp;query.queryName=Organ Weights&amp;lsid=${lsid}</tableUrl>
-                <!--<insertUrl>/ehr/manageRecord.view?schemaName=study&amp;queryName=Organ Weights&amp;keyField=lsid&amp;</insertUrl>-->
-                <!--<updateUrl>/ehr/manageRecord.view?schemaName=study&amp;queryName=Organ Weights&amp;keyField=lsid&amp;key=${lsid}</updateUrl>-->
+                <tableUrl />
                 <insertUrl />
                 <importUrl />
                 <updateUrl />

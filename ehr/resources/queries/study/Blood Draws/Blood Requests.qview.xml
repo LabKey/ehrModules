@@ -51,15 +51,10 @@
       </column>
     </columns>
    <sorts>
-       <!--<sort column="date" descending="false"/>-->
-       <!--<sort column="Id/curLocation/room" descending="false"/>-->
-       <!--<sort column="Id/curLocation/cage" descending="false"/>-->
        <sort column="date" descending="false"/>
        <sort column="Id" descending="false"/>
    </sorts>
     <filters>
         <filter column="qcstate/label" operator="neq" value="Delete Requested"/>
-        <!--<filter column="QCState/label" operator="neq" value="Request: Denied"/>-->
-        <!--<filter column="QCState/label" operator="neq" value="Request: Pending"/>-->
     </filters>
 </customView>

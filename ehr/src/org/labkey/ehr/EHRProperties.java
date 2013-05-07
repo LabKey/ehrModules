@@ -87,6 +87,22 @@ public class EHRProperties
         }
     };
 
+    public static SystemProperty PROBLEMID = new SystemProperty(URI + "ProblemId", PropertyType.STRING)
+    {
+        @Override
+        protected PropertyDescriptor constructPropertyDescriptor()
+        {
+            PropertyDescriptor pd = super.constructPropertyDescriptor();
+            pd.setShownInInsertView(false);
+            pd.setShownInUpdateView(false);
+            pd.setShownInDetailsView(false);
+            pd.setHidden(true);
+            pd.setName("problemid");
+            pd.setLabel("Problem Id");
+            return pd;
+        }
+    };
+
     public static SystemProperty RUNID = new SystemProperty(URI + "RunId", PropertyType.STRING)
     {
         @Override

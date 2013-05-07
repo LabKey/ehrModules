@@ -27,6 +27,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -40,7 +41,7 @@ public class ClinicalHistoryManager
 {
     private static final ClinicalHistoryManager _instance = new ClinicalHistoryManager();
 
-    private Map<String, List<HistoryDataSource>> _dataSources = new HashMap<String, List<HistoryDataSource>>();
+    private List<HistoryDataSource> _dataSources = new ArrayList<HistoryDataSource>();
     private Logger _log = Logger.getLogger(ClinicalHistoryManager.class);
 
     private ClinicalHistoryManager()
@@ -78,6 +79,9 @@ public class ClinicalHistoryManager
 
         registerDataSource(new DefaultTreatmentOrdersDataSource());
         registerDataSource(new DefaultTreatmentEndDataSource());
+
+        registerDataSource(new DefaultAnimalGroupsDataSource());
+        registerDataSource(new DefaultAnimalGroupsEndDataSource());
     }
 
     public static ClinicalHistoryManager get()
@@ -87,15 +91,7 @@ public class ClinicalHistoryManager
 
     public void registerDataSource(HistoryDataSource dataSource)
     {
-        String key = dataSource.getName();
-        List<HistoryDataSource> sources = _dataSources.get(key);
-
-        if (sources == null)
-            sources = new ArrayList<HistoryDataSource>();
-
-        sources.add(0, dataSource);
-
-        _dataSources.put(key, sources);
+        _dataSources.add(dataSource);
     }
 
     public List<HistoryRow> getHistory(Container c, User u, String subjectId, Date minDate, Date maxDate)
@@ -144,19 +140,18 @@ public class ClinicalHistoryManager
 
     protected List<HistoryDataSource> getDataSources(Container c, User u)
     {
-        List<HistoryDataSource> sources = new ArrayList<HistoryDataSource>();
-        for (List<HistoryDataSource> list : _dataSources.values())
+        Map<String, HistoryDataSource> sources = new LinkedHashMap<String, HistoryDataSource>();
+        for (HistoryDataSource source : _dataSources)
         {
-            for (HistoryDataSource source : list)
+            if (source.isAvailable(c, u))
             {
-                if (source.isAvailable(c, u))
-                {
-                    sources.add(source);
-                    break;
-                }
+                if (sources.containsKey(source.getName()))
+                    _log.warn("There is an existing source with the name: " + source.getName());
+
+                sources.put(source.getName(), source);
             }
         }
 
-        return sources;
+        return new ArrayList(sources.values());
     }
 }

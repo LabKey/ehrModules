@@ -2,9 +2,7 @@
     <metadata>
         <tables xmlns="http://labkey.org/data/xml">
             <table tableName="Arrival" tableDbType="TABLE">
-                <tableUrl>/query/detailsQueryRow.view?schemaName=study&amp;query.queryName=Arrival&amp;lsid=${lsid}</tableUrl>
-                <!--<insertUrl>/ehr/manageRecord.view?schemaName=study&amp;queryName=Arrival&amp;keyField=lsid&amp;</insertUrl>-->
-                <!--<updateUrl>/ehr/manageRecord.view?schemaName=study&amp;queryName=Arrival&amp;keyField=lsid&amp;key=${lsid}</updateUrl>-->
+                <tableUrl />
                 <insertUrl />
                 <importUrl />
                 <updateUrl />
@@ -114,6 +112,9 @@
                             <fkTable>RearingType</fkTable>
                             <fkColumnName>rowid</fkColumnName>
                         </fk>
+                    </column>
+                    <column columnName="originalId">
+                        <columnTitle>Original ID</columnTitle>
                     </column>
                 </columns>
             </table>

@@ -48,6 +48,6 @@ public class DefaultCasesDataSource extends AbstractDataSource
     @Override
     protected Set<String> getColumnNames()
     {
-        return PageFlowUtil.set("Id", "date", "enddate", "caseno", "objectid", "performedby");
+        return PageFlowUtil.set("Id", "date", "enddate", "caseno", "objectid", "performedby", "category");
     }
 }

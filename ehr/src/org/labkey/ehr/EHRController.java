@@ -16,6 +16,7 @@
 package org.labkey.ehr;
 
 import org.json.JSONArray;
+import org.json.JSONObject;
 import org.labkey.api.action.ApiAction;
 import org.labkey.api.action.ApiResponse;
 import org.labkey.api.action.ApiSimpleResponse;
@@ -24,27 +25,37 @@ import org.labkey.api.action.SimpleViewAction;
 import org.labkey.api.action.SpringActionController;
 import org.labkey.api.ehr.EHRService;
 import org.labkey.api.ehr.HistoryRow;
+import org.labkey.api.module.Module;
+import org.labkey.api.module.ModuleHtmlView;
+import org.labkey.api.module.ModuleLoader;
 import org.labkey.api.pipeline.PipelineStatusUrls;
+import org.labkey.api.resource.Resource;
 import org.labkey.api.security.RequiresPermissionClass;
 import org.labkey.api.security.permissions.AdminPermission;
 import org.labkey.api.security.permissions.ReadPermission;
 import org.labkey.api.util.ExceptionUtil;
 import org.labkey.api.util.PageFlowUtil;
+import org.labkey.api.util.Path;
 import org.labkey.api.util.URLHelper;
 import org.labkey.api.view.ActionURL;
 import org.labkey.api.view.HtmlView;
+import org.labkey.api.view.JspView;
 import org.labkey.api.view.NavTree;
 import org.labkey.api.view.UnauthorizedException;
+import org.labkey.api.view.WebPartView;
+import org.labkey.api.ehr.dataentry.DataEntryForm;
+import org.labkey.ehr.dataentry.DataEntryManager;
 import org.labkey.ehr.history.ClinicalHistoryManager;
-import org.labkey.ehr.history.HistoryRowImpl;
 import org.labkey.ehr.history.LabworkManager;
-import org.labkey.ehr.pipeline.KinshipRunnable;
+import org.labkey.ehr.pipeline.GeneticCalculationsRunnable;
+import org.labkey.ehr.security.EHRDataEntryPermission;
 import org.springframework.validation.BindException;
 import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -66,8 +77,15 @@ public class EHRController extends SpringActionController
         {
             ApiResponse resp = new ApiSimpleResponse();
 
-            EHRManager.get().getDataEntryItems(getContainer(), getUser());
-            //TODO
+            Collection<DataEntryForm> forms = DataEntryManager.get().getForms(getContainer(), getUser());
+            List<JSONObject> formJson = new ArrayList<JSONObject>();
+            for (DataEntryForm def : forms)
+            {
+                formJson.add(def.toJSON(getContainer(), getUser()));
+            }
+
+            resp.getProperties().put("forms", formJson);
+            resp.getProperties().put("success", true);
 
             return resp;
         }
@@ -321,7 +339,7 @@ public class EHRController extends SpringActionController
             StringBuilder msg = new StringBuilder();
             msg.append("For each dataset, we expect to find a triger script and .query.xml file.  The following datasets lack one or more of these:<br><br>");
 
-            List<String> messages = EHRManager.get().verifyDatasetResources(getContainer(),  getUser());
+            List<String> messages = EHRManager.get().verifyDatasetResources(getContainer(), getUser());
             for (String message : messages)
             {
                 msg.append("\t").append(message).append("<br>");
@@ -367,7 +385,7 @@ public class EHRController extends SpringActionController
     }
 
     @RequiresPermissionClass(AdminPermission.class)
-    public class KinshipAction extends ConfirmAction<Object>
+    public class DoGeneticCalculationsAction extends ConfirmAction<Object>
     {
         public void validateCommand(Object form, Errors errors)
         {
@@ -381,12 +399,12 @@ public class EHRController extends SpringActionController
 
         public ModelAndView getConfirmView(Object form, BindException errors) throws Exception
         {
-            return new HtmlView("This will cause the system to recalculate kinship coefficients on the colony.  Do you want to continue?");
+            return new HtmlView("This will cause the system to recalculate kinship and inbreeding coefficients on the colony.  Do you want to continue?");
         }
 
         public boolean handlePost(Object form, BindException errors) throws Exception
         {
-            return new KinshipRunnable().run(getContainer());
+            return new GeneticCalculationsRunnable().run(getContainer());
         }
     }
 
@@ -523,4 +541,197 @@ public class EHRController extends SpringActionController
         }
     }
 
+    @RequiresPermissionClass(ReadPermission.class)
+    public class ProjectDetailsAction extends SimpleViewAction<Object>
+    {
+        @Override
+        public ModelAndView getView(Object form, BindException errors) throws Exception
+        {
+            EHRServiceImpl service = (EHRServiceImpl)EHRServiceImpl.get();
+
+            Resource r = service.getActionOverride(EHRService.EHR_ACTION_TYPE.projectDetails, getContainer());
+            if (r == null)
+            {
+                Module ehrModule = ModuleLoader.getInstance().getModule(EHRModule.NAME);
+                r = ehrModule.getModuleResource(Path.parse("views/projectDetails.html"));
+            }
+
+            HtmlView view = new ModuleHtmlView(r);
+            view.setFrame(WebPartView.FrameType.NONE);
+
+            return view;
+        }
+
+        @Override
+        public NavTree appendNavTrail(NavTree root)
+        {
+            return root.addChild("Project Details");
+        }
+    }
+
+    @RequiresPermissionClass(ReadPermission.class)
+    public class ProtocolDetailsAction extends SimpleViewAction<Object>
+    {
+        @Override
+        public ModelAndView getView(Object form, BindException errors) throws Exception
+        {
+            EHRServiceImpl service = (EHRServiceImpl)EHRServiceImpl.get();
+
+            Resource r = service.getActionOverride(EHRService.EHR_ACTION_TYPE.protocolDetails, getContainer());
+            if (r == null)
+            {
+                Module ehrModule = ModuleLoader.getInstance().getModule(EHRModule.NAME);
+                r = ehrModule.getModuleResource(Path.parse("views/protocolDetails.html"));
+            }
+
+            HtmlView view = new ModuleHtmlView(r);
+            view.setFrame(WebPartView.FrameType.NONE);
+
+            return view;
+        }
+
+        @Override
+        public NavTree appendNavTrail(NavTree root)
+        {
+            return root.addChild("Protocol Details");
+        }
+    }
+
+    @RequiresPermissionClass(ReadPermission.class)
+    public class ProcedureDetailsAction extends SimpleViewAction<Object>
+    {
+        @Override
+        public ModelAndView getView(Object form, BindException errors) throws Exception
+        {
+            EHRServiceImpl service = (EHRServiceImpl)EHRServiceImpl.get();
+
+            Resource r = service.getActionOverride(EHRService.EHR_ACTION_TYPE.procedureDetails, getContainer());
+            if (r == null)
+            {
+                Module ehrModule = ModuleLoader.getInstance().getModule(EHRModule.NAME);
+                r = ehrModule.getModuleResource(Path.parse("views/procedureDetails.html"));
+            }
+
+            HtmlView view = new ModuleHtmlView(r);
+            view.setFrame(WebPartView.FrameType.NONE);
+
+            return view;
+        }
+
+        @Override
+        public NavTree appendNavTrail(NavTree root)
+        {
+            return root.addChild("Procedure Details");
+        }
+    }
+
+    @RequiresPermissionClass(ReadPermission.class)
+    public class AnimalGroupDetailsAction extends SimpleViewAction<Object>
+    {
+        @Override
+        public ModelAndView getView(Object form, BindException errors) throws Exception
+        {
+            EHRServiceImpl service = (EHRServiceImpl)EHRServiceImpl.get();
+
+            Resource r = service.getActionOverride(EHRService.EHR_ACTION_TYPE.animalGroupDetails, getContainer());
+            if (r == null)
+            {
+                Module ehrModule = ModuleLoader.getInstance().getModule(EHRModule.NAME);
+                r = ehrModule.getModuleResource(Path.parse("views/animalGroupDetails.html"));
+            }
+
+            HtmlView view = new ModuleHtmlView(r);
+            view.setFrame(WebPartView.FrameType.NONE);
+
+            return view;
+        }
+
+        @Override
+        public NavTree appendNavTrail(NavTree root)
+        {
+            return root.addChild("Animal Group Details");
+        }
+    }
+
+    @RequiresPermissionClass(ReadPermission.class)
+    public class CageDetailsAction extends SimpleViewAction<Object>
+    {
+        @Override
+        public ModelAndView getView(Object form, BindException errors) throws Exception
+        {
+            EHRServiceImpl service = (EHRServiceImpl)EHRServiceImpl.get();
+
+            Resource r = service.getActionOverride(EHRService.EHR_ACTION_TYPE.cageDetails, getContainer());
+            if (r == null)
+            {
+                Module ehrModule = ModuleLoader.getInstance().getModule(EHRModule.NAME);
+                r = ehrModule.getModuleResource(Path.parse("views/cageDetails.html"));
+            }
+
+            HtmlView view = new ModuleHtmlView(r);
+            view.setFrame(WebPartView.FrameType.NONE);
+
+            return view;
+        }
+
+        @Override
+        public NavTree appendNavTrail(NavTree root)
+        {
+            return root.addChild("Location Details");
+        }
+    }
+
+    @RequiresPermissionClass(EHRDataEntryPermission.class)
+    public class DataEntryFormAction extends SimpleViewAction<EnterDataForm>
+    {
+        private String _title = null;
+
+        @Override
+        public ModelAndView getView(EnterDataForm form, BindException errors) throws Exception
+        {
+            if (form.getFormType() == null)
+            {
+                errors.reject(ERROR_MSG, "No form type provided");
+                return null;
+            }
+
+            DataEntryForm def = DataEntryManager.get().getFormByName(form.getFormType(), getContainer(), getUser());
+            if (def == null)
+            {
+                errors.reject(ERROR_MSG, "No form type provided");
+                return null;
+            }
+
+            _title = def.getLabel();
+
+            JspView<DataEntryForm> view = new JspView<DataEntryForm>("/org/labkey/ehr/view/dataEntryForm.jsp", def);
+            view.setTitle(def.getLabel());
+            view.setHidePageTitle(true);
+            view.setFrame(WebPartView.FrameType.PORTAL);
+            view.addClientDependencies(def.getClientDependencies());
+
+            return view;
+        }
+
+        @Override
+        public NavTree appendNavTrail(NavTree root)
+        {
+            return root.addChild(_title == null ? "Enter Data" : _title);
+        }
+    }
+
+    public static class EnterDataForm
+    {
+        private String formType;
+
+        public String getFormType()
+        {
+            return formType;
+        }
+
+        public void setFormType(String formType)
+        {
+            this.formType = formType;
+        }
+    }
 }

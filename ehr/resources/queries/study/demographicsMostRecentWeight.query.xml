@@ -13,7 +13,7 @@
                             query.queryName=Weight&amp;
                             query.id~eq=${id}
                         </url>
-                        <formatString>0.##</formatString>
+                        <formatString>#.##</formatString>
                     </column>
                     <column columnName="MostRecentWeightDate">
                         <formatString>yyyy-MM-dd HH:mm a</formatString>

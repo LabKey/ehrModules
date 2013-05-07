@@ -26,11 +26,15 @@ import org.labkey.api.ehr.EHRService;
 import org.labkey.api.ehr.HistoryDataSource;
 import org.labkey.api.module.Module;
 import org.labkey.api.module.ModuleLoader;
+import org.labkey.api.module.ModuleProperty;
 import org.labkey.api.query.DetailsURL;
 import org.labkey.api.resource.Resource;
 import org.labkey.api.security.User;
 import org.labkey.api.util.Pair;
+import org.labkey.api.util.Path;
 import org.labkey.api.view.template.ClientDependency;
+import org.labkey.api.ehr.dataentry.DataEntryForm;
+import org.labkey.ehr.dataentry.DataEntryManager;
 import org.labkey.ehr.history.ClinicalHistoryManager;
 
 import java.util.ArrayList;
@@ -51,6 +55,7 @@ public class EHRServiceImpl extends EHRService
 {
     private Set<Module> _registeredModules = new HashSet<Module>();
     private Map<REPORT_LINK_TYPE, List<ReportLink>> _reportLinks = new HashMap<REPORT_LINK_TYPE, List<ReportLink>>();
+    private Map<EHR_ACTION_TYPE, List<Pair<Module, String>>> _actionOverrides = new HashMap<EHR_ACTION_TYPE, List<Pair<Module, String>>>();
     private List<Pair<Module, Resource>> _extraTriggerScripts = new ArrayList<Pair<Module, Resource>>();
     private Map<Module, List<ClientDependency>> _clientDependencies = new HashMap<Module, List<ClientDependency>>();
     private Map<String, Map<String, List<Pair<Module, Class<? extends TableCustomizer>>>>> _tableCustomizers = new CaseInsensitiveHashMap<Map<String, List<Pair<Module, Class<? extends TableCustomizer>>>>>();
@@ -303,5 +308,53 @@ public class EHRServiceImpl extends EHRService
     public void registerHistoryDataSource(HistoryDataSource source)
     {
         ClinicalHistoryManager.get().registerDataSource(source);
+    }
+
+    public void registerActionOverride(EHR_ACTION_TYPE action, Module owner, String resourcePath)
+    {
+        List<Pair<Module, String>> list = _actionOverrides.get(action);
+        if (list == null)
+            list = new ArrayList<Pair<Module, String>>();
+
+        list.add(Pair.of(owner, resourcePath));
+
+        _actionOverrides.put(action, list);
+    }
+
+    public Resource getActionOverride(EHR_ACTION_TYPE action, Container c)
+    {
+        if (!_actionOverrides.containsKey(action))
+            return null;
+
+        Set<Module> activeModules = c.getActiveModules();
+        for (Pair<Module, String> pair : _actionOverrides.get(action))
+        {
+            if (activeModules.contains(pair.first))
+            {
+                Resource r = pair.first.getModuleResource(Path.parse(pair.second));
+                if (r != null)
+                    return r;
+                else
+                    _log.error("Unable to find registered EHR action: " + pair.first.getName() + " / " + pair.second);
+            }
+        }
+
+        return null;
+    }
+
+    public Container getEHRStudyContainer(Container c)
+    {
+        Module ehr = ModuleLoader.getInstance().getModule(EHRModule.NAME);
+        ModuleProperty mp = ehr.getModuleProperties().get(EHRManager.EHRStudyContainerPropName);
+        String path = PropertyManager.getCoalecedProperty(PropertyManager.SHARED_USER, c, mp.getCategory(), EHRManager.EHRAdminUserPropName);
+        if (path == null)
+            return null;
+
+        return ContainerManager.getForPath(path);
+    }
+
+    public void registerFormType(DataEntryForm form)
+    {
+        DataEntryManager.get().registerFormType(form);
     }
 }

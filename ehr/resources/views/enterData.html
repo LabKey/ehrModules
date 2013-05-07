@@ -1,0 +1,51 @@
+<script type="text/javascript">
+
+Ext4.onReady(function (){
+    var webpart = <%=webpartContext%>;
+    var ctx = EHR.Utils.getEHRContext(webpart.wrapperDivId);
+    if(!ctx)
+        return;
+
+    var domSpec = [{
+        tag: 'div',
+        id: 'ehrTasks_'+webpart.wrapperDivId,
+        style: 'padding-bottom: 10px;'
+    },{
+        tag: 'div',
+        id: 'dataEntryMenuDiv_'+webpart.wrapperDivId,
+        style: 'padding-bottom: 10px;'
+    }]
+
+    var el = Ext4.get(webpart.wrapperDivId);
+    Ext4.DomHelper.append(el, domSpec);
+
+    EHR.Utils.getDataEntryItems({
+        scope: this,
+        success: function(results){
+            var formMap = {};
+            Ext4.each(results.forms, function(form){
+                if (form.isAvailable){
+                    formMap[form.category] = formMap[form.category] || [];
+                    formMap[form.category].push({
+                        name: form.label,
+                        url: LABKEY.ActionURL.buildURL('ehr', 'dataEntryForm', null, {formType: form.name})
+                    });
+                }
+            }, this);
+
+            var sections = [];
+            for (var i in formMap){
+                sections.push({
+                    header: i,
+                    items: formMap[i]
+                });
+            }
+
+            Ext4.create('LDK.panel.NavPanel', {
+                sections: sections
+            }).render('dataEntryMenuDiv_'+webpart.wrapperDivId);
+        }
+    });
+});
+
+</script>

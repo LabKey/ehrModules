@@ -2,9 +2,7 @@
     <metadata>
         <tables xmlns="http://labkey.org/data/xml">
             <table tableName="tissue_samples" tableDbType="TABLE">
-                <tableUrl>/query/detailsQueryRow.view?schemaName=study&amp;query.queryName=tissue_samples&amp;lsid=${lsid}</tableUrl>
-                <!--<insertUrl>/ehr/manageRecord.view?schemaName=study&amp;queryName=Tissue Samples&amp;keyField=lsid&amp;</insertUrl>-->
-                <!--<updateUrl>/ehr/manageRecord.view?schemaName=study&amp;queryName=Tissue Samples&amp;keyField=lsid&amp;key=${lsid}</updateUrl>-->
+                <tableUrl />
                 <insertUrl />
                 <importUrl />
                 <updateUrl />
@@ -67,6 +65,9 @@
                     <column columnName="quantity">
                         <columnTitle>Quantity</columnTitle>
                     </column>
+                    <column columnName="tissueCondition">
+                        <columnTitle>Tissue Condition</columnTitle>
+                    </column>
                     <column columnName="slideNum">
                         <columnTitle>Slide Number</columnTitle>
                     </column>
@@ -81,6 +82,9 @@
                     </column>
                     <column columnName="recipient">
                         <columnTitle>Recipient</columnTitle>
+                    </column>
+                    <column columnName="weight">
+                        <columnTitle>Weight</columnTitle>
                     </column>
                 </columns>
             </table>

@@ -24,7 +24,7 @@ Ext4.define('EHR.data.ClinicalHistoryStore', {
 
         this.actionName = config.actionName || this.actionName;
 
-        this.callParent(config);
+        this.callParent(arguments);
     },
 
     /**

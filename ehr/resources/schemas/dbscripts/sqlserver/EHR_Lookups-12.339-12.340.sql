@@ -1,0 +1,1 @@
+ALTER TABLE ehr_lookups.divider_types ADD displaychar varchar(10);

@@ -81,6 +81,7 @@ Ext4.onReady(function(){
             xtype: 'textfield',
             helpPopup: 'If included, only records from this room will be used.  It can be left blank.',
             fieldLabel: 'Room (optional)',
+            value: LABKEY.ActionURL.getParameter('room'),
             itemId: 'roomField'
             //hidden: LABKEY.ActionURL.getParameter('groupById') ? true : false
         },{

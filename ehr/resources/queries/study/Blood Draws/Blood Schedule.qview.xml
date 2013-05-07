@@ -57,9 +57,8 @@
       </column>
     </columns>
    <sorts>
-       <!--<sort column="date" descending="false"/>-->
-       <sort column="Id/curLocation/room" descending="false"/>
-       <sort column="Id/curLocation/cage" descending="false"/>
+       <sort column="Id/curLocation/room_order"/>
+       <sort column="Id/curLocation/cage"/>
        <sort column="date" descending="false"/>
        <sort column="Id" descending="false"/>
    </sorts>

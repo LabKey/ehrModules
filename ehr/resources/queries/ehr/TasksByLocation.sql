@@ -6,7 +6,7 @@
 SELECT
   --sd.id.curlocation.room as room,
 
-  sd.id.dataset.activehousing.room as room,
+  sd.id.curLocation.room as room,
 
   group_concat(DISTINCT sd.id) as Ids,
 
@@ -29,7 +29,5 @@ ON (t.taskid = sd.taskid)
 GROUP BY
 t.taskid,
 t.formtype,
---sd.id.curlocation.room
-
-sd.id.dataset.activehousing.room
+sd.id.curLocation.room
 

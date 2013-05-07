@@ -5,6 +5,7 @@
  */
 SELECT
 i.date,
+cast(i.date as date) as dateOnly,
 cast(dayofyear(i.date) as integer) as DayOfYear,
 cast(dayofmonth(i.date) as integer) as DayOfMonth,
 cast(dayofweek(i.date) as integer) as DayOfWeek,

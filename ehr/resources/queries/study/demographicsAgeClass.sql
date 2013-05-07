@@ -7,13 +7,15 @@ SELECT
 
 d.id,
 ac.AgeClass,
-ac.label
+ac.label,
+ac.gender,
 
 FROM study.demographics d
 LEFT JOIN ehr_lookups.ageclass ac
 ON (
   (CONVERT(age_in_months(d.birth, COALESCE(d.death, now())), DOUBLE) / 12) >= ac."min" AND
   ((CONVERT(age_in_months(d.birth, COALESCE(d.death, now())), DOUBLE) / 12) < ac."max" OR ac."max" is null) AND
-  d.species = ac.species
+  d.species = ac.species AND
+  (d.gender = ac.gender OR ac.gender IS NULL)
 )
 WHERE d.birth IS NOT NULL

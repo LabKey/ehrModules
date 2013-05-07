@@ -2,9 +2,10 @@
     <metadata>
         <tables xmlns="http://labkey.org/data/xml">
             <table tableName="HousingOverlaps" tableDbType="TABLE">
+                <javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</javaCustomizer>
                 <tableTitle>Housing Overlaps</tableTitle>
                 <description>This query identifies distinct housing records that overlapped with the given housing records, accounting for date and time</description>
-                <tableUrl>/query/detailsQueryRow.view?schemaName=study&amp;query.queryName=housing&amp;lsid=${lsid}</tableUrl>
+                <tableUrl />
                 <columns>
                     <column columnName="lsid">
                         <isHidden>true</isHidden>

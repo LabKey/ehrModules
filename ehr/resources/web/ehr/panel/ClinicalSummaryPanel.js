@@ -71,7 +71,7 @@ Ext4.define('EHR.panel.ClinicalSummaryPanel', {
             requiredVersion: 9.1,
             schemaName: 'study',
             queryName: 'cases',
-            filterArray: [LABKEY.Filter.create('enddateCoalesced', '+0d', LABKEY.Filter.Types.DATE_GREATER_THAN_OR_EQUAL)].concat(this.filterArray),
+            filterArray: [LABKEY.Filter.create('enddateCoalesced', '-0d', LABKEY.Filter.Types.DATE_GREATER_THAN_OR_EQUAL)].concat(this.filterArray),
             columns: ['Id', 'date', 'category'].join(','),
             failure: LDK.Utils.getErrorCallback(),
             scope: this,

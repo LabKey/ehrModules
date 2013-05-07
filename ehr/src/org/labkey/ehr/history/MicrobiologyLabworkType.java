@@ -32,17 +32,19 @@ import java.util.Set;
  */
 public class MicrobiologyLabworkType extends DefaultLabworkType
 {
+    private static final String _tissueField = "tissue/meaning";
+
     public MicrobiologyLabworkType()
     {
         super("Microbiology", "study", "Microbiology Results");
-        _resultField = "quantity";
+        _qualResultField = "quantity";
         _testIdField = "organism/meaning";
     }
 
     @Override
     protected Set<String> getColumnNames()
     {
-        return PageFlowUtil.set(_lsidField, _idField, _dateField, _runIdField, _testIdField, _resultField);
+        return PageFlowUtil.set(_lsidField, _idField, _dateField, _runIdField, _testIdField, _resultField, _tissueField);
     }
 
     @Override
@@ -50,15 +52,22 @@ public class MicrobiologyLabworkType extends DefaultLabworkType
     {
         StringBuilder sb = new StringBuilder();
 
-        Double result = rs.getDouble(FieldKey.fromString(_resultField));
+        String quantity = null;//rs.getString(FieldKey.fromString(_qualResultField));
         String organism = rs.getString(FieldKey.fromString(_testIdField));
+        String tissue = rs.getString(FieldKey.fromString(_tissueField));
+
         String delim = "";
+
+        if (tissue != null)
+        {
+            sb.append("Tissue: ").append(tissue).append("\n");
+        }
 
         if (organism != null)
         {
             sb.append(organism).append(": ");
-            if (result != null)
-                sb.append(result);
+            if (quantity != null)
+                sb.append(quantity);
 
             delim = "\n";
         }

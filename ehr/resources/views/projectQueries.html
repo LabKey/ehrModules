@@ -8,25 +8,7 @@ Ext4.onReady(function(){
 
     EHR.Utils.getReportLinks({
         linkTypes: ['project', 'protocol', 'assignment'],
-        success: function(response){
-            var projectItems = [];
-            var protocolItems = [];
-            var assignmentItems = [];
-            Ext4.each(response.items, function(item){
-                var arr;
-                if (item.type == 'protocol')
-                    arr = protocolItems;
-                else if (item.type == 'project')
-                    arr = projectItems;
-                else if (item.type == 'assignment')
-                    arr = assignmentItems;
-
-                arr.push({
-                    tag: 'li',
-                    html: '<a href="' + LABKEY.ActionURL.buildURL(item.controller, item.action, ctx['EHRStudyContainer'], item.params) + '">' + item.label + '</a>'
-                });
-            }, this);
-
+        success: function(results){
             var domSpec = [{
                 tag: 'div',
                 style: 'padding-bottom: 10px;',
@@ -38,15 +20,8 @@ Ext4.onReady(function(){
                 html: 'Center Projects:'
             });
 
-            if (projectItems.length){
-                domSpec.push({
-                    tag: 'h3',
-                    html: 'Quick Links:'
-                });
-                domSpec.push({
-                    tag: 'ul',
-                    children: [projectItems]
-                });
+            if (results.project && results.project.domSpec){
+                domSpec = domSpec.concat(results.project.domSpec);
             }
 
             domSpec = domSpec.concat([{
@@ -59,15 +34,8 @@ Ext4.onReady(function(){
                 html: 'IACUC Protocols:'
             }]);
 
-            if (protocolItems.length){
-                domSpec.push({
-                    tag: 'h3',
-                    html: 'Quick Links:'
-                });
-                domSpec.push({
-                    tag: 'ul',
-                    children: [protocolItems]
-                });
+            if (results.protocol && results.protocol.domSpec){
+                domSpec = domSpec.concat(results.protocol.domSpec);
             }
 
             domSpec = domSpec.concat([{
@@ -83,23 +51,16 @@ Ext4.onReady(function(){
                 html: 'Assignments:'
             }]);
 
-            if (assignmentItems.length){
-                domSpec.push({
-                    tag: 'h3',
-                    html: 'Quick Links:'
-                });
-                domSpec.push({
-                    tag: 'ul',
-                    children: [assignmentItems]
-                });
+            if (results.assignment && results.assignment.domSpec){
+                domSpec = domSpec.concat(results.assignment.domSpec);
             }
 
             domSpec = domSpec.concat([{
                 tag: 'h3',
-                        html: 'Search All Assignment Records:'
+                html: 'Search All Assignment Records:'
             },{
                 tag: 'div',
-                        id: 'assignmentPanel_' + webpart.wrapperDivId
+                id: 'assignmentPanel_' + webpart.wrapperDivId
             }]);
 
             var el = Ext4.get(webpart.wrapperDivId);

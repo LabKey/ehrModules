@@ -6,7 +6,7 @@
 SELECT
 
 d.id,
-
+d.gender,
 'Offspring' as Relationship,
 
 d2.id  AS Offspring,

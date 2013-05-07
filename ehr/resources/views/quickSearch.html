@@ -120,7 +120,7 @@ function makePanel(){
                     emptyText: '',
                     name: 'projectField',
                     xtype: 'combo',
-                    displayField: 'name',
+                    displayField: 'displayName',
                     valueField: 'project',
                     width: this.FIELD_WIDTH,
                     style: this.FIELD_STYLE,
@@ -131,7 +131,9 @@ function makePanel(){
                         containerPath: ctx['EHRStudyContainer'],
                         schemaName: 'ehr',
                         queryName: 'project',
-                        sort: 'project',
+                        columns: 'project,displayName',
+                        filterArray: [LABKEY.Filter.create('enddate', null, LABKEY.Filter.Types.ISBLANK)],
+                        sort: 'displayName',
                         autoLoad: true
                     }
                 },{
@@ -160,7 +162,7 @@ function makePanel(){
                     emptyText: '',
                     name: 'protocolField',
                     xtype: 'combo',
-                    displayField: 'protocol',
+                    displayField: 'displayName',
                     valueField: 'protocol',
                     width: this.FIELD_WIDTH,
                     style: this.FIELD_STYLE,
@@ -171,7 +173,9 @@ function makePanel(){
                         containerPath: ctx['EHRStudyContainer'],
                         schemaName: 'ehr',
                         queryName: 'protocol',
-                        sort: 'protocol',
+                        columns: 'protocol,displayName',
+                        filterArray: [LABKEY.Filter.create('enddate', null, LABKEY.Filter.Types.ISBLANK)],
+                        sort: 'displayName',
                         autoLoad: true
                     }
                 },{

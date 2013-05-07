@@ -8,34 +8,8 @@ Ext4.onReady(function (){
 
     EHR.Utils.getReportLinks({
         linkTypes: ['animalSearch'],
-        success: function(response){
-            var categories = [];
-            var map = {};
-            Ext4.each(response.items, function(item){
-                if (!item.category)
-                    return;
-
-                if (categories.indexOf(item.category) == -1){
-                    categories.push(item.category);
-                }
-
-                if (!map[item.category]){
-                    map[item.category] = [];
-                    map[item.category].push({
-                        tag: 'h3',
-                        html: '<b>' + item.category + '</b>'
-                    });
-                    map[item.category].push({
-                        tag: 'ul',
-                        children: []
-                    });
-                }
-
-                map[item.category][1].children.push({
-                    tag: 'li',
-                    html: '<a href="' + LABKEY.ActionURL.buildURL(item.controller, item.action, ctx['EHRStudyContainer'], item.params) + '">' + item.label + '</a>'
-                });
-            }, this);
+        success: function(results){
+            var results = results.animalSearch || {};
 
             var domSpec = [{
                 tag: 'div',
@@ -45,10 +19,8 @@ Ext4.onReady(function (){
                 }]
             }];
 
-            if (categories.length){
-                Ext4.each(categories, function(c){
-                    domSpec = domSpec.concat(map[c]);
-                }, this);
+            if (results && results.domSpec && results.domSpec.length){
+                domSpec = domSpec.concat(results.domSpec);
             }
 
             domSpec = domSpec.concat([{

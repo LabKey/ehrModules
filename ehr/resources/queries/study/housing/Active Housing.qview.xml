@@ -13,6 +13,8 @@
            </properties>
        </column>
        <column name="daysInRoom"/>
+       <column name="daysInArea"/>
+       <column name="previousLocation/location"/>
        <column name="remark"/>
        <column name="qcstate"/>
    </columns>
@@ -20,7 +22,7 @@
        <filter column="enddate" operator="isblank" value=""/>
    </filters>
    <sorts>
-       <sort column="room" descending="false"/>
-       <sort column="cage" descending="false"/>
+       <sort column="room/sort_order"/>
+       <sort column="cage"/>
    </sorts>
 </customView>

@@ -1,0 +1,1 @@
+alter table ehr.project add use_category varchar(100);

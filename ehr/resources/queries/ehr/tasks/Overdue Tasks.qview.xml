@@ -16,7 +16,7 @@
    </columns>
    <filters>
        <filter column="qcstate/PublicData" operator="eq" value="false"/>
-       <filter column="duedate" operator="datelte" value="+0d" />
+       <filter column="duedate" operator="datelte" value="-0d" />
    </filters>
    <sorts>
        <sort column="duedate" descending="true"/>

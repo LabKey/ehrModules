@@ -43,7 +43,7 @@
                     LABKEY.Filter.create('rowid', procedureId, LABKEY.Filter.Types.EQUAL)
                 ]
             },
-            title: 'Precedure Details',
+            title: 'Procedure Details',
             renderTo: 'procedureDetails_' + webpart.wrapperDivId
         });
 
@@ -67,13 +67,6 @@
             queryName: 'procedure_default_codes',
             filters: [LABKEY.Filter.create('procedureId', procedureId, LABKEY.Filter.Types.EQUAL)]
         }).render('procedureCodes_' + webpart.wrapperDivId);
-
-        LDK.Utils.getReadOnlyQWP({
-            title: 'Default Charges',
-            schemaName: 'ehr_lookups',
-            queryName: 'procedure_default_charges',
-            filters: [LABKEY.Filter.create('procedureId', procedureId, LABKEY.Filter.Types.EQUAL)]
-        }).render('procedureCharges_' + webpart.wrapperDivId);
     });
 
 </script>

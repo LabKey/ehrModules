@@ -9,11 +9,23 @@
         <script path="ehr/ehrStore.js"/>
         <script path="ehr/panel/SnapshotPanel.js"/>
         <script path="ehr/panel/SmallFormSnapshotPanel.js"/>
+        <script path="ehr/panel/LabworkSummaryPanel.js"/>
         <script path="ehr/data/ClinicalHistoryStore.js"/>
         <script path="ehr/panel/ClinicalHistoryPanel.js"/>
         <script path="ehr/panel/CaseHistoryPanel.js"/>
         <script path="ehr/form/field/RoomField.js"/>
         <script path="ehr/form/field/CageField.js"/>
+
+        <!--Ext4-->
+        <script path="ehr/data/DataEntryStore.js"/>
+        <script path="ehr/data/StoreCollection.js"/>
+
+        <script path="ehr/form/Panel.js"/>
+        <script path="ehr/grid/Panel.js"/>
+        <script path="ehr/grid/GridFormPanel.js"/>
+        <script path="ehr/panel/DataEntryPanel.js"/>
+
+        <!--Ext3-->
         <script path="ehr/ehrStoreCollection.js"/>
         <script path="ehr/ehrEditorGridpanel.js"/>
         <script path="ehr/ehrImportPanel.js"/>
@@ -22,6 +34,8 @@
         <script path="ehr/ehrPrintTaskPanel.js"/>
         <script path="ehr/ExtComponents.js"/>
         <script path="ehr/ExtContainers.js"/>
+
+        <!--metadata-->
         <script path="ehr/metadata/Metadata.js"/>
         <script path="ehr/metadata/Anesthesia.js"/>
         <script path="ehr/metadata/Assay.js"/>
@@ -38,6 +52,7 @@
         <script path="ehr/metadata/Surgery.js"/>
         <script path="ehr/metadata/Task.js"/>
         <script path="ehr/metadata/Treatments.js"/>
+
         <script path="ehr/studyButtons.js"/>
         <script path="ehr/reports.js" />
         <script path="ehr/stylesheet.css"/>

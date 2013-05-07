@@ -52,6 +52,7 @@ import org.labkey.api.study.DataSet;
 import org.labkey.api.study.Study;
 import org.labkey.api.study.StudyService;
 import org.labkey.api.util.ExceptionUtil;
+import org.labkey.api.util.Pair;
 import org.labkey.api.util.ResultSetUtil;
 
 import java.beans.Introspector;
@@ -425,7 +426,9 @@ public class EHRManager
             }
 
             //add indexes
-            String[][] toIndex = new String[][]{{"objectid"}, {"taskid"}, {"parentid"}, {"runId"}, {"requestid"}, {"date"}, {"participantid", "date"}};
+            String[][] toIndex = new String[][]{{"objectid"}, {"taskid"}, {"parentid"}, {"runId"}, {"requestid"}, {"participantid", "date"}};
+            String[][] toRemove = new String[][]{{"date"}};
+
             DbSchema schema = DbSchema.get("studydataset");
             Set<String> distinctIndexes = new HashSet<String>();
             for (DataSet d : study.getDataSets())
@@ -438,9 +441,100 @@ public class EHRManager
                     continue;
                 }
 
+
+                for (String[] cols : toRemove)
+                {
+                    String indexName = tableName + "_" + StringUtils.join(cols, "_");
+                    Set<String> indexNames = new CaseInsensitiveHashSet();
+                    DatabaseMetaData meta = schema.getScope().getConnection().getMetaData();
+                    ResultSet rs = null;
+                    try
+                    {
+                        rs = meta.getIndexInfo(schema.getScope().getDatabaseName(), schema.getName(), tableName, false, false);
+                        while (rs.next())
+                        {
+                            indexNames.add(rs.getString("INDEX_NAME"));
+                        }
+                    }
+                    finally
+                    {
+                        ResultSetUtil.close(rs);
+                    }
+
+                    boolean exists = indexNames.contains(indexName);
+                    if (exists)
+                    {
+                        if (commitChanges)
+                        {
+                            messages.add("Dropping index on column(s): " + StringUtils.join(cols, ", ") + " for dataset: " + d.getLabel());
+                            String sqlString = "DROP INDEX " + indexName + " ON " + realTable.getSelectName();
+                            SQLFragment sql = new SQLFragment(sqlString);
+                            SqlExecutor se = new SqlExecutor(schema);
+                            se.execute(sql);
+                        }
+                        else
+                        {
+                            messages.add("Will drop index on column(s): " + StringUtils.join(cols, ", ") + " for dataset: " + d.getLabel());
+                        }
+                    }
+                }
+
+                List<String[]> toAdd = new ArrayList<String[]>();
                 for (String[] cols : toIndex)
                 {
+                    toAdd.add(cols);
+                }
+
+                if (d.getLabel().equalsIgnoreCase("Housing"))
+                {
+                    toAdd.add(new String[]{"participantid", "enddate"});
+                    toAdd.add(new String[]{"lsid", "participantid"});
+                }
+                else if (d.getLabel().equalsIgnoreCase("Assignment"))
+                {
+                    toAdd.add(new String[]{"project", "participantid", "enddate"});
+                }
+                else if (d.getLabel().equalsIgnoreCase("Demographics"))
+                {
+                    toAdd.add(new String[]{"participantid", "calculated_status"});
+                }
+                else if (d.getLabel().equalsIgnoreCase("Clinical Remarks"))
+                {
+                    toAdd.add(new String[]{"participantid", "lsid"});
+                    toAdd.add(new String[]{"participantid:ASC", "date:ASC", "lsid:ASC"});
+                    toAdd.add(new String[]{"date", "include:hx,caseid"});
+                }
+                else if (d.getLabel().equalsIgnoreCase("Cases"))
+                {
+                    toAdd.add(new String[]{"enddate", "qcstate", "lsid"});
+                }
+
+                for (String[] indexCols : toAdd)
+                {
                     boolean missingCols = false;
+
+                    List<String> cols = new ArrayList<String>();
+                    String[] includedCols = null;
+                    Map<String, String> directionMap = new HashMap<String, String>();
+
+                    for (String name : indexCols)
+                    {
+                        String[] tokens = name.split(":");
+                        if (tokens[0].equalsIgnoreCase("include"))
+                        {
+                            if (tokens.length > 1)
+                            {
+                                includedCols = tokens[1].split(",");
+                            }
+                        }
+                        else
+                        {
+                            cols.add(tokens[0]);
+                            if (tokens.length > 1)
+                                directionMap.put(tokens[0], tokens[1]);
+                        }
+                    }
+
                     for (String col : cols)
                     {
                         if (realTable.getColumn(col) == null)
@@ -454,6 +548,10 @@ public class EHRManager
                         continue;
 
                     String indexName = tableName + "_" + StringUtils.join(cols, "_");
+                    if (includedCols != null)
+                    {
+                        indexName += "_include_" + StringUtils.join(includedCols, "_");
+                    }
 
                     if (distinctIndexes.contains(indexName))
                         throw new RuntimeException("An index has already been created with the name: " + indexName);
@@ -497,10 +595,22 @@ public class EHRManager
                     {
                         if (commitChanges)
                         {
-                            messages.add("Creating index on column(s): " + StringUtils.join(cols, ", ") + " for dataset: " + d.getLabel());
-                            String sqlString = "CREATE INDEX " + indexName + " ON " + realTable.getSelectName() + "(" + StringUtils.join(cols, ", ") + ")";
+                            List<String> columns = new ArrayList<String>();
+                            for (String name : cols)
+                            {
+                                if (schema.getSqlDialect().isSqlServer() && directionMap.containsKey(name))
+                                    name += " " + directionMap.get(name);
+
+                                columns.add(name);
+                            }
+
+                            messages.add("Creating index on column(s): " + StringUtils.join(columns, ", ") + " for dataset: " + d.getLabel());
+                            String sqlString = "CREATE INDEX " + indexName + " ON " + realTable.getSelectName() + "(" + StringUtils.join(columns, ", ") + ")";
                             if (schema.getSqlDialect().isSqlServer())
                             {
+                                if (includedCols != null)
+                                    sqlString += " INCLUDE (" + StringUtils.join(includedCols, ", ") + ") ";
+
                                 sqlString += " WITH (DATA_COMPRESSION = ROW)";
                             }
                             SQLFragment sql = new SQLFragment(sqlString);
@@ -509,7 +619,7 @@ public class EHRManager
                         }
                         else
                         {
-                            messages.add("Missing index on column(s): " + StringUtils.join(cols, ", ") + " for dataset: " + d.getLabel());
+                            messages.add("Missing index on column(s): " + StringUtils.join(indexCols, ", ") + (includedCols != null ? " include: " + StringUtils.join(includedCols, ",") : "") + " for dataset: " + d.getLabel());
                         }
                     }
                 }
@@ -551,29 +661,44 @@ public class EHRManager
 
         _log.info("Compressing indexes on select EHR schema tables");
 
-        Map<String, String> names = new HashMap<String, String>();
-        names.put("encounter_flags", "objectid");
-        names.put("encounter_flags", "parentid");
-        names.put("encounter_flags", "id");
+        List<Pair<String, String[]>> names = new ArrayList<Pair<String, String[]>>();
+        names.add(Pair.of("encounter_flags", new String[]{"objectid"}));
+        names.add(Pair.of("encounter_flags", new String[]{"parentid"}));
+        names.add(Pair.of("encounter_flags", new String[]{"id"}));
 
-        names.put("encounter_participants", "objectid");
-        names.put("encounter_participants", "parentid");
-        names.put("encounter_participants", "id");
+        names.add(Pair.of("encounter_participants", new String[]{"objectid"}));
+        names.add(Pair.of("encounter_participants", new String[]{"parentid"}));
+        names.add(Pair.of("encounter_participants", new String[]{"id"}));
+        names.add(Pair.of("encounter_participants", new String[]{"id"}));
+        names.add(Pair.of("encounter_participants", new String[]{"container", "rowid", "id"}));
+        names.add(Pair.of("encounter_participants", new String[]{"container", "rowid", "parentid"}));
 
-        names.put("encounter_summaries", "objectid");
-        names.put("encounter_summaries", "parentid");
-        names.put("encounter_summaries", "id");
+        names.add(Pair.of("encounter_summaries", new String[]{"objectid"}));
+        names.add(Pair.of("encounter_summaries", new String[]{"parentid"}));
+        names.add(Pair.of("encounter_summaries", new String[]{"id"}));
 
-        names.put("snomed_tags", "objectid");
-        names.put("snomed_tags", "recordid");
-        names.put("snomed_tags", "id");
-        names.put("snomed_tags", "parentid");
-        names.put("snomed_tags", "caseid");
+        names.add(Pair.of("encounter_summaries", new String[]{"parentid", "rowid", "container", "id"}));
+        names.add(Pair.of("encounter_summaries", new String[]{"container", "rowid"}));
+        names.add(Pair.of("encounter_summaries", new String[]{"container", "parentid"}));
 
-        for (String table : names.keySet())
+        names.add(Pair.of("snomed_tags", new String[]{"caseid"}));
+        names.add(Pair.of("snomed_tags", new String[]{"id"}));
+        names.add(Pair.of("snomed_tags", new String[]{"id", "recordid", "code"}));
+
+        names.add(Pair.of("snomed_tags", new String[]{"objectid"}));
+        names.add(Pair.of("snomed_tags", new String[]{"parentid"}));
+        names.add(Pair.of("snomed_tags", new String[]{"recordid"}));
+
+        names.add(Pair.of("snomed_tags", new String[]{"recordid", "rowid", "id"}));
+        names.add(Pair.of("snomed_tags", new String[]{"code", "rowid", "id", "recordid"}));
+        names.add(Pair.of("snomed_tags", new String[]{"recordid", "container", "code"}));
+
+        for (Pair<String, String[]> pair : names)
         {
             DbSchema ehr = EHRSchema.getInstance().getSchema();
-            SQLFragment sql = new SQLFragment("ALTER INDEX " + table + "_" + names.get(table) + " ON ehr. " + table + " REBUILD WITH (DATA_COMPRESSION = ROW);");
+            String table = pair.first;
+            String indexName = table + "_" + StringUtils.join(pair.second, "_");
+            SQLFragment sql = new SQLFragment("ALTER INDEX " + indexName + " ON ehr." + table + " REBUILD WITH (DATA_COMPRESSION = ROW);");
             SqlExecutor se = new SqlExecutor(ehr);
             se.execute(sql);
         }
@@ -658,14 +783,9 @@ public class EHRManager
         }
     }
 
-    public void getDataEntryItems(Container c, User u)
-    {
-
-    }
-
     public void scheduleKinshipTask()
     {
         ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
-        //executor.scheduleAtFixedRate(new KinshipRunnable(), 10, 10000, TimeUnit.SECONDS);
+        //executor.scheduleAtFixedRate(new GeneticCalculationsRunnable(), 10, 10000, TimeUnit.SECONDS);
     }
 }

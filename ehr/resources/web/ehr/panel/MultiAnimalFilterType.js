@@ -99,7 +99,7 @@ Ext4.define('EHR.panel.MultiAnimalFilterType', {
                                 queryName: 'project',
                                 columns: 'displayName,project',
                                 filterArray: [LABKEY.Filter.create('activeAssignments/activeAssignments', 0, LABKEY.Filter.Types.GT)],
-                                sort: 'project',
+                                sort: 'displayName',
                                 autoLoad: true
                             })
                         },{
@@ -107,7 +107,7 @@ Ext4.define('EHR.panel.MultiAnimalFilterType', {
                             emptyText:'',
                             itemId: 'protocol',
                             xtype: 'labkey-combo',
-                            displayField: 'protocol',
+                            displayField: 'displayName',
                             valueField: 'protocol',
                             typeAhead: true,
                             width: 300,
@@ -116,8 +116,9 @@ Ext4.define('EHR.panel.MultiAnimalFilterType', {
                             store: Ext4.create('LABKEY.ext4.Store', {
                                 schemaName: 'ehr',
                                 queryName: 'protocol',
+                                columns: 'protocol,displayName',
                                 filterArray: [LABKEY.Filter.create('activeAnimals/TotalActiveAnimals', 0, LABKEY.Filter.Types.GT)],
-                                sort: 'protocol',
+                                sort: 'displayName',
                                 autoLoad: true
                             })
                         }]

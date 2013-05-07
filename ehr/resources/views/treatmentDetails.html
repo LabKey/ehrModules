@@ -11,15 +11,16 @@ Ext4.onReady(function (){
     var webpart = <%=webpartContext%>;
     var domSpec = [{
         tag: 'div',
+        style: 'margin-bottom: 20px;',
         id: 'treatmentDetails_' + webpart.wrapperDivId
     },{
         tag: 'div',
-        style: 'padding-bottom: 10px;',
+        style: 'margin-bottom: 20px;',
         id: 'treatmentSchedule_' + webpart.wrapperDivId
-    },{
-        tag: 'div',
-        style: 'padding-bottom: 10px;',
-        id: 'treatmentHistory_' + webpart.wrapperDivId
+//    },{
+//        tag: 'div',
+//        style: 'margin-bottom: 20px;',
+//        id: 'treatmentHistory_' + webpart.wrapperDivId
     }]
 
     var el = Ext4.get(webpart.wrapperDivId);
@@ -47,6 +48,7 @@ Ext4.onReady(function (){
                 filterArray: [LABKEY.Filter.create('lsid', lsid, LABKEY.Filter.Types.EQUAL)]
             },
             title: 'Treatment Details:',
+            showBackBtn: false,
             renderTo: 'treatmentDetails_' + webpart.wrapperDivId
         });
 
@@ -68,23 +70,23 @@ Ext4.onReady(function (){
             failure: EHR.Utils.onError
          }).render('treatmentSchedule_' + webpart.wrapperDivId );
 
-        new LABKEY.QueryWebPart({
-            title: 'Treatment History',
-            schemaName: 'study',
-            queryName: 'Drug Administration',
-            allowChooseQuery: false,
-            allowChooseView: true,
-            showInsertNewButton: false,
-            showDeleteButton: false,
-            showDetailsColumn: true,
-            showUpdateColumn: false,
-            showRecordSelectors: true,
-            buttonBarPosition: 'top',
-            filters: [LABKEY.Filter.create('parentid', row.objectid, LABKEY.Filter.Types.STARTS_WITH)],
-            //sort: '-Date',
-            scope: this,
-            failure: EHR.Utils.onError
-         }).render('treatmentHistory_' + webpart.wrapperDivId );
+//        new LABKEY.QueryWebPart({
+//            title: 'Treatment History',
+//            schemaName: 'study',
+//            queryName: 'Drug Administration',
+//            allowChooseQuery: false,
+//            allowChooseView: true,
+//            showInsertNewButton: false,
+//            showDeleteButton: false,
+//            showDetailsColumn: true,
+//            showUpdateColumn: false,
+//            showRecordSelectors: true,
+//            buttonBarPosition: 'top',
+//            filters: [LABKEY.Filter.create('parentid', row.objectid, LABKEY.Filter.Types.STARTS_WITH)],
+//            //sort: '-Date',
+//            scope: this,
+//            failure: EHR.Utils.onError
+//         }).render('treatmentHistory_' + webpart.wrapperDivId );
     }
 });
 

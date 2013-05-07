@@ -1,5 +1,6 @@
 <customView xmlns="http://labkey.org/data/xml/queryCustomView">
     <columns>
+        <column name="groupId"/>
         <column name="Id/curLocation/area">
             <properties>
                 <property name="columnTitle" value="Current Area"/>
@@ -24,9 +25,9 @@
         </column>
     </columns>
     <sorts>
-        <sort column="Id/curLocation/area" descending="false"/>
-        <sort column="Id/curLocation/room" descending="false"/>
-        <sort column="Id/curLocation/cage" descending="false"/>
+        <sort column="Id/curLocation/area"/>
+        <sort column="Id/curLocation/room_order"/>
+        <sort column="Id/curLocation/cage_order"/>
         <sort column="Id" descending="false"/>
     </sorts>
 </customView>

@@ -28,12 +28,11 @@
        <column name="route"/>
        <column name="performedby"/>
        <column name="remark"/>
+       <column name="reason"/>
        <column name="taskid"/>
        <column name="history"/>
    </columns>
    <sorts>
        <sort column="date" descending="true"/>
-       <!--<sort column="Id/curLocation/cage" descending="false"/>-->
-       <!--<sort column="Id/curLocation/room" descending="false"/>-->
    </sorts>
 </customView>

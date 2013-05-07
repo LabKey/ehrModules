@@ -17,8 +17,10 @@ package org.labkey.ehr.history;
 
 import org.labkey.api.data.Results;
 import org.labkey.api.query.FieldKey;
+import org.labkey.api.util.PageFlowUtil;
 
 import java.sql.SQLException;
+import java.util.Set;
 
 /**
  * Created with IntelliJ IDEA.
@@ -31,6 +33,13 @@ public class DefaultClinicalRemarksDataSource extends AbstractDataSource
     public DefaultClinicalRemarksDataSource()
     {
         super("study", "Clinical Remarks", "Clinical Remark");
+    }
+
+    @Override
+    protected String getCategory(Results rs) throws SQLException
+    {
+        String category = rs.getString("category");
+        return (category == null ?  "Clinical" : category) + " Remark";
     }
 
     @Override
@@ -52,6 +61,12 @@ public class DefaultClinicalRemarksDataSource extends AbstractDataSource
         sb.append("</table>");
 
         return sb.toString();
+    }
+
+    @Override
+    protected Set<String> getColumnNames()
+    {
+        return PageFlowUtil.set("Id", "date", "enddate", "category", "hx", "so", "s", "o", "a", "p", "p2", "remark", "performedby");
     }
 
     private void appendNote(Results rs, String field, String label, StringBuilder sb) throws SQLException

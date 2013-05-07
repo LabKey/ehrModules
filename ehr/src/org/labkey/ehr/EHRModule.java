@@ -65,7 +65,7 @@ public class EHRModule extends ExtendedSimpleModule
 
     public double getVersion()
     {
-        return 12.333;
+        return 12.345;
     }
 
     public boolean hasScripts()
@@ -100,12 +100,12 @@ public class EHRModule extends ExtendedSimpleModule
         RoleManager.registerRole(new EHRDataEntryRole());
         RoleManager.registerRole(new EHRRequestorRole());
 
-        NotificationService ns = NotificationService.get();
-        ns.registerNotification(new OverdueWeightsNotification());
+        EHRService.get().registerReportLink(EHRService.REPORT_LINK_TYPE.project, "View All Projects With Active Assignments", this, DetailsURL.fromString("/query/executeQuery.view?schemaName=ehr&query.queryName=Project&query.activeAssignments/activeAssignments~gt=0"), "Quick Links");
+        EHRService.get().registerReportLink(EHRService.REPORT_LINK_TYPE.protocol, "View Total Animals Assigned to Each Protocol, By Species", this, DetailsURL.fromString("/query/executeQuery.view?schemaName=ehr&query.queryName=protocolTotalAnimalsBySpecies"), "Quick Links");
+        EHRService.get().registerReportLink(EHRService.REPORT_LINK_TYPE.assignment, "Find Assignments Overlapping A Date Range", this, DetailsURL.fromString("/query/executeQuery.view?schemaName=study&query.queryName=assignmentOverlapsIdBy"), "Quick Links");
 
-        EHRService.get().registerReportLink(EHRService.REPORT_LINK_TYPE.project, "View All Projects With Active Assignments", this, DetailsURL.fromString("/query/executeQuery.view?schemaName=ehr&query.queryName=Project&query.activeAssignments/activeAssignments~gt=0"), null);
-        EHRService.get().registerReportLink(EHRService.REPORT_LINK_TYPE.protocol, "View Total Animals Assigned to Each Protocol, By Species", this, DetailsURL.fromString("/query/executeQuery.view?schemaName=ehr&query.queryName=protocolTotalAnimalsBySpecies"), null);
-        EHRService.get().registerReportLink(EHRService.REPORT_LINK_TYPE.assignment, "Find Assignments Overlapping A Date Range", this, DetailsURL.fromString("/query/executeQuery.view?schemaName=study&query.queryName=AssignmentOverlaps"), null);
+        //EHRService.get().registerFormType(SimpleFormType.create(this, "study", "weight", "Clinical"));
+        //EHRService.get().registerFormType(SimpleFormType.create(this, "study", "vitals", "Clinical"));
     }
 
     @Override

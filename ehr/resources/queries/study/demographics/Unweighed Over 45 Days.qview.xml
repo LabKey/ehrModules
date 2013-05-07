@@ -66,8 +66,8 @@
         <filter column="Id/MostRecentWeight/DaysSinceWeight" operator="gt" value="45"/>
     </filters>
     <sorts>
-        <sort column="Id/curLocation/room" descending="false"/>
-        <sort column="Id/curLocation/cage" descending="false"/>
+        <sort column="Id/curLocation/room_order"/>
+        <sort column="Id/curLocation/cage_order"/>
         <sort column="Id" descending="false"/>
     </sorts>
 </customView>

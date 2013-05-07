@@ -801,6 +801,28 @@ EHR.Utils = new function(){
             }).show(el);
         },
 
+        showRunSummary: function(runId, Id, el){
+            Ext4.create('Ext.window.Window', {
+                title: 'Labwork Results: ' + Id,
+                bodyStyle: 'padding: 3px;',
+                width: 600,
+                minHeight: 300,
+                modal: true,
+                items: [{
+                    xtype: 'ehr-labworksummarypanel',
+                    border: true,
+                    hideHeader: true,
+                    runId: runId
+                }],
+                buttons: [{
+                    text: 'Close',
+                    handler: function(btn){
+                        btn.up('window').close();
+                    }
+                }]
+            }).show(el);
+        },
+
         /**
          * Returns the list of links that have been registered to appear on a given page
          * @param config A config object
@@ -818,9 +840,94 @@ EHR.Utils = new function(){
             return LABKEY.Ajax.request({
                 url : LABKEY.ActionURL.buildURL('ehr', 'getReportLinks', config.containerPath, {linkTypes: config.linkTypes}),
                 method : 'POST',
-                success: LABKEY.Utils.getCallbackWrapper(LABKEY.Utils.getOnSuccess(config), config.scope),
+                success: LABKEY.Utils.getCallbackWrapper(function(response){
+                    var map = {};
+                    Ext4.each(response.items, function(item){
+                        var type = item.type;
+                        if (!map[type])
+                            map[type] = {};
+
+                        if (!item.category)
+                            return;
+
+                        if (!map[type][item.category])
+                            map[type][item.category] = [];
+
+                        map[type][item.category].push(item);
+                    }, this);
+
+                    var domSpec = [];
+                    var ctx = EHR.Utils.getEHRContext();
+                    var types = Ext4.Object.getKeys(map);
+                    types = types.sort();
+
+                    var ret = {};
+                    Ext4.each(types, function(type){
+                        ret[type] = {
+                            domSpec: null,
+                            sections: {}
+                        };
+
+                        var domSpec = [];
+                        var categories = Ext4.Object.getKeys(map[type]);
+                        categories = categories.sort();
+                        if (categories.length){
+                            Ext4.each(categories, function(c, idx){
+                                ret[type].sections[c] = map[type][c];
+
+                                var toAdd = [];
+                                toAdd.push({
+                                    tag: 'h3',
+                                    html: '<b>' + c + ':</b>'
+                                });
+
+                                toAdd.push({
+                                    tag: 'ul',
+                                    children: []
+                                });
+
+                                var sorted = LDK.Utils.sortByProperty(map[type][c], 'label');
+                                Ext4.each(sorted, function(item){
+                                    toAdd[1].children.push({
+                                        tag: 'li',
+                                        html: '<a href="' + LABKEY.ActionURL.buildURL(item.controller, item.action, ctx['EHRStudyContainer'], item.params) + '">' + item.label + '</a>'
+                                    })
+                                }, this);
+
+                                domSpec = domSpec.concat(toAdd);
+                            }, this);
+                        }
+
+                        ret[type].domSpec = domSpec;
+                    }, this);
+
+                    var callback = LABKEY.Utils.getOnSuccess(config);
+                    if (callback)
+                        callback.call((config.scope || this), ret);
+                }),
                 failure: LDK.Utils.getErrorCallback()
+            });
+        },
+
+        /**
+         * Retrieve the list of available data entry forms
+         * @param [config.containerPath] the container to test
+         * @param config.success Success callback
+         * @param config.scope Scope for the callback
+         */
+        getDataEntryItems: function(config){
+            config = config || {};
+
+            return LABKEY.Ajax.request({
+                url : LABKEY.ActionURL.buildURL('ehr', 'getDataEntryItems', config.containerPath),
+                method : 'POST',
+                scope: config.scope,
+                failure: LDK.Utils.getErrorCallback({
+                    callback: config.failure,
+                    scope: config.scope
+                }),
+                success: LABKEY.Utils.getCallbackWrapper(LABKEY.Utils.getOnSuccess(config), config.scope)
             });
         }
     }
-}
+};

@@ -20,7 +20,4 @@ d2.cond
 FROM study.housing d2
 JOIN (SELECT id, max(date) as maxDate FROM study.housing h GROUP BY id) h
 ON (h.id = d2.id and d2.date = h.maxdate)
-WHERE d2.enddate IS NULL
-AND d2.qcstate.publicdata = true
-
---GROUP BY d2.id
+WHERE d2.qcstate.publicdata = true

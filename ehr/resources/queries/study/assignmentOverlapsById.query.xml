@@ -1,0 +1,62 @@
+<query xmlns="http://labkey.org/data/xml/query">
+    <metadata>
+        <tables xmlns="http://labkey.org/data/xml">
+            <table tableName="assignmentOverlapsById" tableDbType="TABLE">
+                <tableTitle>Assignment Overlaps</tableTitle>
+                <tableUrl />
+                <columns>
+                    <column columnName="lsid">
+                        <isHidden>true</isHidden>
+                    </column>
+                </columns>
+                <buttonBarOptions position="both" includeStandardButtons="false">
+                    <includeScript>ehr.context</includeScript>
+                    <includeScript>/ehr/studyButtons.js</includeScript>
+                    <onRender>EHR.DatasetButtons.moreActionsHandler</onRender>
+
+                    <item text="Views">
+                        <originalText>Views</originalText>
+                    </item>
+                    <item text="Insert New">
+                        <originalText>Insert New</originalText>
+                    </item>
+                    <item text="Cohorts">
+                        <originalText>Cohorts</originalText>
+                    </item>
+                    <item text="QCState">
+                        <originalText>QC State</originalText>
+                    </item>
+                    <item text="Export">
+                        <originalText>Export</originalText>
+                    </item>
+                    <item text="Print">
+                        <originalText>Print</originalText>
+                    </item>
+                    <item text="Import Data">
+                        <originalText>Import Data</originalText>
+                    </item>
+                    <item text="Page Size">
+                        <originalText>Page Size</originalText>
+                    </item>
+                    <item text="More Actions" insertPosition="end" requiresSelection="true">
+                        <item text="Jump To History">
+                            <onClick>
+                                EHR.DatasetButtons.historyHandler(dataRegion, dataRegionName, 'Assignment');
+                            </onClick>
+                        </item>
+                        <item text="Jump To Other Dataset">
+                            <onClick>
+                                EHR.DatasetButtons.datasetHandler(dataRegion, dataRegionName, 'Assignment');
+                            </onClick>
+                        </item>
+                        <item text="Return Distinct Values">
+                            <onClick>
+                                EHR.DatasetButtons.getDistinctHandler(dataRegion, dataRegionName, 'Assignment');
+                            </onClick>
+                        </item>
+                    </item>
+                </buttonBarOptions>
+            </table>
+        </tables>
+    </metadata>
+</query>

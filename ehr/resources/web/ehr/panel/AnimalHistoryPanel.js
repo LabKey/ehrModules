@@ -52,6 +52,7 @@ Ext4.define('EHR.panel.AnimalHistoryPanel', {
                 containerPath: rec.get('containerpath'),
                 schemaName: rec.get('schemaname'),
                 queryName: rec.get('queryname'),
+                jsHandler: rec.get('queryname'),
                 viewName: rec.get('viewname'),
                 reportId: rec.get("report"),
                 dateFieldName: rec.get("datefieldname"),

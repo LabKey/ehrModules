@@ -2,9 +2,7 @@
     <metadata> 
         <tables xmlns="http://labkey.org/data/xml">
             <table tableName="virologyResults" tableDbType="TABLE">
-                <tableUrl>/query/detailsQueryRow.view?schemaName=study&amp;query.queryName=virologyResults&amp;lsid=${lsid}</tableUrl>
-                <!--<insertUrl>/ehr/manageRecord.view?schemaName=study&amp;queryName=Virology Results&amp;keyField=lsid&amp;</insertUrl>-->
-                <!--<updateUrl>/ehr/manageRecord.view?schemaName=study&amp;queryName=Virology Results&amp;keyField=lsid&amp;key=${lsid}</updateUrl>-->
+                <tableUrl />
                 <insertUrl />
                 <importUrl />
                 <updateUrl />
@@ -47,7 +45,7 @@
                         <columnTitle>Units</columnTitle>
                     </column>
                     <column columnName="qualresult">
-                        <columnTitle>Qualitative Result</columnTitle>
+                        <columnTitle>Qualifier</columnTitle>
                         <fk>
                             <fkDbSchema>ehr_lookups</fkDbSchema>
                             <fkTable>qualitative_results</fkTable>

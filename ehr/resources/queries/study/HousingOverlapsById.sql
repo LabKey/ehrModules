@@ -7,7 +7,8 @@
 PARAMETERS(StartDate TIMESTAMP, EndDate TIMESTAMP, Room CHAR DEFAULT NULL, Cage CHAR DEFAULT NULL)
 
 SELECT
-h.id
+h.id,
+cast(StartDate as timestamp) as date
 
 FROM study.housing h
 

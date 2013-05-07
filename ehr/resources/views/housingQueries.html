@@ -9,75 +9,61 @@ Ext4.onReady(function(){
 
     EHR.Utils.getReportLinks({
         linkTypes: ['housing'],
-        success: function(response){
-            var items = [];
-            Ext4.each(response.items, function(item){
-                items.push({
-                    tag: 'li',
-                    html: '<a href="' + LABKEY.ActionURL.buildURL(item.controller, item.action, ctx['EHRStudyContainer'], item.params) + '">' + item.label + '</a>'
-                });
-            }, this);
+        success: function(results){
+            results = results.housing || {};
 
-        var domSpec = [{
-            tag: 'div',
-            style: 'padding-bottom: 10px;',
-            html: 'This page contains a series of queries to search animal housing data.  If there are additional one-button reports you would like added to the top section, please submit a request using the \'user feedback\' item on the menu bar above.'
-        }];
+            var domSpec = [{
+                tag: 'div',
+                style: 'padding-bottom: 10px;',
+                html: 'This page contains a series of queries to search animal housing data.  If there are additional one-button reports you would like added to the top section, please submit a request using the \'user feedback\' item on the menu bar above.'
+            }];
 
-        if (items.length){
-            domSpec.push({
-                tag: 'h3',
-                html: 'Commonly Used Queries:'
-            });
-            domSpec.push({
-                tag: 'ul',
-                children: [items]
-            });
-        }
-
-        domSpec = domSpec.concat([{
-            tag: 'h3',
-            html: 'Search Active Housing Records:'
-        },{
-            html: 'NOTE: By default the search only includes active housing records.  To search all records, including historic ones, pick \'default\' from the \'View\' drop-down menu at the bottom of the search panel.',
-            style: 'padding-bottom: 10px;'
-        },{
-            tag: 'div',
-            id: 'housingPanel_' + webpart.wrapperDivId
-        }]);
-
-        var el = Ext4.get(webpart.wrapperDivId);
-        Ext4.DomHelper.append(el, domSpec);
-
-        Ext4.create('LABKEY.ext4.SearchPanel', {
-            schemaName: 'study',
-            queryName: 'Housing',
-            title: 'Search Housing',
-            defaultViewName: 'Active Housing',
-            viewName: 'Search Panel',
-            metadata: {
-                isTemp: {hidden: true},
-                Id: {lookups: false},
-                room: {lookups: false},
-                project: {lookups: false},
-                Created: {hidden: true},
-                CreatedBy: {hidden: true},
-                Modified: {hidden: true},
-                ModifiedBy: {hidden: true},
-                objectid: {hidden: true},
-                ts: {hidden: true},
-                Dataset: {hidden: true},
-                AgeAtTime: {hidden: true},
-                QCState: {hidden: true},
-                created: {hidden: true},
-                modified: {hidden: true},
-                SequenceNum: {hidden: true},
-                AnimalVisit: {hidden: true},
-                EntityId: {hidden: true},
-                Notes: {hidden: true}
+            if (results.domSpec && results.domSpec.length){
+                domSpec = domSpec.concat(results.domSpec);
             }
-        }).render('housingPanel_' + webpart.wrapperDivId);
 
+            domSpec = domSpec.concat([{
+                tag: 'h3',
+                html: 'Search Active Housing Records:'
+            },{
+                html: 'NOTE: By default the search only includes active housing records.  To search all records, including historic ones, pick \'default\' from the \'View\' drop-down menu at the bottom of the search panel.',
+                style: 'padding-bottom: 10px;'
+            },{
+                tag: 'div',
+                id: 'housingPanel_' + webpart.wrapperDivId
+            }]);
+
+            var el = Ext4.get(webpart.wrapperDivId);
+            Ext4.DomHelper.append(el, domSpec);
+
+            Ext4.create('LABKEY.ext4.SearchPanel', {
+                schemaName: 'study',
+                queryName: 'Housing',
+                title: 'Search Housing',
+                defaultViewName: 'Active Housing',
+                viewName: 'Search Panel',
+                metadata: {
+                    isTemp: {hidden: true},
+                    Id: {lookups: false},
+                    //room: {lookups: false},
+                    project: {lookups: false},
+                    Created: {hidden: true},
+                    CreatedBy: {hidden: true},
+                    Modified: {hidden: true},
+                    ModifiedBy: {hidden: true},
+                    objectid: {hidden: true},
+                    ts: {hidden: true},
+                    Dataset: {hidden: true},
+                    AgeAtTime: {hidden: true},
+                    QCState: {hidden: true},
+                    created: {hidden: true},
+                    modified: {hidden: true},
+                    SequenceNum: {hidden: true},
+                    AnimalVisit: {hidden: true},
+                    EntityId: {hidden: true},
+                    Notes: {hidden: true}
+                }
+            }).render('housingPanel_' + webpart.wrapperDivId);
         },
         failure: LDK.Utils.getErrorCallback,
         scope: this

@@ -2,10 +2,7 @@
     <metadata>
         <tables xmlns="http://labkey.org/data/xml">
             <table tableName="treatment_order" tableDbType="TABLE">
-                <!--<tableUrl>/query/detailsQueryRow.view?schemaName=study&amp;query.queryName=treatment_order&amp;lsid=${lsid}</tableUrl>-->
                 <tableUrl>/EHR/treatmentDetails.view?key=${lsid}</tableUrl>
-                <!--<insertUrl>/ehr/manageRecord.view?schemaName=study&amp;queryName=Treatment Order&amp;keyField=lsid&amp;</insertUrl>-->
-                <!--<updateUrl>/ehr/manageRecord.view?schemaName=study&amp;queryName=Treatment Order&amp;keyField=lsid&amp;key=${lsid}</updateUrl>-->
                 <insertUrl />
                 <importUrl />
                 <updateUrl />

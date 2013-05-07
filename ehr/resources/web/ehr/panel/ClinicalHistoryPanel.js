@@ -71,6 +71,7 @@ Ext4.define('EHR.panel.ClinicalHistoryPanel', {
             viewConfig : {
                 emptyText: 'There are no records to display',
                 derferEmptyText: false,
+                enableTextSelection: true,
                 border: false,
                 stripeRows : true
             },

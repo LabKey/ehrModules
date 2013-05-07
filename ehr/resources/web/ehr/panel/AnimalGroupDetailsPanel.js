@@ -86,13 +86,7 @@ Ext4.define('EHR.panel.AnimalGroupDetailsPanel', {
             items: [{
                 xtype: 'ldk-navpanel',
                 border: false,
-                sections: [{
-                    header: 'Reports',
-                    items: [{
-                        name: 'Find animals assigned to this group on a specific date',
-                        url: LABKEY.ActionURL.buildURL('ehr', 'groupOverlaps', null, {groupId: this.groupId, name: this.groupRow.getDisplayValue('name')})
-                    }]
-                }]
+                sections: this.getReportItems()
             }]
         });
 
@@ -158,5 +152,15 @@ Ext4.define('EHR.panel.AnimalGroupDetailsPanel', {
         });
 
         this.add(toAdd);
+    },
+
+    getReportItems: function(){
+        return [{
+            header: 'Reports',
+            items: [{
+                name: 'Find animals assigned to this group on a specific date',
+                url: LABKEY.ActionURL.buildURL('ehr', 'groupOverlaps', null, {groupId: this.groupId, name: this.groupRow.getDisplayValue('name')})
+            }]
+        }]
     }
 });

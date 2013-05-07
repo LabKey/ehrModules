@@ -14,6 +14,15 @@ Ext.menu.DateMenu.prototype.addClass('extContainer');
 Ext.TabPanel.prototype.addClass('extContainer');
 
 
+//NOTE: In IE8, DatePickers render half-width
+//see: http://www.opendebug.com/article/533989
+Ext.override (Ext.menu.Menu, {
+    autoWidth:function (){
+        //only append if input is numeric
+        if (!isNaN(this.width))
+            this.width += 'px';
+    }
+});
 
 //Ext's 3.1 documentation says this should be the code.
 // the purpose is to allow null values in numeric fields

@@ -3,8 +3,6 @@
         <tables xmlns="http://labkey.org/data/xml">
             <table tableName="ClinpathRuns" tableDbType="TABLE">
                 <tableUrl>/ehr/clinpathDetails.view?lsid=${lsid}&amp;objectid=${objectid}</tableUrl>
-                <!--<insertUrl>/ehr/manageRecord.view?schemaName=study&amp;queryName=Clinical%20Runs&amp;keyField=lsid&amp;</insertUrl>-->
-                <!--<updateUrl>/ehr/manageRecord.view?schemaName=study&amp;queryName=Clinical%20Runs&amp;keyField=lsid&amp;key=${lsid}</updateUrl>-->
                 <insertUrl />
                 <importUrl />
                 <updateUrl />

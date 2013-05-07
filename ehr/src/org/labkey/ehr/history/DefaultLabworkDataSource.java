@@ -59,6 +59,7 @@ public class DefaultLabworkDataSource extends AbstractDataSource
     {
         StringBuilder sb = new StringBuilder();
 
+        sb.append(safeAppend(rs, "Performed By", "performedby"));
         sb.append(safeAppend(rs, "Type", "type"));
         sb.append(safeAppend(rs, "Sample Type", "sampletype"));
         sb.append(safeAppend(rs, "Method", "method"));
@@ -92,7 +93,7 @@ public class DefaultLabworkDataSource extends AbstractDataSource
     @Override
     protected Set<String> getColumnNames()
     {
-        return PageFlowUtil.set("Id", "date", "enddate", "objectid", "type", "sampletype", "collectionmethod", "method");
+        return PageFlowUtil.set("Id", "date", "enddate", "objectid", "type", "performedby", "sampletype", "collectionmethod", "method");
     }
 
     @Override

@@ -3,7 +3,7 @@
         <tables xmlns="http://labkey.org/data/xml">
             <table tableName="HousingCheck" tableDbType="TABLE">
                 <tableTitle>Non-contiguous Housing Records</tableTitle>
-                <tableUrl>/query/detailsQueryRow.view?schemaName=study&amp;query.queryName=housing&amp;lsid=${lsid}</tableUrl>
+                <tableUrl />
                 <columns>
                     <column columnName="lsid">
                         <isHidden>true</isHidden>

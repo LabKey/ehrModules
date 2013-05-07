@@ -75,6 +75,17 @@
                         </fk>
                         <url>/ehr/requestDetails.view?formtype=${requestid/formtype}&amp;requestid=${requestid}</url>
                     </column>
+                    <column columnName="problemid">
+                        <facetingBehavior>ALWAYS_OFF</facetingBehavior>
+                        <isHidden>false</isHidden>
+                        <columnTitle>Problem</columnTitle>
+                        <fk>
+                            <fkDbSchema>study</fkDbSchema>
+                            <fkTable>Problem List</fkTable>
+                            <fkColumnName>objectid</fkColumnName>
+                            <fkDisplayColumnName>category</fkDisplayColumnName>
+                        </fk>
+                    </column>
                     <column columnName="QCState">
                         <isHidden>false</isHidden>
                         <shownInDetailsView>true</shownInDetailsView>

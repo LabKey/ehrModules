@@ -7,7 +7,8 @@ SELECT
   c.location,
   c.room,
   c.cage,
-  count(DISTINCT h.id) as TotalAnimals
+  count(DISTINCT h.id) as TotalAnimals,
+  group_concat(DISTINCT h.id, chr(10)) as animals
 
 FROM ehr_lookups.cages c
 

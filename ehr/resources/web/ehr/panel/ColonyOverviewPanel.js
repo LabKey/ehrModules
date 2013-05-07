@@ -36,9 +36,6 @@ Ext4.define('EHR.panel.ColonyOverviewPanel', {
                         filterArray: this.filterArray,
                         rowField: EHR.panel.PopulationPanel.FIELDS.species,
                         colFields: [EHR.panel.PopulationPanel.FIELDS.ageclass, EHR.panel.PopulationPanel.FIELDS.gender]
-                    },{
-                        xtype: 'ehr-populationtrendspanel',
-                        style: 'padding-top: 20px;'
                     }],
                     itemId: 'population'
                 },{
@@ -46,34 +43,22 @@ Ext4.define('EHR.panel.ColonyOverviewPanel', {
                     style: 'padding 5px;',
                     items: [{
                         xtype: 'ehr-populationpanel',
-                        titleText: 'SPF',
-                        filterArray: [LABKEY.Filter.create('Id/viral_status/viralStatus', 'SPF', LABKEY.Filter.Types.EQUALS)].concat(this.filterArray),
-                        rowField: EHR.panel.PopulationPanel.FIELDS.species,
-                        colFields: [EHR.panel.PopulationPanel.FIELDS.ageclass, EHR.panel.PopulationPanel.FIELDS.gender]
-                    },{
-                        xtype: 'ehr-populationpanel',
-                        titleText: 'SPF 3',
-                        filterArray: [LABKEY.Filter.create('Id/viral_status/viralStatus', 'SPF 3', LABKEY.Filter.Types.EQUALS)].concat(this.filterArray),
-                        rowField: EHR.panel.PopulationPanel.FIELDS.species,
-                        colFields: [EHR.panel.PopulationPanel.FIELDS.ageclass, EHR.panel.PopulationPanel.FIELDS.gender]
-                    },{
-                        xtype: 'ehr-populationpanel',
-                        titleText: 'SPF 4',
+                        titleText: 'SPF 4 (SPF)',
                         filterArray: [LABKEY.Filter.create('Id/viral_status/viralStatus', 'SPF 4', LABKEY.Filter.Types.EQUALS)].concat(this.filterArray),
                         rowField: EHR.panel.PopulationPanel.FIELDS.species,
                         colFields: [EHR.panel.PopulationPanel.FIELDS.ageclass, EHR.panel.PopulationPanel.FIELDS.gender]
                     },{
                         xtype: 'ehr-populationpanel',
-                        titleText: 'SPF 9',
+                        titleText: 'SPF 9 (ESPF)',
                         filterArray: [LABKEY.Filter.create('Id/viral_status/viralStatus', 'SPF 9', LABKEY.Filter.Types.EQUALS)].concat(this.filterArray),
                         rowField: EHR.panel.PopulationPanel.FIELDS.species,
                         colFields: [EHR.panel.PopulationPanel.FIELDS.ageclass, EHR.panel.PopulationPanel.FIELDS.gender]
                     }],
                     itemId: 'spf'
                 },{
-                    title: 'Room Utilization',
-                    xtype: 'ehr-roomutilizationpanel',
-                    itemId: 'roomUtilization'
+                    title: 'Housing Summary',
+                    xtype: 'ehr-housingsummarypanel',
+                    itemId: 'housingSummary'
                 },{
                     title: 'Utilization',
                     xtype: 'ehr-utilizationsummarypanel',
@@ -100,91 +85,6 @@ Ext4.define('EHR.panel.ColonyOverviewPanel', {
                 }
             }
         }
-
-        this.callParent();
-    }
-});
-
-
-
-Ext4.define('EHR.panel.RoomUtilizationPanel', {
-    extend: 'Ext.panel.Panel',
-    alias: 'widget.ehr-roomutilizationpanel',
-    initComponent: function(){
-        Ext4.apply(this, {
-            style: 'padding: 5px',
-            border: false,
-            defaults: {
-                border: false
-            },
-            items: [{
-                xtype: 'grid',
-                columns: [{
-                    dataIndex: 'room',
-                    header: 'Room',
-                    width: 200
-                },{
-                    dataIndex: 'AvailableCages',
-                    id: 'availCagesCol',
-                    text: 'Total Cages',
-                    width: 200,
-                    summaryType: 'sum'
-                },{
-                    dataIndex: 'CagesEmpty',
-                    id: 'cagesEmptyCol',
-                    text: 'Empty Cages',
-                    width: 200,
-                    summaryType: 'sum'
-                },{
-                    dataIndex: 'pctUsed',
-                    id: 'pctCol',
-                    text: '% Used',
-                    width: 200,
-                    summaryType: 'sum',
-                    summaryRenderer: function(val){
-                        if (val){
-                            val = Ext4.util.Format.round(val, 1);
-                        }
-                        return val;
-                    }
-                },{
-                    dataIndex: 'TotalAnimals',
-                    text: 'Total Animals',
-                    width: 200,
-                    renderer: function(value, attrs, rec){
-                        var url = LABKEY.ActionURL.buildURL('query', 'executeQuery', null, {schemaName: 'study', 'query.queryName': 'demographics', 'query.viewName': 'Alive, at Center', 'query.Id/curLocation/room~eq': rec.get('room')});
-                        return '<a href="' + url + '">' + value + '</a>';
-                    },
-                    summaryType: 'sum'
-                }],
-                store: {
-                    type: 'labkey-store',
-                    schemaName: 'ehr_lookups',
-                    queryName: 'roomUtilization',
-                    columns: 'room/area,room,TotalAnimals,CagesEmpty,TotalCages,AvailableCages,CagesUsed,pctUsed',
-                    filterArray: [LABKEY.Filter.create('TotalCages', 0, LABKEY.Filter.Types.GT)],
-                    autoLoad: true,
-                    groupers: [{
-                        property: 'room/area'
-                    }]
-                },
-                features: [{
-                    ftype:'groupingsummary',
-                    startCollapsed: true,
-                    groupHeaderTpl: '{name}',
-                    generateSummaryData: function(){
-                        var data = Ext4.grid.feature.GroupingSummary.prototype.generateSummaryData.call(this, arguments);
-                        for (var group in data){
-                            var pct = 1 - (data[group].cagesEmptyCol / data[group].availCagesCol);
-                            pct = pct * 100;
-                            data[group].pctCol = pct;
-                        }
-
-                        return data;
-                    }
-                }]
-            }]
-        });
 
         this.callParent();
     }

@@ -6,15 +6,15 @@
     <bean id="kinshipPipelineRegistry" class="org.labkey.api.pipeline.TaskPipelineRegistrar">
         <property name="factoryImpls">
             <list>
-                <bean class="org.labkey.ehr.pipeline.KinshipInitTask$Factory">
+                <bean class="org.labkey.ehr.pipeline.GeneticCalculationsInitTask$Factory">
                     <property name="location" value="webserver" />
                     <property name="join" value="false" />
                 </bean>
-                <bean class="org.labkey.ehr.pipeline.KinshipRTask$Factory">
+                <bean class="org.labkey.ehr.pipeline.GeneticCalculationsRTask$Factory">
                     <property name="location" value="webserver" />
                     <property name="join" value="false" />
                 </bean>
-                <bean class="org.labkey.ehr.pipeline.KinshipImportTask$Factory">
+                <bean class="org.labkey.ehr.pipeline.GeneticCalculationsImportTask$Factory">
                     <property name="location" value="webserver" />
                     <property name="join" value="false" />
                 </bean>
@@ -31,9 +31,9 @@
                     <!--<property name="initialInputExt" ref="kinshipFileType" />-->
                     <property name="taskProgressionSpec">
                         <list>
-                            <value type="java.lang.Class">org.labkey.ehr.pipeline.KinshipInitTask</value>
-                            <value type="java.lang.Class">org.labkey.ehr.pipeline.KinshipRTask</value>
-                            <value type="java.lang.Class">org.labkey.ehr.pipeline.KinshipImportTask</value>
+                            <value type="java.lang.Class">org.labkey.ehr.pipeline.GeneticCalculationsInitTask</value>
+                            <value type="java.lang.Class">org.labkey.ehr.pipeline.GeneticCalculationsRTask</value>
+                            <value type="java.lang.Class">org.labkey.ehr.pipeline.GeneticCalculationsImportTask</value>
                         </list>
                     </property>
                 </bean>

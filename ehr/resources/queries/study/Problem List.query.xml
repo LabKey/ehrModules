@@ -2,9 +2,7 @@
     <metadata> 
         <tables xmlns="http://labkey.org/data/xml">
             <table tableName="problem" tableDbType="TABLE">
-                <tableUrl>/query/detailsQueryRow.view?schemaName=study&amp;query.queryName=Problem List&amp;lsid=${lsid}</tableUrl>
-                <!--<insertUrl>/ehr/manageRecord.view?schemaName=study&amp;queryName=Problem List&amp;keyField=lsid&amp;</insertUrl>-->
-                <!--<updateUrl>/ehr/manageRecord.view?schemaName=study&amp;queryName=Problem List&amp;keyField=lsid&amp;key=${lsid}</updateUrl>-->
+                <tableUrl />
                 <insertUrl />
                 <importUrl />
                 <updateUrl />
@@ -45,6 +43,9 @@
                         <columnTitle>Date Resolved</columnTitle>
                         <formatString>yyyy-MM-dd</formatString>
                         <isHidden>false</isHidden>
+                    </column>
+                    <column columnName="caseid">
+                        <columnTitle>Initial Case</columnTitle>
                     </column>
                 </columns>
             </table>
