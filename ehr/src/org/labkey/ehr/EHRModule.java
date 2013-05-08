@@ -48,6 +48,7 @@ import org.labkey.ehr.study.EHRStudyUpgradeCode;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
@@ -147,18 +148,22 @@ public class EHRModule extends ExtendedSimpleModule
     @Override
     public JSONObject getPageContextJson(User u, Container c)
     {
+        Map<String, Object> ret = new HashMap<String, Object>();
         Map<String, String> map = getDefaultPageContextJson(u, c);
+        if (map != null)
+            ret.putAll(map);
+
         if (map.containsKey(EHRManager.EHRStudyContainerPropName) && map.get(EHRManager.EHRStudyContainerPropName) != null)
         {
             //normalize line endings
             String newPath = map.get(EHRManager.EHRStudyContainerPropName);
             newPath = "/" + newPath.replaceAll("^/|/$", "");
-            map.put(EHRManager.EHRStudyContainerPropName, newPath);
+            ret.put(EHRManager.EHRStudyContainerPropName, newPath);
 
             Container ehrContainer = ContainerManager.getForPath(map.get(EHRManager.EHRStudyContainerPropName));
             if(ehrContainer != null)
             {
-                map.put("EHRStudyContainerInfo", ehrContainer.toJSON(u).toString());
+                ret.put("EHRStudyContainerInfo", ehrContainer.toJSON(u));
 
                 Set<String> moduleNames = new TreeSet<String>();
                 Set<Module> activeModules = ehrContainer.getActiveModules();
@@ -167,7 +172,7 @@ public class EHRModule extends ExtendedSimpleModule
                     if (activeModules.contains(m))
                         moduleNames.add(m.getName());
                 }
-                map.put("EHRModules", new JSONObject(moduleNames).toString());
+                ret.put("EHRModules", new JSONObject(moduleNames));
             }
 
             //merge client context for registered modules, if they are enabled in current folder
@@ -178,13 +183,13 @@ public class EHRModule extends ExtendedSimpleModule
                     JSONObject json = m.getPageContextJson(u, c);
                     for (String prop : json.keySet())
                     {
-                        map.put(prop, json.getString(prop));
+                        ret.put(prop, json.get(prop));
                     }
                 }
             }
         }
 
-        return new JSONObject(map);
+        return new JSONObject(ret);
     }
 
     @Override

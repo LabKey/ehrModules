@@ -816,6 +816,7 @@ ehr/resources/views/updateTable.html -text
 ehr/resources/views/updateTable.view.xml -text
 ehr/resources/views/utilities.html -text
 ehr/resources/views/utilities.view.xml -text
+ehr/resources/web/ehr/Constants.js -text
 ehr/resources/web/ehr/ExtComponents.js -text
 ehr/resources/web/ehr/ExtContainers.js -text
 ehr/resources/web/ehr/ExtOverrides.js -text

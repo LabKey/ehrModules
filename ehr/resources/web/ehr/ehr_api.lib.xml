@@ -1,6 +1,7 @@
 <libraries xmlns="http://labkey.org/clientLibrary/xml/">
     <library compileInProductionMode="false">
         <script path="ehr/ExtOverrides.js"/>
+        <script path="ehr/Constants.js"/>
         <script path="ehr/ehrMetaHelper.js"/>
         <script path="ehr/utils.js"/>
         <script path="ehr/Security.js"/>
