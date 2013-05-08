@@ -896,7 +896,6 @@ ehr/resources/web/ehr/studyButtons.js -text
 ehr/resources/web/ehr/stylesheet.css -text
 ehr/resources/web/ehr/utils.js -text
 ehr/src/META-INF/ehr/ehr.sql -text
-ehr/src/org/labkey/ehr/EHRContainerListener.java -text
 ehr/src/org/labkey/ehr/EHRController.java -text
 ehr/src/org/labkey/ehr/EHRManager.java -text
 ehr/src/org/labkey/ehr/EHRModule.java -text
