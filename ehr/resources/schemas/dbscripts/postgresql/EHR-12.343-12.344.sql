@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2013 LabKey Corporation
+ *
+ * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
+ */
 CREATE INDEX encounter_participants_container_rowid_id ON ehr.encounter_participants (container, rowid, id);
 CREATE INDEX encounter_participants_container_rowid_parentid ON ehr.encounter_participants (container, rowid, parentid);
 
