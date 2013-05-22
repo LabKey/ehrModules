@@ -64,28 +64,31 @@ abstract public class AbstractDataDefinedTable extends SimpleUserSchema.SimpleTa
 
     protected String _filterColumn;
     protected String _filterValue;
-
     protected String _valueColumn;
 
     public AbstractDataDefinedTable(UserSchema schema, SchemaTableInfo table, String filterColumn, String valueColumn, String tableName, String filterValue)
     {
         super(schema, table);
-
-        ColumnInfo col = table.getColumn(filterColumn);
-        addCondition(col, filterValue); //enforce only showing rows from this category
-
-        setName(tableName);
-        setTitle(tableName);
-
         _filterColumn = filterColumn;
         _filterValue = filterValue;
         _valueColumn = valueColumn;
+
+        setName(tableName);
+        setTitle(tableName);
+    }
+
+    public SimpleUserSchema.SimpleTable init()
+    {
+        super.init();
+
+        ColumnInfo col = getRealTable().getColumn(_filterColumn);
+        addCondition(col, _filterValue); //enforce only showing rows from this category
 
         List<String> pks = getRealTable().getPkColumnNames();
         assert pks.size() > 0;
         _pk = pks.get(0);
 
-        ColumnInfo valueCol = getColumn(valueColumn);
+        ColumnInfo valueCol = getColumn(_valueColumn);
         assert valueCol != null;
 
         valueCol.setKeyField(true);
@@ -98,7 +101,11 @@ abstract public class AbstractDataDefinedTable extends SimpleUserSchema.SimpleTa
         removeColumn(filterCol);
 
         LDKService.get().getDefaultTableCustomizer().customize(this);
+        return this;
+    }
 
+    protected void addTableURLs()
+    {
         setInsertURL(AbstractTableInfo.LINK_DISABLER);
         setUpdateURL(AbstractTableInfo.LINK_DISABLER);
         setDeleteURL(AbstractTableInfo.LINK_DISABLER);

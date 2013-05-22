@@ -66,6 +66,12 @@ public class LabworkTypeTable extends AbstractDataDefinedTable
         super(schema, table, TYPE_FIELD, FILTER_FIELD, tableName, filterValue);
     }
 
+    @Override
+    public LabworkTypeTable init()
+    {
+        return (LabworkTypeTable)super.init();
+    }
+
     private void normalizeAliases(Map<String, Object> map)
     {
         if (map.get("aliases") != null)

@@ -15,37 +15,12 @@
  */
 package org.labkey.ehr.query;
 
-import org.labkey.api.data.AbstractTableInfo;
 import org.labkey.api.data.ColumnInfo;
-import org.labkey.api.data.CompareType;
-import org.labkey.api.data.Container;
 import org.labkey.api.data.SchemaTableInfo;
-import org.labkey.api.data.SimpleFilter;
-import org.labkey.api.data.TableSelector;
-import org.labkey.api.ldk.LDKService;
-import org.labkey.api.query.BatchValidationException;
-import org.labkey.api.query.DuplicateKeyException;
-import org.labkey.api.query.FieldKey;
-import org.labkey.api.query.InvalidKeyException;
-import org.labkey.api.query.QueryUpdateService;
-import org.labkey.api.query.QueryUpdateServiceException;
-import org.labkey.api.query.SimpleQueryUpdateService;
 import org.labkey.api.query.SimpleUserSchema;
 import org.labkey.api.query.UserSchema;
-import org.labkey.api.query.ValidationException;
-import org.labkey.api.reader.DataLoader;
-import org.labkey.api.security.User;
-import org.labkey.api.util.FileStream;
 
-import java.io.IOException;
-import java.sql.SQLException;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * Created with IntelliJ IDEA.
@@ -60,6 +35,8 @@ public class LookupSetTable extends AbstractDataDefinedTable
     private static final String FILTER_COL = "set_name";
     private static final String VALUE_COL = "value";
 
+    private String _keyField;
+
     public LookupSetTable(UserSchema schema, SchemaTableInfo table, String setName, Map<String, Object> map)
     {
         super(schema, table, FILTER_COL, VALUE_COL, setName, setName);
@@ -71,8 +48,19 @@ public class LookupSetTable extends AbstractDataDefinedTable
             setDescription((String) map.get("description"));
 
         if (map.containsKey("keyField") && map.get("keyField") != null)
+            _keyField = (String)map.get("keyField");
+
+        if (map.containsKey("titleColumn") && map.get("titleColumn") != null)
+            _titleColumn = (String)map.get("titleColumn");
+    }
+
+    public LookupSetTable init()
+    {
+        super.init();
+
+        if (_keyField != null)
         {
-            ColumnInfo keyCol = getColumn((String)map.get("keyField"));
+            ColumnInfo keyCol = getColumn(_keyField);
             if (keyCol != null)
             {
                 keyCol.setKeyField(true);
@@ -82,14 +70,15 @@ public class LookupSetTable extends AbstractDataDefinedTable
         }
 
         setTitleColumn(VALUE_COL);
-        if (map.containsKey("titleColumn") && map.get("titleColumn") != null)
+        if (_titleColumn != null)
         {
-            ColumnInfo titleCol = getColumn((String)map.get("titleColumn"));
+            ColumnInfo titleCol = getColumn(_titleColumn);
             if (titleCol != null)
             {
                 setTitleColumn(titleCol.getName());
             }
         }
+        return this;
     }
 }
 
