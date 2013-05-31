@@ -759,7 +759,7 @@ EHR.Server.Triggers.rowInit = function(errors, row, oldRow){
         if(row.cage)
             sql += "h.cage='"+row.cage+"' AND ";
 
-        sql += "h.id='"+row.id+"' AND h.date <= '"+row.date+"' AND (h.enddate >= '"+row.date+"' OR h.enddate IS NULL) " +
+        sql += "h.id='"+row.id+"' AND h.date <= "+LABKEY.Query.sqlDateTimeLiteral(row.date)+" AND (h.enddate >= "+LABKEY.Query.sqlDateTimeLiteral(row.date)+" OR h.enddate IS NULL) " +
             "AND h.qcstate.publicdata = true";
         //console.log(sql)
         LABKEY.Query.executeSql({

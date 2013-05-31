@@ -22,7 +22,7 @@ function onUpsert(scriptContext, scriptErrors, row){
         var sql = "SELECT Id, room, cage, lsid FROM study.housing h " +
         "WHERE h.room='"+row.room+"' AND " +
         "h.date <= '"+row.Date+"' AND " +
-        "(h.enddate >= '"+row.Date+"' OR h.enddate IS NULL) AND " +
+        "(h.enddate >= "+LABKEY.Query.sqlDateTimeLiteral(row.Date)+" OR h.enddate IS NULL) AND " +
         "h.qcstate.publicdata = true ";
 
         if(row.cage)
@@ -56,7 +56,7 @@ function onAfterInsert(scriptContext, errors, row, oldRow){
             var sql = "SELECT Id, room, cage, lsid FROM study.housing h " +
             "WHERE h.room='"+row.room+"' AND " +
             "h.date <= '"+row.Date+"' AND " +
-            "(h.enddate >= '"+row.Date+"' OR h.enddate IS NULL) AND " +
+            "(h.enddate >= "+LABKEY.Query.sqlDateTimeLiteral(row.Date)+" OR h.enddate IS NULL) AND " +
             "h.qcstate.publicdata = true ";
 
             if(row.cage)
@@ -139,7 +139,7 @@ function onAfterUpdate(errors, scriptContext, row, oldRow){
         var sql = "SELECT Id, room, cage, lsid FROM study.housing h " +
         "WHERE h.room='"+row.room+"' AND " +
         "h.date <= '"+row.Date+"' AND " +
-        "(h.enddate >= '"+row.Date+"' OR h.enddate IS NULL) AND " +
+        "(h.enddate >= "+LABKEY.Query.sqlDateTimeLiteral(row.Date)+" OR h.enddate IS NULL) AND " +
         "h.qcstate.publicdata = true ";
 
         if(row.cage)

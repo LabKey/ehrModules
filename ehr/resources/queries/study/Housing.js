@@ -12,7 +12,7 @@ function onUpsert(context, errors, row, oldRow){
         LABKEY.Query.executeSql({
             schemaName: 'study',
             scope: this,
-            sql: "SELECT group_concat(h.Id) as Ids, count(h.Id) as num FROM (select case when (enddate is null) then (h.Id||'*') else h.Id end as id from study.housing h WHERE h.room='"+row.room+"' AND h.cage='"+row.cage+"' AND h.id != '"+row.Id+"' and (h.enddate is null or h.enddate >= '"+row.date+"')) h",
+            sql: "SELECT group_concat(h.Id) as Ids, count(h.Id) as num FROM (select case when (enddate is null) then (h.Id||'*') else h.Id end as id from study.housing h WHERE h.room='"+row.room+"' AND h.cage='"+row.cage+"' AND h.id != '"+row.Id+"' and (h.enddate is null or h.enddate >= "+LABKEY.Query.sqlDateTimeLiteral(row.date)+")) h",
             success: function(data){
                 if(data.rows && data.rows.length){
                     row['id/numroommates/cagemates'] = (data.rows[0].num ? ('('+data.rows[0].num+') ') + data.rows[0].Ids.join(',') : ' ');
