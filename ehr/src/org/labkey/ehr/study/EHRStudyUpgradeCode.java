@@ -33,7 +33,6 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Created with IntelliJ IDEA.
  * User: bimber
  * Date: 9/12/12
  * Time: 4:02 PM

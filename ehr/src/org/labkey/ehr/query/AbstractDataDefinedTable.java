@@ -53,7 +53,6 @@ import java.util.Set;
 import java.util.concurrent.Callable;
 
 /**
- * Created with IntelliJ IDEA.
  * User: bimber
  * Date: 4/2/13
  * Time: 2:54 PM

@@ -7,10 +7,45 @@ Ext4.define('EHR.data.StoreCollection', {
     extend: 'Ext.util.MixedCollection',
 
     constructor: function(){
-
+        this.collectionId = Ext4.id();
 
         this.callParent(arguments);
         this.addEvents('beforecommit', 'commitcomplete', 'commitexception', 'update', 'validation');
+    },
+
+    getKey: function(o){
+        return o.storeId;
+    },
+
+    getStoreConfig: function(config){
+        var storeConfig = EHR.DataEntryUtils.getStoreConfig(config);
+        storeConfig.storeId = this.collectionId + '||' + storeConfig.storeId;
+        return storeConfig;
+    },
+
+    getForQuery: function(schemaName, queryName){
+        var store;
+
+        this.each(function(s){
+            if (LABKEY.Utils.caseInsensitiveEquals(s.schemaName, schemaName) && LABKEY.Utils.caseInsensitiveEquals(s.queryName, queryName))
+                store = s;
+        }, this);
+
+        return store;
+    },
+
+    addFromConfig: function(config){
+        var storeConfig = this.getStoreConfig(config);
+
+        var store = this.get(storeConfig.storeId);
+        if (store){
+            console.log('Store already defined: ' + store.storeId);
+            return store;
+        }
+
+        store = Ext4.create('EHR.data.DataEntryStore', storeConfig);
+        this.add(store);
+        return store;
     },
 
     /**
@@ -42,8 +77,6 @@ Ext4.define('EHR.data.StoreCollection', {
             store.on('validation', this.onValidation, this);
             store.initMonitorValid();
         }
-
-        this.initInheritance(store);
 
         this.relayEvents(store, ['update']);
     },
@@ -459,5 +492,25 @@ Ext4.define('EHR.data.StoreCollection', {
     //for debugging purposes
     showErrors: function(){
         console.log(this.getErrors());
+    }
+});
+
+
+Ext4.define('EHR.util.DataBindManager', {
+    store: [],
+    forms: [],
+
+    extend: 'Ext.util.Observable',
+
+    constructor: function(config){
+        this.callParent(arguments);
+    },
+
+    addStore: function(store){
+
+    },
+
+    addFormListeners: function(formPanel){
+
     }
 });

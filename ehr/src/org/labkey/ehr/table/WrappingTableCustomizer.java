@@ -26,7 +26,6 @@ import org.labkey.api.query.QueryForeignKey;
 import org.labkey.api.query.UserSchema;
 
 /**
- * Created with IntelliJ IDEA.
  * User: bimber
  * Date: 4/22/13
  * Time: 6:42 PM

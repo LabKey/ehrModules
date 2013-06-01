@@ -15,8 +15,11 @@
  */
 package org.labkey.ehr.dataentry;
 
+import org.labkey.api.data.ColumnInfo;
 import org.labkey.api.data.Container;
+import org.labkey.api.data.TableInfo;
 import org.labkey.api.ehr.dataentry.DataEntryForm;
+import org.labkey.api.query.FieldKey;
 import org.labkey.api.security.User;
 
 import java.util.ArrayList;
@@ -26,7 +29,6 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Created with IntelliJ IDEA.
  * User: bimber
  * Date: 4/27/13
  * Time: 8:24 AM
@@ -36,6 +38,7 @@ public class DataEntryManager
     private static final DataEntryManager _instance = new DataEntryManager();
 
     private List<DataEntryForm> _forms = new ArrayList<DataEntryForm>();
+    private Map<String, List<FieldKey>> _defaultFieldKeys = new HashMap<String, List<FieldKey>>();
 
     private DataEntryManager()
     {
@@ -73,5 +76,44 @@ public class DataEntryManager
     public DataEntryForm getFormByName(String name, Container c, User u)
     {
         return getFormMap(c, u).get(name);
+    }
+
+    public void registerDefaultFieldKeys(String schemaName, String queryName, List<FieldKey> keys)
+    {
+        _defaultFieldKeys.put(getTableKey(schemaName, queryName), keys);
+    }
+
+    public List<FieldKey> getDefaultFieldKeys(TableInfo ti)
+    {
+        String tableKey = getTableKey(ti.getPublicSchemaName(), ti.getPublicName());
+        if (_defaultFieldKeys.containsKey(tableKey))
+            return _defaultFieldKeys.get(tableKey);
+
+
+        return inferDefaultFieldKeys(ti);
+    }
+
+    private List<FieldKey> inferDefaultFieldKeys(TableInfo ti)
+    {
+        List<FieldKey> fks = new ArrayList<FieldKey>();
+        for (ColumnInfo ci : ti.getColumns())
+        {
+            if (ci.isShownInInsertView() && !ci.isCalculated())
+            {
+                fks.add(ci.getFieldKey());
+            }
+        }
+
+        return fks;
+    }
+
+    public static String getTableKey(String schemaName, String queryName)
+    {
+        return schemaName + "||" + queryName;
+    }
+
+    public static String getTableKey(TableInfo ti)
+    {
+        return getTableKey(ti.getPublicSchemaName(), ti.getPublicName());
     }
 }

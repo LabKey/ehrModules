@@ -7,8 +7,10 @@ SELECT
 
 d.id,
 group_concat(d2.id) as Offspring,
-count(d2.id)  AS TotalOffspring
+count(d2.id)  AS TotalOffspring,
 
+min(d2.birth) as earliestBirth,
+max(d2.birth) as latestBirth
 
 FROM study.Demographics d
 

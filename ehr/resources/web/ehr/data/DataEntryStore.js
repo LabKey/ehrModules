@@ -24,11 +24,23 @@ Ext4.define('EHR.data.DataEntryStore', {
 
     },
 
+    generateBaseParams: function(config){
+        var baseParams = this.callParent(arguments);
+        baseParams.apiVersion = 13.1;
+
+        return baseParams;
+
+    },
+
+    onUpdate: function(store, record, operation){
+        this.callParent(arguments);
+
+
+    },
+
     //private
     //this method performs simple checks client-side then will submit the record for server-validation if selected
-    validateRecord: function(store, r, operation, config){
-        config = config || {};
-
+    validateRecord: function(r, validateOnServer){
         r.errors = r.errors || [];
 
         //remove other client-side errors for this record
@@ -39,6 +51,7 @@ Ext4.define('EHR.data.DataEntryStore', {
             }
         }
 
+        var store = this;
         r.fields.each(function(f) {
             //apparently the store's metadata can be updated w/o changing the record's, so we defer to the store
             var meta = store.getFields().get(f.name);
@@ -69,24 +82,18 @@ Ext4.define('EHR.data.DataEntryStore', {
         this.errors.addAll(r.errors);
 
         //this is designed such that validateRecords() can call validateRecord() multiple times without events firing
-        if(config.fireEvent !== false){
-            this.fireEvent('validation', this, [r], config);
+        if(validateOnServer){
+            this.validateRecordOnServer([r]);
         }
-
-        if(operation == 'edit' && this.doServerValidation){
-            this.validateRecordOnServer(this, [r], config);
+        else {
+            this.fireEvent('validation', this, [r]);
         }
     },
 
     //private
-    validateRecordOnServer: function(store, records, config){
+    validateRecordOnServer: function(records){
         if(!records || !records.length)
             return;
-
-        if(config && config.noServerValidation){
-            console.log('skipping server validation');
-            return;
-        }
 
         var commands = this.getChanges(records);
         if (!commands.length){

@@ -26,7 +26,6 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Created with IntelliJ IDEA.
  * User: bimber
  * Date: 9/17/12
  * Time: 8:35 PM

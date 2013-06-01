@@ -32,7 +32,6 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Created with IntelliJ IDEA.
  * User: bimber
  * Date: 2/17/13
  * Time: 3:39 PM

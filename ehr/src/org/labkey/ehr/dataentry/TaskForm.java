@@ -24,24 +24,44 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created with IntelliJ IDEA.
  * User: bimber
  * Date: 4/27/13
  * Time: 12:45 PM
  */
 public class TaskForm extends AbstractDataEntryForm
 {
-    private TaskForm(Module owner, String name, String label, String category, List<FormSection> sections)
+    protected TaskForm(Module owner, String name, String label, String category, List<FormSection> sections)
     {
         super(owner, name, label, category, sections);
+        setJavascriptClass("EHR.panel.TaskDataEntryPanel");
     }
 
-    public static TaskForm create(Module owner, String schemaName, String queryName, String category)
+    public static TaskForm createFormPanel(Module owner, String schemaName, String queryName, String category)
     {
         List<FormSection> sections = new ArrayList<FormSection>();
         String label = StringUtils.capitalize(queryName);
+        sections.add(new SimpleFormPanel("ehr", "tasks", "Task"));
         sections.add(new SimpleFormPanel(schemaName, queryName, label));
 
         return new TaskForm(owner, queryName, label, category, sections);
+    }
+
+    public static TaskForm createGridPanel(Module owner, String schemaName, String queryName, String category)
+    {
+        List<FormSection> sections = new ArrayList<FormSection>();
+        String label = StringUtils.capitalize(queryName);
+        sections.add(new SimpleFormPanel("ehr", "tasks", "Task"));
+        sections.add(new SimpleGridPanel(schemaName, queryName, label));
+
+        return new TaskForm(owner, queryName, label, category, sections);
+    }
+
+    public static TaskForm create(Module owner, String category, String name, String label, List<FormSection> formSections)
+    {
+        List<FormSection> sections = new ArrayList<FormSection>();
+        sections.add(new SimpleFormPanel("ehr", "tasks", "Task"));
+        sections.addAll(formSections);
+
+        return new TaskForm(owner, name, label, category, sections);
     }
 }

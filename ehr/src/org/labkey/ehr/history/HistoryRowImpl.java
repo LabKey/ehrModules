@@ -25,7 +25,6 @@ import java.util.Calendar;
 import java.util.Date;
 
 /**
- * Created with IntelliJ IDEA.
  * User: bimber
  * Date: 2/17/13
  * Time: 6:29 PM

@@ -1670,4 +1670,26 @@
             <ns:column columnName="modified"/>
         </ns:columns>
     </ns:table>
+    <ns:table tableName="treatment_times" tableDbType="TABLE" useColumnOrder="true">
+        <ns:tableTitle>Treatment Times</ns:tableTitle>
+        <ns:javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</ns:javaCustomizer>
+        <ns:columns>
+            <ns:column columnName="rowid"/>
+            <ns:column columnName="treatmentid">
+                <ns:columnTitle>Treatment Id</ns:columnTitle>
+                <ns:fk>
+                    <ns:fkDbSchema>study</ns:fkDbSchema>
+                    <ns:fkTable>Treatment Orders</ns:fkTable>
+                    <ns:fkColumnName>objectid</ns:fkColumnName>
+                </ns:fk>
+            </ns:column>
+            <ns:column columnName="time"/>
+            <ns:column columnName="objectid"/>
+            <ns:column columnName="container"/>
+            <ns:column columnName="createdby"/>
+            <ns:column columnName="created"/>
+            <ns:column columnName="modifiedby"/>
+            <ns:column columnName="modified"/>
+        </ns:columns>
+    </ns:table>
 </ns:tables>

@@ -24,7 +24,6 @@ import org.labkey.api.security.roles.AbstractRole;
 import org.labkey.ehr.EHRModule;
 
 /**
- * Created with IntelliJ IDEA.
  * User: bimber
  * Date: 1/17/13
  * Time: 7:43 PM

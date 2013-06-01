@@ -31,11 +31,7 @@
                 <property name="columnTitle" value="Sire"/>
             </properties>
         </column>
-        <column name="Dataset/Demographics/origin">
-            <properties>
-                <property name="columnTitle" value="Origin"/>
-            </properties>
-        </column>
+        <column name="Dataset/Demographics/origin"/>
         <column name="Dataset/Demographics/birth">
             <properties>
                 <property name="columnTitle" value="Birth"/>

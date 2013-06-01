@@ -62,7 +62,6 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Created with IntelliJ IDEA.
  * User: bimber
  * Date: 12/7/12
  * Time: 2:29 PM
@@ -707,7 +706,11 @@ public class DefaultEHRCustomizer implements TableCustomizer
         if (ds.getColumn(name) != null)
             return;
 
-        WrappedColumn col = new WrappedColumn(ds.getColumn("lsid"), name);
+        ColumnInfo lsidCol = ds.getColumn("lsid");
+        if (lsidCol == null)
+            return;
+
+        WrappedColumn col = new WrappedColumn(lsidCol, name);
         col.setLabel("Housing At Time");
         col.setReadOnly(true);
         col.setIsUnselectable(true);
@@ -757,7 +760,11 @@ public class DefaultEHRCustomizer implements TableCustomizer
         if (ds.getColumn(name) != null)
             return;
 
-        WrappedColumn col = new WrappedColumn(ds.getColumn("lsid"), name);
+        ColumnInfo lsidCol = ds.getColumn("lsid");
+        if (lsidCol == null)
+            return;
+
+        WrappedColumn col = new WrappedColumn(lsidCol, name);
         col.setLabel("Survivorship");
         col.setReadOnly(true);
         col.setIsUnselectable(true);
@@ -824,7 +831,11 @@ public class DefaultEHRCustomizer implements TableCustomizer
         if (ds.getColumn(name) != null)
             return;
 
-        WrappedColumn col = new WrappedColumn(ds.getColumn("lsid"), name);
+        ColumnInfo lsidCol = ds.getColumn("lsid");
+        if (lsidCol == null)
+            return;
+
+        WrappedColumn col = new WrappedColumn(lsidCol, name);
         col.setLabel("Age At The Time");
         col.setReadOnly(true);
         col.setIsUnselectable(true);

@@ -20,7 +20,6 @@ import org.labkey.api.data.Container;
 import org.labkey.api.data.ContainerManager;
 
 /**
- * Created with IntelliJ IDEA.
  * User: bimber
  * Date: 9/17/12
  * Time: 2:02 PM

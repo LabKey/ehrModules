@@ -43,7 +43,6 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 /**
- * Created with IntelliJ IDEA.
  * User: bimber
  * Date: 2/9/13
  * Time: 4:29 PM

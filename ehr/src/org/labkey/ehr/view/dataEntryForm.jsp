@@ -34,6 +34,7 @@
         LinkedHashSet<ClientDependency> resources = new LinkedHashSet<ClientDependency>();
         resources.add(ClientDependency.fromModuleName("ehr"));
         resources.add(ClientDependency.fromFilePath("ehr/panel/DataEntryPanel.js"));
+        resources.add(ClientDependency.fromFilePath("ehr/panel/TaskDataEntryPanel.js"));
         return resources;
     }
 %>

@@ -21,7 +21,6 @@ import org.labkey.api.query.FieldKey;
 import java.sql.SQLException;
 
 /**
- * Created with IntelliJ IDEA.
  * User: bimber
  * Date: 2/17/13
  * Time: 4:52 PM

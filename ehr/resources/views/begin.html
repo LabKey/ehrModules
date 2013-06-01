@@ -1,8 +1,5 @@
 <script type="text/javascript">
 
-LABKEY.requiresScript("/ehr/navMenu.js");
-LABKEY.requiresScript("/ehr/utils.js");
-
 Ext.onReady(createNavMenu);
 
 function createNavMenu()
@@ -15,6 +12,7 @@ function createNavMenu()
 
     var webpart = <%=webpartContext%>;
     var ctx = EHR.Utils.getEHRContext(webpart.wrapperDivId);
+
     if(!ctx)
         return;
 

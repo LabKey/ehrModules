@@ -23,7 +23,6 @@ import org.labkey.api.data.DbSchema;
 import org.labkey.api.data.UpgradeCode;
 import org.labkey.api.ehr.EHRService;
 import org.labkey.api.ldk.ExtendedSimpleModule;
-import org.labkey.api.ldk.notification.NotificationService;
 import org.labkey.api.module.Module;
 import org.labkey.api.module.ModuleContext;
 import org.labkey.api.query.DefaultSchema;
@@ -35,7 +34,7 @@ import org.labkey.api.security.roles.RoleManager;
 import org.labkey.api.util.PageFlowUtil;
 import org.labkey.api.view.WebPartFactory;
 import org.labkey.api.view.template.ClientDependency;
-import org.labkey.ehr.notification.OverdueWeightsNotification;
+import org.labkey.ehr.dataentry.TaskForm;
 import org.labkey.ehr.query.EHRLookupsUserSchema;
 import org.labkey.ehr.security.EHRBasicSubmitterRole;
 import org.labkey.ehr.security.EHRDataAdminRole;
@@ -58,6 +57,7 @@ public class EHRModule extends ExtendedSimpleModule
 {
     public static final String EHR_ADMIN_USER = "EHRAdminUser@ehr.com";
     public static final String NAME = "EHR";
+    public static final String CONTROLLER_NAME = "ehr";
 
     public String getName()
     {
@@ -66,7 +66,7 @@ public class EHRModule extends ExtendedSimpleModule
 
     public double getVersion()
     {
-        return 12.345;
+        return 12.347;
     }
 
     public boolean hasScripts()
@@ -81,7 +81,7 @@ public class EHRModule extends ExtendedSimpleModule
 
     protected void init()
     {
-        addController("ehr", EHRController.class);
+        addController(CONTROLLER_NAME, EHRController.class);
         EHRProperties.register();
 
         EHRServiceImpl impl = new EHRServiceImpl();
@@ -105,8 +105,8 @@ public class EHRModule extends ExtendedSimpleModule
         EHRService.get().registerReportLink(EHRService.REPORT_LINK_TYPE.protocol, "View Total Animals Assigned to Each Protocol, By Species", this, DetailsURL.fromString("/query/executeQuery.view?schemaName=ehr&query.queryName=protocolTotalAnimalsBySpecies"), "Quick Links");
         EHRService.get().registerReportLink(EHRService.REPORT_LINK_TYPE.assignment, "Find Assignments Overlapping A Date Range", this, DetailsURL.fromString("/query/executeQuery.view?schemaName=study&query.queryName=assignmentOverlapsIdBy"), "Quick Links");
 
-        //EHRService.get().registerFormType(SimpleFormType.create(this, "study", "weight", "Clinical"));
-        //EHRService.get().registerFormType(SimpleFormType.create(this, "study", "vitals", "Clinical"));
+        EHRService.get().registerFormType(TaskForm.createGridPanel(this, "study", "weight", "Clinical"));
+        EHRService.get().registerFormType(TaskForm.createFormPanel(this, "study", "vitals", "Clinical"));
     }
 
     @Override

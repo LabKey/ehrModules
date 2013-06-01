@@ -20,7 +20,6 @@ import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 
 /**
- * Created with IntelliJ IDEA.
  * User: bimber
  * Date: 4/25/13
  * Time: 5:56 PM

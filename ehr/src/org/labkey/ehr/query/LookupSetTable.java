@@ -23,7 +23,6 @@ import org.labkey.api.query.UserSchema;
 import java.util.Map;
 
 /**
- * Created with IntelliJ IDEA.
  * User: bimber
  * Date: 1/31/13
  * Time: 4:33 PM

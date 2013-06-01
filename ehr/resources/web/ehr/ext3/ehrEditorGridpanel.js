@@ -4,9 +4,6 @@
  * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
  */
 
-LABKEY.requiresScript("/ehr/Utils.js");
-LABKEY.requiresScript("/ehr/ehrMetaHelper.js");
-
 /**
  * Constructs a new EHR EditorGridPanel using the supplied configuration.
  * @class

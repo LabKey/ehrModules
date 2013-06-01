@@ -170,7 +170,7 @@ Ext.extend(EHR.ext.ImportPanel.Base, Ext.Panel, {
 
         }, this);
 
-        if (debug){
+        if (EHR.debug){
             buttons.push([
                 {text: 'Stores?', name: 'stores', handler: this.store.showStores, scope: this.store},
                 {text: 'Errors?', name: 'errors', handler: this.store.showErrors, scope: this.store}
@@ -395,7 +395,7 @@ Ext.extend(EHR.ext.ImportPanel.Base, Ext.Panel, {
     //when a store validates records on the server, we toggle buttons based on validation status (ie. the most severe error)
     onStoreValidation: function(storeCollection, maxSeverity)
     {
-        if(debug && maxSeverity)
+        if(EHR.debug && maxSeverity)
             console.log('Error level: '+maxSeverity);
 
         this.getFooterToolbar().items.each(function(item){

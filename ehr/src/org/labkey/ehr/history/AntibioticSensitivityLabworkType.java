@@ -34,7 +34,6 @@ import java.util.Set;
 import java.util.TreeMap;
 
 /**
- * Created with IntelliJ IDEA.
  * User: bimber
  * Date: 3/6/13
  * Time: 12:26 PM

@@ -25,9 +25,6 @@ import org.labkey.api.action.SimpleViewAction;
 import org.labkey.api.action.SpringActionController;
 import org.labkey.api.ehr.EHRService;
 import org.labkey.api.ehr.HistoryRow;
-import org.labkey.api.module.Module;
-import org.labkey.api.module.ModuleHtmlView;
-import org.labkey.api.module.ModuleLoader;
 import org.labkey.api.pipeline.PipelineStatusUrls;
 import org.labkey.api.resource.Resource;
 import org.labkey.api.security.RequiresPermissionClass;
@@ -63,7 +60,7 @@ import java.util.Map;
 
 public class EHRController extends SpringActionController
 {
-    private static final DefaultActionResolver _actionResolver = new DefaultActionResolver(EHRController.class);
+    private static final DefaultActionResolver _actionResolver = new EHRActionResolver();
 
     public EHRController()
     {
@@ -538,146 +535,6 @@ public class EHRController extends SpringActionController
         public void setLinkTypes(String[] linkTypes)
         {
             _linkTypes = linkTypes;
-        }
-    }
-
-    @RequiresPermissionClass(ReadPermission.class)
-    public class ProjectDetailsAction extends SimpleViewAction<Object>
-    {
-        @Override
-        public ModelAndView getView(Object form, BindException errors) throws Exception
-        {
-            EHRServiceImpl service = (EHRServiceImpl)EHRServiceImpl.get();
-
-            Resource r = service.getActionOverride(EHRService.EHR_ACTION_TYPE.projectDetails, getContainer());
-            if (r == null)
-            {
-                Module ehrModule = ModuleLoader.getInstance().getModule(EHRModule.NAME);
-                r = ehrModule.getModuleResource(Path.parse("views/projectDetails.html"));
-            }
-
-            HtmlView view = new ModuleHtmlView(r);
-            view.setFrame(WebPartView.FrameType.NONE);
-
-            return view;
-        }
-
-        @Override
-        public NavTree appendNavTrail(NavTree root)
-        {
-            return root.addChild("Project Details");
-        }
-    }
-
-    @RequiresPermissionClass(ReadPermission.class)
-    public class ProtocolDetailsAction extends SimpleViewAction<Object>
-    {
-        @Override
-        public ModelAndView getView(Object form, BindException errors) throws Exception
-        {
-            EHRServiceImpl service = (EHRServiceImpl)EHRServiceImpl.get();
-
-            Resource r = service.getActionOverride(EHRService.EHR_ACTION_TYPE.protocolDetails, getContainer());
-            if (r == null)
-            {
-                Module ehrModule = ModuleLoader.getInstance().getModule(EHRModule.NAME);
-                r = ehrModule.getModuleResource(Path.parse("views/protocolDetails.html"));
-            }
-
-            HtmlView view = new ModuleHtmlView(r);
-            view.setFrame(WebPartView.FrameType.NONE);
-
-            return view;
-        }
-
-        @Override
-        public NavTree appendNavTrail(NavTree root)
-        {
-            return root.addChild("Protocol Details");
-        }
-    }
-
-    @RequiresPermissionClass(ReadPermission.class)
-    public class ProcedureDetailsAction extends SimpleViewAction<Object>
-    {
-        @Override
-        public ModelAndView getView(Object form, BindException errors) throws Exception
-        {
-            EHRServiceImpl service = (EHRServiceImpl)EHRServiceImpl.get();
-
-            Resource r = service.getActionOverride(EHRService.EHR_ACTION_TYPE.procedureDetails, getContainer());
-            if (r == null)
-            {
-                Module ehrModule = ModuleLoader.getInstance().getModule(EHRModule.NAME);
-                r = ehrModule.getModuleResource(Path.parse("views/procedureDetails.html"));
-            }
-
-            HtmlView view = new ModuleHtmlView(r);
-            view.setFrame(WebPartView.FrameType.NONE);
-
-            return view;
-        }
-
-        @Override
-        public NavTree appendNavTrail(NavTree root)
-        {
-            return root.addChild("Procedure Details");
-        }
-    }
-
-    @RequiresPermissionClass(ReadPermission.class)
-    public class AnimalGroupDetailsAction extends SimpleViewAction<Object>
-    {
-        @Override
-        public ModelAndView getView(Object form, BindException errors) throws Exception
-        {
-            EHRServiceImpl service = (EHRServiceImpl)EHRServiceImpl.get();
-
-            Resource r = service.getActionOverride(EHRService.EHR_ACTION_TYPE.animalGroupDetails, getContainer());
-            if (r == null)
-            {
-                Module ehrModule = ModuleLoader.getInstance().getModule(EHRModule.NAME);
-                r = ehrModule.getModuleResource(Path.parse("views/animalGroupDetails.html"));
-            }
-
-            HtmlView view = new ModuleHtmlView(r);
-            view.setFrame(WebPartView.FrameType.NONE);
-
-            return view;
-        }
-
-        @Override
-        public NavTree appendNavTrail(NavTree root)
-        {
-            return root.addChild("Animal Group Details");
-        }
-    }
-
-    @RequiresPermissionClass(ReadPermission.class)
-    public class CageDetailsAction extends SimpleViewAction<Object>
-    {
-        @Override
-        public ModelAndView getView(Object form, BindException errors) throws Exception
-        {
-            EHRServiceImpl service = (EHRServiceImpl)EHRServiceImpl.get();
-
-            Resource r = service.getActionOverride(EHRService.EHR_ACTION_TYPE.cageDetails, getContainer());
-            if (r == null)
-            {
-                Module ehrModule = ModuleLoader.getInstance().getModule(EHRModule.NAME);
-                r = ehrModule.getModuleResource(Path.parse("views/cageDetails.html"));
-            }
-
-            HtmlView view = new ModuleHtmlView(r);
-            view.setFrame(WebPartView.FrameType.NONE);
-
-            return view;
-        }
-
-        @Override
-        public NavTree appendNavTrail(NavTree root)
-        {
-            return root.addChild("Location Details");
         }
     }
 

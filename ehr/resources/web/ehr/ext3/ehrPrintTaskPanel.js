@@ -6,8 +6,6 @@
 
 Ext.namespace('EHR.ext');
 
-LABKEY.requiresScript("/ehr/ehrFormPanel.js");
-
 /**
  * This class was never completed.  The intent was to try to create a variant of a normal Task ImportPanel which would
  * display records in a read-only manner suitable for printing.  The thought was that in some cases paper was going to be

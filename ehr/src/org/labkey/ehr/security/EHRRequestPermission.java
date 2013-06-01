@@ -18,7 +18,6 @@ package org.labkey.ehr.security;
 import org.labkey.api.security.permissions.AbstractPermission;
 
 /**
- * Created with IntelliJ IDEA.
  * User: bimber
  * Date: 1/17/13
  * Time: 7:49 PM

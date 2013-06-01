@@ -3,7 +3,7 @@
  *
  * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
  */
-Ext.namespace('EHR.Security', 'EHR.Utils');
+LABKEY.ExtAdapter.namespace('EHR.Security', 'EHR.Utils');
 
 /**
  * @namespace EHR Security Reporting and Helper class.
@@ -124,7 +124,7 @@ EHR.Security = new function(){
                             query.permissionsByQCState[qcState] = {};
 
                             //iterate over each permission this user has on this query
-                            Ext.each(query.effectivePermissions, function(p){
+                            LABKEY.ExtAdapter.each(query.effectivePermissions, function(p){
                                 if(p == qcRow.adminPermissionName){
                                     qcRow.permissionsByQuery.admin.push(queryName);
                                     query.permissionsByQCState[qcState].admin = true;
@@ -181,7 +181,7 @@ EHR.Security = new function(){
             if(!hasLoaded)
                 throw "EHR.Security.init() has not been called or returned prior to this call";
 
-            if(queries && !Ext.isArray(queries))
+            if(queries && !LABKEY.ExtAdapter.isArray(queries))
                 queries = [queries];
 
             if(!queries.length){
@@ -191,7 +191,7 @@ EHR.Security = new function(){
 
             var result = true;
             //var schemaName = 'study';
-            Ext.each(queries, function(query){
+           LABKEY.ExtAdapter.each(queries, function(query){
                 //if this schema isnt present, it's not securable, so we allow anything
                 if(!schemaMap.schemas[query.schemaName])
                     return true;

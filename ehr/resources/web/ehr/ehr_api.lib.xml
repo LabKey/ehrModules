@@ -1,13 +1,10 @@
 <libraries xmlns="http://labkey.org/clientLibrary/xml/">
     <library compileInProductionMode="false">
-        <script path="ehr/ExtOverrides.js"/>
         <script path="ehr/Constants.js"/>
-        <script path="ehr/ehrMetaHelper.js"/>
         <script path="ehr/utils.js"/>
         <script path="ehr/Security.js"/>
-        <script path="ehr/navMenu.js"/>
-        <script path="ehr/databind.js"/>
-        <script path="ehr/ehrStore.js"/>
+
+        <!--Misc Ext4 components-->
         <script path="ehr/panel/SnapshotPanel.js"/>
         <script path="ehr/panel/SmallFormSnapshotPanel.js"/>
         <script path="ehr/panel/LabworkSummaryPanel.js"/>
@@ -17,42 +14,15 @@
         <script path="ehr/form/field/RoomField.js"/>
         <script path="ehr/form/field/CageField.js"/>
 
-        <!--Ext4-->
+        <!--Ext4 data entry-->
+        <script path="ehr/DataEntryUtils.js"/>
         <script path="ehr/data/DataEntryStore.js"/>
         <script path="ehr/data/StoreCollection.js"/>
 
+        <script path="ehr/plugin/RowEditor.js"/>
         <script path="ehr/form/Panel.js"/>
         <script path="ehr/grid/Panel.js"/>
-        <script path="ehr/grid/GridFormPanel.js"/>
         <script path="ehr/panel/DataEntryPanel.js"/>
-
-        <!--Ext3-->
-        <script path="ehr/ehrStoreCollection.js"/>
-        <script path="ehr/ehrEditorGridpanel.js"/>
-        <script path="ehr/ehrImportPanel.js"/>
-        <script path="ehr/ehrFormPanel.js"/>
-        <script path="ehr/ehrGridFormPanel.js"/>
-        <script path="ehr/ehrPrintTaskPanel.js"/>
-        <script path="ehr/ExtComponents.js"/>
-        <script path="ehr/ExtContainers.js"/>
-
-        <!--metadata-->
-        <script path="ehr/metadata/Metadata.js"/>
-        <script path="ehr/metadata/Anesthesia.js"/>
-        <script path="ehr/metadata/Assay.js"/>
-        <script path="ehr/metadata/Biopsy.js"/>
-        <script path="ehr/metadata/Default.js"/>
-        <script path="ehr/metadata/Encounter.js"/>
-        <script path="ehr/metadata/MPR.js"/>
-        <script path="ehr/metadata/Necropsy.js"/>
-        <script path="ehr/metadata/NewAnimal.js"/>
-        <script path="ehr/metadata/NWM_PE.js"/>
-        <script path="ehr/metadata/PE.js"/>
-        <script path="ehr/metadata/Request.js"/>
-        <script path="ehr/metadata/SimpleForm.js"/>
-        <script path="ehr/metadata/Surgery.js"/>
-        <script path="ehr/metadata/Task.js"/>
-        <script path="ehr/metadata/Treatments.js"/>
 
         <script path="ehr/studyButtons.js"/>
         <script path="ehr/reports.js" />
@@ -61,8 +31,9 @@
     <dependencies>
         <dependency path="clientapi"/>
         <dependency path="LDK.context"/>
+
+        <!--These are Ext4-->
         <dependency path="ux/CheckCombo/CheckCombo.css"/>
         <dependency path="ux/CheckCombo/CheckCombo.js"/>
-        <dependency path="StatusBar.js"/>
     </dependencies>
 </libraries>

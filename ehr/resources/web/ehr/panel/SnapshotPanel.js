@@ -336,7 +336,7 @@ Ext4.define('EHR.panel.SnapshotPanel', {
         multi.add(LABKEY.Query.selectRows, {
             schemaName: 'study',
             queryName: 'Flags',
-            columns: 'date,enddate,performedby,flag,category,value',
+            columns: 'date,enddate,performedby,category,value',
             requiredVersion: 9.1,
             filterArray: [
                 LABKEY.Filter.create('Id', this.subjectId, LABKEY.Filter.Types.EQUAL),
@@ -744,7 +744,7 @@ Ext4.define('EHR.panel.SnapshotPanel', {
             var values = [];
             Ext4.each(results.rows, function(row){
                 var sr = new LDK.SelectRowsRow(row);
-                var flag = sr.getDisplayValue('flag');
+                var flag = sr.getDisplayValue('category');
                 if (flag)
                     flag = Ext4.String.trim(flag);
 

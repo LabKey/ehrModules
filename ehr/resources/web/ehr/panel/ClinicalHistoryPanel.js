@@ -142,7 +142,25 @@ Ext4.define('EHR.panel.ClinicalHistoryPanel', {
                     }
                 },{
                     text: 'Show/Hide Types',
+                    hidden: true,
                     disabled: true
+                },{
+                    text: 'Export History',
+                    scope: this,
+                    handler: function(btn){
+                        var params = {};
+                        if (this.subjectId)
+                            params.subjectId = [this.subjectId];
+                        if (this.caseId)
+                            params.caseId = this.caseId;
+                        if (this.minDate)
+                            params.minDate = this.minDate.format('Y-m-d');
+                        if (this.maxDate)
+                            params.maxDate = this.maxDate.format('Y-m-d');
+
+                        var url = LABKEY.ActionURL.buildURL('ehr', 'clinicalHistoryExport', null, params);
+                        window.open(url, '_blank');
+                    }
                 }]
             }
         };

@@ -61,6 +61,7 @@
                             <fkDbSchema>ehr_lookups</fkDbSchema>
                             <fkTable>routes</fkTable>
                             <fkColumnName>route</fkColumnName>
+                            <fkDisplayColumnName useRawValue="true"/>
                         </fk>
                     </column>
                     <column columnName="concentration">
@@ -72,6 +73,7 @@
                             <fkDbSchema>ehr_lookups</fkDbSchema>
                             <fkTable>conc_units</fkTable>
                             <fkColumnName>unit</fkColumnName>
+                            <fkDisplayColumnName useRawValue="true"/>
                         </fk>
                     </column>
                     <column columnName="dosage_units">
@@ -80,6 +82,7 @@
                             <fkDbSchema>ehr_lookups</fkDbSchema>
                             <fkTable>dosage_units</fkTable>
                             <fkColumnName>unit</fkColumnName>
+                            <fkDisplayColumnName useRawValue="true"/>
                         </fk>
                     </column>
                     <column columnName="vol_units">
@@ -88,6 +91,7 @@
                             <fkDbSchema>ehr_lookups</fkDbSchema>
                             <fkTable>volume_units</fkTable>
                             <fkColumnName>unit</fkColumnName>
+                            <fkDisplayColumnName useRawValue="true"/>
                         </fk>
                     </column>
                     <column columnName="restraint">

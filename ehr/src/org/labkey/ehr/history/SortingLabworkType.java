@@ -43,7 +43,6 @@ import java.util.Map;
 import java.util.TreeMap;
 
 /**
- * Created with IntelliJ IDEA.
  * User: bimber
  * Date: 3/13/13
  * Time: 1:24 PM

@@ -28,6 +28,7 @@ import org.labkey.api.module.Module;
 import org.labkey.api.module.ModuleLoader;
 import org.labkey.api.module.ModuleProperty;
 import org.labkey.api.query.DetailsURL;
+import org.labkey.api.query.FieldKey;
 import org.labkey.api.resource.Resource;
 import org.labkey.api.security.User;
 import org.labkey.api.util.Pair;
@@ -46,7 +47,6 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Created with IntelliJ IDEA.
  * User: bimber
  * Date: 9/14/12
  * Time: 4:46 PM
@@ -55,7 +55,7 @@ public class EHRServiceImpl extends EHRService
 {
     private Set<Module> _registeredModules = new HashSet<Module>();
     private Map<REPORT_LINK_TYPE, List<ReportLink>> _reportLinks = new HashMap<REPORT_LINK_TYPE, List<ReportLink>>();
-    private Map<EHR_ACTION_TYPE, List<Pair<Module, String>>> _actionOverrides = new HashMap<EHR_ACTION_TYPE, List<Pair<Module, String>>>();
+    private Map<String, List<Pair<Module, String>>> _actionOverrides = new HashMap<String, List<Pair<Module, String>>>();
     private List<Pair<Module, Resource>> _extraTriggerScripts = new ArrayList<Pair<Module, Resource>>();
     private Map<Module, List<ClientDependency>> _clientDependencies = new HashMap<Module, List<ClientDependency>>();
     private Map<String, Map<String, List<Pair<Module, Class<? extends TableCustomizer>>>>> _tableCustomizers = new CaseInsensitiveHashMap<Map<String, List<Pair<Module, Class<? extends TableCustomizer>>>>>();
@@ -310,24 +310,24 @@ public class EHRServiceImpl extends EHRService
         ClinicalHistoryManager.get().registerDataSource(source);
     }
 
-    public void registerActionOverride(EHR_ACTION_TYPE action, Module owner, String resourcePath)
+    public void registerActionOverride(String actionName, Module owner, String resourcePath)
     {
-        List<Pair<Module, String>> list = _actionOverrides.get(action);
+        List<Pair<Module, String>> list = _actionOverrides.get(actionName);
         if (list == null)
             list = new ArrayList<Pair<Module, String>>();
 
         list.add(Pair.of(owner, resourcePath));
 
-        _actionOverrides.put(action, list);
+        _actionOverrides.put(actionName, list);
     }
 
-    public Resource getActionOverride(EHR_ACTION_TYPE action, Container c)
+    public Resource getActionOverride(String actionName, Container c)
     {
-        if (!_actionOverrides.containsKey(action))
+        if (!_actionOverrides.containsKey(actionName))
             return null;
 
         Set<Module> activeModules = c.getActiveModules();
-        for (Pair<Module, String> pair : _actionOverrides.get(action))
+        for (Pair<Module, String> pair : _actionOverrides.get(actionName))
         {
             if (activeModules.contains(pair.first))
             {
@@ -356,5 +356,10 @@ public class EHRServiceImpl extends EHRService
     public void registerFormType(DataEntryForm form)
     {
         DataEntryManager.get().registerFormType(form);
+    }
+
+    public void registerDefaultFieldKeys(String schemaName, String queryName, List<FieldKey> keys)
+    {
+        DataEntryManager.get().registerDefaultFieldKeys(schemaName, queryName, keys);
     }
 }

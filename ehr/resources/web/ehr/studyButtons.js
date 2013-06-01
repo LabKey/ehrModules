@@ -7,7 +7,8 @@
 
 Ext.namespace('EHR.ext', 'EHR.Utils', 'EHR.DatasetButtons');
 
-LABKEY.requiresScript("/ehr/ehrAPI.js");
+//NOTE: tables requiring this code should declare that dependency in their query XML
+//LABKEY.requiresScript("/ehr/ehrAPI.js");
 
 
 /**

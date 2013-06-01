@@ -22,7 +22,6 @@ import java.sql.SQLException;
 import java.util.Set;
 
 /**
- * Created with IntelliJ IDEA.
  * User: bimber
  * Date: 2/17/13
  * Time: 4:52 PM

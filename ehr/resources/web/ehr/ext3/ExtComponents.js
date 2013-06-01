@@ -9,15 +9,6 @@
  */
 Ext.namespace('EHR.ext', 'EHR.ext.plugins', 'Ext.ux.form');
 
-
-LABKEY.requiresScript("/ehr/ext.ux.multiselect.js");
-LABKEY.requiresScript('Ext.ux.form.LovCombo.js');
-LABKEY.requiresCss('Ext.ux.form.LovCombo.css');
-
-LABKEY.requiresScript("/ehr/ext.ux.datetimefield.js");
-LABKEY.requiresScript("/ehr/datetime.js");
-
-
 /**
  * Contructs a CheckboxGroup where each radio is populated from a LabKey store.
  * This is an alternative to a combobox.

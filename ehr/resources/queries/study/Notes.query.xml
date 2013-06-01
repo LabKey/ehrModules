@@ -8,8 +8,11 @@
                 <updateUrl />
                 <deleteUrl />
                 <columns>
+                    <column columnName="enddate">
+                        <isHidden>false</isHidden>
+                    </column>
                     <column columnName="category">
-                        <columnTitle>Value</columnTitle>
+                        <columnTitle>Category</columnTitle>
                     </column>
                     <column columnName="value">
                         <columnTitle>Value</columnTitle>

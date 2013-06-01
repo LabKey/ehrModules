@@ -6,9 +6,6 @@
 
 Ext.namespace("EHR", "EHR.ext");
 
-LABKEY.requiresScript("/ehr/utils.js");
-LABKEY.requiresScript("/ehr/ehrMetaHelper.js");
-
 /**
  * Constructs a new EHR AdvancedStore using the supplied configuration.
  * @class

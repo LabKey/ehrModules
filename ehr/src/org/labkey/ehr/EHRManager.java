@@ -692,6 +692,7 @@ public class EHRManager
         names.add(Pair.of("snomed_tags", new String[]{"recordid", "rowid", "id"}));
         names.add(Pair.of("snomed_tags", new String[]{"code", "rowid", "id", "recordid"}));
         names.add(Pair.of("snomed_tags", new String[]{"recordid", "container", "code"}));
+        names.add(Pair.of("snomed_tags", new String[]{"code", "container"}));
 
         for (Pair<String, String[]> pair : names)
         {

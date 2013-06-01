@@ -35,12 +35,11 @@
                 </column>
                 <column columnName="protocol">
                   <columnTitle>Protocol</columnTitle>
-                  <nullable>false</nullable>
-                    <fk>
+                  <fk>
                       <fkDbSchema>ehr</fkDbSchema>
                       <fkTable>protocol</fkTable>
                       <fkColumnName>protocol</fkColumnName>
-                    </fk>
+                  </fk>
                 </column>
                 <column columnName="species">
                   <columnTitle>Species</columnTitle>

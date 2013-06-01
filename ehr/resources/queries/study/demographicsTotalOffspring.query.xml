@@ -13,6 +13,12 @@
                             query.Id~eq=${Id}
                         </url>
                     </column>
+                    <column columnName="earliestBirth">
+                        <columnTitle>Earliest Birth</columnTitle>
+                    </column>
+                    <column columnName="latestBirth">
+                        <columnTitle>Latest Birth</columnTitle>
+                    </column>
                 </columns>
             <titleColumn>TotalOffspring</titleColumn>
             </table>

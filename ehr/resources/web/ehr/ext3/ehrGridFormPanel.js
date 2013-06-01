@@ -6,7 +6,6 @@
 
 Ext.namespace('EHR.ext');
 
-LABKEY.requiresScript("/ehr/ehrFormPanel.js");
 
 /**
  * Constructs a new EHR GridFormPanel using the supplied configuration.

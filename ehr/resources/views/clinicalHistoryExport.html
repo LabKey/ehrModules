@@ -1,0 +1,13 @@
+<script type="text/javascript">
+
+    Ext4.onReady(function (){
+        var webpart = <%=webpartContext%>;
+
+        Ext4.create('EHR.panel.ClinicalHistoryExportPanel', {
+            minDate: LABKEY.ActionURL.getParameter('minDate'),
+            maxDate: LABKEY.ActionURL.getParameter('maxDate'),
+            subjectIds: LABKEY.ActionURL.getParameterArray('subjectId'),
+            caseId: LABKEY.ActionURL.getParameter('caseId')
+        }).render(webpart.wrapperDivId);
+    });
+</script>
