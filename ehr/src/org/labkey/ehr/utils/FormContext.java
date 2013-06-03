@@ -49,7 +49,7 @@ public class FormContext
         SimpleFilter filter = new SimpleFilter(FieldKey.fromString("formtype"), _name);
         TableSelector ts1 = new TableSelector(formTypes, filter, null);
 
-        Map[] rows = ts1.getArray(Map.class);
+        Map<String, Object>[] rows = ts1.getMapArray();
         if (rows.length != 1)
             throw new IllegalArgumentException("Improper data in formTypes table for form: " + _name);
 

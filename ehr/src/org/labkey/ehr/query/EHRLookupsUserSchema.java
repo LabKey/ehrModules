@@ -77,7 +77,7 @@ public class EHRLookupsUserSchema extends SimpleUserSchema
         nameMap = new HashMap<String, Map<String, Object>>();
 
         TableSelector ts = new TableSelector(_dbSchema.getTable(EHRSchema.TABLE_LOOKUP_SETS));
-        Map<String, Object>[] rows = ts.getArray(Map.class);
+        Map<String, Object>[] rows = ts.getMapArray();
         if (rows.length > 0)
         {
             Set<String> existing = super.getTableNames();
@@ -104,7 +104,7 @@ public class EHRLookupsUserSchema extends SimpleUserSchema
         nameMap = new HashMap<String, String>();
 
         TableSelector ts = new TableSelector(_dbSchema.getTable(EHRSchema.TABLE_LABWORK_TYPES));
-        Map<String, Object>[] rows = ts.getArray(Map.class);
+        Map<String, Object>[] rows = ts.getMapArray();
         if (rows.length > 0)
         {
             Set<String> existing = super.getTableNames();

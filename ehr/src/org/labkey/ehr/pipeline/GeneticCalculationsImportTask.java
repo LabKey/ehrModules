@@ -254,7 +254,7 @@ public class GeneticCalculationsImportTask extends PipelineJob.Task<GeneticCalcu
             getJob().getLogger().info("Deleting existing rows");
             TableSelector ts = new TableSelector(ti, Collections.singleton(ti.getColumn(FieldKey.fromString("lsid"))), null, null);
             List<Map<String, Object>> toDelete = new ArrayList<Map<String, Object>>();
-            toDelete.addAll(Arrays.asList((Map<String, Object>[])ts.getArray(Map.class)));
+            toDelete.addAll(Arrays.asList((Map<String, Object>[])ts.getMapArray()));
             qus.deleteRows(getJob().getUser(), getJob().getContainer(), toDelete, new HashMap<String, Object>());
 
             reader = new BufferedReader(new FileReader(output));
