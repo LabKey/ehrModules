@@ -25,14 +25,13 @@ import org.labkey.api.action.SimpleViewAction;
 import org.labkey.api.action.SpringActionController;
 import org.labkey.api.ehr.EHRService;
 import org.labkey.api.ehr.HistoryRow;
+import org.labkey.api.ehr.dataentry.DataEntryForm;
 import org.labkey.api.pipeline.PipelineStatusUrls;
-import org.labkey.api.resource.Resource;
 import org.labkey.api.security.RequiresPermissionClass;
 import org.labkey.api.security.permissions.AdminPermission;
 import org.labkey.api.security.permissions.ReadPermission;
 import org.labkey.api.util.ExceptionUtil;
 import org.labkey.api.util.PageFlowUtil;
-import org.labkey.api.util.Path;
 import org.labkey.api.util.URLHelper;
 import org.labkey.api.view.ActionURL;
 import org.labkey.api.view.HtmlView;
@@ -40,7 +39,6 @@ import org.labkey.api.view.JspView;
 import org.labkey.api.view.NavTree;
 import org.labkey.api.view.UnauthorizedException;
 import org.labkey.api.view.WebPartView;
-import org.labkey.api.ehr.dataentry.DataEntryForm;
 import org.labkey.ehr.dataentry.DataEntryManager;
 import org.labkey.ehr.history.ClinicalHistoryManager;
 import org.labkey.ehr.history.LabworkManager;
@@ -72,7 +70,7 @@ public class EHRController extends SpringActionController
     {
         public ApiResponse execute(Object form, BindException errors)
         {
-            ApiResponse resp = new ApiSimpleResponse();
+            Map<String, Object> resultProperties = new HashMap<>();
 
             Collection<DataEntryForm> forms = DataEntryManager.get().getForms(getContainer(), getUser());
             List<JSONObject> formJson = new ArrayList<JSONObject>();
@@ -81,10 +79,10 @@ public class EHRController extends SpringActionController
                 formJson.add(def.toJSON(getContainer(), getUser()));
             }
 
-            resp.getProperties().put("forms", formJson);
-            resp.getProperties().put("success", true);
+            resultProperties.put("forms", formJson);
+            resultProperties.put("success", true);
 
-            return resp;
+            return new ApiSimpleResponse(resultProperties);
         }
     }
 
@@ -93,7 +91,7 @@ public class EHRController extends SpringActionController
     {
         public ApiResponse execute(LabResultSummaryForm form, BindException errors)
         {
-            ApiResponse resp = new ApiSimpleResponse();
+            Map<String, Object> resultProperties = new HashMap<>();
 
             if (form.getRunId() == null || form.getRunId().length == 0)
             {
@@ -102,10 +100,10 @@ public class EHRController extends SpringActionController
             }
 
             Map<String, List<String>> results = LabworkManager.get().getResults(getContainer(), getUser(), Arrays.asList(form.getRunId()));
-            resp.getProperties().put("results", results);
-            resp.getProperties().put("success", true);
+            resultProperties.put("results", results);
+            resultProperties.put("success", true);
 
-            return resp;
+            return new ApiSimpleResponse(resultProperties);
         }
     }
 
@@ -129,7 +127,7 @@ public class EHRController extends SpringActionController
     {
         public ApiResponse execute(HistoryForm form, BindException errors)
         {
-            ApiResponse resp = new ApiSimpleResponse();
+            Map<String, Object> resultProperties = new HashMap<>();
 
             if (form.getSubjectIds() == null || form.getSubjectIds().length == 0)
             {
@@ -153,9 +151,9 @@ public class EHRController extends SpringActionController
                     results.put(subjectId, arr);
                 }
 
-                resp.getProperties().put("success", true);
-                resp.getProperties().put("results", results);
-                return resp;
+                resultProperties.put("success", true);
+                resultProperties.put("results", results);
+                return new ApiSimpleResponse(resultProperties);
             }
             catch (IllegalArgumentException e)
             {
@@ -172,7 +170,7 @@ public class EHRController extends SpringActionController
     {
         public ApiResponse execute(HistoryForm form, BindException errors)
         {
-            ApiResponse resp = new ApiSimpleResponse();
+            Map<String, Object> resultProperties = new HashMap<>();
 
             if (form.getCaseId() == null || form.getSubjectIds() == null || form.getSubjectIds().length != 1)
             {
@@ -183,7 +181,7 @@ public class EHRController extends SpringActionController
             try
             {
                 String subjectId = form.getSubjectIds()[0];
-                Map<String, JSONArray> results = new HashMap<String, JSONArray>();
+                Map<String, JSONArray> results = new HashMap<>();
                 List<HistoryRow> rows = ClinicalHistoryManager.get().getHistory(getContainer(), getUser(), subjectId, form.getCaseId());
                 for (HistoryRow row : rows)
                 {
@@ -196,9 +194,9 @@ public class EHRController extends SpringActionController
                     results.put(subjectId, arr);
                 }
 
-                resp.getProperties().put("success", true);
-                resp.getProperties().put("results", results);
-                return resp;
+                resultProperties.put("success", true);
+                resultProperties.put("results", results);
+                return new ApiSimpleResponse(resultProperties);
             }
             catch (IllegalArgumentException e)
             {
@@ -481,9 +479,9 @@ public class EHRController extends SpringActionController
     {
         public ApiResponse execute(ReportLinkForm form, BindException errors)
         {
-            ApiResponse resp = new ApiSimpleResponse();
+            Map<String, Object> resultProperties = new HashMap<>();
 
-            List<Map<String, Object>> ret = new ArrayList<Map<String, Object>>();
+            List<Map<String, Object>> ret = new ArrayList<>();
 
             if (form.getLinkTypes() == null)
             {
@@ -518,8 +516,8 @@ public class EHRController extends SpringActionController
                 }
             }
 
-            resp.getProperties().put("items", ret);
-            return resp;
+            resultProperties.put("items", ret);
+            return new ApiSimpleResponse(resultProperties);
         }
     }
 
