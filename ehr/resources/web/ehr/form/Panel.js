@@ -7,73 +7,62 @@ Ext4.define('EHR.form.Panel', {
     extend: 'Ext.form.Panel',
     alias: 'widget.ehr-formpanel',
 
-    fieldConfigs: [],
-    boundRecords: [],
-
     initComponent: function(){
         Ext4.QuickTips.init();
 
-        if (!this.stores || !this.stores.getCount()){
-            alert('No stores configured for FormPanel');
-            return;
-        }
-
-        Ext4.apply(this, {
-            items: this.getItems(),
+        LABKEY.ExtAdapter.apply(this, {
+            items: this.getItemsConfig(),
             bodyStyle: 'padding: 5px;',
             defaults: {
                 border: false
-            }
+            },
+            buttonAlign: 'left',
+            buttons: [{
+                text: 'Show Records',
+                handler: function(btn){
+                    btn.up('panel').store.each(function(r){
+                        console.log(r.data);
+                    }, this);
+                }
+            }]
         });
 
+        this.bindConfig = this.bindConfig || {};
+        LABKEY.Utils.mergeIf(this.bindConfig, {
+            autoCreateRecordOnChange: true,
+            autoBindFirstRecord: true
+        });
+
+        this.plugins = this.plugins || [];
+        this.plugins.push(Ext4.create('EHR.plugin.Databind'));
+
         this.callParent();
+
+        this.addEvents('recordchange', 'fieldvaluechange');
     },
 
-    getItems: function(){
+    getItemsConfig: function(){
         var items = [];
 
-        LABKEY.ExtAdapter.each(this.formConfig.fieldConfigs, function(cfg){
-            var cfg = EHR.DataEntryUtils.getFormEditorConfig(cfg);
+        var fields = EHR.model.DefaultClientModel.getFieldConfigs(this.formConfig.fieldConfigs, this.formConfig.configSources);
+        Ext4.Array.forEach(fields, function(field){
+            if (field.jsonType == 'date' && field.extFormat){
+                if (Ext4.Date.formatContainsHourInfo(field.extFormat)){
+                    field.xtype = 'xdatetime';
+                }
+            }
+
+            var cfg = EHR.DataEntryUtils.getFormEditorConfig(field);
             LABKEY.ExtAdapter.apply(cfg, {
                 labelWidth: 150,
                 width: 400
             });
 
             items.push(cfg);
-
         });
 
         return items;
-    },
-
-    //databind
-    _boundRecordMap: {},
-
-    bindRecord: function(record){
-        var store = record.store;
-        this.getForm().getFields().each(function(field){
-            if (store.schemaName == field.schemaName && store.queryName == field.queryName){
-                field.boundRecord = record;
-            }
-        }, this);
-    },
-
-    attemptFieldBind: function(record, field){
-
-    },
-
-    unbindRecord: function(){
-        var form = this.panel.getForm();
-        this.ignoreNextUpdateEvent = null;
-
-        if(form.getRecord()){
-            form.updateRecord(form.getRecord());
-        }
-
-        form._record = null;
-        form.reset();
-    },
-
+    }
 });
 
 

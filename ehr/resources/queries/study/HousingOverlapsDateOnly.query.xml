@@ -8,6 +8,7 @@
                 <tableUrl />
                 <columns>
                     <column columnName="lsid">
+                        <isKeyField>true</isKeyField>
                         <isHidden>true</isHidden>
                     </column>
                 </columns>

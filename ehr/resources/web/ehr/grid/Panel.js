@@ -8,22 +8,15 @@ Ext4.define('EHR.grid.Panel', {
     alias: 'widget.ehr-gridpanel',
 
     initComponent: function(){
-        if (!this.stores){
+        if (!this.store){
             alert('Must provide a storeConfig');
             return;
         }
 
-        this.store = this.stores.getForQuery(this.formConfig.schemaName, this.formConfig.queryName);
-        this.store.on('load', function(store){
-            console.log('loaded');
-//            this.getView().refresh();
-//            store.fireEvent('datachanged', store);
-        }, this);
-
         this.configureColumns();
 
         LABKEY.ExtAdapter.apply(this, {
-            selType: 'rowmodel',
+            selType: 'cellmodel',
             defaults: {
                 border: false
             },
@@ -42,23 +35,44 @@ Ext4.define('EHR.grid.Panel', {
         this.callParent();
     },
 
-    getEditingPlugin: function(){
-        return Ext4.create('EHR.plugin.RowEditor', {})
-    },
-
     configureColumns: function(){
         if (this.columns)
             return;
 
-        this.columns = [];
+        this.columns = [{
+            xtype: 'actioncolumn',
+            width: 40,
+            icon: LABKEY.ActionURL.getContextPath() + '/_images/editprops.png',
+            tooltip: 'Edit',
+            rowEditorPlugin: this.getRowEditorPlugin(),
+            handler: function(view, rowIndex, colIndex, item, e, rec) {
+                this.rowEditorPlugin.editRecord(rec);
+            }
+        }];
+
         LABKEY.ExtAdapter.each(this.formConfig.fieldConfigs, function(field){
-            if(field.shownInGrid === false)
+            var tableConfig = EHR.model.ViewConfigManager.getTableMetadata(field.schemaName, field.queryName, this.formConfig.sources);
+            var cfg = LABKEY.ExtAdapter.apply({}, field);
+            LABKEY.Utils.merge(cfg, tableConfig[field.name]);
+
+            if(cfg.shownInGrid === false)
                 return;
 
-            var cfg = EHR.DataEntryUtils.getColumnConfigFromMetadata(field, this);
-            if (cfg)
-                this.columns.push(cfg);
+            var colCfg = EHR.DataEntryUtils.getColumnConfigFromMetadata(cfg, this);
+            if (colCfg)
+                this.columns.push(colCfg);
         }, this);
+    },
+
+    getRowEditorPlugin: function(){
+        if (this.rowEditorPlugin)
+            return this.rowEditorPlugin;
+
+        this.rowEditorPlugin = Ext4.create('EHR.plugin.RowEditor', {
+            cmp: this
+        });
+
+        return this.rowEditorPlugin;
     },
 
     getFilterArray: function(){
@@ -78,7 +92,7 @@ Ext4.define('EHR.grid.Panel', {
 
         buttons.push(LABKEY.ext4.GRIDBUTTONS.getButton('ADDRECORD'));
         buttons.push(LABKEY.ext4.GRIDBUTTONS.getButton('DELETERECORD'));
-console.log(buttons)
+
         return buttons;
     }
 });

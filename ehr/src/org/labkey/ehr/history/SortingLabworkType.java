@@ -86,7 +86,7 @@ public class SortingLabworkType extends DefaultLabworkType
     }
 
     @Override
-    protected Map<String, List<String>> getRows(TableSelector ts, final Collection<ColumnInfo> cols)
+    protected Map<String, List<String>> getRows(TableSelector ts, final Collection<ColumnInfo> cols, final boolean redacted)
     {
         final Map<String, Map<Integer, List<String>>> rows = new HashMap<String, Map<Integer, List<String>>>();
         ts.forEach(new Selector.ForEachBlock<ResultSet>()
@@ -106,7 +106,7 @@ public class SortingLabworkType extends DefaultLabworkType
                 if (list == null)
                     list = new ArrayList<String>();
 
-                String line = getLine(rs);
+                String line = getLine(rs, redacted);
                 if (line != null)
                     list.add(line);
 

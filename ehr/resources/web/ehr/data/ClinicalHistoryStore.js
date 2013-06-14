@@ -33,6 +33,7 @@ Ext4.define('EHR.data.ClinicalHistoryStore', {
      * @param config.minDate
      * @param config.maxDate
      * @param config.caseId
+     * @param config.redacted
      */
     reloadData: function(config){
         this.removeAll();
@@ -44,7 +45,8 @@ Ext4.define('EHR.data.ClinicalHistoryStore', {
                 subjectIds: config.subjectIds,
                 caseId: config.caseId,
                 minDate: config.minDate,
-                maxDate: config.maxDate
+                maxDate: config.maxDate,
+                redacted: !!config.redacted
             },
             scope: this,
             failure: LDK.Utils.getErrorCallback(),

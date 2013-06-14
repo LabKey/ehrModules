@@ -17,12 +17,14 @@ package org.labkey.ehr.table;
 
 import org.labkey.api.data.AbstractTableInfo;
 import org.labkey.api.data.ColumnInfo;
+import org.labkey.api.data.Container;
 import org.labkey.api.data.JdbcType;
 import org.labkey.api.data.TableCustomizer;
 import org.labkey.api.data.TableInfo;
 import org.labkey.api.data.WrappedColumn;
 import org.labkey.api.ehr.EHRService;
 import org.labkey.api.query.QueryForeignKey;
+import org.labkey.api.query.QueryService;
 import org.labkey.api.query.UserSchema;
 
 /**
@@ -41,24 +43,22 @@ public class WrappingTableCustomizer implements TableCustomizer
 
     public void customize(TableInfo table)
     {
-        DefaultEHRCustomizer ehr = new DefaultEHRCustomizer();
-        addLookups(table, ehr);
+        addWrappedColumn(table);
 
+        DefaultEHRCustomizer ehr = new DefaultEHRCustomizer();
         ehr.customize(table);
     }
 
-    public void addLookups(TableInfo ti, DefaultEHRCustomizer ehr)
+    public void addWrappedColumn(TableInfo ti)
     {
         for (ColumnInfo col : ti.getColumns())
         {
             if (col.getName().equalsIgnoreCase(ID_FIELD) && col.getJdbcType().equals(JdbcType.VARCHAR) && col.getFk() == null)
             {
-                //TODO: switch approach when in 13.1
-                if (ti instanceof AbstractTableInfo)
+                Container studyContainer = EHRService.get().getEHRStudyContainer(ti.getUserSchema().getContainer());
+                if (studyContainer != null)
                 {
-                    //TODO: use correct container.  look up using module properties
-                    //Container study = EHRService.get().getEHRStudyContainer();
-                    UserSchema us = ehr.getStudyUserSchema((AbstractTableInfo)ti);
+                    UserSchema us = QueryService.get().getUserSchema(ti.getUserSchema().getUser(), ti.getUserSchema().getContainer(), "study");
                     if (us != null)
                     {
                         WrappedColumn newCol = new WrappedColumn(col, "EHR");
@@ -68,6 +68,8 @@ public class WrappingTableCustomizer implements TableCustomizer
                         newCol.setFk(new QueryForeignKey(us, "Animal", ID_FIELD, ID_FIELD));
                         if (ti instanceof AbstractTableInfo)
                             ((AbstractTableInfo) ti).addColumn(newCol);
+
+                        break;
                     }
                 }
             }

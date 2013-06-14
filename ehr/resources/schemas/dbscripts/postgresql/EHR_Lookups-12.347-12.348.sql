@@ -1,0 +1,1 @@
+ALTER TABLE ehr_lookups.species add dateDisabled timestamp;

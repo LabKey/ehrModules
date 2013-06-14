@@ -35,6 +35,7 @@ import org.labkey.api.util.PageFlowUtil;
 import org.labkey.api.view.WebPartFactory;
 import org.labkey.api.view.template.ClientDependency;
 import org.labkey.ehr.dataentry.TaskForm;
+import org.labkey.ehr.pipeline.GeneticCalculationsJob;
 import org.labkey.ehr.query.EHRLookupsUserSchema;
 import org.labkey.ehr.security.EHRBasicSubmitterRole;
 import org.labkey.ehr.security.EHRDataAdminRole;
@@ -66,7 +67,7 @@ public class EHRModule extends ExtendedSimpleModule
 
     public double getVersion()
     {
-        return 12.347;
+        return 12.349;
     }
 
     public boolean hasScripts()
@@ -107,6 +108,9 @@ public class EHRModule extends ExtendedSimpleModule
 
         EHRService.get().registerFormType(TaskForm.createGridPanel(this, "study", "weight", "Clinical"));
         EHRService.get().registerFormType(TaskForm.createFormPanel(this, "study", "vitals", "Clinical"));
+
+        //attempt to schedule genetic calculations.  will abort if not enabled
+        GeneticCalculationsJob.schedule();
     }
 
     @Override

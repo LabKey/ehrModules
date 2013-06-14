@@ -39,6 +39,7 @@ import org.labkey.api.exp.api.ExperimentService;
 import org.labkey.api.exp.property.Domain;
 import org.labkey.api.exp.property.DomainProperty;
 import org.labkey.api.exp.query.ExpSchema;
+import org.labkey.api.ldk.LDKService;
 import org.labkey.api.module.Module;
 import org.labkey.api.module.ModuleLoader;
 import org.labkey.api.module.ModuleProperty;
@@ -54,6 +55,8 @@ import org.labkey.api.study.StudyService;
 import org.labkey.api.util.ExceptionUtil;
 import org.labkey.api.util.Pair;
 import org.labkey.api.util.ResultSetUtil;
+import org.labkey.ehr.pipeline.GeneticCalculationsJob;
+import org.quartz.core.QuartzScheduler;
 
 import java.beans.Introspector;
 import java.sql.DatabaseMetaData;
@@ -782,11 +785,5 @@ public class EHRManager
         {
             ResultSetUtil.close(results);
         }
-    }
-
-    public void scheduleKinshipTask()
-    {
-        ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
-        //executor.scheduleAtFixedRate(new GeneticCalculationsRunnable(), 10, 10000, TimeUnit.SECONDS);
     }
 }

@@ -13,6 +13,13 @@
                             query.Id~eq=${Id}
                         </url>
                     </column>
+                    <column columnName="totalLivingOffspring">
+                        <url>/query/executeQuery.view?schemaName=study&amp;
+                            query.queryName=demographicsOffspring&amp;
+                            query.Offspring/demographics/calculated_status~eq=Alive&amp;
+                            query.Id~eq=${Id}
+                        </url>
+                    </column>
                     <column columnName="earliestBirth">
                         <columnTitle>Earliest Birth</columnTitle>
                     </column>

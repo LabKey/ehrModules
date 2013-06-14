@@ -23,6 +23,8 @@ import org.labkey.api.action.ApiSimpleResponse;
 import org.labkey.api.action.ConfirmAction;
 import org.labkey.api.action.SimpleViewAction;
 import org.labkey.api.action.SpringActionController;
+import org.labkey.api.data.Container;
+import org.labkey.api.data.ContainerManager;
 import org.labkey.api.ehr.EHRService;
 import org.labkey.api.ehr.HistoryRow;
 import org.labkey.api.ehr.dataentry.DataEntryForm;
@@ -42,6 +44,7 @@ import org.labkey.api.view.WebPartView;
 import org.labkey.ehr.dataentry.DataEntryManager;
 import org.labkey.ehr.history.ClinicalHistoryManager;
 import org.labkey.ehr.history.LabworkManager;
+import org.labkey.ehr.pipeline.GeneticCalculationsJob;
 import org.labkey.ehr.pipeline.GeneticCalculationsRunnable;
 import org.labkey.ehr.security.EHRDataEntryPermission;
 import org.springframework.validation.BindException;
@@ -86,6 +89,84 @@ public class EHRController extends SpringActionController
         }
     }
 
+    @RequiresPermissionClass(AdminPermission.class)
+    public class SetGeneticCalculationTaskSettingsAction extends ApiAction<ScheduleGeneticCalculationForm>
+    {
+        public ApiResponse execute(ScheduleGeneticCalculationForm form, BindException errors)
+        {
+            Container c;
+            if (form.getContainerPath() == null)
+                c = getContainer();
+            else
+                c = ContainerManager.getForPath(form.getContainerPath());
+
+            if (c == null)
+            {
+                errors.reject(ERROR_MSG, "Unable to find container for path: " + form.getContainerPath());
+                return null;
+            }
+            GeneticCalculationsJob.setProperties(form.isEnabled(), c, form.getHourOfDay());
+
+            return new ApiSimpleResponse("success", true);
+        }
+    }
+
+    @RequiresPermissionClass(AdminPermission.class)
+    public class GetGeneticCalculationTaskSettingsAction extends ApiAction<ScheduleGeneticCalculationForm>
+    {
+        public ApiResponse execute(ScheduleGeneticCalculationForm form, BindException errors)
+        {
+            Map<String, Object> ret = new HashMap<String, Object>();
+
+            Container c  = GeneticCalculationsJob.getContainer();
+            if (c != null)
+                ret.put("containerPath", c.getPath());
+
+            ret.put("isScheduled", GeneticCalculationsJob.isScheduled());
+            ret.put("enabled", GeneticCalculationsJob.isEnabled());
+            ret.put("hourOfDay", GeneticCalculationsJob.getHourOfDay());
+
+            return new ApiSimpleResponse(ret);
+        }
+    }
+
+    public static class ScheduleGeneticCalculationForm
+    {
+        private boolean _enabled;
+        private String containerPath;
+        private int hourOfDay;
+
+        public boolean isEnabled()
+        {
+            return _enabled;
+        }
+
+        public void setEnabled(boolean enabled)
+        {
+            _enabled = enabled;
+        }
+
+        public String getContainerPath()
+        {
+            return containerPath;
+        }
+
+        public void setContainerPath(String containerPath)
+        {
+            this.containerPath = containerPath;
+        }
+
+        public int getHourOfDay()
+        {
+            return hourOfDay;
+        }
+
+        public void setHourOfDay(int hourOfDay)
+        {
+            this.hourOfDay = hourOfDay;
+        }
+    }
+
     @RequiresPermissionClass(ReadPermission.class)
     public class GetLabResultSummary extends ApiAction<LabResultSummaryForm>
     {
@@ -99,7 +180,7 @@ public class EHRController extends SpringActionController
                 return null;
             }
 
-            Map<String, List<String>> results = LabworkManager.get().getResults(getContainer(), getUser(), Arrays.asList(form.getRunId()));
+            Map<String, List<String>> results = LabworkManager.get().getResults(getContainer(), getUser(), Arrays.asList(form.getRunId()), false);
             resultProperties.put("results", results);
             resultProperties.put("success", true);
 
@@ -142,7 +223,7 @@ public class EHRController extends SpringActionController
                 {
                     JSONArray arr = new JSONArray();
 
-                    List<HistoryRow> rows = ClinicalHistoryManager.get().getHistory(getContainer(), getUser(), subjectId, form.getMinDate(), form.getMaxDate());
+                    List<HistoryRow> rows = ClinicalHistoryManager.get().getHistory(getContainer(), getUser(), subjectId, form.getMinDate(), form.getMaxDate(), form.isRedacted());
                     for (HistoryRow row : rows)
                     {
                         arr.put(row.toJSON());
@@ -182,7 +263,7 @@ public class EHRController extends SpringActionController
             {
                 String subjectId = form.getSubjectIds()[0];
                 Map<String, JSONArray> results = new HashMap<>();
-                List<HistoryRow> rows = ClinicalHistoryManager.get().getHistory(getContainer(), getUser(), subjectId, form.getCaseId());
+                List<HistoryRow> rows = ClinicalHistoryManager.get().getHistory(getContainer(), getUser(), subjectId, form.getCaseId(), form.isRedacted());
                 for (HistoryRow row : rows)
                 {
                     JSONArray arr = results.get(subjectId);
@@ -412,6 +493,7 @@ public class EHRController extends SpringActionController
         private String[] _subjectIds;
         private Date _minDate;
         private Date _maxDate;
+        private Boolean _redacted = false;
 
         public String getParentId()
         {
@@ -471,6 +553,16 @@ public class EHRController extends SpringActionController
         public void setMaxDate(Date maxDate)
         {
             _maxDate = maxDate;
+        }
+
+        public Boolean isRedacted()
+        {
+            return _redacted == null ? false : _redacted;
+        }
+
+        public void setRedacted(Boolean redacted)
+        {
+            _redacted = redacted;
         }
     }
 

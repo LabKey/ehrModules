@@ -70,7 +70,7 @@ public class DefaultEHRCustomizer implements TableCustomizer
 {
     public static final String ID_COL = "Id";
     private static final Logger _log = Logger.getLogger(DefaultEHRCustomizer.class);
-    private Map<String, UserSchema> _userSchemas;
+    private Map<String, UserSchema> _userSchemas = new HashMap<String, UserSchema>();
 
     public DefaultEHRCustomizer()
     {
@@ -185,7 +185,7 @@ public class DefaultEHRCustomizer implements TableCustomizer
                 }
                 room.setLabel("Room");
 
-                room.setFacetingBehaviorType(FacetingBehaviorType.ALWAYS_OFF);
+                //room.setFacetingBehaviorType(FacetingBehaviorType.ALWAYS_OFF);
             }
         }
 
@@ -706,11 +706,15 @@ public class DefaultEHRCustomizer implements TableCustomizer
         if (ds.getColumn(name) != null)
             return;
 
-        ColumnInfo lsidCol = ds.getColumn("lsid");
-        if (lsidCol == null)
+        final ColumnInfo pkCol = getPkCol(ds);
+        if (pkCol == null)
             return;
 
-        WrappedColumn col = new WrappedColumn(lsidCol, name);
+        ColumnInfo dateCol = ds.getColumn("date");
+        if (dateCol == null)
+            return;
+
+        WrappedColumn col = new WrappedColumn(pkCol, name);
         col.setLabel("Housing At Time");
         col.setReadOnly(true);
         col.setIsUnselectable(true);
@@ -721,9 +725,9 @@ public class DefaultEHRCustomizer implements TableCustomizer
                 String name = ds.getName() + "_housingAtTime";
                 QueryDefinition qd = QueryService.get().createQueryDef(us.getUser(), us.getContainer(), us, name);
                 qd.setSql("SELECT\n" +
-                    "sd.lsid,\n" +
-                    "sd.id,\n" +
-                    "sd.date,\n" +
+                    "sd." + pkCol.getSelectName() + ",\n" +
+                    //"sd.id,\n" +
+                    //"sd.date,\n" +
                     "\n" +
                     "cast((\n" +
                     "  SELECT group_concat(DISTINCT h.room) as room FROM study.Housing h\n" +
@@ -740,12 +744,19 @@ public class DefaultEHRCustomizer implements TableCustomizer
 
                 List<QueryException> errors = new ArrayList<QueryException>();
                 TableInfo ti = qd.getTable(errors, true);
+                if (errors.size() > 0)
+                {
+                    for (QueryException e : errors)
+                    {
+                        _log.error(e.getMessage(), e);
+                    }
+                }
 
                 ColumnInfo roomAtTime = ti.getColumn("RoomAtTime");
                 roomAtTime.setFk(new QueryForeignKey(getUserSchema(ds, "ehr_lookups"), "rooms", "room", "room"));
 
-                ti.getColumn("lsid").setHidden(true);
-                ti.getColumn("lsid").setKeyField(true);
+                ti.getColumn(pkCol.getSelectName()).setHidden(true);
+                ti.getColumn(pkCol.getSelectName()).setKeyField(true);
 
                 return ti;
             }
@@ -754,17 +765,29 @@ public class DefaultEHRCustomizer implements TableCustomizer
         ds.addColumn(col);
     }
 
+    private ColumnInfo getPkCol(TableInfo ti)
+    {
+        List<ColumnInfo> pks = ti.getPkColumns();
+        return (pks.size() != 1) ? null : pks.get(0);
+    }
+
     private void appendSurvivorshipCol(final UserSchema us, final AbstractTableInfo ds)
     {
         String name = "survivorship";
         if (ds.getColumn(name) != null)
             return;
 
-        ColumnInfo lsidCol = ds.getColumn("lsid");
-        if (lsidCol == null)
+        final ColumnInfo pkCol = getPkCol(ds);
+        if (pkCol == null)
             return;
 
-        WrappedColumn col = new WrappedColumn(lsidCol, name);
+        ColumnInfo dateCol = ds.getColumn("date");
+        if (dateCol == null)
+            return;
+
+        final String dateColName = dateCol.getSelectName();
+
+        WrappedColumn col = new WrappedColumn(pkCol, name);
         col.setLabel("Survivorship");
         col.setReadOnly(true);
         col.setIsUnselectable(true);
@@ -775,16 +798,16 @@ public class DefaultEHRCustomizer implements TableCustomizer
                 String name = ds.getName() + "_survivorship";
                 QueryDefinition qd = QueryService.get().createQueryDef(us.getUser(), us.getContainer(), us, name);
                 qd.setSql("SELECT\n" +
-                    "c.lsid,\n" +
+                    "c." + pkCol.getSelectName() + ",\n" +
                     "CASE\n" +
-                    "WHEN c.date is null\n" +
+                    "WHEN c." + dateColName + " is null\n" +
                     "  THEN null\n" +
                     "ELSE\n" +
                     //"  timestampdiff('SQL_TSI_YEAR', c.dateOnly, coalesce(c.id.dataset.demographics.death, curdate()))\n" +
                     "  age(c.dateOnly, coalesce(c.id.dataset.demographics.death, curdate()))\n" +
                     "END as survivorshipInYears,\n" +
                     "CASE\n" +
-                    "WHEN c.date is null\n" +
+                    "WHEN c." + dateColName + " is null\n" +
                     "  THEN null\n" +
                     "ELSE\n" +
                     "  timestampdiff('SQL_TSI_DAY', c.dateOnly, coalesce(c.id.dataset.demographics.death, curdate()))\n" +
@@ -795,8 +818,16 @@ public class DefaultEHRCustomizer implements TableCustomizer
 
                 List<QueryException> errors = new ArrayList<QueryException>();
                 TableInfo ti = qd.getTable(errors, true);
-                ti.getColumn("lsid").setHidden(true);
-                ti.getColumn("lsid").setKeyField(true);
+                if (errors.size() > 0)
+                {
+                    for (QueryException e : errors)
+                    {
+                        _log.error(e.getMessage(), e);
+                    }
+                }
+
+                ti.getColumn(pkCol.getSelectName()).setHidden(true);
+                ti.getColumn(pkCol.getSelectName()).setKeyField(true);
 
                 return ti;
             }
@@ -831,11 +862,11 @@ public class DefaultEHRCustomizer implements TableCustomizer
         if (ds.getColumn(name) != null)
             return;
 
-        ColumnInfo lsidCol = ds.getColumn("lsid");
-        if (lsidCol == null)
+        final ColumnInfo pkCol = getPkCol(ds);
+        if (pkCol == null)
             return;
 
-        WrappedColumn col = new WrappedColumn(lsidCol, name);
+        WrappedColumn col = new WrappedColumn(pkCol, name);
         col.setLabel("Age At The Time");
         col.setReadOnly(true);
         col.setIsUnselectable(true);
@@ -847,7 +878,7 @@ public class DefaultEHRCustomizer implements TableCustomizer
                 QueryDefinition qd = QueryService.get().createQueryDef(us.getUser(), us.getContainer(), us, name);
                 //NOTE: do not need to account for QCstate b/c study.demographics only allows 1 row per subject
                 qd.setSql("SELECT\n" +
-                    "c.lsid,\n" +
+                    "c." + pkCol.getSelectName() + ",\n" +
                     "\n" +
                     "CAST(\n" +
                     "CASE\n" +
@@ -878,8 +909,16 @@ public class DefaultEHRCustomizer implements TableCustomizer
 
                 List<QueryException> errors = new ArrayList<QueryException>();
                 TableInfo ti = qd.getTable(errors, true);
-                ti.getColumn("lsid").setHidden(true);
-                ti.getColumn("lsid").setKeyField(true);
+                if (errors.size() > 0)
+                {
+                    for (QueryException e : errors)
+                    {
+                        _log.error(e.getMessage(), e);
+                    }
+                }
+
+                ti.getColumn(pkCol.getSelectName()).setHidden(true);
+                ti.getColumn(pkCol.getSelectName()).setKeyField(true);
 
                 return ti;
             }

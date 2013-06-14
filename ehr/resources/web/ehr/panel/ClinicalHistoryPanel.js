@@ -114,12 +114,12 @@ Ext4.define('EHR.panel.ClinicalHistoryPanel', {
                             return;
                         }
 
-                        var minDate = minDateField.getValue();
-                        var maxDate = maxDateField.getValue();
+                        this.minDate = minDateField.getValue();
+                        this.maxDate = maxDateField.getValue();
 
                         panel.reloadData({
-                            minDate: minDate,
-                            maxDate: maxDate
+                            minDate: this.minDate,
+                            maxDate: this.maxDate
                         });
                     }
                 },{

@@ -54,11 +54,13 @@ public class DefaultLabworkDataSource extends AbstractDataSource
     }
 
     @Override
-    protected String getHtml(Results rs) throws SQLException
+    protected String getHtml(Results rs, boolean redacted) throws SQLException
     {
         StringBuilder sb = new StringBuilder();
 
-        sb.append(safeAppend(rs, "Performed By", "performedby"));
+        if (!redacted)
+            sb.append(safeAppend(rs, "Performed By", "performedby"));
+
         sb.append(safeAppend(rs, "Type", "type"));
         sb.append(safeAppend(rs, "Sample Type", "sampletype"));
         sb.append(safeAppend(rs, "Method", "method"));
@@ -96,11 +98,11 @@ public class DefaultLabworkDataSource extends AbstractDataSource
     }
 
     @Override
-    public List<HistoryRow> getRows(Container c, User u, final String subjectId, Date minDate, Date maxDate)
+    public List<HistoryRow> getRows(Container c, User u, final String subjectId, Date minDate, Date maxDate, boolean redacted)
     {
         Date start = new Date();
 
-        _results = LabworkManager.get().getResults(c, u, subjectId, minDate, maxDate);
+        _results = LabworkManager.get().getResults(c, u, subjectId, minDate, maxDate, redacted);
 
         long duration = ((new Date()).getTime() - start.getTime()) / 1000;
         if (duration > 3)
@@ -112,7 +114,7 @@ public class DefaultLabworkDataSource extends AbstractDataSource
         if (duration > 3)
             _log.error("Loaded clinpath flags for: " + subjectId + " in " + duration + " seconds");
 
-        return super.getRows(c, u, subjectId, minDate, maxDate);
+        return super.getRows(c, u, subjectId, minDate, maxDate, redacted);
     }
 
     public Map<String, List<String>> getFlags(Container c, User u, String id, Date minDate, Date maxDate)

@@ -44,7 +44,7 @@ public class DefaultDrugsDataSource extends AbstractDataSource
     }
 
     @Override
-    protected String getHtml(Results rs) throws SQLException
+    protected String getHtml(Results rs, boolean redacted) throws SQLException
     {
         StringBuilder sb = new StringBuilder();
         String category = rs.getString("category");
@@ -110,9 +110,9 @@ public class DefaultDrugsDataSource extends AbstractDataSource
     }
 
     @Override
-    public List<HistoryRow> getRows(Container c, User u, SimpleFilter filter)
+    public List<HistoryRow> getRows(Container c, User u, SimpleFilter filter, boolean redacted)
     {
-        List<HistoryRow> rows = super.getRows(c, u, filter);
+        List<HistoryRow> rows = super.getRows(c, u, filter, redacted);
         Map<String, List<HistoryRowImpl>> groupedRowMap = new HashMap<String, List<HistoryRowImpl>>();
         for (HistoryRow r : rows)
         {

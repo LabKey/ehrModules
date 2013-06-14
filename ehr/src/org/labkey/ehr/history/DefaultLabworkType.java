@@ -96,20 +96,20 @@ public class DefaultLabworkType implements LabworkType
         return _name;
     }
 
-    public List<String> getResults(Container c, User u, String runId)
+    public List<String> getResults(Container c, User u, String runId, boolean redacted)
     {
         SimpleFilter filter = new SimpleFilter(FieldKey.fromString(_runIdField), runId, CompareType.EQUAL);
-        Map<String, List<String>> rows = getResults(c, u, filter);
+        Map<String, List<String>> rows = getResults(c, u, filter, redacted);
         return rows == null ? null : rows.get(runId);
     }
 
-    public Map<String, List<String>> getResults(Container c, User u, List<String> runIds)
+    public Map<String, List<String>> getResults(Container c, User u, List<String> runIds, boolean redacted)
     {
         SimpleFilter filter = new SimpleFilter(FieldKey.fromString(_runIdField), runIds, CompareType.IN);
-        return getResults(c, u, filter);
+        return getResults(c, u, filter, redacted);
     }
 
-    public Map<String, List<String>> getResults(Container c, User u, String id, @Nullable Date minDate, @Nullable Date maxDate)
+    public Map<String, List<String>> getResults(Container c, User u, String id, @Nullable Date minDate, @Nullable Date maxDate, boolean redacted)
     {
         SimpleFilter filter = new SimpleFilter(FieldKey.fromString(_idField), id, CompareType.EQUAL);
 
@@ -119,10 +119,10 @@ public class DefaultLabworkType implements LabworkType
         if (maxDate != null)
             filter.addCondition(FieldKey.fromString(_dateField), maxDate, CompareType.DATE_LTE);
 
-        return getResults(c, u, filter);
+        return getResults(c, u, filter, redacted);
     }
 
-    protected Map<String, List<String>> getResults(Container c, User u, SimpleFilter filter)
+    protected Map<String, List<String>> getResults(Container c, User u, SimpleFilter filter, boolean redacted)
     {
         final TableInfo ti = getTableInfo(c, u);
         if (ti == null)
@@ -134,7 +134,7 @@ public class DefaultLabworkType implements LabworkType
         final Collection<ColumnInfo> cols = getColumns(ti);
         TableSelector ts = new TableSelector(ti, cols, filter, null);
 
-        Map<String, List<String>> rows = getRows(ts, cols);
+        Map<String, List<String>> rows = getRows(ts, cols, redacted);
 
         Map<String, List<String>> formattedRows = new HashMap<String, List<String>>();
         for (String runId : rows.keySet())
@@ -154,7 +154,7 @@ public class DefaultLabworkType implements LabworkType
         return formattedRows;
     }
 
-    protected Map<String, List<String>> getRows(TableSelector ts, final Collection<ColumnInfo> cols)
+    protected Map<String, List<String>> getRows(TableSelector ts, final Collection<ColumnInfo> cols, final boolean redacted)
     {
         final Map<String, List<String>> rows = new HashMap<String, List<String>>();
         ts.forEach(new Selector.ForEachBlock<ResultSet>()
@@ -169,7 +169,7 @@ public class DefaultLabworkType implements LabworkType
                 if (list == null)
                     list = new ArrayList<String>();
 
-                String line = getLine(rs);
+                String line = getLine(rs, redacted);
                 if (line != null)
                     list.add(line);
 
@@ -198,7 +198,7 @@ public class DefaultLabworkType implements LabworkType
         return results;
     }
 
-    protected String getLine(Results rs) throws SQLException
+    protected String getLine(Results rs, boolean redacted) throws SQLException
     {
         StringBuilder sb = new StringBuilder();
         String testId = getTestId(rs);

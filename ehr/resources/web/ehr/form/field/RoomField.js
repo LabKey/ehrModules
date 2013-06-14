@@ -37,6 +37,7 @@ Ext4.define('EHR.form.field.RoomField', {
     },
 
     filterByAreas: function(areas){
+        this.store.clearFilter();
         if (!this.rendered){
             this.on('afterrender', function(field){
                 field.filterByAreas(areas);
@@ -48,7 +49,6 @@ Ext4.define('EHR.form.field.RoomField', {
             }, this, {single: true});
         }
         else {
-            this.store.clearFilter();
             if (areas && areas.length){
                 this.store.filterBy(function(rec){
                     return areas.indexOf(rec.get('area')) != -1;

@@ -558,6 +558,8 @@ ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-12.339-12.340.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-12.340-12.341.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-12.342-12.343.sql -text
 ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-12.343-12.344.sql -text
+ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-12.347-12.348.sql -text
+ehr/resources/schemas/dbscripts/postgresql/EHR_Lookups-12.348-12.349.sql -text
 ehr/resources/schemas/dbscripts/postgresql/obsolete/EHR-11.10-11.101.sql -text
 ehr/resources/schemas/dbscripts/postgresql/obsolete/EHR-11.101-11.102.sql -text
 ehr/resources/schemas/dbscripts/postgresql/obsolete/EHR-11.102-11.105.sql -text
@@ -713,6 +715,8 @@ ehr/resources/schemas/dbscripts/sqlserver/EHR_Lookups-12.339-12.340.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/EHR_Lookups-12.340-12.341.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/EHR_Lookups-12.342-12.343.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/EHR_Lookups-12.343-12.344.sql -text
+ehr/resources/schemas/dbscripts/sqlserver/EHR_Lookups-12.347-12.348.sql -text
+ehr/resources/schemas/dbscripts/sqlserver/EHR_Lookups-12.348-12.349.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/obsolete/EHR-11.34-11.35.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/obsolete/EHR-11.36-11.37.sql -text
 ehr/resources/schemas/dbscripts/sqlserver/obsolete/EHR_Lookups-11.34-11.35.sql -text
@@ -771,6 +775,8 @@ ehr/resources/views/executeSql.html -text
 ehr/resources/views/frontPage.html -text
 ehr/resources/views/frontPage.view.xml -text
 ehr/resources/views/frontPage.webpart.xml -text
+ehr/resources/views/geneticCalculationSettings.html -text
+ehr/resources/views/geneticCalculationSettings.view.xml -text
 ehr/resources/views/groupOverlaps.html -text
 ehr/resources/views/groupOverlaps.view.xml -text
 ehr/resources/views/housingOverlaps.html -text
@@ -827,11 +833,14 @@ ehr/resources/web/ehr/DataEntryUtils.js -text
 ehr/resources/web/ehr/ExtOverrides.js -text
 ehr/resources/web/ehr/Security.js -text
 ehr/resources/web/ehr/data/ClinicalHistoryStore.js -text
+ehr/resources/web/ehr/data/DataEntryClientStore.js -text
+ehr/resources/web/ehr/data/DataEntryServerStore.js -text
 ehr/resources/web/ehr/data/DataEntryStore.js -text
 ehr/resources/web/ehr/data/StoreCollection.js -text
 ehr/resources/web/ehr/ehrRowEditor.js -text
 ehr/resources/web/ehr/ehr_api.lib.xml -text
 ehr/resources/web/ehr/ehr_ext3_api.lib.xml -text
+ehr/resources/web/ehr/ehr_ext4_dataEntry.lib.xml -text
 ehr/resources/web/ehr/ext3/ExtComponents.js -text
 ehr/resources/web/ehr/ext3/ExtContainers.js -text
 ehr/resources/web/ehr/ext3/ExtOverrides.js -text
@@ -849,8 +858,12 @@ ehr/resources/web/ehr/ext3/ext.ux.datetimefield.js -text
 ehr/resources/web/ehr/ext3/ext.ux.multiselect.js -text
 ehr/resources/web/ehr/ext3/navMenu.js -text
 ehr/resources/web/ehr/form/Panel.js -text
+ehr/resources/web/ehr/form/field/AnimalField.js -text
 ehr/resources/web/ehr/form/field/CageField.js -text
+ehr/resources/web/ehr/form/field/ProjectField.js -text
+ehr/resources/web/ehr/form/field/RemarkField.js -text
 ehr/resources/web/ehr/form/field/RoomField.js -text
+ehr/resources/web/ehr/form/field/SnomedCombo.js -text
 ehr/resources/web/ehr/grid/GridFormPanel.js -text
 ehr/resources/web/ehr/grid/Panel.js -text
 ehr/resources/web/ehr/icons/clipboard.png -text
@@ -881,6 +894,13 @@ ehr/resources/web/ehr/metadata/SimpleForm.js -text
 ehr/resources/web/ehr/metadata/Surgery.js -text
 ehr/resources/web/ehr/metadata/Task.js -text
 ehr/resources/web/ehr/metadata/Treatments.js -text
+ehr/resources/web/ehr/model/DefaultClientModel.js -text
+ehr/resources/web/ehr/model/TaskClientModel.js -text
+ehr/resources/web/ehr/model/ViewConfigManager.js -text
+ehr/resources/web/ehr/model/config/Default.js -text
+ehr/resources/web/ehr/model/config/Encounter.js -text
+ehr/resources/web/ehr/model/config/Request.js -text
+ehr/resources/web/ehr/model/config/Task.js -text
 ehr/resources/web/ehr/panel/AnimalGroupDetailsPanel.js -text
 ehr/resources/web/ehr/panel/AnimalHistoryPanel.js -text
 ehr/resources/web/ehr/panel/BasicAggregationPanel.js -text
@@ -890,6 +910,7 @@ ehr/resources/web/ehr/panel/ClinicalHistoryPanel.js -text
 ehr/resources/web/ehr/panel/ClinicalSummaryPanel.js -text
 ehr/resources/web/ehr/panel/ColonyOverviewPanel.js -text
 ehr/resources/web/ehr/panel/DataEntryPanel.js -text
+ehr/resources/web/ehr/panel/GeneticCalculationSettingsPanel.js -text
 ehr/resources/web/ehr/panel/HiddenSingleSubjectFilterType.js -text
 ehr/resources/web/ehr/panel/HousingSummaryPanel.js -text
 ehr/resources/web/ehr/panel/LabworkSummaryPanel.js -text
@@ -905,7 +926,10 @@ ehr/resources/web/ehr/panel/SmallFormSnapshotPanel.js -text
 ehr/resources/web/ehr/panel/SnapshotPanel.js -text
 ehr/resources/web/ehr/panel/TaskDataEntryPanel.js -text
 ehr/resources/web/ehr/panel/UtilizationSummaryPanel.js -text
+ehr/resources/web/ehr/plugin/DataBind.js -text
+ehr/resources/web/ehr/plugin/ResizableTextArea.js -text
 ehr/resources/web/ehr/plugin/RowEditor.js -text
+ehr/resources/web/ehr/plugin/UserEditableCombo.js -text
 ehr/resources/web/ehr/reports.js -text
 ehr/resources/web/ehr/studyButtons.js -text
 ehr/resources/web/ehr/stylesheet.css -text
@@ -919,6 +943,8 @@ ehr/src/org/labkey/ehr/EHRProperties.java -text
 ehr/src/org/labkey/ehr/EHRSchema.java -text
 ehr/src/org/labkey/ehr/EHRServiceImpl.java -text
 ehr/src/org/labkey/ehr/dataentry/DataEntryManager.java -text
+ehr/src/org/labkey/ehr/dataentry/EncounterForm.java -text
+ehr/src/org/labkey/ehr/dataentry/EncounterFormSection.java -text
 ehr/src/org/labkey/ehr/dataentry/SimpleFormPanel.java -text
 ehr/src/org/labkey/ehr/dataentry/SimpleFormSection.java -text
 ehr/src/org/labkey/ehr/dataentry/SimpleFormType.java -text
@@ -927,6 +953,7 @@ ehr/src/org/labkey/ehr/dataentry/SimpleGridFormPanel.java -text
 ehr/src/org/labkey/ehr/dataentry/SimpleGridPanel.java -text
 ehr/src/org/labkey/ehr/dataentry/SimpleGridpanelForm.java -text
 ehr/src/org/labkey/ehr/dataentry/TaskForm.java -text
+ehr/src/org/labkey/ehr/dataentry/TaskFormSection.java -text
 ehr/src/org/labkey/ehr/history/AbstractDataSource.java -text
 ehr/src/org/labkey/ehr/history/AntibioticSensitivityLabworkType.java -text
 ehr/src/org/labkey/ehr/history/ChemistryLabworkType.java -text

@@ -11,22 +11,18 @@
         <script path="ehr/data/ClinicalHistoryStore.js"/>
         <script path="ehr/panel/ClinicalHistoryPanel.js"/>
         <script path="ehr/panel/CaseHistoryPanel.js"/>
-        <script path="ehr/form/field/RoomField.js"/>
-        <script path="ehr/form/field/CageField.js"/>
-
-        <!--Ext4 data entry-->
-        <script path="ehr/DataEntryUtils.js"/>
-        <script path="ehr/data/DataEntryStore.js"/>
-        <script path="ehr/data/StoreCollection.js"/>
-
-        <script path="ehr/plugin/RowEditor.js"/>
-        <script path="ehr/form/Panel.js"/>
-        <script path="ehr/grid/Panel.js"/>
-        <script path="ehr/panel/DataEntryPanel.js"/>
 
         <script path="ehr/studyButtons.js"/>
         <script path="ehr/reports.js" />
         <script path="ehr/stylesheet.css"/>
+
+        <!--model-->
+        <script path="ehr/model/ViewConfigManager.js"/>
+        <script path="ehr/model/config/Default.js"/>
+        <script path="ehr/model/config/Task.js"/>
+        <script path="ehr/model/config/Request.js"/>
+
+        <script path="ehr/model/DefaultClientModel.js"/>
     </library>
     <dependencies>
         <dependency path="clientapi"/>

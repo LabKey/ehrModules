@@ -93,13 +93,13 @@ public class ClinicalHistoryManager
         _dataSources.add(dataSource);
     }
 
-    public List<HistoryRow> getHistory(Container c, User u, String subjectId, Date minDate, Date maxDate)
+    public List<HistoryRow> getHistory(Container c, User u, String subjectId, Date minDate, Date maxDate, boolean redacted)
     {
         List<HistoryRow> rows = new ArrayList<HistoryRow>();
 
         for (HistoryDataSource ds : getDataSources(c, u))
         {
-            List<HistoryRow> newRows = ds.getRows(c, u, subjectId, minDate, maxDate);
+            List<HistoryRow> newRows = ds.getRows(c, u, subjectId, minDate, maxDate, redacted);
             if (newRows != null)
                 rows.addAll(newRows);
         }
@@ -109,13 +109,13 @@ public class ClinicalHistoryManager
         return rows;
     }
 
-    public List<HistoryRow> getHistory(Container c, User u, String subjectId, String caseId)
+    public List<HistoryRow> getHistory(Container c, User u, String subjectId, String caseId, boolean redacted)
     {
         List<HistoryRow> rows = new ArrayList<HistoryRow>();
 
         for (HistoryDataSource ds : getDataSources(c, u))
         {
-            List<HistoryRow> newRows = ds.getRows(c, u, subjectId, caseId);
+            List<HistoryRow> newRows = ds.getRows(c, u, subjectId, caseId, redacted);
             if (newRows != null)
                 rows.addAll(newRows);
         }

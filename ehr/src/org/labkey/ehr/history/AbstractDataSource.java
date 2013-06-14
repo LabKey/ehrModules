@@ -103,7 +103,7 @@ abstract public class AbstractDataSource implements HistoryDataSource
         return us.getTable(_query);
     }
 
-    public List<HistoryRow> getRows(Container c, User u, String subjectId, String caseId)
+    public List<HistoryRow> getRows(Container c, User u, String subjectId, String caseId, boolean redacted)
     {
         String caseIdField = "caseId";
         if (getTableInfo(c, u).getColumn(caseIdField) == null)
@@ -111,16 +111,16 @@ abstract public class AbstractDataSource implements HistoryDataSource
 
         SimpleFilter filter = new SimpleFilter(FieldKey.fromString(caseIdField), caseId, CompareType.EQUAL);
         filter.addCondition(FieldKey.fromString("Id"), subjectId, CompareType.EQUAL);
-        return getRows(c, u, filter);
+        return getRows(c, u, filter, redacted);
     }
 
-    public List<HistoryRow> getRows(Container c, User u, final String subjectId, Date minDate, Date maxDate)
+    public List<HistoryRow> getRows(Container c, User u, final String subjectId, Date minDate, Date maxDate, boolean redacted)
     {
         SimpleFilter filter = getFilter(subjectId, minDate, maxDate);
-        return getRows(c, u, filter);
+        return getRows(c, u, filter, redacted);
     }
 
-    protected List<HistoryRow> getRows(Container c, User u, SimpleFilter filter)
+    protected List<HistoryRow> getRows(Container c, User u, SimpleFilter filter, final boolean redacted)
     {
         Date start = new Date();
         final TableInfo ti = getTableInfo(c, u);
@@ -142,7 +142,7 @@ abstract public class AbstractDataSource implements HistoryDataSource
                 Date date = results.getTimestamp(getDateField());
                 String category = getCategory(results);
 
-                String html = getHtml(results);
+                String html = getHtml(results, redacted);
                 String subjectId = results.getString(FieldKey.fromString(_subjectIdField));
                 if (!StringUtils.isEmpty(html))
                 {
@@ -268,5 +268,5 @@ abstract public class AbstractDataSource implements HistoryDataSource
         return c.getActiveModules().contains(ModuleLoader.getInstance().getModule(EHRModule.class));
     }
 
-    abstract protected String getHtml(Results rs) throws SQLException;
+    abstract protected String getHtml(Results rs, boolean redacted) throws SQLException;
 }

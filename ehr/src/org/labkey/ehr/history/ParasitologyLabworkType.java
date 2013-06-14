@@ -44,7 +44,7 @@ public class ParasitologyLabworkType extends DefaultLabworkType
     }
 
     @Override
-    protected String getLine(Results rs) throws SQLException
+    protected String getLine(Results rs, boolean redacted) throws SQLException
     {
         StringBuilder sb = new StringBuilder();
 

@@ -42,7 +42,7 @@ public class DefaultCasesCloseDataSource extends AbstractDataSource
     }
 
     @Override
-    protected String getHtml(Results rs) throws SQLException
+    protected String getHtml(Results rs, boolean redacted) throws SQLException
     {
         StringBuilder sb = new StringBuilder();
 
@@ -60,10 +60,10 @@ public class DefaultCasesCloseDataSource extends AbstractDataSource
     }
 
     @Override
-    protected List<HistoryRow> getRows(Container c, User u, SimpleFilter filter)
+    protected List<HistoryRow> getRows(Container c, User u, SimpleFilter filter, boolean redacted)
     {
         filter.addCondition(FieldKey.fromString(getDateField()), null, CompareType.NONBLANK);
-        return super.getRows(c, u, filter);
+        return super.getRows(c, u, filter, redacted);
     }
 
     @Override

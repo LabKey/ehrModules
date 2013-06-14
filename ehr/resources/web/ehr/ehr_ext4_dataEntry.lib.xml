@@ -1,0 +1,35 @@
+<libraries xmlns="http://labkey.org/clientLibrary/xml/">
+    <library compileInProductionMode="false">
+        <script path="ehr/DataEntryUtils.js"/>
+
+        <!--NOTE: model/ViewConfig loaded as part of ehr.lib.xml-->
+
+        <!--data-->
+        <script path="ehr/data/DataEntryServerStore.js"/>
+        <script path="ehr/data/DataEntryClientStore.js"/>
+        <script path="ehr/data/StoreCollection.js"/>
+
+        <!--plugins-->
+        <script path="ehr/plugin/DataBind.js"/>
+        <script path="ehr/plugin/ResizableTextArea.js"/>
+        <script path="ehr/plugin/RowEditor.js"/>
+        <script path="ehr/plugin/UserEditableCombo.js"/>
+
+        <!--fields-->
+        <script path="ehr/form/field/CageField.js"/>
+        <script path="ehr/form/field/AnimalField.js"/>
+        <script path="ehr/form/field/ProjectField.js"/>
+        <script path="ehr/form/field/RemarkField.js"/>
+        <script path="ehr/form/field/RoomField.js"/>
+        <script path="ehr/form/field/SnomedCombo.js"/>
+
+        <!--panels-->
+        <script path="ehr/form/Panel.js"/>
+        <script path="ehr/grid/Panel.js"/>
+        <script path="ehr/panel/DataEntryPanel.js"/>
+        <script path="ehr/panel/TaskDataEntryPanel.js"/>
+    </library>
+    <dependencies>
+        <dependency path="ehr.context"/>
+    </dependencies>
+</libraries>

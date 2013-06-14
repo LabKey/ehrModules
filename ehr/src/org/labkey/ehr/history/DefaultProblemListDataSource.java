@@ -32,7 +32,7 @@ public class DefaultProblemListDataSource extends AbstractDataSource
     }
 
     @Override
-    protected String getHtml(Results rs) throws SQLException
+    protected String getHtml(Results rs, boolean redacted) throws SQLException
     {
         StringBuilder sb = new StringBuilder();
 

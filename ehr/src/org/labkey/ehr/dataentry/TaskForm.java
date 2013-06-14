@@ -34,13 +34,18 @@ public class TaskForm extends AbstractDataEntryForm
     {
         super(owner, name, label, category, sections);
         setJavascriptClass("EHR.panel.TaskDataEntryPanel");
+
+        for (FormSection s : getFormSections())
+        {
+            s.addConfigSource("Task");
+        }
     }
 
     public static TaskForm createFormPanel(Module owner, String schemaName, String queryName, String category)
     {
         List<FormSection> sections = new ArrayList<FormSection>();
         String label = StringUtils.capitalize(queryName);
-        sections.add(new SimpleFormPanel("ehr", "tasks", "Task"));
+        sections.add(new TaskFormSection());
         sections.add(new SimpleFormPanel(schemaName, queryName, label));
 
         return new TaskForm(owner, queryName, label, category, sections);
@@ -50,7 +55,7 @@ public class TaskForm extends AbstractDataEntryForm
     {
         List<FormSection> sections = new ArrayList<FormSection>();
         String label = StringUtils.capitalize(queryName);
-        sections.add(new SimpleFormPanel("ehr", "tasks", "Task"));
+        sections.add(new TaskFormSection());
         sections.add(new SimpleGridPanel(schemaName, queryName, label));
 
         return new TaskForm(owner, queryName, label, category, sections);
@@ -59,7 +64,7 @@ public class TaskForm extends AbstractDataEntryForm
     public static TaskForm create(Module owner, String category, String name, String label, List<FormSection> formSections)
     {
         List<FormSection> sections = new ArrayList<FormSection>();
-        sections.add(new SimpleFormPanel("ehr", "tasks", "Task"));
+        sections.add(new TaskFormSection());
         sections.addAll(formSections);
 
         return new TaskForm(owner, name, label, category, sections);

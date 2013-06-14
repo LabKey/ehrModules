@@ -33,7 +33,8 @@ Ext4.define('EHR.panel.ClinicalHistoryExportPanel', {
             subjectIds: this.subjectIds,
             caseId: this.caseId,
             minDate: this.minDate,
-            maxDate: this.maxDate
+            maxDate: this.maxDate,
+            redacted: this.redacted
         });
     },
 

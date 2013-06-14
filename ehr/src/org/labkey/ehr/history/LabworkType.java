@@ -31,9 +31,9 @@ public interface LabworkType
 {
     public String getName();
 
-    public List<String> getResults(Container c, User u, String runId);
+    public List<String> getResults(Container c, User u, String runId, boolean redacted);
 
-    public Map<String, List<String>> getResults(Container c, User u, List<String> runIds);
+    public Map<String, List<String>> getResults(Container c, User u, List<String> runIds, boolean redacted);
 
-    public Map<String, List<String>> getResults(Container c, User u, String id, Date minDate, Date maxDate);
+    public Map<String, List<String>> getResults(Container c, User u, String id, Date minDate, Date maxDate, boolean redacted);
 }

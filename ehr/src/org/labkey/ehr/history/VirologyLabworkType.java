@@ -46,7 +46,7 @@ public class VirologyLabworkType extends DefaultLabworkType
     }
 
     @Override
-    protected String getLine(Results rs) throws SQLException
+    protected String getLine(Results rs, boolean redacted) throws SQLException
     {
         StringBuilder sb = new StringBuilder();
         String virus = rs.getString(FieldKey.fromString(_testIdField));

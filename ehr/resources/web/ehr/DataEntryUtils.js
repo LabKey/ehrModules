@@ -9,17 +9,6 @@ EHR.DataEntryUtils = new function(){
 
 
     return {
-        getStoreConfig: function(cfg){
-            var storeCfg = Ext4.apply({}, cfg);
-            LABKEY.ExtAdapter.apply(storeCfg, {
-                type: 'ehr-dataentrystore',
-                autoLoad: true,
-                storeId: LABKEY.ext.Ext4Helper.getLookupStoreId({lookup: cfg})
-            });
-
-            return storeCfg;
-        },
-
         getFormEditorConfig: function(columnInfo){
             var cfg = LABKEY.ext.Ext4Helper.getFormEditorConfig(columnInfo);
 
@@ -55,8 +44,9 @@ EHR.DataEntryUtils = new function(){
                 delete col.width;
 
             //allow override of defaults
-            if(meta.columnConfig)
-                Ext4.Object.merge(col, meta.columnConfig);
+            if(meta.columnConfig){
+                col = Ext4.Object.merge(col, meta.columnConfig);
+            }
 
             return col;
         }

@@ -35,13 +35,13 @@ public class DefaultAnimalGroupsDataSource extends AbstractDataSource
     }
 
     @Override
-    protected String getHtml(Results rs) throws SQLException
+    protected String getHtml(Results rs, boolean redacted) throws SQLException
     {
         StringBuilder sb = new StringBuilder();
 
         String value = rs.getString(FieldKey.fromString("groupId/name"));
         if (value != null)
-            sb.append("Add to group: " + value).append("\n");
+            sb.append("Added to group: " + value).append("\n");
 
         return sb.toString();
     }

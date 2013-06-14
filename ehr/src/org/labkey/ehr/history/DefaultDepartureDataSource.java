@@ -32,11 +32,13 @@ public class DefaultDepartureDataSource extends AbstractDataSource
     }
 
     @Override
-    protected String getHtml(Results rs) throws SQLException
+    protected String getHtml(Results rs, boolean redacted) throws SQLException
     {
         StringBuilder sb = new StringBuilder();
 
-        sb.append(safeAppend(rs, "Authorized By", "authorize"));
+        if (!redacted)
+            sb.append(safeAppend(rs, "Authorized By", "authorize"));
+
         sb.append(safeAppend(rs, "Destination", "destination"));
 
         return sb.toString();

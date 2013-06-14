@@ -15,6 +15,7 @@
  */
 package org.labkey.ehr.pipeline;
 
+import org.labkey.api.collections.CaseInsensitiveHashMap;
 import org.labkey.api.data.CompareType;
 import org.labkey.api.data.DbSchema;
 import org.labkey.api.data.SimpleFilter;
@@ -23,6 +24,7 @@ import org.labkey.api.data.TableInfo;
 import org.labkey.api.data.TableSelector;
 import org.labkey.api.exp.api.ExperimentService;
 import org.labkey.api.exp.property.Domain;
+import org.labkey.api.gwt.client.util.StringUtils;
 import org.labkey.api.pipeline.AbstractTaskFactory;
 import org.labkey.api.pipeline.AbstractTaskFactorySettings;
 import org.labkey.api.pipeline.PipelineJob;
@@ -39,6 +41,7 @@ import org.labkey.api.query.QueryService;
 import org.labkey.api.query.QueryUpdateService;
 import org.labkey.api.query.QueryUpdateServiceException;
 import org.labkey.api.query.UserSchema;
+import org.labkey.api.query.ValidationException;
 import org.labkey.api.study.DataSetTable;
 import org.labkey.api.util.FileType;
 
@@ -114,11 +117,10 @@ public class GeneticCalculationsImportTask extends PipelineJob.Task<GeneticCalcu
     public RecordedActionSet run() throws PipelineJobException
     {
         PipelineJob job = getJob();
-        FileAnalysisJobSupport support = (FileAnalysisJobSupport) job;
         List<RecordedAction> actions = new ArrayList<RecordedAction>();
 
-        processKinship();
         processInbreeding();
+        processKinship();
 
         return new RecordedActionSet(actions);
     }
@@ -182,6 +184,11 @@ public class GeneticCalculationsImportTask extends PipelineJob.Task<GeneticCalcu
                 row.put("createdby", job.getUser().getUserId());
                 Table.insert(job.getUser(), kinshipTable, row);
                 lineNum++;
+
+                if (lineNum % 100000 == 0)
+                {
+                    getJob().getLogger().info("processed " + lineNum + " rows");
+                }
             }
 
             ExperimentService.get().commitTransaction();
@@ -210,6 +217,19 @@ public class GeneticCalculationsImportTask extends PipelineJob.Task<GeneticCalcu
 
             ExperimentService.get().closeTransaction();
         }
+    }
+
+    private TableInfo getRealTable(TableInfo ti)
+    {
+        Domain domain = ti.getDomain();
+        if (domain != null)
+        {
+            String tableName = domain.getStorageTableName();
+            DbSchema dbSchema = DbSchema.get("studydataset");
+            return dbSchema.getTable(tableName);
+        }
+
+        return null;
     }
 
     private void processInbreeding() throws PipelineJobException
@@ -252,10 +272,15 @@ public class GeneticCalculationsImportTask extends PipelineJob.Task<GeneticCalcu
 
             //delete all previous records
             getJob().getLogger().info("Deleting existing rows");
-            TableSelector ts = new TableSelector(ti, Collections.singleton(ti.getColumn(FieldKey.fromString("lsid"))), null, null);
-            List<Map<String, Object>> toDelete = new ArrayList<Map<String, Object>>();
-            toDelete.addAll(Arrays.asList((Map<String, Object>[])ts.getMapArray()));
-            qus.deleteRows(getJob().getUser(), getJob().getContainer(), toDelete, new HashMap<String, Object>());
+            TableInfo realTable = getRealTable(ti);
+            if (realTable == null)
+            {
+                throw new PipelineJobException("Unable to find real table for Inbreeding dataset");
+            }
+
+            //delete using table, since it is extremely slow otherwise
+            Table.delete(realTable, new SimpleFilter(FieldKey.fromString("participantId"), null, CompareType.NONBLANK));
+            ExperimentService.get().commitTransaction();
 
             reader = new BufferedReader(new FileReader(output));
 
@@ -272,8 +297,16 @@ public class GeneticCalculationsImportTask extends PipelineJob.Task<GeneticCalcu
                 if ("coefficient".equalsIgnoreCase(fields[1]))
                     continue; //skip header
 
-                Map row = new HashMap<String, Object>();
-                row.put("Id", fields[0]);
+                Map row = new CaseInsensitiveHashMap<Object>();
+                String subjectId = StringUtils.trimToNull(fields[0]);
+                if (subjectId == null)
+                {
+                    getJob().getLogger().error("Missing subjectId on row " + lineNum);
+                    continue;
+                }
+
+                //row.put("Id", subjectId);
+                row.put("participantid", subjectId);
                 row.put("date", date);
                 row.put("coefficient", Double.parseDouble(fields[1]));
 
@@ -283,6 +316,8 @@ public class GeneticCalculationsImportTask extends PipelineJob.Task<GeneticCalcu
 
             getJob().getLogger().info("Inserting rows");
             BatchValidationException errors = new BatchValidationException();
+
+            ExperimentService.get().ensureTransaction();
             qus.insertRows(getJob().getUser(), getJob().getContainer(), rows, errors, new HashMap<String, Object>());
 
             if (errors.hasErrors())
@@ -308,12 +343,14 @@ public class GeneticCalculationsImportTask extends PipelineJob.Task<GeneticCalcu
         {
             throw new PipelineJobException(e);
         }
-        catch (InvalidKeyException e)
-        {
-            throw new PipelineJobException(e);
-        }
         catch (BatchValidationException e)
         {
+            getJob().getLogger().info("error inserting rows");
+            for (ValidationException ve : e.getRowErrors())
+            {
+                getJob().getLogger().info(ve.getMessage());
+            }
+
             throw new PipelineJobException(e);
         }
         catch (QueryUpdateServiceException e)

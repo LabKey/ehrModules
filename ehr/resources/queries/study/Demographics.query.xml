@@ -69,6 +69,7 @@
                             <fkDbSchema>ehr_lookups</fkDbSchema>
                             <fkTable>species</fkTable>
                             <fkColumnName>common</fkColumnName>
+                            <fkDisplayColumnName useRawValue="true"/>
                         </fk>
                     </column>
                     <column columnName="dam">
@@ -117,21 +118,19 @@
                             query.Id~eq=${Id}
                         </url>
                     </column>
-                    <!--NOTE: being depreciated-->
+                    <!--NOTE: being deprecated-->
                     <column columnName="arrivedate">
                         <isHidden>true</isHidden>
                         <shownInInsertView>false</shownInInsertView>
                         <formatString>yyyy-MM-dd HH:mm</formatString>
                         <columnTitle>Arrival Date</columnTitle>
                     </column>
-                    <!--NOTE: being depreciated-->
                     <column columnName="departdate">
                         <isHidden>true</isHidden>
                         <shownInInsertView>false</shownInInsertView>
                         <formatString>yyyy-MM-dd HH:mm</formatString>
                         <columnTitle>Departure Date</columnTitle>
                     </column>
-                    <!--NOTE: being depreciated-->
                     <column columnName="room">
                         <isHidden>true</isHidden>
                         <shownInInsertView>false</shownInInsertView>
@@ -145,7 +144,6 @@
                             <fkColumnName>room</fkColumnName>
                         </fk>
                     </column>
-                    <!--NOTE: being depreciated-->
                     <column columnName="cage">
                         <isHidden>true</isHidden>
                         <shownInInsertView>false</shownInInsertView>
@@ -155,7 +153,6 @@
                             cage=${cage}&amp;
                         </url>
                     </column>
-                    <!--NOTE: being depreciated-->
                     <column columnName="cond">
                         <isHidden>true</isHidden>
                         <shownInInsertView>false</shownInInsertView>
@@ -167,7 +164,6 @@
                             <fkColumnName>value</fkColumnName>
                         </fk>
                     </column>
-                    <!--NOTE: being depreciated-->
                     <column columnName="weight">
                         <isHidden>true</isHidden>
                         <shownInInsertView>false</shownInInsertView>

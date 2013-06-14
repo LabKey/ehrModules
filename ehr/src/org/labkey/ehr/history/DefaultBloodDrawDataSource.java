@@ -32,7 +32,7 @@ public class DefaultBloodDrawDataSource extends AbstractDataSource
     }
 
     @Override
-    protected String getHtml(Results rs) throws SQLException
+    protected String getHtml(Results rs, boolean redacted) throws SQLException
     {
         StringBuilder sb = new StringBuilder();
 
@@ -40,7 +40,12 @@ public class DefaultBloodDrawDataSource extends AbstractDataSource
         sb.append(safeAppend(rs, "Billed By", "billedby"));
         sb.append(safeAppend(rs, "Tube Type", "tube_type"));
         sb.append(safeAppend(rs, "# of Tubes", "num_tubes"));
-        sb.append(safeAppend(rs, "Additional Services", "additionalServices"));
+
+        //NOTE: not really sensitive, but also not necessary to publish
+        if (!redacted)
+        {
+            sb.append(safeAppend(rs, "Additional Services", "additionalServices"));
+        }
 
         return sb.toString();
     }

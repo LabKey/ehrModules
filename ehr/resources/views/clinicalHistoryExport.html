@@ -7,7 +7,8 @@
             minDate: LABKEY.ActionURL.getParameter('minDate'),
             maxDate: LABKEY.ActionURL.getParameter('maxDate'),
             subjectIds: LABKEY.ActionURL.getParameterArray('subjectId'),
-            caseId: LABKEY.ActionURL.getParameter('caseId')
+            caseId: LABKEY.ActionURL.getParameter('caseId'),
+            redacted: LABKEY.ActionURL.getParameter('redacted')
         }).render(webpart.wrapperDivId);
     });
 </script>

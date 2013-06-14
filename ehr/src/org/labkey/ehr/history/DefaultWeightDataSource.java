@@ -54,7 +54,7 @@ public class DefaultWeightDataSource extends AbstractDataSource
     }
 
     @Override
-    protected String getHtml(Results rs) throws SQLException
+    protected String getHtml(Results rs, boolean redacted) throws SQLException
     {
         if (rs.hasColumn(FieldKey.fromString("weight")) && rs.getObject("weight") != null)
             return "Weight: " + rs.getString("weight") + " kg";

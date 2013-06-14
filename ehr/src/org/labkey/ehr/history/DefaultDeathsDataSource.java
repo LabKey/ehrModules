@@ -32,12 +32,16 @@ public class DefaultDeathsDataSource extends AbstractDataSource
     }
 
     @Override
-    protected String getHtml(Results rs) throws SQLException
+    protected String getHtml(Results rs, boolean redacted) throws SQLException
     {
         StringBuilder sb = new StringBuilder();
         sb.append(safeAppend(rs, "Cause", "cause"));
-        sb.append(safeAppend(rs, "Manner", "manner"));
-        sb.append(safeAppend(rs, "Necropsy #", "necropsy"));
+
+        if (!redacted)
+        {
+            sb.append(safeAppend(rs, "Manner", "manner"));
+            sb.append(safeAppend(rs, "Necropsy #", "necropsy"));
+        }
 
         return sb.toString();
     }

@@ -42,12 +42,16 @@ public class DefaultClinicalRemarksDataSource extends AbstractDataSource
     }
 
     @Override
-    protected String getHtml(Results rs) throws SQLException
+    protected String getHtml(Results rs, boolean redacted) throws SQLException
     {
         StringBuilder sb = new StringBuilder();
         sb.append("<table>");
 
-        appendNote(rs, "performedby", "<span style='white-space:nowrap'>Entered By</span>", sb);
+        if (!redacted)
+        {
+            appendNote(rs, "performedby", "<span style='white-space:nowrap'>Entered By</span>", sb);
+        }
+
         appendNote(rs, "hx", "Hx", sb);
         appendNote(rs, "so", "S/O", sb);
         appendNote(rs, "s", "S", sb);

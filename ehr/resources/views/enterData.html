@@ -12,12 +12,22 @@ Ext4.onReady(function (){
         style: 'padding-bottom: 10px;'
     },{
         tag: 'div',
+        html: 'Loading...',
         id: 'dataEntryMenuDiv_'+webpart.wrapperDivId,
         style: 'padding-bottom: 10px;'
     }]
 
     var el = Ext4.get(webpart.wrapperDivId);
     Ext4.DomHelper.append(el, domSpec);
+
+    Ext4.create('LDK.panel.QueryPanel', {
+        queryConfig:  {
+            //title: 'My Tasks',
+            schemaName: 'ehr',
+            queryName: 'my_tasks',
+            viewName: 'Active Tasks'
+        }
+    }).render('ehrTasks_'+webpart.wrapperDivId);
 
     EHR.Utils.getDataEntryItems({
         scope: this,
@@ -41,6 +51,7 @@ Ext4.onReady(function (){
                 });
             }
 
+            Ext4.get('dataEntryMenuDiv_'+webpart.wrapperDivId).update('');
             Ext4.create('LDK.panel.NavPanel', {
                 sections: sections
             }).render('dataEntryMenuDiv_'+webpart.wrapperDivId);

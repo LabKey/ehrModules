@@ -23,72 +23,34 @@ Ext4.define('EHR.plugin.RowEditor', {
     },
 
     getFieldConfig: function(field){
-        var cfg = {};
+        var cfg = EHR.DataEntryUtils.getFormEditorConfig(field);
+        LABKEY.ExtAdapter.apply(cfg, {
+            width: 400
+        });
 
-        if (field.userEditable && !field.hidden)
-        {
-            if (this.fieldConfigs && this.fieldConfigs != null && this.fieldConfigs[field.dataIndex])
-            {
-                // If the user has specified a custom config for this column then push that instead of the default.
-                Ext4.apply(cfg, this.fieldConfigs[field.dataIndex]);
-
-                cfg.name = field.dataIndex; // Set the name to the dataIndex so we properly set the value when we
-                // Load a record.
-
-                return cfg;
-            } else {
-                cfg = {
-                    name: field.dataIndex,
-                    fieldLabel: field.fieldLabel
-                };
-
-
-                switch (field.extType){
-                    case "INT":
-                        cfg.xtype = 'numberfield';
-                        cfg.allowDecimals = false;
-                        cfg.hideTrigger = true;
-                        cfg.keyNavEnabled = false;
-                        cfg.spinUpEnabled = false;
-                        cfg.spinDownEnabled = false;
-                        break;
-                    case "FLOAT":
-                        cfg.xtype = 'numberfield';
-                        cfg.allowDecimals = true;
-                        cfg.hideTrigger = true;
-                        cfg.keyNavEnabled = false;
-                        cfg.spinUpEnabled = false;
-                        cfg.spinDownEnabled = false;
-                        break;
-                    case "DATE":
-                        cfg.xtype = 'datefield';
-                        cfg.format = field.extFormat;
-                        break;
-                    default:
-                        cfg.xtype = 'textfield';
-                }
-
-                return cfg;
-            }
+        if (cfg.height && cfg.height > 100){
+            cfg.height = 100;
         }
 
-        return null;
+        return cfg;
     },
 
-    getPanel: function(fields){
-        var panelItems = [], i, cfg;
+    getPanel: function(){
+        var fields = this.cmp.getStore().getFields();
 
-        for (i = 0; i < fields.length; i++)
-        {
-            cfg = this.getFieldConfig(fields[i]);
+        var panelItems = [], i, cfg;
+        Ext4.Array.each(this.cmp.formConfig.fieldConfigs, function(field){
+            var meta = fields.get(field.name);
+            cfg = this.getFieldConfig(meta);
 
             if(cfg){
                 panelItems.push(cfg);
             }
-        }
+        }, this);
 
         this.formPanel = Ext4.create('Ext.form.Panel', {
             width: '100%',
+            bodyStyle: 'padding: 5px;',
             items: panelItems,
             trackResetOnLoad: true
         });
@@ -96,9 +58,10 @@ Ext4.define('EHR.plugin.RowEditor', {
         return this.formPanel;
     },
 
-    createWindow: function(fields){
+    createWindow: function(){
         this.editorWindow = Ext4.create('Ext.window.Window', {
-            items: this.getPanel(fields),
+            modal: true,
+            items: this.getPanel(),
             closeAction: 'hide',
             buttons: [{text: 'save', handler: this.saveCurrentRecord, scope:this}, {text: 'cancel', handler: this.onCancel, scope: this}],
             listeners: {
@@ -123,8 +86,12 @@ Ext4.define('EHR.plugin.RowEditor', {
     },
 
     onCellClick: function(view, cell, colIdx, record){
+        this.editRecord(record);
+    },
+
+    editRecord: function(record){
         if(!this.editorWindow){
-            this.createWindow(this.cmp.getStore().getFields().items);
+            this.createWindow();
         }
 
         this.loadRecord(record);

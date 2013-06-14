@@ -57,7 +57,7 @@ public class AntibioticSensitivityLabworkType extends DefaultLabworkType
     }
 
     @Override
-    protected String getLine(Results rs) throws SQLException
+    protected String getLine(Results rs, boolean redacted) throws SQLException
     {
         StringBuilder sb = new StringBuilder();
         String microbe = rs.getString(FieldKey.fromString(_microbeField));
@@ -86,7 +86,7 @@ public class AntibioticSensitivityLabworkType extends DefaultLabworkType
     }
 
     @Override
-    protected Map<String, List<String>> getRows(TableSelector ts, final Collection<ColumnInfo> cols)
+    protected Map<String, List<String>> getRows(TableSelector ts, final Collection<ColumnInfo> cols, final boolean redacted)
     {
         final Map<String, Map<String, List<String>>> rows = new HashMap<String, Map<String, List<String>>>();
         ts.forEach(new Selector.ForEachBlock<ResultSet>()
@@ -108,7 +108,7 @@ public class AntibioticSensitivityLabworkType extends DefaultLabworkType
                     if (list == null)
                         list = new ArrayList<String>();
 
-                    String line = getLine(rs);
+                    String line = getLine(rs, redacted);
                     if (line != null)
                         list.add(line);
 

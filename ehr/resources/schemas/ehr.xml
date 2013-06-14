@@ -157,7 +157,7 @@
             <ns:column columnName="category">
                 <ns:nullable>false</ns:nullable>
             </ns:column>
-            <ns:column columnName="requestId">
+            <ns:column columnName="requestid">
             </ns:column>
             <ns:column columnName="qcstate">
                 <ns:nullable>true</ns:nullable>

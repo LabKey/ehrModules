@@ -4,10 +4,15 @@
  * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
  */
 Ext4.define('EHR.data.StoreCollection', {
-    extend: 'Ext.util.MixedCollection',
+    extend: 'Ext.util.Observable',
+
+    clientStores: null,
+    serverStores: null,
 
     constructor: function(){
         this.collectionId = Ext4.id();
+        this.clientStores = Ext4.create('Ext.util.MixedCollection', false, this.getKey),
+        this.serverStores = Ext4.create('Ext.util.MixedCollection', false, this.getKey),
 
         this.callParent(arguments);
         this.addEvents('beforecommit', 'commitcomplete', 'commitexception', 'update', 'validation');
@@ -17,16 +22,10 @@ Ext4.define('EHR.data.StoreCollection', {
         return o.storeId;
     },
 
-    getStoreConfig: function(config){
-        var storeConfig = EHR.DataEntryUtils.getStoreConfig(config);
-        storeConfig.storeId = this.collectionId + '||' + storeConfig.storeId;
-        return storeConfig;
-    },
-
-    getForQuery: function(schemaName, queryName){
+    getServerStoreForQuery: function(schemaName, queryName){
         var store;
 
-        this.each(function(s){
+        this.serverStores.each(function(s){
             if (LABKEY.Utils.caseInsensitiveEquals(s.schemaName, schemaName) && LABKEY.Utils.caseInsensitiveEquals(s.queryName, queryName))
                 store = s;
         }, this);
@@ -34,51 +33,39 @@ Ext4.define('EHR.data.StoreCollection', {
         return store;
     },
 
-    addFromConfig: function(config){
-        var storeConfig = this.getStoreConfig(config);
+    addServerStoreFromConfig: function(config){
+        var storeConfig = Ext4.apply({}, config);
+        LABKEY.ExtAdapter.apply(storeConfig, {
+            type: 'ehr-dataentryserverstore',
+            autoLoad: true,
+            storeId: this.collectionId + '||' + LABKEY.ext.Ext4Helper.getLookupStoreId({lookup: config})
+        });
 
-        var store = this.get(storeConfig.storeId);
+        var store = this.serverStores.get(storeConfig.storeId);
         if (store){
             console.log('Store already defined: ' + store.storeId);
             return store;
         }
 
-        store = Ext4.create('EHR.data.DataEntryStore', storeConfig);
-        this.add(store);
+        store = Ext4.create('EHR.data.DataEntryServerStore', storeConfig);
+console.log(store);
+        this.addServerStore(store);
+
         return store;
     },
 
-    /**
-     * Add a store to this collection
-     * @memberOf EHR.ext.StoreCollection
-     * @param store The store to add.
-     */
-    add: function(store){
-        store = Ext4.StoreMgr.lookup(store);
-        if (this.contains(store)){
-            return;
-        }
+    //add an instantiated server-side store to the collection
+    addServerStore: function(store){
+        //TODO: event monitoring?
 
-        if (!this.containerPath)
-            this.containerPath = store.containerPath;
+        this.serverStores.add(store);
+    },
 
-        //check whether container path matches
-        if (store.containerPath && store.containerPath != this.containerPath)
-            console.error('possible problem: container doesnt match');
-
-        this.callParent([store.storeId, store]);
-
-        Ext4.apply(store, {
-            parentStore: this,
-            monitorValid: this.monitorValid
-        });
-
-        if(this.monitorValid){
-            store.on('validation', this.onValidation, this);
-            store.initMonitorValid();
-        }
-
-        this.relayEvents(store, ['update']);
+    //add an instantiated client-side store to the collection
+    addClientStore: function(store){
+        //TODO: check for dupes?
+        //TODO: event monitoring?
+        this.clientStores.add(store);
     },
 
     //private
@@ -119,7 +106,7 @@ Ext4.define('EHR.data.StoreCollection', {
         var allCommands = [];
         var allRecords = [];
 
-        this.each(function(s){
+        this.clientStores.each(function(s){
             var records;
             if(commitAll)
                 records = s.getAllRecords();

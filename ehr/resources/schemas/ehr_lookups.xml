@@ -485,6 +485,10 @@
                 <ns:description>This is the number of days that must elapse to full reconstitute from a max blood draw
                 </ns:description>
             </ns:column>
+            <ns:column columnName="dateDisabled">
+                <ns:columnTitle>Date Disabled</ns:columnTitle>
+                <ns:isHidden>true</ns:isHidden>
+            </ns:column>
         </ns:columns>
     </ns:table>
     <!--TODO: move-->

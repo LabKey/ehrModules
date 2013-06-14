@@ -32,9 +32,7 @@
     public LinkedHashSet<ClientDependency> getClientDependencies()
     {
         LinkedHashSet<ClientDependency> resources = new LinkedHashSet<ClientDependency>();
-        resources.add(ClientDependency.fromModuleName("ehr"));
-        resources.add(ClientDependency.fromFilePath("ehr/panel/DataEntryPanel.js"));
-        resources.add(ClientDependency.fromFilePath("ehr/panel/TaskDataEntryPanel.js"));
+        resources.add(ClientDependency.fromFilePath("ehr/ehr_ext4_dataEntry"));
         return resources;
     }
 %>
@@ -51,9 +49,14 @@
 <script type="text/javascript">
 
     Ext4.onReady(function(){
-        Ext4.create(<%=text(formClass)%>, {
-            formConfig: <%=text(json.toString())%>
-        }).render('<%=text(renderTarget)%>');
+        EHR.Security.init({
+            scope: this,
+            success: function(){
+                Ext4.create(<%=q(formClass)%>, {
+                    formConfig: <%=text(json.toString())%>
+                }).render('<%=text(renderTarget)%>');
+            }
+        });
     });
 
 </script>

@@ -59,7 +59,7 @@ public class DefaultEncountersDataSource extends AbstractDataSource
     }
 
     @Override
-    protected List<HistoryRow> getRows(Container c, User u, SimpleFilter filter)
+    protected List<HistoryRow> getRows(Container c, User u, SimpleFilter filter, boolean redacted)
     {
         Date start = new Date();
 
@@ -69,16 +69,19 @@ public class DefaultEncountersDataSource extends AbstractDataSource
         if (duration > 3)
             _log.error("Loaded snomed tags in: " + duration + " seconds");
 
-        return super.getRows(c, u, filter);
+        return super.getRows(c, u, filter, redacted);
     }
 
     @Override
-    protected String getHtml(Results rs) throws SQLException
+    protected String getHtml(Results rs, boolean redacted) throws SQLException
     {
         StringBuilder sb = new StringBuilder();
 
         sb.append(safeAppend(rs, "Title", "title"));
-        sb.append(safeAppend(rs, "Case #", "caseno"));
+
+        if (!redacted)
+            sb.append(safeAppend(rs, "Case #", "caseno"));
+
         sb.append(safeAppend(rs, "Procedure", "procedureid/name"));
 
         if (rs.hasColumn(FieldKey.fromString("major")) && rs.getObject("major") != null)
@@ -87,7 +90,9 @@ public class DefaultEncountersDataSource extends AbstractDataSource
             sb.append("Major Surgery? ").append(value).append("\n");
         }
 
-        sb.append(safeAppend(rs, null, "participants/participants", "\n"));
+        if (!redacted)
+            sb.append(safeAppend(rs, null, "participants/participants", "\n"));
+
         sb.append(safeAppend(rs, "Summary", "summaries/summary", "\n"));
 
         String category = rs.getString("type");

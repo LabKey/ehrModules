@@ -59,34 +59,34 @@ public class LabworkManager
         _types.add(type);
     }
 
-    public List<String> getResults(Container c, User u, String runId)
+    public List<String> getResults(Container c, User u, String runId, boolean redacted)
     {
         List<String> list = new ArrayList<String>();
         for (LabworkType type : _types)
         {
-            list.addAll(type.getResults(c, u, runId));
+            list.addAll(type.getResults(c, u, runId, redacted));
         }
 
         return list;
     }
 
-    public Map<String, List<String>> getResults(Container c, User u, List<String> runIds)
+    public Map<String, List<String>> getResults(Container c, User u, List<String> runIds, boolean redacted)
     {
         Map<String, List<String>> map = new HashMap<String, List<String>>();
         for (LabworkType type : _types)
         {
-            merge(map, type.getResults(c, u, runIds));
+            merge(map, type.getResults(c, u, runIds, redacted));
         }
 
         return map;
     }
 
-    public Map<String, List<String>> getResults(Container c, User u, String id, Date minDate, Date maxDate)
+    public Map<String, List<String>> getResults(Container c, User u, String id, Date minDate, Date maxDate, boolean redacted)
     {
         Map<String, List<String>> map = new HashMap<String, List<String>>();
         for (LabworkType type : _types)
         {
-            merge(map, type.getResults(c, u, id, minDate, maxDate));
+            merge(map, type.getResults(c, u, id, minDate, maxDate, redacted));
         }
 
         return map;

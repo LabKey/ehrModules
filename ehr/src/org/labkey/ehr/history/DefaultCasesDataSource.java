@@ -34,12 +34,17 @@ public class DefaultCasesDataSource extends AbstractDataSource
     }
 
     @Override
-    protected String getHtml(Results rs) throws SQLException
+    protected String getHtml(Results rs, boolean redacted) throws SQLException
     {
         StringBuilder sb = new StringBuilder();
         sb.append(safeAppend(rs, "Category", "category"));
         sb.append(safeAppend(rs, "Case #", "caseno"));
-        sb.append(safeAppend(rs, "Opened By", "performedby"));
+
+        if (!redacted)
+        {
+            sb.append(safeAppend(rs, "Opened By", "performedby"));
+        }
+
         return sb.toString();
     }
 

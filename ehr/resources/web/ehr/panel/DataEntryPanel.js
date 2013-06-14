@@ -7,10 +7,10 @@ Ext4.define('EHR.panel.DataEntryPanel', {
     extend: 'Ext.panel.Panel',
     alias: 'widget.ehr-dataentrypanel',
 
-    stores: Ext4.create('EHR.data.StoreCollection', {}),
+    storeCollection: Ext4.create('EHR.data.StoreCollection', {}),
 
     initComponent: function(){
-        this.configureStores();
+        this.createServerStores();
 
         Ext4.apply(this, {
             defaults: {
@@ -21,16 +21,11 @@ Ext4.define('EHR.panel.DataEntryPanel', {
         });
 
         this.callParent();
+
+        this.addEvents('datachanged', 'serverdatachanged', 'clientdatachanged');
     },
 
-    configureStores: function(){
-        var configs = this.getStoreConfigs();
-        LABKEY.ExtAdapter.each(configs, function(cfg){
-            this.stores.addFromConfig(cfg);
-        }, this);
-    },
-
-    getStoreConfigs: function(){
+    createServerStores: function(){
         if (!this.formConfig || !this.formConfig.sections || !this.formConfig.sections.length)
             return;
 
@@ -41,7 +36,7 @@ Ext4.define('EHR.panel.DataEntryPanel', {
                 continue;
 
             for(var j=0;j<section.storeConfigs.length;j++){
-                storeConfigs.push(this.configureStore(section.storeConfigs[j]));
+                this.storeCollection.addServerStoreFromConfig(this.applyConfigToServerStore(section.storeConfigs[j]));
             }
         }
 
@@ -51,7 +46,7 @@ Ext4.define('EHR.panel.DataEntryPanel', {
     /**
      * Allows subclasses to modify the stores prior to creation, such as applying filters
      */
-    configureStore: function(cfg){
+    applyConfigToServerStore: function(cfg){
         return cfg;
     },
 
@@ -64,25 +59,45 @@ Ext4.define('EHR.panel.DataEntryPanel', {
         for (var i=0; i<this.formConfig.sections.length; i++){
             var section = this.formConfig.sections[i];
 
-            items.push({
+            var sectionCfg = LABKEY.ExtAdapter.apply({
                 xtype: section.xtype,
                 style: 'margin-bottom: 10px;',
                 collapsible: true,
                 title: section.label,
                 formConfig: section,
                 dataEntryPanel: this,
-                stores: this.stores
-            });
+                store: this.getClientStoreForSection(section)
+            }, section.formConfig);
+
+            items.push(sectionCfg);
         }
 
         return items;
     },
 
+    getClientStoreForSection: function(section){
+        var modelName = 'EHR.model.model-' + Ext4.id();
+        Ext4.define(modelName, {
+            extend: section.clientModelClass,
+            fields: EHR.model.DefaultClientModel.getFieldConfigs(section.fieldConfigs, section.configSources),
+            dataEntryPanel: this
+        });
+
+        //TODO: storeId?
+        var store = Ext4.create('EHR.data.DataEntryClientStore', {
+            model: modelName
+        });
+
+        this.storeCollection.addClientStore(store);
+
+        return store;
+    },
+
     getButtons: function(){
         var buttons = [];
 
-        if (this.formConfig && !this.formConfig.buttons){
-            LABKEY.ExtAdapter.each(this.formConfig.buttons, function(cfg){
+        if (this.formConfig && this.formConfig.buttons){
+            Ext4.Array.forEach(this.formConfig.buttons, function(cfg){
                 buttons.push(cfg);
             }, this);
         }

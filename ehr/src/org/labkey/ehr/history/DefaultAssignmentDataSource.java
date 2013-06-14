@@ -35,7 +35,7 @@ public class DefaultAssignmentDataSource extends AbstractDataSource
     }
 
     @Override
-    protected String getHtml(Results rs) throws SQLException
+    protected String getHtml(Results rs, boolean redacted) throws SQLException
     {
         StringBuilder sb = new StringBuilder();
 
@@ -47,9 +47,12 @@ public class DefaultAssignmentDataSource extends AbstractDataSource
         {
             sb.append("Project: ").append(rs.getString(projname)).append("\n");
 
-            FieldKey inves = FieldKey.fromString("project/investigatorId/lastname");
-            if (rs.hasColumn(inves) && rs.getObject(inves) != null)
-                sb.append("Investigator: ").append(rs.getString(inves)).append("\n");
+            if (!redacted)
+            {
+                FieldKey inves = FieldKey.fromString("project/investigatorId/lastname");
+                if (rs.hasColumn(inves) && rs.getObject(inves) != null)
+                    sb.append("Investigator: ").append(rs.getString(inves)).append("\n");
+            }
 
             FieldKey title = FieldKey.fromString("project/title");
             if (rs.hasColumn(title) && rs.getObject(title) != null)
