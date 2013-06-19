@@ -41,7 +41,6 @@ import java.io.IOException;
 import java.util.Collections;
 
 /**
- * Created by IntelliJ IDEA.
  * User: bbimber
  * Date: 8/26/12
  * Time: 4:32 PM

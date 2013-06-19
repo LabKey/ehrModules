@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2013 LabKey Corporation
+ *
+ * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
+ */
 /**
  * This creates a combobox suitable to display SNOMED results.  It is a 2-part field, where the top combo allows you to
  * select the 'snomed subset'.  When a subset is picked, the bottom combo loads that subset of codes.  This is designed as

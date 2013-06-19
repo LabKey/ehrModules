@@ -34,7 +34,6 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * Created by IntelliJ IDEA.
  * User: bbimber
  * Date: 8/3/12
  * Time: 4:37 PM

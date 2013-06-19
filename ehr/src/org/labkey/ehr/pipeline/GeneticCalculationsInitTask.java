@@ -47,7 +47,6 @@ import java.util.HashSet;
 import java.util.List;
 
 /**
- * Created by IntelliJ IDEA.
  * User: bbimber
  * Date: 8/6/12
  * Time: 12:57 PM

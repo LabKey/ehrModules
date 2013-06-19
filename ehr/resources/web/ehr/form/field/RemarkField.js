@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2013 LabKey Corporation
+ *
+ * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
+ */
 /**
  * This field is used for EHR remarks.  It automatically used the ResizableTextArea plugin.  Also, if this field is created
  * with a storeCfg object, a combo will be created above the store that allows the user to pick from a set of pre-defined remarks
