@@ -69,7 +69,7 @@ public class SortingLabworkType extends DefaultLabworkType
             TableInfo ti = EHRSchema.getInstance().getEHRLookupsSchema().getTable(EHRSchema.TABLE_LAB_TESTS);
             assert ti != null;
 
-            _tests = new CaseInsensitiveHashMap<Integer>();
+            _tests = new CaseInsensitiveHashMap<>();
             TableSelector ts = new TableSelector(ti, PageFlowUtil.set(_sortCol, _testCol), new SimpleFilter(FieldKey.fromString("type"), _testType), null);
             ts.forEach(new Selector.ForEachBlock<ResultSet>()
             {
@@ -88,7 +88,7 @@ public class SortingLabworkType extends DefaultLabworkType
     @Override
     protected Map<String, List<String>> getRows(TableSelector ts, final Collection<ColumnInfo> cols, final boolean redacted)
     {
-        final Map<String, Map<Integer, List<String>>> rows = new HashMap<String, Map<Integer, List<String>>>();
+        final Map<String, Map<Integer, List<String>>> rows = new HashMap<>();
         ts.forEach(new Selector.ForEachBlock<ResultSet>()
         {
             @Override
@@ -99,12 +99,12 @@ public class SortingLabworkType extends DefaultLabworkType
 
                 Map<Integer, List<String>> map = rows.get(runId);
                 if (map == null)
-                    map = new TreeMap<Integer, List<String>>();
+                    map = new TreeMap<>();
 
                 Integer sort = getSortOrder(rs);
                 List<String> list = map.get(sort);
                 if (list == null)
-                    list = new ArrayList<String>();
+                    list = new ArrayList<>();
 
                 String line = getLine(rs, redacted);
                 if (line != null)
@@ -115,10 +115,10 @@ public class SortingLabworkType extends DefaultLabworkType
             }
         });
 
-        Map<String, List<String>> sortedResults = new HashMap<String, List<String>>();
+        Map<String, List<String>> sortedResults = new HashMap<>();
         for (String runId : rows.keySet())
         {
-            List<String> sorted = new ArrayList<String>();
+            List<String> sorted = new ArrayList<>();
             Map<Integer, List<String>> map = rows.get(runId);
             for (Integer sort : map.keySet())
             {

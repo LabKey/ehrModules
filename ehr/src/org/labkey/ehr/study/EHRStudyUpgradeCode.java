@@ -45,7 +45,7 @@ public class EHRStudyUpgradeCode implements UpgradeCode
     @SuppressWarnings({"UnusedDeclaration"})
     public void modifyStudyColumns1(final ModuleContext moduleContext)
     {
-        Map<String, PropertyType> cols = new HashMap<String, PropertyType>();
+        Map<String, PropertyType> cols = new HashMap<>();
         cols.put("birthCondition", PropertyType.INTEGER);
         cols.put("deliveryLocation", PropertyType.INTEGER);
         ensureDatasetColumns(moduleContext, "Organ Weights", cols);
@@ -56,13 +56,13 @@ public class EHRStudyUpgradeCode implements UpgradeCode
     public void modifyStudyColumns2(final ModuleContext moduleContext)
     {
         //organ weights
-        Map<String, PropertyType> cols = new HashMap<String, PropertyType>();
+        Map<String, PropertyType> cols = new HashMap<>();
         cols.put("appearance", PropertyType.STRING);
         cols.put("preparation", PropertyType.STRING);
         ensureDatasetColumns(moduleContext, "Organ Weights", cols);
 
         //blood draws
-        cols = new HashMap<String, PropertyType>();
+        cols = new HashMap<>();
         cols.put("needlesticks", PropertyType.INTEGER);
         ensureDatasetColumns(moduleContext, "Blood Draws", cols);
     }
@@ -84,7 +84,7 @@ public class EHRStudyUpgradeCode implements UpgradeCode
                         if (d != null)
                         {
                             Domain domain = d.getDomain();
-                            Set<String> foundCols = new HashSet<String>();
+                            Set<String> foundCols = new HashSet<>();
                             for (DomainProperty dp : domain.getProperties())
                             {
                                 for (String colName : cols.keySet())

@@ -130,7 +130,7 @@ public class DefaultLabworkDataSource extends AbstractDataSource
             filter.addCondition(FieldKey.fromString("date"), maxDate, CompareType.DATE_LTE);
 
         TableSelector ts = new TableSelector(ti, PageFlowUtil.set("parentid", "flag", "value"), filter, null);
-        final Map<String, List<String>> map = new HashMap<String, List<String>>();
+        final Map<String, List<String>> map = new HashMap<>();
 
         ts.forEach(new Selector.ForEachBlock<ResultSet>()
         {
@@ -142,7 +142,7 @@ public class DefaultLabworkDataSource extends AbstractDataSource
                 {
                     List<String> rows = map.get(runId);
                     if (rows == null)
-                        rows = new ArrayList<String>();
+                        rows = new ArrayList<>();
 
                     String flag = rs.getString("flag");
                     String value = rs.getString("value");

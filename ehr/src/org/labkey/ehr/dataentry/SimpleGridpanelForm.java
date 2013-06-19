@@ -40,7 +40,7 @@ public class SimpleGridpanelForm extends AbstractDataEntryForm
 
     public static SimpleGridpanelForm create(Module owner, String schemaName, String queryName, String category)
     {
-        List<FormSection> sections = new ArrayList<FormSection>();
+        List<FormSection> sections = new ArrayList<>();
         String label = StringUtils.capitalize(queryName);
         sections.add(new SimpleGridPanel(schemaName, queryName, label));
 
@@ -52,7 +52,7 @@ public class SimpleGridpanelForm extends AbstractDataEntryForm
         JSONObject json = super.toJSON(c, u);
 
         //TODO
-        List<JSONObject> columns = new ArrayList<JSONObject>();
+        List<JSONObject> columns = new ArrayList<>();
         json.put("columns", columns);
 
         return json;

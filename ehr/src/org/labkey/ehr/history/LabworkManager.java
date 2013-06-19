@@ -32,7 +32,7 @@ import java.util.Map;
 public class LabworkManager
 {
     private static final LabworkManager _instance = new LabworkManager();
-    private List<LabworkType> _types = new ArrayList<LabworkType>();
+    private List<LabworkType> _types = new ArrayList<>();
 
     private LabworkManager()
     {
@@ -61,7 +61,7 @@ public class LabworkManager
 
     public List<String> getResults(Container c, User u, String runId, boolean redacted)
     {
-        List<String> list = new ArrayList<String>();
+        List<String> list = new ArrayList<>();
         for (LabworkType type : _types)
         {
             list.addAll(type.getResults(c, u, runId, redacted));
@@ -72,7 +72,7 @@ public class LabworkManager
 
     public Map<String, List<String>> getResults(Container c, User u, List<String> runIds, boolean redacted)
     {
-        Map<String, List<String>> map = new HashMap<String, List<String>>();
+        Map<String, List<String>> map = new HashMap<>();
         for (LabworkType type : _types)
         {
             merge(map, type.getResults(c, u, runIds, redacted));
@@ -83,7 +83,7 @@ public class LabworkManager
 
     public Map<String, List<String>> getResults(Container c, User u, String id, Date minDate, Date maxDate, boolean redacted)
     {
-        Map<String, List<String>> map = new HashMap<String, List<String>>();
+        Map<String, List<String>> map = new HashMap<>();
         for (LabworkType type : _types)
         {
             merge(map, type.getResults(c, u, id, minDate, maxDate, redacted));
@@ -98,7 +98,7 @@ public class LabworkManager
         {
             List<String> existing = map.get(runId);
             if (existing == null)
-                existing = new ArrayList<String>();
+                existing = new ArrayList<>();
 
             existing.addAll(newMap.get(runId));
 

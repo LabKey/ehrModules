@@ -127,7 +127,7 @@ public class DefaultLabworkType implements LabworkType
         final TableInfo ti = getTableInfo(c, u);
         if (ti == null)
         {
-            return new HashMap<String, List<String>>();
+            return new HashMap<>();
         }
 
         assert ti.getColumn(_runIdField) != null : "Unable to find runId column for table: " + _queryName;
@@ -136,7 +136,7 @@ public class DefaultLabworkType implements LabworkType
 
         Map<String, List<String>> rows = getRows(ts, cols, redacted);
 
-        Map<String, List<String>> formattedRows = new HashMap<String, List<String>>();
+        Map<String, List<String>> formattedRows = new HashMap<>();
         for (String runId : rows.keySet())
         {
             List<String> results = rows.get(runId);
@@ -144,7 +144,7 @@ public class DefaultLabworkType implements LabworkType
 
             List<String> newRows = formattedRows.get(runId);
             if (newRows == null)
-                newRows = new ArrayList<String>();
+                newRows = new ArrayList<>();
 
             newRows.add(table);
 
@@ -156,7 +156,7 @@ public class DefaultLabworkType implements LabworkType
 
     protected Map<String, List<String>> getRows(TableSelector ts, final Collection<ColumnInfo> cols, final boolean redacted)
     {
-        final Map<String, List<String>> rows = new HashMap<String, List<String>>();
+        final Map<String, List<String>> rows = new HashMap<>();
         ts.forEach(new Selector.ForEachBlock<ResultSet>()
         {
             @Override
@@ -167,7 +167,7 @@ public class DefaultLabworkType implements LabworkType
 
                 List<String> list = rows.get(runId);
                 if (list == null)
-                    list = new ArrayList<String>();
+                    list = new ArrayList<>();
 
                 String line = getLine(rs, redacted);
                 if (line != null)
@@ -264,7 +264,7 @@ public class DefaultLabworkType implements LabworkType
     {
         if (getColumnNames() == null)
         {
-            Set<ColumnInfo> cols = new HashSet<ColumnInfo>();
+            Set<ColumnInfo> cols = new HashSet<>();
             for (FieldKey fk : ti.getDefaultVisibleColumns())
             {
                 cols.add(ti.getColumn(fk));
@@ -272,7 +272,7 @@ public class DefaultLabworkType implements LabworkType
             return cols;
         }
 
-        List<FieldKey> columns = new ArrayList<FieldKey>();
+        List<FieldKey> columns = new ArrayList<>();
         for (String colName : getColumnNames())
         {
             if (colName == null)
@@ -283,7 +283,7 @@ public class DefaultLabworkType implements LabworkType
 
         QueryService qs = QueryService.get();
         Map<FieldKey, ColumnInfo> map = qs.getColumns(ti, columns);
-        Set<FieldKey> fieldKeys = new LinkedHashSet<FieldKey>();
+        Set<FieldKey> fieldKeys = new LinkedHashSet<>();
 
         for (ColumnInfo col : map.values())
         {

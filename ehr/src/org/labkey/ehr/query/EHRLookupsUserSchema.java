@@ -47,7 +47,7 @@ public class EHRLookupsUserSchema extends SimpleUserSchema
     @Override
     public Set<String> getTableNames()
     {
-        Set<String> available = new HashSet<String>();
+        Set<String> available = new HashSet<>();
         available.addAll(super.getTableNames());
 
         available.addAll(getPropertySetNames().keySet());
@@ -59,7 +59,7 @@ public class EHRLookupsUserSchema extends SimpleUserSchema
     @Override
     public synchronized Set<String> getVisibleTableNames()
     {
-        Set<String> available = new HashSet<String>();
+        Set<String> available = new HashSet<>();
         available.addAll(super.getTableNames());
 
         available.addAll(getPropertySetNames().keySet());
@@ -74,7 +74,7 @@ public class EHRLookupsUserSchema extends SimpleUserSchema
         if (nameMap != null)
             return nameMap;
 
-        nameMap = new HashMap<String, Map<String, Object>>();
+        nameMap = new HashMap<>();
 
         TableSelector ts = new TableSelector(_dbSchema.getTable(EHRSchema.TABLE_LOOKUP_SETS));
         Map<String, Object>[] rows = ts.getMapArray();
@@ -101,7 +101,7 @@ public class EHRLookupsUserSchema extends SimpleUserSchema
         if (nameMap != null)
             return nameMap;
 
-        nameMap = new HashMap<String, String>();
+        nameMap = new HashMap<>();
 
         TableSelector ts = new TableSelector(_dbSchema.getTable(EHRSchema.TABLE_LABWORK_TYPES));
         Map<String, Object>[] rows = ts.getMapArray();

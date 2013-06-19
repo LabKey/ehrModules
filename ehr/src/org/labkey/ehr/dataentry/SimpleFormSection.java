@@ -52,7 +52,7 @@ public class SimpleFormSection extends AbstractFormSection
     @Override
     public Set<Pair<String, String>> getTableNames()
     {
-        Set<Pair<String, String>> tables = new HashSet<Pair<String, String>>();
+        Set<Pair<String, String>> tables = new HashSet<>();
         tables.add(Pair.of(_schemaName, _queryName));
         return tables;
     }
@@ -71,7 +71,7 @@ public class SimpleFormSection extends AbstractFormSection
     @Override
     protected List<FormElement> getFormElements(Container c, User u)
     {
-        List<FormElement> list = new ArrayList<FormElement>();
+        List<FormElement> list = new ArrayList<>();
         for (TableInfo ti : getTables(c, u))
         {
             List<FieldKey> keys = DataEntryManager.get().getDefaultFieldKeys(ti);

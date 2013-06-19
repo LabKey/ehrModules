@@ -159,7 +159,7 @@ public class DefaultEncountersDataSource extends AbstractDataSource
             }
         }
 
-        Set<FieldKey> colKeys = new HashSet<FieldKey>();
+        Set<FieldKey> colKeys = new HashSet<>();
         colKeys.add(FieldKey.fromString("recordid"));
         colKeys.add(FieldKey.fromString("set_number"));
         colKeys.add(FieldKey.fromString("code"));
@@ -168,7 +168,7 @@ public class DefaultEncountersDataSource extends AbstractDataSource
         final Map<FieldKey, ColumnInfo> columns = QueryService.get().getColumns(snomed, colKeys);
 
         TableSelector ts = new TableSelector(snomed, columns.values(), newFilter, null);
-        final Map<String, Map<Integer, Map<Integer, String>>> snomedMap = new HashMap<String, Map<Integer, Map<Integer,String>>>();
+        final Map<String, Map<Integer, Map<Integer, String>>> snomedMap = new HashMap<>();
 
         ts.forEach(new Selector.ForEachBlock<ResultSet>()
         {
@@ -185,11 +185,11 @@ public class DefaultEncountersDataSource extends AbstractDataSource
 
                 Map<Integer, Map<Integer, String>> codes = snomedMap.get(objectid);
                 if (codes == null)
-                    codes = new TreeMap<Integer, Map<Integer, String>>();
+                    codes = new TreeMap<>();
 
                 Map<Integer, String> setMap = codes.get(set_number);
                 if (setMap == null)
-                    setMap = new TreeMap<Integer, String>();
+                    setMap = new TreeMap<>();
 
                 String text = "";
                 if (meaning != null)

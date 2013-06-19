@@ -132,7 +132,7 @@ abstract public class AbstractDataSource implements HistoryDataSource
         TableSelector ts = new TableSelector(ti, cols, filter, null);
         ts.setForDisplay(true);
 
-        final List<HistoryRow> rows = new ArrayList<HistoryRow>();
+        final List<HistoryRow> rows = new ArrayList<>();
         ts.forEach(new Selector.ForEachBlock<ResultSet>()
         {
             @Override
@@ -174,7 +174,7 @@ abstract public class AbstractDataSource implements HistoryDataSource
     {
         if (getColumnNames() == null)
         {
-            Set<ColumnInfo> cols = new HashSet<ColumnInfo>();
+            Set<ColumnInfo> cols = new HashSet<>();
             for (FieldKey fk : ti.getDefaultVisibleColumns())
             {
                 cols.add(ti.getColumn(fk));
@@ -182,7 +182,7 @@ abstract public class AbstractDataSource implements HistoryDataSource
             return cols;
         }
 
-        List<FieldKey> columns = new ArrayList<FieldKey>();
+        List<FieldKey> columns = new ArrayList<>();
         for (String colName : getColumnNames())
         {
             columns.add(FieldKey.fromString(colName));
@@ -190,7 +190,7 @@ abstract public class AbstractDataSource implements HistoryDataSource
 
         QueryService qs = QueryService.get();
         Map<FieldKey, ColumnInfo> map = qs.getColumns(ti, columns);
-        Set<FieldKey> fieldKeys = new LinkedHashSet<FieldKey>();
+        Set<FieldKey> fieldKeys = new LinkedHashSet<>();
 
         for (ColumnInfo col : map.values())
         {

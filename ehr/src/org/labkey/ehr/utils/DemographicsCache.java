@@ -34,7 +34,7 @@ public class DemographicsCache
 {
     private DemographicsCache _instance;
     private TableInfo _demographicsQuery;
-    private Map<String, AnimalRecord> _records = new HashMap<String, AnimalRecord>();
+    private Map<String, AnimalRecord> _records = new HashMap<>();
 
     public DemographicsCache(Container c)
     {
@@ -50,7 +50,7 @@ public class DemographicsCache
 
     public List<AnimalRecord> getAnimals(String... ids)
     {
-        List<AnimalRecord> records = new ArrayList<AnimalRecord>();
+        List<AnimalRecord> records = new ArrayList<>();
         for (String id : ids)
         {
             if (!_records.containsKey(id))

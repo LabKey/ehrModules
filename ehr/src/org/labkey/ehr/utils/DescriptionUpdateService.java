@@ -179,14 +179,14 @@ public class DescriptionUpdateService
         UPDATE_TYPE(String fieldName)
         {
             _fieldName = fieldName;
-            _ids = new HashMap<Container, Map<String, Long>>();
+            _ids = new HashMap<>();
         }
 
         public synchronized void addIds(Container c, String[] ids)
         {
             Map<String, Long> map = _ids.get(c);
             if (map == null)
-                map = new HashMap<String, Long>();
+                map = new HashMap<>();
 
             Long date = new Date().getTime();
             for (String id : ids)
@@ -206,7 +206,7 @@ public class DescriptionUpdateService
                 return;
             }
 
-            Map<Container, Set<String>> ids = new HashMap<Container, Set<String>>();
+            Map<Container, Set<String>> ids = new HashMap<>();
 
             Long d = new Date().getTime();
             for (Container c : _ids.keySet())
@@ -220,7 +220,7 @@ public class DescriptionUpdateService
                     {
                         Set<String> set = ids.get(c);
                         if (set == null)
-                            set = new HashSet<String>();
+                            set = new HashSet<>();
 
                         set.add(id);
                         map.remove(id);

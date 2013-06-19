@@ -114,7 +114,7 @@ public class OverdueWeightsNotification extends AbstractEHRNotification
                 msg.append("<b>WARNING: The following animals are in cage locations and have not been weighed in the past 60 days:</b><br>");
                 msg.append("<p><a href='" + AppProps.getInstance().getBaseServerUrl() + AppProps.getInstance().getContextPath() + "/query" + c.getPath() + "/executeQuery.view?schemaName=study&query.viewName=By Location&query.queryName=Demographics&query.Id/MostRecentWeight/DaysSinceWeight~gt=60&query.calculated_status~eq=Alive&query.Id/curLocation/Cage~isnonblank'>Click here to view them</a><p>\n");
 
-                Map<String, Map<String, Map<String, Object>>> summary = new HashMap<String, Map<String, Map<String, Object>>>();
+                Map<String, Map<String, Map<String, Object>>> summary = new HashMap<>();
                 do
                 {
                     String area = rs.getString(FieldKey.fromString("Id/curLocation/Area"));
@@ -127,12 +127,12 @@ public class OverdueWeightsNotification extends AbstractEHRNotification
 
                     Map<String, Map<String, Object>> areaNode = summary.get(area);
                     if (areaNode == null)
-                        areaNode = new HashMap<String, Map<String, Object>>();
+                        areaNode = new HashMap<>();
 
                     Map<String, Object> roomNode = areaNode.get(room);
                     if (roomNode == null)
                     {
-                        roomNode = new HashMap<String, Object>();
+                        roomNode = new HashMap<>();
                         roomNode.put("incomplete", 0);
                         roomNode.put("complete", 0);
                         roomNode.put("html", new StringBuilder());
@@ -187,7 +187,7 @@ public class OverdueWeightsNotification extends AbstractEHRNotification
         Sort sort = new Sort(getStudy(c).getSubjectColumnName());
 
         TableInfo ti = getStudySchema(c, u).getTable("Demographics");
-        List<FieldKey> colKeys = new ArrayList<FieldKey>();
+        List<FieldKey> colKeys = new ArrayList<>();
         colKeys.add(FieldKey.fromString(getStudy(c).getSubjectColumnName()));
         colKeys.add(FieldKey.fromString("Id/age/AgeFriendly"));
         final Map<FieldKey, ColumnInfo> columns = QueryService.get().getColumns(ti, colKeys);

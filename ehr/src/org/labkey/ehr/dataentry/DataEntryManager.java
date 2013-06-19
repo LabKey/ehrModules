@@ -37,8 +37,8 @@ public class DataEntryManager
 {
     private static final DataEntryManager _instance = new DataEntryManager();
 
-    private List<DataEntryForm> _forms = new ArrayList<DataEntryForm>();
-    private Map<String, List<FieldKey>> _defaultFieldKeys = new HashMap<String, List<FieldKey>>();
+    private List<DataEntryForm> _forms = new ArrayList<>();
+    private Map<String, List<FieldKey>> _defaultFieldKeys = new HashMap<>();
 
     private DataEntryManager()
     {
@@ -58,7 +58,7 @@ public class DataEntryManager
     //designed to produce a non-redunant list of forms that are active in the provided container
     private Map<String, DataEntryForm> getFormMap(Container c, User u)
     {
-        Map<String, DataEntryForm> map = new HashMap<String, DataEntryForm>();
+        Map<String, DataEntryForm> map = new HashMap<>();
         for (DataEntryForm f : _forms)
         {
             if (f.isAvailable(c, u))
@@ -95,7 +95,7 @@ public class DataEntryManager
 
     private List<FieldKey> inferDefaultFieldKeys(TableInfo ti)
     {
-        List<FieldKey> fks = new ArrayList<FieldKey>();
+        List<FieldKey> fks = new ArrayList<>();
         for (ColumnInfo ci : ti.getColumns())
         {
             if (ci.isShownInInsertView() && !ci.isCalculated())

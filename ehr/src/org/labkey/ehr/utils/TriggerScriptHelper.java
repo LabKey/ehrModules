@@ -167,7 +167,7 @@ public class TriggerScriptHelper
     {
         Container c = ContainerManager.getForId(containerId);
 
-        List<String> scripts = new ArrayList<String>();
+        List<String> scripts = new ArrayList<>();
         for (Resource script : EHRService.get().getExtraTriggerScripts(c))
         {
             scripts.add(script.getPath().toString());
@@ -413,7 +413,7 @@ public class TriggerScriptHelper
 
         try
         {
-            qcStates = new HashMap<String, EHRQCState>();
+            qcStates = new HashMap<>();
             SQLFragment sql = new SQLFragment("SELECT * FROM study.qcstate qc LEFT JOIN ehr.qcstatemetadata md ON (qc.label = md.QCStateLabel) WHERE qc.container = ?", getContainer().getEntityId());
             DbSchema db = DbSchema.get("study");
             EHRQCState[] qcs = Table.executeQuery(db, sql, EHRQCState.class);

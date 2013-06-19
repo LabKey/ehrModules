@@ -35,7 +35,7 @@ public class EncounterFormSection extends SimpleFormSection
     public EncounterFormSection()
     {
         super("ehr", "tasks", "Task", "ehr-formpanel");
-        List<String> sources = new ArrayList<String>(getConfigSources());
+        List<String> sources = new ArrayList<>(getConfigSources());
         sources.add("Encounter");
         setConfigSources(sources);
     }
@@ -45,8 +45,8 @@ public class EncounterFormSection extends SimpleFormSection
     {
         JSONObject ret = super.toJSON(c, u);
 
-        Map<String, Object> formConfig = new HashMap<String, Object>();
-        Map<String, Object> bindConfig = new HashMap<String, Object>();
+        Map<String, Object> formConfig = new HashMap<>();
+        Map<String, Object> bindConfig = new HashMap<>();
         bindConfig.put("createRecordOnLoad", true);
         formConfig.put("bindConfig", bindConfig);
         ret.put("formConfig", formConfig);

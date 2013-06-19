@@ -164,7 +164,7 @@ public class EHRManager
             return null;
         }
 
-        Set<Study> ehrStudies = new HashSet<Study>();
+        Set<Study> ehrStudies = new HashSet<>();
         Study[] studies = StudyService.get().getAllStudies(ContainerManager.getRoot(), u);
         for (Study s : studies)
         {
@@ -178,7 +178,7 @@ public class EHRManager
 
     public List<String> verifyDatasetResources(Container c, User u)
     {
-        List<String> messages = new ArrayList<String>();
+        List<String> messages = new ArrayList<>();
         Study s = StudyService.get().getStudy(c);
         if (s == null){
             messages.add("There is no study in container: " + c.getPath());
@@ -211,7 +211,7 @@ public class EHRManager
      */
     public List<String> ensureStudyQCStates(Container c, User u, boolean commitChanges)
     {
-        List<String> messages = new ArrayList<String>();
+        List<String> messages = new ArrayList<>();
         Study s = StudyService.get().getStudy(c);
         if (s == null){
             messages.add("There is no study in container: " + c.getPath());
@@ -248,7 +248,7 @@ public class EHRManager
                 messages.add("Missing QCState: " + qc[0]);
                 if (commitChanges)
                 {
-                    Map<String, Object> row = new HashMap<String, Object>();
+                    Map<String, Object> row = new HashMap<>();
                     row.put("container", c.getId());
                     row.put("label", qc[0]);
                     row.put("description", qc[1]);
@@ -291,7 +291,7 @@ public class EHRManager
      */
     public List<String> ensureDatasetPropertyDescriptors(Container c, User u, boolean commitChanges, boolean rebuildIndexes)
     {
-        List<String> messages = new ArrayList<String>();
+        List<String> messages = new ArrayList<>();
 
         try
         {
@@ -303,7 +303,7 @@ public class EHRManager
                 return messages;
             }
 
-            List<PropertyDescriptor> properties = new ArrayList<PropertyDescriptor>();
+            List<PropertyDescriptor> properties = new ArrayList<>();
 
             properties.add(OntologyManager.getPropertyDescriptor(EHRProperties.PROJECT.getPropertyDescriptor().getPropertyURI(), c));
             properties.add(OntologyManager.getPropertyDescriptor(EHRProperties.REMARK.getPropertyDescriptor().getPropertyURI(), c));
@@ -314,7 +314,7 @@ public class EHRManager
             properties.add(OntologyManager.getPropertyDescriptor(EHRProperties.DESCRIPTION.getPropertyDescriptor().getPropertyURI(), c));
             properties.add(OntologyManager.getPropertyDescriptor(EHRProperties.PERFORMEDBY.getPropertyDescriptor().getPropertyURI(), c));
 
-            List<PropertyDescriptor> optionalProperties = new ArrayList<PropertyDescriptor>();
+            List<PropertyDescriptor> optionalProperties = new ArrayList<>();
             optionalProperties.add(OntologyManager.getPropertyDescriptor(EHRProperties.ENDDATE.getPropertyDescriptor().getPropertyURI(), c));
             optionalProperties.add(OntologyManager.getPropertyDescriptor(EHRProperties.DATEREQUESTED.getPropertyDescriptor().getPropertyURI(), c));
             optionalProperties.add(OntologyManager.getPropertyDescriptor(EHRProperties.ACCOUNT.getPropertyDescriptor().getPropertyURI(), c));
@@ -328,9 +328,9 @@ public class EHRManager
                 Domain domain = dataset.getDomain();
                 DomainProperty[] dprops = domain.getProperties();
                 boolean changed = false;
-                List<PropertyDescriptor> toUpdate = new ArrayList<PropertyDescriptor>();
+                List<PropertyDescriptor> toUpdate = new ArrayList<>();
 
-                Set<PropertyDescriptor> props = new HashSet<PropertyDescriptor>();
+                Set<PropertyDescriptor> props = new HashSet<>();
                 props.addAll(properties);
                 if (dataset.getCategory() != null && dataset.getCategory().equals("ClinPath") && !dataset.getName().equalsIgnoreCase("Clinpath Runs"))
                 {
@@ -433,7 +433,7 @@ public class EHRManager
             String[][] toRemove = new String[][]{{"date"}};
 
             DbSchema schema = DbSchema.get("studydataset");
-            Set<String> distinctIndexes = new HashSet<String>();
+            Set<String> distinctIndexes = new HashSet<>();
             for (DataSet d : study.getDataSets())
             {
                 String tableName = d.getDomain().getStorageTableName();
@@ -482,7 +482,7 @@ public class EHRManager
                     }
                 }
 
-                List<String[]> toAdd = new ArrayList<String[]>();
+                List<String[]> toAdd = new ArrayList<>();
                 for (String[] cols : toIndex)
                 {
                     toAdd.add(cols);
@@ -516,9 +516,9 @@ public class EHRManager
                 {
                     boolean missingCols = false;
 
-                    List<String> cols = new ArrayList<String>();
+                    List<String> cols = new ArrayList<>();
                     String[] includedCols = null;
-                    Map<String, String> directionMap = new HashMap<String, String>();
+                    Map<String, String> directionMap = new HashMap<>();
 
                     for (String name : indexCols)
                     {
@@ -598,7 +598,7 @@ public class EHRManager
                     {
                         if (commitChanges)
                         {
-                            List<String> columns = new ArrayList<String>();
+                            List<String> columns = new ArrayList<>();
                             for (String name : cols)
                             {
                                 if (schema.getSqlDialect().isSqlServer() && directionMap.containsKey(name))
@@ -664,7 +664,7 @@ public class EHRManager
 
         _log.info("Compressing indexes on select EHR schema tables");
 
-        List<Pair<String, String[]>> names = new ArrayList<Pair<String, String[]>>();
+        List<Pair<String, String[]>> names = new ArrayList<>();
         names.add(Pair.of("encounter_flags", new String[]{"objectid"}));
         names.add(Pair.of("encounter_flags", new String[]{"parentid"}));
         names.add(Pair.of("encounter_flags", new String[]{"id"}));
@@ -733,7 +733,7 @@ public class EHRManager
             SqlSelector selector = new SqlSelector(expSchema.getScope(), sql);
             results = selector.getResultSet();
 
-            List<Integer> oldIds = new ArrayList<Integer>();
+            List<Integer> oldIds = new ArrayList<>();
             while (results.next())
             {
                 Map<String, Object> row = results.getRowMap();

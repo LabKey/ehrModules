@@ -76,7 +76,7 @@ public class EHRController extends SpringActionController
             Map<String, Object> resultProperties = new HashMap<>();
 
             Collection<DataEntryForm> forms = DataEntryManager.get().getForms(getContainer(), getUser());
-            List<JSONObject> formJson = new ArrayList<JSONObject>();
+            List<JSONObject> formJson = new ArrayList<>();
             for (DataEntryForm def : forms)
             {
                 formJson.add(def.toJSON(getContainer(), getUser()));
@@ -116,7 +116,7 @@ public class EHRController extends SpringActionController
     {
         public ApiResponse execute(ScheduleGeneticCalculationForm form, BindException errors)
         {
-            Map<String, Object> ret = new HashMap<String, Object>();
+            Map<String, Object> ret = new HashMap<>();
 
             Container c  = GeneticCalculationsJob.getContainer();
             if (c != null)
@@ -218,7 +218,7 @@ public class EHRController extends SpringActionController
 
             try
             {
-                Map<String, JSONArray> results = new HashMap<String, JSONArray>();
+                Map<String, JSONArray> results = new HashMap<>();
                 for (String subjectId : form.getSubjectIds())
                 {
                     JSONArray arr = new JSONArray();
@@ -590,7 +590,7 @@ public class EHRController extends SpringActionController
                     List<EHRServiceImpl.ReportLink> items = ((EHRServiceImpl)EHRServiceImpl.get()).getReportLinks(getContainer(), getUser(), type);
                     for (EHRServiceImpl.ReportLink link : items)
                     {
-                        Map<String, Object> item = new HashMap<String, Object>();
+                        Map<String, Object> item = new HashMap<>();
                         ActionURL url = link.getUrl().copy(getContainer()).getActionURL();
                         item.put("label", link.getLabel());
                         item.put("category", link.getCategory());
@@ -651,7 +651,7 @@ public class EHRController extends SpringActionController
 
             _title = def.getLabel();
 
-            JspView<DataEntryForm> view = new JspView<DataEntryForm>("/org/labkey/ehr/view/dataEntryForm.jsp", def);
+            JspView<DataEntryForm> view = new JspView<>("/org/labkey/ehr/view/dataEntryForm.jsp", def);
             view.setTitle(def.getLabel());
             view.setHidePageTitle(true);
             view.setFrame(WebPartView.FrameType.PORTAL);

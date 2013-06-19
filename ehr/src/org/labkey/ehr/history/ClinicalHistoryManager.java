@@ -40,7 +40,7 @@ public class ClinicalHistoryManager
 {
     private static final ClinicalHistoryManager _instance = new ClinicalHistoryManager();
 
-    private List<HistoryDataSource> _dataSources = new ArrayList<HistoryDataSource>();
+    private List<HistoryDataSource> _dataSources = new ArrayList<>();
     private Logger _log = Logger.getLogger(ClinicalHistoryManager.class);
 
     private ClinicalHistoryManager()
@@ -95,7 +95,7 @@ public class ClinicalHistoryManager
 
     public List<HistoryRow> getHistory(Container c, User u, String subjectId, Date minDate, Date maxDate, boolean redacted)
     {
-        List<HistoryRow> rows = new ArrayList<HistoryRow>();
+        List<HistoryRow> rows = new ArrayList<>();
 
         for (HistoryDataSource ds : getDataSources(c, u))
         {
@@ -111,7 +111,7 @@ public class ClinicalHistoryManager
 
     public List<HistoryRow> getHistory(Container c, User u, String subjectId, String caseId, boolean redacted)
     {
-        List<HistoryRow> rows = new ArrayList<HistoryRow>();
+        List<HistoryRow> rows = new ArrayList<>();
 
         for (HistoryDataSource ds : getDataSources(c, u))
         {
@@ -139,7 +139,7 @@ public class ClinicalHistoryManager
 
     protected List<HistoryDataSource> getDataSources(Container c, User u)
     {
-        Map<String, HistoryDataSource> sources = new LinkedHashMap<String, HistoryDataSource>();
+        Map<String, HistoryDataSource> sources = new LinkedHashMap<>();
         for (HistoryDataSource source : _dataSources)
         {
             if (source.isAvailable(c, u))

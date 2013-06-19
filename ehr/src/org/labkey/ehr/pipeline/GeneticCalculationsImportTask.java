@@ -116,7 +116,7 @@ public class GeneticCalculationsImportTask extends PipelineJob.Task<GeneticCalcu
     public RecordedActionSet run() throws PipelineJobException
     {
         PipelineJob job = getJob();
-        List<RecordedAction> actions = new ArrayList<RecordedAction>();
+        List<RecordedAction> actions = new ArrayList<>();
 
         processInbreeding();
         processKinship();
@@ -285,7 +285,7 @@ public class GeneticCalculationsImportTask extends PipelineJob.Task<GeneticCalcu
 
             String line = null;
             int lineNum = 0;
-            List<Map<String, Object>> rows = new ArrayList<Map<String, Object>>();
+            List<Map<String, Object>> rows = new ArrayList<>();
             Date date = new Date();
 
             getJob().getLogger().info("Reading file");

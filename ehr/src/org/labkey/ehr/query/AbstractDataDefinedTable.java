@@ -116,7 +116,7 @@ abstract public class AbstractDataDefinedTable extends SimpleUserSchema.SimpleTa
      */
     protected Set<String> getDistinctValues()
     {
-        Set<String> distinctValues = new HashSet<String>();
+        Set<String> distinctValues = new HashSet<>();
 
         SimpleFilter filter = new SimpleFilter(FieldKey.fromString(_filterColumn), _filterValue, CompareType.EQUAL);
         TableSelector ts = new TableSelector(_rootTable, Collections.singleton(_valueColumn), filter, null);
@@ -251,7 +251,7 @@ abstract public class AbstractDataDefinedTable extends SimpleUserSchema.SimpleTa
 
         protected void configureTranslator(DataIterator input, final SimpleTranslator it)
         {
-            final Map<String, Integer> inputColMap = new HashMap<String, Integer>();
+            final Map<String, Integer> inputColMap = new HashMap<>();
             for (int idx = 1; idx <= input.getColumnCount(); idx++)
             {
                 ColumnInfo col = input.getColumnInfo(idx);

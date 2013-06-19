@@ -84,7 +84,7 @@ public class GeneticCalculationsRTask extends WorkDirectoryTask<GeneticCalculati
 
     public RecordedActionSet run() throws PipelineJobException
     {
-        List<RecordedAction> actions = new ArrayList<RecordedAction>();
+        List<RecordedAction> actions = new ArrayList<>();
 
         actions.add(runScript("populateInbreeding.r", GeneticCalculationsImportTask.INBREEDING_FILE, "Inbreeding Coefficient Output"));
         actions.add(runScript("populateKinship.r", GeneticCalculationsImportTask.KINSHIP_FILE, "Kinship Output"));
@@ -107,7 +107,7 @@ public class GeneticCalculationsRTask extends WorkDirectoryTask<GeneticCalculati
         if (!tsvFile.exists())
             throw new PipelineJobException("Unable to find TSV file at location: " + tsvFile.getPath());
 
-        List<String> args = new ArrayList<String>();
+        List<String> args = new ArrayList<>();
         args.add(exePath);
         args.add("--vanilla");
         args.add(scriptPath);

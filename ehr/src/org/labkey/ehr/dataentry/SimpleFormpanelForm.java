@@ -37,7 +37,7 @@ public class SimpleFormpanelForm extends AbstractDataEntryForm
 
     public static SimpleFormpanelForm create(Module owner, String schemaName, String queryName, String category)
     {
-        List<FormSection> sections = new ArrayList<FormSection>();
+        List<FormSection> sections = new ArrayList<>();
         String label = StringUtils.capitalize(queryName);
         sections.add(new SimpleFormPanel(schemaName, queryName, label));
 

@@ -152,7 +152,7 @@ public class EHRModule extends ExtendedSimpleModule
     @Override
     public JSONObject getPageContextJson(User u, Container c)
     {
-        Map<String, Object> ret = new HashMap<String, Object>();
+        Map<String, Object> ret = new HashMap<>();
         Map<String, String> map = getDefaultPageContextJson(u, c);
         if (map != null)
             ret.putAll(map);
@@ -169,7 +169,7 @@ public class EHRModule extends ExtendedSimpleModule
             {
                 ret.put("EHRStudyContainerInfo", ehrContainer.toJSON(u));
 
-                Set<String> moduleNames = new TreeSet<String>();
+                Set<String> moduleNames = new TreeSet<>();
                 Set<Module> activeModules = ehrContainer.getActiveModules();
                 for (Module m : EHRService.get().getRegisteredModules())
                 {
@@ -206,7 +206,7 @@ public class EHRModule extends ExtendedSimpleModule
     public LinkedHashSet<ClientDependency> getClientDependencies(Container c, User u)
     {
         // allow other modules to register with EHR service, and include them when the module is turned on
-        LinkedHashSet<ClientDependency> ret = new LinkedHashSet<ClientDependency>();
+        LinkedHashSet<ClientDependency> ret = new LinkedHashSet<>();
         ret.addAll(_clientDependencies);
         ret.addAll(EHRService.get().getRegisteredClientDependencies(c, u));
 

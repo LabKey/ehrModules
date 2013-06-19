@@ -113,7 +113,7 @@ public class DefaultDrugsDataSource extends AbstractDataSource
     public List<HistoryRow> getRows(Container c, User u, SimpleFilter filter, boolean redacted)
     {
         List<HistoryRow> rows = super.getRows(c, u, filter, redacted);
-        Map<String, List<HistoryRowImpl>> groupedRowMap = new HashMap<String, List<HistoryRowImpl>>();
+        Map<String, List<HistoryRowImpl>> groupedRowMap = new HashMap<>();
         for (HistoryRow r : rows)
         {
             if (r instanceof HistoryRowImpl)
@@ -123,7 +123,7 @@ public class DefaultDrugsDataSource extends AbstractDataSource
 
                 List<HistoryRowImpl> existing = groupedRowMap.get(key);
                 if (existing == null)
-                    existing = new ArrayList<HistoryRowImpl>();
+                    existing = new ArrayList<>();
 
                 existing.add(row);
 
@@ -131,7 +131,7 @@ public class DefaultDrugsDataSource extends AbstractDataSource
             }
         }
 
-        List<HistoryRow> newRows = new ArrayList<HistoryRow>();
+        List<HistoryRow> newRows = new ArrayList<>();
         for (List<HistoryRowImpl> records : groupedRowMap.values())
         {
             StringBuilder sb = new StringBuilder();

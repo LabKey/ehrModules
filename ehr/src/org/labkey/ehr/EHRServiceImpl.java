@@ -53,13 +53,13 @@ import java.util.Set;
  */
 public class EHRServiceImpl extends EHRService
 {
-    private Set<Module> _registeredModules = new HashSet<Module>();
-    private Map<REPORT_LINK_TYPE, List<ReportLink>> _reportLinks = new HashMap<REPORT_LINK_TYPE, List<ReportLink>>();
-    private Map<String, List<Pair<Module, String>>> _actionOverrides = new HashMap<String, List<Pair<Module, String>>>();
-    private List<Pair<Module, Resource>> _extraTriggerScripts = new ArrayList<Pair<Module, Resource>>();
-    private Map<Module, List<ClientDependency>> _clientDependencies = new HashMap<Module, List<ClientDependency>>();
-    private Map<String, Map<String, List<Pair<Module, Class<? extends TableCustomizer>>>>> _tableCustomizers = new CaseInsensitiveHashMap<Map<String, List<Pair<Module, Class<? extends TableCustomizer>>>>>();
-    private Map<String, String> _dateFormats = new HashMap<String, String>();
+    private Set<Module> _registeredModules = new HashSet<>();
+    private Map<REPORT_LINK_TYPE, List<ReportLink>> _reportLinks = new HashMap<>();
+    private Map<String, List<Pair<Module, String>>> _actionOverrides = new HashMap<>();
+    private List<Pair<Module, Resource>> _extraTriggerScripts = new ArrayList<>();
+    private Map<Module, List<ClientDependency>> _clientDependencies = new HashMap<>();
+    private Map<String, Map<String, List<Pair<Module, Class<? extends TableCustomizer>>>>> _tableCustomizers = new CaseInsensitiveHashMap<>();
+    private Map<String, String> _dateFormats = new HashMap<>();
     private static final Logger _log = Logger.getLogger(EHRServiceImpl.class);
 
     private static final String ALL_TABLES = "~~ALL_TABLES~~";
@@ -89,7 +89,7 @@ public class EHRServiceImpl extends EHRService
 
     public List<Resource> getExtraTriggerScripts(Container c)
     {
-        List<Resource> resouces = new ArrayList<Resource>();
+        List<Resource> resouces = new ArrayList<>();
         Set<Module> activeModules = c.getActiveModules();
 
         for (Pair<Module, Resource> pair : _extraTriggerScripts)
@@ -111,11 +111,11 @@ public class EHRServiceImpl extends EHRService
     {
         Map<String, List<Pair<Module, Class<? extends TableCustomizer>>>> map = _tableCustomizers.get(schema);
         if (map == null)
-            map = new CaseInsensitiveHashMap<List<Pair<Module, Class<? extends TableCustomizer>>>>();
+            map = new CaseInsensitiveHashMap<>();
 
         List<Pair<Module, Class<? extends TableCustomizer>>> list = map.get(query);
         if (list == null)
-            list = new ArrayList<Pair<Module, Class<? extends TableCustomizer>>>();
+            list = new ArrayList<>();
 
         list.add(Pair.<Module, Class<? extends TableCustomizer>>of(owner, customizerClass));
 
@@ -125,7 +125,7 @@ public class EHRServiceImpl extends EHRService
 
     public List<TableCustomizer> getCustomizers(Container c, String schema, String query)
     {
-        List<TableCustomizer> list = new ArrayList<TableCustomizer>();
+        List<TableCustomizer> list = new ArrayList<>();
         Set<Module> modules = c.getActiveModules();
 
         if (_tableCustomizers.get(ALL_SCHEMAS) != null)
@@ -195,7 +195,7 @@ public class EHRServiceImpl extends EHRService
     {
         List<ClientDependency> list = _clientDependencies.get(owner);
         if (list == null)
-            list = new ArrayList<ClientDependency>();
+            list = new ArrayList<>();
 
         list.add(cd);
 
@@ -204,7 +204,7 @@ public class EHRServiceImpl extends EHRService
 
     public Set<ClientDependency> getRegisteredClientDependencies(Container c, User u)
     {
-        Set<ClientDependency> set = new HashSet<ClientDependency>();
+        Set<ClientDependency> set = new HashSet<>();
         for (Module m : _clientDependencies.keySet())
         {
             if (c.getActiveModules().contains(m))
@@ -246,7 +246,7 @@ public class EHRServiceImpl extends EHRService
         List<ReportLink> links = _reportLinks.get(type);
 
         if (links == null)
-            links = new ArrayList<ReportLink>();
+            links = new ArrayList<>();
 
         links.add(new ReportLink(label, owner, url, category));
 
@@ -259,7 +259,7 @@ public class EHRServiceImpl extends EHRService
         if (links == null)
             return Collections.emptyList();
 
-        List<ReportLink> ret = new ArrayList<ReportLink>();
+        List<ReportLink> ret = new ArrayList<>();
         for (ReportLink l : links)
         {
             if (l.isAvailable(c, u))
@@ -314,7 +314,7 @@ public class EHRServiceImpl extends EHRService
     {
         List<Pair<Module, String>> list = _actionOverrides.get(actionName);
         if (list == null)
-            list = new ArrayList<Pair<Module, String>>();
+            list = new ArrayList<>();
 
         list.add(Pair.of(owner, resourcePath));
 

@@ -43,7 +43,7 @@ public class TaskForm extends AbstractDataEntryForm
 
     public static TaskForm createFormPanel(Module owner, String schemaName, String queryName, String category)
     {
-        List<FormSection> sections = new ArrayList<FormSection>();
+        List<FormSection> sections = new ArrayList<>();
         String label = StringUtils.capitalize(queryName);
         sections.add(new TaskFormSection());
         sections.add(new SimpleFormPanel(schemaName, queryName, label));
@@ -53,7 +53,7 @@ public class TaskForm extends AbstractDataEntryForm
 
     public static TaskForm createGridPanel(Module owner, String schemaName, String queryName, String category)
     {
-        List<FormSection> sections = new ArrayList<FormSection>();
+        List<FormSection> sections = new ArrayList<>();
         String label = StringUtils.capitalize(queryName);
         sections.add(new TaskFormSection());
         sections.add(new SimpleGridPanel(schemaName, queryName, label));
@@ -63,7 +63,7 @@ public class TaskForm extends AbstractDataEntryForm
 
     public static TaskForm create(Module owner, String category, String name, String label, List<FormSection> formSections)
     {
-        List<FormSection> sections = new ArrayList<FormSection>();
+        List<FormSection> sections = new ArrayList<>();
         sections.add(new TaskFormSection());
         sections.addAll(formSections);
 

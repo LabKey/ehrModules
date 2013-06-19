@@ -70,7 +70,7 @@ public class DefaultEHRCustomizer implements TableCustomizer
 {
     public static final String ID_COL = "Id";
     private static final Logger _log = Logger.getLogger(DefaultEHRCustomizer.class);
-    private Map<String, UserSchema> _userSchemas = new HashMap<String, UserSchema>();
+    private Map<String, UserSchema> _userSchemas = new HashMap<>();
 
     public DefaultEHRCustomizer()
     {
@@ -79,7 +79,7 @@ public class DefaultEHRCustomizer implements TableCustomizer
 
     public void customize(TableInfo table)
     {
-        _userSchemas = new HashMap<String, UserSchema>();
+        _userSchemas = new HashMap<>();
 
         LDKService.get().getBuiltInColumnsCustomizer().customize(table);
         UserSchema us = table.getUserSchema();
@@ -449,7 +449,7 @@ public class DefaultEHRCustomizer implements TableCustomizer
 
         if (cfg != null)
         {
-            Set<String> scripts = new HashSet<String>();
+            Set<String> scripts = new HashSet<>();
             String[] existing = cfg.getScriptIncludes();
             if (existing != null)
             {
@@ -742,7 +742,7 @@ public class DefaultEHRCustomizer implements TableCustomizer
                     "FROM study.\"" + ds.getName() + "\" sd");
                 qd.setIsTemporary(true);
 
-                List<QueryException> errors = new ArrayList<QueryException>();
+                List<QueryException> errors = new ArrayList<>();
                 TableInfo ti = qd.getTable(errors, true);
                 if (errors.size() > 0)
                 {
@@ -816,7 +816,7 @@ public class DefaultEHRCustomizer implements TableCustomizer
                     "FROM study.\"" + ds.getName() + "\" c");
                 qd.setIsTemporary(true);
 
-                List<QueryException> errors = new ArrayList<QueryException>();
+                List<QueryException> errors = new ArrayList<>();
                 TableInfo ti = qd.getTable(errors, true);
                 if (errors.size() > 0)
                 {
@@ -907,7 +907,7 @@ public class DefaultEHRCustomizer implements TableCustomizer
                         "FROM study.\"" + ds.getName() + "\" c");
                 qd.setIsTemporary(true);
 
-                List<QueryException> errors = new ArrayList<QueryException>();
+                List<QueryException> errors = new ArrayList<>();
                 TableInfo ti = qd.getTable(errors, true);
                 if (errors.size() > 0)
                 {

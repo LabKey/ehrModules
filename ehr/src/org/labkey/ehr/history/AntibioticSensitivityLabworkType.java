@@ -88,7 +88,7 @@ public class AntibioticSensitivityLabworkType extends DefaultLabworkType
     @Override
     protected Map<String, List<String>> getRows(TableSelector ts, final Collection<ColumnInfo> cols, final boolean redacted)
     {
-        final Map<String, Map<String, List<String>>> rows = new HashMap<String, Map<String, List<String>>>();
+        final Map<String, Map<String, List<String>>> rows = new HashMap<>();
         ts.forEach(new Selector.ForEachBlock<ResultSet>()
         {
             @Override
@@ -99,14 +99,14 @@ public class AntibioticSensitivityLabworkType extends DefaultLabworkType
 
                 Map<String, List<String>> runMap = rows.get(runId);
                 if (runMap == null)
-                    runMap = new TreeMap<String, List<String>>();
+                    runMap = new TreeMap<>();
 
                 String microbe = rs.getString(FieldKey.fromString(_microbeField));
                 if (microbe != null)
                 {
                     List<String> list = runMap.get(microbe);
                     if (list == null)
-                        list = new ArrayList<String>();
+                        list = new ArrayList<>();
 
                     String line = getLine(rs, redacted);
                     if (line != null)
@@ -119,11 +119,11 @@ public class AntibioticSensitivityLabworkType extends DefaultLabworkType
             }
         });
 
-        Map<String, List<String>> sortedRows = new HashMap<String, List<String>>();
+        Map<String, List<String>> sortedRows = new HashMap<>();
         for (String runId : rows.keySet())
         {
             Map<String, List<String>> runMap = rows.get(runId);
-            List<String> lines = new ArrayList<String>();
+            List<String> lines = new ArrayList<>();
 
             for (String microbe : runMap.keySet())
             {
