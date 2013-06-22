@@ -39,7 +39,6 @@ import org.labkey.api.exp.api.ExperimentService;
 import org.labkey.api.exp.property.Domain;
 import org.labkey.api.exp.property.DomainProperty;
 import org.labkey.api.exp.query.ExpSchema;
-import org.labkey.api.ldk.LDKService;
 import org.labkey.api.module.Module;
 import org.labkey.api.module.ModuleLoader;
 import org.labkey.api.module.ModuleProperty;
@@ -55,8 +54,6 @@ import org.labkey.api.study.StudyService;
 import org.labkey.api.util.ExceptionUtil;
 import org.labkey.api.util.Pair;
 import org.labkey.api.util.ResultSetUtil;
-import org.labkey.ehr.pipeline.GeneticCalculationsJob;
-import org.quartz.core.QuartzScheduler;
 
 import java.beans.Introspector;
 import java.sql.DatabaseMetaData;
@@ -69,8 +66,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
 
 public class EHRManager
 {
@@ -234,8 +229,7 @@ public class EHRManager
         };
 
         boolean shouldClearCache = false;
-        ExperimentService.get().ensureTransaction();
-        try
+        try (DbScope.Transaction transaction = ExperimentService.get().ensureTransaction())
         {
             for (Object[] qc : states)
             {
@@ -259,17 +253,13 @@ public class EHRManager
                 }
             }
 
-            ExperimentService.get().commitTransaction();
+            transaction.commit();
         }
         catch (SQLException e)
         {
             ExceptionUtil.logExceptionToMothership(null, e);
             messages.add(e.getMessage());
             return messages;
-        }
-        finally
-        {
-            ExperimentService.get().closeTransaction();
         }
 
         if (shouldClearCache)
@@ -293,10 +283,8 @@ public class EHRManager
     {
         List<String> messages = new ArrayList<>();
 
-        try
+        try (DbScope.Transaction transaction = ExperimentService.get().ensureTransaction())
         {
-            ExperimentService.get().ensureTransaction();
-
             Study study = StudyService.get().getStudy(c);
             if (study == null) {
                 messages.add("No study in this folder");
@@ -627,7 +615,7 @@ public class EHRManager
                     }
                 }
             }
-            ExperimentService.get().commitTransaction();
+            transaction.commit();
 
             if (shouldClearCaches)
             {
@@ -643,10 +631,6 @@ public class EHRManager
         catch (ChangePropertyDescriptorException e)
         {
             throw new RuntimeException(e);
-        }
-        finally
-        {
-            ExperimentService.get().closeTransaction();
         }
 
         return messages;
