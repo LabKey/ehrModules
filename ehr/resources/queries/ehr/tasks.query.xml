@@ -3,8 +3,6 @@
         <tables xmlns="http://labkey.org/data/xml">
             <table tableName="tasks" tableDbType="TABLE">
                 <tableUrl>/ehr/taskDetails.view?formtype=${formtype}&amp;taskid=${taskid}</tableUrl>
-                <!--<updateUrl>/ehr/manageTask.view?formtype=${formtype}&amp;taskid=${taskid}</updateUrl>-->
-                <!--<insertUrl>/ehr/manageTask.view</insertUrl>-->
                 <insertUrl />
                 <importUrl />
                 <updateUrl />

@@ -8,14 +8,10 @@
  * This is the default metadata applied to all queries when using getTableMetadata().  If adding attributes designed to be applied
  * to a given query in all contexts, they should be added here
  */
-EHR.model.ViewConfigManager.registerMetadata('Default', {
+EHR.model.DataModelManager.registerMetadata('Default', {
     allQueries: {
         fieldDefaults: {
-            //lazyCreateStore: false,
             ignoreColWidths: true
-//            columnConfig: {
-//                showLink: false
-//            }
         },
         Id: {
             //TODO
@@ -25,10 +21,9 @@ EHR.model.ViewConfigManager.registerMetadata('Default', {
             allowBlank: false,
             lookups: false,
             columnConfig: {
-                width: 65,
+                width: 95,
                 showLink: false
             }
-            //noDuplicateByDefault: true
         },
         'id/curlocation/location': {
             hidden: true,
@@ -74,16 +69,20 @@ EHR.model.ViewConfigManager.registerMetadata('Default', {
                 dateFormat: 'Y-m-d',
                 otherToNow: true,
                 timeFormat: 'H:i'
-                //plugins: ['ehr-participantfield-events']
             },
             xtype: 'xdatetime',
             columnConfig: {
                 fixed: true,
-                width: 150,
-                editor: 'datefield'
+                width: 180,
+                editor: 'xdatetime'
             },
             getInitialValue: function(v, rec){
                 return v ? v : new Date()
+            }
+        },
+        objectid: {
+            getInitialValue: function(v, rec){
+                return v || LABKEY.Utils.generateUUID();
             }
         },
         room: {
@@ -277,11 +276,10 @@ EHR.model.ViewConfigManager.registerMetadata('Default', {
         'ehr.tasks': {
             taskid: {
                 getInitialValue: function(v, rec){
-                    v = v || rec.dataEntryPanel.formUUID || LABKEY.Utils.generateUUID();
-                    rec.dataEntryPanel.formUUID = v;
+                    v = v || rec.dataEntryPanel.taskId || LABKEY.Utils.generateUUID();
+                    rec.dataEntryPanel.taskId = v;
                     return v;
                 },
-                parentConfig: false,
                 hidden: true
             },
             //NOTE: the case is different on hard tables than studies.
@@ -297,7 +295,6 @@ EHR.model.ViewConfigManager.registerMetadata('Default', {
                     return v || qc;
                 },
                 shownInGrid: false,
-                parentConfig: false,
                 hidden: false,
                 editorConfig: {
                     disabled: true,
@@ -333,11 +330,14 @@ EHR.model.ViewConfigManager.registerMetadata('Default', {
             },
             formtype: {
                 xtype: 'displayfield',
-                hidden: true
+                hidden: true,
+                getInitialValue: function(val, rec){
+                    return val || rec.dataEntryPanel.formConfig.name;
+                }
             },
             title: {
                 getInitialValue: function(val, rec){
-                    return val || rec.dataEntryPanel.formType;
+                    return val || rec.dataEntryPanel.formConfig.label;
                 }
             }
         },
@@ -349,7 +349,6 @@ EHR.model.ViewConfigManager.registerMetadata('Default', {
                     rec.dataEntryPanel.formUUID = v;
                     return v;
                 },
-                parentConfig: false,
                 hidden: true
             },
             notify1: {
@@ -388,12 +387,12 @@ EHR.model.ViewConfigManager.registerMetadata('Default', {
                 xtype: 'displayfield',
                 hidden: true,
                 getInitialValue: function(val, rec){
-                    return val || rec.dataEntryPanel.formType;
+                    return val || rec.dataEntryPanel.formConfig.name;
                 }
             },
             title: {
                 getInitialValue: function(val, rec){
-                    return val || rec.dataEntryPanel.formType;
+                    return val || rec.dataEntryPanel.formConfig.label;
                 }
             },
             //NOTE: the case is different on hard tables than studies.
@@ -407,7 +406,6 @@ EHR.model.ViewConfigManager.registerMetadata('Default', {
                     return v || qc;
                 },
                 shownInGrid: false,
-                parentConfig: false,
                 hidden: false,
                 editorConfig: {
                     disabled: true
@@ -643,11 +641,6 @@ EHR.model.ViewConfigManager.registerMetadata('Default', {
             }
         },
         'study.Clinical Encounters': {
-            objectid: {
-                getInitialValue: function(v, rec){
-                    return v || LABKEY.Utils.generateUUID();
-                }
-            },
             serviceRequested: {
                 xtype: 'displayfield',
                 editorConfig: {
@@ -746,11 +739,6 @@ EHR.model.ViewConfigManager.registerMetadata('Default', {
                 showInGrid: false,
                 updateValueFromServer: true,
                 xtype: 'displayfield'
-            },
-            objectid: {
-                getInitialValue: function(v, rec){
-                    return v || LABKEY.Utils.generateUUID();
-                }
             }
         },
         'study.Dental Status': {
@@ -1128,11 +1116,6 @@ EHR.model.ViewConfigManager.registerMetadata('Default', {
                     keyColumn: 'UserId'
                 }
             },
-            objectid: {
-                getInitialValue: function(v, rec){
-                    return v || LABKEY.Utils.generateUUID();
-                }
-            },
             causeofdeath: {
                 allowBlank: false
             }
@@ -1247,11 +1230,6 @@ EHR.model.ViewConfigManager.registerMetadata('Default', {
                     queryName: 'pathologists',
                     displayColumn: 'UserId',
                     keyColumn: 'UserId'
-                }
-            },
-            objectid: {
-                getInitialValue: function(v, rec){
-                    return v || LABKEY.Utils.generateUUID();
                 }
             }
         },
@@ -1424,7 +1402,6 @@ EHR.model.ViewConfigManager.registerMetadata('Default', {
         },
         'ehr.cage_observations': {
             date: {
-                parentConfig: false,
                 hidden: false,
                 allowBlank: false,
                 getInitialValue: function(v, rec){

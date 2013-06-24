@@ -3,12 +3,48 @@
     Ext4.onReady(function (){
         var webpart = <%=webpartContext%>;
 
-        Ext4.create('EHR.panel.ClinicalHistoryExportPanel', {
-            minDate: LABKEY.ActionURL.getParameter('minDate'),
-            maxDate: LABKEY.ActionURL.getParameter('maxDate'),
-            subjectIds: LABKEY.ActionURL.getParameterArray('subjectId'),
-            caseId: LABKEY.ActionURL.getParameter('caseId'),
-            redacted: LABKEY.ActionURL.getParameter('redacted')
+        var subjects = LABKEY.ActionURL.getParameterArray('subjectId');
+        var toAdd = [];
+        Ext4.each(subjects, function(s){
+            toAdd.push({
+                html: '<span style="font-size: large;"><b>Animal: ' + s + '</b></span>',
+                style: 'padding-bottom: 20px;',
+                border: false
+            });
+
+            toAdd.push({
+                xtype: 'ehr-narrowsnapshotpanel',
+                hrefTarget: '_blank',
+                border: false,
+                subjectId: s
+            });
+
+            toAdd.push({
+                html: '<b>Chronological History:</b><hr>',
+                style: 'padding-top: 5px;',
+                border: false
+            });
+
+            toAdd.push({
+                xtype: 'ehr-clinicalhistorypanel',
+                hideExportBtn: true,
+                border: true,
+                subjectId: s,
+                autoLoadRecords: true,
+                minDate: LABKEY.ActionURL.getParameter('minDate'),
+                maxDate: LABKEY.ActionURL.getParameter('maxDate'),
+                caseId: LABKEY.ActionURL.getParameter('caseId'),
+                redacted: LABKEY.ActionURL.getParameter('redacted'),
+                sortMode: LABKEY.ActionURL.getParameter('sortMode'),
+                hrefTarget: '_blank',
+                style: 'margin-bottom: 20px;'
+            });
+        }, this);
+
+        Ext4.create('Ext.panel.Panel', {
+            border: false,
+            style: 'width: 8in;',
+            items: toAdd
         }).render(webpart.wrapperDivId);
     });
 </script>

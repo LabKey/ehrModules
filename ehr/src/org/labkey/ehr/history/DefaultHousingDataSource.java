@@ -29,7 +29,7 @@ public class DefaultHousingDataSource extends AbstractDataSource
 {
     public DefaultHousingDataSource()
     {
-        super("study", "Housing", "Housing Transfer");
+        super("study", "Housing", "Housing Transfer", "Housing Transfers");
     }
 
     @Override

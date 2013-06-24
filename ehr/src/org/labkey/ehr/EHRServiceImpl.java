@@ -36,6 +36,7 @@ import org.labkey.api.util.Path;
 import org.labkey.api.view.template.ClientDependency;
 import org.labkey.api.ehr.dataentry.DataEntryForm;
 import org.labkey.ehr.dataentry.DataEntryManager;
+import org.labkey.ehr.dataentry.TaskForm;
 import org.labkey.ehr.history.ClinicalHistoryManager;
 
 import java.util.ArrayList;
@@ -356,6 +357,28 @@ public class EHRServiceImpl extends EHRService
     public void registerFormType(DataEntryForm form)
     {
         DataEntryManager.get().registerFormType(form);
+    }
+
+    public void registerSimpleFormType(FORM_TYPE type, Module m, String schema, String query, String category)
+    {
+        DataEntryForm form = null;
+        if (FORM_TYPE.Task.equals(type))
+        {
+            form = TaskForm.createGridPanel(m, schema, query, category);
+        }
+        else if (FORM_TYPE.Encounter.equals(type))
+        {
+            throw new IllegalArgumentException("Not yet implemented");
+        }
+        else if (FORM_TYPE.Request.equals(type))
+        {
+            throw new IllegalArgumentException("Not yet implemented");
+        }
+
+        if (form == null)
+            throw new IllegalArgumentException("Unknown form type");
+
+        registerFormType(form);
     }
 
     public void registerDefaultFieldKeys(String schemaName, String queryName, List<FieldKey> keys)

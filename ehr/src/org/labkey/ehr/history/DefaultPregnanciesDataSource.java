@@ -33,7 +33,7 @@ public class DefaultPregnanciesDataSource extends AbstractDataSource
 {
     public DefaultPregnanciesDataSource()
     {
-        super("study", "Pregnancy Confirmations", "Pregnancy Confirmation");
+        super("study", "Pregnancy Confirmations", "Pregnancy Confirmation", "Pregnancy Confirmations");
     }
 
     @Override

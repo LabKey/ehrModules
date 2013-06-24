@@ -55,7 +55,7 @@ public class DefaultEncountersDataSource extends AbstractDataSource
 
     public DefaultEncountersDataSource()
     {
-        super("study", "Clinical Encounters", "Encounter");
+        super("study", "Clinical Encounters", "Encounter", "Encounters");
     }
 
     @Override
@@ -122,10 +122,16 @@ public class DefaultEncountersDataSource extends AbstractDataSource
     }
 
     @Override
-    protected String getCategory(Results rs) throws SQLException
+    protected String getCategoryText(Results rs) throws SQLException
     {
         String category = rs.getString("type");
         return category == null ? "Encounter" : category;
+    }
+
+    @Override
+    protected String getCategoryGroup(Results rs) throws SQLException
+    {
+        return getCategoryText(rs);
     }
 
     @Override

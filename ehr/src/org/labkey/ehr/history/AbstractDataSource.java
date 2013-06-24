@@ -59,7 +59,8 @@ abstract public class AbstractDataSource implements HistoryDataSource
 {
     private String _schema;
     private String _query;
-    private String _category;
+    private String _categoryText;
+    private String _categoryGroup;
     private String _name;
     private String _subjectIdField = "Id";
     protected static final Logger _log = Logger.getLogger(HistoryDataSource.class);
@@ -73,20 +74,18 @@ abstract public class AbstractDataSource implements HistoryDataSource
         this(schema, query, query);
     }
 
-    public AbstractDataSource(String schema, String query, String category)
+    public AbstractDataSource(String schema, String query, String categoryText)
     {
-        _schema = schema;
-        _query = query;
-        _name = category;
-        _category = category;
+        this(schema, query, categoryText, categoryText);
     }
 
-    public AbstractDataSource(String schema, String query, String name, String category)
+    public AbstractDataSource(String schema, String query, String categoryText, String categoryGroup)
     {
         _schema = schema;
         _query = query;
-        _name = name;
-        _category = category;
+        _name = categoryText;
+        _categoryText = categoryText;
+        _categoryGroup = categoryGroup;
     }
 
     public String getName()
@@ -140,13 +139,14 @@ abstract public class AbstractDataSource implements HistoryDataSource
             {
                 Results results = new ResultsImpl(rs, cols);
                 Date date = results.getTimestamp(getDateField());
-                String category = getCategory(results);
+                String categoryText = getCategoryText(results);
+                String categoryGroup = getCategoryGroup(results);
 
                 String html = getHtml(results, redacted);
                 String subjectId = results.getString(FieldKey.fromString(_subjectIdField));
                 if (!StringUtils.isEmpty(html))
                 {
-                    HistoryRow row = createHistoryRow(results, category, subjectId, date, html);
+                    HistoryRow row = createHistoryRow(results, categoryText, categoryGroup, subjectId, date, html);
                     if (row != null)
                         rows.add(row);
                 }
@@ -160,14 +160,19 @@ abstract public class AbstractDataSource implements HistoryDataSource
         return rows;
     }
 
-    protected HistoryRow createHistoryRow(Results results, String category, String subjectId, Date date, String html) throws SQLException
+    protected HistoryRow createHistoryRow(Results results, String categoryText, String categoryGroup, String subjectId, Date date, String html) throws SQLException
     {
-        return new HistoryRowImpl(category, subjectId, date, html);
+        return new HistoryRowImpl(categoryText, categoryGroup, subjectId, date, html);
     }
 
-    protected String getCategory(Results rs) throws SQLException
+    protected String getCategoryText(Results rs) throws SQLException
     {
-        return _category;
+        return _categoryText;
+    }
+
+    protected String getCategoryGroup(Results rs) throws SQLException
+    {
+        return _categoryGroup;
     }
 
     private Collection<ColumnInfo> getColumns(TableInfo ti)

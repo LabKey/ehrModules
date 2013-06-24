@@ -38,7 +38,7 @@ public class DefaultCasesCloseDataSource extends AbstractDataSource
 {
     public DefaultCasesCloseDataSource()
     {
-        super("study", "Cases", "Case Closed");
+        super("study", "Cases", "Case Closed", "Clinical");
     }
 
     @Override
@@ -46,7 +46,6 @@ public class DefaultCasesCloseDataSource extends AbstractDataSource
     {
         StringBuilder sb = new StringBuilder();
 
-        sb.append("Case Closed");
         sb.append(safeAppend(rs, "Category", "category"));
         sb.append(safeAppend(rs, "Case #", "caseno"));
 
@@ -69,7 +68,7 @@ public class DefaultCasesCloseDataSource extends AbstractDataSource
     @Override
     protected Set<String> getColumnNames()
     {
-        return PageFlowUtil.set("Id", "date", "enddate", "caseno", "objectid", "performedby");
+        return PageFlowUtil.set("Id", "date", "enddate", "caseno", "category", "objectid", "performedby");
     }
 }
 

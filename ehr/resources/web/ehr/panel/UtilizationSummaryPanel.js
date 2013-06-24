@@ -71,5 +71,11 @@ Ext4.define('EHR.panel.UtilizationSummaryPanel', {
         cfg.items.push(this.appendSection('By Category', this.usageCategoryData, 'Id/utilization/usageCategories', 'eq'));
 
         target.add(cfg);
+    },
+
+    getKeys: function(data){
+        return Ext4.Object.getKeys(data.aggregated).sort(function(a, b){
+            return data.aggregated[b] - data.aggregated[a];
+        });
     }
 });

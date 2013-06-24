@@ -1,0 +1,1 @@
+ALTER TABLE ehr_compliancedb.CompletionDates ADD trainer varchar(100);

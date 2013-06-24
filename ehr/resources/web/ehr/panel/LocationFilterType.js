@@ -24,7 +24,7 @@ Ext4.define('EHR.panel.LocationFilterType', {
 
         toAdd.push({
             width: 200,
-            html: 'Search By Location:<br><i>(Note: any of these fields can be left blank)</i>'
+            html: 'Search By Location:<br><i>(Note: when you select an area, the corresponding rooms will be selected in the room field.)</i>'
         });
 
         toAdd.push({
@@ -45,14 +45,13 @@ Ext4.define('EHR.panel.LocationFilterType', {
                 expandToFitContent: true,
                 addAllSelector: true,
                 nullCaption: '[Blank]',
-                emptyText:'',
+                editable: false,
                 fieldLabel: 'Area',
                 multiSelect: true,
                 displayField:'area',
                 valueField: 'area',
                 typeAhead: true,
                 queryMode: 'local',
-                editable: true,
                 store: Ext4.create('LABKEY.ext4.Store', {
                     schemaName: 'ehr_lookups',
                     queryName: 'areas',
@@ -61,16 +60,28 @@ Ext4.define('EHR.panel.LocationFilterType', {
                 }),
                 itemId: 'areaField',
                 listeners: {
-                    change: function(field, val){
+                    select: function(field, records){
+                        if (!records.length)
+                            return;
+
+                        var areas = [];
+                        Ext4.Array.forEach(records, function(r){
+                            areas.push(r.get('area'));
+                        }, this);
+
                         var roomField = field.up('panel').down('#roomField');
-                        roomField.filterByAreas(val);
+                        roomField.suspendEvents();
+                        roomField.selectByAreas(areas);
+                        roomField.resumeEvents();
                     },
                     render: function(field){
                         var val = field.getValue();
-                        if (val && val.length){
-                            var roomField = field.up('panel').down('#roomField');
-                            roomField.filterByAreas(val);
-                        }
+                        val = Ext4.isArray(val) || !val ? val : [val];
+
+                        var roomField = field.up('panel').down('#roomField');
+                        roomField.suspendEvents();
+                        roomField.selectByAreas(val);
+                        roomField.resumeEvents();
                     }
                 },
                 value: ctx.area ? ctx.area.split(',') :  null
@@ -78,7 +89,13 @@ Ext4.define('EHR.panel.LocationFilterType', {
                 xtype: 'ehr-roomfield',
                 itemId: 'roomField',
                 fieldLabel: 'Room',
-                value: ctx.room ? ctx.room.split(',') :  null
+                value: ctx.room ? ctx.room.split(',') :  null,
+                listeners: {
+                    change: function(field){
+                        var areaField = field.up('panel').down('#areaField');
+                        areaField.reset();
+                    }
+                }
             },{
                 xtype: 'ehr-cagefield',
                 itemId: 'cageField',
@@ -174,7 +191,13 @@ Ext4.define('EHR.panel.LocationFilterType', {
         var title = [];
 
         var room = this.down('#roomField').getValue();
-        room = Ext4.isArray(room) ? room.join(', ') : room;
+        if (Ext4.isArray(room)){
+            if (room.length < 8)
+                room = room.join(', ');
+            else
+                room = 'multiple rooms selected';
+        }
+
         var cage = this.down('#cageField').getValue();
 
         var area = this.down('#areaField').getValue();

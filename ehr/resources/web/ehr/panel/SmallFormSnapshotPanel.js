@@ -21,8 +21,8 @@ Ext4.define('EHR.panel.SmallFormSnapshotPanel', {
             xtype: 'displayfield',
             style: 'margin-left: 5px;',
             labelWidth: this.defaultLabelWidth,
-            fieldLabel: 'Treatments',
-            itemId: 'treatments',
+            fieldLabel: 'Medications',
+            itemId: 'medications',
             width: 800
         });
 
@@ -38,6 +38,7 @@ Ext4.define('EHR.panel.SmallFormSnapshotPanel', {
                 var amount = sr.getDisplayValue('amountWithUnits');
                 var route = sr.getDisplayValue('route');
                 var frequency = sr.getDisplayValue('frequency');
+                var category = sr.getDisplayValue('category');
                 var enddate = sr.getFormattedDateValue('enddate', 'Y-m-d');
 
                 var text = '';
@@ -75,10 +76,10 @@ Ext4.define('EHR.panel.SmallFormSnapshotPanel', {
             }, this);
 
             if (values.length)
-                this.down('#treatments').setValue('<table>' + values.join('') + '</table>');
+                this.down('#medications').setValue('<table>' + values.join('') + '</table>');
         }
         else {
-            this.down('#treatments').setValue('None');
+            this.down('#medications').setValue('None');
         }
     },
 

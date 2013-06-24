@@ -16,15 +16,7 @@ Ext4.define('EHR.form.Panel', {
             defaults: {
                 border: false
             },
-            buttonAlign: 'left',
-            buttons: [{
-                text: 'Show Records',
-                handler: function(btn){
-                    btn.up('panel').store.each(function(r){
-                        console.log(r.data);
-                    }, this);
-                }
-            }]
+            buttonAlign: 'left'
         });
 
         this.bindConfig = this.bindConfig || {};

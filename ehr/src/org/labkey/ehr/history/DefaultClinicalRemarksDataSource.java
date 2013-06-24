@@ -31,14 +31,21 @@ public class DefaultClinicalRemarksDataSource extends AbstractDataSource
 {
     public DefaultClinicalRemarksDataSource()
     {
-        super("study", "Clinical Remarks", "Clinical Remark");
+        super("study", "Clinical Remarks", "Clinical Remark", "Clinical");
     }
 
     @Override
-    protected String getCategory(Results rs) throws SQLException
+    protected String getCategoryText(Results rs) throws SQLException
     {
         String category = rs.getString("category");
         return (category == null ?  "Clinical" : category) + " Remark";
+    }
+
+    @Override
+    protected String getCategoryGroup(Results rs) throws SQLException
+    {
+        String category = rs.getString("category");
+        return (category == null ?  "Clinical" : category);
     }
 
     @Override

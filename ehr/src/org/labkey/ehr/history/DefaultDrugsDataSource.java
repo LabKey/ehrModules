@@ -40,7 +40,7 @@ public class DefaultDrugsDataSource extends AbstractDataSource
 {
     public DefaultDrugsDataSource()
     {
-        super("study", "Drug Administration", "Medication Given");
+        super("study", "Drug Administration", "Medication Given", "Medications");
     }
 
     @Override
@@ -87,7 +87,7 @@ public class DefaultDrugsDataSource extends AbstractDataSource
     }
 
     @Override
-    protected String getCategory(Results rs) throws SQLException
+    protected String getCategoryText(Results rs) throws SQLException
     {
         String category = rs.getString("category");
         return category == null ?  "Medication Given" : category + " Medication";
@@ -100,9 +100,9 @@ public class DefaultDrugsDataSource extends AbstractDataSource
     }
 
     @Override
-    protected HistoryRowImpl createHistoryRow(Results results, String category, String subjectId, Date date, String html) throws SQLException
+    protected HistoryRowImpl createHistoryRow(Results results, String categoryText, String categoryGroup, String subjectId, Date date, String html) throws SQLException
     {
-        HistoryRowImpl row = new HistoryRowImpl(category, subjectId, date, html);
+        HistoryRowImpl row = (HistoryRowImpl)super.createHistoryRow(results, categoryText, categoryGroup, subjectId, date, html);
         if (row != null)
             row.setShowTime(true);
 
@@ -147,7 +147,7 @@ public class DefaultDrugsDataSource extends AbstractDataSource
             }
 
             HistoryRowImpl rec = records.get(0);
-            HistoryRowImpl newRow = new HistoryRowImpl(rec.getCategory(), rec.getSubjectId(), rec.getDate(), sb.toString());
+            HistoryRowImpl newRow = new HistoryRowImpl(rec.getCategoryText(), rec.getCategoryGroup(), rec.getSubjectId(), rec.getDate(), sb.toString());
             newRow.setShowTime(true);
             newRows.add(newRow);
         }

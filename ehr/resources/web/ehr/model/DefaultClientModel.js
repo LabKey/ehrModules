@@ -19,7 +19,6 @@ Ext4.define('EHR.model.DefaultClientModel', {
     statics: {
         getFieldConfigs: function(fieldConfigs, sources){
             var fields = [];
-
             for (var i=0;i<fieldConfigs.length;i++){
                 fields.push(this.getFieldConfig(fieldConfigs[i], sources));
             }
@@ -28,7 +27,7 @@ Ext4.define('EHR.model.DefaultClientModel', {
         },
 
         getFieldConfig: function(cfg, sources){
-            var tableConfig = EHR.model.ViewConfigManager.getTableMetadata(cfg.schemaName, cfg.queryName, sources);
+            var tableConfig = EHR.model.DataModelManager.getTableMetadata(cfg.schemaName, cfg.queryName, sources);
             var ret = LABKEY.ExtAdapter.apply({}, cfg);
             LABKEY.ExtAdapter.apply(ret, {
                 useNull: true
@@ -45,6 +44,9 @@ Ext4.define('EHR.model.DefaultClientModel', {
     constructor: function(config){
         this.callParent(arguments);
         this.setFieldDefaults();
+        if (this.storeCollection){
+            this.storeCollection.setClientModelDefaults(this);
+        }
     },
 
     setFieldDefaults: function(){
@@ -53,5 +55,19 @@ Ext4.define('EHR.model.DefaultClientModel', {
                 this.data[field.name] = field.getInitialValue.call(this, this.data[field.name], this);
             }
         }, this);
+    },
+
+    validate: function(){
+        var errors = this.callParent(arguments);
+
+        if(this.serverErrors){
+            console.log(this.serverErrors);
+//            for (var field in this.serverErrors){
+//                errors = errors.concat(this.serverErrors[field]);
+//            }
+        }
+
+        //console.log(errors);
+        return errors;
     }
 });

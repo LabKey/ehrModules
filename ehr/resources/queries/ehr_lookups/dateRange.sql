@@ -20,4 +20,4 @@ timestampadd('SQL_TSI_DAY', i.value, CAST(COALESCE(StartDate, curdate()) AS TIME
 
 FROM ldk.integers i
 
-WHERE i.value <= NumDays) i
+WHERE i.value < NumDays) i

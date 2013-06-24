@@ -9,7 +9,7 @@ h3.room,
 h3.cage,
 CASE
   WHEN h3.cage IS NULL then h3.room
-  ELSE (h3.room || '-' || h3.cage)
+  ELSE (h3.room || ' / ' || h3.cage)
 END as location
 
 FROM (

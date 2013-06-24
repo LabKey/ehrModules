@@ -96,6 +96,10 @@ Ext4.define('EHR.panel.SnapshotPanel', {
                         xtype: 'displayfield',
                         fieldLabel: 'Age',
                         itemId: 'age'
+                    },{
+                        xtype: 'displayfield',
+                        fieldLabel: 'Source',
+                        itemId: 'source'
                     }]
                 },{
                     columnWidth: 0.35,
@@ -124,10 +128,6 @@ Ext4.define('EHR.panel.SnapshotPanel', {
 
     getItems: function(){
         var items = this.getBaseItems();
-
-//                        xtype: 'displayfield',
-//                        fieldLabel: '# Animals In Location',
-//                        itemId: 'roommates'
 
         items[0].items = items[0].items.concat([{
             itemId: 'additionalInformation',
@@ -186,8 +186,8 @@ Ext4.define('EHR.panel.SnapshotPanel', {
         },{
             itemId: 'diet',
             xtype: 'ehr-snapshotchildpanel',
-            headerLabel: 'Special Diets',
-            emptyText: 'There are no active special diets'
+            headerLabel: 'Prescribed Diets',
+            emptyText: 'There are no active diets'
         }]);
 
         return items;
@@ -225,12 +225,25 @@ Ext4.define('EHR.panel.SnapshotPanel', {
 
         multi.add(LABKEY.Query.selectRows, {
             schemaName: 'study',
+            queryName: 'demographicsSource',
+            columns: 'Id,type,source',
+            filterArray: [LABKEY.Filter.create('Id', this.subjectId, LABKEY.Filter.Types.EQUAL)],
+            failure: LDK.Utils.getErrorCallback(),
+            requiredVersion: 9.1,
+            scope: this,
+            success: function(results){
+                this.sourceResults = results;
+            }
+        });
+
+        multi.add(LABKEY.Query.selectRows, {
+            schemaName: 'study',
             queryName: 'assignment',
             requiredVersion: 9.1,
             columns: 'Id,date,enddate,projectedRelease,project,project/protocol,project/title,project/investigatorId,project/investigatorId/firstName,project/investigatorId/lastName',
             filterArray: [
                 LABKEY.Filter.create('Id', this.subjectId, LABKEY.Filter.Types.EQUAL),
-                LABKEY.Filter.create('endDateCoalesced', '-0d', LABKEY.Filter.Types.DATE_GREATER_THAN_OR_EQUAL)
+                LABKEY.Filter.create('isActive', true, LABKEY.Filter.Types.EQUAL)
             ],
             failure: LDK.Utils.getErrorCallback(),
             scope: this,
@@ -246,7 +259,7 @@ Ext4.define('EHR.panel.SnapshotPanel', {
             columns: 'Id,date,enddate,groupId/name',
             filterArray: [
                 LABKEY.Filter.create('Id', this.subjectId, LABKEY.Filter.Types.EQUAL),
-                LABKEY.Filter.create('endDateCoalesced', '-0d', LABKEY.Filter.Types.DATE_GREATER_THAN_OR_EQUAL)
+                LABKEY.Filter.create('isActive', true, LABKEY.Filter.Types.EQUAL)
             ],
             failure: LDK.Utils.getErrorCallback(),
             scope: this,
@@ -277,7 +290,7 @@ Ext4.define('EHR.panel.SnapshotPanel', {
             requiredVersion: 9.1,
             filterArray: [
                 LABKEY.Filter.create('Id', this.subjectId, LABKEY.Filter.Types.EQUAL),
-                LABKEY.Filter.create('endDateCoalesced', '-0d', LABKEY.Filter.Types.DATE_GREATER_THAN_OR_EQUAL)
+                LABKEY.Filter.create('isActive', true, LABKEY.Filter.Types.EQUAL)
             ],
             failure: LDK.Utils.getErrorCallback(),
             scope: this,
@@ -289,11 +302,11 @@ Ext4.define('EHR.panel.SnapshotPanel', {
         multi.add(LABKEY.Query.selectRows, {
             schemaName: 'study',
             queryName: 'Treatment Orders',
-            columns: 'Id,date,amount,amount_units,amountWithUnits,enddate,performedby,code,route,frequency',
+            columns: 'Id,date,amount,amount_units,amountWithUnits,category,daysElapsed,enddate,performedby,code,route,frequency,category',
             requiredVersion: 9.1,
             filterArray: [
                 LABKEY.Filter.create('Id', this.subjectId, LABKEY.Filter.Types.EQUAL),
-                LABKEY.Filter.create('endDateCoalesced', '-0d', LABKEY.Filter.Types.DATE_GREATER_THAN_OR_EQUAL)
+                LABKEY.Filter.create('isActive', true, LABKEY.Filter.Types.EQUAL)
             ],
             failure: LDK.Utils.getErrorCallback(),
             scope: this,
@@ -309,7 +322,7 @@ Ext4.define('EHR.panel.SnapshotPanel', {
             requiredVersion: 9.1,
             filterArray: [
                 LABKEY.Filter.create('Id', this.subjectId, LABKEY.Filter.Types.EQUAL),
-                LABKEY.Filter.create('endDateCoalesced', '-0d', LABKEY.Filter.Types.DATE_GREATER_THAN_OR_EQUAL)
+                LABKEY.Filter.create('isActive', true, LABKEY.Filter.Types.EQUAL)
             ],
             failure: LDK.Utils.getErrorCallback(),
             scope: this,
@@ -324,7 +337,7 @@ Ext4.define('EHR.panel.SnapshotPanel', {
             requiredVersion: 9.1,
             filterArray: [
                 LABKEY.Filter.create('Id', this.subjectId, LABKEY.Filter.Types.EQUAL),
-                LABKEY.Filter.create('endDateCoalesced', '-0d', LABKEY.Filter.Types.DATE_GREATER_THAN_OR_EQUAL)
+                LABKEY.Filter.create('isActive', true, LABKEY.Filter.Types.EQUAL)
             ],
             failure: LDK.Utils.getErrorCallback(),
             scope: this,
@@ -340,7 +353,7 @@ Ext4.define('EHR.panel.SnapshotPanel', {
             requiredVersion: 9.1,
             filterArray: [
                 LABKEY.Filter.create('Id', this.subjectId, LABKEY.Filter.Types.EQUAL),
-                LABKEY.Filter.create('endDateCoalesced', '-0d', LABKEY.Filter.Types.DATE_GREATER_THAN_OR_EQUAL)
+                LABKEY.Filter.create('isActive', true, LABKEY.Filter.Types.EQUAL)
             ],
             failure: LDK.Utils.getErrorCallback(),
             scope: this,
@@ -431,9 +444,10 @@ Ext4.define('EHR.panel.SnapshotPanel', {
         this.appendProblemList(this.problemListResults);
         this.appendAssignments(this.assignmentResults);
         this.appendGroups(this.groupResults);
+        this.appendSourceResults(this.sourceResults);
         this.appendTreatments(this.treatmentResults);
         this.appendCases(this.caseResults);
-        this.appendDiet(this.dietResults);
+        //this.appendDiet(this.dietResults);
         this.appendFlags(this.flagsResults);
         this.appendTBResults(this.tbResults);
 
@@ -462,6 +476,16 @@ Ext4.define('EHR.panel.SnapshotPanel', {
             else {
                 this.down('#lastTB').setValue('Never');
             }
+        }
+    },
+
+    appendSourceResults: function(results){
+        if (results && results.rows && results.rows.length){
+            var row = results.rows[0];
+            var field = this.down('#source');
+
+            var text = this.getValue(row, 'type');
+            field.setValue(text);
         }
     },
 
@@ -691,23 +715,23 @@ Ext4.define('EHR.panel.SnapshotPanel', {
         }
     },
 
-    appendDiet: function(results){
-        var columns = [{
-            name: 'diet',
-            label: 'Diet'
-        },{
-            name: 'performedby',
-            label: 'Entered By'
-        },{
-            name: 'date',
-            label: 'Start Date'
-        },{
-            name: 'enddate',
-            label: 'End Date'
-        }];
-
-        this.down('#diet').appendTable(results, columns)
-    },
+//    appendDiet: function(results){
+//        var columns = [{
+//            name: 'diet',
+//            label: 'Diet'
+//        },{
+//            name: 'performedby',
+//            label: 'Entered By'
+//        },{
+//            name: 'date',
+//            label: 'Start Date'
+//        },{
+//            name: 'enddate',
+//            label: 'End Date'
+//        }];
+//
+//        this.down('#diet').appendTable(results, columns)
+//    },
 
     appendTreatments: function(results){
         var columns = [{
@@ -729,14 +753,38 @@ Ext4.define('EHR.panel.SnapshotPanel', {
             name: 'date',
             label: 'Start Date'
         },{
+            name: 'daysElapsed',
+            label: 'Days Elapsed'
+        },{
             name: 'enddate',
             label: 'End Date'
         },{
             name: 'remark',
             label: 'Remark'
+        },{
+            name: 'category',
+            label: 'Category'
         }];
 
-        this.down('#treatments').appendTable(results, columns)
+        var treatmentRows = [];
+        var dietRows = [];
+
+        Ext4.Array.forEach(results.rows, function(r){
+            if (this.getValue(r, 'category') == 'Diet')
+                dietRows.push(r);
+            else
+                treatmentRows.push(r);
+        }, this);
+
+        this.down('#treatments').appendTable({
+            rows: treatmentRows,
+            metaData: results.metaData
+        }, columns);
+
+        this.down('#diet').appendTable({
+            rows: dietRows,
+            metaData: results.metaData
+        }, columns);
     },
 
     appendFlags: function(results){

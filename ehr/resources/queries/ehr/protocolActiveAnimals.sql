@@ -15,7 +15,7 @@ LEFT JOIN
   (SELECT a.Project.protocol as protocol, a.id, count(*) AS TotalAssignments, max(a.date) as LatestStart,
   max(a.enddateCoalesced) as latestEnd
   FROM study.assignment a
-  WHERE a.dateOnly <= curdate() AND a.enddateCoalesced >= curdate()
+  WHERE a.isActive = true
   GROUP BY a.project.protocol, a.id) a ON (p.protocol = a.protocol)
 
 group by p.protocol

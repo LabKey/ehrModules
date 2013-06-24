@@ -186,6 +186,7 @@ Ext4.define('EHR.panel.PopulationPanel', {
         //now append the data rows
         var colKeys = this.generateColKeys();
         var rowNames = this.valueMap[this.rowField];
+        rowNames.sort();
         Ext4.each(rowNames, function(rowName){
             rows.push({
                 html: rowName + ':',

@@ -50,7 +50,7 @@ public class DefaultLabworkDataSource extends AbstractDataSource
 
     public DefaultLabworkDataSource()
     {
-        super("study", "Clinpath Runs", "Labwork");
+        super("study", "Clinpath Runs", "Labwork", "Labwork");
     }
 
     @Override

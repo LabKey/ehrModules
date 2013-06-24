@@ -7,45 +7,60 @@
  * This is the default metadata applied any record when displayed in the context of an encounter.  An encounter is the special situation in which
  * a task only refers to one ID.  In these cases, there is a single study.Clinical Encounters record, and Id/Date/Project are inherited from this record to children.
  */
-EHR.model.ViewConfigManager.registerMetadata('Encounter', {
+EHR.model.DataModelManager.registerMetadata('Encounter', {
     allQueries: {
         Id: {
-            parentConfig: {
+            inheritance: {
                 storeIdentifier: {queryName: 'Clinical Encounters', schemaName: 'study'},
-                dataIndex: 'Id'
+                sourceField: 'Id',
+                recordSelector: {
+                    parentid: 'objectid'
+                }
             },
             hidden: true,
             shownInGrid: false
         },
         date: {
-            parentConfig: {
+            inheritance: {
                 storeIdentifier: {queryName: 'Clinical Encounters', schemaName: 'study'},
-                dataIndex: 'date'
+                sourceField: 'date',
+                recordSelector: {
+                    parentid: 'objectid'
+                }
             },
             hidden: true,
             shownInGrid: false
         },
         parentid: {
-            parentConfig: {
+            inheritance: {
                 storeIdentifier: {queryName: 'Clinical Encounters', schemaName: 'study'},
-                dataIndex: 'objectid'
+                sourceField: 'objectid',
+                recordSelector: {
+                    parentid: 'objectid'
+                }
             },
             hidden: false,
             shownInGrid: false,
             allowBlank: false
         },
         project: {
-            parentConfig: {
+            inheritance: {
                 storeIdentifier: {queryName: 'Clinical Encounters', schemaName: 'study'},
-                dataIndex: 'project'
+                sourceField: 'project',
+                recordSelector: {
+                    parentid: 'objectid'
+                }
             },
             hidden: true,
             shownInGrid: false
         },
         account: {
-            parentConfig: {
+            inheritance: {
                 storeIdentifier: {queryName: 'Clinical Encounters', schemaName: 'study'},
-                dataIndex: 'account'
+                sourceField: 'account',
+                recordSelector: {
+                    parentid: 'objectid'
+                }
             },
             hidden: true,
             shownInGrid: false
@@ -68,7 +83,6 @@ EHR.model.ViewConfigManager.registerMetadata('Encounter', {
     byQuery: {
         'Treatment Orders': {
             date: {
-                parentConfig: false,
                 hidden: false,
                 allowBlank: false,
                 getInitialValue: function(v, rec){
@@ -79,9 +93,12 @@ EHR.model.ViewConfigManager.registerMetadata('Encounter', {
         },
         'Drug Administration': {
             HeaderDate: {
-                parentConfig: {
+                inheritance: {
                     storeIdentifier: {queryName: 'Clinical Encounters', schemaName: 'study'},
-                    dataIndex: 'date'
+                    sourceField: 'date',
+                    recordSelector: {
+                        parentid: 'objectid'
+                    }
                 }
             },
             begindate: {
@@ -95,20 +112,16 @@ EHR.model.ViewConfigManager.registerMetadata('Encounter', {
         },
         'Clinical Encounters': {
             parentid: {
-                parentConfig: false,
                 allowBlank: true
             },
             Id: {
-                parentConfig: null,
                 hidden: false
             },
             date: {
-                parentConfig: null,
                 hidden: false,
                 label: 'Start Time'
             },
             project: {
-                parentConfig: null,
                 allowBlank: false,
                 hidden: false
             },
@@ -124,9 +137,12 @@ EHR.model.ViewConfigManager.registerMetadata('Encounter', {
                 }
             },
             title: {
-                parentConfig: {
+                inheritance: {
                     storeIdentifier:  {queryName: 'tasks', schemaName: 'ehr'},
-                    dataIndex: 'title'
+                    sourceField: 'title',
+                    recordSelector: {
+                        taskid: 'taskid'
+                    }
                 },
                 hidden: true
             }
@@ -137,20 +153,18 @@ EHR.model.ViewConfigManager.registerMetadata('Encounter', {
             }
         },
         Housing: {
-            date: {
-                parentConfig: false,
-                hidden: false,
-                shownInGrid: true
-            },
             performedby: {
                 allowBlank: false
             }
         },
         tasks: {
             duedate: {
-                parentConfig: {
+                inheritance: {
                     storeIdentifier: {queryName: 'Clinical Encounters', schemaName: 'study'},
-                    dataIndex: 'date'
+                    sourceField: 'date',
+                    recordSelector: {
+                        parentid: 'objectid'
+                    }
                 },
                 hidden: true,
                 shownInGrid: false

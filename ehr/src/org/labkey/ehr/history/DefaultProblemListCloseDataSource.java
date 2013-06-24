@@ -38,7 +38,7 @@ public class DefaultProblemListCloseDataSource extends AbstractDataSource
 {
     public DefaultProblemListCloseDataSource()
     {
-        super("study", "Problem List", "Problem Closed");
+        super("study", "Problem List", "Problem Closed", "Clinical");
     }
 
     @Override

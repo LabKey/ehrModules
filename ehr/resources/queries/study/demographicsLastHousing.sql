@@ -13,9 +13,7 @@ d2.room.area,
 
 d2.room,
 
-d2.cage,
-
-d2.cond
+d2.cage
 
 FROM study.housing d2
 JOIN (SELECT id, max(date) as maxDate FROM study.housing h GROUP BY id) h

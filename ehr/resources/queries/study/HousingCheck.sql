@@ -33,7 +33,6 @@ case
   when (h4.latest_housing_end = h.enddate) then h4.latest_housing_end
   else null
 end as next,
-h.cond,
 h.reason,
 h.remark,
 h.qcstate

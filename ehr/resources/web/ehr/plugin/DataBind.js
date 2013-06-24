@@ -161,6 +161,10 @@ Ext4.define('EHR.plugin.Databind', {
         var form = this.panel.getForm();
         var values = form.getFieldValues();
         var record = this.panel.store.model.create();
+
+        if (EHR.debug)
+            console.log('creating: ' + this.panel.store.storeId);
+
         //remove empty values or we risk overriding defaults
         for (var field in values){
             if (Ext4.isEmpty(values[field]))

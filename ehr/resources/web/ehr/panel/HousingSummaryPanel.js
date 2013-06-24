@@ -98,8 +98,12 @@ Ext4.define('EHR.panel.HousingSummaryPanel', {
 
             Ext4.each(cfg.columns, function(col, idx){
                 var val = row.getDisplayValue(col);
-                if (idx == 0)
+                if (idx == 0){
+                    if (!val)
+                        val = 'Unknown';
+
                     val += ':';
+                }
 
                 var url = row.getURL(col);
                 if (url)

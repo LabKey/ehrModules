@@ -275,7 +275,7 @@ EHR.reports.renderWeightData = function(panel, tab, subject){
                                 items: [{
                                     html: 'Last Weight:'
                                 },{
-                                    html: (row.MostRecentWeight.value ? row.MostRecentWeight.value + ' kg' : 'no record')
+                                    html: (row.MostRecentWeight.value ? Ext4.util.Format.round(row.MostRecentWeight.value, 2) + ' kg' : 'no record')
                                 },{
                                     html: 'Date:'
                                 },{

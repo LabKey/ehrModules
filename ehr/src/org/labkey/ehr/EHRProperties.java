@@ -45,7 +45,7 @@ public class EHRProperties
         protected PropertyDescriptor constructPropertyDescriptor()
         {
             PropertyDescriptor pd = super.constructPropertyDescriptor();
-            pd.setShownInInsertView(false);
+            //pd.setShownInInsertView(false);
             pd.setShownInUpdateView(false);
             pd.setShownInDetailsView(false);
             pd.setHidden(true);
@@ -61,7 +61,7 @@ public class EHRProperties
         protected PropertyDescriptor constructPropertyDescriptor()
         {
             PropertyDescriptor pd = super.constructPropertyDescriptor();
-            pd.setShownInInsertView(false);
+            //pd.setShownInInsertView(false);
             pd.setShownInUpdateView(false);
             pd.setShownInDetailsView(false);
             pd.setHidden(true);
@@ -77,7 +77,7 @@ public class EHRProperties
         protected PropertyDescriptor constructPropertyDescriptor()
         {
             PropertyDescriptor pd = super.constructPropertyDescriptor();
-            pd.setShownInInsertView(false);
+            //pd.setShownInInsertView(false);
             pd.setShownInUpdateView(false);
             pd.setShownInDetailsView(false);
             pd.setHidden(true);
@@ -93,7 +93,7 @@ public class EHRProperties
         protected PropertyDescriptor constructPropertyDescriptor()
         {
             PropertyDescriptor pd = super.constructPropertyDescriptor();
-            pd.setShownInInsertView(false);
+            //pd.setShownInInsertView(false);
             pd.setShownInUpdateView(false);
             pd.setShownInDetailsView(false);
             pd.setHidden(true);
@@ -109,7 +109,7 @@ public class EHRProperties
         protected PropertyDescriptor constructPropertyDescriptor()
         {
             PropertyDescriptor pd = super.constructPropertyDescriptor();
-            pd.setShownInInsertView(false);
+            //pd.setShownInInsertView(false);
             pd.setShownInUpdateView(false);
             pd.setShownInDetailsView(false);
             pd.setHidden(true);
@@ -125,7 +125,7 @@ public class EHRProperties
         protected PropertyDescriptor constructPropertyDescriptor()
         {
             PropertyDescriptor pd = super.constructPropertyDescriptor();
-            pd.setShownInInsertView(false);
+            //pd.setShownInInsertView(false);
             pd.setShownInUpdateView(false);
             pd.setShownInDetailsView(false);
             pd.setHidden(true);
@@ -199,7 +199,7 @@ public class EHRProperties
             pd.setName("objectid");
             pd.setLabel("Key");
             pd.setHidden(true);
-            pd.setShownInInsertView(false);
+            //pd.setShownInInsertView(false);
             pd.setShownInDetailsView(false);
             pd.setShownInUpdateView(false);
             return pd;

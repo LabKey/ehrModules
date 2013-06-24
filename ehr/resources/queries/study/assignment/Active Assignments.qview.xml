@@ -1,6 +1,6 @@
 <customView xmlns="http://labkey.org/data/xml/queryCustomView">
     <filters>
-        <filter column="enddateCoalesced" operator="dategte" value="-0d"/>
+        <filter column="isActive" operator="eq" value="true"/>
     </filters>
     <sorts>
         <sort column="date" descending="true"/>

@@ -45,9 +45,11 @@ Ext4.onReady(function (){
 
             var sections = [];
             for (var i in formMap){
+                var items = formMap[i];
+                items = LDK.Utils.sortByProperty(items, 'name', false);
                 sections.push({
                     header: i,
-                    items: formMap[i]
+                    items: items
                 });
             }
 

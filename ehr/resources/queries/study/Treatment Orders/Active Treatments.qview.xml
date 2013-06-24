@@ -35,6 +35,6 @@
        <sort column="frequency" descending="true"/>
    </sorts>
   <filters>
-      <filter column="enddateCoalesced" operator="dategte" value="-0d"/>
+      <filter column="isActive" operator="eq" value="true"/>
   </filters>
 </customView>

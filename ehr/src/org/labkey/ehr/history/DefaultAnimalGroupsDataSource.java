@@ -31,7 +31,7 @@ public class DefaultAnimalGroupsDataSource extends AbstractDataSource
 {
     public DefaultAnimalGroupsDataSource()
     {
-        super("ehr", "animal_group_members", "Added To Group");
+        super("ehr", "animal_group_members", "Added To Group", "Animal Groups");
     }
 
     @Override

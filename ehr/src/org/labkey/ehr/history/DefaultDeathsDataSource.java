@@ -28,7 +28,7 @@ public class DefaultDeathsDataSource extends AbstractDataSource
 {
     public DefaultDeathsDataSource()
     {
-        super("study", "Deaths", "Death");
+        super("study", "Deaths", "Death", "Deaths");
     }
 
     @Override

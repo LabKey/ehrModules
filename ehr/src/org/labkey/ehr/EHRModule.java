@@ -106,9 +106,6 @@ public class EHRModule extends ExtendedSimpleModule
         EHRService.get().registerReportLink(EHRService.REPORT_LINK_TYPE.protocol, "View Total Animals Assigned to Each Protocol, By Species", this, DetailsURL.fromString("/query/executeQuery.view?schemaName=ehr&query.queryName=protocolTotalAnimalsBySpecies"), "Quick Links");
         EHRService.get().registerReportLink(EHRService.REPORT_LINK_TYPE.assignment, "Find Assignments Overlapping A Date Range", this, DetailsURL.fromString("/query/executeQuery.view?schemaName=study&query.queryName=assignmentOverlapsIdBy"), "Quick Links");
 
-        EHRService.get().registerFormType(TaskForm.createGridPanel(this, "study", "weight", "Clinical"));
-        EHRService.get().registerFormType(TaskForm.createFormPanel(this, "study", "vitals", "Clinical"));
-
         //attempt to schedule genetic calculations.  will abort if not enabled
         GeneticCalculationsJob.schedule();
     }

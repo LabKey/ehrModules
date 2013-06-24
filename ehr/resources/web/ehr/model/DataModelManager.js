@@ -1,19 +1,18 @@
 /*
- * Copyright (c) 2013 LabKey Corporation
+ * Copyright (c) 2011-2013 LabKey Corporation
  *
  * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
- */
-Ext4.ns('EHR.model.ViewConfigSources');
-
-/**
+ *
  * @class
- * @name EHR.model.ViewConfigManager
- * @description The EHR UI is heavily driven by metadata.  ViewConfigManager provides a number of static config objects that
+ * @name EHR.model.DataModelManager
+ * @description The EHR UI is heavily driven by metadata.  DataModelManager provides a number of static config objects that
  * are merged to provide the final config object used to generate the Ext-based forms.  These are organized into 'sources'.
- * Each source is a node under EHR.model.ViewConfigSources.  They can be requested using .getTableMetadata() and will be merged in order to form
+ * Each source is registered using EHR.model.DataModelManager.registerMetadata().  They can be requested using .getTableMetadata() and will be merged in order to form
  * the final config object.  The purpose of this system is to allow sharing/inheritance of complex configuration between many forms.
  */
-EHR.model.ViewConfigManager = new function(){
+LABKEY.ExtAdapter.ns('EHR.model.DataModelManager');
+
+EHR.model.DataModelManager = new function(){
     //private
     var metadata = {};
 
@@ -25,16 +24,16 @@ EHR.model.ViewConfigManager = new function(){
          * @param {Array} sources An array of metadata sources (in order) from which to retrieve metadata.  If the metadata source has metadata on this query, these will be merged with the default metadata in the order provided.
          * @description If the following is called:
          * <p>
-         * EHR.model.ViewConfigManager.getTableMetadata('Necropsies', ['Task', 'Necropsy'])
+         * EHR.model.DataModelManager.getTableMetadata('study', 'Necropsies', ['Task', 'Necropsy'])
          * <p>
          * Then the following config objects will be merged, in order, if they are present, to form the final config object:
          * <p>
-         * EHR.model.ViewConfigSources.Default.allQueries
-         * EHR.model.ViewConfigSources.Sources.Default['Necropsies']
-         * EHR.model.ViewConfigSources.Sources.Task.allQueries
-         * EHR.model.ViewConfigSources.Sources.Task['Necropsies']
-         * EHR.model.ViewConfigSources.Sources.Necropsy.allQueries
-         * EHR.model.ViewConfigSources.Sources.Necropsies['Necropsies']
+         * Default.allQueries
+         * Default['study.Necropsies']
+         * Task.allQueries
+         * Task['study.Necropsies']
+         * Necropsy.allQueries
+         * Necropsies['study.Necropsies']
          * <p>
          * The purpose is to allow layering on config objects and inheritance such tht different forms can support highly customized behaviors per field.
          * <p>

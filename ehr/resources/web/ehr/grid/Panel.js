@@ -33,6 +33,17 @@ Ext4.define('EHR.grid.Panel', {
         });
 
         this.callParent();
+        this.addEvents('animalselect');
+        this.enableBubble('animalselect');
+
+        this.getSelectionModel().on('selectionchange', function(sm, models){
+            if (models.length != 1)
+                return;
+
+            var id = models[0].get('Id');
+            if (id)
+                this.fireEvent('animalselect', id);
+        }, this);
     },
 
     configureColumns: function(){
@@ -51,7 +62,7 @@ Ext4.define('EHR.grid.Panel', {
         }];
 
         LABKEY.ExtAdapter.each(this.formConfig.fieldConfigs, function(field){
-            var tableConfig = EHR.model.ViewConfigManager.getTableMetadata(field.schemaName, field.queryName, this.formConfig.sources);
+            var tableConfig = EHR.model.DataModelManager.getTableMetadata(field.schemaName, field.queryName, this.formConfig.sources);
             var cfg = LABKEY.ExtAdapter.apply({}, field);
             LABKEY.Utils.merge(cfg, tableConfig[field.name]);
 
@@ -59,8 +70,15 @@ Ext4.define('EHR.grid.Panel', {
                 return;
 
             var colCfg = EHR.DataEntryUtils.getColumnConfigFromMetadata(cfg, this);
-            if (colCfg)
+            if (colCfg){
+                if (cfg.jsonType == 'date' && cfg.extFormat){
+                    if (Ext4.Date.formatContainsHourInfo(cfg.extFormat)){
+                        colCfg.editor = 'xdatetime';
+                    }
+                }
+
                 this.columns.push(colCfg);
+            }
         }, this);
     },
 

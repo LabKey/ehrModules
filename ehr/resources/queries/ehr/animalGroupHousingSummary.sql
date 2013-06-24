@@ -9,5 +9,5 @@ SELECT
   count(distinct m.id) as totalAnimals
 
 FROM ehr.animal_group_members m
-WHERE m.enddateTimeCoalesced >= now()
+WHERE m.isActive = true
 GROUP BY m.groupId, m.id.curLocation.room

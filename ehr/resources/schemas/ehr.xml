@@ -143,7 +143,7 @@
                 <ns:fk>
                     <ns:fkDbSchema>ehr_lookups</ns:fkDbSchema>
                     <ns:fkTable>billingtypes</ns:fkTable>
-                    <ns:fkColumnName>name</ns:fkColumnName>
+                    <ns:fkColumnName>rowid</ns:fkColumnName>
                 </ns:fk>
             </ns:column>
             <ns:column columnName="formtype">
@@ -177,6 +177,7 @@
             </ns:column>
             <ns:column columnName="datecompleted">
                 <ns:nullable>true</ns:nullable>
+                <ns:isUserEditable>false</ns:isUserEditable>
                 <ns:columnTitle>Date Finalized</ns:columnTitle>
             </ns:column>
             <ns:column columnName="container">

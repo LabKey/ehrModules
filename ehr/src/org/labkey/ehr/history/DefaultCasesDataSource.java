@@ -30,7 +30,7 @@ public class DefaultCasesDataSource extends AbstractDataSource
 {
     public DefaultCasesDataSource()
     {
-        super("study", "Cases", "Case Opened");
+        super("study", "Cases", "Case Opened", "Clinical");
     }
 
     @Override

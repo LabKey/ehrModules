@@ -20,6 +20,7 @@ import org.labkey.api.query.FieldKey;
 import org.labkey.api.util.PageFlowUtil;
 
 import java.sql.SQLException;
+import java.util.Date;
 import java.util.Set;
 
 /**
@@ -31,7 +32,7 @@ public class DefaultTreatmentOrdersDataSource extends AbstractDataSource
 {
     public DefaultTreatmentOrdersDataSource()
     {
-        super("study", "Treatment Orders", "Treatment Ordered");
+        super("study", "Treatment Orders", "Medication Ordered", "Clinical");
     }
 
     @Override
@@ -102,8 +103,32 @@ public class DefaultTreatmentOrdersDataSource extends AbstractDataSource
     }
 
     @Override
+    protected String getCategoryText(Results rs) throws SQLException
+    {
+        String category = rs.getString("category");
+        return category == null ?  "Medication Ordered" : category + " Medication Ordered";
+    }
+
+    @Override
+    protected HistoryRowImpl createHistoryRow(Results results, String categoryText, String categoryGroup, String subjectId, Date date, String html) throws SQLException
+    {
+        HistoryRowImpl row = (HistoryRowImpl)super.createHistoryRow(results, categoryText, categoryGroup, subjectId, date, html);
+        if (row != null)
+            row.setShowTime(true);
+
+        return row;
+    }
+
+    @Override
+    protected String getCategoryGroup(Results rs) throws SQLException
+    {
+        String category = rs.getString("category");
+        return category == null ?  "Clinical" : category;
+    }
+
+    @Override
     protected Set<String> getColumnNames()
     {
-        return PageFlowUtil.set("Id", "date", "enddate", "route", "volume", "vol_units", "amount", "amount_units", "code", "code/meaning", "duration", "frequency/meaning");
+        return PageFlowUtil.set("Id", "date", "enddate", "route", "volume", "vol_units", "amount", "amount_units", "code", "code/meaning", "duration", "frequency/meaning", "category");
     }
 }

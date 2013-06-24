@@ -46,6 +46,8 @@ public class WrappingTableCustomizer implements TableCustomizer
         addWrappedColumn(table);
 
         DefaultEHRCustomizer ehr = new DefaultEHRCustomizer();
+        ehr.setAddLinkDisablers(false);
+
         ehr.customize(table);
     }
 

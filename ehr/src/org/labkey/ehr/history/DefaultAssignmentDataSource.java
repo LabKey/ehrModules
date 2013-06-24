@@ -31,7 +31,7 @@ public class DefaultAssignmentDataSource extends AbstractDataSource
 {
     public DefaultAssignmentDataSource()
     {
-        super("study", "Assignment");
+        super("study", "Assignment", "Assignment", "Assignments");
     }
 
     @Override

@@ -50,7 +50,7 @@ public class DefaultWeightDataSource extends AbstractDataSource
 {
     public DefaultWeightDataSource()
     {
-        super("study", "Weight");
+        super("study", "Weight", "Weight", "Weights");
     }
 
     @Override

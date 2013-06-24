@@ -7,6 +7,7 @@
         <!--Misc Ext4 components-->
         <script path="ehr/panel/SnapshotPanel.js"/>
         <script path="ehr/panel/SmallFormSnapshotPanel.js"/>
+        <script path="ehr/panel/NarrowSnapshotPanel.js"/>
         <script path="ehr/panel/LabworkSummaryPanel.js"/>
         <script path="ehr/data/ClinicalHistoryStore.js"/>
         <script path="ehr/panel/ClinicalHistoryPanel.js"/>
@@ -17,10 +18,10 @@
         <script path="ehr/stylesheet.css"/>
 
         <!--model-->
-        <script path="ehr/model/ViewConfigManager.js"/>
-        <script path="ehr/model/config/Default.js"/>
-        <script path="ehr/model/config/Task.js"/>
-        <script path="ehr/model/config/Request.js"/>
+        <script path="ehr/model/DataModelManager.js"/>
+        <script path="ehr/model/sources/Default.js"/>
+        <script path="ehr/model/sources/Task.js"/>
+        <script path="ehr/model/sources/Request.js"/>
 
         <script path="ehr/model/DefaultClientModel.js"/>
     </library>

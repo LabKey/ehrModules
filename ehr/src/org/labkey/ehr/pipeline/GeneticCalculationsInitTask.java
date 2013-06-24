@@ -120,10 +120,10 @@ public class GeneticCalculationsInitTask extends PipelineJob.Task<GeneticCalcula
         {
             UserSchema us = QueryService.get().getUserSchema(job.getUser(), job.getContainer(), "study");
             TableInfo pedTable = us.getTable("Pedigree");
-            TableSelector ts = new TableSelector(pedTable, new HashSet<>(PageFlowUtil.set("Id", "Dam", "Sire", "Gender")), null, null);
+            TableSelector ts = new TableSelector(pedTable, new HashSet<>(PageFlowUtil.set("Id", "Dam", "Sire", "Gender", "Species")), null, null);
 
             File outputFile = new File(support.getAnalysisDirectory(), GeneticCalculationsImportTask.PEDIGREE_FILE);
-            final CSVWriter writer = new CSVWriter(new OutputStreamWriter(new FileOutputStream(outputFile)), '\t', CSVWriter.NO_QUOTE_CHARACTER);
+            final CSVWriter writer = new CSVWriter(new OutputStreamWriter(new FileOutputStream(outputFile)), '\t', CSVWriter.DEFAULT_QUOTE_CHARACTER);
             try
             {
                 long count = ts.getRowCount();
@@ -134,7 +134,7 @@ public class GeneticCalculationsInitTask extends PipelineJob.Task<GeneticCalcula
                         @Override
                         public void exec(ResultSet rs) throws SQLException
                         {
-                            String[] row = new String[]{rs.getString("Id"), rs.getString("Dam"), rs.getString("Sire"), rs.getString("Gender")};
+                            String[] row = new String[]{rs.getString("Id"), rs.getString("Dam"), rs.getString("Sire"), rs.getString("Gender"), rs.getString("Species")};
                             for (int i=0;i<row.length;i++)
                             {
                                 //R wont accept empty strings in the input, so we need to replace them with NA

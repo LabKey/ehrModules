@@ -34,6 +34,7 @@ public class TaskForm extends AbstractDataEntryForm
     {
         super(owner, name, label, category, sections);
         setJavascriptClass("EHR.panel.TaskDataEntryPanel");
+        setStoreCollectionClass("EHR.data.TaskStoreCollection");
 
         for (FormSection s : getFormSections())
         {
@@ -46,6 +47,7 @@ public class TaskForm extends AbstractDataEntryForm
         List<FormSection> sections = new ArrayList<>();
         String label = StringUtils.capitalize(queryName);
         sections.add(new TaskFormSection());
+        sections.add(new AnimalDetailsFormSection());
         sections.add(new SimpleFormPanel(schemaName, queryName, label));
 
         return new TaskForm(owner, queryName, label, category, sections);
@@ -56,6 +58,7 @@ public class TaskForm extends AbstractDataEntryForm
         List<FormSection> sections = new ArrayList<>();
         String label = StringUtils.capitalize(queryName);
         sections.add(new TaskFormSection());
+        sections.add(new AnimalDetailsFormSection());
         sections.add(new SimpleGridPanel(schemaName, queryName, label));
 
         return new TaskForm(owner, queryName, label, category, sections);
@@ -65,6 +68,7 @@ public class TaskForm extends AbstractDataEntryForm
     {
         List<FormSection> sections = new ArrayList<>();
         sections.add(new TaskFormSection());
+        sections.add(new AnimalDetailsFormSection());
         sections.addAll(formSections);
 
         return new TaskForm(owner, name, label, category, sections);

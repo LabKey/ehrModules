@@ -10,16 +10,14 @@ Ext4.define('EHR.panel.TaskDataEntryPanel', {
     taskId: null,
 
     initComponent: function(){
-        this.taskId = this.taskId || LABKEY.Utils.generateUUID();
-
+        this.taskId = this.taskId || LABKEY.ActionURL.getParameter('taskid') || LABKEY.Utils.generateUUID();
         this.callParent();
     },
 
-    configureStore: function(cfg){
+    applyConfigToServerStore: function(cfg){
         cfg = this.callParent(arguments);
         cfg.filterArray = cfg.filterArray || [];
         cfg.filterArray.push(LABKEY.Filter.create('taskId', this.taskId, LABKEY.Filter.Types.EQUALS));
-
         return cfg;
     }
 });

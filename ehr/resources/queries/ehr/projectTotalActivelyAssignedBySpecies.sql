@@ -9,6 +9,6 @@ SELECT
   count(*) AS activeAssignments
 
 FROM study.Assignment a
-WHERE a.enddateCoalesced >= curdate()
+WHERE a.isActive = true
 GROUP BY a.project, a.id.demographics.species
 PIVOT activeAssignments by species IN (select distinct a.id.demographics.species from study.assignment a)

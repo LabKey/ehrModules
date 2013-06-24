@@ -39,7 +39,7 @@ public class DefaultTreatmentEndDataSource extends AbstractDataSource
 {
     public DefaultTreatmentEndDataSource()
     {
-        super("study", "Treatment Orders", "Treatment Ending");
+        super("study", "Treatment Orders", "Medication Ending", "Clinical");
     }
 
     @Override
@@ -79,9 +79,23 @@ public class DefaultTreatmentEndDataSource extends AbstractDataSource
     }
 
     @Override
+    protected String getCategoryText(Results rs) throws SQLException
+    {
+        String category = rs.getString("category");
+        return category == null ?  "Medication Ending" : category + " Medication Ending";
+    }
+
+    @Override
+    protected String getCategoryGroup(Results rs) throws SQLException
+    {
+        String category = rs.getString("category");
+        return category == null ?  "Clinical" : category;
+    }
+
+    @Override
     protected Set<String> getColumnNames()
     {
-        return PageFlowUtil.set("Id", "date", "enddate", "route", "volume", "vol_units", "amount", "amount_units", "code", "code/meaning", "duration");
+        return PageFlowUtil.set("Id", "date", "enddate", "route", "volume", "vol_units", "amount", "amount_units", "code", "code/meaning", "duration", "category");
     }
 }
 

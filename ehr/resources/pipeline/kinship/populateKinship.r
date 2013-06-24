@@ -29,8 +29,8 @@ spec <- matrix(c(
 ), ncol=4, byrow=TRUE);
 opts = getopt(spec, commandArgs(trailingOnly = TRUE));
 
-allPed <- read.table(opts$inputFile);
-colnames(allPed)<-c('Id', 'Dam', 'Sire', 'Gender')
+allPed <- read.table(opts$inputFile, quote="\"");
+colnames(allPed)<-c('Id', 'Dam', 'Sire', 'Gender', 'Species');
 
 is.na(allPed$Id)<-which(allPed$Id=="")
 is.na(allPed$Dam)<-which(allPed$Dam=="")
@@ -55,7 +55,7 @@ addMissing <- function(ped){
     nsires <- as.character(unique(ped[is.na(nsires),3]))
     nsires <- nsires[!is.na(nsires)]
     if(length(nsires)){
-        ped <- rbind(ped, data.frame(Id=nsires, Dam=rep(NA, length(nsires)), Sire=rep(NA, length(nsires)), Gender=rep(1, length(nsires))));
+        ped <- rbind(ped, data.frame(Id=nsires, Dam=rep(NA, length(nsires)), Sire=rep(NA, length(nsires)), Gender=rep(1, length(nsires)), Species=rep("Unknown", length(nsires))));
     }
 
     ndams <- match(ped[,2],ped[,1])# [Quoc] change ped,3 to ped,2
@@ -63,7 +63,7 @@ addMissing <- function(ped){
     ndams <- ndams[!is.na(ndams)];
 
     if(length(ndams)){
-        ped <- rbind(ped,data.frame(Id=ndams, Dam=rep(NA, length(ndams)), Sire=rep(NA, length(ndams)), Gender=rep(2, length(ndams))));
+        ped <- rbind(ped,data.frame(Id=ndams, Dam=rep(NA, length(ndams)), Sire=rep(NA, length(ndams)), Gender=rep(2, length(ndams)), Species=rep("Unknown", length(ndams))));
     }
 
     names(ped) <- head

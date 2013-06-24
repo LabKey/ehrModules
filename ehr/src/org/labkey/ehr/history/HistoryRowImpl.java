@@ -35,7 +35,8 @@ public class HistoryRowImpl implements HistoryRow
     private Date _date;
     private Date _enddate;
     private Integer _projectId;
-    private String _category;
+    private String _categoryGroup;
+    private String _categoryText;
     private String _performedBy;
     private String _caseId;
     private String _runId;
@@ -48,9 +49,10 @@ public class HistoryRowImpl implements HistoryRow
     protected final static SimpleDateFormat _dateFormat = new SimpleDateFormat("yyyy-MM-dd");
     protected final static SimpleDateFormat _timeFormat = new SimpleDateFormat("kk:mm");
 
-    public HistoryRowImpl(String category, String subjectId, Date date, String html)
+    public HistoryRowImpl(String categoryText, String categoryGroup, String subjectId, Date date, String html)
     {
-        _category = category;
+        _categoryText = categoryText;
+        _categoryGroup = categoryGroup;
         _subjectId = subjectId;
         _date = date;
         _html = html;
@@ -60,11 +62,14 @@ public class HistoryRowImpl implements HistoryRow
     {
         JSONObject json = new JSONObject();
 
-        json.put("group", _subjectId + "-" + getSortDateString());
+        json.put("dateGroup", _subjectId + "_" + getSortDateString());
+        json.put("typeGroup", _subjectId + "_" + _categoryGroup);
+
+        json.put("type", _categoryGroup);
         json.put("sortDate", getSortDateString());
 
         json.put("id", _subjectId);
-        json.put("category", _category);
+        json.put("category", _categoryText);
         json.put("date", _date);
         json.put("enddate", _enddate);
         json.put("project", _projectId);
@@ -94,7 +99,7 @@ public class HistoryRowImpl implements HistoryRow
         }
         catch (ArrayIndexOutOfBoundsException e)
         {
-            _log.error("Invalid date: " + _date + " for table: " + _category + " and animal " + _subjectId, e);
+            _log.error("Invalid date: " + _date + " for table: " + _categoryGroup + " and animal " + _subjectId, e);
             return "";
         }
     }
@@ -114,9 +119,14 @@ public class HistoryRowImpl implements HistoryRow
         return _date;
     }
 
-    public String getCategory()
+    public String getCategoryText()
     {
-        return _category;
+        return _categoryText;
+    }
+
+    public String getCategoryGroup()
+    {
+        return _categoryGroup;
     }
 
     public String getTimeString()

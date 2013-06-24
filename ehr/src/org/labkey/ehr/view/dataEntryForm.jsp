@@ -27,15 +27,6 @@
 <%@ page import="java.util.LinkedHashSet" %>
 <%@ page import="org.labkey.api.ehr.dataentry.DataEntryForm" %>
 <%@ page extends="org.labkey.api.jsp.JspBase" %>
-<%!
-
-    public LinkedHashSet<ClientDependency> getClientDependencies()
-    {
-        LinkedHashSet<ClientDependency> resources = new LinkedHashSet<>();
-        resources.add(ClientDependency.fromFilePath("ehr/ehr_ext4_dataEntry"));
-        return resources;
-    }
-%>
 <%
     ViewContext ctx = getViewContext();
     DataEntryForm def = (DataEntryForm)getModelBean();

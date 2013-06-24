@@ -71,6 +71,7 @@ public class DefaultEHRCustomizer implements TableCustomizer
     public static final String ID_COL = "Id";
     private static final Logger _log = Logger.getLogger(DefaultEHRCustomizer.class);
     private Map<String, UserSchema> _userSchemas = new HashMap<>();
+    private boolean _addLinkDisablers = true;
 
     public DefaultEHRCustomizer()
     {
@@ -122,6 +123,18 @@ public class DefaultEHRCustomizer implements TableCustomizer
         {
             customizeAnimalGroups((AbstractTableInfo) table);
         }
+        else if (table.getName().equalsIgnoreCase("animal_group_members") && table.getSchema().getName().equalsIgnoreCase("ehr"))
+        {
+            customizeAnimalGroupMembers((AbstractTableInfo)table);
+        }
+        else if (table.getName().equalsIgnoreCase("snomed") && table.getSchema().getName().equalsIgnoreCase("ehr_lookups"))
+        {
+            customizeSNOMED((AbstractTableInfo) table);
+        }
+        else if (table.getName().equalsIgnoreCase("snomed_tags") && table.getSchema().getName().equalsIgnoreCase("ehr"))
+        {
+            customizeSNOMEDTags((AbstractTableInfo) table);
+        }
         else if (table.getName().startsWith("HousingOverlaps") && table.getSchema().getName().equalsIgnoreCase("study"))
         {
             doSharedCustomization((AbstractTableInfo)table);
@@ -164,7 +177,8 @@ public class DefaultEHRCustomizer implements TableCustomizer
         appendEnddate(ti);
         appendDuration(ti);
         appendDateOnly(ti);
-        setLinkDisablers(ti);
+        if (_addLinkDisablers)
+            setLinkDisablers(ti);
 
         ColumnInfo objectId = ti.getColumn("objectid");
         if (objectId != null)
@@ -227,6 +241,11 @@ public class DefaultEHRCustomizer implements TableCustomizer
         if (ds.getName().equalsIgnoreCase("Drug Administration") || ds.getName().equalsIgnoreCase("Treatment Orders"))
         {
             addUnitColumns(ti);
+
+            if (ds.getName().equalsIgnoreCase("Treatment Orders"))
+            {
+                addIsActiveColWithTime(ti);
+            }
         }
         else if (ds.getName().equalsIgnoreCase("Clinical Encounters") || ds.getName().equalsIgnoreCase("Encounters"))
         {
@@ -235,6 +254,26 @@ public class DefaultEHRCustomizer implements TableCustomizer
         else if (ds.getName().equalsIgnoreCase("housing"))
         {
             customizeHousing(ti);
+        }
+        else if (ds.getName().equalsIgnoreCase("assignment"))
+        {
+            addIsActiveCol(ti);
+        }
+        else if (ds.getName().equalsIgnoreCase("notes"))
+        {
+            addIsActiveCol(ti);
+        }
+        else if (ds.getName().equalsIgnoreCase("problem") || ds.getName().equalsIgnoreCase("problem list"))
+        {
+            addIsActiveCol(ti);
+        }
+        else if (ds.getName().equalsIgnoreCase("flags") || ds.getName().equalsIgnoreCase("Animal Record Flags"))
+        {
+            addIsActiveCol(ti);
+        }
+        else if (ds.getName().equalsIgnoreCase("diet"))
+        {
+            addIsActiveCol(ti);
         }
 
         appendCalculatedCols(ti);
@@ -263,6 +302,43 @@ public class DefaultEHRCustomizer implements TableCustomizer
         }
 
         setScriptIncludes((AbstractTableInfo) ds);
+    }
+
+    private void addIsActiveCol(AbstractTableInfo ti)
+    {
+        String name = "isActive";
+        if (ti.getColumn(name) == null)
+        {
+            SQLFragment sql = new SQLFragment("(CASE " +
+                    " WHEN (" + ExprColumn.STR_TABLE_ALIAS + ".date > {fn now()}) THEN " + ti.getSqlDialect().getBooleanFALSE() +
+                    " WHEN (" + ExprColumn.STR_TABLE_ALIAS + ".enddate IS NULL) THEN " + ti.getSqlDialect().getBooleanTRUE() +
+                    " WHEN (" + ExprColumn.STR_TABLE_ALIAS + ".enddate IS NOT NULL AND CAST(" + ExprColumn.STR_TABLE_ALIAS + ".enddate AS DATE) = {fn curdate()} AND CAST(" + ExprColumn.STR_TABLE_ALIAS + ".date as DATE) = {fn curdate()}) THEN " + ti.getSqlDialect().getBooleanTRUE() +
+                    " WHEN (CAST(" + ExprColumn.STR_TABLE_ALIAS + ".enddate AS DATE) > {fn curdate()}) THEN " + ti.getSqlDialect().getBooleanTRUE() +
+                    " ELSE " + ti.getSqlDialect().getBooleanFALSE() +
+                    " END)");
+
+            ExprColumn col = new ExprColumn(ti, name, sql, JdbcType.BOOLEAN, ti.getColumn("date"), ti.getColumn("enddate"));
+            col.setLabel("Is Active?");
+            ti.addColumn(col);
+        }
+    }
+
+    private void addIsActiveColWithTime(AbstractTableInfo ti)
+    {
+        String name = "isActive";
+        if (ti.getColumn(name) == null)
+        {
+            SQLFragment sql = new SQLFragment("(CASE " +
+                " WHEN (" + ExprColumn.STR_TABLE_ALIAS + ".date > {fn now()}) THEN " + ti.getSqlDialect().getBooleanFALSE() +
+                " WHEN (" + ExprColumn.STR_TABLE_ALIAS + ".enddate IS NULL) THEN " + ti.getSqlDialect().getBooleanTRUE() +
+                " WHEN (" + ExprColumn.STR_TABLE_ALIAS + ".enddate > {fn now()}) THEN " + ti.getSqlDialect().getBooleanTRUE() +
+                " ELSE " + ti.getSqlDialect().getBooleanFALSE() +
+                " END)");
+
+            ExprColumn col = new ExprColumn(ti, name, sql, JdbcType.BOOLEAN, ti.getColumn("date"), ti.getColumn("enddate"));
+            col.setLabel("Is Active?");
+            ti.addColumn(col);
+        }
     }
 
     private void appendCalculatedCols(AbstractTableInfo ti)
@@ -442,10 +518,10 @@ public class DefaultEHRCustomizer implements TableCustomizer
     {
         ButtonBarConfig cfg = ti.getButtonBarConfig();
         if (cfg == null)
+        {
             cfg = new ButtonBarConfig(new JSONObject());
-
-        UserDefinedButtonConfig btn = new UserDefinedButtonConfig();
-        //btn.setAction();
+            cfg.setIncludeStandardButtons(true);
+        }
 
         if (cfg != null)
         {
@@ -603,6 +679,41 @@ public class DefaultEHRCustomizer implements TableCustomizer
         }
     }
 
+    private void customizeSNOMED(AbstractTableInfo table)
+    {
+        doSharedCustomization(table);
+
+        String codeAndMeaning = "codeAndMeaning";
+        if (table.getColumn(codeAndMeaning) == null)
+        {
+            String chr = table.getSqlDialect().isPostgreSQL() ? "chr" : "char";
+            SQLFragment sql = new SQLFragment(table.getSqlDialect().concatenate(ExprColumn.STR_TABLE_ALIAS + ".code", chr + "(9)", ExprColumn.STR_TABLE_ALIAS + ".meaning"));
+            ExprColumn col = new ExprColumn(table, codeAndMeaning, sql, JdbcType.VARCHAR, table.getColumn("code"), table.getColumn("meaning"));
+            col.setLabel("Code and Meaning");
+            table.addColumn(col);
+        }
+    }
+
+    private void customizeSNOMEDTags(AbstractTableInfo table)
+    {
+        doSharedCustomization(table);
+
+        String codeAndMeaning = "codeWithSort";
+        if (table.getColumn(codeAndMeaning) == null)
+        {
+            SQLFragment sql = new SQLFragment("(" + table.getSqlDialect().concatenate("CAST(" + ExprColumn.STR_TABLE_ALIAS + ".sort as varchar)", "': '", ExprColumn.STR_TABLE_ALIAS + ".code") + ")");
+            ExprColumn col = new ExprColumn(table, codeAndMeaning, sql, JdbcType.VARCHAR, table.getColumn("code"), table.getColumn("sort"));
+            col.setLabel("Code(s)");
+            table.addColumn(col);
+        }
+    }
+
+    private void customizeAnimalGroupMembers(AbstractTableInfo table)
+    {
+        doSharedCustomization(table);
+        addIsActiveCol(table);
+    }
+
     private void customizeAnimalGroups(AbstractTableInfo table)
     {
         doSharedCustomization(table);
@@ -610,10 +721,10 @@ public class DefaultEHRCustomizer implements TableCustomizer
         String name = "totalAnimals";
         if (table.getColumn(name) == null)
         {
-            SQLFragment sql = new SQLFragment("(select count(distinct g.id) from ehr.animal_group_members g where g.groupId = " + ExprColumn.STR_TABLE_ALIAS + ".rowid AND (g.enddate IS NULL or g.enddate >= {fn now()}))");
+            SQLFragment sql = new SQLFragment("(select count(distinct g.id) as total from ehr.animal_group_members g where g.groupId = " + ExprColumn.STR_TABLE_ALIAS + ".rowid AND (g.date <= {fn now()} AND (g.enddate IS NULL or CAST(g.enddate as date) > {fn curdate()})))");
             ExprColumn totalCol = new ExprColumn(table, name, sql, JdbcType.INTEGER, table.getColumn("rowid"));
             totalCol.setLabel("Total Animals");
-            totalCol.setURL(DetailsURL.fromString("/query/executeQuery.view?schemaName=ehr&query.queryName=animal_group_members&query.groupId~eq=${rowid}&query.enddateCoalesced~dategte=-0d"));
+            totalCol.setURL(DetailsURL.fromString("/query/executeQuery.view?schemaName=ehr&query.queryName=animal_group_members&query.groupId~eq=${rowid}&query.isActive~eq=true"));
             table.addColumn(totalCol);
         }
     }
@@ -846,7 +957,7 @@ public class DefaultEHRCustomizer implements TableCustomizer
         if (ti.getColumn(name) == null)
         {
             ColumnInfo date = ti.getColumn("date");
-            SQLFragment sql = new SQLFragment("(" + ti.getSqlDialect().getDateDiff(Calendar.DATE, "{fn curdate()}", "CAST(" + ExprColumn.STR_TABLE_ALIAS + "." + date.getSelectName() + " AS DATE)") + ")");
+            SQLFragment sql = new SQLFragment("(CASE WHEN " + ExprColumn.STR_TABLE_ALIAS + "." + date.getSelectName() + " <= {fn now()} THEN (" + ti.getSqlDialect().getDateDiff(Calendar.DATE, "{fn curdate()}", "CAST(" + ExprColumn.STR_TABLE_ALIAS + "." + date.getSelectName() + " AS DATE)") + ") ELSE null END)");
             ExprColumn col = new ExprColumn(ti, name, sql, JdbcType.INTEGER, date);
             col.setCalculated(true);
             col.setUserEditable(false);
@@ -992,7 +1103,7 @@ public class DefaultEHRCustomizer implements TableCustomizer
         ColumnInfo enddate = ti.getColumn("enddate");
         if (enddate != null && ti.getColumn("enddateCoalesced") == null)
         {
-            SQLFragment sql = new SQLFragment("COALESCE(" + ExprColumn.STR_TABLE_ALIAS + "." + enddate.getSelectName() + ", {fn curdate()})");
+            SQLFragment sql = new SQLFragment("CAST(COALESCE(" + ExprColumn.STR_TABLE_ALIAS + "." + enddate.getSelectName() + ", {fn curdate()}) as date)");
             ExprColumn col = new ExprColumn(ti, "enddateCoalesced", sql, JdbcType.DATE);
             col.setCalculated(true);
             col.setUserEditable(false);
@@ -1032,5 +1143,15 @@ public class DefaultEHRCustomizer implements TableCustomizer
             col.setLabel("Date Only");
             ti.addColumn(col);
         }
+    }
+
+    public boolean isAddLinkDisablers()
+    {
+        return _addLinkDisablers;
+    }
+
+    public void setAddLinkDisablers(boolean addLinkDisablers)
+    {
+        _addLinkDisablers = addLinkDisablers;
     }
 }

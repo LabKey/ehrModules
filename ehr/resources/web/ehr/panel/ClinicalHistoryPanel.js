@@ -9,12 +9,16 @@
  * @cfg maxDate
  * @cfg maxGridHeight
  * @cfg autoLoadRecords
+ * @cfg hideExportBtn
+ * @cfg sortMode
  */
 Ext4.define('EHR.panel.ClinicalHistoryPanel', {
     extend: 'Ext.panel.Panel',
     alias: 'widget.ehr-clinicalhistorypanel',
 
     initComponent: function(){
+        this.sortMode = this.sortMode || 'date';
+
         Ext4.apply(this, {
             border: false,
             items: [
@@ -30,15 +34,17 @@ Ext4.define('EHR.panel.ClinicalHistoryPanel', {
         }
         else {
             grid.on('afterrender', function(grid){
-                if (grid.store.isLoadingData)
+                if (grid.store.isLoadingData){
                     grid.setLoading(true);
+                }
             }, this, {delay: 120, single: true});
         }
 
         if(this.subjectId || this.caseId){
             var store = this.down('#gridPanel').store;
             store.on('datachanged', function(){
-                this.down('grid').setLoading(false);
+                if (!store.isLoadingData)
+                    this.down('grid').setLoading(false);
             }, this);
 
             store.on('exception', function(store){
@@ -91,12 +97,14 @@ Ext4.define('EHR.panel.ClinicalHistoryPanel', {
                     fieldLabel: 'Min Date',
                     itemId: 'minDate',
                     labelWidth: 80,
+                    width: 200,
                     value: this.minDate
                 },{
                     xtype: 'datefield',
                     fieldLabel: 'Max Date',
                     itemId: 'maxDate',
                     labelWidth: 80,
+                    width: 200,
                     value: this.maxDate
                 },{
                     xtype: 'button',
@@ -114,12 +122,12 @@ Ext4.define('EHR.panel.ClinicalHistoryPanel', {
                             return;
                         }
 
-                        this.minDate = minDateField.getValue();
-                        this.maxDate = maxDateField.getValue();
+                        panel.minDate = minDateField.getValue();
+                        panel.maxDate = maxDateField.getValue();
 
                         panel.reloadData({
-                            minDate: this.minDate,
-                            maxDate: this.maxDate
+                            minDate: panel.minDate,
+                            maxDate: panel.maxDate
                         });
                     }
                 },{
@@ -141,11 +149,25 @@ Ext4.define('EHR.panel.ClinicalHistoryPanel', {
                         btn.collapsed = !btn.collapsed;
                     }
                 },{
-                    text: 'Show/Hide Types',
-                    hidden: true,
-                    disabled: true
+                    text: (this.sortMode == 'type' ? 'Sort By Date' : 'Sort By Type'),
+                    sortMode: this.sortMode == 'type' ? 'date' : 'type',
+                    scope: this,
+                    handler: function(btn){
+                        //toggle the button
+                        if (btn.sortMode == 'type'){
+                            btn.setText('Sort By Date');
+                            btn.sortMode = 'date';
+                            this.changeMode('type');
+                        }
+                        else {
+                            btn.setText('Sort By Type');
+                            btn.sortMode = 'type';
+                            this.changeMode('date');
+                        }
+                    }
                 },{
-                    text: 'Export History',
+                    text: 'Print Version',
+                    hidden: this.hideExportBtn,
                     scope: this,
                     handler: function(btn){
                         var params = {};
@@ -157,6 +179,8 @@ Ext4.define('EHR.panel.ClinicalHistoryPanel', {
                             params.minDate = this.minDate.format('Y-m-d');
                         if (this.maxDate)
                             params.maxDate = this.maxDate.format('Y-m-d');
+                        if (this.sortMode)
+                            params.sortMode = this.sortMode;
 
                         var url = LABKEY.ActionURL.buildURL('ehr', 'clinicalHistoryExport', null, params);
                         window.open(url, '_blank');
@@ -168,19 +192,21 @@ Ext4.define('EHR.panel.ClinicalHistoryPanel', {
 
     reloadData: function(config){
         var grid = this.down('grid');
-        grid.setLoading(true);
 
+        grid.setLoading(true);
         grid.store.reloadData({
             minDate: config.minDate,
             maxDate: config.maxDate,
             subjectIds: [this.subjectId],
-            caseId: this.caseId
+            caseId: this.caseId,
+            sortMode: this.sortMode
         });
     },
 
     getStoreConfig: function(){
         return {
-            type: 'ehr-clinicalhistorystore'
+            type: 'ehr-clinicalhistorystore',
+            sortMode: this.sortMode
         };
     },
 
@@ -188,11 +214,19 @@ Ext4.define('EHR.panel.ClinicalHistoryPanel', {
         return [{
             text: 'Category',
             dataIndex: 'category',
-            width: 200
+            width: 180
+        },{
+            text: 'Date',
+            xtype: 'datecolumn',
+            dataIndex: 'date',
+            format: 'Y-m-d h:i',
+            hidden: (this.sortMode == 'date'),
+            width: 180
         },{
             text: '',
             dataIndex: 'timeString',
-            width: 100
+            hidden: (this.sortMode != 'date'),
+            width: 80
         },{
             text: 'Description',
             dataIndex: 'html',
@@ -218,5 +252,25 @@ Ext4.define('EHR.panel.ClinicalHistoryPanel', {
             startCollapsed: false,
             id: 'historyGrouping'
         });
+    },
+
+    changeMode: function(mode){
+        this.sortMode = mode;
+        var grid = this.down('grid');
+
+        var columns = this.getColumnConfig();
+        Ext4.Array.forEach(columns, function(col){
+            if (col.dataIndex == 'date'){
+                col.hidden = (mode == 'date');
+            }
+            else if (col.dataIndex == 'timeString'){
+                col.hidden = (mode == 'type');
+            }
+        }, this);
+
+        grid.on('reconfigure', function(){
+            grid.store.changeMode(mode);
+        }, this, {single: true});
+        grid.reconfigure(null, columns);
     }
 });

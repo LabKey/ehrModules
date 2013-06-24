@@ -102,6 +102,10 @@ public class DataEntryManager
             {
                 fks.add(ci.getFieldKey());
             }
+            else if (ci.isKeyField() || ci.getName().equalsIgnoreCase("objectid"))
+            {
+                fks.add(ci.getFieldKey());
+            }
         }
 
         return fks;

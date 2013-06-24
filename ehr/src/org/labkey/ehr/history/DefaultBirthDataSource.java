@@ -29,7 +29,7 @@ public class DefaultBirthDataSource extends AbstractDataSource
 {
     public DefaultBirthDataSource()
     {
-        super("study", "Birth");
+        super("study", "Birth", "Birth", "Births");
     }
 
     @Override

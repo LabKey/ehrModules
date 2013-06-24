@@ -19,7 +19,7 @@
         <column name="code"/>
     </columns>
     <filters>
-        <filter column="enddate" operator="isblank"/>
+        <filter column="isActive" operator="eq" value="true"/>
         <!--<filter column="qcstate/publicdata" operator="eq" value="true"/>-->
     </filters>
     <sorts>

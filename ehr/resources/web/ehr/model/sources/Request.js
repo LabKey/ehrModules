@@ -8,7 +8,7 @@
  * This is the default metadata applied any record when displayed in the context of a request.  Metadata placed here
  * can be used to hide fields not editable at time of request.  It also configured a parent/child relationship between the ehr.reqeusts record and dataset records.
  */
-EHR.model.ViewConfigManager.registerMetadata('Request', {
+EHR.model.DataModelManager.registerMetadata('Request', {
     allQueries: {
         requestid: {
             parentConfig: {

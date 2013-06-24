@@ -28,7 +28,7 @@ public class DefaultBloodDrawDataSource extends AbstractDataSource
 {
     public DefaultBloodDrawDataSource()
     {
-        super("study", "Blood Draws", "Blood Draw");
+        super("study", "Blood Draws", "Blood Draw", "Blood Draws");
     }
 
     @Override

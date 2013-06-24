@@ -7,20 +7,19 @@
  * This is the default metadata applied to all Tasks when using getTableMetadata().
  * Among other things, it sets of the parent/child relationship for cild records to inherit taskId from the ehr.tasks record.
  */
-EHR.model.ViewConfigManager.registerMetadata('Task', {
+EHR.model.DataModelManager.registerMetadata('Task', {
     allQueries: {
         QCState: {
-//            parentConfig: {
-//                storeIdentifier: {queryName: 'tasks', schemaName: 'ehr'},
-//                dataIndex: 'qcstate'
-//            }
             hidden: false
-            //,defaultValue: 2
         },
         taskid: {
-            parentConfig: {
+            inheritance: {
                 storeIdentifier:  {queryName: 'tasks', schemaName: 'ehr'},
-                dataIndex: 'taskid'
+                sourceField: 'taskid',
+                recordIdx: 0
+//                recordSelector: {
+//                    taskid: 'taskid'
+//                }
             },
             hidden: true
         }

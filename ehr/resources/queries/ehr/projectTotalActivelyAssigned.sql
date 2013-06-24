@@ -8,5 +8,5 @@ SELECT
   cast(coalesce(count(a.lsid), 0) as integer) as activeAssignments
 
 FROM ehr.project p
-LEFT JOIN study.assignment a ON (p.project = a.project AND a.enddateCoalesced >= curdate())
+LEFT JOIN study.assignment a ON (p.project = a.project AND a.isActive = true)
 GROUP BY p.project

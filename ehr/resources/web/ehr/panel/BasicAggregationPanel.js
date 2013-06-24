@@ -28,12 +28,16 @@ Ext4.define('EHR.panel.BasicAggregationPanel', {
         return object;
     },
 
+    getKeys: function(data){
+        return Ext4.Object.getKeys(data.aggregated).sort();
+    },
+
     appendSection: function(label, data, filterCol, operator){
         if (!data){
             return null;
         }
 
-        var keys = Ext4.Object.getKeys(data.aggregated).sort();
+        var keys = this.getKeys(data);
 
         var rows = [];
         Ext4.each(keys, function(key){

@@ -14,17 +14,14 @@ Ext4.define('EHR.data.ClinicalHistoryStore', {
             proxy: {
                 type: 'memory'
             },
-            fields: ['group', 'id', 'date', 'timeString', 'category', 'html', 'lsid', 'caseId'],
-            groupField: 'group'
-        });
-
-        Ext4.applyIf(this, {
-            sorters: [{property: 'group', direction: 'DESC'}, {property: 'timeString'}]
+            fields: ['dateGroup', 'typeGroup', 'id', 'date', 'timeString', 'category', 'type', 'html', 'lsid', 'caseId']
         });
 
         this.actionName = config.actionName || this.actionName;
 
         this.callParent(arguments);
+
+        this.changeMode(config.sortMode || 'date');
     },
 
     /**
@@ -34,10 +31,15 @@ Ext4.define('EHR.data.ClinicalHistoryStore', {
      * @param config.maxDate
      * @param config.caseId
      * @param config.redacted
+     * @param  config.sortMode
      */
     reloadData: function(config){
         this.removeAll();
         this.isLoadingData = true;
+
+        if (config.sortMode){
+            this.changeMode(config.sortMode);
+        }
 
         LABKEY.Ajax.request({
             url: LABKEY.ActionURL.buildURL('ehr', this.actionName),
@@ -70,5 +72,24 @@ Ext4.define('EHR.data.ClinicalHistoryStore', {
             this.add(toAdd);
         else
             this.fireEvent('datachanged', this);
+    },
+
+    changeMode: function(mode){
+        if (mode == 'date'){
+            var sorters = [
+                {property: 'dateGroup', direction: 'DESC'},
+                {property: 'timeString'}
+            ];
+            this.sort(sorters);
+            this.group('dateGroup');
+        }
+        else {
+            var sorters = [
+                {property: 'typeGroup'},
+                {property: 'timeString'}
+            ];
+            this.sort(sorters);
+            this.group('typeGroup');
+        }
     }
 });

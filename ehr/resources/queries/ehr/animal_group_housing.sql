@@ -19,7 +19,7 @@ FROM (
       count(distinct m.id) as total
 
     FROM ehr.animal_group_members m
-    WHERE m.enddateTimeCoalesced >= now()
+    WHERE m.isActive = true
     GROUP BY m.groupId, m.id.curLocation.room
   ) t1
 ) t2

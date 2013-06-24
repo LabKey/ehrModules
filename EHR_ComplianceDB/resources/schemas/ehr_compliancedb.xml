@@ -472,6 +472,10 @@
         <ns:nullable>true</ns:nullable>
         <ns:columnTitle>Result</ns:columnTitle>
       </ns:column>
+      <ns:column columnName="trainer">
+        <ns:nullable>true</ns:nullable>
+        <ns:columnTitle>Trainer</ns:columnTitle>
+      </ns:column>
       <ns:column columnName="comment">
         <ns:nullable>true</ns:nullable>
         <ns:columnTitle>Comment</ns:columnTitle>

@@ -36,6 +36,32 @@ Ext4.define('EHR.form.field.RoomField', {
         });
     },
 
+    selectByAreas: function(areas){
+        this.store.clearFilter();
+        if (!this.rendered){
+            this.on('afterrender', function(field){
+                field.selectByAreas(areas);
+            }, this, {single: true});
+        }
+        else if (!this.store.getCount()){
+            this.store.on('load', function(store){
+                this.selectByAreas(areas);
+            }, this, {single: true});
+        }
+        else {
+            if (areas && areas.length){
+                var values = [];
+                this.store.each(function(rec){
+                    if (areas.indexOf(rec.get('area')) != -1){
+                        values.push(rec.get('room'));
+                    }
+                }, this);
+
+                this.setValue(values);
+            }
+        }
+    },
+
     filterByAreas: function(areas){
         this.store.clearFilter();
         if (!this.rendered){

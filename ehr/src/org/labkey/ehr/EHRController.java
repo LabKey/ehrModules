@@ -41,6 +41,7 @@ import org.labkey.api.view.JspView;
 import org.labkey.api.view.NavTree;
 import org.labkey.api.view.UnauthorizedException;
 import org.labkey.api.view.WebPartView;
+import org.labkey.api.view.template.ClientDependency;
 import org.labkey.ehr.dataentry.DataEntryManager;
 import org.labkey.ehr.history.ClinicalHistoryManager;
 import org.labkey.ehr.history.LabworkManager;
@@ -655,6 +656,8 @@ public class EHRController extends SpringActionController
             view.setTitle(def.getLabel());
             view.setHidePageTitle(true);
             view.setFrame(WebPartView.FrameType.PORTAL);
+
+            view.addClientDepedency(ClientDependency.fromFilePath("ehr/ehr_ext4_dataEntry"));
             view.addClientDependencies(def.getClientDependencies());
 
             return view;
@@ -669,16 +672,38 @@ public class EHRController extends SpringActionController
 
     public static class EnterDataForm
     {
-        private String formType;
+        private String _formType;
+        private String _taskId;
+        private String _requestId;
 
         public String getFormType()
         {
-            return formType;
+            return _formType;
         }
 
         public void setFormType(String formType)
         {
-            this.formType = formType;
+            _formType = formType;
+        }
+
+        public String getTaskId()
+        {
+            return _taskId;
+        }
+
+        public void setTaskId(String taskId)
+        {
+            _taskId = taskId;
+        }
+
+        public String getRequestId()
+        {
+            return _requestId;
+        }
+
+        public void setRequestId(String requestId)
+        {
+            _requestId = requestId;
         }
     }
 }

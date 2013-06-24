@@ -30,7 +30,7 @@ public class DefaultDeliveryDataSource extends AbstractDataSource
 {
     public DefaultDeliveryDataSource()
     {
-        super("study", "Delivery");
+        super("study", "Delivery", "Delivery", "Deliveries");
     }
 
     @Override

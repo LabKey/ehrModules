@@ -63,7 +63,29 @@ Ext4.define('EHR.plugin.RowEditor', {
             modal: true,
             items: this.getPanel(),
             closeAction: 'hide',
-            buttons: [{text: 'save', handler: this.saveCurrentRecord, scope:this}, {text: 'cancel', handler: this.onCancel, scope: this}],
+            buttons: [{
+                text: 'Save and Close',
+                handler: this.saveCurrentRecord,
+                scope:this
+            },{
+                text: 'Next',
+                handler: function(){
+                    this.saveCurrentRecord();
+                    this.loadNextRecord();
+                },
+                scope: this
+            },{
+                text: 'Previous',
+                handler: function(){
+                    this.saveCurrentRecord();
+                    this.loadPreviousRecord();
+                },
+                scope: this
+            },{
+                text: 'Cancel',
+                handler: this.onCancel,
+                scope: this
+            }],
             listeners: {
                 scope: this,
                 afterrender: function(editorWin){
@@ -107,12 +129,12 @@ Ext4.define('EHR.plugin.RowEditor', {
     initListeners: function(grid){
         grid.mon(grid.view, {
             scope: this,
-            'celldblclick': this.onCellClick
+            celldblclick: this.onCellClick
         });
     },
 
     loadPreviousRecord: function(){
-        var currentRec = this.cmp.getSelectionModel().getSelection()[0], prevRec;
+        var currentRec = this.formPanel.getForm().getRecord(), prevRec;
         if(currentRec){
             prevRec = this.cmp.getStore().getAt(currentRec.index - 1);
             if(prevRec){
@@ -123,7 +145,7 @@ Ext4.define('EHR.plugin.RowEditor', {
     },
 
     loadNextRecord: function(){
-        var currentRec = this.cmp.getSelectionModel().getSelection()[0], nextRec;
+        var currentRec = this.formPanel.getForm().getRecord(), nextRec;
         if (currentRec)
         {
             nextRec = this.cmp.getStore().getAt(currentRec.index + 1);
@@ -136,7 +158,7 @@ Ext4.define('EHR.plugin.RowEditor', {
     },
 
     saveCurrentRecord: function(){
-        var currentRec = this.cmp.getSelectionModel().getSelection()[0], form = this.formPanel.getForm(), fieldName,
+        var form = this.formPanel.getForm(), currentRec = form.getRecord(), fieldName,
                 formValues = form.getValues();
 
         if(form.isDirty() && form.isValid()){
@@ -148,13 +170,11 @@ Ext4.define('EHR.plugin.RowEditor', {
             }
             currentRec.endEdit();
         }
+
+        this.editorWindow.close();
     },
 
     onCancel: function(){
         this.editorWindow.close();
-    },
-
-    commitChanges: function(){
-        this.cmp.getStore().commitChanges();
     }
 });
