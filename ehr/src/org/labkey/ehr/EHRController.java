@@ -657,7 +657,7 @@ public class EHRController extends SpringActionController
             view.setHidePageTitle(true);
             view.setFrame(WebPartView.FrameType.PORTAL);
 
-            view.addClientDepedency(ClientDependency.fromFilePath("ehr/ehr_ext4_dataEntry"));
+            view.addClientDependency(ClientDependency.fromFilePath("ehr/ehr_ext4_dataEntry"));
             view.addClientDependencies(def.getClientDependencies());
 
             return view;
