@@ -18,7 +18,6 @@ package org.labkey.ehr.dataentry;
 import org.labkey.api.ehr.dataentry.AbstractFormSection;
 
 /**
- * Created with IntelliJ IDEA.
  * User: bimber
  * Date: 4/27/13
  * Time: 10:54 AM
