@@ -866,7 +866,7 @@ EHR.ext.SnomedCombo = Ext.extend(LABKEY.ext.ComboBox,
             this.displayField = 'meaning';
         }
         else if (subset == 'SNOMED Codes'){
-             this.store.baseParams['query.queryName'] = 'snomed';
+            this.store.baseParams['query.queryName'] = 'snomed';
             this.store.baseParams['query.columns'] = 'code';
             this.store.baseParams['query.sort'] = 'code';
             if(this.store.sortInfo){

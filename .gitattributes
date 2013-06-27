@@ -836,6 +836,7 @@ ehr/resources/web/ehr/data/ClinicalHistoryStore.js -text
 ehr/resources/web/ehr/data/DataEntryClientStore.js -text
 ehr/resources/web/ehr/data/DataEntryServerStore.js -text
 ehr/resources/web/ehr/data/DataEntryStore.js -text
+ehr/resources/web/ehr/data/EncounterStoreCollection.js -text
 ehr/resources/web/ehr/data/StoreCollection.js -text
 ehr/resources/web/ehr/data/TaskStoreCollection.js -text
 ehr/resources/web/ehr/ehrRowEditor.js -text

@@ -20,6 +20,12 @@ Ext4.define('EHR.plugin.RowEditor', {
     destroy: function(){
         this.editorWindow.destroy();
         delete this.editorWindow();
+
+        if (this.keyNav){
+            this.keyNav.destroy();
+        }
+
+        this.callParent(arguments);
     },
 
     getFieldConfig: function(field){
@@ -35,7 +41,7 @@ Ext4.define('EHR.plugin.RowEditor', {
         return cfg;
     },
 
-    getPanel: function(){
+    getFormPanelCfg: function(){
         var fields = this.cmp.getStore().getFields();
 
         var panelItems = [], i, cfg;
@@ -48,60 +54,75 @@ Ext4.define('EHR.plugin.RowEditor', {
             }
         }, this);
 
-        this.formPanel = Ext4.create('EHR.form.Panel', {
+        return {
+            xtype: 'ehr-formpanel',
+            itemId: 'formPanel',
             width: '100%',
             bodyStyle: 'padding: 5px;',
             items: panelItems,
             store: this.cmp.getStore(),
             trackResetOnLoad: true
-        });
+        };
+    },
 
-        return this.formPanel;
+    getDetailsPanelCfg: function(){
+        return {
+            xtype: 'ehr-animaldetailspanel',
+            itemId: 'detailsPanel'
+        }
     },
 
     createWindow: function(){
         this.editorWindow = Ext4.create('Ext.window.Window', {
             modal: true,
-            items: this.getPanel(),
-            closeAction: 'hide',
-            buttons: [{
-                text: 'Save and Close',
-                handler: function(){
-                    this.saveCurrentRecord(true);
-                },
-                scope: this
-            },{
-                text: 'Next',
-                handler: function(){
-                    this.saveCurrentRecord();
-                    this.loadNextRecord();
-                },
-                scope: this
-            },{
-                text: 'Previous',
-                handler: function(){
-                    this.saveCurrentRecord();
-                    this.loadPreviousRecord();
-                },
-                scope: this
-            },{
-                text: 'Cancel',
-                handler: this.onCancel,
-                scope: this
+            width: 600,
+            items: [{
+                //layout: 'vbox',
+                items: [this.getDetailsPanelCfg(), this.getFormPanelCfg()],
+                buttons: [{
+                    text: 'Save and Close',
+                    handler: function(){
+                        this.saveCurrentRecord(true);
+                    },
+                    scope: this
+                },{
+                    text: 'Previous',
+                    handler: function(){
+                        this.saveCurrentRecord();
+                        this.loadPreviousRecord();
+                    },
+                    scope: this
+                },{
+                    text: 'Next',
+                    handler: function(){
+                        this.saveCurrentRecord();
+                        this.loadNextRecord();
+                    },
+                    scope: this
+                },{
+                    text: 'Cancel',
+                    handler: this.onCancel,
+                    scope: this
+                }]
             }],
+            closeAction: 'hide',
             listeners: {
                 scope: this,
                 afterrender: function(editorWin){
                     this.keyNav = new Ext4.util.KeyNav({
                         target: editorWin.getId(),
                         scope: this,
-                        up: function(){
-                            this.saveCurrentRecord();
-                            this.loadPreviousRecord();
+                        up: function(e){
+                            if (e.ctrlKey){
+                                this.saveCurrentRecord();
+                                this.loadPreviousRecord();
+                            }
                         },
-                        down: function (){
-                            this.saveCurrentRecord();
-                            this.loadNextRecord();
+                        down: function (e){
+                            if (e.ctrlKey){
+                                this.saveCurrentRecord();
+                                this.loadNextRecord();
+                            }
                         }
 //                           enter: this.saveCurrentRecord
                     });
@@ -125,8 +146,16 @@ Ext4.define('EHR.plugin.RowEditor', {
     },
 
     loadRecord: function(record){
-        //TODO: some sort of static helper for this
-        this.formPanel.loadRecord(record);
+        //TODO: some sort of static helper for this?
+        this.editorWindow.down('#formPanel').loadRecord(record);
+        this.editorWindow.down('#detailsPanel').loadAnimal(record.get('Id'));
+
+        var sm = this.cmp.getSelectionModel();
+        if (!sm.hasSelection()){
+            sm.setCurrentPosition(sm.getCurrentPosition());
+        }
+
+        sm.select([record]);
     },
 
     initListeners: function(grid){
@@ -137,29 +166,39 @@ Ext4.define('EHR.plugin.RowEditor', {
     },
 
     loadPreviousRecord: function(){
-        var currentRec = this.formPanel.getForm().getRecord(), prevRec;
+        var currentRec = this.editorWindow.down('#formPanel').getForm().getRecord(), prevRec;
         if(currentRec){
             prevRec = this.cmp.getStore().getAt(this.cmp.getStore().indexOf(currentRec) - 1);
             if(prevRec){
                 this.loadRecord(prevRec);
-                this.cmp.getSelectionModel().select([prevRec]);
+            }
+            else {
+                Ext4.Msg.alert('', 'You have selected the first record, there are no previous records');
             }
         }
     },
 
     loadNextRecord: function(){
-        var currentRec = this.formPanel.getForm().getRecord(), nextRec;
+        var currentRec = this.editorWindow.down('#formPanel').getForm().getRecord(), nextRec;
         if (currentRec){
             nextRec = this.cmp.getStore().getAt(this.cmp.getStore().indexOf(currentRec) + 1);
             if (nextRec){
                 this.loadRecord(nextRec);
-                this.cmp.getSelectionModel().select([nextRec]);
+            }
+            else {
+                Ext4.Msg.confirm('', 'You have selected the last record.  Do you want to add another?', function(val){
+                    if (val == 'yes'){
+                        var r = this.cmp.getStore().createModel({});
+                        this.cmp.getStore().add(r);
+                        this.loadRecord(r);
+                    }
+                }, this);
             }
         }
     },
 
     saveCurrentRecord: function(closeWindow){
-        var form = this.formPanel.getForm(), currentRec = form.getRecord(), fieldName,
+        var form = this.editorWindow.down('#formPanel').getForm(), currentRec = form.getRecord(), fieldName,
                 formValues = form.getValues();
 
         if(form.isDirty() && form.isValid()){

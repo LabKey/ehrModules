@@ -82,6 +82,12 @@ Ext4.define('EHR.grid.Panel', {
             },
             rowEditorPlugin: this.getRowEditorPlugin(),
             handler: function(view, rowIndex, colIndex, item, e, rec) {
+                view.getSelectionModel().setCurrentPosition({
+                    view: view,
+                    row: rowIndex,
+                    column: colIndex
+                });
+
                 this.rowEditorPlugin.editRecord(rec);
             }
         }];

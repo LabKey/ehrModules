@@ -204,11 +204,6 @@ Ext4.define('EHR.plugin.Databind', {
                         if(e.field == this.name)
                             errors.push(e.message);
                     }, this);
-
-                    if(record.serverErrors && record.serverErrors[f.name]){
-                        errors.push(record.serverErrors[f.name].join("<br>"));
-                        delete record.serverErrors[f.name]; //only use it once
-                    }
                 }
 
                 errors = Ext4.Array.unique(errors);

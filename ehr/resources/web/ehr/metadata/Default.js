@@ -259,6 +259,7 @@ EHR.Metadata.registerMetadata('Default', {
             }
         }
         ,parentid: {
+            hidden: true,
             lookups: false
         }
         ,taskid: {

@@ -9,6 +9,7 @@
         <script path="ehr/data/DataEntryClientStore.js"/>
         <script path="ehr/data/StoreCollection.js"/>
         <script path="ehr/data/TaskStoreCollection.js"/>
+        <script path="ehr/data/EncounterStoreCollection.js"/>
 
         <!--plugins-->
         <script path="ehr/plugin/DataBind.js"/>

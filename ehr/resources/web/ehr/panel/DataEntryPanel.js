@@ -55,8 +55,8 @@ Ext4.define('EHR.panel.DataEntryPanel', {
 
     onStoreCollectionValidation: function(sc){
         var maxSeverity = sc.getMaxErrorSeverity();
-        //TODO
-//        if(EHR.debug && maxSeverity)
+
+        if(EHR.debug && maxSeverity)
             console.log('Error level: '+ maxSeverity);
 
         Ext4.Array.forEach(this.getDockedItems('toolbar[dock="bottom"]'), function(toolbar){
@@ -64,7 +64,7 @@ Ext4.define('EHR.panel.DataEntryPanel', {
                 if(item.disableOn){
                     if(maxSeverity && EHR.Utils.errorSeverity[item.disableOn] <= EHR.Utils.errorSeverity[maxSeverity]){
                         item.setDisabled(true);
-                        item.setTooltip('Disabled due to errors in the form')
+                        item.setTooltip('Disabled due to errors in the form');
                     }
                     else {
                         item.setDisabled(false);

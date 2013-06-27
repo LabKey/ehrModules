@@ -211,6 +211,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             }
         },
         parentid: {
+            hidden: true,
             lookups: false
         },
         taskid: {
@@ -231,6 +232,9 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             printWidth: 150,
             editorConfig: {
                 resizeDirections: 's'
+            },
+            columnConfig: {
+                width: 200
             }
         },
         so: {
@@ -2135,7 +2139,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 shownInGrid: true
             },
             remark: {
-                shownInGrid: false
+                shownInGrid: true
             },
             weight: {
                 allowBlank: false,

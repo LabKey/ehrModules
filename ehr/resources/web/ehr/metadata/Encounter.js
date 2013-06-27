@@ -30,7 +30,7 @@ EHR.Metadata.registerMetadata('Encounter', {
                 storeIdentifier: {queryName: 'Clinical Encounters', schemaName: 'study'},
                 dataIndex: 'objectid'
             }
-            ,hidden: false
+            ,hidden: true
             ,shownInGrid: false
             ,allowBlank: false
         }
