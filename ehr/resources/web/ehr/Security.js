@@ -276,7 +276,11 @@ EHR.Security = new function(){
         */
         hasLoaded: function(){
            return hasLoaded;
-        }
+        },
+
+         getPermissionName: function(qcLabel, permissionName){
+             return 'org.labkey.ehr.security.EHR'+(qcLabel).replace(/[^a-zA-Z0-9-]/g, '') + Ext4.String.capitalize(permissionName) + 'Permission';
+         }
      }
 }
 

@@ -42,6 +42,16 @@ Ext4.define('EHR.model.DefaultClientModel', {
     },
 
     constructor: function(config){
+//        this.validations = this.validations || [];
+//        this.fields.each(function(field){
+//            if (field.allowBlank===false || field.nullable === false){
+//                this.validations.push({
+//                    type: 'presence',
+//                    message: 'This field is required',
+//                    field: field.name
+//                });
+//            }
+//        }, this);
         this.callParent(arguments);
         this.setFieldDefaults();
         if (this.storeCollection){
@@ -60,14 +70,28 @@ Ext4.define('EHR.model.DefaultClientModel', {
     validate: function(){
         var errors = this.callParent(arguments);
 
-        if(this.serverErrors){
-            console.log(this.serverErrors);
-//            for (var field in this.serverErrors){
-//                errors = errors.concat(this.serverErrors[field]);
-//            }
+        this.fields.each(function(field){
+            //NOTE: we're drawing a distinction between LABKEY's nullable and ext's allowBlank.
+            // This allows fields to be set to 'allowBlank: false', which throws a warning
+            // nullable:false will throw an error when null.
+            // also, if userEditable==false, we assume will be set server-side so we ignore it here
+            if(field.userEditable !== false && Ext4.isEmpty(this.get(field.name))){
+                if(field.nullable === false || field.allowBlank === false){
+                    errors.add({
+                        id: LABKEY.Utils.generateUUID(),
+                        field: field.name,
+                        message: (field.nullable === false ? 'ERROR' : 'WARN') + ': This field is required',
+                        severity: (field.nullable === false ? 'ERROR' : 'WARN'),
+                        fromServer: false
+                    });
+                }
+            }
+        }, this);
+
+        if(this.serverErrors && this.serverErrors.getCount()){
+            errors.addAll(this.serverErrors.getRange());
         }
 
-        //console.log(errors);
         return errors;
     }
 });

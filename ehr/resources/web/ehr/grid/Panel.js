@@ -44,6 +44,12 @@ Ext4.define('EHR.grid.Panel', {
             if (id)
                 this.fireEvent('animalselect', id);
         }, this);
+
+        this.mon(this.store, 'datachanged', this.onStoreDataChanged, this);
+    },
+
+    onStoreDataChanged: function(store){
+        this.getView().refresh();
     },
 
     configureColumns: function(){
@@ -55,6 +61,25 @@ Ext4.define('EHR.grid.Panel', {
             width: 40,
             icon: LABKEY.ActionURL.getContextPath() + '/_images/editprops.png',
             tooltip: 'Edit',
+            renderer: function(value, cellMetaData, record, rowIndex, colIndex, store){
+                var errors = record.validate();
+                if (errors && !errors.isValid()){
+                    cellMetaData.tdCls = 'labkey-grid-cell-invalid';
+
+                    var messages = [];
+                    errors.each(function(m){
+                        var meta = store.getFields().get(m.field) || {};
+                        messages.push((meta.caption || m.field) + ': ' + m.message);
+                    }, this);
+
+                    messages = Ext4.Array.unique(messages);
+                    if (messages.length){
+                        messages.unshift('Errors:');
+                        cellMetaData.tdAttr = " data-qtip=\"" + Ext4.util.Format.htmlEncode(messages.join('<br>')) + "\"";
+                    }
+                }
+                return value;
+            },
             rowEditorPlugin: this.getRowEditorPlugin(),
             handler: function(view, rowIndex, colIndex, item, e, rec) {
                 this.rowEditorPlugin.editRecord(rec);
@@ -101,15 +126,12 @@ Ext4.define('EHR.grid.Panel', {
         var buttons = [];
         LABKEY.ExtAdapter.each(this.formConfig.tbarButtons, function(btn){
             if (LABKEY.ExtAdapter.isString(btn)){
-                buttons.push(LABKEY.ext4.GRIDBUTTONS.getButton(btn));
+                buttons.push(EHR.DataEntryUtils.getGridButton(btn));
             }
             else {
                 buttons.push(btn);
             }
         }, this);
-
-        buttons.push(LABKEY.ext4.GRIDBUTTONS.getButton('ADDRECORD'));
-        buttons.push(LABKEY.ext4.GRIDBUTTONS.getButton('DELETERECORD'));
 
         return buttons;
     }

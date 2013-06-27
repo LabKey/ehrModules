@@ -39,7 +39,7 @@ Ext4.define('EHR.plugin.RowEditor', {
         var fields = this.cmp.getStore().getFields();
 
         var panelItems = [], i, cfg;
-        Ext4.Array.each(this.cmp.formConfig.fieldConfigs, function(field){
+        Ext4.Array.forEach(this.cmp.formConfig.fieldConfigs, function(field){
             var meta = fields.get(field.name);
             cfg = this.getFieldConfig(meta);
 
@@ -48,10 +48,11 @@ Ext4.define('EHR.plugin.RowEditor', {
             }
         }, this);
 
-        this.formPanel = Ext4.create('Ext.form.Panel', {
+        this.formPanel = Ext4.create('EHR.form.Panel', {
             width: '100%',
             bodyStyle: 'padding: 5px;',
             items: panelItems,
+            store: this.cmp.getStore(),
             trackResetOnLoad: true
         });
 
@@ -65,8 +66,10 @@ Ext4.define('EHR.plugin.RowEditor', {
             closeAction: 'hide',
             buttons: [{
                 text: 'Save and Close',
-                handler: this.saveCurrentRecord,
-                scope:this
+                handler: function(){
+                    this.saveCurrentRecord(true);
+                },
+                scope: this
             },{
                 text: 'Next',
                 handler: function(){
@@ -136,7 +139,7 @@ Ext4.define('EHR.plugin.RowEditor', {
     loadPreviousRecord: function(){
         var currentRec = this.formPanel.getForm().getRecord(), prevRec;
         if(currentRec){
-            prevRec = this.cmp.getStore().getAt(currentRec.index - 1);
+            prevRec = this.cmp.getStore().getAt(this.cmp.getStore().indexOf(currentRec) - 1);
             if(prevRec){
                 this.loadRecord(prevRec);
                 this.cmp.getSelectionModel().select([prevRec]);
@@ -146,18 +149,16 @@ Ext4.define('EHR.plugin.RowEditor', {
 
     loadNextRecord: function(){
         var currentRec = this.formPanel.getForm().getRecord(), nextRec;
-        if (currentRec)
-        {
-            nextRec = this.cmp.getStore().getAt(currentRec.index + 1);
-            if (nextRec)
-            {
+        if (currentRec){
+            nextRec = this.cmp.getStore().getAt(this.cmp.getStore().indexOf(currentRec) + 1);
+            if (nextRec){
                 this.loadRecord(nextRec);
                 this.cmp.getSelectionModel().select([nextRec]);
             }
         }
     },
 
-    saveCurrentRecord: function(){
+    saveCurrentRecord: function(closeWindow){
         var form = this.formPanel.getForm(), currentRec = form.getRecord(), fieldName,
                 formValues = form.getValues();
 
@@ -171,7 +172,8 @@ Ext4.define('EHR.plugin.RowEditor', {
             currentRec.endEdit();
         }
 
-        this.editorWindow.close();
+        if (closeWindow)
+            this.editorWindow.close();
     },
 
     onCancel: function(){

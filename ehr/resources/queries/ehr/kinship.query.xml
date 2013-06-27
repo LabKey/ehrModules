@@ -17,6 +17,7 @@
                             <fkDbSchema>study</fkDbSchema>
                             <fkTable>animal</fkTable>
                             <fkColumnName>id</fkColumnName>
+                            <fkDisplayColumnName useRawValue="true"/>
                         </fk>
                     </column>
                     <column columnName="Id2">
@@ -24,6 +25,7 @@
                             <fkDbSchema>study</fkDbSchema>
                             <fkTable>Pedigree</fkTable>
                             <fkColumnName>Id</fkColumnName>
+                            <fkDisplayColumnName useRawValue="true"/>
                         </fk>
                         <url>/ehr/participantView.view?participantId=${Id2}</url>
                     </column>

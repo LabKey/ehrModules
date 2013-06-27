@@ -339,6 +339,9 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 getInitialValue: function(val, rec){
                     return val || rec.dataEntryPanel.formConfig.label;
                 }
+            },
+            datecompleted: {
+                hidden: true
             }
         },
         'ehr.requests': {

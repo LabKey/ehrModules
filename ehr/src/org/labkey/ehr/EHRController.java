@@ -57,8 +57,10 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class EHRController extends SpringActionController
 {
@@ -109,6 +111,74 @@ public class EHRController extends SpringActionController
             GeneticCalculationsJob.setProperties(form.isEnabled(), c, form.getHourOfDay());
 
             return new ApiSimpleResponse("success", true);
+        }
+    }
+
+    @RequiresPermissionClass(ReadPermission.class)
+    public class GetAnimalDetailsAction extends ApiAction<AnimalDetailsForm>
+    {
+        public ApiResponse execute(AnimalDetailsForm form, BindException errors)
+        {
+            Map<String, Object> props = new HashMap<String, Object>();
+            Set<String> sources = new HashSet<String>();
+            if (form.isIncludeAssignment())
+                sources.add("assignment");
+            if (form.isIncludeFlags())
+                sources.add("flags");
+            if (form.isIncludeTreatments())
+                sources.add("treatments");
+
+            EHRManager.get().getAnimalDetails(getUser(), getContainer(), form.getAnimalIds(), sources);
+
+            return new ApiSimpleResponse(props);
+        }
+    }
+
+    public static class AnimalDetailsForm
+    {
+        private String[] _animalIds;
+        private boolean _includeAssignment;
+        private boolean _includeTreatments;
+        private boolean _includeFlags;
+
+        public String[] getAnimalIds()
+        {
+            return _animalIds;
+        }
+
+        public void setAnimalIds(String[] animalIds)
+        {
+            _animalIds = animalIds;
+        }
+
+        public boolean isIncludeAssignment()
+        {
+            return _includeAssignment;
+        }
+
+        public void setIncludeAssignment(boolean includeAssignment)
+        {
+            _includeAssignment = includeAssignment;
+        }
+
+        public boolean isIncludeTreatments()
+        {
+            return _includeTreatments;
+        }
+
+        public void setIncludeTreatments(boolean includeTreatments)
+        {
+            _includeTreatments = includeTreatments;
+        }
+
+        public boolean isIncludeFlags()
+        {
+            return _includeFlags;
+        }
+
+        public void setIncludeFlags(boolean includeFlags)
+        {
+            _includeFlags = includeFlags;
         }
     }
 

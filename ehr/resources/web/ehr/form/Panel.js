@@ -11,7 +11,7 @@ Ext4.define('EHR.form.Panel', {
         Ext4.QuickTips.init();
 
         LABKEY.ExtAdapter.apply(this, {
-            items: this.getItemsConfig(),
+            items: this.items || this.getItemsConfig(),
             bodyStyle: 'padding: 5px;',
             defaults: {
                 border: false

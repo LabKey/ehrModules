@@ -40,8 +40,9 @@ Ext4.define('EHR.data.DataEntryServerStore', {
         this.callParent(arguments);
     },
 
-    getCommands: function(records){
+    getCommands: function(records, forceUpdate){
         var commands = [];
+        var recordsPerCommand = [];
 
         //batch records into CRUD operations
         var recMap = {
@@ -62,10 +63,11 @@ Ext4.define('EHR.data.DataEntryServerStore', {
                 r = records[i];
                 if (r.phantom)
                     recMap.create.push(r);
-                else if (!LABKEY.Utils.isEmptyObj(r.modified))
+                else if (forceUpdate || !LABKEY.Utils.isEmptyObj(r.modified))
                     recMap.update.push(r);
             }
 
+            //TODO: handle deletes
             //recMap.delete = this.getRemovedRecordsToSync();
         }
 
@@ -79,9 +81,13 @@ Ext4.define('EHR.data.DataEntryServerStore', {
             });
 
             commands.push(this.proxy.buildCommand(operation));
+            recordsPerCommand.push(operation.records);
         }
 
-        return commands;
+        return {
+            commands: commands,
+            records: recordsPerCommand
+        };
     },
 
     getRemovedRecordsToSync: function(){
@@ -110,52 +116,15 @@ Ext4.define('EHR.data.DataEntryServerStore', {
     //this method performs simple checks client-side then will submit the record for server-validation if selected
     validateRecords: function(records, validateOnServer){
         Ext4.Array.forEach(records, function(r){
-            r.errors = r.errors || [];
-
-            //remove other client-side errors for this record
-            for(var i = r.errors.length-1; i >= 0; i--){
-                if(!r.errors[i].fromServer){
-                    this.errors.remove(r.errors[i]);
-                    r.errors.splice(i, 1);
-                }
-            }
-
-            r.fields.each(function(f) {
-                //apparently the store's metadata can be updated w/o changing the record's, so we defer to the store
-                var meta = this.getFields().get(f.name);
-                LDK.Assert.assertNotEmpty('Missing metadata for field: ' + f.name, meta);
-
-                //NOTE: we're drawing a distinction between LABKEY's nullable and ext's allowBlank.
-                // This allows fields to be set to 'allowBlank: false', which throws a warning
-                // nullable:false will throw an error when null.
-                // also, if userEditable==false, we assume will be set server-side so we ignore it here
-                if(meta.userEditable!==false && Ext4.isEmpty(r.data[f.name])){
-                    if(meta.nullable === false || meta.allowBlank === false){
-                        r.errors.push({
-                            id: LABKEY.Utils.generateUUID(),
-                            field: f.name,
-                            message: 'This field is required',
-                            record: r,
-                            errorValue: r.get(f.dataIndex),
-                            severity: (f.nullable === false ? 'ERROR' : 'WARN'),
-                            fromServer: false
-                        });
-                    }
-                }
-
-                //NOTE: consider using model / datatype to validate
-            }, this);
-
-            this.errors.addAll(r.errors);
-
-            //this is designed such that validateRecords() can call validateRecord() multiple times without events firing
-            if(validateOnServer){
-                this.validateRecordsOnServer([r]);
-            }
-            else {
-                this.fireEvent('validation', this, [r]);
-            }
+            r.validate();
         }, this);
+
+        if(validateOnServer){
+            this.validateRecordsOnServer(records);
+        }
+        else {
+            this.fireEvent('validation', this, records);
+        }
     },
 
     //private
@@ -164,6 +133,7 @@ Ext4.define('EHR.data.DataEntryServerStore', {
             return;
 
         var commands = [];
+        var recordArr = [];
         Ext4.Array.forEach(records, function(record){
             //NOTE: we remove saveOperationInProgress b/c this transaction is going to fail
             //therefore we do not want this flag to block a legitimate future save attempt.
@@ -171,7 +141,10 @@ Ext4.define('EHR.data.DataEntryServerStore', {
             record.serverValidationInProgress = true;
 
             //build one command per record so failures on one dont block subsequent records
-            commands = commands.concat(this.getCommands([record]));
+            var result = this.getCommands([record], true);
+            commands = commands.concat(result.commands);
+            recordArr = recordArr.concat(result.records);
+
         }, this);
 
         if (!commands.length){
@@ -179,11 +152,40 @@ Ext4.define('EHR.data.DataEntryServerStore', {
         }
 
         //add a flag per command to make sure this record fails
-        this.storeCollection.sendRequest(records, commands, {
-            validateOnly: true,
+        this.storeCollection.sendRequest(recordArr, commands, {
             silent: true,
             targetQCState: null
-        });
+        }, true);
+    },
+
+    handleServerErrors: function(errors, records){
+        Ext4.Array.forEach(errors, function(error, idx){
+            //console.log(error);
+            //TODO: match record??
+            var record = records[0];
+            record.serverErrors = record.serverErrors || Ext4.create('Ext.data.Errors');
+            record.serverErrors.clear();
+
+            LDK.Assert.assertNotEmpty('Unable to find matching record after validation', record);
+
+            var severity = 'ERROR';
+            var msg = error.message;
+            if (msg.match(': ')){
+                severity = msg.split(': ').shift();
+            }
+
+            record.serverErrors.add({
+                msg: msg,
+                message: msg,
+                severity: severity,
+                fromServer: true,
+                field: error.field,
+                serverRecord: record,
+                id: LABKEY.Utils.generateUUID()
+            });
+        }, this);
+
+        this.fireEvent('validation', this, records);
     },
 
     getKeyField: function(){
@@ -211,8 +213,10 @@ Ext4.define('EHR.data.DataEntryServerStore', {
 
     getMaxErrorSeverity: function(){
         var maxSeverity;
-        this.errors.each(function(e){
-            maxSeverity = EHR.Utils.maxError(maxSeverity, e.severity);
+        this.each(function(r){
+            r.validate().each(function(e){
+                maxSeverity = EHR.Utils.maxError(maxSeverity, (e.severity));
+            }, this);
         }, this);
 
         return maxSeverity;

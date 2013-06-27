@@ -770,4 +770,15 @@ public class EHRManager
             ResultSetUtil.close(results);
         }
     }
+
+    public Map<String, Map<String, Object>> getAnimalDetails(User u, Container c, String[] animalsIds, Set<String> extraSources)
+    {
+        Map<String, Map<String, Object>> ret = new HashMap<String, Map<String, Object>>();
+
+        //first the basic information
+
+
+
+        return ret;
+    }
 }

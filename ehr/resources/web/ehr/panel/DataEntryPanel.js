@@ -10,9 +10,12 @@ Ext4.define('EHR.panel.DataEntryPanel', {
     storeCollection: null,
 
     initComponent: function(){
+        Ext4.QuickTips.init();
+
         this.storeCollection = Ext4.create(this.formConfig.storeCollectionClass || 'EHR.data.StoreCollection', {});
         this.storeCollection.on('load', this.onStoreCollectionLoad, this);
         this.storeCollection.on('commitcomplete', this.onStoreCollectionCommitComplete, this);
+        this.storeCollection.on('validation', this.onStoreCollectionValidation, this);
         this.storeCollection.on('beforecommit', this.onStoreCollectionBeforeCommit, this);
         this.storeCollection.on('commitexception', this.onStoreCollectionCommitException, this);
         this.storeCollection.on('serverdatachanged', this.onStoreCollectionServerDataChanged, this);
@@ -50,21 +53,41 @@ Ext4.define('EHR.panel.DataEntryPanel', {
         }
     },
 
+    onStoreCollectionValidation: function(sc){
+        var maxSeverity = sc.getMaxErrorSeverity();
+        //TODO
+//        if(EHR.debug && maxSeverity)
+            console.log('Error level: '+ maxSeverity);
+
+        Ext4.Array.forEach(this.getDockedItems('toolbar[dock="bottom"]'), function(toolbar){
+            toolbar.items.each(function(item){
+                if(item.disableOn){
+                    if(maxSeverity && EHR.Utils.errorSeverity[item.disableOn] <= EHR.Utils.errorSeverity[maxSeverity]){
+                        item.setDisabled(true);
+                        item.setTooltip('Disabled due to errors in the form')
+                    }
+                    else {
+                        item.setDisabled(false);
+                        item.setTooltip('')
+                    }
+                }
+            }, this);
+        }, this);
+    },
+
     onStoreCollectionBeforeCommit: function(sc, records, commands, extraContext){
         if (!commands || !commands.length){
             console.log('no commands');
         }
-
-        Ext4.Msg.wait('Saving records...');
     },
 
     onStoreCollectionCommitException: function(sc){
+        console.log('commit exception');
         Ext4.Msg.hide();
     },
 
     onStoreCollectionServerDataChanged: function(sc, changed){
-        console.log('server data has been changd');
-        console.log(changed);
+        //console.log('server data has been changd');
     },
 
     createServerStores: function(){
@@ -180,45 +203,68 @@ Ext4.define('EHR.panel.DataEntryPanel', {
         var buttons = [];
 
         if (this.formConfig && this.formConfig.buttons){
-            Ext4.Array.forEach(this.formConfig.buttons, function(cfg){
-                buttons.push(cfg);
+            Ext4.Array.forEach(this.formConfig.buttons, function(name){
+                var btnCfg = EHR.DataEntryUtils.getDataEntryFormButton(name);
+                if (btnCfg){
+                    btnCfg = this.configureButton(btnCfg);
+                    if (btnCfg)
+                        buttons.push(btnCfg);
+                }
             }, this);
         }
 
-        //TODO: remove this
-        buttons.push({
-            text: 'Save',
-            handler: function(btn){
-                var panel = btn.up('ehr-dataentrypanel');
-                panel.storeCollection.commitChanges(true);
-            }
-        });
-
-        buttons.push({
-            text: 'Validate All',
-            handler: function(btn){
-                var panel = btn.up('ehr-dataentrypanel');
-                panel.storeCollection.validateAll();
-            }
-        });
-
-        buttons.push({
-            text: 'Show Store Counts',
-            handler: function(btn){
-                var panel = btn.up('ehr-dataentrypanel');
-
-                console.log('client stores:');
-                panel.storeCollection.clientStores.each(function(s){
-                    console.log(s.storeId + ': ' + s.getCount());
-                }, this);
-
-                console.log('server stores:');
-                panel.storeCollection.serverStores.each(function(s){
-                    console.log(s.storeId + ': ' + s.getCount());
-                }, this);
-            }
-        });
-
         return buttons;
+    },
+
+    configureButton: function(buttonCfg){
+        buttonCfg.scope = this;
+        buttonCfg.xtype = 'button';
+
+        //only show button if user can access this QCState
+        if(buttonCfg.requiredQC){
+            if(!this.hasPermission(buttonCfg.requiredQC, (buttonCfg.requiredPermission || 'insert'))){
+                //buttonCfg.hidden = true;
+                //buttonCfg.tooltip = 'You do not have permission to perform this action';
+                return null;
+            }
+        }
+
+        return buttonCfg;
+    },
+
+    hasPermission: function(qcStateLabel, permissionName){
+        var permMap = this.formConfig.permissions;
+        var permissionName = EHR.Security.getPermissionName(qcStateLabel, permissionName);
+
+        var hasPermission = true;
+        Ext4.Object.each(permMap, function(schemaName, queries) {
+            Ext4.Object.each(queries, function(queryName, permissions) {
+                if (!permissions[permissionName]){
+                    hasPermission = false;
+                    return false;
+                }
+            }, this);
+
+            if (!hasPermission)
+                return false;
+        }, this);
+
+        return hasPermission;
+    },
+
+    onSubmit: function(btn){
+        Ext4.Msg.wait("Saving Changes...");
+        this.storeCollection.transformClientToServer();
+
+        //add a context flag to the request to saveRows
+        var extraContext = {
+            targetQC : btn.targetQC,
+            errorThreshold: btn.errorThreshold,
+            successURL : btn.successURL
+        };
+
+        //we delay this event so that any modified fields can fire their blur events and/or commit changes
+        this.storeCollection.commitChanges.defer(300, this.storeCollection, [true, extraContext]);
     }
+
 });

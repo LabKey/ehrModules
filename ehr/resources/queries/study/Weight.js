@@ -17,7 +17,7 @@ function onUpsert(context, errors, row, oldRow){
     //the highest error this can produce is WARN.  therefore skip if we would ignore it anyway.  this would normally occur when finalizing a form
     if(context.extraContext.dataSource != 'etl' &&
         row.Id && row.weight
-        && EHR.Server.Validation.shouldIncludeError('WARN', context.extraContext.errorThreshold)
+        && EHR.Server.Validation.shouldIncludeError('WARN', context.extraContext.errorThreshold, context)
     ){
         LABKEY.Query.selectRows({
             schemaName: 'study',

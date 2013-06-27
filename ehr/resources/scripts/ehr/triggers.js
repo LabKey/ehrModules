@@ -589,7 +589,7 @@ EHR.Server.Triggers.complete = function(event, errors) {
         }
     }
 
-    console.log('Script time for ' + event + ' of ' + this.scriptContext.rows.length + ' rows: ' + (((new Date()) - this.scriptContext.startTime)/1000));
+    console.log('Script time for ' + (this.scriptContext.extraContext.isValidateOnly ? 'validation/' : '') + event + ' of ' + this.scriptContext.rows.length + ' rows: ' + (((new Date()) - this.scriptContext.startTime)/1000));
 }
 exports.complete = EHR.Server.Triggers.complete;
 
@@ -866,7 +866,7 @@ EHR.Server.Triggers.rowEnd = function(errors, scriptErrors, row, oldRow){
 
     //this converts error objects into an array of strings
     //it also separates errors below the specified threshold
-    var totalErrors = EHR.Server.Validation.processErrors.call(this, row, errors, scriptErrors, errorThreshold, this.extraContext);
+    var totalErrors = EHR.Server.Validation.processErrors.call(this, row, errors, scriptErrors, errorThreshold, this.scriptContext);
 
     if (!totalErrors){
         if(this.setDescription){

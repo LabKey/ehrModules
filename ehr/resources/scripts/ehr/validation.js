@@ -37,27 +37,31 @@ EHR.Server.Validation = {
      * @param errorThreshold Any errors below this threshold will be discarded.  Should match a value from EHR.Server.Validation.errorSeverity
      * @param extraContext The extraContext object provided by LabKey.
      */
-    processErrors: function(row, errors, scriptErrors, errorThreshold, extraContext){
+    processErrors: function(row, errors, scriptErrors, errorThreshold, scriptContext){
         var error;
         var totalErrors = 0;
 
         //extraContext will be roundtripped  back to the client
-        if(!extraContext.skippedErrors){
-            extraContext.skippedErrors = {};
+        if(!scriptContext.extraContext.skippedErrors){
+            scriptContext.extraContext.skippedErrors = {};
         }
 
         for(var i in scriptErrors){
             for(var j=0;j<scriptErrors[i].length;j++){
                 error = scriptErrors[i][j];
 
-                if (!EHR.Server.Validation.shouldIncludeError(error.severity, errorThreshold)){
-                    //console.log('error below threshold');
+                if (!EHR.Server.Validation.shouldIncludeError(error.severity, errorThreshold, scriptContext)){
+                    console.log('error below threshold');
                     if(row._recordid){
-                        if(!extraContext.skippedErrors[row._recordid])
-                            extraContext.skippedErrors[row._recordid] = [];
+                        if(!scriptContext.extraContext.skippedErrors[row._recordid])
+                            scriptContext.extraContext.skippedErrors[row._recordid] = [];
 
                         error.field = i;
-                        extraContext.skippedErrors[row._recordid].push(error);
+                        scriptContext.extraContext.skippedErrors[row._recordid].push(error);
+                    }
+                    else {
+                        console.log('No _recordId provided');
+                        console.log(row);
                     }
                     continue;
                 }
@@ -84,8 +88,8 @@ EHR.Server.Validation = {
         FATAL: 4
     },
 
-    shouldIncludeError: function(error, threshold){
-        if (!threshold)
+    shouldIncludeError: function(error, threshold, context){
+        if ((context && context.extraContext && context.extraContext.isValidateOnly) || !threshold)
             return true;
 
         return EHR.Server.Validation.errorSeverity[error] > EHR.Server.Validation.errorSeverity[threshold];

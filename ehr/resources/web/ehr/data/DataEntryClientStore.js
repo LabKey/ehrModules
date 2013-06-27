@@ -115,4 +115,19 @@ Ext4.define('EHR.data.DataEntryClientStore', {
             }
         }
     },
+
+    createModel: function(data){
+        return this.callParent(arguments);
+    },
+
+    getMaxErrorSeverity: function(){
+        var maxSeverity;
+        this.each(function(r){
+            r.validate().each(function(e){
+                maxSeverity = EHR.Utils.maxError(maxSeverity, (e.severity));
+            }, this);
+        }, this);
+
+        return maxSeverity;
+    }
 });

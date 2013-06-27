@@ -149,18 +149,18 @@ Ext4.define('EHR.panel.ClinicalHistoryPanel', {
                         btn.collapsed = !btn.collapsed;
                     }
                 },{
-                    text: (this.sortMode == 'type' ? 'Sort By Date' : 'Sort By Type'),
+                    text: (this.sortMode == 'type' ? 'Group By Date' : 'Group By Type'),
                     sortMode: this.sortMode == 'type' ? 'date' : 'type',
                     scope: this,
                     handler: function(btn){
                         //toggle the button
                         if (btn.sortMode == 'type'){
-                            btn.setText('Sort By Date');
+                            btn.setText('Group By Date');
                             btn.sortMode = 'date';
                             this.changeMode('type');
                         }
                         else {
-                            btn.setText('Sort By Type');
+                            btn.setText('Group By Type');
                             btn.sortMode = 'type';
                             this.changeMode('date');
                         }
@@ -214,6 +214,7 @@ Ext4.define('EHR.panel.ClinicalHistoryPanel', {
         return [{
             text: 'Category',
             dataIndex: 'category',
+            tdCls: 'ldk-wrap-text',
             width: 180
         },{
             text: 'Date',

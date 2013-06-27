@@ -9,6 +9,8 @@ Ext4.define('EHR.data.StoreCollection', {
     clientStores: null,
     serverStores: null,
 
+    ignoredClientEvents: {},
+
     constructor: function(){
         this.collectionId = Ext4.id();
         this.clientStores = Ext4.create('Ext.util.MixedCollection', false, this.getKey);
@@ -89,6 +91,7 @@ Ext4.define('EHR.data.StoreCollection', {
 
     onServerStoreLoad: function(store){
         if (this.serverStoresLoading && this.serverStoresLoading[store.storeId]){
+            store.validateRecords(store.getRange(), true);
             delete this.serverStoresLoading[store.storeId];
             if (LABKEY.Utils.isEmptyObj(this.serverStoresLoading)){
                 delete this.serverStoresLoading;
@@ -99,19 +102,23 @@ Ext4.define('EHR.data.StoreCollection', {
     },
 
     onClientStoreAdd: function(store){
-        this.fireEvent('clientdatachanged', 'add');
+        if (!this.hasIgnoredClientEvent(store.storeId, 'add', true))
+            this.fireEvent('clientdatachanged', 'add');
     },
 
     onClientStoreRemove: function(store){
-        this.fireEvent('clientdatachanged', 'remove');
+        if (!this.hasIgnoredClientEvent(store.storeId, 'remove', true))
+            this.fireEvent('clientdatachanged', 'remove');
     },
 
     onClientStoreUpdate: function(store){
-        this.fireEvent('clientdatachanged', 'update');
+        if (!this.hasIgnoredClientEvent(store.storeId, 'update', true))
+            this.fireEvent('clientdatachanged', 'update');
     },
 
     onClientStoreDataChanged: function(store){
-        this.fireEvent('clientdatachanged', 'datachanged');
+        if (!this.hasIgnoredClientEvent(store.storeId, 'datachanged', true))
+            this.fireEvent('clientdatachanged', 'datachanged');
     },
 
     //used to allow buffering so clientdatachange events from many sources only trigger 1 recalculation
@@ -124,9 +131,6 @@ Ext4.define('EHR.data.StoreCollection', {
     },
 
     transformClientToServer: function(){
-        console.log('transformClientToServer');
-
-        var changed = [];
         var changedRecords = {};
         this.clientStores.each(function(clientStore){
             var map = clientStore.getClientToServerRecordMap();
@@ -157,7 +161,6 @@ Ext4.define('EHR.data.StoreCollection', {
                             if (serverVal != clientVal){
                                 serverModel.set(serverFieldName, clientVal);
                                 serverModel.setDirty(true);
-                                changed.push(serverFieldName + ': ' + clientVal);
 
                                 if (!changedRecords[serverStore.storeId])
                                     changedRecords[serverStore.storeId] = {};
@@ -170,21 +173,19 @@ Ext4.define('EHR.data.StoreCollection', {
             }
         }, this);
 
-        if (changed.length > 0){
+        if (Ext4.Object.getKeys(changedRecords).length > 0){
             this.validateRecords(changedRecords);
             this.fireEvent('serverdatachanged', this, changedRecords);
         }
     },
 
     validateAll: function(){
-        console.log('validate all records');
         this.serverStores.each(function(serverStore){
             serverStore.validateRecords(serverStore.getRange(), true);
         }, this);
     },
 
     validateRecords: function(recordMap){
-        console.log('validate records');
         for (var serverStoreId in recordMap){
             var serverStore = this.serverStores.get(serverStoreId);
             serverStore.validateRecords(Ext4.Object.getValues(recordMap[serverStoreId]), true);
@@ -245,7 +246,7 @@ Ext4.define('EHR.data.StoreCollection', {
         if (EHR.debug)
             console.log('creating client model');
 
-        var model = store.model.create(data);
+        var model = store.createModel(data);
         store.add(model);
 
         return model;
@@ -254,7 +255,7 @@ Ext4.define('EHR.data.StoreCollection', {
     //creates and adds a model to the provided server store, handling any dependencies within other stores in the collection
     addServerModel: function(store, data){
         console.log('creating server model');
-        var model = store.model.create({});
+        var model = store.createModel({});
         store.add(model);
 
         return model;
@@ -299,9 +300,8 @@ Ext4.define('EHR.data.StoreCollection', {
     },
 
     transformServerToClient: function(){
-        console.log('transformServerToClient');
-
         var map = this.getServerToClientDataMap();
+        var changedStoreIDs = {};
 
         Ext4.Array.forEach(this.getSortedServerStores(), function(name){
             var serverStore = this.getServerStoreByName(name);
@@ -326,8 +326,26 @@ Ext4.define('EHR.data.StoreCollection', {
                         fieldMap = targetChildStores[clientStoreId];
                         clientModel.suspendEvents();
                         for (var clientFieldName in fieldMap){
+                            //transfer values
                             serverFieldName = fieldMap[clientFieldName];
-                            clientModel.set(clientFieldName, serverModel.get(serverFieldName));
+                            var clientVal = Ext4.isEmpty(clientModel.get(clientFieldName)) ? null : clientModel.get(clientFieldName);
+                            var serverVal = Ext4.isEmpty(serverModel.get(serverFieldName)) ? null : serverModel.get(serverFieldName);
+                            if (serverVal != clientVal){
+                                clientModel.set(clientFieldName, serverModel.get(serverFieldName));
+                                changedStoreIDs[clientStore.storeId] = true;
+                            }
+
+                            //also copy server errors
+                            var se = serverModel.serverErrors ? serverModel.serverErrors.getByField(serverFieldName) : [];
+                            if (se && se.length){
+                                changedStoreIDs[clientStore.storeId] = true;
+                                this.removeMatchingErrors(clientModel, clientFieldName);
+                                Ext4.Array.forEach(se, function(e){
+                                    var newError = Ext4.apply({}, e);
+                                    newError.field = clientFieldName;
+                                    clientModel.serverErrors.add(newError);
+                                }, this);
+                            }
                         }
                         clientModel.resumeEvents();
                     }
@@ -338,15 +356,41 @@ Ext4.define('EHR.data.StoreCollection', {
         this.clientStores.each(function(s){
             s.loaded = true;
         });
+
+        Ext4.Array.forEach(Ext4.Object.getKeys(changedStoreIDs), function(storeId){
+            var store = this.clientStores.get(storeId);
+            this.addIgnoredClientEvent(storeId, 'datachanged');
+            store.fireEvent('datachanged', store, true);
+        }, this);
     },
 
-    getSchemaQueryKey: function(store){
-        return store.schemaName + '.' + store.queryName;
+    addIgnoredClientEvent: function(storeId, event){
+        this.ignoredClientEvents[storeId] = this.ignoredClientEvents[storeId] || {};
+        this.ignoredClientEvents[storeId]['datachanged'] = true;
+    },
+
+    hasIgnoredClientEvent: function(storeId, event, remove){
+        if (this.ignoredClientEvents[storeId] && this.ignoredClientEvents[storeId][event]){
+            if (remove)
+                delete this.ignoredClientEvents[storeId][event];
+
+            return true;
+        }
+
+        return false;
+    },
+
+    removeMatchingErrors: function(clientModel, clientFieldName){
+        clientModel.serverErrors = clientModel.serverErrors || Ext4.create('Ext.data.Errors');
+        clientModel.serverErrors.each(function(err){
+            if (err.fromServer && err.field == clientFieldName){
+                clientModel.serverErrors.remove(err);
+            }
+        }, this);
     },
 
     //add an instantiated client-side store to the collection
     addClientStore: function(store){
-        //this.mon(store, 'load', this.onServerStoreLoad, this);
         this.mon(store, 'add', this.onClientStoreAdd, this);
         this.mon(store, 'remove', this.onClientStoreRemove, this);
         this.mon(store, 'update', this.onClientStoreUpdate, this);
@@ -359,29 +403,30 @@ Ext4.define('EHR.data.StoreCollection', {
     //private
     getCommands: function(commitAll){
         var allCommands = [];
-        //var allRecords = [];
+        var allRecords = [];
 
         this.serverStores.each(function(s){
-            var commands = s.getCommands(commitAll);
-            if (commands.length){
-                allCommands = allCommands.concat(commands);
-                //allRecords = allRecords.concat(records);
+            var ret = s.getCommands(commitAll);
+            if (ret.commands.length){
+                allCommands = allCommands.concat(ret.commands);
+                allRecords = allRecords.concat(ret.records);
             }
         }, this);
 
         return {
             commands: allCommands,
-            records: []
+            records: allRecords
         }
     },
 
-    getExtraContext: function(){
-        return null;
+    getExtraContext: function(extraContext){
+        return LABKEY.Utils.merge({}, extraContext);
     },
 
-    commitChanges: function(commitAll) {
+    commitChanges: function(commitAll, extraContext){
+        //TODO
         var changed = this.getCommands(commitAll);
-        this.commit(changed.commands, changed.records, this.getExtraContext());
+        this.commit(changed.commands, changed.records, this.getExtraContext(extraContext));
     },
 
     //private
@@ -399,12 +444,12 @@ Ext4.define('EHR.data.StoreCollection', {
         this.sendRequest(commands, records, extraContext);
     },
 
-    sendRequest: function(records, commands, extraContext, validateOnly){
+    sendRequest: function(recordsArr, commands, extraContext, validateOnly){
         var cfg = {
             url : LABKEY.ActionURL.buildURL('query', 'saveRows', this.containerPath),
             method : 'POST',
-            success: this.getOnCommitSuccess(records),
-            failure: this.getOnCommitFailure(records),
+            success: this.getOnCommitSuccess(recordsArr),
+            failure: this.getOnCommitFailure(recordsArr),
             scope: this,
             timeout: this.timeout || 0,
             jsonData : {
@@ -420,136 +465,96 @@ Ext4.define('EHR.data.StoreCollection', {
 
         if (validateOnly){
             cfg.jsonData.validateOnly = true;
+            cfg.jsonData.extraContext.isValidateOnly = true;
         }
 
         var request = Ext4.Ajax.request(cfg);
 
-        Ext4.each(records, function(rec){
+        Ext4.each(recordsArr, function(rec){
             rec.lastTransactionId = request.tId;
         }, this);
     },
 
-    /**
-     * Will test whether all records in this store collection pass validation or not.
-     * @returns {Boolean} True/false depending on whether all records in this StoreCollection pass validation
-     */
-    isValid: function(){
-        var valid = true;
-        this.serverStores.each(function(s){
-            if(!s.isValid()){
-                valid = false;
-            }
-        }, this);
-        return valid;
-    },
+//    /**
+//     * Will test whether all records in this store collection pass validation or not.
+//     * @returns {Boolean} True/false depending on whether all records in this StoreCollection pass validation
+//     */
+//    isValid: function(){
+//        var valid = true;
+//        this.serverStores.each(function(s){
+//            if(!s.isValid()){
+//                valid = false;
+//            }
+//        }, this);
+//        return valid;
+//    },
+//
+//    /**
+//     * Tests whether any records in this store collection are dirty
+//     * @returns {boolean} True/false depending on whether any records in the collection are dirty.
+//     */
+//    isDirty: function(){
+//        var dirty = false;
+//        this.serverStores.each(function(s){
+//            if(s.getModifiedRecords().length)
+//                dirty = true;
+//        }, this);
+//        return dirty;
+//    },
 
-    /**
-     * Tests whether any records in this store collection are dirty
-     * @returns {boolean} True/false depending on whether any records in the collection are dirty.
-     */
-    isDirty: function(){
-        var dirty = false;
-        this.serverStores.each(function(s){
-            if(s.getModifiedRecords().length)
-                dirty = true;
-        }, this);
-        return dirty;
-    },
-
-    //private
-    //tests whether any store are loading or not
-    isLoading: function(){
-        var isLoading = false;
-        this.serverStores.each(function(s){
-            if(s.isLoading){
-                isLoading = true;
-            }
-        }, this);
-
-        return isLoading;
-    },
-
-    //private
     onServerStoreValidation: function(store, records){
-        //check all stores
-        var maxSeverity = '';
-        this.serverStores.each(function(store){
-            maxSeverity = EHR.Utils.maxError(maxSeverity, store.getMaxErrorSeverity());
-        }, this);
-
-        this.fireEvent('validation', this, maxSeverity);
+        this.transformServerToClient();
+        this.fireEvent('validation', this);
     },
 
-    //private
     getErrors: function(){
         var errors = [];
-        this.each(function(store){
-            store.errors.each(function(error){
-                errors.push(error);
+        this.clientStores.each(function(store){
+            store.each(function(r){
+                errors = errors.concat(r.validate().getRange());
             }, this);
         }, this);
 
         return errors;
     },
 
-    //private
-    getOnCommitFailure: function(records) {
+    getOnCommitFailure: function(recordArr) {
         return function(response, options) {
-            console.log('failure');
-
             //note: should not matter which child store they belong to
-            for(var idx = 0; idx < records.length; ++idx)
-                delete records[idx].saveOperationInProgress;
+            Ext4.Array.forEach(recordArr, function(command){
+                Ext4.Array.forEach(command, function(r){
+                    delete r.saveOperationInProgress;
+                }, this);
+            }, this);
 
             //TODO: clean up how we parse the JSON errors
             var json = this.getJson(response);
-            var msg = '';
-            if(json && json.errors){
+            if(json && json.result){
                 //each error should represent 1 row.  there can be multiple errors per row
-                Ext4.each(json.errors, function(rowError){
-                    //handle validation script errors and exceptions differently
-                    if(rowError.errors && rowError.errors.length && rowError.row){
-                        this.handleValidationErrors(rowError, response, json.extraContext);
-                        msg = rowError.exception || "Could not save changes due to errors.  Please check the form for fields marked in red.";
+                Ext4.Array.forEach(json.result, function(command, commandIdx){
+                    if (command.errors && command.errors.length){
+                        var serverStore = this.getServerStoreForQuery(command.schemaName, command.queryName);
+                        LDK.Assert.assertNotEmpty('Could not find store matching: ' + command.schemaName + '.' + command.queryName, serverStore);
+
+                        serverStore.handleServerErrors(command.errors, recordArr[commandIdx]);
                     }
                     else {
-                        //if an exception was thrown, I believe we automatically only have one error returned
-                        //this means this can only be called once
-                        msg = 'Could not save changes due to the following error:\n' + (json && json.exception) ? json.exception : response.statusText;
+                        console.error('this should not happen');
                     }
                 }, this);
-
-                if(!json.errors){
-                    msg = 'Could not save changes due to the following error:\n' + json.exception;
-                }
             }
 
-            if(false !== this.fireEvent("commitexception", msg, json) && (options.jsonData.extraContext && !options.jsonData.extraContext.silent)){
-                Ext4.Msg.alert("Error", "Error During Save. "+msg);
-                console.error(json);
+            if ((options.jsonData && options.jsonData.validateOnly)){
+                this.fireEvent('validation', this);
+            }
+            else {
+                this.fireEvent('commitexception', this, json);
             }
         };
     },
 
     //private
-    handleValidationErrors: function(json, response, extraContext){
-        var store = this.serverStores.get(extraContext.storeId);
-        LDK.Assert.assertNotEmpty('Unable to find server store to match id: ' + extraContext.storeId, store);
-        var record = store.getById(json.row._recordid);
-        if(record){
-            store.handleValidationError(record, json, response, extraContext);
-        }
-        else {
-            LDK.Utils.logToServer({
-                includeContext: true,
-                msg: 'Unable to find record to match validation error.  Id was: ' + extraContext.storeId + ' / ' + row._recordid
-            });
-            console.error(json);
-        }
-    },
-
-    //private
-    getOnCommitSuccess: function(records){
+    getOnCommitSuccess: function(recordArr){
         return function(response, options){
             var json = this.getJson(response);
 
@@ -557,19 +562,18 @@ Ext4.define('EHR.data.StoreCollection', {
                 return;
 
             if (json.errorCount > 0){
-                console.log(json);
-                var callback = this.getOnCommitFailure(records);
+                var callback = this.getOnCommitFailure(recordArr);
                 callback.call(this, response, options);
                 return;
             }
 
             for (var i=0;i<json.result.length;i++){
-                var result = json.result[i];
-                var store = this.getServerStoreForQuery(result.schemaName, result.queryName);
-                LDK.Assert.assertNotEmpty('Unable to find matching store: ' + result.schemaName + '.' + result.queryName, store);
+                var command = json.result[i];
+                var store = this.getServerStoreForQuery(command.schemaName, command.queryName);
+                LDK.Assert.assertNotEmpty('Unable to find matching store: ' + command.schemaName + '.' + command.queryName, store);
 
                 if(!options.jsonData || !options.jsonData.extraContext || !options.jsonData.extraContext.successURL)
-                    store.processResponse(result.rows);
+                    store.processResponse(command.rows, command[i]);
             }
 
             this.onComplete((options.jsonData ? options.jsonData.extraContext : null));
@@ -578,7 +582,12 @@ Ext4.define('EHR.data.StoreCollection', {
 
     //private
     onComplete: function(extraContext){
-        this.fireEvent("commitcomplete", this, extraContext);
+        if (extraContext && extraContext.isValidateOnly){
+            this.fireEvent('validation', this);
+        }
+        else {
+            this.fireEvent('commitcomplete', this, extraContext);
+        }
     },
 
     //private
@@ -627,46 +636,12 @@ Ext4.define('EHR.data.StoreCollection', {
         }, this);
     },
 
-//    //private
-//    //returns all records in all child stores
-//    getAllRecords: function(){
-//        var records = [];
-//        this.each(function(s){
-//            s.each(function(r){
-//                records.push(r)
-//            }, this);
-//        }, this);
-//        return records;
-//    },
+    getMaxErrorSeverity: function(){
+        var maxSeverity = '';
+        this.clientStores.each(function(store){
+            maxSeverity = EHR.Utils.maxError(maxSeverity, store.getMaxErrorSeverity());
+        }, this);
 
-//    //private
-//    //NOTE: used for development.  should get removed eventually
-//    showStores: function(){
-//        this.each(function(s){
-//            if(s.getCount()){
-//                console.log(s.storeId);
-//                console.log(s);
-//                console.log('Num Records: '+s.getCount());
-//                console.log('Total Records: '+s.getTotalCount());
-//                console.log('Modified Records:');
-//                console.log(s.getModifiedRecords());
-//                s.each(function(rec)
-//                {
-//                    console.log('record ID: '+rec.id);
-//                    console.log('record is dirty?: '+rec.dirty);
-//                    console.log('record is phantom?: '+rec.phantom);
-//                    console.log('saveOperationInProgress? '+rec.saveOperationInProgress);
-//                    Ext4.each(rec.fields.keys, function(f){
-//                        console.log(f + ': ' + rec.get(f));
-//                    }, s);
-//                }, s)
-//            }
-//        }, this);
-//    },
-//
-    //private
-    //for debugging purposes
-    showErrors: function(){
-        console.log(this.getErrors());
+        return maxSeverity;
     }
 });
