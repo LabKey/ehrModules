@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2013 LabKey Corporation
+ *
+ * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
+ */
 /**
  * @class
  * This is the panel that appears when hitting the 'Add Bulk' button on EHR grids.  It provides a popup to find the set of
