@@ -28,38 +28,14 @@ Ext4.define('EHR.plugin.RowEditor', {
         this.callParent(arguments);
     },
 
-    getFieldConfig: function(field){
-        var cfg = EHR.DataEntryUtils.getFormEditorConfig(field);
-        LABKEY.ExtAdapter.apply(cfg, {
-            width: 400
-        });
-
-        if (cfg.height && cfg.height > 100){
-            cfg.height = 100;
-        }
-
-        return cfg;
-    },
-
     getFormPanelCfg: function(){
-        var fields = this.cmp.getStore().getFields();
-
-        var panelItems = [], i, cfg;
-        Ext4.Array.forEach(this.cmp.formConfig.fieldConfigs, function(field){
-            var meta = fields.get(field.name);
-            cfg = this.getFieldConfig(meta);
-
-            if(cfg){
-                panelItems.push(cfg);
-            }
-        }, this);
-
         return {
             xtype: 'ehr-formpanel',
             itemId: 'formPanel',
-            width: '100%',
+            maxFieldHeight: 100,
+            maxItemsPerCol: 8,
             bodyStyle: 'padding: 5px;',
-            items: panelItems,
+            formConfig: this.cmp.formConfig,
             store: this.cmp.getStore(),
             trackResetOnLoad: true
         };
@@ -72,63 +48,75 @@ Ext4.define('EHR.plugin.RowEditor', {
         }
     },
 
+    getEditorWindow: function(){
+        if (!this.editorWindow)
+            this.createWindow();
+
+        return this.editorWindow;
+    },
+
     createWindow: function(){
         this.editorWindow = Ext4.create('Ext.window.Window', {
             modal: true,
             width: 600,
             items: [{
-                //layout: 'vbox',
                 items: [this.getDetailsPanelCfg(), this.getFormPanelCfg()],
                 buttons: [{
-                    text: 'Save and Close',
-                    handler: function(){
-                        this.saveCurrentRecord(true);
-                    },
-                    scope: this
-                },{
                     text: 'Previous',
                     handler: function(){
-                        this.saveCurrentRecord();
                         this.loadPreviousRecord();
                     },
                     scope: this
                 },{
                     text: 'Next',
                     handler: function(){
-                        this.saveCurrentRecord();
                         this.loadNextRecord();
                     },
                     scope: this
                 },{
-                    text: 'Cancel',
-                    handler: this.onCancel,
+                    text: 'Close',
+                    handler: function(btn){
+                        btn.up('window').close();
+                    },
                     scope: this
                 }]
             }],
-            closeAction: 'hide',
+            closeAction: 'close',
             listeners: {
                 scope: this,
+                beforerender: function(win){
+                    var cols = win.down('#formPanel').items.get(0).items.getCount();
+                    if (cols > 1){
+                        win.setWidth(cols * (EHR.form.Panel.defaultFieldWidth + 20));
+                    }
+                },
                 afterrender: function(editorWin){
                     this.keyNav = new Ext4.util.KeyNav({
                         target: editorWin.getId(),
                         scope: this,
                         up: function(e){
                             if (e.ctrlKey){
-                                this.saveCurrentRecord();
                                 this.loadPreviousRecord();
                             }
                         },
                         down: function (e){
                             if (e.ctrlKey){
-                                this.saveCurrentRecord();
                                 this.loadNextRecord();
                             }
                         }
-//                           enter: this.saveCurrentRecord
                     });
+                },
+                animalchange: {
+                    fn: function(id){
+                        this.getEditorWindow().down('#detailsPanel').loadAnimal(id);
+                    },
+                    scope: this,
+                    buffer: 200
                 }
             }
         });
+
+        this.getEditorWindow().addEvents('animalchange');
     },
 
     onCellClick: function(view, cell, colIdx, record){
@@ -136,19 +124,15 @@ Ext4.define('EHR.plugin.RowEditor', {
     },
 
     editRecord: function(record){
-        if(!this.editorWindow){
-            this.createWindow();
-        }
-
         this.loadRecord(record);
-
-        this.editorWindow.show();
+        this.getEditorWindow().show();
     },
 
     loadRecord: function(record){
         //TODO: some sort of static helper for this?
-        this.editorWindow.down('#formPanel').loadRecord(record);
-        this.editorWindow.down('#detailsPanel').loadAnimal(record.get('Id'));
+        var win = this.getEditorWindow();
+        win.down('#formPanel').bindRecord(record);
+        win.down('#detailsPanel').loadAnimal(record.get('Id'));
 
         var sm = this.cmp.getSelectionModel();
         if (!sm.hasSelection()){
@@ -166,7 +150,7 @@ Ext4.define('EHR.plugin.RowEditor', {
     },
 
     loadPreviousRecord: function(){
-        var currentRec = this.editorWindow.down('#formPanel').getForm().getRecord(), prevRec;
+        var currentRec = this.getEditorWindow().down('#formPanel').getForm().getRecord(), prevRec;
         if(currentRec){
             prevRec = this.cmp.getStore().getAt(this.cmp.getStore().indexOf(currentRec) - 1);
             if(prevRec){
@@ -179,7 +163,7 @@ Ext4.define('EHR.plugin.RowEditor', {
     },
 
     loadNextRecord: function(){
-        var currentRec = this.editorWindow.down('#formPanel').getForm().getRecord(), nextRec;
+        var currentRec = this.getEditorWindow().down('#formPanel').getForm().getRecord(), nextRec;
         if (currentRec){
             nextRec = this.cmp.getStore().getAt(this.cmp.getStore().indexOf(currentRec) + 1);
             if (nextRec){
@@ -195,27 +179,5 @@ Ext4.define('EHR.plugin.RowEditor', {
                 }, this);
             }
         }
-    },
-
-    saveCurrentRecord: function(closeWindow){
-        var form = this.editorWindow.down('#formPanel').getForm(), currentRec = form.getRecord(), fieldName,
-                formValues = form.getValues();
-
-        if(form.isDirty() && form.isValid()){
-            currentRec.beginEdit();
-            for(fieldName in formValues){
-                if(formValues.hasOwnProperty(fieldName)){
-                    currentRec.set(fieldName, formValues[fieldName]);
-                }
-            }
-            currentRec.endEdit();
-        }
-
-        if (closeWindow)
-            this.editorWindow.close();
-    },
-
-    onCancel: function(){
-        this.editorWindow.close();
     }
 });

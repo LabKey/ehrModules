@@ -27,9 +27,11 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * User: bimber
@@ -107,6 +109,18 @@ public class ClinicalHistoryManager
         sortRowsByDate(rows);
 
         return rows;
+    }
+
+    public Set<String> getTypes(Container c, User u)
+    {
+        Set<String> types = new HashSet<String>();
+
+        for (HistoryDataSource ds : getDataSources(c, u))
+        {
+            types.addAll(ds.getAllowableCategoryGroups(c, u));
+        }
+
+        return types;
     }
 
     public List<HistoryRow> getHistory(Container c, User u, String subjectId, String caseId, boolean redacted)

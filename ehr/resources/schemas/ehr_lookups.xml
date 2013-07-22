@@ -150,6 +150,10 @@
             <ns:column columnName="height">
                 <ns:nullable>true</ns:nullable>
             </ns:column>
+            <ns:column columnName="hasTunnel">
+                <ns:columnTitle>Has Tunnel?</ns:columnTitle>
+                <ns:nullable>true</ns:nullable>
+            </ns:column>
             <ns:column columnName="joinToCage">
                 <ns:columnTitle>Can Join To This Cage</ns:columnTitle>
                 <ns:nullable>true</ns:nullable>
@@ -1209,10 +1213,28 @@
                 <ns:isHidden>true</ns:isHidden>
             </ns:column>
             <ns:column columnName="name"/>
+            <ns:column columnName="genericName">
+                <ns:columnTitle>Generic Name</ns:columnTitle>
+            </ns:column>
             <ns:column columnName="description"/>
             <ns:column columnName="category"/>
             <ns:column columnName="major"/>
             <ns:column columnName="active"/>
+            <ns:column columnName="incision">
+                <ns:columnTitle>Involves Incision?</ns:columnTitle>
+            </ns:column>
+            <ns:column columnName="recoveryDays">
+                <ns:columnTitle>Recovery Days</ns:columnTitle>
+            </ns:column>
+            <ns:column columnName="followupDays">
+                <ns:columnTitle># Default Followup Days</ns:columnTitle>
+            </ns:column>
+            <ns:column columnName="analgesiaRx">
+                <ns:columnTitle>Default Analgesia Rx</ns:columnTitle>
+            </ns:column>
+            <ns:column columnName="antibioticRx">
+                <ns:columnTitle>Default Antibiotic Rx</ns:columnTitle>
+            </ns:column>
         </ns:columns>
     </ns:table>
     <ns:table tableName="procedure_default_flags" tableDbType="TABLE" useColumnOrder="true">
@@ -1274,8 +1296,11 @@
             <ns:column columnName="cageslots">
                 <ns:columnTitle>Cage Slots</ns:columnTitle>
             </ns:column>
-            <ns:column columnName="CageCapacity">
-                <ns:columnTitle>Cage Capacity</ns:columnTitle>
+            <ns:column columnName="verticalSlots">
+                <ns:columnTitle>Vertical Slots</ns:columnTitle>
+            </ns:column>
+            <ns:column columnName="supportsTunnel">
+                <ns:columnTitle>Supports Tunnel?</ns:columnTitle>
             </ns:column>
         </ns:columns>
     </ns:table>
@@ -1529,7 +1554,7 @@
                     <ns:fkDbSchema>ehr_lookups</ns:fkDbSchema>
                     <ns:fkTable>areas</ns:fkTable>
                     <ns:fkColumnName>area</ns:fkColumnName>
-                    <ns:fkDisplayColumnName>area</ns:fkDisplayColumnName>
+                    <ns:fkDisplayColumnName useRawValue="true"/>
                 </ns:fk>
             </ns:column>
             <ns:column columnName="housingType">
@@ -1623,6 +1648,14 @@
             </ns:column>
             <ns:column columnName="enforceUnique">
                 <ns:columnTitle>Enforce Single Flag Per Animal?</ns:columnTitle>
+                <ns:defaultValue>false</ns:defaultValue>
+            </ns:column>
+            <ns:column columnName="omitFromOverview">
+                <ns:columnTitle>Omit When Displaying Default Flags?</ns:columnTitle>
+                <ns:defaultValue>false</ns:defaultValue>
+            </ns:column>
+            <ns:column columnName="doHighlight">
+                <ns:columnTitle>Highlight Flags of This Category?</ns:columnTitle>
                 <ns:defaultValue>false</ns:defaultValue>
             </ns:column>
         </ns:columns>

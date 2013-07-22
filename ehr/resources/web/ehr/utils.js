@@ -727,75 +727,21 @@ EHR.Utils = new function(){
         },
 
         showClinicalHistory: function(objectId, Id, date, el){
-            var minDate = Ext4.Date.add(new Date(), Ext4.Date.YEAR, -2);
-            Ext4.create('Ext.window.Window', {
-                title: 'Clinical History: ' + Id,
-                bodyStyle: 'padding: 3px;',
-                width: 1200,
-                modal: true,
-                items: [{
-                    xtype: 'ehr-smallformsnapshotpanel',
-                    subjectId: Id,
-                    hideHeader: true,
-                    style: 'padding: 5px;'
-                },{
-                    xtype: 'ehr-clinicalhistorypanel',
-                    border: true,
-                    width: 1180,
-                    gridHeight: 400,
-                    height: 400,
-                    autoLoadRecords: true,
-                    autoScroll: true,
-                    subjectId: Id,
-                    minDate: minDate
-                }],
-                buttons: [{
-                    text: 'Close',
-                    handler: function(btn){
-                        btn.up('window').close();
-                    }
-                },{
-                    text: 'Add Remark',
-                    handler: function(btn){
-                        Ext4.Msg.alert('Add remark', 'Because we still use IRIS, we are not doing any data entry through PRIMe.  Once we start this migration, it will be possible to enter remarks, order treatments, etc. from these screens.')
-                    }
-                }]
+            Ext4.create('EHR.window.ClinicalHistoryWindow', {
+                subjectId: Id
             }).show(el);
         },
 
         showCaseHistory: function(objectId, subjectId, el){
-            Ext4.create('Ext.window.Window', {
-                title: 'Case History:',
-                bodyStyle: 'padding: 3px;',
-                width: 1200,
-                modal: true,
-                items: [{
-                    xtype: 'ehr-smallformsnapshotpanel',
-                    subjectId: subjectId,
-                    hideHeader: true,
-                    style: 'padding: 5px;'
-                },{
-                    xtype: 'ehr-casehistorypanel',
-                    border: true,
-                    width: 1180,
-                    gridHeight: 400,
-                    height: 400,
-                    autoScroll: true,
-                    autoLoadRecords: true,
-                    subjectId: subjectId,
-                    caseId: objectId
-                }],
-                buttons: [{
-                    text: 'Close',
-                    handler: function(btn){
-                        btn.up('window').close();
-                    }
-                },{
-                    text: 'Add Remark',
-                    handler: function(btn){
-                        Ext4.Msg.alert('Add remark', 'Because we still use IRIS, we are not doing any data entry through PRIMe.  Once we start this migration, it will be possible to enter remarks, order treatments, etc. from these screens.')
-                    }
-                }]
+            Ext4.create('EHR.window.CaseHistoryWindow', {
+                subjectId: subjectId,
+                caseId: objectId
+            }).show(el);
+        },
+
+        showManageCasesWindow: function(subjectId, el){
+            Ext4.create('EHR.window.ManageCasesWindow', {
+                subjectId: subjectId
             }).show(el);
         },
 
@@ -919,6 +865,31 @@ EHR.Utils = new function(){
             return LABKEY.Ajax.request({
                 url : LABKEY.ActionURL.buildURL('ehr', 'getDataEntryItems', config.containerPath),
                 method : 'POST',
+                scope: config.scope,
+                failure: LDK.Utils.getErrorCallback({
+                    callback: config.failure,
+                    scope: config.scope
+                }),
+                success: LABKEY.Utils.getCallbackWrapper(LABKEY.Utils.getOnSuccess(config), config.scope)
+            });
+        },
+
+        /**
+         * Retrieve demographics information on the passed animals
+         * @param [config.containerPath] the container to test
+         * @param {array} ids The list of animals to return
+         * @param config.success Success callback
+         * @param config.scope Scope for the callback
+         */
+        getDemographics: function(config){
+            config = config || {};
+
+            return LABKEY.Ajax.request({
+                url : LABKEY.ActionURL.buildURL('ehr', 'getDemographics', config.containerPath),
+                method : 'POST',
+                params: {
+                    ids: config.ids
+                },
                 scope: config.scope,
                 failure: LDK.Utils.getErrorCallback({
                     callback: config.failure,

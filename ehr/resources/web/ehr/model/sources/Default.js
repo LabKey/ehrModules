@@ -14,8 +14,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             ignoreColWidths: true
         },
         Id: {
-            //TODO
-            //xtype: 'ehr-participant',
+            xtype: 'ehr-animalfield',
             dataIndex: 'Id',
             nullable: false,
             allowBlank: false,
@@ -136,9 +135,8 @@ EHR.model.DataModelManager.registerMetadata('Default', {
         },
         code: {
             xtype: 'ehr-snomedcombo',
-            //,lookups: false
             columnConfig: {
-                width: 150,
+                width: 250,
                 showLink: false
             }
         },
@@ -262,11 +260,11 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             }
         },
         project: {
-            xtype: 'ehr-projectfield',
+            xtype: 'ehr-projectentryfield',
             editorConfig: {
 
             },
-            shownInGrid: false,
+            shownInGrid: true,
             useNull: true,
             lookup: {
                 columns: 'project,account'
@@ -446,7 +444,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             Id: {
                 xtype: 'trigger',
                 editorConfig: {
-                    triggerClass: 'x-form-search-trigger',
+                    triggerCls: 'x4-form-search-trigger',
                     onTriggerClick: function (){
                         var prefix = 'pd';
                         var year = new Date().getFullYear().toString().slice(2);
@@ -714,9 +712,12 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 editorConfig: {
                     plugins: ['ehr-usereditablecombo'],
                     listeners: {
-                        select: function(combo, rec){
+                        select: function(combo, recs){
+                            if (!recs || recs.length != 1)
+                                return;
+
                             var theForm = this.findParentByType('ehr-formpanel').getForm();
-                            theForm.findField('type').setValue(rec.get('dataset'));
+                            theForm.findField('type').setValue(recs[0].get('dataset'));
                         }
                     }
                 },
@@ -788,7 +789,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 noDuplicateByDefault: true,
                 noSaveInTemplateByDefault: true,
                 editorConfig: {
-                    triggerClass: 'x-form-search-trigger',
+                    triggerCls: 'x4-form-search-trigger',
                     onTriggerClick: function (){
                         //recalculate amount if needed:
                         var theForm = this.findParentByType('ehr-formpanel').getForm();
@@ -834,7 +835,11 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 compositeField: 'Drug Conc',
                 editorConfig: {
                     listeners: {
-                        select: function(combo, rec){
+                        select: function(combo, recs){
+                            if (!recs || recs.length != 1)
+                                return;
+
+                            var rec = recs[0];
                             var theForm = this.findParentByType('ehr-formpanel').getForm();
                             theForm.findField('amount_units').setValue(rec.get('numerator'));
                             theForm.findField('conc_units').setValue(rec.get('unit'));
@@ -857,19 +862,17 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 noDuplicateByDefault: true,
                 noSaveInTemplateByDefault: true,
                 //,allowBlank: false
-                shownInGrid: false,
                 columnConfig: {
-                    width: 40
+                    width: 90
                 },
                 editorConfig: {
                     decimalPrecision: 3
                 }
             },
             amount_units: {
-                shownInGrid: false,
                 compositeField: 'Amount',
                 columnConfig: {
-                    width: 70
+                    width: 100
                 }
             },
             route: {shownInGrid: false},
@@ -921,7 +924,11 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                         return tpl.compile()
                     }(),
                     listeners: {
-                        select: function(combo, rec){
+                        select: function(combo, recs){
+                            if (!recs || recs.length != 1)
+                                return;
+
+                            var rec = recs[0];
                             var theForm = this.findParentByType('ehr-formpanel').getForm();
 
                             theForm.findField('route').setValue(rec.get('route'));
@@ -966,9 +973,6 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 lookup: {
                     filterArray: [LABKEY.Filter.create('protocol/protocol', null, LABKEY.Filter.Types.NONBLANK)],
                     columns: 'project,protocol,account'
-                },
-                editorConfig: {
-                    //plugins: ['ehr-participantfield-events']
                 }
             },
             date: {
@@ -1022,7 +1026,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 xtype: 'trigger',
                 allowBlank: false,
                 editorConfig: {
-                    triggerClass: 'x-form-search-trigger',
+                    triggerCls: 'x4-form-search-trigger',
                     onTriggerClick: function(){
                         var theWin = Ext4.create('Ext.window.Window', {
                             title: 'Case Number',
@@ -1148,7 +1152,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 xtype: 'trigger',
                 allowBlank: false,
                 editorConfig: {
-                    triggerClass: 'x-form-search-trigger',
+                    triggerCls: 'x4-form-search-trigger',
                     onTriggerClick: function(){
                         var theWin = new Ext.Window({
                             layout: 'form',
@@ -1237,136 +1241,6 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                     queryName: 'pathologists',
                     displayColumn: 'UserId',
                     keyColumn: 'UserId'
-                }
-            }
-        },
-        'study.Morphologic Diagnosis': {
-            duration: {
-                xtype: 'combo',
-                multiSelect: true,
-                shownInGrid: false,
-                hasOwnTpl: true,
-                lookup: {
-                    schemaName:'ehr_lookups',
-                    queryName:'durationSnomed',
-                    displayColumn:'durationVal',
-                    keyColumn:'durationVal'
-                },
-                editorConfig: {
-                    tpl:null,
-                    separator: '!'
-                }
-            },
-            severity: {
-                xtype: 'combo',
-                multiSelect: true,
-                shownInGrid: false,
-                hasOwnTpl: true,
-                lookup: {
-                    schemaName:'ehr_lookups',
-                    queryName:'severitySnomed',
-                    displayColumn:'severityVal',
-                    keyColumn:'severityVal'
-                },
-                editorConfig: {
-                    tpl:null,
-                    separator: '!'
-                }
-            },
-            etiology: {
-                xtype: 'combo',
-                multiSelect: true,
-                hasOwnTpl: true,
-                includeNullRecord: false,
-                shownInGrid: false,
-                lookup: {
-                    schemaName:'ehr_lookups',
-                    queryName: 'etiologySnomed',
-                    displayColumn:'etiologyVal',
-                    keyColumn:'etiologyVal'
-                },
-                editorConfig: {
-                    tpl:null,
-                    separator: '!'
-                }
-            },
-            distribution2: {
-                xtype: 'ehr-snomedcombo',
-                shownInGrid: false,
-                editorConfig: {
-                    defaultSubset: 'Distribution'
-                }
-            },
-            inflammation: {
-                xtype: 'combo',
-                multiSelect: true,
-                hasOwnTpl: true,
-                shownInGrid: false,
-                lookup: {
-                    schemaName:'ehr_lookups',
-                    queryName: 'inflammationSnomed',
-                    displayColumn:'inflammationVal',
-                    keyColumn:'inflammationVal'
-                },
-                editorConfig: {
-                    tpl:null,
-                    separator: '!'
-                }
-            },
-            inflammation2: {
-                xtype: 'ehr-snomedcombo',
-                shownInGrid: false,
-                editorConfig: {
-                    defaultSubset: 'Inflammation'
-                }
-            },
-            distribution: {
-                xtype: 'combo',
-                multiSelect: true,
-                shownInGrid: false,
-                hasOwnTpl: true,
-                lookup : {
-                    schemaName:'ehr_lookups',
-                    queryName:'distributionSnomed',
-                    displayColumn:'distributionVal',
-                    keyColumn:'distributionVal'
-                },
-                editorConfig: {
-                    tpl:null,
-                    separator: '!'
-                }
-            },
-            process: {
-                xtype: 'combo',
-                multiSelect: true,
-                shownInGrid: false,
-                hasOwnTpl: true,
-                lookup : {
-                    schemaName:'ehr_lookups',
-                    queryName: 'processSnomed',
-                    displayColumn:'processVal',
-                    keyColumn:'processVal'
-                },
-                editorConfig: {
-                    tpl:null,
-                    separator: '!'
-                }
-            },
-            process2: {
-                xtype: 'ehr-snomedcombo',
-                editorConfig: {
-                    defaultSubset: 'Process/Disorder'
-                }
-            },
-            performedby: {
-                hidden: true
-            },
-            remark: {
-                shownInGrid: true
-            },
-            tissue_qualifier: {
-                editorConfig: {
-                    plugins: ['ehr-usereditablecombo']
                 }
             }
         },
@@ -1473,9 +1347,12 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                         return tpl.compile()
                     }(),
                     listeners: {
-                        select: function(combo, rec)
-                        {
-                            var theForm = this.ownerCt.getForm();
+                        select: function(combo, recs){
+                            if (!recs || recs.length != 1)
+                                return;
+
+                            var rec = recs[0];
+                            var theForm = this.up('form').getForm();
                             if(theForm){
                                 theForm.findField('unitCost').setValue(rec.get('cost'));
                             }
@@ -1531,7 +1408,11 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 editorConfig: {
                     plugins: ['ehr-usereditablecombo'],
                     listeners: {
-                        select: function(combo, rec){
+                        select: function(combo, recs){
+                            if (!recs || recs.length != 1)
+                                return;
+
+                            var rec = recs[0];
                             var theForm = this.findParentByType('ehr-formpanel').getForm();
                             var unitField = theForm.findField('units');
                             unitField.setValue(rec.get('units'));
@@ -1560,7 +1441,11 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 editorConfig: {
                     plugins: ['ehr-usereditablecombo'],
                     listeners: {
-                        select: function(combo, rec){
+                        select: function(combo, recs){
+                            if (!recs || recs.length != 1)
+                                return;
+
+                            var rec = recs[0];
                             var theForm = this.findParentByType('ehr-formpanel').getForm();
                             var unitField = theForm.findField('units');
                             unitField.setValue(rec.get('units'));
@@ -1609,7 +1494,11 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 editorConfig: {
                     plugins: ['ehr-usereditablecombo'],
                     listeners: {
-                        select: function(combo, rec){
+                        select: function(combo, recs){
+                            if (!recs || recs.length != 1)
+                                return;
+
+                            var rec = recs[0];
                             var theForm = this.findParentByType('ehr-formpanel').getForm();
                             var unitField = theForm.findField('units');
                             unitField.setValue(rec.get('units'));
@@ -1748,7 +1637,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 xtype: 'trigger',
                 shownInGrid: false,
                 editorConfig: {
-                    triggerClass: 'x-form-search-trigger',
+                    triggerCls: 'x4-form-search-trigger',
                     allowAnyId: true,
                     onTriggerClick: function (){
                         var prefix = this.getValue();
@@ -1811,8 +1700,12 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 editorConfig: {
                     plugins: ['ehr-usereditablecombo'],
                     listeners: {
-                        select: function(field, rec){
-                            var theForm = this.ownerCt.getForm();
+                        select: function(field, recs){
+                            if (!recs || recs.length != 1)
+                                return;
+
+                            var rec = recs[0];
+                            var theForm = field.up('form').getForm();
                             var tube_vol = theForm.findField('tube_vol');
 
                             tube_vol.store.baseParams['query.tube_types~contains'] = rec.get('type');
@@ -1846,7 +1739,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 xtype: 'ehr-triggernumberfield',
                 editorConfig: {
                     allowNegative: false,
-                    triggerClass: 'x-form-search-trigger',
+                    triggerCls: 'x4-form-search-trigger',
                     onTriggerClick: function(){
                         var parent = this.findParentByType('ehr-formpanel');
                         var theForm = parent.getForm();
@@ -1947,7 +1840,11 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 editorConfig: {
                     plugins: ['ehr-usereditablecombo'],
                     listeners: {
-                        select: function(combo, rec){
+                        select: function(combo, recs){
+                            if (!recs || recs.length != 1)
+                                return;
+
+                            var rec = recs[0];
                             var theForm = this.findParentByType('ehr-formpanel').getForm();
                             theForm.findField('amount_units').setValue(rec.get('numerator'));
                             theForm.findField('conc_units').setValue(rec.get('unit'));
@@ -1976,12 +1873,12 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 noDuplicateByDefault: true,
                 noSaveInTemplateByDefault: true,
                 editorConfig: {
-                    triggerClass: 'x-form-search-trigger',
-                    onTriggerClick: function (){
+                    triggerCls: 'x4-form-search-trigger',
+                    onTriggerClick: function (field){
                         //recalculate amount if needed:
-                        var theForm = this.findParentByType('ehr-formpanel').getForm();
-                        var conc = theForm.findField('concentration').getValue();
-                        var val = this.getValue();
+                        var theForm = field.up('form');
+                        var conc = theForm.down('#concentration').getValue();
+                        var val = field.getValue();
 
                         if(!val || !conc){
                             alert('Must supply volume and concentration');
@@ -1990,7 +1887,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
 
                         if(val && conc){
                             var amount = conc * val;
-                            var amountField = theForm.findField('amount');
+                            var amountField = theForm.down('#amount');
                             amountField.setValue(amount);
                             amountField.fireEvent('change', amount, amountField.startValue);
                         }
@@ -2010,19 +1907,17 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 noDuplicateByDefault: true,
                 noSaveInTemplateByDefault: true,
                 //,allowBlank: false
-                shownInGrid: false,
                 columnConfig: {
-                    width: 40
+                    width: 90
                 },
                 editorConfig: {
                     decimalPrecision: 10
                 }
             },
             amount_units: {
-                shownInGrid: false,
                 compositeField: 'Amount Given',
                 columnConfig: {
-                    width: 70
+                    width: 100
                 },
                 editorConfig: {
                     plugins: ['ehr-usereditablecombo']
@@ -2150,6 +2045,26 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 }
             }
             //,performedby: {allowBlank: true}
+        },
+        'study.Pairings': {
+            pairingtype: {
+                columnConfig: {
+                    width: 125,
+                    showLink: false
+                }
+            },
+            pairingoutcome: {
+                columnConfig: {
+                    width: 150,
+                    showLink: false
+                }
+            },
+            separationreason: {
+                columnConfig: {
+                    width: 160,
+                    showLink: false
+                }
+            }
         }
     }
 });

@@ -18,12 +18,12 @@
         <script path="ehr/plugin/UserEditableCombo.js"/>
 
         <!--fields-->
-        <script path="ehr/form/field/CageField.js"/>
         <script path="ehr/form/field/AnimalField.js"/>
-        <script path="ehr/form/field/ProjectField.js"/>
         <script path="ehr/form/field/RemarkField.js"/>
-        <script path="ehr/form/field/RoomField.js"/>
         <script path="ehr/form/field/SnomedCombo.js"/>
+        <script path="ehr/form/field/TimeOfDayField.js" />
+        <script path="ehr/form/field/TriggerNumberField.js" />
+        <script path="ehr/form/field/DrugDoseField.js" />
 
         <!--panels / windows-->
         <script path="ehr/window/AddAnimalsWindow.js"/>
@@ -33,6 +33,7 @@
         <script path="ehr/panel/AnimalDetailsPanel.js"/>
         <script path="ehr/panel/DataEntryPanel.js"/>
         <script path="ehr/panel/TaskDataEntryPanel.js"/>
+        <script path="ehr/panel/SimpleDataEntryPanel.js"/>
     </library>
     <dependencies>
         <dependency path="ehr.context"/>

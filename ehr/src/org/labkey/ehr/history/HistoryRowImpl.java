@@ -102,6 +102,11 @@ public class HistoryRowImpl implements HistoryRow
             _log.error("Invalid date: " + _date + " for table: " + _categoryGroup + " and animal " + _subjectId, e);
             return "";
         }
+        catch (Exception e)
+        {
+            _log.error("Error creating sortDateString for animal: " + _subjectId + ", " + _categoryGroup, e);
+            return "";
+        }
     }
 
     public void setShowTime(Boolean showTime)

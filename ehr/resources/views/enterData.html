@@ -6,59 +6,9 @@ Ext4.onReady(function (){
     if(!ctx)
         return;
 
-    var domSpec = [{
-        tag: 'div',
-        id: 'ehrTasks_'+webpart.wrapperDivId,
-        style: 'padding-bottom: 10px;'
-    },{
-        tag: 'div',
-        html: 'Loading...',
-        id: 'dataEntryMenuDiv_'+webpart.wrapperDivId,
-        style: 'padding-bottom: 10px;'
-    }]
+    Ext4.create('EHR.panel.EnterDataPanel', {
 
-    var el = Ext4.get(webpart.wrapperDivId);
-    Ext4.DomHelper.append(el, domSpec);
-
-    Ext4.create('LDK.panel.QueryPanel', {
-        queryConfig:  {
-            //title: 'My Tasks',
-            schemaName: 'ehr',
-            queryName: 'my_tasks',
-            viewName: 'Active Tasks'
-        }
-    }).render('ehrTasks_'+webpart.wrapperDivId);
-
-    EHR.Utils.getDataEntryItems({
-        scope: this,
-        success: function(results){
-            var formMap = {};
-            Ext4.each(results.forms, function(form){
-                if (form.isAvailable){
-                    formMap[form.category] = formMap[form.category] || [];
-                    formMap[form.category].push({
-                        name: form.label,
-                        url: LABKEY.ActionURL.buildURL('ehr', 'dataEntryForm', null, {formType: form.name})
-                    });
-                }
-            }, this);
-
-            var sections = [];
-            for (var i in formMap){
-                var items = formMap[i];
-                items = LDK.Utils.sortByProperty(items, 'name', false);
-                sections.push({
-                    header: i,
-                    items: items
-                });
-            }
-
-            Ext4.get('dataEntryMenuDiv_'+webpart.wrapperDivId).update('');
-            Ext4.create('LDK.panel.NavPanel', {
-                sections: sections
-            }).render('dataEntryMenuDiv_'+webpart.wrapperDivId);
-        }
-    });
+    }).render(webpart.wrapperDivId);
 });
 
 </script>

@@ -160,6 +160,12 @@
                     <column columnName="ts">
                         <formatString>yyyy-MM-dd HH:mm</formatString>
                     </column>
+                    <column columnName="ParticipantSequenceNum">
+                        <shownInInsertView>false</shownInInsertView>
+                    </column>
+                    <column columnName="_key">
+                        <shownInInsertView>false</shownInInsertView>
+                    </column>
                 </columns>
                 <buttonBarOptions position="both" includeStandardButtons="false">
                     <includeScript>ehr.context</includeScript>
@@ -191,31 +197,6 @@
                     </item>
                     <item text="Delete">
                         <originalText>Delete</originalText>
-                    </item>
-                    <item text="More Actions" insertPosition="end" >
-                        <item text="Jump To History">
-                            <onClick>
-                                EHR.DatasetButtons.historyHandler(dataRegion, dataRegionName);
-                            </onClick>
-                        </item>
-                        <item text="Jump To Other Dataset">
-                            <onClick>
-                                EHR.DatasetButtons.datasetHandler(dataRegion, dataRegionName);
-                            </onClick>
-                        </item>
-                        <item text="Return Distinct Values">
-                            <onClick>
-                                EHR.DatasetButtons.getDistinctHandler(dataRegion, dataRegionName);
-                            </onClick>
-                        </item>
-                        <item text="Show Record History">
-                            <onClick>
-                                EHR.DatasetButtons.showAuditHistoryHandler(dataRegion, dataRegionName);
-                            </onClick>
-                        </item>
-                    </item>
-                    <item text=" " requiresSelection="true" insertAfter="More Actions">
-                        <onClick>javascript:void(0);</onClick>
                     </item>
                 </buttonBarOptions>
             </table>

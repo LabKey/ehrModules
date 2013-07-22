@@ -173,6 +173,9 @@ public class GeneticCalculationsImportTask extends PipelineJob.Task<GeneticCalcu
                 if ("coefficient".equalsIgnoreCase(fields[2]))
                     continue; //skip header
 
+                if (fields[0].equalsIgnoreCase(fields[1]))
+                    continue; //dont import self-kinship
+
                 Map row = new HashMap<String, Object>();
                 row.put("Id", fields[0]);
                 row.put("Id2", fields[1]);

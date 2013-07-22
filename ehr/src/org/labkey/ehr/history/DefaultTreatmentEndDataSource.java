@@ -18,14 +18,19 @@ package org.labkey.ehr.history;
 import org.apache.commons.lang3.time.DateUtils;
 import org.labkey.api.data.CompareType;
 import org.labkey.api.data.Container;
+import org.labkey.api.data.DbSchema;
 import org.labkey.api.data.Results;
+import org.labkey.api.data.SQLFragment;
 import org.labkey.api.data.SimpleFilter;
+import org.labkey.api.data.SqlSelector;
+import org.labkey.api.data.TableInfo;
 import org.labkey.api.ehr.HistoryRow;
 import org.labkey.api.query.FieldKey;
 import org.labkey.api.security.User;
 import org.labkey.api.util.PageFlowUtil;
 
 import java.sql.SQLException;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -75,6 +80,7 @@ public class DefaultTreatmentEndDataSource extends AbstractDataSource
     protected List<HistoryRow> getRows(Container c, User u, SimpleFilter filter, boolean redacted)
     {
         filter.addCondition(FieldKey.fromString(getDateField()), null, CompareType.NONBLANK);
+        filter.addCondition(FieldKey.fromString("enddate"), new Date(), CompareType.DATE_LTE);
         return super.getRows(c, u, filter, redacted);
     }
 

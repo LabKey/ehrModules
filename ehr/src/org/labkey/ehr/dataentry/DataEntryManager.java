@@ -19,11 +19,16 @@ import org.labkey.api.data.ColumnInfo;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.TableInfo;
 import org.labkey.api.ehr.dataentry.DataEntryForm;
+import org.labkey.api.module.ModuleLoader;
 import org.labkey.api.query.FieldKey;
+import org.labkey.api.query.QueryService;
+import org.labkey.api.query.UserSchema;
 import org.labkey.api.security.User;
+import org.labkey.ehr.EHRModule;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -76,6 +81,23 @@ public class DataEntryManager
     public DataEntryForm getFormByName(String name, Container c, User u)
     {
         return getFormMap(c, u).get(name);
+    }
+
+    public DataEntryForm getFormForQuery(String schemaName, String queryName, Container c, User u)
+    {
+        UserSchema us = QueryService.get().getUserSchema(u, c, schemaName);
+        if (us == null)
+            throw new IllegalArgumentException("Unable to find schema: " + schemaName);
+
+        TableInfo ti = us.getTable(queryName);
+        if (ti == null)
+            throw new IllegalArgumentException("Unable to find table: " + schemaName + "." + queryName);
+
+        SimpleGridpanelForm type = SimpleGridpanelForm.create(ModuleLoader.getInstance().getModule(EHRModule.class), schemaName, queryName, "Custom");
+        type.getFormSections().get(0).setConfigSources(Collections.singletonList("SimpleForm"));
+        type.setJavascriptClass("EHR.panel.SimpleDataEntryPanel");
+
+        return type;
     }
 
     public void registerDefaultFieldKeys(String schemaName, String queryName, List<FieldKey> keys)

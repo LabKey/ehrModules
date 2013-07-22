@@ -3,7 +3,7 @@
 Ext4.onReady(function (){
     if (!LABKEY.ActionURL.getParameter('lsid')){
         alert('Must Provide LSID');
-        return false;
+        return;
     }
 
     var webpart = <%=webpartContext%>;

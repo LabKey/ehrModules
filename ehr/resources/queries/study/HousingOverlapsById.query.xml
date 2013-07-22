@@ -43,11 +43,6 @@
                                 EHR.DatasetButtons.historyHandler(dataRegion, dataRegionName, 'Housing');
                             </onClick>
                         </item>
-                        <item text="Jump To Other Dataset">
-                            <onClick>
-                                EHR.DatasetButtons.datasetHandler(dataRegion, dataRegionName, 'Housing');
-                            </onClick>
-                        </item>
                         <item text="Return Distinct Values">
                             <onClick>
                                 EHR.DatasetButtons.getDistinctHandler(dataRegion, dataRegionName, 'Housing');

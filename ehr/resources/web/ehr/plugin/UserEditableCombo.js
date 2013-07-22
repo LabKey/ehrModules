@@ -13,69 +13,89 @@ Ext4.define('EHR.plugin.UserEditableCombo', {
     alias: 'plugin.ehr-usereditablecombo',
 
     init: function(combo) {
+        this.combo = combo;
+        combo.userEditablePlugin = this;
+
         Ext4.override(combo, {
-            onSelect: function(cmp, idx){
+            onListSelectionChange: function(list, selectedRecords) {
                 var val;
-                if(idx)
-                    val = this.store.getAt(idx).get(this.valueField);
+                if(selectedRecords && selectedRecords.length && selectedRecords.length == 1)
+                    val = selectedRecords[0].get(this.displayField);
 
                 if(val == 'Other'){
-                    Ext4.MessageBox.prompt('Enter Value', 'Enter value:', this.addNewValue, this);
+                    this.userEditablePlugin.onClickOther();
+                    this.collapse();
                 }
-
-                this.callOverridden(arguments);
-            },
-
-            setValue: function(v){
-                var r = this.findRecord(this.valueField, v);
-                if(!r){
-                    this.addRecord(v, v);
-                }
-                this.callOverridden(arguments);
-            },
-
-            addNewValue: function(btn, val){
-                this.addRecord(val);
-                this.setValue(val);
-                this.fireEvent('change', this, val, 'Other');
-            },
-
-            addRecord: function(value){
-                if(!value)
-                    return;
-
-                var data = {};
-                data[this.valueField] = value;
-                if(this.displayField!=this.valueField){
-                    data[this.displayField] = value;
-                }
-
-                if(!this.store || !this.store.model.getFields()){
-                    this.store.on('load', function(store){
-                        this.addRecord(value);
-                    }, this, {single: true});
-                    console.log('unable to add record: '+this.store.storeId+'/'+value);
-                    return;
-                }
-                this.store.add(this.store.model.create(data));
-
-                if(this.view){
-                    this.view.setStore(this.store);
-                    this.view.refresh()
+                else
+                {
+                    this.callOverridden(arguments);
                 }
             }
         });
 
-        if(combo.store.model.getFields()){
-            combo.addRecord('Other');
+        if(LABKEY.ext.Ext4Helper.hasStoreLoaded(combo.store)){
+            this.addOtherRecord();
         }
         else {
             if (!combo.store.on)
                 combo.store = Ext4.ComponentMgr.create(combo.store);
-
-            combo.store.on('load', function(){
-                combo.addRecord('Other');
-            }, this, {single: true});
         }
+
+        combo.store.on('load', function(){
+            this.addOtherRecord();
+        }, this);
+    },
+
+    addOtherRecord: function(){
+        var rec = this.combo.findRecord(this.combo.displayField, 'Other');
+        if (rec){
+            console.log('other record exists')
+            return;
+        }
+
+        var data = {};
+        data[this.combo.valueField] = 'Other';
+        data[this.combo.displayField] = 'Other';
+        this.addRecord(data, this.combo.store.getCount());
+    },
+
+    onClickOther: function(){
+        Ext4.MessageBox.prompt('Enter Value', 'Enter value:', function(btn, val){
+            this.addNewValue(val);
+        }, this);
+    },
+
+    addNewValue: function(val){
+        var data = {};
+        if (Ext4.isObject(val)){
+            data = val;
+        }
+        else {
+            data[this.combo.valueField] = val;
+            data[this.combo.displayField] = val;
+        }
+
+        this.addRecord(data);
+        this.combo.setValue(data[this.combo.valueField]);
+        this.combo.fireEvent('change', this.combo, data[this.combo.valueField], 'Other');
+    },
+
+    addRecord: function(data, idx){
+        if(!data || LABKEY.Utils.isEmptyObj(data))
+            return;
+
+        if (!this.combo.store || !LABKEY.ext.Ext4Helper.hasStoreLoaded(this.combo.store)){
+            this.combo.store.on('load', function(store){
+                this.addRecord(data);
+            }, this, {single: true});
+
+            console.error('unable to add record: '+this.combo.store.storeId);
+            console.log(data);
+
+            return;
+        }
+
+        idx = idx || this.combo.store.getCount() - 1;
+        this.combo.store.insert(idx, this.combo.store.createModel(data));
     }
 });

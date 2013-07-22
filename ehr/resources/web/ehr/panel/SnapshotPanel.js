@@ -194,280 +194,295 @@ Ext4.define('EHR.panel.SnapshotPanel', {
     },
 
     loadData: function(){
-        var multi = new LABKEY.MultiRequest();
-
-        multi.add(LABKEY.Query.selectRows, {
-            schemaName: 'study',
-            queryName: 'demographics',
-            columns: 'Id,Id/curLocation/area,Id/curLocation/room,Id/curLocation/cage,Id/curLocation/date,Id/age/yearAndDays,gender,species,geographic_origin,calculated_status,dam,sire',
-            filterArray: [LABKEY.Filter.create('Id', this.subjectId, LABKEY.Filter.Types.EQUAL)],
+        EHR.Utils.getDemographics({
+            ids: [this.subjectId],
             failure: LDK.Utils.getErrorCallback(),
-            requiredVersion: 9.1,
-            scope: this,
-            success: function(results){
-                this.demographicsResults = results;
-            }
+            success: this.onLoad,
+            scope: this
         });
 
-        multi.add(LABKEY.Query.selectRows, {
-            schemaName: 'study',
-            queryName: 'parentageSummary',
-            sort: 'Id,relationship',
-            columns: 'Id,date,parent,relationship,method',
-            filterArray: [LABKEY.Filter.create('Id', this.subjectId, LABKEY.Filter.Types.EQUAL)],
-            failure: LDK.Utils.getErrorCallback(),
-            requiredVersion: 9.1,
-            scope: this,
-            success: function(results){
-                this.parentageResults = results;
-            }
-        });
+//        var multi = new LABKEY.MultiRequest();
+//
+//        multi.add(LABKEY.Query.selectRows, {
+//            schemaName: 'study',
+//            queryName: 'demographics',
+//            columns: 'Id,Id/curLocation/area,Id/curLocation/room,Id/curLocation/cage,Id/curLocation/date,Id/age/yearAndDays,gender,species,geographic_origin,calculated_status,dam,sire',
+//            filterArray: [LABKEY.Filter.create('Id', this.subjectId, LABKEY.Filter.Types.EQUAL)],
+//            failure: LDK.Utils.getErrorCallback(),
+//            requiredVersion: 9.1,
+//            scope: this,
+//            success: function(results){
+//                this.demographicsResults = results;
+//            }
+//        });
+//
+//        multi.add(LABKEY.Query.selectRows, {
+//            schemaName: 'study',
+//            queryName: 'parentageSummary',
+//            sort: 'Id,relationship',
+//            columns: 'Id,date,parent,relationship,method',
+//            filterArray: [LABKEY.Filter.create('Id', this.subjectId, LABKEY.Filter.Types.EQUAL)],
+//            failure: LDK.Utils.getErrorCallback(),
+//            requiredVersion: 9.1,
+//            scope: this,
+//            success: function(results){
+//                this.parentageResults = results;
+//            }
+//        });
+//
+//        multi.add(LABKEY.Query.selectRows, {
+//            schemaName: 'study',
+//            queryName: 'demographicsSource',
+//            columns: 'Id,type,source',
+//            filterArray: [LABKEY.Filter.create('Id', this.subjectId, LABKEY.Filter.Types.EQUAL)],
+//            failure: LDK.Utils.getErrorCallback(),
+//            requiredVersion: 9.1,
+//            scope: this,
+//            success: function(results){
+//                this.sourceResults = results;
+//            }
+//        });
+//
+//        multi.add(LABKEY.Query.selectRows, {
+//            schemaName: 'study',
+//            queryName: 'assignment',
+//            requiredVersion: 9.1,
+//            columns: 'Id,date,enddate,projectedRelease,project,project/protocol,project/title,project/investigatorId,project/investigatorId/firstName,project/investigatorId/lastName',
+//            filterArray: [
+//                LABKEY.Filter.create('Id', this.subjectId, LABKEY.Filter.Types.EQUAL),
+//                LABKEY.Filter.create('isActive', true, LABKEY.Filter.Types.EQUAL)
+//            ],
+//            failure: LDK.Utils.getErrorCallback(),
+//            scope: this,
+//            success: function(results){
+//                this.assignmentResults = results;
+//            }
+//        });
+//
+//        multi.add(LABKEY.Query.selectRows, {
+//            schemaName: 'ehr',
+//            queryName: 'animal_group_members',
+//            requiredVersion: 9.1,
+//            columns: 'Id,date,enddate,groupId/name',
+//            filterArray: [
+//                LABKEY.Filter.create('Id', this.subjectId, LABKEY.Filter.Types.EQUAL),
+//                LABKEY.Filter.create('isActive', true, LABKEY.Filter.Types.EQUAL)
+//            ],
+//            failure: LDK.Utils.getErrorCallback(),
+//            scope: this,
+//            success: function(results){
+//                this.groupResults = results;
+//            }
+//        });
+//
+//        multi.add(LABKEY.Query.selectRows, {
+//            schemaName: 'study',
+//            queryName: 'demographicsMostRecentTBDate',
+//            columns: 'Id,MostRecentTBDate,MonthsSinceLastTB,MonthsUntilDue',
+//            requiredVersion: 9.1,
+//            filterArray: [
+//                LABKEY.Filter.create('Id', this.subjectId, LABKEY.Filter.Types.EQUAL)
+//            ],
+//            failure: LDK.Utils.getErrorCallback(),
+//            scope: this,
+//            success: function(results){
+//                this.tbResults = results;
+//            }
+//        });
+//
+//        multi.add(LABKEY.Query.selectRows, {
+//            schemaName: 'study',
+//            queryName: 'Problem List',
+//            columns: 'Id,date,enddate,category',
+//            requiredVersion: 9.1,
+//            filterArray: [
+//                LABKEY.Filter.create('Id', this.subjectId, LABKEY.Filter.Types.EQUAL),
+//                LABKEY.Filter.create('isActive', true, LABKEY.Filter.Types.EQUAL)
+//            ],
+//            failure: LDK.Utils.getErrorCallback(),
+//            scope: this,
+//            success: function(results){
+//                this.problemListResults = results;
+//            }
+//        });
+//
+//        multi.add(LABKEY.Query.selectRows, {
+//            schemaName: 'study',
+//            queryName: 'Treatment Orders',
+//            columns: 'Id,date,amount,amount_units,amountWithUnits,category,daysElapsed,enddate,performedby,code,route,frequency,category',
+//            requiredVersion: 9.1,
+//            filterArray: [
+//                LABKEY.Filter.create('Id', this.subjectId, LABKEY.Filter.Types.EQUAL),
+//                LABKEY.Filter.create('isActive', true, LABKEY.Filter.Types.EQUAL)
+//            ],
+//            failure: LDK.Utils.getErrorCallback(),
+//            scope: this,
+//            success: function(results){
+//                this.treatmentResults = results;
+//            }
+//        });
+//
+//        multi.add(LABKEY.Query.selectRows, {
+//            schemaName: 'study',
+//            queryName: 'Cases',
+//            columns: 'Id,date,enddate,category,performedby,remark,description',
+//            requiredVersion: 9.1,
+//            filterArray: [
+//                LABKEY.Filter.create('Id', this.subjectId, LABKEY.Filter.Types.EQUAL),
+//                LABKEY.Filter.create('isActive', true, LABKEY.Filter.Types.EQUAL)
+//            ],
+//            failure: LDK.Utils.getErrorCallback(),
+//            scope: this,
+//            success: function(results){
+//                this.caseResults = results;
+//            }
+//        });
+//
+//        multi.add(LABKEY.Query.selectRows, {
+//            schemaName: 'study',
+//            queryName: 'diet',
+//            requiredVersion: 9.1,
+//            filterArray: [
+//                LABKEY.Filter.create('Id', this.subjectId, LABKEY.Filter.Types.EQUAL),
+//                LABKEY.Filter.create('isActive', true, LABKEY.Filter.Types.EQUAL)
+//            ],
+//            failure: LDK.Utils.getErrorCallback(),
+//            scope: this,
+//            success: function(results){
+//                this.dietResults = results;
+//            }
+//        });
+//
+//        multi.add(LABKEY.Query.selectRows, {
+//            schemaName: 'study',
+//            queryName: 'Flags',
+//            columns: 'date,enddate,performedby,category,value,category/doHighlight',
+//            requiredVersion: 9.1,
+//            filterArray: [
+//                LABKEY.Filter.create('Id', this.subjectId, LABKEY.Filter.Types.EQUAL),
+//                LABKEY.Filter.create('isActive', true, LABKEY.Filter.Types.EQUAL),
+//                LABKEY.Filter.create('category/omitFromOverview', true, LABKEY.Filter.Types.NEQ_OR_NULL)
+//            ],
+//            failure: LDK.Utils.getErrorCallback(),
+//            scope: this,
+//            success: function(results){
+//                this.flagsResults = results;
+//            }
+//        });
+//
+//        multi.add(LABKEY.Query.selectRows, {
+//            schemaName: 'study',
+//            queryName: 'weight',
+//            columns: 'Id,date,weight',
+//            sort: '-date',
+//            requiredVersion: 9.1,
+//            maxRows: 3,
+//            filterArray: [
+//                LABKEY.Filter.create('Id', this.subjectId, LABKEY.Filter.Types.EQUAL)
+//            ],
+//            failure: LDK.Utils.getErrorCallback(),
+//            scope: this,
+//            success: function(results){
+//                this.weightResults = results;
+//            }
+//        });
+//
+//        if (this.showExtendedInformation){
+//            //only load this data if being displayed
+//            if (this.down('#roommates')){
+//                multi.add(LABKEY.Query.selectRows, {
+//                    schemaName: 'study',
+//                    queryName: 'demographicsPaired',
+//                    columns: 'Id,total,Animals',
+//                    requiredVersion: 9.1,
+//                    filterArray: [
+//                        LABKEY.Filter.create('Id', this.subjectId, LABKEY.Filter.Types.EQUAL)
+//                    ],
+//                    failure: LDK.Utils.getErrorCallback(),
+//                    scope: this,
+//                    success: function(results){
+//                        this.roommateResults = results;
+//                    }
+//                });
+//            }
+//
+//            multi.add(LABKEY.Query.selectRows, {
+//                schemaName: 'study',
+//                queryName: 'Birth',
+//                columns: 'Id,date,type,cond',
+//                requiredVersion: 9.1,
+//                filterArray: [
+//                    LABKEY.Filter.create('Id', this.subjectId, LABKEY.Filter.Types.EQUAL)
+//                ],
+//                failure: LDK.Utils.getErrorCallback(),
+//                scope: this,
+//                success: function(results){
+//                    this.birthResults = results;
+//                }
+//            });
+//
+//            multi.add(LABKEY.Query.selectRows, {
+//                schemaName: 'study',
+//                queryName: 'Deaths',
+//                columns: 'Id,date,cause',
+//                requiredVersion: 9.1,
+//                filterArray: [
+//                    LABKEY.Filter.create('Id', this.subjectId, LABKEY.Filter.Types.EQUAL)
+//                ],
+//                failure: LDK.Utils.getErrorCallback(),
+//                scope: this,
+//                success: function(results){
+//                    this.deathResults = results;
+//                }
+//            });
+//        }
+//
+//        multi.send(this.onAllComplete, this);
+    },
 
-        multi.add(LABKEY.Query.selectRows, {
-            schemaName: 'study',
-            queryName: 'demographicsSource',
-            columns: 'Id,type,source',
-            filterArray: [LABKEY.Filter.create('Id', this.subjectId, LABKEY.Filter.Types.EQUAL)],
-            failure: LDK.Utils.getErrorCallback(),
-            requiredVersion: 9.1,
-            scope: this,
-            success: function(results){
-                this.sourceResults = results;
-            }
-        });
+    onLoad: function(results){
+        this.results = results.results[this.subjectId];
 
-        multi.add(LABKEY.Query.selectRows, {
-            schemaName: 'study',
-            queryName: 'assignment',
-            requiredVersion: 9.1,
-            columns: 'Id,date,enddate,projectedRelease,project,project/protocol,project/title,project/investigatorId,project/investigatorId/firstName,project/investigatorId/lastName',
-            filterArray: [
-                LABKEY.Filter.create('Id', this.subjectId, LABKEY.Filter.Types.EQUAL),
-                LABKEY.Filter.create('isActive', true, LABKEY.Filter.Types.EQUAL)
-            ],
-            failure: LDK.Utils.getErrorCallback(),
-            scope: this,
-            success: function(results){
-                this.assignmentResults = results;
-            }
-        });
-
-        multi.add(LABKEY.Query.selectRows, {
-            schemaName: 'ehr',
-            queryName: 'animal_group_members',
-            requiredVersion: 9.1,
-            columns: 'Id,date,enddate,groupId/name',
-            filterArray: [
-                LABKEY.Filter.create('Id', this.subjectId, LABKEY.Filter.Types.EQUAL),
-                LABKEY.Filter.create('isActive', true, LABKEY.Filter.Types.EQUAL)
-            ],
-            failure: LDK.Utils.getErrorCallback(),
-            scope: this,
-            success: function(results){
-                this.groupResults = results;
-            }
-        });
-
-        multi.add(LABKEY.Query.selectRows, {
-            schemaName: 'study',
-            queryName: 'demographicsMostRecentTBDate',
-            columns: 'Id,MostRecentTBDate,MonthsSinceLastTB,MonthsUntilDue',
-            requiredVersion: 9.1,
-            filterArray: [
-                LABKEY.Filter.create('Id', this.subjectId, LABKEY.Filter.Types.EQUAL)
-            ],
-            failure: LDK.Utils.getErrorCallback(),
-            scope: this,
-            success: function(results){
-                this.tbResults = results;
-            }
-        });
-
-        multi.add(LABKEY.Query.selectRows, {
-            schemaName: 'study',
-            queryName: 'Problem List',
-            columns: 'Id,date,enddate,category',
-            requiredVersion: 9.1,
-            filterArray: [
-                LABKEY.Filter.create('Id', this.subjectId, LABKEY.Filter.Types.EQUAL),
-                LABKEY.Filter.create('isActive', true, LABKEY.Filter.Types.EQUAL)
-            ],
-            failure: LDK.Utils.getErrorCallback(),
-            scope: this,
-            success: function(results){
-                this.problemListResults = results;
-            }
-        });
-
-        multi.add(LABKEY.Query.selectRows, {
-            schemaName: 'study',
-            queryName: 'Treatment Orders',
-            columns: 'Id,date,amount,amount_units,amountWithUnits,category,daysElapsed,enddate,performedby,code,route,frequency,category',
-            requiredVersion: 9.1,
-            filterArray: [
-                LABKEY.Filter.create('Id', this.subjectId, LABKEY.Filter.Types.EQUAL),
-                LABKEY.Filter.create('isActive', true, LABKEY.Filter.Types.EQUAL)
-            ],
-            failure: LDK.Utils.getErrorCallback(),
-            scope: this,
-            success: function(results){
-                this.treatmentResults = results;
-            }
-        });
-
-        multi.add(LABKEY.Query.selectRows, {
-            schemaName: 'study',
-            queryName: 'Cases',
-            columns: 'Id,date,enddate,category,performedby,remark,description',
-            requiredVersion: 9.1,
-            filterArray: [
-                LABKEY.Filter.create('Id', this.subjectId, LABKEY.Filter.Types.EQUAL),
-                LABKEY.Filter.create('isActive', true, LABKEY.Filter.Types.EQUAL)
-            ],
-            failure: LDK.Utils.getErrorCallback(),
-            scope: this,
-            success: function(results){
-                this.caseResults = results;
-            }
-        });
-
-        multi.add(LABKEY.Query.selectRows, {
-            schemaName: 'study',
-            queryName: 'diet',
-            requiredVersion: 9.1,
-            filterArray: [
-                LABKEY.Filter.create('Id', this.subjectId, LABKEY.Filter.Types.EQUAL),
-                LABKEY.Filter.create('isActive', true, LABKEY.Filter.Types.EQUAL)
-            ],
-            failure: LDK.Utils.getErrorCallback(),
-            scope: this,
-            success: function(results){
-                this.dietResults = results;
-            }
-        });
-
-        multi.add(LABKEY.Query.selectRows, {
-            schemaName: 'study',
-            queryName: 'Flags',
-            columns: 'date,enddate,performedby,category,value',
-            requiredVersion: 9.1,
-            filterArray: [
-                LABKEY.Filter.create('Id', this.subjectId, LABKEY.Filter.Types.EQUAL),
-                LABKEY.Filter.create('isActive', true, LABKEY.Filter.Types.EQUAL)
-            ],
-            failure: LDK.Utils.getErrorCallback(),
-            scope: this,
-            success: function(results){
-                this.flagsResults = results;
-            }
-        });
-
-        multi.add(LABKEY.Query.selectRows, {
-            schemaName: 'study',
-            queryName: 'weight',
-            columns: 'Id,date,weight',
-            sort: '-date',
-            requiredVersion: 9.1,
-            maxRows: 3,
-            filterArray: [
-                LABKEY.Filter.create('Id', this.subjectId, LABKEY.Filter.Types.EQUAL)
-            ],
-            failure: LDK.Utils.getErrorCallback(),
-            scope: this,
-            success: function(results){
-                this.weightResults = results;
-            }
-        });
-
-        if (this.showExtendedInformation){
-            //only load this data if being displayed
-            if (this.down('#roommates')){
-                multi.add(LABKEY.Query.selectRows, {
-                    schemaName: 'study',
-                    queryName: 'demographicsPaired',
-                    columns: 'Id,total,Animals',
-                    requiredVersion: 9.1,
-                    filterArray: [
-                        LABKEY.Filter.create('Id', this.subjectId, LABKEY.Filter.Types.EQUAL)
-                    ],
-                    failure: LDK.Utils.getErrorCallback(),
-                    scope: this,
-                    success: function(results){
-                        this.roommateResults = results;
-                    }
-                });
-            }
-
-            multi.add(LABKEY.Query.selectRows, {
-                schemaName: 'study',
-                queryName: 'Birth',
-                columns: 'Id,date,type,cond',
-                requiredVersion: 9.1,
-                filterArray: [
-                    LABKEY.Filter.create('Id', this.subjectId, LABKEY.Filter.Types.EQUAL)
-                ],
-                failure: LDK.Utils.getErrorCallback(),
-                scope: this,
-                success: function(results){
-                    this.birthResults = results;
-                }
-            });
-
-            multi.add(LABKEY.Query.selectRows, {
-                schemaName: 'study',
-                queryName: 'Deaths',
-                columns: 'Id,date,cause',
-                requiredVersion: 9.1,
-                filterArray: [
-                    LABKEY.Filter.create('Id', this.subjectId, LABKEY.Filter.Types.EQUAL)
-                ],
-                failure: LDK.Utils.getErrorCallback(),
-                scope: this,
-                success: function(results){
-                    this.deathResults = results;
-                }
-            });
-        }
-
-        multi.send(this.onAllComplete, this);
+        this.onAllComplete();
     },
 
     onAllComplete: function(){
         Ext4.suspendLayouts();
 
-        this.appendDemographicsResults(this.demographicsResults);
-        this.appendWeightResults(this.weightResults);
+        this.appendDemographicsResults(this.results);
+        this.appendWeightResults(this.results.weights);
 
-        if (this.roommateResults)
-            this.appendRoommateResults(this.roommateResults);
+        if (this.results.cagemates)
+            this.appendRoommateResults(this.results.cagemates);
 
-        this.appendProblemList(this.problemListResults);
-        this.appendAssignments(this.assignmentResults);
-        this.appendGroups(this.groupResults);
-        this.appendSourceResults(this.sourceResults);
-        this.appendTreatments(this.treatmentResults);
-        this.appendCases(this.caseResults);
-        //this.appendDiet(this.dietResults);
-        this.appendFlags(this.flagsResults);
-        this.appendTBResults(this.tbResults);
+        this.appendProblemList(this.results.activeProblems);
+        this.appendAssignments(this.results.activeAssignments);
+        this.appendGroups(this.results.activeAnimalGroups);
+        this.appendSourceResults(this.results.source);
+        this.appendTreatments(this.results.activeTreatments);
+        this.appendCases(this.results.activeCases);
+
+        this.appendFlags(this.results.activeFlags);
+        this.appendTBResults(this.results.tb);
 
         if (this.showExtendedInformation){
-            this.appendBirthResults(this.birthResults);
-            this.appendDeathResults(this.deathResults);
-            this.appendParentageResults(this.parentageResults);
+            this.appendBirthResults(this.results.birthInfo);
+            this.appendDeathResults(this.results.deathInfo);
+            this.appendParentageResults(this.results.parents);
         }
-        this.onLoad();
+        this.afterLoad();
 
         Ext4.resumeLayouts();
         this.doLayout();
     },
 
     appendTBResults: function(results){
-        if (results && results.rows && results.rows.length){
-            var row = results.rows[0];
-            if (this.hasValue(row, 'MostRecentTBDate')){
-                var value = this.getValue(row, 'MostRecentTBDate', Ext4.data.Types.DATE, 'Y-m-d');
-                var months = this.getValue(row, 'MonthsSinceLastTB');
+        if (results && results.length){
+            var row = results[0];
+
+            if (!Ext4.isEmpty(row.MostRecentTBDate)){
+                var value = LDK.ConvertUtils.parseDate(row.MostRecentTBDate).format('Y-m-d');
+                var months = row.MonthsSinceLastTB;
                 if (months)
                     value += ' (' + months + ' month' + (months == 1 ? '' : 's') + ' ago)';
 
@@ -480,87 +495,56 @@ Ext4.define('EHR.panel.SnapshotPanel', {
     },
 
     appendSourceResults: function(results){
-        if (results && results.rows && results.rows.length){
-            var row = results.rows[0];
+        if (results && results.length){
             var field = this.down('#source');
 
-            var text = this.getValue(row, 'type');
+            var text = results[0].type;
             field.setValue(text);
         }
     },
 
-    appendDemographicsResults: function(results){
-        if (results && results.rows && results.rows.length){
-            var row = results.rows[0];
+    appendDemographicsResults: function(row){
+        if (!row){
+            console.log('Id not found');
+            return;
+        }
 
-            Ext4.each(['calculated_status', 'gender', 'dam', 'sire', 'species', 'geographic_origin'], function(name){
-                if (row[name]){
-                    var field = this.down('#' + name);
-                    if (field)
-                        field.setValue(this.getValue(row, name, null, null, true));
+        Ext4.each(['calculated_status', 'species', 'geographic_origin'], function(name){
+            if (row[name]){
+                var field = this.down('#' + name);
+                if (field)
+                    field.setValue(row[name]);
+            }
+        }, this);
+
+        if (!Ext4.isEmpty(row['gender/meaning'])){
+            this.down('#gender').setValue(row['gender/meaning']);
+        }
+
+        if (!Ext4.isEmpty(row['Id/age/yearAndDays'])){
+            this.down('#age').setValue(row['Id/age/yearAndDays']);
+        }
+
+        if (row.activeHousing && row.activeHousing.length){
+            var housingRow = row.activeHousing[0];
+            var location = '';
+            if (!Ext4.isEmpty(housingRow['room']))
+                location = housingRow['room'];
+            if (!Ext4.isEmpty(housingRow['cage']))
+                location += ' / ' + housingRow['cage'];
+
+            if (location){
+                if (this.showLocationDuration && housingRow.date){
+                    var date = LDK.ConvertUtils.parseDate(housingRow.date);
+                    if (date)
+                        location += ' (' + date.format('Y-m-d') + ')';
                 }
-            }, this);
 
-            if (this.hasValue(row, 'Id/age/yearAndDays')){
-                this.down('#age').setValue(this.getValue(row, 'Id/age/yearAndDays'));
+                this.down('#location').setValue(location);
             }
-
-            if (this.hasValue(row, 'Id/curLocation/room') || this.hasValue(row, 'Id/curLocation/cage')){
-                var location = '';
-                if (this.hasValue(row, 'Id/curLocation/room'))
-                    location = this.getValue(row, 'Id/curLocation/room');
-                if (this.hasValue(row, 'Id/curLocation/cage'))
-                    location += ' / ' + this.getValue(row, 'Id/curLocation/cage');
-
-                if (location){
-                    if (this.showLocationDuration && this.hasValue(row, 'Id/curLocation/date')){
-                        var date = this.getValue(row, 'Id/curLocation/date', Ext4.data.Types.DATE, 'Y-m-d');
-                        if (date)
-                            location += ' (since ' + date + ')';
-                    }
-
-                    this.down('#location').setValue(location);
-                }
-                else
-                    this.down('#location').setValue('No active housing');
-            }
+            else
+                this.down('#location').setValue('No active housing');
         }
-        else {
-            this.removeAll();
-            this.add({
-                html: 'Id not found'
-            });
-        }
-    },
-
-    hasValue: function(row, propName){
-        return !Ext4.isEmpty(row[propName]) && !Ext4.isEmpty(row[propName].value);
-    },
-
-    getValue: function(row, propName, extType, formatString, ignoreUrl){
-        if (!this.hasValue(row, propName))
-            return null;
-
-        var val;
-        if (extType){
-            val = row[propName].value;
-            if (extType == Ext4.data.Types.DATE){
-                val = LDK.ConvertUtils.parseDate(val);
-                if (formatString)
-                    val = Ext4.Date.format(val, formatString);
-            }
-            else {
-                console.error('ExtType not supported: ' + extType);
-            }
-        }
-        else {
-            val = Ext4.isEmpty(row[propName].displayValue) ? row[propName].value : row[propName].displayValue;
-        }
-
-        if (!ignoreUrl && row[propName].url){
-            val = '<a href="' + row[propName].url + '" ' + this.getTargetString() + '>' + val + '</a>';
-        }
-        return val;
     },
 
     getTargetString: function(){
@@ -568,15 +552,14 @@ Ext4.define('EHR.panel.SnapshotPanel', {
     },
 
     appendProblemList: function(results){
-        if (results && results.rows && results.rows.length){
+        if (results){
             var values = [];
-            Ext4.each(results.rows, function(row){
-                var sr = new LDK.SelectRowsRow(row);
-                var text = sr.getDisplayValue('category');
+            Ext4.each(results, function(row){
+                var text = row.category;
                 if (text){
-                    var date = sr.getFormattedDateValue('date', 'Y-m-d');
+                    var date = LDK.ConvertUtils.parseDate(row.date);
                     if (date)
-                        text = text + ' (' + date + ')';
+                        text = text + ' (' + date.format('Y-m-d') + ')';
 
                     values.push(text);
                 }
@@ -591,14 +574,13 @@ Ext4.define('EHR.panel.SnapshotPanel', {
     },
 
     appendWeightResults: function(results){
-        if (results && results.rows && results.rows.length){
+        if (results){
             var rows = [];
             var prevRow;
-            Ext4.each(results.rows, function(row){
-                var sr = new LDK.SelectRowsRow(row);
+            Ext4.each(results, function(row){
                 var newRow = {
-                    weight: sr.getValue('weight'),
-                    date: sr.getDateValue('date')
+                    weight: row.weight,
+                    date: LDK.ConvertUtils.parseDate(row.date)
                 };
 
                 var prevDate = prevRow ? prevRow.date : new Date();
@@ -626,9 +608,12 @@ Ext4.define('EHR.panel.SnapshotPanel', {
     },
 
     appendRoommateResults: function(results){
-        if (results && results.rows && results.rows.length){
-            var row = results.rows[0];
-            this.down('#roommates').setValue(this.getValue(row, 'total'));
+        var field = this.down('#roommates');
+        if (!field)
+            return;
+
+        if (results){
+            this.down('#roommates').setValue(row.total);
         }
         else {
             this.down('#roommates').setValue(0)
@@ -636,11 +621,10 @@ Ext4.define('EHR.panel.SnapshotPanel', {
     },
 
     appendGroups: function(results){
-        if (results && results.rows && results.rows.length){
+        if (results){
             var values = [];
-            Ext4.each(results.rows, function(row){
-                var sr = new LDK.SelectRowsRow(row);
-                values.push(sr.getDisplayValue('groupId/name'));
+            Ext4.each(results, function(row){
+                values.push(row['groupId/name']);
             }, this);
 
             if (values.length)
@@ -652,12 +636,11 @@ Ext4.define('EHR.panel.SnapshotPanel', {
     },
 
     appendAssignments: function(results){
-        if (results && results.rows && results.rows.length){
+        if (results){
             var values = [];
-            Ext4.each(results.rows, function(row){
-                var sr = new LDK.SelectRowsRow(row);
-                var val = sr.getDisplayValue('project/investigatorId/lastName') || '';
-                val += ' [' + sr.getDisplayValue('project') + ']';
+            Ext4.each(results, function(row){
+                var val = row['project/investigatorId/lastName'] || '';
+                val += ' [' + row['project/displayName'] + ']';
 
                 if (val)
                     values.push(val);
@@ -671,37 +654,15 @@ Ext4.define('EHR.panel.SnapshotPanel', {
         }
     },
 
-//    appendAssignments: function(results){
-//        var columns = [{
-//            name: 'project',
-//            label: 'Project'
-//        },{
-//            name: 'project/title',
-//            label: 'Title'
-//        },{
-//            name: 'project/investigatorId/lastName',
-//            label: 'Investigator'
-//        },{
-//            name: 'date',
-//            label: 'Assign Date'
-//        },{
-//            name: 'projectedRelease',
-//            label: 'Projected Release Date'
-//        }];
-//
-//        this.down('#assignments').appendTable(results, columns)
-//    },
-
     appendCases: function(results){
-        if (results && results.rows && results.rows.length){
+        if (results){
             var values = [];
-            Ext4.each(results.rows, function(row){
-                var sr = new LDK.SelectRowsRow(row);
-                var text = sr.getDisplayValue('category');
+            Ext4.each(results, function(row){
+                var text = row.category;
                 if (text){
-                    var date = sr.getFormattedDateValue('date', 'Y-m-d');
+                    var date = LDK.ConvertUtils.parseDate(row.date);
                     if (date)
-                        text = text + ' (' + date + ')';
+                        text = text + ' (' + date.format('Y-m-d') + ')';
 
                     values.push(text);
                 }
@@ -715,33 +676,47 @@ Ext4.define('EHR.panel.SnapshotPanel', {
         }
     },
 
-//    appendDiet: function(results){
-//        var columns = [{
-//            name: 'diet',
-//            label: 'Diet'
-//        },{
-//            name: 'performedby',
-//            label: 'Entered By'
-//        },{
-//            name: 'date',
-//            label: 'Start Date'
-//        },{
-//            name: 'enddate',
-//            label: 'End Date'
-//        }];
-//
-//        this.down('#diet').appendTable(results, columns)
-//    },
-
     appendTreatments: function(results){
-        var columns = [{
-            name: 'code',
+        if (!results){
+            return;
+        }
+
+        var treatmentRows = [];
+        var dietRows = [];
+
+        Ext4.Array.forEach(results, function(r){
+            if (r.category == 'Diet')
+                dietRows.push(r);
+            else
+                treatmentRows.push(r);
+        }, this);
+
+
+        this.appendTreatmentRecords(treatmentRows);
+        this.appendDietRecords(dietRows);
+    },
+
+    appendTreatmentRecords: function(rows){
+        this.down('#treatments').appendTable({
+            rows: rows
+        }, this.getTreatmentColumns());
+    },
+
+    appendDietRecords: function(rows){
+        this.down('#diet').appendTable({
+            rows: rows
+        }, this.getTreatmentColumns());
+    },
+
+    getTreatmentColumns: function(){
+        return [{
+            name: 'code/meaning',
             label: 'Medication'
         },{
             name: 'performedby',
             label: 'Ordered By'
         },{
-            name: 'frequency',
+            name: 'frequency/meaning',
             label: 'Frequency'
         },{
             name: 'amountWithUnits',
@@ -765,51 +740,31 @@ Ext4.define('EHR.panel.SnapshotPanel', {
             name: 'category',
             label: 'Category'
         }];
-
-        var treatmentRows = [];
-        var dietRows = [];
-
-        Ext4.Array.forEach(results.rows, function(r){
-            if (this.getValue(r, 'category') == 'Diet')
-                dietRows.push(r);
-            else
-                treatmentRows.push(r);
-        }, this);
-
-        this.down('#treatments').appendTable({
-            rows: treatmentRows,
-            metaData: results.metaData
-        }, columns);
-
-        this.down('#diet').appendTable({
-            rows: dietRows,
-            metaData: results.metaData
-        }, columns);
     },
 
     appendFlags: function(results){
-        if (results && results.rows && results.rows.length){
+        if (results){
             var values = [];
-            Ext4.each(results.rows, function(row){
-                var sr = new LDK.SelectRowsRow(row);
-                var flag = sr.getDisplayValue('category');
-                if (flag)
-                    flag = Ext4.String.trim(flag);
+            Ext4.each(results, function(row){
+                var category = row.category;
+                var highlight = row['category/doHighlight'];
 
-                var val = sr.getDisplayValue('value');
+                if (category)
+                    category = Ext4.String.trim(category);
+
+                var val = row.value;
                 var text = val;
-                if (flag)
-                    text = flag + ': ' + val;
+                if (category)
+                    text = category + ': ' + val;
 
-                if (text && flag == 'Alert')
+                if (text && highlight)
                     text = '<span style="background-color:yellow">' + text + '</span>';
 
                 if (text)
                     values.push(text);
             }, this);
 
-            if (values.length)
-            {
+            if (values.length){
                 values = Ext4.unique(values);
                 this.down('#flags').setValue(values.join('<br>'));
             }
@@ -817,11 +772,12 @@ Ext4.define('EHR.panel.SnapshotPanel', {
     },
 
     appendBirthResults: function(results){
-        if (results && results.rows && results.rows.length){
-            var sr = new LDK.SelectRowsRow(results.rows[0]);
-            var text = sr.getFormattedDateValue('date', 'Y-m-d');
+        if (results && results.length){
+            var row = results[0];
+            var date = LDK.ConvertUtils.parseDate(row.date);
+            var text = date ?  date.format('Y-m-d') : null;
             if (text){
-                var type = sr.getDisplayValue('type');
+                var type = row.type;
                 if (type)
                     text = text + ' (' + type + ')';
 
@@ -832,11 +788,12 @@ Ext4.define('EHR.panel.SnapshotPanel', {
     },
 
     appendDeathResults: function(results){
-        if (results && results.rows && results.rows.length){
-            var sr = new LDK.SelectRowsRow(results.rows[0]);
-            var text = sr.getFormattedDateValue('date', 'Y-m-d');
+        if (results && results.length){
+            var row = results[0];
+            var date = LDK.ConvertUtils.parseDate(row.date);
+            var text = date ? date.format('Y-m-d') : null;
             if (text){
-                var type = sr.getDisplayValue('cause');
+                var type = row.cause;
                 if (type)
                     text = text + ' (' + type + ')';
 
@@ -847,23 +804,29 @@ Ext4.define('EHR.panel.SnapshotPanel', {
     },
 
     appendParentageResults: function(results){
-        if (results && results.rows && results.rows.length){
-            var values = [];
-            Ext4.each(results.rows, function(row){
-                var sr = new LDK.SelectRowsRow(row);
-                var parent = sr.getDisplayValue('parent');
-                var relationship = sr.getDisplayValue('relationship');
+        if (results){
+            var parentMap = {};
+            Ext4.each(results, function(row){
+                var parent = row.parent;
+                var relationship = row.relationship;
 
                 if (parent && relationship){
                     var text = relationship + ' - ' + parent;
 
-                    var method = sr.getDisplayValue('method');
-                    if (method){
-                        text = text + ' (' + method + ')';
-                    }
+                    if (!parentMap[text])
+                        parentMap[text] = [];
 
-                    values.push(text);
+                    var method = row.method;
+                    if (method){
+                        parentMap[text].push(method);
+                    }
                 }
+            }, this);
+
+            var values = [];
+            Ext4.Array.forEach(Ext4.Object.getKeys(parentMap).sort(), function(text){
+                var method = parentMap[text].join(', ');
+                values.push(text + (method ? ' (' + method + ')' : ''));
             }, this);
 
             if (values.length)
@@ -874,14 +837,7 @@ Ext4.define('EHR.panel.SnapshotPanel', {
         }
     },
 
-    safeAppendNumber: function(row, prop, suffix){
-        if (row[prop] && Ext4.isEmpty(row[prop].value))
-            return '';
-
-        return Ext4.util.Format.round(row[prop].value, 2) + (suffix ? ' ' + suffix : '');
-    },
-
-    onLoad: function(){
+    afterLoad: function(){
         if (this.isLoading){
             this.setLoading(false);
             this.isLoading = false;
@@ -968,26 +924,17 @@ Ext4.define('EHR.panel.SnapshotChildPanel', {
             //first the header
             var colKeys = [];
             Ext4.each(columns, function(col){
-                if (Ext4.isString(col)){
-                    var field = this.getField(results, col);
-                    toAdd.items.push({
-                        html: '<i>' + field.caption + '</i>'
-                    });
-                    colKeys.push(field.name);
-                }
-                else if (Ext4.isObject(col)){
-                    toAdd.items.push({
-                        html: '<i>' + col.label + '</i>'
-                    });
-                    colKeys.push(col.name);
-                }
+                toAdd.items.push({
+                    html: '<i>' + col.label + '</i>'
+                });
+                colKeys.push(col.name);
             }, this);
 
-            Ext4.each(results.rows, function(row){
+            Ext4.Array.forEach(results.rows, function(row){
                 Ext4.each(colKeys, function(name){
-                    if (!Ext4.isEmpty(row[name]) && !Ext4.isEmpty(row[name].value)){
+                    if (!Ext4.isEmpty(row[name])){
                         toAdd.items.push({
-                            html: (row[name].displayValue || row[name].value) + ''
+                            html: (row[name]) + ''
                         });
                     }
                     else {
@@ -1007,17 +954,5 @@ Ext4.define('EHR.panel.SnapshotChildPanel', {
                 });
             }
         }
-    },
-
-    getField: function(results, name){
-        var result = null;
-        Ext4.each(results.metaData.fields, function(field){
-            if (field.name.toLowerCase() == name.toLowerCase()){
-                result = field;
-                return false;
-            }
-        }, this);
-
-        return result;
     }
 });

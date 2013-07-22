@@ -13,6 +13,11 @@ Ext4.define('EHR.form.field.AnimalField.js', {
         this.callParent();
 
         this.addEvents('animalchange');
+        this.enableBubble('animalchange');
+
+        this.on('change', function(field, val, oldVal){
+            this.fireEvent('animalchange', val);
+        }, this, {buffer: 200});
     },
 
     //NOTE: modules can override this method to enfore alternate rules

@@ -11,84 +11,62 @@ Ext4.define('EHR.form.field.ProjectField', {
     extend: 'Ext.form.field.ComboBox',
     alias: 'widget.ehr-projectfield',
 
+    fieldLabel: 'Center Project',
+    caseSensitive: false,
+    anyMatch: true,
+    editable: true,
+
     initComponent: function(){
         LABKEY.ExtAdapter.apply(this, {
-            fieldLabel: 'Project',
-            name: this.name || 'project',
-            dataIndex: 'project',
-            emptyText:'',
-            displayField:'project',
+            displayField: 'displayName',
             valueField: 'project',
-            typeAhead: true,
-            forceSelection: true,
             queryMode: 'local',
-            disabled: false,
-            plugins: ['ehr-usereditablecombo'],
-            validationDelay: 500,
-            //NOTE: unless i have this empty store an error is thrown
-            store: {
-                type: 'labkey-store',
-                schemaName: 'study',
-                sql: this.makeSql(),
-                sort: 'project',
-                autoLoad: true
+            store: this.getStoreCfg()
+        });
+
+        this.listConfig = this.listConfig || {};
+        Ext4.apply(this.listConfig, {
+            innerTpl:this.getInnerTpl(),
+            getInnerTpl: function(){
+                return this.innerTpl;
             },
-            listeners: {
-                select: function(combo, rec){
-                    if(this.ownerCt.boundRecord){
-                        this.ownerCt.boundRecord.beginEdit();
-                        this.ownerCt.boundRecord.set('project', rec.get('project'));
-                        this.ownerCt.boundRecord.set('account', rec.get('account'));
-                        this.ownerCt.boundRecord.endEdit();
-                    }
-                }
-            },
-            tpl: [
-                '<tpl for=".">' +
-                '<div class="x-combo-list-item">{[values["project"] + " " + (values["protocol"] ? "("+values["protocol"]+")" : "")]}' +
-                '&nbsp;</div></tpl>'
-            ]
+            style: 'border-top-width: 1px;' //this was added in order to restore the border above the boundList if it is wider than the field
         });
 
         this.callParent(arguments);
-
-        //this.mon(this.ownerCt, 'participantchange', this.getProjects, this);
     },
 
-    makeSql: function(id, date){
-        var sql = "SELECT DISTINCT a.project, a.project.account, a.project.protocol as protocol FROM study.assignment a " +
-            "WHERE a.id='"+id+"' " +
-
-            //this protocol contains tracking projects
-            "AND a.project.protocol != 'wprc00' ";
-
-        if(!this.allowAllProtocols){
-            sql += ' AND a.project.protocol IS NOT NULL '
-        }
-
-        if(date)
-            sql += "AND cast(a.date as date) <= '"+date.format('Y-m-d')+"' AND (cast(a.enddate as date) >= '"+date.format('Y-m-d')+"' OR a.enddate IS NULL)";
-        else
-            sql += "AND a.enddate IS NULL ";
-
-        if(this.defaultProjects){
-            sql += " UNION ALL (SELECT project, account, project.protocol as protocol FROM ehr.project WHERE project IN ('"+this.defaultProjects.join("','")+"'))";
-        }
-
-        return sql;
+    //can be overriden by child modules
+    getInnerTpl: function(){
+        return ['<span style="white-space:nowrap;">{[values["displayName"] + " " + (values["investigatorId/lastName"] ? "(" + (values["investigatorId/lastName"] ? values["investigatorId/lastName"] : "") + ")" : "")]}&nbsp;</span>'];
     },
 
-    getProjects : function(field, id){
-        if(!id && this.ownerCt.boundRecord)
-            id = this.ownerCt.boundRecord.get('Id');
+    getStoreCfg: function(){
+        var ctx = EHR.Utils.getEHRContext();
 
-        var date;
-        if(this.ownerCt.boundRecord){
-            date = this.ownerCt.boundRecord.get('date');
+        var storeCfg = {
+            type: 'labkey-store',
+            containerPath: ctx ? ctx['EHRStudyContainer'] : null,
+            schemaName: 'ehr',
+            queryName: 'project',
+            columns: 'project,protocol,protocol/displayName,displayName,investigatorId/lastName',
+            filterArray: [LABKEY.Filter.create('enddate', null, LABKEY.Filter.Types.ISBLANK)],
+            sort: 'displayName',
+            autoLoad: true
+        };
+
+        if (this.onlyIncludeProtocolsWithAssignments){
+            storeCfg.filterArray.push(LABKEY.Filter.create('activeAssignments/activeAssignments', 0, LABKEY.Filter.Types.GT));
         }
 
-        this.emptyText = 'Select project...';
-        this.store.baseParams.sql = this.makeSql(id, date);
-        this.store.load();
+        if (this.storeConfig){
+            Ext4.apply(storeCfg, this.storeConfig);
+        }
+
+        if (this.filterArray){
+            storeCfg.filterArray = storeCfg.filterArray.concat(this.filterArray);
+        }
+
+        return storeCfg;
     }
 });

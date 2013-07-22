@@ -8,7 +8,8 @@
 
         var groupId = LABKEY.ActionURL.getParameter('groupId');
         if (!groupId){
-            alert('Must provide the ID of the group to display'); return false;
+            alert('Must provide the ID of the group to display');
+            return;
         }
 
         Ext4.create('EHR.panel.AnimalGroupDetailsPanel', {

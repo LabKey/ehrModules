@@ -3,7 +3,7 @@
 Ext4.onReady(function (){
     if (!LABKEY.ActionURL.getParameter('key')){
         alert('Must Provide Protocol Number');
-        return false;
+        return;
     }
 
     var protocol = LABKEY.ActionURL.getParameter('key').toLowerCase();

@@ -13,7 +13,7 @@
                     </column>
                     <column columnName="codes">
                         <columnTitle>Codes</columnTitle>
-                        <displayWidth>500</displayWidth>
+                        <displayWidth>800</displayWidth>
                         <facetingBehavior>ALWAYS_OFF</facetingBehavior>
                     </column>
                 </columns>

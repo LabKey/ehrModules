@@ -31,7 +31,8 @@ Ext4.define('EHR.data.ClinicalHistoryStore', {
      * @param config.maxDate
      * @param config.caseId
      * @param config.redacted
-     * @param  config.sortMode
+     * @param config.sortMode
+     * @param config.checkedItems
      */
     reloadData: function(config){
         this.removeAll();
@@ -41,6 +42,10 @@ Ext4.define('EHR.data.ClinicalHistoryStore', {
             this.changeMode(config.sortMode);
         }
 
+        if (config.checkedItems){
+            this.checkedItems = config.checkedItems;
+        }
+
         LABKEY.Ajax.request({
             url: LABKEY.ActionURL.buildURL('ehr', this.actionName),
             params: {
@@ -48,7 +53,8 @@ Ext4.define('EHR.data.ClinicalHistoryStore', {
                 caseId: config.caseId,
                 minDate: config.minDate,
                 maxDate: config.maxDate,
-                redacted: !!config.redacted
+                redacted: !!config.redacted,
+                includeDistinctTypes: !this.distinctTypes
             },
             scope: this,
             failure: LDK.Utils.getErrorCallback(),
@@ -58,6 +64,10 @@ Ext4.define('EHR.data.ClinicalHistoryStore', {
 
     onLoad: function(results){
         var toAdd = [];
+
+        if (results.distinctTypes)
+            this.distinctTypes = results.distinctTypes;
+
         for (var id in results.results){
             Ext4.each(results.results[id], function(row){
                 row.date = new Date(row.date);
@@ -68,10 +78,28 @@ Ext4.define('EHR.data.ClinicalHistoryStore', {
         }
 
         this.isLoadingData = false;
-        if(toAdd.length)
+        if(toAdd.length){
             this.add(toAdd);
-        else
+            this.applyFilter(this.checkedItems);
+        }
+        else {
             this.fireEvent('datachanged', this);
+        }
+    },
+
+    getDistinctTypes: function(){
+        var types = {};
+        if (this.distinctTypes){
+            Ext4.Array.each(this.distinctTypes, function(t){
+                types[t] = true;
+            }, this);
+        }
+
+        this.each(function(record){
+            types[record.get('type')] = true;
+        }, this);
+
+        return Ext4.Object.getKeys(types).sort();
     },
 
     changeMode: function(mode){
@@ -90,6 +118,15 @@ Ext4.define('EHR.data.ClinicalHistoryStore', {
             ];
             this.sort(sorters);
             this.group('typeGroup');
+        }
+    },
+
+    applyFilter: function(types){
+        this.clearFilter();
+
+        if (types && types.length){
+            var regEx = new RegExp('^' + types.join('$|^') + '$');
+            this.filter([{property: 'type', value: regEx}]);
         }
     }
 });

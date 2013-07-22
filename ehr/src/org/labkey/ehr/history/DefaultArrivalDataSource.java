@@ -30,7 +30,7 @@ public class DefaultArrivalDataSource extends AbstractDataSource
 {
     public DefaultArrivalDataSource()
     {
-        super("study", "Arrival", "Arrival", "Arrivals");
+        super("study", "Arrival", "Arrival", "Arrival/Departure");
     }
 
     @Override

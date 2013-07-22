@@ -65,7 +65,11 @@ public class LookupSetTable extends AbstractDataDefinedTable
                 keyCol.setKeyField(true);
                 getColumn("rowid").setKeyField(false);
             }
-
+        }
+        else
+        {
+            getColumn(VALUE_COL).setKeyField(false);
+            getColumn("rowid").setKeyField(true);
         }
 
         setTitleColumn(VALUE_COL);

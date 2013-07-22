@@ -67,8 +67,7 @@ Ext4.define('EHR.data.DataEntryServerStore', {
                     recMap.update.push(r);
             }
 
-            //TODO: handle deletes
-            //recMap.delete = this.getRemovedRecordsToSync();
+            recMap.delete = this.getRemovedRecordsToSync();
         }
 
         for (var action in recMap){
@@ -158,14 +157,32 @@ Ext4.define('EHR.data.DataEntryServerStore', {
         }, true);
     },
 
-    handleServerErrors: function(errors, records){
-        Ext4.Array.forEach(errors, function(error, idx){
-            //console.log(error);
-            //TODO: match record??
-            var record = records[0];
+    processResponse: function(records, command){
+        //clear server errors
+        Ext4.Array.forEach(records, function(record){
             record.serverErrors = record.serverErrors || Ext4.create('Ext.data.Errors');
             record.serverErrors.clear();
+        }, this);
 
+        this.callParent(arguments);
+    },
+
+
+    handleServerErrors: function(errors, records){
+        //clear all server errors
+        Ext4.Array.forEach(records, function(record){
+            record.serverErrors = record.serverErrors || Ext4.create('Ext.data.Errors');
+            record.serverErrors.clear();
+        }, this);
+
+        Ext4.Array.forEach(errors, function(error, idx){
+            //TODO: how to match the record??
+            if (records.length > 1){
+                console.error(records);
+                console.log(errors);
+            }
+
+            var record = records[0];
             LDK.Assert.assertNotEmpty('Unable to find matching record after validation', record);
 
             var severity = 'ERROR';

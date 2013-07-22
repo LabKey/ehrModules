@@ -75,6 +75,7 @@
         </column>
         <column name="medical"/>
         <column name="prepaid"/>
+        <column name="history"/>
     </columns>
     <filters>
         <filter column="calculated_status" operator="eq" value="Alive"/>

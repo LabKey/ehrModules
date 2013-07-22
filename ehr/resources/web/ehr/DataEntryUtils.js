@@ -6,63 +6,6 @@
 LABKEY.ExtAdapter.ns('EHR.DataEntryUtils');
 
 EHR.DataEntryUtils = new function(){
-    var demographicsCache = {};
-
-    function loadDemographics(animalId, callback, scope){
-        //TODO: this should become a real server-side API
-        var multi = new LABKEY.MultiRequest();
-        var cache = {};
-
-        multi.add(LABKEY.Query.selectRows, {
-            schemaName: this.schemaName || 'study',
-            queryName: this.queryName || 'demographics',
-            viewName: this.viewName || 'Clinical Summary',
-            filterArray: [LABKEY.Filter.create('Id', animalId, LABKEY.Filter.Types.EQUAL)],
-            scope: this,
-            success: function(results){
-                if (results && results.rows && results.rows.length){
-                    cache.demographics = new LDK.SelectRowsRow(results.rows[0]);
-                }
-            },
-            failure: LDK.Utils.getErrorCallback(),
-            requiredVersion: 9.1
-        });
-
-        multi.add(LABKEY.Query.selectRows, {
-            schemaName: this.schemaName || 'study',
-            queryName: this.queryName || 'flags',
-            columns: 'Id,date,category,value',
-            filterArray: [
-                LABKEY.Filter.create('Id', animalId, LABKEY.Filter.Types.EQUAL),
-                LABKEY.Filter.create('isActive', true, LABKEY.Filter.Types.EQUAL)
-            ],
-            scope: this,
-            success: function(results){
-                cache.flags = [];
-
-                if (results && results.rows && results.rows.length){
-                    Ext4.Array.forEach(results.rows, function(r){
-                        cache.flags.push(new LDK.SelectRowsRow(r));
-                    }, this);
-                }
-            },
-            failure: LDK.Utils.getErrorCallback(),
-            requiredVersion: 9.1
-        });
-
-        multi.send(getDemographicsCallback(animalId, cache, callback, scope), this);
-    }
-
-    function getDemographicsCallback(animalId, cache, callback, scope){
-        return function(){
-            cache.loadTime = new Date();
-            demographicsCache[animalId] = cache;
-console.log('loading for: ' + animalId);
-            if (callback)
-                callback.call(scope || this, animalId, cache);
-        }
-    }
-
     var gridButtons = {
         ADDRECORD: function(config){
             return Ext4.Object.merge({
@@ -105,7 +48,7 @@ console.log('loading for: ' + animalId);
         ADDANIMALS: function(config){
             return Ext4.Object.merge({
                 text: 'Add Animals',
-                tooltip: 'Click to add rows',
+                tooltip: 'Click to add a batch of animals, either as a list or by location',
                 handler: function(btn){
                     var grid = btn.up('gridpanel');
 
@@ -364,6 +307,10 @@ console.log('loading for: ' + animalId);
             if(col.editable && !col.editor)
                 col.editor = LABKEY.ext.Ext4Helper.getGridEditorConfig(meta);
 
+            if (col.editor && col.editor.xtype == 'numberfield'){
+                col.editor.hideTrigger = true;
+            }
+
             col.renderer = LABKEY.ext.Ext4Helper.getDefaultRenderer(col, meta, grid);
 
             //HTML-encode the column header
@@ -387,6 +334,10 @@ console.log('loading for: ' + animalId);
             }
         },
 
+        registerGridButton: function(name, btn){
+            gridButtons[name] = btn;
+        },
+
         getDataEntryFormButton: function(name){
             LDK.Assert.assertNotEmpty('Unknown DataEntryForm button: ' + name, dataEntryFormButtons[name]);
             if (dataEntryFormButtons[name]){
@@ -394,24 +345,15 @@ console.log('loading for: ' + animalId);
             }
         },
 
-        getDemographics: function(animalId, callback, scope){
-            LDK.Assert.assertNotEmpty('getDemographics called with a null animalId', animalId);
+        registerDataEntryFormButton: function(name, btn){
+            dataEntryFormButtons[name] = btn;
+        },
 
-            //reuse cached info if less than 10 secs old
-            if (demographicsCache[animalId]){
-                var ms = (new Date()) - demographicsCache[animalId].loadTime;
-                if (ms < 10000){
-                    callback.call(scope || this, animalId, demographicsCache[animalId]);
-                    return;
-                }
-            }
-
-            if (Ext4.isEmpty(animalId)){
-                callback.call(scope || this, animalId, null);
-                return;
-            }
-
-            loadDemographics(animalId, callback, scope);
+        ensureArray: function(val){
+            if (Ext4.isArray(val) || Ext4.isEmpty(val))
+                return val;
+            else
+                return [val];
         }
     }
 };

@@ -1,7 +1,10 @@
 <script type="text/javascript">
 
 Ext4.onReady(function (){
-    if (!LABKEY.ActionURL.getParameter('key')){alert('Must Provide Necropsy Number'); return false;}
+    if (!LABKEY.ActionURL.getParameter('key')){
+        alert('Must Provide Necropsy Number');
+        return;
+    }
 
     var key = LABKEY.ActionURL.getParameter('key');
     var webpart = <%=webpartContext%>;

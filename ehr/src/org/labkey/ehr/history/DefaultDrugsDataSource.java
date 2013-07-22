@@ -40,7 +40,7 @@ public class DefaultDrugsDataSource extends AbstractDataSource
 {
     public DefaultDrugsDataSource()
     {
-        super("study", "Drug Administration", "Medication Given", "Medications");
+        super("study", "Drug Administration", "Medication Given", "Clinical");
     }
 
     @Override

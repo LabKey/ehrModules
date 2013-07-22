@@ -3,7 +3,7 @@
     Ext4.onReady(function (){
         if (!LABKEY.ActionURL.getParameter('procedureId')){
             alert('Must Provide A Procedure Id');
-            return false;
+            return;
         }
 
         var procedureId = LABKEY.ActionURL.getParameter('procedureId');

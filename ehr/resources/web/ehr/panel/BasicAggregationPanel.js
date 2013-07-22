@@ -42,8 +42,6 @@ Ext4.define('EHR.panel.BasicAggregationPanel', {
         var rows = [];
         Ext4.each(keys, function(key){
             var rowLabel = key;
-            LDK.Assert.assertNotEmpty('Empty value for row label in BasicAggregationPanel, which probably indicates bad data', key);
-
             rowLabel = Ext4.isEmpty(rowLabel) ? 'None' : rowLabel;
             if (rowLabel)
                 rowLabel = rowLabel.replace(/\n/g, ' / ');

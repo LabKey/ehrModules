@@ -47,6 +47,8 @@ import org.labkey.api.study.StudyService;
 import org.labkey.api.util.JobRunner;
 import org.labkey.api.view.UnauthorizedException;
 import org.labkey.ehr.EHRManager;
+import org.labkey.ehr.demographics.AnimalRecord;
+import org.labkey.ehr.demographics.DemographicsCache;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -456,5 +458,10 @@ public class TriggerScriptHelper
 
             }
         });
+    }
+
+    public AnimalRecord getDemographicRecord(String id)
+    {
+        return DemographicsCache.get().getAnimal(getContainer(), getUser(), id);
     }
 }

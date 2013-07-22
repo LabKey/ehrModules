@@ -41,48 +41,12 @@ Ext4.define('EHR.panel.LocationFilterType', {
                 scope: this.tabbedReportPanel
             }],
             items: [{
-                xtype: 'checkcombo',
-                expandToFitContent: true,
-                addAllSelector: true,
-                nullCaption: '[Blank]',
-                editable: false,
-                fieldLabel: 'Area',
-                multiSelect: true,
-                displayField:'area',
-                valueField: 'area',
-                typeAhead: true,
-                queryMode: 'local',
-                store: Ext4.create('LABKEY.ext4.Store', {
-                    schemaName: 'ehr_lookups',
-                    queryName: 'areas',
-                    sort: 'area',
-                    autoLoad: true
-                }),
+                xtype: 'ehr-areafield',
                 itemId: 'areaField',
-                listeners: {
-                    select: function(field, records){
-                        if (!records.length)
-                            return;
-
-                        var areas = [];
-                        Ext4.Array.forEach(records, function(r){
-                            areas.push(r.get('area'));
-                        }, this);
-
-                        var roomField = field.up('panel').down('#roomField');
-                        roomField.suspendEvents();
-                        roomField.selectByAreas(areas);
-                        roomField.resumeEvents();
-                    },
-                    render: function(field){
-                        var val = field.getValue();
-                        val = Ext4.isArray(val) || !val ? val : [val];
-
-                        var roomField = field.up('panel').down('#roomField');
-                        roomField.suspendEvents();
-                        roomField.selectByAreas(val);
-                        roomField.resumeEvents();
-                    }
+                fieldLabel: 'Area(s)',
+                pairedWithRoomField: true,
+                getRoomField: function(){
+                    return this.up('panel').down('#roomField');
                 },
                 value: ctx.area ? ctx.area.split(',') :  null
             },{
@@ -190,12 +154,12 @@ Ext4.define('EHR.panel.LocationFilterType', {
     getTitle: function(){
         var title = [];
 
-        var room = this.down('#roomField').getValue();
-        if (Ext4.isArray(room)){
-            if (room.length < 8)
-                room = room.join(', ');
+        var roomText = this.down('#roomField').getValue();
+        if (Ext4.isArray(roomText)){
+            if (roomText.length < 8)
+                roomText = 'Room: ' + roomText.join(', ');
             else
-                room = 'multiple rooms selected';
+                roomText = 'Multiple rooms selected';
         }
 
         var cage = this.down('#cageField').getValue();
@@ -204,11 +168,11 @@ Ext4.define('EHR.panel.LocationFilterType', {
         area = Ext4.isArray(area) ? area.join(', ') : area;
 
         //see note in getFilterArray() about area/room
-        if (area && !room)
+        if (area && !roomText)
             title.push('Area: ' + area);
 
-        if (room)
-            title.push('Room: ' + room);
+        if (roomText)
+            title.push(roomText);
 
         if (cage)
             title.push('Cage: ' + cage);

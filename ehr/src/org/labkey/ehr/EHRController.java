@@ -43,6 +43,8 @@ import org.labkey.api.view.UnauthorizedException;
 import org.labkey.api.view.WebPartView;
 import org.labkey.api.view.template.ClientDependency;
 import org.labkey.ehr.dataentry.DataEntryManager;
+import org.labkey.ehr.demographics.AnimalRecord;
+import org.labkey.ehr.demographics.DemographicsCache;
 import org.labkey.ehr.history.ClinicalHistoryManager;
 import org.labkey.ehr.history.LabworkManager;
 import org.labkey.ehr.pipeline.GeneticCalculationsJob;
@@ -92,6 +94,53 @@ public class EHRController extends SpringActionController
         }
     }
 
+    @RequiresPermissionClass(ReadPermission.class)
+    public class GetDemographicsAction extends ApiAction<GetDemographicsForm>
+    {
+        public ApiResponse execute(GetDemographicsForm form, BindException errors) throws Exception
+        {
+            Map<String, Object> props = new HashMap<String, Object>();
+
+            if (form.getIds() == null || form.getIds().length == 0)
+            {
+                errors.reject(ERROR_MSG, "No Ids Provided");
+                return null;
+            }
+
+            try
+            {
+                JSONObject json = new JSONObject();
+                for (AnimalRecord r : DemographicsCache.get().getAnimals(getContainer(), getUser(), Arrays.asList(form.getIds())))
+                {
+                    json.put(r.getId(), r.getProps());
+                }
+
+                props.put("results", json);
+            }
+            catch (Exception e)
+            {
+                ExceptionUtil.logExceptionToMothership(getViewContext().getRequest(), e);
+                throw e;
+            }
+
+            return new ApiSimpleResponse(props);
+        }
+    }
+
+    public static class GetDemographicsForm
+    {
+        private String[] _ids;
+
+        public String[] getIds()
+        {
+            return _ids;
+        }
+
+        public void setIds(String[] ids)
+        {
+            _ids = ids;
+        }
+    }
     @RequiresPermissionClass(AdminPermission.class)
     public class SetGeneticCalculationTaskSettingsAction extends ApiAction<ScheduleGeneticCalculationForm>
     {
@@ -305,6 +354,10 @@ public class EHRController extends SpringActionController
 
                 resultProperties.put("success", true);
                 resultProperties.put("results", results);
+
+                if (form.isIncludeDistinctTypes())
+                    resultProperties.put("distinctTypes", ClinicalHistoryManager.get().getTypes(getContainer(), getUser()));
+
                 return new ApiSimpleResponse(resultProperties);
             }
             catch (IllegalArgumentException e)
@@ -564,7 +617,8 @@ public class EHRController extends SpringActionController
         private String[] _subjectIds;
         private Date _minDate;
         private Date _maxDate;
-        private Boolean _redacted = false;
+        private boolean _redacted = false;
+        private boolean _includeDistinctTypes = false;
 
         public String getParentId()
         {
@@ -626,14 +680,24 @@ public class EHRController extends SpringActionController
             _maxDate = maxDate;
         }
 
-        public Boolean isRedacted()
+        public boolean isRedacted()
         {
-            return _redacted == null ? false : _redacted;
+            return _redacted;
         }
 
         public void setRedacted(Boolean redacted)
         {
-            _redacted = redacted;
+            _redacted = redacted == null ? false : redacted;
+        }
+
+        public boolean isIncludeDistinctTypes()
+        {
+            return _includeDistinctTypes;
+        }
+
+        public void setIncludeDistinctTypes(boolean includeDistinctTypes)
+        {
+            _includeDistinctTypes = includeDistinctTypes;
         }
     }
 
@@ -707,17 +771,30 @@ public class EHRController extends SpringActionController
         @Override
         public ModelAndView getView(EnterDataForm form, BindException errors) throws Exception
         {
-            if (form.getFormType() == null)
+            if ((form.getFormType() == null) && (form.getQueryName() == null && form.getSchemaName() == null))
             {
-                errors.reject(ERROR_MSG, "No form type provided");
+                errors.reject(ERROR_MSG, "Must provide either the form type or schema/query");
                 return null;
             }
 
-            DataEntryForm def = DataEntryManager.get().getFormByName(form.getFormType(), getContainer(), getUser());
-            if (def == null)
+            DataEntryForm def = null;
+            if (form.getFormType() != null)
             {
-                errors.reject(ERROR_MSG, "No form type provided");
-                return null;
+                def = DataEntryManager.get().getFormByName(form.getFormType(), getContainer(), getUser());
+                if (def == null)
+                {
+                    errors.reject(ERROR_MSG, "Unknown form type: " + form.getFormType());
+                    return null;
+                }
+            }
+            else
+            {
+                def = DataEntryManager.get().getFormForQuery(form.getSchemaName(), form.getQueryName(), getContainer(), getUser());
+                if (def == null)
+                {
+                    errors.reject(ERROR_MSG, "Unable to create form for query: " + form.getSchemaName() + "." + form.getQueryName());
+                    return null;
+                }
             }
 
             _title = def.getLabel();
@@ -745,6 +822,9 @@ public class EHRController extends SpringActionController
         private String _formType;
         private String _taskId;
         private String _requestId;
+
+        private String _schemaName;
+        private String _queryName;
 
         public String getFormType()
         {
@@ -774,6 +854,26 @@ public class EHRController extends SpringActionController
         public void setRequestId(String requestId)
         {
             _requestId = requestId;
+        }
+
+        public String getSchemaName()
+        {
+            return _schemaName;
+        }
+
+        public void setSchemaName(String schemaName)
+        {
+            _schemaName = schemaName;
+        }
+
+        public String getQueryName()
+        {
+            return _queryName;
+        }
+
+        public void setQueryName(String queryName)
+        {
+            _queryName = queryName;
         }
     }
 }

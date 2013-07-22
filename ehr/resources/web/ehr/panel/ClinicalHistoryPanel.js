@@ -11,6 +11,7 @@
  * @cfg autoLoadRecords
  * @cfg hideExportBtn
  * @cfg sortMode
+ * @cfg checkedItems
  */
 Ext4.define('EHR.panel.ClinicalHistoryPanel', {
     extend: 'Ext.panel.Panel',
@@ -18,12 +19,31 @@ Ext4.define('EHR.panel.ClinicalHistoryPanel', {
 
     initComponent: function(){
         this.sortMode = this.sortMode || 'date';
+        if (this.minDate && !Ext4.isDate(this.minDate))
+            this.minDate = LDK.ConvertUtils.parseDate(this.maxDate);
+        if (this.maxDate && !Ext4.isDate(this.minDate))
+            this.maxDate = LDK.ConvertUtils.parseDate(this.maxDate);
 
         Ext4.apply(this, {
             border: false,
             items: [
                 this.getGridConfig()
-            ]
+            ],
+            listeners: {
+                scope: this,
+                render: function(){
+                    //defer loading of data
+                    if (this.autoLoadRecords){
+                        store.reloadData({
+                            subjectIds: [this.subjectId],
+                            caseId: this.caseId,
+                            minDate: this.minDate,
+                            maxDate: this.maxDate,
+                            checkedItems: this.checkedItems
+                        });
+                    }
+                }
+            }
         });
 
         this.callParent();
@@ -43,22 +63,16 @@ Ext4.define('EHR.panel.ClinicalHistoryPanel', {
         if(this.subjectId || this.caseId){
             var store = this.down('#gridPanel').store;
             store.on('datachanged', function(){
-                if (!store.isLoadingData)
+                if (!store.isLoadingData){
                     this.down('grid').setLoading(false);
+                    this.setEmptyText();
+                    this.down('grid').getView().refresh();
+                }
             }, this);
 
             store.on('exception', function(store){
                 this.down('grid').setLoading(false);
             }, this);
-
-            if (this.autoLoadRecords){
-                store.reloadData({
-                    subjectIds: [this.subjectId],
-                    caseId: this.caseId,
-                    minDate: this.minDate,
-                    maxDate: this.maxDate
-                });
-            }
         }
         else {
             Ext4.Msg.alert('Error', 'Must supply at least 1 subject Id or a caseId')
@@ -75,8 +89,8 @@ Ext4.define('EHR.panel.ClinicalHistoryPanel', {
             height: this.gridHeight,
             hideHeaders: true,
             viewConfig : {
-                emptyText: 'There are no records to display',
-                derferEmptyText: false,
+                emptyText: this.minDate ? 'No records found since: ' + this.minDate.format('m/d/Y') : 'There are no records to display',
+                derferEmptyText: true,
                 enableTextSelection: true,
                 border: false,
                 stripeRows : true
@@ -105,6 +119,7 @@ Ext4.define('EHR.panel.ClinicalHistoryPanel', {
                     itemId: 'maxDate',
                     labelWidth: 80,
                     width: 200,
+                    hidden: true,
                     value: this.maxDate
                 },{
                     xtype: 'button',
@@ -129,6 +144,12 @@ Ext4.define('EHR.panel.ClinicalHistoryPanel', {
                             minDate: panel.minDate,
                             maxDate: panel.maxDate
                         });
+                    }
+                },{
+                    text: 'Show/Hide Types',
+                    scope: this,
+                    handler: function(btn){
+                        this.showFilterPanel();
                     }
                 },{
                     text: 'Collapse All',
@@ -181,6 +202,8 @@ Ext4.define('EHR.panel.ClinicalHistoryPanel', {
                             params.maxDate = this.maxDate.format('Y-m-d');
                         if (this.sortMode)
                             params.sortMode = this.sortMode;
+                        if (this.checkedItems && this.checkedItems.length)
+                            params.checkedItems = this.checkedItems.join(';');
 
                         var url = LABKEY.ActionURL.buildURL('ehr', 'clinicalHistoryExport', null, params);
                         window.open(url, '_blank');
@@ -199,8 +222,13 @@ Ext4.define('EHR.panel.ClinicalHistoryPanel', {
             maxDate: config.maxDate,
             subjectIds: [this.subjectId],
             caseId: this.caseId,
-            sortMode: this.sortMode
+            sortMode: this.sortMode,
+            checkedItems: this.checkedItems
         });
+    },
+
+    setEmptyText: function(){
+        this.down('grid').getView().emptyText = this.minDate ? 'No records found since: ' + this.minDate.format('m/d/Y') : 'There are no records to display';
     },
 
     getStoreConfig: function(){
@@ -273,5 +301,89 @@ Ext4.define('EHR.panel.ClinicalHistoryPanel', {
             grid.store.changeMode(mode);
         }, this, {single: true});
         grid.reconfigure(null, columns);
+    },
+
+    showFilterPanel: function(){
+        Ext4.create('EHR.window.ClinicalHistoryFilterWindow', {
+            clinicalHistoryPanel: this
+        }).show();
+    },
+
+    applyFilter: function(types){
+        this.checkedItems = types;
+        this.getStore().applyFilter(types);
+    },
+
+    getStore: function(){
+        return this.down('grid').store;
     }
 });
+
+/**
+ * @cfg clinicalHistoryPanel
+ */
+Ext4.define('EHR.window.ClinicalHistoryFilterWindow', {
+    extend: 'Ext.window.Window',
+
+    initComponent: function(){
+        Ext4.apply(this, {
+            bodyStyle: 'padding: 5px;',
+            title: 'Show/Hide Types',
+            closeAction: 'destroy',
+            modal: true,
+            defaults: {
+                border: false
+            },
+            items: [{
+                html: 'Use the checkboxes below to toggle which types of information are shown',
+                style: 'padding-bottom: 10px;'
+            },{
+                xtype: 'checkboxgroup',
+                columns: 1,
+                itemId: 'types',
+                defaults: {
+                    name: 'type',
+                    xtype: 'checkbox'
+                },
+                items: this.getCheckboxes()
+            }],
+            buttons: [{
+                text: 'Submit',
+                scope: this,
+                handler: this.onSubmit
+            },{
+                text: 'Cancel',
+                handler: function(btn){
+                    btn.up('window').close();
+                }
+            }]
+        });
+
+        this.callParent();
+    },
+
+    getCheckboxes: function(){
+        var types = {};
+        var store = this.clinicalHistoryPanel.getStore();
+
+
+        var items = [];
+        Ext4.Array.each(store.getDistinctTypes(), function(type){
+            items.push({
+                fieldLabel: type,
+                inputValue: type,
+                checked: (!this.clinicalHistoryPanel.checkedItems || Ext4.Array.indexOf(this.clinicalHistoryPanel.checkedItems, type) > -1)
+            });
+        }, this);
+
+        return items;
+    },
+
+    onSubmit: function(){
+        var types = this.down('#types').getValue().type;
+        types = Ext4.isArray(types) || !types ? types : [types];
+        this.clinicalHistoryPanel.applyFilter(types);
+        this.close();
+    }
+});
+

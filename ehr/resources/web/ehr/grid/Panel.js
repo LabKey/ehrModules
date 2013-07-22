@@ -33,8 +33,8 @@ Ext4.define('EHR.grid.Panel', {
         });
 
         this.callParent();
-        this.addEvents('animalselect');
-        this.enableBubble('animalselect');
+        this.addEvents('animalchange');
+        this.enableBubble('animalchange');
 
         this.getSelectionModel().on('selectionchange', function(sm, models){
             if (models.length != 1)
@@ -42,7 +42,7 @@ Ext4.define('EHR.grid.Panel', {
 
             var id = models[0].get('Id');
             if (id)
-                this.fireEvent('animalselect', id);
+                this.fireEvent('animalchange', id);
         }, this);
 
         this.mon(this.store, 'datachanged', this.onStoreDataChanged, this);

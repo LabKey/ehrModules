@@ -4,7 +4,7 @@
 #  Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
 ##
 
-#options(echo=TRUE);
+options(echo=FALSE);
 library(kinship2)
 library(Rlabkey)
 #library(stringr);
@@ -15,6 +15,17 @@ library(Rlabkey)
 
 #NOTE: to run directly in R instead of through labkey, uncomment this:
 #labkey.url.base = "http://localhost:8080/labkey/"
+
+if (length(labkey.data$id) == 0){
+    print("*************************************");
+    print ("");
+    print ("");
+    print("No pedigree data found for the supplied animals");
+    print("");
+    print("");
+    print("*************************************");
+    stop();
+}
 
 #this section queries labkey to obtain the pedigree data
 #you could replace it with a command that loads from TSV if you like
@@ -31,17 +42,6 @@ allPed <- labkey.selectRows(
 )
 colnames(allPed)<-c('Id', 'Dam', 'Sire', 'Gender', 'Status')
 
-# goodPed <- labkey.selectRows(
-#     baseUrl=labkey.url.base,
-#     schemaName="study",
-#     queryName="Demographics",
-#     colSelect=c('Id', 'Dam','Sire', 'Gender'),
-#     showHidden = TRUE,
-#     colNameOpt = 'fieldname',  #rname
-#     #showHidden = FALSE
-# )
-# colnames(goodPed)<-c('Id', 'Dam', 'Sire', 'Gender')
-
 # Since the dataset is built from different sources, missing value is either NA or blank
 # which create a bug for the following functions.
 # We will change blank to NA
@@ -54,18 +54,6 @@ is.na(allPed$Dam)<-which(allPed$Dam=="")
 is.na(allPed$Sire)<-which(allPed$Sire=="")
 is.na(allPed$Gender)<-which(allPed$Gender=="")
 is.na(allPed$Status)<-which(allPed$Status=="")
-
-#the following can be uncommented to validate the data
-#allPedfile=read.delim("demographics_2011-07-01.txt",header=TRUE,na.strings="")
-#allPedfile=allPedfile[,1:4]
-#str(allPed[(is.na(allPed$Dam))&(!is.na(allPed$Sire)),])
-#str(allPed[(!is.na(allPed$Dam))&(is.na(allPed$Sire)),])
-#duplicatedId=allPed$Id[duplicated(allPed$Id)]
-#allPed[allPed$Id%in%duplicatedId,]# Check for duplication: passed
-#Id.Dam=unique(allPed$Dam)
-#allPed[(allPed$Id%in%Id.Dam)&(allPed$Gender!=2),]#Check for Dam that is not female
-#Id.Sire=unique(allPed$Sire)
-#allPed[(allPed$Id%in%Id.Sire)&(allPed$Gender!=1),]#Check for Sire that is not male:1 not passed
 
 #this function adds missing parents to the pedigree
 #it is similar to add.Inds from kinship; however, we retain gender

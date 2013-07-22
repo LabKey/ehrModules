@@ -40,11 +40,25 @@ Ext4.define('EHR.panel.DataEntryPanel', {
 
         this.callParent();
 
-        this.addEvents('datachanged', 'serverdatachanged', 'clientdatachanged', 'animalselect');
+        this.addEvents('datachanged', 'serverdatachanged', 'clientdatachanged', 'animalchange');
+
+        //monitor dirty state
+        window.onbeforeunload = LABKEY.beforeunload(function (){
+            return this.isDirty();
+        }, this);
+    },
+
+    isDirty: function(){
+        var ret = this.storeCollection.isDirty();
+        console.log(ret);
+
+        return true;
     },
 
     onStoreCollectionCommitComplete: function(sc, extraContext){
         console.log('commit complete');
+        console.log(arguments);
+
         Ext4.Msg.hide();
 
         if(extraContext && extraContext.successURL){
@@ -82,6 +96,7 @@ Ext4.define('EHR.panel.DataEntryPanel', {
     },
 
     onStoreCollectionCommitException: function(sc){
+        console.log(arguments);
         console.log('commit exception');
         Ext4.Msg.hide();
     },

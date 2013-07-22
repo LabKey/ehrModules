@@ -18,6 +18,7 @@ package org.labkey.ehr.dataentry;
 import org.apache.commons.lang3.StringUtils;
 import org.labkey.api.ehr.dataentry.AbstractDataEntryForm;
 import org.labkey.api.ehr.dataentry.FormSection;
+import org.labkey.api.ehr.dataentry.TaskFormSection;
 import org.labkey.api.module.Module;
 
 import java.util.ArrayList;
@@ -40,28 +41,6 @@ public class TaskForm extends AbstractDataEntryForm
         {
             s.addConfigSource("Task");
         }
-    }
-
-    public static TaskForm createFormPanel(Module owner, String schemaName, String queryName, String category)
-    {
-        List<FormSection> sections = new ArrayList<>();
-        String label = StringUtils.capitalize(queryName);
-        sections.add(new TaskFormSection());
-        sections.add(new AnimalDetailsFormSection());
-        sections.add(new SimpleFormPanel(schemaName, queryName, label));
-
-        return new TaskForm(owner, queryName, label, category, sections);
-    }
-
-    public static TaskForm createGridPanel(Module owner, String schemaName, String queryName, String category)
-    {
-        List<FormSection> sections = new ArrayList<>();
-        String label = StringUtils.capitalize(queryName);
-        sections.add(new TaskFormSection());
-        sections.add(new AnimalDetailsFormSection());
-        sections.add(new SimpleGridPanel(schemaName, queryName, label));
-
-        return new TaskForm(owner, queryName, label, category, sections);
     }
 
     public static TaskForm create(Module owner, String category, String name, String label, List<FormSection> formSections)

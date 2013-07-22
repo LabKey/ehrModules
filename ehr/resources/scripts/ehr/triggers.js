@@ -598,8 +598,7 @@ exports.complete = EHR.Server.Triggers.complete;
  * This performs a set of checks shared by both beforeInsert() and beforeUpdate().  It is meant to be called internally and should not be used directly.
  * It includes the following:
  * <br>1. Converts any empty strings in the row to null
- * <br>2. Verify the format of the ID using EHR.Server.Validation.verifyIdFormat()
- * <br>3. Queries and caches the study.demographics record (if extraContext.quickValidation is not true).  If this record is found, it performes the following:
+ * <br>2. Queries and caches the study.demographics record (if extraContext.quickValidation is not true).  If this record is found, it performes the following:
  * <br>
  * <li>If the row has a property called 'id/curlocation/location', this will be populated with the current room/cage of the animal/</li>
  * <li>Checks whether this ID exists in study.demographics and is currently located at the center.  If not, it will return an error of severity INFO.  However, if this record is a request QCState, the error will be a warning, which prevents submission.</li>
@@ -658,11 +657,6 @@ EHR.Server.Triggers.rowInit = function(errors, row, oldRow){
             EHR.ETL.fixRow.call(this, row, errors, this.scriptContext);
     }
 
-    //check Id format
-    if(this.scriptContext.extraContext.dataSource != 'etl' && !this.scriptContext.extraContext.skipIdFormatCheck){
-        EHR.Server.Validation.verifyIdFormat(row, errors, this.scriptContext)
-    }
-
     if(this.scriptContext.extraContext.dataSource != 'etl' && this.scriptContext.removeTimeFromDate)
         EHR.Server.Validation.removeTimeFromDate(row, errors);
 
@@ -701,9 +695,9 @@ EHR.Server.Triggers.rowInit = function(errors, row, oldRow){
                 else {
                     if(!this.scriptContext.extraContext.allowAnyId){
                         if(EHR.Server.Security.getQCStateByLabel(row.QCStateLabel).isRequest)
-                            EHR.Server.Validation.addError(errors, 'Id', 'Id not found in demographics table', 'ERROR');
+                            EHR.Server.Validation.addError(errors, 'Id', 'Id not found in demographics table: ' + row.id, 'ERROR');
                         else
-                            EHR.Server.Validation.addError(errors, 'Id', 'Id not found in demographics table', 'INFO');
+                            EHR.Server.Validation.addError(errors, 'Id', 'Id not found in demographics table: ' + row.id, 'INFO');
                     }
                 }
             }

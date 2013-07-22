@@ -53,12 +53,28 @@ function makePanel(){
                         if (!value)
                             return;
 
-                        window.location = LABKEY.ActionURL.buildURL(
-                            'ehr'
-                            ,'participantView'
-                            ,ctx['EHRStudyContainer']
-                            ,{participantId: value}
+                        value = Ext4.String.trim(value);
+                        value = value.replace(/[\s,;]+/g, ';');
+                        value = value.replace(/(^;|;$)/g, '');
+                        value = value.toLowerCase();
+                        value = value.split(';');
+                        value = Ext4.unique(value);
+
+                        if (value.length > 1){
+                            window.location = LABKEY.ActionURL.buildURL(
+                                'ehr',
+                                'animalHistory',
+                                ctx['EHRStudyContainer']
+                            ) + '#subjects:' + value.join(';') + '&inputType:multiSubject&showReport:1';
+                        }
+                        else {
+                            window.location = LABKEY.ActionURL.buildURL(
+                                'ehr',
+                                'participantView',
+                                ctx['EHRStudyContainer'],
+                                {participantId: value.join(';')}
                             );
+                        }
                     },
                     scope: this
                 },{
@@ -146,7 +162,7 @@ function makePanel(){
                         var field = btn.up('panel').down('#projectField');
                         var value = field.getValue();
                         if (!value)
-                            return false;
+                            return;
 
                         window.location = LABKEY.ActionURL.buildURL('ehr', 'projectDetails', ctx['EHRStudyContainer'], {key:value});
                     }
@@ -159,25 +175,10 @@ function makePanel(){
                     colspan: 2
                 },{
                     itemId: 'protocolField',
-                    emptyText: '',
-                    name: 'protocolField',
-                    xtype: 'combo',
-                    displayField: 'displayName',
-                    valueField: 'protocol',
+                    xtype: 'ehr-protocolfield',
                     width: this.FIELD_WIDTH,
                     style: this.FIELD_STYLE,
-                    queryMode: 'local',
-                    editable: true,
-                    store: {
-                        type: 'labkey-store',
-                        containerPath: ctx['EHRStudyContainer'],
-                        schemaName: 'ehr',
-                        queryName: 'protocol',
-                        columns: 'protocol,displayName',
-                        filterArray: [LABKEY.Filter.create('enddate', null, LABKEY.Filter.Types.ISBLANK)],
-                        sort: 'displayName',
-                        autoLoad: true
-                    }
+                    name: 'protocolField'
                 },{
                     xtype: 'button',
                     border: true,
@@ -201,7 +202,7 @@ function makePanel(){
                     style: 'padding-top: 10px;',
                     colspan: 2
                 },{
-                    xtype: 'textfield',
+                    xtype: 'ehr-roomfieldsingle',
                     itemId: 'roomField',
                     name: 'room',
                     width: this.FIELD_WIDTH,

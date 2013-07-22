@@ -15,6 +15,8 @@
  */
 package org.labkey.ehr.dataentry;
 
+import org.labkey.api.ehr.dataentry.SimpleFormSection;
+
 /**
  * User: bimber
  * Date: 4/27/13

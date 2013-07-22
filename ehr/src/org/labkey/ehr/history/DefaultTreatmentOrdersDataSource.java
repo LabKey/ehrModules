@@ -15,11 +15,18 @@
  */
 package org.labkey.ehr.history;
 
+import org.labkey.api.data.Container;
+import org.labkey.api.data.DbSchema;
 import org.labkey.api.data.Results;
+import org.labkey.api.data.SQLFragment;
+import org.labkey.api.data.SqlSelector;
+import org.labkey.api.data.TableInfo;
 import org.labkey.api.query.FieldKey;
+import org.labkey.api.security.User;
 import org.labkey.api.util.PageFlowUtil;
 
 import java.sql.SQLException;
+import java.util.Collections;
 import java.util.Date;
 import java.util.Set;
 
@@ -43,19 +50,6 @@ public class DefaultTreatmentOrdersDataSource extends AbstractDataSource
         sb.append(safeAppend(rs, "Frequency", "frequency/meaning"));
         sb.append(safeAppend(rs, "Reason", "reason"));
         sb.append(safeAppend(rs, "Route", "route"));
-
-        //TODO: conditional based on whether it has ended or not?  maybe a note for 'ending in X days?'
-
-        if (rs.hasColumn(FieldKey.fromString("duration")) && rs.getObject("duration") != null)
-        {
-            int duration = rs.getInt("duration");
-
-            //for single day treatments, we will have the record of the order, plus a medication given, so we skip the treatment in the list
-            if (duration >= 1)
-                return null;
-
-            sb.append("Duration: ").append(duration == 0 ? 1 : duration).append(" days").append("\n");
-        }
 
         if (rs.hasColumn(FieldKey.fromString("concentration")) && rs.getObject("concentration") != null)
         {
@@ -97,6 +91,18 @@ public class DefaultTreatmentOrdersDataSource extends AbstractDataSource
                 sb.append(" " + rs.getString("amount_units"));
 
             sb.append("\n");
+        }
+
+        //TODO: conditional based on whether it has ended or not?  maybe a note for 'ending in X days?'
+        if (rs.hasColumn(FieldKey.fromString("enddate")) && rs.getObject("enddate") != null)
+        {
+            sb.append("End: ").append(_dateFormat.format(rs.getDate("enddate")));
+
+            if (rs.hasColumn(FieldKey.fromString("duration")))
+            {
+                int duration = rs.getInt("duration");
+                sb.append(" (duration: ").append(duration).append(" day").append(duration == 1 ? "" : "s").append(")").append("\n");
+            }
         }
 
         return sb.toString();

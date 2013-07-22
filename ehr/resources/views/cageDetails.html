@@ -2,7 +2,8 @@
 
 Ext4.onReady(function (){
     if (!LABKEY.ActionURL.getParameter('room')){
-        alert('Must Provide Location'); return false;
+        alert('Must Provide Location');
+        return;
     }
 
     var webpart = <%=webpartContext%>;

@@ -20,15 +20,13 @@ Ext4.define('EHR.panel.AnimalDetailsPanel', {
         this.callParent(arguments);
 
         if (this.dataEntryPanel){
-            this.mon(this.dataEntryPanel, 'animalselect', this.loadAnimal, this);
+            this.mon(this.dataEntryPanel, 'animalchange', this.loadAnimal, this, {buffer: 200});
         }
 
         if (this.animalId){
             this.loadAnimal(this.animalId, true);
         }
     },
-
-    cachedData: {},
 
     loadAnimal: function(animalId, forceReload){
         if (!forceReload && animalId == this.animalId){
@@ -43,10 +41,15 @@ Ext4.define('EHR.panel.AnimalDetailsPanel', {
         });
 
         if (animalId)
-            EHR.DataEntryUtils.getDemographics(this.animalId, this.onDemographicsLoad, this);
+            EHR.DemographicsCache.getDemographics(this.animalId, this.onDemographicsLoad, this);
     },
 
     onDemographicsLoad: function(animalId, cache){
+        //Id probably changed prior to data loading
+        if (animalId != this.animalId){
+            return;
+        }
+
         var toAdd;
         if (!cache.demographics){
             toAdd = {
@@ -113,16 +116,17 @@ Ext4.define('EHR.panel.AnimalDetailsPanel', {
         var values = [];
         if (cache.flags && cache.flags.length){
             Ext4.Array.forEach(cache.flags, function(sr){
-                var flag = sr.getDisplayValue('category');
-                if (flag)
-                    flag = Ext4.String.trim(flag);
+                var category = sr.getDisplayValue('category');
+                var highlight = sr.getValue('category/doHighlight');
+                if (category)
+                    category = Ext4.String.trim(category);
 
                 var val = sr.getDisplayValue('value');
                 var text = val;
-                if (flag)
-                    text = flag + ': ' + val;
+                if (category)
+                    text = category + ': ' + val;
 
-                if (text && flag == 'Alert')
+                if (text && highlight)
                     text = '<span style="background-color:yellow">' + text + '</span>';
 
                 if (text)

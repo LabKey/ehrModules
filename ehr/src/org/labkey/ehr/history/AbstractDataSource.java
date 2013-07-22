@@ -93,6 +93,7 @@ abstract public class AbstractDataSource implements HistoryDataSource
         return _name;
     }
 
+
     protected TableInfo getTableInfo(Container c, User u)
     {
         UserSchema us = QueryService.get().getUserSchema(u, c, _schema);
@@ -168,6 +169,11 @@ abstract public class AbstractDataSource implements HistoryDataSource
     protected String getCategoryText(Results rs) throws SQLException
     {
         return _categoryText;
+    }
+
+    public Set<String> getAllowableCategoryGroups(Container c, User u)
+    {
+        return Collections.singleton(_categoryGroup);
     }
 
     protected String getCategoryGroup(Results rs) throws SQLException

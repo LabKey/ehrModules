@@ -18,10 +18,13 @@ package org.labkey.ehr.history;
 import org.labkey.api.data.ColumnInfo;
 import org.labkey.api.data.CompareType;
 import org.labkey.api.data.Container;
+import org.labkey.api.data.DbSchema;
 import org.labkey.api.data.Results;
 import org.labkey.api.data.ResultsImpl;
+import org.labkey.api.data.SQLFragment;
 import org.labkey.api.data.Selector;
 import org.labkey.api.data.SimpleFilter;
+import org.labkey.api.data.SqlSelector;
 import org.labkey.api.data.TableInfo;
 import org.labkey.api.data.TableSelector;
 import org.labkey.api.ehr.HistoryRow;
@@ -36,6 +39,7 @@ import org.labkey.ehr.EHRSchema;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -55,7 +59,7 @@ public class DefaultEncountersDataSource extends AbstractDataSource
 
     public DefaultEncountersDataSource()
     {
-        super("study", "Clinical Encounters", "Encounter", "Encounters");
+        super("study", "Clinical Encounters", "Encounter", "Clinical");
     }
 
     @Override

@@ -42,8 +42,9 @@ Ext4.onReady(function (){
                 width: 660,
                 metadata: {
                     Id: {lookups: false},
-                    'Id/age/AgeInYearsRounded': {duplicate: true},
-                    'Id/MostRecentWeight/MostRecentWeight': {duplicate: true}
+                    'Id/age/AgeInYearsRounded': {duplicate: true, editorConfig: {hideTrigger: true, minValue: 0}},
+                    'Id/MostRecentWeight/MostRecentWeight': {duplicate: true, editorConfig: {hideTrigger: true, minValue: 0}},
+                    'Id/numRoommates/AnimalsInCage': {editorConfig: {hideTrigger: true, minValue: 0}}
                 }
             }).render('animalSearch_'+webpart.wrapperDivId);
         },

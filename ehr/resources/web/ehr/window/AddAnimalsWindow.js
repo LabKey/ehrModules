@@ -16,31 +16,52 @@ Ext4.define('EHR.window.AddAnimalsWindow', {
             modal: true,
             border: true,
             bodyStyle: 'padding:5px',
-            width: 350,
+            width: 400,
             defaults: {
-                width: 330,
+                width: 385,
                 border: false,
                 bodyBorder: false
             },
             items: [{
-                xtype: 'textarea',
-                height: 100,
-                itemId: 'subjArea',
-                fieldLabel: 'Id(s)'
+                html: 'This helper is designed to quick add records to the grid below.  You can look up animals in a variety ',
+                style: 'padding-bottom: 10px;'
             },{
-                xtype: 'ehr-roomfield',
-                emptyText:'',
-                fieldLabel: 'Room(s)',
-                itemId: 'roomField'
+                xtype: 'radiogroup',
+                itemId: 'radio',
+                fieldLabel: 'Choose Type',
+                columns: 1,
+                defaults: {
+                    xtype: 'radio',
+                    name: 'type'
+                },
+                items: [{
+                    inputValue: 'animal',
+                    boxLabel: 'List of Animals',
+                    checked: true
+                },{
+                    inputValue: 'location',
+                    boxLabel: 'Location'
+                },{
+                    inputValue: 'animalGroup',
+                    boxLabel: 'Animal Group'
+                },{
+                    inputValue: 'project',
+                    boxLabel: 'Project/Protocol'
+                }],
+                listeners: {
+                    scope: this,
+                    change: this.onTypeChange
+                }
             },{
-                xtype: 'ehr-cagefield',
-                itemId: 'cageField',
-                fieldLabel: 'Cage'
+                xtype: 'form',
+                itemId: 'theForm',
+                defaults: {
+                    width: 370,
+                    border: false
+                }
             }],
             buttons: [{
-                text:'Submit',
-                disabled:false,
-                ref: 'submit',
+                text: 'Submit',
                 scope: this,
                 handler: function(btn){
                     this.getAnimals();
@@ -54,69 +75,215 @@ Ext4.define('EHR.window.AddAnimalsWindow', {
         });
 
         this.callParent(arguments);
+
+        this.animalHandler();
     },
 
-    getFilterArray: function(){
-        var room = this.down('#roomField').getValue();
-        room = !room || Ext4.isArray(room) ? room : [room];
+    onTypeChange: function(field, val, oldVal){
+        if (!val || !val.type)
+            return;
 
-        var cage = this.down('#cageField').getValue();
+        var method = val.type + 'Handler';
+        LDK.Assert.assertTrue('Unknown handler in AddAnimalsWindow: ' + method, Ext4.isFunction(this[method]));
 
-        var filterArray = [];
+        if (Ext4.isFunction(this[method])){
+            this[method]();
+        }
 
-        if (!Ext4.isEmpty(room))
-            filterArray.push(LABKEY.Filter.create('Id/curLocation/room', room.join(';'), LABKEY.Filter.Types.EQUALS_ONE_OF));
+    },
 
-        if (!Ext4.isEmpty(cage))
-            filterArray.push(LABKEY.Filter.create('Id/curLocation/cage', cage, LABKEY.Filter.Types.EQUAL));
+    animalHandler: function(){
+        var form = this.down('#theForm');
+        form.removeAll();
+        form.add({
+            xtype: 'textarea',
+            height: 100,
+            itemId: 'subjArea',
+            fieldLabel: 'Id(s)'
+        });
 
-        return filterArray;
+        form.getAnimals = function(){
+            //we clean up, combine subjects
+            var subjectList = this.down('#subjArea').getValue();
+            if(subjectList){
+                subjectList = subjectList.replace(/[\s,;]+/g, ';');
+                subjectList = subjectList.replace(/(^;|;$)/g, '');
+                subjectList = subjectList.toLowerCase();
+                subjectList = subjectList.split(';');
+                this.addSubjects(subjectList)
+            }
+            else {
+                Ext4.Msg.alert('Error', 'Must enter at least 1 animal Id');
+            }
+        }
+    },
+
+    addSubjects: function(subjectList){
+        if (subjectList.length && this.targetStore){
+            subjectList = Ext4.Array.unique(subjectList);
+            if (subjectList.length > 200){
+                Ext4.Msg.alert('Error', 'Too many animals were returned: ' + subjectList.length);
+                return;
+
+            }
+
+            var records = [];
+            Ext4.Array.forEach(subjectList, function(s){
+                records.push(this.targetStore.createModel({Id: s}));
+            }, this);
+            this.targetStore.add(records);
+        }
+
+        if (Ext4.Msg.isVisible())
+            Ext4.Msg.hide();
+
+        this.close();
+    },
+
+    locationHandler: function(){
+        var form = this.down('#theForm');
+        form.removeAll();
+        form.add([{
+            xtype: 'ehr-areafield',
+            multiSelect: false,
+            emptyText: '',
+            fieldLabel: 'Area',
+            itemId: 'areaField',
+            pairedWithRoomField: true,
+            getRoomField: function(){
+                return this.up('form').down('#roomField')
+            }
+        },{
+            xtype: 'ehr-roomfield',
+            emptyText: '',
+            fieldLabel: 'Room(s)',
+            itemId: 'roomField'
+        },{
+            xtype: 'ehr-cagefield',
+            itemId: 'cageField',
+            fieldLabel: 'Cage'
+        }]);
+
+        form.getAnimals = function(){
+            var room = this.down('#roomField').getValue();
+            room = !room || Ext4.isArray(room) ? room : [room];
+
+            var cage = this.down('#cageField').getValue();
+
+            var filterArray = [LABKEY.Filter.create('isActive', true, LABKEY.Filter.Types.EQUAL)];
+
+            if (!Ext4.isEmpty(room))
+                filterArray.push(LABKEY.Filter.create('room', room.join(';'), LABKEY.Filter.Types.EQUALS_ONE_OF));
+
+            if (!Ext4.isEmpty(cage))
+                filterArray.push(LABKEY.Filter.create('cage', cage, LABKEY.Filter.Types.EQUAL));
+
+
+            if (filterArray.length == 1){
+                Ext4.Msg.alert('Error', 'Must choose a location');
+                return;
+            }
+
+            this.doQuery({
+                schemaName: 'study',
+                queryName: 'housing',
+                filterArray: filterArray
+            });
+        }
+    },
+
+    animalGroupHandler: function(){
+        var form = this.down('#theForm');
+        form.removeAll();
+        form.add([{
+            xtype: 'ehr-animalgroupfield',
+            emptyText: '',
+            itemId: 'groupField'
+        }]);
+
+        form.getAnimals = function(){
+            var group = this.down('#groupField').getValue();
+            if (!group){
+                Ext4.Msg.alert('Error', 'Must choose a group');
+                return;
+            }
+
+            var filterArray = [
+                LABKEY.Filter.create('groupId', group, LABKEY.Filter.Types.EQUAL),
+                LABKEY.Filter.create('isActive', true, LABKEY.Filter.Types.EQUAL)
+            ];
+
+            this.doQuery({
+                schemaName: 'ehr',
+                queryName: 'animal_group_members',
+                filterArray: filterArray
+            });
+        }
+    },
+
+    projectHandler: function(){
+        var form = this.down('#theForm');
+        form.removeAll();
+        form.add([{
+            html: 'This will return any animals currently assigned to the selected project or a protocol',
+            style: 'padding-bottom: 10px;'
+        },{
+            xtype: 'ehr-projectfield',
+            emptyText: '',
+            itemId: 'projectField',
+            onlyIncludeProtocolsWithAssignments: true
+        },{
+            xtype: 'ehr-protocolfield',
+            emptyText: '',
+            itemId: 'protocolField',
+            onlyIncludeProtocolsWithAssignments: true
+        }]);
+
+        form.getAnimals = function(){
+            var projectId = this.down('#projectField').getValue();
+            var protocol = this.down('#protocolField').getValue();
+            if (!projectId && !protocol){
+                Ext4.Msg.alert('Error', 'Must choose a project or protocol');
+                return;
+            }
+
+            if (projectId && protocol){
+                Ext4.Msg.alert('Error', 'Cannot pick both a project and protocol');
+                return;
+            }
+
+            var filterArray = [LABKEY.Filter.create('isActive', true, LABKEY.Filter.Types.EQUAL)];
+
+            if (projectId)
+                filterArray.push(LABKEY.Filter.create('project', projectId, LABKEY.Filter.Types.EQUAL));
+
+            if (protocol)
+                filterArray.push(LABKEY.Filter.create('project/protocol', protocol, LABKEY.Filter.Types.EQUAL));
+
+            this.doQuery({
+                schemaName: 'study',
+                queryName: 'assignment',
+                filterArray: filterArray
+            });
+        }
     },
 
     getAnimals: function(){
-        //we clean up, combine subjects
-        var subjectList = this.down('#subjArea').getValue();
-        if(subjectList){
-            subjectList = subjectList.replace(/[\s,;]+/g, ';');
-            subjectList = subjectList.replace(/(^;|;$)/g, '');
-            subjectList = subjectList.toLowerCase();
-            subjectList = subjectList.split(';');
-            if(subjectList.length && this.targetStore){
-                var records = [];
-                Ext4.Array.forEach(subjectList, function(s){
-                    records.push(this.targetStore.createModel({Id: s}));
-                }, this);
-                this.targetStore.add(records);
-            }
-        }
+        this.down('#theForm').getAnimals.call(this);
+    },
 
-        var filterArray = this.getFilterArray();
-        if (!subjectList && !subjectList.length && !filterArray.length){
-            if(!subjectList.length)
-                alert('Must Enter A Room or List of Animals');
+    doQuery: function(config){
+        this.hide();
+        Ext4.Msg.wait("Loading...");
 
-            return;
-        }
-
-        if (filterArray.length){
-            this.hide();
-            Ext4.Msg.wait("Loading...");
-
-            //find distinct animals matching criteria
-            LABKEY.Query.selectRows({
-                schemaName: 'study',
-                queryName: 'demographics',
-                sort: 'Id/curLocation/room,Id/curLocation/cage,Id',
-                columns: 'Id/curLocation/room,Id/curLocation/cage,Id',
-                filterArray: filterArray,
-                scope: this,
-                success: this.onSuccess,
-                failure: LDK.Utils.getErrorCallback()
-            });
-        }
-        else {
-            this.close();
-        }
+        //find distinct animals matching criteria
+        LABKEY.Query.selectRows(Ext4.apply({
+            sort: 'Id',
+            columns: 'Id',
+            scope: this,
+            success: this.onSuccess,
+            failure: LDK.Utils.getErrorCallback()
+        }, config));
     },
 
     onSuccess: function(results){
@@ -126,26 +293,12 @@ Ext4.define('EHR.window.AddAnimalsWindow', {
             return;
         }
 
-        var ids = {};
         var records = [];
-
         Ext4.Array.forEach(results.rows, function(row){
-            var obj;
-            if (!ids[row.Id]){
-                obj = {Id: row.Id};
-                if(row.room)
-                    obj['id/curlocation/location'] = row.room+'-'+row.cage;
-
-                records.push(this.targetStore.createModel(obj));
-                ids[row.Id] = 0;
-            }
+            if(row.Id)
+                records.push(row.Id);
         }, this);
 
-        if (this.targetStore){
-            this.targetStore.add(records);
-        }
-
-        Ext4.Msg.hide();
-        this.close();
+        this.addSubjects(records);
     }
 });

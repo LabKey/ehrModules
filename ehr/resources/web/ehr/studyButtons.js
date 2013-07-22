@@ -3,12 +3,7 @@
  *
  * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
  */
-
-
-Ext.namespace('EHR.ext', 'EHR.Utils', 'EHR.DatasetButtons');
-
-//NOTE: tables requiring this code should declare that dependency in their query XML
-//LABKEY.requiresScript("/ehr/ehrAPI.js");
+Ext4.namespace('EHR.ext', 'EHR.Utils', 'EHR.DatasetButtons');
 
 
 /**
@@ -45,64 +40,8 @@ EHR.DatasetButtons = new function(){
             function onSuccess(){
                 var menu = Ext.menu.MenuMgr.get(dataRegion.name + '.Menu.More Actions');
 
-                var tables = [
-                    {queryName: 'Behavior Remarks', schemaName: 'study'}
-        //            ,{queryName: 'Clinical Remarks', schemaName: 'study'},
-        //            ,{queryName: 'Notes', schemaName: 'study', title: 'Note'},
-        //            ,{queryName: 'Problem List', schemaName: 'study', title: 'Problem'}
-        //            ,{queryName: 'Treatment Orders', schemaName: 'study'}
-                ];
-        //        Ext.each(tables, function(t){
-        //            if(EHR.Security.hasPermission('Completed', 'insert', t))
-        //                addFormButton(dataRegion, t, menu);
-        //        }, this);
-
                 if(dataRegion.schemaName.match(/^study$/i) && dataRegion.queryName.match(/^weight$/i))
                     EHR.DatasetButtons.addWeightCompareBtn(dataRegion.name, menu);
-
-        //        if(dataRegion.schemaName.match(/^study$/i) && dataRegion.queryName.match(/^treatmentSchedule$/i)){
-        //            if(EHR.Security.hasPermission('Completed', 'insert', 'Drug Administration')){
-        //                EHR.DatasetButtons.addTreatmentCompleteBtn(dataRegion, menu);
-        //            }
-        //        }
-
-                if(dataRegion.schemaName.match(/^study$/i) && dataRegion.queryName.match(/^Problem List$/i)){
-                    if(EHR.Security.hasPermission('Completed', 'update', {queryName: 'Problem List', schemaName: 'study'})){
-                        EHR.DatasetButtons.addMarkCompleteBtn(dataRegion.name, menu, 'study', 'Problem List', {xtype: 'datefield'});
-                    }
-                }
-
-                if(dataRegion.schemaName.match(/^study$/i) && dataRegion.queryName.match(/^Treatment Orders$/i)){
-                    if(EHR.Security.hasPermission('Completed', 'update', {queryName: 'Treatment Orders', schemaName: 'study'})){
-                        EHR.DatasetButtons.addMarkCompleteBtn(dataRegion.name, menu, 'study', 'Treatment Orders');
-                    }
-                }
-
-                if(dataRegion.schemaName.match(/^study$/i) && (dataRegion.queryName.match(/^Assignment$/i) || dataRegion.queryName.match(/^ActiveAssignments$/i))){
-                    if(EHR.Security.hasPermission('Completed', 'update', {queryName: 'Assignment', schemaName: 'study'})){
-                        EHR.DatasetButtons.addMarkCompleteBtn(dataRegion.name, menu, 'study', 'Assignment', {xtype: 'datefield'});
-                        EHR.DatasetButtons.addAssignmentTaskBtn(dataRegion.name, menu);
-                    }
-                }
-
-                if(dataRegion.schemaName.match(/^study$/i) && dataRegion.queryName.match(/^Feeding$/i)){
-                    if(EHR.Security.hasPermission('Completed', 'update', {queryName: 'Feeding', schemaName: 'study'})){
-                        EHR.DatasetButtons.addFeedingTaskBtn(dataRegion.name, menu);
-                    }
-                }
-
-        //        if(dataRegion.schemaName.match(/^study$/i) && dataRegion.queryName.match(/^treatmentSchedule$/i)){
-        //            if(EHR.Security.hasPermission('Completed', 'insert', {queryName: 'Drug Administration', schemaName: 'study'})){
-        //                EHR.DatasetButtons.addTreatmentCompleteBtn(dataRegion.name, menu);
-        //            }
-        //        }
-
-        //        if(dataRegion.schemaName.match(/^study$/i) && dataRegion.queryName.match(/^Notes$/i)){
-        //            if(EHR.Security.hasPermission('Completed', 'update', {queryName: 'Notes', schemaName: 'study'})){
-        //                EHR.DatasetButtons.addMarkCompleteBtn(dataRegion.name, menu, 'study', 'Notes');
-        //            }
-        //        }
-
 
                 if(dataRegion.schemaName.match(/^study$/i) && dataRegion.queryName.match(/^Demographics$/i)){
                     if(EHR.Security.hasPermission('Scheduled', 'insert', {queryName: 'Weight', schemaName: 'study'})){
@@ -127,13 +66,11 @@ EHR.DatasetButtons = new function(){
                     if(EHR.Security.hasPermission('Scheduled', 'insert', {queryName: 'Blood Draws', schemaName: 'study'})){
                         EHR.DatasetButtons.addCreateTaskBtn(dataRegion.name, menu, {queries: [{schemaName: 'study', queryName: 'Blood Draws'}], formType: 'Blood Draws'});
                         EHR.DatasetButtons.addChangeBloodQCStateBtn(dataRegion.name, menu);
-                        //EHR.DatasetButtons.addBloodToTaskBtn(dataRegion.name, menu);
                     }
                 }
 
                 if(LABKEY.ActionURL.getAction().match(/^dataEntry$/i) && dataRegion.schemaName.match(/^study$/i) && dataRegion.queryName.match(/^Study( )*Data$/i)){
                     if(EHR.Security.hasPermission('Scheduled', 'insert', {queryName: 'Blood Draws', schemaName: 'study'})){
-                        //EHR.DatasetButtons.addCreateTaskBtn(dataRegion.name, menu, {queries: [{schemaName: 'study', queryName: 'Blood Draws'}], formType: 'Blood Draws'});
                         EHR.DatasetButtons.addChangeQCStateBtn(dataRegion.name, menu);
                     }
                 }
@@ -148,6 +85,7 @@ EHR.DatasetButtons = new function(){
          * @param schemaName
          */
         historyHandler: function(dataRegion, dataRegionName, queryName, schemaName){
+            dataRegion = LABKEY.DataRegions[dataRegionName];
             var checked = dataRegion.getChecked();
             if(!checked || !checked.length){
                 alert('No records selected');
@@ -157,7 +95,9 @@ EHR.DatasetButtons = new function(){
             queryName = queryName || dataRegion.queryName;
             schemaName = schemaName || dataRegion.schemaName;
 
-            var sql = "SELECT DISTINCT s.Id FROM "+schemaName+".\""+queryName+"\" s WHERE s.LSID IN ('" + checked.join("', '") + "')";
+            var pkCols = dataRegion.pkCols || ['lsid'];
+            var colExpr = '(s.' + pkCols.join(" || ',' || s.") + ')';
+            var sql = "SELECT DISTINCT s.Id FROM "+schemaName+".\""+queryName+"\" s WHERE " + colExpr + " IN ('" + checked.join("', '") + "')";
 
             LABKEY.Query.executeSql({
                  schemaName: 'study',
@@ -168,25 +108,26 @@ EHR.DatasetButtons = new function(){
                     for (var i = 0; i < data.rows.length; i++)
                         ids.push(data.rows[i].Id);
 
+                    LDK.Assert.assertTrue('No animals found in more actions handler.', ids.length > 0);
+
                     if (ids.length){
                         var ctx = EHR.Utils.getEHRContext();
-                        if(!ctx)
+                        LDK.Assert.assertNotEmpty('EHRContext not loaded.  This might indicate a ClientDependency issue', ctx);
+                        if(!ctx){
                             return;
+                        }
 
                         var hash = 'inputType:multiSubject&showReport:1&subjects:'+ids.join(',');
-                        window.location = LABKEY.ActionURL.buildURL(
-                            'ehr'
-                            ,'animalHistory.view#'+hash
-                            ,ctx['EHRStudyContainer']
-
-                        );
+                        window.location = LABKEY.ActionURL.buildURL('ehr', 'animalHistory.view#'+hash, ctx['EHRStudyContainer']);
 
                         //force reload if on same page
                         if(LABKEY.ActionURL.getAction() == 'animalHistory'){
                             Ext.History.add(hash);
                             window.location.reload();
                         }
-
+                    }
+                    else {
+                        Ext4.Msg.alert('Error', 'No animals were found for your selection.  Either no rows were checked or there is a bug.');
                     }
                 }
             });
@@ -200,20 +141,15 @@ EHR.DatasetButtons = new function(){
          * @param dataRegion
          * @param dataRegionName
          */
-        showAuditHistoryHandler: function(dataRegion, dataRegionName){
+        showAuditHistoryHandler: function(dataRegionName){
 
-            var checked = dataRegion.getChecked();
+            var checked = LABKEY.DataRegions[dataRegionName].getChecked();
             if(!checked || !checked.length){
                 alert('No records selected');
                 return;
             }
 
-        //    if(checked.length!=1){
-        //        alert('Can only select 1 record at a time');
-        //        return;
-        //    }
-
-            Ext.Msg.wait('Loading...');
+            Ext4.Msg.wait('Loading...');
 
             LABKEY.Query.selectRows({
                 schemaName: 'study',
@@ -224,7 +160,7 @@ EHR.DatasetButtons = new function(){
                 ],
                 scope: this,
                 success: function(data){
-                    Ext.Msg.hide();
+                    Ext4.Msg.hide();
 
                     if(data.rows.length){
                         var items = [{
@@ -234,7 +170,7 @@ EHR.DatasetButtons = new function(){
                         }];
 
                         var url;
-                        Ext.each(data.rows, function(row, idx){
+                        Ext4.Array.forEach(data.rows, function(row, idx){
                             url = LABKEY.ActionURL.buildURL("query", "executeQuery", null, {
                                 schemaName: 'auditLog',
                                 'query.queryName': 'DatasetAuditEvent',
@@ -245,15 +181,12 @@ EHR.DatasetButtons = new function(){
                             items.push({
                                 html: '<a target="_blank" href="'+url+'">'+'Record '+(idx+1)+'</a>',
                                 border: false
-                            })
+                            });
 
                             window.open(url);
                         }, this);
 
-
-
-
-                        this.selectorWin = new Ext.Window({
+                        Ext4.create('Ext.window.Window', {
                             closeAction:'destroy',
                             title: 'Record History',
                             modal: true,
@@ -261,8 +194,8 @@ EHR.DatasetButtons = new function(){
                             items: items,
                             buttons: [{
                                 text: 'Close',
-                                handler: function(b){
-                                    b.ownerCt.ownerCt.close();
+                                handler: function(btn){
+                                    btn.up('window').close();
                                 }
                             }]
                         }).show();
@@ -274,287 +207,196 @@ EHR.DatasetButtons = new function(){
                 },
                 failure: LDK.Utils.getErrorCallback()
             });
-
         },
 
-        /**
-         * This is a helper that appears on all datasets, which will allow the user to jump from the current dataset to any other dataset, filtered based
-         * on the distinct set of currently checked IDs.  The purpose is similar to 'Jump To History'.  It allows you to take a single set of IDs and jump
-         * across different types of data.  Can be useful for certain cross-colony queries.
-         * @param dataRegion
-         * @param dataRegionName
-         * @param queryName
-         * @param schemaName
-         */
-        datasetHandler: function(dataRegion, dataRegionName, queryName, schemaName){
-            dataRegion = LABKEY.DataRegions[dataRegionName];
-
-            var checked = dataRegion.getChecked();
-            if(!checked || !checked.length){
-                alert('No records selected');
-                return;
-            }
-
-            queryName = queryName || dataRegion.queryName;
-            schemaName = schemaName || dataRegion.schemaName;
-
-            var theWindow = new Ext.Window({
-                width: 280,
-                autoHeight: true,
-                modal: true,
-                bodyStyle:'padding:5px',
-                closeAction:'destroy',
-                plain: true,
-                keys: [{
-                    key: Ext.EventObject.ENTER,
-                    handler: runSQL,
-                    scope: this
-                }],
-                title: 'Jump To Other Dataset',
-                layout: 'form',
-                items: [{
-                    emptyText:''
-                    ,fieldLabel: 'Dataset'
-                    ,ref: 'dataset'
-                    ,xtype: 'combo'
-                    ,displayField:'Label'
-                    ,valueField: 'Label'
-                    ,typeAhead: true
-                    ,mode: 'local'
-                    ,triggerAction: 'all'
-                    ,width: 150
-                    ,required: true
-                    ,editable: true
-                    ,store: new LABKEY.ext.Store({
-                        schemaName: 'study',
-                        queryName: 'datasets',
-                        sort: 'label',
-                        filterArray: [LABKEY.Filter.create('ShowByDefault', true, LABKEY.Filter.Types.EQUAL)],
-                        autoLoad: true
-                    })
-                },{
-                    emptyText:''
-                    ,fieldLabel: 'Filter On'
-                    ,ref: 'theField'
-                    ,xtype: 'combo'
-                    ,displayField:'name'
-                    ,valueField: 'value'
-                    ,typeAhead: true
-                    ,triggerAction: 'all'
-                    ,mode: 'local'
-                    ,width: 150
-                    ,editable: false
-        //            ,value: 'id'
-                    ,required: true
-                    ,store: new Ext.data.ArrayStore({
-                        fields: ['name', 'value'],
-                        data: [['Animal Id','id'], ['Project','project'], ['Date','date']]
-                    })
-                },{
-                    xtype: 'panel',
-                    html: 'This will allow you to jump to a different dataset, filtered on the rows you checked.  For example, if you pick the dataset Blood Draws and \'Filter on Animal Id\', then you will be transported to the Blood Draw table, showing blood draws from all the distinct animals in the rows you selected.  You have selected ' + checked.length + '  rows.',
-                    frame : false,
-                    border: false,
-                    cls: 'x-window-mc',
-                    bodyCssClass: 'x-window-mc'
-                }],
-                buttons: [{
-                    text:'Submit',
-                    disabled:false,
-                    formBind: true,
-                    ref: '../submit',
-                    scope: this,
-                    handler: runSQL
-                },{
-                    text: 'Close',
-                    scope: this,
-                    handler: function(){
-                        theWindow.close();
-                    }
-                }]
-            });
-            theWindow.show();
-
-            function runSQL(){
-                var checked = dataRegion.getChecked();
-                var dataset = theWindow.dataset.getValue();
-                var theField = theWindow.theField.getValue();
-
-                if(!dataset || !theField){
-                    alert('You must pick a dataset and the field to filter');
-                    return;
-                }
-
-                theWindow.close();
-                Ext.Msg.wait('Loading...');
-
-                var keyFields = dataRegion.selectorCols || dataRegion.pkCols;
-                var whereClause;
-                if (keyFields.length == 1){
-                    whereClause = "s." + keyFields[0] + " IN ('" + checked.join("', '") + "')";
-                }
-                else {
-                    var whereMap = {};
-                    Ext4.each(checked, function(row){
-                        var tokens = row.split(',');
-                        Ext4.each(keyFields, function(key, idx){
-                            if (!whereMap[key])
-                                whereMap[key] = [];
-
-                            whereMap[key].push(tokens[idx]);
-                        }, this);
-                    }, this);
-
-                    whereClause = '';
-                    var idx = 0;
-                    for (var field in whereMap){
-                        if (idx > 0)
-                            whereClause += ' AND ';
-
-                        whereClause += "s." + field + " IN ('" + whereMap[field].join("', '") + "')";
-                        idx++;
-                    }
-                }
-
-                var sql = "SELECT DISTINCT s."+theField+" as field FROM "+schemaName+".\""+queryName+"\" s WHERE " + whereClause;
-
-                LABKEY.Query.executeSql({
-                     schemaName: 'study',
-                     sql: sql,
-                     scope: this,
-                     failure: LDK.Utils.getErrorCallback(),
-                     success: function(data){
-                        var ids = new Array();
-                        for (var i = 0; i < data.rows.length; i++){
-                            if(data.rows[i].field)
-                                ids.push(data.rows[i].field);
-                        }
-
-                         Ext.Msg.hide();
-
-                         if (ids.length){
-                            var fieldFilter = LABKEY.Filter.create(theField, ids.join(';'), LABKEY.Filter.Types.IN);
-                            var baseParams = {
-                                'query.queryName': dataset,
-                                schemaName: 'study'
-
-                            };
-
-                            baseParams[fieldFilter.getURLParameterName()] = fieldFilter.getURLParameterValue();
-
-                            var el = document.body.appendChild(document.createElement('form'));
-                            el.setAttribute('method', 'POST');
-                            //NOTE: this uses a custom page with a QWP in order to support POST params
-                            //might revisit at some future time if executeQuery is improved
-                            el.setAttribute('action', LABKEY.ActionURL.buildURL('ehr', 'executeQuery'));
-                            var theElement = Ext.get(el);
-
-                            for (var j in baseParams) {
-                                var field = document.createElement('input');
-                                field.setAttribute('type', 'hidden');
-                                field.setAttribute('name', j);
-                                field.setAttribute('value', baseParams[j]);
-                                theElement.appendChild(field);
-                            }
-                            el.submit();
-                        }
-                        else{
-                            alert('No IDs found for the selected records');
-                        }
-                     }
-                });
-            }
-        },
-
-        /**
-         * This a adds a button to More Actions that will generate a popup window allowing the user to enter a single record into a single dataset.
-         * It was originally created to allows vets and others to directly enter clinical remarks from any page, without the overhead of needing
-         * to create a new task for each single remark.  The concept should work; however, it was removed because there were advantages to forcing
-         * all records to go through the task pathway.  In practice, most comments were too involved for the popup to be effective.  Most vets have
-         * ended up opening 2 browser windows: one for entering the remarks and one to browser Animal History or other records.
-         * @param dataRegionName
-         * @param config
-         * @param menu
-         */
-        addFormButton: function(dataRegionName, config, menu){
-            menu.add({
-                text: 'Enter '+(config.title || config.queryName),
-                handler: function(){
-                    new Ext.Window({
-                        closeAction:'destroy'
-                        ,title: 'Enter '+(config.title || config.queryName)
-                        ,xtype: 'panel'
-                        ,autoScroll: true
-                        ,autoHeight: true
-                        ,width: 400
-                        ,boxMaxHeight: 600
-                        ,defaults: {
-                            border: false
-                            ,bodyStyle: 'padding: 5px;'
-                        }
-                        ,items: [new EHR.ext.ImportPanel.SimpleImportPanel({
-                            showStatus: false,
-                            allowableButtons: [{
-                                text: 'Submit',
-                                name: 'submit',
-                                requiredQC: 'Completed',
-                                targetQC: 'Completed',
-                                errorThreshold: 'INFO',
-                                disabled: true,
-                                ref: 'submitBtn',
-                                handler: function(o){
-                                    function onComplete(){
-                                        var dataRegion = LABKEY.DataRegions[dataRegionName];
-                                        this.ownerCt.close();
-
-                                        dataRegion.selectNone();
-                                        dataRegion.refresh();
-                                    }
-
-                                    function onException(error){
-                                        console.log(error)
-                                        alert(error.exception);
-                                    }
-
-                                    this.store.on('commitcomplete', onComplete, this, {single: true});
-                                    this.store.on('commitexception', onException, this, {single: true});
-                                    this.onSubmit(o);
-                                    window.onbeforeunload = Ext.emptyFn;
-                                },
-                                disableOn: 'WARN',
-                                scope: this
-                            },{
-                                text: 'Close',
-                                name: 'close',
-                                ref: 'closeBtn',
-                                handler: function(o){
-                                    Ext.Msg.confirm('Close Form', 'Closing this form will discard changes.  Do you want to do this?', function(v){
-                                        if(v=='yes'){
-                                            o.ownerCt.ownerCt.ownerCt.close();
-                                            window.onbeforeunload = Ext.emptyFn;
-                                        }
-                                    }, this);
-                                }
-                            }],
-                            formType: config.queryName,
-                            formSections: [{
-                                xtype: 'ehr-formpanel'
-                                ,showStatus: false
-                                ,schemaName: config.schemaName
-                                ,queryName: config.queryName
-                                ,viewName: '~~UPDATE~~'
-                                ,columns: EHR.Metadata.Columns[config.queryName]
-                                ,collapsible: false
-                                ,metadata: EHR.Metadata.getTableMetadata(config.queryName, ['SimpleForm'])
-                                ,keyField: 'lsid'
-                                ,keyValue: null
-                            }]
-                        })]
-                        ,scope: this
-                    }).show();
-                }
-            })
-        },
+//        /**
+//         * This is a helper that appears on all datasets, which will allow the user to jump from the current dataset to any other dataset, filtered based
+//         * on the distinct set of currently checked IDs.  The purpose is similar to 'Jump To History'.  It allows you to take a single set of IDs and jump
+//         * across different types of data.  Can be useful for certain cross-colony queries.
+//         * @param dataRegion
+//         * @param dataRegionName
+//         * @param queryName
+//         * @param schemaName
+//         */
+//        datasetHandler: function(dataRegion, dataRegionName, queryName, schemaName){
+//            dataRegion = LABKEY.DataRegions[dataRegionName];
+//
+//            var checked = dataRegion.getChecked();
+//            if(!checked || !checked.length){
+//                alert('No records selected');
+//                return;
+//            }
+//
+//            queryName = queryName || dataRegion.queryName;
+//            schemaName = schemaName || dataRegion.schemaName;
+//
+//            var theWindow = new Ext.Window({
+//                width: 280,
+//                autoHeight: true,
+//                modal: true,
+//                bodyStyle: 'padding:5px',
+//                closeAction: 'destroy',
+//                plain: true,
+//                keys: [{
+//                    key: Ext.EventObject.ENTER,
+//                    handler: runSQL,
+//                    scope: this
+//                }],
+//                title: 'Jump To Other Dataset',
+//                layout: 'form',
+//                items: [{
+//                    emptyText:''
+//                    ,fieldLabel: 'Dataset'
+//                    ,ref: 'dataset'
+//                    ,xtype: 'combo'
+//                    ,displayField:'Label'
+//                    ,valueField: 'Label'
+//                    ,typeAhead: true
+//                    ,mode: 'local'
+//                    ,triggerAction: 'all'
+//                    ,width: 150
+//                    ,required: true
+//                    ,editable: true
+//                    ,store: new LABKEY.ext.Store({
+//                        schemaName: 'study',
+//                        queryName: 'datasets',
+//                        sort: 'label',
+//                        filterArray: [LABKEY.Filter.create('ShowByDefault', true, LABKEY.Filter.Types.EQUAL)],
+//                        autoLoad: true
+//                    })
+//                },{
+//                    emptyText:''
+//                    ,fieldLabel: 'Filter On'
+//                    ,ref: 'theField'
+//                    ,xtype: 'combo'
+//                    ,displayField:'name'
+//                    ,valueField: 'value'
+//                    ,typeAhead: true
+//                    ,triggerAction: 'all'
+//                    ,mode: 'local'
+//                    ,width: 150
+//                    ,editable: false
+//        //            ,value: 'id'
+//                    ,required: true
+//                    ,store: new Ext.data.ArrayStore({
+//                        fields: ['name', 'value'],
+//                        data: [['Animal Id','id'], ['Project','project'], ['Date','date']]
+//                    })
+//                },{
+//                    xtype: 'panel',
+//                    html: 'This will allow you to jump to a different dataset, filtered on the rows you checked.  For example, if you pick the dataset Blood Draws and \'Filter on Animal Id\', then you will be transported to the Blood Draw table, showing blood draws from all the distinct animals in the rows you selected.  You have selected ' + checked.length + '  rows.',
+//                    frame : false,
+//                    border: false,
+//                    cls: 'x-window-mc',
+//                    bodyCssClass: 'x-window-mc'
+//                }],
+//                buttons: [{
+//                    text:'Submit',
+//                    disabled:false,
+//                    formBind: true,
+//                    ref: '../submit',
+//                    scope: this,
+//                    handler: runSQL
+//                },{
+//                    text: 'Close',
+//                    scope: this,
+//                    handler: function(){
+//                        theWindow.close();
+//                    }
+//                }]
+//            });
+//            theWindow.show();
+//
+//            function runSQL(){
+//                var checked = dataRegion.getChecked();
+//                var dataset = theWindow.dataset.getValue();
+//                var theField = theWindow.theField.getValue();
+//
+//                if(!dataset || !theField){
+//                    alert('You must pick a dataset and the field to filter');
+//                    return;
+//                }
+//
+//                theWindow.close();
+//                Ext.Msg.wait('Loading...');
+//
+//                var keyFields = dataRegion.selectorCols || dataRegion.pkCols;
+//                var whereClause;
+//                if (keyFields.length == 1){
+//                    whereClause = "s." + keyFields[0] + " IN ('" + checked.join("', '") + "')";
+//                }
+//                else {
+//                    var whereMap = {};
+//                    Ext4.each(checked, function(row){
+//                        var tokens = row.split(',');
+//                        Ext4.each(keyFields, function(key, idx){
+//                            if (!whereMap[key])
+//                                whereMap[key] = [];
+//
+//                            whereMap[key].push(tokens[idx]);
+//                        }, this);
+//                    }, this);
+//
+//                    whereClause = '';
+//                    var idx = 0;
+//                    for (var field in whereMap){
+//                        if (idx > 0)
+//                            whereClause += ' AND ';
+//
+//                        whereClause += "s." + field + " IN ('" + whereMap[field].join("', '") + "')";
+//                        idx++;
+//                    }
+//                }
+//
+//                var sql = "SELECT DISTINCT s."+theField+" as field FROM "+schemaName+".\""+queryName+"\" s WHERE " + whereClause;
+//
+//                LABKEY.Query.executeSql({
+//                     schemaName: 'study',
+//                     sql: sql,
+//                     scope: this,
+//                     failure: LDK.Utils.getErrorCallback(),
+//                     success: function(data){
+//                        var ids = new Array();
+//                        for (var i = 0; i < data.rows.length; i++){
+//                            if(data.rows[i].field)
+//                                ids.push(data.rows[i].field);
+//                        }
+//
+//                         Ext.Msg.hide();
+//
+//                         if (ids.length){
+//                            var fieldFilter = LABKEY.Filter.create(theField, ids.join(';'), LABKEY.Filter.Types.IN);
+//                            var baseParams = {
+//                                'query.queryName': dataset,
+//                                schemaName: 'study'
+//
+//                            };
+//
+//                            baseParams[fieldFilter.getURLParameterName()] = fieldFilter.getURLParameterValue();
+//
+//                            var el = document.body.appendChild(document.createElement('form'));
+//                            el.setAttribute('method', 'POST');
+//                            //NOTE: this uses a custom page with a QWP in order to support POST params
+//                            //might revisit at some future time if executeQuery is improved
+//                            el.setAttribute('action', LABKEY.ActionURL.buildURL('ehr', 'executeQuery'));
+//                            var theElement = Ext.get(el);
+//
+//                            for (var j in baseParams) {
+//                                var field = document.createElement('input');
+//                                field.setAttribute('type', 'hidden');
+//                                field.setAttribute('name', j);
+//                                field.setAttribute('value', baseParams[j]);
+//                                theElement.appendChild(field);
+//                            }
+//                            el.submit();
+//                        }
+//                        else{
+//                            alert('No IDs found for the selected records');
+//                        }
+//                     }
+//                });
+//            }
+//        },
 
         /**
          * This adds a button that allows the user to pick 2 arbitrary weights and it will calculate
@@ -564,203 +406,30 @@ EHR.DatasetButtons = new function(){
          */
         addWeightCompareBtn: function(dataRegionName, menu){
             menu.add({
-                    text: 'Compare Weights',
-                    dataRegionName: dataRegionName,
-                    handler: function(){
-                        var dataRegion = LABKEY.DataRegions[this.dataRegionName];
-                        var checked = dataRegion.getChecked();
-                        if(!checked || !checked.length){
-                            alert('No records selected');
-                            return;
-                        }
-
-                        if(checked.length>2){
-                            Ext.Msg.alert('Error', 'More than 2 weights are checked.  Using the first 2.', doSelectRows, this);
-                        }
-                        else {
-                            doSelectRows();
-                        }
-
-                        function doSelectRows(){
-                            LABKEY.Query.selectRows({
-                                schemaName: 'study',
-                                queryName: 'weight',
-                                filterArray: [
-                                    LABKEY.Filter.create('lsid', checked.join(';'), LABKEY.Filter.Types.EQUALS_ONE_OF)
-                                ],
-                                scope: this,
-                                maxRows: 2,
-                                success: onSuccess
-                                //failure: EHR.Utils.onError
-                            });
-                        }
-
-                        function onSuccess(data){
-                            if(!data || !data.rows){
-                                return;
-                            }
-
-                            //while we currently only allow 2 rows
-                            //this is written to support more
-
-                            var rows = ['<tr><td>'+['Weight1', 'Weight2', 'Pct Change'].join('</td><td>')+'</td></tr>'];
-                            var theRow;
-                            Ext.each(data.rows, function(row, idx){
-                                theRow = [row.weight];
-                                //get the next element
-                                var index = (idx+1) % data.rows.length;
-                                var weight2 = data.rows[index].weight;
-                                theRow.push(weight2);
-
-                                var pct = EHR.Utils.roundNumber((((weight2-row.weight) / row.weight) * 100), 2);
-                                theRow.push(pct+'%');
-
-                                rows.push('<tr><td>'+theRow.join('</td><td>')+'</td></tr>');
-                            }, this);
-
-                            Ext.Msg.hide();
-                            new Ext.Window({
-                                title: 'Weights',
-                                closeAction: 'destroy',
-                                width: 200,
-                                modal: true,
-                                //autoWidth: true,
-                                items: [{
-                                    xtype: 'panel',
-                                    html: '<table border=1>'+rows.join('')+'</table>'
-                                }],
-                                buttonAlign: 'center',
-                                buttons: [{
-                                    text: 'OK',
-                                    handler: function(win, button){
-                                        win.ownerCt.ownerCt.close();
-                                    }
-                                }]
-                            }).show();
-                        }
+                text: 'Compare Weights',
+                dataRegionName: dataRegionName,
+                handler: function(){
+                    var dataRegion = LABKEY.DataRegions[this.dataRegionName];
+                    var checked = dataRegion.getChecked();
+                    if(!checked || !checked.length){
+                        alert('No records selected');
+                        return;
                     }
-                })
-        },
 
-        /**
-         * Add a button originally designed to allows users to mark scheduled treatments 'complete' from the dataregion.  However,
-         * it was ultimately decided to let the user do this through a task instead.  This button is not used.
-         * @param dataRegionName
-         * @param menu
-         * @depreciated
-         */
-        addTreatmentCompleteBtn: function(dataRegionName, menu){
-            menu.add({
-                    text: 'Mark Treatment(s) Complete',
-                    dataRegionName: dataRegionName,
-                    handler: function(){
-                        var dataRegion = LABKEY.DataRegions[this.dataRegionName];
-                        var checked = dataRegion.getChecked();
-                        if(!checked || !checked.length){
-                            alert('No records selected');
-                            return;
-                        }
-
-        //                if(checked.length>2){
-        //                    Ext.Msg.alert('Error', 'More than 1 treatments are checked.  Using the first 2.');
-        //                }
-
-                        var lsids = [];
-                        var map = {};
-                        Ext.each(checked, function(item){
-                            var i = item.split('||');
-                            if(i.length == 2){
-                                lsids.push(i[0]);
-                                map[item] = {lsid: i[0], date: i[1]};
-                            }
-                            else {
-                                console.log('ERROR: improper keyField')
-                            }
-                        }, this);
-                        Ext.Msg.wait('Loading...');
-                        LABKEY.Query.selectRows({
-                            schemaName: 'study',
-                            queryName: 'Treatment Orders',
-                            filterArray: [
-                                LABKEY.Filter.create('lsid', lsids.join(';'), LABKEY.Filter.Types.EQUALS_ONE_OF)
-                            ],
-                            scope: this,
-                            //maxRows: 2,
-                            success: onSuccess,
-                            failure: EHR.Utils.onError
-                        });
-
-                        function onSuccess(data){
-                            if(!data || !data.rows){
-                                return;
-                            }
-
-                            Ext.Msg.hide();
-                            new Ext.Window({
-                                title: 'Mark Treatments Complete',
-                                width: 330,
-                                autoHeight: true,
-                                items: [{
-                                    xtype: 'form',
-                                    ref: 'theForm',
-                                    bodyStyle: 'padding: 5px;',
-                                    items: [{
-                                        xtype: 'xdatetime',
-                                        fieldLabel: 'Date',
-                                        width: 200,
-                                        value: new Date(),
-                                        ref: 'date'
-                                    },{
-                                        xtype: 'textfield',
-                                        fieldLabel: 'Performed By',
-                                        width: 200,
-                                        value: LABKEY.Security.currentUser.displayName,
-                                        ref: 'performedby'
-                                    },{
-                                        xtype: 'combo',
-                                        fieldLabel: 'Restraint',
-                                        width: 200,
-                                        ref: 'restraint',
-                                        displayField:'type',
-                                        valueField: 'type',
-                                        typeAhead: true,
-                                        mode: 'local',
-                                        editable: true,
-                                        triggerAction: 'all',
-                                        store: new LABKEY.ext.Store({
-                                            schemaName: 'ehr_lookups',
-                                            queryName: 'restraint_type',
-                                            sort: 'type',
-                                            autoLoad: true
-                                        })
-                                    },{
-                                        xtype: 'numberfield',
-                                        fieldLabel: 'Time Restrainted',
-                                        width: 200,
-                                        ref: 'timeRestrainted'
-                                    }]
-                                }],
-                                //buttonAlign: 'center',
-                                buttons: [{
-                                    text:'Submit',
-                                    disabled:false,
-                                    formBind: true,
-                                    ref: '../submit',
-                                    scope: this,
-                                    handler: function(o){
-                                        o.ownerCt.ownerCt.close();
-                                    }
-                                },{
-                                    text: 'Close',
-                                    handler: function(o){
-                                        o.ownerCt.ownerCt.close();
-                                    }
-                                }]
-
-                            }).show();
-                        }
+                    if(checked.length > 2){
+                        Ext4.Msg.alert('Error', 'More than 2 weights are checked.  Using the first 2.', doSelectRows, this);
                     }
-                })
+                    else {
+                        doSelectRows();
+                    }
+
+                    function doSelectRows(){
+                        Ext4.create('EHR.window.CompareWeightsWindow', {
+                            dataRegionName: dataRegionName
+                        }).show();
+                    }
+                }
+            });
         },
 
         /**
@@ -771,254 +440,38 @@ EHR.DatasetButtons = new function(){
          * @param queryName
          * @param schemaName
          */
-        getDistinctHandler: function(dataRegion, dataRegionName, queryName, schemaName){
+        getDistinctHandler: function(dataRegionName, queryName, schemaName){
+            var checked = LABKEY.DataRegions[dataRegionName].getChecked();
+            if(!checked || !checked.length){
+                alert('No records selected');
+                return;
+            }
+
+            Ext4.create('EHR.window.GetDistinctWindow', {
+                dataRegionName: dataRegionName,
+                schemaName: schemaName,
+                queryName: queryName
+            }).show();
+        },
+
+        /**
+         * This adds a button that will allow the user to set the end date on records.  It is used by Treatments, Problem List and Assignments.
+         */
+        markCompletedButtonHandler: function(dataRegionName, schemaName, queryName, fieldXtype){
+            var dataRegion = LABKEY.DataRegions[dataRegionName];
+
             var checked = dataRegion.getChecked();
             if(!checked || !checked.length){
                 alert('No records selected');
                 return;
             }
 
-            //NOTE: this allows queries to redirect to a query other than themselves (ie. if a query is a derivative of a dataset)
-            queryName = queryName || dataRegion.queryName;
-            schemaName = schemaName || dataRegion.schemaName;
-
-            var theWindow = new Ext.Window({
-                width: 280,
-                height: 130,
-                modal: true,
-                bodyStyle:'padding:5px',
-                closeAction:'destroy',
-                plain: true,
-                keys: [{
-                    key: Ext.EventObject.ENTER,
-                    handler: runSQL,
-                    scope: this
-                }],
-                title: 'Return Distinct Values',
-                layout: 'form',
-                items: [{
-                    emptyText:''
-                    ,fieldLabel: 'Select Field'
-                    ,ref: 'field'
-                    ,xtype: 'combo'
-                    ,displayField:'name'
-                    ,valueField: 'value'
-                    ,typeAhead: true
-                    ,triggerAction: 'all'
-                    ,mode: 'local'
-                    ,width: 150
-                    ,editable: true
-                    ,value: 'id'
-                    ,required: true
-                    ,store: new Ext.data.ArrayStore({
-                        fields: ['name', 'value'],
-                        data: [['Animal Id','id'], ['Project','project'], ['Date','date']]
-                    })
-                }],
-                buttons: [{
-                    text:'Submit',
-                    disabled:false,
-                    formBind: true,
-                    ref: '../submit',
-                    scope: this,
-                    handler: runSQL
-                },{
-                    text: 'Close',
-                    scope: this,
-                    handler: function(){
-                        theWindow.destroy();
-                    }
-                }]
-            });
-            theWindow.show();
-
-            function runSQL(a,b){
-                var checked = dataRegion.getChecked();
-                var field = theWindow.field.getValue();
-                var sql = "SELECT DISTINCT s."+field+" as field FROM "+schemaName+".\""+queryName+"\" s WHERE s.LSID IN ('" + checked.join("', '") + "')";
-                theWindow.close();
-
-                LABKEY.Query.executeSql({
-                     schemaName: 'study',
-                     sql: sql,
-                     failure: LDK.Utils.getErrorCallback(),
-                     success: function(data){
-                        var ids = {};
-                        for (var i = 0; i < data.rows.length; i++){
-                            if (!data.rows[i].field)
-                                continue;
-
-                            if (data.rows[i].field && !ids[data.rows[i].field])
-                                ids[data.rows[i].field] = 0;
-
-                            ids[data.rows[i].field] += 1;
-
-                        }
-
-                        var result = '';
-                        var total = 0;
-                        for(var j in ids){
-                            result += j + "\n";
-                            total++;
-                        }
-
-                        var win = new Ext.Window({
-                            width: 280,
-                            modal: true,
-                            autoHeight: true,
-                            bodyStyle:'padding:5px',
-                            closeAction:'destroy',
-                            plain: true,
-                            title: 'Distinct Values',
-                            //layout: 'form',
-                            items: [{
-                                html: 'Total: '+total
-                            },{
-                                xtype: 'textarea',
-                                name: 'distinctValues',
-                                width: 260,
-                                height: 350,
-                                value: result
-                            }],
-                            buttons: [{
-                                text: 'Close',
-                                scope: this,
-                                handler: function(){
-                                    win.close();
-                                }
-                            }]
-                        });
-                        win.show();
-                    }
-                });
-            }
-        },
-
-        /**
-         * This adds a button that will allow the user to set the end date on records.  It is used by Treatments, Problem List and Assignments.
-         * @param dataRegionName
-         * @param menu
-         * @param schemaName
-         * @param queryName
-         * @param config
-         */
-        addMarkCompleteBtn: function(dataRegionName, menu, schemaName, queryName, config){
-            config = config || {};
-
-            menu.add({
-                text: 'Set End Date',
+            Ext4.create('EHR.window.MarkCompletedWindow', {
                 dataRegionName: dataRegionName,
-                handler: function(){
-                    var dataRegion = LABKEY.DataRegions[this.dataRegionName];
-                    var checked = dataRegion.getChecked();
-                    if(!checked || !checked.length){
-                        alert('No records selected');
-                        return;
-                    }
-
-                    new Ext.Window({
-                        title: 'Set End Date',
-                        closeAction: 'destory',
-                        width: 330,
-                        autoHeight: true,
-                        items: [{
-                            xtype: 'form',
-                            ref: 'theForm',
-                            bodyStyle: 'padding: 5px;',
-                            items: [{
-                                xtype: (config.xtype || 'xdatetime'),
-                                fieldLabel: 'Date',
-                                width: 200,
-                                value: new Date(),
-                                ref: 'date'
-                            }]
-                        }],
-                        buttons: [{
-                            text:'Submit',
-                            disabled:false,
-                            formBind: true,
-                            ref: '../submit',
-                            scope: this,
-                            handler: function(o){
-                                Ext.Msg.wait('Loading...');
-                                var date = o.ownerCt.ownerCt.theForm.date.getValue();
-                                if(!date){
-                                    alert('Must enter a date');
-                                    return;
-                                }
-
-                                o.ownerCt.ownerCt.close();
-
-                                LABKEY.Query.selectRows({
-                                    schemaName: schemaName,
-                                    queryName: queryName,
-                                    filterArray: [
-                                        LABKEY.Filter.create('lsid', checked.join(';'), LABKEY.Filter.Types.EQUALS_ONE_OF)
-                                    ],
-                                    scope: this,
-                                    success: function(data){
-                                        var toUpdate = [];
-                                        var skipped = [];
-
-                                        if(!data.rows || !data.rows.length){
-                                            Ext.Msg.hide();
-                                            dataRegion.selectNone();
-                                            dataRegion.refresh();
-                                            return;
-                                        }
-
-                                        Ext.each(data.rows, function(row){
-                                            if(!row.enddate)
-                                                toUpdate.push({lsid: row.lsid, enddate: date});
-                                            else
-                                                skipped.push(row.lsid)
-                                        }, this);
-
-                                        if(toUpdate.length){
-                                            LABKEY.Query.updateRows({
-                                                schemaName: schemaName,
-                                                queryName: queryName,
-                                                rows: toUpdate,
-                                                scope: this,
-                                                success: function(){
-                                                    Ext.Msg.hide();
-                                                    dataRegion.selectNone();
-                                                    dataRegion.refresh();
-                                                },
-                                                failure: EHR.Utils.onError
-                                            });
-                                        }
-                                        else {
-                                            Ext.Msg.hide();
-                                            dataRegion.selectNone();
-                                            dataRegion.refresh();
-                                        }
-
-                                        if(skipped.length){
-                                            alert('One or more rows was skipped because it already has an end date');
-                                        }
-                                    },
-                                    failure: EHR.Utils.onError
-                                });
-                            }
-                        },{
-                            text: 'Close',
-                            handler: function(o){
-                                o.ownerCt.ownerCt.close();
-                            }
-                        }]
-                    }).show();
-
-                    function onSuccess(data){
-                        if(!data || !data.rows){
-                            return;
-                        }
-
-                        Ext.Msg.hide();
-
-                    }
-                }
-            })
+                schemaName: schemaName,
+                queryName: queryName,
+                fieldXtype: fieldXtype
+            }).show();
         },
 
         /**
@@ -2047,135 +1500,6 @@ EHR.DatasetButtons = new function(){
                     }]
                 }).show();
             }
-        },
-
-        /**
-         * Originally created for the purpose of allowing users to append blood to an existing task.  There were enough complexities to this (for example, what if that
-         * task is completed?), that rather than 'pushing' blood to tasks, we allow users to 'pull' records into a task from that form.  This side-stepped
-         * many potential issues.
-         * @depreciated
-         * @param dataRegionName
-         * @param menu
-         */
-        addBloodToTaskBtn: function(dataRegionName, menu){
-            menu.add({
-                text: 'Add To Existing Task',
-                dataRegionName: dataRegionName,
-                handler: function(){
-                    var dataRegion = LABKEY.DataRegions[this.dataRegionName];
-                    var checked = dataRegion.getChecked();
-                    if(!checked || !checked.length){
-                        alert('No records selected');
-                        return;
-                    }
-
-                    new Ext.Window({
-                        title: 'Add To Existing Task',
-                        width: 330,
-                        autoHeight: true,
-                        items: [{
-                            xtype: 'form',
-                            ref: 'theForm',
-                            bodyStyle: 'padding: 5px;',
-                            defaults: {
-                                border: false
-                            },
-                            items: [{
-                                html: 'Total Records: '+checked.length+'<br><br>',
-                                tag: 'div'
-                            },{
-                                xtype: 'combo',
-                                fieldLabel: 'Select Task',
-                                width: 200,
-                                triggerAction: 'all',
-                                mode: 'local',
-                                store: new LABKEY.ext.Store({
-                                    xtype: 'labkey-store',
-                                    schemaName: 'ehr',
-                                    sql: "select t.taskid, t.rowid, t.title from ehr.tasks t where t.formtype IN ('Blood Draws','MPR') AND t.qcstate.label!='Completed'",
-                                    sort: 'rowid',
-                                    autoLoad: true
-                                }),
-                                displayField: 'rowid',
-                                valueField: 'rowid',
-                                ref: 'taskField',
-                                tpl: function(){var tpl = new Ext.XTemplate(
-                                    '<tpl for=".">' +
-                                    '<div class="x-combo-list-item">{[values["rowid"] +" - "+ values["title"]]}' +'&nbsp;</div>' +
-                                    '</tpl>'
-                                    );return tpl.compile()}() //FIX: 5860
-                            }]
-                        }],
-                        buttons: [{
-                            text:'Submit',
-                            disabled:false,
-                            formBind: true,
-                            ref: '../submit',
-                            scope: this,
-                            handler: function(o){
-                                Ext.Msg.wait('Saving...');
-
-                                var taskId = o.ownerCt.ownerCt.theForm.taskField.getValue();
-                                if(!taskId){
-                                    alert('You must pick a task');
-                                    Ext.Msg.hide();
-                                    return;
-                                }
-
-                                var rec = o.ownerCt.ownerCt.theForm.taskField.getStore().find('rowid', taskId);
-                                rec = o.ownerCt.ownerCt.theForm.taskField.getStore().getAt(rec);
-
-                                o.ownerCt.ownerCt.close();
-
-                                var records = [];
-                                Ext.each(checked, function(r){
-                                    records.push({lsid: r, taskid: rec.get('taskid'), QCStateLabel: 'Scheduled'});
-                                }, this);
-
-                                LABKEY.Query.updateRows({
-                                    schemaName: 'study',
-                                    queryName: 'Blood Draws',
-                                    rows: records,
-                                    scope: this,
-                                    success: function(data){
-                                        Ext.Msg.hide();
-                                        dataRegion.refresh();
-                                    },
-                                    failure: EHR.Utils.onError
-                                });
-
-                            }
-                        },{
-                            text: 'Close',
-                            handler: function(o){
-                                o.ownerCt.ownerCt.close();
-                            }
-                        }]
-                    }).show();
-                }
-            });
-        },
-
-        perDiemCopyHandler: function(dataRegionName){
-            var dataRegion = LABKEY.DataRegions[dataRegionName];
-            var checked = dataRegion.getChecked();
-            if(!checked || !checked.length){
-                alert('No records selected');
-                return;
-            }
-
-
-            Ext.Msg.confirm('Save Per Diems', 'This will save these charges, replacing any existing per diems during the same date range.  Do you want to proceed?', function(btn){
-                if(btn == 'yes'){
-                    var params = dataRegion.getParameters();
-
-                    LABKEY.Query.selectRows({
-                        schemaName: dataRegion.schemaName,
-                        queryName: dataRegion.queryName,
-                        parameters: dataRegion.getParameters()
-                    });
-                }
-            }, this);
         }
     }
 }

@@ -28,7 +28,7 @@ public class DefaultDepartureDataSource extends AbstractDataSource
 {
     public DefaultDepartureDataSource()
     {
-        super("study", "Departure", "Departure", "Departures");
+        super("study", "Departure", "Departure", "Arrival/Departure");
     }
 
     @Override

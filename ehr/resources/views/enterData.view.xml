@@ -4,5 +4,6 @@
     </permissions>
     <dependencies>
         <dependency path="ehr.context" />
+        <dependency path="ehr/panel/EnterDataPanel.js"/>
     </dependencies>
 </view>

@@ -42,10 +42,10 @@ Ext4.onReady(function () {
                     items: [
                         this.getLabelItemCfg(item)
                     ,
-                        this.getSearchItemCfg(item, {
-                            url: LABKEY.ActionURL.buildURL("query", "searchPanel", null, {schemaName: item.schemaName, queryName: item.queryName})
-                        })
-                    ,
+//                        this.getSearchItemCfg(item, {
+//                            url: LABKEY.ActionURL.buildURL("query", "searchPanel", null, {schemaName: item.schemaName, queryName: item.queryName})
+//                        })
+//                    ,
                         this.getBrowseItemCfg(item, {
                             url: LABKEY.ActionURL.buildURL("query", "executeQuery", null, {schemaName: item.schemaName, 'query.queryName': item.queryName})
                         })
@@ -56,7 +56,7 @@ Ext4.onReady(function () {
                     cfg.items.push({
                         xtype: 'labkey-linkbutton',
                         tooltip: item.searchTooltip || 'Click to update records',
-                        href: LABKEY.ActionURL.buildURL('ehr', 'updateQuery.view', null, {schemaName: 'study', 'query.queryName': item.queryName, 'keyField': 'lsid'}),
+                        href: LABKEY.ActionURL.buildURL('ldk', 'updateQuery', null, {schemaName: 'study', 'query.queryName': item.queryName, 'keyField': 'lsid'}),
                         text: 'Update Records'
                     });
                 }

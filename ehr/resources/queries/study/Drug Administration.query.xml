@@ -1,13 +1,16 @@
 <query xmlns="http://labkey.org/data/xml/query">
     <metadata>
         <tables xmlns="http://labkey.org/data/xml">
-            <table tableName="drug" tableDbType="TABLE">
+            <table tableName="drug" tableDbType="TABLE" useColumnOrder="true">
                 <tableUrl>/ehr/drugDetails.view?lsid=${lsid}</tableUrl>
                 <insertUrl />
                 <importUrl />
                 <updateUrl />
                 <deleteUrl />
                 <columns>
+                    <column columnName="Id">
+
+                    </column>
                     <column columnName="project">
                         <fk>
                             <fkDbSchema>ehr</fkDbSchema>
@@ -19,14 +22,6 @@
                         <columnTitle>Begin Date</columnTitle>
                         <formatString>yyyy-MM-dd HH:mm</formatString>
                     </column>
-                    <column columnName="code">
-                        <columnTitle>Code</columnTitle>
-                        <fk>
-                            <fkDbSchema>ehr_lookups</fkDbSchema>
-                            <fkTable>snomed</fkTable>
-                            <fkColumnName>code</fkColumnName>
-                        </fk>
-                    </column>
                     <column columnName="HeaderDate">
                         <columnTitle>Header Date</columnTitle>
                         <formatString>yyyy-MM-dd H:mm</formatString>
@@ -36,24 +31,16 @@
                         <formatString>yyyy-MM-dd H:mm</formatString>
                         <isHidden>false</isHidden>
                     </column>
-                    <column columnName="parentid">
-                        <!--<fk>-->
-                            <!--<fkDbSchema>study</fkDbSchema>-->
-                            <!--<fkTable>studyDataParent</fkTable>-->
-                            <!--<fkColumnName>objectid</fkColumnName>-->
-                        <!--</fk>-->
-                    </column>
-                    <column columnName="amount">
-                        <columnTitle>Amount Given</columnTitle>
-                    </column>
-                    <column columnName="amount_units">
-                        <columnTitle>Amount Units</columnTitle>
+                    <column columnName="code">
+                        <columnTitle>Code</columnTitle>
                         <fk>
                             <fkDbSchema>ehr_lookups</fkDbSchema>
-                            <fkTable>amount_units</fkTable>
-                            <fkColumnName>unit</fkColumnName>
-                            <fkDisplayColumnName useRawValue="true" />
+                            <fkTable>snomed</fkTable>
+                            <fkColumnName>code</fkColumnName>
                         </fk>
+                    </column>
+                    <column columnName="qualifier">
+                        <columnTitle>Qualifier</columnTitle>
                     </column>
                     <column columnName="route">
                         <columnTitle>Route</columnTitle>
@@ -76,6 +63,9 @@
                             <fkDisplayColumnName useRawValue="true"/>
                         </fk>
                     </column>
+                    <column columnName="dosage">
+                        <columnTitle>Dosage</columnTitle>
+                    </column>
                     <column columnName="dosage_units">
                         <columnTitle>Dosage Units</columnTitle>
                         <fk>
@@ -85,6 +75,9 @@
                             <fkDisplayColumnName useRawValue="true"/>
                         </fk>
                     </column>
+                    <column columnName="volume">
+                        <columnTitle>Volume</columnTitle>
+                    </column>
                     <column columnName="vol_units">
                         <columnTitle>Vol Units</columnTitle>
                         <fk>
@@ -92,6 +85,18 @@
                             <fkTable>volume_units</fkTable>
                             <fkColumnName>unit</fkColumnName>
                             <fkDisplayColumnName useRawValue="true"/>
+                        </fk>
+                    </column>
+                    <column columnName="amount">
+                        <columnTitle>Amount Given</columnTitle>
+                    </column>
+                    <column columnName="amount_units">
+                        <columnTitle>Amount Units</columnTitle>
+                        <fk>
+                            <fkDbSchema>ehr_lookups</fkDbSchema>
+                            <fkTable>amount_units</fkTable>
+                            <fkColumnName>unit</fkColumnName>
+                            <fkDisplayColumnName useRawValue="true" />
                         </fk>
                     </column>
                     <column columnName="restraint">
@@ -111,26 +116,26 @@
                         </fk>
                     </column>
                     <column columnName="category">
+                        <columnTitle>Category</columnTitle>
                         <fk>
                             <fkDbSchema>ehr_lookups</fkDbSchema>
                             <fkTable>drug_categories</fkTable>
                             <fkColumnName>value</fkColumnName>
+                            <fkDisplayColumnName useRawValue="true"/>
                         </fk>
-                    </column>
-                    <column columnName="qualifier">
-                        <columnTitle>Qualifier</columnTitle>
                     </column>
                     <column columnName="begindate">
                         <columnTitle>Begin Date</columnTitle>
                     </column>
-                    <column columnName="category">
-                        <columnTitle>Category</columnTitle>
+                    <column columnName="lot">
+                        <columnTitle>Lot</columnTitle>
                     </column>
-                    <column columnName="dosage">
-                        <columnTitle>Dosage</columnTitle>
+                    <column columnName="treatmentid">
+                        <columnTitle>Treatment Id</columnTitle>
+                        <isHidden>true</isHidden>
                     </column>
-                    <column columnName="volume">
-                        <columnTitle>Volume</columnTitle>
+                    <column columnName="parentid">
+
                     </column>
                 </columns>
             </table>

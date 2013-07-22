@@ -3,7 +3,7 @@
 Ext4.onReady(function (){
     if (!LABKEY.ActionURL.getParameter('objectid')){
         alert('Must Provide Key');
-        return false;
+        return;
     }
 
     var webpart = <%=webpartContext%>;

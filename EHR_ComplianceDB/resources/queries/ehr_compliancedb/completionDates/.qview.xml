@@ -20,6 +20,7 @@
         <column name="date"/>
         <column name="result"/>
         <column name="comment"/>
+        <column name="trainer"/>
     </columns>
     <filters>
         <filter column="employeeid/enddate" operator="isblank"/>

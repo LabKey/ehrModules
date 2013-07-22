@@ -683,13 +683,21 @@ public class EHRManager
 
         for (Pair<String, String[]> pair : names)
         {
-            DbSchema ehr = EHRSchema.getInstance().getSchema();
             String table = pair.first;
             String indexName = table + "_" + StringUtils.join(pair.second, "_");
-            SQLFragment sql = new SQLFragment("ALTER INDEX " + indexName + " ON ehr." + table + " REBUILD WITH (DATA_COMPRESSION = ROW);");
-            SqlExecutor se = new SqlExecutor(ehr);
-            se.execute(sql);
+            rebuildIndex(indexName, table);
         }
+
+        //clustered index does not follow other naming conventions
+        rebuildIndex("snomed_tags", "CIDX_snomed_tags");
+    }
+
+    private void rebuildIndex(String table, String indexName)
+    {
+        DbSchema ehr = EHRSchema.getInstance().getSchema();
+        SQLFragment sql = new SQLFragment("ALTER INDEX " + indexName + " ON ehr." + table + " REBUILD WITH (DATA_COMPRESSION = ROW);");
+        SqlExecutor se = new SqlExecutor(ehr);
+        se.execute(sql);
     }
     
     //NOTE: this assumes the property already exists

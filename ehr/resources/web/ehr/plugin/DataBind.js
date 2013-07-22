@@ -21,11 +21,11 @@ Ext4.define('EHR.plugin.Databind', {
 
         LABKEY.ExtAdapter.apply(panel, {
             bindRecord: function(rec){
-                var plugin = this.getPlugin('labkey-databind');
+                var plugin = this.getPlugin('ehr-databind');
                 plugin.bindRecord.call(plugin, rec);
             },
             unbindRecord: function(){
-                var plugin = this.getPlugin('labkey-databind');
+                var plugin = this.getPlugin('ehr-databind');
                 plugin.unbindRecord.call(plugin);
             }
         });
@@ -78,7 +78,8 @@ Ext4.define('EHR.plugin.Databind', {
             this.mon(store, 'load', this.onStoreLoad, this);
 
         this.mon(store, 'remove', this.onRecordRemove, this);
-        this.mon(this.panel.store, 'update', this.onRecordUpdate, this);
+        this.mon(store, 'datachanged', this.onDataChanged, this);
+        this.mon(store, 'update', this.onRecordUpdate, this);
     },
 
     onStoreLoad: function(store){
@@ -91,6 +92,15 @@ Ext4.define('EHR.plugin.Databind', {
             if(this.panel.bindConfig.autoBindFirstRecord){
                 this.bindRecord(store.getAt(0));
             }
+        }
+    },
+
+    onDataChanged: function(store){
+        this.panel.getForm().isValid();
+
+        if (this.panel.boundRecord){
+            var errors = this.panel.boundRecord.validate();
+            this.panel.getForm().markInvalid(errors);
         }
     },
 
@@ -114,7 +124,6 @@ Ext4.define('EHR.plugin.Databind', {
             form.suspendEvents();
             this.setFormValuesFromRecord(record);
             form.resumeEvents();
-
             form.isValid();
         }
     },
@@ -198,7 +207,6 @@ Ext4.define('EHR.plugin.Databind', {
             getErrors: function(value){
                 var errors = this.callOverridden(arguments);
                 var record = this.up('form').getForm().getRecord();
-
                 if(record){
                     record.validate().each(function(e){
                         if(e.field == this.name)
@@ -228,7 +236,16 @@ Ext4.define('EHR.plugin.Databind', {
 
         function setVal(fieldId, val) {
             var field = form.findField(fieldId);
-            if (field && field.getValue() !== val) {
+            if (!field)
+                return;
+
+            var fieldVal = field.getValue();
+            if (fieldVal !== val) {
+                if (Ext4.isObject(fieldVal) || Ext4.isArray(fieldVal))
+                {
+                    console.error(fieldVal);
+                }
+
                 //TODO: combos and other multi-valued fields represent data differently in the store vs the field.  need to reconcile here
                 field.suspendEvents();
                 field.setValue(val);

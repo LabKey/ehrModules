@@ -139,26 +139,6 @@ EHR.Server.Validation = {
         return meaning ? meaning+(code ? ' ('+code+')' : '') : (code ? code : '');
     },
     /**
-     * A helper that will verify the ID format of an animal ID based on known regular expressions
-     * @param row The row object
-     * @param errors The errors object
-     * @param scriptContext The scriptContext object.  See rowInit()
-     */
-    verifyIdFormat: function(row, errors, scriptContext){
-        if(row.Id){
-            var species = EHR.Server.Validation.getSpecies(row, errors);
-
-            if(species == 'Unknown'){
-                EHR.Server.Validation.addError(errors, 'Id', 'Invalid Id Format', 'INFO');
-            }
-            else if (species == 'Infant') {
-                species = null;
-            }
-
-            row.species = row.species || species;
-        }
-    },
-    /**
      * A helper to convert a date object into a display string.  By default is will use YYYY-mm-dd.
      * @param date The date to convert
      * @returns {string} The display string for this date or an empty string if unable to convert
@@ -309,49 +289,6 @@ EHR.Server.Validation = {
         if(cal1.after(cal2)){
             EHR.Server.Validation.addError(errors, 'date', 'Date is more than 60 days in past', 'WARN');
         }
-    },
-    /**
-     * A helper that will infer the species based on regular expression patterns and the animal ID
-     * @param row The row object, provided by LabKey
-     * @param errors The errors object, provided by LabKey
-     */
-    getSpecies: function(row, errors){
-        var species;
-        if (row.Id.match(/(^rh([0-9]{4})$)|(^r([0-9]{5})$)|(^rh-([0-9]{3})$)|(^rh[a-z]{2}([0-9]{2})$)/))
-        //if (row.Id.match(/(^rh([0-9]{4})$)|(^r([0-9]{5})$)/))
-            species = 'Rhesus';
-        else if (row.Id.match(/^cy([0-9]{4})$/))
-            species = 'Cynomolgus';
-        else if (row.Id.match(/^ag([0-9]{4})$/))
-            species = 'Vervet';
-        else if (row.Id.match(/^cj([0-9]{4})$/))
-            species = 'Marmoset';
-        else if (row.Id.match(/^so([0-9]{4})$/))
-            species = 'Cotton-top Tamarin';
-        else if (row.Id.match(/^pt([0-9]{4})$/))
-            species = 'Pigtail';
-        else if (row.Id.match(/^pd([0-9]{4})$/))
-            species = 'Infant';
-
-        //these are to handle legacy data:
-        else if (row.Id.match(/(^rha([a-z]{1})([0-9]{2}))$/))
-            species = 'Rhesus';
-        else if (row.Id.match(/(^rh-([a-z]{1})([0-9]{2}))$/))
-            species = 'Rhesus';
-        else if (row.Id.match(/^cja([0-9]{3})$/))
-            species = 'Marmoset';
-        else if (row.Id.match(/^m([0-9]{5})$/))
-            species = 'Marmoset';
-        else if (row.Id.match(/^tx([0-9]{4})$/))
-            species = 'Marmoset';
-        //and this is to handle automated tests
-        else if (row.Id.match(/^test[0-9]+$/))
-            species = 'Rhesus';
-
-        else
-            species = 'Unknown';
-
-        return species;
     },
     /**
      * A helper that will verify that the ID located in the specified field is female.
@@ -619,6 +556,35 @@ EHR.Server.Validation = {
             config.callback.apply(config.scope || this);
         }
         else {
+//            NOTE: switch to this once we actually start caching values
+//            var ar = scriptContext.helper.getDemographicRecord(config.participant);
+//            console.log('Find demographics time: ' + (((new Date()) - start) / 1000));
+//            if(ar){
+//                var row = {
+//                    Id: ar.getId(),
+//                    birth: ar.getBirth() ? new Date(ar.getBirth().getTime()) : null,
+//                    death: ar.getDeath() ? new Date(ar.getDeath().getTime()) : null,
+//                    species: ar.getSpecies(),
+//                    dam: null,
+//                    gender: ar.getGender(),
+//                    'gender/origGender': ar.getOrigGender(),
+//                    calculated_status: ar.getCalculatedStatus(),
+//                    sire: null,
+//                    'id/curlocation/room': ar.getCurrentRoom(),
+//                    'id/curlocation/cage': ar.getCurrentCage()
+//                }
+//
+//                //cache results
+//                scriptContext.demographicsMap[row.Id] = row;
+//                config.callback.apply(config.scope || this, [scriptContext.demographicsMap[row.Id]]);
+//            }
+//            else {
+//                if(scriptContext.missingParticipants.indexOf(config.participant) == -1)
+//                    scriptContext.missingParticipants.push(config.participant);
+//
+//                config.callback.apply(config.scope || this);
+//            }
+
             LABKEY.Query.selectRows({
                 schemaName: 'study',
                 queryName: 'demographics',

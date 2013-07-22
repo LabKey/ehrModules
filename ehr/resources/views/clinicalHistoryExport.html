@@ -36,6 +36,7 @@
                 caseId: LABKEY.ActionURL.getParameter('caseId'),
                 redacted: LABKEY.ActionURL.getParameter('redacted'),
                 sortMode: LABKEY.ActionURL.getParameter('sortMode'),
+                checkedItems: LABKEY.ActionURL.getParameter('checkedItems') ? LABKEY.ActionURL.getParameter('checkedItems').split(';') : null,
                 hrefTarget: '_blank',
                 style: 'margin-bottom: 20px;'
             });

@@ -3,7 +3,7 @@
 Ext4.onReady(function (){
     if (!LABKEY.ActionURL.getParameter('key')){
         alert('Must Provide Biopsy Number');
-        return false;
+        return;
     }
 
     var key = LABKEY.ActionURL.getParameter('key');

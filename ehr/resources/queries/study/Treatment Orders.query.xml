@@ -141,6 +141,14 @@
                     <column columnName="volume">
                         <columnTitle>Volume</columnTitle>
                     </column>
+                    <column columnName="category">
+                        <fk>
+                            <fkDbSchema>ehr_lookups</fkDbSchema>
+                            <fkTable>drug_categories</fkTable>
+                            <fkColumnName>value</fkColumnName>
+                            <fkDisplayColumnName useRawValue="true"/>
+                        </fk>
+                    </column>
                 </columns>
             </table>
         </tables>

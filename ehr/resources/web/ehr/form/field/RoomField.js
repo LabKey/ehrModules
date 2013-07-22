@@ -8,16 +8,16 @@ Ext4.define('EHR.form.field.RoomField', {
     alias: 'widget.ehr-roomfield',
     fieldLabel: 'Room',
     initComponent: function(){
-        Ext4.apply(this, {
+        LABKEY.ExtAdapter.apply(this, {
             expandToFitContent: true,
             queryMode: 'local',
-            addAllSelector: true,
-            nullCaption: '[Blank]',
+            anyMatch: true,
             store: {
                 type: 'labkey-store',
                 schemaName: 'ehr_lookups',
                 queryName: 'rooms',
                 columns: 'room,area',
+                sort: 'area,sort_order',
                 filterArray: [LABKEY.Filter.create('datedisabled', null, LABKEY.Filter.Types.ISBLANK)],
                 autoLoad: true
             },

@@ -1078,7 +1078,7 @@
                 <ns:columnTitle>Investigator</ns:columnTitle>
             </ns:column>
             <ns:column columnName="investigatorId">
-                <ns:columnTitle>Investigator</ns:columnTitle>
+                <ns:columnTitle>Project Contact</ns:columnTitle>
                 <ns:isHidden>true</ns:isHidden>
             </ns:column>
             <ns:column columnName="inves2">

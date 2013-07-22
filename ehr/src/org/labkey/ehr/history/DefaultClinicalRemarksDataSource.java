@@ -15,11 +15,21 @@
  */
 package org.labkey.ehr.history;
 
+import org.labkey.api.data.Container;
+import org.labkey.api.data.DbSchema;
 import org.labkey.api.data.Results;
+import org.labkey.api.data.SQLFragment;
+import org.labkey.api.data.SqlSelector;
+import org.labkey.api.data.TableInfo;
+import org.labkey.api.data.TableSelector;
 import org.labkey.api.query.FieldKey;
+import org.labkey.api.security.User;
 import org.labkey.api.util.PageFlowUtil;
 
 import java.sql.SQLException;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Date;
 import java.util.Set;
 
 /**
@@ -40,6 +50,24 @@ public class DefaultClinicalRemarksDataSource extends AbstractDataSource
         String category = rs.getString("category");
         return (category == null ?  "Clinical" : category) + " Remark";
     }
+
+//    @Override
+//    public Set<String> getAllowableCategoryGroups(Container c, User u)
+//    {
+//        Date start = new Date();
+//
+//        TableInfo ti = QueryService.get().getUserSchema(u, c, EHRSchema.EHR_LOOKUPS).getTable("clinremarks_category");
+//        TableSelector ts = new TableSelector(ti, Collections.singleton("value"), null, null);
+//        String[] values = ts.getArray(String.class);
+//
+//        long duration = (new Date().getTime()) - start.getTime();
+//        if (duration > 6000)
+//        {
+//            _log.error("Found distinct categories for " + getName() + " in " + duration/1000 + " seconds");
+//        }
+//
+//        return PageFlowUtil.set(values);
+//    }
 
     @Override
     protected String getCategoryGroup(Results rs) throws SQLException

@@ -3,7 +3,7 @@
 Ext4.onReady(function (){
     if (!LABKEY.ActionURL.getParameter('key')){
         alert('Must Provide Treatment ID');
-        return false;
+        return;
     }
 
     var lsid = LABKEY.ActionURL.getParameter('key');

@@ -22,24 +22,39 @@ import org.labkey.api.data.Container;
 import org.labkey.api.data.ContainerManager;
 import org.labkey.api.data.PropertyManager;
 import org.labkey.api.data.TableCustomizer;
+import org.labkey.api.data.TableInfo;
+import org.labkey.api.ehr.demographics.DemographicsProvider;
 import org.labkey.api.ehr.EHRService;
 import org.labkey.api.ehr.HistoryDataSource;
+import org.labkey.api.ehr.dataentry.FormSection;
+import org.labkey.api.ldk.LDKService;
+import org.labkey.api.ldk.table.ButtonConfigFactory;
 import org.labkey.api.module.Module;
 import org.labkey.api.module.ModuleLoader;
 import org.labkey.api.module.ModuleProperty;
 import org.labkey.api.query.DetailsURL;
 import org.labkey.api.query.FieldKey;
+import org.labkey.api.query.QueryService;
+import org.labkey.api.query.UserSchema;
 import org.labkey.api.resource.Resource;
+import org.labkey.api.security.SecurableResource;
+import org.labkey.api.security.SecurityPolicy;
+import org.labkey.api.security.SecurityPolicyManager;
 import org.labkey.api.security.User;
+import org.labkey.api.security.permissions.Permission;
+import org.labkey.api.study.DataSetTable;
 import org.labkey.api.util.Pair;
 import org.labkey.api.util.Path;
 import org.labkey.api.view.template.ClientDependency;
 import org.labkey.api.ehr.dataentry.DataEntryForm;
 import org.labkey.ehr.dataentry.DataEntryManager;
+import org.labkey.ehr.dataentry.SimpleGridPanel;
 import org.labkey.ehr.dataentry.TaskForm;
 import org.labkey.ehr.history.ClinicalHistoryManager;
+import org.labkey.ehr.security.EHRDataEntryPermission;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -55,16 +70,17 @@ import java.util.Set;
 public class EHRServiceImpl extends EHRService
 {
     private Set<Module> _registeredModules = new HashSet<>();
+    private List<DemographicsProvider> _demographicsProviders = new ArrayList<>();
     private Map<REPORT_LINK_TYPE, List<ReportLink>> _reportLinks = new HashMap<>();
     private Map<String, List<Pair<Module, String>>> _actionOverrides = new HashMap<>();
     private List<Pair<Module, Resource>> _extraTriggerScripts = new ArrayList<>();
     private Map<Module, List<ClientDependency>> _clientDependencies = new HashMap<>();
     private Map<String, Map<String, List<Pair<Module, Class<? extends TableCustomizer>>>>> _tableCustomizers = new CaseInsensitiveHashMap<>();
+    private Map<String, Map<String, List<ButtonConfigFactory>>> _queryButtons = new CaseInsensitiveHashMap<>();
+
     private Map<String, String> _dateFormats = new HashMap<>();
     private static final Logger _log = Logger.getLogger(EHRServiceImpl.class);
 
-    private static final String ALL_TABLES = "~~ALL_TABLES~~";
-    private static final String ALL_SCHEMAS = "~~ALL_SCHEMAS~~";
     private static final String DATE_CATEGORY = "org.labkey.ehr.dateformat";
 
     public EHRServiceImpl()
@@ -103,9 +119,26 @@ public class EHRServiceImpl extends EHRService
         return Collections.unmodifiableList(resouces);
     }
 
+    public void registerDemographicsProvider(DemographicsProvider provider)
+    {
+        _demographicsProviders.add(provider);
+    }
+
+    public Collection<DemographicsProvider> getDemographicsProviders(Container c)
+    {
+        Map<String, DemographicsProvider> providers = new HashMap<String, DemographicsProvider>();
+        for (DemographicsProvider p : _demographicsProviders)
+        {
+            if (p.isAvailable(c))
+                providers.put(p.getName(), p);
+        }
+
+        return Collections.unmodifiableCollection(providers.values());
+    }
+
     public void registerTableCustomizer(Module owner, Class<? extends TableCustomizer> customizerClass)
     {
-        registerTableCustomizer(owner, customizerClass, ALL_SCHEMAS, ALL_TABLES);
+        registerTableCustomizer(owner, customizerClass, LDKService.ALL_SCHEMAS, LDKService.ALL_TABLES);
     }
 
     public void registerTableCustomizer(Module owner, Class<? extends TableCustomizer> customizerClass, String schema, String query)
@@ -129,9 +162,9 @@ public class EHRServiceImpl extends EHRService
         List<TableCustomizer> list = new ArrayList<>();
         Set<Module> modules = c.getActiveModules();
 
-        if (_tableCustomizers.get(ALL_SCHEMAS) != null)
+        if (_tableCustomizers.get(LDKService.ALL_SCHEMAS) != null)
         {
-            for (Pair<Module, Class<? extends TableCustomizer>> pair : _tableCustomizers.get(ALL_SCHEMAS).get(ALL_TABLES))
+            for (Pair<Module, Class<? extends TableCustomizer>> pair : _tableCustomizers.get(LDKService.ALL_SCHEMAS).get(LDKService.ALL_TABLES))
             {
                 if (modules.contains(pair.first))
                 {
@@ -144,9 +177,9 @@ public class EHRServiceImpl extends EHRService
 
         if (_tableCustomizers.containsKey(schema))
         {
-            if (_tableCustomizers.get(schema).get(ALL_TABLES).contains(ALL_TABLES))
+            if (_tableCustomizers.get(schema).get(LDKService.ALL_TABLES).contains(LDKService.ALL_TABLES))
             {
-                for (Pair<Module, Class<? extends TableCustomizer>> pair : _tableCustomizers.get(schema).get(ALL_TABLES))
+                for (Pair<Module, Class<? extends TableCustomizer>> pair : _tableCustomizers.get(schema).get(LDKService.ALL_TABLES))
                 {
                     if (modules.contains(pair.first))
                     {
@@ -157,7 +190,7 @@ public class EHRServiceImpl extends EHRService
                 }
             }
 
-            if (_tableCustomizers.get(schema).get(ALL_TABLES).contains(query))
+            if (_tableCustomizers.get(schema).get(LDKService.ALL_TABLES).contains(query))
             {
                 for (Pair<Module, Class<? extends TableCustomizer>> pair : _tableCustomizers.get(schema).get(query))
                 {
@@ -347,7 +380,7 @@ public class EHRServiceImpl extends EHRService
     {
         Module ehr = ModuleLoader.getInstance().getModule(EHRModule.NAME);
         ModuleProperty mp = ehr.getModuleProperties().get(EHRManager.EHRStudyContainerPropName);
-        String path = PropertyManager.getCoalecedProperty(PropertyManager.SHARED_USER, c, mp.getCategory(), EHRManager.EHRAdminUserPropName);
+        String path = mp.getEffectiveValue(c);
         if (path == null)
             return null;
 
@@ -359,12 +392,17 @@ public class EHRServiceImpl extends EHRService
         DataEntryManager.get().registerFormType(form);
     }
 
-    public void registerSimpleFormType(FORM_TYPE type, Module m, String schema, String query, String category)
+    public void registerSimpleFormType(FORM_TYPE type, Module m, String category, String label, String schema, String query)
+    {
+        registerFormType(type, m, category, query, label, Collections.<FormSection>singletonList(new SimpleGridPanel(schema, query, query)));
+    }
+
+    public void registerFormType(FORM_TYPE type, Module m, String category, String name, String label, List<FormSection> sections)
     {
         DataEntryForm form = null;
         if (FORM_TYPE.Task.equals(type))
         {
-            form = TaskForm.createGridPanel(m, schema, query, category);
+            form = TaskForm.create(m, category, name, label, sections);
         }
         else if (FORM_TYPE.Encounter.equals(type))
         {
@@ -384,5 +422,110 @@ public class EHRServiceImpl extends EHRService
     public void registerDefaultFieldKeys(String schemaName, String queryName, List<FieldKey> keys)
     {
         DataEntryManager.get().registerDefaultFieldKeys(schemaName, queryName, keys);
+    }
+
+    public List<FieldKey> getDefaultFieldKeys(TableInfo ti)
+    {
+        return DataEntryManager.get().getDefaultFieldKeys(ti);
+    }
+
+    public void registerMoreActionsButton(ButtonConfigFactory btn, String schema, String query)
+    {
+        Map<String, List<ButtonConfigFactory>> schemaMap = _queryButtons.get(schema);
+        if (schemaMap == null)
+            schemaMap = new CaseInsensitiveHashMap<List<ButtonConfigFactory>>();
+
+        List<ButtonConfigFactory> list = schemaMap.get(query);
+        if (list == null)
+            list = new ArrayList<ButtonConfigFactory>();
+
+        list.add(btn);
+
+        schemaMap.put(query, list);
+        _queryButtons.put(schema, schemaMap);
+    }
+
+    public List<ButtonConfigFactory> getMoreActionsButtons(TableInfo ti)
+    {
+        Container c = ti.getUserSchema().getContainer();
+        User u = ti.getUserSchema().getUser();
+
+        List<ButtonConfigFactory> buttons = new ArrayList<ButtonConfigFactory>();
+
+        if (_queryButtons.containsKey(LDKService.ALL_SCHEMAS))
+        {
+            Map<String, List<ButtonConfigFactory>> factories = _queryButtons.get(LDKService.ALL_SCHEMAS);
+            buttons.addAll(getButtonsForTable(ti, factories, LDKService.ALL_TABLES));
+            buttons.addAll(getButtonsForTable(ti, factories, ti.getPublicName()));
+        }
+
+        if (_queryButtons.containsKey(ti.getPublicSchemaName()))
+        {
+            Map<String, List<ButtonConfigFactory>> factories = _queryButtons.get(ti.getPublicSchemaName());
+            buttons.addAll(getButtonsForTable(ti, factories, LDKService.ALL_TABLES));
+            buttons.addAll(getButtonsForTable(ti, factories, ti.getPublicName()));
+        }
+
+        return Collections.unmodifiableList(buttons);
+    }
+
+    private List<ButtonConfigFactory> getButtonsForTable(TableInfo ti, Map<String, List<ButtonConfigFactory>> factories, String query)
+    {
+        if (factories.containsKey(query))
+        {
+            List<ButtonConfigFactory> ret = new ArrayList<ButtonConfigFactory>();
+            for (ButtonConfigFactory btn : factories.get(query))
+            {
+                if (btn.isAvailable(ti))
+                    ret.add(btn);
+            }
+
+            return ret;
+        }
+
+        return Collections.emptyList();
+    }
+
+    public boolean hasDataEntryPermission (String schemaName, String queryName, Container c, User u)
+    {
+        return hasPermission(schemaName, queryName, c, u, EHRDataEntryPermission.class);
+    }
+
+    public boolean hasDataEntryPermission (TableInfo ti)
+    {
+        return hasPermission(ti, EHRDataEntryPermission.class);
+    }
+
+    public boolean hasPermission (String schemaName, String queryName, Container c, User u, Class<? extends Permission> perm)
+    {
+        Container ehrContainer = EHRService.get().getEHRStudyContainer(c);
+        if (ehrContainer == null)
+            return false;
+
+        UserSchema studySchema = QueryService.get().getUserSchema(u, ehrContainer, schemaName);
+        if (studySchema == null)
+            return false;
+
+        TableInfo ti = studySchema.getTable(queryName);
+        if (ti == null)
+            return false;
+
+        return hasPermission(ti, perm);
+    }
+
+    public boolean hasPermission (TableInfo ti, Class<? extends Permission> perm)
+    {
+        SecurableResource sr;
+        if (ti instanceof DataSetTable)
+        {
+            sr =((DataSetTable) ti).getDataSet();
+        }
+        else
+        {
+            sr = ti.getUserSchema().getContainer();
+        }
+
+        SecurityPolicy policy = SecurityPolicyManager.getPolicy(sr);
+        return policy.hasPermission(ti.getUserSchema().getUser(), perm);
     }
 }

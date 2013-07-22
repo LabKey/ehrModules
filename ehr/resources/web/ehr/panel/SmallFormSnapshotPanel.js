@@ -30,16 +30,15 @@ Ext4.define('EHR.panel.SmallFormSnapshotPanel', {
     },
 
     appendTreatments: function(results){
-        if (results && results.rows && results.rows.length){
+        if (results && results.length){
             var values = [];
-            Ext4.each(results.rows, function(row){
-                var sr = new LDK.SelectRowsRow(row);
-                var code = sr.getDisplayValue('code');
-                var amount = sr.getDisplayValue('amountWithUnits');
-                var route = sr.getDisplayValue('route');
-                var frequency = sr.getDisplayValue('frequency');
-                var category = sr.getDisplayValue('category');
-                var enddate = sr.getFormattedDateValue('enddate', 'Y-m-d');
+            Ext4.Array.forEach(results, function(row){
+                var code = row['code/meaning'];
+                var amount = row.amountWithUnits;
+                var route = row.route;
+                var frequency = row['frequency/meaning'];
+                var category = row.category;
+                var enddate = row.enddate ? LDK.ConvertUtils.parseDate(row.enddate).format('Y-m-d') : null;
 
                 var text = '';
                 if (code){
