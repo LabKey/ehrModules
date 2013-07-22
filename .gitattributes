@@ -1,6 +1,5 @@
 * text=auto !eol
 EHR_ComplianceDB/EHR_ComplianceDB.iml -text
-EHR_ComplianceDB/build.xml -text
 EHR_ComplianceDB/module.properties -text
 EHR_ComplianceDB/resources/folderTypes/Compliance[!!-~]and[!!-~]Training.folderType.xml -text
 EHR_ComplianceDB/resources/module.xml -text
@@ -75,7 +74,6 @@ EHR_ComplianceDB/resources/views/training.html -text
 EHR_ComplianceDB/resources/views/training.view.xml -text
 EHR_ComplianceDB/resources/views/training.webpart.xml -text
 EHR_ComplianceDB/tools/SOP_Lists.zip -text
-ehr/build.xml -text
 ehr/module.properties -text
 ehr/resources/folderTypes/EHR.folderType.xml -text
 ehr/resources/module.xml -text
