@@ -17,16 +17,14 @@ package org.labkey.ehr.history;
 
 import org.apache.log4j.Logger;
 import org.labkey.api.data.Container;
-import org.labkey.api.ehr.HistoryDataSource;
-import org.labkey.api.ehr.HistoryRow;
+import org.labkey.api.ehr.history.HistoryDataSource;
+import org.labkey.api.ehr.history.HistoryRow;
 import org.labkey.api.security.User;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;

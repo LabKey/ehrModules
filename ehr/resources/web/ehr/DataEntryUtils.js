@@ -304,8 +304,10 @@ EHR.DataEntryUtils = new function(){
             //this.updatable can override col.editable
             col.editable = meta.userEditable;
 
-            if(col.editable && !col.editor)
+            if(col.editable && !col.editor){
                 col.editor = LABKEY.ext.Ext4Helper.getGridEditorConfig(meta);
+                col.editor.fieldLabel = null;
+            }
 
             if (col.editor && col.editor.xtype == 'numberfield'){
                 col.editor.hideTrigger = true;
@@ -354,6 +356,23 @@ EHR.DataEntryUtils = new function(){
                 return val;
             else
                 return [val];
+        },
+
+        getBoundRecord: function(cmp){
+            var boundRecord;
+            var form = cmp.up('form');
+            if (form)
+                boundRecord = form.boundRecord;
+            else {
+                var grid = cmp.up('grid');
+                if (grid){
+                    var records = grid.getSelectionModel().getSelection();
+                    if (records.length == 1)
+                        boundRecord = records[0];
+                }
+            }
+
+            return boundRecord;
         }
     }
 };

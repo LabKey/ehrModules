@@ -41,8 +41,7 @@ Ext4.define('EHR.grid.Panel', {
                 return;
 
             var id = models[0].get('Id');
-            if (id)
-                this.fireEvent('animalchange', id);
+            this.fireEvent('animalchange', id);
         }, this);
 
         this.mon(this.store, 'datachanged', this.onStoreDataChanged, this);

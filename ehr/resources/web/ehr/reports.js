@@ -243,7 +243,10 @@ EHR.reports.renderWeightData = function(panel, tab, subject){
                     scope: this,
                     success: function(results){
                         var target = targetPanel.down('#summaryArea');
-                        LDK.Assert.assertNotEmpty('target panel not present in callback of EHR.reports.renderWeightData.  This may indicate the layout changed before load.', target);
+                        if (!target){
+                            console.log('target panel not present in callback of EHR.reports.renderWeightData.  This may indicate the layout changed before load');
+                            return;
+                        }
 
                         target.removeAll();
 
@@ -365,7 +368,10 @@ EHR.reports.renderWeightData = function(panel, tab, subject){
                     failure: LDK.Utils.getErrorCallback(),
                     success: Ext4.Function.pass(function(subj, results){
                         var target = targetPanel.down('#tabArea');
-                        LDK.Assert.assertNotEmpty('target panel not present in callback of weight report.  This may indicate the layout changed before load.', target);
+                        if (!target){
+                            console.log('target panel not present in callback of weight report.  This may indicate the layout changed before load');
+                            return;
+                        }
 
                         target.removeAll();
                         target.add({

@@ -16,10 +16,9 @@
 package org.labkey.ehr.history;
 
 import org.labkey.api.data.Results;
-import org.labkey.api.util.PageFlowUtil;
+import org.labkey.api.ehr.history.AbstractDataSource;
 
 import java.sql.SQLException;
-import java.util.Set;
 
 /**
  * User: bimber

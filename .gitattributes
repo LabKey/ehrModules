@@ -1000,7 +1000,6 @@ ehr/src/org/labkey/ehr/demographics/HousingDemographicsProvider.java -text
 ehr/src/org/labkey/ehr/demographics/MostRecentWeightDemographicsProvider.java -text
 ehr/src/org/labkey/ehr/demographics/TBDemographicsProvider.java -text
 ehr/src/org/labkey/ehr/demographics/WeightsDemographicsProvider.java -text
-ehr/src/org/labkey/ehr/history/AbstractDataSource.java -text
 ehr/src/org/labkey/ehr/history/AntibioticSensitivityLabworkType.java -text
 ehr/src/org/labkey/ehr/history/ChemistryLabworkType.java -text
 ehr/src/org/labkey/ehr/history/ClinicalHistoryManager.java -text
@@ -1032,7 +1031,6 @@ ehr/src/org/labkey/ehr/history/DefaultTreatmentEndDataSource.java -text
 ehr/src/org/labkey/ehr/history/DefaultTreatmentOrdersDataSource.java -text
 ehr/src/org/labkey/ehr/history/DefaultWeightDataSource.java -text
 ehr/src/org/labkey/ehr/history/HematologyLabworkType.java -text
-ehr/src/org/labkey/ehr/history/HistoryRowImpl.java -text
 ehr/src/org/labkey/ehr/history/LabworkManager.java -text
 ehr/src/org/labkey/ehr/history/LabworkType.java -text
 ehr/src/org/labkey/ehr/history/MicrobiologyLabworkType.java -text

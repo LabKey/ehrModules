@@ -8,11 +8,7 @@
                 <property name="columnTitle" value="Current Weight (kg)"/>
             </properties>
         </column>
-        <column name="relChange/PctChange">
-            <properties>
-                <property name="columnTitle" value="Percent Change"/>
-            </properties>
-        </column>
+        <column name="relChange/PctChange"/>
         <column name="relChange/IntervalInMonths">
             <properties>
                 <property name="columnTitle" value="Interval (Months)"/>

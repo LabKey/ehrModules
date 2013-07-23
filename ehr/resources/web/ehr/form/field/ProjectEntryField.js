@@ -8,16 +8,18 @@ Ext4.define('EHR.form.field.ProjectEntryField', {
     extend: 'Ext.form.field.ComboBox',
     alias: 'widget.ehr-projectentryfield',
 
+    fieldLabel: 'Project',
+    typeAhead: true,
+    forceSelection: true,
+    emptyText:'',
+    disabled: false,
+    matchFieldWidth: false,
+
     initComponent: function(){
         LABKEY.ExtAdapter.apply(this, {
-            fieldLabel: 'Project',
-            emptyText:'',
             displayField: 'displayName',
             valueField: 'project',
-            typeAhead: true,
-            forceSelection: true,
             queryMode: 'local',
-            disabled: false,
             plugins: [Ext4.create('EHR.plugin.UserEditableCombo', {
                 onClickOther: function(){
                     Ext4.create('Ext.window.Window', {
@@ -65,25 +67,42 @@ Ext4.define('EHR.form.field.ProjectEntryField', {
                 schemaName: 'study',
                 sql: this.makeSql(),
                 sort: 'project',
-                autoLoad: true
+                autoLoad: false,
+                listeners: {
+                    scope: this,
+                    load: function(store){
+                        this.getPicker().refresh();
+                    }
+                }
             },
             listeners: {
                 scope: this,
-                select: function(combo, rec){
-                    var form = combo.up('form');
-                    if(form.boundRecord){
-                        form.boundRecord.beginEdit();
-                        form.boundRecord.set('project', rec.get('project'));
-                        form.boundRecord.set('account', rec.get('account'));
-                        form.boundRecord.endEdit();
-                    }
-                },
+//                select: function(combo, rec){
+//                    var form = combo.up('form');
+//                    if(form){
+//                        if (form.boundRecord){
+//                            form.boundRecord.beginEdit();
+//                            form.boundRecord.set('project', rec.get('project'));
+//                            form.boundRecord.set('account', rec.get('account'));
+//                            form.boundRecord.endEdit();
+//                        }
+//                    }
+//                },
                 beforerender: function(field){
-                    var form = field.up('form');
-                    if (form)
-                        field.mon(form, 'animalchange', field.getProjects, field);
-                    else
-                        console.error('no form found');
+                    var target = field.up('form');
+                    if (!target)
+                        target = field.up('grid');
+
+                    LDK.Assert.assertNotEmpty('Unable to find form or grid', target);
+                    if (target) {
+                        field.mon(target, 'animalchange', field.getProjects, field);
+                    }
+                    else {
+                        console.error('Unable to find target');
+                    }
+
+                    //attempt to load for the bound Id
+                    this.getProjects();
                 }
             }
         });
@@ -114,6 +133,18 @@ Ext4.define('EHR.form.field.ProjectEntryField', {
     },
 
     makeSql: function(id, date){
+        if (!id){
+            console.log('removing');
+            return;
+        }
+
+        //avoid unnecessary reloading
+        var key = id + '||' + date;
+        if (this.loadedKey == key){
+            return;
+        }
+        this.loadedKey = key;
+
         var sql = "SELECT DISTINCT a.project as project, a.project.displayName as displayName, a.project.protocol.displayName as protocol, a.project.investigatorId.lastName as investigator FROM study.assignment a " +
             "WHERE a.id='"+id+"' ";
 
@@ -124,7 +155,7 @@ Ext4.define('EHR.form.field.ProjectEntryField', {
         if(date)
             sql += "AND cast(a.date as date) <= '"+date.format('Y-m-d')+"' AND (a.enddateCoalesced >= '"+date.format('Y-m-d')+"')";
         else
-            sql += "AND a.enddate IS NULL ";
+            sql += "AND a.isActive = true ";
 
         if(this.getDefaultProjects()){
             sql += " UNION ALL (SELECT project, account, project.protocol as protocol FROM ehr.project WHERE project IN ('" + this.getDefaultProjects().join("','") + "'))";
@@ -134,7 +165,11 @@ Ext4.define('EHR.form.field.ProjectEntryField', {
     },
 
     getProjects : function(id){
-        var boundRecord = this.up('form').boundRecord;
+        var boundRecord = EHR.DataEntryUtils.getBoundRecord(this);
+        if (!boundRecord){
+            console.error('no bound record found');
+        }
+
         if(!id && boundRecord)
             id = boundRecord.get('Id');
 
@@ -144,8 +179,11 @@ Ext4.define('EHR.form.field.ProjectEntryField', {
         }
 
         this.emptyText = 'Select project...';
-        this.store.sql = this.makeSql(id, date);
-        this.store.removeAll();
-        this.store.load();
+        var sql = this.makeSql(id, date);
+        if (sql){
+            this.store.sql = sql;
+            this.store.removeAll();
+            this.store.load();
+        }
     }
 });

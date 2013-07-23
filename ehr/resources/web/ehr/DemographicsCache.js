@@ -27,7 +27,7 @@ EHR.DemographicsCache = new function(){
         multi.add(LABKEY.Query.selectRows, {
             schemaName: this.schemaName || 'study',
             queryName: this.queryName || 'flags',
-            columns: 'Id,date,category,value,category/doHighlight',
+            columns: 'Id,date,category,value,category/doHighlight,category/omitFromOverview',
             filterArray: [
                 LABKEY.Filter.create('Id', animalId, LABKEY.Filter.Types.EQUAL),
                 LABKEY.Filter.create('isActive', true, LABKEY.Filter.Types.EQUAL),

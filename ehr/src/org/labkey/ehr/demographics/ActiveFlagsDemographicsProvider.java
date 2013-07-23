@@ -34,6 +34,7 @@ public class ActiveFlagsDemographicsProvider extends AbstractListDemographicsPro
         keys.add(FieldKey.fromString("remark"));
 
         keys.add(FieldKey.fromString("category/doHighlight"));
+        keys.add(FieldKey.fromString("category/omitFromOverview"));
 
         return keys;
     }

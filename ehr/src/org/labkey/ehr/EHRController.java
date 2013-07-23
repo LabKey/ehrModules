@@ -26,7 +26,7 @@ import org.labkey.api.action.SpringActionController;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.ContainerManager;
 import org.labkey.api.ehr.EHRService;
-import org.labkey.api.ehr.HistoryRow;
+import org.labkey.api.ehr.history.HistoryRow;
 import org.labkey.api.ehr.dataentry.DataEntryForm;
 import org.labkey.api.pipeline.PipelineStatusUrls;
 import org.labkey.api.security.RequiresPermissionClass;

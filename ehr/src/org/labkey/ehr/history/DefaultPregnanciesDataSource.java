@@ -15,13 +15,11 @@
  */
 package org.labkey.ehr.history;
 
-import org.labkey.api.data.ColumnInfo;
 import org.labkey.api.data.Results;
-import org.labkey.api.data.TableInfo;
+import org.labkey.api.ehr.history.AbstractDataSource;
 import org.labkey.api.util.PageFlowUtil;
 
 import java.sql.SQLException;
-import java.util.Collection;
 import java.util.Set;
 
 /**

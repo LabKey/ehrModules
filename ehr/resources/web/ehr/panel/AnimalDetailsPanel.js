@@ -118,6 +118,12 @@ Ext4.define('EHR.panel.AnimalDetailsPanel', {
             Ext4.Array.forEach(cache.flags, function(sr){
                 var category = sr.getDisplayValue('category');
                 var highlight = sr.getValue('category/doHighlight');
+                var omit = sr.getValue('category/omitFromOverview');
+
+                //skip
+                if (omit === false)
+                    return;
+
                 if (category)
                     category = Ext4.String.trim(category);
 

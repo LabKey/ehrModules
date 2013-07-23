@@ -91,17 +91,17 @@ Ext4.define('EHR.window.GetDistinctWindow', {
                     total++;
                 }
 
-                var win = new Ext.Window({
+                Ext4.create('Ext.window.Window', {
                     width: 280,
                     modal: true,
-                    autoHeight: true,
-                    bodyStyle:'padding:5px',
-                    closeAction:'destroy',
-                    plain: true,
+                    bodyStyle: 'padding:5px',
+                    closeAction: 'destroy',
                     title: 'Distinct Values',
-                    //layout: 'form',
+                    defaults: {
+                        border: false
+                    },
                     items: [{
-                        html: 'Total: '+total
+                        html: 'Total: ' + total
                     },{
                         xtype: 'textarea',
                         name: 'distinctValues',
@@ -112,12 +112,11 @@ Ext4.define('EHR.window.GetDistinctWindow', {
                     buttons: [{
                         text: 'Close',
                         scope: this,
-                        handler: function(){
-                            win.close();
+                        handler: function(btn){
+                            btn.up('window').close();
                         }
                     }]
-                });
-                win.show();
+                }).show();
             }
         });
     }

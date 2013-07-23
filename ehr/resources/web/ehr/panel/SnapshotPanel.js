@@ -748,6 +748,11 @@ Ext4.define('EHR.panel.SnapshotPanel', {
             Ext4.each(results, function(row){
                 var category = row.category;
                 var highlight = row['category/doHighlight'];
+                var omit = row['category/omitFromOverview'];
+
+                //skip
+                if (omit === false)
+                    return;
 
                 if (category)
                     category = Ext4.String.trim(category);

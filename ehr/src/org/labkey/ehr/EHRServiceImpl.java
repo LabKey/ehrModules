@@ -25,7 +25,7 @@ import org.labkey.api.data.TableCustomizer;
 import org.labkey.api.data.TableInfo;
 import org.labkey.api.ehr.demographics.DemographicsProvider;
 import org.labkey.api.ehr.EHRService;
-import org.labkey.api.ehr.HistoryDataSource;
+import org.labkey.api.ehr.history.HistoryDataSource;
 import org.labkey.api.ehr.dataentry.FormSection;
 import org.labkey.api.ldk.LDKService;
 import org.labkey.api.ldk.table.ButtonConfigFactory;
