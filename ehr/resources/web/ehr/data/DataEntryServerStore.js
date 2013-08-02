@@ -9,7 +9,7 @@
  * being used must also support validation.
  */
 Ext4.define('EHR.data.DataEntryServerStore', {
-    extend: 'LABKEY.ext4.Store',
+    extend: 'LDK.data.LabKeyStore',
     alias: 'store.ehr-dataentryserverstore',
 
     constructor: function(){
@@ -55,7 +55,12 @@ Ext4.define('EHR.data.DataEntryServerStore', {
         if (!records){
             recMap.create = this.getNewRecords();
             recMap.update = this.getUpdatedRecords();
-            recMap.delete = this.getRemovedRecordsToSync();
+
+            var removed = this.getRemovedRecordsToSync();
+            if (removed.destroy.length)
+                recMap.destroy = removed.destroy;
+            if (removed.update.length)
+                recMap.update = recMap.update.concat(removed.update);
         }
         else {
             var r;
@@ -67,7 +72,11 @@ Ext4.define('EHR.data.DataEntryServerStore', {
                     recMap.update.push(r);
             }
 
-            recMap.delete = this.getRemovedRecordsToSync();
+            var removed = this.getRemovedRecordsToSync();
+            if (removed.destroy.length)
+                recMap.destroy = removed.destroy;
+            if (removed.update.length)
+                recMap.update = recMap.update.concat(removed.update);
         }
 
         for (var action in recMap){
@@ -91,13 +100,20 @@ Ext4.define('EHR.data.DataEntryServerStore', {
 
     getRemovedRecordsToSync: function(){
         var records = this.getRemovedRecords();
-        var toDelete = [];
+        var ret = {
+            destroy: [],
+            update: []
+        };
         Ext4.Array.forEach(records, function(r){
-            if (!r.phantom)
-                toDelete.push(r);
+            if (!r.phantom){
+                if (r.isRemovedRequest)
+                    ret.update.push(r);
+                else
+                    ret.destroy.push(r);
+            }
         }, this);
 
-        return toDelete;
+        return ret;
     },
 
     removePhantomRecords: function(){
@@ -175,33 +191,47 @@ Ext4.define('EHR.data.DataEntryServerStore', {
             record.serverErrors.clear();
         }, this);
 
-        Ext4.Array.forEach(errors, function(error, idx){
-            //TODO: how to match the record??
-            if (records.length > 1){
-                console.error(records);
-                console.log(errors);
-            }
+        if (errors.errors){
+            Ext4.Array.forEach(errors.errors, function(rowError, idx){
+                var record = records[rowError.rowNumber - 1];
+                LDK.Assert.assertNotEmpty('Unable to find matching record after validation', record);
 
-            var record = records[0];
-            LDK.Assert.assertNotEmpty('Unable to find matching record after validation', record);
+                if (rowError.errors){
+                    //now iterate field errors
+                    Ext4.Array.forEach(rowError.errors, function(fieldError, idx){
+                        var severity = 'ERROR';
+                        var msg = fieldError.message;
 
-            var severity = 'ERROR';
-            var msg = error.message;
-            if (msg.match(': ')){
-                severity = msg.split(': ').shift();
-            }
+                        //translate the default server errors
+                        if (msg.match('Missing value for required property: ')){
+                            msg = 'ERROR: This field is required';
+                        }
 
-            record.serverErrors.add({
-                msg: msg,
-                message: msg,
-                severity: severity,
-                fromServer: true,
-                field: error.field,
-                serverRecord: record,
-                id: LABKEY.Utils.generateUUID()
-            });
-        }, this);
+                        if (msg.match(': ')){
+                            severity = msg.split(': ').shift();
+                        }
 
+                        record.serverErrors.add({
+                            msg: msg,
+                            message: msg,
+                            severity: severity,
+                            fromServer: true,
+                            field: fieldError.field,
+                            serverRecord: record,
+                            id: LABKEY.Utils.generateUUID()
+                        });
+                    }, this);
+                }
+                else {
+                    console.error('unhandled error');
+                    console.log(rowError);
+                }
+            }, this);
+        }
+        else {
+            console.error('unhandled error');
+            console.log(errors);
+        }
         this.fireEvent('validation', this, records);
     },
 

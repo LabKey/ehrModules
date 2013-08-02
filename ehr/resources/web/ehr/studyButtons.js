@@ -95,8 +95,10 @@ EHR.DatasetButtons = new function(){
             queryName = queryName || dataRegion.queryName;
             schemaName = schemaName || dataRegion.schemaName;
 
-            var pkCols = dataRegion.pkCols || ['lsid'];
-            var colExpr = '(s.' + pkCols.join(" || ',' || s.") + ')';
+            var selectorCols = !Ext4.isEmpty(dataRegion.selectorCols) ? dataRegion.selectorCols : dataRegion.pkCols;
+            LDK.Assert.assertNotEmpty('Unable to find selector columns for: ' + dataRegion.schemaName + '.' + dataRegion.queryName, selectorCols);
+
+            var colExpr = '(s.' + selectorCols.join(" || ',' || s.") + ')';
             var sql = "SELECT DISTINCT s.Id FROM "+schemaName+".\""+queryName+"\" s WHERE " + colExpr + " IN ('" + checked.join("', '") + "')";
 
             LABKEY.Query.executeSql({
@@ -441,12 +443,6 @@ EHR.DatasetButtons = new function(){
          * @param schemaName
          */
         getDistinctHandler: function(dataRegionName, queryName, schemaName){
-            var checked = LABKEY.DataRegions[dataRegionName].getChecked();
-            if(!checked || !checked.length){
-                alert('No records selected');
-                return;
-            }
-
             Ext4.create('EHR.window.GetDistinctWindow', {
                 dataRegionName: dataRegionName,
                 schemaName: schemaName,

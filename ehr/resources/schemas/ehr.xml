@@ -961,7 +961,7 @@
         <ns:columns>
             <ns:column columnName="protocol">
                 <ns:isKeyField>true</ns:isKeyField>
-                <ns:columnTitle>Protocol</ns:columnTitle>
+                <ns:columnTitle>IACUC Protocol</ns:columnTitle>
             </ns:column>
             <ns:column columnName="title">
                 <ns:nullable>true</ns:nullable>
@@ -1068,7 +1068,7 @@
                 <ns:isHidden>true</ns:isHidden>
             </ns:column>
             <ns:column columnName="protocol">
-                <ns:columnTitle>Protocol</ns:columnTitle>
+                <ns:columnTitle>IACUC Protocol</ns:columnTitle>
             </ns:column>
             <ns:column columnName="account">
                 <ns:nullable>true</ns:nullable>
@@ -1159,17 +1159,31 @@
                 <ns:columnTitle>Project</ns:columnTitle>
             </ns:column>
             <ns:column columnName="species">
+                <ns:columnTitle>Species</ns:columnTitle>
+                <ns:fk>
+                    <ns:fkDbSchema>ehr_lookups</ns:fkDbSchema>
+                    <ns:fkTable>species</ns:fkTable>
+                    <ns:fkColumnName>common</ns:fkColumnName>
+                </ns:fk>
             </ns:column>
             <ns:column columnName="gender">
+                <ns:columnTitle>Gender</ns:columnTitle>
+                <ns:fk>
+                    <ns:fkDbSchema>ehr_lookups</ns:fkDbSchema>
+                    <ns:fkTable>gender_codes</ns:fkTable>
+                    <ns:fkColumnName>code</ns:fkColumnName>
+                </ns:fk>
             </ns:column>
             <ns:column columnName="allowed">
                 <ns:columnTitle># Allowed</ns:columnTitle>
             </ns:column>
             <ns:column columnName="start">
                 <ns:columnTitle>Start Date</ns:columnTitle>
+                <ns:formatString>yyyy-MM-dd</ns:formatString>
             </ns:column>
             <ns:column columnName="enddate">
                 <ns:columnTitle>End Date</ns:columnTitle>
+                <ns:formatString>yyyy-MM-dd</ns:formatString>
             </ns:column>
             <ns:column columnName="container">
                 <ns:isUserEditable>false</ns:isUserEditable>
@@ -1181,6 +1195,11 @@
                 </ns:fk>
             </ns:column>
             <ns:column columnName="objectid">
+                <ns:columnTitle>Key2</ns:columnTitle>
+                <ns:shownInInsertView>false</ns:shownInInsertView>
+                <ns:shownInUpdateView>false</ns:shownInUpdateView>
+                <ns:shownInDetailsView>false</ns:shownInDetailsView>
+                <ns:isHidden>true</ns:isHidden>
             </ns:column>
             <ns:column columnName="createdby">
                 <ns:isUserEditable>false</ns:isUserEditable>

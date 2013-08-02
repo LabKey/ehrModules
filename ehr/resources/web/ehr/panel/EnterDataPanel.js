@@ -86,20 +86,20 @@ Ext4.define('EHR.panel.EnterDataPanel', {
                 sections: [{
                     header: 'Blood Draws',
                     items: [{
-                        name: 'Unapproved Blood Draw Requests',
-                        url: LABKEY.ActionURL.buildURL('query', 'executeQuery', null, {schemaName: 'study', 'query.queryName': 'Blood Draws', 'query.viewName': 'Blood Requests'})
+                        name: 'Unapproved Requests',
+                        url: LABKEY.ActionURL.buildURL('query', 'executeQuery', null, {schemaName: 'study', 'query.queryName': 'Blood Draws', 'query.viewName': 'Blood Requests', 'query.QCState/Label~eq': 'Request: Pending'})
                     },{
-                        name: 'Blood Draw Schedule',
-                        url: LABKEY.ActionURL.buildURL('query', 'executeQuery', null, {schemaName: 'study', 'query.queryName': 'Blood Draws', 'query.viewName': 'Blood Schedule'})
+                        name: 'Approved Requests',
+                        url: LABKEY.ActionURL.buildURL('query', 'executeQuery', null, {schemaName: 'study', 'query.queryName': 'Blood Draws', 'query.viewName': 'Blood Schedule', 'query.QCState/Label~eq': 'Request: Approved'})
                     }]
                 },{
                     header: 'Lab Tests',
                     items: [{
                         name: 'Unapproved Requests',
-                        url: LABKEY.ActionURL.buildURL('query', 'executeQuery', null, {schemaName: 'study', 'query.queryName': 'Clinpath Runs', 'query.viewName': 'Clinpath Requests'})
+                        url: LABKEY.ActionURL.buildURL('query', 'executeQuery', null, {schemaName: 'study', 'query.queryName': 'Clinpath Runs', 'query.QCState/Label~eq': 'Request: Pending'})
                     },{
-                        name: 'Pending Requests',
-                        url: LABKEY.ActionURL.buildURL('query', 'executeQuery', null, {schemaName: 'study', 'query.queryName': 'Clinpath Runs', 'query.viewName': 'Clinpath Requests'})
+                        name: 'Approved Requests',
+                        url: LABKEY.ActionURL.buildURL('query', 'executeQuery', null, {schemaName: 'study', 'query.queryName': 'Clinpath Runs', 'query.QCState/Label~eq': 'Request: Approved'})
                     }]
                 }]
             }]

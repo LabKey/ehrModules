@@ -6,6 +6,8 @@
         <script path="ehr/Security.js"/>
 
         <!--Misc Ext4 components-->
+        <script path="ehr/panel/WeightGraphPanel.js"/>
+        <script path="ehr/panel/WeightSummaryPanel.js"/>
         <script path="ehr/panel/SnapshotPanel.js"/>
         <script path="ehr/panel/SmallFormSnapshotPanel.js"/>
         <script path="ehr/panel/NarrowSnapshotPanel.js"/>
@@ -14,6 +16,9 @@
         <script path="ehr/panel/ClinicalHistoryPanel.js"/>
         <script path="ehr/panel/CaseHistoryPanel.js"/>
         <script path="ehr/panel/ManageCasesPanel.js"/>
+        <script path="ehr/panel/ClinicalRemarkPanel.js"/>
+        <script path="ehr/panel/EnterRemarkPanel.js"/>
+        <script path="ehr/panel/ObservationsPanel.js"/>
         <script path="ehr/panel/ManageTreatmentsPanel.js"/>
 
         <script path="ehr/window/ClinicalHistoryWindow.js"/>
@@ -23,6 +28,7 @@
         <script path="ehr/window/GetDistinctWindow.js"/>
         <script path="ehr/window/MarkCompletedWindow.js"/>
         <script path="ehr/window/ManageCasesWindow.js"/>
+        <script path="ehr/window/EnterRemarkWindow.js"/>
         <script path="ehr/window/ManageTreatmentsWindow.js"/>
         <script path="ehr/studyButtons.js"/>
         <script path="ehr/reports.js" />
@@ -37,6 +43,7 @@
         <script path="ehr/model/DefaultClientModel.js"/>
 
         <!--fields-->
+        <script path="ehr/form/field/SimpleCombo.js"/>
         <script path="ehr/form/field/ProjectEntryField.js"/>
         <script path="ehr/form/field/ProjectField.js"/>
         <script path="ehr/form/field/ProtocolField.js"/>

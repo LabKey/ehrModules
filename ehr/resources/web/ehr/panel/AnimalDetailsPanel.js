@@ -121,7 +121,7 @@ Ext4.define('EHR.panel.AnimalDetailsPanel', {
                 var omit = sr.getValue('category/omitFromOverview');
 
                 //skip
-                if (omit === false)
+                if (omit === true)
                     return;
 
                 if (category)

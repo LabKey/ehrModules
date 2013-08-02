@@ -3,6 +3,7 @@
         <column name="employeeid"/>
         <column name="lastName"/>
         <column name="firstName"/>
+        <column name="middleName"/>
         <column name="email"/>
         <column name="personid"/>
         <column name="type"/>

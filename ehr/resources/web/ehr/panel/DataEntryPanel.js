@@ -13,6 +13,8 @@ Ext4.define('EHR.panel.DataEntryPanel', {
         Ext4.QuickTips.init();
 
         this.storeCollection = Ext4.create(this.formConfig.storeCollectionClass || 'EHR.data.StoreCollection', {});
+        this.storeCollection.formConfig = this.formConfig;
+
         this.storeCollection.on('load', this.onStoreCollectionLoad, this);
         this.storeCollection.on('commitcomplete', this.onStoreCollectionCommitComplete, this);
         this.storeCollection.on('validation', this.onStoreCollectionValidation, this);
@@ -73,18 +75,27 @@ Ext4.define('EHR.panel.DataEntryPanel', {
         if(EHR.debug && maxSeverity)
             console.log('Error level: '+ maxSeverity);
 
+        function processItem(item){
+            if(item.disableOn){
+                if(maxSeverity && EHR.Utils.errorSeverity[item.disableOn] <= EHR.Utils.errorSeverity[maxSeverity]){
+                    item.setDisabled(true);
+                    item.setTooltip('Disabled due to errors in the form');
+                }
+                else {
+                    item.setDisabled(false);
+                    item.setTooltip('')
+                }
+            }
+
+            if (item.menu){
+                item.menu.items.each(function(menuItem){
+                    processItem(menuItem);
+                }, this);
+            }
+        }
         Ext4.Array.forEach(this.getDockedItems('toolbar[dock="bottom"]'), function(toolbar){
             toolbar.items.each(function(item){
-                if(item.disableOn){
-                    if(maxSeverity && EHR.Utils.errorSeverity[item.disableOn] <= EHR.Utils.errorSeverity[maxSeverity]){
-                        item.setDisabled(true);
-                        item.setTooltip('Disabled due to errors in the form');
-                    }
-                    else {
-                        item.setDisabled(false);
-                        item.setTooltip('')
-                    }
-                }
+                processItem(item);
             }, this);
         }, this);
     },
@@ -169,6 +180,7 @@ Ext4.define('EHR.panel.DataEntryPanel', {
         }
 
         var items = [];
+        var tabItems = [];
         for (var i=0; i<this.formConfig.sections.length; i++){
             var section = this.formConfig.sections[i];
 
@@ -180,52 +192,62 @@ Ext4.define('EHR.panel.DataEntryPanel', {
                 title: section.label,
                 formConfig: section,
                 dataEntryPanel: this,
-                store: this.getClientStoreForSection(section)
+                store: this.storeCollection.getClientStoreForSection(this, section)
             }, section.formConfig);
 
-            items.push(sectionCfg);
+            if (section.location == 'Tabs'){
+                tabItems.push(sectionCfg);
+            }
+            else {
+                items.push(sectionCfg);
+            }
+        }
+
+        if (tabItems.length){
+            items.push({
+                xtype: 'tabpanel',
+                items: tabItems
+            });
         }
 
         return items;
     },
 
-    getClientStoreForSection: function(section){
-        var modelName = 'EHR.model.model-' + Ext4.id();
-        var fields = EHR.model.DefaultClientModel.getFieldConfigs(section.fieldConfigs, section.configSources);
-        if (!fields.length){
-            return;
-        }
-
-        Ext4.define(modelName, {
-            extend: section.clientModelClass,
-            fields: fields,
-            storeCollection: this.storeCollection,
-            dataEntryPanel: this
-        });
-
-        var store = Ext4.create('EHR.data.DataEntryClientStore', {
-            storeId: Ext4.id() + '-' + section.name,
-            model: modelName,
-            loaded: false
-        });
-
-        this.storeCollection.addClientStore(store);
-
-        return store;
-    },
-
     getButtons: function(){
         var buttons = [];
 
-        if (this.formConfig && this.formConfig.buttons){
-            Ext4.Array.forEach(this.formConfig.buttons, function(name){
-                var btnCfg = EHR.DataEntryUtils.getDataEntryFormButton(name);
-                if (btnCfg){
-                    btnCfg = this.configureButton(btnCfg);
-                    if (btnCfg)
-                        buttons.push(btnCfg);
+        if (this.formConfig){
+            if (this.formConfig.buttons){
+                Ext4.Array.forEach(this.formConfig.buttons, function(name){
+                    var btnCfg = EHR.DataEntryUtils.getDataEntryFormButton(name);
+                    if (btnCfg){
+                        btnCfg = this.configureButton(btnCfg);
+                        if (btnCfg)
+                            buttons.push(btnCfg);
+                    }
+                }, this);
+            }
+
+            if (this.formConfig.moreActionButtons){
+                var moreActions = [];
+                Ext4.Array.forEach(this.formConfig.moreActionButtons, function(name){
+                    var btnCfg = EHR.DataEntryUtils.getDataEntryFormButton(name);
+                    if (btnCfg){
+                        btnCfg = this.configureButton(btnCfg);
+                        if (btnCfg){
+                            delete btnCfg.xtype;
+                            moreActions.push(btnCfg);
+                        }
+                    }
+                }, this);
+
+                if (moreActions.length){
+                    buttons.push({
+                        text: 'More Actions',
+                        menu: moreActions
+                    });
                 }
-            }, this);
+            }
         }
 
         return buttons;
@@ -280,6 +302,13 @@ Ext4.define('EHR.panel.DataEntryPanel', {
 
         //we delay this event so that any modified fields can fire their blur events and/or commit changes
         this.storeCollection.commitChanges.defer(300, this.storeCollection, [true, extraContext]);
+    },
+
+    discard: function(extraContext){
+        Ext4.Msg.confirm('Discard Form', 'This will delete all records in this form.  Are you sure you want to do this?', function(val){
+            if (val == 'yes')
+                this.storeCollection.discard(extraContext);
+        }, this);
     }
 
 });

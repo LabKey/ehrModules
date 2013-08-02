@@ -25,7 +25,7 @@
                         <columnTitle>Old Weight (kg)</columnTitle>
                     </column>
                     <column columnName="PctChange">
-                        <columnTitle>% Change Since This Date</columnTitle>
+                        <columnTitle>% Change Relative To Current</columnTitle>
                         <conditionalFormats>
                             <conditionalFormat>
                                 <filters>

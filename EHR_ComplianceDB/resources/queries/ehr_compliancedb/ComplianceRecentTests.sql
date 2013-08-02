@@ -64,6 +64,8 @@ WHERE
       THEN TRUE
     WHEN (e.Animals = TRUE AND rn.Animals = TRUE)
       THEN TRUE
+    WHEN (e.contactsSla = TRUE AND rn.contactsSla = TRUE)
+      THEN TRUE
     WHEN (e.Tissue = TRUE AND rn.Tissues = TRUE)
       THEN TRUE
     --if a requirement is mandatory for a given employee category/unit and this employee is one, it's required
@@ -76,4 +78,4 @@ WHERE
       FALSE
   END = TRUE
 
-  AND e.EndDate IS NULL
+  AND e.EndDateCoalesced >= curdate()

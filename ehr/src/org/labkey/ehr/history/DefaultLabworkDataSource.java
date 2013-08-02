@@ -33,8 +33,10 @@ import org.labkey.ehr.EHRSchema;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -155,5 +157,31 @@ public class DefaultLabworkDataSource extends AbstractDataSource
         });
 
         return map;
+    }
+
+    @Override
+    protected String getCategoryText(Results rs) throws SQLException
+    {
+        String category = rs.getString("type");
+        return category == null ? super.getCategoryText(rs) : category;
+    }
+
+    @Override
+    protected String getPrimaryGroup(Results rs) throws SQLException
+    {
+        return getCategoryText(rs);
+    }
+
+    @Override
+    public Set<String> getAllowableCategoryGroups(Container c, User u)
+    {
+        Set<String> types = new HashSet<String>();
+        types.add("Labwork");
+        for (LabworkType type : LabworkManager.get().getTypes())
+        {
+            types.add(type.getName());
+        }
+
+        return types;
     }
 }

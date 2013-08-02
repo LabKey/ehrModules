@@ -1,4 +1,4 @@
-<view xmlns="http://labkey.org/data/xml/view" title="Clinical Managements" frame="portal">
+<view xmlns="http://labkey.org/data/xml/view" title="Clinical Management" frame="portal">
     <dependencies>
         <dependency path="ehr.context" />
         <dependency path="ehr/panel/ClinicalManagementPanel.js" />

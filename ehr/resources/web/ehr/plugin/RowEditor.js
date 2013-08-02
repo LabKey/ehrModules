@@ -136,7 +136,9 @@ Ext4.define('EHR.plugin.RowEditor', {
 
         var sm = this.cmp.getSelectionModel();
         if (!sm.hasSelection()){
-            sm.setCurrentPosition(sm.getCurrentPosition());
+            if (sm instanceof Ext4.selection.CellModel){
+                sm.setCurrentPosition(sm.getCurrentPosition());
+            }
         }
 
         sm.select([record]);

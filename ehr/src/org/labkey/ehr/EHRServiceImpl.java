@@ -23,6 +23,7 @@ import org.labkey.api.data.ContainerManager;
 import org.labkey.api.data.PropertyManager;
 import org.labkey.api.data.TableCustomizer;
 import org.labkey.api.data.TableInfo;
+import org.labkey.api.ehr.dataentry.RequestForm;
 import org.labkey.api.ehr.demographics.DemographicsProvider;
 import org.labkey.api.ehr.EHRService;
 import org.labkey.api.ehr.history.HistoryDataSource;
@@ -48,8 +49,9 @@ import org.labkey.api.util.Path;
 import org.labkey.api.view.template.ClientDependency;
 import org.labkey.api.ehr.dataentry.DataEntryForm;
 import org.labkey.ehr.dataentry.DataEntryManager;
+import org.labkey.ehr.dataentry.RunForm;
 import org.labkey.ehr.dataentry.SimpleGridPanel;
-import org.labkey.ehr.dataentry.TaskForm;
+import org.labkey.api.ehr.dataentry.TaskForm;
 import org.labkey.ehr.history.ClinicalHistoryManager;
 import org.labkey.ehr.security.EHRDataEntryPermission;
 
@@ -177,7 +179,7 @@ public class EHRServiceImpl extends EHRService
 
         if (_tableCustomizers.containsKey(schema))
         {
-            if (_tableCustomizers.get(schema).get(LDKService.ALL_TABLES).contains(LDKService.ALL_TABLES))
+            if (_tableCustomizers.get(schema).containsKey(LDKService.ALL_TABLES))
             {
                 for (Pair<Module, Class<? extends TableCustomizer>> pair : _tableCustomizers.get(schema).get(LDKService.ALL_TABLES))
                 {
@@ -190,7 +192,7 @@ public class EHRServiceImpl extends EHRService
                 }
             }
 
-            if (_tableCustomizers.get(schema).get(LDKService.ALL_TABLES).contains(query))
+            if (_tableCustomizers.get(schema).containsKey(query))
             {
                 for (Pair<Module, Class<? extends TableCustomizer>> pair : _tableCustomizers.get(schema).get(query))
                 {
@@ -404,13 +406,17 @@ public class EHRServiceImpl extends EHRService
         {
             form = TaskForm.create(m, category, name, label, sections);
         }
+        else if (FORM_TYPE.Run.equals(type))
+        {
+            form = RunForm.create(m, category, name, label, sections);
+        }
         else if (FORM_TYPE.Encounter.equals(type))
         {
             throw new IllegalArgumentException("Not yet implemented");
         }
         else if (FORM_TYPE.Request.equals(type))
         {
-            throw new IllegalArgumentException("Not yet implemented");
+            form = RequestForm.create(m, category, name, label, sections);
         }
 
         if (form == null)

@@ -16,6 +16,7 @@
 package org.labkey.ehr.dataentry;
 
 import org.labkey.api.ehr.dataentry.FormSection;
+import org.labkey.api.ehr.dataentry.TaskForm;
 import org.labkey.api.module.Module;
 
 import java.util.List;

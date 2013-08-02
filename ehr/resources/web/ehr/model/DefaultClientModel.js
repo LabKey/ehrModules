@@ -7,7 +7,10 @@
  * @param fieldConfigs
  */
 Ext4.define('EHR.model.DefaultClientModel', {
-    extend: 'Ext.data.Model',
+    extend: 'LDK.data.CaseInsensitiveModel',
+    sectionConfig: null,
+    queries: {},
+
     proxy: {
         type: 'memory',
         reader: {
@@ -33,8 +36,17 @@ Ext4.define('EHR.model.DefaultClientModel', {
                 useNull: true
             });
 
-            if (tableConfig[cfg.name]){
-                ret = LABKEY.Utils.merge(ret, tableConfig[cfg.name]);
+            var map = {};
+            for (var key in tableConfig){
+                if (map[key.toLowerCase()]){
+                    console.error('duplicate keys: ' + key);
+                }
+
+                map[key.toLowerCase()] = key;
+            }
+
+            if (map[cfg.name.toLowerCase()]){
+                ret = LABKEY.Utils.merge(ret, tableConfig[map[cfg.name.toLowerCase()]]);
             }
 
             return ret;
@@ -56,6 +68,10 @@ Ext4.define('EHR.model.DefaultClientModel', {
         this.setFieldDefaults();
         if (this.storeCollection){
             this.storeCollection.setClientModelDefaults(this);
+        }
+
+        if (this.sectionCfg){
+            this.queries = this.sectionCfg.queries;
         }
     },
 
@@ -93,5 +109,49 @@ Ext4.define('EHR.model.DefaultClientModel', {
         }
 
         return errors;
+    },
+
+    getCurrentQCStateLabel: function(){
+        var qc = this.get('qcstate') || this.get('QCState');
+        if (qc)
+            return EHR.Security.getQCStateByRowId(qc).Label;
+
+        //default to draft records
+        return 'In Progress';
+    },
+
+    canDelete: function(){
+        return this.hasPermission('delete');
+    },
+
+    hasPermission: function(permission, targetQCStateLabel){
+        var currentQcStateLabel = this.getCurrentQCStateLabel();
+        var permissionName;
+
+        if (permission == 'delete'){
+            if (this.phantom)
+                return true;
+
+            return EHR.Security.hasPermission(currentQcStateLabel, permission, this.queries);
+        }
+        else if (permission == 'insert'){
+            return EHR.Security.hasPermission(currentQcStateLabel, permission, this.queries);
+        }
+        else if (permission == 'update'){
+            if (!EHR.Security.hasPermission(currentQcStateLabel, permission, this.queries)){
+                return false;
+            }
+
+            if (targetQCStateLabel){
+                if (!EHR.Security.hasPermission(targetQCStateLabel, 'insert', this.queries)){
+                    return false;
+                }
+            }
+
+            return true;
+        }
+        else {
+            return false;
+        }
     }
 });

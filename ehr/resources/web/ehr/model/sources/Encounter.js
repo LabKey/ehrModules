@@ -12,9 +12,10 @@ EHR.model.DataModelManager.registerMetadata('Encounter', {
         Id: {
             inheritance: {
                 storeIdentifier: {queryName: 'Clinical Encounters', schemaName: 'study'},
-                sourceField: 'Id',
+                sourceField: 'objectid',
                 recordSelector: {
-                    parentid: 'objectid'
+                    parentid: 'objectid',
+                    Id: 'Id'
                 }
             },
             hidden: true,

@@ -211,6 +211,7 @@ public class DefaultEHRCustomizer implements TableCustomizer
         ColumnInfo project = ti.getColumn("project");
         if (project != null && !ti.getName().equalsIgnoreCase("project"))
         {
+            project.setFacetingBehaviorType(FacetingBehaviorType.ALWAYS_OFF);
             UserSchema us = getUserSchema(ti, "ehr");
             if (us != null)
                 project.setFk(new QueryForeignKey(us, "project", "project", "project"));
@@ -228,6 +229,8 @@ public class DefaultEHRCustomizer implements TableCustomizer
         ColumnInfo room = ti.getColumn(name);
         if (room != null)
         {
+            LDKService.get().applyNaturalSort(ti, "room");
+
             if (!ti.getName().equalsIgnoreCase("rooms"))
             {
                 UserSchema us = getUserSchema(ti, "ehr_lookups");
@@ -246,6 +249,8 @@ public class DefaultEHRCustomizer implements TableCustomizer
         ColumnInfo cage = ti.getColumn(name);
         if (cage != null)
         {
+            LDKService.get().applyNaturalSort(ti, "cage");
+
             cage.setDisplayWidth("40");
             cage.setFacetingBehaviorType(FacetingBehaviorType.ALWAYS_OFF);
         }
@@ -834,6 +839,7 @@ public class DefaultEHRCustomizer implements TableCustomizer
             SQLFragment sql = new SQLFragment(table.getSqlDialect().concatenate(ExprColumn.STR_TABLE_ALIAS + ".code", chr + "(9)", ExprColumn.STR_TABLE_ALIAS + ".meaning"));
             ExprColumn col = new ExprColumn(table, codeAndMeaning, sql, JdbcType.VARCHAR, table.getColumn("code"), table.getColumn("meaning"));
             col.setLabel("Code and Meaning");
+            col.setFacetingBehaviorType(FacetingBehaviorType.ALWAYS_OFF);
             table.addColumn(col);
         }
     }
@@ -1085,7 +1091,6 @@ public class DefaultEHRCustomizer implements TableCustomizer
                     "WHEN c." + dateColName + " is null\n" +
                     "  THEN null\n" +
                     "ELSE\n" +
-                    //"  timestampdiff('SQL_TSI_YEAR', c.dateOnly, coalesce(c.id.dataset.demographics.death, curdate()))\n" +
                     "  age(c.dateOnly, coalesce(c.id.dataset.demographics.death, curdate()))\n" +
                     "END as survivorshipInYears,\n" +
                     "CASE\n" +
@@ -1120,20 +1125,18 @@ public class DefaultEHRCustomizer implements TableCustomizer
 
     private void appendTimeSinceCol(final UserSchema us, final AbstractTableInfo ti)
     {
-        //TODO: make PG compatible
-        if (ti.getSqlDialect().isPostgreSQL())
-            return;
-
         String name = "daysElapsed";
         if (ti.getColumn(name) == null)
         {
             ColumnInfo date = ti.getColumn("date");
-            SQLFragment sql = new SQLFragment("(CASE WHEN " + ExprColumn.STR_TABLE_ALIAS + "." + date.getSelectName() + " <= {fn now()} THEN (" + ti.getSqlDialect().getDateDiff(Calendar.DATE, "{fn curdate()}", "CAST(" + ExprColumn.STR_TABLE_ALIAS + "." + date.getSelectName() + " AS DATE)") + " + 1) ELSE null END)");
+            String type = ti.getSqlDialect().isPostgreSQL() ? "timestamp" : "date";
+            SQLFragment sql = new SQLFragment("(CASE WHEN " + ExprColumn.STR_TABLE_ALIAS + "." + date.getSelectName() + " <= {fn now()} THEN (" + ti.getSqlDialect().getDateDiff(Calendar.DATE, "cast({fn curdate()} as " + type + ")", "CAST(" + ExprColumn.STR_TABLE_ALIAS + "." + date.getSelectName() + " AS DATE)") + " + 1) ELSE 0 END)");
             ExprColumn col = new ExprColumn(ti, name, sql, JdbcType.INTEGER, date);
             col.setCalculated(true);
             col.setUserEditable(false);
             col.setHidden(true);
             col.setLabel("Days Elapsed");
+            col.setDescription("This column will show the total number of days that have elapsed since the date of this record");
             ti.addColumn(col);
         }
     }
@@ -1271,6 +1274,7 @@ public class DefaultEHRCustomizer implements TableCustomizer
             col.setUserEditable(false);
             col.setHidden(true);
             col.setLabel("Duration (Days)");
+            col.setDescription("This column will show the total number of days between the date and enddate of this record.  If enddate is blank, the current date will be used.");
             ti.addColumn(col);
         }
 

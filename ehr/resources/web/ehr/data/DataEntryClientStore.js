@@ -129,5 +129,37 @@ Ext4.define('EHR.data.DataEntryClientStore', {
         }, this);
 
         return maxSeverity;
+    },
+
+    //allows subclasses to include data to be passed to the server, such as
+    getExtraContext: function(){
+        return null;
+    },
+
+    safeRemove: function(records){
+        Ext4.Array.forEach(records, function(r){
+            var recs = [];
+            if(r.get('requestid') || r.get('requestId')){
+                r.beginEdit();
+
+                //note: we reject changes since we dont want to retain modifications made in this form
+                r.reject();
+
+                //reset the date
+                if(r.get('daterequested'))
+                    r.set('date', r.get('daterequested'));
+
+                r.set('taskid', null);
+
+                r.set('QCState', EHR.Security.getQCStateByLabel('Request: Approved').RowId);
+                r.set('qcstate', EHR.Security.getQCStateByLabel('Request: Approved').RowId);
+
+                r.endEdit(true);
+
+                r.isRemovedRequest = true;
+            }
+        }, this);
+
+        this.remove(records);
     }
 });

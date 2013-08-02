@@ -1,0 +1,93 @@
+<script type="text/javascript">
+
+    Ext4.onReady(function (){
+        if (!LABKEY.ActionURL.getParameter('requirementname')){
+            alert('Must Provide A Requirement Name');
+            return;
+        }
+
+        var webpart = <%=webpartContext%>;
+        var domSpec = [{
+            tag: 'div',
+            id: 'details_' + webpart.wrapperDivId,
+            style: 'margin-bottom: 20px;'
+        },{
+            tag: 'div',
+            id: 'summary_' + webpart.wrapperDivId,
+            style: 'margin-bottom: 20px;'
+        },{
+            tag: 'div',
+            id: 'percategory_' + webpart.wrapperDivId,
+            style: 'margin-bottom: 20px;'
+        },{
+            tag: 'div',
+            id: 'peremployee_' + webpart.wrapperDivId,
+            style: 'margin-bottom: 20px;'
+        },{
+            tag: 'div',
+            id: 'exemptions_' + webpart.wrapperDivId,
+            style: 'margin-bottom: 20px;'
+        },{
+            tag: 'div',
+            id: 'history_' + webpart.wrapperDivId,
+            style: 'margin-bottom: 20px;'
+        }];
+
+        var el = Ext4.get(webpart.wrapperDivId);
+        Ext4.DomHelper.append(el, domSpec);
+
+        var filterArray = [LABKEY.Filter.create('requirementname', LABKEY.ActionURL.getParameter('requirementname'), LABKEY.Filter.Types.EQUAL)];
+
+        Ext4.create('LDK.panel.DetailsPanel', {
+            store: {
+                schemaName: 'ehr_compliancedb',
+                queryName: 'requirements',
+                filterArray: filterArray
+            },
+            showBackBtn: false,
+            title: 'Requirement Details',
+            renderTo: 'details_' + webpart.wrapperDivId
+        });
+
+        Ext4.create('LDK.panel.QueryPanel', {
+            queryConfig: {
+                title: 'Categories/Units That Must Complete This Requirement',
+                schemaName: 'ehr_compliancedb',
+                queryName: 'requirementspercategory',
+                filterArray: filterArray,
+                failure: LDK.Utils.getErrorCallback()
+            }
+        }).render('percategory_' + webpart.wrapperDivId);
+
+        Ext4.create('LDK.panel.QueryPanel', {
+            queryConfig: {
+                title: 'Individual Employees That Must Complete This Requirement (beyond their category/unit)',
+                schemaName: 'ehr_compliancedb',
+                queryName: 'requirementsperemployee',
+                filterArray: filterArray,
+                failure: LDK.Utils.getErrorCallback()
+            }
+        }).render('peremployee_' + webpart.wrapperDivId);
+
+        Ext4.create('LDK.panel.QueryPanel', {
+            queryConfig: {
+                title: 'Individual Employees Exempt From This Requirement',
+                schemaName: 'ehr_compliancedb',
+                queryName: 'employeerequirementexemptions',
+                filterArray: filterArray,
+                failure: LDK.Utils.getErrorCallback()
+            }
+        }).render('exemptions_' + webpart.wrapperDivId);
+
+        Ext4.create('LDK.panel.QueryPanel', {
+            queryConfig: {
+                title: 'All Employees Who Must Complete This Requirement',
+                schemaName: 'ehr_compliancedb',
+                queryName: 'ComplianceRecentTests',
+                filterArray: filterArray,
+                failure: LDK.Utils.getErrorCallback()
+            }
+        }).render('summary_' + webpart.wrapperDivId);
+    });
+
+</script>

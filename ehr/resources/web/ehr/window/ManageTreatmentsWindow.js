@@ -9,14 +9,26 @@ Ext4.define('EHR.window.ManageTreatmentsWindow', {
         LABKEY.ExtAdapter.apply(this, {
             title: 'Manage Treatments: ' + this.animalId,
             modal: true,
-            bodyStyle: 'padding: 5px;',
             items: [{
                 xtype: 'ehr-managetreatmentspanel',
                 animalId: this.animalId,
-                dataRegionName: this.dataRegionName
-            }]
+                hideButtons: true
+            }],
+            buttons: this.getButtonConfig()
         });
 
         this.callParent(arguments);
+    },
+
+    getButtonConfig: function(){
+        var buttons = EHR.panel.ManageTreatmentsPanel.getButtonConfig();
+        buttons.push({
+            text: 'Close',
+            handler: function(btn){
+                btn.up('window').close();
+            }
+        });
+
+        return buttons;
     }
 });

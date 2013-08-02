@@ -200,244 +200,6 @@ Ext4.define('EHR.panel.SnapshotPanel', {
             success: this.onLoad,
             scope: this
         });
-
-//        var multi = new LABKEY.MultiRequest();
-//
-//        multi.add(LABKEY.Query.selectRows, {
-//            schemaName: 'study',
-//            queryName: 'demographics',
-//            columns: 'Id,Id/curLocation/area,Id/curLocation/room,Id/curLocation/cage,Id/curLocation/date,Id/age/yearAndDays,gender,species,geographic_origin,calculated_status,dam,sire',
-//            filterArray: [LABKEY.Filter.create('Id', this.subjectId, LABKEY.Filter.Types.EQUAL)],
-//            failure: LDK.Utils.getErrorCallback(),
-//            requiredVersion: 9.1,
-//            scope: this,
-//            success: function(results){
-//                this.demographicsResults = results;
-//            }
-//        });
-//
-//        multi.add(LABKEY.Query.selectRows, {
-//            schemaName: 'study',
-//            queryName: 'parentageSummary',
-//            sort: 'Id,relationship',
-//            columns: 'Id,date,parent,relationship,method',
-//            filterArray: [LABKEY.Filter.create('Id', this.subjectId, LABKEY.Filter.Types.EQUAL)],
-//            failure: LDK.Utils.getErrorCallback(),
-//            requiredVersion: 9.1,
-//            scope: this,
-//            success: function(results){
-//                this.parentageResults = results;
-//            }
-//        });
-//
-//        multi.add(LABKEY.Query.selectRows, {
-//            schemaName: 'study',
-//            queryName: 'demographicsSource',
-//            columns: 'Id,type,source',
-//            filterArray: [LABKEY.Filter.create('Id', this.subjectId, LABKEY.Filter.Types.EQUAL)],
-//            failure: LDK.Utils.getErrorCallback(),
-//            requiredVersion: 9.1,
-//            scope: this,
-//            success: function(results){
-//                this.sourceResults = results;
-//            }
-//        });
-//
-//        multi.add(LABKEY.Query.selectRows, {
-//            schemaName: 'study',
-//            queryName: 'assignment',
-//            requiredVersion: 9.1,
-//            columns: 'Id,date,enddate,projectedRelease,project,project/protocol,project/title,project/investigatorId,project/investigatorId/firstName,project/investigatorId/lastName',
-//            filterArray: [
-//                LABKEY.Filter.create('Id', this.subjectId, LABKEY.Filter.Types.EQUAL),
-//                LABKEY.Filter.create('isActive', true, LABKEY.Filter.Types.EQUAL)
-//            ],
-//            failure: LDK.Utils.getErrorCallback(),
-//            scope: this,
-//            success: function(results){
-//                this.assignmentResults = results;
-//            }
-//        });
-//
-//        multi.add(LABKEY.Query.selectRows, {
-//            schemaName: 'ehr',
-//            queryName: 'animal_group_members',
-//            requiredVersion: 9.1,
-//            columns: 'Id,date,enddate,groupId/name',
-//            filterArray: [
-//                LABKEY.Filter.create('Id', this.subjectId, LABKEY.Filter.Types.EQUAL),
-//                LABKEY.Filter.create('isActive', true, LABKEY.Filter.Types.EQUAL)
-//            ],
-//            failure: LDK.Utils.getErrorCallback(),
-//            scope: this,
-//            success: function(results){
-//                this.groupResults = results;
-//            }
-//        });
-//
-//        multi.add(LABKEY.Query.selectRows, {
-//            schemaName: 'study',
-//            queryName: 'demographicsMostRecentTBDate',
-//            columns: 'Id,MostRecentTBDate,MonthsSinceLastTB,MonthsUntilDue',
-//            requiredVersion: 9.1,
-//            filterArray: [
-//                LABKEY.Filter.create('Id', this.subjectId, LABKEY.Filter.Types.EQUAL)
-//            ],
-//            failure: LDK.Utils.getErrorCallback(),
-//            scope: this,
-//            success: function(results){
-//                this.tbResults = results;
-//            }
-//        });
-//
-//        multi.add(LABKEY.Query.selectRows, {
-//            schemaName: 'study',
-//            queryName: 'Problem List',
-//            columns: 'Id,date,enddate,category',
-//            requiredVersion: 9.1,
-//            filterArray: [
-//                LABKEY.Filter.create('Id', this.subjectId, LABKEY.Filter.Types.EQUAL),
-//                LABKEY.Filter.create('isActive', true, LABKEY.Filter.Types.EQUAL)
-//            ],
-//            failure: LDK.Utils.getErrorCallback(),
-//            scope: this,
-//            success: function(results){
-//                this.problemListResults = results;
-//            }
-//        });
-//
-//        multi.add(LABKEY.Query.selectRows, {
-//            schemaName: 'study',
-//            queryName: 'Treatment Orders',
-//            columns: 'Id,date,amount,amount_units,amountWithUnits,category,daysElapsed,enddate,performedby,code,route,frequency,category',
-//            requiredVersion: 9.1,
-//            filterArray: [
-//                LABKEY.Filter.create('Id', this.subjectId, LABKEY.Filter.Types.EQUAL),
-//                LABKEY.Filter.create('isActive', true, LABKEY.Filter.Types.EQUAL)
-//            ],
-//            failure: LDK.Utils.getErrorCallback(),
-//            scope: this,
-//            success: function(results){
-//                this.treatmentResults = results;
-//            }
-//        });
-//
-//        multi.add(LABKEY.Query.selectRows, {
-//            schemaName: 'study',
-//            queryName: 'Cases',
-//            columns: 'Id,date,enddate,category,performedby,remark,description',
-//            requiredVersion: 9.1,
-//            filterArray: [
-//                LABKEY.Filter.create('Id', this.subjectId, LABKEY.Filter.Types.EQUAL),
-//                LABKEY.Filter.create('isActive', true, LABKEY.Filter.Types.EQUAL)
-//            ],
-//            failure: LDK.Utils.getErrorCallback(),
-//            scope: this,
-//            success: function(results){
-//                this.caseResults = results;
-//            }
-//        });
-//
-//        multi.add(LABKEY.Query.selectRows, {
-//            schemaName: 'study',
-//            queryName: 'diet',
-//            requiredVersion: 9.1,
-//            filterArray: [
-//                LABKEY.Filter.create('Id', this.subjectId, LABKEY.Filter.Types.EQUAL),
-//                LABKEY.Filter.create('isActive', true, LABKEY.Filter.Types.EQUAL)
-//            ],
-//            failure: LDK.Utils.getErrorCallback(),
-//            scope: this,
-//            success: function(results){
-//                this.dietResults = results;
-//            }
-//        });
-//
-//        multi.add(LABKEY.Query.selectRows, {
-//            schemaName: 'study',
-//            queryName: 'Flags',
-//            columns: 'date,enddate,performedby,category,value,category/doHighlight',
-//            requiredVersion: 9.1,
-//            filterArray: [
-//                LABKEY.Filter.create('Id', this.subjectId, LABKEY.Filter.Types.EQUAL),
-//                LABKEY.Filter.create('isActive', true, LABKEY.Filter.Types.EQUAL),
-//                LABKEY.Filter.create('category/omitFromOverview', true, LABKEY.Filter.Types.NEQ_OR_NULL)
-//            ],
-//            failure: LDK.Utils.getErrorCallback(),
-//            scope: this,
-//            success: function(results){
-//                this.flagsResults = results;
-//            }
-//        });
-//
-//        multi.add(LABKEY.Query.selectRows, {
-//            schemaName: 'study',
-//            queryName: 'weight',
-//            columns: 'Id,date,weight',
-//            sort: '-date',
-//            requiredVersion: 9.1,
-//            maxRows: 3,
-//            filterArray: [
-//                LABKEY.Filter.create('Id', this.subjectId, LABKEY.Filter.Types.EQUAL)
-//            ],
-//            failure: LDK.Utils.getErrorCallback(),
-//            scope: this,
-//            success: function(results){
-//                this.weightResults = results;
-//            }
-//        });
-//
-//        if (this.showExtendedInformation){
-//            //only load this data if being displayed
-//            if (this.down('#roommates')){
-//                multi.add(LABKEY.Query.selectRows, {
-//                    schemaName: 'study',
-//                    queryName: 'demographicsPaired',
-//                    columns: 'Id,total,Animals',
-//                    requiredVersion: 9.1,
-//                    filterArray: [
-//                        LABKEY.Filter.create('Id', this.subjectId, LABKEY.Filter.Types.EQUAL)
-//                    ],
-//                    failure: LDK.Utils.getErrorCallback(),
-//                    scope: this,
-//                    success: function(results){
-//                        this.roommateResults = results;
-//                    }
-//                });
-//            }
-//
-//            multi.add(LABKEY.Query.selectRows, {
-//                schemaName: 'study',
-//                queryName: 'Birth',
-//                columns: 'Id,date,type,cond',
-//                requiredVersion: 9.1,
-//                filterArray: [
-//                    LABKEY.Filter.create('Id', this.subjectId, LABKEY.Filter.Types.EQUAL)
-//                ],
-//                failure: LDK.Utils.getErrorCallback(),
-//                scope: this,
-//                success: function(results){
-//                    this.birthResults = results;
-//                }
-//            });
-//
-//            multi.add(LABKEY.Query.selectRows, {
-//                schemaName: 'study',
-//                queryName: 'Deaths',
-//                columns: 'Id,date,cause',
-//                requiredVersion: 9.1,
-//                filterArray: [
-//                    LABKEY.Filter.create('Id', this.subjectId, LABKEY.Filter.Types.EQUAL)
-//                ],
-//                failure: LDK.Utils.getErrorCallback(),
-//                scope: this,
-//                success: function(results){
-//                    this.deathResults = results;
-//                }
-//            });
-//        }
-//
-//        multi.send(this.onAllComplete, this);
     },
 
     onLoad: function(results){
@@ -466,7 +228,7 @@ Ext4.define('EHR.panel.SnapshotPanel', {
         this.appendTBResults(this.results.tb);
 
         if (this.showExtendedInformation){
-            this.appendBirthResults(this.results.birthInfo);
+            this.appendBirthResults(this.results.birthInfo, this.results.birth);
             this.appendDeathResults(this.results.deathInfo);
             this.appendParentageResults(this.results.parents);
         }
@@ -751,7 +513,7 @@ Ext4.define('EHR.panel.SnapshotPanel', {
                 var omit = row['category/omitFromOverview'];
 
                 //skip
-                if (omit === false)
+                if (omit === true)
                     return;
 
                 if (category)
@@ -776,10 +538,10 @@ Ext4.define('EHR.panel.SnapshotPanel', {
         }
     },
 
-    appendBirthResults: function(results){
+    appendBirthResults: function(results, birth){
         if (results && results.length){
             var row = results[0];
-            var date = LDK.ConvertUtils.parseDate(row.date);
+            var date = LDK.ConvertUtils.parseDate(row.date || birth);
             var text = date ?  date.format('Y-m-d') : null;
             if (text){
                 var type = row.type;
@@ -788,6 +550,12 @@ Ext4.define('EHR.panel.SnapshotPanel', {
 
                 if (text)
                     this.down('#birth').setValue(text);
+            }
+        }
+        else if (birth){
+            var date = LDK.ConvertUtils.parseDate(birth);
+            if (date){
+                this.down('#birth').setValue(date.format('Y-m-d'));
             }
         }
     },

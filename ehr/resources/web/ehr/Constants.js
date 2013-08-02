@@ -18,3 +18,11 @@ EHR.permission = new function(){
         DATA_ENTRY: prefix + '.EHRDataEntryPermission'
     }
 };
+
+EHR.QCStates = new function(){
+    return {
+        COMPLETED: 'Completed',
+        REVIEW_REQUIRED: 'Review Required',
+        IN_PROGRESS: 'In Progress'
+    }
+};

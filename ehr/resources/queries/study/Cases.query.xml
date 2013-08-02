@@ -23,6 +23,8 @@
                     </column>
                     <column columnName="category">
                         <columnTitle>Case Category</columnTitle>
+                        <isUserEditable>false</isUserEditable>
+                        <nullable>false</nullable>
                     </column>
                     <column columnName="reviewfrequency">
                         <columnTitle>Review Frequency</columnTitle>

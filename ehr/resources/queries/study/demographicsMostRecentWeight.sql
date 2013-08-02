@@ -9,14 +9,13 @@ w.id,
 w.MostRecentWeightDate,
 timestampdiff('SQL_TSI_DAY', w.MostRecentWeightDate, now()) AS DaysSinceWeight,
 
--- t2.weight as MostRecentWeight,
 null as weightField,
--- could also be performed as a subquery
-  cast((
+--NOTE: we need to be careful in case duplicate weights are entered on the same time
+cast((
     SELECT round(cast(AVG(w2.weight) as double), 2) AS _expr
     FROM study.weight w2
     WHERE w.id=w2.id AND w.MostRecentWeightDate=w2.date
-  ) as double) AS MostRecentWeight
+) as double) AS MostRecentWeight
 
 FROM (
 SELECT

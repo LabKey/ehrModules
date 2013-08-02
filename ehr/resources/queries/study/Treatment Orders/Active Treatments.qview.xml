@@ -27,6 +27,7 @@
        <column name="route"/>
        <column name="performedby"/>
        <column name="remark"/>
+       <column name="category"/>
        <column name="taskid"/>
        <column name="qcstate"/>
    </columns>

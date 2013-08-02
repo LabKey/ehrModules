@@ -413,22 +413,19 @@ EHR.Metadata.registerMetadata('Default', {
             notify1: {
                 defaultValue: LABKEY.Security.currentUser.id,
                 lookup: {
-                    sort: 'type,name',
-                    filterArray: [LABKEY.Filter.create('name', 'Administrators', LABKEY.Filter.Types.NOT_EQUAL)]
+                    sort: 'Type,DisplayName'
                 },
                 listWidth: 250
             },
             notify2: {
                 lookup: {
-                    sort: 'type,name',
-                    filterArray: [LABKEY.Filter.create('name', 'Administrators', LABKEY.Filter.Types.NOT_EQUAL)]
+                    sort: 'Type,DisplayName'
                 },
                 listWidth: 250
             },
             notify3: {
                 lookup: {
-                    sort: 'type,name',
-                    filterArray: [LABKEY.Filter.create('name', 'Administrators', LABKEY.Filter.Types.NOT_EQUAL)]
+                    sort: 'Type,DisplayName'
                 },
                 listWidth: 250
             },

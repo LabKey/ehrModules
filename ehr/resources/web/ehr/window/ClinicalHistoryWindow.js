@@ -10,7 +10,7 @@ Ext4.define('EHR.window.ClinicalHistoryWindow', {
         LABKEY.ExtAdapter.apply(this, {
             title: 'Clinical History:',
             bodyStyle: 'padding: 3px;',
-            width: 1200,
+            width: 1210,
             modal: true,
             items: this.getItems(),
             buttons: [{
@@ -19,10 +19,24 @@ Ext4.define('EHR.window.ClinicalHistoryWindow', {
                     btn.up('window').close();
                 }
             },{
-                text: 'Add Remark',
+                text: 'Full Screen',
+                scope: this,
                 handler: function(btn){
-                    Ext4.Msg.alert('Add remark', 'Because we still use IRIS, we are not doing any data entry through PRIMe.  Once we start this migration, it will be possible to enter remarks, order treatments, etc. from these screens.')
+                    window.location = LABKEY.ActionURL.buildURL('ehr', 'clinicalManagement', null, {subjectId: this.subjectId})
                 }
+            },{
+                text: 'Actions',
+                menu: [{
+                    text: 'Enter Remark',
+                    handler: function(btn){
+                        Ext4.Msg.alert('Enter Remark', 'Because we still use IRIS, we are not doing any data entry through PRIMe.  Once we start this migration, it will be possible to enter remarks, order treatments, etc. from these screens.')
+                    }
+                },{
+                    text: 'Order Diet/Medications',
+                    handler: function(btn){
+                        Ext4.Msg.alert('Order Medications', 'Because we still use IRIS, we are not doing any data entry through PRIMe.  Once we start this migration, it will be possible to enter remarks, order treatments, etc. from these screens.')
+                    }
+                }]
             }]
 
         });
@@ -37,15 +51,25 @@ Ext4.define('EHR.window.ClinicalHistoryWindow', {
             hideHeader: true,
             style: 'padding: 5px;'
         },{
-            xtype: 'ehr-clinicalhistorypanel',
-            border: true,
-            width: 1180,
-            gridHeight: 400,
-            height: 400,
-            autoLoadRecords: true,
-            autoScroll: true,
-            subjectId: this.subjectId,
-            minDate: this.minDate || Ext4.Date.add(new Date(), Ext4.Date.YEAR, -2)
+            xtype: 'tabpanel',
+            items: [{
+                xtype: 'ehr-clinicalhistorypanel',
+                title: 'History',
+                border: true,
+                width: 1180,
+                gridHeight: 400,
+                height: 400,
+                autoLoadRecords: true,
+                autoScroll: true,
+                subjectId: this.subjectId,
+                minDate: this.minDate || Ext4.Date.add(new Date(), Ext4.Date.YEAR, -2)
+            },{
+                xtype: 'ehr-weightgraphpanel',
+                title: 'Weights',
+                subjectId: this.subjectId,
+                width: 1180,
+                border: true
+            }]
         }];
     }
 });

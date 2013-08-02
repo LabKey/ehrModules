@@ -32,6 +32,6 @@
         <sort column="firstName" descending="false"/>
     </sorts>
     <filters>
-        <filter column="enddate" operator="isblank"/>
+        <filter column="endDateCoalesced" operator="dategte" value="+0d"/>
     </filters>
 </customView>

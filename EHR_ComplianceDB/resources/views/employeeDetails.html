@@ -1,0 +1,61 @@
+<script type="text/javascript">
+
+    Ext4.onReady(function (){
+        if (!LABKEY.ActionURL.getParameter('employeeid')){
+            alert('Must Provide An Employee Id');
+            return;
+        }
+
+        var webpart = <%=webpartContext%>;
+        var domSpec = [{
+            tag: 'div',
+            id: 'details_' + webpart.wrapperDivId,
+            style: 'margin-bottom: 20px;'
+        },{
+            tag: 'div',
+            id: 'requirements_' + webpart.wrapperDivId,
+            style: 'margin-bottom: 20px;'
+        },{
+            tag: 'div',
+            id: 'history_' + webpart.wrapperDivId,
+            style: 'margin-bottom: 20px;'
+        }];
+
+        var el = Ext4.get(webpart.wrapperDivId);
+        Ext4.DomHelper.append(el, domSpec);
+
+        var filterArray = [LABKEY.Filter.create('employeeid', LABKEY.ActionURL.getParameter('employeeid'), LABKEY.Filter.Types.EQUAL)];
+
+        Ext4.create('LDK.panel.DetailsPanel', {
+            store: {
+                schemaName: 'ehr_compliancedb',
+                queryName: 'employees',
+                filterArray: filterArray
+            },
+            showBackBtn: false,
+            title: 'Employee Details',
+            renderTo: 'details_' + webpart.wrapperDivId
+        });
+
+        Ext4.create('LDK.panel.QueryPanel', {
+            queryConfig: {
+                title: 'Training / Requirement Summary',
+                schemaName: 'ehr_compliancedb',
+                queryName: 'ComplianceRecentTests',
+                filterArray: filterArray,
+                failure: LDK.Utils.getErrorCallback()
+            }
+        }).render('requirements_' + webpart.wrapperDivId);
+
+        Ext4.create('LDK.panel.QueryPanel', {
+            queryConfig: {
+                title: 'Training History',
+                schemaName: 'ehr_compliancedb',
+                queryName: 'CompletionDates',
+                filterArray: filterArray,
+                failure: LDK.Utils.getErrorCallback()
+            }
+        }).render('history_' + webpart.wrapperDivId);
+    });
+
+</script>

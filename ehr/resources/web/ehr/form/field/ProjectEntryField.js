@@ -134,7 +134,6 @@ Ext4.define('EHR.form.field.ProjectEntryField', {
 
     makeSql: function(id, date){
         if (!id){
-            console.log('removing');
             return;
         }
 
@@ -167,7 +166,7 @@ Ext4.define('EHR.form.field.ProjectEntryField', {
     getProjects : function(id){
         var boundRecord = EHR.DataEntryUtils.getBoundRecord(this);
         if (!boundRecord){
-            console.error('no bound record found');
+            console.warn('no bound record found');
         }
 
         if(!id && boundRecord)

@@ -23,6 +23,6 @@
         <sort column="majorudds" descending="false"/>
     </sorts>
     <filters>
-        <filter column="enddate" operator="isblank" value=""/>
+        <filter column="endDateCoalesced" operator="dategte" value="+0d"/>
     </filters>
 </customView>

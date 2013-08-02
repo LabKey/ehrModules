@@ -1,0 +1,19 @@
+Ext4.define('EHR.panel.RequestDataEntryPanel', {
+    extend: 'EHR.panel.DataEntryPanel',
+    alias: 'widget.ehr-requestdataentrypanel',
+
+    taskId: null,
+
+    initComponent: function(){
+        this.requestId = this.requestId || LABKEY.ActionURL.getParameter('requestid') || LABKEY.Utils.generateUUID();
+        this.callParent();
+    },
+
+    applyConfigToServerStore: function(cfg){
+        cfg = this.callParent(arguments);
+        cfg.filterArray = cfg.filterArray || [];
+        cfg.filterArray.push(LABKEY.Filter.create('requestId', this.requestId, LABKEY.Filter.Types.EQUALS));
+
+        return cfg;
+    }
+});

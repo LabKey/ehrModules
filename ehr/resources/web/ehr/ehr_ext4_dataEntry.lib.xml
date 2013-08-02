@@ -7,9 +7,12 @@
         <!--data-->
         <script path="ehr/data/DataEntryServerStore.js"/>
         <script path="ehr/data/DataEntryClientStore.js"/>
+        <script path="ehr/data/BloodDrawClientStore.js"/>
         <script path="ehr/data/StoreCollection.js"/>
         <script path="ehr/data/TaskStoreCollection.js"/>
+        <script path="ehr/data/RequestStoreCollection.js"/>
         <script path="ehr/data/EncounterStoreCollection.js"/>
+        <script path="ehr/data/RunStoreCollection.js"/>
 
         <!--plugins-->
         <script path="ehr/plugin/DataBind.js"/>
@@ -28,11 +31,17 @@
         <!--panels / windows-->
         <script path="ehr/window/AddAnimalsWindow.js"/>
         <script path="ehr/window/SubmitForReviewPanel.js"/>
+        <script path="ehr/window/RecordDuplicatorWindow.js"/>
+        <script path="ehr/window/BulkEditWindow.js"/>
+        <script path="ehr/window/ApplyTemplateWindow.js"/>
+        <script path="ehr/window/SaveTemplateWindow.js"/>
+        <script path="ehr/window/CaseNumberWindow.js"/>
         <script path="ehr/form/Panel.js"/>
         <script path="ehr/grid/Panel.js"/>
         <script path="ehr/panel/AnimalDetailsPanel.js"/>
         <script path="ehr/panel/DataEntryPanel.js"/>
         <script path="ehr/panel/TaskDataEntryPanel.js"/>
+        <script path="ehr/panel/RequestDataEntryPanel.js"/>
         <script path="ehr/panel/SimpleDataEntryPanel.js"/>
     </library>
     <dependencies>

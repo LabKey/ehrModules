@@ -75,6 +75,22 @@ EHR.model.DataModelManager = new function(){
 
             EHR.Utils.rApplyClone(metadata[source], object);
         }
+
+//        //case-insensitive fieldnames
+//        applyMetadata: function(target, source){
+//            target = target || {};
+//            source = source || {};
+//
+//            var map = {};
+//            for (var key in target){
+//                map[key.toLowerCase()] = key;
+//            }
+//
+//            for (var name in source){
+//                var normalized = map[name.toLowerCase()] || name;
+//                EHR.Utils.rApplyClone(target[normalized], source[name]);
+//            }
+//        }
     }
 }
 

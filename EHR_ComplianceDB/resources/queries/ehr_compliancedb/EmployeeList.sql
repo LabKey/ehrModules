@@ -18,4 +18,4 @@ FROM ehr_compliancedb.employees e
 
 WHERE
 
-e.EndDate is null
+e.EndDateCoalesced >= curdate()

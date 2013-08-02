@@ -9,6 +9,7 @@ Ext4.define('EHR.form.field.ProtocolField', {
     editable: true,
     caseSensitive: false,
     anyMatch: true,
+    forceSelection: true,
 
     initComponent: function(){
         LABKEY.ExtAdapter.apply(this, {

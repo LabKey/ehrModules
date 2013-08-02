@@ -23,7 +23,7 @@ Ext4.define('EHR.window.AddAnimalsWindow', {
                 bodyBorder: false
             },
             items: [{
-                html: 'This helper is designed to quick add records to the grid below.  You can look up animals in a variety ',
+                html: 'This helper is designed to quick add records to the grid below.  You can look up animals in a variety of different ways.',
                 style: 'padding-bottom: 10px;'
             },{
                 xtype: 'radiogroup',

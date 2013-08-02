@@ -18,7 +18,7 @@
                   <shownInDetailsView>false</shownInDetailsView>
                 </column>
                 <column columnName="protocol">
-                  <columnTitle>Protocol</columnTitle>
+                  <columnTitle>IACUC Protocol</columnTitle>
                   <nullable>false</nullable>
                     <fk>
                       <fkDbSchema>ehr</fkDbSchema>

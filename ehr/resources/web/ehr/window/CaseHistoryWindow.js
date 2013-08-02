@@ -16,36 +16,21 @@ Ext4.define('EHR.window.CaseHistoryWindow', {
     },
 
     getItems: function(){
-        return [{
-            xtype: 'ehr-smallformsnapshotpanel',
+        var items = this.callParent();
+        items[1].items[0].title = 'Entire History';
+        items[1].items.splice(1, 0, {
+            title: 'Case History',
+            xtype: 'ehr-casehistorypanel',
+            border: true,
+            width: 1180,
+            gridHeight: 400,
+            height: 400,
+            autoScroll: true,
+            autoLoadRecords: true,
             subjectId: this.subjectId,
-            hideHeader: true,
-            style: 'padding: 5px;'
-        },{
-            xtype: 'tabpanel',
-            items: [{
-                title: 'Entire History',
-                xtype: 'ehr-clinicalhistorypanel',
-                border: true,
-                width: 1180,
-                gridHeight: 400,
-                height: 400,
-                autoLoadRecords: true,
-                autoScroll: true,
-                subjectId: this.subjectId,
-                minDate: this.minDate || Ext4.Date.add(new Date(), Ext4.Date.YEAR, -2)
-            },{
-                title: 'Case History',
-                xtype: 'ehr-casehistorypanel',
-                border: true,
-                width: 1180,
-                gridHeight: 400,
-                height: 400,
-                autoScroll: true,
-                autoLoadRecords: true,
-                subjectId: this.subjectId,
-                caseId: this.caseId
-            }]
-        }];
+            caseId: this.caseId
+        });
+
+        return items;
     }
 })

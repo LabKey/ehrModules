@@ -1,24 +1,28 @@
 <script type="text/javascript">
     Ext4.onReady(function (){
-        var webpart = <%=webpartContext%>;
-        var ctx = EHR.Utils.getEHRContext(webpart.wrapperDivId);
-        if(!ctx)
-            return;
+        EHR.Security.init({
+            success: function(){
+                var webpart = <%=webpartContext%>;
+                var ctx = EHR.Utils.getEHRContext(webpart.wrapperDivId);
+                if(!ctx)
+                    return;
 
-        /* get the participant id from the request URL: this parameter is required. */
-        var subjectId = LABKEY.ActionURL.getParameter('subjectId');
+                /* get the participant id from the request URL: this parameter is required. */
+                var subjectId = LABKEY.ActionURL.getParameter('subjectId');
 
-        if (!subjectId){
-            alert('Must Provide An Animal Id');
-            return;
-        }
+                if (!subjectId){
+                    alert('Must Provide An Animal Id');
+                    return;
+                }
 
-        var title = 'Animal Details: ' + subjectId;
-        document.title = title;
-        LABKEY.Utils.setWebpartTitle(title, webpart.id);
+                var title = subjectId;
+                document.title = title;
+                LABKEY.Utils.setWebpartTitle(title, webpart.id);
 
-        Ext4.create('EHR.panel.ClinicalManagementPanel', {
-            subjectId: subjectId
-        }).render(webpart.wrapperDivId);
+                Ext4.create('EHR.panel.ClinicalManagementPanel', {
+                    subjectId: subjectId
+                }).render(webpart.wrapperDivId);
+            }
+        });
     });
 </script>

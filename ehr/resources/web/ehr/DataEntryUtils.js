@@ -32,7 +32,7 @@ EHR.DataEntryUtils = new function(){
         },
         DELETERECORD: function(config){
             return Ext4.Object.merge({
-                text: 'Delete',
+                text: 'Delete Selected',
                 tooltip: 'Click to delete selected rows',
                 handler: function(btn){
                     var grid = btn.up('gridpanel');
@@ -41,7 +41,20 @@ EHR.DataEntryUtils = new function(){
                     if(!grid.store || !selections || !selections.length)
                         return;
 
-                    grid.store.remove(selections);
+                    var hasPermission = true;
+                    Ext4.Array.each(selections, function(r){
+                        if (!r.canDelete()){
+                            hasPermission = false;
+                            return false;
+                        }
+                    }, this);
+
+                    if (hasPermission){
+                        grid.store.safeRemove(selections);
+                    }
+                    else {
+                        Ext4.Msg.alert('Error', 'You do not have permission to remove these records');
+                    }
                 }
             }, config);
         },
@@ -56,6 +69,99 @@ EHR.DataEntryUtils = new function(){
                         targetStore: grid.store
                     }).show();
                 }
+            }, config);
+        },
+        COPYFROMCLINPATHRUNS: function(config){
+            return Ext4.Object.merge({
+                text: 'Copy From Requests',
+                xtype: 'button',
+                tooltip: 'Click to copy records from the clinpath runs section',
+                handler: function(btn){
+                    var grid = btn.up('grid');
+                    LDK.Assert.assertNotEmpty('Unable to find grid in COPYFROMCLINPATHRUNS button', grid);
+
+                    var panel = grid.up('ehr-dataentrypanel');
+                    LDK.Assert.assertNotEmpty('Unable to find dataEntryPanel in COPYFROMCLINPATHRUNS button', panel);
+
+                    var store = panel.storeCollection.getClientStoreByName('Clinpath Runs');
+                    LDK.Assert.assertNotEmpty('Unable to find clinpath runs store in COPYFROMCLINPATHRUNS button', store);
+
+                    if (store){
+                        var type = grid.title;
+                        store.each(function(r){
+                            if(r.get('type') == type){
+                                grid.store.add(grid.store.createModel({
+                                    Id: r.get('Id'),
+                                    date: r.get('date'),
+                                    runid: r.get('objectid')
+                                }));
+                            }
+                        }, this);
+                    }
+
+                }
+            });
+        },
+        SELECTALL: function(config){
+            return Ext4.Object.merge({
+                text: 'Select All',
+                tooltip: 'Click to select all rows',
+                handler: function(btn){
+                    var grid = btn.up('gridpanel');
+                    grid.getSelectionModel().selectAll();
+                }
+            }, config);
+        },
+        DUPLICATE: function(config){
+            return Ext4.Object.merge({
+                text: 'Duplicate Selected',
+                tooltip: 'Click to duplicate selected rows',
+                handler: function(btn){
+                    var grid = btn.up('gridpanel');
+                    var selected = grid.getSelectionModel().getSelection();
+                    if (!selected || !selected.length){
+                        Ext4.Msg.alert('Error', 'No records selected');
+                        return;
+                    }
+
+                    Ext4.create('EHR.window.RecordDuplicatorWindow', {
+                        targetGrid: grid
+                    }).show();
+                }
+            }, config);
+        },
+        BULKEDIT: function(config){
+            return Ext4.Object.merge({
+                text: 'Bulk Edit',
+                tooltip: 'Click to edit the selected rows in bulk',
+                handler: function(btn){
+                    var grid = btn.up('gridpanel');
+                    //TODO
+                }
+            }, config);
+        },
+        APPLYTEMPLATE: function(config){
+            return Ext4.Object.merge({
+                text: 'Apply Template',
+                handler: function(btn){
+                    var grid = btn.up('gridpanel');
+                    Ext4.create('EHR.window.ApplyTemplateWindow', {
+                        targetGrid: grid,
+                        formType: grid.store.storeCollection.formConfig.name
+                    }).show();
+                }
+            }, config);
+        },
+        SAVEASTEMPLATE: function(config){
+            return Ext4.Object.merge({
+                text: 'Save As Template',
+                    handler: function(btn){
+                        var grid = btn.up('gridpanel');
+                        Ext4.create('EHR.window.SaveTemplateWindow', {
+                            targetGrid: grid,
+                            formType: grid.store.storeCollection.formConfig.name
+                        }).show();
+                    }
             }, config);
         }
     };
@@ -139,6 +245,7 @@ EHR.DataEntryUtils = new function(){
             },
             disableOn: 'SEVERE'
         },
+
         /**
          * Will attempt to convert the QCState of all records to 'Completed' and submit the form.  Similar to the other SUBMIT button; however, this button does not require a confirmation prior to submitting.
          */
@@ -220,8 +327,9 @@ EHR.DataEntryUtils = new function(){
             successURL: LABKEY.ActionURL.getParameter('srcURL') || LABKEY.ActionURL.buildURL('ehr', 'enterData.view'),
             handler: function(btn){
                 var panel = btn.up('ehr-dataentrypanel');
-                //TODO:
-                panel.discard();
+                panel.discard({
+                    successURL: btn.successURL
+                });
             }
         },
         /**

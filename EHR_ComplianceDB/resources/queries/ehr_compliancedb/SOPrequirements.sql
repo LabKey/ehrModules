@@ -50,4 +50,4 @@ LEFT JOIN
 WHERE
 
 --active employees only
-e.EndDate IS NULL
+e.EndDateCoalesced >= curdate()

@@ -78,9 +78,10 @@ Ext4.onReady(function(){
             fieldLabel: 'End (optional)',
             itemId: 'endField'
         },{
-            xtype: 'textfield',
+            xtype: 'ehr-roomfield',
             helpPopup: 'If included, only records from this room will be used.  It can be left blank.',
             fieldLabel: 'Room (optional)',
+            multiSelect: false,
             value: LABKEY.ActionURL.getParameter('room'),
             itemId: 'roomField'
             //hidden: LABKEY.ActionURL.getParameter('groupById') ? true : false

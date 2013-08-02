@@ -22,9 +22,6 @@
         <column name="comment"/>
         <column name="trainer"/>
     </columns>
-    <filters>
-        <filter column="employeeid/enddate" operator="isblank"/>
-    </filters>
     <sorts>
         <sort column="employeeid/lastName" descending="false"/>
         <sort column="employeeid/firstName" descending="false"/>

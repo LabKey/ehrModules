@@ -16,16 +16,19 @@ Ext4.define('EHR.grid.Panel', {
         this.configureColumns();
 
         LABKEY.ExtAdapter.apply(this, {
-            selType: 'cellmodel',
+            selType: 'rowmodel',
+            selModel: {
+                mode: 'MULTI'
+            },
             defaults: {
                 border: false
             },
             dockedItems: [{
-                xtype: 'pagingtoolbar',
-                store: this.store,   // same store GridPanel is using
-                dock: 'bottom',
-                displayInfo: true
-            },{
+//                xtype: 'pagingtoolbar',
+//                store: this.store,   // same store GridPanel is using
+//                dock: 'bottom',
+//                displayInfo: true
+//            },{
                 xtype: 'toolbar',
                 dock: 'top',
                 items: this.getTbarButtons()
@@ -81,11 +84,15 @@ Ext4.define('EHR.grid.Panel', {
             },
             rowEditorPlugin: this.getRowEditorPlugin(),
             handler: function(view, rowIndex, colIndex, item, e, rec) {
-                view.getSelectionModel().setCurrentPosition({
-                    view: view,
-                    row: rowIndex,
-                    column: colIndex
-                });
+                var sm = view.getSelectionModel();
+
+                if (sm instanceof Ext4.selection.CellModel){
+                    sm.setCurrentPosition({
+                        view: view,
+                        row: rowIndex,
+                        column: colIndex
+                    });
+                }
 
                 this.rowEditorPlugin.editRecord(rec);
             }
@@ -94,10 +101,11 @@ Ext4.define('EHR.grid.Panel', {
         LABKEY.ExtAdapter.each(this.formConfig.fieldConfigs, function(field){
             var tableConfig = EHR.model.DataModelManager.getTableMetadata(field.schemaName, field.queryName, this.formConfig.sources);
             var cfg = LABKEY.ExtAdapter.apply({}, field);
-            LABKEY.Utils.merge(cfg, tableConfig[field.name]);
+            cfg = EHR.model.DefaultClientModel.getFieldConfig(cfg, this.formConfig.sources);
 
-            if(cfg.shownInGrid === false)
+            if(cfg.shownInGrid === false){
                 return;
+            }
 
             var colCfg = EHR.DataEntryUtils.getColumnConfigFromMetadata(cfg, this);
             if (colCfg){
@@ -129,14 +137,36 @@ Ext4.define('EHR.grid.Panel', {
 
     getTbarButtons: function(){
         var buttons = [];
-        LABKEY.ExtAdapter.each(this.formConfig.tbarButtons, function(btn){
-            if (LABKEY.ExtAdapter.isString(btn)){
-                buttons.push(EHR.DataEntryUtils.getGridButton(btn));
+
+        if (this.formConfig.tbarButtons){
+            LABKEY.ExtAdapter.each(this.formConfig.tbarButtons, function(btn){
+                if (LABKEY.ExtAdapter.isString(btn)){
+                    buttons.push(EHR.DataEntryUtils.getGridButton(btn));
+                }
+                else {
+                    buttons.push(btn);
+                }
+            }, this);
+        }
+
+        if (this.formConfig.tbarMoreActionButtons){
+            var moreActions = [];
+            LABKEY.ExtAdapter.each(this.formConfig.tbarMoreActionButtons, function(btn){
+                if (LABKEY.ExtAdapter.isString(btn)){
+                    moreActions.push(EHR.DataEntryUtils.getGridButton(btn));
+                }
+                else {
+                    moreActions.push(btn);
+                }
+            }, this);
+
+            if (moreActions.length){
+                buttons.push({
+                    text: 'More Actions',
+                    menu: moreActions
+                });
             }
-            else {
-                buttons.push(btn);
-            }
-        }, this);
+        }
 
         return buttons;
     }

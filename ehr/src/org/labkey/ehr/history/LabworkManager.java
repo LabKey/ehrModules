@@ -19,6 +19,8 @@ import org.labkey.api.data.Container;
 import org.labkey.api.security.User;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -46,7 +48,7 @@ public class LabworkManager
         registerType(new ParasitologyLabworkType());
         registerType(new UrinalysisLabworkType());
 
-        registerType(new VirologyLabworkType());
+        registerType(new SerologyLabworkType());
     }
 
     public static LabworkManager get()
@@ -104,5 +106,10 @@ public class LabworkManager
 
             map.put(runId, existing);
         }
+    }
+
+    public Collection<LabworkType> getTypes()
+    {
+        return Collections.unmodifiableCollection(_types);
     }
 }

@@ -16,17 +16,7 @@
                 <property name="columnTitle" value="First Name"/>
             </properties>
         </column>
-        <!--<column name="employeeId/category">-->
-            <!--<properties>-->
-                <!--<property name="columnTitle" value="Category"/>-->
-            <!--</properties>-->
-        <!--</column>-->
         <column name="requirementName"/>
-        <!--<column name="requirementname/Type">-->
-            <!--<properties>-->
-                <!--<property name="columnTitle" value="Requirement Type"/>-->
-            <!--</properties>-->
-        <!--</column>        -->
         <column name="ExpirePeriod"/>
         <column name="MostRecentDate"/>
         <column name="MonthsUntilRenewal"/>

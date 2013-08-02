@@ -128,30 +128,16 @@ function makePanel(){
 //                    }))+'">View All Living Animals</a>',
 //                    colspan: 2
                 },{
-                    html: 'Project:',
+                    html: 'Center Project:',
                     style: 'padding-top: 10px;',
                     colspan: 2
                 },{
                     itemId: 'projectField',
-                    emptyText: '',
                     name: 'projectField',
-                    xtype: 'combo',
-                    displayField: 'displayName',
-                    valueField: 'project',
+                    xtype: 'ehr-projectfield',
+                    fieldLabel: null,
                     width: this.FIELD_WIDTH,
-                    style: this.FIELD_STYLE,
-                    queryMode: 'local',
-                    editable: true,
-                    store: {
-                        type: 'labkey-store',
-                        containerPath: ctx['EHRStudyContainer'],
-                        schemaName: 'ehr',
-                        queryName: 'project',
-                        columns: 'project,displayName',
-                        filterArray: [LABKEY.Filter.create('enddate', null, LABKEY.Filter.Types.ISBLANK)],
-                        sort: 'displayName',
-                        autoLoad: true
-                    }
+                    style: this.FIELD_STYLE
                 },{
                     xtype: 'button',
                     border: true,
@@ -170,7 +156,7 @@ function makePanel(){
                     html: '<a href="' + (LABKEY.ActionURL.buildURL('ehr', 'projectQueries', ctx['EHRStudyContainer'])) + '">Advanced Project Search</a>',
                     colspan: 2
                 },{
-                    html: 'Protocol:',
+                    html: 'IACUC Protocol:',
                     style: 'padding-top: 10px;',
                     colspan: 2
                 },{

@@ -50,7 +50,7 @@ import java.util.TreeMap;
  */
 public class DefaultEncountersDataSource extends AbstractDataSource
 {
-    private Map<String, Map<Integer, Map<Integer, String>>> _results = null;
+    private Map<String, Map<Integer, Map<Integer, String>>> _snomedResults = null;
 
     public DefaultEncountersDataSource()
     {
@@ -62,7 +62,7 @@ public class DefaultEncountersDataSource extends AbstractDataSource
     {
         Date start = new Date();
 
-        _results = getSnomedTags(c, u, filter);
+        _snomedResults = getSnomedTags(c, u, filter);
 
         long duration = ((new Date()).getTime() - start.getTime()) / 1000;
         if (duration > 3)
@@ -96,11 +96,11 @@ public class DefaultEncountersDataSource extends AbstractDataSource
 
         String category = rs.getString("type");
         String objectid = rs.getString(FieldKey.fromString("objectid"));
-        if (!"Diagnosis".equalsIgnoreCase(category) && _results != null && _results.containsKey(objectid))
+        if (!"Diagnosis".equalsIgnoreCase(category) && _snomedResults != null && _snomedResults.containsKey(objectid))
         {
-            sb.append("Codes:\n\n");
+            sb.append("SNOMED Codes:\n\n");
 
-            Map<Integer, Map<Integer, String>> snomedRows = _results.get(objectid);
+            Map<Integer, Map<Integer, String>> snomedRows = _snomedResults.get(objectid);
             for (Map<Integer, String> group : snomedRows.values())
             {
                 for (String value : group.values())
@@ -128,7 +128,7 @@ public class DefaultEncountersDataSource extends AbstractDataSource
     }
 
     @Override
-    protected String getCategoryGroup(Results rs) throws SQLException
+    protected String getPrimaryGroup(Results rs) throws SQLException
     {
         return getCategoryText(rs);
     }
@@ -197,6 +197,8 @@ public class DefaultEncountersDataSource extends AbstractDataSource
                     setMap = new TreeMap<>();
 
                 String text = "";
+//                if (set_number != null)
+//                    text += set_number +") ";
                 if (meaning != null)
                     text += meaning;
                 if (code != null)

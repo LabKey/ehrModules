@@ -1,0 +1,6 @@
+<view xmlns="http://labkey.org/data/xml/view" title="Employee Details" frame="none">
+    <dependencies>
+        <dependency path="Ext4ClientApi"/>
+        <dependency path="LDK/LDKApi"/>
+    </dependencies>
+</view>

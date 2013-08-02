@@ -19,15 +19,13 @@ SELECT
   age_in_months(w.date, w.Id.MostRecentWeight.MostRecentWeightDate) AS IntervalInMonths,
 
   w.weight,
-  CASE WHEN w.date >= timestampadd('SQL_TSI_YEAR', -2, w.Id.MostRecentWeight.MostRecentWeightDate) THEN
-    --Round(((w.Id.MostRecentWeight.MostRecentWeight - w.weight) * 100 / w.Id.MostRecentWeight.MostRecentWeight), 1)
+  CASE WHEN w.date >= timestampadd('SQL_TSI_DAY', -730, w.Id.MostRecentWeight.MostRecentWeightDate) THEN
     Round(((w.Id.MostRecentWeight.MostRecentWeight - w.weight) * 100 / w.weight), 1)
   ELSE
     null
   END  AS PctChange,
 
-  CASE WHEN w.date >= timestampadd('SQL_TSI_YEAR', -2, w.Id.MostRecentWeight.MostRecentWeightDate) THEN
-    --Abs(Round(((w.Id.MostRecentWeight.MostRecentWeight - w.weight) * 100 / w.Id.MostRecentWeight.MostRecentWeight), 1))
+  CASE WHEN w.date >= timestampadd('SQL_TSI_DAY', -730, w.Id.MostRecentWeight.MostRecentWeightDate) THEN
     Abs(Round(((w.Id.MostRecentWeight.MostRecentWeight - w.weight) * 100 / w.weight), 1))
   else
     null

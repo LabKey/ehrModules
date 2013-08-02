@@ -19,6 +19,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             nullable: false,
             allowBlank: false,
             lookups: false,
+            noSaveInTemplateByDefault: true,
             columnConfig: {
                 width: 95,
                 showLink: false
@@ -62,7 +63,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
         date: {
             allowBlank: false,
             nullable: false,
-            //noDuplicateByDefault: true,
+            noSaveInTemplateByDefault: true,
             extFormat: 'Y-m-d H:i',
             editorConfig: {
                 dateFormat: 'Y-m-d',
@@ -80,12 +81,31 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             }
         },
         objectid: {
+            noSaveInTemplateByDefault: true,
             getInitialValue: function(v, rec){
                 return v || LABKEY.Utils.generateUUID();
             }
         },
         room: {
             editorConfig: {listWidth: 200}
+        },
+        resultNumber: {
+            hidden: true
+        },
+        resultInRange: {
+            hidden: true
+        },
+        resultOORIndicator: {
+            hidden: true
+        },
+        quantityNumber: {
+            hidden: true
+        },
+        quantityInRange: {
+            hidden: true
+        },
+        quantityOORIndicator: {
+            hidden: true
         },
         testid: {
             columnConfig: {
@@ -108,6 +128,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
         },
         enddate: {
             xtype: 'xdatetime',
+            noSaveInTemplateByDefault: true,
             shownInInsertView: true,
             columnConfig: {
                 fixed: true,
@@ -151,6 +172,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             }
         },
         performedby: {
+            noSaveInTemplateByDefault: true,
             columnConfig: {
                 width: 65
             },
@@ -188,6 +210,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
         QCState: {
             allowBlank: false,
             noDuplicateByDefault: true,
+            allowSaveInTemplate: false,
             allowDuplicateValue: false,
             noSaveInTemplateByDefault: true,
             facetingBehaviorType: "AUTO",
@@ -268,6 +291,9 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             useNull: true,
             lookup: {
                 columns: 'project,account'
+            },
+            columnConfig: {
+                width: 120
             }
         },
         account: {
@@ -283,25 +309,6 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                     return v;
                 },
                 hidden: true
-            },
-            //NOTE: the case is different on hard tables than studies.
-            //i tried to force hard tables to use QCState, but they kept reverting in odd places
-            qcstate: {
-                allowBlank: false,
-                allowDuplicateValue: false,
-                facetingBehaviorType: "AUTO",
-                getInitialValue: function(v){
-                    var qc;
-                    if(EHR.Security.getQCStateByLabel('In Progress'))
-                        qc = EHR.Security.getQCStateByLabel('In Progress').RowId;
-                    return v || qc;
-                },
-                shownInGrid: false,
-                hidden: false,
-                editorConfig: {
-                    disabled: true,
-                    editorConfig: {listWidth: 200}
-                }
             },
             assignedto: {
                 useNull: true,
@@ -359,22 +366,19 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             notify1: {
                 defaultValue: LABKEY.Security.currentUser.id,
                 lookup: {
-                    sort: 'type,name',
-                    filterArray: [LABKEY.Filter.create('name', 'Administrators', LABKEY.Filter.Types.NOT_EQUAL)]
+                    sort: 'Type,DisplayName'
                 },
                 listWidth: 250
             },
             notify2: {
                 lookup: {
-                    sort: 'type,name',
-                    filterArray: [LABKEY.Filter.create('name', 'Administrators', LABKEY.Filter.Types.NOT_EQUAL)]
+                    sort: 'Type,DisplayName'
                 },
                 listWidth: 250
             },
             notify3: {
                 lookup: {
-                    sort: 'type,name',
-                    filterArray: [LABKEY.Filter.create('name', 'Administrators', LABKEY.Filter.Types.NOT_EQUAL)]
+                    sort: 'Type,DisplayName'
                 },
                 listWidth: 250
             },
@@ -399,22 +403,6 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 getInitialValue: function(val, rec){
                     return val || rec.dataEntryPanel.formConfig.label;
                 }
-            },
-            //NOTE: the case is different on hard tables than studies.
-            //i tried to force hard tables to use QCState, but they kept reverting in odd places
-            qcstate: {
-                allowBlank: false,
-                getInitialValue: function(v){
-                    var qc;
-                    if(!v && EHR.Security.getQCStateByLabel('In Progress'))
-                        qc = EHR.Security.getQCStateByLabel('In Progress').RowId;
-                    return v || qc;
-                },
-                shownInGrid: false,
-                hidden: false,
-                editorConfig: {
-                    disabled: true
-                }
             }
         },
         'study.Demographics': {
@@ -429,65 +417,6 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             account: {hidden: true},
             species: {allowBlank: false},
             gender: {allowBlank: false}
-        },
-        'study.Prenatal Deaths': {
-            conception: {
-                extFormat: 'Y-m-d'
-            },
-            weight: {
-                useNull: true,
-                editorConfig: {
-                    allowNegative: false,
-                    decimalPrecision: 4
-                }
-            },
-            Id: {
-                xtype: 'trigger',
-                editorConfig: {
-                    triggerCls: 'x4-form-search-trigger',
-                    onTriggerClick: function (){
-                        var prefix = 'pd';
-                        var year = new Date().getFullYear().toString().slice(2);
-                        var sql = "SELECT cast(SUBSTRING(MAX(id), 5, 6) AS INTEGER) as num FROM study.prenatal WHERE Id LIKE '" + prefix + year + "%'";
-                        LABKEY.Query.executeSql({
-                            schemaName: 'study',
-                            sql: sql,
-                            scope: this,
-                            success: function(data){
-                                var caseno;
-                                if(data.rows && data.rows.length==1){
-                                    caseno = data.rows[0].num;
-                                    caseno++;
-                                }
-                                else {
-                                    //console.log('no existing IDs found');
-                                    caseno = 1;
-                                }
-
-                                caseno = EHR.Utils.padDigits(caseno, 2);
-                                var val = prefix + year + caseno;
-                                this.setValue(val);
-                                this.fireEvent('change', val)
-                            },
-                            failure: EHR.Utils.onError
-                        });
-                    },
-                    allowAnyId: true
-                }
-            },
-            sire: {lookups: false},
-            dam: {
-                lookups: false,
-                allowBlank: false
-            },
-            project: {hidden: true},
-            performedby: {hidden: true},
-            account: {hidden: true},
-            room: {
-                editorConfig: {
-                    plugins: ['ehr-usereditablecombo']
-                }
-            }
         },
         'study.Parasitology Results': {
             organism: {
@@ -526,7 +455,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 shownInGrid: false
             },
             quantity: {
-                shownInGrid: false
+                shownInGrid: true
             },
             ship_to : {
                 shownInGrid: false
@@ -699,16 +628,31 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 shownInGrid: false
             },
             sampleType : {
-                //shownInGrid: false
+                shownInGrid: false,
                 editorConfig: {
                     plugins: ['ehr-usereditablecombo']
                 }
             },
-            sampleId : {shownInGrid: false},
-            sampleQuantity: {shownInGrid: false},
-            quantityUnits : {shownInGrid: false},
+            condition: {
+                hidden: true
+            },
+            sampleId: {
+                shownInGrid: false
+            },
+            sampleQuantity: {
+                shownInGrid: true
+            },
+            quantityUnits: {
+                shownInGrid: false
+            },
+            units: {
+                hidden: true
+            },
             serviceRequested: {
                 allowBlank: false,
+                columnConfig: {
+                    width: 180
+                },
                 editorConfig: {
                     plugins: ['ehr-usereditablecombo'],
                     listeners: {
@@ -718,6 +662,8 @@ EHR.model.DataModelManager.registerMetadata('Default', {
 
                             var theForm = this.findParentByType('ehr-formpanel').getForm();
                             theForm.findField('type').setValue(recs[0].get('dataset'));
+
+                            console.log(recs[0].get('dataset'))
                         }
                     }
                 },
@@ -749,19 +695,13 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 xtype: 'displayfield'
             }
         },
-        'study.Dental Status': {
-            gingivitis: {allowBlank: false, includeNullRecord: false},
-            tartar: {allowBlank: false, includeNullRecord: false},
-            performedby: {
-                hidden: true
-            }
-        },
         'study.Treatment Orders': {
             date: {
                 xtype: 'datefield',
                 extFormat: 'Y-m-d',
                 allowBlank: false,
                 getInitialValue: function(v, rec){
+                    console.log(v)
                     return v ? v : new Date()
                 },
                 columnConfig: {
@@ -863,7 +803,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 noSaveInTemplateByDefault: true,
                 //,allowBlank: false
                 columnConfig: {
-                    width: 90
+                    width: 110
                 },
                 editorConfig: {
                     decimalPrecision: 3
@@ -872,7 +812,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             amount_units: {
                 compositeField: 'Amount',
                 columnConfig: {
-                    width: 100
+                    width: 110
                 }
             },
             route: {shownInGrid: false},
@@ -980,401 +920,6 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 extFormat: 'Y-m-d'
             },
             enddate: {
-                xtype: 'datefield',
-                extFormat: 'Y-m-d'
-            }
-        },
-        'study.Necropsies': {
-            remark: {
-                height: 200,
-                width: 600
-            },
-            timeofdeath: {
-                xtype: 'xdatetime',
-                extFormat: 'Y-m-d H:i',
-                allowBlank: false,
-                editorConfig: {
-                    dateFormat: 'Y-m-d',
-                    timeFormat: 'H:i'
-                }
-            },
-            tissue_distribution: {
-                xtype: 'combo',
-                multiSelect: true,
-                hasOwnTpl: true,
-                lookup: {
-                    schemaName: 'ehr_lookups',
-                    queryName: 'tissue_distribution',
-                    displayColumn: 'value',
-                    keyColumn: 'value'
-                }
-            },
-            grossdescription: {
-                height: 200,
-                width: 600,
-                defaultValue: 'A ___ kg rhesus macaque is presented for necropsy in excellent post mortem condition.\n\nA ___ kg cynomolgus macaque is presented for necropsy in excellent post mortem condition.\n\nA ___ kg common marmoset is presented for necropsy in excellent post mortem condition.\n\nA ____ kg cynomolgus macaque is presented for perfusion and necropsy in excellent post mortem condition.\n\nA ____ kg rhesus macaque is presented for perfusion and necropsy in excellent post mortem condition.'
-            },
-            histologicalDescription: {
-                height: 200,
-                width: 600
-            },
-            patho_notes: {
-                height: 200,
-                width: 600
-            },
-            caseno: {
-                xtype: 'trigger',
-                allowBlank: false,
-                editorConfig: {
-                    triggerCls: 'x4-form-search-trigger',
-                    onTriggerClick: function(){
-                        var theWin = Ext4.create('Ext.window.Window', {
-                            title: 'Case Number',
-                            bodyBorder: true,
-                            border: true,
-                            theField: this,
-                            //,frame: true
-                            bodyStyle: 'padding:5px',
-                            width: 350,
-                            defaults: {
-                                width: 200,
-                                border: false,
-                                bodyBorder: false
-                            },
-                            items: [{
-                                xtype: 'textfield',
-                                ref: 'prefix',
-                                fieldLabel: 'Prefix',
-                                allowBlank: false,
-                                value: 'c'
-                            },{
-                                xtype: 'numberfield',
-                                ref: 'year',
-                                fieldLabel: 'Year',
-                                allowBlank: false,
-                                value: (new Date()).getFullYear()
-                            }],
-                            buttons: [{
-                                text:'Submit',
-                                disabled:false,
-                                ref: '../submit',
-                                //scope: this,
-                                handler: function(p){
-                                    getCaseNo(p.ownerCt.ownerCt);
-                                    this.ownerCt.ownerCt.hide();
-                                }
-                            },{
-                                text: 'Close',
-                                //scope: this,
-                                handler: function(){
-                                    this.ownerCt.ownerCt.hide();
-                                }
-                            }]
-                        });
-                        theWin.show();
-
-                        function getCaseNo(panel){
-                            var year = panel.year.getValue();
-                            var prefix = panel.prefix.getValue();
-
-                            if(!year || !prefix){
-                                Ext4.Msg.alert('Error', "Must supply both year and prefix");
-                                return
-                            }
-
-                            LABKEY.Query.executeSql({
-                                schemaName: 'study',
-                                sql: "SELECT cast(SUBSTRING(MAX(caseno), 6, 8) AS INTEGER) as caseno FROM study.Necropsies WHERE caseno LIKE '" + year + prefix + "%'",
-                                scope: this,
-                                success: function(data){
-                                    var caseno;
-                                    if(data.rows && data.rows.length==1){
-                                        caseno = data.rows[0].caseno;
-                                        caseno++;
-                                    }
-                                    else {
-                                        console.log('no existing cases found');
-                                        caseno = 1;
-                                    }
-
-                                    caseno = EHR.Utils.padDigits(caseno, 3);
-                                    var val = year + prefix + caseno;
-                                    panel.theField.setValue(val);
-                                    panel.theField.fireEvent('change', val)
-                                },
-                                failure: EHR.Utils.onError
-                            });
-                        };
-                    }
-                }
-            },
-            performedby: {
-                lookup: {
-                    schemaName: 'ehr_lookups',
-                    queryName: 'pathologists',
-                    displayColumn: 'UserId',
-                    keyColumn: 'UserId'
-                }
-            },
-            assistant: {
-                xtype: 'combo',
-                multiSelect: true,
-                hasOwnTpl: true,
-                lookup: {
-                    schemaName: 'ehr_lookups',
-                    queryName: 'pathologists',
-                    displayColumn: 'UserId',
-                    keyColumn: 'UserId'
-                }
-            },
-            causeofdeath: {
-                allowBlank: false
-            }
-        },
-        'study.Biopsies': {
-            remark: {
-                height: 200,
-                width: 600
-            },
-            grossdescription: {
-                height: 200,
-                width: 600
-            },
-            histologicalDescription: {
-                height: 200,
-                width: 600
-            },
-            patho_notes: {
-                height: 200,
-                width: 600
-            },
-            caseno: {
-                xtype: 'trigger',
-                allowBlank: false,
-                editorConfig: {
-                    triggerCls: 'x4-form-search-trigger',
-                    onTriggerClick: function(){
-                        var theWin = new Ext.Window({
-                            layout: 'form',
-                            title: 'Case Number',
-                            bodyBorder: true,
-                            border: true,
-                            theField: this,
-                            //,frame: true
-                            bodyStyle: 'padding:5px',
-                            width: 350,
-                            defaults: {
-                                width: 200,
-                                border: false,
-                                bodyBorder: false
-                            },
-                            items: [{
-                                xtype: 'textfield',
-                                ref: 'prefix',
-                                fieldLabel: 'Prefix',
-                                allowBlank: false,
-                                value: 'b'
-                            },{
-                                xtype: 'numberfield',
-                                ref: 'year',
-                                fieldLabel: 'Year',
-                                allowBlank: false,
-                                value: (new Date()).getFullYear()
-                            }],
-                            buttons: [{
-                                text:'Submit',
-                                disabled:false,
-                                ref: '../submit',
-                                //scope: this,
-                                handler: function(p){
-                                    getCaseNo(p.ownerCt.ownerCt);
-                                    this.ownerCt.ownerCt.hide();
-                                }
-                            },{
-                                text: 'Close',
-                                //scope: this,
-                                handler: function(){
-                                    this.ownerCt.ownerCt.hide();
-                                }
-                            }]
-                        });
-                        theWin.show();
-
-                        function getCaseNo(panel){
-                            var year = panel.year.getValue();
-                            var prefix = panel.prefix.getValue();
-
-                            if(!year || !prefix){
-                                Ext4.Msg.alert('Error', "Must supply both year and prefix");
-                                return
-                            }
-
-                            LABKEY.Query.executeSql({
-                                schemaName: 'study',
-                                sql: "SELECT cast(SUBSTRING(MAX(caseno), 6, 8) AS INTEGER) as caseno FROM study.Necropsies WHERE caseno LIKE '" + year + prefix + "%'",
-                                scope: this,
-                                success: function(data){
-                                    var caseno;
-                                    if(data.rows && data.rows.length==1){
-                                        caseno = data.rows[0].caseno;
-                                        caseno++;
-                                    }
-                                    else {
-                                        console.log('no existing cases found');
-                                        caseno = 1;
-                                    }
-
-                                    caseno = EHR.Utils.padDigits(caseno, 3);
-                                    var val = year + prefix + caseno;
-                                    panel.theField.setValue(val);
-                                    panel.theField.fireEvent('change', val)
-                                },
-                                failure: EHR.Utils.onError
-                            });
-                        };
-                    }
-                }
-            },
-            performedby: {
-                lookup: {
-                    schemaName: 'ehr_lookups',
-                    queryName: 'pathologists',
-                    displayColumn: 'UserId',
-                    keyColumn: 'UserId'
-                }
-            }
-        },
-        'study.Organ Weights': {
-            performedby: {
-                hidden: true
-            },
-            qualifier: {
-                editorConfig: {
-                    plugins: ['ehr-usereditablecombo']
-                }
-            },
-            weight: {
-                allowBlank: false,
-                editorConfig: {
-                    decimalPrecision: 3
-                }
-            }
-        },
-        'study.Body Condition': {
-            performedby: {hidden: true},
-            weightStatus: {
-                xtype: 'ehr-booleancombo',
-                defaultValue: false
-            }
-        },
-        'study.Alopecia': {
-            head: {xtype: 'ehr-remoteradiogroup', includeNullRecord: false, defaultValue: 'No', formEditorConfig: {columns: 3}},
-            dorsum: {xtype: 'ehr-remoteradiogroup', includeNullRecord: false, defaultValue: 'No', formEditorConfig: {columns: 3}},
-            rump: {xtype: 'ehr-remoteradiogroup', includeNullRecord: false, defaultValue: 'No', formEditorConfig: {columns: 3}},
-            shoulders: {xtype: 'ehr-remoteradiogroup', includeNullRecord: false, defaultValue: 'No', formEditorConfig: {columns: 3}},
-            upperArms: {xtype: 'ehr-remoteradiogroup', includeNullRecord: false, defaultValue: 'No', formEditorConfig: {columns: 3}},
-            lowerArms: {xtype: 'ehr-remoteradiogroup', includeNullRecord: false, defaultValue: 'No', formEditorConfig: {columns: 3}},
-            hips: {xtype: 'ehr-remoteradiogroup', includeNullRecord: false, defaultValue: 'No', formEditorConfig: {columns: 3}},
-            upperLegs: {xtype: 'ehr-remoteradiogroup', includeNullRecord: false, defaultValue: 'No', formEditorConfig: {columns: 3}},
-            lowerLegs: {xtype: 'ehr-remoteradiogroup', includeNullRecord: false, defaultValue: 'No', formEditorConfig: {columns: 3}},
-            other: {xtype: 'ehr-remoteradiogroup', includeNullRecord: false, defaultValue: 'No', formEditorConfig: {columns: 3}},
-            score: {lookupNullCaption: '', useNull: true, editorConfig: {useNull: true}},
-            performedby: {hidden: true}
-        },
-        'ehr.cage_observations': {
-            date: {
-                hidden: false,
-                allowBlank: false,
-                getInitialValue: function(v, rec){
-                    return v ? v : new Date()
-                }
-            },
-            remark: {
-                allowBlank: true,
-                formEditorConfig: {
-                    storeCfg: {
-                        schemaName: 'ehr_lookups',
-                        queryName: 'obs_remarks',
-                        valueField: 'description',
-                        displayField: 'value'
-                    }
-                }
-            },
-            feces: {
-                shownInGrid: true,
-                xtype: 'ehr-remotecheckboxgroup', includeNullRecord: false,
-                formEditorConfig: {columns: 1},
-                lookup: {schemaName: 'ehr_lookups', queryName: 'obs_feces', displayColumn: 'title', keyColumn: 'value'}
-            },
-            no_observations: {
-                shownInGrid: false,
-                formEditorConfig: {
-                    listeners: {
-                        check: function(field, val){
-                            var theForm = this.ownerCt.getForm();
-                            if(theForm){
-                                var rfield = theForm.findField('remark');
-
-                                if(val)
-                                    rfield.setValue('ok');
-                                else if (rfield.getValue()=='ok')
-                                    rfield.setValue('');
-
-                                theForm.findField('feces').setValue();
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        'study.Charges': {
-            type: {
-                includeNullRecord: false,
-                allowBlank: false,
-                lookup: {
-                    columns: 'category,description,cost',
-                    sort: 'category,description',
-                    displayColumn: 'description'
-                },
-                editorConfig: {
-                    tpl : function()
-                    {
-                        var tpl = new Ext.XTemplate(
-                                '<tpl for=".">' +
-                                        '<div class="x-combo-list-item">{[ values["category"] ? "<b>"+values["category"]+":</b> "  : "" ]}{[ values["description"] ]}' +
-                                        '&nbsp;</div></tpl>'
-                        );
-                        return tpl.compile()
-                    }(),
-                    listeners: {
-                        select: function(combo, recs){
-                            if (!recs || recs.length != 1)
-                                return;
-
-                            var rec = recs[0];
-                            var theForm = this.up('form').getForm();
-                            if(theForm){
-                                theForm.findField('unitCost').setValue(rec.get('cost'));
-                            }
-                        }
-                    }
-                }
-
-            },
-            unitCost: {
-                xtype: 'displayfield'
-            },
-            quantity: {
-                allowBlank: false,
-                defaultValue: 1
-            },
-            performedby: {
-                hidden: true
-            },
-            remark: {
-                shownInGrid: false
-            },
-            date: {
                 xtype: 'datefield',
                 extFormat: 'Y-m-d'
             }
@@ -1579,18 +1124,6 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 allowBlank: false
             }
         },
-        'study.Vitals': {
-            performedby: {hidden: true}
-        },
-        'study.Teeth': {
-            performedby: {hidden: true},
-            tooth: {
-                lookup: {
-                    columns: '*',
-                    sort: 'sort_order'
-                }
-            }
-        },
         'study.Deaths': {
             performedby: {
                 hidden: false,
@@ -1633,45 +1166,6 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             requestor: {shownInGrid: false, hidden: true, formEditorConfig:{readOnly: true}},
             performedby: {shownInGrid: false},
             instructions: {shownInGrid: false},
-            assayCode: {
-                xtype: 'trigger',
-                shownInGrid: false,
-                editorConfig: {
-                    triggerCls: 'x4-form-search-trigger',
-                    allowAnyId: true,
-                    onTriggerClick: function (){
-                        var prefix = this.getValue();
-
-                        if(!prefix){
-                            Ext4.Msg.alert('Error', "Must enter prefix");
-                            return
-                        }
-                        var sql = "SELECT max(cast(regexp_replace(SUBSTRING(assayCode, "+(prefix.length+1)+"), '[a-z,\-]+', '') as integer)) as maxNumber FROM study.blood WHERE assayCode LIKE '" + prefix + "%'  AND lcase(SUBSTRING(assayCode, "+(prefix.length+1)+")) = ucase(SUBSTRING(assayCode, "+(prefix.length+1)+"))";
-                        //console.log(sql)
-                        LABKEY.Query.executeSql({
-                            schemaName: 'study',
-                            sql: sql,
-                            scope: this,
-                            success: function(data){
-                                var number;
-                                if(data.rows && data.rows.length==1){
-                                    number = Number(data.rows[0].maxNumber)+1;
-                                }
-                                else {
-                                    console.log('no matching IDs found');
-                                    number = 1;
-                                }
-
-                                //number = EHR.Utils.padDigits(number, (6-prefix.length));
-                                var id = prefix + number;
-                                this.setValue(id.toLowerCase());
-                                this.fireEvent('change', this.getValue());
-                            },
-                            failure: EHR.Utils.onError
-                        });
-                    }
-                }
-            },
             additionalServices: {
                 xtype: 'combo',
                 multiSelect: true,
@@ -1686,6 +1180,9 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 editorConfig: {
                     tpl: null,
                     separator: ';'
+                },
+                columnConfig: {
+                    width: 200
                 }
             },
             tube_type: {
@@ -1706,26 +1203,40 @@ EHR.model.DataModelManager.registerMetadata('Default', {
 
                             var rec = recs[0];
                             var theForm = field.up('form').getForm();
-                            var tube_vol = theForm.findField('tube_vol');
+                            if (!theForm){
+                                console.error('no form found');
+                                return;
+                            }
 
-                            tube_vol.store.baseParams['query.tube_types~contains'] = rec.get('type');
+                            var tube_vol = theForm.findField('tube_vol');
+                            tube_vol.store.filterArray = [LABKEY.Filter.create('tube_types', rec.get('type'), LABKEY.Filter.Types.CONTAINS)];
                             tube_vol.store.load();
                         }
                     }
                 },
                 columnConfig: {
-                    width: 60,
+                    width: 100,
                     showLink: false
                 }
             },
             quantity: {
                 //xtype: 'displayfield',
-                shownInGrid: false,
+                shownInGrid: true,
                 allowBlank: false,
                 editorConfig: {
                     allowNegative: false,
                     calculateQuantity: function(){
-                        var form = this.ownerCt.getForm();
+                        var parent = this.findParentByType('ehr-formpanel');
+                        if (!parent){
+                            return
+                        }
+
+                        var form = parent.getForm();
+                        if (!form){
+                            console.error('no form found');
+                            return;
+                        }
+
                         var numTubes = form.findField('num_tubes').getValue();
                         var tube_vol = form.findField('tube_vol').getValue();
 
@@ -1759,7 +1270,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 },
                 allowBlank: true,
                 columnConfig: {
-                    width: 55,
+                    width: 100,
                     header: '# Tubes',
                     showLink: false
                 }
@@ -1779,7 +1290,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                     sort: 'volume'
                 },
                 columnConfig: {
-                    width: 75,
+                    width: 130,
                     header: 'Tube Vol (mL)',
                     showLink: false
                 }

@@ -18,7 +18,7 @@
                       </fk>
                     </column>
                     <column columnName="protocol">
-                      <columnTitle>Protocol</columnTitle>
+                      <columnTitle>IACUC Protocol</columnTitle>
                       <fk>
                         <fkDbSchema>ehr</fkDbSchema>
                         <fkTable>protocol</fkTable>

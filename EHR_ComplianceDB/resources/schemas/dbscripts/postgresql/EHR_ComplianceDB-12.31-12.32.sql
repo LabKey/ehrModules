@@ -1,0 +1,1 @@
+ALTER TABLE ehr_compliancedb.employees ADD middleName varchar(100);

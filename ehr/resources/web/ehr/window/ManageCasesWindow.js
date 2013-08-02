@@ -7,16 +7,28 @@ Ext4.define('EHR.window.ManageCasesWindow', {
 
     initComponent: function(){
         LABKEY.ExtAdapter.apply(this, {
-            title: 'Manage Treatments: ' + this.animalId,
+            title: 'Manage Cases: ' + this.animalId,
             modal: true,
-            bodyStyle: 'padding: 5px;',
             items: [{
                 xtype: 'ehr-managecasespanel',
                 animalId: this.animalId,
-                dataRegionName: this.dataRegionName
-            }]
+                hideButtons: true
+            }],
+            buttons: this.getButtonConfig()
         });
 
         this.callParent(arguments);
+    },
+
+    getButtonConfig: function(){
+        var buttons = EHR.panel.ManageCasesPanel.getButtonConfig();
+        buttons.push({
+            text: 'Close',
+            handler: function(btn){
+                btn.up('window').close();
+            }
+        });
+
+        return buttons;
     }
 });

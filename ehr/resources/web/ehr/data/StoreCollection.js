@@ -58,6 +58,10 @@ Ext4.define('EHR.data.StoreCollection', {
         return this.getServerStoreForQuery(schemaName, queryName);
     },
 
+    getClientStoreByName: function(sectionName){
+        return this.clientStores.get(this.collectionId + '-' + sectionName);
+    },
+
     addServerStoreFromConfig: function(config){
         var storeConfig = Ext4.apply({}, config);
         LABKEY.ExtAdapter.apply(storeConfig, {
@@ -170,6 +174,23 @@ Ext4.define('EHR.data.StoreCollection', {
                         }
                     }
                 }, this);
+
+                var removed = clientStore.getRemovedRecords();
+                if (removed.length){
+                    Ext4.Array.forEach(removed, function(clientModel){
+                        //find the corresponding server record
+                        var key = clientModel.get(clientKeyField);
+                        var serverModel = serverStore.findRecord(clientKeyField, key);
+
+                        if (clientModel.isRemovedRequest){
+                            serverModel.isRemovedRequest = true;
+                            //TODO
+                        }
+                        else {
+                            serverStore.remove(serverModel);
+                        }
+                    }, this);
+                }
             }
         }, this);
 
@@ -231,6 +252,13 @@ Ext4.define('EHR.data.StoreCollection', {
         dependencies = LDK.Utils.tsort(dependencies);
         dependencies.reverse();
         this._sortedServerStores = dependencies;
+
+        //ensure all stores represented
+        this.serverStores.each(function(s){
+            var name = s.schemaName + '.' + s.queryName;
+            if (dependencies.indexOf(s.name) == -1)
+                dependencies.push(name);
+        }, this);
 
         return dependencies;
     },
@@ -395,6 +423,33 @@ Ext4.define('EHR.data.StoreCollection', {
         }, this);
     },
 
+    getClientStoreForSection: function(dataEntryPanel, section){
+        var modelName = 'EHR.model.model-' + Ext4.id();
+        var fields = EHR.model.DefaultClientModel.getFieldConfigs(section.fieldConfigs, section.configSources);
+        if (!fields.length){
+            return;
+        }
+
+        Ext4.define(modelName, {
+            extend: section.clientModelClass,
+            fields: fields,
+            sectionCfg: section,
+            storeCollection: this,
+            dataEntryPanel: dataEntryPanel
+        });
+
+        var clazz = section.clientStoreClass || 'EHR.data.DataEntryClientStore';
+        var store = Ext4.create(clazz, {
+            storeId: this.collectionId + '-' + section.name,
+            model: modelName,
+            loaded: false
+        });
+
+        this.addClientStore(store);
+
+        return store;
+    },
+
     //add an instantiated client-side store to the collection
     addClientStore: function(store){
         this.mon(store, 'add', this.onClientStoreAdd, this);
@@ -426,7 +481,18 @@ Ext4.define('EHR.data.StoreCollection', {
     },
 
     getExtraContext: function(extraContext){
-        return LABKEY.Utils.merge({}, extraContext);
+        var ret = {};
+
+        this.clientStores.each(function(s){
+            var ctx = s.getExtraContext();
+            if (ctx){
+                ret = LABKEY.Utils.merge(ret, ctx);
+            }
+        }, this);
+
+        LABKEY.Utils.merge(ret, extraContext);
+
+        return ret;
     },
 
     commitChanges: function(commitAll, extraContext){
@@ -462,7 +528,7 @@ console.log(commands);
                 apiVersion: 13.2,
                 containerPath: this.containerPath,
                 commands: commands,
-                extraContext: extraContext || {}
+                extraContext: this.getExtraContext(extraContext)
             },
             headers : {
                 'Content-Type' : 'application/json'
@@ -536,21 +602,27 @@ console.log(commands);
                 }, this);
             }, this);
 
-            //TODO: clean up how we parse the JSON errors
             var json = this.getJson(response);
-            if(json && json.result){
-                //each error should represent 1 row.  there can be multiple errors per row
-                Ext4.Array.forEach(json.result, function(command, commandIdx){
-                    if (command.errors && command.errors.length){
-                        var serverStore = this.getServerStoreForQuery(command.schemaName, command.queryName);
-                        LDK.Assert.assertNotEmpty('Could not find store matching: ' + command.schemaName + '.' + command.queryName, serverStore);
+            if(json){
+                //this indicates we had a typical command array that failed.  we inspect each command for errors
+                if (json.result){
+                    //each error should represent 1 row.  there can be multiple errors per row
+                    Ext4.Array.forEach(json.result, function(command, commandIdx){
+                        if (command.errors){
+                            var serverStore = this.getServerStoreForQuery(command.schemaName, command.queryName);
+                            LDK.Assert.assertNotEmpty('Could not find store matching: ' + command.schemaName + '.' + command.queryName, serverStore);
 
-                        serverStore.handleServerErrors(command.errors, recordArr[commandIdx]);
-                    }
-                    else {
-                        //ignore.  this would occur if a multi-command request is sent and 1 of the group fails.
-                    }
-                }, this);
+                            serverStore.handleServerErrors(command.errors, recordArr[commandIdx]);
+                        }
+                        else {
+                            //ignore.  this would occur if a multi-command request is sent and 1 of the group fails.
+                        }
+                    }, this);
+                }
+                else if (json.exception){
+                    //TODO
+                    console.error(json.exception);
+                }
             }
 
             if ((options.jsonData && options.jsonData.validateOnly)){
@@ -585,7 +657,6 @@ console.log(commands);
 
                 if(options.jsonData && options.jsonData.extraContext && options.jsonData.extraContext.successURL){
                     //NOTE: since this indicates we expect to navigate the page, dont bother updating the client store
-                    console.log('has successUrl');
                 }
                 else {
                     Ext4.Array.forEach(records, function(r){
@@ -672,5 +743,35 @@ console.log(commands);
         }, this);
 
         return maxSeverity;
+    },
+
+    discard: function(extraContext){
+        Ext4.Msg.wait('Discarding form...') ;
+
+        var hasPermission = true;
+        this.clientStores.each(function(s){
+            s.each(function(r){
+                if (!r.canDelete()){
+                    hasPermission = false;
+                    return false;
+                }
+            }, this);
+
+            if (!hasPermission)
+                return false;
+        }, this);
+
+        if (!hasPermission){
+            Ext4.Msg.hide();
+            Ext4.Msg.alert('Error', 'You do not have permission to delete this form');
+            return;
+        }
+
+        this.clientStores.each(function(s){
+            s.remove(s.getRange());
+        }, this);
+
+        this.transformClientToServer();
+        this.commitChanges(true, extraContext);
     }
 });

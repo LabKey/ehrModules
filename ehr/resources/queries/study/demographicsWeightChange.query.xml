@@ -10,20 +10,25 @@
                     <column columnName="wdate">
                         <columnTitle>Latest Weight Date</columnTitle>
                     </column>
-                    <column columnName="MinLast30">
+                    <column columnName="minLast30">
                         <columnTitle>Min Weight In Last 30 Days</columnTitle>
+                        <formatString>0.##</formatString>
                     </column>
-                    <column columnName="MaxLast30">
+                    <column columnName="maxLast30">
                         <columnTitle>Max Weight In Last 30 Days</columnTitle>
+                        <formatString>0.##</formatString>
                     </column>
-                    <column columnName="MaxLoss30">
+                    <column columnName="maxLoss30">
                         <columnTitle>Max Weight Loss In Last 30 Days</columnTitle>
+                        <formatString>0.##</formatString>
                     </column>
-                    <column columnName="MaxGain30">
+                    <column columnName="maxGain30">
                         <columnTitle>Max Weight Gain In Last 30 Days</columnTitle>
+                        <formatString>0.##</formatString>
                     </column>
-                    <column columnName="MaxChange30">
+                    <column columnName="maxChange30">
                         <columnTitle>Max % Change In Last 30 Days</columnTitle>
+                        <formatString>0.##</formatString>
                         <conditionalFormats>
                             <conditionalFormat>
                                 <filters>
@@ -41,24 +46,33 @@
                             </conditionalFormat>
                         </conditionalFormats>
                     </column>
-                    <column columnName="Weights30">
+                    <column columnName="numLast30">
                         <columnTitle># of Weights In the Last 30 Days</columnTitle>
                         <displayWidth>140</displayWidth>
                     </column>
-                    <column columnName="MinLast90">
+                    <column columnName="avgLast30">
+                        <columnTitle>Avg Weight In Last 30 Days</columnTitle>
+                        <formatString>0.##</formatString>
+                    </column>
+                    <column columnName="minLast90">
                         <columnTitle>Min Weight In Last 90 Days</columnTitle>
+                        <formatString>0.##</formatString>
                     </column>
-                    <column columnName="MaxLast90">
+                    <column columnName="maxLast90">
                         <columnTitle>Max Weight In Last 90 Days</columnTitle>
+                        <formatString>0.##</formatString>
                     </column>
-                    <column columnName="MaxLoss90">
+                    <column columnName="maxLoss90">
                         <columnTitle>Max Weight Loss In Last 90 Days</columnTitle>
+                        <formatString>0.##</formatString>
                     </column>
-                    <column columnName="MaxGain90">
+                    <column columnName="maxGain90">
                         <columnTitle>Max Weight Gain In Last 90 Days</columnTitle>
+                        <formatString>0.##</formatString>
                     </column>
-                    <column columnName="MaxChange90">
+                    <column columnName="maxChange90">
                         <columnTitle>Max % Change In Last 90 Days</columnTitle>
+                        <formatString>0.##</formatString>
                         <conditionalFormats>
                             <conditionalFormat>
                                 <filters>
@@ -76,24 +90,33 @@
                             </conditionalFormat>
                         </conditionalFormats>
                     </column>
-                    <column columnName="Weights90">
+                    <column columnName="numLast90">
                         <columnTitle># of Weights In the Last 90 Days</columnTitle>
                         <displayWidth>140</displayWidth>
                     </column>
-                    <column columnName="MinLast180">
+                    <column columnName="avgLast90">
+                        <columnTitle>Avg Weight In Last 90 Days</columnTitle>
+                        <formatString>0.##</formatString>
+                    </column>
+                    <column columnName="minLast180">
                         <columnTitle>Min Weight In Last 6 Months</columnTitle>
+                        <formatString>0.##</formatString>
                     </column>
-                    <column columnName="MaxLast180">
+                    <column columnName="maxLast180">
                         <columnTitle>Max Weight In Last 6 Months</columnTitle>
+                        <formatString>0.##</formatString>
                     </column>
-                    <column columnName="MaxLoss180">
+                    <column columnName="maxLoss180">
                         <columnTitle>Max Weight Loss In Last 6 Months</columnTitle>
+                        <formatString>0.##</formatString>
                     </column>
-                    <column columnName="MaxGain180">
+                    <column columnName="maxGain180">
                         <columnTitle>Max Weight Gain In Last 6 Months</columnTitle>
+                        <formatString>0.##</formatString>
                     </column>
-                    <column columnName="MaxChange180">
+                    <column columnName="maxChange180">
                         <columnTitle>Max % Change In Last 6 Months</columnTitle>
+                        <formatString>0.##</formatString>
                         <conditionalFormats>
                             <conditionalFormat>
                                 <filters>
@@ -111,9 +134,69 @@
                             </conditionalFormat>
                         </conditionalFormats>
                     </column>
-                    <column columnName="Weights180">
+                    <column columnName="numLast180">
                         <columnTitle># of Weights In the Last 6 Months</columnTitle>
                         <displayWidth>140</displayWidth>
+                    </column>
+                    <column columnName="avgLast180">
+                        <columnTitle>Avg Weight In Last 6 Months</columnTitle>
+                        <formatString>0.##</formatString>
+                    </column>
+                    <column columnName="minLast365">
+                        <columnTitle>Min Weight In Last Year</columnTitle>
+                        <formatString>0.##</formatString>
+                    </column>
+                    <column columnName="maxLast365">
+                        <columnTitle>Max Weight In Last Year</columnTitle>
+                        <formatString>0.##</formatString>
+                    </column>
+                    <column columnName="maxLoss365">
+                        <columnTitle>Max Weight Loss In Last Year</columnTitle>
+                        <formatString>0.##</formatString>
+                    </column>
+                    <column columnName="maxGain365">
+                        <columnTitle>Max Weight Gain In Last Year</columnTitle>
+                        <formatString>0.##</formatString>
+                    </column>
+                    <column columnName="maxChange365">
+                        <columnTitle>Max % Change In Last Year</columnTitle>
+                        <formatString>0.##</formatString>
+                    </column>
+                    <column columnName="numLast365">
+                        <columnTitle># of Weights In the Last Year</columnTitle>
+                        <displayWidth>140</displayWidth>
+                    </column>
+                    <column columnName="avgLast365">
+                        <columnTitle>Avg Weight In Last Year</columnTitle>
+                        <formatString>0.##</formatString>
+                    </column>                    
+                    <column columnName="minLast2Years">
+                        <columnTitle>Min Weight In Last 2 Years</columnTitle>
+                        <formatString>0.##</formatString>
+                    </column>
+                    <column columnName="maxLast2Years">
+                        <columnTitle>Max Weight In Last 2 Years</columnTitle>
+                        <formatString>0.##</formatString>
+                    </column>
+                    <column columnName="maxLoss2Years">
+                        <columnTitle>Max Weight Loss In Last 2 Years</columnTitle>
+                        <formatString>0.##</formatString>
+                    </column>
+                    <column columnName="maxGain2Years">
+                        <columnTitle>Max Weight Gain In Last 2 Years</columnTitle>
+                        <formatString>0.##</formatString>
+                    </column>
+                    <column columnName="maxChange2Years">
+                        <columnTitle>Max % Change In Last 2 Years</columnTitle>
+                        <formatString>0.##</formatString>
+                    </column>
+                    <column columnName="numLast2Years">
+                        <columnTitle># of Weights In the Last 2 Years</columnTitle>
+                        <displayWidth>140</displayWidth>
+                    </column>
+                    <column columnName="avgLast2Years">
+                        <columnTitle>Avg Weight In Last 2 Years</columnTitle>
+                        <formatString>0.##</formatString>
                     </column>
                 </columns>
                 <titleColumn>MostRecentWeight</titleColumn>

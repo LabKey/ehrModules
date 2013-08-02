@@ -18,6 +18,7 @@ Ext4.define('EHR.panel.TaskDataEntryPanel', {
         cfg = this.callParent(arguments);
         cfg.filterArray = cfg.filterArray || [];
         cfg.filterArray.push(LABKEY.Filter.create('taskId', this.taskId, LABKEY.Filter.Types.EQUALS));
+
         return cfg;
     }
 });

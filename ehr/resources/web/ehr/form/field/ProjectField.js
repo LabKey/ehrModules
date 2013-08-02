@@ -15,6 +15,7 @@ Ext4.define('EHR.form.field.ProjectField', {
     caseSensitive: false,
     anyMatch: true,
     editable: true,
+    forceSelection: true,
 
     initComponent: function(){
         LABKEY.ExtAdapter.apply(this, {

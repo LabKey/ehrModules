@@ -7,6 +7,8 @@ Ext4.define('EHR.form.field.RoomField', {
     extend: 'Ext.ux.CheckCombo',
     alias: 'widget.ehr-roomfield',
     fieldLabel: 'Room',
+    forceSelection: true,
+
     initComponent: function(){
         LABKEY.ExtAdapter.apply(this, {
             expandToFitContent: true,
@@ -17,7 +19,7 @@ Ext4.define('EHR.form.field.RoomField', {
                 schemaName: 'ehr_lookups',
                 queryName: 'rooms',
                 columns: 'room,area',
-                sort: 'area,sort_order',
+                sort: 'sort_order',
                 filterArray: [LABKEY.Filter.create('datedisabled', null, LABKEY.Filter.Types.ISBLANK)],
                 autoLoad: true
             },

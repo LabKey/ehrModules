@@ -11,22 +11,28 @@
 EHR.model.DataModelManager.registerMetadata('Request', {
     allQueries: {
         requestid: {
-            parentConfig: {
+            inheritance: {
                 storeIdentifier:  {queryName: 'requests', schemaName: 'ehr'},
-                dataIndex: 'requestid'
+                sourceField: 'taskid',
+                recordIdx: 0
             }
         },
         date: {
-//            parentConfig: {
-//                storeIdentifier:  {queryName: 'requests', schemaName: 'ehr'}
-//                ,dataIndex: 'daterequested'
-//            },
-//            hidden: true,
             editorConfig: {
                 minValue: (new Date()).add(Date.DAY, 2),
                 dateConfig: {
                     minValue: (new Date()).add(Date.DAY, 2)
                 }
+            },
+            getInitialValue: function(v, rec){
+                if (v)
+                    return v;
+
+                v = (new Date()).add(Date.DAY, 2);
+                v.setHours(8);
+                v.setMinutes(30);
+
+                return v;
             }
         },
         performedby: {
@@ -101,8 +107,13 @@ EHR.model.DataModelManager.registerMetadata('Request', {
                     allowNegative: false,
                     listeners: {
                         change: function(field, val){
-                            if(this.ownerCt.getForm)
-                                this.ownerCt.getForm().findField('quantity').calculateQuantity();
+                            var form = field.up('form');
+                            if(form){
+                                form.getForm().findField('quantity').calculateQuantity();
+                            }
+                            else {
+                                console.error('unable to find form')
+                            }
                         }
                     }
                 },
@@ -114,8 +125,9 @@ EHR.model.DataModelManager.registerMetadata('Request', {
                     allowNegative: false,
                     listeners: {
                         change: function(field, val){
-                            if(this.ownerCt.getForm)
-                                this.ownerCt.getForm().findField('quantity').calculateQuantity();
+                            var form = field.up('form');
+                            if(form)
+                                form.getForm().findField('quantity').calculateQuantity();
                         }
                     }
                 }

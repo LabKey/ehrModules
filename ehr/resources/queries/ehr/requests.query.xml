@@ -89,6 +89,9 @@
                     <column columnName="daterequested">
                         <columnTitle>Date Requested</columnTitle>
                     </column>
+                    <column columnName="enddate">
+                        <isHidden>true</isHidden>
+                    </column>
                     <column columnName="qcstate">
                         <isHidden>true</isHidden>
                         <columnTitle>Status</columnTitle>

@@ -30,5 +30,5 @@ LEFT JOIN
 
 LEFT JOIN ehr_compliancedb.CompletionDates c
     ON (e.employeeid = c.employeeid AND c.RequirementName = 'SOP Review')
-WHERE e.enddate is null
+WHERE e.EndDateCoalesced >= curdate()
 GROUP BY e.employeeid, e.email

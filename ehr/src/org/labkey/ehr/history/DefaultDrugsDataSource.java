@@ -52,7 +52,7 @@ public class DefaultDrugsDataSource extends AbstractDataSource
         String category = rs.getString("category");
 
         //skip treatments given, for now
-        if ("Clinical".equals(category))
+        if (rs.getObject("treatmentid") != null)
             return null;
 
         safeAppend(rs, "Category", "category");
@@ -98,7 +98,7 @@ public class DefaultDrugsDataSource extends AbstractDataSource
     @Override
     protected Set<String> getColumnNames()
     {
-        return PageFlowUtil.set("Id", "date", "enddate", "route", "volume", "vol_units", "amount", "amount_units", "code", "code/meaning", "category", "caseid", "parentId/caseid/category");
+        return PageFlowUtil.set("Id", "date", "enddate", "route", "volume", "vol_units", "amount", "amount_units", "code", "code/meaning", "category", "caseid", "parentId/caseid/category", "treatmentid");
     }
 
     @Override
@@ -149,7 +149,7 @@ public class DefaultDrugsDataSource extends AbstractDataSource
             }
 
             HistoryRowImpl rec = records.get(0);
-            HistoryRowImpl newRow = new HistoryRowImpl(rec.getCategoryText(), rec.getCategoryGroup(), rec.getSubjectId(), rec.getDate(), sb.toString());
+            HistoryRowImpl newRow = new HistoryRowImpl(rec.getCategoryText(), rec.getPrimaryGroup(), rec.getSubjectId(), rec.getDate(), sb.toString());
             newRow.setShowTime(true);
             newRows.add(newRow);
         }

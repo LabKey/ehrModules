@@ -12,10 +12,13 @@
  * @cfg hideExportBtn
  * @cfg sortMode
  * @cfg checkedItems
+ * @cfg showMaxDate
  */
 Ext4.define('EHR.panel.ClinicalHistoryPanel', {
     extend: 'Ext.panel.Panel',
     alias: 'widget.ehr-clinicalhistorypanel',
+
+    showMaxDate: false,
 
     initComponent: function(){
         this.sortMode = this.sortMode || 'date';
@@ -119,7 +122,7 @@ Ext4.define('EHR.panel.ClinicalHistoryPanel', {
                     itemId: 'maxDate',
                     labelWidth: 80,
                     width: 200,
-                    hidden: true,
+                    hidden: this.showMaxDate,
                     value: this.maxDate
                 },{
                     xtype: 'button',
@@ -338,12 +341,37 @@ Ext4.define('EHR.window.ClinicalHistoryFilterWindow', {
                 html: 'Use the checkboxes below to toggle which types of information are shown',
                 style: 'padding-bottom: 10px;'
             },{
+                layout: 'hbox',
+                style: 'padding-bottom: 5px;',
+                items: [{
+                    xtype: 'labkey-linkbutton',
+                    text: '[Select None]',
+                    style: 'padding: 5px;',
+                    itemId: 'selectNone',
+                    handler: function(field){
+                        field.up('window').down('checkboxgroup').items.each(function(cb){
+                            cb.setValue(false);
+                        }, this);
+                    }
+                },{
+                    xtype: 'labkey-linkbutton',
+                    text: '[Select All]',
+                    style: 'padding: 5px;',
+                    itemId: 'selectAll',
+                    handler: function(field){
+                        field.up('window').down('checkboxgroup').items.each(function(cb){
+                            cb.setValue(true);
+                        }, this);
+                    }
+                }]
+            },{
                 xtype: 'checkboxgroup',
-                columns: 1,
+                columns: 2,
                 itemId: 'types',
                 defaults: {
                     name: 'type',
-                    xtype: 'checkbox'
+                    xtype: 'checkbox',
+                    width: 220
                 },
                 items: this.getCheckboxes()
             }],
@@ -370,7 +398,7 @@ Ext4.define('EHR.window.ClinicalHistoryFilterWindow', {
         var items = [];
         Ext4.Array.each(store.getDistinctTypes(), function(type){
             items.push({
-                fieldLabel: type,
+                boxLabel: type,
                 inputValue: type,
                 checked: (!this.clinicalHistoryPanel.checkedItems || Ext4.Array.indexOf(this.clinicalHistoryPanel.checkedItems, type) > -1)
             });

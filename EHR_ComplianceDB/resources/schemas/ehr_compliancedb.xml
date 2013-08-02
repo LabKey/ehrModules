@@ -75,30 +75,15 @@
       </ns:column>
     </ns:columns>
   </ns:table>
-
-  <ns:table tableName="employees" tableDbType="TABLE">
-    <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr_compliancedb&amp;query.queryName=employees&amp;employeeid=${employeeid}</ns:tableUrl>
+  <ns:table tableName="employees" tableDbType="TABLE" useColumnOrder="true">
+    <ns:tableUrl>/ehr_compliancedb/employeeDetails.view?employeeid=${employeeid}</ns:tableUrl>
+    <ns:javaCustomizer>org.labkey.ehr.table.WrappingTableCustomizer</ns:javaCustomizer>
     <ns:tableTitle>Employees</ns:tableTitle>
     <ns:pkColumnName>employeeid</ns:pkColumnName>
     <ns:columns>
       <ns:column columnName="employeeid">
         <ns:isKeyField>true</ns:isKeyField>
         <ns:columnTitle>Employee Id</ns:columnTitle>
-      </ns:column>
-      <ns:column columnName="employeeid2" wrappedColumnName="employeeid">
-          <ns:columnTitle>Employee Id</ns:columnTitle>
-          <ns:isHidden>true</ns:isHidden>
-      </ns:column>
-      <ns:column columnName="UsernameStatus" wrappedColumnName="employeeid">
-          <ns:columnTitle>Labkey User Status</ns:columnTitle>
-          <ns:isUnselectable>true</ns:isUnselectable>
-          <ns:isHidden>true</ns:isHidden>
-          <ns:fk>
-            <!--NOTE: on individual servers, this metadata can be overridden in the schema browser to point to a specific container-->
-            <ns:fkDbSchema>ehr_compliancedb</ns:fkDbSchema>
-            <ns:fkTable>EmployeeUsers</ns:fkTable>
-            <ns:fkColumnName>employeeid</ns:fkColumnName>
-        </ns:fk>
       </ns:column>
       <ns:column columnName="lastName">
       <ns:columnTitle>Last Name</ns:columnTitle>
@@ -109,6 +94,10 @@
         <ns:columnTitle>First Name</ns:columnTitle>
         <ns:displayWidth>100</ns:displayWidth>
       </ns:column>
+        <ns:column columnName="middleName">
+            <ns:columnTitle>Middle Name</ns:columnTitle>
+            <ns:displayWidth>100</ns:displayWidth>
+        </ns:column>
       <ns:column columnName="email">
         <ns:nullable>true</ns:nullable>
         <ns:columnTitle>Email</ns:columnTitle>
@@ -216,7 +205,11 @@
       </ns:column>
       <ns:column columnName="animals">
         <ns:nullable>true</ns:nullable>
-        <ns:columnTitle>Contacts Animals?</ns:columnTitle>
+        <ns:columnTitle>Contacts NHPs?</ns:columnTitle>
+      </ns:column>
+        <ns:column columnName="contactsSla">
+        <ns:nullable>true</ns:nullable>
+        <ns:columnTitle>Contacts Small Lab Animals?</ns:columnTitle>
       </ns:column>
       <ns:column columnName="tissue">
         <ns:nullable>true</ns:nullable>
@@ -225,6 +218,21 @@
       <ns:column columnName="isemployee">
         <ns:nullable>true</ns:nullable>
         <ns:columnTitle>Is Center Employee?</ns:columnTitle>
+      </ns:column>
+      <ns:column columnName="employeeid2" wrappedColumnName="employeeid">
+        <ns:columnTitle>Employee Id</ns:columnTitle>
+        <ns:isHidden>true</ns:isHidden>
+      </ns:column>
+      <ns:column columnName="UsernameStatus" wrappedColumnName="employeeid">
+        <ns:columnTitle>Labkey User Status</ns:columnTitle>
+        <ns:isUnselectable>true</ns:isUnselectable>
+        <ns:isHidden>true</ns:isHidden>
+        <ns:fk>
+          <!--NOTE: on individual servers, this metadata can be overridden in the schema browser to point to a specific container-->
+          <ns:fkDbSchema>ehr_compliancedb</ns:fkDbSchema>
+          <ns:fkTable>EmployeeUsers</ns:fkTable>
+          <ns:fkColumnName>employeeid</ns:fkColumnName>
+        </ns:fk>
       </ns:column>
       <ns:column columnName="container">
         <ns:isUserEditable>false</ns:isUserEditable>
@@ -258,7 +266,7 @@
     </ns:columns>
   </ns:table>
   <ns:table tableName="requirements" tableDbType="TABLE">
-    <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr_compliancedb&amp;query.queryName=requirements&amp;requirementname=${requirementname}</ns:tableUrl>
+    <ns:tableUrl>/ehr_compliancedb/requirementDetails.view?requirementname=${requirementname}</ns:tableUrl>
     <ns:tableTitle>Requirements</ns:tableTitle>
     <ns:pkColumnName>requirementname</ns:pkColumnName>
     <ns:columns>
@@ -287,7 +295,11 @@
       </ns:column>
       <ns:column columnName="animals">
         <ns:nullable>true</ns:nullable>
-        <ns:columnTitle>Required If Contacts Animals?</ns:columnTitle>
+        <ns:columnTitle>Required If Contacts NHPs?</ns:columnTitle>
+      </ns:column>
+      <ns:column columnName="contactsSla">
+        <ns:nullable>true</ns:nullable>
+        <ns:columnTitle>Required If Contacts Small Lab Animals?</ns:columnTitle>
       </ns:column>
       <ns:column columnName="tissues">
         <ns:nullable>true</ns:nullable>

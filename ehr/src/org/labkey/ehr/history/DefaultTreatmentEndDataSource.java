@@ -88,7 +88,7 @@ public class DefaultTreatmentEndDataSource extends AbstractDataSource
     }
 
     @Override
-    protected String getCategoryGroup(Results rs) throws SQLException
+    protected String getPrimaryGroup(Results rs) throws SQLException
     {
         String category = rs.getString("category");
         return category == null ?  "Clinical" : category;
