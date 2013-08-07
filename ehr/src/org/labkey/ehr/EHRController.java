@@ -99,7 +99,7 @@ public class EHRController extends SpringActionController
     {
         public ApiResponse execute(GetDemographicsForm form, BindException errors) throws Exception
         {
-            Map<String, Object> props = new HashMap<String, Object>();
+            Map<String, Object> props = new HashMap<>();
 
             if (form.getIds() == null || form.getIds().length == 0)
             {
