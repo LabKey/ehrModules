@@ -1,0 +1,153 @@
+<ns:tables xmlns:ns="http://labkey.org/data/xml">
+    <ns:table tableName="vl_technique" tableDbType="TABLE">
+        <ns:tableTitle>Viral Load Assay Techniques</ns:tableTitle>
+        <ns:javaCustomizer>org.labkey.ldk.query.DefaultTableCustomizer</ns:javaCustomizer>
+        <ns:pkColumnName>technique</ns:pkColumnName>
+        <ns:columns>
+            <ns:column columnName="technique">
+            </ns:column>
+        </ns:columns>
+    </ns:table>
+    <ns:table tableName="vl_instrument" tableDbType="TABLE">
+        <ns:tableTitle>Viral Load Assay Instruments</ns:tableTitle>
+        <ns:javaCustomizer>org.labkey.ldk.query.DefaultTableCustomizer</ns:javaCustomizer>
+        <ns:pkColumnName>instrument</ns:pkColumnName>
+        <ns:columns>
+            <ns:column columnName="instrument">
+            </ns:column>
+        </ns:columns>
+    </ns:table>
+    <ns:table tableName="assays" tableDbType="TABLE" useColumnOrder="true">
+        <ns:tableTitle>Viral Load Assay Types</ns:tableTitle>
+        <ns:javaCustomizer>org.labkey.ldk.query.DefaultTableCustomizer</ns:javaCustomizer>
+        <ns:pkColumnName>assayname</ns:pkColumnName>
+        <ns:columns>
+            <ns:column columnName="assayname">
+                <ns:columnTitle>Assay Name</ns:columnTitle>
+            </ns:column>
+            <ns:column columnName="virus">
+            </ns:column>
+            <ns:column columnName="forwardprimer">
+                <ns:nullable>true</ns:nullable>
+                <ns:columnTitle>Forward Primer</ns:columnTitle>
+            </ns:column>
+            <ns:column columnName="reverseprimer">
+                <ns:nullable>true</ns:nullable>
+                <ns:columnTitle>Reverse Primer</ns:columnTitle>
+            </ns:column>
+            <ns:column columnName="createdby">
+                <!--<ns:isHidden>true</ns:isHidden>-->
+            </ns:column>
+            <ns:column columnName="created">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:shownInInsertView>false</ns:shownInInsertView>
+                <ns:shownInUpdateView>false</ns:shownInUpdateView>
+                <ns:nullable>true</ns:nullable>
+                <ns:isHidden>true</ns:isHidden>
+            </ns:column>
+            <ns:column columnName="modifiedby">
+                <!--<ns:isHidden>true</ns:isHidden>-->
+            </ns:column>
+            <ns:column columnName="modified">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:shownInInsertView>false</ns:shownInInsertView>
+                <ns:shownInUpdateView>false</ns:shownInUpdateView>
+                <ns:nullable>true</ns:nullable>
+                <ns:isHidden>true</ns:isHidden>
+            </ns:column>
+        </ns:columns>
+    </ns:table>
+    <ns:table tableName="challenge_dates" tableDbType="TABLE" useColumnOrder="true">
+        <ns:pkColumnName>rowid</ns:pkColumnName>
+        <ns:columns>
+            <ns:column columnName="rowid">
+                <ns:isAutoInc>true</ns:isAutoInc>
+                <ns:shownInInsertView>false</ns:shownInInsertView>
+                <ns:shownInUpdateView>false</ns:shownInUpdateView>
+                <ns:isUserEditable>false</ns:isUserEditable>
+            </ns:column>
+            <ns:column columnName="subjectname">
+                <ns:columnTitle>Subject Id</ns:columnTitle>
+                <ns:nullable>false</ns:nullable>
+            </ns:column>
+            <ns:column columnName="date">
+                <ns:columnTitle>Challenge Date</ns:columnTitle>
+                <ns:nullable>false</ns:nullable>
+            </ns:column>
+            <ns:column columnName="agent">
+                <ns:columnTitle>Agent</ns:columnTitle>
+                <ns:nullable>false</ns:nullable>
+                <!--<ns:fk>-->
+                <!--<ns:fkDbSchema>viral_load_assay</ns:fkDbSchema>-->
+                <!--<ns:fkTable>assays</ns:fkTable>-->
+                <!--<ns:fkColumnName>assayname</ns:fkColumnName>-->
+                <!--</ns:fk>-->
+            </ns:column>
+            <ns:column columnName="isVaccination">
+                <ns:columnTitle>Is Vaccination?</ns:columnTitle>
+            </ns:column>
+            <ns:column columnName="container">
+            </ns:column>
+            <ns:column columnName="createdby">
+                <!--<ns:isHidden>true</ns:isHidden>-->
+            </ns:column>
+            <ns:column columnName="created">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:shownInInsertView>false</ns:shownInInsertView>
+                <ns:shownInUpdateView>false</ns:shownInUpdateView>
+                <ns:nullable>true</ns:nullable>
+                <ns:isHidden>true</ns:isHidden>
+            </ns:column>
+            <ns:column columnName="modifiedby">
+                <!--<ns:isHidden>true</ns:isHidden>-->
+            </ns:column>
+            <ns:column columnName="modified">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:shownInInsertView>false</ns:shownInInsertView>
+                <ns:shownInUpdateView>false</ns:shownInUpdateView>
+                <ns:nullable>true</ns:nullable>
+                <ns:isHidden>true</ns:isHidden>
+            </ns:column>
+        </ns:columns>
+    </ns:table>
+    <ns:table tableName="abi7500_detectors" tableDbType="TABLE">
+        <ns:tableTitle>ABI7500 Detectors</ns:tableTitle>
+        <ns:javaCustomizer>org.labkey.ldk.query.DefaultTableCustomizer</ns:javaCustomizer>
+        <ns:pkColumnName>rowid</ns:pkColumnName>
+        <ns:columns>
+            <ns:column columnName="rowid">
+            </ns:column>
+            <ns:column columnName="assayName">
+                <ns:fk>
+                    <ns:fkDbSchema>viral_load_assay</ns:fkDbSchema>
+                    <ns:fkTable>assays</ns:fkTable>
+                    <ns:fkColumnName>assayname</ns:fkColumnName>
+                </ns:fk>
+            </ns:column>
+            <ns:column columnName="detector">
+            </ns:column>
+            <ns:column columnName="reporter">
+                <ns:fk>
+                    <ns:fkDbSchema>viral_load_assay</ns:fkDbSchema>
+                    <ns:fkTable>fluors</ns:fkTable>
+                    <ns:fkColumnName>name</ns:fkColumnName>
+                </ns:fk>
+            </ns:column>
+            <ns:column columnName="quencher">
+                <ns:fk>
+                    <ns:fkDbSchema>viral_load_assay</ns:fkDbSchema>
+                    <ns:fkTable>fluors</ns:fkTable>
+                    <ns:fkColumnName>name</ns:fkColumnName>
+                </ns:fk>
+            </ns:column>
+        </ns:columns>
+    </ns:table>
+    <ns:table tableName="fluors" tableDbType="TABLE">
+        <ns:javaCustomizer>org.labkey.ldk.query.DefaultTableCustomizer</ns:javaCustomizer>
+        <ns:pkColumnName>name</ns:pkColumnName>
+        <ns:columns>
+            <ns:column columnName="name">
+            </ns:column>
+        </ns:columns>
+    </ns:table>
+</ns:tables>

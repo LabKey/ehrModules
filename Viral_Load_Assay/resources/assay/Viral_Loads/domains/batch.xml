@@ -1,0 +1,8 @@
+<ap:domain xmlns:exp="http://cpas.fhcrc.org/exp/xml" xmlns:ap="http://labkey.org/study/assay/xml">
+    <exp:PropertyDescriptor>
+        <exp:Name>importMethod</exp:Name>
+        <exp:Required>false</exp:Required>
+        <exp:RangeURI>http://www.w3.org/2001/XMLSchema#string</exp:RangeURI>
+        <exp:Label>Import Method</exp:Label>
+    </exp:PropertyDescriptor>
+</ap:domain>

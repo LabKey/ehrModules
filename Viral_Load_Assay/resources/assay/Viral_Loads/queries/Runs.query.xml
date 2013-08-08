@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<query xmlns="http://labkey.org/data/xml/query">
+    <metadata>
+        <tables xmlns="http://labkey.org/data/xml">
+            <table tableName="Runs" tableDbType="TABLE">
+                <javaCustomizer>org.labkey.laboratory.query.DefaultAssayCustomizer</javaCustomizer>
+                <columns>
+                    <column columnName="Name">
+                        <columnTitle>Run Name</columnTitle>
+                        <nullable>false</nullable>
+                    </column>
+                    <column columnName="comments">
+                        <columnTitle>Run Description</columnTitle>
+                    </column>
+                    <column columnName="assayId">
+                        <columnTitle>Assay Id</columnTitle>
+                    </column>
+                    <column columnName="technique">
+                        <description>The technique used to perform this assay</description>
+                        <fk>
+                            <fkDbSchema>Viral_Load_Assay</fkDbSchema>
+                            <fkTable>vl_technique</fkTable>
+                            <fkColumnName>technique</fkColumnName>
+                        </fk>
+                    </column>
+                    <column columnName="instrument">
+                        <description>the instrument used to perform this assay</description>
+                        <fk>
+                            <fkDbSchema>Viral_Load_Assay</fkDbSchema>
+                            <fkTable>vl_instrument</fkTable>
+                            <fkColumnName>instrument</fkColumnName>
+                        </fk>
+                    </column>
+                    <column columnName="runDate">
+                        <description>The date this sample was run, which is not the same as the date collected</description>
+                    </column>
+                    <column columnName="performedBy">
+                        <description>The person who performed this assay</description>
+                    </column>
+                    <column columnName="Flag">
+                        <shownInInsertView>false</shownInInsertView>
+                        <shownInUpdateView>false</shownInUpdateView>
+                        <isUserEditable>false</isUserEditable>
+                    </column>
+                </columns>
+                <buttonBarOptions position="both" includeStandardButtons="true">
+                    <includeScript>/laboratory/assayButtons.js</includeScript>
+                    <!--<onRender>Laboratory.onAssayLoad</onRender>-->
+                    <item text="More Actions" insertAfter="last">
+                        <item text="View Batches">
+                            <onClick>Laboratory.Assay.viewBatchesBtn(dataRegion, 'Runs')</onClick>
+                        </item>
+                        <item text="View Results">
+                            <onClick>Laboratory.Assay.viewResultsBtn(dataRegion, 'Runs')</onClick>
+                        </item>
+                        <item text="Manage Assay">
+                            <onClick>Laboratory.Assay.manageAssayBtn(dataRegion, 'Runs')</onClick>
+                        </item>
+                    </item>
+                </buttonBarOptions>
+            </table>
+        </tables>
+    </metadata>
+</query>
