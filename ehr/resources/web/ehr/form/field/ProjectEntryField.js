@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2013 LabKey Corporation
+ *
+ * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
+ */
 /**
  * This field is used to diplay EHR projects.  It contains a custom template for the combo list which displays both the project and protocol.
  * It also listens for participantchange events and will display only the set of allowable projects for the selected animal.
