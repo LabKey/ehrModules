@@ -30,6 +30,7 @@ import org.labkey.api.etl.DataIteratorContext;
 import org.labkey.api.etl.LoggingDataIterator;
 import org.labkey.api.etl.SimpleTranslator;
 import org.labkey.api.ldk.LDKService;
+import org.labkey.api.query.BatchValidationException;
 import org.labkey.api.query.DuplicateKeyException;
 import org.labkey.api.query.FieldKey;
 import org.labkey.api.query.InvalidKeyException;
@@ -189,6 +190,13 @@ abstract public class AbstractDataDefinedTable extends SimpleUserSchema.SimpleTa
 
             row.put(_filterColumn, _filterValue);
             return super.updateRow(user, container, row, oldRow);
+        }
+
+        @Override
+        public void truncateRows(User user, Container container, Map<String, Object> extraScriptContext)
+                throws BatchValidationException, QueryUpdateServiceException, SQLException
+        {
+            throw new UnsupportedOperationException("truncate is not supported for all tables");
         }
     }
 
