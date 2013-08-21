@@ -91,6 +91,7 @@ public class EHRModule extends ExtendedSimpleModule
         return true;
     }
 
+    @NotNull
     protected Collection<WebPartFactory> createWebPartFactories()
     {
         return Collections.emptyList();
@@ -176,6 +177,7 @@ public class EHRModule extends ExtendedSimpleModule
         }
     }
 
+    @NotNull
     @Override
     public Collection<String> getSummary(Container c)
     {
