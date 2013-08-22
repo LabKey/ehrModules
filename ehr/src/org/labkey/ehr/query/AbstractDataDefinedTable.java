@@ -193,7 +193,7 @@ abstract public class AbstractDataDefinedTable extends SimpleUserSchema.SimpleTa
         }
 
         @Override
-        public void truncateRows(User user, Container container, Map<String, Object> extraScriptContext)
+        public int truncateRows(User user, Container container, Map<String, Object> extraScriptContext)
                 throws BatchValidationException, QueryUpdateServiceException, SQLException
         {
             throw new UnsupportedOperationException("truncate is not supported for all tables");
