@@ -32,7 +32,6 @@ import org.labkey.api.query.QuerySchema;
 import org.labkey.api.query.QueryService;
 import org.labkey.api.security.User;
 import org.labkey.api.security.roles.RoleManager;
-import org.labkey.api.util.PageFlowUtil;
 import org.labkey.api.view.WebPartFactory;
 import org.labkey.api.view.template.ClientDependency;
 import org.labkey.ehr.demographics.ActiveAnimalGroupsDemographicsProvider;
@@ -62,6 +61,7 @@ import org.labkey.ehr.security.EHRRequestAdminRole;
 import org.labkey.ehr.security.EHRRequestorRole;
 import org.labkey.ehr.study.EHRStudyUpgradeCode;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -186,9 +186,9 @@ public class EHRModule extends ExtendedSimpleModule
 
     @Override
     @NotNull
-    public Set<String> getSchemaNames()
+    public Collection<String> getSchemaNames()
     {
-        return PageFlowUtil.set(EHRSchema.EHR_SCHEMANAME, EHRSchema.EHR_LOOKUPS);
+        return Arrays.asList(EHRSchema.EHR_SCHEMANAME, EHRSchema.EHR_LOOKUPS);
     }
 
     @Override
@@ -249,7 +249,7 @@ public class EHRModule extends ExtendedSimpleModule
     {
         // allow other modules to register with EHR service, and include them when the module is turned on
         LinkedHashSet<ClientDependency> ret = new LinkedHashSet<>();
-        ret.addAll(_clientDependencies);
+        ret.addAll(super.getClientDependencies(c, u));
         ret.addAll(EHRService.get().getRegisteredClientDependencies(c, u));
 
         return ret;
