@@ -13,6 +13,7 @@
             <!--</properties>-->
         <!--</column>-->
         <column name="gender" />
+        <column name="species" />
         <column name="dam" />
         <column name="Id/activeAssignments/projects">
             <properties>

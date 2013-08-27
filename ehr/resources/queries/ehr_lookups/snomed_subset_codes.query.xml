@@ -2,8 +2,6 @@
     <metadata>
         <tables xmlns="http://labkey.org/data/xml">
             <table tableName="snomed_subset_codes" tableDbType="TABLE">
-                <!--<tableUrl>/ehr/taskDetails.view?type=${type}&amp;taskid=${taskid}</tableUrl>-->
-                <!--<insertUrl>/ehr/createTask.view</insertUrl>-->
                 <titleColumn>code</titleColumn>
                 <!--<tableTitle>Cage Notes</tableTitle>-->
                 <columns>

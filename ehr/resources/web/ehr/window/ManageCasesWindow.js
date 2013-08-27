@@ -14,6 +14,7 @@ Ext4.define('EHR.window.ManageCasesWindow', {
         LABKEY.ExtAdapter.apply(this, {
             title: 'Manage Cases: ' + this.animalId,
             modal: true,
+            closeAction: 'destroy',
             items: [{
                 xtype: 'ehr-managecasespanel',
                 animalId: this.animalId,

@@ -11,20 +11,3 @@
  */
 require("ehr/triggers").initScript(this);
 
-
-/*
- * This will populate the description field.  Every dataset should probably contain a custom function for this.
- */
-function setDescription(row, errors){
-    //we need to set description for every field
-    var description = new Array();
-
-    //you may wish to follow a pattern like this, on the fields that would normally be included in the description
-//    if(row.score)
-//        description.push('Alopecia Score: ' + EHR.Server.Validation.nullToString(row.score));
-//    if(row.cause)
-//        description.push('Cause: ' + EHR.Server.Validation.nullToString(row.cause));
-
-    return description;
-}
-

@@ -1,0 +1,1 @@
+ALTER TABLE ehr.project ADD alwaysavailable bit;

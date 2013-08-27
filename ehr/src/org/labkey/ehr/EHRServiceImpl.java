@@ -15,6 +15,7 @@
  */
 package org.labkey.ehr;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.jetbrains.annotations.Nullable;
 import org.labkey.api.collections.CaseInsensitiveHashMap;
@@ -53,7 +54,7 @@ import org.labkey.ehr.dataentry.RunForm;
 import org.labkey.ehr.dataentry.SimpleGridPanel;
 import org.labkey.api.ehr.dataentry.TaskForm;
 import org.labkey.ehr.history.ClinicalHistoryManager;
-import org.labkey.ehr.security.EHRDataEntryPermission;
+import org.labkey.api.ehr.security.EHRDataEntryPermission;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -394,9 +395,14 @@ public class EHRServiceImpl extends EHRService
         DataEntryManager.get().registerFormType(form);
     }
 
+    public DataEntryForm getDataEntryForm(String name, Container c, User u)
+    {
+        return DataEntryManager.get().getFormByName(name, c, u);
+    }
+
     public void registerSimpleFormType(FORM_TYPE type, Module m, String category, String label, String schema, String query)
     {
-        registerFormType(type, m, category, query, label, Collections.<FormSection>singletonList(new SimpleGridPanel(schema, query, query)));
+        registerFormType(type, m, category, query, label, Collections.<FormSection>singletonList(new SimpleGridPanel(schema, query, StringUtils.capitalize(query))));
     }
 
     public void registerFormType(FORM_TYPE type, Module m, String category, String name, String label, List<FormSection> sections)

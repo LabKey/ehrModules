@@ -2,6 +2,7 @@
     <library compileInProductionMode="false">
         <script path="ehr/Constants.js"/>
         <script path="ehr/utils.js"/>
+        <script path="ehr/DemographicsRecord.js"/>
         <script path="ehr/DemographicsCache.js"/>
         <script path="ehr/Security.js"/>
 
@@ -21,6 +22,7 @@
         <script path="ehr/panel/ObservationsPanel.js"/>
         <script path="ehr/panel/ManageTreatmentsPanel.js"/>
 
+        <script path="ehr/window/ChangeRequestStatusWindow.js"/>
         <script path="ehr/window/ClinicalHistoryWindow.js"/>
         <script path="ehr/window/CaseHistoryWindow.js"/>
         <script path="ehr/window/CompareWeightsWindow.js"/>

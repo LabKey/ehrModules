@@ -20,10 +20,9 @@ import org.labkey.api.data.TableInfo;
 import org.labkey.api.ehr.EHRService;
 import org.labkey.api.ldk.table.SimpleButtonConfigFactory;
 import org.labkey.api.module.Module;
-import org.labkey.api.study.DataSetTable;
 import org.labkey.api.util.PageFlowUtil;
 import org.labkey.api.view.template.ClientDependency;
-import org.labkey.ehr.security.EHRCompletedUpdatePermission;
+import org.labkey.api.ehr.security.EHRCompletedUpdatePermission;
 
 /**
  * User: bimber

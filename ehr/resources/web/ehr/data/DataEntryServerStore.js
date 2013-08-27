@@ -184,7 +184,7 @@ Ext4.define('EHR.data.DataEntryServerStore', {
     },
 
 
-    handleServerErrors: function(errors, records){
+    handleServerErrors: function(errors, records, requestId){
         //clear all server errors
         Ext4.Array.forEach(records, function(record){
             record.serverErrors = record.serverErrors || Ext4.create('Ext.data.Errors');
@@ -193,8 +193,38 @@ Ext4.define('EHR.data.DataEntryServerStore', {
 
         if (errors.errors){
             Ext4.Array.forEach(errors.errors, function(rowError, idx){
-                var record = records[rowError.rowNumber - 1];
-                LDK.Assert.assertNotEmpty('Unable to find matching record after validation', record);
+                var record = records[rowError.rowNumber];
+                if (rowError.row){
+                    var found;
+                    if (this.model.prototype.idProperty && rowError.row[this.model.prototype.idProperty]){
+                        found = this.findRecord(this.model.prototype.idProperty, rowError.row[this.model.prototype.idProperty]);
+                    }
+                    else if (this.model.prototype.fields.get('objectid')){
+                        found = this.findRecord('objectid', rowError.row['objectid']);
+                    }
+
+                    if (found && record && found != record){
+                        LDK.Assert.assertEquality('Record PK and rowNumber do not match', found, record);
+                        console.error('records dont match');
+                        console.log(record);
+                        console.log(found);
+                    }
+                    else {
+                        record = found;
+                    }
+                }
+                else {
+                    //TODO: there is some sort of inconsistency on the server when assigning rowNumber
+                    record = records[rowError.rowNumber - 1];
+                }
+
+                LDK.Assert.assertNotEmpty('Unable to find matching record after validation.  Row # was: ' + rowError.rowNumber + '.  Total records: ' + records.length, record);
+                if (!record)
+                    return;
+
+                if (record.lastRequestId && record.lastRequestId > requestId){
+                    return;
+                }
 
                 if (rowError.errors){
                     //now iterate field errors
@@ -267,6 +297,115 @@ Ext4.define('EHR.data.DataEntryServerStore', {
         }, this);
 
         return maxSeverity;
+    },
+
+    transformRecordsToClient: function(sc,targetChildStores, changedStoreIDs, syncErrorsOnly){
+        var fieldMap, clientStore, serverFieldName, clientKeyField;
+        this.each(function(serverModel){
+            for (var clientStoreId in targetChildStores){
+                clientStore = sc.clientStores.get(clientStoreId);
+                LDK.Assert.assertNotEmpty('Unable to find client store with Id: ' + clientStoreId, clientStore);
+                clientKeyField = clientStore.getKeyField();
+
+                var clientModel = clientStore.findRecord(clientKeyField, serverModel.get(clientKeyField));
+                if (!clientModel && !syncErrorsOnly){
+                    //first look for this model in deleted records
+                    if (clientStore.getRemovedRecords().length){
+                        var foundRecord;
+                        Ext4.each(clientStore.getRemovedRecords(), function(rr){
+                            if (rr.get(clientKeyField) === serverModel.get(clientKeyField)){
+                                foundRecord = rr;
+                                return false;
+                            }
+                        }, this);
+
+                        if (foundRecord){
+                            console.log('have server record for a removed client record, removing');
+                            this.remove(serverModel);
+                            return;
+                        }
+                    }
+
+                    if (serverModel._clientModelId){
+                        var clientModelIdx = clientStore.findBy(function(record){
+                            return record.internalId === serverModel._clientModelId;
+                        });
+                        if (clientModelIdx != -1){
+                            clientModel = clientStore.getAt(clientModelIdx);
+                            console.log('found by internal id')
+                        }
+                    }
+                    else {
+                        clientModel = clientStore.addClientModel({});
+                    }
+                }
+
+                if (clientModel){
+                    clientModel.phantom = serverModel.phantom;
+
+                    fieldMap = targetChildStores[clientStoreId];
+                    clientModel.suspendEvents();
+                    for (var clientFieldName in fieldMap){
+                        serverFieldName = fieldMap[clientFieldName];
+                        LDK.Assert.assertNotEmpty('Unable to find serverField to match clientField: ' + clientFieldName, serverFieldName);
+
+                        if (!syncErrorsOnly){
+                            //transfer values
+                            var clientVal = Ext4.isEmpty(clientModel.get(clientFieldName)) ? null : clientModel.get(clientFieldName);
+                            var serverVal = Ext4.isEmpty(serverModel.get(serverFieldName)) ? null : serverModel.get(serverFieldName);
+                            if (serverVal != clientVal){
+                                clientModel.set(clientFieldName, serverModel.get(serverFieldName));
+                                changedStoreIDs[clientStore.storeId] = true;
+                            }
+                        }
+
+                        //also sync server errors
+                        var se = serverModel.serverErrors ? serverModel.serverErrors.getByField(serverFieldName) : [];
+                        this.removeMatchingErrors(clientModel, clientFieldName, changedStoreIDs, clientStore);
+                        if (se && se.length){
+                            changedStoreIDs[clientStore.storeId] = true;
+                            Ext4.Array.forEach(se, function(e){
+                                var newError = Ext4.apply({}, e);
+                                newError.field = clientFieldName;
+                                clientModel.serverErrors.add(newError);
+                            }, this);
+                        }
+                    }
+                    clientModel.resumeEvents();
+                }
+                else if (!syncErrorsOnly){
+                    if (serverModel.phantom){
+                        //ignore
+                        console.log('phantom servermodel is unable to find client record.  this probably indicates the client record it was removed');
+                        this.remove(serverModel);
+                    }
+                    else {
+                        console.error('unable to find client model for record');
+                        console.log(serverModel);
+                    }
+                }
+            }
+        }, this);
+    },
+
+    removeMatchingErrors: function(clientModel, clientFieldName, changedStoreIDs, clientStore){
+        clientModel.serverErrors = clientModel.serverErrors || Ext4.create('Ext.data.Errors');
+        clientModel.serverErrors.each(function(err){
+            if (err.fromServer && err.field == clientFieldName){
+                clientModel.serverErrors.remove(err);
+                changedStoreIDs[clientStore.storeId] = true;
+            }
+        }, this);
+    },
+
+    //creates and adds a model to the provided server store, handling any dependencies within other stores in the collection
+    addServerModel: function(data){
+        if (EHR.debug)
+            console.log('creating server model');
+        var model = this.createModel({});
+        this.add(model);
+
+        return model;
     }
 });
 

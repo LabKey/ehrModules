@@ -23,7 +23,7 @@
         <!--<filter column="qcstate/publicdata" operator="eq" value="true"/>-->
     </filters>
     <sorts>
-        <sort column="Id/curLocation/room_order"/>
-        <sort column="Id/curLocation/cage_order"/>
+        <sort column="Id/curLocation/room"/>
+        <sort column="Id/curLocation/cage"/>
     </sorts>
 </customView>

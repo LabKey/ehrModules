@@ -14,6 +14,7 @@ Ext4.define('EHR.window.ManageTreatmentsWindow', {
         LABKEY.ExtAdapter.apply(this, {
             title: 'Manage Treatments: ' + this.animalId,
             modal: true,
+            closeAction: 'destroy',
             items: [{
                 xtype: 'ehr-managetreatmentspanel',
                 animalId: this.animalId,

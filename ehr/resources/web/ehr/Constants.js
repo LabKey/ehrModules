@@ -8,17 +8,6 @@ Ext4.ns('EHR.permission');
 //This is a flag that can be set for debugging purposes.  It will cause additional client-side logging
 EHR.debug = (LABKEY.Security.currentUser.isAdmin && LABKEY.ActionURL.getParameter('debug')) ? 1 : 0;
 
-/**
- * Constants representing EHR permission classes
- */
-EHR.permission = new function(){
-    var prefix = 'org.labkey.ehr.security';
-
-    return {
-        DATA_ENTRY: prefix + '.EHRDataEntryPermission'
-    }
-};
-
 EHR.QCStates = new function(){
     return {
         COMPLETED: 'Completed',

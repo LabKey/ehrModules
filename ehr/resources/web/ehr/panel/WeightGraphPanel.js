@@ -111,6 +111,7 @@ Ext4.define('EHR.panel.WeightGraphPanel', {
                 queryName: 'weight',
                 viewName: 'Percent Change',
                 sort: 'id,-date',
+                failure: LDK.Utils.getErrorCallback(),
                 filterArray: [LABKEY.Filter.create('Id', this.subjectId, LABKEY.Filter.Types.EQUAL)]
             }
         }

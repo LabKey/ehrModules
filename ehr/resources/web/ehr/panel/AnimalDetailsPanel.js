@@ -2,10 +2,15 @@
  * Copyright (c) 2013 LabKey Corporation
  *
  * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * @param subjectId
  */
 Ext4.define('EHR.panel.AnimalDetailsPanel', {
-    extend: 'Ext.panel.Panel',
+    extend: 'EHR.panel.SnapshotPanel',
     alias: 'widget.ehr-animaldetailspanel',
+
+    border: true,
+    showExtendedInformation: false,
 
     initComponent: function(){
         Ext4.apply(this, {
@@ -20,129 +25,89 @@ Ext4.define('EHR.panel.AnimalDetailsPanel', {
         this.callParent(arguments);
 
         if (this.dataEntryPanel){
-            this.mon(this.dataEntryPanel, 'animalchange', this.loadAnimal, this, {buffer: 200});
-        }
-
-        if (this.animalId){
-            this.loadAnimal(this.animalId, true);
+            this.mon(this.dataEntryPanel, 'animalchange', this.loadAnimal, this, {buffer: 500});
         }
     },
 
     loadAnimal: function(animalId, forceReload){
-        if (!forceReload && animalId == this.animalId){
+console.log('load: ' + animalId);
+        if (!forceReload && animalId == this.subjectId){
             return;
         }
 
-        this.animalId = animalId;
-
-        this.removeAll();
-        this.add({
-            html: animalId ? 'Loading...' : 'No Id Selected'
-        });
+        this.subjectId = animalId;
 
         if (animalId)
-            EHR.DemographicsCache.getDemographics(this.animalId, this.onDemographicsLoad, this);
+            EHR.DemographicsCache.getDemographics(this.subjectId, this.onLoad, this);
     },
 
-    onDemographicsLoad: function(animalId, cache){
-        //Id probably changed prior to data loading
-        if (animalId != this.animalId){
-            return;
-        }
-
-        var toAdd;
-        if (!cache.demographics){
-            toAdd = {
-                html: 'Unknown Id: ' + animalId
-            }
-        }
-        else {
-            var location = cache.demographics.getDisplayValue('Id/curLocation/room');
-            if (cache.demographics.getDisplayValue('Id/curLocation/cage')){
-                location += ' / ' + cache.demographics.getDisplayValue('Id/curLocation/cage');
-            }
-            location = location || 'No record';
-
-            toAdd = {
-                layout: 'column',
+    getItems: function(){
+        return [{
+            layout: 'column',
+            defaults: {
+                border: false,
+                bodyStyle: 'padding-right: 20px;'
+            },
+            items: [{
+                width: 380,
                 defaults: {
-                    border: false,
-                    bodyStyle: 'padding-right: 20px;'
+                    xtype: 'displayfield',
+                    labelWidth: this.defaultLabelWidth
                 },
                 items: [{
-                    minWidth: 320,
-                    defaults: {
-                        xtype: 'displayfield',
-                        labelWidth: 150
-                    },
-                    items: [{
-                        fieldLabel: 'Id',
-                        value: cache.demographics.getDisplayValue('Id')
-                    },{
-                        fieldLabel: 'Location',
-                        value: location
-                    },{
-                        fieldLabel: 'Gender',
-                        value: cache.demographics.getDisplayValue('gender')
-                    },{
-                        fieldLabel: 'Species',
-                        value: cache.demographics.getDisplayValue('species')
-                    },{
-                        fieldLabel: 'Age',
-                        value: cache.demographics.getDisplayValue('Id/age/AgeFriendly')
-                    },{
-                        fieldLabel: 'Projects and Groups',
-                        value: (cache.demographics.getDisplayValue('Id/activeAssignments/projects') || 'None')
-                    }]
+                    fieldLabel: 'Id',
+                    itemId: 'animalId'
                 },{
-                    defaults: {
-                        xtype: 'displayfield'
-                    },
-                    items: [{
-                        fieldLabel: 'Status',
-                        value: '<span ' + (cache.demographics.getDisplayValue('calculated_status') != 'Alive' ? 'style="background-color:yellow"' : '') + '>' + cache.demographics.getDisplayValue('calculated_status') + '</span>'
-                    }]
+                    fieldLabel: 'Location',
+                    itemId: 'location'
+                },{
+                    fieldLabel: 'Gender',
+                    itemId: 'gender'
+                },{
+                    fieldLabel: 'Species',
+                    itemId: 'species'
+                },{
+                    fieldLabel: 'Age',
+                    itemId: 'age'
+                },{
+                    fieldLabel: 'Projects / Groups',
+                    itemId: 'assignmentsAndGroups'
                 }]
-            };
-
-            this.appendFlags(toAdd, cache);
-        }
-
-        this.removeAll();
-        this.add(toAdd);
+            },{
+                minWidth: 200,
+                defaults: {
+                    xtype: 'displayfield'
+                },
+                items: [{
+                    fieldLabel: 'Status',
+                    itemId: 'calculated_status'
+                },{
+                    fieldLabel: 'Flags',
+                    itemId: 'flags'
+                }]
+            }]
+        }];
     },
 
-    appendFlags: function(toAdd, cache){
+    appendAssignmentsAndGroups: function(record){
         var values = [];
-        if (cache.flags && cache.flags.length){
-            Ext4.Array.forEach(cache.flags, function(sr){
-                var category = sr.getDisplayValue('category');
-                var highlight = sr.getValue('category/doHighlight');
-                var omit = sr.getValue('category/omitFromOverview');
+        if (record.getActiveAssignments() && record.getActiveAssignments().length){
+            Ext4.each(record.getActiveAssignments(), function(row){
+                var val = row['project/investigatorId/lastName'] || '';
+                val += ' [' + row['project/displayName'] + ']';
 
-                //skip
-                if (omit === true)
-                    return;
-
-                if (category)
-                    category = Ext4.String.trim(category);
-
-                var val = sr.getDisplayValue('value');
-                var text = val;
-                if (category)
-                    text = category + ': ' + val;
-
-                if (text && highlight)
-                    text = '<span style="background-color:yellow">' + text + '</span>';
-
-                if (text)
-                    values.push(text);
+                if (val)
+                    values.push(val);
             }, this);
         }
 
-        toAdd.items[1].items.push({
-            fieldLabel: 'Flags',
-            value: values.length ? values.join('<br>') : 'None'
-        });
+        if (record.getActiveAnimalGroups() && record.getActiveAnimalGroups.length){
+            Ext4.each(record.getActiveAnimalGroups(), function(row){
+                values.push(row['groupId/name']);
+            }, this);
+        }
+
+        if (values.length)
+            this.safeAppend('#assignmentsAndGroups', values.join('<br>'));
     }
 });

@@ -34,6 +34,7 @@ Ext4.define('EHR.panel.MultiAnimalFilterType', {
                 var panel = btn.up('ehr-multianimalfiltertype');
 
                 Ext4.create('Ext.window.Window', {
+                    modal: true,
                     width: 330,
                     closeAction: 'destroy',
                     title: 'Search By Room/Cage',
@@ -45,6 +46,7 @@ Ext4.define('EHR.panel.MultiAnimalFilterType', {
                             itemId: 'room',
                             name: 'roomField',
                             multiSelect: false,
+                            showOccupiedOnly: true,
                             width: 300
                         },{
                             xtype: 'ehr-cagefield',
@@ -78,6 +80,7 @@ Ext4.define('EHR.panel.MultiAnimalFilterType', {
                 var panel = btn.up('ehr-multianimalfiltertype');
 
                 Ext4.create('Ext.window.Window', {
+                    modal: true,
                     width: 330,
                     closeAction: 'destroy',
                     title: 'Search By Project/Protocol',
@@ -85,42 +88,13 @@ Ext4.define('EHR.panel.MultiAnimalFilterType', {
                         xtype: 'form',
                         bodyStyle:'padding:5px',
                         items: [{
-                            xtype: 'labkey-combo',
-                            fieldLabel: 'Center Project',
-                            emptyText:'',
+                            xtype: 'ehr-projectfield',
                             itemId: 'project',
-                            displayField: 'displayName',
-                            valueField: 'project',
-                            queryMode: 'local',
-                            width: 300,
-                            editable: true,
-                            store: Ext4.create('LABKEY.ext4.Store', {
-                                schemaName: 'ehr',
-                                queryName: 'project',
-                                columns: 'displayName,project',
-                                filterArray: [LABKEY.Filter.create('activeAssignments/activeAssignments', 0, LABKEY.Filter.Types.GT)],
-                                sort: 'displayName',
-                                autoLoad: true
-                            })
+                            onlyIncludeProjectsWithAssignments: true
                         },{
-                            fieldLabel: 'IACUC Protocol',
-                            emptyText:'',
+                            xtype: 'ehr-protocolfield',
                             itemId: 'protocol',
-                            xtype: 'labkey-combo',
-                            displayField: 'displayName',
-                            valueField: 'protocol',
-                            typeAhead: true,
-                            width: 300,
-                            editable: true,
-                            queryMode: 'local',
-                            store: Ext4.create('LABKEY.ext4.Store', {
-                                schemaName: 'ehr',
-                                queryName: 'protocol',
-                                columns: 'protocol,displayName',
-                                filterArray: [LABKEY.Filter.create('activeAnimals/TotalActiveAnimals', 0, LABKEY.Filter.Types.GT)],
-                                sort: 'displayName',
-                                autoLoad: true
-                            })
+                            onlyIncludeProtocolsWithAssignments: true
                         }]
                     }],
                     buttons: [{

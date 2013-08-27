@@ -11,25 +11,28 @@
  * @cfg hrefTarget
  */
 Ext4.define('EHR.panel.SnapshotPanel', {
-    extend: 'Ext.panel.Panel',
+    extend: 'Ext.form.Panel',
     alias: 'widget.ehr-snapshotpanel',
 
     showLocationDuration: true,
     defaultLabelWidth: 120,
+    border: false,
 
     initComponent: function(){
         Ext4.apply(this, {
-            border: false,
             defaults: {
                 border: false
             },
             items: this.getItems()
         });
 
-        this.isLoading = true;
-        this.setLoading(true);
         this.callParent();
-        this.loadData();
+
+        if (this.subjectId){
+            this.isLoading = true;
+            this.setLoading(true);
+            this.loadData();
+        }
     },
 
     getBaseItems: function(){
@@ -55,7 +58,7 @@ Ext4.define('EHR.panel.SnapshotPanel', {
                     items: [{
                         xtype: 'displayfield',
                         fieldLabel: 'Location',
-                        width: 400,
+                        width: 420,
                         itemId: 'location'
                     },{
                         xtype: 'displayfield',
@@ -129,56 +132,60 @@ Ext4.define('EHR.panel.SnapshotPanel', {
     getItems: function(){
         var items = this.getBaseItems();
 
-        items[0].items = items[0].items.concat([{
-            itemId: 'additionalInformation',
-            style: 'padding-bottom: 10px;',
-            border: false,
-            defaults: {
-                border: false
-            },
-            items: [{
-                html: '<b>Additional Information</b><hr>'
-            },{
-                layout: 'column',
+        if (this.showExtendedInformation){
+            items[0].items = items[0].items.concat([{
+                itemId: 'additionalInformation',
+                style: 'padding-bottom: 10px;',
+                border: false,
                 defaults: {
-                    labelWidth: this.defaultLabelWidth
+                    border: false
                 },
                 items: [{
-                    columnWidth: 0.5,
-                    border: false,
-                    defaults: {
-                        labelWidth: this.defaultLabelWidth,
-                        border: false,
-                        style: 'margin-right: 20px;'
-                    },
-                    items: [{
-                        xtype: 'displayfield',
-                        width: 350,
-                        fieldLabel: 'Geographic Origin',
-                        itemId: 'geographic_origin'
-                    },{
-                        xtype: 'displayfield',
-                        fieldLabel: 'Birth',
-                        itemId: 'birth'
-                    },{
-                        xtype: 'displayfield',
-                        fieldLabel: 'Death',
-                        itemId: 'death'
-                    }]
+                    html: '<b>Additional Information</b><hr>'
                 },{
-                    xtype: 'container',
-                    columnWidth: 0.5,
+                    layout: 'column',
                     defaults: {
                         labelWidth: this.defaultLabelWidth
                     },
                     items: [{
-                        xtype: 'displayfield',
-                        fieldLabel: 'Parent Information',
-                        itemId: 'parents'
+                        columnWidth: 0.5,
+                        border: false,
+                        defaults: {
+                            labelWidth: this.defaultLabelWidth,
+                            border: false,
+                            style: 'margin-right: 20px;'
+                        },
+                        items: [{
+                            xtype: 'displayfield',
+                            width: 350,
+                            fieldLabel: 'Geographic Origin',
+                            itemId: 'geographic_origin'
+                        },{
+                            xtype: 'displayfield',
+                            fieldLabel: 'Birth',
+                            itemId: 'birth'
+                        },{
+                            xtype: 'displayfield',
+                            fieldLabel: 'Death',
+                            itemId: 'death'
+                        }]
+                    },{
+                        xtype: 'container',
+                        columnWidth: 0.5,
+                        defaults: {
+                            labelWidth: this.defaultLabelWidth
+                        },
+                        items: [{
+                            xtype: 'displayfield',
+                            fieldLabel: 'Parent Information',
+                            itemId: 'parents'
+                        }]
                     }]
                 }]
-            }]
-        },{
+            }]);
+        }
+
+        items[0].items = items[0].items.concat([{
             itemId: 'treatments',
             xtype: 'ehr-snapshotchildpanel',
             headerLabel: 'Current Medications',
@@ -194,43 +201,44 @@ Ext4.define('EHR.panel.SnapshotPanel', {
     },
 
     loadData: function(){
-        EHR.Utils.getDemographics({
-            ids: [this.subjectId],
-            failure: LDK.Utils.getErrorCallback(),
-            success: this.onLoad,
-            scope: this
-        });
+        EHR.DemographicsCache.getDemographics(this.subjectId, this.onLoad, this);
     },
 
-    onLoad: function(results){
-        this.results = results.results[this.subjectId];
-
-        this.onAllComplete();
-    },
-
-    onAllComplete: function(){
+    onLoad: function(id, results){
         Ext4.suspendLayouts();
 
-        this.appendDemographicsResults(this.results);
-        this.appendWeightResults(this.results.weights);
+        if (!results){
+            this.getForm().reset();
 
-        if (this.results.cagemates)
-            this.appendRoommateResults(this.results.cagemates);
+            if (id){
+                this.safeAppend('#animalId', id);
+                this.safeAppend('#calculated_status', '<span style="background-color:yellow">Unknown</span>');
+            }
 
-        this.appendProblemList(this.results.activeProblems);
-        this.appendAssignments(this.results.activeAssignments);
-        this.appendGroups(this.results.activeAnimalGroups);
-        this.appendSourceResults(this.results.source);
-        this.appendTreatments(this.results.activeTreatments);
-        this.appendCases(this.results.activeCases);
+            return;
+        }
+        this.appendDemographicsResults(results);
+        this.appendWeightResults(results.getRecentWeights());
 
-        this.appendFlags(this.results.activeFlags);
-        this.appendTBResults(this.results.tb);
+        if (results.getCagemates())
+            this.appendRoommateResults(results.getCagemates());
+
+        this.appendProblemList(results.getActiveProblems());
+        this.appendAssignments(results.getActiveAssignments());
+        this.appendAssignmentsAndGroups(results);
+        this.appendGroups(results.getActiveAnimalGroups());
+
+        this.appendSourceResults(results.getSourceRecord());
+        this.appendTreatments(results.getActiveTreatments());
+        this.appendCases(results.getActiveCases());
+
+        this.appendFlags(results.getActiveFlags());
+        this.appendTBResults(results.getTBRecord());
 
         if (this.showExtendedInformation){
-            this.appendBirthResults(this.results.birthInfo, this.results.birth);
-            this.appendDeathResults(this.results.deathInfo);
-            this.appendParentageResults(this.results.parents);
+            this.appendBirthResults(results.getBirthInfo(), results.getBirth());
+            this.appendDeathResults(results.getDeathInfo());
+            this.appendParentageResults(results.getParents());
         }
         this.afterLoad();
 
@@ -248,20 +256,18 @@ Ext4.define('EHR.panel.SnapshotPanel', {
                 if (months)
                     value += ' (' + months + ' month' + (months == 1 ? '' : 's') + ' ago)';
 
-                this.down('#lastTB').setValue(value);
+                this.safeAppend('#lastTB', value);
             }
             else {
-                this.down('#lastTB').setValue('Never');
+                this.safeAppend('#lastTB', 'Never');
             }
         }
     },
 
     appendSourceResults: function(results){
         if (results && results.length){
-            var field = this.down('#source');
-
             var text = results[0].type;
-            field.setValue(text);
+            this.safeAppend('#source', text);
         }
     },
 
@@ -271,29 +277,36 @@ Ext4.define('EHR.panel.SnapshotPanel', {
             return;
         }
 
-        Ext4.each(['calculated_status', 'species', 'geographic_origin'], function(name){
-            if (row[name]){
-                var field = this.down('#' + name);
-                if (field)
-                    field.setValue(row[name]);
-            }
-        }, this);
-
-        if (!Ext4.isEmpty(row['gender/meaning'])){
-            this.down('#gender').setValue(row['gender/meaning']);
+        if (!Ext4.isEmpty(row.getId())){
+            this.safeAppend('#animalId', row.getId());
         }
 
-        if (!Ext4.isEmpty(row['Id/age/yearAndDays'])){
-            this.down('#age').setValue(row['Id/age/yearAndDays']);
+        var status = row.getCalculatedStatus() || 'Unknown';
+        this.safeAppend('#calculated_status', '<span ' + (status != 'Alive' ? 'style="background-color:yellow"' : '') + '>' + status + '</span>');
+
+        if (!Ext4.isEmpty(row.getSpecies())){
+            this.safeAppend('#species', row.getSpecies());
         }
 
-        if (row.activeHousing && row.activeHousing.length){
-            var housingRow = row.activeHousing[0];
+        if (!Ext4.isEmpty(row.getGeographicOrigin())){
+            this.safeAppend('#geographic_origin', row.getGeographicOrigin());
+        }
+
+        if (!Ext4.isEmpty(row.getGender())){
+            this.safeAppend('#gender', row.getGender());
+        }
+
+        if (!Ext4.isEmpty(row.getAgeInYearsAndDays())){
+            this.safeAppend('#age', row.getAgeInYearsAndDays());
+        }
+
+        if (row.getActiveHousing() && row.getActiveHousing().length){
+            var housingRow = row.getActiveHousing();
             var location = '';
-            if (!Ext4.isEmpty(housingRow['room']))
-                location = housingRow['room'];
-            if (!Ext4.isEmpty(housingRow['cage']))
-                location += ' / ' + housingRow['cage'];
+            if (!Ext4.isEmpty(row.getCurrentRoom()))
+                location = row.getCurrentRoom();
+            if (!Ext4.isEmpty(row.getCurrentCage()))
+                location += ' / ' + row.getCurrentRoom();
 
             if (location){
                 if (this.showLocationDuration && housingRow.date){
@@ -302,11 +315,17 @@ Ext4.define('EHR.panel.SnapshotPanel', {
                         location += ' (' + date.format('Y-m-d') + ')';
                 }
 
-                this.down('#location').setValue(location);
+                this.safeAppend('#location', location);
             }
             else
-                this.down('#location').setValue('No active housing');
+                this.safeAppend('#location', 'No active housing');
         }
+    },
+
+    safeAppend: function(query, val){
+        var el = this.down(query);
+        if (el)
+            el.setValue(val);
     },
 
     getTargetString: function(){
@@ -328,10 +347,10 @@ Ext4.define('EHR.panel.SnapshotPanel', {
             }, this);
 
             if (values.length)
-                this.down('#openProblems').setValue(values.join(', '));
+                this.safeAppend('#openProblems', values.join(', '));
         }
         else {
-            this.down('#openProblems').setValue('None');
+            this.safeAppend('#openProblems', 'None');
         }
     },
 
@@ -365,20 +384,17 @@ Ext4.define('EHR.panel.SnapshotPanel', {
                 text.push('<tr><td>' + r.weight + ' kg' + '</td><td style="padding-left: 5px;">' + r.date.format('Y-m-d') + '</td><td style="padding-left: 5px;">' + (Ext4.isDefined(r.interval) ? ' (' + r.interval + ')' : '') + "</td></tr>");
             }, this);
 
-            this.down('#weights').setValue('<table>' + text.join('') + '</table>');
+            this.safeAppend('#weights', '<table>' + text.join('') + '</table>');
         }
     },
 
     appendRoommateResults: function(results){
-        var field = this.down('#roommates');
-        if (!field)
-            return;
-
-        if (results){
-            this.down('#roommates').setValue(row.total);
+        if (results && results.length){
+            var row = results[0];
+            this.safeAppend('#roommates', row.total);
         }
         else {
-            this.down('#roommates').setValue(0)
+            this.safeAppend('#roommates', 0);
         }
     },
 
@@ -390,12 +406,14 @@ Ext4.define('EHR.panel.SnapshotPanel', {
             }, this);
 
             if (values.length)
-                this.down('#groups').setValue(values.join('<br>'));
+                this.safeAppend('#groups', values.join('<br>'));
         }
         else {
-            this.down('#groups').setValue('None');
+            this.safeAppend('#groups', 'None');
         }
     },
+
+    appendAssignmentsAndGroups: Ext4.emptyFn,
 
     appendAssignments: function(results){
         if (results){
@@ -409,10 +427,10 @@ Ext4.define('EHR.panel.SnapshotPanel', {
             }, this);
 
             if (values.length)
-                this.down('#assignments').setValue(values.join('<br>'));
+                this.safeAppend('#assignments', values.join('<br>'));
         }
         else {
-            this.down('#assignments').setValue('None');
+            this.safeAppend('#assignments', 'None');
         }
     },
 
@@ -431,10 +449,10 @@ Ext4.define('EHR.panel.SnapshotPanel', {
             }, this);
 
             if (values.length)
-                this.down('#activeCases').setValue(values.join(', '));
+                this.safeAppend('#activeCases', values.join(', '));
         }
         else {
-            this.down('#activeCases').setValue('None');
+            this.safeAppend('#activeCases', 'None');
         }
     },
 
@@ -459,13 +477,21 @@ Ext4.define('EHR.panel.SnapshotPanel', {
     },
 
     appendTreatmentRecords: function(rows){
-        this.down('#treatments').appendTable({
+        var el = this.down('#treatments');
+        if (!el)
+            return;
+
+        el.appendTable({
             rows: rows
         }, this.getTreatmentColumns());
     },
 
     appendDietRecords: function(rows){
-        this.down('#diet').appendTable({
+        var el = this.down('#diet');
+        if (!el)
+            return;
+
+        el.appendTable({
             rows: rows
         }, this.getTreatmentColumns());
     },
@@ -533,7 +559,7 @@ Ext4.define('EHR.panel.SnapshotPanel', {
 
             if (values.length){
                 values = Ext4.unique(values);
-                this.down('#flags').setValue(values.join('<br>'));
+                this.safeAppend('#flags', values.join('<br>'));
             }
         }
     },
@@ -549,13 +575,13 @@ Ext4.define('EHR.panel.SnapshotPanel', {
                     text = text + ' (' + type + ')';
 
                 if (text)
-                    this.down('#birth').setValue(text);
+                    this.safeAppend('#birth', text);
             }
         }
         else if (birth){
             var date = LDK.ConvertUtils.parseDate(birth);
             if (date){
-                this.down('#birth').setValue(date.format('Y-m-d'));
+                this.safeAppend('#birth', date.format('Y-m-d'));
             }
         }
     },
@@ -571,7 +597,7 @@ Ext4.define('EHR.panel.SnapshotPanel', {
                     text = text + ' (' + type + ')';
 
                 if (text)
-                    this.down('#death').setValue(text);
+                    this.safeAppend('#death', text);
             }
         }
     },
@@ -603,10 +629,10 @@ Ext4.define('EHR.panel.SnapshotPanel', {
             }, this);
 
             if (values.length)
-                this.down('#parents').setValue(values.join('<br>'));
+                this.safeAppend('#parents', values.join('<br>'));
         }
         else {
-            this.down('#parents').setValue('No data');
+            this.safeAppend('#parents', 'No data');
         }
     },
 

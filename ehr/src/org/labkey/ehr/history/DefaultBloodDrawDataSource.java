@@ -38,7 +38,7 @@ public class DefaultBloodDrawDataSource extends AbstractDataSource
         StringBuilder sb = new StringBuilder();
 
         sb.append(safeAppend(rs, "Total Quantity", "quantity"));
-        sb.append(safeAppend(rs, "Billed By", "billedby"));
+        sb.append(safeAppend(rs, "Charge Type", "billedby"));
         sb.append(safeAppend(rs, "Tube Type", "tube_type"));
         sb.append(safeAppend(rs, "# of Tubes", "num_tubes"));
 

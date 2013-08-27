@@ -6,27 +6,20 @@
 
 require("ehr/triggers").initScript(this);
 
-function onComplete(event, errors, scriptContext){
-    if(scriptContext.publicParticipantsModified.length && scriptContext.extraContext.dataSource != 'etl'){
-        EHR.Server.Validation.updateStatusField(scriptContext.publicParticipantsModified);
-    }
+function onInit(event, helper){
+    helper.setScriptOptions({
+        requiresStatusRecalc: true
+    });
+
+    helper.decodeExtraContextProperty('departuresInTransaction');
+
 }
 
-function onBecomePublic(errors, scriptContext, row, oldRow){
+function onBecomePublic(scriptErrors, helper, row, oldRow){
+    helper.registerDeparture(row.Id, row.date);
+
     //this will close any existing assignments, housing and treatment records
-    if(scriptContext.extraContext.dataSource != 'etl')
-        EHR.Server.Validation.onDeathDeparture(row.Id, row.date);
-}
-
-function setDescription(row, errors){
-    //we need to set description for every field
-    var description = new Array();
-
-    if (row.authorize)
-        description.push('Authorized By: '+ row.authorize);
-
-    if (row.destination)
-        description.push('Destination: '+ row.destination);
-
-    return description;
+    if (!helper.isETL()){
+        helper.onDeathDeparture(row.Id, row.date);
+    }
 }

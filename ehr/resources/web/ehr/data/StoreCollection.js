@@ -110,9 +110,15 @@ Ext4.define('EHR.data.StoreCollection', {
             this.fireEvent('clientdatachanged', 'add');
     },
 
-    onClientStoreRemove: function(store){
-        if (!this.hasIgnoredClientEvent(store.storeId, 'remove', true))
+    onClientStoreRemove: function(store, record){
+        //note: stores do not normally keep track of removed phantom records
+        if (record.phantom){
+            store.removed.push(record);
+        }
+
+        if (!this.hasIgnoredClientEvent(store.storeId, 'remove', true)){
             this.fireEvent('clientdatachanged', 'remove');
+        }
     },
 
     onClientStoreUpdate: function(store){
@@ -127,76 +133,31 @@ Ext4.define('EHR.data.StoreCollection', {
 
     //used to allow buffering so clientdatachange events from many sources only trigger 1 recalculation
     onClientDataChanged: function(){
-        this.transformClientToServer()
+        this.transformClientToServer();
     },
 
     onServerStoreException: function(store){
         console.log('exception');
+        console.log(arguments);
     },
 
     transformClientToServer: function(){
+        if (EHR.debug)
+            console.log('client to server');
+
         var changedRecords = {};
         this.clientStores.each(function(clientStore){
-            var map = clientStore.getClientToServerRecordMap();
-            var clientKeyField = clientStore.getKeyField();
-
-            for (var table in map){
-                var serverStore = this.getServerStoreByName(table);
-                LDK.Assert.assertNotEmpty('Unable to find server store: ' + table, serverStore);
-
-                var fieldMap = map[table];
-                Ext4.Array.forEach(clientStore.getRange(), function(clientModel){
-                    //find the corresponding server record
-                    var key = clientModel.get(clientKeyField);
-                    var serverModel = serverStore.findRecord(clientKeyField, key);
-
-                    if (!serverModel){
-                        //TODO: determine whether to auto-create the record
-                        serverModel = this.addServerModel(serverStore, {});
-                    }
-
-                    if (serverModel){
-                        var serverFieldName;
-                        for (var clientFieldName in fieldMap){
-                            serverFieldName = fieldMap[clientFieldName];
-
-                            var clientVal = Ext4.isEmpty(clientModel.get(clientFieldName)) ? null : clientModel.get(clientFieldName);
-                            var serverVal = Ext4.isEmpty(serverModel.get(serverFieldName)) ? null : serverModel.get(serverFieldName);
-                            if (serverVal != clientVal){
-                                serverModel.set(serverFieldName, clientVal);
-                                serverModel.setDirty(true);
-
-                                if (!changedRecords[serverStore.storeId])
-                                    changedRecords[serverStore.storeId] = {};
-
-                                changedRecords[serverStore.storeId][serverModel.getId()] = serverModel;
-                            }
-                        }
-                    }
-                }, this);
-
-                var removed = clientStore.getRemovedRecords();
-                if (removed.length){
-                    Ext4.Array.forEach(removed, function(clientModel){
-                        //find the corresponding server record
-                        var key = clientModel.get(clientKeyField);
-                        var serverModel = serverStore.findRecord(clientKeyField, key);
-
-                        if (clientModel.isRemovedRequest){
-                            serverModel.isRemovedRequest = true;
-                            //TODO
-                        }
-                        else {
-                            serverStore.remove(serverModel);
-                        }
-                    }, this);
-                }
-            }
+            clientStore.processServerRecords(this, changedRecords);
         }, this);
 
         if (Ext4.Object.getKeys(changedRecords).length > 0){
             this.validateRecords(changedRecords);
             this.fireEvent('serverdatachanged', this, changedRecords);
+        }
+        else
+        {
+            //this really isnt the right event to fire, but it will force a recalulation of buttons on the panel
+            this.fireEvent('validation', this);
         }
     },
 
@@ -256,7 +217,7 @@ Ext4.define('EHR.data.StoreCollection', {
         //ensure all stores represented
         this.serverStores.each(function(s){
             var name = s.schemaName + '.' + s.queryName;
-            if (dependencies.indexOf(s.name) == -1)
+            if (dependencies.indexOf(name) == -1)
                 dependencies.push(name);
         }, this);
 
@@ -267,27 +228,6 @@ Ext4.define('EHR.data.StoreCollection', {
         //this method is designed to be overriden by subclasses
 
         //TODO: apply inheritance
-    },
-
-    //creates and adds a model to the provided client store, handling any dependencies within other stores in the collection
-    addClientModel: function(store, data){
-        if (EHR.debug)
-            console.log('creating client model');
-
-        var model = store.createModel(data);
-        store.add(model);
-
-        return model;
-    },
-
-    //creates and adds a model to the provided server store, handling any dependencies within other stores in the collection
-    addServerModel: function(store, data){
-        if (EHR.debug)
-            console.log('creating server model');
-        var model = store.createModel({});
-        store.add(model);
-
-        return model;
     },
 
     updateClientModelInheritance: function(clientStore, clientModel){
@@ -331,59 +271,11 @@ Ext4.define('EHR.data.StoreCollection', {
     transformServerToClient: function(syncErrorsOnly){
         var map = this.getServerToClientDataMap();
         var changedStoreIDs = {};
-
         Ext4.Array.forEach(this.getSortedServerStores(), function(name){
             var serverStore = this.getServerStoreByName(name);
             LDK.Assert.assertNotEmpty('Unable to find store with name: ' + name, serverStore);
 
-            var targetChildStores = map[name];
-            var fieldMap, clientStore, serverFieldName, clientKeyField;
-            serverStore.each(function(serverModel){
-                for (var clientStoreId in targetChildStores){
-                    clientStore = this.clientStores.get(clientStoreId);
-                    LDK.Assert.assertNotEmpty('Unable to find client store with Id: ' + clientStoreId, clientStore);
-                    clientKeyField = clientStore.getKeyField();
-
-                    var clientModel = clientStore.findRecord(clientKeyField, serverModel.get(clientKeyField));
-                    if (!clientModel){
-                        clientModel = this.addClientModel(clientStore, {});
-                    }
-
-                    if (clientModel){
-                        clientModel.phantom = serverModel.phantom;
-
-                        fieldMap = targetChildStores[clientStoreId];
-                        clientModel.suspendEvents();
-                        for (var clientFieldName in fieldMap){
-                            serverFieldName = fieldMap[clientFieldName];
-                            LDK.Assert.assertNotEmpty('Unable to find serverField to match clientField: ' + clientFieldName, serverFieldName);
-
-                            if (!syncErrorsOnly){
-                                //transfer values
-                                var clientVal = Ext4.isEmpty(clientModel.get(clientFieldName)) ? null : clientModel.get(clientFieldName);
-                                var serverVal = Ext4.isEmpty(serverModel.get(serverFieldName)) ? null : serverModel.get(serverFieldName);
-                                if (serverVal != clientVal){
-                                    clientModel.set(clientFieldName, serverModel.get(serverFieldName));
-                                    changedStoreIDs[clientStore.storeId] = true;
-                                }
-                            }
-
-                            //also sync server errors
-                            var se = serverModel.serverErrors ? serverModel.serverErrors.getByField(serverFieldName) : [];
-                            this.removeMatchingErrors(clientModel, clientFieldName, changedStoreIDs, clientStore);
-                            if (se && se.length){
-                                changedStoreIDs[clientStore.storeId] = true;
-                                Ext4.Array.forEach(se, function(e){
-                                    var newError = Ext4.apply({}, e);
-                                    newError.field = clientFieldName;
-                                    clientModel.serverErrors.add(newError);
-                                }, this);
-                            }
-                        }
-                        clientModel.resumeEvents();
-                    }
-                }
-            }, this);
+            serverStore.transformRecordsToClient(this, map[name], changedStoreIDs, syncErrorsOnly);
         }, this);
 
         this.clientStores.each(function(s){
@@ -399,7 +291,7 @@ Ext4.define('EHR.data.StoreCollection', {
 
     addIgnoredClientEvent: function(storeId, event){
         this.ignoredClientEvents[storeId] = this.ignoredClientEvents[storeId] || {};
-        this.ignoredClientEvents[storeId]['datachanged'] = true;
+        this.ignoredClientEvents[storeId][event] = true;
     },
 
     hasIgnoredClientEvent: function(storeId, event, remove){
@@ -411,16 +303,6 @@ Ext4.define('EHR.data.StoreCollection', {
         }
 
         return false;
-    },
-
-    removeMatchingErrors: function(clientModel, clientFieldName, changedStoreIDs, clientStore){
-        clientModel.serverErrors = clientModel.serverErrors || Ext4.create('Ext.data.Errors');
-        clientModel.serverErrors.each(function(err){
-            if (err.fromServer && err.field == clientFieldName){
-                clientModel.serverErrors.remove(err);
-                changedStoreIDs[clientStore.storeId] = true;
-            }
-        }, this);
     },
 
     getClientStoreForSection: function(dataEntryPanel, section){
@@ -516,7 +398,9 @@ Ext4.define('EHR.data.StoreCollection', {
     },
 
     sendRequest: function(recordsArr, commands, extraContext, validateOnly){
-console.log(commands);
+        if (EHR.debug)
+            console.log(commands);
+
         var cfg = {
             url : LABKEY.ActionURL.buildURL('query', 'saveRows', this.containerPath),
             method : 'POST',
@@ -526,6 +410,7 @@ console.log(commands);
             timeout: this.timeout || 0,
             jsonData : {
                 apiVersion: 13.2,
+                transacted: true,
                 containerPath: this.containerPath,
                 commands: commands,
                 extraContext: this.getExtraContext(extraContext)
@@ -542,8 +427,10 @@ console.log(commands);
 
         var request = Ext4.Ajax.request(cfg);
 
-        Ext4.each(recordsArr, function(rec){
-            rec.lastTransactionId = request.tId;
+        Ext4.Array.forEach(recordsArr, function(command){
+            Ext4.Array.forEach(command, function(rec){
+                rec.lastRequestId = request.id;
+            }, this);
         }, this);
     },
 
@@ -612,7 +499,7 @@ console.log(commands);
                             var serverStore = this.getServerStoreForQuery(command.schemaName, command.queryName);
                             LDK.Assert.assertNotEmpty('Could not find store matching: ' + command.schemaName + '.' + command.queryName, serverStore);
 
-                            serverStore.handleServerErrors(command.errors, recordArr[commandIdx]);
+                            serverStore.handleServerErrors(command.errors, recordArr[commandIdx], response.requestId);
                         }
                         else {
                             //ignore.  this would occur if a multi-command request is sent and 1 of the group fails.
@@ -638,7 +525,6 @@ console.log(commands);
     getOnCommitSuccess: function(recordArr, validateOnly){
         return function(response, options){
             var json = this.getJson(response);
-
             if(!json || !json.result)
                 return;
 

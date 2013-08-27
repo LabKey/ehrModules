@@ -14,77 +14,76 @@
  *
  */
 Ext4.define('EHR.form.field.SnomedCombo', {
-    extend: 'Ext.form.field.ComboBox',
+    extend: 'Ext.form.FieldContainer',
     alias: 'widget.ehr-snomedcombo',
 
+    //defaultSubset: '',
+
     initComponent: function(){
+        this.comboWidth = this.width - this.labelWidth - 5;
+
         LABKEY.ExtAdapter.apply(this, {
+            items: [this.getFilterComboCfg(), this.getSnomedComboCfg()]
+        });
+
+        this.callParent(arguments);
+    },
+
+    getSnomedComboCfg: function(){
+        return {
+            xtype: 'labkey-combo',
+            itemId: 'snomedCombo',
             queryMode: 'local',
             displayField: 'code/meaning',
             valueField: 'code',
-            listWidth: 300,
-            allowAnyValue: true,
+            width: this.comboWidth,
+            forceSelection: true,
+            caseSensitive: false,
+            anyMatch: true,
             store: {
                 type: 'labkey-store',
                 schemaName: 'ehr_lookups',
                 queryName: 'snomed_subset_codes',
                 columns: 'secondaryCategory,code,code/meaning',
                 sort: 'secondaryCategory,code/meaning',
-                storeId: ['ehr_lookups', 'snomed', 'code', 'meaning', this.queryName, (this.dataIndex || this.name)].join('||'),
-                maxRows: 0,
-                autoLoad: false
-            }
-        });
-
-        this.listConfig = this.listConfig || {};
-        Ext4.apply(this.listConfig, {
-            innerTpl: '{[ values["secondaryCategory"] ? "<b>"+values["secondaryCategory"]+":</b> "  : "" ]}' +
-                '{[ (values["meaning"] || values["code/meaning"]) ? (values["meaning"] || values["code/meaning"])+" ("+values["code"]+")" : ' +
-                'values["code"]]}',
-            getInnerTpl: function(){
-                return this.innerTpl;
+                storeId: ['ehr_lookups', 'snomed', 'code', 'meaning', (this.dataIndex || this.name), this.id].join('||'),
+                filterArray: this.getFilterArray(this.defaultSubset),
+                autoLoad: true
             },
-            style: 'border-top-width: 1px;' //this was added in order to restore the border above the boundList if it is wider than the field
-        });
-
-        this.callParent(arguments);
-
-        this.filterComboCfg = {};
+            listConfig: {
+                innerTpl: '{[ values["secondaryCategory"] ? "<b>"+values["secondaryCategory"]+":</b> "  : "" ]}' +
+                        '{[ (values["meaning"] || values["code/meaning"]) ? (values["meaning"] || values["code/meaning"])+" ("+values["code"]+")" : ' +
+                        'values["code"]]}',
+                getInnerTpl: function(){
+                    return this.innerTpl;
+                },
+                style: 'border-top-width: 1px;' //this was added in order to restore the border above the boundList if it is wider than the field
+            }
+        }
     },
 
-    onRender: function(){
-        this.callParent(arguments);
-
-        //if there is a storeCfg property, we render a combo with common remarks
-        if(this.filterComboCfg){
-            this.addCombo();
+    getFilterArray: function(subset){
+        if (!subset){
+            if (this.rendered)
+                subset = this.down('#filterCombo').getValue();
         }
 
+        if (subset){
+            return [LABKEY.Filter.create('primaryCategory', subset, LABKEY.Filter.Types.EQUAL)];
+        }
     },
 
-    addCombo: function(){
-        var div = this.container.insertFirst({
-            tag: 'div',
-            style: 'padding-bottom: 5px;'
-        });
-
-        if(LABKEY.ActionURL.getParameter('useSnomedCodes')){
-            this.defaultSubset = 'SNOMED Codes';
-        }
-
-        var config = LABKEY.ExtAdapter.applyIf(this.filterComboCfg, {
+    getFilterComboCfg: function(){
+        return {
             xtype: 'combo',
-            renderTo: div,
-            width: this.width,
-            disabled: this.disabled,
+            itemId: 'filterCombo',
             emptyText: 'Pick subset...',
             typeAhead: true,
-            mode: 'local',
             isFormField: false,
-            boxMaxWidth: 200,
+            width: this.comboWidth,
             valueField: 'subset',
             displayField: 'subset',
-            triggerAction: 'all',
+            queryMode: 'local',
             initialValue: this.defaultSubset,
             value: this.defaultSubset,
             nullCaption: 'All',
@@ -93,87 +92,45 @@ Ext4.define('EHR.form.field.SnomedCombo', {
                 schemaName: 'ehr_lookups',
                 queryName: 'snomed_subsets',
                 sort: 'subset',
-                //NOTE: this can potentially be a lot of records, so we initially load with zero
-                //maxRows: 0,
                 autoLoad: true,
                 listeners: {
                     scope: this,
                     load: function(s){
                         s.add({subset: 'SNOMED Codes'})
                     }
-                },
-                nullRecord: {
-                    displayColumn: 'subset',
-                    nullCaption: 'All'
                 }
             },
             listeners: {
                 scope: this,
                 change: this.applyFilter
             }
-        });
-
-        this.filterCombo = Ext4.ComponentMgr.create(config);
-        if(this.defaultSubset){
-            this.applyFilter(this.filterCombo, this.defaultSubset)
-        }
+        };
     },
 
     applyFilter: function(combo, subset){
-        this.store.removeAll();
-        delete this.store.maxRows;
+        var snomedCombo = this.down('#snomedCombo');
+console.log('applying filter: ' + subset);
 
         if(!subset || subset == 'All' || subset == 'SNOMED Codes'){
-            this.store.queryName = 'snomed';
-            this.store.columns = 'code,meaning';
-            this.store.initialConfig.sort = 'meaning';
-            delete this.store.filterArray;
+            snomedCombo.store.queryName = 'snomed';
+            snomedCombo.store.columns = 'code,meaning';
+            snomedCombo.store.initialConfig.sort = 'meaning';
+            delete snomedCombo.store.filterArray;
 
             if (subset == 'SNOMED Codes')
-                this.displayField = 'code';
+                snomedCombo.displayField = 'code';
             else
-                this.displayField = 'meaning';
+                snomedCombo.displayField = 'meaning';
         }
         else {
-            this.store.filterArray = [LABKEY.Filter.create('primaryCategory', subset, LABKEY.Filter.Types.EQUAL)];
-            this.store.queryName = 'snomed_subset_codes';
-            this.store.columns = 'secondaryCategory,code,code/meaning';
-            this.store.initialConfig.sort = 'secondaryCategory,code/meaning';
+            snomedCombo.store.filterArray = this.getFilterArray(subset);
+            snomedCombo.store.queryName = 'snomed_subset_codes';
+            snomedCombo.store.columns = 'secondaryCategory,code,code/meaning';
+            snomedCombo.store.initialConfig.sort = 'secondaryCategory,code/meaning';
 
-            this.displayField = 'code/meaning';
+            snomedCombo.displayField = 'code/meaning';
         }
 
-        this.store.load();
-
-        if(this.view)
-            this.view.setStore(this.store);
-    },
-
-    setDisabled: function(val){
-        if(this.filterCombo)
-            this.filterCombo.setDisabled(val);
-
-        this.callParent(arguments);
-    },
-
-    setVisible: function(val){
-        if(this.filterCombo)
-            this.filterCombo.setVisible(val);
-
-        this.callParent(arguments);
-    },
-
-    reset: function(){
-        if(this.filterCombo)
-            this.filterCombo.reset();
-
-        this.callParent(arguments);
-    },
-
-    destroy: function(){
-        if(this.filterCombo)
-            this.filterCombo.destroy();
-
-        this.callParent(arguments);
+        snomedCombo.store.load();
     }
 });

@@ -11,10 +11,13 @@
  */
 Ext4.define('EHR.window.RecordDuplicatorWindow', {
     extend: 'Ext.window.Window',
+    width: 500,
 
     initComponent: function(){
         LABKEY.ExtAdapter.applyIf(this, {
             modal: true,
+            closeAction: 'destroy',
+            title: 'Duplicate Selected',
             border: true,
             bodyStyle: 'padding:5px',
             defaults: {
@@ -22,9 +25,14 @@ Ext4.define('EHR.window.RecordDuplicatorWindow', {
                 bodyBorder: false
             },
             items: [{
+                html: 'This helper will create copies of the selected records.  It will only copy the fields you have selected below.',
+                //maxWidth: 400,
+                style: 'margin-bottom: 20px;'
+            },{
                 xtype: 'numberfield',
                 labelWidth: 150,
                 fieldLabel: 'Number of Copies',
+                helpPopup: 'This determines how many copies will be made of each record',
                 itemId: 'newRecs',
                 value: 1
             },{
@@ -92,10 +100,10 @@ Ext4.define('EHR.window.RecordDuplicatorWindow', {
 
                 toAdd.push(this.targetGrid.store.createModel(data));
             }, this);
+        }
 
-            if (toAdd.length){
-                this.targetGrid.store.add(toAdd);
-            }
+        if (toAdd.length){
+            this.targetGrid.store.add(toAdd);
         }
     }
 });

@@ -17,7 +17,7 @@ Ext.onReady(function(){
     }
 
     function renderTaskForm(formType){
-        EHR.Utils.createImportPanel({
+        EHR.Ext3Utils.createImportPanel({
             panelType: 'RequestPanel',
             formUUID: formUUID,
             formType: formType,
@@ -28,7 +28,7 @@ Ext.onReady(function(){
     }
 
     function renderSimpleForm(queryName){
-        EHR.Utils.createSimpleTaskPanel({
+        EHR.Ext3Utils.createSimpleTaskPanel({
             panelType: 'RequestPanel',
             formType: LABKEY.ActionURL.getParameter('queryName'),
             formUUID: formUUID,

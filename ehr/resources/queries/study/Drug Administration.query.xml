@@ -51,6 +51,9 @@
                             <fkDisplayColumnName useRawValue="true"/>
                         </fk>
                     </column>
+                    <column columnName="lot">
+                        <columnTitle>Lot</columnTitle>
+                    </column>
                     <column columnName="concentration">
                         <columnTitle>Drug Conc</columnTitle>
                     </column>
@@ -99,6 +102,9 @@
                             <fkDisplayColumnName useRawValue="true" />
                         </fk>
                     </column>
+                    <column columnName="outcome">
+                        <columnTitle>Outcome</columnTitle>
+                    </column>
                     <column columnName="restraint">
                         <columnTitle>Restraint</columnTitle>
                         <fk>
@@ -115,6 +121,19 @@
                             <fkColumnName>value</fkColumnName>
                         </fk>
                     </column>
+                    <column columnName="outcome">
+                        <columnTitle>Outcome</columnTitle>
+                        <fk>
+                            <fkDbSchema>ehr_lookups</fkDbSchema>
+                            <fkTable>drugOutcome</fkTable>
+                            <fkColumnName>value</fkColumnName>
+                            <fkDisplayColumnName useRawValue="true"/>
+                        </fk>
+                        <defaultValue>Normal</defaultValue>
+                    </column>
+                    <column columnName="remark">
+                        <columnTitle>Remark</columnTitle>
+                    </column>
                     <column columnName="category">
                         <columnTitle>Category</columnTitle>
                         <fk>
@@ -126,9 +145,6 @@
                     </column>
                     <column columnName="begindate">
                         <columnTitle>Begin Date</columnTitle>
-                    </column>
-                    <column columnName="lot">
-                        <columnTitle>Lot</columnTitle>
                     </column>
                     <column columnName="treatmentid">
                         <columnTitle>Treatment Id</columnTitle>

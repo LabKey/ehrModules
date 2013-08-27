@@ -91,7 +91,6 @@
                         <shownInDetailsView>true</shownInDetailsView>
                         <columnTitle>Status</columnTitle>
                         <displayWidth>50</displayWidth>
-                        <!--<url>/ehr/taskDetails.view?formtype=${taskid/formtype}&amp;taskid=${taskid}</url>-->
                         <conditionalFormats>
                             <conditionalFormat>
                                 <filters>

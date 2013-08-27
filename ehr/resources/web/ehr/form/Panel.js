@@ -37,20 +37,22 @@ Ext4.define('EHR.form.Panel', {
 
         this.callParent();
 
-        this.addEvents('recordchange', 'fieldvaluechange');
+        this.addEvents('fieldvaluechange');
     },
 
-    getItemsConfig: function(){
+    getRawFieldConfigs: function(){
         var items = [];
-
         var fields = EHR.model.DefaultClientModel.getFieldConfigs(this.formConfig.fieldConfigs, this.formConfig.configSources);
-        var compositeFields = {};
-
         Ext4.Array.forEach(fields, function(field){
             if (field.jsonType == 'date' && field.extFormat){
                 if (Ext4.Date.formatContainsHourInfo(field.extFormat)){
                     field.xtype = 'xdatetime';
                 }
+            }
+
+            if (!field.name){
+                console.log(field)
+                field.name = field.itemId;
             }
 
             var cfg = EHR.DataEntryUtils.getFormEditorConfig(field);
@@ -67,41 +69,56 @@ Ext4.define('EHR.form.Panel', {
                 cfg.height = this.maxFieldHeight;
             }
 
+            items.push({
+                cfg: cfg,
+                field: field
+            });
+        }, this);
+
+        return items;
+    },
+
+    getFieldConfigs: function(){
+        var fields = this.getRawFieldConfigs();
+        var compositeFields = {};
+
+        var items = [];
+        Ext4.Array.forEach(fields, function(item){
+            var cfg = item.cfg;
+            var field = item.field;
+
             if (field.compositeField){
                 cfg.fieldLabel = undefined;
 
-                if(!compositeFields[field.compositeField]){
+                if (!compositeFields[field.compositeField]){
+                    var msgTargetId = 'msgtarget-' + Ext4.id();
                     compositeFields[field.compositeField] = {
                         xtype: 'fieldcontainer',
-                        layout: 'hbox',
-                        border: false,
                         fieldLabel: field.compositeField,
                         width: EHR.form.Panel.defaultFieldWidth,
                         labelWidth: EHR.form.Panel.defaultLabelWidth,
-                        items: [cfg]
+                        border: false,
+                        msgTargetId: msgTargetId,
+                        msgTarget: 'under',
+                        items: [{
+                            border: false,
+                            layout: 'hbox',
+                            items: [cfg]
+                        },{
+                            xtype: 'displayfield',
+                            isFormField: false,
+                            hidden: true,
+                            itemId: msgTargetId
+                        }]
                     };
                     items.push(compositeFields[field.compositeField]);
-
-                    if(compositeFields[field.compositeField].msgTarget == 'below'){
-                        //create a div to hold error messages
-                        compositeFields[field.compositeField].msgTargetId = Ext4.id();
-                        items.push({
-                            tag: 'div',
-                            fieldLabel: null,
-                            border: false,
-                            id: compositeFields[field.compositeField].msgTargetId
-                        });
-                    }
-                    else {
-                        cfg.msgTarget = 'qtip';
-                    }
                 }
                 else {
-                    compositeFields[field.compositeField].items.push({
+                    compositeFields[field.compositeField].items[0].items.push({
                         xtype: 'splitter',
                         border: false
                     });
-                    compositeFields[field.compositeField].items.push(cfg);
+                    compositeFields[field.compositeField].items[0].items.push(cfg);
                 }
             }
             else {
@@ -115,11 +132,11 @@ Ext4.define('EHR.form.Panel', {
             var toResize = [];
             //this leaves a 2px buffer between each field
             var availableWidth = EHR.form.Panel.defaultFieldWidth - EHR.form.Panel.defaultLabelWidth;
-            for (var j=0;j<compositeFields[i].items.length;j++){
-                var field = compositeFields[i].items[j];
+            for (var j=0;j<compositeFields[i].items[0].items.length;j++){
+                var field = compositeFields[i].items[0].items[j];
                 //if the field isnt using the default width, we assume it was deliberately customized
                 if (field.xtype == 'splitter'){
-                    availableWidth = availableWidth - 10;
+                    availableWidth = availableWidth - 4;
                 }
                 else if (field.width && field.width != EHR.form.Panel.defaultFieldWidth){
                     availableWidth = availableWidth - field.width;
@@ -127,16 +144,23 @@ Ext4.define('EHR.form.Panel', {
                 else {
                     toResize.push(field)
                 }
+
+                availableWidth = availableWidth - 2;
             }
 
-            if(toResize.length){
-                var newWidth = availableWidth/toResize.length;
+            if (toResize.length){
+                var newWidth = availableWidth / toResize.length;
                 for (var j=0;j<toResize.length;j++){
                     toResize[j].width = newWidth;
                 }
             }
         }
 
+        return items;
+    },
+
+    getItemsConfig: function(){
+        var items = this.getFieldConfigs();
         var visibleHeight = 0;
         Ext4.Array.forEach(items, function(item){
             if (!item.hidden)

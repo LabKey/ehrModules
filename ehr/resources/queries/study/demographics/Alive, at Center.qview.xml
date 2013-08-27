@@ -81,7 +81,7 @@
         <filter column="calculated_status" operator="eq" value="Alive"/>
     </filters>
     <sorts>
-        <sort column="Id/curLocation/room_order"/>
-        <sort column="Id/curLocation/cage_order"/>
+        <sort column="Id/curLocation/room"/>
+        <sort column="Id/curLocation/cage"/>
     </sorts>
 </customView>

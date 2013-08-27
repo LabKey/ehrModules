@@ -33,7 +33,7 @@ public class BirthDemographicsProvider extends AbstractListDemographicsProvider
 {
     public BirthDemographicsProvider()
     {
-        super("Birth", "birthInfo");
+        super("study", "Birth", "birthInfo");
     }
 
     protected Set<FieldKey> getFieldKeys()

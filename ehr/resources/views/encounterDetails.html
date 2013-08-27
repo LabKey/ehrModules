@@ -6,13 +6,6 @@ Ext4.onReady(function (){
         return;
     }
 
-    if (LABKEY.ActionURL.getParameter('formtype')){
-        window.location = LABKEY.ActionURL.buildURL('ehr', 'taskDetails', null, {
-            formtype: LABKEY.ActionURL.getParameter('formtype'),
-            taskid: LABKEY.ActionURL.getParameter('taskid')
-        });
-    }
-
     var webpart = <%=webpartContext%>;
     var domSpec = [{
         tag: 'div',

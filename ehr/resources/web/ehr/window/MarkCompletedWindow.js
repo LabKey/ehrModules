@@ -14,6 +14,7 @@ Ext4.define('EHR.window.MarkCompletedWindow', {
 
     initComponent: function(){
         Ext4.apply(this, {
+            modal: true,
             title: 'Set End Date',
             closeAction: 'destroy',
             width: 380,

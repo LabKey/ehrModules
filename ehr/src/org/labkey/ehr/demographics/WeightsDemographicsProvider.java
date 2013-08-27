@@ -47,7 +47,7 @@ public class WeightsDemographicsProvider extends AbstractListDemographicsProvide
 {
     public WeightsDemographicsProvider()
     {
-        super("Weight", "weights");
+        super("study", "Weight", "weights");
     }
 
     protected Set<FieldKey> getFieldKeys()

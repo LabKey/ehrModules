@@ -77,7 +77,7 @@ Ext4.define('EHR.window.CaseNumberWindow', {
                     caseno = 1;
                 }
 
-                caseno = EHR.Utils.padDigits(caseno, 3);
+                caseno = Ext4.String.leftPad(caseno, 3, '0');
                 var val = year + prefix + caseno;
                 this.targetField.setValue(val);
                 this.targetField.fireEvent('change', val)

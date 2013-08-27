@@ -16,6 +16,8 @@ Ext4.define('EHR.form.field.ProtocolField', {
     anyMatch: true,
     forceSelection: true,
 
+    onlyIncludeProtocolsWithAssignments: false,
+
     initComponent: function(){
         LABKEY.ExtAdapter.apply(this, {
             displayField: 'displayName',

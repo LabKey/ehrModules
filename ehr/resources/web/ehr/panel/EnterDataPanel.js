@@ -91,7 +91,7 @@ Ext4.define('EHR.panel.EnterDataPanel', {
                 sections: [{
                     header: 'Blood Draws',
                     items: [{
-                        name: 'Unapproved Requests',
+                        name: 'Pending Requests',
                         url: LABKEY.ActionURL.buildURL('query', 'executeQuery', null, {schemaName: 'study', 'query.queryName': 'Blood Draws', 'query.viewName': 'Blood Requests', 'query.QCState/Label~eq': 'Request: Pending'})
                     },{
                         name: 'Approved Requests',
@@ -100,11 +100,11 @@ Ext4.define('EHR.panel.EnterDataPanel', {
                 },{
                     header: 'Lab Tests',
                     items: [{
-                        name: 'Unapproved Requests',
-                        url: LABKEY.ActionURL.buildURL('query', 'executeQuery', null, {schemaName: 'study', 'query.queryName': 'Clinpath Runs', 'query.QCState/Label~eq': 'Request: Pending'})
+                        name: 'Clinpath Requests',
+                        url: LABKEY.ActionURL.buildURL('query', 'executeQuery', null, {schemaName: 'study', 'query.queryName': 'Clinpath Runs', 'query.QCState/Label~startswith': 'Request:', 'query.servicerequested/chargetype~eq': 'Clinpath'})
                     },{
-                        name: 'Approved Requests',
-                        url: LABKEY.ActionURL.buildURL('query', 'executeQuery', null, {schemaName: 'study', 'query.queryName': 'Clinpath Runs', 'query.QCState/Label~eq': 'Request: Approved'})
+                        name: 'SPF Surveillance Requests',
+                        url: LABKEY.ActionURL.buildURL('query', 'executeQuery', null, {schemaName: 'study', 'query.queryName': 'Clinpath Runs', 'query.QCState/Label~startswith': 'Request:', 'query.servicerequested/chargetype~eq': 'SPF Surveillance'})
                     }]
                 }]
             }]

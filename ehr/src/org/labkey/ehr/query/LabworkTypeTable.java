@@ -63,6 +63,7 @@ public class LabworkTypeTable extends AbstractDataDefinedTable
     public LabworkTypeTable(UserSchema schema, SchemaTableInfo table, String tableName, String filterValue)
     {
         super(schema, table, TYPE_FIELD, FILTER_FIELD, tableName, filterValue);
+        setTitleColumn("testid");
     }
 
     @Override

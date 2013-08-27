@@ -157,21 +157,27 @@ public class EHRApiTest extends AbstractEHRTest
         {
             JSONObject extraContext = getExtraContext();
 
+            String[] fields;
+            Object[][] data;
+            JSONObject insertCommand;
+
             //insert into demographics
             log("Creating test subjects");
-            String[] fields = new String[]{"Id", "Species", "Birth", "Gender", "date"};
-            Object[][] data = new Object[][]{
+            fields = new String[]{"Id", "Species", "Birth", "Gender", "date"};
+            data = new Object[][]{
                 {SUBJECTS[0], "Rhesus", (new Date()).toString(), "m", new Date()},
                 {SUBJECTS[1], "Cynomolgus", (new Date()).toString(), "m", new Date()},
                 {SUBJECTS[2], "Rhesus", (new Date()).toString(), "f", new Date()}
             };
-            JSONObject insertCommand = prepareInsertCommand("study", "demographics", FIELD_LSID, fields, data);
+            insertCommand = prepareInsertCommand("study", "demographics", FIELD_LSID, fields, data);
             doSaveRows(DATA_ADMIN, Collections.singletonList(insertCommand), extraContext, true);
+
+            //used as initial dates
+            Date pastDate1 = _tf.parse("2012-01-03 09:30");
+            Date pastDate2 = _tf.parse("2012-05-03 19:20");
 
             //set housing
             log("Creating initial housing records");
-            Date pastDate1 = _tf.parse("2012-01-03 09:30");
-            Date pastDate2 = _tf.parse("2012-05-03 19:20");
             fields = new String[]{"Id", "date", "enddate", "room", "cage"};
             data = new Object[][]{
                 {SUBJECTS[0], pastDate1, pastDate2, ROOMS[0], CAGES[0]},
@@ -195,9 +201,9 @@ public class EHRApiTest extends AbstractEHRTest
             log("Setting initial assignments");
             fields = new String[]{"Id", "date", "enddate", "project"};
             data = new Object[][]{
-                {SUBJECTS[0], pastDate1, pastDate2, PROJECTS[0]},
-                {SUBJECTS[1], pastDate1, pastDate2, PROJECTS[0]},
-                {SUBJECTS[1], pastDate2, null, PROJECTS[2]}
+                    {SUBJECTS[0], pastDate1, pastDate2, PROJECTS[0]},
+                    {SUBJECTS[1], pastDate1, pastDate2, PROJECTS[0]},
+                    {SUBJECTS[1], pastDate2, null, PROJECTS[2]}
             };
             insertCommand = prepareInsertCommand("study", "Housing", FIELD_LSID, fields, data);
             doSaveRows(DATA_ADMIN, Collections.singletonList(insertCommand), extraContext, true);
@@ -216,7 +222,7 @@ public class EHRApiTest extends AbstractEHRTest
             {SUBJECTS[0], new Date(), null, null, 120, EHRQCState.IN_PROGRESS.label, null, null, "recordID"}
         };
         Map<String, List<String>> expected = new HashMap<>();
-        expected.put("weight", Arrays.asList("Weight above the allowable value of 35 kg for Rhesus", "Weight gain of >10%. Last weight 12 kg"));
+        expected.put("weight", Arrays.asList("Weight above the allowable value of 35.0 kg for Rhesus", "Weight gain of >10%. Last weight 12 kg"));
         testValidationMessage("study", "weight", weightFields, data, expected);
 
         //expect INFO for +10% diff
@@ -310,6 +316,7 @@ public class EHRApiTest extends AbstractEHRTest
             extraContext.put("skipIdFormatCheck", true);
             extraContext.put("allowAnyId", true);
             extraContext.put("targetQC", "Completed");
+            extraContext.put("isLegacyFormat", true);
             return extraContext;
         }
         catch (JSONException e)
@@ -458,10 +465,8 @@ public class EHRApiTest extends AbstractEHRTest
         {
             log("Testing validation for table: " + schemaName + "." + queryName);
 
-            JSONObject extraContext = new JSONObject();
+            JSONObject extraContext = getExtraContext();
             extraContext.put("errorThreshold", "INFO");
-            extraContext.put("skipIdFormatCheck", true);
-            extraContext.put("allowAnyId", true);
             extraContext.put("validateOnly", true); //a flag to force failure
             extraContext.put("targetQC", EHRQCState.IN_PROGRESS.label);
 
@@ -816,6 +821,7 @@ public class EHRApiTest extends AbstractEHRTest
             //add(new Permission(EHRRole.DATA_ADMIN, EHRQCState.REQUEST_COMPLETE, "insert"));
             add(new Permission(EHRRole.DATA_ADMIN, EHRQCState.REQUEST_DENIED, "insert"));
             add(new Permission(EHRRole.DATA_ADMIN, EHRQCState.REQUEST_PENDING, "insert"));
+            add(new Permission(EHRRole.DATA_ADMIN, EHRQCState.REQUEST_SAMPLE_DELIVERED, "insert"));
             add(new Permission(EHRRole.DATA_ADMIN, EHRQCState.REVIEW_REQUIRED, "insert"));
             add(new Permission(EHRRole.DATA_ADMIN, EHRQCState.SCHEDULED, "insert"));
 
@@ -827,6 +833,7 @@ public class EHRApiTest extends AbstractEHRTest
             //add(new Permission(EHRRole.DATA_ADMIN, EHRQCState.REQUEST_COMPLETE, "update"));
             add(new Permission(EHRRole.DATA_ADMIN, EHRQCState.REQUEST_DENIED, "update"));
             add(new Permission(EHRRole.DATA_ADMIN, EHRQCState.REQUEST_PENDING, "update"));
+            add(new Permission(EHRRole.DATA_ADMIN, EHRQCState.REQUEST_SAMPLE_DELIVERED, "update"));
             add(new Permission(EHRRole.DATA_ADMIN, EHRQCState.REVIEW_REQUIRED, "update"));
             add(new Permission(EHRRole.DATA_ADMIN, EHRQCState.SCHEDULED, "update"));
 
@@ -838,6 +845,7 @@ public class EHRApiTest extends AbstractEHRTest
             //add(new Permission(EHRRole.DATA_ADMIN, EHRQCState.REQUEST_COMPLETE, "delete"));
             add(new Permission(EHRRole.DATA_ADMIN, EHRQCState.REQUEST_DENIED, "delete"));
             add(new Permission(EHRRole.DATA_ADMIN, EHRQCState.REQUEST_PENDING, "delete"));
+            add(new Permission(EHRRole.DATA_ADMIN, EHRQCState.REQUEST_SAMPLE_DELIVERED, "delete"));
             add(new Permission(EHRRole.DATA_ADMIN, EHRQCState.REVIEW_REQUIRED, "delete"));
             add(new Permission(EHRRole.DATA_ADMIN, EHRQCState.SCHEDULED, "delete"));
 
@@ -850,6 +858,7 @@ public class EHRApiTest extends AbstractEHRTest
             //add(new Permission(EHRRole.FULL_UPDATER, EHRQCState.REQUEST_COMPLETE, "insert"));
             add(new Permission(EHRRole.FULL_UPDATER, EHRQCState.REQUEST_DENIED, "insert"));
             add(new Permission(EHRRole.FULL_UPDATER, EHRQCState.REQUEST_PENDING, "insert"));
+            add(new Permission(EHRRole.FULL_UPDATER, EHRQCState.REQUEST_SAMPLE_DELIVERED, "insert"));
             add(new Permission(EHRRole.FULL_UPDATER, EHRQCState.REVIEW_REQUIRED, "insert"));
             add(new Permission(EHRRole.FULL_UPDATER, EHRQCState.SCHEDULED, "insert"));
 
@@ -861,6 +870,7 @@ public class EHRApiTest extends AbstractEHRTest
             //add(new Permission(EHRRole.FULL_UPDATER, EHRQCState.REQUEST_COMPLETE, "update"));
             add(new Permission(EHRRole.FULL_UPDATER, EHRQCState.REQUEST_DENIED, "update"));
             add(new Permission(EHRRole.FULL_UPDATER, EHRQCState.REQUEST_PENDING, "update"));
+            add(new Permission(EHRRole.FULL_UPDATER, EHRQCState.REQUEST_SAMPLE_DELIVERED, "update"));
             add(new Permission(EHRRole.FULL_UPDATER, EHRQCState.REVIEW_REQUIRED, "update"));
             add(new Permission(EHRRole.FULL_UPDATER, EHRQCState.SCHEDULED, "update"));
 
@@ -872,12 +882,15 @@ public class EHRApiTest extends AbstractEHRTest
             //add(new Permission(EHRRole.FULL_UPDATER, EHRQCState.REQUEST_COMPLETE, "delete"));
             add(new Permission(EHRRole.FULL_UPDATER, EHRQCState.REQUEST_DENIED, "delete"));
             add(new Permission(EHRRole.FULL_UPDATER, EHRQCState.REQUEST_PENDING, "delete"));
+            add(new Permission(EHRRole.FULL_UPDATER, EHRQCState.REQUEST_SAMPLE_DELIVERED, "delete"));
             add(new Permission(EHRRole.FULL_UPDATER, EHRQCState.REVIEW_REQUIRED, "delete"));
             add(new Permission(EHRRole.FULL_UPDATER, EHRQCState.SCHEDULED, "delete"));
 
             // Requester - Users with this role are permitted to submit requests, but not approve them
             add(new Permission(EHRRole.REQUESTER, EHRQCState.REQUEST_PENDING, "insert"));
+            add(new Permission(EHRRole.REQUESTER, EHRQCState.REQUEST_SAMPLE_DELIVERED, "insert"));
             add(new Permission(EHRRole.REQUESTER, EHRQCState.REQUEST_PENDING, "update"));
+            add(new Permission(EHRRole.REQUESTER, EHRQCState.REQUEST_SAMPLE_DELIVERED, "update"));
             //add(new Permission(EHRRole.REQUESTER, EHRQCState.REQUEST_DENIED, "insert"));
             add(new Permission(EHRRole.REQUESTER, EHRQCState.REQUEST_DENIED, "update"));
 
@@ -890,6 +903,7 @@ public class EHRApiTest extends AbstractEHRTest
             //add(new Permission(EHRRole.FULL_SUBMITTER, EHRQCState.REQUEST_COMPLETE, "insert"));
             add(new Permission(EHRRole.FULL_SUBMITTER, EHRQCState.REQUEST_DENIED, "insert"));
             add(new Permission(EHRRole.FULL_SUBMITTER, EHRQCState.REQUEST_PENDING, "insert"));
+            add(new Permission(EHRRole.FULL_SUBMITTER, EHRQCState.REQUEST_SAMPLE_DELIVERED, "insert"));
             add(new Permission(EHRRole.FULL_SUBMITTER, EHRQCState.REVIEW_REQUIRED, "insert"));
             add(new Permission(EHRRole.FULL_SUBMITTER, EHRQCState.SCHEDULED, "insert"));
 
@@ -901,6 +915,7 @@ public class EHRApiTest extends AbstractEHRTest
             //add(new Permission(EHRRole.FULL_SUBMITTER, EHRQCState.REQUEST_COMPLETE, "update"));
             add(new Permission(EHRRole.FULL_SUBMITTER, EHRQCState.REQUEST_DENIED, "update"));
             add(new Permission(EHRRole.FULL_SUBMITTER, EHRQCState.REQUEST_PENDING, "update"));
+            add(new Permission(EHRRole.FULL_SUBMITTER, EHRQCState.REQUEST_SAMPLE_DELIVERED, "update"));
             add(new Permission(EHRRole.FULL_SUBMITTER, EHRQCState.REVIEW_REQUIRED, "update"));
             add(new Permission(EHRRole.FULL_SUBMITTER, EHRQCState.SCHEDULED, "update"));
 
@@ -912,6 +927,7 @@ public class EHRApiTest extends AbstractEHRTest
             //add(new Permission(EHRRole.FULL_SUBMITTER, EHRQCState.REQUEST_COMPLETE, "delete"));
             add(new Permission(EHRRole.FULL_SUBMITTER, EHRQCState.REQUEST_DENIED, "delete"));
             add(new Permission(EHRRole.FULL_SUBMITTER, EHRQCState.REQUEST_PENDING, "delete"));
+            add(new Permission(EHRRole.FULL_SUBMITTER, EHRQCState.REQUEST_SAMPLE_DELIVERED, "delete"));
             //add(new Permission(EHRRole.FULL_SUBMITTER, EHRQCState.REVIEW_REQUIRED, "delete"));
             add(new Permission(EHRRole.FULL_SUBMITTER, EHRQCState.SCHEDULED, "delete"));
 
@@ -919,6 +935,7 @@ public class EHRApiTest extends AbstractEHRTest
             add(new Permission(EHRRole.BASIC_SUBMITTER, EHRQCState.IN_PROGRESS, "insert"));
             add(new Permission(EHRRole.BASIC_SUBMITTER, EHRQCState.REVIEW_REQUIRED, "insert"));
             add(new Permission(EHRRole.BASIC_SUBMITTER, EHRQCState.REQUEST_PENDING, "insert"));
+            add(new Permission(EHRRole.BASIC_SUBMITTER, EHRQCState.REQUEST_SAMPLE_DELIVERED, "insert"));
             add(new Permission(EHRRole.BASIC_SUBMITTER, EHRQCState.DELETE_REQUESTED, "insert"));
             //request approved: none
             add(new Permission(EHRRole.BASIC_SUBMITTER, EHRQCState.REQUEST_DENIED, "insert"));
@@ -928,6 +945,7 @@ public class EHRApiTest extends AbstractEHRTest
             add(new Permission(EHRRole.BASIC_SUBMITTER, EHRQCState.IN_PROGRESS, "update"));
             add(new Permission(EHRRole.BASIC_SUBMITTER, EHRQCState.REVIEW_REQUIRED, "update"));
             add(new Permission(EHRRole.BASIC_SUBMITTER, EHRQCState.REQUEST_PENDING, "update"));
+            add(new Permission(EHRRole.BASIC_SUBMITTER, EHRQCState.REQUEST_SAMPLE_DELIVERED, "update"));
             add(new Permission(EHRRole.BASIC_SUBMITTER, EHRQCState.DELETE_REQUESTED, "update"));
             //request approved: none
             add(new Permission(EHRRole.BASIC_SUBMITTER, EHRQCState.REQUEST_DENIED, "update"));
@@ -945,6 +963,7 @@ public class EHRApiTest extends AbstractEHRTest
             //add(new Permission(EHRRole.REQUEST_ADMIN, EHRQCState.REQUEST_COMPLETE, "insert"));
             add(new Permission(EHRRole.REQUEST_ADMIN, EHRQCState.REQUEST_DENIED, "insert"));
             add(new Permission(EHRRole.REQUEST_ADMIN, EHRQCState.REQUEST_PENDING, "insert"));
+            add(new Permission(EHRRole.REQUEST_ADMIN, EHRQCState.REQUEST_SAMPLE_DELIVERED, "insert"));
             add(new Permission(EHRRole.REQUEST_ADMIN, EHRQCState.REVIEW_REQUIRED, "insert"));
             add(new Permission(EHRRole.REQUEST_ADMIN, EHRQCState.SCHEDULED, "insert"));
 
@@ -956,6 +975,7 @@ public class EHRApiTest extends AbstractEHRTest
             //add(new Permission(EHRRole.REQUEST_ADMIN, EHRQCState.REQUEST_COMPLETE, "update"));
             add(new Permission(EHRRole.REQUEST_ADMIN, EHRQCState.REQUEST_DENIED, "update"));
             add(new Permission(EHRRole.REQUEST_ADMIN, EHRQCState.REQUEST_PENDING, "update"));
+            add(new Permission(EHRRole.REQUEST_ADMIN, EHRQCState.REQUEST_SAMPLE_DELIVERED, "update"));
             add(new Permission(EHRRole.REQUEST_ADMIN, EHRQCState.REVIEW_REQUIRED, "update"));
             add(new Permission(EHRRole.REQUEST_ADMIN, EHRQCState.SCHEDULED, "update"));
 
@@ -967,6 +987,7 @@ public class EHRApiTest extends AbstractEHRTest
             //add(new Permission(EHRRole.REQUEST_ADMIN, EHRQCState.REQUEST_COMPLETE, "delete"));
             add(new Permission(EHRRole.REQUEST_ADMIN, EHRQCState.REQUEST_DENIED, "delete"));
             add(new Permission(EHRRole.REQUEST_ADMIN, EHRQCState.REQUEST_PENDING, "delete"));
+            add(new Permission(EHRRole.REQUEST_ADMIN, EHRQCState.REQUEST_SAMPLE_DELIVERED, "delete"));
             //add(new Permission(EHRRole.REQUEST_ADMIN, EHRQCState.REVIEW_REQUIRED, "delete"));
             add(new Permission(EHRRole.REQUEST_ADMIN, EHRQCState.SCHEDULED, "delete"));
         }

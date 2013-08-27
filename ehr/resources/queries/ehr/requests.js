@@ -6,10 +6,6 @@
 
 require("ehr/triggers").initScript(this);
 
-function onUpsert(context, errors, row, oldRow){
-    row.title = row.title || '';
-}
-
 function setDescription(row, errors){
     //we need to set description for every field
     var description = new Array();

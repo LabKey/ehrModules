@@ -309,7 +309,7 @@ Ext.extend(EHR.ext.ImportPanel.Base, Ext.Panel, {
     applyTemplates: function(templates)
     {
         Ext.each(templates, function(obj){
-            EHR.Utils.loadTemplateByName(obj.title, obj.storeId);
+            EHR.Ext3Utils.loadTemplateByName(obj.title, obj.storeId);
         }, this);
     },
 

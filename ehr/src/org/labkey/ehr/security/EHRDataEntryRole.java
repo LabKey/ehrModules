@@ -15,12 +15,11 @@
  */
 package org.labkey.ehr.security;
 
+import org.labkey.api.ehr.security.EHRDataEntryPermission;
 import org.labkey.api.security.permissions.DeletePermission;
 import org.labkey.api.security.permissions.InsertPermission;
 import org.labkey.api.security.permissions.ReadPermission;
 import org.labkey.api.security.permissions.UpdatePermission;
-import org.labkey.api.security.roles.AbstractRole;
-import org.labkey.ehr.EHRModule;
 
 /**
  * User: bimber

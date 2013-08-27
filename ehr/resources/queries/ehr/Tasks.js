@@ -6,17 +6,8 @@
 
 require("ehr/triggers").initScript(this);
 
-function onUpsert(context, errors, row, oldRow){
-    row.title = row.title || '';
-
+function onUpsert(helper, scriptErrors, row, oldRow){
     if(row.QCStateLabel && EHR.Server.Security.getQCStateByLabel(row.QCStateLabel).PublicData){
         row.datecompleted = new Date();
     }
 }
-
-//function setDescription(row, errors){
-//    //we need to set description for every field
-//    var description = new Array();
-//    return description;
-//}
-

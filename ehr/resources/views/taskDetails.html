@@ -1,6 +1,6 @@
 <script type="text/javascript">
 
-Ext.onReady(function(){
+Ext4.onReady(function(){
     var formType = LABKEY.ActionURL.getParameter('formtype');
     var formUUID = LABKEY.ActionURL.getParameter('taskid');
     var queryName = LABKEY.ActionURL.getParameter('queryName');
@@ -32,14 +32,14 @@ Ext.onReady(function(){
         else {
             alert('Must provide form type');
         }
-        return;
     }
-
-    renderTaskForm(formType);
+    else {
+        renderTaskForm(formType);
+    }
 
     function renderTaskForm(formType){
         var webpart = <%=webpartContext%>;
-        EHR.Utils.createImportPanel({
+        EHR.Ext3Utils.createImportPanel({
             panelType: 'TaskDetailsPanel',
             formUUID: formUUID,
             formType: formType,

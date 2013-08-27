@@ -33,7 +33,7 @@ public class ActiveAssignmentsDemographicsProvider extends AbstractListDemograph
 {
     public ActiveAssignmentsDemographicsProvider()
     {
-        super("Assignment", "activeAssignments");
+        super("study", "Assignment", "activeAssignments");
     }
 
     protected Set<FieldKey> getFieldKeys()

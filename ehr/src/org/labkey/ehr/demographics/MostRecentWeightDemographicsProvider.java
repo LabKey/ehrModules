@@ -34,7 +34,7 @@ public class MostRecentWeightDemographicsProvider extends AbstractDemographicsPr
 {
     public MostRecentWeightDemographicsProvider()
     {
-        super("demographicsMostRecentWeight");
+        super("study", "demographicsMostRecentWeight");
     }
 
     public String getName()
@@ -60,5 +60,11 @@ public class MostRecentWeightDemographicsProvider extends AbstractDemographicsPr
         SimpleFilter filter = super.getFilter(ids);
 
         return filter;
+    }
+
+    @Override
+    public boolean requiresRecalc(String schema, String query)
+    {
+        return ("study".equalsIgnoreCase(schema) && "Weight".equalsIgnoreCase(query));
     }
 }

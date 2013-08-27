@@ -51,10 +51,7 @@ Ext4.define('EHR.panel.DataEntryPanel', {
     },
 
     isDirty: function(){
-        var ret = this.storeCollection.isDirty();
-        console.log(ret);
-
-        return true;
+        return this.storeCollection.isDirty();
     },
 
     onStoreCollectionCommitComplete: function(sc, extraContext){
@@ -110,6 +107,7 @@ Ext4.define('EHR.panel.DataEntryPanel', {
         console.log(arguments);
         console.log('commit exception');
         Ext4.Msg.hide();
+        Ext4.Msg.alert('Error', 'There was an error saving the data');
     },
 
     onStoreCollectionServerDataChanged: function(sc, changed){
@@ -275,6 +273,11 @@ Ext4.define('EHR.panel.DataEntryPanel', {
 
         var hasPermission = true;
         Ext4.Object.each(permMap, function(schemaName, queries) {
+            // minor improvement.  non-study tables cannot have per-table permissions, so instead we check
+            // for the container-level DataEntryPermission
+            if (schemaName.toLowerCase() != 'study'){
+                permissionName = 'org.labkey.api.ehr.security.EHRDataEntryPermission';
+            }
             Ext4.Object.each(queries, function(queryName, permissions) {
                 if (!permissions[permissionName]){
                     hasPermission = false;

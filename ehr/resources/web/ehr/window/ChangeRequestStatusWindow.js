@@ -1,0 +1,189 @@
+/**
+ * @cfg dataRegionName
+ */
+Ext4.define('EHR.window.ChangeRequestStatusWindow', {
+    extend: 'Ext.window.Window',
+
+    fieldWidth: 360,
+    allowBlankQCState: false,
+
+    initComponent: function(){
+        LABKEY.ExtAdapter.apply(this, {
+            modal: true,
+            closeAction: 'destroy',
+            title: 'Change Request Status',
+            width: 400,
+            autoHeight: true,
+            items: [{
+                xtype: 'panel',
+                bodyStyle: 'padding: 5px;',
+                defaults: {
+                    border: false
+                },
+                items: [{
+                    xtype: 'form',
+                    itemId: 'theForm',
+                    items: this.getFormItems()
+                }]
+            }],
+            buttons: [{
+                text:'Submit',
+                itemId: 'submitBtn',
+                disabled: true,
+                scope: this,
+                handler: this.onSubmit
+            },{
+                text: 'Close',
+                handler: function(btn){
+                    btn.up('window').close();
+                }
+            }]
+        });
+
+        this.callParent();
+
+        this.on('render', function(){
+            this.setLoading(true);
+            this.loadData();
+        }, this, {single: true});
+    },
+
+    getFormItems: function(){
+        return [{
+            xtype: 'combo',
+            editable: false,
+            forceSelection: true,
+            fieldLabel: 'Status',
+            width: this.fieldWidth,
+            queryMode: 'local',
+            store: {
+                type: 'labkey-store',
+                schemaName: 'study',
+                queryName: 'qcstate',
+                columns: 'rowid,label',
+                sort: 'label',
+                filterArray: [LABKEY.Filter.create('label', 'Request', LABKEY.Filter.Types.STARTS_WITH)],
+                autoLoad: true
+            },
+            displayField: 'Label',
+            valueField: 'RowId',
+            itemId: 'qcstateField',
+            name: 'qcstate'
+        }]
+    },
+
+    loadData: function(){
+        var dataRegion = LABKEY.DataRegions[this.dataRegionName];
+        var checkedRows = dataRegion.getChecked();
+
+        LABKEY.Query.selectRows({
+            requiredVersion: 9.1,
+            schemaName: dataRegion.schemaName,
+            queryName: dataRegion.queryName,
+            columns: 'lsid,Id,date,requestid,taskid,qcstate,qcstate/label,qcstate/metadata/isRequest',
+            filterArray: [LABKEY.Filter.create('lsid', checkedRows.join(';'), LABKEY.Filter.Types.EQUALS_ONE_OF)],
+            scope: this,
+            success: this.onDataLoad,
+            failure: LDK.Utils.getErrorCallback()
+        });
+    },
+
+    onDataLoad: function(data){
+        this.setLoading(false);
+
+        if(!data.rows || !data.rows.length){
+            this.close();
+            Ext4.Msg.alert('Error', 'No records found');
+            return;
+        }
+
+        this.records = [];
+        var hasError = false;
+        Ext4.Array.forEach(data.rows, function(json){
+            var r = new LDK.SelectRowsRow(json);
+
+            if (!r.getValue('qcstate/metadata/isRequest')){
+                hasError = true;
+            }
+            else {
+                this.records.push(r);
+            }
+        }, this);
+
+        this.down('#submitBtn').setDisabled(false);
+
+        if (hasError){
+            Ext4.Msg.alert('Error', 'One or more records is not a request and will be skipped');
+        }
+
+        this.down('#theForm').insert(0, {
+            html: 'Total Selected: ' + this.records.length + '<br><br>',
+            border: false,
+            tag: 'div'
+        });
+
+    },
+
+    onSubmit: function(){
+        this.doSave(this.getRecords());
+    },
+
+    doSave: function(records){
+        if (!records || !records.length)
+            return;
+
+        Ext4.Msg.wait('Saving...');
+        var dataRegion = LABKEY.DataRegions[this.dataRegionName];
+        LABKEY.Query.updateRows({
+            schemaName: dataRegion.schemaName,
+            queryName: dataRegion.queryName,
+            rows: records,
+            scope: this,
+            failure: LDK.Utils.getErrorCallback(),
+            success: this.onUpdate
+        });
+    },
+
+    getRecords: function(){
+        var values = this.down('#theForm').getForm().getValues();
+        if(!this.allowBlankQCState && (!values || !values.qcstate)){
+            alert('Must choose a status');
+            return;
+        }
+
+        //it is important not to overwrite existing values if not selected
+        if (Ext4.isEmpty(values.qcstate)){
+            delete values.qcstate;
+        }
+
+        var toSave = [];
+        Ext4.each(this.records, function(r){
+            if (!this.allowBlankQCState)
+            //no need to update
+            if (!Ext4.isEmpty(values.qcstate) && r.getValue('qcstate') == values.qcstate){
+                console.log('skipping row');
+                return;
+            }
+
+            toSave.push(Ext4.apply({
+                lsid: r.getValue('lsid')
+            }, values));
+        }, this);
+
+        if (!toSave.length){
+            this.close();
+            Ext4.Msg.alert('Nothing To Save', 'There are no records to save');
+            return null;
+        }
+
+        return toSave;
+    },
+
+    onUpdate: function(){
+        Ext4.Msg.hide();
+        var dataRegion = LABKEY.DataRegions[this.dataRegionName];
+        dataRegion.selectNone();
+        dataRegion.refresh();
+        this.close();
+    }
+});

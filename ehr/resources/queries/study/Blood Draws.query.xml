@@ -27,6 +27,14 @@
                             <fkColumnName>value</fkColumnName>
                         </fk>
                     </column>
+                    <column columnName="chargetype">
+                        <columnTitle>Charge Type</columnTitle>
+                        <fk>
+                            <fkDbSchema>ehr_lookups</fkDbSchema>
+                            <fkTable>bloodChargeType</fkTable>
+                            <fkColumnName>value</fkColumnName>
+                        </fk>
+                    </column>
                     <column columnName="tube_type">
                         <columnTitle>Tube Type</columnTitle>
                     </column>
@@ -43,7 +51,8 @@
                         <columnTitle>Additional Services</columnTitle>
                     </column>
                     <column columnName="instructions">
-                        <columnTitle>Instructions</columnTitle>
+                        <columnTitle>Special Instructions</columnTitle>
+                        <inputType>textarea</inputType>
                     </column>
                     <column columnName="parentid">
                         <!--<fk>-->

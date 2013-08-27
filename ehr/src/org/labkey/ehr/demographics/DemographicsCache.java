@@ -16,6 +16,7 @@
 package org.labkey.ehr.demographics;
 
 import org.apache.log4j.Logger;
+import org.labkey.api.cache.CacheManager;
 import org.labkey.api.data.Container;
 import org.labkey.api.ehr.demographics.DemographicsProvider;
 import org.labkey.api.ehr.EHRService;
@@ -24,6 +25,7 @@ import org.labkey.api.security.User;
 import org.labkey.api.util.ConfigurationException;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -43,7 +45,10 @@ public class DemographicsCache
     private static final DemographicsCache _instance = new DemographicsCache();
     private static final Logger _log = Logger.getLogger(DemographicsCache.class);
 
-    private Map<String, AnimalRecord> _records = new HashMap<String, AnimalRecord>();
+    //track stats
+    private int _totalCached = 0;
+    private int _totalUncached = 0;
+    private int _cacheSize = 0;
 
     private DemographicsCache()
     {
@@ -63,20 +68,20 @@ public class DemographicsCache
 
     public List<AnimalRecord> getAnimals(Container c, User u, List<String> ids)
     {
-        //TODO: check security
+        //TODO: check security?
 
         List<AnimalRecord> records = new ArrayList<AnimalRecord>();
         Set<String> toCreate = new HashSet<String>();
         for (String id : ids)
         {
             String key = getCacheKey(c, id);
-            if (!_records.containsKey(key))
+            if (CacheManager.getSharedCache().get(key) == null)
             {
                 toCreate.add(id);
             }
             else
             {
-                records.add(_records.get(key));
+                records.add((AnimalRecord)CacheManager.getSharedCache().get(key));
             }
         }
 
@@ -88,25 +93,45 @@ public class DemographicsCache
         return records;
     }
 
+    public void reportDataChange(Container c, String schema, String query, List<String> ids)
+    {
+        for (DemographicsProvider p : EHRService.get().getDemographicsProviders(c))
+        {
+            if (p.requiresRecalc(schema, query))
+            {
+                uncacheRecords(c, ids);
+                break;
+            }
+        }
+    }
+
     private String getCacheKey(Container c, String id)
     {
-        return c.getId() + "||" + id;
+        return getClass().getName() + "||" + c.getId() + "||" + id;
     }
 
-    synchronized public void cacheRecord(AnimalRecord record)
+    synchronized public void cacheRecord(Container c, AnimalRecord record)
     {
-        _records.put(record.getId(), record);
+        _log.info("caching demographics record: " + record.getId());
+        CacheManager.getSharedCache().put(getCacheKey(record.getContainer(), record.getId()), record);
+        _totalCached++;
+        _cacheSize++;
     }
 
-    synchronized public void uncacheRecords(String... ids)
+    synchronized public void uncacheRecords(Container c, String... ids)
+    {
+        uncacheRecords(c, Arrays.asList(ids));
+    }
+
+    synchronized public void uncacheRecords(Container c, Collection<String> ids)
     {
         for (String id : ids)
         {
-            if (_records.containsKey(id))
-            {
-                _records.remove(id);
-            }
+            _log.info("attempting to uncache: " + id);
+            CacheManager.getSharedCache().remove(getCacheKey(c, id));
         }
+        _totalUncached += ids.size();
+        _cacheSize -= ids.size();
     }
 
     public List<AnimalRecord> createRecords(Container c, Collection<String> ids)
@@ -133,17 +158,38 @@ public class DemographicsCache
             }
         }
 
+        //NOTE: we want to keep track of attempt to find an ID.  requesting a non-existing ID still requires a query, so make note of the fact it doesnt exist
+        for (String id : ids)
+        {
+            if (!ret.containsKey(id))
+                ret.put(id, new HashMap<String, Object>());
+        }
+
         List<AnimalRecord> records = new ArrayList<AnimalRecord>();
         for (String id : ret.keySet())
         {
             Map<String, Object> props = ret.get(id);
             AnimalRecord record = AnimalRecord.create(c, id, props);
 
-            //NOTE: for now we wont cache yet
-            //cacheRecord(record);
+            cacheRecord(c, record);
             records.add(record);
         }
 
         return records;
+    }
+
+    public int getTotalCached()
+    {
+        return _totalCached;
+    }
+
+    public int getTotalUncached()
+    {
+        return _totalUncached;
+    }
+
+    public int getCacheSize()
+    {
+        return _cacheSize;
     }
 }

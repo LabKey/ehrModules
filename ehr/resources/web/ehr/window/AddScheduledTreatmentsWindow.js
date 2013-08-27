@@ -14,6 +14,7 @@ Ext4.define('EHR.window.AddScheduledTreatmentsWindow', {
     initComponent: function(){
         LABKEY.ExtAdapter.applyIf(this, {
             modal: true,
+            closeAction: 'destroy',
             title: 'Import Scheduled Treatments',
             border: true,
             bodyStyle: 'padding: 5px',
@@ -38,6 +39,7 @@ Ext4.define('EHR.window.AddScheduledTreatmentsWindow', {
                 itemId: 'timeField'
             },{
                 xtype: 'checkcombo',
+                forceSelection: true,
                 multiSelect: true,
                 fieldLabel: 'Category',
                 itemId: 'categoryField',
@@ -134,8 +136,8 @@ Ext4.define('EHR.window.AddScheduledTreatmentsWindow', {
             success: this.onSuccess,
             failure: LDK.Utils.getErrorCallback()
         });
-
     },
+
     onSuccess: function(results){
         if (!results || !results.rows || !results.rows.length){
             Ext4.Msg.hide();
@@ -154,8 +156,8 @@ Ext4.define('EHR.window.AddScheduledTreatmentsWindow', {
             row.date = row.getDateValue('date');
             var date = new Date();
 
-            //if retroactively entering, we take the time that record was ordered.  otherwise we use the current time
-            if(row.date.getDate() != date.getDate() || row.date.getMonth() != date.getMonth() || row.date.getFullYear() != date.getFullYear())
+            //if retroactively entering (more than 2 hours after the scheduled time), we take the time that record was scheduled to be administered.  otherwise we use the current time
+            if ((date.getTime() - row.date.getTime()) < (1000 * 60 * 60 * 2))
                 date = row.date;
 
             records.push(this.targetStore.createModel({
@@ -189,7 +191,7 @@ Ext4.define('EHR.window.AddScheduledTreatmentsWindow', {
 EHR.DataEntryUtils.registerGridButton('ADDTREATMENTS', function(config){
     return Ext4.Object.merge({
         text: 'Add Scheduled Treatments',
-        tooltip: 'Click to add a scheduled treatments',
+        tooltip: 'Click to automatically add scheduled treatments',
         handler: function(btn){
             var grid = btn.up('gridpanel');
             if(!grid.store || !grid.store.hasLoaded()){

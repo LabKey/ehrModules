@@ -33,7 +33,7 @@ public class ActiveTreatmentsDemographicsProvider extends AbstractListDemographi
 {
     public ActiveTreatmentsDemographicsProvider()
     {
-        super("Treatment Orders", "activeTreatments");
+        super("study", "Treatment Orders", "activeTreatments");
     }
 
     protected Set<FieldKey> getFieldKeys()

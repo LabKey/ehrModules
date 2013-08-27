@@ -15,6 +15,7 @@
  */
 package org.labkey.ehr.security;
 
+import org.labkey.api.ehr.security.*;
 import org.labkey.api.security.Group;
 import org.labkey.api.security.permissions.DeletePermission;
 import org.labkey.api.security.permissions.InsertPermission;
@@ -53,6 +54,9 @@ public class EHRFullSubmitterRole extends AbstractEHRDatasetRole
                 EHRRequestApprovedDeletePermission.class,
                 EHRRequestApprovedInsertPermission.class,
                 EHRRequestApprovedUpdatePermission.class,
+                EHRRequestSampleDeliveredInsertPermission.class,
+                EHRRequestSampleDeliveredUpdatePermission.class,
+                EHRRequestSampleDeliveredDeletePermission.class,
                 EHRRequestDeniedDeletePermission.class,
                 EHRRequestDeniedInsertPermission.class,
                 EHRRequestDeniedUpdatePermission.class,

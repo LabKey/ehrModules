@@ -17,6 +17,8 @@ Ext4.define('EHR.form.field.ProjectField', {
     editable: true,
     forceSelection: true,
 
+    onlyIncludeProjectsWithAssignments: false,
+
     initComponent: function(){
         LABKEY.ExtAdapter.apply(this, {
             displayField: 'displayName',
@@ -56,7 +58,7 @@ Ext4.define('EHR.form.field.ProjectField', {
             autoLoad: true
         };
 
-        if (this.onlyIncludeProtocolsWithAssignments){
+        if (this.onlyIncludeProjectsWithAssignments){
             storeCfg.filterArray.push(LABKEY.Filter.create('activeAssignments/activeAssignments', 0, LABKEY.Filter.Types.GT));
         }
 

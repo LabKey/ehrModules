@@ -47,6 +47,7 @@ Ext4.define('EHR.window.GetDistinctWindow', {
                 fieldLabel: 'Select Field',
                 itemId: 'field',
                 xtype: 'combo',
+                forceSelection: true,
                 displayField:'name',
                 valueField: 'value',
                 queryMode: 'local',
@@ -149,11 +150,7 @@ Ext4.define('EHR.window.GetDistinctWindow', {
         }
 
         var field = this.down('#field').getValue();
-        var selectorCols = !Ext4.isEmpty(dataRegion.selectorCols) ? dataRegion.selectorCols : dataRegion.pkCols;
-        LDK.Assert.assertNotEmpty('Unable to find selector columns for: ' + this.schemaName + '.' + this.queryName, selectorCols);
-
-        var colExpr = '(s.' + selectorCols.join(" || ',' || s.") + ')';
-        var sql = "SELECT DISTINCT s." + field + " as field FROM " + this.schemaName + ".\"" + this.queryName + "\" s WHERE " + colExpr + " IN ('" + checked.join("', '") + "')";
+        var sql = "SELECT DISTINCT s." + field + " as field FROM " + this.schemaName + ".\"" + this.queryName + "\" s " + LDK.Utils.getDataRegionWhereClause(dataRegion, 's');
 
         LABKEY.Query.executeSql({
             schemaName: 'study',

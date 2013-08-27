@@ -15,7 +15,7 @@ Ext4.define('EHR.window.SaveTemplateWindow', {
     extend: 'Ext.window.Window',
 
     initComponent: function(){
-        LABKEY.ExtAdapter.applyIf(this, {
+        LABKEY.ExtAdapter.applyIf (this, {
             modal: true,
             closeAction: 'destroy',
             title: 'Save As Template',
@@ -52,6 +52,7 @@ Ext4.define('EHR.window.SaveTemplateWindow', {
                     itemId: 'templateDescription'
                 },{
                     xtype: 'combo',
+                    forceSelection: true,
                     displayField: 'DisplayName',
                     valueField: 'UserId',
                     queryMode: 'local',
@@ -100,8 +101,6 @@ Ext4.define('EHR.window.SaveTemplateWindow', {
         this.on('show', function(){
             this.down('#templateName').focus(false, 50);
         }, this);
-
-        console.log(this.targetGrid.formConfig);
     },
 
     getTabs: function(){
@@ -109,12 +108,11 @@ Ext4.define('EHR.window.SaveTemplateWindow', {
 
         if (!this.targetGrid.store.getCount()){
             this.on('beforeshow', function(){
+                Ext4.Msg.alert('Error', 'There are no records to save.');
+
+                this.close();
                 return false;
             }, this, {single: true});
-
-            this.close();
-
-            Ext4.Msg.alert('Error', 'There are no records to save.');
         }
         else
             tabs.push(this.getTabForStore(this.targetGrid.store));
@@ -124,13 +122,13 @@ Ext4.define('EHR.window.SaveTemplateWindow', {
 
     getTabForStore: function(store){
         var count = store.getCount();
-        if(!count){
+        if (!count){
             return
         }
 
         return {
             xtype: 'panel',
-            title: this.targetGrid.formConfig.name + ': ' + count + ' Record' + (count==1 ? '' : 's'),
+            title: this.targetGrid.formConfig.label + ': ' + count + ' Record' + (count==1 ? '' : 's'),
             border: false,
             style: 'padding-bottom:10px;',
             storeId: store.storeId,
@@ -183,7 +181,7 @@ Ext4.define('EHR.window.SaveTemplateWindow', {
         var toAdd = [];
 
         store.getFields().each(function(f){
-            if(!f.hidden && f.shownInInsertView && f.allowSaveInTemplate!==false && f.allowDuplicate!==false){
+            if (!f.hidden && f.shownInInsertView && f.allowSaveInTemplate!==false && f.allowDuplicate!==false){
                 toAdd.push({
                     xtype: 'checkbox',
                     dataIndex: f.dataIndex,
@@ -209,19 +207,19 @@ Ext4.define('EHR.window.SaveTemplateWindow', {
             var selections = tab.down('#recordSelector').getValue().inputValue;
             var fields = tab.down('#fieldSelector').getValue().fields;
 
-            if(!fields.length)
+            if (!fields.length)
                 return;
 
-            if(selections == 'none')
+            if (selections == 'none')
                 return;
 
             var store = Ext4.StoreMgr.get(tab.storeId);
 
             var records = [];
-            if(selections == 'selected'){
+            if (selections == 'selected'){
                 records = this.grid.getSelectionModel().getSelections();
 
-                if(!records.length){
+                if (!records.length){
                     Ext4.Msg.hide();
                     Ext4.Msg.alert('Error', 'No records were selected in the grid');
                 }
@@ -232,7 +230,7 @@ Ext4.define('EHR.window.SaveTemplateWindow', {
             Ext4.Array.forEach(records, function(rec){
                 var json = {};
                 Ext4.Array.forEach(fields, function(chk){
-                    json[chk.dataIndex] = rec.get(chk.dataIndex);
+                    json[chk] = rec.get(chk);
                 }, this);
 
                 rows.push({
@@ -244,7 +242,7 @@ Ext4.define('EHR.window.SaveTemplateWindow', {
             }, this);
         }, this);
 
-        if(!rows.length){
+        if (!rows.length){
             Ext4.Msg.hide();
             Ext4.Msg.alert('Error', "No records selected");
             return;
@@ -264,7 +262,7 @@ Ext4.define('EHR.window.SaveTemplateWindow', {
                 description: this.down('#templateDescription').getValue(),
                 formType: this.formType
             }],
-            success: function(rows){return function(data){
+            success: function(data){
                 Ext4.Array.forEach(rows, function(r){
                     r.templateId = data.rows[0].entityid;
                 }, this);
@@ -278,7 +276,16 @@ Ext4.define('EHR.window.SaveTemplateWindow', {
                         Ext4.Msg.hide();
                     }
                 });
-            }}(rows),
+
+                //reload the templates btn, if present
+                var btn = this.targetGrid.down('#templatesBtn');
+                LDK.Assert.assertNotEmpty('Unable to find templatesBtn in SaveTemplateWindow', btn);
+                if (btn){
+                    btn.populateFromDatabase();
+                }
+
+                this.close();
+            },
             failure: LDK.Utils.getErrorCallback()
         });
     }

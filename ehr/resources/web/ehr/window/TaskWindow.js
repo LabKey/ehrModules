@@ -1,0 +1,29 @@
+Ext4.define('EHR.window.TaskWindow', {
+    extend: 'Ext.window.Window',
+
+    initComponent: function(){
+        LABKEY.ExtAdapter.apply(this, {
+            modal: true,
+            items: this.getItems(),
+            buttons: this.getButtons()
+        });
+
+        this.callParent(arguments);
+    },
+
+    getItems: function(){
+        return [{
+            xtype: 'ehr-taskdataentrypanel',
+            taskId: this.taskId
+        }]
+    },
+
+    getButtons: function(){
+        return [{
+            text: 'Close',
+            handler: function(btn){
+                btn.up('window').close();
+            }
+        }]
+    }
+});

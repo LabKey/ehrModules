@@ -88,7 +88,7 @@ Ext4.define('EHR.window.CompareWeightsWindow', {
             interval = interval / (1000 * 60 * 60 * 24);
             interval = Math.floor(interval);
 
-            var pct = EHR.Utils.roundNumber((((weight2-row.weight) / row.weight) * 100), 2);
+            var pct = Ext4.util.Format.round((((weight2-row.weight) / row.weight) * 100), 2);
 
             items.push({
                 html: interval + ''

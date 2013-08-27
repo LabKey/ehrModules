@@ -12,10 +12,11 @@ LABKEY.ExtAdapter.namespace('EHR.Security', 'EHR.Utils');
 */
 EHR.Security = new function(){
     /* private variables and functions */
-     var permissionMap;
-     var hasLoaded = false;
-     var schemaMap;
-     var qcMap;
+    var classPrefix = 'org.labkey.api.ehr.security';
+    var permissionMap;
+    var hasLoaded = false;
+    var schemaMap;
+    var qcMap;
 
      //A helper to return a map of QCStates and their properties.
     function getQCStateMap(config){
@@ -39,7 +40,7 @@ EHR.Security = new function(){
                     for (var i=0;i<data.rows.length;i++){
                         row = data.rows[i];
 
-                        var prefix = 'org.labkey.ehr.security.EHR'+(row.Label).replace(/[^a-zA-Z0-9-]/g, '');
+                        var prefix = classPrefix + '.EHR'+(row.Label).replace(/[^a-zA-Z0-9-]/g, '');
                         row.adminPermissionName = prefix+'AdminPermission';
                         row.insertPermissionName = prefix+'InsertPermission';
                         row.updatePermissionName = prefix+'UpdatePermission';
@@ -279,7 +280,19 @@ EHR.Security = new function(){
         },
 
          getPermissionName: function(qcLabel, permissionName){
-             return 'org.labkey.ehr.security.EHR'+(qcLabel).replace(/[^a-zA-Z0-9-]/g, '') + Ext4.String.capitalize(permissionName) + 'Permission';
+             return classPrefix + '.EHR'+(qcLabel).replace(/[^a-zA-Z0-9-]/g, '') + Ext4.String.capitalize(permissionName) + 'Permission';
+         },
+
+         /**
+          * Returns the package name, used as a prefix, to identify custom EHR permissions
+          * @returns {string}
+          */
+         getClassPrefix: function(){
+             return classPrefix;
+         },
+
+         Permissions: {
+             DATA_ENTRY: classPrefix + '.EHRDataEntryPermission'
          }
      }
 }

@@ -809,7 +809,7 @@ EHR.ext.HematologyExcelWin = Ext.extend(Ext.Panel, {
 //
 //                    value = value / Math.pow(10, decimals);
 //
-//                    value = EHR.Utils.roundNumber(value, decimals);
+//                    value = Ext4.util.Format.round(value, decimals);
 //                }
 //                else {
 //                    //alert('Value: '+value+' is not a number');

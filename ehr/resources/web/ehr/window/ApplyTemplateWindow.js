@@ -10,6 +10,7 @@
  *
  * @cfg targetGrid
  * @cfg formType
+ * @cfg defaultTemplate
  */
 Ext4.define('EHR.window.ApplyTemplateWindow', {
     extend: 'Ext.window.Window',
@@ -17,6 +18,7 @@ Ext4.define('EHR.window.ApplyTemplateWindow', {
     initComponent: function(){
         LABKEY.ExtAdapter.applyIf(this, {
             modal: true,
+            closeAction: 'destroy',
             border: true,
             bodyStyle: 'padding:5px',
             defaults: {
@@ -27,6 +29,8 @@ Ext4.define('EHR.window.ApplyTemplateWindow', {
             },
             items: [{
                 xtype: 'combo',
+                value: this.defaultTemplate,
+                forceSelection: true,
                 displayField: 'title',
                 valueField: 'entityid',
                 queryMode: 'local',
@@ -42,7 +46,8 @@ Ext4.define('EHR.window.ApplyTemplateWindow', {
                 }
             },{
                 xtype: 'checkbox',
-                fieldLabel: 'Customize Values',
+                fieldLabel: 'Bulk Edit Before Applying',
+                helpPopup: 'If checked, you will be prompted with a screen that lets you bulk edit the records that will be created.  This is often very useful when adding many similar records.',
                 itemId: 'customizeValues',
                 checked: false
             }],
@@ -111,7 +116,7 @@ Ext4.define('EHR.window.ApplyTemplateWindow', {
             }
 
             //also verify it is loaded
-            if (!store.getFields() || !store.getFields().getCount()){
+            if (store.loading || !store.getFields() || !store.getFields().getCount()){
                 store.on('load', function(){
                     this.onLoadTemplate(data);
                 }, this, {single: true, delay: 200});
@@ -133,36 +138,26 @@ Ext4.define('EHR.window.ApplyTemplateWindow', {
     customizeData: function(toAdd){
         Ext4.Msg.hide();
 
-        //create window
-        this.theWindow = Ext4.create('Ext.window.Window', {
-            closeAction:'hide',
-            title: 'Customize Values',
-            width: 350,
-            items: [{
-                xtype: 'tabpanel',
-                itemId: 'theForm',
-                activeTab: 0
-            }],
-            scope: this,
-            buttons: [{
-                text:'Submit',
-                disabled:false,
-                scope: this,
-                handler: this.onCustomize
-            },{
-                text: 'Close',
-                scope: this,
-                handler: function(){
-                    this.theWindow.hide();
-                }
-            }]
-        });
-
-        for (var i in toAdd){
-            this.addStore(i, toAdd[i]);
+        //TODO
+        var recMap = this.getRecordMap(toAdd);
+        var storeIds = Ext4.Object.getKeys(recMap);
+        LDK.Assert.assertEquality('Attempt to customize values on a template with more than 1 store.  The UI should prevent this.', 1, storeIds.length);
+        if (storeIds.length != 1){
+            Ext4.Msg.alert('Error', 'This type of template cannot be customized');
+            this.loadTemplateData(toAdd);
+            return;
         }
 
-        this.theWindow.show();
+        //create window
+        var records = recMap[storeIds[0]];
+        Ext4.create('EHR.window.BulkEditWindow', {
+            suppressConfirmMsg: true,
+            records: records,
+            targetStore: this.targetGrid.store,
+            formConfig: this.targetGrid.formConfig
+        }).show();
+        
+        this.close();
     },
 
     addStore: function(storeId, records){
@@ -224,16 +219,28 @@ Ext4.define('EHR.window.ApplyTemplateWindow', {
     },
 
     loadTemplateData: function(toAdd){
+        var recMap = this.getRecordMap(toAdd);
+        for (var i in toAdd){
+            var store = Ext4.StoreMgr.get(i);            
+            store.add(toAdd[i]);            
+        }
+
+        Ext4.Msg.hide();
+    },
+    
+    getRecordMap: function(toAdd){
+        var recMap = {};
+
         for (var i in toAdd){
             var store = Ext4.StoreMgr.get(i);
             var recs = [];
             Ext4.Array.forEach(toAdd[i], function(data){
                 recs.push(store.createModel(data));
             }, this);
-            store.add(recs)
+            recMap[store.storeId] = recs;
         }
 
-        Ext4.Msg.hide();
+        return recMap;        
     },
 
     onCustomize: function(){

@@ -35,6 +35,15 @@ EHR.model.DataModelManager.registerMetadata('Request', {
                 return v;
             }
         },
+        billedby: {
+            hidden: true
+        },
+        chargetype: {
+            hidden: true
+        },
+        caseno: {
+            hidden: true
+        },
         performedby: {
             hidden: true,
             allowBlank: true
@@ -42,44 +51,23 @@ EHR.model.DataModelManager.registerMetadata('Request', {
         remark: {
             hidden: true
         },
-//        daterequested: {
-//            editorConfig: {
-//                minValue: (new Date()).add(Date.DAY, 2)
-//            }
-//        },
         QCState: {
-            //defaultValue: 5,
-            setInitialValue: function(v){
+            getInitialValue: function(v){
                 var qc;
-                if(!v && EHR.Security.getQCStateByLabel('Request: Pending'))
+                if (!v && EHR.Security.getQCStateByLabel('Request: Pending'))
                     qc = EHR.Security.getQCStateByLabel('Request: Pending').RowId;
                 return v || qc;
             }
-        },
-        restraint: {
-            hidden: true
-        },
-        restraintDuration: {
-            hidden: true
         },
         'id/curlocation/location': {
             shownInGrid: false
         }
     },
     byQuery: {
-        'ehr.project': {
-            protocol: {
-                hidden: true
-            },
-            avail: {
-                hidden: true
-            }
-        },
         'ehr.requests': {
             daterequested: {
                 xtype: 'datefield',
                 extFormat: 'Y-m-d'
-                //nullable: false
             }
         },
         'study.Blood Draws': {
@@ -87,9 +75,6 @@ EHR.model.DataModelManager.registerMetadata('Request', {
                 defaultValue: LABKEY.Security.currentUser.displayName
             },
             daterequested: {
-                hidden: true
-            },
-            billedby: {
                 hidden: true
             },
             assayCode: {
@@ -107,13 +92,7 @@ EHR.model.DataModelManager.registerMetadata('Request', {
                     allowNegative: false,
                     listeners: {
                         change: function(field, val){
-                            var form = field.up('form');
-                            if(form){
-                                form.getForm().findField('quantity').calculateQuantity();
-                            }
-                            else {
-                                console.error('unable to find form')
-                            }
+                            EHR.DataEntryUtils.calculateQuantity(field, {num_tubes: val});
                         }
                     }
                 },
@@ -125,9 +104,7 @@ EHR.model.DataModelManager.registerMetadata('Request', {
                     allowNegative: false,
                     listeners: {
                         change: function(field, val){
-                            var form = field.up('form');
-                            if(form)
-                                form.getForm().findField('quantity').calculateQuantity();
+                            EHR.DataEntryUtils.calculateQuantity(field, {tube_vol: val});
                         }
                     }
                 }
@@ -141,7 +118,7 @@ EHR.model.DataModelManager.registerMetadata('Request', {
                         increment: 60
                     }
                 },
-                setInitialValue: function(v){
+                getInitialValue: function(v){
                     var date = (new Date()).add(Date.DAY, 2);
                     date.setHours(9);
                     date.setMinutes(30);

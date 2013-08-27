@@ -215,7 +215,7 @@ abstract public class AbstractEHRTest extends SimpleApiTestWD implements Advance
         ModulePropertyValue prop3 = new ModulePropertyValue("EHR", "/" + getProjectName(), "DefaultAnimalHistoryReport", "abstract");
         setModuleProperties(Arrays.asList(prop, prop2, prop3));
     }
-    
+
     @LogMethod
     protected void populateRecords() throws Exception
     {
@@ -368,11 +368,17 @@ abstract public class AbstractEHRTest extends SimpleApiTestWD implements Advance
             uncheckInheritedPermissions();
 
         setPermissions(DATA_ADMIN.getGroup(), "Editor");
+        setPermissions(DATA_ADMIN.getGroup(), "EHR Data Entry");
         setPermissions(REQUESTER.getGroup(), "Editor");
+        setPermissions(REQUESTER.getGroup(), "EHR Data Entry");
         setPermissions(BASIC_SUBMITTER.getGroup(), "Editor");
+        setPermissions(BASIC_SUBMITTER.getGroup(), "EHR Data Entry");
         setPermissions(FULL_SUBMITTER.getGroup(), "Editor");
+        setPermissions(FULL_SUBMITTER.getGroup(), "EHR Data Entry");
         setPermissions(FULL_UPDATER.getGroup(), "Editor");
+        setPermissions(FULL_UPDATER.getGroup(), "EHR Data Entry");
         setPermissions(REQUEST_ADMIN.getGroup(), "Editor");
+        setPermissions(REQUEST_ADMIN.getGroup(), "EHR Data Entry");
         savePermissions();
     }
 
@@ -543,6 +549,7 @@ abstract public class AbstractEHRTest extends SimpleApiTestWD implements Advance
         //REQUEST_COMPLETE("Request: Complete", "Request has been completed", true, false, true),
         REQUEST_DENIED("Request: Denied", "Request has been denied", true, false, true),
         REQUEST_PENDING("Request: Pending", "Part of a request that has not been approved", false, false, true),
+        REQUEST_SAMPLE_DELIVERED("Request: Sample Delivered", "Request where the sample is delivered", false, false, true),
         REVIEW_REQUIRED("Review Required", "Review is required prior to public release", false, false, false),
         SCHEDULED("Scheduled", "Record is scheduled, but not performed", true, true, false);
 

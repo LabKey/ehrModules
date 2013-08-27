@@ -2,10 +2,6 @@
     <metadata>
         <tables xmlns="http://labkey.org/data/xml">
             <table tableName="TasksByLocation" tableDbType="NOT_IN_DB">
-                <!--<tableUrl>/ehr/taskDetails.view?formtype=${formtype}&amp;taskid=${taskid}</tableUrl>-->
-                <!--<updateUrl>/ehr/manageTask.view?formtype=${formtype}&amp;taskid=${taskid}</updateUrl>-->
-                <!--<insertUrl>/ehr/manageTask.view</insertUrl>-->
-                <!--<titleColumn>RowId</titleColumn>-->
                 <columns>
                     <column columnName="taskid">
                         <columnTitle>Task Id</columnTitle>
@@ -15,7 +11,6 @@
                             <fkTable>tasks</fkTable>
                             <fkColumnName>taskid</fkColumnName>
                         </fk>
-                        <!--<url>/ehr/manageTask.view?formtype=${formtype}&amp;taskid=${taskid}</url>-->
                     </column>
                     <column columnName="formtype">
                         <isHidden>true</isHidden>
@@ -26,7 +21,6 @@
                             <fkTable>rooms</fkTable>
                             <fkColumnName>room</fkColumnName>
                         </fk>
-                        <!--<url>/EHR/cageDetails.view?room=${room}</url>-->
                     </column>
                     <column columnName="title">
                         <url>/ehr/taskDetails.view?formtype=${formtype}&amp;taskid=${taskid}</url>

@@ -16,6 +16,7 @@
 package org.labkey.ehr.security;
 
 import org.labkey.api.data.Container;
+import org.labkey.api.ehr.security.*;
 import org.labkey.api.module.ModuleLoader;
 import org.labkey.api.security.Group;
 import org.labkey.api.security.SecurableResource;
@@ -42,6 +43,9 @@ public class EHRDataAdminRole extends AbstractEHRDatasetRole
                 UpdatePermission.class,
                 DeletePermission.class,
 
+                EHRDataEntryPermission.class,
+                EHRRequestAdminPermission.class,
+
                 EHRAbnormalAdminPermission.class,
                 EHRAbnormalDeletePermission.class,
                 EHRAbnormalInsertPermission.class,
@@ -58,11 +62,14 @@ public class EHRDataAdminRole extends AbstractEHRDatasetRole
                 EHRInProgressDeletePermission.class,
                 EHRInProgressInsertPermission.class,
                 EHRInProgressUpdatePermission.class,
+                EHRRequestSampleDeliveredAdminPermission.class,
+                EHRRequestSampleDeliveredInsertPermission.class,
+                EHRRequestSampleDeliveredUpdatePermission.class,
+                EHRRequestSampleDeliveredDeletePermission.class,
                 EHRRequestApprovedAdminPermission.class,
                 EHRRequestApprovedDeletePermission.class,
                 EHRRequestApprovedInsertPermission.class,
                 EHRRequestApprovedUpdatePermission.class,
-                EHRRequestApprovedDeletePermission.class,
                 EHRRequestCompleteAdminPermission.class,
                 EHRRequestCompleteDeletePermission.class,
                 EHRRequestCompleteInsertPermission.class,

@@ -6,21 +6,17 @@
 
 require("ehr/triggers").initScript(this);
 
-//function onInit(event, context){
-//    context.extraContext.allowAnyId = true;
-//}
-
-function onUpsert(context, errors, row, oldRow){
-    //TODO: do we need this for every ETL record?
-    //NOTE: this should be getting set by the birth, death, arrival & departure tables
-    if(!row.calculated_status && context.extraContext.dataSource != 'etl'){
-        row = EHR.Server.Validation.updateStatusField([row.Id], row);
-    }
+function onInit(event, helper){
+    helper.setScriptOptions({
+        allowAnyId: true,
+        requiresStatusRecalc: false
+    });
 }
 
-function setDescription(row, errors){
-    //we need to set description for every field
-    var description = new Array();
-
-    return description;
+function onUpsert(helper, scriptErrors, row, oldRow){
+    //NOTE: this should be getting set by the birth, death, arrival & departure tables
+    //ALSO: it should be rare to insert directly into this table.  usually this record will be created by inserting into either birth or arrival
+    if (!row.calculated_status && !helper.isETL()){
+        row.calculated_status = helper.getJavaHelper().getCalculatedStatusValue(row.Id);
+    }
 }

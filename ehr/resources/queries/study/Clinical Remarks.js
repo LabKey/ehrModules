@@ -6,15 +6,17 @@
 
 require("ehr/triggers").initScript(this);
 
-function onInit(event, context){
-    context.allowDeadIds = true;
+function onInit(event, helper){
+    helper.setScriptOptions({
+        allowDeadIds: true
+    });
 }
 
-function onUpsert(context, errors, row, oldRow){
+function onUpsert(helper, scriptErrors, row, oldRow){
     //TODO: split by center
     if(!row.so && !row.s && !row.p2 && !row.a && !row.p && !row.remark){
-        EHR.Server.Validation.addError(errors, 'remark', 'Must enter at least one comment', 'WARN');
-        EHR.Server.Validation.addError(errors, 'so', 'Must enter at least one comment', 'WARN');
+        EHR.Server.Utils.addError(scriptErrors, 'remark', 'Must enter at least one comment', 'WARN');
+        EHR.Server.Utils.addError(scriptErrors, 'so', 'Must enter at least one comment', 'WARN');
     }
 
     //for compatibility with old system

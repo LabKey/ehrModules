@@ -4,15 +4,15 @@
  * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
  */
 
-var console = require("console");
-var LABKEY = require("labkey");
+var console = require('console');
+var LABKEY = require('labkey');
 
 var EHR = {};
 exports.EHR = EHR;
 
 
 EHR.Server = {};
-EHR.Server.Utils = require("ehr/utils").EHR.Server.Utils;
+EHR.Server.Utils = require('ehr/utils').EHR.Server.Utils;
 
 
 /**
@@ -31,20 +31,8 @@ EHR.Server.Security = new function(){
     var _qcByRowId;
     var _qcByLabel;
 
-    //private
-//    function getQcObject(qc){
-//        return {
-//            RowId: qc.getRowId(),
-//            Label: qc.getLabel(),
-//            PublicData: qc.isPublicData(),
-//            isRequest: qc.isRequest() ,
-//            allowFutureDates: qc.isAllowFutureDates()
-//        }
-//    }
-
-    function cacheQCStates()
-    {
-        var json = _helper.getQCStateJson();
+    function cacheQCStates(){
+        var json = _helper.getJavaHelper().getQCStateJson();
         _qcByRowId = {};
         _qcByLabel = {};
 
@@ -70,16 +58,12 @@ EHR.Server.Security = new function(){
          * described below.  The results are cached, and can be queried using the helpers EHR.Security.hasPermission() or EHR.Security.getQueryPermissions().
          * Pages expecting to enforce EHR-specific security should call .init() immediately on load.
          *
-         * @param config Configuration properties.
-         * @param [config.success] The success callback.  The callback will be called when the permission map has loaded.  No arguments are passed; however, EHR.Security.hasPermission() can be used to test permissions
-         * @param [config.failure] The failure callback.  The callback will be passed an Ext.Ajax.request error object
-         * @param [config.scope] The scope to be used in callbacks
+         * @param helper The scriptHelper
          */
-        init: function(scriptContext) {
-            if(scriptContext.verbosity > 0)
-                console.log('Caching security: ');
+        init: function(helper) {
+            _helper = helper;
 
-            _helper = scriptContext.helper;
+            helper.logDebugMsg('Caching security');
             cacheQCStates();
             hasLoaded = true;
         },
@@ -95,16 +79,16 @@ EHR.Server.Security = new function(){
         * all of the queries specified in the queries param
         */
         hasPermission: function(qcStateLabel, permission, queries){
-            if(!qcStateLabel || !permission)
-                throw "Must provide a QC State label and permission name";
+            if (!qcStateLabel || !permission)
+                throw 'Must provide a QC State label and permission name';
 
-            if(!hasLoaded)
-                throw "EHR.Security.init() has not been called or returned prior to this call";
+            if (!hasLoaded)
+                throw 'EHR.Security.init() has not been called or returned prior to this call';
 
-            if(queries && !LABKEY.ExtAdapter.isArray(queries))
+            if (queries && !LABKEY.ExtAdapter.isArray(queries))
                 queries = [queries];
 
-            if(!queries.length){
+            if (!queries.length){
                 console.error('Must provide an array of query objects');
                 return false;
             }
@@ -112,10 +96,10 @@ EHR.Server.Security = new function(){
             var result = true;
             LABKEY.ExtAdapter.each(queries, function(query){
                 //if this schema isnt present, it's not securable, so we allow anything
-                if(!schemaMap.schemas[query.schemaName])
+                if (!schemaMap.schemas[query.schemaName])
                     return true;
 
-                if(!schemaMap.schemas[query.schemaName].queries[query.queryName] ||
+                if (!schemaMap.schemas[query.schemaName].queries[query.queryName] ||
                    !schemaMap.schemas[query.schemaName].queries[query.queryName].permissionsByQCState[qcStateLabel] ||
                    !schemaMap.schemas[query.schemaName].queries[query.queryName].permissionsByQCState[qcStateLabel][permission]
                 ){
@@ -132,12 +116,12 @@ EHR.Server.Security = new function(){
          * @return {EHRQCState} An instance of the java class EHRQCState
          */
         getQCStateByLabel: function(label){
-            if(!hasLoaded)
-                throw "EHR.Security.init() has not been called or returned prior to this call";
+            if (!hasLoaded)
+                throw 'EHR.Security.init() has not been called or returned prior to this call';
 
             var qc = _qcByLabel[label];
-            if(!qc){
-                console.error('ERROR: QCLabel "'+label+'" not found');
+            if (!qc){
+                console.error('ERROR: QCLabel ' + label + ' not found');
                 return null;
             }
             return qc;
@@ -148,11 +132,11 @@ EHR.Server.Security = new function(){
         * @return {EHRQCState} An instance of the java class EHRQCState
         */
         getQCStateByRowId: function(rowid){
-            if(!hasLoaded)
-                throw "EHR.Security.init() has not been called or returned prior to this call";
+            if (!hasLoaded)
+                throw 'EHR.Security.init() has not been called or returned prior to this call';
 
            var qc = _qcByRowId[rowid];
-           if(!qc){
+           if (!qc){
                 console.error('ERROR: QC State associated with the rowId ' + rowid + ' not found');
                 return null;
             }
@@ -181,29 +165,29 @@ EHR.Server.Security = new function(){
          * @param {object}row The row object, as passed by LabKey
          * @param {object}oldRow The original row object (prior to update), as passed by LabKey
          */
-        verifyPermissions: function(event, scriptContext, row, oldRow){
-            EHR.Server.Security.normalizeQcState(scriptContext, row, oldRow);
-            return _helper.hasPermission(scriptContext.schemaName, scriptContext.queryName, event, oldRow ? oldRow.QCStateLabel :  null, row.QCStateLabel);
+        verifyPermissions: function(event, row, oldRow){
+            EHR.Server.Security.normalizeQcState(row, oldRow);
+            return _helper.getJavaHelper().hasPermission(_helper.getSchemaName(), _helper.getQueryName(), event, oldRow ? oldRow.QCStateLabel :  null, row.QCStateLabel);
         },
 
         /**
          *
          * @private
          */
-        normalizeQcState: function(scriptContext, row, oldRow){
-            if(!EHR.Server.Security.hasLoaded()){
-                EHR.Server.Security.init(scriptContext);
+        normalizeQcState: function(row, oldRow){
+            if (!EHR.Server.Security.hasLoaded()){
+                throw 'EHR.Server.Security.init() has not been called';
             }
 
             //first we normalize QCstate
-            if(oldRow){
-                if(oldRow.QCState){
+            if (oldRow){
+                if (oldRow.QCState){
                     var oldQc = EHR.Server.Security.getQCStateByRowId(oldRow.QCState);
-                    if(oldQc){
+                    if (oldQc){
                         oldRow.QCStateLabel = oldQc.Label;
                     }
                     else
-                        console.error('Unknown QCState: '+oldRow.QCState);
+                        console.error('Unknown QCState: ' +oldRow.QCState);
 
                     oldRow.QCState = null;
                 }
@@ -217,11 +201,11 @@ EHR.Server.Security = new function(){
 
             if (row.QCState){
                 var qc = EHR.Server.Security.getQCStateByRowId(row.QCState);
-                if(qc){
+                if (qc){
                     row.QCStateLabel = qc.Label;
                 }
                 else
-                    console.error('Unknown QCState: '+row.QCState);
+                    console.error('Unknown QCState: ' +row.QCState);
 
                 row.QCState = null;
             }
@@ -229,13 +213,12 @@ EHR.Server.Security = new function(){
                 //nothing needed
             }
             else {
-                if(scriptContext.extraContext.validateOnly)
-                {
+                if (_helper.isValidateOnly()){
                     row.QCStateLabel = 'In Progress';
                     row.QCState = null;
                 }
                 else {
-                    if(oldRow && oldRow.QCStateLabel){
+                    if (oldRow && oldRow.QCStateLabel){
                         row.QCStateLabel = oldRow.QCStateLabel;
                         row.QCState = oldRow.QCState;
                     }
@@ -248,22 +231,22 @@ EHR.Server.Security = new function(){
 
             //next we determine whether to use row-level QC or the global target QCState
             //for now we always prefer the global QC
-            if(scriptContext.extraContext.targetQC){
-                row.QCStateLabel = scriptContext.extraContext.targetQC;
+            if (_helper.getTargetQCStateLabel()){
+                row.QCStateLabel = _helper.getTargetQCStateLabel();
             }
 
             //flag public status of rows
-            if(oldRow && oldRow.QCStateLabel && row.QCStateLabel){
-                if(!EHR.Server.Security.getQCStateByLabel(oldRow.QCStateLabel).PublicData && EHR.Server.Security.getQCStateByLabel(row.QCStateLabel).PublicData)
+            if (oldRow && oldRow.QCStateLabel && row.QCStateLabel){
+                if (!EHR.Server.Security.getQCStateByLabel(oldRow.QCStateLabel).PublicData && EHR.Server.Security.getQCStateByLabel(row.QCStateLabel).PublicData)
                     row._becomingPublicData = true;
             }
 
-            if(row.QCStateLabel){
-                if(EHR.Server.Security.getQCStateByLabel(row.QCStateLabel).PublicData){
+            if (row.QCStateLabel){
+                if (EHR.Server.Security.getQCStateByLabel(row.QCStateLabel).PublicData){
                     row._publicData = true;
 
                     //a row can be directly inserted as public
-                    if(!oldRow)
+                    if (!oldRow)
                         row._becomingPublicData = true;
                 }
                 else {
@@ -272,12 +255,10 @@ EHR.Server.Security = new function(){
 
             }
 
-            if(oldRow && oldRow.QCStateLabel){
-                if(EHR.Server.Security.getQCStateByLabel(oldRow.QCStateLabel).PublicData)
+            if (oldRow && oldRow.QCStateLabel){
+                if (EHR.Server.Security.getQCStateByLabel(oldRow.QCStateLabel).PublicData)
                     oldRow._publicData = true;
             }
         }
     }
 }
-
-

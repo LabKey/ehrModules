@@ -60,6 +60,11 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             noDuplicateByDefault: true,
             extFormat: 'Y-m-d H:i'
         },
+        procedureid: {
+            columnConfig: {
+                width: 200
+            }
+        },
         date: {
             allowBlank: false,
             nullable: false,
@@ -96,7 +101,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             hidden: true
         },
         resultOORIndicator: {
-            hidden: true
+            hidden: false
         },
         quantityNumber: {
             hidden: true
@@ -109,7 +114,8 @@ EHR.model.DataModelManager.registerMetadata('Default', {
         },
         testid: {
             columnConfig: {
-                showLink: false
+                showLink: false,
+                width: 200
             }
         },
         begindate: {
@@ -140,29 +146,19 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 timeFormat: 'H:i'
             }
         },
-        cage: {
-            editorConfig: {
-                //TODO
-                listeners: {
-                    change: function(field, val){
-                        if(val && !isNaN(val)){
-                            var newVal = EHR.Utils.padDigits(val, 4);
-                            if(val != newVal)
-                                field.setValue(newVal);
-                        }
-                    }
-                }
-            }
-        },
         code: {
-            xtype: 'ehr-snomedcombo',
+            formEditorConfig: {
+                xtype: 'ehr-snomedcombo'
+            },
             columnConfig: {
                 width: 250,
                 showLink: false
             }
         },
         tissue: {
-            xtype: 'ehr-snomedcombo',
+            formEditorConfig: {
+                xtype: 'ehr-snomedcombo'
+            },
             editorConfig: {
                 defaultSubset: 'Organ/Tissue'
             },
@@ -174,7 +170,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
         performedby: {
             noSaveInTemplateByDefault: true,
             columnConfig: {
-                width: 65
+                width: 120
             },
             shownInGrid: false
         },
@@ -216,7 +212,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             facetingBehaviorType: "AUTO",
             getInitialValue: function(v){
                 var qc;
-                if(!v && EHR.Security.getQCStateByLabel('In Progress'))
+                if (!v && EHR.Security.getQCStateByLabel('In Progress'))
                     qc = EHR.Security.getQCStateByLabel('In Progress').RowId;
                 return v || qc;
             },
@@ -290,7 +286,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             shownInGrid: true,
             useNull: true,
             lookup: {
-                columns: 'project,account'
+                columns: 'project,displayName,protocol,account'
             },
             columnConfig: {
                 width: 120
@@ -317,7 +313,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                     return val || LABKEY.Security.currentUser.id
                 },
                 lookup: {
-                    sort: 'type,displayname'
+                    sort: 'Type,DisplayName'
                 },
                 editorConfig: {listWidth: 200}
             },
@@ -356,9 +352,8 @@ EHR.model.DataModelManager.registerMetadata('Default', {
         'ehr.requests': {
             requestid: {
                 getInitialValue: function(v, rec){
-                    v = v || rec.dataEntryPanel.formUUID || LABKEY.Utils.generateUUID();
-                    rec.dataEntryPanel.formUUID = v;
-                    rec.dataEntryPanel.formUUID = v;
+                    v = v || rec.dataEntryPanel.requestId || LABKEY.Utils.generateUUID();
+                    rec.dataEntryPanel.requestId = v;
                     return v;
                 },
                 hidden: true
@@ -392,6 +387,9 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             rowid: {
                 xtype: 'displayfield'
             },
+            pi: {
+                hidden: true
+            },
             formtype: {
                 xtype: 'displayfield',
                 hidden: true,
@@ -418,9 +416,37 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             species: {allowBlank: false},
             gender: {allowBlank: false}
         },
+        'study.Microbiology Results': {
+            tissue: {
+                formEditorConfig: {
+                    xtype: 'ehr-snomedcombo'
+                },
+                editorConfig: {
+                    defaultSubset: 'Organ/Tissue'
+                },
+                columnConfig: {
+                    width: 150,
+                    showLink: false
+                }
+            },
+            organism: {
+                formEditorConfig: {
+                    xtype: 'ehr-snomedcombo'
+                },
+                editorConfig: {
+                    defaultSubset: 'Organisms'
+                },
+                columnConfig: {
+                    width: 150,
+                    showLink: false
+                }
+            }
+        },
         'study.Parasitology Results': {
             organism: {
-                xtype: 'ehr-snomedcombo',
+                formEditorConfig: {
+                    xtype: 'ehr-snomedcombo'
+                },
                 editorConfig: {
                     defaultSubset: 'Parasitology Results'
                 }
@@ -438,7 +464,9 @@ EHR.model.DataModelManager.registerMetadata('Default', {
         },
         'study.Tissue Samples': {
             diagnosis: {
-                xtype: 'ehr-snomedcombo'
+                formEditorConfig: {
+                    xtype: 'ehr-snomedcombo'
+                }
             },
             performedby: {
                 hidden: true
@@ -494,7 +522,9 @@ EHR.model.DataModelManager.registerMetadata('Default', {
         },
         'study.Histology': {
             diagnosis: {
-                xtype: 'ehr-snomedcombo'
+                formEditorConfig: {
+                    xtype: 'ehr-snomedcombo'
+                }
             },
             slideNum: {
 
@@ -651,7 +681,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             serviceRequested: {
                 allowBlank: false,
                 columnConfig: {
-                    width: 180
+                    width: 250
                 },
                 editorConfig: {
                     plugins: ['ehr-usereditablecombo'],
@@ -660,31 +690,33 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                             if (!recs || recs.length != 1)
                                 return;
 
-                            var theForm = this.findParentByType('ehr-formpanel').getForm();
-                            theForm.findField('type').setValue(recs[0].get('dataset'));
+                            var params = {};
+                            if (recs[0].get('dataset'))
+                                params.type = recs[0].get('dataset');
 
-                            console.log(recs[0].get('dataset'))
+                            if (recs[0].get('chargetype'))
+                                params.chargetype = recs[0].get('chargetype');
+
+                            if (recs[0].get('sampletype'))
+                                params.sampletype = recs[0].get('sampletype');
+
+                            if (!LABKEY.Utils.isEmptyObj(params))
+                                EHR.DataEntryUtils.setSiblingFields(combo, params);
                         }
                     }
                 },
                 lookup: {
-                    schemaName: 'ehr_lookups',
-                    queryName: 'clinpath_tests',
-                    displayColumn: 'testname',
-                    keyColumn: 'testname',
-                    sort: 'testname',
+                    sort: 'servicename',
                     columns: '*'
                 }
             },
             project: {
-                allowBlank: true,
-                nullable: true
-            },
-            account: {
                 allowBlank: false
             },
             source: {
-                xtype: 'ehr-snomedcombo',
+                formEditorConfig: {
+                    xtype: 'ehr-snomedcombo'
+                },
                 editorConfig: {
                     defaultSubset: 'Organisms'
                 }
@@ -693,6 +725,9 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 showInGrid: false,
                 updateValueFromServer: true,
                 xtype: 'displayfield'
+            },
+            collectedby: {
+                shownInGrid: false
             }
         },
         'study.Treatment Orders': {
@@ -725,29 +760,10 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             CurrentCage: {lookups: false},
             volume: {
                 compositeField: 'Volume',
-                xtype: 'ehr-triggernumberfield',
+                xtype: 'ehr-drugvolumefield',
                 noDuplicateByDefault: true,
                 noSaveInTemplateByDefault: true,
                 editorConfig: {
-                    triggerCls: 'x4-form-search-trigger',
-                    onTriggerClick: function (){
-                        //recalculate amount if needed:
-                        var theForm = this.findParentByType('ehr-formpanel').getForm();
-                        var conc = theForm.findField('concentration').getValue();
-                        var val = this.getValue();
-
-                        if(!val || !conc){
-                            alert('Must supply volume and concentration');
-                            return;
-                        }
-
-                        if(val && conc){
-                            var amount = conc * val;
-                            var amountField = theForm.findField('amount');
-                            amountField.setValue(amount);
-                            amountField.fireEvent('change', amount, amountField.startValue);
-                        }
-                    },
                     decimalPrecision: 3
                 },
                 header: 'Vol',
@@ -780,19 +796,18 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                                 return;
 
                             var rec = recs[0];
-                            var theForm = this.findParentByType('ehr-formpanel').getForm();
-                            theForm.findField('amount_units').setValue(rec.get('numerator'));
-                            theForm.findField('conc_units').setValue(rec.get('unit'));
-                            theForm.findField('vol_units').setValue(rec.get('denominator'));
+                            var vals = {
+                                amount_units: rec.get('numerator'),
+                                vol_units: rec.get('denominator'),
+                                conc_units: rec.get('unit')
+                            }
 
-                            var doseField = theForm.findField('dosage_units');
-                            if(rec.get('numerator'))
-                                doseField.setValue(rec.get('numerator')+'/kg');
+                            if (rec.get('numerator'))
+                                vals.dosage_units = rec.get('numerator')+'/kg';
                             else
-                                doseField.setValue('');
+                                vals.dosage_units = null;
 
-                            doseField.fireEvent('change', doseField.getValue(), doseField.startValue);
-
+                            EHR.DataEntryUtils.setSiblingFields(combo, vals);
                         }
                     }
                 }
@@ -803,7 +818,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 noSaveInTemplateByDefault: true,
                 //,allowBlank: false
                 columnConfig: {
-                    width: 110
+                    width: 120
                 },
                 editorConfig: {
                     decimalPrecision: 3
@@ -812,7 +827,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             amount_units: {
                 compositeField: 'Amount',
                 columnConfig: {
-                    width: 110
+                    width: 120
                 }
             },
             route: {shownInGrid: false},
@@ -825,6 +840,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             },
             dosage: {
                 xtype: 'ehr-drugdosefield',
+                msgTarget: 'under',
                 shownInGrid: false,
                 compositeField: 'Dosage',
                 editorConfig: {
@@ -843,54 +859,6 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             },
             qualifier: {
                 shownInGrid: false
-            },
-            meaning: {
-                shownInGrid: false,
-                lookup: {
-                    schemaName: 'ehr_lookups',
-                    queryName: 'treatment_codes',
-                    displayColumn: 'meaning',
-                    keyColumn: 'meaning',
-                    sort: 'category,meaning',
-                    columns: '*'
-                },
-                editorConfig: {
-                    tpl : function(){
-                        var tpl = new Ext.XTemplate(
-                                '<tpl for=".">' +
-                                        '<div class="x-combo-list-item">{[ values["category"] ? "<b>"+values["category"]+":</b> "  : "" ]}{[ values["meaning"] ]}' +
-                                        '&nbsp;</div></tpl>'
-                        );
-                        return tpl.compile()
-                    }(),
-                    listeners: {
-                        select: function(combo, recs){
-                            if (!recs || recs.length != 1)
-                                return;
-
-                            var rec = recs[0];
-                            var theForm = this.findParentByType('ehr-formpanel').getForm();
-
-                            theForm.findField('route').setValue(rec.get('route'));
-                            theForm.findField('qualifier').setValue(rec.get('qualifier'));
-                            theForm.findField('code').setValue(rec.get('code'));
-                            theForm.findField('frequency').setValue(rec.get('frequency'));
-
-                            theForm.findField('amount_units').setValue(rec.get('amount_units'));
-                            theForm.findField('conc_units').setValue(rec.get('conc_units'));
-                            theForm.findField('vol_units').setValue(rec.get('vol_units'));
-                            theForm.findField('dosage_units').setValue(rec.get('dosage_units'));
-
-                            theForm.findField('amount').setValue(rec.get('amount'));
-                            theForm.findField('concentration').setValue(rec.get('concentration'));
-                            theForm.findField('volume').setValue(rec.get('volume'));
-
-                            var doseField = theForm.findField('dosage');
-                            doseField.setValue(rec.get('dosage'));
-                            doseField.fireEvent('change', doseField.getValue(), doseField.startValue);
-                        }
-                    }
-                }
             },
             remark: {
                 shownInGrid: false
@@ -911,7 +879,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 allowBlank: false,
                 xtype: 'combo',
                 lookup: {
-                    filterArray: [LABKEY.Filter.create('protocol/protocol', null, LABKEY.Filter.Types.NONBLANK)],
+                    filterArray: [LABKEY.Filter.create('protocol/protocol/isActive', true, LABKEY.Filter.Types.EQUALS)],
                     columns: 'project,protocol,account'
                 }
             },
@@ -924,7 +892,52 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 extFormat: 'Y-m-d'
             }
         },
+        'study.Misc Tests': {
+            result: {
+                compositeField: 'Numeric Result'
+            },
+            units: {
+                compositeField: 'Numeric Result'
+            },
+            category: {
+                hidden: true
+            },
+            code: {
+                editorConfig: {
+                    defaultSubset: 'Organ/Tissue'
+                }
+            }
+        },
+        'study.Serology Results': {
+            definitive: {
+                hidden: true
+            },
+            category: {
+                hidden: true
+            },
+            agent: {
+                formEditorConfig: {
+                    xtype: 'ehr-snomedcombo'
+                },
+                editorConfig: {
+                    defaultSubset: 'Organisms'
+                },
+                columnConfig: {
+                    width: 150,
+                    showLink: false
+                }
+            },
+            numericresult: {
+                compositeField: 'Numeric Result'
+            },
+            units: {
+                compositeField: 'Numeric Result'
+            }
+        },
         'study.Chemistry Results': {
+            category: {
+                hidden: true
+            },
             resultOORIndicator: {
                 label: 'Result',
                 shownInGrid: false,
@@ -945,10 +958,13 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                     decimalPrecision: 4
                 }
             },
+            units: {
+                compositeField: 'Result',
+                width: 40
+            },
             testid: {
                 lookup: {
-                    columns: '*',
-                    filterArray: [LABKEY.Filter.create('categories', 'chemistry', LABKEY.Filter.Types.CONTAINS)]
+                    columns: '*'
                 },
                 editorConfig: {
                     plugins: ['ehr-usereditablecombo'],
@@ -958,10 +974,9 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                                 return;
 
                             var rec = recs[0];
-                            var theForm = this.findParentByType('ehr-formpanel').getForm();
-                            var unitField = theForm.findField('units');
-                            unitField.setValue(rec.get('units'));
-                            unitField.fireEvent('change', unitField.getValue(), unitField.startValue);
+                            EHR.DataEntryUtils.setSiblingFields(combo, {
+                                units: rec.get('units')
+                            });                            
                         }
                     }
                 }
@@ -978,10 +993,18 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             }
         },
         'study.Hematology Results': {
+            resultOORIndicator: {
+                hidden: true
+            },
+            result: {
+                compositeField: 'Result'
+            },
+            units: {
+                compositeField: 'Result'
+            },
             testid: {
                 lookup: {
-                    columns: '*',
-                    filterArray: [LABKEY.Filter.create('categories', 'hematology', LABKEY.Filter.Types.CONTAINS)]
+                    columns: '*'
                 },
                 editorConfig: {
                     plugins: ['ehr-usereditablecombo'],
@@ -990,11 +1013,9 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                             if (!recs || recs.length != 1)
                                 return;
 
-                            var rec = recs[0];
-                            var theForm = this.findParentByType('ehr-formpanel').getForm();
-                            var unitField = theForm.findField('units');
-                            unitField.setValue(rec.get('units'));
-                            unitField.fireEvent('change', unitField.getValue(), unitField.startValue);
+                            EHR.DataEntryUtils.setSiblingFields(combo, {
+                                units: recs[0].get('units')                            
+                            });
                         }
                     }
                 }
@@ -1031,10 +1052,12 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                     decimalPrecision: 4
                 }
             },
+            units: {
+                compositeField: 'Result'
+            },
             testid: {
                 lookup: {
-                    columns: '*',
-                    filterArray: [LABKEY.Filter.create('categories', 'urinalysis', LABKEY.Filter.Types.CONTAINS)]
+                    columns: '*'
                 },
                 editorConfig: {
                     plugins: ['ehr-usereditablecombo'],
@@ -1044,10 +1067,9 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                                 return;
 
                             var rec = recs[0];
-                            var theForm = this.findParentByType('ehr-formpanel').getForm();
-                            var unitField = theForm.findField('units');
-                            unitField.setValue(rec.get('units'));
-                            unitField.fireEvent('change', unitField.getValue(), unitField.startValue);
+                            EHR.DataEntryUtils.setSiblingFields(combo, {
+                                units: rec.get('units')
+                            });                            
                         }
                     }
                 }
@@ -1097,18 +1119,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             },
             initialCage: {
                 hidden: false,
-                allowBlank: false,
-                editorConfig: {
-                    listeners: {
-                        change: function(field, val){
-                            if(val && !isNaN(val)){
-                                var newVal = EHR.Utils.padDigits(val, 4);
-                                if(val != newVal)
-                                    field.setValue(newVal);
-                            }
-                        }
-                    }
-                }
+                allowBlank: false
             },
             initialCond: {hidden: false}
         },
@@ -1162,13 +1173,17 @@ EHR.model.DataModelManager.registerMetadata('Default', {
         'study.Blood Draws' : {
             billedby: {shownInGrid: false},
             remark: {shownInGrid: false},
-            project: {shownInGrid: false, allowBlank: false},
+            project: {allowBlank: false},
             requestor: {shownInGrid: false, hidden: true, formEditorConfig:{readOnly: true}},
-            performedby: {shownInGrid: false},
-            instructions: {shownInGrid: false},
+            performedby: {shownInGrid: true},
+            instructions: {
+                shownInGrid: true,
+                columnConfig: {
+                    width: 200
+                }
+            },
             additionalServices: {
-                xtype: 'combo',
-                multiSelect: true,
+                xtype: 'checkcombo',
                 hasOwnTpl: true,
                 includeNullRecord: false,
                 lookup: {
@@ -1179,6 +1194,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 },
                 editorConfig: {
                     tpl: null,
+                    multiSelect: true,
                     separator: ';'
                 },
                 columnConfig: {
@@ -1192,25 +1208,34 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                     queryName: 'blood_draw_tube_type',
                     displayColumn: 'type',
                     keyColumn: 'type',
-                    columns: 'type,volume'
+                    columns: 'type,volume,color'
                 },
                 editorConfig: {
-                    plugins: ['ehr-usereditablecombo'],
+//                    plugins: ['ehr-usereditablecombo', 'combo-autowidth'],
+                    listConfig: {
+                        innerTpl: '{[(values.type) + (values.color ? " (" + values.color + ")" : "")]}',
+                        getInnerTpl: function(){
+                            return this.innerTpl;
+                        }
+                    },
                     listeners: {
                         select: function(field, recs){
                             if (!recs || recs.length != 1)
                                 return;
 
-                            var rec = recs[0];
-                            var theForm = field.up('form').getForm();
-                            if (!theForm){
-                                console.error('no form found');
-                                return;
-                            }
+                            var record = EHR.DataEntryUtils.getBoundRecord(field);
+                            if (record){
+                                var rec = recs[0];
+                                var meta = record.store.model.prototype.fields.get('tube_vol');
+                                var storeId = LABKEY.ext.Ext4Helper.getLookupStoreId(meta);
+                                var store = Ext4.StoreMgr.get(storeId);
+                                LDK.Assert.assertNotEmpty('Unable to find store with Id: ' + storeId, store);
 
-                            var tube_vol = theForm.findField('tube_vol');
-                            tube_vol.store.filterArray = [LABKEY.Filter.create('tube_types', rec.get('type'), LABKEY.Filter.Types.CONTAINS)];
-                            tube_vol.store.load();
+                                if (store){
+                                    store.filterArray = [LABKEY.Filter.create('tube_types', rec.get('type'), LABKEY.Filter.Types.CONTAINS)];
+                                    store.load();
+                                }
+                            }
                         }
                     }
                 },
@@ -1220,52 +1245,29 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 }
             },
             quantity: {
-                //xtype: 'displayfield',
                 shownInGrid: true,
                 allowBlank: false,
                 editorConfig: {
-                    allowNegative: false,
-                    calculateQuantity: function(){
-                        var parent = this.findParentByType('ehr-formpanel');
-                        if (!parent){
-                            return
-                        }
-
-                        var form = parent.getForm();
-                        if (!form){
-                            console.error('no form found');
-                            return;
-                        }
-
-                        var numTubes = form.findField('num_tubes').getValue();
-                        var tube_vol = form.findField('tube_vol').getValue();
-
-                        var quantity = numTubes*tube_vol;
-                        this.setValue(quantity);
-                        this.fireEvent('change', quantity, this.startValue);
-                    }
+                    allowNegative: false
                 }
             },
             num_tubes: {
                 xtype: 'ehr-triggernumberfield',
                 editorConfig: {
                     allowNegative: false,
+                    triggerToolTip: 'Click to calculate volume based on tube volume and number of tubes',
                     triggerCls: 'x4-form-search-trigger',
                     onTriggerClick: function(){
-                        var parent = this.findParentByType('ehr-formpanel');
-                        var theForm = parent.getForm();
+                        var record = EHR.DataEntryUtils.getBoundRecord(this);
+                        if (record){
+                            var tube_vol = record.get('tube_vol');
+                            if (!tube_vol || !this.getValue()){
+                                Ext4.Msg.alert('Error', 'Must enter tube volume and number of tubes');
+                                return;
+                            }
 
-                        var tube_vol = theForm.findField('tube_vol');
-
-                        if(!tube_vol.getValue() || !this.getValue()){
-                            Ext4.Msg.alert('Error', 'Must enter tube volume and number of tubes');
-                            return;
+                            EHR.DataEntryUtils.calculateQuantity(this);
                         }
-
-                        var quantity = tube_vol.getValue() * this.getValue();
-                        var quantityField = theForm.findField('quantity');
-                        quantityField.setValue(quantity);
-                        quantityField.fireEvent('change', quantity, quantityField.startValue);
                     }
                 },
                 allowBlank: true,
@@ -1277,6 +1279,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             },
             tube_vol: {
                 shownInGrid: true,
+                forceSelection: false,
                 editorConfig: {
                     plugins: ['ehr-usereditablecombo']
                 },
@@ -1324,6 +1327,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             remark: {shownInGrid: false},
             dosage: {
                 xtype: 'ehr-drugdosefield',
+                msgTarget: 'under',
                 shownInGrid: false,
                 compositeField: 'Dosage',
                 editorConfig: {
@@ -1356,18 +1360,18 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                                 return;
 
                             var rec = recs[0];
-                            var theForm = this.findParentByType('ehr-formpanel').getForm();
-                            theForm.findField('amount_units').setValue(rec.get('numerator'));
-                            theForm.findField('conc_units').setValue(rec.get('unit'));
-                            theForm.findField('vol_units').setValue(rec.get('denominator'));
-
-                            var doseField = theForm.findField('dosage_units');
-                            if(rec.get('numerator'))
-                                doseField.setValue(rec.get('numerator')+'/kg');
+                            var vals = {
+                                amount_units: rec.get('numerator'),
+                                conc_units: rec.get('unit'),
+                                vol_units: rec.get('denominator')                                
+                            };
+                            
+                            if (rec.get('numerator'))
+                                vals.dosage_units = rec.get('numerator')+'/kg';
                             else
-                                doseField.setValue('');
+                                vals.dosage_units = null;
 
-                            doseField.fireEvent('change', doseField.getValue(), doseField.startValue);
+                            EHR.DataEntryUtils.setSiblingFields(combo, vals);
                         }
                     }
                 }
@@ -1380,29 +1384,10 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             },
             volume: {
                 compositeField: 'Volume',
-                xtype: 'ehr-triggernumberfield',
+                xtype: 'ehr-drugvolumefield',
                 noDuplicateByDefault: true,
                 noSaveInTemplateByDefault: true,
                 editorConfig: {
-                    triggerCls: 'x4-form-search-trigger',
-                    onTriggerClick: function (field){
-                        //recalculate amount if needed:
-                        var theForm = field.up('form');
-                        var conc = theForm.down('#concentration').getValue();
-                        var val = field.getValue();
-
-                        if(!val || !conc){
-                            alert('Must supply volume and concentration');
-                            return;
-                        }
-
-                        if(val && conc){
-                            var amount = conc * val;
-                            var amountField = theForm.down('#amount');
-                            amountField.setValue(amount);
-                            amountField.fireEvent('change', amount, amountField.startValue);
-                        }
-                    },
                     decimalPrecision: 3
                 }
             },
@@ -1417,9 +1402,8 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 compositeField: 'Amount Given',
                 noDuplicateByDefault: true,
                 noSaveInTemplateByDefault: true,
-                //,allowBlank: false
                 columnConfig: {
-                    width: 90
+                    width: 120
                 },
                 editorConfig: {
                     decimalPrecision: 10
@@ -1428,7 +1412,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             amount_units: {
                 compositeField: 'Amount Given',
                 columnConfig: {
-                    width: 100
+                    width: 120
                 },
                 editorConfig: {
                     plugins: ['ehr-usereditablecombo']
@@ -1451,9 +1435,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             }
         },
         'study.Notes': {
-            performedby: {hidden: true},
-            project: {hidden: true},
-            account: {hidden: true}
+
         },
         'study.Problem List': {
             date: {
@@ -1472,9 +1454,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
         },
         'study.Clinical Observations': {
             observation: {
-                xtype: 'ehr-remoteradiogroup',
-                //defaultValue: 'Normal',
-                //allowBlank: false,
+                //xtype: 'ehr-remoteradiogroup',
                 includeNullRecord: false,
                 editorConfig: {columns: 2},
                 lookup: {
@@ -1511,17 +1491,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                     width: 40
                 }
             },
-            result1: {
-                columnConfig: {
-                    width: 40
-                }
-            },
-            result2: {
-                columnConfig: {
-                    width: 40
-                }
-            },
-            result3: {
+            result: {
                 columnConfig: {
                     width: 40
                 }
@@ -1555,7 +1525,6 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                     decimalPrecision: 4
                 }
             }
-            //,performedby: {allowBlank: true}
         },
         'study.Pairings': {
             pairingtype: {
@@ -1575,7 +1544,26 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                     width: 160,
                     showLink: false
                 }
+            },
+            room1: {
+                xtype: 'ehr-roomentryfield',
+                editorConfig: {
+                    idFieldIndex: 'Id',
+                    cageFieldIndex: 'cage1'
+                }
+            },
+            room2: {
+                xtype: 'ehr-roomentryfield',
+                editorConfig: {
+                    idFieldIndex: 'Id2',
+                    cageFieldIndex: 'cage2'
+                }
+            },
+            Id2: {
+                allowBlank: false
+                //xtype: 'ehr-roomentryfield'
             }
+
         }
     }
 });

@@ -60,20 +60,21 @@ EHR.DataEntryUtils = new function(){
         },
         ADDANIMALS: function(config){
             return Ext4.Object.merge({
-                text: 'Add Animals',
+                text: 'Add Batch',
                 tooltip: 'Click to add a batch of animals, either as a list or by location',
                 handler: function(btn){
                     var grid = btn.up('gridpanel');
 
                     Ext4.create('EHR.window.AddAnimalsWindow', {
-                        targetStore: grid.store
+                        targetStore: grid.store,
+                        formConfig: grid.formConfig
                     }).show();
                 }
             }, config);
         },
         COPYFROMCLINPATHRUNS: function(config){
             return Ext4.Object.merge({
-                text: 'Copy From Requests',
+                text: 'Copy From Above',
                 xtype: 'button',
                 tooltip: 'Click to copy records from the clinpath runs section',
                 handler: function(btn){
@@ -87,18 +88,12 @@ EHR.DataEntryUtils = new function(){
                     LDK.Assert.assertNotEmpty('Unable to find clinpath runs store in COPYFROMCLINPATHRUNS button', store);
 
                     if (store){
-                        var type = grid.title;
-                        store.each(function(r){
-                            if(r.get('type') == type){
-                                grid.store.add(grid.store.createModel({
-                                    Id: r.get('Id'),
-                                    date: r.get('date'),
-                                    runid: r.get('objectid')
-                                }));
-                            }
-                        }, this);
+                        Ext4.create('EHR.window.CopyFromRunsWindow', {
+                            targetGrid: grid,
+                            dataset: grid.title,
+                            runsStore: store
+                        }).show();
                     }
-
                 }
             });
         },
@@ -136,25 +131,78 @@ EHR.DataEntryUtils = new function(){
                 tooltip: 'Click to edit the selected rows in bulk',
                 handler: function(btn){
                     var grid = btn.up('gridpanel');
-                    //TODO
-                }
-            }, config);
-        },
-        APPLYTEMPLATE: function(config){
-            return Ext4.Object.merge({
-                text: 'Apply Template',
-                handler: function(btn){
-                    var grid = btn.up('gridpanel');
-                    Ext4.create('EHR.window.ApplyTemplateWindow', {
-                        targetGrid: grid,
-                        formType: grid.store.storeCollection.formConfig.name
+                    var selected = grid.getSelectionModel().getSelection();
+                    if (!selected || !selected.length){
+                        Ext4.Msg.alert('Error', 'No records selected');
+                        return;
+                    }
+
+                    Ext4.create('EHR.window.BulkEditWindow', {
+                        targetStore: grid.store,
+                        formConfig: grid.formConfig,
+                        records: selected
                     }).show();
                 }
             }, config);
         },
-        SAVEASTEMPLATE: function(config){
+        TEMPLATE: function(config){
             return Ext4.Object.merge({
-                text: 'Save As Template',
+                text: 'Templates',
+                itemId: 'templatesBtn',
+                listeners: {
+                    beforerender: function(btn){
+                        var grid = btn.up('gridpanel');
+                        LDK.Assert.assertNotEmpty('Unable to find gridpanel in TEMPLATE button', grid);
+
+                        btn.grid = grid;
+                        btn.formType = grid.store.storeCollection.formConfig.name;
+
+                        btn.populateFromDatabase.call(btn);
+                    }
+                },
+                populateFromDatabase: function(){
+                    LABKEY.Query.selectRows({
+                        schemaName: 'ehr',
+                        queryName: 'my_formtemplates',
+                        sort: 'title',
+                        autoLoad: true,
+                        filterArray: [LABKEY.Filter.create('formtype', this.formType, LABKEY.Filter.Types.EQUAL)],
+                        failure: LDK.Utils.getErrorCallback(),
+                        scope: this,
+                        success: this.onLoad
+                    });
+                },
+                onLoad: function(results){
+                    var btn = this.menu.items.get('templatesMenu');
+                    btn.menu.removeAll();
+
+                    var toAdd = [];
+                    if (results.rows && results.rows.length){
+                        Ext4.Array.forEach(results.rows, function(row){
+                            toAdd.push({
+                                text: row.title,
+                                templateId: row.entityid,
+                                scope: this,
+                                handler: function(menu){
+                                    Ext4.create('EHR.window.ApplyTemplateWindow', {
+                                        targetGrid: this.grid,
+                                        formType: this.formType,
+                                        defaultTemplate: menu.templateId
+                                    }).show();
+                                }
+                            })
+                        }, this);
+                    }
+                    else {
+                        toAdd.push({
+                            text: 'There are no saved templates'
+                        });
+                    }
+
+                    btn.menu.add(toAdd);
+                },
+                menu: [{
+                    text: 'Save As Template',
                     handler: function(btn){
                         var grid = btn.up('gridpanel');
                         Ext4.create('EHR.window.SaveTemplateWindow', {
@@ -162,6 +210,20 @@ EHR.DataEntryUtils = new function(){
                             formType: grid.store.storeCollection.formConfig.name
                         }).show();
                     }
+                },{
+                    text: 'Apply Template',
+                    handler: function(btn){
+                        var grid = btn.up('gridpanel');
+                        Ext4.create('EHR.window.ApplyTemplateWindow', {
+                            targetGrid: grid,
+                            formType: grid.store.storeCollection.formConfig.name
+                        }).show();
+                    }
+                },{
+                    text: 'Templates',
+                    itemId: 'templatesMenu',
+                    menu: []
+                }]
             }, config);
         }
     };
@@ -358,7 +420,7 @@ EHR.DataEntryUtils = new function(){
             targetQC: 'Request: Pending',
             requiredQC: 'Request: Pending',
             errorThreshold: 'WARN',
-            successURL: LABKEY.ActionURL.getParameter('srcURL') || LABKEY.ActionURL.buildURL('ehr', 'requestServices.view'),
+            successURL: LABKEY.ActionURL.getParameter('srcURL') || LABKEY.ActionURL.buildURL('ehr', 'serviceRequests.view'),
             disabled: true,
             itemId: 'requestBtn',
             handler: function(btn){
@@ -404,7 +466,7 @@ EHR.DataEntryUtils = new function(){
             col.header = meta.header || meta.caption || meta.label || meta.name;
 
             col.customized = true;
-            col.sortable = false;
+            col.sortable = true;
 
             col.hidden = meta.hidden;
             col.format = meta.extFormat;
@@ -466,11 +528,36 @@ EHR.DataEntryUtils = new function(){
                 return [val];
         },
 
+        setSiblingFields: function(cmp, vals){
+            var boundRecord;
+            var form = cmp.up('form');
+            if (form){
+                form.getForm().setValues(vals);
+            }
+            else {
+                var grid = cmp.up('grid');
+                if (grid){
+                    var records = grid.getSelectionModel().getSelection();
+                    if (records.length == 1){
+                        records[0].set(vals);
+                    }
+                    else {
+                        console.log('grid has more than 1 record selected, cannot select');
+                    }
+
+                }
+                else {
+                    console.log('unable to find grid or form to set');
+                }
+            }
+
+        },
+
         getBoundRecord: function(cmp){
             var boundRecord;
             var form = cmp.up('form');
             if (form)
-                boundRecord = form.boundRecord;
+                boundRecord = form.getBoundRecord();
             else {
                 var grid = cmp.up('grid');
                 if (grid){
@@ -480,7 +567,114 @@ EHR.DataEntryUtils = new function(){
                 }
             }
 
+            if (!boundRecord)
+                console.log('unable to find bound record');
+
             return boundRecord;
+        },
+
+        /**
+         * A utility that will load a EHR form template based on the title and storeId.  These correspond to records in ehr.formtemplates.
+         * @param {string} title The title of the template
+         * @param {string} storeId The storeId associated with the template
+         */
+        loadTemplateByName: function(title, storeId){
+            LABKEY.Query.selectRows({
+                schemaName: 'ehr',
+                queryName: 'formtemplates',
+                filterArray: [
+                    LABKEY.Filter.create('title', title, LABKEY.Filter.Types.EQUAL),
+                    LABKEY.Filter.create('storeId', storeId, LABKEY.Filter.Types.EQUAL)
+                ],
+                success: onLoadTemplate
+            });
+
+            function onLoadTemplate(data){
+                if(!data || !data.rows.length)
+                    return;
+
+                EHR.Utils.loadTemplate(data.rows[0].entityid)
+            }
+        },
+
+        /**
+         * A utility that will load a EHR form template based on the templateId.  These correspond to records in ehr.formtemplates.
+         * @param {string} templateId The templateId, which is the GUID of the corresponding record in ehr.formtemplates
+         */
+        loadTemplate: function(templateId){
+            if(!templateId)
+                return;
+
+            LABKEY.Query.selectRows({
+                schemaName: 'ehr',
+                queryName: 'formtemplaterecords',
+                filterArray: [LABKEY.Filter.create('templateId', templateId, LABKEY.Filter.Types.EQUAL)],
+                sort: '-rowid',
+                success: onLoadTemplate,
+                scope: this
+            });
+
+            Ext4.Msg.wait("Loading Template...");
+
+            function onLoadTemplate(data){
+                if(!data || !data.rows.length){
+                    Ext.Msg.hide();
+                    return;
+                }
+
+                var toAdd = {};
+
+                Ext4.each(data.rows, function(row){
+                    var data = Ext4.decode(row.json);
+                    var store = Ext.StoreMgr.get(row.storeid);
+
+                    //verify store exists
+                    if(!store){
+                        Ext.StoreMgr.on('add', function(){
+                            onLoadTemplate(data);
+                        }, this, {single: true, delay: 200});
+                        return false;
+                    };
+
+                    //also verify it is loaded
+                    if(!store.fields || !store.fields.length){
+                        store.on('load', function(){
+                            onLoadTemplate(data);
+                        }, this, {single: true, delay: 200});
+                        return false;
+                    };
+
+                    if(!toAdd[store.storeId])
+                        toAdd[store.storeId] = [];
+
+                    toAdd[store.storeId].push(data);
+                });
+
+                for (var i in toAdd){
+                    var store = Ext4.StoreMgr.get(i);
+                    toAdd[i].reverse();
+                    var recs = store.addRecords(toAdd[i])
+                }
+
+                Ext4.Msg.hide();
+            }
+        },
+
+        calculateQuantity: function(field, values){
+            values = values || {};
+            var record = EHR.DataEntryUtils.getBoundRecord(field);
+            if (!record){
+                return
+            }
+
+            var numTubes = Ext4.isDefined(values.num_tubes) ? values.num_tubes : record.get('num_tubes');
+            var tube_vol = Ext4.isDefined(values.tube_vol) ? values.tube_vol : record.get('tube_vol');
+
+            var quantity = numTubes * tube_vol;
+
+            EHR.DataEntryUtils.setSiblingFields(field, {
+                quantity: quantity
+            });
         }
     }
 };

@@ -55,19 +55,9 @@ EHR.model.DataModelManager.registerMetadata('Encounter', {
             hidden: true,
             shownInGrid: false
         },
-        account: {
-            inheritance: {
-                storeIdentifier: {queryName: 'Clinical Encounters', schemaName: 'study'},
-                sourceField: 'account',
-                recordSelector: {
-                    parentid: 'objectid'
-                }
-            },
-            hidden: true,
-            shownInGrid: false
-        },
         begindate: {
             getInitialValue: function(v, rec){
+                //TODO: review
                 var field = rec.fields.get('begindate');
                 var store = Ext.StoreMgr.get('study||Clinical Encounters||||');
                 if(store)

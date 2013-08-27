@@ -21,10 +21,12 @@ import org.labkey.api.action.ApiAction;
 import org.labkey.api.action.ApiResponse;
 import org.labkey.api.action.ApiSimpleResponse;
 import org.labkey.api.action.ConfirmAction;
+import org.labkey.api.action.SimpleErrorView;
 import org.labkey.api.action.SimpleViewAction;
 import org.labkey.api.action.SpringActionController;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.ContainerManager;
+import org.labkey.api.data.TableInfo;
 import org.labkey.api.ehr.EHRService;
 import org.labkey.api.ehr.history.HistoryRow;
 import org.labkey.api.ehr.dataentry.DataEntryForm;
@@ -49,7 +51,7 @@ import org.labkey.ehr.history.ClinicalHistoryManager;
 import org.labkey.ehr.history.LabworkManager;
 import org.labkey.ehr.pipeline.GeneticCalculationsJob;
 import org.labkey.ehr.pipeline.GeneticCalculationsRunnable;
-import org.labkey.ehr.security.EHRDataEntryPermission;
+import org.labkey.api.ehr.security.EHRDataEntryPermission;
 import org.springframework.validation.BindException;
 import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
@@ -537,7 +539,7 @@ public class EHRController extends SpringActionController
         public ModelAndView getView(Object form, BindException errors) throws Exception
         {
             StringBuilder msg = new StringBuilder();
-            msg.append("For each dataset, we expect to find a triger script and .query.xml file.  The following datasets lack one or more of these:<br><br>");
+            msg.append("For each dataset, we expect to find a trigger script and .query.xml file.  The following datasets lack one or more of these:<br><br>");
 
             List<String> messages = EHRManager.get().verifyDatasetResources(getContainer(), getUser());
             for (String message : messages)
@@ -764,6 +766,50 @@ public class EHRController extends SpringActionController
     }
 
     @RequiresPermissionClass(EHRDataEntryPermission.class)
+    public class GetDataEntryFormDetailsAction extends ApiAction<EnterDataForm>
+    {
+        public ApiResponse execute(EnterDataForm form, BindException errors)
+        {
+            Map<String, Object> props = new HashMap<String, Object>();
+
+            if (form.getFormType() == null && form.getTaskId() == null && form.getRequestId() == null)
+            {
+                errors.reject(ERROR_MSG, "Must provide either the form type, taskId or requestId");
+                return null;
+            }
+
+            String formType = form.getFormType();
+            if (formType == null && form.getTaskId() != null)
+            {
+                formType = EHRManager.get().getFormTypeForTask(getContainer(), getUser(), form.getTaskId());
+            }
+
+            if (formType == null && form.getRequestId() != null)
+            {
+                formType = EHRManager.get().getFormTypeForRequest(getContainer(), getUser(), form.getRequestId());
+            }
+
+            if (formType == null)
+            {
+                errors.reject(ERROR_MSG, "Unable to find formType for task: " + form.getTaskId());
+                return null;
+            }
+
+            DataEntryForm def = DataEntryManager.get().getFormByName(form.getFormType(), getContainer(), getUser());
+            if (def == null)
+            {
+                errors.reject(ERROR_MSG, "Unknown form type: " + form.getFormType());
+                return null;
+            }
+
+            props.put("success", true);
+            props.put("form", def.toJSON(getContainer(), getUser()));
+
+            return new ApiSimpleResponse(props);
+        }
+    }
+
+    @RequiresPermissionClass(EHRDataEntryPermission.class)
     public class DataEntryFormAction extends SimpleViewAction<EnterDataForm>
     {
         private String _title = null;
@@ -784,7 +830,7 @@ public class EHRController extends SpringActionController
                 if (def == null)
                 {
                     errors.reject(ERROR_MSG, "Unknown form type: " + form.getFormType());
-                    return null;
+                    return new SimpleErrorView(errors);
                 }
             }
             else
@@ -793,7 +839,7 @@ public class EHRController extends SpringActionController
                 if (def == null)
                 {
                     errors.reject(ERROR_MSG, "Unable to create form for query: " + form.getSchemaName() + "." + form.getQueryName());
-                    return null;
+                    return new SimpleErrorView(errors);
                 }
             }
 

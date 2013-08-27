@@ -8,6 +8,12 @@
                         <isKeyField>true</isKeyField>
                         <isHidden>true</isHidden>
                     </column>
+                    <column columnName="dateLastAssigned">
+                        <columnTitle>Date Last Group Assignment</columnTitle>
+                    </column>
+                    <column columnName="daysSinceLastAssignment">
+                        <columnTitle>Days Since Last Group Assignment</columnTitle>
+                    </column>
                 </columns>
             </table>
         </tables>

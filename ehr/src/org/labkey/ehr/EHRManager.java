@@ -32,6 +32,7 @@ import org.labkey.api.data.SqlSelector;
 import org.labkey.api.data.Table;
 import org.labkey.api.data.TableInfo;
 import org.labkey.api.data.TableSelector;
+import org.labkey.api.ehr.security.EHRCompletedInsertPermission;
 import org.labkey.api.exp.ChangePropertyDescriptorException;
 import org.labkey.api.exp.OntologyManager;
 import org.labkey.api.exp.PropertyDescriptor;
@@ -73,7 +74,10 @@ public class EHRManager
     public static final String EHRStudyContainerPropName = "EHRStudyContainer";
     public static final String EHRAdminUserPropName = "EHRAdminUser";
     public static final String EHRStudyLabel = "Primate Electronic Health Record";
-    public static final String SECURITY_PACKAGE = "org.labkey.ehr.security.EHR";
+    public static final String SECURITY_PACKAGE = EHRCompletedInsertPermission.class.getPackage().getName();
+
+    public static final String CAGE_HEIGHT_EXEMPTION_FLAG = "Height requirement, Cage Exception";
+    public static final String CAGE_WEIGHT_EXEMPTION_FLAG = "Weight management, Cage Exception";
 
     private static final Logger _log = Logger.getLogger(EHRManager.class);
 
@@ -222,6 +226,7 @@ public class EHRManager
             {"Delete Requested", "Records are requested to be deleted", false},
             {"In Progress", "Draft Record, not public", false},
             {"Request: Approved", "Request has been approved", false},
+            {"Request: Sample Delivered", "The sample associated with this request has been delivered", false},
             {"Request: Denied", "Request has been denied", false},
             {"Request: Pending", "Part of a request that has not been approved", false},
             {"Review Required", "Review is required prior to public release", false},
@@ -788,5 +793,43 @@ public class EHRManager
 
 
         return ret;
+    }
+
+    public String getFormTypeForTask(Container c, User u, String taskId)
+    {
+        UserSchema us = QueryService.get().getUserSchema(u, c, EHRSchema.EHR_SCHEMANAME);
+        if (us == null)
+            return null;
+
+        TableInfo ti = us.getTable(EHRSchema.TABLE_TASKS);
+        if (ti == null)
+            return null;
+
+        TableSelector ts = new TableSelector(ti, Collections.singleton("formType"), new SimpleFilter(FieldKey.fromString("taskid"), taskId), null);
+        String[] ret = ts.getArray(String.class);
+
+        if (ret != null && ret.length == 1)
+            return ret[0];
+
+        return null;
+    }
+
+    public String getFormTypeForRequest(Container c, User u, String requestId)
+    {
+        UserSchema us = QueryService.get().getUserSchema(u, c, EHRSchema.EHR_SCHEMANAME);
+        if (us == null)
+            return null;
+
+        TableInfo ti = us.getTable(EHRSchema.TABLE_REQUESTS);
+        if (ti == null)
+            return null;
+
+        TableSelector ts = new TableSelector(ti, Collections.singleton("formType"), new SimpleFilter(FieldKey.fromString("taskid"), requestId), null);
+        String[] ret = ts.getArray(String.class);
+
+        if (ret != null && ret.length == 1)
+            return ret[0];
+
+        return null;
     }
 }

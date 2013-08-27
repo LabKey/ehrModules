@@ -37,7 +37,8 @@ EHR.Server.TriggerManager = new function(){
             AFTER_UPSERT: 'afterUpsert',
             ON_BECOME_PUBLIC: 'onBecomePublic',
             AFTER_BECOME_PUBLIC: 'afterBecomePublic',
-            COMPLETE: 'complete'
+            COMPLETE: 'complete',
+            DESCRIPTION: 'description'
         },
 
         /**

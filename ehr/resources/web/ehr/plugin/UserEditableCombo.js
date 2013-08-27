@@ -30,8 +30,16 @@ Ext4.define('EHR.plugin.UserEditableCombo', {
                 {
                     this.callOverridden(arguments);
                 }
+            },
+
+            setValue: function(val){
+                //TODO: need to allow for setting of custom value prior to load
+
+                this.callOverridden(arguments);
             }
         });
+
+        combo.store.on('add', this.onStoreAdd, this);
 
         if(LABKEY.ext.Ext4Helper.hasStoreLoaded(combo.store)){
             this.addOtherRecord();
@@ -46,10 +54,20 @@ Ext4.define('EHR.plugin.UserEditableCombo', {
         }, this);
     },
 
+    customRecords: {},
+
+    onStoreAdd: function(store, recs){
+        Ext4.Array.forEach(recs, function(r){
+            var pk = r.get(this.combo.valueField);
+            if (!this.customRecords[pk]){
+                this.customRecords[pk] = r;
+            }
+        }, this);
+    },
+
     addOtherRecord: function(){
         var rec = this.combo.findRecord(this.combo.displayField, 'Other');
         if (rec){
-            console.log('other record exists')
             return;
         }
 
@@ -86,10 +104,10 @@ Ext4.define('EHR.plugin.UserEditableCombo', {
 
         if (!this.combo.store || !LABKEY.ext.Ext4Helper.hasStoreLoaded(this.combo.store)){
             this.combo.store.on('load', function(store){
-                this.addRecord(data);
+                this.addRecord(data, idx);
             }, this, {single: true});
 
-            console.error('unable to add record: '+this.combo.store.storeId);
+            console.error('unable to add record: ' + this.combo.store.storeId);
             console.log(data);
 
             return;

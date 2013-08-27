@@ -16,7 +16,9 @@ Ext4.define('EHR.grid.Panel', {
         this.configureColumns();
 
         LABKEY.ExtAdapter.apply(this, {
+            cls: 'ldk-grid',
             selType: 'rowmodel',
+            clicksToEdit: 1,
             selModel: {
                 mode: 'MULTI'
             },
@@ -60,6 +62,7 @@ Ext4.define('EHR.grid.Panel', {
 
         this.columns = [{
             xtype: 'actioncolumn',
+            editable: false,
             width: 40,
             icon: LABKEY.ActionURL.getContextPath() + '/_images/editprops.png',
             tooltip: 'Edit',
@@ -99,9 +102,9 @@ Ext4.define('EHR.grid.Panel', {
         }];
 
         LABKEY.ExtAdapter.each(this.formConfig.fieldConfigs, function(field){
-            var tableConfig = EHR.model.DataModelManager.getTableMetadata(field.schemaName, field.queryName, this.formConfig.sources);
+            var tableConfig = EHR.model.DataModelManager.getTableMetadata(field.schemaName, field.queryName, this.formConfig.configSources);
             var cfg = LABKEY.ExtAdapter.apply({}, field);
-            cfg = EHR.model.DefaultClientModel.getFieldConfig(cfg, this.formConfig.sources);
+            cfg = EHR.model.DefaultClientModel.getFieldConfig(cfg, this.formConfig.configSources);
 
             if(cfg.shownInGrid === false){
                 return;
@@ -114,6 +117,9 @@ Ext4.define('EHR.grid.Panel', {
                         colCfg.editor = 'xdatetime';
                     }
                 }
+
+                if (!colCfg.hidden)
+                    colCfg.tdCls = 'ldk-wrap-text';
 
                 this.columns.push(colCfg);
             }

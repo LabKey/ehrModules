@@ -31,7 +31,7 @@ public class BasicDemographicsProvider extends AbstractDemographicsProvider
 {
     public BasicDemographicsProvider()
     {
-        super("Demographics");
+        super("study", "Demographics");
     }
 
     public String getName()

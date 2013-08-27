@@ -1,5 +1,6 @@
 <ns:tables xmlns:ns="http://labkey.org/data/xml">
   <ns:table tableName="employeecategory" tableDbType="TABLE">
+    <ns:auditLogging>DETAILED</ns:auditLogging>
     <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr_compliancedb&amp;query.queryName=employeecategory&amp;categoryname=${categoryname}</ns:tableUrl>
     <ns:pkColumnName>categoryname</ns:pkColumnName>
     <ns:tableTitle>Employee Categories</ns:tableTitle>
@@ -11,6 +12,7 @@
     </ns:columns>
   </ns:table>
   <ns:table tableName="employeelocations" tableDbType="TABLE">
+    <ns:auditLogging>DETAILED</ns:auditLogging>
     <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr_compliancedb&amp;query.queryName=employeelocations&amp;location=${location}</ns:tableUrl>
     <ns:tableTitle>Employee Locations</ns:tableTitle>
     <ns:pkColumnName>location</ns:pkColumnName>
@@ -22,6 +24,7 @@
     </ns:columns>
   </ns:table>
   <ns:table tableName="unit_names" tableDbType="TABLE">
+    <ns:auditLogging>DETAILED</ns:auditLogging>
     <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr_compliancedb&amp;query.queryName=unit_names&amp;unit=${unit}</ns:tableUrl>
     <ns:tableTitle>Unit Names</ns:tableTitle>
     <ns:pkColumnName>unit</ns:pkColumnName>
@@ -43,6 +46,7 @@
     </ns:columns>
   </ns:table>
   <ns:table tableName="requirementtype" tableDbType="TABLE">
+    <ns:auditLogging>DETAILED</ns:auditLogging>
     <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr_compliancedb&amp;query.queryName=requirementtype&amp;type=${type}</ns:tableUrl>
     <ns:tableTitle>Requirement Types</ns:tableTitle>
     <ns:pkColumnName>type</ns:pkColumnName>
@@ -54,6 +58,7 @@
     </ns:columns>
   </ns:table>
   <ns:table tableName="employeetypes" tableDbType="TABLE">
+    <ns:auditLogging>DETAILED</ns:auditLogging>
     <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr_compliancedb&amp;query.queryName=employeetypes&amp;type=${type}</ns:tableUrl>
     <ns:tableTitle>Employee Types</ns:tableTitle>
     <ns:pkColumnName>type</ns:pkColumnName>
@@ -65,6 +70,7 @@
     </ns:columns>
   </ns:table>
   <ns:table tableName="employeetitles" tableDbType="TABLE">
+    <ns:auditLogging>DETAILED</ns:auditLogging>
     <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr_compliancedb&amp;query.queryName=employeetitles&amp;title=${title}</ns:tableUrl>
     <ns:tableTitle>Employee Titles</ns:tableTitle>
     <ns:pkColumnName>title</ns:pkColumnName>
@@ -76,6 +82,7 @@
     </ns:columns>
   </ns:table>
   <ns:table tableName="employees" tableDbType="TABLE" useColumnOrder="true">
+    <ns:auditLogging>DETAILED</ns:auditLogging>
     <ns:tableUrl>/ehr_compliancedb/employeeDetails.view?employeeid=${employeeid}</ns:tableUrl>
     <ns:javaCustomizer>org.labkey.ehr.table.WrappingTableCustomizer</ns:javaCustomizer>
     <ns:tableTitle>Employees</ns:tableTitle>
@@ -266,6 +273,7 @@
     </ns:columns>
   </ns:table>
   <ns:table tableName="requirements" tableDbType="TABLE">
+    <ns:auditLogging>DETAILED</ns:auditLogging>
     <ns:tableUrl>/ehr_compliancedb/requirementDetails.view?requirementname=${requirementname}</ns:tableUrl>
     <ns:tableTitle>Requirements</ns:tableTitle>
     <ns:pkColumnName>requirementname</ns:pkColumnName>
@@ -327,8 +335,8 @@
       </ns:column>
     </ns:columns>
   </ns:table>
-
   <ns:table tableName="requirementspercategory" tableDbType="TABLE">
+    <ns:auditLogging>DETAILED</ns:auditLogging>
     <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr_compliancedb&amp;query.queryName=requirementspercategory&amp;rowid=${rowid}</ns:tableUrl>
     <ns:tableTitle>Requirements Per Employee Category</ns:tableTitle>
     <ns:pkColumnName>rowid</ns:pkColumnName>
@@ -394,6 +402,7 @@
     </ns:columns>
   </ns:table>
   <ns:table tableName="requirementsperemployee" tableDbType="TABLE">
+    <ns:auditLogging>DETAILED</ns:auditLogging>
     <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr_compliancedb&amp;query.queryName=requirementsperemployee&amp;rowid=${rowid}</ns:tableUrl>
     <ns:tableTitle>Requirements Per Employee</ns:tableTitle>
     <ns:pkColumnName>rowid</ns:pkColumnName>
@@ -451,6 +460,7 @@
     </ns:columns>
   </ns:table>
   <ns:table tableName="completiondates" tableDbType="TABLE">
+    <ns:auditLogging>DETAILED</ns:auditLogging>
     <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr_compliancedb&amp;query.queryName=completiondates&amp;rowid=${rowid}</ns:tableUrl>
     <ns:tableTitle>Dates Employees Completed Requirements</ns:tableTitle>
     <ns:pkColumnName>rowid</ns:pkColumnName>
@@ -524,6 +534,7 @@
     </ns:columns>
   </ns:table>
   <ns:table tableName="employeerequirementexemptions" tableDbType="TABLE">
+    <ns:auditLogging>DETAILED</ns:auditLogging>
     <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr_compliancedb&amp;query.queryName=employeerequirementexemptions&amp;rowid=${rowid}</ns:tableUrl>
     <ns:tableTitle>Employee Exemptions to Requirements</ns:tableTitle>
     <ns:pkColumnName>rowid</ns:pkColumnName>
@@ -580,8 +591,8 @@
       </ns:column>
     </ns:columns>
   </ns:table>
-
   <ns:table tableName="sops" tableDbType="TABLE">
+    <ns:auditLogging>DETAILED</ns:auditLogging>
     <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr_compliancedb&amp;query.queryName=sops&amp;sopid=${sopid}</ns:tableUrl>
     <ns:tableTitle>SOPs</ns:tableTitle>
     <ns:pkColumnName>sopid</ns:pkColumnName>
@@ -634,6 +645,7 @@
     </ns:columns>
   </ns:table>
   <ns:table tableName="sopdates" tableDbType="TABLE">
+    <ns:auditLogging>DETAILED</ns:auditLogging>
     <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr_compliancedb&amp;query.queryName=sopdates&amp;rowid=${rowid}</ns:tableUrl>
     <ns:tableTitle>SOP Completion Dates</ns:tableTitle>
     <ns:pkColumnName>rowid</ns:pkColumnName>
@@ -695,6 +707,7 @@
     </ns:columns>
   </ns:table>
   <ns:table tableName="sopbycategory" tableDbType="TABLE">
+    <ns:auditLogging>DETAILED</ns:auditLogging>
     <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr_compliancedb&amp;query.queryName=sopbycategory&amp;rowid=${rowid}</ns:tableUrl>
     <ns:tableTitle>SOPs Per Employee Category</ns:tableTitle>
     <ns:pkColumnName>rowid</ns:pkColumnName>

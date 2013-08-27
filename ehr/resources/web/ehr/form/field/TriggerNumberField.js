@@ -5,10 +5,25 @@
  */
 /**
  * A trigger field which only allows numeric characters
+ *
+ * @cfg triggerToolTip
  */
 Ext4.define('EHR.form.field.TriggerNumberField', {
     extend: 'Ext.form.field.Trigger',
     alias: 'widget.ehr-triggernumberfield',
+
+    initComponent: function(){
+        this.callParent();
+
+        if (this.triggerToolTip){
+            this.on('render', function(){
+                Ext4.QuickTips.register({
+                    target: this.triggerEl,
+                    text: this.triggerToolTip
+                });
+            }, this);
+        }
+    },
 
     baseChars : "0123456789",
     autoStripChars: false,

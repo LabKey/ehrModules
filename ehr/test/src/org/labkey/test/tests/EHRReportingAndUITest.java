@@ -382,6 +382,10 @@ public class EHRReportingAndUITest extends AbstractEHRTest
         _extHelper.clickExtMenuButton(false, Locator.xpath("//table[@id='dataregion_" + dataRegionName + "']" + Locator.navButton("More Actions").getPath()), "Compare Weights");
         _extHelper.waitForExtDialog("Error"); // After error dialog.
         _extHelper.clickExtButton("Error", "OK", 0);
+
+        //wait for load
+        _extHelper.waitForExtDialog("Weights");
+        _extHelper.clickExtButton("Weights", "OK", 0);
         assertTextNotPresent("Weight 1");
 
         log("Jump to History");

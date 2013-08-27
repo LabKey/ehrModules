@@ -33,8 +33,7 @@ public class ActiveAnimalGroupsDemographicsProvider extends AbstractListDemograp
 {
     public ActiveAnimalGroupsDemographicsProvider()
     {
-        super("animal_group_members", "activeAnimalGroups");
-        _schemaName = "ehr";
+        super("ehr", "animal_group_members", "activeAnimalGroups");
     }
 
     protected Set<FieldKey> getFieldKeys()

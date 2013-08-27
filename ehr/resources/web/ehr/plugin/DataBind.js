@@ -27,6 +27,9 @@ Ext4.define('EHR.plugin.Databind', {
             unbindRecord: function(){
                 var plugin = this.getPlugin('ehr-databind');
                 plugin.unbindRecord.call(plugin);
+            },
+            getBoundRecord: function(){
+                return this.getForm().getRecord();
             }
         });
 
@@ -39,7 +42,7 @@ Ext4.define('EHR.plugin.Databind', {
             createRecordOnLoad: false
         }, panel.bindConfig);
 
-        panel.addEvents('recordchange', 'fieldvaluechange');
+        panel.addEvents('bindrecord', 'fieldvaluechange');
 
         this.configureStore(panel.store);
         this.addFieldListeners();
@@ -60,7 +63,7 @@ Ext4.define('EHR.plugin.Databind', {
             findMatchingField.call(this, c);
         }, this);
 
-        if(panel.boundRecord)
+        if (panel.boundRecord)
             panel.bindRecord(panel.boundRecord);
 
         this.callParent(arguments);
@@ -69,7 +72,7 @@ Ext4.define('EHR.plugin.Databind', {
     configureStore: function(store){
         store = Ext4.StoreMgr.lookup(store);
 
-        if(!store)
+        if (!store)
             return;
 
         if (store.hasLoaded())
@@ -84,12 +87,12 @@ Ext4.define('EHR.plugin.Databind', {
 
     onStoreLoad: function(store){
         if (store.getCount() == 0){
-            if(this.panel.bindConfig.createRecordOnLoad){
+            if (this.panel.bindConfig.createRecordOnLoad){
                 this.createAndBindRecord();
             }
         }
         else {
-            if(this.panel.bindConfig.autoBindFirstRecord){
+            if (this.panel.bindConfig.autoBindFirstRecord){
                 this.bindRecord(store.getAt(0));
             }
         }
@@ -106,7 +109,7 @@ Ext4.define('EHR.plugin.Databind', {
 
     onRecordRemove: function(store, rec, idx){
         var boundRecord = this.panel.getForm().getRecord();
-        if(boundRecord && rec == boundRecord){
+        if (boundRecord && rec == boundRecord){
             this.unbindRecord();
         }
     },
@@ -114,7 +117,7 @@ Ext4.define('EHR.plugin.Databind', {
     //this is the listener for record update events.  it should update the values of the form, without firing change events on those fields
     onRecordUpdate: function(store, record, operation){
         var form = this.panel.getForm();
-        if(form.getRecord() && record == form.getRecord()){
+        if (form.getRecord() && record == form.getRecord()){
             //this flag is used to skip the record update events caused by this plugin
             if (this.ignoreNextUpdateEvent){
                 this.ignoreNextUpdateEvent = null;
@@ -132,20 +135,22 @@ Ext4.define('EHR.plugin.Databind', {
         var form = this.panel.getForm();
         this.ignoreNextUpdateEvent = null;
 
-        if(form.getRecord())
+        if (form.getRecord())
             this.unbindRecord();
 
         form.suspendEvents();
         form.loadRecord(record);
         form.resumeEvents();
-        form.isValid();
+        form.isValid.defer(100, form);
+
+        this.panel.fireEvent('bindrecord', this.panel, record);
     },
 
     unbindRecord: function(){
         var form = this.panel.getForm();
         this.ignoreNextUpdateEvent = null;
 
-        if(form.getRecord()){
+        if (form.getRecord()){
             form.updateRecord(form.getRecord());
         }
 
@@ -158,7 +163,7 @@ Ext4.define('EHR.plugin.Databind', {
     onFieldValueChange: function(){
         var form = this.panel.getForm();
         var record = form.getRecord();
-        if(record){
+        if (record){
             this.updateRecordFromForm();
         }
         else if (this.panel.bindConfig.autoCreateRecordOnChange){
@@ -191,25 +196,24 @@ Ext4.define('EHR.plugin.Databind', {
     },
 
     addFieldListener: function(f){
-        if(f.hasDatabindListener){
+        if (f.hasDatabindListener){
             console.warn('field already has listener');
             return;
         }
 
-        //this.mon(f, 'check', this.onFieldChange, this); //in Ext4, checkboxes should fire change events
         this.mon(f, 'change', this.onFieldChange, this);
 
         var form = f.up('form');
-        if(form.getRecord() && this.panel.bindConfig.disableUnlessBound && !this.panel.bindConfig.autoCreateRecordOnChange)
+        if (form.getRecord() && this.panel.bindConfig.disableUnlessBound && !this.panel.bindConfig.autoCreateRecordOnChange)
             f.setDisabled(true);
 
         Ext4.override(f, {
             getErrors: function(value){
                 var errors = this.callOverridden(arguments);
                 var record = this.up('form').getForm().getRecord();
-                if(record){
+                if (record){
                     record.validate().each(function(e){
-                        if(e.field == this.name)
+                        if (e.field == this.name)
                             errors.push(e.message);
                     }, this);
                 }
@@ -241,8 +245,7 @@ Ext4.define('EHR.plugin.Databind', {
 
             var fieldVal = field.getValue();
             if (fieldVal !== val) {
-                if (Ext4.isObject(fieldVal) || Ext4.isArray(fieldVal))
-                {
+                if (Ext4.isObject(fieldVal) || Ext4.isArray(fieldVal)){
                     console.error(fieldVal);
                 }
 

@@ -7,23 +7,31 @@
  * @class
  * This is the panel that appears when hitting the 'Add Bulk' button on EHR grids.  It provides a popup to find the set of
  * distinct animal IDs based on room, case, etc.
+ *
+ * @cfg targetStore
+ * @cfg formConfig
  */
 Ext4.define('EHR.window.AddAnimalsWindow', {
     extend: 'Ext.window.Window',
+
+    MAX_ANIMALS: 100,
+
     initComponent: function(){
         Ext4.apply(this, {
             title: 'Choose Animals',
             modal: true,
+            closeAction: 'destroy',
             border: true,
             bodyStyle: 'padding:5px',
-            width: 400,
+            width: 450,
             defaults: {
-                width: 385,
+                width: 400,
+                labelWidth: 140,
                 border: false,
                 bodyBorder: false
             },
             items: [{
-                html: 'This helper is designed to quick add records to the grid below.  You can look up animals in a variety of different ways.',
+                html: 'This helper is designed to quickly add records to the grid below.  You can look up animals in a variety of different ways.  For each animal, one reord will be created.  If you check the \'Bulk Edit\' box, you will be prompted to fill out values for the other fields.  If not, one row will be created per animal with blank values.',
                 style: 'padding-bottom: 10px;'
             },{
                 xtype: 'radiogroup',
@@ -53,10 +61,19 @@ Ext4.define('EHR.window.AddAnimalsWindow', {
                     change: this.onTypeChange
                 }
             },{
+                xtype: 'checkbox',
+                fieldLabel: 'Bulk Edit Values',
+                helpPopup: 'If checked, you will be prompted with a screen that lets you bulk edit the records that will be created.  This is often very useful when adding many similar records.',
+                itemId: 'chooseValues'
+            },{
+                html: '<hr>',
+                style: 'padding-top: 5px;padding-bottom: 5px;'
+            },{
                 xtype: 'form',
                 itemId: 'theForm',
                 defaults: {
-                    width: 370,
+                    width: 400,
+                    labelWidth: 140,
                     border: false
                 }
             }],
@@ -96,6 +113,9 @@ Ext4.define('EHR.window.AddAnimalsWindow', {
         var form = this.down('#theForm');
         form.removeAll();
         form.add({
+            html: 'Either type of cut/paste a list of Animal IDs into the box below.  They can be separated by either commas, spaes, or line breaks.',
+            style: 'padding-bottom: 10px;'
+        },{
             xtype: 'textarea',
             height: 100,
             itemId: 'subjArea',
@@ -121,7 +141,7 @@ Ext4.define('EHR.window.AddAnimalsWindow', {
     addSubjects: function(subjectList){
         if (subjectList.length && this.targetStore){
             subjectList = Ext4.Array.unique(subjectList);
-            if (subjectList.length > 200){
+            if (subjectList.length > this.MAX_ANIMALS){
                 Ext4.Msg.alert('Error', 'Too many animals were returned: ' + subjectList.length);
                 return;
 
@@ -131,7 +151,20 @@ Ext4.define('EHR.window.AddAnimalsWindow', {
             Ext4.Array.forEach(subjectList, function(s){
                 records.push(this.targetStore.createModel({Id: s}));
             }, this);
-            this.targetStore.add(records);
+
+            var choose = this.down('#chooseValues').getValue();
+            if (choose){
+                Ext4.create('EHR.window.BulkEditWindow', {
+                    suppressConfirmMsg: true,
+                    records: records,
+                    targetStore: this.targetStore,
+                    formConfig: this.formConfig
+                }).show();
+                this.close();
+            }
+            else {
+                this.targetStore.add(records);
+            }
         }
 
         if (Ext4.Msg.isVisible())
@@ -144,6 +177,9 @@ Ext4.define('EHR.window.AddAnimalsWindow', {
         var form = this.down('#theForm');
         form.removeAll();
         form.add([{
+            html: 'This will return any animals currently housed in the selected location.  You can leave any of the fields blank.',
+            style: 'padding-bottom: 10px;'
+        },{
             xtype: 'ehr-areafield',
             multiSelect: false,
             emptyText: '',
@@ -155,7 +191,9 @@ Ext4.define('EHR.window.AddAnimalsWindow', {
             }
         },{
             xtype: 'ehr-roomfield',
+            multiSelect: true,
             emptyText: '',
+            showOccupiedOnly: true,
             fieldLabel: 'Room(s)',
             itemId: 'roomField'
         },{
@@ -196,6 +234,9 @@ Ext4.define('EHR.window.AddAnimalsWindow', {
         var form = this.down('#theForm');
         form.removeAll();
         form.add([{
+            html: 'This will return any animals currently assigned to the selected group.',
+            style: 'padding-bottom: 10px;'
+        },{
             xtype: 'ehr-animalgroupfield',
             emptyText: '',
             itemId: 'groupField'
@@ -225,17 +266,21 @@ Ext4.define('EHR.window.AddAnimalsWindow', {
         var form = this.down('#theForm');
         form.removeAll();
         form.add([{
-            html: 'This will return any animals currently assigned to the selected project or a protocol',
+            html: 'This will return any animals currently assigned to the selected project or protocol.  Choose one or the other.',
             style: 'padding-bottom: 10px;'
         },{
             xtype: 'ehr-projectfield',
             emptyText: '',
             itemId: 'projectField',
-            onlyIncludeProtocolsWithAssignments: true
+            width: 400,
+            labelWidth: 140,
+            onlyIncludeProjectsWithAssignments: true
         },{
             xtype: 'ehr-protocolfield',
             emptyText: '',
             itemId: 'protocolField',
+            width: 400,
+            labelWidth: 140,
             onlyIncludeProtocolsWithAssignments: true
         }]);
 

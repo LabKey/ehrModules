@@ -1,0 +1,97 @@
+Ext4.define('EHR.panel.ServiceRequestsPanel', {
+    extend: 'Ext.tab.Panel',
+
+    minHeight: 300,
+
+    initComponent: function(){
+        LABKEY.ExtAdapter.apply(this, {
+            items: this.getItems()
+        });
+
+        this.loadData();
+
+        this.callParent();
+    },
+
+    loadData: function(){
+        EHR.Utils.getDataEntryItems({
+            scope: this,
+            success: this.onLoad
+        });
+    },
+
+    onLoad: function(results){
+        var formMap = {};
+        Ext4.each(results.forms, function(form){
+            if (form.isAvailable && form.category == 'Requests'){
+                formMap[form.category] = formMap[form.category] || [];
+                formMap[form.category].push({
+                    name: form.label,
+                    url: LABKEY.ActionURL.buildURL('ehr', 'dataEntryForm', null, {formType: form.name})
+                });
+            }
+        }, this);
+
+        var sections = [];
+        for (var i in formMap){
+            var items = formMap[i];
+            items = LDK.Utils.sortByProperty(items, 'name', false);
+            sections.push({
+                header: i,
+                items: items
+            });
+        }
+
+        var tab = this.down('#enterNew');
+        tab.removeAll();
+        tab.add({
+            xtype: 'ldk-navpanel',
+            sections: sections
+        });
+    },
+
+    getItems: function(){
+        return [{
+            xtype: 'panel',
+            style: 'padding: 5px;',
+            title: 'New Request',
+            itemId: 'enterNew',
+            defaults: {
+                border: false
+            },
+            items: [{
+                html: 'Loading...'
+            }]
+        },{
+            xtype: 'ldk-querypanel',
+            title: 'My Requests',
+            style: 'padding: 5px;',
+            queryConfig:  {
+                schemaName: 'ehr',
+                queryName: 'my_requests'
+            }
+        },{
+            xtype: 'ldk-querypanel',
+            title: 'Blood Draw Queue',
+            style: 'padding: 5px;',
+            queryConfig:  {
+                schemaName: 'study',
+                queryName: 'Blood Draws',
+                viewName: 'Blood Requests',
+                filterArray: [
+                    LABKEY.Filter.create('QCState/Label', 'Completed', LABKEY.Filter.Types.NOT_EQUAL)
+                ]
+            }
+        },{
+            xtype: 'ldk-querypanel',
+            title: 'Labwork Queue',
+            queryConfig:  {
+                schemaName: 'study',
+                queryName: 'Clinpath Runs',
+                filterArray: [
+                    LABKEY.Filter.create('QCState/Label', 'Completed', LABKEY.Filter.Types.NOT_EQUAL)
+                ]
+            }
+        }]
+    }
+});

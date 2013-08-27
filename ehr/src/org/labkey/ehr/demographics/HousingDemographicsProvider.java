@@ -31,7 +31,7 @@ public class HousingDemographicsProvider extends AbstractListDemographicsProvide
 {
     public HousingDemographicsProvider()
     {
-        super("demographicsCurLocation", "activeHousing");
+        super("study", "demographicsCurLocation", "activeHousing");
     }
 
     protected Collection<FieldKey> getFieldKeys()
@@ -39,11 +39,18 @@ public class HousingDemographicsProvider extends AbstractListDemographicsProvide
         Set<FieldKey> keys = new HashSet<FieldKey>();
         keys.add(FieldKey.fromString("area"));
         keys.add(FieldKey.fromString("room"));
-        keys.add(FieldKey.fromString("room_order"));
+        keys.add(FieldKey.fromString("room_sortValue"));
         keys.add(FieldKey.fromString("cage"));
-        keys.add(FieldKey.fromString("cage_order"));
+        keys.add(FieldKey.fromString("cage_sortValue"));
         keys.add(FieldKey.fromString("date"));
 
         return keys;
+    }
+
+    @Override
+    public boolean requiresRecalc(String schema, String query)
+    {
+        return ("study".equalsIgnoreCase(schema) && "Housing".equalsIgnoreCase(query)) ||
+                ("ehr_lookups".equalsIgnoreCase(schema) && "cage".equalsIgnoreCase(query));
     }
 }

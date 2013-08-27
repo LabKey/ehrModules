@@ -61,6 +61,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -123,6 +124,10 @@ public class DefaultEHRCustomizer implements TableCustomizer
         else if (table.getName().equalsIgnoreCase("protocol") && table.getSchema().getName().equalsIgnoreCase("ehr"))
         {
             customizeProtocolTable((AbstractTableInfo)table);
+        }
+        else if (table.getSchema().getName().equalsIgnoreCase("ehr_lookups") && table.getName().equalsIgnoreCase("rooms"))
+        {
+            customizeRooms((AbstractTableInfo) table);
         }
         else if (table.getName().equalsIgnoreCase("animal_groups") && table.getSchema().getName().equalsIgnoreCase("ehr"))
         {
@@ -278,6 +283,8 @@ public class DefaultEHRCustomizer implements TableCustomizer
         else if (ds.getName().equalsIgnoreCase("housing"))
         {
             customizeHousing(ti);
+
+            addIsActiveColWithTime(ti);
         }
         else if (ds.getName().equalsIgnoreCase("assignment"))
         {
@@ -334,6 +341,11 @@ public class DefaultEHRCustomizer implements TableCustomizer
 
     private void addIsActiveCol(AbstractTableInfo ti, boolean allowSameDay)
     {
+        addIsActiveCol(ti, allowSameDay, false);
+    }
+
+    private void addIsActiveCol(AbstractTableInfo ti, boolean allowSameDay, boolean allowDateOfDeath)
+    {
         String name = "isActive";
         if (ti.getColumn(name) == null)
         {
@@ -342,6 +354,7 @@ public class DefaultEHRCustomizer implements TableCustomizer
                     " WHEN (" + ExprColumn.STR_TABLE_ALIAS + ".enddate IS NULL) THEN " + ti.getSqlDialect().getBooleanTRUE() +
                     (allowSameDay ? " WHEN (" + ExprColumn.STR_TABLE_ALIAS + ".enddate IS NOT NULL AND CAST(" + ExprColumn.STR_TABLE_ALIAS + ".enddate AS DATE) = {fn curdate()} AND CAST(" + ExprColumn.STR_TABLE_ALIAS + ".date as DATE) = {fn curdate()}) THEN " + ti.getSqlDialect().getBooleanTRUE() : "") +
                     " WHEN (CAST(" + ExprColumn.STR_TABLE_ALIAS + ".enddate AS DATE) > {fn curdate()}) THEN " + ti.getSqlDialect().getBooleanTRUE() +
+                    //(allowDateOfDeath ? " WHEN " + ExprColumn.STR_TABLE_ALIAS : "") +
                     " ELSE " + ti.getSqlDialect().getBooleanFALSE() +
                     " END)");
 
@@ -478,7 +491,7 @@ public class DefaultEHRCustomizer implements TableCustomizer
                         Date date = (Date)ctx.get("date");
                         String id = (String)ctx.get(ID_COL);
 
-                        out.write("<span style=\"white-space:nowrap\"><a href=\"javascript:void(0);\" onclick=\"EHR.Utils.showClinicalHistory('" + objectid + "', '" + id + "', '" + date + "', this);\">[Show Hx]</a></span>");
+                        out.write("<span style=\"white-space:nowrap\"><a href=\"javascript:void(0);\" onclick=\"EHR.DatasetButtons.showClinicalHistory('" + objectid + "', '" + id + "', '" + date + "', this);\">[Show Hx]</a></span>");
                     }
 
                     @Override
@@ -629,7 +642,7 @@ public class DefaultEHRCustomizer implements TableCustomizer
 
     private void addScriptInclude(ButtonBarConfig cfg, String script)
     {
-        Set<String> scripts = new HashSet<String>();
+        Set<String> scripts = new LinkedHashSet<String>();
         String[] existing = cfg.getScriptIncludes();
         if (existing != null)
         {
@@ -1038,6 +1051,23 @@ public class DefaultEHRCustomizer implements TableCustomizer
         });
 
         ds.addColumn(col);
+    }
+
+    private void customizeRooms(AbstractTableInfo ti)
+    {
+        UserSchema us = getUserSchema(ti, "ehr_lookups");
+        ColumnInfo roomCol = ti.getColumn("room");
+
+        ColumnInfo utilization = ti.getColumn("utilization");
+        if (utilization == null)
+        {
+            WrappedColumn col = new WrappedColumn(roomCol, "utilization");
+            col.setReadOnly(true);
+            col.setIsUnselectable(true);
+            col.setUserEditable(false);
+            col.setFk(new QueryForeignKey(us, "roomUtilization", "room", "room"));
+            ti.addColumn(col);
+        }
     }
 
     private ColumnInfo getPkCol(TableInfo ti)

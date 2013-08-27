@@ -15,21 +15,37 @@
  */
 package org.labkey.ehr.utils;
 
+import org.apache.commons.beanutils.ConversionException;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.time.DateUtils;
 import org.apache.log4j.Logger;
+import org.jetbrains.annotations.Nullable;
 import org.json.JSONArray;
 import org.labkey.api.cache.CacheManager;
+import org.labkey.api.collections.CaseInsensitiveHashMap;
+import org.labkey.api.data.Aggregate;
+import org.labkey.api.data.ColumnInfo;
+import org.labkey.api.data.CompareType;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.ContainerManager;
+import org.labkey.api.data.ConvertHelper;
 import org.labkey.api.data.DbSchema;
 import org.labkey.api.data.RuntimeSQLException;
 import org.labkey.api.data.SQLFragment;
 import org.labkey.api.data.SimpleFilter;
 import org.labkey.api.data.SqlExecutor;
+import org.labkey.api.data.SqlSelector;
 import org.labkey.api.data.Table;
 import org.labkey.api.data.TableInfo;
+import org.labkey.api.data.TableSelector;
 import org.labkey.api.ehr.EHRService;
+import org.labkey.api.query.BatchValidationException;
+import org.labkey.api.query.DuplicateKeyException;
 import org.labkey.api.query.FieldKey;
+import org.labkey.api.query.InvalidKeyException;
 import org.labkey.api.query.QueryService;
+import org.labkey.api.query.QueryUpdateServiceException;
+import org.labkey.api.query.UserSchema;
 import org.labkey.api.resource.Resource;
 import org.labkey.api.security.SecurableResource;
 import org.labkey.api.security.SecurityManager;
@@ -44,20 +60,28 @@ import org.labkey.api.security.permissions.UpdatePermission;
 import org.labkey.api.study.DataSet;
 import org.labkey.api.study.Study;
 import org.labkey.api.study.StudyService;
+import org.labkey.api.util.GUID;
 import org.labkey.api.util.JobRunner;
+import org.labkey.api.util.MailHelper;
+import org.labkey.api.util.PageFlowUtil;
 import org.labkey.api.view.UnauthorizedException;
 import org.labkey.ehr.EHRManager;
+import org.labkey.ehr.EHRSchema;
 import org.labkey.ehr.demographics.AnimalRecord;
 import org.labkey.ehr.demographics.DemographicsCache;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 
 /**
@@ -67,24 +91,27 @@ import java.util.Map;
  */
 public class TriggerScriptHelper
 {
-    private static String QCSTATE_CACHE_ID = "qcstates";
+    private static final String QCSTATE_CACHE_ID = "qcstates";
 
-    private String _containerId;
-    private int _userId;
+    private Container _container = null;
+    private User _user = null;
 
-    private static Logger _log = Logger.getLogger(TriggerScriptHelper.class);
+    //NOTE: consider moving these to SharedCache, to allow them to be shared across scripts, yet reset from admin console
+    private Map<String, Map<String, Object>> _weightRanges = new HashMap<String, Map<String, Object>>();
+    private Map<String, Map<String, Object>> _bloodDrawServices = null;
+    private Map<String, Map<String, Object>> _labworkServices = null;
+
+    private static final Logger _log = Logger.getLogger(TriggerScriptHelper.class);
 
     private TriggerScriptHelper(int userId, String containerId)
     {
-        User user = UserManager.getUser(userId);
-        if (user == null)
+        _user = UserManager.getUser(userId);
+        if (_user == null)
             throw new RuntimeException("User does not exist: " + userId);
-        _userId = userId;
 
-        Container container = ContainerManager.getForId(containerId);
-        if (container == null)
+        _container = ContainerManager.getForId(containerId);
+        if (_container == null)
             throw new RuntimeException("Container does not exist: " + containerId);
-        _containerId = containerId;
 
         Study study = getStudy();
         if (study == null)
@@ -93,12 +120,12 @@ public class TriggerScriptHelper
 
     private User getUser()
     {
-        return UserManager.getUser(_userId);
+        return _user;
     }
 
     private Container getContainer()
     {
-        return ContainerManager.getForId(_containerId);
+        return _container;
     }
 
     private Study getStudy()
@@ -106,63 +133,34 @@ public class TriggerScriptHelper
         return StudyService.get().getStudy(getContainer());
     }
 
-    private static String getCacheKey(int userId, String containerId)
+    public static TriggerScriptHelper create(int userId, String containerId)
     {
-        return TriggerScriptHelper.class.getName() + "|" + containerId + "|" + userId;
-    }
+        _log.info("Creating trigger script helper for: " +  userId + ", " + containerId);
+        TriggerScriptHelper helper = new TriggerScriptHelper(userId, containerId);
 
-    public static TriggerScriptHelper getForContainer(int userId, String containerId)
-    {
-        String key = getCacheKey(userId, containerId);
-        TriggerScriptHelper helper = (TriggerScriptHelper)CacheManager.getSharedCache().get(key);
-        if (helper != null)
-        {
-            return helper;
-        }
-
-        _log.info("Creating triger script helper for: " +  userId + ", " + containerId);
-        helper = new TriggerScriptHelper(userId, containerId);
-        CacheManager.getSharedCache().put(key, helper);
         return helper;
     }
 
-    public static boolean closeActiveDatasetRecords(String c, int userId, List<String> queryNames, String id, Date enddate)
+    public void closeActiveDatasetRecords(List<String> queryNames, String id, Date enddate)
     {
-        boolean success = false;
-
-        Container container = ContainerManager.getForId(c);
-        if(container == null)
-        {
-            //these should not be RuntimeExceptions...
-            throw new RuntimeException("Non existent container: " + c);
-        }
-
-        User user = (User)SecurityManager.getPrincipal(userId);
-        if(user == null)
-        {
-            throw new RuntimeException("Non existent user: " + userId);
-        }
-
-        StudyService.Service ss = StudyService.get();
-        Study study = ss.getStudy(container);
-        if (study == null)
-        {
-            throw new RuntimeException("No study found in container: " + c);
-        }
+        Container container = getContainer();
+        User user = getUser();
 
         for (String queryName : queryNames)
         {
-            int datasetId = ss.getDatasetIdByQueryName(container, queryName);
-            DataSet dataset = ss.getDataSet(container, datasetId);
+            int datasetId = StudyService.get().getDatasetIdByLabel(container, queryName);
+            DataSet dataset = StudyService.get().getDataSet(container, datasetId);
             if(dataset == null){
-                throw new RuntimeException("Non existent table: study." + queryName);
+                _log.warn("Non existent table: study." + queryName);
+                continue;
             }
 
+            //TODO: this is done direct to the DB for speed.  however we lose auditing, etc.
+            //might want to reconsider
             TableInfo ti = dataset.getTableInfo(user);
-            SQLFragment sql = new SQLFragment("UPDATE " + ti.getSchema().getName() + "." + ti.getSelectName() + " SET enddate = ? WHERE id = ? AND enddate IS NULL", enddate, id);
+            SQLFragment sql = new SQLFragment("UPDATE studydataset." + dataset.getDomain().getStorageTableName() + " SET enddate = ? WHERE participantid = ? AND enddate IS NULL", enddate, id);
             new SqlExecutor(ti.getSchema()).execute(sql);
         }
-        return success;
     }
 
     public static List<String> getScriptsToLoad(String containerId)
@@ -246,47 +244,27 @@ public class TriggerScriptHelper
         }
     }
 
-    public EHRQCState getQCStateForRowId(int rowId) throws Exception
+    public EHRQCState getQCStateForRowId(int rowId)
     {
-        try
-        {
-            Map<String, EHRQCState> qcStates = getQCStateInfo();
+        Map<String, EHRQCState> qcStates = getQCStateInfo();
 
-            for (EHRQCState qc : qcStates.values())
-            {
-                if (qc.getRowId() == rowId)
-                    return qc;
-
-            }
-            return null;
-        }
-        catch (Exception e)
+        for (EHRQCState qc : qcStates.values())
         {
-            //NOTE: this is only called by JS triggers, which will bury the exception otherwise
-            _log.error(e.getMessage());
-            _log.error(e.getStackTrace());
-            throw(e);
+            if (qc.getRowId() == rowId)
+                return qc;
+
         }
+        return null;
     }
 
-    public EHRQCState getQCStateForLabel(String label) throws Exception
+    public EHRQCState getQCStateForLabel(String label)
     {
-        try
-        {
-            Map<String, EHRQCState> qcStates = getQCStateInfo();
+        Map<String, EHRQCState> qcStates = getQCStateInfo();
 
-            if (qcStates.containsKey(label))
-                return qcStates.get(label);
-            else
-                return null;
-        }
-        catch (Exception e)
-        {
-            //NOTE: this is only called by JS triggers, which will bury the exception otherwise
-            _log.error(e.getMessage());
-            _log.error(e.getStackTrace());
-            throw(e);
-        }
+        if (qcStates.containsKey(label))
+            return qcStates.get(label);
+        else
+            return null;
     }
 
     private boolean testPermission (SecurableResource resource, Class<? extends Permission> perm, EHRQCState qcState)
@@ -320,7 +298,7 @@ public class TriggerScriptHelper
         //TODO: this is a little ugly
         String permString = perm.getCanonicalName().replaceAll(perm.getPackage().getName() + "\\.", "");
         String qcString = qc.getLabel().replaceAll("[^a-zA-Z0-9-]", "");
-        return EHRManager.SECURITY_PACKAGE + qcString + permString;
+        return EHRManager.SECURITY_PACKAGE + ".EHR" + qcString + permString;
     }
 
     public static void cascadeDelete(int userId, String containerId, String schemaName, String queryName, String keyField, Object keyValue) throws SQLException
@@ -352,7 +330,7 @@ public class TriggerScriptHelper
         SimpleFilter filter;
         if(sql == null)
         {
-            filter = new SimpleFilter(keyField, keyValue);
+            filter = new SimpleFilter(FieldKey.fromString(keyField), keyValue);
         }
         else
         {
@@ -390,22 +368,6 @@ public class TriggerScriptHelper
         return null;
     }
 
-//    private void sendMessage()
-//    {
-//        //to send email: see SendMessageAction implementation
-//        //MailHelper will send the email, but you loose some of the benefit of our API, like auto-resolving emails from UserIds.
-//        //it would be preferable to use this and i need to look in more detail
-//        try
-//        {
-//            MailHelper.MultipartMessage msg = MailHelper.createMultipartMessage();
-//            msg.setBodyContent("Hello", "Hello");
-//        }
-//        catch (Exception e)
-//        {
-//            //do something
-//        }
-//    }
-
     private Map<String, EHRQCState> getQCStateInfo()
     {
         String cacheKey = getCacheKey(getStudy(), QCSTATE_CACHE_ID);
@@ -413,31 +375,18 @@ public class TriggerScriptHelper
         if (qcStates != null)
             return qcStates;
 
-        try
+        qcStates = new HashMap<String, EHRQCState>();
+        SQLFragment sql = new SQLFragment("SELECT * FROM study.qcstate qc LEFT JOIN ehr.qcstatemetadata md ON (qc.label = md.QCStateLabel) WHERE qc.container = ?", getContainer().getEntityId());
+        DbSchema db = DbSchema.get("study");
+        EHRQCState[] qcs = new SqlSelector(db, sql).getArray(EHRQCState.class);
+        for (EHRQCState qc : qcs)
         {
-            qcStates = new HashMap<>();
-            SQLFragment sql = new SQLFragment("SELECT * FROM study.qcstate qc LEFT JOIN ehr.qcstatemetadata md ON (qc.label = md.QCStateLabel) WHERE qc.container = ?", getContainer().getEntityId());
-            DbSchema db = DbSchema.get("study");
-            EHRQCState[] qcs = Table.executeQuery(db, sql, EHRQCState.class);
-            for (EHRQCState qc : qcs)
-            {
-                qcStates.put(qc.getLabel(), qc);
-            }
-
-            CacheManager.getSharedCache().put(getCacheKey(getStudy(), QCSTATE_CACHE_ID), qcStates);
-            return qcStates;
+            qcStates.put(qc.getLabel(), qc);
         }
-        catch (SQLException e)
-        {
-            throw new RuntimeSQLException(e);
-        }
-    }
 
-    private FormContext getFormContext(String formName)
-    {
-        //TODO: caching
+        CacheManager.getSharedCache().put(getCacheKey(getStudy(), QCSTATE_CACHE_ID), qcStates);
 
-        return new FormContext(formName);
+        return qcStates;
     }
 
     private String getCacheKey(Study s, String suffix)
@@ -445,6 +394,1056 @@ public class TriggerScriptHelper
         return getClass().getName() + "||" + s.getEntityId() + "||" + suffix;
     }
 
+    public AnimalRecord getDemographicRecord(String id)
+    {
+        return DemographicsCache.get().getAnimal(getContainer(), getUser(), id);
+    }
+
+    public void uncacheDemographicRecords(String[] ids)
+    {
+        DemographicsCache.get().uncacheRecords(getContainer(), Arrays.asList(ids));
+    }
+
+    public Map<String, Object> validateAssignment(String id, Integer projectId, Date date)
+    {
+        if (id == null || projectId == null || date == null)
+            return null;
+
+        TableInfo ti = getTableInfo("study", "Assignment");
+        SimpleFilter filter = new SimpleFilter(FieldKey.fromString("Id"), id);
+
+        filter.addCondition(FieldKey.fromString("project"), projectId);
+        filter.addCondition(FieldKey.fromString("date"), date, CompareType.DATE_LTE);
+
+        filter.addClause(new SimpleFilter.OrClause(new CompareType.EqualsCompareClause(FieldKey.fromString("enddate"), CompareType.DATE_GTE, date), new CompareType.CompareClause(FieldKey.fromString("enddate"), CompareType.ISBLANK, null)));
+        filter.addCondition(FieldKey.fromString("qcstate/publicdata"), true, CompareType.EQUAL);
+
+        Set<FieldKey> keys = PageFlowUtil.set(FieldKey.fromString("project"), FieldKey.fromString("project"), FieldKey.fromString("project/protocol"));
+        Map<FieldKey, ColumnInfo> cols = QueryService.get().getColumns(ti, keys);
+        TableSelector ts = new TableSelector(ti, cols.values(), filter, null);
+
+        Map<String, Object>[] ret = ts.getMapArray();
+        if (ret.length != 1)
+            return null;
+
+        return ret[0];
+    }
+
+    private TableInfo getTableInfo(String schema, String query)
+    {
+        UserSchema us = QueryService.get().getUserSchema(getUser(), getContainer(), schema);
+        if (us == null)
+            throw new IllegalArgumentException("Unable to find schema: " + schema);
+
+        TableInfo ti = us.getTable(query);
+        if (ti == null)
+            throw new IllegalArgumentException("Unable to find table: " + schema + "." + query);
+
+        return ti;
+    }
+
+    public String getSnomedMeaning(String code)
+    {
+        if (code == null)
+            return null;
+
+        TableInfo ti = EHRSchema.getInstance().getEHRLookupsSchema().getTable(EHRSchema.TABLE_SNOMED);
+        TableSelector ts = new TableSelector(ti, Collections.singleton("meaning"), new SimpleFilter(FieldKey.fromString("code"), code), null);
+        String[] ret = ts.getArray(String.class);
+        if (ret != null && ret.length == 1)
+            return ret[0];
+
+        return null;
+    }
+
+    public boolean validateHousing(String id, String room, String cage, Date date)
+    {
+        if (id == null || room == null || date == null)
+            return true;
+
+        TableInfo ti = getTableInfo("study", "Housing");
+        SimpleFilter filter = new SimpleFilter(FieldKey.fromString("Id"), id);
+        filter.addCondition(FieldKey.fromString("room"), room, CompareType.EQUAL);
+        if (cage != null)
+            filter.addCondition(FieldKey.fromString("cage"), cage, CompareType.EQUAL);
+
+        filter.addCondition(FieldKey.fromString("date"), date, CompareType.LTE);
+        filter.addClause(new SimpleFilter.OrClause(new CompareType.EqualsCompareClause(FieldKey.fromString("enddate"), CompareType.GT, date), new CompareType.CompareClause(FieldKey.fromString("enddate"), CompareType.ISBLANK, null)));
+        filter.addCondition(FieldKey.fromString("qcstate/publicdata"), true, CompareType.EQUAL);
+
+        TableSelector ts = new TableSelector(ti, Collections.singleton("Id"), filter, null);
+        return ts.getRowCount() > 0;
+    }
+
+    public String getProtocolForProject(Integer project)
+    {
+        if (project == null)
+            return null;
+
+        TableInfo ti = getTableInfo("ehr", "project");
+        TableSelector ts = new TableSelector(ti, Collections.singleton("protocol"), new SimpleFilter(FieldKey.fromString("project"), project), null);
+        String[] ret = ts.getArray(String.class);
+        if (ret.length == 1)
+            return ret[0];
+
+        return null;
+    }
+
+    public String lookupDatasetForService(String service)
+    {
+        Map<String, Map<String, Object>> map = getLabworkServices();
+        if (map.containsKey(service))
+            return (String)map.get(service).get("dataset");
+
+        return null;
+    }
+
+    public String lookupChargeTypeForService(String service)
+    {
+        Map<String, Map<String, Object>> map = getLabworkServices();
+        if (map.containsKey(service))
+            return (String)map.get(service).get("chargetype");
+
+        return null;
+    }
+
+    public Map<String, Map<String, Object>> getLabworkServices()
+    {
+        if (_labworkServices == null)
+        {
+            TableInfo ti = getTableInfo("ehr_lookups", "labwork_services");
+            TableSelector ts = new TableSelector(ti);
+            final Map<String, Map<String, Object>> ret = new HashMap<String, Map<String, Object>>();
+            for (Map<String, Object> row : ts.getMapArray())
+            {
+                ret.put((String)row.get("servicename"), row);
+            }
+
+            _labworkServices = ret;
+        }
+
+        return _labworkServices;
+    }
+
+    public Map<String, Object> getWeightRangeForSpecies(String species)
+    {
+        if (_weightRanges.containsKey(species))
+            return _weightRanges.get(species);
+
+        TableInfo ti = getTableInfo("ehr_lookups", "weight_ranges");
+        SimpleFilter filter = new SimpleFilter(FieldKey.fromString("species"), species, CompareType.EQUAL);
+        TableSelector ts = new TableSelector(ti, Table.ALL_COLUMNS, filter, null);
+        Map<String, Object>[] ret = ts.getMapArray();
+
+        if (ret.length > 1)
+        {
+            _log.warn("More than 1 row returned from ehr_lookups.weight_ranges for the species: " + species);
+            return null;
+        }
+        else if (ret.length == 0)
+        {
+            return null;
+        }
+
+        _weightRanges.put(species, ret[0]);
+
+        return _weightRanges.get(species);
+    }
+
+    public String verifyWeightRange(String id, Double weight, String species)
+    {
+        if (species == null)
+            return null;
+
+        if (weight == null)
+            return null;
+
+
+        Map<String, Object> row = getWeightRangeForSpecies(species);
+        if (row == null)
+            return null;
+
+        Double minWeight = (Double)row.get("min_weight");
+        Double maxWeight = (Double)row.get("max_weight");
+        if (minWeight != null && weight < minWeight)
+        {
+            return "Weight below the allowable value of " + minWeight + " kg for " + species;
+        }
+
+        if (maxWeight != null && weight > maxWeight)
+        {
+            return "Weight above the allowable value of " + maxWeight + " kg for " + species;
+        }
+
+        return null;
+    }
+
+    public void announceIdsModified(String schema, String query, List<String> ids)
+    {
+        DemographicsCache.get().reportDataChange(getContainer(), schema, query, ids);
+    }
+
+    public void insertWeight(String id, Date date, Double weight) throws QueryUpdateServiceException, DuplicateKeyException, SQLException, BatchValidationException
+    {
+        if (id == null || date == null || weight == null)
+            return;
+
+        TableInfo ti = getTableInfo("study", "weight");
+
+        Map<String, Object> row = new CaseInsensitiveHashMap<Object>();
+        row.put("Id", id);
+        row.put("date", date);
+        row.put("weight", weight);
+
+        List<Map<String, Object>> rows = new ArrayList<Map<String, Object>>();
+        rows.add(row);
+        BatchValidationException errors = new BatchValidationException();
+        ti.getUpdateService().insertRows(getUser(), getContainer(), rows, errors, getExtraContext());
+
+    }
+
+    public void createHousingRecord(String id, Date date, @Nullable String enddate, String room, @Nullable String cage) throws QueryUpdateServiceException, DuplicateKeyException, SQLException, BatchValidationException
+    {
+        if (id == null || date == null || room == null)
+            return;
+
+        TableInfo ti = getTableInfo("study", "housing");
+
+        Map<String, Object> row = new CaseInsensitiveHashMap<Object>();
+        row.put("Id", id);
+        row.put("date", date);
+        row.put("room", room);
+
+        if (enddate != null)
+            row.put("enddate", enddate);
+
+        if (cage != null)
+            row.put("cage", cage);
+
+        List<Map<String, Object>> rows = new ArrayList<Map<String, Object>>();
+        rows.add(row);
+        BatchValidationException errors = new BatchValidationException();
+        ti.getUpdateService().insertRows(getUser(), getContainer(), rows, errors, getExtraContext());
+    }
+
+    public void createBirthRecord(String id, Map<String, Object> props) throws QueryUpdateServiceException, DuplicateKeyException, SQLException, BatchValidationException
+    {
+        if (id == null)
+            return;
+
+        TableInfo ti = getTableInfo("study", "birth");
+        Map<String, Object> row = new CaseInsensitiveHashMap<Object>();
+        row.putAll(props);
+
+        List<Map<String, Object>> rows = new ArrayList<Map<String, Object>>();
+        rows.add(row);
+        BatchValidationException errors = new BatchValidationException();
+        ti.getUpdateService().insertRows(getUser(), getContainer(), rows, errors, getExtraContext());
+    }
+
+    public void createDemographicsRecord(String id, Map<String, Object> props) throws QueryUpdateServiceException, DuplicateKeyException, SQLException, BatchValidationException
+    {
+        if (id == null)
+            return;
+
+        AnimalRecord ar = DemographicsCache.get().getAnimal(getContainer(), getUser(), id);
+        if (ar != null && ar.getProps().size() > 0)
+        {
+            _log.info("Id already exists, no need to create demographics record: " + id);
+            return;
+        }
+
+        TableInfo ti = getTableInfo("study", "demographics");
+        Map<String, Object> row = new CaseInsensitiveHashMap<Object>();
+        row.putAll(props);
+        EHRQCState qc = getQCStateForLabel("Completed");
+        if (qc != null)
+            row.put("qcstate", qc.getRowId());
+
+        List<Map<String, Object>> rows = new ArrayList<Map<String, Object>>();
+        rows.add(row);
+        BatchValidationException errors = new BatchValidationException();
+        ti.getUpdateService().insertRows(getUser(), getContainer(), rows, errors, getExtraContext());
+        DemographicsCache.get().uncacheRecords(getContainer(), id);
+    }
+
+    public Map<String, Object> getExtraContext()
+    {
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("quickValidation", true);
+        map.put("generatedByServer", true);
+
+        return map;
+    }
+
+    public Long findExistingAnimalsInCage(String id, String room, String cage)
+    {
+        if (id == null || room == null || cage == null)
+            return null;
+
+        TableInfo ti = getTableInfo("study", "housing");
+        SimpleFilter filter = new SimpleFilter(FieldKey.fromString("Id"), id, CompareType.NEQ);
+        filter.addCondition(FieldKey.fromString("room"), room, CompareType.EQUAL);
+        filter.addCondition(FieldKey.fromString("cage"), cage, CompareType.EQUAL);
+
+        TableSelector ts = new TableSelector(ti, Collections.singleton("Id"), filter, null);
+
+        return ts.getRowCount();
+    }
+
+    public String getCalculatedStatusValue(String id)
+    {
+        if (id == null)
+            return null;
+
+        AnimalRecord ar = DemographicsCache.get().getAnimal(getContainer(), getUser(), id);
+        if (ar == null)
+            return "Unknown";
+
+        if (ar.getCalculatedStatus() != null)
+            return ar.getCalculatedStatus();
+
+        if (ar.getDeath() != null && ar.getMostRecentDeparture() != null)
+        {
+            return ar.getMostRecentDeparture().before(ar.getDeath()) ? "Shipped" : "Dead";
+        }
+
+        if (ar.getDeath() != null)
+            return "Dead";
+
+        if (ar.getMostRecentDeparture() != null)
+            return "Shipped";
+
+        if (ar.getCurrentRoom() != null)
+            return "Alive";
+
+        return null;
+    }
+
+    public void createRequestsForBloodAdditionalServices(String id, Integer project, String performedby, String services) throws QueryUpdateServiceException, DuplicateKeyException, SQLException, BatchValidationException
+    {
+        if (id == null || project == null)
+            return;
+
+        String[] toAutomaticallyCreate = getAdditionalServicesToCreate(services);
+        if (toAutomaticallyCreate == null || toAutomaticallyCreate.length == 0)
+            return;
+
+        for (String testId : toAutomaticallyCreate)
+        {
+            GUID requestId = new GUID();
+            Date dateRequested = new Date();
+            Map<String, Object> row = new CaseInsensitiveHashMap<Object>();
+            row.put("daterequested", dateRequested);
+            row.put("requestid", requestId.toString());
+            row.put("priority", "Routine");
+            row.put("formtype", "labworkRequest");
+            row.put("title", "Labwork Request From Blood Draw: " + testId);
+            row.put("notify1", getUser().getUserId());
+
+            TableInfo requests = getTableInfo("ehr", "requests");
+            List<Map<String, Object>> rows = new ArrayList<Map<String, Object>>();
+            rows.add(row);
+            requests.getUpdateService().insertRows(getUser(), getContainer(), rows, new BatchValidationException(), getExtraContext());
+
+            TableInfo clinpathRuns = getTableInfo("study", "Clinpath Runs");
+            List<Map<String, Object>> clinpathRows = new ArrayList<Map<String, Object>>();
+            Map<String, Object> clinpathRow = new CaseInsensitiveHashMap<Object>();
+            clinpathRow.put("Id", id);
+            clinpathRow.put("date", dateRequested);
+            clinpathRow.put("project", project);
+            clinpathRow.put("requestId", requestId);
+            clinpathRow.put("sampletype", "Blood - EDTA Whole Blood");
+            clinpathRow.put("collectedBy", performedby);
+            clinpathRow.put("serviceRequested", testId);
+            clinpathRow.put("QCStateLabel", "Request: Pending");
+
+            clinpathRows.add(clinpathRow);
+            clinpathRuns.getUpdateService().insertRows(getUser(), getContainer(), clinpathRows, new BatchValidationException(), getExtraContext());
+        }
+    }
+
+    public String[] validateBloodAdditionalServices(String services, String tubeType, Double quantity)
+    {
+        services = StringUtils.trimToNull(services);
+        if (services == null)
+            return null;
+
+        List<String> testNames = Arrays.asList(StringUtils.split(services, ","));
+        if (testNames.size() == 0)
+            return null;
+
+        Map<String, Map<String, Object>> serviceMap = getBloodDrawServicesMap();
+        Set<String> msgs = new HashSet<String>();
+
+        Double accumulatedMinVol = 0.0;
+        for (String testName : testNames)
+        {
+            Map<String, Object> map = serviceMap.get(testName);
+            if (map == null)
+            {
+                msgs.add("Unknown service: " + testName);
+                continue;
+            }
+
+            if (map.containsKey("requiredtubetype"))
+            {
+                String requiredType = (String)map.get("requiredtubetype");
+                if (requiredType != null && !requiredType.equalsIgnoreCase(tubeType))
+                {
+                    msgs.add(testName + " requires a tube type of: " + requiredType);
+                }
+            }
+
+            if (map.containsKey("minvolume"))
+            {
+                Double minVolume = (Double)map.get("minvolume");
+                if (minVolume != null && minVolume > 0)
+                {
+                    accumulatedMinVol += minVolume;
+                    if (quantity < minVolume)
+                    {
+                        msgs.add("Quantity below volume required for " + testName + ": " + minVolume);
+                        continue;
+                    }
+                }
+            }
+
+            if (accumulatedMinVol > 0 && quantity < accumulatedMinVol)
+            {
+                msgs.add("Quantity below total volume required for services: " + accumulatedMinVol);
+            }
+        }
+
+        if (msgs.size() == 0)
+        {
+            return null;
+        }
+        else
+        {
+            return msgs.toArray(new String[msgs.size()]);
+        }
+    }
+
+    private Map<String, Map<String, Object>> getBloodDrawServicesMap()
+    {
+        if (_bloodDrawServices != null)
+            return _bloodDrawServices;
+
+        TableInfo ti = getTableInfo("ehr_lookups", "blood_draw_services");
+        Map<String, Map<String, Object>> map = new HashMap<String, Map<String, Object>>();
+
+        TableSelector ts = new TableSelector(ti);
+        for (Map<String, Object> row : ts.getMapArray())
+        {
+            map.put((String)row.get("service"), row);
+        }
+
+        _bloodDrawServices = map;
+
+        return map;
+    }
+
+    public boolean isDefaultProject(Integer project)
+    {
+        if (project == null)
+            return false;
+
+        return getDefaultProjects().contains(project);
+    }
+
+    private Set<Integer> _defaultProjects = null;
+
+    public Set<Integer> getDefaultProjects()
+    {
+        if (_defaultProjects != null)
+            return _defaultProjects;
+
+        TableInfo ti = getTableInfo("ehr", "project");
+        SimpleFilter filter = new SimpleFilter(FieldKey.fromString("alwaysavailable"), true, CompareType.EQUAL);
+        filter.addCondition(FieldKey.fromString("enddateCoalesced"), new Date(), CompareType.DATE_GT);
+
+        TableSelector ts = new TableSelector(ti, PageFlowUtil.set("project"), filter, null);
+        Set<Integer> ret = new HashSet<Integer>();
+        ret.addAll(Arrays.asList(ts.getArray(Integer.class)));
+        _defaultProjects = Collections.unmodifiableSet(ret);
+
+        return _defaultProjects;
+    }
+
+    private String[] getAdditionalServicesToCreate(String services)
+    {
+        services = StringUtils.trimToNull(services);
+        if (services == null)
+            return null;
+
+        List<String> testNames = Arrays.asList(StringUtils.split(services, ","));
+        if (testNames.size() == 0)
+            return null;
+
+        TableInfo ti = getTableInfo("ehr_lookups", "blood_draw_services");
+        SimpleFilter filter = new SimpleFilter(FieldKey.fromString("service"), testNames, CompareType.IN);
+        filter.addCondition(FieldKey.fromString("automaticrequestfromblooddraw"), true);
+
+        TableSelector ts = new TableSelector(ti, PageFlowUtil.set("service"), filter, null);
+
+        return ts.getArray(String.class);
+    }
+
+    //NOTE: the interval start/stop are inclusive
+    private Double getOtherDrawsQuantity(String id, Date intervalStart, Date intervalStop, List<Map<String, Object>> recordsInTransaction, String rowObjectId, Double rowQuantity)
+    {
+        intervalStart = DateUtils.round(intervalStart, Calendar.DATE);
+        intervalStop = DateUtils.round(intervalStop, Calendar.DATE);
+
+        //if provided, we inspect the other records in this transaction and add their values
+        //first determine which other records from this transction should be considered
+        Set<String> ignoredObjectIds = new HashSet<String>();
+        double quantityInTransaction = 0.0;
+
+        if (recordsInTransaction != null)
+        {
+            for (Map<String, Object> origMap : recordsInTransaction)
+            {
+                Map<String, Object> map = new CaseInsensitiveHashMap<Object>(origMap);
+                if (!map.containsKey("date"))
+                {
+                    _log.warn("TriggerScriptHelper.verifyBloodVolume was passed a previous record lacking a date");
+                    continue;
+                }
+
+                EHRQCState qc = null;
+                if (map.containsKey("QCState"))
+                {
+                    Integer i = ConvertHelper.convert(map.get("QCState"), Integer.class);
+                    qc = getQCStateForRowId(i);
+                }
+                else if (map.containsKey("QCStateLabel"))
+                {
+                    qc = getQCStateForLabel((String)map.get("QCStateLabel"));
+                }
+
+                if (qc == null || (!qc.isPublicData() && !qc.isDraftData()))
+                {
+                    _log.info("skipping blood row due to QCState");
+                    continue;
+                }
+
+                try
+                {
+                    Date d = ConvertHelper.convert(map.get("date"), Date.class);
+                    d = DateUtils.round(d, Calendar.DATE);
+                    if (d.getTime() >= intervalStart.getTime() && d.getTime() <= intervalStop.getTime())
+                    {
+                        Double quantity = ConvertHelper.convert(map.get("quantity"), Double.class);
+                        if (quantity != null)
+                            quantityInTransaction += quantity;
+                    }
+
+                    String objectId = ConvertHelper.convert(map.get("objectid"), String.class);
+                    if (objectId != null)
+                    {
+                        ignoredObjectIds.add(objectId);
+                    }
+                }
+                catch (ConversionException e)
+                {
+                    _log.error("TriggerScriptHelper.verifyBloodVolume was unable to parse date", e);
+                    continue;
+                }
+            }
+        }
+        else
+        {
+            quantityInTransaction = rowQuantity;
+            ignoredObjectIds.add(rowObjectId);
+        }
+
+        SimpleFilter filter = new SimpleFilter(FieldKey.fromString("Id"), id);
+        filter.addCondition(FieldKey.fromString("date"), intervalStart, CompareType.DATE_GTE);
+        filter.addCondition(FieldKey.fromString("date"), intervalStop, CompareType.DATE_LTE);
+        filter.addCondition(FieldKey.fromString("quantity"), null, CompareType.NONBLANK);
+
+        if (ignoredObjectIds != null && ignoredObjectIds.size() > 0)
+            filter.addCondition(FieldKey.fromString("objectid"), ignoredObjectIds, CompareType.NOT_IN);
+
+        filter.addClause(new SimpleFilter.OrClause(new CompareType.EqualsCompareClause(FieldKey.fromString("qcstate/metadata/DraftData"), CompareType.EQUAL, true), new CompareType.EqualsCompareClause(FieldKey.fromString("qcstate/publicdata"), CompareType.EQUAL, true)));
+
+        TableInfo ti = getTableInfo("study", "Blood Draws");
+        TableSelector ts = new TableSelector(ti, Collections.singleton("quantity"), filter, null);
+
+        for (Double q : ts.getArray(Double.class))
+        {
+            quantityInTransaction += q;
+        }
+
+        return quantityInTransaction;
+    }
+
+    public String verifyBloodVolume(String id, Date date, List<Map<String, Object>> recordsInTransaction, String objectId, Double quantity)
+    {
+        if (id == null || date == null || quantity == null)
+            return null;
+
+        AnimalRecord ar = DemographicsCache.get().getAnimal(getContainer(), getUser(), id);
+        if (ar == null)
+            return null;
+
+        String species = ar.getSpecies();
+        if (species == null)
+            return "Unknown species, unable to calculate allowable blood volume";
+
+        Double weight = ar.getMostRecentWeight();
+        if (weight == null)
+            return "Unknown weight, unable to calculate allowable blood volume";
+
+        TableSelector allowable = new TableSelector(getTableInfo("ehr_lookups", "species"), Table.ALL_COLUMNS, new SimpleFilter(FieldKey.fromString("common"), species), null);
+        Map<String, Object>[] rows = allowable.getMapArray();
+        if (rows.length != 1)
+            return "Unable to calculate allowable blood volume";
+
+        Double bloodPerKg = (Double)rows[0].get("blood_per_kg");
+        Integer interval = ((Double)rows[0].get("blood_draw_interval")).intValue();
+        Double maxDrawPct = (Double)rows[0].get("max_draw_pct");
+        if (bloodPerKg == null || interval == null || maxDrawPct == null)
+            return "Unable to calculate allowable blood volume";
+
+        Double maxAllowable = weight * bloodPerKg * maxDrawPct;
+
+        //find draws over the interval
+        Calendar intervalMin = Calendar.getInstance();
+        intervalMin.setTime(date);
+        intervalMin.add(Calendar.DATE, (-1 * interval) + 1);  //draws drop off on the morning of the nth date
+
+        Double bloodPrevious = getOtherDrawsQuantity(id, intervalMin.getTime(), date, recordsInTransaction, objectId, quantity);
+        if (bloodPrevious == null)
+            bloodPrevious = 0.0;
+
+        if (bloodPrevious > maxAllowable)
+        {
+            return "Blood volume of " + bloodPrevious + " exceeds allowable volume of " + maxAllowable + "' mL over the previous " + interval + " days";
+        }
+
+        // if we didnt already have an error, check the future interval
+        Calendar intervalMax = Calendar.getInstance();
+        intervalMax.setTime(date);
+        intervalMax.add(Calendar.DATE, interval);
+
+        Double bloodFuture = getOtherDrawsQuantity(id, date, intervalMax.getTime(), recordsInTransaction, objectId, quantity);
+        if (bloodFuture == null)
+            bloodFuture = 0.0;
+
+        if (bloodFuture > maxAllowable)
+        {
+            return "Blood volume of " + bloodFuture + " conflicts with future draws. Max allowable is : " + maxAllowable + " mL";
+        }
+
+        return null;
+    }
+
+    //TODO
+    public void processDeniedRequests(List<String> requestIds)
+    {
+        TableInfo ti = getTableInfo("ehr", "requests");
+        SimpleFilter filter = new SimpleFilter(FieldKey.fromString("requestid"), requestIds, CompareType.IN);
+        TableSelector ts = new TableSelector(ti, Table.ALL_COLUMNS, filter, null);
+
+
+        StringBuilder msg = new StringBuilder("<p>The requests that have been denied will say 'Request: Denied' in the status column.  Please do not reply to this email, as this account is not read.");
+
+
+//
+//        for (var i=0;i<data.rows.length;i++){
+//            row = data.rows[i];
+//            var recipients = [];
+//            var rows = helper.getRequestsDenied()[row.requestid];
+//
+//            if (row.notify1)
+//                recipients.push(LABKEY.Message.createPrincipalIdRecipient(LABKEY.Message.recipientType.to, row.notify1));
+//            if (row.notify2)
+//                recipients.push(LABKEY.Message.createPrincipalIdRecipient(LABKEY.Message.recipientType.to, row.notify2));
+//            if (row.notify3)
+//                recipients.push(LABKEY.Message.createPrincipalIdRecipient(LABKEY.Message.recipientType.to, row.notify3));
+//
+//            var msgContent = 'One or more elements from a '+row.formtype+(row.title ? ' titled: \''+row.title+'\'' : '')+' have been denied: ' +
+//                    '<a href="'+LABKEY.ActionURL.getBaseURL()+'ehr' + LABKEY.ActionURL.getContainer() + '/requestDetails.view?requestid='+row.requestid+'&formtype='+row.formtype +
+//                    '">Click here to view them</a>.  <p>';
+//
+//            if (rows.length){
+//                msgContent += 'The following IDs have been marked complete:<br>';
+//                var req;
+//                for (var j=0;j<rows.length;j++){
+//                    req = rows[j];
+//                    msgContent += '<a href="'+LABKEY.ActionURL.getBaseURL()+'ehr' + LABKEY.ActionURL.getContainer() + '/requestDetails.view?requestid='+row.requestid+'&formtype='+row.formtype + '">' + req.Id+'</a><br>';
+//                    if (req.description){
+//                        msgContent += req.description.replace(/\n/g,'<br>');
+//                    }
+//                    msgContent += '<p>';
+//                }
+//            }
+//
+//            EHR.Server.Utils.sendEmail({
+//                    recipients: recipients,
+//                    msgContent: msgContent,
+//                    msgSubject: 'EHR '+row.formtype+' Denied',
+//                    notificationType: row.formtype+' Denied'
+//            })
+//        }
+//    }
+
+    }
+
+    //TODO
+    public void processCompletedRequests(List<String> requestsIds)
+    {
+        TableInfo ti = getTableInfo("ehr", "requests");
+        SimpleFilter filter = new SimpleFilter(FieldKey.fromString("requestid"), requestsIds, CompareType.IN);
+        TableSelector ts = new TableSelector(ti, Table.ALL_COLUMNS, filter, null);
+
+
+//        var emails = [];
+//        var row;
+//
+//        for (var i=0;i<data.rows.length;i++){
+//            row = data.rows[i];
+//            var recipients = [];
+//            var rows = helper.getRequestsCompleted()[row.requestid] || [];
+//
+//            if (row.notify1)
+//                recipients.push(LABKEY.Message.createPrincipalIdRecipient(LABKEY.Message.recipientType.to, row.notify1));
+//            if (row.notify2)
+//                recipients.push(LABKEY.Message.createPrincipalIdRecipient(LABKEY.Message.recipientType.to, row.notify2));
+//            if (row.notify3)
+//                recipients.push(LABKEY.Message.createPrincipalIdRecipient(LABKEY.Message.recipientType.to, row.notify3));
+//
+//            var msgContent = 'One or more elements from the '+row.formtype+(row.title ? ' titled: \''+row.title+'\'' : '')+' have been completed: ' +
+//                    '<a href="'+LABKEY.ActionURL.getBaseURL()+'ehr' + LABKEY.ActionURL.getContainer() + '/requestDetails.view?requestid='+row.requestid+'&formtype='+row.formtype +
+//                    '">Click here to view them</a>.  <p>';
+//
+//            if (rows.length){
+//                msgContent += 'The following IDs have been marked complete:<br>';
+//                var req;
+//                for (var j=0;j<rows.length;j++){
+//                    req = rows[j];
+//                    msgContent += '<a href="'+LABKEY.ActionURL.getBaseURL()+'ehr' + LABKEY.ActionURL.getContainer() + '/requestDetails.view?requestid='+row.requestid+'&formtype='+row.formtype + '">' + req.Id+'</a><br>';
+//                    if (req.description){
+//                        msgContent += req.description.replace(/\n/g,'<br>');
+//                    }
+//                    msgContent += '<p>';
+//                }
+//            }
+//
+//            msgContent += '<p>The requests that have been completed will say \'Completed\' in the status column.  Please do not reply directly to this email, as this account is not read.';
+//
+//            EHR.Server.Utils.sendEmail({
+//                    recipients: recipients,
+//                    msgContent: msgContent,
+//                    msgSubject: 'EHR '+row.formtype+' Completed',
+//                    notificationType: row.formtype+' Completed'
+//            })
+//        }
+
+
+        //TODO: this should be more general code, not located here
+//    if (helper.getRows().length > 0) {
+//        var r = helper.getRows()[0];
+//        if (r.row.requestid && !r.row.taskid && r.row.QCState == 5) {
+//            LABKEY.Query.selectRows({
+//                schemaName:'ehr',
+//                queryName:'requests',
+//                filterArray:[
+//                    LABKEY.Filter.create('requestid', r.row.requestid, LABKEY.Filter.Types.EQUAL)
+//                ],
+//                scope:this,
+//                success: function(data){
+//                    if (data.rows && data.rows.length) {
+//                        var dRow = data.rows[0];
+//                        if (dRow.priority == 'Stat') {
+//                            EHR.Server.Utils.sendEmail({
+//                                notificationType: 'Clinpath Request - Stat',
+//                                msgContent: 'A clinpath request (' + dRow.rowid +') requires immediate attention:<br>' +
+//                                        dRow.title + ',<br>' +
+//                                        '<p></p><a href="'+LABKEY.ActionURL.getBaseURL()+'ehr' + LABKEY.ActionURL.getContainer() + '/requestDetails.view?formtype=Clinpath Request&requestid=' + r.row.requestid +
+//                                        '">Click here to view request ' + dRow.rowid +'</a>.',
+//                                msgSubject: 'Request ' + dRow.rowid + ' Stat!'
+//                            });
+//                        }
+//                    }
+//                },
+//                failure: EHR.Server.Utils.onFailure
+//            });
+//        }
+//    }
+    }
+
+    public void onAnimalArrival(String id, Map<String, Object> row) throws QueryUpdateServiceException, DuplicateKeyException, SQLException, BatchValidationException
+    {
+        Map<String, Object> demographicsProps = new HashMap<String, Object>();
+        for (String key : new String[]{"Id", "gender", "species", "dam", "sire", "origin", "source", "geographic_origin", "geographic_origin", "birth"})
+        {
+            if (row.containsKey(key))
+            {
+                demographicsProps.put(key, row.get(key));
+            }
+        }
+        demographicsProps.put("date", row.get("birth"));
+        demographicsProps.put("calculated_status", "Alive");
+        createDemographicsRecord(id, demographicsProps);
+
+        if (row.containsKey("birth"))
+        {
+            Map<String, Object> birthProps = new HashMap<String, Object>();
+            for (String key : new String[]{"Id", "dam", "sire"})
+            {
+                if (row.containsKey(key))
+                {
+                    birthProps.put(key, row.get(key));
+                }
+            }
+            birthProps.put("date", row.get("birth"));
+
+            createBirthRecord(id, birthProps);
+        }
+    }
+
+    private Date findMostRecentDate(String id, Date lastVal, Map<String, List<Date>> otherVals)
+    {
+        if (otherVals != null && otherVals.containsKey(id))
+        {
+            for (Object obj : otherVals.get(id))
+            {
+                try
+                {
+                    Date d = ConvertHelper.convert(obj, Date.class);
+                    if (d != null && (lastVal == null || d.after(lastVal)))
+                    {
+                        lastVal = d;
+                    }
+                }
+                catch (ConversionException e)
+                {
+                    _log.warn("Improper date: " + obj, e);
+                }
+            }
+        }
+
+        return lastVal;
+    }
+
+    public Set<String> hasDemographicsRecord(List<String> ids)
+    {
+        TableInfo ti = getTableInfo("study", "Demographics");
+        SimpleFilter filter = new SimpleFilter(FieldKey.fromString("Id"), new HashSet<String>(ids), CompareType.IN);
+        filter.addCondition(FieldKey.fromString("qcstate/publicdata"), true);
+
+        TableSelector ts = new TableSelector(ti, Collections.singleton("Id"), filter, null);
+
+        Set<String> ret = new HashSet<String>();
+        ret.addAll(Arrays.asList(ts.getArray(String.class)));
+
+        return ret;
+    }
+
+    public void updateStatusField(List<String> ids, Map<String, List<Date>> births, Map<String, List<Date>> arrivals, Map<String, List<Date>> deaths, Map<String, List<Date>> departures) throws QueryUpdateServiceException, DuplicateKeyException, SQLException, BatchValidationException, InvalidKeyException
+    {
+        List<Map<String, Object>> rows = new ArrayList<Map<String, Object>>();
+
+        Set<String> idsInDemographics = hasDemographicsRecord(ids);
+        for (String id : ids)
+        {
+            if (!idsInDemographics.contains(id))
+            {
+                _log.info("ID not in demographics table, cannot update status: " + id);
+                continue;
+            }
+
+            Date lastArrival = findMostRecentDate(id, getMostRecentDate(id, "Arrival"), arrivals);
+            Date lastBirth = findMostRecentDate(id, getMostRecentDate(id, "Birth"), births);
+            Date lastDeath = findMostRecentDate(id, getMostRecentDate(id, "Deaths"), deaths);
+            Date lastDeparture = findMostRecentDate(id, getMostRecentDate(id, "Departure"), departures);
+
+            String status = null;
+            if (lastDeath != null)
+            {
+                status = "Dead";
+            }
+            else if (lastDeparture != null)
+            {
+                if (lastArrival != null && lastArrival.after(lastDeparture))
+                {
+                    status = "Alive";
+                }
+                else
+                {
+                    status = "Shipped";
+                }
+            }
+            else if (lastBirth != null || lastArrival != null)
+            {
+                status = "Alive";
+            }
+            else
+            {
+                status = "Unknown";
+            }
+
+            Map<String, Object> row = new CaseInsensitiveHashMap<Object>();
+            row.put("Id", id);
+            row.put("calculated_status", status);
+
+            rows.add(row);
+        }
+
+        //now perform the actual update
+        TableInfo ti = getTableInfo("study", "Demographics");
+        ti.getUpdateService().updateRows(getUser(), getContainer(), rows, rows, getExtraContext());
+        DemographicsCache.get().uncacheRecords(getContainer(), ids);
+    }
+
+    //find most recent record date for the passed Id/table
+    private Date getMostRecentDate(String id, String queryName)
+    {
+        TableInfo ti = getTableInfo("study", queryName);
+        SimpleFilter filter = new SimpleFilter(FieldKey.fromString("Id"), id);
+        filter.addCondition(FieldKey.fromString("qcstate/publicdata"), true);
+
+        TableSelector ts = new TableSelector(ti, Collections.singleton("date"), filter, null);
+        Map<String, List<Aggregate.Result>> aggs = ts.getAggregates(Collections.singletonList(new Aggregate(FieldKey.fromString("date"), Aggregate.Type.MAX)));
+        for (List<Aggregate.Result> ag : aggs.values())
+        {
+            for (Aggregate.Result r : ag)
+            {
+                if (r.getValue() instanceof Date)
+                {
+                    return (Date)r.getValue();
+                }
+            }
+        }
+
+        return null;
+    }
+
+    //we want to catch situations where we insert an opened-ended housing record
+    //when there is already another opened ended record with a later date.
+    //if we inserted an open ended record and there is a pre-existing one with an earlier start date, this is ok since the latter will be closed out
+    private Integer getOpenEndedHousingOverlaps(String id, Date date, Date enddate, List<Map<String, Object>> recordsInTransaction, String rowObjectId)
+    {
+        //if provided, we inspect the other records in this transaction and add their values
+        //first determine which other records from this transction should be considered
+        Set<String> ignoredObjectIds = new HashSet<String>();
+        int otherOpenEndedRecords = 0;
+
+        if (recordsInTransaction != null)
+        {
+            for (Map<String, Object> origMap : recordsInTransaction)
+            {
+                Map<String, Object> map = new CaseInsensitiveHashMap<Object>(origMap);
+                if (!map.containsKey("date"))
+                {
+                    _log.warn("TriggerScriptHelper.hasHousingOverlaps was passed a previous record lacking a date");
+                    continue;
+                }
+
+                EHRQCState qc = null;
+                if (map.containsKey("QCState"))
+                {
+                    Integer i = ConvertHelper.convert(map.get("QCState"), Integer.class);
+                    qc = getQCStateForRowId(i);
+                }
+                else if (map.containsKey("QCStateLabel"))
+                {
+                    qc = getQCStateForLabel((String)map.get("QCStateLabel"));
+                }
+
+                if (qc == null || (!qc.isPublicData()))
+                {
+                    _log.info("skipping blood row due to QCState");
+                    continue;
+                }
+
+                try
+                {
+                    Date now = new Date();
+                    Date start = ConvertHelper.convert(map.get("date"), Date.class);
+                    Date end = ConvertHelper.convert(map.get("enddate"), Date.class);
+
+                    String objectId = ConvertHelper.convert(map.get("objectid"), String.class);
+                    if (objectId != null)
+                    {
+                        ignoredObjectIds.add(objectId);
+                    }
+
+                    // if the record has ended in the past, we ignore it.
+                    // we dont worry about catching overlapping records here, although perhaps we should
+                    if (end != null && end.getTime() < now.getTime())
+                        continue;
+
+                    if (start.getTime() >= date.getTime())
+                    {
+                        otherOpenEndedRecords++;
+                    }
+                }
+                catch (ConversionException e)
+                {
+                    _log.error("TriggerScriptHelper.verifyBloodVolume was unable to parse date", e);
+                    continue;
+                }
+            }
+        }
+        else
+        {
+            ignoredObjectIds.add(rowObjectId);
+        }
+
+        SimpleFilter filter = new SimpleFilter(FieldKey.fromString("Id"), id);
+        filter.addCondition(FieldKey.fromString("date"), date, CompareType.LTE);
+        filter.addCondition(FieldKey.fromString("isActive"), true, CompareType.EQUAL);
+
+        if (ignoredObjectIds != null && ignoredObjectIds.size() > 0)
+            filter.addCondition(FieldKey.fromString("objectid"), ignoredObjectIds, CompareType.NOT_IN);
+
+        filter.addCondition(FieldKey.fromString("qcstate/publicData"), true, CompareType.EQUAL);
+
+        TableInfo ti = getTableInfo("study", "Housing");
+        TableSelector ts = new TableSelector(ti, Collections.singleton("Id"), filter, null);
+        otherOpenEndedRecords += ts.getRowCount();
+
+        return otherOpenEndedRecords;
+    }
+
+    public String onHousingBecomePublic(String id, Date date, Date enddate, String objectid, List<Map<String, Object>> recordsInTransaction)
+    {
+        if (id == null || date == null || enddate != null)
+            return null;
+
+
+        Integer overlapping = getOpenEndedHousingOverlaps(id, date, enddate, recordsInTransaction, objectid);
+        if (overlapping > 0)
+            return "You cannot enter an open ended housing while there is another active record starting after this record's start date";
+
+        return null;
+    }
+
+    //TODO
+    private void sendMessage(String subject, String bodyText, List<User> recipients)
+    {
+        //to send email: see SendMessageAction implementation
+        //MailHelper will send the email, but you loose some of the benefit of our API, like auto-resolving emails from UserIds.
+        //it would be preferable to use this and i need to look in more detail
+        try
+        {
+            MailHelper.MultipartMessage msg = MailHelper.createMultipartMessage();
+            //msg.setFrom();
+            msg.setSubject(subject);
+            msg.setBodyContent(bodyText, "text/html");
+        }
+        catch (Exception e)
+        {
+            //do something
+        }
+    }
+
+    //TODO
     private void sendDeathNotification(String idString)
     {
         final User user = getUser();
@@ -460,8 +1459,47 @@ public class TriggerScriptHelper
         });
     }
 
-    public AnimalRecord getDemographicRecord(String id)
+    //TODO
+    public void verifyAssignmentCounts(String id, Integer protocol)
     {
-        return DemographicsCache.get().getAnimal(getContainer(), getUser(), id);
+//        LABKEY.Query.selectRows({
+//                schemaName: 'ehr',
+//            queryName: 'protocolTotalAnimalsBySpecies',
+//            viewName: 'With Animals',
+//            scope: this,
+//            filterArray: [
+//        LABKEY.Filter.create('species', species+';All Species', LABKEY.Filter.Types.EQUALS_ONE_OF),
+//                LABKEY.Filter.create('protocol', protocol, LABKEY.Filter.Types.EQUAL)
+//        ],
+//        success: function(data){
+//        if (data && data.rows && data.rows.length){
+//            for(var i=0;i<data.rows.length;i++){
+//                var remaining = data.rows[i].TotalRemaining;
+//                var species = data.rows[i].Species;
+//
+//                if (!context.extraContext.newIdsAdded[protocol][species])
+//                    context.extraContext.newIdsAdded[protocol][species] = [];
+//
+//                if (context.extraContext.newIdsAdded[protocol] && context.extraContext.newIdsAdded[protocol][species]){
+//                    remaining -= context.extraContext.newIdsAdded[protocol][species].length;
+//                }
+//
+//                var animals = data.rows[i].Animals;
+//                if (animals && animals.indexOf(row.Id)==-1){
+//                    if (remaining <= 1)
+//                        EHR.Server.Utils.addError(scriptErrors, 'project', 'There are not enough spaces on protocol: '+protocol, 'WARN');
+//
+//                    if (context.extraContext.newIdsAdded[protocol][species] && context.extraContext.newIdsAdded[protocol][species].indexOf(row.Id)==-1)
+//                        context.extraContext.newIdsAdded[protocol][species].push(row.Id);
+//                }
+//            }
+//        }
+//        else {
+//            console.log('there was an error finding allowable animals per assignment')
+//        }
+//    },
+//        failure: EHR.Server.Utils.onFailure
+//        });
+
     }
 }

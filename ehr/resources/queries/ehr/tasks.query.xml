@@ -2,6 +2,7 @@
     <metadata>
         <tables xmlns="http://labkey.org/data/xml">
             <table tableName="tasks" tableDbType="TABLE">
+                <javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</javaCustomizer>
                 <tableUrl>/ehr/taskDetails.view?formtype=${formtype}&amp;taskid=${taskid}</tableUrl>
                 <insertUrl />
                 <importUrl />
@@ -14,6 +15,7 @@
                         <columnTitle>Task Id</columnTitle>
                         <isAutoInc>true</isAutoInc>
                         <nullable>true</nullable>
+                        <shownInInsertView>true</shownInInsertView>
                         <url>/ehr/taskDetails.view?formtype=${formtype}&amp;taskid=${taskid}</url>
                     </column>
                     <column columnName="taskid">

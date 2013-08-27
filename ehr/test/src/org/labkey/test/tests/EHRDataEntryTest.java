@@ -74,6 +74,9 @@ public class EHRDataEntryTest extends AbstractEHRTest
         _extHelper.setExtFormElementByLabel("Id:", DEAD_ANIMAL_ID);
         waitForText(DEAD_ANIMAL_ID, WAIT_FOR_JAVASCRIPT);
 
+        //these fields seem to be forgetting their values, so verify they show the correct value
+        assertFormElementEquals(Locator.name("title"), TASK_TITLE);
+
         waitForElement(Locator.button("Add Batch"), WAIT_FOR_JAVASCRIPT);
         clickButton("Add Batch", 0);
         _extHelper.waitForExtDialog("");
@@ -127,6 +130,7 @@ public class EHRDataEntryTest extends AbstractEHRTest
         recallLocation();
         waitAndClickAndWait(Locator.linkWithText("Enter Data"));
         waitForElement(Locator.xpath("//div[contains(@class, 'my-tasks-marker') and "+Locator.NOT_HIDDEN+"]//table"), WAIT_FOR_JAVASCRIPT);
+        waitForElement(Locator.linkContainingText(TASK_TITLE));
 
         String href = getAttribute(Locator.linkWithText(TASK_TITLE), "href");
         beginAt(href); // Clicking link opens in another window.

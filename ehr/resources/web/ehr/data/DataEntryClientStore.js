@@ -161,5 +161,77 @@ Ext4.define('EHR.data.DataEntryClientStore', {
         }, this);
 
         this.remove(records);
+    },
+
+    processServerRecords:  function(sc, changedRecords){
+        var map = this.getClientToServerRecordMap();
+        var clientKeyField = this.getKeyField();
+
+        for (var table in map){
+            var serverStore = sc.getServerStoreByName(table);
+            LDK.Assert.assertNotEmpty('Unable to find server store: ' + table, serverStore);
+
+            var fieldMap = map[table];
+            Ext4.Array.forEach(this.getRange(), function(clientModel){
+                //find the corresponding server record
+                var key = clientModel.get(clientKeyField);
+                var serverModel = serverStore.findRecord(clientKeyField, key);
+
+                if (!serverModel){
+                    //TODO: determine whether to auto-create the record
+                    //ALSO: we have a problem if the PK of the table isnt
+                    serverModel = serverStore.addServerModel({});
+                    serverModel._clientModelId = clientModel.internalId;
+                }
+
+                if (serverModel){
+                    var serverFieldName;
+                    for (var clientFieldName in fieldMap){
+                        serverFieldName = fieldMap[clientFieldName];
+
+                        var clientVal = Ext4.isEmpty(clientModel.get(clientFieldName)) ? null : clientModel.get(clientFieldName);
+                        var serverVal = Ext4.isEmpty(serverModel.get(serverFieldName)) ? null : serverModel.get(serverFieldName);
+                        if (serverVal != clientVal){
+                            serverModel.set(serverFieldName, clientVal);
+                            serverModel.setDirty(true);
+
+                            if (!changedRecords[serverStore.storeId])
+                                changedRecords[serverStore.storeId] = {};
+
+                            changedRecords[serverStore.storeId][serverModel.id] = serverModel;
+                        }
+                    }
+                }
+            }, this);
+
+            var removed = this.getRemovedRecords();
+            if (removed.length){
+                Ext4.Array.forEach(removed, function(clientModel){
+                    //find the corresponding server record
+                    var key = clientModel.get(clientKeyField);
+                    var serverModel = serverStore.findRecord(clientKeyField, key);
+                    if (serverModel){
+                        if (clientModel.isRemovedRequest){
+                            serverModel.isRemovedRequest = true;
+                            console.error('not yet implemented');
+                        }
+                        else {
+                            serverStore.remove(serverModel);
+                        }
+                    }
+                }, this);
+            }
+        }
+    },
+
+    //creates and adds a model to the provided client store, handling any dependencies within other stores in the collection
+    addClientModel: function(data){
+        if (EHR.debug)
+            console.log('creating client model');
+
+        var model = this.createModel(data);
+        this.add(model);
+
+        return model;
     }
 });

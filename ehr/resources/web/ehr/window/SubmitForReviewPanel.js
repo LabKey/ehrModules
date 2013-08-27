@@ -47,6 +47,7 @@ Ext4.define('EHR.window.SubmitForReviewPanel', {
                 bodyStyle: 'padding:5px;',
                 items: [{
                     xtype: 'combo',
+                    forceSelection: true,
                     fieldLabel: 'Assign To',
                     width: 400,
                     queryMode: 'local',

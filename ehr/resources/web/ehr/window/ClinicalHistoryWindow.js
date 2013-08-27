@@ -17,6 +17,7 @@ Ext4.define('EHR.window.ClinicalHistoryWindow', {
             bodyStyle: 'padding: 3px;',
             width: 1210,
             modal: true,
+            closeAction: 'destroy',
             items: this.getItems(),
             buttons: [{
                 text: 'Close',

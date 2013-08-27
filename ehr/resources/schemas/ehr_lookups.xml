@@ -279,6 +279,18 @@
                 <ns:isKeyField>true</ns:isKeyField>
             </ns:column>
             <ns:column columnName="automaticrequestfromblooddraw">
+                <ns:columnTitle>Automatically Create Request After Blood Draw</ns:columnTitle>
+            </ns:column>
+            <ns:column columnName="requiredtubetype">
+                <ns:columnTitle>Required Tube Type</ns:columnTitle>
+                <ns:fk>
+                    <ns:fkDbSchema>ehr_lookups</ns:fkDbSchema>
+                    <ns:fkTable>blood_draw_tube_type</ns:fkTable>
+                    <ns:fkColumnName>type</ns:fkColumnName>
+                </ns:fk>
+            </ns:column>
+            <ns:column columnName="minvolume">
+                <ns:columnTitle>Min Volume</ns:columnTitle>
             </ns:column>
         </ns:columns>
     </ns:table>
@@ -302,7 +314,7 @@
         <ns:updateUrl></ns:updateUrl>
         <ns:deleteUrl></ns:deleteUrl>
         <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr_lookups&amp;query.queryName=clinpath_tests&amp;testname=${testname}</ns:tableUrl>
-        <ns:pkColumnName>status</ns:pkColumnName>
+        <ns:pkColumnName>testname</ns:pkColumnName>
         <ns:columns>
             <ns:column columnName="testname">
                 <ns:isKeyField>true</ns:isKeyField>
@@ -701,10 +713,13 @@
         <ns:tableUrl>/query/detailsQueryRow.view?schemaName=ehr_lookups&amp;query.queryName=blood_draw_tube_type&amp;type=${type}</ns:tableUrl>
         <ns:columns>
             <ns:column columnName="type">
+                <ns:columnTitle>Type</ns:columnTitle>
                 <ns:isKeyField>true</ns:isKeyField>
             </ns:column>
-            <!--<ns:column columnName="volume">-->
-            <!--</ns:column>-->
+            <ns:column columnName="color">
+                <ns:columnTitle>Color</ns:columnTitle>
+                <ns:isKeyField>true</ns:isKeyField>
+            </ns:column>
         </ns:columns>
     </ns:table>
     <ns:table tableName="snomed" tableDbType="TABLE" useColumnOrder="true">
@@ -1657,6 +1672,63 @@
             <ns:column columnName="doHighlight">
                 <ns:columnTitle>Highlight Flags of This Category?</ns:columnTitle>
                 <ns:defaultValue>false</ns:defaultValue>
+            </ns:column>
+        </ns:columns>
+    </ns:table>
+    <ns:table tableName="labwork_services" tableDbType="TABLE" useColumnOrder="true">
+        <ns:tableTitle>Labwork Service Types</ns:tableTitle>
+        <ns:description>This table lists all the types of labwork that can be ordered</ns:description>
+        <ns:importUrl></ns:importUrl>
+        <ns:insertUrl></ns:insertUrl>
+        <ns:updateUrl></ns:updateUrl>
+        <ns:deleteUrl></ns:deleteUrl>
+        <ns:pkColumnName>servicename</ns:pkColumnName>
+        <ns:columns>
+            <ns:column columnName="servicename">
+                <ns:columnTitle>Service Name</ns:columnTitle>
+                <ns:isKeyField>true</ns:isKeyField>
+            </ns:column>
+            <ns:column columnName="dataset">
+            </ns:column>
+            <ns:column columnName="chargetype">
+                <ns:columnTitle>Charge Type</ns:columnTitle>
+            </ns:column>
+            <ns:column columnName="sampletype">
+                <ns:columnTitle>Sample Type</ns:columnTitle>
+            </ns:column>
+            <ns:column columnName="collectionmethod">
+                <ns:columnTitle>Collection Method</ns:columnTitle>
+            </ns:column>
+            <ns:column columnName="alertOnComplete">
+                <ns:columnTitle>Alert On Complete?</ns:columnTitle>
+            </ns:column>
+        </ns:columns>
+    </ns:table>
+    <ns:table tableName="labwork_panels" tableDbType="TABLE" useColumnOrder="true">
+        <ns:tableTitle>Labwork Panels</ns:tableTitle>
+        <ns:description>This table lists all the tests expected to be generated from each lab service type</ns:description>
+        <ns:importUrl></ns:importUrl>
+        <ns:insertUrl></ns:insertUrl>
+        <ns:updateUrl></ns:updateUrl>
+        <ns:deleteUrl></ns:deleteUrl>
+        <ns:pkColumnName>rowid</ns:pkColumnName>
+        <ns:columns>
+            <ns:column columnName="rowid">
+
+            </ns:column>
+            <ns:column columnName="servicename">
+                <ns:columnTitle>Service Name</ns:columnTitle>
+                <ns:fk>
+                    <ns:fkDbSchema>ehr_lookups</ns:fkDbSchema>
+                    <ns:fkTable>labwork_services</ns:fkTable>
+                    <ns:fkColumnName>servicename</ns:fkColumnName>
+                </ns:fk>
+            </ns:column>
+            <ns:column columnName="testname">
+                <ns:columnTitle>Test Name</ns:columnTitle>
+            </ns:column>
+            <ns:column columnName="sortorder">
+                <ns:columnTitle>Sort Order</ns:columnTitle>
             </ns:column>
         </ns:columns>
     </ns:table>

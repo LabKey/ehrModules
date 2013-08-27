@@ -24,7 +24,7 @@ function beforeBoth(row, errors) {
             var item = row.joinToCage[i] ;
             if(item){
                 if(!isNaN(item))
-                    newArray.push(EHR.Server.Validation.padDigits(item, 4));
+                    newArray.push(EHR.Server.Utils.padDigits(item, 4));
                 else
                     newArray.push(item);
             }

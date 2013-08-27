@@ -15,6 +15,7 @@
  */
 package org.labkey.ehr.security;
 
+import org.labkey.api.ehr.security.*;
 import org.labkey.api.security.Group;
 import org.labkey.api.security.permissions.DeletePermission;
 import org.labkey.api.security.permissions.InsertPermission;
@@ -35,6 +36,7 @@ public class EHRRequestAdminRole extends AbstractEHRDatasetRole
                 UpdatePermission.class,
                 DeletePermission.class,
 
+                EHRRequestAdminPermission.class,
 //                EHRAbnormalDeletePermission.class,
                 EHRAbnormalInsertPermission.class,
                 EHRAbnormalUpdatePermission.class,
@@ -52,6 +54,10 @@ public class EHRRequestAdminRole extends AbstractEHRDatasetRole
 //                EHRRequestCompleteDeletePermission.class,
                 EHRRequestCompleteInsertPermission.class,
                 EHRRequestCompleteUpdatePermission.class,
+                EHRRequestSampleDeliveredAdminPermission.class,
+                EHRRequestSampleDeliveredInsertPermission.class,
+                EHRRequestSampleDeliveredUpdatePermission.class,
+                EHRRequestSampleDeliveredDeletePermission.class,
                 EHRRequestApprovedAdminPermission.class,
                 EHRRequestApprovedDeletePermission.class,
                 EHRRequestApprovedInsertPermission.class,

@@ -681,6 +681,7 @@ EHR.ext.AdvancedStore = Ext.extend(LABKEY.ext.Store, {
             failure: this.getOnCommitFailure(records),
             scope: this,
             jsonData : {
+                isLegacyFormat: true,
                 containerPath: this.containerPath,
                 commands: commands,
                 extraContext: extraContext || {}

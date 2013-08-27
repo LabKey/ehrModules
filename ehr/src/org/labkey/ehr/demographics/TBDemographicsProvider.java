@@ -33,7 +33,7 @@ public class TBDemographicsProvider extends AbstractListDemographicsProvider
 {
     public TBDemographicsProvider()
     {
-        super("demographicsMostRecentTBDate", "tb");
+        super("study", "demographicsMostRecentTBDate", "tb");
     }
 
     protected Set<FieldKey> getFieldKeys()
@@ -53,5 +53,13 @@ public class TBDemographicsProvider extends AbstractListDemographicsProvider
         SimpleFilter filter = super.getFilter(ids);
 
         return filter;
+    }
+
+    @Override
+    public boolean requiresRecalc(String schema, String query)
+    {
+        return ("study".equalsIgnoreCase(schema) && "TB Tests".equalsIgnoreCase(query)) ||
+                ("study".equalsIgnoreCase(schema) && "TB".equalsIgnoreCase(query)) ||
+                ("study".equalsIgnoreCase(schema) && "Demographics".equalsIgnoreCase(query));
     }
 }

@@ -131,7 +131,7 @@
                 <ns:isKeyField>true</ns:isKeyField>
             </ns:column>
             <ns:column columnName="rowid">
-                <ns:shownInInsertView>false</ns:shownInInsertView>
+                <ns:shownInInsertView>true</ns:shownInInsertView>
                 <ns:isAutoInc>true</ns:isAutoInc>
             </ns:column>
             <ns:column columnName="title">
@@ -238,6 +238,10 @@
                     <ns:fkTable>PrincipalsWithoutAdmin</ns:fkTable>
                     <ns:fkColumnName>userid</ns:fkColumnName>
                 </ns:fk>
+            </ns:column>
+            <ns:column columnName="sendemail">
+                <ns:nullable>true</ns:nullable>
+                <ns:columnTitle>Send Email On Complete?</ns:columnTitle>
             </ns:column>
             <ns:column columnName="pi">
                 <ns:nullable>true</ns:nullable>
@@ -360,6 +364,10 @@
             </ns:column>
             <ns:column columnName="report">
                 <ns:columnTitle>Report Path</ns:columnTitle>
+                <ns:nullable>true</ns:nullable>
+            </ns:column>
+            <ns:column columnName="subjectIdFieldName">
+                <ns:columnTitle>Subject Id Field Name</ns:columnTitle>
                 <ns:nullable>true</ns:nullable>
             </ns:column>
             <ns:column columnName="datefieldname">
@@ -1112,6 +1120,10 @@
             </ns:column>
             <ns:column columnName="enddate">
                 <ns:columnTitle>End Date</ns:columnTitle>
+            </ns:column>
+            <ns:column columnName="alwaysavailable">
+                <ns:columnTitle>Is Always Available?</ns:columnTitle>
+                <ns:isHidden>true</ns:isHidden>
             </ns:column>
             <ns:column columnName="createdby">
                 <ns:isUserEditable>false</ns:isUserEditable>

@@ -32,11 +32,13 @@ Ext4.define('EHR.data.BloodDrawClientStore', {
                     quantity: record.get('quantity')
                 });
             }
+        }
 
-            if (!LABKEY.Utils.isEmptyObj(bloodDrawMap)){
-                return {
-                    bloodInTransaction: bloodDrawMap
-                }
+        if (!LABKEY.Utils.isEmptyObj(bloodDrawMap)){
+            bloodDrawMap = LABKEY.ExtAdapter.encode(bloodDrawMap);
+
+            return {
+                bloodInTransaction: bloodDrawMap
             }
         }
 

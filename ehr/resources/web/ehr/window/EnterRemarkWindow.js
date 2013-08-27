@@ -18,6 +18,7 @@ Ext4.define('EHR.window.EnterRemarkWindow', {
         LABKEY.ExtAdapter.apply(this, {
             title: 'Enter Remark: ' + this.animalId,
             modal: true,
+            closeAction: 'destroy',
             items: [{
                 xtype: 'ehr-enterremarkpanel',
                 animalId: this.animalId,

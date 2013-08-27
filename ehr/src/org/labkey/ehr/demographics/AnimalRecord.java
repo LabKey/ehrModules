@@ -184,16 +184,33 @@ public class AnimalRecord
 
     public Double getMostRecentWeight()
     {
-        return (Double)_props.get(FieldKey.fromString("mostRecentWeight"));
+        return (Double)_props.get(FieldKey.fromString("mostRecentWeight").toString());
     }
 
     public Date getMostRecentWeightDate()
     {
-        return (Date)_props.get(FieldKey.fromString("mostRecentWeightDate"));
+        return (Date)_props.get(FieldKey.fromString("mostRecentWeightDate").toString());
+    }
+
+    public Date getMostRecentDeparture()
+    {
+        return (Date)_props.get(FieldKey.fromString("mostRecentDeparture").toString());
+    }
+
+    public Date getMostRecentArrival()
+    {
+        if (_props.containsKey("source"))
+        {
+            List<Map<String, Object>> rows = (List)_props.get("source");
+            if (rows.size() > 0)
+                return (Date)rows.get(0).get("date");
+        }
+
+        return null;
     }
 
     public Integer getDaysSinceWeight()
     {
-        return (Integer)_props.get(FieldKey.fromString("daysSinceWeight"));
+        return (Integer)_props.get(FieldKey.fromString("daysSinceWeight").toString());
     }
 }

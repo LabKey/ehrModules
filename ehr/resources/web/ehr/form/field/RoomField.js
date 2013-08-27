@@ -8,6 +8,7 @@ Ext4.define('EHR.form.field.RoomField', {
     alias: 'widget.ehr-roomfield',
     fieldLabel: 'Room',
     forceSelection: true,
+    showOccupiedOnly: false,
 
     initComponent: function(){
         LABKEY.ExtAdapter.apply(this, {
@@ -18,9 +19,9 @@ Ext4.define('EHR.form.field.RoomField', {
                 type: 'labkey-store',
                 schemaName: 'ehr_lookups',
                 queryName: 'rooms',
-                columns: 'room,area',
-                sort: 'sort_order',
-                filterArray: [LABKEY.Filter.create('datedisabled', null, LABKEY.Filter.Types.ISBLANK)],
+                columns: 'room,room_sortValue,area',
+                sort: 'room_sortValue',
+                filterArray: this.getStoreFilterArray(),
                 autoLoad: true
             },
             valueField: 'room',
@@ -36,6 +37,14 @@ Ext4.define('EHR.form.field.RoomField', {
         this.on('render', function(field){
             field.el.set({autocomplete: 'off'});
         });
+    },
+
+    getStoreFilterArray: function(){
+        var ret = [LABKEY.Filter.create('datedisabled', null, LABKEY.Filter.Types.ISBLANK)];
+        if (this.showOccupiedOnly)
+            ret.push(LABKEY.Filter.create('utilization/totalAnimals', 0, LABKEY.Filter.Types.GREATER_THAN));
+
+        return ret;
     },
 
     selectByAreas: function(areas){

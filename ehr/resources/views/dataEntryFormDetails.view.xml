@@ -1,0 +1,6 @@
+<view xmlns="http://labkey.org/data/xml/view" title="Form Details">
+    <dependencies>
+        <dependency path="ehr.context" />
+        <dependency path="ehr/panel/DataEntryFormDetailsPanel.js"/>
+    </dependencies>
+</view>

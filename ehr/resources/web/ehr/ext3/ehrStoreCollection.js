@@ -161,6 +161,7 @@ EHR.ext.StoreCollection = Ext.extend(Ext.util.MixedCollection, {
             scope: this,
             timeout: this.timeout || 0,
             jsonData : {
+                isLegacyFormat: true,
                 containerPath: this.containerPath,
                 commands: commands,
                 extraContext: extraContext || {}

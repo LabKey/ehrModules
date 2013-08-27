@@ -8,6 +8,8 @@
         <script path="ehr/data/DataEntryServerStore.js"/>
         <script path="ehr/data/DataEntryClientStore.js"/>
         <script path="ehr/data/BloodDrawClientStore.js"/>
+        <script path="ehr/data/AssignmentClientStore.js"/>
+        <script path="ehr/data/HousingClientStore.js"/>
         <script path="ehr/data/StoreCollection.js"/>
         <script path="ehr/data/TaskStoreCollection.js"/>
         <script path="ehr/data/RequestStoreCollection.js"/>
@@ -27,22 +29,28 @@
         <script path="ehr/form/field/TimeOfDayField.js" />
         <script path="ehr/form/field/TriggerNumberField.js" />
         <script path="ehr/form/field/DrugDoseField.js" />
+        <script path="ehr/form/field/DrugVolumeField.js" />
+        <script path="ehr/form/field/RoomEntryField.js" />
 
         <!--panels / windows-->
+        <script path="ehr/form/Panel.js"/>
+        <script path="ehr/grid/Panel.js"/>
+        <script path="ehr/panel/BulkEditPanel.js"/>
+        <script path="ehr/window/BulkEditWindow.js"/>
         <script path="ehr/window/AddAnimalsWindow.js"/>
         <script path="ehr/window/SubmitForReviewPanel.js"/>
+        <script path="ehr/window/CopyFromRunsWindow.js"/>
         <script path="ehr/window/RecordDuplicatorWindow.js"/>
-        <script path="ehr/window/BulkEditWindow.js"/>
         <script path="ehr/window/ApplyTemplateWindow.js"/>
         <script path="ehr/window/SaveTemplateWindow.js"/>
         <script path="ehr/window/CaseNumberWindow.js"/>
-        <script path="ehr/form/Panel.js"/>
-        <script path="ehr/grid/Panel.js"/>
+        <script path="ehr/panel/SnapshotPanel.js"/>
         <script path="ehr/panel/AnimalDetailsPanel.js"/>
         <script path="ehr/panel/DataEntryPanel.js"/>
         <script path="ehr/panel/TaskDataEntryPanel.js"/>
         <script path="ehr/panel/RequestDataEntryPanel.js"/>
         <script path="ehr/panel/SimpleDataEntryPanel.js"/>
+        <script path="ehr/window/TaskWindow.js"/>
     </library>
     <dependencies>
         <dependency path="ehr.context"/>

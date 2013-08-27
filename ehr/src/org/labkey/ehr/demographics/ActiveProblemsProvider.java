@@ -33,7 +33,7 @@ public class ActiveProblemsProvider extends AbstractListDemographicsProvider
 {
     public ActiveProblemsProvider()
     {
-        super("Problem List", "activeProblems");
+        super("study", "Problem List", "activeProblems");
     }
 
     protected Set<FieldKey> getFieldKeys()

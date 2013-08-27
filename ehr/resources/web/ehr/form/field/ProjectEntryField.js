@@ -7,7 +7,7 @@
  * This field is used to diplay EHR projects.  It contains a custom template for the combo list which displays both the project and protocol.
  * It also listens for participantchange events and will display only the set of allowable projects for the selected animal.
  *
- *
+ * @cfg includeDefaultProjects defaults to true
  */
 Ext4.define('EHR.form.field.ProjectEntryField', {
     extend: 'Ext.form.field.ComboBox',
@@ -15,12 +15,26 @@ Ext4.define('EHR.form.field.ProjectEntryField', {
 
     fieldLabel: 'Project',
     typeAhead: true,
-    forceSelection: true,
+    forceSelection: false, //allows project to be set prior to store loading
     emptyText:'',
     disabled: false,
     matchFieldWidth: false,
+    includeDefaultProjects: true,
 
     initComponent: function(){
+        this.allProjectStore = new LABKEY.ext4.Store({
+            type: 'labkey-store',
+            schemaName: 'ehr',
+            queryName: 'project',
+            columns: 'project,displayName,protocol,protocol/displayName,title,investigatorId/lastName',
+            filterArray: [LABKEY.Filter.create('enddate', null, LABKEY.Filter.Types.ISBLANK)],
+            sort: 'displayName',
+            autoLoad: true
+        });
+
+        this.trigger2Cls = Ext4.form.field.ComboBox.prototype.triggerCls;
+        this.onTrigger2Click = Ext4.form.field.ComboBox.prototype.onTriggerClick;
+
         LABKEY.ExtAdapter.apply(this, {
             displayField: 'displayName',
             valueField: 'project',
@@ -50,7 +64,9 @@ Ext4.define('EHR.form.field.ProjectEntryField', {
                                 this.addNewValue({
                                     project: project,
                                     displayName: rec.get('displayName'),
-                                    protocol: rec.get('protocol/displayName'),
+                                    protocolDisplayName: rec.get('protocol/displayName'),
+                                    protocol: rec.get('protocol'),
+                                    title: rec.get('title'),
                                     investigator: rec.get('investigatorId/lastName')
                                 });
 
@@ -71,28 +87,20 @@ Ext4.define('EHR.form.field.ProjectEntryField', {
                 type: 'labkey-store',
                 schemaName: 'study',
                 sql: this.makeSql(),
-                sort: 'project',
+                sort: 'sort_order,project',
                 autoLoad: false,
+                loading: true,
                 listeners: {
                     scope: this,
+                    delay: 50,
                     load: function(store){
+                        this.resolveProjectFromStore();
                         this.getPicker().refresh();
                     }
                 }
             },
             listeners: {
                 scope: this,
-//                select: function(combo, rec){
-//                    var form = combo.up('form');
-//                    if(form){
-//                        if (form.boundRecord){
-//                            form.boundRecord.beginEdit();
-//                            form.boundRecord.set('project', rec.get('project'));
-//                            form.boundRecord.set('account', rec.get('account'));
-//                            form.boundRecord.endEdit();
-//                        }
-//                    }
-//                },
                 beforerender: function(field){
                     var target = field.up('form');
                     if (!target)
@@ -122,6 +130,13 @@ Ext4.define('EHR.form.field.ProjectEntryField', {
         });
 
         this.callParent(arguments);
+
+        this.on('render', function(){
+            Ext4.QuickTips.register({
+                target: this.triggerEl.elements[0],
+                text: 'Click to lookup allowable projects'
+            });
+        }, this);
     },
 
     getInnerTpl: function(){
@@ -129,18 +144,31 @@ Ext4.define('EHR.form.field.ProjectEntryField', {
         return ['<span style="white-space:nowrap;">{[values["displayName"] + " " + (values["investigator"] ? "(" + (values["investigator"] ? values["investigator"] : "") + ")" : "")]}&nbsp;</span>'];
     },
 
+    trigger1Cls: 'x4-form-search-trigger',
+
+    onTrigger1Click: function(){
+        var boundRecord = EHR.DataEntryUtils.getBoundRecord(this);
+        if (!boundRecord){
+            Ext4.Msg.alert('Error', 'Unable to locate associated animal Id');
+            return;
+        }
+
+        var id = boundRecord.get('Id');
+        if (!id){
+            Ext4.Msg.alert('Error', 'No Animal Id Provided');
+            return;
+        }
+
+        this.getProjects(id);
+    },
+
     getDisallowedProtocols: function(){
         return null;
     },
 
-    getDefaultProjects: function(){
-        return null;
-    },
-
     makeSql: function(id, date){
-        if (!id){
+        if (!id && !this.includeDefaultProjects)
             return;
-        }
 
         //avoid unnecessary reloading
         var key = id + '||' + date;
@@ -149,21 +177,33 @@ Ext4.define('EHR.form.field.ProjectEntryField', {
         }
         this.loadedKey = key;
 
-        var sql = "SELECT DISTINCT a.project as project, a.project.displayName as displayName, a.project.protocol.displayName as protocol, a.project.investigatorId.lastName as investigator FROM study.assignment a " +
+        var sql = "SELECT DISTINCT t.project, t.displayName, t.protocolDisplayName, t.protocol, t.investigator, t.title, false as fromClient, max(sort_order) as sort_order FROM (";
+
+        if (id){
+            sql += "SELECT  a.project as project, a.project.displayName as displayName, a.project.protocol.displayName as protocolDisplayName, a.project.protocol as protocol, a.project.title, a.project.investigatorId.lastName as investigator, 0 as sort_order FROM study.assignment a " +
             "WHERE a.id='"+id+"' ";
 
-        if (this.getDisallowedProtocols()){
-            sql += " AND a.project.protocol NOT IN ('" + this.getDisallowedProtocols().join("', '") + "') ";
+            if (this.getDisallowedProtocols()){
+                sql += " AND a.project.protocol NOT IN ('" + this.getDisallowedProtocols().join("', '") + "') ";
+            }
+
+            //NOTE: if the date is in the future, we assume active projects
+            if (date){
+                sql += "AND cast(a.date as date) <= '"+date.format('Y-m-d')+"' AND ((a.enddateCoalesced >= '"+date.format('Y-m-d')+"') OR ('"+date.format('Y-m-d')+"' >= now() and a.enddate IS NULL))";
+            }
+            else {
+                sql += "AND a.isActive = true ";
+            }
         }
 
-        if(date)
-            sql += "AND cast(a.date as date) <= '"+date.format('Y-m-d')+"' AND (a.enddateCoalesced >= '"+date.format('Y-m-d')+"')";
-        else
-            sql += "AND a.isActive = true ";
+        if (this.includeDefaultProjects){
+            if (id)
+                sql += ' UNION ALL ';
 
-        if(this.getDefaultProjects()){
-            sql += " UNION ALL (SELECT project, account, project.protocol as protocol FROM ehr.project WHERE project IN ('" + this.getDefaultProjects().join("','") + "'))";
+            sql += " SELECT p.project, p.displayName, p.protocol.displayName as protocolDisplayName, p.protocol as protocol, p.title, p.investigatorId.lastName as investigator, 1 as sort_order FROM ehr.project p WHERE p.alwaysavailable = true and p.enddateCoalesced >= curdate()";
         }
+
+        sql+= " ) t GROUP BY t.project, t.displayName, t.protocolDisplayName, t.protocol, t.investigator, t.title";
 
         return sql;
     },
@@ -188,6 +228,66 @@ Ext4.define('EHR.form.field.ProjectEntryField', {
             this.store.sql = sql;
             this.store.removeAll();
             this.store.load();
+        }
+    },
+
+    setValue: function(val){
+        var rec;
+        if (val){
+            rec = this.store.findRecord('project', val);
+            if (!rec){
+                rec = this.store.findRecord('displayField', val);
+
+                if (rec)
+                    console.log('resolved project entry field by display value')
+            }
+
+            if (!rec){
+                rec = this.resolveProject(val);
+            }
+        }
+
+        this.callOverridden([rec || val]);
+    },
+
+    resolveProjectFromStore: function(){
+        var val = this.getValue();
+        if (!val)
+            return;
+
+        var rec = this.store.findRecord('project', val);
+        if (rec)
+            return;
+
+        rec = this.allProjectStore.findRecord('project', val);
+        if (rec){
+            var newRec = this.store.createModel({});
+            newRec.set({
+                project: rec.data.project,
+                displayName: rec.data.displayName,
+                protocolDisplayName: rec.data['protocol/displayName'],
+                protocol: rec.data.protocol,
+                title: rec.data.title,
+                investigator: rec.data['investigatorId/lastName'],
+                fromClient: true
+            });
+
+            this.store.insert(0, newRec);
+
+            return newRec;
+        }
+    },
+
+    resolveProject: function(val){
+        if (this.allProjectStore.loading){
+            this.allProjectStore.on('load', function(store){
+                var newRec = this.resolveProjectFromStore();
+                if (newRec)
+                    this.setValue(val);
+            }, this, {single: true});
+        }
+        else {
+            this.resolveProjectFromStore();
         }
     }
 });

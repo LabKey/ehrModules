@@ -29,25 +29,25 @@ import org.labkey.api.module.ModuleContext;
 import org.labkey.api.query.DefaultSchema;
 import org.labkey.api.query.DetailsURL;
 import org.labkey.api.query.QuerySchema;
-import org.labkey.api.query.QueryService;
 import org.labkey.api.security.User;
 import org.labkey.api.security.roles.RoleManager;
 import org.labkey.api.view.WebPartFactory;
 import org.labkey.api.view.template.ClientDependency;
+import org.labkey.ehr.buttons.CompareWeightsButton;
 import org.labkey.ehr.demographics.ActiveAnimalGroupsDemographicsProvider;
 import org.labkey.ehr.demographics.ActiveAssignmentsDemographicsProvider;
-import org.labkey.ehr.demographics.ActiveFlagsDemographicsProvider;
 import org.labkey.ehr.demographics.ActiveProblemsProvider;
 import org.labkey.ehr.demographics.ActiveTreatmentsDemographicsProvider;
 import org.labkey.ehr.demographics.BasicDemographicsProvider;
 import org.labkey.ehr.demographics.BirthDemographicsProvider;
 import org.labkey.ehr.demographics.DeathsDemographicsProvider;
+import org.labkey.ehr.demographics.DepartureDemographicsProvider;
 import org.labkey.ehr.demographics.HousingDemographicsProvider;
 import org.labkey.ehr.demographics.MostRecentWeightDemographicsProvider;
-import org.labkey.ehr.demographics.TBDemographicsProvider;
 import org.labkey.ehr.demographics.WeightsDemographicsProvider;
 import org.labkey.ehr.pipeline.GeneticCalculationsJob;
 import org.labkey.ehr.query.EHRLookupsUserSchema;
+import org.labkey.ehr.query.EHRUserSchema;
 import org.labkey.ehr.query.buttons.JumpToHistoryButton;
 import org.labkey.ehr.query.buttons.MarkCompletedButton;
 import org.labkey.ehr.query.buttons.ReturnDistinctButton;
@@ -83,7 +83,7 @@ public class EHRModule extends ExtendedSimpleModule
 
     public double getVersion()
     {
-        return 12.354;
+        return 12.359;
     }
 
     public boolean hasScripts()
@@ -108,15 +108,14 @@ public class EHRModule extends ExtendedSimpleModule
         // NOTE: deliberately register these prior to doStartupAfterSpringConfig(), so other modules
         // can override them
         EHRService.get().registerDemographicsProvider(new BasicDemographicsProvider());
+        EHRService.get().registerDemographicsProvider(new DepartureDemographicsProvider());
         EHRService.get().registerDemographicsProvider(new ActiveAnimalGroupsDemographicsProvider());
         EHRService.get().registerDemographicsProvider(new ActiveAssignmentsDemographicsProvider());
-        EHRService.get().registerDemographicsProvider(new ActiveFlagsDemographicsProvider());
         EHRService.get().registerDemographicsProvider(new ActiveProblemsProvider());
         EHRService.get().registerDemographicsProvider(new ActiveTreatmentsDemographicsProvider());
         EHRService.get().registerDemographicsProvider(new BirthDemographicsProvider());
         EHRService.get().registerDemographicsProvider(new DeathsDemographicsProvider());
         EHRService.get().registerDemographicsProvider(new HousingDemographicsProvider());
-        EHRService.get().registerDemographicsProvider(new TBDemographicsProvider());
 
         EHRService.get().registerDemographicsProvider(new MostRecentWeightDemographicsProvider());
         EHRService.get().registerDemographicsProvider(new WeightsDemographicsProvider());
@@ -146,12 +145,13 @@ public class EHRModule extends ExtendedSimpleModule
         EHRService.get().registerMoreActionsButton(new JumpToHistoryButton(this), "study", LDKService.ALL_TABLES);
         EHRService.get().registerMoreActionsButton(new ReturnDistinctButton(this), "study", LDKService.ALL_TABLES);
         EHRService.get().registerMoreActionsButton(new ShowAuditHistoryButton(this), "study", LDKService.ALL_TABLES);
+        EHRService.get().registerMoreActionsButton(new ShowAuditHistoryButton(this), "study", LDKService.ALL_TABLES);
 
+        EHRService.get().registerMoreActionsButton(new CompareWeightsButton(this), "study", "Weight");
         EHRService.get().registerMoreActionsButton(new MarkCompletedButton(this, "study", "Treatment Orders"), "study", "Treatment Orders");
         EHRService.get().registerMoreActionsButton(new MarkCompletedButton(this, "study", "Problem List"), "study", "Problem List");
         EHRService.get().registerMoreActionsButton(new MarkCompletedButton(this, "study", "Assignment"), "study", "Assignment");
         EHRService.get().registerMoreActionsButton(new MarkCompletedButton(this, "study", "Feeding"), "study", "Feeding");
-
     }
 
     @Override
@@ -168,8 +168,8 @@ public class EHRModule extends ExtendedSimpleModule
                     {
                         if (schemaName.equalsIgnoreCase(EHRSchema.EHR_LOOKUPS))
                             return new EHRLookupsUserSchema(schema.getUser(), schema.getContainer(), dbschema);
-                        else
-                            return QueryService.get().createSimpleUserSchema(schemaName, null, schema.getUser(), schema.getContainer(), dbschema);
+                        else if (schemaName.equalsIgnoreCase(EHRSchema.EHR_SCHEMANAME))
+                            return new EHRUserSchema(schema.getUser(), schema.getContainer(), dbschema);
                     }
                     return null;
                 }
