@@ -14,8 +14,8 @@
                     <column columnName="project">
                         <isHidden>true</isHidden>
                     </column>
-                    <column columnName="tissue">
-                        <columnTitle>Tissue</columnTitle>
+                    <column columnName="sampletype">
+                        <columnTitle>Sample Type</columnTitle>
                         <fk>
                             <fkDbSchema>ehr_lookups</fkDbSchema>
                             <fkTable>snomed</fkTable>
@@ -39,11 +39,10 @@
                         </fk>
                     </column>
                     <column columnName="result">
-                        <columnTitle>Result</columnTitle>
+                        <columnTitle>Numeric Result</columnTitle>
                     </column>
                     <column columnName="units">
                         <columnTitle>Units</columnTitle>
-                        <isHidden>true</isHidden>
                     </column>
                     <column columnName="quantity">
                         <columnTitle>Quantity</columnTitle>

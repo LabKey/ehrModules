@@ -40,10 +40,8 @@ EHR.model.DataModelManager.registerMetadata('Task', {
         'ehr.tasks': {
             category: {defaultValue: 'Task'}
         },
-        'study.Blood Draws': {
-            requestor:{xtype: 'displayfield'},
+        'study.blood': {
             performedby: {allowBlank: false},
-            billedby: {allowBlank: false},
             tube_type: {allowBlank: false},
             daterequested: {
                 hidden: false,

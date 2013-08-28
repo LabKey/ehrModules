@@ -109,7 +109,7 @@ public class DefaultEHRCustomizer implements TableCustomizer
         {
             customizeDataset((DataSetTable)table);
         }
-        else if ("StudyData".equalsIgnoreCase(table.getName()))
+        else if (matches(table, "study", "StudyData"))
         {
             customizeStudyData((AbstractTableInfo)table);
         }
@@ -117,33 +117,41 @@ public class DefaultEHRCustomizer implements TableCustomizer
         {
             customizeAnimalTable((AbstractTableInfo)table);
         }
-        else if (table.getName().equalsIgnoreCase("project") && table.getSchema().getName().equalsIgnoreCase("ehr"))
+        else if (matches(table, "ehr", "project"))
         {
             customizeProjectTable((AbstractTableInfo)table);
         }
-        else if (table.getName().equalsIgnoreCase("protocol") && table.getSchema().getName().equalsIgnoreCase("ehr"))
+        else if (matches(table, "ehr", "protocolExemptions"))
         {
-            customizeProtocolTable((AbstractTableInfo)table);
+            customizeProtocolExemptions((AbstractTableInfo) table);
         }
-        else if (table.getSchema().getName().equalsIgnoreCase("ehr_lookups") && table.getName().equalsIgnoreCase("rooms"))
+        else if (matches(table, "ehr", "protocol"))
+        {
+            customizeProtocolTable((AbstractTableInfo) table);
+        }
+        else if (matches(table, "ehr_lookups", "rooms"))
         {
             customizeRooms((AbstractTableInfo) table);
         }
-        else if (table.getName().equalsIgnoreCase("animal_groups") && table.getSchema().getName().equalsIgnoreCase("ehr"))
+        else if (matches(table, "ehr", "animal_groups"))
         {
             customizeAnimalGroups((AbstractTableInfo) table);
         }
-        else if (table.getName().equalsIgnoreCase("animal_group_members") && table.getSchema().getName().equalsIgnoreCase("ehr"))
+        else if (matches(table, "ehr", "animal_group_members"))
         {
-            customizeAnimalGroupMembers((AbstractTableInfo)table);
+            customizeAnimalGroupMembers((AbstractTableInfo) table);
         }
-        else if (table.getName().equalsIgnoreCase("snomed") && table.getSchema().getName().equalsIgnoreCase("ehr_lookups"))
+        else if (matches(table, "ehr_lookups", "snomed"))
         {
             customizeSNOMED((AbstractTableInfo) table);
         }
-        else if (table.getName().equalsIgnoreCase("snomed_tags") && table.getSchema().getName().equalsIgnoreCase("ehr"))
+        else if (matches(table, "ehr", "snomed_tags"))
         {
             customizeSNOMEDTags((AbstractTableInfo) table);
+        }
+        else if (matches(table, "ehr", "tasks") || matches(table, "ehr", "my_tasks"))
+        {
+            customizeTasks((AbstractTableInfo) table);
         }
         else if (table instanceof AbstractTableInfo)
         {
@@ -267,42 +275,42 @@ public class DefaultEHRCustomizer implements TableCustomizer
         hideStudyColumns(ti);
 
         doSharedCustomization(ti);
-        if (ds.getName().equalsIgnoreCase("Drug Administration") || ds.getName().equalsIgnoreCase("Treatment Orders"))
+        if (matches(ti, "study", "Drug Administration") || matches(ti, "study", "Treatment Orders"))
         {
             addUnitColumns(ti);
 
-            if (ds.getName().equalsIgnoreCase("Treatment Orders"))
+            if (matches(ti, "study", "Treatment Orders"))
             {
                 addIsActiveColWithTime(ti);
             }
         }
-        else if (ds.getName().equalsIgnoreCase("Clinical Encounters") || ds.getName().equalsIgnoreCase("Encounters"))
+        else if (matches(ti, "study", "Clinical Encounters") || matches(ti, "study", "Encounters"))
         {
             customizeEncountersTable(ti);
         }
-        else if (ds.getName().equalsIgnoreCase("housing"))
+        else if (matches(ti, "study", "housing"))
         {
             customizeHousing(ti);
 
             addIsActiveColWithTime(ti);
         }
-        else if (ds.getName().equalsIgnoreCase("assignment"))
+        else if (matches(ti, "study", "assignment"))
         {
             addIsActiveCol(ti);
         }
-        else if (ds.getName().equalsIgnoreCase("notes"))
+        else if (matches(ti, "study", "notes"))
         {
             addIsActiveCol(ti);
         }
-        else if (ds.getName().equalsIgnoreCase("problem") || ds.getName().equalsIgnoreCase("problem list"))
+        else if (matches(ti, "study", "problem") || matches(ti, "study", "problem list"))
         {
             addIsActiveCol(ti);
         }
-        else if (ds.getName().equalsIgnoreCase("flags") || ds.getName().equalsIgnoreCase("Animal Record Flags"))
+        else if (matches(ti, "study", "flags") || matches(ti, "study", "Animal Record Flags"))
         {
             addIsActiveCol(ti, false);
         }
-        else if (ds.getName().equalsIgnoreCase("diet"))
+        else if (matches(ti, "study", "diet"))
         {
             addIsActiveCol(ti);
         }
@@ -342,6 +350,14 @@ public class DefaultEHRCustomizer implements TableCustomizer
     private void addIsActiveCol(AbstractTableInfo ti, boolean allowSameDay)
     {
         addIsActiveCol(ti, allowSameDay, false);
+    }
+
+    private boolean matches(TableInfo ti, String schema, String query)
+    {
+        if (ti instanceof DataSetTable)
+            return ti.getSchema().getName().equalsIgnoreCase(schema) && (ti.getName().equalsIgnoreCase(query) || ti.getTitle().equalsIgnoreCase(query));
+        else
+            return ti.getSchema().getName().equalsIgnoreCase(schema) && ti.getName().equalsIgnoreCase(query);
     }
 
     private void addIsActiveCol(AbstractTableInfo ti, boolean allowSameDay, boolean allowDateOfDeath)
@@ -570,9 +586,30 @@ public class DefaultEHRCustomizer implements TableCustomizer
             cfg.setIncludeStandardButtons(true);
         }
 
+        cfg.setAlwaysShowRecordSelectors(true);
         setScriptIncludes(cfg);
+        configureTbarBtns(ti, cfg);
         configureMoreActionsBtn(ti, cfg);
-        addHiddenButton(cfg);
+    }
+
+    private void configureTbarBtns(AbstractTableInfo ti, ButtonBarConfig cfg)
+    {
+        List<ButtonConfigFactory> buttons = EHRService.get().getTbarButtons(ti);
+        List<ButtonConfig> existingBtns = cfg.getItems();
+        if (existingBtns == null)
+            existingBtns = new ArrayList<>();
+
+        for (ButtonConfigFactory fact : buttons)
+        {
+            UserDefinedButtonConfig newButton = fact.createBtn(ti);
+            existingBtns.add(newButton);
+            for (ClientDependency cd : fact.getClientDependencies(ti.getUserSchema().getContainer(), ti.getUserSchema().getUser()))
+            {
+                addScriptInclude(cfg, cd.getScriptString());
+            }
+        }
+
+        cfg.setItems(existingBtns);
     }
 
     private void configureMoreActionsBtn(AbstractTableInfo ti, ButtonBarConfig cfg)
@@ -654,33 +691,6 @@ public class DefaultEHRCustomizer implements TableCustomizer
 
         scripts.add(script);
         cfg.setScriptIncludes(scripts.toArray(new String[scripts.size()]));
-    }
-
-    private void addHiddenButton(ButtonBarConfig cfg)
-    {
-        boolean found = false;
-        for (ButtonConfig btn : cfg.getItems())
-        {
-            if (btn instanceof UserDefinedButtonConfig)
-            {
-                UserDefinedButtonConfig udb = (UserDefinedButtonConfig)btn;
-                if (" ".equals(udb.getText()))
-                {
-                    found = true;
-                    break;
-                }
-            }
-        }
-
-        if (!found)
-        {
-            UserDefinedButtonConfig newButton = new UserDefinedButtonConfig();
-            newButton.setText(" ");
-            newButton.setInsertAfter("More Actions");
-            newButton.setOnClick("javascript:void(0);");
-            newButton.setRequiresSelection(true);
-            cfg.getItems().add(newButton);
-        }
     }
 
     private void setScriptIncludes(ButtonBarConfig cfg)
@@ -871,6 +881,12 @@ public class DefaultEHRCustomizer implements TableCustomizer
         }
     }
 
+    private void customizeTasks(AbstractTableInfo ti)
+    {
+        doSharedCustomization(ti);
+        customizeButtonBar(ti);
+    }
+
     private void customizeAnimalGroupMembers(AbstractTableInfo table)
     {
         doSharedCustomization(table);
@@ -895,6 +911,7 @@ public class DefaultEHRCustomizer implements TableCustomizer
     private void customizeProtocolTable(AbstractTableInfo table)
     {
         doSharedCustomization(table);
+        table.setDetailsURL(DetailsURL.fromString("/ehr/protocolDetails.view?key=${protocol}"));
 
         if (table.getColumn("activeAnimals") == null)
         {
@@ -923,9 +940,23 @@ public class DefaultEHRCustomizer implements TableCustomizer
         }
     }
 
+    private void customizeProtocolExemptions(AbstractTableInfo ti)
+    {
+        String name = "coalescedProtocol";
+        if (ti.getColumn(name) == null)
+        {
+            SQLFragment sql = new SQLFragment("COALESCE(" + ExprColumn.STR_TABLE_ALIAS + ".protocol, (SELECT p.protocol FROM ehr.project p WHERE p.project = " + ExprColumn.STR_TABLE_ALIAS + ".project))");
+            ColumnInfo col = new ExprColumn(ti, name, sql, JdbcType.VARCHAR, ti.getColumn("protocol"), ti.getColumn("project"));
+            col.setLabel("Coalesced Protocol");
+            col.setHidden(true);
+            ti.addColumn(col);
+        }
+    }
+
     private void customizeProjectTable(AbstractTableInfo table)
     {
         doSharedCustomization(table);
+        table.setDetailsURL(DetailsURL.fromString("/ehr/projectDetails.view?key=${project}"));
         table.setTitleColumn("project");
 
         UserSchema us = getUserSchema(table, "ehr");
@@ -1298,7 +1329,7 @@ public class DefaultEHRCustomizer implements TableCustomizer
         if (date != null && enddate != null && ti.getColumn("duration") == null)
         {
             String type = ti.getSqlDialect().isPostgreSQL() ? "timestamp" : "date";
-            SQLFragment sql = new SQLFragment("(" + ti.getSqlDialect().getDateDiff(Calendar.DATE, "(cast(COALESCE(CAST(" + ExprColumn.STR_TABLE_ALIAS + "." + enddate.getSelectName() + " as date), {fn curdate()}) as " + type + ")", "CAST(" + ExprColumn.STR_TABLE_ALIAS + "." + date.getSelectName() + " AS date)") + ") + 1)");
+            SQLFragment sql = new SQLFragment("(" + ti.getSqlDialect().getDateDiff(Calendar.DATE, "(cast(COALESCE(CAST(" + ExprColumn.STR_TABLE_ALIAS + "." + enddate.getSelectName() + " as date), {fn curdate()}) as " + type + ")", "CAST(" + ExprColumn.STR_TABLE_ALIAS + "." + date.getSelectName() + " AS date)") + "))");
             ExprColumn col = new ExprColumn(ti, "duration", sql, JdbcType.INTEGER);
             col.setCalculated(true);
             col.setUserEditable(false);

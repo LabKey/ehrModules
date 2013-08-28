@@ -70,7 +70,13 @@ EHR.model.DataModelManager.registerMetadata('Request', {
                 extFormat: 'Y-m-d'
             }
         },
-        'study.Blood Draws': {
+        'study.blood': {
+            chargetype: {
+                hidden: false
+            },
+            reason: {
+                defaultValue: 'Research'
+            },
             requestor: {
                 defaultValue: LABKEY.Security.currentUser.displayName
             },
@@ -137,9 +143,12 @@ EHR.model.DataModelManager.registerMetadata('Request', {
                 formEditorConfig:{xtype: 'textarea', readOnly: false}
             }
         },
-        'study.Clinical Encounters': {
+        'study.encounters': {
             title: {
                 hidden: true
+            },
+            chargetype: {
+                hidden: false
             },
             performedby: {
                 allowBlank: true
@@ -165,16 +174,14 @@ EHR.model.DataModelManager.registerMetadata('Request', {
                 }
             }
         },
-        'study.Clinpath Runs': {
+        'study.clinpathRuns': {
             date: {
                 editorConfig: {
                     minValue: null
                 }
             },
-            serviceRequested: {
-                editorConfig: {
-                    plugins: ['ehr-usereditablecombo']
-                }
+            method: {
+                hidden: true
             },
             remark: {
                 hidden: false

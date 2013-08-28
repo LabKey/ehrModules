@@ -491,7 +491,7 @@ EHR.Utils = new function(){
                                 Ext4.each(sorted, function(item){
                                     toAdd[1].children.push({
                                         tag: 'li',
-                                        html: '<a href="' + LABKEY.ActionURL.buildURL(item.controller, item.action, ctx['EHRStudyContainer'], item.params) + '">' + item.label + '</a>'
+                                        html: '<a href="' + (item.url || LABKEY.ActionURL.buildURL(item.controller, item.action, ctx['EHRStudyContainer'], item.params)) + '">' + item.label + '</a>'
                                     })
                                 }, this);
 

@@ -19,7 +19,7 @@ Ext4.define('EHR.plugin.RowEditor', {
 
     destroy: function(){
         this.editorWindow.destroy();
-        delete this.editorWindow();
+        delete this.editorWindow;
 
         if (this.keyNav){
             this.keyNav.destroy();
@@ -76,14 +76,21 @@ Ext4.define('EHR.plugin.RowEditor', {
                 },{
                     text: 'Close',
                     handler: function(btn){
-                        btn.up('window').close();
+                        var win = btn.up('window');
+                        win.close();
                     },
                     scope: this
                 }]
             }],
-            closeAction: 'close',
+            closeAction: 'destroy',
             listeners: {
                 scope: this,
+                close: function(){
+                    delete this.editorWindow;
+                },
+                destroy: function(){
+                    delete this.editorWindow;
+                },
                 beforerender: function(win){
                     var cols = win.down('#formPanel').items.get(0).items.getCount();
                     if (cols > 1){
@@ -172,13 +179,15 @@ Ext4.define('EHR.plugin.RowEditor', {
                 this.loadRecord(nextRec);
             }
             else {
-                Ext4.Msg.confirm('', 'You have selected the last record.  Do you want to add another?', function(val){
-                    if (val == 'yes'){
-                        var r = this.cmp.getStore().createModel({});
-                        this.cmp.getStore().add(r);
-                        this.loadRecord(r);
-                    }
-                }, this);
+                //TODO: alert?
+                return;
+//                Ext4.Msg.confirm('', 'You have selected the last record.  Do you want to add another?', function(val){
+//                    if (val == 'yes'){
+//                        var r = this.cmp.getStore().createModel({});
+//                        this.cmp.getStore().add(r);
+//                        this.loadRecord(r);
+//                    }
+//                }, this);
             }
         }
     }

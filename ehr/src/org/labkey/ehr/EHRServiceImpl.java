@@ -18,6 +18,7 @@ package org.labkey.ehr;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.jetbrains.annotations.Nullable;
+import org.json.JSONObject;
 import org.labkey.api.collections.CaseInsensitiveHashMap;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.ContainerManager;
@@ -47,6 +48,8 @@ import org.labkey.api.security.permissions.Permission;
 import org.labkey.api.study.DataSetTable;
 import org.labkey.api.util.Pair;
 import org.labkey.api.util.Path;
+import org.labkey.api.util.URLHelper;
+import org.labkey.api.view.ActionURL;
 import org.labkey.api.view.template.ClientDependency;
 import org.labkey.api.ehr.dataentry.DataEntryForm;
 import org.labkey.ehr.dataentry.DataEntryManager;
@@ -79,7 +82,8 @@ public class EHRServiceImpl extends EHRService
     private List<Pair<Module, Resource>> _extraTriggerScripts = new ArrayList<>();
     private Map<Module, List<ClientDependency>> _clientDependencies = new HashMap<>();
     private Map<String, Map<String, List<Pair<Module, Class<? extends TableCustomizer>>>>> _tableCustomizers = new CaseInsensitiveHashMap<>();
-    private Map<String, Map<String, List<ButtonConfigFactory>>> _queryButtons = new CaseInsensitiveHashMap<>();
+    private Map<String, Map<String, List<ButtonConfigFactory>>> _moreActionsButtons = new CaseInsensitiveHashMap<>();
+    private Map<String, Map<String, List<ButtonConfigFactory>>> _tbarButtons = new CaseInsensitiveHashMap<>();
 
     private Map<String, String> _dateFormats = new HashMap<>();
     private static final Logger _log = Logger.getLogger(EHRServiceImpl.class);
@@ -290,6 +294,18 @@ public class EHRServiceImpl extends EHRService
         _reportLinks.put(type, links);
     }
 
+    public void registerReportLink(REPORT_LINK_TYPE type, String label, Module owner, URLHelper url, @Nullable String category)
+    {
+        List<ReportLink> links = _reportLinks.get(type);
+
+        if (links == null)
+            links = new ArrayList<>();
+
+        links.add(new ReportLink(label, owner, url, category));
+
+        _reportLinks.put(type, links);
+    }
+
     public List<ReportLink> getReportLinks(Container c, User u, REPORT_LINK_TYPE type)
     {
         List<ReportLink> links = _reportLinks.get(type);
@@ -308,12 +324,21 @@ public class EHRServiceImpl extends EHRService
 
     public class ReportLink
     {
-        private DetailsURL _url;
+        private URLHelper _url = null;
+        private DetailsURL _detailsURL = null;
         private String _label;
         private Module _owner;
         private String _category;
 
         public ReportLink(String label, Module owner, DetailsURL url, @Nullable String category)
+        {
+            _detailsURL = url;
+            _label = label;
+            _owner = owner;
+            _category = category;
+        }
+
+        public ReportLink(String label, Module owner, URLHelper url, @Nullable String category)
         {
             _url = url;
             _label = label;
@@ -326,7 +351,12 @@ public class EHRServiceImpl extends EHRService
             return c.getActiveModules().contains(_owner);
         }
 
-        public DetailsURL getUrl()
+        public DetailsURL getDetailsUrl()
+        {
+            return _detailsURL;
+        }
+
+        public URLHelper getUrl()
         {
             return _url;
         }
@@ -339,6 +369,29 @@ public class EHRServiceImpl extends EHRService
         public String getCategory()
         {
             return _category;
+        }
+
+        public JSONObject toJSON(Container c)
+        {
+            Map<String, Object> item = new HashMap<>();
+
+            if (getDetailsUrl() != null)
+            {
+                ActionURL url = getDetailsUrl().copy(c).getActionURL();
+                item.put("controller", url.getController());
+                item.put("action", url.getAction());
+                item.put("params", url.getParameterMap());
+            }
+
+            if (getUrl() != null)
+            {
+                item.put("url", getUrl().toString());
+            }
+
+            item.put("label", getLabel());
+            item.put("category", getCategory());
+
+            return new JSONObject(item);
         }
     }
 
@@ -441,39 +494,56 @@ public class EHRServiceImpl extends EHRService
         return DataEntryManager.get().getDefaultFieldKeys(ti);
     }
 
+    public void registerTbarButton(ButtonConfigFactory btn, String schema, String query)
+    {
+        registerButton(btn, schema, query, _tbarButtons);
+    }
+
     public void registerMoreActionsButton(ButtonConfigFactory btn, String schema, String query)
     {
-        Map<String, List<ButtonConfigFactory>> schemaMap = _queryButtons.get(schema);
+        registerButton(btn, schema, query, _moreActionsButtons);
+    }
+
+    private void registerButton(ButtonConfigFactory btn, String schema, String query, Map<String, Map<String, List<ButtonConfigFactory>>> map)
+    {
+        Map<String, List<ButtonConfigFactory>> schemaMap = map.get(schema);
         if (schemaMap == null)
-            schemaMap = new CaseInsensitiveHashMap<List<ButtonConfigFactory>>();
+            schemaMap = new CaseInsensitiveHashMap<>();
 
         List<ButtonConfigFactory> list = schemaMap.get(query);
         if (list == null)
-            list = new ArrayList<ButtonConfigFactory>();
+            list = new ArrayList<>();
 
         list.add(btn);
 
         schemaMap.put(query, list);
-        _queryButtons.put(schema, schemaMap);
+        map.put(schema, schemaMap);
     }
 
     public List<ButtonConfigFactory> getMoreActionsButtons(TableInfo ti)
     {
-        Container c = ti.getUserSchema().getContainer();
-        User u = ti.getUserSchema().getUser();
+        return getButtons(ti, _moreActionsButtons);
+    }
 
-        List<ButtonConfigFactory> buttons = new ArrayList<ButtonConfigFactory>();
+    public List<ButtonConfigFactory> getTbarButtons(TableInfo ti)
+    {
+        return getButtons(ti, _tbarButtons);
+    }
 
-        if (_queryButtons.containsKey(LDKService.ALL_SCHEMAS))
+    private List<ButtonConfigFactory> getButtons(TableInfo ti, Map<String, Map<String, List<ButtonConfigFactory>>> map)
+    {
+        List<ButtonConfigFactory> buttons = new ArrayList<>();
+
+        if (map.containsKey(LDKService.ALL_SCHEMAS))
         {
-            Map<String, List<ButtonConfigFactory>> factories = _queryButtons.get(LDKService.ALL_SCHEMAS);
+            Map<String, List<ButtonConfigFactory>> factories = map.get(LDKService.ALL_SCHEMAS);
             buttons.addAll(getButtonsForTable(ti, factories, LDKService.ALL_TABLES));
             buttons.addAll(getButtonsForTable(ti, factories, ti.getPublicName()));
         }
 
-        if (_queryButtons.containsKey(ti.getPublicSchemaName()))
+        if (map.containsKey(ti.getPublicSchemaName()))
         {
-            Map<String, List<ButtonConfigFactory>> factories = _queryButtons.get(ti.getPublicSchemaName());
+            Map<String, List<ButtonConfigFactory>> factories = map.get(ti.getPublicSchemaName());
             buttons.addAll(getButtonsForTable(ti, factories, LDKService.ALL_TABLES));
             buttons.addAll(getButtonsForTable(ti, factories, ti.getPublicName()));
         }
@@ -485,7 +555,7 @@ public class EHRServiceImpl extends EHRService
     {
         if (factories.containsKey(query))
         {
-            List<ButtonConfigFactory> ret = new ArrayList<ButtonConfigFactory>();
+            List<ButtonConfigFactory> ret = new ArrayList<>();
             for (ButtonConfigFactory btn : factories.get(query))
             {
                 if (btn.isAvailable(ti))

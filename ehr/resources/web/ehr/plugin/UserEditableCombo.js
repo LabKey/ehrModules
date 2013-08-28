@@ -32,14 +32,53 @@ Ext4.define('EHR.plugin.UserEditableCombo', {
                 }
             },
 
+            ensureValueInStore: function(){
+                this.addValueIfNeeded(this.getValue());
+            },
+
+            addValueIfNeeded: function(val){
+                if (Ext4.isEmpty(val))
+                    return;
+
+                if (val instanceof Ext4.data.Model){
+                    return;  //if setting value using a record, it is probably in the store
+                }
+
+                if (Ext4.isObject(val)){
+                    console.log(val);
+                    return;
+                }
+
+                if (this.valueField != this.displayField)
+                    return;
+
+                if (!this.store){
+                    LDK.Utils.logToServer({
+                        message: 'Unable to find store in usereditable combo'
+                    });
+                    return;
+                }
+
+                var recIdx = this.store.find(this.valueField, val);
+                if (recIdx != -1)
+                    return;
+
+                var rec = this.store.createModel({});
+                rec.set(this.valueField, val);
+                this.store.add(rec);
+            },
+
             setValue: function(val){
                 //TODO: need to allow for setting of custom value prior to load
+                this.addValueIfNeeded(val);
 
                 this.callOverridden(arguments);
             }
         });
 
         combo.store.on('add', this.onStoreAdd, this);
+        combo.store.on('load', combo.ensureValueInStore, combo);
+        combo.store.on('beforerender', combo.ensureValueInStore, combo);
 
         if(LABKEY.ext.Ext4Helper.hasStoreLoaded(combo.store)){
             this.addOtherRecord();
@@ -85,7 +124,9 @@ Ext4.define('EHR.plugin.UserEditableCombo', {
 
     addNewValue: function(val){
         var data = {};
+
         if (Ext4.isObject(val)){
+
             data = val;
         }
         else {

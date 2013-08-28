@@ -151,7 +151,8 @@ Ext4.define('EHR.form.Panel', {
             if (toResize.length){
                 var newWidth = availableWidth / toResize.length;
                 for (var j=0;j<toResize.length;j++){
-                    toResize[j].width = newWidth;
+                    delete toResize[j].width;
+                    toResize[j].flex = (1.0 / toResize.length);
                 }
             }
         }

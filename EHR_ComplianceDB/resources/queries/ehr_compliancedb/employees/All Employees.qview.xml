@@ -1,6 +1,0 @@
-<customView xmlns="http://labkey.org/data/xml/queryCustomView">
-    <sorts>
-        <sort column="lastName" descending="false"/>
-        <sort column="firstName" descending="false"/>
-    </sorts>
-</customView>

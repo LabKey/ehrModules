@@ -199,7 +199,7 @@ Ext4.define('EHR.window.AddAnimalsWindow', {
         },{
             xtype: 'ehr-cagefield',
             itemId: 'cageField',
-            fieldLabel: 'Cage'
+            fieldLabel: 'Cage(s)'
         }]);
 
         form.getAnimals = function(){
@@ -207,6 +207,14 @@ Ext4.define('EHR.window.AddAnimalsWindow', {
             room = !room || Ext4.isArray(room) ? room : [room];
 
             var cage = this.down('#cageField').getValue();
+            if (cage){
+                cage = cage.split(',');
+                var cages = [];
+                Ext4.Array.forEach(cage, function(c){
+                    cages.push(Ext4.String.trim(c));
+                }, this);
+                cage = cages.join(';');
+            }
 
             var filterArray = [LABKEY.Filter.create('isActive', true, LABKEY.Filter.Types.EQUAL)];
 
@@ -214,8 +222,7 @@ Ext4.define('EHR.window.AddAnimalsWindow', {
                 filterArray.push(LABKEY.Filter.create('room', room.join(';'), LABKEY.Filter.Types.EQUALS_ONE_OF));
 
             if (!Ext4.isEmpty(cage))
-                filterArray.push(LABKEY.Filter.create('cage', cage, LABKEY.Filter.Types.EQUAL));
-
+                filterArray.push(LABKEY.Filter.create('cage', cage, LABKEY.Filter.Types.EQUALS_ONE_OF));
 
             if (filterArray.length == 1){
                 Ext4.Msg.alert('Error', 'Must choose a location');

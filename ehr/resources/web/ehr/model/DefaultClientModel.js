@@ -23,7 +23,21 @@ Ext4.define('EHR.model.DefaultClientModel', {
         getFieldConfigs: function(fieldConfigs, sources){
             var fields = [];
             for (var i=0;i<fieldConfigs.length;i++){
-                fields.push(this.getFieldConfig(fieldConfigs[i], sources));
+                var cfg = this.getFieldConfig(fieldConfigs[i], sources);
+
+                if (cfg.xtype == 'ehr-snomedcombo' || (cfg.editorConfig && cfg.editorConfig.xtype == 'ehr-snomedcombo')){
+                    EHR.DataEntryUtils.getSnomedStore();
+                }
+
+                if (cfg.lookup && cfg.lookup.schemaName == 'ehr' && cfg.lookup.queryName == 'project'){
+                    EHR.DataEntryUtils.getProjectStore();
+                }
+
+                if (cfg.lookup && cfg.lookup.schemaName == 'ehr_lookups' && cfg.lookup.queryName == 'procedures'){
+                    EHR.DataEntryUtils.getProceduresStore();
+                }
+
+                fields.push(cfg);
             }
 
             return fields;
@@ -112,7 +126,7 @@ Ext4.define('EHR.model.DefaultClientModel', {
     },
 
     getCurrentQCStateLabel: function(){
-        var qc = this.get('qcstate') || this.get('QCState');
+        var qc = this.get('QCState');
         if (qc)
             return EHR.Security.getQCStateByRowId(qc).Label;
 

@@ -69,6 +69,7 @@ import org.labkey.ehr.EHRManager;
 import org.labkey.ehr.EHRSchema;
 import org.labkey.ehr.demographics.AnimalRecord;
 import org.labkey.ehr.demographics.DemographicsCache;
+import org.labkey.ehr.security.EHRSecurityManager;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -202,20 +203,20 @@ public class TriggerScriptHelper
             //test update on oldQC, plus insert on new QC
             if (originalQCState != null)
             {
-                if (!testPermission(sr, UpdatePermission.class, originalQC))
+                if (!EHRSecurityManager.get().testPermission(getUser(), sr, UpdatePermission.class, originalQC))
                     return false;
             }
 
             //we only need to test insert if the new QCState is different from the old one
             if (!targetQCState.equals(originalQCState))
             {
-                if (!testPermission(sr, InsertPermission.class, targetQC))
+                if (!EHRSecurityManager.get().testPermission(getUser(), sr, InsertPermission.class, targetQC))
                     return false;
             }
         }
         else
         {
-            if (!testPermission(sr, event.perm, targetQC))
+            if (!EHRSecurityManager.get().testPermission(getUser(), sr, event.perm, targetQC))
                 return false;
         }
 
@@ -265,40 +266,6 @@ public class TriggerScriptHelper
             return qcStates.get(label);
         else
             return null;
-    }
-
-    private boolean testPermission (SecurableResource resource, Class<? extends Permission> perm, EHRQCState qcState)
-    {
-        Collection<Class<? extends Permission>> permissions;
-        String className = getPermissionClassName(perm, qcState);
-
-        //NOTE: See getResourceProps() in SecurityApiActions for notes on this hack
-        if (resource instanceof DataSet)
-        {
-            DataSet ds = (DataSet)resource;
-            permissions = ds.getPermissions(getUser());
-        }
-        else
-        {
-            SecurityPolicy policy = SecurityPolicyManager.getPolicy(resource);
-            permissions = policy.getPermissions(getUser());
-        }
-
-        for (Class<? extends Permission> p : permissions)
-        {
-            if (p.getName().equals(className))
-                return true;
-        }
-
-        return false;
-    }
-
-    private String getPermissionClassName(Class<? extends Permission> perm, EHRQCState qc)
-    {
-        //TODO: this is a little ugly
-        String permString = perm.getCanonicalName().replaceAll(perm.getPackage().getName() + "\\.", "");
-        String qcString = qc.getLabel().replaceAll("[^a-zA-Z0-9-]", "");
-        return EHRManager.SECURITY_PACKAGE + ".EHR" + qcString + permString;
     }
 
     public static void cascadeDelete(int userId, String containerId, String schemaName, String queryName, String keyField, Object keyValue) throws SQLException
@@ -375,11 +342,8 @@ public class TriggerScriptHelper
         if (qcStates != null)
             return qcStates;
 
-        qcStates = new HashMap<String, EHRQCState>();
-        SQLFragment sql = new SQLFragment("SELECT * FROM study.qcstate qc LEFT JOIN ehr.qcstatemetadata md ON (qc.label = md.QCStateLabel) WHERE qc.container = ?", getContainer().getEntityId());
-        DbSchema db = DbSchema.get("study");
-        EHRQCState[] qcs = new SqlSelector(db, sql).getArray(EHRQCState.class);
-        for (EHRQCState qc : qcs)
+        qcStates = new HashMap<>();
+        for (EHRQCState qc : EHRManager.get().getQCStates(getContainer()))
         {
             qcStates.put(qc.getLabel(), qc);
         }
@@ -861,7 +825,7 @@ public class TriggerScriptHelper
 
         TableInfo ti = getTableInfo("ehr", "project");
         SimpleFilter filter = new SimpleFilter(FieldKey.fromString("alwaysavailable"), true, CompareType.EQUAL);
-        filter.addCondition(FieldKey.fromString("enddateCoalesced"), new Date(), CompareType.DATE_GT);
+        filter.addCondition(FieldKey.fromString("enddateCoalesced"), new Date(), CompareType.DATE_GTE);
 
         TableSelector ts = new TableSelector(ti, PageFlowUtil.set("project"), filter, null);
         Set<Integer> ret = new HashSet<Integer>();

@@ -9,6 +9,18 @@
 Ext4.define('EHR.data.BloodDrawClientStore', {
     extend: 'EHR.data.DataEntryClientStore',
 
+    constructor: function(){
+        this.callParent(arguments);
+
+        this.on('update', this.onRecordUpdate, this);
+    },
+
+    onRecordUpdate: function(store, record){
+        if (!record.get('quantity') && record.get('num_tubes') > 0 && record.get('tube_vol') > 0){
+            record.set('quantity', record.get('num_tubes') * record.get('tube_vol'));
+        }
+    },
+
     getExtraContext: function(){
         var bloodDrawMap = {};
         var allRecords = this.getRange();

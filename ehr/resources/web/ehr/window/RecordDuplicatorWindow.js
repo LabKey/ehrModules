@@ -8,6 +8,7 @@
  * per record and which fields to copy
  *
  * @cfg targetGrid
+ * @cfg formConfig
  */
 Ext4.define('EHR.window.RecordDuplicatorWindow', {
     extend: 'Ext.window.Window',
@@ -35,6 +36,12 @@ Ext4.define('EHR.window.RecordDuplicatorWindow', {
                 helpPopup: 'This determines how many copies will be made of each record',
                 itemId: 'newRecs',
                 value: 1
+            },{
+                xtype: 'checkbox',
+                labelWidth: 150,
+                fieldLabel: 'Bulk Edit?',
+                helpPopup: 'If checked, you will have the option to bulk edit the newly created records.',
+                itemId: 'doBulkEdit'
             },{
                 html: 'Choose Fields to Copy:',
                 style: 'padding-top: 10px;padding-bottom: 5px;'
@@ -103,7 +110,19 @@ Ext4.define('EHR.window.RecordDuplicatorWindow', {
         }
 
         if (toAdd.length){
-            this.targetGrid.store.add(toAdd);
+            var choose = this.down('#doBulkEdit').getValue();
+            if (choose){
+                Ext4.create('EHR.window.BulkEditWindow', {
+                    suppressConfirmMsg: true,
+                    records: toAdd,
+                    targetStore: this.targetGrid.store,
+                    formConfig: this.targetGrid.formConfig
+                }).show();
+                this.close();
+            }
+            else {
+                this.targetGrid.store.add(toAdd);
+            }
         }
     }
 });

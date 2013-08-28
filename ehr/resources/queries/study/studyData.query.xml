@@ -124,6 +124,12 @@
                             </conditionalFormat>
                             <conditionalFormat>
                                 <filters>
+                                    <filter operator="eq" value="Request: Sample Delivered"/>
+                                </filters>
+                                <backgroundColor>FBEC5D</backgroundColor>
+                            </conditionalFormat>
+                            <conditionalFormat>
+                                <filters>
                                     <filter operator="eq" value="Request: Denied"/>
                                 </filters>
                                 <backgroundColor>FF0000</backgroundColor>

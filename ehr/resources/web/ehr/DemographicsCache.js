@@ -9,56 +9,68 @@ EHR.DemographicsCache = new function(){
     var demographicsCache = {};
     var expireThreshold = 30000; //30-second threshold
 
-    function loadDemographics(animalId, callback, scope){
+    function loadDemographics(animalIds, callback, scope){
         return LABKEY.Ajax.request({
             url : LABKEY.ActionURL.buildURL('ehr', 'getDemographics'),
             method : 'POST',
             params: {
-                ids: [animalId]
+                ids: animalIds
             },
             scope: this,
             failure: LDK.Utils.getErrorCallback(),
-            success: LABKEY.Utils.getCallbackWrapper(getDemographicsCallback(animalId, callback, scope), this)
+            success: LABKEY.Utils.getCallbackWrapper(getDemographicsCallback(animalIds, callback, scope), this)
         });
     }
 
-    function getDemographicsCallback(animalId, callback, scope){
+    function getDemographicsCallback(animalIds, callback, scope){
         return function(json){
-            var ret;
-            if (json && json.results && json.results[animalId])
-            {
-                ret = json.results[animalId];
-            }
+            var ret = {};
+            Ext4.Array.forEach(animalIds, function(animalId){
+                if (json && json.results && json.results[animalId]){
+                    json.results[animalId].loadTime = new Date();
+                    demographicsCache[animalId] = json.results[animalId];
 
-            if (ret)
-                ret.loadTime = new Date();
-
-            demographicsCache[animalId] = ret;
+                    ret[animalId] = new EHR.DemographicsRecord(demographicsCache[animalId])
+                }
+            }, this);
 
             if (callback)
-                callback.call(scope || this, animalId, (ret ? new EHR.DemographicsRecord(ret) : null));
+                callback.call(scope || this, animalIds, ret);
         }
     }
 
     return {
-        getDemographics: function(animalId, callback, scope, threshold){
-            LDK.Assert.assertNotEmpty('getDemographics called with a null animalId', animalId);
-
-            if (Ext4.isEmpty(animalId)){
-                callback.call(scope || this, animalId, null);
+        getDemographics: function(animalIds, callback, scope, threshold){
+            if (Ext4.isEmpty(animalIds)){
+                callback.call(scope || this, animalIds, null);
                 return;
             }
-            //reuse cached info if less than threshold
-            threshold = threshold || expireThreshold;
-            if (demographicsCache[animalId]){
-                var ms = (new Date()) - demographicsCache[animalId].loadTime;
-                if (ms < expireThreshold || expireThreshold == -1){
-                    callback.call(scope || this, animalId, new EHR.DemographicsRecord(demographicsCache[animalId]));
-                    return;
-                }
+
+            if (!Ext4.isArray(animalIds)){
+                animalIds = [animalIds];
             }
 
-            loadDemographics(animalId, callback, scope);
+            //reuse cached info if less than threshold
+            threshold = threshold || expireThreshold;
+
+            var ret = {};
+            var found = 0;
+            Ext4.Array.forEach(animalIds, function(animalId){
+                if (demographicsCache[animalId]){
+                    var ms = (new Date()) - demographicsCache[animalId].loadTime;
+                    if (ms < expireThreshold || expireThreshold == -1){
+                        ret[animalId] = new EHR.DemographicsRecord(demographicsCache[animalId]);
+                        found++;
+                    }
+                }
+            }, this);
+
+            if (found == animalIds.length){
+                callback.call(scope || this, animalIds, ret);
+            }
+            else {
+                loadDemographics(animalIds, callback, scope);
+            }
         },
 
         /**

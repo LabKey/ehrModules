@@ -1,7 +1,12 @@
+/**
+ * @cfg targetStore
+ */
 Ext4.define('EHR.window.AddScheduledBloodDrawsWindow', {
     extend: 'Ext.window.Window',
 
     initComponent: function(){
+        this.bloodDrawStore = this.targetStore.storeCollection.getServerStoreForQuery('study', 'blood');
+
         LABKEY.ExtAdapter.applyIf(this, {
             modal: true,
             title: 'Import Scheduled Blood',
@@ -25,11 +30,12 @@ Ext4.define('EHR.window.AddScheduledBloodDrawsWindow', {
                 maxValue: (new Date()),
                 itemId: 'dateField'
             },{
+                xtype: 'ehr-areafield',
+                multiSelect: false,
+                itemId: 'areaField'
+            },{
                 xtype: 'ehr-roomfield',
                 itemId: 'roomField'
-            },{
-                xtype: 'ehr-timeofdayfield',
-                itemId: 'timeField'
             },{
                 xtype: 'checkcombo',
                 forceSelection: true,
@@ -69,21 +75,20 @@ Ext4.define('EHR.window.AddScheduledBloodDrawsWindow', {
     getFilterArray: function(){
         var area = this.down('#areaField') ? this.down('#areaField').getValue() : null;
         var rooms = EHR.DataEntryUtils.ensureArray(this.down('#roomField').getValue()) || [];
-        var times = EHR.DataEntryUtils.ensureArray(this.down('#timeField').getTimeValue()) || [];
         var categories = EHR.DataEntryUtils.ensureArray(this.down('#categoryField').getValue()) || [];
 
         var date = (this.down('#dateField') ? this.down('#dateField').getValue() : new Date());
 
-        if (!rooms.length){
-            alert('Must provide at least one room');
+        if (!area && !rooms.length){
+            alert('Must provide at least one room or an area');
             return;
         }
 
         var filterArray = [];
 
         filterArray.push(LABKEY.Filter.create('date', date.format('Y-m-d'), LABKEY.Filter.Types.DATE_EQUAL));
-
-        filterArray.push(LABKEY.Filter.create('treatmentStatus', null, LABKEY.Filter.Types.ISBLANK));
+        filterArray.push(LABKEY.Filter.create('taskId', null, LABKEY.Filter.Types.ISBLANK));
+        filterArray.push(LABKEY.Filter.create('QCState/label', 'Request:', LABKEY.Filter.Types.STARTS_WITH));
 
         if (area)
             filterArray.push(LABKEY.Filter.create('Id/curLocation/area', area, LABKEY.Filter.Types.EQUAL));
@@ -107,16 +112,14 @@ Ext4.define('EHR.window.AddScheduledBloodDrawsWindow', {
         this.hide();
 
         //find distinct animals matching criteria
+        var date = (this.down('#dateField') ? this.down('#dateField').getValue() : new Date());
+
         LABKEY.Query.selectRows({
             requiredVersion: 9.1,
             schemaName: 'study',
-            queryName: 'treatmentSchedule',
-            parameters: {
-                NumDays: 1,
-                StartDate: date.format('Y-m-d')
-            },
+            queryName: 'blood',
             sort: 'date,Id/curlocation/room,Id/curlocation/cage,Id',
-            columns: 'primaryKey,lsid,Id,date,project,meaning,code,qualifier,route,concentration,conc_units,amount,amount_units,dosage,dosage_units,volume,vol_units,remark,category',
+            columns: 'lsid,Id,date,project,tube_type,quantity,charge_type,additionalServices,instructions,daterequested,reason,objectid,requestid',
             filterArray: filterArray,
             scope: this,
             success: this.onSuccess,
@@ -127,50 +130,35 @@ Ext4.define('EHR.window.AddScheduledBloodDrawsWindow', {
     onSuccess: function(results){
         if (!results || !results.rows || !results.rows.length){
             Ext4.Msg.hide();
-            Ext4.Msg.alert('', 'No uncompleted treatments were found.');
+            Ext4.Msg.alert('', 'No matching blood draws were found.');
             return;
         }
-
-        LDK.Assert.assertNotEmpty('Unable to find targetStore in AddScheduledTreatmentsWindow', this.targetStore);
 
         var records = [];
         var performedby = this.down('#performedBy').getValue();
 
-        Ext4.Array.each(results.rows, function(sr){
-            var row = new LDK.SelectRowsRow(sr);
+        Ext4.Array.each(results.rows, function(row){
+            row.taskId = this.targetStore.storeCollection.getTaskId();
+            row.QCStateLabel = 'Scheduled';
 
-            row.date = row.getDateValue('date');
-            var date = new Date();
-
-            //if retroactively entering, we take the time that record was ordered.  otherwise we use the current time
-            if(row.date.getDate() != date.getDate() || row.date.getMonth() != date.getMonth() || row.date.getFullYear() != date.getFullYear())
-                date = row.date;
-
-            records.push(this.targetStore.createModel({
-                Id: row.getValue('Id'),
-                date: date,
-                project: row.getValue('project'),
-                code: row.getValue('code'),
-                qualifier: row.getValue('qualifier'),
-                route: row.getValue('route'),
-                concentration: row.getValue('concentration'),
-                conc_units: row.getValue('conc_units'),
-                amount: row.getValue('amount'),
-                amount_units: row.getValue('amount_units'),
-                volume: row.getValue('volume'),
-                vol_units: row.getValue('vol_units'),
-                dosage: row.getValue('dosage'),
-                dosage_units: row.getValue('dosage_units'),
-                treatmentid: row.getValue('treatmentid'),
-                performedby: performedby,
-                remark: row.getValue('remark'),
-                category: row.getValue('category')
-            }));
+            console.log(row.taskId);
+            rows.push(row);
         }, this);
 
-        this.targetStore.add(records);
+        if (records.length){
+            LABKEY.Query.updateRows({
+                schemaName: 'study',
+                queryName: 'blood',
+                rows: records,
+                scope: this,
+                failure: LDK.Utils.getErrorCallback(),
+                success: function(results){
+                    this.bloodDrawStore.load();
 
-        Ext4.Msg.hide();
+                    Ext4.Msg.hide();
+                }
+            });
+        }
     }
 });
 

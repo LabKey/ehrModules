@@ -302,6 +302,8 @@ Ext4.define('EHR.data.DataEntryServerStore', {
     transformRecordsToClient: function(sc,targetChildStores, changedStoreIDs, syncErrorsOnly){
         var fieldMap, clientStore, serverFieldName, clientKeyField;
         this.each(function(serverModel){
+            var found = false;
+
             for (var clientStoreId in targetChildStores){
                 clientStore = sc.clientStores.get(clientStoreId);
                 LDK.Assert.assertNotEmpty('Unable to find client store with Id: ' + clientStoreId, clientStore);
@@ -341,6 +343,7 @@ Ext4.define('EHR.data.DataEntryServerStore', {
                 }
 
                 if (clientModel){
+                    found = true;
                     clientModel.phantom = serverModel.phantom;
 
                     fieldMap = targetChildStores[clientStoreId];
@@ -373,16 +376,17 @@ Ext4.define('EHR.data.DataEntryServerStore', {
                     }
                     clientModel.resumeEvents();
                 }
-                else if (!syncErrorsOnly){
-                    if (serverModel.phantom){
-                        //ignore
-                        console.log('phantom servermodel is unable to find client record.  this probably indicates the client record it was removed');
-                        this.remove(serverModel);
-                    }
-                    else {
-                        console.error('unable to find client model for record');
-                        console.log(serverModel);
-                    }
+            }
+
+            if (!found && !syncErrorsOnly){
+                if (serverModel.phantom){
+                    //ignore
+                    console.log('phantom servermodel is unable to find client record.  this probably indicates the client record it was removed');
+                    this.remove(serverModel);
+                }
+                else {
+                    console.error('unable to find client model for record');
+                    console.log(serverModel);
                 }
             }
         }, this);

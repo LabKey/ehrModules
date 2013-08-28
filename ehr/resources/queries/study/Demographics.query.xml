@@ -26,6 +26,9 @@
                     <column columnName="date">
                         <isHidden>true</isHidden>
                     </column>
+                    <column columnName="project">
+                        <isHidden>true</isHidden>
+                    </column>
                     <column columnName="status">
                         <shownInInsertView>false</shownInInsertView>
                         <isHidden>true</isHidden>

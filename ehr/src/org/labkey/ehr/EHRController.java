@@ -26,13 +26,16 @@ import org.labkey.api.action.SimpleViewAction;
 import org.labkey.api.action.SpringActionController;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.ContainerManager;
+import org.labkey.api.data.RuntimeSQLException;
 import org.labkey.api.data.TableInfo;
 import org.labkey.api.ehr.EHRService;
 import org.labkey.api.ehr.history.HistoryRow;
 import org.labkey.api.ehr.dataentry.DataEntryForm;
+import org.labkey.api.exp.api.ExperimentService;
 import org.labkey.api.pipeline.PipelineStatusUrls;
 import org.labkey.api.security.RequiresPermissionClass;
 import org.labkey.api.security.permissions.AdminPermission;
+import org.labkey.api.security.permissions.DeletePermission;
 import org.labkey.api.security.permissions.ReadPermission;
 import org.labkey.api.util.ExceptionUtil;
 import org.labkey.api.util.PageFlowUtil;
@@ -56,6 +59,7 @@ import org.springframework.validation.BindException;
 import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -93,6 +97,88 @@ public class EHRController extends SpringActionController
             resultProperties.put("success", true);
 
             return new ApiSimpleResponse(resultProperties);
+        }
+    }
+
+    @RequiresPermissionClass(DeletePermission.class)
+    public class DiscardFormAction extends ApiAction<DiscardFormForm>
+    {
+        public ApiResponse execute(DiscardFormForm form, BindException errors)
+        {
+            Map<String, Object> resultProperties = new HashMap<>();
+            Map<String, List<String>> errorMsgMap = new HashMap<>();
+
+            //first verify permission to delete
+            if (form.getTaskIds() != null)
+            {
+                boolean canDiscard = true;
+                for (String taskId : form.getTaskIds())
+                {
+                    List<String> msgs = new ArrayList<>();
+                    if (!EHRManager.get().canDiscardTask(getContainer(), getUser(), taskId, msgs))
+                    {
+                        canDiscard = false;
+                        errorMsgMap.put(taskId, msgs);
+                    }
+                }
+
+                if (canDiscard)
+                {
+                    ExperimentService.get().ensureTransaction();
+                    try
+                    {
+                        for (String taskId : form.getTaskIds())
+                        {
+                            EHRManager.get().discardTask(getContainer(), getUser(), taskId);
+                        }
+
+                        ExperimentService.get().commitTransaction();
+                    }
+                    catch (SQLException e)
+                    {
+                        throw new RuntimeSQLException(e);
+                    }
+                    finally
+                    {
+                        ExperimentService.get().closeTransaction();
+                    }
+                }
+                else
+                {
+
+                }
+            }
+
+
+            resultProperties.put("success", true);
+
+            return new ApiSimpleResponse(resultProperties);
+        }
+    }
+
+    public static class DiscardFormForm
+    {
+        private String[] taskIds;
+        private String[] requestIds;
+
+        public String[] getTaskIds()
+        {
+            return taskIds;
+        }
+
+        public void setTaskIds(String[] taskIds)
+        {
+            this.taskIds = taskIds;
+        }
+
+        public String[] getRequestIds()
+        {
+            return requestIds;
+        }
+
+        public void setRequestIds(String[] requestIds)
+        {
+            this.requestIds = requestIds;
         }
     }
 
@@ -727,14 +813,8 @@ public class EHRController extends SpringActionController
                     List<EHRServiceImpl.ReportLink> items = ((EHRServiceImpl)EHRServiceImpl.get()).getReportLinks(getContainer(), getUser(), type);
                     for (EHRServiceImpl.ReportLink link : items)
                     {
-                        Map<String, Object> item = new HashMap<>();
-                        ActionURL url = link.getUrl().copy(getContainer()).getActionURL();
-                        item.put("label", link.getLabel());
-                        item.put("category", link.getCategory());
+                        JSONObject item = link.toJSON(getContainer());
                         item.put("type", type.name());
-                        item.put("controller", url.getController());
-                        item.put("action", url.getAction());
-                        item.put("params", url.getParameterMap());
                         ret.add(item);
                     }
                 }

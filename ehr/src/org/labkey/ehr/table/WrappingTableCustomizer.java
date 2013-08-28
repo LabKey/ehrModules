@@ -60,7 +60,7 @@ public class WrappingTableCustomizer implements TableCustomizer
                 Container studyContainer = EHRService.get().getEHRStudyContainer(ti.getUserSchema().getContainer());
                 if (studyContainer != null)
                 {
-                    UserSchema us = QueryService.get().getUserSchema(ti.getUserSchema().getUser(), ti.getUserSchema().getContainer(), "study");
+                    UserSchema us = QueryService.get().getUserSchema(ti.getUserSchema().getUser(), studyContainer, "study");
                     if (us != null)
                     {
                         WrappedColumn newCol = new WrappedColumn(col, "EHR");

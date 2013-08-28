@@ -67,8 +67,8 @@ Ext4.define('EHR.form.field.RoomEntryField', {
             return;
 
         Ext4.Msg.wait('Loading...');
-        EHR.DemographicsCache.getDemographics(id, function(animalId, data){
-            this.onDemographicsLoad(id, data, showMsg)
+        EHR.DemographicsCache.getDemographics([id], function(animalIds, data){
+            this.onDemographicsLoad(id, data ? data[id] : null, showMsg)
         }, this, -1);
     },
 

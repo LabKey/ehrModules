@@ -61,14 +61,19 @@ public class EHRDataEntryTest extends AbstractEHRTest
         log("Create weight measurement task.");
         waitAndClickAndWait(Locator.linkWithText("Enter Weights"));
         waitForElement(Locator.name("title"), WAIT_FOR_JAVASCRIPT);
-        setFormElement(Locator.name("title"), TASK_TITLE);
+        waitForElement(Locator.xpath("//input[@name='title' and not(contains(@class, 'disabled'))]"), WAIT_FOR_JAVASCRIPT);
+
+        _helper.setDataEntryField("title", TASK_TITLE);
+        sleep(800);  //why?
         _extHelper.selectComboBoxItem("Assigned To:", BASIC_SUBMITTER.getGroup() + "\u00A0"); // appended with a nbsp (Alt+0160)
+        _helper.setDataEntryField("title", TASK_TITLE);
+        assertFormElementEquals(Locator.name("title"), TASK_TITLE);
 
         log("Add blank weight entries");
         clickButton("Add Record", 0);
         waitForElement(Locator.xpath("//input[@name='Id' and not(contains(@class, 'disabled'))]"), WAIT_FOR_JAVASCRIPT);
         // Form input doesn't seem to be enabled yet, so wait
-        try { Thread.sleep(500); } catch (InterruptedException e) {}
+        sleep(500);
         _extHelper.setExtFormElementByLabel("Id:", "noSuchAnimal");
         waitForText("Id not found", WAIT_FOR_JAVASCRIPT);
         _extHelper.setExtFormElementByLabel("Id:", DEAD_ANIMAL_ID);
@@ -214,8 +219,8 @@ public class EHRDataEntryTest extends AbstractEHRTest
         _extHelper.setExtFormElementByLabel("Id:", PROJECT_MEMBER_ID + "\t");
         click(Locator.xpath("//div[./label[normalize-space()='Id:']]//input"));
         waitForElement(Locator.linkWithText(PROJECT_MEMBER_ID), WAIT_FOR_JAVASCRIPT);
-        setFormElement(Locator.name("title"), MPR_TASK_TITLE);
-        click(Locator.name("title"));
+        _helper.setDataEntryField("title", MPR_TASK_TITLE);
+        waitAndClick(Locator.name("title"));
 
         clickButton("Save & Close");
 

@@ -52,7 +52,7 @@ EHR.DatasetButtons = new function(){
         historyHandler: function(dataRegion, dataRegionName, queryName, schemaName){
             dataRegion = LABKEY.DataRegions[dataRegionName];
             var checked = dataRegion.getChecked();
-            if(!checked || !checked.length){
+            if (!checked || !checked.length){
                 alert('No records selected');
                 return;
             }
@@ -63,10 +63,10 @@ EHR.DatasetButtons = new function(){
             var sql = "SELECT DISTINCT s.Id FROM "+schemaName+".\""+queryName+"\" s " + LDK.Utils.getDataRegionWhereClause(dataRegion, 's');
 
             LABKEY.Query.executeSql({
-                 schemaName: 'study',
-                 sql: sql,
-                 failure: LDK.Utils.getErrorCallback(),
-                 success: function(data){
+                schemaName: 'study',
+                sql: sql,
+                failure: LDK.Utils.getErrorCallback(),
+                success: function(data){
                     var ids = new Array();
                     for (var i = 0; i < data.rows.length; i++)
                         ids.push(data.rows[i].Id);
@@ -76,7 +76,7 @@ EHR.DatasetButtons = new function(){
                     if (ids.length){
                         var ctx = EHR.Utils.getEHRContext();
                         LDK.Assert.assertNotEmpty('EHRContext not loaded.  This might indicate a ClientDependency issue', ctx);
-                        if(!ctx){
+                        if (!ctx){
                             return;
                         }
 
@@ -84,7 +84,7 @@ EHR.DatasetButtons = new function(){
                         window.location = LABKEY.ActionURL.buildURL('ehr', 'animalHistory.view#'+hash, ctx['EHRStudyContainer']);
 
                         //force reload if on same page
-                        if(LABKEY.ActionURL.getAction() == 'animalHistory'){
+                        if (LABKEY.ActionURL.getAction() == 'animalHistory'){
                             Ext4.History.add(hash);
                             window.location.reload();
                         }
@@ -106,7 +106,7 @@ EHR.DatasetButtons = new function(){
         showAuditHistoryHandler: function(dataRegionName){
             var dataRegion = LABKEY.DataRegions[dataRegionName];
             var checked = dataRegion.getChecked();
-            if(!checked || !checked.length){
+            if (!checked || !checked.length){
                 alert('No records selected');
                 return;
             }
@@ -124,7 +124,7 @@ EHR.DatasetButtons = new function(){
                 success: function(data){
                     Ext4.Msg.hide();
 
-                    if(data.rows.length){
+                    if (data.rows.length){
                         var items = [{
                             html: 'New browser windows or tabs should have opened to load the history of these records.  If this did not happen, please be sure popups are enabled.  You can also click the following links to view those records:',
                             bodyStyle: 'padding: 5px;',
@@ -179,12 +179,12 @@ EHR.DatasetButtons = new function(){
         compareWeightsHandler: function(dataRegionName){
             var dataRegion = LABKEY.DataRegions[dataRegionName];
             var checked = dataRegion.getChecked();
-            if(!checked || !checked.length){
+            if (!checked || !checked.length){
                 alert('No records selected');
                 return;
             }
 
-            if(checked.length > 2){
+            if (checked.length > 2){
                 Ext4.Msg.alert('Error', 'More than 2 weights are checked.  Using the first 2.', showWindow, this);
             }
             else {
@@ -196,6 +196,38 @@ EHR.DatasetButtons = new function(){
                     dataRegionName: dataRegionName
                 }).show();
             }
+        },
+
+        discardTasks: function(dataRegionName){
+            var dataRegion = LABKEY.DataRegions[dataRegionName];
+            var checked = dataRegion.getChecked();
+            if (!checked || !checked.length){
+                alert('No records selected');
+                return;
+            }
+
+            Ext4.Msg.confirm('Discard Tasks', 'You are about to permanently delete the selected tasks.  Do you want to do this?', function(val){
+                if (val == 'yes'){
+                    Ext4.Msg.wait('Deleting...');
+                    LABKEY.Ajax.request({
+                        url: LABKEY.ActionURL.buildURL('ehr', 'discardForm', null, {taskIds: checked}),
+                        success: function(response, options){
+                            Ext4.Msg.hide();
+                            Ext4.Msg.alert('Success', 'Tasks discarded');
+                            dataRegion.refresh();
+                        },
+                        failure: LDK.Utils.getErrorCallback({
+                            callback: function(response){
+                                console.log(arguments)
+                                Ext4.Msg.hide();
+                                Ext4.Msg.alert('Error', 'There was an error deleting one or more tasks');
+                            },
+                            scope: this
+                        }),
+                        scope: this
+                    });
+                }
+            }, this);
         },
 
         /**
@@ -221,7 +253,7 @@ EHR.DatasetButtons = new function(){
             var dataRegion = LABKEY.DataRegions[dataRegionName];
 
             var checked = dataRegion.getChecked();
-            if(!checked || !checked.length){
+            if (!checked || !checked.length){
                 alert('No records selected');
                 return;
             }
@@ -241,7 +273,7 @@ EHR.DatasetButtons = new function(){
         createTaskFromIdsHandler: function(dataRegionName, formType, taskLabel, dataSets){
             var dataRegion = LABKEY.DataRegions[dataRegionName];
             var checked = dataRegion.getChecked();
-            if(!checked || !checked.length){
+            if (!checked || !checked.length){
                 Ext4.Msg.alert('Error', 'No records selected');
                 return;
             }
@@ -262,7 +294,7 @@ EHR.DatasetButtons = new function(){
         createTaskFromRecordHandler: function(dataRegionName, formType, taskLabel){
             var dataRegion = LABKEY.DataRegions[dataRegionName];
             var checked = dataRegion.getChecked();
-            if(!checked || !checked.length){
+            if (!checked || !checked.length){
                 Ext4.Msg.alert('Error', 'No records selected');
                 return;
             }
@@ -283,7 +315,7 @@ EHR.DatasetButtons = new function(){
         changeQCStateHandler: function(dataRegionName, className){
             var dataRegion = LABKEY.DataRegions[dataRegionName];
             var checked = dataRegion.getChecked();
-            if(!checked || !checked.length){
+            if (!checked || !checked.length){
                 alert('No records selected');
                 return;
             }
@@ -303,7 +335,7 @@ EHR.DatasetButtons = new function(){
          */
         duplicateTaskHandler: function(dataRegion){
             var checked = dataRegion.getChecked();
-            if(!checked || !checked.length){
+            if (!checked || !checked.length){
                 alert('No records selected');
                 return;
             }
@@ -332,7 +364,7 @@ EHR.DatasetButtons = new function(){
 
             function onSuccess(data){
 
-                if(!data || data.rows.length!=1){
+                if (!data || data.rows.length!=1){
                     alert('Task not found');
                     return;
                 }
@@ -351,7 +383,7 @@ EHR.DatasetButtons = new function(){
                     success: function(data){
                         pendingRequests = 0;
                         Ext.each(data.rows, function(r){
-                            if(r.schemaName && r.schemaName.match(/study/i)){
+                            if (r.schemaName && r.schemaName.match(/study/i)){
                                 pendingRequests++;
                                 LABKEY.Query.selectRows({
                                     schemaName: 'study',
@@ -363,7 +395,7 @@ EHR.DatasetButtons = new function(){
                                     ],
                                     scope: this,
                                     success: function(data){
-                                        if(data.rows.length){
+                                        if (data.rows.length){
                                             existingRecords[r.queryName] = [];
                                             Ext.each(data.rows, function(rec){
                                                 delete rec.lsid;
@@ -447,13 +479,13 @@ EHR.DatasetButtons = new function(){
                             Ext.Msg.wait('Loading...');
 
                             var assignedTo = o.ownerCt.ownerCt.theForm.assignedTo.getValue();
-                            if(!assignedTo){
+                            if (!assignedTo){
                                 alert('Must assign to someone');
                                 Ext.Msg.hide();
                                 return;
                             }
                             var title = o.ownerCt.ownerCt.theForm.titleField.getValue();
-                            if(!title){
+                            if (!title){
                                 alert('Must enter a title');
                                 Ext.Msg.hide();
                                 return;
@@ -462,7 +494,7 @@ EHR.DatasetButtons = new function(){
                             var date = o.ownerCt.ownerCt.theForm.date.getValue();
 
                             var subjectArray = o.ownerCt.ownerCt.theForm.ids.getValue();
-                            if(subjectArray){
+                            if (subjectArray){
                                 subjectArray = subjectArray.replace(/[\s,;]+/g, ';');
                                 subjectArray = subjectArray.replace(/(^;|;$)/g, '');
                                 subjectArray = subjectArray.toLowerCase();
@@ -492,17 +524,17 @@ EHR.DatasetButtons = new function(){
                                         rows: []
                                     }
                                     Ext.each(existingRecords[query], function(record){
-                                        if(date)
+                                        if (date)
                                             record.date = date;
 
                                         obj.rows.push(record);
                                     }, this);
-                                    if(obj.rows.length)
+                                    if (obj.rows.length)
                                         toUpdate.push(obj);
                                 }
 
                                 var duedate = date || oldDate;
-                                if(duedate){ duedate = duedate.toGMTString()};
+                                if (duedate){ duedate = duedate.toGMTString()};
 
                                 var taskConfig = {
                                     initialQCState: 'Scheduled',
@@ -512,7 +544,7 @@ EHR.DatasetButtons = new function(){
                                     success: function(response, options, config){
                                         Ext.Msg.hide();
                                         Ext.Msg.confirm('View Task Now?', 'Do you want to view the task now?', function(btn){
-                                            if(btn == 'yes'){
+                                            if (btn == 'yes'){
                                                 window.location = LABKEY.ActionURL.buildURL("ehr", "manageTask", null, {taskid: config.taskId, formtype: config.taskRecord.formType});
                                             }
                                             else {
@@ -527,12 +559,12 @@ EHR.DatasetButtons = new function(){
                                     }
                                 }
 
-                                if(subjectArray.length){
+                                if (subjectArray.length){
 
                                     Ext.each(subjectArray, function(id){
-                                       var cfg = Ext.apply({}, taskConfig);
-                                       cfg.taskRecord.title = title + ': ' + id;
-                                       Ext.each(cfg.childRecords, function(tableRecords){
+                                        var cfg = Ext.apply({}, taskConfig);
+                                        cfg.taskRecord.title = title + ': ' + id;
+                                        Ext.each(cfg.childRecords, function(tableRecords){
                                             Ext.each(tableRecords.rows, function(record){
                                                 record.Id = id;
                                             }, this);

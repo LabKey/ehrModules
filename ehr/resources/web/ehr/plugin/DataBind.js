@@ -17,6 +17,7 @@ Ext4.define('EHR.plugin.Databind', {
         observable: 'Ext.util.Observable'
     },
     init: function(panel){
+        this.id = this.id || Ext4.id();
         this.panel = panel;
 
         LABKEY.ExtAdapter.apply(panel, {
@@ -67,6 +68,11 @@ Ext4.define('EHR.plugin.Databind', {
             panel.bindRecord(panel.boundRecord);
 
         this.callParent(arguments);
+    },
+
+    destroy: function(){
+        this.clearListeners();
+        delete this.panel;
     },
 
     configureStore: function(store){
@@ -135,8 +141,13 @@ Ext4.define('EHR.plugin.Databind', {
         var form = this.panel.getForm();
         this.ignoreNextUpdateEvent = null;
 
-        if (form.getRecord())
+        if (form.getRecord()){
+            if (form.getRecord().id == record.id){
+                return; //no need to reload same record
+            }
+
             this.unbindRecord();
+        }
 
         form.suspendEvents();
         form.loadRecord(record);
@@ -196,8 +207,8 @@ Ext4.define('EHR.plugin.Databind', {
     },
 
     addFieldListener: function(f){
+        LDK.Assert.assertEmpty('field already has databind listener: ' + f.name, f.hasDatabindListener);
         if (f.hasDatabindListener){
-            console.warn('field already has listener');
             return;
         }
 
@@ -210,14 +221,13 @@ Ext4.define('EHR.plugin.Databind', {
         Ext4.override(f, {
             getErrors: function(value){
                 var errors = this.callOverridden(arguments);
-                var record = this.up('form').getForm().getRecord();
+                var record = EHR.DataEntryUtils.getBoundRecord(this);
                 if (record){
                     record.validate().each(function(e){
                         if (e.field == this.name)
                             errors.push(e.message);
                     }, this);
                 }
-
                 errors = Ext4.Array.unique(errors);
 
                 return errors;
@@ -240,8 +250,9 @@ Ext4.define('EHR.plugin.Databind', {
 
         function setVal(fieldId, val) {
             var field = form.findField(fieldId);
-            if (!field)
+            if (!field){
                 return;
+            }
 
             var fieldVal = field.getValue();
             if (fieldVal !== val) {

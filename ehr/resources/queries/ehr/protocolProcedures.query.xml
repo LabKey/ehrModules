@@ -6,7 +6,7 @@
               <importUrl />
               <updateUrl />
               <deleteUrl />
-              <tableTitle>RARC Protocol Allowable Procedures</tableTitle>
+              <tableTitle>IACUC Protocol Allowable Procedures</tableTitle>
               <columns>
                 <column columnName="rowid">
                   <columnTitle>Key</columnTitle>

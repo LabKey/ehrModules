@@ -24,13 +24,20 @@ Ext4.define('EHR.window.AddScheduledTreatmentsWindow', {
                 border: false
             },
             items: [{
+                html: 'This helper allows you to pull records from the treatment schedule into this form.  It will identify any records matching the criteria below that have not already been marked as completed.',
+                style: 'padding-bottom: 10px;'
+            },{
                 xtype: 'datefield',
                 fieldLabel: 'Date',
-                value: (new Date()),
+                value: new Date(),
                 //TODO
                 //hidden: !EHR.Security.hasPermission('Completed', 'update', {queryName: 'Blood Draws', schemaName: 'study'}),
                 maxValue: (new Date()),
                 itemId: 'dateField'
+            },{
+                xtype: 'ehr-areafield',
+                multiSelect: false,
+                itemId: 'areaField'
             },{
                 xtype: 'ehr-roomfield',
                 itemId: 'roomField'
@@ -85,15 +92,15 @@ Ext4.define('EHR.window.AddScheduledTreatmentsWindow', {
 
         var date = (this.down('#dateField') ? this.down('#dateField').getValue() : new Date());
 
-        if (!rooms.length){
-            alert('Must provide at least one room');
+        if (!area && !rooms.length){
+            alert('Must provide at least one room or an area');
             return;
         }
 
         var filterArray = [];
 
         filterArray.push(LABKEY.Filter.create('date', date.format('Y-m-d'), LABKEY.Filter.Types.DATE_EQUAL));
-
+        filterArray.push(LABKEY.Filter.create('taskid', null, LABKEY.Filter.Types.ISBLANK));
         filterArray.push(LABKEY.Filter.create('treatmentStatus', null, LABKEY.Filter.Types.ISBLANK));
 
         if (area)
@@ -106,7 +113,7 @@ Ext4.define('EHR.window.AddScheduledTreatmentsWindow', {
             filterArray.push(LABKEY.Filter.create('category', categories.join(';'), LABKEY.Filter.Types.EQUALS_ONE_OF));
 
         if (times && times.length)
-            filterArray.push(LABKEY.Filter.create('TimeOfDay', times.join(';'), LABKEY.Filter.Types.EQUALS_ONE_OF));
+            filterArray.push(LABKEY.Filter.create('timeOfDay', times.join(';'), LABKEY.Filter.Types.EQUALS_ONE_OF));
 
         return filterArray;
     },
@@ -117,6 +124,7 @@ Ext4.define('EHR.window.AddScheduledTreatmentsWindow', {
             return;
         }
 
+        var date = (this.down('#dateField') ? this.down('#dateField').getValue() : new Date());
         Ext4.Msg.wait("Loading...");
         this.hide();
 
@@ -130,7 +138,7 @@ Ext4.define('EHR.window.AddScheduledTreatmentsWindow', {
                 StartDate: date.format('Y-m-d')
             },
             sort: 'date,Id/curlocation/room,Id/curlocation/cage,Id',
-            columns: 'primaryKey,lsid,Id,date,project,meaning,code,qualifier,route,concentration,conc_units,amount,amount_units,dosage,dosage_units,volume,vol_units,remark,category',
+            columns: 'primaryKey,lsid,treatmentid,Id,date,project,meaning,code,qualifier,route,concentration,conc_units,amount,amount_units,dosage,dosage_units,volume,vol_units,remark,category',
             filterArray: filterArray,
             scope: this,
             success: this.onSuccess,
@@ -157,7 +165,7 @@ Ext4.define('EHR.window.AddScheduledTreatmentsWindow', {
             var date = new Date();
 
             //if retroactively entering (more than 2 hours after the scheduled time), we take the time that record was scheduled to be administered.  otherwise we use the current time
-            if ((date.getTime() - row.date.getTime()) < (1000 * 60 * 60 * 2))
+            if ((date.getTime() - row.date.getTime()) > (1000 * 60 * 60 * 2))
                 date = row.date;
 
             records.push(this.targetStore.createModel({

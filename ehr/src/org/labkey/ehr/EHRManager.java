@@ -18,6 +18,7 @@ package org.labkey.ehr;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.labkey.api.cache.CacheManager;
+import org.labkey.api.collections.CaseInsensitiveHashMap;
 import org.labkey.api.collections.CaseInsensitiveHashSet;
 import org.labkey.api.data.Container;
 import org.labkey.api.data.ContainerManager;
@@ -26,12 +27,15 @@ import org.labkey.api.data.DbScope;
 import org.labkey.api.data.PropertyManager;
 import org.labkey.api.data.RuntimeSQLException;
 import org.labkey.api.data.SQLFragment;
+import org.labkey.api.data.Selector;
 import org.labkey.api.data.SimpleFilter;
 import org.labkey.api.data.SqlExecutor;
 import org.labkey.api.data.SqlSelector;
 import org.labkey.api.data.Table;
 import org.labkey.api.data.TableInfo;
 import org.labkey.api.data.TableSelector;
+import org.labkey.api.ehr.dataentry.DataEntryForm;
+import org.labkey.api.ehr.dataentry.FormSection;
 import org.labkey.api.ehr.security.EHRCompletedInsertPermission;
 import org.labkey.api.exp.ChangePropertyDescriptorException;
 import org.labkey.api.exp.OntologyManager;
@@ -43,24 +47,32 @@ import org.labkey.api.exp.query.ExpSchema;
 import org.labkey.api.module.Module;
 import org.labkey.api.module.ModuleLoader;
 import org.labkey.api.module.ModuleProperty;
+import org.labkey.api.query.BatchValidationException;
 import org.labkey.api.query.FieldKey;
+import org.labkey.api.query.InvalidKeyException;
 import org.labkey.api.query.QueryService;
+import org.labkey.api.query.QueryUpdateServiceException;
 import org.labkey.api.query.UserSchema;
 import org.labkey.api.security.User;
 import org.labkey.api.security.UserManager;
 import org.labkey.api.security.ValidEmail;
+import org.labkey.api.security.permissions.DeletePermission;
 import org.labkey.api.study.DataSet;
 import org.labkey.api.study.Study;
 import org.labkey.api.study.StudyService;
 import org.labkey.api.util.ExceptionUtil;
 import org.labkey.api.util.Pair;
 import org.labkey.api.util.ResultSetUtil;
+import org.labkey.ehr.dataentry.DataEntryManager;
+import org.labkey.ehr.security.EHRSecurityManager;
+import org.labkey.ehr.utils.EHRQCState;
 
 import java.beans.Introspector;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -661,9 +673,7 @@ public class EHRManager
         names.add(Pair.of("encounter_participants", new String[]{"objectid"}));
         names.add(Pair.of("encounter_participants", new String[]{"parentid"}));
         names.add(Pair.of("encounter_participants", new String[]{"id"}));
-        names.add(Pair.of("encounter_participants", new String[]{"id"}));
-        names.add(Pair.of("encounter_participants", new String[]{"container", "rowid", "id"}));
-        names.add(Pair.of("encounter_participants", new String[]{"container", "rowid", "parentid"}));
+        names.add(Pair.of("encounter_participants", new String[]{"taskid"}));
 
         names.add(Pair.of("encounter_summaries", new String[]{"objectid"}));
         names.add(Pair.of("encounter_summaries", new String[]{"parentid"}));
@@ -679,6 +689,7 @@ public class EHRManager
 
         names.add(Pair.of("snomed_tags", new String[]{"objectid"}));
         names.add(Pair.of("snomed_tags", new String[]{"parentid"}));
+        names.add(Pair.of("snomed_tags", new String[]{"taskid"}));
         names.add(Pair.of("snomed_tags", new String[]{"recordid"}));
 
         names.add(Pair.of("snomed_tags", new String[]{"recordid", "rowid", "id"}));
@@ -831,5 +842,136 @@ public class EHRManager
             return ret[0];
 
         return null;
+    }
+
+    public int discardTask(Container c, User u, String taskId) throws SQLException
+    {
+        DataEntryForm def = getDataEntryFormForTask(c, u, taskId);
+
+        int deleted = 0;
+        for (final TableInfo ti : def.getTables(c, u))
+        {
+            SimpleFilter filter = new SimpleFilter(FieldKey.fromString("taskId"), taskId);
+            final List<Map<String, Object>> keysToDelete = new ArrayList<>();
+            final List<Map<String, Object>> requestsToQueue = new ArrayList<>();
+            Set<String> colNames = new HashSet<>();
+            colNames.addAll(ti.getPkColumnNames());
+            if (ti.getColumn(FieldKey.fromString("requestid")) != null)
+                colNames.add("requestid");
+
+            TableSelector ts = new TableSelector(ti, colNames, filter, null);
+            ts.forEach(new Selector.ForEachBlock<ResultSet>()
+            {
+                @Override
+                public void exec(ResultSet rs) throws SQLException
+                {
+                    Map<String, Object> row = new CaseInsensitiveHashMap<>();
+                    row.putAll(ResultSetUtil.mapRow(rs));
+                    if (row.containsKey("requestid") && row.get("requestid") != null)
+                    {
+                        row.put("requestid", null);
+                        row.put("qcstate", null);
+                        row.put("qcstateLabel", "Request: Approved");
+
+                        requestsToQueue.add(row);
+                    }
+                    else
+                    {
+                        keysToDelete.add(row);
+                    }
+                }
+            });
+
+            try
+            {
+                if (!keysToDelete.isEmpty())
+                {
+                    ti.getUpdateService().deleteRows(u, c, keysToDelete, new HashMap<String, Object>());
+                }
+
+
+                if (!requestsToQueue.isEmpty())
+                {
+                    ti.getUpdateService().updateRows(u, c, requestsToQueue, requestsToQueue, new HashMap<String, Object>());
+                }
+            }
+            catch (InvalidKeyException e)
+            {
+                throw new RuntimeException(e.getMessage());
+            }
+            catch (QueryUpdateServiceException e)
+            {
+                throw new RuntimeException(e.getMessage());
+            }
+            catch (BatchValidationException e)
+            {
+                throw new RuntimeException(e.getMessage());
+            }
+        }
+
+        return deleted;
+    }
+
+    public DataEntryForm getDataEntryFormForTask(Container c, User u, String taskId)
+    {
+        String formType = EHRManager.get().getFormTypeForTask(c, u, taskId);
+        if (formType == null)
+        {
+            throw new IllegalArgumentException("Unable to find formType for the task: " + taskId);
+        }
+
+        DataEntryForm def = DataEntryManager.get().getFormByName(formType, c, u);
+        if (def == null)
+        {
+            throw new IllegalArgumentException("Unable to find form type for the name: " + formType);
+        }
+
+        return def;
+    }
+
+    public boolean canDiscardTask(Container c, User u, String taskId, List<String> errorMsgs)
+    {
+        DataEntryForm def = getDataEntryFormForTask(c, u, taskId);
+
+        Map<Integer, EHRQCState> qcStateMap = new HashMap<>();
+        for (EHRQCState qc : EHRManager.get().getQCStates(c))
+        {
+            qcStateMap.put(qc.getRowId(), qc);
+        }
+
+        boolean hasPermission = true;
+        Set<TableInfo> distinctTables = def.getTables(c, u);
+        for (TableInfo ti : distinctTables)
+        {
+            if (ti.getColumn(FieldKey.fromString("qcstate")) != null && ti.getColumn(FieldKey.fromString("taskid")) != null)
+            {
+                SimpleFilter filter = new SimpleFilter(FieldKey.fromString("taskid"), taskId);
+                TableSelector ts = new TableSelector(ti, Collections.singleton("qcstate"), filter, null);
+                Set<Integer> distinctQcStates = new HashSet<>();
+                distinctQcStates.addAll(Arrays.asList(ts.getArray(Integer.class)));
+                for (Integer qc : distinctQcStates)
+                {
+                    EHRQCState q = qcStateMap.get(qc);
+                    if (q != null)
+                    {
+                        if (!EHRSecurityManager.get().testPermission(u, ti, DeletePermission.class, q))
+                        {
+                            hasPermission = false;
+                            errorMsgs.add("Insufficient permissions to delete record with QCState of: " + q.getLabel());
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
+        return hasPermission;
+    }
+
+    public EHRQCState[] getQCStates(Container c)
+    {
+        SQLFragment sql = new SQLFragment("SELECT * FROM study.qcstate qc LEFT JOIN ehr.qcstatemetadata md ON (qc.label = md.QCStateLabel) WHERE qc.container = ?", c.getEntityId());
+        DbSchema db = DbSchema.get("study");
+        return new SqlSelector(db, sql).getArray(EHRQCState.class);
     }
 }

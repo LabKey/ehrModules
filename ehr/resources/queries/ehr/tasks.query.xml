@@ -105,6 +105,12 @@
                             </conditionalFormat>
                             <conditionalFormat>
                                 <filters>
+                                    <filter operator="eq" value="Request: Sample Delivered"/>
+                                </filters>
+                                <backgroundColor>FBEC5D</backgroundColor>
+                            </conditionalFormat>
+                            <conditionalFormat>
+                                <filters>
                                     <filter operator="eq" value="Request: Denied"/>
                                 </filters>
                                 <backgroundColor>FBEC5D</backgroundColor>
@@ -128,8 +134,7 @@
                     </column>
                 </columns>
                 <buttonBarOptions includeStandardButtons="false">
-                    <!--<includeScript>/ehr/studyButtons.js</includeScript>-->
-                    <!--<onRender>EHR.DatasetButtons.moreActionsHandler</onRender>-->
+                    <includeScript>/ehr/studyButtons.js</includeScript>
                     <item text="Views">
                         <originalText>Views</originalText>
                     </item>
@@ -139,9 +144,6 @@
                     <item text="Print">
                         <originalText>Print</originalText>
                     </item>
-                    <!--<item text="Import Data">-->
-                        <!--<originalText>Import Data</originalText>-->
-                    <!--</item>-->
                     <item text="Page Size">
                         <originalText>Page Size</originalText>
                     </item>

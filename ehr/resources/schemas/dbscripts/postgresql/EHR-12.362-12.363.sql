@@ -1,0 +1,1 @@
+ALTER TABLE ehr.encounter_participants ADD taskid entityid;

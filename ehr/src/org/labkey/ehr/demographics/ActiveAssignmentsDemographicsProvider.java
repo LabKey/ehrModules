@@ -48,6 +48,7 @@ public class ActiveAssignmentsDemographicsProvider extends AbstractListDemograph
         keys.add(FieldKey.fromString("project/title"));
         keys.add(FieldKey.fromString("project/displayName"));
         keys.add(FieldKey.fromString("project/protocol"));
+        keys.add(FieldKey.fromString("project/use_category"));
         keys.add(FieldKey.fromString("project/protocol/displayName"));
         keys.add(FieldKey.fromString("project/investigatorId"));
         keys.add(FieldKey.fromString("project/investigatorId/firstName"));

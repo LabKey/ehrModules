@@ -46,7 +46,7 @@ Ext4.define('EHR.window.CopyFromRunsWindow', {
 
         this.on('beforeshow', function(window){
             if (!this.runRecords.length){
-                Ext4.Msg.alert('No Records', 'There are no panels for '  + this.dataset + ', nothing to add');
+                Ext4.Msg.alert('No Records', 'There are no panels for '  + this.dataset + ', nothing to add.  Note: the panels must have an Id/date in order to enter results');
                 return false;
             }
         }, this);
@@ -69,7 +69,7 @@ Ext4.define('EHR.window.CopyFromRunsWindow', {
     getRunsRecords: function(){
         var records = [];
         this.runsStore.each(function(r){
-            if(r.get('type') == this.dataset){
+            if (r.get('type') == this.dataset && r.get('Id') && r.get('date')){
                 records.push(r);
             }
         }, this);
@@ -83,6 +83,7 @@ Ext4.define('EHR.window.CopyFromRunsWindow', {
             queryName: 'labwork_panels',
             requiredVersion: 9.1,
             columns: '*',
+            sort: 'servicename,sortorder',
             filterArray: [LABKEY.Filter.create('servicename/dataset', this.dataset, LABKEY.Filter.Types.EQUAL)],
             failure: LDK.Utils.getErrorCallback(),
             success: this.onLoad,
@@ -98,7 +99,7 @@ Ext4.define('EHR.window.CopyFromRunsWindow', {
                 if (!this.panelMap[row.getValue('servicename')])
                     this.panelMap[row.getValue('servicename')] = [];
 
-                this.panelMap[row.getValue('servicename')].push(row.getValue('testname'));
+                this.panelMap[row.getValue('servicename')].push(row);
             }, this);
         }
 
@@ -137,7 +138,7 @@ Ext4.define('EHR.window.CopyFromRunsWindow', {
                 valueField: 'servicename',
                 forceSelection: true,
                 queryMode: 'local',
-                value: this.panelMap[r.get('servicerequested')] ? r.get('servicerequested') : null,
+                value: r.get('servicerequested'),
                 store: {
                     type: 'labkey-store',
                     schemaName: 'ehr_lookups',
@@ -185,22 +186,30 @@ Ext4.define('EHR.window.CopyFromRunsWindow', {
                 }
 
                 var panel = item.getValue();
-                var testIds;
+                var rows;
                 if (panel && this.panelMap[panel]){
-                    testIds = this.panelMap[panel];
+                    rows = this.panelMap[panel];
                 }
                 else {
-                    testIds = [null];
+                    rows = [null];
                 }
 
-                Ext4.Array.forEach(testIds, function(testId){
+                Ext4.Array.forEach(rows, function(row){
                     var data = {
                         Id: item.boundRecord.get('Id'),
                         date: item.boundRecord.get('date'),
                         runid: item.boundRecord.get('objectid')
                     };
 
-                    data[this.testFieldName] = testId
+                    if (row){
+                        if (row.getValue('method')){
+                            data.method = row.getValue('method');
+                        }
+
+                        if (row.getValue('testname')){
+                            data[row.getValue('testfieldname') || 'testid'] = row.getValue('testname');
+                        }
+                    }
 
                     records.push(this.targetGrid.store.createModel(data));
                 }, this);

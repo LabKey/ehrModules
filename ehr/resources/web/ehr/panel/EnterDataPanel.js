@@ -56,7 +56,7 @@ Ext4.define('EHR.panel.EnterDataPanel', {
     getItems: function(){
         return [{
             xtype: 'ldk-querypanel',
-            bodyStyle: 'padding: 5px;',
+            bodyStyle: 'margin: 5px;',
             title: 'My Tasks',
             queryConfig:  {
                 schemaName: 'ehr',
@@ -65,7 +65,7 @@ Ext4.define('EHR.panel.EnterDataPanel', {
             }
         },{
             xtype: 'ldk-querypanel',
-            bodyStyle: 'padding: 5px;',
+            bodyStyle: 'margin: 5px;',
             title: 'All Tasks',
             queryConfig:  {
                 schemaName: 'ehr',
@@ -74,7 +74,7 @@ Ext4.define('EHR.panel.EnterDataPanel', {
             }
         },{
             xtype: 'panel',
-            bodyStyle: 'padding: 5px;',
+            bodyStyle: 'margin: 5px;',
             title: 'Enter New Data',
             itemId: 'enterNew',
             defaults: {
@@ -84,18 +84,24 @@ Ext4.define('EHR.panel.EnterDataPanel', {
                 html: 'Loading...'
             }]
         },{
-            title: 'Manage Requests',
-            bodyStyle: 'padding: 5px;',
+            title: 'Queues',
+            bodyStyle: 'margin: 5px;',
             items: [{
                 xtype: 'ldk-navpanel',
                 sections: [{
                     header: 'Blood Draws',
                     items: [{
-                        name: 'Pending Requests',
-                        url: LABKEY.ActionURL.buildURL('query', 'executeQuery', null, {schemaName: 'study', 'query.queryName': 'Blood Draws', 'query.viewName': 'Blood Requests', 'query.QCState/Label~eq': 'Request: Pending'})
+                        name: 'Requests for CMU',
+                        url: LABKEY.ActionURL.buildURL('query', 'executeQuery', null, {schemaName: 'study', 'query.queryName': 'Blood Draws', 'query.viewName': 'Requests', 'query.QCState/Label~startswith': 'Request:', 'query.chargetype~eq': 'DCM: CMU'})
                     },{
-                        name: 'Approved Requests',
-                        url: LABKEY.ActionURL.buildURL('query', 'executeQuery', null, {schemaName: 'study', 'query.queryName': 'Blood Draws', 'query.viewName': 'Blood Schedule', 'query.QCState/Label~eq': 'Request: Approved'})
+                        name: 'Requests for RFO',
+                        url: LABKEY.ActionURL.buildURL('query', 'executeQuery', null, {schemaName: 'study', 'query.queryName': 'Blood Draws', 'query.viewName': 'Requests', 'query.QCState/Label~startswith': 'Request:', 'query.chargetype~eq': 'DCM: RFO'})
+                    },{
+                        name: 'Requests for Surgery',
+                        url: LABKEY.ActionURL.buildURL('query', 'executeQuery', null, {schemaName: 'study', 'query.queryName': 'Blood Draws', 'query.viewName': 'Requests', 'query.QCState/Label~startswith': 'Request:', 'query.chargetype~eq': 'DCM: Surgery'})
+                    },{
+                        name: 'Requests for Research Staff',
+                        url: LABKEY.ActionURL.buildURL('query', 'executeQuery', null, {schemaName: 'study', 'query.queryName': 'Blood Draws', 'query.viewName': 'Requests', 'query.QCState/Label~startswith': 'Request:', 'query.chargetype~eq': 'Research Staff'})
                     }]
                 },{
                     header: 'Lab Tests',
@@ -105,6 +111,12 @@ Ext4.define('EHR.panel.EnterDataPanel', {
                     },{
                         name: 'SPF Surveillance Requests',
                         url: LABKEY.ActionURL.buildURL('query', 'executeQuery', null, {schemaName: 'study', 'query.queryName': 'Clinpath Runs', 'query.QCState/Label~startswith': 'Request:', 'query.servicerequested/chargetype~eq': 'SPF Surveillance'})
+                    }]
+                },{
+                    header: 'Procedures',
+                    items: [{
+                        name: 'Surgery Requests',
+                        url: LABKEY.ActionURL.buildURL('query', 'executeQuery', null, {schemaName: 'study', 'query.queryName': 'encounters', 'query.QCState/Label~startswith': 'Request:', 'query.type~eq': 'Surgery'})
                     }]
                 }]
             }]

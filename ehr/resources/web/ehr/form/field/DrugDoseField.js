@@ -47,8 +47,8 @@ Ext4.define('EHR.form.field.DrugDoseField', {
     calculateDose: function(id, record, sc){
         Ext4.Msg.wait('Loading weight...');
 
-        EHR.DemographicsCache.getDemographics(id, function(animalId, data){
-            this.onDemographicsLoad(id, data, record, sc)
+        EHR.DemographicsCache.getDemographics([id], function(animalIds, data){
+            this.onDemographicsLoad(id, data ? data[id] : null, record, sc)
         }, this, -1);
     },
 

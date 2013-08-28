@@ -30,7 +30,6 @@ Ext4.define('EHR.panel.AnimalDetailsPanel', {
     },
 
     loadAnimal: function(animalId, forceReload){
-console.log('load: ' + animalId);
         if (!forceReload && animalId == this.subjectId){
             return;
         }
@@ -38,7 +37,15 @@ console.log('load: ' + animalId);
         this.subjectId = animalId;
 
         if (animalId)
-            EHR.DemographicsCache.getDemographics(this.subjectId, this.onLoad, this);
+            EHR.DemographicsCache.getDemographics([this.subjectId], this.onLoad, this);
+    },
+
+    onLoad: function(ids, resultMap){
+        if (ids && ids.length && ids[0] != this.subjectId){
+            return;
+        }
+
+        this.callParent(arguments);
     },
 
     getItems: function(){
@@ -84,9 +91,32 @@ console.log('load: ' + animalId);
                 },{
                     fieldLabel: 'Flags',
                     itemId: 'flags'
+                },{
+                    fieldLabel: 'Weight',
+                    itemId: 'weights'
                 }]
             }]
         }];
+    },
+
+    appendWeightResults: function(results){
+        if (results && results.length){
+            var row = results[0];
+            var date = LDK.ConvertUtils.parseDate(row.date);
+            var interval = '';
+            if (date){
+                //round to day for purpose of this comparison
+                var d1 = Ext4.Date.clearTime(new Date(), true);
+                var d2 = Ext4.Date.clearTime(date, true);
+                var interval = Ext4.Date.getElapsed(d1, d2);
+                interval = interval / (1000 * 60 * 60 * 24);
+                interval = Math.floor(interval);
+                interval = interval + ' days ago';
+            }
+
+            var text = row.weight + ' kg, ' + date.format('Y-m-d') + (Ext4.isDefined(interval) ? ' (' + interval + ')' : '');
+            this.safeAppend('#weights', '<table>' + text + '</table>');
+        }
     },
 
     appendAssignmentsAndGroups: function(record){

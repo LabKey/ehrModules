@@ -109,7 +109,7 @@ Ext4.define('EHR.data.DataEntryClientStore', {
     // NOTE: the gridpanel will attempt to cache display values, so we need to clear them on update
     onUpdate : function(store, record, operation) {
         for(var field  in record.getChanges()){
-            if(record.raw && record.raw[field]){
+            if (record.raw && record.raw[field]){
                 delete record.raw[field].displayValue;
                 delete record.raw[field].mvValue;
             }
@@ -139,20 +139,21 @@ Ext4.define('EHR.data.DataEntryClientStore', {
     safeRemove: function(records){
         Ext4.Array.forEach(records, function(r){
             var recs = [];
-            if(r.get('requestid') || r.get('requestId')){
+            if (!r.phantom && r.get('requestid')){
                 r.beginEdit();
 
                 //note: we reject changes since we dont want to retain modifications made in this form
                 r.reject();
 
                 //reset the date
-                if(r.get('daterequested'))
+                if (r.get('daterequested')){
+                    console.log('setting daterequested');
                     r.set('date', r.get('daterequested'));
+                }
 
                 r.set('taskid', null);
 
                 r.set('QCState', EHR.Security.getQCStateByLabel('Request: Approved').RowId);
-                r.set('qcstate', EHR.Security.getQCStateByLabel('Request: Approved').RowId);
 
                 r.endEdit(true);
 

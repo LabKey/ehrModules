@@ -8,8 +8,9 @@ Ext4.define('EHR.data.TaskStoreCollection', {
 
     getTaskId: function(){
         var model = this.getServerStoreForQuery('ehr', 'tasks').getAt(0);
-        if (model)
+        if (model){
             return model.get('taskid');
+        }
     },
 
     setClientModelDefaults: function(model){

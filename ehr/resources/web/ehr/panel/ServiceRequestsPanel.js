@@ -52,6 +52,22 @@ Ext4.define('EHR.panel.ServiceRequestsPanel', {
 
     getItems: function(){
         return [{
+            xtype: 'ldk-querypanel',
+            title: 'My Requests',
+            style: 'padding: 5px;',
+            queryConfig:  {
+                schemaName: 'ehr',
+                queryName: 'my_requests'
+            }
+        },{
+            xtype: 'ldk-querypanel',
+            title: 'All Requests',
+            style: 'padding: 5px;',
+            queryConfig:  {
+                schemaName: 'ehr',
+                queryName: 'requests'
+            }
+        },{
             xtype: 'panel',
             style: 'padding: 5px;',
             title: 'New Request',
@@ -64,22 +80,15 @@ Ext4.define('EHR.panel.ServiceRequestsPanel', {
             }]
         },{
             xtype: 'ldk-querypanel',
-            title: 'My Requests',
-            style: 'padding: 5px;',
-            queryConfig:  {
-                schemaName: 'ehr',
-                queryName: 'my_requests'
-            }
-        },{
-            xtype: 'ldk-querypanel',
             title: 'Blood Draw Queue',
             style: 'padding: 5px;',
             queryConfig:  {
                 schemaName: 'study',
-                queryName: 'Blood Draws',
-                viewName: 'Blood Requests',
-                filterArray: [
-                    LABKEY.Filter.create('QCState/Label', 'Completed', LABKEY.Filter.Types.NOT_EQUAL)
+                queryName: 'blood',
+                viewName: 'Requests',
+                removeableFilters: [
+                    LABKEY.Filter.create('requestid/createdby/displayname', LABKEY.Security.currentUser.displayName, LABKEY.Filter.Types.EQUAL),
+                    LABKEY.Filter.create('QCState/Label', 'Request', LABKEY.Filter.Types.STARTS_WITH)
                 ]
             }
         },{
@@ -88,8 +97,22 @@ Ext4.define('EHR.panel.ServiceRequestsPanel', {
             queryConfig:  {
                 schemaName: 'study',
                 queryName: 'Clinpath Runs',
-                filterArray: [
-                    LABKEY.Filter.create('QCState/Label', 'Completed', LABKEY.Filter.Types.NOT_EQUAL)
+                viewName: 'Requests',
+                removeableFilters: [
+                    LABKEY.Filter.create('requestid/createdby/displayname', LABKEY.Security.currentUser.displayName, LABKEY.Filter.Types.EQUAL),
+                    LABKEY.Filter.create('QCState/Label', 'Request', LABKEY.Filter.Types.STARTS_WITH)
+                ]
+            }
+        },{
+            xtype: 'ldk-querypanel',
+            title: 'Procedure Queue',
+            queryConfig:  {
+                schemaName: 'study',
+                queryName: 'encounters',
+                viewName: 'Requests',
+                removeableFilters: [
+                    LABKEY.Filter.create('requestid/createdby/displayname', LABKEY.Security.currentUser.displayName, LABKEY.Filter.Types.EQUAL),
+                    LABKEY.Filter.create('QCState/Label', 'Request', LABKEY.Filter.Types.STARTS_WITH)
                 ]
             }
         }]

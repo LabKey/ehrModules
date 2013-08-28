@@ -11,7 +11,7 @@
     </columns>
     <filters>
         <filter column="EventType" operator="eq" value="Client API Actions"/>
-        <filter column="Key1" operator="neq" value="LabKey Server Backup" />
+        <filter column="Key1" operator="neqornull" value="LabKey Server Backup" />
     </filters>
    <sorts>
        <sort column="Date" descending="true"/>

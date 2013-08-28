@@ -50,7 +50,10 @@ EHR.DataEntryUtils = new function(){
                     }, this);
 
                     if (hasPermission){
-                        grid.store.safeRemove(selections);
+                        Ext4.Msg.confirm('Confirm', 'You are about to permanently delete these records.  It cannot be undone.  Are you sure you want to do this?', function(val){
+                            if (val == 'yes')
+                                grid.store.safeRemove(selections);
+                        }, this);
                     }
                     else {
                         Ext4.Msg.alert('Error', 'You do not have permission to remove these records');
@@ -72,30 +75,24 @@ EHR.DataEntryUtils = new function(){
                 }
             }, config);
         },
-        COPYFROMCLINPATHRUNS: function(config){
+        GUESSPROJECT: function(config){
             return Ext4.Object.merge({
-                text: 'Copy From Above',
-                xtype: 'button',
-                tooltip: 'Click to copy records from the clinpath runs section',
+                text: 'Guess Projects',
+                tooltip: 'Click to automatically set the project on the selected records',
                 handler: function(btn){
-                    var grid = btn.up('grid');
-                    LDK.Assert.assertNotEmpty('Unable to find grid in COPYFROMCLINPATHRUNS button', grid);
-
-                    var panel = grid.up('ehr-dataentrypanel');
-                    LDK.Assert.assertNotEmpty('Unable to find dataEntryPanel in COPYFROMCLINPATHRUNS button', panel);
-
-                    var store = panel.storeCollection.getClientStoreByName('Clinpath Runs');
-                    LDK.Assert.assertNotEmpty('Unable to find clinpath runs store in COPYFROMCLINPATHRUNS button', store);
-
-                    if (store){
-                        Ext4.create('EHR.window.CopyFromRunsWindow', {
-                            targetGrid: grid,
-                            dataset: grid.title,
-                            runsStore: store
-                        }).show();
+                    var grid = btn.up('gridpanel');
+                    var selected = grid.getSelectionModel().getSelection();
+                    if (!selected || !selected.length){
+                        Ext4.Msg.alert('Error', 'No records selected');
+                        return;
                     }
+
+                    Ext4.create('EHR.window.GuessProjectWindow', {
+                        targetGrid: grid,
+                        records: selected
+                    }).show();
                 }
-            });
+            }, config);
         },
         SELECTALL: function(config){
             return Ext4.Object.merge({
@@ -568,96 +565,67 @@ EHR.DataEntryUtils = new function(){
             }
 
             if (!boundRecord)
-                console.log('unable to find bound record');
+                console.log('unable to find bound record: ' + cmp.name);
 
             return boundRecord;
         },
 
-        /**
-         * A utility that will load a EHR form template based on the title and storeId.  These correspond to records in ehr.formtemplates.
-         * @param {string} title The title of the template
-         * @param {string} storeId The storeId associated with the template
-         */
-        loadTemplateByName: function(title, storeId){
-            LABKEY.Query.selectRows({
-                schemaName: 'ehr',
-                queryName: 'formtemplates',
-                filterArray: [
-                    LABKEY.Filter.create('title', title, LABKEY.Filter.Types.EQUAL),
-                    LABKEY.Filter.create('storeId', storeId, LABKEY.Filter.Types.EQUAL)
-                ],
-                success: onLoadTemplate
+        getSnomedStore: function(){
+            if (EHR._snomedStore)
+                return EHR._snomedStore;
+
+            var storeId = ['ehr_lookups', 'snomed', 'code', 'meaning'].join('||');
+
+            EHR._snomedStore = Ext4.StoreMgr.get(storeId) || Ext4.create('LABKEY.ext4.Store', {
+                type: 'labkey-store',
+                schemaName: 'ehr_lookups',
+                queryName: 'snomed_combo_list',
+                columns: 'code,meaning,categories',
+                sort: 'meaning',
+                storeId: storeId,
+                autoLoad: true
             });
 
-            function onLoadTemplate(data){
-                if(!data || !data.rows.length)
-                    return;
-
-                EHR.Utils.loadTemplate(data.rows[0].entityid)
-            }
+            return EHR._snomedStore;
         },
 
-        /**
-         * A utility that will load a EHR form template based on the templateId.  These correspond to records in ehr.formtemplates.
-         * @param {string} templateId The templateId, which is the GUID of the corresponding record in ehr.formtemplates
-         */
-        loadTemplate: function(templateId){
-            if(!templateId)
-                return;
+        getProceduresStore: function(){
+            if (EHR._proceduresStore)
+                return EHR._proceduresStore;
 
-            LABKEY.Query.selectRows({
-                schemaName: 'ehr',
-                queryName: 'formtemplaterecords',
-                filterArray: [LABKEY.Filter.create('templateId', templateId, LABKEY.Filter.Types.EQUAL)],
-                sort: '-rowid',
-                success: onLoadTemplate,
-                scope: this
+            var storeId = ['ehr_lookups', 'procedures', 'rowid', 'name'].join('||');
+
+            EHR._proceduresStore = Ext4.StoreMgr.get(storeId) || Ext4.create('LABKEY.ext4.Store', {
+                type: 'labkey-store',
+                schemaName: 'ehr_lookups',
+                queryName: 'procedures',
+                columns: 'rowid,name,active',
+                sort: 'name',
+                storeId: storeId,
+                autoLoad: true
             });
 
-            Ext4.Msg.wait("Loading Template...");
+            return EHR._proceduresStore;
+        },
 
-            function onLoadTemplate(data){
-                if(!data || !data.rows.length){
-                    Ext.Msg.hide();
-                    return;
-                }
+        getProjectStore: function(){
+            if (EHR._projectStore)
+                return EHR._projectStore;
 
-                var toAdd = {};
+            var storeId = ['ehr', 'project', 'project', 'displayName'].join('||');
 
-                Ext4.each(data.rows, function(row){
-                    var data = Ext4.decode(row.json);
-                    var store = Ext.StoreMgr.get(row.storeid);
+            EHR._projectStore = Ext4.StoreMgr.get(storeId) || new LABKEY.ext4.Store({
+                type: 'labkey-store',
+                schemaName: 'ehr',
+                queryName: 'project',
+                columns: 'project,displayName,name,protocol,protocol/displayName,title,investigatorId/lastName',
+                //filterArray: [LABKEY.Filter.create('enddate', null, LABKEY.Filter.Types.ISBLANK)],
+                sort: 'displayName',
+                storeId: storeId,
+                autoLoad: true
+            });
 
-                    //verify store exists
-                    if(!store){
-                        Ext.StoreMgr.on('add', function(){
-                            onLoadTemplate(data);
-                        }, this, {single: true, delay: 200});
-                        return false;
-                    };
-
-                    //also verify it is loaded
-                    if(!store.fields || !store.fields.length){
-                        store.on('load', function(){
-                            onLoadTemplate(data);
-                        }, this, {single: true, delay: 200});
-                        return false;
-                    };
-
-                    if(!toAdd[store.storeId])
-                        toAdd[store.storeId] = [];
-
-                    toAdd[store.storeId].push(data);
-                });
-
-                for (var i in toAdd){
-                    var store = Ext4.StoreMgr.get(i);
-                    toAdd[i].reverse();
-                    var recs = store.addRecords(toAdd[i])
-                }
-
-                Ext4.Msg.hide();
-            }
+            return EHR._projectStore;
         },
 
         calculateQuantity: function(field, values){

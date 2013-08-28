@@ -35,6 +35,6 @@ public class EHRUserSchema extends SimpleUserSchema
 
     private TableInfo getDataEntryTable(TableInfo schemaTable)
     {
-        return new DataEntryTable(this, schemaTable);
+        return new DataEntryTable(this, schemaTable).init();
     }
 }

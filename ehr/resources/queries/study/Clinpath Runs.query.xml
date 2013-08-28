@@ -7,6 +7,7 @@
                 <importUrl />
                 <updateUrl />
                 <deleteUrl />
+                <titleColumn>serviceRequested</titleColumn>
                 <columns>
                     <column columnName="Id">
 
@@ -27,7 +28,7 @@
                         </fk>
                     </column>
                     <column columnName="type">
-                        <columnTitle>Type</columnTitle>
+                        <columnTitle>Category</columnTitle>
                         <fk>
                           <fkDbSchema>ehr_lookups</fkDbSchema>
                           <fkTable>clinpath_types</fkTable>

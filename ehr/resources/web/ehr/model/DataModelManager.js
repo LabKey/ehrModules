@@ -72,7 +72,6 @@ EHR.model.DataModelManager = new function(){
         registerMetadata: function(source, object){
             if (!metadata[source])
                 metadata[source] = {};
-
             EHR.Utils.rApplyClone(metadata[source], object);
         }
 

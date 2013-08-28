@@ -102,7 +102,6 @@
                 <buttonBarOptions includeStandardButtons="false">
                     <includeScript>ehr.context</includeScript>
                     <includeScript>/ehr/studyButtons.js</includeScript>
-                    <!--<onRender>EHR.DatasetButtons.moreActionsHandler</onRender>-->
                     <item text="Views">
                         <originalText>Views</originalText>
                     </item>
@@ -112,14 +111,8 @@
                     <item text="Print">
                         <originalText>Print</originalText>
                     </item>
-                    <!--<item text="Import Data">-->
-                        <!--<originalText>Import Data</originalText>-->
-                    <!--</item>-->
                     <item text="Page Size">
                         <originalText>Page Size</originalText>
-                    </item>
-                    <item text="Duplicate" requiresSelection="true">
-                        <onClick>EHR.DatasetButtons.duplicateTaskHandler(dataRegion)</onClick>
                     </item>
                 </buttonBarOptions>
             </table>

@@ -65,6 +65,11 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 width: 200
             }
         },
+        chargetype: {
+            columnConfig: {
+                width: 160
+            }
+        },
         date: {
             allowBlank: false,
             nullable: false,
@@ -92,9 +97,25 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             }
         },
         room: {
-            editorConfig: {listWidth: 200}
+            editorConfig: {
+                listWidth: 200
+            }
         },
-        resultNumber: {
+        qualresult: {
+            columnConfig: {
+                width: 150
+            }
+        },
+        result: {
+            columnConfig: {
+                width: 150
+            }
+        },
+        numericresult: {
+            columnConfig: {
+                width: 150
+            }
+        },        resultNumber: {
             hidden: true
         },
         resultInRange: {
@@ -147,7 +168,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             }
         },
         code: {
-            formEditorConfig: {
+            editorConfig: {
                 xtype: 'ehr-snomedcombo'
             },
             columnConfig: {
@@ -156,14 +177,12 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             }
         },
         tissue: {
-            formEditorConfig: {
-                xtype: 'ehr-snomedcombo'
-            },
             editorConfig: {
+                xtype: 'ehr-snomedcombo',
                 defaultSubset: 'Organ/Tissue'
             },
             columnConfig: {
-                width: 150,
+                width: 200,
                 showLink: false
             }
         },
@@ -182,8 +201,12 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 keyColumn: 'name',
                 sort: 'Email'
             },
-            formEditorConfig:{readOnly: true},
-            editorConfig: {listWidth: 200},
+            formEditorConfig:{
+                readOnly: true
+            },
+            editorConfig: {
+                listWidth: 200
+            },
             defaultValue: LABKEY.Security.currentUser.displayName,
             shownInGrid: false
         },
@@ -286,7 +309,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             shownInGrid: true,
             useNull: true,
             lookup: {
-                columns: 'project,displayName,protocol,account'
+                columns: 'project,name,displayName,protocol'
             },
             columnConfig: {
                 width: 120
@@ -300,7 +323,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
         'ehr.tasks': {
             taskid: {
                 getInitialValue: function(v, rec){
-                    v = v || rec.dataEntryPanel.taskId || LABKEY.Utils.generateUUID();
+                    v = v || (rec.dataEntryPanel && rec.dataEntryPanel.taskId ? rec.dataEntryPanel.taskId : LABKEY.Utils.generateUUID());
                     rec.dataEntryPanel.taskId = v;
                     return v;
                 },
@@ -352,7 +375,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
         'ehr.requests': {
             requestid: {
                 getInitialValue: function(v, rec){
-                    v = v || rec.dataEntryPanel.requestId || LABKEY.Utils.generateUUID();
+                    v = v || (rec.dataEntryPanel && rec.dataEntryPanel.requestId ? rec.dataEntryPanel.requestId : LABKEY.Utils.generateUUID());
                     rec.dataEntryPanel.requestId = v;
                     return v;
                 },
@@ -416,39 +439,80 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             species: {allowBlank: false},
             gender: {allowBlank: false}
         },
-        'study.Microbiology Results': {
+        'study.microbiology': {
             tissue: {
-                formEditorConfig: {
-                    xtype: 'ehr-snomedcombo'
-                },
                 editorConfig: {
+                    xtype: 'ehr-snomedcombo',
                     defaultSubset: 'Organ/Tissue'
                 },
                 columnConfig: {
-                    width: 150,
+                    width: 200,
                     showLink: false
                 }
             },
             organism: {
-                formEditorConfig: {
-                    xtype: 'ehr-snomedcombo'
-                },
                 editorConfig: {
+                    xtype: 'ehr-snomedcombo',
                     defaultSubset: 'Organisms'
                 },
                 columnConfig: {
-                    width: 150,
+                    width: 200,
                     showLink: false
                 }
             }
         },
-        'study.Parasitology Results': {
-            organism: {
-                formEditorConfig: {
-                    xtype: 'ehr-snomedcombo'
-                },
+        'study.antibioticSensitivity': {
+            tissue: {
                 editorConfig: {
+                    xtype: 'ehr-snomedcombo',
+                    defaultSubset: 'Organ/Tissue'
+                },
+                columnConfig: {
+                    width: 200,
+                    showLink: false
+                }
+            },
+            microbe: {
+                editorConfig: {
+                    xtype: 'ehr-snomedcombo',
+                    defaultSubset: 'Organisms'
+                },
+                columnConfig: {
+                    width: 200,
+                    showLink: false
+                }
+            },
+            antibiotic: {
+                editorConfig: {
+                    xtype: 'ehr-snomedcombo',
+                    defaultSubset: 'Antibiotics'
+                },
+                columnConfig: {
+                    width: 200,
+                    showLink: false
+                }
+            },
+            project: {
+                hidden: true
+            }
+        },
+        'study.parasitologyResults': {
+            organism: {
+                editorConfig: {
+                    xtype: 'ehr-snomedcombo',
                     defaultSubset: 'Parasitology Results'
+                },
+                columnConfig: {
+                    width: 200
+                }
+            },
+            sampletype: {
+                editorConfig: {
+                    xtype: 'ehr-snomedcombo',
+                    defaultSubset: 'Parasitology Sampletype'
+                },
+                columnConfig: {
+                    width: 200
                 }
             },
             date: {
@@ -460,11 +524,17 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             },
             remark: {
                 shownInGrid: false
+            },
+            result: {
+                compositeField: 'Numeric Result'
+            },
+            units: {
+                compositeField: 'Numeric Result'
             }
         },
         'study.Tissue Samples': {
             diagnosis: {
-                formEditorConfig: {
+                editorConfig: {
                     xtype: 'ehr-snomedcombo'
                 }
             },
@@ -522,7 +592,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
         },
         'study.Histology': {
             diagnosis: {
-                formEditorConfig: {
+                editorConfig: {
                     xtype: 'ehr-snomedcombo'
                 }
             },
@@ -604,21 +674,46 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 }
             }
         },
-        'study.Clinical Encounters': {
+        'study.encounters': {
+            instructions: {
+                columnConfig: {
+                    width: 200
+                }
+            },
             serviceRequested: {
                 xtype: 'displayfield',
                 editorConfig: {
                     height: 100
                 }
             },
+            major: {
+                hidden: true
+            },
             performedby: {
                 allowBlank: false
             },
             type: {
                 allowBlank: false
+            },
+            encounterid: {
+                getInitialValue: function(v, rec){
+                    v = v || (rec.dataEntryPanel && rec.dataEntryPanel.encounterId ? rec.dataEntryPanel.encounterId : LABKEY.Utils.generateUUID());
+                    rec.dataEntryPanel.encounterId = v;
+                    return v;
+                }
+            },
+            parentid: {
+                getInitialValue: function(v, rec){
+                    v = v || (rec.dataEntryPanel && rec.dataEntryPanel.encounterId ? rec.dataEntryPanel.encounterId : LABKEY.Utils.generateUUID());
+                    rec.dataEntryPanel.encounterId = v;
+                    return v;
+                }
             }
         },
-        'study.Clinical Remarks': {
+        'study.clinremarks': {
+            project: {
+                hidden: true
+            },
             performedby: {
                 hidden: false,
                 defaultValue: LABKEY.Security.currentUser.displayName
@@ -649,7 +744,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 height: 150
             }
         },
-        'study.Clinpath Runs': {
+        'study.clinpathRuns': {
             date: {
                 xtype: 'datefield',
                 extFormat: 'Y-m-d'
@@ -714,10 +809,8 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 allowBlank: false
             },
             source: {
-                formEditorConfig: {
-                    xtype: 'ehr-snomedcombo'
-                },
                 editorConfig: {
+                    xtype: 'ehr-snomedcombo',
                     defaultSubset: 'Organisms'
                 }
             },
@@ -728,9 +821,14 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             },
             collectedby: {
                 shownInGrid: false
+            },
+            runid: {
+                getInitialValue: function(v, rec){
+                    return v || LABKEY.Utils.generateUUID();
+                }
             }
         },
-        'study.Treatment Orders': {
+        'study.treatment_order': {
             date: {
                 xtype: 'datefield',
                 extFormat: 'Y-m-d',
@@ -830,7 +928,9 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                     width: 120
                 }
             },
-            route: {shownInGrid: false},
+            route: {
+                shownInGrid: true
+            },
             frequency: {
                 allowBlank: false,
                 lookup: {
@@ -892,7 +992,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 extFormat: 'Y-m-d'
             }
         },
-        'study.Misc Tests': {
+        'study.miscTests': {
             result: {
                 compositeField: 'Numeric Result'
             },
@@ -908,22 +1008,23 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 }
             }
         },
-        'study.Serology Results': {
+        'study.serology': {
             definitive: {
                 hidden: true
             },
             category: {
                 hidden: true
             },
+            qualifier: {
+                hidden: true
+            },
             agent: {
-                formEditorConfig: {
-                    xtype: 'ehr-snomedcombo'
-                },
                 editorConfig: {
-                    defaultSubset: 'Organisms'
+                    xtype: 'ehr-snomedcombo',
+                    defaultSubset: 'Agents'
                 },
                 columnConfig: {
-                    width: 150,
+                    width: 200,
                     showLink: false
                 }
             },
@@ -934,7 +1035,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 compositeField: 'Numeric Result'
             }
         },
-        'study.Chemistry Results': {
+        'study.chemistryResults': {
             category: {
                 hidden: true
             },
@@ -992,7 +1093,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 shownInGrid: false
             }
         },
-        'study.Hematology Results': {
+        'study.hematologyResults': {
             resultOORIndicator: {
                 hidden: true
             },
@@ -1031,7 +1132,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 shownInGrid: false
             }
         },
-        'study.Urinalysis Results': {
+        'study.urinalysisResults': {
             resultOORIndicator: {
                 label: 'Result',
                 shownInGrid: false,
@@ -1047,6 +1148,9 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 }
             },
             result: {
+                compositeField: 'Result'
+            },
+            rangeMax: {
                 compositeField: 'Result',
                 editorConfig: {
                     decimalPrecision: 4
@@ -1074,18 +1178,6 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                     }
                 }
             },
-            date: {
-                xtype: 'datefield',
-                extFormat: 'Y-m-d'
-            },
-            method: {
-                shownInGrid: false
-            },
-            remark: {
-                shownInGrid: false
-            }
-        },
-        'study.Virology Results': {
             date: {
                 xtype: 'datefield',
                 extFormat: 'Y-m-d'
@@ -1170,11 +1262,17 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             estimated: {shownInGrid: false},
             conception: {shownInGrid: false}
         },
-        'study.Blood Draws' : {
+        'study.blood' : {
             billedby: {shownInGrid: false},
             remark: {shownInGrid: false},
             project: {allowBlank: false},
-            requestor: {shownInGrid: false, hidden: true, formEditorConfig:{readOnly: true}},
+            requestor: {
+                shownInGrid: false,
+                hidden: true,
+                formEditorConfig:{
+                    readOnly: true
+                }
+            },
             performedby: {shownInGrid: true},
             instructions: {
                 shownInGrid: true,
@@ -1211,7 +1309,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                     columns: 'type,volume,color'
                 },
                 editorConfig: {
-//                    plugins: ['ehr-usereditablecombo', 'combo-autowidth'],
+                    plugins: ['ehr-usereditablecombo'],
                     listConfig: {
                         innerTpl: '{[(values.type) + (values.color ? " (" + values.color + ")" : "")]}',
                         getInnerTpl: function(){
@@ -1229,8 +1327,6 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                                 var meta = record.store.model.prototype.fields.get('tube_vol');
                                 var storeId = LABKEY.ext.Ext4Helper.getLookupStoreId(meta);
                                 var store = Ext4.StoreMgr.get(storeId);
-                                LDK.Assert.assertNotEmpty('Unable to find store with Id: ' + storeId, store);
-
                                 if (store){
                                     store.filterArray = [LABKEY.Filter.create('tube_types', rec.get('type'), LABKEY.Filter.Types.CONTAINS)];
                                     store.load();
@@ -1279,10 +1375,6 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             },
             tube_vol: {
                 shownInGrid: true,
-                forceSelection: false,
-                editorConfig: {
-                    plugins: ['ehr-usereditablecombo']
-                },
                 includeNullRecord: false,
                 lookup: {
                     schemaName: 'ehr_lookups',
@@ -1299,7 +1391,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 }
             }
         },
-        'study.Drug Administration': {
+        'study.drug': {
             enddate: {
                 shownInGrid: false,
                 hidden: false,
@@ -1393,7 +1485,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             },
             vol_units: {
                 compositeField: 'Volume',
-                header: 'Units',
+                header: 'Vol Units',
                 editorConfig: {
                     plugins: ['ehr-usereditablecombo']
                 }
@@ -1422,7 +1514,8 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 allowBlank: false
             },
             project: {
-                allowBlank: false
+                //TODO: revisit
+                allowBlank: true
             },
             restraint: {
                 shownInGrid: false
@@ -1437,7 +1530,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
         'study.Notes': {
 
         },
-        'study.Problem List': {
+        'study.problem': {
             date: {
                 xtype: 'datefield',
                 extFormat: 'Y-m-d'
@@ -1501,7 +1594,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 extFormat: 'Y-m-d'
             }
         },
-        'study.Weight': {
+        'study.weight': {
             project: {
                 hidden: true
             },

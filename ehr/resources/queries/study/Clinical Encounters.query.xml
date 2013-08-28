@@ -1,7 +1,7 @@
     <query xmlns="http://labkey.org/data/xml/query">
     <metadata>
         <tables xmlns="http://labkey.org/data/xml">
-            <table tableName="encounters" tableDbType="TABLE">
+            <table tableName="encounters" tableDbType="TABLE" useColumnOrder="true">
                 <tableUrl>/ehr/encounterDetails.view?objectid=${objectid}&amp;formtype=${taskid/formtype}&amp;taskid=${taskid}</tableUrl>
                 <!--<insertUrl>/ehr/manageRecord.view?schemaName=study&amp;queryName=Clinical Encounters&amp;keyField=lsid&amp;</insertUrl>-->
                 <!--<updateUrl>/ehr/manageRecord.view?schemaName=study&amp;queryName=Clinical Encounters&amp;keyField=lsid&amp;key=${lsid}</updateUrl>-->
@@ -10,12 +10,42 @@
                 <updateUrl />
                 <deleteUrl />
                 <columns>
+                    <column columnName="Id">
+
+                    </column>
+                    <column columnName="date">
+                        <columnTitle>Date</columnTitle>
+                        <formatString>yyyy-MM-dd HH:mm</formatString>
+                    </column>
+                    <column columnName="enddate">
+                        <isHidden>false</isHidden>
+                        <formatString>yyyy-MM-dd HH:mm</formatString>
+                    </column>
+                    <column columnName="project">
+
+                    </column>
                     <column columnName="type">
                         <columnTitle>Type</columnTitle>
                         <fk>
                             <fkDbSchema>ehr_lookups</fkDbSchema>
                             <fkTable>encounter_types</fkTable>
                             <fkColumnName>value</fkColumnName>
+                        </fk>
+                    </column>
+                    <column columnName="chargetype">
+                        <columnTitle>Charge Type</columnTitle>
+                        <fk>
+                            <fkDbSchema>ehr_lookups</fkDbSchema>
+                            <fkTable>procedureChargeType</fkTable>
+                            <fkColumnName>value</fkColumnName>
+                        </fk>
+                    </column>
+                    <column columnName="procedureid">
+                        <columnTitle>Procedure</columnTitle>
+                        <fk>
+                            <fkDbSchema>ehr_lookups</fkDbSchema>
+                            <fkTable>procedures</fkTable>
+                            <fkColumnName>rowid</fkColumnName>
                         </fk>
                     </column>
                     <column columnName="major">
@@ -29,16 +59,12 @@
                     <column columnName="serviceRequested">
                         <columnTitle>Service Requested</columnTitle>
                     </column>
+                    <column columnName="instructions">
+                        <columnTitle>Special Instructions</columnTitle>
+                        <inputType>textarea</inputType>
+                    </column>
                     <column columnName="title">
                         <columnTitle>Title</columnTitle>
-                    </column>
-                    <column columnName="date">
-                        <columnTitle>Date</columnTitle>
-                        <formatString>yyyy-MM-dd HH:mm</formatString>
-                    </column>
-                    <column columnName="enddate">
-                        <isHidden>false</isHidden>
-                        <formatString>yyyy-MM-dd HH:mm</formatString>
                     </column>
                     <column columnName="restraint">
                         <columnTitle>Restraint</columnTitle>
@@ -59,17 +85,6 @@
                     <column columnName="daterequested">
                         <columnTitle>Date Requested</columnTitle>
                         <isHidden>true</isHidden>
-                    </column>
-                    <column columnName="chargetype">
-                        <columnTitle>Charge Type</columnTitle>
-                        <fk>
-                            <fkDbSchema>ehr_lookups</fkDbSchema>
-                            <fkTable>procedureChargeType</fkTable>
-                            <fkColumnName>value</fkColumnName>
-                        </fk>
-                    </column>
-                    <column columnName="procedureid">
-                        <columnTitle>Procedure</columnTitle>
                     </column>
                 </columns>
             </table>

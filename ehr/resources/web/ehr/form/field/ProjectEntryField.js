@@ -22,15 +22,7 @@ Ext4.define('EHR.form.field.ProjectEntryField', {
     includeDefaultProjects: true,
 
     initComponent: function(){
-        this.allProjectStore = new LABKEY.ext4.Store({
-            type: 'labkey-store',
-            schemaName: 'ehr',
-            queryName: 'project',
-            columns: 'project,displayName,protocol,protocol/displayName,title,investigatorId/lastName',
-            filterArray: [LABKEY.Filter.create('enddate', null, LABKEY.Filter.Types.ISBLANK)],
-            sort: 'displayName',
-            autoLoad: true
-        });
+        this.allProjectStore = EHR.DataEntryUtils.getProjectStore();
 
         this.trigger2Cls = Ext4.form.field.ComboBox.prototype.triggerCls;
         this.onTrigger2Click = Ext4.form.field.ComboBox.prototype.onTriggerClick;

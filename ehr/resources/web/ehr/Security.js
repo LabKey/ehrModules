@@ -20,7 +20,7 @@ EHR.Security = new function(){
 
      //A helper to return a map of QCStates and their properties.
     function getQCStateMap(config){
-        if(!config || !config.success){
+        if (!config || !config.success){
             throw "Must provide a success callback"
         }
 
@@ -36,7 +36,7 @@ EHR.Security = new function(){
                 };
 
                 var row;
-                if(data.rows && data.rows.length){
+                if (data.rows && data.rows.length){
                     for (var i=0;i<data.rows.length;i++){
                         row = data.rows[i];
 
@@ -77,9 +77,9 @@ EHR.Security = new function(){
             var schemaName = 'study';
 
             //if already loaded, we reuse it
-            if(permissionMap){
+            if (permissionMap){
                 //console.log('reusing existing permission map')
-                if(config.success)
+                if (config.success)
                     config.success.apply(config.scope || this, []);
 
                 return;
@@ -116,9 +116,9 @@ EHR.Security = new function(){
                     };
                     qcRow.effectivePermissions = {};
 
-                    if(schemaMap.schemas[schemaName] && schemaMap.schemas[schemaName].queries){
+                    if (schemaMap.schemas[schemaName] && schemaMap.schemas[schemaName].queries){
                         var queryCount = 0;
-                        for(var queryName in schemaMap.schemas[schemaName].queries){
+                        for (var queryName in schemaMap.schemas[schemaName].queries){
                             var query = schemaMap.schemas[schemaName].queries[queryName];
                             queryCount++;
                             query.permissionsByQCState = query.permissionsByQCState || {};
@@ -126,19 +126,19 @@ EHR.Security = new function(){
 
                             //iterate over each permission this user has on this query
                             LABKEY.ExtAdapter.each(query.effectivePermissions, function(p){
-                                if(p == qcRow.adminPermissionName){
+                                if (p == qcRow.adminPermissionName){
                                     qcRow.permissionsByQuery.admin.push(queryName);
                                     query.permissionsByQCState[qcState].admin = true;
                                 }
-                                if(p == qcRow.insertPermissionName){
+                                if (p == qcRow.insertPermissionName){
                                     qcRow.permissionsByQuery.insert.push(queryName);
                                     query.permissionsByQCState[qcState].insert = true;
                                 }
-                                if(p == qcRow.updatePermissionName){
+                                if (p == qcRow.updatePermissionName){
                                     qcRow.permissionsByQuery.update.push(queryName);
                                     query.permissionsByQCState[qcState].update = true;
                                 }
-                                if(p == qcRow.deletePermissionName){
+                                if (p == qcRow.deletePermissionName){
                                     qcRow.permissionsByQuery['delete'].push(queryName);
                                     query.permissionsByQCState[qcState]['delete'] = true;
                                 }
@@ -159,7 +159,7 @@ EHR.Security = new function(){
 
                 hasLoaded = true;
 
-                if(config.success)
+                if (config.success)
                     config.success.apply(config.scope || this);
             }
 
@@ -176,16 +176,16 @@ EHR.Security = new function(){
         * all of the queries specified in the queries param
         */
         hasPermission: function(qcStateLabel, permission, queries){
-            if(!qcStateLabel || !permission)
+            if (!qcStateLabel || !permission)
                 throw "Must provide a QC State label and permission name";
 
-            if(!hasLoaded)
+            if (!hasLoaded)
                 throw "EHR.Security.init() has not been called or returned prior to this call";
 
-            if(queries && !LABKEY.ExtAdapter.isArray(queries))
+            if (queries && !LABKEY.ExtAdapter.isArray(queries))
                 queries = [queries];
 
-            if(!queries.length){
+            if (!queries.length){
                 console.log('Must provide an array of query objects');
                 return false;
             }
@@ -194,13 +194,11 @@ EHR.Security = new function(){
             //var schemaName = 'study';
            LABKEY.ExtAdapter.each(queries, function(query){
                 //if this schema isnt present, it's not securable, so we allow anything
-                if(!schemaMap.schemas[query.schemaName])
+                if (!schemaMap.schemas[query.schemaName])
                     return true;
 
-                if(!schemaMap.schemas[query.schemaName].queries[query.queryName] ||
-                   !schemaMap.schemas[query.schemaName].queries[query.queryName].permissionsByQCState[qcStateLabel] ||
-                   !schemaMap.schemas[query.schemaName].queries[query.queryName].permissionsByQCState[qcStateLabel][permission]
-                ){
+               var sm = schemaMap.schemas[query.schemaName].queries[query.queryName];
+                if (!sm || !sm.permissionsByQCState[qcStateLabel] || !sm.permissionsByQCState[qcStateLabel][permission]){
                     result = false;
                 }
             }, this);
@@ -217,10 +215,10 @@ EHR.Security = new function(){
         * @return {Boolean} True/false depending on whether the user has the specified permission for the QCState provides against all of the queries specified in the queries param
         */
         getQueryPermissions: function(schemaName, queryName){
-            if(!hasLoaded)
+            if (!hasLoaded)
                 throw "EHR.Security.init() has not been called or returned prior to this call";
 
-            if(!schemaMap.schemas[schemaName] ||
+            if (!schemaMap.schemas[schemaName] ||
                !schemaMap.schemas[schemaName].queries[queryName] ||
                !schemaMap.schemas[schemaName].queries[queryName].permissionsByQCState
             )
@@ -244,10 +242,10 @@ EHR.Security = new function(){
         * <li>effectivePermissions: similar to permissionsByQuery, except this map reports the effective permissions across all datasets.  The map has the keys: admin, delete, insert and update.  Each pair consists of the permission name and true/false depending on whether the current user has this permission across all datasets.
         */
         getQCStateByLabel: function(label){
-            if(!hasLoaded)
+            if (!hasLoaded)
                 throw "EHR.Security.init() has not been called or returned prior to this call";
 
-            if(!qcMap.label[label]){
+            if (!qcMap.label[label]){
                 console.log('ERROR: QCLabel '+label+' not found');
                 return null;
             }
@@ -260,10 +258,10 @@ EHR.Security = new function(){
         * @return {Boolean} True/false depending on whether EHR.Security has loaded permission information.
         */
         getQCStateByRowId: function(rowid){
-            if(!hasLoaded)
+            if (!hasLoaded)
                 throw "EHR.Security.init() has not been called or returned prior to this call";
 
-            if(!qcMap.rowid[rowid]){
+            if (!qcMap.rowid[rowid]){
                 console.log('ERROR: QC State associated with the rowId '+label+' not found');
                 return null;
             }

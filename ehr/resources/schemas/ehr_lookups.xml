@@ -305,6 +305,9 @@
             <ns:column columnName="priority">
                 <ns:isKeyField>true</ns:isKeyField>
             </ns:column>
+            <ns:column columnName="immediatenotification">
+                <ns:columnTitle>Immediate Notification</ns:columnTitle>
+            </ns:column>
         </ns:columns>
     </ns:table>
     <ns:table tableName="clinpath_tests" tableDbType="TABLE" useColumnOrder="true">
@@ -1225,7 +1228,6 @@
         <ns:columns>
             <ns:column columnName="rowid">
                 <ns:columnTitle>Procedure Id</ns:columnTitle>
-                <ns:isHidden>true</ns:isHidden>
             </ns:column>
             <ns:column columnName="name"/>
             <ns:column columnName="genericName">
@@ -1464,14 +1466,22 @@
                     <ns:fkColumnName>rowid</ns:fkColumnName>
                 </ns:fk>
             </ns:column>
-            <ns:column columnName="volume"/>
-            <ns:column columnName="volume_units"/>
-            <ns:column columnName="dosage"/>
-            <ns:column columnName="dosage_units"/>
             <ns:column columnName="concentration"/>
-            <ns:column columnName="concentration_units"/>
+            <ns:column columnName="conc_units">
+                <ns:columnTitle>Concentration Units</ns:columnTitle>
+            </ns:column>
+            <ns:column columnName="dosage"/>
+            <ns:column columnName="dosage_units">
+                <ns:columnTitle>Dosage Units</ns:columnTitle>
+            </ns:column>
+            <ns:column columnName="volume"/>
+            <ns:column columnName="vol_units">
+                <ns:columnTitle>Volume Units</ns:columnTitle>
+            </ns:column>
             <ns:column columnName="amount"/>
-            <ns:column columnName="amount_units"/>
+            <ns:column columnName="amount_units">
+                <ns:columnTitle>Amount Units</ns:columnTitle>
+            </ns:column>
         </ns:columns>
     </ns:table>
     <ns:table tableName="procedure_default_charges" tableDbType="TABLE" useColumnOrder="true">
@@ -1729,6 +1739,12 @@
             </ns:column>
             <ns:column columnName="sortorder">
                 <ns:columnTitle>Sort Order</ns:columnTitle>
+            </ns:column>
+            <ns:column columnName="method">
+                <ns:columnTitle>Method</ns:columnTitle>
+            </ns:column>
+            <ns:column columnName="testfieldname">
+                <ns:columnTitle>Test Field Name</ns:columnTitle>
             </ns:column>
         </ns:columns>
     </ns:table>

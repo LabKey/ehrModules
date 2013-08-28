@@ -6,12 +6,12 @@ Ext4.define('EHR.window.ChangeRequestStatusWindow', {
 
     fieldWidth: 360,
     allowBlankQCState: false,
+    title: 'Change Request Status',
 
     initComponent: function(){
         LABKEY.ExtAdapter.apply(this, {
             modal: true,
             closeAction: 'destroy',
-            title: 'Change Request Status',
             width: 400,
             autoHeight: true,
             items: [{
@@ -98,11 +98,12 @@ Ext4.define('EHR.window.ChangeRequestStatusWindow', {
         }
 
         this.records = [];
+        var errorMsgs = [];
         var hasError = false;
         Ext4.Array.forEach(data.rows, function(json){
             var r = new LDK.SelectRowsRow(json);
 
-            if (!r.getValue('qcstate/metadata/isRequest')){
+            if (this.hasError(r, errorMsgs)){
                 hasError = true;
             }
             else {
@@ -113,7 +114,8 @@ Ext4.define('EHR.window.ChangeRequestStatusWindow', {
         this.down('#submitBtn').setDisabled(false);
 
         if (hasError){
-            Ext4.Msg.alert('Error', 'One or more records is not a request and will be skipped');
+            var errorMsg = Ext4.Array.unique(errorMsgs).join('<br>');
+            Ext4.Msg.alert('Error', errorMsg);
         }
 
         this.down('#theForm').insert(0, {
@@ -122,6 +124,20 @@ Ext4.define('EHR.window.ChangeRequestStatusWindow', {
             tag: 'div'
         });
 
+    },
+
+    hasError: function(row, errorMsgs){
+        if (!row.getValue('qcstate/metadata/isRequest')){
+            errorMsgs.push('One or more records is not a request and will be skipped');
+            return true;
+        }
+
+        if (row.getValue('taskid')){
+            errorMsgs.push('One or more records is already part of a task and will be skipped');
+            return true;
+        }
+
+        return false;
     },
 
     onSubmit: function(){
@@ -158,11 +174,12 @@ Ext4.define('EHR.window.ChangeRequestStatusWindow', {
 
         var toSave = [];
         Ext4.each(this.records, function(r){
-            if (!this.allowBlankQCState)
-            //no need to update
-            if (!Ext4.isEmpty(values.qcstate) && r.getValue('qcstate') == values.qcstate){
-                console.log('skipping row');
-                return;
+            if (!this.allowBlankQCState){
+                //no need to update
+                if (!Ext4.isEmpty(values.qcstate) && r.getValue('qcstate') == values.qcstate){
+                    console.log('skipping row');
+                    return;
+                }
             }
 
             toSave.push(Ext4.apply({

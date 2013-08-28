@@ -66,15 +66,18 @@
             </ns:column>
             <ns:column columnName="schemaName">
                 <ns:columnTitle>Schema Name</ns:columnTitle>
+                <ns:isHidden>true</ns:isHidden>
                 <ns:nullable>true</ns:nullable>
             </ns:column>
             <ns:column columnName="queryName">
                 <ns:columnTitle>Query Name</ns:columnTitle>
+                <ns:isHidden>true</ns:isHidden>
                 <ns:nullable>true</ns:nullable>
             </ns:column>
             <ns:column columnName="recordid">
                 <ns:columnTitle>Record Id</ns:columnTitle>
                 <ns:nullable>true</ns:nullable>
+                <ns:isHidden>true</ns:isHidden>
             </ns:column>
             <ns:column columnName="set_number">
                 <ns:columnTitle>Set Number</ns:columnTitle>
@@ -100,9 +103,29 @@
             </ns:column>
             <ns:column columnName="caseid">
                 <ns:columnTitle>Case Id</ns:columnTitle>
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:fk>
+                    <ns:fkDbSchema>study</ns:fkDbSchema>
+                    <ns:fkTable>case</ns:fkTable>
+                    <ns:fkColumnName>objectid</ns:fkColumnName>
+                </ns:fk>
             </ns:column>
             <ns:column columnName="parentid">
                 <ns:columnTitle>Encounter Id</ns:columnTitle>
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:fk>
+                    <ns:fkDbSchema>study</ns:fkDbSchema>
+                    <ns:fkTable>encounters</ns:fkTable>
+                    <ns:fkColumnName>objectid</ns:fkColumnName>
+                </ns:fk>
+            </ns:column>
+            <ns:column columnName="taskid">
+                <ns:columnTitle>Task Id</ns:columnTitle>
+                <ns:fk>
+                    <ns:fkDbSchema>ehr</ns:fkDbSchema>
+                    <ns:fkTable>tasks</ns:fkTable>
+                    <ns:fkColumnName>taskid</ns:fkColumnName>
+                </ns:fk>
             </ns:column>
             <ns:column columnName="container">
                 <ns:isHidden>true</ns:isHidden>
@@ -1563,7 +1586,6 @@
         <ns:javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</ns:javaCustomizer>
         <ns:auditLogging>DETAILED</ns:auditLogging>
         <ns:columns>
-            <ns:column columnName="rowid"/>
             <ns:column columnName="Id">
                 <ns:columnTitle>Id</ns:columnTitle>
                 <ns:fk>
@@ -1574,16 +1596,33 @@
             </ns:column>
             <ns:column columnName="userid">
                 <ns:columnTitle>User Id</ns:columnTitle>
+                <ns:fk>
+                    <ns:fkDbSchema>core</ns:fkDbSchema>
+                    <ns:fkTable>users</ns:fkTable>
+                    <ns:fkColumnName>UserId</ns:fkColumnName>
+                </ns:fk>
             </ns:column>
             <ns:column columnName="username">
-            <ns:columnTitle>User Id</ns:columnTitle>
-                </ns:column>
-            <ns:column columnName="role"/>
+                <ns:columnTitle>User Id</ns:columnTitle>
+                <ns:isHidden>true</ns:isHidden>
+            </ns:column>
+            <ns:column columnName="role">
+                <ns:fk>
+                    <ns:fkDbSchema>ehr_lookups</ns:fkDbSchema>
+                    <ns:fkTable>encounter_roles</ns:fkTable>
+                    <ns:fkColumnName>value</ns:fkColumnName>
+                </ns:fk>
+            </ns:column>
             <ns:column columnName="parentid">
                 <ns:columnTitle>Encounter Id</ns:columnTitle>
             </ns:column>
+            <ns:column columnName="taskid">
+                <ns:columnTitle>Task Id</ns:columnTitle>
+            </ns:column>
             <ns:column columnName="comment"/>
-            <ns:column columnName="objectid"/>
+            <ns:column columnName="objectid">
+                <ns:isKeyField>true</ns:isKeyField>
+            </ns:column>
             <ns:column columnName="container"/>
             <ns:column columnName="createdby"/>
             <ns:column columnName="created"/>
@@ -1722,6 +1761,71 @@
             <ns:column columnName="created"/>
             <ns:column columnName="modifiedby"/>
             <ns:column columnName="modified"/>
+        </ns:columns>
+    </ns:table>
+    <ns:table tableName="protocolexemptions" tableDbType="TABLE" useColumnOrder="true">
+        <ns:tableTitle>Protocol Exemptions</ns:tableTitle>
+        <ns:javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</ns:javaCustomizer>
+        <ns:auditLogging>DETAILED</ns:auditLogging>
+        <ns:importUrl></ns:importUrl>
+        <ns:insertUrl></ns:insertUrl>
+        <ns:updateUrl></ns:updateUrl>
+        <ns:deleteUrl></ns:deleteUrl>
+        <ns:pkColumnName>rowid</ns:pkColumnName>
+        <ns:columns>
+            <ns:column columnName="rowid">
+                <ns:isHidden>true</ns:isHidden>
+                <ns:shownInInsertView>false</ns:shownInInsertView>
+                <ns:shownInUpdateView>false</ns:shownInUpdateView>
+                <ns:shownInDetailsView>false</ns:shownInDetailsView>
+                <ns:isAutoInc>true</ns:isAutoInc>
+                <ns:isKeyField>true</ns:isKeyField>
+            </ns:column>
+            <ns:column columnName="protocol">
+                <ns:nullable>false</ns:nullable>
+            </ns:column>
+            <ns:column columnName="project">
+
+            </ns:column>
+            <ns:column columnName="exemption">
+                <ns:columnTitle>Exemption</ns:columnTitle>
+                <ns:nullable>true</ns:nullable>
+            </ns:column>
+            <ns:column columnName="startdate">
+                <ns:columnTitle>Start Date</ns:columnTitle>
+                <ns:nullable>true</ns:nullable>
+            </ns:column>
+            <ns:column columnName="enddate">
+                <ns:columnTitle>End Date</ns:columnTitle>
+                <ns:nullable>true</ns:nullable>
+            </ns:column>
+            <ns:column columnName="remark">
+                <ns:columnTitle>Remark</ns:columnTitle>
+                <ns:inputType>textarea</ns:inputType>
+            </ns:column>
+            <ns:column columnName="container">
+                <ns:isHidden>true</ns:isHidden>
+            </ns:column>
+            <ns:column columnName="createdby">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:nullable>true</ns:nullable>
+                <ns:isHidden>true</ns:isHidden>
+            </ns:column>
+            <ns:column columnName="created">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:nullable>true</ns:nullable>
+                <ns:isHidden>true</ns:isHidden>
+            </ns:column>
+            <ns:column columnName="modifiedby">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:nullable>true</ns:nullable>
+                <ns:isHidden>true</ns:isHidden>
+            </ns:column>
+            <ns:column columnName="modified">
+                <ns:isUserEditable>false</ns:isUserEditable>
+                <ns:nullable>true</ns:nullable>
+                <ns:isHidden>true</ns:isHidden>
+            </ns:column>
         </ns:columns>
     </ns:table>
 </ns:tables>

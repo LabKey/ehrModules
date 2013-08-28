@@ -78,26 +78,20 @@ function onUpsert(helper, scriptErrors, row, oldRow){
         if (row.date && !row.requestdate)
             row.requestdate = row.date;
 
-        if (!row.quantity && row.num_tubes && row.tube_vol)
+        if (!row.quantity && row.num_tubes && row.tube_vol){
             row.quantity = row.num_tubes * row.tube_vol;
+        }
 
         if (row.additionalServices) {
             if (row.tube_type || row.tube_vol){
                 var tubeType = row.tube_type || null;
-                var tubeVol = row.tube_vol || null;
-                var msgs = helper.getJavaHelper().validateBloodAdditionalServices(row.additionalServices, tubeType, tubeVol);
+                var quantity = row.quantity || 0;
+                var msgs = helper.getJavaHelper().validateBloodAdditionalServices(row.additionalServices, tubeType, quantity);
                 if (msgs && msgs.length){
                     LABKEY.ExtAdapter.each(msgs, function(msg){
                         EHR.Server.Utils.addError(scriptErrors, 'additionalServices', msg, 'WARN');
                     }, this);
                 }
-
-            }
-
-            //TODO: either make data driven or move to WNPRC module
-            //We do not permit requests of 6mL in EDTA with CBC
-            if (row.tube_type == 'EDTA' && row.tube_vol === 6 && row.additionalServices.indexOf('CBC') >= 0) {
-                EHR.Server.Utils.addError(scriptErrors, 'tube_type', 'May not request draw of 6mL in EDTA with CBC', 'ERROR');
             }
         }
 

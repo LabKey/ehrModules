@@ -58,7 +58,7 @@ Ext4.define('EHR.panel.SnapshotPanel', {
                     items: [{
                         xtype: 'displayfield',
                         fieldLabel: 'Location',
-                        width: 420,
+                        //width: 420,
                         itemId: 'location'
                     },{
                         xtype: 'displayfield',
@@ -179,6 +179,14 @@ Ext4.define('EHR.panel.SnapshotPanel', {
                             xtype: 'displayfield',
                             fieldLabel: 'Parent Information',
                             itemId: 'parents'
+                        },{
+                            xtype: 'displayfield',
+                            fieldLabel: 'Pairing Type',
+                            itemId: 'pairingType'
+                        },{
+                            xtype: 'displayfield',
+                            fieldLabel: 'Cagemates',
+                            itemId: 'cagemates'
                         }]
                     }]
                 }]
@@ -201,15 +209,16 @@ Ext4.define('EHR.panel.SnapshotPanel', {
     },
 
     loadData: function(){
-        EHR.DemographicsCache.getDemographics(this.subjectId, this.onLoad, this);
+        EHR.DemographicsCache.getDemographics([this.subjectId], this.onLoad, this);
     },
 
-    onLoad: function(id, results){
+    onLoad: function(ids, resultMap){
         Ext4.suspendLayouts();
 
+        this.getForm().reset();
+        var id = ids[0];
+        var results = resultMap[id];
         if (!results){
-            this.getForm().reset();
-
             if (id){
                 this.safeAppend('#animalId', id);
                 this.safeAppend('#calculated_status', '<span style="background-color:yellow">Unknown</span>');
@@ -217,11 +226,12 @@ Ext4.define('EHR.panel.SnapshotPanel', {
 
             return;
         }
-        this.appendDemographicsResults(results);
+
+        this.appendDemographicsResults(results, id);
         this.appendWeightResults(results.getRecentWeights());
 
         if (results.getCagemates())
-            this.appendRoommateResults(results.getCagemates());
+            this.appendRoommateResults(results.getCagemates(), id);
 
         this.appendProblemList(results.getActiveProblems());
         this.appendAssignments(results.getActiveAssignments());
@@ -271,14 +281,15 @@ Ext4.define('EHR.panel.SnapshotPanel', {
         }
     },
 
-    appendDemographicsResults: function(row){
+    appendDemographicsResults: function(row, id){
         if (!row){
             console.log('Id not found');
             return;
         }
 
-        if (!Ext4.isEmpty(row.getId())){
-            this.safeAppend('#animalId', row.getId());
+        var animalId = row.getId() || id;
+        if (!Ext4.isEmpty(animalId)){
+            this.safeAppend('#animalId', animalId);
         }
 
         var status = row.getCalculatedStatus() || 'Unknown';
@@ -306,7 +317,7 @@ Ext4.define('EHR.panel.SnapshotPanel', {
             if (!Ext4.isEmpty(row.getCurrentRoom()))
                 location = row.getCurrentRoom();
             if (!Ext4.isEmpty(row.getCurrentCage()))
-                location += ' / ' + row.getCurrentRoom();
+                location += ' / ' + row.getCurrentCage();
 
             if (location){
                 if (this.showLocationDuration && housingRow.date){
@@ -388,13 +399,28 @@ Ext4.define('EHR.panel.SnapshotPanel', {
         }
     },
 
-    appendRoommateResults: function(results){
+    appendRoommateResults: function(results, id){
         if (results && results.length){
             var row = results[0];
-            this.safeAppend('#roommates', row.total);
+            this.safeAppend('#pairingType', row.category);
+
+            if (row.animals){
+                var animals = row.animals.split(',');
+                animals = animals.remove(id);
+
+                if (animals.length > 3){
+                    this.safeAppend('#cagemates', animals.length - 1 + ' animals');
+                }
+                else if (animals.length == 0){
+                    this.safeAppend('#cagemates', 'None');
+                }
+                else {
+                    this.safeAppend('#cagemates', animals.join(', '));
+                }
+            }
         }
         else {
-            this.safeAppend('#roommates', 0);
+            this.safeAppend('#cagemates', 0);
         }
     },
 
