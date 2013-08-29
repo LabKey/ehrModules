@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2013 LabKey Corporation
+ *
+ * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
+ */
 --this might have been created by EHRManager
 SELECT core.fn_dropifexists('encounter_participants', 'ehr', 'INDEX', 'encounter_participants_objectid');
 SELECT core.fn_dropifexists('encounter_participants', 'ehr', 'CONSTRAINT', 'pk_encounter_participants');
