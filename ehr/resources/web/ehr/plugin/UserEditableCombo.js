@@ -23,6 +23,7 @@ Ext4.define('EHR.plugin.UserEditableCombo', {
                     val = selectedRecords[0].get(this.displayField);
 
                 if(val == 'Other'){
+                    this.getPicker().getSelectionModel().deselectAll(true); //note: we need to clear selection in case other is clicked twice in a row
                     this.userEditablePlugin.onClickOther();
                     this.collapse();
                 }
@@ -117,16 +118,68 @@ Ext4.define('EHR.plugin.UserEditableCombo', {
     },
 
     onClickOther: function(){
-        Ext4.MessageBox.prompt('Enter Value', 'Enter value:', function(btn, val){
-            this.addNewValue(val);
+        this.windowIsVisible = true;
+        this.addEditorListeners();
+
+        this.window = this.createWindow();
+
+        if (this.window){
+            this.mon(this.window, 'close', function(win){
+                this.windowIsVisible = false;
+                this.window = null;
+                this.endEdit();
+            }, this, {single: true});
+        }
+    },
+
+    endEdit: function(){
+        var editor = this.combo.up('editor');
+        if (editor){
+            editor.completeEdit();
+        }
+        else {
+            this.combo.fireEvent('blur', this.combo);
+        }
+    },
+
+    createWindow: function(){
+        return Ext4.MessageBox.prompt('Enter Value', 'Enter value:', function(btn, val){
+            this.onWindowClose(val);
         }, this);
+    },
+
+    onWindowClose: function(val){
+        this.windowIsVisible = false;
+        this.window = null;
+        this.addNewValue(val);
+
+        this.endEdit();
+    },
+
+    addEditorListeners: function(){
+        var editor = this.combo.up('editor');
+        if (editor){
+            var plugin = this;
+            Ext4.override(editor, {
+                completeEdit : function(remainVisible) {
+                    if (plugin && plugin.isWindowIsVisible()){
+                        return false;
+                    }
+
+                    this.callOverridden(arguments);
+                }
+            });
+        }
+    },
+
+    isWindowIsVisible: function(){
+        return this.windowIsVisible;
     },
 
     addNewValue: function(val){
         var data = {};
 
         if (Ext4.isObject(val)){
-
             data = val;
         }
         else {
@@ -134,9 +187,11 @@ Ext4.define('EHR.plugin.UserEditableCombo', {
             data[this.combo.displayField] = val;
         }
 
+
         this.addRecord(data);
+        var oldVal = this.combo.getValue();
         this.combo.setValue(data[this.combo.valueField]);
-        this.combo.fireEvent('change', this.combo, data[this.combo.valueField], 'Other');
+        this.combo.fireEvent('change', this.combo, data[this.combo.valueField], oldVal);
     },
 
     addRecord: function(data, idx){

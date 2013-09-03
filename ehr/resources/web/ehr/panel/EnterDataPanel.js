@@ -8,7 +8,8 @@ Ext4.define('EHR.panel.EnterDataPanel', {
 
     initComponent: function(){
         LABKEY.ExtAdapter.apply(this, {
-            items: this.getItems()
+            items: this.getItems(),
+            minHeight: 200
         });
 
         this.loadData();
@@ -92,16 +93,16 @@ Ext4.define('EHR.panel.EnterDataPanel', {
                     header: 'Blood Draws',
                     items: [{
                         name: 'Requests for CMU',
-                        url: LABKEY.ActionURL.buildURL('query', 'executeQuery', null, {schemaName: 'study', 'query.queryName': 'Blood Draws', 'query.viewName': 'Requests', 'query.QCState/Label~startswith': 'Request:', 'query.chargetype~eq': 'DCM: CMU'})
+                        url: LABKEY.ActionURL.buildURL('query', 'executeQuery', null, {schemaName: 'study', 'query.queryName': 'Blood Draws', 'query.viewName': 'Requests', 'query.QCState/Label~startswith': 'Request:', 'query.chargetype/value~eq': 'DCM: CMU'})
                     },{
                         name: 'Requests for RFO',
-                        url: LABKEY.ActionURL.buildURL('query', 'executeQuery', null, {schemaName: 'study', 'query.queryName': 'Blood Draws', 'query.viewName': 'Requests', 'query.QCState/Label~startswith': 'Request:', 'query.chargetype~eq': 'DCM: RFO'})
+                        url: LABKEY.ActionURL.buildURL('query', 'executeQuery', null, {schemaName: 'study', 'query.queryName': 'Blood Draws', 'query.viewName': 'Requests', 'query.QCState/Label~startswith': 'Request:', 'query.chargetype/value~eq': 'DCM: RFO'})
                     },{
                         name: 'Requests for Surgery',
-                        url: LABKEY.ActionURL.buildURL('query', 'executeQuery', null, {schemaName: 'study', 'query.queryName': 'Blood Draws', 'query.viewName': 'Requests', 'query.QCState/Label~startswith': 'Request:', 'query.chargetype~eq': 'DCM: Surgery'})
+                        url: LABKEY.ActionURL.buildURL('query', 'executeQuery', null, {schemaName: 'study', 'query.queryName': 'Blood Draws', 'query.viewName': 'Requests', 'query.QCState/Label~startswith': 'Request:', 'query.chargetype/value~eq': 'DCM: Surgery'})
                     },{
                         name: 'Requests for Research Staff',
-                        url: LABKEY.ActionURL.buildURL('query', 'executeQuery', null, {schemaName: 'study', 'query.queryName': 'Blood Draws', 'query.viewName': 'Requests', 'query.QCState/Label~startswith': 'Request:', 'query.chargetype~eq': 'Research Staff'})
+                        url: LABKEY.ActionURL.buildURL('query', 'executeQuery', null, {schemaName: 'study', 'query.queryName': 'Blood Draws', 'query.viewName': 'Requests', 'query.QCState/Label~startswith': 'Request:', 'query.chargetype/value~eq': 'Research Staff'})
                     }]
                 },{
                     header: 'Lab Tests',

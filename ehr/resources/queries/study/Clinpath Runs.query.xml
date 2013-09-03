@@ -27,22 +27,6 @@
                             <fkColumnName>servicename</fkColumnName>
                         </fk>
                     </column>
-                    <column columnName="type">
-                        <columnTitle>Category</columnTitle>
-                        <fk>
-                          <fkDbSchema>ehr_lookups</fkDbSchema>
-                          <fkTable>clinpath_types</fkTable>
-                          <fkColumnName>value</fkColumnName>
-                        </fk>
-                    </column>
-                    <column columnName="chargetype">
-                        <columnTitle>Charge Type</columnTitle>
-                        <fk>
-                            <fkDbSchema>ehr_lookups</fkDbSchema>
-                            <fkTable>labworkChargeType</fkTable>
-                            <fkColumnName>value</fkColumnName>
-                        </fk>
-                    </column>
                     <column columnName="sampletype">
                         <columnTitle>Sample Type</columnTitle>
                             <fk>
@@ -76,6 +60,26 @@
                     </column>
                     <column columnName="method">
                         <columnTitle>Method</columnTitle>
+                    </column>
+                    <column columnName="remark">
+                        <columnTitle>Remark</columnTitle>
+                    </column>
+                    <column columnName="type">
+                        <columnTitle>Category</columnTitle>
+                        <fk>
+                            <fkDbSchema>ehr_lookups</fkDbSchema>
+                            <fkTable>clinpath_types</fkTable>
+                            <fkColumnName>value</fkColumnName>
+                        </fk>
+                    </column>
+                    <column columnName="chargetype">
+                        <columnTitle>Charge Type</columnTitle>
+                        <isHidden>true</isHidden>
+                        <fk>
+                            <fkDbSchema>ehr_lookups</fkDbSchema>
+                            <fkTable>labworkChargeType</fkTable>
+                            <fkColumnName>value</fkColumnName>
+                        </fk>
                     </column>
                     <column columnName="reviewedBy">
                         <columnTitle>Reviewed By</columnTitle>

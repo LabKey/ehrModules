@@ -35,12 +35,7 @@ public class DiscardTaskButton extends SimpleButtonConfigFactory
 
     public boolean isAvailable(TableInfo ti)
     {
-        if (ti.getUserSchema().getName().equalsIgnoreCase("ehr") && ti.getPublicName().equalsIgnoreCase("my_tasks"))
-        {
-            return ti.getUserSchema().getTable("tasks").hasPermission(ti.getUserSchema().getUser(), DeletePermission.class);
-        }
-
-        return false;
+        return super.isAvailable(ti) && ti.getUserSchema().getContainer().hasPermission(ti.getUserSchema().getUser(), DeletePermission.class);
     }
 }
 

@@ -37,6 +37,9 @@ public class CompareWeightsButton extends SimpleButtonConfigFactory
 
     public boolean isAvailable(TableInfo ti)
     {
+        if (!super.isAvailable(ti))
+            return false;
+
         //this only requires read permission, so the weight table would handle this upstream
         if (ti.getUserSchema().getName().equalsIgnoreCase("study") && ti.getPublicName().equalsIgnoreCase("weight"))
             return true;

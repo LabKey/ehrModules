@@ -101,6 +101,7 @@ public class TriggerScriptHelper
     private Map<String, Map<String, Object>> _weightRanges = new HashMap<String, Map<String, Object>>();
     private Map<String, Map<String, Object>> _bloodDrawServices = null;
     private Map<String, Map<String, Object>> _labworkServices = null;
+    private Map<Integer, String> _cachedAccounts = new HashMap<>();
 
     private static final Logger _log = Logger.getLogger(TriggerScriptHelper.class);
 
@@ -368,7 +369,7 @@ public class TriggerScriptHelper
         DemographicsCache.get().uncacheRecords(getContainer(), Arrays.asList(ids));
     }
 
-    public Map<String, Object> validateAssignment(String id, Integer projectId, Date date)
+    public String validateAssignment(String id, Integer projectId, Date date)
     {
         if (id == null || projectId == null || date == null)
             return null;
@@ -388,7 +389,31 @@ public class TriggerScriptHelper
 
         Map<String, Object>[] ret = ts.getMapArray();
         if (ret.length != 1)
+            return "Not assigned to the project on this date";
+
+        Map<String, Object> row = ret[0];
+        if (!row.containsKey("protocol") || row.get("protocol") == null)
+        {
+            return "This project is not associated with a valid protocol";
+        }
+
+        return null;
+    }
+
+    public String getAccountForProject(int projectId)
+    {
+        if (_cachedAccounts.containsKey(projectId))
+            return _cachedAccounts.get(projectId);
+
+        TableInfo ti = getTableInfo("ehr", "project");
+        SimpleFilter filter = new SimpleFilter(FieldKey.fromString("project"), projectId);
+        TableSelector ts = new TableSelector(ti, Collections.singleton("account"), filter, null);
+
+        String[] ret = ts.getArray(String.class);
+        if (ret.length != 1)
             return null;
+
+        _cachedAccounts.put(projectId, ret[0]);
 
         return ret[0];
     }

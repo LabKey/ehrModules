@@ -153,6 +153,9 @@ EHR.ext.StoreCollection = Ext.extend(Ext.util.MixedCollection, {
         if(this.fireEvent('beforecommit', records, commands, extraContext)===false)
             return;
 
+        extraContext = extraContext || {};
+        extraContext.isLegacyFormat = true;
+
         var request = Ext.Ajax.request({
             url : LABKEY.ActionURL.buildURL('query', 'saveRows', this.containerPath),
             method : 'POST',
@@ -161,10 +164,9 @@ EHR.ext.StoreCollection = Ext.extend(Ext.util.MixedCollection, {
             scope: this,
             timeout: this.timeout || 0,
             jsonData : {
-                isLegacyFormat: true,
                 containerPath: this.containerPath,
                 commands: commands,
-                extraContext: extraContext || {}
+                extraContext: extraContext
             },
             headers : {
                 'Content-Type' : 'application/json'

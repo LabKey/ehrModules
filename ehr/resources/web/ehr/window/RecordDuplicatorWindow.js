@@ -78,7 +78,17 @@ Ext4.define('EHR.window.RecordDuplicatorWindow', {
     getCheckboxes: function(){
         var items = [];
         this.targetGrid.store.getFields().each(function(f){
-            if (!f.hidden && f.shownInInsertView && f.allowDuplicateValue!==false){
+            if (f.alwaysDuplicate){
+                items.push({
+                    xtype: 'checkbox',
+                    hidden: true,
+                    dataIndex: f.dataIndex || f.name,
+                    name: f.dataIndex || f.name,
+                    boxLabel: f.fieldLabel || f.caption,
+                    checked: true
+                });
+            }
+            else if (!f.hidden && f.shownInInsertView && f.allowDuplicateValue!==false){
                 items.push({
                     xtype: 'checkbox',
                     dataIndex: f.dataIndex || f.name,

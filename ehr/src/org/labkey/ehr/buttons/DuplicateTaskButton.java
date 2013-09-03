@@ -36,6 +36,9 @@ public class DuplicateTaskButton extends SimpleButtonConfigFactory
 
     public boolean isAvailable(TableInfo ti)
     {
+        if (!super.isAvailable(ti))
+            return false;
+
         if (ti.getUserSchema().getName().equalsIgnoreCase("ehr") && ti.getPublicName().equalsIgnoreCase("tasks"))
         {
             return ti.getUserSchema().getContainer().hasPermission(ti.getUserSchema().getUser(), DeletePermission.class);

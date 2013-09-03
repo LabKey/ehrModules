@@ -326,6 +326,7 @@ public class DefaultEHRCustomizer implements TableCustomizer
                 runId.setFk(new QueryForeignKey(study, "Clinpath Runs", "objectid", ID_COL));
 
             runId.setFacetingBehaviorType(FacetingBehaviorType.ALWAYS_OFF);
+            runId.setUserEditable(false);
         }
 
         ColumnInfo parentId = ti.getColumn("parentId");

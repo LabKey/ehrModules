@@ -7,6 +7,9 @@ EHR.model.DataModelManager.registerMetadata('Surgery', {
     allQueries: {
         performedby: {
             allowBlank: true
+        },
+        chargetype: {
+            allowBlank: false
         }
     },
     byQuery: {

@@ -57,21 +57,25 @@ public class WrappingTableCustomizer implements TableCustomizer
         {
             if (col.getName().equalsIgnoreCase(ID_FIELD) && col.getJdbcType().equals(JdbcType.VARCHAR) && col.getFk() == null)
             {
-                Container studyContainer = EHRService.get().getEHRStudyContainer(ti.getUserSchema().getContainer());
-                if (studyContainer != null)
+                String name = "EHR";
+                if (ti.getColumn(name) == null)
                 {
-                    UserSchema us = QueryService.get().getUserSchema(ti.getUserSchema().getUser(), studyContainer, "study");
-                    if (us != null)
+                    Container studyContainer = EHRService.get().getEHRStudyContainer(ti.getUserSchema().getContainer());
+                    if (studyContainer != null)
                     {
-                        WrappedColumn newCol = new WrappedColumn(col, "EHR");
-                        newCol.setIsUnselectable(true);
-                        newCol.setLabel("EHR");
-                        newCol.setUserEditable(false);
-                        newCol.setFk(new QueryForeignKey(us, "Animal", ID_FIELD, ID_FIELD));
-                        if (ti instanceof AbstractTableInfo)
-                            ((AbstractTableInfo) ti).addColumn(newCol);
+                        UserSchema us = QueryService.get().getUserSchema(ti.getUserSchema().getUser(), studyContainer, "study");
+                        if (us != null)
+                        {
+                            WrappedColumn newCol = new WrappedColumn(col, name);
+                            newCol.setIsUnselectable(true);
+                            newCol.setLabel(name);
+                            newCol.setUserEditable(false);
+                            newCol.setFk(new QueryForeignKey(us, "Animal", ID_FIELD, ID_FIELD));
+                            if (ti instanceof AbstractTableInfo)
+                                ((AbstractTableInfo) ti).addColumn(newCol);
 
-                        break;
+                            break;
+                        }
                     }
                 }
             }

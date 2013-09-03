@@ -124,7 +124,7 @@ public class DataEntryManager
             {
                 fks.add(ci.getFieldKey());
             }
-            else if (ci.isKeyField() || ci.getName().equalsIgnoreCase("objectid"))
+            else if (ci.isKeyField() || ci.getName().equalsIgnoreCase("objectid") || ci.getName().equalsIgnoreCase("runid") || ci.getName().equalsIgnoreCase("parentid") || ci.getName().equalsIgnoreCase("taskid") || ci.getName().equalsIgnoreCase("requestid"))
             {
                 fks.add(ci.getFieldKey());
             }

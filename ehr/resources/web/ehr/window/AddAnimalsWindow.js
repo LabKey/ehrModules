@@ -195,7 +195,13 @@ Ext4.define('EHR.window.AddAnimalsWindow', {
             emptyText: '',
             showOccupiedOnly: true,
             fieldLabel: 'Room(s)',
-            itemId: 'roomField'
+            itemId: 'roomField',
+            listeners: {
+                change: function(field){
+                    var areaField = field.up('panel').down('#areaField');
+                    areaField.reset();
+                }
+            }
         },{
             xtype: 'ehr-cagefield',
             itemId: 'cageField',

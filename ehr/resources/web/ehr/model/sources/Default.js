@@ -62,7 +62,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
         },
         procedureid: {
             columnConfig: {
-                width: 200
+                width: 250
             }
         },
         chargetype: {
@@ -251,14 +251,22 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             }
         },
         parentid: {
+            alwaysDuplicate: true,
             hidden: true,
             lookups: false
         },
         taskid: {
+            //alwaysDuplicate: true,  // should be covered by the form
             lookups: false,
             hidden: true
         },
         requestid: {
+            //alwaysDuplicate: true,  //should be covered by the form
+            lookups: false,
+            hidden: true
+        },
+        runid: {
+            alwaysDuplicate: true,
             lookups: false,
             hidden: true
         },
@@ -750,12 +758,16 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 extFormat: 'Y-m-d'
             },
             collectionMethod : {
-                shownInGrid: false
+                columnConfig: {
+                    width: 160
+                }
             },
             sampleType : {
-                shownInGrid: false,
                 editorConfig: {
                     plugins: ['ehr-usereditablecombo']
+                },
+                columnConfig: {
+                    width: 160
                 }
             },
             condition: {
@@ -779,26 +791,8 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                     width: 250
                 },
                 editorConfig: {
-                    plugins: ['ehr-usereditablecombo'],
-                    listeners: {
-                        select: function(combo, recs){
-                            if (!recs || recs.length != 1)
-                                return;
-
-                            var params = {};
-                            if (recs[0].get('dataset'))
-                                params.type = recs[0].get('dataset');
-
-                            if (recs[0].get('chargetype'))
-                                params.chargetype = recs[0].get('chargetype');
-
-                            if (recs[0].get('sampletype'))
-                                params.sampletype = recs[0].get('sampletype');
-
-                            if (!LABKEY.Utils.isEmptyObj(params))
-                                EHR.DataEntryUtils.setSiblingFields(combo, params);
-                        }
-                    }
+                    anyMatch: true,
+                    plugins: ['ehr-usereditablecombo']
                 },
                 lookup: {
                     sort: 'servicename',
@@ -816,8 +810,10 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             },
             type: {
                 showInGrid: false,
-                updateValueFromServer: true,
-                xtype: 'displayfield'
+                xtype: 'displayfield',
+                columnConfig: {
+                    width: 150
+                }
             },
             collectedby: {
                 shownInGrid: false
@@ -825,6 +821,12 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             runid: {
                 getInitialValue: function(v, rec){
                     return v || LABKEY.Utils.generateUUID();
+                }
+            },
+            instructions: {
+                shownInGrid: true,
+                columnConfig: {
+                    width: 200
                 }
             }
         },
@@ -1006,6 +1008,11 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 editorConfig: {
                     defaultSubset: 'Organ/Tissue'
                 }
+            },
+            testid: {
+                editorConfig: {
+                    plugins: ['ehr-usereditablecombo']
+                }
             }
         },
         'study.serology': {
@@ -1016,7 +1023,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 hidden: true
             },
             qualifier: {
-                hidden: true
+                hidden: false
             },
             agent: {
                 editorConfig: {
@@ -1068,18 +1075,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                     columns: '*'
                 },
                 editorConfig: {
-                    plugins: ['ehr-usereditablecombo'],
-                    listeners: {
-                        select: function(combo, recs){
-                            if (!recs || recs.length != 1)
-                                return;
-
-                            var rec = recs[0];
-                            EHR.DataEntryUtils.setSiblingFields(combo, {
-                                units: rec.get('units')
-                            });                            
-                        }
-                    }
+                    plugins: ['ehr-usereditablecombo']
                 }
             },
             date: {
@@ -1108,17 +1104,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                     columns: '*'
                 },
                 editorConfig: {
-                    plugins: ['ehr-usereditablecombo'],
-                    listeners: {
-                        select: function(combo, recs){
-                            if (!recs || recs.length != 1)
-                                return;
-
-                            EHR.DataEntryUtils.setSiblingFields(combo, {
-                                units: recs[0].get('units')                            
-                            });
-                        }
-                    }
+                    plugins: ['ehr-usereditablecombo']
                 }
             },
             date: {
@@ -1164,18 +1150,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                     columns: '*'
                 },
                 editorConfig: {
-                    plugins: ['ehr-usereditablecombo'],
-                    listeners: {
-                        select: function(combo, recs){
-                            if (!recs || recs.length != 1)
-                                return;
-
-                            var rec = recs[0];
-                            EHR.DataEntryUtils.setSiblingFields(combo, {
-                                units: rec.get('units')
-                            });                            
-                        }
-                    }
+                    plugins: ['ehr-usereditablecombo']
                 }
             },
             date: {
@@ -1187,6 +1162,13 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             },
             remark: {
                 shownInGrid: false
+            },
+            qualresult: {
+                xtype: 'ehr-urinalysisresultfield',
+                lookup: {
+                    columns: 'rowid,value,description,sort_order',
+                    sort: 'sort_order'
+                }
             }
         },
         'study.Arrival': {
@@ -1263,9 +1245,18 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             conception: {shownInGrid: false}
         },
         'study.blood' : {
-            billedby: {shownInGrid: false},
-            remark: {shownInGrid: false},
-            project: {allowBlank: false},
+            billedby: {
+                shownInGrid: false
+            },
+            chargetype: {
+                allowBlank: false
+            },
+            remark: {
+                shownInGrid: false
+            },
+            project: {
+                allowBlank: false
+            },
             requestor: {
                 shownInGrid: false,
                 hidden: true,
@@ -1273,7 +1264,9 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                     readOnly: true
                 }
             },
-            performedby: {shownInGrid: true},
+            performedby: {
+                shownInGrid: true
+            },
             instructions: {
                 shownInGrid: true,
                 columnConfig: {
@@ -1619,16 +1612,16 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 }
             }
         },
-        'study.Pairings': {
+        'study.pairings': {
             pairingtype: {
                 columnConfig: {
-                    width: 125,
+                    width: 145,
                     showLink: false
                 }
             },
-            pairingoutcome: {
+            eventtype: {
                 columnConfig: {
-                    width: 150,
+                    width: 160,
                     showLink: false
                 }
             },
@@ -1638,25 +1631,35 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                     showLink: false
                 }
             },
-            room1: {
+            housingtype: {
+                columnConfig: {
+                    width: 160,
+                    showLink: false
+                }
+            },
+            observation: {
+                columnConfig: {
+                    width: 160,
+                    showLink: false
+                }
+            },
+            outcome: {
+                columnConfig: {
+                    width: 160,
+                    showLink: false
+                }
+            },
+            room: {
                 xtype: 'ehr-roomentryfield',
                 editorConfig: {
                     idFieldIndex: 'Id',
-                    cageFieldIndex: 'cage1'
+                    cageFieldIndex: 'cage'
+                },
+                columnConfig: {
+                    width: 160,
+                    showLink: false
                 }
-            },
-            room2: {
-                xtype: 'ehr-roomentryfield',
-                editorConfig: {
-                    idFieldIndex: 'Id2',
-                    cageFieldIndex: 'cage2'
-                }
-            },
-            Id2: {
-                allowBlank: false
-                //xtype: 'ehr-roomentryfield'
             }
-
         }
     }
 });

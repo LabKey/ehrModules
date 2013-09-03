@@ -54,7 +54,7 @@ Ext4.onReady(function () {
 
                 if(EHR.Security.hasPermission('Completed', 'admin', {schemaName: 'study', queryName: item.queryName})){
                     cfg.items.push({
-                        xtype: 'labkey-linkbutton',
+                        xtype: 'ldk-linkbutton',
                         tooltip: item.searchTooltip || 'Click to update records',
                         href: LABKEY.ActionURL.buildURL('ldk', 'updateQuery', null, {schemaName: 'study', 'query.queryName': item.queryName, 'keyField': 'lsid'}),
                         text: 'Update Records'

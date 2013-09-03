@@ -430,7 +430,7 @@ EHR.DataEntryUtils = new function(){
          * This button will convert the QCState on records to 'Request: Approved' and submit.  Not currently used in the EHR, because requests are better managed through the tabbed UI on the enterData page.
          */
         APPROVE: {
-            text: 'Approve Request',
+            text: 'Request & Approve',
             name: 'approve',
             targetQC: 'Request: Approved',
             requiredQC: 'Request: Approved',

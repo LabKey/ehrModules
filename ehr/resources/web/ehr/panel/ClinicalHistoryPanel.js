@@ -344,7 +344,7 @@ Ext4.define('EHR.window.ClinicalHistoryFilterWindow', {
                 layout: 'hbox',
                 style: 'padding-bottom: 5px;',
                 items: [{
-                    xtype: 'labkey-linkbutton',
+                    xtype: 'ldk-linkbutton',
                     text: '[Select None]',
                     style: 'padding: 5px;',
                     itemId: 'selectNone',
@@ -354,7 +354,7 @@ Ext4.define('EHR.window.ClinicalHistoryFilterWindow', {
                         }, this);
                     }
                 },{
-                    xtype: 'labkey-linkbutton',
+                    xtype: 'ldk-linkbutton',
                     text: '[Select All]',
                     style: 'padding: 5px;',
                     itemId: 'selectAll',

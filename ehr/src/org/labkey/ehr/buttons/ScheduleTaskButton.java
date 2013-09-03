@@ -36,7 +36,7 @@ public class ScheduleTaskButton extends SimpleButtonConfigFactory
     public boolean isAvailable(TableInfo ti)
     {
         //this only requires read permission, so the weight table would handle this upstream
-        if (ti.getUserSchema().getName().equalsIgnoreCase("study") && ti.getPublicName().equalsIgnoreCase("weight"))
+        if (super.isAvailable(ti) && ti.getUserSchema().getName().equalsIgnoreCase("study") && ti.getPublicName().equalsIgnoreCase("weight"))
             return true;
 
         return false;

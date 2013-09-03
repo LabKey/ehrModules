@@ -329,6 +329,40 @@ function populateReports(){
         LABKEY.Query.insertRows(makeObject(config, data, fields));
     }
 
+    function populateSnomedSubsets(){
+        pendingInserts++;
+
+        //records for snomed subsets:
+        var config = {
+            schemaName: 'ehr_lookups',
+            queryName: 'snomed_subsets',
+            rows: [],
+            success: onSuccess,
+            failure: onError
+        };
+        var fields = ('subset').split(',');
+        var data = [
+            ['Antibiotic'],
+            ['Bacteriology Results'],
+            ['Culture Source'],
+            ['Distribution'],
+            ['Drugs and Procedures'],
+            ['Duration'],
+            ['Etiology'],
+            ['Inflammation'],
+            ['Organ/Tissue'],
+            ['Organisms'],
+            ['Parasitology Results'],
+            ['Procedures'],
+            ['Process/Disorder'],
+            ['Severity Codes'],
+            ['Treatment Codes'],
+            ['Viral Challenges']
+        ];
+
+        LABKEY.Query.insertRows(makeObject(config, data, fields));
+    };
+
 function populateSnomedSubsetCodes(){
     pendingInserts++;
 
@@ -7783,6 +7817,19 @@ var panel = new Ext.Panel({
         }
     },{
         xtype: 'button',
+        text: 'Populate SNOMED Subsets Table',
+        scope: this,
+        handler: populateSnomedSubsets
+    },{
+        xtype: 'button',
+        text: 'Delete Data From SNOMED Subset',
+        scope: this,
+        handler: function(){
+            pendingDeletes++;
+            deleteAll('ehr_lookups', 'snomed_subsets', 'rowid')
+        }
+    },{
+        xtype: 'button',
         text: 'Populate Charge Items Table',
         scope: this,
         handler: populateChargeItems
@@ -7842,6 +7889,7 @@ var panel = new Ext.Panel({
             populateFormPanelSections();
 //            populateFormTemplates();  //populate form templates
             populateReports();
+            populateSnomedSubsets();
             populateSnomedSubsetCodes();  //populate SNOMED subset codes
             populateChargeItems();
 //            populateFormTemplateRecords();   //delete form templates
@@ -7860,6 +7908,7 @@ var panel = new Ext.Panel({
             //deleteAll('ehr', 'formtemplates', 'entityid');
             //deleteAll('ehr', 'formtemplaterecords', 'rowid');
             deleteAll('ehr', 'reports', 'rowid');
+            deleteAll('ehr_lookups', 'snomed_subsets', 'rowid')
             deleteAll('ehr_lookups', 'snomed_subset_codes', 'rowid');
             deleteAll('ehr_lookups', 'charge_items', 'rowid');
 //            deleteAll('ehr_lookups', 'snomed', 'code');

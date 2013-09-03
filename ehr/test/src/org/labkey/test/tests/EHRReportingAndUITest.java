@@ -242,7 +242,7 @@ public class EHRReportingAndUITest extends AbstractEHRTest
 
         log("Verify Project search");
         waitAndClick(Locator.ext4Radio("Multiple Animals"));
-        waitAndClick(Locator.xpath("//span[text()='[Search By Project/Protocol]']"));
+        waitAndClick(Locator.linkContainingText("[Search By Project/Protocol]"));
         waitForElement(Ext4Helper.ext4Window("Search By Project/Protocol"));
         _ext4Helper.selectComboBoxItem("Center Project:", PROJECT_ID, true);
         _extHelper.clickExtButton("Search By Project/Protocol", "Submit", 0);
@@ -256,7 +256,7 @@ public class EHRReportingAndUITest extends AbstractEHRTest
 
         log("Verify Protocol search");
         waitAndClick(Locator.ext4Radio("Multiple Animals"));
-        waitAndClick(Locator.xpath("//span[text()='[Search By Project/Protocol]']"));
+        waitAndClick(Locator.linkContainingText("[Search By Project/Protocol]"));
         waitForElement(Ext4Helper.ext4Window("Search By Project/Protocol"));
         _ext4Helper.selectComboBoxItem("IACUC Protocol:", PROTOCOL_ID, true);
         clickButton("Submit", 0);
@@ -392,7 +392,7 @@ public class EHRReportingAndUITest extends AbstractEHRTest
         checkDataRegionCheckbox("query", 0); // PROTOCOL_MEMBER_IDS[0]
         clickMenuButton("More Actions", "Jump To History");
         assertTitleContains("Animal History");
-        waitAndClick(Locator.ext4Button("Append -->"));
+
         //page has loaded, so we re-query
         getAnimalHistorySubjField().setValue(PROTOCOL_MEMBER_IDS[2]);
         waitAndClick(Locator.ext4Button("Append -->"));

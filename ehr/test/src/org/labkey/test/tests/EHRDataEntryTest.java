@@ -62,11 +62,11 @@ public class EHRDataEntryTest extends AbstractEHRTest
         waitAndClickAndWait(Locator.linkWithText("Enter Weights"));
         waitForElement(Locator.name("title"), WAIT_FOR_JAVASCRIPT);
         waitForElement(Locator.xpath("//input[@name='title' and not(contains(@class, 'disabled'))]"), WAIT_FOR_JAVASCRIPT);
+        _helper.waitForElementWithValue(this, "title", "Weight", 10000);
 
-        _helper.setDataEntryField("title", TASK_TITLE);
-        sleep(800);  //why?
+        setFormElement(Locator.name("title"), TASK_TITLE);
         _extHelper.selectComboBoxItem("Assigned To:", BASIC_SUBMITTER.getGroup() + "\u00A0"); // appended with a nbsp (Alt+0160)
-        _helper.setDataEntryField("title", TASK_TITLE);
+
         assertFormElementEquals(Locator.name("title"), TASK_TITLE);
 
         log("Add blank weight entries");

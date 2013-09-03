@@ -25,7 +25,7 @@ import java.io.File;
  * Date: 1/25/13
  * Time: 4:31 PM
  */
-public class ONPRC_EHRTest extends AbstractEHRTest implements SqlserverOnlyTest
+public class ONPRC_EHRTest extends AbstractEHRTest
 {
     protected String PROJECT_NAME = "ONPRC_EHR_TestProject";
 

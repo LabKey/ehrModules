@@ -264,6 +264,7 @@
             </ns:column>
             <ns:column columnName="sendemail">
                 <ns:nullable>true</ns:nullable>
+                <ns:defaultValue>true</ns:defaultValue>
                 <ns:columnTitle>Send Email On Complete?</ns:columnTitle>
             </ns:column>
             <ns:column columnName="pi">

@@ -70,7 +70,7 @@ Ext4.define('EHR.window.LabworkAddRecordWindow', {
     onSubmit: function(){
         var runId = this.down('#comboField').getValue();
         if (!runId){
-            Ext4.Msg.alert('Error', 'Must select a panel');
+            Ext4.Msg.alert('Error', 'You must choose which panel is associated with this result');
             return;
         }
 

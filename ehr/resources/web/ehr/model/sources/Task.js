@@ -22,18 +22,6 @@ EHR.model.DataModelManager.registerMetadata('Task', {
 //                }
             },
             hidden: true
-        },
-        runid: {
-            inheritance: {
-                storeIdentifier:  {queryName: 'Clinpath Runs', schemaName: 'study'},
-                sourceField: 'objectid',
-                targetField: 'runid',
-                recordSelector: {
-                    runid: 'objectid',
-                    Id: 'Id'
-                }
-            },
-            hidden: true
         }
     },
     byQuery: {

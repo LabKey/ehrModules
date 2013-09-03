@@ -19,9 +19,9 @@ EHR.model.DataModelManager.registerMetadata('Request', {
         },
         date: {
             editorConfig: {
-                minValue: (new Date()).add(Date.DAY, 2),
+                minValue: (new Date()),
                 dateConfig: {
-                    minValue: (new Date()).add(Date.DAY, 2)
+                    minValue: (new Date())
                 }
             },
             getInitialValue: function(v, rec){
@@ -89,9 +89,9 @@ EHR.model.DataModelManager.registerMetadata('Request', {
             performedby: {
                 allowBlank: true
             },
-            quantity : {
-                xtype: 'displayfield'
-            },
+//            quantity : {
+//                xtype: 'displayfield'
+//            },
             num_tubes: {
                 xtype: 'ehr-triggernumberfield',
                 editorConfig: {
@@ -117,13 +117,13 @@ EHR.model.DataModelManager.registerMetadata('Request', {
             },
             date: {
                 nullable: false,
-                editorConfig: {
-                    timeConfig: {
-                        minValue: '8:30',
-                        maxValue: '9:30',
-                        increment: 60
-                    }
-                },
+//                editorConfig: {
+//                    timeConfig: {
+//                        minValue: '8:30',
+//                        maxValue: '9:30',
+//                        increment: 60
+//                    }
+//                },
                 getInitialValue: function(v){
                     var date = (new Date()).add(Date.DAY, 2);
                     date.setHours(9);
@@ -148,7 +148,8 @@ EHR.model.DataModelManager.registerMetadata('Request', {
                 hidden: true
             },
             chargetype: {
-                hidden: false
+                hidden: false,
+                allowBlank: false
             },
             performedby: {
                 allowBlank: true
@@ -168,7 +169,6 @@ EHR.model.DataModelManager.registerMetadata('Request', {
             serviceRequested: {
                 xtype: 'ehr-remark',
                 isAutoExpandColumn: true,
-                printWidth: 150,
                 editorConfig: {
                     resizeDirections: 's'
                 }

@@ -674,6 +674,9 @@ EHR.ext.AdvancedStore = Ext.extend(LABKEY.ext.Store, {
     //private
     //NOTE: split this into a separate method so validateOnServer() can call it separately
     sendRequest: function(records, commands, extraContext){
+        extraContext = extraContext || {};
+        extraContext.isLegacyFormat = true;
+
         var request = Ext.Ajax.request({
             url : LABKEY.ActionURL.buildURL("query", "saveRows", this.containerPath),
             method : 'POST',
@@ -681,10 +684,9 @@ EHR.ext.AdvancedStore = Ext.extend(LABKEY.ext.Store, {
             failure: this.getOnCommitFailure(records),
             scope: this,
             jsonData : {
-                isLegacyFormat: true,
                 containerPath: this.containerPath,
                 commands: commands,
-                extraContext: extraContext || {}
+                extraContext: extraContext
             },
             headers : {
                 'Content-Type' : 'application/json'

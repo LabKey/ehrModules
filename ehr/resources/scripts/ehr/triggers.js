@@ -573,19 +573,10 @@ EHR.Server.Triggers.rowInit = function(helper, scriptErrors, row, oldRow){
         !helper.getJavaHelper().isDefaultProject(row.project) &&
         !helper.isSkipAssignmentCheck()
     ){
-        var assignmentRow = helper.getJavaHelper().validateAssignment(row.Id, row.project, row.date);
-        if (!assignmentRow){
-            var severity = 'WARN';
-            if (EHR.Server.Security.getQCStateByLabel(row.QCStateLabel).isRequest)
-                severity = 'INFO';
-
-            EHR.Server.Utils.addError(scriptErrors, 'project', 'Not assigned to the project on this date', severity);
-
-            if (assignmentRow && !assignmentRow.protocol)
-                EHR.Server.Utils.addError(scriptErrors, 'project', 'This project is not associated with a valid protocol', severity);
-        }
-        else {
-            helper.setAssignmentRecord(assignmentRow);
+        var assignmentErrors = helper.getJavaHelper().validateAssignment(row.Id, row.project, row.date);
+        if (assignmentErrors){
+            var severity = EHR.Server.Security.getQCStateByLabel(row.QCStateLabel).isRequest ? 'INFO' : 'WARN';
+            EHR.Server.Utils.addError(scriptErrors, 'project', assignmentErrors, severity);
         }
     }
 
@@ -622,9 +613,10 @@ EHR.Server.Triggers.rowInit = function(helper, scriptErrors, row, oldRow){
         //set account based on project.  do differently depending on insert/update.
         //assignmentRecord should have been cached above
         //we only do this one time when the row becomes public, b/c project/account relationships can change
-        if (!helper.isETL() && helper.getAssignmentRecord() && !row.account){
-            helper.logDebugMsg('setting account to: ' + helper.getAssignmentRecord().get('account'));
-            row.account = helper.getAssignmentRecord().get('account');
+        if (!helper.isETL() && !row.account && row.project){
+            var account = helper.getJavaHelper().getAccountForProject(row.project);
+            helper.logDebugMsg('setting account to: ' + account);
+            row.account = account;
         }
 
         //TODO: handlers

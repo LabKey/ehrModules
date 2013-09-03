@@ -27,6 +27,11 @@ import org.labkey.test.BaseWebDriverTest;
 import org.labkey.test.Locator;
 import org.labkey.test.tests.EHRReportingAndUITest;
 import org.labkey.test.util.ext4cmp.Ext4CmpRefWD;
+import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.TimeoutException;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.support.ui.ExpectedCondition;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.io.IOException;
 
@@ -117,7 +122,7 @@ public class EHRTestHelper
             @Override
             public boolean check()
             {
-              return null != _test._ext4Helper.queryOne(query, Ext4CmpRefWD.class);
+                return null != _test._ext4Helper.queryOne(query, Ext4CmpRefWD.class);
             }
         }, "Component did not appear for query: " + query, BaseSeleniumWebTest.WAIT_FOR_JAVASCRIPT);
     }
@@ -128,6 +133,29 @@ public class EHRTestHelper
         _test.click(Locator.xpath(parentLocator.getPath() + "//*[contains(@class, 'x-form-arrow-trigger')]"));
         _test.waitAndClick(Locator.xpath("//div["+NOT_HIDDEN+"]/div/div[contains(normalize-space(), '" + selection + "')]"));
         _test.waitForElementToDisappear(Locator.xpath("//div["+NOT_HIDDEN+"]/div/div[contains(normalize-space(), '" + selection + "')]"), WAIT_FOR_JAVASCRIPT);
+    }
+
+    public Boolean waitForElementWithValue(final BaseWebDriverTest test, final String name, final String value, final int msTimeout)
+    {
+        final Locator l = Locator.name(name);
+        long secTimeout = msTimeout / 1000;
+        secTimeout = secTimeout > 0 ? secTimeout : 1;
+        WebDriverWait wait = new WebDriverWait(test.getDriver(), secTimeout);
+        try
+        {
+            return wait.until(new ExpectedCondition<Boolean>()
+            {
+                @Override
+                public Boolean apply(WebDriver d)
+                {
+                    return value.equals(test.getFormElement(l));
+                }
+            });
+        }
+        catch (TimeoutException ex)
+        {
+            throw new NoSuchElementException("Timeout waiting for element [" + secTimeout + "sec]: " + l.getLoggableDescription());
+        }
     }
 }
 

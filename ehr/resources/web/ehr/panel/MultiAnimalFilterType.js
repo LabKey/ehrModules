@@ -26,7 +26,7 @@ Ext4.define('EHR.panel.MultiAnimalFilterType', {
         }]
 
         items.push({
-            xtype: 'labkey-linkbutton',
+            xtype: 'ldk-linkbutton',
             text: '[Search By Room/Cage]',
             minWidth: 80,
             style: 'padding-left:200px;',
@@ -73,7 +73,7 @@ Ext4.define('EHR.panel.MultiAnimalFilterType', {
         });
 
         items.push({
-            xtype: 'labkey-linkbutton',
+            xtype: 'ldk-linkbutton',
             text: '[Search By Project/Protocol]',
             minWidth: 80,
             handler: function(btn){

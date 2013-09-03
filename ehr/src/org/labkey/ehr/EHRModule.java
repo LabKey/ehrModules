@@ -34,7 +34,7 @@ import org.labkey.api.security.roles.RoleManager;
 import org.labkey.api.view.WebPartFactory;
 import org.labkey.api.view.template.ClientDependency;
 import org.labkey.ehr.buttons.CompareWeightsButton;
-import org.labkey.ehr.buttons.DiscardTaskButton;
+import org.labkey.ehr.buttons.TaskAssignButton;
 import org.labkey.ehr.demographics.ActiveAnimalGroupsDemographicsProvider;
 import org.labkey.ehr.demographics.ActiveAssignmentsDemographicsProvider;
 import org.labkey.ehr.demographics.ActiveProblemsProvider;
@@ -84,7 +84,7 @@ public class EHRModule extends ExtendedSimpleModule
 
     public double getVersion()
     {
-        return 12.365;
+        return 12.366;
     }
 
     public boolean hasScripts()
@@ -149,7 +149,8 @@ public class EHRModule extends ExtendedSimpleModule
         EHRService.get().registerMoreActionsButton(new ShowAuditHistoryButton(this), "study", LDKService.ALL_TABLES);
 
         EHRService.get().registerMoreActionsButton(new CompareWeightsButton(this), "study", "weight");
-        EHRService.get().registerMoreActionsButton(new DiscardTaskButton(this), "ehr", "my_tasks");
+        EHRService.get().registerMoreActionsButton(new TaskAssignButton(this), "ehr", "my_tasks");
+        EHRService.get().registerMoreActionsButton(new TaskAssignButton(this), "ehr", "tasks");
         EHRService.get().registerMoreActionsButton(new MarkCompletedButton(this, "study", "treatment_order"), "study", "treatment_order");
         EHRService.get().registerMoreActionsButton(new MarkCompletedButton(this, "study", "problem"), "study", "problem");
         EHRService.get().registerMoreActionsButton(new MarkCompletedButton(this, "study", "assignment"), "study", "assignment");

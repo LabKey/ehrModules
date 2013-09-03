@@ -32,8 +32,8 @@ Ext4.define('EHR.form.field.ProjectEntryField', {
             valueField: 'project',
             queryMode: 'local',
             plugins: [Ext4.create('EHR.plugin.UserEditableCombo', {
-                onClickOther: function(){
-                    Ext4.create('Ext.window.Window', {
+                createWindow: function(){
+                    return Ext4.create('Ext.window.Window', {
                         modal: true,
                         closeAction: 'destroy',
                         bodyStyle: 'padding: 5px',
@@ -53,7 +53,7 @@ Ext4.define('EHR.form.field.ProjectEntryField', {
                                 var rec = field.findRecord('project', project);
                                 LDK.Assert.assertNotEmpty('Record not found: ' + project, rec);
 
-                                this.addNewValue({
+                                this.onWindowClose({
                                     project: project,
                                     displayName: rec.get('displayName'),
                                     protocolDisplayName: rec.get('protocol/displayName'),
