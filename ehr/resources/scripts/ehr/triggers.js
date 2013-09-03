@@ -611,7 +611,6 @@ EHR.Server.Triggers.rowInit = function(helper, scriptErrors, row, oldRow){
 
     if (row._becomingPublicData){
         //set account based on project.  do differently depending on insert/update.
-        //assignmentRecord should have been cached above
         //we only do this one time when the row becomes public, b/c project/account relationships can change
         if (!helper.isETL() && !row.account && row.project){
             var account = helper.getJavaHelper().getAccountForProject(row.project);
@@ -619,9 +618,19 @@ EHR.Server.Triggers.rowInit = function(helper, scriptErrors, row, oldRow){
             row.account = account;
         }
 
-        //TODO: handlers
+        var handlers = [];
         if (this.onBecomePublic)
-            this.onBecomePublic(scriptErrors, helper, row, oldRow);
+            handlers.push(this.onBecomePublic);
+
+        var otherHandlers = EHR.Server.TriggerManager.getHandlersForQuery(EHR.Server.TriggerManager.Events.ON_BECOME_PUBLIC, helper.getSchemaName(), helper.getQueryName(), true) || [];
+        if (otherHandlers.length)
+            handlers = handlers.concat(otherHandlers);
+
+        if (handlers.length){
+            for (var i=0;i<handlers.length;i++){
+                handlers[i](scriptErrors, helper, row, oldRow);
+            }
+        }
     }
 
 
@@ -767,8 +776,21 @@ EHR.Server.Triggers.afterEvent = function (event, helper, errors, row, oldRow){
     //NOTE: necessary to populate the _becomingPublicData flag
     EHR.Server.Security.normalizeQcState(row, oldRow);
 
-    if (row._becomingPublicData && this.afterBecomePublic){
-        this.afterBecomePublic(errors, helper, row, oldRow);
+    if (row._becomingPublicData){
+        var handlers = [];
+        if (this.afterBecomePublic){
+            handlers.push(this.afterBecomePublic);
+        }
+
+        var otherHandlers = EHR.Server.TriggerManager.getHandlersForQuery(EHR.Server.TriggerManager.Events.AFTER_BECOME_PUBLIC, helper.getSchemaName(), helper.getQueryName(), true) || [];
+        if (otherHandlers.length)
+            handlers = handlers.concat(otherHandlers);
+
+        if (handlers.length){
+            for (var i=0;i<handlers.length;i++){
+                handlers[i](errors, helper, row, oldRow);
+            }
+        }
     }
 
     helper.addRow({

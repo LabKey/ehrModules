@@ -7902,13 +7902,13 @@ var panel = new Ext.Panel({
         text: 'Delete All',
         scope: this,
         handler: function(){
-            pendingDeletes = 5;
+            pendingDeletes = 6;
             deleteAll('ehr', 'formtypes', 'rowid'); //note: formpanelsections will be deleted by trigger script
             //deleteAll('ehr', 'formpanelsections', 'rowid');
             //deleteAll('ehr', 'formtemplates', 'entityid');
             //deleteAll('ehr', 'formtemplaterecords', 'rowid');
             deleteAll('ehr', 'reports', 'rowid');
-            deleteAll('ehr_lookups', 'snomed_subsets', 'rowid')
+            deleteAll('ehr_lookups', 'snomed_subsets', 'rowid');
             deleteAll('ehr_lookups', 'snomed_subset_codes', 'rowid');
             deleteAll('ehr_lookups', 'charge_items', 'rowid');
 //            deleteAll('ehr_lookups', 'snomed', 'code');

@@ -229,14 +229,6 @@ EHR.Server.ScriptHelper = function(extraContext, event, EHR){
             return scriptOptions.allowShippedIds;
         },
 
-        setAssignmentRecord: function(rec){
-            props.assignmentRow = rec;
-        },
-
-        getAssignmentRecord: function(){
-            return props.assignmentRow;
-        },
-
         addSkippedError: function(recordId, error){
             if (!props.extraContext.skippedErrors)
                 props.extraContext.skippedErrors = {};
