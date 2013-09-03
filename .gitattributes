@@ -1,6 +1,5 @@
 * text=auto !eol
 Viral_Load_Assay/Viral_Load_Assay.iml -text
-Viral_Load_Assay/build.xml -text
 Viral_Load_Assay/module.properties -text
 Viral_Load_Assay/resources/assay/Viral_Loads/config.xml -text
 Viral_Load_Assay/resources/assay/Viral_Loads/domains/batch.xml -text
