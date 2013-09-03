@@ -5,7 +5,7 @@ SELECT core.fn_dropifexists('snomed_subsets', 'ehr_lookups', 'CONSTRAINT', 'PK_s
 ALTER TABLE ehr_lookups.snomed_subsets ADD CONSTRAINT pk_snomed_subsets PRIMARY KEY (rowid);
 
 --upgrade path for WNPRC
-UPDATE ehr_lookups.snomed_subsets SET container = (SELECT c.entityid from labkey.core.containers c LEFT JOIN labkey.core.Containers c2 on (c.Parent = c2.EntityId) WHERE c.name = 'EHR' and c2.name = 'WNPRC');
+UPDATE ehr_lookups.snomed_subsets SET container = (SELECT c.entityid from core.containers c LEFT JOIN core.Containers c2 on (c.Parent = c2.EntityId) WHERE c.name = 'EHR' and c2.name = 'WNPRC');
 DELETE FROM ehr_lookups.snomed_subsets WHERE container IS NULL;
 
 INSERT INTO ehr_lookups.labwork_types (type, tablename) VALUES ('Misc Tests', 'misc_tests');
