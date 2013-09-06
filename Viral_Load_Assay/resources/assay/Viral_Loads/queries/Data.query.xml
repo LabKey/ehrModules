@@ -1,7 +1,7 @@
 <query xmlns="http://labkey.org/data/xml/query">
     <metadata>
         <tables xmlns="http://labkey.org/data/xml">
-            <table tableName="Results" tableDbType="TABLE">
+            <table tableName="Data" tableDbType="TABLE">
                 <javaCustomizer>org.labkey.laboratory.query.DefaultAssayCustomizer</javaCustomizer>
                 <columns>
                     <column columnName="subjectId">
