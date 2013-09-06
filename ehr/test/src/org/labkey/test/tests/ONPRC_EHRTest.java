@@ -15,7 +15,11 @@
  */
 package org.labkey.test.tests;
 
+import org.junit.experimental.categories.Category;
 import org.labkey.test.TestTimeoutException;
+import org.labkey.test.categories.EHR;
+import org.labkey.test.categories.External;
+import org.labkey.test.categories.ONPRC;
 import org.labkey.test.util.SqlserverOnlyTest;
 
 import java.io.File;
@@ -25,6 +29,7 @@ import java.io.File;
  * Date: 1/25/13
  * Time: 4:31 PM
  */
+@Category({External.class, EHR.class, ONPRC.class})
 public class ONPRC_EHRTest extends AbstractEHRTest
 {
     protected String PROJECT_NAME = "ONPRC_EHR_TestProject";
