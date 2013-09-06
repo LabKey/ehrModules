@@ -1,7 +1,7 @@
 <query xmlns="http://labkey.org/data/xml/query">
     <metadata>
         <tables xmlns="http://labkey.org/data/xml">
-            <table tableName="tasks" tableDbType="TABLE">
+            <table tableName="my_tasks" tableDbType="TABLE">
                 <javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</javaCustomizer>
                 <insertUrl />
                 <updateUrl />

@@ -1,7 +1,7 @@
 <query xmlns="http://labkey.org/data/xml/query">
     <metadata>
         <tables xmlns="http://labkey.org/data/xml">
-            <table tableName="protocolAnimals" tableDbType="NOT_IN_DB">
+            <table tableName="protocolHistoricAnimals" tableDbType="NOT_IN_DB">
                 <columns>
                     <column columnName="protocol">
                         <isKeyField>true</isKeyField>

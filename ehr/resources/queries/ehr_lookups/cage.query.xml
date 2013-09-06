@@ -1,7 +1,7 @@
 <query xmlns="http://labkey.org/data/xml/query">
     <metadata>
         <tables xmlns="http://labkey.org/data/xml">
-            <table tableName="Cage" tableDbType="TABLE">
+            <table tableName="cage" tableDbType="TABLE">
                 <!--<tableUrl>/EHR/cageDetails.view?room=${room}&amp;cage=${cage}</tableUrl>-->
                 <columns>
                     <column columnName="location">
