@@ -1264,6 +1264,7 @@ public class DefaultEHRCustomizer implements TableCustomizer
                 TableInfo ti = qd.getTable(errors, true);
                 if (errors.size() > 0)
                 {
+                    _log.error("Error creating lookup table for: " + ds.getPublicSchemaName() + "." + ds.getPublicName());
                     for (QueryException e : errors)
                     {
                         _log.error(e.getMessage(), e);
