@@ -1016,7 +1016,7 @@ public class DefaultEHRCustomizer implements TableCustomizer
     }
 
     //note: these columns should both be date/time
-    private void appendHousingAtTimeCol(final UserSchema us, final AbstractTableInfo ds, final String dateColName)
+    private void appendHousingAtTimeCol(final UserSchema us, AbstractTableInfo ds, final String dateColName)
     {
         if (!hasTable(ds, "study", "Housing"))
             return;
@@ -1039,12 +1039,16 @@ public class DefaultEHRCustomizer implements TableCustomizer
         col.setIsUnselectable(true);
         col.setUserEditable(false);
 
+        final String tableName = ds.getName();
+        final String queryName = ds.getPublicName();
+        final String schemaName = ds.getPublicSchemaName();
+
         final boolean hasLookup = hasAnimalLookup(ds);
 
         col.setFk(new LookupForeignKey(){
             public TableInfo getLookupTableInfo()
             {
-                String name = ds.getName() + "_housingAtTime";
+                String name = tableName + "_housingAtTime";
                 QueryDefinition qd = QueryService.get().createQueryDef(us.getUser(), us.getContainer(), us, name);
                 qd.setSql("SELECT\n" +
                     "sd." + pkCol.getSelectName() + ",\n" +
@@ -1058,7 +1062,7 @@ public class DefaultEHRCustomizer implements TableCustomizer
                     "  WHERE sd.id = h.id AND h.date <= sd." + dateColName + " AND (sd." + dateColName + " < h.enddateTimeCoalesced" + (hasLookup ? " OR d.death = h.enddateTimeCoalesced" : "") + ")\n" +
                     "  AND h.qcstate.publicdata = true\n" +
                     ") as varchar) as CageAtTime,\n" +
-                    "FROM \"" + ds.getPublicSchemaName() + "\".\"" + ds.getName() + "\" sd" +
+                    "FROM \"" + schemaName + "\".\"" + queryName + "\" sd" +
                     (hasLookup ? " LEFT JOIN study.demographics d ON (d.id = sd.id)\n" : ""));
                 qd.setIsTemporary(true);
 
@@ -1073,7 +1077,10 @@ public class DefaultEHRCustomizer implements TableCustomizer
                 }
 
                 ColumnInfo roomAtTime = ti.getColumn("RoomAtTime");
-                roomAtTime.setFk(new QueryForeignKey(getUserSchema(ds, "ehr_lookups"), "rooms", "room", "room"));
+                if (ti instanceof AbstractTableInfo)
+                    roomAtTime.setFk(new QueryForeignKey(getUserSchema((AbstractTableInfo)ti, "ehr_lookups"), "rooms", "room", "room"));
+                else
+                    _log.error("Table is not AbstractTableInfo: " + ti.getPublicName());
 
                 ti.getColumn(pkCol.getSelectName()).setHidden(true);
                 ti.getColumn(pkCol.getSelectName()).setKeyField(true);
@@ -1118,7 +1125,7 @@ public class DefaultEHRCustomizer implements TableCustomizer
         return true;
     }
 
-    private void appendSurvivorshipCol(final UserSchema us, final AbstractTableInfo ds)
+    private void appendSurvivorshipCol(final UserSchema us, AbstractTableInfo ds)
     {
         String name = "survivorship";
         if (ds.getColumn(name) != null)
@@ -1136,6 +1143,9 @@ public class DefaultEHRCustomizer implements TableCustomizer
             return;
 
         final String dateColName = dateCol.getSelectName();
+        final String tableName = ds.getName();
+        final String queryName = ds.getPublicName();
+        final String schemaName = ds.getPublicSchemaName();
 
         WrappedColumn col = new WrappedColumn(pkCol, name);
         col.setLabel("Survivorship");
@@ -1145,7 +1155,7 @@ public class DefaultEHRCustomizer implements TableCustomizer
         col.setFk(new LookupForeignKey(){
             public TableInfo getLookupTableInfo()
             {
-                String name = ds.getName() + "_survivorship";
+                String name = tableName + "_survivorship";
                 QueryDefinition qd = QueryService.get().createQueryDef(us.getUser(), us.getContainer(), us, name);
                 qd.setSql("SELECT\n" +
                     "c." + pkCol.getSelectName() + ",\n" +
@@ -1162,7 +1172,7 @@ public class DefaultEHRCustomizer implements TableCustomizer
                     "  timestampdiff('SQL_TSI_DAY', c.dateOnly, coalesce(c.id.dataset.demographics.death, curdate()))\n" +
                     "END as survivorshipInDays,\n" +
                     "\n" +
-                    "FROM \"" + ds.getPublicSchemaName() + "\".\"" + ds.getName() + "\" c");
+                    "FROM \"" + schemaName + "\".\"" + queryName + "\" c");
                 qd.setIsTemporary(true);
 
                 List<QueryException> errors = new ArrayList<>();
@@ -1203,7 +1213,7 @@ public class DefaultEHRCustomizer implements TableCustomizer
         }
     }
 
-    private void appendAgeAtTimeCol(final UserSchema us, final AbstractTableInfo ds, final String dateColName)
+    private void appendAgeAtTimeCol(final UserSchema us, AbstractTableInfo ds, final String dateColName)
     {
         String name = "ageAtTime";
         if (ds.getColumn(name) != null)
@@ -1219,6 +1229,10 @@ public class DefaultEHRCustomizer implements TableCustomizer
         if (!hasAnimalLookup(ds))
             return;
 
+        final String tableName = ds.getName();
+        final String queryName = ds.getPublicName();
+        final String schemaName = ds.getPublicSchemaName();
+
         WrappedColumn col = new WrappedColumn(pkCol, name);
         col.setLabel("Age At The Time");
         col.setReadOnly(true);
@@ -1227,7 +1241,7 @@ public class DefaultEHRCustomizer implements TableCustomizer
         col.setFk(new LookupForeignKey(){
             public TableInfo getLookupTableInfo()
             {
-                String name = ds.getName() + "_ageAtTime";
+                String name = tableName + "_ageAtTime";
                 QueryDefinition qd = QueryService.get().createQueryDef(us.getUser(), us.getContainer(), us, name);
                 //NOTE: do not need to account for QCstate b/c study.demographics only allows 1 row per subject
                 qd.setSql("SELECT\n" +
@@ -1257,14 +1271,14 @@ public class DefaultEHRCustomizer implements TableCustomizer
                     "  CONVERT(age_in_months(c.id.dataset.demographics.birth, COALESCE(c.id.dataset.demographics.death, c." + dateColName + ")), INTEGER)\n" +
                     "END AS float) as AgeAtTimeMonths,\n" +
                     "\n" +
-                    "FROM \"" + ds.getPublicSchemaName() + "\".\"" + ds.getName() + "\" c");
+                    "FROM \"" + schemaName + "\".\"" + queryName + "\" c");
                 qd.setIsTemporary(true);
 
                 List<QueryException> errors = new ArrayList<>();
                 TableInfo ti = qd.getTable(errors, true);
                 if (errors.size() > 0)
                 {
-                    _log.error("Error creating lookup table for: " + ds.getPublicSchemaName() + "." + ds.getPublicName());
+                    _log.error("Error creating lookup table for: " + schemaName + "." + queryName);
                     for (QueryException e : errors)
                     {
                         _log.error(e.getMessage(), e);

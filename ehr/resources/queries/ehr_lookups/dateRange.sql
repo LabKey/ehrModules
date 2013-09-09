@@ -13,8 +13,8 @@ cast(dayofmonth(i.date) as integer) as DayOfMonth,
 cast(dayofweek(i.date) as integer) as DayOfWeek,
 ceiling(cast(dayofmonth(i.date) as float) / 7.0) as WeekOfMonth,
 cast(week(i.date) as integer) as WeekOfYear,
-STARTDATE as startDate @hidden,
-NumDays as numDays @hidden
+CAST(StartDate AS TIMESTAMP) as startDate @hidden,
+CAST(NumDays as INTEGER) as numDays @hidden
 
 FROM (SELECT
 
