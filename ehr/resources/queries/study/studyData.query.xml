@@ -1,7 +1,7 @@
 <query xmlns="http://labkey.org/data/xml/query">
   <metadata>
         <tables xmlns="http://labkey.org/data/xml">
-            <table tableName="StudyData" tableDbType="TABLE">
+            <table tableName="" tableDbType="TABLE">
                 <javaCustomizer>org.labkey.ehr.table.DefaultEHRCustomizer</javaCustomizer>
                 <pkColumnName>lsid</pkColumnName>
                 <columns>
