@@ -29,9 +29,7 @@ h1.date,
 h1.enddate,
 h1.room,
 h1.cage,
---h1.cond AS Condition,
---COALESCE(h2.id, 'Single Housed') AS RoommateId,
-h2.id as RoommateId, 
+h2.id as RoommateId,
 CASE
   WHEN h2.date > h1.date THEN h2.date
   else h1.date
@@ -44,22 +42,12 @@ END AS RoommateEnd,
 h1.qcstate
 FROM study.Housing h1
 
-LEFT OUTER JOIN study.Housing h2
+LEFT JOIN study.Housing h2
     ON (
-      (
-      (h2.Date >= h1.date AND h2.Date < h1.enddateTimeCoalesced)
-      OR
-      (h1.Date >= h2.date AND h1.Date < h2.enddateTimeCoalesced)
-      OR
-      (h2.enddateTimeCoalesced > h1.date AND h2.enddateTimeCoalesced <= h1.enddateTimeCoalesced)
-      OR
-      (h2.Date <= h1.date AND h2.enddateTimeCoalesced >= h1.enddateTimeCoalesced)
-      OR
-      (h2.Date <= h1.date AND h2.enddateTimeCoalesced >= h1.enddateTimeCoalesced)
-
-      ) AND
+      ((h2.Date < h1.enddateTimeCoalesced AND h2.enddateTimeCoalesced > h1.date) OR (h1.Date < h2.enddateTimeCoalesced AND h1.enddateTimeCoalesced > h2.date))
+      AND
       h1.id != h2.id AND h1.room = h2.room AND (h1.cage = h2.cage OR (h1.cage is null and h2.cage is null))
-      )
+    )
 
 
 WHERE h1.qcstate.publicdata = true

@@ -6,6 +6,7 @@
 /**
  * @cfg subjectId
  * @cfg showRawData
+ * @cfg containerPath
  */
 Ext4.define('EHR.panel.WeightGraphPanel', {
     extend: 'Ext.panel.Panel',
@@ -29,6 +30,7 @@ Ext4.define('EHR.panel.WeightGraphPanel', {
     loadData: function(){
         //then raw data
         LABKEY.Query.selectRows({
+            containerPath: this.containerPath,
             schemaName: 'study',
             queryName: 'weightRelChange',
             filterArray: [LABKEY.Filter.create('Id', this.subjectId, LABKEY.Filter.Types.EQUAL)],
@@ -107,6 +109,7 @@ Ext4.define('EHR.panel.WeightGraphPanel', {
             style: 'margin: 5px;',
             queryConfig: {
                 frame: 'none',
+                containerPath: this.containerPath,
                 schemaName: 'study',
                 queryName: 'weight',
                 viewName: 'Percent Change',

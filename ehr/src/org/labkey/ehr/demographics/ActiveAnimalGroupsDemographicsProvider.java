@@ -34,6 +34,7 @@ public class ActiveAnimalGroupsDemographicsProvider extends AbstractListDemograp
     public ActiveAnimalGroupsDemographicsProvider()
     {
         super("ehr", "animal_group_members", "activeAnimalGroups");
+        _supportsQCState = false;
     }
 
     protected Set<FieldKey> getFieldKeys()

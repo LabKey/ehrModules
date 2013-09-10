@@ -404,6 +404,7 @@ public class EHRReportingAndUITest extends AbstractEHRTest
 
     private Ext4FieldRefWD getAnimalHistorySubjField()
     {
+        Ext4CmpRefWD.waitForComponent(this, "#subjArea");
         return _ext4Helper.queryOne("#subjArea", Ext4FieldRefWD.class);
     }
 

@@ -7,18 +7,19 @@ Ext4.define('EHR.panel.SimpleDataEntryPanel', {
     extend: 'EHR.panel.DataEntryPanel',
     alias: 'widget.ehr-simpledataentrypanel',
 
-    taskId: null,
-
     initComponent: function(){
-        this.pkCol = this.pkCol || LABKEY.ActionURL.getParameter('pkCol');
-        this.pkValue = this.pkValue || LABKEY.ActionURL.getParameter('key');
+        this.pkCols = this.formConfig.pkCols;
+
         this.callParent();
     },
 
     applyConfigToServerStore: function(cfg){
         cfg = this.callParent(arguments);
         cfg.filterArray = cfg.filterArray || [];
-        cfg.filterArray.push(LABKEY.Filter.create(this.pkCol, this.pkValue, LABKEY.Filter.Types.EQUAL));
+        Ext4.Array.forEach(this.pkCols, function(pkCol, idx){
+            var pkValue = LABKEY.ActionURL.getParameter(pkCol);
+            cfg.filterArray.push(LABKEY.Filter.create(pkCol, pkValue, LABKEY.Filter.Types.EQUAL));
+        }, this);
         return cfg;
     }
 });

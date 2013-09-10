@@ -7,15 +7,6 @@
         page-break-after:always;
     }
 }
-
-@page {
-    size: 11in 8.5in;  /* width height */
-}
-
-body {
-    width: 11in;
-    margin: 0in .1875in;
-}
 .label{
     /* Avery 5160 labels -- CSS and HTML by MM at Boulder Information Services */
     width: 2.025in; /* plus .6 inches from padding */

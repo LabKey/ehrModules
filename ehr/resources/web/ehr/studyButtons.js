@@ -60,7 +60,7 @@ EHR.DatasetButtons = new function(){
             queryName = queryName || dataRegion.queryName;
             schemaName = schemaName || dataRegion.schemaName;
 
-            var sql = "SELECT DISTINCT s.Id FROM "+schemaName+".\""+queryName+"\" s " + LDK.Utils.getDataRegionWhereClause(dataRegion, 's');
+            var sql = "SELECT DISTINCT s.Id FROM "+schemaName+".\""+queryName+"\" s " + LDK.DataRegionUtils.getDataRegionWhereClause(dataRegion, 's');
 
             LABKEY.Query.executeSql({
                 schemaName: 'study',
@@ -589,15 +589,29 @@ EHR.DatasetButtons = new function(){
 
 
         showClinicalHistory: function(objectId, Id, date, el){
+            var ctx = EHR.Utils.getEHRContext();
+            LDK.Assert.assertNotEmpty('EHRContext not loaded.  This might indicate a ClientDependency issue', ctx);
+            if (!ctx){
+                return;
+            }
+
             Ext4.create('EHR.window.ClinicalHistoryWindow', {
-                subjectId: Id
+                subjectId: Id,
+                containerPath: ctx['EHRStudyContainer']
             }).show(el);
         },
 
         showCaseHistory: function(objectId, subjectId, el){
+            var ctx = EHR.Utils.getEHRContext();
+            LDK.Assert.assertNotEmpty('EHRContext not loaded.  This might indicate a ClientDependency issue', ctx);
+            if (!ctx){
+                return;
+            }
+
             Ext4.create('EHR.window.CaseHistoryWindow', {
                 subjectId: subjectId,
-                caseId: objectId
+                caseId: objectId,
+                containerPath: ctx['EHRStudyContainer']
             }).show(el);
         },
 

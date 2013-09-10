@@ -1,4 +1,4 @@
-<customView xmlns="http://labkey.org/data/xml/queryCustomView">
+<customView xmlns="http://labkey.org/data/xml/queryCustomView" label="All Housing Types">
     <columns>
         <column name="Id"/>
         <column name="RoommateId"/>

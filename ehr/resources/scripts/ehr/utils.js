@@ -170,7 +170,7 @@ EHR.Server.Utils = new function(){
             }
             else if (LABKEY.ExtAdapter.isString(val)){
                 if (!supppressErrors)
-                    console.error('EHR trigger script is being passed a date object as a string: ' + val);
+                    console.warn('EHR trigger script is being passed a date object as a string: ' + val);
 
                 var javaDate = org.labkey.api.data.ConvertHelper.convert(val, java.util.Date);
                 if (javaDate){
@@ -475,6 +475,7 @@ EHR.Server.Utils = new function(){
                     gender: ar.getGender(),
                     'gender/origGender': ar.getOrigGender(),
                     calculated_status: ar.getCalculatedStatus(),
+                    departure: ar.getMostRecentDeparture() ? new Date(ar.getMostRecentDeparture().getTime()) : null,
                     sire: null,
                     'id/curlocation/room': ar.getCurrentRoom(),
                     'id/curlocation/cage': ar.getCurrentCage(),

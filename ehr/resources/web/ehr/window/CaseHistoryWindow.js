@@ -7,6 +7,7 @@
  * @cfg subjectId
  * @cfg minDate
  * @cfg caseId
+ * @cfg containerPath
  */
 Ext4.define('EHR.window.CaseHistoryWindow', {
     extend: 'EHR.window.ClinicalHistoryWindow',
@@ -26,6 +27,7 @@ Ext4.define('EHR.window.CaseHistoryWindow', {
         items[1].items.splice(1, 0, {
             title: 'Case History',
             xtype: 'ehr-casehistorypanel',
+            containerPath: this.containerPath,
             border: true,
             width: 1180,
             gridHeight: 400,

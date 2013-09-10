@@ -17,7 +17,6 @@ Ext4.define('EHR.grid.Panel', {
 
         LABKEY.ExtAdapter.apply(this, {
             cls: 'ldk-grid',
-            selType: 'rowmodel',
             clicksToEdit: 1,
             selModel: {
                 mode: 'MULTI'

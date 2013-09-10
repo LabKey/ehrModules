@@ -15,6 +15,7 @@
 
 package org.labkey.ehr;
 
+import org.apache.commons.lang3.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.labkey.api.action.ApiAction;
@@ -33,6 +34,13 @@ import org.labkey.api.ehr.history.HistoryRow;
 import org.labkey.api.ehr.dataentry.DataEntryForm;
 import org.labkey.api.exp.api.ExperimentService;
 import org.labkey.api.pipeline.PipelineStatusUrls;
+import org.labkey.api.query.DetailsURL;
+import org.labkey.api.query.QueryAction;
+import org.labkey.api.query.QueryException;
+import org.labkey.api.query.QueryForm;
+import org.labkey.api.query.QueryParseException;
+import org.labkey.api.query.QueryView;
+import org.labkey.api.query.QueryWebPart;
 import org.labkey.api.security.RequiresPermissionClass;
 import org.labkey.api.security.permissions.AdminPermission;
 import org.labkey.api.security.permissions.DeletePermission;
@@ -44,7 +52,10 @@ import org.labkey.api.view.ActionURL;
 import org.labkey.api.view.HtmlView;
 import org.labkey.api.view.JspView;
 import org.labkey.api.view.NavTree;
+import org.labkey.api.view.NotFoundException;
+import org.labkey.api.view.Portal;
 import org.labkey.api.view.UnauthorizedException;
+import org.labkey.api.view.WebPartFactory;
 import org.labkey.api.view.WebPartView;
 import org.labkey.api.view.template.ClientDependency;
 import org.labkey.ehr.dataentry.DataEntryManager;
@@ -179,6 +190,114 @@ public class EHRController extends SpringActionController
         public void setRequestIds(String[] requestIds)
         {
             this.requestIds = requestIds;
+        }
+    }
+
+    @RequiresPermissionClass(EHRDataEntryPermission.class)
+    public class UpdateQueryAction extends SimpleViewAction<QueryForm>
+    {
+        private QueryForm _form;
+
+        public ModelAndView getView(QueryForm form, BindException errors) throws Exception
+        {
+            ensureQueryExists(form);
+
+            _form = form;
+
+            String schemaName = form.getSchemaName();
+            String queryName = form.getQueryName();
+
+            QueryView queryView = QueryView.create(form, errors);
+            TableInfo ti = queryView.getTable();
+            List<String> pks = ti.getPkColumnNames();
+            String keyField = null;
+            if (pks.size() == 1)
+                keyField = pks.get(0);
+
+            ActionURL url = getViewContext().getActionURL().clone();
+
+            if (keyField != null)
+            {
+                String detailsStr = "/ehr/dataEntryFormForQuery.view?schemaName=" + schemaName + "&queryName=" + queryName;
+                for (String pkCol : ti.getPkColumnNames())
+                {
+                    detailsStr += "&" + pkCol + "=${" + pkCol + "}";
+                }
+                DetailsURL updateUrl = DetailsURL.fromString(detailsStr);
+                updateUrl.setContainerContext(getContainer());
+
+                DetailsURL deleteUrl = DetailsURL.fromString("/query/deleteQueryRows.view?schemaName=" + schemaName + "&query.queryName=" + queryName);
+                deleteUrl.setContainerContext(getContainer());
+
+                url.addParameter("updateURL", updateUrl.toString());
+                url.addParameter("deleteURL", deleteUrl.toString());
+                url.addParameter("showInsertNewButton", false);
+            }
+
+            url.addParameter("queryName", queryName);
+            url.addParameter("allowChooseQuery", false);
+            url.addParameter("dataRegionName", "query");
+
+            WebPartFactory factory = Portal.getPortalPartCaseInsensitive("Query");
+            Portal.WebPart part = factory.createWebPart();
+            part.setProperties(url.getQueryString());
+
+            QueryWebPart qwp = new QueryWebPart(getViewContext(), part);
+            qwp.setTitle(ti.getTitle());
+            qwp.setFrame(WebPartView.FrameType.NONE);
+            return qwp;
+        }
+
+        public NavTree appendNavTrail(NavTree root)
+        {
+            TableInfo ti = null;
+            try
+            {
+                ti = _form.getSchema() == null ? null : _form.getSchema().getTable(_form.getQueryName());
+            }
+            catch (QueryParseException x)
+            {
+                /* */
+            }
+
+            root.addChild(ti == null ? _form.getQueryName() : ti.getTitle(), _form.urlFor(QueryAction.executeQuery));
+            return root;
+        }
+
+        protected void ensureQueryExists(QueryForm form)
+        {
+            if (form.getSchema() == null)
+            {
+                throw new NotFoundException("Could not find schema: " + form.getSchemaName());
+            }
+
+            if (StringUtils.isEmpty(form.getQueryName()))
+            {
+                throw new NotFoundException("Query not specified");
+            }
+
+            if (!queryExists(form))
+            {
+                throw new NotFoundException("Query '" + form.getQueryName() + "' in schema '" + form.getSchemaName() + "' doesn't exist.");
+            }
+        }
+
+        protected boolean queryExists(QueryForm form)
+        {
+            try
+            {
+                return form.getSchema() != null && form.getSchema().getTable(form.getQueryName()) != null;
+            }
+            catch (QueryParseException x)
+            {
+                // exists with errors
+                return true;
+            }
+            catch (QueryException x)
+            {
+                // exists with errors
+                return true;
+            }
         }
     }
 
@@ -773,9 +892,9 @@ public class EHRController extends SpringActionController
             return _redacted;
         }
 
-        public void setRedacted(Boolean redacted)
+        public void setRedacted(boolean redacted)
         {
-            _redacted = redacted == null ? false : redacted;
+            _redacted = redacted;
         }
 
         public boolean isIncludeDistinctTypes()
@@ -897,30 +1016,58 @@ public class EHRController extends SpringActionController
         @Override
         public ModelAndView getView(EnterDataForm form, BindException errors) throws Exception
         {
-            if ((form.getFormType() == null) && (form.getQueryName() == null && form.getSchemaName() == null))
+            if (form.getFormType() == null)
             {
-                errors.reject(ERROR_MSG, "Must provide either the form type or schema/query");
+                errors.reject(ERROR_MSG, "Must provide either the form type");
                 return null;
             }
 
-            DataEntryForm def = null;
-            if (form.getFormType() != null)
+            DataEntryForm def = DataEntryManager.get().getFormByName(form.getFormType(), getContainer(), getUser());
+            if (def == null)
             {
-                def = DataEntryManager.get().getFormByName(form.getFormType(), getContainer(), getUser());
-                if (def == null)
-                {
-                    errors.reject(ERROR_MSG, "Unknown form type: " + form.getFormType());
-                    return new SimpleErrorView(errors);
-                }
+                errors.reject(ERROR_MSG, "Unknown form type: " + form.getFormType());
+                return new SimpleErrorView(errors);
             }
-            else
+
+            _title = def.getLabel();
+
+            JspView<DataEntryForm> view = new JspView<>("/org/labkey/ehr/view/dataEntryForm.jsp", def);
+            view.setTitle(def.getLabel());
+            view.setHidePageTitle(true);
+            view.setFrame(WebPartView.FrameType.PORTAL);
+
+            view.addClientDependency(ClientDependency.fromFilePath("ehr/ehr_ext4_dataEntry"));
+            view.addClientDependencies(def.getClientDependencies());
+
+            return view;
+        }
+
+        @Override
+        public NavTree appendNavTrail(NavTree root)
+        {
+            return root.addChild(_title == null ? "Enter Data" : _title);
+        }
+    }
+
+    @RequiresPermissionClass(EHRDataEntryPermission.class)
+    public class DataEntryFormForQueryAction extends SimpleViewAction<EnterDataForm>
+    {
+        private String _title = null;
+
+        @Override
+        public ModelAndView getView(EnterDataForm form, BindException errors) throws Exception
+        {
+            if (form.getQueryName() == null || form.getSchemaName() == null)
             {
-                def = DataEntryManager.get().getFormForQuery(form.getSchemaName(), form.getQueryName(), getContainer(), getUser());
-                if (def == null)
-                {
-                    errors.reject(ERROR_MSG, "Unable to create form for query: " + form.getSchemaName() + "." + form.getQueryName());
-                    return new SimpleErrorView(errors);
-                }
+                errors.reject(ERROR_MSG, "Must provide either the schema/query");
+                return null;
+            }
+
+            DataEntryForm def = DataEntryManager.get().getFormForQuery(form.getSchemaName(), form.getQueryName(), getContainer(), getUser());
+            if (def == null)
+            {
+                errors.reject(ERROR_MSG, "Unable to create form for query: " + form.getSchemaName() + "." + form.getQueryName());
+                return new SimpleErrorView(errors);
             }
 
             _title = def.getLabel();

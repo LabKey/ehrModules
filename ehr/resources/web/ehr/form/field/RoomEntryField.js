@@ -101,5 +101,6 @@ Ext4.define('EHR.form.field.RoomEntryField', {
         }
 
         EHR.DataEntryUtils.setSiblingFields(this, vals);
+        this.setValue(data.getCurrentRoom());
     }
 });

@@ -453,23 +453,8 @@ public class EHRManager
                 for (String[] cols : toRemove)
                 {
                     String indexName = tableName + "_" + StringUtils.join(cols, "_");
-                    Set<String> indexNames = new CaseInsensitiveHashSet();
-                    DatabaseMetaData meta = schema.getScope().getConnection().getMetaData();
-                    ResultSet rs = null;
-                    try
-                    {
-                        rs = meta.getIndexInfo(schema.getScope().getDatabaseName(), schema.getName(), tableName, false, false);
-                        while (rs.next())
-                        {
-                            indexNames.add(rs.getString("INDEX_NAME"));
-                        }
-                    }
-                    finally
-                    {
-                        ResultSetUtil.close(rs);
-                    }
 
-                    boolean exists = indexNames.contains(indexName);
+                    boolean exists = doesIndexExist(schema, tableName, indexName);
                     if (exists)
                     {
                         if (commitChanges)
@@ -496,6 +481,7 @@ public class EHRManager
                 if (d.getLabel().equalsIgnoreCase("Housing"))
                 {
                     toAdd.add(new String[]{"participantid", "enddate"});
+                    toAdd.add(new String[]{"participantid", "include:date,cage,room"});
                     toAdd.add(new String[]{"lsid", "participantid"});
                 }
                 else if (d.getLabel().equalsIgnoreCase("Assignment"))
@@ -586,11 +572,7 @@ public class EHRManager
                     {
                         if (commitChanges)
                         {
-                            messages.add("Dropping index on column(s): " + StringUtils.join(cols, ", ") + " for dataset: " + d.getLabel());
-                            String sqlString = "DROP INDEX " + indexName + " ON " + realTable.getSelectName();
-                            SQLFragment sql = new SQLFragment(sqlString);
-                            SqlExecutor se = new SqlExecutor(schema);
-                            se.execute(sql);
+                            dropIndex(schema, realTable, indexName, cols, d.getLabel(), messages);
                         }
                         else
                         {
@@ -612,18 +594,7 @@ public class EHRManager
                                 columns.add(name);
                             }
 
-                            messages.add("Creating index on column(s): " + StringUtils.join(columns, ", ") + " for dataset: " + d.getLabel());
-                            String sqlString = "CREATE INDEX " + indexName + " ON " + realTable.getSelectName() + "(" + StringUtils.join(columns, ", ") + ")";
-                            if (schema.getSqlDialect().isSqlServer())
-                            {
-                                if (includedCols != null)
-                                    sqlString += " INCLUDE (" + StringUtils.join(includedCols, ", ") + ") ";
-
-                                sqlString += " WITH (DATA_COMPRESSION = ROW)";
-                            }
-                            SQLFragment sql = new SQLFragment(sqlString);
-                            SqlExecutor se = new SqlExecutor(schema);
-                            se.execute(sql);
+                            createIndex(schema, realTable, d.getLabel(), indexName, columns, includedCols, messages);
                         }
                         else
                         {
@@ -632,6 +603,10 @@ public class EHRManager
                     }
                 }
             }
+
+            //add study.participant indexes
+            createParticipantIndexes(messages, commitChanges, rebuildIndexes);
+
             transaction.commit();
 
             if (shouldClearCaches)
@@ -651,6 +626,78 @@ public class EHRManager
         }
 
         return messages;
+    }
+
+    private void createParticipantIndexes(List<String> messages, boolean commitChanges, boolean rebuildIndexes) throws SQLException
+    {
+        DbSchema schema = DbSchema.get("study");
+        TableInfo realTable = schema.getTable("participant");
+        String indexName = "EHR_INDEX_container_participantid";
+        List<String> cols = Arrays.asList("container", "participantid");
+        String label = "participant";
+
+        boolean exists = doesIndexExist(schema, "participant", indexName);
+
+        if (commitChanges && (!exists || rebuildIndexes))
+        {
+            if (exists)
+                dropIndex(schema, realTable, indexName, cols, label, messages);
+
+            createIndex(schema, realTable, label, indexName, cols, null, messages);
+        }
+        else if ((!exists || rebuildIndexes))
+        {
+            if (exists)
+                messages.add("Will drop index on column(s): container, participantid" + " for table: study.participant");
+
+            messages.add("Will create index on column(s): container, participantid" + " for table: study.participant");
+        }
+    }
+
+    private void createIndex(DbSchema schema, TableInfo realTable, String tableName, String indexName, List<String> columns, String[] includedCols, List<String> messages)
+    {
+        messages.add("Creating index on column(s): " + StringUtils.join(columns, ", ") + " for table: " + tableName);
+        String sqlString = "CREATE INDEX " + indexName + " ON " + realTable.getSelectName() + "(" + StringUtils.join(columns, ", ") + ")";
+        if (schema.getSqlDialect().isSqlServer())
+        {
+            if (includedCols != null)
+                sqlString += " INCLUDE (" + StringUtils.join(includedCols, ", ") + ") ";
+
+            sqlString += " WITH (DATA_COMPRESSION = ROW)";
+        }
+        SQLFragment sql = new SQLFragment(sqlString);
+        SqlExecutor se = new SqlExecutor(schema);
+        se.execute(sql);
+    }
+
+    private boolean doesIndexExist(DbSchema schema, String tableName, String indexName) throws SQLException
+    {
+        Set<String> indexNames = new CaseInsensitiveHashSet();
+        DatabaseMetaData meta = schema.getScope().getConnection().getMetaData();
+        ResultSet rs = null;
+        try
+        {
+            rs = meta.getIndexInfo(schema.getScope().getDatabaseName(), schema.getName(), tableName, false, false);
+            while (rs.next())
+            {
+                indexNames.add(rs.getString("INDEX_NAME"));
+            }
+        }
+        finally
+        {
+            ResultSetUtil.close(rs);
+        }
+
+        return indexNames.contains(indexName);
+    }
+
+    private void dropIndex(DbSchema schema, TableInfo realTable, String indexName, List<String> cols, String tableName, List<String> messages)
+    {
+        messages.add("Dropping index on column(s): " + StringUtils.join(cols, ", ") + " for dataset: " + tableName);
+        String sqlString = "DROP INDEX " + indexName + " ON " + realTable.getSelectName();
+        SQLFragment sql = new SQLFragment(sqlString);
+        SqlExecutor se = new SqlExecutor(schema);
+        se.execute(sql);
     }
 
     //the module's SQL scripts create indexes, but apparently only SQL server enterprise supports compression,
@@ -871,6 +918,7 @@ public class EHRManager
                     {
                         row.put("requestid", null);
                         row.put("qcstate", null);
+                        row.put("taskid", null);
                         row.put("qcstateLabel", "Request: Approved");
 
                         requestsToQueue.add(row);

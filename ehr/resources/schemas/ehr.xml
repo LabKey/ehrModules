@@ -1441,6 +1441,7 @@
             </ns:column>
             <ns:column columnName="coefficient">
                 <ns:nullable>true</ns:nullable>
+                <ns:formatString>##.######</ns:formatString>
             </ns:column>
             <ns:column columnName="container">
                 <ns:isUserEditable>false</ns:isUserEditable>

@@ -8,6 +8,7 @@ require("ehr/triggers").initScript(this);
 
 function onInit(event, helper){
     helper.decodeExtraContextProperty('bloodInTransaction');
+    helper.decodeExtraContextProperty('weightInTransaction');
 
     helper.registerRowProcessor(function(helper, row){
         if (!row.row)
@@ -66,10 +67,6 @@ function onUpsert(helper, scriptErrors, row, oldRow){
         }
     }
 
-    if (!row.quantity && row.num_tubes && row.tube_vol){
-        row.quantity = row.num_tubes * row.tube_vol;
-    }
-
     if (row.quantity === 0){
         EHR.Server.Utils.addError(scriptErrors, 'quantity', 'This field is required', 'WARN');
     }
@@ -118,7 +115,13 @@ function onUpsert(helper, scriptErrors, row, oldRow){
                 draws = map[row.Id];
             }
 
-            var msg = helper.getJavaHelper().verifyBloodVolume(row.id, row.date, draws, row.objectid, row.quantity);
+            var weightMap = helper.getProperty('weightInTransaction');
+            var weights = [];
+            if (weightMap && weightMap[row.Id]){
+                weights = weightMap[row.Id];
+            }
+
+            var msg = helper.getJavaHelper().verifyBloodVolume(row.id, row.date, draws, weights, row.objectid, row.quantity);
             if (msg != null){
                 EHR.Server.Utils.addError(scriptErrors, 'num_tubes', msg, errorQC);
                 EHR.Server.Utils.addError(scriptErrors, 'quantity', msg, errorQC);

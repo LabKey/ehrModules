@@ -35,6 +35,7 @@ public class DepartureDemographicsProvider extends AbstractDemographicsProvider
     public DepartureDemographicsProvider()
     {
         super("study", "demographicsMostRecentDeparture");
+        _supportsQCState = false;
     }
 
     public String getName()

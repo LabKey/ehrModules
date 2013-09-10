@@ -14,7 +14,7 @@ function makePanel(){
         return;
 
     Ext4.define('EHR.panel.QuickSearchPanel', {
-        extend: 'Ext.panel.Panel',
+        extend: 'Ext.form.Panel',
         FIELD_WIDTH: 180,
         BUTTON_WIDTH: 125,
         BUTTON_STYLE: 'margin-left: 4px;',
@@ -40,13 +40,23 @@ function makePanel(){
                     name: 'animal',
                     itemId: 'animalField',
                     style: this.FIELD_STYLE,
-                    width: this.FIELD_WIDTH
+                    width: this.FIELD_WIDTH,
+                    listeners: {
+                        scope: this,
+                        specialkey: function(field, e){
+                            if (e.getKey() === e.ENTER){
+                                var btn = field.up('panel').down('#animalBtn');
+                                btn.handler.call(btn.scope || btn, btn);
+                            }
+                        }
+                    }
                 },{
                     xtype: 'button',
                     border: true,
                     text: 'Show Animal',
                     style: this.BUTTON_STYLE,
                     width: this.BUTTON_WIDTH,
+                    itemId: 'animalBtn',
                     handler: function (btn){
                         var field = btn.up('panel').down('#animalField');
                         var value = field.getValue();
@@ -137,13 +147,23 @@ function makePanel(){
                     xtype: 'ehr-projectfield',
                     fieldLabel: null,
                     width: this.FIELD_WIDTH,
-                    style: this.FIELD_STYLE
+                    style: this.FIELD_STYLE,
+                    listeners: {
+                        scope: this,
+                        specialkey: function(field, e){
+                            if (!field.isExpanded && e.getKey() === e.ENTER){
+                                var btn = field.up('panel').down('#projectBtn');
+                                btn.handler.call(btn.scope || btn, btn);
+                            }
+                        }
+                    }
                 },{
                     xtype: 'button',
                     border: true,
                     text: 'Show Project',
                     width: this.BUTTON_WIDTH,
                     style: this.BUTTON_STYLE,
+                    itemId: 'projectBtn',
                     handler: function (btn){
                         var field = btn.up('panel').down('#projectField');
                         var value = field.getValue();
@@ -165,13 +185,23 @@ function makePanel(){
                     xtype: 'ehr-protocolfield',
                     width: this.FIELD_WIDTH,
                     style: this.FIELD_STYLE,
-                    name: 'protocolField'
+                    name: 'protocolField',
+                    listeners: {
+                        scope: this,
+                        specialkey: function(field, e){
+                            if (!field.isExpanded && e.getKey() === e.ENTER){
+                                var btn = field.up('panel').down('#protocolBtn');
+                                btn.handler.call(btn.scope || btn, btn);
+                            }
+                        }
+                    }
                 },{
                     xtype: 'button',
                     border: true,
                     text: 'Show Protocol',
                     width: this.BUTTON_WIDTH,
                     style: this.BUTTON_STYLE,
+                    itemId: 'protocolBtn',
                     handler: function(btn){
                         var field = btn.up('panel').down('#protocolField');
                         var value = field.getValue();
@@ -193,11 +223,21 @@ function makePanel(){
                     itemId: 'roomField',
                     name: 'room',
                     width: this.FIELD_WIDTH,
-                    style: this.FIELD_STYLE
+                    style: this.FIELD_STYLE,
+                    listeners: {
+                        scope: this,
+                        specialkey: function(field, e){
+                            if (!field.isExpanded && e.getKey() === e.ENTER){
+                                var btn = field.up('panel').down('#roomBtn');
+                                btn.handler.call(btn.scope || btn, btn);
+                            }
+                        }
+                    }
                 },{
                     xtype: 'button',
                     border: true,
                     text: 'Show Room',
+                    itemId: 'roomBtn',
                     width: this.BUTTON_WIDTH,
                     style: this.BUTTON_STYLE,
                     handler: function(btn){
@@ -215,11 +255,31 @@ function makePanel(){
                 }]
             });
 
+            if (this.hoverPart)
+                this.mon(this.hoverPart, 'beforehide', this.onBeforeHide, this);
+
             this.callParent(arguments);
+        },
+
+        onBeforeHide: function(hover){
+            return !this.hasFocus();
+        },
+
+        hasFocus: function(){
+            var hasFocus = false;
+            this.getForm().getFields().each(function(f){
+                if (f.hasFocus){
+                    hasFocus = true;
+                    return false;
+                }
+            }, this);
+            return hasFocus;
         }
     });
 
-    Ext4.create('EHR.panel.QuickSearchPanel').render(webpart.wrapperDivId);
+    Ext4.create('EHR.panel.QuickSearchPanel', {
+        hoverPart: HoverNavigation.Parts[webpart.hoverPartName]
+    }).render(webpart.wrapperDivId);
 }
 
 </script>

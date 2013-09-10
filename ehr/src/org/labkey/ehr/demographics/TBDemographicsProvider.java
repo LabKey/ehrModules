@@ -34,6 +34,7 @@ public class TBDemographicsProvider extends AbstractListDemographicsProvider
     public TBDemographicsProvider()
     {
         super("study", "demographicsMostRecentTBDate", "tb");
+        _supportsQCState = false;
     }
 
     protected Set<FieldKey> getFieldKeys()

@@ -744,7 +744,7 @@ public class TriggerScriptHelper
             clinpathRow.put("requestId", requestId);
             clinpathRow.put("sampletype", "Blood - EDTA Whole Blood");
             clinpathRow.put("collectedBy", performedby);
-            clinpathRow.put("serviceRequested", testId);
+            clinpathRow.put("servicerequested", testId);
             clinpathRow.put("QCStateLabel", "Request: Pending");
 
             clinpathRows.add(clinpathRow);
@@ -901,22 +901,23 @@ public class TriggerScriptHelper
                     continue;
                 }
 
-                EHRQCState qc = null;
-                if (map.containsKey("QCState"))
-                {
-                    Integer i = ConvertHelper.convert(map.get("QCState"), Integer.class);
-                    qc = getQCStateForRowId(i);
-                }
-                else if (map.containsKey("QCStateLabel"))
-                {
-                    qc = getQCStateForLabel((String)map.get("QCStateLabel"));
-                }
-
-                if (qc == null || (!qc.isPublicData() && !qc.isDraftData()))
-                {
-                    _log.info("skipping blood row due to QCState");
-                    continue;
-                }
+                //NOTE: it would be useful to consider QCState, but we need to include pending requests in the current transaction, which this would exclude
+//                EHRQCState qc = null;
+//                if (map.containsKey("QCState"))
+//                {
+//                    Integer i = ConvertHelper.convert(map.get("QCState"), Integer.class);
+//                    qc = getQCStateForRowId(i);
+//                }
+//                else if (map.containsKey("QCStateLabel"))
+//                {
+//                    qc = getQCStateForLabel((String)map.get("QCStateLabel"));
+//                }
+//
+//                if (qc != null && (!qc.isPublicData() && !qc.isDraftData()))
+//                {
+//                    _log.info("skipping blood row due to QCState");
+//                    continue;
+//                }
 
                 try
                 {
@@ -969,7 +970,50 @@ public class TriggerScriptHelper
         return quantityInTransaction;
     }
 
-    public String verifyBloodVolume(String id, Date date, List<Map<String, Object>> recordsInTransaction, String objectId, Double quantity)
+    private Double extractWeightForId(String id, List<Map<String, Object>> weightsInTransaction)
+    {
+        if (weightsInTransaction == null)
+            return null;
+
+        Double weight = null;
+        Date lastDate = null;
+
+        for (Map<String, Object> origMap : weightsInTransaction)
+        {
+            Map<String, Object> map = new CaseInsensitiveHashMap<Object>(origMap);
+            if (!map.containsKey("date"))
+            {
+                _log.warn("TriggerScriptHelper.extractWeightForId was passed a previous record lacking a date");
+                continue;
+            }
+
+            try
+            {
+                Date d = ConvertHelper.convert(map.get("date"), Date.class);
+                if (d == null)
+                    continue;
+
+                if (lastDate == null || d.after(lastDate))
+                {
+                    Double w = ConvertHelper.convert(map.get("weight"), Double.class);
+                    if (w != null)
+                    {
+                        lastDate = d;
+                        weight = w;
+                    }
+                }
+            }
+            catch (ConversionException e)
+            {
+                _log.error("TriggerScriptHelper.extractWeightForId was unable to parse date", e);
+                continue;
+            }
+        }
+
+        return weight;
+    }
+
+    public String verifyBloodVolume(String id, Date date, List<Map<String, Object>> recordsInTransaction, List<Map<String, Object>> weightsInTransaction, String objectId, Double quantity)
     {
         if (id == null || date == null || quantity == null)
             return null;
@@ -982,7 +1026,10 @@ public class TriggerScriptHelper
         if (species == null)
             return "Unknown species, unable to calculate allowable blood volume";
 
-        Double weight = ar.getMostRecentWeight();
+        Double weight = extractWeightForId(id, weightsInTransaction);
+        if (weight == null)
+            weight = ar.getMostRecentWeight();
+
         if (weight == null)
             return "Unknown weight, unable to calculate allowable blood volume";
 
@@ -1010,7 +1057,7 @@ public class TriggerScriptHelper
 
         if (bloodPrevious > maxAllowable)
         {
-            return "Blood volume of " + bloodPrevious + " exceeds allowable volume of " + maxAllowable + "' mL over the previous " + interval + " days";
+            return "Blood volume of " + quantity + " (" + bloodPrevious + " total) exceeds allowable volume of " + maxAllowable + "' mL over the previous " + interval + " days (" + weight + " kg)";
         }
 
         // if we didnt already have an error, check the future interval
@@ -1024,7 +1071,7 @@ public class TriggerScriptHelper
 
         if (bloodFuture > maxAllowable)
         {
-            return "Blood volume of " + bloodFuture + " conflicts with future draws. Max allowable is : " + maxAllowable + " mL";
+            return "Blood volume of " + bloodFuture + " conflicts with future draws. Max allowable is : " + maxAllowable + " mL (" + weight + " kg)";
         }
 
         return null;

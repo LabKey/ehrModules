@@ -130,6 +130,9 @@ public class DefaultLabworkType implements LabworkType
             return new HashMap<>();
         }
 
+        if (ti.getColumn("qcstate") != null)
+            filter.addCondition(FieldKey.fromString("QCState/publicdata"), true, CompareType.EQUAL);
+
         assert ti.getColumn(_runIdField) != null : "Unable to find runId column for table: " + _queryName;
         final Collection<ColumnInfo> cols = getColumns(ti);
         TableSelector ts = new TableSelector(ti, cols, filter, null);

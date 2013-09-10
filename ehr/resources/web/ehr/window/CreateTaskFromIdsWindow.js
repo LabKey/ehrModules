@@ -186,7 +186,7 @@ Ext4.define('EHR.window.CreateTaskFromIdsWindow', {
         var dataRegion = LABKEY.DataRegions[this.dataRegionName];
         LDK.Assert.assertNotEmpty('Unknown dataregion: ' + this.dataRegionName, dataRegion);
 
-        var sql = "SELECT DISTINCT s." + this.selectField + " as field FROM " + dataRegion.schemaName + ".\"" + dataRegion.queryName + "\" s " + LDK.Utils.getDataRegionWhereClause(dataRegion, 's');
+        var sql = "SELECT DISTINCT s." + this.selectField + " as field FROM " + dataRegion.schemaName + ".\"" + dataRegion.queryName + "\" s " + LDK.DataRegionUtils.getDataRegionWhereClause(dataRegion, 's');
 
         LABKEY.Query.executeSql({
             schemaName: 'study',

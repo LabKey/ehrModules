@@ -150,7 +150,7 @@ Ext4.define('EHR.window.GetDistinctWindow', {
         }
 
         var field = this.down('#field').getValue();
-        var sql = "SELECT DISTINCT s." + field + " as field FROM " + this.schemaName + ".\"" + this.queryName + "\" s " + LDK.Utils.getDataRegionWhereClause(dataRegion, 's');
+        var sql = "SELECT DISTINCT s." + field + " as field FROM " + this.schemaName + ".\"" + this.queryName + "\" s " + LDK.DataRegionUtils.getDataRegionWhereClause(dataRegion, 's');
 
         LABKEY.Query.executeSql({
             schemaName: 'study',

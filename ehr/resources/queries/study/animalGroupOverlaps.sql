@@ -7,7 +7,7 @@
 /**
   * This query is designed to find distinct animals that were part of a group at a given point in time
   */
-PARAMETERS(STARTDATE TIMESTAMP, ENDDATE TIMESTAMP)
+PARAMETERS(StartDate TIMESTAMP, EndDate TIMESTAMP)
 
 SELECT
   m.Id,
@@ -19,16 +19,16 @@ FROM ehr.animal_group_members m
 
 WHERE (
     /* entered startdate must be <= entered enddate */
-    coalesce( STARTDATE , cast('1900-01-01 00:00:00.0' as timestamp)) <= coalesce(ENDDATE, now())
+    coalesce( StartDate , cast('1900-01-01 00:00:00.0' as timestamp)) <= coalesce(EndDate, now())
     AND
 
     /* entered startdate must be less than record's enddate */
-    cast(coalesce( STARTDATE , cast('1900-01-01 00:00:00.0' as DATE)) AS DATE) <= m.enddateCoalesced
+    cast(coalesce( StartDate , cast('1900-01-01 00:00:00.0' as DATE)) AS DATE) <= m.enddateCoalesced
 
     and
 
     /* entered enddate must be greater than record's startdate */
-    cast(coalesce(ENDDATE, curdate()) AS DATE) >= m.dateOnly
+    cast(coalesce(EndDate, curdate()) AS DATE) >= m.dateOnly
   )
 
 GROUP BY m.groupId, m.id

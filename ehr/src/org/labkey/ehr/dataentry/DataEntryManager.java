@@ -28,7 +28,6 @@ import org.labkey.ehr.EHRModule;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -93,11 +92,7 @@ public class DataEntryManager
         if (ti == null)
             throw new IllegalArgumentException("Unable to find table: " + schemaName + "." + queryName);
 
-        SimpleGridpanelForm type = SimpleGridpanelForm.create(ModuleLoader.getInstance().getModule(EHRModule.class), schemaName, queryName, "Custom");
-        type.getFormSections().get(0).setConfigSources(Collections.singletonList("SimpleForm"));
-        type.setJavascriptClass("EHR.panel.SimpleDataEntryPanel");
-
-        return type;
+        return SingleQueryForm.create(ModuleLoader.getInstance().getModule(EHRModule.class), ti);
     }
 
     public void registerDefaultFieldKeys(String schemaName, String queryName, List<FieldKey> keys)

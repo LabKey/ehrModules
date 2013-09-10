@@ -3,6 +3,9 @@ Ext4.define('EHR.form.field.UrinalysisResultField', {
     alias: 'widget.ehr-urinalysisresultfield',
 
     initComponent: function(){
+        this.plugins = this.plugins || [];
+        this.plugins.push('ldk-usereditablecombo');
+
         this.store = this.store || {
             store: {
                 type: 'labkey-store',

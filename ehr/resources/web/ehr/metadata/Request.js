@@ -182,7 +182,7 @@ EHR.Metadata.registerMetadata('Request', {
                     minValue: null
                 }
             },
-            serviceRequested: {
+            servicerequested: {
                 editorConfig: {
                     plugins: ['ehr-usereditablecombo']
                 }

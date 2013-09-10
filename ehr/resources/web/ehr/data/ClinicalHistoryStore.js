@@ -2,6 +2,8 @@
  * Copyright (c) 2013 LabKey Corporation
  *
  * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * @cfg containerPath
  */
 Ext4.define('EHR.data.ClinicalHistoryStore', {
     extend: 'Ext.data.Store',
@@ -30,7 +32,6 @@ Ext4.define('EHR.data.ClinicalHistoryStore', {
      * @param config.minDate
      * @param config.maxDate
      * @param config.caseId
-     * @param config.redacted
      * @param config.sortMode
      * @param config.checkedItems
      */
@@ -47,13 +48,13 @@ Ext4.define('EHR.data.ClinicalHistoryStore', {
         }
 
         LABKEY.Ajax.request({
-            url: LABKEY.ActionURL.buildURL('ehr', this.actionName),
+            url: LABKEY.ActionURL.buildURL('ehr', this.actionName, this.containerPath),
             params: {
                 subjectIds: config.subjectIds,
                 caseId: config.caseId,
                 minDate: config.minDate,
                 maxDate: config.maxDate,
-                redacted: !!config.redacted,
+                redacted: !!this.redacted,
                 includeDistinctTypes: !this.distinctTypes
             },
             scope: this,

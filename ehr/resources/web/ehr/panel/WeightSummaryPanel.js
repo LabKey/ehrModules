@@ -6,6 +6,7 @@
 /**
  * @cfg subjectId
  * @cfg showRawData
+ * @cfg containerPath
  */
 Ext4.define('EHR.panel.WeightSummaryPanel', {
     extend: 'Ext.panel.Panel',
@@ -40,6 +41,7 @@ Ext4.define('EHR.panel.WeightSummaryPanel', {
 
         //first summary
         LABKEY.Query.selectRows({
+            containerPath: this.containerPath,
             schemaName: 'study',
             queryName: 'demographicsWeightChange',
             columns: 'id,date,mostRecentWeightDate,mostRecentWeight,daysSinceWeight,minLast30,maxLast30,maxChange30,avgLast30,numLast30,minLast90,maxLast90,avgLast90,maxChange90,numLast90,minLast180,maxLast180,avgLast180,maxChange180,numLast180,minLast365,maxLast365,maxChange365,avgLast365,numLast365,minLast2Years,maxLast2Years,maxChange2Years,avgLast2Years,numLast2Years',

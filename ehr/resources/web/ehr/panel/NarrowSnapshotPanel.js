@@ -9,6 +9,8 @@ Ext4.define('EHR.panel.NarrowSnapshotPanel', {
 
     showLocationDuration: false,
 
+    minWidth: 800,
+
     initComponent: function(){
 
         this.defaultLabelWidth = 120;
@@ -29,14 +31,16 @@ Ext4.define('EHR.panel.NarrowSnapshotPanel', {
 
         firstCol.items = firstCol.items.concat(secondCol.items);
 
-        items[0].items.push({
-            xtype: 'displayfield',
-            style: 'margin-left: 5px;',
-            labelWidth: this.defaultLabelWidth,
-            fieldLabel: 'Medications',
-            itemId: 'medications',
-            width: 800
-        });
+        if (!this.redacted){
+            items[0].items.push({
+                xtype: 'displayfield',
+                style: 'margin-left: 5px;',
+                labelWidth: this.defaultLabelWidth,
+                fieldLabel: 'Medications',
+                itemId: 'medications',
+                width: 800
+            });
+        }
 
         return items;
     }

@@ -8,7 +8,8 @@
                         <isHidden>true</isHidden>
                     </column>
                     <column columnName="NumRoommates">
-                        <columnTitle>Number of Cagemates</columnTitle>
+                        <columnTitle># Cagemates</columnTitle>
+                        <description>The total number of animals in this cage, excluding the current animal</description>
                         <url>/query/executeQuery.view?schemaName=study&amp;
                             query.queryName=housing&amp;
                             query.room~eq=${Id/curLocation/room/room}&amp;
@@ -18,7 +19,8 @@
                         </url>
                     </column>
                     <column columnName="AnimalsInCage">
-                        <columnTitle># Animals In Cage</columnTitle>
+                        <columnTitle>Total Animals In Cage</columnTitle>
+                        <description>The total number of animals in this cage, including the current animal</description>
                         <url>/query/executeQuery.view?schemaName=study&amp;
                             query.queryName=housing&amp;
                             query.room~eq=${Id/curLocation/room/room}&amp;

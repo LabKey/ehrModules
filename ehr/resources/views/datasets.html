@@ -56,7 +56,7 @@ Ext4.onReady(function () {
                     cfg.items.push({
                         xtype: 'ldk-linkbutton',
                         tooltip: item.searchTooltip || 'Click to update records',
-                        href: LABKEY.ActionURL.buildURL('ldk', 'updateQuery', null, {schemaName: 'study', 'query.queryName': item.queryName, 'keyField': 'lsid'}),
+                        href: LABKEY.ActionURL.buildURL('ehr', 'updateQuery', null, {schemaName: 'study', 'query.queryName': item.queryName, 'keyField': 'lsid'}),
                         text: 'Update Records'
                     });
                 }

@@ -36,7 +36,12 @@ public class MarkCompletedButton extends SimpleButtonConfigFactory
 
     public MarkCompletedButton(Module owner, String schemaName, String queryName)
     {
-        super(owner, "Mark Completed", "");
+        this(owner, schemaName, queryName, "Mark Completed");
+    }
+
+    public MarkCompletedButton(Module owner, String schemaName, String queryName, String label)
+    {
+        super(owner, label, "");
         setClientDependencies(ClientDependency.fromModuleName("ehr"));
         _schemaName = schemaName;
         _queryName = queryName;

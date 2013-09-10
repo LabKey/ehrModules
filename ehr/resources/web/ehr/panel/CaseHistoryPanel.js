@@ -15,6 +15,7 @@ Ext4.define('EHR.panel.CaseHistoryPanel', {
     getStoreConfig: function(){
         return {
             type: 'ehr-clinicalhistorystore',
+            containerPath: this.containerPath,
             actionName: 'getCaseHistory',
             sorters: [{property: 'group'}, {property: 'timeString'}]
         };

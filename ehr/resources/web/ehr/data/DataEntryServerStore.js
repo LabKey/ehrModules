@@ -300,7 +300,7 @@ Ext4.define('EHR.data.DataEntryServerStore', {
     },
 
     transformRecordsToClient: function(sc,targetChildStores, changedStoreIDs, syncErrorsOnly){
-        var fieldMap, clientStore, serverFieldName, clientKeyField;
+        var fieldMap, clientStore, serverFieldName, clientKeyField, toRemove = [];
         this.each(function(serverModel){
             var found = false;
 
@@ -323,7 +323,7 @@ Ext4.define('EHR.data.DataEntryServerStore', {
 
                         if (foundRecord){
                             console.log('have server record for a removed client record, removing');
-                            this.remove(serverModel);
+                            toRemove.push(foundRecord);
                             return;
                         }
                     }
@@ -357,7 +357,7 @@ Ext4.define('EHR.data.DataEntryServerStore', {
                             var clientVal = Ext4.isEmpty(clientModel.get(clientFieldName)) ? null : clientModel.get(clientFieldName);
                             var serverVal = Ext4.isEmpty(serverModel.get(serverFieldName)) ? null : serverModel.get(serverFieldName);
                             if (serverVal != clientVal){
-                                clientModel.set(clientFieldName, serverModel.get(serverFieldName));
+                                clientModel.set(clientFieldName, serverVal);
                                 changedStoreIDs[clientStore.storeId] = true;
                             }
                         }
@@ -390,6 +390,12 @@ Ext4.define('EHR.data.DataEntryServerStore', {
                 }
             }
         }, this);
+
+        if (toRemove.length){
+            Ext4.Array.forEach(toRemove, function(r){
+                this.remove(r);
+            }, this);
+        }
     },
 
     removeMatchingErrors: function(clientModel, clientFieldName, changedStoreIDs, clientStore){

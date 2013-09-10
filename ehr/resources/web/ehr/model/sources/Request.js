@@ -178,6 +178,9 @@ EHR.model.DataModelManager.registerMetadata('Request', {
             date: {
                 editorConfig: {
                     minValue: null
+                },
+                getInitialValue: function(v, rec){
+                    return v || new Date();
                 }
             },
             method: {

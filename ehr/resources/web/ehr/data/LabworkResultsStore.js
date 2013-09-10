@@ -11,7 +11,7 @@ Ext4.define('EHR.data.LabworkResultsStore', {
     },
 
     updateUnits: function(record, modifiedFieldNames){
-        if (record.get('testid')){
+        if (record.fields.get('testid') && record.get('testid')){
             modifiedFieldNames = modifiedFieldNames || [];
             if (record.get('units') && modifiedFieldNames.indexOf('testid') == -1){
                 return;

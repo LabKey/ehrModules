@@ -864,7 +864,7 @@ EHR.Metadata.registerMetadata('Default', {
             sampleId : {shownInGrid: false},
             sampleQuantity: {shownInGrid: false},
             quantityUnits : {shownInGrid: false},
-            serviceRequested: {
+            servicerequested: {
                 allowBlank: false,
                 editorConfig: {
                     plugins: ['ehr-usereditablecombo'],

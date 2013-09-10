@@ -205,7 +205,7 @@ public class EHRApiTest extends AbstractEHRTest
                     {SUBJECTS[1], pastDate1, pastDate2, PROJECTS[0]},
                     {SUBJECTS[1], pastDate2, null, PROJECTS[2]}
             };
-            insertCommand = prepareInsertCommand("study", "Housing", FIELD_LSID, fields, data);
+            insertCommand = prepareInsertCommand("study", "Assignment", FIELD_LSID, fields, data);
             doSaveRows(DATA_ADMIN, Collections.singletonList(insertCommand), extraContext, true);
         }
         catch (ParseException e)
@@ -483,7 +483,7 @@ public class EHRApiTest extends AbstractEHRTest
                 List<String> errs = errors.get(field);
 
                 log("Expected " + expectedErrs.size() + " errors for field " + field);
-                Assert.assertEquals("Wrong number of errors found for field " + field + ": ", expectedErrs.size(), errs.size());
+                Assert.assertEquals("Wrong number of errors found for field: " + field + "; " + StringUtils.join(errs, "; "), expectedErrs.size(), errs.size());
                 for (String e : expectedErrs)
                 {
                     boolean success = errs.remove(e);

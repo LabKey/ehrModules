@@ -10,8 +10,14 @@ EHR.DemographicsCache = new function(){
     var expireThreshold = 30000; //30-second threshold
 
     function loadDemographics(animalIds, callback, scope){
+        var ctx = EHR.Utils.getEHRContext();
+        LDK.Assert.assertNotEmpty('EHRContext not loaded.  This might indicate a ClientDependency issue', ctx);
+        if (!ctx){
+            return;
+        }
+
         return LABKEY.Ajax.request({
-            url : LABKEY.ActionURL.buildURL('ehr', 'getDemographics'),
+            url : LABKEY.ActionURL.buildURL('ehr', 'getDemographics', ctx['EHRStudyContainer']),
             method : 'POST',
             params: {
                 ids: animalIds

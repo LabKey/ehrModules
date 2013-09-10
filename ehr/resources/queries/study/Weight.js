@@ -12,6 +12,47 @@ function onInit(event, helper){
         allowDeadIds: true,
         skipIdFormatCheck: true
     });
+
+    helper.registerRowProcessor(function(helper, row){
+        if (!row.row)
+            return;
+
+        row = row.row;
+
+        if (!row.Id || !row.weight){
+            return;
+        }
+
+        var weightInTransaction = helper.getProperty('weightInTransaction');
+        weightInTransaction = weightInTransaction || {};
+        weightInTransaction[row.Id] = weightInTransaction[row.Id] || [];
+
+        var shouldAdd = true;
+        if (row.objectid){
+            LABKEY.ExtAdapter.each(weightInTransaction[row.Id], function(r){
+                if (r.objectid == row.objectid){
+                    if (r.weight != row.weight){
+                        r.weight = row.weight;
+                    }
+                    else {
+                        shouldAdd = false;
+                        return false;
+                    }
+                }
+            }, this);
+        }
+
+        if (shouldAdd){
+            weightInTransaction[row.Id].push({
+                objectid: row.objectid,
+                date: row.date,
+                qcstate: row.QCState,
+                weight: row.weight
+            });
+        }
+
+        helper.setProperty('weightInTransaction', weightInTransaction);
+    });
 }
 
 function onUpsert(helper, scriptErrors, row, oldRow){

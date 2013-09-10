@@ -1712,7 +1712,7 @@
             <ns:column columnName="dataset">
             </ns:column>
             <ns:column columnName="chargetype">
-                <ns:columnTitle>Charge Type</ns:columnTitle>
+                <ns:columnTitle>Group</ns:columnTitle>
             </ns:column>
             <ns:column columnName="sampletype">
                 <ns:columnTitle>Sample Type</ns:columnTitle>

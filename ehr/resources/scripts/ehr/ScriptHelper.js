@@ -454,6 +454,5 @@ EHR.Server.ScriptHelper = function(extraContext, event, EHR){
         getSessionGUID: function(){
             return props.sessionGUID;
         }
-
     }
 };

@@ -17,14 +17,17 @@ Ext4.define('EHR.panel.SmallFormSnapshotPanel', {
 
     getItems: function(){
         var items = this.getBaseItems();
-        items[0].items.push({
-            xtype: 'displayfield',
-            style: 'margin-left: 5px;',
-            labelWidth: this.defaultLabelWidth,
-            fieldLabel: 'Medications',
-            itemId: 'medications',
-            width: 800
-        });
+
+        if (!this.redacted){
+            items[0].items.push({
+                xtype: 'displayfield',
+                style: 'margin-left: 5px;',
+                labelWidth: this.defaultLabelWidth,
+                fieldLabel: 'Medications',
+                itemId: 'medications',
+                width: 800
+            });
+        }
 
         return items;
     },
@@ -75,10 +78,10 @@ Ext4.define('EHR.panel.SmallFormSnapshotPanel', {
             }, this);
 
             if (values.length)
-                this.down('#medications').setValue('<table>' + values.join('') + '</table>');
+                this.safeAppend('#medications', '<table>' + values.join('') + '</table>');
         }
         else {
-            this.down('#medications').setValue('None');
+            this.safeAppend('#medications', 'None');
         }
     },
 

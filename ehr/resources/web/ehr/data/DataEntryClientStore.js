@@ -140,23 +140,6 @@ Ext4.define('EHR.data.DataEntryClientStore', {
         Ext4.Array.forEach(records, function(r){
             var recs = [];
             if (!r.phantom && r.get('requestid')){
-                r.beginEdit();
-
-                //note: we reject changes since we dont want to retain modifications made in this form
-                r.reject();
-
-                //reset the date
-                if (r.get('daterequested')){
-                    console.log('setting daterequested');
-                    r.set('date', r.get('daterequested'));
-                }
-
-                r.set('taskid', null);
-
-                r.set('QCState', EHR.Security.getQCStateByLabel('Request: Approved').RowId);
-
-                r.endEdit(true);
-
                 r.isRemovedRequest = true;
             }
         }, this);
@@ -213,8 +196,7 @@ Ext4.define('EHR.data.DataEntryClientStore', {
                     var serverModel = serverStore.findRecord(clientKeyField, key);
                     if (serverModel){
                         if (clientModel.isRemovedRequest){
-                            serverModel.isRemovedRequest = true;
-                            console.error('not yet implemented');
+                            this.prepareServerModelForDelete(serverModel);
                         }
                         else {
                             serverStore.remove(serverModel);
@@ -223,6 +205,32 @@ Ext4.define('EHR.data.DataEntryClientStore', {
                 }, this);
             }
         }
+    },
+
+    prepareServerModelForDelete: function(serverModel){
+        serverModel.isRemovedRequest = true;
+
+        if (serverModel.phantom)
+            return;
+
+        serverModel.beginEdit();
+
+        //note: we reject changes since we dont want to retain modifications made in this form
+        serverModel.reject();
+
+        //reset the date
+        if (serverModel.fields.get('daterequested') && serverModel.get('daterequested')){
+            console.log('setting daterequested');
+            serverModel.set('date', serverModel.get('daterequested'));
+        }
+
+        if (serverModel.fields.get('taskid'))
+            serverModel.set('taskid', null);
+
+        if (serverModel.fields.get('QCState'))
+            serverModel.set('QCState', EHR.Security.getQCStateByLabel('Request: Approved').RowId);
+
+        serverModel.endEdit(true);
     },
 
     //creates and adds a model to the provided client store, handling any dependencies within other stores in the collection

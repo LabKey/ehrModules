@@ -70,6 +70,6 @@ function onUpsert(helper, scriptErrors, row, oldRow){
         !(oldRow && oldRow.Id && oldRow.Id==row.Id) &&
         row.Id && row.project && row.date
     ){
-        helper.getJavaHelper().verifyAssignmentCounts(Id, row.project);
+        helper.getJavaHelper().verifyAssignmentCounts(row.Id, row.project);
     }
 }

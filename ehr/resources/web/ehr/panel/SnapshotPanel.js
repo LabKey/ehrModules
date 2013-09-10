@@ -9,6 +9,7 @@
  * @cfg showLocationDuration
  * @cgf showExtendedInformation
  * @cfg hrefTarget
+ * @cfg redacted
  */
 Ext4.define('EHR.panel.SnapshotPanel', {
     extend: 'Ext.form.Panel',
@@ -62,11 +63,13 @@ Ext4.define('EHR.panel.SnapshotPanel', {
                         itemId: 'location'
                     },{
                         xtype: 'displayfield',
+                        hidden: this.redacted,
                         itemId: 'assignments',
                         fieldLabel: 'Projects'
                     },{
                         xtype: 'displayfield',
                         fieldLabel: 'Groups',
+                        hidden: this.redacted,
                         itemId: 'groups'
                     },{
                         xtype: 'displayfield',

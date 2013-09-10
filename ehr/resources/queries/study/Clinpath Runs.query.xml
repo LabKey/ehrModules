@@ -7,7 +7,7 @@
                 <importUrl />
                 <updateUrl />
                 <deleteUrl />
-                <titleColumn>serviceRequested</titleColumn>
+                <titleColumn>servicerequested</titleColumn>
                 <columns>
                     <column columnName="Id">
 

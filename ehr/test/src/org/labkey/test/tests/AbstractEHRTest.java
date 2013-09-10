@@ -338,6 +338,11 @@ abstract public class AbstractEHRTest extends SimpleApiTestWD implements Advance
         goToManageStudy();
         clickAndWait(Locator.linkWithText("Manage Dataset QC States"));
 
+        //TODO: it would be nice to get EnsureQCStatesAction to handle this
+        selectOptionByText(Locator.name("defaultPipelineQCState"), "Completed");
+        selectOptionByText(Locator.name("defaultAssayQCState"), "Completed");
+        selectOptionByText(Locator.name("defaultDirectEntryQCState"), "Completed");
+
         selectOptionByValue(Locator.name("showPrivateDataByDefault"), "true");
         clickButton("Done");
     }
@@ -367,18 +372,12 @@ abstract public class AbstractEHRTest extends SimpleApiTestWD implements Advance
         if (!getContainerPath().equals(getProjectName()))
             uncheckInheritedPermissions();
 
-        setPermissions(DATA_ADMIN.getGroup(), "Editor");
-        setPermissions(DATA_ADMIN.getGroup(), "EHR Data Entry");
-        setPermissions(REQUESTER.getGroup(), "Editor");
-        setPermissions(REQUESTER.getGroup(), "EHR Data Entry");
-        setPermissions(BASIC_SUBMITTER.getGroup(), "Editor");
-        setPermissions(BASIC_SUBMITTER.getGroup(), "EHR Data Entry");
-        setPermissions(FULL_SUBMITTER.getGroup(), "Editor");
-        setPermissions(FULL_SUBMITTER.getGroup(), "EHR Data Entry");
-        setPermissions(FULL_UPDATER.getGroup(), "Editor");
-        setPermissions(FULL_UPDATER.getGroup(), "EHR Data Entry");
-        setPermissions(REQUEST_ADMIN.getGroup(), "Editor");
-        setPermissions(REQUEST_ADMIN.getGroup(), "EHR Data Entry");
+        _securityHelper.setProjectPerm(DATA_ADMIN.getGroup(), "EHR Data Entry");
+        _securityHelper.setProjectPerm(REQUESTER.getGroup(), "EHR Data Entry");
+        _securityHelper.setProjectPerm(BASIC_SUBMITTER.getGroup(), "EHR Data Entry");
+        _securityHelper.setProjectPerm(FULL_SUBMITTER.getGroup(), "EHR Data Entry");
+        _securityHelper.setProjectPerm(FULL_UPDATER.getGroup(), "EHR Data Entry");
+        _securityHelper.setProjectPerm(REQUEST_ADMIN.getGroup(), "EHR Data Entry");
         savePermissions();
     }
 

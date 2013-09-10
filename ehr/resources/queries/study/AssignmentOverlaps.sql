@@ -38,8 +38,8 @@ FROM (
   h.project.avail as avail,
   h.project.title as title,
   h.qcstate,
-  cast(COALESCE(STARTDATE, '1900-01-01') as date) as StartDateParam,
-  cast(COALESCE(ENDDATE, curdate()) as date) as EndDateParam,
+  cast(COALESCE(StartDate, '1900-01-01') as date) as StartDateParam,
+  cast(COALESCE(EndDate, curdate()) as date) as EndDateParam,
   FROM study.assignment h
 ) h
 

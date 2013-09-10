@@ -247,7 +247,7 @@ EHR.Metadata.Columns = {
     'Clinical Encounters': EHR.Metadata.topCols + ',title,type,major,serviceRequested,restraint,restraintDuration,'+EHR.Metadata.bottomCols,
     'Clinical Remarks': EHR.Metadata.topCols+',so,a,p,'+EHR.Metadata.bottomCols,
     'Clinical Observations': EHR.Metadata.topCols+',area,observation,code,' + EHR.Metadata.bottomCols,
-    'Clinpath Runs': EHR.Metadata.topCols+',serviceRequested,type,sampletype,sampleId,collectionMethod,collectedBy,'+EHR.Metadata.bottomCols,
+    'Clinpath Runs': EHR.Metadata.topCols+',servicerequested,type,sampletype,sampleId,collectionMethod,collectedBy,'+EHR.Metadata.bottomCols,
     'Cytology Automated Evaluation': EHR.Metadata.topCols+',sampleType,collectionMethod,testid,result,units,'+EHR.Metadata.bottomCols,
     'Cytology Manual Evaluation': EHR.Metadata.topCols+',sampleType,collectionMethod,sampleAppearance,slidesMade,slidesSubmitted,stainType,results,reviewedBy,'+EHR.Metadata.bottomCols,
     Deaths: EHR.Metadata.topCols+',tattoo,dam,cause,manner,'+EHR.Metadata.bottomCols,

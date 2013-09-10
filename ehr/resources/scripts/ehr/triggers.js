@@ -587,7 +587,7 @@ EHR.Server.Triggers.rowInit = function(helper, scriptErrors, row, oldRow){
         !helper.isSkipHousingCheck()
     ){
         helper.logDebugMsg('Verifying room/cage:');
-        if (!helper.getJavaHelper.validateHousing(row.Id, row.room, row.cage, row.date)){
+        if (!helper.getJavaHelper().validateHousing(row.Id, row.room, row.cage, row.date)){
             EHR.Server.Utils.addError(scriptErrors, 'room', 'Not housed in this room on this date', 'WARN');            
         }
     }

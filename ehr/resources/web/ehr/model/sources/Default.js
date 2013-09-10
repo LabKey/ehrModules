@@ -531,7 +531,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 shownInGrid: false
             },
             remark: {
-                shownInGrid: false
+                shownInGrid: true
             },
             result: {
                 compositeField: 'Numeric Result'
@@ -551,12 +551,12 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             },
             preservation: {
                 editorConfig: {
-                    plugins: ['ehr-usereditablecombo']
+                    plugins: ['ldk-usereditablecombo']
                 }
             },
             qualifier: {
                 editorConfig: {
-                    plugins: ['ehr-usereditablecombo']
+                    plugins: ['ldk-usereditablecombo']
                 },
                 shownInGrid: false
             },
@@ -572,7 +572,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             stain: {
                 defaultValue: 'Hematoxylin & Eosin',
                 editorConfig: {
-                    plugins: ['ehr-usereditablecombo']
+                    plugins: ['ldk-usereditablecombo']
                 },
                 shownInGrid: false
             },
@@ -593,7 +593,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             },
             container_type: {
                 editorConfig: {
-                    plugins: ['ehr-usereditablecombo']
+                    plugins: ['ldk-usereditablecombo']
                 },
                 shownInGrid: false
             }
@@ -613,7 +613,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             stain: {
                 defaultValue: 'Hematoxylin & Eosin',
                 editorConfig: {
-                    plugins: ['ehr-usereditablecombo']
+                    plugins: ['ldk-usereditablecombo']
                 }
             },
             pathologist: {
@@ -633,7 +633,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             },
             qualifier: {
                 editorConfig: {
-                    plugins: ['ehr-usereditablecombo']
+                    plugins: ['ldk-usereditablecombo']
                 }
             }
         },
@@ -678,7 +678,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             },
             room: {
                 editorConfig: {
-                    plugins: ['ehr-usereditablecombo']
+                    plugins: ['ldk-usereditablecombo']
                 }
             }
         },
@@ -764,7 +764,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             },
             sampleType : {
                 editorConfig: {
-                    plugins: ['ehr-usereditablecombo']
+                    plugins: ['ldk-usereditablecombo']
                 },
                 columnConfig: {
                     width: 160
@@ -785,17 +785,23 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             units: {
                 hidden: true
             },
-            serviceRequested: {
+            servicerequested: {
                 allowBlank: false,
                 columnConfig: {
                     width: 250
                 },
                 editorConfig: {
                     anyMatch: true,
-                    plugins: ['ehr-usereditablecombo']
+                    plugins: ['ldk-usereditablecombo'],
+                    listConfig: {
+                        innerTpl: '{[(values.chargetype ? "<b>" + values.chargetype + ":</b> " : "") + values.servicename]}',
+                        getInnerTpl: function(){
+                            return this.innerTpl;
+                        }
+                    }
                 },
                 lookup: {
-                    sort: 'servicename',
+                    sort: 'chargetype,servicename',
                     columns: '*'
                 }
             },
@@ -1011,7 +1017,10 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             },
             testid: {
                 editorConfig: {
-                    plugins: ['ehr-usereditablecombo']
+                    plugins: ['ldk-usereditablecombo']
+                },
+                lookup: {
+                    columns: '*'
                 }
             }
         },
@@ -1075,7 +1084,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                     columns: '*'
                 },
                 editorConfig: {
-                    plugins: ['ehr-usereditablecombo']
+                    plugins: ['ldk-usereditablecombo']
                 }
             },
             date: {
@@ -1086,7 +1095,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 shownInGrid: false
             },
             remark: {
-                shownInGrid: false
+                shownInGrid: true
             }
         },
         'study.hematologyResults': {
@@ -1104,7 +1113,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                     columns: '*'
                 },
                 editorConfig: {
-                    plugins: ['ehr-usereditablecombo']
+                    plugins: ['ldk-usereditablecombo']
                 }
             },
             date: {
@@ -1115,7 +1124,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 shownInGrid: false
             },
             remark: {
-                shownInGrid: false
+                shownInGrid: true
             }
         },
         'study.urinalysisResults': {
@@ -1150,7 +1159,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                     columns: '*'
                 },
                 editorConfig: {
-                    plugins: ['ehr-usereditablecombo']
+                    plugins: ['ldk-usereditablecombo']
                 }
             },
             date: {
@@ -1161,7 +1170,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 shownInGrid: false
             },
             remark: {
-                shownInGrid: false
+                shownInGrid: true
             },
             qualresult: {
                 xtype: 'ehr-urinalysisresultfield',
@@ -1179,7 +1188,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             account: {hidden: true},
             source: {
                 editorConfig: {
-                    plugins: ['ehr-usereditablecombo']
+                    plugins: ['ldk-usereditablecombo']
                 },
                 allowBlank: false
             },
@@ -1204,7 +1213,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             authorized_by: {allowBlank: false},
             destination: {
                 editorConfig: {
-                    plugins: ['ehr-usereditablecombo']
+                    plugins: ['ldk-usereditablecombo']
                 },
                 allowBlank: false
             }
@@ -1302,7 +1311,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                     columns: 'type,volume,color'
                 },
                 editorConfig: {
-                    plugins: ['ehr-usereditablecombo'],
+                    plugins: ['ldk-usereditablecombo'],
                     listConfig: {
                         innerTpl: '{[(values.type) + (values.color ? " (" + values.color + ")" : "")]}',
                         getInnerTpl: function(){
@@ -1423,7 +1432,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 shownInGrid: false,
                 compositeField: 'Dosage',
                 editorConfig: {
-                    plugins: ['ehr-usereditablecombo']
+                    plugins: ['ldk-usereditablecombo']
                 }
             },
             concentration: {
@@ -1438,7 +1447,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 lookup: {columns: '*'},
                 compositeField: 'Drug Conc',
                 editorConfig: {
-                    plugins: ['ehr-usereditablecombo'],
+                    plugins: ['ldk-usereditablecombo'],
                     listeners: {
                         select: function(combo, recs){
                             if (!recs || recs.length != 1)
@@ -1464,7 +1473,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             route: {
                 shownInGrid: false,
                 editorConfig: {
-                    plugins: ['ehr-usereditablecombo']
+                    plugins: ['ldk-usereditablecombo']
                 }
             },
             volume: {
@@ -1480,7 +1489,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                 compositeField: 'Volume',
                 header: 'Vol Units',
                 editorConfig: {
-                    plugins: ['ehr-usereditablecombo']
+                    plugins: ['ldk-usereditablecombo']
                 }
             },
             amount: {
@@ -1500,7 +1509,7 @@ EHR.model.DataModelManager.registerMetadata('Default', {
                     width: 120
                 },
                 editorConfig: {
-                    plugins: ['ehr-usereditablecombo']
+                    plugins: ['ldk-usereditablecombo']
                 }
             },
             performedby: {
@@ -1613,6 +1622,22 @@ EHR.model.DataModelManager.registerMetadata('Default', {
             }
         },
         'study.pairings': {
+            pairid: {
+                allowBlank: false,
+                xtype: 'triggerfield',
+                editorConfig: {
+                    triggerCls: 'x4-form-search-trigger',
+                    triggerToolTip: 'Click to set this to match the current cage',
+                    onTriggerClick: function(e){
+                        var rec = EHR.DataEntryUtils.getBoundRecord(this);
+                        if (rec){
+                            var cage = rec.get('cage');
+                            if (cage)
+                                this.setValue(cage);
+                        }
+                    }
+                }
+            },
             pairingtype: {
                 columnConfig: {
                     width: 145,

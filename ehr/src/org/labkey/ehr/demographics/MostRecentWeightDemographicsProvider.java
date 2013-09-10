@@ -35,6 +35,7 @@ public class MostRecentWeightDemographicsProvider extends AbstractDemographicsPr
     public MostRecentWeightDemographicsProvider()
     {
         super("study", "demographicsMostRecentWeight");
+        _supportsQCState = false;
     }
 
     public String getName()

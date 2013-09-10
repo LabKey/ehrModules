@@ -2,7 +2,7 @@
     <metadata>
         <tables xmlns="http://labkey.org/data/xml">
             <table tableName="housingRoommates" tableDbType="NOT_IN_DB">
-                <titleColumn>Roommate History</titleColumn>
+                <titleColumn>Cagemate History</titleColumn>
                 <columns>
                     <column columnName="lsid">
                         <isKeyField>true</isKeyField>
@@ -21,7 +21,7 @@
                         </fk>
                     </column>
                     <column columnName="RoommateId">
-                        <columnTitle>Roommate Id</columnTitle>
+                        <columnTitle>Other Id</columnTitle>
                         <fk>
                             <fkColumnName>Id</fkColumnName>
                             <fkTable>Animal</fkTable>
@@ -40,9 +40,11 @@
                     <!--</column>-->
                     <column columnName="roommateStart">
                         <formatString>yyyy-MM-dd HH:mm</formatString>
+                        <columnTitle>Cagemate Start</columnTitle>
                     </column>
                     <column columnName="roommateEnd">
                         <formatString>yyyy-MM-dd HH:mm</formatString>
+                        <columnTitle>Cagemate End</columnTitle>
                     </column>
                 </columns>
             </table>

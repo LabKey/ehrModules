@@ -4,7 +4,7 @@
  * Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
  */
 /**
- * This provides the UI to duplicate one or more records from an EHR.ext.GridFormPanel.  It allows the user to pick the number of copies
+ * This provides the UI to duplicate one or more records from a DataEntryPanel.  It allows the user to pick the number of copies
  * per record and which fields to copy
  *
  * @cfg targetGrid

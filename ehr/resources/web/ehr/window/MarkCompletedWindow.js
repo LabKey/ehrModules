@@ -40,6 +40,9 @@ Ext4.define('EHR.window.MarkCompletedWindow', {
                         return;
                     }
 
+                    var dataRegion = LABKEY.DataRegions[this.dataRegionName];
+                    var checked = dataRegion.getChecked();
+
                     LABKEY.Query.selectRows({
                         schemaName: this.schemaName,
                         queryName: this.queryName,
@@ -73,6 +76,7 @@ Ext4.define('EHR.window.MarkCompletedWindow', {
                                     rows: toUpdate,
                                     scope: this,
                                     success: function(){
+                                        this.close();
                                         Ext4.Msg.hide();
                                         dataRegion.selectNone();
                                         dataRegion.refresh();

@@ -13,6 +13,8 @@
  * @cfg sortMode
  * @cfg checkedItems
  * @cfg showMaxDate
+ * @cfg redacted
+ * @cfg printMode
  */
 Ext4.define('EHR.panel.ClinicalHistoryPanel', {
     extend: 'Ext.panel.Panel',
@@ -85,8 +87,9 @@ Ext4.define('EHR.panel.ClinicalHistoryPanel', {
     getGridConfig: function(){
         return {
             xtype: 'grid',
-            border: true,
+            border: this.printMode ? false : true,
             minHeight: 100,
+            minWidth: this.width - 50,
             cls: 'ldk-grid',
             maxHeight: this.maxGridHeight,
             height: this.gridHeight,
@@ -107,7 +110,7 @@ Ext4.define('EHR.panel.ClinicalHistoryPanel', {
             caseId: this.caseId,
             minDate: this.minDate,
             maxDate: this.maxDate,
-            tbar: {
+            tbar: this.printMode ? null : {
                 border: true,
                 items: [{
                     xtype: 'datefield',
@@ -237,6 +240,8 @@ Ext4.define('EHR.panel.ClinicalHistoryPanel', {
     getStoreConfig: function(){
         return {
             type: 'ehr-clinicalhistorystore',
+            containerPath: this.containerPath,
+            redacted: this.redacted,
             sortMode: this.sortMode
         };
     },
