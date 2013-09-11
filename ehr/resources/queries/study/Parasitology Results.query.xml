@@ -1,7 +1,7 @@
 <query xmlns="http://labkey.org/data/xml/query">
     <metadata>
         <tables xmlns="http://labkey.org/data/xml">
-            <table tableName="Parasitology Results" tableDbType="TABLE" useColumnOrder="true">
+            <table tableName="parasitologyResults" tableDbType="TABLE" useColumnOrder="true">
                 <tableUrl />
                 <tableTitle>Parasitology Results</tableTitle>
                 <columns>
