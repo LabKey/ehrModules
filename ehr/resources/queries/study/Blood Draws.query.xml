@@ -1,7 +1,7 @@
  <query xmlns="http://labkey.org/data/xml/query">
     <metadata> 
         <tables xmlns="http://labkey.org/data/xml">
-            <table tableName="Blood Draws" tableDbType="TABLE" useColumnOrder="true">
+            <table tableName="blood" tableDbType="TABLE" useColumnOrder="true">
                 <tableUrl />
                 <insertUrl />
                 <importUrl />
