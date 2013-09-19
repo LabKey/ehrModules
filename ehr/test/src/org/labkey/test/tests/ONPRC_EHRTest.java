@@ -90,6 +90,8 @@ public class ONPRC_EHRTest extends AbstractEHRTest
             selectImportDataAction("Reload Study");
         else
             selectImportDataAction("Import Study");
+
+        waitForPipelineJobsToFinish(1);
     }
 
     @Override
