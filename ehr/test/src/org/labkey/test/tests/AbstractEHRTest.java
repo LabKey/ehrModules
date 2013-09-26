@@ -23,8 +23,8 @@ import org.labkey.remoteapi.query.SaveRowsResponse;
 import org.labkey.test.BaseWebDriverTest;
 import org.labkey.test.Locator;
 import org.labkey.test.ModulePropertyValue;
+import org.labkey.test.TestProperties;
 import org.labkey.test.TestTimeoutException;
-import org.labkey.test.tests.SimpleApiTestWD;
 import org.labkey.test.util.AdvancedSqlTest;
 import org.labkey.test.util.EHRTestHelper;
 import org.labkey.test.util.LogMethod;
@@ -101,11 +101,10 @@ abstract public class AbstractEHRTest extends SimpleApiTestWD implements Advance
     }
 
     @Override
-    public boolean enableLinkCheck()
+    public void checkLinks()
     {
-        if ( super.enableLinkCheck() )
+        if ( TestProperties.linkCheckEnabled() )
             log("EHR test has too many hard coded links and special actions to crawl effectively. Skipping crawl.");
-        return false;
     }
 
     @Override
